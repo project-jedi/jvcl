@@ -107,13 +107,7 @@ type
     procedure SetTransparent(Value: Boolean);
     procedure SetWordWrap(Value: Boolean);
     procedure SetShowFocus(Value: Boolean);
-    procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
-    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
-    procedure CMDialogChar(var Msg: TCMDialogChar); message CM_DIALOGCHAR;
-    procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
-    procedure CMVisibleChanged(var Msg: TMessage); message CM_VISIBLECHANGED;
-    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure WMRButtonDown(var Msg: TWMRButtonDown); message WM_RBUTTONDOWN;
     procedure WMRButtonUp(var Msg: TWMRButtonUp); message WM_RBUTTONUP;
     procedure SetImageIndex(const Value: TImageIndex);
@@ -125,6 +119,14 @@ type
     procedure SetSpacing(const Value: integer);
     procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
   protected
+    procedure TextChanged; override;
+    procedure FontChanged; override;
+    function WantKey(Key: Integer; Shift: TShiftState;
+      const KeyText: WideString): Boolean; override;
+    procedure EnabledChanged; override;
+    procedure VisibleChanged; override;
+    procedure ParentColorChanged; override;
+
     procedure DoDrawCaption(var Rect: TRect; Flags: Word); virtual;
     procedure DoDrawText(var Rect: TRect; Flags: Word); virtual;
     procedure AdjustBounds;
@@ -787,30 +789,29 @@ begin
   inherited;
 end;
 
-procedure TJvCustomLabel.CMTextChanged(var Msg: TMessage);
+procedure TJvCustomLabel.TextChanged;
 begin
+  inherited TextChanged;
   NonProviderChange;
   Invalidate;
   AdjustBounds;
 end;
 
-procedure TJvCustomLabel.CMFontChanged(var Msg: TMessage);
+procedure TJvCustomLabel.FontChanged;
 begin
-  inherited;
+  inherited FontChanged;
   AdjustBounds;
   UpdateTrackFont(HotTrackFont, Font, FHotTrackFontOptions);
 end;
 
-procedure TJvCustomLabel.CMDialogChar(var Msg: TCMDialogChar);
+function TJvCustomLabel.WantKey(Key: Integer; Shift: TShiftState;
+  const KeyText: WideString): Boolean;
 begin
-  if (FFocusControl <> nil) and Enabled and ShowAccelChar and
-    IsAccel(Msg.CharCode, GetLabelCaption) then
-    with FFocusControl do
-      if CanFocus then
-      begin
-        SetFocus;
-        Msg.Result := 1;
-      end;
+  Result := (FFocusControl <> nil) and Enabled and ShowAccelChar and
+    IsAccel(Key, GetLabelCaption) and (ssAlt in Shift);
+  if Result then
+    if FFocusControl.CanFocus then
+      FFocusControl.SetFocus;
 end;
 
 procedure TJvCustomLabel.WMRButtonDown(var Msg: TWMRButtonDown);
@@ -825,21 +826,23 @@ begin
   UpdateTracking;
 end;
 
-procedure TJvCustomLabel.CMEnabledChanged(var Msg: TMessage);
+procedure TJvCustomLabel.EnabledChanged;
 begin
-  inherited;
+  inherited EnabledChanged;
   UpdateTracking;
 end;
 
-procedure TJvCustomLabel.CMVisibleChanged(var Msg: TMessage);
+procedure TJvCustomLabel.VisibleChanged;
 begin
-  inherited;
+  inherited VisibleChanged;
   if Visible then
     UpdateTracking;
 end;
 
 procedure TJvCustomLabel.MouseEnter(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   if not FMouseInControl and Enabled and IsForegroundTask then
   begin
     FHintSaved := Application.HintColor;
@@ -850,19 +853,21 @@ begin
       Font.Assign(FHotTrackFont);
     end;
     FMouseInControl := True;
-    inherited;
+    inherited MouseEnter(Control);
   end;
 end;
 
 procedure TJvCustomLabel.MouseLeave(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   if FMouseInControl and Enabled and not FDragging then
   begin
     Application.HintColor := FHintSaved;
     if HotTrack then
       Font.Assign(FFontSave);
     FMouseInControl := False;
-    inherited;
+    inherited MouseLeave(Control);
   end;
 end;
 
@@ -933,9 +938,9 @@ begin
     Result := Images.Width;
 end;
 
-procedure TJvCustomLabel.CMParentColorChanged(var Msg: TMessage);
+procedure TJvCustomLabel.ParentColorChanged;
 begin
-  inherited;
+  inherited ParentColorChanged;
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;

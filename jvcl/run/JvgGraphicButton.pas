@@ -168,6 +168,8 @@ end;
 
 procedure TJvgGraphicButton.MouseEnter(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   inherited MouseEnter(Control);
   FState := bsActive;
   Repaint;
@@ -175,6 +177,8 @@ end;
 
 procedure TJvgGraphicButton.MouseLeave(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   inherited MouseLeave(Control);
   FState := bsPassive;
   Repaint;

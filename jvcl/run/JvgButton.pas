@@ -171,7 +171,7 @@ type
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
+    procedure ParentColorChanged; override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
   public
@@ -651,32 +651,36 @@ begin
   end;
 end;
 
-procedure TJvgButton.CMParentColorChanged(var Msg: TMessage);
+procedure TJvgButton.ParentColorChanged;
 begin
-  inherited;
+  inherited ParentColorChanged;
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
 
 procedure TJvgButton.MouseEnter(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   if not FOver then
   begin
     FSaved := Application.HintColor;
     Application.HintColor := FHintColor;
     FOver := True;
   end;
-  inherited;
+  inherited MouseEnter(Control);
 end;
 
 procedure TJvgButton.MouseLeave(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   if FOver then
   begin
     Application.HintColor := FSaved;
     FOver := False;
   end;
-  inherited;
+  inherited MouseLeave(Control);
   FMouseInControl := False;
   Paint_;
 end;

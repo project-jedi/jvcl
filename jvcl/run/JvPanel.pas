@@ -122,10 +122,10 @@ type
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
-    procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
+    procedure ParentColorChanged; override;
+    procedure TextChanged; override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure Paint; override;
     procedure AdjustSize; override;
@@ -510,23 +510,22 @@ begin
   end;
 end;
 
-procedure TJvPanel.CMParentColorChanged(var Msg: TMessage);
+procedure TJvPanel.ParentColorChanged;
 begin
-  inherited;
+  inherited ParentColorChanged;
   Invalidate;
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
 
-procedure TJvPanel.CMMouseEnter(var Msg: TMessage);
+procedure TJvPanel.MouseEnter(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   if not FOver then
   begin
     FSaved := Application.HintColor;
     FOldColor := Color;
-    // for D7...
-    if csDesigning in ComponentState then
-      Exit;
     Application.HintColor := FHintColor;
     FOver := True;
     if not Transparent then
@@ -535,12 +534,13 @@ begin
       MouseTimer.Attach(Self);
     end;
   end;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
+  inherited MouseEnter(Control);
 end;
 
-procedure TJvPanel.CMMouseLeave(var Msg: TMessage);
+procedure TJvPanel.MouseLeave(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   if FOver then
   begin
     Application.HintColor := FSaved;
@@ -551,8 +551,7 @@ begin
       MouseTimer.Detach(Self);
     end;
   end;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
+  inherited MouseLeave(Control);
 end;
 
 procedure TJvPanel.SetTransparent(const Value: Boolean);
@@ -604,9 +603,9 @@ begin
   end;
 end;
 
-procedure TJvPanel.CMTextChanged(var Msg: TMessage);
+procedure TJvPanel.TextChanged;
 begin
-  inherited;
+  inherited TextChanged;
   Invalidate;
 end;
 

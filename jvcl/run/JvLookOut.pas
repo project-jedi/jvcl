@@ -35,17 +35,16 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   StdCtrls, ExtCtrls, Buttons, Menus, ImgList,
-  JvTypes, JvComponent, JvThemes;
+  JvTypes, JvConsts, JvComponent, JvThemes, JvExButtons;
 
 const
   CM_IMAGESIZECHANGED = CM_BASE + 100;
   CM_LEAVEBUTTON = CM_BASE + 101;
-  CM_LOOKOUTBUTTONPRESSED = CM_BASE + 102;
 
 type
   TJvButtonBorder = (bbDark, bbLight, bbMono);
 
-  TJvUpArrowBtn = class(TSpeedButton)
+  TJvUpArrowBtn = class(TJvExSpeedButton)
   private
     FTimer: TTimer;
     FAutoRepeat: Boolean;
@@ -54,8 +53,6 @@ type
     FOver: Boolean;
     procedure SetFlat(Value: Boolean);
     procedure CmDesignHitTest(var Msg: TCmDesignHitTest); message Cm_DesignHitTest;
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
   protected
     procedure OnTime(Sender: TObject); virtual;
@@ -63,6 +60,8 @@ type
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
   public
     procedure Click; override;
     constructor Create(AOwner: TComponent); override;
@@ -128,11 +127,9 @@ type
     procedure DrawSmallImages;
     procedure DrawLargeImages;
     procedure ImageListChange(Sender: TObject);
-    procedure CMDialogChar(var Msg: TCMDialogChar); message CM_DIALOGCHAR;
-    procedure CMButtonPressed(var Msg: TMessage); message CM_LOOKOUTBUTTONPRESSED;
+    procedure CMButtonPressed(var Msg: TJvCMButtonPressed); message CM_JVBUTTONPRESSED;
     procedure CMParentImageSizeChanged(var Msg: TMessage); message CM_IMAGESIZECHANGED;
     procedure CMLeaveButton(var Msg: TMessage); message CM_LEAVEBUTTON;
-    procedure CmVisibleChanged(var M: TMessage); message CM_VISIBLECHANGED;
     function ParentVisible: Boolean;
   protected
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
@@ -151,6 +148,10 @@ type
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
+    function WantKey(Key: Integer; Shift: TShiftState;
+      const KeyText: WideString): Boolean; override;
+    procedure VisibleChanged; override;
+
     property FillColor: TColor read FFillColor write SetFillColor default clNone;
     property Offset: Integer read FOffset write SetOffset default 0;
     property ButtonBorder: TJvButtonBorder read FButtonBorder write SetButtonBorder default bbDark;
@@ -601,15 +602,19 @@ begin
   end;
 end;
 
-procedure TJvUpArrowBtn.CMMouseEnter(var Msg: TMessage);
+procedure TJvUpArrowBtn.MouseEnter(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   FOver := True;
   if FFlat {$IFDEF JVCLThemesEnabled}or ThemeServices.ThemesEnabled{$ENDIF} then
     Invalidate;
 end;
 
-procedure TJvUpArrowBtn.CMMouseLeave(var Msg: TMessage);
+procedure TJvUpArrowBtn.MouseLeave(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   FOver := False;
   //  FDown := False;
   if FFlat {$IFDEF JVCLThemesEnabled}or ThemeServices.ThemesEnabled{$ENDIF} then
@@ -983,21 +988,20 @@ begin
     LargeImages := TJvCustomLookOutButton(Source).LargeImages;
     SmallImages := TJvCustomLookOutButton(Source).SmallImages;
     Spacing := TJvCustomLookOutButton(Source).Spacing;
-    Exit;
-  end;
-  inherited Assign(Source);
+  end
+  else
+    inherited Assign(Source);
 end;
 
-procedure TJvCustomLookOutButton.CMDialogChar(var Msg: TCMDialogChar);
+function TJvCustomLookOutButton.WantKey(Key: Integer; Shift: TShiftState;
+  const KeyText: WideString): Boolean;
 begin
-  with Msg do
-    if IsAccel(CharCode, FCaption) and Enabled and Visible and ParentVisible then
-    begin
-      Click;
-      Result := 1;
-    end
-    else
-      inherited;
+  Result := IsAccel(Key, FCaption) and Enabled and Visible and ParentVisible
+    and (ssAlt in Shift);
+  if Result then
+    Click
+  else
+    Result := inherited WantKey(Key, Shift, KeyText);
 end;
 
 function TJvCustomLookOutButton.ParentVisible: Boolean;
@@ -1022,13 +1026,13 @@ end;
 
 procedure TJvCustomLookOutButton.UpdateExclusive;
 var
-  Msg: TMessage;
+  Msg: TJvCMButtonPressed;
 begin
   if (FGroupIndex <> 0) and (Parent <> nil) then
   begin
-    Msg.Msg := CM_LOOKOUTBUTTONPRESSED;
-    Msg.WParam := FGroupIndex;
-    Msg.LParam := Longint(Self);
+    Msg.Msg := CM_JVBUTTONPRESSED;
+    Msg.Index := FGroupIndex;
+    Msg.Control := Self;
     Msg.Result := 0;
     Parent.Broadcast(Msg);
   end;
@@ -1340,13 +1344,13 @@ begin
   end;
 end;
 
-procedure TJvCustomLookOutButton.CMButtonPressed(var Msg: TMessage);
+procedure TJvCustomLookOutButton.CMButtonPressed(var Msg: TJvCMButtonPressed);
 var
   Sender: TJvCustomLookOutButton;
 begin
-  if Msg.WParam = FGroupIndex then
+  if Msg.Index = FGroupIndex then
   begin
-    Sender := TJvCustomLookOutButton(Msg.LParam);
+    Sender := TJvCustomLookOutButton(Msg.Control);
     if Sender <> Self then
     begin
       if Sender.Down and FDown then
@@ -1362,7 +1366,9 @@ end;
 
 procedure TJvCustomLookOutButton.MouseEnter(Control: TControl);
 begin
-  inherited;
+  if csDesigning in ComponentState then
+    Exit;
+  inherited MouseEnter(Control);
   FOver := True;
   if FFillColor = clNone then
     PaintFrame
@@ -1372,7 +1378,9 @@ end;
 
 procedure TJvCustomLookOutButton.MouseLeave(Control: TControl);
 begin
-  inherited;
+  if csDesigning in ComponentState then
+    Exit;
+  inherited MouseLeave(Control);
   if FOver and not FStayDown then
   begin
     FOver := False;
@@ -1520,9 +1528,9 @@ begin
   Result := TJvLookOutButtonActionLink;
 end;
 
-procedure TJvCustomLookOutButton.CmVisibleChanged(var M: TMessage);
+procedure TJvCustomLookOutButton.VisibleChanged;
 begin
-  inherited;
+  inherited VisibleChanged;
   Invalidate;
 end;
 

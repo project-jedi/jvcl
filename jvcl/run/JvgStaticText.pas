@@ -105,16 +105,20 @@ end;
 
 procedure TJvgStaticText.MouseEnter(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   FActive := True;
   Repaint;
-  inherited;
+  inherited MouseEnter(Control);
 end;
 
 procedure TJvgStaticText.MouseLeave(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   FActive := False;
   Repaint;
-  inherited;
+  inherited MouseLeave(Control);
 end;
 
 procedure TJvgStaticText.Paint;

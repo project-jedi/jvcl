@@ -54,17 +54,15 @@ uses
   {$IFDEF VisualCLX}
   QGraphics, QControls, QStdCtrls, QDialogs, QForms,
   {$ENDIF}
-  JvComponent, JvMaxPixel, JVCLVer;
+  JvComponent, JvMaxPixel, JVCLVer, JvExStdCtrls;
 
 type
-  TJvCustomEdit = class(TCustomEdit)
+  TJvCustomEdit = class(TJvExCustomEdit)
   private
     FAboutJVCL: TJVCLAboutInfo;
     FOver: Boolean;
     FColor: TColor;
     FSaved: TColor;
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FMaxPixel: TJvMaxPixel;
     FClipboardCommands: TJvClipboardCommands;
@@ -100,10 +98,6 @@ type
     procedure WMCopy(var Msg: TWMCopy); message WM_COPY;
     procedure WMCut(var Msg: TWMCut); message WM_CUT;
     procedure WMUndo(var Msg: TWMUndo); message WM_UNDO;
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
-    procedure CMEnabledChanged(var Message: TMessage); message CM_ENABLEDCHANGED;
   {$ENDIF}
     procedure SetGroupIndex(const Value: Integer);
     procedure UpdateEdit;
@@ -117,12 +111,10 @@ type
     procedure SetSelStart(Value: Integer); override;
     function GetPopupMenu: TPopupMenu; override;
   {$ENDIF}
-  {$IFDEF VisualCLX}
     procedure EnabledChanged; override;
     procedure ParentColorChanged; override;
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
-  {$ENDIF}
   public
     function IsEmpty: Boolean;
     constructor Create(AOwner: TComponent); override;
@@ -152,8 +144,6 @@ type
     property HintColor: TColor read FColor write FColor default clInfoBk;
     property MaxPixel: TJvMaxPixel read FMaxPixel write FMaxPixel;
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   end;
 
@@ -318,18 +308,14 @@ begin
     (Win32MajorVersion = 4) and (Win32MinorVersion = 0) then
     Params.Style := Params.Style or ES_MULTILINE; // needed for Win95
 end;
-{$ENDIF}
+{$ENDIF VCL}
 
-{$IFDEF VisualCLX}
 procedure TJvCustomEdit.MouseEnter(AControl: TControl);
-{$ENDIF}
 {$IFDEF VCL}
-procedure TJvCustomEdit.CMMouseEnter(var Msg: TMessage);
 var
   I, J: Integer;
-{$ENDIF}
+{$ENDIF VCL}
 begin
-  // for D7...
   if csDesigning in ComponentState then
     Exit;
   if not FOver then
@@ -345,26 +331,18 @@ begin
       SelStart := I;
       SelLength := J;
     end;
-  {$ENDIF}
+  {$ENDIF VCL}
     FOver := True;
   end;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
+  inherited MouseEnter(AControl);
 end;
 
-
-{$IFDEF VCL}
-procedure TJvCustomEdit.CMMouseLeave(var Msg: TMessage);
-var I, J: Integer;
-{$ENDIF}
-{$IFDEF VisualCLX}
 procedure TJvCustomEdit.MouseLeave(AControl: TControl);
-{$ENDIF}
+{$IFDEF VCL}
+var
+  I, J: Integer;
+{$ENDIF VCL}
 begin
-  {$IFDEF VisualCLX}
-  inherited;
-  {$ENDIF}
-  // for D7...
   if csDesigning in ComponentState then
     Exit;
   if FOver then
@@ -379,21 +357,15 @@ begin
       SelStart := I;
       SelLength := J;
     end;
-    {$ENDIF}
+    {$ENDIF VCL}
     FOver := False;
   end;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
+  inherited MouseLeave(AControl);
 end;
 
-{$IFDEF VCL}
-procedure TJvCustomEdit.CMParentColorChanged(var Msg: TMessage);
-{$ENDIF}
-{$IFDEF VisualCLX}
 procedure TJvCustomEdit.ParentColorChanged;
-{$ENDIF}
 begin
-  inherited;
+  inherited ParentColorChanged;
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
@@ -404,14 +376,14 @@ begin
   FHotTrack := Value;
   Ctl3D := not FHotTrack;  // asn: in clx not implemented
 end;
-{$ENDIF}
+{$ENDIF VCl}
 
 function TJvCustomEdit.IsEmpty: Boolean;
 begin
   Result := (Length(Text) = 0);
 end;
 
-{$IFDEF VCL}  // asn: clx version version has alignment prpoerty
+{$IFDEF VCL}  // asn: clx version has alignment property
 procedure TJvCustomEdit.SetAlignment(Value: TAlignment);
 begin
   if FAlignment <> Value then
@@ -420,7 +392,7 @@ begin
     ReCreateWnd;
   end;
 end;
-{$ENDIF}
+{$ENDIF VCL}
 
 procedure TJvCustomEdit.MaxPixelChanged(Sender: TObject);
 var
@@ -533,16 +505,11 @@ begin
   FCaret.DestroyCaret;
   inherited;
 end;
-{$ENDIF}
+{$ENDIF VCL}
 
-{$IFDEF VCL}
-procedure TJvCustomEdit.CMEnabledchanged(var Message: TMessage);
-{$ENDIF}
-{$IFDEF VisualCLX}
 procedure TJvCustomEdit.Enabledchanged;
-{$ENDIF}
 begin
-  inherited;
+  inherited EnabledChanged;
   Invalidate;
 end;
 

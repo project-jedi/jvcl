@@ -48,19 +48,17 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
-  JvCaret, JVCLVer, JvComponent;
+  JvCaret, JVCLVer, JvComponent, JvExStdCtrls;
 
 const
   WM_AUTOBAR = WM_USER + 43;
 
 type
-  TJvCustomMemo = class(TCustomMemo)
+  TJvCustomMemo = class(TJvExCustomMemo)
   private
     FAboutJVCL: TJVCLAboutInfo;
     FMaxLines: Integer;
     FHotTrack: Boolean;
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
     FHintColor: TColor;
     FSaved: TColor;
     FOnParentColorChanged: TNotifyEvent;
@@ -79,9 +77,6 @@ type
     procedure WMSetFocus(var Msg: TMessage); message WM_SETFOCUS;
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure WMPaste(var Msg: TWMPaste); message WM_PASTE;
     procedure WMCopy(var Msg: TWMCopy); message WM_COPY;
     procedure WMCut(var Msg: TWMCut); message WM_CUT;
@@ -96,6 +91,9 @@ type
     procedure SetReadOnly(const Value: Boolean);
     procedure SetClipboardCommands(const Value: TJvClipboardCommands);
   protected
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
+    procedure ParentColorChanged; override;
     procedure WndProc(var Msg: TMessage); override;
     procedure KeyPress(var Key: Char); override;
     procedure Change; override;
@@ -122,8 +120,8 @@ type
     property Lines: TStrings read GetLines write SetLines;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly;
     property Transparent: Boolean read FTransparent write SetTransparent default False;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property OnVerticalScroll: TNotifyEvent read FOnVerticalScroll write FOnVerticalScroll;
     property OnHorizontalScroll: TNotifyEvent read FOnHorizontalScroll write FOnHorizontalScroll;
@@ -228,9 +226,9 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvCustomMemo.CMParentColorChanged(var Msg: TMessage);
+procedure TJvCustomMemo.ParentColorChanged;
 begin
-  inherited;
+  inherited ParentColorChanged;
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
@@ -249,9 +247,8 @@ begin
     FOnVerticalScroll(Self);
 end;
 
-procedure TJvCustomMemo.CMMouseEnter(var Msg: TMessage);
+procedure TJvCustomMemo.MouseEnter(Control: TControl);
 begin
-  // for D7...
   if csDesigning in ComponentState then
     Exit;
   if not FOver then
@@ -262,13 +259,11 @@ begin
       Ctl3D := True;
     FOver := True;
   end;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
+  inherited MouseEnter(Control);
 end;
 
-procedure TJvCustomMemo.CMMouseLeave(var Msg: TMessage);
+procedure TJvCustomMemo.MouseLeave(Control: TControl);
 begin
-  // for D7...
   if csDesigning in ComponentState then
     Exit;
   if FOver then
@@ -278,8 +273,7 @@ begin
       Ctl3D := False;
     FOver := False;
   end;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
+  inherited MouseLeave(Control);
 end;
 
 procedure TJvCustomMemo.SetHotTrack(const Value: Boolean);

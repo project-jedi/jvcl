@@ -34,25 +34,23 @@ interface
 uses
   Windows, Messages, Classes, Controls, Graphics, ExtCtrls, Buttons, Forms,
   JVCLVer,
-  JvgTypes, JvgCommClasses, JvgUtils;
+  JvgTypes, JvgCommClasses, JvgUtils, JvExButtons;
 
 type
-  TJvgBitBtn = class(TBitBtn)
+  TJvgBitBtn = class(TJvExBitBtn)
   private
     FAboutJVCL: TJVCLAboutInfo;
     FCanvas: TControlCanvas;
     FHintColor: TColor;
     FSaved: TColor;
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FOver: Boolean;
     function GetCanvas: TCanvas;
     procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
-    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
   protected
+    procedure ParentColorChanged; override;
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
     procedure DrawItem(const DrawItemStruct: TDrawItemStruct);
   public
     constructor Create(AOwner: TComponent); override;
@@ -62,8 +60,8 @@ type
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    property OnMouseEnter;
+    property OnMouseLeave;
   end;
 
 implementation
@@ -135,37 +133,36 @@ begin
   FCanvas.Handle := 0;
 end;
 
-procedure TJvgBitBtn.CMParentColorChanged(var Msg: TMessage);
+procedure TJvgBitBtn.ParentColorChanged;
 begin
-  inherited;
+  inherited ParentColorChanged;
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
 
-procedure TJvgBitBtn.CMMouseEnter(var Msg: TMessage);
+procedure TJvgBitBtn.MouseEnter(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   if not FOver then
   begin
     FSaved := Application.HintColor;
-    // for D7...
-    if csDesigning in ComponentState then
-      Exit;
     Application.HintColor := FHintColor;
     FOver := True;
   end;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
+  inherited MouseEnter(Control);
 end;
 
-procedure TJvgBitBtn.CMMouseLeave(var Msg: TMessage);
+procedure TJvgBitBtn.MouseLeave(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   if FOver then
   begin
     Application.HintColor := FSaved;
     FOver := False;
   end;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
+  inherited MouseLeave(Control);
 end;
 
 end.

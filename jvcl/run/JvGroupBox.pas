@@ -32,26 +32,20 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
-  JVCLVer, JvThemes;
+  JVCLVer, JvThemes, JvExStdCtrls;
 
 type
-  TJvGroupBox = class(TGroupBox)
+  TJvGroupBox = class(TJvExGroupBox)
   private
     FAboutJVCL: TJVCLAboutInfo;
     FOnHotKey: TNotifyEvent;
-    FOnMouseEnter: TNotifyEvent;
     FHintColor: TColor;
     FSaved: TColor;
-    FOnMouseLeave: TNotifyEvent;
     FOnParentColorChange: TNotifyEvent;
     FOver: Boolean;
     FPropagateEnable: Boolean;
     procedure SetPropagateEnable(const Value: Boolean);
-    procedure CMDialogChar(var Msg: TCMDialogChar); message CM_DIALOGCHAR;
-    procedure CMEnabledChanged(var Msg: TMsg); message CM_ENABLEDCHANGED;
-    procedure CMMouseEnter(var Msg: TMsg); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMsg); message CM_MOUSELEAVE;
-    procedure CMParentColorChanged(var Msg: TMsg); message CM_PARENTCOLORCHANGED;
+
     procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
   {$IFDEF JVCLThemesEnabledD56}
     function GetParentBackground: Boolean;
@@ -59,6 +53,12 @@ type
     procedure SetParentBackground(Value: Boolean); virtual;
   {$ENDIF JVCLThemesEnabledD56}
   protected
+    function WantKey(Key: Integer; Shift: TShiftState;
+      const KeyText: WideString): Boolean; override;
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
+    procedure EnabledChanged; override;
+    procedure ParentColorChanged; override;
     procedure DoHotKey; dynamic;
     procedure Paint; override;
   public
@@ -71,8 +71,8 @@ type
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground default True;
     {$ENDIF JVCLThemesEnabledD56}
     property PropagateEnable: Boolean read FPropagateEnable write SetPropagateEnable default False;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChange write FOnParentColorChange;
     property OnHotKey: TNotifyEvent read FOnHotKey write FOnHotKey;
   end;
@@ -183,53 +183,53 @@ end;
 
 {$ENDIF JVCLThemesEnabledD56}
 
-procedure TJvGroupBox.CMDialogChar(var Msg: TCMDialogChar);
+function TJvGroupBox.WantKey(Key: Integer; Shift: TShiftState;
+  const KeyText: WideString): Boolean;
 begin
-  inherited;
-  if Msg.Result <> 0 then
+  Result := inherited WantKey(Key, Shift, KeyText);
+  if Result then
     DoHotKey;
 end;
 
-procedure TJvGroupBox.CMEnabledChanged(var Msg: TMsg);
+procedure TJvGroupBox.EnabledChanged;
 var
   I: Integer;
 begin
-  inherited;
+  inherited EnabledChanged;
   if PropagateEnable then
     for I := 0 to ControlCount - 1 do
       Controls[I].Enabled := Enabled;
   Invalidate;
 end;
 
-procedure TJvGroupBox.CMMouseEnter(var Msg: TMsg);
+procedure TJvGroupBox.MouseEnter(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   if not FOver then
   begin
     FSaved := Application.HintColor;
-    // for D7...
-    if csDesigning in ComponentState then
-      Exit;
     Application.HintColor := FHintColor;
     FOver := True;
   end;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
+  inherited MouseEnter(Control);
 end;
 
-procedure TJvGroupBox.CMMouseLeave(var Msg: TMsg);
+procedure TJvGroupBox.MouseLeave(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   if FOver then
   begin
     Application.HintColor := FSaved;
     FOver := False;
   end;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
+  inherited MouseLeave(Control);
 end;
 
-procedure TJvGroupBox.CMParentColorChanged(var Msg: TMsg);
+procedure TJvGroupBox.ParentColorChanged;
 begin
-  inherited;
+  inherited ParentColorChanged;
   if Assigned(FOnParentColorChange) then
     FOnParentColorChange(Self);
 end;

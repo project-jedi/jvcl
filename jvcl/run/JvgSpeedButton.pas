@@ -34,12 +34,17 @@ interface
 uses
   Windows, Messages, Classes, Controls, Graphics,
   ExtCtrls, Buttons, StdCtrls, Forms,
-  JVCLVer, JvgTypes, JvgCommClasses, JvgUtils;
+  {$IFDEF USEJVCL}
+  JVCLVer,
+  {$ENDIF USEJVCL}
+  JvgTypes, JvgCommClasses, JvgUtils;
 
 type
   TJvgSpeedButton = class(TSpeedButton)
   private
+    {$IFDEF USEJVCL}
     FAboutJVCL: TJVCLAboutInfo;
+    {$ENDIF USEJVCL}
     FCanvas: TControlCanvas;
     FMouseEnter: Boolean;
     FColor: TColor;
@@ -61,6 +66,8 @@ type
     procedure SetColor(const Value: TColor);
     procedure SetFrameColor(const Value: TColor);
   protected
+    procedure MouseEnter(Control: TControl); dynamic;
+    procedure MouseLeave(Control: TControl); dynamic;
     { (rb) Better respond to CM_ENABLEDCHANGED, but don't know if that works on D5,D6 }
     procedure SetEnabled(Value: Boolean); override;
     function GetEnabled: Boolean; override;
@@ -73,7 +80,9 @@ type
     procedure Click; override;
     property Canvas: TCanvas read GetCanvas;
   published
+    {$IFDEF USEJVCL}
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    {$ENDIF USEJVCL}
     property Color: TColor read FColor write SetColor;
     property ActiveColor: TColor read FActiveColor write FActiveColor;
     property Control: TControl read FControl write SetControl;
@@ -90,8 +99,6 @@ type
     FStyle: TJvgSpeedButtonStyle;
     FStyleActive: TJvgSpeedButtonStyle;
     FStylePushed: TJvgSpeedButtonStyle;
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure SetColor(const Value: TColor);
     procedure SetActiveColor(const Value: TColor);
     function GetFont: TFont;
@@ -100,6 +107,8 @@ type
     function GetColor: TColor;
     procedure ButtonChanged(Sender: TObject);
   protected
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
     procedure Paint; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -202,14 +211,28 @@ end;
 procedure TJvgSpeedButton.CMMouseEnter(var Msg: TMessage);
 begin
   inherited;
-  FMouseEnter := True;
-  if FIsDown or (Color <> ActiveColor) then
-    Invalidate;
+  MouseEnter(TControl(Msg.LParam));
 end;
 
 procedure TJvgSpeedButton.CMMouseLeave(var Msg: TMessage);
 begin
   inherited;
+  MouseLeave(TControl(Msg.LParam));
+end;
+
+procedure TJvgSpeedButton.MouseEnter(Control: TControl);
+begin
+  if csDesigning in ComponentState then
+    Exit;
+  FMouseEnter := True;
+  if FIsDown or (Color <> ActiveColor) then
+    Invalidate;
+end;
+
+procedure TJvgSpeedButton.MouseLeave(Control: TControl);
+begin
+  if csDesigning in ComponentState then
+    Exit;
   FMouseEnter := False;
   if FIsDown or (Color <> ActiveColor) then
     Invalidate;
@@ -414,9 +437,11 @@ begin
       True, GetTransparentColor(Glyph, ftcLeftBottomPixel), 0);
 end;
 
-procedure TJvgExtSpeedButton.CMMouseEnter(var Msg: TMessage);
+procedure TJvgExtSpeedButton.MouseEnter(Control: TControl);
 begin
-  inherited;
+  if csDesigning in ComponentState then
+    Exit;
+  inherited MouseEnter(Control);
   if Enabled then
   begin
     FMouseEnter := True;
@@ -424,9 +449,11 @@ begin
   end;
 end;
 
-procedure TJvgExtSpeedButton.CMMouseLeave(var Msg: TMessage);
+procedure TJvgExtSpeedButton.MouseLeave(Control: TControl);
 begin
-  inherited;
+  if csDesigning in ComponentState then
+    Exit;
+  inherited MouseLeave(Control);
   if Enabled then
   begin
     FMouseEnter := False;

@@ -38,8 +38,7 @@ uses
 
 const
   FTextAlign = DT_LEFT or DT_SINGLELINE;
-  RadianEscapments: array[TgllabelDir] of Integer = (0, -1800, -900,
-    900);
+  RadianEscapments: array[TgllabelDir] of Integer = (0, -1800, -900, 900);
 type
 
   TJvgCustomLabel = class(TJvGraphicControl)
@@ -52,9 +51,8 @@ type
     FNewWndProc: Pointer;
     procedure SetFocusControl(Value: TWinControl);
     procedure SetTransparent(Value: Boolean);
-    procedure WMLMouseUP(var Message: TMessage); message WM_LBUTTONUP;
+    procedure WMLMouseUp(var Message: TMessage); message WM_LBUTTONUP;
     procedure WMLMouseDown(var Message: TMessage); message WM_LBUTTONDOWN;
-    procedure CMTextChanged(var Message: TMessage); message CM_TEXTCHANGED;
   protected
     FActiveNow: Boolean;
     FShowAsActiveWhileControlFocused: Boolean;
@@ -66,6 +64,7 @@ type
     procedure FocusControlWndHookProc(var Msg_: TMessage);
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure MouseEnter(Control: TControl); override;
+    procedure TextChanged; override;
 
     property AutoSize: Boolean read FAutoSize write FAutoSize default True;
     property FocusControl: TWinControl read FFocusControl write SetFocusControl;
@@ -121,10 +120,10 @@ type
     procedure OnIlluminationChanged(Sender: TObject);
     procedure CreateLabelFont;
     procedure InvalidateLabel(UpdateBackgr: Boolean);
-    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
+    procedure FontChanged; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Loaded; override;
   public
@@ -315,13 +314,15 @@ end;
 
 procedure TJvgCustomLabel.MouseEnter(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   inherited MouseEnter(Control);
   if Assigned(FocusControl) and (FocusControlMethod = fcmOnMouseEnter) then
     FocusControl.SetFocus;
 end;
 //______
 
-procedure TJvgCustomLabel.WMLMouseUP(var Message: TMessage);
+procedure TJvgCustomLabel.WMLMouseUp(var Message: TMessage);
 begin
   inherited;
   if Enabled and (FocusControlMethod = fcmOnMouseUp)
@@ -341,8 +342,9 @@ begin
 end;
 //______
 
-procedure TJvgCustomLabel.CMTextChanged(var Message: TMessage);
+procedure TJvgCustomLabel.TextChanged;
 begin
+  inherited TextChanged;
   Invalidate;
 end;
 //______
@@ -481,9 +483,9 @@ begin
 end;
 //______
 
-procedure TJvgLabel.CMFontChanged(var Message: TMessage);
+procedure TJvgLabel.FontChanged;
 begin
-  inherited;
+  inherited FontChanged;
   CreateLabelFont;
   Invalidate;
 end;
@@ -491,6 +493,9 @@ end;
 
 procedure TJvgLabel.MouseEnter(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
+
   if not Enabled or (floIgnoreMouse in Options) or
      FShowAsActiveWhileControlFocused then
     Exit;
@@ -512,12 +517,14 @@ begin
       FNeedUpdateOnlyMainText := True;
       Paint;
     end;
-  inherited;
+  inherited MouseEnter(Control);
 end;
 //______
 
 procedure TJvgLabel.MouseLeave(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   if not Enabled or (floIgnoreMouse in Options) or
      FShowAsActiveWhileControlFocused then
     Exit;
@@ -539,7 +546,7 @@ begin
       FNeedUpdateOnlyMainText := True;
       Paint;
     end;
-  inherited;
+  inherited MouseLeave(Control);
 end;
 //______
 

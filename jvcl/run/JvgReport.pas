@@ -34,7 +34,10 @@ interface
 uses
   Windows, Messages, Classes, Controls, Graphics,
   Forms, OleCtnrs, ExtCtrls, SysUtils, Printers,
-  JvComponent, JvgUtils, JvgTypes, JvgCommClasses;
+  {$IFDEF USEJVCL}
+  JvComponent,
+  {$ENDIF USEJVCL}
+  JvgUtils, JvgTypes, JvgCommClasses;
 
 type
   TJvgReport = class;
@@ -52,80 +55,89 @@ type
     property OnDraw: TNotifyEvent read FOnDraw write FOnDraw;
   end;
 
+  {$IFDEF USEJVCL}
   TJvgReportItem = class(TJvGraphicControl)
+  {$ELSE}
+  TJvgReportItem = class(TGraphicControl)
+  {$ENDIF USEJVCL}
   private
-    FSelected: boolean;
-    FBkColor: integer;
-    FBvColor: integer;
-    FTransparent: integer;
-    FAlignment: word; //..1-left,2-right,3-center,4-boadwise
-    FSideLeft,
-      FSideTop,
-      FSideRight,
-      FSideBottom: word;
-    FPenStyle: integer;
-    FPenWidth: word;
+    FSelected: Boolean;
+    FBkColor: Integer;
+    FBvColor: Integer;
+    FTransparent: Integer;
+    FAlignment: Word; //..1-left,2-right,3-center,4-boadwise
+    FSideLeft, FSideTop, FSideRight, FSideBottom: Word;
+    FPenStyle: Integer;
+    FPenWidth: Word;
     FText: string;
     PrintText: string;
     FCompName: string;
     FFName: string;
-    FFSize,
-      FFColor,
-      FFStyle: integer;
-    FContainOLE: boolean;
-    FFixed: word;
+    FFSize, FFColor, FFStyle: Integer;
+    FContainOLE: Boolean;
+    FFixed: Word;
     FOLELinkToFile: string;
-    FOLESizeMode: word;
+    FOLESizeMode: Word;
     //    fRepaintOnlyBorder,
-    fSizing: boolean;
+    fSizing: Boolean;
     R: array[1..8] of TRect;
     DownPos: TPoint;
-    SizeDirection: integer;
+    SizeDirection: Integer;
     FExternalCanvas: TCanvas;
     Cursors: array[1..8] of TCursor;
     bmp: TBitmap;
     Report: TJvgReport;
 
-    procedure SetSelected(Value: boolean);
-    procedure SetBkColor(Value: integer);
-    procedure SetBvColor(Value: integer);
-    procedure SetTransparent(Value: integer);
-    procedure SetAlignment(Value: word);
-    procedure SetSideLeft(Value: word);
-    procedure SetSideTop(Value: word);
-    procedure SetSideRight(Value: word);
-    procedure SetSideBottom(Value: word);
-    procedure SetPenStyle(Value: integer);
-    procedure SetPenWidth(Value: word);
+    procedure SetSelected(Value: Boolean);
+    procedure SetBkColor(Value: Integer);
+    procedure SetBvColor(Value: Integer);
+    procedure SetTransparent(Value: Integer);
+    procedure SetAlignment(Value: Word);
+    procedure SetSideLeft(Value: Word);
+    procedure SetSideTop(Value: Word);
+    procedure SetSideRight(Value: Word);
+    procedure SetSideBottom(Value: Word);
+    procedure SetPenStyle(Value: Integer);
+    procedure SetPenWidth(Value: Word);
     procedure SetText(Value: string);
     procedure SetFName(Value: string);
-    procedure SetFSize(Value: integer);
-    procedure SetFColor(Value: integer);
-    procedure SetFStyle(Value: integer);
-    procedure SetContainOLE(Value: boolean);
+    procedure SetFSize(Value: Integer);
+    procedure SetFColor(Value: Integer);
+    procedure SetFStyle(Value: Integer);
+    procedure SetContainOLE(Value: Boolean);
     procedure SetOLELinkToFile(Value: string);
-    procedure SetOLESizeMode(Value: word);
-    procedure SetFixed(Value: word);
-    function IsContainOLE: boolean;
+    procedure SetOLESizeMode(Value: Word);
+    procedure SetFixed(Value: Word);
+    function IsContainOLE: Boolean;
 
     procedure WMMouseMove(var Message: TWMMouse); message WM_MOUSEMOVE;
     procedure WMLMouseDown(var Message: TWMMouse); message WM_LBUTTONDOWN;
-    procedure WMLMouseUP(var Message: TWMMouse); message WM_LBUTTONUP;
-    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
+    procedure WMLMouseUp(var Message: TWMMouse); message WM_LBUTTONUP;
     procedure WMSize(var Message: TWMSize); message WM_SIZE;
 
-  public
+    {$IFDEF USEJVCL}
+  protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
+    procedure FontChanged; override;
+    {$ELSE}
+    procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
+    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
+    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
+  protected
+    procedure MouseEnter(Control: TControl); dynamic;
+    procedure MouseLeave(Control: TControl); dynamic;
+    procedure FontChanged; dynamic;
+    {$ENDIF USEJVCl}
+  public
     procedure Paint; override;
     procedure PaintTo(Canvas: TCanvas);
   protected
     procedure SetParent(Value: TWinControl); override;
-
   public
     ResText: string;
     OLEContainer: TOLEContainer;
-    property Selected: boolean read FSelected write SetSelected default false;
+    property Selected: Boolean read FSelected write SetSelected default False;
     property Visible;
     property OnClick;
     property OnDblClick;
@@ -137,52 +149,42 @@ type
     //    procedure RepaintBorder;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
   published
-    property BkColor: integer read FBkColor write SetBkColor default clWhite;
-    property BvColor: integer read FBvColor write SetBvColor default clBlack;
-    property Transparent: integer read FTransparent write SetTransparent
-      default 0;
-    property Alignment: word read FAlignment write SetAlignment
-      default 1;
-    property SideLeft: word read FSideLeft write SetSideLeft
-      default 1;
-    property SideTop: word read FSideTop write SetSideTop
-      default 1;
-    property SideRight: word read FSideRight write SetSideRight
-      default 1;
-    property SideBottom: word read FSideBottom write SetSideBottom
-      default 1;
-    property PenStyle: integer read FPenStyle write SetPenStyle
-      default integer(psSolid);
-    property PenWidth: word read FPenWidth write SetPenWidth
-      default 1;
+    property BkColor: Integer read FBkColor write SetBkColor default clWhite;
+    property BvColor: Integer read FBvColor write SetBvColor default clBlack;
+    property Transparent: Integer read FTransparent write SetTransparent default 0;
+    property Alignment: Word read FAlignment write SetAlignment default 1;
+    property SideLeft: Word read FSideLeft write SetSideLeft default 1;
+    property SideTop: Word read FSideTop write SetSideTop default 1;
+    property SideRight: Word read FSideRight write SetSideRight default 1;
+    property SideBottom: Word read FSideBottom write SetSideBottom default 1;
+    property PenStyle: Integer read FPenStyle write SetPenStyle default Integer(psSolid);
+    property PenWidth: Word read FPenWidth write SetPenWidth default 1;
     property Text: string read FText write SetText;
     property CompName: string read FCompName write FCompName;
     property FName: string read FFName write SetFName;
-    property FSize: integer read FFSize write SetFSize;
-    property FColor: integer read FFColor write SetFColor;
-    property FStyle: integer read FFStyle write SetFStyle;
-    property ContainOLE: boolean read FContainOLE write SetContainOLE default
-      false;
-    property OLELinkToFile: string read FOLELinkToFile write SetOLELinkToFile
-      stored IsContainOLE;
-    property OLESizeMode: word read FOLESizeMode write SetOLESizeMode
-      stored IsContainOLE default 2;
-    property Fixed: word read FFixed write SetFixed
-      default 0;
+    property FSize: Integer read FFSize write SetFSize;
+    property FColor: Integer read FFColor write SetFColor;
+    property FStyle: Integer read FFStyle write SetFStyle;
+    property ContainOLE: Boolean read FContainOLE write SetContainOLE default False;
+    property OLELinkToFile: string read FOLELinkToFile write SetOLELinkToFile stored IsContainOLE;
+    property OLESizeMode: Word read FOLESizeMode write SetOLESizeMode stored IsContainOLE default 2;
+    property Fixed: Word read FFixed write SetFixed default 0;
   end;
 
   TJvgReportBeforePrintEvent = procedure(Sender: TJvgReport) of object;
 
+  {$IFDEF USEJVCL}
   TJvgReport = class(TJvComponent)
+  {$ELSE}
+  TJvgReport = class(TComponent)
+  {$ENDIF USEJVCL}
   private
     procedure ValidateWnds;
     function GetReportText: TStringList;
     procedure SetReportText(Value: TStringList);
   public
-    OwnerWnd,
-      ParentWnd: TWinControl;
+    OwnerWnd, ParentWnd: TWinControl;
     ParamNames: TStringList;
     ParamValues: TStringList;
     ParamMasks: TStringList;
@@ -198,10 +200,9 @@ type
     procedure PaintTo(Canvas: TCanvas);
     procedure PreviewTo(Window: TWinControl);
     procedure Print;
-    procedure CreateReport(ParentWnd: TWinControl; fNeedClearOwner: boolean);
-    function SetParam(const sParamName, sParamValue: string): boolean;
-    function GetParam(const sParamName: string; var sParamValue: string):
-      boolean;
+    procedure CreateReport(ParentWnd: TWinControl; fNeedClearOwner: Boolean);
+    function SetParam(const sParamName, sParamValue: string): Boolean;
+    function GetParam(const sParamName: string; var sParamValue: string): Boolean;
     function AddComponent: TJvgReportItem;
     procedure AnalyzeParams(Item: TJvgReportItem; DefName: string);
   private
@@ -212,8 +213,7 @@ type
   published
     property Report: TStringList read FReportList;
     property ReportText: TStringList read GetReportText write SetReportText;
-    property BeforePrint: TJvgReportBeforePrintEvent read FBeforePrint write
-      FBeforePrint;
+    property BeforePrint: TJvgReportBeforePrintEvent read FBeforePrint write FBeforePrint;
   end;
 
 implementation
@@ -278,8 +278,6 @@ end;
 //=== TJvgReportItem =========================================================
 
 constructor TJvgReportItem.Create(AOwner: TComponent);
-var
-  Msg: TMessage;
 begin
   inherited Create(AOwner);
   //..defaults
@@ -293,7 +291,7 @@ begin
   FSideTop := 1;
   FSideRight := 1;
   FSideBottom := 1;
-  FPenStyle := integer(psSolid);
+  FPenStyle := Integer(psSolid);
   FPenWidth := 1;
   FOLESizeMode := 2;
   Cursors[1] := crSizeNWSE;
@@ -306,11 +304,11 @@ begin
 
   Cursors[7] := crSizeWE;
   Cursors[8] := crSizeWE;
-  ParentFont := false;
+  ParentFont := False;
   {$IFDEF GL_RUS}
   Font.CharSet := RUSSIAN_CHARSET;
   {$ENDIF}
-  CMFontChanged(Msg);
+  FontChanged;
 end;
 
 destructor TJvgReportItem.Destroy;
@@ -334,12 +332,12 @@ var R: TRect;
 begin
   R := ClientRect;
   OffsetRect( R, Left, Top );
-  InvalidateRect( Parent.Handle, @R, false );
+  InvalidateRect( Parent.Handle, @R, False );
   InflateRect( R, -DS, -DS );
 //  ValidateRect( Parent.Handle, @R );
-  fRepaintOnlyBorder := true;
+  fRepaintOnlyBorder := True;
   Paint;
-  //fRepaintOnlyBorder := false;
+  //fRepaintOnlyBorder := False;
 end;
 }
 
@@ -354,7 +352,7 @@ const
     ftaRightJustify, ftaCenter, ftaBroadwise);
   //  SysAlignments: array[TglAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER, 0);
 var
-  i, L, T: integer;
+  i, L, T: Integer;
   sPrintText: string;
   R_, Client_Rect, RCalc: TRect;
 begin
@@ -425,16 +423,16 @@ begin
       SetBkMode(Canvas.Handle, TRANSPARENT);
       SetTextColor(Canvas.Handle, FColor);
       DrawText(Canvas.Handle, PChar(sPrintText), Length(sPrintText), RCalc,
-        DT_CALCRECT or DT_WORDBREAK);
+        DT_CALCRECT or DT_WordBREAK);
       R_.Top := R_.Top + max(0, (R_.Bottom - R_.Top - (RCalc.Bottom -
         RCalc.Top)) div 2);
       DrawTextExtAligned(Canvas, sPrintText, R_, Alignments[Alignment],
-        true);
+        True);
     end
     else if (OLELinkToFile <> '') and (ExtractFileExt(OLELinkToFile) = '.bmp') then
     begin
       if Assigned(OLEContainer) then
-        OLEContainer.Visible := false;
+        OLEContainer.Visible := False;
       if bmp = nil then
       begin
         bmp := TBitmap.Create;
@@ -483,21 +481,29 @@ end;
 
 procedure TJvgReportItem.MouseEnter(Control: TControl);
 begin
-  inherited;
+  {$IFDEF USEJVCL}
+  inherited MouseEnter(Control);
+  {$ENDIF USEJVCL}
+  if csDesigning in ComponentState then
+    Exit;
   //Cursor := crCross;
 //  SetCursor( Screen.Cursors[crCross] );
 end;
 
 procedure TJvgReportItem.MouseLeave(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   Cursor := crDefault;
-  inherited;
+  {$IFDEF USEJVCL}
+  inherited MouseLeave(Control);
+  {$ENDIF USEJVCL}
   //  SetCursor( Screen.Cursors[crDefault] );
 end;
 
 procedure TJvgReportItem.WMMouseMove(var Message: TWMMouse);
 var
-  i, dX, dY, nLeft, nTop, nWidth, nHeight: integer;
+  i, dX, dY, nLeft, nTop, nWidth, nHeight: Integer;
   pt: TPoint;
 begin
   inherited;
@@ -598,7 +604,7 @@ begin
           begin
             Cursor := Cursors[i];
             SizeDirection := i;
-            exit;
+            Exit;
           end;
     end;
   Cursor := crDefault;
@@ -623,13 +629,15 @@ end;}
 
 procedure TJvgReportItem.WMLMouseUp(var Message: TWMMouse);
 begin
-  fSizing := false;
+  fSizing := False;
   inherited;
 end;
 
-procedure TJvgReportItem.CMFontChanged(var Message: TMessage);
+procedure TJvgReportItem.FontChanged;
 begin
-  inherited;
+  {$IFDEF USEJVCL}
+  inherited FontChanged;
+  {$ENDIF USEJVCL}
   FName := Font.Name;
   FFSize := Font.Size;
   FFColor := Font.Color;
@@ -649,68 +657,89 @@ begin
   // if Assigned(OnResize) then OnResize(self);
 end;
 
-procedure TJvgReportItem.SetSelected(Value: boolean);
+{$IFDEF USEJVCL}
+{$ELSE}
+procedure TJvgReportItem.CMMouseEnter(var Message: TMessage);
+begin
+  inherited;
+  MouseEnter(TControl(Message.LParam));
+end;
+
+procedure TJvgReportItem.CMMouseLeave(var Message: TMessage);
+begin
+  inherited;
+  MouseLeave(TControl(Message.LParam));
+end;
+
+procedure TJvgReportItem.CMFontChanged(var Message: TMessage);
+begin
+  inherited;
+  FontChanged;
+end;
+{$ENDIF USEJVCL}
+
+procedure TJvgReportItem.SetSelected(Value: Boolean);
 begin
   FSelected := Value;
   Repaint;
 end;
 
-procedure TJvgReportItem.SetBkColor(Value: integer);
+procedure TJvgReportItem.SetBkColor(Value: Integer);
 begin
   FBkColor := Value;
   Color := BkColor;
   Repaint;
 end;
 
-procedure TJvgReportItem.SetBvColor(Value: integer);
+procedure TJvgReportItem.SetBvColor(Value: Integer);
 begin
   FBvColor := Value;
   Repaint;
 end;
 
-procedure TJvgReportItem.SetTransparent(Value: integer);
+procedure TJvgReportItem.SetTransparent(Value: Integer);
 begin
   FTransparent := Value;
   Repaint;
 end;
 
-procedure TJvgReportItem.SetAlignment(Value: word);
+procedure TJvgReportItem.SetAlignment(Value: Word);
 begin
   FAlignment := Value;
   Invalidate;
 end;
 
-procedure TJvgReportItem.SetSideLeft(Value: word);
+procedure TJvgReportItem.SetSideLeft(Value: Word);
 begin
   FSideLeft := Value;
   Invalidate;
 end;
 
-procedure TJvgReportItem.SetSideTop(Value: word);
+procedure TJvgReportItem.SetSideTop(Value: Word);
 begin
   FSideTop := Value;
   Invalidate;
 end;
 
-procedure TJvgReportItem.SetSideRight(Value: word);
+procedure TJvgReportItem.SetSideRight(Value: Word);
 begin
   FSideRight := Value;
   Invalidate;
 end;
 
-procedure TJvgReportItem.SetSideBottom(Value: word);
+procedure TJvgReportItem.SetSideBottom(Value: Word);
 begin
   FSideBottom := Value;
   Invalidate;
 end;
 
-procedure TJvgReportItem.SetPenStyle(Value: integer);
+procedure TJvgReportItem.SetPenStyle(Value: Integer);
 begin
   FPenStyle := Value;
   Invalidate;
 end;
 
-procedure TJvgReportItem.SetPenWidth(Value: word);
+procedure TJvgReportItem.SetPenWidth(Value: Word);
 begin
   FPenWidth := Value;
   Invalidate;
@@ -719,7 +748,7 @@ end;
 procedure TJvgReportItem.SetText(Value: string);
 begin
   if FText = Value then
-    exit;
+    Exit;
   FText := Value;
   Invalidate;
 end;
@@ -731,21 +760,21 @@ begin
   Invalidate;
 end;
 
-procedure TJvgReportItem.SetFSize(Value: integer);
+procedure TJvgReportItem.SetFSize(Value: Integer);
 begin
   FFSize := Value;
   Canvas.Font.Size := Value;
   Invalidate;
 end;
 
-procedure TJvgReportItem.SetFColor(Value: integer);
+procedure TJvgReportItem.SetFColor(Value: Integer);
 begin
   FFColor := Value;
   Canvas.Font.Color := Value;
   Invalidate;
 end;
 
-procedure TJvgReportItem.SetFStyle(Value: integer);
+procedure TJvgReportItem.SetFStyle(Value: Integer);
 begin
   FFStyle := Value;
   with Canvas.Font do
@@ -766,15 +795,15 @@ begin
   Invalidate;
 end;
 
-procedure TJvgReportItem.SetContainOLE(Value: boolean);
+procedure TJvgReportItem.SetContainOLE(Value: Boolean);
 begin
   FContainOLE := Value;
   if FContainOLE and (not Assigned(OLEContainer)) then
   begin
     if not Assigned(Parent) then
-      exit;
+      Exit;
     OLEContainer := TOLEContainer.Create(parent.parent);
-    OLEContainer.AutoVerbMenu := false;
+    OLEContainer.AutoVerbMenu := False;
     OLEContainer.BorderStyle := bsNone;
     OLEContainer.Color := clWhite;
     OLEContainer.SizeMode := smScale;
@@ -788,27 +817,27 @@ procedure TJvgReportItem.SetOLELinkToFile(Value: string);
 begin
   FOLELinkToFile := Value;
   if not Assigned(OLEContainer) then
-    exit;
+    Exit;
   OLEContainer.CreateLinkToFile(Value, False);
   //OLEContainer.LoadFromFile( Value );
 end;
 
-procedure TJvgReportItem.SetFixed(Value: word);
+procedure TJvgReportItem.SetFixed(Value: Word);
 begin
   FFixed := Value;
   Repaint;
 end;
 
-procedure TJvgReportItem.SetOLESizeMode(Value: word);
+procedure TJvgReportItem.SetOLESizeMode(Value: Word);
 begin
   if FOLESizeMode = Value then
-    exit;
+    Exit;
   FOLESizeMode := Value;
   if Assigned(OLEContainer) then
     OLEContainer.SizeMode := TSizeMode(Value);
 end;
 
-function TJvgReportItem.IsContainOLE: boolean;
+function TJvgReportItem.IsContainOLE: Boolean;
 begin
   Result := FContainOLE;
 end;
@@ -841,7 +870,7 @@ end;
 procedure TJvgReport.Loaded;
 begin
   inherited;
-  CreateReport(nil, false);
+  CreateReport(nil, False);
 end;
 
 procedure TJvgReport.Save;
@@ -895,12 +924,12 @@ end;
 
 {procedure TJvgReport.Edit;
 begin
-  CreateReport(true);
+  CreateReport(True);
 end;}
 
 procedure TJvgReport.PaintTo(Canvas: TCanvas);
 var
-  i: integer;
+  i: Integer;
 begin
   OwnerWnd := nil;
   ParentWnd := nil;
@@ -909,7 +938,7 @@ begin
   //  ParamValues.Clear;
   //  ParamTypes.Clear;
   ComponentList.Clear;
-  CreateReport(ParentWnd, false);
+  CreateReport(ParentWnd, False);
   for i := 0 to ComponentList.Count - 1 do
     TJvgReportItem(ComponentList[i]).PaintTo(Canvas);
 end;
@@ -923,15 +952,15 @@ begin
   ParamValues.Clear;
   ParamTypes.Clear;
   ComponentList.Clear;
-  CreateReport(ParentWnd, false);
+  CreateReport(ParentWnd, False);
   //  ProcessParams;
 end;
 
 procedure TJvgReport.Print;
 var
-  i: integer;
+  i: Integer;
   ScreenDC: HDC;
-  HS, WS, HP, WP: integer;
+  HS, WS, HP, WP: Integer;
 begin
   if Assigned(BeforePrint) then
     BeforePrint(self);
@@ -940,17 +969,17 @@ begin
   ParentWnd := OwnerWnd;
   //OwnerWnd.Show;
   try
-    CreateReport(ParentWnd, true);
+    CreateReport(ParentWnd, True);
     if ComponentList.Count = 0 then
-      exit;
+      Exit;
 
     Printer.BeginDoc;
     ScreenDC := GetDC(0);
 
-    HS := CentimetersToPixels(ScreenDC, 21, true);
-    WS := CentimetersToPixels(ScreenDC, 21, false);
-    HP := CentimetersToPixels(Printer.Canvas.Handle, 21, true);
-    WP := CentimetersToPixels(Printer.Canvas.Handle, 21, false);
+    HS := CentimetersToPixels(ScreenDC, 21, True);
+    WS := CentimetersToPixels(ScreenDC, 21, False);
+    HP := CentimetersToPixels(Printer.Canvas.Handle, 21, True);
+    WP := CentimetersToPixels(Printer.Canvas.Handle, 21, False);
 
     ReleaseDC(0, ScreenDC);
 
@@ -986,7 +1015,7 @@ end;
 
 procedure TJvgReport.ClearReport;
 var
-  i: integer;
+  i: Integer;
 begin
   for i := 0 to ComponentList.Count - 1 do
     TJvgReportItem(ComponentList[i]).Free;
@@ -994,7 +1023,7 @@ begin
 end;
 
 procedure TJvgReport.CreateReport(ParentWnd: TWinControl; fNeedClearOwner:
-  boolean);
+  Boolean);
 var
   ms: TMemoryStream;
   p: TParser;
@@ -1020,7 +1049,7 @@ var
       B.Report := self;
     end;
     if B = nil then
-      exit;
+      Exit;
     ComponentList.Add(B);
     c := p.NextToken;
     while not p.TokenSymbolIs('end') do
@@ -1171,7 +1200,7 @@ var
 
   procedure ClearOwner;
   var
-    i: integer;
+    i: Integer;
   begin
     //    ParamNames.Clear;
     //    ParamMasks.Clear;
@@ -1243,20 +1272,20 @@ end;
 
 procedure TJvgReport.SetUnicalName(laBevel: TJvgReportItem);
 var
-  i: integer;
+  i: Integer;
 
-  function ComponentExists(No: integer): boolean;
+  function ComponentExists(No: Integer): Boolean;
   var
-    i: integer;
+    i: Integer;
   begin
-    Result := false;
+    Result := False;
     for i := 0 to OwnerWnd.ComponentCount - 1 do
       if OwnerWnd.Components[i] is TJvgReportItem then
         if TJvgReportItem(OwnerWnd.Components[i]).CompName = 'Component' +
           IntToStr(No) then
         begin
-          Result := true;
-          break;
+          Result := True;
+          Break;
         end;
   end;
 begin
@@ -1269,32 +1298,32 @@ end;
 
 procedure TJvgReport.AnalyzeParams(Item: TJvgReportItem; DefName: string);
 var
-  LastPos: integer;
+  LastPos: Integer;
   SList: TStringList;
   ParamType: TJvgReportParamKind;
   ParamText, ParamName, ParamMask, ParamValue: string;
 
-  function ExtractParam(Item: TJvgReportItem; var SrchPos: integer; var
-    ParamName: string; var ParamType: TJvgReportParamKind): boolean;
+  function ExtractParam(Item: TJvgReportItem; var SrchPos: Integer; var
+    ParamName: string; var ParamType: TJvgReportParamKind): Boolean;
   var
-    i, j: integer;
-    f: boolean;
+    i, j: Integer;
+    f: Boolean;
     Text: string;
   begin
-    Result := false;
+    Result := False;
     Text := Item.Text;
     if Length(Text) = 0 then
-      exit;
-    f := false;
+      Exit;
+    f := False;
     for i := SrchPos to Length(Text) - 1 do
       if Text[i] = '#' then
       begin
-        f := true;
-        break;
+        f := True;
+        Break;
       end;
 
     if not f then
-      exit;
+      Exit;
     if Text[i - 1] = '{' then
       ParamType := gptEdit
     else if Text[i - 1] = '<' then
@@ -1305,17 +1334,17 @@ var
       ParamType := gptUnknown;
 
     if not f or (ParamType = gptUnknown) then
-      exit;
+      Exit;
     SrchPos := i + 1;
-    f := false;
+    f := False;
     for i := SrchPos to Length(Text) do
       if (Text[i] = '}') or (Text[i] = ']') or (Text[i] = '>') then
       begin
-        f := true;
-        break;
+        f := True;
+        Break;
       end;
     if not f then
-      exit;
+      Exit;
     ParamName := copy(Text, SrchPos, i - SrchPos);
 
     j := ParamNames.IndexOf(ParamName);
@@ -1323,7 +1352,7 @@ var
       Item.PrintText := copy(Text, 0, SrchPos - 3) + ParamValues[j] +
         copy(Text, i + 1, 255);
 
-    Result := true;
+    Result := True;
   end;
 begin
 
@@ -1359,35 +1388,35 @@ begin
       // else ParamValues[ParamIndex] := sParamValue;
     end
     else
-      break;
-  until false;
+      Break;
+  until False;
   SList.Free;
 end;
 
-function TJvgReport.SetParam(const sParamName, sParamValue: string): boolean;
+function TJvgReport.SetParam(const sParamName, sParamValue: string): Boolean;
 var
-  i: integer;
+  i: Integer;
 begin
-  Result := false;
+  Result := False;
   i := ParamNames.IndexOf(sParamName);
   if i <> -1 then
   begin
-    Result := true;
+    Result := True;
     ParamValues[i] := sParamValue;
   end;
 end;
 
 function TJvgReport.GetParam(const sParamName: string; var sParamValue: string):
-  boolean;
+  Boolean;
 var
-  ParamIndex: integer;
+  ParamIndex: Integer;
 begin
   ParamIndex := ParamNames.IndexOf(sParamName);
   if ParamIndex = -1 then
-    Result := false
+    Result := False
   else
   begin
-    Result := true;
+    Result := True;
     sParamValue := ParamValues[ParamIndex];
   end;
 end;
