@@ -295,7 +295,7 @@ begin
      {$IFNDEF DelphiPersonalEdition}
      TJvProgressBar,
      {$ENDIF}
-     TJvUpDown, TJvHotKey, TJvApplicationHotKey,
+     TJvUpDown, TJvDomainUpDown, TJvHotKey, TJvApplicationHotKey,
      TJvAnimate, TJvDateTimePicker, TJvMonthCalendar, TJvMonthCalendar2,
      TJvTreeView, TJvListView, TJvHeaderControl, TJvStatusBar, TJvToolBar,
      TJvCoolBar, TJvPageScroller, TJvScrollingWindow, TJvIpAddress,

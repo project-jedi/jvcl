@@ -370,7 +370,7 @@ procedure TJvCustomUpDown.CreateWnd;
 const
   cBase:array[TJvUpDownFormat] of integer = (10,16);
 var
-  OrigWidth:integer; AccelArray: array [0..0] of TUDAccel;
+  OrigWidth:integer; 
 begin
   OrigWidth := Width;
   inherited CreateWnd;
