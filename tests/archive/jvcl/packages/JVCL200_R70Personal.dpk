@@ -55,8 +55,6 @@ requires
   vclx,
   vcljpg,
   VclSmp,
-  QRPT,
-  INET,
   djcl70;
 
 contains
