@@ -488,8 +488,8 @@ begin
       end
       else
       begin
-        if IsInArray(ExtractFileExt(sr.Name), FileExtensions) <> -1 then
-          List.Add(Dir + '\' + sr.Name);
+        if (Length(FileExtensions) = 0) or (IsInArray(ExtractFileExt(sr.Name), FileExtensions) <> -1) then
+          List.AddObject(Dir + '\' + sr.Name, TObject(sr.Size));
       end;
     until FindNext(sr) <> 0;
   finally
