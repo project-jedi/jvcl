@@ -66,6 +66,10 @@ type
     property Options: TJvOwnerDrawViewerOptions read GetOptions write SetOptions;
     property SelectedIndex;
     property OnDrawItem;
+    property OnOptionsChanged;
+    property OnItemChanging;
+    property OnItemChanged;
+    property OnItemHint;
 
     property Align;
     property Anchors;

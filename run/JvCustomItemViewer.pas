@@ -331,7 +331,7 @@ procedure ReleasePattern(EvenColor, OddColor: TColor);
 // that are only used short times
 procedure ClearBrushPatterns;
 
-function ViewerDrawText(Canvas: TCanvas; S: PChar; aLength: Integer;
+function ViewerDrawText(Canvas: TCanvas; S: WideString; aLength: Integer;
   var R: TRect; Format: Cardinal; Alignment: TAlignment; Layout: TTextLayout; WordWrap: Boolean): Integer;
 function CenterRect(InnerRect, OuterRect: TRect): TRect;
 
@@ -436,7 +436,7 @@ begin
   Inc(GlobalPatterns[I].UsageCount);
 end;
 
-function ViewerDrawText(Canvas: TCanvas; S: PChar; aLength: Integer;
+function ViewerDrawText(Canvas: TCanvas; S: WideString; aLength: Integer;
   var R: TRect; Format: Cardinal; Alignment: TAlignment; Layout: TTextLayout; WordWrap: Boolean): Integer;
 const
   Alignments: array [TAlignment] of Cardinal = (DT_LEFT, DT_RIGHT, DT_CENTER);
@@ -447,7 +447,10 @@ var
 begin
   Flags := Format or Alignments[Alignment] or Layouts[Layout] or WordWraps[WordWrap];
   // (p3) Do we need BiDi support here?
-  Result := DrawText(Canvas, S, aLength, R, Flags);
+  if Win32Platform = VER_PLATFORM_WIN32_NT then
+    Result := DrawTextW(Canvas, PWideChar(S), aLength, R, Flags)
+  else
+    Result := DrawText(Canvas, PChar(string(S)), aLength, R, Flags);
 end;
 
 function CenterRect(InnerRect, OuterRect: TRect): TRect;
