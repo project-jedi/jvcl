@@ -74,7 +74,7 @@ FUTURE PLANS / NOT FINISHED:
 
 - There is an ongoing effort to remove duplicates from JVCL that are already in JCL (mostly functions, but some classes are also involved). If you find anything that you think should be moved from JVCL to JCL, please report in the Issue tracker.
 
-- The support for Delphi6 Personal should now be functioning. Please report any problems in the Issue Tracker
+- The support for Delphi6 Personal should now be functioning. Please report any problems in the Issue Tracker.
 
 CONTRIBUTORS:
 ==============
