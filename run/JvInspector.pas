@@ -44,6 +44,7 @@
         where the name started (expand/collapse button drawn over the value,
         name selection rectangle partly visible above/below and to the left
         of the value and other minor visual side effects).
+      - Class item editor can now be treated as a category.
     Apr 10, 2004, Marcel Bestebroer:
       - Double clicking a category item will now expand/collapse regardless
         of the position of the mouse (used to work only when clicking left of
@@ -205,7 +206,7 @@ type
   TInspectorItemFlags = set of TInspectorItemFlag;
   TInspectorSetFlag = (isfEditString, isfCreateMemberItems, isfRenderAsCategory);
   TInspectorSetFlags = set of TInspectorSetFlag;
-  TInspectorClassFlag = (icfCreateMemberItems, icfShowClassName);
+  TInspectorClassFlag = (icfCreateMemberItems, icfShowClassName, icfRenderAsCategory);
   TInspectorClassFlags = set of TInspectorClassFlag;
   TInspectorComponentFlag = (icfShowOwnerNames, icfNoShowFirstOwnerName, icfSortComponents,
     icfSortOwners, icfKeepFirstOwnerAsFirst);
@@ -1155,12 +1156,15 @@ type
     function GetCreateMemberItems: Boolean; virtual;
     function GetDisplayValue: string; override;
     function GetItemClassFlags: TInspectorClassFlags; virtual;
+    function GetRenderAsCategory: Boolean; virtual;
     function GetShowClassName: Boolean; virtual;
     procedure InvalidateItem; override;
     procedure InvalidateMetaData; override;
+    function IsCategory: Boolean; override;
     procedure SetCreateMemberItems(const Value: Boolean); virtual;
     procedure SetDisplayValue(const Value: string); override;
     procedure SetItemClassFlags(Value: TInspectorClassFlags); virtual;
+    procedure SetRenderAsCategory(const Value: Boolean); virtual;
     procedure SetShowClassName(const Value: Boolean); virtual;
   public
     constructor Create(const AParent: TJvCustomInspectorItem;
@@ -1168,6 +1172,7 @@ type
     property CreateMemberItems: Boolean read GetCreateMemberItems write SetCreateMemberItems;
     property ItemClassFlags: TInspectorClassFlags read GetItemClassFlags write SetItemClassFlags;
     property OnGetValueList;
+    property RenderAsCategory: Boolean read GetRenderAsCategory write SetRenderAsCategory;
     property ShowClassName: Boolean read GetShowClassName write SetShowClassName;
   end;
 
@@ -8144,6 +8149,11 @@ begin
   Result := FItemClassFlags;
 end;
 
+function TJvInspectorClassItem.GetRenderAsCategory: Boolean;
+begin
+  Result := (icfRenderAsCategory in ItemClassFlags);
+end;
+
 function TJvInspectorClassItem.GetShowClassName: Boolean;
 begin
   Result := (icfShowClassName in ItemClassFlags);
@@ -8152,16 +8162,21 @@ end;
 procedure TJvInspectorClassItem.InvalidateItem;
 begin
   inherited InvalidateItem;
-  if icfCreateMemberItems in ItemClassFlags then
+  if CreateMemberItems or RenderAsCategory then
     CreateMembers;
 end;
 
 procedure TJvInspectorClassItem.InvalidateMetaData;
 begin
-  if icfCreateMemberItems in ItemClassFlags then
+  if CreateMemberItems or RenderAsCategory then
     CreateMembers
   else
     DeleteMembers;
+end;
+
+function TJvInspectorClassItem.IsCategory: Boolean;
+begin
+  Result := RenderAsCategory;
 end;
 
 procedure TJvInspectorClassItem.SetCreateMemberItems(const Value: Boolean);
@@ -8203,6 +8218,17 @@ begin
   begin
     FItemClassFlags := Value;
     InvalidateMetaData;
+  end;
+end;
+
+procedure TJvInspectorClassItem.SetRenderAsCategory(const Value: Boolean);
+begin
+  if Value <> RenderAsCategory then
+  begin
+    if Value then
+      ItemClassFlags := ItemClassFlags + [icfRenderAsCategory]
+    else
+      ItemClassFlags := ItemClassFlags - [icfRenderAsCategory];
   end;
 end;
 
