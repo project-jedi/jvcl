@@ -19,7 +19,7 @@ Contributor(s):
   Remko Bonte
   Peter Thörnqvist
 
-Last Modified: 2003-07-18
+Last Modified: 2003-07-19
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -180,6 +180,7 @@ type
     procedure WriteSubItems(Writer: TWriter);
     { IJvDataItem methods and properties. }
     function GetItems: IJvDataItems;
+    function GetIndex: Integer;
     function GetImplementer: TObject;
     function GetID: string;
     procedure ContextDestroying(Context: IJvDataContext); dynamic;
@@ -188,7 +189,8 @@ type
     property Items: IJvDataItems read GetItems;
     property Implementer: TObject read GetImplementer;
     { Optional IJvDataContextSensitive interface implementation }
-    procedure RevertToDefault; dynamic;
+    procedure RevertToAncestor; dynamic;
+    function IsEqualToAncestor: Boolean; dynamic;
   public
     constructor Create(AOwner: IJvDataItems);
     procedure AfterConstruction; override;
@@ -250,7 +252,7 @@ type
       IJvDataItemsDesigner. }
     procedure InternalAdd(Item: IJvDataItem); virtual; abstract;
     { Determines if the item is streamable. }
-    function IsStreamableItem(Item: IJvdataItem): Boolean; virtual;
+    function IsStreamableItem(Item: IJvDataItem): Boolean; virtual;
     { Streaming methods }
     procedure DefineProperties(Filer: TFiler); override;
     procedure ReadItems(Reader: TReader);
@@ -260,6 +262,8 @@ type
     { IJvDataItems methods }
     function GetCount: Integer; virtual; abstract;
     function GetItem(I: Integer): IJvDataItem; virtual; abstract;
+    function GetItemByID(ID: string): IJvDataItem;
+    function GetItemByIndexPath(IndexPath: array of Integer): IJvDataItem;
     function GetParent: IJvDataItem;
     function GetProvider: IJvDataProvider;
     function GetImplementer: TObject;
@@ -334,7 +338,8 @@ type
   public
     constructor Create(AOwner: TExtensibleInterfacedPersistent); override;
     destructor Destroy; override;
-    procedure RevertToDefault;
+    procedure RevertToAncestor; dynamic;
+    function IsEqualToAncestor: Boolean; dynamic;
   end;
 
   TJvDataItemImageImpl = class(TJvBaseDataItemImageImpl)
@@ -542,7 +547,6 @@ type
     constructor Create(AProvider: IJvDataProvider; AAncestor: IJvDataContext); virtual;
     constructor CreateManaged(AProvider: IJvDataProvider; AAncestor: IJvDataContext;
       ManagerClass: TJvDataContextsManagerClass);
-    function GetInterface(const IID: TGUID; out Obj): Boolean; override;
   end;
 
   // Basic context list manager
@@ -742,6 +746,7 @@ type
     procedure ViewChanged(AExtension: TJvDataConsumerAggregatedObject);
     function ExtensionCount: Integer;
     function Extension(Index: Integer): TJvDataConsumerAggregatedObject;
+    function IsContextStored: Boolean;
     { Property access }
     function GetContext: TJvDataContextID;
     procedure SetContext(Value: TJvDataContextID);
@@ -776,7 +781,7 @@ type
     {$ELSE}
     property Provider: TComponent read GetProviderComp write SetProviderComp;
     {$ENDIF COMPILER6_UP}
-    property Context: TJvDataContextID read GetContext write SetContext;
+    property Context: TJvDataContextID read GetContext write SetContext stored IsContextStored;
   end;
 
   TJvDataConsumerAggregatedObject = class(TAggregatedPersistentEx)
@@ -1092,8 +1097,8 @@ end;
 
 function DP_FindItemsIntf(AItem: IJvDataItem; IID: TGUID; out Obj): Boolean;
 begin
-  while (AItem <> nil) and not Supports(AItem.Items, IID, Obj) do
-    AItem := AItem.Items.Parent;
+  while (AItem <> nil) and not Supports(AItem.GetItems, IID, Obj) do
+    AItem := AItem.GetItems.Parent;
   Result := AItem <> nil;
 end;
 
@@ -1350,7 +1355,7 @@ var
   RAPI: PPropInfo;
 begin
   RAPI := GetPropInfo(TOpenWriter, 'RootAncestor');
-  if RAPI = nil then
+  if RAPI = nil then // Should never happen
     raise Exception.Create('Internal error.');
   Result := Pointer(Cardinal(RAPI.GetProc) and $00FFFFFF + Cardinal(Self) + 4);
 end;
@@ -1359,45 +1364,6 @@ procedure TOpenWriter.SetPropPath(const NewPath: string);
 begin
   if NewPath <> PropPath then
     PropPathField^ := NewPath;
-end;
-
-type
-  TDesignContext = class(TInterfacedObject, IJvDataContext)
-  private
-    FContexts: IJvDataContexts;
-  protected
-    function GetImplementer: TObject;
-    function Contexts: IJvDataContexts;
-    function Name: string;
-    function IsDeletable: Boolean;
-  public
-    constructor Create(AContexts: IJvDataContexts);
-  end;
-
-function TDesignContext.GetImplementer: TObject;
-begin
-  Result := Self;
-end;
-
-function TDesignContext.Contexts: IJvDataContexts;
-begin
-  Result := FContexts;
-end;
-
-function TDesignContext.Name: string;
-begin
-  Result := 'Designer context';
-end;
-
-function TDesignContext.IsDeletable: Boolean;
-begin
-  Result := False;
-end;
-
-constructor TDesignContext.Create(AContexts: IJvDataContexts);
-begin
-  inherited Create;
-  FContexts := AContexts;
 end;
 
 { TJvDataItemAggregatedObject }
@@ -1478,9 +1444,9 @@ procedure TJvDataItemTextImpl.SetCaption(const Value: string);
 begin
   if Caption <> Value then
   begin
-    Item.Items.Provider.Changing(pcrUpdateItem, Item);
+    Item.GetItems.Provider.Changing(pcrUpdateItem, Item);
     FCaption := Value;
-    Item.Items.Provider.Changed(pcrUpdateItem, Item);
+    Item.GetItems.Provider.Changed(pcrUpdateItem, Item);
   end;
 end;
 
@@ -1490,7 +1456,7 @@ function TJvDataItemContextTextImpl.GetCaption: string;
 var
   CurCtx: IJvDataContext;
 begin
-  CurCtx := Item.Items.Provider.SelectedContext;
+  CurCtx := Item.GetItems.Provider.SelectedContext;
   while (CurCtx <> nil) and (FContextStrings.IndexOfObject(TObject(CurCtx)) = -1) do
     CurCtx := CurCtx.Contexts.Ancestor;
   if (CurCtx <> nil) and (FContextStrings.IndexOfObject(TObject(CurCtx)) > -1) then
@@ -1504,18 +1470,18 @@ var
   CurCtx: IJvDataContext;
   I: Integer;
 begin
-  CurCtx := Item.Items.Provider.SelectedContext;
+  CurCtx := Item.GetItems.Provider.SelectedContext;
   if CurCtx <> nil then
   begin
     if Caption <> Value then
     begin
-      Item.Items.Provider.Changing(pcrUpdateItem, Item);
+      Item.GetItems.Provider.Changing(pcrUpdateItem, Item);
       I := FContextStrings.IndexOfObject(TObject(CurCtx));
       if I > -1 then
         FContextStrings[I] := Value
       else
         FContextStrings.AddObject(Value, TObject(CurCtx));
-      Item.Items.Provider.Changed(pcrUpdateItem, Item);
+      Item.GetItems.Provider.Changed(pcrUpdateItem, Item);
     end;
   end
   else
@@ -1534,22 +1500,30 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvDataItemContextTextImpl.RevertToDefault;
+procedure TJvDataItemContextTextImpl.RevertToAncestor;
 var
   CurCtx: IJvDataContext;
   I: Integer;
 begin
-  CurCtx := Item.Items.Provider.SelectedContext;
+  CurCtx := Item.GetItems.Provider.SelectedContext;
   if CurCtx <> nil then
   begin
     I := FContextStrings.IndexOfObject(TObject(CurCtx));
     if I > -1 then
     begin
-      Item.Items.Provider.Changing(pcrUpdateItem, Item);
+      Item.GetItems.Provider.Changing(pcrUpdateItem, Item);
       FContextStrings.Delete(I);
-      Item.Items.Provider.Changed(pcrUpdateItem, Item);
+      Item.GetItems.Provider.Changed(pcrUpdateItem, Item);
     end;
   end;
+end;
+
+function TJvDataItemContextTextImpl.IsEqualToAncestor: Boolean;
+var
+  CurCtx: IJvDataContext;
+begin
+  CurCtx := Item.GetItems.Provider.SelectedContext;
+  Result := FContextStrings.IndexOfObject(TObject(CurCtx)) = -1;
 end;
 
 { TJvDataItemImageImpl }
@@ -1563,9 +1537,9 @@ procedure TJvDataItemImageImpl.SetAlignment(Value: TAlignment);
 begin
   if GetAlignment <> Value then
   begin
-    Item.Items.Provider.Changing(pcrUpdateItem, Item);
+    Item.GetItems.Provider.Changing(pcrUpdateItem, Item);
     FAlignment := Value;
-    Item.Items.Provider.Changed(pcrUpdateItem, Item);
+    Item.GetItems.Provider.Changed(pcrUpdateItem, Item);
   end;
 end;
 
@@ -1578,9 +1552,9 @@ procedure TJvDataItemImageImpl.SetImageIndex(Index: Integer);
 begin
   if GetImageIndex <> Index then
   begin
-    Item.Items.Provider.Changing(pcrUpdateItem, Item);
+    Item.GetItems.Provider.Changing(pcrUpdateItem, Item);
     FImageIndex := Index;
-    Item.Items.Provider.Changed(pcrUpdateItem, Item);
+    Item.GetItems.Provider.Changed(pcrUpdateItem, Item);
   end;
 end;
 
@@ -1593,9 +1567,9 @@ procedure TJvDataItemImageImpl.SetSelectedIndex(Value: Integer);
 begin
   if GetSelectedIndex <> Value then
   begin
-    Item.Items.Provider.Changing(pcrUpdateItem, Item);
+    Item.GetItems.Provider.Changing(pcrUpdateItem, Item);
     FSelectedIndex := Value;
-    Item.Items.Provider.Changed(pcrUpdateItem, Item);
+    Item.GetItems.Provider.Changed(pcrUpdateItem, Item);
   end;
 end;
 
@@ -2016,6 +1990,68 @@ begin
   Writer.WriteListEnd;
 end;
 
+function TJvBaseDataItems.GetItemByID(ID: string): IJvDataItem;
+var
+  CurItems: IJvDataItems;
+  PathSep: Integer;
+  PathSep2: Integer;
+  ThisPath: string;
+  Idx: Integer;
+begin
+  CurItems := Self;
+  while (CurItems <> nil) and (Result <> nil) and (ID <> '') do
+  begin
+    PathSep := Pos('\', ID);
+    PathSep2 := Pos('/', ID);
+    if (PathSep > PathSep2) or (PathSep = 0) then
+      PathSep := PathSep2;
+    if PathSep = 0 then
+      PathSep := Length(ID) + 1;
+    ThisPath := Copy(ID, 1, PathSep - 1);
+    if ThisPath = '..' then
+    begin
+      if GetParent <> nil then
+        CurItems := GetParent.GetItems
+      else
+        CurItems := nil;
+    end
+    else if (ThisPath = '') and (GetParent <> nil) and (PathSep <> 0) then
+      CurItems := GetProvider.GetItems
+    else
+    begin
+      Idx := CurItems.GetCount - 1;
+      while (Idx >= 0) and not AnsiSameText(CurItems.GetItem(Idx).GetID, ThisPath) do
+        Dec(Idx);
+      if Idx >= 0 then
+      begin
+        Delete(ID, 1, PathSep);
+        if ID = '' then
+          Result := CurItems.GetItem(Idx)
+        else
+          Supports(CurItems.GetItem(Idx), IJvDataItems, CurItems);
+      end;
+    end;
+  end;
+end;
+
+function TJvBaseDataItems.GetItemByIndexPath(IndexPath: array of Integer): IJvDataItem;
+var
+  Idx: Integer;
+  ItemList: IJvDataItems;
+begin
+  if Length(IndexPath) > 0 then
+  begin
+    ItemList := Self;
+    Idx := 0;
+    while (Idx < Length(IndexPath)) do
+    begin
+      Supports(ItemList.GetItem(IndexPath[Idx]), IJvDataItems, ItemList);
+      Inc(Idx);
+    end;
+    Result := ItemList.GetParent;
+  end;
+end;
+
 function TJvBaseDataItems.GetParent: IJvDataItem;
 begin
   Result := IJvDataItem(FParent);
@@ -2050,28 +2086,16 @@ function TJvBaseDataItems.FindByID(ID: string; const Recursive: Boolean): IJvDat
 var
   I: Integer;
   SubItems: IJvDataItems;
-  Search: IJvDataIDSearch;
 begin
-  I := GetCount - 1;
-  while (I >= 0) and (GetItem(I).GetID <> ID) do
-    Dec(I);
-  if I >= 0 then
-    Result := GetItem(I)
-  else
+  Result := GetItemByID(ID);
+  if (Result = nil) and Recursive then
   begin
-    Result := nil;
-    if Recursive then
+    I := GetCount - 1;
+    while (I >= 0) and (Result = nil) do
     begin
-      I := GetCount - 1;
-      while (I >= 0) and (Result = nil) do
-      begin
-        if Supports(GetItem(I), IJvDataItems, SubItems) then
-        begin
-          if Supports(SubItems, IJvDataIDSearch, Search) then
-            Result := Search.Find(ID, Recursive);
-        end;
-        Dec(I);
-      end;
+      if Supports(GetItem(I), IJvDataItems, SubItems) then
+        Result := SubItems.GetItemByID(ID);
+      Dec(I);
     end;
   end;
 end;
@@ -2089,9 +2113,9 @@ end;
 
 constructor TJvBaseDataItems.CreateParent(const Parent: IJvDataItem);
 begin
-  CreateProvider(Parent.Items.Provider);
+  CreateProvider(Parent.GetItems.Provider);
   FParent := Pointer(Parent);
-  if (Parent <> nil) and Parent.Items.IsDynamic then
+  if (Parent <> nil) and Parent.GetItems.IsDynamic then
     FParentIntf := Parent;
   if (Parent <> nil) and (Parent.GetImplementer is TExtensibleInterfacedPersistent) then
     FSubAggregate := TJvBaseDataItemSubItems.Create(
@@ -2183,9 +2207,9 @@ begin
   if Value = disNotUsed then Exit;
   if Value <> Get_Enabled then
   begin
-    Item.Items.Provider.Changing(pcrUpdateItem, Item);
+    Item.GetItems.Provider.Changing(pcrUpdateItem, Item);
     FEnabled := Value;
-    Item.Items.Provider.Changed(pcrUpdateItem, Item);
+    Item.GetItems.Provider.Changed(pcrUpdateItem, Item);
   end;
 end;
 
@@ -2199,9 +2223,9 @@ begin
   if Value = disNotUsed then Exit;
   if Value <> Get_Checked then
   begin
-    Item.Items.Provider.Changing(pcrUpdateItem, Item);
+    Item.GetItems.Provider.Changing(pcrUpdateItem, Item);
     FChecked := Value;
-    Item.Items.Provider.Changed(pcrUpdateItem, Item);
+    Item.GetItems.Provider.Changed(pcrUpdateItem, Item);
   end;
 end;
 
@@ -2215,9 +2239,9 @@ begin
   if Value = disNotUsed then Exit;
   if Value <> Get_Visible then
   begin
-    Item.Items.Provider.Changing(pcrUpdateItem, Item);
+    Item.GetItems.Provider.Changing(pcrUpdateItem, Item);
     FVisible := Value;
-    Item.Items.Provider.Changed(pcrUpdateItem, Item);
+    Item.GetItems.Provider.Changed(pcrUpdateItem, Item);
   end;
 end;
 
@@ -2243,7 +2267,7 @@ procedure TJvBaseDataItemsRenderer.DrawItemByIndex(ACanvas: TCanvas; var ARect: 
   Index: Integer; State: TProviderDrawStates);
 begin
   if (Index < 0) or (Index >= Items.Count) then
-    raise EJVCLException.CreateFmt(SListIndexError, [Index]);
+    raise EJVCLDataItems.CreateFmt(SListIndexError, [Index]);
   DrawItem(ACanvas, ARect, Items.Items[Index], State);
 end;
 
@@ -2254,7 +2278,7 @@ begin
   else
   begin
     if (Index < 0) or (Index >= Items.Count) then
-      raise EJVCLException.CreateFmt(SListIndexError, [Index]);
+      raise EJVCLDataItems.CreateFmt(SListIndexError, [Index]);
     Result := MeasureItem(ACanvas, Items.Items[Index]);
   end;
 end;
@@ -2340,7 +2364,7 @@ begin
     Items.Provider.Changed(pcrDelete, nil);
   end
   else if Items.GetItem(Index) <> nil then
-    raise EJVCLException.Create('Item can not be deleted.');
+    raise EJVCLDataItems.Create('Item can not be deleted.');
 end;
 
 procedure TJvBaseDataItemsListManagement.Remove(var Item: IJvDataItem);
@@ -2370,7 +2394,7 @@ begin
     end;
   end
   else if Item <> nil then
-    raise EJVCLException.Create('Item can not be deleted.');
+    raise EJVCLDataItems.Create('Item can not be deleted.');
 end;
 
 { TJvCustomDataItemsImages }
@@ -2437,7 +2461,7 @@ end;
 
 function TJvBaseDataItem._AddRef: Integer;
 begin
-  if Items.IsDynamic then
+  if GetItems.IsDynamic then
     Result := inherited _AddRef
   else
     Result := -1;
@@ -2445,7 +2469,7 @@ end;
 
 function TJvBaseDataItem._Release: Integer;
 begin
-  if Items.IsDynamic then
+  if GetItems.IsDynamic then
     Result := inherited _Release
   else
     Result := -1;
@@ -2532,6 +2556,16 @@ begin
   Result := IJvDataItems(FItems);
 end;
 
+function TJvBaseDataItem.GetIndex: Integer;
+var
+  Owner: IJvDataItems;
+begin
+  Owner := GetItems;
+  Result := Owner.GetCount - 1;
+  while (Result >= 0) and (Owner.GetItem(Result) <> Self as IJvDataItem) do
+    Dec(Result);
+end;
+
 function TJvBaseDataItem.GetImplementer: TObject;
 begin
   Result := Self;
@@ -2553,7 +2587,7 @@ begin
     SubItems.ContextDestroying(Context);
 end;
 
-function TJvBaseDataItem.IsParentOf(AnItem: IJvDataItem; DirectParent: Boolean = False): Boolean;
+function TJvBaseDataItem.IsParentOf(AnItem: IJvDataItem; DirectParent: Boolean): Boolean;
 begin
   Result := AnItem.GetItems.Parent = (Self as IJvDataItem);
   if not Result and not DirectParent then
@@ -2570,7 +2604,7 @@ begin
   Result := True;
 end;
 
-procedure TJvBaseDataItem.RevertToDefault;
+procedure TJvBaseDataItem.RevertToAncestor;
 var
   I: Integer;
   Inst: TJvDataItemAggregatedObject;
@@ -2580,7 +2614,24 @@ begin
   begin
     Inst := TJvDataItemAggregatedObject(FAdditionalIntfImpl[I]);
     if Inst.GetInterface(IJvDataContextSensitive, CtxSens) then
-      CtxSens.RevertToDefault;
+      CtxSens.RevertToAncestor;
+  end;
+end;
+
+function TJvBaseDataItem.IsEqualToAncestor: Boolean;
+var
+  I: Integer;
+  Inst: TJvDataItemAggregatedObject;
+  CtxSens: IJvDataContextSensitive;
+begin
+  Result := True;
+  I := 0;
+  while Result and (I < FAdditionalIntfImpl.Count) do
+  begin
+    Inst := TJvDataItemAggregatedObject(FAdditionalIntfImpl[I]);
+    if Inst.GetInterface(IJvDataContextSensitive, CtxSens) then
+      Result := CtxSens.IsEqualToAncestor;
+    Inc(I);
   end;
 end;
 
@@ -2845,7 +2896,7 @@ begin
   if (FConsumerStack <> nil) and (FConsumerStack.Count > 0) then
     FConsumerStack.Delete(0)
   else if FConsumerStack <> nil then
-    raise EJVCLException.Create('Consumer stack is empty.');
+    raise EJVCLDataProvider.Create('Consumer stack is empty.');
 end;
 
 procedure TJvCustomDataProvider.SelectContext(Context: IJvDataContext);
@@ -2867,7 +2918,7 @@ begin
   if (FContextStack <> nil) and (FContextStack.Count > 0) then
     FContextStack.Delete(0)
   else if FContextStack <> nil then
-    raise EJVCLException.Create('Context stack is empty.');
+    raise EJVCLDataProvider.Create('Context stack is empty.');
 end;
 
 procedure TJvCustomDataProvider.ContextDestroying(Context: IJvDataContext);
@@ -2903,7 +2954,7 @@ begin
   if ItemsClass <> nil then
     FDataItemsImpl := ItemsClass.CreateProvider(Self)
   else
-    raise EJVCLException.Create(SDataProviderNeedsItemsImpl);
+    raise EJVCLDataProvider.Create(SDataProviderNeedsItemsImpl);
   FDataItemsImpl._AddRef;
 end;
 
@@ -2984,8 +3035,6 @@ begin
   inherited Create;
   FProvider := AProvider;
   FAncestor := AAncestor;
-  if Ancestor = nil then
-    FDsgnContext := TDesignContext.Create(Self);
 end;
 
 constructor TJvBaseDataContexts.CreateManaged(AProvider: IJvDataProvider; AAncestor: IJvDataContext;
@@ -2994,13 +3043,6 @@ begin
   Create(AProvider, AAncestor);
   if ManagerClass <> nil then
     ManagerClass.Create(Self);
-end;
-
-function TJvBaseDataContexts.GetInterface(const IID: TGUID; out Obj): Boolean;
-begin
-  Result := inherited GetInterface(IID, Obj) or (
-    (FDsgnContext <> nil) and Supports(FDsgnContext, IID, Obj)
-  );
 end;
 
 //===TJvBaseDataContextsManager=====================================================================
@@ -3043,7 +3085,7 @@ begin
     if (ExistingContext = nil) or (ExistingContext = (Self as IJvDataContext)) then
       DoSetName(Value)
     else
-      raise EJVCLException.Create('A context with that name already exists.');
+      raise EJVCLDataContexts.Create('A context with that name already exists.');
   end;
 end;
 
@@ -3076,7 +3118,7 @@ begin
     SetName(AName);
   end
   else
-    raise EJVCLException.Create('Cannot create a context without a context list owner.');
+    raise EJVCLDataContexts.Create('Cannot create a context without a context list owner.');
 end;
 
 //===TJvBaseFixedDataContext========================================================================
@@ -3102,7 +3144,7 @@ begin
   else
   begin
     if Tmp <> Context then
-      raise EJVCLException.Create('A context with that name already exists.');
+      raise EJVCLDataContexts.Create('A context with that name already exists.');
   end;
 end;
 
@@ -3182,6 +3224,8 @@ end;
 //===TJvDataConsumer================================================================================
 
 procedure TJvDataConsumer.SetProvider(Value: IJvDataProvider);
+var
+  CtxList: IJvDataContexts;
 begin
   if FProvider <> Value then
   begin
@@ -3197,7 +3241,12 @@ begin
       FFixupContext := '';
     end
     else
-      SetContextIntf(nil);
+    begin
+      if Supports(ProviderIntf, IJvDataContexts, CtxList) and (CtxList.GetCount >0 ) then
+        SetContextIntf(CtxList.GetContext(0))
+      else
+        SetContextIntf(nil);
+    end;
     ProviderChanged;
     if FNeedFixups then
     begin
@@ -3238,10 +3287,10 @@ begin
       if Value.GetInterface(IJvDataProvider, ProviderRef) then
         SetProvider(ProviderRef)
       else
-        raise EJVCLException.Create('Component does not support the IJvDataProvider interface.');
+        raise EJVCLDataConsumer.Create('Component does not support the IJvDataProvider interface.');
     end
     else
-      raise EJVCLException.Create('Component does not support the IInterfaceComponentReference interface.');
+      raise EJVCLDataConsumer.Create('Component does not support the IInterfaceComponentReference interface.');
   end;
 end;
 {$ENDIF COMPILER6_UP}
@@ -3459,6 +3508,14 @@ begin
   Result := TJvDataConsumerAggregatedObject(FAdditionalIntfImpl[Index]);
 end;
 
+function TJvDataConsumer.IsContextStored: Boolean;
+var
+  CtxList: IJvDataContexts;
+begin
+  Result := (ProviderIntf <> nil) and Supports(ProviderIntf, IJvDataContexts, CtxList) and
+    (ContextIntf <> CtxList.GetContext(0));
+end;
+
 function TJvDataConsumer.GetContext: TJvDataContextID;
 begin
   if FContext = nil then
@@ -3479,7 +3536,7 @@ begin
       if (VCLComponent <> nil) and (csLoading in VCLComponent.ComponentState) then
         FFixupContext := Value
       else
-        raise EJVCLException.Create('You must specify a provider before setting the context.');
+        raise EJVCLDataConsumer.Create('You must specify a provider before setting the context.');
     end
     else
     begin
@@ -3491,10 +3548,10 @@ begin
           if ContextIntf <> nil then
             SetContextIntf(ContextIntf)
           else
-            raise EJVCLException.CreateFmt('Provider has no context named "%s"', [Value]);
+            raise EJVCLDataConsumer.CreateFmt('Provider has no context named "%s"', [Value]);
         end
         else
-          raise EJVCLException.Create('Provider does not support contexts.');
+          raise EJVCLDataConsumer.Create('Provider does not support contexts.');
       end
       else
         SetContextIntf(nil);
@@ -3572,7 +3629,7 @@ begin
   if Value <> ContextIntf then
   begin
     if (Value <> nil) and (Value.Contexts.Provider <> ProviderIntf) then
-      raise EJVCLException.Create('The specified context is not part of the same provider.');
+      raise EJVCLDataConsumer.Create('The specified context is not part of the same provider.');
     ContextChanging;
     FContext := Value;
     ContextChanged;
@@ -3730,7 +3787,7 @@ begin
           Exit;
         end
         else
-          raise EJVCLException.Create('You must specify a provider before setting the item.');
+          raise EJVCLDataConsumer.Create('You must specify a provider before setting the item.');
       end
       else
       begin
@@ -3740,7 +3797,7 @@ begin
           if TmpItem <> nil then
             SetItemIntf(TmpItem)
           else
-            raise EJVCLException.Create('Item not found in the selected context.');
+            raise EJVCLDataConsumer.Create('Item not found in the selected context.');
         finally
           ConsumerImpl.Leave;
         end;
@@ -3986,10 +4043,10 @@ begin
   begin
     if IndexOfID(Item.GetID) < 0 then
     begin
-      ExpandTreeTo(Item.Items.GetParent);
-      ParIdx := IndexOfID(Item.Items.GetParent.GetID);
+      ExpandTreeTo(Item.GetItems.GetParent);
+      ParIdx := IndexOfID(Item.GetItems.GetParent.GetID);
       if ItemIsExpanded(ParIdx) then // we have a big problem <g>
-        raise EJVCLException.Create('ViewList out of sync');
+        raise EJVCLDataConsumer.Create('ViewList out of sync');
       ToggleItem(ParIdx);
     end;
   end;

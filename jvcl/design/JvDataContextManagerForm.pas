@@ -115,7 +115,7 @@ function TJvContextRootItem.GetInterface(const IID: TGUID; out Obj): Boolean;
 begin
   Result := inherited GetInterface(IID, Obj);
   if not Result then
-    Result := TExtensibleInterfacedPersistent(Items.GetImplementer).GetInterface(IID, Obj);
+    Result := TExtensibleInterfacedPersistent(GetItems.GetImplementer).GetInterface(IID, Obj);
 end;
 
 //===TfrmJvDataContextManager=======================================================================

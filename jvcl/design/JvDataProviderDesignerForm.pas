@@ -149,7 +149,7 @@ function TJvProviderRootItem.GetInterface(const IID: TGUID; out Obj): Boolean;
 begin
   Result := inherited GetInterface(IID, Obj);
   if not Result then
-    Result := TExtensibleInterfacedPersistent(Items.GetImplementer).GetInterface(IID, Obj);
+    Result := TExtensibleInterfacedPersistent(GetItems.GetImplementer).GetInterface(IID, Obj);
 end;
 
 //===TfrmDataProviderDesigner=======================================================================
@@ -206,7 +206,7 @@ begin
         Supports(Items, IJvDataItemsDesigner, Dsgn);
     end;
     if (Item <> nil) then
-      Item.Items.QueryInterface(IJvDataItemsManagement, ParentMan);
+      Item.GetItems.QueryInterface(IJvDataItemsManagement, ParentMan);
   end
   else
   begin
@@ -422,7 +422,7 @@ begin
     I := fmeTreeList.lvProvider.Selected.Index;
     Item := fmeTreeList.GetDataItem(I);
     if Item <> nil then
-      Items := Item.Items
+      Items := Item.GetItems
     else
       raise EJVCLException.Create(SDataItemNotFound);
     if Supports(Items, IJvDataItemsManagement, Mangr) then
