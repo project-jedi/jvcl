@@ -8,20 +8,22 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvDesktopAlertForm.PAS, released on 2004-03-23.
+The Original Code is: JvDesktopAlertForm.PAS, released on 2004-03-24.
 
 The Initial Developer of the Original Code is Peter Thornqvist <peter3 at peter3 dot com>
-Portions created by Sébastien Buysse are Copyright (C) 2004 Peter Thornqvist.
+Portions created by Peter Thornqvist are Copyright (C) 2004 Peter Thornqvist.
 All Rights Reserved.
 
 Contributor(s):
+Hans-Eric Grönlund (stack logic)
 
-Last Modified: 2004-03-23
+Last Modified: 2004-03-24
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
+* This form is used by the TJvDeskTop component
 -----------------------------------------------------------------------------}
 unit JvDesktopAlertForm;
 
@@ -73,7 +75,6 @@ type
     acClose: TAction;
     FadeTimer: TTimer;
     MouseTimer:TTimer;
-    FMouseDown:boolean;
     procedure WMNCHitTest(var Message: TWMNCHitTest); message WM_NCHITTEST;
 
     procedure FadeInTimer(Sender:TObject);
@@ -87,7 +88,9 @@ type
     procedure Wait;
   protected
     procedure DoShow; override;
+
     procedure WMMove(var Message: TWMMove); message WM_MOVE;
+    procedure DoClose(var Action: TCloseAction); override;
   public
     imIcon: TImage;
     lblText: TLabel;
@@ -115,10 +118,10 @@ uses
 const
   cAlphaIncrement = 5;
   cCaptionHeight = 8;
-  
+
 {.$R *.dfm} // not needed
 
-procedure DrawDesktopAlertCaption(Canvas:TCanvas; ARect:TRect; ColorFrom, ColorTo:TColor);
+procedure DrawDesktopAlertCaption(Canvas:TCanvas; ARect:TRect; ColorFrom, ColorTo:TColor; DrawDots:boolean);
 var i:integer;R:TRect;
 begin
   GradientFillRect(Canvas,ARect, ColorFrom, ColorTo, fdTopToBottom, cCaptionHeight);
@@ -127,6 +130,7 @@ begin
   Inc(R.Top, 3);
   R.Right := R.Left + 2;
   R.Bottom := R.Top + 2;
+  if DrawDots then
   for i := 0 to 9 do // draw the dots
   begin
     Canvas.Brush.Color := $808080;
@@ -141,12 +145,12 @@ begin
 end;
 
 procedure DrawDesktopAlertWindow(Canvas:TCanvas;WindowRect:TRect;
-  FrameColor:TColor; WindowColorFrom, WindowColorTo, CaptionColorFrom, CaptionColorTo:TColor);
+  FrameColor:TColor; WindowColorFrom, WindowColorTo, CaptionColorFrom, CaptionColorTo:TColor; DrawDots:boolean);
 var CaptionRect:TRect; ATop:integer; AColors:byte;
 begin
   CaptionRect := WindowRect;
   CaptionRect.Bottom := CaptionRect.Top + cCaptionHeight;
-  DrawDesktopAlertCaption(Canvas, CaptionRect,CaptionColorFrom, CaptionColorTo);
+  DrawDesktopAlertCaption(Canvas, CaptionRect,CaptionColorFrom, CaptionColorTo, DrawDots);
   ATop := WindowRect.Top;
   WindowRect.Top := CaptionRect.Bottom + 1;
   Dec(WindowRect.Bottom);
@@ -181,7 +185,7 @@ end;
 
 procedure TJvFormDesktopAlert.FormPaint(Sender: TObject);
 begin
-  DrawDesktopAlertWindow(Canvas, ClientRect, FrameColor, WindowColorFrom, WindowColorTo, CaptionColorFrom, CaptionColorTo);
+  DrawDesktopAlertWindow(Canvas, ClientRect, FrameColor, WindowColorFrom, WindowColorTo, CaptionColorFrom, CaptionColorTo, Moveable or MoveAnywhere);
 end;
 
 procedure TJvFormDesktopAlert.WMNCHitTest(var Message: TWMNCHitTest);
@@ -208,8 +212,8 @@ procedure TJvFormDesktopAlert.CMMouseenter(var Message: TMessage);
 begin
   inherited;
   MouseInControl := true;
-//  SetFocus;
-  BringToFront;
+  SetFocus;
+//  BringToFront;
   FadeTimer.Enabled := false;
   AlphaBlendValue := MaxAlphaBlendValue;
   if Assigned(FOnMouseEnter) then
@@ -226,7 +230,8 @@ begin
   begin
     if Assigned(FOnMouseLeave) then
       FOnMouseLeave(Self);
-    FadeOut;
+    if WaitTime > 0 then
+      FadeOut;
     MouseInControl := false;
   end;
 end;
@@ -248,12 +253,16 @@ end;
 procedure TJvFormDesktopAlert.FadeOutTimer(Sender: TObject);
 begin
   FadeTimer.Enabled := false;
-  if AlphaBlendValue >= cAlphaIncrement then
+  if AlphaBlendValue > cAlphaIncrement then
+  begin
     AlphaBlendValue := AlphaBlendValue - cAlphaIncrement;
-  if AlphaBlendValue <= cAlphaIncrement then
-    Close
+    if AlphaBlendValue <= cAlphaIncrement then
+      Close
+    else
+      FadeTimer.Enabled := true;
+  end
   else
-    FadeTimer.Enabled := True;
+    Close
 end;
 
 procedure TJvFormDesktopAlert.WaitTimer(Sender: TObject);
@@ -434,12 +443,13 @@ begin
   lblText.Top := lblHeader.Top + lblHeader.Height;
   FadeIn;
   inherited;
+  MouseTimer.Enabled := true;
 end;
 
 procedure TJvFormDesktopAlert.WMMove(var Message: TWMMove);
 begin
   inherited;
-  if Showing and Assigned(FOnUserMove) and FMouseDown then
+  if Showing and Assigned(FOnUserMove) then
     FOnUserMove(Self);
 end;
 
@@ -470,8 +480,8 @@ end;
 constructor TJvFormDesktopAlert.CreateNew(AOwner: TComponent; Dummy: Integer);
 begin
   inherited CreateNew(AOwner, Dummy);
-  if MouseTimer = nil then
-    MouseTimer := TTimer.Create(Self);
+  Font.Assign(Screen.IconFont);
+  MouseTimer := TTimer.Create(Self);
   MouseTimer.Enabled := false;
   MouseTimer.Interval := 200;
   MouseTimer.OnTimer := DoMouseTimer;
@@ -565,7 +575,9 @@ begin
   FadeTimer.Interval := FadeOutTime;
   FadeTimer.OnTimer := FadeOutTimer;
   FadeTimer.Enabled := FadeOutTime > 0;
-  if not FadeTimer.Enabled then Close;
+  MouseTimer.Enabled := false;
+  if not FadeTimer.Enabled and (WaitTime > 0) then
+    Close;
 end;
 
 procedure TJvFormDesktopAlert.Wait;
@@ -579,6 +591,12 @@ begin
   // NB! If waittime = 0 then we never close - user has to do that manually
 //  if not FadeTimer.Enabled then
 //    FadeOut;
+end;
+
+procedure TJvFormDesktopAlert.DoClose(var Action: TCloseAction);
+begin
+  inherited;
+  MouseTimer.Enabled := false;
 end;
 
 initialization
