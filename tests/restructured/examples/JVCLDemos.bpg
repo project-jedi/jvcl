@@ -20,7 +20,8 @@ PROJECTS = TimeLineDemo.exe AppDdeCmdExample.exe ArrowButtonDemo.exe BmpAnimDemo
   ListCombDemo.exe MailExample.exe MonthCalendarDemo.exe JvObjPickerDemo.exe OLBarDemo.exe ProfilerDemo.exe \
   RegEditDemo.exe RunDLL32Demo.exe ScrollWinDemo.exe TipsDemo.exe SimpleTLTest1.exe TransparentButtonDemo.exe \
   ShFileOpDemo.exe JVCLDemo.exe RANotepad.exe MDIapp.exe JvInterpreterEndUser.exe DynamicLoad.exe JvInterpreterTest.exe \
-  ColorHintsTest.exe LineNumbers.exe RAEditorTest.exe RAHLEdPropDlgTest.exe DBTree.exe DBMove.exe RAControls.exe
+  ColorHintsTest.exe LineNumbers.exe RAEditorTest.exe RAHLEdPropDlgTest.exe DBTree.exe DBMove.exe RAControls.exe \
+  prjControls.exe EventViewer.exe
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -244,4 +245,9 @@ DBMove.exe: RALib\RaDBMove\DBMove.dpr
 RAControls.exe: RALib\RaControls\RAControls.dpr
   $(DCC)
 
+prjControls.exe: JvFooterAndGroupHeader\prjControls.dpr
+  $(DCC)
+ 
+EventViewer.exe: JvNTEventLog\EventViewer.dpr
+  $(DCC)
 

@@ -198,6 +198,9 @@ type
 
   TOnChangeColor = procedure(Sender: TObject; Foreground, Background: TColor) of object;
 
+  TJvLayout = (lTop, lCenter, lBottom);
+  TJvBevelStyle = (bsShape, bsLowered, bsRaised);
+
 implementation
 
 end.

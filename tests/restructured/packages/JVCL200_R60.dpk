@@ -57,9 +57,9 @@ requires
   dbrtl,
   vcldb,
   bdertl,
-  QRPT,
-  INET,  
-  djcl60;
+  djcl60,
+  inet,
+  qrpt;
 
 contains
   JvAddPrinter in '..\source\JvAddPrinter.pas',
@@ -115,7 +115,7 @@ contains
   JvEdit in '..\source\JvEdit.pas',
   JvFavoritesButton in '..\source\JvFavoritesButton.pas',
   JvFloatEdit in '..\source\JvFloatEdit.pas',
-  JvFormAlarms in '..\source\JvFormAlarms.pas' {FormAlarm}, 
+  JvFormAlarms in '..\source\JvFormAlarms.pas' {FormAlarm},
   JvFormAnimatedIcon in '..\source\JvFormAnimatedIcon.pas',
   JvFormAnimation in '..\source\JvFormAnimation.pas',
   JvFormImage in '..\source\JvFormImage.pas' {FormImg},
@@ -425,8 +425,6 @@ contains
   JvBandUtils in '..\Source\JvBandUtils.pas',
   JvBandWindows in '..\Source\JvBandWindows.pas',
   JvBandObject in '..\Source\JvBandObject.pas',
-//#------RA Controls----------------------------
-
   JvComponentPanel in '..\Source\JvComponentPanel.pas',
   JvDlg in '..\Source\JvDlg.pas',
   JvDsgnIntf in '..\Source\JvDsgnIntf.pas',
@@ -443,23 +441,16 @@ contains
   JvStrUtil in '..\Source\JvStrUtil.pas',
   JvCtlConst in '..\Source\JvCtlConst.pas',
   JvHLParser in '..\Source\JvHLParser.pas',
-
-//------RA DB Controls----------------------------
-
   JvDBUtil in '..\Source\JvDBUtil.pas',
   JvDBLookupTreeView in '..\Source\JvDBLookupTreeView.pas',
   JvDBMove in '..\Source\JvDBMove.pas',
   JvDBTreeView in '..\Source\JvDBTreeView.pas',
   JvSQLS in '..\Source\JvSQLS.pas',
   JvDBConst in '..\Source\JvDBConst.pas',
-//------RA Interpreter----------------------------
-
   JvInterpreterParser in '..\Source\JvInterpreterParser.pas',
   JvInterpreterFm in '..\Source\JvInterpreterFm.pas',
   JvInterpreterConst in '..\Source\JvInterpreterConst.pas',
   JvInterpreter in '..\source\JvInterpreter.pas',
-
-//------RA Interpreter----------------------------
   JvInterpreter_Windows in '..\Source\JvInterpreter_Windows.pas',
   JvInterpreter_Classes in '..\Source\JvInterpreter_Classes.pas',
   JvInterpreter_ComCtrls in '..\Source\JvInterpreter_ComCtrls.pas',
@@ -485,6 +476,9 @@ contains
   JvInterpreter_Contnrs in '..\Source\JvInterpreter_Contnrs.pas',
   JvInterpreter_JvUtils in '..\Source\JvInterpreter_JvUtils.pas',
   JvUtils in '..\Source\JvUtils.pas',
-  JvInterpreter_JvInterpreter in '..\Source\JvInterpreter_JvInterpreter.pas';
-  
+  JvInterpreter_JvInterpreter in '..\Source\JvInterpreter_JvInterpreter.pas',
+  JvNTEventLog in '..\source\JvNTEventLog.pas',
+  JvGroupHeader in '..\source\JvGroupHeader.pas',
+  JvFooter in '..\source\JvFooter.pas';
+
 end.

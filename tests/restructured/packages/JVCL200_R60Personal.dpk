@@ -438,6 +438,9 @@ contains
   JvInterpreter_Contnrs in '..\Source\JvInterpreter_Contnrs.pas',
   JvInterpreter_JvUtils in '..\Source\JvInterpreter_JvUtils.pas',
   JvUtils in '..\Source\JvUtils.pas',
-  JvInterpreter_JvInterpreter in '..\Source\JvInterpreter_JvInterpreter.pas';
+  JvInterpreter_JvInterpreter in '..\Source\JvInterpreter_JvInterpreter.pas',
+  JvNTEventLog in '..\source\JvNTEventLog.pas',
+  JvGroupHeader in '..\source\JvGroupHeader.pas',
+  JvFooter in '..\source\JvFooter.pas';
 
 end.

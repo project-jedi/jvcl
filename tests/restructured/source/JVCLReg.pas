@@ -173,7 +173,9 @@ FiltEdit,
   JvChangeNotify, JvEnterTab, JvFindFiles,
   JvFileInfo, JvItemsPanel, JvDsgnEditors, JvCntScr, JvCmdEdit,
   JvTMTL, JvCalendar, JvUCB, JvChNtfyProperty, JvOLBar, JvOLBarEditor, JvSHFmt,
-  JvInspector, JvHidControllerClass, JvAnalogClock, JvRadioCtl;
+  JvInspector, JvHidControllerClass, JvAnalogClock, JvRadioCtl,
+  // Fernando Silva
+  JvFooter, JvGroupHeader, JvNTEventLog;
 
 {******************************************************************************}
 
@@ -219,6 +221,8 @@ begin
   RegisterComponentEditor(TJvImageComboBox, TJvListCombProperty);
   RegisterComponentEditor(TJvExpress, TExpressEditor);
   RegisterComponentEditor(TJvChangeNotify, TJvChangeNotifyEditor);
+  RegisterComponentEditor(TJvGroupHeader, TJvGroupHeaderEditor);
+  RegisterComponentEditor(TJvFooter, TJvFooterEditor);
   RegisterComponentEditor(TJvCustomOutlookBar, TOLBarComponentEditor);
 end;
 
@@ -307,7 +311,10 @@ begin
       TJvDivider,
       TJvArrow,
       TJvHighlighter,
-      TJvRadioControl
+      TJvRadioControl,
+
+    TJvGroupHeader,
+      TJvFooter
       ]);
 
   // Jv Win32
@@ -368,8 +375,9 @@ begin
       TJvDirectories,
       TJvSystemColors,
       TJvClipboardViewer,
-      TJvSystemPopup
+      TJvSystemPopup,
 
+    TJvNTEventLog
       ]);
 
 {$IFNDEF D6PersonalEdition}
@@ -590,7 +598,7 @@ begin
       TJvYearEdit
       ]);
 
-//JvBands
+// JvBands
 //============
   RegisterCustomModule(TjvBandForm, TCustomModule);
   RegisterPackageWizard(TjvBandObjectDLLWizard.Create);
@@ -613,6 +621,7 @@ begin
   RegPropEds;
   RegCompEds;
   RegisterClass(TJvLookOutPage);
+  RegisterClass(TJvFooterBtn);
 end;
 
 end.

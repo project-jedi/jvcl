@@ -97,7 +97,9 @@ JvInterpreterTest.exe \
 JvInterpreterEndUser.exe \
 MDIapp.exe \
 RANotepad.exe \
-JVCLDemo.exe 
+JVCLDemo.exe \
+prjControls.exe \
+EventViewer.exe
 
  
 #---------------------------------------------------------------------------------------------------
@@ -482,5 +484,14 @@ JVCLDemo.exe: JVCLMegaDemo\JVCLDemo.dpr
   $(DCC) $&.dpr
   cd ..
   
+prjControls.exe: JVFooterAndGroupHeader\prjControls.dpr
+  cd JVFooterAndGroupHeader
+  $(DCC) $&.dpr
+  cd ..
+
+EventViewer.exe: JvNTEventLog\EventViewer.dpr
+  cd JvNTEventLog
+  $(DCC) $&.dpr
+  cd ..
   
   
