@@ -36,8 +36,8 @@ uses
   JVCLVer;
 
 type
-  TJvClipBoardCommand = (caCopy, caCut, caPaste, caUndo);
-  TJvClipboardCommands = set of TJvClipBoardCommand;
+  TJvClipboardCommand = (caCopy, caCut, caPaste, caUndo);
+  TJvClipboardCommands = set of TJvClipboardCommand;
 
   TJvComponent = class(TComponent)
   private
