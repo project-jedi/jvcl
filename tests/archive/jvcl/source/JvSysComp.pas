@@ -866,6 +866,9 @@ begin
   DoRedirect := coRedirect in ConsoleOptions;
 
   ZeroMemory(@FProcessInfo, SizeOf(FProcessInfo));
+  ZeroMemory(@LLocalHandles, SizeOf(LLocalHandles));
+  ZeroMemory(@LConsoleHandles, SizeOf(LConsoleHandles));
+
   Flags := ProcessPriorities[FPriority];
   for F := Low(TJvCPSFlag) to High(TJvCPSFlag) do
     if F in FCreationFlags then
@@ -897,6 +900,8 @@ begin
       Flags, EnvironmentData, CurrDir, LStartupInfo, FProcessInfo) then
     begin
       CloseProcessHandles;
+      SafeCloseHandle(LLocalHandles.Write);
+      SafeCloseHandle(LLocalHandles.Read);
       RaiseLastOSError;
     end;
 
@@ -922,7 +927,7 @@ begin
     end
     else
     begin
-      { http://support.microsoft.com/default.aspx?scid=KB;EN-US;Q124121& }
+      { http://support.microsoft.com/default.aspx?scid=kb;en-us;124121 }
       WaitForInputIdle(FProcessInfo.hProcess, INFINITE);
       CloseProcessHandles;
       FState := psRunning;
