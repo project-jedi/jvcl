@@ -250,6 +250,7 @@ begin
 end;
 
 { function VarArrayCreate(const Bounds: array of Integer; VarType: Integer): Variant; }
+
 procedure JvInterpreter_VarArrayCreate(var Value: Variant; Args: TJvInterpreterArgs);
 var
   OA: TOpenArray;
@@ -359,10 +360,11 @@ begin
   if VarIsArray(Args.Values[0]) then
   begin
     if VarArrayDimCount(Args.Values[0]) > 1 then
-      raise exception.Create('Sorry. For one-dimensional arrays only.');
+      raise Exception.Create('Sorry. For one-dimensional arrays only.');
     Value := VarArrayHighBound(Args.Values[0], 1)-VarArrayLowBound(Args.Values[0], 1);
   end
-  else if TVarData(Args.Values[0]).vType = varArray then
+  else
+  if TVarData(Args.Values[0]).vType = varArray then
     Value := JvInterpreterArrayLength(Args.Values[0])
   else
     Value := Length(Args.Values[0]);
@@ -497,7 +499,7 @@ begin
   if VarIsArray(Args.Values[0]) then
   begin
     if VarArrayDimCount(Args.Values[0]) > 1 then
-      raise exception.Create('Sorry. For one-dimensional arrays only.');
+      raise Exception.Create('Sorry. For one-dimensional arrays only.');
     Value := VarArrayLowBound(Args.Values[0], 1);
   end
   else
@@ -511,7 +513,7 @@ begin
   if VarIsArray(Args.Values[0]) then
   begin
     if VarArrayDimCount(Args.Values[0]) > 1 then
-      raise exception.Create('Sorry. For one-dimensional arrays only.');
+      raise Exception.Create('Sorry. For one-dimensional arrays only.');
     Value := VarArrayLowBound(Args.Values[0], 1);
   end
   else

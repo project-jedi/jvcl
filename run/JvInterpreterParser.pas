@@ -36,9 +36,9 @@ uses
   SysUtils;
 
 type
-  TTokenTyp = type Integer;
+  TTokenKind = type Integer;
 
-  TJvInterpreterParser = class
+  TJvInterpreterParser = class(TObject)
   private
     FSource: string;
     FPCPos: PChar; { current parse position }
