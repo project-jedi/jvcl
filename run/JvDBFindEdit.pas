@@ -6,22 +6,19 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   StdCtrls, ExtCtrls, DB, DBCtrls,
-{$IFDEF USEJVCL}
   CheckLst,
-  JVCLVer;
-{$ELSE}
-  CheckLst;
-{$ENDIF USEJVCL}
+  JVCLVer,
+  JvExMask,
+  JvToolEdit,
+  JvMaskEdit;
 
 type
   TJvEditFindStyle = (fsNavigate, fsFilter);
   TJvEditFindMode = (fmFirstPos, fmAnyPos);
 
-  TJvDBFindEdit = class(TCustomEdit)
+  TJvDBFindEdit = class(TJvMaskEdit)
   private
-{$IFDEF USEJVCL}
     FAboutJVCL: TJVCLAboutInfo;
-{$ENDIF USEJVCL}
     FTimer: TTimer;
     FOldFiltered: Boolean;
     FOldFilterRecord: TFilterRecordEvent;
@@ -46,16 +43,19 @@ type
     procedure Change; override;
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
+    function DateVal:Boolean ;
+    Function IsDate(s1:String):Boolean;
+    Function GetDateDelimiter:String;
+    Function IsNumeric(s1:String):Boolean;
   public
     { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Find(AText: string);
+    procedure ResetFilter;
 
   published
-{$IFDEF USEJVCL}
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-{$ENDIF USEJVCL}
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property FindStyle: TJvEditFindStyle read FFindStyle write SetFindStyle default fsNavigate;
@@ -74,6 +74,7 @@ type
     property Font;
     property HideSelection;
     property MaxLength;
+    Property EditMask;
     property ParentColor;
     property ParentCtl3D;
     property ParentFont;
@@ -133,6 +134,7 @@ begin
     FDataLink.DataSet.Filtered := FOldFiltered;
   end;
   FDataLink.Control := nil;
+  DataSource:=nil;
   FDataLink.Free;
   FDataLink := nil;
   inherited Destroy;
@@ -146,6 +148,93 @@ begin
   FTimer.Enabled := true;
   FSearchText := Text;
   inherited;
+end;
+
+
+Function TJvDBFindEdit.IsNumeric(s1:String):Boolean;
+Var ier:Integer;
+    r1:Real;
+Begin
+  Result := true;
+  Val(s1,r1,ier);
+  If ier > 0 Then Result := false; 
+End;
+
+Function TJvDBFindEdit.GetDateDelimiter:String;
+Var s1:String; i:Integer;
+Begin 
+  s1 := DateTimeToStr(Now); 
+  For i := 1 to Length(s1) do Begin 
+    If Not (s1[i] in ['0'..'9']) Then Begin 
+      Result := s1[i]; 
+      Break; 
+    End; 
+  End; 
+End;
+
+Function TJvDBFindEdit.IsDate(s1:String):Boolean;
+Var i,k,p1,p2:Integer; sm,sd,sj,ss:String;
+Begin 
+  Result := false;
+  ss := GetDateDelimiter;
+  k := Length(s1); 
+  If k > 0 Then Begin 
+    p1 := 0; 
+    p2 := 0; 
+    For i := 1 to k do Begin
+      If p1 = 0 Then Begin 
+        If s1[i] = ss Then p1 := i; 
+      End Else Begin 
+        If s1[i] = ss Then p2 := i; 
+      End; 
+    End; 
+    If p1 > 0 Then Begin 
+      If p2 > 0 Then Begin 
+        If p2 > p1 Then Begin 
+          sm := Copy(s1,1,p1-1);
+          sd := Copy(s1,p1+1,p2-p1-1); 
+          sj := Copy(s1,p2+1,k-p2); 
+          If IsNumeric(sm) Then Begin 
+            If IsNumeric(sd) Then Begin 
+              If IsNumeric(sj) Then Begin
+                p1 := StrToInt(sd);
+                If (p1 > 0) and (p1 < 32) Then Begin 
+                  p1 := StrToInt(sm); 
+                  If (p1 > 0) and (p1 < 13) Then Begin 
+                    p1 := StrToInt(sj);
+                    If p1 > 1969 Then Result := true; 
+                  End; 
+                End; 
+              End; 
+            End; 
+          End; 
+        End; 
+      End; 
+    End; 
+  End;
+End;
+
+function TJvDBFindEdit.DateVal:Boolean ;
+Begin
+result:=True;
+if FDataLink.Field is TDateField then
+ if not IsDate(FSearchText) then
+  result:=false;
+
+if IsDate(FSearchText) then
+        //Begin
+        //DateSeparator :='/';
+        //ShortDateFormat := 'mm/dd/yyyy';
+   FSearchText:=(DateToStr(StrToDate(FSearchText)));
+        //end;
+end;
+
+procedure TJvDBFindEdit.ResetFilter;
+begin
+ Text:='';
+// FSearchText:='';
+FDataLink.DataSet.Filtered := false;
+
 end;
 
 procedure TJvDBFindEdit.FTimerTimer(Sender: TObject);
@@ -162,6 +251,9 @@ begin
   else
   begin
     if not FDataLink.Active or (FDataLink.Field = nil) then Exit;
+    if DateVal then
+    if not(FDataLink.Field is TBlobField) then
+
     if FFindStyle = fsNavigate then
       if IgnoreCase then
         FDataLink.DataSet.Locate(DataField, FSearchText, [loCaseInsensitive, loPartialKey])
