@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: JVCL3\n"
-"POT-Creation-Date: 2004-08-07 13:01\n"
-"PO-Revision-Date: 2004-08-07 13:28+0100\n"
+"POT-Creation-Date: 2004-10-14 21:23\n"
+"PO-Revision-Date: 2004-10-14 21:27+0100\n"
 "Last-Translator: Olivier Sannier <obones@meloo.com>\n"
 "Language-Team: jvcl team <jvcl@sf.net>\n"
 "MIME-Version: 1.0\n"
@@ -262,18 +262,39 @@ msgstr ""
 msgid "Edit jvcl.inc"
 msgstr "Editer jvcl.inc"
 
+#  FrameConfigPage..GroupBoxJvclInc..CheckBoxUnitVersioning..Hint
+#. FrameConfigPage..GroupBoxJvclInc..CheckBoxUnitVersioning....Height
+#: Frames/FrmConfigPage.dfm:158
+msgid ""
+"Enable this option if you want that every JVCL unit should support\n"
+"UnitVersioning.\n"
+"UnitVersioning allows you the obtain the revision, date and filename\n"
+"of each unit at runtime."
+msgstr ""
+"Activez cette option si vous voulez que n'importe quel unité JVCL puisse\n"
+"supporter UnitVersioning.\n"
+"UnitVersioning vous permet d'obtenir la révision, la date et le nom de fichier\n"
+"de chaque unité à l'éxecution."
+
+#  FrameConfigPage..GroupBoxJvclInc..CheckBoxUnitVersioning..Caption
+#. FrameConfigPage..GroupBoxJvclInc..CheckBoxUnitVersioning..Caption
+#: Frames/FrmConfigPage.dfm:159
+msgid "Unit Versioning"
+msgstr "Versionnage d'Unité"
+
+#  FrameConfigPage..GroupBoxInstallOptions..Caption
 #. FrameConfigPage..GroupBoxInstallOptions..Caption
-#: Frames/FrmConfigPage.dfm:156
+#: Frames/FrmConfigPage.dfm:171
 msgid " Installation options "
 msgstr " Options d'installation "
 
 #. FrameConfigPage..GroupBoxInstallOptions..LblOptionsFor..Caption
-#: Frames/FrmConfigPage.dfm:163
-msgid "Options for:"
-msgstr "Options pour:"
+#: Frames/FrmConfigPage.dfm:178
+msgid "&Options for:"
+msgstr "&Options pour:"
 
 #. FrameConfigPage..GroupBoxInstallOptions..CheckBoxDeveloperInstall....Height
-#: Frames/FrmConfigPage.dfm:173
+#: Frames/FrmConfigPage.dfm:189
 msgid ""
 "Activate this option if you are a JVCL developer.\n"
 "This adds the \\run, \\common, \\design, \\qrun,\n"
@@ -285,12 +306,12 @@ msgstr ""
 "\\qcommon et \\qdesign aux chemins de bibliothèque."
 
 #. FrameConfigPage..GroupBoxInstallOptions..CheckBoxDeveloperInstall..Caption
-#: Frames/FrmConfigPage.dfm:175
+#: Frames/FrmConfigPage.dfm:191
 msgid "&JVCL Developer installation"
 msgstr "Installation développeur &JVCL"
 
 #. FrameConfigPage..GroupBoxInstallOptions..CheckBoxCleanPalettes....Height
-#: Frames/FrmConfigPage.dfm:188
+#: Frames/FrmConfigPage.dfm:204
 msgid ""
 "Remove all JVCL components from the component palettes in\n"
 "order to reinstall in a proper order."
@@ -299,12 +320,12 @@ msgstr ""
 "afin de le réinstaller dans un ordre correct."
 
 #. FrameConfigPage..GroupBoxInstallOptions..CheckBoxCleanPalettes..Caption
-#: Frames/FrmConfigPage.dfm:190
+#: Frames/FrmConfigPage.dfm:206
 msgid "Clean JVCL component &palettes"
 msgstr "Nettoyer les &palettes de composant JVCL"
 
 #. FrameConfigPage..GroupBoxInstallOptions..CheckBoxBuild....Height
-#: Frames/FrmConfigPage.dfm:215
+#: Frames/FrmConfigPage.dfm:231
 msgid ""
 "Check this option if you want to build the packages instead\n"
 "of compiling the modified files.\n"
@@ -319,12 +340,12 @@ msgstr ""
 "Ceci peut prendre plus de 10 minutes."
 
 #. FrameConfigPage..GroupBoxInstallOptions..CheckBoxBuild..Caption
-#: Frames/FrmConfigPage.dfm:217
+#: Frames/FrmConfigPage.dfm:233
 msgid "B&uild packages"
 msgstr "Constr&uire les paquets"
 
 #. FrameConfigPage..GroupBoxInstallOptions..CheckBoxCompileOnly....Height
-#: Frames/FrmConfigPage.dfm:230
+#: Frames/FrmConfigPage.dfm:246
 msgid ""
 "Check this option if you do not want to register\n"
 "the designtime package into the IDE."
@@ -333,27 +354,27 @@ msgstr ""
 "les paquets de conception dans l'IDE."
 
 #. FrameConfigPage..GroupBoxInstallOptions..CheckBoxCompileOnly..Caption
-#: Frames/FrmConfigPage.dfm:232
-msgid "No IDE registration"
-msgstr "Pas d'enregistrement  d'EDI (Compile seulement)"
+#: Frames/FrmConfigPage.dfm:248
+msgid "No &IDE registration"
+msgstr "Pas d'enregistrement dans l'ED&I (Compile seulement)"
 
 #. FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseBPL..LblCaption..Caption
-#: Frames/FrmConfigPage.dfm:248
+#: Frames/FrmConfigPage.dfm:264
 msgid "BP&L Directory:"
 msgstr "Répertoire BP&L:"
 
 #. FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseDCP..LblCaption..Caption
-#: Frames/FrmConfigPage.dfm:272
+#: Frames/FrmConfigPage.dfm:288
 msgid "&DCP Directory:"
 msgstr "&Répertoire DCP:"
 
 #. FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseHPP..LblCaption..Caption
-#: Frames/FrmConfigPage.dfm:296
+#: Frames/FrmConfigPage.dfm:312
 msgid "&HPP Directory:"
 msgstr "&Répertoire HPP:"
 
 #. FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseHPP..EditDirectory....Width
-#: Frames/FrmConfigPage.dfm:309
+#: Frames/FrmConfigPage.dfm:325
 msgid ""
 "The HPP directory specifies where the generated .hpp files\n"
 "should go. If this field is empty the generated .hpp files are\n"
@@ -365,7 +386,7 @@ msgstr ""
 "est situé."
 
 #. FrameConfigPage..GroupBoxInstallOptions..CheckBoxGenerateMapFiles....Height
-#: Frames/FrmConfigPage.dfm:327
+#: Frames/FrmConfigPage.dfm:343
 msgid ""
 "Activate this option if the installer should generate\n"
 "detailed map-files for each package.The .map files\n"
@@ -383,12 +404,12 @@ msgstr ""
 " par ex. JclLDebug peut les utiliser."
 
 #. FrameConfigPage..GroupBoxInstallOptions..CheckBoxGenerateMapFiles..Caption
-#: Frames/FrmConfigPage.dfm:329
+#: Frames/FrmConfigPage.dfm:345
 msgid "Genera&te Map files"
 msgstr "Généra&tion des fichiers Map"
 
 #. FrameConfigPage..CheckBoxCompileJclDcp....Height
-#: Frames/FrmConfigPage.dfm:344
+#: Frames/FrmConfigPage.dfm:360
 msgid ""
 "Deactivate this option if you do not want the installer to\n"
 "compile/update the JCL .dcp files that are required for\n"
@@ -399,12 +420,12 @@ msgstr ""
 " l'installation de C++Builder."
 
 #. FrameConfigPage..CheckBoxCompileJclDcp..Caption
-#: Frames/FrmConfigPage.dfm:345
+#: Frames/FrmConfigPage.dfm:361
 msgid "Co&mpile JCL .dcp files for C++Builder"
 msgstr "Co&mpiler les fichiers dcp JCL si nécessaire"
 
 #. FrameConfigPage..CheckBoxVerbose....Height
-#: Frames/FrmConfigPage.dfm:358
+#: Frames/FrmConfigPage.dfm:374
 msgid ""
 "Activate this option if you want to see a more detailed compiler log on\n"
 "the installation progress page."
@@ -413,7 +434,7 @@ msgstr ""
 "dans la page de progression de l'installation."
 
 #. FrameConfigPage..CheckBoxVerbose..Caption
-#: Frames/FrmConfigPage.dfm:359
+#: Frames/FrmConfigPage.dfm:375
 msgid "&Verbose compiler output"
 msgstr "&Sorties du compilateur détaillées"
 
