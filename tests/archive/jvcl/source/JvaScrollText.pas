@@ -27,37 +27,40 @@ Description : 'Delphi IDE'-like Editor
 Known Issues:
 -----------------------------------------------------------------------------}
 
-
 {$I JVCL.INC}
 
 unit JvaScrollText;
 
 interface
 
-uses Windows, SysUtils, Classes, Controls, Forms, ExtCtrls, Graphics;
+uses
+  Windows, Classes, Controls, ExtCtrls, Forms, Graphics, SysUtils,
+  JvComponent;
 
 type
 
-  TJvaScrollText = class(TCustomControl)
+  TJvaScrollText = class(TJvCustomControl)
   private
-    ImageFon: TImage;
-    ImagePattern: TImage;
-    ImageFontMask: TImage;
-    ImageFont: TImage;
-    ImageScroll: TImage;
-    FStrings : TStrings;
+    FForeImage: TImage;
+    FBackImage: TImage;
+    FFontMaskImage: TImage;
+    FFontImage: TImage;
+    FScrollImage: TImage;
+    FStrings: TStrings;
 
-    FStop : boolean;
-    FScrollBottom, FScrollTop  : integer;
-    FLeftMargin, FRightMargin : integer;
-    FMaxFontSize: integer;
-    DelayC: integer;
-    Pic: integer;
+    FStop: Boolean;
+    FScrollBottom: Integer;
+    FScrollTop: Integer;
+    FLeftMargin: Integer;
+    FRightMargin: Integer;
+    FMaxFontSize: Integer;
+    FSpeed: Integer;
+    Pic: Integer;
 
-    procedure SetImageFon(Value: TPicture);
-    procedure SetImagePattern(Value: TPicture);
-    function GetImageFon: TPicture;
-    function GetImagePattern: TPicture;
+    procedure SetForeImage(Value: TPicture);
+    procedure SetBackImage(Value: TPicture);
+    function GetForeImage: TPicture;
+    function GetBackImage: TPicture;
     procedure SetStrings(Value: TStrings);
   protected
     procedure Loaded; override;
@@ -68,41 +71,42 @@ type
     procedure Scroll;
     procedure Stop;
   published
-    property ForeImage: TPicture read GetImageFon write SetImageFon;
-    property BackImage: TPicture read GetImagePattern write SetImagePattern;
+    property ForeImage: TPicture read GetForeImage write SetForeImage;
+    property BackImage: TPicture read GetBackImage write SetBackImage;
+    property Height default 150;
     property Lines: TStrings read FStrings write SetStrings;
-    property ScrollBottom: integer read FScrollBottom write FScrollBottom default -1;
-    property ScrollTop: integer read FScrollTop write FScrollTop default -1;
-    property LeftMargin: integer read FLeftMargin write FLeftMargin default -1;
-    property RightMargin: integer read FRightMargin write FRightMargin default -1;
-    property MaxFontSize: integer read FMaxFontSize write FMaxFontSize default 48;
+    property ScrollBottom: Integer read FScrollBottom write FScrollBottom default -1;
+    property ScrollTop: Integer read FScrollTop write FScrollTop default -1;
+    property LeftMargin: Integer read FLeftMargin write FLeftMargin default -1;
+    property RightMargin: Integer read FRightMargin write FRightMargin default -1;
+    property MaxFontSize: Integer read FMaxFontSize write FMaxFontSize default 48;
     property Font;
-    property Speed: integer read DelayC write DelayC default 25;
+    property Speed: Integer read FSpeed write FSpeed default 25;
+    property Width default 150;
   end;
 
 implementation
 
-uses JvStrUtil, JvDsgnIntf;
+uses
+  JvStrUtil, JvDsgnIntf;
 
 {$IFNDEF COMPILER4_UP}
 type
-  longword = Integer;
+  Longword = Integer;
 {$ENDIF}
 
 const
-  constDelayIncrement = 50;
-
-  IntToStyle : array[0..3] of TFontStyles = ([], [fsBold], [fsItalic], [fsBold, fsItalic]);
-
+  cDelayIncrement = 50;
+  cIntToStyle: array [0..3] of TFontStyles = ([], [fsBold], [fsItalic], [fsBold, fsItalic]);
 
 constructor TJvaScrollText.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  ImageFon := TImage.Create(Self);
-  ImagePattern := TImage.Create(Self);
-  ImageFontMask := TImage.Create(Self);
-  ImageFont := TImage.Create(Self);
-  ImageScroll := TImage.Create(Self);
+  FForeImage := TImage.Create(nil);
+  FBackImage := TImage.Create(nil);
+  FFontMaskImage := TImage.Create(nil);
+  FFontImage := TImage.Create(nil);
+  FScrollImage := TImage.Create(nil);
   FStrings := TStringList.Create;
   FScrollBottom := -1;
   FScrollTop := -1;
@@ -111,39 +115,39 @@ begin
   Speed := 25;
   Width := 150;
   Height := 150; 
-end;    { Create }
+end;
 
 destructor TJvaScrollText.Destroy;
 begin
-  ImageFon.Free;
-  ImagePattern.Free;
-  ImageFontMask.Free;
-  ImageFont.Free;
-  ImageScroll.Free;
+  FForeImage.Free;
+  FBackImage.Free;
+  FFontMaskImage.Free;
+  FFontImage.Free;
+  FScrollImage.Free;
   FStrings.Free;
   inherited Destroy;
-end;    { Destroy }
+end;
 
-procedure TJvaScrollText.SetImageFon(Value: TPicture);
+function TJvaScrollText.GetForeImage: TPicture;
 begin
-  ImageFon.Picture.Assign(Value);
+  Result := FForeImage.Picture;
+end;
+
+function TJvaScrollText.GetBackImage: TPicture;
+begin
+  Result := FBackImage.Picture;
+end;
+
+procedure TJvaScrollText.SetForeImage(Value: TPicture);
+begin
+  FForeImage.Picture.Assign(Value);
   Invalidate;
 end;
 
-procedure TJvaScrollText.SetImagePattern(Value: TPicture);
+procedure TJvaScrollText.SetBackImage(Value: TPicture);
 begin
-  ImagePattern.Picture.Assign(Value);
+  FBackImage.Picture.Assign(Value);
   Invalidate;
-end;
-
-function TJvaScrollText.GetImageFon: TPicture;
-begin
-  Result := ImageFon.Picture;
-end;
-
-function TJvaScrollText.GetImagePattern: TPicture;
-begin
-  Result := ImagePattern.Picture;
 end;
 
 procedure TJvaScrollText.SetStrings(Value: TStrings);
@@ -153,116 +157,122 @@ end;
 
 procedure TJvaScrollText.Paint;
 begin
-  inherited Paint; {?}
+  inherited Paint;
   if csDesigning in ComponentState then
   begin
     DrawDesignFrame(Canvas, ClientRect);
-		Canvas.Draw(0, 0, ImageFon.Picture.Graphic);
+    Canvas.Draw(0, 0, FForeImage.Picture.Graphic);
   end
   else
-    Canvas.Draw(0, 0, ImageScroll.Picture.Graphic);
+    Canvas.Draw(0, 0, FScrollImage.Picture.Graphic);
 end;
 
 procedure TJvaScrollText.Scroll;
 var
-  j  : integer;
-  H : integer;
-  RecTmp    : TRect;
-  DelayMsec : longword;
-	DelayPause : longword;
-	DelayPause2 : longword;
-	Pixels  : 1..4;
-	Pixels2 : 1..4;
-	Pix : array [1..4] of integer;
- // DrawInfo : boolean;
-	Line  : integer;
-	H2, Popr, LastLine : integer;
-	Dest   : TRect;
-	Source : TRect;
-	SourceFon : TRect;
-	FontHeight : integer;
+  j: Integer;
+  H: Integer;
+  RecTmp: TRect;
+  DelayMsec: Longword;
+  DelayPause: Longword;
+  DelayPause2: Longword;
+  Pixels: 1..4;
+  Pixels2: 1..4;
+  Pix: array [1..4] of Integer;
+ // DrawInfo: Boolean;
+  Line: Integer;
+  H2, Popr, LastLine: Integer;
+  Dest: TRect;
+  Source: TRect;
+  SourceFon: TRect;
+  FontHeight: Integer;
 
-  procedure Delay(msec : longword);
+  procedure Delay(MSecs: Longword);
   var
-    DelayM : longword;
+    DelayM: Longword;
   begin
     DelayM := GetTickCount;
     repeat
       Application.ProcessMessages;
-      if FStop then exit;
-    until GetTickCount - DelayM > msec;
+      if FStop then
+        Exit;
+    until GetTickCount - DelayM > MSecs;
   end;
 
-  function ChangeFont(S : string) : boolean;
+  function ChangeFont(S: string): Boolean;
   var
-  	msec : string[10];
+    msec: string[10];
   begin
-  	Result := true;
-  	if StrLComp('$Font:', PChar(S), 6) = 0 then
-    	with imageFont.Canvas.Font do
+    Result := True;
+    if StrLComp('$Font:', PChar(S), 6) = 0 then
+      with FFontImage.Canvas.Font do
       begin
-    		S := PChar(S)+6;
-    		Name := SubStr(S, 0, ';');
-    		Size := StrToInt(SubStr(S, 1, ';'));
-    		Style := IntToStyle[StrToInt(SubStr(S, 2, ';'))];
-    	end
+        S := PChar(S) + 6;
+        Name := SubStr(S, 0, ';');
+        Size := StrToInt(SubStr(S, 1, ';'));
+        Style := cIntToStyle[StrToInt(SubStr(S, 2, ';'))];
+      end
     else
     if StrLComp('$Pause', PChar(S), 6) = 0 then
     begin
-  		msec := Copy(S, 7, 16);
-  		try
-  			Delay(StrToInt(msec));
-  		except
-  		end
-  	end else
-      Result := false;
-  	FontHeight := -imageFont.Canvas.Font.Height +3;
+      msec := Copy(S, 7, 16);
+      try
+        Delay(StrToInt(msec));
+      except
+      end
+    end
+    else
+      Result := False;
+      FontHeight := -FFontImage.Canvas.Font.Height + 3;
   end;
 
   procedure InitAll;
   begin
-    FStop := false;
+    FStop := False;
     Pixels := 1;
-    DelayPause := DelayC;
+    DelayPause := FSpeed;
     Pixels2 := 1;
-    DelayPause2 := DelayC;
-   // DrawInfo := false;
-    imageScroll.Picture.Assign(imageFon.Picture);
-    imageFontMask.Picture.Assign(imageFon.Picture);
-    imageFont.Picture.Assign(imageFon.Picture);
-    imageScroll.BoundsRect := BoundsRect;
-    imageFon.BoundsRect := BoundsRect;
-    imageFontMask.BoundsRect := BoundsRect;
-    imageFont.BoundsRect := BoundsRect;
+    DelayPause2 := FSpeed;
+   // DrawInfo := False;
+    FScrollImage.Picture.Assign(FForeImage.Picture);
+    FFontMaskImage.Picture.Assign(FForeImage.Picture);
+    FFontImage.Picture.Assign(FForeImage.Picture);
+    FScrollImage.BoundsRect := BoundsRect;
+    FForeImage.BoundsRect := BoundsRect;
+    FFontMaskImage.BoundsRect := BoundsRect;
+    FFontImage.BoundsRect := BoundsRect;
     Canvas.Font.Size := MaxFontSize;
-    imageFont.Picture.Bitmap.Height := Height + Canvas.TextHeight('W');
+    FFontImage.Picture.Bitmap.Height := Height + Canvas.TextHeight('W');
 
-    imageScroll.Picture.Assign(imageFon.Picture);
+    FScrollImage.Picture.Assign(FForeImage.Picture);
     SourceFon.Top := 0;
     SourceFon.Left := 0;
-    SourceFon.Right := imageFon.Width-1;
-    SourceFon.Bottom := imageFon.Height-1;
+    SourceFon.Right := FForeImage.Width-1;
+    SourceFon.Bottom := FForeImage.Height-1;
     Source.Top := 0;
     Source.Left := 0;
-    Source.Right := imageScroll.Picture.Width-1;
+    Source.Right := FScrollImage.Picture.Width-1;
     Dest := Source;
-    imageFont.Canvas.Brush.Color := clBlack;
-    Source.Bottom := imageFont.Picture.Height-1;
-    imageFont.Canvas.FillRect(Source);
-    imageFont.Canvas.Font.Color := clWhite;
-    imageFontMask.Canvas.Brush.Color := clWhite;
-    imageFontMask.Canvas.FillRect(SourceFon);
+    FFontImage.Canvas.Brush.Color := clBlack;
+    Source.Bottom := FFontImage.Picture.Height-1;
+    FFontImage.Canvas.FillRect(Source);
+    FFontImage.Canvas.Font.Color := clWhite;
+    FFontMaskImage.Canvas.Brush.Color := clWhite;
+    FFontMaskImage.Canvas.FillRect(SourceFon);
 
-    FStop := false;
+    FStop := False;
    // ChangeFont('$Font:Times New Roman;12;0');
-    imageFont.Canvas.Font := Font;
-    imageFont.Canvas.Font.Color := clWhite;
-    FontHeight := imageFont.Canvas.TextHeight('W') + 3;
+    FFontImage.Canvas.Font := Font;
+    FFontImage.Canvas.Font.Color := clWhite;
+    FontHeight := FFontImage.Canvas.TextHeight('W') + 3;
 
-    if FScrollTop < 0 then FScrollTop := 2;
-    if FScrollBottom < 0 then FScrollBottom := Height - 2;
-    if FLeftMargin < 0 then FLeftMargin := 2;
-    if FRightMargin < 0 then FRightMargin := Width - 2;
+    if FScrollTop < 0 then
+      FScrollTop := 2;
+    if FScrollBottom < 0 then
+      FScrollBottom := Height - 2;
+    if FLeftMargin < 0 then
+      FLeftMargin := 2;
+    if FRightMargin < 0 then
+      FRightMargin := Width - 2;
     H2 := ScrollBottom;
     Popr := 0;
     LastLine := 0;
@@ -276,22 +286,27 @@ var
 
   procedure DelayEnd;
   var
-    DelayFact: longword;
+    DelayFact: Longword;
   begin
     DelayFact := GetTickCount - DelayMsec;
     repeat
       Application.ProcessMessages;
-      if FStop then exit;
+      if FStop then
+        Exit;
     until GetTickCount - DelayMsec > DelayPause;
 //    {************* Коррекция скорости *************}
-    inc(Pic);
-    if Pic > 11 then begin
-//         {Подкорректировать скорость - сделать рывками}
-        Pixels := 1;
-        if Pix[2] > Pix[Pixels] then Pixels := 2;
-        if Pix[3] > Pix[Pixels] then Pixels := 3;
-        if Pix[4] > Pix[Pixels] then Pixels := 4;
-        DelayPause := DelayC + (Pixels-1)*constDelayIncrement;
+    Inc(Pic);
+    if Pic > 11 then
+    begin
+//     {Подкорректировать скорость - сделать рывками}
+      Pixels := 1;
+      if Pix[2] > Pix[Pixels] then
+        Pixels := 2;
+      if Pix[3] > Pix[Pixels] then
+        Pixels := 3;
+      if Pix[4] > Pix[Pixels] then
+        Pixels := 4;
+      DelayPause := FSpeed + (Pixels-1)*cDelayIncrement;
       DelayPause2 := DelayPause;
       Pixels2 := Pixels;
       Pix[1] := 0;
@@ -299,18 +314,24 @@ var
       Pix[3] := 0;
       Pix[4] := 0;
       Pic    := 0;
-    end else begin
-      if (DelayFact > DelayPause2) and (Pixels2 < 4) then begin
-//         {Подкорректировать скорость - сделать рывками}
-        inc(Pixels2);
-        inc(DelayPause2, constDelayIncrement);
-      end else if Pixels2 > 1 then begin
-//         {Подкорректировать скорость - сделать плавнее - машина успевает}
-        dec(Pixels2);
-        dec(DelayPause2, constDelayIncrement);
+    end
+    else
+    begin
+      if (DelayFact > DelayPause2) and (Pixels2 < 4) then
+      begin
+//      {Подкорректировать скорость - сделать рывками}
+        Inc(Pixels2);
+        Inc(DelayPause2, cDelayIncrement);
+      end
+      else
+      if Pixels2 > 1 then
+      begin
+//      {Подкорректировать скорость - сделать плавнее - машина успевает}
+        Dec(Pixels2);
+        Dec(DelayPause2, cDelayIncrement);
       end;
     end;
-    inc(Pix[Pixels2]);
+    Inc(Pix[Pixels2]);
    { if DrawInfo then
       lblInfo.Caption := 'P='+IntToStr(Pixels)
        +' P2='+IntToStr(Pixels2)+' D='+IntToStr(DelayFact)
@@ -320,84 +341,88 @@ var
 
   procedure CopyAll;
   begin
-    imageFontMask.Canvas.FillRect(SourceFon);
-//     {перенести текст}
-    imageFontMask.Canvas.CopyMode := cmNotSrcCopy;
-    imageFontMask.Canvas.CopyRect(Dest, imageFont.Canvas, Source);
-//     {Корректировка верхней границы}
+    FFontMaskImage.Canvas.FillRect(SourceFon);
+//  {перенести текст}
+    FFontMaskImage.Canvas.CopyMode := cmNotSrcCopy;
+    FFontMaskImage.Canvas.CopyRect(Dest, FFontImage.Canvas, Source);
+//  {Корректировка верхней границы}
     RecTmp := SourceFon;
     RecTmp.Bottom := FScrollTop;
-    imageFontMask.Canvas.FillRect(RecTmp);
-//     {Корректировка правой границы}
+    FFontMaskImage.Canvas.FillRect(RecTmp);
+//  {Корректировка правой границы}
     RecTmp := SourceFon;
     RecTmp.Left := FRightMargin;
-    imageFontMask.Canvas.FillRect(RecTmp);
-//     {наложить маску на фон}
-    imageScroll.Canvas.CopyMode := cmSrcCopy;
-    imageScroll.Canvas.CopyRect(SourceFon, imageFon.Canvas, SourceFon);
-    imageScroll.Canvas.CopyMode := cmSrcAnd;
-    imageScroll.Canvas.CopyRect(SourceFon, imageFontMask.Canvas, SourceFon);
-//     {наложить маску}
-    imageFontMask.Canvas.CopyMode := cmSrcErase;
-    imageFontMask.Canvas.CopyRect(SourceFon, imagePattern.Canvas, SourceFon);
-//     {наложить текст на фон}
-    imageScroll.Canvas.CopyMode := cmSrcPaint;
-    imageScroll.Canvas.CopyRect(SourceFon, imageFontMask.Canvas, SourceFon);
+    FFontMaskImage.Canvas.FillRect(RecTmp);
+//  {наложить маску на фон}
+    FScrollImage.Canvas.CopyMode := cmSrcCopy;
+    FScrollImage.Canvas.CopyRect(SourceFon, FForeImage.Canvas, SourceFon);
+    FScrollImage.Canvas.CopyMode := cmSrcAnd;
+    FScrollImage.Canvas.CopyRect(SourceFon, FFontMaskImage.Canvas, SourceFon);
+//  {наложить маску}
+    FFontMaskImage.Canvas.CopyMode := cmSrcErase;
+    FFontMaskImage.Canvas.CopyRect(SourceFon, FBackImage.Canvas, SourceFon);
+//  {наложить текст на фон}
+    FScrollImage.Canvas.CopyMode := cmSrcPaint;
+    FScrollImage.Canvas.CopyRect(SourceFon, FFontMaskImage.Canvas, SourceFon);
   end;
 
 begin
   InitAll;
   while True do
   begin
-  	inc(Line);
-  	if Line = FStrings.Count then Line := 0;
-//   	{Вывести строку}
-  	if ChangeFont(FStrings[Line]) then continue;
-  	H := LastLine - Popr;
-  	LastLine := LastLine + FontHeight;
-  	{H := Line * FontHeight - Popr;}
-  	imageFont.Canvas.TextOut(FLeftMargin, H, FStrings[Line]);
-//   	{Прокрутить строку}
-  	for j := 1 to FontHeight do
+    Inc(Line);
+    if Line = FStrings.Count then
+      Line := 0;
+//  {Вывести строку}
+    if ChangeFont(FStrings[Line]) then
+      Continue;
+    H := LastLine - Popr;
+    LastLine := LastLine + FontHeight;
+    {H := Line * FontHeight - Popr;}
+    FFontImage.Canvas.TextOut(FLeftMargin, H, FStrings[Line]);
+//  {Прокрутить строку}
+    for j := 1 to FontHeight do
     begin
-  		dec(H2);
-  		if (j mod Pixels) <> 0 then continue;
-  		Source.Bottom := H+j;{H1}
-  		Source.Left := FLeftMargin;
-  		SourceFon.Left := FLeftMargin;
-  		Dest.Left := FLeftMargin;
-  		Dest.Top := H2;
-  		Dest.Bottom := H2 + H+j;{H2+H1}
-  	  DelayBegin;
-  			CopyAll;
-  			Canvas.Draw(0, 0, ImageScroll.Picture.Graphic);
-  	  DelayEnd;
-  		if FStop then exit;
-  	end;
-  	if (Source.Bottom - imageScroll.Height) > FontHeight then
+      Dec(H2);
+      if (j mod Pixels) <> 0 then
+        Continue;
+      Source.Bottom := H+j; {H1}
+      Source.Left := FLeftMargin;
+      SourceFon.Left := FLeftMargin;
+      Dest.Left := FLeftMargin;
+      Dest.Top := H2;
+      Dest.Bottom := H2 + H+j; {H2+H1}
+      DelayBegin;
+      CopyAll;
+      Canvas.Draw(0, 0, FScrollImage.Picture.Graphic);
+      DelayEnd;
+      if FStop then
+        Exit;
+    end;
+    if (Source.Bottom - FScrollImage.Height) > FontHeight then
     begin
-  		inc(H2, FontHeight);
-  		inc(Popr, FontHeight);
-  		Dest.Top      := 0;
-  		Dest.Bottom   := imageFont.Picture.Height-1 - FontHeight;
-  		Source.Top := FontHeight;
-  		Source.Bottom := imageFont.Picture.Height-1;
-  		imageFont.Canvas.CopyRect(Dest, imageFont.Canvas, Source);
-  		Source.Top := 0;
-  	end;
-  end;    { while }
+      Inc(H2, FontHeight);
+      Inc(Popr, FontHeight);
+      Dest.Top      := 0;
+      Dest.Bottom   := FFontImage.Picture.Height-1 - FontHeight;
+      Source.Top := FontHeight;
+      Source.Bottom := FFontImage.Picture.Height-1;
+      FFontImage.Canvas.CopyRect(Dest, FFontImage.Canvas, Source);
+      Source.Top := 0;
+    end;
+  end;
 end;
 
 procedure TJvaScrollText.Loaded;
 begin
   inherited Loaded;
-  imageScroll.BoundsRect := BoundsRect;
-  imageScroll.Picture.Assign(imageFon.Picture);
-end;    { Loaded }
+  FScrollImage.BoundsRect := BoundsRect;
+  FScrollImage.Picture.Assign(FForeImage.Picture);
+end;
 
 procedure TJvaScrollText.Stop;
 begin
   FStop := True;
-end;    { Stop }
+end;
 
 end.

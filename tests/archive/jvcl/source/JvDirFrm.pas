@@ -25,14 +25,18 @@ Known Issues:
 
 {$I JVCL.INC}
 
-
 unit JvDirFrm;
 
 interface
 
-uses {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF} Messages,
-  SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, JvxCtrls,
-  JvPlacemnt;
+uses
+  {$IFDEF WIN32}
+  Windows,
+  {$ELSE}
+  WinTypes, WinProcs,
+  {$ENDIF}
+  Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls,
+  JvxCtrls, JvPlacemnt;
 
 type
   TJvDirectoryListDialog = class(TForm)
@@ -48,23 +52,20 @@ type
     procedure RemoveBtnClick(Sender: TObject);
     procedure DirectoryListClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    procedure DirectoryListDragDrop(Sender, Source: TObject; X,
-      Y: Integer);
+    procedure DirectoryListDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure DirectoryListDragOver(Sender, Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean);
     procedure FormCreate(Sender: TObject);
   private
-    { Private declarations }
     procedure CheckButtons;
-  public
-    { Public declarations }
   end;
 
 function EditFolderList(Folders: TStrings): Boolean;
 
 implementation
 
-uses JvFileUtil, JvBoxProcs, JvConst;
+uses
+  JvFileUtil, JvBoxProcs, JvConst;
 
 {$R *.DFM}
 
@@ -82,8 +83,6 @@ begin
   end;
 end;
 
-{ TJvDirectoryListDialog }
-
 procedure TJvDirectoryListDialog.CheckButtons;
 begin
   ModifyBtn.Enabled := (DirectoryList.Items.Count > 0) and
@@ -97,7 +96,8 @@ var
   S: string;
 begin
   S := '';
-  if BrowseDirectory(S, '', 0) then begin
+  if BrowseDirectory(S, '', 0) then
+  begin
     I := DirectoryList.Items.Add(S);
     DirectoryList.ItemIndex := I;
     CheckButtons;
@@ -110,11 +110,11 @@ var
   S: string;
 begin
   I := DirectoryList.ItemIndex;
-  if I >= 0 then begin
+  if I >= 0 then
+  begin
     S := DirectoryList.Items[I];
-    if BrowseDirectory(S, '', 0) then begin
+    if BrowseDirectory(S, '', 0) then
       DirectoryList.Items[I] := S;
-    end;
   end;
 end;
 
@@ -123,7 +123,8 @@ var
   I: Integer;
 begin
   I := DirectoryList.ItemIndex;
-  if I >= 0 then begin
+  if I >= 0 then
+  begin
     DirectoryList.Items.Delete(I);
     CheckButtons;
   end;
@@ -139,15 +140,15 @@ begin
   CheckButtons;
 end;
 
-procedure TJvDirectoryListDialog.DirectoryListDragDrop(Sender,
-  Source: TObject; X, Y: Integer);
+procedure TJvDirectoryListDialog.DirectoryListDragDrop(Sender,Source: TObject;
+  X, Y: Integer);
 begin
   BoxMoveFocusedItem(DirectoryList, DirectoryList.ItemAtPos(Point(X, Y), True));
   CheckButtons;
 end;
 
-procedure TJvDirectoryListDialog.DirectoryListDragOver(Sender,
-  Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
+procedure TJvDirectoryListDialog.DirectoryListDragOver(Sender, Source: TObject;
+  X, Y: Integer; State: TDragState; var Accept: Boolean);
 begin
   BoxDragOver(DirectoryList, Source, X, Y, State, Accept, DirectoryList.Sorted);
   CheckButtons;
@@ -155,14 +156,16 @@ end;
 
 procedure TJvDirectoryListDialog.FormCreate(Sender: TObject);
 begin
-{$IFDEF WIN32}
-  with Storage do begin
+  {$IFDEF WIN32}
+  with Storage do
+  begin
     UseRegistry := True;
     IniFileName := SDelphiKey;
   end;
-{$ELSE}
-  if not NewStyleControls then Font.Style := [fsBold];
-{$ENDIF}
+  {$ELSE}
+  if not NewStyleControls then
+    Font.Style := [fsBold];
+  {$ENDIF}
 end;
 
 end.

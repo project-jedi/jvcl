@@ -28,12 +28,11 @@ Known Issues:
 
 unit JvAutoSizeCompo;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
+  JvComponent;
 
 type
   TJvAutoSizeCompo = class(TJvComponent)
@@ -44,13 +43,12 @@ type
     FOldWidth: Integer;
     FOldHeight: Integer;
     procedure Resize(Sender: TObject);
-  protected
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
     // (p3) default here should be false!!!
-    property Active: Boolean read FActive write FActive; // default true;
+    property Active: Boolean read FActive write FActive default False;
   end;
 
 implementation
@@ -59,9 +57,9 @@ implementation
 
 constructor TJvAutoSizeCompo.Create(AOwner: TComponent);
 begin
-  inherited;
-  // (p3) dangerous: can create problems without user being aware
-//  FActive := True;
+  inherited Create(AOwner);
+  // (p3) dangerous: True can create problems without user being aware
+  FActive := False;
   FForm := GetParentForm(TControl(AOwner)) as TForm;
   if FForm <> nil then
   begin
@@ -78,8 +76,9 @@ begin
   if FForm <> nil then
     FForm.OnResize := nil;
   FForm := nil;
-  inherited;
+  inherited Destroy;
 end;
+
 {**************************************************}
 
 procedure TJvAutoSizeCompo.Resize(Sender: TObject);
@@ -97,7 +96,7 @@ begin
     begin
       WidthRatio := FForm.Width / FOldWidth;
       HeightRatio := FForm.Height / FOldHeight;
-      for CompIndex := 0 to (FForm.ComponentCount - 1) do
+      for CompIndex := 0 to FForm.ComponentCount - 1 do
       begin
         if FForm.Components[CompIndex] is TControl then
         begin

@@ -22,12 +22,6 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Known Issues:
-
-  * Only dropdown shadow for windows xp systems.
-  * Only custom animation for windows xp systems, because of use of window region.
-  * Setting ParentWindow causes flickering.
-  * Close button doesn't look the same as the windows shell balloon.
-
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
@@ -37,7 +31,8 @@ unit JvBalloonHint;
 interface
 
 uses
-  Windows, Controls, Classes, Graphics, Messages, Forms, ImgList, JvComponent;
+  Windows, Controls, Classes, Graphics, Messages, Forms, ImgList,
+  JvComponent;
 
 type
   TJvStemSize = (ssSmall, ssNormal, ssLarge);
@@ -100,16 +95,16 @@ type
     function GetStemPointPosition: TPoint;
     function GetStemPointPositionInRect(const ARect: TRect): TPoint;
   protected
-    procedure CMTextChanged(var Message: TMessage); message CM_TEXTCHANGED;
-    procedure CMShowingChanged(var Message: TMessage); message CM_SHOWINGCHANGED;
-    procedure WMEraseBkgnd(var Message: TWmEraseBkgnd); message WM_ERASEBKGND;
-{$IFNDEF COMPILER6_UP}
-    procedure WMNCPaint(var Message: TMessage); message WM_NCPAINT;
-{$ENDIF}
+    procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
+    procedure CMShowingChanged(var Msg: TMessage); message CM_SHOWINGCHANGED;
+    procedure WMEraseBkgnd(var Msg: TWmEraseBkgnd); message WM_ERASEBKGND;
+    {$IFNDEF COMPILER6_UP}
+    procedure WMNCPaint(var Msg: TMessage); message WM_NCPAINT;
+    {$ENDIF}
     procedure CreateParams(var Params: TCreateParams); override;
-{$IFDEF COMPILER6_UP}
+    {$IFDEF COMPILER6_UP}
     procedure NCPaint(DC: HDC); override;
-{$ENDIF}
+    {$ENDIF}
     procedure Paint; override;
 
     function CreateRegion: HRGN;
@@ -141,11 +136,11 @@ type
     FShowCloseBtn: Boolean;
     FIsAnchored: Boolean;
   protected
-    procedure WMNCHitTest(var Message: TWMNCHitTest); message WM_NCHITTEST;
-    procedure WMMouseMove(var Message: TWMMouseMove); message WM_MOUSEMOVE;
-    procedure WMLButtonDown(var Message: TWMLButtonDown); message WM_LBUTTONDOWN;
-    procedure WMLButtonUp(var Message: TWMLButtonUp); message WM_LBUTTONUP;
-    procedure WMActivateApp(var Message: TWMActivateApp); message WM_ACTIVATEAPP;
+    procedure WMNCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
+    procedure WMMouseMove(var Msg: TWMMouseMove); message WM_MOUSEMOVE;
+    procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
+    procedure WMLButtonUp(var Msg: TWMLButtonUp); message WM_LBUTTONUP;
+    procedure WMActivateApp(var Msg: TWMActivateApp); message WM_ACTIVATEAPP;
 
     procedure Paint; override;
 
@@ -177,9 +172,9 @@ type
     procedure SetImages(const Value: TCustomImageList);
     procedure SetApplicationHintOptions(const Value: TJvApplicationHintOptions);
   protected
-    function HookProc(var Message: TMessage): Boolean;
+    function HookProc(var Msg: TMessage): Boolean;
     procedure Hook;
-    procedure UnHook;
+    procedure Unhook;
 
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 
@@ -192,8 +187,8 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    procedure ActivateHint(ACtrl: TControl; const AHint: string; const AHeader: string = ''; const
-      VisibleTime: Integer = 5000); overload;
+    procedure ActivateHint(ACtrl: TControl; const AHint: string; const AHeader: string = '';
+      const VisibleTime: Integer = 5000); overload;
     procedure ActivateHint(ACtrl: TControl; const AHint: string; const AImageIndex: TImageIndex;
       const AHeader: string = ''; const VisibleTime: Integer = 5000); overload;
     procedure ActivateHint(ACtrl: TControl; const AHint: string; const AIconKind: TJvIconKind;
@@ -222,25 +217,23 @@ type
 implementation
 
 uses
-  SysUtils, CommCtrl, Registry, JvMaxMin, JvWndProcHook, JvFunctions,
-  ComCtrls, // needed for GetComCtlVersion
-  MMSystem; // needed for sndPlaySound
+  SysUtils, CommCtrl, Registry, MMSystem, // needed for sndPlaySound
+  JvMaxMin, JvWndProcHook, JvFunctions;
 
 const
   { TJvStemSize = (ssSmall, ssNormal, ssLarge);
     ssLarge isn't used (yet)
   }
-  CTipHeight: array[TJvStemSize] of Integer = (8, 16, 24);
-  CTipWidth: array[TJvStemSize] of Integer = (8, 16, 24);
-  CTipDelta: array[TJvStemSize] of Integer = (16, 15, 17);
+  CTipHeight: array [TJvStemSize] of Integer = (8, 16, 24);
+  CTipWidth: array [TJvStemSize] of Integer = (8, 16, 24);
+  CTipDelta: array [TJvStemSize] of Integer = (16, 15, 17);
 
 type
   TGlobalCtrl = class(TComponent)
   private
     FMainCtrl: TJvBalloonHint;
     FDefaultImages: TImageList;
-    FSounds: array[TJvIconKind] of string;
-    FNeedUpdateBkColor: Boolean;
+    FSounds: array [TJvIconKind] of string;
     FBkColor: TColor;
     function GetMainCtrl: TJvBalloonHint;
     procedure GetDefaultSounds;
@@ -248,8 +241,7 @@ type
     procedure SetMainCtrl(ACtrl: TJvBalloonHint);
     procedure SetBkColor(const Value: TColor);
   protected
-    procedure Notification(AComponent: TComponent;
-      Operation: TOperation); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -284,38 +276,44 @@ begin
 end;
 
 {$IFNDEF COMPILER6_UP}
+
 resourcestring
   SParentRequired = 'Control ''%s'' has no parent window';
   SParentGivenNotAParent = 'Parent given is not a parent of ''%s''';
 
 const
   SPI_GETTOOLTIPANIMATION = $1016;
-{$EXTERNALSYM SPI_GETTOOLTIPANIMATION}
+  {$EXTERNALSYM SPI_GETTOOLTIPANIMATION}
   SPI_GETTOOLTIPFADE = $1018;
-{$EXTERNALSYM SPI_GETTOOLTIPFADE}
+  {$EXTERNALSYM SPI_GETTOOLTIPFADE}
 
 type
   TAnimateWindowProc = function(HWND: HWND; dwTime: DWORD; dwFlags: DWORD): BOOL; stdcall;
+
 var
   AnimateWindowProc: TAnimateWindowProc = nil;
+
 {$ENDIF}
 
-function IsWinXP_UP: Boolean;
+function IsWinXP: Boolean;
 begin
   Result := (Win32Platform = VER_PLATFORM_WIN32_NT) and
     ((Win32MajorVersion > 5) or
     (Win32MajorVersion = 5) and (Win32MinorVersion >= 1));
 end;
 
+{$IFDEF COMPILER6_UP}
+
 function InternalClientToParent(AControl: TControl; const Point: TPoint;
   AParent: TWinControl): TPoint;
-
-{$IFDEF COMPILER6_UP}
 begin
   Result := AControl.ClientToParent(Point, AParent);
 end;
+
 {$ELSE}
 
+function InternalClientToParent(AControl: TControl; const Point: TPoint;
+  AParent: TWinControl): TPoint;
 var
   LParent: TWinControl;
 begin
@@ -342,9 +340,8 @@ begin
   if LParent = nil then
     raise EInvalidOperation.CreateFmt(SParentGivenNotAParent, [AControl.Name]);
 end;
-{$ENDIF}
 
-{ TJvBalloonWindow }
+{$ENDIF}
 
 procedure TJvBalloonWindow.ActivateHint(Rect: TRect; const AHint: string);
 begin
@@ -371,6 +368,7 @@ var
   ScreenRect: TRect;
   LStemPointPosition: TPoint;
 begin
+
   { bpAuto returns the same value as bpLeftDown; bpLeftDown is choosen
     arbitrary }
   FCurrentPosition := bpLeftDown;
@@ -455,7 +453,8 @@ begin
         Result.Bottom := Max(Result.Bottom, cy + 11);
       end;
   end
-  else if FShowIcon then
+  else
+  if FShowIcon then
     with FImageSize do
       Result := Rect(0, 0, cx + 11, cy + 11)
   else
@@ -503,8 +502,10 @@ begin
   { bpAuto returns the same value as bpLeftDown; bpLeftDown is choosen
     arbitrary }
   case FCurrentPosition of
-    bpAuto, bpLeftDown, bpRightDown: FDeltaY := FTipHeight;
-    bpLeftUp, bpRightUp: FDeltaY := 0;
+    bpAuto, bpLeftDown, bpRightDown:
+      FDeltaY := FTipHeight;
+    bpLeftUp, bpRightUp:
+      FDeltaY := 0;
   end;
 end;
 
@@ -530,10 +531,14 @@ begin
     case FCurrentPosition of
       { bpAuto returns the same value as bpLeftDown; bpLeftDown is choosen
         arbitrary }
-      bpAuto, bpLeftDown: Result := Point(Left - Right + FTipDelta, 0);
-      bpRightDown: Result := Point(-FTipDelta, 0);
-      bpLeftUp: Result := Point(Left - Right + FTipDelta, Top - Bottom - FSwitchHeight);
-      bpRightUp: Result := Point(-FTipDelta, Top - Bottom - FSwitchHeight);
+      bpAuto, bpLeftDown:
+        Result := Point(Left - Right + FTipDelta, 0);
+      bpRightDown:
+        Result := Point(-FTipDelta, 0);
+      bpLeftUp:
+        Result := Point(Left - Right + FTipDelta, Top - Bottom - FSwitchHeight);
+      bpRightUp:
+        Result := Point(-FTipDelta, Top - Bottom - FSwitchHeight);
     end;
 end;
 
@@ -552,28 +557,32 @@ begin
   begin
     if NewPosition = bpLeftDown then
       NewPosition := bpLeftUp
-    else if NewPosition = bpRightDown then
+    else
+    if NewPosition = bpRightDown then
       NewPosition := bpRightUp;
   end;
   if ARect.Right > ScreenRect.Right - ScreenRect.Left then
   begin
     if NewPosition = bpRightDown then
       NewPosition := bpLeftDown
-    else if NewPosition = bpRightUp then
+    else
+    if NewPosition = bpRightUp then
       NewPosition := bpLeftUp;
   end;
   if ARect.Left < ScreenRect.Left then
   begin
     if NewPosition = bpLeftDown then
       NewPosition := bpRightDown
-    else if NewPosition = bpLeftUp then
+    else
+    if NewPosition = bpLeftUp then
       NewPosition := bpRightUp;
   end;
   if ARect.Top < ScreenRect.Top then
   begin
     if NewPosition = bpLeftUp then
       NewPosition := bpLeftDown
-    else if NewPosition = bpRightUp then
+    else
+    if NewPosition = bpRightUp then
       NewPosition := bpRightDown;
   end;
 
@@ -595,16 +604,14 @@ begin
   end;
 end;
 
-procedure TJvBalloonWindow.CMShowingChanged(var Message: TMessage);
+procedure TJvBalloonWindow.CMShowingChanged(var Msg: TMessage);
 begin
-  { In response of RecreateWnd, SetParentWindow calls, only respond when visible }
-  if Showing then
-    UpdateRegion;
-
   inherited;
+  { In response of RecreateWnd, SetParentWindow calls }
+  UpdateRegion;
 end;
 
-procedure TJvBalloonWindow.CMTextChanged(var Message: TMessage);
+procedure TJvBalloonWindow.CMTextChanged(var Msg: TMessage);
 begin
   {inherited;}
 end;
@@ -618,7 +625,7 @@ begin
   { Drop shadow in combination with custom animation may cause blurry effect,
     no solution.
   }
-  if IsWinXP_UP then
+  if IsWinXP then
     Params.WindowClass.Style := Params.WindowClass.Style or CS_DROPSHADOW;
 end;
 
@@ -626,7 +633,7 @@ function TJvBalloonWindow.CreateRegion: HRGN;
 var
   Rect: TRect;
   RegionRound, RegionTip: HRGN;
-  ptTail: array[0..2] of TPoint;
+  ptTail: array [0..2] of TPoint;
 begin
   SetRect(Rect, 0, 0, Width, Height);
 
@@ -711,10 +718,14 @@ begin
     arbitrary }
   with ARect do
     case FCurrentPosition of
-      bpAuto, bpLeftDown: Result := Point(Right - FTipDelta, Top);
-      bpRightDown: Result := Point(Left + FTipDelta, Top);
-      bpLeftUp: Result := Point(Right - FTipDelta, Bottom);
-      bpRightUp: Result := Point(Left + FTipDelta, Bottom);
+      bpAuto, bpLeftDown:
+        Result := Point(Right - FTipDelta, Top);
+      bpRightDown:
+        Result := Point(Left + FTipDelta, Top);
+      bpLeftUp:
+        Result := Point(Right - FTipDelta, Bottom);
+      bpRightUp:
+        Result := Point(Left + FTipDelta, Bottom);
     end;
 end;
 
@@ -735,7 +746,6 @@ begin
 end;
 
 {$IFDEF COMPILER6_UP}
-
 procedure TJvBalloonWindow.NCPaint(DC: HDC);
 begin
   { Do nothing, thus prevent TJvHintWindow from drawing }
@@ -789,7 +799,7 @@ begin
     system deletes the region handle when it no longer needed. }
 end;
 
-procedure TJvBalloonWindow.WMEraseBkgnd(var Message: TWmEraseBkgnd);
+procedure TJvBalloonWindow.WMEraseBkgnd(var Msg: TWmEraseBkgnd);
 var
   Brush, BrushBlack: HBRUSH;
   Region: HRGN;
@@ -799,19 +809,18 @@ begin
   try
     Region := CreateRegion;
     OffsetRgn(Region, -1, -1);
-    FillRgn(Message.DC, Region, Brush);
-    FrameRgn(Message.DC, Region, BrushBlack, 1, 1);
+    FillRgn(Msg.DC, Region, Brush);
+    FrameRgn(Msg.DC, Region, BrushBlack, 1, 1);
     DeleteObject(Region);
   finally
     DeleteObject(Brush);
     DeleteObject(BrushBlack);
   end;
-  Message.Result := 1;
+  Msg.Result := 1;
 end;
 
 {$IFNDEF COMPILER6_UP}
-
-procedure TJvBalloonWindow.WMNCPaint(var Message: TMessage);
+procedure TJvBalloonWindow.WMNCPaint(var Msg: TMessage);
 begin
   { Do nothing, thus prevent TJvHintWindow from drawing }
 end;
@@ -935,7 +944,7 @@ destructor TJvBalloonHint.Destroy;
 begin
   CancelHint;
   StopHintTimer;
-  { This will implicitly reset the global HintWindowClass var.: }
+  { This will implicity reset the global HintWindowClass var.: }
   ApplicationHintOptions := [];
   inherited;
 end;
@@ -946,10 +955,10 @@ begin
     RegisterWndProcHook(FData.RAnchorWindow, HookProc, hoBeforeMsg);
 end;
 
-function TJvBalloonHint.HookProc(var Message: TMessage): Boolean;
+function TJvBalloonHint.HookProc(var Msg: TMessage): Boolean;
 begin
   Result := False;
-  case Message.Msg of
+  case Msg.Msg of
     WM_MOVE:
       with FData do
         FHint.MoveWindow(RAnchorWindow.ClientToScreen(RAnchorPosition));
@@ -1002,9 +1011,10 @@ begin
       RImageIndex := DefaultImageIndex;
     RShowCloseBtn := boShowCloseBtn in Options;
 
-    if not IsWinXP_UP then
+    if not IsWinXP then
       RAnimationStyle := atNone
-    else if boCustomAnimation in Options then
+    else
+    if boCustomAnimation in Options then
     begin
       RAnimationStyle := FCustomAnimationStyle;
       RAnimationTime := FCustomAnimationTime;
@@ -1099,7 +1109,8 @@ begin
     if not IsMainCtrl then
       { Flag can't be on if the control isn't the 'main' control }
       Exclude(FApplicationHintOptions, ahUseBalloonAsHint)
-    else if ahUseBalloonAsHint in FApplicationHintOptions then
+    else
+    if ahUseBalloonAsHint in FApplicationHintOptions then
     begin
       { If flag is turned on then.. }
       FOldHintWindowClass := HintWindowClass;
@@ -1136,7 +1147,7 @@ begin
   end;
 end;
 
-procedure TJvBalloonHint.UnHook;
+procedure TJvBalloonHint.Unhook;
 begin
   if Assigned(FData.RAnchorWindow) then
     UnRegisterWndProcHook(FData.RAnchorWindow, HookProc, hoBeforeMsg);
@@ -1146,27 +1157,23 @@ end;
 
 constructor TGlobalCtrl.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
 
-  if IsWinXP_UP then
+  if IsWinXP then
   begin
     FDefaultImages := TImageList.Create(nil);
+    FDefaultImages.BkColor := clNone;
     { According to MSDN flag ILC_COLOR32 needs to be included (?) }
-    FDefaultImages.Handle := ImageList_Create(16, 16, ILC_COLOR32 or ILC_MASK, 4, 4);
+    FDefaultImages.Handle := ImageList_Create(16, 16, ILC_COLORDDB or ILC_COLOR32 or ILC_MASK,
+      4, 4);
   end
   else
     FDefaultImages := TImageList.CreateSize(16, 16);
 
-  { Only need to update the background color in XP when using pre v6.0 ComCtl32.dll
-    image lists }
-  FNeedUpdateBkColor := IsWinXP_UP and (GetComCtlVersion < $00060000);
+  FDefaultImages.BkColor := Application.HintColor;
+  FDefaultImages.Masked := True;
 
-  if FNeedUpdateBkColor then
-    FDefaultImages.BkColor := Application.HintColor
-  else
-    FDefaultImages.BkColor := clNone;
-
-  FBkColor := Application.HintColor;
+  FBkColor := FDefaultImages.BkColor;
 
   GetDefaultImages;
   GetDefaultSounds;
@@ -1175,7 +1182,7 @@ end;
 destructor TGlobalCtrl.Destroy;
 begin
   FDefaultImages.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TGlobalCtrl.DrawHintImage(Canvas: TCanvas; X, Y: Integer; const ABkColor: TColor);
@@ -1211,8 +1218,8 @@ end;
 procedure TGlobalCtrl.GetDefaultImages;
 const
   { ikApplication, ikError, ikInformation, ikQuestion, ikWarning }
-  CIcons: array[ikApplication..ikWarning] of Integer =
-  (OIC_SAMPLE, OIC_HAND, OIC_NOTE, OIC_QUES, OIC_BANG);
+  CIcons: array [ikApplication..ikWarning] of Integer =
+    (OIC_SAMPLE, OIC_HAND, OIC_NOTE, OIC_QUES, OIC_BANG);
 var
   IconKind: TJvIconKind;
 begin
@@ -1323,16 +1330,19 @@ end;
 
 procedure TGlobalCtrl.SetBkColor(const Value: TColor);
 begin
-  if FNeedUpdateBkColor and (FBkColor <> Value) then
+  if FBkColor <> Value then
   begin
-    { Icons in windows XP use an alpha channel to 'blend' with the background.
-      If the background color changes, then the images must be redrawn,
-      when using pre v6.0 ComCtl32.dll image lists
-    }
     FBkColor := Value;
-    FDefaultImages.Clear;
-    FDefaultImages.BkColor := FBkColor;
-    GetDefaultImages;
+    { Icons in windows XP use an alpha channel to 'blend' with the background.
+      If the background color changes, then the images must be redrawn - that is
+      I don't know an other solution :)
+    }
+    if IsWinXP then
+    begin
+      FDefaultImages.Clear;
+      FDefaultImages.BkColor := FBkColor;
+      GetDefaultImages;
+    end;
   end;
 end;
 
@@ -1409,7 +1419,7 @@ procedure TJvBalloonWindowEx.InternalActivateHint(var Rect: TRect;
 const
   {TJvAnimationStyle = (atNone, atSlide, atRoll, atRollHorNeg, atRollHorPos, atRollVerNeg,
     atRollVerPos, atSlideHorNeg, atSlideHorPos, atSlideVerNeg, atSlideVerPos, atCenter, atBlend);}
-  CAnimationStyle: array[TJvAnimationStyle] of Integer = (0, AW_SLIDE, 0, AW_HOR_NEGATIVE,
+  CAnimationStyle: array [TJvAnimationStyle] of Integer = (0, AW_SLIDE, 0, AW_HOR_NEGATIVE,
     AW_HOR_POSITIVE, AW_VER_NEGATIVE, AW_VER_POSITIVE, AW_HOR_NEGATIVE or AW_SLIDE,
     AW_HOR_POSITIVE or AW_SLIDE, AW_VER_NEGATIVE or AW_SLIDE, AW_VER_POSITIVE or AW_SLIDE,
     AW_CENTER, AW_BLEND);
@@ -1435,7 +1445,7 @@ begin
     Rect.Bottom := Screen.DesktopTop;
   SetWindowPos(Handle, HWND_TOPMOST, Rect.Left, Rect.Top, Width, Height,
     SWP_NOACTIVATE);
-  if (FAnimationStyle <> atNone) and IsWinXP_UP and Assigned(AnimateWindowProc) then
+  if (FAnimationStyle <> atNone) and IsWinXP and Assigned(AnimateWindowProc) then
   begin
     if FAnimationStyle in [atSlide, atRoll] then
       case FCurrentPosition of
@@ -1450,16 +1460,6 @@ begin
       because of use of the window region: }
     AnimateWindowProc(Handle, FAnimationTime, CAnimationStyle[FAnimationStyle] or AutoValue);
   end;
-  { This will prevent focusing/unfocusing of the application button on the
-    taskbar when clicking on the balloon window, but will cause flickering
-    when for the first time called because the window will be recreated.
-    Maybe move to TJvBalloonHint.Create although it will implicitly show
-    the window (but with no effect (?) because the size of the window is
-    then 0): }
-  if FIsAnchored then
-    ParentWindow := Application.Handle
-  else
-    ParentWindow := 0;
   ShowWindow(Handle, SW_SHOWNOACTIVATE);
   //Invalidate;
 end;
@@ -1509,19 +1509,19 @@ begin
   end;
 end;
 
-procedure TJvBalloonWindowEx.WMActivateApp(var Message: TWMActivateApp);
+procedure TJvBalloonWindowEx.WMActivateApp(var Msg: TWMActivateApp);
 begin
   inherited;
-  if FIsAnchored and (Message.Active = False) then
+  if FIsAnchored and (Msg.Active = False) then
     FCtrl.CancelHint;
 end;
 
-procedure TJvBalloonWindowEx.WMLButtonDown(var Message: TWMLButtonDown);
+procedure TJvBalloonWindowEx.WMLButtonDown(var Msg: TWMLButtonDown);
 begin
   inherited;
   if FShowCloseBtn then
   begin
-    if PtInRect(FCloseBtnRect, SmallPointToPoint(Message.Pos)) then
+    if PtInRect(FCloseBtnRect, SmallPointToPoint(Msg.Pos)) then
     begin
       SetCapture(Handle);
       ChangeCloseState(FCloseState or DFCS_PUSHED);
@@ -1529,7 +1529,7 @@ begin
   end;
 end;
 
-procedure TJvBalloonWindowEx.WMLButtonUp(var Message: TWMLButtonUp);
+procedure TJvBalloonWindowEx.WMLButtonUp(var Msg: TWMLButtonUp);
 begin
   inherited;
   if FShowCloseBtn then
@@ -1538,13 +1538,13 @@ begin
     begin
       ReleaseCapture;
       ChangeCloseState(FCloseState and not DFCS_PUSHED);
-      if PtInRect(FCloseBtnRect, SmallPointToPoint(Message.Pos)) then
+      if PtInRect(FCloseBtnRect, SmallPointToPoint(Msg.Pos)) then
         FCtrl.CancelHint;
     end;
   end;
 end;
 
-procedure TJvBalloonWindowEx.WMMouseMove(var Message: TWMMouseMove);
+procedure TJvBalloonWindowEx.WMMouseMove(var Msg: TWMMouseMove);
 var
   State: Cardinal;
 begin
@@ -1553,7 +1553,7 @@ begin
   begin
     State := DFCS_FLAT;
 
-    if PtInRect(FCloseBtnRect, SmallPointToPoint(Message.Pos)) then
+    if PtInRect(FCloseBtnRect, SmallPointToPoint(Msg.Pos)) then
     begin
       { Note: DFCS_HOT is not supported in windows 95 systems }
       State := State or DFCS_HOT;
@@ -1564,10 +1564,10 @@ begin
   end;
 end;
 
-procedure TJvBalloonWindowEx.WMNCHitTest(var Message: TWMNCHitTest);
+procedure TJvBalloonWindowEx.WMNCHitTest(var Msg: TWMNCHitTest);
 begin
   if FShowCloseBtn then
-    Message.Result := HTCLIENT
+    Msg.Result := HTCLIENT
   else
     inherited;
 end;
@@ -1582,9 +1582,9 @@ begin
 end;
 
 initialization
-{$IFNDEF COMPILER6_UP}
+  {$IFNDEF COMPILER6_UP}
   InitD5Controls;
-{$ENDIF}
+  {$ENDIF}
 finalization
   FreeAndNil(GGlobalCtrl);
 end.

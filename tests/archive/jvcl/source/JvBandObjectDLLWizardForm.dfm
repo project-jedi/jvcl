@@ -15,6 +15,9 @@ object zWizardForm: TzWizardForm
   OldCreateOrder = False
   Position = poScreenCenter
   Scaled = False
+  DesignSize = (
+    321
+    289)
   PixelsPerInch = 96
   TextHeight = 16
   object Bevel1: TBevel
@@ -77,7 +80,7 @@ object zWizardForm: TzWizardForm
     Caption = ' Band &Type '
     ItemIndex = 0
     Items.Strings = (
-      'IE Info Band (Verticle)'
+      'IE Info Band (Vertical)'
       'IE Comm Band (Horizontal)'
       'IE Tool Band'
       'Desk Band')

@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: jvBandUtils.PAS, released on 2001-07-10.
+The Original Code is: JvBandUtils.PAS, released on 2001-07-10.
 
 The Initial Developer of the Original Code is Chiang Seng Chang <cs@ctzen.com>
 Portions created by Chiang Seng Chang are Copyright (C) 2001 Chiang Seng Chang.
@@ -26,11 +26,11 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit jvBandUtils;
+unit JvBandUtils;
 
 interface
 
-function iif(const Test: Boolean; const True, False: Variant): Variant;
+function iif(const Test: Boolean; const ATrue, AFalse: Variant): Variant;
 function BooleanAsString(const Test: Boolean): string;
 
 implementation
@@ -53,12 +53,12 @@ else
 </code>
 }
 
-function iif(const Test: Boolean; const True, False: Variant): Variant;
+function iif(const Test: Boolean; const ATrue, AFalse: Variant): Variant;
 begin
   if Test then
-    Result := True
+    Result := ATrue
   else
-    Result := False;
+    Result := AFalse;
 end;
 
 {:Transforms Boolean to String.

@@ -29,9 +29,15 @@ unit JvFDualLst;
 
 interface
 
-uses SysUtils, {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
-  Messages, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, JvxCtrls,
-  ExtCtrls, Buttons;
+uses
+  {$IFDEF WIN32}
+  Windows,
+  {$ELSE}
+  WinTypes, WinProcs,
+  {$ENDIF}
+  SysUtils, Messages, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls,
+  ExtCtrls, Buttons,
+  JvxCtrls;
 
 type
   TJvDualListForm = class(TForm)
@@ -73,13 +79,14 @@ type
   public
     { Public declarations }
     procedure SetButtons;
-    property ShowHelp: Boolean read GetShowHelp write SetShowHelp
-      default True;
+    property ShowHelp: Boolean read GetShowHelp write SetShowHelp default True;
 end;
 
 implementation
 
-uses Consts, JvVCLUtils, JvBoxProcs;
+uses
+  Consts,
+  JvVCLUtils, JvBoxProcs;
 
 {$R *.DFM}
 
@@ -113,16 +120,19 @@ const
   x_GrpBtn = 15;
   x_BtnBtn = 8;
 begin
-  with HelpBtn do begin
+  with HelpBtn do
+  begin
     Enabled := Value;
     Visible := Value;
   end;
-  if Value then begin
+  if Value then
+  begin
     HelpBtn.Left := Width - HelpBtn.Width - x_FrmBtn;
     CancelBtn.Left := HelpBtn.Left - CancelBtn.Width - x_GrpBtn;
     OkBtn.Left := CancelBtn.Left - OkBtn.Width - x_BtnBtn;;
   end
-  else begin
+  else
+  begin
     CancelBtn.Left := Width - CancelBtn.Width - x_FrmBtn;
     OkBtn.Left := CancelBtn.Left - OkBtn.Width - x_BtnBtn;;
   end;
@@ -175,19 +185,21 @@ end;
 procedure TJvDualListForm.SrcListDragDrop(Sender, Source: TObject; X,
   Y: Integer);
 begin
-  if Source = DstList then ExclBtnClick(SrcList)
-  else if Source = SrcList then begin
+  if Source = DstList then
+    ExclBtnClick(SrcList)
+  else
+  if Source = SrcList then
     BoxMoveFocusedItem(SrcList, SrcList.ItemAtPos(Point(X, Y), True));
-  end;
 end;
 
 procedure TJvDualListForm.DstListDragDrop(Sender, Source: TObject; X,
   Y: Integer);
 begin
-  if Source = SrcList then IncBtnClick(DstList)
-  else if Source = DstList then begin
+  if Source = SrcList then
+    IncBtnClick(DstList)
+  else
+  if Source = DstList then
     BoxMoveFocusedItem(DstList, DstList.ItemAtPos(Point(X, Y), True));
-  end;
 end;
 
 procedure TJvDualListForm.SrcListKeyDown(Sender: TObject; var Key: Word;
@@ -195,10 +207,14 @@ procedure TJvDualListForm.SrcListKeyDown(Sender: TObject; var Key: Word;
 var
   Incr: Integer;
 begin
-  if not SrcList.Sorted then begin
-    if (ssCtrl in Shift) and ((Key = VK_DOWN) or (Key = VK_UP)) then begin
-      if Key = VK_DOWN then Incr := 1
-      else Incr := -1;
+  if not SrcList.Sorted then
+  begin
+    if (ssCtrl in Shift) and ((Key = VK_DOWN) or (Key = VK_UP)) then
+    begin
+      if Key = VK_DOWN then
+        Incr := 1
+      else
+        Incr := -1;
       BoxMoveFocusedItem(SrcList, SrcList.ItemIndex + Incr);
       Key := 0;
     end;
@@ -210,10 +226,14 @@ procedure TJvDualListForm.DstListKeyDown(Sender: TObject; var Key: Word;
 var
   Incr: Integer;
 begin
-  if not DstList.Sorted then begin
-    if (ssCtrl in Shift) and ((Key = VK_DOWN) or (Key = VK_UP)) then begin
-      if Key = VK_DOWN then Incr := 1
-      else Incr := -1;
+  if not DstList.Sorted then
+  begin
+    if (ssCtrl in Shift) and ((Key = VK_DOWN) or (Key = VK_UP)) then
+    begin
+      if Key = VK_DOWN then
+        Incr := 1
+      else
+        Incr := -1;
       BoxMoveFocusedItem(DstList, DstList.ItemIndex + Incr);
       Key := 0;
     end;
@@ -230,7 +250,8 @@ begin
   OkBtn.Caption := ResStr(SOKButton);
   CancelBtn.Caption := ResStr(SCancelButton);
   HelpBtn.Caption := ResStr(SHelpButton);
-  if NewStyleControls then Font.Style := [];
+  if NewStyleControls then
+    Font.Style := [];
 end;
 
 procedure TJvDualListForm.ListClick(Sender: TObject);

@@ -1,4 +1,4 @@
-{:jvBandObject wizard form.       }
+{:JvBandObject wizard form.       }
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
@@ -9,7 +9,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: jvBandObjectDLLWizardForm.PAS, released on 2001-07-10.
+The Original Code is: JvBandObjectDLLWizardForm.PAS, released on 2001-07-10.
 
 The Initial Developer of the Original Code is Chiang Seng Chang <cs@ctzen.com>
 Portions created by Chiang Seng Chang are Copyright (C) 2001 Chiang Seng Chang.
@@ -27,7 +27,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit jvBandObjectDLLWizardForm;
+unit JvBandObjectDLLWizardForm;
 
 interface
 
@@ -62,7 +62,7 @@ begin
     if not IsValidIdent(Text) then
     begin
       SetFocus;
-      raise Exception.Create('Band name has to be a valid identifier  !');
+      raise Exception.Create('Band name has to be a valid identifier!');
     end;
   end;
   with EditBandDesc do
@@ -71,7 +71,7 @@ begin
     if Text = '' then
     begin
       SetFocus;
-      raise Exception.Create('Please enter band description !');
+      raise Exception.Create('Please enter band description!');
     end;
   end;
   ModalResult := mrOK;
@@ -81,7 +81,7 @@ procedure TzWizardForm.Button3Click(Sender: TObject);
 const
   CRLF = #13#10;
   CRLF2 = #13#10#13#10;
-  HELP_TEXT = CRLF +
+  cHelpText = CRLF +
     'Band Name' + CRLF +
     'Enter a band name, e.g. MyBand.' + CRLF +
     'This will be the class name of the band object.' + CRLF +
@@ -113,7 +113,7 @@ begin
       Parent := HelpForm;
       Align := alClient;
       ReadOnly := True;
-      Text := HELP_TEXT;
+      Text := cHelpText;
     end;
     HelpForm.ShowModal;
   finally

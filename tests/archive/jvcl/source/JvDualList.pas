@@ -25,21 +25,22 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvDUALLIST;
+unit JvDualList;
 
 interface
 
-uses Classes, Controls{, JvComponent};
+uses
+  Classes, Controls, JvComponent;
 
 type
 
 { TJvDualListDialog }
 
-  TJvDualListDialog = class(TComponent)
+  TJvDualListDialog = class(TJvComponent)
   private
     FCtl3D: Boolean;
     FSorted: Boolean;
-    FTitle: String;
+    FTitle: string;
     FLabel1Caption: TCaption;
     FLabel2Caption: TCaption;
     FOkBtnCaption: TCaption;
@@ -84,9 +85,9 @@ type
 
 implementation
 
-uses SysUtils, Forms, JvFDualLst, Consts, JvxConst, JvVCLUtils;
-
-{ TJvDualListDialog }
+uses
+  SysUtils, Forms, Consts,
+  JvFDualLst, JvxConst, JvVCLUtils;
 
 constructor TJvDualListDialog.Create(AOwner: TComponent);
 begin
@@ -107,7 +108,6 @@ destructor TJvDualListDialog.Destroy;
 begin
   List1.Free;
   List2.Free;
-  //if (FTitle <> nil) and (FTitle^ <> '') then Dispose(FTitle);
   inherited Destroy;
 end;
 
@@ -162,19 +162,24 @@ var
 begin
   Form := TJvDualListForm.Create(Application);
   try
-    with Form do begin
+    with Form do
+    begin
       Ctl3D := Self.Ctl3D;
-{$IFDEF WIN32}
-      if NewStyleControls then Font.Style := [];
-{$ENDIF}
+      {$IFDEF WIN32}
+      if NewStyleControls then
+        Font.Style := [];
+      {$ENDIF}
       ShowHelp := Self.ShowHelp;
       SrcList.Sorted := Sorted;
       DstList.Sorted := Sorted;
       SrcList.Items := List1;
       DstList.Items := List2;
-      if Self.Title <> '' then Form.Caption := Self.Title;
-      if Label1Caption <> '' then SrcLabel.Caption := Label1Caption;
-      if Label2Caption <> '' then DstLabel.Caption := Label2Caption;
+      if Self.Title <> '' then
+        Form.Caption := Self.Title;
+      if Label1Caption <> '' then
+        SrcLabel.Caption := Label1Caption;
+      if Label2Caption <> '' then
+        DstLabel.Caption := Label2Caption;
       OkBtn.Caption := OkBtnCaption;
       CancelBtn.Caption := CancelBtnCaption;
       HelpBtn.Caption := HelpBtnCaption;
@@ -182,7 +187,8 @@ begin
       HelpBtn.HelpContext := HelpContext;
     end;
     Result := (Form.ShowModal = mrOk);
-    if Result then begin
+    if Result then
+    begin
       List1 := Form.SrcList.Items;
       List2 := Form.DstList.Items;
     end;

@@ -26,7 +26,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit jvBandForms;
+unit JvBandForms;
 
 interface
 
@@ -39,33 +39,34 @@ type
   @enum bmfVariableHeight  Height of the band object can be changed.
   @enum bmfDebossed        Band object displayed with a sunken appearance.
   @enum bmfBkColor         Band object displayed with the background color specified in the band form's Color property.
-  @seeAlso <see type="TjvBandModeFlags">
-  @seeAlso <see class="TjvBandForm" property="BandModeFlags">
+  @seeAlso <see type="TJvBandModeFlags">
+  @seeAlso <see class="TJvBandForm" property="BandModeFlags">
   }
-  TjvBandModeFlag = (bmfVariableHeight, bmfDebossed, bmfBkColor);
+  TJvBandModeFlag = (bmfVariableHeight, bmfDebossed, bmfBkColor);
 
   {:Set of band object mode flags.
-  @seeAlso <see class="TjvBandForm" property="BandModeFlags">
+  @seeAlso <see class="TJvBandForm" property="BandModeFlags">
   }
-  TjvBandModeFlags = set of TjvBandModeFlag;
+  TJvBandModeFlags = set of TJvBandModeFlag;
 
   {:Event type for band form's OnBandGetXXXX events.
-  @seeAlso <see class="TjvBandForm" event="OnBandGetMinSize">
-  @seeAlso <see class="TjvBandForm" event="OnBandGetMaxSize">
-  @seeAlso <see class="TjvBandForm" event="OnBandGetIntegral">
-  @seeAlso <see class="TjvBandForm" event="OnBandGetActualSize">
+  @seeAlso <see class="TJvBandForm" event="OnBandGetMinSize">
+  @seeAlso <see class="TJvBandForm" event="OnBandGetMaxSize">
+  @seeAlso <see class="TJvBandForm" event="OnBandGetIntegral">
+  @seeAlso <see class="TJvBandForm" event="OnBandGetActualSize">
   }
   TzGetPointLEvent = function(Sender: TObject): TPointL of object;
 
   {:Base class for band forms.
   @cat jvBandFormComponents
   }
-  TjvBandForm = class(TForm)
+  TJvBandForm = class(TForm)
   private
     FBandObject: TComObject;
-    FBandModeFlags: TjvBandModeFlags;
+    FBandModeFlags: TJvBandModeFlags;
     FBandContextMenu: TPopupMenu;
-    FBandIntegralX, FBandIntegralY: Word;
+    FBandIntegralX: Word;
+    FBandIntegralY: Word;
     FOnGetMinSize: TzGetPointLEvent;
     FOnGetMaxSize: TzGetPointLEvent;
     FOnGetIntegral: TzGetPointLEvent;
@@ -157,7 +158,7 @@ type
     Used by IDeskBand::GetBandInfo.
     @seeAlso <see class="TzCustomBandObject" method="GetBandInfo">
     }
-    property BandModeFlags: TjvBandModeFlags read FBandModeFlags write FBandModeFlags default [bmfVariableHeight];
+    property BandModeFlags: TJvBandModeFlags read FBandModeFlags write FBandModeFlags default [bmfVariableHeight];
     {:Specifies the band object's X sizing step.
     @seeAlso <see property="BandIntegralY">
     @seeAlso <see property="BandIntegral">
@@ -299,14 +300,11 @@ type
 implementation
 
 uses
-  jvBandUtils, jvBandWindows;
+  JvBandUtils, JvBandWindows;
 
-{ TjvBandForm }
-
-
-constructor TjvBandForm.Create(AOwner: TComponent);
+constructor TJvBandForm.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FBandModeFlags := [bmfVariableHeight];
   FBandIntegralX := 1;
   FBandIntegralY := 1;
@@ -318,13 +316,13 @@ begin
   Visible := False;
 end;
 
-destructor TjvBandForm.Destroy;
+destructor TJvBandForm.Destroy;
 begin
   ControlStyle := ControlStyle + [csNoStdEvents];
   inherited;
 end;
 
-constructor TjvBandForm.CreateBandForm(const ParentWindow: HWnd; const BandObject: TComObject);
+constructor TJvBandForm.CreateBandForm(const ParentWindow: HWnd; const BandObject: TComObject);
 var
   Rect: TRect;
 begin
@@ -335,7 +333,7 @@ begin
   ClientHeight := Rect.Bottom - Rect.Top + 1;
 end;
 
-constructor TjvBandForm.CreateNew(AOwner: TComponent; Dummy: Integer);
+constructor TJvBandForm.CreateNew(AOwner: TComponent; Dummy: Integer);
 begin
   inherited;
   FBandModeFlags := [bmfVariableHeight];
@@ -345,7 +343,7 @@ begin
   Visible := False;
 end;
 
-function TjvBandForm.GetMinSize: TPointL;
+function TJvBandForm.GetMinSize: TPointL;
 begin
   if Assigned(FOnGetMinSize) then
     Result := FOnGetMinSize(Self)
@@ -354,7 +352,7 @@ begin
       Result := PointL(MinWidth, MinHeight);
 end;
 
-function TjvBandForm.GetMaxSize: TPointL;
+function TJvBandForm.GetMaxSize: TPointL;
 begin
   if Assigned(FOnGetMaxSize) then
     Result := FOnGetMaxSize(Self)
@@ -364,7 +362,7 @@ begin
         iif(MaxHeight = 0, -1, MaxHeight));
 end;
 
-function TjvBandForm.GetIntegral: TPointL;
+function TJvBandForm.GetIntegral: TPointL;
 begin
   if Assigned(FOnGetIntegral) then
     Result := FOnGetIntegral(Self)
@@ -372,7 +370,7 @@ begin
     Result := PointL(FBandIntegralX, FBandIntegralY);
 end;
 
-function TjvBandForm.GetActualSize: TPointL;
+function TJvBandForm.GetActualSize: TPointL;
 begin
   if Assigned(FOnGetActualSize) then
     Result := FOnGetActualSize(Self)
@@ -380,7 +378,7 @@ begin
     Result := PointL(ClientWidth, ClientHeight);
 end;
 
-procedure TjvBandForm.SetContextMenu(const Value: TPopupMenu);
+procedure TJvBandForm.SetContextMenu(const Value: TPopupMenu);
 begin
   FBandContextMenu := Value;
   if Value = nil then
@@ -388,7 +386,7 @@ begin
   Value.FreeNotification(Self);
 end;
 
-procedure TjvBandForm.Notification(AComponent: TComponent;
+procedure TJvBandForm.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited;

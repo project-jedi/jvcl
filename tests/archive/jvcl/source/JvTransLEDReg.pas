@@ -1,9 +1,11 @@
 unit JvTransLedReg;
 
 interface
+
 procedure Register;
 
 implementation
+
 uses
   Classes, JvTransLed;
   
