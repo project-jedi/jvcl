@@ -73,8 +73,9 @@ uses
   {$IFNDEF DelphiPersonalEdition}
   JvgCrossTable, JvgDBNav, JvgExport, JvgDBGrid, JvgExportComponents,
   {$IFNDEF COMPILER8_UP}
-  JvgWebDocumentIterator, JvgHTTPVersionInfo,
-  JvgCheckVersionInfoForm,
+   {$IFDEF INTERNET_COMPONENTS}
+  JvgWebDocumentIterator, JvgHTTPVersionInfo, JvgCheckVersionInfoForm,
+   {$ENDIF INTERNET_COMPONENTS}
   {$ENDIF COMPILER8_UP}
   {$IFDEF JVCL_UseQuickReport}
   JvgQPrintPreviewForm, JvgQPrintSetupForm, JvgQRLabel,
