@@ -162,7 +162,7 @@ type
     constructor CreateSize(AWidth, AHeight: Integer);
     destructor Destroy; override;
     function AddMasked(Image: TBitmap; MaskColor: TColor): Integer;
-      {$IFDEF VisualCLX} override; {$ENDIF VisualCLX}
+      {$IFDEF VisualCLX} override; {$ENDIF}
     procedure Delete(Index: Integer);
     property Count: Integer read FCount;
   end;
@@ -1004,7 +1004,7 @@ begin
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     repeat
-      Application.ProcessMessages
+      Application.ProcessMessages;
     until IsWindowVisible(FPopup.Handle) = False;
     {$ENDIF VisualCLX}
   end;

@@ -502,7 +502,6 @@ begin
 end;
 
 {$IFDEF VCL}
-
 procedure TJvCustomLabel.DrawAngleText(var Rect: TRect; Flags: Word; HasImage: boolean;
   ShadowSize: Byte; ShadowColor: TColorRef; ShadowPos: TShadowPosition);
 var
@@ -618,11 +617,10 @@ end;
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}
-
 procedure TJvCustomLabel.DrawAngleText(var Rect: TRect; Flags: Word; HasImage: boolean;
   ShadowSize: Byte; ShadowColor: TColorRef; ShadowPos: TShadowPosition);
 var
-  Text: array[0..4096] of Char;
+  Text: array [0..4096] of Char;
   TextX, TextY: Integer;
   Phi: Real;
   w, h: Integer;
@@ -728,7 +726,7 @@ begin
       if RoundedFrame=0 then
       begin
         Brush.Color := FrameColor;
-        FrameRect({$IFDEF VisualCLX}Canvas, {$ENDIF} ClientRect);
+        FrameRect({$IFDEF VisualCLX} Canvas, {$ENDIF} ClientRect);
       end
       else
       begin
@@ -799,7 +797,7 @@ begin
     {$IFDEF VisualCLX}
     Canvas.Start(False);
     try
-      {$ENDIF VisualCLX}
+    {$ENDIF VisualCLX}
       if Angle = 0 then
       begin
         InflateRect(Rect, -Margin, -Margin);
@@ -811,7 +809,7 @@ begin
       begin
         DrawAngleText(Rect, DT_CALCRECT or DT_EXPANDTABS or DT_WORDBREAK or Alignments[Alignment], IsValidImage, 0, 0, spLeftTop);
       end;
-      {$IFDEF VisualCLX}
+    {$IFDEF VisualCLX}
     finally
       Canvas.Stop;
     end;

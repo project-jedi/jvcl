@@ -37,7 +37,7 @@ uses
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   Types, QGraphics, QImgList,
-  {$ENDIF VisuaLCLX}
+  {$ENDIF VisualCLX}
   JclBase, JvTypes;
 
 type

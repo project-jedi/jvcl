@@ -2938,7 +2938,7 @@ begin
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   MyAxisFont;
-  {$ENDIF VisuaLCLX}
+  {$ENDIF VisualCLX}
   if Options.XStartOffset > 10 then
   begin
     {ht := MyTextHeight(StrText); }// not used (ahuser)

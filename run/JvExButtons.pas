@@ -120,7 +120,7 @@ type
     FAboutJVCLX: TJVCLAboutInfo;
   published
     property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
-  {$ENDIF VisuaLCLX}
+  {$ENDIF VisualCLX}
   
   public
     constructor Create(AOwner: TComponent); override;
@@ -233,7 +233,7 @@ type
     FAboutJVCLX: TJVCLAboutInfo;
   published
     property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
-  {$ENDIF VisuaLCLX}
+  {$ENDIF VisualCLX}
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
@@ -676,7 +676,9 @@ begin
       Invalidate;
   end;
 end;
+
 {$ENDIF VisualCLX}
+
 procedure TJvExBitBtn.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
   inherited;
@@ -706,27 +708,24 @@ function TJvExBitBtn.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean
 asm
   JMP   DefaultDoPaintBackground
 end;
+
 {$IFDEF VCL}
+
 constructor TJvExBitBtn.Create(AOwner: TComponent);
 begin
-  {$IFDEF VisualCLX}
-  WindowProc := WndProc;
-  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
-  SetCopyRectMode(Self, cmVCL);
-  {$IFEND}
-  {$ENDIF VisualCLX}
   inherited Create(AOwner);
   FHintColor := clInfoBk;
-  
 end;
 
 destructor TJvExBitBtn.Destroy;
 begin
-  
   inherited Destroy;
 end;
+
 {$ENDIF VCL}
+
 {$IFDEF VisualCLX}
+
 constructor TJvExBitBtn.Create(AOwner: TComponent);
 begin
   WindowProc := WndProc;
@@ -741,7 +740,6 @@ end;
 
 destructor TJvExBitBtn.Destroy;
 begin
-  
   FCanvas.Free;
   inherited Destroy;
 end;
@@ -750,6 +748,7 @@ procedure TJvExBitBtn.Paint;
 begin
   WidgetControl_DefaultPaint(Self, Canvas);
 end;
+
 {$ENDIF VisualCLX}
 
 end.

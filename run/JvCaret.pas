@@ -220,7 +220,7 @@ begin
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     if QWindows.DestroyCaret then
-    {$ENDIF VisuaLCLX}
+    {$ENDIF VisualCLX}
       FCaretCreated := False;
   end;
 end;

@@ -122,7 +122,7 @@ type
 
 function CreateCalculatorForm(AOwner: TComponent; AHelpContext: THelpContext): TJvCalculatorForm;
 function CreatePopupCalculator(AOwner: TComponent
-  {$IFDEF VCL}; ABiDiMode: TBiDiMode = bdLeftToRight {$ENDIF VCL}): TWinControl;
+  {$IFDEF VCL}; ABiDiMode: TBiDiMode = bdLeftToRight {$ENDIF}): TWinControl;
 procedure SetupPopupCalculator(PopupCalc: TWinControl; APrecision: Byte;
   ABeepOnError: Boolean);
 
@@ -173,7 +173,7 @@ begin
     Name := 'Helvetica';
     Height := 11;
   end;
-  {$ENDIF  VisualCLX}
+  {$ENDIF VisualCLX}
   AFont.Style := [fsBold];
   {
   if Layout = clDialog then
@@ -377,8 +377,7 @@ type
     FOnCalcKey: TKeyPressEvent;
     FOnDisplayChange: TNotifyEvent;
     FControl: TControl;
-    procedure SetText(const Value: string);
-      {$IFDEF VisualCLX}reintroduce;{$ENDIF VisualCLX}
+    procedure SetText(const Value: string); {$IFDEF VisualCLX} reintroduce; {$ENDIF}
     procedure CheckFirst;
     procedure CalcKey(Key: Char);
     procedure Clear;

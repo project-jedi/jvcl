@@ -792,7 +792,7 @@ begin
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     if Clipboard.AsText <> '' then
-    {$ENDIF VisualCLX }
+    {$ENDIF VisualCLX}
       SetCellData(Clipboard.AsText);
 end;
 

@@ -1361,7 +1361,7 @@ begin
           if HasImage then
           begin
             PageImages.Draw(Canvas, 4, ATop, Pages[Index].ImageIndex,
-              {$IFDEF VisualCLX}itImage, {$ENDIF}Pages[Index].Enabled);
+              {$IFDEF VisualCLX} itImage, {$ENDIF} Pages[Index].Enabled);
             Inc(R.Left, PageImages.Width + 8);
           end
           else
@@ -1372,7 +1372,7 @@ begin
         if HasImage then
         begin
           PageImages.Draw(Canvas, 4, ATop, Pages[Index].ImageIndex,
-            {$IFDEF VisualCLX}itImage, {$ENDIF}Pages[Index].Enabled);
+            {$IFDEF VisualCLX} itImage, {$ENDIF} Pages[Index].Enabled);
           Inc(R.Left, PageImages.Width + 4);
         end;
       taRightJustify:
@@ -1380,7 +1380,7 @@ begin
           if HasImage then
           begin
             PageImages.Draw(Canvas, 4, ATop, Pages[Index].ImageIndex,
-              {$IFDEF VisualCLX}itImage, {$ENDIF}Pages[Index].Enabled);
+              {$IFDEF VisualCLX} itImage, {$ENDIF} Pages[Index].Enabled);
             Inc(R.Left, PageImages.Width + 8);
           end;
           Dec(R.Right, 4);
@@ -1546,7 +1546,7 @@ begin
                   if LargeImages <> nil then
                     LargeImages.Draw(Canvas, R.Left + ((R.Right - R.Left) - LargeImages.Width) div 2, R.Top + 4,
                       Pages[Index].Buttons[I].ImageIndex,
-                      {$IFDEF VisualCLX}itImage, {$ENDIF}
+                      {$IFDEF VisualCLX} itImage, {$ENDIF}
                       Pages[Index].Enabled and Pages[Index].Buttons[I].Enabled);
                 finally
                   RestoreDC(Canvas.Handle, SavedDC);
@@ -1581,7 +1581,7 @@ begin
                   if SmallImages <> nil then
                     SmallImages.Draw(Canvas, R.Left + 2, R.Top + 2,
                       Pages[Index].Buttons[I].ImageIndex,
-                      {$IFDEF VisualCLX}itImage, {$ENDIF}
+                      {$IFDEF VisualCLX} itImage, {$ENDIF}
                       Pages[Index].Enabled and Pages[Index].Buttons[I].Enabled);
                 finally
                   RestoreDC(Canvas.Handle, SavedDC);

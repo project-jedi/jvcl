@@ -46,7 +46,7 @@ uses
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QExtCtrls, Types,
-  {$ENDIF VIsualCLX}
+  {$ENDIF VisualCLX}
   SysUtils, Classes,
   JvExForms, JvExExtCtrls;
 
