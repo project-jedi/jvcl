@@ -113,10 +113,11 @@ type
 
 implementation
 
+{ (ahuser) make Delphi 5 compiler happy
 function NonPaletteColor(Color: TColor): TColor;
 begin
   Result := Color and not $02000000;
-end;
+end; }
 
 constructor TJvBitmapButton.Create(AOwner: TComponent);
 begin

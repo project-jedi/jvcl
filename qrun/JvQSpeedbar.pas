@@ -19,17 +19,16 @@ Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
-Last Modified: 2002-07-04
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
-unit JvQSpeedBar;
+unit JvQSpeedbar;
 
 interface
 
@@ -37,12 +36,12 @@ uses
   SysUtils, Classes, IniFiles,
   
   
-  QMenus, QButtons, QControls, Types,
+  QMenus, QButtons, QControls,
   QGraphics, QForms, QImgList, QActnList, QExtCtrls, QGrids,
   
-
+  
   RTLConsts,
-
+  
   JvQSpeedButton, JvQAppStorage, JvQConsts, JvQTypes, JvQFormPlacement,
   JvQComponent, JvQThemes, JvQExControls;
 
@@ -51,7 +50,6 @@ const
   DefButtonHeight = 23;
 
 type
-  TButtonStyle = (bsAutoDetect, bsWin31, bsNew);
   TJvSpeedItem = class;
   TJvSpeedBarSection = class;
   EJvSpeedbarError = class(EJVCLException);
@@ -75,7 +73,7 @@ type
     FOrientation: TBarOrientation;
     FAlign: TAlign;
     FButtonSize: TPoint;
-    FButtonStyle: TButtonStyle;
+    FButtonStyle: Buttons.TButtonStyle;
     FGridSize: TPoint;
     FOffset: TPoint;
     FEditWin: HWnd;
@@ -240,7 +238,7 @@ type
     property Color;
     property DragMode;
     property Enabled;
-//    property Locked;
+    property Locked;
     property ParentColor;
     property ParentShowHint default False;
     property PopupMenu;

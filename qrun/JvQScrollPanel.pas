@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -14,19 +14,18 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvScrollPanel.PAS, released on 2002-05-26.
 
-The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.com]
+The Initial Developer of the Original Code is Peter Thörnqvist [peter3 at sourceforge dot net]
 Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
 Contributor(s):
-
-Last Modified: 2002-05-26
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -126,7 +125,7 @@ type
   protected
     procedure Visiblechanged; override;
     procedure EnabledChanged; override;
-    procedure SetParent(AParent: TWinControl); override;
+    procedure SetParent(const AParent: TWinControl); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     property Align default alTop;
     property Height default 35;
@@ -168,8 +167,6 @@ type
     property Hint;
     property ParentShowHint;
     property PopupMenu;
-//    property ImeMode;
-//    property ImeName;
     property Color;
     property ParentColor;
     property OnEnter;
@@ -490,9 +487,6 @@ begin
   ControlStyle := ControlStyle + [csAcceptsControls];
   
   FScrollDirection := sdHorizontal;
-  BevelInner := bvRaised;
-  BevelOuter := bvNone;
-  BevelKind := bkTile;
   FScrollAmount := 16;
   Align := alTop;
   Height := 35;
@@ -666,7 +660,7 @@ begin
   FDownRight.Kind := sbRight;
 end;
 
-procedure TJvCustomScrollPanel.SetParent(AParent: TWinControl);
+procedure TJvCustomScrollPanel.SetParent(const AParent: TWinControl);
 begin
   inherited SetParent(AParent);
   if FUpLeft = nil then

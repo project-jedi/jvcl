@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -20,13 +20,12 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
-Last Modified: 2000-02-28
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -94,6 +93,8 @@ type
     procedure EnabledChanged; override;
     procedure FontChanged; override;
     procedure RepaintBackground; virtual;
+    procedure TextChanged; override;
+
 
     property AllowAllUp: Boolean read FAllowAllUp write SetAllowAllUp default False;
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex default 0;
@@ -108,7 +109,9 @@ type
       DefaultTrackFontOptions;
     property Down: Boolean read FDown write SetDown default False;
     property DropDownMenu: TPopupMenu read FDropDownMenu write FDropDownMenu;
+    procedure Click; override;
   public
+
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -256,6 +259,8 @@ begin
     inherited MouseEnter(Control);
     if Flat then
       RepaintBackground;
+    if HotTrack then
+      Repaint;
   end;
 end;
 
@@ -267,6 +272,8 @@ begin
     inherited MouseLeave(Control);
     if Flat then
       RepaintBackground;
+    if HotTrack then
+      Repaint;
   end;
 end;
 
@@ -393,7 +400,7 @@ end;
 
 procedure TJvCustomGraphicButton.SetDown(Value: Boolean);
 begin
-  if GroupIndex <> 0 then
+  if GroupIndex = 0 then
     Value := False;
   if FDown <> Value then
   begin
@@ -403,10 +410,12 @@ begin
     if FDown then
     begin
       Include(FStates, bsMouseDown);
+
       {     Click; }{ uncomment and see what happens... }
     end
     else
       Exclude(FStates, bsMouseDown);
+    UpdateExclusive;
   end;
 end;
 
@@ -497,7 +506,7 @@ begin
     begin
       if Sender.Down and Down then
       begin
-        Down := False;
+        FDown := False;
         Exclude(FStates, bsMouseDown);
         RepaintBackground;
       end;
@@ -732,6 +741,24 @@ begin
   end;
 end;
 
+
+procedure TJvCustomGraphicButton.TextChanged;
+begin
+  inherited;
+  RepaintBackground;
+end;
+
+procedure TJvCustomGraphicButton.Click;
+begin
+  inherited;
+  if GroupIndex <> 0 then
+  begin
+    if AllowAllUp then
+      Down := not Down
+    else
+      Down := True;
+  end;
+end;
 
 initialization
 

@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -20,13 +20,12 @@ All Rights Reserved.
 
 Contributor(s): ______________________________________.
 
-Last Modified: 2002-10-24
-
 You may retrieve the latest version of this file at the Project JEDI home page,
 located at http://www.delphi-jedi.org
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -40,7 +39,7 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
-  Libc, QWindows,
+  Libc,
   {$ENDIF LINUX}
   JvQMTConsts, JvQMTSync, JvQFinalize;
 
@@ -50,14 +49,9 @@ type
 
   TMTEvent = procedure(Thread: TMTThread) of object;
 
-  {$IFDEF COMPILER5}
-  TIntThread = class(Classes.TThread)
-  public
-    procedure Synchronize(Method: TThreadMethod);
-  end;
-  {$ELSE}
+  
   TIntThread = TThread;
-  {$ENDIF COMPILER5}
+  
 
   TMTInternalThread = class(TIntThread)
   private
@@ -141,19 +135,12 @@ type
 function CurrentMTThread: TMTThread;
 
 implementation
-{$IFDEF USEJVCL}
+
 uses
   JvQResources;
-{$ENDIF USEJVCL}
 
-{$IFNDEF USEJVCL}
-resourcestring
-  RsECurThreadIsPartOfManager = 'Current MTThread is part of the MTManager';
-  RsECheckTerminateCalledByWrongThread = 'CheckTerminate can only be called by the same thread';
-  RsEThreadNotInitializedOrWaiting = 'Cannot run: thread is not Initializing or Waiting';
-  RsECannotChangeNameOfOtherActiveThread = 'Cannot change name of other active thread';
-  RsEReleaseOfUnusedTicket = 'Release of unused ticket';
-{$ENDIF USEJVCL}
+
+
 
 threadvar
   _CurrentMTThread: TMTThread;
@@ -164,110 +151,7 @@ begin
 end;
 
 
-{$IFDEF COMPILER5}
 
-const
-  sUnitName = 'JvMTThreading';
-
-type
-  PSyncRequest = ^TSyncRequest;
-  TSyncRequest = record
-    Method: TThreadMethod;
-    ExceptionObject: TObject;
-    Signal: THandle;
-  end;
-
-var
-  SyncRequestAvailable: Boolean;
-  ThreadSyncLock: TRTLCriticalSection;
-  SyncRequestList: TList = nil;
-  FirstSyncRequestList: Boolean = True;
-
-function CheckSynchronize: Boolean;
-var
-  SyncRequest: PSyncRequest;
-begin
-  Result := False;
-  // Only the main thread is allowed to synchronize thread methods.
-  if GetCurrentThreadID <> MainThreadID then
-    Exit;
-
-  if SyncRequestAvailable and (SyncRequestList <> nil) then
-  begin
-    // Do not block while another thread is adding a new synchronization request.
-    EnterCriticalSection(ThreadSyncLock);
-    try
-      while SyncRequestList.Count > 0 do
-      begin
-        SyncRequest := SyncRequestList[0];
-        SyncRequestList.Delete(0);
-        try
-          SyncRequest.Method;
-        except
-          SyncRequest^.ExceptionObject := ExceptObject;
-        end;
-        // inform TIntThread.Synchronize
-        SetEvent(SyncRequest.Signal);
-        SyncRequestAvailable := False;
-        Result := True;
-      end;
-    finally
-      LeaveCriticalSection(ThreadSyncLock);
-    end;
-  end;
-end;
-
-procedure FinalizeSyncRequestList;
-begin
-  // if the list is not empty there are still waiting threads
-  if SyncRequestList <> nil then
-  begin
-    CheckSynchronize;
-    SyncRequestList.Free;
-    SyncRequestList := nil;
-  end;
-end;
-
-procedure TIntThread.Synchronize(Method: TThreadMethod);
-var
-  SyncRequest: TSyncRequest;
-begin
-  if GetCurrentThreadID = MainThreadID then
-    Method
-  else
-  begin
-    SyncRequest.Signal := CreateEvent(nil, True, False, nil);
-    try
-      EnterCriticalSection(ThreadSyncLock);
-      try
-        if SyncRequestList = nil then
-        begin
-          SyncRequestList := TList.Create;
-          if FirstSyncRequestList then
-            AddFinalizeProc(sUnitName, FinalizeSyncRequestList);
-        end;
-
-        SyncRequest.ExceptionObject := nil;
-        SyncRequest.Method := Method;
-        // The function returns only when the item is deleted from the List.
-        SyncRequestList.Add(@SyncRequest);
-
-        SyncRequestAvailable := True;
-      finally
-        LeaveCriticalSection(ThreadSyncLock);
-      end;
-      // Wait for CheckSynchronize.
-      WaitForSingleObject(SyncRequest.Signal, INFINITE);
-    finally
-      CloseHandle(SyncRequest.Signal);
-    end;
-    // An exception occured. Re-raise it in the calling thread's context.
-    if Assigned(SyncRequest.ExceptionObject) then
-      raise SyncRequest.ExceptionObject;
-  end;
-end;
-
-{$ENDIF COMPILER5}
 
 //=== TMTInternalThread ======================================================
 
@@ -283,21 +167,17 @@ var
   ThreadNameInfo: TThreadNameInfo;
 
 begin
-  {$IFDEF MSWINDOWS}
+  
   ThreadNameInfo.FType := $1000;
   ThreadNameInfo.FName := PChar(FName);
   ThreadNameInfo.FThreadID := $FFFFFFFF;
   ThreadNameInfo.FFlags := 0;
   try
-
     RaiseException($406D1388, 0, SizeOf(ThreadNameInfo) div SizeOf(LongWord),
       @ThreadNameInfo);
   except
   end;
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
-  // TODO
-  {$ENDIF LINUX}
+  
 end;
 
 //=== TMTThread ==============================================================
@@ -753,15 +633,6 @@ begin
   end;
 end;
 
-{$IFDEF COMPILER5}
 
-initialization
-  InitializeCriticalSection(ThreadSyncLock);
-
-finalization
-  FinalizeUnit(sUnitName);
-  DeleteCriticalSection(ThreadSyncLock);
-
-{$ENDIF COMPILER5}
 
 end.

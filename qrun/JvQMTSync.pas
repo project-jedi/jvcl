@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -20,13 +20,12 @@ All Rights Reserved.
 
 Contributor(s): ______________________________________.
             
-Last Modified: 2002-09-29
-
 You may retrieve the latest version of this file at the Project JEDI home page,
 located at http://www.delphi-jedi.org
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -40,7 +39,7 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
-  Libc, QWindows,
+  Libc,
   {$ENDIF LINUX}
   JvQMTConsts;
 
@@ -104,17 +103,12 @@ type
 implementation
 
 uses
-  {$IFDEF USEJVCL}
+  
   JvQResources,
-  {$ENDIF USEJVCL}
+  
   JvQMTThreading;
 
-{$IFNDEF USEJVCL}
-resourcestring
-  RsESemaphoreFailure = 'Semaphore failure (%d)';
-  RsESemaphoreAbandoned = 'Semaphore was abandoned';
-  RsEThreadAbandoned = 'Thread was abandoned';
-{$ENDIF USEJVCL}
+
 
 //=== TMTSemaphore ===========================================================
 
@@ -323,22 +317,12 @@ end;
 
 procedure TMTSimpleEvent.ResetEvent;
 begin
-  {$IFDEF MSWINDOWS}
   Windows.ResetEvent(FHandle);
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
-  QWindows.ResetEvent(FHandle);
-  {$ENDIF LINUX}
 end;
 
 procedure TMTSimpleEvent.SetEvent;
 begin
-  {$IFDEF MSWINDOWS}
   Windows.SetEvent(FHandle);
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
-  QWindows.SetEvent(FHandle);
-  {$ENDIF LINUX}
 end;
 
 end.

@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -14,13 +14,11 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvArrowBtn.PAS, released on 2002-05-26.
 
-The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.com]
+The Initial Developer of the Original Code is Peter Thörnqvist [peter3 at sourceforge dot net]
 Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
 Contributor(s):
-
-Last Modified: 2004-02-01
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -31,7 +29,10 @@ Description:
   separate events.
 
 Known Issues:
+
+
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -107,6 +108,8 @@ type
     procedure Click; override;
   published
     property Align;
+    property Anchors;
+    property Constraints;
     property AllowAllUp: Boolean read FAllowAllUp write SetAllowAllUp default False;
     property ArrowWidth: Integer read FArrowWidth write SetArrowWidth default 13;
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex default 0;

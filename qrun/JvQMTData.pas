@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -20,13 +20,12 @@ All Rights Reserved.
 
 Contributor(s): ______________________________________.
             
-Last Modified: 2002-09-29
-
 You may retrieve the latest version of this file at the Project JEDI home page,
 located at http://www.delphi-jedi.org
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -108,18 +107,15 @@ type
   end;
 
 implementation
-{$IFDEF USEJVCL}
+
 uses
   JvQResources;
-{$ENDIF USEJVCL}
+
 
 const
   sUnitName = 'JvMTData';
 
-{$IFNDEF USEJVCL}
-resourcestring
-  RsEMethodOnlyForMainThread = '%s method can only be used by the main VCL thread';
-{$ENDIF USEJVCL}
+
 
 var
   GlobalDataThreadsMan: TMTManager = nil;

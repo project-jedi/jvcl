@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -14,13 +14,11 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvCntScr.PAS, released on 2002-05-26.
 
-The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.com]
+The Initial Developer of the Original Code is Peter Thörnqvist [peter3 at sourceforge dot net]
 Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
 Contributor(s):
-
-Last Modified: 2002-05-26
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -30,6 +28,7 @@ Description:
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -44,13 +43,13 @@ uses
   SysUtils, Classes,
   
   
-  Types, QGraphics, QControls, QForms, QDialogs, QExtCtrls, QTypes, QWindows,
+  Types, QGraphics, QControls, QForms, QDialogs, QExtCtrls, QTypes,
   
   JvQComponent;
 
 type
   TJvContentScrollDirection = (sdUp, sdDown);
-  TJvScrollAmount = 1..MaxInt;
+  TJvScrollAmount = 1..MaxWord;
 
   TJvContentScroller = class(TJvCustomPanel)
   private
@@ -177,7 +176,7 @@ var
   Flag: Integer;
 begin
   if not Assigned(FTimer) then
-    FTimer := TTimer.Create(self);
+    FTimer := TTimer.Create(nil);
   // FPosition := -Abs(FScrollStart);
   // ScrollBy(0,FScrollStart);
   FTimer.Enabled := False;
@@ -196,7 +195,6 @@ end;
 
 procedure TJvContentScroller.FreeTimer;
 begin
-  (*)
   if Assigned(FTimer) then
   begin
     FTimer.Enabled := False;
@@ -204,7 +202,6 @@ begin
     FTimer.Free;
     FTimer := nil;
   end;
-  (*)
   if FScrollDirection = sdUp then
     ScrollBy(0, FPosition)
   else
@@ -214,7 +211,6 @@ begin
   if FileExists(FMediaFile) then
     PlaySound(nil, 0, SND_ASYNC);
   {$ENDIF MSWINDOWS}
-
 end;
 
 procedure TJvContentScroller.DoTimer(Sender: TObject);

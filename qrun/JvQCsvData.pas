@@ -385,6 +385,7 @@ type
     procedure InternalInitRecord(Buffer: PChar); override;
     function GetRecord(Buffer: PChar; GetMode: TGetMode;
       DoCheck: Boolean): TGetResult; override;
+
     function GetRecordSize: Word; override;
     procedure SetFieldData(Field: TField; Buffer: Pointer); override;
     procedure ClearCalcFields(Buffer: PChar); override;
@@ -448,6 +449,7 @@ type
     procedure ClearFilter; // Clear all previous SetFilters, shows All Rows. Refresh screen.
 
     procedure _ClearFilter; // Clear Previous Filtering. DOES NOT REFRESH SCREEN.
+
 
     // ----------- THIS IS A DUMMY FUNCTION, DON'T USE IT!:
     function Locate(const KeyFields: string; const KeyValues: Variant;
@@ -1266,6 +1268,7 @@ var
 
 begin
   Result := False;
+  if not Active then exit;
   if Pos(',',KeyFields)>0 then
     Count := StrSplit(KeyFields, ',', Chr(0), KeyFieldArray, 20)
   else
@@ -1382,6 +1385,7 @@ begin
     end;
   end;
 end;
+
 
 function TJvCustomCsvDataSet.GetRecord(Buffer: PChar; GetMode: TGetMode;
   DoCheck: Boolean): TGetResult;
@@ -1837,11 +1841,13 @@ begin
     ProcessCsvHeaderRow; // process FHeaderRow
   end;
 
-  pSource := GetActiveRecordBuffer;
-  if pSource = nil then
-  begin
-    //JvCsvDatabaseError('CsvDataSet.GetFieldData: Unable to get active record buffer');
-    Exit;
+  pSource := GetActiveRecordBuffer; // This should not be nil EXCEPT if table is Empty or Closed.
+  if pSource = nil then begin
+      {$IFDEF DEBUGINFO_ON}
+      if Self.FData.Count>0 then
+          OutputDebugString( 'TJvCustomCsvDataSet.GetFieldData: GetActiveRecordBuffer is nil but table is not empty. (Internal Fault Condition).');
+      {$ENDIF}
+      exit;
   end;
 
   //------------------------------------------------------------------------
@@ -2077,8 +2083,6 @@ end;
 // Our bookmark data is a pointer to a PCsvData
 
 procedure TJvCustomCsvDataSet.GetBookmarkData(Buffer: PChar; data: Pointer);
-//var
-//  t:Integer;
 begin
 // t:= PCsvRow(Buffer)^.bookmark.data;
   PInteger(data)^ := PCsvRow(Buffer)^.Bookmark.data;
@@ -3679,9 +3683,13 @@ begin
   Dif := 0;
   if (ColumnIndex < 0) or (ColumnIndex > MAXCOLUMNS) then
     Exit;
+
   Copy1 := CsvRowGetColumnMarker(pItem, ColumnIndex);
   if Copy1 = COLUMN_ENDMARKER then
     Exit;
+    // Update new rows:  FIX previous fix!
+  if (ColumnIndex >= pItem^.columns) then
+      pItem^.columns := ColumnIndex+1;
 
   if Copy1 > MAXLINELENGTH then
     Exit;

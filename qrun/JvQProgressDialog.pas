@@ -20,8 +20,6 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-03-31
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -83,6 +81,7 @@ NB!
  *current* values in the dialog (as changed in OnProgress). After execution, the
  properties are reset to their original ("start") values.
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

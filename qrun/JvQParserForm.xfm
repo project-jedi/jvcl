@@ -3,14 +3,14 @@ object FormParsers: TFormParsers
   Top = 279
   Width = 423
   Height = 247
-  HorzScrollBar.Range = 415
   VertScrollBar.Range = 241
+  HorzScrollBar.Range = 415
   ActiveControl = OkBtn
   BorderIcons = [biSystemMenu]
   Caption = 'Parser - Edit '
   Color = clButton
   Font.Color = clText
-  Font.Height = 13
+  Font.Height = 11
   Font.Name = 'adobe-helvetica'
   Font.Pitch = fpVariable
   Font.Style = []
@@ -30,13 +30,13 @@ object FormParsers: TFormParsers
   Position = poScreenCenter
   Scaled = False
   ShowHint = True
-  PixelsPerInch = 113
+  PixelsPerInch = 96
   object ListBox1: TListBox
     Left = 8
     Top = 120
     Width = 321
     Height = 117
-    ItemHeight = 15
+    ItemHeight = 13
     TabOrder = 4
     OnClick = ListBox1Click
   end
@@ -52,44 +52,44 @@ object FormParsers: TFormParsers
     object Label1: TLabel
       Left = 14
       Top = 23
-      Width = 49
-      Height = 15
+      Width = 41
+      Height = 13
       Caption = 'Keyword'
     end
     object Label2: TLabel
       Left = 12
       Top = 48
-      Width = 50
-      Height = 15
+      Width = 44
+      Height = 13
       Caption = 'Start Tag'
     end
     object Label3: TLabel
       Left = 204
       Top = 23
-      Width = 47
-      Height = 15
+      Width = 41
+      Height = 13
       Caption = 'End Tag'
     end
     object Label4: TLabel
       Left = 204
       Top = 48
-      Width = 49
-      Height = 15
+      Width = 41
+      Height = 13
       Hint = 'Where the start text must be'
       Caption = 'Must be '
     end
     object Label5: TLabel
       Left = 12
       Top = 75
-      Width = 50
-      Height = 15
+      Width = 45
+      Height = 13
       Caption = 'Take text'
     end
     object Edit1: TEdit
       Left = 66
       Top = 19
       Width = 115
-      Height = 23
+      Height = 21
       Hint = 
         'Put here the keyword'#13#10'you want the component to send'#13#10'when he ha' +
         's found this item'
@@ -100,7 +100,7 @@ object FormParsers: TFormParsers
       Left = 66
       Top = 44
       Width = 115
-      Height = 23
+      Height = 21
       Hint = 'Put here the string that'#13#10'is just before the part'#13#10'you want'
       TabOrder = 1
       OnChange = Edit2Change
@@ -109,7 +109,7 @@ object FormParsers: TFormParsers
       Left = 256
       Top = 19
       Width = 115
-      Height = 23
+      Height = 21
       Hint = 'Put here the tag you want to find '#13#10'to end the tag'
       TabOrder = 2
       OnChange = Edit3Change
@@ -118,9 +118,9 @@ object FormParsers: TFormParsers
       Left = 66
       Top = 71
       Width = 305
-      Height = 23
+      Height = 21
       Hint = 'Tell the component'#13#10'which part you want of the string'
-      ItemHeight = 17
+      ItemHeight = 15
       Items.Strings = (
         'Between limits'
         'All before start tag'
@@ -134,7 +134,7 @@ object FormParsers: TFormParsers
       Left = 256
       Top = 43
       Width = 115
-      Height = 23
+      Height = 21
       Hint = 
         'Put here the position of the start tag'#13#10#13#10'1 if you don'#39't care, '#13 +
         #10'0 if it can'#39't be in the string, '#13#10'1 if you want it in the first' +

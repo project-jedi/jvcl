@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -20,13 +20,12 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
-Last Modified: 2000-02-28
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -77,7 +76,7 @@ type
     procedure SetPosition(Value: Integer);
     procedure Loading(Sender: TObject);
   protected
-//    procedure SetAutoSize(Value: Boolean);
+    procedure SetAutoSize(Value: Boolean); //override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -121,7 +120,12 @@ type
 
 implementation
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvSlider.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvSlider.res}
+{$ENDIF LINUX}
 
 constructor TJvSlider.Create(AOwner: TComponent);
 begin
@@ -150,7 +154,7 @@ begin
   FTimer.Interval := 10;
   FTimer.OnTimer := Loading;
   FTimer.Enabled := True;
-//  AutoSize := True;
+  //AutoSize := True;
 end;
 
 destructor TJvSlider.Destroy;
@@ -356,21 +360,18 @@ end;
 procedure TJvSlider.SetImageRuler(Value: TBitmap);
 begin
   FImageRuler.Assign(Value);
-  (*)
-  if (Value.Width > 0) and (Value.Height > 0) and AutoSize then
+  if (Value.Width > 0) and (Value.Height > 0) {and AutoSize} then
   begin
     Height := Value.Height;
     Width := Value.Width;
   end;
-  (*)
   Repaint;
   Calculate;
 end;
 
-(*)
 procedure TJvSlider.SetAutoSize(Value: Boolean);
 begin
-  inherited SetAutoSize(Value);
+//  inherited SetAutoSize(Value);
   if Value then
   begin
     if (FImageRuler.Width > 0) and (FImageRuler.Height > 0) then
@@ -380,7 +381,7 @@ begin
     end;
   end;
 end;
-(*)
+
 procedure TJvSlider.Loading(Sender: TObject);
 begin
   FTimer.Enabled := False;

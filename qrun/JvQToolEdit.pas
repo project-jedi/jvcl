@@ -19,8 +19,6 @@ Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
-Last Modified: 2004-02-09
-
 Contributers:
   Rob den Braasem [rbraasem@xs4all.nl]
   Polaris Software
@@ -32,6 +30,7 @@ located at http://jvcl.sourceforge.net
 Known Issues:
   (rb) Move button related functionality from TJvCustomComboEdit to TJvEditButton
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -820,10 +819,7 @@ function IsInWordArray(Value: Word; const A: array of Word): Boolean;
 implementation
 
 uses
-  {$IFDEF MSWINDOWS}
-  ShellAPI,
-  {$ENDIF}
-  Math,
+  ShellAPI, Math,
   
   QConsts,
   
@@ -850,7 +846,6 @@ const
   sDateBmp = 'JV_DEDITBMP';  { Date editor button glyph }
 
 
-//type
   { TDateHook is used to only have 1 hook per application for monitoring
     date changes;
 

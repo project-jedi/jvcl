@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -12,7 +12,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvTransparentPanel.PAS, released on 2000-11-22.
+The Original Code is: JvAlignListbox.PAS, released on 2000-11-22.
 
 The Initial Developer of the Original Code is Peter Below <100113.1101@compuserve.com>
 Portions created by Peter Below are Copyright (C) 2000 Peter Below.
@@ -20,13 +20,12 @@ All Rights Reserved.
 
 Contributor(s): ______________________________________.
 
-Last Modified: 2004-03-02
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -72,8 +71,7 @@ end;
 
 procedure TJvTransparentPanel.CaptureBackground;
 var
-//  Canvas: TCanvas;
-//  DC: HDC;
+  
   SourceRect: TRect;
 begin
   // (rom) check here to secure against misuse
@@ -87,24 +85,11 @@ begin
   end;
   SourceRect.TopLeft := ClientToScreen(ClientRect.TopLeft);
   SourceRect.BottomRight := ClientToScreen(ClientRect.BottomRight);
-  (*)
-  DC := CreateDC('DISPLAY', nil, nil, nil);
-  try
-    Canvas := TCanvas.Create;
-    try
-      Canvas.Handle := DC;
-      FBackground.Canvas.CopyRect(ClientRect, Canvas, SourceRect);
-    finally
-      Canvas.Handle := nil;
-      Canvas.Free;
-    end;
-  finally
-    DeleteDC(DC);
-  end;
-  (*)
+  
+  
   QPixmap_grabWidget(FBackground.Handle, HWND_DESKTOP, SourceRect.Left, SourceRect.Top,
      (SourceRect.Right - SourceRect.Left), (SourceRect.Bottom - SourceRect.Top));
-
+  
 end;
 
 procedure TJvTransparentPanel.Paint;

@@ -38,14 +38,15 @@ interface
 
 uses
   SysUtils, Classes,
-  
-  
-  Types, QControls, QGraphics, QForms, QWindows;
+
+
+  Types, QControls, QGraphics, QForms, QWindows,
+  JvQComponent;
   
 type
   TJvColorTrackBarIndicator = (tbiArrow, tbiLine);
   TJvColorTrackBarIndicators = set of TJvColorTrackBarIndicator;
-  TJvColorTrackBar = class(TGraphicControl)
+  TJvColorTrackBar = class(TJvGraphicControl)
   private
     //FShowValue: boolean;
     FPosition, FMin, FMax: integer;
@@ -120,9 +121,11 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
+    
     property OnMouseWheel;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
+    
     property OnStartDrag;
   end;
 

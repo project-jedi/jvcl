@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -12,21 +12,20 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvTMTL.PAS, released on 2002-05-26.
+The Original Code is: JvTMTimeLine.PAS, released on 2002-05-26.
 
-The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.com]
+The Initial Developer of the Original Code is Peter Thörnqvist [peter3 at sourceforge dot net]
 Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
 Contributor(s):
-
-Last Modified: 2002-05-26
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -885,7 +884,7 @@ begin
       // draw new selection
       R := GetRectForDate(FSelDate);
       InflateRect(R, Selection.Pen.Width + 1, Selection.Pen.Width + 1);
-      QWindows.InvalidateRect(Handle, @R, True);
+       QWindows.InvalidateRect(Handle, @R, True);
     end;
   end;
 end;
@@ -1035,11 +1034,12 @@ end;
 procedure TJvCustomTMTimeline.EnabledChanged;
 begin
   inherited EnabledChanged;
-  if assigned(FLeftBtn) then
+  // asn: VisualCLX inherited Create emits EnableChanged event
+  if Assigned(FRightBtn) then
   begin
     FLeftBtn.Enabled := Enabled;
     FRightBtn.Enabled := Enabled;
-  end;  
+  end;
   Invalidate;
 end;
 

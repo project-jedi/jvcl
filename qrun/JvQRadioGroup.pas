@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -20,13 +20,12 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
-Last Modified: 2004-02-06
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -36,10 +35,9 @@ interface
 
 uses
   SysUtils, Classes,
-  
-  
-  Types, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QTypes,
-  QWindows,
+
+
+  Types, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QTypes, QWindows,
   
   JvQThemes, JvQExControls, JvQExExtCtrls;
 
@@ -157,9 +155,9 @@ begin
   begin
     Font := Self.Font;
     H := TextHeight('0');
-    R := Rect(0, H div 2 - 1, Width, Height);  
+    R := Rect(0, H div 2 - 1, Width, Height);
     DrawEdge(Handle, R, InnerStyles[FEdgeInner] or OuterStyles[FEdgeOuter],
-      Byte(FEdgeBorders) {or Ctl3DStyles[Ctl3D]} or BF_ADJUST);
+      Byte(FEdgeBorders) or BF_ADJUST);
     if (Text <> '') and CaptionVisible then
     begin
       if not UseRightToLeftAlignment then
@@ -169,7 +167,6 @@ begin
       Flags := DrawTextBiDiModeFlags(DT_SINGLELINE);
       DrawTextW(Handle, PWideChar(Text), Length(Text), R, Flags or DT_CALCRECT);
       Brush.Color := Color;
-      SetBkMode(Handle, OPAQUE);     // asn
       DrawTextW(Handle, PWideChar(Text), Length(Text), R, Flags);
     end;
   end;

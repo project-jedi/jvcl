@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -21,16 +21,15 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 pongtawat
-Peter Thornqvist [peter3@peter3.com]
+Peter Thornqvist [peter3 at sourceforge dot net]
 Jens Fudickar [jens.fudickar@oratool.de]
-
-Last Modified: 2003-11-03
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -87,6 +86,7 @@ type
     property AutoArrange: Boolean read FAutoArrange write SetAutoArrange default False;
   end;
 
+  
   TJvPanel = class(TJvCustomPanel, IJvDenySubClassing)
   private
     FTransparent: Boolean;
@@ -120,7 +120,7 @@ type
     procedure SetMultiLine(const Value: Boolean);
     procedure SetHotColor(const Value: TColor);
     procedure SetSizeable(const Value: Boolean);
-    
+
   protected
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -162,6 +162,7 @@ type
     property FlatBorderColor: TColor read FFlatBorderColor write SetFlatBorderColor default clBtnShadow;
     property OnMouseEnter;
     property OnMouseLeave;
+    
     property OnParentColorChange;
 
     property ArrangeSettings: TJvArrangeSettings read FArrangeSettings write SetArrangeSettings;
@@ -846,7 +847,6 @@ begin
   if (Value <> nil) and (Value <> FArrangeSettings) then
     FArrangeSettings.Assign(Value);
 end;
-
 
 end.
 

@@ -634,7 +634,10 @@ type
     property Align;
     property Anchors;
     property Constraints;
+    property OnDblClick; { TNotifyEvent from TControl }
     
+
+
     property DragMode;
     property Enabled;
     property ParentShowHint;
@@ -1571,30 +1574,44 @@ end;
 
 procedure TJvChart.PrimaryYAxisLabels;
 var
-  I         : Integer;
+  I,J         : Integer;
   YDivision : Double;
-  YDivisionStr: string; // left hand side, vertically ascending labels for scale of Y values.
+  FormatStr,YDivisionStr,PrevYDivisionStr: string; // left hand side, vertically ascending labels for scale of Y values.
+  Decimals : Integer;
+  Unique : Boolean;
 begin
+  Decimals := Options.PrimaryYAxis.YLegendDecimalPlaces;
+  Unique := false; { Add Decimals until we get unique values }
+  while not Unique do begin
 
-  Options.PrimaryYAxis.YLegends.Clear;
-  for I := 0 to Options.PrimaryYAxis.YDivisions do // NOTE! Don't make this YDivisions-1 That'd be bad! !!!!
-  begin
-    YDivision := (I * Options.PrimaryYAxis.YGap);
-    if Options.PrimaryYAxis.YLegendDecimalPlaces <= 0 then
-      YDivisionStr := IntToStr(Round(YDivision)) // This was giving MANY decimal places.
-    else
-    if Options.PrimaryYAxis.YLegendDecimalPlaces = 1 then
-      YDivisionStr := FormatFloat('0.0',  YDivision )
-    else
-      YDivisionStr := FormatFloat('0.00', YDivision );
-
-    Options.PrimaryYAxis.YLegends.Add( YDivisionStr );
-    
-  end;
-
+    Unique := true;
+    PrevYDivisionStr := '';
+    Options.PrimaryYAxis.YLegends.Clear;
+    FormatStr := '0.0';
+    for J := 2 to Decimals do begin
+        FormatStr := FormatStr + '0';
+    end;
+    for I := 0 to Options.PrimaryYAxis.YDivisions do // NOTE! Don't make this YDivisions-1 That'd be bad! !!!!
+    begin
+      YDivision := (I * Options.PrimaryYAxis.YGap);
+      if Decimals <= 0 then begin
+          YDivisionStr := IntToStr(Round(YDivision)); // Whole Numbers Only.
+      end else begin
+          YDivisionStr := FormatFloat( FormatStr,  YDivision ); // Variable Decimals
+      end;
+        if (PrevYDivisionStr=YDivisionStr)and(Decimals<5) then begin
+            Inc(Decimals);
+            Unique := false; // Force repeat
+            break; // exit for loop.
+        end;
+        Options.PrimaryYAxis.YLegends.Add( YDivisionStr );
+        PrevYDivisionStr := YDivisionStr;
+      end; {end for}
+  end; { end while  }
 end;
-{ Setup display graph ranges }
 
+
+{ Setup Graph Formatting Properties }
 procedure TJvChart.AutoFormatGraph;
 var
   V, nYMax, nYMin: Double;
@@ -2571,7 +2588,7 @@ begin
     for I := 1 to ((Options.XValueCount div Options.XAxisValuesPerDivision))-1 do begin
         XLegendHoriz := Round(Options.XStartOffset + Options.XPixelGap * I * Options.XAxisValuesPerDivision);
 
-        timestamp := FData.Timestamp[ I * Options.XAxisValuesPerDivision ];
+        timestamp := FData.Timestamp[ (I * Options.XAxisValuesPerDivision)-1 ];
 
         if Length(Options.FXAxisDateTimeFormat)=0 then // not specified, means use Locale defaults
            timestampStr := TimeToStr( timestamp )

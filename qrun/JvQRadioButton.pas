@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -23,13 +23,12 @@ Michael Beck [mbeck@bigfoot.com].
 Robert Marquardt copied implementation of TJvCheckBox
 Peter Thörnqvist- added LinkedControls property
 
-Last Modified: 2004-01-26
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -70,7 +69,7 @@ type
     procedure SetLeftText(const Value: Boolean);
     function GetLinkedControls: TJvLinkedControls;
     procedure SetLinkedControls(const Value: TJvLinkedControls);
-//    procedure BMSetCheck(var Msg:TMessage); message BM_SETCHECK;
+    
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation);override;
     procedure MouseEnter(AControl: TControl); override;
@@ -79,6 +78,10 @@ type
     procedure FontChanged; override;
     procedure EnabledChanged;override;
     procedure SetAutoSize(Value: Boolean); //override;
+    
+    
+    procedure RecreateWnd;
+    procedure Toggle; override;
     
     procedure CalcAutoSize; virtual;
     procedure Loaded; override;
@@ -208,8 +211,12 @@ begin
   // This is slower than GetTextExtentPoint but it does consider hotkeys
   if Caption <> '' then
   begin
+    
+    
+    RequiredState(FCanvas, [csHandleValid, csFontValid]);
     DrawTextW(FCanvas.Handle, PWideChar(Caption), Length(Caption), R,
       Flags[WordWrap] or DT_LEFT or DT_NOCLIP or DT_CALCRECT);
+    
     AWidth := (R.Right - R.Left) + ASize.cx + 8;
     AHeight := R.Bottom - R.Top;
   end
@@ -264,7 +271,7 @@ begin
     FWordWrap := Value;
     if Value then
       AutoSize := False;
-    RecreateWidget;
+    RecreateWnd;
   end;
 end;
 
@@ -273,7 +280,7 @@ begin
   if FAlignment <> Value then
   begin
     FAlignment := Value;
-    RecreateWidget;
+    RecreateWnd;
   end;
 end;
 
@@ -282,7 +289,7 @@ begin
   if FLayout <> Value then
   begin
     FLayout := Value;
-    RecreateWidget;
+    RecreateWnd;
   end;
 end;
 
@@ -296,7 +303,7 @@ begin
   if FLeftText <> Value then
   begin
     FLeftText := Value;
-    RecreateWidget;
+    RecreateWnd;
   end;
 end;
 
@@ -334,13 +341,14 @@ begin
   FLinkedControls.Assign(Value);
 end;
 
-(*)
-procedure TJvRadioButton.BMSetCheck(var Msg: TMessage);
+
+procedure TJvRadioButton.Toggle;
+
+
 begin
   inherited;
   CheckLinkedControls;
 end;
-(*)
 
 procedure TJvRadioButton.EnabledChanged;
 begin
@@ -355,6 +363,14 @@ begin
   if Assigned(FLinkedControls) and not (csDestroying in ComponentState) then
     LinkedControls.Notification(AComponent, Operation);
 end;
+
+
+procedure TJvRadioButton.RecreateWnd;
+begin
+  RecreateWidget;
+end;
+
+
 
 end.
 

@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -22,8 +22,6 @@ Contributor(s):
 Zinvob
 boerema
 
-Last Modified: 2003-03-17
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -32,6 +30,7 @@ description : dialog components
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -71,6 +70,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Execute;
+    procedure Hide;
     procedure ProgressStepIt;
     property Cancel: Boolean read FCancel;
   published
@@ -119,6 +119,12 @@ destructor TJvProgressComponent.Destroy;
 begin
   FForm.Free;
   inherited Destroy;
+end;
+
+procedure TJvProgressComponent.Hide;
+begin
+  FForm.Free;
+  FForm := nil;
 end;
 
 procedure TJvProgressComponent.Execute;

@@ -20,8 +20,6 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2004-01-05
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -30,6 +28,7 @@ Known Issues:
 Description:
 - This form is used by JvProgressDialog.pas
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

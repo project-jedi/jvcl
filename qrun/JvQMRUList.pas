@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -22,13 +22,12 @@ Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 Arioch [the_Arioch@nm.ru]
 
-Last Modified: 2002-07-11
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 {$I windowsonly.inc}
@@ -151,9 +150,9 @@ type
     function DeleteKey: Boolean;
 
     // Arioch: the following are function for Unicode Enabling
-    function AddUnicodeString(Value: widestring): Boolean;
+    function AddUnicodeString(Value: WideString): Boolean;
     function AddUnicodePChar(Value: PWideChar): Boolean;
-    function FindUnicodeString(Value: widestring): Integer;
+    function FindUnicodeString(Value: WideString): Integer;
   published
     property DelayedWrite: Boolean read FDelayedWrite write FDelayedWrite default False;
     property WantUnicode: Boolean read FWantUnicode write SetWantUnicode default False;
@@ -315,7 +314,7 @@ begin
   Result := AddPchar(PChar(Value));
 end;
 
-function TJvMRUList.AddUnicodeString(Value: widestring): Boolean;
+function TJvMRUList.AddUnicodeString(Value: WideString): Boolean;
 begin
   Result := AddUnicodePChar(PWideChar(Value));
 end;
@@ -359,7 +358,7 @@ begin
     Result := FindMruString(FList, PChar(Value), nil);
 end;
 
-function TJvMRUList.FindUnicodeString(Value: widestring): Integer;
+function TJvMRUList.FindUnicodeString(Value: WideString): Integer;
 begin
   NeedUnicode;
   Result := -1;

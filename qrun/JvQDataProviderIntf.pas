@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -36,13 +36,12 @@ unit JvQDataProviderIntf;
 interface
 
 uses
+  Classes,
   
   
   Types, QGraphics, QImgList,
   
-  Classes,
-  JclBase,
-  JvQTypes;
+  JclBase, JvQTypes;
 
 type
   TDataProviderChangeReason =
