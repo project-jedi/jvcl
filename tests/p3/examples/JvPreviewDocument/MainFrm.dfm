@@ -1,4 +1,4 @@
-object Form1: TForm1
+object frmMain: TfrmMain
   Left = 353
   Top = 176
   Width = 783
@@ -8,7 +8,7 @@ object Form1: TForm1
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
-  Font.Name = 'MS Sans Serif'
+  Font.Name = 'MS Shell Dlg 2'
   Font.Style = []
   Menu = MainMenu1
   OldCreateOrder = False
@@ -26,55 +26,44 @@ object Form1: TForm1
     object Label1: TLabel
       Left = 16
       Top = 8
-      Width = 43
+      Width = 44
       Height = 13
       Caption = 'Columns:'
     end
     object Label2: TLabel
       Left = 112
       Top = 8
-      Width = 64
+      Width = 30
       Height = 13
-      Caption = 'Visible Count:'
+      Caption = 'Rows:'
     end
     object Label3: TLabel
       Left = 208
       Top = 8
-      Width = 71
+      Width = 74
       Height = 13
       Caption = 'Shadow offset:'
     end
     object Label4: TLabel
       Left = 304
       Top = 8
-      Width = 27
+      Width = 26
       Height = 13
       Caption = 'Zoom'
     end
     object Label5: TLabel
       Left = 400
       Top = 8
-      Width = 41
+      Width = 42
       Height = 13
       Caption = 'Preview:'
-    end
-    object chkAutoScroll: TCheckBox
-      Left = 576
-      Top = 34
-      Width = 97
-      Height = 17
-      Caption = 'AutoScroll'
-      Checked = True
-      State = cbChecked
-      TabOrder = 0
-      OnClick = chkAutoScrollClick
     end
     object Edit1: TEdit
       Left = 16
       Top = 24
       Width = 65
       Height = 21
-      TabOrder = 1
+      TabOrder = 0
       Text = '1'
     end
     object udColumns: TUpDown
@@ -85,7 +74,7 @@ object Form1: TForm1
       Associate = Edit1
       Min = 1
       Position = 1
-      TabOrder = 2
+      TabOrder = 1
       Wrap = False
       OnClick = udColumnsClick
     end
@@ -94,10 +83,10 @@ object Form1: TForm1
       Top = 24
       Width = 65
       Height = 21
-      TabOrder = 3
+      TabOrder = 2
       Text = '1'
     end
-    object udCount: TUpDown
+    object udRows: TUpDown
       Left = 177
       Top = 24
       Width = 15
@@ -105,16 +94,16 @@ object Form1: TForm1
       Associate = Edit2
       Min = 1
       Position = 1
-      TabOrder = 4
+      TabOrder = 3
       Wrap = False
-      OnClick = udCountClick
+      OnClick = udRowsClick
     end
     object Edit3: TEdit
       Left = 208
       Top = 24
       Width = 65
       Height = 21
-      TabOrder = 5
+      TabOrder = 4
       Text = '4'
     end
     object udShadowWidth: TUpDown
@@ -125,7 +114,7 @@ object Form1: TForm1
       Associate = Edit3
       Min = -100
       Position = 4
-      TabOrder = 6
+      TabOrder = 5
       Wrap = False
       OnClick = udShadowWidthClick
     end
@@ -134,8 +123,8 @@ object Form1: TForm1
       Top = 24
       Width = 65
       Height = 21
-      TabOrder = 7
-      Text = '10'
+      TabOrder = 6
+      Text = '100'
     end
     object udZoom: TUpDown
       Left = 369
@@ -145,30 +134,11 @@ object Form1: TForm1
       Associate = Edit4
       Min = 1
       Max = 1000
-      Position = 10
-      TabOrder = 8
+      Position = 100
+      TabOrder = 7
       Thousands = False
       Wrap = False
       OnClick = udZoomClick
-    end
-    object Button1: TButton
-      Left = 680
-      Top = 24
-      Width = 75
-      Height = 25
-      Anchors = [akRight, akBottom]
-      Caption = 'Printer...'
-      TabOrder = 9
-      OnClick = Button1Click
-    end
-    object chkMargins: TCheckBox
-      Left = 576
-      Top = 16
-      Width = 65
-      Height = 17
-      Caption = 'Margins'
-      TabOrder = 10
-      OnClick = chkMarginsClick
     end
     object cbPreview: TComboBox
       Left = 400
@@ -177,17 +147,49 @@ object Form1: TForm1
       Height = 21
       Style = csDropDownList
       ItemHeight = 13
-      TabOrder = 11
+      TabOrder = 8
       OnChange = cbPreviewChange
       Items.Strings = (
         'Screen'
-        'Form'
         'Printer')
     end
   end
+  object PageControl1: TPageControl
+    Left = 0
+    Top = 0
+    Width = 775
+    Height = 429
+    ActivePage = tabOriginal
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 1
+    object tabOriginal: TTabSheet
+      Caption = 'Original'
+      ImageIndex = 1
+      object reOriginal: TJvRichEdit
+        Left = 0
+        Top = 0
+        Width = 767
+        Height = 401
+        Align = alClient
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Courier New'
+        Font.Style = []
+        ParentFont = False
+        ScrollBars = ssBoth
+        TabOrder = 0
+        WantTabs = True
+      end
+    end
+    object tabPreview: TTabSheet
+      Caption = 'Preview'
+    end
+  end
   object PrinterSetupDialog1: TPrinterSetupDialog
-    Left = 672
-    Top = 368
+    Left = 152
+    Top = 64
   end
   object MainMenu1: TMainMenu
     Left = 96
@@ -199,6 +201,66 @@ object Form1: TForm1
         ShortCut = 16463
         OnClick = Open1Click
       end
+      object N1: TMenuItem
+        Caption = '-'
+      end
+      object Printer1: TMenuItem
+        Caption = 'Printer...'
+        ShortCut = 16464
+        OnClick = Printer1Click
+      end
+      object N2: TMenuItem
+        Caption = '-'
+      end
+      object Exit1: TMenuItem
+        Caption = 'Exit'
+        ShortCut = 32883
+        OnClick = Exit1Click
+      end
     end
+    object View1: TMenuItem
+      Caption = 'View'
+      object First1: TMenuItem
+        Caption = 'First'
+        ShortCut = 16420
+        OnClick = First1Click
+      end
+      object Previous1: TMenuItem
+        Caption = 'Previous'
+        ShortCut = 16417
+        OnClick = Previous1Click
+      end
+      object Next1: TMenuItem
+        Caption = 'Next'
+        ShortCut = 16418
+        OnClick = Next1Click
+      end
+      object Last1: TMenuItem
+        Caption = 'Last'
+        ShortCut = 16419
+        OnClick = Last1Click
+      end
+    end
+    object Options1: TMenuItem
+      Caption = 'Options'
+      object mnuMargins: TMenuItem
+        Caption = 'Margins'
+        Checked = True
+        OnClick = mnuMarginsClick
+      end
+    end
+    object Help1: TMenuItem
+      Caption = 'Help'
+      object About1: TMenuItem
+        Caption = 'About...'
+        OnClick = About1Click
+      end
+    end
+  end
+  object OpenDialog1: TOpenDialog
+    Filter = 'RTF files|*.rtf|All files(*.*)|*.*'
+    InitialDir = '.'
+    Left = 92
+    Top = 112
   end
 end
