@@ -77,14 +77,8 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     {$IFDEF JVCLThemesEnabled}
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-    {$IFDEF VCL}
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
-    {$ENDIF VisualCLX}
     {$ENDIF JVCLThemesEnabled}
   public
     constructor Create(AOwner: TComponent); override;
@@ -219,35 +213,17 @@ begin
   end;
 end;
 
-{$IFDEF VisualCLX}
 procedure TJvArrayButton.MouseEnter(AControl: TControl);
 begin
   inherited MouseEnter(AControl);
   Repaint;
 end;
-{$ENDIF VisualCLX}
-{$IFDEF VCL}
-procedure TJvArrayButton.CMMouseEnter(var Msg: TMessage);
-begin
-  inherited;
-  Repaint;
-end;
-{$ENDIF VCL}
 
-{$IFDEF VisualCLX}
 procedure TJvArrayButton.MouseLeave(AControl: TControl);
 begin
   inherited MouseLeave(AControl);
   Repaint;
 end;
-{$ENDIF VisualCLX}
-{$IFDEF VCL}
-procedure TJvArrayButton.CMMouseLeave(var Msg: TMessage);
-begin
-  inherited;
-  Repaint;
-end;
-{$ENDIF VCL}
 
 {$ENDIF JVCLThemesEnabled}
 
