@@ -739,16 +739,21 @@ procedure IncludeThemeStyle(Control: TControl; Style: TThemeStyle);
 procedure ExcludeThemeStyle(Control: TControl; Style: TThemeStyle);
 function GetThemeStyle(Control: TControl): TThemeStyle;
 
-{ DrawThemedBackground fills R with Canvas.Brush.Color. If the control uses
+
+{ DrawThemedBackground fills R with Canvas.Brush.Color/Color. If the control uses
   csParentBackground and the color is that of it's parent the Rect is not filled
-  because the it is done by the JvThemes/VCL7. }
+  because then it is done by the JvThemes/VCL7. }
 procedure DrawThemedBackground(Control: TControl; Canvas: TCanvas;
   const R: TRect; NeedsParentBackground: Boolean = True); overload;
+procedure DrawThemedBackground(Control: TControl; Canvas: TCanvas;
+  const R: TRect; Color: TColor; NeedsParentBackground: Boolean = True); overload;
 {$IFDEF MSWINDOWS}
 procedure DrawThemedBackground(Control: TControl; DC: HDC; const R: TRect;
   Brush: HBRUSH; NeedsParentBackground: Boolean = True);  overload;
 
-function DrawThemedFrameControl(Control: TControl; DC: HDC; const Rect: TRect; uType, uState: UINT): BOOL;
+{ DrawThemesFrameControl draws a themed frame control when theming is enabled. }
+function DrawThemedFrameControl(Control: TControl; DC: HDC; const Rect: TRect;
+  uType, uState: UINT): BOOL;
 
 { PerformEraseBackground sends a WM_ERASEBKGND message to the Control's parent. }
 procedure PerformEraseBackground(Control: TControl; DC: HDC; Offset: TPoint;
@@ -756,12 +761,18 @@ procedure PerformEraseBackground(Control: TControl; DC: HDC; Offset: TPoint;
 procedure PerformEraseBackground(Control: TControl; DC: HDC; R: PRect = nil); overload;
 {$ENDIF MSWINDOWS}
 
+{ DrawThemedButtonFace draws a themed button when theming is enabled. }
 function DrawThemedButtonFace(Control: TControl; Canvas: TCanvas; const Client: TRect;
   BevelWidth: Integer; Style: TButtonStyle; IsRounded, IsDown,
   IsFocused, IsHot: Boolean): TRect;
 
+{ IsMouseOver returns True if the mouse is over the control. }
 function IsMouseOver(Control: TControl): Boolean;
+
+{ GetParentBackground returns True if the Control has the csParentPackground
+  ControlStyle }
 function GetParentBackground(Control: TWinControl): Boolean;
+{ SetParentBackground sets the Control's csParentPackground ControlStyle }
 procedure SetParentBackground(Control: TWinControl; Value: Boolean);
 
 implementation
@@ -769,27 +780,44 @@ implementation
 procedure DrawThemedBackground(Control: TControl; Canvas: TCanvas;
   const R: TRect; NeedsParentBackground: Boolean = True);
 begin
+  DrawThemedBackground(Control, Canvas, R, Canvas.Brush.Color,
+    NeedsParentBackground);
+end;
+
+procedure DrawThemedBackground(Control: TControl; Canvas: TCanvas;
+  const R: TRect; Color: TColor; NeedsParentBackground: Boolean = True);
+var
+  cl: TColor;
+begin
 {$IFDEF JVCLThemesEnabled}
   if (not (csDesigning in Control.ComponentState)) and
      (Control.Parent <> nil) and
-     ((Canvas.Brush.Color = TWinControlThemeInfo(Control.Parent).Color) or
-     (ColorToRGB(Canvas.Brush.Color) = ColorToRGB(TWinControlThemeInfo(Control.Parent).Color))) and
+     ((Color = TWinControlThemeInfo(Control.Parent).Color) or
+     (ColorToRGB(Color) = ColorToRGB(TWinControlThemeInfo(Control.Parent).Color))) and
      (ThemeServices.ThemesEnabled) and
      ((not NeedsParentBackground) or
      (csParentBackground in GetThemeStyle(Control))) then
-
+  begin
     if Control is TWinControl then
     begin
       if TWinControl(Control).DoubleBuffered then
         PerformEraseBackground(Control, Canvas.Handle, @R)
       else
-        ThemeServices.DrawParentBackground(TWinControl(Control).Handle, Canvas.Handle, nil, False, @R)
+        ThemeServices.DrawParentBackground(TWinControl(Control).Handle, Canvas.Handle, nil, False, @R);
     end
     else
-      PerformEraseBackground(Control.Parent, Canvas.Handle, @R)
+      PerformEraseBackground(Control, Canvas.Handle, @R)
+  end
   else
 {$ENDIF}
-  Canvas.FillRect(R);
+  begin
+    cl := Canvas.Brush.Color;
+    if cl <> Color then
+      Canvas.Brush.Color := Color;
+    Canvas.FillRect(R);
+    if cl <> Canvas.Brush.Color then
+      Canvas.Brush.Color := cl;
+  end;
 end;
 
 {$IFDEF MSWINDOWS}
@@ -809,16 +837,17 @@ begin
      (ThemeServices.ThemesEnabled) and
      ((not NeedsParentBackground) or
      (csParentBackground in GetThemeStyle(Control))) then
-
+  begin
     if Control is TWinControl then
     begin
       if TWinControl(Control).DoubleBuffered then
         PerformEraseBackground(Control, DC, @R)
       else
-        ThemeServices.DrawParentBackground(TWinControl(Control).Handle, DC, nil, False, @R)
+        ThemeServices.DrawParentBackground(TWinControl(Control).Handle, DC, nil, False, @R);
     end
     else
-      PerformEraseBackground(Control.Parent, DC, @R)
+      PerformEraseBackground(Control, DC, @R)
+  end
   else
 {$ENDIF}
   FillRect(DC, R, Brush);
@@ -1194,7 +1223,7 @@ end;
 destructor TThemeHook.Destroy;
 begin
   if FControl is TGraphicControl then
-    FControl.FreeNotification(ThemeHookComponent);
+    FControl.RemoveFreeNotification(ThemeHookComponent);
   inherited Destroy;
 end;
 
@@ -1237,8 +1266,8 @@ end;
 procedure TThemeHook.ExcludeThemeStyle(Style: TThemeStyle);
 begin
   FThemeStyle := FThemeStyle - Style;
-  if (FThemeStyle = []) or
-     (ThemeHooks.FEraseBkgndHooked and (FThemeStyle = [csParentBackground])) then
+  if (FThemeStyle = []) {or
+     (ThemeHooks.FEraseBkgndHooked and (FThemeStyle = [csParentBackground]))} then
     DeleteHook;
 end;
 
@@ -1347,7 +1376,7 @@ procedure TThemeHook.ThemedCtlColorStatic(var Msg: TWMCtlColorStatic; var Handle
 begin
   if csParentBackground in ThemeStyle then
   begin
-    if (Control is TButtonControl) then
+    if (Control is TWinControl)then
     begin
       ThemedEraseBkGnd(TWMEraseBkGnd(Msg), Handled);
       Msg.Result := GetStockObject(NULL_BRUSH);
@@ -1418,9 +1447,8 @@ begin
 end;
 
 function GetDynamicMethod(AClass: TClass; Index: Integer): Pointer; assembler;
-// JclSysUtils code
 asm
-        CALL    System.@FindDynaClass
+  call System.@FindDynaClass
 end;
 
 procedure WMEraseBkgndHook(Self: TWinControl; var Msg: TWMEraseBkgnd);
@@ -1432,7 +1460,7 @@ begin
     if ThemeServices.ThemesEnabled and (csParentBackground in GetThemeStyle(Self)) then
     begin
       R := Self.ClientRect;
-      ThemeServices.DrawParentBackground(Self.Handle, Msg.DC, nil, False, @R)
+      ThemeServices.DrawParentBackground(Self.Handle, Msg.DC, nil, False, @R);
     end
     else
       FillRect(Msg.DC, Self.ClientRect, Self.Brush.Handle);
