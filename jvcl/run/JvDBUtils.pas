@@ -42,7 +42,7 @@ type
 
   EJvScriptError = class(Exception)
     ErrPos: Integer;
-    constructor Create2(AMessage: string; AErrPos: Integer);
+    constructor Create(AMessage: string; AErrPos: Integer);overload;
   end;
 
   TJvLocateObject = class(TObject)
@@ -173,7 +173,7 @@ begin
   DatabaseError(Msg);
 end;
 
-constructor EJvScriptError.Create2(AMessage: string; AErrPos: Integer);
+constructor EJvScriptError.Create(AMessage: string; AErrPos: Integer);
 begin
   inherited Create(AMessage);
   ErrPos := AErrPos;
