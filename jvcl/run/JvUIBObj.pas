@@ -36,7 +36,9 @@ uses
   JvUIBConst, JvUIBLib, Classes;
 
 type
-
+{$IFNDEF COMPILER7_UP}
+  TDate = TDateTime;
+{$ENDIF COMPILER6_UP}
   EJvUIBException = class(Exception);
 
   TJvUIBConnection = class(TInterfacedObject)
@@ -165,7 +167,6 @@ uses
   ZLib;
 
 {$IFNDEF DELPHI6_UP}
-
 const
   OleAutDllName = 'oleaut32.dll';
 
