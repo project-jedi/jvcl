@@ -41,22 +41,24 @@ uses
   JvDynControlEngine, JvDynControlEngineIntf;
 
 type
+
   TCxDynControlWrapper = class(TPersistent)
   private
     FLookAndFeel: TcxLookAndFeel;
     FStyleController: TcxEditStyleController;
   protected
     procedure SetLookAndFeel(Value: TcxLookAndFeel);
+    procedure SetStyleController(Value: TcxEditStyleController);
   public
     constructor Create; virtual;
     destructor Destroy; override;
   published
     property LookAndFeel: TcxLookAndFeel read FLookAndFeel write SetLookAndFeel;
-    property StyleController: TcxEditStyleController read FStyleController write FStyleController;
+    property StyleController: TcxEditStyleController read FStyleController write SetStyleController;
   end;
 
   IJvDynControlDevExpCx = interface
-    ['{247D29CD-ABA4-4F87-A25D-4987BD950F0C}']
+    ['{13F812FE-9F75-4529-8452-45F2D9DE5A91}']
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
   end;
 
@@ -694,6 +696,7 @@ uses
   Variants,
   {$ENDIF COMPILER6_UP}
   cxTextEdit, cxControls,
+  JvDynControlEngineVCL, 
   JvJclUtils, JvBrowseFolder, JvDynControlEngineTools;
 
 var
@@ -705,10 +708,12 @@ constructor TCxDynControlWrapper.Create;
 begin
   inherited Create;
   FLookAndFeel := TcxLookAndFeel.Create(nil);
+//  FStyleController := TcxEditStyleController.Create(nil);
 end;
 
 destructor TCxDynControlWrapper.Destroy;
 begin
+//  FreeAndNil(FStyleController);
   FreeAndNil(FLookAndFeel);
   inherited Destroy;
 end;
@@ -716,6 +721,11 @@ end;
 procedure TCxDynControlWrapper.SetLookAndFeel(Value: TcxLookAndFeel);
 begin
   FLookAndFeel.Assign(Value);
+end;
+
+procedure TCxDynControlWrapper.SetStyleController(Value: TcxEditStyleController);
+begin
+  FStyleController := Value;
 end;
 
 //=== { TJvDynControlCxMaskEdit } ============================================
@@ -2494,12 +2504,12 @@ end;
 procedure TJvDynControlCxLabel.ControlSetWordWrap(Value: Boolean);
 begin
   Properties.WordWrap := Value;
-//  WordWrap := Value;
 end;
 
 procedure TJvDynControlCxLabel.ControlSetCxProperties(Value: TCxDynControlWrapper);
 begin
-//  LookAndFeel.Assign(Value.LookandFeel);
+  Style.LookAndFeel.Assign(Value.LookAndFeel);
+  Style.StyleController := Value.StyleController;
 end;
 
 //=== { TJvDynControlCxStaticText } ==========================================
@@ -2683,12 +2693,16 @@ end;
 procedure TJvDynControlEngineDevExpCx.SetcxProperties(Value: TCxDynControlWrapper);
 begin
   if Value is TCxDynControlWrapper then
-    FCxProperties.LookAndFeel.Assign(Value.LookAndFeel);
+  begin
+    FCxProperties.LookAndFeel := Value.LookAndFeel;
+    FCxProperties.StyleController := Value.StyleController;
+  end;
 end;
 
 procedure TJvDynControlEngineDevExpCx.RegisterControls;
 begin
   RegisterControlType(jctLabel, TJvDynControlCxLabel);
+//  RegisterControlType(jctLabel, TJvDynControlVCLLabel);
   RegisterControlType(jctStaticText, TJvDynControlCxStaticText);
   RegisterControlType(jctButton, TJvDynControlCxButton);
   RegisterControlType(jctRadioButton, TJvDynControlCxRadioButton);
