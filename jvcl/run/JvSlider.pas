@@ -36,7 +36,7 @@ uses
   {$IFDEF LINUX}
   Types,
   {$ENDIF LINUX}
-  SysUtils, Classes,
+  Messages, SysUtils, Classes,
   {$IFDEF VCL}
   Graphics, Controls, ExtCtrls,
   {$ENDIF VCL}
@@ -74,14 +74,17 @@ type
     procedure SetPosition(Value: Integer);
     procedure Loading(Sender: TObject);
   protected
-    procedure SetAutoSize(Value: Boolean); override;
+    procedure WMEraseBkgnd(var Message: TWMEraseBkgnd);
+      message WM_ERASEBKGND;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure Paint; override;
+    function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean; override;
   published
     property ImageRuler: TBitmap read FImageRuler write SetImageRuler;
     property ImageThumb: TBitmap read FImageThumb write SetImageThumb;
@@ -128,6 +131,7 @@ implementation
 constructor TJvSlider.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  ControlStyle := ControlStyle + [csOpaque]; 
   Width := 191;
   Height := 11;
   FImageRuler := TBitmap.Create;
@@ -287,8 +291,15 @@ end;
 procedure TJvSlider.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   Tmp: TBitmap;
+  R:TRect;
+  P:TPoint;
 begin
   FTracking := True;
+  MouseCapture := True;
+  R := ClientRect;
+  P := ClientToScreen(Point(0,0));
+  OffsetRect(R, P.X, P.Y);
+  ClipCursor(@R);
   if Assigned(FOnBeginChange) then
     FOnBeginChange(Self);
   if not FChanged then
@@ -309,6 +320,7 @@ var
 begin
   FTracking := False;
   FChanging := False;
+  ClipCursor(nil);
   if FChanged then
   begin
     Tmp := TBitmap.Create;
@@ -345,7 +357,7 @@ begin
   Src.Right := Dest.Left;
   Src.Bottom := FImageThumb.Height;
   FThumb2.Canvas.CopyRect(Src, FImageThumb.Canvas, Dest);
-  Repaint;
+  Invalidate;
   Calculate;
 end;
 
@@ -367,19 +379,6 @@ begin
   Calculate;
 end;
 
-procedure TJvSlider.SetAutoSize(Value: Boolean);
-begin
-  inherited SetAutoSize(Value);
-  if Value then
-  begin
-    if (FImageRuler.Width > 0) and (FImageRuler.Height > 0) then
-    begin
-      Height := FImageRuler.Height;
-      Width := FImageRuler.Width;
-    end;
-  end;
-end;
-
 procedure TJvSlider.Loading(Sender: TObject);
 begin
   FTimer.Enabled := False;
@@ -387,6 +386,23 @@ begin
   ThumbChanged(Self);
   Calculate;
   FTimer.Free;
+end;
+
+procedure TJvSlider.WMEraseBkgnd(var Message: TWMEraseBkgnd);
+begin
+  Message.Result := 1;
+end;
+
+function TJvSlider.CanAutoSize(var NewWidth, NewHeight: Integer): Boolean;
+begin
+  if AutoSize and (FImageRuler.Width > 0) and (FImageRuler.Height > 0) then
+  begin
+    NewHeight := FImageRuler.Height;
+    NewWidth := FImageRuler.Width;
+    Result := True;
+  end
+  else
+    Result := False;
 end;
 
 end.
