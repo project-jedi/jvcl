@@ -1,11 +1,12 @@
 object JvDirectoryListDialog: TJvDirectoryListDialog
   Left = 206
   Top = 99
-  Width = 358
-  Height = 221
   ActiveControl = AddBtn
+  AutoScroll = False
   BorderIcons = [biSystemMenu]
   Caption = 'Directory list'
+  ClientHeight = 181
+  ClientWidth = 350
   Color = clBtnFace
   Constraints.MinHeight = 221
   Constraints.MinWidth = 358
@@ -27,7 +28,6 @@ object JvDirectoryListDialog: TJvDirectoryListDialog
     0000FF9F0000FF9F0000FF9F0000FF9F0000FF0F0000FE070000FFFF0000}
   OldCreateOrder = True
   Position = poScreenCenter
-  Scaled = False
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
