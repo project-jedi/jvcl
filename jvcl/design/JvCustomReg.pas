@@ -52,6 +52,7 @@ uses
   JvLookOut, JvOutlookBar, JvScheduledEvents, JvThumbImage,
   JvThumbnails, JvThumbviews, JvTimeLine, JvTMTimeLine, JvBalloonHint,
   JvValidateEdit, JvEditor, JvHLEditor, JvHLEditorPropertyForm, JvHLParser,
+  JvImagesViewer, JvImageListViewer, JvOwnerDrawViewer, 
   JvTimeLineEditor, JvHLEditEditor, JvScheduleEditors,
   JvOutlookBarEditors, JvLookoutEditor, JvChart;
 

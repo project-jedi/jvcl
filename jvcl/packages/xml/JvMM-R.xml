@@ -36,7 +36,7 @@
     <File Name="..\..\run\JvId3v2Types.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvImageRotate.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvImageTransform.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvImageWindow.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvImageSquare.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvPcx.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvPicClip.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSlider.pas" Targets="all" Formname="" Condition=""/>

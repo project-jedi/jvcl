@@ -44,7 +44,7 @@ uses
   JvDsgnConsts,
   JvAni, JvAnimate, JvBmpAnimator, JvPicClip, JvIconList,
   JvEasterEgg, JvGradient, JvGradientHeaderPanel, JvId3v1, JvId3v2,
-  JvImageRotate, JvImageTransform, JvImageWindow, JvPcx, JvStarfield,
+  JvImageRotate, JvImageTransform, JvImageSquare, JvPcx, JvStarfield,
   JvWaitingGradient, JvWaitingProgress, JvWavePlayer, JvSpecialProgress,
   {$IFDEF USE_JV_GIF}
   JvGIF, JvGIFCtrl,
