@@ -1,57 +1,101 @@
+{$IFNDEF JEDI_INC}
+{$DEFINE JEDI_INC}
+
 {******************************************************************************}
 {                                                                              }
-{ The contents of this file are subject to the Mozilla Public License Version  }
-{ 1.1 (the "License"); you may not use this file except in compliance with the }
-{ License. You may obtain a copy of the License at http://www.mozilla.org/MPL/ }
+{  The contents of this file are subject to the Mozilla Public License         }
+{  Version 1.1 (the "License"); you may not use this file except in            }
+{  compliance with the License. You may obtain a copy of the License at        }
+{  http://www.mozilla.org/MPL/                                                 }
 {                                                                              }
-{ Software distributed under the License is distributed on an "AS IS" basis,   }
-{ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for }
-{ the specific language governing rights and limitations under the License.    }
+{  Software distributed under the License is distributed on an "AS IS" basis,  }
+{  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License    }
+{  for the specific language governing rights and limitations under the        }
+{  License.                                                                    }
 {                                                                              }
-{ The Original Code is JEDI.INC.                                               }
+{  The Original Code is: jedi.inc.                                             }
+{  The Initial Developer of the Original Code is Project JEDI                  }
+{  http://www.delphi-jedi.org                                                  }
 {                                                                              }
-{ The Initial Developer of the Original Code is Project JEDI                   }
-{ http://www.delphi-jedi.org                                                   }
+{  Alternatively, the contents of this file may be used under the terms of     }
+{  the GNU Lesser General Public License (the  "LGPL License"), in which case  }
+{  the provisions of the LGPL License are applicable instead of those above.   }
+{  If you wish to allow use of your version of this file only under the terms  }
+{  of the LGPL License and not to allow others to use your version of this     }
+{  file under the MPL, indicate your decision by deleting the provisions       }
+{  above and replace them with the notice and other provisions required by     }
+{  the LGPL License. If you do not delete the provisions above, a recipient    }
+{  may use your version of this file under either the MPL or the LGPL License. }
 {                                                                              }
-{******************************************************************************}
-{                                                                              }
-{ This file defines various generic compiler directives used in the JEDI Code  }
-{ Library (JCL) and JEDI Visual Component Library Library (J-VCL). The         }
-{ directives in this file are of generic nature and consist mostly of mappings }
-{ from the VERXXX directives defined by Delphi and C++ Builder to friendly     }
-{ names such as DELPHI5 and SUPPORTS_WIDESTRING. These friendly names are      }
-{ subsequently used in both libraries to test for compiler versions and/or     }
-{ whether the compiler supports certain features (such as widestring's or 64   }
-{ bit integers. Both libraries provide an additional, library specific,        }
-{ include file. For the JCL this is JCL.INC. These files should be included in }
-{ source files instead of this file (which is pulled in automatically).        }
-{                                                                              }
-{ Maintainer: Marcel van Brakel                                                }
-{ Last modified: Nov  23, 2003                                                 }
+{  For more information about the LGPL:                                        }
+{  http://www.gnu.org/copyleft/lesser.html                                     }
 {                                                                              }
 {******************************************************************************}
+{                                                                              }
+{  This file defines various generic compiler directives used in different     }
+{  libraries, e.g. in the JEDI Code Library (JCL) and JEDI Visual Component    }
+{  Library Library (J-VCL). The directives in this file are of generic nature  }
+{  and consist mostly of mappings from the VERXXX directives defined by        }
+{  Delphi, C++ Builder and FPC to friendly names such as DELPHI5 and           }
+{  SUPPORTS_WIDESTRING. These friendly names are subsequently used in the      }
+{  libraries to test for compiler versions and/or whether the compiler         }
+{  supports certain features (such as widestrings or 64 bit integers. The      }
+{  libraries provide an additional, library specific, include file. For the    }
+{  JCL e.g. this is jcl.inc. These files should be included in source files    }
+{  instead of this file (which is pulled in automatically).                    }
+{                                                                              }
+{******************************************************************************}
+
+// Last modified: $Date$
+// For history see end of file
 
 (*
 
 - Development environment directives
 
   This file defines two directives to indicate which development environment the
-  library is being compiled with.
+  library is being compiled with. Currently this can either be Delphi, Kylix,
+  C++ Builder or FPC.
 
-  Directive    Description
+  Directive        Description
   ------------------------------------------------------------------------------
-  DELPHI       Defined if compiled with Delphi
-  BCB          Defined if compiled with C++ Builder
+  DELPHI           Defined if compiled with Delphi
+  KYLIX            Defined if compiled with Kylix
+  DELPHICOMPILER   Defined if compiled with Delphi or Kylix/Delphi
+  BCB              Defined if compiled with C++ Builder
+  CPPBUILDER       Defined if compiled with C++ Builder (alias for BCB)
+  BCBCOMPILER      Defined if compiled with C++ Builder or Kylix/C++
+  DELPHILANGUAGE   Defined if compiled with Delphi, Kylix or C++ Builder
+  BORLAND          Defined if compiled with Delphi, Kylix or C++ Builder
+  FPC              Defined if compiled with FPC
 
 - Platform Directives
 
-  Platform directives are not explicitly defined in this file but are defined
-  by the compiler itself. They are listed here only for completeness.
+  Platform directives are not all explicitly defined in this file, some are
+  defined by the compiler itself. They are listed here only for completeness.
 
   Directive    Description
   ------------------------------------------------------------------------------
+  WIN32        Defined when target platform is 32 bit Windows
   MSWINDOWS    Defined when target platform is 32 bit Windows
   LINUX        Defined when target platform is Linux
+  UNIX         Defined when target platform is Linux or Unix
+
+
+- Visual library Directives
+
+  The following directives indicate for a visual library. In a Delphi
+  application you need to define VisualCLX in the project options, if you want
+  to use the VisualCLX. Alternative you can use the IDE expert, which is distributed
+  with the JCL to do this automatically.
+
+  Directive    Description
+  ------------------------------------------------------------------------------
+  COMPLIB_VCL  Defined when application do not define VisualCLX, obsolete, use VCL
+  COMPLIB_CLX  Defined when application use the VisualCLX, obsolete, use VisualCLX
+  VCL          Defined when application do not define VisualCLX
+  VisualCLX    Defined when application use the VisualCLX
+
 
 - Delphi Versions
 
@@ -76,6 +120,43 @@
   DELPHI6_UP   Defined when compiling with Delphi 6 or higher
   DELPHI7_UP   Defined when compiling with Delphi 7 or higher
 
+
+- Kylix Versions
+
+  The following directives are direct mappings from the VERXXX directives to a
+  friendly name of the associated compiler. These directives are only defined if
+  the compiler is Kylix (ie KYLIX is defined).
+
+  Directive    Description
+  ------------------------------------------------------------------------------
+  KYLIX1       Defined when compiling with Kylix 1
+  KYLIX2       Defined when compiling with Kylix 2
+  KYLIX3       Defined when compiling with Kylix 3
+  KYLIX1_UP    Defined when compiling with Kylix 1 or higher
+  KYLIX2_UP    Defined when compiling with Kylix 2 or higher
+  KYLIX3_UP    Defined when compiling with Kylix 3 or higher
+
+
+- Delphi Compiler Versions (Delphi / Kylix, not in BCB mode)
+
+  Directive           Description
+  ------------------------------------------------------------------------------
+  DELPHICOMPILER1     Defined when compiling with Delphi 1
+  DELPHICOMPILER2     Defined when compiling with Delphi 2
+  DELPHICOMPILER3     Defined when compiling with Delphi 3
+  DELPHICOMPILER4     Defined when compiling with Delphi 4
+  DELPHICOMPILER5     Defined when compiling with Delphi 5
+  DELPHICOMPILER6     Defined when compiling with Delphi 6 or Kylix 1, 2 or 3
+  DELPHICOMPILER7     Defined when compiling with Delphi 7
+  DELPHICOMPILER1_UP  Defined when compiling with Delphi 1 or higher
+  DELPHICOMPILER2_UP  Defined when compiling with Delphi 2 or higher
+  DELPHICOMPILER3_UP  Defined when compiling with Delphi 3 or higher
+  DELPHICOMPILER4_UP  Defined when compiling with Delphi 4 or higher
+  DELPHICOMPILER5_UP  Defined when compiling with Delphi 5 or higher
+  DELPHICOMPILER6_UP  Defined when compiling with Delphi 6 or Kylix 1, 2 or 3 or higher
+  DELPHICOMPILER7_UP  Defined when compiling with Delphi 7 or higher
+
+
 - C++ Builder Versions
 
   The following directives are direct mappings from the VERXXX directives to a
@@ -89,13 +170,12 @@
   BCB4         Defined when compiling with C++ Builder 4
   BCB5         Defined when compiling with C++ Builder 5
   BCB6         Defined when compiling with C++ Builder 6
-  BCB7         Defined when compiling with C++ Builder 7
   BCB1_UP      Defined when compiling with C++ Builder 1 or higher
   BCB3_UP      Defined when compiling with C++ Builder 3 or higher
   BCB4_UP      Defined when compiling with C++ Builder 4 or higher
   BCB5_UP      Defined when compiling with C++ Builder 5 or higher
   BCB6_UP      Defined when compiling with C++ Builder 6 or higher
-  BCB7_UP      Defined when compiling with C++ Builder 7 or higher
+
 
 - Compiler Versions
 
@@ -105,24 +185,49 @@
   That is, they are defined regardless of whether compilation takes place using
   Delphi or C++ Builder.
 
-  Directive    Description
+  Directive     Description
   ------------------------------------------------------------------------------
-  COMPILER1    Defined when compiling with Delphi 1
-  COMPILER2    Defined when compiling with Delphi 2 or C++ Builder 1
-  COMPILER3    Defined when compiling with Delphi 3
-  COMPILER35   Defined when compiling with C++ Builder 3
-  COMPILER4    Defined when compiling with Delphi 4 or C++ Builder 4
-  COMPILER5    Defined when compiling with Delphi 5 or C++ Builder 5
-  COMPILER6    Defined when compiling with Delphi 6 or C++ Builder 6
-  COMPILER7    Defined when compiling with Delphi 7 or C++ Builder 7
-  COMPILER1_UP Defined when compiling with Delphi 1 or higher
-  COMPILER2_UP Defined when compiling with Delphi 2 or C++ Builder 1 or higher
-  COMPILER3_UP Defined when compiling with Delphi 3 or higher
-  COMPILER35UP Defined when compiling with C++ Builder 3 or higher
-  COMPILER4_UP Defined when compiling with Delphi 4 or C++ Builder 4 or higher
-  COMPILER5_UP Defined when compiling with Delphi 5 or C++ Builder 5 or higher
-  COMPILER6_UP Defined when compiling with Delphi 6 or C++ Builder 6 or higher
-  COMPILER7_UP Defined when compiling with Delphi 7 or C++ Builder 6 or higher
+  COMPILER1     Defined when compiling with Delphi 1
+  COMPILER2     Defined when compiling with Delphi 2 or C++ Builder 1
+  COMPILER3     Defined when compiling with Delphi 3
+  COMPILER35    Defined when compiling with C++ Builder 3
+  COMPILER4     Defined when compiling with Delphi 4 or C++ Builder 4
+  COMPILER5     Defined when compiling with Delphi 5 or C++ Builder 5
+  COMPILER6     Defined when compiling with Delphi 6 or C++ Builder 6
+  COMPILER7     Defined when compiling with Delphi 7
+  COMPILER1_UP  Defined when compiling with Delphi 1 or higher
+  COMPILER2_UP  Defined when compiling with Delphi 2 or C++ Builder 1 or higher
+  COMPILER3_UP  Defined when compiling with Delphi 3 or higher
+  COMPILER35_UP Defined when compiling with C++ Builder 3 or higher
+  COMPILER4_UP  Defined when compiling with Delphi 4 or C++ Builder 4 or higher
+  COMPILER5_UP  Defined when compiling with Delphi 5 or C++ Builder 5 or higher
+  COMPILER6_UP  Defined when compiling with Delphi 6 or C++ Builder 6 or higher
+  COMPILER7_UP  Defined when compiling with Delphi 7
+
+
+- RTL Versions
+
+  Use e.g. following to determine the exact RTL version since version 14.0:
+    {$IFDEF CONDITIONALEXPRESSIONS}
+      {$IF Declared(RTLVersion) and (RTLVersion >= 14.2)}
+        // code for Delphi 6.02 or later, Kylix 2 or later, C++ Builder 6 or later
+        ...
+      {$IFEND}
+    {$ENDIF}
+
+  Directive     Description
+  ------------------------------------------------------------------------------
+  RTL80_UP      Defined when compiling with Delphi 1 or later
+  RTL90_UP      Defined when compiling with Delphi 2 or later
+  RTL93_UP      Defined when compiling with C++ Builder 1 or later
+  RTL100_UP     Defined when compiling with Delphi 3 or later
+  RTL110_UP     Defined when compiling with C++ Builder 3 or later
+  RTL120_UP     Defined when compiling with Delphi 4 or later
+  RTL125_UP     Defined when compiling with C++ Builder 4 or later
+  RTL130_UP     Defined when compiling with Delphi 5 or C++ Builder 5 or later
+  RTL140_UP     Defined when compiling with Delphi 6, Kylix 1, 2 or 3 or C++ Builder 6 or later
+  RTL150_UP     Defined when compiling with Delphi 7 or later
+
 
 - Feature Directives
 
@@ -133,14 +238,48 @@
 
   Directive              Description
   ------------------------------------------------------------------------------
-  SUPPORTS_WIDESTRING    Compiler supports the WideString type (D3/BCB3 up)
-  SUPPORTS_INTERFACE     Compiler supports interfaces (D3/BCB3)
-  SUPPORTS_EXTSYM        Compiler supports the $EXTERNALSYM directive (D4/BCB3)
-  SUPPORTS_NODEFINE      Compiler supports the $NODEFINE directive (D4/BCB3)
-  SUPPORTS_INT64         Compiler supports the Int64 type (D4/BCB4)
-  SUPPORTS_DYNAMICARRAYS Compiler supports dynamic arrays (D4/BCB4)
-  SUPPORTS_DEFAULTPARAMS Compiler supports default parameters (D4/BCB4)
-  SUPPORTS_OVERLOAD      Compiler supports overloading (D4/BCB4)
+  SUPPORTS_CONSTPARAMS          Compiler supports const parameters (D1+)
+  SUPPORTS_SINGLE               Compiler supports the Single type (D1+)
+  SUPPORTS_DOUBLE               Compiler supports the Double type (D1+)
+  SUPPORTS_EXTENDED             Compiler supports the Extended type (D1+)
+  SUPPORTS_CURRENCY             Compiler supports the Currency type (D2+)
+  SUPPORTS_THREADVAR            Compiler supports threadvar declarations (D2+)
+  SUPPORTS_OUTPARAMS            Compiler supports out parameters (D3+)
+  SUPPORTS_VARIANT              Compiler supports variant (D2+)
+  SUPPORTS_WIDECHAR             Compiler supports the WideChar type (D2+)
+  SUPPORTS_WIDESTRING           Compiler supports the WideString type (D3+/BCB3+)
+  SUPPORTS_INTERFACE            Compiler supports interfaces (D3+/BCB3+)
+  SUPPORTS_DISPINTERFACE        Compiler supports dispinterfaces (D3+/BCB3+)
+  SUPPORTS_EXTSYM               Compiler supports the $EXTERNALSYM directive (D4+/BCB3+)
+  SUPPORTS_NODEFINE             Compiler supports the $NODEFINE directive (D4+/BCB3+)
+  SUPPORTS_LONGWORD             Compiler supports the LongWord type (unsigned 32 bit) (D4+/BCB4+)
+  SUPPORTS_INT64                Compiler supports the Int64 type (D4+/BCB4+)
+  SUPPORTS_DYNAMICARRAYS        Compiler supports dynamic arrays (D4+/BCB4+)
+  SUPPORTS_DEFAULTPARAMS        Compiler supports default parameters (D4+/BCB4+)
+  SUPPORTS_OVERLOAD             Compiler supports overloading (D4+/BCB4+)
+  SUPPORTS_IMPLEMENTS           Compiler supports implements (D4+/BCB4+)
+  SUPPORTS_DEPRECATED           Compiler supports the deprecated directive (D6+/BCB6+)
+  SUPPORTS_PLATFORM             Compiler supports the platform directive (D6+/BCB6+)
+  SUPPORTS_LIBRARY              Compiler supports the library directive (D6+/BCB6+)
+  SUPPORTS_LOCAL                Compiler supports the local directive (D6+/BCB6+)
+  ACCEPT_DEPRECATED             Compiler supports or ignore the deprecated directive (D6/BCB6/FPC)
+  ACCEPT_PLATFORM               Compiler supports or ignore the platform directive (D6+/BCB6+)
+  ACCEPT_LIBRARY                Compiler supports or ignore the library directive (D6+/BCB6+)
+  SUPPORTS_CUSTOMVARIANTS       Compiler supports custom variants (D6+/BCB6+)
+  SUPPORTS_VARARGS              Compiler supports varargs (D6+/BCB6+)
+  SUPPORTS_ENUMVALUE            Compiler supports values for enums (D6+/BCB6+)
+  SUPPORTS_DEPRECATED_WARNINGS  Compiler supports deprecated warnings (D6+/BCB6+)
+  SUPPORTS_LIBRARY_WARNINGS     Compiler supports library warnings (D6+/BCB6+)
+  SUPPORTS_PLATFORM_WARNINGS    Compiler supports platform warnings (D6+/BCB6+)
+  SUPPORTS_UNSAFE_WARNINGS      Compiler supports unsafe warnings (D7)
+  SUPPORTS_WEAKPACKAGEUNIT      Compiler supports the WEAKPACKAGEUNIT directive
+  SUPPORTS_COMPILETIME_MESSAGES Compiler supports the MESSAGE directive
+  HAS_UNIT_LIBC                 The unit Libc exists (Kylix, FPC on Linux)
+  HAS_UNIT_RTLCONSTS            The unit RTLConsts exists (D6+/BCB6+)
+  HAS_UNIT_TYPES                The unit Types exists (D6+/BCB6+)
+  HAS_UNIT_VARIANTS             The unit Variants exists (D6+/BCB6+)
+  HAS_UNIT_STRUTILS             The unit StrUtils exists (D6+/BCB6+)
+  XPLATFORM_RTL                 The RTL supports crossplatform function names (e.g. RaiseLastOSError) (D6+/BCB6+/FPC)
 
 - Compiler Settings
 
@@ -169,127 +308,128 @@
   VARSTRINGCHECKS_ON     Compiling in the V+ state (type checking of shortstrings)
   STACKFRAMES_ON         Compiling in the W+ state (generation of stack frames)
   EXTENDEDSYNTAX_ON      Compiling in the X+ state (Delphi extended syntax enabled)
-
 *)
 
-//------------------------------------------------------------------------------
-// Compiler settings
-//------------------------------------------------------------------------------
+{$DEFINE BORLAND}
 
-{$IFOPT A+} {$DEFINE ALIGN_ON} {$ENDIF}
-{$IFOPT B+} {$DEFINE BOOLEVAL_ON} {$ENDIF}
-{$IFOPT C+} {$DEFINE ASSERTIONS_ON} {$ENDIF}
-{$IFOPT D+} {$DEFINE DEBUGINFO_ON} {$ENDIF}
-{$IFOPT G+} {$DEFINE IMPORTEDDATA_ON} {$ENDIF}
-{$IFOPT H+} {$DEFINE LONGSTRINGS_ON} {$ENDIF}
-//HINTS
-{$IFOPT I+} {$DEFINE IOCHECKS_ON} {$ENDIF}
-{$IFOPT J+} {$DEFINE WRITEABLECONST_ON} {$ENDIF}
-{$IFOPT L+} {$DEFINE LOCALSYMBOLS} {$ENDIF}
-{$IFOPT M+} {$DEFINE TYPEINFO_ON} {$ENDIF}
-{$IFOPT O+} {$DEFINE OPTIMIZATION_ON} {$ENDIF}
-{$IFOPT P+} {$DEFINE OPENSTRINGS_ON} {$ENDIF}
-{$IFOPT Q+} {$DEFINE OVERFLOWCHECKS_ON} {$ENDIF}
-{$IFOPT R+} {$DEFINE RANGECHECKS_ON} {$ENDIF}
-//REALCOMPATIBILITY
-{$IFOPT T+} {$DEFINE TYPEDADDRESS_ON} {$ENDIF}
-{$IFOPT U+} {$DEFINE SAFEDIVIDE_ON} {$ENDIF}
-{$IFOPT V+} {$DEFINE VARSTRINGCHECKS_ON} {$ENDIF}
-{$IFOPT W+} {$DEFINE STACKFRAMES_ON} {$ENDIF}
-//WARNINGS
-{$IFOPT X+} {$DEFINE EXTENDEDSYNTAX_ON} {$ENDIF}
+{ Set FreePascal to Delphi mode }
+{$IFDEF FPC}
+  {$MODE DELPHI}
+  {$ASMMODE Intel}
+  {$UNDEF BORLAND}
+{$ENDIF}
 
-//------------------------------------------------------------------------------
-// VERXXX to COMPILERX, DELPHIX and BCBX mappings
-//------------------------------------------------------------------------------
-{$IFDEF VER160}
-  {$DEFINE COMPILER8}
+{$IFDEF BORLAND}
+  {$IFDEF LINUX}
+    {$DEFINE KYLIX}
+  {$ENDIF LINUX}
+{$ENDIF BORLAND}
+
+{------------------------------------------------------------------------------}
+{ VERXXX to COMPILERX, DELPHIX and BCBX mappings                               }
+{------------------------------------------------------------------------------}
+
+{$IFDEF BORLAND}
+  {$IFDEF KYLIX}
+    {$I kylix.inc} // FPC incompatible stuff
+  {$ELSE ~KYLIX}
+  
+    {$IFDEF VER150}
+      {$DEFINE COMPILER7}
+      {$IFDEF BCB}
+        {$DEFINE BCB7}
+      {$ELSE}
+        {$DEFINE DELPHI7}
+        {$DEFINE DELPHICOMPILER7}
+      {$ENDIF}
+      {$DEFINE RTL150_UP}
+    {$ENDIF}
+
+    {$IFDEF VER140}
+      {$DEFINE COMPILER6}
+      {$IFDEF BCB}
+        {$DEFINE BCB6}
+      {$ELSE}
+        {$DEFINE DELPHI6}
+        {$DEFINE DELPHICOMPILER6}
+      {$ENDIF}
+      {$DEFINE RTL140_UP}
+    {$ENDIF}
+
+    {$IFDEF VER130}
+      {$DEFINE COMPILER5}
+      {$IFDEF BCB}
+        {$DEFINE BCB5}
+      {$ELSE}
+        {$DEFINE DELPHI5}
+        {$DEFINE DELPHICOMPILER5}
+      {$ENDIF}
+      {$DEFINE RTL130_UP}
+    {$ENDIF}
+
+    {$IFDEF VER125}
+      {$DEFINE COMPILER4}
+      {$DEFINE BCB4}
+      {$DEFINE BCB}
+      {$DEFINE RTL125_UP}
+    {$ENDIF}
+
+    {$IFDEF VER120}
+      {$DEFINE COMPILER4}
+      {$DEFINE DELPHI4}
+      {$DEFINE DELPHICOMPILER4}
+      {$DEFINE RTL120_UP}
+    {$ENDIF}
+
+    {$IFDEF VER110}
+      {$DEFINE COMPILER35}
+      {$DEFINE BCB3}
+      {$DEFINE RTL110_UP}
+    {$ENDIF}
+
+    {$IFDEF VER100}
+      {$DEFINE COMPILER3}
+      {$DEFINE DELPHI3}
+      {$DEFINE DELPHICOMPILER3}
+      {$DEFINE RTL100_UP}
+    {$ENDIF}
+
+    {$IFDEF VER93}
+      {$DEFINE COMPILER2}
+      {$DEFINE BCB1}
+      {$DEFINE BCB}
+      {$DEFINE RTL93_UP}
+    {$ENDIF}
+
+    {$IFDEF VER90}
+      {$DEFINE COMPILER2}
+      {$DEFINE DELPHI2}
+      {$DEFINE DELPHICOMPILER2}
+      {$DEFINE RTL90_UP}
+    {$ENDIF}
+
+    {$IFDEF VER80}
+      {$DEFINE COMPILER1}
+      {$DEFINE DELPHI1}
+      {$DEFINE DELPHICOMPILER1}
+      {$DEFINE RTL80_UP}
+    {$ENDIF}
+
+  {$ENDIF ~KYLIX}
+
   {$IFDEF BCB}
-    {$DEFINE BCB8}
-    {$DEFINE BCB}
-  {$ELSE}
-    {$DEFINE DELPHI8}
+    {$DEFINE CPPBUILDER}
+    {$DEFINE BCBCOMPILER}
+  {$ELSE ~BCB}
     {$DEFINE DELPHI}
-  {$ENDIF}
-{$ENDIF}
-{$IFDEF VER150}
-  {$DEFINE COMPILER7}
-  {$IFDEF BCB}
-    {$DEFINE BCB7}
-    {$DEFINE BCB}
-  {$ELSE}
-    {$DEFINE DELPHI7}
-    {$DEFINE DELPHI}
-  {$ENDIF}
-{$ENDIF}
+    {$DEFINE DELPHICOMPILER}
+  {$ENDIF ~BCB}
 
-{$IFDEF VER140}
-  {$DEFINE COMPILER6}
-  {$IFDEF BCB}
-    {$DEFINE BCB6}
-    {$DEFINE BCB}
-  {$ELSE}
-    {$DEFINE DELPHI6}
-    {$DEFINE DELPHI}
-  {$ENDIF}
-{$ENDIF}
+{$ENDIF BORLAND}
 
-{$IFDEF VER130}
-  {$DEFINE COMPILER5}
-  {$IFDEF BCB}
-    {$DEFINE BCB5}
-    {$DEFINE BCB}
-  {$ELSE}
-    {$DEFINE DELPHI5}
-    {$DEFINE DELPHI}
-  {$ENDIF}
-{$ENDIF}
-
-{$IFDEF VER125}
-  {$DEFINE COMPILER4}
-  {$DEFINE BCB4}
-  {$DEFINE BCB}
-{$ENDIF}
-
-{$IFDEF VER120}
-  {$DEFINE COMPILER4}
-  {$DEFINE DELPHI4}
-  {$DEFINE DELPHI}
-{$ENDIF}
-
-{$IFDEF VER110}
-  {$DEFINE COMPILER35}
-  {$DEFINE BCB3}
-  {$DEFINE BCB}
-{$ENDIF}
-
-{$IFDEF VER100}
-  {$DEFINE COMPILER3}
-  {$DEFINE DELPHI3}
-  {$DEFINE DELPHI}
-{$ENDIF}
-
-{$IFDEF VER93}
-  {$DEFINE COMPILER2}
-  {$DEFINE BCB1}
-  {$DEFINE BCB}
-{$ENDIF}
-
-{$IFDEF VER90}
-  {$DEFINE COMPILER2}
-  {$DEFINE DELPHI2}
-  {$DEFINE DELPHI}
-{$ENDIF}
-
-{$IFDEF VER80}
-  {$DEFINE COMPILER1}
-  {$DEFINE DELPHI1}
-  {$DEFINE DELPHI}
-{$ENDIF}
-
-//------------------------------------------------------------------------------
-// DELPHIX_UP from DELPHIX mappings
-//------------------------------------------------------------------------------
+{------------------------------------------------------------------------------}
+{ DELPHIX_UP from DELPHIX mappings                                             }
+{------------------------------------------------------------------------------}
 
 {$IFDEF DELPHI7}
   {$DEFINE DELPHI7_UP}
@@ -340,9 +480,28 @@
   {$DEFINE DELPHI1_UP}
 {$ENDIF}
 
-//------------------------------------------------------------------------------
-// BCBX_UP from BCBX mappings
-//------------------------------------------------------------------------------
+{------------------------------------------------------------------------------}
+{ KYLIXX_UP from DELPHIX mappings                                              }
+{------------------------------------------------------------------------------}
+
+{$IFDEF KYLIX3}
+  {$DEFINE KYLIX3_UP}
+  {$DEFINE KYLIX2_UP}
+  {$DEFINE KYLIX1_UP}
+{$ENDIF}
+
+{$IFDEF KYLIX2}
+  {$DEFINE KYLIX2_UP}
+  {$DEFINE KYLIX1_UP}
+{$ENDIF}
+
+{$IFDEF KYLIX1}
+  {$DEFINE KYLIX1_UP}
+{$ENDIF}
+
+{------------------------------------------------------------------------------}
+{ BCBX_UP from BCBX mappings                                                   }
+{------------------------------------------------------------------------------}
 
 {$IFDEF BCB7}
   {$DEFINE BCB7_UP}
@@ -383,24 +542,62 @@
   {$DEFINE BCB1_UP}
 {$ENDIF}
 
-//------------------------------------------------------------------------------
-// COMPILERX_UP from COMPILERX mappings
-//------------------------------------------------------------------------------
+{------------------------------------------------------------------------------}
+{ DELPHICOMPILERX_UP from DELPHICOMPILERX mappings                             }
+{------------------------------------------------------------------------------}
 
-
-{$IFDEF COMPILER8}
-  {$DEFINE MSWINDOWS}
-  {$DEFINE DOTNET}
-  {$DEFINE COMPILER8_UP}
-  {$DEFINE COMPILER7_UP}
-  {$DEFINE COMPILER6_UP}
-  {$DEFINE COMPILER5_UP}
-  {$DEFINE COMPILER4_UP}
-  {$DEFINE COMPILER35_UP}
-  {$DEFINE COMPILER3_UP}
-  {$DEFINE COMPILER2_UP}
-  {$DEFINE COMPILER1_UP}
+{$IFDEF DELPHICOMPILER7}
+  {$DEFINE DELPHICOMPILER7_UP}
+  {$DEFINE DELPHICOMPILER6_UP}
+  {$DEFINE DELPHICOMPILER5_UP}
+  {$DEFINE DELPHICOMPILER4_UP}
+  {$DEFINE DELPHICOMPILER3_UP}
+  {$DEFINE DELPHICOMPILER2_UP}
+  {$DEFINE DELPHICOMPILER1_UP}
 {$ENDIF}
+
+{$IFDEF DELPHICOMPILER6}
+  {$DEFINE DELPHICOMPILER6_UP}
+  {$DEFINE DELPHICOMPILER5_UP}
+  {$DEFINE DELPHICOMPILER4_UP}
+  {$DEFINE DELPHICOMPILER3_UP}
+  {$DEFINE DELPHICOMPILER2_UP}
+  {$DEFINE DELPHICOMPILER1_UP}
+{$ENDIF}
+
+{$IFDEF DELPHICOMPILER5}
+  {$DEFINE DELPHICOMPILER5_UP}
+  {$DEFINE DELPHICOMPILER4_UP}
+  {$DEFINE DELPHICOMPILER3_UP}
+  {$DEFINE DELPHICOMPILER2_UP}
+  {$DEFINE DELPHICOMPILER1_UP}
+{$ENDIF}
+
+{$IFDEF DELPHICOMPILER4}
+  {$DEFINE DELPHICOMPILER4_UP}
+  {$DEFINE DELPHICOMPILER3_UP}
+  {$DEFINE DELPHICOMPILER2_UP}
+  {$DEFINE DELPHICOMPILER1_UP}
+{$ENDIF}
+
+{$IFDEF DELPHICOMPILER3}
+  {$DEFINE DELPHICOMPILER3_UP}
+  {$DEFINE DELPHICOMPILER2_UP}
+  {$DEFINE DELPHICOMPILER1_UP}
+{$ENDIF}
+
+{$IFDEF DELPHICOMPILER2}
+  {$DEFINE DELPHICOMPILER2_UP}
+  {$DEFINE DELPHICOMPILER1_UP}
+{$ENDIF}
+
+{$IFDEF DELPHICOMPILER1}
+  {$DEFINE DELPHICOMPILER1_UP}
+{$ENDIF}
+
+{------------------------------------------------------------------------------}
+{ COMPILERX_UP from COMPILERX mappings                                         }
+{------------------------------------------------------------------------------}
 
 {$IFDEF COMPILER7}
   {$DEFINE COMPILER7_UP}
@@ -462,51 +659,319 @@
   {$DEFINE COMPILER1_UP}
 {$ENDIF}
 
-//------------------------------------------------------------------------------
-// Map COMPILERX_UP to friendly feature names
-//------------------------------------------------------------------------------
+{------------------------------------------------------------------------------}
+
+{$IFDEF DELPHICOMPILER}
+  {$DEFINE DELPHILANGUAGE}
+{$ENDIF}
+
+{$IFDEF BCBCOMPILER}
+  {$DEFINE DELPHILANGUAGE}
+{$ENDIF}
+
+{------------------------------------------------------------------------------}
+{ RTLX_UP from RTLX_UP mappings                                                }
+{------------------------------------------------------------------------------}
+
+{$IFDEF RTL150_UP}
+  {$DEFINE RTL145_UP}
+{$ENDIF}
+
+{$IFDEF RTL145_UP}
+  {$DEFINE RTL142_UP}
+{$ENDIF}
+
+{$IFDEF RTL142_UP}
+  {$DEFINE RTL140_UP}
+{$ENDIF}
+
+{$IFDEF RTL140_UP}
+  {$DEFINE RTL130_UP}
+{$ENDIF}
+
+{$IFDEF RTL130_UP}
+  {$DEFINE RTL125_UP}
+{$ENDIF}
+
+{$IFDEF RTL125_UP}
+  {$DEFINE RTL120_UP}
+{$ENDIF}
+
+{$IFDEF RTL120_UP}
+  {$DEFINE RTL110_UP}
+{$ENDIF}
+
+{$IFDEF RTL110_UP}
+  {$DEFINE RTL100_UP}
+{$ENDIF}
+
+{$IFDEF RTL100_UP}
+  {$DEFINE RTL93_UP}
+{$ENDIF}
+
+{$IFDEF RTL93_UP}
+  {$DEFINE RTL90_UP}
+{$ENDIF}
+
+{$IFDEF RTL90_UP}
+  {$DEFINE RTL80_UP}
+{$ENDIF}
+
+{------------------------------------------------------------------------------}
+{ Map COMPILERX_UP to friendly feature names                                   }
+{------------------------------------------------------------------------------}
+
+{$IFDEF FPC}
+  {$IFDEF  VER1_0}
+     Please use FPC 1.1 or later to compile this.
+  {$ELSE}
+    {$DEFINE SUPPORTS_OUTPARAMS}
+    {$DEFINE SUPPORTS_WIDECHAR}
+    {$DEFINE SUPPORTS_WIDESTRING}
+    {$IFDEF HASINTF}
+      {$DEFINE SUPPORTS_INTERFACE}
+    {$ENDIF}
+    {$IFDEF HASVARIANT}
+      {$DEFINE SUPPORTS_VARIANT}
+    {$ENDIF}
+    {$IFDEF FPC_HAS_TYPE_SINGLE}
+      {$DEFINE SUPPORTS_SINGLE}
+    {$ENDIF}
+    {$IFDEF FPC_HAS_TYPE_DOUBLE}
+      {$DEFINE SUPPORTS_DOUBLE}
+    {$ENDIF}
+    {$IFDEF FPC_HAS_TYPE_EXTENDED}
+      {$DEFINE SUPPORTS_EXTENDED}
+    {$ENDIF}
+    {$IFDEF HASCURRENCY}
+      {$DEFINE SUPPORTS_CURRENCY}
+    {$ENDIF}
+    {$DEFINE SUPPORTS_THREADVAR}
+    {$DEFINE SUPPORTS_CONSTPARAMS}
+    {$DEFINE SUPPORTS_LONGWORD}
+    {$DEFINE SUPPORTS_INT64}
+    {$DEFINE SUPPORTS_DYNAMICARRAYS}
+    {$DEFINE SUPPORTS_DEFAULTPARAMS}
+    {$DEFINE SUPPORTS_OVERLOAD}
+    {$DEFINE ACCEPT_DEPRECATED}
+    {$DEFINE ACCEPT_PLATFORM}
+    {$DEFINE ACCEPT_LIBRARY}
+    {$DEFINE SUPPORTS_EXTSYM}
+    {$DEFINE SUPPORTS_NODEFINE}
+    {$DEFINE SUPPORTS_COMPILETIME_MESSAGES}
+
+    {$DEFINE SUPPORTS_CUSTOMVARIANTS}
+    {$DEFINE SUPPORTS_VARARGS}
+    {$DEFINE SUPPORTS_ENUMVALUE}
+    {$IFDEF LINUX}
+      {$DEFINE HAS_UNIT_LIBC}
+    {$ENDIF LINUX}
+    {$DEFINE HAS_UNIT_TYPES}
+    {$DEFINE HAS_UNIT_VARIANTS}
+    {$DEFINE HAS_UNIT_STRUTILS}
+
+    {$DEFINE XPLATFORM_RTL}
+
+    {$UNDEF SUPPORTS_DISPINTERFACE}
+    {$UNDEF SUPPORTS_IMPLEMENTS}
+    {$UNDEF SUPPORTS_UNSAFE_WARNINGS}
+  {$ENDIF}
+{$ENDIF FPC}
+
+{$IFDEF COMPILER1_UP}
+  {$DEFINE SUPPORTS_CONSTPARAMS}
+  {$DEFINE SUPPORTS_SINGLE}
+  {$DEFINE SUPPORTS_DOUBLE}
+  {$DEFINE SUPPORTS_EXTENDED}
+{$ENDIF COMPILER1_UP}
+
+{$IFDEF COMPILER2_UP}
+  {$DEFINE SUPPORTS_CURRENCY}
+  {$DEFINE SUPPORTS_THREADVAR}
+  {$DEFINE SUPPORTS_VARIANT}
+  {$DEFINE SUPPORTS_WIDECHAR}
+{$ENDIF COMPILER2_UP}
 
 {$IFDEF COMPILER3_UP}
+  {$DEFINE SUPPORTS_OUTPARAMS}
   {$DEFINE SUPPORTS_WIDESTRING}
   {$DEFINE SUPPORTS_INTERFACE}
-{$ENDIF}
+  {$DEFINE SUPPORTS_DISPINTERFACE}
+  {$DEFINE SUPPORTS_WEAKPACKAGEUNIT}
+{$ENDIF COMPILER3_UP}
 
 {$IFDEF COMPILER35_UP}
   {$DEFINE SUPPORTS_EXTSYM}
   {$DEFINE SUPPORTS_NODEFINE}
-{$ENDIF}
+{$ENDIF COMPILER35_UP}
 
 {$IFDEF COMPILER4_UP}
+  {$DEFINE SUPPORTS_LONGWORD}
   {$DEFINE SUPPORTS_INT64}
   {$DEFINE SUPPORTS_DYNAMICARRAYS}
   {$DEFINE SUPPORTS_DEFAULTPARAMS}
   {$DEFINE SUPPORTS_OVERLOAD}
-{$ENDIF}
+  {$DEFINE SUPPORTS_IMPLEMENTS}
+{$ENDIF COMPILER4_UP}
 
 {$IFDEF COMPILER6_UP}
   {$DEFINE SUPPORTS_DEPRECATED}
   {$DEFINE SUPPORTS_LIBRARY}
   {$DEFINE SUPPORTS_PLATFORM}
+  {$DEFINE SUPPORTS_LOCAL}
+  {$DEFINE ACCEPT_DEPRECATED}
+  {$DEFINE ACCEPT_PLATFORM}
+  {$DEFINE ACCEPT_LIBRARY}
+  {$DEFINE SUPPORTS_DEPRECATED_WARNINGS}
+  {$DEFINE SUPPORTS_LIBRARY_WARNINGS}
+  {$DEFINE SUPPORTS_PLATFORM_WARNINGS}
   {$DEFINE SUPPORTS_CUSTOMVARIANTS}
-  {$DEFINE HAS_UNIT_RTLCONSTS}
-  {$DEFINE HAS_UNIT_STRUTILS}
-  {$DEFINE HAS_UNIT_TYPES}
-  {$DEFINE HAS_UNIT_VARIANTS}
+  {$DEFINE SUPPORTS_VARARGS}
+  {$DEFINE SUPPORTS_ENUMVALUE}
+  {$DEFINE SUPPORTS_COMPILETIME_MESSAGES}
 {$ENDIF COMPILER6_UP}
 
-//------------------------------------------------------------------------------
-// Cross-platform related defines
-//------------------------------------------------------------------------------
+{$IFDEF COMPILER7_UP}
+  {$DEFINE SUPPORTS_UNSAFE_WARNINGS}
+{$ENDIF COMPILER7_UP}
+
+{$IFDEF RTL140_UP}
+  {$IFDEF LINUX}
+    {$DEFINE HAS_UNIT_LIBC}
+  {$ENDIF LINUX}
+  {$DEFINE HAS_UNIT_RTLCONSTS}
+  {$DEFINE HAS_UNIT_TYPES}
+  {$DEFINE HAS_UNIT_VARIANTS}
+  {$DEFINE HAS_UNIT_STRUTILS}
+  {$DEFINE XPLATFORM_RTL}
+{$ENDIF RTL140_UP}
+
+{------------------------------------------------------------------------------}
+{ Cross-platform related defines                                               }
+{------------------------------------------------------------------------------}
 
 {$IFDEF WIN32}
   {$DEFINE MSWINDOWS}
 {$ENDIF}
 
-{$IFDEF LINUX}
-  {$DEFINE UNIX}
-  {$DEFINE VisualCLX}
-{$ENDIF}
+{$IFDEF DELPHILANGUAGE}
+  {$IFDEF LINUX}
+    {$DEFINE UNIX}
+    {$DEFINE VisualCLX}
+  {$ENDIF}
 
-{$IFNDEF VisualCLX}
-  {$DEFINE VCL}
+  {$IFNDEF VisualCLX}
+    {$DEFINE VCL}
+  {$ENDIF}
+
+  {$IFDEF VisualCLX}
+    {$DEFINE COMPLIB_CLX} { kept for backward compatibility, use VisualCLX instead }
+  {$ENDIF}
+
+  {$IFDEF VCL}
+    {$DEFINE COMPLIB_VCL} { kept for backward compatibility, use VCL instead }
+  {$ENDIF}
+{$ENDIF DELPHILANGUAGE}
+
+{------------------------------------------------------------------------------}
+{ Compiler settings                                                            }
+{------------------------------------------------------------------------------}
+
+{$IFOPT A+} {$DEFINE ALIGN_ON} {$ENDIF}
+{$IFOPT B+} {$DEFINE BOOLEVAL_ON} {$ENDIF}
+{$IFDEF COMPILER2_UP}
+  {$IFOPT C+} {$DEFINE ASSERTIONS_ON} {$ENDIF}
 {$ENDIF}
+{$IFOPT D+} {$DEFINE DEBUGINFO_ON} {$ENDIF}
+{$IFOPT G+} {$DEFINE IMPORTEDDATA_ON} {$ENDIF}
+{$IFDEF COMPILER2_UP}
+  {$IFOPT H+} {$DEFINE LONGSTRINGS_ON} {$ENDIF}
+{$ENDIF}
+{ HINTS }
+{$IFOPT I+} {$DEFINE IOCHECKS_ON} {$ENDIF}
+{$IFDEF COMPILER2_UP}
+  {$IFOPT J+} {$DEFINE WRITEABLECONST_ON} {$ENDIF}
+{$ENDIF}
+{$IFOPT L+} {$DEFINE LOCALSYMBOLS} {$ENDIF}
+{$IFOPT M+} {$DEFINE TYPEINFO_ON} {$ENDIF}
+{$IFOPT O+} {$DEFINE OPTIMIZATION_ON} {$ENDIF}
+{$IFOPT P+} {$DEFINE OPENSTRINGS_ON} {$ENDIF}
+{$IFOPT Q+} {$DEFINE OVERFLOWCHECKS_ON} {$ENDIF}
+{$IFOPT R+} {$DEFINE RANGECHECKS_ON} {$ENDIF}
+{ REALCOMPATIBILITY }
+{$IFOPT T+} {$DEFINE TYPEDADDRESS_ON} {$ENDIF}
+{$IFOPT U+} {$DEFINE SAFEDIVIDE_ON} {$ENDIF}
+{$IFOPT V+} {$DEFINE VARSTRINGCHECKS_ON} {$ENDIF}
+{$IFOPT W+} {$DEFINE STACKFRAMES_ON} {$ENDIF}
+{ WARNINGS }
+{$IFOPT X+} {$DEFINE EXTENDEDSYNTAX_ON} {$ENDIF}
+
+// for Delphi/BCB trial versions remove the point from the line below
+{.$UNDEF SUPPORTS_WEAKPACKAGEUNIT}
+
+// History:
+
+// $Log$
+// Revision 1.6  2004/07/29 15:20:47  marquardt
+// replaced by JCL file
+//
+// Revision 1.15  2004/07/29 07:58:21  marquardt
+// inc files updated
+//
+// Revision 1.14  2004/06/21 01:10:17  rrossmair
+// - $IFDEFed contents (to prevent from repeated inclusion)
+// - introduced symbols SUPPORTS_DEPRECATED_WARNINGS, SUPPORTS_LIBRARY_WARNINGS, SUPPORTS_PLATFORM_WARNINGS, SUPPORTS_COMPILETIME_MESSAGES
+// - reordered pre-CVS history
+//
+// Revision 1.13  2004/05/08 08:44:20  rrossmair
+// introduced & applied symbol HAS_UNIT_LIBC
+//
+// Revision 1.12  2004/05/06 05:03:59  rrossmair
+// SUPPORTS_ENUMVALUE definition fixed for Free Pascal Compiler
+//
+// Revision 1.11  2004/05/05 03:20:13  rrossmair
+// jedi.inc: moved FPC-incompatible Kylix-related code to separate include file "kylix.inc", disposed of FPC-related TODOs
+//
+// Revision 1.10  2004/05/01 00:03:59  rrossmair
+// FPC workaround removed; didn't work with Kylix
+//
+// Revision 1.9  2004/04/30 18:25:15  rrossmair
+// added symbols BORLAND, CPPBUILDER, BCBCOMPILER
+// removed symbol NONBORLAND
+// cleanup (reduced redundancy)
+// corrected embarrassing typo "widestring's" (for the 3rd time, I believe)
+//
+// Revision 1.8  2004/04/14 20:26:33  mthoma
+// Changed data to date
+// Local is Delphi 6 - removed todo comment
+// Replaced CLX with VisualCLX to be consistent with Borlands current definition of what "CLX" is.
+//
+// Revision 1.7  2004/04/06 05:06:12  peterjhaas
+// add support for Kylix, FPC, RTL, versions, some speaking directives
+//
+// 2004-03-22, Peter J. Haas
+//  - add SUPPORTS_WEAKPACKAGEUNIT
+//
+// 2004-03-20, Peter J. Haas
+//  - add SUPPORTS_LOCAL
+//
+// 2004-03-18, Peter J. Haas
+//  - add SUPPORTS_LONGWORD
+//
+// 2004-03-16, Peter J. Haas
+//  - add HAS_UNIT_STRUTILS
+//  - add XPLATFORM_RTL
+//
+// 2003-12-03, Peter J. Haas
+//  - add SUPPORTS_ENUMVALUE
+//
+// 2003-11-14, Peter J. Haas
+//  - add SUPPORTS_VARARGS
+//
+// 2003-10-30, Peter J. Haas
+//  - correct and complete comments
+//  - add Kylix definitions
+//  - add RTL definitions
+//  - add FPC definitions
+
+{$ENDIF ~JEDI_INC}
