@@ -988,7 +988,8 @@ end;
 
 function TJvgCheckListBox.GetState(Index: integer): TCheckBoxState;
 begin
-  Result := TCheckBoxState(Items.Objects[Index]);
+  if Index > -1 then
+    Result := TCheckBoxState(Items.Objects[Index]);
 end;
 
 procedure TJvgCheckListBox.DrawCheck(R: TRect; AState: TCheckBoxState);
