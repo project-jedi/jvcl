@@ -248,7 +248,7 @@ function DrawTextBiDiModeFlags(Flags: Longint): Longint;
 procedure ChangeBiDiModeAlignment(var Alignment: TAlignment);
 function UseRightToLeftAlignment: Boolean;
 var
-  NewStyleControls: boolean;
+  NewStyleControls: boolean = true;
 { colors }
 function GetSysColor(SysColor: Integer): TColorRef;
 function SetSysColor(RefColor: TColor; TrueColor: TColorRef): boolean;
@@ -336,6 +336,7 @@ function EqualRect(R1, R2: TRect): LongBool;
 function UnionRect(var Dst: TRect; R1, R2: TRect): LongBool;
 function CopyRect(var Dst: TRect; const Src: TRect): LongBool;
 function SubtractRect(var dR: TRect; const R1, R2: TRect): LongBool;
+function CenterRect(InnerRect, OuterRect: TRect): TRect;
 
 type
   TRGBQuad = packed record
@@ -3658,7 +3659,7 @@ begin
     SM_CXFRAME, SM_CYFRAME:
       Result := QStyle_DefaultFrameWidth(QApplication_style); // or this one
     SM_CYCAPTION:
-      Result := 24;
+      Result := 19;
   else
     raise Exception.Create('GetSystemMetrics: unsupported property')
   end;
@@ -3840,6 +3841,17 @@ end;
 function EqualPoints(const P1: TPoint; const P2: TPoint): Boolean;
 begin
   Result := (P1.X = P2.X) and (P1.Y = P2.Y);
+end;
+
+function CenterRect(InnerRect, OuterRect: TRect): TRect;
+var
+  w,h : integer;
+begin
+  w := InnerRect.Right - InnerRect.Left;
+  h := InnerRect.Bottom - InnerRect.Top;
+  Result.Left := (OuterRect.Right + OuterRect.Left - w)div 2;
+  Result.Top := (OuterRect.Bottom + OuterRect.Top - h)div 2;
+  Result := Bounds( Result.Left, Result.Top, w, h );
 end;
 
 function SubtractRect(var dR: TRect; const R1, R2: TRect): LongBool;
@@ -4670,9 +4682,6 @@ begin
             DFCS_BUTTONPUSH or (uState and not Mask));
           if Result then
           begin
-            R := Rect;
-            Dec(R.Right);
-            Dec(R.Bottom);
             // draw image
             Pen := CreatePen(PS_SOLID, 1, clBlack);
             QPainter_setPen(Handle, Pen);
@@ -4680,9 +4689,10 @@ begin
             case uState and $07 of
               DFCS_CAPTIONCLOSE:
                 begin
-                  InflateRect(R , -4, -4);
-                  Dec(R.Right);
-                  Dec(R.Bottom);
+                  SetRect(R, 0, 0, 6, 6);
+                  R := CenterRect(R, Rect);
+                  if (uState and DFCS_PUSHED) = 0 then
+                    OffsetRect(R, -1, -1);
                   QPainter_moveTo(Handle, R.Left , R.Top);
                   QPainter_lineTo(Handle, R.Right, R.Bottom);
                   QPainter_moveTo(Handle, R.Left , R.Bottom);
@@ -4695,9 +4705,11 @@ begin
                 end;
               DFCS_CAPTIONMIN:
                 begin
+                  if (uState and DFCS_PUSHED) <> 0 then
+                    OffsetRect(R, 1, 1);
                   Inc(R.Left, 4);
                   Dec(R.Right, 6);
-                  Dec(R.Bottom, 3);
+                  Dec(R.Bottom, 4);
                   QPainter_moveTo(Handle, R.Left , R.Bottom - 1);
                   QPainter_lineTo(Handle, R.Right, R.Bottom - 1);
                   QPainter_moveTo(Handle, R.Left , R.Bottom );
@@ -4706,11 +4718,15 @@ begin
               DFCS_CAPTIONMAX:
                 begin
                   {$IFDEF MSWINDOWS}
-                  InflateRect(R, -4, -4);
+               //   InflateRect(R, -4, -4);
                   {$ENDIF MSWINDOWS}
                   {$IFDEF LINUX}
-                  InflateRect(R, -3, -2);
+               //   InflateRect(R, -3, -2);
                   {$ENDIF LINUX}
+                  SetRect(R, 0, 0, 9, 9);
+                  R := CenterRect(R, Rect);
+                  if (uState and DFCS_PUSHED) <> 0 then
+                    OffsetRect(R, 1, 1);
                   QPainter_drawRect(Handle, @R);
                   QPainter_moveTo(Handle, R.Left , R.Top + 1);
                   QPainter_lineTo(Handle, R.Right-1 , R.Top + 1);
@@ -4719,14 +4735,19 @@ begin
                 begin
                   {$IFDEF MSWINDOWS}
                   QPainter_save(Handle);
-                  ExcludeClipRect(Handle, R.Left + 4, R.Top + 8, R.Right - 8, R.Bottom - 4);
-                  SetRect(R, R.Left + 8, R.Top + 4, R.Right - 4, R.Bottom - 8);
+                  SetRect(R, 0, 0, 6, 6);
+                  R := CenterRect(R, Rect);
+                  if (uState and DFCS_PUSHED) <> 0 then
+                    OffsetRect(R, 1, 1);
+                  OffsetRect(R, -2, 1);
+                  ExcludeClipRect(Handle, R.Left , R.Top, R.Right, R.Bottom);
+                  OffsetRect(R, 2, -3);
                   QPainter_drawRect(Handle, @R);
                   QPainter_moveTo(Handle, R.Left + 1, R.Top + 1);
                   QPainter_lineTo(Handle, R.Right - 1, R.Top + 1);
                   QPainter_restore(Handle);
 
-                  OffsetRect(R, -4, 4);
+                  OffsetRect(R, -2, 3);
                   QPainter_drawRect(Handle, @R);
                   QPainter_moveTo(Handle, R.Left + 1, R.Top + 1);
                   QPainter_lineTo(Handle, R.Right - 1, R.Top + 1);
@@ -4750,6 +4771,9 @@ begin
                   QFont_setBold(Font, True);
                   QPainter_setFont(Handle, Font);
                   QFont_destroy(Font);
+                  if (uState and DFCS_PUSHED) = 0 then
+                    OffsetRect(R, -1, -1);
+                  OffsetRect(R, -1, 0);
                   DrawText(Handle, '?', 1, R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
                 end;
             end; // case of
