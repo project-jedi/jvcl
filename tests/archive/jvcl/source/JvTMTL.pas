@@ -264,7 +264,7 @@ type
     property VisibleDays;
 
     property Action;
-    property Align;
+    property Align default alTop;
     property Anchors;
     property Constraints;
     property Cursor;
