@@ -16,6 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
+Burov Dmitry, translation of russian text.
 
 Last Modified:  2003-01-15
 
@@ -119,7 +120,7 @@ function TJvgLogicItemEditor.Execute(Logics: TJvgLogics; LogicElement: TJvgLogic
 var
   i: integer;
 begin
-  Caption := 'Логический элемент :  ' + LogicElement.Caption;
+  Caption := 'Logic Element: ' + LogicElement.Caption;
   self.Logics := Logics;
   self.LogicElement := LogicElement;
 
@@ -212,7 +213,7 @@ begin
     else
       Font.Color := clGray;
     R := Bounds(Rect.Left + 5, Rect.Top + 3, 120, 20);
-    DrawText(Handle, 'если', 4, R, DT_SINGLELINE);
+    DrawText(Handle, 'if', 4, R, DT_SINGLELINE);
 
     Font.Color := $00007171;
     R := Bounds(Rect.Left + 130, Rect.Top + 3, 120, 20);
@@ -237,7 +238,7 @@ begin
     else
       Font.Color := clGray;
     R := Bounds(Rect.Left + 15, Rect.Top + 37, 120, 20);
-    DrawText(Handle, 'то', 2, R, DT_SINGLELINE);
+    DrawText(Handle, 'then', 2, R, DT_SINGLELINE);
 
     Font.Color := clGreen;
     R := Bounds(Rect.Left + 130, Rect.Top + 37, 120, 20);
@@ -245,7 +246,7 @@ begin
 
     Font.Color := clGray;
     R := Bounds(Rect.Left + 15, Rect.Top + 53, 120, 20);
-    DrawText(Handle, 'иначе', 5, R, DT_SINGLELINE);
+    DrawText(Handle, 'else', 5, R, DT_SINGLELINE);
 
     Font.Color := $00404080;
     R := Bounds(Rect.Left + 130, Rect.Top + 53, 120, 20);
@@ -311,9 +312,9 @@ procedure TJvgLogicItemEditor.ToolButton1Click(Sender: TObject);
 begin
   with LogicElement.LogicVariants.Add do
   begin
-    Value := '[ не определено]';
-    TrueResult := '[ не определено ]';
-    FalseResult := '[ не определено ]';
+    Value := '[ not defined ]';
+    TrueResult := '[ not defined ]';
+    FalseResult := '[ not defined ]';
   end;
   LB.Items.Add('1');
 end;

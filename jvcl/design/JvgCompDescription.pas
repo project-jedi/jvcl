@@ -16,6 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
+Burov Dmitry, translation of russian text.
 
 Last Modified:  2003-01-15
 
@@ -128,7 +129,8 @@ begin
 
   GetMem(PropList, NumProps * sizeof(pointer));
   try
-    { Получаем список свойств }
+    //{ Получаем список свойств }
+    { Retrieving list of properties [translated] }
     GetPropInfos(TypeInf, PropList);
 
     for i := 0 to NumProps - 1 do

@@ -18,7 +18,7 @@ object JvgLogicsEditor: TJvgLogicsEditor
   TextHeight = 13
   object Splitter1: TSplitter
     Left = 0
-    Top = 404
+    Top = 397
     Width = 782
     Height = 3
     Cursor = crVSplit
@@ -28,7 +28,7 @@ object JvgLogicsEditor: TJvgLogicsEditor
     Left = 0
     Top = 75
     Width = 782
-    Height = 329
+    Height = 322
     HorzScrollBar.Smooth = True
     HorzScrollBar.Style = ssFlat
     HorzScrollBar.Tracking = True
@@ -78,9 +78,9 @@ object JvgLogicsEditor: TJvgLogicsEditor
     object Label2: TLabel
       Left = 36
       Top = 5
-      Width = 37
+      Width = 41
       Height = 13
-      Caption = 'Элемент'
+      Caption = 'Element:'
     end
     object iLink: TImage
       Left = 596
@@ -111,9 +111,9 @@ object JvgLogicsEditor: TJvgLogicsEditor
     object Label1: TLabel
       Left = 45
       Top = 29
-      Width = 41
+      Width = 28
       Height = 13
-      Caption = 'Статус:'
+      Caption = 'State:'
     end
     object Label5: TLabel
       Left = 613
@@ -144,10 +144,10 @@ object JvgLogicsEditor: TJvgLogicsEditor
     object Label7: TLabel
       Left = 545
       Top = 5
-      Width = 42
+      Width = 27
       Height = 13
       Anchors = [akTop, akRight]
-      Caption = 'Истина'
+      Caption = 'True'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
@@ -158,10 +158,10 @@ object JvgLogicsEditor: TJvgLogicsEditor
     object Label8: TLabel
       Left = 545
       Top = 27
-      Width = 32
+      Width = 31
       Height = 13
       Anchors = [akTop, akRight]
-      Caption = 'Ложь'
+      Caption = 'False'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
@@ -187,8 +187,8 @@ object JvgLogicsEditor: TJvgLogicsEditor
       TabOrder = 0
       OnChange = cbModeChange
       Items.Strings = (
-        'Свободный элемент'
-        'Первый элемент')
+        'Free item'
+        'First element')
     end
     object cbNext: TComboBox
       Left = 638
@@ -228,14 +228,14 @@ object JvgLogicsEditor: TJvgLogicsEditor
       Top = 5
       Width = 225
       Height = 17
-      Caption = 'Не учитывать пробелы при анализе'
+      Caption = 'Ignore spaces'
       TabOrder = 4
       OnClick = cbIgnoreSpacesClick
     end
   end
   object SBar: TStatusBar
     Left = 0
-    Top = 504
+    Top = 497
     Width = 782
     Height = 19
     Panels = <>
@@ -270,14 +270,14 @@ object JvgLogicsEditor: TJvgLogicsEditor
     object tbNew: TToolButton
       Left = 36
       Top = 0
-      Caption = 'Добавить элемент'
+      Caption = 'Add item'
       ImageIndex = 1
       OnClick = tbNewClick
     end
     object ToolButton3: TToolButton
       Left = 64
       Top = 0
-      Caption = 'Удалить элемент'
+      Caption = 'Remove item'
       ImageIndex = 2
     end
     object ToolButton2: TToolButton
@@ -328,7 +328,7 @@ object JvgLogicsEditor: TJvgLogicsEditor
   end
   object pLeft: TPanel
     Left = 0
-    Top = 407
+    Top = 400
     Width = 782
     Height = 97
     Align = alBottom

@@ -20,16 +20,16 @@ object JvgLogicItemEditor: TJvgLogicItemEditor
   object Label2: TLabel
     Left = 19
     Top = 230
-    Width = 35
+    Width = 22
     Height = 13
-    Caption = #200#241#242#232#237#224
+    Caption = 'True'
   end
   object Label3: TLabel
     Left = 12
     Top = 144
-    Width = 27
+    Width = 25
     Height = 13
-    Caption = #203#238#230#252
+    Caption = 'False'
   end
   object Shape4: TShape
     Left = 0
@@ -310,9 +310,9 @@ object JvgLogicItemEditor: TJvgLogicItemEditor
     object Label1: TLabel
       Left = 9
       Top = 3
-      Width = 58
+      Width = 37
       Height = 13
-      Caption = #199#237#224#247#229#237#232#229':'
+      Caption = 'Value:'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
@@ -323,9 +323,9 @@ object JvgLogicItemEditor: TJvgLogicItemEditor
     object Label4: TLabel
       Left = 257
       Top = 3
-      Width = 54
+      Width = 58
       Height = 13
-      Caption = #211#241#235#238#226#232#229':'
+      Caption = 'Condition:'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
@@ -336,9 +336,9 @@ object JvgLogicItemEditor: TJvgLogicItemEditor
     object Label5: TLabel
       Left = 9
       Top = 35
-      Width = 60
+      Width = 102
       Height = 13
-      Caption = #194#224#240#232#224#237#242#251':'
+      Caption = 'Variants/Choices:'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
@@ -347,23 +347,23 @@ object JvgLogicItemEditor: TJvgLogicItemEditor
       ParentFont = False
     end
     object Shape1: TShape
-      Left = 73
+      Left = 49
       Top = 10
-      Width = 168
+      Width = 193
       Height = 1
       Pen.Color = clBtnShadow
     end
     object Shape2: TShape
       Left = 317
       Top = 10
-      Width = 121
+      Width = 124
       Height = 1
       Pen.Color = clBtnShadow
     end
     object Shape3: TShape
-      Left = 75
+      Left = 115
       Top = 43
-      Width = 364
+      Width = 326
       Height = 1
       Pen.Color = clBtnShadow
     end
@@ -496,7 +496,7 @@ object JvgLogicItemEditor: TJvgLogicItemEditor
     Height = 22
     AutoSize = True
     ButtonHeight = 21
-    ButtonWidth = 54
+    ButtonWidth = 38
     Caption = 'TB'
     Color = clBtnFace
     EdgeInner = esNone
@@ -507,14 +507,14 @@ object JvgLogicItemEditor: TJvgLogicItemEditor
     object ToolButton1: TToolButton
       Left = 0
       Top = 0
-      Caption = #196#238#225#224#226#232#242#252
+      Caption = 'Add'
       ImageIndex = 0
       OnClick = ToolButton1Click
     end
     object ToolButton2: TToolButton
-      Left = 54
+      Left = 38
       Top = 0
-      Caption = #211#228#224#235#232#242#252
+      Caption = 'Delete'
       ImageIndex = 1
     end
   end
