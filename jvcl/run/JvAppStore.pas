@@ -344,8 +344,8 @@ implementation
 
 uses
   SysUtils,
-  JclStrings,
-  JclRTTI;
+  JclStrings, JclRTTI,
+  JvTypes;
 
 procedure UpdateGlobalPath(GlobalPaths, NewPaths: TStrings);
 var
@@ -801,23 +801,21 @@ begin
     WriteDateTimeInt(Path, Value);
 end;
 
- //-----------------------------------------------------------------------------
- //=== Boolean
-function TJvCustomAppStore.ReadBooleanInt(const Path: string;
-  Default: boolean = true): boolean;
+function TJvCustomAppStore.ReadBooleanInt(const Path: string; Default: Boolean): Boolean;
 var
-  int: integer;
+  Value: Integer;
 begin
-  Int := ReadInteger(Path, Ord(Default));
-  if int = Ord(true) then
-    Result := true
-  else if int = Ord(false) then
-    Result := false
+  Result := Default;
+  Value := ReadInteger(Path, Ord(Default));
+  if Value = Ord(True) then
+    Result := True
+  else if Value = Ord(False) then
+    Result := False
   else
-    EConvertError.Create('Invalid Boolean : ' + IntToStr(int));
+    EConvertError.Create('Invalid Boolean : ' + IntToStr(Value));
 end;
 
-procedure TJvCustomAppStore.WriteBooleanInt(const Path: string; Value: boolean);
+procedure TJvCustomAppStore.WriteBooleanInt(const Path: string; Value: Boolean);
 begin
   WriteInteger(Path, Ord(Value));
 end;
@@ -904,42 +902,81 @@ begin
   WriteList(Path, SL.Count, WriteSLItem, DeleteSLItems);
 end;
 
+procedure CopyEnumValue(const Source; var Target; const Kind: TOrdType);
+begin
+  case Kind of
+    otSByte,
+    otUByte:
+      Byte(Target) := Byte(Source);
+    otSWord,
+    otUWord:
+      Word(Target) := Word(Source);
+    otSLong,
+    otULong:
+      Longword(Target) := Longword(Source);
+  end;
+end;
+
 procedure TJvCustomAppStore.ReadEnumeration(const Path: string;
   const TypeInfo: PTypeInfo; const Default; out Value);
 var
-  StrValue: string;
+  OrdValue: Integer;
 begin
- //  if not ValueStored(Path) and StoreOptions.DefaultIfValueNotExist then
- //  begin
- ////    Value := Default;
- //    Exit;
- //  end;
- //  try
- //    try
-//      Value := GetEnumValue(TypeInfo, ReadString(Path, GetEnumName(TypeInfo, Default)));
- //    except
- //      on e: EConvertError do
- //        Value := ReadInteger(Path, Integer(Default)));
- //      end
- //  except
- //    on e: EConvertError do
- //      if StoreOptions.DefaultIfReadConvertError then
- //        Result := Default
- //      else
- //        raise;
- //  end;
- //  StrValue := ReadString(Path, GetEnumName(TypeInfo, Default));
- //  Result := GetEnumValue(TypeInfo, StrValue);
- //  end;
+  if TypeInfo.Kind <> tkEnumeration then
+    raise EJVCLException.Create('Not an enumeration type.');
+  if not ValueStored(Path) and StoreOptions.DefaultIfValueNotExist then
+  begin
+    CopyEnumValue(Default, Value, GetTypeData(TypeInfo).OrdType);
+    Exit;
+  end;
+  try
+    // Usage of an invalid identifier to signal the value does not exist
+    OrdValue := GetEnumValue(TypeInfo, ReadString(Path, ' #!@not known@!# '));
+    if OrdValue = -1 then
+    begin
+      // Invalid string or not string found; try as Integer instead
+      OrdValue := 0;
+      CopyEnumValue(Default, OrdValue, GetTypeData(TypeInfo).OrdType);
+      OrdValue := ReadInteger(Path, OrdValue);
+    end
+  except
+    on E: EConvertError do
+      if StoreOptions.DefaultIfReadConvertError then
+        CopyEnumValue(Default, Value, GetTypeData(TypeInfo).OrdType)
+      else
+        raise;
+  end;
+  CopyEnumValue(OrdValue, Value, GetTypeData(TypeInfo).OrdType);
+end;
+
+function OrdOfEnum(const Value; OrdType: TOrdType): Integer;
+begin
+  case OrdType of
+    otSByte:
+      Result := ShortInt(Value);
+    otUByte:
+      Result := Byte(Value);
+    otSWord:
+      Result := SmallInt(Value);
+    otUWord:
+      Result := Word(Value);
+    otSLong,
+    otULong:
+      Result := LongInt(Value);
+    else
+      Result := -1;
+  end;
 end;
 
 procedure TJvCustomAppStore.WriteEnumeration(const Path: string;
   const TypeInfo: PTypeInfo; const Value);
 begin
   case StoreOptions.EnumerationStoreOption of
- //    asodString : WriteString(Path, GetEnumName(TypeInfo, Value));
- //    asodList :
-    asodInteger: WriteInteger(Path, integer(Value));
+    asodString:
+      WriteString(Path, GetEnumName(TypeInfo, OrdOfEnum(Value, GetTypeData(TypeInfo).OrdType)));
+    asodList, // Storing an enumeration as a list seems inapropiate, so I interpreted it as Integer
+    asodInteger:
+      WriteInteger(Path, OrdOfEnum(Value, GetTypeData(TypeInfo).OrdType));
   end;
 end;
 
@@ -995,8 +1032,9 @@ var
   PropPath: string;
 
 begin
-  if not assigned(PersObj) then
-    exit;
+  Result := nil;
+  if not Assigned(PersObj) then
+    Exit;
   for Index := 0 to GetPropCount(PersObj) - 1 do
   begin
     PropName := GetPropName(PersObj, Index);

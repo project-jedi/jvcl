@@ -253,7 +253,7 @@ var
   Section: string;
   Key: string;
 begin
-  SplitKeyPath(BaseSection+'\'+Path, Section, Key);
+  SplitKeyPath(ConcatPaths([BaseSection, Path]), Section, Key);
   Result := ValueExists(Section, Key);
 end;
 
@@ -262,7 +262,7 @@ var
   Section: string;
   Key: string;
 begin
-  SplitKeyPath(BaseSection+'\'+Path, Section, Key);
+  SplitKeyPath(ConcatPaths([BaseSection, Path]), Section, Key);
   RemoveValue(Section, Key);
 end;
 
@@ -279,7 +279,7 @@ var
   Key: string;
   Value: string;
 begin
-  SplitKeyPath(BaseSection+'\'+Path, Section, Key);
+  SplitKeyPath(ConcatPaths([BaseSection, Path]), Section, Key);
   if ValueExists(Section, Key) then
   begin
     Value := ReadValue(Section, Key);
@@ -296,7 +296,7 @@ var
   Section: string;
   Key: string;
 begin
-  SplitKeyPath(BaseSection+'\'+Path, Section, Key);
+  SplitKeyPath(ConcatPaths([BaseSection, Path]), Section, Key);
   WriteValue(Section, Key, IntToStr(Value));
 end;
 
@@ -306,7 +306,7 @@ var
   Key: string;
   Value: string;
 begin
-  SplitKeyPath(BaseSection+'\'+Path, Section, Key);
+  SplitKeyPath(ConcatPaths([BaseSection, Path]), Section, Key);
   if ValueExists(Section, Key) then
   begin
     Value := ReadValue(Section, Key);
@@ -323,7 +323,7 @@ var
   Section: string;
   Key: string;
 begin
-  SplitKeyPath(BaseSection+'\'+Path, Section, Key);
+  SplitKeyPath(ConcatPaths([BaseSection, Path]), Section, Key);
   WriteValue(Section, Key, FloatToStr(Value));
 end;
 
@@ -332,7 +332,7 @@ var
   Section: string;
   Key: string;
 begin
-  SplitKeyPath(BaseSection+'\'+Path, Section, Key);
+  SplitKeyPath(ConcatPaths([BaseSection, Path]), Section, Key);
   if ValueExists(Section, Key) then
     Result := ReadValue(Section, Key)
   else
@@ -344,7 +344,7 @@ var
   Section: string;
   Key: string;
 begin
-  SplitKeyPath(BaseSection+'\'+Path, Section, Key);
+  SplitKeyPath(ConcatPaths([BaseSection, Path]), Section, Key);
   WriteValue(Section, Key, Value);
 end;
 
@@ -354,7 +354,7 @@ var
   Key: string;
   Value: string;
 begin
-  SplitKeyPath(BaseSection+'\'+Path, Section, Key);
+  SplitKeyPath(ConcatPaths([BaseSection, Path]), Section, Key);
   if ValueExists(Section, Key) then
   begin
     Value := ReadValue(Section, Key);
@@ -369,7 +369,7 @@ var
   Section: string;
   Key: string;
 begin
-  SplitKeyPath(BaseSection+'\'+Path, Section, Key);
+  SplitKeyPath(ConcatPaths([BaseSection, Path]), Section, Key);
   WriteValue(Section, Key, BufToBinStr(Buf, BufSize));
 end;
 
@@ -563,7 +563,7 @@ var
   Section: string;
   Key: string;
 begin
-  SplitKeyPath(BaseSection+'\'+Path, Section, Key);
+  SplitKeyPath(ConcatPaths([BaseSection, Path]), Section, Key);
   Result := IniFile.SectionExists(Section+'\'+Key);
 End;
 

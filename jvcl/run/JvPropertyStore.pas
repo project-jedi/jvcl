@@ -115,17 +115,20 @@ type
 
 implementation
 
-uses jclRTTI, SysUtils{, menus};
+uses
+  JclRTTI, SysUtils{, menus};
 
 
 const
   cLastSaveTime = 'Last Save Time';
 
+{ What is this for? RegisterClass should be placed in an initialization section I think...
 procedure Register;
 begin
   RegisterNoIcon([tJvCustomPropertyStore]);
   RegisterClass(tJvCustomPropertyStore);
 end;
+}
 
  //-----------------------------------------------------------------------------
  //===tJvCustomPropertyStore====================================================
@@ -319,25 +322,26 @@ begin
   fPath := Value;
 end;   {*** procedure tJvCustomPropertyStore.SetPath ***}
 
-procedure tJvCustomPropertyStore.SetAppStore(Value: tJvCustomAppStore);
+procedure TJvCustomPropertyStore.SetAppStore(Value: TJvCustomAppStore);
 var
   Index: integer;
 begin
   if Value = fAppStore then
     Exit;
   for Index := 0 to ComponentCount - 1 do
-    if Components[Index] is tJvCustomPropertyStore then
-      tJvCustomPropertyStore(Components[Index]).AppStore := Value;
+    if Components[Index] is TJvCustomPropertyStore then
+      TJvCustomPropertyStore(Components[Index]).AppStore := Value;
   fAppStore := Value;
 end;
 
-procedure tJvCustomPropertyStore.SetIgnoreProperties(Value: TStrings);
+procedure TJvCustomPropertyStore.SetIgnoreProperties(Value: TStrings);
 begin
   FIgnoreProperties.Assign(Value);
 end;
 
-function tJvCustomPropertyStore.GetLastSaveTime: tDateTime;
+function TJvCustomPropertyStore.GetLastSaveTime: TDateTime;
 begin
+  Result := 0;
   if not Enabled then
     Exit;
   if Path = '' then
