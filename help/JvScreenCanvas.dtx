@@ -1,5 +1,5 @@
 ##Package: System
-##Status: Review
+##Status: Completed
 ----------------------------------------------------------------------------------------------------
 @@JvScreenCanvas.pas
 Summary
@@ -13,7 +13,7 @@ Summary
   Enables you to draw on the screen.
 Description
   Use a TJvScreenCanvas object to draw on the screen.
-  
+
   * \Read the Width and Height properties to determine the size of the screen.
   * Start a drawing operation by calling BeginPaint.
   * Use the Canvas property to do the actual drawing.
@@ -23,14 +23,14 @@ Description
 Summary
   Creates and initializes a TJvScreenCanvas object.
 Description
-  Call \Create to instantiate a TJvScreenCanvas object at runtime. \Create allocates memory for the 
+  Call \Create to instantiate a TJvScreenCanvas object at runtime. \Create allocates memory for the
   instance of TJvScreenCanvas.
 ----------------------------------------------------------------------------------------------------
 @@TJvScreenCanvas.Destroy
 Summary
   Destroys an instance of TJvScreenCanvas.
 Description
-  Do not call Destroy directly in an application. Instead, call Free. Free verifies that the 
+  Do not call Destroy directly in an application. Instead, call Free. Free verifies that the
   TJvScreenCanvas object is not nil and only then calls Destroy.
 See Also
   Create
@@ -50,11 +50,11 @@ See Also
 Summary
   Provides access to the drawing area of the screen.
 Description
-  TJvScreenCanvas allows drawing on the screen by providing a TCanvas object for this purpose. Drawing 
+  TJvScreenCanvas allows drawing on the screen by providing a TCanvas object for this purpose. Drawing
   on the canvas effectively modifies the screen image pixels. Any canvas operation is valid - not just
   Draw and StretchDraw - including line drawing, rectangles, and circles.
 
-  A canvas object is created automatically for TJvScreenCanvas by calling BeginPaint, and the property 
+  A canvas object is created automatically for TJvScreenCanvas by calling BeginPaint, and the property
   is read-only.
 See Also
   BeginPaint, EndPaint, Height, Width
@@ -63,8 +63,8 @@ See Also
 Summary
   Signals the end of a drawing operation.
 Description
-  Call EndPaint to signal the end of any drawing operation that you preceded by a call to the 
-  BeginPaint method.  
+  Call EndPaint to signal the end of any drawing operation that you preceded by a call to the
+  BeginPaint method.
 See Also
   BeginPaint, Canvas
 ----------------------------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ##Package: StdCtrls
-##Status: Needs review
+##Status: Completed
 ----------------------------------------------------------------------------------------------------
 @@JvShape.pas
 Summary
@@ -16,28 +16,28 @@ JVCLInfo
 Summary
   Supports extended features such as hot tracking.
 Description
-  TJvShape is a shape that supports extended features such as hot tracking. 
-  
+  TJvShape is a shape that supports extended features such as hot tracking.
+
   TJvShape adds four events to TShape: OnCtl3DChanged, OnParentColorChange, OnMouseEnter and
   OnMouseLeave.
 
-  You can use OnMouseEnter and OnMouseLeave to alter the shape's look or behavoir, when the user 
+  You can use OnMouseEnter and OnMouseLeave to alter the shape's look or behavoir, when the user
   moves the mouse pointer over the control.
-  
+
   Property HintColor can be used to set a different color of the Help hint boxes for the shape.
-  
+
 ----------------------------------------------------------------------------------------------------
 @@TJvShape.Create
 Summary
   Creates and initializes an instance of TJvShape.
 Description
-  Call \Create to create an instance of TJvShape at runtime. A TJvShape component placed on a 
+  Call \Create to create an instance of TJvShape at runtime. A TJvShape component placed on a
   form at design time is created automatically.
 
   Pass a single Component as a parameter to provide the shape with an Owner that is responsible
   for freeing it.
 
-  \Create calls the inherited \Create method, then sets the initial values for the shape as follows: 
+  \Create calls the inherited \Create method, then sets the initial values for the shape as follows:
 
   * HintColor is set to clInfoBk.
 Parameters
@@ -52,10 +52,10 @@ See Also
 Summary
   Responds when the Ctrl3D property changes.
 Description
-  CMCtl3DChanged is called automatically when the Ctl3D property changes. It triggers the 
+  CMCtl3DChanged is called automatically when the Ctl3D property changes. It triggers the
   OnCtl3DChanged event.
 Parameters
-  Msg - Represents the parameters of the Windows message that informs the shape of the Ctl3D 
+  Msg - Represents the parameters of the Windows message that informs the shape of the Ctl3D
         change.
 See Also
   OnCtl3DChanged
@@ -65,7 +65,7 @@ Summary
   Responds when the mouse pointer moves over the shape.
 Description
   CMMouseEnter is called automatically when the mouse pointer moves over the shape. It sets the
-  hint color for the application to the property specified by HintColor, and triggers the OnMouseEnter 
+  hint color for the application to the property specified by HintColor, and triggers the OnMouseEnter
   event.
 Parameters
   Msg - Represents the parameters of the Windows message that informs the shape of the event.
@@ -102,14 +102,13 @@ Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor
   assign it a new TColor value.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvShape.OnCtl3DChanged
 Summary
   Occurs when the Ctl3D property of the shape changes.
 Description
   \Write an OnCtl3DChanged event handler to take specific action when the Ctl3D property changes.
-See Also 
+See Also
   OnParentColorChange
 ----------------------------------------------------------------------------------------------------
 @@TJvShape.OnMouseEnter
@@ -120,7 +119,7 @@ Description
   shape. For example, you can use this event to change the brush color when the mouse is over the
   shape, and then use the OnMouseLeave event to change it back when the mouse moves off the shape.
 See Also
-  OnMouseLeave 
+  OnMouseLeave
 ----------------------------------------------------------------------------------------------------
 @@TJvShape.OnMouseLeave
 Summary
@@ -137,5 +136,5 @@ Summary
   Occurs when the color property for the parent of the shape changes.
 Description
   \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
-See Also 
+See Also
   OnCtl3DChanged

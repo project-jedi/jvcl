@@ -1,5 +1,5 @@
 ##Package: StdCtrls
-##Status: Needs review
+##Status: Completed
 ----------------------------------------------------------------------------------------------------
 @@JvScrollBox.pas
 Summary
@@ -17,23 +17,23 @@ Summary
   Supports extended features such as hot tracking, and responds to navigational key combinations.
 Description
   TJvScrollBox is a scroll box that supports extended features such as hot tracking, and responds to
-  navigational key combinations. 
-  
-  You can use OnMouseEnter and OnMouseLeave to alter the controls look or behavoir, when the user 
-  moves the mouse pointer over the control. Alternatively, you can use property HotTrack to highlight 
+  navigational key combinations.
+
+  You can use OnMouseEnter and OnMouseLeave to alter the controls look or behavoir, when the user
+  moves the mouse pointer over the control. Alternatively, you can use property HotTrack to highlight
   the scroll box automatically when the mouse passes over it.
 
   Use OnHorizontalScroll and OnVerticalScroll to take action when the user scrolls the specified
   scroll bar.
 
   Property HintColor can be used to set a different color of the Help hint boxes for the scroll box.
-  
+
   TJvScrollBox scrolls the box in response to the following navigational key combinations:
   <TABLE>
   Key                 Action
   ---                 ------
-  UP ARROW            Scrolls one line up. 
-  DOWN ARROW          Scrolls one line down. 
+  UP ARROW            Scrolls one line up.
+  DOWN ARROW          Scrolls one line down.
   LEFT ARROW          Scrolls left by one unit.
   RIGHT ARROW         Scrolls right by one unit.
   PAGE DOWN + Shift   Scrolls right by the width of the window.
@@ -44,19 +44,19 @@ Description
   HOME                Scrolls to the left.
   END + Shift         Scrolls to the lower right.
   END                 Scrolls to the right.
-  </TABLE>  
+  </TABLE>
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollBox.Create
 Summary
   Creates and initializes a new TJvScrollBox object.
 Description
   Use \Create to create and initialize a new TJvScrollBox object.
-  
-  \Create calls the inherited \Create method, then sets the initial values for the scroll box as follows: 
+
+  \Create calls the inherited \Create method, then sets the initial values for the scroll box as follows:
 
   * HintColor is set to clInfoBk.
   * HotTrack is set to False.
-  * csAcceptsControls is added to ControlStyle.  
+  * csAcceptsControls is added to ControlStyle.
 Parameters
   AOwner - A component, typically the form, that is responsible for freeing the scroll box.
 See Also
@@ -79,9 +79,9 @@ See Also
 Summary
   Specifies whether the scroll box is highlighted when the mouse passes over it.
 Description
-  Set HotTrack to True to provide visual feedback about which item is under the mouse. 
+  Set HotTrack to True to provide visual feedback about which item is under the mouse.
   When HotTrack is False, there is no visual feedback when the mouse passes over this control.
-See Also 
+See Also
   OnMouseEnter, OnMouseLeave
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollBox.KeyDown
@@ -89,12 +89,12 @@ Summary
   Provides special processing when the user presses a key.
 Description
   KeyDown scrolls the box in response to the following navigational key combinations:
-  
+
   <TABLE>
   Key                 Action
   ---                 ------
-  UP ARROW            Scrolls one line up. 
-  DOWN ARROW          Scrolls one line down. 
+  UP ARROW            Scrolls one line up.
+  DOWN ARROW          Scrolls one line down.
   LEFT ARROW          Scrolls left by one unit.
   RIGHT ARROW         Scrolls right by one unit.
   PAGE DOWN + Shift   Scrolls right by the width of the window.
@@ -109,7 +109,7 @@ Description
 Parameters
   Key   - The key on the keyboard. For non-alphanumeric keys, you must use WinAPI virtual key codes to
            determine the key pressed. For more information, search for virtual key codes in the Win32
-           Developer's Reference (WIN32.HLP). 
+           Developer's Reference (WIN32.HLP).
   Shift - Indicates whether the Shift, Alt, or Ctrl keys are combined with the keystroke.
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollBox.OnCtl3DChanged
@@ -124,7 +124,7 @@ Summary
 Description
   \Write an OnHorizontalScroll event handler to take specific action when the user scrolls the
   horizontal scroll bar.
-See Also 
+See Also
   OnVerticalScroll
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollBox.OnMouseEnter
@@ -135,7 +135,7 @@ Description
   scroll box. For example, you can use this event to change the font color when the mouse is over the
   scroll box, and then use the OnMouseLeave event to change it back when the mouse moves off the scroll box.
 See Also
-  HotTrack, OnMouseLeave 
+  HotTrack, OnMouseLeave
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollBox.OnMouseLeave
 Summary
@@ -160,7 +160,7 @@ Description
   \Write an OnVerticalScroll event handler to take specific action when the user scrolls the
   vertical scroll bar.
 See Also
-  OnHorizontalScroll 
+  OnHorizontalScroll
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollBox.WndProc
 Summary
