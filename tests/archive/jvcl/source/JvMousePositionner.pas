@@ -44,10 +44,10 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation);
       override;
   public
-  published
-    property Control: TControl read FControl write FControl;
     procedure Execute(Steps: Integer = 200; Delay: Integer = 10);
     procedure ExecuteEx(Dest: TPoint; Steps: Integer = 200; Delay: Integer = 10);
+  published
+    property Control: TControl read FControl write FControl;
   end;
 
 implementation
