@@ -53,7 +53,7 @@ uses
 
 procedure TJVCLAboutDialogProperty.Edit;
 begin
-  TJvJVCLAboutForm.Execute(True);
+  TJvJVCLAboutForm.Execute(false);
 end;
 
 function TJVCLAboutDialogProperty.GetAttributes: TPropertyAttributes;
