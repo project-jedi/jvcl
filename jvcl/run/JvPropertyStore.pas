@@ -111,10 +111,10 @@ type
     procedure SetString(Index: Integer; Value: string);
     procedure SetObject(Index: Integer; Value: TObject);
     function GetCount: Integer;
-    procedure ReadSLOItem(Sender: TJvCustomAppStorage; const Path: string; const Index: Integer);
-    procedure WriteSLOItem(Sender: TJvCustomAppStorage; const Path: string; const Index: Integer);
-    procedure DeleteSLOItems(Sender: TJvCustomAppStorage; const Path: string; const First,
-      Last: Integer);
+    procedure ReadSLOItem(Sender: TJvCustomAppStorage; const Path: string; const List: TObject;const Index: Integer);
+    procedure WriteSLOItem(Sender: TJvCustomAppStorage; const Path: string; const List: TObject; const Index: Integer);
+    procedure DeleteSLOItems(Sender: TJvCustomAppStorage; const Path: string; const List: TObject;
+      const First, Last: Integer);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -565,13 +565,13 @@ end;
 procedure TJvCustomPropertyListStore.StoreData;
 begin
   inherited StoreData;
-  AppStorage.WriteList(AppStoragePath, Count, WriteSLOItem, DeleteSLOItems);
+  AppStorage.WriteList(AppStoragePath, Nil, Count, WriteSLOItem, DeleteSLOItems);
 end;
 
 procedure TJvCustomPropertyListStore.LoadData;
 begin
   inherited LoadData;
-  AppStorage.ReadList(AppStoragePath, ReadSLOItem);
+  AppStorage.ReadList(AppStoragePath, Nil, ReadSLOItem);
 end;
 
 procedure TJvCustomPropertyListStore.Clear;
@@ -617,7 +617,7 @@ begin
 end;
 
 procedure TJvCustomPropertyListStore.ReadSLOItem(Sender: TJvCustomAppStorage; const Path: string;
-  const Index: Integer);
+  const List: TObject; const Index: Integer);
 var
   NewObject:  TObject;
   ObjectName: string;
@@ -676,7 +676,7 @@ begin
     Strings[Index] := Sender.ReadString(Sender.ConcatPaths([Path, 'Item' + IntToStr(Index)]));
 end;
 
-procedure TJvCustomPropertyListStore.WriteSLOItem(Sender: TJvCustomAppStorage; const Path: string;
+procedure TJvCustomPropertyListStore.WriteSLOItem(Sender: TJvCustomAppStorage; const Path: string; const List: TObject;
   const Index: integer);
 begin
   if Assigned(Objects[Index]) then
@@ -699,7 +699,7 @@ begin
 end;
 
 procedure TJvCustomPropertyListStore.DeleteSLOItems(Sender: TJvCustomAppStorage; const Path: string;
-  const First, Last: Integer);
+  const List: TObject; const First, Last: Integer);
 var
   I: Integer;
 begin
