@@ -33,14 +33,14 @@ requires
   visualclx;
 
 contains
-  ClxStrEdit in 'C:\Program Files\Borland\Delphi7\Source\Property Editors\ClxStrEdit.pas' {ClxStrEditDlg},
-  ClxImgEdit in 'C:\Program Files\Borland\Delphi7\Source\Property Editors\ClxImgEdit.pas' {ClxImageListEditor},
-  ClxItemEdit in 'C:\Program Files\Borland\Delphi7\Source\Property Editors\ClxItemEdit.pas' {ClxListViewItems},
-  ClxNodeEdit in 'C:\Program Files\Borland\Delphi7\Source\Property Editors\ClxNodeEdit.pas' {ClxTreeViewItems},
-  ClxPicEdit in 'C:\Program Files\Borland\Delphi7\Source\Property Editors\ClxPicEdit.pas' {ClxPictureEditorDlg},
-  ClxIconEdit in 'C:\Program Files\Borland\Delphi7\Source\Property Editors\ClxIconEdit.pas' {ClxIconViewItemsEditor},
-  ClxSprigs in 'C:\Program Files\Borland\Delphi7\Source\ToolsAPI\ClxSprigs.pas',
-  ClxEditors in 'C:\Program Files\Borland\Delphi7\Source\ToolsAPI\ClxEditors.pas',
-  ClxDesignWindows in 'C:\Program Files\Borland\Delphi7\Source\ToolsAPI\ClxDesignWindows.pas';
+  ClxStrEdit {ClxStrEditDlg},
+  ClxImgEdit {ClxImageListEditor},
+  ClxItemEdit {ClxListViewItems},
+  ClxNodeEdit {ClxTreeViewItems},
+  ClxPicEdit {ClxPictureEditorDlg},
+  ClxIconEdit {ClxIconViewItemsEditor},
+  ClxSprigs,
+  ClxEditors,
+  ClxDesignWindows;
 
 end.
