@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, StdCtrls, JvClipView, JvComponent;
+  ExtCtrls, StdCtrls, JvComponent, JvClipboardViewer;
 
 type
   TJvClipboardViewerMainForm = class(TForm)
