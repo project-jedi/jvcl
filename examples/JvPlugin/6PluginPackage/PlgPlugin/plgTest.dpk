@@ -27,7 +27,7 @@ package plgTest;
 {$IMPLICITBUILD ON}
 
 requires
-  vcl50;
+  vcl;
 
 contains
   PluginTest in 'PluginTest.pas' {Test: TJvPlugin},

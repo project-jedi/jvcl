@@ -8,7 +8,7 @@ uses
 {$ELSE}
   Windows, Graphics, Controls, Forms, Messages, Dialogs, StdCtrls,
 {$ENDIF}
-  SysUtils, Classes, JvUIB, SyncObjs;
+  SysUtils, Classes, JvUIB, SyncObjs, JvComponent;
 
 type
   TForm1 = class(TForm)
@@ -23,7 +23,7 @@ type
   end;
 
   TMyThread = class(TThread)
-  protected
+  public
     procedure Execute; override;
     destructor destroy; override;
   end;
