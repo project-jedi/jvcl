@@ -1,3 +1,4 @@
+## Completed by: Christian Alis on 2003-04-28
 ----------------------------------------------------------------------------------------------------
 @@JvCoupler.pas
 <GROUP JVCL.FileRef>
@@ -10,41 +11,79 @@ Author
 @@TJvCoupler
 <TITLEIMG TJvCoupler>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.LabelsAndStatic
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  Joins a label control and a windowed control
 Description
-  Write here a description
+  TJvCoupler is a non-visual component that allows a label control to position together with a windowed 
+  control. Moving the windowed control will also position the label, but the opposite is not true.  
+  The spacing and alignment of the label with respect to the windowed control can also be assigned. 
+  The FocusControl property of the label will be automatically set to the windowed control.
+
+  To use this component the following tasks should be executed:
+
+  * Add a label component and a windowed control e.g. edit boxes and combo boxes to the form.
+  * Add a TJvCoupler component to the form.
+  * Set the DisplayLabel property to the name of the label component.
+  * Set the FocusControl property to the name of the windowed control.
+  * Optionally modify the spacing and position properties.
+----------------------------------------------------------------------------------------------------
+@@TJvCoupler.AlignLabel
+Summary
+  Aligns the label to the windowed control
+Description
+  AlignLabel is a protected method that aligns the <LINK TJvCoupler.DisplayLabel, label> to the
+  <LINK TJvCoupler.FocusControl, windowed control> based on the values
+  of the Position and Spacing properties.
+See Also
+  DisplayLabel, FocusControl, Position, Spacing
 ----------------------------------------------------------------------------------------------------
 @@TJvCoupler.DisplayLabel
 Summary
-  Write here a summary (1 line)
+  Specifies the label control
 Description
-  Write here a description
+  DisplayLabel is the name of the label control to be coupled with a
+  <LINK TJvCoupler.FocusControl, windowed control>
 See Also
-  List here other properties, methods (comma seperated)
+  FocusControl
 ----------------------------------------------------------------------------------------------------
 @@TJvCoupler.FocusControl
 Summary
-  Write here a summary (1 line)
+  Specifies the windoed control
 Description
-  Write here a description
+  FocusControl is the name of the windowed control to be coupled with a
+  <LINK, JvCoupler.DisplayLabel, label>. The label's FocusControl property will be set to the value
+  of this property.
 See Also
-  List here other properties, methods (comma seperated)
+  DisplayLabel
 ----------------------------------------------------------------------------------------------------
 @@TJvCoupler.Position
 Summary
-  Write here a summary (1 line)
+  Specifies the position of the label relative to the windowed control.
 Description
-  Write here a description
+  The value of Position is the relative position of the <LINK TJvCoupler.DisplayLabel, label> from the 
+  <LINK TJvCoupler.FocusControl, windowed control>.  Changing the value of this property
+  will adjust the label accordingly, leaving the windowed control in the same location.  This property
+  is of type TAnchorKind and it can have one of the following values:
+<TABLE>
+  Value	        Meaning
+  ------        -------
+  akTop	        The label is above the windowed control.   
+  akLeft        The label is at the left of the windowed control. 
+  akRight	      The label is at the right of the windowed control. 
+  akBottom	    The label is below the windowed control. 
+</TABLE>
 See Also
-  List here other properties, methods (comma seperated)
+  Spacing
 ----------------------------------------------------------------------------------------------------
 @@TJvCoupler.Spacing
 Summary
-  Write here a summary (1 line)
+  Controls the distance between the <LINK TJvCoupler.DisplayLabel, label> and the 
+  <LINK TJvCoupler.FocusControl, windowed control>
 Description
-  Write here a description
+  Spacing is the distance of the <LINK TJvCoupler.DisplayLabel, label> from the 
+  <LINK TJvCoupler.FocusControl, windowed control> in pixels.  Changing the value of this property
+  will adjust the label accordingly, leaving the windowed control in the same location
 See Also
-  List here other properties, methods (comma seperated)
+  Position
