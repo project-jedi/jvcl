@@ -240,6 +240,20 @@ uses
   {$ENDIF !COMPILER6_UP}
   Math;
 
+{$IFDEF COMPILER5}
+// (ahuser) Delphi 5 does not know Sign and I will not depend on JCL in this
+//          unit.
+function Sign(A: Integer): Integer;
+begin
+  if A < 0 then
+    Result := -1
+  else if A > 0 then
+    Result := 1
+  else
+    Result := 0;
+end;
+{$ENDIF COMPILER6_UP}
+
 procedure SwapWordByteOrder(P: PChar; Len: Cardinal);
 var
   B: Char;
