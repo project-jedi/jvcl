@@ -6,9 +6,9 @@
   <C5Libs/>
   <C6Libs/>
   <Requires>
-    <Package Name="JvMM-R" Targets="allbutclx" Condition=""/>
+    <Package Name="JvMM-R" Targets="all" Condition=""/>
     <Package Name="JvCmp-R" Targets="allbutclx" Condition=""/>
-    <Package Name="JvCore-D" Targets="allbutclx" Condition=""/>
+    <Package Name="JvCore-D" Targets="all" Condition=""/>
     <Package Name="JvStdCtrls-R" Targets="C5,C6,C6p" Condition=""/>
     <Package Name="dsnide50" Targets="C5" Condition=""/>
     <Package Name="vcl50" Targets="C5" Condition=""/>
@@ -24,14 +24,16 @@
   <Contains>
     <File Name="..\..\design\JvPictureEditors.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\design\JvVirtualKeyEditorForm.pas" Targets="allbutclx" Formname="frmJvVirtualKeyEditor" Condition=""/>
-    <File Name="..\..\design\JvAnimatedEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\qdesign\JvQQtEditorForm.pas" Targets="allclx" Formname="frmJvQtKeyEditor" Condition=""/>
+    <File Name="..\..\design\JvAnimatedEditor.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvAVICaptureEditors.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\design\JvDirectoryListForm.pas" Targets="allbutclx" Formname="JvDirectoryListDialog" Condition=""/>
-    <File Name="..\..\design\JvIconListForm.pas" Targets="allbutclx" Formname="IconListDialog" Condition=""/>
+    <File Name="..\..\design\JvIconListForm.pas" Targets="all" Formname="IconListDialog" Condition=""/>
     <File Name="..\..\design\JvID3v2DefineForm.pas" Targets="allbutclx" Formname="JvID3DefineDlg" Condition=""/>
     <File Name="..\..\design\JvID3v2EditorForm.pas" Targets="allbutclx" Formname="JvID3FramesEditor" Condition=""/>
     <File Name="..\..\design\JvImagePreviewForm.pas" Targets="allbutclx" Formname="ImageForm" Condition=""/>
     <File Name="..\..\design\JvMMReg.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\qdesign\JvQMMReg.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\design\JvPictureEditForm.pas" Targets="allbutclx" Formname="PictureEditDialog" Condition=""/>
   </Contains>
 </Package>

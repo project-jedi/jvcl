@@ -6,7 +6,7 @@
   <C5Libs/>
   <C6Libs/>
   <Requires>
-    <Package Name="JvCore-R" Targets="allbutclx" Condition=""/>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
     <Package Name="JvStdCtrls-R" Targets="C6,C6p" Condition=""/>
     <Package Name="vcl50" Targets="C5,D5,D5s" Condition=""/>
     <Package Name="CJCL50" Targets="C5" Condition=""/>
@@ -19,8 +19,8 @@
   </Requires>
   <Contains>
     <File Name="..\..\run\JvSLDMappingEditorDialog.pas" Targets="allbutclx" Formname="frmSLDMappingEditorDialog" Condition=""/>
-    <File Name="..\..\run\JvDialButton.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvLED.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDialButton.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvLED.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSegmentedLEDDisplay.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvSegmentedLEDDisplayMapperFrame.pas" Targets="allbutclx" Formname="fmeJvSegmentedLEDDisplayMapper: TFrame" Condition=""/>
   </Contains>

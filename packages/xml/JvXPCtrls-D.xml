@@ -6,15 +6,15 @@
   <C5Libs/>
   <C6Libs/>
   <Requires>
-    <Package Name="JvCore-D" Targets="allbutclx" Condition="USEJVCL"/>
-    <Package Name="JvXPCtrls-R" Targets="allbutclx" Condition=""/>
+    <Package Name="JvCore-D" Targets="all" Condition="USEJVCL"/>
+    <Package Name="JvXPCtrls-R" Targets="all" Condition=""/>
     <Package Name="rtl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
     <Package Name="vcl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
     <Package Name="designide" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
     <Package Name="vcl50" Targets="C5,D5,D5s" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvXPCtrlsReg.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\design\JvXPPropertyEditors.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\design\JvXPCtrlsReg.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvXPPropertyEditors.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>

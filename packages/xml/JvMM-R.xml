@@ -7,7 +7,7 @@
   <C6Libs/>
   <Requires>
     <Package Name="JvCore-R" Targets="allbutclx" Condition=""/>
-    <Package Name="JvCtrls-R" Targets="allbutclx" Condition=""/>
+    <Package Name="JvCtrls-R" Targets="all" Condition=""/>
     <Package Name="JvSystem-R" Targets="allbutclx" Condition=""/>
     <Package Name="JvCmp-R" Targets="D5,D5s,D6,D6p" Condition=""/>
     <Package Name="JvStdCtrls-R" Targets="D5,D5s,D6,D6p" Condition=""/>
@@ -24,35 +24,36 @@
   </Requires>
   <Contains>
     <File Name="..\..\run\JvAVICapture.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvBmpAnimator.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBmpAnimator.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvGIF.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvGIFCtrl.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvGradient.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvGradientHeaderPanel.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvIconList.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvId3v1.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvId3v2.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvID3v2Base.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvId3v2Types.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvImageRotate.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvImageTransform.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvImageSquare.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvGradient.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvGradientHeaderPanel.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvIconList.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvId3v1.pas" Targets="windows" Formname="" Condition=""/>
+    <File Name="..\..\run\JvId3v2.pas" Targets="windows" Formname="" Condition=""/>
+    <File Name="..\..\run\JvID3v2Base.pas" Targets="windows" Formname="" Condition=""/>
+    <File Name="..\..\run\JvId3v2Types.pas" Targets="windows" Formname="" Condition=""/>
+    <File Name="..\..\run\JvImageRotate.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvImageTransform.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvImageSquare.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvPcx.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvPicClip.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvSlider.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvSpecialImage.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvSpecialProgress.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvSplashWindow.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvStarfield.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvPicClip.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSlider.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSpecialImage.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSpecialProgress.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSplashWindow.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvStarfield.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvVirtualKeySelectionFrame.pas" Targets="allbutclx" Formname="JvVirtualKeySelectionFrame: TFrame" Condition=""/>
-    <File Name="..\..\run\JvWaitingGradient.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvWaitingProgress.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvWavePlayer.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvAni.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQQtKeySelectionFrame.pas" Targets="allclx" Formname="JvVirtualKeySelectionFrame: TFrame" Condition=""/>
+    <File Name="..\..\run\JvWaitingGradient.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvWaitingProgress.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvWavePlayer.pas" Targets="windows" Formname="" Condition=""/>
+    <File Name="..\..\run\JvAni.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvCursor.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvAnimate.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvAnimatedImage.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvColorTrackBar.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvAnimate.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvAnimatedImage.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvColorTrackBar.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\common\VFW.pas" Targets="allbutclx" Formname="" Condition=""/>
   </Contains>
 </Package>

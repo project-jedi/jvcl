@@ -6,7 +6,7 @@
   <C5Libs/>
   <C6Libs/>
   <Requires>
-    <Package Name="JvCore-R" Targets="allbutclx" Condition="USEJVCL"/>
+    <Package Name="JvCore-R" Targets="all" Condition="USEJVCL"/>
     <Package Name="CJCL" Targets="C6,C6p" Condition="USEJVCL"/>
     <Package Name="CJCL50" Targets="C5" Condition="USEJVCL"/>
     <Package Name="vcl50" Targets="C5,D5,D5s" Condition=""/>
@@ -14,18 +14,19 @@
     <Package Name="rtl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
     <Package Name="vcl" Targets="C6,C6p,D6,D7,D7p" Condition=""/>
     <Package Name="vclx" Targets="C6,C6p,D6,D7,D7p" Condition=""/>
-    <Package Name="dbrtl" Targets="C6,D6,D7" Condition=""/>
+    <Package Name="dbrtl" Targets="C6,D6,D7,D7clx" Condition=""/>
+    <Package Name="dataclx" Targets="K3" Condition=""/>
     <Package Name="vclx50" Targets="D5,D5s" Condition=""/>
     <Package Name="vcljpg" Targets="D7,D7p" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\run\JvUIBMetaData.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvUIBSQLParser.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvUIB.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvUIBase.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvUIBConst.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvUIBMetaData.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvUIBSQLParser.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvUIB.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvUIBase.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvUIBConst.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvUIBDataSet.pas" Targets="allbutperso" Formname="" Condition=""/>
-    <File Name="..\..\run\JvUIBError.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvUIBLib.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvUIBError.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvUIBLib.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>

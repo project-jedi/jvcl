@@ -8,7 +8,7 @@
   <Requires>
     <Package Name="JvCore-R" Targets="allbutclx" Condition=""/>
     <Package Name="JvSystem-R" Targets="allbutclx" Condition=""/>
-    <Package Name="JvStdCtrls-R" Targets="allbutclx" Condition=""/>
+    <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
     <Package Name="CJCL50" Targets="C5" Condition=""/>
     <Package Name="vcl50" Targets="C5" Condition=""/>
     <Package Name="vcljpg50" Targets="C5" Condition=""/>
@@ -20,15 +20,15 @@
   </Requires>
   <Contains>
     <File Name="..\..\run\JvGradientCaption.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvAnimTitle.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvAppAnimatedIcon.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvAppEvent.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvAnimTitle.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvAppAnimatedIcon.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvAppEvent.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvAppHotKey.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvFormAnimatedIcon.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvFormAnimation.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvFormAutoSize.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvFormAnimatedIcon.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvFormAnimation.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvFormAutoSize.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvFormMagnet.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvFormTransparent.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvFormWallpaper.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvFormWallpaper.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>

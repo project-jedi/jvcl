@@ -1,31 +1,34 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvNet" Design="0">
   <Description>JVCL Network Components Runtime Package</Description>
-  <C5PFlags> -LUCJcl50</C5PFlags>
+  <ClxDescription>JVCLX Network Components Runtime Package</ClxDescription>
+  <C5PFlags>-LUCJcl50</C5PFlags>
   <C6PFlags>-LUCJcl</C6PFlags>
   <C5Libs>wininet.lib</C5Libs>
   <C6Libs>wininet.lib</C6Libs>
   <Requires>
-    <Package Name="JvCore-R" Targets="allbutclx" Condition=""/>
-    <Package Name="JvStdCtrls-R" Targets="allbutclx" Condition=""/>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
     <Package Name="vcl50" Targets="C5" Condition=""/>
     <Package Name="CJCL50" Targets="C5" Condition=""/>
     <Package Name="bcbsmp50" Targets="C5" Condition=""/>
-    <Package Name="rtl" Targets="C6,C6p" Condition=""/>
-    <Package Name="vcl" Targets="C6,C6p" Condition=""/>
+    <Package Name="rtl" Targets="C6,C6p,D7clx" Condition=""/>
+    <Package Name="vcl" Targets="C6,C6p,D7clx" Condition=""/>
+    <Package Name="DJCL" Targets="D7clx" Condition=""/>
     <Package Name="CJCL" Targets="C6,C6p" Condition=""/>
     <Package Name="bcbsmp" Targets="C6,C6p" Condition=""/>
     <Package Name="vclx" Targets="C6,C6p" Condition=""/>
+    <Package Name="visualclx" Targets="D7clx" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\run\JvUrlListGrabber.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvFormToHtml.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvHtmlParser.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvMail.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvRgbToHtml.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvRichEditToHtml.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvStringListToHtml.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvStrToHtml.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvUrlGrabbers.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvUrlListGrabber.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvFormToHtml.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvHtmlParser.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvMail.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvRgbToHtml.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvRichEditToHtml.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvStringListToHtml.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvStrToHtml.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvUrlGrabbers.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>

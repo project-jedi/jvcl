@@ -22,44 +22,44 @@
     <Package Name="bcbsmp" Targets="C6,C6p" Condition=""/>
     <Package Name="bcbie" Targets="C6,C6p" Condition=""/>
     <Package Name="JvCore-R" Targets="allbutclx" Condition=""/>
-    <Package Name="JvStdCtrls-R" Targets="allbutclx" Condition=""/>
+    <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\run\JvMarkupCommon.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvMarkupLabel.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvMarkupViewer.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvPainterEffectsForm.pas" Targets="allbutclx" Formname="PainterEffectsF" Condition=""/>
-    <File Name="..\..\run\JvPainterQBForm.pas" Targets="allbutclx" Formname="PainterQBF" Condition=""/>
-    <File Name="..\..\run\JvPaintFX.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvQuickPreviewForm.pas" Targets="allbutclx" Formname="QuickPreviewF" Condition=""/>
-    <File Name="..\..\run\JvResample.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvSAL.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvSALCore.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvSALHashList.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvSALMath.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvMarkupCommon.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvMarkupLabel.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvMarkupViewer.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvPainterEffectsForm.pas" Targets="all" Formname="PainterEffectsF" Condition=""/>
+    <File Name="..\..\run\JvPainterQBForm.pas" Targets="all" Formname="PainterQBF" Condition=""/>
+    <File Name="..\..\run\JvPaintFX.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvQuickPreviewForm.pas" Targets="all" Formname="QuickPreviewF" Condition=""/>
+    <File Name="..\..\run\JvResample.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSAL.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSALCore.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSALHashList.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSALMath.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvShapedButton.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvSimLogic.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvSimPID.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvSimPIDLinker.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvSimScope.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvSpellerForm.pas" Targets="allbutclx" Formname="JvSpellerForm" Condition=""/>
+    <File Name="..\..\run\JvSimLogic.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSimPID.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSimPIDLinker.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSimScope.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSpellerForm.pas" Targets="all" Formname="JvSpellerForm" Condition=""/>
     <File Name="..\..\run\JvSticker.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvStrings.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvTracker.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvTurtle.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvXmlTree.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvYearGrid.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvYearGridEditForm.pas" Targets="allbutclx" Formname="YearGridEditF" Condition=""/>
-    <File Name="..\..\run\JvAirBrush.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvArrayButton.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvBitmapButton.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvCSVBaseControls.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDrawImage.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvForth.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvGridFilter.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvGridPreviewForm.pas" Targets="allbutclx" Formname="jvGridPreviewF" Condition=""/>
-    <File Name="..\..\run\JvGridPrinter.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvStrings.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvTracker.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvTurtle.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvXmlTree.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvYearGrid.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvYearGridEditForm.pas" Targets="all" Formname="YearGridEditF" Condition=""/>
+    <File Name="..\..\run\JvAirBrush.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvArrayButton.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBitmapButton.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvCSVBaseControls.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDrawImage.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvForth.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvGridFilter.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvGridPreviewForm.pas" Targets="all" Formname="jvGridPreviewF" Condition=""/>
+    <File Name="..\..\run\JvGridPrinter.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvJanTreeView.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvSimIndicator.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSimIndicator.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvCtrls" Design="0">
   <Description>JVCL Controls Runtime Package</Description>
-  <C5PFlags> -LUCJcl50</C5PFlags>
+  <C5PFlags>-LUCJcl50</C5PFlags>
   <C6PFlags>-LUCJcl</C6PFlags>
   <C5Libs/>
   <C6Libs/>
   <Requires>
-    <Package Name="JvCore-R" Targets="allbutclx" Condition=""/>
-    <Package Name="JvStdCtrls-R" Targets="allbutclx" Condition=""/>
-    <Package Name="JvSystem-R" Targets="C5,C6,C6p,D7,D7p" Condition=""/>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
+    <Package Name="JvSystem-R" Targets="C5,C6,C6p,D7,D7p,D7clx,K3,K3p" Condition=""/>
     <Package Name="vclx50" Targets="C5" Condition=""/>
     <Package Name="vcl50" Targets="C5" Condition=""/>
     <Package Name="bcbsmp50" Targets="C5" Condition=""/>
@@ -23,51 +23,52 @@
   </Requires>
   <Contains>
     <File Name="..\..\run\JvCharMap.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvClock.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvColorBox.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvColorButton.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvColorForm.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvClock.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvColorBox.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvColorButton.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvColorForm.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvComboListBox.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvComponentPanel.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvContentScroller.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDice.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvComponentPanel.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvContentScroller.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDice.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDriveCtrls.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvFooter.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvGroupHeader.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvHint.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvHtControls.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvImageDrawThread.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvFooter.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvGroupHeader.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvHint.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvHtControls.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvImageDrawThread.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvInstallLabel.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvItemsPanel.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvItemsPanel.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvListComb.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvMovableBevel.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvMovableBevel.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvPageScroller.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvPlaylist.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvRegistryTreeview.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvRollOut.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvScrollMax.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvScrollPanel.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvScrollText.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvSpacer.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvSpeedbar.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvRollOut.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvScrollMax.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvScrollPanel.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvScrollText.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSpacer.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSpeedbar.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSpeedbarSetupForm.pas" Targets="allbutclx" Formname="JvSpeedbarSetupWindow" Condition=""/>
     <File Name="..\..\run\JvSplit.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvSplitter.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvSwitch.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSplitter.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSwitch.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSyncSplitter.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvTransparentButton.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvTransparentButton.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvUninstallControls.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvWinampLabel.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvWinampLabel.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvZoom.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvArrowButton.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvaScrollText.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvBehaviorLabel.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvButtons.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvArrowButton.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvaScrollText.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBehaviorLabel.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvButtons.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvCaptionButton.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvCaptionPanel.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvOfficeColorButton.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvOfficeColorPanel.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvOfficeColorForm.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvNetscapeSplitter.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvCaptionPanel.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvOfficeColorButton.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvOfficeColorPanel.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvOfficeColorForm.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvNetscapeSplitter.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQSpeedbarSetupForm.pas" Targets="allclx" Formname="JvSpeedbarSetupWindow" Condition=""/>
   </Contains>
 </Package>

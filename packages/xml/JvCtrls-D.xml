@@ -6,8 +6,8 @@
   <C5Libs/>
   <C6Libs/>
   <Requires>
-    <Package Name="JvCore-D" Targets="allbutclx" Condition=""/>
-    <Package Name="JvCtrls-R" Targets="allbutclx" Condition=""/>
+    <Package Name="JvCore-D" Targets="all" Condition=""/>
+    <Package Name="JvCtrls-R" Targets="all" Condition=""/>
     <Package Name="vcl50" Targets="C5" Condition=""/>
     <Package Name="dclstd50" Targets="C5,D5,D5s" Condition=""/>
     <Package Name="CJCL50" Targets="C5" Condition=""/>
@@ -23,14 +23,14 @@
     <Package Name="bcbsmp" Targets="C6,C6p" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvHTHintForm.pas" Targets="allbutclx" Formname="JvHintEditor" Condition=""/>
+    <File Name="..\..\design\JvHTHintForm.pas" Targets="all" Formname="JvHintEditor" Condition=""/>
     <File Name="..\..\design\JvScrollMaxEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\design\JvSpeedbarForm.pas" Targets="allbutclx" Formname="JvSpeedbarEditor" Condition=""/>
-    <File Name="..\..\design\JvBehaviorLabelEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\design\JvCtrlsReg.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\design\JvFooterEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\design\JvGroupHeaderEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\design\JvTransparentButtonEditors.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\design\JvRollOutEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\design\JvSpeedbarForm.pas" Targets="all" Formname="JvSpeedbarEditor" Condition=""/>
+    <File Name="..\..\design\JvBehaviorLabelEditor.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvCtrlsReg.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvFooterEditor.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvGroupHeaderEditor.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvTransparentButtonEditors.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvRollOutEditor.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>

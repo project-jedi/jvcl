@@ -6,8 +6,9 @@
   <C5Libs/>
   <C6Libs/>
   <Requires>
-    <Package Name="JvCore-D" Targets="allbutclx" Condition=""/>
-    <Package Name="JvStdCtrls-R" Targets="allbutclx" Condition=""/>
+    <Package Name="JvCore-D" Targets="all" Condition=""/>
+    <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
+    <Package Name="JvCtrls-R" Targets="allclx" Condition=""/>
     <Package Name="JvSystem-D" Targets="C5,C6,C6p" Condition=""/>
     <Package Name="vcl50" Targets="C5" Condition=""/>
     <Package Name="dclstd50" Targets="C5,D5,D5s" Condition=""/>
@@ -21,8 +22,9 @@
     <Package Name="CJCLVCL" Targets="C6,C6p" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvCheckedItemsForm.pas" Targets="allbutclx" Formname="JvCheckItemsEditor" Condition=""/>
-    <File Name="..\..\design\JvProgressEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\design\JvCheckedItemsForm.pas" Targets="all" Formname="JvCheckItemsEditor" Condition=""/>
+    <File Name="..\..\design\JvProgressEditor.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvStdCtrlsReg.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\qdesign\JvQStdCtrlsReg.pas" Targets="allclx" Formname="" Condition=""/>
   </Contains>
 </Package>

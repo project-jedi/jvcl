@@ -6,7 +6,7 @@
   <C5Libs/>
   <C6Libs/>
   <Requires>
-    <Package Name="JvAppFrm-R" Targets="allbutclx" Condition=""/>
+    <Package Name="JvAppFrm-R" Targets="all" Condition=""/>
     <Package Name="JvStdCtrls-R" Targets="C5,C6,C6p,D7,D7p" Condition=""/>
     <Package Name="CJCL50" Targets="C5" Condition=""/>
     <Package Name="vcl50" Targets="C5" Condition=""/>
@@ -16,11 +16,12 @@
     <Package Name="CJCLVCL" Targets="C6,C6p" Condition=""/>
     <Package Name="vcl" Targets="C6,C6p" Condition=""/>
     <Package Name="vclx" Targets="C6,C6p" Condition=""/>
-    <Package Name="JvCore-D" Targets="allbutclx" Condition=""/>
+    <Package Name="JvCore-D" Targets="all" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\design\JvGradientCaptionForm.pas" Targets="allbutclx" Formname="GradCaptionsEditor" Condition=""/>
     <File Name="..\..\design\JvAppFrmReg.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\qdesign\JvQAppFrmReg.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\design\JvFormWallpaperEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvWallpaperEditForm.pas" Targets="allbutclx" Formname="FoWallpaperChooser" Condition=""/>
   </Contains>

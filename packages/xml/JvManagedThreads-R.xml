@@ -6,7 +6,7 @@
   <C5Libs/>
   <C6Libs/>
   <Requires>
-    <Package Name="JvCore-R" Targets="allbutclx" Condition="USEJVCL"/>
+    <Package Name="JvCore-R" Targets="all" Condition="USEJVCL"/>
     <Package Name="CJCL50" Targets="C5" Condition="USEJVCL"/>
     <Package Name="CJCL" Targets="C6,C6p" Condition="USEJVCL"/>
     <Package Name="vcl50" Targets="C5,D5,D5s" Condition=""/>
@@ -14,11 +14,11 @@
     <Package Name="vcl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\run\JvMTComponents.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvMTConsts.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvMTData.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvMTSync.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvMTSyncMon.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvMTThreading.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvMTComponents.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvMTConsts.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvMTData.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvMTSync.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvMTSyncMon.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvMTThreading.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>
