@@ -54,7 +54,6 @@ type
   end;
 
 implementation
-uses CSIntf;
 
 procedure TJvSizeablePanel.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer);
