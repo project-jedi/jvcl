@@ -42,10 +42,9 @@ uses
   Graphics,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Qt, QTypes, Types, QGraphics, QForms,
+  Qt, QTypes, Types, QGraphics,
   {$ENDIF VisualCLX}
-  SysUtils, Classes,
-  JvTypes;
+  SysUtils, Classes;
 
 {$IFDEF LINUX}
 type
@@ -207,10 +206,14 @@ function ClxExtTextOutW(Canvas: TCanvas; X, Y: Integer; Flags: Integer;
 implementation
 
 {$IFDEF VisualCLX}
+var
+  SysColorPalette: TPalette;
 
 function GetSysColor(Color: Integer): TColorRef;
 begin
-  Result := TColorRef(Application.Palette.GetColor(Color));
+  if not Assigned(SysColorPalette) then
+    SysColorPalette := TPalette.Create;
+  Result := TColorRef(SysColorPalette.GetColor(Color));
 end;
 
 procedure EnableWindow(Handle: QWidgetH; Value: Boolean);
@@ -288,12 +291,12 @@ begin
   case PropItem of
     SM_CXVSCROLL:
       begin
-        QStyle_scrollBarExtent(Application.Style.Handle, @size);
+        QStyle_scrollBarExtent(QApplication_style, @size);
         Result := size.cx;
       end;
     SM_CYVSCROLL:
       begin
-        QStyle_scrollBarExtent(Application.Style.Handle, @size);
+        QStyle_scrollBarExtent(QApplication_style, @size);
         Result := size.cy;
       end;
     SM_CXSMICON:
@@ -301,13 +304,13 @@ begin
     SM_CXICON:
       Result := 32;
     SM_CXSCREEN:
-      Result := Screen.Width;
+      Result := QWidget_width(QApplication_desktop);
     SM_CYSCREEN:
-      Result := Screen.Height;
+      Result := QWidget_height(QApplication_desktop);
     SM_CXBORDER, SM_CYBORDER:
-      Result := Application.Style.DefaultFrameWidth; // (probably) wrong ?
+      Result := QClxStyle_defaultFrameWidth(QClxStyleH(QApplication_style)); // (probably) wrong ?
     SM_CXFRAME, SM_CYFRAME:
-      Result := Application.Style.DefaultFrameWidth; // or this one
+      Result := QClxStyle_defaultFrameWidth(QClxStyleH(QApplication_style)); // or this one
   else
     Result := 0;
   end;
@@ -548,7 +551,6 @@ function ClxExtTextOutW(Canvas: TCanvas; X, Y: Integer; Flags: Integer;
 var
   RecallBrush: TBrush;
   RecallPenPos: TPoint;
-  Ch: WideChar;
   WS: WideString;
   Index, Width: Integer;
   Dx: PInteger;
@@ -666,4 +668,13 @@ begin
   {$ENDIF VisualCLX}
 end;
 
+
+{$IFDEF VisualCLX}
+initialization
+  SysColorPalette := nil;
+
+finalization
+  SysColorPalette.Free;
+
+{$ENDIF VisualCLX}
 end.
