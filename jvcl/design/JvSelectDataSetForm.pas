@@ -111,7 +111,7 @@ procedure TJvSelectDataSetForm.FillDataSetList(ExcludeDataSet: TDataSet);
 var
   I: Integer;
   Component: TComponent;
-{$ENDIF COMPILER6_UP}
+{$ENDIF !COMPILER6_UP}
 begin
   DataSetList.Items.BeginUpdate;
   try

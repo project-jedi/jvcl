@@ -69,7 +69,7 @@ uses
 const
   {$EXTERNALSYM AC_SRC_ALPHA}
   AC_SRC_ALPHA = $01;
-{$ENDIF COMPILER6_UP}
+{$ENDIF !COMPILER6_UP}
 
 type
   {$IFDEF COMPILER5}
@@ -316,7 +316,7 @@ uses
   UxTheme,
   {$IFNDEF COMPILER7_UP}
   TmSchema,
-  {$ENDIF COMPILER7_UP}
+  {$ENDIF !COMPILER7_UP}
   JvJVCLUtils,
   {$ENDIF JVCLThemesEnabled}
   JvDsgnIntf, JvConsts, JvTypes, JvJCLUtils, JvResources, JvWndProcHook;

@@ -358,7 +358,7 @@ begin
   end;
 end;
 
-{$ENDIF COMPILER6_UP}
+{$ENDIF !COMPILER6_UP}
 
 function IsWinXP_UP: Boolean;
 begin
@@ -410,7 +410,7 @@ constructor TJvBalloonWindow.Create(AOwner: TComponent);
 begin
   {$IFNDEF COMPILER6_UP}
   InitD5Controls;
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF !COMPILER6_UP}
   inherited Create(AOwner);
   ControlStyle := [csCaptureMouse, csClickEvents, csDoubleClicks];
 end;
@@ -1827,7 +1827,7 @@ begin
     ShowWindow(Handle, SW_SHOWNOACTIVATE);
   {$IFNDEF COMPILER6_UP}
   Invalidate;
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF !COMPILER6_UP}
 end;
 
 procedure TJvBalloonWindowEx.MoveWindow(NewPos: TPoint);

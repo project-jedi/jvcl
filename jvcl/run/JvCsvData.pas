@@ -172,7 +172,7 @@ type
   PBoolean = ^Boolean;
   {$IFNDEF COMPILER6_UP}
   PWordBool = ^WordBool;
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF !COMPILER6_UP}
   EJvCsvDataSetError = class(EDatabaseError);
   // Subclass DB.EDatabaseError so we can work nicely with existing Delphi apps.
 

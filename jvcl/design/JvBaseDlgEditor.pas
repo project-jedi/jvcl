@@ -40,7 +40,7 @@ uses
   {$ENDIF COMPILER6_UP}
   {$IFNDEF COMPILER7_UP}
   EditIntf, ToolIntf, ExptIntf,
-  {$ENDIF COMPILER7_UP}
+  {$ENDIF !COMPILER7_UP}
   JvBaseDlg;
 
 type

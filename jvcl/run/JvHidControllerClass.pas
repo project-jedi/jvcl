@@ -426,7 +426,7 @@ function HidErrorString(const RetVal: NTSTATUS): string;
 // to register the component in the palette
 procedure Register;
 
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 implementation
 
@@ -2256,7 +2256,7 @@ begin
   RegisterComponents('Project JEDI', [TJvHidDeviceController]);
 end;
 
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 {$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}

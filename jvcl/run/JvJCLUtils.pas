@@ -2518,7 +2518,7 @@ begin
     CharLowerBuffW(Pointer(Result), Length(Result));
 end;
 
-{$ENDIF COMPILER}
+{$ENDIF COMPILER5}
 
 function TrimW(const S: WideString): WideString;
 {$IFDEF COMPILER6_UP}

@@ -441,7 +441,7 @@ type
     {$IFNDEF COMPILER6_UP}
     function GetProviderComp: TComponent;
     procedure SetProviderComp(Value: TComponent);
-    {$ENDIF COMPILER6_UP}
+    {$ENDIF !COMPILER6_UP}
   protected
     class function ItemsClass: TJvDataItemsClass; override;
     function ConsumerClasses: TClassArray; override;
@@ -1203,7 +1203,7 @@ begin
     raise EJVCLException.CreateRes(@RsENoColProv);
 end;
 
-{$ENDIF COMPILER6_UP}
+{$ENDIF !COMPILER6_UP}
 
 class function TJvColorMappingProvider.ItemsClass: TJvDataItemsClass;
 begin

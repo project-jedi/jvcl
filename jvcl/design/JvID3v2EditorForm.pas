@@ -368,7 +368,7 @@ begin
   if (P is TJvID3Frame) and (TJvID3Frame(P).Controller = Controller) then
     UpdateDisplay;
 end;
-{$ENDIF COMPILER6_UP}
+{$ENDIF !COMPILER6_UP}
 
 function TJvID3FramesEditor.DoNewFrame: TJvID3Frame;
 var
@@ -729,7 +729,7 @@ begin
       {$IFNDEF COMPILER6_UP}
       // In D6 up it's an interface, so no need to free up
       ComponentList.Free;
-      {$ENDIF COMPILER6_UP}
+      {$ENDIF !COMPILER6_UP}
       raise;
     end;
     {$IFDEF COMPILER6_UP}

@@ -47,7 +47,7 @@ implementation
 {$IFNDEF USEJVCL}
 resourcestring
   RsPaletteMTThreads = 'Jv Threading';
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 procedure Register;
 begin

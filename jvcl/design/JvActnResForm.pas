@@ -34,7 +34,7 @@ uses
   ActnList, ImgList, Controls,
   {$IFNDEF COMPILER6_UP}
   Forms,
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF !COMPILER6_UP}
   SysUtils, Classes, StdActns,
   JvActions;
 

@@ -182,7 +182,7 @@ type
   PFullColorValue = ^TFullColorValue;
   {$IFNDEF COMPILER6_UP}
   PCardinal = ^Cardinal;
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF !COMPILER6_UP}
 var
   OriginalPixelFormat: TPixelFormat;
   Colors: array [TJvAxisIndex,Byte] of TFullColorValue;

@@ -80,7 +80,7 @@ uses
 {$IFNDEF USEJVCL}
 resourcestring
   RsETilingError = 'Tiling only works on images with dimensions > 0';
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 const
   { Frame Style Color constant arrays }

@@ -49,7 +49,7 @@ uses
 type
   {$IFNDEF COMPILER6_UP}
   TInterfacedPersistent = class(TPersistent);
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF !COMPILER6_UP}
   TJvPersistentEmbedded = class(TInterfacedPersistent)
   private
     FFiler: TFiler;

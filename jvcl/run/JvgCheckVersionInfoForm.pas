@@ -82,7 +82,7 @@ uses
 {$IFNDEF USEJVCL}
 resourcestring
   RsNoNewerVersionOfProgramAvailable = 'No newer version of program available';
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 procedure TJvgfCheckVersionInfo.Execute(WinControl: TWinControl);
 var

@@ -84,7 +84,7 @@ uses
 {$IFNDEF USEJVCL}
 resourcestring
   RsEOnlyOneInstanceOfTJvg3DLocalColors = 'Cannot create more than one instance of TJvg3DLocalColors component';
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 //=== { TJvg3DLocalColors } ==================================================
 

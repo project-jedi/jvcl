@@ -255,7 +255,7 @@ const
 {$IFNDEF COMPILER6_UP}
 function FtpGetFileSize(hFile: HINTERNET; lpdwFileSizeHigh: LPDWORD): DWORD; stdcall;
   external 'wininet.dll' name 'FtpGetFileSize';
-{$ENDIF COMPILER6_UP}
+{$ENDIF !COMPILER6_UP}
 
 // global download callback
 

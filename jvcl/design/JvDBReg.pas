@@ -76,7 +76,7 @@ const
   cPanels = 'Panels';
 begin
   RegisterComponents(RsPaletteDBNonVisual, [TJvMemoryData,
-    TJvCSVDataSet {$IFDEF JV_MIDAS}, TJvDBRemoteLogin {$ENDIF},
+    TJvCsvDataSet {$IFDEF JV_MIDAS}, TJvDBRemoteLogin {$ENDIF},
     TJvDBGridWordExport, TJvDBGridExcelExport, TJvDBGridHTMLExport,
     TJvDBGridCSVExport, TJvDBGridXMLExport, TJvDatabaseActionList]);
   RegisterComponents(RsPaletteDBVisual, [TJvDBDatePickerEdit,

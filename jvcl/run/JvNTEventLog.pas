@@ -133,7 +133,7 @@ uses
   Registry,
   {$IFNDEF COMPILER6_UP}
   JvJCLUtils,
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF !COMPILER6_UP}
   JvResources;
 
 const

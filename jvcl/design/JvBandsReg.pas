@@ -42,7 +42,7 @@ uses
   {$ENDIF COMPILER6_UP}
   {$IFNDEF COMPILER7_UP}
   ExptIntf,
-  {$ENDIF COMPILER7_UP}
+  {$ENDIF !COMPILER7_UP}
   JclSchedule,
   JvBandForms, JvBandObject, JvBandObjectDLLWizard,
   JvBandObjectDLLWizardForm;

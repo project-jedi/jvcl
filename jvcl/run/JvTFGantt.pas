@@ -136,7 +136,7 @@ uses
 resourcestring
   RsThisIsTheMajorScale = 'This is the Major Scale';
   RsThisIsTheMinorScale = 'This is the Minor Scale';
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 //=== { TJvTFGantt } =========================================================
 

@@ -321,6 +321,6 @@ begin
   Result := 'IPageList';
 end;
 
-{$ENDIF COMPILER6_UP}
+{$ENDIF !COMPILER6_UP}
 
 end.

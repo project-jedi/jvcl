@@ -34,8 +34,8 @@ interface
 const
   S_OK    = $00000000;
   S_FALSE = $00000001;
-{$ENDIF BCB}
-{$ENDIF DELPHI6_UP}
+{$ENDIF !BCB}
+{$ENDIF !DELPHI6_UP}
 
 type
   // JvUIB Server Commands
@@ -71,7 +71,7 @@ const
   BreakLine = #10;
 {$ELSE}
   BreakLine = #13;
-{$ENDIF}
+{$ENDIF LINUX}
   NewLine = BreakLine + BreakLine;
 
 resourcestring

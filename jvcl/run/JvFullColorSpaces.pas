@@ -331,7 +331,7 @@ uses
   JvResources, TypInfo,
   {$IFNDEF COMPILER6_UP}
   JclMath,   // For EnsureRange
-  {$ENDIF COMPILER7_UP}
+  {$ENDIF !COMPILER6_UP}
   Math;
 
 var

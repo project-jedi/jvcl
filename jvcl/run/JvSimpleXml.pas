@@ -453,7 +453,7 @@ uses
   {$ENDIF UNITVERSIONING}
   {$IFDEF COMPILER5}
   JvJCLUtils, // for StrToFloatDef
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER5}
   JvConsts, JvResources;
 
 const

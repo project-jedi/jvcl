@@ -46,7 +46,7 @@ uses
   Dialogs, Menus, Math,
   {$IFNDEF COMPILER6_UP}
   FileCtrl,
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF !COMPILER6_UP}
   JvJVCLUtils, JvJCLUtils, JvInterpreter_Windows;
 
 { function ReplaceAllStrings(S: string; Words, Frases: TStrings): string; }
@@ -736,7 +736,7 @@ procedure JvInterpreter_BrowseForFolderNative(var Value: Variant; Args: TJvInter
 begin
   Value := BrowseForFolderNative(Args.Values[0], Args.Values[1], string(TVarData(Args.Values[2]).vString));
 end;
-{$ENDIF BCB1}
+{$ENDIF !BCB1}
 
 { function DeleteReadOnlyFile(const FileName: TFileName): Boolean; }
 
@@ -1071,7 +1071,7 @@ begin
     {$IFNDEF BCB1}
     AddFunction(cJvUtils, 'BrowseForFolderNative', JvInterpreter_BrowseForFolderNative, 3, [varEmpty, varString, varString or
       varByRef], varEmpty);
-    {$ENDIF BCB1}
+    {$ENDIF !BCB1}
     AddFunction(cJvUtils, 'DeleteReadOnlyFile', JvInterpreter_DeleteReadOnlyFile, 1, [varEmpty], varEmpty);
     AddFunction(cJvUtils, 'HasParam', JvInterpreter_HasParam, 1, [varString], varEmpty);
     AddFunction(cJvUtils, 'HasSwitch', JvInterpreter_HasSwitch, 1, [varString], varEmpty);

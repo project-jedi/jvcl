@@ -89,7 +89,7 @@ type
     {$IFNDEF COMPILER6_UP}
     FPageListComponent: TComponent;
     procedure SetPageListComponent(const Value: TComponent);
-    {$ENDIF COMPILER6_UP}
+    {$ENDIF !COMPILER6_UP}
     procedure SetPageDefault(const Value: Integer);
     procedure SetLinks(const Value: TJvPageLinks);
     procedure SetPageList(const Value: IPageList);
@@ -419,7 +419,7 @@ uses
   {$ENDIF UNITVERSIONING}
   {$IFNDEF COMPILER6_UP}
   JvResources,
-  {$ENDIF COMPLER6_UP}
+  {$ENDIF !COMPILER6_UP}
   Forms;
 
 (* (ahuser) make Delphi 5 compiler happy
@@ -518,7 +518,7 @@ begin
   {$IFNDEF COMPILER6_UP}
   // TreeNodes are destroyed by TCustomTreeview in D6 and above!!!
   FreeAndNil(FItems);
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF !COMPILER6_UP}
   inherited Destroy;
 end;
 

@@ -194,7 +194,7 @@ var
   {$IFNDEF COMPILER6_UP}
   CompRef: IInterfaceComponentReference;
   ProvComp: TComponent;
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF !COMPILER6_UP}
 begin
   Svc := GetConsumerServiceAt(Index);
   if Svc <> nil then
@@ -290,11 +290,11 @@ var
   {$IFNDEF COMPILER6_UP}
   List: IDesignerSelections;
   Dsgnr: IFormDesigner;
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF !COMPILER6_UP}
 begin
   {$IFNDEF COMPILER6_UP}
   Dsgnr := Self.Designer;
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF !COMPILER6_UP}
   if Value = '' then
     Comp := nil
   else
@@ -317,7 +317,7 @@ begin
   Dsgnr.NoSelection; // Self will be gone here
   Dsgnr.SetSelections(List);
   Dsgnr.Modified;
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF !COMPILER6_UP}
 end;
 
 procedure TJvDataConsumerProperty.GetValues(Proc: TGetStrProc);

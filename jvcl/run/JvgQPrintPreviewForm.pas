@@ -124,7 +124,7 @@ uses
 {$IFNDEF USEJVCL}
 resourcestring
   RsPageOfPages = 'Page %d of %d';
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 procedure TJvgfPrintPreview.FormCreate(Sender: TObject);
 begin

@@ -98,7 +98,7 @@ begin
   // you link the package:
   // Fatal: Type index 2147479547 is bad in module ..\..\design\JvDataContextManagerForm.pas
   Form.BringToFront;
-  {$ENDIF BCB5}
+  {$ENDIF !BCB5}
 end;
 
 //=== { TJvContextRootItem } =================================================

@@ -195,7 +195,7 @@ type
     FErrorIndicatorComponent: TComponent;
     procedure SetValidationSummaryComponent(Value: TComponent);
     procedure SetErrorIndicatorComponent(Value: TComponent);
-    {$ENDIF COMPILER6_UP}
+    {$ENDIF !COMPILER6_UP}
     procedure SetValidationSummary(const Value: IJvValidationSummary);
     procedure SetErrorIndicator(const Value: IJvErrorIndicator);
     function GetCount: Integer;
@@ -345,7 +345,7 @@ begin
     Result := vrGreaterThan;
 end;
 
-{$ENDIF COMPILER6_UP}
+{$ENDIF !COMPILER6_UP}
 
 //=== { TJvBaseValidator } ===================================================
 
@@ -816,7 +816,7 @@ begin
   end;
 end;
 
-{$ENDIF COMPILER6_UP}
+{$ENDIF !COMPILER6_UP}
 
 procedure TJvValidators.Insert(AValidator: TJvBaseValidator);
 begin

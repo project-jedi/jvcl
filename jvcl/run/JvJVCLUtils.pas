@@ -669,7 +669,7 @@ procedure DeallocateHWndEx(Wnd: Windows.HWND);
 
 function JvMakeObjectInstance(Method: TWndMethod): Pointer;
 procedure JvFreeObjectInstance(ObjectInstance: Pointer);
-{$ENDIF  MSWINDOWS}
+{$ENDIF MSWINDOWS}
 
 function GetAppHandle: HWND;
 // DrawArrow draws a standard arrow in any of four directions and with the specifed color.

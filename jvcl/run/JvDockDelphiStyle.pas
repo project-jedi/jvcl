@@ -42,7 +42,7 @@ type
     constructor Create(AOwner: TComponent); override;
     {$IFNDEF USEJVCL}
     function GetControlName: string; override;
-    {$ENDIF USEJVCL}
+    {$ENDIF !USEJVCL}
   published
     property ConjoinServerOption;
     property TabServerOption;
@@ -193,7 +193,7 @@ function TJvDockDelphiStyle.GetControlName: string;
 begin
   Result := Format(RsDockLikeDelphiStyle, [inherited GetControlName]);
 end;
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 procedure TJvDockDelphiTabPageControl.CMDockClient(var Msg: TCMDockClient);
 var

@@ -41710,7 +41710,7 @@ begin(*yyparse*)
   yydebug := true;
 {$else}
   yydebug := false;
-{$endif}
+{$ENDIF yydebug}
 
 parse:
 

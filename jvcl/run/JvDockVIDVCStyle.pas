@@ -154,7 +154,7 @@ type
     constructor Create(AOwner: TComponent); override;
     {$IFNDEF USEJVCL}
     function GetControlName: string; override;
-    {$ENDIF USEJVCL}
+    {$ENDIF !USEJVCL}
     procedure SetDockBaseControl(IsCreate: Boolean; DockBaseControl: TJvDockBaseControl); override;
   published
     property SystemInfoChange: TJvDockSystemInfoChange read FSystemInfoChange
@@ -3842,7 +3842,7 @@ function TJvDockVIDVCStyle.GetControlName: string;
 begin
   Result := Format(RsDockLikeVIDStyle, [inherited GetControlName]);
 end;
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 //=== { TJvDockVIDVCDragDockObject } =========================================
 

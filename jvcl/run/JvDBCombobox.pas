@@ -58,7 +58,7 @@ type
     procedure SetEditReadOnly;
     {$IFNDEF COMPILER6_UP}
     procedure SetItems(const Value: TStrings);
-    {$ENDIF COMPILER6_UP}
+    {$ENDIF !COMPILER6_UP}
     procedure SetReadOnly(Value: Boolean);
     procedure UpdateData(Sender: TObject);
     function GetComboText: string; virtual;

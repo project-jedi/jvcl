@@ -185,7 +185,7 @@ type
 {$IFNDEF COMPILER6_UP}
 function Supports(Instance: TObject; const Intf: TGUID): Boolean; overload;
 function Supports(AClass: TClass; const Intf: TGUID): Boolean; overload;
-{$ENDIF COMPILER6_UP}
+{$ENDIF !COMPILER6_UP}
 
 function IntfCast(Instance: TObject; const Intf: TGUID): IUnknown;
 

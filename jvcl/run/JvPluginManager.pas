@@ -187,7 +187,7 @@ uses
   {$ENDIF UNITVERSIONING}
   {$IFNDEF COMPILER6_UP}
   JvJCLUtils, // for IncludeTrailingPathDelimiter (only <D6)
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF !COMPILER6_UP}
   JvResources;
 
 const

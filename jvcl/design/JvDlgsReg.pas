@@ -49,7 +49,7 @@ uses
   {$IFDEF VCL}
    {$IFNDEF BCB5}  // removed because BCB5 cannot compile/link JvDialogActns
   JvDialogActns,
-   {$ENDIF BCB5}
+   {$ENDIF !BCB5}
   JvDialogActnResForm, JvDialogs, JvPageSetupTitled, JvPageSetup,
   JvAppletEditor,
   {$ENDIF VCL}
@@ -143,7 +143,7 @@ begin
     // TJvDialogActions is a datamodule with default settings for our dialog actions
     TJvDialogActions);
   {$ENDIF VCL}
-  {$ENDIF BCB5}
+  {$ENDIF !BCB5}
 end;
 
 end.

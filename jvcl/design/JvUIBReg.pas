@@ -28,7 +28,7 @@ unit JvUIBReg;
 
 {$IFNDEF BCB}
 {$I jvcl.inc}
-{$ENDIF BCB}
+{$ENDIF !BCB}
 {$I jvuib.inc}
 
 interface

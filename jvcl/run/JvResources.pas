@@ -1725,7 +1725,7 @@ resourcestring
 resourcestring
   {$IFNDEF COMPILER6_UP}
   // RsEInvalidBoolean = '''%s'' is not a valid Boolean value'; make Delphi 5 compiler happy // andreas
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF !COMPILER6_UP}
   RsEInvalidXMLElementUnexpectedCharacte =
     'Invalid XML Element: Unexpected character in property declaration ("%s" found)';
   RsEInvalidXMLElementUnexpectedCharacte_ =
@@ -2250,7 +2250,7 @@ implementation
 
 {$IFNDEF USEJVCL}
   {$UNDEF UNITVERSIONING}
-{$ENDIF ~USEJVCL}
+{$ENDIF !USEJVCL}
 
 {$IFDEF UNITVERSIONING}
 uses

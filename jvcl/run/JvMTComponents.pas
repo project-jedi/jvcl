@@ -256,7 +256,7 @@ resourcestring
   RsEOperatorNotAvailable = 'Operation not available while thread is active';
   RsECannotChangePropertySection = 'Cannot change property of active section';
   RsECannotChangePropertyBuffer = 'Cannot change property of active buffer';
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 constructor TJvMTManager.Create(AOwner: TComponent);
 begin

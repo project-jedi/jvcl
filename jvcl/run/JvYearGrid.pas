@@ -63,7 +63,7 @@ type
   {$HPPEMIT '#define TTime TDateTime'}
   {$ENDIF VisualCLX}
   {$HPPEMIT '#endif'}
-  {$ENDIF USEJVCL}
+  {$ENDIF !USEJVCL}
 
   TYearData = record
     DisplayText: string;
@@ -115,7 +115,7 @@ type
 
     {$IFNDEF USECUSTOMGRID}
     procedure MouseToCell(X, Y: Integer; var ACol, ARow: Longint);
-    {$ENDIF USECUSTOMGRID}
+    {$ENDIF !USECUSTOMGRID}
 
     procedure DoShowHint(var HintStr: THintString; var CanShow: Boolean;
       var HintInfo: THintInfo);
@@ -166,7 +166,7 @@ type
     {$IFNDEF USECUSTOMGRID}
     FOnSelectCell: TSelectCellEvent;
     FOnDrawCell: TDrawCellEvent;
-    {$ENDIF USECUSTOMGRID}
+    {$ENDIF !USECUSTOMGRID}
     FDaysAlignment: TAlignment;
     FDayNamesAlignment: TAlignment;
     FMonthNamesAlignment: TAlignment;
@@ -326,12 +326,12 @@ resourcestring
   RsCopyItem = '&Copy';
   RsPasteItem = '&Paste';
   RsDeleteItem = '&Delete';
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 {$IFNDEF USEJVCL}
 const
   Cr = #13;
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 const
   TodayFontColor = clWhite;
@@ -1488,7 +1488,7 @@ begin
   ACol := Coord.X;
   ARow := Coord.Y;
 end;
-{$ENDIF USECUSTOMGRID}
+{$ENDIF !USECUSTOMGRID}
 
 procedure TJvYearGrid.ReadGridYear(Reader: TReader);
 begin

@@ -543,7 +543,7 @@ type
     {$IFNDEF COMPILER6_UP}
     { IInterfaceComponentReference }
     function GetComponent: TComponent;
-    {$ENDIF COMPILER6_UP}
+    {$ENDIF !COMPILER6_UP}
     { IDataProvider }
     function GetItems: IJvDataItems; virtual;
     procedure RegisterChangeNotify(ANotify: IJvDataProviderNotify); dynamic;
@@ -753,7 +753,7 @@ type
     {$IFNDEF COMPILER6_UP}
     function GetProviderComp: TComponent;
     procedure SetProviderComp(Value: TComponent);
-    {$ENDIF COMPILER6_UP}
+    {$ENDIF !COMPILER6_UP}
   protected
     function _AddRef: Integer; override; stdcall;
     function _Release: Integer; override; stdcall;
@@ -1688,7 +1688,7 @@ type
   end;
   {$IFNDEF TYPEINFO_ON}
   {$TYPEINFO OFF}
-  {$ENDIF TYPEINFO_ON}
+  {$ENDIF !TYPEINFO_ON}
 
 function THackWriter.GetPropPath: string;
 begin
@@ -3333,7 +3333,7 @@ function TJvCustomDataProvider.GetComponent: TComponent;
 begin
   Result := Self;
 end;
-{$ENDIF COMPILER6_UP}
+{$ENDIF !COMPILER6_UP}
 
 function TJvCustomDataProvider.GetItems: IJvDataItems;
 begin
@@ -3809,7 +3809,7 @@ begin
   end;
 end;
 
-{$ENDIF COMPILER6_UP}
+{$ENDIF !COMPILER6_UP}
 
 function TJvDataConsumer._AddRef: Integer;
 begin
@@ -5038,7 +5038,7 @@ var
   Finder: IJvDataIDSearch;
   {$IFNDEF ViewList_UseFinder}
   ParIdx: Integer;
-  {$ENDIF ViewList_UseFinder}
+  {$ENDIF !ViewList_UseFinder}
 begin
   {$IFDEF ViewList_UseFinder}
   { The easiest way: use IJvDataIDSearch to locate the item given it's ID value. Scans all items

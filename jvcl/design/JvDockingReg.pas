@@ -63,7 +63,7 @@ begin
   {$IFNDEF USEJVCL}
   RegisterComponentEditor(TJvDockBaseControl, TJvDockControlEditor);
   RegisterComponentEditor(TJvDockBasicStyle, TJvDockStyleEditor);
-  {$ENDIF USEJVCL}
+  {$ENDIF !USEJVCL}
   RegisterComponentEditor(TJvDockVIDTabPageControl, TJvDockVIDTabPageControlEditor);
   RegisterComponentEditor(TJvDockVIDTabSheet, TJvDockVIDTabPageControlEditor);
 

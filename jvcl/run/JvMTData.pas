@@ -116,7 +116,7 @@ uses
 {$IFNDEF USEJVCL}
 resourcestring
   RsEMethodOnlyForMainThread = '%s method can only be used by the main VCL thread';
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 var
   GlobalDataThreadsMan: TMTManager = nil;

@@ -110,7 +110,7 @@ uses
 {$IFNDEF USEJVCL}
 resourcestring
   RsWeekOf = 'Week of %s';
-{$ENDIF USEJVCL}  
+{$ENDIF !USEJVCL}  
 
 procedure TJvTFWeeks.ConfigCells;
 var

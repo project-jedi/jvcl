@@ -76,12 +76,12 @@ uses
    {$IFDEF INTERNET_COMPONENTS}
   JvgWebDocumentIterator, JvgHTTPVersionInfo, JvgCheckVersionInfoForm,
    {$ENDIF INTERNET_COMPONENTS}
-  {$ENDIF COMPILER8_UP}
+  {$ENDIF !COMPILER8_UP}
   {$IFDEF JVCL_UseQuickReport}
   JvgQPrintPreviewForm, JvgQPrintSetupForm, JvgQRLabel,
   {$ENDIF JVCL_UseQuickReport}
   JvgVertDBGrid,
-  {$ENDIF DelphiPersonalEdition}
+  {$ENDIF !DelphiPersonalEdition}
   JvgLabelEditorForm;
 
 // JvgStepLabel,
@@ -94,7 +94,7 @@ begin
     {$IFNDEF DelphiPersonalEdition}
     {TJvgExportDataset,} TJvgDBNavigator, TJvgPrintCrossTable, TJvgDBGrid,
     TJvgVertDBSGrid,
-    {$ENDIF DelphiPersonalEdition}
+    {$ENDIF !DelphiPersonalEdition}
     TJvgGridHeaderControl,
     TJvgSysInfo, TJvgMaskEdit, TJvgBevel, TJvgBitBtn, TJvgGraphicButton,
     {TJvgGraph,} TJvgTreeView, TJvgCheckTreeView, TJvgSplitter, TJvgShadow,
@@ -120,7 +120,7 @@ begin
     {$IFDEF JVCL_UseQuickReport}
     TJvgQRLabel, TJvgQRDBText, TJvgMyQRPreview,
     {$ENDIF JVCL_UseQuickReport}
-    {$ENDIF DelphiPersonalEdition}
+    {$ENDIF !DelphiPersonalEdition}
     {TJvgMultipleResources,} {TJvgComponentDescription,} TJvgSingleInstance,
     TJvgFixFont]);
 

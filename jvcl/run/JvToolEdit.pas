@@ -84,7 +84,7 @@ type
     function GetOptions(var dwFlag: DWORD): HRESULT; stdcall;
   end;
 
-{$ENDIF ~COMPILER7_UP}
+{$ENDIF !COMPILER7_UP}
 
 type
   TFileExt = type string;

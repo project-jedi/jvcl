@@ -215,7 +215,7 @@ begin
   {$IFNDEF USEJVCL}
   FDockInfoIni := nil;
   FDockInfoReg := nil;
-  {$ENDIF USEJVCL}
+  {$ENDIF !USEJVCL}
   FJvDockInfoStyle := isNone;
   FDataStream := TMemoryStream.Create;
 end;

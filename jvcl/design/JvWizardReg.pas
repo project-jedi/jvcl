@@ -92,7 +92,7 @@ begin
   {$IFNDEF USEJVCL}
   RegisterPropertyEditor(TypeInfo(TJvWizardAboutInfoForm), nil, 'About',
     TJvWizardAboutDialogProperty);
-  {$ENDIF USEJVCL}
+  {$ENDIF !USEJVCL}
   // JvWizard Page List Editor
   RegisterPropertyEditor(TypeInfo(TJvWizardPageList), TJvWizard, cPages,
     TJvWizardPageListProperty);

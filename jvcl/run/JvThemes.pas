@@ -1215,7 +1215,7 @@ begin
   ThemeServices.DoOnThemeChange;
 end;
 
-{$ENDIF COMPILER7_UP}
+{$ENDIF !COMPILER7_UP}
 
 function ThemeServices: TThemeServicesEx;
 begin
@@ -1907,7 +1907,7 @@ finalization
   {$IFNDEF COMPILER7_UP}
   FreeAndNil(GlobalThemeHooks);
   UninstallWinControlHook;
-  {$ENDIF !COMPILER7UP}
+  {$ENDIF !COMPILER7_UP}
   {$ENDIF JVCLThemesEnabled}
 
   {$IFDEF UNITVERSIONING}

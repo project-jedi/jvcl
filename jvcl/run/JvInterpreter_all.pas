@@ -49,7 +49,7 @@ uses
   {$IFDEF JVCL_UseQuickReport}
   JvInterpreter_Quickrpt,
   {$ENDIF JVCL_UseQuickReport}
-  {$ENDIF DelphiPersonalEdition}
+  {$ENDIF !DelphiPersonalEdition}
   JvInterpreter_JvEditor, JvInterpreterFm,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
@@ -98,7 +98,7 @@ initialization
   {$IFDEF JVCL_UseQuickReport}
   JvInterpreter_Quickrpt.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
   {$ENDIF JVCL_UseQuickReport}
-  {$ENDIF DelphiPersonalEdition}
+  {$ENDIF !DelphiPersonalEdition}
 
   JvInterpreter_JvEditor.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
 

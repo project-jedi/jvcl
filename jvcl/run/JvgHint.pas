@@ -105,7 +105,7 @@ uses
 {$IFNDEF USEJVCL}
 resourcestring
   RsEOnlyOneInstanceOfTJvgHint = 'Cannot create more than one instance of TJvgHint component';
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 type
   TJvgHintWindow = class(THintWindow)

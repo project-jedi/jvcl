@@ -123,7 +123,7 @@ type
   IInvokable = interface(IInterface)
   end;
   {$M-}
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF !COMPILER6_UP}
 
   // Base class for persistent properties that can show events.
   // By default, Delphi and BCB don't show the events of a class
@@ -210,7 +210,7 @@ type
   {$IFNDEF COMPILER6_UP}
   { TStream seek origins }
   TSeekOrigin = (soBeginning, soCurrent, soEnd);
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF !COMPILER6_UP}
 
   TJvGradientStyle = (grFilled, grEllipse, grHorizontal, grVertical, grPyramid, grMount);
   //  TOnDelete = procedure(Sender: TObject; Path: string) of object;

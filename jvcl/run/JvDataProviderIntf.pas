@@ -234,7 +234,7 @@ type
     ['{E28B1858-EC86-4559-8FCD-6B4F824151ED}']
     function GetComponent: TComponent;
   end;
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF !COMPILER6_UP}
 
   IJvDataConsumer = interface
     ['{B2F18D03-F615-4AA2-A51A-74D330C05C0E}']

@@ -96,7 +96,7 @@ resourcestring
   RsActiveStepFormat = 'Step %d of %d';
   RsBackTo = 'Back to';
   RsNextStep = 'Next Step';
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 constructor TJvWizardRouteMapSteps.Create(AOwner: TComponent);
 begin

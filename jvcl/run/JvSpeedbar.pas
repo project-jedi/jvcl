@@ -1692,7 +1692,7 @@ begin
     end;
   end;
 end;
-{$ENDIF VCL }
+{$ENDIF VCL}
 {$IFDEF VisualCLX}
 begin
   ParentFont := False;

@@ -638,7 +638,7 @@ begin
   {$ENDIF COMPILER6_UP}
   {$IFNDEF COMPILER6_UP}
   try
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF !COMPILER6_UP}
     Item := ItemByRow(ButtonsList.Row);
     if Item <> nil then
     begin
@@ -651,7 +651,7 @@ begin
   finally
     CompList.Free;
   end;
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF !COMPILER6_UP}
 end;
 
 procedure TJvSpeedbarEditorMain.Paste;
@@ -667,7 +667,7 @@ begin
     {$ENDIF COMPILER6_UP}
     {$IFNDEF COMPILER6_UP}
     try
-    {$ENDIF COMPILER6_UP}
+    {$ENDIF !COMPILER6_UP}
       FBar.OnAddItem := OnPasteItem;
       try
         PasteComponents(OwnerForm, FBar, CompList);
@@ -679,7 +679,7 @@ begin
     finally
       CompList.Free;
     end;
-    {$ENDIF COMPILER6_UP}
+    {$ENDIF !COMPILER6_UP}
   end;
 end;
 

@@ -65,7 +65,7 @@ type
     function CanSetEachOtherDocked(ADockBaseControl: TJvDockBaseControl): Boolean; override;
     {$IFNDEF USEJVCL}
     function GetControlName: string; override;
-    {$ENDIF USEJVCL}
+    {$ENDIF !USEJVCL}
     procedure SetDockBaseControl(IsCreate: Boolean;
       DockBaseControl: TJvDockBaseControl); override;
   published

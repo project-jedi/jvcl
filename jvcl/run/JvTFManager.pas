@@ -1087,7 +1087,7 @@ resourcestring
     'because aPrinter must be assigned';
   RsEInvalidFooterHeightd = 'Invalid Footer Height (%d)';
   RsEInvalidHeaderHeightd = 'Invalid Header Height (%d)';
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 function AdjustEndTime(ATime: TTime): TTime;
 begin

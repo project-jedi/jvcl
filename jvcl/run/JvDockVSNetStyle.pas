@@ -254,7 +254,7 @@ type
     destructor Destroy; override;
     {$IFNDEF USEJVCL}
     function GetControlName: string; override;
-    {$ENDIF USEJVCL}
+    {$ENDIF !USEJVCL}
     procedure SetDockFormVisible(ADockClient: TJvDockClient; AVisible: Boolean);
     procedure ShowDockForm(ADockClient: TJvDockClient); override;
     procedure HideDockForm(ADockClient: TJvDockClient); override;

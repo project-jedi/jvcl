@@ -286,7 +286,7 @@ uses
   {$ENDIF UNITVERSIONING}
   {$IFNDEF COMPILER6_UP}
   JvResources,
-  {$ENDIF COMPLER6_UP}
+  {$ENDIF !COMPILER6_UP}
   Forms;
 
 //=== { TJvCustomPage } ======================================================

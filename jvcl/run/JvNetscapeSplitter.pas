@@ -873,7 +873,7 @@ begin
       Cursor := crVSplit
     else
       Cursor := crHSplit;
-    {$ENDIF COMPILER4_UP}
+    {$ENDIF !COMPILER4_UP}
   end;
 end;
 
