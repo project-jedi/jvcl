@@ -47,7 +47,9 @@ uses
   JVCLVer;
 
 type
-
+  {$IFNDEF COMPILER6_UP}
+  TInterfacedPersistent = class(TPersistent);
+  {$ENDIF}
   TJvPersistentEmbedded = class(TInterfacedPersistent)
   private
     FFiler: TFiler;
