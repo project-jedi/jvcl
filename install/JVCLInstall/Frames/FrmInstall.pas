@@ -62,6 +62,7 @@ type
     procedure EvProgress(Sender: TObject; const Text: string;
       Position, Max: Integer; Kind: TProgressKind);
     procedure EvCaptureLine(const Text: string; var Aborted: Boolean);
+    procedure EvIdle(Sender: TObject);
   public
     class function Build(Installer: TInstaller; Client: TWinControl): TFrameInstall;
     procedure Execute;
@@ -187,6 +188,11 @@ begin
   end;
 end;
 
+procedure TFrameInstall.EvIdle(Sender: TObject);
+begin
+  Application.ProcessMessages;
+end;
+
 procedure TFrameInstall.RichEditLogSelectionChange(Sender: TObject);
 var
   S: string;
@@ -269,10 +275,12 @@ begin
   FPositionProject := 0;
 
   FFinished := False;
+
   Compiler := TJVCLCompiler.Create(Installer.Data);
   try
     Compiler.OnProgress := EvProgress;
     Compiler.OnCaptureLine := EvCaptureLine;
+    Compiler.OnIdle := EvIdle;
     Success := Compiler.Compile;
     AbortReason := Compiler.AbortReason;
   finally

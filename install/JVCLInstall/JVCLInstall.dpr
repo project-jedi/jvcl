@@ -29,10 +29,10 @@ Known Issues:
 program JVCLInstall;
 
 uses
-  Forms,
   {$IFDEF USE_DXGETTEXT}
   gnugettext,
   {$ENDIF USE_DXGETTEXT}
+  Forms,
   Main in 'Main.pas' {FormMain},
   Core in 'Core.pas',
   JVCL3Install in 'JVCL3Install.pas',
@@ -70,12 +70,12 @@ uses
 {$R *.res}
 
 begin
+  {$IFDEF USE_DXGETTEXT}
+  if CmdOptions.Lang <> '' then
+     UseLanguage(CmdOptions.Lang);
+  {$ENDIF USE_DXGETTEXT}
   Application.Initialize;
   Application.CreateForm(TFormMain, FormMain);
   Application.CreateForm(TFormJvclIncConfig, FormJvclIncConfig);
-  {$IFDEF USE_DXGETTEXT}
-  if ParamStr(1) <> '' then
-     UseLanguage(ParamStr(1));
-  {$ENDIF USE_DXGETTEXT}
   Application.Run;
 end.

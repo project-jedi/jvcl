@@ -43,7 +43,7 @@ uses
   gnugettext,
   {$ENDIF USE_DXGETTEXT}
   Core,
-  ShellAPI, HtHint, JvWizardRouteMapSteps;
+  ShellAPI, HtHint;
 
 type
   TFormMain = class(TJvForm)
@@ -275,7 +275,7 @@ begin
     while Index > ToPage.PageIndex do
     begin
       if not PackageInstaller.CanPrevPage then
-      begin
+      begin                 
         ToPage := JvWizard.WizardPages[Index];
         Break;
       end;
@@ -303,14 +303,14 @@ var
 begin
   if not Finished then
   begin
+    if Supports(PackageInstaller.Page, IInstallPage, InstallPage) and
+       (JvWizard.ActivePage.EnabledButtons = []) then
+      { The installation cannot be aborted without leaving make.exe and cmd.exe
+        running for ever. So we do not allow abortion. }
+      CanClose := False
+    else
     CanClose := MessageDlg(RsCancelInstallation,
       mtConfirmation, [mbYes, mbNo], 0) = mrYes;
-    if CanClose and Supports(PackageInstaller.Page, IInstallPage, InstallPage) and
-       (JvWizard.ActivePage.EnabledButtons = []) then
-    begin
-      CanClose := False;
-      InstallPage.Abort;
-    end;
   end;
 end;
 
@@ -382,7 +382,7 @@ procedure InitDxgettext;
 var
   Path: string;
 begin
-  Path := ExtractFilePath(Application.ExeName) + '..' + PathDelim + 'locale';
+  Path := ExtractFilePath(ExtractFileDir(ParamStr(0))) + 'locale';
   bindtextdomain('JVCLInstall', Path);
   bindtextdomain('jvcl', Path);
   AddDomainForResourceString('JVCLInstall');

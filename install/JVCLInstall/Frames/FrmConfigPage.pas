@@ -137,7 +137,7 @@ end;
 
 procedure TFrameConfigPage.Init;
 var
-  i{, Y, BCBCount, Num}: Integer;
+  i: Integer;
 begin
   Inc(FInitializing);
   try
@@ -175,10 +175,10 @@ begin
       end;
     end;
     ComboBoxTargetIDEChange(ComboBoxTargetIDE);
-
+    
    // jvcl.inc
     LblDxgettextHomepage.Left := CheckBoxDxgettextSupport.Left + 16;
-    LblDxgettextHomepage.Top := CheckBoxDxgettextSupport.Top + 2;
+    LblDxgettextHomepage.Top := CheckBoxDxgettextSupport.Top;
     LblDxgettextHomepage.OnClick := Installer.DoHomepageClick;
     LblDxgettextHomepage.Caption := CheckBoxDxgettextSupport.Caption;
 

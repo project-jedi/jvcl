@@ -74,12 +74,14 @@ type
     FOnResourceProgress: TResourceProgressEvent;
     FOnProjectProgress: TProjectProgressEvent;
     FOnProgress: TProgressEvent;
+    FOnIdle: TNotifyEvent;
 
     FAbortReason: string;
     FQuiet: string;
   protected
     function Make(TargetConfig: ITargetConfig; const Args: string;
       CaptureLine: TCaptureLine; StartDir: string = ''): Integer;
+    procedure DoIdle(Sender: TObject);
 
     procedure CaptureLine(const Line: string; var Aborted: Boolean); virtual;
     procedure CaptureLineClean(const Line: string; var Aborted: Boolean); virtual;
@@ -124,6 +126,7 @@ type
     property OnResourceProgress: TResourceProgressEvent read FOnResourceProgress write FOnResourceProgress;
     property OnProjectProgress: TProjectProgressEvent read FOnProjectProgress write FOnProjectProgress;
     property OnProgress: TProgressEvent read FOnProgress write FOnProgress;
+    property OnIdle: TNotifyEvent read FOnIdle write FOnIdle;
   end;
 
 const
@@ -313,13 +316,18 @@ begin
   end;
 
   Result := CaptureExecute('"' + TargetConfig.Target.Make + '"', '-l+ ' + Args,
-                           StartDir, CaptureLine);
+                           StartDir, CaptureLine, DoIdle);
   if Result < 0 then // command not found
     MessageBox(0, PChar(Format(RsCommandNotFound,
                       ['"' + TargetConfig.Target.Make + '"' + Args, StartDir])),
                'JVCL Installer', MB_OK or MB_ICONERROR);
 end;
 
+procedure TJVCLCompiler.DoIdle(Sender: TObject);
+begin
+  if Assigned(FOnIdle) then
+    FOnIdle(Self);
+end;
 
 /// <summary>
 /// GeneratePackages generates the packages in
@@ -956,7 +964,12 @@ begin
               begin
                 S := ProjectGroup.TargetConfig.UnitOutDir + '\obj\' + ChangeFileExt(S, '.obj');
                 if FileExists(S) then
-                  Lines.Add(#9'-@del "' + S + '" >NUL');
+                begin
+                  if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
+                    Lines.Add(#9'-@del "' + S + '" >NUL')
+                  else
+                    Lines.Add(#9'-@del /f /q "' + S + '" 2>NUL');
+                end;
               end;
             end;
           end;
