@@ -83,7 +83,7 @@ type
 implementation
 
 uses
-  JvConsts, JvResources;
+  JvConsts, JvResources, JvJCLUtils;
 
 const
   CM_SHOWEVENT = CM_JVBASE + 1;
@@ -100,39 +100,6 @@ type
   private
     procedure CMShowEvent(var Msg: TCMShowEvent); message CM_SHOWEVENT;
   end;
-
-function ChangeTopException(E: TObject): TObject;
-type
-  PRaiseFrame = ^TRaiseFrame;
-  TRaiseFrame = record
-    NextRaise: PRaiseFrame;
-    ExceptAddr: Pointer;
-    ExceptObject: TObject;
-    //ExceptionRecord: PExceptionRecord;
-  end;
-begin
-  { C++ Builder 3 Warning !}
-  { if linker error occured with message "unresolved external 'System::RaiseList'" try
-    comment this function implementation, compile,
-    then uncomment and compile again. }
-  {$IFDEF MSWINDOWS}
-  {$IFDEF COMPILER6_UP}
-  {$WARN SYMBOL_DEPRECATED OFF}
-  {$ENDIF}
-  if RaiseList <> nil then
-  begin
-    Result := PRaiseFrame(RaiseList)^.ExceptObject;
-    PRaiseFrame(RaiseList)^.ExceptObject := E
-  end
-  else
-    Result := nil;
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
-  // XXX: changing exception in stack frame is not supported on Kylix
-  Writeln('ChangeTopException');
-  Result := E;
-  {$ENDIF LINUX}
-end;
 
 //=== TJvProgressComponent ===================================================
 
