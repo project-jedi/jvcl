@@ -40,22 +40,36 @@ interface
 uses
   Windows;
 
+{$HPPEMIT '#include "ras.h"'}
+
 const
   UNLEN = 256;
+  {$EXTERNALSYM UNLEN}
   PWLEN = 256;
+  {$EXTERNALSYM PWLEN}
   DNLEN = 15;
+  {$EXTERNALSYM DNLEN}
   RAS_MaxEntryName = 256;
+  {$EXTERNALSYM RAS_MaxEntryName}
   RAS_MaxDeviceName = 128;
+  {$EXTERNALSYM RAS_MaxDeviceName}
   RAS_MaxDeviceType = 16;
+  {$EXTERNALSYM RAS_MaxDeviceType}
   RAS_MaxParamKey = 32;
+  {$EXTERNALSYM RAS_MaxParamKey}
   RAS_MaxParamValue = 128;
+  {$EXTERNALSYM RAS_MaxParamValue}
   RAS_MaxPhoneNumber = 128;
+  {$EXTERNALSYM RAS_MaxPhoneNumber}
   RAS_MaxCallbackNumber = RAS_MaxPhoneNumber;
+  {$EXTERNALSYM RAS_MaxCallbackNumber}
 
 type
   UINT = Word;
+  {$EXTERNALSYM UINT}
   PHRASConn = ^HRASConn;
   HRASConn = DWORD;
+  {$EXTERNALSYM HRASConn}
 
 const
   RASDialEvent = 'RASDialEvent';
