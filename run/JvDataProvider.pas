@@ -85,6 +85,10 @@ type
     function SelectedContext: IJvDataContext;
     { Deselect the current context and revert back to the context that was selected before it. }
     procedure ReleaseContext;
+    { Called when the context is about to be destroyed. Should be handed over to the items list. }
+    procedure ContextDestroying(Context: IJvDataContext);
+    { Called when a consumer is about to be destroyed. }
+    procedure ConsumerDestroying(Consumer: IJvDataConsumer);
   end;
 
   { Implemented by clients (i.e list/comboboxes, labels, buttons, edits, listviews, treeviews, menus etc)
@@ -116,6 +120,9 @@ type
     { Determines if the list is a dynamic list of items (i.e. items are generated as needed and
       disposed of when the last reference to it goes out of scope). }
     function IsDynamic: Boolean;
+    { Called when the specified context is about to be destroyed. Should iterate over all it's items
+      annd call it's ContextDestroying method. }
+    procedure ContextDestroying(Context: IJvDataContext);
 
     { Number of items in the list }
     property Count: Integer read GetCount;
@@ -227,6 +234,9 @@ type
     function GetImplementer: TObject;
     { Retrieve the items ID string. }
     function GetID: string;
+    { Called when the specified context is about to be destroyed. If the item supports sub items,
+      these should also be notified (by calling the IJvDataItems.ContextDestroying method). }
+    procedure ContextDestroying(Context: IJvDataContext);
 
     { Reference to the IJvDataItems owner. }
     property Items: IJvDataItems read GetItems;
@@ -308,6 +318,13 @@ type
     function GetVerb(Index: Integer; out Caption: string; out Enabled, Checked, Visible,
       RadioItem: Boolean): Boolean;
     function ExecVerb(Index: Integer): Boolean;
+  end;
+
+  { Support interface for all IJvDataItem support interfaces as well as for the IJvDataItem itself.
+    Allows to revert to the default setting for the support interface or for the item in general. }
+  IJvDataContextSensitive = interface
+    ['{7067F5C1-05DC-4DAC-A595-AF9151695FBB}']
+    procedure RevertToDefault;
   end;
 
   {$IFNDEF COMPILER6_UP}
@@ -433,6 +450,8 @@ type
 
   IJvDataContext = interface
     ['{F226D92A-3493-4EF8-9CE6-037357EB0CEA}']
+    { Retrieve the implementing instance. }
+    function GetImplementer: TObject;
     { Reference to the context manager. }
     function Contexts: IJvDataContexts;
     { Unique name of the context (used at design time and by the streaming system). }
