@@ -33,31 +33,19 @@ WARNINGHEADER
 interface
 
 uses
-  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, DBGrids,
-  {$ENDIF VCl}
-  {$IFDEF VisualCLX}
-  Types, Qt, QGraphics, QControls, QForms, QDBGrids, QWindows,
-  {$ENDIF VisualCLX}
   Classes, SysUtils,
   JvTypes, JvThemes, JVCLVer, JvExControls;
 
-{$IFDEF VCL}
  {$DEFINE NeedMouseEnterLeave}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
- {$IF not declared(PatchedVCLX)}
-  {$DEFINE NeedMouseEnterLeave}
- {$IFEND}
-{$ENDIF VisualCLX}
 
 type
-  JV_CUSTOMCONTROL_EVENTS(CustomDBGrid)
-  JV_CUSTOMCONTROL_EVENTS(DBGrid)
+  JV_WINCONTROL_EVENTS(CustomDBGrid)
+  JV_WINCONTROL_EVENTS(DBGrid)
 
 implementation
 
-JV_CUSTOMCONTROL_EVENTS_IMPL(CustomDBGrid)
-JV_CUSTOMCONTROL_EVENTS_IMPL(DBGrid)
+JV_WINCONTROL_EVENTS_IMPL(CustomDBGrid)
+JV_WINCONTROL_EVENTS_IMPL(DBGrid)
 
 end.

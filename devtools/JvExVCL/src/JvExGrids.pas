@@ -33,29 +33,15 @@ WARNINGHEADER
 interface
 
 uses
-  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Grids,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Qt, QGraphics, QControls, QForms, QGrids, Types, QWindows,
-  {$ENDIF VisualCLX}
   Classes, SysUtils,
   JvTypes, JvThemes, JVCLVer, JvExControls;
 
-{$IFDEF VCL}
  {$DEFINE NeedMouseEnterLeave}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
- {$IF not declared(PatchedVCLX)}
-  {$DEFINE NeedMouseEnterLeave}
- {$IFEND}
-{$ENDIF VisualCLX}
 
 type
 {$IFDEF COMPILER6_UP}
- {$IFDEF VCL}
   {$DEFINE HAS_GRID_EDITSTYLE}
- {$ENDIF VCL}
 {$ENDIF COMPILER6_UP}
 
   {$IFNDEF HAS_GRID_EDITSTYLE}
@@ -65,23 +51,21 @@ type
 
 
   JV_WINCONTROL_EVENTS(InplaceEdit)
-  JV_CUSTOMCONTROL_EVENTS(CustomGrid)
-  {$IFDEF VCL}
+  JV_WINCONTROL_EVENTS(CustomGrid)
   {$IFDEF COMPILER6_UP}
-  JV_CUSTOMCONTROL_EVENTS(CustomDrawGrid)
+  JV_WINCONTROL_EVENTS(CustomDrawGrid)
   JV_WINCONTROL_EVENTS(InplaceEditList)
   {$ENDIF COMPILER6_UP}
-  {$ENDIF VCL}
 
-  JV_CUSTOMCONTROL_EVENTS_BEGIN(DrawGrid)
+  JV_WINCONTROL_EVENTS_BEGIN(DrawGrid)
   JV_CONSTRUCTOR
   {$IFNDEF HAS_GRID_EDITSTYLE}
   protected
     function GetEditStyle(ACol, ARow: Longint): TEditStyle; dynamic;
   {$ENDIF !HAS_GRID_EDITSTYLE}
-  JV_CUSTOMCONTROL_EVENTS_END(DrawGrid)
+  JV_WINCONTROL_EVENTS_END(DrawGrid)
 
-  JV_CUSTOMCONTROL_EVENTS_BEGIN(StringGrid)
+  JV_WINCONTROL_EVENTS_BEGIN(StringGrid)
   JV_CONSTRUCTOR
   {$IFNDEF HAS_GRID_EDITSTYLE}
   protected
@@ -92,13 +76,11 @@ type
 implementation
 
 JV_WINCONTROL_EVENTS_IMPL(InplaceEdit)
-JV_CUSTOMCONTROL_EVENTS_IMPL(CustomGrid)
-{$IFDEF VCL}
+JV_WINCONTROL_EVENTS_IMPL(CustomGrid)
 {$IFDEF COMPILER6_UP}
-JV_CUSTOMCONTROL_EVENTS_IMPL(CustomDrawGrid)
+JV_WINCONTROL_EVENTS_IMPL(CustomDrawGrid)
 JV_WINCONTROL_EVENTS_IMPL(InplaceEditList)
 {$ENDIF COMPILER6_UP}
-{$ENDIF VCL}
 
 JV_CUSTOMCONTROL_EVENTS_IMPL_BEGIN(DrawGrid)
 {$IFNDEF HAS_GRID_EDITSTYLE}
