@@ -28,18 +28,13 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvDBQBE;
+unit JvBDEQBE;
 
 interface
 
 uses
   SysUtils,
-  {$IFDEF WIN32}
   Bde,
-  {$ELSE}
-  WinTypes, WinProcs,
-  DbiErrs, DbiTypes, DbiProcs,
-  {$ENDIF}
   Classes, DB, DBTables;
 
 const

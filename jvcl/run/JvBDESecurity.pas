@@ -25,13 +25,13 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvDBSecurity;
+unit JvBDESecurity;
 
 interface
 
 uses
   SysUtils, Classes, DBTables,
-  JvLoginForm, JvDBLoginDialog, JvCheckPasswordForm;
+  JvDBLoginForm, JvBDELoginDialog, JvBDECheckPasswordForm;
 
 type
   TCheckUserEvent = function(UsersTable: TTable;

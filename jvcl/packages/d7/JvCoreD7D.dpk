@@ -33,7 +33,14 @@ requires
   vcl,
   vclactnband,
   vclx,
-  dclstd;
+  dclstd,
+  vclie,
+  vcljpg,
+  qrpt,
+  bdertl,
+  dbrtl,
+  VclSmp,
+  vcldb;
 
 contains
   JvJVCLAboutEditor in '..\..\design\JvJVCLAboutEditor.pas',

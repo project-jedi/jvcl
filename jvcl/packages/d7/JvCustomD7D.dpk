@@ -27,9 +27,17 @@ package JvCustomD7D;
 {$IMPLICITBUILD ON}
 
 requires
-  JvCustomD7R;
+  JvCustomD7R,
+  vcl,
+  rtl,
+  designide,
+  vclactnband,
+  vclx,
+  JvCoreD7D;
 
 contains
-  JvCustomReg in '..\..\design\JvCustomReg.pas';
+  JvCustomReg in '..\..\design\JvCustomReg.pas',
+  JvOutlookBarForm in '..\..\design\JvOutlookBarForm.pas' {FrmOLBEditor},
+  JvOutlookBarEditors in '..\..\design\JvOutlookBarEditors.pas';
 
 end.

@@ -25,7 +25,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvLoginForm;
+unit JvDBLoginForm;
 
 interface
 
@@ -163,7 +163,7 @@ implementation
 
 uses
   Registry, Consts, IniFiles,
-  JvConsts, JvJVCLUtils;
+  JvJVCLUtils, JvConsts;
 
 {$R *.DFM}
 

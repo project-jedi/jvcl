@@ -1,5 +1,5 @@
 {$I JVCL.INC}
-unit JvMemTableEditor;
+unit JvBDEMemTableEditor;
 
 interface
 uses
@@ -9,7 +9,7 @@ uses
   {$ELSE}
   LibIntf, DsgnIntf,
   {$ENDIF}
-  SysUtils, JvMemTable;
+  SysUtils, JvBDEMemTable;
 
 type
   TJvMemDataSetEditor = class(TComponentEditor)

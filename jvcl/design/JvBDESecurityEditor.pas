@@ -1,5 +1,5 @@
 {$I JVCL.INC}
-unit JvDBSecurityEditor;
+unit JvBDESecurityEditor;
 
 interface
 uses

@@ -25,7 +25,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvDBProgress;
+unit JvBDEProgress;
 
 interface
 

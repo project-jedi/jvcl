@@ -28,14 +28,14 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvDBLoginDialog;
+unit JvBDELoginDialog;
 
 interface
 
 uses
   SysUtils, Classes, Controls, Forms, StdCtrls,
   ExtCtrls, DB, DBTables,
-  JvDBLists, JvLoginForm;
+  JvBDELists, JvDBLoginForm;
 
 type
   TCheckUserNameEvent = function(UsersTable: TTable;

@@ -37,23 +37,18 @@ requires
 
 contains
   JvBdeUtils in '..\..\run\JvBdeUtils.pas',
-  JvCheckPasswordForm in '..\..\run\JvCheckPasswordForm.pas' {JvChPswdForm},
-  JvDBExceptionForm in '..\..\run\JvDBExceptionForm.pas' {JvBdeErrorDlg},
-  JvDBFilter in '..\..\run\JvDBFilter.pas',
-  JvDBIndex in '..\..\run\JvDBIndex.pas',
-  JvDBLists in '..\..\run\JvDBLists.pas',
-  JvDBMove in '..\..\run\JvDBMove.pas',
-  JvDBProgress in '..\..\run\JvDBProgress.pas',
-  JvDBQBE in '..\..\run\JvDBQBE.pas',
-  JvDBSecurity in '..\..\run\JvDBSecurity.pas',
-  JvMemTable in '..\..\run\JvMemTable.pas',
-  JvQuery in '..\..\run\JvQuery.pas',
-  JvSQLScript in '..\..\run\JvSQLScript.pas',
-  JvDBLoginDialog in '..\..\run\JvDBLoginDialog.pas',
-  JvQueryParamsForm in '..\..\run\JvQueryParamsForm.pas' {JvQueryParamsDialog},
-  JvDBCombobox in '..\..\run\JvDBCombobox.pas',
-  JvDBControls in '..\..\run\JvDBControls.pas',
-  JvLoginForm in '..\..\run\JvLoginForm.pas' {JvLoginForm},
-  JvRemoteLogin in '..\..\run\JvRemoteLogin.pas';
+  JvBDECheckPasswordForm in '..\..\run\JvBDECheckPasswordForm.pas' {JvChPswdForm},
+  JvBDEExceptionForm in '..\..\run\JvBDEExceptionForm.pas' {JvBdeErrorDlg},
+  JvBDEFilter in '..\..\run\JvBDEFilter.pas',
+  JvBDEIndex in '..\..\run\JvBDEIndex.pas',
+  JvBDELists in '..\..\run\JvBDELists.pas',
+  JvBDEMove in '..\..\run\JvBDEMove.pas',
+  JvBDEProgress in '..\..\run\JvBDEProgress.pas',
+  JvBDEQBE in '..\..\run\JvBDEQBE.pas',
+  JvBDESecurity in '..\..\run\JvBDESecurity.pas',
+  JvBDEMemTable in '..\..\run\JvBDEMemTable.pas',
+  JvBDEQuery in '..\..\run\JvBDEQuery.pas',
+  JvBDESQLScript in '..\..\run\JvBDESQLScript.pas',
+  JvBDELoginDialog in '..\..\run\JvBDELoginDialog.pas';
 
 end.

@@ -33,7 +33,13 @@ requires
   vcldb,
   JvStdCtrlsD7R,
   vcl,
-  bdertl;
+  vclie,
+  vcljpg,
+  qrpt,
+  vclx,
+  VclSmp,
+  dsnap,
+  dsnapcon;
 
 contains
   JvDBConsts in '..\..\common\JvDBConsts.pas',
@@ -44,9 +50,14 @@ contains
   JvDBRichEdit in '..\..\run\JvDBRichEdit.pas',
   JvDBSpinEdit in '..\..\run\JvDBSpinEdit.pas',
   JvDBTreeView in '..\..\run\JvDBTreeView.pas',
-  JvLookup in '..\..\run\JvLookup.pas',
+  JvDBLookup in '..\..\run\JvDBLookup.pas',
   JvDBUtils in '..\..\run\JvDBUtils.pas',
   JvCsvData in '..\..\run\JvCsvData.pas',
-  JvCsvParse in '..\..\run\JvCsvParse.pas';
+  JvCsvParse in '..\..\run\JvCsvParse.pas',
+  JvDBCombobox in '..\..\run\JvDBCombobox.pas',
+  JvDBControls in '..\..\run\JvDBControls.pas',
+  JvDBLoginForm in '..\..\run\JvDBLoginForm.pas' {JvLoginForm},
+  JvDBQueryParamsForm in '..\..\run\JvDBQueryParamsForm.pas' {JvQueryParamsDialog},
+  JvDBRemoteLogin in '..\..\run\JvDBRemoteLogin.pas';
 
 end.

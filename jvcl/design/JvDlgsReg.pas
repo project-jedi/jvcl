@@ -8,11 +8,11 @@ procedure Register;
 
 implementation
 uses
-  Classes, DesignIntf,
-  JvDSADialogs, JvBaseDlg, JvTipOfDay, JvWinDialogs, JvAddPrinter, JvCommonDialogD, JvCommonExecDlg, JvDialogActns,
-  JvDialogs, JvProgressForm, JvPageSetupTitled, JvPageSetup, JvConnectNetwork, JvSelectDirectory,
-  JvCopyError, JvDeleteError, JvRenameError, JvDiskPrompt, JvFindFiles, JvObjectPickerDialog,
-  JvBaseDlgEditor, JvCommonDialogDEditor, JvTipOfDayEditor;
+  Classes, DesignIntf, ActnList,
+  JvDSADialogs, JvBaseDlg, JvTipOfDay, JvWinDialogs, JvAddPrinter, JvCommonDialogD, JvCommonExecDlg, 
+  JvDialogActns, JvActnRes, JvDialogs, JvProgressForm, JvPageSetupTitled, JvPageSetup, JvConnectNetwork, 
+  JvSelectDirectory, JvCopyError, JvDeleteError, JvRenameError, JvDiskPrompt, JvFindFiles, 
+  JvObjectPickerDialog, JvBaseDlgEditor, JvCommonDialogDEditor, JvTipOfDayEditor;
 
 {.$R ..\resources\JvDlgsReg.dcr}
 
@@ -29,6 +29,13 @@ begin
   RegisterComponentEditor(TJvCommonDialogF, TJvBaseDlgEditor);
   RegisterComponentEditor(TJvCommonDialogD, TJvCommonDialogDEditor);
   RegisterComponentEditor(TJvTipOfDay, TJvTipOfDayEditor);
+  RegisterActions('JVCL',
+    [TJvBrowseForFolderAction, TJvSelectDirectoryAction, TJvConnectNetworkAction,
+     TJvFloppyFormatAction, TJvOrganizeFavoritesAction, TJvControlPanelAction,
+     TJvOpenFileAction, TJvSaveFileAction, TJvPageSetupAction,
+     TJvPageSetupTitledAction],
+    // TJvStandardActions is a datamodule with default settings for our actions
+    TJvStandardActions);
 end;
 
 end.

@@ -29,13 +29,13 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvSQLScript;
+unit JvBDESQLScript;
 
 interface
 
 uses
   SysUtils, Classes, DBTables,
-  JvDBUtils, JvComponent;
+  JvBDEUtils, JvDBUtils, JvComponent;
 
 type
   TJvaSQLScript = class;
@@ -61,9 +61,7 @@ type
   end;
 
 implementation
-uses
-  JvBdeUtils;
-  
+
 constructor TJvaSQLScript.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
