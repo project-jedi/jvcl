@@ -74,8 +74,7 @@ uses
   JvImage, JvLabel, JvRadioButton, JvRadioGroup, JvScrollBar, JvShape,
   JvStatusBar, JvGrids, JvStringGrid, JvBitBtn, JvPanel, JvImageList,
   JvTransparentPanel, JvCheckedItemsForm, JvProgressEditor, JvDsgnEditors,
-  JvCheckedMaskEdit,
-  JvXPProgressBar;
+  JvCheckedMaskEdit;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvStdCtrlsReg.dcr}
@@ -165,9 +164,6 @@ begin
   {$IFDEF VCL}
   RegisterComponents(RsPaletteSliderSplitter, [TJvxSlider]);
   {$ENDIF VCL}
-
-  // JVCL 4: Should be moved to JvXPCtrls when the USEJVCL is lifted.
-  RegisterComponents(RsPaletteXPControls, [TJvXPProgressBar]);
 
   RegisterPropertyEditor(TypeInfo(TControl), BaseClass, 'Gauge', TJvProgressControlProperty);
   RegisterPropertyEditor(TypeInfo(TControl), BaseClass, 'ProgressBar', TJvProgressControlProperty);
