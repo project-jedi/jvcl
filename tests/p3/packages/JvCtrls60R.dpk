@@ -28,7 +28,8 @@ package JvCtrls60R;
 requires
   rtl,
   JvCore60R,
-  JvStdCtrls60R;
+  JvStdCtrls60R,
+  JvCmp60R;
 
 contains
   JvZoom in '..\source\JvZoom.pas',
@@ -65,7 +66,6 @@ contains
   JvTransLED in '..\source\JvTransLED.pas',
   JvxClock in '..\source\JvxClock.pas',
   JvSbSetup in '..\source\JvSBSetup.pas' {JvSpeedbarSetupWindow},
-  JvSearchFiles in '..\source\JvSearchFiles.pas',
   JvColorForm in '..\source\JvColorform.pas',
   JvDsgnIntf in '..\source\JvDsgnIntf.pas',
   JvStrUtil in '..\source\JvStrUtil.pas',

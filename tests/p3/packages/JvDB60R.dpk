@@ -33,16 +33,15 @@ requires
   JvStdCtrls60R;
 
 contains
-  JvDBUtils in '..\source\JvDBUtils.pas',
   JvDBConst in '..\source\JvDBConst.pas',
-  JvLookUp in '..\source\JvLookUp.pas',
-  JvMemDS   in '..\source\JvMemDS.pas',
   JvDBDatePickerEdit in '..\source\JvDBDatePickerEdit.pas',
   JvDBDateTimePicker in '..\source\JvDBDateTimePicker.pas',
   JvDBLookupTreeView in '..\source\JvDBLookupTreeView.pas',
   JvDBProgressBar in '..\source\JvDBProgressBar.pas',
   JvDBRichEd in '..\source\JvDBRichEd.pas',
   JvDBSpinEdit in '..\source\JvDBSpinEdit.pas',
-  JvDBTreeView in '..\source\JvDBTreeView.pas';
+  JvDBTreeView in '..\source\JvDBTreeView.pas',
+  JvLookup in '..\Source\JvLookup.pas',
+  JvDBUtils in '..\Source\JvDBUtils.pas';
 
 end.

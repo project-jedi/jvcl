@@ -28,7 +28,7 @@ package JvMM60R;
 requires
   rtl,
   JvCore60R,
-  jvStdCtrls60R,
+  JvStdCtrls60R,
   JvCrypt60R,
   JvCtrls60R,
   JvCmp60R;

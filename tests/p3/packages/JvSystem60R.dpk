@@ -30,7 +30,8 @@ requires
   vcl,
   vclx,
   JvCore60R,
-  JvStdCtrls60R;
+  JvStdCtrls60R,
+  JvCmp60R;
 
 contains
   JvClipboardViewer in '..\source\JvClipboardViewer.pas',
@@ -47,13 +48,11 @@ contains
   JvHidControllerClass in '..\source\JvHidControllerClass.pas',
   JvJoystick in '..\source\JvJoystick.pas',
   JvKeyboardStates in '..\source\JvKeyboardStates.pas',
-  JvLogFile in '..\source\JvLogFile.pas',
   JvMemoryInfos in '..\source\JvMemoryInfos.pas',
   JvMru in '..\source\JvMru.pas',
   JvMRUList in '..\source\JvMRUList.pas',
   JvNotify in '..\source\JvNotify.pas',
   JvNTEventLog in '..\source\JvNTEventLog.pas',
-  JvPrint in '..\source\JvPrint.pas',
   JvRas32 in '..\source\JvRas32.pas',
   JvScreenCanvas in '..\source\JvScreenCanvas.pas',
   JvScreenResolution in '..\source\JvScreenResolution.pas',
@@ -65,7 +64,6 @@ contains
   JvThread in '..\source\JvThread.pas',
   JvThreadTimer in '..\source\JvThreadTimer.pas',
   JvTimerLst in '..\source\JvTimerLst.pas',
-  JvFormLog in '..\source\JvFormLog.pas',
   JvHRas32 in '..\source\JvHRas32.pas',
   JvChangeNotify in '..\source\JvChangeNotify.pas',
   JvObjSel in '..\source\JvObjSel.pas',

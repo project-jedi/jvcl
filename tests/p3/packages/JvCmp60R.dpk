@@ -51,6 +51,8 @@ contains
   JvRle in '..\source\JvRle.pas',
   JvGraph in '..\source\JvGraph.pas',
   JvIcoList in '..\source\JvIcoList.pas',
-  JvTranslator in '..\source\JvTranslator.pas';
+  JvTranslator in '..\source\JvTranslator.pas',
+  JvPrint in '..\Source\JvPrint.pas',
+  JvSearchFiles in '..\Source\JvSearchFiles.pas';
 
 end.

@@ -28,7 +28,8 @@ package JvAppFrm60R;
 requires
   rtl,
   JvCore60R,
-  JvStdCtrls60R;
+  JvStdCtrls60R,
+  JvCmp60R;
 
 contains
   JvAppAnimatedIcon in '..\source\JvAppAnimatedIcon.pas',
