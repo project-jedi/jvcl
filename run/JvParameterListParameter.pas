@@ -155,11 +155,6 @@ type
   private
   protected
     function GetParameterNameExt: string; override;
-//    procedure SetEnabled(Value: Boolean); override;
-//    procedure SetVisible(Value: Boolean); override;
-//    procedure SetHeight(Value: Integer); override;
-//    procedure SetWidth(Value: Integer); override;
-//    procedure SetTabOrder(Value: Integer); override;
   public
     procedure CreateWinControlOnParent(ParameterParent: TWinControl); override;
   end;
@@ -882,6 +877,11 @@ constructor TJvArrangeParameter.Create(AParameterList: TJvParameterList);
 begin
   inherited Create(AParameterList);
   FArrangeSettings := TJvArrangeSettings.Create(nil);
+  FArrangeSettings.BorderLeft := 2;
+  FArrangeSettings.BorderTop := 2;
+  FArrangeSettings.DistanceVertical := 2;
+  FArrangeSettings.DistanceHorizontal := 2;
+  FArrangeSettings.AutoArrange := True;
 end;
 
 destructor TJvArrangeParameter.Destroy;

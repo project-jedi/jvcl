@@ -306,6 +306,10 @@ type
 
     property ParameterDialog: TCustomForm read FParameterDialog;
     property ParameterListSelectList: TJvParameterListSelectList read FParameterListSelectList;
+    {this procedure checks the autoscroll-property of the internal
+     scrollbox. This function should only be called, after the size of
+     the parent-panel has changed}
+    procedure CheckScrollBoxAutoScroll;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -341,10 +345,6 @@ type
     function ValidateDataAtWinControls: Boolean;
     {deletes alll Parameters from the Parameterlist}
     procedure Clear;
-    {this procedure checks the autoscroll-property of the internal
-     scrollbox. This function should only be called, after the size of
-     the parent-panel has changed}
-    procedure CheckScrollBoxAutoScroll;
     { count of parameters }
     property Count: Integer read GetCount;
     {returns the current height of the created main-parameter-panel}
@@ -1318,14 +1318,18 @@ begin
         if ArrangePanel.Width + RightPanel.Width > MaxWidth then
           TForm(ParameterDialog).ClientWidth := MaxWidth
         else
-          TForm(ParameterDialog).ClientWidth := ArrangePanel.Width;
+          TForm(ParameterDialog).ClientWidth := ArrangePanel.Width+5
+      else
+        TForm(ParameterDialog).ClientWidth := ArrangePanel.Width+5;
   if Height <= 0 then
     if ArrangeSettings.AutoSize in [asHeight, asBoth] then
       if ArrangePanel.Height + BottomPanel.Height > TForm(ParameterDialog).ClientHeight then
         if ArrangePanel.Height + BottomPanel.Height > MaxHeight then
           TForm(ParameterDialog).ClientHeight := MaxHeight + 5
         else
-          TForm(ParameterDialog).ClientHeight := ArrangePanel.Height + BottomPanel.Height + 5;
+          TForm(ParameterDialog).ClientHeight := ArrangePanel.Height + BottomPanel.Height + 5
+      else
+        TForm(ParameterDialog).ClientHeight := ArrangePanel.Height + BottomPanel.Height + 5;
 
   if Assigned(HistoryPanel) then
     if (ButtonPanel.Width + HistoryPanel.Width) > BottomPanel.Width then
@@ -1515,20 +1519,19 @@ begin
   begin
     AutoScroll := False;
     BorderStyle := bsNone;
+    BevelInner := bvNone;
+    BevelOuter := bvNone;
     Align := alClient;
   end;
   RightPanel := TJvPanel.Create(Self);
   RightPanel.Parent := ScrollBox;
   with RightPanel do
   begin
-    Transparent := True;
     Align := alRight;
     BorderStyle := bsNone;
     BevelInner := bvNone;
     BevelOuter := bvNone;
-    Left := 0;
-    Top := 0;
-    Width := 20;
+    Width := Scrollbox.HorzScrollBar.Size+3;
     Visible := False;
   end;
   FreeAndNil(ArrangePanel);
@@ -1538,7 +1541,7 @@ begin
   with ArrangePanel do
   begin
     Transparent := False;
-    Align := alTop;
+    Align := alNone;
     BorderStyle := bsNone;
     BevelInner := bvNone;
     BevelOuter := bvNone;
@@ -1576,7 +1579,6 @@ begin
     ArrangePanel.EnableArrange;
   end;
   ArrangePanel.ArrangeControls;
-  CheckScrollBoxAutoScroll;
 end;
 
 procedure TJvParameterList.CheckScrollBoxAutoScroll;
@@ -1587,12 +1589,14 @@ begin
     Exit;
   RightPanel.Visible := False;
   ScrollBox.AutoScroll := False;
-  if ArrangePanel.Width > ScrollBox.Width then
+  if ArrangePanel.Width > (ScrollBox.Width+3) then
   begin
+    ArrangePanel.Align := alTop;
     RightPanel.Visible := True;
+    TForm(ParameterDialog).ClientWidth := TForm(ParameterDialog).ClientWidth + RightPanel.Width;
     ScrollBox.AutoScroll := True;
   end;
-  if (ArrangePanel.Height > ScrollBox.Height) {OR
+  if (ArrangePanel.Height > (ScrollBox.Height+3)) {OR
   (ArrangePanel.Height > MaxHeight) }then
     ScrollBox.AutoScroll := True;
 end;
