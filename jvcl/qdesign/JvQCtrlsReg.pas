@@ -44,7 +44,7 @@ uses
   DesignEditors, DesignIntf, 
   JvQDsgnConsts, 
   {$IFDEF MSWINDOWS}
-  JvQUninstallControls,
+  JvUninstallControls,
   {$ENDIF MSWINDOWS}
   JvQDsgnIntf, 
   QTypes, 

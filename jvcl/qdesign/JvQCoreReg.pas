@@ -63,19 +63,19 @@ uses
 procedure Register;
 const
   BaseClass: TClass = TComponent;
-begin 
-  GroupDescendentsWith(TJvComponent, TControl); 
+begin
+  GroupDescendentsWith(TJvComponent, TControl);
 
   RegisterComponents(RsPaletteNonVisual, [TJvJVCLAboutComponent,
-   TJvContextProvider, TJvColorProvider, TJvColorMappingProvider]); 
+   TJvContextProvider, TJvColorProvider, TJvColorMappingProvider]);
 
   RegisterComponents(RsPalettePersistence, [TJvAppStorage,
     TJvAppIniFileStorage, TJvAppStorageSelectList]);
   {$IFDEF MSWINDOWS}
   RegisterComponents(RsPalettePersistence, [TJvAppRegistryStorage]);
   {$ENDIF MSWINDOWS}
-  
-  RegisterPropertyEditor(TypeInfo(TJVCLAboutInfo), nil, 'AboutJVCLX', TJVCLAboutDialogProperty); 
+
+  RegisterPropertyEditor(TypeInfo(TJVCLAboutInfo), nil, 'AboutJVCLX', TJVCLAboutDialogProperty);
 
   // The TJvPersistent class needs an editor for D5 and BCB5, but for
   // all other compilers, it doesn't need anything as it is declared as

@@ -61,11 +61,11 @@ implementation
 
 uses
   SysUtils, TypInfo,
-  QWindows, QImgList, 
   {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF MSWINDOWS} 
-  JvDsgnConsts;
+  {$ENDIF MSWINDOWS}
+  QImgList,
+  JvQDsgnConsts;
 
 type
   PPropData = ^TPropData;

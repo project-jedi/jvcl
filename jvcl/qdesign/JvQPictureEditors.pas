@@ -89,7 +89,7 @@ function EditGraphic(Graphic: TGraphic; AClass: TGraphicClass;
 implementation
 
 uses
-  SysUtils, TypInfo, LibHelp, Consts,
+  SysUtils, TypInfo, LibHelp, QConsts,
   JvQTypes, JvQJVCLUtils;
 
 //=== Utility routines =======================================================
