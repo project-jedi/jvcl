@@ -77,7 +77,7 @@ type
     property Center: boolean read FCenter write FCenter default true;
     property Proportional: boolean read FProportional write FProportional default true;
     property Stretch: boolean read FStretch write FStretch default true;
-    property Transparent: boolean read FTransparent write FTransparent;
+    property Transparent: boolean read FTransparent write FTransparent default false;
   end;
 
   TJvPreviewGraphicList = class(TOwnedCollection)
@@ -138,7 +138,6 @@ type
     procedure SetPrinter(const Value: TPrinter);
     procedure CheckPrinter;
     procedure CheckActive;
-    procedure CheckInactive;
     procedure SetPrintPreview(const Value: TJvCustomPreviewDoc);
     procedure SetNumCopies(const Value: Integer);
   protected
@@ -287,6 +286,7 @@ begin
       EPrintPreviewError.Create('A RichEdit component must be assigned in CreatePreview!');
   Result := RichEdit.Lines.Count > 0;
   FFinished := not Result;
+  FLastChar := 0;
   if Result then
     Result := inherited CreatePreview(Append);
 end;
@@ -375,6 +375,7 @@ function TJvPreviewStringsRender.CreatePreview(Append: boolean): boolean;
 begin
   Result := Strings.Count > 0;
   FFinished := not Result;
+  FCurrentRow := 0;
   if Result then
     Result := inherited CreatePreview(Append);
 end;
@@ -443,14 +444,14 @@ end;
 
 
 procedure TJvPreviewControlRender.DrawWinControl(ADC:HDC;AWidth,AHeight:integer; AWinControl:TWinControl);
-// var i:integer;
+var i:integer;
 begin
   AWinControl.PaintTo(ADC, 0, 0);
-{  for i := 0 to AWinControl.ControlCount - 1 do
+  for i := 0 to AWinControl.ControlCount - 1 do
     if AWinControl.Controls[i] is TWinControl then
       DrawWinControl(ADC, AWidth,AHeight, TWinControl(AWinControl.Controls[i]))
     else
-      DrawSubControl(ADC,AWidth,AHeight, AWinControl.Controls[i]); }
+      DrawSubControl(ADC,AWidth,AHeight, AWinControl.Controls[i]);
 end;
 
 procedure TJvPreviewControlRender.DoAddPage(Sender: TObject;
@@ -501,10 +502,17 @@ end;
 
 
 procedure TJvPreviewControlRender.DrawSubControl(ADC: HDC; AWidth,AHeight:integer; AControl: TControl);
+var SaveIndex:integer;
 begin
-  if Control is TGraphicControl then
-    BitBlt(ADC, 0, 0, AWidth, AHeight,
-      TAccessGraphicControl(Control).Canvas.Handle, 0, 0, SRCCOPY);
+  SaveIndex := SaveDC(ADC);
+  try
+    MoveWindowOrg(ADC,0,0);
+    IntersectClipRect(ADC,0,0,AWidth,AHeight);
+    AControl.Perform(WM_ERASEBKGND, ADC, 0);
+    AControl.Perform(WM_PAINT,ADC,0);
+  finally
+    RestoreDC(ADC,SaveIndex);
+  end;
 end;
 
 { TJvPreviewGraphicList }
@@ -594,11 +602,24 @@ end;
 procedure TJvPreviewGraphicRender.DoAddPage(Sender: TObject;
   PageIndex: integer; Canvas: TCanvas; PageRect, PrintRect: TRect;
   var NeedMorePages: boolean);
+var img:TImageList;
 begin
   with Images[PageIndex] do
     if (PageIndex < Images.Count) and (Picture.Height > 0) and (Picture.Width > 0) and (Picture.Graphic <> nil)
       and not Picture.Graphic.Empty then
+      begin
+        if (Picture.Graphic is TIcon) then
+        begin
+          img := TImageList.CreateSize(Picture.Width,Picture.Height);
+          try
+            img.AddIcon(Picture.Icon);
+            img.getBitmap(0,Picture.Bitmap);
+          finally
+            img.Free;
+          end;
+        end;
       Canvas.StretchDraw(DestRect(PrintRect), Picture.Graphic);
+    end;
   NeedMorePages := PageIndex < Images.Count - 1;
 end;
 
@@ -645,13 +666,6 @@ procedure TJvPrinter.CheckActive;
 begin
   if (Printer <> nil) and GetPrinting then
     raise EPrintPreviewError.Create('Cannot perfrom this operation while printing!');
-end;
-
-procedure TJvPrinter.CheckInactive;
-begin
-  CheckPrinter;
-  if not GetPrinting then
-    raise EPrintPreviewError.Create('Cannot perform this operation while not printing!');
 end;
 
 procedure TJvPrinter.CheckPrinter;
@@ -749,6 +763,7 @@ end;
 
 procedure TJvPrinter.SetPrintPreview(const Value: TJvCustomPreviewDoc);
 begin
+  CheckActive;
   if FPrintPreview <> Value then
   begin
     if FPrintPreview <> nil then

@@ -31,50 +31,64 @@ object frmMain: TfrmMain
       Caption = 'Columns:'
     end
     object Label2: TLabel
-      Left = 112
+      Left = 88
       Top = 8
       Width = 30
       Height = 13
       Caption = 'Rows:'
     end
     object Label3: TLabel
-      Left = 208
+      Left = 152
       Top = 8
-      Width = 74
+      Width = 42
       Height = 13
-      Caption = 'Shadow offset:'
+      Caption = 'Shadow:'
     end
     object Label4: TLabel
-      Left = 304
+      Left = 216
       Top = 8
       Width = 29
       Height = 13
       Caption = 'Scale:'
     end
     object Label5: TLabel
-      Left = 552
+      Left = 568
       Top = 8
       Width = 42
       Height = 13
       Caption = 'Preview:'
     end
     object Label6: TLabel
-      Left = 392
+      Left = 408
       Top = 8
       Width = 58
       Height = 13
       Caption = 'Scale Mode:'
     end
+    object Label7: TLabel
+      Left = 280
+      Top = 8
+      Width = 24
+      Height = 13
+      Caption = 'Vert:'
+    end
+    object Label8: TLabel
+      Left = 344
+      Top = 8
+      Width = 26
+      Height = 13
+      Caption = 'Horz:'
+    end
     object Edit1: TEdit
       Left = 16
       Top = 24
-      Width = 65
+      Width = 49
       Height = 21
       TabOrder = 0
       Text = '1'
     end
     object udCols: TUpDown
-      Left = 81
+      Left = 65
       Top = 24
       Width = 15
       Height = 21
@@ -86,15 +100,15 @@ object frmMain: TfrmMain
       OnClick = udColsClick
     end
     object Edit2: TEdit
-      Left = 112
+      Left = 88
       Top = 24
-      Width = 65
+      Width = 41
       Height = 21
       TabOrder = 2
       Text = '1'
     end
     object udRows: TUpDown
-      Left = 177
+      Left = 129
       Top = 24
       Width = 15
       Height = 21
@@ -106,15 +120,15 @@ object frmMain: TfrmMain
       OnClick = udRowsClick
     end
     object Edit3: TEdit
-      Left = 208
+      Left = 152
       Top = 24
-      Width = 65
+      Width = 41
       Height = 21
       TabOrder = 4
       Text = '4'
     end
     object udShadowWidth: TUpDown
-      Left = 273
+      Left = 193
       Top = 24
       Width = 15
       Height = 21
@@ -126,15 +140,15 @@ object frmMain: TfrmMain
       OnClick = udShadowWidthClick
     end
     object Edit4: TEdit
-      Left = 304
+      Left = 216
       Top = 24
-      Width = 65
+      Width = 41
       Height = 21
       TabOrder = 6
       Text = '100'
     end
     object udZoom: TUpDown
-      Left = 369
+      Left = 257
       Top = 24
       Width = 16
       Height = 21
@@ -148,7 +162,7 @@ object frmMain: TfrmMain
       OnClick = udZoomClick
     end
     object cbPreview: TComboBox
-      Left = 552
+      Left = 568
       Top = 24
       Width = 145
       Height = 21
@@ -161,7 +175,7 @@ object frmMain: TfrmMain
         'Printer')
     end
     object cbScaleMode: TComboBox
-      Left = 392
+      Left = 408
       Top = 24
       Width = 145
       Height = 21
@@ -176,15 +190,59 @@ object frmMain: TfrmMain
         'Use Auto Scale'
         'Use Cols and Rows')
     end
+    object Edit5: TEdit
+      Left = 280
+      Top = 24
+      Width = 41
+      Height = 21
+      TabOrder = 10
+      Text = '8'
+    end
+    object udVertSpacing: TUpDown
+      Left = 321
+      Top = 24
+      Width = 15
+      Height = 21
+      Associate = Edit5
+      Min = 0
+      Max = 500
+      Position = 8
+      TabOrder = 11
+      Thousands = False
+      Wrap = False
+      OnClick = udVertSpacingClick
+    end
+    object Edit6: TEdit
+      Left = 344
+      Top = 24
+      Width = 41
+      Height = 21
+      TabOrder = 12
+      Text = '8'
+    end
+    object udHorzSpacing: TUpDown
+      Left = 385
+      Top = 24
+      Width = 15
+      Height = 21
+      Associate = Edit6
+      Min = 0
+      Max = 500
+      Position = 8
+      TabOrder = 13
+      Thousands = False
+      Wrap = False
+      OnClick = udHorzSpacingClick
+    end
   end
   object PageControl1: TPageControl
     Left = 0
     Top = 0
     Width = 775
     Height = 410
-    ActivePage = tabOriginal
+    ActivePage = tabPreview
     Align = alClient
-    TabIndex = 0
+    TabIndex = 1
     TabOrder = 1
     object tabOriginal: TTabSheet
       Caption = 'Original'
@@ -288,9 +346,12 @@ object frmMain: TfrmMain
       object N3: TMenuItem
         Caption = '-'
       end
-      object PreviewForm1: TMenuItem
-        Caption = 'Preview Form'
-        OnClick = PreviewForm1Click
+      object mnuPreview: TMenuItem
+        Caption = 'Preview'
+        object Control1: TMenuItem
+          Caption = 'Control'
+          OnClick = Control1Click
+        end
       end
     end
     object Options1: TMenuItem
@@ -299,6 +360,10 @@ object frmMain: TfrmMain
         Caption = 'Margins'
         Checked = True
         OnClick = mnuMarginsClick
+      end
+      object Clear1: TMenuItem
+        Caption = 'Clear'
+        OnClick = Clear1Click
       end
     end
     object Help1: TMenuItem

@@ -52,7 +52,15 @@ type
     cbScaleMode: TComboBox;
     StatusBar1: TStatusBar;
     N3: TMenuItem;
-    PreviewForm1: TMenuItem;
+    mnuPreview: TMenuItem;
+    Control1: TMenuItem;
+    Clear1: TMenuItem;
+    Label7: TLabel;
+    Edit5: TEdit;
+    udVertSpacing: TUpDown;
+    Label8: TLabel;
+    Edit6: TEdit;
+    udHorzSpacing: TUpDown;
     procedure FormCreate(Sender: TObject);
     procedure udColsClick(Sender: TObject; Button: TUDBtnType);
     procedure udRowsClick(Sender: TObject; Button: TUDBtnType);
@@ -70,18 +78,22 @@ type
     procedure About1Click(Sender: TObject);
     procedure Print1Click(Sender: TObject);
     procedure cbScaleModeChange(Sender: TObject);
-    procedure PreviewForm1Click(Sender: TObject);
+    procedure Control1Click(Sender: TObject);
+    procedure Clear1Click(Sender: TObject);
+    procedure udVertSpacingClick(Sender: TObject; Button: TUDBtnType);
+    procedure udHorzSpacingClick(Sender: TObject; Button: TUDBtnType);
   private
     { Private declarations }
     procedure OpenRTFFile(const Filename: string);
+    procedure OpenImages(Files: TStrings);
+    procedure OpenTxtFile(const Filename: string);
+    procedure OpenImage(const Filename: string);
     procedure DoChange(Sender: TObject);
     procedure DoVertScroll(Sender: TObject);
     procedure BuildRTFPreview;
     procedure BuildTXTPreview;
     procedure BuildImagePreview;
-    procedure OpenImages(Files: TStrings);
-    procedure OpenTxtFile(const Filename: string);
-    procedure OpenImage(const Filename: string);
+    procedure BuildControlMenu;
   public
     { Public declarations }
     pd: TJvPreviewDoc;
@@ -96,7 +108,7 @@ var
 
 implementation
 uses
-  Printers;
+  Printers, Math;
 
 {$R *.dfm}
 
@@ -140,8 +152,12 @@ end;
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   OpenDialog1.Filter := OpenDialog1.Filter + '|' + GraphicFilter(TGraphic);
+  JvImg := TJvPreviewGraphicRender.Create(self);
+  JvRTF := TJvPreviewRichEditRender.Create(self);
+  JvTxt := TJvPreviewStringsRender.Create(self);
 
   pd := TJvPreviewDoc.Create(self);
+  pd.Name := 'JvPreviewDoc1';
   pd.Parent := tabPreview;
   pd.Align := alClient;
   pd.TabStop := true;
@@ -163,6 +179,8 @@ begin
   finally
     pd.EndUpdate;
   end;
+
+  BuildControlMenu;
 end;
 
 procedure TfrmMain.DoChange(Sender: TObject);
@@ -173,9 +191,11 @@ begin
   udZoom.Position := pd.Options.Scale;
   mnuMargins.Checked := pd.Options.DrawMargins;
   cbScaleMode.ItemIndex := Ord(pd.Options.ScaleMode);
+  udVertSpacing.Position := pd.Options.VertSpacing;
+  udHorzSpacing.Position := pd.Options.HorzSpacing;
   Statusbar1.Panels[0].Text := ExtractFilename(OpenDialog1.Filename);
   Statusbar1.Panels[1].Text := Format('%d pages', [pd.PageCount]);
-  Statusbar1.Panels[2].Text := Format('Cols: %d, Rows: %d, Page %d', [pd.TotalCols, pd.VisibleRows, pd.TopPage]);
+  Statusbar1.Panels[2].Text := Format('Cols: %d, Rows: %d, Row %d', [pd.TotalCols, pd.VisibleRows, pd.TopRow]);
 end;
 
 procedure TfrmMain.udColsClick(Sender: TObject; Button: TUDBtnType);
@@ -251,8 +271,6 @@ end;
 
 procedure TfrmMain.OpenImage(const Filename: string);
 begin
-  if JvImg = nil then
-    JvImg := TJvPreviewGraphicRender.Create(self);
   with JvImg.Images.Add do
     Picture.LoadFromFile(Filename);
 end;
@@ -338,13 +356,11 @@ end;
 
 procedure TfrmMain.DoVertScroll(Sender: TObject);
 begin
-  Statusbar1.Panels[2].Text := Format('Cols: %d, Rows: %d, Page %d', [pd.TotalCols, pd.VisibleRows, pd.TopPage]);
+  Statusbar1.Panels[2].Text := Format('Cols: %d, Rows: %d, Row %d', [pd.TotalCols, pd.VisibleRows, pd.TopRow]);
 end;
 
 procedure TfrmMain.BuildRTFPreview;
 begin
-  if JvRTF = nil then
-    JvRTF := TJvPreviewRichEditRender.Create(self);
   with JvRTF do
   begin
     RichEdit := reOriginal;
@@ -355,8 +371,6 @@ end;
 
 procedure TfrmMain.BuildImagePreview;
 begin
-  if JvImg = nil then
-    JvImg := TJvPreviewGraphicRender.Create(self);
   with JvImg do
   begin
     PrintPreview := pd;
@@ -366,8 +380,6 @@ end;
 
 procedure TfrmMain.BuildTXTPreview;
 begin
-  if JvTxt = nil then
-    JvTxt := TJvPreviewStringsRender.Create(self);
   with JvTxt do
   begin
     PrintPreview := pd;
@@ -376,17 +388,52 @@ begin
   end;
 end;
 
-procedure TfrmMain.PreviewForm1Click(Sender: TObject);
+procedure TfrmMain.Control1Click(Sender: TObject);
 begin
   with TJvPreviewControlRender.Create(nil) do
   try
-    pd.TopPage := 0;
+    pd.First;
     PrintPreview := pd;
-    Control := self;
+    Control := TControl((Sender as TMenuItem).Tag);
     CreatePreview(false);
   finally
     Free;
   end;
+end;
+
+procedure TfrmMain.BuildControlMenu;
+var m:TMenuItem;i:integer;
+begin
+  mnuPreview.Clear;
+  for i := 0 to ComponentCount-1 do
+    if Components[i] is TControl then
+    begin
+      m := TMenuItem.Create(self);
+      m.Tag := integer(Components[i]);
+      m.Caption := Components[i].Name;
+      m.OnClick := Control1Click;
+      mnuPreview.Add(m);
+    end;
+end;
+
+procedure TfrmMain.Clear1Click(Sender: TObject);
+begin
+  pd.Clear;
+  JvImg.Images.Clear;
+  reOriginal.Lines.Clear;
+  JvTxt.Strings.Clear;
+end;
+
+procedure TfrmMain.udVertSpacingClick(Sender: TObject; Button: TUDBtnType);
+begin
+  pd.Options.VertSpacing := udVertSpacing.Position;
+  udVertSpacing.Position := pd.Options.VertSpacing;
+end;
+
+procedure TfrmMain.udHorzSpacingClick(Sender: TObject; Button: TUDBtnType);
+begin
+  pd.Options.HorzSpacing := udHorzSpacing.Position;
+  udHorzSpacing.Position := pd.Options.HorzSpacing;
 end;
 
 end.
