@@ -710,7 +710,7 @@ end;
 
 {$ENDIF COMPILER6_UP}
 
-//=== { TJvDBGridControls } ==========================================================
+//=== { TJvDBGridControls } ==================================================
 
 constructor TJvDBGridControls.Create(ParentDBGrid: TJvDBGrid);
 begin

@@ -491,7 +491,7 @@ resourcestring
   RsJvDBGridSelectWarning = 'At least one column must be visible!';
   RsEJvDBGridControlPropertyNotAssigned = 'JvDBGrid.EditControls: property Control not assigned';
 
-//=== JvDBUltimGrid.pas ===========================================================
+//=== JvDBUltimGrid.pas ======================================================
 resourcestring
   RsEJvDBGridBadFieldKind = 'Cannot sort a binary or special field';
   RsEJvDBGridIndexPropertyMissing = 'Cannot sort. An index property is missing';

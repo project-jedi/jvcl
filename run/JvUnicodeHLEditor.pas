@@ -201,7 +201,7 @@ begin
   end;
 end;
 
-//=== { TJvWideHLEditor } ========================================================
+//=== { TJvWideHLEditor } ====================================================
 
 constructor TJvWideHLEditor.Create(AOwner: TComponent);
 begin
@@ -222,7 +222,8 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvWideHLEditor.Notification(AComponent: TComponent; Operation: TOperation);
+procedure TJvWideHLEditor.Notification(AComponent: TComponent;
+  Operation: TOperation);
 begin
   if (Operation = opRemove) and (AComponent = FSyntaxHighlighter) then
     SyntaxHighlighter := nil;

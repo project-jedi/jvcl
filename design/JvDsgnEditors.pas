@@ -804,7 +804,7 @@ begin
 end;
 {$ENDIF VisualCLX}
 
-//=== { TJvShortCutProperty } ==================================================
+//=== { TJvShortCutProperty } ================================================
 
 function TJvShortCutProperty.GetAttributes: TPropertyAttributes;
 begin

@@ -200,8 +200,6 @@ uses
   JclStrings,
   JvResources;
 
-//=== { TJvDBUltimGrid } ==========================================================
-
 constructor TJvDBUltimGrid.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);

@@ -410,7 +410,7 @@ begin
     inherited Assign(Source);
 end;
 
-//=== { TJvImageItem } ========================================================
+//=== { TJvImageItem } =======================================================
 
 constructor TJvImageItem.Create(Collection: TCollection);
 begin
@@ -524,7 +524,7 @@ begin
     S.Exchange(I, Value);
 end;
 
-//=== { TJvImageItems } =======================================================
+//=== { TJvImageItems } ======================================================
 
 constructor TJvImageItems.Create(AOwner: TPersistent);
 begin

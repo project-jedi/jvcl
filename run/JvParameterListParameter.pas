@@ -439,8 +439,8 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure GetData; override;
     procedure SetData; override;
-    procedure AddCheckListBoxItem(const aText: string; aState: TCheckBoxState = cbChecked; aItemEnabled: Boolean = True;
-      aHeader: Boolean = False);
+    procedure AddCheckListBoxItem(const AText: string; AState: TCheckBoxState = cbChecked;
+      AItemEnabled: Boolean = True; AHeader: Boolean = False);
     property ItemData[Index: Integer]: TJvCheckListItemDataWrapper read GetItemData write SetItemData;
   published
     property Sorted: Boolean read FSorted write FSorted;
@@ -963,8 +963,7 @@ end;
 
 procedure TJvArrangeParameter.ArrangeControls;
 begin
-  if Assigned(FParentControl) and
-    (FParentControl is TJvPanel) then
+  if FParentControl is TJvPanel then
     TJvPanel(FParentControl).ArrangeControls;
 end;
 
@@ -1457,7 +1456,7 @@ begin
     ITmpItems.ControlSetSorted(Sorted);
 end;
 
-//==== TJvCheckListItemDataWrapper ====================================================
+//==== TJvCheckListItemDataWrapper ===========================================
 
 procedure TJvCheckListItemDataWrapper.SetChecked(Check: Boolean);
 begin
@@ -1472,7 +1471,7 @@ begin
   Result := FState = cbChecked;
 end;
 
-//=== { TJvCheckListBoxParameter } ================================================
+//=== { TJvCheckListBoxParameter } ===========================================
 
 constructor TJvCheckListBoxParameter.Create(AParameterList: TJvParameterList);
 begin
@@ -1486,8 +1485,7 @@ var
   I: Integer;
 begin
   for I := 0 to ItemList.Count - 1 do
-    if Assigned(ItemList.Objects[I]) then
-      ItemList.Objects[I].Free;
+    ItemList.Objects[I].Free;
   inherited Destroy;
 end;
 
@@ -1537,15 +1535,16 @@ begin
       end;
 end;
 
-procedure TJvCheckListBoxParameter.AddCheckListBoxItem(const aText: string; aState: TCheckBoxState = cbChecked;
-  aItemEnabled: Boolean = True; aHeader: Boolean = False);
+procedure TJvCheckListBoxParameter.AddCheckListBoxItem(const AText: string;
+  AState: TCheckBoxState = cbChecked; AItemEnabled: Boolean = True;
+  AHeader: Boolean = False);
 begin
-  ItemList.Add(aText);
+  ItemList.Add(AText);
   with ItemData[ItemList.Count - 1] do
   begin
-    Header := aHeader;
-    State := aState;
-    ItemEnabled := aItemEnabled;
+    Header := AHeader;
+    State := AState;
+    ItemEnabled := AItemEnabled;
   end;
 end;
 
@@ -1623,11 +1622,11 @@ begin
   inherited SetItemList(Value);
 end;
 
-//=== { TJvTimeParameter } ===============================================
+//=== { TJvTimeParameter } ===================================================
 
 constructor TJvTimeParameter.Create(AParameterList: TJvParameterList);
 begin
-  inherited Create (AParameterList);
+  inherited Create(AParameterList);
   LabelArrangeMode := lamBefore;
 end;
 
@@ -1661,7 +1660,7 @@ end;
 
 constructor TJvDateTimeParameter.Create(AParameterList: TJvParameterList);
 begin
-  inherited Create (AParameterList);
+  inherited Create(AParameterList);
   LabelArrangeMode := lamBefore;
 end;
 
@@ -1700,11 +1699,11 @@ begin
     end;
 end;
 
-//=== { TJvDateParameter } ===============================================
+//=== { TJvDateParameter } ===================================================
 
 constructor TJvDateParameter.Create(AParameterList: TJvParameterList);
 begin
-  inherited Create (AParameterList);
+  inherited Create(AParameterList);
   LabelArrangeMode := lamBefore;
 end;
 
@@ -1786,7 +1785,7 @@ begin
   end;
 end;
 
-//=== { TJvButtonEditParameter } ============================================
+//=== { TJvButtonEditParameter } =============================================
 
 function TJvButtonEditParameter.GetParameterNameExt: string;
 begin
@@ -1812,7 +1811,7 @@ begin
     OnButtonClick := TJvButtonEditParameter(Source).OnButtonClick;
 end;
 
-//=== { TJvNumberEditParameter } ============================================
+//=== { TJvNumberEditParameter } =============================================
 
 procedure TJvNumberEditParameter.Assign(Source: TPersistent);
 begin

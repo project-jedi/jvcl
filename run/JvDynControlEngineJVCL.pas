@@ -572,7 +572,7 @@ begin
   EditMask := Value;
 end;
 
-//=== { TJvDynControlJVCLButtonEdit } ============================================
+//=== { TJvDynControlJVCLButtonEdit } ========================================
 
 constructor TJvDynControlJVCLButtonEdit.Create(AOwner: TComponent);
 begin
@@ -1482,7 +1482,7 @@ begin
   OnDblClick := Value;
 end;
 
-//=== { TJvDynControlJVCLCheckListBox } ============================================
+//=== { TJvDynControlJVCLCheckListBox } ======================================
 
 procedure TJvDynControlJVCLCheckListBox.ControlSetDefaultProperties;
 begin
@@ -1684,7 +1684,7 @@ begin
     Style := csDropDownList;
 end;
 
-//=== { TJvDynControlJVCLGroupBox } ==============================================
+//=== { TJvDynControlJVCLGroupBox } ==========================================
 
 procedure TJvDynControlJVCLGroupBox.ControlSetDefaultProperties;
 begin

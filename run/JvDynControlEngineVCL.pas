@@ -565,7 +565,7 @@ begin
   EditMask := Value;
 end;
 
-//=== { TJvDynControlVCLButtonEdit } ============================================
+//=== { TJvDynControlVCLButtonEdit } =========================================
 
 constructor TJvDynControlVCLButtonEdit.Create(AOwner: TComponent);
 begin
@@ -1108,7 +1108,7 @@ begin
   {$ENDIF COMPILER6_UP}
 end;
 
-//=== { TJvDynControlVCLDateEdit } =======================================
+//=== { TJvDynControlVCLDateEdit } ===========================================
 
 procedure TJvDynControlVCLDateEdit.ControlSetDefaultProperties;
 begin
@@ -1174,7 +1174,7 @@ begin
   {$ENDIF COMPILER6_UP}
 end;
 
-//=== { TJvDynControlVCLTimeEdit } =======================================
+//=== { TJvDynControlVCLTimeEdit } ===========================================
 
 procedure TJvDynControlVCLTimeEdit.ControlSetDefaultProperties;
 begin
@@ -1500,7 +1500,7 @@ begin
   OnDblClick := Value;
 end;
 
-//=== { TJvDynControlVCLCheckListBox } ============================================
+//=== { TJvDynControlVCLCheckListBox } =======================================
 
 procedure TJvDynControlVCLCheckListBox.ControlSetDefaultProperties;
 begin
@@ -1698,7 +1698,7 @@ begin
   Style := Styles[Value];
 end;
 
-//=== { TJvDynControlVCLGroupBox } ==============================================
+//=== { TJvDynControlVCLGroupBox } ===========================================
 
 procedure TJvDynControlVCLGroupBox.ControlSetDefaultProperties;
 begin

@@ -116,7 +116,7 @@ begin
     inherited SetValue(Value);
 end;
 
-//=== { TJvAppletIndexProperty } ==============================================
+//=== { TJvAppletIndexProperty } =============================================
 
 function TJvAppletIndexProperty.GetAttributes: TPropertyAttributes;
 begin
@@ -125,10 +125,9 @@ end;
 
 procedure TJvAppletIndexProperty.GetValues(Proc: TGetStrProc);
 var
-  I, J: Integer;
+  I: Integer;
 begin
-  J := (GetComponent(0) as TJvAppletDialog).Count;
-  for I := 0 to J - 1 do
+  for I := 0 to (GetComponent(0) as TJvAppletDialog).Count - 1 do
     Proc(IntToStr(I));
 end;
 

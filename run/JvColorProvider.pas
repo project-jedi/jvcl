@@ -552,9 +552,7 @@ begin
   Result := Prefix + IntToStr(SuffixNum);
 end;
 
-//==================================================================================================
-// Color provider color adding methods
-//==================================================================================================
+//=== Color provider color adding methods ====================================
 
 procedure AddColorProviderEvent(Provider: IJvColorProvider; ColorType: TColorType;
   var Color: TColor; var DoAdd: Boolean);
@@ -574,9 +572,7 @@ begin
   end;
 end;
 
-//==================================================================================================
-// Color provider color adding methods registration
-//==================================================================================================
+//=== Color provider color adding methods registration =======================
 
 var
   AdderReg: TJvColorProviderColorAdderRegister;

@@ -242,7 +242,7 @@ type
     function ReadString(const Section, Ident, Default: string): string;
   end;
 
-//=== { TJvUninstallInfo } ================================================
+//=== { TJvUninstallInfo } ===================================================
 
 destructor TJvUninstallInfo.Destroy;
 begin
@@ -265,15 +265,16 @@ begin
   FProperties.Assign(Value);
 end;}
 
-//=== { TSafeRegIniFile } ================================================
+//=== { TSafeRegIniFile } ====================================================
 
 function TSafeRegIniFile.ReadString(const Section, Ident, Default: string): string;
 var
   Key, OldKey: HKEY;
   Len: Integer;
   RegData: TRegDataType;
-  Buffer: array[0..4095] of byte;
-  function BufToStr(Buffer: array of byte; BufSize: Integer): string;
+  Buffer: array [0..4095] of Byte;
+
+  function BufToStr(Buffer: array of Byte; BufSize: Integer): string;
   var
     I: Integer;
   begin
@@ -287,57 +288,58 @@ var
     SetLength(Result, ExpandEnvironmentStrings(PChar(S), nil, 0));
     ExpandEnvironmentStrings(PChar(S), PChar(Result), Length(Result));
   end;
+
 begin
   Key := GetKey(Section);
   if Key <> 0 then
-  try
-    OldKey := CurrentKey;
-    SetCurrentKey(Key);
     try
-      if ValueExists(Ident) then
-      begin
-        RegData := GetDataType(Ident);
-        case RegData of
-          rdString, rdExpandString:
-            begin
-              Len := GetDataSize(Ident);
-              if Len > 0 then
+      OldKey := CurrentKey;
+      SetCurrentKey(Key);
+      try
+        if ValueExists(Ident) then
+        begin
+          RegData := GetDataType(Ident);
+          case RegData of
+            rdString, rdExpandString:
               begin
-                SetString(Result, nil, Len);
-                GetData(Ident, PChar(Result), Len, RegData);
-                SetLength(Result, StrLen(PChar(Result)));
-                if RegData = rdExpandString then
-                  Result := ExpandEnvVar(Result);
-              end
-              else
-                Result := '';
-            end;
-          rdInteger:
-            begin
-              GetData(Ident, @Len, SizeOf(Len), RegData);
-              Result := IntToStr(Len);
-            end;
-          rdBinary:
-            begin
-              Len := GetDataSize(Ident);
-              if Len > 0 then
+                Len := GetDataSize(Ident);
+                if Len > 0 then
+                begin
+                  SetString(Result, nil, Len);
+                  GetData(Ident, PChar(Result), Len, RegData);
+                  SetLength(Result, StrLen(PChar(Result)));
+                  if RegData = rdExpandString then
+                    Result := ExpandEnvVar(Result);
+                end
+                else
+                  Result := '';
+              end;
+            rdInteger:
               begin
-                GetData(Ident, @Buffer, SizeOf(Buffer), RegData);
-                Result := BufToStr(Buffer, Min(Len, SizeOf(Buffer)));
-              end
-              else
-                Result := '';
-            end;
-        end;
-      end
-      else
-        Result := Default;
+                GetData(Ident, @Len, SizeOf(Len), RegData);
+                Result := IntToStr(Len);
+              end;
+            rdBinary:
+              begin
+                Len := GetDataSize(Ident);
+                if Len > 0 then
+                begin
+                  GetData(Ident, @Buffer, SizeOf(Buffer), RegData);
+                  Result := BufToStr(Buffer, Min(Len, SizeOf(Buffer)));
+                end
+                else
+                  Result := '';
+              end;
+          end;
+        end
+        else
+          Result := Default;
+      finally
+        SetCurrentKey(OldKey);
+      end;
     finally
-      SetCurrentKey(OldKey);
-    end;
-  finally
-    RegCloseKey(Key);
-  end
+      RegCloseKey(Key);
+    end
   else
     Result := Default;
 end;
@@ -351,7 +353,7 @@ var
   Dm: TJvUCBDisplayMode;
   UI: TJvUninstallInfo;
 
-  function BufToStr(Buffer: array of byte; BufSize: Integer): string;
+  function BufToStr(Buffer: array of Byte; BufSize: Integer): string;
   var
     I: Integer;
   begin
@@ -390,6 +392,7 @@ var
         Result := 'HKEY_LOCAL_MACHINE';
     end;
   end;
+
 begin
   FFolders := TStringList.Create;
   FItems := TStringList.Create;

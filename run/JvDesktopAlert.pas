@@ -1222,14 +1222,13 @@ begin
   end;
 end;
 
-//=== { TJvCustomDesktopAlertStyle } ================================================
+//=== { TJvCustomDesktopAlertStyle } =========================================
 
 constructor TJvCustomDesktopAlertStyleHandler.Create(OwnerForm: TJvFormDesktopAlert);
 begin
   inherited Create;
   FAnimTimer := TTimer.Create(nil);
   FAnimTimer.Enabled := False;
-
   FOwnerForm := OwnerForm;
 end;
 
@@ -1468,7 +1467,7 @@ begin
   FStyleHandler.Assign(Value);
 end;
 
-//=== { TJvCenterGrowAlertStyleHandler } ================================================
+//=== { TJvCenterGrowAlertStyleHandler } =====================================
 
 constructor TJvCenterGrowAlertStyleHandler.Create(OwnerForm: TJvFormDesktopAlert);
 begin

@@ -845,11 +845,11 @@ begin
   Result := FContainOLE;
 end;
 
-//===========================================================================
+//=== { TJvgReport } =========================================================
 
 constructor TJvgReport.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   ParamNames := TStringList.Create;
   ParamValues := TStringList.Create;
   ParamMasks := TStringList.Create;
@@ -867,12 +867,12 @@ begin
   ParamTypes.Free;
   ClearReport;
   ComponentList.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvgReport.Loaded;
 begin
-  inherited;
+  inherited Loaded;
   CreateReport(nil, False);
 end;
 

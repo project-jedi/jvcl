@@ -3293,16 +3293,16 @@ begin
   inherited DrawCheckImage(Rect(ARect.Left - 2, ARect.Top, ARect.Right - 2, ARect.Bottom - 1));
 end;
 
-//=== { TJvStandardMenuItemPainter } ========================================
+//=== { TJvStandardMenuItemPainter } =========================================
 
 procedure TJvStandardMenuItemPainter.DrawCheckedImageBack(ARect: TRect);
 begin
-  inherited;
+  inherited DrawCheckedImageBack(ARect);
 end;
 
 procedure TJvStandardMenuItemPainter.UpdateFieldsFromMenu;
 begin
-  inherited;
+  inherited UpdateFieldsFromMenu;
 end;
 
 function TJvStandardMenuItemPainter.GetTextMargin: Integer;
@@ -3319,23 +3319,19 @@ begin
   // If any of the items has a checkmark then we need to
   // ensure the width of the "image" is enough to display a check
   // mark, and this for all items
-  if (FItem.Parent <> nil) then
-  begin
+  if FItem.Parent <> nil then
     for I := 0 to FItem.Parent.Count - 1 do
-    begin
       if FItem.Parent.Items[I].Checked then
       begin
         Result := Max(Result, GetSystemMetrics(SM_CXMENUCHECK));
-        Exit;
+        Break;
       end;
-    end;
-  end;
 end;
 
 procedure TJvStandardMenuItemPainter.Paint(Item: TMenuItem;
   ItemRect: TRect; State: TMenuOwnerDrawState);
 begin
-  inherited;
+  inherited Paint(Item, ItemRect, State);
 end;
 
 //=== { TJvOwnerDrawMenuItemPainter } ========================================

@@ -417,7 +417,7 @@ begin
 end;
 {$ENDIF VCL}
 
-//=== { TJvPanelScrollBar } =======================================================
+//=== { TJvPanelScrollBar } ==================================================
 
 constructor TJvPanelScrollBar.Create(AOwner: TComponent);
 begin

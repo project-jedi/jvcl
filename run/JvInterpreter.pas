@@ -2623,7 +2623,7 @@ begin
       JvInterpreterVarAssignment(V.Value, Value);
 end;
 
-//=== { TJvInterpreterFunctionDesc } ==============================================
+//=== { TJvInterpreterFunctionDesc } =========================================
 
 function TJvInterpreterFunctionDesc.GetParamType(Index: Integer): Word;
 begin
@@ -2723,7 +2723,7 @@ begin
   {$ENDIF JvInterpreter_DEBUG}
 end;
 
-//=== { TJvInterpreterSrcFunction } ===============================================
+//=== { TJvInterpreterSrcFunction } ==========================================
 
 constructor TJvInterpreterSrcFunction.Create;
 begin
@@ -2737,7 +2737,7 @@ begin
   inherited Destroy;
 end;
 
-//=== { TJvInterpreterExtFunction } ===============================================
+//=== { TJvInterpreterExtFunction } ==========================================
 
 function TJvInterpreterExtFunction.CallDll(Args: TJvInterpreterArgs): Variant;
 begin
@@ -2800,7 +2800,7 @@ begin
   Result := FOwner.CallFunctionEx(FInstance, FUnitName, FFunctionName, Args, NV);
 end;
 
-//=== { TJvInterpreterIdentifierList } ========================================
+//=== { TJvInterpreterIdentifierList } =======================================
 
 function TJvInterpreterIdentifierList.Find(const Identifier: string;
   var Index: Integer): Boolean;

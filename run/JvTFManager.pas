@@ -1148,7 +1148,7 @@ begin
       Result := Result + S[I];
 end;
 
-{ TJvTFCustomImageMap }
+//=== { TJvTFCustomImageMap } ================================================
 
 constructor TJvTFCustomImageMap.Create(anAppt: TJvTFAppt);
 begin
@@ -1163,7 +1163,7 @@ end;
 destructor TJvTFCustomImageMap.Destroy;
 begin
   FMap.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 function TJvTFCustomImageMap.GetImage(MapIndex: Integer): Integer;
@@ -1253,7 +1253,7 @@ begin
     inherited Assign(Source);
 end;
 
-{ TJvTFStateImageMap }
+//=== { TJvTFStateImageMap } =================================================
 
 constructor TJvTFStateImageMap.Create(Serv: TJvTFScheduleManager);
 var
@@ -1377,7 +1377,7 @@ begin
     inherited Assign(Source);
 end;
 
-{ TJvTFAppt }
+//=== { TJvTFAppt } ==========================================================
 
 constructor TJvTFAppt.Create(Serv: TJvTFScheduleManager; const ApptID: string);
 begin
@@ -1422,7 +1422,7 @@ begin
   FConnections.Free;
   FImageMap.Free;
 
-  inherited;
+  inherited Destroy;
 end;
 
 function TJvTFAppt.GetDescription: string;
@@ -1915,7 +1915,7 @@ begin
   Refreshed := False;
 end;
 
-{ TJvTFSched }
+//=== { TJvTFSched } =========================================================
 
 constructor TJvTFSched.Create(Serv: TJvTFScheduleManager; const AName: string;
   ADate: TDate);
@@ -2458,7 +2458,7 @@ begin
   end;
 end;
 
-{ TJvTFScheduleManagerCache }
+//=== { TJvTFScheduleManagerCache } ==========================================
 
 constructor TJvTFScheduleManagerCache.Create(SchedManager: TJvTFScheduleManager);
 begin
@@ -2478,7 +2478,7 @@ end;
 destructor TJvTFScheduleManagerCache.Destroy;
 begin
   FTimer.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvTFScheduleManagerCache.SetCacheType(Value: TJvTFScheduleManagerCacheType);
@@ -2550,27 +2550,11 @@ begin
     inherited Assign(Source);
 end;
 
-{ TJvTFScheduleManager }
-
-class function TJvTFScheduleManager.GetScheduleID(const SchedName: string;
-  SchedDate: TDate): string;
-begin
-  Result := SchedName + IntToStr(Trunc(SchedDate));
-end;
-
-class function TJvTFScheduleManager.GenerateApptID: string;
-var
-  I: Integer;
-begin
-  Result := FloatToStr(Now);
-  Randomize;
-  for I := 1 to 5 do
-    Result := Result + Chr(Random(25) + 65);
-end;
+//=== { TJvTFScheduleManager } ===============================================
 
 constructor TJvTFScheduleManager.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
 
   FSchedLoadMode := slmOnDemand;
 
@@ -2622,7 +2606,23 @@ begin
 
   FCache.Free;
 
-  inherited;
+  inherited Destroy;
+end;
+
+class function TJvTFScheduleManager.GetScheduleID(const SchedName: string;
+  SchedDate: TDate): string;
+begin
+  Result := SchedName + IntToStr(Trunc(SchedDate));
+end;
+
+class function TJvTFScheduleManager.GenerateApptID: string;
+var
+  I: Integer;
+begin
+  Result := FloatToStr(Now);
+  Randomize;
+  for I := 1 to 5 do
+    Result := Result + Chr(Random(25) + 65);
 end;
 
 function TJvTFScheduleManager.GetAppt(Index: Integer): TJvTFAppt;
@@ -2681,7 +2681,7 @@ end;
 procedure TJvTFScheduleManager.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
-  inherited;
+  inherited Notification(AComponent, Operation);
   if Operation = opRemove then
     if AComponent = StateImages then
     begin
@@ -3624,7 +3624,7 @@ begin
   FRefreshAutoReconcile := Value;
 end;
 
-{ TJvTFHint }
+//=== { TJvTFHint } ==========================================================
 
 constructor TJvTFHint.Create(anApptCtrl: TJvTFControl);
 begin
@@ -3640,7 +3640,7 @@ end;
 destructor TJvTFHint.Destroy;
 begin
   FTimer.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvTFHint.SetPause(Value: Integer);
@@ -3759,7 +3759,7 @@ end;
 procedure TJvTFHint.ActivateHint(Rect: TRect; const AHint: THintString);
 begin
   PrepTimer(False);
-  inherited;
+  inherited ActivateHint(Rect, AHint);
   // Reset the timer so we get the full interval
   FTimer.Enabled := False;
   FTimer.Enabled := True;
@@ -3921,11 +3921,11 @@ begin
   end;
 end;
 
-{ TJvTFControl }
+//=== { TJvTFControl } =======================================================
 
 constructor TJvTFControl.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
 
   FSchedules := TStringList.Create;
   FTimeFormat := 't'; // global short time format
@@ -3937,7 +3937,7 @@ begin
   ScheduleManager := nil;
   FSchedules.Free;
 
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvTFControl.SetManager(Value: TJvTFScheduleManager);
@@ -4038,7 +4038,7 @@ end;
 
 procedure TJvTFControl.DoStartDrag(var DragObject: TDragObject);
 begin
-  inherited;
+  inherited DoStartDrag(DragObject);
 
   FDragInfo := TJvTFDragInfo.Create;
   with FDragInfo do
@@ -4067,7 +4067,7 @@ end;
 
 procedure TJvTFControl.DoEndDrag(Target: TObject; X, Y: Integer);
 begin
-  inherited;
+  inherited DoEndDrag(Target, X, Y);
 
   FDragInfo.Free;
   FDragInfo := nil;
@@ -4076,7 +4076,7 @@ end;
 procedure TJvTFControl.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
-  inherited;
+  inherited MouseDown(Button, Shift, X, Y);
   FShift := Shift;
 end;
 
@@ -4132,7 +4132,7 @@ end;
 procedure TJvTFControl.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
-  inherited;
+  inherited Notification(AComponent, Operation);
   //  If (AComponent = Navigator) and (Operation = opRemove) Then
   //    Navigator := nil;
 end;
@@ -4164,11 +4164,11 @@ begin
     ScheduleManager.ProcessBatches;
 end;
 
-{ TJvTFComponent }
+//=== { TJvTFComponent } =====================================================
 
 constructor TJvTFComponent.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
 
   FSchedules := TStringList.Create;
   FTimeFormat := 't'; // global short time format
@@ -4180,7 +4180,7 @@ begin
   ScheduleManager := nil;
   FSchedules.Free;
 
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvTFComponent.DestroyApptNotification(anAppt: TJvTFAppt);
@@ -4336,7 +4336,27 @@ begin
   end;
 end;
 
-{ TJvTFPrinter }
+//=== { TJvTFPrinter } =======================================================
+
+constructor TJvTFPrinter.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  CreateLayout;
+  FMeasure := pmInches;
+  FPages := TStringList.Create;
+  FBodies := TStringList.Create;
+  InitializeMargins;
+end;
+
+destructor TJvTFPrinter.Destroy;
+begin
+  FreeDoc;
+  FBodies.Free;
+  FPages.Free;
+
+  FPageLayout.Free;
+  inherited Destroy;
+end;
 
 procedure TJvTFPrinter.AbortPrint;
 begin
@@ -4384,26 +4404,6 @@ begin
     Result := round(Value / MMFactor)
   else
     Result := Value;
-end;
-
-constructor TJvTFPrinter.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  CreateLayout;
-  FMeasure := pmInches;
-  FPages := TStringList.Create;
-  FBodies := TStringList.Create;
-  InitializeMargins;
-end;
-
-destructor TJvTFPrinter.Destroy;
-begin
-  FreeDoc;
-  FBodies.Free;
-  FPages.Free;
-
-  FPageLayout.Free;
-  inherited;
 end;
 
 procedure TJvTFPrinter.CreateDoc;
@@ -4923,12 +4923,20 @@ begin
   FTitle := Value;
 end;
 
-{ TJvTFPrinterPageLayout }
+//=== { TJvTFPrinterPageLayout } =============================================
+
+constructor TJvTFPrinterPageLayout.Create(aPrinter: TJvTFPrinter);
+begin
+  inherited Create;
+  if not Assigned(aPrinter) then
+    raise EJvTFPrinterError.CreateRes(@RsECouldNotCreateTJvTFPrinterPageLayou);
+
+  FPrinter := aPrinter;
+end;
 
 procedure TJvTFPrinterPageLayout.Assign(Source: TPersistent);
 var
-  SourceMeas,
-    DestMeas: TJvTFPrinterMeasure;
+  SourceMeas, DestMeas: TJvTFPrinterMeasure;
   WorkVal: Integer;
   SourceLayout: TJvTFPrinterPageLayout;
 begin
@@ -4971,15 +4979,6 @@ end;
 procedure TJvTFPrinterPageLayout.Change;
 begin
   // do nothing, leave to descendants
-end;
-
-constructor TJvTFPrinterPageLayout.Create(aPrinter: TJvTFPrinter);
-begin
-  inherited Create;
-  if not Assigned(aPrinter) then
-    raise EJvTFPrinterError.CreateRes(@RsECouldNotCreateTJvTFPrinterPageLayou);
-
-  FPrinter := aPrinter;
 end;
 
 function TJvTFPrinterPageLayout.GetMargin(Index: Integer): Integer;
@@ -5111,29 +5110,39 @@ begin
   Printer.SetPropertyCheck;
 end;
 
-{ TJvTFUniversalPrinter }
+//=== { TJvTFUniversalPrinter } ==============================================
 
 procedure TJvTFUniversalPrinter.CreateDoc;
 begin
-  inherited;
+  inherited CreateDoc;
 end;
 
 procedure TJvTFUniversalPrinter.FinishDoc;
 begin
-  inherited;
+  inherited FinishDoc;
 end;
 
 procedure TJvTFUniversalPrinter.NewDoc;
 begin
-  inherited;
+  inherited NewDoc;
 end;
 
 procedure TJvTFUniversalPrinter.NewPage;
 begin
-  inherited;
+  inherited NewPage;
 end;
 
-{ TJvTFHintProps }
+//=== { TJvTFHintProps } =====================================================
+
+constructor TJvTFHintProps.Create(AOwner: TJvTFControl);
+begin
+  inherited Create;
+  FControl := AOwner;
+
+  FHintColor := clDefault;
+  FHintHidePause := -1;
+  FHintPause := -1;
+end;
 
 procedure TJvTFHintProps.Assign(Source: TPersistent);
 begin
@@ -5151,16 +5160,6 @@ end;
 procedure TJvTFHintProps.Change;
 begin
   // do nothing
-end;
-
-constructor TJvTFHintProps.Create(AOwner: TJvTFControl);
-begin
-  inherited Create;
-  FControl := AOwner;
-
-  FHintColor := clDefault;
-  FHintHidePause := -1;
-  FHintPause := -1;
 end;
 
 procedure TJvTFHintProps.SetHintColor(Value: TColor);
@@ -5196,7 +5195,20 @@ begin
   end;
 end;
 
-{ TJvTFDWNames }
+//=== { TJvTFDWNames } =======================================================
+
+constructor TJvTFDWNames.Create;
+begin
+  inherited Create;
+  FSource := dwnsSysShort;
+  FDWN_Sunday := 'S';
+  FDWN_Monday := 'M';
+  FDWN_Tuesday := 'T';
+  FDWN_Wednesday := 'W';
+  FDWN_Thursday := 'T';
+  FDWN_Friday := 'F';
+  FDWN_Saturday := 'S';
+end;
 
 procedure TJvTFDWNames.Assign(Source: TPersistent);
 begin
@@ -5222,29 +5234,23 @@ begin
     FOnChange(Self);
 end;
 
-constructor TJvTFDWNames.Create;
-begin
-  inherited;
-  FSource := dwnsSysShort;
-  FDWN_Sunday := 'S';
-  FDWN_Monday := 'M';
-  FDWN_Tuesday := 'T';
-  FDWN_Wednesday := 'W';
-  FDWN_Thursday := 'T';
-  FDWN_Friday := 'F';
-  FDWN_Saturday := 'S';
-end;
-
 function TJvTFDWNames.GetDWN(Index: Integer): string;
 begin
   case Index of
-    1: Result := FDWN_Sunday;
-    2: Result := FDWN_Monday;
-    3: Result := FDWN_Tuesday;
-    4: Result := FDWN_Wednesday;
-    5: Result := FDWN_Thursday;
-    6: Result := FDWN_Friday;
-    7: Result := FDWN_Saturday;
+    1:
+      Result := FDWN_Sunday;
+    2:
+      Result := FDWN_Monday;
+    3:
+      Result := FDWN_Tuesday;
+    4:
+      Result := FDWN_Wednesday;
+    5:
+      Result := FDWN_Thursday;
+    6:
+      Result := FDWN_Friday;
+    7:
+      Result := FDWN_Saturday;
   else
     Result := '';
   end;
@@ -5285,7 +5291,21 @@ begin
   end;
 end;
 
-{ TJvTFDateList }
+//=== { TJvTFDateList } ======================================================
+
+constructor TJvTFDateList.Create;
+begin
+  inherited Create;
+  FList := TStringList.Create;
+  FList.Sorted := True;
+  FList.Duplicates := dupIgnore;
+end;
+
+destructor TJvTFDateList.Destroy;
+begin
+  FList.Free;
+  inherited Destroy;
+end;
 
 function TJvTFDateList.Add(ADate: TDate): Integer;
 begin
@@ -5310,24 +5330,10 @@ begin
   Result := FList.Count;
 end;
 
-constructor TJvTFDateList.Create;
-begin
-  inherited Create;
-  FList := TStringList.Create;
-  FList.Sorted := True;
-  FList.Duplicates := dupIgnore;
-end;
-
 procedure TJvTFDateList.Delete(Index: Integer);
 begin
   FList.Delete(Index);
   Change;
-end;
-
-destructor TJvTFDateList.Destroy;
-begin
-  FList.Free;
-  inherited;
 end;
 
 function TJvTFDateList.GetDate(Index: Integer): TDate;
@@ -5340,16 +5346,11 @@ begin
   Result := FList.IndexOf(IntToStr(Trunc(ADate)));
 end;
 
-{ TJvTFNavigator }
+//=== { TJvTFNavigator } =====================================================
 
-//function TJvTFNavigator.ControlCount: Integer;
-//begin
-//  Result := FControls.Count;
-//end;
-//
 //constructor TJvTFNavigator.Create(AOwner: TComponent);
 //begin
-//  inherited;
+//  inherited Create(AOwner);
 //  FControls := TStringList.Create;
 //end;
 //
@@ -5359,7 +5360,12 @@ end;
 //    UnregisterControl(Controls[0]);
 //  FControls.Free;
 //
-//  inherited;
+//  inherited Destroy;
+//end;
+//
+//function TJvTFNavigator.ControlCount: Integer;
+//begin
+//  Result := FControls.Count;
 //end;
 //
 //function TJvTFNavigator.GetControl(Index: Integer): TJvTFControl;

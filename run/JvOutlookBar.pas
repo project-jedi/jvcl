@@ -692,7 +692,7 @@ begin
     end;
 end;
 
-//=== { TJvOutlookBarButtonActionLink } =============================================
+//=== { TJvOutlookBarButtonActionLink } ======================================
 
 procedure TJvOutlookBarButtonActionLink.AssignClient(AClient: TObject);
 begin
@@ -1294,14 +1294,15 @@ begin
     TJvCustomOutlookBar(Owner).Repaint;
 end;
 
-//=== { TJvThemedTopBottomButton } =============================================
+//=== { TJvThemedTopBottomButton } ===========================================
 
 {$IFDEF JVCLThemesEnabled}
 
 type
   TJvThemedTopBottomButton = class(TJvRepeatButton)
-  protected
+  private
     FIsUpBtn: Boolean;
+  protected
     procedure WMEraseBkgnd(var Msg: TWmEraseBkgnd); message WM_ERASEBKGND;
     procedure Paint; override;
   end;

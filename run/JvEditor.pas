@@ -2248,7 +2248,7 @@ begin
   GetEditor.SetCaretInternal(CaretX, CaretY);
 end;
 
-//=== { TJvUnindentColumnUndo } ================================================
+//=== { TJvUnindentColumnUndo } ==============================================
 
 constructor TJvUnindentColumnUndo.Create(AJvEditor: TJvCustomEditor;
   ACaretX, ACaretY, ABegX, ABegY: Integer; const AText: string);
@@ -2318,8 +2318,7 @@ begin
   end;
 end;
 
-
-//=== { TJvDeleteLineUndo } ======================================================
+//=== { TJvDeleteLineUndo } ==================================================
 
 {procedure TJvDeleteLineUndo.Redo;
 begin
