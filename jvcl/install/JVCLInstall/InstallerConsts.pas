@@ -166,6 +166,8 @@ resourcestring
               'Do you want to open readme.htm ?';
   RsErrorOpeningReadmeHTM = 'Cannot open file readme.htm';
   RsEditJvclInc = 'Edit jvcl%s%d.inc';
+  RsEditJvclIncAll = 'Edit jvcl.inc';
+  RsEditJvclIncAllError = 'Options can only be set for a single target, please select a target from the drop down list first.';
   RsJVCLConfigurationError = 'The jvcl.inc files are corrupted.';
 
 const
