@@ -2,8 +2,9 @@ object frmDrop: TfrmDrop
   Left = 252
   Top = 150
   ActiveControl = tvFolders
+  BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
-  Caption = 'Custom DropDown'
+  Caption = 'Select folder'
   ClientHeight = 287
   ClientWidth = 290
   Color = clBtnFace
@@ -22,9 +23,17 @@ object frmDrop: TfrmDrop
   object Label1: TLabel
     Left = 11
     Top = 8
-    Width = 119
+    Width = 64
     Height = 13
-    Caption = 'Folders on current drive:'
+    Caption = 'Select folder:'
+  end
+  object PathLabel: TLabel
+    Left = 14
+    Top = 232
+    Width = 261
+    Height = 13
+    Anchors = [akLeft, akRight, akBottom]
+    AutoSize = False
   end
   object btnCancel: TButton
     Left = 202
@@ -42,11 +51,13 @@ object frmDrop: TfrmDrop
     Left = 8
     Top = 24
     Width = 273
-    Height = 212
+    Height = 201
     Anchors = [akLeft, akTop, akRight, akBottom]
-    Images = ImageList1
+    HideSelection = False
+    Images = ilSmallIcons
     Indent = 19
     TabOrder = 1
+    OnChange = tvFoldersChange
     OnDblClick = tvFoldersDblClick
     OnExpanding = tvFoldersExpanding
     OnGetImageIndex = tvFoldersGetImageIndex
@@ -64,9 +75,10 @@ object frmDrop: TfrmDrop
     TabOrder = 2
     OnClick = btnOKClick
   end
-  object ImageList1: TImageList
-    Left = 128
-    Top = 64
+  object ilSmallIcons: TImageList
+    ShareImages = True
+    Left = 16
+    Top = 32
     Bitmap = {
       494C010102000400040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001001000000000000008

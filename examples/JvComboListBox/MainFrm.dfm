@@ -1,9 +1,9 @@
-object Form1: TForm1
+object frmMain: TfrmMain
   Left = 237
   Top = 105
   AutoScroll = False
-  Caption = 'Form1'
-  ClientHeight = 436
+  Caption = 'JvComboListBox Demo'
+  ClientHeight = 457
   ClientWidth = 647
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -19,7 +19,7 @@ object Form1: TForm1
     Left = 409
     Top = 0
     Width = 3
-    Height = 436
+    Height = 457
     Cursor = crHSplit
     AutoSnap = False
     MinSize = 100
@@ -37,7 +37,7 @@ object Form1: TForm1
     Left = 0
     Top = 0
     Width = 409
-    Height = 436
+    Height = 457
     Align = alLeft
     BevelOuter = bvNone
     TabOrder = 1
@@ -63,7 +63,7 @@ object Form1: TForm1
       Top = 200
       Width = 56
       Height = 13
-      Caption = '&Draw Type:'
+      Caption = 'Draw &Type:'
     end
     object Label4: TLabel
       Left = 304
@@ -84,9 +84,9 @@ object Form1: TForm1
     object Label6: TLabel
       Left = 304
       Top = 240
-      Width = 78
+      Width = 79
       Height = 13
-      Caption = 'Dropdown ali&gn:'
+      Caption = 'Dro&pdown Align:'
       FocusControl = cbPopupAlign
     end
     object Memo1: TMemo
@@ -149,7 +149,7 @@ object Form1: TForm1
       BevelOuter = bvNone
       BorderStyle = bsSingle
       Caption = ' '
-      TabOrder = 1
+      TabOrder = 8
       object Image1: TImage
         Left = 0
         Top = 0
@@ -1682,7 +1682,7 @@ object Form1: TForm1
       Width = 75
       Height = 25
       Caption = 'L&oad...'
-      TabOrder = 2
+      TabOrder = 15
       OnClick = btnLoadImageClick
     end
     object btnCopyImage: TButton
@@ -1690,8 +1690,8 @@ object Form1: TForm1
       Top = 400
       Width = 75
       Height = 25
-      Caption = 'Co&py'
-      TabOrder = 3
+      Caption = 'Cop&y'
+      TabOrder = 16
       OnClick = btnCopyImageClick
     end
     object btnCopyText: TButton
@@ -1700,7 +1700,7 @@ object Form1: TForm1
       Width = 75
       Height = 25
       Caption = '&Copy'
-      TabOrder = 4
+      TabOrder = 7
       OnClick = btnCopyTextClick
     end
     object edItemHeight: TEdit
@@ -1708,7 +1708,7 @@ object Form1: TForm1
       Top = 48
       Width = 65
       Height = 21
-      TabOrder = 5
+      TabOrder = 1
       Text = '48'
     end
     object udItemHeight: TUpDown
@@ -1720,7 +1720,7 @@ object Form1: TForm1
       Min = 12
       Max = 32767
       Position = 48
-      TabOrder = 6
+      TabOrder = 2
       Wrap = False
       OnClick = udItemHeightClick
     end
@@ -1731,7 +1731,7 @@ object Form1: TForm1
       Height = 21
       Style = csDropDownList
       ItemHeight = 13
-      TabOrder = 7
+      TabOrder = 9
       OnChange = cbDrawStyleChange
       Items.Strings = (
         'Original'
@@ -1743,7 +1743,7 @@ object Form1: TForm1
       Top = 88
       Width = 65
       Height = 21
-      TabOrder = 9
+      TabOrder = 3
       Text = '26'
     end
     object udButtonWidth: TUpDown
@@ -1755,7 +1755,7 @@ object Form1: TForm1
       Min = 0
       Max = 32767
       Position = 26
-      TabOrder = 10
+      TabOrder = 4
       Wrap = False
       OnClick = udButtonWidthClick
     end
@@ -1765,7 +1765,7 @@ object Form1: TForm1
       Width = 75
       Height = 25
       Caption = '&Load...'
-      TabOrder = 11
+      TabOrder = 6
       OnClick = btnLoadTextClick
     end
     object chkHotTrackCombo: TCheckBox
@@ -1774,7 +1774,7 @@ object Form1: TForm1
       Width = 97
       Height = 17
       Caption = 'Hot&TrackCombo'
-      TabOrder = 12
+      TabOrder = 13
       OnClick = chkHotTrackComboClick
     end
     object edColumns: TEdit
@@ -1782,7 +1782,7 @@ object Form1: TForm1
       Top = 296
       Width = 65
       Height = 21
-      TabOrder = 13
+      TabOrder = 11
       Text = '26'
     end
     object udColumns: TUpDown
@@ -1794,7 +1794,7 @@ object Form1: TForm1
       Min = 0
       Max = 32767
       Position = 26
-      TabOrder = 14
+      TabOrder = 12
       Wrap = False
       OnClick = udColumnsClick
     end
@@ -1804,7 +1804,7 @@ object Form1: TForm1
       Width = 97
       Height = 17
       Caption = 'Ins&ert at top'
-      TabOrder = 15
+      TabOrder = 14
       OnClick = chkHotTrackComboClick
     end
     object cbPopupAlign: TComboBox
@@ -1815,7 +1815,7 @@ object Form1: TForm1
       Style = csDropDownList
       DropDownCount = 100
       ItemHeight = 13
-      TabOrder = 8
+      TabOrder = 10
       OnChange = cbPopupAlignChange
       Items.Strings = (
         'Popup at Left'
@@ -1827,15 +1827,18 @@ object Form1: TForm1
       Top = 120
       Width = 97
       Height = 17
-      Caption = 'Custom Drop'
-      TabOrder = 16
+      Caption = 'Custom &Drop'
+      TabOrder = 5
     end
-  end
-  object JvColorButton1: TJvColorButton
-    Left = 232
-    Top = 384
-    OtherCaption = '&Other...'
-    Options = []
+    object chkIncludeFiles: TCheckBox
+      Left = 24
+      Top = 432
+      Width = 369
+      Height = 17
+      Caption = '&Include files in custom dropdown'
+      TabOrder = 17
+      OnClick = chkIncludeFilesClick
+    end
   end
   object OpenPictureDialog1: TOpenPictureDialog
     InitialDir = '.'

@@ -5,11 +5,11 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, JvComponent, JvClipboardViewer, ExtCtrls, ExtDlgs,
-  ComCtrls, Menus, JvComboListBox, JvColorBox, JvColorButton;
+  ComCtrls, Menus, JvComboListBox;
 
 type
 
-  TForm1 = class(TForm)
+  TfrmMain = class(TForm)
     JvClipboardViewer1: TJvClipboardViewer;
     Splitter1: TSplitter;
     Panel1: TPanel;
@@ -46,7 +46,7 @@ type
     cbPopupAlign: TComboBox;
     Label6: TLabel;
     chkCustomDrop: TCheckBox;
-    JvColorButton1: TJvColorButton;
+    chkIncludeFiles: TCheckBox;
     procedure JvClipboardViewer1Image(Sender: TObject; Image: TBitmap);
     procedure JvClipboardViewer1Text(Sender: TObject; Text: string);
     procedure btnCopyTextClick(Sender: TObject);
@@ -64,6 +64,7 @@ type
     procedure chkHotTrackComboClick(Sender: TObject);
     procedure udColumnsClick(Sender: TObject; Button: TUDBtnType);
     procedure cbPopupAlignChange(Sender: TObject);
+    procedure chkIncludeFilesClick(Sender: TObject);
   private
     { Private declarations }
     LB: TJvComboListBox;
@@ -75,7 +76,7 @@ type
   end;
 
 var
-  Form1: TForm1;
+  frmMain: TfrmMain;
 
 implementation
 uses
@@ -93,7 +94,7 @@ begin
       Result := Values[i];
 end;
 
-procedure TForm1.JvClipboardViewer1Image(Sender: TObject; Image: TBitmap);
+procedure TfrmMain.JvClipboardViewer1Image(Sender: TObject; Image: TBitmap);
 var
   P: TPicture;
 begin
@@ -112,7 +113,7 @@ begin
   Caption := Format('Count: %d', [LB.Items.Count]);
 end;
 
-procedure TForm1.JvClipboardViewer1Text(Sender: TObject; Text: string);
+procedure TfrmMain.JvClipboardViewer1Text(Sender: TObject; Text: string);
 begin
   if chkInsert.Checked then
     LB.InsertText(0, StringReplace(Text, #13#10, ' ', [rfReplaceAll]))
@@ -121,14 +122,14 @@ begin
   Caption := Format('Clipboard count: %d', [LB.Items.Count]);
 end;
 
-procedure TForm1.btnCopyTextClick(Sender: TObject);
+procedure TfrmMain.btnCopyTextClick(Sender: TObject);
 begin
   if Memo1.SelLength = 0 then
     Memo1.SelectAll;
   Memo1.CopyToClipboard;
 end;
 
-procedure TForm1.btnCopyImageClick(Sender: TObject);
+procedure TfrmMain.btnCopyImageClick(Sender: TObject);
 var
   AFormat: Word;
   AData: Cardinal;
@@ -150,18 +151,18 @@ begin
   Clipboard.SetAsHandle(AFormat, AData);
 end;
 
-procedure TForm1.btnLoadImageClick(Sender: TObject);
+procedure TfrmMain.btnLoadImageClick(Sender: TObject);
 begin
   if OpenPictureDialog1.Execute then
     Image1.Picture.LoadFromFile(OpenPictureDialog1.FileName);
 end;
 
-procedure TForm1.udItemHeightClick(Sender: TObject; Button: TUDBtnType);
+procedure TfrmMain.udItemHeightClick(Sender: TObject; Button: TUDBtnType);
 begin
   LB.ItemHeight := udItemHeight.Position;
 end;
 
-procedure TForm1.DoAccept(Sender:TObject;Index:integer; const Value:string);
+procedure TfrmMain.DoAccept(Sender:TObject;Index:integer; const Value:string);
 begin
   if Index < 0 then Index := LB.ItemIndex;
   if Index >= 0 then
@@ -172,7 +173,7 @@ begin
   end;
 end;
 
-procedure TForm1.DoDropDown(Sender: TObject;Index, X,Y:integer; var AllowDrop:boolean);
+procedure TfrmMain.DoDropDown(Sender: TObject;Index, X,Y:integer; var AllowDrop:boolean);
 var
   R:TRect;
   P:TPoint;
@@ -186,6 +187,7 @@ begin
       frmDrop := TfrmDrop.Create(Application);
     with frmDrop do
     begin
+      IncludeFiles := chkIncludeFiles.Checked;
       Top := P.Y + LB.ItemHeight;
       Left := P.X - Width;
       // notify dialog when the user clicks outside the form
@@ -195,7 +197,7 @@ begin
   end;
 end;
 
-procedure TForm1.FormCreate(Sender: TObject);
+procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   LB := TJvComboListBox.Create(Self);
   LB.Align := alClient;
@@ -211,9 +213,10 @@ begin
   LB.ItemHeight := udItemHeight.Position;
   udButtonWidth.Position := LB.ButtonWidth;
   udColumns.Position := LB.Columns;
+
 end;
 
-procedure TForm1.Paste1Click(Sender: TObject);
+procedure TfrmMain.Paste1Click(Sender: TObject);
 begin
   with LB do
   begin
@@ -224,26 +227,26 @@ begin
   end;
 end;
 
-procedure TForm1.Delete1Click(Sender: TObject);
+procedure TfrmMain.Delete1Click(Sender: TObject);
 begin
   with LB do
     if ItemIndex >= 0 then
       Delete(ItemIndex);
 end;
 
-procedure TForm1.cbDrawStyleChange(Sender: TObject);
+procedure TfrmMain.cbDrawStyleChange(Sender: TObject);
 begin
   LB.DrawStyle := TJvComboListBoxDrawStyle(cbDrawStyle.ItemIndex);
 end;
 
-procedure TForm1.Proportional1Click(Sender: TObject);
+procedure TfrmMain.Proportional1Click(Sender: TObject);
 begin
   cbDrawStyle.ItemIndex := (Sender as TMenuItem).Tag;
   LB.DrawStyle := TJvComboListBoxDrawStyle(cbDrawStyle.ItemIndex);
   (Sender as TMenuItem).Checked := true;
 end;
 
-procedure TForm1.PopupMenu1Popup(Sender: TObject);
+procedure TfrmMain.PopupMenu1Popup(Sender: TObject);
 var
   i: integer;
 begin
@@ -252,23 +255,23 @@ begin
       PopupMenu1.Items[i].Checked := PopupMenu1.Items[i].Tag = cbDrawStyle.ItemIndex;
 end;
 
-procedure TForm1.udButtonWidthClick(Sender: TObject; Button: TUDBtnType);
+procedure TfrmMain.udButtonWidthClick(Sender: TObject; Button: TUDBtnType);
 begin
   LB.ButtonWidth := udButtonWidth.Position;
 end;
 
-procedure TForm1.btnLoadTextClick(Sender: TObject);
+procedure TfrmMain.btnLoadTextClick(Sender: TObject);
 begin
   if OpenDialog1.Execute then
     Memo1.Lines.LoadFromFile(OpenDialog1.FileName);
 end;
 
-procedure TForm1.chkHotTrackComboClick(Sender: TObject);
+procedure TfrmMain.chkHotTrackComboClick(Sender: TObject);
 begin
   LB.HotTrackCombo := chkHotTrackCombo.Checked;
 end;
 
-procedure TForm1.udColumnsClick(Sender: TObject; Button: TUDBtnType);
+procedure TfrmMain.udColumnsClick(Sender: TObject; Button: TUDBtnType);
 begin
   LB.Columns := udColumns.Position;
   if LB.Columns > 0 then
@@ -277,9 +280,18 @@ begin
     LB.ScrollBars := ssVertical;
 end;
 
-procedure TForm1.cbPopupAlignChange(Sender: TObject);
+procedure TfrmMain.cbPopupAlignChange(Sender: TObject);
 begin
   PopupMenu1.Alignment := TPopupAlignment(cbPopupAlign.ItemIndex);
+end;
+
+procedure TfrmMain.chkIncludeFilesClick(Sender: TObject);
+begin
+  if frmDrop <> nil then //recreate form
+  begin
+    frmDrop.Release;
+    frmDrop := nil;
+  end;
 end;
 
 end.
