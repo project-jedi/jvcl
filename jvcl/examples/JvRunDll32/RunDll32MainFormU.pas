@@ -36,7 +36,7 @@ var
 
 implementation
 uses
-  JvJVCLUtils, ShellAPI, InfoFrm;
+  JvJCLUtils, ShellAPI, InfoFrm;
 
 {$R *.dfm}
 {

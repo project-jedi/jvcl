@@ -37,6 +37,7 @@ object Form1: TForm1
     DatabaseName = 'd:\employee.db'
     UserName = 'SYSDBA'
     PassWord = 'masterkey'
+    LibraryName = 'gds32.dll'
     Left = 8
     Top = 8
   end

@@ -52,11 +52,8 @@ var
 implementation
 uses
   ShellAPI,
-  JvJVCLUtils // Include/ExcludeTrailingPathDelimiter, MinimizeName
-{$IFNDEF COMPILER6_UP}
-  ,JvJCLUtils // DirectoryExists
-{$ENDIF}
-  ;
+  JvJVCLUtils, // Include/ExcludeTrailingPathDelimiter
+  JvJCLUtils; // DirectoryExists, MinimzeFileName
 
 {$R *.dfm}
 
@@ -242,7 +239,7 @@ end;
 
 procedure TfrmDrop.tvFoldersChange(Sender: TObject; Node: TTreeNode);
 begin
-  PathLabel.Caption := MinimizeName(GetFullPath(Node), Canvas, PathLabel.Width);
+  PathLabel.Caption := MinimizeFileName(GetFullPath(Node), Canvas, PathLabel.Width);
 end;
 
 end.
