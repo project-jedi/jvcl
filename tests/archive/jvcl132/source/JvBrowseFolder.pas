@@ -51,7 +51,6 @@ type
 
   TJvBrowseFolder = class(TJvCommonDialog)
   private
-    FHandle: Integer;
     FDialogHandle: Integer;
     FTitle: string;
     FOptions: TOptionsDir;
@@ -64,6 +63,7 @@ type
     FOnChange: TJvDirChange;
     FPidl: TItemIDList;
   protected
+    function getParentHandle:THandle;
   public
     constructor Create(AOwner: TComponent); override;
     procedure SetStatusText(Value: string);
@@ -101,7 +101,6 @@ constructor TJvBrowseFolder.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FOptions := [odStatusAvailable, odNewDialogStyle];
-  FHandle := GetParentForm(TControl(AOwner)).Handle;
 end;
 
 {**************************************************}
@@ -110,8 +109,10 @@ function lpfnBrowseProc(Wnd: HWND; uMsg: UINT; lParam, lpData: LPARAM): Integer 
 var
   r, sr: TRect;
   st: string;
+  FHandle:THandle;
 begin
   Result := 0;
+  FHandle := getParentHandle;
   with TObject(lpData) as TJvBrowseFolder do
   begin
     case uMsg of
@@ -252,9 +253,9 @@ begin
   if (odShareable in FOptions) and (ShellVersion >= $00050000) then
     BrowseInfo.ulFlags := BrowseInfo.ulFlags + BIF_SHAREABLE;
 
-  BrowseInfo.hwndOwner := FHandle;
+  BrowseInfo.hwndOwner := getParentHandle;
   if CSIDLLocations[FFromDirectory] <> 0 then
-    SHGetSpecialFolderLocation(FHandle, CSIDLLocations[FFromDirectory], BrowseInfo.pidlRoot);
+    SHGetSpecialFolderLocation(getParentHandle, CSIDLLocations[FFromDirectory], BrowseInfo.pidlRoot);
 
   BrowseInfo.pszDisplayName := dspName;
   if FTitle = '' then
@@ -288,6 +289,18 @@ begin
   except
   end;
   FDialogHandle := 0;
+end;
+
+function TJvBrowseFolder.getParentHandle: THandle;
+var F:TCustomForm;
+begin
+  F := GetParentForm(TControl(Owner));
+  if F <> nil then
+    Result :0 F.Handle
+  else if (Screen <> nil) and (Screen.ActiveCustomForm <> nil) then
+    Result := Screen.ActiveCustomForm.Handle
+  else
+    Result := GetFocus;
 end;
 
 end.

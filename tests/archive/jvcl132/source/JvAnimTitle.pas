@@ -52,6 +52,7 @@ type
     procedure EnableChange(NewEnable: Boolean);
     procedure ChangeDelay(NewDelay: Integer);
     procedure AnimateTitle(Sender: TObject);
+    procedure CheckOwner;
   protected
   public
     constructor Create(AOwner: TComponent); override;
@@ -107,13 +108,20 @@ end;
 
 {**************************************************}
 
+procedure TJvAnimTitle.CheckOwner;
+begin
+  if FForm = nil then
+    raise Exception.Create('TJvAnimTitle can only be used on a TCustomForm or descendant!');
+end;
+
 constructor TJvAnimTitle.Create(AOwner: TComponent);
 begin
+  FForm := GetParentForm(TControl(AOwner));
+  CheckOwner;
   inherited;
   FEnable := False;
   FDelay := 50;
   FBlinker := 5;
-  FForm := GetParentForm(TControl(AOwner));
   FInitialTitle := FForm.Caption;
   FSens := True;
   FBlinking := False;
@@ -131,6 +139,7 @@ end;
 destructor TJvAnimTitle.Destroy;
 begin
   FTimer.Free;
+  CheckOwner;
   if not (csDestroying in FForm.ComponentState) then
     FForm.Caption := FInitialTitle;
   inherited;

@@ -41,6 +41,7 @@ type
     FHasTitle: Boolean;
     FForm: TCustomForm;
     procedure SetTitle(const Value: Boolean);
+    procedure CheckOwner;
   protected
   public
     constructor Create(AOwner: TComponent); override;
@@ -53,18 +54,26 @@ implementation
 
 {**************************************************}
 
+procedure TJvNoTitle.CheckOwner;
+begin
+  if FForm = nil then
+    raise Exception.Create('TJvNoTitle can only be used on a TCustomForm or descendant!');
+end;
+
+
 constructor TJvNoTitle.Create(AOwner: TComponent);
 begin
+  FForm := GetParentForm(TControl(AOwner));
+  CheckOwner;
   inherited;
   FHasTitle := True;
-  FForm := GetParentForm(TControl(AOwner));
 end;
 
 {**************************************************}
 
 destructor TJvNoTitle.Destroy;
 begin
-  if not (csDestroying in FForm.ComponentState) then
+  if (FForm <> nil) and not (csDestroying in FForm.ComponentState) then
     SetTitle(True);
   inherited;
 end;
@@ -73,6 +82,7 @@ end;
 
 procedure TJvNoTitle.SetTitle(const Value: Boolean);
 begin
+  CheckOwner;
   FHasTitle := Value;
   if FHasTitle then
     SetWindowLong(FForm.Handle, GWL_STYLE, GetWindowLong(FForm.Handle, GWL_STYLE) or WS_CAPTION)

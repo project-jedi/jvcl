@@ -41,6 +41,7 @@ type
     FActive: Boolean;
     FForm: TCustomForm;
     procedure SetActive(const Value: Boolean);
+    procedure CheckOwner;
   protected
   public
     constructor Create(AOwner: TComponent); override;
@@ -54,13 +55,20 @@ implementation
 
 constructor TJvTransForm.Create(AOwner: TComponent);
 begin
+  FForm := GetParentForm(TControl(AOwner));
+  CheckOwner;
   inherited;
   FActive := False;
-  FForm := GetParentForm(TControl(AOwner));
   SetActive(FActive);
 end;
 
 {**************************************************}
+
+procedure TJvTransForm.CheckOwner;
+begin
+  if FForm = nil then
+    raise Exception.Create('TJvTransForm can only be used on a TCustomForm or descendant!');
+end;
 
 procedure TJvTransForm.SetActive(const Value: Boolean);
 var
@@ -71,6 +79,7 @@ var
   r, s: Hrgn;
   cl: TRect;
 begin
+  CheckOwner;
   FActive := Value;
   if csDesigning in ComponentState then Exit; // should really not be hidden at design-time ???
   cl := FForm.ClientRect;
@@ -99,7 +108,6 @@ begin
   end
   else
     r := 0;
-
   SetWindowRgn(FForm.Handle, r, True);
 end;
 

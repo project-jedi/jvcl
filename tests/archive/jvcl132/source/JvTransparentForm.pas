@@ -36,7 +36,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, JvRegion, JvComponent;
 
 type
-  TJvTransparenTForm = class(TJvComponent)
+  TJvTransparentForm = class(TJvComponent)
   private
     FMask: TBitmap;
     FComponentOwner: TCustomForm;
@@ -47,6 +47,7 @@ type
     procedure SetEnable(Value: Boolean);
     procedure SetMask(Value: TBitmap);
     procedure SetAutoSize(Value: Boolean);
+    procedure CheckOwner;
   protected
   public
     constructor Create(AOwner: TComponent); override;
@@ -61,18 +62,20 @@ implementation
 
 {***********************************************************}
 
-constructor TJvTransparenTForm.Create(AOwner: TComponent);
+constructor TJvTransparentForm.Create(AOwner: TComponent);
 begin
-  inherited;
   FComponentOwner := GetParentForm(TControl(AOwner));
+  CheckOwner;
+  inherited;
   FMask := TBitmap.Create;
   FRgn := TJvRegion.Create(Self);
 end;
 
 {***********************************************************}
 
-destructor TJvTransparenTForm.Destroy;
+destructor TJvTransparentForm.Destroy;
 begin
+  CheckOwner;
   if not (csDestroying in FComponentOwner.ComponentState) then
   begin
     SetWindowLong(FComponentOwner.Handle, GWL_STYLE,
@@ -86,8 +89,9 @@ end;
 
 {***********************************************************}
 
-procedure TJvTransparenTForm.SetMask(Value: TBitmap);
+procedure TJvTransparentForm.SetMask(Value: TBitmap);
 begin
+  CheckOwner;
   FMask.Assign(Value);
   FRegion := FRgn.RegionFromBitmap(Value);
   if FEnable then
@@ -103,8 +107,15 @@ end;
 
 {***********************************************************}
 
-procedure TJvTransparenTForm.SetEnable(Value: Boolean);
+procedure TJvTransparentForm.CheckOwner;
 begin
+  if FComponentOwner = nil then
+    raise Exception.Create('TJvTransparentForm can only be used on a TCustomForm or descendant!');
+end;
+
+procedure TJvTransparentForm.SetEnable(Value: Boolean);
+begin
+  CheckOwner;
   FEnable := Value;
   if Value then
   begin
@@ -128,8 +139,9 @@ end;
 
 {***********************************************************}
 
-procedure TJvTransparenTForm.SetAutoSize(Value: Boolean);
+procedure TJvTransparentForm.SetAutoSize(Value: Boolean);
 begin
+  CheckOwner;
   FAutoSize := Value;
   if Value and FEnable then
   begin
