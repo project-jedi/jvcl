@@ -38,7 +38,7 @@ uses
   {$ENDIF VCL}
   Graphics, Controls, Forms, StdCtrls, ExtCtrls, Buttons, Menus, ImgList,
   {$IFDEF VisualCLX}
-  QTypes, QWindows,
+  QTypes, Qt, QWindows,
   {$ENDIF VisualCLX}
   JvTypes, JvConsts, JvComponent, JvThemes, JvExControls, JvExButtons;
 
@@ -1266,12 +1266,7 @@ begin
       Canvas.Font := Font;
 
     //    W := FSpacing  + W;
-    {$IFDEF VCL}
     SetBkMode(Canvas.Handle, Windows.Transparent);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    SetBkMode(Canvas.Handle, QWindows.Transparent);
-    {$ENDIF VisualCLX}
     R := GetClientRect;
     if (ImageSize = isLarge) and Assigned(FLargeImages) then
       R.Top := R.Top + FLargeImages.Height + (FSpacing * 2)
@@ -1477,6 +1472,11 @@ begin
       while PeekMessage(Msg, 0, WM_MOUSEFIRST, WM_MOUSELAST, PM_REMOVE) do
         {nothing};
       {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      repeat
+        Application.ProcessMessages;
+      until not QWidget_isVisible(FPopUpMenu.handle);
+      {$ENDIF VisualCLX}
     end;
     { release button }
     if not FStayDown then
@@ -2381,6 +2381,11 @@ begin
     while PeekMessage(Msg, 0, WM_MOUSEFIRST, WM_MOUSELAST, PM_REMOVE) do
       {nothing};
     {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+     repeat
+       Application.ProcessMessages;
+     until not QWidget_isVisible(FPopUpMenu.handle);
+    {$ENDIF VisualCLX}
     FDown := False;
   end
   else
@@ -2725,8 +2730,8 @@ var
 begin
   DC := GetWindowDC(Handle);
   try
-    Windows.GetClientRect(Handle, RC);
     GetWindowRect(Handle, RW);
+    Windows.GetClientRect(Handle, RC);
     MapWindowPoints(NullHandle, Handle, RW, 2);
     OffsetRect(RC, -RW.Left, -RW.Top);
     ExcludeClipRect(DC, RC.Left, RC.Top, RC.Right, RC.Bottom);
@@ -2954,8 +2959,8 @@ var
 begin
   DC := GetWindowDC(Handle);
   try
-    Windows.GetClientRect(Handle, RC);
     GetWindowRect(Handle, RW);
+    Windows.GetClientRect(Handle, RC);
     MapWindowPoints(NullHandle, Handle, RW, 2);
     OffsetRect(RC, -RW.Left, -RW.Top);
     ExcludeClipRect(DC, RC.Left, RC.Top, RC.Right, RC.Bottom);
