@@ -19,7 +19,7 @@ The Initial Developers of the Original Code are: Andrei Prygounkov <a dott prygo
 Copyright (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
-Contributor(s):  Warren Postma (warrenpstma@hotmail.com)
+Contributor(s):  Warren Postma (warrenpstma att hotmail dott com)
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -32,21 +32,22 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQCsvDataEditor;
+
+{$I jvcl.inc}
 
 interface
 
 uses
-  SysUtils, Classes, Db,
-  QWindows, QMessages, QForms, QDialogs, Types, QGraphics, 
+  SysUtils, Classes, DB,
+  QWindows, QMessages, QForms, QDialogs, QGraphics, 
   DesignEditors, DesignIntf, 
   JvQCsvData;
 
 type
   { A string property editor makes setting up the CSV Field definitions less painful }
   TJvCsvDefStrProperty = class(TStringProperty)
+  public
     function GetAttributes: TPropertyAttributes; override;
     procedure Edit; override;
   end;
@@ -65,7 +66,7 @@ type
     function GetAttributes: TPropertyAttributes; override;
   end;
 
-procedure Register;
+//procedure Register;
 
 implementation
 
@@ -74,7 +75,7 @@ uses
 
 { CsvDataDefStrDsgn= String Editor at design time for CSVDefs }
 
-//=== TJvCsvDefStrProperty ===================================================
+//=== { TJvCsvDefStrProperty } ===============================================
 
 function TJvCsvDefStrProperty.GetAttributes: TPropertyAttributes;
 begin
@@ -84,20 +85,18 @@ end;
 function DoCsvDefDialog(OldValue: string): string;
 var
   Dialog: TJvCsvDefStrDialog;
-  dlgResult: Integer;
-  {$IFDEF MSWINDOWS}
+  DlgResult: Integer;
   WindowList: Pointer;
-  {$ENDIF MSWINDOWS}
 begin
   {$IFDEF MSWINDOWS}
   WindowList := DisableTaskWindows(0);
   {$ENDIF MSWINDOWS}
   Dialog := TJvCsvDefStrDialog.Create(nil); // no owner!
-//  dlgResult := idCancel;
+//  DlgResult := idCancel;
   try
     Dialog.SetCsvStr(OldValue);
-    dlgResult := Dialog.ShowModal;
-    if dlgResult = idOk then
+    DlgResult := Dialog.ShowModal;
+    if DlgResult = idOk then
       Result := Dialog.GetCsvStr
     else
       Result := OldValue;
@@ -173,7 +172,7 @@ begin
 end;
 }
 
-//=== TJvFilenameProperty ====================================================
+//=== { TJvFilenameProperty } ================================================
 
 procedure TJvFilenameProperty.Edit;
 begin
@@ -197,22 +196,20 @@ begin
   Result := [paDialog, paRevertable];
 end;
 
+{ (rom) moved to JvDBReg.pas
 procedure Register;
-const
- cCsvFieldDef = 'CsvFieldDef';
- //cTableName = 'TableName';
- cFileName = 'FileName';
 begin
-  RegisterPropertyEditor(TypeInfo(string), TJvCSVDataSet, cCsvFieldDef, TJvCsvDefStrProperty);
-// RegisterPropertyEditor(TypeInfo(string), TJvCSVDataSet, cTableName, TFileNameProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvCSVDataSet, cFileName, TJvFileNameProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvCsvDataSet, 'CsvFieldDef', TJvCsvDefStrProperty);
+  // RegisterPropertyEditor(TypeInfo(string), TJvCsvDataSet, 'TableName', TFileNameProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvCsvDataSet, 'FileName', TJvFilenameProperty);
 
- { Component Editor - Verbs for the Right-Clicky-on-ye-component thing
-   Requires a working DSDESIGN.pas source that will compile. }
-// RegisterComponentEditor(TCSVDataSet, TCSVDataSetComponentEditor);
+  // Component Editor - Verbs for the Right-Clicky-on-ye-component thing
+  //  Requires a working DSDESIGN.pas source that will compile.
+  // RegisterComponentEditor(TCSVDataSet, TCSVDataSetComponentEditor);
 
-  RegisterComponents(RsPaletteDBNonVisual, [TJvCSVDataSet]);
+  RegisterComponents(RsPaletteDBNonVisual, [TJvCsvDataSet]);
 end;
+}
 
 end.
 

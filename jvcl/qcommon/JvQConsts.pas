@@ -34,18 +34,16 @@ unit JvQConsts;
 interface
 
 uses
-  SysUtils, Classes, 
-  QButtons, {CM_BUTTONPRESSED} 
-  QForms, QControls, QGraphics, QWindows;
+  SysUtils, Classes, QForms, QControls, QGraphics, QWindows;
+
 
 const
-
-  PaletteMask = $00000000;
-
   clMoneyGreen = TColor($C0DCC0);
   clSkyBlue = TColor($F0CAA6);
   clCream = TColor($F0FBFF);
   clMedGray = TColor($A4A0A0);
+
+
 
 
   { JvEditor }
@@ -82,7 +80,7 @@ const
   {$ENDIF DELPHI9}
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
-  SDelphiKey = '.borland/.jvclx1';
+  SDelphiKey = '.borland'; // relative to ~ 
   {$ENDIF UNIX}
   { JvDataProvider constants }
   { Consumer attributes }
@@ -94,8 +92,7 @@ const
   { Command message for JvSpeedbar editor }
   CM_SPEEDBARCHANGED = CM_JVBASE + 0;
   { Command message for TJvSpeedButton }
-//  CM_JVBUTTONPRESSED = CM_JVBASE + 1;
-  CM_JVBUTTONPRESSED = CM_BUTTONPRESSED;
+  CM_JVBUTTONPRESSED = CM_JVBASE + 1;
   // (rom) disabled unused
   { Command messages for TJvWindowHook }
   //CM_RECREATEWINDOW  = CM_JVBASE + 2;
@@ -105,23 +102,29 @@ const
   CM_FORCESIZE = CM_JVBASE + 5;  // used in JvButton
 
   { Values for WParam for CM_SPEEDBARCHANGED message }
-  SBR_CHANGED        = 0; { change buttons properties }
-  SBR_DESTROYED      = 1; { destroy SpeedBar }
-  SBR_BTNSELECT      = 2; { select button in SpeedBar }
-  SBR_BTNSIZECHANGED = 3; { button size changed }
+  SBR_CHANGED = 0; { change buttons properties  }
+  SBR_DESTROYED = 1; { destroy SpeedBar           }
+  SBR_BTNSELECT = 2; { select button in SpeedBar  }
+  SBR_BTNSIZECHANGED = 3; { button size changed        }
 
- 
+  { TBitmap.GetTransparentColor from GRAPHICS.PAS use this value }
+  PaletteMask = $02000000;
+
+  // (outchy) now used 
+  // (outchy) it was defined as $000000FF
+  clSystemColor = $FF000000;
+  DEFAULT_SYSCOLOR_MASK = clSystemColor;  // $FF000000
  
  
   sLineBreakLen = Length(sLineBreak);
 
+  CrLf = #13#10;
+  Cr = #13;
+  Lf = #10;
   Backspace = #8;
-  Tab   = #9;
-  CrLf  = #13#10;
-  Cr    = #13;
-  Lf    = #10;
-  Esc   = #27;
-  Del   = #127;
+  Tab = #9;
+  Esc = #27;
+  Del = #127;
   CtrlC = ^C;
   CtrlH = ^H;
   CtrlI = ^I;
@@ -130,16 +133,15 @@ const
   CtrlV = ^V;
   CtrlX = ^X;
   {$IFDEF MSWINDOWS}
-  RegPathDelim   = '\';
-  PathDelim      = '\';
-  DriveDelim     = ':';
-  PathSep        = ';';
+  RegPathDelim = '\';
+  PathDelim = '\';
+  DriveDelim = ':';
+  PathSep = ';';
   AllFilePattern = '*.*';
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
-//  RegPathDelim   = '_';
-  RegPathDelim   = '/';
-  PathDelim      = '/';
+  RegPathDelim = '_';
+  PathDelim = '/';
   AllFilePattern = '*';
   {$ENDIF UNIX}
 
@@ -177,7 +179,7 @@ const
   FOURCC_fram = 'fram';
   FOURCC_icon = 'icon';
   FOURCC_rate = 'rate';
-  FOURCC_seq  = 'seq ';
+  FOURCC_seq = 'seq ';
 
   AF_ICON = $00000001;
   AF_SEQUENCE = $00000002;

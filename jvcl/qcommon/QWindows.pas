@@ -56,7 +56,7 @@ uses
   {$ENDIF LINUX}
   Types, StrUtils, SysUtils, Classes, Math, Contnrs, SyncObjs, QDialogs,
   QTypes, Qt, QConsts, QGraphics, QControls, QForms, QExtCtrls, QStdCtrls,
-  QButtons, QImgList;
+  QButtons, QImgList, QStyle;
 
 type
   IPerformControl = interface
@@ -683,6 +683,16 @@ const
   WM_TIMER = $0113;  { 275 }
 
 type
+  TAppEventHook = class(TComponent)
+  private
+    FHook: QApplication_hookH;
+  protected
+    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; cdecl;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  end;
+
   TMsg = packed record
     hwnd: QWidgetH;
     message: Integer;
@@ -729,6 +739,7 @@ type
   HDC         = QPainterH;
   HFONT       = QFontH;
   UINT        = Cardinal;
+  ULONG       = Cardinal;
   DWORD       = Cardinal;
   BOOL        = LongBool;
   WPARAM      = Integer;
@@ -1073,10 +1084,10 @@ type { wait for object}
 
 type
   TTimerProc = procedure(Widget: QWidgetH; Msg: Cardinal; WMTimerId: Cardinal;  TickCount: Cardinal);
-  TAppEventFilter = function(App: TApplication; Receiver: QObjectH; Event: QEventH): Boolean; cdecl;
-  PAppEventFilter = ^TAppEventFilter;
+  TAppEventFilterMethod = function (Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+  PAppEventFilterMethod = ^TAppEventFilterMethod;
 
-function InstallApplicationEventHook(EventFilter: PAppEventFilter): QObject_hookH;
+function InstallApplicationEventHook(EventFilter: TEventFilterMethod): QApplication_hookH;
 
 procedure WakeUpGuiThread;
 {
@@ -1447,6 +1458,8 @@ function SetCaretPos(X, Y: Integer): Boolean;
 function GetCaretPos(var Pt: TPoint): Boolean;
 function DestroyCaret: Boolean;
 
+procedure SetCursorPos(X, Y: integer);
+
 function GetDoubleClickTime: Cardinal;
 function SetDoubleClickTime(Interval: Cardinal): LongBool;
 function ReleaseCapture: LongBool;
@@ -1498,7 +1511,8 @@ function ShellExecute(Handle: Integer; Operation, FileName, Parameters,
 function GetTickCount: Cardinal;
 function GetUserName(Buffer: PChar; var Size: Cardinal): LongBool;
 function GetComputerName(Buffer: PChar; var Size: Cardinal): LongBool;
-procedure OutputDebugString(lpOutputString: PAnsiChar);
+procedure OutputDebugString(lpOutputString: PAnsiChar); overload;
+procedure OutputDebugString(OutputString: AnsiString); overload;
 function InterlockedIncrement(var I: Integer): Integer;
 function InterlockedDecrement(var I: Integer): Integer;
 function InterlockedExchange(var A: Integer; B: Integer): Integer;
@@ -1515,13 +1529,14 @@ procedure EnableTaskWindows(WindowList: Pointer);
 function DisableTaskWindows(ActiveWindow: Windows.HWnd): Pointer;
 {$ENDIF MSWINDOWS}
 
-{$IFDEF LINUX}
 function CopyFile(lpExistingFileName, lpNewFileName: PChar;
   bFailIfExists: LongBool): LongBool; overload;
+
 function CopyFileA(lpExistingFileName, lpNewFileName: PAnsiChar;
   bFailIfExists: LongBool): LongBool;
 function CopyFileW(lpExistingFileName, lpNewFileName: PWideChar;
   bFailIfExists: LongBool): LongBool;
+{$IFDEF LINUX}
 function CopyFile(const Source, Destination: string;
   FailIfExists: Boolean): LongBool; overload;
 
@@ -1652,6 +1667,14 @@ type
   THackCanvas = class(TCanvas);
   TOpenWidgetControl = class(TWidgetControl);
 
+var
+  AppEventHook: TAppEventHook = nil;
+
+procedure AppEventHookNeeded;
+begin
+  if not Assigned(AppEventHook) then
+    AppEventHook := TAppEventHook.Create(nil);
+end;
 { used internally }
 
 procedure MapPainterLP(Handle: QPainterH; var x, y: Integer); overload;
@@ -2192,7 +2215,7 @@ end;
 function DeleteObject(Handle: QPenH): LongBool;
 begin
   try
-    if not TStockObjectList.ReleaseStockObject(Handle) then
+//    if not TStockObjectList.ReleaseStockObject(Handle) then
       QPen_destroy(Handle);
     Result := True;
   except
@@ -2224,7 +2247,7 @@ begin
   if Handle <> nil then
   begin
     try
-      if not TStockObjectList.ReleaseStockObject(Handle) then
+//      if not TStockObjectList.ReleaseStockObject(Handle) then
         QBrush_destroy(Handle);
       Result := True;
     except
@@ -2739,7 +2762,7 @@ begin
       MapPainterLPwh(DestDC, d_dw, d_dh);
       MapPainterLP(SrcDC, d_sx, d_sy);
       MapPainterLPwh(SrcDC, d_sw, d_sh);
-
+      
       if (d_dw = d_sw) and (d_dh = d_sh) then // device bitBlt possible
         Qt.bitBlt(QPainter_device(DestDC), d_dx, d_dy, QPainter_device(SrcDC),
           d_sx, d_sy, d_sw, d_sh, Rop,
@@ -2774,18 +2797,12 @@ end;
 
 function BitBlt(DestCanvas: TCanvas; X, Y, Width, Height: Integer; SrcCanvas: TCanvas;
   XSrc, YSrc: Integer; WinRop: Cardinal; IgnoreMask: boolean): LongBool;
-var
-  d,s :TPoint;
 begin
   DestCanvas.Start;
-  if DestCanvas <> SrcCanvas then
-    SrcCanvas.Start;
-  d := PainterOffset(DestCanvas);
-  s := PainterOffset(SrcCanvas);
-  Result := BitBlt(DestCanvas.Handle, X + d.x, Y + d.y, Width, Height, SrcCanvas.Handle,
-    XSrc + s.x, YSrc + s.y, WinRop, IgnoreMask);
-  if DestCanvas <> SrcCanvas then
-    SrcCanvas.Stop;
+  SrcCanvas.Start;
+  Result := BitBlt(DestCanvas.Handle, X, Y , Width, Height, SrcCanvas.Handle,
+    XSrc, YSrc, WinRop, IgnoreMask);
+  SrcCanvas.Stop;
   DestCanvas.Stop;
 end;
 
@@ -3767,7 +3784,7 @@ var
           If not PtInRegion(Region, X + I , Y + J) then
           begin
             Inc(K);
-            if K > 1 then  // 2 points required windows requires 1 point
+            if K > 1 then  // 2 points required windows uses 1 point
             begin
               Result := True;
               exit;
@@ -3800,7 +3817,7 @@ end;
 function DeleteObject(Region: QRegionH): LongBool;
 begin
   try
-    if not TStockObjectList.ReleaseStockObject(Region) then
+//    if not TStockObjectList.ReleaseStockObject(Region) then
       QRegion_destroy(Region);
     Result := True;
   except
@@ -4808,12 +4825,10 @@ begin
     R2.Top := R.Top;
     QPainter_boundingRect(Handle, @R, @R, Flags and not $3F{Alignment},
                           PWideString(@Caption), -1, nil);
-    (*)
     if R.Left <> R2.Left then
       OffsetRect(R, R2.Left, 0);
     if R.Top <> R2.Top then
       OffsetRect(R, 0, R2.Top);
-    (*)
 //    QPainter_boundingRect(Handle, @R, @R, Flags and not $3F{Alignment},
 //                          @Caption, -1, nil);
     Result := R.Bottom - R.Top;
@@ -5619,8 +5634,10 @@ begin
 
         DFC_POPUPMENU:
           begin
-            // not implemented
-            raise Exception.Create('QWindows.DrawFrameControl: DFC_POPUPMENU not implemented');
+          //
+            QStyle_drawPopupPanel(Application.Style.Handle, Handle,
+                R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top,
+                GetColorGroup(uState), 2, Brush);
           end;
       end;
     finally
@@ -6234,7 +6251,7 @@ end;
 function DeleteObject(Handle: QPixmapH): LongBool;
 begin
   try
-    if not TStockObjectList.ReleaseStockObject(Handle) then
+//    if not TStockObjectList.ReleaseStockObject(Handle) then
       QPixmap_destroy(Handle);
     Result := True;
   except
@@ -6588,9 +6605,14 @@ begin
   QApplication_beep;
 end;
 
+procedure OutputDebugString(OutputString: AnsiString);
+begin
+  WriteLn(ErrOutput, OutputString);
+end;
+
 procedure OutputDebugString(lpOutputString: PAnsiChar);
 begin
-  WriteLn(ErrOutput, string(lpOutputString));
+  OutputDebugString(string(lpOutputString));
 end;
 
 function GetCurrentProcess: THandle;
@@ -6763,7 +6785,18 @@ end;
 
 function GetKeyState(nVirtKey: Integer): SmallInt;
 begin
-  Result := GetAsyncKeyState(nVirtKey);
+  Result := 0;
+  case nVirtKey of
+    Key_Shift:
+      if ssShift in Application.KeyState  then
+        Result := -32768;  // = $8000
+    Key_Control:
+      if ssCtrl in Application.KeyState then
+        Result := -32768;
+    Key_Menu:
+      if ssAlt in Application.KeyState then
+        Result := -32768;
+  end;
 end;
 
 function GetAsyncKeyState(vKey: Integer): SmallInt;
@@ -7944,6 +7977,25 @@ end;
 
 {$IFDEF MSWINDOWS}
 { wrappers to windows}
+
+function CopyFile(lpExistingFileName, lpNewFileName: PChar;
+  bFailIfExists: LongBool): LongBool;
+begin
+  Result := Windows.CopyFile(lpExistingFileName, lpNewFileName, bFailIfExists);
+end;
+
+function CopyFileA(lpExistingFileName, lpNewFileName: PAnsiChar;
+  bFailIfExists: LongBool): LongBool;
+begin
+  Result := Windows.CopyFileA(lpExistingFileName, lpNewFileName, bFailIfExists);
+end;
+
+function CopyFileW(lpExistingFileName, lpNewFileName: PWideChar;
+  bFailIfExists: LongBool): LongBool;
+begin
+  Result := Windows.CopyFileW(lpExistingFileName, lpNewFileName, bFailIfExists);
+end;
+
 function GetUserName(Buffer: PChar; var Size: Cardinal): LongBool;
 begin
   Result := Windows.GetUserName(Buffer,Size);
@@ -7982,6 +8034,11 @@ end;
 function PulseEvent(Event: THandle): LongBool;
 begin
   Result := Windows.PulseEvent(Event);
+end;
+
+procedure OutputDebugString(OutputString: AnsiString);
+begin
+  Windows.OutputDebugString(PAnsiChar(OutputString));
 end;
 
 procedure OutputDebugString(lpOutputString: PAnsiChar);
@@ -8080,6 +8137,15 @@ begin
   end;
 end;
 
+procedure SetCursorPos(X, Y: integer);
+var
+  Value: TPoint;
+begin
+  Value.X := X;
+  Value.Y := Y;
+  QCursor_setPos(@Value);
+end;
+
 { ------------ Caret -------------- }
 type
   TEmulatedCaret = class(TComponent)
@@ -8119,10 +8185,17 @@ type
   end;
 
 var
-  GlobalCaret: TEmulatedCaret;
+  GlobalCaret: TEmulatedCaret = nil ;
+
+procedure GlobalCaretNeeded;
+begin
+  if GlobalCaret = nil then
+    GlobalCaret := TEmulatedCaret.Create(nil);
+end;
 
 function CreateCaret(Widget: QWidgetH; Pixmap: QPixmapH; Width, Height: Integer): Boolean;
 begin
+  GlobalCaretNeeded;
   GlobalCaret.Lock;
   try
     Result := GlobalCaret.CreateCaret(Widget, Pixmap, Width, Height);
@@ -8146,11 +8219,14 @@ begin
   Result := True;
   try
     QApplication_setCursorFlashTime(uMSeconds);
-    GlobalCaret.Lock;
-    try
-      GlobalCaret.Timer.Interval := GetCaretBlinkTime;
-    finally
-      GlobalCaret.Unlock;
+    if assigned(GlobalCaret) then
+    begin
+      GlobalCaret.Lock;
+      try
+        GlobalCaret.Timer.Interval := GetCaretBlinkTime;
+      finally
+        GlobalCaret.Unlock;
+      end;
     end;
   except
     Result := False;
@@ -8159,16 +8235,23 @@ end;
 
 function HideCaret(Widget: QWidgetH): Boolean;
 begin
-  GlobalCaret.Lock;
-  try
-    Result := GlobalCaret.Hide;
-  finally
-    GlobalCaret.Unlock;
-  end;
+  GlobalCaretNeeded;
+  if Assigned(GlobalCaret) then
+  begin
+    GlobalCaret.Lock;
+    try
+      Result := GlobalCaret.Hide;
+    finally
+      GlobalCaret.Unlock;
+    end;
+  end
+  else
+    Result := false;
 end;
 
 function ShowCaret(Widget: QWidgetH): Boolean;
 begin
+  GlobalCaretNeeded;
   GlobalCaret.Lock;
   try
     Result := GlobalCaret.Show(Widget);
@@ -8180,6 +8263,7 @@ end;
 function SetCaretPos(X, Y: Integer): Boolean;
 begin
   Result := True;
+  GlobalCaretNeeded;
   GlobalCaret.Lock;
   try
     GlobalCaret.Pos := Point(X, Y);
@@ -8191,6 +8275,7 @@ end;
 function GetCaretPos(var Pt: TPoint): Boolean;
 begin
   Result := True;
+  GlobalCaretNeeded;
   GlobalCaret.Lock;
   try
     Pt := GlobalCaret.Pos;
@@ -8201,12 +8286,17 @@ end;
 
 function DestroyCaret: Boolean;
 begin
-  GlobalCaret.Lock;
-  try
-    Result := GlobalCaret.DestroyCaret;
-  finally
-    GlobalCaret.Unlock;
-  end;
+  if Assigned(GlobalCaret) then
+  begin
+    GlobalCaret.Lock;
+    try
+      Result := GlobalCaret.DestroyCaret;
+    finally
+      GlobalCaret.Unlock;
+    end;
+  end
+  else
+    Result := False;
 end;
 
 { TEmulatedCaret }
@@ -8263,10 +8353,11 @@ var
 begin
   if IsValid then
   begin
+
     DestDev := QWidget_to_QPaintDevice(FWidget);
     R := Rect(0, 0, QPixmap_width(FPixmap), QPixmap_height(FPixmap));
 
-    Qt.bitBlt(DestDev, @FPos, FPixmap, @R, RasterOp_XorROP);
+    Qt.bitBlt(DestDev, @FPos, FPixmap, @R, RasterOp_CopyROP);
     FShown := not FShown;
   end;
 end;
@@ -8337,14 +8428,14 @@ begin
   else
   begin
     case Color of
-      0: QC := QColor(clWhite);
+      0: QC := QColor(clBlack);
       1: QC := QColor(clGray);
     else
       Result := nil;
       Exit;
     end;
     try
-      Result := QPixmap_create(FWidth, FHeight, 32, QPixmapOptimization_MemoryOptim);
+      Result := QPixmap_create(FWidth, FHeight, -1, QPixmapOptimization_MemoryOptim);
       try
         QPixmap_fill(Result, QC);
       except
@@ -8371,6 +8462,7 @@ begin
   else
     FWndId := 0;
 end;
+
 
 type
   TCriticalSections = class(TComponent)
@@ -8408,6 +8500,7 @@ var
   Event: QCustomEventH;
   Mesg: TMessage;
 begin
+  AppEventHookNeeded;
   with Mesg do
   begin
     Msg := MsgId;
@@ -8423,6 +8516,7 @@ end;
 
 function SendMessage(AControl: TWidgetControl; MsgId: Integer; WPar, LPar: Longint): Integer;
 begin
+//  OutputDebugString(Pchar(Format('%s: %s Sended message %x', [AControl.Name, AControl.ClassName, MsgId ])));
   Result := SendMessage(AControl.Handle, MsgId, WPar, LPar);
 end;
 
@@ -8440,16 +8534,14 @@ var
   Mesg: PMessage;
   Event: QCustomEventH;
 begin
+  AppEventHookNeeded;
   New(Mesg);
   with Mesg^ do
   begin
-//    HWnd := Cardinal(Receiver);
     Msg := MsgId;
     WParam := WPar;
     LParam := LPar;
     Result := 0; //GetTickCount;
-//    Time := GetTickCount;
-//    Pt := Mouse.CursorPos;
   end;
   Event := QCustomEvent_Create(QEventType_Message, Mesg);
   try
@@ -8463,7 +8555,7 @@ end;
 
 function PostMessage(AControl: TWidgetControl; MsgId: Integer; WPar, LPar: Longint): LongBool;
 begin
-//  OutputDebugString(Pchar(Format('Posted message %d', [ MsgId-CM_BASE ])));
+//  OutputDebugString(Pchar(Format('%s: %s Posted message %x', [AControl.Name, AControl.ClassName, MsgId ])));
   Result := PostMessage(AControl.Handle, MsgId, WPar, LPar);
 end;
 
@@ -8500,6 +8592,7 @@ end;
 class function TWinTimer.CreateTimer(AOwner: TWinControl; WMTimerId: Cardinal;
       Elapse: Cardinal; Proc: TTimerProc): TWinTimer;
 begin
+  AppEventHookNeeded;
   Result := Create(AOwner);
   with Result do
   begin
@@ -8557,9 +8650,15 @@ function SetTimer(Instance: TWidgetControl; WMTimerID, Elapse: Cardinal;
 var
   FWinTimer: TWinTimer;
 begin
-  FWinTimer := FindWMTimer(Instance.Handle, WMTimerId);
-  if Assigned(FWinTimer) then
-    FWinTimer.Destroy;
+  if Assigned(AppEventHook) then
+  begin
+    FWinTimer := FindWMTimer(Instance.Handle, WMTimerId);
+    if Assigned(FWinTimer) then
+      FWinTimer.Destroy;
+  end
+  else
+    AppEventHookNeeded;
+
   FWinTimer := TWinTimer.CreateTimer(Instance, WMTimerID, Elapse, TimerFunc);
   Result := FWinTimer.WMTimer;
 end;
@@ -8595,17 +8694,7 @@ begin
     Result := false;
 end;
 
-type
-  TAppEventHook = class(TComponent)
-  private
-    FHook: QObject_hookH;
-  protected
-//    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; cdecl;
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-  end;
-
-function AppEventFilter(App: TApplication; Receiver: QObjectH; Event: QEventH): Boolean; cdecl;
+function TAppEventHook.EventFilter(Receiver: QObjectH; Event: QEventH): Boolean;
 var
   WinTimer: TWinTimer;
   Mesg: TMessage;
@@ -8617,10 +8706,13 @@ begin
 
   QEventType_Message:
     begin
-      Mesg := TMessage(QCustomEvent_data(QCustomEventH(Event))^);
-      Mesg.Result := 0;
       Instance := FindControl(QWidgetH(Receiver));
-      Instance.Dispatch(Mesg);
+      if Assigned(Instance)  and not (csDestroying in Instance.ComponentState) then
+      begin
+        Mesg := TMessage(QCustomEvent_data(QCustomEventH(Event))^);
+        Mesg.Result := 0;
+        Instance.Dispatch(Mesg);
+      end;
       Result := True;
     end;
 
@@ -8641,10 +8733,8 @@ begin
             Mesg.WParam := WMTimer;
             Mesg.LParam := Integer(@TimerProc);
             Mesg.Result := 0;
-//            Message.pt := Mouse.CursorPos;
             Owner.Dispatch(Mesg);
           end;
-//          Result := Mesg.Result <> 0;
           Result := True;
         end;
     end;
@@ -8652,26 +8742,31 @@ begin
   end;       // case EventType of
 end;
 
-function InstallApplicationEventHook(EventFilter: PAppEventFilter): QObject_hookH;
+function InstallApplicationEventHook(EventFilter: TEventFilterMethod): QApplication_hookH;
 var
   Method: TMethod;
 begin
-  Method.Code := EventFilter;
-  Method.Data := Application;
-  Result := QObject_hook_create(Application.Handle);
+  Result := QApplication_hook_create(Application.Handle);
+  TEventFilterMethod(Method) := EventFilter;
   Qt_hook_hook_events(Result, Method);
 end;
 
 constructor TAppEventHook.Create(AOwner: TComponent);
+var
+  Method: TMethod;
 begin
   inherited Create(AOwner);
-  FHook := InstallApplicationEventHook(@AppEventFilter);
+  FHook := QApplication_hook_create(Application.Handle);
+  TEventFilterMethod(Method) := EventFilter;
+  Qt_hook_hook_events(FHook, Method);
 end;
 
 destructor TAppEventHook.Destroy;
 begin
   if Assigned(FHook) then
-    QObject_hook_destroy(FHook);
+  begin
+    QApplication_hook_destroy(FHook);
+  end;
   inherited Destroy;
 end;
 
@@ -8681,16 +8776,25 @@ initialization
   InitGetTickCount;
   WaitObjectList := THandleObjectList.Create;
   {$ENDIF LINUX}
-  TAppEventHook.Create(Application);
-  GlobalCaret := TEmulatedCaret.Create(Application);
-  TCriticalSections.Create(Application);
+//  TCriticalSections.Create(Application);
 
 finalization
   {$IFDEF LINUX}
   WaitObjectList.Free;
   {$ENDIF LINUX}
-
+  AppEventHook.Free;
+  GlobalCaret.Free;
+  OutputDebugString('Unloaded QWindows.pas');
 end.
+
+
+
+
+
+
+
+
+
 
 
 
