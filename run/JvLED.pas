@@ -186,7 +186,7 @@ begin
   DestRect := SrcRect;
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  DestRect := Bounds(Left,Top,Width,Height);
+  DestRect := Bounds(Left, Top, Width, Height);
   {$ENDIF VisualCLX}
   OffsetRect(DestRect, (ClientWidth - FImgPict.Width) div 2, (ClientHeight - FImgPict.Height) div 2);
   Canvas.CopyMode := cmSrcAnd;
