@@ -63,6 +63,7 @@ contains
   QComboEdits in '..\..\qcommon\QComboEdits.pas',
   JvQExComboEdits in '..\..\qrun\JvQExComboEdits.pas',
   JvQImageList in '..\..\qrun\JvQImageList.pas',
-  JvQControlBar in '..\..\qrun\JvQControlBar.pas';
+  JvQControlBar in '..\..\qrun\JvQControlBar.pas',
+  JvQStringGrid in '..\..\qrun\JvQStringGrid.pas';
 
 end.

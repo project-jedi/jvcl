@@ -29,7 +29,8 @@ requires
   rtl,
   visualclx,
   JvQCoreD7R,
-  JvQStdCtrlsD7R;
+  JvQStdCtrlsD7R,
+  DJcl;
 
 contains
   JvQMarkupCommon in '..\..\qrun\JvQMarkupCommon.pas',
