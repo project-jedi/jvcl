@@ -48,18 +48,27 @@ type
     FHotFont: TFont;
     FFontSave: TFont;
     FOver: Boolean;
+    FAutoSize: boolean;
+    FControlCanvas: TControlCanvas;
     procedure SetHotFont(const Value: TFont);
+    function GetCanvas: TCanvas;
   protected
+    procedure SetAutoSize(Value: boolean);{$IFDEF COMPILER6_UP}override;{$ENDIF}
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
+    property Canvas: TCanvas read GetCanvas;
+    procedure CMTextchanged(var Message: TMessage); message CM_TEXTCHANGED;
+    procedure CMFontchanged(var Message: TMessage); message CM_FONTCHANGED;
+    procedure CalcAutoSize;virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    property AutoSize:boolean read FAutoSize write SetAutoSize;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
     property HotTrackFont: TFont read FHotFont write SetHotFont;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
@@ -145,6 +154,60 @@ end;
 procedure TJvRadioButton.SetHotFont(const Value: TFont);
 begin
   FHotFont.Assign(Value);
+end;
+
+procedure TJvRadioButton.SetAutoSize(Value: boolean);
+begin
+  if FAutoSize <> Value then
+  begin
+    {$IFDEF COMPILER6_UP}
+    inherited SetAutoSize(Value);
+    {$ENDIF}
+    FAutoSize := Value;
+    CalcAutoSize;
+  end;
+end;
+
+
+function TJvRadioButton.GetCanvas: TCanvas;
+begin
+  if FControlCanvas = nil then
+  begin
+    FControlCanvas := TControlCanvas.Create;
+    FControlCanvas.Control := self;
+  end;
+  Result := FControlCanvas;
+end;
+
+procedure TJvRadioButton.CalcAutoSize;
+var AWidth,AHeight:integer;
+begin
+  // (p3) TODO: find the Windows constants for width and height of checkbox and radiobutton icons
+  if AutoSize then
+  begin
+    with Canvas.TextExtent(Caption) do
+    begin
+      AWidth := cx + 18;
+      if AWidth <= 18 then
+        AWidth := 14;
+      AHeight := cy + 4;
+      if AHeight < 14 then AHeight := 14;
+      ClientWidth := AWidth;
+      ClientHeight := AHeight;
+    end;
+  end;
+end;
+
+procedure TJvRadioButton.CMFontchanged(var Message: TMessage);
+begin
+  inherited;
+  CalcAutoSize;
+end;
+
+procedure TJvRadioButton.CMTextchanged(var Message: TMessage);
+begin
+  inherited;
+  CalcAutoSize;
 end;
 
 end.

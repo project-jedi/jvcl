@@ -50,20 +50,24 @@ type
     FOver: Boolean;
     FAutoSize: Boolean;
     FAssociated: TControl;
+    FControlCanvas: TControlCanvas;
     procedure SetHotFont(const Value: TFont);
-    function GetCaption: TCaption;
-    procedure SetCaption(const Value: TCaption);
     procedure SetAssociated(const Value: TControl);
+    function GetCanvas: TCanvas;
   protected
-    procedure SetAutoSize(Value: Boolean); {$IFDEF COMPILER6_UP} override; {$ENDIF}
+    property Canvas: TCanvas read GetCanvas;
+    procedure SetAutoSize(Value: Boolean);{$IFDEF COMPILER6_UP} override;{$ENDIF}
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
+
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure Notification(AComponent: TComponent; Operation: TOperation);
       override;
-
+    procedure CMTextchanged(var Message: TMessage); message CM_TEXTCHANGED;
+    procedure CMFontchanged(var Message: TMessage); message CM_FONTCHANGED;
+    procedure CalcAutoSize;virtual;
   public
     procedure Loaded; override;
     procedure Toggle; override;
@@ -73,12 +77,11 @@ type
     destructor Destroy; override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property Associated:TControl read FAssociated write SetAssociated;
+    property Associated: TControl read FAssociated write SetAssociated;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
     property HotTrackFont: TFont read FHotFont write SetHotFont;
     property HintColor: TColor read FColor write FColor default clInfoBk;
-    property Caption: TCaption read GetCaption write SetCaption;
 
     property OnMouseEnter: TNotifyEvent read FonMouseEnter write FonMouseEnter;
     property OnMouseLeave: TNotifyEvent read FonMouseLeave write FonMouseLeave;
@@ -105,6 +108,7 @@ destructor TJvCheckBox.Destroy;
 begin
   FHotFont.Free;
   FFontSave.Free;
+  FControlCanvas.Free;
   inherited Destroy;
 end;
 
@@ -183,23 +187,15 @@ begin
     Associated.Enabled := Checked;
 end;
 
-function TJvCheckBox.GetCaption: TCaption;
-begin
-  Result := inherited Caption;
-end;
-
 procedure TJvCheckBox.SetAutoSize(Value: Boolean);
 begin
-  FAutoSize := Value;
-  SetCaption(Caption);
-end;
-
-procedure TJvCheckBox.SetCaption(const Value: TCaption);
-begin
-  inherited Caption := Value;
-  if AutoSize then
+  if FAutoSize <> Value then
   begin
-    // (rom) TODO?
+    {$IFDEF COMPILER6_UP}
+    inherited SetAutoSize(Value);
+    {$ENDIF}
+    FAutoSize := Value;
+    CalcAutoSize;
   end;
 end;
 
@@ -235,4 +231,46 @@ begin
     Associated := nil;
 end;
 
+function TJvCheckBox.GetCanvas: TCanvas;
+begin
+  if FControlCanvas = nil then
+  begin
+    FControlCanvas := TControlCanvas.Create;
+    FControlCanvas.Control := self;
+  end;
+  Result := FControlCanvas;
+end;
+
+procedure TJvCheckBox.CMTextchanged(var Message: TMessage);
+begin
+  inherited;
+  CalcAutoSize;
+end;
+
+procedure TJvCheckBox.CMFontchanged(var Message: TMessage);
+begin
+  inherited;
+  CalcAutoSize;
+end;
+
+procedure TJvCheckBox.CalcAutoSize;
+var AWidth,AHeight:integer;
+begin
+  // (p3) TODO: find the Windows constants for width and height of checkbox and radiobutton icons
+  if AutoSize then
+  begin
+    with Canvas.TextExtent(Caption) do
+    begin
+      AWidth := cx + 18;
+      if AWidth < 14 then
+        AWidth := 14;
+      AHeight := cy + 4;
+      if AHeight < 14 then AHeight := 14;
+      ClientWidth := AWidth;
+      ClientHeight := AHeight;
+    end;
+  end;
+end;
+
 end.
+
