@@ -90,7 +90,6 @@ contains
   jvBandObjectDLLWizardForm in '..\source\JvBandObjectDLLWizardForm.pas' {zWizardForm},
 
   JvPluginWizard in '..\source\JvPluginWizard.pas',
-  JvAboutPlugin in '..\source\JvAboutPlugin.pas' {frmAboutPlugin},
   JvPluginParams in '..\source\JvPluginParams.pas' {frmPluginParams};
 
 
