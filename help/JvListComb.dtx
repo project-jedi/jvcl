@@ -90,9 +90,9 @@ Summary
   Specifies the default indentation for new items.
 Description
   Use DefaultIndent to set the amount of indentation of new items added to the list. You can change the
-  indentation of individual items with the Indent property of the TJvListItem.
+  indentation of individual items with the Indent property of the TJvImageItem.
 See Also
-  TJvListItem, Items, IndentSelected
+  TJvImageItem, Items, IndentSelected
 ----------------------------------------------------------------------------------------------------
 @@TJvImageComboBox.DroppedWidth
 Summary
@@ -107,9 +107,9 @@ Summary
 Description
   Specify an available image list for the ImageList property to set the images that are displayed for
   the items in the list. Change the images for individual items by assigning a new value to their
-  <LINK TJvListItem.ImageIndex, ImageIndex> property.
+  <LINK TJvImageItem.ImageIndex, ImageIndex> property.
 See Also
-  TJvListItem.ImageIndex
+  TJvImageItem.ImageIndex
 ----------------------------------------------------------------------------------------------------
 @@TJvImageComboBox.IndentSelected
 Summary
@@ -117,7 +117,7 @@ Summary
 Description
   Use IndentSelected to temporarily set the indentation for an item that is selected in the edit portion
   of the combobox. The normal indentation for the item is not affected: the item will still be displayed using
-  it's <LINK TJvListItem.Indent,Indent> property when it is rendered in the drop-down list.
+  it's <LINK TJvImageItem.Indent,Indent> property when it is rendered in the drop-down list.
 See Also
   DefaultIndent
 ----------------------------------------------------------------------------------------------------
@@ -209,9 +209,9 @@ Summary
 Description
   Specify an available image list for the ImageList property to set the images that are displayed for
   the items in the list. Change the images for individual items by assigning a new value to their
-  <LINK TJvListItem.ImageIndex, ImageIndex> property.
+  <LINK TJvImageItem.ImageIndex, ImageIndex> property.
 See Also
-  TJvListItem.ImageIndex
+  TJvImageItem.ImageIndex
 ----------------------------------------------------------------------------------------------------
 @@TJvImageListBox.Items
 Summary
@@ -219,68 +219,68 @@ Summary
 Description
   Use Items to access the individual items in the list using an index.
 ----------------------------------------------------------------------------------------------------
-@@TJvListItem
+@@TJvImageItem
 Summary
   Class type used for items that can display images and text as well as be assigned an indentation value.
 Description
-  TJvListItem is the type used for individual items in a TJvImageComboBox and TJvImageListBox. Use the
-  properties of TJvListItem to set the Indent, Text and ImageIndex of the items displayed.
+  TJvImageItem is the type used for individual items in a TJvImageComboBox and TJvImageListBox. Use the
+  properties of TJvImageItem to set the Indent, Text and ImageIndex of the items displayed.
 ----------------------------------------------------------------------------------------------------
-@@TJvListItem.ImageIndex
+@@TJvImageItem.ImageIndex
 Summary
   Determines which image is displayed as the icon for the item.
 Description
   Set ImageIndex to associate the item with one of the images in the imagelist
   of the owning control.
 ----------------------------------------------------------------------------------------------------
-@@TJvListItem.Indent
+@@TJvImageItem.Indent
 Summary
   Specifies the indentation of the item.
 Description
   Set Indent to specify the indentation of the item. Indentation is used by the owning control
   (a TJvImageListBox or TJvImageComboBox) to determine where to draw the item on it's canvas.
 ----------------------------------------------------------------------------------------------------
-@@TJvListItem.Text
+@@TJvImageItem.Text
 Summary
   Contains a text string associated with the item.
 Description
   Use the Text property to read the Text of the item or specify a new string for the Text value.
   By default, Text is empty.
 ----------------------------------------------------------------------------------------------------
-@@TJvListItems
+@@TJvImageItems
 Summary
-  Collection class that maintains a list of TJvListItem objects.
+  Collection class that maintains a list of TJvImageItem objects.
 Description
-  TJvListItems is the class type of the Items property of TJvImageListBox and TJvImageComboBox.
-  TJvListItems maintains a list of items of type TJvListItem. Use the methods of TJvListItems to Add, Delete
+  TJvImageItems is the class type of the Items property of TJvImageListBox and TJvImageComboBox.
+  TJvImageItems maintains a list of items of type TJvImageItem. Use the methods of TJvImageItems to Add, Delete
   and copy items to and from the list.
 ----------------------------------------------------------------------------------------------------
-@@TJvListItems.Add
+@@TJvImageItems.Add
 Summary
   Adds a new item to the list.
 Description
-  Call Add to add a new TJvListItem item to the list. The item will be added as the last item in the
+  Call Add to add a new TJvImageItem item to the list. The item will be added as the last item in the
   list and will be assigned default values.
 Return value
-  The newly created TJvListItem.
+  The newly created TJvImageItem.
 See Also
   <LINK Assign>, Insert, Delete
 ----------------------------------------------------------------------------------------------------
-@@TJvListItems.Assign
+@@TJvImageItems.Assign
 Summary
   Copies the properties and items of a compatible object into this object.
 Description
-  Call Assign to copy the properties and Items of another TJvListItems or descendant object into this object.
+  Call Assign to copy the properties and Items of another TJvImageItems or descendant object into this object.
   If Source is a TStrings object, the Items array is cleared and new items are created where the Text
   of each item is assigned from the TStrings.
 Parameters
-  Source - The object to copy from. This can be a TJvListItems or descendant or a TStrings or descendant.
+  Source - The object to copy from. This can be a TJvImageItems or descendant or a TStrings or descendant.
 ----------------------------------------------------------------------------------------------------
-@@TJvListItems.Items
+@@TJvImageItems.Items
 Summary
   Provides indexed access to the items in the list.
 Description
-  Use Items to access the items in the list using an index. Since Items is the default property of TJvListItems, you
+  Use Items to access the items in the list using an index. Since Items is the default property of TJvImageItems, you
   can access the items without the Items specifier.
 
   \Example:

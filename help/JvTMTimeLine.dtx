@@ -1,5 +1,5 @@
 ##Package: Custom
-##Status: Needs review
+##Status: Completed
 ----------------------------------------------------------------------------------------------------
 @@JvTMTimeLine.pas
 Summary
@@ -13,11 +13,11 @@ Summary
   Base type for timeline view components that mimick the timeline in MS \Team Manager, including
   TJvTMTimeline.
 Description
-  Use TJvCustomTimeLine as a base class when defining controls that show a timeline with images below
+  Use TJvCustomTMTimeline as a base class when defining controls that show a timeline with images below
   specific dates.
 
   Do not create instances of TJvCustomTMTimeline. To put a timeline view on a form, use a descendant of
-  TJvCustomTMTimeline, such as TJvTMTimeLine.
+  TJvCustomTMTimeline, such as <LINK TJvTMTimeline>.
 See Also
   TJvTMTimeline
 ----------------------------------------------------------------------------------------------------
@@ -33,7 +33,6 @@ Summary
   Specifies the width of the scroll buttons on the timeline view.
 Description
   ButtonWidth represents the width, in pixels, of the scroll buttons on the timeline view.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTMTimeline.ClearImages
 Summary
@@ -85,7 +84,6 @@ Description
   an associated image. Associate an image with a date by setting property ImageIndex with the particular
   date as index. If you associate an image with a date the control will display that image below that
   date in the timeline view.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTMTimeline.ImageIndex
 Summary
@@ -445,7 +443,6 @@ Summary
 Description
   \Write an OnChange event handler to take specific action when the graphics object changes. The
   properties of the graphics object reflect the new settings when OnChange occurs.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTLSelFrame.Pen
 Summary
