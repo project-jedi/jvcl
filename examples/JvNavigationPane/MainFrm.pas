@@ -6,7 +6,8 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, JvOutlookBar, ComCtrls, CheckLst, JvComponent,
-  JvNavigationPane, ImgList, Menus, JvPageList, JvExControls, ExtCtrls;
+  JvNavigationPane, ImgList, Menus, JvPageList, JclWin32, JvExControls, ExtCtrls,
+  JvExExtCtrls;
 
 type
   TForm1 = class(TForm)

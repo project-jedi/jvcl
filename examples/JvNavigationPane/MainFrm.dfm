@@ -713,6 +713,21 @@ object Form1: TForm1
     Colors.ButtonSelectedColorFrom = 5496319
     Colors.ButtonSelectedColorTo = 883654
     Colors.FrameColor = 9711616
+    Fonts.NavPanelFont.Charset = ANSI_CHARSET
+    Fonts.NavPanelFont.Color = clWindowText
+    Fonts.NavPanelFont.Height = -11
+    Fonts.NavPanelFont.Name = 'Tahoma'
+    Fonts.NavPanelFont.Style = [fsBold]
+    Fonts.DividerFont.Charset = ANSI_CHARSET
+    Fonts.DividerFont.Color = clWindowText
+    Fonts.DividerFont.Height = -11
+    Fonts.DividerFont.Name = 'Tahoma'
+    Fonts.DividerFont.Style = []
+    Fonts.HeaderFont.Charset = DEFAULT_CHARSET
+    Fonts.HeaderFont.Color = clWhite
+    Fonts.HeaderFont.Height = -16
+    Fonts.HeaderFont.Name = 'Arial'
+    Fonts.HeaderFont.Style = [fsBold]
     Left = 32
     Top = 50
   end
@@ -722,7 +737,7 @@ object Form1: TForm1
     Left = 126
     Top = 65532
     Bitmap = {
-      494C01010600090004000C000C00FFFFFFFFFF00FFFFFFFFFFFFFFFF424D3600
+      494C01010600090004000C000C00FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       000000000000360000002800000030000000240000000100100000000000800D
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -843,6 +858,7 @@ object Form1: TForm1
       E07E070000000000F0FF0F0000000000FFFF9CE00E000000000000F01F000000
       000000F83F800000000000783780000000000030130000000000000000000000
       0000008008000000000000E00E000000000000E00E000000000000E00E000000
-      000000F01F010000FFFFFFF83F830000}
+      000000F01F010000FFFFFFF83F83000000000000000000000000000000000000
+      000000000000}
   end
 end

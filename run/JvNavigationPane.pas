@@ -233,6 +233,29 @@ type
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
 
+  TJvNavPanelFonts = class(TPersistent)
+  private
+    FHeaderFont: TFont;
+    FNavPanelFont: TFont;
+    FDividerFont: TFont;
+    FOnChange: TNotifyEvent;
+    procedure SetDividerFont(const Value: TFont);
+    procedure SetHeaderFont(const Value: TFont);
+    procedure SetNavPanelFont(const Value: TFont);
+  protected
+    procedure Change;
+    procedure DoFontChange(Sender:TObject);
+  public
+    procedure Assign(Source: TPersistent); override;
+    constructor Create;
+    destructor Destroy; override;
+  published
+    property NavPanelFont:TFont read FNavPanelFont write SetNavPanelFont;
+    property DividerFont:TFont read FDividerFont write SetDividerFont;
+    property HeaderFont:TFont read FHeaderFont write SetHeaderFont;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+  end;
+
   TJvIconPanel = class(TJvCustomControl)
   private
     FDropButton: TJvNavIconButton;
@@ -722,9 +745,11 @@ type
     FColors: TJvNavPanelColors;
     FTheme: TJvNavPanelTheme;
     FClients: TList;
+    FFonts: TJvNavPanelFonts;
     procedure SetColors(const Value: TJvNavPanelColors);
     procedure SetTheme(const Value: TJvNavPanelTheme);
-    procedure DoColorsChange(Sender: TObject);
+    procedure DoThemeChange(Sender: TObject);
+    procedure SetFonts(const Value: TJvNavPanelFonts);
   protected
     procedure AssignTo(Dest: TPersistent); override;
   public
@@ -736,7 +761,7 @@ type
   published
     property Theme: TJvNavPanelTheme read FTheme write SetTheme default nptStandard;
     property Colors: TJvNavPanelColors read FColors write SetColors;
-    //    property Fonts; // TODO!!!
+    property Fonts: TJvNavPanelFonts read FFonts write SetFonts;
   end;
 
 implementation
@@ -801,6 +826,7 @@ end;
 procedure TJvIconPanel.DoStyleChange(Sender: TObject);
 begin
   Colors := (Sender as TJvNavPaneStyleManager).Colors;
+  Font   := (Sender as TJvNavPaneStyleManager).Fonts.NavPanelFont;
 end;
 
 function TJvIconPanel.GetDropDownMenu: TPopupMenu;
@@ -1281,6 +1307,7 @@ end;
 procedure TJvCustomNavigationPane.DoStyleChange(Sender: TObject);
 begin
   Colors := (Sender as TJvNavPaneStyleManager).Colors;
+  NavPanelFont := (Sender as TJvNavPaneStyleManager).Fonts.NavPanelFont;
 end;
 
 { TJvNavIconButton }
@@ -1511,6 +1538,7 @@ end;
 procedure TJvNavIconButton.DoStyleChange(Sender: TObject);
 begin
   Colors := (Sender as TJvNavPaneStyleManager).Colors;
+  Font   := (Sender as TJvNavPaneStyleManager).Fonts.DividerFont;
 end;
 
 { TJvNavPanelButton }
@@ -1573,6 +1601,7 @@ end;
 procedure TJvNavPanelButton.DoStyleChange(Sender: TObject);
 begin
   Colors := (Sender as TJvNavPaneStyleManager).Colors;
+  Font   := (Sender as TJvNavPaneStyleManager).Fonts.NavPanelFont;
 end;
 
 procedure TJvNavPanelButton.FontChanged;
@@ -1875,6 +1904,78 @@ begin
     FSplitterColorTo := Value;
     Change;
   end;
+end;
+
+{ TJvNavPanelFonts }
+
+procedure TJvNavPanelFonts.Assign(Source: TPersistent);
+begin
+  if (Source is TJvNavPanelFonts) and (Source <> Self) then
+  begin
+    NavPanelFont := TJvNavPanelFonts(Source).NavPanelFont;
+    DividerFont  := TJvNavPanelFonts(Source).DividerFont;
+    HeaderFont   := TJvNavPanelFonts(Source).HeaderFont;
+  end;
+end;
+
+procedure TJvNavPanelFonts.Change;
+begin
+  if Assigned(FOnChange) then FOnChange(Self);
+end;
+
+constructor TJvNavPanelFonts.Create;
+begin
+  inherited Create;
+  FDividerFont := TFont.Create;
+  FNavPanelFont  := TFont.Create;
+
+  FHeaderFont  := TFont.Create;
+  FHeaderFont.Name := 'Arial';
+  FHeaderFont.Size := 12;
+  FHeaderFont.Style := [fsBold];
+  FHeaderFont.Color := clWhite;
+  FHeaderFont.OnChange := DoFontChange;
+
+  {$IFDEF VCL}
+  FDividerFont.Assign(Screen.IconFont);
+  FNavPanelFont.Assign(Screen.IconFont);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  FDividerFont.Assign(Application.Font);
+  FNavPanelFont.Assign(Application.Font);
+  {$ENDIF VisualCLX}
+  FNavPanelFont.Style := [fsBold];
+
+  FDividerFont.OnChange := DoFontChange;
+  FNavPanelFont.OnChange := DoFontChange;
+end;
+
+destructor TJvNavPanelFonts.Destroy;
+begin
+  FDividerFont.Free;
+  FHeaderFont.Free;
+  FNavPanelFont.Free;
+  inherited;
+end;
+
+procedure TJvNavPanelFonts.DoFontChange(Sender: TObject);
+begin
+  Change;
+end;
+
+procedure TJvNavPanelFonts.SetDividerFont(const Value: TFont);
+begin
+  FDividerFont.Assign(Value);
+end;
+
+procedure TJvNavPanelFonts.SetHeaderFont(const Value: TFont);
+begin
+  FHeaderFont.Assign(Value);
+end;
+
+procedure TJvNavPanelFonts.SetNavPanelFont(const Value: TFont);
+begin
+  FNavPanelFont.Assign(Value);
 end;
 
 { TJvNavPanelPage }
@@ -2250,6 +2351,7 @@ end;
 
 procedure TJvNavPanelHeader.DoStyleChange(Sender: TObject);
 begin
+  Font := (Sender as TJvNavPaneStyleManager).Fonts.HeaderFont;
   with (Sender as TJvNavPaneStyleManager).Colors do
   begin
     FColorFrom := HeaderColorFrom;
@@ -2421,6 +2523,7 @@ end;
 
 procedure TJvNavPanelDivider.DoStyleChange(Sender: TObject);
 begin
+  Font := (Sender as TJvNavPaneStyleManager).Fonts.DividerFont;
   with (Sender as TJvNavPaneStyleManager).Colors do
   begin
     FColorFrom := DividerColorFrom;
@@ -2515,12 +2618,17 @@ end;
 procedure TJvNavPaneStyleManager.Assign(Source: TPersistent);
 var
   SourceColors: TJvNavPanelColors;
+  SourceFonts: TJvNavPanelFonts;
 begin
+  SourceFonts := nil;
   if Source is TJvNavPaneStyleManager then
   begin
     Theme := TJvNavPaneStyleManager(Source).Theme;
     if Theme = nptCustom then
-      SourceColors := TJvNavPaneStyleManager(Source).Colors
+    begin
+      SourceColors := TJvNavPaneStyleManager(Source).Colors;
+      SourceFonts := TJvNavPaneStyleManager(Source).Fonts;
+    end
     else
       Exit;
   end
@@ -2540,17 +2648,24 @@ begin
     Exit;
   end;
   FColors.Assign(SourceColors);
+  if SourceFonts <> nil then
+    FFonts.Assign(SourceFonts);
 end;
 
 procedure TJvNavPaneStyleManager.AssignTo(Dest: TPersistent);
 var
   DestColors: TJvNavPanelColors;
+  DestFonts: TJvNavPanelFonts;
 begin
+  DestFonts := nil;
   if Dest is TJvNavPaneStyleManager then
   begin
     TJvNavPaneStyleManager(Dest).Theme := Theme;
     if Theme = nptCustom then
-      DestColors := TJvNavPaneStyleManager(Dest).Colors
+    begin
+      DestColors := TJvNavPaneStyleManager(Dest).Colors;
+      DestFonts := TJvNavPaneStyleManager(Dest).Fonts;
+    end
     else
       Exit;
   end
@@ -2570,6 +2685,8 @@ begin
     Exit;
   end;
   DestColors.Assign(Colors);
+  if DestFonts <> nil then
+    DestFonts.Assign(Fonts);
 end;
 
 constructor TJvNavPaneStyleManager.Create(AOwner: TComponent);
@@ -2577,7 +2694,10 @@ begin
   inherited Create(AOwner);
   FClients := TList.Create;
   FColors := TJvNavPanelColors.Create;
-  FColors.OnChange := DoColorsChange;
+  FColors.OnChange := DoThemeChange;
+  FFonts := TJvNavPanelFonts.Create;
+  FFonts.OnChange := DoThemeChange; 
+
   Theme := nptStandard;
 end;
 
@@ -2588,10 +2708,11 @@ begin
   FClients.Free;
   FClients := nil;
   FColors.Free;
+  FFonts.Free;
   inherited Destroy;
 end;
 
-procedure TJvNavPaneStyleManager.DoColorsChange(Sender: TObject);
+procedure TJvNavPaneStyleManager.DoThemeChange(Sender: TObject);
 var
   I: Integer;
 begin
@@ -2612,8 +2733,14 @@ begin
   FColors.Assign(Value);
 end;
 
+procedure TJvNavPaneStyleManager.SetFonts(const Value: TJvNavPanelFonts);
+begin
+  FFonts.Assign(Value);
+end;
+
 procedure TJvNavPaneStyleManager.SetTheme(const Value: TJvNavPanelTheme);
 begin
+  // TODO: also set the fonts
   if FTheme <> Value then
   begin
     case Value of
@@ -2827,6 +2954,7 @@ end;
 
 procedure TJvNavPaneToolPanel.DoStyleChange(Sender: TObject);
 begin
+  Font := (Sender as TJvNavPaneStyleManager).Fonts.NavPanelFont;
   with (Sender as TJvNavPaneStyleManager).Colors do
   begin
     FColorFrom := ButtonColorFrom;
@@ -2851,9 +2979,6 @@ function TJvNavPaneToolPanel.GetDropDownMenu: TPopupMenu;
 begin
   Result := FDropDown.DropDownMenu;
 end;
-
-//  phtNowhere, phtAbove, phtBelow, phtToLeft, phtToRight,
-// phtGrabber, phtHeader, phtClient
 
 function TJvNavPaneToolPanel.GetHitTestInfoAt(X,
   Y: Integer): TJvToolPanelHitTestInfos;
