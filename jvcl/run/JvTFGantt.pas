@@ -22,15 +22,16 @@ Last Modified: 2003-08-01
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+  .CDK.REGLINK=JvTFGanttComponentsReg.pas
+  Created 10/6/2001 6:14:06 PM
+  Eagle Software CDK, Version 5.13 Rev. B
+
 Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
 
-unit JvTFGantt; { TJvTFGantt component. }
- {.CDK.REGLINK=JvTFGanttComponentsReg.pas}{ Registration file is JvTFGanttComponentsReg.pas. }
-{ Created 10/6/2001 6:14:06 PM }
-{ Eagle Software CDK, Version 5.13 Rev. B }
+unit JvTFGantt;
 
 interface
 
@@ -41,13 +42,13 @@ uses
   Menus, StdCtrls, ExtCtrls,
   {$ELSE}
   QGraphics, QControls, QForms, QDialogs, QMenus, QStdCtrls, QExtCtrls,
-  {$ENDIF}
+  {$ENDIF VCL}
   JvTFUtils, JvTFManager;
 
 type
   TJvTFGanttScrollBar = class(TScrollBar)
   protected
-    procedure CMDesignHitTest(var Message: TCMDesignHitTest); message CM_DESIGNHITTEST;
+    procedure CMDesignHitTest(var Msg: TCMDesignHitTest); message CM_DESIGNHITTEST;
     procedure CreateWnd; override;
     function GetLargeChange: Integer; virtual;
     procedure SetLargeChange(Value: Integer); virtual;
@@ -64,7 +65,7 @@ type
     FScale: TJvTFGanttScale;
     FFont: TFont;
     FFormat: string;
-    FWidth: integer;
+    FWidth: Integer;
   protected
     function GetFont: TFont;
     procedure SetFont(const Value: TFont);
@@ -75,12 +76,12 @@ type
     property Format: string read FFormat write FFormat;
     property Font: TFont read GetFont write SetFont;
     property Scale: TJvTFGanttScale read FScale write FScale;
-    property Width: integer read FWidth write FWidth;
+    property Width: Integer read FWidth write FWidth;
   end;
 
   TJvTFGantt = class(TJvTFControl)
   private
-      // property fields
+    // property fields
     FMajorScale: TJvTFGanttScaleFormat;
     FMinorScale: TJvTFGanttScaleFormat;
 
@@ -88,63 +89,112 @@ type
     FVScrollBar: TJvTFGanttScrollBar;
     FVisibleScrollBars: TJvTFVisibleScrollBars;
 
-      // Other class variables
-    PaintBuffer: TBitmap;
-
-    procedure CMSysColorChange(var Msg: TMessage); message CM_SYSCOLORCHANGE;
-    procedure CMDesignHitTest(var Msg: TCMDesignHitTest); message CM_DesignHitTest;
-  protected
-      { Protected declarations }
     FCustomGlyphs: TBitmap;
-
+    // Other class variables
+    FPaintBuffer: TBitmap;
+    procedure CMSysColorChange(var Msg: TMessage); message CM_SYSCOLORCHANGE;
+    procedure CMDesignHitTest(var Msg: TCMDesignHitTest); message CM_DESIGNHITTEST;
+    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
+  protected
     procedure DrawMajor(ACanvas: TCanvas); virtual;
     procedure DrawMinor(ACanvas: TCanvas); virtual;
-    procedure SeTJvTFVisibleScrollBars(Value: TJvTFVisibleScrollBars); virtual;
-    function CalcHeaderHeight: integer;
+    procedure SetVisibleScrollBars(Value: TJvTFVisibleScrollBars); virtual;
+    function CalcHeaderHeight: Integer;
     procedure AlignScrollBars; virtual;
     function GetMinorScale: TJvTFGanttScaleFormat; virtual;
     procedure SetMinorScale(const Value: TJvTFGanttScaleFormat); virtual;
     function GetMajorScale: TJvTFGanttScaleFormat; virtual;
     procedure SetMajorScale(const Value: TJvTFGanttScaleFormat); virtual;
-
     procedure DrawClientArea; virtual;
     procedure DrawHeader(ACanvas: TCanvas); virtual;
     procedure Loaded; override;
     procedure Resize; override;
-    procedure DrawCustomGlyph(someBitmap: TBitmap; targetLeft, targetTop, imageIndex, numGlyphsPerBitmap: integer); dynamic;
+    procedure DrawCustomGlyph(SomeBitmap: TBitmap;
+      TargetLeft, TargetTop, ImageIndex, NumGlyphsPerBitmap: Integer); dynamic;
     function ClientCursorPos: TPoint;
-    function ValidMouseAtDesignTime: boolean;
-    procedure CMFontChanged(var Message: TMessage); message CM_FontChanged;
+    function ValidMouseAtDesignTime: Boolean;
     procedure AdjustComponentHeightBasedOnFontChange; virtual;
   public
-      { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure PrepareAllBitmaps;
-    procedure PrepareBitmaps(someGlyph: TBitmap; resourceName: PChar); dynamic;
+    procedure PrepareBitmaps(SomeGlyph: TBitmap; ResourceName: PChar); dynamic;
     procedure Paint; override;
   published
     property MajorScale: TJvTFGanttScaleFormat read GetMajorScale write SetMajorScale;
     property MinorScale: TJvTFGanttScaleFormat read GetMinorScale write SetMinorScale;
-    property VisibleScrollBars: TJvTFVisibleScrollBars read FVisibleScrollBars write SeTJvTFVisibleScrollBars;
-
-      // inherited
+    property VisibleScrollBars: TJvTFVisibleScrollBars read FVisibleScrollBars write SetVisibleScrollBars;
     property Align;
     property Anchors;
-  end; { TJvTFGantt }
+  end;
 
 
 implementation
+
 {$IFDEF USEJVCL}
 uses
   JvJVCLUtils, JvResources;
-{$ENDIF}  
+{$ENDIF USEJVCL}
 
 {$IFNDEF USEJVCL}
 resourcestring
   RsThisIsTheMajorScale = 'This is the Major Scale';
   RsThisIsTheMinorScale = 'This is the Minor Scale';
-{$ENDIF}
+{$ENDIF USEJVCL}
+
+//=== TJvTFGantt =============================================================
+
+constructor TJvTFGantt.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FPaintBuffer := TBitmap.Create;
+  FCustomGlyphs := TBitmap.Create;
+  FVisibleScrollBars := [vsbHorz, vsbVert];
+
+  FVScrollBar := TJvTFGanttScrollBar.Create(Self);
+  with FVScrollBar do
+  begin
+    Kind := sbVertical;
+    TabStop := False;
+    Anchors := [];
+    Parent := Self;
+    Visible := True;
+    // OnScroll := ScrollBarScroll;
+  end;
+
+  FHScrollBar := TJvTFGanttScrollBar.Create(Self);
+  with FHScrollBar do
+  begin
+    Kind := sbHorizontal;
+    TabStop := False;
+    Anchors := [];
+    Parent := Self;
+    Visible := True;
+    // OnScroll := ScrollBarScroll;
+  end;
+
+
+  FMajorScale := TJvTFGanttScaleFormat.Create;
+  FMajorScale.Scale := ugsMonth;
+  FMajorScale.Format := 'mmmm';
+  FMinorScale := TJvTFGanttScaleFormat.Create;
+  FMinorScale.Scale := ugsDay;
+  FMinorScale.Format := 'dd';
+
+  PrepareAllBitmaps;
+end;
+
+destructor TJvTFGantt.Destroy;
+begin
+  FPaintBuffer.Free;
+  FMajorScale.Free;
+  FMinorScale.Free;
+  FVScrollBar.Free;
+  FHScrollBar.Free;
+
+  FCustomGlyphs.Free;
+  inherited Destroy;
+end;
 
 procedure TJvTFGantt.DrawMajor(ACanvas: TCanvas);
 var
@@ -161,17 +211,18 @@ var
 begin
   ACanvas.Font.Assign(FMinorScale.Font);
   Caption := RsThisIsTheMinorScale;
-  ACanvas.TextOut((Width div 2) - (ACanvas.TextWidth(Caption) div 2), (CalcHeaderHeight div 2) + 2, Caption);
+  ACanvas.TextOut((Width div 2) - (ACanvas.TextWidth(Caption) div 2),
+    (CalcHeaderHeight div 2) + 2, Caption);
 end;
 
-function TJvTFGantt.CalcHeaderHeight: integer;
+function TJvTFGantt.CalcHeaderHeight: Integer;
 begin
-  result := 0;
+  Result := 0;
   Canvas.Font.Assign(FMajorScale.Font);
-  result := result + Canvas.TextHeight('Wq');
+  Result := Result + Canvas.TextHeight('Wq');
   Canvas.Font.Assign(FMinorScale.Font);
-  result := result + Canvas.TextHeight('Wq');
-  result := result + 4;
+  Result := Result + Canvas.TextHeight('Wq');
+  Result := Result + 4;
 end;
 
 procedure TJvTFGantt.Resize;
@@ -187,7 +238,7 @@ end;
 
 function TJvTFGantt.GetMajorScale: TJvTFGanttScaleFormat;
 begin
-  result := FMajorScale;
+  Result := FMajorScale;
 end;
 
 procedure TJvTFGantt.SetMinorScale(const Value: TJvTFGanttScaleFormat);
@@ -197,10 +248,10 @@ end;
 
 function TJvTFGantt.GetMinorScale: TJvTFGanttScaleFormat;
 begin
-  result := FMinorScale;
+  Result := FMinorScale;
 end;
 
-procedure TJvTFGantt.SeTJvTFVisibleScrollBars(Value: TJvTFVisibleScrollBars);
+procedure TJvTFGantt.SetVisibleScrollBars(Value: TJvTFVisibleScrollBars);
 begin
   if Value <> FVisibleScrollBars then
   begin
@@ -213,8 +264,7 @@ end;
 
 procedure TJvTFGantt.AlignScrollBars;
 begin
-   // DO NOT INVALIDATE GRID IN THIS METHOD
-
+  // DO NOT INVALIDATE GRID IN THIS METHOD
   FVScrollBar.Left := ClientWidth - FVScrollBar.Width;
   FVScrollBar.Top := CalcHeaderHeight;
   FVScrollBar.Height := FHScrollBar.Top - FVScrollBar.Top;
@@ -224,20 +274,16 @@ begin
   FHScrollBar.Width := FVScrollBar.Left - FHScrollBar.Left;
 
   with FVScrollBar do
-  begin
     if vsbHorz in VisibleScrollBars then
       Height := FHScrollBar.Top - Top
     else
       Height := Self.ClientHeight - Top;
-  end;
 
   with FHScrollBar do
-  begin
     if vsbVert in VisibleScrollBars then
       Width := FVScrollBar.Left - Left
     else
       Width := Self.ClientWidth - Left;
-  end;
 end;
 
 procedure TJvTFGantt.DrawClientArea;
@@ -254,7 +300,7 @@ end;
 procedure TJvTFGantt.Paint;
 begin
   inherited Paint;
-  with PaintBuffer do
+  with FPaintBuffer do
   begin
     Width := ClientWidth;
     Height := ClientHeight;
@@ -269,18 +315,17 @@ begin
     DrawClientArea;
   end;
   if Enabled then
-    Windows.BitBlt(Canvas.Handle, 0, 0, ClientWidth, ClientHeight, PaintBuffer.Canvas.Handle, 0, 0, SRCCOPY)
+    Windows.BitBlt(Canvas.Handle, 0, 0, ClientWidth, ClientHeight, FPaintBuffer.Canvas.Handle, 0, 0, SRCCOPY)
   else
-    Windows.DrawState(Canvas.Handle, 0, nil, PaintBuffer.Handle, 0, 0, 0, 0, 0, DST_BITMAP or DSS_UNION or DSS_DISABLED);
+    Windows.DrawState(Canvas.Handle, 0, nil, FPaintBuffer.Handle, 0, 0, 0, 0, 0, DST_BITMAP or DSS_UNION or DSS_DISABLED);
 
 end;
 
-procedure TJvTFGantt.DrawCustomGlyph(someBitmap: TBitmap; targetLeft, targetTop, imageIndex, numGlyphsPerBitmap: integer);
-{ Draws someBitmap out to the canvas. Use imageIndex = 0 and numGlyphsPerBitmap = 1 to draw the entire image,
+{ Draws SomeBitmap out to the canvas. Use ImageIndex = 0 and NumGlyphsPerBitmap = 1 to draw the entire image,
    or use other values to specify sub-glyphs within the image (for bitmaps that contain several same-sized
    images aligned side-to-side in a single row).
 
-   targetLeft and targetTop are the left and top coordinates in the Canvas where you would like this image to appear.
+   TargetLeft and TargetTop are the left and top coordinates in the Canvas where you would like this image to appear.
    Use 0 and 0 to place the image in the top left corner.
 
    CDK: Call this method from an appropriate point in your code (e.g., a "Paint" or "DrawItem" override).
@@ -293,35 +338,35 @@ procedure TJvTFGantt.DrawCustomGlyph(someBitmap: TBitmap; targetLeft, targetTop,
       // Draws last image within FCustomGlyph (which contains four side-to-side images):
       DrawCustomGlyph(FCustomGlyphs, 0, 0, 3, 4);
 }
+
+procedure TJvTFGantt.DrawCustomGlyph(SomeBitmap: TBitmap; TargetLeft, TargetTop, ImageIndex, NumGlyphsPerBitmap: Integer);
 var
-  localImageWidth: integer;
-  SourceRect,
-    DestRect: TRect;
+  LocalImageWidth: Integer;
+  SourceRect, DestRect: TRect;
 begin
   with Canvas do
   begin
     with SourceRect do
     begin
-      if numGlyphsPerBitmap = 0 then
-        numGlyphsPerBitmap := 1;
-      localImageWidth := someBitmap.Width div numGlyphsPerBitmap;
-      Left := imageIndex * localImageWidth;
+      if NumGlyphsPerBitmap = 0 then
+        NumGlyphsPerBitmap := 1;
+      LocalImageWidth := SomeBitmap.Width div NumGlyphsPerBitmap;
+      Left := ImageIndex * LocalImageWidth;
       Top := 0;
-      Right := Left + localImageWidth;
-      Bottom := Top + someBitmap.Height;
-    end; { with }
+      Right := Left + LocalImageWidth;
+      Bottom := Top + SomeBitmap.Height;
+    end;
     with DestRect do
     begin
-      Left := targetLeft;
-      Top := targetTop;
-      Right := Left + localImageWidth;
-      Bottom := Top + someBitmap.Height;
-    end; { with }
-    CopyRect(DestRect, someBitmap.Canvas, SourceRect);
-  end; { with }
-end; { DrawCustomGlyph }
+      Left := TargetLeft;
+      Top := TargetTop;
+      Right := Left + LocalImageWidth;
+      Bottom := Top + SomeBitmap.Height;
+    end;
+    CopyRect(DestRect, SomeBitmap.Canvas, SourceRect);
+  end;
+end;
 
-procedure TJvTFGantt.PrepareBitmaps(someGlyph: TBitmap; resourceName: PChar); { public }
 { Prepares glyphs for display.
    The following colors in your glyphs will be replaced:
 
@@ -334,21 +379,24 @@ procedure TJvTFGantt.PrepareBitmaps(someGlyph: TBitmap; resourceName: PChar); { 
    CDK: Modify your glyphs so that they conform to the colors above, or alternatively
    modify the colors referenced in the code below.
 }
-var
-  localBitmap: TBitmap;
 
-  procedure ReplaceColors(SourceBmp, TargetBMP: TBitmap; sourceColor, targetColor: TColor);
+procedure TJvTFGantt.PrepareBitmaps(SomeGlyph: TBitmap; ResourceName: PChar);
+var
+  LocalBitmap: TBitmap;
+
+  procedure ReplaceColors(SourceBmp, TargetBmp: TBitmap; SourceColor, TargetColor: TColor);
   begin
-    TargetBMP.Canvas.Brush.Color := targetColor;
-    TargetBMP.Canvas.BrushCopy(SourceBmp.Canvas.ClipRect, SourceBmp, SourceBmp.Canvas.ClipRect, sourceColor);
-  end; { ReplaceColors }
+    TargetBmp.Canvas.Brush.Color := TargetColor;
+    TargetBmp.Canvas.BrushCopy(SourceBmp.Canvas.ClipRect, SourceBmp,
+      SourceBmp.Canvas.ClipRect, SourceColor);
+  end;
 
 begin
-  localBitmap := TBitmap.Create;
+  LocalBitmap := TBitmap.Create;
   try
-    localBitmap.LoadFromResourceName(HInstance, resourceName);
-    someGlyph.Width := localBitmap.Width;
-    someGlyph.Height := localBitmap.Height;
+    LocalBitmap.LoadFromResourceName(HInstance, ResourceName);
+    SomeGlyph.Width := LocalBitmap.Width;
+    SomeGlyph.Height := LocalBitmap.Height;
 
       { Replace the following colors after loading bitmap:
 
@@ -359,21 +407,20 @@ begin
             clRed with clWindowText
       }
 
-      { Must call ReplaceColors an odd number of times, to ensure that final image ends up in someGlyph.
+      { Must call ReplaceColors an odd number of times, to ensure that final image ends up in SomeGlyph.
          As it turns out, we need to make exactly five replacements. Note that each subsequent call to
-         ReplaceColors switches the order of parameters localBitmap and someGlyph. This is because
+         ReplaceColors switches the order of parameters LocalBitmap and SomeGlyph. This is because
          we are copying the image back and forth, replacing individual colors with each copy. }
 
-    ReplaceColors(localBitmap, someGlyph, clYellow, clBtnHighlight);
-    ReplaceColors(someGlyph, localBitmap, clSilver, clBtnFace);
-    ReplaceColors(localBitmap, someGlyph, clGray, clBtnShadow);
-    ReplaceColors(someGlyph, localBitmap, clWhite, clWindow);
-    ReplaceColors(localBitmap, someGlyph, clRed, clWindowText);
-  finally { wrap up }
-    if assigned(localBitmap) then
-      localBitmap.Free;
-  end; { try/finally }
-end; { PrepareBitmaps }
+    ReplaceColors(LocalBitmap, SomeGlyph, clYellow, clBtnHighlight);
+    ReplaceColors(SomeGlyph, LocalBitmap, clSilver, clBtnFace);
+    ReplaceColors(LocalBitmap, SomeGlyph, clGray, clBtnShadow);
+    ReplaceColors(SomeGlyph, LocalBitmap, clWhite, clWindow);
+    ReplaceColors(LocalBitmap, SomeGlyph, clRed, clWindowText);
+  finally
+    LocalBitmap.Free;
+  end;
+end;
 
 procedure TJvTFGantt.PrepareAllBitmaps;
 begin
@@ -381,38 +428,38 @@ begin
 //   PrepareBitmaps(FCustomGlyphs, 'BITMAP_RESOURCE_NAME');
    { CDK: If you have other Glyphs that need loading/preparing, place additional
       calls to PrepareBitmaps here. }
-end; { PrepareAllBitmaps }
+end;
 
-procedure TJvTFGantt.CMSysColorChange(var Msg: TMessage); { private }
+procedure TJvTFGantt.CMSysColorChange(var Msg: TMessage);
 begin
   inherited;
   PrepareAllBitmaps;
-end; { CMSysColorChange }
+end;
 
 function TJvTFGantt.ClientCursorPos: TPoint;
 begin
-  GetCursorPos(result);
-  result := ScreenToClient(result);
-end; { ClientCursorPos }
+  GetCursorPos(Result);
+  Result := ScreenToClient(Result);
+end;
 
-function TJvTFGantt.ValidMouseAtDesignTime: boolean;
+function TJvTFGantt.ValidMouseAtDesignTime: Boolean;
 begin
-  result := False;
-end; { ValidMouseAtDesignTime }
+  Result := False;
+end;
 
 procedure TJvTFGantt.CMDesignHitTest(var Msg: TCMDesignHitTest);
 begin
   if ValidMouseAtDesignTime then
-    Msg.Result := 1 { Allow design-time mouse hits to get through if Alt key is down. }
+    Msg.Result := 1 // Allow design-time mouse hits to get through if Alt key is down.
   else
     Msg.Result := 0;
-end; { CMDesignHitTest }
+end;
 
-procedure TJvTFGantt.CMFontChanged(var Message: TMessage);
+procedure TJvTFGantt.CMFontChanged(var Msg: TMessage);
 begin
   inherited;
   AdjustComponentHeightBasedOnFontChange;
-end; { CMFontChanged }
+end;
 
 procedure TJvTFGantt.AdjustComponentHeightBasedOnFontChange;
 begin
@@ -428,74 +475,22 @@ begin
   Button1.Height := Height;
   LockHeight := True;
 }
-end; { AdjustComponentHeightBasedOnFontChange }
+end;
 
 procedure TJvTFGantt.Loaded;
 begin
   inherited Loaded;
   AlignScrollBars;
-end; { Loaded }
+end;
 
-destructor TJvTFGantt.Destroy;
+//=== TJvTFGanttScaleFormat ==================================================
+
+constructor TJvTFGanttScaleFormat.Create;
 begin
-  PaintBuffer.Free;
-  FMajorScale.Free;
-  FMinorScale.Free;
-  FVScrollBar.Free;
-  FHScrollBar.Free;
-
-  if assigned(FCustomGlyphs) then
-  begin
-    FCustomGlyphs.Free;
-    FCustomGlyphs := nil;
-  end;
-  inherited Destroy;
-end; { Destroy }
-
-constructor TJvTFGantt.Create(AOwner: TComponent);
-{ Creates an object of type TJvTFGantt, and initializes properties. }
-begin
-  inherited Create(AOwner);
-  PaintBuffer := TBitmap.Create;
-  FCustomGlyphs := TBitmap.Create;
-  FVisibleScrollBars := [vsbHorz, vsbVert];
-
-  FVScrollBar := TJvTFGanttScrollBar.Create(Self);
-  with FVScrollBar do
-  begin
-    Kind := sbVertical;
-    TabStop := False;
-    Anchors := [];
-    Parent := Self;
-    Visible := true;
-//      OnScroll := ScrollBarScroll;
-  end;
-
-  FHScrollBar := TJvTFGanttScrollBar.Create(Self);
-  with FHScrollBar do
-  begin
-    Kind := sbHorizontal;
-    TabStop := False;
-    Anchors := [];
-    Parent := Self;
-    Visible := true;
-//      OnScroll := ScrollBarScroll;
-  end;
-
-
-  FMajorScale := TJvTFGanttScaleFormat.Create;
-  FMajorScale.Scale := ugsMonth;
-  FMajorScale.Format := 'mmmm';
-  FMinorScale := TJvTFGanttScaleFormat.Create;
-  FMinorScale.Scale := ugsDay;
-  FMinorScale.Format := 'dd';
-
-  PrepareAllBitmaps;
-end; { Create }
-
-
-
-{ TJvTFGanttScaleFormat }
+  // (rom) added inherited Create
+  inherited Create;
+  FFont := TFont.Create;
+end;
 
 destructor TJvTFGanttScaleFormat.Destroy;
 begin
@@ -503,14 +498,9 @@ begin
   inherited Destroy;
 end;
 
-constructor TJvTFGanttScaleFormat.Create;
-begin
-  FFont := TFont.Create;
-end;
-
 function TJvTFGanttScaleFormat.GetFont: TFont;
 begin
-  result := FFont;
+  Result := FFont;
 end;
 
 procedure TJvTFGanttScaleFormat.SetFont(const Value: TFont);
@@ -519,21 +509,21 @@ begin
 end;
 
 
-{ TJvTFGanttScrollBar }
+//=== TJvTFGanttScrollBar ====================================================
 
 constructor TJvTFGanttScrollBar.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   // If we set the csNoDesignVisible flag then visibility at design time
-  //  is controled by the Visible property, which is exactly what we want.
+  //  is controlled by the Visible property, which is exactly what we want.
   ControlStyle := ControlStyle + [csNoDesignVisible];
   ParentCtl3D := False;
   Ctl3D := False;
 end;
 
-procedure TJvTFGanttScrollBar.CMDesignHitTest(var Message: TCMDesignHitTest);
+procedure TJvTFGanttScrollBar.CMDesignHitTest(var Msg: TCMDesignHitTest);
 begin
-  Message.Result := 1;
+  Msg.Result := 1;
 end;
 
 procedure TJvTFGanttScrollBar.CreateWnd;
@@ -560,15 +550,12 @@ begin
   FillChar(Info, SizeOf(Info), 0);
   with Info do
   begin
-    cbsize := SizeOf(Info);
-    fmask := SIF_PAGE;
+    cbSize := SizeOf(Info);
+    fMask := SIF_PAGE;
     nPage := LargeChange;
   end;
   SetScrollInfo(Handle, SB_CTL, Info, True);
 end;
 
-
-initialization
-finalization
 end.
 
