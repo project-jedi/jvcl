@@ -1,5 +1,10 @@
 Changelog for JVCL 3.0
 ======================
+2004-02-03
+- Added Localization.html and updated documentation // obones
+- Moved all C++ Builder packages to their new place (c?) // obones
+- Updated templates and installer to cope with change in output directories for C++ Builder // obones
+- Cleaned up crappy code in TJvAviCapture // obones
 2004-01-30
 - added JvDBHTLabel donation from Maciej Kaczkowski // peter3
 - added AutoSizeColumns, AutoSizeColumnsIndex, MinColumnWidth and MaxColumnWidth to TJvDBGrid // peter3
