@@ -46,8 +46,8 @@ type
     procedure SetJvGradient1Cursor(Value: TCursor);
     function GetJvGradient1Hint: string;
     procedure SetJvGradient1Hint(Value: string);
-    function GetJvGradient1StarTColor: TColor;
-    procedure SetJvGradient1StarTColor(Value: TColor);
+    function GetJvGradient1StartColor: TColor;
+    procedure SetJvGradient1StartColor(Value: TColor);
     function GetJvGradient1EndColor: TColor;
     procedure SetJvGradient1EndColor(Value: TColor);
     function GetJvGradient1Steps: Integer;
@@ -80,7 +80,7 @@ type
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property GradientCursor: TCursor read GetJvGradient1Cursor write SetJvGradient1Cursor;
     property GradientHint: string read GetJvGradient1Hint write SetJvGradient1Hint;
-    property GradientStarTColor: TColor read GetJvGradient1StarTColor write SetJvGradient1StarTColor default clBlack;
+    property GradientStartColor: TColor read GetJvGradient1StartColor write SetJvGradient1StartColor default clBlack;
     property GradientEndColor: TColor read GetJvGradient1EndColor write SetJvGradient1EndColor default clWhite;
     property GradientSteps: Integer read GetJvGradient1Steps write SetJvGradient1Steps default 100;
     property LabelLeft: Integer read GetLabel1Left write SetLabel1Left default 18;
@@ -117,7 +117,7 @@ begin
   FLabel1.Parent := Self;
   FJvGradient1.Left := 0;
   FJvGradient1.Top := 0;
-  FJvGradient1.StarTColor := clBlack;
+  FJvGradient1.StartColor := clBlack;
   FJvGradient1.EndColor := clWhite;
   FJvGradient1.Steps := 100;
   FLabel1.Left := 10;
@@ -163,15 +163,15 @@ begin
 end;
 {***************************************************}
 
-function TJvGradientCaption.GetJvGradient1StarTColor: TColor;
+function TJvGradientCaption.GetJvGradient1StartColor: TColor;
 begin
-  Result := FJvGradient1.StarTColor;
+  Result := FJvGradient1.StartColor;
 end;
 {***************************************************}
 
-procedure TJvGradientCaption.SetJvGradient1StarTColor(Value: TColor);
+procedure TJvGradientCaption.SetJvGradient1StartColor(Value: TColor);
 begin
-  FJvGradient1.StarTColor := Value;
+  FJvGradient1.StartColor := Value;
 end;
 {***************************************************}
 
