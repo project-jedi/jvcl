@@ -24,6 +24,10 @@ Known Issues:
 // are registered for JVCL as well as for non-JVCL components
 {.$DEFINE JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
 
+// Some new libraries and packages (currently, JvUIB and JvWizard) can be installed either in "stand-alone" mode
+// or in "JVCL" mode. These packages use the USEJVCL define to determine whether
+// they are installed in JVCL mode or not. By default, this define is enabled.
+{$DEFINE USEJVCL}
 {$IFDEF BCB}
   {$ObjExportAll ON}
 {$ENDIF}

@@ -63,7 +63,7 @@ unit JvUIB;
 interface
 uses
   {$IFDEF MSWINDOWS} Windows, {$ENDIF}
-  {$IFDEF UIBJVCL} JvComponent, {$ENDIF}
+  {$IFDEF USEJVCL} JvComponent, {$ENDIF}
   Classes, SysUtils, JvUIBLib, JvUIBase, SyncObjs;
 
 type
@@ -98,7 +98,7 @@ type
 {$IFDEF UIBNOCOMPONENT}
   TJvUIBComponent = class(TObject)
 {$ELSE}
-  {$IFDEF UIBJVCL}
+  {$IFDEF USEJVCL}
   TJvUIBComponent = class(TJvComponent)
   {$ELSE}
   TJvUIBComponent = class(TComponent)

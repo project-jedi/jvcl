@@ -1,5 +1,13 @@
 Changelog for JVCL 3.0
 ======================
+2003-07-11:
+- Added updated JvPlugin units from Stefaan Lesage
+- Added JvConvert conversion file for KWizard
+- Added new palette images for RouteMaps
+- Added KWizard and associated RouteMap components (renamed to JVCL standard) donation from William Wue, Steven Forbes and Max Evans
+- Renamed TJvImageDlg to TJvImageDialog
+- Changed UIBJVCL to USEJVCL to accomodate KWizard. When defined, JvUIB and JvWizard are installed in "JVCL" mode, i.e using TJvComponent or similar as the base class for the main component thus enabling the JVCL About box 
+
 2003-06-29:
 - Added TJvAVICapture component from Olivier Sannier
 

@@ -1,14 +1,12 @@
 object frmPluginParams: TfrmPluginParams
   Left = 424
   Top = 232
-  Width = 343
-  Height = 247
+  Width = 355
+  Height = 459
+  ActiveControl = edtPluginName
   BorderIcons = [biSystemMenu]
   Caption = 'Setup Plugin Parameters'
   Color = clBtnFace
-  Constraints.MaxHeight = 247
-  Constraints.MinHeight = 247
-  Constraints.MinWidth = 343
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -30,57 +28,84 @@ object frmPluginParams: TfrmPluginParams
   PixelsPerInch = 96
   TextHeight = 13
   object lblCreateInfo: TLabel
-    Left = 5
-    Top = 110
+    Left = 8
+    Top = 344
     Width = 325
-    Height = 71
-    Anchors = [akLeft, akTop, akRight, akBottom]
+    Height = 50
+    Anchors = [akLeft, akRight, akBottom]
     AutoSize = False
     WordWrap = True
   end
+  object Label1: TLabel
+    Left = 8
+    Top = 112
+    Width = 34
+    Height = 13
+    Caption = '&Author:'
+  end
+  object Label2: TLabel
+    Left = 8
+    Top = 152
+    Width = 47
+    Height = 13
+    Caption = '&Copyright:'
+  end
+  object Label3: TLabel
+    Left = 8
+    Top = 192
+    Width = 56
+    Height = 13
+    Caption = '&Description:'
+  end
+  object Label4: TLabel
+    Left = 8
+    Top = 288
+    Width = 22
+    Height = 13
+    Caption = '&UID:'
+  end
   object butOK: TButton
-    Left = 167
-    Top = 190
+    Left = 179
+    Top = 402
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
     Caption = 'OK'
     Default = True
     ModalResult = 1
-    TabOrder = 0
+    TabOrder = 5
   end
   object butCancel: TButton
-    Left = 255
-    Top = 190
+    Left = 267
+    Top = 402
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
     Caption = 'Cancel'
     ModalResult = 2
-    TabOrder = 1
+    TabOrder = 6
   end
   object gbPluginSettings: TGroupBox
     Left = 5
     Top = 5
-    Width = 325
+    Width = 337
     Height = 96
     Anchors = [akLeft, akTop, akRight]
     Caption = ' Plugin settings '
-    TabOrder = 2
-    object edName: TEdit
+    TabOrder = 0
+    object edtPluginName: TEdit
       Left = 10
       Top = 20
-      Width = 305
+      Width = 317
       Height = 21
       Anchors = [akLeft, akTop, akRight]
       TabOrder = 0
-      Text = 'PluginName'
       OnChange = SettingsChanged
     end
     object rbPackage: TRadioButton
       Left = 10
       Top = 50
-      Width = 305
+      Width = 317
       Height = 17
       Anchors = [akLeft, akTop, akRight]
       Caption = 'Package plugin'
@@ -92,12 +117,46 @@ object frmPluginParams: TfrmPluginParams
     object rbDLL: TRadioButton
       Left = 10
       Top = 70
-      Width = 305
+      Width = 317
       Height = 17
       Anchors = [akLeft, akTop, akRight]
       Caption = 'DLL plugin (old style)'
       TabOrder = 2
       OnClick = SettingsChanged
     end
+  end
+  object edtPluginAuthor: TEdit
+    Left = 8
+    Top = 128
+    Width = 325
+    Height = 21
+    Anchors = [akLeft, akTop, akRight]
+    TabOrder = 1
+  end
+  object edtPluginCopyright: TEdit
+    Left = 8
+    Top = 168
+    Width = 325
+    Height = 21
+    Anchors = [akLeft, akTop, akRight]
+    TabOrder = 2
+  end
+  object mmoDescripton: TRichEdit
+    Left = 8
+    Top = 208
+    Width = 325
+    Height = 73
+    Anchors = [akLeft, akTop, akRight]
+    PlainText = True
+    ScrollBars = ssBoth
+    TabOrder = 3
+  end
+  object edtPluginUID: TEdit
+    Left = 8
+    Top = 304
+    Width = 325
+    Height = 21
+    Anchors = [akLeft, akTop, akRight]
+    TabOrder = 4
   end
 end

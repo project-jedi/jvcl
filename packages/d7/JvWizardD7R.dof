@@ -1,0 +1,6 @@
+[Directories]
+OutputDir=
+UnitOutputDir=..\..\lib7
+PackageDLLOutputDir=
+PackageDCPOutputDir=
+SearchPath=..\..\common;..\..\Resources

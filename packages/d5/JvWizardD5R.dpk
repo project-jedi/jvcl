@@ -1,0 +1,38 @@
+package JvWizardD5R;
+
+{$R *.RES}
+{$ALIGN ON}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'Jv Wizard Run Time Package'}
+{$RUNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  vcl50;
+
+contains
+  JvWizard in '..\..\run\JvWizard.pas',
+  JvWizardRouteMapNodes in '..\..\run\JvWizardRouteMapNodes.pas',
+  JvWizardRouteMapSteps in '..\..\run\JvWizardRouteMapSteps.pas',
+  JvWizardCommon in '..\..\run\JvWizardCommon.pas';
+
+end.
