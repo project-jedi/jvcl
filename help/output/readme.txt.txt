@@ -1,1 +1,0 @@
-Doc-O-Matic output folder

@@ -1,6 +1,0 @@
-#include "rafdconst.rc"
-unit1 pas unit1.pas
-deDefaultComponentBitmap BITMAP ..\all\defaultcomponent.bmp
-....
-bitmaps
-....

@@ -1,6 +1,0 @@
-/* JVCL UIB components */
-TJvUIBDataBase BITMAP "TJvUIBDataBase.bmp"
-TJvUIBTransaction BITMAP "TJvUIBTransaction.bmp"
-TJvUIBQuery BITMAP "TJvUIBQuery.bmp"
-TJvUIBBackup BITMAP "TJvUIBBackup.bmp"
-TJvUIBRestore BITMAP "TJvUIBRestore.bmp"
