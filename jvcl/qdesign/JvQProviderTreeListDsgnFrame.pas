@@ -36,12 +36,13 @@ unit JvQProviderTreeListDsgnFrame;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ComCtrls, ImgList, Menus, ActnList,
+  SysUtils, Classes,
+  QWindows, QGraphics, QControls, QForms, QDialogs,
+  QComCtrls, QImgList, QMenus, QActnList,
   
   DesignIntf, DesignEditors,
   
-  JvQDataProviderIntf, JvQProviderTreeListFrame, JvQDsgnTypes;
+  JvQDataProviderIntf, JvQProviderTreeListFrame, JvQDsgnTypes, QTypes;
 
 type
   TDsgFmeBeforeNewItem = procedure(Sender: TObject; Kind: Integer; var Allow: Boolean) of object;
@@ -94,7 +95,7 @@ type
 implementation
 
 uses
-  CommCtrl,
+
   JvQTypes, JvQDsgnConsts, JvQConsts;
 
 
