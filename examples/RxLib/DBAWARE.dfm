@@ -969,7 +969,6 @@ object DBAwareForm: TDBAwareForm
     Top = 12
   end
   object FormStorage1: TJvFormStorage
-    IniSection = 'DBAware Components'
     Options = [fpPosition]
     StoredProps.Strings = (
       'TabbedNotebook1.PageIndex'

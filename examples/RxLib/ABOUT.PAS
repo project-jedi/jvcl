@@ -4,8 +4,8 @@ interface
 
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
-  Forms, Dialogs, StdCtrls, Buttons, JvxCtrls, JvLabel, ExtCtrls, JvxAnimate,
-  JvComponent;
+  Forms, Dialogs, StdCtrls, Buttons, ExtCtrls, JvComponent, JvLabel,
+  JvSecretPanel;
 
 type
   TAboutForm = class(TForm)
@@ -35,7 +35,7 @@ procedure RxWebSite;
 
 implementation
 
-uses JvConst, ShellAPI;
+uses JvConsts, ShellAPI;
 
 {$R *.DFM}
 
@@ -50,8 +50,8 @@ end;
 procedure TAboutForm.FormCreate(Sender: TObject);
 begin
   AppIcon.Picture.Icon := Application.Icon;
-  AppIcon.Cursor := crHand;
-  WebLabel.Cursor := crHand;
+  AppIcon.Cursor := crHandPoint;
+  WebLabel.Cursor := crHandPoint;
 end;
 
 procedure TAboutForm.AppIconDblClick(Sender: TObject);

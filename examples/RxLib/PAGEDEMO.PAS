@@ -4,9 +4,9 @@ interface
 
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
-  Forms, Dialogs, StdCtrls, DBCtrls, DBTables, DB, Mask, ExtCtrls, Grids,
-  DBGrids, JvDBCtrl, JvQuery, JvPlacemnt, JvToolEdit, JvPageMngr, JvxCtrls,
-  JvDBComb, JvComponent, JvLabel;
+  Forms, Dialogs, StdCtrls, DBCtrls, DB, DBTables, JvPageManager,
+  JvComponent, JvFormPlacement, JvBDEQuery, JvDBCombobox, JvToolEdit,
+  JvDBControls, Mask, JvLabel, Grids, DBGrids, ExtCtrls;
 
 type
   TClientAssistanceMode = (camNew, camEdit, camDelete, camView);

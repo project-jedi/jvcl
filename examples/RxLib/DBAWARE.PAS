@@ -4,10 +4,10 @@ interface
 
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
-  Forms, Dialogs, DB, DBTables, Grids, DBGrids, JvDBCtrl, ExtCtrls,
-  TabNotBk, StdCtrls, Spin, DBCtrls, JvDBQBE, JvLookup, Mask, JvDBIndex,
-  Buttons, JvDBFilter, JvPlacemnt, JvQuery, JvPicclip, JvxCtrls, ComCtrls,
-  JvComponent;
+  Forms, Dialogs, DB, DBTables, Grids, DBGrids, JvPicClip, JvBDEQuery,
+  JvFormPlacement, JvComponent, JvBDEFilter, JvBDEQBE, StdCtrls, ExtCtrls,
+  Buttons, DBCtrls, JvBDEIndex, JvDBLookup, Mask, JvLabel, JvDBControls,
+  ComCtrls, TabNotBk;
 
 type
   TDBAwareForm = class(TForm)

@@ -114,22 +114,21 @@ object MainForm: TMainForm
     BtnOffsetVert = 3
     BtnWidth = 54
     BtnHeight = 50
-    IniStorage = FormPlacement1
     Version = 3
     BevelInner = bvLowered
     BevelOuter = bvNone
     TabOrder = 1
     InternalVer = 1
-    object SpeedbarSection1: TJvSpeedbarSection
+    object SpeedbarSection1: TJvSpeedBarSection
       Caption = 'File'
     end
-    object SpeedbarSection2: TJvSpeedbarSection
+    object SpeedbarSection2: TJvSpeedBarSection
       Caption = 'View'
     end
-    object SpeedbarSection3: TJvSpeedbarSection
+    object SpeedbarSection3: TJvSpeedBarSection
       Caption = 'Window'
     end
-    object SpeedbarSection4: TJvSpeedbarSection
+    object SpeedbarSection4: TJvSpeedBarSection
       Caption = 'Help'
     end
     object CustomizeBtn: TJvSpeedItem
@@ -390,6 +389,12 @@ object MainForm: TMainForm
     end
   end
   object MainMenu1: TJvMainMenu
+    ImageMargin.Left = 0
+    ImageMargin.Top = 0
+    ImageMargin.Right = 0
+    ImageMargin.Bottom = 0
+    ImageSize.Height = 0
+    ImageSize.Width = 0
     Style = msOwnerDraw
     OnGetItemParams = MainMenu1GetItemParams
     Left = 4
@@ -452,12 +457,6 @@ object MainForm: TMainForm
       end
     end
   end
-  object FormPlacement1: TJvFormPlacement
-    OnSavePlacement = FormPlacement1SavePlacement
-    OnRestorePlacement = FormPlacement1RestorePlacement
-    Left = 32
-    Top = 60
-  end
   object DBProgress1: TJvDBProgress
     WaitCursor = crSQLWait
     MessageControl = MessagePanel
@@ -466,8 +465,13 @@ object MainForm: TMainForm
     Top = 60
   end
   object ToolbarMenu: TJvPopupMenu
+    ImageMargin.Left = 0
+    ImageMargin.Top = 0
+    ImageMargin.Right = 0
+    ImageMargin.Bottom = 0
+    ImageSize.Height = 0
+    ImageSize.Width = 0
     Style = msOwnerDraw
-    ShowCheckMarks = False
     OnGetItemParams = ToolbarMenuGetItemParams
     Left = 60
     Top = 60
@@ -533,9 +537,14 @@ object MainForm: TMainForm
     Top = 88
   end
   object PopupMenu: TJvPopupMenu
+    ImageMargin.Left = 0
+    ImageMargin.Top = 0
+    ImageMargin.Right = 0
+    ImageMargin.Bottom = 0
+    ImageSize.Height = 0
+    ImageSize.Width = 0
     LeftMargin = 30
     Style = msOwnerDraw
-    ShowCheckMarks = False
     OnDrawMargin = PopupMenuDrawMargin
     OnGetItemParams = PopupMenuGetItemParams
     Left = 60

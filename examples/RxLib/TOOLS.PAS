@@ -4,9 +4,9 @@ interface
 
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
-  Forms, Dialogs, StdCtrls, TabNotBk, ExtCtrls, JvPicclip, JvClipView, JvPlacemnt,
-  JvDualList, JvDataConv, Spin, JvxCtrls, JvCalc, Mask, JvToolEdit,
-  ComCtrls, JvComponent, JvBaseDlg;
+  Forms, Dialogs, StdCtrls, TabNotBk, ExtCtrls, JvDualList,
+  JvFormPlacement, JvComponent, JvBaseDlg, JvCalc, JvPicClip,
+  JvSecretPanel, Spin, Mask, JvToolEdit, JvClipboardViewer, ComCtrls;
 
 type
   TToolsForm = class(TForm)
@@ -82,7 +82,8 @@ implementation
 
 {$R *.DFM}
 
-uses Main, Clipbrd, JvClipIcon;
+uses
+  Main, Clipbrd, JvJCLUtils;
 
 procedure TToolsForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin

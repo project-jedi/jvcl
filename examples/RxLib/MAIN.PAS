@@ -6,9 +6,9 @@ interface
 
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
-  Forms, Dialogs, Gauges, ExtCtrls, Menus, JvDBPrgrss, JvPlacemnt, JvSpeedbar,
-  JvAppEvent, JvSplit, JvxAnimate, JvMenus, JvPicclip,
-  JvComponent, JvTrayIcon;
+  Forms, Dialogs, Gauges, ExtCtrls, Menus, JvSpeedbar,
+  JvAppEvent, JvSplit, JvMenus, JvComponent, JvTrayIcon, JvBDEProgress,
+  JvFormPlacement, JvPicClip;
 
 type
   TMainForm = class(TForm)
@@ -29,7 +29,6 @@ type
     Panel1: TPanel;
     ProgressPanel: TPanel;
     DbiProgress: TGauge;
-    FormPlacement1: TjvFormPlacement;
     DBProgress1: TJvDBProgress ;
     ToolbarMenu: TJvPopupMenu ;
     Customize1: TMenuItem;
@@ -106,9 +105,8 @@ var
 
 implementation
 
-uses IniFiles, JvAppUtils, Buttons, Ctrls, DBAware, Tools, About, PageDemo,
-  JvxSlider, JvVCLUtils, JvHints, JvGraph, {$IFDEF WIN32} Jvgrdcpt, {$ENDIF}
-  ShellAPI;
+uses IniFiles, Buttons, Ctrls, DBAware, Tools, About, PageDemo,
+  JvxSlider, JvJVCLUtils, JvHints, ShellAPI, JvGradientCaption;
 
 {$R *.DFM}
 
@@ -222,9 +220,10 @@ procedure TMainForm.SaveLayoutItemClick(Sender: TObject);
 var
   IniFile: TIniFile;
 begin
+//!!!
   IniFile := TIniFile.Create(GetDefaultIniName);
   try
-    Toolbar.SaveLayout(IniFile);
+    Toolbar.SaveLayout;
   finally
     IniFile.Free;
   end;
@@ -234,9 +233,10 @@ procedure TMainForm.RestoreLayoutItemClick(Sender: TObject);
 var
   IniFile: TIniFile;
 begin
+//!!!
   IniFile := TIniFile.Create(GetDefaultIniName);
   try
-    Toolbar.RestoreLayout(IniFile);
+    Toolbar.RestoreLayout;
   finally
     IniFile.Free;
   end;
@@ -263,7 +263,7 @@ end;
 
 procedure TMainForm.FormPlacement1RestorePlacement(Sender: TObject);
 begin
-  RestoreMDIChildren(Self, FormPlacement1.IniFile);
+//!!!  RestoreMDIChildren(Self, FormPlacement1.IniFile);
 {$IFNDEF WIN32}
   AppTaskbarIcons(True);
   Application.BringToFront;
@@ -272,7 +272,7 @@ end;
 
 procedure TMainForm.FormPlacement1SavePlacement(Sender: TObject);
 begin
-  SaveMDIChildren(Self, FormPlacement1.IniFile);
+//!!!  SaveMDIChildren(Self, FormPlacement1.IniFile);
 end;
 
 procedure TMainForm.AppSettingsChanged(Sender: TObject);
