@@ -87,6 +87,7 @@ type
     procedure BeginDoc;
     procedure EndDoc;
     procedure NewPage;
+    procedure Abort;
     function GetAborted: boolean;
     function GetCanvas: TCanvas;
     function GetPageWidth: integer;
@@ -114,7 +115,7 @@ type
     procedure SetOffsetY(const Value: Cardinal);
     procedure SetPageHeight(const Value: Cardinal);
     procedure SetPageWidth(const Value: Cardinal);
-    procedure SetupDeviceInfo;
+    procedure DefaultDeviceInfo;
     procedure SetReferenceHandle(const Value: HDC);
     procedure SetPhysicalHeight(const Value: Cardinal);
     procedure SetPhysicalWidth(const Value: Cardinal);
@@ -135,9 +136,9 @@ type
     function MMToXPx(MM: single): integer;
     function MMToYPx(MM: single): integer;
 
-    property ReferenceHandle: HDC read FReferenceHandle write SetReferenceHandle;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   published
+    property ReferenceHandle: HDC read FReferenceHandle write SetReferenceHandle;
     property LogPixelsX: Cardinal read FLogPixelsX write SetLogPixesX;
     property LogPixelsY: Cardinal read FLogPixelsY write SetLogPixelsY;
     property PhysicalWidth: Cardinal read FPhysicalWidth write SetPhysicalWidth;
@@ -204,7 +205,7 @@ type
   published
     property Color: TColor read FColor write SetColor default clWhite;
     property Cols: Cardinal read GetCols write SetCols default 1;
-    property DrawMargins: boolean read FDrawMargins write SetDrawMargins default false;
+    property DrawMargins: boolean read FDrawMargins write SetDrawMargins default true;
     property HorzSpacing: Cardinal read GetHorzSpacing write SetHorzSpacing default 8;
     property Rows: Cardinal read GetRows write SetRows;
     property Shadow: TJvPageShadow read FShadow write SetShadow;
@@ -335,6 +336,8 @@ type
   published
 
     property TopRow;
+    property ScrollBars;
+    property HideScrollBars;
     property SelectedPage;
     property BorderStyle;
     property Color default clAppWorkSpace;
@@ -521,6 +524,7 @@ begin
   FColor := clWhite;
   FVertSpacing := 8;
   FHorzSpacing := 8;
+  FDrawMargins := true;
 end;
 
 destructor TJvPreviewPageOptions.Destroy;
@@ -686,7 +690,7 @@ end;
 constructor TJvDeviceInfo.Create;
 begin
   inherited Create;
-  SetupDeviceInfo;
+  DefaultDeviceInfo;
 end;
 
 destructor TJvDeviceInfo.Destroy;
@@ -818,7 +822,10 @@ procedure TJvDeviceInfo.SetReferenceHandle(const Value: HDC);
 begin
   FReferenceHandle := Value;
   if FReferenceHandle = 0 then
-    FReferenceHandle := GetScreenDC;
+  begin
+    DefaultDeviceInfo;
+    Exit;
+  end;
   FLogPixelsX := GetDeviceCaps(FReferenceHandle, Windows.LOGPIXELSX);
   FLogPixelsY := GetDeviceCaps(FReferenceHandle, Windows.LOGPIXELSY);
   FPageWidth := GetDeviceCaps(FReferenceHandle, HORZRES);
@@ -839,9 +846,22 @@ begin
   Change;
 end;
 
-procedure TJvDeviceInfo.SetupDeviceInfo;
+procedure TJvDeviceInfo.DefaultDeviceInfo;
 begin
-  SetReferenceHandle(GetScreenDC);
+  // default sizes using my current printer (HP DeskJet 690C)
+  FReferenceHandle := 0;
+  FLogPixelsX := 300;
+  FLogPixelsY := 300;
+  FPhysicalWidth := 2480;
+  FPhysicalHeight := 3507;
+  FPageWidth      := 2400;
+  FPageHeight     := 3281;
+
+  FOffsetLeft   := 40;
+  FOffsetTop    := 40;
+  FOffsetRight  := 40;
+  FOffsetBottom := 40;
+  Change;
 end;
 
 function TJvDeviceInfo.XPxToInch(Pixels: integer): single;
@@ -893,7 +913,7 @@ begin
 
   si.nMax := FMaxWidth - ClientWidth;
   si.nPage := 0;
-  ShowScrollbar(Handle, SB_HORZ, ScrollBars in [ssHorizontal, ssBoth] {(FPageWidth > ClientWidth)});
+  ShowScrollbar(Handle, SB_HORZ, not HideScrollBars and (ScrollBars in [ssHorizontal, ssBoth]) {(FPageWidth > ClientWidth)});
   SetScrollInfo(Handle, SB_HORZ, si, true);
   // update scroll pos if it has changed
   GetScrollInfo(Handle, SB_HORZ, si);
@@ -920,7 +940,7 @@ begin
     si.nMax := FMaxHeight - ClientHeight;
     si.nPage := 0; // FMaxHeight div TotalRows;
   end;
-  ShowScrollbar(Handle, SB_VERT, ScrollBars in [ssVertical, ssBoth]);
+  ShowScrollbar(Handle, SB_VERT, not HideScrollBars and (ScrollBars in [ssVertical, ssBoth]));
   SetScrollInfo(Handle, SB_VERT, si, true);
   // update scroll pos if it has changed
   GetScrollInfo(Handle, SB_VERT, si);

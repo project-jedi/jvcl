@@ -162,11 +162,12 @@ type
     property Center: boolean read FCenter write FCenter default true;
     property Proportional: boolean read FProportional write FProportional default true;
     property Stretch: boolean read FStretch write FStretch default true;
-    property Transparent:boolean read FTransparent write FTransparent; 
+    property Transparent:boolean read FTransparent write FTransparent;
   end;
 
+  TJvNewPageEvent = procedure(Sender:TObject;PageIndex:integer) of object;
   // a class that implements the IJvPrinter interface
-  TJvPreviewPrinter = class(TComponent, IUnknown, IJvPrinter)
+  TJvPreviewPrinter = class(TJvComponent, IUnknown, IJvPrinter)
   private
     FPrinter: TPrinter;
     FPrintPreview: TJvCustomPreviewControl;
@@ -174,8 +175,13 @@ type
     FToPage: Integer;
     FFromPage: Integer;
     FCopies: Integer;
+    FPageIndex:integer;
     FOptions: TPrintDialogOptions;
     FPrintRange: TPrintRange;
+    FOnEndDoc: TNotifyEvent;
+    FOnNewPage: TJvNewPageEvent;
+    FOnBeginDoc: TNotifyEvent;
+    FOnAbort: TNotifyEvent;
     procedure SetPrinter(const Value: TPrinter);
     procedure CheckPrinter;
     procedure CheckActive;
@@ -192,12 +198,15 @@ type
     function GetPageWidth: Integer;
     function GetPrinting: Boolean;
     procedure NewPage;
+    procedure Abort;
     function GetTitle: string;
     procedure SetTitle(const Value: string);
   public
     procedure Print;
-    procedure Assign(Source: TPersistent); override;
-
+    procedure Assign(Source: TPersistent);override;
+    property Title:string read GetTitle write SetTitle;
+    property Printer: TPrinter read FPrinter write SetPrinter;
+  published
     property Collate: Boolean read FCollate write FCollate default False;
     property Copies: Integer read FCopies write SetNumCopies default 0;
     property FromPage: Integer read FFromPage write FFromPage default 0;
@@ -205,9 +214,11 @@ type
     property PrintRange: TPrintRange read FPrintRange write FPrintRange default prAllPages;
     property ToPage: Integer read FToPage write FToPage default 0;
 
-    property Printer: TPrinter read FPrinter write SetPrinter;
     property PrintPreview: TJvCustomPreviewControl read FPrintPreview write SetPrintPreview;
-    property Title: string read GetTitle write SetTitle;
+    property OnBeginDoc:TNotifyEvent read FOnBeginDoc write FOnBeginDoc;
+    property OnNewPage:TJvNewPageEvent read FOnNewPage write FOnNewPage;
+    property OnEndDoc:TNotifyEvent read FOnEndDoc write FOnEndDoc;
+    property OnAbort:TNotifyEvent read FOnAbort write FOnAbort;
   end;
 
 implementation
@@ -216,7 +227,6 @@ uses
 
 type
   TAccessPrvwDoc = class(TJvCustomPreviewControl);
-  TAccessGraphicControl = class(TGraphicControl);
 
 function CalcDestRect(AWidth, AHeight: integer; DstRect: TRect; Stretch, Proportional, Center: boolean): TRect;
 var
@@ -283,9 +293,12 @@ begin
   if not Append then
     PrintPreview.Clear;
   FOldAddPage := TAccessPrvwDoc(PrintPreview).OnAddPage;
-  TAccessPrvwDoc(PrintPreview).OnAddPage := InternalDoAddPage;
-  PrintPreview.Add;
-  TAccessPrvwDoc(PrintPreview).OnAddPage := FOldAddPage;
+  try
+    TAccessPrvwDoc(PrintPreview).OnAddPage := InternalDoAddPage;
+    PrintPreview.Add;
+  finally
+    TAccessPrvwDoc(PrintPreview).OnAddPage := FOldAddPage;
+  end;
 end;
 
 procedure TJvCustomPreviewer.InternalDoAddPage(Sender: TObject;
@@ -694,6 +707,15 @@ end;
 
 { TJvPreviewPrinter }
 
+procedure TJvPreviewPrinter.Abort;
+begin
+  CheckPrinter;
+  if GetPrinting then
+    FPrinter.Abort;
+  if Assigned(FOnAbort) then
+    FOnAbort(self);
+end;
+
 procedure TJvPreviewPrinter.Assign(Source: TPersistent);
 begin
   CheckActive;
@@ -724,6 +746,9 @@ procedure TJvPreviewPrinter.BeginDoc;
 begin
   CheckPrinter;
   FPrinter.BeginDoc;
+  if Assigned(FOnBeginDoc) then
+    FOnBeginDoc(self);
+  FPageIndex := 0;
 end;
 
 procedure TJvPreviewPrinter.CheckActive;
@@ -742,6 +767,8 @@ procedure TJvPreviewPrinter.EndDoc;
 begin
   CheckPrinter;
   FPrinter.EndDoc;
+  if Assigned(FOnEndDoc) then
+    FOnEndDoc(self);
 end;
 
 function TJvPreviewPrinter.GetAborted: Boolean;
@@ -784,6 +811,9 @@ procedure TJvPreviewPrinter.NewPage;
 begin
   CheckPrinter;
   FPrinter.NewPage;
+  if Assigned(FOnNewPage) then
+    FOnNewPage(self,FPageIndex);
+  Inc(FPageIndex);
 end;
 
 procedure TJvPreviewPrinter.Notification(AComponent: TComponent;
