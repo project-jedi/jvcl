@@ -126,7 +126,7 @@ uses
 
   // WinDialogs
   JvBrowseFolder, JvObjPickerComp, JvConnectNetwork,
-  JvAddPrinter, JvWinDialogs, JvxLogin,
+  JvAddPrinter, JvWinDialogs, JvxLogin, JvProgressDialog,
 
   // Win32
   JvStatusBar, JvProgressBar,
@@ -235,6 +235,8 @@ begin
   RegisterComponentEditor(TCommonDialog, TJvBaseDlgEditor);
   {$ENDIF}
   RegisterComponentEditor(TJvCommonDialog, TJvBaseDlgEditor);
+  RegisterComponentEditor(TJvOpenDialog, TJvBaseDlgEditor);
+  RegisterComponentEditor(TJvSaveDialog, TJvBaseDlgEditor);
   RegisterComponentEditor(TJvCommonDialogP, TJvBaseDlgEditor);
   RegisterComponentEditor(TJvCommonDialogF, TJvBaseDlgEditor);
   RegisterComponentEditor(TJvCommonDialogD, TJvCommonDialogDEditor);
@@ -335,7 +337,7 @@ begin
 
      TJvNagScreen, TJvTipOfDay, TJvFindReplace,
      TJvImageDlg, TJvDiskPrompt, TJvCopyError, TJvDeleteError,
-     TJvRenameError, TJvDSADialog, TJvLoginDialog]);
+     TJvRenameError, TJvDSADialog, TJvLoginDialog, TJvProgressDialog]);
 
   // Jv Custom
   RegisterComponents(srJvCustomPalette,

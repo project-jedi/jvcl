@@ -122,7 +122,7 @@ JvLogFileDemo.exe \
 JvTrayIconDemo.exe \
 JvZLibMultipleDemo.exe \
 JvFormatEditDemo.exe \
-
+JvProgressDialogDemo.exe \
 
 #---------------------------------------------------------------------------------------------------
 
@@ -612,5 +612,10 @@ JvZLibMultipleDemo.exe: JvZLibMultiple\JvZLibMultipleDemo.dpr
 
 JvFormatEditDemo.exe: JvValidateEdit\JvFormatEditDemo.dpr
   cd JvValidateEdit
+  $(DCC) $&.dpr
+  cd ..
+
+JvProgressDialogDemo.exe: JvProgressDialog\JvProgressDialogDemo.dpr
+  cd JvProgressDialog
   $(DCC) $&.dpr
   cd ..

@@ -37,8 +37,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes,
-  Controls, Forms, StdCtrls, ComCtrls,
-  JvComponent;
+  Controls, Forms, StdCtrls, ComCtrls, JvComponent;
 
 type
   TJvProgressForm = class(TJvComponent)
@@ -97,6 +96,8 @@ begin
     comment this function implementation, compile,
     then uncomment and compile again. }
 {$IFDEF COMPLIB_VCL}
+  {$IFDEF COMPILER6_UP}
+  {$WARN SYMBOL_DEPRECATED OFF}
   if RaiseList <> nil then
   begin
     Result := PRaiseFrame(RaiseList)^.ExceptObject;
@@ -104,6 +105,7 @@ begin
   end
   else
     Result := nil;
+  {$ENDIF}
 {$ENDIF COMPLIB_VCL}
 {$IFDEF LINUX}
   // XXX: changing exception in stack frame is not supported on Kylix

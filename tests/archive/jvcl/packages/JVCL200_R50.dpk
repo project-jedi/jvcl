@@ -413,6 +413,8 @@ contains
   JvCaret in '..\source\JvCaret.pas',
   Winamp in '..\common\Winamp.pas',
   Ras32 in '..\common\Ras32.pas',
+  JvProgressDialog in '..\source\JvProgressDialog.pas',
+  JvProgressFrm in '..\source\JvProgressFrm.pas' { frmProgress }, 
   JvValidateEdit in '..\source\JvValidateEdit.pas';
 
 end.

@@ -374,6 +374,8 @@ contains
   JvJVCLAbout in '..\source\JvJVCLAbout.pas' {JvJVCLAboutForm},
   JvCaret in '..\source\JvCaret.pas',
   Winamp in '..\common\Winamp.pas',
+  JvProgressDialog in '..\source\JvProgressDialog.pas',
+  JvProgressFrm in '..\source\JvProgressFrm.pas' { frmProgress }, 
   Ras32 in '..\common\Ras32.pas';
 
 end.
