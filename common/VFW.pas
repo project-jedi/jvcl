@@ -76,12 +76,7 @@ interface
 (******************************************************************************)
 
 uses
-    Windows,
-    MMSystem,
-    Messages,
-    CommDlg,
-    ActiveX,
-    Dialogs;
+  Windows, MMSystem, Messages, CommDlg, ActiveX, Dialogs;
 
 (****************************************************************************
  *
@@ -90,10 +85,10 @@ uses
  ***************************************************************************)
 
 type
-  PVOID = pointer;
-  LONG  = longint;
+  PVOID = Pointer;
+  LONG  = Longint;
   PLONG = ^LONG;
-  int   = integer;
+  int   = Integer;
   {$EXTERNALSYM int}
 
 (****************************************************************************

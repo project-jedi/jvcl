@@ -421,36 +421,36 @@ const
   ** SendMessage(hwnd_winamp, WM_COMMAND,command_name,0);
   *)
 
-  WINAMP_OPTIONS_EQ = 40036; // toggles the EQ window
+  WINAMP_OPTIONS_EQ     = 40036; // toggles the EQ window
   WINAMP_OPTIONS_PLEDIT = 40040; // toggles the playlist window
-  WINAMP_VOLUMEUP = 40058; // turns the volume up a little
-  WINAMP_VOLUMEDOWN = 40059; // turns the volume down a little
-  WINAMP_FFWD5S = 40060; // fast forwards 5 seconds
-  WINAMP_REW5S = 40061; // rewinds 5 seconds
+  WINAMP_VOLUMEUP       = 40058; // turns the volume up a little
+  WINAMP_VOLUMEDOWN     = 40059; // turns the volume down a little
+  WINAMP_FFWD5S         = 40060; // fast forwards 5 seconds
+  WINAMP_REW5S          = 40061; // rewinds 5 seconds
 
   // the following are the five main control buttons, with optionally shift
   // or control pressed
   // (for the exact functions of each, just try it out)
-  WINAMP_BUTTON1 = 40044;
-  WINAMP_BUTTON2 = 40045;
-  WINAMP_BUTTON3 = 40046;
-  WINAMP_BUTTON4 = 40047;
-  WINAMP_BUTTON5 = 40048;
-  WINAMP_BUTTON1_SHIFT = 40144;
-  WINAMP_BUTTON2_SHIFT = 40145;
-  WINAMP_BUTTON3_SHIFT = 40146;
-  WINAMP_BUTTON4_SHIFT = 40147;
-  WINAMP_BUTTON5_SHIFT = 40148;
-  WINAMP_BUTTON1_CTRL = 40154;
-  WINAMP_BUTTON2_CTRL = 40155;
-  WINAMP_BUTTON3_CTRL = 40156;
-  WINAMP_BUTTON4_CTRL = 40157;
-  WINAMP_BUTTON5_CTRL = 40158;
+  WINAMP_BUTTON1        = 40044;
+  WINAMP_BUTTON2        = 40045;
+  WINAMP_BUTTON3        = 40046;
+  WINAMP_BUTTON4        = 40047;
+  WINAMP_BUTTON5        = 40048;
+  WINAMP_BUTTON1_SHIFT  = 40144;
+  WINAMP_BUTTON2_SHIFT  = 40145;
+  WINAMP_BUTTON3_SHIFT  = 40146;
+  WINAMP_BUTTON4_SHIFT  = 40147;
+  WINAMP_BUTTON5_SHIFT  = 40148;
+  WINAMP_BUTTON1_CTRL   = 40154;
+  WINAMP_BUTTON2_CTRL   = 40155;
+  WINAMP_BUTTON3_CTRL   = 40156;
+  WINAMP_BUTTON4_CTRL   = 40157;
+  WINAMP_BUTTON5_CTRL   = 40158;
 
-  WINAMP_FILE_PLAY = 40029; // pops up the load file(s) box
-  WINAMP_OPTIONS_PREFS = 40012; // pops up the preferences
-  WINAMP_OPTIONS_AOT = 40019; // toggles always on top
-  WINAMP_HELP_ABOUT = 40041; // pops up the about box :)
+  WINAMP_FILE_PLAY      = 40029; // pops up the load file(s) box
+  WINAMP_OPTIONS_PREFS  = 40012; // pops up the preferences
+  WINAMP_OPTIONS_AOT    = 40019; // toggles always on top
+  WINAMP_HELP_ABOUT     = 40041; // pops up the about box :)
 
   (*
   ** EOF.. Enjoy.

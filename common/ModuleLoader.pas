@@ -27,6 +27,8 @@
 {                                                                  }
 {******************************************************************}
 
+{$I JVCL.INC}
+
 unit ModuleLoader;
 
 interface
@@ -35,7 +37,7 @@ interface
 
 // each OS gets its own IFDEFed complete code block to make reading easier
 
-{$IFDEF WIN32}
+{$IFDEF MSWINDOWS}
 
 uses
   Windows;
@@ -45,7 +47,7 @@ type
   TModuleHandle = HINST;
 
 const
-  // Value designating an unassigned TModuleHandle od a failed loading
+  // Value designating an unassigned TModuleHandle or a failed loading
   INVALID_MODULEHANDLE_VALUE = TModuleHandle(0);
 
 function LoadModule(var Module: TModuleHandle; FileName: string): Boolean;
@@ -55,9 +57,10 @@ function GetModuleSymbol(Module: TModuleHandle; SymbolName: string): Pointer;
 function GetModuleSymbolEx(Module: TModuleHandle; SymbolName: string; var Accu: Boolean): Pointer;
 function ReadModuleData(Module: TModuleHandle; SymbolName: string; var Buffer; Size: Cardinal): Boolean;
 function WriteModuleData(Module: TModuleHandle; SymbolName: string; var Buffer; Size: Cardinal): Boolean;
-{$ENDIF}
 
-{$IFDEF LINUX}
+{$ENDIF MSWINDOWS}
+
+{$IFDEF UNIX}
 
 uses
   Types, Libc;
@@ -65,10 +68,9 @@ uses
 type
   // Handle to a loaded .so
   TModuleHandle = Pointer;
-  HModule = Pointer;
 
 const
-  // Value designating an unassigned TModuleHandle od a failed loading
+  // Value designating an unassigned TModuleHandle or a failed loading
   INVALID_MODULEHANDLE_VALUE = TModuleHandle(nil);
 
 function LoadModule(var Module: TModuleHandle; FileName: string): Boolean;
@@ -79,7 +81,7 @@ function GetModuleSymbolEx(Module: TModuleHandle; SymbolName: string; var Accu: 
 function ReadModuleData(Module: TModuleHandle; SymbolName: string; var Buffer; Size: Cardinal): Boolean;
 function WriteModuleData(Module: TModuleHandle; SymbolName: string; var Buffer; Size: Cardinal): Boolean;
 
-{$ENDIF}
+{$ENDIF UNIX}
 
 // (p3)
 // Simple DLL loading class. The idea is to use it to dynamically load
@@ -97,62 +99,40 @@ function WriteModuleData(Module: TModuleHandle; SymbolName: string; var Buffer; 
 type
   TModuleLoadMethod = (ltDontResolveDllReferences, ltLoadAsDataFile, ltAlteredSearchPath);
   TModuleLoadMethods = set of TModuleLoadMethod;
-  TModuleLoader = class
+  TModuleLoader = class(TObject)
   private
-    FHandle: HModule;
+    FHandle: TModuleHandle;
     FDLLName: string;
-    function GetLoaded: boolean;
+    function GetLoaded: Boolean;
   protected
-    procedure Load(LoadMethods:TModuleLoadMethods);virtual;
-    procedure Unload;virtual;
-    procedure Error(ErrorCode:Cardinal);virtual;
+    procedure Load(LoadMethods: TModuleLoadMethods); virtual;
+    procedure Unload; virtual;
+    procedure Error(ErrorCode: Cardinal); virtual;
   public
     // Check whether a DLL (and optionally a function) is available on the system
     // To only check the DLL, leave ProcName empty
-    class function IsAvaliable(const ADLLName:string;const AProcName:string=''):boolean;
-    constructor Create(const ADLLName:string; LoadMethods:TModuleLoadMethods=[]);
-    destructor Destroy;override;
+    class function IsAvaliable(const ADLLName: string; const AProcName: string = ''): Boolean;
+    constructor Create(const ADLLName: string; LoadMethods: TModuleLoadMethods = []);
+    destructor Destroy; override;
     // Get a pointer to a function in the DLL. Should be called as GetProcedure('Name',@FuncPointer);
-    // Returns true if the function was found. Note that a call to GetProcAddress is only executed if AProc = nil
-    function GetProcedure(const AName:string; var AProc:Pointer):boolean;
+    // Returns True if the function was found. Note that a call to GetProcAddress is only executed if AProc = nil
+    function GetProcedure(const AName: string; var AProc: Pointer): Boolean;
     // Returns a symbol exported from the DLL and puts it in Buffer.
     // Make sure AName is actually a symbol and not a function or this will crash horribly!
-    function GetExportedSymbol(const AName:string;var Buffer;Size:integer):boolean;
+    function GetExportedSymbol(const AName: string; var Buffer; Size: Integer): Boolean;
     // Changes a symbol exported from the DLL into the value in Buffer.
     // The change is not persistent (it will get lost when the DLL is unloaded)
     // Make sure AName is actually a symbol and not a function or this will crash horribly!
-    function SetExportedSymbol(const AName:string;var Buffer;Size:integer):boolean;
+    function SetExportedSymbol(const AName: string; var Buffer; Size: Integer): Boolean;
 
-    property Loaded:boolean read GetLoaded;
-    property DLLName:string read FDLLName;
-    property Handle:HModule read FHandle;
+    property Loaded: Boolean read GetLoaded;
+    property DLLName: string read FDLLName;
+    property Handle: TModuleHandle read FHandle;
   end;
-  {$IFDEF WIN32}
-  {$IFDEF MODULELOADER_TEST}
-  // This is a simple example of dynamically loading user32.dll and accessing the
-  // RegisterShellHookWindow/DeregisterShellHookWindow functions
-  // (since these might not be available on all systems)
-  // NB! Win32 only!!!
-  TRegisterShellHookWindowFunc = function(hWnd: HWND): BOOL; stdcall;
-  TRegisterHookModuleLoader = class(TModuleLoader)
-  private
-    FRegisterShellHookWindow: TRegisterShellHookWindowFunc;
-    FDeregisterShellHookWindow: TRegisterShellHookWindowFunc;
-  protected
-    procedure Load(LoadMethods:TModuleLoadMethods);override;
-    procedure Unload;override;
-  public
-    constructor Create;
-    // alias the DLL functions as methods
-    function RegisterShellHookWindow(hWnd:HWND):BOOL;
-    function DeregisterShellHookWindow(hWnd:HWND):BOOL;
-  end;
-  {$ENDIF MODULELOADER_TEST}
-  {$ENDIF WIN32}
 
 implementation
 
-{$IFDEF WIN32 }
+{$IFDEF MSWINDOWS}
 // load the DLL file FileName
 // the rules for FileName are those of LoadLibrary
 // Returns: True = success, False = failure to load
@@ -204,7 +184,7 @@ end;
 // returns the pointer to the symbol named SymbolName
 // if it is exported from the DLL Module
 // nil is returned if the symbol is not available.
-// as an extra the boolean variable Accu is updated
+// as an extra the Boolean variable Accu is updated
 // by anding in the success of the function.
 // This is very handy for rendering a global result
 // when accessing a long list of symbols.
@@ -253,9 +233,9 @@ begin
     Move(Buffer, Sym^, Size);
 end;
 
-{$ENDIF}
+{$ENDIF MSWINDOWS}
 
-{$IFDEF LINUX }
+{$IFDEF UNIX}
 
 // load the .so file FileName
 // the rules for FileName are those of dlopen()
@@ -308,7 +288,7 @@ end;
 // returns the pointer to the symbol named SymbolName
 // if it is exported from the .so Module
 // nil is returned if the symbol is not available.
-// as an extra the boolean variable Accu is updated
+// as an extra the Boolean variable Accu is updated
 // by anding in the success of the function.
 // This is very handy for rendering a global result
 // when accessing a long list of symbols.
@@ -357,44 +337,47 @@ begin
     Move(Buffer, Sym^, Size);
 end;
 
-{$ENDIF}
-// support routines for the TModuleloader class
-function InternalLoadLibraryEx(const lpLibFilename: PChar; hFile: HFILE; dwFlags: DWORD): HModule;
+{$ENDIF UNIX}
+
+// support routines for the TModuleLoader class
+
+function InternalLoadLibraryEx(const lpLibFilename: PChar; hFile: HFILE; dwFlags: DWORD): TModuleHandle;
 begin
-  {$IFDEF LINUX}
-  Result := dlopen(lpLibFilename,dwFlags);
-  {$ENDIF}
-  {$IFDEF WIN32}
-  Result := LoadLibraryEx(lpLibFilename,hFile,dwFlags);
-  {$ENDIF}
+  {$IFDEF UNIX}
+  Result := dlopen(lpLibFilename, dwFlags);
+  {$ENDIF UNIX}
+  {$IFDEF MSWINDOWS}
+  Result := LoadLibraryEx(lpLibFilename, hFile, dwFlags);
+  {$ENDIF MSWINDOWS}
 end;
 
-function InternalGetProcAddress(hModule: HModule;
+function InternalGetProcAddress(hModule: TModuleHandle;
   lpProcName: PChar): Pointer;
 begin
-  {$IFDEF LINUX}
-  Result := dlsym(hModule,lpProcName);
-  {$ENDIF}
-  {$IFDEF WIN32}
-  Result := GetProcAddress(hModule,lpProcName);
-  {$ENDIF}
+  {$IFDEF UNIX}
+  Result := dlsym(hModule, lpProcName);
+  {$ENDIF UNIX}
+  {$IFDEF MSWINDOWS}
+  Result := GetProcAddress(hModule, lpProcName);
+  {$ENDIF MSWINDOWS}
 end;
 
-function InternalFreeLibrary(hModule: HModule): BOOL;
+function InternalFreeLibrary(hModule: TModuleHandle): BOOL;
 begin
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   Result := dlclose(hModule) = 0;
-  {$ENDIF}
-  {$IFDEF WIN32}
+  {$ENDIF UNIX}
+  {$IFDEF MSWINDOWS}
   Result := FreeLibrary(hModule);
-  {$ENDIF}
+  {$ENDIF MSWINDOWS}
 end;
 
-{ TModuleLoader }
+//=== TModuleLoader ==========================================================
 
-constructor TModuleLoader.Create(const ADLLName: string; LoadMethods:TModuleLoadMethods=[]);
+constructor TModuleLoader.Create(const ADLLName: string; LoadMethods: TModuleLoadMethods = []);
 begin
   inherited Create;
+  FHandle := INVALID_MODULEHANDLE_VALUE;
   FDLLName := ADLLName;
   Load(LoadMethods);
 end;
@@ -402,7 +385,7 @@ end;
 destructor TModuleLoader.Destroy;
 begin
   Unload;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TModuleLoader.Error(ErrorCode: Cardinal);
@@ -411,25 +394,26 @@ begin
 end;
 
 function TModuleLoader.GetExportedSymbol(const AName: string; var Buffer;
-  Size: integer): boolean;
-var ASymbol:Pointer;
+  Size: Integer): Boolean;
+var
+  ASymbol: Pointer;
 begin
-  Result := GetProcedure(AName,ASymbol);
+  Result := GetProcedure(AName, ASymbol);
   if Result then
-    Move(ASymbol^,Buffer,Size);
+    Move(ASymbol^, Buffer, Size);
 end;
 
-function TModuleLoader.GetLoaded: boolean;
+function TModuleLoader.GetLoaded: Boolean;
 begin
-  Result := Handle <> 0;
+  Result := Handle <> INVALID_MODULEHANDLE_VALUE;
 end;
 
-function TModuleLoader.GetProcedure(const AName: string; var AProc: Pointer): boolean;
+function TModuleLoader.GetProcedure(const AName: string; var AProc: Pointer): Boolean;
 begin
   Result := Loaded;
   if Result and not Assigned(AProc) then
   begin
-    AProc := InternalGetProcAddress(Handle,PChar(AName));
+    AProc := InternalGetProcAddress(Handle, PChar(AName));
     Result := Assigned(AProc);
   end;
   if not Result then
@@ -439,96 +423,58 @@ begin
   end;
 end;
 
-class function TModuleLoader.IsAvaliable(const ADLLName: string;const AProcName:string=''): boolean;
-var FModule:HModule;P:Pointer;
+class function TModuleLoader.IsAvaliable(const ADLLName: string; const AProcName: string = ''): Boolean;
+var
+  Module: TModuleHandle;
+  P: Pointer;
 begin
-  FModule := InternalLoadLibraryEx(PChar(ADLLName),0,0);
-  Result := FModule <> 0;
+  Module := InternalLoadLibraryEx(PChar(ADLLName), 0, 0);
+  Result := Module <> 0;
   if Result then
   begin
     if AProcName <> '' then
     begin
-      P := InternalGetProcAddress(FModule,PChar(AProcName));
+      P := InternalGetProcAddress(Module, PChar(AProcName));
       Result := Assigned(P);
     end;
     InternalFreeLibrary(FModule);
   end;
 end;
 
-procedure TModuleLoader.Load(LoadMethods:TModuleLoadMethods);
+procedure TModuleLoader.Load(LoadMethods: TModuleLoadMethods);
 const
-  cLoadMethods:array[TModuleLoadMethod] of DWORD = (DONT_RESOLVE_DLL_REFERENCES,LOAD_LIBRARY_AS_DATAFILE,LOAD_WITH_ALTERED_SEARCH_PATH);
-var Flags:DWORD;i:TModuleLoadMethod;
+  cLoadMethods: array [TModuleLoadMethod] of DWORD =
+    (DONT_RESOLVE_DLL_REFERENCES, LOAD_LIBRARY_AS_DATAFILE, LOAD_WITH_ALTERED_SEARCH_PATH);
+var
+  Flags: DWORD;
+  I: TModuleLoadMethod;
 begin
   Flags := 0;
-  for i := Low(TModuleLoadMethod) to High(TModuleLoadMethod) do
-    if i in LoadMethods then
-      Flags := Flags or cLoadMethods[i];
-  if FHandle = 0 then
-    FHandle := InternalLoadLibraryEx(PChar(DLLName),0,Flags);
-  if FHandle = 0 then
+  for I := Low(TModuleLoadMethod) to High(TModuleLoadMethod) do
+    if I in LoadMethods then
+      Flags := Flags or cLoadMethods[I];
+  if FHandle = INVALID_MODULEHANDLE_VALUE then
+    FHandle := InternalLoadLibraryEx(PChar(DLLName), 0, Flags);
+  if FHandle = INVALID_MODULEHANDLE_VALUE then
     Error(GetLastError);
 end;
 
 function TModuleLoader.SetExportedSymbol(const AName: string; var Buffer;
-  Size: integer): boolean;
-var ASymbol:Pointer;
+  Size: Integer): Boolean;
+var
+  ASymbol: Pointer;
 begin
-  Result := GetProcedure(AName,ASymbol);
+  Result := GetProcedure(AName, ASymbol);
   if Result then
-    Move(Buffer,ASymbol^,Size);
+    Move(Buffer, ASymbol^, Size);
 end;
 
 procedure TModuleLoader.Unload;
 begin
-  if FHandle <> 0 then
+  if FHandle <> INVALID_MODULEHANDLE_VALUE then
     InternalFreeLibrary(FHandle);
-  FHandle := 0;
+  FHandle := INVALID_MODULEHANDLE_VALUE;
 end;
-
-{$IFDEF WIN32}
-{$IFDEF MODULELOADER_TEST}
-{ TRegisterHookModuleLoader }
-
-constructor TRegisterHookModuleLoader.Create;
-begin
-  // Don't allow users to change the DLL loaded:
-  inherited Create('user32.dll');
-end;
-
-function TRegisterHookModuleLoader.DeregisterShellHookWindow(hWnd: HWND): BOOL;
-begin
-  // Load example 1: load the function once at request
-  if Assigned(FDeregisterShellHookWindow) or GetProcedure('DeregisterShellHookWindow',@FDeregisterShellHookWindow) then
-    Result := FDeregisterShellHookWindow(hWnd)
-  else
-    Result := false;
-end;
-
-procedure TRegisterHookModuleLoader.Load(LoadMethods: TModuleLoadMethods);
-begin
-  inherited Load(LoadMethods);
-  // Load example 2: load the function once at startup
-  GetProcedure('RegisterShellHookWindow',@FRegisterShellHookWindow);
-end;
-
-function TRegisterHookModuleLoader.RegisterShellHookWindow(
-  hWnd: HWND): BOOL;
-begin
-  if Assigned(FRegisterShellHookWindow) then
-    Result := FRegisterShellHookWindow(hWnd)
-  else
-    Result := false;
-end;
-
-procedure TRegisterHookModuleLoader.Unload;
-begin
-  inherited Unload;
-  @FRegisterShellHookWindow := nil;
-  @FDeregisterShellHookWindow := nil;
-end;
-{$ENDIF MODULELOADER_TEST}
-{$ENDIF WIN32}
-
 
 end.
+

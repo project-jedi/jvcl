@@ -1,4 +1,3 @@
-{ what the heck is $EXTERNALSYM??? }
 {******************************************************************************
 
  Object Picker API interface Unit for Object Pascal
