@@ -241,6 +241,7 @@ procedure TJvCalcButton.ParentFontChanged;
 {$IFDEF VCL}
 procedure TJvCalcButton.CMParentFontChanged(var Msg: TMessage);
 {$ENDIF VCL}
+
   function BtnColor(Kind: TCalcBtnKind): TColor;
   begin
     if Kind in [cbSqr, cbPcnt, cbRev, cbMP..cbMC] then
@@ -818,7 +819,7 @@ begin
     cbEql:
       CalcKey('=');
     cbBck:
-      CalcKey(#8);
+      CalcKey(Backspace);
     cbClr:
       CalcKey('C');
     cbMP:

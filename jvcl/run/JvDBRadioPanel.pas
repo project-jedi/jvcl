@@ -151,6 +151,9 @@ type
 
 implementation
 
+uses
+  JvConsts;
+
 //=== TGroupButton ===========================================================
 
 type
@@ -204,7 +207,7 @@ procedure TGroupButton.KeyPress(var Key: Char);
 begin
   inherited KeyPress(Key);
   TJvDBRadioPanel(Parent).KeyPress(Key);
-  if Key in [#8, ' '] then
+  if Key in [Backspace, ' '] then
   begin
     if not TJvDBRadioPanel(Parent).CanModify then
       Key := #0;
@@ -433,9 +436,9 @@ procedure TJvDBRadioPanel.KeyPress(var Key: Char);
 begin
   inherited KeyPress(Key);
   case Key of
-    #8, ' ':
+    Backspace, ' ':
       FDataLink.Edit;
-    #27:
+    Esc:
       FDataLink.Reset;
   end;
 end;

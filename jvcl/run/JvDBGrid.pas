@@ -1746,7 +1746,7 @@ end;
 procedure TJvDBGrid.KeyPress(var Key: Char);
 const
   cChar = ['A'..'Z', 'a'..'z', ' ', '-', '+', '0'..'9', '.', ',',
-    'é', 'è', 'ê', 'ë', 'ô', 'û', 'ù', 'â', 'à', 'î', 'ï', 'ç', #8];
+    'é', 'è', 'ê', 'ë', 'ô', 'û', 'ù', 'â', 'à', 'î', 'ï', 'ç', Backspace];
 var
   lWord: string;
   lMasterField: TField;
@@ -1756,7 +1756,7 @@ begin
   // Goal: Allow to go directly into the InplaceEditor when one types the first
   // characters of a word found in the list.
   if not ReadOnly then
-    if (Key = #13) and FPostOnEnter then
+    if (Key = Cr) and FPostOnEnter then
       DataSource.DataSet.CheckBrowseMode
     else
       with Columns[SelectedIndex].Field do
@@ -1766,7 +1766,7 @@ begin
           begin
             if Pos(UpperCase(FWord), UpperCase(InplaceEditor.EditText)) <> 1 then
               FWord := '';
-            if Key = #8 then
+            if Key = Backspace then
               if (FWord = '') or (Length(FWord) = 1) then
               begin
                 lWord := '';
@@ -1807,7 +1807,7 @@ begin
           begin
             if Pos(UpperCase(FWord), UpperCase(InplaceEditor.EditText)) <> 1 then
               FWord := '';
-            if Key = #8 then
+            if Key = Backspace then
               if (FWord = '') or (Length(FWord) = 1) then
               begin
                 lWord := '';
@@ -1818,7 +1818,7 @@ begin
             else
               lWord := FWord + Key;
 
-            Key := #0; // De toute façon le caractère est supprimé
+            Key := #0; // always suppress char
             with Columns[SelectedIndex].PickList do
               for I := 0 to Count - 1 do
               begin

@@ -251,9 +251,9 @@ implementation
 uses
   Forms,
   JvJVCLUtils, JvJCLUtils, JvConsts, JvResources;
-const
-  cTwipsPerInch = 1440;  
 
+const
+  cTwipsPerInch = 1440;
 
 procedure StretchDrawBitmap(Canvas: TCanvas; const ARect: TRect; Bitmap: TBitmap);
 begin
@@ -601,8 +601,8 @@ begin
         DT_CALCRECT or DT_NOPREFIX or DT_EXPANDTABS or DT_WORDBREAK or DT_LEFT or DT_TOP);
       if ARect.Right > PrintRect.Right then
       begin
-        ARect.Right := PrintRect.Right; // reset and jsut force a line break in the middle (not fail proof!)
-        S := Copy(S, 1, Length(S) div 2) + #13#10 +
+        ARect.Right := PrintRect.Right; // reset and just force a line break in the middle (not fail proof!)
+        S := Copy(S, 1, Length(S) div 2) + CrLf +
           Copy(S, Length(S) div 2 + 1, Length(S));
         IncValue := DrawText(Canvas, PChar(S), Length(S), ARect,
           DT_CALCRECT or DT_NOPREFIX or DT_EXPANDTABS or DT_WORDBREAK or DT_LEFT or DT_TOP);

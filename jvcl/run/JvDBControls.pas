@@ -750,9 +750,9 @@ begin
     Key := #0;
   end;
   case Key of
-    ^H, ^V, ^X, #32..#255:
+    CtrlH, CtrlV, CtrlX, #32..#255:
       FDataLink.Edit;
-    #27:
+    Esc:
       begin
         FDataLink.Reset;
         SelectAll;
@@ -1185,9 +1185,9 @@ begin
     Key := #0;
   end;
   case Key of
-    ^H, ^V, ^X, #32..#255:
+    CtrlH, CtrlV, CtrlX, #32..#255:
       FDataLink.Edit;
-    #27:
+    Esc:
       begin
         FDataLink.Reset;
         SelectAll;
@@ -1460,9 +1460,9 @@ begin
     Key := #0;
   end;
   case Key of
-    ^H, ^V, ^X, '0'..'9':
+    CtrlH, CtrlV, CtrlX, '0'..'9':
       FDataLink.Edit;
-    #27:
+    Esc:
       begin
         Reset;
         Key := #0;
@@ -1806,10 +1806,10 @@ procedure TJvDBCalcEdit.KeyPress(var Key: Char);
 begin
   inherited KeyPress(Key);
   case Key of
-    ^H, ^V, ^X, #32..#255:
+    CtrlH, CtrlV, CtrlX, #32..#255:
       if not PopupVisible then
         FDataLink.Edit;
-    #27:
+    Esc:
       begin
         FDataLink.Reset;
         SelectAll;

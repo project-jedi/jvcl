@@ -1141,7 +1141,8 @@ end;
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
 begin
-  if WorkingDirectory = '' then WorkingDirectory := GetCurrentDir;
+  if WorkingDirectory = '' then
+    WorkingDirectory := GetCurrentDir;
   Result := Libc.system(PChar(Format('cd "%s" ; %s',
     [WorkingDirectory, CommandLine])));
 end;
@@ -2916,7 +2917,7 @@ begin
   UsesBitmap;
   I := ColorToRGB(ACanvas.Brush.Color);
   if not WordWrap and (Integer(GetNearestColor(ACanvas.Handle, I)) = I) and
-    (Pos(#13, Text) = 0) then
+    (Pos(Cr, Text) = 0) then
   begin { Use ExtTextOut for solid colors }
     { In BiDi, because we changed the window origin, the text that does not
     change alignment, actually gets its alignment changed. }
@@ -3924,7 +3925,7 @@ var
 begin
   Result := Str;
   repeat
-    N := Pos(CRLF, Result);
+    N := Pos(CrLf, Result);
     if N > 0 then
       Result := Copy(Result, 1, N - 1) + '\n' + Copy(Result, N + 2, Length(Result));
   until N = 0;

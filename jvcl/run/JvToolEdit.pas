@@ -2144,12 +2144,12 @@ begin
 
   //Polaris  if (Key = Char(VK_RETURN)) or (Key = Char(VK_ESCAPE)) then
 //  if (Key = Char(VK_RETURN)) or (Key = Char(VK_ESCAPE)) or ((Key = #10) and PopupVisible) then
-  if (Key = #13) or (Key = #27) or ((Key = #10) and PopupVisible) then
+  if (Key = Cr) or (Key = Esc) or ((Key = Lf) and PopupVisible) then
   begin
     if PopupVisible then
     begin
       //Polaris      PopupCloseUp(FPopup, Key = Char(VK_RETURN));
-      PopupCloseUp(FPopup, Key <> #27);
+      PopupCloseUp(FPopup, Key <> Esc);
       Key := #0;
     end
     else
@@ -2161,7 +2161,7 @@ begin
       {$IFDEF VisualCLX}
       TCustomFormHack(GetParentForm(Self)).NeedKey(Integer(Key), [], WideChar(Key));
       {$ENDIF VisualCLX}
-      if Key = #13 then
+      if Key = Cr then
       begin
         inherited KeyPress(Key);
         Key := #0;
@@ -2170,7 +2170,7 @@ begin
     end;
   end;
   //Polaris
-  if Key in [#10, #9] then
+  if Key in [Tab, Lf] then
   begin
     Key := #0;
     if (Form <> nil) {and Form.KeyPreview} then

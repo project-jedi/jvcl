@@ -709,7 +709,7 @@ end;
 function TJvCustomButton.GetRealCaption: string;
 begin
   if WordWrap then
-    Result := StringReplace(Caption, JvBtnLineSeparator, #10, [rfReplaceAll])
+    Result := StringReplace(Caption, JvBtnLineSeparator, Lf, [rfReplaceAll])
   else
     Result := Caption;
 end;

@@ -211,7 +211,7 @@ function getWeekNumber(today: Tdatetime): string;
 
 function parseNumber(s: string): Integer;
 // parse number returns the last position, starting from 1
-function parseDate(s: string): Integer;
+function ParseDate(s: string): Integer;
 // parse a SQL style data string from positions 1,
 // starts and ends with #
 
@@ -2009,8 +2009,10 @@ begin
           Inc(I, 2);
           Result := Result + Chr(((Pos(H1, HexChars) - 1) * 16) + (Pos(H2, HexChars) - 1));
         end;
-      '+': Result := Result + ' ';
-      '&': Result := Result + #13 + #10;
+      '+':
+        Result := Result + ' ';
+      '&':
+        Result := Result + CrLf;
     else
       Result := Result + Ch;
     end;
@@ -2224,7 +2226,7 @@ end;
 // parse a SQL style data string from positions 1,
 // starts and ends with #
 
-function parseDate(s: string): Integer;
+function ParseDate(s: string): Integer;
 var
   p: Integer;
 begin

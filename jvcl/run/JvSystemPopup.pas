@@ -77,7 +77,7 @@ type
 implementation
 
 uses
-  JvWndProcHook, JvResources;
+  JvWndProcHook, JvConsts, JvResources;
 
 type
   TMenuItemProtectedAccess = class(TMenuItem);
@@ -278,7 +278,7 @@ begin
   else
   if (AMenuItem.ShortCut <> scNone) and ((AMenuItem.Parent = nil) or
     (AMenuItem.Parent.Parent <> nil) or not (AMenuItem.Parent.Owner is TMainMenu)) then
-    Caption := Caption + #9 + ShortCutToText(AMenuItem.ShortCut);
+    Caption := Caption + Tab + ShortCutToText(AMenuItem.ShortCut);
   if Lo(GetVersion) >= 4 then
   begin
     MenuItemInfo.cbSize := 44; // Required for Windows 95

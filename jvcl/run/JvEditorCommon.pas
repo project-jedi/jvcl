@@ -2531,13 +2531,13 @@ var
   Tabs, LenSp: Integer;
   P: PChar;
 begin
-  ps := Pos(#9, S);
+  ps := Pos(Tab, S);
   if ps > 0 then
   begin
    // How may Tab chars?
     Tabs := 1;
     for I := ps + 1 to Length(S) do
-      if S[I] = #9 then
+      if S[I] = Tab then
         Inc(Tabs);
 
     Sp := Spaces(GetDefTabStop(0, True));
@@ -2547,7 +2547,7 @@ begin
     SetLength(Result, Length(S) - Tabs + Tabs * LenSp);
     P := PChar(Result);
 
-   // copy the chars before the #9
+   // copy the chars before the Tab
     if ps > 1 then
     begin
       Move(S[1], P[0], ps - 1);
@@ -2555,7 +2555,7 @@ begin
     end;
 
     for I := ps to Length(S) do
-      if S[I] <> #9 then
+      if S[I] <> Tab then
       begin
         P[0] := S[I];
         Inc(P);
@@ -2918,7 +2918,7 @@ begin
   end;
 
   if Com = ecBackSpace then
-    Completion.DoKeyPress(#8);
+    Completion.DoKeyPress(Backspace);
 end;
 
 procedure TJvCustomEditorBase.KeyPress(var Key: Char);

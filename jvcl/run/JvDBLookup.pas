@@ -627,7 +627,7 @@ implementation
 
 uses
   DBConsts, Dialogs, Math,
-  JvThemes, JvTypes, JvJVCLUtils, JvJCLUtils, JvResources;
+  JvThemes, JvJVCLUtils, JvJCLUtils, JvConsts, JvResources, JvTypes;
 
 procedure CheckLookupFormat(const AFormat: string);
 var
@@ -1095,9 +1095,9 @@ begin
   S := '';
   if (FDisplayField <> nil) {and (FDisplayField.DataType = ftString)} then
     case Key of
-      #9, #27:
+      Tab, Esc:
         FSearchText := '';
-      Char(VK_BACK), #32..#255:
+      Backspace, #32..#255:
         if CanModify then
         begin
           if not FPopup then
@@ -2637,9 +2637,9 @@ procedure TJvDBLookupCombo.KeyPress(var Key: Char);
 begin
   if FListVisible then
   begin
-    if Key in [#13, #27] then
+    if Key in [Cr, Esc] then
     begin
-      CloseUp(Key = #13);
+      CloseUp(Key = Cr);
       Key := #0;
     end
     else
@@ -2654,7 +2654,7 @@ begin
         FDataList.KeyPress(Key);
     end
     else
-    if (Key = #27) and FEscapeClear and (not ValueIsEmpty(FValue)) and CanModify then
+    if (Key = Esc) and FEscapeClear and (not ValueIsEmpty(FValue)) and CanModify then
     begin
       ResetField;
       // Key := #0;
@@ -2663,7 +2663,7 @@ begin
     end;
   end;
   inherited KeyPress(Key);
-  if Key in [#13, #27] then
+  if Key in [Cr, Esc] then
     GetParentForm(Self).Perform(CM_DIALOGKEY, Byte(Key), 0);
 end;
 

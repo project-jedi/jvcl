@@ -512,7 +512,7 @@ uses
   {$IFDEF COMPILER6_UP}
   DateUtils,
   {$ENDIF COMPILER6_UP}
-  JvJVCLUtils, JvThemes;
+  JvJVCLUtils, JvConsts, JvThemes;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvTimeLine.res}
@@ -2292,7 +2292,7 @@ begin
   begin
     S := '';
     Stream.Read(Ch, 1);
-    while Ch <> #13 do
+    while Ch <> Cr do
     begin
       S := S + Ch;
       Stream.Read(Ch, 1);
@@ -2336,37 +2336,37 @@ begin
   begin
     with Items[I] do
     begin
-      S := Caption + #13;
+      S := Caption + Cr;
       Stream.Write(S[1], Length(S));
 
-      S := IntToStr(ColorToRGB(Color)) + #13;
+      S := IntToStr(ColorToRGB(Color)) + Cr;
       Stream.Write(S[1], Length(S));
 
-      S := DateTimeToStr(Date) + #13;
+      S := DateTimeToStr(Date) + Cr;
       Stream.Write(S[1], Length(S));
 
-      S := Hint + #13;
+      S := Hint + Cr;
       Stream.Write(S[1], Length(S));
 
-      S := IntToStr(ImageIndex) + #13;
+      S := IntToStr(ImageIndex) + Cr;
       Stream.Write(S[1], Length(S));
 
-      S := IntToStr(Level) + #13;
+      S := IntToStr(Level) + Cr;
       Stream.Write(S[1], Length(S));
 
-      S := IntToStr(Ord(Selected)) + #13;
+      S := IntToStr(Ord(Selected)) + Cr;
       Stream.Write(S[1], Length(S));
 
-      S := IntToStr(ColorToRGB(TextColor)) + #13;
+      S := IntToStr(ColorToRGB(TextColor)) + Cr;
       Stream.Write(S[1], Length(S));
 
-      S := IntToStr(Width) + #13;
+      S := IntToStr(Width) + Cr;
       Stream.Write(S[1], Length(S));
       { let the user save his data stuff }
       SaveItem(Items[I], Stream);
     end;
   end;
-  S := #13;
+  S := Cr;
   Stream.Write(S[1], 1);
 end;
 

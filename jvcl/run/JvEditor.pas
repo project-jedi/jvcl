@@ -587,7 +587,7 @@ begin
   try
     P := PChar(Text);
     F := P;
-    while (P[0] <> #0) and (P[0] <> #10) and (P[0] <> #13) do
+    while (P[0] <> #0) and (P[0] <> Lf) and (P[0] <> Cr) do
       Inc(P);
 
     SetString(s, F, P - F);
@@ -597,13 +597,13 @@ begin
 
     while P[0] <> #0 do
     begin
-      if P[0] = #13 then
+      if P[0] = Cr then
         Inc(P);
-      if P[0] = #10 then
+      if P[0] = Lf then
         Inc(P);
       F := P;
 
-      while (P[0] <> #0) and (P[0] <> #10) and (P[0] <> #13) do
+      while (P[0] <> #0) and (P[0] <> Lf) and (P[0] <> Cr) do
         Inc(P);
       SetString(S, F, P - F);
       Inc(Y);
@@ -680,7 +680,7 @@ begin
     F := P;
     while P[0] <> #0 do
     begin
-      while (P[0] <> #0) and (P[0] <> #10) and (P[0] <> #13) do
+      while (P[0] <> #0) and (P[0] <> Lf) and (P[0] <> Cr) do
         Inc(P);
       SetString(S, F, P - F);
 
@@ -693,9 +693,9 @@ begin
       System.Insert(S, Line, X);
       Internal[Y] := Line;
 
-      if P[0] = #13 then
+      if P[0] = Cr then
         Inc(P);
-      if P[0] = #10 then
+      if P[0] = Lf then
         Inc(P);
       F := P;
       Inc(Y);
@@ -949,7 +949,7 @@ begin
   end
   else
   case Key of
-    #13:
+    Cr:
       begin
         if InsertMode then
         begin
@@ -1262,7 +1262,7 @@ begin
             X := Length(FLines[Y - 1]);
 
             { --- UNDO --- }
-            TJvBackspaceUndo.Create(Self, X + 1, CaretY - 1, #10);
+            TJvBackspaceUndo.Create(Self, X + 1, CaretY - 1, Lf);
             CaretUndo := False;
             { --- /UNDO --- }
 
@@ -1555,7 +1555,7 @@ begin
 end;
 
 // Substitutes a word in a cursor position on NewString
-// string NewString should not contain #13, #10 [translated]
+// string NewString should not contain Cr, Lf [translated]
 
 procedure TJvCustomEditor.ReplaceWord(const NewString: string);
 var
@@ -1777,7 +1777,7 @@ begin
           if SelBlockFormat = bfLine then
           begin
             X := 0;
-            if (Clips = '') or (Clips[Length(Clips)] <> #10) then
+            if (Clips = '') or (Clips[Length(Clips)] <> Lf) then
               Clips := Clips + sLineBreak;
           end;
 
@@ -1906,13 +1906,13 @@ var
   Tabs, LenSp: Integer;
   P: PChar;
 begin
-  ps := Pos(#9, S);
+  ps := Pos(Tab, S);
   if ps > 0 then
   begin
     // How many Tab chars?
     Tabs := 1;
     for I := ps + 1 to Length(S) do
-      if S[I] = #9 then
+      if S[I] = Tab then
         Inc(Tabs);
 
     Sp := Spaces(GetDefTabStop(0, True));
@@ -1922,7 +1922,7 @@ begin
     SetLength(Result, Length(S) - Tabs + Tabs * LenSp);
     P := PChar(Result);
 
-    // copy the chars before the #9
+    // copy the chars before the Tab
     if ps > 1 then
     begin
       Move(S[1], P[0], ps - 1);
@@ -1931,7 +1931,7 @@ begin
 
     for I := ps to Length(S) do
     begin
-      if S[I] <> #9 then
+      if S[I] <> Tab then
       begin
         P[0] := S[I];
         Inc(P);
@@ -2368,7 +2368,7 @@ begin
 
   // set caret on last backspace undo's position
   with TJvDeleteUndo(UndoBuffer.Items[TJvOpenUndoBuffer(UndoBuffer).FPtr]) do
-    if (FText = #10) or (FText = #13) then // a line was removed by backspace
+    if (FText = Lf) or (FText = Cr) then // a line was removed by backspace
       GetEditor.SetCaretInternal(0, CaretY + 1)
     else
       GetEditor.SetCaretInternal(CaretX, CaretY);

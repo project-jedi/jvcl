@@ -177,7 +177,7 @@ implementation
 
 uses
   SysUtils,
-  JvDBUtils;
+  JvConsts, JvDBUtils;
 
 //=== TJvCustomDBComboBox ====================================================
 
@@ -369,9 +369,9 @@ begin
     Key := #0;
   end;
   case Key of
-    ^H, ^V, ^X, #32..#255:
+    CtrlH, CtrlV, CtrlX, #32..#255:
       FDataLink.Edit;
-    #27:
+    Esc:
       begin
         FDataLink.Reset;
         SelectAll;

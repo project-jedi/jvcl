@@ -963,7 +963,7 @@ begin
   Modify := False;
   if Sender = FEdit then
     case Key of
-      #13:
+      Cr:
         begin
           ACaption := FEdit.Text;
           DoOnEdited(ACaption);
@@ -977,7 +977,7 @@ begin
           FEdit := nil;
           Screen.Cursor := crDefault;
         end;
-      #27:
+      Esc:
         begin
           Key := #0;
           if FEdit.Handle = GetCapture then
@@ -1779,7 +1779,7 @@ begin
   Modify := False;
   if Sender = FEdit then
     case Key of
-      #13:
+      Cr:
         begin
           Key := #0;
           ACaption := FEdit.Text;
@@ -1793,7 +1793,7 @@ begin
           FEdit := nil;
           Screen.Cursor := crDefault;
         end;
-      #27:
+      Esc:
         begin
           Key := #0;
           if FEdit.Handle = GetCapture then

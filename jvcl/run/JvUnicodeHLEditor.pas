@@ -111,7 +111,7 @@ implementation
 uses
   Math,
   JvHLEditor, // for Assign
-  JvJCLUtils;
+  JvJCLUtils, JvConsts;
 
 function LastNonSpaceChar(const S: WideString): WideChar;
 var
@@ -615,7 +615,7 @@ const
     I: Integer;
   begin
     I := 0;
-    while (Parser.PCPos[I] <> #0) and CharInSetW(Parser.PCPos[I], [' ', #9, #13, #10]) do
+    while (Parser.PCPos[I] <> #0) and CharInSetW(Parser.PCPos[I], [' ', Tab, Lf, Cr]) do
       Inc(I);
     Result := Parser.PCPos[I];
   end;

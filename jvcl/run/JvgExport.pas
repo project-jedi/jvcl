@@ -47,7 +47,8 @@ procedure ExportDataSetToExcel(DataSet: TDataSet; OnExportProgress: TOnExportPro
 implementation
 
 uses
-  ComObj, JvgUtils;
+  ComObj,
+  JvConsts, JvgUtils;
 
 const
   cExcelApplication = 'Excel.Application';
@@ -70,7 +71,8 @@ var
     I: Integer;
   begin
     for I := 1 to Length(str) do
-      if (str[I] = #13) then str[I] := ' ';
+      if (str[I] = Cr) then
+        str[I] := ' ';
     Result := str;
   end;
 begin

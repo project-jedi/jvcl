@@ -234,7 +234,7 @@ const
 implementation
 
 uses
-  JvInterpreter, JvInterpreterConst;
+  JvInterpreter, JvInterpreterConst, JvConsts;
 
 const
   K = '''';
@@ -589,10 +589,10 @@ var
           JvInterpreterError(ieBadRemark, P - PChar(FSource));
       '/':
         if (P[1] = '/') then
-          while not (P[0] in [#10, #13, #00]) do
+          while not (P[0] in [Lf, Cr, #0]) do
             Inc(P);
     end;
-    while (P[0] in [' ', #10, #13, #9]) do
+    while (P[0] in [' ', Lf, Cr, Tab]) do
       Inc(P);
   end;
 

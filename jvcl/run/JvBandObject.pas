@@ -166,7 +166,8 @@ uses
   {$IFDEF DEBUGINFO_ON}
   //zTrace,
   {$ENDIF DEBUGINFO_ON}
-  Math, JvJVCLUtils;
+  Math,
+  JvConsts, JvJVCLUtils;
 
 const
   cIERegistryBase = 'Software\Microsoft\Internet Explorer\';
@@ -896,7 +897,7 @@ begin
     Exit;
   if (MenuItem.ShortCut <> scNone) and
     ((MenuItem.Parent = nil) or (MenuItem.Parent.Parent <> nil) or not (MenuItem.Parent.Owner is TMainMenu)) then
-    Result := Result + #9 + ShortCutToText(MenuItem.ShortCut);
+    Result := Result + Tab + ShortCutToText(MenuItem.ShortCut);
 end;
 
 (* make Delphi 5 compiler happy // andreas

@@ -195,7 +195,7 @@ implementation
 uses
   Math,
   JclFileUtils,
-  JvJVCLUtils, JvTypes, JvResources;
+  JvJVCLUtils, JvConsts, JvResources, JvTypes;
 
 const
   siRecentItem = 'Item_%d';
@@ -420,7 +420,7 @@ end;
 
 procedure TJvMRUManager.UpdateRecentMenu;
 const
-  AccelDelimChars: array[TAccelDelimiter] of Char = (#9, ' ');
+  AccelDelimChars: array[TAccelDelimiter] of Char = (Tab, ' ');
 var
   I: Integer;
   L: Cardinal;

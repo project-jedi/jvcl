@@ -736,7 +736,7 @@ var
 begin
   Len := Length(S);
   I := 1;
-  while (Len >= I) and ((S[I] = ' ') or (S[I] = #9)) do
+  while (Len >= I) and ((S[I] = ' ') or (S[I] = Tab)) do
     I := I + 1;
   if I > Len then
   begin
@@ -746,7 +746,7 @@ begin
   S := Copy(S, I, Len);
   Len := Len - I + 1;
   I := Len;
-  while (I > 0) and ((S[I] = ' ') or (S[I] = #9)) do
+  while (I > 0) and ((S[I] = ' ') or (S[I] = Tab)) do
     I := I - 1;
   Result := Copy(S, 1, I);
 end;
