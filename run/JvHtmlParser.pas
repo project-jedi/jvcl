@@ -26,7 +26,7 @@ Known Issues:
 
 {$I jvcl.inc}
 
-unit JvHTMLParser;
+unit JvHtmlParser;
 
 interface
 
