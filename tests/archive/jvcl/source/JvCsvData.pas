@@ -119,8 +119,10 @@ type
  EJvCsvKeyError = class(EDatabaseError); // Key Uniqueness or Key Problem
 
  {  Special Event Types }
- TOnSpecialData = procedure(Sender : TObject; Index : Integer; NonCsvData : String) of Object;
+ TJvCsvOnSpecialData = procedure(Sender : TObject; Index : Integer; NonCsvData : String) of Object;
 
+ TJvCsvOnGetFieldData = procedure(Sender : TObject; UserTag:Integer; UserData:Pointer; FieldName:String; var Value:String) of Object;
+ TJvCsvOnSetFieldData = procedure(Sender : TObject; UserTag:Integer; UserData:Pointer; FieldName:String; Value:String) of Object;
 
  { SPECIAL TYPES OF  DATABASE COLUMNS FOR THIS COMPONENT }
  { Columns are numeric, text, or one of two kinds of Specially Encoded date/time formats: }
@@ -240,7 +242,10 @@ type
     FCsvFileAsStrings : TStringList;
 
     {  event pointers }
-    FOnSpecialData : TOnSpecialData;
+    FOnSpecialData  : TJvCsvOnSpecialData;
+    FOnGetFieldData : TJvCsvOnGetFieldData; // Helps to allow you to update the contents of your CSV data from some other object in memory.
+    FOnSetFieldData : TJvCsvOnSetFieldData; // Helps to keep some other thing in sync with the contents of a changing CSV file.
+
 
     //  Internal Use Only Protected Methods
 //    function GetDataFileSize: Integer; virtual;
@@ -355,6 +360,10 @@ type
     // Additional procedures
     procedure EmptyTable;
 
+      // Tells controls to redraw.
+    procedure Refresh;
+
+
     // Sort the table:
     procedure Sort( SortFields:String; Ascending:Boolean);
 
@@ -368,9 +377,13 @@ type
 
     // The UserData/UserTag properties apply to the row that the
     // cursor is sitting on. Without visibly moving the cursor,
-    // its handy to get/set the usertag values.
+    // its handy to get/set the usertag and data values.
     function  GetUserTag(recno:Integer):Integer;
     procedure SetUserTag(recno,newValue:Integer);
+
+    function  GetUserData(recno:Integer):Pointer;
+    procedure SetUserData(recno:Integer;newValue:Pointer);
+
 
 
     function GetCsvHeader:String;
@@ -385,6 +398,9 @@ type
     // as long as the field names and positions have not changed.
     procedure AssignFromStrings(const Strings:TStrings);virtual; // update String data directly.
     procedure AssignToStrings(Strings:TStrings);virtual;
+
+    procedure DeleteRows( FromRow, ToRow :Integer);     // NEW: Quickly zap a bunch of rows:
+    procedure ExportRows( Filename :String; FromRow, ToRow :Integer);     // NEW: Quickly save a bunch of rows:
 
     procedure ExportCsvFile(const Filename:String);virtual; // save out to a file. does NOT keep backups! If file exists, it will be
         // overwritten, and NO backups are made!
@@ -467,7 +483,9 @@ type
      // Ie: do they get stored in DFM Form file along with the component
      property StoreDefs: Boolean read FStoreDefs write FStoreDefs default False;
      { Additional Events }
-     property OnSpecialData : TOnSpecialData read FOnSpecialData write FOnSpecialData;
+     property OnSpecialData : TJvCsvOnSpecialData read FOnSpecialData write FOnSpecialData;
+     property OnGetFieldData : TJvCsvOnGetFieldData read FOnGetFieldData write FOnGetFieldData;
+     property OnSetFieldData : TJvCsvOnSetFieldData read FOnSetFieldData write FOnSetFieldData;
 
      { value in seconds : to do GMT to EST (ie GMT-5) use value of (-3600*5)
        This is only useful if you use the Hex encoded date-time fields.
@@ -590,6 +608,7 @@ begin
       end;
   end else begin // split failed...
       result := false;
+      exit;
   end;
   // if we get here, no short circuit was possible.
   if (boolOp = '|') then
@@ -603,7 +622,7 @@ var
   row:PCsvRow;
   t:Integer;
 begin
-  for t := 0 to FData.Count do begin
+  for t := 0 to FData.Count-1 do begin
      row :=PCsvRow(FData[recno]);
      if Assigned(row) then
        if row^.usertag <> tagValue then 
@@ -648,6 +667,35 @@ begin
           row^.usertag := newValue;
   end;
 end;
+
+
+
+
+
+function TJvCsvCustomInMemoryDataSet.GetUserData(recno:Integer):Pointer;
+var
+  row:PCsvRow;
+begin
+  result := 0;
+  if (recno>=0) and (recno<FData.Count) then begin
+     row :=PCsvRow(FData[recno]);
+     if Assigned(row) then
+          result := row^.userdatapointer;
+  end;
+end;
+
+
+procedure TJvCsvCustomInMemoryDataSet.SetUserData(recno:Integer;newValue:Pointer);
+var
+  row:PCsvRow;
+begin
+  if (recno >= 0) and (recno < FData.Count) then begin
+     row :=PCsvRow(FData[recno]);
+     if Assigned(row) then
+          row^.userdatapointer := newValue;
+  end;
+end;
+
 
 
 // Recursive wildcard matching function
@@ -1201,6 +1249,7 @@ end;
 
 procedure TJvCsvCustomInMemoryDataSet.SetFieldData(Field: TField; Buffer: Pointer);
 var
+  RowPtr:PCsvRow;
   NewVal:String;
   PhysicalLocation:Integer;
   pDestination:PChar;
@@ -1210,7 +1259,8 @@ begin
 
   //Trace( 'SetFieldData '+Field.FieldName );
  pDestination :=GetActiveRecordBuffer;
-
+ RowPtr := PCsvRow(pDestination);
+ 
  // Dynamic CSV Column Ordering: If we didn't start by
  // assigning column orders when we opened the table,
  // we've now GOT to assume a physical ordering:
@@ -1317,7 +1367,11 @@ begin
   end;
 
  // Set new data value (NewVal = String)
- SetCsvRowItem( PCsvRow(pDestination{was:ActiveBuffer}), PhysicalLocation, NewVal );
+ SetCsvRowItem( RowPtr, PhysicalLocation, NewVal );
+
+  if Assigned(FOnSetFieldData) then begin
+      FOnSetFieldData(Self, RowPtr^.usertag, RowPtr^.userdatapointer, Field.FieldName, NewVal);
+  end;
 
  // Set a dirty bit so we remember to write this later:
  CsvRowSetDirtyBit(PCsvRow(pDestination),PhysicalLocation);
@@ -1370,13 +1424,19 @@ begin
   result := s;
 end;
 
+// Tells controls to redraw.
+procedure TJvCsvCustomInMemoryDataSet.Refresh;
+begin
+      DataEvent(deDataSetChange, 0);
+end;
+
 function TJvCsvCustomInMemoryDataSet.GetFieldData(Field: TField; Buffer: Pointer):Boolean;
 var
-  {RowPtr:PCsvRow;}
+  RowPtr:PCsvRow;
   {ActiveRowPtr:PCsvRow;}
   pSource:PChar;
   pTempBuffer:PChar;
-  TempString:String;
+  UserString,TempString:String;
   PhysicalLocation:Integer;
   CsvColumnData :PCsvColumn;
   aDateTime:TDateTime;
@@ -1445,9 +1505,33 @@ begin
   // a CSV file can store an empty string but has no way of indicating a NULL.
   //------------------------------------------------------------------------
 
-  TempString:=GetCsvRowItem( PCsvRow(pSource{was:ActiveBuffer}), PhysicalLocation);
+  RowPtr := PCsvRow(pSource);
 
-  // NULL:  There are no "Real" NULLS in an ASCII flat file, however for anything
+  TempString:=GetCsvRowItem( RowPtr, PhysicalLocation);
+
+  // Strip quotes first!
+  if (Field.DataType = ftString) then begin
+       l := Length(TempString);
+       if (l>=2) then
+           if (TempString[1] = '"') and (TempString[l] = '"') then begin // quoted string!
+                  TempString := _Dequote(TempString);
+           end;
+  end;
+
+  // Custom Get Method allows us to create a "Virtual DataSet" where the data
+  // in the CSV rows is really just a mirror which can be updated when displayed
+  // but which we really are fetching from somewhere else.
+  if Assigned(FOnGetFieldData) and Assigned(RowPtr^.userdatapointer) then begin
+      UserString := TempString;
+      FOnGetFieldData(Self, RowPtr^.usertag, RowPtr^.userdatapointer,Field.FieldName,UserString);
+      if (UserString <> TempString) then begin
+            // Write changed value back to row:
+            SetCsvRowItem(RowPtr, PhysicalLocation, UserString);
+            TempString := UserString;
+      end;
+  end;
+
+    // NULL:  There are no "Real" NULLS in an ASCII flat file, however for anything
   // other than a string field, we will return "NULL" to indicate there is an
   // empty string in the field.
   if (Field.DataType <> ftString) then
@@ -1474,15 +1558,6 @@ begin
         // buffer, padded with NUL i.e. Chr(0):
        ftString:
           begin
-                // NEW: Don't display the quotes and decode the
-                // escape sequences before giving string values to the end
-                // user!
-                l := Length(TempString);
-                if (l>=2) then 
-                  if (TempString[1] = '"') and (TempString[l] = '"') then begin // quoted string!
-                          TempString := _Dequote(TempString);
-                  end;
-
                pTempBuffer := AllocMem(Field.Size+1);  // AllocMem fills with zeros
                StrCopy(pTempBuffer,PChar(TempString)); // we copy in the data portion
                Move(pTempBuffer^,Buffer^,Field.Size);  // Buffer^ is now zero padded.
@@ -2620,6 +2695,47 @@ begin
   FData.AddRow(pNewRow);
 end;
 
+
+{ This function is handy to save a portion of a csv table that has
+grown too large into a file, and then DeleteRows can be called to remove
+that section of the file. }
+procedure TJvCsvCustomInMemoryDataSet.ExportRows( Filename :String; FromRow, ToRow :Integer);
+var
+  t:Integer;
+  StrList:TStringList;
+begin
+  StrList := TStringList.Create;
+  StrList.Add( Self.FHeaderRow);
+  try
+    for t := FromRow to ToRow do begin
+        StrList.Add( FData.GetRowStr(t) )
+    end;
+    StrList.SaveToFile(Filename);
+  finally
+    StrList.Free;
+  end;
+end;
+
+procedure TJvCsvCustomInMemoryDataSet.DeleteRows( FromRow, ToRow :Integer);
+var
+  Count:Integer;
+begin
+  Count := (ToRow-FromRow)+1;
+  while (Count > 0) do begin
+        if (FromRow < FData.Count) then
+            FData.DeleteRow(FromRow) // Everything moves down one every time we do this.
+        else
+            break;
+        Dec(Count);
+  end;
+  // Force Redraw of Data Controls:
+  if FRecordPos >= FData.Count then begin 
+      FRecordPos := FData.Count-1;
+      Last;
+  end else
+      First;
+  FFileDirty := True;
+end;
 
 procedure TJvCsvCustomInMemoryDataSet.ExportCsvFile(const Filename:String); // save out to a file.
 var
