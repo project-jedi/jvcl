@@ -24,9 +24,6 @@ object ImageWindowChild2: TImageWindowChild2
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
-    DesignSize = (
-      203
-      65)
     object ImageWindow1: TJvImageWindow
       Left = 0
       Top = 0

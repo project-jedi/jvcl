@@ -15,9 +15,6 @@ object DSADialogsMainForm: TDSADialogsMainForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
-  DesignSize = (
-    644
-    292)
   PixelsPerInch = 96
   TextHeight = 13
   object lvDSAInfo: TListView
