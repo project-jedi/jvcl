@@ -34,13 +34,14 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  SetupApi, JvTypes, JvComponent;
+  SetupApi,
+  JvTypes, JvComponent;
 
 type
   TJvCommonDialogD = class(TJvComponent)
   private
   protected
-    FHandle: THandle;
+    FOwnerHandle: THandle;
     FDll: THandle;
     FTitle: string;
     // (rom) needs some TODO
@@ -67,10 +68,10 @@ resourcestring
 constructor TJvCommonDialogD.Create(AOwner: TComponent);
 begin
   inherited;
-  if Aowner is TWinControl then
+  if AOwner is TWinControl then
   begin
     FTitle := '';
-    FHandle := (Aowner as TWinControl).Handle;
+    FOwnerHandle := (AOwner as TWinControl).Handle;
     FDll := LoadLibrary('setupapi.dll');
     if FDll <> 0 then
     begin

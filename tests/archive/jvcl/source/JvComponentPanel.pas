@@ -273,8 +273,10 @@ end;
 procedure TJvComponentPanel.OnMoveClick(Sender: TObject);
 begin
   case TSpeedButton(Sender).Tag of
-    0: dec(FFirstVisible);
-    1: inc(FFirstVisible);
+    0:
+      Dec(FFirstVisible);
+    1:
+      Inc(FFirstVisible);
   end;
   Resize;
 end;

@@ -97,7 +97,7 @@ const
 
 const
   cOSCurrentKey: array [Boolean] of string =
-    (RC_CurrentKey, RC_CurrentKeyNT);
+  (RC_CurrentKey, RC_CurrentKeyNT);
 
 function IsNT: Boolean;
 begin

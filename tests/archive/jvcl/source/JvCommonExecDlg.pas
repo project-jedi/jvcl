@@ -28,8 +28,6 @@ Known Issues:
 
 unit JvCommonExecDlg;
 
-
-
 interface
 
 uses
@@ -39,7 +37,7 @@ uses
 type
   TJvCommonExecDlg = class(TJvCommonDialogP)
   private
-    FHandle: THandle;
+    FOwnerHandle: THandle;
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -48,12 +46,18 @@ type
 
 implementation
 
+resourcestring
+  RC_ErrorOwner = 'Owner must be of type TWinControl';
+
 {**************************************************}
 
 constructor TJvCommonExecDlg.Create(AOwner: TComponent);
 begin
-  inherited;
-  FHandle := (AOwner as TWinControl).Handle;
+  inherited Create(AOwner);
+  if AOwner is TWinControl then
+    FOwnerHandle := (AOwner as TWinControl).Handle
+  else
+    raise EJVCLException.Create(RC_ErrorOwner);
 end;
 
 {**************************************************}
@@ -64,3 +68,4 @@ begin
 end;
 
 end.
+

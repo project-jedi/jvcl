@@ -33,7 +33,12 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExptIntf,
   Dialogs, EditIntf, ToolIntf, TypInfo,
-   {$IFDEF COMPILER5} DsgnIntf, {$ENDIF} {$IFDEF COMPILER6_UP} DesignEditors, DesignIntf, {$ENDIF}
+  {$IFDEF COMPILER5}
+  DsgnIntf,
+  {$ENDIF}
+  {$IFDEF COMPILER6_UP}
+  DesignEditors, DesignIntf,
+  {$ENDIF}
   JvCommonDialogD;
 
 type
@@ -75,3 +80,4 @@ begin
 end;
 
 end.
+

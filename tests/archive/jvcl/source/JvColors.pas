@@ -12,7 +12,7 @@ The Original Code is: JvColors.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -25,15 +25,15 @@ Known Issues:
 
 {$I JVCL.INC}
 
-
 unit JvColors;
 
 {$C PRELOAD}
 
-
 interface
 
-uses Classes, Controls, Graphics, Forms, JvVCLUtils;
+uses
+  Classes, Controls, Graphics, Forms,
+  JvVCLUtils;
 
 function JvIdentToColor(const Ident: string; var Color: Longint): Boolean;
 function JvColorToString(Color: TColor): string;
@@ -44,10 +44,14 @@ procedure RegisterJvColors;
 
 implementation
 
-uses Windows,
- {$IFDEF COMPILER6_UP}RTLConsts,DesignIntf, VCLEditors, DesignEditors,{$ELSE}DsgnIntf,{$ENDIF}
-SysUtils
-;
+uses
+  Windows,
+  {$IFDEF COMPILER6_UP}
+  RTLConsts, DesignIntf, VCLEditors, DesignEditors,
+  {$ELSE}
+  DsgnIntf,
+  {$ENDIF}
+  SysUtils;
 
 type
   TColorEntry = record
@@ -56,31 +60,32 @@ type
   end;
 
 const
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   clInfoBk16 = TColor($02E1FFFF);
   clNone16 = TColor($02FFFFFF);
   ColorCount = 3;
-{$ELSE}
+  {$ELSE}
   ColorCount = 5;
-{$ENDIF}
-  Colors: array[0..ColorCount - 1] of TColorEntry = (
-{$IFNDEF WIN32}
-    (Value: clInfoBk;      Name: 'clInfoBk'),
-    (Value: clNone;        Name: 'clNone'),
-{$ENDIF}
-    (Value: clCream;       Name: 'clCream'),
-    (Value: clMoneyGreen;  Name: 'clMoneyGreen'),
-    (Value: clSkyBlue;     Name: 'clSkyBlue'));
+  {$ENDIF}
+  Colors: array [0..ColorCount - 1] of TColorEntry = (
+    {$IFNDEF WIN32}
+    (Value: clInfoBk; Name: 'clInfoBk'),
+    (Value: clNone; Name: 'clNone'),
+    {$ENDIF}
+    (Value: clCream; Name: 'clCream'),
+    (Value: clMoneyGreen; Name: 'clMoneyGreen'),
+    (Value: clSkyBlue; Name: 'clSkyBlue'));
 
 function JvColorToString(Color: TColor): string;
 var
   I: Integer;
 begin
-  if not ColorToIdent(Color, Result) then begin
+  if not ColorToIdent(Color, Result) then
+  begin
     for I := Low(Colors) to High(Colors) do
       if Colors[I].Value = Color then
       begin
-        Result := StrPas(Colors[I].Name);
+        Result := Colors[I].Name;
         Exit;
       end;
     FmtStr(Result, '$%.8x', [Color]);
@@ -90,11 +95,12 @@ end;
 function JvIdentToColor(const Ident: string; var Color: Longint): Boolean;
 var
   I: Integer;
-  Text: array[0..63] of Char;
+  Text: array [0..63] of Char;
 begin
   StrPLCopy(Text, Ident, SizeOf(Text) - 1);
   for I := Low(Colors) to High(Colors) do
-    if StrIComp(Colors[I].Name, Text) = 0 then begin
+    if StrIComp(Colors[I].Name, Text) = 0 then
+    begin
       Color := Colors[I].Value;
       Result := True;
       Exit;
@@ -113,10 +119,9 @@ var
   I: Integer;
 begin
   GetColorValues(Proc);
-  for I := Low(Colors) to High(Colors) do Proc(StrPas(Colors[I].Name));
+  for I := Low(Colors) to High(Colors) do
+    Proc(StrPas(Colors[I].Name));
 end;
-
-{ TJvColorProperty }
 
 type
   TJvColorProperty = class(TColorProperty)
@@ -125,7 +130,7 @@ type
     procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const Value: string); override;
     procedure ListDrawValue(const Value: string; ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean);
-    {$IFDEF COMPILER5}override{$ELSE}virtual{$ENDIF};
+    {$IFDEF COMPILER5} override {$ELSE} virtual {$ENDIF};
   end;
 
 function TJvColorProperty.GetValue: string;
@@ -133,10 +138,13 @@ var
   Color: TColor;
 begin
   Color := TColor(GetOrdValue);
-{$IFDEF WIN32}
-  if Color = clNone16 then Color := clNone
-  else if Color = clInfoBk16 then Color := clInfoBk;
-{$ENDIF}
+  {$IFDEF WIN32}
+  if Color = clNone16 then
+    Color := clNone
+  else
+    if Color = clInfoBk16 then
+    Color := clInfoBk;
+  {$ENDIF}
   Result := JvColorToString(Color);
 end;
 
@@ -158,38 +166,39 @@ procedure TJvColorProperty.ListDrawValue(const Value: string; ACanvas: TCanvas;
     TColorQuad = record
       Red, Green, Blue, Alpha: Byte;
     end;
+
   begin
     if (TColorQuad(AColor).Red > 192) or (TColorQuad(AColor).Green > 192) or
-       (TColorQuad(AColor).Blue > 192) then
+      (TColorQuad(AColor).Blue > 192) then
       Result := clBlack
-    else if ASelected then
+    else
+    if ASelected then
       Result := clWhite
     else
       Result := AColor;
   end;
 
 var
-  vRight: Integer;
-  vOldPenColor, vOldBrushColor: TColor;
+  Rght: Integer;
+  OldPenColor, OldBrushColor: TColor;
 begin
-  vRight := (ARect.Bottom - ARect.Top) + ARect.Left;
+  Rght := (ARect.Bottom - ARect.Top) + ARect.Left;
   with ACanvas do
   try
-    vOldPenColor := Pen.Color;
-    vOldBrushColor := Brush.Color;
+    OldPenColor := Pen.Color;
+    OldBrushColor := Brush.Color;
     Pen.Color := Brush.Color;
-    Rectangle(ARect.Left, ARect.Top, vRight, ARect.Bottom);
+    Rectangle(ARect.Left, ARect.Top, Rght, ARect.Bottom);
     Brush.Color := JvStringToColor(Value);
     Pen.Color := ColorToBorderColor(ColorToRGB(Brush.Color));
-    Rectangle(ARect.Left + 1, ARect.Top + 1, vRight - 1, ARect.Bottom - 1);
-    Brush.Color := vOldBrushColor;
-    Pen.Color := vOldPenColor;
+    Rectangle(ARect.Left + 1, ARect.Top + 1, Rght - 1, ARect.Bottom - 1);
+    Brush.Color := OldBrushColor;
+    Pen.Color := OldPenColor;
   finally
-    ACanvas.TextRect(Rect(vRight, ARect.Top, ARect.Right, ARect.Bottom),
-      vRight + 1, ARect.Top + 1, Value);
+    ACanvas.TextRect(Rect(Rght, ARect.Top, ARect.Right, ARect.Bottom),
+      Rght + 1, ARect.Top + 1, Value);
   end;
 end;
-
 
 procedure RegisterJvColors;
 begin
@@ -197,3 +206,4 @@ begin
 end;
 
 end.
+

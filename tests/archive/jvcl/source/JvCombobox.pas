@@ -28,8 +28,6 @@ Known Issues:
 
 unit JvCombobox;
 
-
-
 interface
 
 uses
@@ -43,7 +41,7 @@ type
     FAutoComplete: Boolean;
     FSearching: Boolean;
     FOnMouseEnter: TNotifyEvent;
-    FColor: TColor;
+    FHintColor: TColor;
     FSaved: TColor;
     FOnMouseLeave: TNotifyEvent;
     FOnCtl3DChanged: TNotifyEvent;
@@ -79,7 +77,7 @@ type
 
     property AutoComplete: Boolean read FAutoComplete write FAutoComplete default True;
     property AutoSave: TJvAutoSave read FAutoSave write FAutoSave;
-    property HintColor: TColor read FColor write FColor default clInfoBk;
+    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property MaxPixel: TJvMaxPixel read FMaxPixel write FMaxPixel;
 
     property OnRestored: TNotifyEvent read FOnRestored write FOnRestored;
@@ -171,7 +169,6 @@ type
     property OnParentColorChange;
   end;
 
-
 implementation
 
 {**************************************************}
@@ -179,7 +176,7 @@ implementation
 constructor TJvCustomCombobox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FColor := clInfoBk;
+  FHintColor := clInfoBk;
   FAutoComplete := True;
   FSearching := False;
   ControlStyle := ControlStyle + [csAcceptsControls];
@@ -204,24 +201,24 @@ end;
 
 procedure TJvCustomCombobox.Loaded;
 var
-  st: string;
-  i: Integer;
+  St: string;
+  I: Integer;
 begin
   inherited;
   if Style = csDropDownList then
   begin
-    if FAutoSave.LoadValue(i) then
+    if FAutoSave.LoadValue(I) then
     begin
-      ItemIndex := i;
+      ItemIndex := I;
       if Assigned(FOnRestored) then
         FOnRestored(Self);
     end;
   end
   else
   begin
-    if FAutoSave.LoadValue(st) then
+    if FAutoSave.LoadValue(St) then
     begin
-      Text := st;
+      Text := St;
       if Assigned(FOnRestored) then
         FOnRestored(Self);
     end;
@@ -232,33 +229,33 @@ end;
 
 procedure TJvCustomCombobox.Change;
 var
-  res: Integer;
-  st: string;
-  start, finish: Integer;
+  Res: Integer;
+  St: string;
+  Start, Finish: Integer;
 begin
   inherited;
   if not FSearching and FAutoComplete then
   begin
-    st := Text;
-    FMaxPixel.Test(st, Font);
-    if Text <> st then
+    St := Text;
+    FMaxPixel.Test(St, Font);
+    if Text <> St then
     begin
-      Text := st;
+      Text := St;
       Exit;
     end;
-    if (FKey <> 8) and (FKey <> 46) and (FKey <> 13) then
+    if (FKey <> VK_BACK) and (FKey <> VK_DELETE) and (FKey <> VK_RETURN) then
     begin
       FSearching := True;
-      st := Text;
-      res := SendMessage(Handle, CB_FINDSTRING, -1, Longint(PChar(st)));
-      if res <> CB_ERR then
+      St := Text;
+      Res := SendMessage(Handle, CB_FINDSTRING, -1, Longint(PChar(St)));
+      if Res <> CB_ERR then
       try
-        ItemIndex := res;
-        start := Length(st);
-        finish := Length(Items[res]) - start;
-        Text := Items[res];
-        SelStart := start;
-        SelLength := finish;
+        ItemIndex := Res;
+        Start := Length(St);
+        Finish := Length(Items[Res]) - Start;
+        Text := Items[Res];
+        SelStart := Start;
+        SelLength := Finish;
       except
       end;
       FSearching := False;
@@ -320,8 +317,9 @@ begin
   begin
     FSaved := Application.HintColor;
     // for D7...
-    if csDesigning in ComponentState then Exit;
-    Application.HintColor := FColor;
+    if csDesigning in ComponentState then
+      Exit;
+    Application.HintColor := FHintColor;
     FOver := True;
   end;
   if Assigned(FOnMouseEnter) then
@@ -361,16 +359,17 @@ end;
 
 procedure TJvCustomCombobox.MaxPixelChanged(Sender: TObject);
 var
-  st: string;
+  St: string;
 begin
   if Style <> csDropDownList then
   begin
-    st := Text;
-    FMaxPixel.Test(st, Font);
-    if Text <> st then
-      Text := st;
+    St := Text;
+    FMaxPixel.Test(St, Font);
+    if Text <> St then
+      Text := St;
     SelStart := Length(Text);
   end;
 end;
 
 end.
+

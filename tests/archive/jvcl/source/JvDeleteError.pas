@@ -83,7 +83,7 @@ begin
 
   if @FSetupDeleteError <> nil then
   begin
-    case FSetupDeleteError(FHandle, PChar(FTitle), PChar(FFile), FError, Sty) of
+    case FSetupDeleteError(FOwnerHandle, PChar(FTitle), PChar(FFile), FError, Sty) of
       DPROMPT_SUCCESS:
         Result := dsSuccess;
       DPROMPT_CANCEL:

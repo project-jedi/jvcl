@@ -14,7 +14,7 @@ The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.co
 Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
-Contributor(s):            
+Contributor(s):
 
 Last Modified: 2002-05-26
 
@@ -22,6 +22,8 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Known Issues:
+    If the OtherCaption is set to an empty string, the default '&Other..' magically appears.
+    Solution: Set OtherCaption to ' ' instead
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
@@ -29,36 +31,32 @@ Known Issues:
 {A color selection button that mimicks the one on the 'Display Properties' page in Win95/NT4 }
 
 unit JvColorBtn;
-{
-  Bugs:
-    If the OtherCaption is set to an empty string, the default '&Other..' magically appears.
-    Solution: Set OtherCaption to ' ' instead
-}
 
 interface
 
 uses
   Windows, Messages, Forms, SysUtils, Classes, Graphics, Controls,
-  Dialogs, ExtCtrls, StdCtrls, Buttons, Menus, JvColorBox;
+  Dialogs, ExtCtrls, StdCtrls, Buttons, Menus,
+  JvColorBox;
 
 type
   TJvColorButton = class(TJvCustomDropButton)
   private
-    aClrFrm: TForm;
-    FIsDown: boolean;
+    FColorForm: TForm;
+    FIsDown: Boolean;
     FColor: TColor;
     FOtherCaption: string;
     FOnChange: TNotifyEvent;
-    FOpts: TColorDialogOptions;
-    FCustCol: TStrings;
-    FEdgeWidth: integer;
-    procedure SetEdgeWidth(Value: integer);
-    procedure SetOpts(Value: TColorDialogOptions);
-    procedure SetCustCol(Value: TStrings);
+    FOptions: TColorDialogOptions;
+    FCustomColors: TStrings;
+    FEdgeWidth: Integer;
+    procedure SetEdgeWidth(Value: Integer);
+    procedure SetOptions(Value: TColorDialogOptions);
+    procedure SetCustomColors(Value: TStrings);
     procedure SetColor(Value: TColor);
     procedure SetOtherCaption(Value: string);
-    procedure WMSetFocus(var Message: TWMSetFocus); message WM_SETFOCUS;
-    procedure WMKillFocus(var Message: TWMKillFocus); message WM_KILLFOCUS;
+    procedure WMSetFocus(var Msg: TWMSetFocus); message WM_SETFOCUS;
+    procedure WMKillFocus(var Msg: TWMKillFocus); message WM_KILLFOCUS;
   protected
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
@@ -73,13 +71,15 @@ type
   published
     property ArrowWidth;
     property OtherCaption: string read FOtherCaption write SetOtherCaption;
-    property EdgeWidth: integer read FEdgeWidth write SetEdgeWidth default 4;
-    property Options: TColorDialogOptions read FOpts write SetOpts;
-    property CustomColors: TStrings read FCustCol write SetCustCol;
+    property EdgeWidth: Integer read FEdgeWidth write SetEdgeWidth default 4;
+    property Options: TColorDialogOptions read FOptions write SetOptions;
+    property CustomColors: TStrings read FCustomColors write SetCustomColors;
     property Color: TColor read FColor write SetColor default clBlack;
     property Enabled;
     property Hint;
+    property Height default 21;
     property ShowHint;
+    property Width default 42;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnEnter;
     property OnExit;
@@ -93,37 +93,36 @@ type
   end;
 
 implementation
+
 uses
   JvColorForm;
 
 resourcestring
   SOtherCaption = '&Other...';
 
-  { TJvColorButton }
-
 constructor TJvColorButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  TabStop := false;
-  FOpts := [];
-  FCustCol := TStringList.Create;
+  TabStop := False;
+  FOptions := [];
+  FCustomColors := TStringList.Create;
   FColor := clBlack;
   FEdgeWidth := 4;
   Width := 42;
   Height := 21;
-  aClrFrm := TJvClrFrm.Create(nil);
-  TJvClrFrm(aClrFrm).SetButton(self);
+  FColorForm := TJvClrFrm.Create(nil);
+  TJvClrFrm(FColorForm).SetButton(Self);
   FOtherCaption := SOtherCaption;
-  aClrFrm.Visible := False;
+  FColorForm.Visible := False;
 end;
 
 destructor TJvColorButton.Destroy;
 begin
-  FCustCol.Free;
-  if aClrFrm <> nil then
+  FCustomColors.Free;
+  if FColorForm <> nil then
   begin
-    aClrFrm.Free;
-    aClrFrm := nil;
+    FColorForm.Free;
+    FColorForm := nil;
   end;
   inherited Destroy;
 end;
@@ -132,24 +131,25 @@ procedure TJvColorButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
   inherited MouseDown(Button, Shift, X, Y);
-  if (Button <> mbLeft) or not Enabled or not Assigned(aClrFrm) then
+  if (Button <> mbLeft) or not Enabled or not Assigned(FColorForm) then
     Exit;
-  with TJvClrFrm(aClrFrm) do
+  with TJvClrFrm(FColorForm) do
   begin
-    CD.Options := FOpts;
+    CD.Options := FOptions;
     OtherBtn.Caption := FOtherCaption;
-    CD.CustomColors.Assign(FCustCol);
+    CD.CustomColors.Assign(FCustomColors);
     if ArrowWidth = 0 then
     begin
       if CD.Execute then
         FColor := CD.Color;
       MouseUp(mbLeft, [], X, Y);
     end
-    else if not aClrFrm.Visible then
-      aClrFrm.Show
     else
-      aClrFrm.Hide;
-    //    ColorSquare21.Color := self.Color;
+    if not FColorForm.Visible then
+      FColorForm.Show
+    else
+      FColorForm.Hide;
+    //    ColorSquare21.Color := Self.Color;
   end;
   if ArrowWidth <> 0 then
     FIsDown := True
@@ -167,7 +167,8 @@ begin
 end;
 
 procedure TJvColorButton.Paint;
-var Rec: TRect;
+var
+  Rec: TRect;
 begin
   inherited Paint;
   { draw the colorsquare }
@@ -188,7 +189,7 @@ begin
   Canvas.FillRect(Rec);
 end;
 
-procedure TJvColorButton.SetEdgeWidth(Value: integer);
+procedure TJvColorButton.SetEdgeWidth(Value: Integer);
 begin
   if FEdgeWidth <> Value then
   begin
@@ -197,15 +198,15 @@ begin
   end;
 end;
 
-procedure TJvColorButton.SetOpts(Value: TColorDialogOptions);
+procedure TJvColorButton.SetOptions(Value: TColorDialogOptions);
 begin
-  if FOpts <> Value then
-    FOpts := Value;
+  if FOptions <> Value then
+    FOptions := Value;
 end;
 
-procedure TJvColorButton.SetCustCol(Value: TStrings);
+procedure TJvColorButton.SetCustomColors(Value: TStrings);
 begin
-  FCustCol.Assign(Value);
+  FCustomColors.Assign(Value);
 end;
 
 procedure TJvColorButton.SetColor(Value: TColor);
@@ -233,7 +234,7 @@ begin
         MouseDown(mbLeft, [], 0, 0);
     VK_ESCAPE:
       begin
-        aClrFrm.Hide;
+        FColorForm.Hide;
         Key := 0;
       end;
   end;
@@ -250,12 +251,12 @@ begin
   inherited KeyUp(Key, Shift);
 end;
 
-procedure TJvColorButton.WMSetFocus(var Message: TWMSetFocus);
+procedure TJvColorButton.WMSetFocus(var Msg: TWMSetFocus);
 begin
   inherited;
 end;
 
-procedure TJvColorButton.WMKillFocus(var Message: TWMKillFocus);
+procedure TJvColorButton.WMKillFocus(var Msg: TWMKillFocus);
 begin
   inherited;
 end;

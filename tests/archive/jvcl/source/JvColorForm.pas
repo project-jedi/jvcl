@@ -14,7 +14,7 @@ The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.co
 Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
-Contributor(s):            
+Contributor(s):
 
 Last Modified: 2002-05-26
 
@@ -34,7 +34,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  Buttons, ExtCtrls, JvColorBox, JvColorBtn, JvComponent;
+  Buttons, ExtCtrls,
+  JvColorBox, JvColorBtn, JvComponent;
 
 type
   TJvClrFrm = class(TForm)
@@ -70,38 +71,36 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormActivate(Sender: TObject);
   private
-    { Private declarations }
-    FOwner:TControl;
-    CDVisible:boolean;
-    procedure ShowCD(Sender:TObject);
-    procedure HideCD(Sender:TObject);
-    procedure WMActivate(var Message:TWMActivate); message WM_ACTIVATE;
+    FOwner: TControl;
+    FCDVisible: Boolean;
+    procedure ShowCD(Sender: TObject);
+    procedure HideCD(Sender: TObject);
+    procedure WMActivate(var Msg: TWMActivate); message WM_ACTIVATE;
   protected
-    procedure CreateWnd;override;
+    procedure CreateWnd; override;
   public
-    { Public declarations }
-    SelectedColor:TColor;
-    CD:TColorDialog;
-    procedure SetButton(Button:TControl);
+    SelectedColor: TColor;
+    CD: TColorDialog;
+    procedure SetButton(Button: TControl);
   end;
 
 implementation
 
 {$R *.DFM}
 
-procedure TJvClrFrm.SetButton(Button:TControl);
+procedure TJvClrFrm.SetButton(Button: TControl);
 begin
   FOwner := Button;
 end;
 
-procedure TJvClrFrm.ShowCD(Sender:TObject);
+procedure TJvClrFrm.ShowCD(Sender: TObject);
 begin
-  CDVisible := True;
+  FCDVisible := True;
 end;
 
-procedure TJvClrFrm.HideCD(Sender:TObject);
+procedure TJvClrFrm.HideCD(Sender: TObject);
 begin
-  CDVisible := False;
+  FCDVisible := False;
 end;
 
 procedure TJvClrFrm.OtherBtnClick(Sender: TObject);
@@ -124,10 +123,10 @@ begin
   Hide;
 end;
 
-procedure TJvClrFrm.WMActivate(var Message:TWMActivate);
+procedure TJvClrFrm.WMActivate(var Msg: TWMActivate);
 begin
   inherited;
-  if (Message.Active = WA_INACTIVE) and not CDVisible then
+  if (Msg.Active = WA_INACTIVE) and not FCDVisible then
   begin
     Hide;
     ModalResult := mrCancel;
@@ -154,7 +153,7 @@ end;
 procedure TJvClrFrm.FormKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = 27 then
+  if Key = VK_ESCAPE then
   begin
     Hide;
     ModalResult := mrCancel;
@@ -163,8 +162,8 @@ end;
 
 procedure TJvClrFrm.FormCreate(Sender: TObject);
 begin
-  CD := TColorDialog.Create(self);
-  CDVisible := False;
+  CD := TColorDialog.Create(Self);
+  FCDVisible := False;
   CD.OnShow := ShowCD;
   CD.OnClose := HideCD;
 end;
@@ -176,25 +175,27 @@ end;
 
 procedure TJvClrFrm.CreateWnd;
 begin
-  inherited;
+  inherited CreateWnd;
 //  Hide;
-  SetWindowLong(Handle,GWL_STYLE,
-              GetWindowLong(Handle,GWL_STYLE) and not WS_CAPTION);
+  SetWindowLong(Handle, GWL_STYLE,
+    GetWindowLong(Handle, GWL_STYLE) and not WS_CAPTION);
 //  Show;
 end;
 
 procedure TJvClrFrm.FormActivate(Sender: TObject);
-var R:TRect;aPoint:TPoint;
+var
+  R: TRect;
+  Pt: TPoint;
 begin
   { set placement }
   if Assigned(FOwner) then
   begin
     R := FOwner.ClientRect;
-    aPoint.X := R.Left;
-    aPoint.Y := R.Top + R.Bottom;
-    aPoint := FOwner.ClientToScreen(aPoint);
-    Left := aPoint.X;
-    Top :=  aPoint.Y;
+    Pt.X := R.Left;
+    Pt.Y := R.Top + R.Bottom;
+    Pt := FOwner.ClientToScreen(Pt);
+    Left := Pt.X;
+    Top := Pt.Y;
     if FOwner is TJvColorButton then
       SelectedColor := TJvColorButton(FOwner).Color;
   end;
@@ -203,3 +204,4 @@ begin
 end;
 
 end.
+

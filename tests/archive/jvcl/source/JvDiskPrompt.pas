@@ -109,7 +109,7 @@ begin
 
   if @FSetupPromptForDisk <> nil then
   begin
-    case FSetupPromptForDisk(FHandle, PChar(FTitle), PChar(FDiskName),
+    case FSetupPromptForDisk(FOwnerHandle, PChar(FTitle), PChar(FDiskName),
       PChar(FPathToSource), PChar(FFileSought), PChar(FTagFile), Sty, res, SizeOf(res), Required) of
       DPROMPT_SUCCESS:
         begin

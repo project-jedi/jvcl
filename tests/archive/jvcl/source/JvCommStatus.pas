@@ -28,26 +28,23 @@ Known Issues:
 
 unit JvCommStatus;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, JvTypes, JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls,
+  JvTypes, JvComponent;
 
 type
   TJvCommPort = 0..8;
 
   TJvCommWatcher = class(TThread)
   private
-  protected
-    procedure Execute; override;
-    procedure Changed;
-  public
-    // (rom) ugly needs TODO
     FHandle: THandle;
     FStat: Cardinal;
     FOnChange: TNotifyEvent;
+    procedure Changed;
+  protected
+    procedure Execute; override;
   end;
 
   TJvCommStatus = class(TJvComponent)
@@ -58,7 +55,7 @@ type
     FReceive: Boolean;
     FHandle: THandle;
     FWatcher: TJvCommWatcher;
-    FBidon: Boolean;
+    FDummy: Boolean;
     FComm: TJvCommPort;
     FOnChanged: TNotifyEvent;
     procedure SetComm(const Value: TJvCommPort);
@@ -68,10 +65,10 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property ClearToSend: Boolean read FClear write FBidon;
-    property DataSetReady: Boolean read FDataSet write FBidon;
-    property Ring: Boolean read FRing write FBidon;
-    property ReceiveLine: Boolean read FReceive write FBidon;
+    property ClearToSend: Boolean read FClear write FDummy;
+    property DataSetReady: Boolean read FDataSet write FDummy;
+    property Ring: Boolean read FRing write FDummy;
+    property ReceiveLine: Boolean read FReceive write FDummy;
     property Comm: TJvCommPort read FComm write SetComm default 0;
     property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
   end;
@@ -82,7 +79,7 @@ implementation
 
 constructor TJvCommStatus.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FComm := 0;
   FHandle := 0;
 
@@ -93,7 +90,7 @@ begin
 
     FWatcher.FHandle := FHandle;
     FWatcher.FStat := 0;
-    FWatcher.FonChange := OnChange;
+    FWatcher.FOnChange := OnChange;
 
     FWatcher.Resume;
   end
@@ -114,24 +111,24 @@ begin
   end;
   if FHandle <> 0 then
     CloseHandle(FHandle);
-  inherited;
+  inherited Destroy;
 end;
 
 {**************************************************}
 
 procedure TJvCommStatus.OnChange(Sender: TObject);
 var
-  stat: Cardinal;
+  Stat: Cardinal;
 begin
   if (FWatcher <> nil) and (FHandle <> 0) then
-    stat := FWatcher.FStat
+    Stat := FWatcher.FStat
   else
-    stat := 0;
+    Stat := 0;
 
-  FClear := (stat and MS_CTS_ON) <> 0;
-  FDataSet := (stat and MS_DSR_ON) <> 0;
-  FRing := (stat and MS_RING_ON) <> 0;
-  FReceive := (stat and MS_RLSD_ON) <> 0;
+  FClear := (Stat and MS_CTS_ON) <> 0;
+  FDataSet := (Stat and MS_DSR_ON) <> 0;
+  FRing := (Stat and MS_RING_ON) <> 0;
+  FReceive := (Stat and MS_RLSD_ON) <> 0;
 
   if Assigned(FOnChanged) then
     FOnChanged(Self);
@@ -141,7 +138,7 @@ end;
 
 procedure TJvCommStatus.SetComm(const Value: TJvCommPort);
 var
-  stat: Cardinal;
+  Stat: Cardinal;
   CommName: string;
 begin
   if FWatcher <> nil then
@@ -162,12 +159,12 @@ begin
   FRing := False;
   FReceive := False;
 
-  if GetCommModemStatus(FHandle, stat) then
+  if GetCommModemStatus(FHandle, Stat) then
   begin
-    FClear := (stat and MS_CTS_ON) <> 0;
-    FDataSet := (stat and MS_DSR_ON) <> 0;
-    FRing := (stat and MS_RING_ON) <> 0;
-    FReceive := (stat and MS_RLSD_ON) <> 0;
+    FClear := (Stat and MS_CTS_ON) <> 0;
+    FDataSet := (Stat and MS_DSR_ON) <> 0;
+    FRing := (Stat and MS_RING_ON) <> 0;
+    FReceive := (Stat and MS_RLSD_ON) <> 0;
   end;
 
   if FWatcher <> nil then
@@ -195,16 +192,16 @@ end;
 
 procedure TJvCommWatcher.Execute;
 var
-  mask: Cardinal;
+  Mask: Cardinal;
 begin
   while not Terminated do
   begin
     if FHandle <> 0 then
     begin
-      GetCommModemStatus(FHandle, mask);
-      if mask <> FStat then
+      GetCommModemStatus(FHandle, Mask);
+      if Mask <> FStat then
       begin
-        FStat := mask;
+        FStat := Mask;
         Synchronize(Changed);
       end;
     end;
@@ -213,3 +210,4 @@ begin
 end;
 
 end.
+

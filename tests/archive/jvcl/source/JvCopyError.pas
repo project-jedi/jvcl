@@ -112,7 +112,7 @@ begin
 
   if @FSetupCopyError <> nil then
   begin
-    case FSetupCopyError(Fhandle, PChar(Ftitle), PChar(FDiskName),
+    case FSetupCopyError(FOwnerHandle, PChar(FTitle), PChar(FDiskName),
       PChar(FPathToSource), PChar(FSource), PCHar(FTarget),
       FError, Sty, res, SizeOf(res), @Required) of
       DPROMPT_SUCCESS:

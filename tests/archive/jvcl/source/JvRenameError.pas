@@ -84,7 +84,7 @@ begin
 
   if @FSetupRenameError <> nil then
   begin
-    case FSetupRenameError(FHandle, PChar(FTitle), PChar(FSource), PChar(FDest), FError, Sty) of
+    case FSetupRenameError(FOwnerHandle, PChar(FTitle), PChar(FSource), PChar(FDest), FError, Sty) of
       DPROMPT_SUCCESS:
         Result := dsSuccess;
       DPROMPT_CANCEL:

@@ -119,10 +119,10 @@ type
     { Note: streaming system does not deal properly with a published persistent
       property on another nested persitent. We use a pseudoproperty to save the
       bitmap. }
-    property Bitmap: TBitmap read FCaretBitmap write SetCaretBitmap stored false;
+    property Bitmap: TBitmap read FCaretBitmap write SetCaretBitmap stored False;
     property Width: Integer read FCaretWidth write SetCaretWidth default 0;
     property Height: Integer read FCaretHeight write SetCaretHeight default 0;
-    property Gray: Boolean read FGrayCaret write SetGrayCaret default false;
+    property Gray: Boolean read FGrayCaret write SetGrayCaret default False;
   end;
 
 implementation
@@ -171,7 +171,7 @@ end;
 
 procedure TJvCaret.CreateCaret;
 const
-  GrayHandles: array[Boolean] of THandle = (0, THandle(-1));
+  GrayHandles: array [Boolean] of THandle = (0, THandle(-1));
 
   function UsingBitmap: Boolean;
   begin
@@ -185,8 +185,7 @@ const
 
 begin
   if FCaretOwner.Focused and
-    not (csDesigning in FCaretOwner.ComponentState) and
-    not IsDefaultCaret then
+    not (csDesigning in FCaretOwner.ComponentState) and not IsDefaultCaret then
   begin
     if UsingBitmap then
       OSCheck(Windows.CreateCaret(FCaretOwner.handle, Bitmap.Handle, 0, 0))
