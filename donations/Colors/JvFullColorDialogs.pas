@@ -126,9 +126,7 @@ type
     procedure SetHelpContext(const Value: THelpContext);
     procedure SetOptions(const Value: TJvFullColorCircleDialogOptions);
     procedure SetTitle(const Value: string);
-    function GetDelta(const Index: TJvRotateColor): TJvAxisDelta;
     procedure SetDelta(const Index: TJvRotateColor; const Value: TJvAxisDelta);
-    function GetColorID: TJvFullColorSpaceID;
     procedure SetColorID(const Value: TJvFullColorSpaceID);
   protected
     procedure FormApply(Sender: TObject);
@@ -138,10 +136,10 @@ type
     constructor Create(AOwner: TComponent); override;
     function Execute: Boolean;
     property Form: TJvBaseColorCircleForm read FForm;
-    property RedDelta: TJvAxisDelta index rcRed read GetDelta write SetDelta;
-    property GreenDelta: TJvAxisDelta index rcGreen read GetDelta write SetDelta;
-    property BlueDelta: TJvAxisDelta index rcBlue read GetDelta write SetDelta;
-    property ColorID: TJvFullColorSpaceID read GetColorID write SetColorID;
+    property RedDelta: TJvAxisDelta index rcRed read FDelta.AxisRed write SetDelta;
+    property GreenDelta: TJvAxisDelta index rcGreen read FDelta.AxisGreen write SetDelta;
+    property BlueDelta: TJvAxisDelta index rcBlue read FDelta.AxisBlue write SetDelta;
+    property ColorID: TJvFullColorSpaceID read FDelta.ColorID write SetColorID;
     property Delta: TJvColorDelta read FDelta;
   published
     // (rom) set default values
@@ -394,10 +392,22 @@ end;
 //=== { TJvColorCircleDialog } ===============================================
 
 constructor TJvFullColorCircleDialog.Create(AOwner: TComponent);
+  procedure InitAxe (out Value: TJvAxisDelta);
+  var
+    Index: TJvAxisIndex;
+  begin
+    for Index := Low(TJvAxisIndex) to High(TJvAxisIndex) do
+    begin
+      Value[Index].Value := 0;
+      Value[Index].SaturationMethod := smLoop;
+    end;
+  end;
 begin
   inherited Create(AOwner);
   FOptions := JvDefaultColorCircleDialogOptions;
-  FillChar(FDelta,sizeof(FDelta),0);
+  InitAxe(FDelta.AxisRed);
+  InitAxe(FDelta.AxisGreen);
+  InitAxe(FDelta.AxisBlue);
   FDelta.ColorID := csRGB;
 end;
 
@@ -413,10 +423,10 @@ begin
     if Title <> '' then
       Caption := Title;
     Options := Self.Options;
+    ColorID := Self.ColorID;
     RedDelta := Self.RedDelta;
     GreenDelta := Self.GreenDelta;
     BlueDelta := Self.BlueDelta;
-    ColorID := Self.ColorID;
     OnApply := FormApply;
     OnClose := FormClose;
     OnShow := FormShow;
@@ -475,22 +485,6 @@ begin
     FDelta.AxisBlue := FForm.BlueDelta;
     if Assigned(FOnShow) then
       FOnShow(Self);
-  end;
-end;
-
-function TJvFullColorCircleDialog.GetColorID: TJvFullColorSpaceID;
-begin
-  Result := FDelta.ColorID;
-end;
-
-function TJvFullColorCircleDialog.GetDelta(const Index: TJvRotateColor): TJvAxisDelta;
-var
-  I: TJvAxisIndex;
-begin
-  for I := Low(Result) to High(Result) do
-  begin
-    Result[I].Value := 0;
-    Result[I].SaturationMethod := smLoop;
   end;
 end;
 

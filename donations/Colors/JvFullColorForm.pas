@@ -118,11 +118,10 @@ begin
   with ColorSpaceManager do
   begin
     CS := TJvDEFColorSpace(ColorSpace[csDEF]);
-
     for Index:=0 to CS.ColorCount-1 do
       JvFullColorGroup.Items.Add(CS.ConvertFromColor(CS.ColorValue[Index]));
-
     LabelDrawOld.Color := ConvertToColor(FullColor);
+    JvColorSpaceCombo.ColorSpaceID := GetColorSpaceID(FullColor);
   end;
   SetFullColor(FullColor);
   SetOptions(Options);
@@ -391,7 +390,11 @@ procedure TJvFullColorFrm.SetFullColor(const Value: TJvFullColor);
 begin
   inherited SetFullColor(Value);
   if not FUpdating then
+  begin
+    with ColorSpaceManager do
+      JvColorSpaceCombo.ColorSpaceID := GetColorSpaceID(Value);
     UpdateColorSpace;
+  end;
 end;
 
 procedure TJvFullColorFrm.SetOptions(const Value: TJvFullColorDialogOptions);

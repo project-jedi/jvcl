@@ -209,9 +209,9 @@ begin
       end;
       for J := Low(Byte) to High(Byte) do
       begin
-        DoRotate(J,AColorDelta.AxisRed,Colors[axIndex0,J]);
-        DoRotate(J shl 8,AColorDelta.AxisGreen,Colors[axIndex1,J]);
-        DoRotate(J shl 16,AColorDelta.AxisBlue,Colors[axIndex2,J]);
+        DoRotate(TColor(J),AColorDelta.AxisRed,Colors[axIndex0,J]);
+        DoRotate(TColor(J shl 8),AColorDelta.AxisGreen,Colors[axIndex1,J]);
+        DoRotate(TColor(J shl 16),AColorDelta.AxisBlue,Colors[axIndex2,J]);
       end;
 
       for Y := 0 to DestBitmap.Height-1 do

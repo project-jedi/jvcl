@@ -365,7 +365,6 @@ type
     destructor Destroy; override;
   published
     property LabelColor: TJvFullColor read FLabelColor write SetLabelColor default fclDEFWindowText;
-    property AutoSize;
     property Font: TFont read FFont write SetFont;
     property Pen: TPen read FPen write SetPen;
     property Brush: TBrush read FBrush write SetBrush;
@@ -377,6 +376,41 @@ type
     property Spacing: Integer read FSpacing write SetSpacing default 5;
     property RoundShapeWidth: Integer read FRoundShapeWidth write SetRoundShapeWidth default 4;
     property RoundShapeHeight: Integer read FRoundShapeHeight write SetRoundShapeHeight default 4;
+    property Align;
+    property Anchors;
+    property AutoSize;
+    property BiDiMode;
+    property Color nodefault;
+    property Constraints;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property Enabled;
+    property ParentBiDiMode;
+    property ParentColor;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property Visible;
+    property OnCanResize;
+    property OnClick;
+    property OnConstrainedResize;
+    property OnContextPopup;
+    property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDock;
+    property OnEndDrag;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnMouseWheel;
+    property OnMouseWheelDown;
+    property OnMouseWheelUp;
+    property OnResize;
+    property OnStartDock;
+    property OnStartDrag;
   end;
 
   TJvFullColorSpaceFormat = (cfName, cfShortName, cfBoth);
@@ -2786,6 +2820,7 @@ end;
 constructor TJvFullColorLabel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  ControlStyle := ControlStyle - [csOpaque];
   FPen := TPen.Create;
   FPen.OnChange := GraphicChange;
   FBrush := TBrush.Create;
@@ -2828,7 +2863,8 @@ begin
         end;
     end;
     AdjustSize;
-  end;
+  end
+  else Invalidate;
 end;
 
 procedure TJvFullColorLabel.GraphicChange(Sender: TObject);
@@ -2923,7 +2959,7 @@ procedure TJvFullColorLabel.SetName(const Value: TComponentName);
 var
   Equal: Boolean;
 begin
-  Equal := CompareText(Name, FCaption) = 0;
+  Equal := Name = FCaption;
   inherited SetName(Value);
   if Equal then
     Caption := Name;
@@ -2943,6 +2979,10 @@ begin
   if (Value <> FRoundShapeWidth) and (Value < ShapeWidth div 2) then
   begin
     FRoundShapeWidth := Value;
+    if FRoundShapeWidth > Value div 2 then
+      FRoundShapeWidth := Value div 2;
+    if Shape in [stSquare, stRoundSquare, stCircle] then
+      FShapeHeight := FShapeWidth;
     Invalidate;
   end;
 end;
@@ -2952,6 +2992,8 @@ begin
   if FShapeHeight <> Value then
   begin
     FShapeHeight := Value;
+    if FRoundShapeHeight > Value div 2 then
+      FRoundShapeHeight := Value div 2;
     if Shape in [stSquare, stRoundSquare, stCircle] then
       FShapeWidth := FShapeHeight;
     CalcSize;
