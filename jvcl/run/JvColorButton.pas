@@ -54,8 +54,6 @@ type
     procedure SetOptions(Value: TColorDialogOptions);
     procedure SetCustomColors(Value: TStrings);
     procedure SetOtherCaption(Value: string);
-    procedure WMSetFocus(var Msg: TWMSetFocus); message WM_SETFOCUS;
-    procedure WMKillFocus(var Msg: TWMKillFocus); message WM_KILLFOCUS;
     procedure SetColor(const Value: TColor);
   protected
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
@@ -93,7 +91,6 @@ type
   end;
 
 implementation
-
 uses
   JvColorForm;
 
@@ -110,7 +107,7 @@ begin
   FEdgeWidth := 4;
   Width := 42;
   Height := 21;
-  FColorForm := TJvClrFrm.Create(nil);
+  FColorForm := TJvClrFrm.CreateNew(self);
   TJvClrFrm(FColorForm).SetButton(Self);
   FOtherCaption := SOtherCaption;
   FColorForm.Visible := False;
@@ -238,16 +235,6 @@ begin
         MouseUp(mbLeft, [], 0, 0);
   end;
   inherited KeyUp(Key, Shift);
-end;
-
-procedure TJvColorButton.WMSetFocus(var Msg: TWMSetFocus);
-begin
-  inherited;
-end;
-
-procedure TJvColorButton.WMKillFocus(var Msg: TWMKillFocus);
-begin
-  inherited;
 end;
 
 procedure TJvColorButton.SetColor(const Value: TColor);
