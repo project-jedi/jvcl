@@ -54,6 +54,20 @@ Note
 See Also
   CustomColorCount, NewColorText, OnBeforeCustom, OnNewColor, Options
 ----------------------------------------------------------------------------------------------------
+@@TJvColorComboBox.ColorName
+Summary
+  Returns the current name for a specific color.
+Description
+  Use ColorName to retrieve the current name for a specific color, specified by the AColor parameter.
+  The function uses the values in ColorNameMap to find the name of a non-standard color. Note that 
+  the function might trigger the OnGetDisplayName event.
+Parameters
+  AColor - Specifies the color to search a name for.
+Returns
+  The current name for the color specified by AColor.
+See Also
+  FindColor
+----------------------------------------------------------------------------------------------------
 @@TJvColorComboBox.ColorNameMap
 Summary
   Determines display names for colors.
@@ -106,6 +120,19 @@ Summary
 Description
   Use DropDownWidth to customize the width of the drop-down list.
 ----------------------------------------------------------------------------------------------------
+@@TJvColorComboBox.FindColor
+Summary
+  Returns the index of a specific color or -1 if not found.
+Description
+  Use FindColor to find the index of a specific color specified by the AColor parameter, in the 
+  combo box's list.
+Parameters
+  AColor - The color to search for.
+Returns
+  The Index of the color specified by AColor, or -1 if not found.
+See Also
+  ColorName
+----------------------------------------------------------------------------------------------------
 @@TJvColorComboBox.GetColors
 Summary
   Clears the combo box's list and refills it with colors.
@@ -115,6 +142,14 @@ Description
   included in Options it also adds colors defined in the Windows Control panel, such as clMenu and
   clWindow. If coCustomColors is included in Options it also adds the special combo box items which
   allows the user to add custom colors to the combo box.
+----------------------------------------------------------------------------------------------------
+@@TJvColorComboBox.GetCustomColors
+Summary
+  Fills a list with the custom colors.
+Description
+  Use GetCustomColors to retrieve a list with the custom colors in the color combo box's list.
+Parameters
+  AList - Specifies a list to be filled with custom colors.
 ----------------------------------------------------------------------------------------------------
 @@TJvColorComboBox.HiliteColor
 Summary

@@ -397,6 +397,8 @@ Description
   * \Search in RootDirectory and all it's sub-directories.
   * \Search in RootDirectory and all it's sub-directories, but not in directories that do not meet the
     parameters specified by DirParams.
+See Also
+  RecurseDepth
 ----------------------------------------------------------------------------------------------------
 @@TJvSearchFiles.DirParams
 Summary
@@ -560,6 +562,18 @@ Description
   * Specify whether to search in the start directory as specified by RootDirectory.
 
   By default, all options except soSearchFiles are off.
+----------------------------------------------------------------------------------------------------
+@@TJvSearchFiles.RecurseDepth
+Summary
+  Specifies the maximum depth of a search.
+Description
+  Use RecurseDepth to specify a maximum depth for a search. If set to 0, all subfolders are searched.
+  Otherwise all subfolders with a depth smaller than or equal to RecurseDepth are searched.
+  
+  The root directory has depth 0; subfolders of the root directory have depth 1; subfolders of 
+  subfolders of the root directory have depth 2, etc.
+See Also
+  DirOption
 ----------------------------------------------------------------------------------------------------
 @@TJvSearchFiles.RootDirectory
 Summary
