@@ -322,7 +322,7 @@ var
 implementation
 
 uses
-  JvDsgnIntf, JvConsts, JvThemes, JvResources;
+  JvDsgnIntf, JvJVCLUtils, JvConsts, JvThemes, JvResources;
 
 { Cursors resources }
 {$R ..\resources\JvScrollMax.res}
@@ -537,7 +537,9 @@ begin
     begin
       FParentButtonFont := False;
       Canvas.Font := Self.Font;
-      FButton.Height := Canvas.TextHeight('W') + 4;
+      // (rom) please check this change
+      //FButton.Height := Canvas.TextHeight('W') + 4;
+      FButton.Height := CanvasMaxTextHeight(Canvas)+2;
       Invalidate;
     end;
 end;

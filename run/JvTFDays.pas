@@ -1766,7 +1766,7 @@ implementation
 
 uses
   Consts, TypInfo, Printers,
-  JvConsts, JvResources;
+  JvJVCLUtils, JvConsts, JvResources;
 
 //Type
   // DEF TIMEBLOCK (not conditionally compiled, just marked for reference)
@@ -1816,7 +1816,7 @@ begin
    TxtLeft := 0;
    TxtTop := 0;
    TxtWidth := aCanvas.TextWidth(Txt);
-   TxtHeight := aCanvas.TextHeight('Ay');
+   TxtHeight := CanvasMaxTextHeight(aCanvas);
 
    case HAlign of
       taLeftJustify : TxtLeft := aRect.Left;
@@ -6563,7 +6563,7 @@ procedure TJvTFDays.CanDrawWhat(aCanvas : TCanvas; ApptRect : TRect;
 //   TextHeightThreshold,
 //      TextWidthThreshold : Integer;
 begin
-//   TextHeightThreshold := aCanvas.TextHeight('Ay') * Thresholds.TextHeight;
+//   TextHeightThreshold := CanvasMaxTextHeight(aCanvas) * Thresholds.TextHeight;
 //   TextWidthThreshold := aCanvas.TextWidth('Bi') div 2 * Thresholds.TextWidth;
 
 //   if TextHeightThreshold + PicsHeight < RectHeight(ApptRect) then
@@ -9530,7 +9530,7 @@ begin
    Windows.IntersectRect(EditorRect, GetDataAreaRect, ApptRect);
 
 // Commented out by Tim - No longer required since no editor failure.
-//   EditHeightThreshold := Canvas.TextHeight('Ay') * Thresholds.EditHeight;
+//   EditHeightThreshold := CanvasMaxTextHeight(Canvas) * Thresholds.EditHeight;
 //   EditWidthThreshold := Canvas.TextWidth('Bi') div 2 * Thresholds.EditWidth;
 
 // Commented out by Tim - The editor should no longer ever fail.
@@ -12121,7 +12121,7 @@ var
    TextHeightThreshold,
       TextWidthThreshold : Integer;
 begin
-   TextHeightThreshold := aCanvas.TextHeight('Ay') * Thresholds.TextHeight;
+   TextHeightThreshold := CanvasMaxTextHeight(aCanvas) * Thresholds.TextHeight;
    TextWidthThreshold := aCanvas.TextWidth('Bi') div 2 * Thresholds.TextWidth;
 
    if TextHeightThreshold + PicsHeight < RectHeight(ApptRect) then

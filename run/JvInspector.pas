@@ -1668,7 +1668,7 @@ uses
   QDialogs, QForms, QButtons,
   {$ENDIF VisualCLX}
   JclRTTI, JclLogic,
-  JvJCLUtils, JvThemes, JvResources;
+  JvJCLUtils, JvJVCLUtils, JvThemes, JvResources;
 
 type
   PMethod = ^TMethod;
@@ -3791,7 +3791,7 @@ begin
     Canvas := TControlCanvas.Create;
     TControlCanvas(Canvas).Control := Inspector;
     ApplyNameFont;
-    Result := Canvas.TextHeight('Wy');
+    Result := CanvasMaxTextHeight(Canvas);
   finally
     if TmpCanvas <> Canvas then
       Canvas.Free;
@@ -3831,7 +3831,7 @@ begin
     Canvas := TControlCanvas.Create;
     TControlCanvas(Canvas).Control := Inspector;
     ApplyValueFont;
-    Result := Canvas.TextHeight('Wy');
+    Result := CanvasMaxTextHeight(Canvas);
   finally
     if TmpCanvas <> Canvas then
       Canvas.Free;
@@ -4237,7 +4237,7 @@ begin
   CanvasState := SaveCanvasState(Canvas);
   try
     ApplyNameFont;
-    RowHeight := Canvas.TextHeight('Wy');
+    RowHeight := CanvasMaxTextHeight(Canvas);
     TmpRect := Rects[iprNameArea];
     if RectHeight(TmpRect) div RowHeight < 2 then
       OffsetRect(TmpRect, 0, (RectHeight(TmpRect) - RowHeight) div 2)
@@ -4262,7 +4262,7 @@ begin
   CanvasState := SaveCanvasState(Canvas);
   try
     ApplyValueFont;
-    RowHeight := Canvas.TextHeight('Wy');
+    RowHeight := CanvasMaxTextHeight(Canvas);
     TmpRect := Rects[iprValueArea];
     if RectHeight(TmpRect) div RowHeight < 2 then
     begin
@@ -4891,7 +4891,7 @@ begin
     if TListBox(ListBox).IntegralHeight then
     begin
       ListBox.Canvas.Font := TListBox(ListBox).Font;
-      TListBox(ListBox).ItemHeight := ListBox.Canvas.TextHeight('Wy');
+      TListBox(ListBox).ItemHeight := CanvasMaxTextHeight(ListBox.Canvas);
     end;
     {$ENDIF VCL}
     ListBox.Items.Clear;
@@ -7869,7 +7869,7 @@ begin
     FontName := Items[Index];
     Canvas.Font.Name := FontName;
   end;
-  Height := TListBox(Control).Canvas.TextHeight('Wy');
+  Height := CanvasMaxTextHeight(TListBox(Control).Canvas);
 end;
 
 procedure TJvInspectorFontNameItem.DoMeasureListItemWidth(Control: TWinControl;

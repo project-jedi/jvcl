@@ -791,7 +791,7 @@ end;
 procedure TJvDrawGrid.DrawStr(ARect: TRect; const S: string;
   Align: TAlignment);
 begin
-  DrawCellTextEx(Self, 0, 0, S, ARect, Align, vaCenter, False, IsRightToLeft);
+  DrawCellTextEx(Self, 0, 0, S, ARect, Align, vaCenterJustify, False, IsRightToLeft);
 end;
 
 procedure TJvDrawGrid.DrawMultiline(ARect: TRect; const S: string;

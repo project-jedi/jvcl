@@ -359,9 +359,7 @@ type
 implementation
 
 uses
-  {$IFNDEF COMPILER6_UP}
   JvJVCLUtils,
-  {$ENDIF COMPILER6_UP}
   JvConsts, JvResources;
 
 const
@@ -1120,7 +1118,7 @@ begin
   begin
     MyHeaderFont;
     nOldY := Options.YStartOffset;
-    Options.YStartOffset := MyTextHeight('Xg') + 8;
+    Options.YStartOffset := CanvasMaxTextHeight(ChartCanvas) + 8;
     Options.YEnd := Options.YEnd + (nOldY - Options.YStartOffset);
   end;
 
@@ -1453,7 +1451,7 @@ begin
                            IntToStr(I*10));
       end;
       MySmallGraphFont;
-      nTextHeight := Round(MyTextHeight('XX')*1.1);
+      nTextHeight := Round(CanvasMaxTextHeight(ChartCanvas)*1.1);
 
       if Options.LegendRowCount < 4 then
          Options.LegendRowCount := 4;
@@ -1521,7 +1519,7 @@ begin
 
   MySmallGraphFont;
    {10 % extra space for line height}
-  nTextHeight := Round(MyTextHeight('Mg') * 1.1);
+  nTextHeight := Round(CanvasMaxTextHeight(ChartCanvas) * 1.1);
   MyColorRectangle(-4,
     Options.XStartOffset + Options.XEnd + 6,
     Options.YStartOffset + XLegendGap + 6,
@@ -2139,7 +2137,7 @@ begin
 {   if (nChars>4) then nChars := nChars-4;}// not used (ahuser)
 
   MySmallGraphFont;
-  nTextHeight := Round(MyTextHeight('Mg') * 1.2);
+  nTextHeight := Round(CanvasMaxTextHeight(ChartCanvas) * 1.2);
 
   if Options.ShowLegend then
   begin

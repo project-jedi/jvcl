@@ -23,8 +23,9 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
+
 {$I JVCL.INC}
+
 unit JvYearGrid;
 
 interface
@@ -577,6 +578,8 @@ begin
 end;
 
 procedure TJvYearGrid.CreatePopup;
+const
+  cMenuBreakCaption = '-';
 var
   g: Tpopupmenu;
   m: tmenuitem;
@@ -589,7 +592,7 @@ begin
   m.tag := 1;
   g.Items.Add(m);
   m := tmenuitem.Create(g);
-  m.Caption := '-';
+  m.Caption := cMenuBreakCaption;
   g.Items.Add(m);
   m := tmenuitem.Create(g);
   m.Caption := sEdit;
@@ -604,7 +607,7 @@ begin
   m.OnClick := nocolor1click;
   g.Items.Add(m);
   m := tmenuitem.Create(g);
-  m.Caption := '-';
+  m.Caption := cMenuBreakCaption;
   g.Items.Add(m);
   m := tmenuitem.Create(g);
   m.Caption := sCopy;
@@ -623,7 +626,7 @@ begin
   m.OnClick := delete1click;
   g.Items.Add(m);
   m := tmenuitem.Create(g);
-  m.Caption := '-';
+  m.Caption := cMenuBreakCaption;
   g.Items.Add(m);
   m := tmenuitem.Create(g);
   m.Caption := sSaveAllInfo;
@@ -636,7 +639,7 @@ begin
   m.tag := 1;
   g.Items.Add(m);
   m := tmenuitem.Create(g);
-  m.Caption := '-';
+  m.Caption := cMenuBreakCaption;
   g.Items.Add(m);
   m := tmenuitem.Create(g);
   m.Caption := sBorderColor;
@@ -649,7 +652,7 @@ begin
   m.tag := 1;
   g.Items.Add(m);
   m := tmenuitem.Create(g);
-  m.Caption := '-';
+  m.Caption := cMenuBreakCaption;
   g.Items.Add(m);
   m := tmenuitem.Create(g);
   m.Caption := sFindItem;

@@ -187,8 +187,10 @@ type
   end;
 
 implementation
+
 uses
-  Math;
+  Math,
+  JvJVCLUtils;
 
 const
   BufSize = 1024;
@@ -758,7 +760,7 @@ const
 var
   S: string;
 begin
-  if RowHeights[ARow] < Canvas.TextHeight('Wq') then Exit;
+  if RowHeights[ARow] < CanvasMaxTextHeight(Canvas) then Exit;
   Canvas.FillRect(Rect);
   S := Cells[AColumn, ARow];
   if Length(S) > 0 then

@@ -512,7 +512,7 @@ uses
   {$ENDIF COMPILER6_UP}
   SysUtils, Dialogs,
   JclRTTI, JclStrings,
-  JvConsts, JvResources;
+  JvJVCLUtils, JvConsts, JvResources;
 
 const
   aisPrvEvt = 'aisPrvEvt';
@@ -3223,7 +3223,7 @@ begin
     MeasureColorBox(Result);
     if CurrentSettings.TextSettings.Active then
     begin
-      ChHeight := ACanvas.TextHeight('Wy');
+      ChHeight := CanvasMaxTextHeight(ACanvas);
       if ChHeight > Result.cy then
         Result.cy := ChHeight;
       GetTextMetrics(ACanvas.Handle, Metrics);

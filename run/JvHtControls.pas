@@ -384,7 +384,8 @@ function PrepareText(a: String):String;
 implementation
 
 uses
-  JclLogic;
+  JclLogic,
+  JvJVCLUtils;
 
 // Kaczkowski - begin
 function PrepareText(a: String):String;
@@ -485,7 +486,7 @@ var vText, vM, TagPrp, Prp, tempLink: String;
   begin
     if not Assigned(Canvas) then Exit;
     Width  := Canvas.TextWidth(M);
-    Height := Canvas.TextHeight('W');
+    Height := CanvasMaxTextHeight(Canvas);
     if IsLink and not MouseOnLink then
      if (MouseY in [Rect.Top..Rect.Top+Height]) and
         (MouseX in [Rect.Left..Rect.Left+Width]) then
@@ -509,7 +510,7 @@ var vText, vM, TagPrp, Prp, tempLink: String;
      begin
       Width := Max(Width, Rect.Left);
       Rect.Left := 2;
-      Rect.Top := Rect.Top + Canvas.TextHeight('Äy');
+      Rect.Top := Rect.Top + CanvasMaxTextHeight(Canvas);
      end;
   end;
 
@@ -623,8 +624,8 @@ try
                        begin
                          if odDisabled in State then // only when disabled
                             Canvas.Pen.Color := Canvas.Font.Color;
-                         Canvas.MoveTo(0,rect.top+Canvas.TextHeight('Äy'));
-                         Canvas.Lineto(rect.right,rect.top+Canvas.TextHeight('Äy'));
+                         Canvas.MoveTo(0,rect.top+CanvasMaxTextHeight(Canvas));
+                         Canvas.Lineto(rect.right,rect.top+CanvasMaxTextHeight(Canvas));
                        end;
                  'F': if (Pos('>', vText) > 0) and (not Selected) and Assigned(Canvas) and (not CalcWidth) then // F from FONT
                        begin
@@ -709,11 +710,11 @@ begin
  try
   str := TStringList.Create;
   str.Text := PrepareText(Text);
-  result := str.Count * (Canvas.TextHeight('Äy'));
+  result := str.Count * CanvasMaxTextHeight(Canvas);
   finally
    FreeAndNil(str);
  end;
- if result = 0 then result := Canvas.TextHeight('Äy'); // if str.count = 0;
+ if result = 0 then result := CanvasMaxTextHeight(Canvas); // if str.count = 0;
  Inc(result);
 end;
 
@@ -770,7 +771,7 @@ end;
 procedure TJvHTListBox.CMFontChanged(var Msg: TMessage);
 begin
   Canvas.Font := Font;
-  ItemHeight := Canvas.TextHeight('Äy');
+  ItemHeight := CanvasMaxTextHeight(Canvas);
 end;
 {$ENDIF VCL}
 
@@ -785,7 +786,7 @@ end;
 procedure TJvHTListBox.FontChanged;
 begin
   Canvas.Font := Font;
-  ItemHeight := Canvas.TextHeight('Äy');
+  ItemHeight := CanvasMaxTextHeight(Canvas);
 end;
 {$ENDIF VisualCLX}
 

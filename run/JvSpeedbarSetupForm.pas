@@ -206,7 +206,7 @@ begin
   ButtonsList.ClientHeight := Min(MaxHeight,
     ButtonsList.DefaultRowHeight * Cnt);
   SectionList.ClientHeight := ButtonsList.ClientHeight;
-  SectionList.DefaultRowHeight := Canvas.TextHeight('Wg') + 2;
+  SectionList.DefaultRowHeight := CanvasMaxTextHeight(Canvas) + 2;
 end;
 
 procedure TJvSpeedbarSetupWindow.SetJvSpeedBar(Value: TJvSpeedBar);
@@ -283,7 +283,7 @@ begin
     if Row < FBar.SectionCount then
     begin
       DrawCellText(Sender as TDrawGrid, Col, Row,
-        FBar.Sections[Row].Caption, Rect, taLeftJustify, vaCenter, TDrawGrid(Sender).IsRightToLeft);
+        FBar.Sections[Row].Caption, Rect, taLeftJustify, vaCenterJustify, TDrawGrid(Sender).IsRightToLeft);
     end;
   end;
 end;

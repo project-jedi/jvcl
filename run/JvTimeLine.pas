@@ -499,11 +499,11 @@ type
 implementation
 
 uses
-  JvThemes,
+  Math,
   {$IFDEF COMPILER6_UP}
   DateUtils,
   {$ENDIF COMPILER6_UP}
-  Math;
+  JvJVCLUtils, JvThemes;
 
 {$R ..\resources\JvTimeLine.res}
 
@@ -2080,7 +2080,7 @@ begin
       end
       else
       begin
-        R.Bottom := Min(R.Top + ACanvas.TextHeight('Wq'), R.Bottom);
+        R.Bottom := Min(R.Top + CanvasMaxTextHeight(ACanvas), R.Bottom);
         ACanvas.Rectangle(R);
         if Item.Selected and Item.Enabled then
           ACanvas.DrawFocusRect(R);
