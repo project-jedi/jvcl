@@ -1,16 +1,21 @@
 object FileListBoxMainForm: TFileListBoxMainForm
   Left = 280
   Top = 132
-  Width = 604
-  Height = 484
-  Caption = 'various file components'
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsSingle
+  Caption = 'File and directory related examples'
+  ClientHeight = 454
+  ClientWidth = 596
   Color = clBtnFace
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = True
+  Position = poDesktopCenter
+  Scaled = False
   PixelsPerInch = 96
   TextHeight = 13
   object JvLabel6: TJvLabel
@@ -97,9 +102,9 @@ object FileListBoxMainForm: TFileListBoxMainForm
     TabOrder = 1
     object JvFileListBox1: TJvFileListBox
       Left = 217
-      Top = 23
+      Top = 25
       Width = 329
-      Height = 227
+      Height = 225
       Align = alRight
       FileEdit = Edit1
       ItemHeight = 16
@@ -108,9 +113,9 @@ object FileListBoxMainForm: TFileListBoxMainForm
       ForceFileExtensions = False
     end
     object JvDriveCombo1: TJvDriveCombo
-      Left = 22
+      Left = 25
       Top = 1
-      Width = 524
+      Width = 521
       Height = 22
       Align = alTop
       DriveTypes = [dtFixed, dtRemote, dtCDROM]
@@ -120,10 +125,10 @@ object FileListBoxMainForm: TFileListBoxMainForm
       TabOrder = 1
     end
     object JvDirectoryListBox1: TJvDirectoryListBox
-      Left = 22
-      Top = 23
-      Width = 195
-      Height = 227
+      Left = 25
+      Top = 25
+      Width = 192
+      Height = 225
       Align = alClient
       Directory = 'C:\'
       DirLabel = Label1

@@ -6,6 +6,7 @@ object AnimatorForm: TAnimatorForm
   ClientHeight = 421
   ClientWidth = 366
   Color = clBtnFace
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -13,6 +14,8 @@ object AnimatorForm: TAnimatorForm
   Font.Style = []
   KeyPreview = True
   OldCreateOrder = True
+  Position = poDesktopCenter
+  Scaled = False
   OnActivate = FormActivate
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
@@ -312,6 +315,7 @@ object AnimatorForm: TAnimatorForm
     Width = 191
     Height = 357
     ActivePage = OptionsTab
+    TabIndex = 0
     TabOrder = 6
     object OptionsTab: TTabSheet
       Caption = 'Options'
@@ -508,8 +512,8 @@ object AnimatorForm: TAnimatorForm
       object LoopLbl: TJvLabel
         Left = 27
         Top = 167
-        Width = 74
-        Height = 13
+        Width = 75
+        Height = 14
         Caption = '&Repeat Count: '
         Enabled = False
         FocusControl = RepeatCnt
@@ -675,8 +679,8 @@ object AnimatorForm: TAnimatorForm
       object TransColorLabel: TJvLabel
         Left = 6
         Top = 216
-        Width = 95
-        Height = 13
+        Width = 96
+        Height = 14
         Caption = 'Transparent Color:  '
         Enabled = False
         FocusControl = TransColor

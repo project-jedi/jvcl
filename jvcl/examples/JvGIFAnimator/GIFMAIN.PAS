@@ -41,13 +41,13 @@ interface
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, StdCtrls, ExtCtrls, JvSpeedbar, Grids,
-  ComCtrls, ExtDlgs {$IFNDEF BCB}, Jpeg {$ENDIF},
+  ComCtrls, ExtDlgs{$IFNDEF BCB}, Jpeg{$ENDIF},
   JvGIF, JvLabel, Mask, JvToolEdit, ImgList,
   JvComponent, JvFormPlacement, JvExControls, JvExExtCtrls, JvExMask;
 
 type
   TAnimatorForm = class(TForm)
-    JvSpeedbar: TJvSpeedBar ;
+    JvSpeedbar: TJvSpeedBar;
     SpeedbarSection1: TjvSpeedbarSection;
     NewBtn: TjvSpeedItem;
     OpenBtn: TjvSpeedItem;
@@ -56,7 +56,7 @@ type
     InsertBtn: TjvSpeedItem;
     SpeedbarSection2: TjvSpeedbarSection;
     SpeedbarSection3: TjvSpeedbarSection;
-    Storage: TJvFormStorage ;
+    Storage: TJvFormStorage;
     CutBtn: TjvSpeedItem;
     CopyBtn: TjvSpeedItem;
     PasteBtn: TjvSpeedItem;
@@ -89,7 +89,7 @@ type
     ColorDepthCombo: TComboBox;
     Label1: TLabel;
     ThumbnailsBox: TCheckBox;
-    ThumbnailsLabel: TJvLabel ;
+    ThumbnailsLabel: TJvLabel;
     Frame1Lbl: TLabel;
     Frame2Lbl: TLabel;
     Frame3Lbl: TLabel;
@@ -107,7 +107,7 @@ type
     Label6: TLabel;
     ImageCount: TLabel;
     Bevel3: TBevel;
-    BackColor: TJvComboEdit ;
+    BackColor: TJvComboEdit;
     Label7: TLabel;
     Label8: TLabel;
     FrameW: TLabel;
@@ -126,21 +126,21 @@ type
     DelayTimeBtn: TUpDown;
     DisposalCombo: TComboBox;
     Label13: TLabel;
-    TransColor: TJvComboEdit ;
+    TransColor: TJvComboEdit;
     TransBox: TCheckBox;
-    TransColorLabel: TJvLabel ;
+    TransColorLabel: TJvLabel;
     Label14: TLabel;
     GIFVersion: TLabel;
     Bevel6: TBevel;
     FlatBtns: TCheckBox;
     AlwaysOnTop: TCheckBox;
-    AlwaysOnTopLabel: TJvLabel ;
+    AlwaysOnTopLabel: TJvLabel;
     GrayscaleBtn: TjvSpeedItem;
     ToolbarImages: TImageList;
     RepeatCntBtn: TUpDown;
     RepeatCnt: TEdit;
     LoopBox: TCheckBox;
-    LoopLbl: TJvLabel ;
+    LoopLbl: TJvLabel;
     RepeatForever: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -182,7 +182,7 @@ type
     procedure LoopChange(Sender: TObject);
   private
     { Private declarations }
-    FImage: TJvGIFImage ;
+    FImage: TJvGIFImage;
     FTopIndex: Integer;
     FFileName: string;
     FModified: Boolean;
@@ -190,13 +190,13 @@ type
     FUpdating: Boolean;
     FAborting: Boolean;
     FProgressPos: Integer;
-{$IFDEF COMPILER3_UP}
+    {$IFDEF COMPILER3_UP}
     FOpenDlg: TOpenPictureDialog;
     FSaveDlg: TSavePictureDialog;
-{$ELSE}
+    {$ELSE}
     FOpenDlg: TOpenDialog;
     FSaveDlg: TSaveDialog;
-{$ENDIF}
+    {$ENDIF}
     procedure GraphicProgress(Sender: TObject; Stage: TProgressStage;
       PercentDone: Byte; RedrawNow: Boolean; const R: TRect; const Msg: string);
     procedure SetSelectedIndex(Index: Integer; Force: Boolean);
@@ -241,22 +241,28 @@ procedure TAnimatorForm.GraphicProgress(Sender: TObject;
   Stage: TProgressStage; PercentDone: Byte; RedrawNow: Boolean;
   const R: TRect; const Msg: string);
 begin
-  if Stage in [psStarting, psEnding] then begin
+  if Stage in [psStarting, psEnding] then
+  begin
     FProgressPos := 0;
     Progress.Position := 0;
     Application.ProcessMessages;
   end
-  else if Stage = psRunning then begin
-    if PercentDone >= FProgressPos + 10 then begin
+  else
+  if Stage = psRunning then
+  begin
+    if PercentDone >= FProgressPos + 10 then
+    begin
       Progress.Position := PercentDone;
       FProgressPos := PercentDone;
     end;
   end;
-  if Msg <> '' then begin
+  if Msg <> '' then
+  begin
     Status.Caption := Msg;
     Status.Update;
   end;
-  if FLoading and FAborting then begin
+  if FLoading and FAborting then
+  begin
     FAborting := False;
     Abort;
   end;
@@ -284,10 +290,13 @@ begin
     case FImage.Version of
       gv87a: GIFVersion.Caption := '87a';
       gv89a: GIFVersion.Caption := '89a';
-      else GIFVersion.Caption := '';
+    else
+      GIFVersion.Caption := '';
     end;
-    if FImage.FrameIndex >= 0 then begin
-      with FImage.Frames[FImage.FrameIndex] do begin
+    if FImage.FrameIndex >= 0 then
+    begin
+      with FImage.Frames[FImage.FrameIndex] do
+      begin
         FrameComment.Lines := Comment;
         FrameW.Caption := IntToStr(Width);
         FrameH.Caption := IntToStr(Height);
@@ -298,14 +307,16 @@ begin
         DelayTime.Text := IntToStr(DelayTimeBtn.Position);
         if DisposalMethod in [dmUndefined..dmRestorePrevious] then
           DisposalCombo.ItemIndex := Ord(DisposalMethod)
-        else DisposalCombo.ItemIndex := 0;
+        else
+          DisposalCombo.ItemIndex := 0;
         TransBox.Checked := TransparentColor <> clNone;
         TransColor.Enabled := TransBox.Checked;
         TransColorLabel.Enabled := TransBox.Checked;
         TransColor.Color := PaletteColor(TransparentColor);
       end;
     end
-    else begin
+    else
+    begin
       FrameComment.Lines.Clear;
       FrameW.Caption := '';
       FrameH.Caption := '';
@@ -318,7 +329,8 @@ end;
 function TAnimatorForm.GetPalette: HPALETTE;
 begin
   Result := FImage.Palette;
-  if Result = 0 then Result := inherited GetPalette;
+  if Result = 0 then
+    Result := inherited GetPalette;
 end;
 
 procedure TAnimatorForm.EnableButtons;
@@ -340,7 +352,8 @@ end;
 
 procedure TAnimatorForm.GrayscaleImage;
 begin
-  if not FImage.Empty then begin
+  if not FImage.Empty then
+  begin
     FImage.Grayscale(True);
     FModified := True;
   end;
@@ -350,16 +363,19 @@ procedure TAnimatorForm.ImageChanged(Sender: TObject);
 var
   Enable: Boolean;
 begin
-  with ImageScroll do begin
+  with ImageScroll do
+  begin
     Min := 0;
     Max := Math.Max(0, FImage.Count - 1);
     Enable := (Max > Min) and not FImage.Empty;
-    if not Enable then ActiveControl := Pages;
+    if not Enable then
+      ActiveControl := Pages;
     Enabled := Enable;
   end;
   SetSelectedIndex(Max(0, FImage.FrameIndex), True);
   EnableTabs;
-  if not FLoading then begin
+  if not FLoading then
+  begin
     if Active and HandleAllocated then
       PostMessage(Handle, WM_QUERYNEWPALETTE, 0, 0);
     UpdateControls;
@@ -372,24 +388,30 @@ var
   I: Integer;
   Labl: TLabel;
 begin
-  if Force or (Index <> FImage.FrameIndex) then begin
+  if Force or (Index <> FImage.FrameIndex) then
+  begin
     I := FTopIndex;
     Index := Min(FImage.Count - 1, Max(Index, -1));
-    if (FImage.Count > 0) then FTopIndex := Max(FTopIndex, 0);
-    while (FTopIndex < Index - 3) do Inc(FTopIndex);
-    if Index < FTopIndex then FTopIndex := Index;
+    if (FImage.Count > 0) then
+      FTopIndex := Max(FTopIndex, 0);
+    while (FTopIndex < Index - 3) do
+      Inc(FTopIndex);
+    if Index < FTopIndex then
+      FTopIndex := Index;
     FImage.FrameIndex := Index;
     if FImage.FrameIndex <> ImageScroll.Position then
       ImageScroll.Position := FImage.FrameIndex;
     InvalidateImage(I <> FTopIndex);
   end;
-  for I := 1 to 4 do begin
+  for I := 1 to 4 do
+  begin
     Labl := TLabel(FindComponent(Format('Frame%dLbl', [I])));
     if Labl <> nil then
       Labl.Visible := (FTopIndex + Labl.Tag < FImage.Count) and
         (FImage.Count > 0);
     Labl := TLabel(FindComponent(Format('No%d', [I])));
-    if Labl <> nil then begin
+    if Labl <> nil then
+    begin
       Labl.Caption := IntToStr(FTopIndex + Labl.Tag + 1);
       Labl.Visible := (FTopIndex + Labl.Tag < FImage.Count) and
         (FImage.Count > 0);
@@ -406,12 +428,14 @@ begin
   AnimationTab.TabVisible := not Empty;
   ImageTab.Enabled := not Empty;
   ImageTab.TabVisible := not Empty;
-  if Empty then Pages.ActivePage := OptionsTab;
+  if Empty then
+    Pages.ActivePage := OptionsTab;
 end;
 
 procedure TAnimatorForm.InvalidateImage(UpdateAll: Boolean);
 begin
-  if not FLoading then begin
+  if not FLoading then
+  begin
     PaintBox1.Invalidate;
     PaintBox2.Invalidate;
     PaintBox3.Invalidate;
@@ -425,7 +449,8 @@ var
 begin
   AColor := FImage.BackgroundColor;
   NewColor := SelectColor(FImage.Palette, AColor);
-  if NewColor <> AColor  then begin
+  if NewColor <> AColor then
+  begin
     FImage.BackgroundColor := NewColor;
     FModified := True;
   end;
@@ -436,23 +461,27 @@ var
   Frame: TJvGIFFrame;
   AColor, NewColor: TColor;
 begin
-  if FImage.FrameIndex >= 0 then begin
+  if FImage.FrameIndex >= 0 then
+  begin
     Frame := FImage.Frames[FImage.FrameIndex];
     AColor := Frame.TransparentColor;
     NewColor := SelectColor(FImage.Palette, AColor);
-    if NewColor <> AColor then begin
+    if NewColor <> AColor then
+    begin
       Frame.TransparentColor := NewColor;
       FModified := True;
     end;
   end
-  else MessageBeep(MB_ICONEXCLAMATION);
+  else
+    MessageBeep(MB_ICONEXCLAMATION);
 end;
 
 procedure TAnimatorForm.ConfirmSave;
 var
   Res: TModalResult;
 begin
-  if FModified then begin
+  if FModified then
+  begin
     Res := MessageDlg('Save changes to current animation?', mtWarning,
       [mbYes, mbNo, mbCancel], 0);
     case Res of
@@ -473,28 +502,30 @@ begin
   SetHintStyle(hsRectangle, 3, False, taCenter);
   UpdateCaption;
   FTopIndex := -1;
-  FImage := TJvGIFImage .Create;
+  FImage := TJvGIFImage.Create;
   EnableTabs;
   EnableButtons;
   ColorDepthCombo.ItemIndex := Ord(DefaultMappingMethod);
-{$IFDEF COMPILER3_UP}
+  {$IFDEF COMPILER3_UP}
   FOpenDlg := TOpenPictureDialog.Create(Self);
   FSaveDlg := TSavePictureDialog.Create(Self);
-{$ELSE}
+  {$ELSE}
   FOpenDlg := TOpenDialog.Create(Self);
   FSaveDlg := TSaveDialog.Create(Self);
-{$ENDIF}
-  with FOpenDlg do begin
+  {$ENDIF}
+  with FOpenDlg do
+  begin
     Name := 'OpenDialog';
     Options := [ofHideReadOnly, ofFileMustExist];
-    DefaultExt := GraphicExtension(TJvGIFImage );
+    DefaultExt := GraphicExtension(TJvGIFImage);
     Filter := GraphicFilter(TGraphic);
   end;
-  with FSaveDlg do begin
+  with FSaveDlg do
+  begin
     Name := 'SaveDialog';
     Options := [ofHideReadOnly, ofOverwritePrompt];
-    DefaultExt := GraphicExtension(TJvGIFImage );
-    Filter := GraphicFilter(TJvGIFImage );
+    DefaultExt := GraphicExtension(TJvGIFImage);
+    Filter := GraphicFilter(TJvGIFImage);
   end;
   { Add dialogs to storage }
 //!!!  with Storage.StoredProps do begin
@@ -532,9 +563,10 @@ end;
 procedure TAnimatorForm.OpenBtnClick(Sender: TObject);
 begin
   ConfirmSave;
-  FOpenDlg.Filter := GraphicFilter(TJvGIFImage );
+  FOpenDlg.Filter := GraphicFilter(TJvGIFImage);
   try
-    if FOpenDlg.Execute then begin
+    if FOpenDlg.Execute then
+    begin
       StartWait;
       FLoading := True;
       try
@@ -576,45 +608,53 @@ var
   Frame: TJvGIFFrame;
 begin
   ImageIndex := FTopIndex + TPaintBox(Sender).Tag;
-  if (ImageIndex >= 0) and (ImageIndex < FImage.Count) then begin
+  if (ImageIndex >= 0) and (ImageIndex < FImage.Count) then
+  begin
     DrawRect := TPaintBox(Sender).ClientRect;
     Frame := FImage.Frames[ImageIndex];
-    with TPaintBox(Sender).Canvas do begin
-      if ImageIndex = FImage.FrameIndex then begin
+    with TPaintBox(Sender).Canvas do
+    begin
+      if ImageIndex = FImage.FrameIndex then
+      begin
         Pen.Color := clActiveCaption;
         Pen.Width := 3;
-        with DrawRect do Rectangle(Left, Top, Right, Bottom);
+        with DrawRect do
+          Rectangle(Left, Top, Right, Bottom);
       end;
       InflateRect(DrawRect, -3, -3);
-      if ThumbnailsBox.Checked then begin
+      if ThumbnailsBox.Checked then
+      begin
         W := FImage.ScreenWidth;
         H := FImage.ScreenHeight;
         L := Frame.Origin.X;
         T := Frame.Origin.Y;
       end
-      else begin
+      else
+      begin
         W := Frame.Width;
         H := Frame.Height;
         L := 0;
         T := 0;
       end;
 
-
       if (W <= RectWidth(DrawRect)) and
         (H <= RectHeight(DrawRect)) then
       begin
         DrawRect := Bounds(L, T, Frame.Width, Frame.Height);
       end
-      else begin
+      else
+      begin
         Size := DrawRect.Top + MulDiv(H, RectWidth(DrawRect), W);
-        if Size > DrawRect.Bottom then begin
+        if Size > DrawRect.Bottom then
+        begin
           L := MulDiv(L, RectHeight(DrawRect), H);
           T := MulDiv(T, RectHeight(DrawRect), H);
           W := MulDiv(Frame.Width, RectHeight(DrawRect), H);
           H := MulDiv(Frame.Height, RectHeight(DrawRect), H);
           DrawRect := Bounds(L, T, W, H);
         end
-        else begin
+        else
+        begin
           L := MulDiv(L, RectWidth(DrawRect), W);
           T := MulDiv(T, RectWidth(DrawRect), W);
           H := MulDiv(Frame.Height, RectWidth(DrawRect), W);
@@ -638,8 +678,10 @@ procedure TAnimatorForm.PaintBoxMouseDown(Sender: TObject;
 var
   ImageIndex: Integer;
 begin
-  if (FImage.Count > 0) then begin
-    if ImageScroll.Enabled then ActiveControl := ImageScroll;
+  if (FImage.Count > 0) then
+  begin
+    if ImageScroll.Enabled then
+      ActiveControl := ImageScroll;
     ImageIndex := FTopIndex + TPaintBox(Sender).Tag;
     if (ImageIndex >= 0) and (ImageIndex < FImage.Count) then
       SetSelectedIndex(ImageIndex, True);
@@ -649,7 +691,8 @@ end;
 procedure TAnimatorForm.NewBtnClick(Sender: TObject);
 begin
   ConfirmSave;
-  if not FImage.Empty then FImage.Clear;
+  if not FImage.Empty then
+    FImage.Clear;
   FFileName := '';
   UpdateCaption;
   Status.Caption := SReady;
@@ -658,8 +701,10 @@ end;
 
 procedure TAnimatorForm.SaveBtnClick(Sender: TObject);
 begin
-  if FFileName = '' then SaveAsBtnClick(Sender)
-  else begin
+  if FFileName = '' then
+    SaveAsBtnClick(Sender)
+  else
+  begin
     StartWait;
     try
       FImage.SaveToFile(FFileName);
@@ -673,11 +718,13 @@ end;
 
 procedure TAnimatorForm.SaveAsBtnClick(Sender: TObject);
 begin
-  if FFileName <> '' then begin
+  if FFileName <> '' then
+  begin
     FSaveDlg.FileName := FFileName;
     FSaveDlg.InitialDir := ExtractFilePath(FSaveDlg.FileName);
   end;
-  if not FImage.Empty and FSaveDlg.Execute then begin
+  if not FImage.Empty and FSaveDlg.Execute then
+  begin
     Application.ProcessMessages;
     StartWait;
     try
@@ -697,17 +744,19 @@ procedure TAnimatorForm.InsertBtnClick(Sender: TObject);
 var
   Pic: TPicture;
 begin
-  if FOpenDlg.Execute then begin
+  if FOpenDlg.Execute then
+  begin
     Application.ProcessMessages;
     StartWait;
     Pic := TPicture.Create;
     try
       FOpenDlg.InitialDir := ExtractFilePath(FOpenDlg.FileName);
-{$IFDEF COMPILER3_UP}
+      {$IFDEF COMPILER3_UP}
       Pic.OnProgress := GraphicProgress;
-{$ENDIF}
+      {$ENDIF}
       Pic.LoadFromFile(FOpenDlg.FileName);
-      if (Pic.Graphic <> nil) and not Pic.Graphic.Empty then begin
+      if (Pic.Graphic <> nil) and not Pic.Graphic.Empty then
+      begin
         FImage.AddFrame(Pic.Graphic);
         FModified := True;
         ImageChanged(FImage);
@@ -730,11 +779,13 @@ procedure TAnimatorForm.PasteBtnClick(Sender: TObject);
 var
   Temp: TPicture;
 begin
-  if not EnablePaste then Exit;
+  if not EnablePaste then
+    Exit;
   Temp := TPicture.Create;
   try
     Temp.Assign(Clipboard);
-    if (Temp.Graphic <> nil) and not Temp.Graphic.Empty then begin
+    if (Temp.Graphic <> nil) and not Temp.Graphic.Empty then
+    begin
       FImage.AddFrame(Temp.Graphic);
       FModified := True;
       ImageChanged(FImage);
@@ -759,10 +810,11 @@ end;
 
 procedure TAnimatorForm.CopyBtnClick(Sender: TObject);
 var
-  Temp: TJvGIFImage ;
+  Temp: TJvGIFImage;
 begin
-  if not FImage.Empty and (FImage.FrameIndex >= 0) then begin
-    Temp := TJvGIFImage .Create;
+  if not FImage.Empty and (FImage.FrameIndex >= 0) then
+  begin
+    Temp := TJvGIFImage.Create;
     try
       Temp.Assign(FImage.Frames[FImage.FrameIndex]);
       Clipboard.Assign(Temp);
@@ -775,7 +827,8 @@ end;
 
 procedure TAnimatorForm.DeleteBtnClick(Sender: TObject);
 begin
-  if FImage.FrameIndex >= 0 then begin
+  if FImage.FrameIndex >= 0 then
+  begin
     FImage.DeleteFrame(FImage.FrameIndex);
     FModified := True;
   end;
@@ -783,7 +836,8 @@ end;
 
 procedure TAnimatorForm.UpBtnClick(Sender: TObject);
 begin
-  if FImage.FrameIndex > 0 then begin
+  if FImage.FrameIndex > 0 then
+  begin
     FImage.MoveFrame(FImage.FrameIndex, FImage.FrameIndex - 1);
     FModified := True;
   end;
@@ -830,7 +884,8 @@ begin
   LoopLbl.Enabled := RepeatForever.Enabled and not RepeatForever.Checked;
   RepeatCnt.Enabled := LoopLbl.Enabled;
   RepeatCntBtn.Enabled := LoopLbl.Enabled;
-  if not (FLoading or FUpdating) then begin
+  if not (FLoading or FUpdating) then
+  begin
     if RepeatForever.Checked then
       FImage.RepeatCount := 0
     else
@@ -842,10 +897,12 @@ end;
 
 procedure TAnimatorForm.CommentChange(Sender: TObject);
 begin
-  if not (FLoading or FUpdating) then begin
+  if not (FLoading or FUpdating) then
+  begin
     if (Sender = FrameComment) and (FImage.FrameIndex >= 0) then
       FImage.Frames[FImage.FrameIndex].Comment := FrameComment.Lines
-    else if Sender = TrailingComment then
+    else
+    if Sender = TrailingComment then
       FImage.Comment := TrailingComment.Lines;
     FModified := True;
   end;
@@ -853,7 +910,8 @@ end;
 
 procedure TAnimatorForm.TopLeftChange(Sender: TObject);
 begin
-  if not (FLoading or FUpdating) and (FImage.FrameIndex >= 0) then begin
+  if not (FLoading or FUpdating) and (FImage.FrameIndex >= 0) then
+  begin
     FImage.Frames[FImage.FrameIndex].Origin := Point(
       StrToIntDef(ImageLeft.Text, ImageLeftBtn.Position),
       StrToIntDef(ImageTop.Text, ImageTopBtn.Position));
@@ -863,7 +921,8 @@ end;
 
 procedure TAnimatorForm.DelayTimeChange(Sender: TObject);
 begin
-  if not (FLoading or FUpdating) and (FImage.FrameIndex >= 0) then begin
+  if not (FLoading or FUpdating) and (FImage.FrameIndex >= 0) then
+  begin
     FImage.Frames[FImage.FrameIndex].AnimateInterval :=
       StrToIntDef(DelayTime.Text, DelayTimeBtn.Position) * 10;
     FModified := True;
@@ -872,8 +931,10 @@ end;
 
 procedure TAnimatorForm.DisposalComboChange(Sender: TObject);
 begin
-  if not (FLoading or FUpdating) and (FImage.FrameIndex >= 0) then begin
-    if DisposalCombo.ItemIndex >= 0 then begin
+  if not (FLoading or FUpdating) and (FImage.FrameIndex >= 0) then
+  begin
+    if DisposalCombo.ItemIndex >= 0 then
+    begin
       FImage.Frames[FImage.FrameIndex].DisposalMethod :=
         TDisposalMethod(DisposalCombo.ItemIndex);
       FModified := True;
@@ -885,8 +946,10 @@ procedure TAnimatorForm.TransBoxClick(Sender: TObject);
 begin
   TransColor.Enabled := TransBox.Checked;
   TransColorLabel.Enabled := TransBox.Checked;
-  if not (FLoading or FUpdating) and (FImage.FrameIndex >= 0) then begin
-    if not TransBox.Checked then begin
+  if not (FLoading or FUpdating) and (FImage.FrameIndex >= 0) then
+  begin
+    if not TransBox.Checked then
+    begin
       FImage.Frames[FImage.FrameIndex].TransparentColor := clNone;
       FModified := True;
     end;
@@ -895,7 +958,8 @@ end;
 
 procedure TAnimatorForm.FormKeyPress(Sender: TObject; var Key: Char);
 begin
-  if (Key = #27) and FLoading then begin
+  if (Key = #27) and FLoading then
+  begin
     FAborting := True;
     Key := #0;
   end;
@@ -927,12 +991,14 @@ end;
 procedure TAnimatorForm.CheckLabelMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  if (Button = mbLeft) and not (ssDouble in Shift) then begin
-    if TJvLabel (Sender).FocusControl.CanFocus then
-      ActiveControl := TJvLabel (Sender).FocusControl;
-    if (TJvLabel (Sender).FocusControl is TCheckBox) then
-      with TCheckBox(TJvLabel (Sender).FocusControl) do
-        if Enabled then Checked := not Checked;
+  if (Button = mbLeft) and not (ssDouble in Shift) then
+  begin
+    if TJvLabel(Sender).FocusControl.CanFocus then
+      ActiveControl := TJvLabel(Sender).FocusControl;
+    if (TJvLabel(Sender).FocusControl is TCheckBox) then
+      with TCheckBox(TJvLabel(Sender).FocusControl) do
+        if Enabled then
+          Checked := not Checked;
   end;
 end;
 
@@ -942,3 +1008,4 @@ begin
 end;
 
 end.
+

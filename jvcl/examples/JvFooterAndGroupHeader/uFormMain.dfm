@@ -5,16 +5,21 @@ object Form1: TForm1
   Height = 222
   Caption = 'JvGroupHeader and JvFooter demo'
   Color = clBtnFace
+  Constraints.MinHeight = 150
+  Constraints.MinWidth = 200
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  Position = poDesktopCenter
+  Scaled = False
   PixelsPerInch = 96
   TextHeight = 13
   object JvGroupHeader1: TJvGroupHeader
-    Left = 8
+    Left = 16
     Top = 8
     Width = 225
     Height = 17
@@ -27,8 +32,8 @@ object Form1: TForm1
     ParentFont = False
   end
   object JvGroupHeader2: TJvGroupHeader
-    Left = 8
-    Top = 40
+    Left = 16
+    Top = 32
     Width = 225
     Height = 17
     Caption = 'JvGroupHeader2'
