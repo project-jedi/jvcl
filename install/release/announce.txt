@@ -1,0 +1,33 @@
+Subject: 
+ANN: JVCL 3 BETA Released!
+Body:
+The JVCL Team is proud to announce that a beta release of JVCL 3 is available for download. 
+
+This release contains changes, additions and bugfixes too numerous to list here, but here are some of the highlights:
+
+- The monolithic package structure of JVCL 2.10 has been broken into smaller packages. 
+- Files have been renamed and arranged using a more logical naming scheme and folder structure, making it easier to find what you are looking for.
+- Numerous components have been merged. This means there are almost no duplicates in JVCL anymore.
+- The full install contains a tool to convert large parts of your source from JVCL 2.10 to JVCL 3.00, simplifying migration.
+- Several new components and libraries have been added, among them UIB, Globus, KWizard, DockPresident, Managed Threads, UIL Time Framework, dxPack II, Jans Components, Print Preview, a LED control, a checkbox/radiobutton treeview and an XML database.
+- A new package generator that creates packages for all supported platforms from XML files.
+- A new installer that knows about and automatically detects package dependecies, installing what you need in each supported version.
+- Improved support for Windows XP theming.
+- Improved support for VisualCLX (not complete).
+- Numerous bugs fixed.
+- Support for localization using dxgettext (http://dxgettext.sourceforge.net)
+
+If you are currently using JVCL 2.10, please read the documentation *carefully* before installing JVCL 3, especially the migration document.
+
+This release is available in three flavors:
+- Full install + latest JCL
+- Source and examples
+- Source only
+
+Later on we will also provide separate downloads for those packages that can be installed in a "stand-alone" mode (JvUIB, JvWizard, JvGlobus, JvManagedThreads, JvDocking, JvXPCtrls and JvDotNetCtrls)
+To download JVCL 3, go to http://sourceforge.net/projects/jvcl and click the "Files" link at the top.
+
+The version o fthis release is JVCL3.0 BETA 1.
+
+The JVCL Team
+
