@@ -1313,9 +1313,9 @@ var
   SavedDC, ATop: Integer;
   SavedColor: TColor;
   Flags: Cardinal;
+  HasImage: boolean;
 begin
-  ATop := R.Top;
-  Flags := DT_CENTER or DT_VCENTER or DT_SINGLELINE;
+  ATop := R.Top + 1;
   if Pressed then
   begin
     if BorderStyle = bsNone then
@@ -1336,44 +1336,42 @@ begin
       Frame3D(Canvas, R, clBtnFace, clBtnShadow, 1);
     end;
   end;
-  if Assigned(PageImages) and (Pages[Index].ImageIndex >= 0) and (Pages[Index].ImageIndex < PageImages.Count) then
-  begin
-    SavedDC := SaveDC(Canvas.Handle);
-    try
-      case Pages[Index].Alignment of
-        taLeftJustify:
-          begin
-            PageImages.Draw(Canvas, 4, ATop + 1, Pages[Index].ImageIndex, Pages[Index].Enabled);
-            Inc(R.Left, PageImages.Width + 8);
-          end;
-        taCenter: // draw images to the left but don't offset the text
-          begin
-            PageImages.Draw(Canvas, 4, ATop + 2, Pages[Index].ImageIndex, Pages[Index].Enabled);
-          end;
-        taRightJustify:
-          begin
-            PageImages.Draw(Canvas, R.Right - PageImages.Width - 4, ATop + 2,
-              Pages[Index].ImageIndex, Pages[Index].Enabled);
-            Dec(R.Right, PageImages.Width + 8);
-          end;
-      end;
-    finally
-      RestoreDC(Canvas.Handle, SavedDC);
-    end;
-  end
-  else
+  Flags := DT_CENTER or DT_VCENTER or DT_SINGLELINE;
+  HasImage := Assigned(PageImages) and (Pages[Index].ImageIndex >= 0) and (Pages[Index].ImageIndex < PageImages.Count);
+  SavedDC := SaveDC(Canvas.Handle);
+  try
     case Pages[Index].Alignment of
       taLeftJustify:
         begin
+          if HasImage then
+          begin
+            PageImages.Draw(Canvas, 4, ATop, Pages[Index].ImageIndex, Pages[Index].Enabled);
+            Inc(R.Left, PageImages.Width + 8);
+          end
+          else
+            Inc(R.Left, 4);
           Flags := DT_LEFT or DT_VCENTER or DT_SINGLELINE;
-          Inc(R.Left, 2);
+        end;
+      taCenter:
+        if HasImage then
+        begin
+          PageImages.Draw(Canvas, 4, ATop, Pages[Index].ImageIndex, Pages[Index].Enabled);
+          Inc(R.Left, PageImages.Width + 4);
         end;
       taRightJustify:
         begin
+          if HasImage then
+          begin
+            PageImages.Draw(Canvas, 4, ATop, Pages[Index].ImageIndex, Pages[Index].Enabled);
+            Inc(R.Left, PageImages.Width + 8);
+          end;
+          Dec(R.Right, 4);
           Flags := DT_RIGHT or DT_VCENTER or DT_SINGLELINE;
-          Dec(R.Right, 2);
         end;
     end;
+  finally
+    RestoreDC(Canvas.Handle, SavedDC);
+  end;
   SetBkMode(Canvas.Handle, TRANSPARENT);
   OffsetRect(R, 0, -1);
   SavedColor := Canvas.Font.Color;
@@ -1382,11 +1380,11 @@ begin
     begin
       OffsetRect(R, 1, 1);
       Canvas.Font.Color := clWhite;
-      DrawText(Canvas.Handle, PChar(Pages[Index].Caption), -1, R, Flags);
+      DrawText(Canvas.Handle, PChar(Pages[Index].Caption), -1, R, Flags or DT_END_ELLIPSIS);
       OffsetRect(R, -1, -1);
       Canvas.Font.Color := clGrayText;
     end;
-    DrawText(Canvas.Handle, PChar(Pages[Index].Caption), -1, R, Flags);
+    DrawText(Canvas.Handle, PChar(Pages[Index].Caption), -1, R, Flags or DT_END_ELLIPSIS);
   finally
     Canvas.Font.Color := SavedColor;
   end;
@@ -2434,17 +2432,28 @@ procedure TJvCustomOutlookBar.CMDialogChar(var Message: TCMDialogChar);
 var
   I: integer;
 begin
-  if CanFocus and (ActivePage <> nil) then
+  if CanFocus then
   begin
-    for I := 0 to ActivePage.Buttons.Count - 1 do
-      if IsAccel(Message.CharCode, ActivePage.Buttons[I].Caption) then
+  // first check the buttons on the active page, then check the pages
+    if (ActivePage <> nil) and (ActivePage.Enabled) then
+    begin
+      for I := 0 to ActivePage.Buttons.Count - 1 do
+        if ActivePage.Buttons[I].Enabled and IsAccel(Message.CharCode, ActivePage.Buttons[I].Caption) then
+        begin
+          Message.Result := 1;
+          DoButtonClick(I);
+          Exit;
+        end;
+    end;
+
+    for I := 0 to Pages.Count - 1 do
+      if Pages[I].Enabled and IsAccel(Message.CharCode, Pages[I].Caption) then
       begin
         Message.Result := 1;
-        DoButtonClick(I);
+        ActivePageIndex := I;
         Exit;
       end;
   end;
-
   inherited;
 end;
 
