@@ -3069,12 +3069,12 @@ end;
 
 function TJvMiscInfo.GetWallpaperStyle: TJvWallpaperStyle;
 begin
-  Result := TJvWallpaperStyle(RegReadIntegerDef(HKEY_CURRENT_USER, HKCU_CONTROL_PANEL_DESKTOP, 'WallpaperStyle', 0));
+  Result := TJvWallpaperStyle(StrToInt(RegReadStringDef(HKEY_CURRENT_USER, HKCU_CONTROL_PANEL_DESKTOP, 'WallpaperStyle', '0')));
 end;
 
 function TJvMiscInfo.GetWallpaperTiled: Boolean;
 begin
-  Result := RegReadIntegerDef(HKEY_CURRENT_USER, HKCU_CONTROL_PANEL_DESKTOP, 'TileWallpaper', 0) <> 0;
+  Result := RegReadStringDef(HKEY_CURRENT_USER, HKCU_CONTROL_PANEL_DESKTOP, 'TileWallpaper', '0') <> '0';
 end;
 
 procedure TJvMiscInfo.SetColorSchemes(const Value: TStrings);
@@ -3154,7 +3154,7 @@ begin
   if not IsDesigning and not ReadOnly then
   begin
     if Value <> wsUnused then
-      RegWriteInteger(HKEY_CURRENT_USER, HKCU_CONTROL_PANEL_DESKTOP, 'WallpaperStyle', Ord(Value));
+      RegWriteString(HKEY_CURRENT_USER, HKCU_CONTROL_PANEL_DESKTOP, 'WallpaperStyle', IntToStr(Ord(Value)));
   end
   else
     RaiseReadOnly;
@@ -3163,7 +3163,7 @@ end;
 procedure TJvMiscInfo.SetWallpaperTiled(const Value: Boolean);
 begin
   if not IsDesigning and not ReadOnly then
-    RegWriteInteger(HKEY_CURRENT_USER, HKCU_CONTROL_PANEL_DESKTOP, 'TileWallpaper', Ord(Value))
+    RegWriteString(HKEY_CURRENT_USER, HKCU_CONTROL_PANEL_DESKTOP, 'TileWallpaper', IntToStr(Ord(Value)))
   else
     RaiseReadOnly;
 end;
