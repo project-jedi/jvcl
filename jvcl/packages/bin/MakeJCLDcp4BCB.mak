@@ -50,7 +50,7 @@ pg.exe: Templates
 	$(MAKE) $(QUIET) -f makefile.mak -s pg.exe
 	cd $(DEVTOOLS_BACK)
 	#
-	@echo [Generating: Delphi Packages]
+	@echo [Generating: Packages]
 	$(DEVTOOLS)\bin\pg.exe -m=JCL -p="$(JCLROOT)\Packages" -t=c$(VERSION) -x=$(DEVTOOLS)\bin\pgEdit.xml
 
 Templates:
