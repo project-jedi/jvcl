@@ -48,13 +48,13 @@ type
   published
     property Text: string read FValue write SetValue;
     property Html: string read FHtml write SetHtml;
-    function CharToHtml(Ch: Char): string;
     function TextToHtml(Text: string): string;
     function HtmlToText(Text: string): string;
   end;
 
 function StringToHtml(Value: string): string;
 function HtmlToString(Value: string): string;
+function CharToHtml(Ch: Char): string;
 
 implementation
 
@@ -149,17 +149,97 @@ const
 
   {**************************************************}
 
-function TJvStrToHtml.CharToHtml(Ch: Char): string;
+function _StringReplace(const S, OldPattern, NewPattern: string; Flags: TReplaceFlags): string;
 var
-  I: Integer;
+  i: integer;
+  SearchStr,
+    Patt: string;
+  ChStart,
+    ChPatt: PChar;
+  OldPattLen: integer;
+  NewPattLen: integer;
+  Delta: integer;
 begin
-  for I := Low(Conversions) to High(Conversions) do
-    if Conversions[I].Ch = Ch then
+  result := S;
+  OldPattLen := Length(OldPattern);
+  NewPattLen := Length(NewPattern);
+  if rfIgnoreCase in Flags then
+  begin
+    SearchStr := ANSIUppercase(S);
+    Patt := ANSIUpperCase(OldPattern);
+  end
+  else
+  begin
+    SearchStr := S;
+    Patt := OldPattern;
+  end;
+  if OldPattLen > NewPattLen then
+  begin                                 // We may do only one string truncation
+    ChStart := PChar(SearchStr);
+    ChPatt := ChStart;
+    Delta := 0;
+    while true do
     begin
-      Result := Conversions[I].Html;
-      Exit;
+      ChPatt := StrPos(ChPatt, PChar(Patt));
+      if ChPatt = nil then
+        break;
+      Move(NewPattern[1], result[ChPatt - ChStart + 1 - Delta], NewPattLen);
+      Move(result[(ChPatt - ChStart - Delta) + OldPattLen + 1],
+        result[ChPatt - ChStart + NewPattLen + 1 - Delta],
+        Length(Result) - (ChPatt - ChStart - Delta) - OldPattLen);
+      Delta := Delta + OldPattLen - NewPattLen; // Keep track of difference in positions between S and result
+      if not (rfReplaceAll in Flags) then
+        break;
+      inc(ChPatt);
     end;
-  Result := Ch;
+    SetLength(Result, Length(Result) - Delta);
+  end
+  else if OldPattLen < NewPattLen then
+  begin                                 // The slowest, needs to enlarge string for each replacement
+    ChStart := PChar(SearchStr);
+    ChPatt := ChStart;
+    Delta := 0;
+    while true do
+    begin
+      ChPatt := StrPos(ChPatt, PChar(Patt));
+      if ChPatt = nil then
+        break;
+      SetLength(Result, Length(Result) + NewPattLen - OldPattLen);
+      Move(result[(ChPatt - ChStart) + Delta + OldPattLen + 1],
+        result[(ChPatt - ChStart) + (NewPattLen) + Delta + 1],
+        Length(Result) - (ChPatt - ChStart) - Delta - NewPattLen);
+      Move(NewPattern[1], result[ChPatt - ChStart + 1 + Delta], NewPattLen);
+      Delta := Delta + (NewPattLen - OldPattLen); // Keep track of difference in positions between S and result
+      if not (rfReplaceAll in Flags) then
+        break;
+      inc(ChPatt);
+    end;
+  end
+  else if OldPattLen = 1 then
+  begin                                 // Just replace Chars...
+    for i := 1 to Length(SearchStr) do
+      if SearchStr[i] = Patt[1] then
+      begin
+        result[i] := NewPattern[1];
+        if not (rfReplaceAll in Flags) then
+          break;
+      end;
+  end
+  else
+  begin                                 // Equal length, but more than 1 char...keep length, move chars
+    ChStart := PChar(SearchStr);
+    ChPatt := ChStart;
+    while true do
+    begin
+      ChPatt := StrPos(ChPatt, PChar(Patt));
+      if ChPatt = nil then
+        break;
+      Move(NewPattern[1], result[ChPatt - ChStart + 1], OldPattLen);
+      if not (rfReplaceAll in Flags) then
+        break;
+      inc(ChPatt);
+    end;
+  end;
 end;
 
 {**************************************************}
@@ -174,62 +254,69 @@ end;
 {**************************************************}
 
 function TJvStrToHtml.HtmlToText(Text: string): string;
-var
-  I: Integer;
 begin
-  Result := '';
-  for I := 1 to Length(Text) do
-    Result := Result + CharToHtml(Text[I]);
+  Result := HtmlToString(Text);
 end;
 
 {**************************************************}
 
 procedure TJvStrToHtml.SetHtml(const Value: string);
 begin
-  FValue := HtmlToText(Value);
+  FValue := HtmlToString(Value);
 end;
 
 {**************************************************}
 
 procedure TJvStrToHtml.SetValue(const Value: string);
 begin
-  FHtml := TextToHtml(Value);
+  FHtml := StringToHtml(Value);
 end;
 
 {**************************************************}
 
 function TJvStrToHtml.TextToHtml(Text: string): string;
-var
-  i: Integer;
 begin
-  Result := Text;
-  for i := Low(Conversions) to High(Conversions) do
-    Result := StringReplace(Result, Conversions[i].Html, Conversions[i].Ch,
-      [rfReplaceAll, rfIgnoreCase]);
+  Result := StringToHtml(Text);
 end;
 
 {**************************************************}
 
 // (rom) this is silly. Better base the component methods on the functions.
+// (p3) seconded
 
 function StringToHtml(Value: string): string;
+var i:integer;
 begin
-  with TJvStrToHtml.Create(nil) do
-  begin
-    Result := TextToHtml(Value);
-    Free;
-  end;
+  Result := Value;
+  // (p3) this is *very* slow - please rewrite
+  for i := Low(Conversions) to High(Conversions) do
+    Result := _StringReplace(Result, Conversions[i].Html, Conversions[i].Ch,
+      [rfReplaceAll, rfIgnoreCase]);
 end;
 
 {**************************************************}
 
 function HtmlToString(Value: string): string;
+var
+  I: Integer;
 begin
-  with TJvStrToHtml.Create(nil) do
-  begin
-    Result := HtmlToText(Value);
-    Free;
-  end;
+  Result := '';
+  for I := 1 to Length(Value) do
+    Result := Result + CharToHtml(Value[I]);
+end;
+
+function CharToHtml(Ch: Char): string;
+var
+  I: Integer;
+begin
+  for I := Low(Conversions) to High(Conversions) do
+    if Conversions[I].Ch = Ch then
+    begin
+      Result := Conversions[I].Html;
+      Exit;
+    end;
+  Result := Ch;
 end;
 
 end.
+
