@@ -30,10 +30,12 @@ package JVCL200_D60Personal;
 requires
   vcl,
   JVCL200_R60Personal,
-  designide;
+  designide,
+  dclstd;
 
 contains
   JVCLReg in '..\Source\JVCLReg.pas',
+  JvAlarmsEditor in '..\Source\JvAlarmsEditor.pas',
   JvBaseDlgEditor in '..\Source\JvBaseDlgEditor.pas',
   JvCommonDialogDEditor in '..\Source\JvCommonDialogDEditor.pas',
   JvFormFinish in '..\Source\JvFormFinish.pas' {FormEnd},
@@ -61,6 +63,23 @@ contains
   JvChNtfyProperty in '..\Source\JvChNtfyProperty.pas',
   JvLCProperty in '..\Source\JvLCProperty.pas',
   JvTipProperty in '..\Source\JvTipProperty.pas',
-  JvAlarmsEditor in '..\source\JvAlarmsEditor.pas';
+  JvAppletProperty in '..\source\JvAppletProperty.pas',
+  JvLConst in '..\source\JvLConst.pas',
+  JvHintProp in '..\source\JvHintProp.pas',
+  JvCheckItm in '..\source\JvCheckItm.pas',
+  JvxStrLEdit in '..\source\JvxStrLEdit.pas',
+  JvColors in '..\source\JvColors.pas',
+  JvDsgn in '..\source\JvDsgn.pas',
+  JvPresrDsn in '..\source\JvPresrDsn.pas',
+  JvMinMaxEd in '..\source\JvMinMaxEd.pas',
+  JvSbEdit in '..\source\JvSbEdit.pas',
+  JvPgMngrEd in '..\source\JvPgMngrEd.pas',
+  JvTimLstEd in '..\source\JvTimLstEd.pas',
+  JvIcoLEdit in '..\source\JvIcoLEdit.pas',
+  JvPictEdit in '..\source\JvPictEdit.pas',
+  JvDirFrm in '..\source\JvDirFrm.pas',
+  JvGradEdit in '..\source\JvGradEdit.pas',
+  JvCtlReg in '..\source\JvCtlReg.pas',
+  JvTooReg in '..\source\JvTooReg.pas';
 
 end.
