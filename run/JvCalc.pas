@@ -414,7 +414,7 @@ constructor TJvCalculatorPanel.CreateLayout(AOwner: TComponent;
   ALayout: TCalcPanelLayout);
 var
   {$IFDEF VisualCLX}
-  GlyphList : TImageList;
+  GlyphList: TImageList;
   {$ENDIF VisualCLX}
   Bmp: TBitmap;
   I: TCalcBtnKind;
@@ -463,6 +463,7 @@ begin
     MinHeight := Height ;
     MinWidth := Width ;
   end;
+  GlyphList := nil;
   Bmp := TBitmap.Create;
   {$ENDIF VisualCLX}
   try
