@@ -188,6 +188,7 @@ var
   SourceFon: TRect;
   FontHeight: Integer;
 
+  // (rom) the Delay implementation is crude. Better use a Timer
   procedure Delay(MSecs: Longword);
   var
     DelayM: Longword;
@@ -220,7 +221,7 @@ var
       try
         Delay(StrToInt(msec));
       except
-      end
+      end;
     end
     else
       Result := False;
@@ -281,6 +282,7 @@ var
     Line := -1;
   end;
 
+  // (rom) the Delay implementation is crude. Better use a Timer or multimedia timer
   procedure DelayBegin;
   begin
     DelayMsec := GetTickCount;

@@ -368,7 +368,7 @@ var
             CompList.Add(AComponent);
 
             aNumProps := TypeData^.PropCount;
-            GetMem(aPropList, aNumProps * sizeof(pointer));
+            GetMem(aPropList, aNumProps * SizeOf(Pointer));
             try
               GetPropInfos(ATypeInfo, aPropList);
               for I := 0 to aNumProps - 1 do
@@ -377,7 +377,7 @@ var
                 AddToTree(AComponent, aPropList^[I], MyNode);
               end;
             finally
-              FreeMem(aPropList, aNumProps * sizeof(pointer));
+              FreeMem(aPropList, aNumProps * SizeOf(Pointer));
             end;
           end;
         // tkSet    // - Not yet supported [translated]
@@ -392,7 +392,7 @@ var
     s: string;
   begin
     if not (csDesigning in ComponentState) then
-      exit;
+      Exit;
     Pic := TBitmap.Create;
     s := Comp.ClassName;
     try
@@ -428,7 +428,7 @@ begin
       LoadProgress.ProgressBar.Position := J + 1;
       Application.ProcessMessages;
       if LoadProgress.Canceled then
-        exit;
+        Exit;
       //ODS('Read ' + Comp.Name + ':' + Comp.ClassName);
 
       LoadBitmap;
@@ -441,7 +441,7 @@ begin
         AName := TypeInf^.Name;
         TypeData := GetTypeData(TypeInf);
         NumProps := TypeData^.PropCount;
-        GetMem(PropList, NumProps * sizeof(pointer));
+        GetMem(PropList, NumProps * SizeOf(Pointer));
         try
           GetPropInfos(TypeInf, PropList);
           for I := 0 to NumProps - 1 do
@@ -452,7 +452,7 @@ begin
             AddToTree(Comp, PropList^[I], ANode);
           end;
         finally
-          FreeMem(PropList, NumProps * sizeof(pointer));
+          FreeMem(PropList, NumProps * SizeOf(Pointer));
         end;
       except
         on E: Exception do
@@ -487,7 +487,7 @@ var
   P: Integer;
 begin
   if Node = nil then
-    exit;
+    Exit;
   Text := Node.Text;
   btnAddProp.Enabled := IsEnabled(Text);
   P := Pos(' ', Text);

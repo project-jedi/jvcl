@@ -1442,10 +1442,9 @@ begin
       Tmp := ClientToScreen(Point(X, Y));
       FPopUpMenu.PopupComponent := Self;
       FPopUpMenu.Popup(Tmp.X, Tmp.Y);
-      // (rom) very suspicious
       { wait 'til menu is Done }
       while PeekMessage(Msg, 0, WM_MOUSEFIRST, WM_MOUSELAST, PM_REMOVE) do
-        ;
+        {nothing};
     end;
     { release button }
     if not FStayDown then
@@ -2324,7 +2323,7 @@ begin
     FPopUpMenu.Popup(Tmp.X, Tmp.Y);
     { wait 'til menu is Done }
     while PeekMessage(Msg, 0, WM_MOUSEFIRST, WM_MOUSELAST, PM_REMOVE) do
-      ;
+      {nothing};
     FDown := False;
   end
   else

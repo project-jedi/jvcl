@@ -826,9 +826,9 @@ type
     dwHelpContext: DWORD;
     lData: Longint;
     hIcon: HICON;
-    szName: array[0..31] of AnsiChar;
-    szInfo: array[0..63] of AnsiChar;
-    szHelpFile: array[0..127] of AnsiChar;
+    szName: array [0..31] of AnsiChar;
+    szInfo: array [0..63] of AnsiChar;
+    szHelpFile: array [0..127] of AnsiChar;
   end;
   TNewCPLInfoW = packed record
     dwSize: DWORD;
@@ -836,9 +836,9 @@ type
     dwHelpContext: DWORD;
     lData: Longint;
     hIcon: HICON;
-    szName: array[0..31] of WideChar;
-    szInfo: array[0..63] of WideChar;
-    szHelpFile: array[0..127] of WideChar;
+    szName: array [0..31] of WideChar;
+    szInfo: array [0..63] of WideChar;
+    szHelpFile: array [0..127] of WideChar;
   end;
 
 function GetControlPanelApplet(const AFilename: string; Strings: TStrings; Images: TImageList = nil): Boolean;
@@ -953,8 +953,8 @@ end;
 
 procedure ExecuteAndWait(FileName: string; Visibility: Integer);
 var
-  zAppName: array[0..512] of Char;
-  zCurDir: array[0..255] of Char;
+  zAppName: array [0..512] of Char;
+  zCurDir: array [0..255] of Char;
   WorkDir: string;
   StartupInfo: TStartupInfo;
   ProcessInfo: TProcessInformation;
@@ -1041,7 +1041,7 @@ end;
 procedure HideStartBtn(Visible: Boolean);
 var
   Tray, Child: HWND;
-  C: array[0..127] of Char;
+  C: array [0..127] of Char;
   S: string;
 begin
   Tray := FindWindow(PChar(RC_ShellName), nil);
@@ -1236,7 +1236,7 @@ end;
 
 function EnumWindowsProc(Handle: THandle; lParam: TStrings): Boolean; stdcall;
 var
-  St: array[0..256] of Char;
+  St: array [0..256] of Char;
   St2: string;
 begin
   if IsWindowVisible(Handle) then
@@ -1594,7 +1594,7 @@ end;
 
 function StringToBoolean(const Ps: string): Boolean;
 const
-  TRUE_STRINGS: array[1..5] of string = ('True', 't', 'y', 'yes', '1');
+  TRUE_STRINGS: array [1..5] of string = ('True', 't', 'y', 'yes', '1');
 var
   liLoop: Integer;
 begin
@@ -1666,9 +1666,12 @@ function DateIsNull(const pdtValue: TDateTime; const pdtKind: TdtKind): Boolean;
 begin
   Result := False;
   case pdtKind of
-    dtkDateOnly: Result := pdtValue < 1; //if date only then anything less than 1 is considered null
-    dtkTimeOnly: Result := frac(pdtValue) = NullEquivalentDate; //if time only then anything without a remainder is null
-    dtkDateTime: Result := pdtValue = NullEquivalentDate;
+    dtkDateOnly:
+      Result := pdtValue < 1; //if date only then anything less than 1 is considered null
+    dtkTimeOnly:
+      Result := Frac(pdtValue) = NullEquivalentDate; //if time only then anything without a remainder is null
+    dtkDateTime:
+      Result := pdtValue = NullEquivalentDate;
   end;
 end;
 
@@ -1681,7 +1684,7 @@ end;
 
 function MinimizeName(const Filename: string; Canvas: TCanvas; MaxLen: Integer): string;
 var
-  b: array[0..MAX_PATH] of Char;
+  b: array [0..MAX_PATH] of Char;
   R: TRect;
 begin
   StrCopy(b, PChar(Filename));
@@ -1738,12 +1741,12 @@ end;
 
 function TimeOnly(pcValue: TDateTime): TTime;
 begin
-  Result := frac(pcValue);
+  Result := Frac(pcValue);
 end;
 
 function DateOnly(pcValue: TDateTime): TDate;
 begin
-  Result := trunc(pcValue);
+  Result := Trunc(pcValue);
 end;
 
 function HasFlag(a, b: Integer): Boolean;

@@ -2448,6 +2448,8 @@ begin
   SetString(S, PChar(RAddr), RLen);
 end;
 
+// (rom) a thread to wait would be more elegant, also JCL function available
+
 function Execute(const CommandLine, WorkingDirectory: string): Integer;
 var
   R: Boolean;

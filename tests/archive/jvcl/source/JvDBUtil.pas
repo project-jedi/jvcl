@@ -254,6 +254,7 @@ begin
             if Assigned(OnProgress) then
               OnProgress(UserData, Stop, Y)
             else
+              // (rom) i do not like this
               Application.ProcessMessages;
             if Stop then
               Abort;

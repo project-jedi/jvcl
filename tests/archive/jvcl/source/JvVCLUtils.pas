@@ -1173,7 +1173,7 @@ type
   PPoints = ^TPoints;
   TPoints = array [0..0] of TPoint;
 var
-  Rgn: HRgn;
+  Rgn: HRGN;
 begin
   Rgn := CreatePolygonRgn(PPoints(@Points)^, High(Points) + 1, WINDING);
   try
@@ -1225,7 +1225,7 @@ begin
     else
       StrPCopy(lfFaceName, Font.Name);
     {$ELSE}
-    {$IFDEF VER93}
+    {$IFDEF BCB1}
     lfCharSet := Byte(Font.Charset);
     {$ELSE}
     lfCharSet := DEFAULT_CHARSET;

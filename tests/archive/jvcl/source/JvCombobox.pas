@@ -385,13 +385,13 @@ begin
         if SelectItem(SaveText + Char(Msg.WParam)) then
         begin
           PeekMessage(Msg, Handle, 0, 0, PM_REMOVE);
-          Key := #0
+          Key := #0;
         end;
       end;
     end
     else
       if SelectItem(SaveText) then
-        Key := #0
+        Key := #0;
   end;
 end;
 
@@ -407,11 +407,12 @@ begin
     Result := False;
     ItemIndex := -1;
     Change;
-    exit;
+    Exit;
   end;
   Idx := SendMessage(Handle, CB_FINDSTRING, -1, LongInt(PChar(AnItem)));
   Result := (Idx <> CB_ERR);
-  if not Result then exit;
+  if not Result then
+    Exit;
   ValueChange := Idx <> ItemIndex;
   SendMessage(Handle, CB_SETCURSEL, Idx, 0);
   if (Style in [csDropDown, csSimple]) then

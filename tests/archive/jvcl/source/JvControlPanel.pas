@@ -107,7 +107,7 @@ begin
       It.OnClick := DoLinkClick;
       It.Hint := S.Values[S.Names[I]];
       if Images <> nil then
-        It.ImageIndex := integer(S.Objects[I])
+        It.ImageIndex := Integer(S.Objects[I])
       else
       begin
         B := TBitmap(S.Objects[I]);
@@ -115,7 +115,8 @@ begin
         B.Free;
       end;
       Item.Add(It);
-      Application.ProcessMessages;
+      // (rom) seems of no use
+      //Application.ProcessMessages;
     end;
   finally
     S.Free;

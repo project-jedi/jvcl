@@ -777,7 +777,7 @@ begin
     // (rom) needs to be checked
     { wait 'til menu is done }
     while PeekMessage(Msg, 0, WM_MOUSEFIRST, WM_MOUSELAST, PM_REMOVE) do
-      ;
+      {nothing};
     { release button }
     MouseUp(Button, Shift, X, Y);
   end;

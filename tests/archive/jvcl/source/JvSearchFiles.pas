@@ -209,6 +209,7 @@ type
     FOptions: TJvSearchOptions;
     FOnAbort: TNotifyEvent;
     FOnError: TJvSearchFilesError;
+    FOnProgress: TNotifyEvent;
     FDirs: TStrings;
     FFiles: TStrings;
     FFindData: TWin32FindData;
@@ -230,6 +231,7 @@ type
     procedure DoFindFile(const APath: string); virtual;
     procedure DoFindDir(const APath: string); virtual;
     procedure DoAbort; virtual;
+    procedure DoProgress; virtual;
     function DoCheckDir: Boolean; virtual;
     function DoCheckFile: Boolean; virtual;
     function HandleError: Boolean; virtual;
@@ -271,14 +273,14 @@ type
     property OnError: TJvSearchFilesError read FOnError write FOnError;
     { Maybe add a flag to Options to disable OnCheck }
     property OnCheck: TJvCheckEvent read FOnCheck write FOnCheck;
+    // (rom) replaced ProcessMessages with OnProgress event
+    property OnProgress read FOnProgress write FOnProgress;
   end;
 
 implementation
 
 uses
   JclStrings, JclDateTime;
-
-//  Forms; // Application.ProcessMessages
 
 { Maybe TJvSearchFiles should be implemented with FindFirst, FindNext.
   There isn't a good reason to use FindFirstFile, FindNextFile instead of
@@ -287,23 +289,7 @@ uses
 const
   CDate1_1_1980 = 29221;
 
-  //=== TJvSearchFiles =========================================================
-
-  // (p3)
-
-  // (rom) better implement an OnProgress where the user can handle it
-  // (rom) OnProgress is an abstract concept and this ProcessMessages is not good
-
-procedure ProcessMessages;
-var
-  M: TMsg;
-begin
-  if PeekMessage(M, 0, 0, 0, PM_REMOVE) then
-  begin
-    TranslateMessage(M);
-    DispatchMessage(M);
-  end;
-end;
+//=== TJvSearchFiles =========================================================
 
 constructor TJvSearchFiles.Create(AOwner: TComponent);
 begin
@@ -341,6 +327,12 @@ procedure TJvSearchFiles.DoAbort;
 begin
   if Assigned(FOnAbort) then
     FOnAbort(Self);
+end;
+
+procedure TJvSearchFiles.DoProgress;
+begin
+  if Assigned(FOnProgress) then
+    FOnProgress(Self);
 end;
 
 procedure TJvSearchFiles.DoBeginScanDir(const ADirName: string);
@@ -449,8 +441,8 @@ begin
     begin
       // (p3) no need to bring in the Forms unit for this:
       if not IsConsole then
-        ProcessMessages;
-      { After ProcessMessages, the user can have called Abort,
+        DoProgress;
+      { After DoProgress, the user can have called Abort,
         so check it }
       if FAborting then
       begin

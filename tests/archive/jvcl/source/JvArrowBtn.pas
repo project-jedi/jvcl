@@ -930,8 +930,8 @@ begin
   if Assigned(FPopUp) and FArrowClick then
   begin
     Pnt := ClientToScreen(Point(0, Height));
-    FPopUp.Popup(Pnt.x, Pnt.y);
-    while PeekMessage(Msg, HWND(0), WM_MOUSEFIRST, WM_MOUSELAST, PM_REMOVE) do
+    FPopUp.Popup(Pnt.X, Pnt.Y);
+    while PeekMessage(Msg, HWND_DESKTOP, WM_MOUSEFIRST, WM_MOUSELAST, PM_REMOVE) do
       {nothing};
     if GetCapture <> 0 then
       SendMessage(GetCapture, WM_CANCELMODE, 0, 0);

@@ -5198,8 +5198,7 @@ begin
           P := ScreenToClient(Msg.Pt);
           if (P.X >= 0) and (P.X < ClientWidth) and (P.Y >= 0)
             and (P.Y <= ClientHeight) then
-            KillMessage(0, Msg.Message);
-          {PeekMessage(Msg, 0, 0, 0, PM_REMOVE);}
+            KillMessage(HWND_DESKTOP, Msg.Message);
         end;
       end;
     finally

@@ -228,6 +228,7 @@ procedure TJvSpecialImage.FadeIn;
 var
   I: Integer;
 begin
+  // (rom) needs better implementation. Timing is by CPU/graphics speed.
   for I := 0 to 50 do
   begin
     Brightness := I * 2;
@@ -239,6 +240,7 @@ procedure TJvSpecialImage.FadeOut;
 var
   I: Integer;
 begin
+  // (rom) needs better implementation. Timing is by CPU/graphics speed.
   for I := 50 downto 0 do
   begin
     Brightness := I * 2;
