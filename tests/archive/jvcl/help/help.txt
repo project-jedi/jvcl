@@ -1,1 +1,1 @@
-This directory is inteded for help text files.
+This directory is inteded for help files.
