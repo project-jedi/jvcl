@@ -73,7 +73,6 @@ type
     procedure SetOptions(Value: TJvSearchOptions);
     procedure SetDoSubs(Value: boolean);
     procedure SetStripDirs(Value: boolean);
-    procedure FindAllFiles(Path, Filename: string; Flags: integer);
     procedure FindAllMasks(Path: string; Filemasks: Tstrings; Flags: integer);
     function GetDrive: char;
     procedure SetDrive(Value: Char);
@@ -183,8 +182,8 @@ begin
 end;
 
 function TJvSearchFiles.Search: boolean;
-const FOpts: array[TJvSearchOption] of integer = (faReadOnly, faHidden, faSysFile,
-    faVolumeID, faDirectory, faArchive, faAnyFile);
+const FOpts: array[TJvSearchOption] of integer = 
+  (faReadOnly, faHidden, faSysFile,faVolumeID, faDirectory, faArchive, faAnyFile);
 
 var FFlags: integer; i: TJvSearchOption;
 var NewDrive, CurDrive: char;
@@ -208,7 +207,6 @@ begin
   if (NewDrive <> '') and (NewDrive <> CurDrive) then
     SetDrive(NewDrive);
 
-  //  FindAllFiles(ExtractFilePath(FMask),ExtractFilename(FMask),FFlags);
   if FSorted then
   begin
     TStringlist(FDirs).Sorted := true;
@@ -293,7 +291,8 @@ begin
           FHandle := INVALID_HANDLE_VALUE;
           Exit;
         end;
-        if (FindData.dwFileAttributes and FILE_ATTRIBUTE_DIRECTORY = 0) and (FindData.dwFileAttributes and Flags > 0) then
+        if (FindData.dwFileAttributes and FILE_ATTRIBUTE_DIRECTORY = 0) 
+          and ((FindData.dwFileAttributes and Flags > 0) or (FindData.dwFileAttributes = FILE_ATTRIBUTE_NORMAL)) then
         begin
           if not FOwnerData then
           begin
@@ -344,73 +343,7 @@ begin
         Windows.FindClose(FHandle);
     end;
   end;
-end; //
-
-procedure TJvSearchFiles.FindAllFiles(Path, Filename: string; Flags: integer);
-var FHandle: THandle; FindData: TWin32FindData; Cont: bool;
-begin
-  if FDoSubs then
-  begin
-    { do subdirs: skip true files }
-    FHandle := FindFirstFile(PChar(Path + '*.*'), FindData);
-    try
-      Cont := FHandle <> INVALID_HANDLE_VALUE;
-      while Cont do
-      begin
-        Application.ProcessMessages;
-        if FAbort then
-        begin
-          if FHandle <> INVALID_HANDLE_VALUE then
-            Windows.FindClose(FHandle);
-          Exit;
-        end;
-        if (FindData.dwFileAttributes and FILE_ATTRIBUTE_DIRECTORY > 0)
-          and (FindData.cFileName[0] <> '.') and (FindData.dwFileAttributes and Flags > 0) then
-        begin
-          if not FOwnerData then
-            FDirs.Add(Path + FindData.cFilename);
-          FindDir(FindData, Path);
-          FindAllFiles(Path + FindData.cFilename + '\', Filename, Flags);
-        end;
-        Cont := Windows.FindNextFile(FHandle, FindData);
-      end;
-    finally
-      if FHandle <> INVALID_HANDLE_VALUE then
-        Windows.FindClose(FHandle);
-    end;
-  end;
-
-  { do this dir (files only) }
-  FHandle := FindFirstFile(PChar(Path + Filename), FindData);
-  try
-    Cont := FHandle <> INVALID_HANDLE_VALUE;
-    while Cont do
-    begin
-      Application.ProcessMessages;
-      if FAbort then
-      begin
-        if FHandle <> INVALID_HANDLE_VALUE then
-          Windows.FindClose(FHandle);
-        Exit;
-      end;
-      if (FindData.dwFileAttributes and FILE_ATTRIBUTE_DIRECTORY = 0) and (FindData.dwFileAttributes and Flags > 0) then
-      begin
-        if not FOwnerData then
-        begin
-          if FStripDirs then
-            FItems.Add(FindData.cFilename)
-          else
-            FItems.Add(Path + FindData.cFilename);
-        end;
-        FindFile(FindData, Path);
-      end;
-      Cont := Windows.FindNextFile(FHandle, FindData);
-    end;
-  finally
-    if FHandle <> INVALID_HANDLE_VALUE then
-      Windows.FindClose(FHandle);
-  end;
-end;
+end; 
 
 procedure TJvSearchFiles.FindDir(FindData: TWin32FindData; Path: string);
 begin
