@@ -415,40 +415,40 @@ type
 
   TJvMemInfo = class(TJvReadOnlyInfo)
   private
-    function GetFreePageFileMemory: Integer;
-    function GetFreePhysicalMemory: Integer;
-    function GetFreeVirtualMemory: Integer;
+    function GetFreePageFileMemory: Int64;
+    function GetFreePhysicalMemory: Int64;
+    function GetFreeVirtualMemory: Int64;
     function GetMaxAppAddress: Integer;
-    function GetMemoryLoad: Byte;
+    function GetMemoryLoad: Int64;
     function GetMinAppAddress: Integer;
-    function GetSwapFileSize: Integer;
+    function GetSwapFileSize: Int64;
     function GetSwapFileUsage: Integer;
-    function GetTotalPageFileMemory: Integer;
-    function GetTotalPhysicalMemory: Integer;
-    function GetTotalVirtualMemory: Integer;
-    procedure SetFreePageFileMemory(const Value: Integer);
-    procedure SetFreePhysicalMemory(const Value: Integer);
-    procedure SetFreeVirtualMemory(const Value: Integer);
+    function GetTotalPageFileMemory: Int64;
+    function GetTotalPhysicalMemory: Int64;
+    function GetTotalVirtualMemory: Int64;
+    procedure SetFreePageFileMemory(const Value: Int64);
+    procedure SetFreePhysicalMemory(const Value: Int64);
+    procedure SetFreeVirtualMemory(const Value: Int64);
     procedure SetMaxAppAddress(const Value: Integer);
-    procedure SetMemoryLoad(const Value: Byte);
+    procedure SetMemoryLoad(const Value: Int64);
     procedure SetMinAppAddress(const Value: Integer);
-    procedure SetSwapFileSize(const Value: Integer);
+    procedure SetSwapFileSize(const Value: Int64);
     procedure SetSwapFileUsage(const Value: Integer);
-    procedure SetTotalPageFileMemory(const Value: Integer);
-    procedure SetTotalPhysicalMemory(const Value: Integer);
-    procedure SetTotalVirtualMemory(const Value: Integer);
+    procedure SetTotalPageFileMemory(const Value: Int64);
+    procedure SetTotalPhysicalMemory(const Value: Int64);
+    procedure SetTotalVirtualMemory(const Value: Int64);
   published
     property MaxAppAddress: Integer read GetMaxAppAddress write SetMaxAppAddress stored False;
     property MinAppAddress: Integer read GetMinAppAddress write SetMinAppAddress stored False;
-    property MemoryLoad: Byte read GetMemoryLoad write SetMemoryLoad stored False;
-    property SwapFileSize: Integer read GetSwapFileSize write SetSwapFileSize stored False;
+    property MemoryLoad: Int64 read GetMemoryLoad write SetMemoryLoad stored False;
+    property SwapFileSize: Int64 read GetSwapFileSize write SetSwapFileSize stored False;
     property SwapFileUsage: Integer read GetSwapFileUsage write SetSwapFileUsage stored False;
-    property TotalPhysicalMemory: Integer read GetTotalPhysicalMemory write SetTotalPhysicalMemory stored False;
-    property FreePhysicalMemory: Integer read GetFreePhysicalMemory write SetFreePhysicalMemory stored False;
-    property TotalPageFileMemory: Integer read GetTotalPageFileMemory write SetTotalPageFileMemory stored False;
-    property FreePageFileMemory: Integer read GetFreePageFileMemory write SetFreePageFileMemory stored False;
-    property TotalVirtualMemory: Integer read GetTotalVirtualMemory write SetTotalVirtualMemory stored False;
-    property FreeVirtualMemory: Integer read GetFreeVirtualMemory write SetFreeVirtualMemory stored False;
+    property TotalPhysicalMemory: Int64 read GetTotalPhysicalMemory write SetTotalPhysicalMemory stored False;
+    property FreePhysicalMemory: Int64 read GetFreePhysicalMemory write SetFreePhysicalMemory stored False;
+    property TotalPageFileMemory: Int64 read GetTotalPageFileMemory write SetTotalPageFileMemory stored False;
+    property FreePageFileMemory: Int64 read GetFreePageFileMemory write SetFreePageFileMemory stored False;
+    property TotalVirtualMemory: Int64 read GetTotalVirtualMemory write SetTotalVirtualMemory stored False;
+    property FreeVirtualMemory: Int64 read GetFreeVirtualMemory write SetFreeVirtualMemory stored False;
   end;
 
   TJvKeyInfo = class(TJvWriteableInfo)
@@ -1681,12 +1681,12 @@ end;
 
 function TJvOSVersionInfo.GetWinVersionMajor: DWORD;
 begin
-  Result := Win32MinorVersion;
+  Result := Win32MajorVersion;
 end;
 
 function TJvOSVersionInfo.GetWinVersionMinor: DWORD;
 begin
-  Result := Win32MajorVersion;
+  Result := Win32MinorVersion;
 end;
 
 function TJvOSVersionInfo.GetWinVersionCSDString: string;
@@ -2077,19 +2077,26 @@ end;
 
 //=== { TJvMemInfo } =========================================================
 
-function TJvMemInfo.GetFreePageFileMemory: Integer;
+function GetMemoryStatus:TMemoryStatus;
 begin
-  Result := JclSysInfo.GetFreePageFileMemory;
+  FillChar(Result, SizeOf(Result), 0);
+  Result.dwLength := SizeOf(MemoryStatus);
+  GlobalMemoryStatus(Result);
 end;
 
-function TJvMemInfo.GetFreePhysicalMemory: Integer;
+function TJvMemInfo.GetFreePageFileMemory: Int64;
 begin
-  Result := JclSysInfo.GetFreePhysicalMemory;
+  Result := GetMemoryStatus.dwAvailPageFile;
 end;
 
-function TJvMemInfo.GetFreeVirtualMemory: Integer;
+function TJvMemInfo.GetFreePhysicalMemory: Int64;
 begin
-  Result := JclSysInfo.GetFreeVirtualMemory;
+  Result := GetMemoryStatus.dwAvailPhys;
+end;
+
+function TJvMemInfo.GetFreeVirtualMemory: Int64;
+begin
+  Result := GetMemoryStatus.dwAvailVirtual;
 end;
 
 function TJvMemInfo.GetMaxAppAddress: Integer;
@@ -2097,9 +2104,9 @@ begin
   Result := JclSysInfo.GetMaxAppAddress;
 end;
 
-function TJvMemInfo.GetMemoryLoad: Byte;
+function TJvMemInfo.GetMemoryLoad: Int64;
 begin
-  Result := JclSysInfo.GetMemoryLoad;
+  Result := GetMemoryStatus.dwMemoryLoad;
 end;
 
 function TJvMemInfo.GetMinAppAddress: Integer;
@@ -2107,42 +2114,47 @@ begin
   Result := JclSysInfo.GetMinAppAddress;
 end;
 
-function TJvMemInfo.GetSwapFileSize: Integer;
+function TJvMemInfo.GetSwapFileSize: Int64;
 begin
-  Result := JclSysInfo.GetSwapFileSize;
+  with GetMemoryStatus do
+    Result := Trunc(dwTotalPageFile - dwAvailPageFile);
 end;
 
 function TJvMemInfo.GetSwapFileUsage: Integer;
 begin
-  Result := JclSysInfo.GetSwapFileUsage;
+  with GetMemoryStatus do
+    if dwTotalPageFile > 0 then
+      Result := 100 - Trunc(dwAvailPageFile / dwTotalPageFile * 100)
+    else
+      Result := 0;
 end;
 
-function TJvMemInfo.GetTotalPageFileMemory: Integer;
+function TJvMemInfo.GetTotalPageFileMemory: Int64;
 begin
-  Result := JclSysInfo.GetTotalPageFileMemory;
+  Result := GetMemoryStatus.dwTotalPageFile;
 end;
 
-function TJvMemInfo.GetTotalPhysicalMemory: Integer;
+function TJvMemInfo.GetTotalPhysicalMemory: Int64;
 begin
-  Result := JclSysInfo.GetTotalPhysicalMemory;
+  Result := GetMemoryStatus.dwTotalPhys;
 end;
 
-function TJvMemInfo.GetTotalVirtualMemory: Integer;
+function TJvMemInfo.GetTotalVirtualMemory: Int64;
 begin
-  Result := JclSysInfo.GetTotalVirtualMemory;
+  Result := GetMemoryStatus.dwTotalVirtual;
 end;
 
-procedure TJvMemInfo.SetFreePageFileMemory(const Value: Integer);
+procedure TJvMemInfo.SetFreePageFileMemory(const Value: Int64);
 begin
   RaiseReadOnly;
 end;
 
-procedure TJvMemInfo.SetFreePhysicalMemory(const Value: Integer);
+procedure TJvMemInfo.SetFreePhysicalMemory(const Value: Int64);
 begin
   RaiseReadOnly;
 end;
 
-procedure TJvMemInfo.SetFreeVirtualMemory(const Value: Integer);
+procedure TJvMemInfo.SetFreeVirtualMemory(const Value: Int64);
 begin
   RaiseReadOnly;
 end;
@@ -2152,7 +2164,7 @@ begin
   RaiseReadOnly;
 end;
 
-procedure TJvMemInfo.SetMemoryLoad(const Value: Byte);
+procedure TJvMemInfo.SetMemoryLoad(const Value: Int64);
 begin
   RaiseReadOnly;
 end;
@@ -2162,7 +2174,7 @@ begin
   RaiseReadOnly;
 end;
 
-procedure TJvMemInfo.SetSwapFileSize(const Value: Integer);
+procedure TJvMemInfo.SetSwapFileSize(const Value: Int64);
 begin
   RaiseReadOnly;
 end;
@@ -2172,17 +2184,17 @@ begin
   RaiseReadOnly;
 end;
 
-procedure TJvMemInfo.SetTotalPageFileMemory(const Value: Integer);
+procedure TJvMemInfo.SetTotalPageFileMemory(const Value: Int64);
 begin
   RaiseReadOnly;
 end;
 
-procedure TJvMemInfo.SetTotalPhysicalMemory(const Value: Integer);
+procedure TJvMemInfo.SetTotalPhysicalMemory(const Value: Int64);
 begin
   RaiseReadOnly;
 end;
 
-procedure TJvMemInfo.SetTotalVirtualMemory(const Value: Integer);
+procedure TJvMemInfo.SetTotalVirtualMemory(const Value: Int64);
 begin
   RaiseReadOnly;
 end;
