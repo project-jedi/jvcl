@@ -1,1 +1,1 @@
-In this directoy is the JVCL Installer.
+In this directory is the JVCL Installer.
