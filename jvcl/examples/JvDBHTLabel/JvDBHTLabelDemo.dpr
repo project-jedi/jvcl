@@ -2,12 +2,12 @@ program JvDBHTLabelDemo;
 
 uses
   Forms,
-  MainFrm in 'MainFrm.pas' {Form1};
+  JvDBHTLabelDemoMainForm in 'JvDBHTLabelDemoMainForm.pas' {JvDBHTLabelDemoMainFrm};
 
 {$R *.res}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TJvDBHTLabelDemoMainFrm, JvDBHTLabelDemoMainFrm);
   Application.Run;
 end.

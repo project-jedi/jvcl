@@ -34,7 +34,7 @@ uses
   JvFullColorDialogs, JvFullColorRotate;
 
 type
-  TFormMain = class(TForm)
+  TJvFullColorCircleDlgMainFrm = class(TForm)
     Image: TImage;
     Bevel: TBevel;
     Memo: TMemo;
@@ -56,7 +56,7 @@ type
   end;
 
 var
-  FormMain: TFormMain;
+  JvFullColorCircleDlgMainFrm: TJvFullColorCircleDlgMainFrm;
 
 implementation
 
@@ -79,7 +79,7 @@ type
 var
   ColorDeltas: TJvColorDeltaList;
 
-procedure TFormMain.FormCreate(Sender: TObject);
+procedure TJvFullColorCircleDlgMainFrm.FormCreate(Sender: TObject);
 var
   X, Y: Integer;
   PitchX, PitchY: Integer;
@@ -135,24 +135,24 @@ begin
   ComboBoxFileNameSelect(ComboBoxFileName);
 end;
 
-procedure TFormMain.CustomizeDblClick(Sender: TObject);
+procedure TJvFullColorCircleDlgMainFrm.CustomizeDblClick(Sender: TObject);
 begin
   if JvFullColorCircleDialog.Execute then
     RotateCustomValues;
 end;
 
-procedure TFormMain.MemoKeyDown(Sender: TObject; var Key: Word;
+procedure TJvFullColorCircleDlgMainFrm.MemoKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   Key := 0;          // discard any key but Enabled=False affects the text rendering
 end;
 
-procedure TFormMain.MemoKeyPress(Sender: TObject; var Key: Char);
+procedure TJvFullColorCircleDlgMainFrm.MemoKeyPress(Sender: TObject; var Key: Char);
 begin
   Key := #0;         // discard any key but Enabled=False affects the text rendering
 end;
 
-procedure TFormMain.ComboBoxFileNameSelect(Sender: TObject);
+procedure TJvFullColorCircleDlgMainFrm.ComboBoxFileNameSelect(Sender: TObject);
 var
   Index: Integer;
 begin
@@ -174,13 +174,13 @@ begin
   RotateCustomValues;
 end;
 
-procedure TFormMain.RotateCustomValues;
+procedure TJvFullColorCircleDlgMainFrm.RotateCustomValues;
 begin
   RotateBitmap(Image.Picture.Bitmap,Images[6].Picture.Bitmap,JvFullColorCircleDialog.Delta);
   FormatMemo(Memos[6],JvFullColorCircleDialog.Delta);
 end;
 
-procedure TFormMain.FormatMemo(AMemo: TMemo; const Delta: TJvColorDelta);
+procedure TJvFullColorCircleDlgMainFrm.FormatMemo(AMemo: TMemo; const Delta: TJvColorDelta);
 var
   Index: TJvAxisIndex;
 begin
@@ -346,7 +346,7 @@ begin
   ColorDeltas.Add(Delta);
 end;
 
-procedure TFormMain.JvFullColorCircleDialogApply(Sender: TObject);
+procedure TJvFullColorCircleDlgMainFrm.JvFullColorCircleDialogApply(Sender: TObject);
 begin
   RotateCustomValues;
 end;

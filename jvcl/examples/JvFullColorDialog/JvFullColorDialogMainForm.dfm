@@ -1,4 +1,4 @@
-object MainForm: TMainForm
+object JvFullColorDialogMainFrm: TJvFullColorDialogMainFrm
   Left = 419
   Top = 367
   BorderStyle = bsDialog
@@ -41,7 +41,6 @@ object MainForm: TMainForm
   end
   object JvFullColorDialog: TJvFullColorDialog
     FullColor = 83886079
-    HelpContext = 0
     OnApply = JvFullColorDialogApply
     Left = 232
     Top = 128

@@ -2,13 +2,13 @@ program WebMapper;
 
 uses
   Forms,
-  MainForm in 'MainForm.pas' {MainDlg},
+  WebMapperDemoMainForm in 'WebMapperDemoMainForm.pas' {WebMapperDemoMainFrm},
   JimParse;
 
 {$R *.RES}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TMainDlg, MainDlg);
+  Application.CreateForm(TWebMapperDemoMainFrm, WebMapperDemoMainFrm);
   Application.Run;
 end.

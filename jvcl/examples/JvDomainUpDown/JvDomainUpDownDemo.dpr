@@ -2,12 +2,12 @@ program JvDomainUpDownDemo;
 
 uses
   Forms,
-  MainFrm in 'MainFrm.pas' {frmMain};
+  JvDomainUpDownDemoMainForm in 'JvDomainUpDownDemoMainForm.pas' {JvDomainUpDownDemoMainFrm};
 
 {$R *.res}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TfrmMain, frmMain);
+  Application.CreateForm(TJvDomainUpDownDemoMainFrm, JvDomainUpDownDemoMainFrm);
   Application.Run;
 end.

@@ -2,12 +2,12 @@ program JvDBSearchDemo;
 
 uses
   Forms,
-  UnitMain in 'UnitMain.pas' {Form1};
+  JvDBSearchDemoMainForm in 'JvDBSearchDemoMainForm.pas' {JvDBSearchDemoMainFrm};
 
 {$R *.res}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TJvDBSearchDemoMainFrm, JvDBSearchDemoMainFrm);
   Application.Run;
 end.

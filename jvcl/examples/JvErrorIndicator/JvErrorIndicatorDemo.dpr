@@ -2,13 +2,13 @@ program JvErrorIndicatorDemo;
 
 uses
   Forms,
-  MainFrm in 'MainFrm.pas' {frmErrIndicatorDemo};
+  JvErrorIndicatorMainDemoForm in 'JvErrorIndicatorMainDemoForm.pas' {JvErrorIndicatorMainDemoFrm};
 
 {$R *.res}
 
 begin
   Application.Initialize;
   Application.Title := 'JvErrorIndicator Demo';
-  Application.CreateForm(TfrmErrIndicatorDemo, frmErrIndicatorDemo);
+  Application.CreateForm(TJvErrorIndicatorMainDemoFrm, JvErrorIndicatorMainDemoFrm);
   Application.Run;
 end.

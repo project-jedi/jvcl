@@ -2,13 +2,13 @@ program UseCase;
 
 uses
   Forms,
-  MainForm in 'MainForm.pas' {MainDlg},
+  UseCaseDemoMainForm in 'UseCaseDemoMainForm.pas' {UseCaseDemoMainFrm},
   CaptionEditForm in 'CaptionEditForm.pas' {CaptionEditDlg};
 
 {$R *.RES}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TMainDlg, MainDlg);
+  Application.CreateForm(TUseCaseDemoMainFrm, UseCaseDemoMainFrm);
   Application.Run;
 end.

@@ -2,12 +2,12 @@ program JvDBFindEditDemo;
 
 uses
   Forms,
-  MainFrm in 'MainFrm.pas' {Form1};
+  JvDBFindEditDemoForm in 'JvDBFindEditDemoForm.pas' {JvDBFindEditDemoFrm};
 
 {$R *.res}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TJvDBFindEditDemoFrm, JvDBFindEditDemoFrm);
   Application.Run;
 end.

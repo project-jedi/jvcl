@@ -1,8 +1,8 @@
-object FormMain: TFormMain
-  Left = 259
-  Top = 229
+object JvFullColorCircleDlgMainFrm: TJvFullColorCircleDlgMainFrm
+  Left = 498
+  Top = 236
   BorderStyle = bsDialog
-  Caption = 'FormMain'
+  Caption = 'JvFullColorCircleDlgMainFrm'
   ClientHeight = 394
   ClientWidth = 343
   Color = clBtnFace

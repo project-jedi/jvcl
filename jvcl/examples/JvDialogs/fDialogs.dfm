@@ -1,4 +1,4 @@
-object Form1: TForm1
+object JvDialogsDemoFrm: TJvDialogsDemoFrm
   Left = 345
   Top = 154
   BorderIcons = [biSystemMenu, biMinimize]

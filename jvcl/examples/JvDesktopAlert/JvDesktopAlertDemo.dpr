@@ -2,12 +2,12 @@ program JvDesktopAlertDemo;
 
 uses
   Forms,
-  MainFrm in 'MainFrm.pas' {frmMain};
+  JvDesktopAlertDemoForm in 'JvDesktopAlertDemoForm.pas' {JvDesktopAlertDemoFrm};
 
 {$R *.res}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TfrmMain, frmMain);
+  Application.CreateForm(TJvDesktopAlertDemoFrm, JvDesktopAlertDemoFrm);
   Application.Run;
 end.

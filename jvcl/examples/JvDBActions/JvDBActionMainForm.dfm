@@ -1,9 +1,9 @@
-object Form1: TForm1
-  Left = 409
-  Top = 203
+object JvDBActionMainFrm: TJvDBActionMainFrm
+  Left = 349
+  Top = 48
   Width = 870
   Height = 640
-  Caption = 'Form1'
+  Caption = 'JvDBActionMainFrm'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -156,7 +156,6 @@ object Form1: TForm1
     EditControls = <>
     RowsHeight = 17
     TitleRowHeight = 17
-    ShowMemos = True
   end
   object BitBtn7: TBitBtn
     Left = 135
@@ -264,6 +263,13 @@ object Form1: TForm1
       Options.PostButtonCaption = '&Post'
       Options.CancelButtonCaption = '&Cancel'
       Options.CloseButtonCaption = 'C&lose'
+      Options.ArrangeConstraints.MaxHeight = 480
+      Options.ArrangeConstraints.MaxWidth = 640
+      Options.ArrangeSettings.BorderLeft = 3
+      Options.ArrangeSettings.BorderTop = 3
+      Options.ArrangeSettings.DistanceVertical = 3
+      Options.ArrangeSettings.DistanceHorizontal = 3
+      Options.ArrangeSettings.AutoSize = asBoth
     end
     object JvDatabaseFirstAction1: TJvDatabaseFirstAction
       Category = 'JVCL-DB'

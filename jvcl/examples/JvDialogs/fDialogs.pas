@@ -37,7 +37,7 @@ uses
   JvAddPrinter, JvCalc, JvDialogs;
 
 type
-  TForm1 = class(TForm)
+  TJvDialogsDemoFrm = class(TForm)
     JvFormatDriveDialog1: TJvFormatDriveDialog;
     JvFindFiles1: TJvFindFilesDialog;
     JvBrowseFolder1: TJvBrowseForFolderDialog;   //TJvShellAbout;
@@ -132,109 +132,107 @@ type
     procedure Button32Click(Sender: TObject);
     procedure Button33Click(Sender: TObject);
     procedure FormActivate(Sender: TObject);
-  private
-  public
   end;
 var
-  Form1: TForm1;
+  JvDialogsDemoFrm: TJvDialogsDemoFrm;
 
 implementation
 
 {$R *.dfm}
 
-procedure TForm1.Button1Click(Sender: TObject);
+procedure TJvDialogsDemoFrm.Button1Click(Sender: TObject);
 begin
   JvFormatDriveDialog1.Execute;
 end;
 
-procedure TForm1.Button2Click(Sender: TObject);
+procedure TJvDialogsDemoFrm.Button2Click(Sender: TObject);
 begin
   JvFindFiles1.Execute;
 end;
 
-procedure TForm1.Button3Click(Sender: TObject);
+procedure TJvDialogsDemoFrm.Button3Click(Sender: TObject);
 begin
   JvBrowseFolder1.Execute;
 end;
 
-procedure TForm1.Button4Click(Sender: TObject);
+procedure TJvDialogsDemoFrm.Button4Click(Sender: TObject);
 begin
   JvShellAboutDialog1.Execute;
 end;
 
-procedure TForm1.Button5Click(Sender: TObject);
+procedure TJvDialogsDemoFrm.Button5Click(Sender: TObject);
 begin
   JvSelectDirectory1.Execute;
 end;
 
-procedure TForm1.Button8Click(Sender: TObject);
+procedure TJvDialogsDemoFrm.Button8Click(Sender: TObject);
 begin
   { TODO : BUG - This routine doesn't work }
   { DONE -opeter3 : Works on Win2k... }
   JvAddPrinterDialog1.Execute;
 end;
 
-procedure TForm1.Button9Click(Sender: TObject);
+procedure TJvDialogsDemoFrm.Button9Click(Sender: TObject);
 begin
   JvConnectNetwork1.Execute;
 end;
 
-procedure TForm1.Button10Click(Sender: TObject);
+procedure TJvDialogsDemoFrm.Button10Click(Sender: TObject);
 begin
   JvDisconnectNetwork1.Execute;
 end;
 
-procedure TForm1.Button18Click(Sender: TObject);
+procedure TJvDialogsDemoFrm.Button18Click(Sender: TObject);
 begin
   JvCalculator1.Execute;
 end;
 
-procedure TForm1.Button20Click(Sender: TObject);
+procedure TJvDialogsDemoFrm.Button20Click(Sender: TObject);
 begin
   JvDiskPrompt1.Execute;
 end;
 
-procedure TForm1.Button21Click(Sender: TObject);
+procedure TJvDialogsDemoFrm.Button21Click(Sender: TObject);
 begin
   JvCopyError1.Execute;
 end;
 
-procedure TForm1.Button22Click(Sender: TObject);
+procedure TJvDialogsDemoFrm.Button22Click(Sender: TObject);
 begin
   JvDeleteError1.Execute;
 end;
 
-procedure TForm1.Button23Click(Sender: TObject);
+procedure TJvDialogsDemoFrm.Button23Click(Sender: TObject);
 begin
   JvRenameError1.Execute;
 end;
 
-procedure TForm1.Button24Click(Sender: TObject);
+procedure TJvDialogsDemoFrm.Button24Click(Sender: TObject);
 begin
   JvShutdownDlg1.Execute;
 end;
 
-procedure TForm1.Button25Click(Sender: TObject);
+procedure TJvDialogsDemoFrm.Button25Click(Sender: TObject);
 begin
   JvAddHardwareDialog1.Execute;
 end;
 
-procedure TForm1.Button26Click(Sender: TObject);
+procedure TJvDialogsDemoFrm.Button26Click(Sender: TObject);
 begin
   JvChooseIconDlg1.Execute;
 end;
 
-procedure TForm1.Button27Click(Sender: TObject);
+procedure TJvDialogsDemoFrm.Button27Click(Sender: TObject);
 begin
   JvRunDlg1.Execute;
 end;
 
-procedure TForm1.Button28Click(Sender: TObject);
+procedure TJvDialogsDemoFrm.Button28Click(Sender: TObject);
 begin
   JvFindComputerDlg1.Execute;
 end;
 
-procedure TForm1.Button29Click(Sender: TObject);
+procedure TJvDialogsDemoFrm.Button29Click(Sender: TObject);
 var
   St: string;
 begin
@@ -243,22 +241,22 @@ begin
   JvObjectPropertiesDlg1.Execute;
 end;
 
-procedure TForm1.Button30Click(Sender: TObject);
+procedure TJvDialogsDemoFrm.Button30Click(Sender: TObject);
 begin
   JvOutOfMemoryDlg1.Execute;
 end;
 
-procedure TForm1.Button31Click(Sender: TObject);
+procedure TJvDialogsDemoFrm.Button31Click(Sender: TObject);
 begin
   JvOutOfSpaceDlg1.Execute;
 end;
 
-procedure TForm1.Button39Click(Sender: TObject);
+procedure TJvDialogsDemoFrm.Button39Click(Sender: TObject);
 begin
   JvOrganizeFavoritesDialog1.Execute;
 end;
 
-procedure TForm1.Button38Click(Sender: TObject);
+procedure TJvDialogsDemoFrm.Button38Click(Sender: TObject);
 var
   WinDir: array [0..255] of Char;
 begin
@@ -273,47 +271,49 @@ begin
   end;
 end;
 
-procedure TForm1.Button36Click(Sender: TObject);
+procedure TJvDialogsDemoFrm.Button36Click(Sender: TObject);
 begin
   JvAppletDialog1.AppletName := '';
   JvAppletDialog1.Execute;
 end;
 
-procedure TForm1.Button37Click(Sender: TObject);
+procedure TJvDialogsDemoFrm.Button37Click(Sender: TObject);
 begin
   JvNewLinkDialog1.Execute;
 end;
 
-procedure TForm1.Button40Click(Sender: TObject);
+procedure TJvDialogsDemoFrm.Button40Click(Sender: TObject);
 begin
   JvOpenWithDialog1.Execute;
 end;
 
-procedure TForm1.Button7Click(Sender: TObject);
+procedure TJvDialogsDemoFrm.Button7Click(Sender: TObject);
 begin
   JvPageSetupDialog1.Execute;
 end;
 
-procedure TForm1.Button41Click(Sender: TObject);
+procedure TJvDialogsDemoFrm.Button41Click(Sender: TObject);
 begin
   JvPageSetupTitledDialog1.Execute;
 end;
 
-procedure TForm1.Button32Click(Sender: TObject);
+procedure TJvDialogsDemoFrm.Button32Click(Sender: TObject);
 begin
   JvOpenDialog1.Execute;
 end;
 
-procedure TForm1.Button33Click(Sender: TObject);
+procedure TJvDialogsDemoFrm.Button33Click(Sender: TObject);
 begin
   JvSaveDialog1.Execute;
 end;
 
-procedure TForm1.FormActivate(Sender: TObject);
+procedure TJvDialogsDemoFrm.FormActivate(Sender: TObject);
 begin
-  Form1.ClientHeight := PageControl1.Height;
-  Form1.ClientWidth := PageControl1.Width;
+  JvDialogsDemoFrm.ClientHeight := PageControl1.Height;
+  JvDialogsDemoFrm.ClientWidth := PageControl1.Width;
 end;
 
 end.
+
+
 

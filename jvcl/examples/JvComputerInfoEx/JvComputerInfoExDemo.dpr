@@ -2,12 +2,12 @@ program JvComputerInfoExDemo;
 
 uses
   Forms,
-  MainFrm in 'MainFrm.pas' {frmMain};
+  JvComputerInfoExDemoForm in 'JvComputerInfoExDemoForm.pas' {JvComputerInfoExDemoFrm};
 
 {$R *.res}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TfrmMain, frmMain);
+  Application.CreateForm(TJvComputerInfoExDemoFrm, JvComputerInfoExDemoFrm);
   Application.Run;
 end.

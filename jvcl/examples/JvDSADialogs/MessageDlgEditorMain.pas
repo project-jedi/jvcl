@@ -788,6 +788,7 @@ begin
   imgInformation.Picture.Icon.Handle := LoadIcon(0, IDI_ASTERISK);
   imgConfirmation.Picture.Icon.Handle := LoadIcon(0, IDI_QUESTION);
   DlgSettingChanged;
+  frmMessageDlgEditor := self; // is needed when loading as part of the MegaDemo
 end;
 
 procedure TfrmMessageDlgEditor.imgWarningClick(Sender: TObject);

@@ -2,12 +2,12 @@ program JvMouseGestureDemo;
 
 uses
   Forms,
-  uJvMouseGesture in 'uJvMouseGesture.pas' {Form1};
+  uJvMouseGesture in 'uJvMouseGesture.pas' {JvMouseGestureDemoMainFrm};
 
 {$R *.res}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TJvMouseGestureDemoMainFrm, JvMouseGestureDemoMainFrm);
   Application.Run;
 end.
