@@ -925,7 +925,6 @@ begin
   DialogOptions := Value;
 end;
 
-
 //=== TJvDynControlJVCLDateTimeEdit ==========================================
 
 constructor TJvDynControlJVCLDateTimeEdit.Create(AOwner: TComponent);

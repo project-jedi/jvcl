@@ -664,7 +664,40 @@ begin
   end;
 end;
 
-{ TJvForthScript }
+//=== TJvForthScript =========================================================
+
+constructor TJvForthScript.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FAtoms := TAtomList.Create;
+  FIncludes := TStringList.create;
+  FSubsList := TStringList.create;
+  FVarsList := TvariantList.Create;
+  FDSOList := TJvJanDSOList.Create;
+  FXMLList := TJvJanXMLList.Create;
+  FXMLSelect := TList.Create;
+  FDSOBase := ExtractFilePath(paramstr(0));
+  if FDSOBase[Length(FDSOBase)] = '\' then
+    Delete(FDSOBase, Length(FDSOBase), 1);
+  FVSP := 0;
+  // osp := 0;
+  FRSP := 0;
+  FInDevice := 'dialog';
+  FOutDevice := 'dialog';
+  FScriptTimeOut := 30; // seconds
+end;
+
+destructor TJvForthScript.Destroy;
+begin
+  FAtoms.Free;
+  FIncludes.Free;
+  FSubsList.Free;
+  FVarsList.Free;
+  FDSOList.Free;
+  FXMLList.Free;
+  FXMLSelect.Free;
+  inherited Destroy;
+end;
 
 procedure TJvForthScript.vpush(AValue: Variant);
 begin
@@ -1299,39 +1332,6 @@ begin
     Result := null
   else
     Result := vpop;
-end;
-
-constructor TJvForthScript.Create(AOwner: TComponent);
-begin
-  inherited;
-  FAtoms := TAtomList.Create;
-  FIncludes := TStringList.create;
-  FSubsList := TStringList.create;
-  FVarsList := TvariantList.Create;
-  FDSOList := TJvJanDSOList.Create;
-  FXMLList := TJvJanXMLList.Create;
-  FXMLSelect := TList.Create;
-  FDSOBase := ExtractFilePath(paramstr(0));
-  if FDSOBase[Length(FDSOBase)] = '\' then
-    Delete(FDSOBase, Length(FDSOBase), 1);
-  FVSP := 0;
-  // osp := 0;
-  FRSP := 0;
-  FInDevice := 'dialog';
-  FOutDevice := 'dialog';
-  FScriptTimeOut := 30; // seconds
-end;
-
-destructor TJvForthScript.Destroy;
-begin
-  FAtoms.Free;
-  FIncludes.Free;
-  FSubsList.Free;
-  FVarsList.Free;
-  FDSOList.Free;
-  FXMLList.Free;
-  FXMLSelect.Free;
-  inherited;
 end;
 
 procedure TJvForthScript.SetOnGetVariable(const Value: TOnGetVariable);

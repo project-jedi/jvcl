@@ -61,7 +61,6 @@ type
     procedure AfterCreateControl(AControl: TControl); virtual;
   public
     constructor Create; virtual;
-    destructor Destroy; override;
     function CreateControl(AControlType: TJvDynControlType; AOwner: TComponent;
       AParentControl: TWinControl; AControlName: string): TControl; virtual;
     function CreateControlClass(AControlClass: TControlClass; AOwner: TComponent;
@@ -174,11 +173,6 @@ end;
 constructor TJvDynControlEngine.Create;
 begin
   inherited Create;
-end;
-
-destructor TJvDynControlEngine.Destroy;
-begin
-  inherited Destroy;
 end;
 
 function TJvDynControlEngine.IsControlTypeRegistered(const ADynControlType: TJvDynControlType): Boolean;

@@ -143,8 +143,6 @@ resourcestring
   RsEOnlyOneInstanceOfTJvgCaption = 'Cannot create more than one instance of TJvgCaption component';
 {$ENDIF USEJVCL}
 
-//==============================================================
-
 constructor TJvgCaption.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);

@@ -32,7 +32,8 @@ unit JvClipbrd;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Contnrs, Clipbrd, JvFinalize;
+  Windows, Messages, SysUtils, Classes, Contnrs, Clipbrd,
+  JvFinalize;
 
 type
   // the type of the event fired when a format has been added with delayed
@@ -50,7 +51,7 @@ type
   //              variable or use a PChar() conversion.
   //              Alternatively, you can allocate some memory with
   //              GetMem(), copy your data in the buffer and set the
-  //              mustFree parameter to true to ask the clipboard to
+  //              mustFree parameter to True to ask the clipboard to
   //              free the memory for you (done using FreeMem)
   //              Setting buffer to nil will make the system remove this
   //              format from the clipboard, even if it is not a
@@ -59,7 +60,7 @@ type
   //              Setting size to 0 will make the system remove this
   //              format from the clipboard, even if it is not a
   //              documented behaviour
-  //   mustFree   set to false by default. If you set this to true, the
+  //   mustFree   set to False by default. If you set this to True, the
   //              clipboard will call FreeMem(buffer) after having copied
   //              the data in the system clipboard. This is useful only
   //              if you allocated the buffer using GetMem()
@@ -103,7 +104,7 @@ type
 
     // This flag is used to determine wether or not the RenderFormat
     // method should be called as a result of the WM_RENDERALLFORMATS
-    // message. It will be set to true from within DestroyHandle,
+    // message. It will be set to True from within DestroyHandle,
     // thus ensuring a delayed rendering format is only rendered once
     FFromDestroyHandle: Boolean;
 
@@ -187,27 +188,27 @@ type
 
     // get a buffer of the given format
     // the format must be present in the clipboard. If not the function
-    // returns false.
+    // returns False.
     // The buffer and the size parameters must be set to the correct size
     // for the specified format. If they are too small, the data will be
     // truncated, resulting in corrupted values on your side (but you're
     // the one who knows what to do with that).
     // If they are too large, the application will crash as it will be
     // asking the system for more data than available
-    // Returns true if data was successfuly retrieved, else use
+    // Returns True if data was successfuly retrieved, else use
     // Windows.GetLastError to get the error code
     function GetBuffer(Format: Word; Buffer: Pointer; Size: Cardinal): Boolean;
 
     // overloaded version of the same procedure in TClipboard that
     // now allows you to specify delayed rendering.
-    // If delayed is set to false, the inherited method is called
+    // If delayed is set to False, the inherited method is called
     // else, the format is simply added in the clipboard and you MUST
     // provid an OnRenderFormat event;
     procedure SetComponent(Component: TComponent; Delayed: Boolean); overload;
 
     // overloaded version of the same procedure in TClipboard that
     // now allows you to specify delayed rendering.
-    // If delayed is set to false, the inherited method is called
+    // If delayed is set to False, the inherited method is called
     // else, the format is simply added in the clipboard and you MUST
     // provid an OnRenderFormat event;
     procedure SetTextBuf(Buffer: PChar; Delayed: Boolean); overload;
@@ -215,14 +216,12 @@ type
     // the handle to the underlying window handling the delayed
     // rendering messages
     property Handle: THandle read GetHandle;
-
   {$IFNDEF COMPILER6_UP}
   private
     function GetOpenRefCount: Integer;
   protected
     property OpenRefCount: Integer read GetOpenRefCount;
   {$ENDIF !COMPILER6_UP}
-
   published
     // the event fired when a format has been added with delayed
     // rendering and needs rendering because an application (or the
@@ -245,7 +244,8 @@ const
   sUnitName = 'JvClipbrd';
 
 {$IFNDEF COMPILER6_UP}
-  // Delphi 5 implementation
+
+// Delphi 5 implementation
 type
   TPrivateClipboard = class(TPersistent)
   private
@@ -256,6 +256,35 @@ var
   Clipboard_SetBuffer: procedure(Instance: TClipboard; Format: Word; var Buffer;
     Size: Integer);
 
+{$ENDIF !COMPILER6_UP}
+
+constructor TJvClipboard.Create;
+begin
+  inherited Create;
+  // create the list used to keep track of delayed formats
+  // in the clipboard
+  FDelayedFormats := TList.Create;
+
+  // if a WM_RENDERALLFORMATS message is fired, then
+  // it is not yet as a result of a call to DestroyHandle
+  FFromDestroyHandle := False;
+end;
+
+destructor TJvClipboard.Destroy;
+begin
+  // ensure handle is destroyed, but see remark where
+  // DestroyHandle is declared
+  DestroyHandle;
+
+  // free the list
+  FDelayedFormats.Free;
+
+  // and let the rest be done
+  inherited Destroy;
+end;
+
+{$IFNDEF COMPILER6_UP}
+
 procedure TJvClipboard.SetBuffer(Format: Word; var Buffer; Size: Integer);
 var
   P: PByte;
@@ -263,9 +292,11 @@ begin
   if not Assigned(Clipboard_SetBuffer) then
   begin
     P := @TClipboard.SetTextBuf;
-    while P^ <> $E8 do Inc(P); // StrLen
+    while P^ <> $E8 do
+      Inc(P); // StrLen
     Inc(P);
-    while P^ <> $E8 do Inc(P); // SetBuffer
+    while P^ <> $E8 do
+      Inc(P); // SetBuffer
     Inc(P);
     Clipboard_SetBuffer := Pointer(Integer(P) + 4 + PInteger(P)^);
   end;
@@ -273,16 +304,11 @@ begin
     Clipboard_SetBuffer(Self, Format, Buffer, Size);
 end;
 
-{$ENDIF !COMPILER6_UP}     
-
-                                        
-{ TJvClipboard }
-
-{$IFNDEF COMPILER6_UP}
 function TJvClipboard.GetOpenRefCount: Integer;
 begin
   Result := TPrivateClipboard(Self).FOpenRefCount;
 end;
+
 {$ENDIF !COMPILER6_UP}
 
 procedure TJvClipboard.Clear;
@@ -305,7 +331,7 @@ begin
   Open;
 
   // ask for data
-  Data := GetClipboardData(format);
+  Data := GetClipboardData(Format);
 
   // was data retrieved ?
   if Data <> 0 then
@@ -317,14 +343,14 @@ begin
     if DataPtr <> nil then
     begin
       // if yes, copy from global pointer to user supplied pointer
-      CopyMemory(buffer, DataPtr, size);
+      CopyMemory(buffer, DataPtr, Size);
       // and retrieval was a success
-      Result := true;
+      Result := True;
     end
     else
     begin
       // else, retrieval has failed
-      Result := false;
+      Result := False;
     end;
 
     // unlock global memory
@@ -333,7 +359,7 @@ begin
   else
   begin
     // if no data retrieved, then retrieval failed
-    Result := false;
+    Result := False;
   end;
 
   // finally, close clipoard
@@ -399,9 +425,9 @@ function TJvClipboard.RegisterFormat(const Name: string): Word;
 var
   Tmp: PChar;
 begin
-  GetMem(tmp, Length(Name) + 1); // don't forget +1 for trailing #0
+  GetMem(Tmp, Length(Name) + 1); // don't forget +1 for trailing #0
   try
-    StrPCopy(tmp, Name);
+    StrPCopy(Tmp, Name);
     Result := RegisterClipboardFormat(Tmp);
   finally
     FreeMem(Tmp);
@@ -453,15 +479,13 @@ begin
 
   // if user asked us to free his buffer
   if MustFree then
-  begin
     // then we free it
     FreeMem(buffer);
-  end;
 end;
 
 procedure TJvClipboard.WndProc(var Message: TMessage);
 var
-  i: Integer;
+  I: Integer;
 begin
   case Message.Msg of
     // if asked to render a particular format
@@ -481,8 +505,8 @@ begin
         begin
           // then we render all the delayed formats
           // we are aware of
-          for i := 0 to FDelayedFormats.Count - 1 do
-            RenderFormat(Word(FDelayedFormats[i]));
+          for I := 0 to FDelayedFormats.Count - 1 do
+            RenderFormat(Word(FDelayedFormats[I]));
         end;
         // tell windows we handled the message
         Message.Result := 0;
@@ -509,35 +533,9 @@ begin
 end;
 {$ENDIF !COMPILER6_UP}
 
-
-constructor TJvClipboard.Create;
-begin
-  inherited Create;
-  // create the list used to keep track of delayed formats
-  // in the clipboard
-  FDelayedFormats := TList.Create;
-
-  // if a WM_RENDERALLFORMATS message is fired, then
-  // it is not yet as a result of a call to DestroyHandle
-  FFromDestroyHandle := false;
-end;
-
-destructor TJvClipboard.Destroy;
-begin
-  // ensure handle is destroyed, but see remark where
-  // DestroyHandle is declared
-  DestroyHandle;
-
-  // free the list
-  FDelayedFormats.Free;
-
-  // and let the rest be done
-  inherited Destroy;
-end;
-
 procedure TJvClipboard.DestroyHandle;
 var
-  i: Integer;
+  I: Integer;
   Format: Word;
   Buffer: Char;
 begin
@@ -554,10 +552,10 @@ begin
     // Of course, this will not work for formats that the user
     // put in the clipboard using delayed rendering through direct
     // API calls
-    for i := 0 to FDelayedFormats.Count - 1 do
+    for I := 0 to FDelayedFormats.Count - 1 do
     begin
       // get the format id
-      Format := Word(FDelayedFormats[i]);
+      Format := Word(FDelayedFormats[I]);
 
       // ask to get this format from the clipboard, will
       // in turn trigger a WM_RENDERFORMAT message
@@ -589,37 +587,27 @@ end;
 procedure TJvClipboard.SetComponent(Component: TComponent; Delayed: Boolean);
 begin
   if Delayed then
-  begin
     // add as delayed
-    AddDelayed(CF_COMPONENT);
-  end
+    AddDelayed(CF_COMPONENT)
   else
-  begin
     inherited SetComponent(Component);
-  end;
 end;
 
 procedure TJvClipboard.SetTextBuf(Buffer: PChar; Delayed: Boolean);
 begin
   if Delayed then
-  begin
     // add as delayed
-    AddDelayed(CF_TEXT);
-  end
+    AddDelayed(CF_TEXT)
   else
-  begin
     inherited SetTextBuf(Buffer);
-  end;
 end;
 
 procedure TJvClipboard.SetBuffer(Format: Word; Buffer: Pointer; Size: Integer);
 begin
   // if buffer is nil
   if Buffer = nil then
-  begin
     // then add the format using delayed rendering
-    AddDelayed(Format);
-  end
+    AddDelayed(Format)
   else
   begin
     // else call inherited method
@@ -651,7 +639,8 @@ begin
     else
       Result := '';
   finally
-    if Data <> 0 then GlobalUnlock(Data);
+    if Data <> 0 then
+      GlobalUnlock(Data);
     Close;
   end;
   if (Data = 0) or (Result = '') then

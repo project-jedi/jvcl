@@ -23,6 +23,7 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -92,7 +93,6 @@ type
     procedure Resize; override;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     procedure DockDrop(Source: TDragDockObject; X, Y: Integer); override;
 
     procedure ShowDockPanel(MakeVisible: Boolean; Client: TControl;
@@ -163,7 +163,6 @@ type
     property DockStyle: TJvDockBasicStyle read FDockStyle write FDockStyle;
   public
     constructor Create(ADockStyle: TJvDockBasicStyle); virtual;
-    destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
   end;
 
@@ -186,7 +185,6 @@ type
     procedure ResetConjoinPanel(APanel: TJvDockConjoinPanel); virtual;
   public
     constructor Create(ADockStyle: TJvDockBasicStyle); override;
-    destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure SetDockGrabbersSize_WithoutChangeSystemInfo(const Value: TJvDockGrabbersSize);
     procedure SetDockSplitterWidth_WithoutChangeSystemInfo(const Value: TJvDockSplitterWidth);
@@ -210,7 +208,6 @@ type
     procedure ResetTabPageControl(APage: TJvDockTabPageControl); virtual;
   public
     constructor Create(ADockStyle: TJvDockBasicStyle); override;
-    destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
   published
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
@@ -818,7 +815,6 @@ type
     FPageControl: TJvDockTabPageControl;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     function GetActiveDockForm: TForm;
     property DockClient;
     property PageControl: TJvDockTabPageControl read FPageControl write FPageControl;
@@ -1826,11 +1822,6 @@ begin
   BevelOuter := bvNone;
   Width := 10;
   Height := 10;
-end;
-
-destructor TJvDockPanel.Destroy;
-begin
-  inherited Destroy;
 end;
 
 procedure TJvDockPanel.CustomDockDrop(Source: TJvDockDragDockObject;
@@ -3579,11 +3570,6 @@ begin
   BorderStyle := TabDockHostBorderStyle;
 end;
 
-destructor TJvDockTabHostForm.Destroy;
-begin
-  inherited Destroy;
-end;
-
 function TJvDockTabHostForm.GetActiveDockForm: TForm;
 begin
   if PageControl.ActivePage.ControlCount = 1 then
@@ -4579,11 +4565,6 @@ begin
   FDockStyle := ADockStyle;
 end;
 
-destructor TJvDockBasicServerOption.Destroy;
-begin
-  inherited Destroy;
-end;
-
 procedure TJvDockBasicServerOption.Assign(Source: TPersistent);
 begin
   if Source is TJvDockBasicServerOption then
@@ -4607,11 +4588,6 @@ begin
   inherited Create(ADockStyle);
   FHotTrack := False;
   FTabPosition := tpTop;
-end;
-
-destructor TJvDockBasicTabServerOption.Destroy;
-begin
-  inherited Destroy;
 end;
 
 procedure TJvDockBasicTabServerOption.Assign(Source: TPersistent);
@@ -4689,11 +4665,6 @@ begin
   inherited Create(ADockStyle);
   GrabbersSize := 12;
   SplitterWidth := 4;
-end;
-
-destructor TJvDockBasicConjoinServerOption.Destroy;
-begin
-  inherited Destroy;
 end;
 
 procedure TJvDockBasicConjoinServerOption.Assign(Source: TPersistent);

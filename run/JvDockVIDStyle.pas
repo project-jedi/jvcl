@@ -150,7 +150,6 @@ type
     procedure DoSystemInfoChange(Value: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     {$IFNDEF USEJVCL}
     function GetControlName: string; override;
     {$ENDIF USEJVCL}
@@ -177,7 +176,6 @@ type
       var DropAlign: TAlign); override;
     function CreateDockManager: IDockManager; override;
   public
-    constructor Create(AOwner: TComponent); override;
     procedure DockDrop(Source: TDragDockObject; X, Y: Integer); override;
     procedure UpdateCaption(Exclude: TControl); override;
   end;
@@ -254,7 +252,6 @@ type
     property CaptionRightOffset: Integer read FCaptionRightOffset write SetCaptionRightOffset;
   public
     constructor Create(DockSite: TWinControl; DockZoneClass: TJvDockZoneClass); override;
-    destructor Destroy; override;
   end;
 
   TJvDockVIDTabPageControl = class;
@@ -816,11 +813,6 @@ begin
   TabServerOptionClass := TJvDockVIDTabServerOption;
 end;
 
-destructor TJvDockVIDStyle.Destroy;
-begin
-  inherited Destroy;
-end;
-
 procedure TJvDockVIDStyle.FormDockOver(DockClient: TJvDockClient; Source: TJvDockDragDockObject; X, Y: Integer;
   State: TDragState; var Accept: Boolean);
 var
@@ -1092,11 +1084,6 @@ end;
 
 //=== TJvDockVIDPanel ========================================================
 
-constructor TJvDockVIDPanel.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-end;
-
 function TJvDockVIDPanel.CreateDockManager: IDockManager;
 var
   Option: TJvDockVIDConjoinServerOption;
@@ -1192,11 +1179,6 @@ begin
   MinSize := 20;
   CaptionLeftOffset := 0;
   CaptionRightOffset := 0;
-end;
-
-destructor TJvDockVIDTree.Destroy;
-begin
-  inherited Destroy;
 end;
 
 function TJvDockVIDTree.GeTJvDockGrabbersPosition: TJvDockGrabbersPosition;

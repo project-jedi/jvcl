@@ -1599,7 +1599,7 @@ end;
 procedure TJvCustomLookOutButton.VisibleChanged;
 begin
   inherited VisibleChanged;
-  if not csCreating in ControlState then
+  if not (csCreating in ControlState) then
     Invalidate;
 end;
 

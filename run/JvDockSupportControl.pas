@@ -622,6 +622,29 @@ begin
   end;
 end;
 
+//=== TJvDockDragDockObject ==================================================
+
+constructor TJvDockDragDockObject.Create(AControl: TControl);
+begin
+  // (rom) added inherited Create
+  inherited Create;
+  FControl := AControl;
+  FBrush := TBrush.Create;
+  FBrush.Bitmap := AllocPatternBitmap(clBlack, clWhite);
+  FFrameWidth := 4;
+  FCtrlDown := False;
+end;
+
+destructor TJvDockDragDockObject.Destroy;
+begin
+  if FBrush <> nil then
+  begin
+    FBrush.Free;
+    FBrush := nil;
+  end;
+  inherited Destroy;
+end;
+
 procedure TJvDockDragDockObject.AdjustDockRect(const ARect: TRect);
 var
   DeltaX, DeltaY: Integer;
@@ -636,12 +659,12 @@ var
   end;
 
 begin
-  if (ARect.Left > FDragPos.x) or (ARect.Right < FDragPos.x) then
-    DeltaX := AbsMin(ARect.Left - FDragPos.x, ARect.Right - FDragPos.x)
+  if (ARect.Left > FDragPos.X) or (ARect.Right < FDragPos.X) then
+    DeltaX := AbsMin(ARect.Left - FDragPos.X, ARect.Right - FDragPos.X)
   else
     DeltaX := 0;
-  if (ARect.Top > FDragPos.y) or (ARect.Bottom < FDragPos.y) then
-    DeltaY := AbsMin(ARect.Top - FDragPos.y, ARect.Bottom - FDragPos.y)
+  if (ARect.Top > FDragPos.Y) or (ARect.Bottom < FDragPos.Y) then
+    DeltaY := AbsMin(ARect.Top - FDragPos.Y, ARect.Bottom - FDragPos.Y)
   else
     DeltaY := 0;
   if (DeltaX <> 0) or (DeltaY <> 0) then
@@ -661,17 +684,6 @@ function TJvDockDragDockObject.Capture: HWND;
 begin
   Result := AllocateHWnd(MouseMsg);
   SetCapture(Result);
-end;
-
-constructor TJvDockDragDockObject.Create(AControl: TControl);
-begin
-  // (rom) added inherited Create
-  inherited Create;
-  FControl := AControl;
-  FBrush := TBrush.Create;
-  FBrush.Bitmap := AllocPatternBitmap(clBlack, clWhite);
-  FFrameWidth := 4;
-  FCtrlDown := False;
 end;
 
 procedure TJvDockDragDockObject.DefaultDockImage(Erase: Boolean);
@@ -700,16 +712,6 @@ begin
   finally
     ReleaseDC(DesktopWindow, DC);
   end;
-end;
-
-destructor TJvDockDragDockObject.Destroy;
-begin
-  if FBrush <> nil then
-  begin
-    FBrush.Free;
-    FBrush := nil;
-  end;
-  inherited Destroy;
 end;
 
 function TJvDockDragDockObject.DragFindWindow(const Pos: TPoint): HWND;
@@ -921,6 +923,23 @@ begin
   DockManager := Value;
 end;
 
+//=== TJvDockCustomPanel =====================================================
+
+constructor TJvDockCustomPanel.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  ControlStyle := [csAcceptsControls, csCaptureMouse, csClickEvents,
+    csSetCaption, csOpaque, csDoubleClicks, csReplicatable];
+  Color := clBtnFace;
+  UseDockManager := True;
+end;
+
+destructor TJvDockCustomPanel.Destroy;
+begin
+  SetDockSite(Self, False);
+  inherited Destroy;
+end;
+
 procedure TJvDockCustomControl.CustomDockDrop(Source: TJvDockDragDockObject;
   X, Y: Integer);
 var
@@ -1074,15 +1093,6 @@ begin
   inherited WndProc(Msg);
 end;
 
-constructor TJvDockCustomPanel.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  ControlStyle := [csAcceptsControls, csCaptureMouse, csClickEvents,
-    csSetCaption, csOpaque, csDoubleClicks, csReplicatable];
-  Color := clBtnFace;
-  UseDockManager := True;
-end;
-
 function TJvDockCustomPanel.CreateDockManager: IDockManager;
 begin
   if (Self is TJvDockConjoinPanel) and
@@ -1120,11 +1130,7 @@ begin
   DoubleBuffered := DoubleBuffered or (Result <> nil);
 end;
 
-destructor TJvDockCustomPanel.Destroy;
-begin
-  SetDockSite(Self, False);
-  inherited Destroy;
-end;
+//=== TJvDockCustomTabControl ================================================
 
 constructor TJvDockCustomTabControl.Create(AOwner: TComponent);
 begin
@@ -1663,6 +1669,8 @@ begin
   inherited PaintWindow(DC);
 end;
 
+//=== TJvDockTabSheet ========================================================
+
 constructor TJvDockTabSheet.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -1832,6 +1840,8 @@ begin
       MakeLong(Word(Value), 0));
   FHighlighted := Value;
 end;
+
+//=== TJvDockPageControl =====================================================
 
 constructor TJvDockPageControl.Create(AOwner: TComponent);
 begin
@@ -2457,6 +2467,8 @@ begin
     ButtonEvent(Self, Msg, mbRight, msTabPage, JvGlobalDockClient.DoNCButtonUp);
 end;
 
+//=== TJvDockManager =========================================================
+
 constructor TJvDockManager.Create;
 begin
   // (rom) added inherited Create
@@ -2763,11 +2775,11 @@ begin
   with ADragObject, DockRect do
   begin
     if Right - Left > 0 then
-      MouseDeltaX := (DragPos.x - Left) / (Right - Left)
+      MouseDeltaX := (DragPos.X - Left) / (Right - Left)
     else
       MouseDeltaX := 0;
     if Bottom - Top > 0 then
-      MouseDeltaY := (DragPos.y - Top) / (Bottom - Top)
+      MouseDeltaY := (DragPos.Y - Top) / (Bottom - Top)
     else
       MouseDeltaY := 0;
     if Immediate then
@@ -3239,6 +3251,8 @@ begin
     JvGlobalDockClient.DockStyle.ResetCursor(DragObject);
 end;
 
+//=== TSiteList ==============================================================
+
 procedure TSiteList.AddSite(ASite: TWinControl);
 var
   SI: PSiteInfoRec;
@@ -3311,6 +3325,8 @@ begin
         CurrentWnd := GetNextWindow(CurrentWnd, GW_HWNDNEXT);
   end;
 end;
+
+//=== TJvDockCustomPanelSplitter =============================================
 
 constructor TJvDockCustomPanelSplitter.Create(AOwner: TComponent);
 begin

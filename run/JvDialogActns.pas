@@ -568,8 +568,9 @@ begin
   Result := TJvPageSetupTitledDialog;
 end;
 
+//=== TCommonDialogAction ====================================================
+
 {$IFNDEF COMPILER6_UP}
-{ TCommonDialogAction }
 
 constructor TCommonDialogAction.Create(AOwner: TComponent);
 var
@@ -595,6 +596,7 @@ function TCommonDialogAction.HandlesTarget(Target: TObject): Boolean;
 begin
   Result := True;
 end;
-{$ENDIF !"COMPILER6_UP}
+{$ENDIF !COMPILER6_UP}
+
 end.
 

@@ -1232,7 +1232,6 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
-  
 
 function KeyPressed(VK: Integer): Boolean;
 begin
