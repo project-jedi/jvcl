@@ -169,10 +169,14 @@ object frmMain: TfrmMain
     end
   end
   object SaveDialog1: TSaveDialog
+    DefaultExt = 'doc'
+    FileName = 'DBGridExport.doc'
     Filter = 
       'MS Word (*.doc)|*.doc|MS Excel (*.xls)|*.xls|HTML (*.htm;*.html)' +
-      '|*.htm;*.html|CSV (*.csv;*.txt)|*.csv;*.txt'
+      '|*.htm;*.html|CSV (*.csv;*.txt)|*.csv;*.txt|XML files (*.xml)|*.' +
+      'xml'
     Options = [ofOverwritePrompt, ofHideReadOnly, ofEnableSizing]
+    OnTypeChange = SaveDialog1TypeChange
     Left = 56
     Top = 72
   end
