@@ -14,9 +14,10 @@ The Initial Developer of the Original Code is Sébastien Buysse [sbuysse@buypin.c
 Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
 All Rights Reserved.
 
-Contributor(s): Michael Beck [mbeck@bigfoot.com].
+Contributor(s): Michael Beck [mbeck@bigfoot.com],
+                Andreas Hausladen [Andreas.Hausladen@gmx.de].
 
-Last Modified: 2000-02-28
+Last Modified: 2003-12-14
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -25,17 +26,84 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
+{$I WINDOWSONLY.INC}
 
 unit JvDragDrop;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Controls, ShellAPI,
+  Windows, Messages, SysUtils, Classes, Controls, Forms,
+  ShellAPI, ActiveX, ShlObj,
   JvComponent;
 
 type
+  TJvDropTarget = class;
+  TJvDragDrop = class;
+
   TJvDropEvent = procedure(Sender: TObject; Pos: TPoint; Value: TStrings) of object;
+  TJvDropEffect = (deNone, deCopy, deMove, deLink, deScroll);
+
+  TJvDragEvent = procedure(Sender: TJvDropTarget; var Effect: TJvDropEffect) of object;
+  TJvDragDropEvent = procedure(Sender: TJvDropTarget; var Effect: TJvDropEffect;
+    Shift: TShiftState; X, Y: Integer) of object;
+  TJvDragLeaveEvent = procedure(Sender: TJvDropTarget) of object;
+  TJvDragAcceptEvent = procedure(Sender: TJvDropTarget; var Accept: Boolean) of object;
+
+  TJvDropTarget = class(TJvComponent, IDropTarget)
+  private
+    FDataObject: IDataObject;
+    FStreamedAcceptDrag: Boolean;
+
+    FControl: TWinControl;
+    FOnDragDrop: TJvDragDropEvent;
+    FOnDragAccept: TJvDragAcceptEvent;
+    FOnDragEnter: TJvDragEvent;
+    FOnDragOver: TJvDragEvent;
+    FOnDragLeave: TJvDragLeaveEvent;
+    FAcceptDrag: Boolean;
+
+    procedure SetControl(Value: TWinControl);
+    procedure SetAcceptDrag(Value: Boolean);
+    procedure RegisterControl;
+    procedure UnregisterControl;
+  protected
+    function DragEnter(const dataObj: IDataObject; grfKeyState: Longint;
+      pt: TPoint; var dwEffect: Longint): HResult; stdcall;
+    function DragOver(grfKeyState: Longint; pt: TPoint;
+      var dwEffect: Longint): HResult; stdcall;
+    function DragLeave: HResult; stdcall;
+    function Drop(const dataObj: IDataObject; grfKeyState: Longint; pt: TPoint;
+      var dwEffect: Longint): HResult; stdcall;
+
+    function DoDragAccept: Boolean; dynamic;
+    procedure DoDragEnter(var Effect: Longint); dynamic;
+    procedure DoDragOver(var Effect: Longint); dynamic;
+    procedure DoDragLeave; dynamic;
+    procedure DoDragDrop(var Effect: Longint; Shift: TShiftState; X, Y: Integer); dynamic;
+
+    procedure Loaded; override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+    function GetFilenames(List: TStrings): Integer;
+    function GetFileDescrNames(List: TStrings): Integer;
+    function GetFileDescrCount: Integer;
+    function GetFileContent(Index: Integer; Stream: TStream): Boolean;
+
+    property DataObject: IDataObject read FDataObject;
+  published
+    property AcceptDrag: Boolean read FAcceptDrag write SetAcceptDrag default True;
+    property Control: TWinControl read FControl write SetControl;
+
+    property OnDragDrop: TJvDragDropEvent read FOnDragDrop write FOnDragDrop;
+    property OnDragAccept: TJvDragAcceptEvent read FOnDragAccept write FOnDragAccept;
+    property OnDragEnter: TJvDragEvent read FOnDragEnter write FOnDragEnter;
+    property OnDragOver: TJvDragEvent read FOnDragOver write FOnDragOver;
+    property OnDragLeave: TJvDragLeaveEvent read FOnDragLeave write FOnDragLeave;
+  end;
 
   TJvDragDrop = class(TJvComponent)
   private
@@ -46,6 +114,7 @@ type
     FIsHooked: Boolean;
     FTargetStrings: TStrings;
     FDropTarget: TWinControl;
+
     procedure DropFiles(Handle: HDROP);
     function GetFiles: TStrings;
     procedure SetAcceptDrag(Value: Boolean);
@@ -67,10 +136,19 @@ type
     property OnDrop: TJvDropEvent read FOnDrop write FOnDrop;
   end;
 
+var
+  CF_FILEDESCRIPTOR: DWORD;
+  CF_FILECONTENTS: DWORD;
+  Malloc: IMalloc;
+
+  FileDropFormatEtc: FORMATETC;
+  FileContentFormatEtc: FORMATETC;
+  FileDescriptorFormatEtc: FORMATETC;
+
 implementation
 
 uses
-  JvWndProcHook;
+  JvWndProcHook, JvJCLUtils;
 
 constructor TJvDragDrop.Create(AOwner: TComponent);
 begin
@@ -88,6 +166,12 @@ begin
   UnHookControl;
   FFiles.Free;
   inherited Destroy;
+end;
+
+procedure TJvDragDrop.Loaded;
+begin
+  inherited Loaded;
+  SetAcceptDrag(FStreamedAcceptDrag);
 end;
 
 procedure TJvDragDrop.DropFiles(Handle: HDROP);
@@ -145,10 +229,15 @@ begin
       FIsHooked := RegisterWndProcHook(FDropTarget, WndProc, hoBeforeMsg);
 end;
 
-procedure TJvDragDrop.Loaded;
+procedure TJvDragDrop.UnHookControl;
 begin
-  inherited Loaded;
-  SetAcceptDrag(FStreamedAcceptDrag);
+  if FIsHooked then
+  begin
+    FIsHooked := False;
+    { Paranoia checks }
+    if Assigned(FDropTarget) and not (csDesigning in ComponentState) then
+      UnRegisterWndProcHook(FDropTarget, WndProc, hoBeforeMsg);
+  end;
 end;
 
 procedure TJvDragDrop.Notification(AComponent: TComponent;
@@ -218,23 +307,429 @@ begin
   end;
 end;
 
-procedure TJvDragDrop.UnHookControl;
-begin
-  if FIsHooked then
-  begin
-    FIsHooked := False;
-    { Paranoia checks }
-    if Assigned(FDropTarget) and not (csDesigning in ComponentState) then
-      UnRegisterWndProcHook(FDropTarget, WndProc, hoBeforeMsg);
-  end;
-end;
-
 function TJvDragDrop.WndProc(var Msg: TMessage): Boolean;
 begin
   Result := Msg.Msg = WM_DROPFILES;
   if Result then
     DropFiles(HDROP(Msg.WParam))
 end;
+
+
+{ TJvDropTarget }
+
+procedure InitFormatEtc;
+begin
+  if FileDescriptorFormatEtc.cfFormat <> 0 then
+    Exit;
+
+  FileDropFormatEtc.cfFormat := CF_HDROP;
+  FileDropFormatEtc.ptd := nil;
+  FileDropFormatEtc.dwAspect := DVASPECT_CONTENT;
+  FileDropFormatEtc.lindex := 0;
+  FileDropFormatEtc.tymed := TYMED_HGLOBAL;
+
+  FileDescriptorFormatEtc.cfFormat := CF_FILEDESCRIPTOR;
+  FileDescriptorFormatEtc.ptd := nil;
+  FileDescriptorFormatEtc.dwAspect := DVASPECT_CONTENT;
+  FileDescriptorFormatEtc.lindex := -1;
+  FileDescriptorFormatEtc.tymed := TYMED_HGLOBAL;
+
+  FileContentFormatEtc.cfFormat := CF_FILECONTENTS;
+  FileContentFormatEtc.ptd := nil;
+  FileContentFormatEtc.dwAspect := DVASPECT_CONTENT;
+  FileContentFormatEtc.lindex := 0;
+  FileContentFormatEtc.tymed := TYMED_ISTREAM;
+end;
+
+procedure GetDropEffect(Effect: Longint; var eff: TJvDropEffect);
+begin
+  eff := deNone;
+  if Effect and DROPEFFECT_NONE <> 0 then
+    eff := deNone
+  else if Effect and DROPEFFECT_COPY <> 0 then
+    eff := deCopy
+  else if Effect and DROPEFFECT_MOVE <> 0 then
+    eff := deMove
+  else if Effect and DROPEFFECT_LINK <> 0 then
+    eff := deLink
+  else if Effect and DROPEFFECT_SCROLL <> 0 then
+    eff := deScroll;
+end;
+
+procedure SetDropEffect(var Effect: Longint; eff: TJvDropEffect);
+begin
+  case eff of
+    deNone: Effect := DROPEFFECT_NONE;
+    deCopy: Effect := DROPEFFECT_COPY;
+    deMove: Effect := DROPEFFECT_MOVE;
+    deLink: Effect := DROPEFFECT_LINK;
+    deScroll: Effect := Longint(DROPEFFECT_SCROLL);
+  end;
+end;
+
+constructor TJvDropTarget.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FAcceptDrag := True;
+
+  InitFormatEtc;
+end;
+
+destructor TJvDropTarget.Destroy;
+begin
+  UnregisterControl;
+  FDataObject := nil;
+  inherited Destroy;
+end;
+
+function TJvDropTarget.DragEnter(const dataObj: IDataObject; grfKeyState: Longint;
+  pt: TPoint; var dwEffect: Longint): HRESULT;
+begin
+  FDataObject := dataObj;
+  Result := S_OK;
+
+  if not DoDragAccept then
+  begin
+    FDataObject := nil;
+    dwEffect := DROPEFFECT_NONE;
+  end
+  else
+  begin
+    dwEffect := DROPEFFECT_COPY;
+    try
+      DoDragEnter(dwEffect);
+    except
+      Result := E_UNEXPECTED;
+    end;
+  end;
+end;
+
+function TJvDropTarget.DragOver(grfKeyState: Longint; pt: TPoint;
+  var dwEffect: Longint): HResult;
+begin
+  Result := S_OK;
+  if FDataObject = nil then
+  begin
+    FDataObject := nil;
+    dwEffect := DROPEFFECT_NONE;
+  end
+  else
+  begin
+    dwEffect := DROPEFFECT_COPY;
+    try
+      DoDragOver(dwEffect);
+    except
+      Result := E_UNEXPECTED;
+    end;
+  end;
+end;
+
+function TJvDropTarget.DragLeave: HResult;
+begin
+  try
+    DoDragLeave;
+    Result := S_OK;
+  except
+    Result := E_UNEXPECTED;
+  end;
+  FDataObject := nil;
+end;
+
+function TJvDropTarget.Drop(const dataObj: IDataObject; grfKeyState: Longint;
+  pt: TPoint; var dwEffect: Longint): HResult;
+begin
+  Result := S_OK;
+  if FDataObject = nil then
+  begin
+    FDataObject := nil;
+    dwEffect := DROPEFFECT_NONE;
+  end
+  else
+  begin
+    dwEffect := DROPEFFECT_COPY;
+    try
+      DoDragDrop(dwEffect, KeyDataToShiftState(grfKeyState), pt.X, pt.Y);
+    except
+      Result := E_UNEXPECTED;
+    end;
+    FDataObject := nil;
+  end;
+end;
+
+function TJvDropTarget.DoDragAccept: Boolean;
+begin
+  Result := True;
+  if Assigned(FOnDragAccept) then
+    FOnDragAccept(Self, Result);
+end;
+
+procedure TJvDropTarget.DoDragEnter(var Effect: Longint);
+var
+  eff: TJvDropEffect;
+begin
+  GetDropEffect(Effect, eff);
+  if Assigned(FOnDragEnter) then
+    FOnDragEnter(Self, eff);
+  SetDropEffect(Effect, eff);
+end;
+
+procedure TJvDropTarget.DoDragOver(var Effect: Longint);
+var
+  eff: TJvDropEffect;
+begin
+  GetDropEffect(Effect, eff);
+  if Assigned(FOnDragOver) then
+    FOnDragOver(Self, eff);
+  SetDropEffect(Effect, eff);
+end;
+
+procedure TJvDropTarget.DoDragLeave;
+begin
+  if Assigned(FOnDragLeave) then
+    FOnDragLeave(Self);
+end;
+
+procedure TJvDropTarget.DoDragDrop(var Effect: Longint; Shift: TShiftState;
+  X, Y: Integer);
+var
+  eff: TJvDropEffect;
+begin
+  GetDropEffect(Effect, eff);
+  if Assigned(FOnDragDrop) then
+    FOnDragDrop(Self, eff, Shift, X, Y);
+  SetDropEffect(Effect, eff);
+end;
+
+procedure TJvDropTarget.SetControl(Value: TWinControl);
+begin
+  if Value <> FControl then
+  begin
+    UnregisterControl;
+    if Assigned(FControl) then
+      FControl.RemoveFreeNotification(Self);
+
+    FControl := Value;
+
+    if Assigned(FControl) then
+      FControl.FreeNotification(Self);
+      
+    RegisterControl;
+  end;
+end;
+
+procedure TJvDropTarget.RegisterControl;
+begin
+  if FAcceptDrag and Assigned(FControl) and not (csDesigning in ComponentState) then
+  begin
+    if RegisterDragDrop(FControl.Handle, Self) <> S_OK then
+      RaiseLastOSError;
+  end;
+end;
+
+procedure TJvDropTarget.UnregisterControl;
+begin
+  if FAcceptDrag and Assigned(FControl) and not (csDesigning in ComponentState) then
+    if FControl.HandleAllocated then
+      RevokeDragDrop(FControl.Handle);
+end;
+
+procedure TJvDropTarget.SetAcceptDrag(Value: Boolean);
+begin
+  if csLoading in ComponentState then
+    FStreamedAcceptDrag := Value
+  else if Value <> FAcceptDrag then
+  begin
+    UnregisterControl;
+    FAcceptDrag := Value;
+    RegisterControl;
+  end;
+end;
+
+procedure TJvDropTarget.Loaded;
+begin
+  inherited Loaded;
+  AcceptDrag := FStreamedAcceptDrag;
+end;
+
+procedure TJvDropTarget.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (Operation = opRemove) and (AComponent = FControl) then
+    Control := nil;
+end;
+
+function TJvDropTarget.GetFileDescrNames(List: TStrings): Integer;
+var
+  FileGroupDescr: PFileGroupDescriptor;
+  Medium: TStgMedium;
+  i: Integer;
+  s: string;
+begin
+  Result := 0;
+  if FDataObject.GetData(FileDescriptorFormatEtc, Medium) = S_OK then
+  begin
+    try
+      try
+        FileGroupDescr := GlobalLock(Medium.hGlobal);
+        try
+          if List <> nil then
+          begin
+            for i := 0 to FileGroupDescr.cItems - 1 do
+            begin
+              SetString(s, FileGroupDescr^.fgd[i].cFileName, StrLen(FileGroupDescr^.fgd[i].cFileName));
+              List.Add(s);
+            end;
+          end;
+          Result := FileGroupDescr.cItems;
+        finally
+          GlobalUnlock(Medium.hGlobal);
+        end;
+      finally
+        ReleaseStgMedium(Medium);
+      end;
+    except
+      Result := 0;
+    end;
+  end;
+end;
+
+function TJvDropTarget.GetFileDescrCount: Integer;
+var
+  FileGroupDescr: PFileGroupDescriptor;
+  Medium: TStgMedium;
+begin
+  Result := 0;
+  if FDataObject.GetData(FileDescriptorFormatEtc, Medium) = S_OK then
+  begin
+    try
+      try
+        FileGroupDescr := GlobalLock(Medium.hGlobal);
+        try
+          Result := FileGroupDescr.cItems;
+        finally
+          GlobalUnlock(Medium.hGlobal);
+        end;
+      finally
+        ReleaseStgMedium(Medium);
+      end;
+    except
+      Result := 0;
+    end;
+  end;
+end;
+
+function TJvDropTarget.GetFilenames(List: TStrings): Integer;
+var
+  DragH: Integer;
+  Medium: TStgMedium;
+  Name: string;
+  i, Count, Len: Integer;
+begin
+  Result := 0;
+  if FDataObject.GetData(FileDropFormatEtc, Medium) = S_OK then
+  begin
+    try
+      try
+        DragH := Integer(GlobalLock(Medium.hGlobal));
+        try
+          Count := DragQueryFile(DragH, Cardinal(-1), nil, 0);
+          if List <> nil then
+          begin
+            for i := 0 to Count - 1 do
+            begin
+              Len := DragQueryFile(DragH, i, nil, 0);
+              if Len > 0 then Inc(Len);
+              SetLength(Name, Len);
+              if Len > 0 then
+                DragQueryFile(DragH, i, PChar(Name), Len);
+              List.Add(Name);
+            end;
+          end;
+          Result := Count;
+        finally
+          GlobalUnlock(Medium.hGlobal);
+        end;
+      finally
+        ReleaseStgMedium(Medium);
+      end;
+    except
+      Result := 0;
+    end;
+  end;
+end;
+
+function TJvDropTarget.GetFileContent(Index: Integer; Stream: TStream): Boolean;
+const
+  MaxBufSize = 100 * 1024;
+var
+  Medium: TStgMedium;
+  InStream: IStream;
+  Stat: TStatStg;
+
+  Buf: Pointer;
+  BufSize: Integer;
+  Num: Int64;
+  Position: Int64;
+begin
+  Result := False;
+  if (Stream = nil) or (Index < 0) or (Index >= GetFileDescrCount) then
+    Exit;
+
+  FileContentFormatEtc.lindex := Index;
+  if FDataObject.GetData(FileContentFormatEtc, Medium) = S_OK then
+  begin
+    try
+      try
+        if Medium.tymed and TYMED_ISTREAM <> 0 then
+        begin
+          InStream := IStream(Medium.stm);
+          InStream.Stat(Stat, STATFLAG_NONAME);
+          Num := Stat.cbSize;
+          if Num > 0 then
+          begin
+            GetMem(Buf, MaxBufSize);
+            try
+             // Speicherbereich reservieren
+              Position := Stream.Position;
+              Stream.Size := Stream.Size + Num;
+              Stream.Position := Position;
+
+              while Num > 0 do
+              begin
+                if Num < MaxBufSize then
+                  BufSize := Num
+                else
+                  BufSize := MaxBufSize;
+                InStream.Read(Buf, BufSize, nil);
+                Stream.Write(Buf^, BufSize);
+                Dec(Num, BufSize);
+              end;
+            finally
+              FreeMem(Buf);
+            end;
+          end;
+        end
+        else
+          Result := False;
+      finally
+        ReleaseStgMedium(Medium);
+      end;
+    except
+      Result := False;
+    end;
+  end;
+end;
+
+initialization
+  OleInitialize(nil);
+  CF_FILECONTENTS := RegisterClipboardFormat(CFSTR_FILECONTENTS);
+  CF_FILEDESCRIPTOR := RegisterClipboardFormat(CFSTR_FILEDESCRIPTOR);
+
+  ShGetMalloc(Malloc); // otherwise Delphi will crash
+
+finalization
+  OleUninitialize;
 
 end.
 
