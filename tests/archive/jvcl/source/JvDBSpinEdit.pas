@@ -10,8 +10,8 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvDBSpinEdit.PAS, released on 2002-07-26.
 
-The Initial Developer of the Original Code is Rob den Braseem []
-Portions created by Rob den Braseem are Copyright (C) 2002 Rob den Braseem.
+The Initial Developer of the Original Code is Rob den Braasem []
+Portions created by Rob den Braasem are Copyright (C) 2002 Rob den Braasem.
 All Rights Reserved.
 
 Contributor(s): 

@@ -15,7 +15,7 @@ Portions created by Peter Below are Copyright (C) 2000 Peter Below.
 All Rights Reserved.
 
 Contributor(s): 
-Rob den Braseem <>
+Rob den Braasem <>
 
 Last Modified: 2002-07-26
 
