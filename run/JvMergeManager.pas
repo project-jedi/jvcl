@@ -123,8 +123,10 @@ end;
 
 destructor TJvMergeManager.Destroy;
 begin
-  FFormHistory.Free;
   inherited Destroy;
+  // (ahuser) FFormHistory must be freed after inherited Destroy to avoid AVs
+  //          in design mode.
+  FFormHistory.Free;
 end;
 
 function TJvMergeManager.MergeFrameStored: Boolean;
@@ -246,7 +248,6 @@ begin
   MergeForm(MergeFrame, TForm(AForm), alClient, Show);
   GotoForm(AForm);
 end;
-
 
 function TJvMergeManager.GotoForm(AForm: TCustomForm): Boolean;
 var
