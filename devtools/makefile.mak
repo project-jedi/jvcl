@@ -27,7 +27,8 @@ SRCH = ..\$(SRC);..\$(COM);..\$(JCL);..\$(ARCH);..\$(DCU)
 #---------------------------------------------------------------------------------------------------
 MAKE = "$(ROOT)\bin\make.exe" -$(MAKEFLAGS)
 DCC  = "$(ROOT)\bin\dcc32.exe" -e"$(BIN)" -i"$(SRCP)" -n"$(DCU)" -r"$(SRCP)" -u"$(SRCP)" -u"$(ROOT)\Lib\Obj" -q -w -h -m
-DCCx = "$(ROOT)\bin\dcc32.exe" -Q -M
+DCCx = "$(ROOT)\bin\dcc32.exe" -Q -M 
+#-I$(COM) -U$(SRC) -U$(COM)
 DCCH = "$(ROOT)\bin\dcc32.exe" -e"..\$(BIN)" -i"$(SRCH)" -n"..\$(DCU)" -r"$(SRCH)" -u"$(SRCH)" -q -w -h -m
 BRCC = "$(ROOT)\bin\brcc32.exe" $**
 #---------------------------------------------------------------------------------------------------
@@ -63,10 +64,15 @@ configfile:
 	@echo. >>"$(CFG)"
 	@echo. >>"$(CFG)"
 	@echo -e"$(BIN)">>$(CFG)
+	@echo. >>"$(CFG)"
 	@echo -i"$(SRCP)">>$(CFG)
+	@echo. >>"$(CFG)"
 	@echo -n"$(DCU)">>$(CFG)
+	@echo. >>"$(CFG)"
 	@echo -r"$(SRCP)">>$(CFG)
+	@echo. >>"$(CFG)"
 	@echo -u"$(SRCP)">>$(CFG)
+	@echo. >>"$(CFG)"
 	@echo -u"$(ROOT)\Lib\Obj">>$(CFG)
 
 isu.exe: ITEStrip\isu.dpr
@@ -103,7 +109,7 @@ Bpg2Make.exe: Bpg2Make\Bpg2Make.dpr \
   @$(MAKE) -DCFG=Bpg2Make\Bpg2Make.cfg configfile >NUL
   @cd Bpg2Make
   $(DCCx) Bpg2Make.dpr
-  -@del Bpg2Make.cfg >NUL 2>NUL
+#  -@del Bpg2Make.cfg >NUL 2>NUL
   @cd ..
 
 jtouch.exe: JTouch\jtouch.dpr \
