@@ -26,7 +26,7 @@ unit JvFormPlacementSelectList;
 interface
 
 uses
-  Classes,
+  SysUtils, Classes,
   JvAppStore, JvFormPlacement, JvAppStoreSelectList;
 
 type
@@ -50,8 +50,7 @@ type
 implementation
 
 uses
-  SysUtils;
-
+  JvConsts;
 
 function TJvFormStorageSelectList.GetFormStorage: TJvFormStorage;
 begin
