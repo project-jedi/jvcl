@@ -38,10 +38,10 @@ const
     'SRCP = $(SRC);$(COM);$(JCL);$(ARCH);$(DCU)' + sLineBreak +
     'SRCH = ..\$(SRC);..\$(COM);..\$(JCL);..\$(ARCH);..\$(DCU)' + sLineBreak +}
     '#---------------------------------------------------------------------------------------------------' + sLineBreak +
-    'MAKE = $(ROOT)\make.exe -$(MAKEFLAGS) -f$**' + sLineBreak +
-    'DCC  = $(ROOT)\dcc32.exe -Q -W -H -M -$O+ $&.dpk' + sLineBreak +
+    'MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**' + sLineBreak +
+    'DCC  = $(ROOT)\bin\dcc32.exe -U"$(DCPDIR)" -Q -W -H -M -$O+ $&.dpk' + sLineBreak +
 //    'DCC  = $(ROOT)\dcc32.exe -e$(BIN) -i$(SRCP) -n$(DCU) -r$(SRCP) -u$(SRCP) -q -w -m' + sLineBreak +
-    'BRCC = $(ROOT)\brcc32.exe $**' + sLineBreak +
+    'BRCC = $(ROOT)\bin\brcc32.exe $**' + sLineBreak +
     '#---------------------------------------------------------------------------------------------------' + sLineBreak;
 
 //--------------------------------------------------------------------------------------------------
