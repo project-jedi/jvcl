@@ -67,7 +67,7 @@ type
     Length: Byte;
     Index: Byte;
   end;
-  TJvDateFigures = array [0..2] of TJvDateFigureInfo;
+  TJvDateFigures = array[0..2] of TJvDateFigureInfo;
 
   {A dropdown form with an embedded calendar control.}
   TJvDropCalendar = class(TJvCustomDropDownForm)
@@ -117,8 +117,8 @@ type
     FNoDateText: string;
     FStoreDate: Boolean;
     FAlwaysReturnEditDate: Boolean;
-//    FMinYear: Word;
-//    FMaxYear: Word;
+    //    FMinYear: Word;
+    //    FMaxYear: Word;
     procedure ButClick(Sender: TObject);
     procedure CalChange(Sender: TObject);
     procedure CalDestroy(Sender: TObject);
@@ -166,8 +166,8 @@ type
     property DateFormat: string read FDateFormat write SetDateFormat stored IsDateFormatStored;
     property Dropped: Boolean read GetDropped;
     property EnableValidation: Boolean read GetEnableValidation write FEnableValidation default True;
-//    property MaxYear: Word read FMaxYear write FMaxYear;
-//    property MinYear: Word read FMinYear write FMinYear;
+    //    property MaxYear: Word read FMaxYear write FMaxYear;
+    //    property MinYear: Word read FMinYear write FMinYear;
     property NoDateShortcut: TShortcut read FNoDateShortcut write FNoDateShortcut stored IsNoDateShortcutStored;
     property NoDateText: string read FNoDateText write SetNoDateText stored IsNoDateTextStored;
     property StoreDate: Boolean read FStoreDate write FStoreDate default False;
@@ -210,8 +210,8 @@ type
     property GroupIndex;
     property HintColor;
     property HotTrack;
-//    property MaxYear default 2900;
-//    property MinYear default 1900;
+    //    property MaxYear default 2900;
+    //    property MinYear default 1900;
     property NoDateShortcut;
     property NoDateText;
     property ParentColor;
@@ -268,8 +268,8 @@ begin
   FDeleting := False;
   FDropFo := nil;
   FEnableValidation := True;
-//  FMaxYear := 2900;
-//  FMinYear := 1800;
+  //  FMaxYear := 2900;
+  //  FMinYear := 1800;
   FNoDateShortcut := TextToShortCut(RsDefaultNoDateShortcut);
   FNoDateText := '';
   FStoreDate := False;
@@ -451,31 +451,34 @@ end;
 function TJvCustomDatePickerEdit.AttemptTextToDate(const AText: string;
   var ADate: TDateTime; const AForce: Boolean; const ARaise: Boolean): Boolean;
 var
-  lFormatBup: string;
-  lDate: TDateTime;
-  lDummy: Integer;
+  OldFormat: string;
+  ADate: TDateTime;
+  ADummy: Integer;
 begin
-  Result := Validate(AText, lDummy);
+  Result := Validate(AText, ADummy);
   {only attempt to convert, if at least the Mask is matched
-    - otherwise we'd be swamped by exceptions during input}
+  - otherwise we'd be swamped by exceptions during input}
   if Result or AForce then
   begin
-    lDate := ADate;
-    lFormatBup := ShortDateFormat;
+    ADate := ADate;
+    OldFormat := ShortDateFormat;
     try
       ShortDateFormat := Self.DateFormat;
       try
-        ADate := StrToDate(AText);
+        if AnsiSameText(AText,EditMask) then
+          ADate := 0.0
+        else
+          ADate := StrToDate(AText);
         Result := True;
       except
         Result := False;
         if (ARaise) then
           raise
         else
-          ADate := lDate;
+          ADate := ADate;
       end;
     finally
-      ShortDateFormat := lFormatBup;
+      ShortDateFormat := OldFormat;
     end;
   end;
 end;
@@ -528,8 +531,7 @@ var
   begin
     if lFigVal > AMax then
       SetActiveFigVal(AMax)
-    else
-    if lFigVal < AMin then
+    else if lFigVal < AMin then
       SetActiveFigVal(AMin);
   end;
 
@@ -555,32 +557,31 @@ begin
           EndInternalChange;
         end;
       end
-      else
-        if (not FDeleting) and EnableValidation then
-        begin
-          lActFig := ActiveFigure;
+      else if (not FDeleting) and EnableValidation then
+      begin
+        lActFig := ActiveFigure;
 
-          if lActFig.Figure <> dfNone then
-          begin
-            lFigVal := StrToIntDef(Trim(Copy(Text, lActFig.Start, lActFig.Length)), 0);
-            //only enforce range if the cursor is at the end of the current figure:
-            if SelStart = lActFig.Start + lActFig.Length - 1 then
-              case lActFig.Figure of
-                dfDay:
-                  EnforceRange(1, 31);
-                dfMonth:
-                  EnforceRange(1, 12);
-                dfYear:
-                  {EnforceRange( MinYear, MaxYear)}; //year-validation still under development
-              end;
-          end;
-         {make sure querying the date in an OnChange event handler always reflects
-          the current contents of the control and not just the last valid value.}
-          lDate := 0;
-          AttemptTextToDate(Text, lDate, lActFig.Index = High(TJvDateFigures));
-          if AlwaysReturnEditDate then
-            FDate := lDate;
+        if lActFig.Figure <> dfNone then
+        begin
+          lFigVal := StrToIntDef(Trim(Copy(Text, lActFig.Start, lActFig.Length)), 0);
+          //only enforce range if the cursor is at the end of the current figure:
+          if SelStart = lActFig.Start + lActFig.Length - 1 then
+            case lActFig.Figure of
+              dfDay:
+                EnforceRange(1, 31);
+              dfMonth:
+                EnforceRange(1, 12);
+              dfYear:
+                {EnforceRange( MinYear, MaxYear)}; //year-validation still under development
+            end;
         end;
+        {make sure querying the date in an OnChange event handler always reflects
+         the current contents of the control and not just the last valid value.}
+        lDate := 0;
+        AttemptTextToDate(Text, lDate, lActFig.Index = High(TJvDateFigures));
+        if AlwaysReturnEditDate then
+          FDate := lDate;
+      end;
     end;
   finally
     FDeleting := False;
@@ -899,10 +900,10 @@ end;
 procedure TJvDropCalendar.CalKillFocus(const ASender: TObject;
   const ANextControl: TWinControl);
 var
-  P:TPoint;
+  P: TPoint;
 begin
   GetCursorPos(P);
-  if PtInRect(BoundsRect,P) then Exit;
+  if PtInRect(BoundsRect, P) then Exit;
   Self.DoKillFocus(ANextControl.Handle);
 end;
 
