@@ -465,6 +465,10 @@ type
     procedure MyRightTextOut(X, Y: Integer; const Text: string); // RIGHT TEXT
     procedure MyCenterTextOut(X, Y: Integer; const Text: string); // CENTER TEXT
     procedure MyLeftTextOut(X, Y: Integer; const Text: string); // LEFT ALIGN TEXT
+
+    // Use HintColor:
+    procedure MyLeftTextOutHint(X, Y: Integer; const Text: string);
+
     { line, curve, rectangle stuff }
     procedure MyPenLineTo(X, Y: Integer);
     procedure MyAxisLineTo(X, Y: Integer);
@@ -589,7 +593,7 @@ uses
   JvJVCLUtils, JvConsts, JvResources;
 
 const
-  CHART_SANITY_LIMIT = 30000;
+  CHART_SANITY_LIMIT = 60000;
         // Any attempt to have more than CHART_SANITY_LIMIT elements in this
         // graph will be treated as an internal failure on our part.  This prevents
         // ugly situations where we thrash because of excessive memory usage.
@@ -701,7 +705,17 @@ begin
 
   if ValueIndex >= FDataAlloc then
   begin
-    FDataAlloc := ValueIndex + 1;
+      //--------------------------------------------------------
+      // Performance tweak: Uses more memory but makes JvChart
+      // much faster!
+      // We Double our allocation unit size
+      // until we start to get Really Huge, then grow in chunks!
+      //--------------------------------------------------------
+    if (ValueIndex < 640000) then
+       FDataAlloc := (ValueIndex * 2) // Double in size
+    else
+       FDataAlloc := ValueIndex+64000;
+
     SetLength(FData, FDataAlloc);
   end;
 
@@ -3321,7 +3335,7 @@ begin
     MyColorRectangle(jvChartHintColorIndex, X + 3, Y + 3, X + nWidth + 3 + 5, Y + nLineH + 3);
     MyColorRectangle(jvChartPaperColorIndex, X, Y, X + nWidth + 5, Y + nLineH);
     Canvas.Font.Color := Self.Font.Color;
-    MyLeftTextOut(X + 2, Y, RsNoValuesHere);
+    MyLeftTextOutHint(X + 2, Y, RsNoValuesHere);
     FMouseLegend := True;
     Exit;
   end;
@@ -3353,7 +3367,7 @@ begin
   begin
     if (I = 1) and FMouseDownHintBold then
       Canvas.Font.Style := [];
-    MyLeftTextOut(X + 2, 4 + Y + (I * nLineH), FMouseDownHintStrs[I]); // draw text for each line.
+    MyLeftTextOutHint(X + 2, 4 + Y + (I * nLineH), FMouseDownHintStrs[I]); // draw text for each line.
   end;
 
   FMouseLegend := True;
@@ -3770,16 +3784,26 @@ end;
 
 procedure TJvChart.MyLeftTextOut(X, Y: Integer; const Text: string);
 begin
+  ChartCanvas.Brush.Color := Options.PaperColor; // non default paper color.
   ChartCanvas.TextOut(X, Y + 1, Text);
 end;
 
+procedure TJvChart.MyLeftTextOutHint(X, Y: Integer; const Text: string);
+begin
+  ChartCanvas.Brush.Color := Options.HintColor;
+  ChartCanvas.TextOut(X, Y + 1, Text);
+end;
+
+
 procedure TJvChart.MyCenterTextOut(X, Y: Integer; const Text: string);
 begin
+  ChartCanvas.Brush.Color := Options.PaperColor; // non default paper color.
   ChartCanvas.TextOut(X - Round(ChartCanvas.TextWidth(Text) / 2), Y + 1, Text);
 end;
 
 procedure TJvChart.MyRightTextOut(X, Y: Integer; const Text: string);
 begin
+  ChartCanvas.Brush.Color := Options.PaperColor; // non default paper color.
   ChartCanvas.TextOut(X - ChartCanvas.TextWidth(Text),
     Y - Round(ChartCanvas.TextHeight(Text) / 2), Text);
 end;
