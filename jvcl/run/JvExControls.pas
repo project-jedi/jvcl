@@ -1228,10 +1228,14 @@ var
   Intf: IJvWinControlEvents;
   IsDoubleBuffered: Boolean;
   R: TRect;
-  TC: QColorH;
 begin
-  if csDestroying in Instance.ComponentState then
+  if (csDestroying in Instance.ComponentState) or not Assigned(Instance.Parent) then
     Exit;
+
+  R := Rect(0, 0, 0, 0);
+  QRegion_boundingRect(EventRegion, @R);
+  if IsRectEmpty(R) then
+    exit;
 
   Instance.GetInterface(IJvWinControlEvents, Intf);
   IsDoubleBuffered := Intf.GetDoubleBuffered;
@@ -1240,27 +1244,27 @@ begin
 
   with TWidgetControlAccessProtected(Instance) do
   begin
+
     TControlCanvas(Canvas).StartPaint;
+
     if IsDoubleBuffered then
     begin
       Pixmap := QPixmap_create(Instance.Width, Instance.Height, -1, QPixmapOptimization_DefaultOptim);
       // fill with parent's background if the control has a parent
-//      if Instance.Parent <> nil then
-//        QPixmap_fill(Pixmap, Instance.Parent.Handle, QWidget_x(Instance.Handle), QWidget_y(Instance.Handle));
+      if Instance.Parent <> nil then
+        QPixmap_fill(Pixmap, Instance.Parent.Handle, QWidget_x(Instance.Handle), QWidget_y(Instance.Handle));
       OriginalPainter := Canvas.Handle;
       Canvas.Handle := QPainter_create(Pixmap);
       TControlCanvas(Canvas).StartPaint;
       QPainter_setClipRegion(Canvas.Handle, EventRegion);
       QPainter_setClipping(Canvas.Handle, True);
-      R := Rect(0, 0, 0, 0);
-      QRegion_boundingRect(EventRegion, @R);
     end;
-
     try
-      Canvas.Brush.Color := Instance.Brush.Color;
-      QPainter_setFont(Canvas.Handle, Font.Handle);
-      QPainter_setPen(Canvas.Handle, Font.FontPen);
+      Canvas.Brush.Assign(Brush);
       Canvas.Font.Assign(Font);
+      QPainter_setFont(Canvas.Handle, Canvas.Font.Handle);
+      QPainter_setPen(Canvas.Handle, Canvas.Font.FontPen);
+      QPainter_setBrush(Canvas.Handle, Canvas.Brush.Handle);
 
       HasBackground := (Instance as IJvWinControlEvents).DoPaintBackground(Canvas, 0);
 
@@ -1274,28 +1278,10 @@ begin
             QPixmap_fill(Pixmap, Handle, 0, 0)
           else
           begin
-            TC := QColor(Brush.Color, Instance.Handle);
-            QPixmap_fill(Pixmap, TC);
-            QColor_destroy(TC);
+            Canvas.FillRect(Rect( 0, 0, Width, Height));
           end;
         end;
-      end
-      else
-      begin
-        if HasBackground then
-        begin
-          // The widget draws the background itself, so set the background to no background
-          if QWidget_backgroundMode(Instance.Handle) <> QWidgetBackgroundMode_NoBackground then
-            QWidget_setBackgroundMode(Instance.Handle, QWidgetBackgroundMode_NoBackground);
-        end
-        else
-        begin
-          // The widget does not draw the background itself
-          if QWidget_backgroundMode(Instance.Handle) = QWidgetBackgroundMode_NoBackground then
-            QWidget_setBackgroundMode(Instance.Handle, QWidgetBackgroundMode_PaletteBackground);
-        end;
       end;
-
       if Instance is TCustomForm then
         // TCustomForm calls Paint in it's EventFilter
       else
@@ -1303,22 +1289,15 @@ begin
         TCustomControlAccessProtected(Instance).Paint
       else
         Intf.Paint;
-
     finally
       if Pixmap <> nil then
       begin
         TControlCanvas(Canvas).StopPaint;
         QPainter_destroy(Canvas.Handle);
         Canvas.Handle := OriginalPainter;
-        QPainter_setClipRegion(Canvas.Handle, EventRegion);
-        if (R.Right - R.Left > 0) or (R.Bottom - R.Top > 0) then
-          bitBlt(QPainter_device(Canvas.Handle), R.Left, R.Top,
-            Pixmap, R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top,
-            RasterOp_CopyROP, True)
-        else
-          bitBlt(QPainter_device(Canvas.Handle), 0, 0,
-            Pixmap, 0, 0, QPixmap_width(Pixmap), QPixmap_height(Pixmap),
-            RasterOp_CopyROP, True);
+        bitBlt(QPainter_device(Canvas.Handle), R.Left, R.Top,
+          Pixmap, R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top,
+          RasterOp_CopyROP, True);
         QPixmap_destroy(Pixmap);
       end;
       TControlCanvas(Canvas).StopPaint;
@@ -1417,8 +1396,7 @@ begin
     Instance.GetInterface(IJvWinControlEvents, Intf);
     if Bitmap.Empty then
     begin
-      Palette.Color := Color;
-      Brush.Color := Color;
+      Palette.Color := Brush.Color;
       if not Intf.GetDoubleBuffered then
       begin
         TC := QColor(Color);
@@ -2229,12 +2207,16 @@ end;
 
 procedure TJvExGraphicControl.PaintRequest;
 begin
+  if not Assigned(Parent) then
+    Exit;
   Canvas.Start;
   try
     Canvas.Brush.Color := Color;
-    QPainter_setFont(Canvas.Handle, Font.Handle);
-    QPainter_setPen(Canvas.Handle, Font.FontPen);
+    Canvas.Brush.Style := bsSolid;
     Canvas.Font.Assign(Font);
+    QPainter_setFont(Canvas.Handle, Canvas.Font.Handle);
+    QPainter_setPen(Canvas.Handle, Canvas.Font.FontPen);
+    QPainter_setBrush(Canvas.Handle, Canvas.Brush.Handle);
     inherited PaintRequest;
   finally
     Canvas.Stop;
