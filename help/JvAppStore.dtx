@@ -1,5 +1,5 @@
 ##Package: Core
-##Status: Completed
+##Status: Incompleted
 ----------------------------------------------------------------------------------------------------
 @@JvAppStore.pas
 Summary
@@ -72,7 +72,7 @@ Description
 
   The application storage components are used with various components in the JEDI-VCL library to
   provide a means to store their data to a user specified destination. Because all storages use this
-  component interface, other components don't need to worry about how there information is stored or
+  component interface, other components don't need to worry about how their information is stored or
   where it is stored.
 
   Data is referenced much like a file on an Operating System. The storage system uses paths and uses
@@ -88,6 +88,13 @@ Description
   path specified as '..\MyFolder1.1.2' would translate into 'MyFolder1\MyFolder1.1\MyFolder1.1.2'
   and a path specified as '...\MyFolder1.2\MyFolder1.2.1' or '..\..\MyFolder1.2\MyFolder1.2.1'
   would translate into 'MyFolder1\MyFolder1.2\MyFolder1.2.1'.
+
+  In addition you can link other storages into the storage tree, where each sub storage would be
+  accessible through a specific path. This allows one to use a single storage to access both
+  generic settings (common for the machine the application runs on, e.g. a registry backend pointing
+  to HKEY_LOCAL_MACHINE) and user settings (unique for each user, e.g. an INI file backend pointing
+  to an INI file in the current users home directory), making the access to the settings easier to
+  use. Not all storages may surface this linking mechanism, but most do.
 
   You should not instantiate a TJvCustomAppStore but rather one of it's descendants.
 ----------------------------------------------------------------------------------------------------
@@ -193,6 +200,32 @@ Description
   Note that this path is relative to the absolute storage root specified by the Root property.
 See Also
   Root
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStore.ResolvePath
+Summary
+  Resolves the specified path to a target storage and target path.
+Description
+  ResolvePath will resolve the specified path into a storage backend and path to use. The storage
+  returned might be itself, one of it's sub stores or a sub store at an even deeper level. In any
+  case, the returned store and path will no longer reference to any other sub store.
+
+  ResolvePath will take the specified path, prefixing it with the currently set path and
+  canonicalize it (making it relative to the absolute root of the storage).
+
+  It will then  scan the sub storages to see if the path refers to a linked storage. If it doesn't,
+  this storage will be returned as the target store and the canonicalized path as the target path.
+
+  If it did find a sub store, the link path is removed from the canonical path (making it relative
+  to the absolute root of the sub store) and ResolvePath is executed on the sub store. Eventually
+  the sub store to use and the path relative to the absolute root of that store are returned.
+Parameters
+  InPath    - The path to resolve. This may be any path specification, even one that's relative to
+              the currently selected path.
+  TgtStore  - The target store to use. The returned store is guaranteed to be the store that should
+              contain the specified path (ie. it can not reference any of it's linked sub stores).
+  TgtPath   - The path to use in the target store. The returned path is always canonical and
+              relative to the absolute root of the target store specified by TgtStore and will
+              reference the path specified by InPath.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStore.ReadBinary
 Summary
