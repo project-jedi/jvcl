@@ -833,6 +833,7 @@ begin
   begin
     FFlat := Value;
     {$IFDEF VCL}
+    Ctl3D := FFlat;     // Force update to allow to work in a TFrame
     Ctl3D := not FFlat;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
