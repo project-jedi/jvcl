@@ -37,6 +37,7 @@ const
 {$ENDIF}
 {$ENDIF}
 
+
 type
   // JvUIB Server Commands
   TServerCommand = (
@@ -129,6 +130,35 @@ ResourceString
   EJvUIB_CantConnect   = 'Nelze pøipojit server.';
   EJvUIB_ClassNotFound = 'Tøída neexistuje.';
   EJvUIB_DataType      = 'Chybný typ dat.';
+{$ENDIF}
+
+{$IFDEF UIBLANG_DE}
+
+  sUIBTrue             = 'Wahr';
+  sUIBFalse            = 'Falsch';
+
+  // UIB Errors
+  EUIB_INVALIDEIBVERSION   = 'Falsche Datenbankserverversion. Bitte ueberpruefen sie die Compiler Optionen.';
+  EUIB_CANTLOADLIB         = 'Kann Bibliothek %s nicht laden.';
+  EUIB_DBHANDLEALLREADYSET = 'Datenbank Handle bereits zugewiesen. Bitte erst Verbindung von der Datenbank trennen.';
+  EUIB_TRANSACTIONNOTDEF   = 'Transaktion nicht zugewiesen.';
+  EUIB_DATABASENOTDEF      = 'Datenbank nicht zugewiesen.';
+  EUIB_QUERYNOTOPEN        = 'Abfrage nicht geoeffnet.';
+  EUIB_CASTERROR           = 'Fehler bei Typumwandlung.';
+  EUIB_UNEXPECTEDERROR     = 'Unerwarteter Fehler.';
+  EUIB_FIELDNUMNOTFOUND    = 'Feld Nummer: %d not found.';
+  EUIB_FIELDSTRNOTFOUND    = 'Feld "%s" nicht gefunden.';
+  EUIB_PARAMSTRNOTFOUND    = 'Parameter "%s" nicht gefunden.';
+  EUIB_BLOBFIELDNOTFOUND   = 'Blob Feld Nummer: %d nicht gefunden.';
+  EUIB_FETCHBLOBNOTSET     = 'Die Eigenschaft FetchBlob muss gesetzt sein um diese Methode zu nutzen.';
+  EUIB_INDEXERROR          = 'Index ausserhalb des gueltigen Bereichs. (%d)';
+  EUIB_SIZENAME            = 'Name ist zu lang. (%s)';
+  EUIB_MUSTBEPREPARED      = 'Die Abfrage muss erst vorbereitet werden.';
+
+  // ORB Errors
+  EJvUIB_CantConnect   = 'Verbindung zum Server kann nicht aufgebaut werden.';
+  EJvUIB_ClassNotFound = 'Klasse nicht gefunden.';
+  EJvUIB_DataType      = 'Datentypfehler.';
 {$ENDIF}
 
 implementation
