@@ -14,7 +14,7 @@ The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.co
 Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
-Contributor(s):            
+Contributor(s):
 
 Last Modified: 2002-05-26
 
@@ -38,12 +38,12 @@ uses
 
 type
   TMediaFilename = string;
-  TJvScrollDirection = (sdUp,sdDown);
+  TJvScrollDirection = (sdUp, sdDown);
   TJvScrollAmount = 1..MaxWord;
 
   TJvContentScroller = class(TJvCustomPanel)
   private
-    FTimer:TTimer;
+    FTimer: TTimer;
     FActive: boolean;
     FPosition: integer;
     FScrollAmount: TJvScrollAmount;
@@ -55,7 +55,7 @@ type
     FScrollLength: TJvScrollAmount;
     FScrollDirection: TJvScrollDirection;
     FLoopCount: integer;
-    FCurLoop:integer;
+    FCurLoop: integer;
 //    FScrollStart: integer;
     procedure SetActive(Value: boolean);
     procedure SeTJvScrollAmount(Value: TJvScrollAmount);
@@ -72,14 +72,15 @@ type
     { Private declarations }
   protected
     { Protected declarations }
-    procedure DoBeforeScroll;virtual;
-    procedure DoAfterScroll;virtual;
-    procedure CreateWnd;override;
+    procedure Paint; override;
+    procedure DoBeforeScroll; virtual;
+    procedure DoAfterScroll; virtual;
+    procedure CreateWnd; override;
   public
     { Public declarations }
-    constructor Create(AOwner:TComponent);override;
-    destructor Destroy;override;
-    procedure ScrollContent(Amount:TJvScrollAmount);
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure ScrollContent(Amount: TJvScrollAmount);
   published
     { Published declarations }
     property Action;
@@ -138,18 +139,18 @@ type
     property OnResize;
     property OnStartDrag;
     { new properties }
-    property Active:boolean read FActive write SetActive;
-    property ScrollAmount:TJvScrollAmount read FScrollAmount write SeTJvScrollAmount default 10;
-    property ScrollIntervall:TJvScrollAmount read FScrollIntervall write SetScrollIntervall default 50;
-    property ScrollLength:TJvScrollAmount read FScrollLength write SetScrollLength default 250;
-    property ScrollDirection:TJvScrollDirection read FScrollDirection write SeTJvScrollDirection default sdUp;
+    property Active: boolean read FActive write SetActive;
+    property ScrollAmount: TJvScrollAmount read FScrollAmount write SeTJvScrollAmount default 10;
+    property ScrollIntervall: TJvScrollAmount read FScrollIntervall write SetScrollIntervall default 50;
+    property ScrollLength: TJvScrollAmount read FScrollLength write SetScrollLength default 250;
+    property ScrollDirection: TJvScrollDirection read FScrollDirection write SeTJvScrollDirection default sdUp;
 //    property ScrollStart:integer read FScrollStart write SetScrollStart;
-    property MediaFile:TMediaFilename read FMediaFile write SetMediaFile;
-    property LoopMedia:boolean read FLoopMedia write SetLoopMedia default true;
-    property LoopCount:integer read FLoopCount write SetLoopCount default -1;
+    property MediaFile: TMediaFilename read FMediaFile write SetMediaFile;
+    property LoopMedia: boolean read FLoopMedia write SetLoopMedia default true;
+    property LoopCount: integer read FLoopCount write SetLoopCount default -1;
     {*****************}
-    property OnAfterScroll:TNotifyEvent read FOnAfterScroll write FOnAfterScroll;
-    property OnBeforeScroll:TNotifyEvent read FOnBeforeScroll write FOnBeforeScroll;
+    property OnAfterScroll: TNotifyEvent read FOnAfterScroll write FOnAfterScroll;
+    property OnBeforeScroll: TNotifyEvent read FOnBeforeScroll write FOnBeforeScroll;
   end;
 
 
@@ -180,7 +181,7 @@ begin
 end;
 
 procedure TJvContentScroller.CreateTimer;
-var Flag:integer;
+var Flag: integer;
 begin
   if not Assigned(FTimer) then
     FTimer := TTimer.Create(nil);
@@ -194,7 +195,7 @@ begin
   if FLoopMedia then
     Flag := Flag or SND_LOOP;
   if FileExists(FMediaFile) then
-    PlaySound(PChar(FMediaFile),0,Flag);
+    PlaySound(PChar(FMediaFile), 0, Flag);
   FCurLoop := FLoopCount;
 end;
 
@@ -208,16 +209,16 @@ begin
     FTimer := nil;
   end;
   if FScrollDirection = sdUp then
-    ScrollBy(0,FPosition)
+    ScrollBy(0, FPosition)
   else
-    ScrollBy(0,-FPosition);
+    ScrollBy(0, -FPosition);
   FPosition := 0;
   if FileExists(FMediaFile) then
-    PlaySound(nil,0,SND_ASYNC);
+    PlaySound(nil, 0, SND_ASYNC);
 end;
 
-procedure TJvContentScroller.DoTimer(Sender:TObject);
-var b:boolean;
+procedure TJvContentScroller.DoTimer(Sender: TObject);
+var b: boolean;
 begin
   b := FTimer.Enabled;
   FTimer.Enabled := false;
@@ -244,8 +245,8 @@ begin
     FOnBeforeScroll(self);
 end;
 
-procedure TJvContentScroller.ScrollContent(Amount:TJvScrollAmount);
-var i:integer;
+procedure TJvContentScroller.ScrollContent(Amount: TJvScrollAmount);
+var i: integer;
 begin
   DisableAlign;
   try
@@ -263,7 +264,7 @@ begin
       begin
         i := FPosition + FScrollLength;
         FPosition := -FScrollLength;
-        ScrollBy(0,i);
+        ScrollBy(0, i);
       end;
       i := -Amount;
     end
@@ -271,16 +272,16 @@ begin
     begin
       if (FPosition >= FScrollLength) then
       begin
-        i := -FPosition-FScrollLength;
+        i := -FPosition - FScrollLength;
         FPosition := -FScrollLength;
-        ScrollBy(0,i);
+        ScrollBy(0, i);
       end;
       i := Amount;
     end;
 
     if Active then
     begin
-      ScrollBy(0,i);
+      ScrollBy(0, i);
       FPosition := FPosition + Amount;
     end;
   finally
@@ -359,4 +360,18 @@ begin
     FScrollStart := Value;
 end;
 }
+
+procedure TJvContentScroller.Paint;
+begin
+  inherited;
+  if csDesigning in ComponentState then
+    with Canvas do
+    begin
+      Pen.Style := psDash;
+      Brush.Style := bsClear;
+      Rectangle(0, 0, Width, Height);
+    end;
+end;
+
 end.
+
