@@ -798,6 +798,18 @@ type
     procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
     procedure WMGetDlgCode(var Message: TWMGetDlgCode); message WM_GETDLGCODE;
     procedure CMDesignHitTest(var Message: TCMDesignHitTest); message CM_DESIGNHITTEST;
+    function GetBackButtonClick: TNotifyEvent;
+    function GetCancelButtonClick: TNotifyEvent;
+    function GetFinishButtonClick: TNotifyEvent;
+    function GetLastButtonClick: TNotifyEvent;
+    function GetNextButtonClick: TNotifyEvent;
+    function GetStartButtonClick: TNotifyEvent;
+    procedure SetBackButtonClick(const Value: TNotifyEvent);
+    procedure SetCancelButtonClick(const Value: TNotifyEvent);
+    procedure SetFinishButtonClick(const Value: TNotifyEvent);
+    procedure SetLastButtonClick(const Value: TNotifyEvent);
+    procedure SetNextButtonClick(const Value: TNotifyEvent);
+    procedure SetStartButtonClick(const Value: TNotifyEvent);
   protected
     procedure Loaded; override;
     procedure AdjustClientRect(var Rect: TRect); override;
@@ -865,18 +877,18 @@ type
       read FOnSelectNextPage write FOnSelectNextPage;
     property OnSelectPriorPage: TJvWizardSelectPageEvent
       read FOnSelectPriorPage write FOnSelectPriorPage;
-    property OnStartButtonClick: TNotifyEvent index bkStart
-      read GetButtonClick write SetButtonClick;
-    property OnLastButtonClick: TNotifyEvent index bkLast
-      read GetButtonClick write SetButtonClick;
-    property OnBackButtonClick: TNotifyEvent index bkBack
-      read GetButtonClick write SetButtonClick;
-    property OnNextButtonClick: TNotifyEvent index bkNext
-      read GetButtonClick write SetButtonClick;
-    property OnFinishButtonClick: TNotifyEvent index bkFinish
-      read GetButtonClick write SetButtonClick;
-    property OnCancelButtonClick: TNotifyEvent index bkCancel
-      read GetButtonClick write SetButtonClick;
+    property OnStartButtonClick: TNotifyEvent// index bkStart
+      read GetStartButtonClick write SetStartButtonClick;
+    property OnLastButtonClick: TNotifyEvent// index bkLast
+      read GetLastButtonClick write SetLastButtonClick;
+    property OnBackButtonClick: TNotifyEvent// index bkBack
+      read GetBackButtonClick write SetBackButtonClick;
+    property OnNextButtonClick: TNotifyEvent// index bkNext
+      read GetNextButtonClick write SetNextButtonClick;
+    property OnFinishButtonClick: TNotifyEvent// index bkFinish
+      read GetFinishButtonClick write SetFinishButtonClick;
+    property OnCancelButtonClick: TNotifyEvent// index bkCancel
+      read GetCancelButtonClick write SetCancelButtonClick;
     property Color;
     property Font;
     property Enabled;
@@ -3151,6 +3163,66 @@ begin
     raise EJvWizard.Create(rsInvalidWizardPage);
   Result := not Assigned(FromPage) or (Assigned(ToPage) and
       (FromPage.PageIndex < ToPage.PageIndex));
+end;
+
+function TJvWizard.GetBackButtonClick: TNotifyEvent;
+begin
+  Result := GetButtonClick(bkBack);
+end;
+
+function TJvWizard.GetCancelButtonClick: TNotifyEvent;
+begin
+  Result := GetButtonClick(bkCancel);
+end;
+
+function TJvWizard.GetFinishButtonClick: TNotifyEvent;
+begin
+  Result := GetButtonClick(bkFinish);
+end;
+
+function TJvWizard.GetLastButtonClick: TNotifyEvent;
+begin
+  Result := GetButtonClick(bkLast);
+end;
+
+function TJvWizard.GetNextButtonClick: TNotifyEvent;
+begin
+  Result := GetButtonClick(bkNext);
+end;
+
+function TJvWizard.GetStartButtonClick: TNotifyEvent;
+begin
+  Result := GetButtonClick(bkStart);
+end;
+
+procedure TJvWizard.SetBackButtonClick(const Value: TNotifyEvent);
+begin
+  SetButtonClick(bkBack, Value);
+end;
+
+procedure TJvWizard.SetCancelButtonClick(const Value: TNotifyEvent);
+begin
+  SetButtonClick(bkCancel, Value);
+end;
+
+procedure TJvWizard.SetFinishButtonClick(const Value: TNotifyEvent);
+begin
+  SetButtonClick(bkFinish, Value);
+end;
+
+procedure TJvWizard.SetLastButtonClick(const Value: TNotifyEvent);
+begin
+  SetButtonClick(bkLast, Value);
+end;
+
+procedure TJvWizard.SetNextButtonClick(const Value: TNotifyEvent);
+begin
+  SetButtonClick(bkNext, Value);
+end;
+
+procedure TJvWizard.SetStartButtonClick(const Value: TNotifyEvent);
+begin
+  SetButtonClick(bkStart, Value);
 end;
 
 end.
