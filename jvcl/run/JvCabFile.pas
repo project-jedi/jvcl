@@ -86,7 +86,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  SetupApi,
+  SetupApi, WinConvTypes,
   JvConsts, JvResources;
 
 constructor TJvCABFile.Create(AOwner: TComponent);
@@ -161,7 +161,7 @@ end;
 
 function CExtract(Context: Pointer; Notification: UINT; Param1, Param2: UINT_PTR): UINT; stdcall;
 var
-  CAB: PFileInCabinetInfo;
+  CAB: PFileInCabinetInfoA;
   Sender: TJvCABFile;
   CABInfo: TCABInfo;
   Cont: Boolean;
@@ -258,7 +258,7 @@ end;
 procedure TJvCABFile.RefreshFiles;
 begin
   Files.Clear;
-  if SetupIterateCabinet(PChar(FFileName), 0, CBack, @Self) then
+  if SetupIterateCabinetA(PChar(FFileName), 0, CBack, @Self) then
     if Assigned(FOnFiles) then
       FOnFiles(Self);
 end;
@@ -268,7 +268,7 @@ begin
   if DestPath[Length(DestPath)] <> PathDelim then
     DestPath := DestPath + PathDelim;
   FDestPath := DestPath;
-  Result := SetupIterateCabinet(PChar(FFileName), 0, CExtract, @Self);
+  Result := SetupIterateCabinetA(PChar(FFileName), 0, CExtract, @Self);
 end;
 
 function TJvCABFile.ExtractFile(FileName, DestPath: string): Boolean;
@@ -276,7 +276,7 @@ begin
   if DestPath[Length(DestPath)] <> PathDelim then
     DestPath := DestPath + PathDelim;
   FDestPath := DestPath + FileName;
-  Result := SetupIterateCabinet(PChar(FFileName), 0, CExtract, @Self);
+  Result := SetupIterateCabinetA(PChar(FFileName), 0, CExtract, @Self);
 end;
 
 {$IFDEF UNITVERSIONING}

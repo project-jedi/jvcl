@@ -63,6 +63,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  JclSysUtils,
   SetupApi;
 
 constructor TJvCopyError.Create(AOwner: TComponent);
@@ -82,8 +83,8 @@ var
   Required: DWORD;
   Res: array [0..255] of Char;
 begin
-  case SetupCopyError(OwnerWindow, Pointer(Title), Pointer(DiskName),
-      PChar(PathToSource), PChar(SourceFile), Pointer(TargetFile),
+  case SetupCopyErrorA(OwnerWindow, PCharOrNil(Title), PCharOrNil(DiskName),
+      PChar(PathToSource), PChar(SourceFile), PCharOrNil(TargetFile),
       FWin32ErrorCode, JvDiskStylesToDWORD(Style), Res, SizeOf(Res), @Required) of
     DPROMPT_SUCCESS:
       begin
