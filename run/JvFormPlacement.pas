@@ -591,7 +591,8 @@ begin
   begin
     if Options * [fpState, fpPosition] <> [] then
     begin
-      JvJVCLUtils.SaveFormPlacement(Form, AppStorage, AppStoragePath);
+      JvJVCLUtils.InternalSaveFormPlacement(Form, AppStorage, AppStoragePath, fpState in Options,
+        fpPosition in Options);
       AppStorage.WriteInteger(AppStoragePath + siVisible, Ord(FDestroying));
       if (fpActiveControl in Options) and (Form.ActiveControl <> nil) then
         AppStorage.WriteString(AppStoragePath + siActiveCtrl, Form.ActiveControl.Name);
@@ -604,7 +605,7 @@ procedure TJvFormPlacement.RestorePlacement;
 begin
   if Owner is TCustomForm then
   begin
-    JvJVCLUtils.RestoreFormPlacement(Form, AppStorage, AppStoragePath, fpState in Options,
+    JvJVCLUtils.InternalRestoreFormPlacement(Form, AppStorage, AppStoragePath, fpState in Options,
         fpPosition in Options);
   end;
   NotifyLinks(poRestore);
