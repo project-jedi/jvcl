@@ -2441,7 +2441,7 @@ var
   i, Delta: Integer;
   Brush: HBRUSH;
 begin
-  if IsRectEmpty(ARect) then
+  if IsRectEmpty(ARect) and (GetMapMode(Canvas.Handle) = MM_TEXT) then
     Exit;
   {$IFDEF VisualCLX}
   Canvas.Start;
