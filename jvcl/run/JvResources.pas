@@ -140,6 +140,7 @@ resourcestring
   RsDeleteCaption = '&Delete';
 
   RsEDynControlEngineNotDefined = 'TJvAppStorageSelectList.CreateDialog: DynControlEngine not defined!';
+  RsEDynAppStorageNotDefined    = 'TJvAppStorageSelectList.GetSelectListPath: No AppStorage assigned';
 
 //=== JvAppXMLStorage.pas ======================================================
 resourcestring
