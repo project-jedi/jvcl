@@ -140,6 +140,7 @@ begin
     if p = 0 then exit;
     FilterValue := copy(s, 1, p - 1);
     s := trim(copy(s, p + 1, length(s)));
+    f := nil;
     if op = '=' then
       f := filterEQ
     else if op = '<>' then

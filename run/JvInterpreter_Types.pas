@@ -33,7 +33,7 @@ unit JvInterpreter_Types;
 interface
 
 uses
-  Types, Variants,
+  {$IFDEF COMPILER6_UP}Types, Variants,{$ELSE}Windows, Classes, {$ENDIF}
   JvInterpreter;
 
 function Point2Var(const Point: TPoint): Variant;

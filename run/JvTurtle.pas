@@ -498,7 +498,7 @@ end;
 
 function TJvTurtle.inpot(token: string; var num: integer): boolean;
 var
-  i: integer;
+//  i: integer;
   s: string;
 begin
   result := false;
@@ -516,7 +516,7 @@ end;
 function TJvTurtle.getnum(var num: integer): boolean;
 var
   token, msg: string;
-  Anum: integer;
+//  Anum: integer;
 begin
   result := false;
   if gettoken(token) then
@@ -796,7 +796,7 @@ procedure TJvTurtle.TextRotate(x, y, angle: integer; atext: string;
 var
   dc: hdc;
   fnt: LogFont;
-  plf: PLogFont;
+//  plf: PLogFont;
   hfnt, hfntPrev: hfont;
   i: integer;
   fname, s: string;
@@ -2039,6 +2039,7 @@ begin
   if gettoken(token) then
   begin
     index := pot.IndexOfName(token);
+    { TODO -oJVCL -cPOSSIBLEBUG : index is never used... }
     if index < 0 then
       index := pot.Add(token + '=' + inttostr(num))
     else

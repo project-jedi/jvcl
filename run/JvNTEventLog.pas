@@ -125,7 +125,7 @@ uses
   Registry;
   {$ELSE}
   Registry,
-  JvFunctions;
+  JvJVCLUtils;
   {$ENDIF}
 
 const

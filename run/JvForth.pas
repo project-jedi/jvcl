@@ -131,7 +131,7 @@ type
     procedure ClearObjects;
     procedure SetVariable(symbol: string; Avalue: variant);
     function GetVariable(symbol: string): variant;
-    function GetObject(symbol: string): TvariantObject;
+    function GetObject(symbol: string): TVariantObject;reintroduce;
   end;
 
   TAtom = class(TObject)
@@ -1914,7 +1914,7 @@ var
   c: integer;
   token: TToken;
 begin
-  while pc < c do
+  while pc < c do { TODO -oJVCL -cPOSSIBLEBUG : what should "c" be here? }
   begin
     token := TAtom(atoms[pc]).token;
     if token = dfoEndSub then
@@ -2753,8 +2753,9 @@ var
 begin
   key := aKey;
   strkey := false;
+  index := 0;
   try
-    index := strtoint(key)
+    index := StrToInt(key)
   except
     strkey := true;
   end;
@@ -2807,6 +2808,7 @@ var
 begin
   key := akey;
   strkey := false;
+  index := 0;
   try
     index := strtoint(key)
   except

@@ -591,7 +591,6 @@ end;
 function TJvOutlookBarButtons.Add: TJvOutlookBarButton;
 begin
   Result := TJvOutlookBarButton(inherited Add);
-  Result.SetCollection(self);
 end;
 
 procedure TJvOutlookBarButtons.Assign(Source: TPersistent);

@@ -2076,6 +2076,7 @@ begin
   src.PixelFormat := pf24bit;
   hasb := false;
   TraceB := $00;
+  tb := 0;
   for i := 1 to Intensity do
   begin
     for y := 0 to BitMap.height - 2 do
@@ -2213,7 +2214,7 @@ end;
 
 procedure TJvPaintFX.shadowupleft(src: Tbitmap);
 var
-  c, c2, x, y: integer;
+  x, y: integer;
   BitMap: TBitMap;
   P1, P2: PByteArray;
 begin
@@ -2450,11 +2451,10 @@ const
   maxY = 1.25;
   minY = -1.25;
 var
-  w, h, x, y, facx, facy: integer;
-  Sa, Sbi, dx, dy: extended;
+  w, h, x, y : integer;
+  dx, dy: extended;
   p0: pbytearray;
   color: integer;
-  xlo, xhi, ylo, yhi: extended;
 
   function IsMandel(CA, CBi: extended): integer;
   const
@@ -2715,6 +2715,7 @@ begin
   bm2.width := cx;
   p0 := bm.scanline[0];
   p00 := bm2.scanline[0];
+  dx := 0;
   for y := 0 to src.height - 1 do
   begin
     p1 := src.scanline[y];

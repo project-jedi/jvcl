@@ -1,3 +1,4 @@
+{$I JVCL.INC}
 unit JvCsvData;
 
 {-----------------------------------------------------------------------------
@@ -113,7 +114,9 @@ type
   PInteger = ^Integer;
   PDouble = ^Double;
   PBoolean = ^Boolean;
-
+{$IFNDEF COMPILER6_P}
+  PWordBool = ^WordBool;
+{$ENDIF}
   EJvCsvDataSetError = class(EDatabaseError); // Subclass DB.EDatabaseError so we can work nicely with existing Delphi apps.
 
   EJvCsvKeyError = class(EDatabaseError); // Key Uniqueness or Key Problem
@@ -519,7 +522,12 @@ function JvCsvWildcardMatch(data, pattern: string): Boolean;
 implementation
 
 uses
-  DBConsts, Forms, Controls, Dialogs, JvCsvParse;
+  DBConsts, Forms, Controls, Dialogs,
+  {$IFNDEF COMPILER6_UP}
+  JvJVCLUtils, // StrToFloatDef
+  JvJCLUtils,  // DirectoryExists
+  {$ENDIF}
+  JvCsvParse;
 
 var
   CallCount: Integer;
@@ -3130,7 +3138,7 @@ begin
   if FileExists(RemoveFile) then
     DeleteFile(RemoveFile);
 
-  CopyFile(PChar(filename), PChar(BackupFilename), false);
+  Windows.CopyFile(PChar(filename), PChar(BackupFilename), false);
   Result := true;
 end;
 

@@ -9,8 +9,9 @@ procedure Register;
 implementation
 uses
   Classes, Controls,
+  FiltEdit,
   {$IFDEF COMPILER6_UP}
-  FiltEdit,DesignEditors, DesignIntf,
+  DesignEditors, DesignIntf,
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}

@@ -29,7 +29,12 @@ package JvAppFrmD7R;
 requires
   JvCoreD7R,
   JvStdCtrlsD7R,
-  JvSystemD7R;
+  JvSystemD7R,
+  vcl,
+  rtl,
+  vclx,
+  DJCL70,
+  vcljpg;
 
 contains
   JvAppAnimatedIcon in '..\..\run\JvAppAnimatedIcon.pas',
@@ -43,6 +48,7 @@ contains
   JvFormWallpaperEdit in '..\..\run\JvFormWallpaperEdit.pas',
   JvFormMagnet in '..\..\run\JvFormMagnet.pas',
   JvAnimTitle in '..\..\run\JvAnimTitle.pas',
-  JvFormAutoSize in '..\..\run\JvFormAutoSize.pas';
+  JvFormAutoSize in '..\..\run\JvFormAutoSize.pas',
+  JvGradientCaption in '..\..\run\JvGradientCaption.pas';
 
 end.
