@@ -20,8 +20,9 @@ TJvListBox3 has been renamed TJvImageListBox and the original TJvImageListBox ha
 Contributor(s):
 Sébastien Buysse [sbuysse@buypin.com]
 Michael Beck [mbeck@bigfoot.com]
+Olivier Sannier [obones@meloo.com]
 
-Last Modified: 2002-05-26
+Last Modified: 2003-11-30
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -44,16 +45,25 @@ uses
 
 type
   TJvButtonColors = (fsLighter, fsLight, fsMedium, fsDark, fsDarker);
-  TJvImageItems = class;
 
+  TJvListPropertiesUsed = set of (puFont, puColorHighlight, puColorHighlightText);
+
+const
+  AllListPropertiesUsed = [puFont, puColorHighlight, puColorHighlightText];
+
+type
+  TJvImageItems = class;
   TJvImageItem = class(TCollectionItem)
   private
     FOwner: TJvImageItems;
     FImageIndex: Integer;
     FIndent: Integer;
-    FUseListFont: Boolean;
+    FListPropertiesUsed: TJvListPropertiesUsed;
     FFont : TFont;
+    FColorHighlight: TColor;
+    FColorHighlightText: TColor;
     FGlyph : TBitmap;
+    FLinkedObject: TObject;
     procedure SetImageIndex(const Value: Integer);
     procedure SetText(const Value: string);
     procedure SetIndent(const Value: Integer);
@@ -64,6 +74,12 @@ type
     function GetGlyph: TBitmap;
     procedure SetGlyph(const Value: TBitmap);
     procedure SetFont(const Value: TFont);
+    function GetColorHighlight: TColor;
+    function GetColorHighlightText: TColor;
+    procedure SetColorHighlight(const Value: TColor);
+    procedure SetColorHighlightText(const Value: TColor);
+    function IsColorHighlightTextStored: Boolean;
+    function IsColorHighlightStored: Boolean;
   protected
     procedure SetIndex(Value: Integer); override;
     function GetDisplayName: string; override;
@@ -75,14 +91,18 @@ type
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
   published
-    // UseListFont must come before Font or the component will not be created
-    // correctly when restored from a DFM stream
-    property UseListFont : Boolean read FUseListFont write FUseListFont default true;
+    // UseListProperties must come before properties named the same
+    // as in the list or the component will not be created
+    // correctly when restored from a DFM stream.
+    property ListPropertiesUsed : TJvListPropertiesUsed read FListPropertiesUsed write FListPropertiesUsed default AllListPropertiesUsed;
+    property ColorHighlight: TColor read GetColorHighlight write SetColorHighlight stored IsColorHighlightStored default clHighlight ;
+    property ColorHighlightText: TColor read GetColorHighlightText write SetColorHighlightText stored IsColorHighlightTextStored default clHighlightText;
     property Font : TFont read GetFont write SetFont stored IsFontStored;
     property Glyph: TBitmap read GetGlyph write SetGlyph stored True;
     property ImageIndex: Integer read FImageIndex write SetImageIndex default -1;
     property Indent: Integer read FIndent write SetIndent default 2;
     property Text: string read GetText write SetText;
+    property LinkedObject : TObject read FLinkedObject write FLinkedObject;
   end;
 
   TJvImageItems = class(TOwnedCollection)
@@ -90,13 +110,17 @@ type
     FStrings: TStrings;
     function GetItems(Index: Integer): TJvImageItem;
     procedure SetItems(Index: Integer; const Value: TJvImageItem);
+    function GetObjects(Index: Integer): TObject;
+    procedure SetObjects(Index: Integer; const Value: TObject);
   protected
     procedure Update(Item: TCollectionItem); override;
   public
-    function Add: TJvImageItem;
+    function Add: TJvImageItem; overload;
+    function Add(text : string): Integer; overload;
     procedure Assign(Source: TPersistent); override;
     constructor Create(AOwner: TPersistent);
     property Items[Index: Integer]: TJvImageItem read GetItems write SetItems; default;
+    property Objects[Index : Integer] : TObject read GetObjects write SetObjects;
   end;
 
   TJvImageComboBox = class(TCustomComboBox)
@@ -236,6 +260,9 @@ type
     property Canvas: TCanvas read FCanvas;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+{$IFDEF COMPILER6_UP}
+    property Anchors;
+{$ENDIF}
     property Align;
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property BorderStyle;
@@ -275,6 +302,9 @@ type
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
     property OnStartDrag;
     property Sorted;
     property Tag;
@@ -342,9 +372,11 @@ constructor TJvImageItem.Create(Collection: TCollection);
 begin
   inherited Create(Collection);
   FOwner := Collection as TJvImageItems;
-  FUseListFont := true;
+  FListPropertiesUsed := AllListPropertiesUsed;
   FFont := nil;
   FGlyph := nil;
+  FColorHighlight := clHighlight;
+  FColorHighlightText := clHighlightText;  
 end;
 
 destructor TJvImageItem.Destroy;
@@ -454,6 +486,15 @@ end;
 function TJvImageItems.Add: TJvImageItem;
 begin
   Result := TJvImageItem(inherited Add);
+end;
+
+function TJvImageItems.Add(text: string): Integer;
+var
+  item : TJvImageItem;
+begin
+  item := Add;
+  item.Text := text;
+  Result := item.Index;
 end;
 
 procedure TJvImageItems.Assign(Source: TPersistent);
@@ -631,8 +672,12 @@ var
   Offset, Tmp: Integer;
   TmpCol: TColor;
   TmpR, OrigR: TRect;
+  SavedColor : TColor;
 begin
+  SavedColor := Canvas.Font.Color;
   Canvas.Font.Assign(Items[Index].Font);
+  if State <> [] then
+    Canvas.Font.Color := SavedColor;
   OrigR := R;
   with FCanvas do
   begin
@@ -974,8 +1019,8 @@ begin
 
     if (Integer(itemID) >= 0) and (odSelected in State) then
     begin
-      FCanvas.Brush.Color := FColorHighlight;
-      FCanvas.Font.Color := FColorHighlightText;
+      FCanvas.Brush.Color := Items[Integer(itemID)].ColorHighlight;
+      FCanvas.Font.Color := Items[Integer(itemID)].ColorHighlightText;
     end;
 
     if Integer(itemID) >= 0 then
@@ -987,8 +1032,13 @@ begin
 end;
 
 procedure TJvImageListBox.DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState);
+var
+  SavedColor : TColor;
 begin
+  SavedColor := Canvas.Font.Color;
   Canvas.Font.Assign(Items[Index].Font);
+  if State <> [] then
+    Canvas.Font.Color := SavedColor;
   case FAlignment of
     taLeftJustify:
       DrawLeftGlyph(Index, Rect, State);
@@ -1296,20 +1346,15 @@ begin
 end;
 
 
-function TJvImageItem.IsFontStored: Boolean;
-begin
-  Result := not FUseListFont;
-end;
-
 procedure TJvImageItem.SetFont(const Value: TFont);
 begin
-  if not FUseListFont then
+  if not (puFont in FListPropertiesUsed) then
     Font.Assign(Value);
 end;
 
 function TJvImageItem.GetFont: TFont;
 begin
-  if FUseListFont then
+  if puFont in FListPropertiesUsed then
     Result := (TJvImageItems(Collection).GetOwner as TJvImageListBox).Font
   else
   begin
@@ -1339,8 +1384,65 @@ end;
 
 procedure TJvImageItem.FontChanged(Sender: TObject);
 begin
-  if not FUseListFont then
+  if not (puFont in FListPropertiesUsed) then
     (TJvImageItems(Collection).GetOwner as TJvImageListBox).Invalidate;
+end;
+
+function TJvImageItems.GetObjects(Index: Integer): TObject;
+begin
+  Result := Items[Index].LinkedObject;
+end;
+
+procedure TJvImageItems.SetObjects(Index: Integer; const Value: TObject);
+begin
+  Items[Index].LinkedObject := Value;
+end;
+
+function TJvImageItem.GetColorHighlight: TColor;
+begin
+  if (puColorHighlight in FListPropertiesUsed) then
+    Result := (TJvImageItems(Collection).GetOwner as TJvImageListBox).ColorHighlight
+  else
+    Result := FColorHighlight;
+end;
+
+function TJvImageItem.GetColorHighlightText: TColor;
+begin
+  if (puColorHighlightText in FListPropertiesUsed) then
+    Result := (TJvImageItems(Collection).GetOwner as TJvImageListBox).ColorHighlightText
+  else
+    Result := FColorHighlightText;
+end;
+
+procedure TJvImageItem.SetColorHighlight(const Value: TColor);
+begin
+  if (puColorHighlight in FListPropertiesUsed) then
+    (TJvImageItems(Collection).GetOwner as TJvImageListBox).ColorHighlight := Value
+  else
+    FColorHighlight := Value;
+end;
+
+procedure TJvImageItem.SetColorHighlightText(const Value: TColor);
+begin
+  if (puColorHighlightText in FListPropertiesUsed) then
+    (TJvImageItems(Collection).GetOwner as TJvImageListBox).ColorHighlightText := Value
+  else
+    FColorHighlightText := Value;
+end;
+
+function TJvImageItem.IsColorHighlightTextStored: Boolean;
+begin
+  Result := not (puColorHighlightText in FListPropertiesUsed);
+end;
+
+function TJvImageItem.IsFontStored: Boolean;
+begin
+  Result := not (puFont in FListPropertiesUsed);
+end;
+
+function TJvImageItem.IsColorHighlightStored: Boolean;
+begin
+  Result := not (puColorHighlight in FListPropertiesUsed);
 end;
 
 end.
