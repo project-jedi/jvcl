@@ -96,8 +96,8 @@ uses
 {$R *.DFM}
 
 resourcestring
-  SCodeError = '%s.' + CrLf + 'Error Code: %.8x (%1:d).';
-  SModuleError = 'Exception in module %s.' + CrLf + '%s';
+  SCodeError = '%s.' + sLineBreak + 'Error Code: %.8x (%1:d).';
+  SModuleError = 'Exception in module %s.' + sLineBreak + '%s';
 
 procedure JvErrorIntercept;
 begin
