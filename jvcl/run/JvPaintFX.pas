@@ -192,43 +192,16 @@ end;
 // Just a small function to map the numbers to colors
 
 function ConvertColor(Value: Integer): TColor;
+const
+  Colors: array[0..15] of TColor = (
+    clBlack, clNavy, clGreen, clAqua, clRed, clPurple, clMaroon, clSilver,
+    clGray, clBlue, clLime, clOlive, clFuchsia, clTeal, clYellow, clWhite
+  );
 begin
-  case Value of
-    0:
-      Result := clBlack;
-    1:
-      Result := clNavy;
-    2:
-      Result := clGreen;
-    3:
-      Result := clAqua;
-    4:
-      Result := clRed;
-    5:
-      Result := clPurple;
-    6:
-      Result := clMaroon;
-    7:
-      Result := clSilver;
-    8:
-      Result := clGray;
-    9:
-      Result := clBlue;
-    10:
-      Result := clLime;
-    11:
-      Result := clOlive;
-    12:
-      Result := clFuchsia;
-    13:
-      Result := clTeal;
-    14:
-      Result := clYellow;
-    15:
-      Result := clWhite;
+  if (Value < 0) or (Value > High(Colors)) then
+    Result := clWhite
   else
-    Result := clWhite;
-  end;
+    Result := Colors[Value];
 end;
 
 function BellFilter(Value: Single): Single;
@@ -1083,7 +1056,7 @@ var
   X, Y, xP, yP, yP2, xP2: Integer;
   Read, Read2: PByteArray;
   t, z, z2, iz2: Integer;
-  pc: PBytearray;
+  pc: PByteArray;
   w1, w2, w3, w4: Integer;
   Col1r, col1g, col1b, Col2r, col2g, col2b: Byte;
 begin
@@ -1153,7 +1126,7 @@ var
     X, Y: Integer;
   nw, ne,
     sw, se: TFColor;
-  P1, P2, P3: Pbytearray;
+  P1, P2, P3: PByteArray;
 begin
   Angle := angle;
   Angle := -Angle * Pi / 180;
@@ -1212,7 +1185,7 @@ end;
 
 class procedure TJvPaintFX.SplitBlur(const Dst: TBitmap; Amount: Integer);
 var
-  p0, p1, p2: pbytearray;
+  p0, p1, p2: PByteArray;
   CX, X, Y: Integer;
   Buf: array[0..3, 0..2] of Byte;
 begin
@@ -1325,7 +1298,7 @@ var
   total_red, total_green: Single;
   total_blue: Single;
   ix, iy: Integer;
-  sli, slo: PBytearray;
+  sli, slo: PByteArray;
 
   function ArcTan2(xt, yt: Single): Single;
   begin
@@ -1461,7 +1434,7 @@ var
   wavex: Integer;
 begin
   Bitmap := TBitmap.Create;
-  Bitmap.assign(Dst);
+  Bitmap.Assign(Dst);
   wavex := Style;
   Angle := Pi / 2 / Amount;
   for Y := Bitmap.Height - 1 - (2 * Amount) downto Amount do
@@ -1489,7 +1462,7 @@ end;
 
 class procedure TJvPaintFX.MakeSeamlessClip(var Dst: TBitmap; Seam: Integer);
 var
-  p0, p1, p2: pbytearray;
+  p0, p1, p2: PByteArray;
   H, W, i, j, sv, sh: Integer;
   f0, f1, f2: real;
 begin
@@ -1571,7 +1544,7 @@ var
   dx, X, Y, c, CX: Integer;
   R: TRect;
   bm: TBitmap;
-  p0, p1: pbytearray;
+  p0, p1: PByteArray;
 begin
   if Amount > (Src.Width div 2) then
     Amount := Src.Width div 2;
@@ -1595,37 +1568,37 @@ begin
       mbhor:
         begin
           dx := Amount;
-          R := rect(dx, Y, Src.Width - dx, Y + 1);
+          R := Rect(dx, Y, Src.Width - dx, Y + 1);
         end;
       mbtop:
         begin
           dx := Round((Src.Height - 1 - Y) / Src.Height * Amount);
-          R := rect(dx, Y, Src.Width - dx, Y + 1);
+          R := Rect(dx, Y, Src.Width - dx, Y + 1);
         end;
       mbBottom:
         begin
           dx := Round(Y / Src.Height * Amount);
-          R := rect(dx, Y, Src.Width - dx, Y + 1);
+          R := Rect(dx, Y, Src.Width - dx, Y + 1);
         end;
       mbDiamond:
         begin
           dx := Round(Amount * Abs(Cos(Y / (Src.Height - 1) * Pi)));
-          R := rect(dx, Y, Src.Width - dx, Y + 1);
+          R := Rect(dx, Y, Src.Width - dx, Y + 1);
         end;
       mbWaste:
         begin
           dx := Round(Amount * Abs(Sin(Y / (Src.Height - 1) * Pi)));
-          R := rect(dx, Y, Src.Width - dx, Y + 1);
+          R := Rect(dx, Y, Src.Width - dx, Y + 1);
         end;
       mbRound:
         begin
           dx := Round(Amount * Abs(Sin(Y / (Src.Height - 1) * Pi)));
-          R := rect(CX - dx, Y, CX + dx, Y + 1);
+          R := Rect(CX - dx, Y, CX + dx, Y + 1);
         end;
       mbRound2:
         begin
           dx := Round(Amount * Abs(Sin(Y / (Src.Height - 1) * Pi * 2)));
-          R := rect(CX - dx, Y, CX + dx, Y + 1);
+          R := Rect(CX - dx, Y, CX + dx, Y + 1);
         end;
     end;
     Dst.Canvas.StretchDraw(R, bm);
@@ -1706,17 +1679,11 @@ var
   rgb: TRGB;
   color: TColorRGB;
   {$IFDEF USE_SCANLINE}
-  SourceLine,
-    DestLine: PRGBList;
-  SourcePixel,
-    DestPixel: PColorRGB;
-  Delta,
-    DestDelta: Integer;
+  SourceLine, DestLine: PRGBList;
+  SourcePixel, DestPixel: PColorRGB;
+  Delta, DestDelta: Integer;
   {$ENDIF}
-  SrcWidth,
-    SrcHeight,
-    DstWidth,
-    DstHeight: Integer;
+  SrcWidth, SrcHeight, DstWidth, DstHeight: Integer;
 
   function Color2RGB(Color: TColor): TColorRGB;
   begin
@@ -1765,7 +1732,7 @@ begin
     // --------------------------------------------
     // Pre-calculate filter contributions for a row
     // -----------------------------------------------
-    GetMem(contrib, DstWidth * sizeof(TCList));
+    GetMem(contrib, DstWidth * SizeOf(TCList));
     // Horizontal sub-sampling
     // Scales from bigger to smaller Width
     if (xscale < 1.0) then
@@ -1775,7 +1742,7 @@ begin
       for i := 0 to DstWidth - 1 do
       begin
         contrib^[i].n := 0;
-        GetMem(contrib^[i].p, trunc(Width * 2.0 + 1) * sizeof(TContributor));
+        GetMem(contrib^[i].p, trunc(Width * 2.0 + 1) * SizeOf(TContributor));
         center := i / xscale;
         // Original code:
         // left := ceil(center - Width);
@@ -1808,7 +1775,7 @@ begin
       for i := 0 to DstWidth - 1 do
       begin
         contrib^[i].n := 0;
-        GetMem(contrib^[i].p, trunc(AWidth * 2.0 + 1) * sizeof(TContributor));
+        GetMem(contrib^[i].p, trunc(AWidth * 2.0 + 1) * SizeOf(TContributor));
         center := i / xscale;
         // Original code:
         // left := ceil(center - AWidth);
@@ -1904,7 +1871,7 @@ begin
     // -----------------------------------------------
     // Pre-calculate filter contributions for a column
     // -----------------------------------------------
-    GetMem(contrib, DstHeight * sizeof(TCList));
+    GetMem(contrib, DstHeight * SizeOf(TCList));
     // Vertical sub-sampling
     // Scales from bigger to smaller Height
     if (yscale < 1.0) then
@@ -1914,7 +1881,7 @@ begin
       for i := 0 to DstHeight - 1 do
       begin
         contrib^[i].n := 0;
-        GetMem(contrib^[i].p, trunc(Width * 2.0 + 1) * sizeof(TContributor));
+        GetMem(contrib^[i].p, trunc(Width * 2.0 + 1) * SizeOf(TContributor));
         center := i / yscale;
         // Original code:
         // left := ceil(center - Width);
@@ -1947,7 +1914,7 @@ begin
       for i := 0 to DstHeight - 1 do
       begin
         contrib^[i].n := 0;
-        GetMem(contrib^[i].p, trunc(AWidth * 2.0 + 1) * sizeof(TContributor));
+        GetMem(contrib^[i].p, trunc(AWidth * 2.0 + 1) * SizeOf(TContributor));
         center := i / yscale;
         // Original code:
         // left := ceil(center - AWidth);
@@ -2087,7 +2054,7 @@ class procedure TJvPaintFX.FlipDown(const Dst: TBitmap);
 var
   Bmp: TBitmap;
   W, H, X, Y: Integer;
-  pd, ps: pbytearray;
+  pd, ps: PByteArray;
 begin
   W := Dst.Width;
   H := Dst.Height;
@@ -2115,7 +2082,7 @@ class procedure TJvPaintFX.FlipRight(const Dst: TBitmap);
 var
   dest: TBitmap;
   W, H, X, Y: Integer;
-  pd, ps: pbytearray;
+  pd, ps: PByteArray;
 begin
   W := Dst.Width;
   H := Dst.Height;
@@ -2135,7 +2102,7 @@ begin
       pd[X * 3 + 2] := ps[(W - 1 - X) * 3 + 2];
     end;
   end;
-  Dst.assign(dest);
+  Dst.Assign(dest);
   dest.Free;
 end;
 
@@ -2402,7 +2369,7 @@ end;
 class procedure TJvPaintFX.SemiOpaque(Src, Dst: TBitmap);
 var
   B: TBitmap;
-  P: Pbytearray;
+  P: PByteArray;
   X, Y: Integer;
 begin
   B := TBitmap.Create;
@@ -2444,7 +2411,7 @@ end;
 class procedure TJvPaintFX.QuartoOpaque(Src, Dst: TBitmap);
 var
   B: TBitmap;
-  P: Pbytearray;
+  P: PByteArray;
   X, Y: Integer;
 begin
   B := TBitmap.Create;
@@ -2485,7 +2452,7 @@ end;
 class procedure TJvPaintFX.FoldRight(Src1, Src2, Dst: TBitmap; Amount: Single);
 var
   W, H, X, Y, xf, xf0: Integer;
-  ps1, ps2, pd: pbytearray;
+  ps1, ps2, pd: PByteArray;
 begin
   Src1.PixelFormat := pf24bit;
   Src2.PixelFormat := pf24bit;
@@ -2532,7 +2499,7 @@ const
 var
   W, H, X, Y : Integer;
   dx, dy: Extended;
-  Line: pbytearray;
+  Line: PByteArray;
   color: Integer;
 
   function IsMandel(CA, CBi: Extended): Integer;
@@ -2601,7 +2568,7 @@ end;
 class procedure TJvPaintFX.KeepBlue(const Dst: TBitmap; Factor: Single);
 var
   X, Y, W, H: Integer;
-  Line: pbytearray;
+  Line: PByteArray;
 begin
   Dst.PixelFormat := pf24bit;
   W := Dst.Width;
@@ -2621,7 +2588,7 @@ end;
 class procedure TJvPaintFX.KeepGreen(const Dst: TBitmap; Factor: Single);
 var
   X, Y, W, H: Integer;
-  Line: pbytearray;
+  Line: PByteArray;
 begin
   Dst.PixelFormat := pf24bit;
   W := Dst.Width;
@@ -2641,7 +2608,7 @@ end;
 class procedure TJvPaintFX.KeepRed(const Dst: TBitmap; Factor: Single);
 var
   X, Y, W, H: Integer;
-  Line: pbytearray;
+  Line: PByteArray;
 begin
   Dst.PixelFormat := pf24bit;
   W := Dst.Width;
@@ -2661,7 +2628,7 @@ end;
 class procedure TJvPaintFX.Shake(Src, Dst: TBitmap; Factor: Single);
 var
   X, Y, H, W, dx: Integer;
-  p: pbytearray;
+  p: PByteArray;
 begin
   Dst.Canvas.draw(0, 0, Src);
   Dst.PixelFormat := pf24bit;
@@ -2697,7 +2664,7 @@ end;
 class procedure TJvPaintFX.ShakeDown(Src, Dst: TBitmap; Factor: Single);
 var
   X, Y, H, W, dy: Integer;
-  p, p2, p3: pbytearray;
+  p, p2, p3: PByteArray;
 begin
   Dst.Canvas.draw(0, 0, Src);
   Dst.PixelFormat := pf24bit;
@@ -2740,7 +2707,7 @@ var
   cval, sval: array[0..255] of Integer;
   i, X, Y, W, H, XX, YY: Integer;
   Asin, Acos: Extended;
-  ps1, ps2, pd: pbytearray;
+  ps1, ps2, pd: PByteArray;
 begin
   W := Src1.Width;
   H := Src1.Height;
@@ -2779,7 +2746,7 @@ var
   X, Y, W, c, c00, dx, CX: Integer;
   R, R00: TRect;
   bm, bm2: TBitmap;
-  p0, p00, p1: pbytearray;
+  p0, p00, p1: PByteArray;
 begin
   if Amount = 0 then
   begin
@@ -2821,9 +2788,9 @@ begin
       mbSplitWaste:
         dx := Round(Amount * Abs(Cos(Y / (Src.Height - 1) * Pi)));
     end;
-    R := rect(0, Y, dx, Y + 1);
+    R := Rect(0, Y, dx, Y + 1);
     Dst.Canvas.StretchDraw(R, bm);
-    R00 := rect(W - 1 - dx, Y, W - 1, Y + 1);
+    R00 := Rect(W - 1 - dx, Y, W - 1, Y + 1);
     Dst.Canvas.StretchDraw(R00, bm2);
   end;
   bm.Free;
@@ -2833,7 +2800,7 @@ end;
 class procedure TJvPaintFX.Emboss(var Bmp: TBitmap);
 var
   X, Y: Integer;
-  p1, p2: Pbytearray;
+  p1, p2: PByteArray;
 begin
   for Y := 0 to Bmp.Height - 2 do
   begin
@@ -2852,7 +2819,7 @@ end;
 class procedure TJvPaintFX.FilterRed(const Dst: TBitmap; Min, Max: Integer);
 var
   c, X, Y: Integer;
-  p1: pbytearray;
+  p1: PByteArray;
 begin
   for Y := 0 to Dst.Height - 1 do
   begin
@@ -2873,7 +2840,7 @@ end;
 class procedure TJvPaintFX.FilterGreen(const Dst: TBitmap; Min, Max: Integer);
 var
   c, X, Y: Integer;
-  p1: pbytearray;
+  p1: PByteArray;
 begin
   for Y := 0 to Dst.Height - 1 do
   begin
@@ -2894,7 +2861,7 @@ end;
 class procedure TJvPaintFX.FilterBlue(const Dst: TBitmap; Min, Max: Integer);
 var
   c, X, Y: Integer;
-  p1: pbytearray;
+  p1: PByteArray;
 begin
   for Y := 0 to Dst.Height - 1 do
   begin
@@ -2915,7 +2882,7 @@ end;
 class procedure TJvPaintFX.FilterXRed(const Dst: TBitmap; Min, Max: Integer);
 var
   c, X, Y: Integer;
-  p1: pbytearray;
+  p1: PByteArray;
 begin
   for Y := 0 to Dst.Height - 1 do
   begin
@@ -2934,7 +2901,7 @@ end;
 class procedure TJvPaintFX.FilterXGreen(const Dst: TBitmap; Min, Max: Integer);
 var
   c, X, Y: Integer;
-  p1: pbytearray;
+  p1: PByteArray;
 begin
   for Y := 0 to Dst.Height - 1 do
   begin
@@ -2953,7 +2920,7 @@ end;
 class procedure TJvPaintFX.FilterXBlue(const Dst: TBitmap; Min, Max: Integer);
 var
   c, X, Y: Integer;
-  p1: pbytearray;
+  p1: PByteArray;
 begin
   for Y := 0 to Dst.Height - 1 do
   begin
@@ -2980,7 +2947,7 @@ type
 var
   X, XX, Y, YY, Cx, Cy, Dx, Dy, XSquared, YSquared: Double;
   Nx, Ny, Py, Px, I: Integer;
-  Line: pbytearray;
+  Line: PByteArray;
   cc: array[0..15] of TJvRGBTriplet;
   AColor: TColor;
 begin
@@ -3050,7 +3017,7 @@ end;
 class procedure TJvPaintFX.Invert(Src: TBitmap);
 var
   W, H, X, Y: Integer;
-  p: pbytearray;
+  p: PByteArray;
 begin
   W := Src.Width;
   H := Src.Height;
@@ -3070,7 +3037,7 @@ end;
 class procedure TJvPaintFX.MirrorRight(Src: TBitmap);
 var
   W, H, X, Y: Integer;
-  p: pbytearray;
+  p: PByteArray;
 begin
   W := Src.Width;
   H := Src.Height;
@@ -3090,7 +3057,7 @@ end;
 class procedure TJvPaintFX.MirrorDown(Src: TBitmap);
 var
   W, H, X, Y: Integer;
-  p1, p2: pbytearray;
+  p1, p2: PByteArray;
 begin
   W := Src.Width;
   H := Src.Height;
@@ -3117,7 +3084,7 @@ type
   end;
 var
   W, H, X, Y, tb, tm, te: Integer;
-  ps: pbytearray;
+  ps: PByteArray;
   T: ttriplet;
 begin
   W := Dst.Width;
@@ -3264,7 +3231,7 @@ begin
   bm.Height := Amount;
   W := Dst.Width;
   H := Dst.Height;
-  ARect := rect(0, 0, Amount, Amount);
+  ARect := Rect(0, 0, Amount, Amount);
   bm.Canvas.StretchDraw(ARect, Dst);
   Y := 0;
   repeat
@@ -3309,7 +3276,7 @@ class procedure TJvPaintFX.HeightMap(const Dst: TBitmap; Amount: Integer);
 var
   bm: TBitmap;
   W, H, X, Y: Integer;
-  pb, ps: pbytearray;
+  pb, ps: PByteArray;
   c: Integer;
 begin
   H := Dst.Height;
@@ -3341,7 +3308,7 @@ end;
 class procedure TJvPaintFX.Turn(Src, Dst: TBitmap);
 var
   W, H, X, Y: Integer;
-  ps, pd: pbytearray;
+  ps, pd: PByteArray;
 begin
   H := Src.Height;
   W := Src.Width;
@@ -3365,7 +3332,7 @@ end;
 class procedure TJvPaintFX.TurnRight(Src, Dst: TBitmap);
 var
   W, H, X, Y: Integer;
-  ps, pd: pbytearray;
+  ps, pd: PByteArray;
 begin
   H := Src.Height;
   W := Src.Width;
@@ -3435,7 +3402,7 @@ end;
 class procedure TJvPaintFX.Blend(const Src1, Src2: TBitmap; var Dst: TBitmap; Amount: Single);
 var
   W, H, X, Y: Integer;
-  ps1, ps2, pd: pbytearray;
+  ps1, ps2, pd: PByteArray;
 begin
   W := Src1.Width;
   H := Src1.Height;
