@@ -15,8 +15,9 @@ Copyright (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
 Contributor(s):
+Andreas Hausladen [Andreas.Hausladen@gmx.de]
 
-Last Modified: 2002-07-04
+Last Modified: 2003-03-23
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -179,15 +180,34 @@ unit JvEditor;
 {$UNDEF RAEDITOR_COMPLETION}
 {$ENDIF RAEDITOR_EDITOR}
 
+
+{$DEFINE RAEDITOR_MORE_DELPHI_LIKE} { act more like Delphi IDE editor }
+{$DEFINE BUGFIX} { enable bug fixes }
+
+{$IFDEF RAEDITOR_MORE_DELPHI_LIKE}
+{$DEFINE RAEDITOR_SPEED_FONTCACHE} { enable cached TFont instead of changing TFont-Properties for every token }
+{$DEFINE RAEDITOR_SPEED_FASTDRAW} { enable some optimations }
+{$ENDIF}
+
+
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  ExtCtrls, StdCtrls, ClipBrd;
+  ExtCtrls, StdCtrls, Clipbrd
+{$IFDEF RAEDITOR_MORE_DELPHI_LIKE}
+  , JvStrUtils
+{$ENDIF RAEDITOR_MORE_DELPHI_LIKE}
+  ;
 
 const
   Max_X = 1024; {max symbols per row}
+{$IFDEF RAEDITOR_MORE_DELPHI_LIKE}
+  Max_X_Scroll = Max_X;
+{$ELSE}
   Max_X_Scroll = 256;
+{$ENDIF RAEDITOR_MORE_DELPHI_LIKE}
+
   {max symbols per row for scrollbar}
   GutterRightMargin = 2;
 
@@ -244,6 +264,10 @@ type
     constructor Create;
     function Add(const S: string): Integer; override;
     procedure Insert(Index: Integer; const S: string); override;
+{$IFDEF BUGFIX}
+    procedure DeleteText(BegX, BegY, EndX, EndY: Integer);
+    procedure InsertText(X, Y: Integer; const Text: string);
+{$ENDIF}
     property Internal[Index: Integer]: string write SetInternal;
   end;
 
@@ -298,9 +322,16 @@ type
       const AShift2: TShiftState);
   end;
 
+{$IFDEF RAEDITOR_MORE_DELPHI_LIKE}
+  TCommand2Event = procedure(Sender: TObject; const Key1: Word; const Shift1: TShiftState;
+      const Key2: Word; const Shift2: TShiftState; var Command: TEditCommand) of object;
+{$ENDIF}
   TJvKeyboard = class(TObject)
   private
     List: TList;
+{$IFDEF RAEDITOR_MORE_DELPHI_LIKE}
+    FOnCommand2: TCommand2Event;
+{$ENDIF}
   public
     constructor Create;
     destructor Destroy; override;
@@ -316,6 +347,9 @@ type
     {$IFDEF RAEDITOR_DEFLAYOT}
     procedure SetDefLayot;
     {$ENDIF RAEDITOR_DEFLAYOT}
+{$IFDEF RAEDITOR_MORE_DELPHI_LIKE}
+    property OnCommand2: TCommand2Event read FOnCommand2 write FOnCommand2;
+{$ENDIF}
   end;
 
   EJvEditorError = class(Exception);
@@ -426,6 +460,9 @@ type
     FVisibleRowCount: Integer;
 
     { internal - other flags and attributes }
+{$IFDEF RAEDITOR_SPEED_FONTCACHE}
+    FFontCache: TList;  // collects all used fonts for faster font creation
+{$ENDIF}
     FAllRepaint: Boolean;
     FCellRect: TCellRect;
     {$IFDEF RAEDITOR_EDITOR}
@@ -574,6 +611,10 @@ type
       ScrollPos: Integer);
     procedure Scroll(const Vert: Boolean; const ScrollPos: Integer);
     procedure PaintLine(const Line: Integer; ColBeg, ColEnd: Integer);
+{$IFDEF RAEDITOR_SPEED_FONTCACHE}
+    function FontCacheFind(LA: TLineAttr): TFont;
+    procedure FontCacheClear;
+{$ENDIF}
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     {$IFDEF RAEDITOR_EDITOR}
     procedure KeyPress(var Key: Char); override;
@@ -581,7 +622,11 @@ type
     {$ENDIF RAEDITOR_EDITOR}
     function GetClipboardBlockFormat: TSelBlockFormat;
     procedure SetClipboardBlockFormat(const Value: TSelBlockFormat);
+{$IFDEF RAEDITOR_MORE_DELPHI_LIKE}
+    procedure SetSel(SelX, SelY: Integer);
+{$ELSE}
     procedure SetSel(const SelX, SelY: Integer);
+{$ENDIF RAEDITOR_MORE_DELPHI_LIKE}
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -951,6 +996,9 @@ const
   ecBackTab = ecInsertPara + 5;
   ecIndent = ecInsertPara + 6;
   ecUnindent = ecInsertPara + 7;
+{$IFDEF RAEDITOR_MORE_DELPHI_LIKE}
+  ecBackspaceWord = ecInsertPara + 8;
+{$ENDIF RAEDITOR_MORE_DELPHI_LIKE}
 
   ecDeleteSelected = ecInsertPara + 10;
   ecClipboardCopy = ecInsertPara + 11;
@@ -1104,7 +1152,7 @@ type
     procedure Undo; override;
   end;
 
-  TUnselectUndo = class(TJvSelectUndo);
+  TJvUnselectUndo = class(TJvSelectUndo);
 
   TJvBeginCompoundUndo = class(TUndo)
   public
@@ -1414,6 +1462,67 @@ begin
   end;
 end;
 
+{$IFDEF BUGFIX}
+procedure TJvEditorStrings.DeleteText(BegX, BegY, EndX, EndY: Integer);
+var
+  BegLine, EndLine: string;
+  i: Integer;
+begin
+  if BegY < 0 then
+  begin
+    BegY := 0;
+    BegX := 0;
+  end;
+  if BegY >= Count then Exit; // nothing to delete
+  if EndY >= Count then
+  begin
+    EndY := Count;
+    EndX := MaxInt;
+  end;
+
+  BegLine := Strings[BegY];
+  EndLine := Strings[EndY];
+
+ // delete lines between and end line
+  for i := EndY downto BegY + 1 do
+    Delete(i);
+
+  System.Delete(BegLine, BegX + 1, MaxInt);
+  System.Delete(EndLine, 1, EndX);
+  Strings[BegY] := BegLine + EndLine;
+end;
+
+procedure TJvEditorStrings.InsertText(X, Y: Integer; const Text: string);
+var
+  BegLine, EndLine: string;
+  i: Integer;
+  List: TStrings;
+begin
+  BegLine := Strings[Y];
+  EndLine := System.Copy(BegLine, X, MaxInt);
+  System.Delete(BegLine, X, MaxInt);
+
+  List := TStringList.Create;
+  try
+    List.Text := Text;
+    if List.Count > 0 then
+    begin
+     // Here we have to call inherited Put because Strings[], Internal[]
+     // and Put() can remove trailing spaces.
+      inherited Put(Y, BegLine + List[0]);
+      for i := 1 to List.Count - 1 do
+      begin
+        Inc(Y);
+        Insert(Y, List[i]);
+      end;
+      Internal[Y] := Strings[Y] + EndLine;
+    end;
+  finally
+    List.Free;
+  end;
+end;
+{$ENDIF BUGFIX}
+
 //=== TJvEditorClient ========================================================
 
 function TJvEditorClient.GetCanvas: TCanvas;
@@ -1574,6 +1683,10 @@ begin
   { we can change font only after all objects are created }
   Font.Name := 'Courier New';
   Font.Size := 10;
+
+{$IFDEF RAEDITOR_SPEED_FONTCACHE}
+  FFontCache := TList.Create;
+{$ENDIF RAEDITOR_SPEED_FONTCACHE}
 end;
 
 destructor TJvCustomEditor.Destroy;
@@ -1592,6 +1705,10 @@ begin
   {$ENDIF RAEDITOR_COMPLETION}
   {$ENDIF RAEDITOR_EDITOR}
   FGutter.Free;
+{$IFDEF RAEDITOR_SPEED_FONTCACHE}
+  FontCacheClear; // free cached font instances
+  FFontCache.Free;
+{$ENDIF RAEDITOR_SPEED_FONTCACHE}
   inherited Destroy;
 end;
 
@@ -1688,7 +1805,7 @@ begin
   begin
     FSelected := False;
     {$IFDEF RAEDITOR_UNDO}
-    TUnselectUndo.Create(Self, FCaretX, FCaretY, FSelected, FSelBlockFormat,
+    TJvUnselectUndo.Create(Self, FCaretX, FCaretY, FSelected, FSelBlockFormat,
       FSelBegX, FSelBegY, FSelEndX, FSelEndY);
     {$ENDIF RAEDITOR_UNDO}
     PaintSelection;
@@ -1788,6 +1905,9 @@ begin
   if csLoading in ComponentState then
     Exit;
   EditorClient.Canvas.Font := Font;
+{$IFDEF RAEDITOR_SPEED_FONTCACHE}
+  FontCacheClear;
+{$ENDIF RAEDITOR_SPEED_FONTCACHE}
   FCellRect.Height := EditorClient.Canvas.TextHeight(BiggestSymbol) + 1;
 
   // workaround the bug in Windows-9x
@@ -1816,6 +1936,43 @@ begin
   FGutter.Invalidate;
 end;
 
+{$IFDEF RAEDITOR_SPEED_FONTCACHE}
+function TJvCustomEditor.FontCacheFind(LA: TLineAttr): TFont;
+var i: Integer;
+begin
+ // find the font instance
+  for i := 0 to FFontCache.Count - 1 do
+  begin
+    Result := TFont(FFontCache.Items[i]);
+    if (Result.Style = LA.Style) and (Result.Color = LA.FC) then begin
+{       if (Result.Size <> EditorClient.Canvas.Font.Size) or // other font-attributes has changed
+          (CompareText(Result.Name, EditorClient.Canvas.Font.Name) <> 0) then
+        begin
+          Result.Free;
+          FFontCache.Delete(i);
+          Break; // create a new font instance
+
+          *** handled by CMFontChanged ***
+       end;}
+       Exit;
+    end;
+  end;
+ // create a new font instance
+  Result := TFont.Create;
+  Result.Assign(EditorClient.Canvas.Font); // copy default font
+  Result.Style := LA.Style;
+  Result.Color := LA.FC;
+  FFontCache.Add(Result); { store in FontCache }
+end;
+
+procedure TJvCustomEditor.FontCacheClear;
+var i: Integer;
+begin
+  for i := 0 to FFontCache.Count - 1 do TFont(FFontCache.Items[i]).Free;
+  FFontCache.Clear;
+end;
+{$ENDIF RAEDITOR_SPEED_FONTCACHE}
+
 procedure TJvCustomEditor.PaintLine(const Line: Integer; ColBeg, ColEnd: Integer);
 var
   Ch: string;
@@ -1823,6 +1980,9 @@ var
   i, iC, jC, SL, MX: Integer;
   S: string;
   LA: TLineAttr;
+{$IFDEF RAEDITOR_SPEED_FASTDRAW}
+  jCStart: integer;
+{$ENDIF RAEDITOR_SPEED_FASTDRAW}
 begin
   if (Line < FTopRow) or (Line > FTopRow + FVisibleRowCount) then
     Exit;
@@ -1840,7 +2000,12 @@ begin
       GetLineAttr(S, Line, ColBeg, ColEnd);
 
       {left line}
+{$IFDEF RAEDITOR_SPEED_FASTDRAW}
+      if Canvas.Brush.Color <> LineAttrs[FLeftCol+1].BC then // change GDI object only if necessary
+        Canvas.Brush.Color := LineAttrs[FLeftCol + 1].BC;
+{$ELSE}
       Canvas.Brush.Color := LineAttrs[FLeftCol + 1].BC;
+{$ENDIF RAEDITOR_SPEED_FASTDRAW}
       Canvas.FillRect(Bounds(EditorClient.Left, (Line - FTopRow) *
         FCellRect.Height, 1, FCellRect.Height));
 
@@ -1863,6 +2028,16 @@ begin
             Ch := S[iC]
           else
             Ch := ' ';
+{$IFDEF RAEDITOR_SPEED_FASTDRAW}
+          jCStart := jC;
+          while (jC <= MX + 1) and
+            CompareMem(@LA, @LineAttrs[jC], sizeof(LineAttrs[1])) do Inc(jC);
+          Ch := Copy(S, jCStart - 1, jC - jCStart + 1);
+          if jC > SL then Ch := Ch + MakeStr(' ', jC - SL);
+
+          if Brush.Color <> LA.BC then // change GDI object only if necessary
+            Brush.Color := LA.BC;
+{$ELSE}
           while (jC <= MX + 1) and
             CompareMem(@LA, @LineAttrs[jC], SizeOf(LineAttrs[1])) do
           begin
@@ -1873,8 +2048,13 @@ begin
             Inc(jC);
           end;
           Brush.Color := LA.BC;
+{$ENDIF RAEDITOR_SPEED_FASTDRAW}
+{$IFDEF RAEDITOR_SPEED_FONTCACHE}
+          Font.Assign(FontCacheFind(LA));
+{$ELSE}
           Font.Color := LA.FC;
           Font.Style := LA.Style;
+{$ENDIF RAEDITOR_SPEED_FONTCACHE}
 
           R := CalcCellRect(i - FLeftCol, Line - FTopRow);
           {bottom line}
@@ -2231,6 +2411,12 @@ begin
   {$IFDEF RAEDITOR_EDITOR}
   if WaitSecondKey then
   begin
+{$IFDEF RAEDITOR_MORE_DELPHI_LIKE}
+    IgnoreKeyPress := True; { set this before calling FKeyboard.Command2()
+                              because in FKeyboard.OnCommand2 the
+                              Editor-window can loose the focus and the
+                              second char is printed }
+{$ENDIF RAEDITOR_MORE_DELPHI_LIKE}
     Com := FKeyboard.Command2(Key1, Shift1, Key, Shift);
     WaitSecondKey := False;
     IgnoreKeyPress := True;
@@ -2469,7 +2655,7 @@ begin
           else
             SetUnSelected;
         end;
-      ecPrevWord, ecSelPrevWord:
+      ecPrevWord, ecSelPrevWord{$IFDEF RAEDITOR_MORE_DELPHI_LIKE}, ecBackspaceWord{$ENDIF}:
         begin
           if (ACommand = ecSelPrevWord) and not FSelected then
             SetSel1(FCaretX, FCaretY);
@@ -2494,12 +2680,34 @@ begin
               else
               if not (S[F + 1] in Separators) then
                 B := True;
+{$IFDEF RAEDITOR_MORE_DELPHI_LIKE}
+              if (X = 0) and (Y > 0) and (ACommand <> ecBackspaceWord) then // let the cursor jump one line up
+              begin
+                Dec(Y);
+                S := FLines[Y];
+                X := Length(S);
+              end;
+{$ENDIF RAEDITOR_MORE_DELPHI_LIKE}
             if X = FCaretX then
               X := 0;
             if ACommand = ecSelPrevWord then
               SetSel1(X, Y)
             else
               SetUnselected;
+{$IFDEF RAEDITOR_MORE_DELPHI_LIKE}
+            if (ACommand = ecBackspaceWord) and (Y >= 0) and (X <> FCaretX) then
+            begin
+              if not FReadOnly then
+              begin
+                Command(ecBeginCompound);
+                Command(ecBeginUpdate);
+                while FCaretX > X do Command(ecBackspace);
+                Command(ecEndUpdate);
+                Command(ecEndCompound);
+                ReLine;
+              end;
+            end;
+{$ENDIF RAEDITOR_MORE_DELPHI_LIKE}
           end;
         end;
       ecNextWord, ecSelNextWord:
@@ -2519,7 +2727,14 @@ begin
             begin
               Y := FCaretY + 1;
               X := 0;
+{$IFDEF RAEDITOR_MORE_DELPHI_LIKE}
+              if ACommand = ecSelNextWord then // this code is copied from [ecPrevWord, ecSelPrevWord]
+                SetSel1(X, Y)
+              else
+                SetUnselected;
+{$ELSE}
               SetSel1(X, Y);
+{$ENDIF RAEDITOR_MORE_DELPHI_LIKE}
             end;
           end
           else
@@ -3131,7 +3346,13 @@ begin
   {abstract}
 end;
 
+{$IFDEF RAEDITOR_MORE_DELPHI_LIKE}
+procedure TJvCustomEditor.SetSel(SelX, SelY: Integer);
+var
+  LineLen: Integer;
+{$ELSE}
 procedure TJvCustomEditor.SetSel(const SelX, SelY: Integer);
+{$ENDIF RAEDITOR_MORE_DELPHI_LIKE}
 
   procedure UpdateSelected;
   var
@@ -3173,6 +3394,26 @@ begin
   TJvSelectUndo.Create(Self, FCaretX, FCaretY, FSelected, FSelBlockFormat,
     FSelBegX, FSelBegY, FSelEndX, FSelEndY);
   {$ENDIF RAEDITOR_UNDO}
+{$IFDEF RAEDITOR_MORE_DELPHI_LIKE}
+  if SelX < 0 then SelX := 0;
+  if SelY < 0 then SelY := 0;
+  if SelY >= FLines.Count then
+  begin
+    if FLines.Count = 0 then
+      SelY := 0 // select none
+    else
+    begin
+      SelY := FLines.Count - 1;  // select last line
+      SelX := length(FLines[SelY]); // with all text
+    end;
+  end;
+  if (FLines.Count > 0) and (SelY < FLines.Count) then
+  begin
+    LineLen := length(FLines[SelY]);
+    if SelX > LineLen then
+      SelX := LineLen; // only text not the whole line
+  end;
+{$ENDIF RAEDITOR_MORE_DELPHI_LIKE}
   if not FSelected then
   begin
     FSelStartX := SelX;
@@ -3299,6 +3540,10 @@ begin
     SetUnSelected;
   end;
   SetFocus;
+{$IFDEF RAEDITOR_MORE_DELPHI_LIKE}
+  if Button = mbLeft then
+    TJvBeginCompoundUndo.Create(Self);
+{$ENDIF RAEDITOR_MORE_DELPHI_LIKE}
   if Button = mbLeft then
     SetCaret(XX, YY);
   PaintCaret(True);
@@ -3356,6 +3601,9 @@ end;
 procedure TJvCustomEditor.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
+{$IFDEF RAEDITOR_MORE_DELPHI_LIKE}
+  if FMouseDowned then  TJvEndCompoundUndo.Create(Self);
+{$ENDIF RAEDITOR_MORE_DELPHI_LIKE}
   TimerScroll.Enabled := False;
   FMouseDowned := False;
   inherited MouseUp(Button, Shift, X, Y);
@@ -3365,6 +3613,9 @@ procedure TJvCustomEditor.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
   if FMouseDowned and (Shift = [ssLeft]) then
   begin
+{$IFDEF RAEDITOR_MORE_DELPHI_LIKE}
+    SetSel(CaretX, CaretY);
+{$ENDIF RAEDITOR_MORE_DELPHI_LIKE}
     PaintCaret(False);
     MouseMoveY := Y;
     Mouse2Caret(X, Y, MouseMoveXX, MouseMoveYY);
@@ -3745,8 +3996,16 @@ end;
 procedure TJvCustomEditor.DeleteSelected;
 var
   S, S1: string;
+{$IFDEF BUGFIX}
+  i, iBeg, X, Y: Integer;
+{$ELSE}
   i, iBeg, iEnd, X, Y: Integer;
+{$ENDIF BUGFIX}
 begin
+{$IFDEF BUGFIX}
+  X := FSelBegX;
+  Y := FSelBegY;
+{$ENDIF}
   if FSelected then
   begin
     PaintCaret(False);
@@ -3757,6 +4016,14 @@ begin
     {$ENDIF RAEDITOR_UNDO}
     if FSelBlockFormat in [bfInclusive, bfNonInclusive] then
     begin
+{$IFDEF BUGFIX}
+      iBeg := PosFromCaret(FSelBegX, FSelBegY);
+      S1 := GetSelText;
+      FSelected := False;
+      FLines.DeleteText(X, Y, FSelEndX + Integer(FSelBlockFormat = bfInclusive), FSelEndY);
+      TextModified(iBeg, maDelete, S1);
+//      CaretFromPos(iBeg, X, Y);
+{$ELSE}
       S := FLines.Text;
       iBeg := PosFromCaret(FSelBegX, FSelBegY);
       iEnd := PosFromCaret(FSelEndX + Integer(FSelBlockFormat = bfInclusive), FSelEndY);
@@ -3766,6 +4033,7 @@ begin
       FLines.SetLockText(S);
       TextModified(iBeg, maDelete, S1);
       CaretFromPos(iBeg, X, Y);
+{$ENDIF BUGFIX}
     end
     else
     if FSelBlockFormat = bfColumn then
@@ -3829,6 +4097,9 @@ end;
 
 procedure TJvCustomEditor.TextAllChangedInternal(const Unselect: Boolean);
 begin
+{$IFDEF RAEDITOR_SPEED_FONTCACHE}
+  FontCacheClear;
+{$ENDIF RAEDITOR_SPEED_FONTCACHE}
   if Unselect then
     FSelected := False;
   TextModified(0, maInsert, FLines.Text);
@@ -3987,6 +4258,32 @@ end;
 
 function TJvCustomEditor.PosFromCaret(const X, Y: Integer): Integer;
 { vice versa [translated] }
+{$IFDEF BUGIFX}
+const
+  {$IFDEF DELPHI5_UP}
+  LineBreakLen = Length(sLineBreak);
+  {$ELSE DELPHI5_UP}
+  LineBreakLen = 2;
+  {$ENDIF DELPHI5_UP}
+var
+  I: Integer;
+  Len: Integer;
+begin
+  if (Y > FLines.Count - 1) or (Y < 0) then
+    Result := -1
+  else
+  begin
+    Result := 0;
+    for I := 0 to Y - 1 do
+      Inc(Result, Length(FLines[I]) + LineBreakLen {CR/LF});
+    Len := Length(FLines[Y]);
+    if X < Len then
+      Inc(Result, X)
+    else
+      Inc(Result, Len);
+  end;
+end;
+{$ELSE BUGFIX}
 var
   I: Integer;
 begin
@@ -4003,6 +4300,7 @@ begin
       Inc(Result, Length(FLines[Y]))
   end;
 end;
+{$ENDIF BUGFIX}
 
 function TJvCustomEditor.PosFromMouse(const X, Y: Integer): Integer;
 var
@@ -4453,6 +4751,11 @@ begin
         Result := Command;
         Exit;
       end;
+{$IFDEF RAEDITOR_MORE_DELPHI_LIKE}
+ // no command found: trigger event
+  if Assigned(FOnCommand2) then
+     FOnCommand2(Self, AKey1, AShift1, AKey2, AShift2, Result);
+{$ENDIF RAEDITOR_MORE_DELPHI_LIKE}
 end;
 
 {$IFDEF RAEDITOR_EDITOR}
@@ -4495,6 +4798,10 @@ begin
 
   Add(ecInsertPara, VK_RETURN, []);
   Add(ecBackspace, VK_BACK, []);
+{$IFDEF RAEDITOR_MORE_DELPHI_LIKE}
+  Add(ecBackspace, VK_BACK, [ssShift]);
+  Add(ecBackspaceWord, VK_BACK, [ssCtrl]);
+{$ENDIF RAEDITOR_MORE_DELPHI_LIKE}
   Add(ecDelete, VK_DELETE, []);
   Add(ecTab, VK_TAB, []);
   Add(ecBackTab, VK_TAB, [ssShift]);
@@ -4647,7 +4954,13 @@ procedure TUndoBuffer.Undo;
 var
   UndoClass: TClass;
   Compound: Integer;
+{$IFDEF RAEDITOR_MORE_DELPHI_LIKE}
+  IsOnlyCaret: Boolean;
+{$ENDIF RAEDITOR_MORE_DELPHI_LIKE}
 begin
+{$IFDEF RAEDITOR_MORE_DELPHI_LIKE}
+  IsOnlyCaret := True;
+{$ENDIF RAEDITOR_MORE_DELPHI_LIKE}
   InUndo := True;
   try
     if LastUndo <> nil then
@@ -4673,6 +4986,12 @@ begin
         if (UndoClass = TJvDeleteTrailUndo) or
           (UndoClass = TJvReLineUndo) then
           UndoClass := LastUndo.ClassType;
+{$IFDEF RAEDITOR_MORE_DELPHI_LIKE}
+        if (UndoClass <> TJvCaretUndo) and
+          (UndoClass <> TJvSelectUndo) and
+          (UndoClass <> TJvUnselectUndo) then
+          IsOnlyCaret := False;
+{$ENDIF RAEDITOR_MORE_DELPHI_LIKE}
         if not FRAEditor.FGroupUndo then
           Break;
         // FRAEditor.Paint; {DEBUG !!!!!!!!!}
@@ -4680,7 +4999,12 @@ begin
       if FRAEditor.FUpdateLock = 0 then
       begin
         FRAEditor.TextAllChangedInternal(False);
+{$IFDEF RAEDITOR_MORE_DELPHI_LIKE}
+        if (not IsOnlyCaret) then
+          FRAEditor.Changed;
+{$ELSE}
         FRAEditor.Changed;
+{$ENDIF RAEDITOR_MORE_DELPHI_LIKE}
       end;
     end;
   finally
@@ -4888,6 +5212,39 @@ end;
 
 //=== TJvBackspaceUndo =======================================================
 
+{$IFDEF BUGFIX}
+procedure TJvBackspaceUndo.Undo;
+var
+  Text: string;
+  StartPtr: Integer;
+begin
+  Text := '';
+  with UndoBuffer do
+  begin
+    StartPtr := FPtr;
+    while (FPtr >= 0) and not IsNewGroup(Self) do
+    begin
+      Text := Text + TJvDeleteUndo(LastUndo).FText;
+      Dec(FPtr);
+      if not FRAEditor.FGroupUndo then
+        Break;
+    end;
+    Inc(FPtr);
+  end;
+  with TJvDeleteUndo(UndoBuffer.Items[StartPtr]) do
+  begin
+//    S := FRAEditor.FLines.Text;
+//    iBeg := FRAEditor.PosFromCaret({mac: FRAEditor.}FCaretX, {mac: FRAEditor.} FCaretY);
+//    if FCaretX > Length(FRAEditor.FLines[FCaretY]) then Inc(iBeg);
+//    Insert(Text, S, iBeg);
+//    FRAEditor.FLines.SetLockText(S);
+    FRAEditor.FLines.InsertText(FCaretX, FCaretY, Text);
+  end;
+ // set caret on last backspace undo's position
+  with TJvDeleteUndo(UndoBuffer.Items[UndoBuffer.FPtr]) do
+    FRAEditor.SetCaretInternal(FCaretX, FCaretY);
+end;
+{$ELSE}
 procedure TJvBackspaceUndo.Undo;
 var
   S, Text: string;
@@ -4914,6 +5271,7 @@ begin
     FRAEditor.SetCaretInternal(FCaretX, FCaretY);
   end;
 end;
+{$ENDIF BUGFIX}
 
 //=== TJvReplaceUndo =========================================================
 
@@ -5182,7 +5540,7 @@ begin
       CloseUp(False);
     VK_RETURN:
       CloseUp(True);
-    VK_UP, VK_DOWN, VK_PRIOR, VK_NEXT:
+    VK_UP, VK_DOWN, VK_PRIOR, VK_NEXT{$IFDEF RAEDITOR_MORE_DELPHI_LIKE}, VK_HOME, VK_END{$ENDIF}:
       FPopupList.Perform(WM_KEYDOWN, Key, 0);
   else
     Result := False;

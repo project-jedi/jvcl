@@ -15,8 +15,9 @@ Copyright (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
 Contributor(s):
+Andreas Hausladen [Andreas.Hausladen@gmx.de]
 
-Last Modified: 2002-07-04
+Last Modified: 2003-03-23
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -30,7 +31,7 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.Inc}
-
+{$DEFINE BUGFIX}
 unit JvHLParser;
 
 interface
@@ -357,6 +358,15 @@ begin
       begin
         if (P[0] = '"') and (P[-1] <> '\') then
           Break;
+{$IFDEF BUGFIX}
+        if (P[0] = '"') and (P[-1] = '\') then
+        begin
+         // count the backslashes, on even backslahses it is a string end
+          i := 1;
+          while (P - 1 - i > F) and (P[-1 - i] = '\') do inc(i);
+          if i and $01 = 0 then Break;  { same but faster than: if i mod 2 = 0 then Break; }
+        end;
+{$ENDIF}
         Inc(P);
       end;
       if P[0] <> #0 then

@@ -15,8 +15,9 @@ Copyright (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
 Contributor(s):
+Andreas Hausladen [Andreas.Hausladen@gmx.de]
 
-Last Modified: 2002-07-04
+Last Modified: 2003-03-23
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -68,6 +69,8 @@ Known Issues:
 }
 
 unit JvHLEditor;
+{$DEFINE HL_NOT_QUITE_C} { enable Not Quite C (LEGO MindStorm(R)) highlighter }
+{$DEFINE BUGFIX} { bugfixes }
 
 interface
 
@@ -81,7 +84,11 @@ const
 
 type
   THighLighter = (hlNone, hlPascal, hlCBuilder, hlSql, hlPython, hlJava, hlVB,
-    hlHtml, hlPerl, hlIni, hlCocoR, hlPhp);
+    hlHtml, hlPerl, hlIni, hlCocoR, hlPhp
+{$IFDEF HL_NOT_QUITE_C}
+    , hlNQC
+{$ENDIF HL_NOT_QUITE_C}
+  );
 
   TJvSymbolColor = class(TPersistent)
   private
@@ -144,6 +151,9 @@ type
     FLongTokens: Boolean;
     FLongDesc: array [0..Max_Line] of Byte;
     FSyntaxHighlighting: Boolean;
+{$IFDEF BUGFIX}
+    FRescanLongChanged: Boolean;
+{$ENDIF BUGFIX}
     FOnReservedWord: TOnReservedWord;
     // Coco/R
     ProductionsLine: Integer;
@@ -175,6 +185,78 @@ implementation
 uses
   Math,
   JvStrUtil;
+
+{$IFDEF BUGFIX}
+const
+  lgNone            = 0;
+  lgComment1        = 1;
+  lgComment2        = 2;
+  lgString          = 4;
+  lgTag             = 5;
+  lgPreproc         = 6;
+
+function LastNoSpaceChar(const S: String): Char;
+var i: integer;
+begin
+  Result := #0;
+  i := Length(S);
+  while (i > 0) and (S[i] = ' ') do Dec(i);
+  if i > 0 then Result := S[i];
+end;
+
+function GetTrimChar(const S: String; Index: Integer): Char;
+var LS, l: Integer;
+begin
+  LS := Length(S);
+  if LS <> 0 then
+  begin
+    l := 1;
+    while (l <= LS) and (s[l] = ' ') do Inc(l);
+    if l <= LS then
+      Result := S[l - 1 + Index]
+    else
+      Result := S[Index];
+  end
+  else
+    Result := #0;
+end;
+
+function HasStringOpenEnd(Lines: TStrings; iLine: Integer): Boolean;
+{ find C/C++ "line breaker" '\' }
+var
+  i: integer;
+  IsOpen: Boolean;
+  P, F: PChar;
+  S: string;
+begin
+  Result := False;
+  if (iLine < 0) or (iLine >= Lines.Count) then exit;
+  i := iLine - 1;
+  IsOpen := False;
+  if (i >= 0) and (LastNoSpaceChar(Lines[i]) = '\') then // check prior lines
+    IsOpen := HasStringOpenEnd(Lines, i);
+  S := Lines[iLine];
+  F := PChar(S);
+  P := F;
+  repeat
+    P := StrScan(P, '"');
+    if P <> nil then
+    begin
+      if (P = F) or (P[-1] <> '\') then
+        IsOpen := not IsOpen
+      else
+      begin
+       // count the backslashes
+        i := 1;
+        while (P-1-i > F) and (P[-1-i] = '\') do inc(i);
+        if i and $01 = 0 then IsOpen := not IsOpen; { faster than if i mod 2 = 0 then IsOpen := not IsOpen; }
+      end;
+      inc(P);
+    end;
+  until P = nil;
+  Result := IsOpen;
+end;
+{$ENDIF BUGFIX}
 
 //=== TJvSymbolColor =========================================================
 
@@ -305,7 +387,7 @@ begin
     case FHighLighter of
       hlPascal:
         Parser.Style := psPascal;
-      hlCBuilder, hlSql, hlJava:
+      hlCBuilder, hlSql, hlJava{$IFDEF HL_NOT_QUITE_C}, hlNQC{$ENDIF}:
         Parser.Style := psCpp;
       hlPython:
         Parser.Style := psPython;
@@ -360,6 +442,15 @@ const
     '__stdcall  _stdcall  struct  switch  template  this  __thread  throw  true  __try  ' +
     'try  typedef  typename  typeid  union  using  unsigned  virtual  void  volatile  ' +
     'wchar_t  while  ';
+
+{$IFDEF HL_NOT_QUITE_C}
+  NQCKeyWords: string = {Not Quite C - a C similar language for programming LEGO MindStorm(R) robots }
+    ' __event_src  __type  acquire  break  __sensor  abs  asm  case  catch  const  ' +
+    'continue  default  do  else  false  for  if  inline  ' +
+    'int  monitor  repeat  return  signed  start  stop  sub  switch  task  true  ' +
+    'until  void  while  '
+    ;
+{$ENDIF HL_NOT_QUITE_C}
 
   SQLKeyWords: string =
   '  active  as  add  asc  after  ascending  all  at  alter  auto  ' +
@@ -480,72 +571,79 @@ const
     ' tokens create destroy errors comments from nested chr any ' +
     ' description ';
 
-  function IsDelphiKeyWord(St: string): Boolean;
+  function IsDelphiKeyWord(const St: string): Boolean;
   begin
     Result := Pos(' ' + AnsiLowerCase(St) + ' ', DelphiKeyWords) <> 0;
   end;
 
-  function IsBuilderKeyWord(St: string): Boolean;
+  function IsBuilderKeyWord(const St: string): Boolean;
   begin
     Result := Pos(' ' + St + ' ', BuilderKeyWords) <> 0;
   end;
 
-  function IsJavaKeyWord(St: string): Boolean;
+{$IFDEF HL_NOT_QUITE_C}
+  function IsNQCKeyWord(const St: string): Boolean;
+  begin
+    Result := Pos(' ' + St + ' ', NQCKeyWords) <> 0;
+  end;
+{$ENDIF HL_NOT_QUITE_C}
+
+  function IsJavaKeyWord(const St: string): Boolean;
   begin
     Result := Pos(' ' + St + ' ', JavaKeyWords) <> 0;
   end;
 
-  function IsVBKeyWord(St: string): Boolean;
+  function IsVBKeyWord(const St: string): Boolean;
   begin
     Result := Pos(' ' + LowerCase(St) + ' ', VBKeyWords) <> 0;
   end;
 
-  function IsVBStatement(St: string): Boolean;
+  function IsVBStatement(const St: string): Boolean;
   begin
     Result := Pos(' ' + LowerCase(St) + ' ', VBStatements) <> 0;
   end;
 
-  function IsSQLKeyWord(St: string): Boolean;
+  function IsSQLKeyWord(const St: string): Boolean;
   begin
     Result := Pos(' ' + AnsiLowerCase(St) + ' ', SQLKeyWords) <> 0;
   end;
 
-  function IsPythonKeyWord(St: string): Boolean;
+  function IsPythonKeyWord(const St: string): Boolean;
   begin
     Result := Pos(' ' + St + ' ', PythonKeyWords) <> 0;
   end;
 
-  function IsHtmlTag(St: string): Boolean;
+  function IsHtmlTag(const St: string): Boolean;
   begin
     Result := Pos(' ' + AnsiLowerCase(St) + ' ', HtmlTags) <> 0;
   end;
 
-  function IsHtmlSpecChar(St: string): Boolean;
+  function IsHtmlSpecChar(const St: string): Boolean;
   begin
     Result := Pos(' ' + AnsiLowerCase(St) + ' ', HtmlSpecChars) <> 0;
   end;
 
-  function IsPerlKeyWord(St: string): Boolean;
+  function IsPerlKeyWord(const St: string): Boolean;
   begin
     Result := Pos(' ' + St + ' ', PerlKeyWords) <> 0;
   end;
 
-  function IsPerlStatement(St: string): Boolean;
+  function IsPerlStatement(const St: string): Boolean;
   begin
     Result := Pos(' ' + St + ' ', PerlStatements) <> 0;
   end;
 
-  function IsCocoKeyWord(St: string): Boolean;
+  function IsCocoKeyWord(const St: string): Boolean;
   begin
     Result := Pos(' ' + AnsiLowerCase(St) + ' ', CocoKeyWords) <> 0;
   end;
 
-  function IsPhpKeyWord(St: string): Boolean;
+  function IsPhpKeyWord(const St: string): Boolean;
   begin
     Result := Pos(' ' + St + ' ', PerlKeyWords) <> 0;
   end;
 
-  function IsComment(St: string): Boolean;
+  function IsComment(const St: string): Boolean;
   var
     LS: Integer;
   begin
@@ -555,7 +653,7 @@ const
         Result := ((LS > 0) and (St[1] = '{')) or
           ((LS > 1) and (((St[1] = '(') and (St[2] = '*')) or
           ((St[1] = '/') and (St[2] = '/'))));
-      hlCBuilder, hlSQL, hlJava, hlPhp:
+      hlCBuilder, hlSQL, hlJava, hlPhp{$IFDEF HL_NOT_QUITE_C}, hlNQC{$ENDIF}:
         Result := (LS > 1) and (St[1] = '/') and
           ((St[2] = '*') or (St[2] = '/'));
       hlVB:
@@ -574,13 +672,13 @@ const
     end;
   end;
 
-  function IsStringConstant(St: string): Boolean;
+  function IsStringConstant(const St: string): Boolean;
   var
     LS: Integer;
   begin
     LS := Length(St);
     case FHighLighter of
-      hlPascal, hlCBuilder, hlSql, hlPython, hlJava, hlPerl, hlCocoR, hlPhp:
+      hlPascal, hlCBuilder, hlSql, hlPython, hlJava, hlPerl, hlCocoR, hlPhp{$IFDEF HL_NOT_QUITE_C}, hlNQC{$ENDIF}:
         Result := (LS > 0) and ((St[1] = '''') or (St[1] = '"'));
       hlVB:
         Result := (LS > 0) and (St[1] = '"');
@@ -595,6 +693,9 @@ const
   var
     I: Integer;
   begin
+{$IFDEF BUGFIX}
+    iEnd := Min(iEnd, Max_X);
+{$ENDIF BUGFIX}
     for I := iBeg to iEnd do
       with LineAttrs[I] do
       begin
@@ -704,6 +805,9 @@ var
   InTag: Boolean;
   N: Integer;
 begin
+{$IFDEF BUGFIX}
+  if not FSyntaxHighlighting then Exit; 
+{$ENDIF}
   S := Lines[Line];
   if (FHighLighter = hlNone) and not UserReservedWords then
     C := Colors.PlainText
@@ -715,8 +819,12 @@ begin
     Parser.pcPos := Parser.pcProgram;
     CheckInLong;
     LS := Length(S);
-    if (FHighLighter in [hlCBuilder]) and (LS > 0) and
+    if (FHighLighter in [hlCBuilder{$IFDEF HL_NOT_QUITE_C}, hlNQC{$ENDIF}]) and (LS > 0) and
+{$IFDEF BUGFIX} { this is also a bug fix }
+      (((GetTrimChar(S, 1) = '#') and (FLong = 0)) or (FLong = lgPreproc)) then
+{$ELSE}
       (S[1] = '#') and (FLong = 0) then
+{$ENDIF BUGFIX}
       C := FColors.FPreproc
     else
     if ((FHighLighter in [hlPython, hlPerl]) and (LS > 0) and
@@ -728,10 +836,24 @@ begin
     if (FLong <> 0) and (FHighLighter <> hlHtml) then
     begin
       Parser.pcPos := Parser.pcProgram + FindLongEnd + 1;
+{$IFDEF BUGFIX}
+      if (FHighLighter in [hlCBuilder, hlPython, hlPerl{$IFDEF HL_NOT_QUITE_C}, hlNQC{$ENDIF}]) then
+        case FLong of
+          lgString:
+            C := FColors.FString;
+          lgComment1, lgComment2:
+            C := FColors.FComment;
+          lgPreproc:
+            C := FColors.Preproc;
+        end
+      else
+        C := FColors.FComment;
+{$ELSE}
       if (FHighLighter in [hlPython, hlPerl]) and (FLong = 4) then
         C := FColors.FString
       else
         C := FColors.FComment;
+{$ENDIF BUGFIX}
     end;
   end;
 
@@ -752,16 +874,27 @@ begin
 
   if (FHighLighter = hlNone) and not UserReservedWords then
     Exit;
+{$IFDEF BUGFIX}
+  if (Length(S) > 0) and (((GetTrimChar(S, 1) = '#') and
+    (FHighLighter in [hlCBuilder, hlPython, hlPerl{$IFDEF HL_NOT_QUITE_C}, hlNQC{$ENDIF}])) or
+    ((GetTrimChar(S, 1) in ['#', ';']) and (FHighLighter = hlIni))) then
+    Exit;
+{$ELSE}
   if (Length(S) > 0) and (((S[1] = '#') and
     (FHighLighter in [hlCBuilder, hlPython, hlPerl])) or
     ((S[1] in ['#', ';']) and (FHighLighter = hlIni))) then
     Exit;
+{$ENDIF BUGFIX}
 
   if FHighLighter = hlIni then
     SetIniColors
   else
   try
+{$IFDEF BUGFIX}
+    InTag := FLong = lgTag;
+{$ELSE}
     InTag := FLong = 5;
+{$ENDIF BUGFIX}
     PrevToken := '';
     PrevToken2 := '';
     Token := Parser.Token;
@@ -787,6 +920,13 @@ begin
               SetColor(FColors.FReserved)
             else
               F := False;
+{$IFDEF HL_NOT_QUITE_C}
+          hlNQC:
+            if IsNQCKeyWord(Token) then
+              SetColor(FColors.FReserved)
+            else
+              F := False;
+{$ENDIF HL_NOT_QUITE_C}
           hlSql:
             if IsSQLKeyWord(Token) then
               SetColor(FColors.FReserved)
@@ -908,7 +1048,7 @@ begin
       if IsIntConstant(Token) or IsRealConstant(Token) then
         SetColor(FColors.FNumber)
       else
-      if (FHighLighter in [hlCBuilder, hlJava, hlPython, hlPhp]) and
+      if (FHighLighter in [hlCBuilder, hlJava, hlPython, hlPhp{$IFDEF HL_NOT_QUITE_C}, hlNQC{$ENDIF}]) and
         (PrevToken = '0') and (Token[1] in ['x', 'X']) then
         SetColor(FColors.FNumber)
       else
@@ -951,6 +1091,9 @@ var
   S: string;
   i, i1, L1: Integer;
 begin
+{$IFDEF BUGFIX}
+  FRescanLongChanged := False;
+{$ENDIF BUGFIX}
   if not FLongTokens or (FHighLighter in [hlNone, hlIni]) then
   begin
     FLong := 0;
@@ -961,7 +1104,10 @@ begin
   FLong := 0;
   iLine := 0;
   ProductionsLine := High(Integer);
+{$IFDEF BUGFIX}
+{$ELSE}
   FillChar(FLongDesc, sizeof(FLongDesc), 0);
+{$ENDIF BUGFIX}
   while iLine < Lines.Count - 1 do
   begin
     { only real programmer can write loop on 5 pages }
@@ -970,6 +1116,9 @@ begin
     P := PChar(S);
     F := P;
     L1 := Length(S);
+{$IFDEF BUGFIX}
+    if (L1 = 0) and (FLong in [lgPreproc, lgString]) then FLong := 0;
+{$ENDIF BUGFIX}
     i := 1;
     while i <= L1 do
     begin
@@ -983,7 +1132,11 @@ begin
                     P := StrScan(F + i, '}');
                     if P = nil then
                     begin
+{$IFDEF BUGFIX}
+                      FLong := lgComment1;
+{$ELSE}
                       FLong := 1;
+{$ENDIF BUGFIX}
                       Break;
                     end
                     else
@@ -992,7 +1145,11 @@ begin
                 '(':
                   if {S[i + 1]} F[i] = '*' then
                   begin
+{$IFDEF BUGFIX}
+                    FLong := lgComment2;
+{$ELSE}
                     FLong := 2;
+{$ENDIF BUGFIX}
                     P := StrScan(F + i + 2, ')');
                     if P = nil then
                       Break
@@ -1018,7 +1175,11 @@ begin
                       i := L1 + 1;
                   end;
               end;
+{$IFDEF BUGFIX}
+            lgComment1:
+{$ELSE}
             1:
+{$ENDIF BUGFIX}
               begin //  {
                 P := StrScan(F + i - 1, '}');
                 if P <> nil then
@@ -1029,7 +1190,11 @@ begin
                 else
                   i := L1 + 1;
               end;
+{$IFDEF BUGFIX}
+            lgComment2:
+{$ELSE}
             2:
+{$ENDIF BUGFIX}
               begin //  (*
                 P := StrScan(F + i, ')');
                 if P = nil then
@@ -1042,14 +1207,18 @@ begin
                 end;
               end;
           end;
-        hlCBuilder, hlSql, hlJava, hlPhp:
+        hlCBuilder, hlSql, hlJava, hlPhp{$IFDEF HL_NOT_QUITE_C}, hlNQC{$ENDIF}:
           case FLong of
             0: //  not in comment
               case S[i] of
                 '/':
                   if {S[i + 1]} F[i] = '*' then
                   begin
+{$IFDEF BUGFIX}
+                    FLong := lgComment2;
+{$ELSE}
                     FLong := 2;
+{$ENDIF BUGFIX}
                     P := StrScan(F + i + 2, '/');
                     if P = nil then
                       Break
@@ -1072,10 +1241,33 @@ begin
                         { ?? }
                     end
                     else
+{$IFDEF BUGFIX}
+                    if FHighlighter in [hlCBuilder, hlJava{$IFDEF HL_NOT_QUITE_C}, hlNQC{$ENDIF}] then
+                    begin
+                      if (LastNoSpaceChar(S) = '\') and (HasStringOpenEnd(Lines, iLine)) then
+                        FLong := lgString;
+                      i := L1 + 1;
+                    end
+                    else
+{$ENDIF BUGFIX}
                       i := L1 + 1;
                   end;
+{$IFDEF BUGFIX}
+                '#':
+                  begin
+                    if (GetTrimChar(S, 1) = '#') and (LastNoSpaceChar(S) = '\') then
+                    begin
+                      FLong := lgPreproc;
+                      Break;
+                    end;
+                  end;
+{$ENDIF BUGFIX}
               end;
+{$IFDEF BUGFIX}
+            lgComment2:
+{$ELSE}
             2:
+{$ENDIF BUGFIX}
               begin //  /*
                 P := StrScan(F + i, '/');
                 if P = nil then
@@ -1087,6 +1279,34 @@ begin
                   i := P - F + 1;
                 end;
               end;
+{$IFDEF BUGFIX}
+            lgString:
+              begin
+                P := StrScan(F + i + 1, '"');
+                if P <> nil then
+                begin
+                  i1 := P - F;
+                  if P[1] <> '"' then
+                    i := i1
+                  else
+                    { ?? }
+                end
+                else
+                begin
+                  if FHighlighter in [hlCBuilder, hlJava, hlNQC] then
+                  begin
+                    if (LastNoSpaceChar(S) <> '\') or (not HasStringOpenEnd(Lines, iLine)) then
+                      FLong := lgNone;
+                  end;
+                  i := L1 + 1;
+                end;
+              end;
+            lgPreproc:
+              begin
+                if LastNoSpaceChar(S) <> '\' then
+                  FLong := lgNone;
+              end;
+{$ENDIF BUGFIX}
           end;
         hlPython, hlPerl:
           case FLong of
@@ -1106,7 +1326,11 @@ begin
                       i := P - F + 1;
                   end;
               end;
+{$IFDEF BUGFIX}
+            lgString: // python and perl long string
+{$ELSE}
             4: // python and perl long string
+{$ENDIF}
               begin
                 P := StrScan(F + i - 1, '"');
                 if P <> nil then
@@ -1127,14 +1351,22 @@ begin
                     P := StrScan(F + i, '>');
                     if P = nil then
                     begin
+{$IFDEF BUGFIX}
+                      FLong := lgTag;
+{$ELSE}
                       FLong := 5;
+{$ENDIF BUGFIX}
                       Break;
                     end
                     else
                       i := P - F + 1;
                   end;
               end;
+{$IFDEF BUGFIX}
+            lgTag: // html tag
+{$ELSE}
             5: // html tag
+{$ENDIF BUGFIX}
               begin
                 P := StrScan(F + i - 1, '>');
                 if P <> nil then
@@ -1153,7 +1385,11 @@ begin
                 '(':
                   if {S[i + 1]} F[i] = '*' then
                   begin
+{$IFDEF BUGFIX}
+                    FLong := lgComment2;
+{$ELSE}
                     FLong := 2;
+{$ENDIF}
                     P := StrScan(F + i + 2, ')');
                     if P = nil then
                       Break
@@ -1207,7 +1443,11 @@ begin
                     end;
                   end;
               end;
+{$IFDEF BUGFIX}
+            lgComment2:
+{$ELSE}
             2:
+{$ENDIF BUGFIX}
               begin //  (*
                 P := StrScan(F + i, ')');
                 if P = nil then
@@ -1231,6 +1471,10 @@ begin
     end;
 
     Inc(iLine);
+{$IFDEF BUGFIX}
+    if FLongDesc[iLine] <> FLong then
+      FRescanLongChanged := True; // don't invalidate() if there was no change
+{$ENDIF BUGFIX}
     FLongDesc[iLine] := FLong;
   end;
 end;
@@ -1238,19 +1482,30 @@ end;
 function TJvHLEditor.FindLongEnd: Integer;
 var
   P, F: PChar;
+{$IFDEF BUGFIX}
+  i: integer;
+{$ENDIF BUGFIX}
 begin
   P := PChar(FLine);
   Result := Length(FLine);
   case FHighLighter of
     hlPascal:
       case FLong of
+{$IFDEF BUGFIX}
+        lgComment1:
+{$ELSE}
         1:
+{$ENDIF BUGFIX}
           begin
             P := StrScan(P, '}');
             if P <> nil then
               Result := P - PChar(FLine);
           end;
+{$IFDEF BUGFIX}
+        lgComment2:
+{$ELSE}
         2:
+{$ENDIF BUGFIX}
           begin
             F := P;
             while True do
@@ -1266,8 +1521,54 @@ begin
             Result := P - PChar(FLine);
           end;
       end;
-    hlCBuilder, hlSql, hlJava, hlPhp:
+    hlCBuilder, hlSql, hlJava, hlPhp{$IFDEF HL_NOT_QUITE_C}, hlNQC{$ENDIF}:
       begin
+{$IFDEF BUGFIX}
+        case FLong of
+          lgComment2:
+            begin
+              F := P;
+              while True do
+              begin
+                F := StrScan(F, '*');
+                if F = nil then
+                  Exit;
+                if F[1] = '/' then
+                  Break;
+                Inc(F);
+              end;
+              P := F + 1;
+              Result := P - PChar(FLine);
+            end;
+          lgString:
+            begin
+              F := P;
+              repeat
+                P := StrScan(P, '"');
+                if P <> nil then
+                begin
+                  if (P = F) or (P[-1] <> '\') then
+                  begin
+                    Result := P - F;
+                    Break;
+                  end
+                  else
+                  begin
+                   // count the backslashes
+                    i := 1;
+                    while (P - 1 - i > F) and (P[-1 - i] = '\') do Inc(i);
+                    if i and $01 = 0 then {faster than: if i mod 2 = 0 then}
+                    begin
+                      Result := P - F;
+                      Break;
+                    end;
+                  end;
+                  Inc(P);
+                end;
+              until P = nil;
+            end;
+          end;  // case
+{$ELSE}
         F := P;
         while True do
         begin
@@ -1280,10 +1581,15 @@ begin
         end;
         P := F + 1;
         Result := P - PChar(FLine);
+{$ENDIF BUGFIX}
       end;
     hlPython, hlPerl:
       case FLong of
+{$IFDEF BUGFIX}
+        lgString:
+{$ELSE}
         4:
+{$ENDIF BUGFIX}
           begin
             P := StrScan(P, '"');
             if P <> nil then
@@ -1292,7 +1598,11 @@ begin
       end;
     hlHtml:
       case FLong of
-        4:
+{$IFDEF BUGFIX}
+        lgTag:
+{$ELSE}
+        5:
+{$ENDIF BUGFIX}
           begin
             P := StrScan(P, '>');
             if P <> nil then
@@ -1315,8 +1625,12 @@ begin
   case FHighLighter of
     hlPascal:
       S := '{}*()/'#13;
-    hlCBuilder, hlJava, hlSql, hlPhp:
+    hlCBuilder, hlJava, hlSql, hlPhp{$IFDEF HL_NOT_QUITE_C}, hlNQC{$ENDIF}:
+{$IFDEF BUGFIX}
+      S := '*/'#13'\';
+{$ELSE}
       S := '*/'#13;
+{$ENDIF BUGFIX}
     hlVB:
       S := '''' + #13;
     hlPython, hlPerl:
@@ -1331,7 +1645,12 @@ begin
   if HasAnyChar(S, Text) then
   begin
     RescanLong;
+{$IFDEF BUGFIX}
+    if FRescanLongChanged then
+      Invalidate;
+{$ELSE}
     Invalidate;
+{$ENDIF BUGFIX}
   end;
  {
   if (FHighLighter = hlCocoR) and (HasAnyChar('productions'#13, Text)) then

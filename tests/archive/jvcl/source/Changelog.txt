@@ -1,4 +1,50 @@
-2003-03-22
+2003-03-23
+Modifications from Andreas Hausladen:
+==============================================================================
+Theses modifications were primary applied to the R&A Library 2.00 in order to
+make the highlighter editor RAHLEditor (now JvHLEditor) more acting like the
+Delphi Editor.
+
+JvStrUtils.pas
+  {$DEFINE BUGFIX}
+  * Bugfix: function GetXYByPos counts #13 instead of #10
+JvHLParser.pas:
+  {$DEFINE BUGFIX}
+  * Bugfix: In CBuilder mode a string like "abc\\" will not terminate the string
+    token, corrected
+JvEditor.pas:
+  {$DEFINE RAEDITOR_MORE_DELPHI_LIKE}
+  {$DEFINE RAEDITOR_SPEED_FASTDRAW}
+  {$DEFINE RAEDITOR_SPEED_FONTCACHE}
+  {$DEFINE BUGFIX}
+  * TUnselectUndo renamed to TJvUnselectUndo
+  * Changed uses-"ClipBrd" to "Clipbrd" for Linux file system
+  * Bugfix: Caret move and selection have set Modified to True, corrected
+  * Bugfix: ecPrevWord and ecSelPrevWord command cannot jump to prior line,
+    corrected
+  * Bugfix: TJvBackspaceUndo.Undo inserts on wrong position in most cases,
+    corrected
+  * Bugfix: CodeCompletition catches VK_HOME, VK_END, corrected
+  * Corrected some strange (mouse) selection behaviour
+  + Added TFont cache for faster rendering
+  + Added OnCommand2 event to TKeyboard for special two key shortcuts like
+    [CTRL][Q]+[F]
+  + Added ecBackspaceWord command that removes a word on [CTRL][BACKSPACE]
+    instead of typing a strange symbol.
+    [SHIFT][BACKSPACE] acts like [BACKSPACE]
+JvHLEditor.pas:
+  {$DEFINE HL_NOT_QUITE_C}  { enable a nqc (LEGO MindStorm(R)) highlighter }
+  {$DEFINE BUGFIX} { some bugfixes }
+  + C/C++ line continuation symbol '\' extends the highlight colors to the next
+    line
+  + Not Quite C highlighter (C similar, for programming LEGO MindStorm(R) robots)
+  * Bugfix: SetBlockColor raise an exception (AV) if iEnd becomes greater than
+    MAX_X, corrected
+  * In TRAHLEditor.GetAttr all IsXxxKeyWord get a CONST string, so no compiler
+    magic LStrAddRef is needed.
+  * some speed optimations 
+==============================================================================
+2003-03-23
 - Several properties in TJvRollout have changed and been put into nested sub-properties. 
   To update current usage do the following:
    * Color: change to Colors.Color

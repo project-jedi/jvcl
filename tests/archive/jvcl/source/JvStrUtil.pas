@@ -15,8 +15,9 @@ Copyright (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
 Contributor(s):
+Andreas Hausladen [Andreas.Hausladen@gmx.de]
 
-Last Modified: 2002-07-04
+Last Modified: 2003-03-23
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -29,6 +30,7 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
+{$DEFINE BUGFIX}
 
 unit JvStrUtil;
 
@@ -306,7 +308,11 @@ begin
     Y := 0;
     while (I <= Pos) do
     begin
+{$IFDEF BUGFIX}
+      if S[I] = #10 then
+{$ELSE}
       if S[I] = #13 then
+{$ENDIF BUGFIX}
       begin
         Inc(Y);
         iB := I + 1
