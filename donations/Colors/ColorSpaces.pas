@@ -45,7 +45,12 @@ const
   csYUV = TJvColorSpaceID(4 shl 2);
   csHSV = TJvColorSpaceID(5 shl 2);
   csYIQ = TJvColorSpaceID(6 shl 2);
-  csDEF = TJvColorSpaceID(7 shl 2);
+  csYCC = TJvColorSpaceID(7 shl 2);
+  csXYZ = TJvColorSpaceID(8 shl 2);
+  csDEF = TJvColorSpaceID(9 shl 2);
+
+  csMIN = csRGB;
+  csMAX = csDEF;
 
   RGB_MIN = 0;
   RGB_MAX = 255;
@@ -59,6 +64,10 @@ const
   HSV_MAX = 240;
   YIQ_MIN = 0;
   YIQ_MAX = 255;
+  YCC_MIN = 0;
+  YCC_MAX = 255;
+  XYZ_MIN = 0;
+  XYZ_MAX = 255;
   DEF_MIN = 0;
   DEF_MAX = 255;
 
@@ -68,7 +77,7 @@ const
   fclRGBLime  = TJvFullColor((Ord(csRGB) shl 24) or $00FF00);
   fclRGBBlue  = TJvFullColor((Ord(csRGB) shl 24) or $FF0000);
 
-  fclDEFWindowText = TJvFullColor((Ord(csDEF) shl 24) or $01000000 or COLOR_WINDOWTEXT);
+  fclDEFWindowText = TJvFullColor((Ord(csDEF) shl 24) or COLOR_WINDOWTEXT);
 
 type
   TJvColorSpace = class(TPersistent)
@@ -173,6 +182,32 @@ type
     function ConvertFromColor(AColor: TColor): TJvFullColor; override;
     function ConvertToColor(AColor: TJvFullColor): TColor; override;
   end;
+
+  TJvYCCColorSpace = class(TJvColorSpace)
+  protected
+    function GetAxisName(Index: TJvAxisIndex): string; override;
+    function GetAxisMin(Index: TJvAxisIndex): Byte; override;
+    function GetAxisMax(Index: TJvAxisIndex): Byte; override;
+    function GetName: string; override;
+    function GetShortName: string; override;
+    function GetAxisDefault(Index: TJvAxisIndex): Byte; override;
+  public
+    function ConvertFromColor(AColor: TColor): TJvFullColor; override;
+    function ConvertToColor(AColor: TJvFullColor): TColor; override;
+  end;
+
+  TJvXYZColorSpace = class(TJvColorSpace)
+  protected
+    function GetAxisName(Index: TJvAxisIndex): string; override;
+    function GetAxisMin(Index: TJvAxisIndex): Byte; override;
+    function GetAxisMax(Index: TJvAxisIndex): Byte; override;
+    function GetName: string; override;
+    function GetShortName: string; override;
+    function GetAxisDefault(Index: TJvAxisIndex): Byte; override;
+  public
+    function ConvertFromColor(AColor: TColor): TJvFullColor; override;
+    function ConvertToColor(AColor: TJvFullColor): TColor; override;
+  end;
   
   TJvDEFColorSpace = class(TJvColorSpace)
   private
@@ -236,44 +271,65 @@ var
   GlobalColorSpaceManager: TJvColorSpaceManager = nil;
 
 resourcestring
-  RsUnnamedColorAxis = 'Unnamed Color Axis';
-  RsUnnamedColorSpace = 'Unnamed Color Space';
-  RsUCS = 'UCS';
-  RsRed = 'Red';
-  RsGreen = 'Green';
-  RsBlue = 'Blue';
-  RsTrueColor = 'True Color';
-  RsRGB = 'RGB';
-  RsHue = 'Hue';
-  RsLightness = 'Lightness';
-  RsSaturation = 'Saturation';
-  RsChromaticVision = 'Chromatic Vision';
-  RsHLS = 'HLS';
-  RsCyan = 'Cyan';
-  RsMagenta = 'Magenta';
-  RsYellow = 'Yellow';
-  RsSubstractiveVision = 'Substractive Vision';
-  RsCMY = 'CMY';
-  RsYUVValueY = 'Y Value';
-  RsYUVValueU = 'U Value';
-  RsYUVValueV = 'V Value';
-  RsPCVideo = 'PC Video';
-  RsYUV = 'YUV';
-  RsValue = 'Value';
-  RsRotationVision = 'Rotation Vision';
-  RsHSV = 'HSV';
-  RsNoName= 'No Name';
-  RsYIQValueY = 'Y';
-  RsYIQValueI = 'I';
-  RsYIQValueQ = 'Q';
-  RsUSScreen = 'NTSC US television standard';
-  RsYIQ = 'YIQ';
-  RsPredefinedColors = 'Predefined Colors';
-  RsDEF = 'DEF';
-  RsEColorSpaceNotFound = 'Color Space not found: %d';
-  RsEIllegalColorSpaceID = 'Color Space ID %d is illegal';
-  RsEColorSpaceAlreadyExists = 'Color Space Already exists [ID: %d, Name: %s]';
-  RsEInconvertibleColor = 'TColor value $%.8X cannot be converted to TJvFullColor';
+  RsErr_UnnamedAxis        = 'Unnamed Color Axis';
+  RsErr_UnnamedSpace       = 'Unnamed Color Space';
+  RsErr_UCS                = 'UCS';
+  RsErr_NoName             = 'No Name';
+  RsErr_CSNotFound         = 'Color Space not found: %d';
+  RsErr_IllegalID          = 'Color Space ID %d is illegal';
+  RsErr_CSAlreadyExists    = 'Color Space Already exists [ID: %d, Name: %s]';
+  RsErr_InconvertibleColor = 'TColor value $%.8X cannot be converted to TJvFullColor';
+
+  RsRGB_Red       = 'Red';
+  RsRGB_Green     = 'Green';
+  RsRGB_Blue      = 'Blue';
+  RsRGB_FullName  = 'True Color';
+  RsRGB_ShortName = 'RGB';
+
+  RsHLS_Hue        = 'Hue';
+  RsHLS_Lightness  = 'Lightness';
+  RsHLS_Saturation = 'Saturation';
+  RsHLS_FullName   = 'Chromatic Vision';
+  RsHLS_ShortName  = 'HLS';
+
+  RsCMY_Cyan      = 'Cyan';
+  RsCMY_Magenta   = 'Magenta';
+  RsCMY_Yellow    = 'Yellow';
+  RsCMY_FullName  = 'Substractive Vision';
+  RsCMY_ShortName = 'CMY';
+
+  RsYUV_Y         = 'Y Value';
+  RsYUV_U         = 'U Value';
+  RsYUV_V         = 'V Value';
+  RsYUV_FullName  = 'PC Video';
+  RsYUV_ShortName = 'YUV';
+
+  RsHSV_Hue        = 'Hue';
+  RsHSV_Saturation = 'Saturation';
+  RsHSV_Value      = 'Value';
+  RsHSV_FullName   = 'Rotation Vision';
+  RsHSV_ShortName  = 'HSV';
+
+  RsYIQ_Y         = 'Y';
+  RsYIQ_I         = 'I';
+  RsYIQ_Q         = 'Q';
+  RsYIQ_FullName  = 'NTSC US television standard';
+  RsYIQ_ShortName = 'YIQ';
+
+  RsYCC_Y         = 'Y';
+  RsYCC_Cr        = 'Cr';
+  RsYCC_Cb        = 'Cb';
+  RsYCC_FullName  = 'YCrCb';
+  RsYCC_ShortName = 'YCC';
+
+  RsXYZ_X         = 'Y';
+  RsXYZ_Y         = 'Y';
+  RsXYZ_Z         = 'Z';
+  RsXYZ_FullName  = 'CIE XYZ';
+  RsXYZ_ShortName = 'XYZ';
+
+  RsDEF_FullName  = 'Delphi predefined colors';
+  RsDEF_ShortName = 'DEF';
 
 const
   HLS_MAX_HALF = HLS_MAX / 2.0;
@@ -336,10 +392,9 @@ end;
 
 function JoinColorParts(Part1, Part2, Part3: Cardinal): TJvFullColor;
 begin
-  Result :=
-    (Part1 and $000000FF) or
-    ((Part2 and $000000FF) shl 8) or
-    ((Part3 and $000000FF) shl 16);
+  Result :=     (Part1 and $000000FF)
+            or ((Part2 and $000000FF) shl  8)
+            or ((Part3 and $000000FF) shl 16);
 end;
 
 //=== { TJvColorSpace } ======================================================
@@ -347,10 +402,10 @@ end;
 constructor TJvColorSpace.Create(ColorID: TJvColorSpaceID);
 begin
   inherited Create;
-  if (ColorID >= csRGB) and (ColorID <= csDEF) then
+  if (ColorID >= csMIN) and (ColorID <= csMAX) then
     FID := ColorID
   else
-    raise EJvColorSpaceError.CreateResFmt(@RsEIllegalColorSpaceID, [Ord(ColorID)]);
+    raise EJvColorSpaceError.CreateResFmt(@RsErr_IllegalID, [Ord(ColorID)]);
 end;
 
 function TJvColorSpace.ConvertFromColor(AColor: TColor): TJvFullColor;
@@ -388,17 +443,17 @@ end;
 
 function TJvColorSpace.GetAxisName(Index: TJvAxisIndex): string;
 begin
-  Result := RsUnnamedColorAxis;
+  Result := RsErr_UnnamedAxis;
 end;
 
 function TJvColorSpace.GetName: string;
 begin
-  Result := RsUnnamedColorSpace;
+  Result := RsErr_UnnamedSpace;
 end;
 
 function TJvColorSpace.GetShortName: string;
 begin
-  Result := RsUCS;
+  Result := RsErr_UCS;
 end;
 
 //=== { TJvRGBColorSpace } ===================================================
@@ -432,11 +487,11 @@ function TJvRGBColorSpace.GetAxisName(Index: TJvAxisIndex): string;
 begin
   case Index of
     axIndex0:
-      Result := RsRed;
+      Result := RsRGB_Red;
     axIndex1:
-      Result := RsGreen;
+      Result := RsRGB_Green;
     axIndex2:
-      Result := RsBlue;
+      Result := RsRGB_Blue;
   else
     Result := inherited GetAxisName(Index);
   end;
@@ -444,12 +499,12 @@ end;
 
 function TJvRGBColorSpace.GetName: string;
 begin
-  Result := RsTrueColor;
+  Result := RsRGB_FullName;
 end;
 
 function TJvRGBColorSpace.GetShortName: string;
 begin
-  Result := RsRGB;
+  Result := RsRGB_ShortName;
 end;
 
 //=== { TJvHLSColorSpace } ===================================================
@@ -594,11 +649,11 @@ function TJvHLSColorSpace.GetAxisName(Index: TJvAxisIndex): string;
 begin
   case Index of
     axIndex0:
-      Result := RsHue;
+      Result := RsHLS_Hue;
     axIndex1:
-      Result := RsLightness;
+      Result := RsHLS_Lightness;
     axIndex2:
-      Result := RsSaturation;
+      Result := RsHLS_Saturation;
   else
     Result := inherited GetAxisName(Index);
   end;
@@ -606,12 +661,12 @@ end;
 
 function TJvHLSColorSpace.GetName: string;
 begin
-  Result := RsChromaticVision;
+  Result := RsHLS_FullName;
 end;
 
 function TJvHLSColorSpace.GetShortName: string;
 begin
-  Result := RsHLS;
+  Result := RsHLS_ShortName;
 end;
 
 //=== { TJvCMYColorSpace } ===================================================
@@ -619,18 +674,29 @@ end;
 function TJvCMYColorSpace.ConvertFromColor(AColor: TColor): TJvFullColor;
 var
   Red, Green, Blue: Integer;
+  Cyan, Magenta, Yellow: Integer;
 begin
   SplitColorParts(AColor, Red, Green, Blue);
-  Result := inherited ConvertFromColor(
-    JoinColorParts(CMY_MAX - Red, CMY_MAX - Green, CMY_MAX - Blue));
+
+  Cyan    := ((RGB_MAX - Red  ) * (CMY_MAX-CMY_MIN+1) div (RGB_MAX-RGB_MIN+1)) + CMY_MIN;
+  Magenta := ((RGB_MAX - Green) * (CMY_MAX-CMY_MIN+1) div (RGB_MAX-RGB_MIN+1)) + CMY_MIN;
+  Yellow  := ((RGB_MAX - Blue ) * (CMY_MAX-CMY_MIN+1) div (RGB_MAX-RGB_MIN+1)) + CMY_MIN;
+
+  Result := inherited ConvertFromColor(JoinColorParts(Cyan, Magenta, Yellow));
 end;
 
 function TJvCMYColorSpace.ConvertToColor(AColor: TJvFullColor): TColor;
 var
   Cyan, Magenta, Yellow: Integer;
+  Red, Green, Blue: Integer;
 begin
   SplitColorParts(AColor, Cyan, Magenta, Yellow);
-  Result := inherited ConvertToColor(JoinColorParts(CMY_MAX - Cyan, CMY_MAX - Magenta, CMY_MAX - Yellow));
+
+  Red   := ((CMY_MAX - Cyan   ) * (RGB_MAX-RGB_MIN+1) div (CMY_MAX-CMY_MIN+1)) + RGB_MIN;
+  Green := ((CMY_MAX - Magenta) * (RGB_MAX-RGB_MIN+1) div (CMY_MAX-CMY_MIN+1)) + RGB_MIN;
+  Blue  := ((CMY_MAX - Yellow ) * (RGB_MAX-RGB_MIN+1) div (CMY_MAX-CMY_MIN+1)) + RGB_MIN;
+
+  Result := inherited ConvertToColor(JoinColorParts(Red, Green, Blue));
 end;
 
 function TJvCMYColorSpace.GetAxisDefault(Index: TJvAxisIndex): Byte;
@@ -652,11 +718,11 @@ function TJvCMYColorSpace.GetAxisName(Index: TJvAxisIndex): string;
 begin
   case Index of
     axIndex0:
-      Result := RsCyan;
+      Result := RsCMY_Cyan;
     axIndex1:
-      Result := RsMagenta;
+      Result := RsCMY_Magenta;
     axIndex2:
-      Result := RsYellow;
+      Result := RsCMY_Yellow;
   else
     Result := inherited GetAxisName(Index);
   end;
@@ -664,12 +730,12 @@ end;
 
 function TJvCMYColorSpace.GetName: string;
 begin
-  Result := RsSubstractiveVision;
+  Result := RsHLS_FullName;
 end;
 
 function TJvCMYColorSpace.GetShortName: string;
 begin
-  Result := RsCMY;
+  Result := RsHLS_ShortName;
 end;
 
 //=== { TJvYUVColorSpace } ===================================================
@@ -733,11 +799,11 @@ function TJvYUVColorSpace.GetAxisName(Index: TJvAxisIndex): string;
 begin
   case Index of
     axIndex0:
-      Result := RsYUVValueY;
+      Result := RsYUV_Y;
     axIndex1:
-      Result := RsYUVValueU;
+      Result := RsYUV_U;
     axIndex2:
-      Result := RsYUVValueV;
+      Result := RsYUV_V;
   else
     Result := inherited GetAxisName(Index);
   end;
@@ -745,12 +811,12 @@ end;
 
 function TJvYUVColorSpace.GetName: string;
 begin
-  Result := RsPCVideo;
+  Result := RsYUV_FullName;
 end;
 
 function TJvYUVColorSpace.GetShortName: string;
 begin
-  Result := RsYUV;
+  Result := RsYUV_ShortName;
 end;
 
 //=== { TJvHSVColorSpace } ===================================================
@@ -898,18 +964,18 @@ end;
 
 function TJvHSVColorSpace.GetAxisMin(Index: TJvAxisIndex): Byte;
 begin
-  Result := 0;
+  Result := HSV_MIN;
 end;
 
 function TJvHSVColorSpace.GetAxisName(Index: TJvAxisIndex): string;
 begin
   case Index of
     axIndex0:
-      Result := RsHue;
+      Result := RsHSV_Hue;
     axIndex1:
-      Result := RsSaturation;
+      Result := RsHSV_Saturation;
     axIndex2:
-      Result := RsValue;
+      Result := RsHSV_Value;
   else
     Result := inherited GetAxisName(Index);
   end;
@@ -917,12 +983,12 @@ end;
 
 function TJvHSVColorSpace.GetName: string;
 begin
-  Result := RsRotationVision;
+  Result := RsHSV_FullName;
 end;
 
 function TJvHSVColorSpace.GetShortName: string;
 begin
-  Result := RsHSV;
+  Result := RsHSV_ShortName;
 end;
 
 //=== { TJvYIQColorSpace } ===================================================
@@ -956,9 +1022,9 @@ begin
   I := I - 128;
   Q := Q - 128;
 
-  Red := Round(Y + 0.956*I + 0.621*Q);
+  Red := Round(Y + 0.956*I + 0.620*Q);
   Green := Round(Y - 0.272*I - 0.647*Q);
-  Blue := Round(Y - 1.105*I + 1.702*Q);
+  Blue := Round(Y - 1.108*I + 1.705*Q);
 
   Red := EnsureRange(Red , RGB_MIN, RGB_MAX);
   Green := EnsureRange(Green, RGB_MIN, RGB_MAX);
@@ -986,11 +1052,11 @@ function TJvYIQColorSpace.GetAxisName(Index: TJvAxisIndex): string;
 begin
   case Index of
     axIndex0:
-      Result := RsYIQValueY;
+      Result := RsYIQ_Y;
     axIndex1:
-      Result := RsYIQValueI;
+      Result := RsYIQ_I;
     axIndex2:
-      Result := RsYIQValueQ;
+      Result := RsYIQ_Q;
   else
     Result := inherited GetAxisName(Index);
   end;
@@ -998,12 +1064,170 @@ end;
 
 function TJvYIQColorSpace.GetName: string;
 begin
-  Result := RsUSScreen;
+  Result := RsYIQ_FullName;
 end;
 
 function TJvYIQColorSpace.GetShortName: string;
 begin
-  Result := RsYIQ;
+  Result := RsYIQ_ShortName;
+end;
+
+//=== { TJvYCCColorSpace } ===================================================
+
+function TJvYCCColorSpace.ConvertFromColor(AColor: TColor): TJvFullColor;
+var
+  Y, Cr, Cb: Integer;
+  Red, Green, Blue: Integer;
+begin
+  SplitColorParts(AColor,Red,Green,Blue);
+
+  Y  := Round( 0.299*Red + 0.587*Green + 0.114*Blue);
+  Cr := Round(-0.150*Red - 0.293*Green + 0.443*Blue) + 128;
+  Cb := Round( 0.438*Red - 0.367*Green - 0.071*Blue) + 128;
+
+  Y  := EnsureRange(Y,  YCC_MIN, YCC_MAX);
+  Cr := EnsureRange(Cr, YCC_MIN, YCC_MAX);
+  Cb := EnsureRange(Cb, YCC_MIN, YCC_MAX);
+
+  Result := inherited ConvertFromColor(JoinColorParts(Y, Cr, Cb));
+end;
+
+function TJvYCCColorSpace.ConvertToColor(AColor: TJvFullColor): TColor;
+var
+  Red, Green, Blue: Integer;
+  Y, Cr, Cb: Integer;
+begin
+  SplitColorParts(AColor,Y,Cr,Cb);
+
+  Y  := Y;
+  Cr := Cr - 128;
+  Cb := Cb - 128;
+
+  Red := Round(Y - 0.001*Cr + 1.600*Cb);
+  Green := Round(Y - 0.388*Cr - 0.816*Cb);
+  Blue := Round(Y + 2.000*Cr + 0.002*Cb);
+
+  Red := EnsureRange(Red , RGB_MIN, RGB_MAX);
+  Green := EnsureRange(Green, RGB_MIN, RGB_MAX);
+  Blue := EnsureRange(Blue, RGB_MIN, RGB_MAX);
+
+  Result := inherited ConvertToColor(JoinColorParts(Red, Green, Blue));
+end;
+
+function TJvYCCColorSpace.GetAxisDefault(Index: TJvAxisIndex): Byte;
+begin
+  Result := 128;
+end;
+
+function TJvYCCColorSpace.GetAxisMax(Index: TJvAxisIndex): Byte;
+begin
+  Result := YCC_MAX;
+end;
+
+function TJvYCCColorSpace.GetAxisMin(Index: TJvAxisIndex): Byte;
+begin
+  Result := YCC_MIN;
+end;
+
+function TJvYCCColorSpace.GetAxisName(Index: TJvAxisIndex): string;
+begin
+  case Index of
+    axIndex0:
+      Result := RsYCC_Y;
+    axIndex1:
+      Result := RsYCC_Cr;
+    axIndex2:
+      Result := RsYCC_Cb;
+  else
+    Result := inherited GetAxisName(Index);
+  end;
+end;
+
+function TJvYCCColorSpace.GetName: string;
+begin
+  Result := RsYCC_FullName;
+end;
+
+function TJvYCCColorSpace.GetShortName: string;
+begin
+  Result := RsYCC_ShortName;
+end;
+
+//=== { TJvXYZColorSpace } ===================================================
+
+function TJvXYZColorSpace.ConvertFromColor(AColor: TColor): TJvFullColor;
+var
+  X, Y, Z: Integer;
+  Red, Green, Blue: Integer;
+begin
+  SplitColorParts(AColor,Red,Green,Blue);
+
+  X := Round( 0.618*Red + 0.177*Green + 0.205*Blue);
+  Y := Round( 0.299*Red + 0.587*Green + 0.114*Blue);
+  Z := Round(             0.056*Green + 0.944*Blue);
+
+  X := EnsureRange(X, XYZ_MIN, XYZ_MAX);
+  Y := EnsureRange(Y, XYZ_MIN, XYZ_MAX);
+  Z := EnsureRange(Z, XYZ_MIN, XYZ_MAX);
+
+  Result := inherited ConvertFromColor(JoinColorParts(X, Y, Z));
+end;
+
+function TJvXYZColorSpace.ConvertToColor(AColor: TJvFullColor): TColor;
+var
+  Red, Green, Blue: Integer;
+  X, Y, Z: Integer;
+begin
+  SplitColorParts(AColor,X,Y,Z);
+
+  Red   := Round( 1.876*X - 0.533*Y - 0.343*Z);
+  Green := Round(-0.967*X + 1.998*Y - 0.031*Z);
+  Blue  := Round( 0.057*X - 0.118*Y + 1.061*Z);
+
+  Red := EnsureRange(Red , RGB_MIN, RGB_MAX);
+  Green := EnsureRange(Green, RGB_MIN, RGB_MAX);
+  Blue := EnsureRange(Blue, RGB_MIN, RGB_MAX);
+
+  Result := inherited ConvertToColor(JoinColorParts(Red, Green, Blue));
+end;
+
+function TJvXYZColorSpace.GetAxisDefault(Index: TJvAxisIndex): Byte;
+begin
+  Result := 128;
+end;
+
+function TJvXYZColorSpace.GetAxisMax(Index: TJvAxisIndex): Byte;
+begin
+  Result := XYZ_MAX;
+end;
+
+function TJvXYZColorSpace.GetAxisMin(Index: TJvAxisIndex): Byte;
+begin
+  Result := XYZ_MIN;
+end;
+
+function TJvXYZColorSpace.GetAxisName(Index: TJvAxisIndex): string;
+begin
+  case Index of
+    axIndex0:
+      Result := RsXYZ_X;
+    axIndex1:
+      Result := RsXYZ_Y;
+    axIndex2:
+      Result := RsXYZ_Z;
+  else
+    Result := inherited GetAxisName(Index);
+  end;
+end;
+
+function TJvXYZColorSpace.GetName: string;
+begin
+  Result := RsXYZ_FullName;
+end;
+
+function TJvXYZColorSpace.GetShortName: string;
+begin
+  Result := RsXYZ_ShortName;
 end;
 
 //=== { TJvDEFColorSpace } ===================================================
@@ -1079,17 +1303,17 @@ end;
 
 function TJvDEFColorSpace.GetAxisName(Index: TJvAxisIndex): string;
 begin
-  Result := RsNoName;
+  Result := RsErr_NoName;
 end;
 
 function TJvDEFColorSpace.GetName: string;
 begin
-  Result := RsPredefinedColors;
+  Result := RsDEF_FullName;
 end;
 
 function TJvDEFColorSpace.GetShortName: string;
 begin
-  Result := RsDEF;
+  Result := RsDEF_ShortName;
 end;
 
 function TJvDEFColorSpace.GetNumberOfColors: Cardinal;
@@ -1151,7 +1375,7 @@ begin
       $80:
         Result := ColorSpace[csDEF].ConvertFromColor(AColor);
     else
-      raise EJvColorSpaceError.CreateResFmt(@RsEInconvertibleColor, [Cardinal(AColor)]);
+      raise EJvColorSpaceError.CreateResFmt(@RsErr_InconvertibleColor, [Cardinal(AColor)]);
     end;
 end;
 
@@ -1163,7 +1387,7 @@ begin
   for I := 0 to Count - 1 do
     if ColorSpaceByIndex[I].ID = Result then
       Exit;
-  raise EJvColorSpaceError.CreateResFmt(@RsEIllegalColorSpaceID, [Ord(Result)]);
+  raise EJvColorSpaceError.CreateResFmt(@RsErr_IllegalID, [Ord(Result)]);
 end;
 
 function TJvColorSpaceManager.GetColorSpace(ID: TJvColorSpaceID): TJvColorSpace;
@@ -1178,7 +1402,7 @@ begin
       Break;
   end;
   if Result = nil then
-    raise EJvColorSpaceError.CreateResFmt(@RsEColorSpaceNotFound, [Ord(ID)]);
+    raise EJvColorSpaceError.CreateResFmt(@RsErr_CSNotFound, [Ord(ID)]);
 end;
 
 function TJvColorSpaceManager.GetCount: Integer;
@@ -1202,7 +1426,7 @@ begin
     if CS.ID = NewColorSpace.ID then
       with CS do
       begin
-        EJvColorSpaceError.CreateFmt(RsEColorSpaceAlreadyExists, [ID, Name]);
+        EJvColorSpaceError.CreateFmt(RsErr_CSAlreadyExists, [ID, Name]);
         Exit;
       end;
   end;
@@ -1226,6 +1450,8 @@ initialization
   ColorSpaceManager.RegisterColorSpace(TJvYUVColorSpace.Create(csYUV));
   ColorSpaceManager.RegisterColorSpace(TJvHSVColorSpace.Create(csHSV));
   ColorSpaceManager.RegisterColorSpace(TJvYIQColorSpace.Create(csYIQ));
+  ColorSpaceManager.RegisterColorSpace(TJvYCCColorSpace.Create(csYCC));
+  ColorSpaceManager.RegisterColorSpace(TJvXYZColorSpace.Create(csXYZ));
   ColorSpaceManager.RegisterColorSpace(TJvDEFColorSpace.Create(csDEF));
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);

@@ -49,6 +49,8 @@ type
   TJvColorCircle = class;
   TJvFullColorTrackBar = class;
 
+  EJvColorError = class (EJVCLException);
+
   TJvColorComponent = class(TCustomControl)
   private
     FAutoMouse: Boolean;
@@ -371,54 +373,6 @@ type
     property RoundShapeHeight: Integer read FRoundShapeHeight write SetRoundShapeHeight default 4;
   end;
 
-  TJvFullColors = array [0..MaxListSize - 1] of TJvFullColor;
-  PJvFullColors = ^TJvFullColors;
-
-  TJvFullColorListEvent = procedure(Sender: TObject; Item: TJvFullColor; Position: Integer) of object;
-
-  EJvFullColorListError = class(EJVCLException);
-
-  TJvFullColorList = class(TPersistent)
-  private
-    FCapacity: Integer;
-    FCount: Integer;
-    FList: PJvFullColors;
-    FOnChange: TJvFullColorListEvent;
-    FUpdateCount: Integer;
-    procedure SetCapacity(const Value: Integer);
-    procedure SetCount(const Value: Integer);
-  protected
-    procedure Grow;
-    function GetItem(Index: Integer): TJvFullColor;
-    procedure SetItem(Index: Integer; const Value: TJvFullColor);
-    procedure DefineProperties(Filer: TFiler); override;
-    procedure WriteItems(Writer: TWriter);
-    procedure ReadItems(Reader: TReader);
-    procedure Change(AColor: TJvFullColor; AIndex: Integer);
-  public
-    destructor Destroy; override;
-
-    function Add(AColor: TJvFullColor): Integer;
-    procedure Clear;
-    function Remove(AColor: TJvFullColor): Integer;
-    procedure Delete(Index: Integer);
-    procedure Exchange(Index1, Index2: Integer);
-    procedure Insert(Index: Integer; AColor: TJvFullColor);
-    function IndexOf(AColor: TJvFullColor): Integer;
-    procedure DeleteRedundant;
-    procedure BeginUpdate;
-    procedure EndUpdate;
-
-    property Items[Index: Integer]: TJvFullColor read GetItem write SetItem; default;
-    property List: PJvFullColors read FList;
-    property Capacity: Integer read FCapacity write SetCapacity;
-    property Count: Integer read FCount write SetCount;
-    property UpdateCount: Integer read FUpdateCount;
-    property OnChange: TJvFullColorListEvent read FOnChange write FOnChange;
-  end;
-
-  EJvColorError = class(EJVCLException);
-
   TJvColorSpaceFormat = (cfName, cfShortName, cfBoth);
 
   TJvColorSpaceCombo = class(TCustomComboBox)
@@ -563,6 +517,114 @@ type
     property OnSelect;
     property OnStartDock;
     property OnStartDrag;
+  end;
+
+  TJvFullColorArray = array [0..MaxListSize - 1] of TJvFullColor;
+  PJvFullColorArray = ^TJvFullColorArray;
+
+  TJvFullColorListEvent = procedure(Sender: TObject; Item: TJvFullColor;
+                                    Position: Integer) of object;
+
+  EJvFullColorListError = class(Exception);
+
+  TJvFullColorList = class(TPersistent)
+  private
+    FCapacity: Integer;
+    FCount: Integer;
+    FList: PJvFullColorArray;
+    FOnChange: TJvFullColorListEvent;
+    FUpdateCount: Integer;
+    procedure SetCapacity(const Value: Integer);
+    procedure SetCount(const Value: Integer);
+  protected
+    procedure Grow;
+    function GetItem(Index: Integer): TJvFullColor;
+    procedure SetItem(Index: Integer; const Value: TJvFullColor);
+    procedure DefineProperties(Filer: TFiler); override;
+    procedure WriteItems(Writer: TWriter);
+    procedure ReadItems(Reader: TReader);
+    procedure Change(AColor: TJvFullColor; AIndex: Integer);
+  public
+    constructor Create;
+    destructor Destroy; override;
+
+    function Add(AColor: TJvFullColor): Integer;
+    procedure Clear;
+    function Remove(AColor: TJvFullColor): Integer;
+    procedure Delete(Index: Integer);
+    procedure Exchange(Index1, Index2: Integer);
+    procedure Insert(Index: Integer; AColor: TJvFullColor);
+    function IndexOf(AColor: TJvFullColor): Integer;
+    procedure DeleteRedundant;
+    procedure BeginUpdate;
+    procedure EndUpdate;
+
+    property Items[Index: Integer]: TJvFullColor read GetItem write SetItem; default;
+    property List: PJvFullColorArray read FList;
+    property Capacity: Integer read FCapacity write SetCapacity;
+    property Count: Integer read FCount write SetCount;
+    property UpdateCount: Integer read FUpdateCount;
+    property OnChange: TJvFullColorListEvent read FOnChange write FOnChange;
+  end;
+
+  TJvFullColorEdge = (feRaised, feLowered, feFlat);
+
+  TJvFullColorGroup = class (TCustomControl)
+  private
+    FItems: TJvFullColorList;
+    FColCount: Integer;
+    FEdge: TJvFullColorEdge;
+    FSelectedEdge: TJvFullColorEdge;
+    FMouseEdge: TJvFullColorEdge;
+    FSquareSize: Integer;
+    FMouseIndex: Integer;
+    FSelectedIndex: Integer;
+    FBrush: TBrush;
+    procedure SetItems(const Value: TJvFullColorList);
+    procedure SetColCount(const Value: Integer);
+    procedure SetEdge(const Value: TJvFullColorEdge);
+    procedure SetMouseEdge(const Value: TJvFullColorEdge);
+    procedure SetSelectedEdge(const Value: TJvFullColorEdge);
+    procedure SetSquareSize(const Value: Integer);
+    procedure MouseLeave(var Message:TWMMouse); message WM_MOUSELEAVE;
+    function GetSelected: TJvFullColor;
+    procedure SetSelected(const Value: TJvFullColor);
+    procedure SetSelectedIndex(const Value: Integer);
+    procedure SetBrush(const Value: TBrush);
+  protected
+    procedure Paint; override;
+    procedure ItemsChange(Sender: TObject; Item: TJvFullColor; Position: Integer);
+    procedure BrushChange(Sender: TObject);
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
+      X, Y: Integer); override;
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
+    procedure CalcRects(out XPos, YPos, XInc, YInc:Integer);
+    procedure InvalidateIndex(AIndex:Integer);
+  public
+    constructor Create (AOwner:TComponent); override;
+    destructor Destroy; override;
+    property MouseIndex:Integer read FMouseIndex;
+    property SelectedIndex:Integer read FSelectedIndex write SetSelectedIndex;
+    property Selected:TJvFullColor read GetSelected write SetSelected;
+  published
+    property Items:TJvFullColorList read FItems write SetItems;
+    property ColCount:Integer read FColCount write SetColCount default 4;
+    property Edge:TJvFullColorEdge read FEdge write SetEdge default feRaised;
+    property SelectedEdge:TJvFullColorEdge read FSelectedEdge
+      write SetSelectedEdge default feLowered;
+    property MouseEdge:TJvFullColorEdge read FMouseEdge write SetMouseEdge
+      default feRaised;
+    property SquareSize:Integer read FSquareSize write SetSquareSize default 6;
+    property Brush:TBrush read FBrush write SetBrush;
+    property Align;
+    property Anchors;
+    property Color;
+    property Constraints;
+    property Hint;
+    property ParentShowHint;
+    property ParentColor;
+    property ShowHint;
+    property Visible;
   end;
 
 function GetIndexAxis(AxisConfig: TJvColorAxisConfig; AxisID: TJvAxisIndex): TJvAxisIndex;
@@ -2830,7 +2892,166 @@ begin
   CalcSize;
 end;
 
+//=== { TJvColorSpaceCombo } =================================================
+
+constructor TJvColorSpaceCombo.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  Style := csDropDownList;
+  FAllowVariable := True;
+  FItemFormat := cfBoth;
+end;
+
+procedure TJvColorSpaceCombo.CreateWnd;
+begin
+  inherited CreateWnd;
+  MakeList;
+end;
+
+function TJvColorSpaceCombo.GetColorSpace: TJvColorSpace;
+begin
+  if ItemIndex > -1 then
+    Result := TJvColorSpace(Self.Items.Objects[ItemIndex])
+  else
+    Result := nil;
+end;
+
+function TJvColorSpaceCombo.GetColorSpaceID: TJvColorSpaceID;
+var
+  CS: TJvColorSpace;
+begin
+  CS := SelectedSpace;
+  if CS <> nil then
+    Result := CS.ID
+  else
+    Result := csRGB;
+end;
+
+procedure TJvColorSpaceCombo.MakeList;
+var
+  Index: Integer;
+  LColorSpace: TJvColorSpace;
+  OldColorID: TJvColorSpaceID;
+begin
+  OldColorID := ColorSpaceID;
+  with ColorSpaceManager, Items do
+  begin
+    Clear;
+    for Index := 0 to ColorSpaceManager.Count - 1 do
+    begin
+      LColorSpace := ColorSpaceByIndex[Index];
+      if (LColorSpace.ID <> csDEF) or AllowVariable then
+        AddObject(ColorSpaceToString(LColorSpace, ItemFormat), LColorSpace);
+    end;
+  end;
+  ColorSpaceID := OldColorID;
+end;
+
+procedure TJvColorSpaceCombo.SetAllowVariable(const Value: Boolean);
+begin
+  if FAllowVariable <> Value then
+  begin
+    FAllowVariable := Value;
+    MakeList;
+  end;
+end;
+
+procedure TJvColorSpaceCombo.SetColorSpace(const Value: TJvColorSpace);
+var
+  I: Integer;
+begin
+  for I := 0 to Items.Count - 1 do
+    if Value.ID = TJvColorSpace(Items.Objects[I]).ID then
+    begin
+      ItemIndex := I;
+      Exit;
+    end;
+end;
+
+procedure TJvColorSpaceCombo.SetColorSpaceID(const Value: TJvColorSpaceID);
+begin
+  SetColorSpace(ColorSpaceManager.ColorSpace[Value]);
+end;
+
+procedure TJvColorSpaceCombo.SetItemFormat(const Value: TJvColorSpaceFormat);
+begin
+  if FItemFormat <> Value then
+  begin
+    FItemFormat := Value;
+    MakeList;
+  end;
+end;
+
+//=== { TJvColorAxisConfigCombo } ============================================
+
+constructor TJvColorAxisConfigCombo.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  Style := csDropDownList;
+  FColorID := csRGB;
+  FItemFormat := afComplete;
+end;
+
+procedure TJvColorAxisConfigCombo.CreateWnd;
+begin
+  inherited CreateWnd;
+  MakeList;
+end;
+
+function TJvColorAxisConfigCombo.GetSelected: TJvColorAxisConfig;
+begin
+  Result := TJvColorAxisConfig(ItemIndex);
+end;
+
+procedure TJvColorAxisConfigCombo.MakeList;
+var
+  Index: TJvColorAxisConfig;
+  LColorSpace: TJvColorSpace;
+  OldItemIndex: Integer;
+begin
+  OldItemIndex := ItemIndex;
+  LColorSpace := ColorSpaceManager.ColorSpace[ColorID];
+  with Items do
+  begin
+    Clear;
+    for Index := Low(TJvColorAxisConfig) to High(TJvColorAxisConfig) do
+      Add(AxisConfigToString(Index, ItemFormat, LColorSpace));
+  end;
+  ItemIndex := OldItemIndex;
+end;
+
+procedure TJvColorAxisConfigCombo.SetColorID(const Value: TJvColorSpaceID);
+begin
+  if FColorID <> Value then
+  begin
+    FColorID := Value;
+    MakeList;
+  end;
+end;
+
+procedure TJvColorAxisConfigCombo.SetItemFormat(const Value: TJvColorAxisConfigFormat);
+begin
+  if FItemFormat <> Value then
+  begin
+    FItemFormat := Value;
+    MakeList;
+  end;
+end;
+
+procedure TJvColorAxisConfigCombo.SetSelected(const Value: TJvColorAxisConfig);
+begin
+  ItemIndex := Integer(Value);
+end;
+
 //=== { TJvFullColorList } ===================================================
+
+constructor TJvFullColorList.Create;
+begin
+  inherited Create;
+  FList:=nil;
+  FCount:=0;
+  FCapacity:=0;
+end;
 
 destructor TJvFullColorList.Destroy;
 begin
@@ -3012,161 +3233,323 @@ begin
   Writer.WriteListEnd;
 end;
 
-//=== { TJvColorSpaceCombo } =================================================
+//=== { TFullColorGroup } ===================================================
 
-constructor TJvColorSpaceCombo.Create(AOwner: TComponent);
+constructor TJvFullColorGroup.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  Style := csDropDownList;
-  FAllowVariable := True;
-  FItemFormat := cfBoth;
+  ControlStyle:=ControlStyle+[csOpaque];
+  FItems:=TJvFullColorList.Create;
+  FItems.OnChange:=ItemsChange;
+  FBrush:=TBrush.Create;
+  FBrush.OnChange:=BrushChange;
+  FEdge:=feRaised;
+  FSelectedEdge:=feLowered;
+  FMouseEdge:=feRaised;
+  FColCount:=5;
+  FSquareSize:=6;
+  FSelectedIndex:=-1;
+  FMouseIndex:=-1;
 end;
 
-procedure TJvColorSpaceCombo.CreateWnd;
+destructor TJvFullColorGroup.Destroy;
 begin
-  inherited CreateWnd;
-  MakeList;
+  FItems.Free;
+  FBrush.Free;
+  inherited Destroy;
 end;
 
-function TJvColorSpaceCombo.GetColorSpace: TJvColorSpace;
-begin
-  if ItemIndex > -1 then
-    Result := TJvColorSpace(Self.Items.Objects[ItemIndex])
-  else
-    Result := nil;
-end;
-
-function TJvColorSpaceCombo.GetColorSpaceID: TJvColorSpaceID;
+procedure TJvFullColorGroup.CalcRects(out XPos, YPos, XInc, YInc: Integer);
 var
-  CS: TJvColorSpace;
+   XOffset:Integer;
+   YOffset:Integer;
+   RowCount:Integer;
 begin
-  CS := SelectedSpace;
-  if CS <> nil then
-    Result := CS.ID
-  else
-    Result := csRGB;
+  XOffset:=Width - (FSquareSize*ColCount) - 2;
+  XInc:=XOffset div (ColCount+1);
+  XOffset:=((XOffset-(XInc*(ColCount-1))) div 2) + 1;
+  XPos:=XOffset;
+
+  RowCount:=(Items.Count div ColCount)+1;
+  YOffset:=Height - (FSquareSize*RowCount) - 2;
+  if (RowCount=1)
+    then YInc:=0
+    else YInc:=YOffset div (RowCount+1);
+  YOffset:=((YOffset-(YInc*(RowCount-1))) div 2) + 1;
+  YPos:=YOffset;
 end;
 
-procedure TJvColorSpaceCombo.MakeList;
-var
-  Index: Integer;
-  LColorSpace: TJvColorSpace;
-  OldColorID: TJvColorSpaceID;
+procedure TJvFullColorGroup.ItemsChange(Sender: TObject; Item: TJvFullColor;
+  Position: Integer);
 begin
-  OldColorID := ColorSpaceID;
-  with ColorSpaceManager, Items do
+  FMouseIndex:=-1;
+  FSelectedIndex:=EnsureRange(FSelectedIndex,-1,Items.Count-1);
+  Refresh;
+end;
+
+procedure TJvFullColorGroup.BrushChange(Sender: TObject);
+begin
+  Refresh;
+end;
+
+procedure TJvFullColorGroup.InvalidateIndex(AIndex:Integer);
+var
+  ARect:TRect;
+  ColIndex, RowIndex:Integer;
+  XPos, YPos, XInc, YInc:Integer;
+begin
+  if (AIndex<>-1) then
   begin
-    Clear;
-    for Index := 0 to ColorSpaceManager.Count - 1 do
+    CalcRects(XPos, YPos, XInc, YInc);
+    ColIndex:=AIndex mod ColCount;
+    RowIndex:=AIndex div ColCount;
+    ARect.Left:=XPos+(ColIndex*(XInc+FSquareSize));
+    ARect.Top:=YPos+(RowIndex*(YInc+FSquareSize));
+    ARect.Right:=ARect.Left+FSquareSize+1;
+    ARect.Bottom:=ARect.Top+FSquareSize+1;
+    InvalidateRect(Handle,@ARect,False);
+  end;
+end;
+
+procedure TJvFullColorGroup.MouseLeave(var Message: TWMMouse);
+begin
+  FMouseIndex:=-1;
+  Message.Result:=1;
+  Refresh;
+end;
+
+procedure TJvFullColorGroup.MouseMove(Shift: TShiftState; X, Y: Integer);
+var
+   Index:Integer;
+   RowCount:Integer;
+   Sum:Integer;
+   XPos, YPos, XInc, YInc:Integer;
+   ColIndex, RowIndex:Integer;
+begin
+  inherited MouseMove(Shift,X,Y);
+
+  CalcRects(XPos, YPos, XInc, YInc);
+
+  Sum:=XPos;
+  if (X<XPos) then
+  begin
+    InvalidateIndex(MouseIndex);
+    FMouseIndex:=-1;
+    Exit;
+  end;
+  ColIndex:=-1;
+  for Index:=0 to ColCount-1 do
+  begin
+    if (X>=Sum) and (X<(Sum+FSquareSize)) then
     begin
-      LColorSpace := ColorSpaceByIndex[Index];
-      if (LColorSpace.ID <> csDEF) or AllowVariable then
-        AddObject(ColorSpaceToString(LColorSpace, ItemFormat), LColorSpace);
+      ColIndex:=Index;
+      Break;
+    end;
+    if (X>=(Sum+FSquareSize)) and (X<(Sum+FSquareSize+XInc))
+      then Break;
+    Inc(Sum,FSquareSize+XInc);
+  end;
+
+  if (ColIndex=-1) then
+  begin
+    InvalidateIndex(MouseIndex);
+    FMouseIndex:=-1;
+    Exit;
+  end;
+
+  RowCount:=(Items.Count div ColCount)+1;
+
+  Sum:=YPos;
+  if (Y<YPos) then
+  begin
+    InvalidateIndex(MouseIndex);
+    FMouseIndex:=-1;
+    Exit;
+  end;
+  RowIndex:=-1;
+  for Index:=0 to RowCount-1 do
+  begin
+    if (Y>=Sum) and (Y<(Sum+FSquareSize)) then
+    begin
+      RowIndex:=Index;
+      Break;
+    end;
+    if (Y>=(Sum+FSquareSize)) and (Y<(Sum+FSquareSize+YInc))
+      then Break;
+    Inc(Sum,FSquareSize+YInc);
+  end;
+  if (RowIndex=-1) then
+  begin
+    InvalidateIndex(MouseIndex);
+    FMouseIndex:=-1;
+    Exit;
+  end;
+
+  InvalidateIndex(MouseIndex);
+  FMouseIndex:=EnsureRange((RowIndex*ColCount)+ColIndex,0,Items.Count-1);
+  InvalidateIndex(MouseIndex);
+end;
+
+procedure TJvFullColorGroup.MouseDown(Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  inherited MouseDown(Button,Shift,X,Y);
+  InvalidateIndex(SelectedIndex);
+  SelectedIndex:=MouseIndex;
+  InvalidateIndex(SelectedIndex);
+end;
+
+procedure TJvFullColorGroup.Paint;
+  procedure BevelRect(const R: TRect; Style:TJvFullColorEdge;
+    FillStyle:TBrushStyle; FillColor:TColor);
+  var
+    Color1, Color2:TColor;
+  begin
+    case Style  of
+         feLowered : begin
+                       Color1 := clBtnShadow;
+                       Color2 := clBtnHighlight;
+                     end;
+         feRaised  : begin
+                       Color1 := clBtnHighlight;
+                       Color2 := clBtnShadow;
+                     end;
+         else        begin
+                       Color1 := clBlack;
+                       Color2 := clBlack;
+                     end;
+    end;
+
+    with Canvas do
+    begin
+      Brush.Color:=FillColor;
+      Brush.Style:=FillStyle;
+      Pen.Color:=FillColor;
+      Pen.Style:=psClear;
+      Rectangle(R.Left+1,R.Top+1,R.Right+1,R.Bottom+1);
+
+      Pen.Style:=psSolid;
+      Pen.Color := Color1;
+      PolyLine([Point(R.Left, R.Bottom), Point(R.Left, R.Top),
+        Point(R.Right, R.Top)]);
+      Pen.Color := Color2;
+      PolyLine([Point(R.Right, R.Top), Point(R.Right, R.Bottom),
+        Point(R.Left, R.Bottom)]);
     end;
   end;
-  ColorSpaceID := OldColorID;
-end;
-
-procedure TJvColorSpaceCombo.SetAllowVariable(const Value: Boolean);
-begin
-  if FAllowVariable <> Value then
-  begin
-    FAllowVariable := Value;
-    MakeList;
-  end;
-end;
-
-procedure TJvColorSpaceCombo.SetColorSpace(const Value: TJvColorSpace);
 var
-  I: Integer;
+  Index:Integer;
+  XOffset, YOffset, XInc, YInc:Integer;
+  X, Y:Integer;
+  AEdge:TJvFullColorEdge;
 begin
-  for I := 0 to Items.Count - 1 do
-    if Value.ID = TJvColorSpace(Items.Objects[I]).ID then
-    begin
-      ItemIndex := I;
-      Exit;
-    end;
+   BevelRect(Rect(0, 0, Width - 1, Height - 1),FEdge,bsSolid, Color);
+
+   CalcRects(XOffset,YOffset,XInc,YInc);
+
+   Y:=YOffset;
+   X:=XOffset;
+
+   Index:=0;
+   while (Index<Items.Count) do
+   begin
+     if (Index=SelectedIndex)
+       then AEdge:=SelectedEdge
+       else if (Index=MouseIndex)
+              then AEdge:=MouseEdge
+              else AEdge:=feFlat;
+     BevelRect(Rect(X,Y,X+FSquareSize,Y+FSquareSize),AEdge,Brush.Style,
+       ColorSpaceManager.ConvertToID(Items[Index],csRGB));
+     Inc(Index);
+     if ((Index mod ColCount)=0) then
+     begin
+          X:=XOffset;
+          Inc(Y,YInc+FSquareSize);
+     end
+     else Inc(X,XInc+FSquareSize);
+   end;
 end;
 
-procedure TJvColorSpaceCombo.SetColorSpaceID(const Value: TJvColorSpaceID);
+procedure TJvFullColorGroup.SetEdge(const Value: TJvFullColorEdge);
 begin
-  SetColorSpace(ColorSpaceManager.ColorSpace[Value]);
+  FEdge := Value;
+  Refresh;
 end;
 
-procedure TJvColorSpaceCombo.SetItemFormat(const Value: TJvColorSpaceFormat);
+procedure TJvFullColorGroup.SetMouseEdge(const Value: TJvFullColorEdge);
 begin
-  if FItemFormat <> Value then
-  begin
-    FItemFormat := Value;
-    MakeList;
-  end;
+  FMouseEdge := Value;
+  Refresh;
 end;
 
-//=== { TJvColorAxisConfigCombo } ============================================
-
-constructor TJvColorAxisConfigCombo.Create(AOwner: TComponent);
+procedure TJvFullColorGroup.SetSelectedEdge(const Value: TJvFullColorEdge);
 begin
-  inherited Create(AOwner);
-  Style := csDropDownList;
-  FColorID := csRGB;
-  FItemFormat := afComplete;
+  FSelectedEdge := Value;
+  Refresh;
 end;
 
-procedure TJvColorAxisConfigCombo.CreateWnd;
+procedure TJvFullColorGroup.SetColCount(const Value: Integer);
 begin
-  inherited CreateWnd;
-  MakeList;
+  if (Value<=0)
+    then FColCount := 1
+    else FColCount := Value;
+  Refresh;
 end;
 
-function TJvColorAxisConfigCombo.GetSelected: TJvColorAxisConfig;
+procedure TJvFullColorGroup.SetItems(const Value: TJvFullColorList);
 begin
-  Result := TJvColorAxisConfig(ItemIndex);
+  FItems.Assign(Value);
 end;
 
-procedure TJvColorAxisConfigCombo.MakeList;
+procedure TJvFullColorGroup.SetSquareSize(const Value: Integer);
 var
-  Index: TJvColorAxisConfig;
-  LColorSpace: TJvColorSpace;
-  OldItemIndex: Integer;
+  TempValue:Integer;
 begin
-  OldItemIndex := ItemIndex;
-  LColorSpace := ColorSpaceManager.ColorSpace[ColorID];
-  with Items do
-  begin
-    Clear;
-    for Index := Low(TJvColorAxisConfig) to High(TJvColorAxisConfig) do
-      Add(AxisConfigToString(Index, ItemFormat, LColorSpace));
-  end;
-  ItemIndex := OldItemIndex;
+  if (FSquareSize<0)
+    then FSquareSize:=-FSquareSize;
+
+  if (FSquareSize=0)
+    then FSquareSize:=1;
+
+  FSquareSize := Value;
+
+  TempValue:=(Width-2) div ColCount;
+  if (TempValue<FSquareSize)
+    then FSquareSize:=TempValue;
+
+  TempValue:=(Height-2) div ((Items.Count div ColCount)+1);
+  if (TempValue<FSquareSize)
+    then FSquareSize:=TempValue;
+
+  Refresh;
 end;
 
-procedure TJvColorAxisConfigCombo.SetColorID(const Value: TJvColorSpaceID);
+function TJvFullColorGroup.GetSelected: TJvFullColor;
 begin
-  if FColorID <> Value then
-  begin
-    FColorID := Value;
-    MakeList;
-  end;
+  if (SelectedIndex>-1)
+    then Result:=Items[SelectedIndex]
+    else Result:=clNone;
 end;
 
-procedure TJvColorAxisConfigCombo.SetItemFormat(const Value: TJvColorAxisConfigFormat);
+procedure TJvFullColorGroup.SetSelected(const Value: TJvFullColor);
 begin
-  if FItemFormat <> Value then
-  begin
-    FItemFormat := Value;
-    MakeList;
-  end;
+  SelectedIndex:=Items.IndexOf(Value);
 end;
 
-procedure TJvColorAxisConfigCombo.SetSelected(const Value: TJvColorAxisConfig);
+procedure TJvFullColorGroup.SetSelectedIndex(const Value: Integer);
 begin
-  ItemIndex := Integer(Value);
+  FSelectedIndex := EnsureRange(Value,-1,Items.Count-1);
+end;
+
+procedure TJvFullColorGroup.SetBrush(const Value: TBrush);
+begin
+  FBrush.Assign(Value);
 end;
 
 procedure Register;
 begin
   RegisterComponents('Colors', [TJvColorPanel, TJvFullColorTrackBar, TJvColorLabel,
-    TJvColorCircle, TJvColorSpaceCombo, TJvColorAxisConfigCombo]);
+    TJvColorCircle, TJvColorSpaceCombo, TJvColorAxisConfigCombo, TJvFullColorGroup]);
 end;
 
 {$IFDEF UNITVERSIONING}
