@@ -185,7 +185,6 @@ type
     property BeepOnError;
   end;
 
-
   TJvDBComboEdit = class(TJvCustomComboEdit)
   private
     FDataLink: TFieldDataLink;
@@ -224,7 +223,10 @@ type
     function ExecuteAction(Action: TBasicAction): Boolean; override;
     function UpdateAction(Action: TBasicAction): Boolean; override;
     function UseRightToLeftAlignment: Boolean; override;
+{$IFNDEF BCB5}
+    // Do not use this under BCB5, you will crash the linker.
     property Button;
+{$ENDIF BCB5}
     property Field: TField read GetField;
     property Canvas: TCanvas read GetCanvas;
   published
@@ -1101,7 +1103,6 @@ end;
 
 
 //=== TJvDBComboEdit =========================================================
-
 procedure ResetMaxLength(DBEdit: TJvDBComboEdit);
 var
   F: TField;
@@ -2565,7 +2566,6 @@ begin
       UpdateData;
   end;
 end;
-
 
 end.
 
