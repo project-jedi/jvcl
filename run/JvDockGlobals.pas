@@ -32,7 +32,7 @@ interface
 
 uses
   Messages,
-  JvDockControlForm, JvDockInfo, JvDockSupportControl;
+  JvDockControlForm, JvDockSupportControl;
 
 resourcestring
   {$IFNDEF USEJVCL}
