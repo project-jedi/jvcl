@@ -42,7 +42,7 @@ begin
     TJvLinkLabel
     ]);
   RegisterComponents(SPaletteImageAnimator,[
-    TJvThumbImage
+    TJvThumbView, TJvThumbnail, TJvThumbImage
     ]);
   RegisterComponents(SPaletteVisual,[
     TJvInspector, TJvInspectorBorlandPainter, TJvInspectorDotNETPainter, TJvTimeLine, TJvTMTimeLine
