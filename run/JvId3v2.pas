@@ -325,6 +325,7 @@ type
     property Owner: TJvID3Owner read FOwner;
     property Popularimeter: TJvID3Popularimeter read FPopularimeter;
     property Version;
+    property FileInfo;
   end;
 
 implementation

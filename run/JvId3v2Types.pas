@@ -76,14 +76,14 @@ type
   TJvID3Encoding = (ienISO_8859_1, ienUTF_16, ienUTF_16BE, ienUTF_8);
   TJvID3Encodings = set of TJvID3Encoding;
 
-  TJvID3ForceVersion = (ifvDontCare, ifv2_3, ifv2_4);
-  TJvID3Version = (ive2_2AndLower, ive2_3, ive2_4, ive2_5AndHigher);
+  TJvID3ForceVersion = (ifvDontCare, ifv2_2, ifv2_3, ifv2_4);
+  TJvID3Version = (iveLowerThan2_2, ive2_2, ive2_3, ive2_4, iveHigherThan2_4);
 
 const
   CForceEncodingToEncoding: array [TJvID3ForceEncoding] of TJvID3Encoding =
     (ienISO_8859_1, ienISO_8859_1, ienUTF_16, ienUTF_16BE, ienUTF_8);
   CForceVersionToVersion: array [TJvID3ForceVersion] of TJvID3Version =
-    (ive2_3, ive2_3, ive2_4);
+    (ive2_3, ive2_2, ive2_3, ive2_4);
 
 type
   TJvID3StringPair = record
@@ -235,7 +235,7 @@ type
 
 { Frame ID procedures }
 function ID3_StringToFrameID(const S: string): TJvID3FrameID;
-function ID3_FrameIDToString(const ID: TJvID3FrameID): string;
+function ID3_FrameIDToString(const ID: TJvID3FrameID; const Size: Integer = 4): string;
 
 { Genre procedures }
 function ID3_GenreToID(const AGenre: string; const InclWinampGenres: Boolean = True): Integer;
@@ -298,7 +298,10 @@ begin
       0:
         Result := fiPaddingFrame;
       3:
-        Result := ID3ShortTextToFrameID(S);
+        if S = #0#0#0 then
+          Result := fiPaddingFrame
+        else
+          Result := ID3ShortTextToFrameID(S);
       4:
         if S = #0#0#0#0 then
           Result := fiPaddingFrame
@@ -329,7 +332,7 @@ const
     (ShortTextID: '';    LongTextID: ''    ), { fiUnknownFrame        - - - }
     (ShortTextID: 'CRA'; LongTextID: 'AENC'), { fiAudioCrypto         X X X }
     (ShortTextID: 'PIC'; LongTextID: 'APIC'), { fiPicture             X X X }
-    (ShortTextID: '';    LongTextID: 'ASPI'), { fiAudioSeekPoint      - X X }
+    (ShortTextID: '';    LongTextID: 'ASPI'), { fiAudioSeekPoint      - - X }
     (ShortTextID: 'COM'; LongTextID: 'COMM'), { fiComment             X X X }
     (ShortTextID: '';    LongTextID: 'COMR'), { fiCommercial          - X X }
     (ShortTextID: '';    LongTextID: 'ENCR'), { fiCryptoReg           - X X }
@@ -420,7 +423,7 @@ const
     (ShortTextID: 'WPB'; LongTextID: 'WPUB'), { fiWWWPublisher        X X X }
     (ShortTextID: 'WXX'; LongTextID: 'WXXX'), { fiWWWUser             X X X }
     (ShortTextID: 'CRM'; LongTextID: ''    ), { fiMetaCrypto          X - - }
-    (ShortTextID: 'CDM'; LongTextID: ''    ) { fiMetaCompressio       X - - }
+    (ShortTextID: 'CDM'; LongTextID: ''    )  { fiMetaCompressio      X - - }
     );
 
   { http://www.loc.gov/standards/iso639-2/englangn.html }
@@ -1074,9 +1077,16 @@ const
   CGenre_HighV1 = 79;
   CGenre_DefaultID = 12;
 
-function ID3_FrameIDToString(const ID: TJvID3FrameID): string;
+function ID3_FrameIDToString(const ID: TJvID3FrameID; const Size: Integer): string;
 begin
-  Result := CID3FrameDefs[ID].LongTextID;
+  case Size of
+    3:
+      Result := CID3FrameDefs[ID].ShortTextID;
+    4:
+      Result := CID3FrameDefs[ID].LongTextID;
+  else
+    raise Exception.Create('Frame ID size can only be 3 or 4');
+  end;
 end;
 
 function ID3_GenreToID(const AGenre: string; const InclWinampGenres: Boolean): Integer;
@@ -1154,23 +1164,47 @@ function IndexOfLongString(Strings: TStrings; const ALongText: string): Integer;
 
   If we search for a prefix for 'Pop/Funk or something' the binary search
   may return 'Pop', thus we use FindFrom to search some more
+
+  Note:
+
+  'Rock'      => Result = 17
+  'Rocks'     => Result = 255 (nothing found)
+  'Rock Rock' => Result = 17
 }
 
-  function FindFrom(const Index: Integer) : Integer;
+  function IsPrefix(const S: string): Boolean;
   begin
-    if Length(ALongText) > Length(Strings[Index]) then
+    Result := (AnsiStrLIComp(PChar(S), PChar(ALongText), Length(S)) = 0);
+  end;
+
+  function HasSpaceAfterPrefix(const Prefix: string): Boolean;
+  { PRE: IsPrefix(Prefix) = True }
+  var
+    C: Integer;
+  begin
+    C := Length(Prefix) - Length(ALongText);
+    Result := (C = 0) or ((C < 0) and (ALongText[Length(Prefix) + 1] = ' '));
+  end;
+
+  function FindFrom(const Index: Integer): Integer;
+  begin
+    { Try to find I with IsPrefix(Strings[I]) and HasSpaceAfterPrefix(Strings[i]) }
+
+    if Length(Strings[Index]) < Length(ALongText) then
     begin
+      { Now is valid: IsPrefix(Strings[Result]) }
+
       Result := Index + 1;
 
       { Strings is sorted thus it's only usefull to look at higher indexes than
         Index ie only at higher indexes are possibly longer prefixes of ALongText }
-      while (Result < Strings.Count) and
-        (AnsiStrLIComp(PChar(Strings[Result]), PChar(ALongText), Length(Strings[Result])) = 0) do
-
+      while (Result < Strings.Count) and IsPrefix(Strings[Result]) do
         Inc(Result);
 
       { Strings[Result] is not ok, Strings[Result-1] is ok }
       Dec(Result);
+
+      { Now is valid: IsPrefix(Strings[Result]) }
     end
     else
     if Length(ALongText) < Length(Strings[Index]) then
@@ -1178,15 +1212,56 @@ function IndexOfLongString(Strings: TStrings; const ALongText: string): Integer;
       Result := Index - 1;
 
       while (Result >= 0) and (Length(Strings[Result]) > Length(ALongText)) do
-        Dec(Result);
+        if AnsiStrLIComp(PChar(Strings[Result]), PChar(ALongText), Length(ALongText)) = 0 then
+          Dec(Result)
+        else
+        begin
+          { Not found }
+          Result := -1;
+          Exit;
+        end;
 
-      if (Result >= 0) and
-        (AnsiStrLIComp(PChar(Strings[Result]), PChar(ALongText), Length(Strings[Result])) <> 0) then
+      if (Result < 0) or not IsPrefix(Strings[Result]) then
+      begin
         { Not found }
         Result := -1;
+        Exit;
+      end;
+
+      { Now is valid: IsPrefix(Strings[Result]) }
     end
     else
+    begin
+      { Found }
       Result := Index;
+      Exit;
+    end;
+
+    { Now is valid: IsPrefix(Strings[Result]) }
+
+    if HasSpaceAfterPrefix(Strings[Result]) then
+      { Found }
+      Exit;
+
+    Dec(Result);
+
+    { Now go down until we find a string X with X + some separator is a prefix
+      of ALongText }
+    while Result >= 0 do
+      if IsPrefix(Strings[Result]) then
+      begin
+        if HasSpaceAfterPrefix(Strings[Result]) then
+          { Found }
+          Exit
+        else
+          Dec(Result);
+      end
+      else
+      begin
+        { Not found }
+        Result := -1;
+        Exit;
+      end;
   end;
 var
   Top, Mid, C: Integer;
