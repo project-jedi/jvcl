@@ -98,6 +98,7 @@ type
     class function GetButtonName(OLBar: TJvCustomOutlookBar): string;
     class function GetPageName(OLBar: TJvCustomOutlookBar): string;
     procedure DeleteItem(Item: TPersistent);
+    procedure SwitchItems(Node1,Node2:TTreeNode);
   protected
     procedure StoreSettings;
     procedure LoadSettings;
@@ -699,6 +700,7 @@ procedure TfrmOLBEditor.acUpExecute(Sender: TObject);
 var N: TTreeNode;
 begin
   N := tvItems.Selected;
+  SwitchItems(tvItems.Selected,N.getPrevSibling);
   N.MoveTo(N.getPrevSibling, naInsert);
   N.Expand(true);
   tvItems.Selected := N;
@@ -707,6 +709,7 @@ end;
 procedure TfrmOLBEditor.acDownExecute(Sender: TObject);
 var N: TTreeNode;
 begin
+  SwitchItems(tvItems.Selected,tvItems.Selected.getNextSibling);
   N := tvItems.Selected.getNextSibling;
   N.MoveTo(tvItems.Selected, naInsert);
   N.Expand(true);
@@ -778,6 +781,23 @@ begin
   Result := '\Software\Borland\C++Builder\5.0\' + cRegKey;
 {$ENDIF}
   // previous versions (4.0-1.0) not supported
+end;
+
+procedure TfrmOLBEditor.SwitchItems(Node1, Node2: TTreeNode);
+var i:integer;
+begin
+  if TObject(Node1.Data) is TJvOutlookbarButton then
+  begin
+    i := TJvOutlookbarButton(Node1.Data).Index;
+    TJvOutlookbarButton(Node1.Data).Index := TJvOutlookbarButton(Node2.Data).Index;
+    TJvOutlookbarButton(Node2.Data).Index := i;
+  end
+  else if TObject(Node1.Data) is TJvOutlookbarPage then
+  begin
+    i := TJvOutlookbarPage(Node1.Data).Index;
+    TJvOutlookbarPage(Node1.Data).Index := TJvOutlookbarPage(Node2.Data).Index;
+    TJvOutlookbarPage(Node2.Data).Index := i;
+  end;
 end;
 
 { TJvOutlookBarButtonImageIndexProperty }
