@@ -1640,14 +1640,14 @@ end;
 procedure TJvChart.AutoFormatGraph;
 var
   V, nYMax, nYMin: Double;
-  nPen: Longint;
+//  nPen: Longint;
   I, J: Integer;
 //   calcYGap  :Double; // not used (ahuser)
   aTextWidth, skipby, maxfit: Integer;
 begin
 
 //   nMaxXValue       := 0;
-  nPen := 0;
+//  nPen := 0;
   Options.PrimaryYAxis.Normalize;
   Options.SecondaryYAxis.Normalize;
 
@@ -1699,7 +1699,12 @@ begin
   end
   else
   begin
-    nYMax := Options.PrimaryYAxis.YMax;
+    // !!!!!!!!!!!!! WARNING WARNING WARNING !!!!!!!!!!!!!!!!!!!!
+    // The following line has been commented out because it triggers
+    // a warning because nYMax is not used anywhere after the
+    // setting of its value
+    //nYMax := Options.PrimaryYAxis.YMax;
+
     nYMin := Options.PrimaryYAxis.YMin;
   end;
 
@@ -1884,12 +1889,12 @@ procedure TJvChart.GraphXAxisDivisionMarkers; // new.
 var
     I,X:integer;
     Lines : Integer;
-    YTempOrigin:Integer;
+//    YTempOrigin:Integer;
 begin
     if not Options.XAxisDivisionMarkers then exit;
     if (Options.XAxisValuesPerDivision <= 0) then exit;
 
-    YTempOrigin := Options.YStartOffset + Round(Options.PrimaryYAxis.YPixelGap * (Options.PrimaryYAxis.YDivisions));
+//    YTempOrigin := Options.YStartOffset + Round(Options.PrimaryYAxis.YPixelGap * (Options.PrimaryYAxis.YDivisions));
 
     Lines := ( ( (Options.XValueCount
                     +(Options.XAxisValuesPerDivision div 2)
@@ -1972,7 +1977,7 @@ procedure TJvChart.PlotGraph;
 var
   nStackGap: Integer;
   n100Sum: Double;
-  nOldY: Longint;
+//  nOldY: Longint;
   YOldOrigin : Integer;
   nMaxTextHeight : Integer;
    // Rectangle plotting:
@@ -2284,7 +2289,7 @@ var
         V,LineXPixelGap:Double;
         NanFlag:Boolean;
         vc:Integer;
-        PenAxisOpt:TJvChartYAxisOptions;
+//        PenAxisOpt:TJvChartYAxisOptions;
     begin
         NanFlag := false;
         vc := Options.XValueCount;
@@ -2296,7 +2301,7 @@ var
         ChartCanvas.Pen.Style := psSolid;
         for I := 0 to Options.PenCount - 1 do
         begin
-          PenAxisOpt := Options.GetPenAxis(I);
+//          PenAxisOpt := Options.GetPenAxis(I);
           // No line types?
           if Options.GetPenStyle(I) = psClear then
               continue;
@@ -2453,7 +2458,7 @@ begin { ------------------- PlotGraph begins... Enough local functions for ya? -
   if not PrintInSession then
   begin
     MyHeaderFont;
-    nOldY := Options.YStartOffset;
+//    nOldY := Options.YStartOffset;
     nMaxTextHeight := CanvasMaxTextHeight(ChartCanvas) + 8;
     // Bump bottom margins if the fonts don't fit!
     if ( Options.YStartOffset < (2*nMaxTextHeight)) then begin
