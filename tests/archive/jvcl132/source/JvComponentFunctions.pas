@@ -42,7 +42,8 @@ Comments:
 
 interface
 
-uses ComCtrls, Controls;
+uses
+  Windows, Graphics, ComCtrls, Controls;
 
 function CharIsMoney(const ch: char): boolean;
 
@@ -97,11 +98,15 @@ const
   NullEquivalentDate: TDateTime = 0.0;
 
 function DateIsNull(const pdtValue: TDateTime; const pdtKind: TdtKind): Boolean;
+// replacement for Win32Check
+function OSCheck(RetVal: boolean): boolean;
+
+function MinimizeName(const Filename: string; Canvas: TCanvas; MaxLen: Integer): string;
 
 implementation
 
 uses
-  {delphi } SysUtils, CommCtrl,
+  {delphi } Classes, SysUtils, CommCtrl,
   { jcl } JCLStrings;
 
 {-------------------------------------------------------------------------------
@@ -515,6 +520,24 @@ begin
     dtkTimeOnly: Result := frac(pdtValue) = NullEquivalentDate; //if time only then anything without a remainder is null
     dtkDateTime: Result := pdtValue = NullEquivalentDate;
   end;
+end;
+
+function OSCheck(RetVal: boolean): boolean;
+begin
+  if not RetVal then RaiseLastOSError;
+  Result := RetVal;
+end;
+
+function MinimizeName(const Filename: string; Canvas: TCanvas; MaxLen: Integer): string;
+var b: array[0..MAX_PATH] of char; R: TRect;
+begin
+  StrCopy(b, PChar(Filename));
+  R := Rect(0, 0, MaxLen, Canvas.TextHeight('Wq'));
+  if DrawText(Canvas.Handle, b, Length(Filename), R,
+    DT_SINGLELINE or DT_MODIFYSTRING or DT_PATH_ELLIPSIS or DT_CALCRECT or DT_NOPREFIX) > 0 then
+    Result := b
+  else
+    Result := Filename;
 end;
 
 function TimeOnly(pcValue: TDateTime): TTime;
