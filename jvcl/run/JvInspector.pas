@@ -4750,14 +4750,15 @@ begin
           with TWMKey(Message) do
           begin
             DoDropDownKeys(CharCode, KeyDataToShiftState(KeyData));
-            if (CharCode <> 0) and DroppedDown then
+            if (CharCode <> 0) then
             begin
-              with TMessage(Message) do
-                SendMessage(ListBox.Handle, Msg, WParam, LParam);
+              if DroppedDown then
+                with TMessage(Message) do
+                  SendMessage(ListBox.Handle, Msg, WParam, LParam);
               if not (iifAllowNonListValues in Flags) or
                 ((Msg = WM_KEYDOWN) and
                 (TWMKeyDown(Message).CharCode in [VK_UP, VK_DOWN])) then
-                ExecInherited := False;
+              ExecInherited := False;
             end;
           end;
         PostToInsp :=
@@ -4776,21 +4777,10 @@ begin
         end;
       end;
   end;
-  { Bypass ENTER key from standard editor control WndProc: }
-  (* debug annoying message handling quirks:
-    if (Message.Msg <> WM_NCHITTEST) then
-      OutputDebugString( Pchar('inspector Msg = $'+IntToHex(Message.Msg,4)) );
-   *)
-  if (Message.Msg = WM_CHAR) and (Message.WParam=13) then begin
-      ExecInherited := false;   // ByeBye ANNOYING "BEEP" when you hit enter! ARGH!!!! -WAP August 2003
-      // Fire the OnEnter event if assigned.
-      if Assigned(FInspector.FOnEnter) then begin
-          FInspector.FOnEnter( FEditCtrl );
-      end;
-  end;
-  if ExecInherited then  begin
+  if (Message.Msg = WM_CHAR) and (Message.WParam = 13) then
+    ExecInherited := False;
+  if ExecInherited and (@EditWndPrc <> nil) then
     EditWndPrc(Message);
-  end;
   case Message.Msg of
     WM_GETDLGCODE:
       begin
@@ -5904,6 +5894,7 @@ begin
       DisplayValue := EditCtrl.Text;
     FreeAndNil(FListBox);
     SetEditCtrl(nil);
+    FEditWndPrc := nil;
     if HadFocus then
       SetFocus;
   end;
