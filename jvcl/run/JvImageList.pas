@@ -925,7 +925,7 @@ begin
 end;
 {$ENDIF COMPLIB_CLX}
 
-{$IFDEF COMPLIB_CLX}
+{$IFDEF COMPLIB_VCL}
 initialization
   HandleNeededHookInstaned := False;
 
