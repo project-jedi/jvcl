@@ -247,7 +247,7 @@ type
 implementation
 
 uses
-  Consts, Math,
+  QConsts, Math,
   JvQThemes;
 
 const
