@@ -32,7 +32,7 @@ interface
 
 uses
   Classes, Graphics, Controls,
-  JvId3v2Types, JvID3v2Base, JvComponent, JvxRConst;
+  JvId3v2Types, JvID3v2Base, JvxRConst;
 
 type
   TJvID3Persistent = class(TPersistent)
@@ -330,8 +330,7 @@ type
 implementation
 
 uses
-  SysUtils, Math,
-  JclFileUtils;
+  SysUtils, Math;
 
 //=== TJvID3v2 ===============================================================
 

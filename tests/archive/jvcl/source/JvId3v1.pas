@@ -31,35 +31,10 @@ unit JvId3v1;
 interface
 
 uses
-  Windows, SysUtils, Classes,
+  SysUtils, Classes,
   JvComponent;
 
 type
-  TGenre = (grBlues, grClassicRock, grCountry, grDance, grDisco, grFunk, grGrunge,
-    grHipHop, grJazz, grMetal, grNewAge, grOldies, grOther, grPop, grRandB, grRap,
-    grReggae, grRock, grTechno, grIndustrial, grAlternative, grSka,
-    grDeathMetal, grPranks, grSoundtrack, grEuroTechno, grAmbient,
-    grTripHop, grVocal, grJazzFunk, grFusion, grTrance, grClassical,
-    grInstrumental, grAcid, grHouse, grGame, grSoundClip, grGospel,
-    grNoise, grAlternRock, grBass, grSoul, grPunk, grSpace, grMeditative,
-    grInstrumentalPop, grInstrumentalRock, grEthnic,
-    grGothic, grDarkwave, grTechnoIndustrial, grElectronic,
-    grPopFolk, grEurodance, grDream, grSouthernRock, grComedy,
-    grCult, grGangsta, grTop40, grChristianRap, grPopFunk,
-    grJungle, grNativeAmerican, grCabaret, grNewWave, grPsychadelic,
-    grRave, grShowtunes, grTrailer, grLoFi, grTribal, grAcidPunk,
-    grAcidJazz, grPolka, grRetro, grMusical, grRockandRoll,
-    grHardRock, grFolk, grFolkRock, grNationalFolk, grSwing,
-    grFastFusion, grBebob, grLatin, grRevival, grCeltic,
-    grBluegrass, grAvantgarde, grGothicRock, grProgressiveRock,
-    grPsychedelicRock, grSymphonicRock, grSlowRock, grBigBand,
-    grChorus, grEasyListening, grAcoustic, grHumour, grSpeech,
-    grChanson, grOpera, grChamberMusic, grSonata, grSymphony, grBootyBass,
-    grPrimus, grPornGroove, grSatire, grSlowJam, grClub, grTango, grSamba,
-    grFolklore, grBallad, grPowerBallad, grRhythmicSoul, grFreestyle,
-    grDuet, grPunkRock, grDrumSolo, grAcapella, grEuroHouse, grDanceHall,
-    grNone);
-
   TId3v1Tag = packed record
     Identifier: array [0..2] of Char;
     SongName: array [0..29] of Char;
@@ -77,16 +52,37 @@ type
     FAlbum: string;
     FComment: string;
     FYear: string;
-    FGenre: TGenre;
+    FGenre: string;
     FFileName: TFileName;
+    FActive: Boolean;
+    FAlbumTrack: Byte;
+    FStreamedActive: Boolean;
+    FHasTag: Boolean;
+    FHasTagDirty: Boolean;
+    function GetHasTag: Boolean;
+    procedure Reset;
+    procedure SetActive(const Value: Boolean);
     procedure SetFileName(const Value: TFileName);
-  public
+  protected
+    procedure CheckActive;
+
+    procedure DoOpen; virtual;
+    procedure DoClose; virtual;
+
     function ReadTag: Boolean;
-    function WriteTag: Boolean;
-    procedure RemoveTag;
-    function TagPresent: Boolean;
-    function GenreToString(Genre: TGenre): string;
+
+    procedure Loaded; override;
+  public
+    procedure Refresh;
+
+    procedure Open;
+    procedure Close;
+    function Commit: Boolean;
+    procedure Erase;
+
+    property HasTag: Boolean read GetHasTag;
   published
+    property Active: Boolean read FActive write SetActive;
     property FileName: TFileName read FFileName write SetFileName;
     { Do not store dummies }
     property SongName: string read FSongName write FSongName stored False;
@@ -94,7 +90,8 @@ type
     property Album: string read FAlbum write FAlbum stored False;
     property Year: string read FYear write FYear stored False;
     property Comment: string read FComment write FComment stored False;
-    property Genre: TGenre read FGenre write FGenre stored False;
+    property Genre: string read FGenre write FGenre stored False;
+    property AlbumTrack: Byte read FAlbumTrack write FAlbumTrack stored False;
   end;
 
 function HasID3v1Tag(const AFileName: string): Boolean;
@@ -105,7 +102,8 @@ function WriteID3v1Tag(const AFileName: string; const ATag: TId3v1Tag): Boolean;
 implementation
 
 uses
-  Math;
+  Math,
+  JvID3v2Types;
 
 const
   CID3v1Tag = 'TAG';
@@ -208,87 +206,25 @@ end;
 
 //=== TJvId3v1 ===============================================================
 
-function TJvId3v1.GenreToString(Genre: TGenre): string;
-const
-  cGenreTexts: array [TGenre] of PChar =
-  ('Blues', 'Classic Rock', 'Country', 'Dance', 'Disco', 'Funk', 'Grunge',
-    'Hip-Hop', 'Jazz', 'Metal', 'New Age', 'Oldies', 'Other', 'Pop',
-    'R&B', 'Rap', 'Reggae', 'Rock', 'Techno', 'Industrial', 'Alternative',
-    'Ska', 'Death Metal', 'Pranks', 'Soundtrack', 'Euro-Techno', 'Ambient',
-    'Trip-Hop', 'Vocal', 'Jazz+Funk', 'Fusion', 'Trance', 'Classical',
-    'Instrumental', 'Acid', 'House', 'Game', 'Sound Clip', 'Gospel',
-    'Noise', 'AlternRock', 'Bass', 'Soul', 'Punk', 'Space', 'Meditative',
-    'Instrumental Pop', 'Instrumental Rock', 'Ethnic', 'Gothic', 'Darkwave',
-    'Techno-Industrial', 'Electronic', 'Pop-Folk', 'Eurodance', 'Dream',
-    'Southern Rock', 'Comedy', 'Cult', 'Gangsta', 'Top 40', 'Christian Rap',
-    'Pop/Funk', 'Jungle', 'Native American', 'Cabaret', 'New Wave', 'Psychadelic',
-    'Rave', 'Showtunes', 'Trailer', 'Lo-Fi', 'Tribal', 'Acid Punk', 'Acid Jazz',
-    'Polka', 'Retro', 'Musical', 'Rock & Roll', 'Hard Rock', 'Folk', 'Folk/Rock',
-    'National Folk', 'Swing', 'Fast Fusion', 'Bebob', 'Latin', 'Revival',
-    'Celtic', 'Bluegrass', 'Avantgarde', 'Gothic Rock', 'Progressive Rock',
-    'Psychedelic Rock', 'Symphonic Rock', 'Slow Rock', 'Big Band', 'Chorus',
-    'Easy Listening', 'Acoustic', 'Humour', 'Speech', 'Chanson', 'Opera',
-    'Chamber Music', 'Sonata', 'Symphony', 'Booty Bass', 'Primus',
-    'Porn Groove', 'Satire', 'Slow Jam', 'Club', 'Tango', 'Samba', 'Folklore',
-    'Ballad', 'Power Ballad', 'Rhythmic Soul', 'Freestyle', 'Duet', 'Punk Rock',
-    'Drum Solo', 'Acapella', 'Euro-House', 'Dance Hall', 'none');
+procedure TJvId3v1.CheckActive;
 begin
-  Result := cGenreTexts[Genre];
+  if not FActive then
+    raise Exception.Create('Not active');
 end;
 
-function TJvId3v1.ReadTag: Boolean;
+procedure TJvId3v1.Close;
+begin
+  SetActive(False);
+end;
+
+function TJvId3v1.Commit: Boolean;
 var
   Tag: TId3v1Tag;
 begin
-  Result := ReadID3v1Tag(FileName, Tag);
-  if Result then
-  begin
-    FSongName := TagToStr(PChar(@Tag.SongName), 30);
-    FArtist := TagToStr(PChar(@Tag.Artist), 30);
-    FAlbum := TagToStr(PChar(@Tag.Album), 30);
-    FYear := TagToStr(PChar(@Tag.Year), 4);
-    FComment := TagToStr(PChar(@Tag.Comment), 30);
-    // (p3) missing genre added
-    if Tag.Genre <= Integer(High(TGenre)) then
-      FGenre := TGenre(Tag.Genre)
-    else
-      FGenre := grNone;
-  end
-  else
-  begin
-    FSongName := '';
-    FArtist := '';
-    FAlbum := '';
-    FYear := '';
-    FComment := '';
-    FGenre := grNone;
-  end;
-end;
+  CheckActive;
 
-procedure TJvId3v1.RemoveTag;
-begin
-  RemoveID3v1Tag(FileName);
-  ReadTag;
-end;
+  FHasTagDirty := True;
 
-procedure TJvId3v1.SetFileName(const Value: TFileName);
-begin
-  if FFileName <> Value then
-  begin
-    FFileName := Value;
-    ReadTag;
-  end;
-end;
-
-function TJvId3v1.TagPresent: Boolean;
-begin
-  Result := HasID3v1Tag(FileName);
-end;
-
-function TJvId3v1.WriteTag: Boolean;
-var
-  Tag: TId3v1Tag;
-begin
   FillChar(Tag, CTagSize, #0);
 
   //Set new Tag
@@ -298,9 +234,143 @@ begin
   Move(Album[1], Tag.Album[0], Min(30, Length(Album)));
   Move(Year[1], Tag.Year[0], Min(4, Length(Year)));
   Move(Comment[1], Tag.Comment[0], Min(30, Length(Comment)));
-  Tag.Genre := Byte(Genre);
+  Tag.Genre := ID3_GenreToID_v1(FGenre);
+  if Tag.Comment[28] = #0 then
+    Tag.Comment[29] := Char(FAlbumTrack);
 
   Result := WriteID3v1Tag(FileName, Tag);
+end;
+
+procedure TJvId3v1.DoClose;
+begin
+  Reset;
+end;
+
+procedure TJvId3v1.DoOpen;
+begin
+  ReadTag;
+end;
+
+procedure TJvId3v1.Erase;
+var
+  SavedActive: Boolean;
+begin
+  FHasTagDirty := True;
+
+  SavedActive := Active;
+  Close;
+
+  try
+    RemoveID3v1Tag(FileName);
+  finally
+    if SavedActive then
+      Open;
+  end;
+end;
+
+function TJvId3v1.GetHasTag: Boolean;
+begin
+  if FHasTagDirty then
+  begin
+    FHasTagDirty := False;
+    FHasTag := HasID3v1Tag(FileName);
+  end;
+
+  Result := FHasTag;
+end;
+
+procedure TJvId3v1.Loaded;
+begin
+  inherited Loaded;
+
+  FHasTagDirty := True;
+  if FStreamedActive then
+    SetActive(True);
+end;
+
+procedure TJvId3v1.Open;
+begin
+  SetActive(True);
+end;
+
+function TJvId3v1.ReadTag: Boolean;
+var
+  Tag: TId3v1Tag;
+begin
+  CheckActive;
+
+  Result := ReadID3v1Tag(FileName, Tag);
+
+  FHasTagDirty := False;
+  FHasTag := Result;
+
+  if Result then
+  begin
+    FSongName := TagToStr(PChar(@Tag.SongName), 30);
+    FArtist := TagToStr(PChar(@Tag.Artist), 30);
+    FAlbum := TagToStr(PChar(@Tag.Album), 30);
+    FYear := TagToStr(PChar(@Tag.Year), 4);
+    FComment := TagToStr(PChar(@Tag.Comment), 30);
+    // (p3) missing genre added
+    FGenre := ID3_IDToGenre_v1(Tag.Genre);
+    if Tag.Comment[28] = #0 then
+      FAlbumTrack := Byte(Tag.Comment[29])
+    else
+      FAlbumTrack := 0;
+  end
+  else
+    Reset;
+end;
+
+procedure TJvId3v1.Refresh;
+begin
+  CheckActive;
+
+  ReadTag;
+end;
+
+procedure TJvId3v1.Reset;
+begin
+  FSongName := '';
+  FArtist := '';
+  FAlbum := '';
+  FYear := '';
+  FComment := '';
+  FGenre := '';
+end;
+
+procedure TJvId3v1.SetActive(const Value: Boolean);
+begin
+  { Based on TCustomConnection.SetConnected }
+  if (csReading in ComponentState) and Value then
+    FStreamedActive := True
+  else
+  begin
+    if Value = FActive then
+      Exit;
+    if Value then
+      DoOpen
+    else
+      DoClose;
+  end;
+end;
+
+procedure TJvId3v1.SetFileName(const Value: TFileName);
+var
+  SavedActive: Boolean;
+begin
+  if Value <> FFileName then
+  begin
+    SavedActive := Active;
+
+    Close;
+
+    FHasTagDirty := True;
+    FFileName := Value;
+
+    if SavedActive then
+      Open;
+  end;
 end;
 
 end.

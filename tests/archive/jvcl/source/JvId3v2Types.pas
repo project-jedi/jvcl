@@ -233,8 +233,19 @@ type
     );
   TJvID3FrameIDs = set of TJvID3FrameID;
 
+{ Frame ID procedures }
 function ID3_StringToFrameID(const S: string): TJvID3FrameID;
 function ID3_FrameIDToString(const ID: TJvID3FrameID): string;
+
+{ Genre procedures }
+function ID3_GenreToID_v1(const AGenre: string): Integer;
+function ID3_GenreToID_v2(const AGenre: string): Integer;
+function ID3_IDToGenre_v1(const ID: Integer): string;
+function ID3_IDToGenre_v2(const ID: Integer): string;
+procedure ID3_Genres_v1(Strings: TStrings);
+procedure ID3_Genres_v2(Strings: TStrings);
+
+{ Language ISO 639-2 procedures }
 function ISO_639_2IsCode(const Code: string): Boolean;
 function ISO_639_2CodeToName(const Code: string): string;
 { Known problem: some codes such as 'dut' and 'nld', have the same name value,
@@ -248,7 +259,8 @@ uses
   SysUtils;
 
 type
-  TJvListType = (ltID3LongText, ltID3ShortText, ltISO_639_2Code, ltISO_639_2Name);
+  TJvListType = (ltID3LongText, ltID3ShortText, ltISO_639_2Code, ltISO_639_2Name,
+    ltID3Genres);
 
   TJvID3TermFinder = class
   private
@@ -258,17 +270,22 @@ type
     procedure BuildList_ISO_639_2Code;
     procedure BuildList_ID3LongText;
     procedure BuildList_ID3ShortText;
+    procedure BuildList_ID3Genres;
     function IsFrameOk(const S: string): Boolean;
   public
     constructor Create; virtual;
     destructor Destroy; override;
     class function Instance: TJvID3TermFinder;
+
     function ID3LongTextToFrameID(const S: string): TJvID3FrameID;
     function ID3ShortTextToFrameID(const S: string): TJvID3FrameID;
 
+    function ID3GenreToID(const AGenre: string; const OnlyV1: Boolean): Integer;
+    procedure ID3Genres(AStrings: TStrings; const OnlyV1: Boolean);
+
     function ISO_639_2CodeToIndex(const ACode: string): Integer;
     function ISO_639_2NameToIndex(const AName: string): Integer;
-    procedure ISO_639_2Names(Strings: TStrings);
+    procedure ISO_639_2Names(AStrings: TStrings);
   end;
 
 function ID3_StringToFrameID(const S: string): TJvID3FrameID;
@@ -887,9 +904,184 @@ const
     (S: 'zun'; L: 'Zuni')
     );
 
+  CID3Genres: array[0..125] of PChar = (
+
+    { The following genres is defined in ID3v1 }
+
+    {0}'Blues',
+    'Classic Rock',
+    'Country',
+    'Dance',
+    'Disco',
+    'Funk',
+    'Grunge',
+    'Hip-Hop',
+    'Jazz',
+    'Metal',
+    {10}'New Age',
+    'Oldies',
+    'Other',     { <= Default }
+    'Pop',
+    'R&B',
+    'Rap',
+    'Reggae',
+    'Rock',
+    'Techno',
+    'Industrial',
+    {20}'Alternative',
+    'Ska',
+    'Death Metal',
+    'Pranks',
+    'Soundtrack',
+    'Euro-Techno',
+    'Ambient',
+    'Trip-Hop',
+    'Vocal',
+    'Jazz+Funk',
+    {30}'Fusion',
+    'Trance',
+    'Classical',
+    'Instrumental',
+    'Acid',
+    'House',
+    'Game',
+    'Sound Clip',
+    'Gospel',
+    'Noise',
+    {40}'AlternRock',
+    'Bass',
+    'Soul',
+    'Punk',
+    'Space',
+    'Meditative',
+    'Instrumental Pop',
+    'Instrumental Rock',
+    'Ethnic',
+    'Gothic',
+    {50}'Darkwave',
+    'Techno-Industrial',
+    'Electronic',
+    'Pop-Folk',
+    'Eurodance',
+    'Dream',
+    'Southern Rock',
+    'Comedy',
+    'Cult',
+    'Gangsta',
+    {60}'Top 40',
+    'Christian Rap',
+    'Pop/Funk',
+    'Jungle',
+    'Native American',
+    'Cabaret',
+    'New Wave',
+    'Psychadelic',
+    'Rave',
+    'Showtunes',
+    {70}'Trailer',
+    'Lo-Fi',
+    'Tribal',
+    'Acid Punk',
+    'Acid Jazz',
+    'Polka',
+    'Retro',
+    'Musical',
+    'Rock & Roll',
+    'Hard Rock',
+
+    { The following genres are Winamp extensions }
+
+    {80}'Folk',
+    'Folk-Rock',
+    'National Folk',
+    'Swing',
+    'Fast Fusion',
+    'Bebob',
+    'Latin',
+    'Revival',
+    'Celtic',
+    'Bluegrass',
+    {90}'Avantgarde',
+    'Gothic Rock',
+    'Progressive Rock',
+    'Psychedelic Rock',
+    'Symphonic Rock',
+    'Slow Rock',           
+    'Big Band',
+    'Chorus',
+    'Easy Listening',
+    'Acoustic',
+    {100}'Humour',
+    'Speech',
+    'Chanson',
+    'Opera',
+    'Chamber Music',
+    'Sonata',
+    'Symphony',
+    'Booty Bass',
+    'Primus',
+    'Porn Groove',
+    {110}'Satire',
+    'Slow Jam',
+    'Club',
+    'Tango',
+    'Samba',
+    'Folklore',
+    'Ballad',
+    'Power Ballad',
+    'Rhythmic Soul',
+    'Freestyle',
+    {120}'Duet',
+    'Punk Rock',
+    'Drum Solo',
+    'A capella',
+    'Euro-House',
+    'Dance Hall'
+   );
+
+const
+  CGenre_HighV1 = 79;
+  CGenre_DefaultID = 12;
+
 function ID3_FrameIDToString(const ID: TJvID3FrameID): string;
 begin
   Result := CID3FrameDefs[ID].LongTextID;
+end;
+
+function ID3_GenreToID_v1(const AGenre: string): Integer;
+begin
+  Result := TJvID3TermFinder.Instance.ID3GenreToID(AGenre, True);
+end;
+
+function ID3_GenreToID_v2(const AGenre: string): Integer;
+begin
+  Result := TJvID3TermFinder.Instance.ID3GenreToID(AGenre, False);
+end;
+
+function ID3_IDToGenre_v1(const ID: Integer): string;
+begin
+  if (ID >= Low(CID3Genres)) and (ID <= CGenre_HighV1) then
+    Result := CID3Genres[ID]
+  else
+    Result := '';
+end;
+
+function ID3_IDToGenre_v2(const ID: Integer): string;
+begin
+  if (ID >= Low(CID3Genres)) and (ID <= High(CID3Genres)) then
+    Result := CID3Genres[ID]
+  else
+    Result := '';
+end;
+
+procedure ID3_Genres_v1(Strings: TStrings);
+begin
+  TJvID3TermFinder.Instance.ID3Genres(Strings, True);
+end;
+
+procedure ID3_Genres_v2(Strings: TStrings);
+begin
+  TJvID3TermFinder.Instance.ID3Genres(Strings, False);
 end;
 
 function ISO_639_2IsCode(const Code: string): Boolean;
@@ -932,6 +1124,25 @@ begin
 end;
 
 // === TJvID3TermFinder =====================================================
+
+procedure TJvID3TermFinder.BuildList_ID3Genres;
+var
+  I: Integer;
+begin
+  if Assigned(FLists[ltID3Genres]) then
+    Exit;
+
+  FLists[ltID3Genres] := TStringList.Create;
+  with FLists[ltID3Genres] do
+  begin
+    { There are no duplicates in the list }
+    Duplicates := dupError;
+    Sorted := True;
+
+    for I := Low(CID3Genres) to High(CID3Genres) do
+      AddObject(CID3Genres[I], TObject(I));
+  end;
+end;
 
 procedure TJvID3TermFinder.BuildList_ID3LongText;
 var
@@ -1029,6 +1240,41 @@ begin
   inherited Destroy;
 end;
 
+procedure TJvID3TermFinder.ID3Genres(AStrings: TStrings;
+  const OnlyV1: Boolean);
+var
+  I: Integer;
+begin
+  BuildList_ID3Genres;
+
+  with FLists[ltID3Genres] do
+  begin
+    AStrings.BeginUpdate;
+    try
+      AStrings.Clear;
+      for I := 0 to FLists[ltID3Genres].Count - 1 do
+        if not OnlyV1 or (Integer(Objects[I]) <= CGenre_HighV1) then
+          AStrings.AddObject(Strings[I], Objects[I]);
+    finally
+      AStrings.EndUpdate;
+    end;
+  end;
+end;
+
+function TJvID3TermFinder.ID3GenreToID(const AGenre: string; const OnlyV1: Boolean): Integer;
+begin
+  BuildList_ID3Genres;
+
+  Result := FLists[ltID3Genres].IndexOf(AGenre);
+  if OnlyV1 and (Result > CGenre_HighV1) then
+    Result := -1;
+
+  if Result >= 0 then
+    Result := Integer(FLists[ltID3Genres].Objects[Result])
+  else
+    Result := CGenre_DefaultID;
+end;
+
 function TJvID3TermFinder.ID3LongTextToFrameID(
   const S: string): TJvID3FrameID;
 var
@@ -1103,11 +1349,11 @@ begin
     Result := Integer(FLists[ltISO_639_2Code].Objects[Result]);
 end;
 
-procedure TJvID3TermFinder.ISO_639_2Names(Strings: TStrings);
+procedure TJvID3TermFinder.ISO_639_2Names(AStrings: TStrings);
 begin
   BuildList_ISO_639_2Name;
 
-  Strings.Assign(FLists[ltISO_639_2Name]);
+  AStrings.Assign(FLists[ltISO_639_2Name]);
 end;
 
 function TJvID3TermFinder.ISO_639_2NameToIndex(

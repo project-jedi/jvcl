@@ -41,12 +41,12 @@ type
     FArtist: string;
     FSongName: string;
     FYear: string;
-    FGenre: TGenre;
+    FGenre: string;
     FOnChange: TNotifyEvent;
     procedure SetAlbum(const Value: string);
     procedure SetArtist(const Value: string);
     procedure SetComment(const Value: string);
-    procedure SetGenre(const Value: TGenre);
+    procedure SetGenre(const Value: string);
     procedure SetSongName(const Value: string);
     procedure SetYear(const Value: string);
   protected
@@ -57,7 +57,7 @@ type
     property Album: string read FAlbum write SetAlbum;
     property Artist: string read FArtist write SetArtist;
     property Comment: string read FComment write SetComment;
-    property Genre: TGenre read FGenre write SetGenre;
+    property Genre: string read FGenre write SetGenre;
     property SongName: string read FSongName write SetSongName;
     property Year: string read FYear write SetYear;
   end;
@@ -111,6 +111,9 @@ type
 
 implementation
 
+uses
+  JvID3v2Types;
+
 //=== TJvVisualId3v1 =========================================================
 
 constructor TJvVisualId3v1.Create(AOwner: TComponent);
@@ -118,9 +121,7 @@ const
   CaptionLabels: array [1..6] of PChar =
     ('Artist', 'SongName', 'Album', 'Year', 'Comment', 'Genre');
 var
-  I: Byte;
   J: Integer;
-  S: string;
 begin
   inherited Create(AOwner);
   Width := 229;
@@ -163,12 +164,7 @@ begin
   FId3Tag.OnChange := Changed;
 
   FId3v1 := TJvId3v1.Create(Self);
-  for I := Integer(Low(TGenre)) to Integer(High(TGenre)) do
-  begin
-    S := FId3v1.GenreToString(TGenre(I));
-    if S <> '' then
-      FCombo1.Items.AddObject(S, TObject(I));
-  end;
+  ID3_Genres_v1(FCombo1.Items);
   FEditFont.OnChange := FontChanged;
   FLabelFont.OnChange := FontChanged;
   FontChanged(Self);
@@ -263,7 +259,7 @@ end;
 
 procedure TJvVisualId3v1.RemoveTag;
 begin
-  FId3v1.RemoveTag;
+  FId3v1.Erase;
 
   { Copy FId3v1 data to the edit controls }
   UpdateCtrls;
@@ -271,7 +267,10 @@ end;
 
 procedure TJvVisualId3v1.ReadTag;
 begin
-  FId3v1.ReadTag;
+  if not FId3v1.Active then
+    FId3v1.Open
+  else
+    FId3v1.Refresh;
 
   { Copy FId3v1 data to the edit controls }
   UpdateCtrls;
@@ -303,7 +302,7 @@ begin
     Comment := FId3Tag.Comment;
     Genre := FId3Tag.Genre;
 
-    WriteTag;
+    Commit;
   end;
 
   { Reload to be sure }
@@ -332,6 +331,7 @@ end;
 procedure TJvVisualId3v1.SetFileName(const Value: TFileName);
 begin
   FId3v1.FileName := Value;
+  FId3v1.Open;
   UpdateCtrls;
 end;
 
@@ -364,10 +364,7 @@ begin
   FId3Tag.FAlbum := FEditList[3].Text;
   FId3Tag.FYear := FEditList[4].Text;
   FId3Tag.FComment := FEditList[5].Text;
-  if FCombo1.ItemIndex >= 0 then
-    FId3Tag.FGenre := TGenre(FCombo1.Items.Objects[FCombo1.ItemIndex])
-  else
-    FId3Tag.FGenre := grNone;
+  FId3Tag.FGenre := FCombo1.Text;
 end;
 
 procedure TJvVisualId3v1.WMSize(var Msg: TWMSize);
@@ -402,7 +399,7 @@ begin
   FArtist := '';
   FSongName := '';
   FYear := '';
-  FGenre := grBlues;
+  FGenre := '';
 end;
 
 procedure TJvId3v1Tag.SetAlbum(const Value: string);
@@ -426,7 +423,7 @@ begin
     FOnChange(Self);
 end;
 
-procedure TJvId3v1Tag.SetGenre(const Value: TGenre);
+procedure TJvId3v1Tag.SetGenre(const Value: string);
 begin
   FGenre := Value;
   if Assigned(FOnChange) then

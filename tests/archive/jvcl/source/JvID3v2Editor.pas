@@ -85,14 +85,26 @@ type
     procedure WMGetMinMaxInfo(var Message: TWMGetMinMaxInfo); message WM_GETMINMAXINFO;
   protected
     procedure Activated; override;
+    {$IFDEF COMPILER6_UP}
     function UniqueName(Component: TComponent): string; override;
+    {$ENDIF}
   public
-    procedure ItemDeleted(const ADesigner: IDesigner; AItem: TPersistent); override;
-    function EditAction(Action: TEditAction): Boolean; override;
     function ForEachSelection(Proc: TSelectionProc): Boolean;
-    procedure ItemsModified(const Designer: IDesigner); override;
-    procedure SelectionChanged(const ADesigner: IDesigner; const ASelection: IDesignerSelections); override;
     function DoNewFrame: TJvID3Frame;
+
+    {$IFDEF COMPILER6_UP}
+    function EditAction(Action: TEditAction): Boolean; override;
+    procedure ItemDeleted(const ADesigner: IDesigner; AItem: TPersistent); override;
+    { (rb) ?? Don't know how this is handled in D5 }
+    procedure SelectionChanged(const ADesigner: IDesigner; const ASelection: IDesignerSelections); override;
+    procedure ItemsModified(const Designer: IDesigner); override;
+    {$ELSE}
+    procedure EditAction(Action: TEditAction); override;
+    procedure ComponentDeleted(Component: IPersistent); override;
+    function UniqueName(Component: TComponent): string; override;
+    procedure FormModified; override;
+    {$ENDIF}
+
     property Controller: TJvID3Controller read FController write SetController;
   end;
 
@@ -251,7 +263,11 @@ begin
   else
   begin
     Result := TJvID3FramesEditor.Create(Application);
+    {$IFDEF COMPILER6_UP}
     Result.Designer := Designer;
+    {$ELSE}
+    Result.Designer := Designer as IFormDesigner;
+    {$ENDIF}
     Result.Controller := AController;
     Shared := False;
   end;
@@ -268,6 +284,20 @@ begin
     FrameListBox.Items.Clear;
   end;
 end;
+
+{$IFNDEF COMPILER6_UP}
+procedure TJvID3FramesEditor.ComponentDeleted(Component: IPersistent);
+var
+  P: TPersistent;
+begin
+  P := ExtractPersistent(Component);
+  if P = Controller then
+    Controller := nil
+  else
+  if (P is TJvID3Frame) and (TJvID3Frame(P).Controller = Controller) then
+    UpdateDisplay;
+end;
+{$ENDIF}
 
 function TJvID3FramesEditor.DoNewFrame: TJvID3Frame;
 var
@@ -291,7 +321,13 @@ begin
   end;
 end;
 
+{$IFDEF COMPILER6_UP}
 function TJvID3FramesEditor.EditAction(Action: TEditAction): Boolean;
+{$ELSE}
+procedure TJvID3FramesEditor.EditAction(Action: TEditAction);
+var
+  Result: Boolean;
+{$ENDIF}
 begin
   Result := True;
   case Action of
@@ -327,8 +363,8 @@ begin
   Result := True;
 end;
 
-procedure TJvID3FramesEditor.ItemDeleted(const ADesigner: IDesigner;
-  AItem: TPersistent);
+{$IFDEF COMPILER6_UP}
+procedure TJvID3FramesEditor.ItemDeleted(const ADesigner: IDesigner; AItem: TPersistent);
 begin
   if AItem = Controller then
     Controller := nil
@@ -336,10 +372,16 @@ begin
   if (AItem is TJvID3Frame) and (TJvID3Frame(AItem).Controller = Controller) then
     UpdateDisplay;
 end;
+{$ENDIF}
 
+{$IFDEF COMPILER6_UP}
 procedure TJvID3FramesEditor.ItemsModified(const Designer: IDesigner);
+{$ELSE}
+procedure TJvID3FramesEditor.FormModified;
+{$ENDIF}
 begin
-  UpdateCaption;
+  if not (csDestroying in ComponentState) then
+    UpdateCaption;
 end;
 
 procedure TJvID3FramesEditor.MoveFrames(MoveOffset: Integer);
@@ -460,6 +502,7 @@ begin
     for I := 0 to Items.Count - 1 do Selected[I] := True;
 end;
 
+{$IFDEF COMPILER6_UP}
 procedure TJvID3FramesEditor.SelectionChanged(const ADesigner: IDesigner;
   const ASelection: IDesignerSelections);
 var
@@ -488,6 +531,7 @@ begin
         Selected[I] := S;
     end;
 end;
+{$ENDIF COMPILER6_UP}
 
 procedure TJvID3FramesEditor.SetController(Value: TJvID3Controller);
 begin

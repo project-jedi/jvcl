@@ -28,6 +28,8 @@ Known Issues:
     list indicate not supported frames.
 -----------------------------------------------------------------------------}
 
+{$I JVCL.INC}
+
 unit JvID3v2Base;
 
 interface
@@ -531,13 +533,12 @@ type
     class function Find(AController: TJvID3Controller): TJvID3GeneralObjFrame; overload;
     class function Find(AController: TJvID3Controller; const AContentDescription: string): TJvID3GeneralObjFrame;
       overload;
-    class function Find(AController: TJvID3Controller; const AContentDescription: WideString): TJvID3GeneralObjFrame;
-      overload;
+    class function FindW(AController: TJvID3Controller; const AContentDescription: WideString): TJvID3GeneralObjFrame;
     class function FindOrCreate(AController: TJvID3Controller): TJvID3GeneralObjFrame; overload;
     class function FindOrCreate(AController: TJvID3Controller; const AContentDescription: string):
       TJvID3GeneralObjFrame; overload;
-    class function FindOrCreate(AController: TJvID3Controller; const AContentDescription: WideString):
-      TJvID3GeneralObjFrame; overload;
+    class function FindOrCreateW(AController: TJvID3Controller; const AContentDescription: WideString):
+      TJvID3GeneralObjFrame;
   published
     property MIMEType: string read FMIMEType write SetMIMEType;
     property FileName: string read FFileName.SA write SetFileName;
@@ -1113,8 +1114,11 @@ implementation
 
 uses
   Graphics, Windows,
+  {$IFNDEF COMPILER6_UP}
+  Forms,
+  {$ENDIF}
   JclFileUtils, JclLogic, JclDateTime,
-  JvxRConst;
+  JvxRConst, JvFunctions;
 
 var
   DefaultFrameClasses: array [TJvID3FrameID] of TJvID3FrameClass = (
@@ -3194,6 +3198,7 @@ begin
     SaveToFile(FFileName);
     SetModified(False);
   except
+    {$IFDEF COMPILER6_UP}
     if csDesigning in ComponentState then
       if Assigned(Classes.ApplicationHandleException) then
         Classes.ApplicationHandleException(ExceptObject)
@@ -3201,6 +3206,15 @@ begin
         ShowException(ExceptObject, ExceptAddr)
     else
       raise;
+    {$ELSE}
+    if csDesigning in ComponentState then
+      if Assigned(Application.HandleException) then
+        Application.HandleException(ExceptObject)
+      else
+        ShowException(ExceptObject, ExceptAddr)
+    else
+      raise;
+    {$ENDIF}
   end;
 end;
 
@@ -3510,6 +3524,7 @@ begin
     if FStreamedActive then
       SetActive(True);
   except
+    {$IFDEF COMPILER6_UP}
     if csDesigning in ComponentState then
       if Assigned(Classes.ApplicationHandleException) then
         Classes.ApplicationHandleException(ExceptObject)
@@ -3517,6 +3532,15 @@ begin
         ShowException(ExceptObject, ExceptAddr)
     else
       raise;
+    {$ELSE}
+    if csDesigning in ComponentState then
+      if Assigned(Application.HandleException) then
+        Application.HandleException(ExceptObject)
+      else
+        ShowException(ExceptObject, ExceptAddr)
+    else
+      raise;
+    {$ENDIF}
   end;
 end;
 
@@ -6872,31 +6896,6 @@ begin
     Result := TJvID3GeneralObjFrame(Frame);
 end;
 
-class function TJvID3GeneralObjFrame.Find(AController: TJvID3Controller;
-  const AContentDescription: WideString): TJvID3GeneralObjFrame;
-var
-  Frame: TJvID3Frame;
-  SP: TJvID3StringPair;
-begin
-  Result := nil;
-  if not Assigned(AController) or not AController.Active then
-    Exit;
-
-  if not AController.FindFirstFrame(fiGeneralObject, Frame) then
-    Exit;
-
-  SP.SW := AContentDescription;
-
-  while (Frame is TJvID3GeneralObjFrame) and
-    not SameStringPair(SP, TJvID3GeneralObjFrame(Frame).FContentDescription,
-    ienUTF_16, Frame.Encoding) do
-
-    AController.FindNextFrame(fiGeneralObject, Frame);
-
-  if Frame is TJvID3GeneralObjFrame then
-    Result := TJvID3GeneralObjFrame(Frame);
-end;
-
 class function TJvID3GeneralObjFrame.FindOrCreate(
   AController: TJvID3Controller): TJvID3GeneralObjFrame;
 begin
@@ -6923,7 +6922,7 @@ begin
   end;
 end;
 
-class function TJvID3GeneralObjFrame.FindOrCreate(
+class function TJvID3GeneralObjFrame.FindOrCreateW(
   AController: TJvID3Controller;
   const AContentDescription: WideString): TJvID3GeneralObjFrame;
 begin
@@ -6936,6 +6935,31 @@ begin
     Result := TJvID3GeneralObjFrame(AController.AddFrame(fiGeneralObject));
     Result.ContentDescriptionW := AContentDescription;
   end;
+end;
+
+class function TJvID3GeneralObjFrame.FindW(AController: TJvID3Controller;
+  const AContentDescription: WideString): TJvID3GeneralObjFrame;
+var
+  Frame: TJvID3Frame;
+  SP: TJvID3StringPair;
+begin
+  Result := nil;
+  if not Assigned(AController) or not AController.Active then
+    Exit;
+
+  if not AController.FindFirstFrame(fiGeneralObject, Frame) then
+    Exit;
+
+  SP.SW := AContentDescription;
+
+  while (Frame is TJvID3GeneralObjFrame) and
+    not SameStringPair(SP, TJvID3GeneralObjFrame(Frame).FContentDescription,
+    ienUTF_16, Frame.Encoding) do
+
+    AController.FindNextFrame(fiGeneralObject, Frame);
+
+  if Frame is TJvID3GeneralObjFrame then
+    Result := TJvID3GeneralObjFrame(Frame);
 end;
 
 function TJvID3GeneralObjFrame.GetFrameSize(const ToEncoding: TJvID3Encoding): Cardinal;
