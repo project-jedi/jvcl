@@ -2,7 +2,8 @@
 {$I JEDI.INC}
 package JVCL200_D50;
 
-{$R *.res}
+{$R *.RES}
+{$ALIGN ON}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
 {$DEBUGINFO OFF}
@@ -40,9 +41,6 @@ contains
   JvAlarmsEditor in '..\Source\JvAlarmsEditor.pas',
   JvBaseDlgEditor in '..\Source\JvBaseDlgEditor.pas',
   JvCommonDialogDEditor in '..\Source\JvCommonDialogDEditor.pas',
-  JvFormFinish in '..\Source\JvFormFinish.pas' {FormEnd},
-  JvFormCancel in '..\Source\JvFormCancel.pas' {FormCanc},
-  JvFormCompo in '..\Source\JvFormCompo.pas' {FormComp},
   JvDataEmbeddedEditor in '..\Source\JvDataEmbeddedEditor.pas',
   JvExchListboxes in '..\Source\JvExchListboxes.pas',
   JvFormLists in '..\Source\JvFormLists.pas' {FormListb},
@@ -66,11 +64,9 @@ contains
   JvLCProperty in '..\Source\JvLCProperty.pas',
   JvTipProperty in '..\Source\JvTipProperty.pas',
   JvAppletProperty in '..\source\JvAppletProperty.pas',
-  // Rx Controls
   JvLConst in '..\source\JvLConst.pas',
   JvHintProp in '..\source\JvHintProp.pas',
   JvCheckItm in '..\source\JvCheckItm.pas',
-  JvxStrLEdit in '..\source\JvxStrLEdit.pas',
   JvColors in '..\source\JvColors.pas',
   JvDsgn in '..\source\JvDsgn.pas',
   JvPresrDsn in '..\source\JvPresrDsn.pas',
@@ -79,17 +75,15 @@ contains
   JvPgMngrEd in '..\source\JvPgMngrEd.pas',
   JvTimLstEd in '..\source\JvTimLstEd.pas',
   JvIcoLEdit in '..\source\JvIcoLEdit.pas',
-//  JvResExp in '..\source\JvResExp.pas',
   JvPictEdit in '..\source\JvPictEdit.pas',
   JvDirFrm in '..\source\JvDirFrm.pas',
   JvGradEdit in '..\source\JvGradEdit.pas',
   JvCtlReg in '..\source\JvCtlReg.pas',
   JvTooReg in '..\source\JvTooReg.pas',
-  // Rx DB Controls
   JvSelDSFrm in '..\source\JvSelDSFrm.pas',
   JvDBReg in '..\source\JvDBReg.pas',
-  // Rx BDE Controls
   JvQBndDlg in '..\source\JvQBndDlg.pas',
-  JvBDEReg in '..\source\JvBDEReg.pas';
+  JvBDEReg in '..\source\JvBDEReg.pas',
+  JvImagPrvw in '..\source\JvImagPrvw.pas' {ImageForm};
 
 end.

@@ -38,9 +38,6 @@ contains
   JvAlarmsEditor in '..\Source\JvAlarmsEditor.pas',
   JvBaseDlgEditor in '..\Source\JvBaseDlgEditor.pas',
   JvCommonDialogDEditor in '..\Source\JvCommonDialogDEditor.pas',
-  JvFormFinish in '..\Source\JvFormFinish.pas' {FormEnd},
-  JvFormCancel in '..\Source\JvFormCancel.pas' {FormCanc},
-  JvFormCompo in '..\Source\JvFormCompo.pas' {FormComp},
   JvDataEmbeddedEditor in '..\Source\JvDataEmbeddedEditor.pas',
   JvExchListboxes in '..\Source\JvExchListboxes.pas',
   JvFormLists in '..\Source\JvFormLists.pas' {FormListb},
@@ -67,7 +64,6 @@ contains
   JvLConst in '..\source\JvLConst.pas',
   JvHintProp in '..\source\JvHintProp.pas',
   JvCheckItm in '..\source\JvCheckItm.pas',
-  JvxStrLEdit in '..\source\JvxStrLEdit.pas',
   JvColors in '..\source\JvColors.pas',
   JvDsgn in '..\source\JvDsgn.pas',
   JvPresrDsn in '..\source\JvPresrDsn.pas',
@@ -80,6 +76,7 @@ contains
   JvDirFrm in '..\source\JvDirFrm.pas',
   JvGradEdit in '..\source\JvGradEdit.pas',
   JvCtlReg in '..\source\JvCtlReg.pas',
-  JvTooReg in '..\source\JvTooReg.pas';
+  JvTooReg in '..\source\JvTooReg.pas',
+  JvImagPrvw in '..\source\JvImagPrvw.pas' {ImageForm};
 
 end.
