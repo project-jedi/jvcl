@@ -156,8 +156,10 @@ type
     procedure SetTitleArrow(const Value: Boolean);
     procedure ShowSelectColumnClick;
     procedure SetAlternateRowColor(const Value: TColor);
+    procedure ReadAlternRowColor(Reader: TReader);
     // End Lionel
   protected
+    
     procedure MouseLeave(Control: TControl); override;
     function AcquireFocus: Boolean;
     function CanEditShow: Boolean; override;
@@ -207,6 +209,7 @@ type
     {$IFNDEF COMPILER6_UP}
     procedure FocusCell(ACol, ARow: Longint; MoveAnchor: Boolean);
     {$ENDIF !COMPILER6_UP}
+    procedure DefineProperties(Filer: TFiler); override;
   public
     constructor Create(AOwner: TComponent); override; // Modified by Lionel
     destructor Destroy; override; // Modified by Lionel
@@ -2439,6 +2442,22 @@ begin
     FAlternateRowColor := Value;
     Invalidate;
   end;
+end;
+
+procedure TJvDBGrid.ReadAlternRowColor(Reader:TReader);
+var b:boolean;
+begin
+  b := Reader.ReadBoolean;
+  if b then
+    AlternateRowColor := $00DDDDDD
+  else
+    AlternateRowColor := clNone;
+end;
+
+procedure TJvDBGrid.DefineProperties(Filer: TFiler);
+begin
+  inherited;
+  Filer.DefineProperty('AlternRowColor', ReadAlternRowColor, nil, false);
 end;
 
 initialization
