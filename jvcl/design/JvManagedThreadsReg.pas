@@ -21,6 +21,8 @@ Last Modified: 2002-09-25
 Known Issues:
 -----------------------------------------------------------------------------}
 
+{$I JVCL.INC}
+
 unit JvManagedThreadsReg;
 
 interface
@@ -28,8 +30,8 @@ interface
 uses
   Classes,
   {$IFDEF USEJVCL}
-  JvDsgnConsts,
-  {$ENDIF}
+  //JvDsgnConsts,
+  {$ENDIF USEJVCL}
   JvMtComponents;
 
 procedure Register;
@@ -38,10 +40,10 @@ implementation
 
 {$R ..\Resources\JvManagedThreadsReg.dcr}
 
-{$IFNDEF USEJVCL}
+{ IFNDEF USEJVCL}
 resourcestring
   RsPaletteMTThreads = 'Jv Threading';
-{$ENDIF}
+{ ENDIF USEJVCL}
 
 procedure Register;
 begin

@@ -148,7 +148,7 @@ implementation
 {$IFDEF USEJVCL}
 uses
   JvDsgnConsts;
-{$ENDIF}
+{$ENDIF USEJVCL}
 
 {$R *.dfm}
 
@@ -161,8 +161,8 @@ resourcestring
   RsNextPage = 'Next Page';
   RsPreviousPage = 'Previous Page';
   RsNone = '(none)';
+{$ENDIF USEJVCL}
 
-{$ENDIF}
 procedure ShowWizardPageListEditor(Designer: IDesigner; AWizard: TJvWizard);
 var
   I: Integer;

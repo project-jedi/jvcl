@@ -74,19 +74,21 @@ resourcestring
   RsPaletteHMINonVisual = 'Jv HMI Non-Visual';
   RsPaletteHMIControls = 'Jv HMI Controls';
   RsPaletteBDE = 'Jv BDE Components';
-  RsPaletteMTThreads = 'Jv Threading';
   RsPalettePrintPreview = 'Jv Print Preview';
-  RsPaletteTimeFramework = 'Jv TimeFrameWork';
   RsPaletteUIB = 'Jv UIB';
   RsPaletteInterpreter = 'Jv Interpreter';
   RsPaletteGlobusComponents1 = 'JVCL Globus Components 1';
   RsPaletteGlobusComponents2 = 'JVCL Globus Components 2';
   RsPaletteValidators = 'Jv Validators';
+  {$IFDEF USEJVCL}
+  RsPaletteMTThreads = 'Jv Threading';
+  RsPaletteTimeFramework = 'Jv TimeFrameWork';
   RsPaletteWizard = 'Jv Wizard';
   RsPaletteXPControls = 'Jv XP Controls';
   RsPaletteDocking = 'Jv Docking';
   RsPaletteDotNet = 'Jv DotNet';
   RsPaletteDotNetDB = 'Jv DotNet DB';
+  {$ENDIF USEJVCL}
 
 //=== JvAnimatedEditor.pas ===================================================
 resourcestring
@@ -609,11 +611,13 @@ resourcestring
   RsJvValidatorItemsEditorEllipsis = 'JvValidator Items Editor...';
 
 //=== JvWizardEditorForm.pas =================================================
+{$IFDEF USEJVCL}
 resourcestring
   RsPageListEllipsis = 'Page List...';
   RsNewWelcomePage = 'New Welcome Page';
   RsNewInteriorPage = 'New Interior Page';
   RsDeletePage = 'Delete Page';
+{$ENDIF USEJVCL}
 
 //=== JvXPPropertyEditors.pas ================================================
 resourcestring

@@ -82,6 +82,7 @@ type
   end;
 
 implementation
+
 uses
   JvXPBar;
 

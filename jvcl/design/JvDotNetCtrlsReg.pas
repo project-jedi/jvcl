@@ -45,17 +45,16 @@ resourcestring
   RsPaletteDotNet = 'Jv DotNet';
   RsPaletteDotNetDB = 'Jv DotNet DB';
 
-
 procedure Register;
 begin
   RegisterComponents(RsPaletteDotNet, [TJvDotNetCheckListBox,
     TJvDotNetEdit, TJvDotNetHotKey, TJvDotNetListBox,
     TJvDotNetListView, TJvDotNetMaskEdit, TJvDotNetMemo,
     TJvDotNetRichEdit, TJvDotNetScrollBox, TJvDotNetTreeView]);
-{$IFNDEF DelphiPersonalEdition}
+  {$IFNDEF DelphiPersonalEdition}
   RegisterComponents(RsPaletteDotNetDB, [TJvDotNetDBEdit, TJvDotNetDBListBox,
     TJvDotNetDBLookupListBox, TJvDotNetDBMemo, TJvDotNetDBRichEdit]);
-{$ENDIF}
+  {$ENDIF DelphiPersonalEdition}
 end;
 
 end.
