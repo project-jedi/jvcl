@@ -60,9 +60,6 @@ object Form1: TForm1
     Align = alRight
     BevelOuter = bvNone
     TabOrder = 1
-    DesignSize = (
-      257
-      470)
     object Button2: TButton
       Left = 16
       Top = 124

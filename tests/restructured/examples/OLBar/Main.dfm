@@ -13,9 +13,6 @@ object Form1: TForm1
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
-  DesignSize = (
-    213
-    273)
   PixelsPerInch = 96
   TextHeight = 13
   object Splitter1: TSplitter

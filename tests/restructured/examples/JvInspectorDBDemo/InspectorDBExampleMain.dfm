@@ -12,9 +12,6 @@ object Form1: TForm1
   Font.Style = []
   OldCreateOrder = False
   OnShow = FormShow
-  DesignSize = (
-    751
-    454)
   PixelsPerInch = 96
   TextHeight = 13
   object JvInspector1: TJvInspector

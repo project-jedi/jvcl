@@ -11,9 +11,6 @@ object Form1: TForm1
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
-  DesignSize = (
-    328
-    402)
   PixelsPerInch = 96
   TextHeight = 16
   object Label1: TLabel

@@ -23,9 +23,6 @@ object Form1: TForm1
     Constraints.MinHeight = 183
     FullRepaint = False
     TabOrder = 0
-    DesignSize = (
-      762
-      245)
     object JvSpecialProgress1: TJvSpecialProgress
       Left = 8
       Top = 56

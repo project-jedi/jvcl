@@ -14,9 +14,6 @@ object Form2: TForm2
   OldCreateOrder = False
   Position = poScreenCenter
   OnCreate = FormCreate
-  DesignSize = (
-    508
-    219)
   PixelsPerInch = 96
   TextHeight = 14
   object Label1: TLabel

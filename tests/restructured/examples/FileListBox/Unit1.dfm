@@ -12,9 +12,6 @@ object Form1: TForm1
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
-  DesignSize = (
-    595
-    398)
   PixelsPerInch = 96
   TextHeight = 13
   object DriveCombo1: TJvDriveCombo

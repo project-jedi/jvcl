@@ -5,19 +5,22 @@
 #--------------------------------------------------------------------------------------------------#
 
 !ifndef ROOT
-ROOT = $(MAKEDIR)\..
+ROOT = $(MAKEDIR)
 !endif
 #---------------------------------------------------------------------------------------------------
-SRC = ..\..\Source;..\..\Common
-DCU = ..\..\Dcu;..\..\lib5;..\..\lib6
+SRC = ..\..\Source
+ARCH = ..\..\Archive
+COM = ..\..\Common
 BIN = ..\..\Bin
 JCL = ..\..\..\JCL\source
 DRC = $&.drc
+SRCP = $(SRC);$(COM);$(JCL);$(ARCH)
+SRCH = ..\$(SRC);..\$(COM);..\$(JCL);$..\(ARCH)
 #---------------------------------------------------------------------------------------------------
-MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
-DCC = $(ROOT)\bin\dcc32.exe -e$(BIN) -i$(SRC) -i$(DCU) -n$(DCU) -r$(SRC) -q -u$(SRC) -u$(JCL) -w
-DCCU = $(ROOT)\bin\dcc32.exe -e$(BIN) -i$(SRC) -i$(DCU) -n$(DCU) -q -w $**
-BRCC = $(ROOT)\bin\brcc32.exe $**
+MAKE = $(ROOT)\make.exe -$(MAKEFLAGS) -f$**
+DCC  = $(ROOT)\dcc32.exe -e$(BIN) -i$(SRCP) -r$(SRCP) -u$(SRCP) -q -w -m
+DCCH = $(ROOT)\dcc32.exe -e..\$(BIN) -i$(SRCH) -r$(SRCH) -u$(SRCH) -q -w -m
+BRCC = $(ROOT)\brcc32.exe $**
 #---------------------------------------------------------------------------------------------------
 default: \
 ArrowButtonDemo.exe \
@@ -67,7 +70,12 @@ ControlsExample.exe \
 CreateProcessExample.exe \ 
 EvnironmentList.exe \
 MailExample.exe \
-JvTranslatorProj.exe
+DBexpl32.exe \
+RxDemo.exe \
+RxGIFAnm.exe \
+JvTranslatorProj.exe \
+JvThumbnailDemo.exe
+
 #---------------------------------------------------------------------------------------------------
 
 ArrowButtonDemo.exe: ArrowButton\ArrowButtonDemo.dpr
@@ -310,7 +318,27 @@ MailExample.exe: MailExample\MailExample.dpr
   $(DCC) $&.dpr
   cd ..
 
+DBexpl32.exe: RxDBExplorer\DBexpl32.dpr
+  cd RxDBExplorer
+  $(DCC) $&.dpr
+  cd ..
+
+RxDemo.exe: RxDemo\RxDemo.dpr
+  cd RxDemo
+  $(DCC) $&.dpr
+  cd ..
+
+RxGIFAnm.exe: RxGIFAnimator\RxGIFAnm.dpr
+  cd RxGIFAnimator
+  $(DCC) $&.dpr
+  cd ..
+
 JvTranslatorProj.exe: JvTranslator\JvTranslatorProj.dpr
   cd JvTranslator
+  $(DCC) $&.dpr
+  cd ..
+
+JvThumbnailDemo.exe: JvThumbnail\JvThumbnailDemo.dpr
+  cd JvThumbnail
   $(DCC) $&.dpr
   cd ..

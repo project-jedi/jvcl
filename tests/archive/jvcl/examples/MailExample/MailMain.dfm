@@ -14,9 +14,6 @@ object MainForm: TMainForm
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
-  DesignSize = (
-    557
-    429)
   PixelsPerInch = 96
   TextHeight = 13
   object ClientLabel: TLabel

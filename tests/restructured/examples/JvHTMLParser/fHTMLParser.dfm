@@ -70,9 +70,6 @@ object Form1: TForm1
         Align = alBottom
         BevelOuter = bvNone
         TabOrder = 2
-        DesignSize = (
-          484
-          34)
         object btnProcessTable: TJvButton
           Left = 408
           Top = 5
@@ -116,9 +113,6 @@ object Form1: TForm1
         Align = alBottom
         BevelOuter = bvNone
         TabOrder = 1
-        DesignSize = (
-          484
-          34)
         object btnProcessHTML2Text: TJvButton
           Left = 408
           Top = 5
@@ -162,9 +156,6 @@ object Form1: TForm1
         Align = alBottom
         BevelOuter = bvNone
         TabOrder = 1
-        DesignSize = (
-          484
-          34)
         object btnProcessURL: TJvButton
           Left = 408
           Top = 5
@@ -208,9 +199,6 @@ object Form1: TForm1
         Align = alBottom
         BevelOuter = bvNone
         TabOrder = 1
-        DesignSize = (
-          484
-          34)
         object btnProcessTags: TJvButton
           Left = 408
           Top = 5

@@ -13,9 +13,6 @@ object Form1: TForm1
   Font.Style = []
   OldCreateOrder = False
   OnDestroy = FormDestroy
-  DesignSize = (
-    262
-    389)
   PixelsPerInch = 96
   TextHeight = 13
   object Button1: TButton

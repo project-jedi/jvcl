@@ -239,9 +239,6 @@ object Form1: TForm1
     OnDrawItem = TimeLine1DrawItem
     OnSaveItem = TimeLine1SaveItem
     OnLoadItem = TimeLine1LoadItem
-    DesignSize = (
-      688
-      196)
   end
   object Panel2: TPanel
     Left = 0
