@@ -38,7 +38,7 @@ uses
 type
   TJvCustomPropertyStore = class(TJvComponent)
   private
-    FPath: string;
+    FAppStoragePath: string;
     FAppStorage: TJvCustomAppStorage;
     FEnabled: Boolean;
     FDeleteBeforeStore: Boolean;
@@ -79,7 +79,7 @@ type
     procedure Clear; virtual;
   published
     property AutoLoad: boolean read FAutoLoad write SetAutoLoad;
-    property Path: string read FPath Write SetPath;
+    property AppStoragePath: string read FAppStoragePath Write SetPath;
     property Enabled: Boolean read FEnabled write FEnabled default True;
     property DeleteBeforeStore: Boolean read FDeleteBeforeStore write FDeleteBeforeStore
       default False;
@@ -267,7 +267,7 @@ begin
   FCombinedIgnoreList.AddStrings(FIntIgnoreProperties);
   FCombinedIgnoreList.AddStrings(FIgnoreProperties);
   FIntIgnoreProperties.Add('AboutJVCL');
-  FIntIgnoreProperties.Add('Path');
+  FIntIgnoreProperties.Add('AppStoragePath');
   FIntIgnoreProperties.Add('AutoLoad');
   FIntIgnoreProperties.Add('Name');
   FIntIgnoreProperties.Add('Tag');
@@ -415,7 +415,7 @@ var
   PropName: string;
 begin
   if OldPath = '' then
-    OldPath := Path;
+    OldPath := AppStoragePath;
   for Index := 0 to GetPropCount(Self) - 1 do
   begin
     PropName := GetPropName(Self, Index);
@@ -426,11 +426,11 @@ begin
       Continue;
     if PropType(Self, GetPropName(Self, Index)) = tkClass then
       if (TPersistent(GetOrdProp(Self, PropName)) is TJvCustomPropertyStore) then
-        if (TJvCustomPropertyStore(TPersistent(GetOrdProp(Self, PropName))).Path =
+        if (TJvCustomPropertyStore(TPersistent(GetOrdProp(Self, PropName))).AppStoragePath =
           AppStorage.ConcatPaths([OldPath, VisPropName])) or
-          (TJvCustomPropertyStore(TPersistent(GetOrdProp(Self, PropName))).Path = '') then
-            TJvCustomPropertyStore(TPersistent(GetOrdProp(Self, PropName))).Path :=
-            AppStorage.ConcatPaths([Path, VisPropName]);
+          (TJvCustomPropertyStore(TPersistent(GetOrdProp(Self, PropName))).AppStoragePath = '') then
+            TJvCustomPropertyStore(TPersistent(GetOrdProp(Self, PropName))).AppStoragePath :=
+            AppStorage.ConcatPaths([AppStoragePath, VisPropName]);
   end;
 end;
 
@@ -438,9 +438,9 @@ procedure TJvCustomPropertyStore.SetPath(Value: string);
 var
   OldPath: string;
 begin
-  OldPath := FPath;
-  if Value <> Path then
-    FPath := Value;
+  OldPath := FAppStoragePath;
+  if Value <> AppStoragePath then
+    FAppStoragePath := Value;
   UpdateChildPaths(OldPath);
 end;
 
@@ -466,10 +466,10 @@ begin
   Result := 0;
   if not Enabled then
     Exit;
-  if Path = '' then
+  if AppStoragePath = '' then
     Exit;
-  if AppStorage.ValueStored(AppStorage.ConcatPaths([Path, cLastSaveTime])) then
-    Result := AppStorage.ReadDateTime(AppStorage.ConcatPaths([Path, cLastSaveTime]))
+  if AppStorage.ValueStored(AppStorage.ConcatPaths([AppStoragePath, cLastSaveTime])) then
+    Result := AppStorage.ReadDateTime(AppStorage.ConcatPaths([AppStoragePath, cLastSaveTime]))
   else
     Result := 0;
 end;
@@ -487,7 +487,7 @@ begin
   if Assigned(FOnBeforeLoadProperties) then
     OnBeforeLoadProperties(Self);
   LoadData;
-  AppStorage.ReadPersistent(Path, Self, True, False);
+  AppStorage.ReadPersistent(AppStoragePath, Self, True, False);
   if Assigned(FOnAfterLoadProperties) then
     OnAfterLoadProperties(self);
 end;
@@ -504,14 +504,14 @@ begin
   DisableAutoLoadDown;
   SaveProperties := IgnoreLastLoadTime or (GetLastSaveTime < FLastLoadTime);
   if DeleteBeforeStore then
-    AppStorage.DeleteSubTree(Path);
+    AppStorage.DeleteSubTree(AppStoragePath);
   if not IgnoreLastLoadTime then
-    AppStorage.WriteString(AppStorage.ConcatPaths([Path, cLastSaveTime]), DateTimeToStr(Now));
+    AppStorage.WriteString(AppStorage.ConcatPaths([AppStoragePath, cLastSaveTime]), DateTimeToStr(Now));
   if Assigned(FOnBeforeStoreProperties) then
     OnBeforeStoreProperties(self);
   if SaveProperties then
     StoreData;
-  AppStorage.WritePersistent(Path, Self, True, CombinedIgnoreList);
+  AppStorage.WritePersistent(AppStoragePath, Self, True, CombinedIgnoreList);
   if Assigned(FOnAfterStoreProperties) then
     OnAfterStoreProperties(self);
 end;
@@ -546,13 +546,13 @@ end;
 procedure TJvCustomPropertyListStore.StoreData;
 begin
   inherited StoreData;
-  AppStorage.WriteList(Path, Count, WriteSLOItem, DeleteSLOItems);
+  AppStorage.WriteList(AppStoragePath, Count, WriteSLOItem, DeleteSLOItems);
 end;
 
 procedure TJvCustomPropertyListStore.LoadData;
 begin
   inherited LoadData;
-  AppStorage.ReadList(Path, ReadSLOItem);
+  AppStorage.ReadList(AppStoragePath, ReadSLOItem);
 end;
 
 procedure TJvCustomPropertyListStore.Clear;
@@ -617,7 +617,7 @@ begin
       begin
         if NewObject is TJvCustomPropertyStore then
         begin
-          TJvCustomPropertyStore(NewObject).Path := Sender.ConcatPaths([Path, 'Object' +
+          TJvCustomPropertyStore(NewObject).AppStoragePath := Sender.ConcatPaths([Path, 'Object' +
             IntToStr(Index)]);
           TJvCustomPropertyStore(NewObject).LoadProperties;
         end
@@ -642,7 +642,7 @@ begin
     begin
       if Objects[Index] is tJvCustomPropertyStore then
       begin
-        TJvCustomPropertyStore(Objects[Index]).Path := Sender.ConcatPaths([Path, 'Object' +
+        TJvCustomPropertyStore(Objects[Index]).AppStoragePath := Sender.ConcatPaths([Path, 'Object' +
           IntToStr(Index)]);
         TJvCustomPropertyStore(Objects[Index]).LoadProperties;
       end
@@ -667,7 +667,7 @@ begin
   begin
     if Objects[Index] is TJvCustomPropertyStore then
     begin
-      TJvCustomPropertyStore(Objects[Index]).Path := Sender.ConcatPaths([Path, 'Object' +
+      TJvCustomPropertyStore(Objects[Index]).AppStoragePath := Sender.ConcatPaths([Path, 'Object' +
         IntToStr(Index)]);
       TJvCustomPropertyStore(Objects[Index]).StoreProperties;
     end

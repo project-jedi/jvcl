@@ -1036,14 +1036,14 @@ end;
 
 procedure TJvParameterList.SetPath(Value: string);
 begin
-  FParameterListPropertyStore.Path := Value;
+  FParameterListPropertyStore.AppStoragePath := Value;
   if Assigned(AppStorage) then
     FParameterListSelectList.SelectPath := AppStorage.ConcatPaths([Value, RsHistorySelectPath])
 end;
 
 function TJvParameterList.GetPath: string;
 begin
-  Result := FParameterListPropertyStore.Path;
+  Result := FParameterListPropertyStore.AppStoragePath;
 end;
 
 function TJvParameterList.GeTJvAppStorage: TJvCustomAppStorage;
@@ -1055,7 +1055,7 @@ procedure TJvParameterList.SeTJvAppStorage(Value: TJvCustomAppStorage);
 begin
   FParameterListPropertyStore.AppStorage := Value;
   if Assigned(Value) then
-    FParameterListSelectList.SelectPath := Value.ConcatPaths([FParameterListPropertyStore.Path, RsHistorySelectPath])
+    FParameterListSelectList.SelectPath := Value.ConcatPaths([FParameterListPropertyStore.AppStoragePath, RsHistorySelectPath])
 end;
 
 procedure TJvParameterList.Notification(AComponent: TComponent; Operation: TOperation);
