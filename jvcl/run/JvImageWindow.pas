@@ -26,7 +26,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-{ A component that can display a grid of images taken from a TImageList }
+{ A component that can display a grid of images taken from a TCustomImageList }
 
 unit JvImageWindow;
 
@@ -43,7 +43,7 @@ type
 
   TJvImageWindow = class(TJvGraphicControl)
   private
-    FImageList: TImageList;
+    FImageList: TCustomImageList;
     FIndex: Integer;
     OldX: Integer;
     OldY: Integer;
@@ -71,7 +71,7 @@ type
     procedure SetShowFrame(Value: Boolean);
     procedure SetShowGrid(Value: Boolean);
     procedure SetGhost(Value: Boolean);
-    procedure SetImageList(Value: TImageList);
+    procedure SetImageList(Value: TCustomImageList);
     procedure ImageListChange(Sender: Tobject);
   protected
     procedure Paint; override;
@@ -100,7 +100,7 @@ type
     property Margin: TJvMargin read FMargin write SetMargin default 2;
     property ColCount: TJvPositive read FColCount write SetColCount default 4;
     property ImageCount: Integer read FImageCount write SetImageCount default 0;
-    property ImageList: TImageList read FImageList write SetImageList;
+    property Images: TCustomImageList read FImageList write SetImageList;
     property ShowFrame: Boolean read FShowFrame write SetShowFrame default True;
     property ShowGrid: Boolean read FShowGrid write SetShowGrid default True;
     property GridColor: TColor read FGridColor write SetGridColor default clActiveCaption;
@@ -129,7 +129,7 @@ type
   private
     FHiColor, TmpColor, FBackColor: TColor;
     FBorderStyle: TBorderStyle;
-    FImageList: TImageList;
+    FImageList: TCustomImageList;
     FIndex: Integer;
     FOnEnter: TNotifyEvent;
     FOnExit: TNotifyEvent;
@@ -139,7 +139,7 @@ type
     procedure SetHiColor(Value: TColor);
     procedure SetBorderStyle(Value: TBorderStyle);
     procedure SetIndex(Value: Integer);
-    procedure SetImageList(Value: TImageList);
+    procedure SetImageList(Value: TCustomImageList);
     procedure ImageListChange(Sender: Tobject);
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
@@ -157,7 +157,7 @@ type
     property Color default clWindow;
     property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
     property HiColor: TColor read FHiColor write SetHiColor default clActiveCaption;
-    property ImageList: TImageList read FImageList write SetImageList;
+    property Images: TCustomImageList read FImageList write SetImageList;
     property ImageIndex: Integer read FIndex write SetIndex default 0;
     property ShowClick: Boolean read FShowClick write FShowClick default False;
     property Width default 36;
@@ -230,7 +230,7 @@ var
 begin
   if not Assigned(FImageList) then
   begin
-    EJVCLException.Create('ImageList not Assigned!');
+    EJVCLException.Create('Images not Assigned!');
     Exit;
   end;
   Bmp := TBitmap.Create;
@@ -440,12 +440,12 @@ begin
   Changed;
 end;
 
-procedure TJvImageWindow.SetImageList(Value: TImageList);
+procedure TJvImageWindow.SetImageList(Value: TCustomImageList);
 begin
-  if ImageList <> nil then
-    ImageList.UnRegisterChanges(FImageChangeLink);
+  if Images <> nil then
+    Images.UnRegisterChanges(FImageChangeLink);
   FImageList := Value;
-  if ImageList <> nil then
+  if Images <> nil then
     FImageList.RegisterChanges(FImageChangeLink);
 
   if Assigned(FImageList) then
@@ -695,12 +695,12 @@ begin
   end;
 end;
 
-procedure TJvImageSquare.SetImageList(Value: TImageList);
+procedure TJvImageSquare.SetImageList(Value: TCustomImageList);
 begin
-  if ImageList <> nil then
-    ImageList.UnRegisterChanges(FImageChangeLink);
+  if Images <> nil then
+    Images.UnRegisterChanges(FImageChangeLink);
   FImageList := Value;
-  if ImageList <> nil then
+  if Images <> nil then
     FImageList.RegisterChanges(FImageChangeLink);
   Repaint;
 end;

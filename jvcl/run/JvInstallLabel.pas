@@ -41,7 +41,7 @@ uses
 type
   TJvInstallLabel = class(TJvGraphicControl)
   private
-    FImageList: TImageList;
+    FImageList: TCustomImageList;
     FImageChangeLink: TChangeLink;
     FLines: TStrings;
     FStyles: TList;
@@ -52,7 +52,7 @@ type
     procedure SetIndex(Value: Integer);
     procedure SetStyles(Index: Integer; Value: TFontStyles);
     function GetStyles(Index: Integer): TFontStyles;
-    procedure SetImageList(Value: TImageList);
+    procedure SetImageList(Value: TCustomImageList);
     procedure SetLines(Value: TStrings);
     procedure SetImageOffset(Value: Integer);
     procedure SetTextOffset(Value: Integer);
@@ -77,7 +77,7 @@ type
     property Font;
     property Color default clBtnFace;
     property DefaultImage: Integer read FDefaultImage write SetIndex default -1;
-    property ImageList: TImageList read FImageList write SetImageList;
+    property Images: TCustomImageList read FImageList write SetImageList;
     property Lines: TStrings read FLines write SetLines;
     property LineSpacing: Integer read FLineSpacing write SetLineSpacing default 10;
     property ShowHint;
@@ -194,13 +194,13 @@ begin
     Result := PStyles(FStyles[Index])^.Style;
 end;
 
-procedure TJvInstallLabel.SetImageList(Value: TImageList);
+procedure TJvInstallLabel.SetImageList(Value: TCustomImageList);
 begin
-  if ImageList <> nil then
-    ImageList.UnRegisterChanges(FImageChangeLink);
+  if Images <> nil then
+    Images.UnRegisterChanges(FImageChangeLink);
   FImageList := Value;
-  if ImageList <> nil then
-    ImageList.RegisterChanges(FImageChangeLink);
+  if Images <> nil then
+    Images.RegisterChanges(FImageChangeLink);
 end;
 
 procedure TJvInstallLabel.SetLines(Value: TStrings);

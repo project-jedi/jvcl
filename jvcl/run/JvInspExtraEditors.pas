@@ -139,7 +139,7 @@ type
     procedure DrawValue(const ACanvas: TCanvas); override;
     class procedure RegisterAsDefaultItem;
     class procedure UnregisterAsDefaultItem;
-    property ImageList: TCustomImageList read FImageList write FImageList;
+    property Images: TCustomImageList read FImageList write FImageList;
   end;
 
 implementation
@@ -803,11 +803,11 @@ begin
   BoxRect.Bottom := BoxRect.Top + TH;
   with ACanvas do
   begin
-    if (ImgNum > -1) and (ImageList <> nil) and (ImgNum < ImageList.Count) then
+    if (ImgNum > -1) and (Images <> nil) and (ImgNum < Images.Count) then
     begin
       BMP := TBitmap.Create;
       try
-        ImageList.GetBitmap(ImgNum, BMP);
+        Images.GetBitmap(ImgNum, BMP);
         StretchDraw(BoxRect, BMP);
       finally
         BMP.Free;
