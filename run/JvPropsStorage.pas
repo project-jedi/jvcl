@@ -124,7 +124,7 @@ const
 implementation
 
 uses
-  JvAppStore, JvJCLUtils;
+  JvAppStorage, JvJCLUtils;
 
 const
   sCount = 'Count';
@@ -955,7 +955,7 @@ end;
 function TJvPropsStorage.ReadString(const ASection, Item, Default: string): string;
 begin
   if Assigned(FOnReadString) then
-    Result := FOnReadString(TJvCustomAppStore.ConcatPaths([ASection, Item]), Default)
+    Result := FOnReadString(TJvCustomAppStorage.ConcatPaths([ASection, Item]), Default)
   else
     Result := '';
 end;
@@ -963,7 +963,7 @@ end;
 procedure TJvPropsStorage.WriteString(const ASection, Item, Value: string);
 begin
   if Assigned(FOnWriteString) then
-    FOnWriteString(TJvCustomAppStore.ConcatPaths([ASection, Item]), Value);
+    FOnWriteString(TJvCustomAppStorage.ConcatPaths([ASection, Item]), Value);
 end;
 
 procedure TJvPropsStorage.EraseSection(const ASection: string);
