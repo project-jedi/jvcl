@@ -3556,7 +3556,9 @@ begin
     SM_CYSCREEN:
       Result := QWidget_height(QApplication_desktop);
     SM_CXBORDER, SM_CYBORDER:
-      Result := QStyle_DefaultFrameWidth(QApplication_style); // (probably) wrong ?
+      Result := 1;
+        // (ahuser) Windows returns "1"
+        //QStyle_DefaultFrameWidth(QApplication_style); // (probably) wrong ?
     SM_CXFRAME, SM_CYFRAME:
       Result := QStyle_DefaultFrameWidth(QApplication_style); // or this one
     SM_CYCAPTION:
@@ -3614,6 +3616,7 @@ var
   fm: QFontMetricsH;
   fi: QFontInfoH;
 begin
+  FillChar(tt, SizeOf(tt), 0);
   with tt do
   begin
     fm := QFontMetrics_create(QPainter_font(Handle));
