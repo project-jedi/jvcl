@@ -37,8 +37,8 @@ unit JvQCalc;
 interface
 
 uses
-  QWindows, QMessages, Classes, QControls, QForms, QStdCtrls, QMenus, QExtCtrls, 
-  QImgList, Types,
+  Types, QWindows, QMessages, Classes, QControls, QForms, QStdCtrls, QMenus, QExtCtrls, 
+  QImgList, 
   JvQBaseDlg;
 
 const
@@ -1038,7 +1038,7 @@ begin
   inherited CreateNew(AOwner, 0); // for BCB
   BorderIcons := [biSystemMenu];  
   BorderStyle := fbsDialog;
-  Scaled := false; 
+  Scaled := False; 
   Caption := RsCalculatorCaption;
   ClientHeight := 159;
   ClientWidth := 242;

@@ -78,7 +78,7 @@ type
     function CreateLoginForm(UnlockMode: Boolean): TJvLoginForm; virtual;
     procedure DoAfterLogin; dynamic;
     procedure DoBeforeLogin; dynamic;
-    procedure DoIconDblCLick(Sender: TObject); dynamic;
+    procedure DoIconDblClick(Sender: TObject); dynamic;
     function DoLogin(var UserName: string): Boolean; virtual; abstract;
     function DoUnlockDialog: Boolean; virtual;
     procedure SetLoggedUser(const Value: string);
@@ -192,7 +192,7 @@ begin
   end;
 end;
 
-//=== TJvCustomLogin =========================================================
+//=== { TJvCustomLogin } =====================================================
 
 constructor TJvCustomLogin.Create(AOwner: TComponent);
 begin
@@ -239,7 +239,7 @@ begin
     FBeforeLogin(Self);
 end;
 
-procedure TJvCustomLogin.DoIconDblCLick(Sender: TObject);
+procedure TJvCustomLogin.DoIconDblClick(Sender: TObject);
 begin
   if Assigned(FOnIconDblClick) then
     FOnIconDblClick(Self);
@@ -376,7 +376,7 @@ end;
 
 
 
-//=== TJvLoginDialog =========================================================
+//=== { TJvLoginDialog } =====================================================
 
 procedure TJvLoginDialog.Loaded;
 var
@@ -458,7 +458,7 @@ begin
   end;
 end;
 
-//=== TJvLoginForm ===========================================================
+//=== { TJvLoginForm } =======================================================
 
 procedure TJvLoginForm.FormCreate(Sender: TObject);
 begin

@@ -84,23 +84,23 @@ type
     property RestoreEnabled: Boolean read FRestoreEnabled write FRestoreEnabled default True;
   end;
 
-function CheckLinkControlEnabled(Enabled, Checked: Boolean; Options: TJvLinkedControlsOptions): boolean;
+function CheckLinkControlEnabled(Enabled, Checked: Boolean; Options: TJvLinkedControlsOptions): Boolean;
 
 implementation
 
 uses
   JvQResources;
 
-function CheckLinkControlEnabled(Enabled, Checked: Boolean; Options: TJvLinkedControlsOptions): boolean;
+function CheckLinkControlEnabled(Enabled, Checked: Boolean; Options: TJvLinkedControlsOptions): Boolean;
 var
   IsChecked, IsEnabled: Boolean;
 begin
-  if (loInvertChecked in Options) then
+  if loInvertChecked in Options then
     IsChecked := not Checked
   else
     IsChecked := Checked;
 
-  if (loInvertEnabled in Options) then
+  if loInvertEnabled in Options then
     IsEnabled := not Enabled
   else
     IsEnabled := Enabled;

@@ -149,7 +149,7 @@ begin
   if (Left + Width > LScreenRect.Right) then
     Left := LScreenRect.Right - Width;
   if (Top + Height > LScreenRect.Bottom) then
-    Top := Self.Edit.ClientOrigin.y - Height;
+    Top := Self.Edit.ClientOrigin.Y - Height;
 end;
 
 function TJvCustomDropDownForm.GetEdit: TCustomEdit;

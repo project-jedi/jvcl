@@ -548,7 +548,7 @@ end;
 
 function TJvNTEventLogRecord.GetSID: PSID;
 begin
-  Result := PSID(PChar(FCurrentRecord) + PEventLogRecord(FCurrentRecord)^.userSIDOffset);
+  Result := PSID(PChar(FCurrentRecord) + PEventLogRecord(FCurrentRecord)^.UserSidOffset);
 end;
 
 function TJvNTEventLogRecord.GetString(Index: Cardinal): string;

@@ -41,13 +41,13 @@ interface
 uses
   Classes,  
   QWindows, 
-  QGraphics, QControls, QExtCtrls, QImgList,
+  Types, QGraphics, QControls, QExtCtrls, QImgList,
   JvQComponent;
 
 type
   TJvAnimateDirection = (tdForward, tdBack, tdFwdBack, tdBackFwd);
 
-  TJvCustomBmpAnimator = class(TJvWinControl)
+  TJvCustomBmpAnimator = class(TJvGraphicControl)
   private
     FImageList: TCustomImageList;
     FTimer: TTimer;
@@ -371,7 +371,7 @@ procedure TJvCustomBmpAnimator.Paint;
 var
   dX, dY: Integer;
 begin
-  if Assigned(FImagelist) then
+  if Assigned(FImageList) then
   begin
     if FCenter then
     begin

@@ -36,7 +36,7 @@ unit JvQDesktopAlert;
 interface
 
 uses
-  QWindows, Classes, QControls, Types, QGraphics, QForms, QMenus, QImgList,
+  Types, QWindows, Classes, QControls, QGraphics, QForms, QMenus, QImgList,
   JvQComponent, JvQBaseDlg, JvQDesktopAlertForm;
 
 const
@@ -674,7 +674,7 @@ end;
 
 function TJvDesktopAlert.GetDropDownMenu: TPopupMenu;
 begin
-  Result := FDeskTopForm.tbDropDown.DropDownMenu;
+  Result := FDesktopForm.tbDropDown.DropDownMenu;
 end;
 
 function TJvDesktopAlert.GetFadeInTime: Integer;
@@ -699,7 +699,7 @@ end;
 
 function TJvDesktopAlert.GetHeaderText: string;
 begin
-  Result := FDeskTopForm.lblHeader.Caption;
+  Result := FDesktopForm.lblHeader.Caption;
 end;
 
 function TJvDesktopAlert.GetImage: TPicture;
@@ -714,7 +714,7 @@ end;
 
 function TJvDesktopAlert.GetMessageText: string;
 begin
-  Result := FDeskTopForm.lblText.Caption;
+  Result := FDesktopForm.lblText.Caption;
 end;
 
 function TJvDesktopAlert.GetParentFont: Boolean;
@@ -724,7 +724,7 @@ end;
 
 function TJvDesktopAlert.GeTPopupMenu: TPopupMenu;
 begin
-  Result := FDeskTopForm.PopupMenu;
+  Result := FDesktopForm.PopupMenu;
 end;
 
 function TJvDesktopAlert.GetShowHint: Boolean;
@@ -856,7 +856,7 @@ end;
 
 procedure TJvDesktopAlert.SetHeaderText(const Value: string);
 begin
-  FDeskTopForm.lblHeader.Caption := Value;
+  FDesktopForm.lblHeader.Caption := Value;
 end;
 
 procedure TJvDesktopAlert.SetHint(const Value: string);
@@ -891,8 +891,8 @@ end;
 
 procedure TJvDesktopAlert.SetMessageText(const Value: string);
 begin
-  FDeskTopForm.lblText.Caption := Value;
-  FDeskTopForm.lblText.Update;
+  FDesktopForm.lblText.Caption := Value;
+  FDesktopForm.lblText.Update;
 end;
 
 procedure TJvDesktopAlert.SetParentFont(const Value: Boolean);

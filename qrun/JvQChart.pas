@@ -51,7 +51,7 @@ Known Issues:
   MARCH 2004 -JVCL3BETA- STILL IN DEVELOPMENT. REPORT PROBLEMS TO JEDI JVCL
   BUG TRACKING SYSTEM (AKA 'MANTIS') AND THE JEDI.VCL NEWSGROUP!
   JUNE 23 2004 -JVCL3BETA- Negative values and anything other than 0 in
-                YMin properties was causing problems. Fixed. -WPostma. 
+                YMin properties was causing problems. Fixed. -WPostma.
 -----------------------------------------------------------------------------}
 // $Id$
 
@@ -74,10 +74,8 @@ const
 
   JvDefaultHintColor = TColor($00DDFBFA);
   JvDefaultAvgLineColor = TColor($00EEDDDD);
-  JvDefaultDivisionLineColor=clLtGray;//NEW!
-  JvDefaultShadowColor=clLtGray;//NEW!
-
-
+  JvDefaultDivisionLineColor = clLtGray; //NEW!
+  JvDefaultShadowColor = clLtGray; //NEW!
 
   JvDefaultYLegends = 20;
   MaxShowXValueInLegends = 10;
@@ -309,10 +307,10 @@ type
 
     //COLORS:
     FPaperColor: TColor;
-    FDivisionLineColor:TColor; // NEW! Division line
-    FShadowColor:TColor;       // NEW! Shadow color
-    FAxisLineColor: TColor;     // Color of box around chart plot area.
-    FHintColor: TColor;         // Hint box color
+    FDivisionLineColor: TColor; // NEW! Division line
+    FShadowColor: TColor; // NEW! Shadow color
+    FAxisLineColor: TColor; // Color of box around chart plot area.
+    FHintColor: TColor; // Hint box color
     FAverageLineColor: TColor; // Pen color for Charts with auto-average lines.
     FCursorColor: TColor; // Sample indicator Cursor color
 
@@ -392,9 +390,9 @@ type
     property LegendFont: TFont read FLegendFont write SetLegendFont;
     property AxisFont: TFont read FAxisFont write SetAxisFont;
     { Color properties}
-    property DivisionLineColor:TColor read FDivisionLineColor write FDivisionLineColor default JvDefaultDivisionLineColor; // NEW! Division line
-    property ShadowColor:TColor read FShadowColor write FShadowColor default JvDefaultShadowColor;       // NEW! Shadow color
-
+    property DivisionLineColor: TColor read FDivisionLineColor write FDivisionLineColor default
+      JvDefaultDivisionLineColor; // NEW! Division line
+    property ShadowColor: TColor read FShadowColor write FShadowColor default JvDefaultShadowColor; // NEW! Shadow color
 
     property PaperColor: TColor read FPaperColor write SetPaperColor;
     property AxisLineColor: TColor read FAxisLineColor write FAxisLineColor;
@@ -461,6 +459,10 @@ type
     procedure MyRightTextOut(X, Y: Integer; const Text: string); // RIGHT TEXT
     procedure MyCenterTextOut(X, Y: Integer; const Text: string); // CENTER TEXT
     procedure MyLeftTextOut(X, Y: Integer; const Text: string); // LEFT ALIGN TEXT
+
+    // Use HintColor:
+    procedure MyLeftTextOutHint(X, Y: Integer; const Text: string);
+
     { line, curve, rectangle stuff }
     procedure MyPenLineTo(X, Y: Integer);
     procedure MyAxisLineTo(X, Y: Integer);
@@ -575,7 +577,7 @@ uses
   JvQJVCLUtils, JvQConsts, JvQResources;
 
 const
-  CHART_SANITY_LIMIT = 30000;
+  CHART_SANITY_LIMIT = 60000;
         // Any attempt to have more than CHART_SANITY_LIMIT elements in this
         // graph will be treated as an internal failure on our part.  This prevents
         // ugly situations where we thrash because of excessive memory usage.
@@ -643,19 +645,19 @@ end;
 
 function TJvChartData.GetTimestamp(ValueIndex: Integer): TDateTime;
 begin
-  if (ValueIndex < 0) or (ValueIndex >= Length(FTimestamp)) then
+  if (ValueIndex < 0) or (ValueIndex >= Length(FTimeStamp)) then
     Result := 0.0 // null datetime
   else
-    Result := FTimestamp[ValueIndex];
+    Result := FTimeStamp[ValueIndex];
 end;
 
 procedure TJvChartData.SetTimestamp(ValueIndex: Integer; AValue: TDateTime);
 begin
   if ValueIndex < 0 then
     Exit;
-  if ValueIndex >= Length(FTimestamp) then
-    SetLength(FTimestamp, ValueIndex + 1);
-  FTimestamp[ValueIndex] := AValue;
+  if ValueIndex >= Length(FTimeStamp) then
+    SetLength(FTimeStamp, ValueIndex + 1);
+  FTimeStamp[ValueIndex] := AValue;
 end;
 
 procedure TJvChartData.Scroll;
@@ -687,7 +689,17 @@ begin
 
   if ValueIndex >= FDataAlloc then
   begin
-    FDataAlloc := ValueIndex + 1;
+      //--------------------------------------------------------
+      // Performance tweak: Uses more memory but makes JvChart
+      // much faster!
+      // We Double our allocation unit size
+      // until we start to get Really Huge, then grow in chunks!
+      //--------------------------------------------------------
+    if ValueIndex < 640000 then
+      FDataAlloc := (ValueIndex * 2) // Double in size
+    else
+      FDataAlloc := ValueIndex + 64000;
+
     SetLength(FData, FDataAlloc);
   end;
 
@@ -729,16 +741,14 @@ begin
   FValueCount := 0;
 end;
 
-
 procedure TJvChartData.ClearPenValues; // Clears all pen values to NaN but does not reset pen definitions etc.
 var
-  I,J : Integer;
+  I, J: Integer;
 begin
   for I := 0 to FDataAlloc - 1 do
     for J := 0 to Length(FData[I]) - 1 do
       FData[I, J] := 0.0;
 end;
-
 
 //=== { TJvChartYAxisOptions } ===============================================
 
@@ -808,21 +818,22 @@ begin
   if YDivisions < MinYDivisions then
   begin
     YDivisions := MinYDivisions;
-    FYGap := (YMax-YMin) / YDivisions;
+    FYGap := (YMax - YMin) / YDivisions;
   end
   else
   begin
     if YDivisions > MaxYDivisions then
     begin
       YDivisions := MaxYDivisions;
-      FYGap := (YMax-YMin) / YDivisions;
+      FYGap := (YMax - YMin) / YDivisions;
     end;
   end;
 end;
 
 procedure TJvChartYAxisOptions.SetYMin(NewYMin: Double);
 begin
-  if (NewYMin=FYMin) then exit;
+  if NewYMin = FYMin then
+    Exit;
 
   FYMin := NewYMin;
 
@@ -830,17 +841,19 @@ begin
     Exit;
   if not Assigned(FOwner.FOwner) then
     Exit;
-  if (csLoading in FOwner.FOwner.ComponentState) then
+  if csLoading in FOwner.FOwner.ComponentState then
     Exit;
 
   // Rework other values around new YMin:
   Normalize;
   FOwner.NotifyOptionsChange;
   {NEW: Auto-Regenerate Y Axis Labels}
-  if Assigned(FYLegends) then begin
-    if FYLegends.Count>0 then begin
-        FYLegends.Clear;
-        FOwner.FOwner.PrimaryYAxisLabels;
+  if Assigned(FYLegends) then
+  begin
+    if FYLegends.Count > 0 then
+    begin
+      FYLegends.Clear;
+      FOwner.FOwner.PrimaryYAxisLabels;
     end;
   end;
 
@@ -848,7 +861,8 @@ end;
 
 procedure TJvChartYAxisOptions.SetYMax(NewYMax: Double);
 begin
-  if (NewYMax=FYMax) then exit;
+  if NewYMax = FYMax then
+    Exit;
 
   FYMax := NewYMax;
 
@@ -856,22 +870,23 @@ begin
     Exit;
   if not Assigned(FOwner.FOwner) then
     Exit;
-  if (csLoading in FOwner.FOwner.ComponentState) then
+  if csLoading in FOwner.FOwner.ComponentState then
     Exit;
-
 
   // Rework other values around new YMax:
   Normalize;
   FOwner.NotifyOptionsChange;
-  
+
   {NEW: Auto-Regenerate Y Axis Labels}
-  if Assigned(FYLegends) then begin
-    if FYLegends.Count>0 then begin
-        FYLegends.Clear;
-        FOwner.FOwner.PrimaryYAxisLabels;
+  if Assigned(FYLegends) then
+  begin
+    if FYLegends.Count > 0 then
+    begin
+      FYLegends.Clear;
+      FOwner.FOwner.PrimaryYAxisLabels;
     end;
   end;
-    
+
 end;
 
 (*procedure TJvChartYAxisOptions.SetYGap(newYgap: Double);
@@ -908,7 +923,7 @@ begin
     Exit;
   if not Assigned(FOwner.FOwner) then
     Exit;
-  if (csLoading in FOwner.FOwner.ComponentState) then
+  if csLoading in FOwner.FOwner.ComponentState then
     Exit;
 
   // Rework other values around new YMax:
@@ -970,9 +985,8 @@ begin
   FPaperColor := clWhite;
   FAxisLineColor := clBlack;
   FAverageLineColor := JvDefaultAvgLineColor;
-  FDivisionLineColor  := JvDefaultDivisionLineColor; // NEW!
+  FDivisionLineColor := JvDefaultDivisionLineColor; // NEW!
   FShadowColor := JvDefaultShadowColor; //NEW!
-
 
   FHeaderFont := TFont.Create;
   FLegendFont := TFont.Create;
@@ -1050,7 +1064,6 @@ begin
   end;
 end;
 
-
 function TJvChartOptions.GetPenColor(Index: Integer): TColor;
 begin
   // Don't check for out of range values, since we use that on purpose in this
@@ -1061,7 +1074,7 @@ begin
     jvChartDivisionLineColorIndex: // horizontal and vertical division line color
       Result := FDivisionLineColor;
     jvChartShadowColorIndex: // legend shadow (light gray)
-      Result := FShadowColor; 
+      Result := FShadowColor;
     jvChartAxisColorIndex:
       Result := FAxisLineColor; // get property.
     jvChartHintColorIndex:
@@ -1069,7 +1082,7 @@ begin
     jvChartPaperColorIndex:
       Result := FPaperColor; // Get property.
   else
-    if Index < jvChartAverageLineColorIndex then
+  if Index < jvChartAverageLineColorIndex then
       Result := clBtnFace
     else
     if Index >= 0 then
@@ -1237,7 +1250,7 @@ end;
 
 procedure TJvChartOptions.SetXStartOffset(Offset: Integer);
 begin
-//if (not PrintInSession) then
+//if not PrintInSession then
 //  if (Offset < 10) or (Offset > (FOwner.Width div 2)) then
   //  raise ERangeError.CreateRes(@RsEChartOptionsXStartOffsetValueOutO);
   FXStartOffset := Offset;
@@ -1318,43 +1331,43 @@ end;
 
 function TJvChart.DestRect: TRect;
 var
-  w, h {, cw, ch}: Integer; // not used (ahuser)
+  W, H {, cw, ch}: Integer; // not used (ahuser)
 //  xyaspect: Double; // not used (ahuser)
 begin
-  w := Picture.Width;
-  h := Picture.Height;
+  W := Picture.Width;
+  H := Picture.Height;
 (*  cw := ClientWidth;
   ch := ClientHeight;
-  if Stretch or (Proportional and ((w > cw) or (h > ch))) then
+  if Stretch or (Proportional and ((W > cw) or (H > ch))) then
   begin
- if Proportional and (w > 0) and (h > 0) then
+ if Proportional and (W > 0) and (H > 0) then
  begin
-      xyaspect := w / h;
-      if w > h then
+      xyaspect := W / H;
+      if W > H then
       begin
-        w := cw;
-        h := Trunc(cw / xyaspect);
-        if h > ch then  // woops, too big
+        W := cw;
+        H := Trunc(cw / xyaspect);
+        if H > ch then  // woops, too big
         begin
-          h := ch;
-          w := Trunc(ch * xyaspect);
+          H := ch;
+          W := Trunc(ch * xyaspect);
         end;
       end
       else
       begin
-        h := ch;
-        w := Trunc(ch * xyaspect);
-        if w > cw then  // woops, too big
+        H := ch;
+        W := Trunc(ch * xyaspect);
+        if W > cw then  // woops, too big
         begin
-          w := cw;
-          h := Trunc(cw / xyaspect);
+          W := cw;
+          H := Trunc(cw / xyaspect);
         end;
       end;
     end
     else
     begin
-      w := cw;
-      h := ch;
+      W := cw;
+      H := ch;
     end;
   end;
     *)
@@ -1362,12 +1375,12 @@ begin
   begin
     Left := 0;
     Top := 0;
-    Right := w;
-    Bottom := h;
+    Right := W;
+    Bottom := H;
   end;
 
 (*  if Center then
- OffsetRect(Result, (cw - w) div 2, (ch - h) div 2); *)
+ OffsetRect(Result, (cw - W) div 2, (ch - H) div 2); *)
 end;
 
 procedure TJvChart.Loaded;
@@ -1395,14 +1408,14 @@ begin
 
   DesignStr := ClassName + RsChartDesigntimeLabel;
 
-  if (Options.PrimaryYAxis.YMin>=Options.PrimaryYAxis.YMax) then begin
-     if Options.PrimaryYAxis.YMax>0 then
-        Options.PrimaryYAxis.YMin := 0.0;
+  if Options.PrimaryYAxis.YMin >= Options.PrimaryYAxis.YMax then
+  begin
+    if Options.PrimaryYAxis.YMax > 0 then
+      Options.PrimaryYAxis.YMin := 0.0;
   end;
-  
+
   if (Abs(Options.PrimaryYAxis.YMax) < 0.000001) and (Abs(Options.PrimaryYAxis.YMin) < 0.000001) then
     Options.PrimaryYAxis.YMax := 10.0; // Reasonable non-zero default, so that charting works!
-
 
   Options.PrimaryYAxis.Normalize;
   Options.SecondaryYAxis.Normalize;
@@ -1531,7 +1544,7 @@ begin
       FormatStr := FormatStr + '0';
     for I := 0 to Options.PrimaryYAxis.YDivisions do // NOTE! Don't make this YDivisions-1 That'd be bad! !!!!
     begin
-      YDivision := Options.PrimaryYAxis.YMin+ (I * Options.PrimaryYAxis.YGap);
+      YDivision := Options.PrimaryYAxis.YMin + (I * Options.PrimaryYAxis.YGap);
       if Decimals <= 0 then
         YDivisionStr := IntToStr(Round(YDivision)) // Whole Numbers Only.
       else
@@ -1643,7 +1656,6 @@ begin
     Options.ChartKind := ckChartLine;
     Options.YOrigin := Round(-NYMin / Options.PrimaryYAxis.YGap);
   end;
-
 
   if Options.PrimaryYAxis.YDivisions = 0 then
     Options.PrimaryYAxis.YDivisions := 1;
@@ -1773,7 +1785,7 @@ begin
   ChartCanvas.MoveTo(Round(XOrigin), Options.YStartOffset);
   MyAxisLineTo(Round(XOrigin),
     Round((Options.YStartOffset - 1) +
-      Options.PrimaryYAxis.YPixelGap * (Options.PrimaryYAxis.YDivisions)));
+    Options.PrimaryYAxis.YPixelGap * (Options.PrimaryYAxis.YDivisions)));
 end;
 
 // internal methods
@@ -1844,7 +1856,7 @@ begin
         ChartCanvas.Pen.Color := Options.GetPenColor(jvChartAxisColorIndex);
 
         Y := Round(Y + (Options.PrimaryYAxis.YPixelGap / 2));
-        Self.MyDrawAxisMark(Options.XStartOffset,  Y,
+        Self.MyDrawAxisMark(Options.XStartOffset, Y,
           Options.XStartOffset - 4, // Tick at halfway between major marks.
           Y);
       end;
@@ -2104,7 +2116,7 @@ var
         Assert(Y2 < Height);
         if Y2 < 0 then
           Y2 := -1; //clip extreme negatives.
-        if (Y2 >= Y) then
+        if Y2 >= Y then
           Y2 := Y - 1;
         Assert(Y2 < Y);
         Assert(X2 > 0);
@@ -2159,7 +2171,7 @@ var
       Result := 0.0; // can't chart! YGap is near zero, zero, or negative.
       Exit;
     end;
-    Result := (YOrigin - (((V-PenAxisOpt.YMin) / PenAxisOpt.YGap) * PenAxisOpt.YPixelGap));
+    Result := (YOrigin - (((V - PenAxisOpt.YMin) / PenAxisOpt.YGap) * PenAxisOpt.YPixelGap));
     if Result >= (YOrigin - 1) then
       Result := Round(YOrigin) - 1 // hit the top of the chart
     else
@@ -2216,9 +2228,9 @@ var
             ChartCanvas.Pen.Style := Options.PenStyle[I];
             if I > 0 then
             begin
-              for i2 := 0 to I - 1 do
+              for I2 := 0 to I - 1 do
               begin
-                V := GraphConstrainedLineY(i2, J);
+                V := GraphConstrainedLineY(I2, J);
                 if IsNan(V) then
                   Continue;
                 Y1 := Round(V);
@@ -2475,8 +2487,8 @@ var
   //YTempOrigin        : Integer; // (ahuser) conflict with YTempOrigin property?
   myLabel: string;
 
-  timestamp: TDateTime;
-  timestampStr: string;
+  Timestamp: TDateTime;
+  TimestampStr: string;
   XOverlap: Integer;
   VisiblePenCount: Integer;
   YTempOrigin: Integer;
@@ -2494,7 +2506,7 @@ begin
   if Options.XAxisDateTimeMode then
   begin { if DateTime mode then legends are painted where the division markers are painted }
     // if not Options.XAxisDivisionMarkers then Exit;
-    if (Options.XAxisValuesPerDivision <= 0) then
+    if Options.XAxisValuesPerDivision <= 0 then
       Exit;
 
     YTempOrigin := Options.YStartOffset +
@@ -2505,20 +2517,20 @@ begin
     begin
       Options.FXLegendHoriz := Round(Options.XStartOffset + Options.XPixelGap * I * Options.XAxisValuesPerDivision);
 
-      timestamp := FData.Timestamp[I * Options.XAxisValuesPerDivision - 1];
+      Timestamp := FData.Timestamp[I * Options.XAxisValuesPerDivision - 1];
 
       if Length(Options.FXAxisDateTimeFormat) = 0 then // not specified, means use Locale defaults
-        timestampStr := TimeToStr(timestamp)
+        TimestampStr := TimeToStr(Timestamp)
       else
-        timestampStr := FormatDateTime(Options.FXAxisDateTimeFormat, timestamp);
+        TimestampStr := FormatDateTime(Options.FXAxisDateTimeFormat, Timestamp);
 
       // Check if writing this label would collide with previous label, if not, plot it
-      if (Options.FXLegendHoriz - (ChartCanvas.TextWidth(timestampStr) div 2)) > XOverlap then
+      if (Options.FXLegendHoriz - (ChartCanvas.TextWidth(TimestampStr) div 2)) > XOverlap then
       begin
         MyCenterTextOut(Options.FXLegendHoriz,
-          {bottom:} FXAxisPosition + Options.AxisLineWidth
+          {bottom:}FXAxisPosition + Options.AxisLineWidth
           {top: Round(YTempOrigin - Options.PrimaryYAxis.YPixelGap)},
-          timestampStr);
+          TimestampStr);
 
         // draw a ticky-boo (technical term used by scientists the world over)
         // so that we can see where on the chart the X axis datetime is pointing to.
@@ -2526,7 +2538,7 @@ begin
         ChartCanvas.MoveTo(Options.FXLegendHoriz, FXAxisPosition);
         ChartCanvas.LineTo(Options.FXLegendHoriz, FXAxisPosition + Options.AxisLineWidth + 2);
 
-        XOverlap := Options.FXLegendHoriz + ChartCanvas.TextWidth(timestampStr);
+        XOverlap := Options.FXLegendHoriz + ChartCanvas.TextWidth(TimestampStr);
       end;
     end;
   end
@@ -2546,18 +2558,20 @@ begin
       Options.FXLegendHoriz := Round(Options.XStartOffset + Options.XPixelGap * I);
 
       // Don't exceed right margin:
-      if (I < Options.XLegends.Count) then
+      if I < Options.XLegends.Count then
         if ChartCanvas.TextWidth(Options.XLegends[I]) + Options.FXLegendHoriz > Options.XEnd then
           Break;
 
       // Label X axis above or below?
-      if FContainsNegative then begin
-         if I < Options.XLegends.Count then // fix exception. June 23, 2004- WPostma.
-            MyLeftTextOut(Options.FXLegendHoriz, Options.YEnd + 3, Options.XLegends[I])
-      end else
+      if FContainsNegative then
+      begin
+        if I < Options.XLegends.Count then // fix exception. June 23, 2004- WPostma.
+          MyLeftTextOut(Options.FXLegendHoriz, Options.YEnd + 3, Options.XLegends[I])
+      end
+      else
       if I < Options.XLegends.Count then
         MyLeftTextOut(Options.FXLegendHoriz,
-          {bottom:} FXAxisPosition + Options.AxisLineWidth {top: Round(YTempOrigin - Options.PrimaryYAxis.YPixelGap)},
+          {bottom:}FXAxisPosition + Options.AxisLineWidth {top: Round(YTempOrigin - Options.PrimaryYAxis.YPixelGap)},
           Options.XLegends[I])
       else
         Break;
@@ -2590,7 +2604,7 @@ begin
     begin
       if Options.PenStyle[I] <> psClear then
       begin // Only draw legend on VISIBLE pens.
-        DrawPenColorBox(I,  // pen#
+        DrawPenColorBox(I, // pen#
           BoxWidth,
           BoxHeight,
           Options.XStartOffset + Options.XEnd + 7,
@@ -2651,11 +2665,11 @@ begin
       begin
         // For lines, draw a pen color box:
         BoxWidth := ChartCanvas.TextWidth('X') * 2 - 2;
-        DrawPenColorBox(I,               {pen#}
-              BoxWidth - 2,              {width}
-              nTextHeight - 2,           {height}
-              Options.FXLegendHoriz,     {X=}
-              Y + 4);                    {Y=}
+        DrawPenColorBox(I, {pen#}
+          BoxWidth - 2, {width}
+          nTextHeight - 2, {height}
+          Options.FXLegendHoriz, {X=}
+          Y + 4); {Y=}
       end;
       SetFontColor(jvChartAxisColorIndex);
       // Draw the Pen Legend (WAP :add unit to legend. )
@@ -2979,7 +2993,7 @@ end;
 
 procedure TJvChart.MyYHeader(StrText: string);
 var
-  {ht,} wd, vert, horiz: Integer; // not used (ahuser)
+  {ht,}wd, vert, horiz: Integer; // not used (ahuser)
 begin
   if Length(StrText) = 0 then
     Exit;
@@ -3290,7 +3304,7 @@ begin
     MyColorRectangle(jvChartHintColorIndex, X + 3, Y + 3, X + nWidth + 3 + 5, Y + nLineH + 3);
     MyColorRectangle(jvChartPaperColorIndex, X, Y, X + nWidth + 5, Y + nLineH);
     Canvas.Font.Color := Self.Font.Color;
-    MyLeftTextOut(X + 2, Y, RsNoValuesHere);
+    MyLeftTextOutHint(X + 2, Y, RsNoValuesHere);
     FMouseLegend := True;
     Exit;
   end;
@@ -3322,7 +3336,7 @@ begin
   begin
     if (I = 1) and FMouseDownHintBold then
       Canvas.Font.Style := [];
-    MyLeftTextOut(X + 2, 4 + Y + (I * nLineH), FMouseDownHintStrs[I]); // draw text for each line.
+    MyLeftTextOutHint(X + 2, 4 + Y + (I * nLineH), FMouseDownHintStrs[I]); // draw text for each line.
   end;
 
   FMouseLegend := True;
@@ -3686,16 +3700,25 @@ end;
 
 procedure TJvChart.MyLeftTextOut(X, Y: Integer; const Text: string);
 begin
+  ChartCanvas.Brush.Color := Options.PaperColor; // non default paper color.
+  ChartCanvas.TextOut(X, Y + 1, Text);
+end;
+
+procedure TJvChart.MyLeftTextOutHint(X, Y: Integer; const Text: string);
+begin
+  ChartCanvas.Brush.Color := Options.HintColor;
   ChartCanvas.TextOut(X, Y + 1, Text);
 end;
 
 procedure TJvChart.MyCenterTextOut(X, Y: Integer; const Text: string);
 begin
+  ChartCanvas.Brush.Color := Options.PaperColor; // non default paper color.
   ChartCanvas.TextOut(X - Round(ChartCanvas.TextWidth(Text) / 2), Y + 1, Text);
 end;
 
 procedure TJvChart.MyRightTextOut(X, Y: Integer; const Text: string);
 begin
+  ChartCanvas.Brush.Color := Options.PaperColor; // non default paper color.
   ChartCanvas.TextOut(X - ChartCanvas.TextWidth(Text),
     Y - Round(ChartCanvas.TextHeight(Text) / 2), Text);
 end;

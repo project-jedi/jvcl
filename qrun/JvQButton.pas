@@ -36,7 +36,7 @@ interface
 
 uses 
   Qt, 
-  QWindows, QMessages, Classes, Types, QGraphics, QControls, QMenus, QButtons,
+  Types, QWindows, QMessages, Classes, QGraphics, QControls, QMenus, QButtons,
   JvQComponent, JvQConsts, JvQTypes, JvQExStdCtrls;
 
 type
@@ -354,7 +354,7 @@ end;
 
 function TJvCustomGraphicButton.DoDropDownMenu(Button: TMouseButton; Shift: TShiftState; X, Y: Integer): Boolean;
 var 
-  Handled: boolean;
+  Handled: Boolean;
 begin
   Result := (Button = mbLeft) and (DropDownMenu <> nil);
   if Result then
@@ -375,7 +375,7 @@ begin
       Exit;  
     repeat
       Application.ProcessMessages;
-    until not QWidget_isVisible(DropDownMenu.handle); 
+    until not QWidget_isVisible(DropDownMenu.Handle); 
     { release button }
     MouseUp(Button, Shift, X, Y);
   end;
@@ -443,9 +443,9 @@ begin
       Msg.NewSize.X := AWidth;
       Msg.NewSize.Y := AHeight;
       Form.Broadcast(Msg); 
-      for i := 0 to Form.ControlCount - 1 do
-        if Form.Controls[i] is TJvCustomGraphicButton then
-          TJvCustomGraphicButton(Form.Controls[i]).ForceSize(Self, AWidth, AHeight); 
+      for I := 0 to Form.ControlCount - 1 do
+        if Form.Controls[I] is TJvCustomGraphicButton then
+          TJvCustomGraphicButton(Form.Controls[I]).ForceSize(Self, AWidth, AHeight); 
     end;
   end;
 end;

@@ -367,7 +367,7 @@ begin
     HashWord := Items[HashVal];
     HashStrings := TJvHashStrings.Create;
     Items[HashVal] := HashStrings;
-    HashStrings.AddString(HashWord.S, HashWord.Id, HashWord.ExId);
+    HashStrings.AddString(HashWord.S, HashWord.Id, HashWord.ExID);
     HashWord.Free;
     HashStrings.AddString(AString, AId, AExId)
   end;
@@ -402,7 +402,7 @@ begin
     HashWord := Items[HashValue];
     HashItems := TJvHashItems.Create(FSecondaryHash);
     Items[HashValue] := HashItems;
-    HashItems.AddString(HashWord.S, HashWord.Id, HashWord.ExId);
+    HashItems.AddString(HashWord.S, HashWord.Id, HashWord.ExID);
     HashWord.Free;
     HashItems.AddString(AString, AId, AExId);
   end;
@@ -418,7 +418,7 @@ function TJvSALHashList.HashEx(const S: string; var AId: TJvSALProc;
   var AExId: TJvSALProc; HashValue: Integer): Boolean;
 var
   Temp: TObject;
-  Hashword: TJvHashWord;
+  HashWord: TJvHashWord;
   HashItems: TJvHashItems;
   I, ItemHash: Integer;
 begin
@@ -431,7 +431,7 @@ begin
   begin
     if FList[HashValue] is TJvHashWord then
     begin
-      Hashword := Items[HashValue];
+      HashWord := Items[HashValue];
       Result := FCompare(HashWord.S, S);
       if Result then
       begin

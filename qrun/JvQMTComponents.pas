@@ -36,18 +36,12 @@ interface
 
 uses
   SysUtils, Classes, SyncObjs,
-  QConsts,
-  {$IFDEF USEJVCL}
-  JvQComponent,
-  {$ENDIF USEJVCL}
+  QConsts, 
+  JvQComponent, 
   JvQMTThreading, JvQMTConsts, JvQMTData, JvQMTSync, JvQMTSyncMon;
 
-type
-  {$IFDEF USEJVCL}
-  TJvMTComponent = class(TJvComponent);
-  {$ELSE}
-  TJvMTComponent = class(TComponent);
-  {$ENDIF USEJVCL}
+type 
+  TJvMTComponent = class(TJvComponent); 
   TJvMTSingleThread = class(TMTThread);
   TJvMTThread = class;
 
@@ -247,18 +241,12 @@ type
 
 implementation
 
-{$IFDEF USEJVCL}
+
 uses
   JvQResources;
-{$ENDIF USEJVCL}
 
-{$IFNDEF USEJVCL}
-resourcestring
-  RsENoThreadManager = 'No ThreadManager specified';
-  RsEOperatorNotAvailable = 'Operation not available while thread is active';
-  RsECannotChangePropertySection = 'Cannot change property of active section';
-  RsECannotChangePropertyBuffer = 'Cannot change property of active buffer';
-{$ENDIF USEJVCL}
+
+
 
 constructor TJvMTManager.Create(AOwner: TComponent);
 begin
@@ -331,8 +319,7 @@ begin
   FManager.WaitThreads;
 end;
 
-
-{ TJvMTManagedComponent }
+//=== { TJvMTManagedComponent } ==============================================
 
 procedure TJvMTManagedComponent.Notification(AComponent: TComponent; Operation:
   TOperation);
@@ -354,7 +341,7 @@ begin
     FManager.FreeNotification(Self);
 end;
 
-//=== TJvMTThread ============================================================
+//=== { TJvMTThread } ========================================================
 
 destructor TJvMTThread.Destroy;
 begin
@@ -453,25 +440,25 @@ end;
 
 procedure TJvMTThread.SetManager(Value: TJvMTManager);
 begin
-  UnhookThread;
+  UnHookThread;
   inherited SetManager(Value);
 end;
 
 procedure TJvMTThread.SetOnExecute(Value: TJvMTThreadEvent);
 begin
-  UnhookThread;
+  UnHookThread;
   FOnExecute := Value;
 end;
 
 procedure TJvMTThread.SetOnFinished(Value: TJvMTThreadEvent);
 begin
-  UnhookThread;
+  UnHookThread;
   FOnFinished := Value;
 end;
 
 procedure TJvMTThread.SetOnTerminating(Value: TJvMTThreadEvent);
 begin
-  UnhookThread;
+  UnHookThread;
   FOnTerminating := Value;
 end;
 
@@ -534,7 +521,7 @@ begin
     Run;
 end;
 
-//=== TJvMTSectionBase =======================================================
+//=== { TJvMTSectionBase } ===================================================
 
 destructor TJvMTSectionBase.Destroy;
 begin
@@ -573,7 +560,7 @@ begin
   FSync.Release;
 end;
 
-//=== TJvMTSection ===========================================================
+//=== { TJvMTSection } =======================================================
 
 constructor TJvMTSection.Create(AOwner: TComponent);
 begin
@@ -604,7 +591,7 @@ begin
   FInitEntered := Value;
 end;
 
-//=== TJvMTCountingSection ===================================================
+//=== { TJvMTCountingSection } ===============================================
 
 constructor TJvMTCountingSection.Create(AOwner: TComponent);
 begin
@@ -637,7 +624,7 @@ begin
   SetInitAndMax(FInitCount, Value);
 end;
 
-//=== TJvMTAsyncBufferBase ===================================================
+//=== { TJvMTAsyncBufferBase } ===============================================
 
 constructor TJvMTAsyncBufferBase.Create(AOwner: TComponent);
 begin
@@ -691,7 +678,7 @@ begin
   FBuffer.Write(AObject);
 end;
 
-//=== TJvMTThreadToVCL =======================================================
+//=== { TJvMTThreadToVCL } ===================================================
 
 procedure TJvMTThreadToVCL.CreateBuffer;
 begin
@@ -706,7 +693,7 @@ begin
     FOnCanRead(Self);
 end;
 
-//=== TJvMTVCLToThread =======================================================
+//=== { TJvMTVCLToThread } ===================================================
 
 procedure TJvMTVCLToThread.CreateBuffer;
 begin
@@ -730,7 +717,7 @@ begin
     FOnCanWrite(Self);
 end;
 
-//=== TJvMTThreadToThread ====================================================
+//=== { TJvMTThreadToThread } ================================================
 
 constructor TJvMTThreadToThread.Create(AOwner: TComponent);
 begin
@@ -774,7 +761,7 @@ begin
   if FQueue <> nil then
     raise EThread.CreateRes(@RsECannotChangePropertyBuffer);
   if Value < 1 then
-    raise EInvalidOperation.CreateREsFmt(@SPropertyOutOfRange, [ClassName]);
+    raise EInvalidOperation.CreateResFmt(@SPropertyOutOfRange, [ClassName]);
   FMaxBufferSize := Value;
 end;
 
@@ -784,7 +771,7 @@ begin
   FQueue.Push(AObject);
 end;
 
-//=== TJvMTMonitorSection ====================================================
+//=== { TJvMTMonitorSection } ================================================
 
 constructor TJvMTMonitorSection.Create(AOwner: TComponent);
 begin

@@ -38,10 +38,11 @@ unit JvQDesktopAlertForm;
 interface
 
 uses
-  SysUtils, Classes,  
-  QGraphics, QControls, QForms, QDialogs, QImgList, QExtCtrls, QActnList,
-  QMenus, QStdCtrls, Types, QWindows, 
-  JvQButton, JvQComponent, JvQLabel;
+  QWindows,  
+  Types, 
+  Classes, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls,
+  QImgList, QActnList,
+  JvQButton, JvQLabel, JvQComponent;
 
 const
   cDefaultAlertFormWidth = 329;
@@ -136,6 +137,7 @@ type
 implementation
 
 uses
+  QMenus,
   JvQJVCLUtils;
 
 {.$R *.dfm}// not needed

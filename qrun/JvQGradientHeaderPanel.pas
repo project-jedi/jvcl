@@ -76,15 +76,13 @@ type
     procedure SetGradientStyle(const Value: TJvGradientStyle);
     function GetLabelAlignment: TAlignment;
     procedure SetLabelAlignment(const Value: TAlignment);
-    procedure AdjustLabelWidth;
- 
+    procedure AdjustLabelWidth; 
   protected 
     procedure AdjustSize; override; 
 //    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure DoLabelFontChange(Sender: TObject);
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
-      X: Integer; Y: Integer); override;
-
+      X, Y: Integer); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -146,13 +144,13 @@ uses
 
 type
   TNoEventLabel = class(TLabel)
-  public  
-    constructor Create(AOwner: TComponent); override; 
+  public 
+    constructor Create(AOwner: TComponent); override;  
   end;
 
   TNoEventGradient = class(TJvGradient)
-  public  
-    constructor Create(AOwner: TComponent); override; 
+  public 
+    constructor Create(AOwner: TComponent); override;  
   end;
 
 constructor TJvGradientHeaderPanel.Create(AOwner: TComponent);
@@ -394,10 +392,10 @@ end;
 procedure TJvGradientHeaderPanel.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  inherited;
-  if CanFocus then SetFocus;
+  inherited MouseDown(Button, Shift, X, Y);
+  if CanFocus then
+    SetFocus;
 end;
-
 
 (*
 function TJvGradientHeaderPanel.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
@@ -407,21 +405,28 @@ begin
 end;
 *)
 
-{ TNoEventLabel }
-
+//=== { TNoEventLabel } ======================================================
 
 
 constructor TNoEventLabel.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   ControlStyle := ControlStyle - [csNoStdEvents];
 end;
 
+
+
+
+//=== { TNoEventGradient } ===================================================
+
+
 constructor TNoEventGradient.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   ControlStyle := ControlStyle - [csNoStdEvents];
 end;
+
+
 
 
 end.

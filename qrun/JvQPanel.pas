@@ -39,8 +39,8 @@ unit JvQPanel;
 interface
 
 uses
-  QWindows, QMessages,
-  SysUtils, Classes, Types, QGraphics, QControls, QForms, QExtCtrls,
+  Types, QWindows, QMessages,
+  SysUtils, Classes, QGraphics, QControls, QForms, QExtCtrls,
   JvQThemes, JvQComponent, JvQExControls;
 
 type
@@ -768,7 +768,7 @@ begin
           end;
         end;
       end;
-      if CurrControlCount = LastControlCOunt then
+      if CurrControlCount = LastControlCount then
         Break;
       LastControlCount := CurrControlCount;
     end;

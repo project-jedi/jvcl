@@ -273,7 +273,7 @@ type
   public
     constructor Create(ProcessHandle: DWORD; AWriteHandle: THandle);
     destructor Destroy; override;
-    function write(const S: string): Boolean;
+    function Write(const S: string): Boolean;
     procedure CloseWrite;
   end;
 

@@ -41,7 +41,7 @@ interface
 
 uses
   SysUtils, Classes,
-  QWindows, QMessages, Types, QGraphics, QControls, QImgList, QComCtrls,
+  Types, QWindows, QMessages, QGraphics, QControls, QImgList, QComCtrls,
   JvQComponent, JvQThemes, JvQPageList, JvQExComCtrls;
 
 type
@@ -384,7 +384,7 @@ begin
       N.ImageIndex := ImageIndex;
       N.SelectedIndex := SelectedIndex;
       if Recurse then
-        ResetSiblingFolders(N.getFirstCHild, ImageINdex, SelectedIndex, Recurse);
+        ResetSiblingFolders(N.getFirstChild, ImageIndex, SelectedIndex, Recurse);
     end;
     N := N.getPrevSibling;
   end;
@@ -396,7 +396,7 @@ begin
       N.ImageIndex := ImageIndex;
       N.SelectedIndex := SelectedIndex;
       if Recurse then
-        ResetSiblingFolders(N.getFirstChild, ImageINdex, SelectedIndex, Recurse);
+        ResetSiblingFolders(N.getFirstChild, ImageIndex, SelectedIndex, Recurse);
     end;
     N := N.getNextSibling;
   end;
@@ -419,8 +419,8 @@ begin
 end;
 
 function TJvCustomPageListTreeView.CanChange(Node: TTreeNode): Boolean;
-begin		
-  Result := true; 
+begin  
+  Result := True; 
   if Result and Assigned(Node) and Assigned(FPageList) then
     Result := FPageList.CanChange(TJvPageIndexNode(Node).PageIndex);
 end;
@@ -478,7 +478,7 @@ begin
     begin
       if TJvPageIndexNode(N).PageIndex = FPageDefault then
         TJvPageIndexNode(N).PageIndex := Value;
-      N := N.getNext;
+      N := N.GetNext;
     end;
     FPageDefault := Value;
   end;
@@ -592,7 +592,6 @@ begin
     end;
   end;
 end;
-
 
 //=== { TJvSettingsTreeImages } ==============================================
 

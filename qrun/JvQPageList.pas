@@ -283,7 +283,7 @@ end;
 function TJvCustomPage.DoBeforePaint(ACanvas: TCanvas; ARect: TRect): Boolean;
 begin
   Result := True;
-  if Assigned(FonBeforePaint) then
+  if Assigned(FOnBeforePaint) then
     FOnBeforePaint(Self, ACanvas, ARect, Result);
 end;
 
@@ -707,7 +707,7 @@ end;
 
 function TJvCustomPageList.GetActivePageIndex: Integer;
 begin
-  if ACtivePage <> nil then
+  if ActivePage <> nil then
     Result := ActivePage.PageIndex
   else
     Result := -1;

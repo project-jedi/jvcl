@@ -38,8 +38,8 @@ unit JvQRadioButton;
 interface
 
 uses
-  QWindows, QMessages,
-  SysUtils, Classes, Types, QGraphics, QControls, QForms, QStdCtrls,
+  Types, QWindows, QMessages,
+  SysUtils, Classes, QGraphics, QControls, QForms, QStdCtrls,
   JvQTypes, JvQExStdCtrls, JvQLinkedControls;
 
 type
@@ -92,7 +92,7 @@ type
     property HintColor;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
     property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont;
-    property HotTrackFontOptions: TJvTrackFOntOptions read FHotTrackFontOptions write SetHotTrackFontOptions
+    property HotTrackFontOptions: TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions
       default DefaultTrackFontOptions;
     property Layout: TTextLayout read FLayout write SetLayout default tlCenter;
     // show text to the left of the radio bullet

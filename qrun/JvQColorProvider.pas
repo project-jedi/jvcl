@@ -36,8 +36,7 @@ unit JvQColorProvider;
 interface
 
 uses
-  Classes, Contnrs,  
-  Types, QWindows, QGraphics, QDialogs, 
+  Types, QWindows, Classes, Contnrs, QGraphics, QDialogs,
   JclBase,
   JvQDataProvider, JvQDataProviderIntf, JvQTypes;
 
@@ -501,9 +500,9 @@ implementation
 
 uses
   SysUtils, 
-  RTLConsts,   
-  QControls, 
-  JclRTTI, JclStrings,
+  RTLConsts, 
+  QControls,
+  JclStrings,
   JvQJVCLUtils, JvQConsts, JvQResources;
 
 const
@@ -2633,7 +2632,7 @@ var
   CtxIdx: Integer;
   ItemIdx: Integer;
 begin
-  ColIdx := IndexOfColor(value);
+  ColIdx := IndexOfColor(Value);
   if ColIdx > -1 then
   begin
     CtxIdx := SelectedContextIndex;
@@ -2683,7 +2682,7 @@ var
   CtxIdx: Integer;
   ItemIdx: Integer;
 begin
-  ColIdx := IndexOfColor(value);
+  ColIdx := IndexOfColor(Value);
   if ColIdx > -1 then
   begin
     CtxIdx := SelectedContextIndex;
@@ -2733,7 +2732,7 @@ var
   CtxIdx: Integer;
   ItemIdx: Integer;
 begin
-  ColIdx := IndexOfColor(value);
+  ColIdx := IndexOfColor(Value);
   if ColIdx > -1 then
   begin
     CtxIdx := SelectedContextIndex;

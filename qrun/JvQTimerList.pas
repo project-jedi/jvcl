@@ -473,7 +473,7 @@ begin
     else
     begin
       FStartInterval := 0;
-      FInterval := MaxLongInt;
+      FInterval := MaxLongint;
       for I := 0 to Count - 1 do
         with Items[I] do
           if Enabled and (Interval > 0) then
@@ -629,8 +629,8 @@ begin
       begin
         if Items[I].Interval > Items[I + 1].Interval then
         begin
-          Items[i].Index := i + 1;
-//          Items[i+1].Index := i;
+          Items[I].Index := I + 1;
+//          Items[I+1].Index := I;
           ExitLoop := False;
         end;
       end;

@@ -264,7 +264,7 @@ begin
     if MergeFrame.Controls[I] = AForm then
     begin
       AForm.BringToFront;
-      MergeMainMenu(AForm,false);
+      MergeMainMenu(AForm, False);
       case HistoryCommand of
         hcNone:
           ;

@@ -147,10 +147,10 @@ begin
       Exit;
     // find fieldnumber
     FieldNr := 0;
-    for i := 1 to Grid.ColCount - 1 do
-      if Grid.Cells[i, 0] = FieldName then
+    for I := 1 to Grid.ColCount - 1 do
+      if Grid.Cells[I, 0] = FieldName then
       begin
-        FieldNr := i;
+        FieldNr := I;
         Break;
       end;
     if FieldNr = 0 then

@@ -371,10 +371,10 @@ begin
           RecordExists := LoopExist(Segment.OwnerLoopId, Segment.ParentLoopId);
           if not RecordExists then
             AddLoop(Segment.OwnerLoopId, Segment.ParentLoopId);
-          RecordExists := SegmentExist(Segment.SegmentID, Segment.OwnerLoopId,
+          RecordExists := SegmentExist(Segment.SegmentId, Segment.OwnerLoopId,
             Segment.ParentLoopId);
           if not RecordExists then
-            AddSegment(Segment.SegmentID, Segment.OwnerLoopId, Segment.ParentLoopId);
+            AddSegment(Segment.SegmentId, Segment.OwnerLoopId, Segment.ParentLoopId);
           for E := 0 to Segment.ElementCount - 1 do
           begin
             Element := TEDIElementSpec(Segment.Element[E]);
@@ -382,11 +382,11 @@ begin
               ElementList.Values[Element.Id] := '0';
             ElementList.Values[Element.Id] :=
               IntToStr(StrToInt(ElementList.Values[Element.Id]) + 1);
-            RecordExists := ElementExist(Segment.SegmentID, Element.Id);
+            RecordExists := ElementExist(Segment.SegmentId, Element.Id);
             if not RecordExists then
-              AddElement(Segment.SegmentID, Element.Id, Element.ElementType, Element.MaximumLength)
+              AddElement(Segment.SegmentId, Element.Id, Element.ElementType, Element.MaximumLength)
             else
-              UpdateElement(Segment.SegmentID, Element.Id, Element.ElementType,
+              UpdateElement(Segment.SegmentId, Element.Id, Element.ElementType,
                 Element.MaximumLength, StrToInt(ElementList.Values[Element.Id]));
           end;
           DoAfterProfiledSegment(Segment);
@@ -427,10 +427,10 @@ begin
         RecordExists := LoopExist(SEFSegment.OwnerLoopId, SEFSegment.ParentLoopId);
         if not RecordExists then
           AddLoop(SEFSegment.OwnerLoopId, SEFSegment.ParentLoopId);
-        RecordExists := SegmentExist(SEFSegment.SegmentID, SEFSegment.OwnerLoopId,
+        RecordExists := SegmentExist(SEFSegment.SegmentId, SEFSegment.OwnerLoopId,
           SEFSegment.ParentLoopId);
         if not RecordExists then
-          AddSegment(SEFSegment.SegmentID, SEFSegment.OwnerLoopId, SEFSegment.ParentLoopId);
+          AddSegment(SEFSegment.SegmentId, SEFSegment.OwnerLoopId, SEFSegment.ParentLoopId);
         ElementList := SEFSegment.GetElementObjectList;
         ElementStrList := TStringList.Create;
         try

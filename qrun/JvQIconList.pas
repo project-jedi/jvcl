@@ -34,8 +34,8 @@ unit JvQIconList;
 interface
 
 uses
-  QWindows, SysUtils,
-  Types, QGraphics,
+  Types, QWindows, SysUtils,
+  QGraphics,
   Classes;
 
 type
@@ -270,7 +270,7 @@ var
 begin
   Ico := TIcon.Create;
   try  
-    ResStream := TResourceStream.CreateFromID(Instance, Integer(ResID), RT_RCDATA);
+    ResStream := TResourceStream.CreateFromID(Instance, Integer(ResId), RT_RCDATA);
     try
       Ico.LoadFromStream(ResStream);
     finally
@@ -362,7 +362,7 @@ var
 begin
   Ico := TIcon.Create;
   try  
-    ResStream := TResourceStream.CreateFromID(Instance, Integer(ResID), RT_RCDATA);
+    ResStream := TResourceStream.CreateFromID(Instance, Integer(ResId), RT_RCDATA);
     try
       Ico.LoadFromStream(ResStream);
     finally

@@ -32,12 +32,10 @@ unit JvQDiagramShape;
 interface
 
 uses
-  {$IFDEF MSWINDOWS}
-  Windows, Messages,
-  {$ENDIF MSWINDOWS}  
-  QTypes, Types, QGraphics, QControls, QExtCtrls, QImgList, QWindows, 
-  SysUtils, Classes,
-  JvQComponent, JvQTypes;
+  Types, QWindows,  
+  QTypes,  
+  Classes, QGraphics, QControls, QExtCtrls, QImgList,
+  JvQComponent;
 
 type
   TJvTextShape = class;
@@ -337,7 +335,8 @@ type
 implementation
 
 uses
-  JvQConsts;
+  SysUtils, 
+  JvQTypes, JvQConsts;
 
 type
   // This type is solely for the acccess to the protected MouseDown method
@@ -398,7 +397,7 @@ begin
       Result := A[I];
 end;
 
-//=== TJvCustomDiagramShape ==================================================
+//=== { TJvCustomDiagramShape } ==============================================
 
 constructor TJvCustomDiagramShape.Create(AOwner: TComponent);
 var
@@ -623,7 +622,7 @@ var
   Writer: TWriter;
   RealName: string;
 begin
-  FS := TFileStream.Create(Filename, fmCreate or fmShareDenyWrite);
+  FS := TFileStream.Create(FileName, fmCreate or fmShareDenyWrite);
   Writer := TWriter.Create(FS, 1024);
   try
     Writer.Root := ParentControl.Owner;
@@ -645,7 +644,7 @@ var
   RealName: string;
 begin
   DeleteAllShapes(ParentControl);
-  FS := TFileStream.Create(Filename, fmOpenRead or fmShareDenyWrite);
+  FS := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
   Reader := TReader.Create(FS, 1024);
   try
     // Save the parent's name, in case we are reading into a different
@@ -710,7 +709,7 @@ begin
         TJvCustomDiagramShape(ParentControl.Controls[I]).Selected := False;
 end;
 
-//=== TJvMoveableShape =======================================================
+//=== { TJvMoveableShape } ===================================================
 
 constructor TJvMoveableShape.Create(AOwner: TComponent);
 begin
@@ -844,7 +843,7 @@ begin
   end;
 end;
 
-//=== TJvSizeableShape =======================================================
+//=== { TJvSizeableShape } ===================================================
 
 constructor TJvSizeableShape.Create(AOwner: TComponent);
 begin
@@ -1093,7 +1092,7 @@ begin
   inherited SetBounds(ALeft, ATop, AWidth, AHeight);
 end;
 
-//=== TJvTextShape ===========================================================
+//=== { TJvTextShape } =======================================================
 
 constructor TJvTextShape.Create(AOwner: TComponent);
 begin
@@ -1211,7 +1210,7 @@ begin
   inherited SetBounds(ALeft, ATop, AWidth, AHeight);
 end;
 
-//=== TJvBitmapShape =========================================================
+//=== { TJvBitmapShape } =====================================================
 
 constructor TJvBitmapShape.Create(AOwner: TComponent);
 begin
@@ -1288,7 +1287,7 @@ begin
       FImages := nil;
 end;
 
-//=== TJvStandardShape =======================================================
+//=== { TJvStandardShape } ===================================================
 
 constructor TJvStandardShape.Create(AOwner: TComponent);
 begin
@@ -1343,7 +1342,7 @@ begin
   end;
 end;
 
-//=== TJvConnection ==========================================================
+//=== { TJvConnection } ======================================================
 
 constructor TJvConnection.Create;
 begin
@@ -1496,7 +1495,7 @@ begin
   end;
 end;
 
-//=== TJvConnector ===========================================================
+//=== { TJvConnector } =======================================================
 
 constructor TJvConnector.Create(AOwner: TComponent);
 begin
@@ -1720,7 +1719,7 @@ begin
     Min([A.Y, B.Y]) + Abs(A.Y - B.Y) div 2);
 end;
 
-//=== TJvSingleHeadArrow =====================================================
+//=== { TJvSingleHeadArrow } =================================================
 
 constructor TJvSingleHeadArrow.Create(AOwner: TComponent);
 begin
@@ -1797,7 +1796,7 @@ begin
   end;
 end;
 
-//=== TJvSingleHeadOpenDashArrow =============================================
+//=== { TJvSingleHeadOpenDashArrow } =========================================
 
 constructor TJvSingleHeadOpenDashArrow.Create(AOwner: TComponent);
 begin
@@ -1885,7 +1884,7 @@ begin
   end;
 end;
 
-//=== TJvBluntSingleHeadOpenDashArrow ========================================
+//=== { TJvBluntSingleHeadOpenDashArrow } ====================================
 
 constructor TJvBluntSingleHeadOpenDashArrow.Create(AOwner: TComponent);
 begin
@@ -1911,7 +1910,7 @@ begin
   end;
 end;
 
-//=== TJvBluntSingleHeadArrow ================================================
+//=== { TJvBluntSingleHeadArrow } ============================================
 
 constructor TJvBluntSingleHeadArrow.Create(AOwner: TComponent);
 begin
@@ -1937,7 +1936,7 @@ begin
   end;
 end;
 
-//=== TJvSubCaseArrow ========================================================
+//=== { TJvSubCaseArrow } ====================================================
 
 constructor TJvSubCaseArrow.Create(AOwner: TComponent);
 begin
@@ -2034,7 +2033,7 @@ begin
   end;
 end;
 
-//=== TJvDoubleHeadArrow =====================================================
+//=== { TJvDoubleHeadArrow } =================================================
 
 constructor TJvDoubleHeadArrow.Create(AOwner: TComponent);
 begin

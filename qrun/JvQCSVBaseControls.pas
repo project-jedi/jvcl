@@ -709,106 +709,32 @@ end;
 
 procedure TJvCSVNavigator.CreateButtons;
 
-  procedure ib(b: TSpeedButton);
+  procedure InitButton(var Btn: TSpeedButton; ALeft: Integer; GlyphName: string;
+    ClickEvent: TNotifyEvent; AHint: string);
   begin
-    b.Width := 23;
-    b.Height := 22;
-    b.Flat := True;
-    b.Parent := Self;
-    b.Top := 1;
-    ShowHint := True;
+    Btn := TSpeedButton.Create(Self);
+    Btn.Width := 23;
+    Btn.Height := 22;
+    Btn.Flat := True;
+    Btn.Top := 1;
+    Btn.Left := ALeft;
+    Btn.Glyph.LoadFromResourceName(HInstance, GlyphName);
+    Btn.OnClick := ClickEvent;
+    Btn.Hint := AHint;
+    Btn.Parent := Self;
   end;
 
 begin
-  FbtnFirst := TSpeedButton.Create(Self);
-  with FbtnFirst do
-  begin
-    ib(FbtnFirst);
-    Glyph.LoadFromResourceName(HInstance, 'JVCSVFIRST');
-    Left := 1;
-    OnClick := BtnFirstClick;
-    Hint := RsFirstHint;
-  end;
-
-  FbtnPrevious := TSpeedButton.Create(Self);
-  with FbtnPrevious do
-  begin
-    ib(FbtnPrevious);
-    Glyph.LoadFromResourceName(HInstance, 'JVCSVPREVIOUS');
-    Left := 25;
-    OnClick := BtnPreviousClick;
-    Hint := RsPreviousHint;
-  end;
-
-  FbtnFind := TSpeedButton.Create(Self);
-  with FbtnFind do
-  begin
-    ib(FbtnFind);
-    Glyph.LoadFromResourceName(HInstance, 'JVCSVFIND');
-    Left := 49;
-    OnClick := BtnFindClick;
-    Hint := RsFindHint;
-  end;
-
-  FbtnNext := TSpeedButton.Create(Self);
-  with FbtnNext do
-  begin
-    ib(FbtnNext);
-    Glyph.LoadFromResourceName(HInstance, 'JVCSVNEXT');
-    Left := 73;
-    OnClick := BtnNextClick;
-    Hint := RsNextHint;
-  end;
-
-  FbtnLast := TSpeedButton.Create(Self);
-  with FbtnLast do
-  begin
-    ib(FbtnLast);
-    Glyph.LoadFromResourceName(HInstance, 'JVCSVLAST');
-    Left := 97;
-    OnClick := BtnLastClick;
-    Hint := RsLastHint;
-  end;
-
-  FbtnAdd := TSpeedButton.Create(Self);
-  with FbtnAdd do
-  begin
-    ib(FbtnAdd);
-    Glyph.LoadFromResourceName(HInstance, 'JVCSVADD');
-    Left := 121;
-    OnClick := BtnAddClick;
-    Hint := RsAddHint;
-  end;
-
-  FbtnDelete := TSpeedButton.Create(Self);
-  with FbtnDelete do
-  begin
-    ib(FbtnDelete);
-    Glyph.LoadFromResourceName(HInstance, 'JVCSVDELETE');
-    Left := 145;
-    OnClick := BtnDeleteClick;
-    Hint := RsDeleteHint;
-  end;
-
-  FbtnPost := TSpeedButton.Create(Self);
-  with FbtnPost do
-  begin
-    ib(FbtnPost);
-    Glyph.LoadFromResourceName(HInstance, 'JVCSVPOST');
-    Left := 169;
-    OnClick := BtnPostClick;
-    Hint := RsPostHint;
-  end;
-
-  FbtnRefresh := TSpeedButton.Create(Self);
-  with FbtnRefresh do
-  begin
-    ib(FbtnRefresh);
-    Glyph.LoadFromResourceName(HInstance, 'JVCSVREFRESH');
-    Left := 193;
-    OnClick := BtnRefreshClick;
-    Hint := RsRefreshHint;
-  end;
+  ShowHint := True;
+  InitButton(FbtnFirst, 1, 'JVCSVFIRST', BtnFirstClick, RsFirstHint);
+  InitButton(FbtnPrevious, 25, 'JVCSVPREVIOUS', BtnPreviousClick, RsPreviousHint);
+  InitButton(FbtnFind, 49, 'JVCSVFIND', BtnFindClick, RsFindHint);
+  InitButton(FbtnNext, 73, 'JVCSVNEXT', BtnNextClick, RsNextHint);
+  InitButton(FbtnLast, 97, 'JVCSVLAST', BtnLastClick, RsLastHint);
+  InitButton(FbtnAdd, 121, 'JVCSVADD', BtnAddClick, RsAddHint);
+  InitButton(FbtnDelete, 145, 'JVCSVDELETE', BtnDeleteClick, RsDeleteHint);
+  InitButton(FbtnPost, 169, 'JVCSVPOST', BtnPostClick, RsPostHint);
+  InitButton(FbtnRefresh, 193, 'JVCSVREFRESH', BtnRefreshClick, RsRefreshHint);
 end;
 
 

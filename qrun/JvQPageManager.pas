@@ -139,7 +139,7 @@ type
     FOnHide: TPageNotifyEvent;
     function GetPageName: string;
     procedure SetPageName(const Value: string);
-    procedure SetJvPageManager(Value: TJvPageManager);
+    procedure SetPageManager(Value: TJvPageManager);
     procedure PageEnter(Next: Boolean);
     procedure PageLeave(Next: Boolean);
     procedure PageShow(Next: Boolean);
@@ -151,7 +151,7 @@ type
     destructor Destroy; override;
     function HasParent: Boolean; override;
     function GetParentComponent: TComponent; override;
-    property PageManager: TJvPageManager read FPageManager write SeTJvPageManager;
+    property PageManager: TJvPageManager read FPageManager write SetPageManager;
   published
     property PageName: string read GetPageName write SetPageName;
     property OnEnter: TPageNotifyEvent read FOnEnter write FOnEnter;
@@ -225,7 +225,7 @@ begin
     FPageName := Value;
 end;
 
-procedure TJvPageProxy.SetJvPageManager(Value: TJvPageManager);
+procedure TJvPageProxy.SetPageManager(Value: TJvPageManager);
 begin
   if FPageManager <> nil then
     FPageManager.RemoveProxy(Self);

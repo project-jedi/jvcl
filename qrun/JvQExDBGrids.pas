@@ -229,6 +229,7 @@ function TJvExCustomDBGrid.IsRightToLeft: Boolean;
 begin
   Result := False;
 end;
+
 procedure TJvExCustomDBGrid.MouseEnter(Control: TControl);
 begin
   Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);

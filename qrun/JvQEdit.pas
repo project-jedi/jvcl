@@ -50,9 +50,9 @@ unit JvQEdit;
 interface
 
 uses
-  QWindows, QMessages, 
+  Types, QWindows, QMessages, 
   Qt, QTypes, 
-  Classes, Types, QGraphics, QControls, QMenus,
+  Classes, QGraphics, QControls, QMenus,
   JvQCaret, JvQMaxPixel, JvQTypes, JvQExStdCtrls;
 
 
@@ -81,8 +81,9 @@ type
     FPasswordChar: Char;
     FNullPixmap: QPixmapH; 
     FEmptyValue: string;
-    FIsEmptyValue: boolean;
-    FEmptyFontColor, FOldFontColor: TColor;
+    FIsEmptyValue: Boolean;
+    FEmptyFontColor: TColor;
+    FOldFontColor: TColor;
     function GetPasswordChar: Char;
     procedure SetAlignment(Value: TAlignment);
     procedure SetCaret(const Value: TJvCaret);
@@ -130,8 +131,7 @@ type
   public
     function IsEmpty: Boolean;
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
- 
+    destructor Destroy; override; 
     procedure Loaded; override;
   protected
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
@@ -392,11 +392,12 @@ begin
     R := ClientRect;
     Canvas.FillRect(R);
     Result := True; 
-   // paint Border
-    if (BorderStyle = bsSingle) then
+    // paint Border
+    if BorderStyle = bsSingle then
       QGraphics.DrawEdge(Canvas, R, esLowered, esLowered, ebRect); 
   end;
 end;
+
 
 
 
@@ -601,15 +602,15 @@ begin
     C := TControlCanvas.Create;
     try
       C.Control := Self;  
-        if GetTextExtentPoint32W(C.Handle, PWideChar(Text), Length(Text), Size) then 
-        begin
-          if (ClientWidth <= Size.cx) then
-            Hint := Text
-          else
-            Hint := FOldHint;
-        end
+      if GetTextExtentPoint32W(C.Handle, PWideChar(Text), Length(Text), Size) then 
+      begin
+        if ClientWidth <= Size.cx then
+          Hint := Text
         else
           Hint := FOldHint;
+      end
+      else
+        Hint := FOldHint;
     finally
       C.Free;
     end;
@@ -654,7 +655,7 @@ begin
     if FIsEmptyValue then
     begin
       Text := '';
-      FIsEmptyValue := false;
+      FIsEmptyValue := False;
       if not (csDesigning in ComponentState) then
         Font.Color := FOldFontColor;
     end;
@@ -668,7 +669,7 @@ begin
     if Text = '' then
     begin
       Text := EmptyValue;
-      FIsEmptyValue := true;
+      FIsEmptyValue := True;
       if not (csDesigning in ComponentState) then
       begin
         FOldFontColor := Font.Color;
@@ -701,7 +702,6 @@ begin
       DoEmptyValueExit;
   end;
 end;
-
 
 end.
 
