@@ -31,11 +31,9 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
   Windows, Messages, Graphics, Forms, Controls, StdCtrls,
-  {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QGraphics, QForms, QControls, QStdCtrls, Types, QWindows, QTypes,
+  QTypes,
   {$ENDIF VisualCLX}
   JvComponent, JvMarkupCommon;
 
@@ -49,27 +47,27 @@ type
     PageBottom: Integer;
     FElementStack: TJvHTMLElementStack;
     FTagStack: TJvHTMLElementStack;
-    FText: TCaption;
     FBackColor: TColor;
     FMarginLeft: Integer;
     FMarginRight: Integer;
     FMarginTop: Integer;
+    {$IFDEF VCL}
+    FText: TCaption;
+    procedure SetText(const Value: TCaption);
+    {$ENDIF VCL}
     procedure ParseHTML(s: string);
     procedure RenderHTML;
     procedure HTMLClearBreaks;
     procedure HTMLElementDimensions;
     procedure SetBackColor(const Value: TColor);
-    procedure SetText(const Value: TCaption);
     procedure SetMarginLeft(const Value: Integer);
     procedure SetMarginRight(const Value: Integer);
     procedure SetMarginTop(const Value: Integer);
     procedure ScrollViewer(Sender: TObject);
   protected
-    {$IFDEF VCL}
     procedure CreateWnd; override;
-    {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    procedure CreateWidget; override;
+    procedure SetText(const Value: TCaption); override;
     {$ENDIF VisualCLX}
   public
     constructor Create(AOwner: TComponent); override;
@@ -77,7 +75,12 @@ type
     procedure Paint; override;
   published
     property Align;
+    {$IFDEF VCL}
     property Text: TCaption read FText write SetText;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    property Text: TCaption read GetText write SetText;
+    {$ENDIF VisualCLX}
     property BackColor: TColor read FBackColor write SetBackColor;
     property MarginLeft: Integer read FMarginLeft write SetMarginLeft default 5;
     property MarginRight: Integer read FMarginRight write SetMarginRight default 5;
@@ -159,16 +162,9 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
 procedure TJvMarkupViewer.CreateWnd;
 begin
   inherited CreateWnd;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-procedure TJvMarkupViewer.CreateWidget;
-begin
-  inherited CreateWidget;
-{$ENDIF VisualCLX}
   FScrollBar := TScrollBar.Create(Self);
   FScrollBar.Kind := sbVertical;
   FScrollBar.Parent := Self;
@@ -453,6 +449,9 @@ begin
   ieol := 0; // Not needed but removed Warning
   R := Rect(0, 0, FBmp.Width, FBmp.Height);
   FBmp.Canvas.Brush.Color := BackColor;
+  {$IFDEF VisualCLX}
+  FBmp.Canvas.Brush.Style := bsSolid;
+  {$ENDIF VisualCLX}
   FBmp.Canvas.FillRect(R);
   FBmp.TransparentColor := BackColor;
   FBmp.Transparent := True;
@@ -584,15 +583,26 @@ procedure TJvMarkupViewer.SetText(const Value: TCaption);
 var
   s: string;
 begin
+{$IFDEF VCL}
   if Value <> FText then
     Exit;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+  if Value <> GetText then
+    Exit;
+{$ENDIF VisualCLX}
   s := Value;
   s := StringReplace(s, sLineBreak, ' ', [rfReplaceAll]);
   s := TrimRight(s);
   ParseHTML(s);
   HTMLElementDimensions;
+  {$IFDEF VCL}
   FText := s;
   Invalidate;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  inherited SetText(s);
+  {$ENDIF VisualCLX}
 end;
 
 end.
