@@ -1,0 +1,45 @@
+package JvCustomD6D;
+
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS OFF}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS OFF}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS ON}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'JVCL Custom Controls'}
+{$DESIGNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  JvCustomD6R,
+  designide,
+  JvCoreD6D,
+  dclstd;
+
+contains
+  JvCustomReg in '..\..\design\JvCustomReg.pas',
+  JvOutlookBarForm in '..\..\design\JvOutlookBarForm.pas' {FrmOLBEditor},
+  JvOutlookBarEditors in '..\..\design\JvOutlookBarEditors.pas',
+  JvTimeLineEditor in '..\..\design\JvTimeLineEditor.pas',
+  JVHLEditEditor in '..\..\design\JvHLEditEditor.pas',
+  JvScheduleEditors in '..\..\design\JvScheduleEditors.pas',
+  JvScheduleEditorForm in '..\..\design\JvScheduleEditorForm.pas' {FrmScheduleEditor},
+  JvLookoutEditor in '..\..\design\JvLookoutEditor.pas';
+
+end.
