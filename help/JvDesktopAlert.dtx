@@ -1,5 +1,5 @@
 ##Package: Dialogs
-##Status: Locked by peter3
+##Status: Completed (peter3), needs review
 ----------------------------------------------------------------------------------------------------
 @@JvDesktopAlert.pas
 Summary
@@ -10,475 +10,433 @@ Author
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert
 Summary
-  Write here a summary (1 line)
+  Displays a window with a message that is automatically hidden after a specified time.
 Description
-  Write here a description
+  Use TJvDesktopAlert when you need to display information to your users in an unobtrusive way. 
+  The TJvDesktopAlertcomponent displays a window with a message that fades away after a predefined 
+  amount of time. The window can, apart from the message, also display a dropdown menu, an icon and
+  any number of custom buttons.
+Note
+  TJvDesktopAlert uses alpha blending to perform the fade in and fade out effect. Alpha blending is only
+  available on Windows 2000 and Windows XP and above. For earlier versions of Windows, the window is displayed 
+  without fading.
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.AlertStack
 Summary
-  Write here a summary (1 line)
+  Points to a component that handles stacking of alerts.
 Description
-  Write here a description
+  Drop a TJvDesktopAlertStack component on the form and assign it to this property when you want to display 
+  several desktop alerts as a group. Each TJvDesktopAlert can only display a single window but if you use 
+  several desktop alerts, use a TJvDesktopAlertStack to group them. If you don't assign a TJvDesktopAlertStack,
+  a default stacker is created and used automatically.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvDesktopAlertStack
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.Buttons
 Summary
-  Write here a summary (1 line)
+  Defines the custom buttons to display on the alert window.
 Description
-  Write here a description
+  Use Buttons to define the custm buttons to display on the desktop alert. Custom buttons are displayed 
+  in the lower left corner of the window. 
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvDesktopAlertButtons
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.Colors
 Summary
-  Write here a summary (1 line)
+  Manages the colors used in the desktop alert window.
 Description
-  Write here a description
+  Modify the subproperties of Colors to set the colors used in the desktop alert. 
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvDesktopAlertColors
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.Data
 Summary
-  Write here a summary (1 line)
+  Provides a storage variable for user data.
 Description
-  Write here a description
+  Use Data to store arbitrary data with the component. Data is similar to Tag but is defined as a TObject
+  to easily store classes and similar with the component. Note that you are still responsible for handling 
+  the memory of the associated object.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Tag
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.DropDownMenu
 Summary
-  Write here a summary (1 line)
+  Defines a menu to display for the dropdown button in the window.
 Description
-  Write here a description
+  Assign a popup menu to the DropDownMenu property to display a dropdown button on the desktop alert.
+  If no DropDownMenu is assiged, the dropdown button is not shown.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  PopUpMenu
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.Execute
 Summary
-  Write here a summary (1 line)
+  Shows the desktop alert.
 Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Call Execute to show the desktop alert window in your application. 
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.FadeInTime
 Summary
-  Write here a summary (1 line)
+  Specifies the time it takes to display the window.
 Description
-  Write here a description
+  Set FadeInTime to the number of milliseconds that should pass before the AlphaBlendValue of the
+  window reaches the MaxAlphaBlendValue. When the value is reached, WaitTime begins. If FadeInTime is 0
+  or daoCanFade isn't in Options, the MaxAlphaBlendValue is set immediately when the window is shown.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  MaxAlphaBlendValue, FadeOutTime, WaitTime, Options
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.FadeOutTime
 Summary
-  Write here a summary (1 line)
+  Specifies the time it takes to hide the window.
 Description
-  Write here a description
+  Set FadeOutTime to the number of milliseconds that should pass before MaxAlphaBlendValue of the
+  window reaches 0 and the window is hidden. If FadeOutTime is 0 or daoCanFade isn't in Options, 
+  the window is hidden immediately.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Options, FadeInTime
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.Font
 Summary
-  Write here a summary (1 line)
+  Specifies the font settings used for the message text.
 Description
-  Write here a description
+  Set the properties of Font to specify how the desktop alert's message text is displayed.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  HeaderFont, ParentFont
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.HeaderFont
 Summary
-  Write here a summary (1 line)
+  Specifies the font used for the header text.
 Description
-  Write here a description
+  Set the properties of HeaderFont to specify how the desktop alert's header text is displayed.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Font
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.HeaderText
 Summary
-  Write here a summary (1 line)
+  Specifies the text to use as the header of the alert.
 Description
-  Write here a description
+  Set HeaderText to the text to display for the header of the window.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Text
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.Hint
 Summary
-  Write here a summary (1 line)
+  Contains the text string that can appear when the user moves the mouse over the control.
 Description
-  Write here a description
+  Use the Hint property to provide a string of help text as a Help Hint. Set ShowHint to true to
+  actually show the hint at run-time.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ShowHint
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.Image
 Summary
-  Write here a summary (1 line)
+  Specifies the image to display on the desktop alert.
 Description
-  Write here a description
+  Assign an image to the Image property to display it in the upper left corner of the desktop alert window.
+Note
+  Since the size of the desktop alert window is small, you shouldn't use images that are larger than about 48x48 pixels.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Images
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.Images
 Summary
-  Write here a summary (1 line)
+  Specifies the image list used by the custom buttons.
 Description
-  Write here a description
+  Set Images to an image list to use for the custom buttons on the desktop alert. Custom buttons get their
+  image from this list
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Buttons
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.Location
 Summary
-  Write here a summary (1 line)
+  Specifies where the desktop alert appears on-screen.
 Description
-  Write here a description
+  Use the subproperties of Location to define where the desktop alert appears at run-time.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvDesktopAlertLocation
 ----------------------------------------------------------------------------------------------------
-@@TJvDesktopAlert.MaxAlphaBlendValue
+@@TJvDesktopAlert.AlphaBlendValue
 Summary
-  Write here a summary (1 line)
+  Specifies how transparent the desktop alert is when it is fully displayed.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Set AlphaBlendValue to a value between 0 (fully transparent) and 255 (fully opaque) to specify how transparent
+  the desktop alert window is when it is fully visible. If the Windows version your application is running
+  doesn't support alpha blending, this property has no effect and the desktop window is always fully opaque.
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.MessageText
 Summary
-  Write here a summary (1 line)
+  Specifies the text of the message.
 Description
-  Write here a description
+  Set MessageText to the string to display as the message text of the desktop alert.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  HeaderText
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.OnClose
 Summary
-  Write here a summary (1 line)
+  Occurs when the desktop alert closes.
 Description
-  Write here a description
+  Use OnClose to perform special processing when the desktop alert closes.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnShow
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.OnMessageClick
 Summary
-  Write here a summary (1 line)
+  Occurs when the user clicks the message text,
 Description
-  Write here a description
+  Write a handler for the OnMessageClick event to take specific action when the user clicks on the
+  message text. This event handler is only called when daoCanClick is included in Options.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  MessageText, Options
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.OnMouseEnter
 Summary
-  Occurs when the mouse pointer moves over the <xxx>.
+  Occurs when the mouse pointer moves over the desktop alert.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
-  <xxx>.
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
+  desktop alert.
 See Also
-  HotTrack, OnMouseLeave
+  OnMouseLeave
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.OnMouseLeave
 Summary
-  Occurs when the mouse pointer moves off the <xxx>.
+  Occurs when the mouse pointer moves off the desktop alert.
 Description
   Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
-  <xxx>. For example, you can use this event to undo changes that were made in an OnMouseEnter
+  desktop alert. For example, you can use this event to undo changes that were made in an OnMouseEnter
   event handler.
 See Also
-  HotTrack, OnMouseEnter
+  OnMouseEnter
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.OnShow
 Summary
-  Write here a summary (1 line)
+  Occurs when the desktop alert is shown (that is, when its Visible property is set to True).
 Description
-  Write here a description
+  Use OnShow to perform special processing when the desktop alert is shown. Note that the window
+  might not be visible when OnShow is called since visibility is controlled by the AlphaBlendValue
+  value and the FadeInTime value.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnClose, AlphaBlendValue, FadeInTime
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.Options
 Summary
-  Write here a summary (1 line)
+  Controls the behvaior of the desktop alert.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Change the settings of Options to modify the behacior of the desktop alert.
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.ParentFont
 Summary
-  Write here a summary (1 line)
+  Determines where the desktop alert looks for its font information.
 Description
-  Write here a description
+  Set ParentFont to true to have the desktop alert window use the same font settings as the form where
+  the TJvDesktopAlert is located. When the font of the form changes, so does the desktop alert window.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Font
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.PopupMenu
 Summary
-  Write here a summary (1 line)
+  Identifies the pop-up menu associated with the desktop alert.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Assign a value to PopupMenu to make a pop-up menu appear when the user selects the desktop alert window
+  and clicks the right mouse button.
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.ShowHint
 Summary
-  Write here a summary (1 line)
+  Determines whether the desktop alert displays a Help Hint when the mouse pointer rests momentarily on its surface.
 Description
-  Write here a description
+  The Help Hint is the value of the Hint property, which is displayed in a box above the desktop alert.
+  Use ShowHint to determine whether a Help Hint appears for the desktop alert window.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Hint
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.Showing
 Summary
-  Write here a summary (1 line)
+  Indicates whether the control is showing on the screen.
 Description
-  Write here a description
+  Call Showing to determine whether the desktop alert is currently showing on screen.
 Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  True if the window is visible, false otherwise.
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.WaitTime
 Summary
-  Write here a summary (1 line)
+  Specifies how long the desktop alert is visible before it is faded away.
 Description
-  Write here a description
+  Set WaitTime to the number of milliseconds to display the desktop alert. WaitTime starts when FadeInTime has
+  passed and when WaitTime has expired, FadeOutTime starts so the total number of milliseconds for
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  FadeInTime, FadeOutTime
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertButtons
 Summary
-  Write here a summary (1 line)
+  Manages a collection of custom buttons on a desktop alert window.
 Description
-  Write here a description
+  TJvDesktopAlertButtons is a TCollection that handles a list of TJvDesktopAlertButton instances. Each
+  TJvDesktopAlertButton is a custom button on a TJvDesktopAlert window. 
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertButtons.Add
 Summary
-  Write here a summary (1 line)
+  Adds a new button to the collection.
 Description
-  Write here a description
+  Call Add to add a new button to the collection.
 Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDesktopAlertButtons.Assign
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-Parameters
-  Source - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The newly added button.
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertButtons.Items
 Summary
-  Write here a summary (1 line)
+  Provides indexed access to the items in the collection.
 Description
-  Write here a description
+  Use Items to access the items in the collection based on their index. Index can be in the range
+  0 to Count - 1.
 Parameters
-  Index - Description for this parameter
+  Index - The 0-based index of the button to access.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Count
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertChangePersistent
 Summary
-  Write here a summary (1 line)
+  Base class for TPersistent classes that can report changes through an event
 Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvDesktopAlertChangePersistent.OnChange
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  This class is used internally by the tJvDesktopAlert component. It is not for general use.
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertColors
 Summary
-  Write here a summary (1 line)
+  Manages a collection of colors.
 Description
-  Write here a description
+  TJvDesktopAlertColors is the type of the Colors property of a TJvDesktopAlert component. TJvDesktopAlertColors
+  manages the colors that are user modifiable in a TJvDesktopAlert.
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertColors.CaptionFrom
 Summary
-  Write here a summary (1 line)
+  Defines the starting color of the caption area.
 Description
-  Write here a description
+  Set CaptionFrom to the color to use as the start color of the gradient drawn in the caption area of
+  a TJvDesktopAlert. The gradient is drawn from top to bottom.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  CaptionTo
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertColors.CaptionTo
 Summary
-  Write here a summary (1 line)
+  Defines the ending color of the caption area.
 Description
-  Write here a description
+  Set CaptionTo to the color to use as the end color of the gradient drawn in the caption area of
+  a TJvDesktopAlert. The gradient is drawn from top to bottom.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  CaptionFrom
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertColors.Frame
 Summary
-  Write here a summary (1 line)
+  Defines the color used to draw the frame around the edge.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Set Frame to the color to use to draw the frame around the edge of a TJvDesktopAlert window.
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertColors.WindowFrom
 Summary
-  Write here a summary (1 line)
+  Defines the starting color of the client area.
 Description
-  Write here a description
+  Set WindowFrom to the color to use as the start color of the gradient drawn in the client area of
+  a TJvDesktopAlert. The gradient is drawn from top to bottom.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  WindowTo
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertColors.WindowTo
 Summary
-  Write here a summary (1 line)
+  Defines the ending color of the client area.
 Description
-  Write here a description
+  Set WindowFrom to the color to use as the end color of the gradient drawn in the client area of
+  a TJvDesktopAlert. The gradient is drawn from top to bottom.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  WindowFrom
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertItem
 Summary
-  Write here a summary (1 line)
+  Class that manages the settings of a custom button in a desktop alert window.
 Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvDesktopAlertItem.Assign
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-Parameters
-  Source - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvDesktopAlertItem is the type of the Items property of a TJvDesktopAlertButtons collection.
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertItem.ImageIndex
 Summary
-  Write here a summary (1 line)
+  Specifies the image to use on the button.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Set ImageIndex to the index of the image to use on the button. The images are taken from the
+  Images property of TJvDesktopAlert. If ImageIndex is invalid (below 0 or above Count-1), no image is drawn
+  on the button.
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertItem.OnClick
 Summary
-  Write here a summary (1 line)
+  Occurs when the user clicks the button.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Assign a handler to the OnClick event to take specific action when the users clicks the button.
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertItem.Tag
 Summary
-  Write here a summary (1 line)
+  Stores an integer value as part of the item.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Tag has no predefined meaning. The Tag property is provided for the convenience of developers. It
+  can be used for storing an additional integer value or it can be typecast to any 32-bit value
+  such as a component reference or a pointer.
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertLocation
 Summary
-  Write here a summary (1 line)
+  Class that manages the location settings of a desktop alert window.
 Description
-  Write here a description
+  TJvDesktopAlertLocation is the type of the Location property of a TJvDesktopAlert component. It manages
+  the position settings for the desktop alert window.
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertLocation.AlwaysResetPosition
 Summary
-  Write here a summary (1 line)
+  Specifies if moving the desktop alert changes the Position property.
 Description
-  Write here a description
+  If AlwaysResetPosition is false, Position is set to dapCustom if the user moves the window. If
+  AlwaysResetPosition is true, the value of Position is never changed.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Position
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertLocation.Left
 Summary
-  Write here a summary (1 line)
+  Specifies the value of the Left property of the desktop alert window.
 Description
-  Write here a description
+  Use the Left property to determine where the left side of the desktop alert window begins or to
+  reposition the left side of the window. Left is only used when Position is dapCustom.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Top, Position
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertLocation.Position
 Summary
-  Write here a summary (1 line)
+  Specifies where the desktop alert window is located when it is displayed.
 Description
-  Write here a description
+  Use Position to specify where the TJvDesktopAlert window should appear on screen. This setting
+  also controls the stacking of multiple desktop alert windows. If Position is dapCustom, the placement
+  of the window is determined by the Left and Top properties. 
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Top, Left
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertLocation.Top
 Summary
-  Write here a summary (1 line)
+  Specifies the value of the Top property of the desktop alert window.
 Description
-  Write here a description
+  Use the Top property to determine where the top of the desktop alert window begins or to
+  reposition the top of the window. Top is only used when Position is dapCustom.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Top, Position
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertOption
 <TITLE TJvDesktopAlertOption type>
 Summary
-  Write here a summary (1 line)
+  Specifies the behavior of a TJvDesktopAlert window.
 Description
-  Write here a description
+  TJvDesktopAlertOption is the type of the Options property of a TJvDesktopAlert.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvDeskTopAlert
 @@TJvDesktopAlertOption.daoCanClick
-  Description for daoCanClick
+  Determines whether the user can click the message text or not. If true, the message text in the window
+  is hottracked, like a HTML link.
 @@TJvDesktopAlertOption.daoCanMove
-  Description for daoCanMove
+  Determines whether the user is allowed to move the TJvDesktopAlert window.
 @@TJvDesktopAlertOption.daoCanMoveAnywhere
-  Description for daoCanMoveAnywhere
+  Determines whether the user can move the TJvDesktopAlert window by clicking and dragging anywhere. To set
+  this to true, daoCanMove must also be true.
 @@TJvDesktopAlertOption.daoCanClose
-  Description for daoCanClose
+  Determines whether a close button is displayed on the TJvDesktopAlert and whether pressing Alt+F4 closes it.
 @@TJvDesktopAlertOption.daoCanFade
-  Description for daoCanFade
+  Determines whether the FadeInTIme and FadeOutTime values are used or not.
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertOptions
 <TITLE TJvDesktopAlertOptions type>
@@ -487,76 +445,78 @@ See Also
 @@TJvDesktopAlertPosition
 <TITLE TJvDesktopAlertPosition type>
 Summary
-  Write here a summary (1 line)
+  Specifies the possible placements of a desktop alert window.
 Description
-  Write here a description
+  TJvDesktopAlertPosition is the type of the Position property of the TJvDesktopAlertLocation class. TJvDesktopAlertLocation is
+  the type of the Location property of a TJvDesktopAlert component.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvDesktopAlertLocation, TJvDesktopAlert
 @@TJvDesktopAlertPosition.dapTopLeft
-  Description for dapTopLeft
+  The window is displayed in the upper left corner. If multiple alert windows are displayed, they are stacked
+  such that the oldest window is always at the top.
 @@TJvDesktopAlertPosition.dapTopRight
-  Description for dapTopRight
+  The window is displayed in the upper right corner. If multiple alert windows are displayed, they are stacked
+  such that the oldest window is always at the top.
 @@TJvDesktopAlertPosition.dapBottomLeft
-  Description for dapBottomLeft
+  The window is displayed in the bottom left corner. If multiple alert windows are displayed, they are stacked
+  such that oldest window is always at the bottom.
 @@TJvDesktopAlertPosition.dapBottomRight
-  Description for dapBottomRight
+  The window is displayed in the bottom right corner. If multiple alert windows are displayed, they are stacked
+  such that the oldest window is always at the bottom.
 @@TJvDesktopAlertPosition.dapCustom
-  Description for dapCustom
+  The location of the window is determined by the Left and Top properties of the <LINK TJvDesktopAlert.Location,TJvDesktopAlert.Location> property
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertStack
 Summary
-  Write here a summary (1 line)
+  Manages a list of TJvDesktopAlert components.
 Description
-  Write here a description
+  Use TJvDesktopAlertStack to control the behavior of multiple TJvDesktopAlert components. To use, drop a
+  TJvDesktopAlertStack on the form and assign it to the AlertStack property of each of the TJvDesktopAlert
+  components you want to be managed by this TJvDesktopAlertStack.
+
+  When a TJvDesktopAlert is managed by an explicitly assiged TJvDesktopAlertStack component, the Position property
+  of TJvDesktopAlertStack is used for all the TJvDesktopAlert components.
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertStack.Add
 Summary
-  Write here a summary (1 line)
+  Adds a form to the list of managed forms.
 Description
-  Write here a description
-Parameters
-  AForm - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Do not call this method. It is for intern use only.
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertStack.Count
 Summary
-  Write here a summary (1 line)
+  Returns the number of forms managed by this component.
 Description
-  Write here a description
+  Read the value of Count to learn the number of forms currently managed by the component. Count
+  varies as desktop alert windows are displayed and closed.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Items
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertStack.Items
 Summary
-  Write here a summary (1 line)
+  Provides indexed access to the forms managed by this component
 Description
-  Write here a description
+  Use Items to access the forms managed by the component using its index.
+
+Warning
+    The list of managed forms is highly dynamic and can change while you iterate over them. Accessing a
+    non-existent form or a non-existent index will lead to acess violation errors.
 Parameters
-  Index - Description for this parameter
+  Index - The index of the form in the list.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Count
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertStack.Position
 Summary
-  Write here a summary (1 line)
+  Specifies where the desktop alert windows should be placed when they are displayed.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use Position to specify where the tJvDesktop windows are displayed.
+Note
+  If you set Position to dapCustom, the component will not stack the desktop windows for you.
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertStack.Remove
 Summary
-  Write here a summary (1 line)
+  Removes a form from the internal list of managed forms.
 Description
-  Write here a description
-Parameters
-  AForm - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Do not call this method. It is for internal use only.
+
