@@ -31,12 +31,7 @@ interface
 
 uses
   SysUtils,
-  {$IFDEF VCL}
-  Controls, Graphics, Windows;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
   QControls, QGraphics;
-  {$ENDIF VisualCLX}
 
 {$IFDEF VisualCLX}
 const
