@@ -9,7 +9,6 @@
   <Requires>
     <Package Name="JvCore-R" Targets="allbutclx" Condition=""/>
     <Package Name="JvSystem-R" Targets="all" Condition=""/>
-    <Package Name="JvStdCtrls-R" Targets="C5,C5s,C6,C6p" Condition=""/>
     <Package Name="CJCL50" Targets="C5,C5s" Condition=""/>
     <Package Name="vcl50" Targets="C5,C5s" Condition=""/>
     <Package Name="bcbsmp50" Targets="C5,C5s" Condition=""/>
