@@ -132,8 +132,8 @@ begin
     fmeTreeList.Provider.Slave := Value;
     if Value <> nil then
     begin
-      fmeTreeList.Provider.SetProviderIntf(Value.ProviderIntf);
-      fmeTreeList.Provider.SetContextIntf(Value.ContextIntf);
+{      fmeTreeList.Provider.SetProviderIntf(Value.ProviderIntf);
+      fmeTreeList.Provider.SetContextIntf(Value.ContextIntf);}
       UpdateViewList;
       if TOpenConsumer(Value).VCLComponent <> nil then
         TOpenConsumer(Value).VCLComponent.FreeNotification(Self);

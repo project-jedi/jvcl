@@ -43,12 +43,12 @@ type
     function FindByName(Name: string; const Recursive: Boolean = False): IJvDataItem;
   end;
 
-  IContextItems = interface
+  IJvDataContextItems = interface
     ['{3303276D-2596-4FDB-BA1C-CE6E043BEB7A}']
     function GetContexts: IJvDataContexts;
   end;
 
-  IContextItem = interface
+  IJvDataContextItem = interface
     ['{7156CAC8-0DB9-43B7-96C5-5A56723C5158}']
     function GetContext: IJvDataContext;
   end;
@@ -84,9 +84,9 @@ type
   TContextItem = class;
   TContextItemsManager = class;
 
-  TContextItems = class(TJvBaseDataItems, IContextItems, IJvDataContextSearch)
+  TContextItems = class(TJvBaseDataItems, IJvDataContextItems, IJvDataContextSearch)
   protected
-    function GetContexts: IJvDataContexts;
+    function GetContexts: IJvDataContexts; virtual;
     function Find(Context: IJvDataContext; const Recursive: Boolean = False): IJvDataItem;
     function FindByName(Name: string; const Recursive: Boolean = False): IJvDataItem;
     procedure InitImplementers; override;
@@ -103,6 +103,8 @@ type
       AReason: TDataProviderChangeReason; Source: IUnknown);
     procedure DataProviderChanged(ADataProvider: IJvDataProvider;
       AReason: TDataProviderChangeReason; Source: IUnknown);
+  protected
+    function GetContexts: IJvDataContexts; override;
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -110,7 +112,7 @@ type
     property ClientProvider: IJvDataProvider read FClientProvider write SetClientProvider;
   end;
 
-  TContextItem = class(TJvBaseDataItem, IJvDataItemText, IContextItem)
+  TContextItem = class(TJvBaseDataItem, IJvDataItemText, IJvDataContextItem)
   private
     FContext: IJvDataContext;
     { IContextItem methods }
@@ -149,7 +151,7 @@ begin
       Supports(ParentCtx, IJvDataContexts, Result);
   end
   else
-    Result := (TContextRootItems(Self).ClientProvider as IJvDataContexts);
+    Result := nil;
 end;
 
 function TContextItems.Find(Context: IJvDataContext; const Recursive: Boolean = False): IJvDataItem;
@@ -258,13 +260,13 @@ procedure TContextRootItems.SetClientProvider(Value: IJvDataProvider);
 begin
   if Value <> FClientProvider then
   begin
-    GetProvider.Changing(pcrUpdateItems, Self);
+    GetProvider.Changing(pcrFullRefresh, nil);
     FClientProvider := Value;
     FNotifier.Provider := Value;
     ClearIntfImpl;
     if Value <> nil then
       InitImplementers;
-    GetProvider.Changed(pcrUpdateItems, Self);
+    GetProvider.Changed(pcrFullRefresh, nil);
   end;
 end;
 
@@ -350,6 +352,19 @@ begin
   end;
 end;
 
+function TContextRootItems.GetContexts: IJvDataContexts;
+var
+  ParentCtx: IJvDataContext;
+begin
+  if (GetParent <> nil) then
+  begin
+    if Supports(GetParent, IJvDataContext, ParentCtx) then
+      Supports(ParentCtx, IJvDataContexts, Result);
+  end
+  else
+    Supports(ClientProvider, IJvDataContexts, Result);
+end;
+
 constructor TContextRootItems.Create;
 begin
   inherited Create;
@@ -432,9 +447,9 @@ end;
 
 function TContextItemsManager.GetContexts: IJvDataContexts;
 var
-  ICI: IContextItems;
+  ICI: IJvDataContextItems;
 begin
-  if Supports(Items, IContextItems, ICI) then
+  if Supports(Items, IJvDataContextItems, ICI) then
     Result := ICI.GetContexts
   else
     Result := nil;
@@ -444,12 +459,12 @@ function TContextItemsManager.Add(Item: IJvDataItem): IJvDataItem;
 var
   Contexts: IJvDataContexts;
   Mngr: IJvDataContextsManager;
-  CtxItem: IContextItem;
+  CtxItem: IJvDataContextItem;
 begin
   Contexts := GetContexts;
   if (Contexts <> nil) and Supports(Contexts, IJvDataContextsManager, Mngr) then
   begin
-    if Supports(Item, IContextItem, CtxItem) then
+    if Supports(Item, IJvDataContextItem, CtxItem) then
       Result := Item
     else
       raise EJVCLException.Create('Specified item is not a context item.');
@@ -489,13 +504,13 @@ procedure TContextItemsManager.Remove(var Item: IJvDataItem);
 var
   Contexts: IJvDataContexts;
   Mngr: IJvDataContextsManager;
-  CtxItem: IContextItem;
+  CtxItem: IJvDataContextItem;
   Ctx: IJvDataContext;
 begin
   Contexts := GetContexts;
   if (Contexts <> nil) and Supports(Contexts, IJvDataContextsManager, Mngr) then
   begin
-    if Supports(Item, IContextItem, CtxItem) then
+    if Supports(Item, IJvDataContextItem, CtxItem) then
     begin
       Ctx := CtxItem.GetContext;
       Item := nil;

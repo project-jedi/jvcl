@@ -38,7 +38,7 @@ uses
 
 type
   TDataProviderChangeReason = (pcrAdd, pcrDelete, pcrUpdateItem, pcrUpdateItems, pcrDestroy,
-    pcrContextAdd, pcrContextDelete, pcrContextUpdate);
+    pcrContextAdd, pcrContextDelete, pcrContextUpdate, pcrFullRefresh);
   TDataItemState = (disFalse, disTrue, disIndetermined, disNotUsed);
   TProviderDrawState = (pdsSelected, pdsGrayed, pdsDisabled, pdsChecked, pdsFocused, pdsDefault,
     pdsHot);
@@ -353,6 +353,15 @@ type
     property ExpandOnNewItem: Boolean read Get_ExpandOnNewItem write Set_ExpandOnNewItem;
     { Indentation in pixels for each level. Used by the rendering engine. }
     property LevelIndent: Integer read Get_LevelIndent write Set_LevelIndent;
+  end;
+
+  { Consumer support interface to be notified if another consumer has changed it's selected
+    (current) item. Used to react to changes of another consumer. For example, if another consumer
+    lists contexts related to this consumer and the context list consumer selects a different
+    context, this interface's implementer can switch the context of it's own consumer. }
+  IJvDataConsumerClientNotify = interface
+    ['{D1AAAFDF-BEB1-44DB-B8D8-A60080CEF3C7}']
+    procedure ItemSelected(Value: IJvDataItem);
   end;
 
   { Provider context list interface. Note that there is always an implicit (nameless) context

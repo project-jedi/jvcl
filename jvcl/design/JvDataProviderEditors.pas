@@ -33,7 +33,7 @@ unit JvDataProviderEditors;
 interface
 
 uses
-  {$IFNDEF COMPILER6_UP}DsgnIntf,{$ELSE}DesignIntf, DesignEditors, DesignMenus, {$ENDIF}
+  {$IFNDEF COMPILER6_UP}DsgnIntf, Menus,{$ELSE}DesignIntf, DesignEditors, DesignMenus, {$ENDIF}
   JvDataProvider, JvDataProviderImpl;
 
 type
@@ -42,6 +42,21 @@ type
     function GetConsumerExt: TJvDataConsumerAggregatedObject;
     function GetConsumer: IJvDataConsumer;
     function GetConsumerImpl: TJvDataConsumer;
+  end;
+
+  TJvProviderEditor = class(TDefaultEditor)
+  protected
+    function Provider: IJvDataProvider;
+  public
+    procedure Edit; override;
+    procedure ExecuteVerb(Index: Integer); override;
+    function GetVerb(Index: Integer): string; override;
+    function GetVerbCount: Integer; override;
+    {$IFNDEF COMPILER6_UP}
+    procedure PrepareItem(Index: Integer; const AItem: TMenuItem); override;
+    {$ELSE}
+    procedure PrepareItem(Index: Integer; const AItem: IMenuItem); override;
+    {$ENDIF}
   end;
 
 procedure Register;
@@ -56,7 +71,7 @@ resourcestring
 implementation
 
 uses
-  Classes, {$IFNDEF COMPILER6_UP}Consts,{$ELSE}RTLConsts,{$ENDIF} SysUtils, TypInfo, Menus,
+  Classes, {$IFNDEF COMPILER6_UP}Consts,{$ELSE}RTLConsts,{$ENDIF} SysUtils, TypInfo,
   JvDataConsumerContextSelectForm, JvDataConsumerItemSelectForm, JvDataProviderDesignerForm,
   JvDataContextManagerForm;
 
@@ -108,21 +123,6 @@ type
     function GetAttributes: TPropertyAttributes; override;
     function GetValue: string; override;
     procedure SetValue(const Value: string); override;
-  end;
-
-  TJvProviderEditor = class(TDefaultEditor)
-  protected
-    function Provider: IJvDataProvider;
-  public
-    procedure Edit; override;
-    procedure ExecuteVerb(Index: Integer); override;
-    function GetVerb(Index: Integer): string; override;
-    function GetVerbCount: Integer; override;
-    {$IFNDEF COMPILER6_UP}
-    procedure PrepareItem(Index: Integer; const AItem: TMenuItem); override;
-    {$ELSE}
-    procedure PrepareItem(Index: Integer; const AItem: IMenuItem); override;
-    {$ENDIF}
   end;
 
   TOpenSvc = class(TJvDataConsumer);

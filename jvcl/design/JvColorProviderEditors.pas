@@ -49,6 +49,13 @@ type
     procedure GetValues(Proc: TGetStrProc); override;
   end;
 
+  TJvColorProviderEditor = class(TDefaultEditor)
+  public
+    procedure Edit; override;
+    procedure ExecuteVerb(Index: Integer); override;
+    function GetVerb(Index: Integer): string; override;
+    function GetVerbCount: Integer; override;
+  end;
 
 resourcestring
   sMappingDoesNotExistForThisColorProv = 'Mapping does not exist for this color provider.';
@@ -57,7 +64,7 @@ implementation
 
 uses
   SysUtils, TypInfo,
-  JvDataProvider;
+  JvDataProvider, JvColorProviderDesignerForm;
 
 //===TJvColorProviderMappingProperty================================================================
 
@@ -104,6 +111,39 @@ begin
     for I := 0 to Get_MappingCount - 1 do
       Proc(Get_Mapping(I).Name);
   end;
+end;
+
+//===TJvColorProviderEditor=========================================================================
+
+procedure TJvColorProviderEditor.Edit;
+begin
+  ExecuteVerb(0)
+end;
+
+procedure TJvColorProviderEditor.ExecuteVerb(Index: Integer);
+begin
+  if Index = 0 then
+    DesignColorProvider(TJvColorProvider(Component), Designer)
+  else
+    inherited ExecuteVerb(Index)
+end;
+
+function TJvColorProviderEditor.GetVerb(Index: Integer): string;
+begin
+  if Index = 0 then
+    Result := 'Designer...'
+  else
+   inherited GetVerb(Index);
+end;
+
+function TJvColorProviderEditor.GetVerbCount: Integer;
+begin
+  Result := 1;
+end;
+
+procedure Register;
+begin
+  RegisterComponentEditor(TJvColorProvider, TJvColorProviderEditor);
 end;
 
 end.

@@ -47,6 +47,8 @@ type
   TJvBaseDataContexts = class;
   TJvBaseDataContextsManager = class;
   TJvBaseDataContext = class;
+  TJvDataConsumer = class;
+  TJvDataConsumerAggregatedObject = class;
 
   // Class references
   TAggregatedPersistentExClass = class of TAggregatedPersistentEx;
@@ -56,10 +58,22 @@ type
   TJvDataContextsClass = class of TJvBaseDataContexts;
   TJvDataContextsManagerClass = class of TJvBaseDataContextsManager;
   TJvDataContextClass = class of TJvBaseDataContext;
+  TJvDataConsumerAggregatedObjectClass = class of TJvDataConsumerAggregatedObject;
 
-  // Types
-  TItemPathsArray = array of TDynIntegerArray;
-  TCtxItemPathsArray = array of TItemPathsArray;
+  // Various types
+  TProviderNotifyEvent = procedure(ADataProvider: IJvDataProvider;
+    AReason: TDataProviderChangeReason; Source: IUnknown) of object;
+  TJvDataProviderTree = type Integer;
+  TJvDataProviderItemID = type string;
+  TJvDataProviderContexts = type Integer;
+  TBeforeCreateSubSvcEvent = procedure(Sender: TJvDataConsumer;
+    var SubSvcClass: TJvDataConsumerAggregatedObjectClass) of object;
+  TAfterCreateSubSvcEvent = procedure(Sender: TJvDataConsumer;
+    SubSvc: TJvDataConsumerAggregatedObject) of object;
+  TJvDataConsumerChangeReason = (ccrProviderSelected, ccrProviderChanged, ccrViewChanged,
+    ccrContextChanged, ccrOther);
+  TJvDataConsumerChangeEvent = procedure(Sender: TJvDataConsumer;
+    Reason: TJvDataConsumerChangeReason) of object;
 
   // Generic classes (move to some other unit?)
   TExtensibleInterfacedPersistent = class(TPersistent, IUnknown)
@@ -120,9 +134,6 @@ type
     procedure AfterConstruction; override;
     procedure BeforeDestruction; override;
   end;
-
-  TProviderNotifyEvent = procedure(ADataProvider: IJvDataProvider;
-    AReason: TDataProviderChangeReason; Source: IUnknown) of object;
 
   // Generic event based provider notification
   TJvProviderNotification = class(TObject, IUnknown, IJvDataProviderNotify)
@@ -484,11 +495,8 @@ type
   end;
 
   // Generic data provider implementation
-  TJvDataProviderTree = type Integer;
-  TJvDataProviderItemID = type string;
-  TJvDataProviderContexts = type Integer;
-  TJvCustomDataProvider = class(TJvComponent, IUnknown, {$IFNDEF COMPILER6_UP}IInterfaceComponentReference, {$ENDIF}
-    IJvDataProvider)
+  TJvCustomDataProvider = class(TJvComponent, IUnknown,
+    {$IFNDEF COMPILER6_UP}IInterfaceComponentReference, {$ENDIF}IJvDataProvider)
   private
     FDataItems: IJvDataItems;
     FDataContextsImpl: TJvBaseDataContexts;
@@ -501,7 +509,7 @@ type
   protected
     function QueryInterface(const IID: TGUID; out Obj): HResult; override;
     procedure Changing(ChangeReason: TDataProviderChangeReason; Source: IUnknown = nil);
-    procedure Changed(ChangeReason: TDataProviderChangeReason; Source: IUnknown = nil); 
+    procedure Changed(ChangeReason: TDataProviderChangeReason; Source: IUnknown = nil);
     class function PersistentDataItems: Boolean; virtual;
     class function ItemsClass: TJvDataItemsClass; virtual;
     class function ContextsClass: TJvDataContextsClass; virtual;
@@ -652,31 +660,7 @@ type
     function IsDeletable: Boolean; override;
   end;
 
-// Helper routines
-{ Locate nearest IJvDataItems* implementation for a specific item. }
-function DP_FindItemsIntf(AItem: IJvDataItem; IID: TGUID; out Obj): Boolean;
-{ Locate nearest IJvDataItemsRenderer implementation for a specific item. }
-function DP_FindItemsRenderer(AItem: IJvDataItem; out Renderer: IJvDataItemsRenderer): Boolean;
-{ Locate nearest IJvDataItemsImages implementation for a specific item. }
-function DP_FindItemsImages(AItem: IJvDataItem; out Images: IJvDataItemsImages): Boolean;
-{ Generate items list to emulate trees in a flat list control }
-procedure DP_GenItemsList(RootList: IJvDataItems; ItemList: TStrings);
-{ Convert TOwnerDrawState to TProviderDrawStates }
-function DP_OwnerDrawStateToProviderDrawState(State: TOwnerDrawState): TProviderDrawStates;
-{ Atomically select a consumer/context pair, pushing the current consumer/context onto their
-  internal stacks. }
-procedure DP_SelectConsumerContext(Provider: IJvDataProvider; Consumer: IJvDataConsumer; Context: IJvDataContext);
-{ Atomically release a consumer/context pair, reinstating the prior pair on the respective stacks. }
-procedure DP_ReleaseConsumerContext(Provider: IJvDataProvider);
-{ Retrieve the specified context's name path. }
-function GetContextPath(Context: IJvDataContext): string;
-{ Retrieve the specified item's ID path. The path is based on the currently active context. }
-function GetItemIDPath(Item: IJvDataItem): string;
-{ Retrieve the specified item's index path. The path is based on the currently active context. }
-function GetItemIndexPath(Item: IJvDataItem): TDynIntegerArray;
-
 // Helper classes: rendering helpers
-type
   { Render class to be used by both the IJvDataItemsRenderer as well as IJvDataItemRenderer
     implementers. Reduces code duplication if both type of implementers can use the same rendering
     mechanism. }
@@ -734,17 +718,6 @@ type
     property Alignment: TAlignment read FAlignment write FAlignment;
   end;
 
-  TJvDataConsumer = class;
-  TJvDataConsumerAggregatedObject = class;
-  TJvDataConsumerAggregatedObjectClass = class of TJvDataConsumerAggregatedObject;
-  TBeforeCreateSubSvcEvent = procedure(Sender: TJvDataConsumer;
-    var SubSvcClass: TJvDataConsumerAggregatedObjectClass) of object;
-  TAfterCreateSubSvcEvent = procedure(Sender: TJvDataConsumer;
-    SubSvc: TJvDataConsumerAggregatedObject) of object;
-  TJvDataConsumerChangeReason = (ccrProviderSelected, ccrProviderChanged, ccrViewChanged,
-    ccrContextChanged, ccrOther);
-  TJvDataConsumerChangeEvent = procedure(Sender: TJvDataConsumer;
-    Reason: TJvDataConsumerChangeReason) of object;
   TJvDataConsumer = class(TExtensibleInterfacedPersistent, IJvDataConsumer, IJvDataProviderNotify,
     IJvDataConsumerProvider)
   private
@@ -757,6 +730,8 @@ type
     FOnChanged: TJvDataConsumerChangeEvent;
     FNeedFixups: Boolean;
     FFixupContext: TJvDataContextID;
+    FOnProviderChanging: TProviderNotifyEvent;
+    FOnProviderChanged: TProviderNotifyEvent;
     procedure SetProvider(Value: IJvDataProvider);
     {$IFNDEF COMPILER6_UP}
     function GetProviderComp: TComponent;
@@ -781,10 +756,14 @@ type
     procedure AfterSubSvcAdded(ASvc: TJvDataConsumerAggregatedObject); virtual;
     procedure UpdateExtensions; virtual;
     procedure FixupExtensions;
+    procedure FixupContext;
     procedure ViewChanged(AExtension: TJvDataConsumerAggregatedObject);
+    procedure NotifyItemSelected(Value: IJvDataItem);
     function ExtensionCount: Integer;
     function Extension(Index: Integer): TJvDataConsumerAggregatedObject;
     function IsContextStored: Boolean;
+    function GetNeedExtensionFixups: Boolean;
+    function GetNeedContextFixup: Boolean;
     { Property access }
     function GetContext: TJvDataContextID;
     procedure SetContext(Value: TJvDataContextID);
@@ -797,27 +776,38 @@ type
     function AttributeApplies(Attr: Integer): Boolean;
     { IJvDataConsumerProvider methods }
     function IJvDataConsumerProvider.GetProvider = ProviderIntf;
+    { States }
+    property NeedExtensionFixups: Boolean read GetNeedExtensionFixups;
+    property NeedContextFixup: Boolean read GetNeedContextFixup;
   public
     constructor Create(AOwner: TComponent; Attributes: array of Integer);
     destructor Destroy; override;
     { Direct link to actual provider interface. This is done to aid in the implementation (less
       IFDEF's in the code; always refer to ProviderIntf and it's working in all Delphi versions). }
-    function ProviderIntf: IJvDataProvider;
-    procedure SetProviderIntf(Value: IJvDataProvider);
+    function ProviderIntf: IJvDataProvider; virtual;
+    procedure SetProviderIntf(Value: IJvDataProvider); virtual;
     function ContextIntf: IJvDataContext;
     procedure SetContextIntf(Value: IJvDataContext);
     procedure Loaded; virtual;
     procedure Enter;
     procedure Leave;
+    { Notifies the consumer the specified item is selected in the control. Will execute the item's
+      IJvDataItemExecute interface if one is assigned to the item and notifies all service
+      extensions of the selection change. }
+    procedure ItemSelected(Value: IJvDataItem);
 
     property OnChanged: TJvDataConsumerChangeEvent read FOnChanged write FOnChanged;
+    property OnProviderChanging: TProviderNotifyEvent read FOnProviderChanging
+      write FOnProviderChanging;
+    property OnProviderChanged: TProviderNotifyEvent read FOnProviderChanged
+      write FOnProviderChanged;
     property AfterCreateSubSvc: TAfterCreateSubSvcEvent read FAfterCreateSubSvc
       write FAfterCreateSubSvc;
     property BeforeCreateSubSvc: TBeforeCreateSubSvcEvent read FBeforeCreateSubSvc
       write FBeforeCreateSubSvc;
   published
     {$IFDEF COMPILER6_UP}
-    property Provider: IJvDataProvider read FProvider write setProvider;
+    property Provider: IJvDataProvider read ProviderIntf write setProvider;
     {$ELSE}
     property Provider: TComponent read GetProviderComp write SetProviderComp;
     {$ENDIF COMPILER6_UP}
@@ -847,6 +837,8 @@ type
     procedure NotifyViewChanged;
     { Called after the view has changed by another extension. }
     procedure ViewChanged(AExtension: TJvDataConsumerAggregatedObject); virtual;
+    { Called when an item has been selected by the consumer. }
+    procedure ItemSelected(Value: IJvDataItem); virtual;
     { Signal to the consumer service that settings need to be applies but the provider/context was
       not yet available. This may occur during streaming in from the DFM. As soon as the provider is
       known, the context is also set and Fixup is called for all sub services. }
@@ -1045,6 +1037,38 @@ type
     property LevelIndent;
   end;
 
+  TJvDataConsumerNotifyOthers = class(TJvDataConsumerAggregatedObject)
+  private
+    FClients: TList; // List of IJvDataConsumerClientNotify interfaces
+  protected
+  public
+  end;
+  
+// Helper routines
+{ Locate nearest IJvDataItems* implementation for a specific item. }
+function DP_FindItemsIntf(AItem: IJvDataItem; IID: TGUID; out Obj): Boolean;
+{ Locate nearest IJvDataItemsRenderer implementation for a specific item. }
+function DP_FindItemsRenderer(AItem: IJvDataItem; out Renderer: IJvDataItemsRenderer): Boolean;
+{ Locate nearest IJvDataItemsImages implementation for a specific item. }
+function DP_FindItemsImages(AItem: IJvDataItem; out Images: IJvDataItemsImages): Boolean;
+{ Generate items list to emulate trees in a flat list control }
+procedure DP_GenItemsList(RootList: IJvDataItems; ItemList: TStrings);
+{ Convert TOwnerDrawState to TProviderDrawStates }
+function DP_OwnerDrawStateToProviderDrawState(State: TOwnerDrawState): TProviderDrawStates;
+{ Atomically select a consumer/context pair, pushing the current consumer/context onto their
+  internal stacks. }
+procedure DP_SelectConsumerContext(Provider: IJvDataProvider; Consumer: IJvDataConsumer; Context: IJvDataContext);
+{ Atomically release a consumer/context pair, reinstating the prior pair on the respective stacks. }
+procedure DP_ReleaseConsumerContext(Provider: IJvDataProvider);
+{ Retrieve the specified context's name path. }
+function GetContextPath(Context: IJvDataContext): string;
+{ Retrieve the specified item's ID path. The path is based on the currently active context. }
+function GetItemIDPath(Item: IJvDataItem): string;
+{ Retrieve the specified item's index path. The path is based on the currently active context. }
+function GetItemIndexPath(Item: IJvDataItem): TDynIntegerArray;
+{ Determine a unique context name for the given prefix in the given context list. }
+function GetUniqueCtxName(Contexts: IJvDataContexts; Prefix: string): string;
+
 // Rename and move to JvFunctions? Converts a buffer into a string of hex digits.
 function HexBytes(const Buf; Length: Integer): string;
 // Move to other unit? Render text in a disabled way (much like TLabel does)
@@ -1075,7 +1099,6 @@ implementation
 
 uses
   ActiveX, Consts, {$IFDEF COMPILER6_UP}RTLConsts, {$ENDIF}Controls, TypInfo,
-//  DBugIntf,
   JclStrings,
   JvTypes;
 
@@ -1276,19 +1299,29 @@ begin
     SetLength(Result, 0);
 end;
 
-(* make Delphi 5 compiler happy // andreas
-procedure CopyPaths(Source: TItemPathsArray; var Dest: TItemPathsArray);
+function GetUniqueCtxName(Contexts: IJvDataContexts; Prefix: string): string;
 var
-  Path: Integer;
+  PrefixLen: Integer;
+  SuffixNum: Int64;
+  CtxIdx: Integer;
+  TmpNum: Int64;
 begin
-  SetLength(Dest, Length(Source));
-  for Path := 0 to High(Source) do
-  begin
-    SetLength(Dest[Path], Length(Source[Path]));
-    Move(Source[Path][0], Dest[Path][0], Length(Source[Path]) * SizeOf(Source[0][0]));
-  end;
+  PrefixLen := Length(Prefix);
+  SuffixNum := 1;
+  for CtxIdx := 0 to Contexts.GetCount - 1 do
+    if AnsiSameStr(Prefix, Copy(Contexts.GetContext(CtxIdx).Name, 1, PrefixLen)) then
+      with Contexts.GetContext(CtxIdx) do
+      begin
+        if StrIsSubset(Copy(Name, PrefixLen + 1, Length(Name) - PrefixLen), ['0' .. '9']) then
+        begin
+          TmpNum := StrToInt64(Copy(Name, PrefixLen + 1, Length(Name) - PrefixLen));
+          if TmpNum >= SuffixNum then
+            SuffixNum := TmpNum + 1;
+        end;
+      end;
+  Result := Prefix + IntToStr(SuffixNum);
 end;
-*)
+
 
 { TJvDP_ProviderBaseRender }
 
@@ -2952,7 +2985,8 @@ var
 begin
   TOpenWriter(Writer).WriteValue(vaCollection);
   for I := 0 to FDataContextsImpl.GetCount - 1 do
-    WriteContext(Writer, FDataContextsImpl.GetContext(I));
+    if FDataContextsImpl.GetContext(I).IsDeletable then
+      WriteContext(Writer, FDataContextsImpl.GetContext(I));
   Writer.WriteListEnd;
 end;
 
@@ -3467,12 +3501,8 @@ begin
     FProvider := Value;
     if FProvider <> nil then
       FProvider.RegisterChangeNotify(Self);
-    if (FFixupContext <> '') and ((VCLComponent = nil) or
-      not (csLoading in VCLComponent.ComponentState)) then
-    begin
-      Context := FFixupContext;
-      FFixupContext := '';
-    end
+    if NeedContextFixup then
+      FixupContext
     else
     begin
       if Supports(ProviderIntf, IJvDataContexts, CtxList) and (CtxList.GetCount >0 ) then
@@ -3481,11 +3511,8 @@ begin
         SetContextIntf(nil);
     end;
     ProviderChanged;
-    if FNeedFixups and ((VCLComponent = nil) or not (csLoading in VCLComponent.ComponentState)) then
-    begin
+    if NeedExtensionFixups then
       FixupExtensions;
-      FNeedFixups := False;
-    end;
     ViewChanged(nil);
     Changed(ccrProviderSelected);
   end;
@@ -3496,11 +3523,11 @@ function TJvDataConsumer.GetProviderComp: TComponent;
 var
   CompRef: IInterfaceComponentReference;
 begin
-  if FProvider = nil then
+  if ProviderIntf = nil then
     Result := nil
   else
   begin
-    if Succeeded(FProvider.QueryInterface(IInterfaceComponentReference, CompRef)) then
+    if Succeeded(ProviderIntf.QueryInterface(IInterfaceComponentReference, CompRef)) then
       Result := CompRef.GetComponent as TComponent
     else
       Result := nil;
@@ -3513,13 +3540,13 @@ var
   ProviderRef: IJvDataProvider;
 begin
   if Value = nil then
-    SetProvider(nil)
+    SetProviderIntf(nil)
   else
   begin
     if Value.GetInterface(IInterfaceComponentReference, CompRef) then
     begin
       if Value.GetInterface(IJvDataProvider, ProviderRef) then
-        SetProvider(ProviderRef)
+        SetProviderIntf(ProviderRef)
       else
         raise EJVCLDataConsumer.Create(sComponentDoesNotSupportTheIJvDataPr);
     end
@@ -3542,11 +3569,15 @@ end;
 procedure TJvDataConsumer.DoProviderChanging(ADataProvider: IJvDataProvider;
   AReason: TDataProviderChangeReason; Source: IUnknown);
 begin
+  if @FOnProviderChanging <> nil then
+    OnProviderChanging(ADataProvider, AReason, Source);
 end;
 
 procedure TJvDataConsumer.DoProviderChanged(ADataProvider: IJvDataProvider;
   AReason: TDataProviderChangeReason; Source: IUnknown);
 begin
+  if @FOnProviderChanged <> nil then
+    OnProviderChanged(ADataProvider, AReason, Source);
 end;
 
 procedure TJvDataConsumer.DoAfterCreateSubSvc(ASvc: TJvDataConsumerAggregatedObject);
@@ -3720,16 +3751,34 @@ var
 begin
   for I := 0 to ExtensionCount - 1 do
     Extension(I).Fixup;
+  FNeedFixups := False;
+end;
+
+procedure TJvDataConsumer.FixupContext;
+begin
+  Context := FFixupContext;
+  FFixupContext := '';
 end;
 
 procedure TJvDataConsumer.ViewChanged(AExtension: TJvDataConsumerAggregatedObject);
 var
   I: Integer;
 begin
+  try
+    for I := 0 to ExtensionCount - 1 do
+      if Extension(I) <> AExtension then
+        Extension(I).ViewChanged(AExtension);
+  finally
+    Changed(ccrViewChanged);
+  end;
+end;
+
+procedure TJvDataConsumer.NotifyItemSelected(Value: IJvDataItem);
+var
+  I: Integer;
+begin
   for I := 0 to ExtensionCount - 1 do
-    if Extension(I) <> AExtension then
-    Extension(I).ViewChanged(AExtension);
-  Changed(ccrViewChanged);
+    Extension(I).ItemSelected(Value);
 end;
 
 function TJvDataConsumer.ExtensionCount: Integer;
@@ -3748,6 +3797,18 @@ var
 begin
   Result := (ProviderIntf <> nil) and Supports(ProviderIntf, IJvDataContexts, CtxList) and
     (CtxList.GetCount > 0) and (ContextIntf <> CtxList.GetContext(0));
+end;
+
+function TJvDataConsumer.GetNeedExtensionFixups: Boolean;
+begin
+  Result := FNeedFixups and ((VCLComponent = nil) or
+    not (csLoading in VCLComponent.ComponentState));
+end;
+
+function TJvDataConsumer.GetNeedContextFixup: Boolean;
+begin
+  Result := (FFixupContext <> '') and ((VCLComponent = nil) or
+    not (csLoading in VCLComponent.ComponentState));
 end;
 
 function TJvDataConsumer.GetContext: TJvDataContextID;
@@ -3796,19 +3857,19 @@ end;
 procedure TJvDataConsumer.DataProviderChanging(const ADataProvider: IJvDataProvider;
   AReason: TDataProviderChangeReason; Source: IUnknown);
 begin
-  case AReason of
-    pcrDestroy:
-      Provider := nil;
-    else
-      DoProviderChanging(ADataProvider, AReason, Source);
-  end;
+  DoProviderChanging(ADataProvider, AReason, Source);
+  if AReason = pcrDestroy then
+    Provider := nil;
 end;
 
 procedure TJvDataConsumer.DataProviderChanged(const ADataProvider: IJvDataProvider;
   AReason: TDataProviderChangeReason; Source: IUnknown);
 begin
   DoProviderChanged(ADataProvider, AReason, Source);
-  Changed(ccrProviderChanged);
+  if AReason = pcrFullRefresh then
+    ViewChanged(nil)
+  else
+    Changed(ccrProviderChanged);
 end;
 
 function TJvDataConsumer.Consumer: IJvDataConsumer;
@@ -3900,6 +3961,15 @@ begin
   DP_ReleaseConsumerContext(ProviderIntf);
 end;
 
+procedure TJvDataConsumer.ItemSelected(Value: IJvDataItem);
+var
+  ItemAct: IJvDataItemBasicAction;
+begin
+  NotifyItemSelected(Value);
+  if Supports(Value, IJvDataItemBasicAction, ItemAct) then
+    ItemAct.Execute(VCLComponent);
+end;
+
 { TJvDataConsumerAggregatedObject }
 
 procedure TJvDataConsumerAggregatedObject.Fixup;
@@ -3928,6 +3998,10 @@ begin
 end;
 
 procedure TJvDataConsumerAggregatedObject.ViewChanged(AExtension: TJvDataConsumerAggregatedObject);
+begin
+end;
+
+procedure TJvDataConsumerAggregatedObject.ItemSelected(Value: IJvDataItem);
 begin
 end;
 
