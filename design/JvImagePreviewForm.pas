@@ -33,7 +33,7 @@ interface
 uses
   Windows, SysUtils, Classes, Graphics, Forms, Controls, StdCtrls, ExtCtrls,
   FileCtrl, Buttons,
-  JvPicClip, JvFormPlacement, JvAppStore, JvAppRegistryStore, JvComponent;
+  JvPicClip, JvFormPlacement, JvAppStorage, JvAppRegistryStorage, JvComponent;
 
 type
   TImageForm = class(TJvForm)
@@ -56,7 +56,7 @@ type
     Label4: TLabel;
     Label5: TLabel;
     PreviewBtn: TSpeedButton;
-    AppStore: TJvAppRegistryStore;
+    AppStorage: TJvAppRegistryStorage;
     procedure FileListBoxClick(Sender: TObject);
     procedure StretchCheckClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -198,7 +198,7 @@ begin
   FBmpImage.Assign(FilePics.GraphicCell[5]);
   if not NewStyleControls then
     Font.Style := [fsBold];
-  AppStore.Root := SDelphiKey;
+  AppStorage.Root := SDelphiKey;
   with TDirList(DirectoryList) do
   begin
     ClosedBmp.Assign(FilePics.GraphicCell[0]);

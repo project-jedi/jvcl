@@ -33,7 +33,7 @@ uses
   Windows, Messages, Classes, Graphics, Forms, Controls, Dialogs, Menus,
   StdCtrls, ExtCtrls, ExtDlgs, Buttons,
   JvMRUManager, JvFormPlacement, JvClipboardMonitor, JvComponent,
-  JvAppStore, JvAppRegistryStore;
+  JvAppStorage, JvAppRegistryStorage;
 
 type
   TPictureEditDialog = class(TJvForm)
@@ -55,7 +55,7 @@ type
     PathsBtn: TSpeedButton;
     PathsMenu: TPopupMenu;
     PathsMRU: TJvMRUManager;
-    AppStore: TJvAppRegistryStore;
+    AppStorage: TJvAppRegistryStorage;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure LoadClick(Sender: TObject);
@@ -204,7 +204,7 @@ begin
   SaveDialog.Title := RsSavePictureAs;
   Bevel.Visible := False;
   Font.Style := [];
-  AppStore.Root := SDelphiKey;
+  AppStorage.Root := SDelphiKey;
   PathsMRU.RecentMenu := PathsMenu.Items;
   IconColor := clBtnFace;
   HelpContext := hcDPictureEditor;

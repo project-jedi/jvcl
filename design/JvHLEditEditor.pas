@@ -61,7 +61,7 @@ type
 implementation
 
 uses
-  JvAppINIStore, JvDsgnConsts;
+  JvAppIniStorage, JvDsgnConsts;
 
 //=== TJvHLEdPropDlgEditor ===================================================
 
@@ -90,7 +90,7 @@ procedure TJvHLEdPropDlgEditor.Edit;
 var
   PakName: string;
   NewRegAuto: TJvFormStorage;
-  NewStore: TJvAppINIFileStore;
+  NewStore: TJvAppIniFileStorage;
   OldRegAuto: TJvFormStorage;
 begin
   if (Component as TJvHLEdPropDlg).JvHLEditor <> nil then
@@ -99,7 +99,7 @@ begin
       NewStore := nil;
       try
         NewRegAuto := TJvFormStorage.Create(nil);
-        NewStore := TJvAppINIFileStore.Create(nil);
+        NewStore := TJvAppIniFileStorage.Create(nil);
         NewRegAuto.AppStorage := NewStore;
         SetLength(PakName, MAX_PATH);
         SetLength(PakName, GetModuleFileName(hInstance, PChar(PakName), MAX_PATH));

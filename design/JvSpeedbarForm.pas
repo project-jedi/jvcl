@@ -39,7 +39,7 @@ uses
   SysUtils, Messages, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, Buttons, Grids, Menus,
   JvSpeedButton, JvSpeedBar, JvFormPlacement,
-  JvConsts, JvComponent, JvAppStore, JvAppRegistryStore;
+  JvConsts, JvComponent, JvAppStorage, JvAppRegistryStorage;
 
 type
   TSelectData = record
@@ -69,7 +69,7 @@ type
     PasteMenu: TMenuItem;
     CutMenu: TMenuItem;
     FormPlacement1: TJvFormStorage;
-    AppStorage: TJvAppRegistryStore;
+    AppStorage: TJvAppRegistryStorage;
     procedure DelSectionClick(Sender: TObject);
     procedure AddButtonClick(Sender: TObject);
     procedure RemoveButtonClick(Sender: TObject);
@@ -170,7 +170,7 @@ implementation
 
 uses
   TypInfo, Math,
-  JvPropsStorage, JvDsgnConsts, JvDsgnTypes, JvJVCLUtils;
+  JvPropertyStorage, JvDsgnConsts, JvDsgnTypes, JvJVCLUtils;
 
 {$R *.dfm}
 

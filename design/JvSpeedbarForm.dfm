@@ -249,9 +249,9 @@ object JvSpeedbarEditor: TJvSpeedbarEditor
     Left = 44
     Top = 103
   end
-  object AppStorage: TJvAppRegistryStore
-    StoreOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
-    StoreOptions.BooleanStringFalseValues = 'FALSE, NO, N'
+  object AppStorage: TJvAppRegistryStorage
+    StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
+    StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
     RegRoot = hkCurrentUser
     Left = 44
     Top = 53

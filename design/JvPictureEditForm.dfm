@@ -171,7 +171,7 @@ object PictureEditDialog: TPictureEditDialog
     TabOrder = 1
   end
   object FormStorage: TJvFormStorage
-    AppStorage = AppStore
+    AppStorage = AppStorage
     AppStoragePath = 'RX.ImageEditor\'
     Options = [fpPosition]
     OnSavePlacement = FormStorageSavePlacement
@@ -198,7 +198,7 @@ object PictureEditDialog: TPictureEditDialog
     Left = 136
     Top = 30
   end
-  object AppStore: TJvAppRegistryStore
+  object AppStorage: TJvAppRegistryStorage
     RegRoot = hkCurrentUser
     Left = 29
     Top = 81
