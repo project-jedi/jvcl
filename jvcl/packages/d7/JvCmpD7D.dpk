@@ -43,6 +43,7 @@ contains
   JvAlarmsEditor in '..\..\design\JvAlarmsEditor.pas',
   JvFormAlarms in '..\..\run\JvFormAlarms.pas' {FormAlarm},
   JvPatcherEditor in '..\..\design\JvPatcherEditor.pas',
-  JvFormPatch in '..\..\run\JvFormPatch.pas';
+  JvFormPatch in '..\..\run\JvFormPatch.pas',
+  JvPageManagerForm in '..\..\design\JvPageManagerForm.pas';
 
 end.

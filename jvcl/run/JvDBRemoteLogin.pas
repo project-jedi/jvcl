@@ -29,16 +29,15 @@ unit JvDBRemoteLogin;
 
 interface
 
-{$IFDEF COMPILER3_UP}
 {$IFDEF JV_MIDAS}
 
 uses
   SysUtils, Windows, Messages, Classes, Graphics, Controls, Forms,
   Dialogs, DBClient,
-  JvxLogin;
+  JvDBLoginForm;
 
 type
-  TJvRemoteLogin = class(TJvCustomLogin)
+  TJvDBRemoteLogin = class(TJvCustomLogin)
   private
     FRemoteServer: TCustomRemoteServer;
     FPrepared: Boolean;
@@ -80,19 +79,15 @@ type
   end;
 
 {$ENDIF JV_MIDAS}
-{$ENDIF COMPILER3_UP}
 
 implementation
 
-{$IFDEF COMPILER3_UP}
 {$IFDEF JV_MIDAS}
 
 uses
   IniFiles, Registry,
-  {$IFDEF COMPILER4_UP}
   MConnect,
-  {$ENDIF}
-  JvAppUtils, JvVCLUtils;
+  JvJVCLUtils;
 
 const
   cKeyLoginSection = 'Remote Login';
@@ -101,25 +96,25 @@ const
 type
   TJvServer = class(TCustomRemoteServer);
 
-constructor TJvRemoteLogin.Create(AOwner: TComponent);
+constructor TJvDBRemoteLogin.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 end;
 
-destructor TJvRemoteLogin.Destroy;
+destructor TJvDBRemoteLogin.Destroy;
 begin
   UnprepareRemoteServer;
   inherited Destroy;
 end;
 
-procedure TJvRemoteLogin.Notification(AComponent: TComponent; Operation: TOperation);
+procedure TJvDBRemoteLogin.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
   if (Operation = opRemove) and (AComponent = RemoteServer) then
     RemoteServer := nil;
 end;
 
-procedure TJvRemoteLogin.Loaded;
+procedure TJvDBRemoteLogin.Loaded;
 var
   Loading: Boolean;
 begin
@@ -136,7 +131,7 @@ begin
   end;
 end;
 
-procedure TJvRemoteLogin.SetRemoteServer(Value: TCustomRemoteServer);
+procedure TJvDBRemoteLogin.SetRemoteServer(Value: TCustomRemoteServer);
 begin
   if FRemoteServer <> Value then
   begin
@@ -151,22 +146,20 @@ begin
   end;
 end;
 
-procedure TJvRemoteLogin.PrepareRemoteServer;
+procedure TJvDBRemoteLogin.PrepareRemoteServer;
 begin
   if Assigned(FRemoteServer) and not FPrepared then
     with TJvServer(RemoteServer) do
     begin
-      {$IFDEF COMPILER4_UP}
       if RemoteServer is TDispatchConnection then
         TDispatchConnection(RemoteServer).LoginPrompt := False;
-      {$ENDIF}
       FSaveAfterConnect := AfterConnect;
       AfterConnect := ServerAfterConnect;
       FPrepared := True;
     end;
 end;
 
-procedure TJvRemoteLogin.UnprepareRemoteServer;
+procedure TJvDBRemoteLogin.UnprepareRemoteServer;
 begin
   if Assigned(FRemoteServer) and FPrepared then
     with TJvServer(RemoteServer) do
@@ -176,7 +169,7 @@ begin
     end;
 end;
 
-procedure TJvRemoteLogin.OkButtonClick(Sender: TObject);
+procedure TJvDBRemoteLogin.OkButtonClick(Sender: TObject);
 var
   SetCursor: Boolean;
 begin
@@ -201,11 +194,9 @@ begin
   end;
 end;
 
-procedure TJvRemoteLogin.ServerAfterConnect(Sender: TObject);
-{$IFDEF COMPILER4_UP}
+procedure TJvDBRemoteLogin.ServerAfterConnect(Sender: TObject);
 var
   OnGetUser: TGetUsernameEvent;
-{$ENDIF}
 begin
   if Sender = FRemoteServer then
   begin
@@ -215,14 +206,12 @@ begin
     try
       OnOkClick := Self.OkButtonClick;
       FUsername := ReadUserName(FUsername);
-      {$IFDEF COMPILER4_UP}
       if FRemoteServer is TDispatchConnection then
       begin
         OnGetUser := TDispatchConnection(FRemoteServer).OnGetUsername;
         if Assigned(OnGetUser) then
           OnGetUser(FRemoteServer, FUsername);
       end;
-      {$ENDIF}
       UserNameEdit.Text := FUsername;
       if ShowModal = mrOk then
       begin
@@ -246,14 +235,14 @@ begin
   end;
 end;
 
-function TJvRemoteLogin.DoCheckUser(const UserName, Password: string): Boolean;
+function TJvDBRemoteLogin.DoCheckUser(const UserName, Password: string): Boolean;
 begin
   Result := True;
   if Assigned(FOnCheckUser) then
     FOnCheckUser(Self, UserName, Password, Result);
 end;
 
-procedure TJvRemoteLogin.WriteUserName(const UserName: string);
+procedure TJvDBRemoteLogin.WriteUserName(const UserName: string);
 var
   Ini: TObject;
 begin
@@ -271,7 +260,7 @@ begin
   end;
 end;
 
-function TJvRemoteLogin.ReadUserName(const UserName: string): string;
+function TJvDBRemoteLogin.ReadUserName(const UserName: string): string;
 var
   Ini: TObject;
 begin
@@ -279,9 +268,7 @@ begin
     if UseRegistry then
     begin
       Ini := TRegIniFile.Create(IniFileName);
-      {$IFDEF COMPILER5_UP}
       TRegIniFile(Ini).Access := KEY_READ;
-      {$ENDIF}
     end
     else
       Ini := TIniFile.Create(IniFileName);
@@ -296,7 +283,7 @@ begin
   end;
 end;
 
-procedure TJvRemoteLogin.AbortConnection;
+procedure TJvDBRemoteLogin.AbortConnection;
 var
   OnAfterDisconnect, OnBeforeDisconnect: TNotifyEvent;
 begin
@@ -316,7 +303,7 @@ begin
   end;
 end;
 
-function TJvRemoteLogin.DoLogin(var UserName: string): Boolean;
+function TJvDBRemoteLogin.DoLogin(var UserName: string): Boolean;
 begin
   Result := False;
   if not Assigned(FRemoteServer) then
@@ -344,7 +331,6 @@ begin
 end;
 
 {$ENDIF JV_MIDAS}
-{$ENDIF COMPILER3_UP}
 
 end.
 

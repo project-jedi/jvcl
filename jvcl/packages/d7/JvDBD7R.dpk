@@ -30,7 +30,9 @@ requires
   JvCoreD7R,
   dbrtl,
   JvStdCtrlsD7R,
-  vcldb;
+  vcldb,
+  vcl,
+  rtl;
 
 contains
   JvDBConsts in '..\..\common\JvDBConsts.pas',
@@ -47,8 +49,8 @@ contains
   JvCsvParse in '..\..\run\JvCsvParse.pas',
   JvDBCombobox in '..\..\run\JvDBCombobox.pas',
   JvDBControls in '..\..\run\JvDBControls.pas',
-  JvDBLoginForm in '..\..\run\JvDBLoginForm.pas' {JvLoginForm},
   JvDBQueryParamsForm in '..\..\run\JvDBQueryParamsForm.pas' {JvQueryParamsDialog},
-  JvDBRemoteLogin in '..\..\run\JvDBRemoteLogin.pas';
+  JvDBRemoteLogin in '..\..\run\JvDBRemoteLogin.pas',
+  JvMemoryDataset in '..\..\run\JvMemoryDataset.pas';
 
 end.

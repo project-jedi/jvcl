@@ -31,7 +31,6 @@ requires
   designide,
   vcl,
   rtl,
-  vclactnband,
   vclx,
   dclstd,
   JvCoreD7D;
@@ -42,6 +41,7 @@ contains
   JvRegAutoEditor in '..\..\design\JvRegAutoEditor.pas' {JvRegEditor},
   JvScrollMaxEditor in '..\..\design\JvScrollMaxEditor.pas',
   JvFooterEditor in '..\..\design\JvFooterEditor.pas',
-  JvGroupHeaderEditor in '..\..\design\JvGroupHeaderEditor.pas';
+  JvGroupHeaderEditor in '..\..\design\JvGroupHeaderEditor.pas',
+  JvSpeedbarForm in '..\..\design\JvSpeedbarForm.pas';
 
 end.

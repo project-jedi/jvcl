@@ -1780,6 +1780,9 @@ begin
   inherited Create(AOwner);
   ControlStyle := [csCaptureMouse, csClickEvents {, csOpaque}, csDoubleClicks,
     csReplicatable];
+  {$IFDEF JVCLThemesEnabled}
+  ControlStyle := ControlStyle + [csNeedsBorderPaint];
+  {$ENDIF}
   FInsertMode := True;
   FLines := TJvEditorStrings.Create;
   FLines.FJvEditor := Self;

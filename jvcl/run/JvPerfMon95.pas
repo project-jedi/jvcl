@@ -155,7 +155,7 @@ implementation
 uses
   Consts,
   JclSysInfo,
-  JvFunctions;
+  JvJCLUtils, JvJVCLUtils;
 
 resourcestring
   sCantOpenPerfKey = 'Performance registry key not found';
@@ -228,7 +228,7 @@ end;
 
 procedure ShowWrongOSWarning;
 begin
-  if WrongOSWarningShown or (GetWindowsVersion in [wvWin95, wvWin95OSR2, wvWin98, wvWin98SE]) then
+  if WrongOSWarningShown or (Win32Platform = VER_PLATFORM_WIN32_WINDOWS) then
     Exit;
   with Application do
     MessageBox(PChar(sWrongOS), PChar(Title), MB_ICONWARNING);

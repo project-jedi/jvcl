@@ -29,7 +29,10 @@ package JvDlgsD7R;
 requires
   JvCoreD7R,
   DJCL70,
-  JvStdCtrlsD7R;
+  JvStdCtrlsD7R,
+  vcl,
+  rtl,
+  vcljpg;
 
 contains
   JvDSADialogs in '..\..\run\JvDSADialogs.pas',
@@ -50,6 +53,9 @@ contains
   JvRenameError in '..\..\run\JvRenameError.pas',
   JvDiskPrompt in '..\..\run\JvDiskPrompt.pas',
   JvFindFiles in '..\..\run\JvFindFiles.pas',
-  JvObjectPickerDialog in '..\..\run\JvObjectPickerDialog.pas';
+  JvObjectPickerDialog in '..\..\run\JvObjectPickerDialog.pas',
+  JvLoginForm in '..\..\run\JvLoginForm.pas' {JvLoginForm},
+  JvImageDlg in '..\..\run\JvImageDlg.pas',
+  JvFormImage in '..\..\run\JvFormImage.pas' {FormImg};
 
 end.

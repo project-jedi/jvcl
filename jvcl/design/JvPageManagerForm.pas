@@ -30,11 +30,7 @@ unit JvPageManagerForm;
 interface
 
 uses
-  {$IFDEF WIN32}
   Windows,
-  {$ELSE}
-  WinTypes, WinProcs,
-  {$ENDIF}
   SysUtils, Classes, Graphics, Controls, Forms, Grids,
   {$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, DesignEditors, VCLEditors, DesignWindows,
@@ -42,7 +38,7 @@ uses
   LibIntf, DsgnIntf, DsgnWnds,
   {$ENDIF}
   StdCtrls, ExtCtrls,
-  JvPageMngr, JvPlacemnt, JvVCLUtils, JvComponent;
+  JvPageManager, JvFormPlacement, JvJVCLUtils, JvComponent;
 
 type
   TJvProxyEditor = class(TDesignWindow)
@@ -124,7 +120,7 @@ implementation
 
 uses
   Consts, Buttons,
-  JvxCtrls, JvConst, JvxDConst;
+  JvxCtrls, JvConsts;
 
 {$R *.DFM}
 

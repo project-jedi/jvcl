@@ -564,7 +564,7 @@ type
     property OnCloseUp: TCloseUpEvent read FCloseUp write FCloseUp;
   end;
 
-  TJvLookupEdit = class(TJvCustomComboEdit)
+  TJvDBLookupEdit = class(TJvCustomComboEdit)
   private
     FChanging: Boolean;
     FIgnoreChange: Boolean;
@@ -3580,7 +3580,7 @@ procedure TJvPopupDataWindow.Click;
 begin
   inherited Click;
   if Value <> '' then
-    with TJvLookupEdit(FEditor) do
+    with TJvDBLookupEdit(FEditor) do
       if not (FChanging or ReadOnly) then
       begin
         FChanging := True;
@@ -3654,9 +3654,9 @@ begin
   Visible := True;
 end;
 
-//=== TJvLookupEdit ==========================================================
+//=== TJvDBLookupEdit ==========================================================
 
-constructor TJvLookupEdit.Create(AOwner: TComponent);
+constructor TJvDBLookupEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FDropDownCount := 8;
@@ -3671,7 +3671,7 @@ begin
   end;
 end;
 
-destructor TJvLookupEdit.Destroy;
+destructor TJvDBLookupEdit.Destroy;
 begin
   if FPopup <> nil then
     with TJvPopupDataWindow(FPopup) do
@@ -3684,7 +3684,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvLookupEdit.SetDropDownCount(Value: Integer);
+procedure TJvDBLookupEdit.SetDropDownCount(Value: Integer);
 begin
   if Value < 1 then
     Value := 1;
@@ -3693,99 +3693,99 @@ begin
   FDropDownCount := Value;
 end;
 
-function TJvLookupEdit.GetListStyle: TLookupListStyle;
+function TJvDBLookupEdit.GetListStyle: TLookupListStyle;
 begin
   Result := TJvPopupDataWindow(FPopup).ListStyle;
 end;
 
-procedure TJvLookupEdit.SetListStyle(Value: TLookupListStyle);
+procedure TJvDBLookupEdit.SetListStyle(Value: TLookupListStyle);
 begin
   TJvPopupDataWindow(FPopup).ListStyle := Value;
 end;
 
-function TJvLookupEdit.GetFieldsDelimiter: Char;
+function TJvDBLookupEdit.GetFieldsDelimiter: Char;
 begin
   Result := TJvPopupDataWindow(FPopup).FieldsDelimiter;
 end;
 
-procedure TJvLookupEdit.SetFieldsDelimiter(Value: Char);
+procedure TJvDBLookupEdit.SetFieldsDelimiter(Value: Char);
 begin
   TJvPopupDataWindow(FPopup).FieldsDelimiter := Value;
 end;
 
-function TJvLookupEdit.GetLookupDisplay: string;
+function TJvDBLookupEdit.GetLookupDisplay: string;
 begin
   Result := TJvPopupDataWindow(FPopup).LookupDisplay;
 end;
 
-procedure TJvLookupEdit.SetLookupDisplay(const Value: string);
+procedure TJvDBLookupEdit.SetLookupDisplay(const Value: string);
 begin
   TJvPopupDataWindow(FPopup).LookupDisplay := Value;
 end;
 
-function TJvLookupEdit.GetDisplayIndex: Integer;
+function TJvDBLookupEdit.GetDisplayIndex: Integer;
 begin
   Result := TJvPopupDataWindow(FPopup).LookupDisplayIndex;
 end;
 
-procedure TJvLookupEdit.SetDisplayIndex(Value: Integer);
+procedure TJvDBLookupEdit.SetDisplayIndex(Value: Integer);
 begin
   TJvPopupDataWindow(FPopup).LookupDisplayIndex := Value;
 end;
 
-function TJvLookupEdit.GetLookupField: string;
+function TJvDBLookupEdit.GetLookupField: string;
 begin
   Result := TJvPopupDataWindow(FPopup).LookupField;
 end;
 
-procedure TJvLookupEdit.SetLookupField(const Value: string);
+procedure TJvDBLookupEdit.SetLookupField(const Value: string);
 begin
   TJvPopupDataWindow(FPopup).LookupField := Value;
 end;
 
-function TJvLookupEdit.GetLookupSource: TDataSource;
+function TJvDBLookupEdit.GetLookupSource: TDataSource;
 begin
   Result := TJvPopupDataWindow(FPopup).LookupSource;
 end;
 
-procedure TJvLookupEdit.SetLookupSource(Value: TDataSource);
+procedure TJvDBLookupEdit.SetLookupSource(Value: TDataSource);
 begin
   TJvPopupDataWindow(FPopup).LookupSource := Value;
 end;
 
-function TJvLookupEdit.GetOnGetImage: TGetImageEvent;
+function TJvDBLookupEdit.GetOnGetImage: TGetImageEvent;
 begin
   Result := TJvPopupDataWindow(FPopup).OnGetImage;
 end;
 
-procedure TJvLookupEdit.SetOnGetImage(Value: TGetImageEvent);
+procedure TJvDBLookupEdit.SetOnGetImage(Value: TGetImageEvent);
 begin
   TJvPopupDataWindow(FPopup).OnGetImage := Value;
 end;
 
-function TJvLookupEdit.GetLookupValue: string;
+function TJvDBLookupEdit.GetLookupValue: string;
 begin
   TJvPopupDataWindow(FPopup).DisplayValue := Text;
   Result := TJvPopupDataWindow(FPopup).Value;
 end;
 
-procedure TJvLookupEdit.SetLookupValue(const Value: string);
+procedure TJvDBLookupEdit.SetLookupValue(const Value: string);
 begin
   TJvPopupDataWindow(FPopup).Value := Value;
   Text := TJvPopupDataWindow(FPopup).DisplayValue;
 end;
 
-procedure TJvLookupEdit.ShowPopup(Origin: TPoint);
+procedure TJvDBLookupEdit.ShowPopup(Origin: TPoint);
 begin
   TJvPopupDataWindow(FPopup).Show(Origin);
 end;
 
-procedure TJvLookupEdit.HidePopup;
+procedure TJvDBLookupEdit.HidePopup;
 begin
   TJvPopupDataWindow(FPopup).Hide;
 end;
 
-procedure TJvLookupEdit.PopupDropDown(DisableEdit: Boolean);
+procedure TJvDBLookupEdit.PopupDropDown(DisableEdit: Boolean);
 begin
   if not (ReadOnly or PopupVisible) then
   begin
@@ -3809,7 +3809,7 @@ begin
   inherited PopupDropDown(False);
 end;
 
-procedure TJvLookupEdit.KeyDown(var Key: Word; Shift: TShiftState);
+procedure TJvDBLookupEdit.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   if (Key in [VK_PRIOR, VK_NEXT, VK_UP, VK_DOWN]) and PopupVisible then
   begin
@@ -3830,13 +3830,13 @@ begin
   end;
 end;
 
-procedure TJvLookupEdit.KeyPress(var Key: Char);
+procedure TJvDBLookupEdit.KeyPress(var Key: Char);
 begin
   inherited KeyPress(Key);
   FIgnoreChange := (SelLength > 0) or (Key = Char(VK_BACK));
 end;
 
-procedure TJvLookupEdit.Change;
+procedure TJvDBLookupEdit.Change;
 begin
   if PopupOnlyLocate or PopupVisible then
     inherited Change
@@ -3847,7 +3847,7 @@ begin
   end;
 end;
 
-procedure TJvLookupEdit.PopupChange;
+procedure TJvDBLookupEdit.PopupChange;
 var
   S: string;
   Len: Integer;
@@ -3876,9 +3876,9 @@ begin
 end;
 
 {$IFDEF WIN32}
-procedure TJvLookupEdit.SetPopupValue(const Value: Variant);
+procedure TJvDBLookupEdit.SetPopupValue(const Value: Variant);
 {$ELSE}
-procedure TJvLookupEdit.SetPopupValue(const Value: string);
+procedure TJvDBLookupEdit.SetPopupValue(const Value: string);
 {$ENDIF}
 begin
   {$IFDEF WIN32}
@@ -3890,9 +3890,9 @@ begin
 end;
 
 {$IFDEF WIN32}
-function TJvLookupEdit.GetPopupValue: Variant;
+function TJvDBLookupEdit.GetPopupValue: Variant;
 {$ELSE}
-function TJvLookupEdit.GetPopupValue: string;
+function TJvDBLookupEdit.GetPopupValue: string;
 {$ENDIF}
 begin
   with TJvPopupDataWindow(FPopup) do
@@ -3903,9 +3903,9 @@ begin
 end;
 
 {$IFDEF WIN32}
-function TJvLookupEdit.AcceptPopup(var Value: Variant): Boolean;
+function TJvDBLookupEdit.AcceptPopup(var Value: Variant): Boolean;
 {$ELSE}
-function TJvLookupEdit.AcceptPopup(var Value: string): Boolean;
+function TJvDBLookupEdit.AcceptPopup(var Value: string): Boolean;
 {$ENDIF}
 begin
   Result := True;

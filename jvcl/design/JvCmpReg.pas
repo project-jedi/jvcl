@@ -8,11 +8,11 @@ procedure Register;
 
 implementation
 uses
-  Classes, DesignIntf,
+  Classes, Controls, DesignIntf,
   JvAlarms, JvConverter, JvDataEmbedded, JvCreateProcess,
   JvEnterTab, JvMergeManager, JvPageManager, JvPatchFile,
   JvStringHolder, JvTimeLimit, JvWinHelp, JvTranslator, JvPrint, JvEasterEgg,
-  JvDataEmbeddedEditor, JvPatcherEditor, JvAlarmsEditor,
+  JvDataEmbeddedEditor, JvPatcherEditor, JvAlarmsEditor, JvPageManagerForm,
   JvDsgnEditors;
 
 {.$R ..\resources\JvCmpReg.dcr}
@@ -30,6 +30,16 @@ begin
   RegisterPropertyEditor(TypeInfo(TStream), TJvDataEmbedded, 'Data', TJvDataEmbeddedEditor);
   RegisterPropertyEditor(TypeInfo(TStrings), TJvPatchFile, 'Differences', TJvPatcherEditor);
   RegisterPropertyEditor(TypeInfo(TStrings), TJvAlarms, 'Alarms', TJvAlarmsEditor);
+  RegisterPropertyEditor(TypeInfo(TList), TJvPageManager, 'PageProxies', TJvProxyListProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvPageProxy, 'PageName', TJvPageNameProperty);
+  RegisterPropertyEditor(TypeInfo(TControl), TJvPageManager, 'PriorBtn', TJvPageBtnProperty);
+  RegisterPropertyEditor(TypeInfo(TControl), TJvPageManager, 'NextBtn', TJvPageBtnProperty);
+  RegisterPropertyEditor(TypeInfo(TWinControl), TJvMergeManager, 'MergeFrame', TJvComponentFormProperty);
+
+  RegisterComponentEditor(TJvPageManager, TJvPageManagerEditor);
+  RegisterComponentEditor(TJvStrHolder, TJvStringsEditor);
+
+  RegisterNoIcon([TJvPageProxy]);
 end;
 
 end.

@@ -38,7 +38,7 @@ uses
   {$ENDIF}
   SysUtils, Messages, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, Buttons, Grids, Menus,
-  JvSpeedBar, JvPlacemnt, JvConst, JvxCtrls, JvVCLUtils, JvComponent;
+  JvSpeedBar, JvFormPlacement, JvConsts, JvxCtrls, JvJVCLUtils, JvComponent;
 
 type
   TSelectData = record
@@ -172,7 +172,7 @@ implementation
 
 uses
   TypInfo, Math,
-  JvxDConst, JvProps;
+  JvPropsStorage;
 
 {$R *.DFM}
 

@@ -29,15 +29,9 @@ unit JvBDEIndex;
 
 interface
 
-{$IFDEF WIN32}
 uses
   SysUtils, Messages, Classes, Controls,
   Graphics, Menus, StdCtrls, DB, DBTables;
-{$ELSE}
-uses
-  SysUtils, WinTypes, WinProcs, Messages, Classes, Controls,
-  Graphics, Menus, StdCtrls, DB, DBTables;
-{$ENDIF}
 
 type
   // (rom) needs Jv prefix

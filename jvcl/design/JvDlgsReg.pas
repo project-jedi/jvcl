@@ -12,7 +12,8 @@ uses
   JvDSADialogs, JvTipOfDay, JvWinDialogs, JvAddPrinter, JvCommonDialogD, JvCommonExecDlg,
   JvDialogActns, JvActnRes, JvDialogs, JvProgressForm, JvPageSetupTitled, JvPageSetup, JvConnectNetwork,
   JvSelectDirectory, JvCopyError, JvDeleteError, JvRenameError, JvDiskPrompt, JvFindFiles,
-  JvObjectPickerDialog, JvBaseDlgEditor, JvCommonDialogDEditor, JvTipOfDayEditor;
+  JvImageDlg, JvLoginForm,
+  JvAppletEditor, JvObjectPickerDialog, JvBaseDlgEditor, JvCommonDialogDEditor, JvTipOfDayEditor;
 
 {.$R ..\resources\JvDlgsReg.dcr}
 
@@ -22,10 +23,13 @@ begin
     TJvDSADialog, TJvTipOfDay,
     TJvFormatDriveDialog, TJvOrganizeFavoritesDialog, TJvAppletDialog,
     
-    TJvProgressForm
+    TJvProgressForm, TJvImageDlg, TJvLoginDialog 
 
     ]);
 
+  RegisterPropertyEditor(TypeInfo(string), TJvAppletDialog, 'AppletName', TJvAppletNameProperty);
+  RegisterPropertyEditor(TypeInfo(integer), TJvAppletDialog, 'AppletIndex', TJvAppletIndexProperty);
+    
   {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
   RegisterComponentEditor(TCommonDialog, TJvBaseDlgEditor);
   {$ENDIF}

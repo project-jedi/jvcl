@@ -30,18 +30,14 @@ unit JvTimerListForm;
 interface
 
 uses
-  {$IFDEF WIN32}
   Windows,
-  {$ELSE}
-  WinTypes, WinProcs,
-  {$ENDIF}
   SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls, Grids, Menus,
   {$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, DesignEditors, DesignWindows, VCLEditors,
   {$ELSE}
   LibIntf, DsgnIntf, DsgnWnds,
   {$ENDIF}
-  JvVCLUtils, JvPlacemnt, JvTimerLst, JvComponent;
+  JvJVCLUtils, JvFormPlacement, JvTimerList, JvComponent;
 
 type
   TJvTimerItemsEditor = class(TDesignWindow)
@@ -136,10 +132,7 @@ implementation
 
 uses
   Consts,
-  {$IFDEF WIN32}
-  JvConst,
-  {$ENDIF}
-  JvxDConst, JvTypes;
+  JvConsts, JvTypes;
 
 {$R *.DFM}
 

@@ -27,7 +27,9 @@ package JvNetD7R;
 {$IMPLICITBUILD ON}
 
 requires
-  JvCoreD7R;
+  JvCoreD7R,
+  vcl,
+  rtl;
 
 contains
   JvStringListToHtml in '..\..\run\JvStringListToHtml.pas',
@@ -38,6 +40,7 @@ contains
   JvMultiHttpGrabber in '..\..\run\JvMultiHttpGrabber.pas',
   JvRgbToHtml in '..\..\run\JvRgbToHtml.pas',
   JvRichEditToHtml in '..\..\run\JvRichEditToHtml.pas',
-  JvStrToHtml in '..\..\run\JvStrToHTML.pas';
+  JvStrToHtml in '..\..\run\JvStrToHTML.pas',
+  JvMail in '..\..\run\JvMail.pas';
 
 end.

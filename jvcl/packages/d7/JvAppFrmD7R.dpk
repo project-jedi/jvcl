@@ -29,7 +29,9 @@ package JvAppFrmD7R;
 requires
   JvCoreD7R,
   JvStdCtrlsD7R,
-  JvMMD7R;
+  JvMMD7R,
+  vcl,
+  rtl;
 
 contains
   JvAppAnimatedIcon in '..\..\run\JvAppAnimatedIcon.pas',

@@ -8,13 +8,20 @@ procedure Register;
 
 implementation
 uses
-  Classes;
+  Classes, DesignIntf, DesignEditors, JvTypes, 
+  JvStringListToHtml, JvFormToHtml, JvFtpGrabber, JvHtmlParser, JvHttpGrabber,
+  JvMultiHttpGrabber, JvRgbToHtml, JvRichEditToHtml, JvStrToHtml, JvMail,
+  JvMailEditor, JvHTMLParserEditor;
 
 {.$R ..\resources\JvNetReg.dcr}
 
 procedure Register;
 begin
-//  RegisterComponents('',[]);
+  RegisterComponents('Jv Network',[]);
+
+  RegisterPropertyEditor(TypeInfo(TJvParserInfoList), TJvHtmlParser, 'Parser', TJvHtmlParserEditor);
+  
+  RegisterComponentEditor(TJvMail, TJvMailEditor);
 end;
 
 end.

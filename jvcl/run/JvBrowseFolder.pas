@@ -272,10 +272,10 @@ function BrowseForComputer(const ATitle: string; AllowCreate: Boolean;
   var ADirectory: string; AHelpContext: THelpContext = 0): Boolean;
 // (p3) moved from JvFileUtil, deprecated removed
 function BrowseDirectory(var AFolderName: string; const DlgText: string;
-  AHelpContext: THelpContext): Boolean; {$IFDEF COMPILER6_UP} deprecated; {$ENDIF}
-// JvBrowseFolder.BrowseForComputer should be used instead
+  AHelpContext: THelpContext): Boolean;
+// (p3) moved from JvFileUtil, deprecated removed
 function BrowseComputer(var AComputerName: string; const DlgText: string;
-  AHelpContext: THelpContext): Boolean; {$IFDEF COMPILER6_UP} deprecated; {$ENDIF}  
+  AHelpContext: THelpContext): Boolean;   
 
 implementation
 

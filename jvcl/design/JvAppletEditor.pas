@@ -55,7 +55,7 @@ type
 
 implementation
 uses
-  SysUtils, JvWinDialogs, JclSysInfo, JvFunctions;
+  SysUtils, JvWinDialogs, JclSysInfo, JvJVCLUtils;
 
 var
   FApplets:TStringlist = nil;

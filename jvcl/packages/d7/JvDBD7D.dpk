@@ -28,11 +28,25 @@ package JvDBD7D;
 
 requires
   JvDBD7R,
-  designide;
+  designide,
+  dcldb,
+  rtl,
+  dbrtl,
+  vclactnband,
+  vclx,
+  vcl,
+  vcldesigner,
+  designdgm,
+  dclstd,
+  vcldb,
+  bdertl;
 
 contains
   JvCsvDataForm in '..\..\design\JvCsvDataForm.pas' {JvCsvDefStrDialog},
   JvCsvDataEditor in '..\..\design\JvCsvDataEditor.pas',
-  JvDBReg in '..\..\design\JvDBReg.pas';
+  JvDBReg in '..\..\design\JvDBReg.pas',
+  JVDBEditors in '..\..\design\JvDBEditors.pas',
+  JvDBMemDatasetEDitor in '..\..\design\JvDBMemDatasetEDitor.pas',
+  JvSelectDataSetForm in '..\..\design\JvSelectDataSetForm.pas' {JvSelectDataSetForm};
 
 end.

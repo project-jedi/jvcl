@@ -33,7 +33,8 @@ requires
   vcl,
   rtl,
   vclactnband,
-  vclx;
+  vclx,
+  visualclx;
 
 contains
   JvJVCLAboutEditor in '..\..\design\JvJVCLAboutEditor.pas',
@@ -44,6 +45,7 @@ contains
   JvColorEditor in '..\..\design\JvColorEditor.pas',
   JvIDEZoom in '..\..\design\JvIDEZoom.pas',
   JvPaintBoxEditor in '..\..\design\JvPaintBoxEditor.pas',
-  JvBaseDlgEditor in '..\..\design\JvBaseDlgEditor.pas';
+  JvBaseDlgEditor in '..\..\design\JvBaseDlgEditor.pas',
+  JvDesignerUtils in '..\..\design\JvDesignerUtils.pas';
 
 end.

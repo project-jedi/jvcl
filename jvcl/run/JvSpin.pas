@@ -70,7 +70,6 @@ type
     FBottomHotBtn: TBitmap;
     FMouseInTopBtn: Boolean;
     FMouseInBottomBtn: Boolean;
-    FIsThemed: Boolean;
     {$ENDIF}
 
     FRepeatTimer: TTimer;
@@ -101,6 +100,7 @@ type
 
     procedure TimerExpired(Sender: TObject);
     procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
+    procedure CMSysColorChange(var Msg: TMessage); message CM_SYSCOLORCHANGE;
   protected
     procedure Paint; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -182,7 +182,7 @@ type
     FAlignment: TAlignment;
     FMinValue: Extended;
     FMaxValue: Extended;
-    FOldValue:Extended;
+    FOldValue: Extended;
     FIncrement: Extended;
     FDecimal: Byte;
     FChanging: Boolean;
@@ -426,15 +426,17 @@ implementation
 
 uses
   Consts,
-  {$IFDEF WIN32}
   CommCtrl,
-  {$ENDIF}
   {$IFDEF JVCLThemesEnabled}
   Themes, UxTheme,
   {$ENDIF}
   JvJCLUtils;
 
-{$R ..\resources\JvSpin.res}
+{$IFDEF WIN32}
+{$R *.Res}
+{$ELSE}
+{$R *.R16}
+{$ENDIF}
 
 const
   sSpinUpBtn = 'JVSPINUP';
@@ -468,8 +470,8 @@ begin
   if Result = '' then
     Result := '0'
   else
-    if Result = '-' then
-      Result := '-0';
+  if Result = '-' then
+    Result := '-0';
 end;
 
 //=== TJvSpinButton ==========================================================
@@ -494,7 +496,6 @@ begin
   {$IFDEF JVCLThemesEnabled}
   FTopHotBtn := TBitmap.Create;
   FBottomHotBtn := TBitmap.Create;
-  FIsThemed := ThemeServices.ThemesEnabled;
   {$ENDIF}
   DrawAllBitmap;
   FLastDown := sbNotDown;
@@ -608,7 +609,7 @@ end;
 procedure TJvSpinButton.DrawAllBitmap;
 begin
   {$IFDEF JVCLThemesEnabled}
-  if FIsThemed then
+  if ThemeServices.ThemesEnabled then
   begin
     {$IFDEF POLESPIN}
     if FButtonStyle = sbsClassic then
@@ -862,39 +863,25 @@ end;
 procedure TJvSpinButton.WndProc(var Message: TMessage);
 var
   P: TPoint;
-  LIsThemed: Boolean;
 begin
   inherited WndProc(Message);
 
-  { Note: We can't detect theme changes, only when it's turned off or on.
-    (That is: we could check GetCurrentThemeName but that causes to much
-    overhead, IMHO - WM_THEMECHANGED doesn't work because the component has
-    no handle) }
-  LIsThemed := ThemeServices.ThemesEnabled;
-  if LIsThemed <> FIsThemed then
+  if ThemeServices.ThemesEnabled then
   begin
-    FIsThemed := LIsThemed;
-    FInvalidate := True;
-    Repaint;
-  end;
-
-  if not FIsThemed then
-    Exit;
-
-  if Message.Msg = CM_MOUSEENTER then
-  begin
-    if not FMouseInTopBtn and not FMouseInBottomBtn then
+    if Message.Msg = CM_MOUSEENTER then
     begin
-      GetCursorPos(P);
-      if MouseInBottomBtn(ScreenToClient(P)) then
-        FMouseInBottomBtn := True
-      else
-        FMouseInTopBtn := True;
-      Repaint;
-    end;
-  end
-  else
-    if Message.Msg = CM_MOUSELEAVE then
+      if not FMouseInTopBtn and not FMouseInBottomBtn then
+      begin
+        GetCursorPos(P);
+        if MouseInBottomBtn(ScreenToClient(P)) then
+          FMouseInBottomBtn := True
+        else
+          FMouseInTopBtn := True;
+        Repaint;
+      end;
+    end
+    else
+      if Message.Msg = CM_MOUSELEAVE then
     begin
       if FMouseInTopBtn or FMouseInBottomBtn then
       begin
@@ -903,6 +890,7 @@ begin
         Repaint;
       end;
     end;
+  end;
 end;
 
 {$ENDIF JVCLThemesEnabled}
@@ -1168,6 +1156,13 @@ begin
   //<Polaris
 end;
 
+procedure TJvSpinButton.CMSysColorChange(var Msg: TMessage);
+begin
+  inherited;
+  Invalidate;
+  DrawAllBitmap;
+end;
+
 //>Polaris
 
 procedure TJvSpinButton.SetButtonStyle(Value: TJvSpinButtonStyle);
@@ -1281,35 +1276,35 @@ begin
       end;
     end
     else
-      if FDown <> sbNotDown then
-      begin
-        FDown := sbNotDown;
-        Repaint;
-      end;
+    if FDown <> sbNotDown then
+    begin
+      FDown := sbNotDown;
+      Repaint;
+    end;
   end
   {$IFDEF JVCLThemesEnabled}
   else
-    if (FMouseInTopBtn or FMouseInBottomBtn) and FIsThemed then
+  if (FMouseInTopBtn or FMouseInBottomBtn) and ThemeServices.ThemesEnabled then
+  begin
+    if MouseInBottomBtn(Point(X, Y)) then
     begin
-      if MouseInBottomBtn(Point(X, Y)) then
+      if not FMouseInBottomBtn then
       begin
-        if not FMouseInBottomBtn then
-        begin
-          FMouseInTopBtn := False;
-          FMouseInBottomBtn := True;
-          Repaint;
-        end;
-      end
-      else
+        FMouseInTopBtn := False;
+        FMouseInBottomBtn := True;
+        Repaint;
+      end;
+    end
+    else
+    begin
+      if not FMouseInTopBtn then
       begin
-        if not FMouseInTopBtn then
-        begin
-          FMouseInTopBtn := True;
-          FMouseInBottomBtn := False;
-          Repaint;
-        end;
+        FMouseInTopBtn := True;
+        FMouseInBottomBtn := False;
+        Repaint;
       end;
     end;
+  end;
   {$ENDIF}
 end;
 
@@ -1398,8 +1393,8 @@ begin
         if Msg.Pos > 0 then
           Click(btNext)
         else
-          if Msg.Pos < 0 then
-            Click(btPrev);
+        if Msg.Pos < 0 then
+          Click(btPrev);
         if HandleAllocated then
           SendMessage(Handle, UDM_SETPOS, 0, 0);
       finally
@@ -1683,8 +1678,8 @@ begin
     if Key = VK_UP then
       UpClick(Self)
     else
-      if Key = VK_DOWN then
-        DownClick(Self);
+    if Key = VK_DOWN then
+      DownClick(Self);
     Key := 0;
   end;
 end;
@@ -1767,10 +1762,10 @@ begin
       ValidChars := ValidChars + ['e', 'E'];
   end
   else
-    if ValueType = vtHex then
-    begin
-      ValidChars := ValidChars + ['A'..'F', 'a'..'f'];
-    end;
+  if ValueType = vtHex then
+  begin
+    ValidChars := ValidChars + ['A'..'F', 'a'..'f'];
+  end;
   Result := (Key in ValidChars) or (Key < #32);
   if not FEditorEnabled and Result and ((Key >= #32) or
     (Key = Char(VK_BACK)) or (Key = Char(VK_DELETE))) then
@@ -2070,7 +2065,7 @@ begin
   begin
     FValueType := NewType;
     Value := GetValue;
-    if FValueType in [{$IFDEF CBUILDER} vtInt {$ELSE} vtInteger {$ENDIF}, vtHex] then
+    if FValueType in [{$IFDEF CBUILDER}vtInt{$ELSE}vtInteger{$ENDIF}, vtHex] then
     begin
       FIncrement := Round(FIncrement);
       if FIncrement = 0 then
@@ -2326,8 +2321,8 @@ begin
             Result := FMinValue;
           end
           else
-            if not TextToFloat(PChar(RemoveThousands(Text)), Result, fvExtended) then
-              Result := FMinValue;
+          if not TextToFloat(PChar(RemoveThousands(Text)), Result, fvExtended) then
+            Result := FMinValue;
         end;
       vtHex:
         Result := StrToIntDef('$' + Text, Round(FMinValue));

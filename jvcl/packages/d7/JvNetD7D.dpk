@@ -27,9 +27,17 @@ package JvNetD7D;
 {$IMPLICITBUILD ON}
 
 requires
-  JvNetD7R;
+  JvNetD7R,
+  designide,
+  vcl,
+  rtl,
+  vclactnband,
+  vclx;
 
 contains
-  JvNetReg in '..\..\design\JvNetReg.pas';
+  JvNetReg in '..\..\design\JvNetReg.pas',
+  JvMailEditor in '..\..\design\JvMailEditor.pas',
+  JvHtmlParserEditor in '..\..\design\JvHTMLParserEditor.pas',
+  JvFormParser in '..\..\run\JvFormParser.pas' {FormParsers};
 
 end.

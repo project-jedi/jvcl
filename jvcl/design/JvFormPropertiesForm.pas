@@ -37,7 +37,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF}
-  JvVCLUtils, JvxCtrls, JvPlacemnt, JvProps, JvListBox, JvCtrls;
+  JvJVCLUtils, JvxCtrls, JvFormPlacement, JvPropsStorage, JvListBox, JvCtrls;
 
 type
   {$IFNDEF COMPILER4_UP}
@@ -109,15 +109,9 @@ function ShowStorageDesigner(ACompOwner: TComponent; ADesigner: IDesigner;
 
 implementation
 
-{$IFDEF WIN32}
 uses
   TypInfo,
-  JvBoxProcs, JvxDConst;
-{$ELSE}
-uses
-  WinTypes, WinProcs, TypInfo,
-  JvStr16, JvBoxProcs, JvxDConst;
-{$ENDIF}
+  JvBoxProcs, JvConsts;
 
 {$R *.DFM}
 
