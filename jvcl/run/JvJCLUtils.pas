@@ -8486,18 +8486,18 @@ end;
 function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC;
   XSrc, YSrc: Integer; Rop: RasterOp; IgnoreMask: Boolean): LongBool;
 begin
-  Result := Windows.BitBlt(DestDC, X, Y, Width, Height, DestDC, XSrc, YSrc, RasterOpToWinRop(Rop));
+  Result := Windows.BitBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, RasterOpToWinRop(Rop));
 end;
 
 function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC;
   XSrc, YSrc: Integer; WinRop: Cardinal; IgnoreMask: Boolean): LongBool;
 begin
-  Result := Windows.BitBlt(DestDC, X, Y, Width, Height, DestDC, XSrc, YSrc, WinRop);
+  Result := Windows.BitBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, WinRop);
 end;
 
-function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; WinRop: Cardinal): LongBool; 
+function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; WinRop: Cardinal): LongBool;
 begin
-  Result := Windows.BitBlt(DestDC, X, Y, Width, Height, DestDC, XSrc, YSrc, WinRop);
+  Result := Windows.BitBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, WinRop);
 end;
 {$ENDIF VCL}
 
