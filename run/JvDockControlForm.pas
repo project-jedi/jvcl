@@ -1240,7 +1240,7 @@ var
         for I := 0 to DockClientCount - 1 do
           HideDockChild(TWinControl(DockClients[I]));
     DockClient := FindDockClient(DockWindow);
-    if (DockWindow is TForm) and (TForm(DockWindow).FormStyle <> fsMDIChild) then
+    if (DockWindow is TForm) and (TForm(DockWindow).FormStyle <> fsMDIChild) and (DockClient.DockStyle <> nil) then
       DockClient.DockStyle.HideDockForm(DockClient);
   end;
 
@@ -1260,7 +1260,8 @@ var
           if Host.Parent <> nil then
           begin
             DockClient := FindDockClient(Host.Parent);
-            DockClient.DockStyle.HideDockForm(DockClient);
+            if (DockClient <> nil) and (DockClient.DockStyle <> nil) then
+              DockClient.DockStyle.HideDockForm(DockClient);
             HideDockParent(Host.Parent);
           end;
         end;
