@@ -152,7 +152,7 @@ var
 
 function TInstaller.InstallerName: WideString;
 begin
-  Result := 'JVCL Installation';
+  Result := 'JVCL 3  Installation';
 end;
 
 function TInstaller.FirstPage: IInstallerPage;
