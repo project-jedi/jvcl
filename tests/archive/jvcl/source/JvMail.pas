@@ -646,10 +646,12 @@ procedure TJvMail.RestoreTaskWindowsState;
 var
   I: Integer;
 begin
-  for I := 0 to Screen.FormCount - 1 do
-    EnableWindow(Screen.Forms[I].Handle, FSaveTaskWindows[I]);
+  if (FSaveTaskWindows <> nil) and (Length(FSaveTaskWindows) >= Screen.FormCount) then
+    for I := 0 to Screen.FormCount - 1 do
+      EnableWindow(Screen.Forms[I].Handle, FSaveTaskWindows[I]);
   FSaveTaskWindows := nil;
-  SetFocus(FSaveTaskActiveForm.Handle);
+  if (FSaveTaskActiveForm <> nil) then
+    SetFocus(FSaveTaskActiveForm.Handle);
 end;
 
 function TJvMail.SaveMail(const MessageID: string): string;
