@@ -68,8 +68,8 @@ type
 // -----------------------------------------------------------------------------}
 
   {NEW:}
-  TFileBeforeWriteEvent = procedure(Sender: TObject; const FileName: string;var WriteFile:Boolean) of object;
-  TFileAfterWriteEvent = procedure(Sender: TObject; const FileName: string;const FileSize:LongWord ) of object;
+  TFileBeforeWriteEvent = procedure(Sender: TObject; const FileName: string; var WriteFile: Boolean) of object;
+  TFileAfterWriteEvent = procedure(Sender: TObject; const FileName: string; const FileSize: Longword) of object;
 
   TFileEvent = procedure(Sender: TObject; const FileName: string) of object;
   TProgressEvent = procedure(Sender: TObject; Position, Total: Integer) of object;
@@ -79,7 +79,6 @@ type
     FOnProgress: TProgressEvent;
     FOnCompressingFile: TFileEvent;
     FOnCompressedFile: TFileEvent;
-
     // July 26, 2004: New improved event types for decompression: Allow user to
     // skip writing of files they want skipped on extraction, and if they
     // extract nothing, they can use this "nil extraction" to scan the contents
@@ -110,10 +109,9 @@ type
     // If RelativePaths is true, any paths in the stream are stripped from their drive letter
     procedure DecompressStream(Stream: TStream; Directory: string; Overwrite: Boolean; const RelativePaths: Boolean = True);
   published
-
-     // NOTE: Changed decompression event parameters. July 26 2004. -WPostma. 
-    property OnDecompressingFile : TFileBeforeWriteEvent read FOnDecompressingFile write FOnDecompressingFile;
-    property OnDecompressedFile : TFileAfterWriteEvent read FOnDecompressedFile write FOnDecompressedFile;
+     // NOTE: Changed decompression event parameters. July 26 2004. -WPostma.
+    property OnDecompressingFile: TFileBeforeWriteEvent read FOnDecompressingFile write FOnDecompressingFile;
+    property OnDecompressedFile: TFileAfterWriteEvent read FOnDecompressedFile write FOnDecompressedFile;
     
     property OnProgress: TProgressEvent read FOnProgress write FOnProgress;
 
@@ -358,7 +356,7 @@ begin
       if Overwrite or not FileExists(S) then
       begin
         //This fails if Directory isn't empty
-        WriteMe := true;
+        WriteMe := True;
         if Assigned(FOnDecompressingFile) then
             FOnDecompressingFile(Self, S, WriteMe);
 
