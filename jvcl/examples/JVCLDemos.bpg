@@ -34,7 +34,7 @@ PROJECTS = AppDdeCmdExample.exe ArrowButtonDemo.exe BmpAnimDemo.exe \
   RunDLL32Demo.exe DBEXPL32.exe Rxdemo.exe RxGIFAnm.exe ScrollWinDemo.exe \
   TimeLineDemo.exe TipsDemo.exe SimpleTLTest1.exe TransparentButtonDemo.exe \
   JvLogFileDemo.exe JvTrayIconDemo.exe JvZLibMultipleDemo.exe JvID3v1Demo.exe \
-  JvFormatEditDemo.exe JvProgressDialogDemo.exe JvAppInstDemo.exe \
+  JvFormatEditDemo.exe JvProgressDialogDemo.exe JvAppInstDemo.exe Balls.exe \
  
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
@@ -334,3 +334,7 @@ JvProgressDialogDemo.exe: JvProgressDialog\JvProgressDialogDemo.dpr
 
 JvAppInstDemo.exe: JvAppInstances\JvAppInstDemo.dpr
   $(DCC)
+
+Balls.exe: JvManagedThreads\Balls\Balls.dpr
+  $(DCC)
+
