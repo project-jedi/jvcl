@@ -292,6 +292,9 @@ resourcestring
   RsDeletingFiles = 'Deleting files...';
   RsComplete = 'Complete.';
 
+const
+  TargetTypes: array[Boolean] of string = ('D', 'C'); // do not localize
+
 function ReadRegString(RootKey: HKEY; const Key, Name: string): string;
 var
   Reg: TRegistry;
@@ -777,8 +780,6 @@ end;
 /// file that is used for this target.
 /// </summary>
 function TTargetConfig.GetBpgFilename(Personal: Boolean; Kind: TPackageGroupKind): string;
-const
-  TargetTypes: array[Boolean] of string = ('D', 'C');
 var
   Pers, Clx: string;
 begin
@@ -793,8 +794,12 @@ begin
   if Kind = pkClx then
     Clx := 'Clx';
 
-  Result := Owner.JVCLPackagesDir + Format('\%s%d%s%s Packages.bpg', // do not localize
-    [TargetTypes[Target.IsBCB], Target.Version, Pers, Clx]);
+  if Target.IsBDS then
+    Result := Owner.JVCLPackagesDir + Format('\%s%d%s%s Packages.bdsgroup', // do not localize
+      [TargetTypes[Target.IsBCB], Target.Version, Pers, Clx])
+  else
+    Result := Owner.JVCLPackagesDir + Format('\%s%d%s%s Packages.bpg', // do not localize
+      [TargetTypes[Target.IsBCB], Target.Version, Pers, Clx]);
 end;
 
 procedure TTargetConfig.SavePackagesSettings(ProjectGroup: TProjectGroup);
@@ -803,8 +808,8 @@ var
   Ini: TMemIniFile;
   IniFileName: string;
 begin
- // save to ini
-  IniFileName := ChangeFileExt(ParamStr(0), '.ini');
+  // save to ini
+  IniFileName := ChangeFileExt(ParamStr(0), '.ini'); // do not localize
   FileSetReadOnly(IniFileName, False);
   Ini := TMemIniFile.Create(IniFileName);
   try
@@ -826,12 +831,12 @@ var
   IsInstalled: Boolean;
   Ini: TMemIniFile;
 begin
- // Set Compile to False for each package.
+  // Set Compile to False for each package.
   for PkgIndex := 0 to ProjectGroup.Count - 1 do
     ProjectGroup.Packages[PkgIndex].Compile := False;
 
- // read from ini
-  Ini := TMemIniFile.Create(ChangeFileExt(ParamStr(0), '.ini'));
+  // read from ini
+  Ini := TMemIniFile.Create(ChangeFileExt(ParamStr(0), '.ini')); // do not localize
   try
     for i := 0 to ProjectGroup.Count - 1 do
       if not ProjectGroup.Packages[i].Info.IsDesign then
@@ -841,8 +846,8 @@ begin
   end;
 
   IsInstalled := False;
- // Set Install to the registry setting. The dependency check will activate the
- // required (runtime) packages.
+  // Set Install to the registry setting. The dependency check will activate the
+  // required (runtime) packages.
   for PkgIndex := 0 to ProjectGroup.Count - 1 do
   begin
     BplName := ProjectGroup.Packages[PkgIndex].Info.BplName;
@@ -873,24 +878,20 @@ begin
 end;
 
 function TTargetConfig.GetTargetSymbol: string;
-const
-  TargetTypes: array[Boolean] of string = ('D', 'C');
 var
   Pers: string;
 begin
   if Target.IsPersonal {or (Kind = pkPersonal)} then
   begin
     if Target.Version = 5 then
-      Pers := 's'
+      Pers := 's' // do not localize
     else
-      Pers := 'p';
+      Pers := 'p'; // do not localize
   end;
-  Result := Format('%s%d%s', [TargetTypes[Target.IsBCB], Target.Version, Pers]);
+  Result := Format('%s%d%s', [TargetTypes[Target.IsBCB], Target.Version, Pers]); // do not localize
 end;
 
 function TTargetConfig.GetUnitOutDir: string;
-const
-  TargetTypes: array[Boolean] of string = ('D', 'C');
 begin
   Result := GetJVCLDir + Format('\lib\%s%d', [TargetTypes[Target.IsBCB], Target.Version]); // do not localize
 end;
@@ -1049,7 +1050,7 @@ begin
       SavePackagesSettings(Frameworks.Items[True, Kind]);
   end;
 
-  IniFileName := ChangeFileExt(ParamStr(0), '.ini');
+  IniFileName := ChangeFileExt(ParamStr(0), '.ini'); // do not localize
   FileSetReadOnly(IniFileName, False);
   Ini := TMemIniFile.Create(IniFileName);
   try
@@ -1138,7 +1139,7 @@ begin
        ProjectGroup.Packages[PackageIndex].Info.IsDesign then
     begin
       KnownPackages.Add(
-        ProjectGroup.TargetConfig.BplDir + '\' + ProjectGroup.Packages[PackageIndex].TargetName,
+        ProjectGroup.TargetConfig.BplDir + '\' + ProjectGroup.Packages[PackageIndex].TargetName, // do not localize
         ProjectGroup.Packages[PackageIndex].Info.Description
       );
     end;
@@ -1160,31 +1161,31 @@ begin
 
  // remove old
   AddPaths(Target.BrowsingPaths, False, Owner.JVCLDir,
-    ['common', 'run', 'qcommon', 'qrun']);
+    ['common', 'run', 'qcommon', 'qrun']); // do not localize
   AddPaths(Target.SearchPaths, False, Owner.JVCLDir,
-    ['common', 'run', 'qcommon', 'qrun']);
+    ['common', 'run', 'qcommon', 'qrun']); // do not localize
 
 
  // common
   AddPaths(Target.BrowsingPaths, True, Owner.JVCLDir,
-    ['common']);
+    ['common']); // do not localize
   AddPaths(Target.SearchPaths, True, Owner.JVCLDir,
-    ['common', Target.InsertDirMacros(UnitOutDir)]);
+    ['common', Target.InsertDirMacros(UnitOutDir)]); // do not localize
 
  // add
   if pkVCL in InstallMode then
   begin
     AddPaths(Target.BrowsingPaths, True, Owner.JVCLDir,
-      ['run']);
+      ['run']); // do not localize
     AddPaths(Target.SearchPaths, {Add:=}DeveloperInstall, Owner.JVCLDir,
-      ['run']);
+      ['run']); // do not localize
   end;
   if pkCLX in InstallMode then
   begin
     AddPaths(Target.BrowsingPaths, True, Owner.JVCLDir,
-      ['qcommon', 'qrun']);
+      ['qcommon', 'qrun']); // do not localize
     AddPaths(Target.SearchPaths, {Add:=}DeveloperInstall, Owner.JVCLDir,
-      ['qcommon', 'qrun']);
+      ['qcommon', 'qrun']); // do not localize
   end;
 
   AllPackages := TProjectGroup.Create(Self, '');
@@ -1220,7 +1221,7 @@ begin
   try
     ps := 0;
     for i := 1 to Length(Entries) do
-      if Entries[i] = ';' then
+      if Entries[i] = ';' then // do not localize
       begin
         List.Add(SubStr(Entries, ps + 1, i - 1));
         ps := i;
@@ -1237,7 +1238,7 @@ begin
 
     S := '';
     for i := 0 to List.Count - 1 do
-      S := S + List[i] + ';';
+      S := S + List[i] + ';'; // do not localize
     // last char is ';'
 
     if (S <> '') or (not RemoveEmptyPalettes) then
@@ -1262,7 +1263,7 @@ begin
   reg := TRegistry.Create;
   try
     reg.RootKey := HKEY_CURRENT_USER;
-    if reg.OpenKey(Target.RegistryKey + '\Palette', False) then
+    if reg.OpenKey(Target.RegistryKey + '\Palette', False) then // do not localize
     begin
       List := TStringList.Create;
       try
@@ -1304,19 +1305,19 @@ begin
 
  // remove JVCL 1 and 2 directories
   for i := Target.BrowsingPaths.Count - 1 downto 0 do
-    if Pos('\jvpack\', AnsiLowerCase(Target.BrowsingPaths[i])) <> 0 then
+    if Pos('\jvpack\', AnsiLowerCase(Target.BrowsingPaths[i])) <> 0 then // do not localize
       Target.BrowsingPaths.Delete(i);
 
   for i := Target.SearchPaths.Count - 1 downto 0 do
-    if Pos('\jvpack\', AnsiLowerCase(Target.SearchPaths[i])) <> 0 then
+    if Pos('\jvpack\', AnsiLowerCase(Target.SearchPaths[i])) <> 0 then // do not localize
       Target.SearchPaths.Delete(i);
 
 
  // remove JVCL 3 directories
   AddPaths(Target.BrowsingPaths, {Add:=}False, Owner.JVCLDir,
-    ['common', 'design', 'run', 'qcommon', 'qdesign', 'qrun']);
+    ['common', 'design', 'run', 'qcommon', 'qdesign', 'qrun']); // do not localize
   AddPaths(Target.SearchPaths, {Add:=}False, Owner.JVCLDir,
-    ['common', 'design', 'run', 'qcommon', 'qdesign', 'qrun',
+    ['common', 'design', 'run', 'qcommon', 'qdesign', 'qrun', // do not localize
     Target.InsertDirMacros(UnitOutDir), UnitOutDir]);
   Target.SavePaths;
 
@@ -1325,17 +1326,17 @@ begin
   with Target do
   begin
     for i := DisabledPackages.Count - 1 downto 0 do
-      if StartsWith(DisabledPackages.Items[i].Name, 'Jv', True) then
+      if StartsWith(DisabledPackages.Items[i].Name, 'Jv', True) then // do not localize
         DisabledPackages.Delete(i);
 
     for i := KnownPackages.Count - 1 downto 0 do
-      if StartsWith(KnownPackages.Items[i].Name, 'Jv', True) then
+      if StartsWith(KnownPackages.Items[i].Name, 'Jv', True) then // do not localize
         KnownPackages.Delete(i);
   end;
   Target.SavePackagesLists;
 
  // clean ini file
-  Ini := TMemIniFile.Create(ChangeFileExt(ParamStr(0), '.ini'));
+  Ini := TMemIniFile.Create(ChangeFileExt(ParamStr(0), '.ini')); // do not localize
   try
     Ini.EraseSection(Target.DisplayName);
     for Kind := pkFirst to pkLast do
