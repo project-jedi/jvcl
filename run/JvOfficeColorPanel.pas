@@ -576,12 +576,8 @@ begin
   FSelectedColor := clBlack;
   {$IFDEF VCL}
   FColorDialogOptions := [];
-<<<<<<< JvOfficeColorPanel.pas
-{$ENDIF VCL}
   FClickColorButton := cbctNone;
-=======
   {$ENDIF VCL}
->>>>>>> 1.4
 
   FProperties := TJvOfficeColorPanelProperties.Create;
   FProperties.OnPropertiesChanged := PropertiesChanged;
