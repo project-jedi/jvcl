@@ -1,3 +1,30 @@
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+The Original Code is: JvLEDDisplays.PAS, released on 2003-03-18.
+
+The Initial Developer of the Original Code is Marcel Bestebroer [marcelb@zeelandnet.nl]
+Portions created by Marcel Bestebroer are Copyright (C) 2003 Marcel Bestebroer.
+All Rights Reserved.
+
+Contributor(s):
+Jay Dubal [].
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------}
+
+{$I JVCL.INC}
+
 unit JvLEDDisplays;
 
 interface
@@ -7,9 +34,10 @@ uses
   JvComponent;
 
 
-(*
-  7-Segment render code based on JDLed donated by Jay Dubal (http://delphisoft.topcities.com).
-  Badly coded parts around it are written by me (Marcel Bestebroer) :-)
+(* Comments to be removed later (when the help is done <g>):
+
+  7-Segment render code used to be based on JDLed donated by Jay Dubal
+  (http://delphisoft.topcities.com), but I rewrote it to allow slanted displays as well.
 
 
   7-segment: (displays 0-9, A-F, o, r and space; suitable for hexadecimals and the word Error;
@@ -95,13 +123,13 @@ type
     FDigitHeight: Integer;
     FDigits: TList;
     FDigitWidth: Integer;
-    FImg: TBitmap;
     FKind: TJvSegmentLEDKind;
     FSegmentWidth: Integer;
     FMargin: Integer;
     FSpacing: Integer;
     FRecalcPolygons: Boolean;
     FSlantAngle: Integer;
+    FText: string;
   protected
     function GetDigit(I: Integer): TJvSegmentLEDDigit;
     function GetDigitCount: Integer;
@@ -117,17 +145,16 @@ type
     procedure SetSegmentWidth(Value: Integer);
     procedure SetSlantAngle(Value: Integer);
     procedure SetSpacing(Value: Integer);
-
+    procedure SetText(Value: string);
     procedure Paint; override;
     procedure InvalidatePolygons;
-
     procedure WMEraseBkGnd(var M: TMessage); message WM_ERASEBKGND;
-
     property ColorOn: TColor read FColorOn write SetColorOn;
     property ColorOff: TColor read FColorOff write SetColorOff;
     property Digit[I: Integer]: TJvSegmentLEDDigit read GetDigit;
     property DigitCount: Integer read GetDigitCount write SetDigitCount;
     property DigitHeight: Integer read FDigitHeight write SetDigitHeight;
+    { Digits is only used in the IDE to allow setting the individual digits }
     property Digits: TJvSegmentLEDDigits read GetDigits write SetDigits stored False;
     property DigitWidth: Integer read FDigitWidth write SetDigitWidth;
     property Kind: TJvSegmentLEDKind read FKind write SetKind;
@@ -135,29 +162,31 @@ type
     property SegmentWidth: Integer read FSegmentWidth write FSegmentWidth;
     property SlantAngle: Integer read FSlantAngle write SetSlantAngle;
     property Spacing: Integer read FSpacing write SetSpacing;
+    property Text: string read FText write SetText;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure DisplayString(S: string; const ResizeDisplay: Boolean = False);
   published
   end;
 
   TJvSegmentLEDDisplay = class(TJvCustomSegmentLEDDisplay)
   public
-    procedure DisplayString(S: string; const ResizeDisplay: Boolean = False);
     property Digit;
-    property DigitCount;
-    property DigitHeight;
-    property DigitWidth;
-    property SegmentWidth;
   published
     property Color;
     property ColorOn;
     property ColorOff;
+    property DigitCount;
+    property DigitHeight;
     property Digits;
+    property DigitWidth;
     property Kind;
     property Margin;
+    property SegmentWidth;
     property SlantAngle;
     property Spacing;
+    property Text;
   end;
 
   TJvSegmentLEDDigits = class(TPersistent)
@@ -168,6 +197,7 @@ type
     FDigitIndex: Integer;
     FDisplay: TJvCustomSegmentLEDDisplay;
     FSegments: array of Boolean; // On state of each segment (where DP is the last segment in the array if it's used)
+    FDPRect: TRect;
     FUseDP: Boolean;
     FPolygons: array of array of TPoint;
   protected
@@ -382,6 +412,18 @@ begin
   FRecalcPolygons := True;
 end;
 
+procedure TJvCustomSegmentLEDDisplay.SetText(Value: string);
+begin
+  Value := Copy(Value, 1, DigitCount);
+  if Length(Value) < DigitCount then
+    Value := Value + StringOfChar(' ', DigitCount - Length(Value));
+  if Value <> Text then
+  begin
+    DisplayString(Value);
+    FText := Value;    
+  end;
+end;
+
 procedure TJvCustomSegmentLEDDisplay.Paint;
 var
   I: Integer;
@@ -394,16 +436,14 @@ begin
       for I := DigitCount - 1 downto 0 do
         Digit[I].CalcPolygons;
     end;
-    FImg.Handle := CreateCompatibleBitmap(Canvas.Handle, ClientWidth, ClientHeight);
-    with FImg.Canvas do
+    with Canvas do
     begin
       Brush.Color := Color;
       Pen.Color := Color;
       Rectangle(0, 0, ClientWidth + 1, ClientHeight + 1);
     end;
     for I := 0 to DigitCount - 1 do
-      Digit[I].Paint(FImg.Canvas);
-    BitBlt(Canvas.Handle, 0, 0, ClientWidth, ClientHeight, FImg.Canvas.Handle, 0, 0, SRCCOPY);
+      Digit[I].Paint(Canvas);
   end;
 end;
 
@@ -422,19 +462,15 @@ begin
   FMargin := 4;
   FSpacing := 2;
   FSegmentWidth := 2;
-  FImg := TBitmap.Create;
 end;
 
 destructor TJvCustomSegmentLEDDisplay.Destroy;
 begin
   FDigits.Free;
-  FImg.Free;
   inherited Destroy;
 end;
 
-//===TJvSegmentLEDDisplay===========================================================================
-
-procedure TJvSegmentLEDDisplay.DisplayString(S: string; const ResizeDisplay: Boolean);
+procedure TJvCustomSegmentLEDDisplay.DisplayString(S: string; const ResizeDisplay: Boolean);
 var
   I: Integer;
 begin
@@ -788,6 +824,7 @@ begin
     Point(CenterCenterX - SegT - HalfSpc, CenterCenterY + HalfSegT + HalfSpc),
     Point(BottomLeftX + SegT + HalfSpc, BottomLeftY - SegT - HalfSpc - HalfSegT)
   ]);
+  FDPRect := Rect(BottomRightX + Spc, BottomRightY, BottomRightX + Spc + SegT + HalfSegT + 1, BottomRightY + SegT + HalfSegT + 1);
 end;
 
 procedure TJvSegmentLEDDigit.Paint(ACanvas: TCanvas);
@@ -820,6 +857,17 @@ var
     end;
   end;
 
+  procedure RenderDP(const AColor: TColor);
+  begin
+    with ACanvas do
+    begin
+      Brush.Color := AColor;
+      Pen.Color := AColor;
+      Ellipse(FDPRect);
+//      Polygon(FPolygons[SegIdx - 1]);
+    end;
+  end;
+
 begin
   case Display.Kind of
     slk7:
@@ -838,6 +886,8 @@ begin
           RenderSegment(SegNames16[I], ColorForState(FSegments[I]));
       end;
   end;
+  if UseDP then
+    RenderDP(ColorForState(FSegments[High(FSegments)]));
 end;
 
 procedure TJvSegmentLEDDigit.SetChar7(Ch: Char);

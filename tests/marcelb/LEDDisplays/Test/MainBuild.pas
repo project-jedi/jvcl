@@ -37,6 +37,8 @@ const
   clRedOff = $00000064;
 
 procedure TForm4.FormCreate(Sender: TObject);
+var
+  I: Integer;
 begin
   FLEDDisplay := TJvSegmentLEDDisplay.Create(Self);
   with FLEDDisplay do
@@ -49,7 +51,8 @@ begin
     ColorOff := clRedOff;
     Parent := Self;
     DisplayString('-0123456789ABCDEFc HELP'#248'''" Error', True);
-    Digit[DigitCount - 1].UseDP := True;
+    for I := DigitCount - 1 downto 0 do
+      Digit[I].UseDP := True;
     Digit[DigitCount - 1].SegmentState[7] := True;
   end;
 
@@ -120,12 +123,12 @@ procedure TForm4.Timer1Timer(Sender: TObject);
 begin
   if JVCLOn then
   begin
-    FLEDDisplayJVCL.DisplayString('');
+    FLEDDisplayJVCL.Text := '';
     JVCLOn := False;
   end
   else
   begin
-    FLEDDisplayJVCL.DisplayString(' JEDI-VCL');
+    FLEDDisplayJVCL.Text := ' JEDI-VCL';
     JVCLOn := True;
   end
 end;
