@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): _________________________________.
 
-Last Modified: 2002-06-03
+Last Modified: 2004-02-09
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -32,12 +32,12 @@ interface
 
 uses
   SysUtils, Classes, IniFiles,
-  {$IFDEF VCL}
+{$IFDEF VCL}
   Forms, ComCtrls, Menus, Dialogs,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
   QForms, QComCtrls, QMenus, QDialogs,
-  {$ENDIF VisualCLX}
+{$ENDIF VisualCLX}
   JvSimpleXml, JvComponent;
 
 type
@@ -60,7 +60,7 @@ type
     // Call SkipProperty to register a class property to skip when reading/writing
     // If UnskipClass has already been called for this class, does nothing
     procedure SkipProperty(AClass: TClass; const PropName: string);
-    // Call UnskipProperty to unregister a class property so it won't be skip when reading/writing
+    // Call UnskipProperty to unregister a class property so it won't be skipped when reading/writing
     // If SkipClass has already been called for this class, does nothing
     procedure UnskipProperty(AClass: TClass; const PropName: string);
     // Returns True if the specifed class/object/property is in the skip list
@@ -155,18 +155,18 @@ type
 
 function InternalGetWideStrProp(Instance: TObject; const PropName: string): WideString; overload;
 begin
-  {$IFDEF COMPILER6_UP}
+{$IFDEF COMPILER6_UP}
   Result := GetWideStrProp(Instance, PropName);
-  {$ELSE}
+{$ELSE}
   Result := GetStrProp(Instance, PropName);
-  {$ENDIF COMPILER6_UP}
+{$ENDIF COMPILER6_UP}
 end;
 
 function InternalGetPropList(AObject: TObject; out PropList: PPropList): Integer;
 begin
-  {$IFDEF COMPILER6_UP}
+{$IFDEF COMPILER6_UP}
   Result := GetPropList(AObject, PropList);
-  {$ELSE}
+{$ELSE}
   Result := GetTypeData(AObject.ClassInfo)^.PropCount;
   if Result > 0 then
   begin
@@ -174,7 +174,7 @@ begin
     GetPropInfos(AObject.ClassInfo, PropList);
   end;
   Result := GetPropList(AObject.ClassInfo, tkProperties, PropList);
-  {$ENDIF COMPILER6_UP}
+{$ENDIF COMPILER6_UP}
 end;
 
 //=== TJvTranslator ==========================================================
@@ -203,8 +203,7 @@ begin
     Root := FXML.Root;
   if AnsiSameText(Root.Name, AName) then
     Result := Root
-  else
-  if not ARecurse then
+  else if not ARecurse then
     Result := Root.Items.ItemNamed[AName]
   else
     for I := 0 to Root.Items.Count - 1 do
@@ -339,17 +338,13 @@ var
                 AnObj := GetObjectProp(AnObject, PropName);
                 if IsObject(AnObj.ClassType, cTTreeNodes) then
                   TreeNodesToXML(TTreeNodes(AnObj), Elem.Items.Add(PropName))
-                else
-                if IsObject(AnObj.ClassType, cTListItems) then
+                else if IsObject(AnObj.ClassType, cTListItems) then
                   ListItemsToXML(TListItems(AnObj), Elem.Items.Add(PropName))
-                else
-                if IsObject(AnObj.ClassType, cTStrings) then
+                else if IsObject(AnObj.ClassType, cTStrings) then
                   StringsToXML(TStrings(AnObj), Elem.Items.Add(PropName))
-                else
-                if IsObject(AnObj.ClassType, cTCollection) then
+                else if IsObject(AnObj.ClassType, cTCollection) then
                   CollectionToXML(TCollection(AnObj), Elem.Items.Add(PropName))
-                else
-                if not IsObject(AnObj.ClassType, cTComponent) then
+                else if not IsObject(AnObj.ClassType, cTComponent) then
                   // NB! TComponents are excluded because most of the time, a published TComponent
                   // property references another component on the form. In some cases, however, a TComponent
                   // *can* be an internal component and this code won't list it.
@@ -412,17 +407,13 @@ var
                 AnObj := GetObjectProp(AComponent, PropName);
                 if IsObject(AnObj.ClassType, cTTreeNodes) then
                   TreeNodesToXML(TTreeNodes(AnObj), Elem.Items.Add(PropName))
-                else
-                if IsObject(AnObj.ClassType, cTListItems) then
+                else if IsObject(AnObj.ClassType, cTListItems) then
                   ListItemsToXML(TListItems(AnObj), Elem.Items.Add(PropName))
-                else
-                if IsObject(AnObj.ClassType, cTStrings) then
+                else if IsObject(AnObj.ClassType, cTStrings) then
                   StringsToXML(TStrings(AnObj), Elem.Items.Add(PropName))
-                else
-                if IsObject(AnObj.ClassType, cTCollection) then
+                else if IsObject(AnObj.ClassType, cTCollection) then
                   CollectionToXML(TCollection(AnObj), Elem.Items.Add(PropName))
-                else
-                if not IsObject(AnObj.ClassType, cTComponent) then
+                else if not IsObject(AnObj.ClassType, cTComponent) then
                   // NB! TComponents are excluded because most of the time, a published TComponent
                   // property references another component on the form. In some cases, however, a TComponent
                   // *can* be an internal component and this code won't list it.
@@ -448,20 +439,21 @@ begin
     Exit;
   if AComponent is TApplication then
   begin
-    AName := TApplication(AComponent).Title
-      FXML.Root.Name := 'Translation'; // DO NOT LOCALIZE
+    AName := TApplication(AComponent).Title;
+    FXML.Root.Name := 'Translation'; // DO NOT LOCALIZE
     AElem := FXML.Root.Items.Add(AName);
   end
   else
+  begin
     AName := TComponent(AComponent).Name;
-  AElem := FXML.Root;
-  FXML.Root.Name := AName;
-end;
-if AName <> '' then
-begin
-  InnerComponentToXML(AComponent, AElem, Recurse);
-  Result := FXML.Root.SaveToString;
-end;
+    AElem := FXML.Root;
+    FXML.Root.Name := AName;
+  end;
+  if AName <> '' then
+  begin
+    InnerComponentToXML(AComponent, AElem, Recurse);
+    Result := FXML.Root.SaveToString;
+  end;
 end;
 
 procedure TJvTranslator.Translate(const FileName: string);
@@ -743,11 +735,9 @@ begin
             Obj := GetObjectProp(Component, Elem.Items[I].Name);
             if IsObject(Obj.ClassType, cTStrings) then
               TransStrings(Obj, Elem.Items[I])
-            else
-            if IsObject(Obj.ClassType, cTTreeNodes) then
+            else if IsObject(Obj.ClassType, cTTreeNodes) then
               TransTreeNodes(Obj, Elem.Items[I])
-            else
-            if IsObject(Obj.ClassType, cTListItems) then
+            else if IsObject(Obj.ClassType, cTListItems) then
               TransListItems(Obj, Elem.Items[I])
             else
             begin
@@ -953,8 +943,7 @@ begin
       P := PSkipPropRec(FSkipList[I]);
       if PropName = '' then
         P^.AProps.Clear // skip entire class
-      else
-      if P^.AProps.Count > 0 then // only add if the class is not skipped as a whole
+      else if P^.AProps.Count > 0 then // only add if the class is not skipped as a whole
         P^.AProps.Add(PropName); // the list is sorted, so property name will only be added once
       Exit;
     end;
