@@ -300,7 +300,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  SysUtils, ActiveX, Controls, Forms, Consts,
+  SysUtils, ActiveX, Controls, Forms, Consts, Graphics,
   JclShell,
   JvJCLUtils, JvJVCLUtils, JvConsts, JvResources, JvTypes;
 
@@ -1390,6 +1390,7 @@ const
 var
   WindowRect, ItemRect: TRect;
   ItemHandle: THandle;
+  ACanvas:TCanvas;
 begin
   if [odStatusAvailable, odNewDialogStyle] * FUsedOptions <> [odStatusAvailable] then
     Exit;
@@ -1399,13 +1400,21 @@ begin
   else
   begin
     ItemHandle := GetDlgItem(FDialogWindow, cStatusLabel);
-
     if ItemHandle <> 0 then
     begin
       GetWindowRect(FDialogWindow, WindowRect);
       GetWindowRect(ItemHandle, ItemRect);
-      AText := MinimizeFileName(AText, Application.MainForm.Canvas,
+      if Application.MainForm <> nil then
+        ACanvas := Application.MainForm.Canvas
+      else
+      begin
+        ACanvas := TCanvas.Create;
+        ACanvas.Handle := GetDC(0);
+      end;
+      AText := MinimizeFileName(AText, ACanvas,
         (WindowRect.Right - WindowRect.Left) - (ItemRect.Left - WindowRect.Left) * 2 - 8);
+      if Application.MainForm = nil then
+        ACanvas.Free;
     end;
   end;
 
