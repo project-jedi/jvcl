@@ -10,19 +10,19 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvDateTimePicker.PAS, released on 2001-02-28.
 
-The Initial Developer of the Original Code is Sébastien Buysse [sbuysse@buypin.com]
+The Initial Developer of the Original Code is Sébastien Buysse [sbuysse att buypin dott com]
 Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
 All Rights Reserved.
 
 Contributor(s):
-Michael Beck [mbeck@bigfoot.com]
+Michael Beck [mbeck att bigfoot dott com]
 
-Peter Thörnqvist [peter3@peter3.com]:
+Peter Thörnqvist [peter3 att peter3 dott com]:
 * Added NullDate, NullText and DropDownDate properties
   * Bug: When TDateTImePicker is used for TIMES, it is impossible to turn
      off the NullDate feature. It should be optional! -W.Postma.
 
-Marc Geldon [marcgeldon@web.de]
+Marc Geldon [marcgeldon att web dott de]
 * Fixed CheckNullValue (any nonformat characters must be enclosed within single quotes!)
 
 

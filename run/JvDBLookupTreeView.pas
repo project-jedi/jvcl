@@ -1339,10 +1339,8 @@ end;
 //=== TJvPopupTree ===========================================================
 
 {******* from ComCtl98 unit}
-  ////////////////////////////
-  // Jean-Luc Mattei        //
-  // jlucm@club-internet.fr //
-  ////////////////////////////
+  // Jean-Luc Mattei
+  // jlucm dott club-internet att fr
 const
   NM_CUSTOMDRAW = (NM_FIRST - 12);
   CDDS_PREPAINT = $000000001;

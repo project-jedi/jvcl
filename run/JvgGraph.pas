@@ -10,7 +10,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvgGraph.PAS, released on 2003-01-15.
 
-The Initial Developer of the Original Code is Andrey V. Chudin,  [chudin@yandex.ru]
+The Initial Developer of the Original Code is Andrey V. Chudin,  [chudin att yandex dott ru]
 Portions created by Andrey V. Chudin are Copyright (C) 2003 Andrey V. Chudin.
 All Rights Reserved.
 

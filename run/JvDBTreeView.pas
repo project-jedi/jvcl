@@ -37,7 +37,7 @@ Known Issues:
     - first release;
   1.61:
     - support for non-bde components,
-      by Yakovlev Vacheslav (jwe@belkozin.com)
+      by Yakovlev Vacheslav (jwe att belkozin dott com)
 }
 
 unit JvDBTreeView;

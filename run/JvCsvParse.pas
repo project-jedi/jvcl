@@ -14,7 +14,7 @@ The Initial Developers of the Original Code are: Andrei Prygounkov <a dott prygo
 Copyright (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
-Contributor(s):  Warren Postma (warrenpstma@hotmail.com)
+Contributor(s):  Warren Postma (warrenpstma att hotmail dott com)
 
                Changed StrSplit Function (has one new parameter).
 

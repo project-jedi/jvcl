@@ -10,7 +10,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: LinkTools.pas, released 2002-01-06.
 
-The Initial Developer of the Original Code is David Polberger <dpol@swipnet.se>
+The Initial Developer of the Original Code is David Polberger <dpol att swipnet dott se>
 Portions created by David Polberger are Copyright (C) 2002 David Polberger.
 All Rights Reserved.
 

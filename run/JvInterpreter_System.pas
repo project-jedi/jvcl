@@ -14,7 +14,7 @@ The Initial Developers of the Original Code are: Andrei Prygounkov <a dott prygo
 Copyright (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
-Contributor(s):  peter Fischer-Haase <pfischer@ise-online.de> commented as "pfh"
+Contributor(s):  Peter Fischer-Haase <pfischer att ise-online dott de> commented as "pfh"
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net

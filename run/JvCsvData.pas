@@ -10,7 +10,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is by Warren Postma.
 
-Contributor(s):  Warren Postma (warrenpstma@hotmail.com)
+Contributor(s):  Warren Postma (warrenpstma att hotmail dott com)
 
 2003-07-29 Warren Postma - New features (Sorting, Indexing, UserData)
 
@@ -136,7 +136,7 @@ Known Issues and Updates:
 // INSTEAD OF MEMORIZING ALL THIS FIELD TYPE STUFF.
 //
 // Originally written by Warren Postma
-// Contact: warren.postma@sympatico.ca or warrenpstma@hotmail.com
+// Contact: warren.postma att sympatico dott ca or warrenpstma att hotmail dott com
 //
 // Donated to the Delphi Jedi Project.
 // All Copyrights and Ownership donated to the Delphi Jedi Project.

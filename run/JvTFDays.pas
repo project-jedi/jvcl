@@ -11338,10 +11338,10 @@ begin
 end;
 
 //////////////////////////////////////////////////////////////////
-// Credit for the CalcTextPos routine goes to Joerg Lingner.   //
-// It comes from his JLLabel component (freeware - Torry's).   //
-// It is used here with his permission.  Thanks Joerg!       //
-// He can be reached at jlingner@t-online.de              //
+// Credit for the CalcTextPos routine goes to Joerg Lingner.    //
+// It comes from his JLLabel component (freeware - Torry's).    //
+// It is used here with his permission.  Thanks Joerg!          //
+// He can be reached at jlingner att t-online dott de           //
 //////////////////////////////////////////////////////////////////
 {
 procedure TJvTFDays.CalcTextPos(var aRect: TRect; aAngle: Integer;

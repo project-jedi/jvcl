@@ -40,9 +40,9 @@ Known Issues:
     - improvements in custom reserved words support;
     - comments works better in custom reserved words;
   1.17:
-    - python highlighting by Rafal Smotrzyk - rsmotrzyk@mikroplan.com.pl;
+    - python highlighting by Rafal Smotrzyk - rsmotrzyk att mikroplan dott com dott pl;
   1.17.2:
-    - jscript, vbscript highlighting by Rafal Smotrzyk - rsmotrzyk@mikroplan.com.pl;
+    - jscript, vbscript highlighting by Rafal Smotrzyk - rsmotrzyk att mikroplan dott com dott pl;
   1.17.6:
     - html highlighting;
   1.12.2:

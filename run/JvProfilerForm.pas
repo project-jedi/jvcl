@@ -10,7 +10,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvProfilerForm.PAS, released on 2002-05-26.
 
-The Initial Developer of the Original Code is Certified Software Corp. [certsoft@quest-net.com]
+The Initial Developer of the Original Code is Certified Software Corp. [certsoft att quest-net dott com]
 Portions created by Peter Thörnqvist are Copyright (C) 1996 Certified Software Corp.
 All Rights Reserved.
 

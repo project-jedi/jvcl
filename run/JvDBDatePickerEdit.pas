@@ -10,7 +10,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvDBDatePickerEdit, released on 2002-10-04.
 
-The Initial Developer of the Original Code is Oliver Giesen [giesen@lucatec.com]
+The Initial Developer of the Original Code is Oliver Giesen [giesen att lucatec dott com]
 Portions created by Oliver Giesen are Copyright (C) 2002 Lucatec GmbH.
 All Rights Reserved.
 

@@ -10,7 +10,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: uilPluginMan.PAS, released on 1999-09-06.
 
-The Initial Developer of the Original Code is Tim Sullivan [tim@uil.net]
+The Initial Developer of the Original Code is Tim Sullivan [tim att uil dott net]
 Portions created by Tim Sullivan are Copyright (C) 1999 Tim Sullivan.
 All Rights Reserved.
 

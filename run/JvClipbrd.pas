@@ -11,7 +11,7 @@ the specific language governing rights and limitations under the License.
 The Original Code is: JvClipbrd.PAS, released on 2003-05-18.
 
 The Initial Developer of the Original Code is Olivier Sannier
-[obones@meloo.com]
+  [obones att meloo dott com]
 Portions created by Olivier Sannier are Copyright (C) 2003 Olivier Sannier.
 All Rights Reserved.
 

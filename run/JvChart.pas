@@ -17,7 +17,7 @@ The Initial Developers of the Original Code are
     Mårten Henrichson (TAABGraph)
 
 Contributor(s):
-    Warren Postma (warrenpstma@hotmail.com)
+    Warren Postma (warrenpstma att hotmail dott com)
     Mårten Henrichson/AABSoft (no email known)
 
     Contains some code which is
@@ -25,8 +25,8 @@ Contributor(s):
 
     The rest is
         (C) 2003 Warren Postma
-              warren.postma@sympatico.ca
-              warrenpstma@hotmail.com
+              warren.postma att sympatico dott ca
+              warrenpstma att hotmail dott com
 
 Last Modified:
   2003-09-30 - (WP) - Alpha-Initial checkin of new component, into JVCL3 CVS tree.
