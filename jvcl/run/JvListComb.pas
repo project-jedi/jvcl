@@ -91,7 +91,7 @@ type
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
   published
-    // UseListProperties must come before properties named the same
+    // ListPropertiesUsed must come before properties named the same
     // as in the list or the component will not be created
     // correctly when restored from a DFM stream.
     property ListPropertiesUsed : TJvListPropertiesUsed read FListPropertiesUsed write FListPropertiesUsed default AllListPropertiesUsed;
@@ -370,11 +370,15 @@ end;
 
 constructor TJvImageItem.Create(Collection: TCollection);
 begin
+  // FGlyph MUST be created before calling inherited or the
+  // creation of the item from a stream (DFM for instance)
+  // will not work correctly.
+  FGlyph := TBitmap.Create;
+
   inherited Create(Collection);
   FOwner := Collection as TJvImageItems;
   FListPropertiesUsed := AllListPropertiesUsed;
   FFont := nil;
-  FGlyph := nil;
   FColorHighlight := clHighlight;
   FColorHighlightText := clHighlightText;  
 end;
@@ -1375,9 +1379,6 @@ end;
 
 procedure TJvImageItem.SetGlyph(const Value: TBitmap);
 begin
-  if not Assigned(FGlyph) then
-    FGlyph := TBitmap.Create;
-    
   FGlyph.Assign(Value);
   (TJvImageItems(Collection).GetOwner as TJvImageListBox).Invalidate;
 end;
