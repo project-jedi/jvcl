@@ -183,6 +183,10 @@ procedure PreProcessXML(aList: Tstringlist);
 
 implementation
 
+{$IFDEF BCB}
+uses Variants;
+{$ENDIF}
+
 const
   cr = chr(13) + chr(10);
   tab = chr(9);
@@ -1437,7 +1441,7 @@ var
   i, c: integer;
   a: TJvXMLAttribute;
 begin
-  result := null;
+  result := Null;
   c := attributes.count;
   if c = 0 then exit;
   for i := 0 to c - 1 do

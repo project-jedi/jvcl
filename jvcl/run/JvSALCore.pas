@@ -104,6 +104,10 @@ type
 
 implementation
 
+{$IFDEF BCB}
+uses Variants;
+{$ENDIF}
+
 const
   cr = chr(13) + chr(10);
   tab = chr(9);
