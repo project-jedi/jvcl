@@ -29,209 +29,208 @@ Known Issues:
 
 // This unit implements the TJvgJumpingComponent joke component. :)
 
-UNIT JvgJump;
+unit JvgJump;
 
-INTERFACE
+interface
 
-USES
-   Windows,
-   Messages,
-   SysUtils,
-   JVComponent,
-   Classes,
-   Graphics,
-   Controls,
-   ExtCtrls;                            //MMSystem;
+uses
+  Windows,
+  Messages,
+  SysUtils,
+  JVComponent,
+  Classes,
+  Graphics,
+  Controls,
+  ExtCtrls; //MMSystem;
 
-TYPE
-   TJvgJumpingComponent = CLASS(TJvComponent)
-   PRIVATE
-      FStep: word;
-      FActiveControl: TControl;
-      FTimerInterval: word;
-      FEnabled: boolean;
-      FOnTimer: TNotifyEvent;
-      Timer: TTimer;
-      l, t, HShift, VShift: integer;
-      HDir, VDir: boolean;
-      PROCEDURE SetStep(Value: word);
-      PROCEDURE SetTimerInterval(Value: word);
-      PROCEDURE SetEnabled(Value: boolean);
+type
+  TJvgJumpingComponent = class(TJvComponent)
+  private
+    FStep: word;
+    FActiveControl: TControl;
+    FTimerInterval: word;
+    FEnabled: boolean;
+    FOnTimer: TNotifyEvent;
+    Timer: TTimer;
+    l, t, HShift, VShift: integer;
+    HDir, VDir: boolean;
+    procedure SetStep(Value: word);
+    procedure SetTimerInterval(Value: word);
+    procedure SetEnabled(Value: boolean);
 
-      PROCEDURE SetActiveControl(Control: TControl);
-      PROCEDURE SetDir(h, v: boolean);
-      PROCEDURE OnTimerProc(Sender: TObject);
+    procedure SetActiveControl(Control: TControl);
+    procedure SetDir(h, v: boolean);
+    procedure OnTimerProc(Sender: TObject);
 
-   PROTECTED
-      PROCEDURE Notification(AComponent: TComponent; Operation: TOperation);
-         OVERRIDE;
-   PUBLIC
-      CONSTRUCTOR Create(AOwner: TComponent); OVERRIDE;
-      DESTRUCTOR Destroy; OVERRIDE;
+  protected
+    procedure Notification(AComponent: TComponent; Operation: TOperation);
+      override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
 
-   PUBLISHED
-      PROPERTY Step: word READ FStep WRITE SetStep DEFAULT 10;
-      PROPERTY ActiveControl: TControl READ FActiveControl WRITE
-         SetActiveControl;
-      PROPERTY TimerInterval: word READ FTimerInterval WRITE SetTimerInterval
-         DEFAULT 10;
-      PROPERTY Enabled: boolean READ FEnabled WRITE SetEnabled DEFAULT false;
-      PROPERTY OnTimer: TNotifyEvent READ FOnTimer WRITE FOnTimer;
-   END;
+  published
+    property Step: word read FStep write SetStep default 10;
+    property ActiveControl: TControl read FActiveControl write
+      SetActiveControl;
+    property TimerInterval: word read FTimerInterval write SetTimerInterval
+      default 10;
+    property Enabled: boolean read FEnabled write SetEnabled default false;
+    property OnTimer: TNotifyEvent read FOnTimer write FOnTimer;
+  end;
 
-PROCEDURE Register;
+procedure Register;
 
-IMPLEMENTATION
+implementation
 
-PROCEDURE Register;
-BEGIN
-END;
+procedure Register;
+begin
+end;
 //---------------------
 
-CONSTRUCTOR TJvgJumpingComponent.Create(AOwner: TComponent);
-BEGIN
-   SetDir(true, true);
+constructor TJvgJumpingComponent.Create(AOwner: TComponent);
+begin
+  SetDir(true, true);
 
-   FStep := 10;
-   FTimerInterval := 10;
-   Timer := TTimer.Create(self);
-   Timer.Interval := FTimerInterval;
-   Timer.Enabled := false;
-   Timer.OnTimer := OnTimerProc;
-   SetDir(true, true);
-   INHERITED;
-END;
+  FStep := 10;
+  FTimerInterval := 10;
+  Timer := TTimer.Create(self);
+  Timer.Interval := FTimerInterval;
+  Timer.Enabled := false;
+  Timer.OnTimer := OnTimerProc;
+  SetDir(true, true);
+  inherited;
+end;
 //-----
 
-DESTRUCTOR TJvgJumpingComponent.Destroy;
-BEGIN
-   Timer.Enabled := false;
-   Timer.Free;
-   FActiveControl := NIL;
-   INHERITED;
-END;
+destructor TJvgJumpingComponent.Destroy;
+begin
+  Timer.Enabled := false;
+  Timer.Free;
+  FActiveControl := nil;
+  inherited;
+end;
 //-----
 
-PROCEDURE TJvgJumpingComponent.Notification(AComponent: TComponent; Operation:
-   TOperation);
-BEGIN
-   INHERITED Notification(AComponent, Operation);
-   IF (AComponent = FActiveControl) AND (Operation = opRemove) THEN
-      ActiveControl := NIL;
-END;
+procedure TJvgJumpingComponent.Notification(AComponent: TComponent; Operation:
+  TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (AComponent = FActiveControl) and (Operation = opRemove) then
+    ActiveControl := nil;
+end;
 //-----
 
-PROCEDURE TJvgJumpingComponent.SetStep(Value: word);
-BEGIN
-   IF Value <> 0 THEN
-   BEGIN
-      FStep := Value;
-      SetDir(HDir, VDir);
-   END;
-END;
+procedure TJvgJumpingComponent.SetStep(Value: word);
+begin
+  if Value <> 0 then
+  begin
+    FStep := Value;
+    SetDir(HDir, VDir);
+  end;
+end;
 //-----
 
-PROCEDURE TJvgJumpingComponent.SetActiveControl(Control: TControl);
-BEGIN
-   IF FActiveControl <> Control THEN
-   BEGIN
-      FActiveControl := Control;
-      IF Control = NIL THEN
-      BEGIN
-         Timer.Enabled := false
-      END
-      ELSE
-         WITH FActiveControl DO
-         BEGIN
-            l := left;
-            t := top;
-         END;
-   END;
-END;
+procedure TJvgJumpingComponent.SetActiveControl(Control: TControl);
+begin
+  if FActiveControl <> Control then
+  begin
+    FActiveControl := Control;
+    if Control = nil then
+    begin
+      Timer.Enabled := false
+    end
+    else
+      with FActiveControl do
+      begin
+        l := left;
+        t := top;
+      end;
+  end;
+end;
 //-----
 
-PROCEDURE TJvgJumpingComponent.OnTimerProc;
-VAR
-   f                          : boolean;
-   r                          : TRect;
-   ParentWidth, ParentHeight  : integer;
-BEGIN
-   IF FActiveControl = NIL THEN
-      exit;
-   IF Assigned(FOnTimer) THEN
-      FOnTimer(self);
-   WITH FActiveControl DO
-   BEGIN
-      f := false;
-      r := parent.ClientRect;
-      ParentWidth := r.right - r.left;
-      ParentHeight := r.bottom - r.top;
-      l := l + HShift;
-      t := t + VShift;
-      IF l <= 0 THEN
-      BEGIN
-         HDir := NOT HDir;
-         f := true;
-      END;
-      IF t <= 0 THEN
-      BEGIN
-         VDir := NOT VDir;
-         f := true;
-      END;
-      IF l + width >= parentWidth THEN
-      BEGIN
-         HDir := NOT HDir;
-         f := true;
-      END;
-      IF t + height >= parentHeight THEN
-      BEGIN
-         VDir := NOT VDir;
-         f := true;
-      END;
-      IF f THEN
-         SetDir(HDir, VDir)
-      ELSE
-      BEGIN
-         Left := l;
-         Top := t;
-      END;
-   END;
-END;
+procedure TJvgJumpingComponent.OnTimerProc;
+var
+  f: boolean;
+  r: TRect;
+  ParentWidth, ParentHeight: integer;
+begin
+  if FActiveControl = nil then
+    exit;
+  if Assigned(FOnTimer) then
+    FOnTimer(self);
+  with FActiveControl do
+  begin
+    f := false;
+    r := parent.ClientRect;
+    ParentWidth := r.right - r.left;
+    ParentHeight := r.bottom - r.top;
+    l := l + HShift;
+    t := t + VShift;
+    if l <= 0 then
+    begin
+      HDir := not HDir;
+      f := true;
+    end;
+    if t <= 0 then
+    begin
+      VDir := not VDir;
+      f := true;
+    end;
+    if l + width >= parentWidth then
+    begin
+      HDir := not HDir;
+      f := true;
+    end;
+    if t + height >= parentHeight then
+    begin
+      VDir := not VDir;
+      f := true;
+    end;
+    if f then
+      SetDir(HDir, VDir)
+    else
+    begin
+      Left := l;
+      Top := t;
+    end;
+  end;
+end;
 //-----
 
-PROCEDURE TJvgJumpingComponent.SetDir(h, v: boolean);
-BEGIN
-   HDir := h;
-   VDir := v;
-   IF h THEN
-      HShift := FStep
-   ELSE
-      HShift := -FStep;
-   IF v THEN
-      VShift := FStep
-   ELSE
-      VShift := -FStep;
-END;
+procedure TJvgJumpingComponent.SetDir(h, v: boolean);
+begin
+  HDir := h;
+  VDir := v;
+  if h then
+    HShift := FStep
+  else
+    HShift := -FStep;
+  if v then
+    VShift := FStep
+  else
+    VShift := -FStep;
+end;
 //-----
 
-PROCEDURE TJvgJumpingComponent.SetTimerInterval(Value: word);
-BEGIN
-   IF (FTimerInterval = Value) OR (Value < 1) THEN
-      exit;
-   FTimerInterval := Value;
-   Timer.Interval := Value;
-END;
+procedure TJvgJumpingComponent.SetTimerInterval(Value: word);
+begin
+  if (FTimerInterval = Value) or (Value < 1) then
+    exit;
+  FTimerInterval := Value;
+  Timer.Interval := Value;
+end;
 //-----
 
-PROCEDURE TJvgJumpingComponent.SetEnabled(Value: boolean);
-BEGIN
-   IF (Enabled = Value) OR (FActiveControl = NIL) THEN
-      exit;
+procedure TJvgJumpingComponent.SetEnabled(Value: boolean);
+begin
+  if (Enabled = Value) or (FActiveControl = nil) then
+    exit;
 
-   FEnabled := Value;
-   Timer.Enabled := Value;
-END;
+  FEnabled := Value;
+  Timer.Enabled := Value;
+end;
 //-----
 
-END.
-
+end.

@@ -27,287 +27,286 @@ Known Issues:
 
 {$I JVCL.INC}
 
-UNIT JvgImageGroup;
+unit JvgImageGroup;
 
-INTERFACE
+interface
 
-USES
-   Windows,
-   Messages,
-   SysUtils,
-   Classes,
-   Graphics,
-   Controls,
-   Forms,
-   Dialogs,
-   ExtCtrls,
-   JvgTypes,
-   JvgUtils,
-   JVComponent,
-   JvgCommClasses;
+uses
+  Windows,
+  Messages,
+  SysUtils,
+  Classes,
+  Graphics,
+  Controls,
+  Forms,
+  Dialogs,
+  ExtCtrls,
+  JvgTypes,
+  JvgUtils,
+  JVComponent,
+  JvgCommClasses;
 
-TYPE
-   TJvgImageGroup = CLASS(TJvGraphicControl)
-   PRIVATE
-      FImageList: TImageList;
-      FPassiveMask: TBitmap;
-      FActiveMask: TBitmap;
-      FSelectedMask: TBitmap;
-      FSingleSelected: boolean;
-      FTransparent: boolean;
-      FTransparentColor: TColor;
-      FMasked: boolean;
-      FMaskedColor: TColor;
-      FDisabledMaskColor: TColor;
+type
+  TJvgImageGroup = class(TJvGraphicControl)
+  private
+    FImageList: TImageList;
+    FPassiveMask: TBitmap;
+    FActiveMask: TBitmap;
+    FSelectedMask: TBitmap;
+    FSingleSelected: boolean;
+    FTransparent: boolean;
+    FTransparentColor: TColor;
+    FMasked: boolean;
+    FMaskedColor: TColor;
+    FDisabledMaskColor: TColor;
 
-      FAutoTrColor: TglAutoTransparentColor;
-      FFastDraw: boolean;
-      fNeedRemakeBackground: boolean;
-      Image: TBitmap;
-      OldWidth, OldHeight,
-         OldLeft, OldTop: integer;
+    FAutoTrColor: TglAutoTransparentColor;
+    FFastDraw: boolean;
+    fNeedRemakeBackground: boolean;
+    Image: TBitmap;
+    OldWidth, OldHeight,
+      OldLeft, OldTop: integer;
 
-      PROCEDURE SmthChanged(Sender: TObject);
+    procedure SmthChanged(Sender: TObject);
 
-      PROCEDURE SetImageList(Value: TImageList);
-      PROCEDURE SetTransparent(Value: boolean);
-      PROCEDURE SetTransparentColor(Value: TColor);
-      PROCEDURE SetMasked(Value: boolean);
-      PROCEDURE SetMaskedColor(Value: TColor);
-      PROCEDURE SetDisabledMaskColor(Value: TColor);
-      PROCEDURE SetAutoTrColor(Value: TglAutoTransparentColor);
-      PROCEDURE SetFastDraw(Value: boolean);
+    procedure SetImageList(Value: TImageList);
+    procedure SetTransparent(Value: boolean);
+    procedure SetTransparentColor(Value: TColor);
+    procedure SetMasked(Value: boolean);
+    procedure SetMaskedColor(Value: TColor);
+    procedure SetDisabledMaskColor(Value: TColor);
+    procedure SetAutoTrColor(Value: TglAutoTransparentColor);
+    procedure SetFastDraw(Value: boolean);
 
-   PROTECTED
-      PROCEDURE Paint; OVERRIDE;
-      PROCEDURE WMSize(VAR Msg: TMessage);
-   PUBLIC
-      CONSTRUCTOR Create(AOwner: TComponent); OVERRIDE;
-      DESTRUCTOR Destroy; OVERRIDE;
-      PROCEDURE CreateResBitmap;
-      PROCEDURE RemakeBackground;
-   PUBLISHED
-      PROPERTY Align;
-      PROPERTY DragCursor;
-      PROPERTY DragMode;
-      PROPERTY Enabled;
-      PROPERTY ParentShowHint;
-      PROPERTY PopupMenu;
-      PROPERTY ShowHint;
-      PROPERTY Visible;
-      PROPERTY OnClick;
-      PROPERTY OnDblClick;
-      PROPERTY OnDragDrop;
-      PROPERTY OnDragOver;
-      PROPERTY OnEndDrag;
-      PROPERTY OnMouseDown;
-      PROPERTY OnMouseMove;
-      PROPERTY OnMouseUp;
-      PROPERTY OnStartDrag;
+  protected
+    procedure Paint; override;
+    procedure WMSize(var Msg: TMessage);
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure CreateResBitmap;
+    procedure RemakeBackground;
+  published
+    property Align;
+    property DragCursor;
+    property DragMode;
+    property Enabled;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property Visible;
+    property OnClick;
+    property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnStartDrag;
 
-      PROPERTY Images: TImageList READ FImageList WRITE SetImageList;
-      PROPERTY Transparent: boolean READ FTransparent WRITE SetTransparent
-         DEFAULT false;
-      PROPERTY TransparentColor: TColor READ FTransparentColor
-         WRITE SetTransparentColor DEFAULT clOlive;
-      PROPERTY Masked: boolean READ FMasked WRITE SetMasked
-         DEFAULT false;
-      PROPERTY MaskedColor: TColor READ FMaskedColor
-         WRITE SetMaskedColor DEFAULT clOlive;
-      PROPERTY DisabledMaskColor: TColor READ FDisabledMaskColor
-         WRITE SetDisabledMaskColor DEFAULT clBlack;
-      PROPERTY AutoTransparentColor: TglAutoTransparentColor
-         READ FAutoTrColor WRITE SetAutoTrColor DEFAULT ftcLeftBottomPixel;
-      PROPERTY FastDraw: boolean READ FFastDraw WRITE SetFastDraw
-         DEFAULT false;
-   END;
+    property Images: TImageList read FImageList write SetImageList;
+    property Transparent: boolean read FTransparent write SetTransparent
+      default false;
+    property TransparentColor: TColor read FTransparentColor
+      write SetTransparentColor default clOlive;
+    property Masked: boolean read FMasked write SetMasked
+      default false;
+    property MaskedColor: TColor read FMaskedColor
+      write SetMaskedColor default clOlive;
+    property DisabledMaskColor: TColor read FDisabledMaskColor
+      write SetDisabledMaskColor default clBlack;
+    property AutoTransparentColor: TglAutoTransparentColor
+      read FAutoTrColor write SetAutoTrColor default ftcLeftBottomPixel;
+    property FastDraw: boolean read FFastDraw write SetFastDraw
+      default false;
+  end;
 
-PROCEDURE Register;
+procedure Register;
 
-IMPLEMENTATION
+implementation
 
-PROCEDURE Register;
-BEGIN
-END;
+procedure Register;
+begin
+end;
 
 //*****************************************_____________LowLevel METHODS
 //________________________________________________________
 
-CONSTRUCTOR TJvgImageGroup.Create(AOwner: TComponent);
-BEGIN
+constructor TJvgImageGroup.Create(AOwner: TComponent);
+begin
 
-   INHERITED Create(AOwner);
-   //  ControlStyle := ControlStyle + [{csReplicatable,}csOpaque];
-   Width := 105;
-   Height := 105;
+  inherited Create(AOwner);
+  //  ControlStyle := ControlStyle + [{csReplicatable,}csOpaque];
+  Width := 105;
+  Height := 105;
 
-   Image := TBitmap.create;
-   //...defaults
-   FTransparent := false;
-   FTransparentColor := clOlive;
-   FMasked := false;
-   FMaskedColor := clOlive;
-   FDisabledMaskColor := clBlack;
-   FAutoTrColor := ftcLeftBottomPixel;
-   FFastDraw := false;
-END;
+  Image := TBitmap.create;
+  //...defaults
+  FTransparent := false;
+  FTransparentColor := clOlive;
+  FMasked := false;
+  FMaskedColor := clOlive;
+  FDisabledMaskColor := clBlack;
+  FAutoTrColor := ftcLeftBottomPixel;
+  FFastDraw := false;
+end;
 //________________________________________________________
 
-DESTRUCTOR TJvgImageGroup.Destroy;
-BEGIN
-   Image.free;
-   INHERITED;
-END;
+destructor TJvgImageGroup.Destroy;
+begin
+  Image.free;
+  inherited;
+end;
 //________________________________________________________
 
-PROCEDURE TJvgImageGroup.WMSize(VAR Msg: TMessage);
-BEGIN
-   IF csDesigning IN ComponentState THEN
-      CreateResBitmap;
-END;
+procedure TJvgImageGroup.WMSize(var Msg: TMessage);
+begin
+  if csDesigning in ComponentState then
+    CreateResBitmap;
+end;
 //________________________________________________________
 
-PROCEDURE TJvgImageGroup.Paint;
-BEGIN
-   //  if fNeedRebuildImage then
-   BEGIN
-      CreateResBitmap;
-   END;
-   BitBlt(Canvas.Handle, 0, 0, Width, Height, Image.Canvas.Handle, 0, 0,
-      SRCCOPY);
-END;
+procedure TJvgImageGroup.Paint;
+begin
+  //  if fNeedRebuildImage then
+  begin
+    CreateResBitmap;
+  end;
+  BitBlt(Canvas.Handle, 0, 0, Width, Height, Image.Canvas.Handle, 0, 0,
+    SRCCOPY);
+end;
 
-PROCEDURE TJvgImageGroup.RemakeBackground;
-BEGIN
-   fNeedRemakeBackground := true;
-   Repaint;
-END;
+procedure TJvgImageGroup.RemakeBackground;
+begin
+  fNeedRemakeBackground := true;
+  Repaint;
+end;
 //________________________________________________________
 
-PROCEDURE TJvgImageGroup.CreateResBitmap;
-VAR
-   i                          : integer;
-   Bitmap                     : TBitmap;
-BEGIN
-   IF (FImageList = NIL) OR (FImageList.Count = 0) THEN
-      exit;
+procedure TJvgImageGroup.CreateResBitmap;
+var
+  i: integer;
+  Bitmap: TBitmap;
+begin
+  if (FImageList = nil) or (FImageList.Count = 0) then
+    exit;
 
-   Bitmap := TBitmap.Create;
+  Bitmap := TBitmap.Create;
 
-   Image.Width := FImageList.Width * FImageList.Count;
-   Image.Height := FImageList.Height;
-   Width := max(Image.Width, Width);
-   Height := max(Image.Height, Height);
-   WITH Image DO
-   BEGIN
-      Canvas.Brush.Color := clBtnFace;
-      Canvas.Brush.Style := bsSolid;
-      Canvas.FillRect(Bounds(0, 0, Width, Height));
-   END;
+  Image.Width := FImageList.Width * FImageList.Count;
+  Image.Height := FImageList.Height;
+  Width := max(Image.Width, Width);
+  Height := max(Image.Height, Height);
+  with Image do
+  begin
+    Canvas.Brush.Color := clBtnFace;
+    Canvas.Brush.Style := bsSolid;
+    Canvas.FillRect(Bounds(0, 0, Width, Height));
+  end;
 
-   IF FTransparent THEN
-      GetParentImageRect(self, Bounds(Left, Top, Image.Width, Image.Height),
-         Image.Canvas.Handle);
+  if FTransparent then
+    GetParentImageRect(self, Bounds(Left, Top, Image.Width, Image.Height),
+      Image.Canvas.Handle);
 
-   FOR i := 0 TO FImageList.Count - 1 DO
-   BEGIN
-      FImageList.GetBitmap(i, Bitmap);
+  for i := 0 to FImageList.Count - 1 do
+  begin
+    FImageList.GetBitmap(i, Bitmap);
 
-      IF FMasked THEN
-         ChangeBitmapColor(Image, FMaskedColor, clBtnFace);
+    if FMasked then
+      ChangeBitmapColor(Image, FMaskedColor, clBtnFace);
 
-      CreateBitmapExt(Image.Canvas.Handle, Bitmap, ClientRect,
-         i * FImageList.Width, 0,
-         fwoNone, fdsDefault,
-         FTransparent, FTransparentColor, FDisabledMaskColor);
+    CreateBitmapExt(Image.Canvas.Handle, Bitmap, ClientRect,
+      i * FImageList.Width, 0,
+      fwoNone, fdsDefault,
+      FTransparent, FTransparentColor, FDisabledMaskColor);
 
-   END;
-   Bitmap.Free;
-END;
+  end;
+  Bitmap.Free;
+end;
 //________________________________________________________
 
-PROCEDURE TJvgImageGroup.SmthChanged(Sender: TObject);
-BEGIN
-   Invalidate;
-END;
+procedure TJvgImageGroup.SmthChanged(Sender: TObject);
+begin
+  Invalidate;
+end;
 
 //*****************************************_____________PROPERTY METHODS
 //________________________________________________________
 
-PROCEDURE TJvgImageGroup.SetImageList(Value: TImageList);
-BEGIN
-   FImageList := Value;
-   //  SetAutoTrColor( FAutoTrColor );
-   Invalidate;
-END;
+procedure TJvgImageGroup.SetImageList(Value: TImageList);
+begin
+  FImageList := Value;
+  //  SetAutoTrColor( FAutoTrColor );
+  Invalidate;
+end;
 //________________________________________________________
 
-PROCEDURE TJvgImageGroup.SetTransparent(Value: boolean);
-BEGIN
-   IF FTransparent = Value THEN
-      exit;
-   FTransparent := Value;
-   Invalidate;
-END;
+procedure TJvgImageGroup.SetTransparent(Value: boolean);
+begin
+  if FTransparent = Value then
+    exit;
+  FTransparent := Value;
+  Invalidate;
+end;
 //________________________________________________________
 
-PROCEDURE TJvgImageGroup.SetTransparentColor(Value: TColor);
-BEGIN
-   IF FTransparentColor = Value THEN
-      exit;
-   //  FAutoTrColor:=ftcUser;
-   FTransparentColor := Value;
-   Invalidate;
-END;
+procedure TJvgImageGroup.SetTransparentColor(Value: TColor);
+begin
+  if FTransparentColor = Value then
+    exit;
+  //  FAutoTrColor:=ftcUser;
+  FTransparentColor := Value;
+  Invalidate;
+end;
 //________________________________________________________
 
-PROCEDURE TJvgImageGroup.SetMasked(Value: boolean);
-BEGIN
-   IF FMasked = Value THEN
-      exit;
-   FMasked := Value;
-   Invalidate;
-END;
+procedure TJvgImageGroup.SetMasked(Value: boolean);
+begin
+  if FMasked = Value then
+    exit;
+  FMasked := Value;
+  Invalidate;
+end;
 //________________________________________________________
 
-PROCEDURE TJvgImageGroup.SetMaskedColor(Value: TColor);
-BEGIN
-   IF FMaskedColor = Value THEN
-      exit;
-   FMaskedColor := Value;
-   Invalidate;
-END;
+procedure TJvgImageGroup.SetMaskedColor(Value: TColor);
+begin
+  if FMaskedColor = Value then
+    exit;
+  FMaskedColor := Value;
+  Invalidate;
+end;
 
-PROCEDURE TJvgImageGroup.SetDisabledMaskColor(Value: TColor);
-BEGIN
-   IF FDisabledMaskColor = Value THEN
-      exit;
-   FDisabledMaskColor := Value;
-   Invalidate;
-END;
+procedure TJvgImageGroup.SetDisabledMaskColor(Value: TColor);
+begin
+  if FDisabledMaskColor = Value then
+    exit;
+  FDisabledMaskColor := Value;
+  Invalidate;
+end;
 //________________________________________________________
 
-PROCEDURE TJvgImageGroup.SetAutoTrColor(Value: TglAutoTransparentColor);
+procedure TJvgImageGroup.SetAutoTrColor(Value: TglAutoTransparentColor);
 //var x,y :integer;
-BEGIN {
-   FAutoTrColor := Value;
-   if (FAutoTrColor=ftcUser)or((FBitmap.Width or FBitmap.Height)=0)then
-     exit;
-   case FAutoTrColor of
-     ftcLeftTopPixel: begin x:=0; y:=0; end;
-     ftcLeftBottomPixel: begin x:=0; y:=FBitmap.Height-1; end;
-     ftcRightTopPixel: begin x:=FBitmap.Width-1; y:=0; end;
-     ftcRightBottomPixel: begin x:=FBitmap.Width-1; y:=FBitmap.Height-1; end;
-   end;
-   FTransparentColor := GetPixel(FBitmap.Canvas.Handle,x,y);
-   Invalidate;}
-END;
+begin {
+  FAutoTrColor := Value;
+  if (FAutoTrColor=ftcUser)or((FBitmap.Width or FBitmap.Height)=0)then
+    exit;
+  case FAutoTrColor of
+    ftcLeftTopPixel: begin x:=0; y:=0; end;
+    ftcLeftBottomPixel: begin x:=0; y:=FBitmap.Height-1; end;
+    ftcRightTopPixel: begin x:=FBitmap.Width-1; y:=0; end;
+    ftcRightBottomPixel: begin x:=FBitmap.Width-1; y:=FBitmap.Height-1; end;
+  end;
+  FTransparentColor := GetPixel(FBitmap.Canvas.Handle,x,y);
+  Invalidate;}
+end;
 //________________________________________________________
 
-PROCEDURE TJvgImageGroup.SetFastDraw(Value: boolean);
-BEGIN
-   FFastDraw := Value;
-END;
+procedure TJvgImageGroup.SetFastDraw(Value: boolean);
+begin
+  FFastDraw := Value;
+end;
 
-END.
-
+end.

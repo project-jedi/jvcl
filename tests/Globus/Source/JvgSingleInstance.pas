@@ -27,40 +27,40 @@ Known Issues:
 
 {$I JVCL.INC}
 
-UNIT JvgSingleInstance;
+unit JvgSingleInstance;
 
-INTERFACE
+interface
 
-USES
-   Windows,
-   Messages,
-   Classes,
-   Forms,
-   JvComponent,
-   Dialogs,
-   syncobjs,
-   SysUtils;
+uses
+  Windows,
+  Messages,
+  Classes,
+  Forms,
+  JvComponent,
+  Dialogs,
+  syncobjs,
+  SysUtils;
 
-TYPE
-   TJvgSingleInstance = CLASS(TJvComponent)
-   PRIVATE
-      CheckEvent: TEvent;
-   PROTECTED
-      { Protected declarations }
-   PUBLIC
-      CONSTRUCTOR Create(AOwner: TComponent); OVERRIDE;
-      DESTRUCTOR Destroy; OVERRIDE;
-   PUBLISHED
-      { Published declarations }
-   END;
+type
+  TJvgSingleInstance = class(TJvComponent)
+  private
+    CheckEvent: TEvent;
+  protected
+    { Protected declarations }
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  published
+    { Published declarations }
+  end;
 
-PROCEDURE Register;
+procedure Register;
 
-IMPLEMENTATION
+implementation
 
-PROCEDURE Register;
-BEGIN
-END;
+procedure Register;
+begin
+end;
 
 { semaphore
 
@@ -107,26 +107,25 @@ end.
 }
 { TJvgSingleInstance }
 
-CONSTRUCTOR TJvgSingleInstance.Create(AOwner: TComponent);
-BEGIN
-   INHERITED;
-   IF csDesigning IN ComponentState THEN
-      exit;
-   CheckEvent := TEvent.Create(NIL, false, true, ExtractFileName(ParamStr(0)));
-   IF CheckEvent.WaitFor(10) <> wrSignaled THEN
-   BEGIN
-      Application.MessageBox('Копия данной программы уже запущена. Повторный запуск программы не разрешен.', PChar('Повторный запуск программы ' + ExtractFileName(ParamStr(0))),
-         MB_ICONSTOP OR MB_OK);
-      halt;
-   END;
-END;
+constructor TJvgSingleInstance.Create(AOwner: TComponent);
+begin
+  inherited;
+  if csDesigning in ComponentState then
+    exit;
+  CheckEvent := TEvent.Create(nil, false, true, ExtractFileName(ParamStr(0)));
+  if CheckEvent.WaitFor(10) <> wrSignaled then
+  begin
+    Application.MessageBox('Копия данной программы уже запущена. Повторный запуск программы не разрешен.', PChar('Повторный запуск программы ' + ExtractFileName(ParamStr(0))),
+      MB_ICONSTOP or MB_OK);
+    halt;
+  end;
+end;
 
-DESTRUCTOR TJvgSingleInstance.Destroy;
-BEGIN
-   INHERITED;
-   IF Assigned(CheckEvent) THEN
-      CheckEvent.Free;
-END;
+destructor TJvgSingleInstance.Destroy;
+begin
+  inherited;
+  if Assigned(CheckEvent) then
+    CheckEvent.Free;
+end;
 
-END.
-
+end.

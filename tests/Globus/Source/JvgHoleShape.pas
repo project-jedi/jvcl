@@ -27,622 +27,621 @@ Known Issues:
 
 {$I JVCL.INC}
 
-UNIT JvgHoleShape;
+unit JvgHoleShape;
 
-INTERFACE
+interface
 
-USES
-   Windows,
-   Messages,
-   SysUtils,
-   Classes,
-   Graphics,
-   Controls,
-   Forms,
-   Dialogs,
-   ExtCtrls,
-   JvgTypes,
-   JvgUtils,
-   JVComponent,
-   JvgCommClasses;
+uses
+  Windows,
+  Messages,
+  SysUtils,
+  Classes,
+  Graphics,
+  Controls,
+  Forms,
+  Dialogs,
+  ExtCtrls,
+  JvgTypes,
+  JvgUtils,
+  JVComponent,
+  JvgCommClasses;
 
-TYPE
-   TRGNCombineMode = (cmAND, cmCOPY, cmDIFF, cmOR, cmXOR);
-   THoleShapeType = (stRectangle, stSquare, stRoundRect, stRoundSquare,
-      stEllipse, stCircle);
-   TJvgHoleShape = CLASS(TJvGraphicControl)
-   PRIVATE
-      FShape: THoleShapeType;
-      FShapeBitmap: TBitmap;
-      FBevelInner: TPanelBevel;
-      FBevelOuter: TPanelBevel;
-      FBoldInner: boolean;
-      FBoldOuter: boolean;
-      FRectEllipse: TJvgPointClass;
-      FBevelOffset: integer;
-      fNeedUpdateRGN: boolean;
-      fDestroyed: boolean;
-      fRunOnce: boolean;
-      fNeedRebuildBitmapShape: boolean;
-      OldX, OldY, OldW, OldH: integer;
-      PROCEDURE SetEnabled(Value: boolean);
-      PROCEDURE SetEnabledDT(Value: boolean);
-      PROCEDURE SetShape(Value: THoleShapeType);
-      PROCEDURE SetShapeBitmap(Value: TBitmap);
-      PROCEDURE SetBevelInner(Value: TPanelBevel);
-      PROCEDURE SetBevelOuter(Value: TPanelBevel);
-      PROCEDURE SetBoldInner(Value: boolean);
-      PROCEDURE SetBoldOuter(Value: boolean);
-      PROCEDURE SetCombineMode(Value: TRGNCombineMode);
-      PROCEDURE SetBevelOffset(Value: integer);
+type
+  TRGNCombineMode = (cmAND, cmCOPY, cmDIFF, cmOR, cmXOR);
+  THoleShapeType = (stRectangle, stSquare, stRoundRect, stRoundSquare,
+    stEllipse, stCircle);
+  TJvgHoleShape = class(TJvGraphicControl)
+  private
+    FShape: THoleShapeType;
+    FShapeBitmap: TBitmap;
+    FBevelInner: TPanelBevel;
+    FBevelOuter: TPanelBevel;
+    FBoldInner: boolean;
+    FBoldOuter: boolean;
+    FRectEllipse: TJvgPointClass;
+    FBevelOffset: integer;
+    fNeedUpdateRGN: boolean;
+    fDestroyed: boolean;
+    fRunOnce: boolean;
+    fNeedRebuildBitmapShape: boolean;
+    OldX, OldY, OldW, OldH: integer;
+    procedure SetEnabled(Value: boolean);
+    procedure SetEnabledDT(Value: boolean);
+    procedure SetShape(Value: THoleShapeType);
+    procedure SetShapeBitmap(Value: TBitmap);
+    procedure SetBevelInner(Value: TPanelBevel);
+    procedure SetBevelOuter(Value: TPanelBevel);
+    procedure SetBoldInner(Value: boolean);
+    procedure SetBoldOuter(Value: boolean);
+    procedure SetCombineMode(Value: TRGNCombineMode);
+    procedure SetBevelOffset(Value: integer);
 
-      PROCEDURE Update_;
-      PROCEDURE CalcRGNs;
-      PROCEDURE SmthChanged(Sender: TObject);
-      PROCEDURE SayAllDTEnabledState(EnabledDT: boolean);
-   PROTECTED
-      PROCEDURE Paint; OVERRIDE;
-   PUBLIC
-      RGNOuter, RGNInner: HRGN;
-      FCombineMode: TRGNCombineMode;
-      FEnabledDT: boolean;
-      FEnabled: boolean;
-      CONSTRUCTOR Create(AOwner: TComponent); OVERRIDE;
-      DESTRUCTOR Destroy; OVERRIDE;
-      PROCEDURE UpdateRGN;
-      PROCEDURE Loaded; OVERRIDE;
-   PUBLISHED
-      PROPERTY Align;
-      PROPERTY ShowHint;
-      PROPERTY ParentShowHint;
-      PROPERTY PopupMenu;
-      //    property Visible;
-      PROPERTY Enabled: boolean READ FEnabled WRITE SetEnabled
-         DEFAULT true;
-      PROPERTY EnabledAllInDesignTime: boolean READ FEnabledDT WRITE SetEnabledDT
-         DEFAULT true;
-      PROPERTY Shape: THoleShapeType READ FShape WRITE SetShape
-         DEFAULT stEllipse;
-      PROPERTY BevelInner: TPanelBevel READ FBevelInner WRITE SetBevelInner
-         DEFAULT bvNone;
-      PROPERTY BevelOuter: TPanelBevel READ FBevelOuter WRITE SetBevelOuter
-         DEFAULT bvLowered;
-      PROPERTY BevelInnerBold: boolean READ FBoldInner WRITE SetBoldInner
-         DEFAULT true;
-      PROPERTY BevelOuterBold: boolean READ FBoldOuter WRITE SetBoldOuter
-         DEFAULT true;
-      PROPERTY CombineMode: TRGNCombineMode READ FCombineMode WRITE
-         SetCombineMode
-         DEFAULT cmDIFF;
-      PROPERTY BevelOffset: integer READ FBevelOffset WRITE SetBevelOffset
-         DEFAULT 0;
-      PROPERTY RectEllipse: TJvgPointClass READ FRectEllipse WRITE FRectEllipse;
-      PROPERTY ShapeBitmap: TBitmap READ FShapeBitmap WRITE SetShapeBitmap;
-   END;
+    procedure Update_;
+    procedure CalcRGNs;
+    procedure SmthChanged(Sender: TObject);
+    procedure SayAllDTEnabledState(EnabledDT: boolean);
+  protected
+    procedure Paint; override;
+  public
+    RGNOuter, RGNInner: HRGN;
+    FCombineMode: TRGNCombineMode;
+    FEnabledDT: boolean;
+    FEnabled: boolean;
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure UpdateRGN;
+    procedure Loaded; override;
+  published
+    property Align;
+    property ShowHint;
+    property ParentShowHint;
+    property PopupMenu;
+    //    property Visible;
+    property Enabled: boolean read FEnabled write SetEnabled
+      default true;
+    property EnabledAllInDesignTime: boolean read FEnabledDT write SetEnabledDT
+      default true;
+    property Shape: THoleShapeType read FShape write SetShape
+      default stEllipse;
+    property BevelInner: TPanelBevel read FBevelInner write SetBevelInner
+      default bvNone;
+    property BevelOuter: TPanelBevel read FBevelOuter write SetBevelOuter
+      default bvLowered;
+    property BevelInnerBold: boolean read FBoldInner write SetBoldInner
+      default true;
+    property BevelOuterBold: boolean read FBoldOuter write SetBoldOuter
+      default true;
+    property CombineMode: TRGNCombineMode read FCombineMode write
+      SetCombineMode
+      default cmDIFF;
+    property BevelOffset: integer read FBevelOffset write SetBevelOffset
+      default 0;
+    property RectEllipse: TJvgPointClass read FRectEllipse write FRectEllipse;
+    property ShapeBitmap: TBitmap read FShapeBitmap write SetShapeBitmap;
+  end;
 
-PROCEDURE Register;
+procedure Register;
 
-IMPLEMENTATION
-CONST
-   aCombMode                     : ARRAY[0..4] OF integer = (RGN_AND, RGN_COPY,
-      RGN_DIFF, RGN_OR, RGN_XOR);
-   {~~~~~~~~~~~~~~~~~~~~~~~~~}
+implementation
+const
+  aCombMode: array[0..4] of integer = (RGN_AND, RGN_COPY,
+    RGN_DIFF, RGN_OR, RGN_XOR);
+  {~~~~~~~~~~~~~~~~~~~~~~~~~}
 
-PROCEDURE Register;
-BEGIN
-END;
+procedure Register;
+begin
+end;
 {~~~~~~~~~~~~~~~~~~~~~~~~~}
 //________________________________________________________ Methods _
 
-CONSTRUCTOR TJvgHoleShape.Create(AOwner: TComponent);
-BEGIN
-   INHERITED;
-   FShapeBitmap := TBitmap.Create;
-   FEnabled := (Owner IS TWinControl);
+constructor TJvgHoleShape.Create(AOwner: TComponent);
+begin
+  inherited;
+  FShapeBitmap := TBitmap.Create;
+  FEnabled := (Owner is TWinControl);
 
-   ControlStyle := ControlStyle - [csOpaque];
-   FEnabledDT := FEnabled;
-   fDestroyed := false;
-   FRectEllipse := TJvgPointClass.Create;
-   FRectEllipse.x := 30;
-   FRectEllipse.y := 30;
-   FRectEllipse.OnChanged := SmthChanged;
-   FShape := stEllipse;
-   FBevelOuter := bvLowered;
-   FBevelInner := bvNone;
-   FCombineMode := cmDIFF;
-   FBoldInner := true;
-   FBoldOuter := true;
-   FRectEllipse.y := 45;
-   FRectEllipse.x := 45;
-   FBevelOffset := 0;
-   Width := 112;
-   Height := 112;
-   fNeedUpdateRGN := false;
-   fRunOnce := true;
-END;
+  ControlStyle := ControlStyle - [csOpaque];
+  FEnabledDT := FEnabled;
+  fDestroyed := false;
+  FRectEllipse := TJvgPointClass.Create;
+  FRectEllipse.x := 30;
+  FRectEllipse.y := 30;
+  FRectEllipse.OnChanged := SmthChanged;
+  FShape := stEllipse;
+  FBevelOuter := bvLowered;
+  FBevelInner := bvNone;
+  FCombineMode := cmDIFF;
+  FBoldInner := true;
+  FBoldOuter := true;
+  FRectEllipse.y := 45;
+  FRectEllipse.x := 45;
+  FBevelOffset := 0;
+  Width := 112;
+  Height := 112;
+  fNeedUpdateRGN := false;
+  fRunOnce := true;
+end;
 
-DESTRUCTOR TJvgHoleShape.Destroy;
-BEGIN
-   FShapeBitmap.Free;
-   FRectEllipse.Free;
-   IF NOT (csDestroying IN Owner.ComponentState) THEN
-   BEGIN
-      FEnabledDT := false;
-      FEnabled := false;
-      UpdateRGN();
-   END;
-   INHERITED;
-END;
+destructor TJvgHoleShape.Destroy;
+begin
+  FShapeBitmap.Free;
+  FRectEllipse.Free;
+  if not (csDestroying in Owner.ComponentState) then
+  begin
+    FEnabledDT := false;
+    FEnabled := false;
+    UpdateRGN();
+  end;
+  inherited;
+end;
 
-PROCEDURE TJvgHoleShape.Paint;
-VAR
-   r                          : TRect;
-   H, W, EH, EW, i            : integer;
+procedure TJvgHoleShape.Paint;
+var
+  r: TRect;
+  H, W, EH, EW, i: integer;
 
-   PROCEDURE DrawShape(Bevel: TPanelBevel; fBold, fRect: boolean);  //_______LOCAL PROC_
+  procedure DrawShape(Bevel: TPanelBevel; fBold, fRect: boolean); //_______LOCAL PROC_
 
-      PROCEDURE SetPenAndBrush(c: Tcolor);
-      BEGIN
-         Canvas.Pen.Color := c;
-         IF fRect AND ((EW AND EH) = 0) THEN
-         BEGIN
-            Canvas.Brush.Style := bsClear;
-         END
-         ELSE
-         BEGIN
-            Canvas.Brush.Color := c;
-         END
-      END;
-   BEGIN
-      Canvas.Brush.Style := bsClear;    //bsSolid;//bsClear;
-      i := integer(fBold);
-      WITH Canvas DO
-         CASE Bevel OF
-            bvLowered:
-               BEGIN
-                  SetPenAndBrush(clBtnHighlight);
-                  IF fRect THEN
-                     RoundRect(R.Left, R.Top, R.Right, R.Bottom, EW, EH)
-                  ELSE
-                     Ellipse(R.Left, R.Top, R.Right, R.Bottom);
-                  SetPenAndBrush(clBtnShadow);
-                  IF fRect THEN
-                     RoundRect(R.Left, R.Top, R.Right - 1, R.Bottom - 1, EW, EH)
-                  ELSE
-                     Ellipse(R.Left, R.Top, R.Right - 1, R.Bottom - 1);
-                  IF FBold THEN
-                  BEGIN
-                     SetPenAndBrush(cl3DDkShadow);
-                     IF fRect THEN
-                        RoundRect(R.Left + 1, R.Top + 1, R.Right - 1, R.Bottom -
-                           1, EW, EH)
-                     ELSE
-                        Ellipse(R.Left + 1, R.Top + 1, R.Right - 1, R.Bottom -
-                           1);
-                  END;
-                  InflateRect(R, -1, -1);
-                  inc(R.Left, i);
-                  inc(R.Top, i);
-               END;
-            bvRaised:
-               BEGIN
-                  SetPenAndBrush(clBtnHighlight);
-                  IF fRect THEN
-                     RoundRect(R.Left, R.Top, R.Right, R.Bottom, EW, EH)
-                  ELSE
-                     Ellipse(R.Left, R.Top, R.Right, R.Bottom);
-                  IF FBold THEN
-                  BEGIN
-                     SetPenAndBrush(cl3DDkShadow);
-                     IF fRect THEN
-                        RoundRect(R.Left + 1, R.Top + 1, R.Right, R.Bottom, EW,
-                           EH)
-                     ELSE
-                        Ellipse(R.Left + 1, R.Top + 1, R.Right, R.Bottom);
-                  END;
-                  SetPenAndBrush(clBtnShadow);
-                  IF fRect THEN
-                     RoundRect(R.Left + 1, R.Top + 1, R.Right - i, R.Bottom - i,
-                        EW, EH)
-                  ELSE
-                     Ellipse(R.Left + 1, R.Top + 1, R.Right - i, R.Bottom - i);
-                  InflateRect(R, -1, -1);
-                  dec(R.Right, i);
-                  dec(R.Bottom, i);
-               END;
-         ELSE
-            BEGIN
-               //Brush.Color:=clBlack;
-               //FrameRect( Rect(Left, Top, Left+W, Top+H) );
-            END;
-         END;
-      SetPenAndBrush(clBtnFace);
+    procedure SetPenAndBrush(c: Tcolor);
+    begin
+      Canvas.Pen.Color := c;
+      if fRect and ((EW and EH) = 0) then
+      begin
+        Canvas.Brush.Style := bsClear;
+      end
+      else
+      begin
+        Canvas.Brush.Color := c;
+      end
+    end;
+  begin
+    Canvas.Brush.Style := bsClear; //bsSolid;//bsClear;
+    i := integer(fBold);
+    with Canvas do
+      case Bevel of
+        bvLowered:
+          begin
+            SetPenAndBrush(clBtnHighlight);
+            if fRect then
+              RoundRect(R.Left, R.Top, R.Right, R.Bottom, EW, EH)
+            else
+              Ellipse(R.Left, R.Top, R.Right, R.Bottom);
+            SetPenAndBrush(clBtnShadow);
+            if fRect then
+              RoundRect(R.Left, R.Top, R.Right - 1, R.Bottom - 1, EW, EH)
+            else
+              Ellipse(R.Left, R.Top, R.Right - 1, R.Bottom - 1);
+            if FBold then
+            begin
+              SetPenAndBrush(cl3DDkShadow);
+              if fRect then
+                RoundRect(R.Left + 1, R.Top + 1, R.Right - 1, R.Bottom -
+                  1, EW, EH)
+              else
+                Ellipse(R.Left + 1, R.Top + 1, R.Right - 1, R.Bottom -
+                  1);
+            end;
+            InflateRect(R, -1, -1);
+            inc(R.Left, i);
+            inc(R.Top, i);
+          end;
+        bvRaised:
+          begin
+            SetPenAndBrush(clBtnHighlight);
+            if fRect then
+              RoundRect(R.Left, R.Top, R.Right, R.Bottom, EW, EH)
+            else
+              Ellipse(R.Left, R.Top, R.Right, R.Bottom);
+            if FBold then
+            begin
+              SetPenAndBrush(cl3DDkShadow);
+              if fRect then
+                RoundRect(R.Left + 1, R.Top + 1, R.Right, R.Bottom, EW,
+                  EH)
+              else
+                Ellipse(R.Left + 1, R.Top + 1, R.Right, R.Bottom);
+            end;
+            SetPenAndBrush(clBtnShadow);
+            if fRect then
+              RoundRect(R.Left + 1, R.Top + 1, R.Right - i, R.Bottom - i,
+                EW, EH)
+            else
+              Ellipse(R.Left + 1, R.Top + 1, R.Right - i, R.Bottom - i);
+            InflateRect(R, -1, -1);
+            dec(R.Right, i);
+            dec(R.Bottom, i);
+          end;
+      else
+        begin
+          //Brush.Color:=clBlack;
+          //FrameRect( Rect(Left, Top, Left+W, Top+H) );
+        end;
+      end;
+    SetPenAndBrush(clBtnFace);
 
-   END; //____________________________________END LOCAL PROC_
+  end; //____________________________________END LOCAL PROC_
 
-BEGIN //_________________________________________________________PAINT_
-   fNeedUpdateRGN := fNeedUpdateRGN OR (OldX <> Left) OR (OldY <> Top) OR (OldW
-      <> Width) OR (OldH <> Height);
+begin //_________________________________________________________PAINT_
+  fNeedUpdateRGN := fNeedUpdateRGN or (OldX <> Left) or (OldY <> Top) or (OldW
+    <> Width) or (OldH <> Height);
 
-   IF fNeedUpdateRGN THEN
-      UpdateRGN();
-   OldX := Left;
-   OldY := Top;
-   OldW := Width;
-   OldH := Height;
+  if fNeedUpdateRGN then
+    UpdateRGN();
+  OldX := Left;
+  OldY := Top;
+  OldW := Width;
+  OldH := Height;
 
-   IF IsItAFilledBitmap(FShapeBitmap) THEN
-   BEGIN
-      BitBlt(Canvas.handle, -1, -1, Width, Height, FShapeBitmap.Canvas.handle,
-         0, 0, SRCCopy);
-      exit;
-   END;
+  if IsItAFilledBitmap(FShapeBitmap) then
+  begin
+    BitBlt(Canvas.handle, -1, -1, Width, Height, FShapeBitmap.Canvas.handle,
+      0, 0, SRCCopy);
+    exit;
+  end;
 
-   CASE FShape OF
-      stRectangle, stRoundRect, stEllipse:
-         BEGIN
-            H := Height;
-            W := Width;
-         END
-   ELSE
-      BEGIN
-         H := min(Height, Width);
-         W := H;
-      END;
-   END;
-   R := Bounds(0, 0, W, H);
-   WITH Canvas DO
-      CASE FShape OF
-         stRectangle, stSquare, stRoundRect, stRoundSquare:
-            BEGIN
-               IF (FShape = stRectangle) OR (FShape = stSquare) THEN
-               BEGIN
-                  EW := 0;
-                  EH := 0;
-               END;
-               IF (FShape = stRoundRect) OR (FShape = stRoundSquare) THEN
-               BEGIN
-                  EW := FRectEllipse.x;
-                  EH := FRectEllipse.y;
-               END;
+  case FShape of
+    stRectangle, stRoundRect, stEllipse:
+      begin
+        H := Height;
+        W := Width;
+      end
+  else
+    begin
+      H := min(Height, Width);
+      W := H;
+    end;
+  end;
+  R := Bounds(0, 0, W, H);
+  with Canvas do
+    case FShape of
+      stRectangle, stSquare, stRoundRect, stRoundSquare:
+        begin
+          if (FShape = stRectangle) or (FShape = stSquare) then
+          begin
+            EW := 0;
+            EH := 0;
+          end;
+          if (FShape = stRoundRect) or (FShape = stRoundSquare) then
+          begin
+            EW := FRectEllipse.x;
+            EH := FRectEllipse.y;
+          end;
 
-               DrawShape(FBevelOuter, FBoldOuter, true);
-               InflateRect(R, -FBevelOffset, -FBevelOffset);
-               DrawShape(FBevelInner, FBoldInner, true);
+          DrawShape(FBevelOuter, FBoldOuter, true);
+          InflateRect(R, -FBevelOffset, -FBevelOffset);
+          DrawShape(FBevelInner, FBoldInner, true);
 
-               //Pen.Color:=clBtnFace;
-               //Rect( R.Left, R.Top, R.Right, R.Bottom );
-            END;
-         stEllipse, stCircle:
-            BEGIN
-               DrawShape(FBevelOuter, FBoldOuter, false);
-               InflateRect(R, -FBevelOffset, -FBevelOffset);
-               DrawShape(FBevelInner, FBoldInner, false);
-            END;
-      END;
-END;
+          //Pen.Color:=clBtnFace;
+          //Rect( R.Left, R.Top, R.Right, R.Bottom );
+        end;
+      stEllipse, stCircle:
+        begin
+          DrawShape(FBevelOuter, FBoldOuter, false);
+          InflateRect(R, -FBevelOffset, -FBevelOffset);
+          DrawShape(FBevelInner, FBoldInner, false);
+        end;
+    end;
+end;
 //-------------------------------------------------------
 
-PROCEDURE TJvgHoleShape.CalcRGNs;
-VAR
-   H, W, xOffs, yOffs         : integer;
-   R                          : TRect;
-   BmpInfo                    : Windows.TBitmap;
-   BorderStyle                : TFormBorderStyle;
+procedure TJvgHoleShape.CalcRGNs;
+var
+  H, W, xOffs, yOffs: integer;
+  R: TRect;
+  BmpInfo: Windows.TBitmap;
+  BorderStyle: TFormBorderStyle;
 
-   PROCEDURE CalcShape(Bevel: TPanelBevel; fBold: boolean); //____LOCAL PROC_
-   VAR
-      i                       : integer;
-   BEGIN
-      i := integer(fBold);
-      CASE Bevel OF
-         bvLowered:
-            BEGIN
-               InflateRect(R, -1, -1);
-               inc(R.Left, i);
-               inc(R.Top, i);
-            END;
-         bvRaised:
-            BEGIN
-               InflateRect(R, -1, -1);
-               dec(R.Right, i);
-               dec(R.Bottom, i);
-            END;
-      END;
-   END; //____________________________________END LOCAL PROC_
+  procedure CalcShape(Bevel: TPanelBevel; fBold: boolean); //____LOCAL PROC_
+  var
+    i: integer;
+  begin
+    i := integer(fBold);
+    case Bevel of
+      bvLowered:
+        begin
+          InflateRect(R, -1, -1);
+          inc(R.Left, i);
+          inc(R.Top, i);
+        end;
+      bvRaised:
+        begin
+          InflateRect(R, -1, -1);
+          dec(R.Right, i);
+          dec(R.Bottom, i);
+        end;
+    end;
+  end; //____________________________________END LOCAL PROC_
 
-   PROCEDURE CalcBmpRgn(VAR rgn: HRGN);
-   VAR
-      i, j                    : integer;
-      rgn2                    : HRGN;
-      TransparentColor        : TColor;
-   BEGIN
-      TransparentColor := FShapeBitmap.Canvas.Pixels[0, FShapeBitmap.Height -
-         1];
-      FOR j := 0 TO FShapeBitmap.Height DO
-         FOR i := 0 TO FShapeBitmap.Width DO
-         BEGIN
-            IF FShapeBitmap.Canvas.Pixels[i, j] <> TransparentColor THEN
-               continue;
-            RGN2 := CreateRectRgn(i, j, i + 1, j + 1);
-            CombineRgn(RGN, RGN2, RGN, RGN_OR);
-            DeleteObject(RGN2);
-         END;
-   END; //____________________________________END LOCAL PROC_
-BEGIN
-   IF NOT FShapeBitmap.Empty THEN
-   BEGIN
-      {if fNeedRebuildBitmapShape then} WITH FShapeBitmap DO
-      BEGIN
-         GetObject(FShapeBitmap.Handle, sizeof(Windows.TBitmap), @BmpInfo);
-         DeleteObject(RGNOuter);
-         DeleteObject(RGNInner);
-         RGNInner := CreateRectRgn(0, 0, 0, 0);
-         CalcBmpRgn(RGNInner);
-         fNeedRebuildBitmapShape := false;
-      END;
-   END
-   ELSE
-   BEGIN
-      CASE FShape OF
-         stRectangle, stRoundRect, stEllipse:
-            BEGIN
-               H := Height;
-               W := Width;
-            END
-      ELSE
-         BEGIN
-            H := min(Height, Width);
-            W := H;
-         END;
-      END;
-      R := Bounds(0, 0, W, H);
+  procedure CalcBmpRgn(var rgn: HRGN);
+  var
+    i, j: integer;
+    rgn2: HRGN;
+    TransparentColor: TColor;
+  begin
+    TransparentColor := FShapeBitmap.Canvas.Pixels[0, FShapeBitmap.Height -
+      1];
+    for j := 0 to FShapeBitmap.Height do
+      for i := 0 to FShapeBitmap.Width do
+      begin
+        if FShapeBitmap.Canvas.Pixels[i, j] <> TransparentColor then
+          continue;
+        RGN2 := CreateRectRgn(i, j, i + 1, j + 1);
+        CombineRgn(RGN, RGN2, RGN, RGN_OR);
+        DeleteObject(RGN2);
+      end;
+  end; //____________________________________END LOCAL PROC_
+begin
+  if not FShapeBitmap.Empty then
+  begin
+    {if fNeedRebuildBitmapShape then} with FShapeBitmap do
+    begin
+      GetObject(FShapeBitmap.Handle, sizeof(Windows.TBitmap), @BmpInfo);
       DeleteObject(RGNOuter);
       DeleteObject(RGNInner);
+      RGNInner := CreateRectRgn(0, 0, 0, 0);
+      CalcBmpRgn(RGNInner);
+      fNeedRebuildBitmapShape := false;
+    end;
+  end
+  else
+  begin
+    case FShape of
+      stRectangle, stRoundRect, stEllipse:
+        begin
+          H := Height;
+          W := Width;
+        end
+    else
+      begin
+        H := min(Height, Width);
+        W := H;
+      end;
+    end;
+    R := Bounds(0, 0, W, H);
+    DeleteObject(RGNOuter);
+    DeleteObject(RGNInner);
 
-      IF FBevelOffset <> 0 THEN
-      BEGIN
-         CalcShape(FBevelOuter, FBoldOuter);
-         OffsetRect(R, 1, 1);
-      END;
-      CASE FShape OF
-         stRectangle, stSquare:
-            RGNOuter := CreateRectRgn(R.Left, R.Top, R.Right, R.Bottom);
-         stRoundRect, stRoundSquare:
-            RGNOuter := CreateRoundRectRgn(R.Left, R.Top, R.Right, R.Bottom,
-               FRectEllipse.x, FRectEllipse.y);
-         stEllipse, stCircle:
-            RGNOuter := CreateEllipticRgn(R.Left, R.Top, R.Right, R.Bottom);
-      END;
-      IF FBevelOffset = 0 THEN
-         CalcShape(FBevelOuter, FBoldOuter);
-      InflateRect(R, -FBevelOffset, -FBevelOffset);
-      IF FBevelOffset = 0 THEN
-         CalcShape(FBevelInner, FBoldInner)
-      ELSE
-         OffsetRect(R, -1, -1);
-      CASE FShape OF
-         stRectangle, stSquare:
-            RGNInner := CreateRectRgn(R.Left + 1, R.Top + 1, R.Right + 1,
-               R.Bottom + 1);
-         stRoundRect, stRoundSquare:
-            RGNInner := CreateRoundRectRgn(R.Left + 1, R.Top + 1, R.Right + 2,
-               R.Bottom + 2, FRectEllipse.x, FRectEllipse.y);
-         stEllipse, stCircle:
-            RGNInner := CreateEllipticRgn(R.Left + 1, R.Top + 1, R.Right + 2,
-               R.Bottom + 2);
-      END;
-   END;
+    if FBevelOffset <> 0 then
+    begin
+      CalcShape(FBevelOuter, FBoldOuter);
+      OffsetRect(R, 1, 1);
+    end;
+    case FShape of
+      stRectangle, stSquare:
+        RGNOuter := CreateRectRgn(R.Left, R.Top, R.Right, R.Bottom);
+      stRoundRect, stRoundSquare:
+        RGNOuter := CreateRoundRectRgn(R.Left, R.Top, R.Right, R.Bottom,
+          FRectEllipse.x, FRectEllipse.y);
+      stEllipse, stCircle:
+        RGNOuter := CreateEllipticRgn(R.Left, R.Top, R.Right, R.Bottom);
+    end;
+    if FBevelOffset = 0 then
+      CalcShape(FBevelOuter, FBoldOuter);
+    InflateRect(R, -FBevelOffset, -FBevelOffset);
+    if FBevelOffset = 0 then
+      CalcShape(FBevelInner, FBoldInner)
+    else
+      OffsetRect(R, -1, -1);
+    case FShape of
+      stRectangle, stSquare:
+        RGNInner := CreateRectRgn(R.Left + 1, R.Top + 1, R.Right + 1,
+          R.Bottom + 1);
+      stRoundRect, stRoundSquare:
+        RGNInner := CreateRoundRectRgn(R.Left + 1, R.Top + 1, R.Right + 2,
+          R.Bottom + 2, FRectEllipse.x, FRectEllipse.y);
+      stEllipse, stCircle:
+        RGNInner := CreateEllipticRgn(R.Left + 1, R.Top + 1, R.Right + 2,
+          R.Bottom + 2);
+    end;
+  end;
 
-   { calc offsets }
-   IF Owner IS TForm THEN
-   BEGIN
-      IF csDesigning IN ComponentState THEN
-         BorderStyle := bsSizeable
-      ELSE
-         BorderStyle := TForm(Owner).BorderStyle;
-      CASE BorderStyle OF
-         bsSizeable:
-            BEGIN
-               xOffs := GetSystemMetrics(SM_CXFRAME) - 1;
-               yOffs := GetSystemMetrics(SM_CYFRAME) - 1;
-               inc(yOffs, GetSystemMetrics(SM_CYCAPTION));
-            END;
-         bsDialog:
-            BEGIN
-               xOffs := GetSystemMetrics(SM_CXDLGFRAME) - 1;
-               yOffs := GetSystemMetrics(SM_CYDLGFRAME) - 1;
-               inc(yOffs, GetSystemMetrics(SM_CYCAPTION));
-            END;
-         bsSingle:
-            BEGIN
-               xOffs := GetSystemMetrics(SM_CXBORDER);
-               yOffs := GetSystemMetrics(SM_CYBORDER);
-               inc(yOffs, GetSystemMetrics(SM_CYCAPTION));
-            END;
-         bsToolWindow:
-            BEGIN
-               xOffs := GetSystemMetrics(SM_CXBORDER);
-               yOffs := GetSystemMetrics(SM_CYBORDER);
-               inc(yOffs, GetSystemMetrics(SM_CYSMCAPTION));
-            END;
-         bsSizeToolWin:
-            BEGIN
-               xOffs := GetSystemMetrics(SM_CXSIZEFRAME);
-               yOffs := GetSystemMetrics(SM_CYSIZEFRAME);
-               inc(yOffs, GetSystemMetrics(SM_CYSMCAPTION));
-            END;
-      ELSE
-         BEGIN
-            xOffs := -1;
-            yOffs := -1;
-         END;
-      END;
+  { calc offsets }
+  if Owner is TForm then
+  begin
+    if csDesigning in ComponentState then
+      BorderStyle := bsSizeable
+    else
+      BorderStyle := TForm(Owner).BorderStyle;
+    case BorderStyle of
+      bsSizeable:
+        begin
+          xOffs := GetSystemMetrics(SM_CXFRAME) - 1;
+          yOffs := GetSystemMetrics(SM_CYFRAME) - 1;
+          inc(yOffs, GetSystemMetrics(SM_CYCAPTION));
+        end;
+      bsDialog:
+        begin
+          xOffs := GetSystemMetrics(SM_CXDLGFRAME) - 1;
+          yOffs := GetSystemMetrics(SM_CYDLGFRAME) - 1;
+          inc(yOffs, GetSystemMetrics(SM_CYCAPTION));
+        end;
+      bsSingle:
+        begin
+          xOffs := GetSystemMetrics(SM_CXBORDER);
+          yOffs := GetSystemMetrics(SM_CYBORDER);
+          inc(yOffs, GetSystemMetrics(SM_CYCAPTION));
+        end;
+      bsToolWindow:
+        begin
+          xOffs := GetSystemMetrics(SM_CXBORDER);
+          yOffs := GetSystemMetrics(SM_CYBORDER);
+          inc(yOffs, GetSystemMetrics(SM_CYSMCAPTION));
+        end;
+      bsSizeToolWin:
+        begin
+          xOffs := GetSystemMetrics(SM_CXSIZEFRAME);
+          yOffs := GetSystemMetrics(SM_CYSIZEFRAME);
+          inc(yOffs, GetSystemMetrics(SM_CYSMCAPTION));
+        end;
+    else
+      begin
+        xOffs := -1;
+        yOffs := -1;
+      end;
+    end;
 
-      OffsetRgn(RGNInner, Left + xOffs, Top + yOffs);
-      OffsetRgn(RGNOuter, Left + xOffs, Top + yOffs);
-   END;
+    OffsetRgn(RGNInner, Left + xOffs, Top + yOffs);
+    OffsetRgn(RGNOuter, Left + xOffs, Top + yOffs);
+  end;
 
-   fRunOnce := false;
-END;
+  fRunOnce := false;
+end;
 //-------------------------------------------------------
 //...set all enabled/disabled in design time
 
-PROCEDURE TJvgHoleShape.SayAllDTEnabledState(EnabledDT: boolean);
-VAR
-   i                          : integer;
-BEGIN
-   FOR i := 0 TO TWinControl(Owner).ControlCount - 1 DO
-      WITH TWinControl(Owner) DO
-      BEGIN
-         IF (Controls[i] IS TJvgHoleShape) THEN
-         BEGIN
-            TJvgHoleShape(Controls[i]).FEnabledDT := EnabledDT;
-         END;
-      END;
+procedure TJvgHoleShape.SayAllDTEnabledState(EnabledDT: boolean);
+var
+  i: integer;
+begin
+  for i := 0 to TWinControl(Owner).ControlCount - 1 do
+    with TWinControl(Owner) do
+    begin
+      if (Controls[i] is TJvgHoleShape) then
+      begin
+        TJvgHoleShape(Controls[i]).FEnabledDT := EnabledDT;
+      end;
+    end;
 
-END;
+end;
 //-------------------------------------------------------
 
-PROCEDURE TJvgHoleShape.UpdateRGN;
-VAR
-   i                          : integer;
-   NewRGN                     : HRGN;
-BEGIN
-   IF NOT (Owner IS TWinControl) THEN
-      exit;
-   NewRGN := CreateRectRgn(0, 0, 2000, 1000);
+procedure TJvgHoleShape.UpdateRGN;
+var
+  i: integer;
+  NewRGN: HRGN;
+begin
+  if not (Owner is TWinControl) then
+    exit;
+  NewRGN := CreateRectRgn(0, 0, 2000, 1000);
 
-   FOR i := 0 TO TWinControl(Owner).ControlCount - 1 DO
-      WITH TWinControl(Owner) DO
-      BEGIN
-         IF Controls[i] IS TJvgHoleShape THEN
-            WITH TJvgHoleShape(Controls[i]) DO
-               IF ((csDesigning IN ComponentState) AND FEnabledDT)
-                  OR ((NOT (csDesigning IN ComponentState)) AND FEnabled) THEN
-               BEGIN
-                  CalcRGNs;
-                  CombineRgn(NewRGN, NewRGN, RGNInner,
-                     aCombMode[integer(FCombineMode)])
-               END;
-      END;
+  for i := 0 to TWinControl(Owner).ControlCount - 1 do
+    with TWinControl(Owner) do
+    begin
+      if Controls[i] is TJvgHoleShape then
+        with TJvgHoleShape(Controls[i]) do
+          if ((csDesigning in ComponentState) and FEnabledDT)
+            or ((not (csDesigning in ComponentState)) and FEnabled) then
+          begin
+            CalcRGNs;
+            CombineRgn(NewRGN, NewRGN, RGNInner,
+              aCombMode[integer(FCombineMode)])
+          end;
+    end;
 
-   SetWindowRgn(TWinControl(Owner).Handle, NewRGN, true);
-   fNeedUpdateRGN := false;
-END;
+  SetWindowRgn(TWinControl(Owner).Handle, NewRGN, true);
+  fNeedUpdateRGN := false;
+end;
 
-PROCEDURE TJvgHoleShape.Update_;
-BEGIN
-   IF csLoading IN ComponentState THEN
-      exit;
-   UpdateRGN();
-   Refresh;
-END;
+procedure TJvgHoleShape.Update_;
+begin
+  if csLoading in ComponentState then
+    exit;
+  UpdateRGN();
+  Refresh;
+end;
 
-PROCEDURE TJvgHoleShape.SmthChanged(Sender: TObject);
-BEGIN
-   Update_;
-END;
+procedure TJvgHoleShape.SmthChanged(Sender: TObject);
+begin
+  Update_;
+end;
 
 //________________________________________________________ Properties _
 
-PROCEDURE TJvgHoleShape.SetEnabled(Value: boolean);
-BEGIN
-   IF (FEnabled = Value) OR NOT (Owner IS TWinControl) THEN
-      exit;
-   FEnabled := Value;
-   Update_;
-END;
+procedure TJvgHoleShape.SetEnabled(Value: boolean);
+begin
+  if (FEnabled = Value) or not (Owner is TWinControl) then
+    exit;
+  FEnabled := Value;
+  Update_;
+end;
 
-PROCEDURE TJvgHoleShape.SetEnabledDT(Value: boolean);
-BEGIN
-   IF (FEnabledDT = Value) OR NOT (Owner IS TWinControl) THEN
-      exit;
-   FEnabledDT := Value;
-   SayAllDTEnabledState(FEnabledDT);
-   Update_;
-END;
+procedure TJvgHoleShape.SetEnabledDT(Value: boolean);
+begin
+  if (FEnabledDT = Value) or not (Owner is TWinControl) then
+    exit;
+  FEnabledDT := Value;
+  SayAllDTEnabledState(FEnabledDT);
+  Update_;
+end;
 
-PROCEDURE TJvgHoleShape.SetShape(Value: THoleShapeType);
-BEGIN
-   IF FShape = Value THEN
-      exit;
-   FShape := Value;
-   Update_;
-END;
+procedure TJvgHoleShape.SetShape(Value: THoleShapeType);
+begin
+  if FShape = Value then
+    exit;
+  FShape := Value;
+  Update_;
+end;
 
-PROCEDURE TJvgHoleShape.SetShapeBitmap(Value: TBitmap);
-BEGIN
-   IF FShapeBitmap = Value THEN
-      exit;
-   fNeedRebuildBitmapShape := true;
-   FShapeBitmap.Assign(Value);
-   IF Assigned(FShapeBitmap) THEN
-   BEGIN
-      Width := FShapeBitmap.Width;
-      Height := FShapeBitmap.Width;
-   END;
-   Update_();
-END;
+procedure TJvgHoleShape.SetShapeBitmap(Value: TBitmap);
+begin
+  if FShapeBitmap = Value then
+    exit;
+  fNeedRebuildBitmapShape := true;
+  FShapeBitmap.Assign(Value);
+  if Assigned(FShapeBitmap) then
+  begin
+    Width := FShapeBitmap.Width;
+    Height := FShapeBitmap.Width;
+  end;
+  Update_();
+end;
 
-PROCEDURE TJvgHoleShape.SetBevelInner(Value: TPanelBevel);
-BEGIN
-   IF FBevelInner = Value THEN
-      exit;
-   FBevelInner := Value;
-   Update_;
-END;
+procedure TJvgHoleShape.SetBevelInner(Value: TPanelBevel);
+begin
+  if FBevelInner = Value then
+    exit;
+  FBevelInner := Value;
+  Update_;
+end;
 
-PROCEDURE TJvgHoleShape.SetBevelOuter(Value: TPanelBevel);
-BEGIN
-   IF FBevelOuter = Value THEN
-      exit;
-   FBevelOuter := Value;
-   Update_;
-END;
+procedure TJvgHoleShape.SetBevelOuter(Value: TPanelBevel);
+begin
+  if FBevelOuter = Value then
+    exit;
+  FBevelOuter := Value;
+  Update_;
+end;
 
-PROCEDURE TJvgHoleShape.SetBoldInner(Value: boolean);
-BEGIN
-   IF FBoldInner = Value THEN
-      exit;
-   FBoldInner := Value;
-   Update_;
-END;
+procedure TJvgHoleShape.SetBoldInner(Value: boolean);
+begin
+  if FBoldInner = Value then
+    exit;
+  FBoldInner := Value;
+  Update_;
+end;
 
-PROCEDURE TJvgHoleShape.SetBoldOuter(Value: boolean);
-BEGIN
-   IF FBoldOuter = Value THEN
-      exit;
-   FBoldOuter := Value;
-   Update_;
-END;
+procedure TJvgHoleShape.SetBoldOuter(Value: boolean);
+begin
+  if FBoldOuter = Value then
+    exit;
+  FBoldOuter := Value;
+  Update_;
+end;
 
-PROCEDURE TJvgHoleShape.SetCombineMode(Value: TRGNCombineMode);
-BEGIN
-   IF FCombineMode = Value THEN
-      exit;
-   FCombineMode := Value;
-   Update_;
-END;
+procedure TJvgHoleShape.SetCombineMode(Value: TRGNCombineMode);
+begin
+  if FCombineMode = Value then
+    exit;
+  FCombineMode := Value;
+  Update_;
+end;
 
-PROCEDURE TJvgHoleShape.SetBevelOffset(Value: integer);
-BEGIN
-   IF (FBevelOffset = Value) OR (Value < 0) THEN
-      exit;
-   IF (Value > width - 2) OR (Value > height - 2) THEN
-      Value := min(width, height) - 2;
-   FBevelOffset := Value;
-   Update_;
-END;
+procedure TJvgHoleShape.SetBevelOffset(Value: integer);
+begin
+  if (FBevelOffset = Value) or (Value < 0) then
+    exit;
+  if (Value > width - 2) or (Value > height - 2) then
+    Value := min(width, height) - 2;
+  FBevelOffset := Value;
+  Update_;
+end;
 
-PROCEDURE TJvgHoleShape.Loaded;
-BEGIN
-   INHERITED;
-   fNeedRebuildBitmapShape := true;
-   UpdateRGN();
-   Refresh;
-END;
+procedure TJvgHoleShape.Loaded;
+begin
+  inherited;
+  fNeedRebuildBitmapShape := true;
+  UpdateRGN();
+  Refresh;
+end;
 
-END.
-
+end.

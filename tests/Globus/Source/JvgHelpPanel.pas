@@ -140,7 +140,7 @@ implementation
 
 procedure Register;
 begin
-//  RegisterComponents('Gl Controls', [TJvgHelpPanel]);
+  //  RegisterComponents('Gl Controls', [TJvgHelpPanel]);
 end;
 
 { TJvgHelpPanel }

@@ -76,8 +76,8 @@ procedure TJvgfCheckVersionInfo.Execute(WinControl: TWinControl);
 var
   VersionInfo: TJvgHTTPVersionInfo;
 begin
-//  eCurentVersion.Text := globCon.APP_VERSION;
-//  eCurentVersionDate.Text := globCon.APP_DATE;
+  //  eCurentVersion.Text := globCon.APP_VERSION;
+  //  eCurentVersionDate.Text := globCon.APP_DATE;
 
   VersionInfo := TJvgHTTPVersionInfo.Create(self);
   try

@@ -250,11 +250,10 @@ begin
     end;
     if FHottrackThrought then
       doHottracking := (AHottrackCol = ACol) or (AHottrackRow = ARow)
+    else if fsgHottrack in FExtOptions then
+      doHottracking := (AHottrackCol = ACol) and (AHottrackRow = ARow) and ((ACol < FixedCols) or (ARow < FixedRows))
     else
-      if fsgHottrack in FExtOptions then
-        doHottracking := (AHottrackCol = ACol) and (AHottrackRow = ARow) and ((ACol < FixedCols) or (ARow < FixedRows))
-      else
-        doHottracking := false;
+      doHottracking := false;
 
     if isFixedCell then
     begin

@@ -283,7 +283,8 @@ begin
         fhaLeft:
           begin
             x := 1;
-            if fHor then inc(r_.left, Glyph.Width + 1)
+            if fHor then
+              inc(r_.left, Glyph.Width + 1)
           end;
         fhaCenter: x := (r.Right - r.Left - Glyph.Width) div 2;
       else {fhaRight}

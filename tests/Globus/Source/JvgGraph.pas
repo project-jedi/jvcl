@@ -27,119 +27,118 @@ Known Issues:
 
 {$I JVCL.INC}
 
-UNIT JvgGraph;
+unit JvgGraph;
 
-INTERFACE
+interface
 
-USES
-   Windows,
-   Messages,
-   Classes,
-   Controls,
-   Graphics,
-   JvgTypes,
-   JvgCommClasses,
-   JvgUtils,
-   ExtCtrls,
-   JVComponent,
-   JvgBevel;
+uses
+  Windows,
+  Messages,
+  Classes,
+  Controls,
+  Graphics,
+  JvgTypes,
+  JvgCommClasses,
+  JvgUtils,
+  ExtCtrls,
+  JVComponent,
+  JvgBevel;
 
-CONST
-   MaxPointsCount             = 30;
-TYPE
+const
+  MaxPointsCount = 30;
+type
 
-   TJvgGraph = CLASS(TJvGraphicControl) //TJvgBevel)
-   PRIVATE
-      //    procedure SetBevelInner(Value: TPanelBevel);
-      //    procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
-      //    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
-   PROTECTED
-      PROCEDURE Paint; OVERRIDE;
+  TJvgGraph = class(TJvGraphicControl) //TJvgBevel)
+  private
+    //    procedure SetBevelInner(Value: TPanelBevel);
+    //    procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
+    //    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
+  protected
+    procedure Paint; override;
 
-   PUBLIC
-      PenWidth: integer;
-      MaxValue: integer;
-      PointsCount: integer;
-      DrawPointsCount: integer;
-      yPoints: ARRAY[0..MaxPointsCount] OF integer;
-      CONSTRUCTOR Create(AOwner: TComponent); OVERRIDE;
-      DESTRUCTOR Destroy; OVERRIDE;
+  public
+    PenWidth: integer;
+    MaxValue: integer;
+    PointsCount: integer;
+    DrawPointsCount: integer;
+    yPoints: array[0..MaxPointsCount] of integer;
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
 
-   PUBLISHED
-      PROPERTY Color;
-      //    property HorLines: TglGraphLines read FHorLines write FHorLines;
-   END;
+  published
+    property Color;
+    //    property HorLines: TglGraphLines read FHorLines write FHorLines;
+  end;
 
-IMPLEMENTATION
+implementation
 //________________________________________________________ Methods _
 
-CONSTRUCTOR TJvgGraph.Create(AOwner: TComponent);
-VAR
-   i                          : integer;
-BEGIN
-   INHERITED;
-   //..defaults
-   Width := 50;
-   Height := 50;
-   MaxValue := 100;
-   PointsCount := MaxPointsCount;
-   DrawPointsCount := MaxPointsCount;
-   //  for i:=0 to 10 do yPoints[i] := Random(100);//( 1,70,60,40,9,10,10,10,88,10, 5 );
-END;
+constructor TJvgGraph.Create(AOwner: TComponent);
+var
+  i: integer;
+begin
+  inherited;
+  //..defaults
+  Width := 50;
+  Height := 50;
+  MaxValue := 100;
+  PointsCount := MaxPointsCount;
+  DrawPointsCount := MaxPointsCount;
+  //  for i:=0 to 10 do yPoints[i] := Random(100);//( 1,70,60,40,9,10,10,10,88,10, 5 );
+end;
 
-DESTRUCTOR TJvgGraph.Destroy;
-BEGIN
-   INHERITED;
-END;
+destructor TJvgGraph.Destroy;
+begin
+  inherited;
+end;
 
-PROCEDURE TJvgGraph.Paint;
-VAR
-   r, r_                      : TRect;
-   i                          : integer;
-   BoxSides                   : TglSides;
-   Points                     : ARRAY[0..MaxPointsCount] OF TPoint;
-   ShadowPoints               : ARRAY[0..MaxPointsCount] OF TPoint;
+procedure TJvgGraph.Paint;
+var
+  r, r_: TRect;
+  i: integer;
+  BoxSides: TglSides;
+  Points: array[0..MaxPointsCount] of TPoint;
+  ShadowPoints: array[0..MaxPointsCount] of TPoint;
 
-   PROCEDURE OffsetPoints(x, y: integer);
-   VAR
-      i                       : integer;
-   BEGIN
-      FOR i := 0 TO PointsCount DO
-      BEGIN
-         inc(Points[i].x, X);
-         inc(Points[i].y, Y);
-      END;
-   END;
-BEGIN
-   INHERITED;
-   r := ClientRect;
-   InflateRect(r, -2, -2);
+  procedure OffsetPoints(x, y: integer);
+  var
+    i: integer;
+  begin
+    for i := 0 to PointsCount do
+    begin
+      inc(Points[i].x, X);
+      inc(Points[i].y, Y);
+    end;
+  end;
+begin
+  inherited;
+  r := ClientRect;
+  InflateRect(r, -2, -2);
 
-   FOR i := 0 TO PointsCount DO
-   BEGIN
-      Points[i].x := MulDiv(i, Width, PointsCount);
-      Points[i].y := Height - MulDiv(yPoints[i], Height, MaxValue);
-      ShadowPoints[i].x := Points[i].x + 6;
-      ShadowPoints[i].y := Points[i].y + 6;
-   END;
+  for i := 0 to PointsCount do
+  begin
+    Points[i].x := MulDiv(i, Width, PointsCount);
+    Points[i].y := Height - MulDiv(yPoints[i], Height, MaxValue);
+    ShadowPoints[i].x := Points[i].x + 6;
+    ShadowPoints[i].y := Points[i].y + 6;
+  end;
 
-   Canvas.Pen.Width := PenWidth;
-   //  Canvas.Pen.Color := clBtnShadow;
-   //  Canvas.Polyline( ShadowPoints );
+  Canvas.Pen.Width := PenWidth;
+  //  Canvas.Pen.Color := clBtnShadow;
+  //  Canvas.Polyline( ShadowPoints );
 
-     //..3D shadow
-   Canvas.Pen.Color := DecColor(Color, 100);
-   Canvas.Polyline(Slice(Points, DrawPointsCount + 1));
+    //..3D shadow
+  Canvas.Pen.Color := DecColor(Color, 100);
+  Canvas.Polyline(Slice(Points, DrawPointsCount + 1));
 
-   OffsetPoints(-2, -2);
-   Canvas.Pen.Color := IncColor(Color, 200);
-   Canvas.Polyline(Slice(Points, DrawPointsCount + 1));
+  OffsetPoints(-2, -2);
+  Canvas.Pen.Color := IncColor(Color, 200);
+  Canvas.Polyline(Slice(Points, DrawPointsCount + 1));
 
-   OffsetPoints(1, 1);
-   Canvas.Pen.Color := Color;
-   Canvas.Polyline(Slice(Points, DrawPointsCount + 1));
+  OffsetPoints(1, 1);
+  Canvas.Pen.Color := Color;
+  Canvas.Polyline(Slice(Points, DrawPointsCount + 1));
 
-END;
+end;
 
-END.
-
+end.

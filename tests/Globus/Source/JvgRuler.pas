@@ -27,163 +27,162 @@ Known Issues:
 
 {$I JVCL.INC}
 
-UNIT JvgRuler;
+unit JvgRuler;
 
-INTERFACE
-USES
-   Windows,
-   Messages,
-   Classes,
-   Controls,
-   Graphics,
-   JvgTypes,
-   JvgCommClasses,
-   JvgUtils,
-   Forms,
-   OleCtnrs,
-   ExtCtrls,
-   JVComponent,
-   SysUtils;
+interface
+uses
+  Windows,
+  Messages,
+  Classes,
+  Controls,
+  Graphics,
+  JvgTypes,
+  JvgCommClasses,
+  JvgUtils,
+  Forms,
+  OleCtnrs,
+  ExtCtrls,
+  JVComponent,
+  SysUtils;
 
-TYPE
-   TglSizeUnit = (fsuSantimetres, fsuInches, fsuPixels);
+type
+  TglSizeUnit = (fsuSantimetres, fsuInches, fsuPixels);
 
-   TJvgRuler = CLASS(TJvGraphicControl)
-   PRIVATE
-      FUseUnit: TglSizeUnit;
-      FOrientation: TglOrientation;
-      LOGPIXELSX_,
-         LOGPIXELSY_: integer;
-      FPosition: integer;
-      PROCEDURE SetPosition(CONST Value: integer);
-   PROTECTED
-      PROCEDURE Paint; OVERRIDE;
-   PUBLIC
-      PROPERTY Position: integer READ FPosition WRITE SetPosition;
-   PUBLISHED
-      PROPERTY Align;
-      PROPERTY Font;
-      PROPERTY Orientation: TglOrientation READ FOrientation WRITE FOrientation
-         DEFAULT goHorizontal;
-      PROPERTY UseUnit: TglSizeUnit READ FUseUnit WRITE FUseUnit
-         DEFAULT fsuSantimetres;
-   END;
+  TJvgRuler = class(TJvGraphicControl)
+  private
+    FUseUnit: TglSizeUnit;
+    FOrientation: TglOrientation;
+    LOGPIXELSX_,
+      LOGPIXELSY_: integer;
+    FPosition: integer;
+    procedure SetPosition(const Value: integer);
+  protected
+    procedure Paint; override;
+  public
+    property Position: integer read FPosition write SetPosition;
+  published
+    property Align;
+    property Font;
+    property Orientation: TglOrientation read FOrientation write FOrientation
+      default goHorizontal;
+    property UseUnit: TglSizeUnit read FUseUnit write FUseUnit
+      default fsuSantimetres;
+  end;
 
-PROCEDURE Register;
+procedure Register;
 
-IMPLEMENTATION
+implementation
 {~~~~~~~~~~~~~~~~~~~~~~~~~}
 
-PROCEDURE Register;
-BEGIN
-END;
+procedure Register;
+begin
+end;
 {~~~~~~~~~~~~~~~~~~~~~~~~~}
 
-PROCEDURE TJvgRuler.Paint;
-CONST
-   Offset                     : ARRAY[boolean] OF integer = (8, 3);
-VAR
-   x, y                       : single;
-   pt                         : TPoint;
-   str                        : STRING;
-   R                          : TRect;
-BEGIN
-   LOGPIXELSX_ := GetDeviceCaps(Canvas.Handle, LOGPIXELSX);
-   LOGPIXELSY_ := GetDeviceCaps(Canvas.Handle, LOGPIXELSY);
-   Canvas.Font.Assign(Font);
-   x := 0;
-   y := 0;
-   REPEAT
-      x := x + 0.5;
-      y := y + 0.5;
-      //  FUseUnit := fsuSantimetres;
-      CASE FUseUnit OF
-         {fsuPixels://...points
-         begin
-           //PosLabel.Caption := Format( '%u'+#13+'%u', [pt.x,pt.y] );
-         end;}
-         fsuInches:                     //...inchs
-            BEGIN
-               pt.x := round(x * LOGPIXELSX_ * 1.541 / 10);
-               pt.y := round(y * LOGPIXELSY_ * 1.541 / 10);
-            END;
-         fsuSantimetres:                //...santimetres
-            BEGIN
-               pt.x := round(x * LOGPIXELSX_ * 1.541 * 2.54 / 10);
-               pt.y := round(y * LOGPIXELSY_ * 1.541 * 2.54 / 10);
-            END;
-         fsuPixels:                     //...pixels
-            BEGIN
-               pt.x := round(x * 50);
-               pt.y := round(y * 50);
-            END;
-      END;
+procedure TJvgRuler.Paint;
+const
+  Offset: array[boolean] of integer = (8, 3);
+var
+  x, y: single;
+  pt: TPoint;
+  str: string;
+  R: TRect;
+begin
+  LOGPIXELSX_ := GetDeviceCaps(Canvas.Handle, LOGPIXELSX);
+  LOGPIXELSY_ := GetDeviceCaps(Canvas.Handle, LOGPIXELSY);
+  Canvas.Font.Assign(Font);
+  x := 0;
+  y := 0;
+  repeat
+    x := x + 0.5;
+    y := y + 0.5;
+    //  FUseUnit := fsuSantimetres;
+    case FUseUnit of
+      {fsuPixels://...points
+      begin
+        //PosLabel.Caption := Format( '%u'+#13+'%u', [pt.x,pt.y] );
+      end;}
+      fsuInches: //...inchs
+        begin
+          pt.x := round(x * LOGPIXELSX_ * 1.541 / 10);
+          pt.y := round(y * LOGPIXELSY_ * 1.541 / 10);
+        end;
+      fsuSantimetres: //...santimetres
+        begin
+          pt.x := round(x * LOGPIXELSX_ * 1.541 * 2.54 / 10);
+          pt.y := round(y * LOGPIXELSY_ * 1.541 * 2.54 / 10);
+        end;
+      fsuPixels: //...pixels
+        begin
+          pt.x := round(x * 50);
+          pt.y := round(y * 50);
+        end;
+    end;
 
-      WITH Canvas DO
-         IF Orientation = goHorizontal THEN
-         BEGIN
-            IF pt.x > Width THEN
-               break;
-            IF x = trunc(x) THEN
-            BEGIN
-               R := Rect(pt.x - 10, 0, pt.x + 10, Height);
-               SetBkMode(Handle, TRANSPARENT);
-               IF UseUnit = fsuPixels THEN
-                  str := IntToStr(pt.x)
-               ELSE
-                  str := IntToStr(trunc(X));
-               DrawText(Handle, PChar(str), Length(str), R, DT_SINGLELINE OR
-                  DT_CENTER);
-            END;
-            MoveTo(pt.x, Height - Offset[x = trunc(x)]);
-            LineTo(pt.x, Height - 1);
-         END
-         ELSE
-         BEGIN
-            IF pt.y > Height THEN
-               break;
-            IF y = trunc(y) THEN
-            BEGIN
-               R := Rect(0, pt.y - 10, Width, pt.y + 10);
-               SetBkMode(Handle, TRANSPARENT);
-               IF UseUnit = fsuPixels THEN
-                  str := IntToStr(pt.y)
-               ELSE
-                  str := IntToStr(trunc(Y));
-               DrawText(Handle, PChar(str), Length(str), R, DT_SINGLELINE OR
-                  DT_CENTER OR DT_VCENTER);
-            END;
-            MoveTo(Width - Offset[y = trunc(y)], pt.y);
-            LineTo(Width - 1, pt.y);
-         END;
+    with Canvas do
+      if Orientation = goHorizontal then
+      begin
+        if pt.x > Width then
+          break;
+        if x = trunc(x) then
+        begin
+          R := Rect(pt.x - 10, 0, pt.x + 10, Height);
+          SetBkMode(Handle, TRANSPARENT);
+          if UseUnit = fsuPixels then
+            str := IntToStr(pt.x)
+          else
+            str := IntToStr(trunc(X));
+          DrawText(Handle, PChar(str), Length(str), R, DT_SINGLELINE or
+            DT_CENTER);
+        end;
+        MoveTo(pt.x, Height - Offset[x = trunc(x)]);
+        LineTo(pt.x, Height - 1);
+      end
+      else
+      begin
+        if pt.y > Height then
+          break;
+        if y = trunc(y) then
+        begin
+          R := Rect(0, pt.y - 10, Width, pt.y + 10);
+          SetBkMode(Handle, TRANSPARENT);
+          if UseUnit = fsuPixels then
+            str := IntToStr(pt.y)
+          else
+            str := IntToStr(trunc(Y));
+          DrawText(Handle, PChar(str), Length(str), R, DT_SINGLELINE or
+            DT_CENTER or DT_VCENTER);
+        end;
+        MoveTo(Width - Offset[y = trunc(y)], pt.y);
+        LineTo(Width - 1, pt.y);
+      end;
 
-   UNTIL false;
+  until false;
 
-   IF Position > 0 THEN
-      WITH Canvas DO
-         IF Orientation = goHorizontal THEN
-         BEGIN
-            MoveTo(Position - 2, Height - 4);
-            LineTo(Position + 2, Height - 4);
-            LineTo(Position, Height);
-            LineTo(Position - 2, Height - 4);
-         END
-         ELSE
-         BEGIN
-            MoveTo(Width - 4, Position - 2);
-            LineTo(Width - 4, Position + 2);
-            LineTo(Width, Position);
-            LineTo(Width - 4, Position - 2);
-         END;
-END;
+  if Position > 0 then
+    with Canvas do
+      if Orientation = goHorizontal then
+      begin
+        MoveTo(Position - 2, Height - 4);
+        LineTo(Position + 2, Height - 4);
+        LineTo(Position, Height);
+        LineTo(Position - 2, Height - 4);
+      end
+      else
+      begin
+        MoveTo(Width - 4, Position - 2);
+        LineTo(Width - 4, Position + 2);
+        LineTo(Width, Position);
+        LineTo(Width - 4, Position - 2);
+      end;
+end;
 
-PROCEDURE TJvgRuler.SetPosition(CONST Value: integer);
-BEGIN
-   IF FPosition = Value THEN
-      exit;
-   FPosition := Value;
-   Invalidate;
-END;
+procedure TJvgRuler.SetPosition(const Value: integer);
+begin
+  if FPosition = Value then
+    exit;
+  FPosition := Value;
+  Invalidate;
+end;
 
-END.
-
+end.

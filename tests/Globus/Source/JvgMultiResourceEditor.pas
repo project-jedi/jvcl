@@ -27,189 +27,188 @@ Known Issues:
 
 {$I JVCL.INC}
 
-UNIT JvgMultiResourceEditor;
+unit JvgMultiResourceEditor;
 
-INTERFACE
+interface
 
-USES
-   Windows,
-   Messages,
-   SysUtils,
-   Classes,
-   Graphics,
-   Controls,
-   Forms,
-   Dialogs,
-   {$IFDEF COMPILER6_UP}
-   DesignIntf,
-   DesignEditors,
-   PropertyCategories,
-   {$ELSE}
-   DsgnIntf,
-   {$ENDIF COMPILER6_UP}
+uses
+  Windows,
+  Messages,
+  SysUtils,
+  Classes,
+  Graphics,
+  Controls,
+  Forms,
+  Dialogs,
+  {$IFDEF COMPILER6_UP}
+  DesignIntf,
+  DesignEditors,
+  PropertyCategories,
+  {$ELSE}
+  DsgnIntf,
+  {$ENDIF COMPILER6_UP}
 
-   StdCtrls,
-   JvgMultiResources,
-   Grids;
+  StdCtrls,
+  JvgMultiResources,
+  Grids;
 
-TYPE
+type
 
-   TJvgResourcesProperty = CLASS(TPropertyEditor)
-      FUNCTION GetAttributes: TPropertyAttributes; OVERRIDE;
-      FUNCTION GetValue: STRING; OVERRIDE;
-      PROCEDURE Edit; OVERRIDE;
-   END;
+  TJvgResourcesProperty = class(TPropertyEditor)
+    function GetAttributes: TPropertyAttributes; override;
+    function GetValue: string; override;
+    procedure Edit; override;
+  end;
 
-   TJvgMultipleResourceEdit = CLASS(TForm)
-      sg: TStringGrid;
-      PROCEDURE FormShow(Sender: TObject);
-      PROCEDURE sgSetEditText(Sender: TObject; ACol, ARow: Integer; CONST Value:
-         STRING);
-      PROCEDURE FormCreate(Sender: TObject);
-      PROCEDURE FormDestroy(Sender: TObject);
-   PRIVATE
-      ControlsList: TList;
-      PROCEDURE LoadDefaults;
-   PUBLIC
-      Component: TJvgMultipleResources;
-      FUNCTION GetSub(SrcStr: STRING; No: integer; VAR ResStr: STRING): boolean;
-   END;
+  TJvgMultipleResourceEdit = class(TForm)
+    sg: TStringGrid;
+    procedure FormShow(Sender: TObject);
+    procedure sgSetEditText(Sender: TObject; ACol, ARow: Integer; const Value:
+      string);
+    procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+  private
+    ControlsList: TList;
+    procedure LoadDefaults;
+  public
+    Component: TJvgMultipleResources;
+    function GetSub(SrcStr: string; No: integer; var ResStr: string): boolean;
+  end;
 
-VAR
-   glMresEdit                 : TJvgMultipleResourceEdit;
+var
+  glMresEdit: TJvgMultipleResourceEdit;
 
-IMPLEMENTATION
+implementation
 {$R *.DFM}
 
-FUNCTION TJvgResourcesProperty.GetAttributes: TPropertyAttributes;
-BEGIN
-   Result := [paDialog];
-END;
+function TJvgResourcesProperty.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paDialog];
+end;
 
-FUNCTION TJvgResourcesProperty.GetValue: STRING;
-BEGIN
-   Result := Format('(%s)', [GetPropType^.Name]);
-END;
+function TJvgResourcesProperty.GetValue: string;
+begin
+  Result := Format('(%s)', [GetPropType^.Name]);
+end;
 
-PROCEDURE TJvgResourcesProperty.Edit;
-VAR
-   Dialog                     : TJvgMultipleResourceEdit;
-   I                          : Integer;
-BEGIN
-   TJvgMultipleResources(GetComponent(0)).Update;
-   Dialog := glMresEdit.Create(Application);
-   Dialog.Component := TJvgMultipleResources(GetComponent(0));
-   Dialog.ShowModal;
-   Dialog.free;
-   //  GetComponent(0).Owner.Name
-END;
+procedure TJvgResourcesProperty.Edit;
+var
+  Dialog: TJvgMultipleResourceEdit;
+  I: Integer;
+begin
+  TJvgMultipleResources(GetComponent(0)).Update;
+  Dialog := glMresEdit.Create(Application);
+  Dialog.Component := TJvgMultipleResources(GetComponent(0));
+  Dialog.ShowModal;
+  Dialog.free;
+  //  GetComponent(0).Owner.Name
+end;
 
-PROCEDURE TJvgMultipleResourceEdit.LoadDefaults;
-VAR
-   ARow                       : integer;
-BEGIN
-   sg.RowCount := Component.Comps.Count + 2;
-   FOR ARow := 1 TO Component.Comps.Count DO
-      sg.Cells[1, ARow] := Component.Comps[ARow - 1];
-END;
+procedure TJvgMultipleResourceEdit.LoadDefaults;
+var
+  ARow: integer;
+begin
+  sg.RowCount := Component.Comps.Count + 2;
+  for ARow := 1 to Component.Comps.Count do
+    sg.Cells[1, ARow] := Component.Comps[ARow - 1];
+end;
 
-PROCEDURE TJvgMultipleResourceEdit.FormShow(Sender: TObject);
-VAR
-   Str, SubStr, ResStr        : STRING;
-   i, uPos1, uPos2, ACol, ARow, SubStrNo: integer;
-BEGIN
+procedure TJvgMultipleResourceEdit.FormShow(Sender: TObject);
+var
+  Str, SubStr, ResStr: string;
+  i, uPos1, uPos2, ACol, ARow, SubStrNo: integer;
+begin
 
-   sg.ColCount := 3;
-   sg.RowCount := Component.Resources.Count + 2;
-   sg.Cells[0, 0] := 'Control';
-   sg.Cells[1, 0] := 'Default';
-   LoadDefaults;
-   WITH Component, sg DO
-      FOR ARow := 1 TO Resources.Count DO
-      BEGIN
-         Str := Resources[ARow - 1];
-         uPos1 := 1;
-         uPos2 := uPos1 + 1;
-         ACol := 0;
-         SubStrNo := 1;
-         WHILE GetSub(Str, SubStrNo, ResStr) DO
-         BEGIN
-            inc(ACol);
-            inc(SubStrNo);
-            IF sg.ColCount < ACol + 1 THEN
-               sg.ColCount := ACol + 1;
-            Cells[ACol, ARow] := ResStr;
-         END;
-         Cells[0, ARow] := Component.Comps[ARow - 1];
-         {    repeat
-               if Str[uPos2] = '#' then
-               begin
-          Cells[ ACol, ARow ] := copy(str, uPos1, uPos2-uPos1 );
-          inc(uPos2);
-          uPos1 := uPos2;
-          inc(ACol);
-               end;
-               inc(uPos2);
-             until uPos2 >= length(Str);}
+  sg.ColCount := 3;
+  sg.RowCount := Component.Resources.Count + 2;
+  sg.Cells[0, 0] := 'Control';
+  sg.Cells[1, 0] := 'Default';
+  LoadDefaults;
+  with Component, sg do
+    for ARow := 1 to Resources.Count do
+    begin
+      Str := Resources[ARow - 1];
+      uPos1 := 1;
+      uPos2 := uPos1 + 1;
+      ACol := 0;
+      SubStrNo := 1;
+      while GetSub(Str, SubStrNo, ResStr) do
+      begin
+        inc(ACol);
+        inc(SubStrNo);
+        if sg.ColCount < ACol + 1 then
+          sg.ColCount := ACol + 1;
+        Cells[ACol, ARow] := ResStr;
+      end;
+      Cells[0, ARow] := Component.Comps[ARow - 1];
+      {    repeat
+            if Str[uPos2] = '#' then
+            begin
+       Cells[ ACol, ARow ] := copy(str, uPos1, uPos2-uPos1 );
+       inc(uPos2);
+       uPos1 := uPos2;
+       inc(ACol);
+            end;
+            inc(uPos2);
+          until uPos2 >= length(Str);}
 
-         //    Cells[ ACol, ARow ] := copy(str, uPos1, uPos2-uPos1+1 );
+      //    Cells[ ACol, ARow ] := copy(str, uPos1, uPos2-uPos1+1 );
 
-      END;
-   sg.FixedCols := 1;
-   sg.FixedRows := 1;
-END;
+    end;
+  sg.FixedCols := 1;
+  sg.FixedRows := 1;
+end;
 
-FUNCTION TJvgMultipleResourceEdit.GetSub(SrcStr: STRING; No: integer; VAR
-   ResStr: STRING): boolean;
-VAR
-   Str, SubStr                : STRING;
-   Counter, uPos1, uPos2, uPrevPos2, ACol, ARow: integer;
-BEGIN
-   uPos1 := 1;
-   uPos2 := 1;
-   uPrevPos2 := 1;
-   Counter := 0;
-   ResStr := '';
-   IF SrcStr = '' THEN
-      exit;
-   REPEAT
-      IF SrcStr[uPos2] = '#' THEN
-      BEGIN
-         inc(Counter);
-         uPos1 := uPrevPos2;
-         uPrevPos2 := uPos2;
-      END;
-      inc(uPos2);
-   UNTIL (Counter = No) OR (uPos2 = length(SrcStr));
-   Result := true;
-   IF Counter = No THEN
-      ResStr := copy(SrcStr, uPos1 - 1, uPos2 - uPos1 - 1)
-   ELSE IF Counter + 1 = No THEN
-      ResStr := copy(SrcStr, uPrevPos2, uPos2 - uPrevPos2 + 1)
-   ELSE
-      Result := false;
+function TJvgMultipleResourceEdit.GetSub(SrcStr: string; No: integer; var
+  ResStr: string): boolean;
+var
+  Str, SubStr: string;
+  Counter, uPos1, uPos2, uPrevPos2, ACol, ARow: integer;
+begin
+  uPos1 := 1;
+  uPos2 := 1;
+  uPrevPos2 := 1;
+  Counter := 0;
+  ResStr := '';
+  if SrcStr = '' then
+    exit;
+  repeat
+    if SrcStr[uPos2] = '#' then
+    begin
+      inc(Counter);
+      uPos1 := uPrevPos2;
+      uPrevPos2 := uPos2;
+    end;
+    inc(uPos2);
+  until (Counter = No) or (uPos2 = length(SrcStr));
+  Result := true;
+  if Counter = No then
+    ResStr := copy(SrcStr, uPos1 - 1, uPos2 - uPos1 - 1)
+  else if Counter + 1 = No then
+    ResStr := copy(SrcStr, uPrevPos2, uPos2 - uPrevPos2 + 1)
+  else
+    Result := false;
 
-END;
+end;
 
-PROCEDURE TJvgMultipleResourceEdit.sgSetEditText(Sender: TObject; ACol, ARow:
-   Integer;
-   CONST Value: STRING);
-BEGIN
-   IF ACol <> 1 THEN
-      exit;
-   //if Tlabel(ControlsList[ARow-1]).Caption <> Value then
- //    Tlabel(ControlsList[ARow-1]).Caption := Value;
-END;
+procedure TJvgMultipleResourceEdit.sgSetEditText(Sender: TObject; ACol, ARow:
+  Integer;
+  const Value: string);
+begin
+  if ACol <> 1 then
+    exit;
+  //if Tlabel(ControlsList[ARow-1]).Caption <> Value then
+//    Tlabel(ControlsList[ARow-1]).Caption := Value;
+end;
 
-PROCEDURE TJvgMultipleResourceEdit.FormCreate(Sender: TObject);
-BEGIN
-   ControlsList := TList.create;
-END;
+procedure TJvgMultipleResourceEdit.FormCreate(Sender: TObject);
+begin
+  ControlsList := TList.create;
+end;
 
-PROCEDURE TJvgMultipleResourceEdit.FormDestroy(Sender: TObject);
-BEGIN
-   ControlsList.Free;
-END;
+procedure TJvgMultipleResourceEdit.FormDestroy(Sender: TObject);
+begin
+  ControlsList.Free;
+end;
 
-END.
-
+end.

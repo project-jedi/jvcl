@@ -211,7 +211,7 @@ implementation
 
 procedure Register;
 begin
-//  RegisterComponents('Proba', [TJvgListBox]);
+  //  RegisterComponents('Proba', [TJvgListBox]);
 end;
 //*****************************************_____________LowLevel METHODS
 
@@ -420,10 +420,10 @@ var
       CreateBitmapExt(DC, TmpBitmap, Rect(0, 0, 100, 100), r.left, r.top,
         fwoNone, fdsDefault, true, FTranspColor, clBlack)
         //      else begin
-      //        ChangeBitmapColor( TmpBitmap, FTranspColor, ItemStyle.Color );
-      //        BitBlt( DC, r.left, r.top, TmpBitmap.Width, TmpBitmap.Height, TmpBitmap.Canvas.handle,
-      //                0, 0, SRCCOPY );
-      //      end;
+  //        ChangeBitmapColor( TmpBitmap, FTranspColor, ItemStyle.Color );
+  //        BitBlt( DC, r.left, r.top, TmpBitmap.Width, TmpBitmap.Height, TmpBitmap.Canvas.handle,
+  //                0, 0, SRCCOPY );
+  //      end;
     end;
   end;
 

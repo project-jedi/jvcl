@@ -180,7 +180,6 @@ type
 implementation
 uses JvgUtils;
 
-
 //*****************************************_____________LowLevel METHODS
 
 constructor TJvgAskListBox.Create(AOwner: TComponent);

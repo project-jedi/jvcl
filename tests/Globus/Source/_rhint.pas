@@ -7,7 +7,7 @@ uses
   FrTypes, FrUtils, FrCommCl, StdCtrls, ExtCtrls;
 
 type
-  TFrCaption = Class(TJvComponent)
+  TFrCaption = class(TJvComponent)
   private
     FPrevWndProc: Pointer;
     FNewWndProc: Pointer;

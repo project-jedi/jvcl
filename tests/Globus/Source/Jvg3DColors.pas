@@ -35,7 +35,7 @@ uses
   JvComponent;
 
 type
-  TJvg3DLocalColors = Class(TJvComponent)
+  TJvg3DLocalColors = class(TJvComponent)
   private
     FDkShadow,
       FHighlight,
@@ -71,10 +71,8 @@ type
     constructor Create(AOwner: TComponent); override;
   end;
 
-
 implementation
 uses JvgUtils, JvgTypes;
-
 
 constructor TJvg3DColors.Create(AOwner: TComponent);
 begin

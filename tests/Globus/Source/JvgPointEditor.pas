@@ -27,69 +27,68 @@ Known Issues:
 
 {$I JVCL.INC}
 
-UNIT JvgPointEditor;
+unit JvgPointEditor;
 
-INTERFACE
+interface
 
-USES
-   Windows,
-   Messages,
-   SysUtils,
-   Classes,
-   Graphics,
-   Controls,
-   Forms,
-   Dialogs,
-   {$IFDEF COMPILER6_UP}
-   DesignIntf,
-   DesignEditors,
-   PropertyCategories,
-   {$ELSE}
-   DsgnIntf,
-   {$ENDIF COMPILER6_UP}
+uses
+  Windows,
+  Messages,
+  SysUtils,
+  Classes,
+  Graphics,
+  Controls,
+  Forms,
+  Dialogs,
+  {$IFDEF COMPILER6_UP}
+  DesignIntf,
+  DesignEditors,
+  PropertyCategories,
+  {$ELSE}
+  DsgnIntf,
+  {$ENDIF COMPILER6_UP}
 
-   TypInfo;                             //FrTypes;
+  TypInfo; //FrTypes;
 
-TYPE
-   TJvgPointProperty = CLASS(TPropertyEditor)
+type
+  TJvgPointProperty = class(TPropertyEditor)
 
-      FUNCTION GetAttributes: TPropertyAttributes; OVERRIDE;
-      FUNCTION GetValue: STRING; OVERRIDE;
-      //    procedure Edit; override;
-   END;
+    function GetAttributes: TPropertyAttributes; override;
+    function GetValue: string; override;
+    //    procedure Edit; override;
+  end;
 
-PROCEDURE Register;
+procedure Register;
 
-IMPLEMENTATION
-VAR
-   PPointTypeInfo             : PTypeInfo;
-   PointTypeInfo              : TTypeInfo;
+implementation
+var
+  PPointTypeInfo: PTypeInfo;
+  PointTypeInfo: TTypeInfo;
 
-   {== TPointPropertyEditor Methods ==}
+  {== TPointPropertyEditor Methods ==}
 
-FUNCTION TJvgPointProperty.GetAttributes: TPropertyAttributes;
-BEGIN
-   Result := [];                        // paSubProperties, paReadOnly ];
-END;
+function TJvgPointProperty.GetAttributes: TPropertyAttributes;
+begin
+  Result := []; // paSubProperties, paReadOnly ];
+end;
 
-FUNCTION TJvgPointProperty.GetValue: STRING;
-VAR
-   pPT                        : PPoint;
-BEGIN
-   //  pPT := PPoint(GetOrdValue);
-   //  Result := Format('(%d,%d)', [ ppt^.x, ppt^.y ]);
-   Result := '[,]';
-END;
+function TJvgPointProperty.GetValue: string;
+var
+  pPT: PPoint;
+begin
+  //  pPT := PPoint(GetOrdValue);
+  //  Result := Format('(%d,%d)', [ ppt^.x, ppt^.y ]);
+  Result := '[,]';
+end;
 
-PROCEDURE Register;
-BEGIN
-   PointTypeInfo.Name := 'TPoint';
-   PointTypeInfo.Kind := tkFloat;
-   PPointTypeInfo := @PointTypeInfo;
-   RegisterPropertyEditor(TypeInfo(TPoint), NIL,
-      '', TJvgPointProperty);
+procedure Register;
+begin
+  PointTypeInfo.Name := 'TPoint';
+  PointTypeInfo.Kind := tkFloat;
+  PPointTypeInfo := @PointTypeInfo;
+  RegisterPropertyEditor(TypeInfo(TPoint), nil,
+    '', TJvgPointProperty);
 
-END;
+end;
 
-END.
-
+end.

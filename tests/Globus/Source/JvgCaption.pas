@@ -27,544 +27,543 @@ Known Issues:
 
 {$I JVCL.INC}
 
-UNIT JvgCaption;
+unit JvgCaption;
 
-INTERFACE
+interface
 
-USES
-   Windows,
-   Messages,
-   SysUtils,
-   Classes,
-   Graphics,
-   Controls,
-   Forms,
-   Dialogs,
-   JvComponent,
-   JvgTypes,
-   JvgUtils,
-   JvgCommClasses,
-   StdCtrls,
-   ExtCtrls;
+uses
+  Windows,
+  Messages,
+  SysUtils,
+  Classes,
+  Graphics,
+  Controls,
+  Forms,
+  Dialogs,
+  JvComponent,
+  JvgTypes,
+  JvgUtils,
+  JvgCommClasses,
+  StdCtrls,
+  ExtCtrls;
 
-TYPE
-   TJvgCaption = CLASS(TJvComponent)
-   PRIVATE
-      FExcludeButtons: boolean;
-      FExcludeIcon: boolean;
-      FCaptBox: TJvgBevel;
-      FTextBox: TJvgBevel;
-      FIconBox: TJvgBevel;
-      FPrevWndProc: Pointer;
-      FNewWndProc: Pointer;
-      //    FParent		  : TForm;
-      FCaptionColor: TColor;
-      FTextStyle: TglTextStyle;
-      FFont: TFont;
-      FTexture, bmp: TBitmap;
-      FImage: TImage;
-      FTextureTransparent: boolean;
-      FAutoTrColor: TglAutoTransparentColor;
-      FTransparentColor: TColor;
+type
+  TJvgCaption = class(TJvComponent)
+  private
+    FExcludeButtons: boolean;
+    FExcludeIcon: boolean;
+    FCaptBox: TJvgBevel;
+    FTextBox: TJvgBevel;
+    FIconBox: TJvgBevel;
+    FPrevWndProc: Pointer;
+    FNewWndProc: Pointer;
+    //    FParent		  : TForm;
+    FCaptionColor: TColor;
+    FTextStyle: TglTextStyle;
+    FFont: TFont;
+    FTexture, bmp: TBitmap;
+    FImage: TImage;
+    FTextureTransparent: boolean;
+    FAutoTrColor: TglAutoTransparentColor;
+    FTransparentColor: TColor;
 
-      FGlyphClose: TBitmap;
-      OwnerWidth: integer;
-      BtnCount: integer;
-      CloseRect: TRect;
-      _CYCAPTION: integer;
-      _CXFRAME: integer;
-      _CYFRAME: integer;
-      _CXSMICON: integer;
-      _CYSMICON: integer;
-      _CXICON: integer;
-      _CYICON: integer;
+    FGlyphClose: TBitmap;
+    OwnerWidth: integer;
+    BtnCount: integer;
+    CloseRect: TRect;
+    _CYCAPTION: integer;
+    _CXFRAME: integer;
+    _CYFRAME: integer;
+    _CXSMICON: integer;
+    _CYSMICON: integer;
+    _CXICON: integer;
+    _CYICON: integer;
 
-      PROCEDURE SetExcludeIcon(Value: boolean);
-      PROCEDURE SetExcludeButtons(Value: boolean);
-      PROCEDURE SetCaptionColor(Value: TColor);
-      PROCEDURE SetTextStyle(Value: TglTextStyle);
-      PROCEDURE SetFont(Value: TFont);
-      PROCEDURE SetTexture(Value: TBitmap);
-      PROCEDURE SetImage(Value: TImage);
-      FUNCTION GetTexture: TBitmap;
-      PROCEDURE SetTextureTransparent(Value: boolean);
-      PROCEDURE SetAutoTrColor(Value: TglAutoTransparentColor);
-      PROCEDURE SetTransparentColor(Value: TColor);
+    procedure SetExcludeIcon(Value: boolean);
+    procedure SetExcludeButtons(Value: boolean);
+    procedure SetCaptionColor(Value: TColor);
+    procedure SetTextStyle(Value: TglTextStyle);
+    procedure SetFont(Value: TFont);
+    procedure SetTexture(Value: TBitmap);
+    procedure SetImage(Value: TImage);
+    function GetTexture: TBitmap;
+    procedure SetTextureTransparent(Value: boolean);
+    procedure SetAutoTrColor(Value: TglAutoTransparentColor);
+    procedure SetTransparentColor(Value: TColor);
 
-      PROCEDURE Repaint;
-      PROCEDURE DrawIcon(DC: HDC; R: TRect);
-      FUNCTION DrawCaption(DrawAll: boolean): TRect;
-      PROCEDURE ParentWindowHookProc(VAR Msg_: TMessage);
-      PROCEDURE SetParentWindowHook;
-      PROCEDURE FreeParentWindowHook;
-      FUNCTION CountCaptionButtons: integer;
-      PROCEDURE SmthChanged(Sender: TObject);
-   PROTECTED
-      //    procedure WndProc(var Message: TMessage);override;
-      PROCEDURE Loaded; OVERRIDE;
-      PROCEDURE Notification(Component: TComponent; Operation: TOperation);
-         OVERRIDE;
-   PUBLIC
-      CONSTRUCTOR Create(AOwner: TComponent); OVERRIDE;
-      DESTRUCTOR Destroy; OVERRIDE;
-   PUBLISHED
-      //    property Parent: TForm read Fparent write SetParent;
-      PROPERTY ExcludeButtons: boolean
-         READ FExcludeButtons WRITE SetExcludeButtons DEFAULT true;
-      PROPERTY ExcludeIcon: boolean
-         READ FExcludeIcon WRITE SetExcludeIcon DEFAULT false;
-      PROPERTY CaptionColor: TColor
-         READ FCaptionColor WRITE SetCaptionColor DEFAULT clBtnFace;
-      PROPERTY TextStyle: TglTextStyle
-         READ FTextStyle WRITE SetTextStyle DEFAULT fstRaised;
-      PROPERTY Font: TFont READ FFont WRITE SetFont;
-      PROPERTY CaptBox: TJvgBevel READ FCaptBox WRITE FCaptBox;
-      PROPERTY TextBox: TJvgBevel READ FTextBox WRITE FTextBox;
-      PROPERTY IconBox: TJvgBevel READ FIconBox WRITE FIconBox;
-      PROPERTY Texture: TBitmap READ GetTexture WRITE SetTexture;
-      PROPERTY Image: TImage READ FImage WRITE SetImage;
-      PROPERTY TextureTransparent: boolean READ FTextureTransparent WRITE
-         SetTextureTransparent
-         DEFAULT false;
-      PROPERTY AutoTransparentColor: TglAutoTransparentColor
-         READ FAutoTrColor WRITE SetAutoTrColor DEFAULT ftcLeftBottomPixel;
-      PROPERTY TransparentColor: TColor READ FTransparentColor WRITE
-         SetTransparentColor
-         DEFAULT clBlack;
-   END;
+    procedure Repaint;
+    procedure DrawIcon(DC: HDC; R: TRect);
+    function DrawCaption(DrawAll: boolean): TRect;
+    procedure ParentWindowHookProc(var Msg_: TMessage);
+    procedure SetParentWindowHook;
+    procedure FreeParentWindowHook;
+    function CountCaptionButtons: integer;
+    procedure SmthChanged(Sender: TObject);
+  protected
+    //    procedure WndProc(var Message: TMessage);override;
+    procedure Loaded; override;
+    procedure Notification(Component: TComponent; Operation: TOperation);
+      override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  published
+    //    property Parent: TForm read Fparent write SetParent;
+    property ExcludeButtons: boolean
+      read FExcludeButtons write SetExcludeButtons default true;
+    property ExcludeIcon: boolean
+      read FExcludeIcon write SetExcludeIcon default false;
+    property CaptionColor: TColor
+      read FCaptionColor write SetCaptionColor default clBtnFace;
+    property TextStyle: TglTextStyle
+      read FTextStyle write SetTextStyle default fstRaised;
+    property Font: TFont read FFont write SetFont;
+    property CaptBox: TJvgBevel read FCaptBox write FCaptBox;
+    property TextBox: TJvgBevel read FTextBox write FTextBox;
+    property IconBox: TJvgBevel read FIconBox write FIconBox;
+    property Texture: TBitmap read GetTexture write SetTexture;
+    property Image: TImage read FImage write SetImage;
+    property TextureTransparent: boolean read FTextureTransparent write
+      SetTextureTransparent
+      default false;
+    property AutoTransparentColor: TglAutoTransparentColor
+      read FAutoTrColor write SetAutoTrColor default ftcLeftBottomPixel;
+    property TransparentColor: TColor read FTransparentColor write
+      SetTransparentColor
+      default clBlack;
+  end;
 
-   {$DEFINE GL_CAPT_BUTTONS}
-IMPLEMENTATION
+  {$DEFINE GL_CAPT_BUTTONS}
+implementation
 {$IFDEF GL_CAPT_BUTTONS}
 {$R JvgCaption.res}
 {$ENDIF}
 
 //==============================================================
 
-CONSTRUCTOR TJvgCaption.Create(AOwner: TComponent);
-BEGIN
-   INHERITED Create(AOwner);
-   FCaptBox := TJvgBevel.Create;
-   FTextBox := TJvgBevel.Create;
-   FIconBox := TJvgBevel.Create;
-   FFont := TFont.Create;
-   FExcludeButtons := true;
-   FExcludeIcon := false;
-   FCaptionColor := clBtnFace;
-   FTextStyle := fstRaised;
-   FTextBox.Inner := bvRaised;
-   FIconBox.Inner := bvNone;
-   FIconBox.Outer := bvNone;
-   FTextureTransparent := false;
-   FAutoTrColor := ftcLeftBottomPixel;
-   FCaptBox.OnChanged := SmthChanged;
-   FTextBox.OnChanged := SmthChanged;
-   FIconBox.OnChanged := SmthChanged;
+constructor TJvgCaption.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FCaptBox := TJvgBevel.Create;
+  FTextBox := TJvgBevel.Create;
+  FIconBox := TJvgBevel.Create;
+  FFont := TFont.Create;
+  FExcludeButtons := true;
+  FExcludeIcon := false;
+  FCaptionColor := clBtnFace;
+  FTextStyle := fstRaised;
+  FTextBox.Inner := bvRaised;
+  FIconBox.Inner := bvNone;
+  FIconBox.Outer := bvNone;
+  FTextureTransparent := false;
+  FAutoTrColor := ftcLeftBottomPixel;
+  FCaptBox.OnChanged := SmthChanged;
+  FTextBox.OnChanged := SmthChanged;
+  FIconBox.OnChanged := SmthChanged;
 
-   //  FParent:=nil;
-   IF NOT (AOwner IS TForm) THEN
-      exit;                             //FParent:=TForm(AOwner) else exit;
+  //  FParent:=nil;
+  if not (AOwner is TForm) then
+    exit; //FParent:=TForm(AOwner) else exit;
 
-   {$IFDEF GL_CAPT_BUTTONS}
-   //if (csDesigning in ComponentState)and not(csLoading in ComponentState)then
-   BEGIN
-      FGlyphClose := TBitmap.Create;
-      FGlyphClose.LoadFromResourceName(hInstance, 'CLOSE');
-   END;
-   {$ENDIF}
+  {$IFDEF GL_CAPT_BUTTONS}
+  //if (csDesigning in ComponentState)and not(csLoading in ComponentState)then
+  begin
+    FGlyphClose := TBitmap.Create;
+    FGlyphClose.LoadFromResourceName(hInstance, 'CLOSE');
+  end;
+  {$ENDIF}
 
-   _CYCAPTION := GetSystemMetrics(SM_CYCAPTION);
-   _CYFRAME := GetSystemMetrics(SM_CYFRAME);
-   _CXFRAME := GetSystemMetrics(SM_CXFRAME);
-   _CXSMICON := GetSystemMetrics(SM_CXSMICON);
-   _CYSMICON := GetSystemMetrics(SM_CYSMICON);
-   _CXICON := GetSystemMetrics(SM_CXICON);
-   _CYICON := GetSystemMetrics(SM_CYICON);
+  _CYCAPTION := GetSystemMetrics(SM_CYCAPTION);
+  _CYFRAME := GetSystemMetrics(SM_CYFRAME);
+  _CXFRAME := GetSystemMetrics(SM_CXFRAME);
+  _CXSMICON := GetSystemMetrics(SM_CXSMICON);
+  _CYSMICON := GetSystemMetrics(SM_CYSMICON);
+  _CXICON := GetSystemMetrics(SM_CXICON);
+  _CYICON := GetSystemMetrics(SM_CYICON);
 
-   SetParentWindowHook;
-END;
+  SetParentWindowHook;
+end;
 //-----
 
-DESTRUCTOR TJvgCaption.Destroy;
-BEGIN
-   FFont.Free;
-   FCaptBox.Free;
-   FTextBox.Free;
-   FIconBox.Free;
-   IF Assigned(FTexture) THEN
-      FTexture.Free;
-   IF Assigned(FGlyphClose) THEN
-      FGlyphClose.Free;
-   FreeParentWindowHook;
-   INHERITED Destroy;
-END;
+destructor TJvgCaption.Destroy;
+begin
+  FFont.Free;
+  FCaptBox.Free;
+  FTextBox.Free;
+  FIconBox.Free;
+  if Assigned(FTexture) then
+    FTexture.Free;
+  if Assigned(FGlyphClose) then
+    FGlyphClose.Free;
+  FreeParentWindowHook;
+  inherited Destroy;
+end;
 
-PROCEDURE TJvgCaption.Loaded;
-BEGIN
-   INHERITED;
-   IF Assigned(FTexture) AND (NOT FTexture.Empty) THEN
-      Bmp := FTexture;
-END;
+procedure TJvgCaption.Loaded;
+begin
+  inherited;
+  if Assigned(FTexture) and (not FTexture.Empty) then
+    Bmp := FTexture;
+end;
 
-PROCEDURE TJvgCaption.Notification(Component: TComponent; Operation:
-   TOperation);
-BEGIN
-   IF (Component <> Self) AND (Operation = opInsert) AND (Component IS
-      TJvgCaption) THEN
-      RAISE
-         Exception.Create('Cannot create more than one instance of TJvgCaption component');
-END;
+procedure TJvgCaption.Notification(Component: TComponent; Operation:
+  TOperation);
+begin
+  if (Component <> Self) and (Operation = opInsert) and (Component is
+    TJvgCaption) then
+    raise
+      Exception.Create('Cannot create more than one instance of TJvgCaption component');
+end;
 //=========================================================.special procs.
 
-PROCEDURE TJvgCaption.SetParentWindowHook;
-VAR
-   P                          : Pointer;
-BEGIN
-   P := Pointer(GetWindowLong(TForm(Owner).Handle, GWL_WNDPROC));
-   IF (P <> FNewWndProc) THEN
-   BEGIN
-      FPrevWndProc := P;
-      FNewWndProc := MakeObjectInstance(ParentWindowHookProc);
-      SetWindowLong(TForm(Owner).Handle, GWL_WNDPROC, LongInt(FNewWndProc));
-   END;
-END;
+procedure TJvgCaption.SetParentWindowHook;
+var
+  P: Pointer;
+begin
+  P := Pointer(GetWindowLong(TForm(Owner).Handle, GWL_WNDPROC));
+  if (P <> FNewWndProc) then
+  begin
+    FPrevWndProc := P;
+    FNewWndProc := MakeObjectInstance(ParentWindowHookProc);
+    SetWindowLong(TForm(Owner).Handle, GWL_WNDPROC, LongInt(FNewWndProc));
+  end;
+end;
 //==============================================================
 
-PROCEDURE TJvgCaption.FreeParentWindowHook;
-BEGIN
-   IF (FNewWndProc <> NIL) AND (FPrevWndProc <> NIL)
-      AND (Pointer(GetWindowLong(TForm(Owner).Handle, GWL_WNDPROC)) =
-         FNewWndProc) THEN
-   BEGIN
-      //Repaint;
-      SetWindowLong(TForm(Owner).Handle, GWL_WNDPROC, LongInt(FPrevWndProc));
-      FNewWndProc := NIL;
-   END;
-END;
+procedure TJvgCaption.FreeParentWindowHook;
+begin
+  if (FNewWndProc <> nil) and (FPrevWndProc <> nil)
+    and (Pointer(GetWindowLong(TForm(Owner).Handle, GWL_WNDPROC)) =
+    FNewWndProc) then
+  begin
+    //Repaint;
+    SetWindowLong(TForm(Owner).Handle, GWL_WNDPROC, LongInt(FPrevWndProc));
+    FNewWndProc := nil;
+  end;
+end;
 //==============================================================
 
-PROCEDURE TJvgCaption.ParentWindowHookProc(VAR Msg_: TMessage);
-VAR
-   pt                         : TPoint;
+procedure TJvgCaption.ParentWindowHookProc(var Msg_: TMessage);
+var
+  pt: TPoint;
 
-   PROCEDURE DefaultProc;               //___________________________________
-   BEGIN
-      WITH Msg_ DO
-         Result := CallWindowProc(FPrevWndProc, TForm(Owner).Handle, Msg,
-            WParam, LParam);
-   END;
+  procedure DefaultProc; //___________________________________
+  begin
+    with Msg_ do
+      Result := CallWindowProc(FPrevWndProc, TForm(Owner).Handle, Msg,
+        WParam, LParam);
+  end;
 
-BEGIN //_______________________________________________________
-   OwnerWidth := TForm(Owner).Width;
-   WITH Msg_ DO
-      CASE Msg OF
-         //	WM_CREATE: if TForm(Owner)<>nil then FreeParentWindowHook;
-         WM_NCPAINT,
-            //	WM_MOUSEMOVE,
-       //WM_MOUSEACTIVATE,
-         WM_MOUSEACTIVATE,
-            WM_NCACTIVATE,
-            WM_SYSCOLORCHANGE,
-            //	WM_NCLBUTTONUP,
-         WM_NCLBUTTONDBLCLK,
-            WM_SIZE:
-            BEGIN
-               DefaultProc;
-               DrawCaption(true);
-            END;
-         WM_NCLBUTTONDOWN:
-            BEGIN
-               DefaultProc;
-               DrawCaption(false);
-            END;
-         WM_LBUTTONUP:
-            BEGIN
-               DefaultProc;
-               {$IFDEF GL_CAPT_BUTTONS}
-               GetCursorPos(pt);
-               dec(pt.x, TForm(Owner).left);
-               dec(pt.y, TForm(Owner).top);
-               IF PtInRect(CloseRect, pt) THEN
-                  SendMessage(TForm(Owner).Handle, WM_CLOSE, 0, 0);
-               {$ENDIF}
-            END;
-         WM_NCHITTEST:
-            BEGIN
-               {$IFDEF GL_CAPT_BUTTONS}
-               pt := {TForm(Owner).ScreenToClient}(Point(Loword(lParam) -
-                  TForm(Owner).left, Hiword(lParam) - TForm(Owner).Top));
-               IF PtInRect(CloseRect, pt) THEN
-               BEGIN
-                  result := HTCLIENT;
-                  exit;
-               END;
-               {$ENDIF}
-               DefaultProc;
-               IF (Result = HTLEFT) OR (Result = HTRIGHT) OR (Result = HTTOP)
-                  OR (Result = HTBOTTOM) OR (Result = HTBOTTOMLEFT)
-                  OR (Result = HTBOTTOMRIGHT) OR (Result = HTTOPLEFT)
-                  OR (Result = HTTOPRIGHT) THEN
-               BEGIN
-                  DrawCaption(false);
-               END;
-            END;
-         //	WM_SETTEXT: DrawCaption( false );
-         //	WM_ACTIVATE: DrawCaption;
-         WM_DESTROY:
-            BEGIN
-               FreeParentWindowHook;
-               DefaultProc;
-            END;
-      ELSE
-         DefaultProc;
-      END;
-END;
-//==============================================================
-
-PROCEDURE TJvgCaption.DrawIcon(DC: HDC; R: TRect);
-VAR
-   IconHandle                 : HIcon;
-   IconDC                     : HDC;
-   OldIconBMP, IconBMP        : HBitmap;
-   Brush, OldBrush            : HBrush;
-BEGIN
-
-   WITH TForm(Owner) DO
-      IF Icon.Handle <> 0 THEN
-         IconHandle := Icon.Handle
-      ELSE IF Application.Icon.Handle <> 0 THEN
-         IconHandle := Application.Icon.Handle
-      ELSE
-         IconHandle := LoadIcon(0, IDI_APPLICATION);
-
-   IconDC := CreateCompatibleDC(DC);
-   IconBMP := CreateCompatibleBitmap(DC, _CXICON, _CYICON);
-   OldIconBMP := SelectObject(IconDC, IconBMP);
-   Brush := CreateSolidBrush(ColorToRGB(CaptionColor));
-   OldBrush := SelectObject(IconDC, Brush);
-   //  FillRect( IconDC, R, Brush );
-   PatBlt(IconDC, 0, 0, _CXICON, _CYICON, PATCOPY);
-
-   Windows.DrawIcon(IconDC, 0, 0, IconHandle);
-   StretchBlt(DC, R.Left, R.Top, R.Bottom - R.Top, R.Bottom - R.Top, IconDC,
-      0, 0, _CXICON, _CYICON, SRCCOPY);
-
-   DeleteObject(SelectObject(IconDC, OldIconBMP));
-   DeleteObject(SelectObject(IconDC, OldBrush));
-   DeleteDC(IconDC);
-END;
-
-//==============================================================
-
-FUNCTION TJvgCaption.DrawCaption(DrawAll: boolean): TRect;
-VAR
-   DC                         : HDC;
-   R, IconR                   : TRect;
-   x, y, x_, y_, IWidth, IHeight: integer;
-BEGIN
-   DC := GetWindowDC(TForm(Owner).Handle);
-   TRY
-      GetWindowRect(TForm(Owner).Handle, R);
-      OwnerWidth := R.Right - R.left;
-
-      R.Left := _CXFRAME - 1;
-      R.Top := _CYFRAME - 1;
-      R.Right := OwnerWidth - _CXFRAME;
-      R.Bottom := R.Top + _CYCAPTION - 1;
-
-      BtnCount := CountCaptionButtons;
-      IF (BtnCount = 0) AND (NOT DrawAll) THEN
-         exit;
-      R := DrawBoxEx(DC, R, FCaptBox.Sides, FCaptBox.Inner, FCaptBox.Outer,
-         FCaptBox.Bold, CaptionColor, true);
-      IF NOT DrawAll THEN
-         exit;
-
-      IF (NOT FExcludeIcon) AND (biSystemMenu IN TForm(Owner).BorderIcons) THEN
-      BEGIN
-         IconR := Rect(R.Left, R.Top, R.Left + _CXSMICON + 3, R.Top +
-            _CYSMICON);
-         IconR := DrawBoxEx(DC, IconR, FIconBox.Sides, FIconBox.Inner,
-            FIconBox.Outer, FIconBox.Bold, CaptionColor, false);
-         DrawIcon(DC, IconR);
-         inc(R.Left, _CXSMICON + 4);
-      END;
-
-      dec(R.Right, BtnCount * (_CXSMICON + 1));
-      IF BtnCount <> 0 THEN
-         dec(R.Right, 4);
-      R := DrawBoxEx(DC, R, FTextBox.Sides, FTextBox.Inner, FTextBox.Outer,
-         FTextBox.Bold, CaptionColor, true);
-
-      WITH TForm(Owner).Canvas DO
-      BEGIN
-         inc(R.right);
-         inc(R.bottom);
-         Brush.Color := CaptionColor {clActiveCaption};
-         Brush.Style := bsSolid;
-         Windows.FillRect(DC, R, Brush.Handle);
-      END;
-      inc(R.Left, 2);
-
-      IF IsItAFilledBitmap(bmp) THEN
-      BEGIN
-         x := r.Left - 2;
-         y := r.top;
-         IHeight := r.bottom - r.top;
-         IWidth := r.Right - r.Left;
-         x_ := x;
-         y_ := y;
-         {      while x < IWidth do
-               begin
-          while y < IHeight do begin
-            BitBlt(DC, x, y, min( IWidth, bmp.Width ), min( IHeight, bmp.Height ), bmp.Canvas.Handle, 0,0, SRCCOPY );
-            Inc(y, min( IHeight, bmp.Height ));
+begin //_______________________________________________________
+  OwnerWidth := TForm(Owner).Width;
+  with Msg_ do
+    case Msg of
+      //	WM_CREATE: if TForm(Owner)<>nil then FreeParentWindowHook;
+      WM_NCPAINT,
+        //	WM_MOUSEMOVE,
+//WM_MOUSEACTIVATE,
+      WM_MOUSEACTIVATE,
+        WM_NCACTIVATE,
+        WM_SYSCOLORCHANGE,
+        //	WM_NCLBUTTONUP,
+      WM_NCLBUTTONDBLCLK,
+        WM_SIZE:
+        begin
+          DefaultProc;
+          DrawCaption(true);
+        end;
+      WM_NCLBUTTONDOWN:
+        begin
+          DefaultProc;
+          DrawCaption(false);
+        end;
+      WM_LBUTTONUP:
+        begin
+          DefaultProc;
+          {$IFDEF GL_CAPT_BUTTONS}
+          GetCursorPos(pt);
+          dec(pt.x, TForm(Owner).left);
+          dec(pt.y, TForm(Owner).top);
+          if PtInRect(CloseRect, pt) then
+            SendMessage(TForm(Owner).Handle, WM_CLOSE, 0, 0);
+          {$ENDIF}
+        end;
+      WM_NCHITTEST:
+        begin
+          {$IFDEF GL_CAPT_BUTTONS}
+          pt := {TForm(Owner).ScreenToClient}(Point(Loword(lParam) -
+            TForm(Owner).left, Hiword(lParam) - TForm(Owner).Top));
+          if PtInRect(CloseRect, pt) then
+          begin
+            result := HTCLIENT;
+            exit;
           end;
-          Inc(x, min( IWidth, bmp.Width ));
-          y:=0;
-               end;}
-         WHILE x_ < r.right DO
-         BEGIN
-            //IWidth:=SavedIWidth; SavedIWidth:=IWidth;
-            IF x_ + IWidth > r.right THEN
-               IWidth := r.right - x_;
-            WHILE y_ < r.bottom DO
-            BEGIN
-               //	    IHeight:=SavedIHeight; SavedIHeight:=IHeight;
-               IF y_ + IHeight > r.bottom THEN
-                  IHeight := r.bottom - y_;
-               BitBlt(DC, x_, y_, min(IWidth, bmp.Width), min(IHeight,
-                  bmp.Height), bmp.Canvas.Handle, 0, 0, SRCCOPY);
-               Inc(y_, min(IHeight, bmp.Height));
-            END;
-            Inc(x_, min(IWidth, bmp.Width));
-            y_ := y;
-         END;
-      END;
-      //...draw close button
-      {$IFDEF GL_CAPT_BUTTONS}
-      IF (BtnCount = 0) AND (tag = 1) THEN
-      BEGIN
-         CloseRect := Bounds(r.right - FGlyphClose.Width - 2, r.top,
-            FGlyphClose.Width, FGlyphClose.Height);
-         //      BitBlt( DC, r.right-FGlyphClose.Width-2, r.top, FGlyphClose.Width, FGlyphClose.Height, FGlyphClose.Canvas.Handle, 0,0, SRCCOPY );
-         CreateBitmapExt(DC, FGlyphClose, R, r.right - FGlyphClose.Width - 8,
-            r.top - 3,
-            fwoNone, fdsDefault, true,
-            GetPixel(FGlyphClose.Canvas.Handle, 0, FGlyphClose.Height - 1)
-               {TransparentColor},
-            0);
-      END
-      ELSE
-         CloseRect := Rect(0, 0, 0, 0);
-      {$ENDIF}
+          {$ENDIF}
+          DefaultProc;
+          if (Result = HTLEFT) or (Result = HTRIGHT) or (Result = HTTOP)
+            or (Result = HTBOTTOM) or (Result = HTBOTTOMLEFT)
+            or (Result = HTBOTTOMRIGHT) or (Result = HTTOPLEFT)
+            or (Result = HTTOPRIGHT) then
+          begin
+            DrawCaption(false);
+          end;
+        end;
+      //	WM_SETTEXT: DrawCaption( false );
+      //	WM_ACTIVATE: DrawCaption;
+      WM_DESTROY:
+        begin
+          FreeParentWindowHook;
+          DefaultProc;
+        end;
+    else
+      DefaultProc;
+    end;
+end;
+//==============================================================
 
-      DrawTextInRect(DC, R, TForm(Owner).Caption, FTextStyle, FFont,
-         DT_SINGLELINE OR DT_VCENTER OR DT_LEFT);
-   FINALLY
-      ReleaseDC(TForm(Owner).Handle, DC);
-   END;
-   Result := R;
-END;
+procedure TJvgCaption.DrawIcon(DC: HDC; R: TRect);
+var
+  IconHandle: HIcon;
+  IconDC: HDC;
+  OldIconBMP, IconBMP: HBitmap;
+  Brush, OldBrush: HBrush;
+begin
 
-FUNCTION TJvgCaption.CountCaptionButtons: integer;
-BEGIN
-   IF NOT (biSystemMenu IN TForm(Owner).BorderIcons) THEN
-   BEGIN
-      Result := 0;
+  with TForm(Owner) do
+    if Icon.Handle <> 0 then
+      IconHandle := Icon.Handle
+    else if Application.Icon.Handle <> 0 then
+      IconHandle := Application.Icon.Handle
+    else
+      IconHandle := LoadIcon(0, IDI_APPLICATION);
+
+  IconDC := CreateCompatibleDC(DC);
+  IconBMP := CreateCompatibleBitmap(DC, _CXICON, _CYICON);
+  OldIconBMP := SelectObject(IconDC, IconBMP);
+  Brush := CreateSolidBrush(ColorToRGB(CaptionColor));
+  OldBrush := SelectObject(IconDC, Brush);
+  //  FillRect( IconDC, R, Brush );
+  PatBlt(IconDC, 0, 0, _CXICON, _CYICON, PATCOPY);
+
+  Windows.DrawIcon(IconDC, 0, 0, IconHandle);
+  StretchBlt(DC, R.Left, R.Top, R.Bottom - R.Top, R.Bottom - R.Top, IconDC,
+    0, 0, _CXICON, _CYICON, SRCCOPY);
+
+  DeleteObject(SelectObject(IconDC, OldIconBMP));
+  DeleteObject(SelectObject(IconDC, OldBrush));
+  DeleteDC(IconDC);
+end;
+
+//==============================================================
+
+function TJvgCaption.DrawCaption(DrawAll: boolean): TRect;
+var
+  DC: HDC;
+  R, IconR: TRect;
+  x, y, x_, y_, IWidth, IHeight: integer;
+begin
+  DC := GetWindowDC(TForm(Owner).Handle);
+  try
+    GetWindowRect(TForm(Owner).Handle, R);
+    OwnerWidth := R.Right - R.left;
+
+    R.Left := _CXFRAME - 1;
+    R.Top := _CYFRAME - 1;
+    R.Right := OwnerWidth - _CXFRAME;
+    R.Bottom := R.Top + _CYCAPTION - 1;
+
+    BtnCount := CountCaptionButtons;
+    if (BtnCount = 0) and (not DrawAll) then
       exit;
-   END;
-   result := 1;
-   IF NOT (TForm(Owner).BorderStyle IN [bsToolWindow, bsSizeToolWin, bsDialog])
-      THEN
-   BEGIN
-      IF (biMinimize IN TForm(Owner).BorderIcons)
-         OR (biMaximize IN TForm(Owner).BorderIcons) THEN
-         inc(Result, 2)
-      ELSE IF biHelp IN TForm(Owner).BorderIcons THEN
-         inc(Result);
-   END;
-END;
+    R := DrawBoxEx(DC, R, FCaptBox.Sides, FCaptBox.Inner, FCaptBox.Outer,
+      FCaptBox.Bold, CaptionColor, true);
+    if not DrawAll then
+      exit;
 
-PROCEDURE TJvgCaption.SmthChanged(Sender: TObject);
-BEGIN
-   Repaint;
-END;
+    if (not FExcludeIcon) and (biSystemMenu in TForm(Owner).BorderIcons) then
+    begin
+      IconR := Rect(R.Left, R.Top, R.Left + _CXSMICON + 3, R.Top +
+        _CYSMICON);
+      IconR := DrawBoxEx(DC, IconR, FIconBox.Sides, FIconBox.Inner,
+        FIconBox.Outer, FIconBox.Bold, CaptionColor, false);
+      DrawIcon(DC, IconR);
+      inc(R.Left, _CXSMICON + 4);
+    end;
 
-PROCEDURE TJvgCaption.Repaint;
-VAR
-   RGN                        : HRGN;
-BEGIN
-   RGN := CreateRectRgn(0, 0, TForm(Owner).Width, _CYCAPTION);
-   SendMessage(THandle(TForm(Owner).Handle), WM_NCPAINT, HRGN(RGN), 0);
-   DeleteObject(RGN);
-END;
+    dec(R.Right, BtnCount * (_CXSMICON + 1));
+    if BtnCount <> 0 then
+      dec(R.Right, 4);
+    R := DrawBoxEx(DC, R, FTextBox.Sides, FTextBox.Inner, FTextBox.Outer,
+      FTextBox.Bold, CaptionColor, true);
+
+    with TForm(Owner).Canvas do
+    begin
+      inc(R.right);
+      inc(R.bottom);
+      Brush.Color := CaptionColor {clActiveCaption};
+      Brush.Style := bsSolid;
+      Windows.FillRect(DC, R, Brush.Handle);
+    end;
+    inc(R.Left, 2);
+
+    if IsItAFilledBitmap(bmp) then
+    begin
+      x := r.Left - 2;
+      y := r.top;
+      IHeight := r.bottom - r.top;
+      IWidth := r.Right - r.Left;
+      x_ := x;
+      y_ := y;
+      {      while x < IWidth do
+            begin
+       while y < IHeight do begin
+         BitBlt(DC, x, y, min( IWidth, bmp.Width ), min( IHeight, bmp.Height ), bmp.Canvas.Handle, 0,0, SRCCOPY );
+         Inc(y, min( IHeight, bmp.Height ));
+       end;
+       Inc(x, min( IWidth, bmp.Width ));
+       y:=0;
+            end;}
+      while x_ < r.right do
+      begin
+        //IWidth:=SavedIWidth; SavedIWidth:=IWidth;
+        if x_ + IWidth > r.right then
+          IWidth := r.right - x_;
+        while y_ < r.bottom do
+        begin
+          //	    IHeight:=SavedIHeight; SavedIHeight:=IHeight;
+          if y_ + IHeight > r.bottom then
+            IHeight := r.bottom - y_;
+          BitBlt(DC, x_, y_, min(IWidth, bmp.Width), min(IHeight,
+            bmp.Height), bmp.Canvas.Handle, 0, 0, SRCCOPY);
+          Inc(y_, min(IHeight, bmp.Height));
+        end;
+        Inc(x_, min(IWidth, bmp.Width));
+        y_ := y;
+      end;
+    end;
+    //...draw close button
+    {$IFDEF GL_CAPT_BUTTONS}
+    if (BtnCount = 0) and (tag = 1) then
+    begin
+      CloseRect := Bounds(r.right - FGlyphClose.Width - 2, r.top,
+        FGlyphClose.Width, FGlyphClose.Height);
+      //      BitBlt( DC, r.right-FGlyphClose.Width-2, r.top, FGlyphClose.Width, FGlyphClose.Height, FGlyphClose.Canvas.Handle, 0,0, SRCCOPY );
+      CreateBitmapExt(DC, FGlyphClose, R, r.right - FGlyphClose.Width - 8,
+        r.top - 3,
+        fwoNone, fdsDefault, true,
+        GetPixel(FGlyphClose.Canvas.Handle, 0, FGlyphClose.Height - 1)
+        {TransparentColor},
+        0);
+    end
+    else
+      CloseRect := Rect(0, 0, 0, 0);
+    {$ENDIF}
+
+    DrawTextInRect(DC, R, TForm(Owner).Caption, FTextStyle, FFont,
+      DT_SINGLELINE or DT_VCENTER or DT_LEFT);
+  finally
+    ReleaseDC(TForm(Owner).Handle, DC);
+  end;
+  Result := R;
+end;
+
+function TJvgCaption.CountCaptionButtons: integer;
+begin
+  if not (biSystemMenu in TForm(Owner).BorderIcons) then
+  begin
+    Result := 0;
+    exit;
+  end;
+  result := 1;
+  if not (TForm(Owner).BorderStyle in [bsToolWindow, bsSizeToolWin, bsDialog]) then
+  begin
+    if (biMinimize in TForm(Owner).BorderIcons)
+      or (biMaximize in TForm(Owner).BorderIcons) then
+      inc(Result, 2)
+    else if biHelp in TForm(Owner).BorderIcons then
+      inc(Result);
+  end;
+end;
+
+procedure TJvgCaption.SmthChanged(Sender: TObject);
+begin
+  Repaint;
+end;
+
+procedure TJvgCaption.Repaint;
+var
+  RGN: HRGN;
+begin
+  RGN := CreateRectRgn(0, 0, TForm(Owner).Width, _CYCAPTION);
+  SendMessage(THandle(TForm(Owner).Handle), WM_NCPAINT, HRGN(RGN), 0);
+  DeleteObject(RGN);
+end;
 //============================================================PROPERTIES
 
-PROCEDURE TJvgCaption.SetExcludeIcon(Value: boolean);
-BEGIN
-   FExcludeIcon := Value;
-   IF NOT (csLoading IN ComponentState) THEN
-      DrawCaption(true);
-END;
+procedure TJvgCaption.SetExcludeIcon(Value: boolean);
+begin
+  FExcludeIcon := Value;
+  if not (csLoading in ComponentState) then
+    DrawCaption(true);
+end;
 
-PROCEDURE TJvgCaption.SetExcludeButtons(Value: boolean);
-BEGIN
-   FExcludeButtons := Value;
-   IF NOT (csLoading IN ComponentState) THEN
-      DrawCaption(true);
-END;
+procedure TJvgCaption.SetExcludeButtons(Value: boolean);
+begin
+  FExcludeButtons := Value;
+  if not (csLoading in ComponentState) then
+    DrawCaption(true);
+end;
 
-PROCEDURE TJvgCaption.SetCaptionColor(Value: TColor);
-BEGIN
-   FCaptionColor := Value;
-   IF NOT (csLoading IN ComponentState) THEN
-      DrawCaption(true);
-END;
+procedure TJvgCaption.SetCaptionColor(Value: TColor);
+begin
+  FCaptionColor := Value;
+  if not (csLoading in ComponentState) then
+    DrawCaption(true);
+end;
 
-PROCEDURE TJvgCaption.SetTextStyle(Value: TglTextStyle);
-BEGIN
-   FTextStyle := Value;
-   IF NOT (csLoading IN ComponentState) THEN
-      DrawCaption(true);
-END;
+procedure TJvgCaption.SetTextStyle(Value: TglTextStyle);
+begin
+  FTextStyle := Value;
+  if not (csLoading in ComponentState) then
+    DrawCaption(true);
+end;
 
-PROCEDURE TJvgCaption.SetFont(Value: TFont);
-BEGIN
-   IF NOT Assigned(Value) THEN
-      exit;
-   FFont.Assign(Value);
-   Repaint;
-   IF NOT (csLoading IN ComponentState) THEN
-      DrawCaption(true);
-END;
+procedure TJvgCaption.SetFont(Value: TFont);
+begin
+  if not Assigned(Value) then
+    exit;
+  FFont.Assign(Value);
+  Repaint;
+  if not (csLoading in ComponentState) then
+    DrawCaption(true);
+end;
 
-PROCEDURE TJvgCaption.SetAutoTrColor(Value: TglAutoTransparentColor);
-BEGIN
-   FAutoTrColor := Value;
-   FTransparentColor := GetTransparentColor(FTexture, Value);
-   IF NOT (csLoading IN ComponentState) THEN
-      DrawCaption(true);
-END;
+procedure TJvgCaption.SetAutoTrColor(Value: TglAutoTransparentColor);
+begin
+  FAutoTrColor := Value;
+  FTransparentColor := GetTransparentColor(FTexture, Value);
+  if not (csLoading in ComponentState) then
+    DrawCaption(true);
+end;
 
-PROCEDURE TJvgCaption.SetTextureTransparent(Value: boolean);
-BEGIN
-   IF FTextureTransparent = Value THEN
-      exit;
-   FTextureTransparent := Value;
-   IF NOT (csLoading IN ComponentState) THEN
-      DrawCaption(true);
-END;
+procedure TJvgCaption.SetTextureTransparent(Value: boolean);
+begin
+  if FTextureTransparent = Value then
+    exit;
+  FTextureTransparent := Value;
+  if not (csLoading in ComponentState) then
+    DrawCaption(true);
+end;
 //________________________________________________________
 
-PROCEDURE TJvgCaption.SetTransparentColor(Value: TColor);
-BEGIN
-   IF FTransparentColor = Value THEN
-      exit;
-   FTransparentColor := Value;
-   IF NOT (csLoading IN ComponentState) THEN
-      DrawCaption(true);
-END;
+procedure TJvgCaption.SetTransparentColor(Value: TColor);
+begin
+  if FTransparentColor = Value then
+    exit;
+  FTransparentColor := Value;
+  if not (csLoading in ComponentState) then
+    DrawCaption(true);
+end;
 //________________________________________________________
 {procedure TJvgCaption.SetTexture( Value: TBitmap );
 begin
@@ -573,43 +572,42 @@ begin
   FTexture.Assign(Value);
 end;}
 
-FUNCTION TJvgCaption.GetTexture: TBitmap;
-BEGIN
-   IF NOT Assigned(FTexture) THEN
-      FTexture := TBitmap.Create;
-   Result := FTexture;
-END;
+function TJvgCaption.GetTexture: TBitmap;
+begin
+  if not Assigned(FTexture) then
+    FTexture := TBitmap.Create;
+  Result := FTexture;
+end;
 
-PROCEDURE TJvgCaption.SetTexture(Value: TBitmap);
-BEGIN
-   IF Assigned(FTexture) THEN
-      FTexture.Free;
-   FTexture := TBitmap.Create;
-   FTexture.Assign(Value);
-   IF Assigned(Value) THEN
-      Bmp := FTexture
-   ELSE IF Assigned(FImage) AND Assigned(FImage.Picture) AND
-      Assigned(FImage.Picture.Bitmap) THEN
-      Bmp := FImage.Picture.Bitmap
-   ELSE
-      Bmp := NIL;
-   IF NOT (csLoading IN ComponentState) THEN
-      DrawCaption(true);
-END;
+procedure TJvgCaption.SetTexture(Value: TBitmap);
+begin
+  if Assigned(FTexture) then
+    FTexture.Free;
+  FTexture := TBitmap.Create;
+  FTexture.Assign(Value);
+  if Assigned(Value) then
+    Bmp := FTexture
+  else if Assigned(FImage) and Assigned(FImage.Picture) and
+    Assigned(FImage.Picture.Bitmap) then
+    Bmp := FImage.Picture.Bitmap
+  else
+    Bmp := nil;
+  if not (csLoading in ComponentState) then
+    DrawCaption(true);
+end;
 
-PROCEDURE TJvgCaption.SetImage(Value: TImage);
-BEGIN
-   FImage := Value;
-   IF Assigned(FImage) AND Assigned(FImage.Picture) AND
-      Assigned(FImage.Picture.Bitmap) THEN
-      Bmp := FImage.Picture.Bitmap
-   ELSE IF Assigned(FTexture) THEN
-      Bmp := FTexture
-   ELSE
-      Bmp := NIL;
-   IF NOT (csLoading IN ComponentState) THEN
-      DrawCaption(true);
-END;
+procedure TJvgCaption.SetImage(Value: TImage);
+begin
+  FImage := Value;
+  if Assigned(FImage) and Assigned(FImage.Picture) and
+    Assigned(FImage.Picture.Bitmap) then
+    Bmp := FImage.Picture.Bitmap
+  else if Assigned(FTexture) then
+    Bmp := FTexture
+  else
+    Bmp := nil;
+  if not (csLoading in ComponentState) then
+    DrawCaption(true);
+end;
 
-END.
-
+end.

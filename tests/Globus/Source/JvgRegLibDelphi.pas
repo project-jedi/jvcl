@@ -30,261 +30,260 @@ Known Issues:
 
 //  this unit contains registration procedures for Delphi 4 - 7
 
-UNIT JvgRegLibDelphi;
+unit JvgRegLibDelphi;
 
-INTERFACE
+interface
 
-PROCEDURE Register;
+procedure Register;
 
-IMPLEMENTATION
+implementation
 
-USES Classes,
-   {$IFDEF COMPILER6_UP}
-   DesignIntf,
-   DesignEditors,
-   PropertyCategories,
-   {$ELSE}
-   DsgnIntf,
-   {$ENDIF COMPILER6_UP}
-   JvgReportEditor,
-   JvgAlignForm,
-   JvgAlignFunction,
-   JvgReportParamEditorForm,
-   JvgBitBtn,
-   JvgRuler,
-   JvgCaption,
-   JvgCGI,
-   JvgReportParamEditor,
-   JvgRichEditUtils,
-   JvgCommClasses,
-   JvgRttiUtils,
-   JvgScrollBox,
-   JvgConstSysRequirements,
-   JvgCrossTable,
-   JvgShade,
-   JvgDBNav,
-   JvgDigits,
-   JvgDrawTab,
-   JvgEdit,
-   JvgExceptionHandler,
-   JvgExport,
-   JvgShadowEditor,
-   JvgFileIterator,
-   JvgFileUtils,
-   JvgFixFont,
-   JvgShadow,
-   JvgGraph,
-   JvgGraphicButton,
-   JvgGridHeaderControl,
-   JvgSingleInstance,
-   JvgShape,
-   JvgSpeedButton,
-   JvgStaticText,
-   JvgHoleShape,
-   JvgHTTPVersionInfo,
-   JvgSplit,
-   JvgImageGroup,
-   JvgInspectorGrid,
-   JvgJump,
-   JvgSmallFontsDefense,
-   JvgSysInf,
-   //   JvgStepLabel,
-   JvgLogicItemEditor,
-   JvgLogics,
-   JvgStringContainer,
-   JvgMailSlots,
-   JvgStringGrid,
-   JvgTabComm,
-   JvgTab,
-   JvgSysRequirements,
-   JvgProcess,
-   JvgProcessUtils,
-   //   JvgTagParser,
-   JvgPropertyCenter,
-   JvgQPrintPreview,
-   JvgQPrintSetup,
-   JvgQRLabel,
-   JvgTransparentMemo,
-   JvgTreeView,
-   JvgTypes,
-   JvgVertDBGrid,
-   JvgUtils,
-   JvgWinMask,
-   JvgWebDocumentIterator,
-   JvgRTFPreviewEditor,
-   JvgWizardHeader,
-   JvgXMLSerializer,
-   Jvg3DColors,
-   JvgAskListBox,
-   JvgBevel,
-   JvgButton,
-   JvgCheckBox,
-   JvgCheckVersionInfo,
-   JvgCompDescription,
-   JvgComponentListEditor,
-   JvgDBGrid,
-   JvgExportComponents,
-   JvgFlyingText,
-   JvgGroupBox,
-   JvgHelpPanel,
-   JvgHelpPanelEditor,
-   JvgHint,
-   JvgImage,
-   JvgLabel,
-   JvgLanguageLoader,
-   JvgListBox,
-   JvgLogicsEditor,
-   JvgMultiResourceEditor,
-   JvgMultiResources,
-   JvgPage,
-   //   JvgPointEditor,
-   JvgProgress,
-   JvgReport;
+uses Classes,
+  {$IFDEF COMPILER6_UP}
+  DesignIntf,
+  DesignEditors,
+  PropertyCategories,
+  {$ELSE}
+  DsgnIntf,
+  {$ENDIF COMPILER6_UP}
+  JvgReportEditor,
+  JvgAlignForm,
+  JvgAlignFunction,
+  JvgReportParamEditorForm,
+  JvgBitBtn,
+  JvgRuler,
+  JvgCaption,
+  JvgCGI,
+  JvgReportParamEditor,
+  JvgRichEditUtils,
+  JvgCommClasses,
+  JvgRttiUtils,
+  JvgScrollBox,
+  JvgConstSysRequirements,
+  JvgCrossTable,
+  JvgShade,
+  JvgDBNav,
+  JvgDigits,
+  JvgDrawTab,
+  JvgEdit,
+  JvgExceptionHandler,
+  JvgExport,
+  JvgShadowEditor,
+  JvgFileIterator,
+  JvgFileUtils,
+  JvgFixFont,
+  JvgShadow,
+  JvgGraph,
+  JvgGraphicButton,
+  JvgGridHeaderControl,
+  JvgSingleInstance,
+  JvgShape,
+  JvgSpeedButton,
+  JvgStaticText,
+  JvgHoleShape,
+  JvgHTTPVersionInfo,
+  JvgSplit,
+  JvgImageGroup,
+  JvgInspectorGrid,
+  JvgJump,
+  JvgSmallFontsDefense,
+  JvgSysInf,
+  //   JvgStepLabel,
+  JvgLogicItemEditor,
+  JvgLogics,
+  JvgStringContainer,
+  JvgMailSlots,
+  JvgStringGrid,
+  JvgTabComm,
+  JvgTab,
+  JvgSysRequirements,
+  JvgProcess,
+  JvgProcessUtils,
+  //   JvgTagParser,
+  JvgPropertyCenter,
+  JvgQPrintPreview,
+  JvgQPrintSetup,
+  JvgQRLabel,
+  JvgTransparentMemo,
+  JvgTreeView,
+  JvgTypes,
+  JvgVertDBGrid,
+  JvgUtils,
+  JvgWinMask,
+  JvgWebDocumentIterator,
+  JvgRTFPreviewEditor,
+  JvgWizardHeader,
+  JvgXMLSerializer,
+  Jvg3DColors,
+  JvgAskListBox,
+  JvgBevel,
+  JvgButton,
+  JvgCheckBox,
+  JvgCheckVersionInfo,
+  JvgCompDescription,
+  JvgComponentListEditor,
+  JvgDBGrid,
+  JvgExportComponents,
+  JvgFlyingText,
+  JvgGroupBox,
+  JvgHelpPanel,
+  JvgHelpPanelEditor,
+  JvgHint,
+  JvgImage,
+  JvgLabel,
+  JvgLanguageLoader,
+  JvgListBox,
+  JvgLogicsEditor,
+  JvgMultiResourceEditor,
+  JvgMultiResources,
+  JvgPage,
+  //   JvgPointEditor,
+  JvgProgress,
+  JvgReport;
 
-PROCEDURE Register;
-BEGIN
-   RegisterComponents('Jv BDE', [
-      TJvgExportDBETable
-         ]);
-
-   RegisterComponents('Jv Data Controls', [
-      TJvgDBNAvigator,
-         TJvgPrintCrossTable,
-         TJvgDBGrid,
-         TJvgVertDBSGrid]);
-
-   RegisterComponents('Jv Custom', [
+procedure Register;
+begin
+  RegisterComponents('Jv BDE', [
+    TJvgExportDBETable
       ]);
 
-   RegisterComponents('Jv Dialogs', [
+  RegisterComponents('Jv Data Controls', [
+    TJvgDBNAvigator,
+      TJvgPrintCrossTable,
+      TJvgDBGrid,
+      TJvgVertDBSGrid]);
+
+  RegisterComponents('Jv Custom', [
+    ]);
+
+  RegisterComponents('Jv Dialogs', [
+    ]);
+
+  RegisterComponents('Jv System', [
+    TJvgSysInfo
       ]);
 
-   RegisterComponents('Jv System', [
-      TJvgSysInfo
-         ]);
-
-   RegisterComponents('Jvg Additional', [
-      TJvgMaskEdit,
-         TJvgBevel,
-         TJvgBitBtn,
-         TJvgGraphicButton,
-         TJvgGraph,
-         TJvgTreeView,
-         TJvgCheckTreeView,
-         TJvgSplitter,
-         TJvgShadow,
-         TJvgShade,
-         TJvgButton,
-         TJvgImageGroup,
-         TJvgProgress,
-         TJvgTranspMemo,
-         TJvgWinMask,
-         TJvgGroupBox,
-         TJvgBitmapImage,
-         TJvgListBox,
-         TJvgCheckListBox,
-         TJvgAskListBox,
-         TJvgScrollBox,
-         TJvgStringGrid,
-         TJvgSpeedButton,
-         TJvgHelpPanel,
-         TJvgWizardHeader,
-         TJvg3DColors,
-         TJvgCaption,
-         TJvgHint,
-         TJvgJumpingComponent,
-         TJvgStringContainer,
-         TJvgSysRequirements,
-         TJvgSmallFontsDefence,
-         TJvgMultipleResources,
-         TJvgGridHeaderControl,
-         TJvginspectorGrid,
-         TJvgReportParamsEditor,
-         TJvgLogicProducer
-         ]);
-
-   RegisterComponents('Jv Standard', [
-      TJvgCheckBox
-         ]);
-
-   RegisterComponents('Jv Controls', [
-      TJvgRuler
-         ]);
-
-   RegisterComponents('Jv Win32', [
-      TJvgPageControl,
-         TJvgTabControl,
-         TJvgProcess
-         ]);
-
-   RegisterComponents('Jv Internet', [
-      TJvgMailSlotServer,
-         TJvgMailSlotClient
-         ]);
-
-   RegisterComponents('Jv Labels', [
-      TJvgLabel,
-         TJvgFlyingText,
-         TJvgDigits,
-         TJvgStaticText
-         ]);
-
-   RegisterComponents('Jv MultiMedia', [
+  RegisterComponents('Jvg Additional', [
+    TJvgMaskEdit,
+      TJvgBevel,
+      TJvgBitBtn,
+      TJvgGraphicButton,
+      TJvgGraph,
+      TJvgTreeView,
+      TJvgCheckTreeView,
+      TJvgSplitter,
+      TJvgShadow,
+      TJvgShade,
+      TJvgButton,
+      TJvgImageGroup,
+      TJvgProgress,
+      TJvgTranspMemo,
+      TJvgWinMask,
+      TJvgGroupBox,
+      TJvgBitmapImage,
+      TJvgListBox,
+      TJvgCheckListBox,
+      TJvgAskListBox,
+      TJvgScrollBox,
+      TJvgStringGrid,
+      TJvgSpeedButton,
+      TJvgHelpPanel,
+      TJvgWizardHeader,
+      TJvg3DColors,
+      TJvgCaption,
+      TJvgHint,
+      TJvgJumpingComponent,
+      TJvgStringContainer,
+      TJvgSysRequirements,
+      TJvgSmallFontsDefence,
+      TJvgMultipleResources,
+      TJvgGridHeaderControl,
+      TJvginspectorGrid,
+      TJvgReportParamsEditor,
+      TJvgLogicProducer
       ]);
 
-   RegisterComponents('Jv Forms', [
-      TJvgHoleShape
-         ]);
-
-   RegisterComponents('Jv Utils', [
-      TJvgExportExcel,
-         TJvgExportHTML,
-         TJvgExportXML,
-         TJvgXMLSerializer,
-         TJvgLanguageLoader,
-         TJvgExceptionHandler,
-         TJvgSingleInstance,
-         TJvgFixFont,
-         TJvgComponentDescription]);
-
-   RegisterComponents('Jv Composites', [
+  RegisterComponents('Jv Standard', [
+    TJvgCheckBox
       ]);
 
-   RegisterComponents('Jv QReport', [
-      TJvgQRLabel,
-         TJvgQRDBText
-         ]);
+  RegisterComponents('Jv Controls', [
+    TJvgRuler
+      ]);
 
-   RegisterComponentEditor(TJvgPropertyCenter, TJvgComponentListEditor);
+  RegisterComponents('Jv Win32', [
+    TJvgPageControl,
+      TJvgTabControl,
+      TJvgProcess
+      ]);
 
-   RegisterPropertyEditor(TypeInfo(TStringList), TJvgPropertyCenter,
-      'ComponentList', TJvgComponentListProperty);
+  RegisterComponents('Jv Internet', [
+    TJvgMailSlotServer,
+      TJvgMailSlotClient
+      ]);
 
-   RegisterComponentEditor(TJvgReportParamsEditor, TJvgRepParamsEditor);
+  RegisterComponents('Jv Labels', [
+    TJvgLabel,
+      TJvgFlyingText,
+      TJvgDigits,
+      TJvgStaticText
+      ]);
 
-   RegisterComponentEditor(TJvgLogicProducer, TJvgLogicsComponentEditor);
+  RegisterComponents('Jv MultiMedia', [
+    ]);
 
-   RegisterComponentEditor(TJvgReport, TJvgReportCompEditor);
+  RegisterComponents('Jv Forms', [
+    TJvgHoleShape
+      ]);
 
-   RegisterPropertyEditor(TypeInfo(TStringList), TJvgReport, 'Report',
-      TJvgRepProperty);
+  RegisterComponents('Jv Utils', [
+    TJvgExportExcel,
+      TJvgExportHTML,
+      TJvgExportXML,
+      TJvgXMLSerializer,
+      TJvgLanguageLoader,
+      TJvgExceptionHandler,
+      TJvgSingleInstance,
+      TJvgFixFont,
+      TJvgComponentDescription]);
 
-   RegisterComponentEditor(TJvgReportEditor, TJvgReportCompEditor);
+  RegisterComponents('Jv Composites', [
+    ]);
 
-   RegisterComponentEditor(TJvgShadow, TJvgShadowEditor);
+  RegisterComponents('Jv QReport', [
+    TJvgQRLabel,
+      TJvgQRDBText
+      ]);
 
-   RegisterComponentEditor(TJvgHelpPanel, TJvgHelpPanelEditor);
+  RegisterComponentEditor(TJvgPropertyCenter, TJvgComponentListEditor);
 
-   RegisterPropertyEditor(TypeInfo(TJvgResStringList), TJvgMultipleResources,
-      'Resources', TJvgResourcesProperty);
+  RegisterPropertyEditor(TypeInfo(TStringList), TJvgPropertyCenter,
+    'ComponentList', TJvgComponentListProperty);
 
-   //   RegisterComponentEditor(TJvgGridHeaderControl, TJvgGridHeaderControl_Editor);
-   //   RegisterPropertyEditor(TypeInfo(STRING), TJvgMaskEdit, 'EditMask',
-   //      TMaskProperty);
-   //   RegisterPropertyEditor(TypeInfo(STRING), TJvgProcess, 'FileName',
-   //      TFilenameProperty);
+  RegisterComponentEditor(TJvgReportParamsEditor, TJvgRepParamsEditor);
 
-END;
+  RegisterComponentEditor(TJvgLogicProducer, TJvgLogicsComponentEditor);
 
-END.
+  RegisterComponentEditor(TJvgReport, TJvgReportCompEditor);
 
+  RegisterPropertyEditor(TypeInfo(TStringList), TJvgReport, 'Report',
+    TJvgRepProperty);
+
+  RegisterComponentEditor(TJvgReportEditor, TJvgReportCompEditor);
+
+  RegisterComponentEditor(TJvgShadow, TJvgShadowEditor);
+
+  RegisterComponentEditor(TJvgHelpPanel, TJvgHelpPanelEditor);
+
+  RegisterPropertyEditor(TypeInfo(TJvgResStringList), TJvgMultipleResources,
+    'Resources', TJvgResourcesProperty);
+
+  //   RegisterComponentEditor(TJvgGridHeaderControl, TJvgGridHeaderControl_Editor);
+  //   RegisterPropertyEditor(TypeInfo(STRING), TJvgMaskEdit, 'EditMask',
+  //      TMaskProperty);
+  //   RegisterPropertyEditor(TypeInfo(STRING), TJvgProcess, 'FileName',
+  //      TFilenameProperty);
+
+end;
+
+end.

@@ -108,7 +108,6 @@ type
 implementation
 //{$R JvgShadow.res}
 
-
 constructor TJvgMaskEdit.Create(AOwner: TComponent);
 begin
   inherited;

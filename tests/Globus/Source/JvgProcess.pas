@@ -27,74 +27,73 @@ Known Issues:
 
 {$I JVCL.INC}
 
-UNIT JvgProcess;                        //...simple process managment
+unit JvgProcess; //...simple process managment
 
-INTERFACE
+interface
 
-USES Windows,
-   Messages,
-   JVComponent,
-   Classes,
-   Forms,
-   dialogs;
+uses Windows,
+  Messages,
+  JVComponent,
+  Classes,
+  Forms,
+  dialogs;
 
-TYPE
+type
 
-   TJvgProcess = CLASS(TJvComponent)
-   PRIVATE
-      FResult: boolean;
-      FFileName: STRING;
-      FOnTermainated: TNotifyEvent;
-      si: TStartupInfo;
-   PUBLIC
-      pi: TProcessInformation;
-      FUNCTION Run: boolean;
-      FUNCTION Kill: boolean;
-      DESTRUCTOR Destroy; OVERRIDE;
-   PUBLISHED
-      PROPERTY FileName: STRING READ FFileName WRITE FFileName;
-      PROPERTY Result: boolean READ FResult STORED false;
-      PROPERTY OnTermainated: TNotifyEvent READ FOnTermainated WRITE
-         FOnTermainated;
-   END;
+  TJvgProcess = class(TJvComponent)
+  private
+    FResult: boolean;
+    FFileName: string;
+    FOnTermainated: TNotifyEvent;
+    si: TStartupInfo;
+  public
+    pi: TProcessInformation;
+    function Run: boolean;
+    function Kill: boolean;
+    destructor Destroy; override;
+  published
+    property FileName: string read FFileName write FFileName;
+    property Result: boolean read FResult stored false;
+    property OnTermainated: TNotifyEvent read FOnTermainated write
+      FOnTermainated;
+  end;
 
-PROCEDURE Register;
+procedure Register;
 
-IMPLEMENTATION
+implementation
 
-PROCEDURE Register;
-BEGIN
-END;
+procedure Register;
+begin
+end;
 
-DESTRUCTOR TJvgProcess.Destroy;
-BEGIN
-   Kill;
-   INHERITED;
-END;
+destructor TJvgProcess.Destroy;
+begin
+  Kill;
+  inherited;
+end;
 
-FUNCTION TJvgProcess.Run: boolean;
-BEGIN
-   GetStartupInfo(si);
-   si.wShowWindow := SW_NORMAL;
-   FResult := CreateProcess(PChar(FFileName), NIL, NIL, NIL, false,
-      NORMAL_PRIORITY_CLASS, NIL, NIL, si, pi);
-   Run := FResult;
-   IF Result THEN
-   BEGIN
-      WHILE WaitForSingleObject(pi.hProcess, 100) = WAIT_TIMEOUT DO
-         Application.ProcessMessages;
-      IF Assigned(OnTermainated) THEN
-         OnTermainated(self);
-   END;
-END;
+function TJvgProcess.Run: boolean;
+begin
+  GetStartupInfo(si);
+  si.wShowWindow := SW_NORMAL;
+  FResult := CreateProcess(PChar(FFileName), nil, nil, nil, false,
+    NORMAL_PRIORITY_CLASS, nil, nil, si, pi);
+  Run := FResult;
+  if Result then
+  begin
+    while WaitForSingleObject(pi.hProcess, 100) = WAIT_TIMEOUT do
+      Application.ProcessMessages;
+    if Assigned(OnTermainated) then
+      OnTermainated(self);
+  end;
+end;
 
-FUNCTION TJvgProcess.Kill: boolean;
-BEGIN
-   IF FResult {and(WaitForSingleObject(pi.hProcess, 100) <> WAIT_TIMEOUT)} THEN
-      Kill := TerminateProcess(pi.hProcess, 0)
-   ELSE
-      Kill := false;
-END;
+function TJvgProcess.Kill: boolean;
+begin
+  if FResult {and(WaitForSingleObject(pi.hProcess, 100) <> WAIT_TIMEOUT)} then
+    Kill := TerminateProcess(pi.hProcess, 0)
+  else
+    Kill := false;
+end;
 
-END.
-
+end.

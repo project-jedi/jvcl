@@ -27,165 +27,164 @@ Known Issues:
 
 {$I JVCL.INC}
 
-UNIT JvgSysInf;
+unit JvgSysInf;
 
-INTERFACE
+interface
 
-USES
-   Windows,
-   Messages,
-   SysUtils,
-   Classes,
-   Graphics,
-   Controls,
-   Forms,
-   Dialogs,
-   StdCtrls,
-   JvComponent,
-   extctrls;
+uses
+  Windows,
+  Messages,
+  SysUtils,
+  Classes,
+  Graphics,
+  Controls,
+  Forms,
+  Dialogs,
+  StdCtrls,
+  JvComponent,
+  extctrls;
 
-TYPE
+type
 
-   TJvgSysInfo = CLASS(TJvComponent)
-   PRIVATE
-      {data fields for properties}
-      FMemoryLoad: integer;
-      FTotalPhys: integer;
-      FAvailPhys: integer;
-      FTotalPageFile: integer;
-      FAvailPageFile: integer;
-      FTotalVirtual: integer;
-      FAvailVirtual: integer;
-      FColorDepth: integer;
-      FSystemFont: STRING;
-      FOSPlatform: STRING;
-      FVRefreshRate: integer;
-      FGraphicResolution: STRING;
-      FCPUKind: integer;
-      FCPUName: STRING;
-      FComputerName: STRING;
-      FUserName: STRING;
-      iNone: integer;
-      sNone: STRING;
-   PROTECTED
-      PROCEDURE Loaded; OVERRIDE;
-   PUBLIC
-      PROCEDURE Refresh;
-      CONSTRUCTOR Create(AOwner: TComponent); OVERRIDE;
-   PUBLISHED
-      PROPERTY MemoryLoad: integer READ FMemoryLoad WRITE iNone STORED false;
-      PROPERTY TotalPhys: integer READ FTotalPhys WRITE iNone STORED false;
-      PROPERTY AvailPhys: integer READ FAvailPhys WRITE iNone STORED false;
-      PROPERTY TotalPageFile: integer READ FTotalPageFile WRITE iNone STORED
-         false;
-      PROPERTY AvailPageFile: integer READ FAvailPageFile WRITE iNone STORED
-         false;
-      PROPERTY TotalVirtual: integer READ FTotalVirtual WRITE iNone STORED
-         false;
-      PROPERTY AvailVirtual: integer READ FAvailVirtual WRITE iNone STORED
-         false;
+  TJvgSysInfo = class(TJvComponent)
+  private
+    {data fields for properties}
+    FMemoryLoad: integer;
+    FTotalPhys: integer;
+    FAvailPhys: integer;
+    FTotalPageFile: integer;
+    FAvailPageFile: integer;
+    FTotalVirtual: integer;
+    FAvailVirtual: integer;
+    FColorDepth: integer;
+    FSystemFont: string;
+    FOSPlatform: string;
+    FVRefreshRate: integer;
+    FGraphicResolution: string;
+    FCPUKind: integer;
+    FCPUName: string;
+    FComputerName: string;
+    FUserName: string;
+    iNone: integer;
+    sNone: string;
+  protected
+    procedure Loaded; override;
+  public
+    procedure Refresh;
+    constructor Create(AOwner: TComponent); override;
+  published
+    property MemoryLoad: integer read FMemoryLoad write iNone stored false;
+    property TotalPhys: integer read FTotalPhys write iNone stored false;
+    property AvailPhys: integer read FAvailPhys write iNone stored false;
+    property TotalPageFile: integer read FTotalPageFile write iNone stored
+      false;
+    property AvailPageFile: integer read FAvailPageFile write iNone stored
+      false;
+    property TotalVirtual: integer read FTotalVirtual write iNone stored
+      false;
+    property AvailVirtual: integer read FAvailVirtual write iNone stored
+      false;
 
-      PROPERTY CPUKind: Integer READ FCPUKind WRITE iNone STORED false;
-      PROPERTY CPUName: STRING READ FCPUName WRITE sNone STORED false;
-      PROPERTY ColorDepth: integer READ FColorDepth WRITE iNone STORED false;
-      PROPERTY SystemFont: STRING READ FSystemFont WRITE sNone STORED false;
-      PROPERTY OSPlatform: STRING READ FOSPlatform WRITE sNone STORED false;
-      PROPERTY VRefreshRate: integer READ FVRefreshRate WRITE iNone STORED
-         false;
-      PROPERTY GraphicResolution: STRING READ FGraphicResolution WRITE sNone
-         STORED false;
-      PROPERTY ComputerName: STRING READ FComputerName WRITE sNone STORED false;
-      PROPERTY UserName: STRING READ FUserName WRITE sNone STORED false;
-   END;
+    property CPUKind: Integer read FCPUKind write iNone stored false;
+    property CPUName: string read FCPUName write sNone stored false;
+    property ColorDepth: integer read FColorDepth write iNone stored false;
+    property SystemFont: string read FSystemFont write sNone stored false;
+    property OSPlatform: string read FOSPlatform write sNone stored false;
+    property VRefreshRate: integer read FVRefreshRate write iNone stored
+      false;
+    property GraphicResolution: string read FGraphicResolution write sNone
+      stored false;
+    property ComputerName: string read FComputerName write sNone stored false;
+    property UserName: string read FUserName write sNone stored false;
+  end;
 
-CONST
-   i8086                      = 1;      { & 8088 CPU }
-   i80286                     = 2;
-   i80386                     = 3;
-   i80486                     = 4;
-   iPentium                   = 5;      { P5 - Pentium }
-   iPentiumPro                = 6;      { P6 - Pentium Pro & Celeron}
+const
+  i8086 = 1; { & 8088 CPU }
+  i80286 = 2;
+  i80386 = 3;
+  i80486 = 4;
+  iPentium = 5; { P5 - Pentium }
+  iPentiumPro = 6; { P6 - Pentium Pro & Celeron}
 
-PROCEDURE Register;
+procedure Register;
 
-IMPLEMENTATION
-USES JvgUtils;
+implementation
+uses JvgUtils;
 
-CONSTRUCTOR TJvgSysInfo.Create(AOwner: TComponent);
-BEGIN
-   INHERITED;
-   IF csDesigning IN ComponentState THEN
-      Refresh;
-END;
+constructor TJvgSysInfo.Create(AOwner: TComponent);
+begin
+  inherited;
+  if csDesigning in ComponentState then
+    Refresh;
+end;
 
-PROCEDURE TJvgSysInfo.Loaded;
-BEGIN
-   Refresh;
-END;
+procedure TJvgSysInfo.Loaded;
+begin
+  Refresh;
+end;
 
-PROCEDURE TJvgSysInfo.Refresh;
-VAR
-   DC                         : HDC;
-   OSVersionInfo              : TOSVersionInfo;
-   SI                         : TSystemInfo;
-   MS                         : TMemoryStatus;
-BEGIN
-   MS.dwLength := SizeOf(MS);
-   GlobalMemoryStatus(MS);
-   OSVersionInfo.dwOSVersionInfoSize := sizeof(OSVersionInfo);
-   GetVersionEx(OSVersionInfo);
-   GetSystemInfo(SI);
-   DC := GetDC(0);
+procedure TJvgSysInfo.Refresh;
+var
+  DC: HDC;
+  OSVersionInfo: TOSVersionInfo;
+  SI: TSystemInfo;
+  MS: TMemoryStatus;
+begin
+  MS.dwLength := SizeOf(MS);
+  GlobalMemoryStatus(MS);
+  OSVersionInfo.dwOSVersionInfoSize := sizeof(OSVersionInfo);
+  GetVersionEx(OSVersionInfo);
+  GetSystemInfo(SI);
+  DC := GetDC(0);
 
-   FMemoryLoad := MS.dwMemoryLoad;
-   FTotalPhys := MS.dwTotalPhys;
-   FAvailPhys := MS.dwAvailPhys;
-   FTotalPageFile := MS.dwTotalPageFile;
-   FAvailPageFile := MS.dwAvailPageFile;
-   FTotalVirtual := MS.dwTotalVirtual;
-   FAvailVirtual := MS.dwAvailVirtual;
+  FMemoryLoad := MS.dwMemoryLoad;
+  FTotalPhys := MS.dwTotalPhys;
+  FAvailPhys := MS.dwAvailPhys;
+  FTotalPageFile := MS.dwTotalPageFile;
+  FAvailPageFile := MS.dwAvailPageFile;
+  FTotalVirtual := MS.dwTotalVirtual;
+  FAvailVirtual := MS.dwAvailVirtual;
 
-   FCPUKind := SI.wProcessorLevel;
+  FCPUKind := SI.wProcessorLevel;
 
-   CASE SI.wProcessorLevel OF
-      //    i8086: Result := '8086';
-      //    i80286: Result := '80286';
-      i80386: FCPUName := '80386';
-      i80486: FCPUName := '80486';
-      iPentium: FCPUName := 'Pentium';
-      iPentiumPro: FCPUName := 'Pentium Pro/Celeron';
-   ELSE
-      FCPUName := Format('P%d', [SI.wProcessorLevel]);
-   END;
+  case SI.wProcessorLevel of
+    //    i8086: Result := '8086';
+    //    i80286: Result := '80286';
+    i80386: FCPUName := '80386';
+    i80486: FCPUName := '80486';
+    iPentium: FCPUName := 'Pentium';
+    iPentiumPro: FCPUName := 'Pentium Pro/Celeron';
+  else
+    FCPUName := Format('P%d', [SI.wProcessorLevel]);
+  end;
 
-   IF OSVersionInfo.dwPlatformId = VER_PLATFORM_WIN32_NT THEN
-      FOSPlatform := 'NT'
-   ELSE IF OSVersionInfo.dwPlatformId = VER_PLATFORM_WIN32_WINDOWS THEN
-      FOSPlatform := '95';
+  if OSVersionInfo.dwPlatformId = VER_PLATFORM_WIN32_NT then
+    FOSPlatform := 'NT'
+  else if OSVersionInfo.dwPlatformId = VER_PLATFORM_WIN32_WINDOWS then
+    FOSPlatform := '95';
 
-   FVRefreshRate := GetDeviceCaps(DC, VREFRESH);
-   FColorDepth := GetDeviceCaps(DC, BITSPIXEL);
+  FVRefreshRate := GetDeviceCaps(DC, VREFRESH);
+  FColorDepth := GetDeviceCaps(DC, BITSPIXEL);
 
-   FGraphicResolution := Format('%dx%d', [GetDeviceCaps(DC, HORZRES),
-      GetDeviceCaps(DC, VERTRES)]);
+  FGraphicResolution := Format('%dx%d', [GetDeviceCaps(DC, HORZRES),
+    GetDeviceCaps(DC, VERTRES)]);
 
-   IF GetDeviceCaps(DC, LOGPIXELSX) = 96 THEN
-      FSystemFont := 'SmallFont'
-   ELSE IF GetDeviceCaps(DC, LOGPIXELSX) = 120 THEN
-      FSystemFont := 'BigFont';
+  if GetDeviceCaps(DC, LOGPIXELSX) = 96 then
+    FSystemFont := 'SmallFont'
+  else if GetDeviceCaps(DC, LOGPIXELSX) = 120 then
+    FSystemFont := 'BigFont';
 
-   FComputerName := JvgUtils.ComputerName;
-   FUserName := JvgUtils.UserName;
+  FComputerName := JvgUtils.ComputerName;
+  FUserName := JvgUtils.UserName;
 
-   ReleaseDC(0, DC);
-END;
+  ReleaseDC(0, DC);
+end;
 
 {registration procedure}
 
-PROCEDURE Register;
-BEGIN
-//   RegisterComponents('Globus Components', [TJvgSysInfo]);
-END;
+procedure Register;
+begin
+  //   RegisterComponents('Globus Components', [TJvgSysInfo]);
+end;
 
-END.
-
+end.

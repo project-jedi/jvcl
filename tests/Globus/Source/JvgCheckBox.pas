@@ -27,858 +27,855 @@ Known Issues:
 
 {$I JVCL.INC}
 
-UNIT JvgCheckBox;
+unit JvgCheckBox;
 
-INTERFACE
-USES
-   Windows,
-   Messages,
-   SysUtils,
-   Classes,
-   Graphics,
-   Controls,
-   Forms,
-   Dialogs,
-   StdCtrls,
-   ExtCtrls,
-   JvgTypes,
-   JvgCommClasses,
-   JVComponent,
-   JvgUtils;
+interface
+uses
+  Windows,
+  Messages,
+  SysUtils,
+  Classes,
+  Graphics,
+  Controls,
+  Forms,
+  Dialogs,
+  StdCtrls,
+  ExtCtrls,
+  JvgTypes,
+  JvgCommClasses,
+  JVComponent,
+  JvgUtils;
 
-TYPE
+type
 
-   TJvgCheckBox = CLASS(TJvGraphicControl)
-   PRIVATE
-      FChecked: boolean;
-      FColors: TJvgLabelColors;
-      FIllumination: TJvgIllumination;
-      FGlyph: TBitmap;
-      FGlyphOn: TBitmap;
-      FGlyphOff: TBitmap;
-      FGlyphDisabled: TBitmap;
-      FGradient: TJvgGradient;
-      FGroupIndex: integer;
-      FGlyphShift: TJvgPointClass;
-      FOptions: TglCBoxOptions;
-      FTransparent: boolean;
-      FTextStyles: TJvgLabelTextStyles;
-      FDisabledMaskColor: TColor;
-      FInterspace: integer;
-      FFocusControl: TWinControl;
-      FFocusControlMethod: TFocusControlMethod;
-      FOnMouseEnter: TNotifyEvent;
-      FOnMouseLeave: TNotifyEvent;
-      FAfterPaint: TNotifyEvent;
+  TJvgCheckBox = class(TJvGraphicControl)
+  private
+    FChecked: boolean;
+    FColors: TJvgLabelColors;
+    FIllumination: TJvgIllumination;
+    FGlyph: TBitmap;
+    FGlyphOn: TBitmap;
+    FGlyphOff: TBitmap;
+    FGlyphDisabled: TBitmap;
+    FGradient: TJvgGradient;
+    FGroupIndex: integer;
+    FGlyphShift: TJvgPointClass;
+    FOptions: TglCBoxOptions;
+    FTransparent: boolean;
+    FTextStyles: TJvgLabelTextStyles;
+    FDisabledMaskColor: TColor;
+    FInterspace: integer;
+    FFocusControl: TWinControl;
+    FFocusControlMethod: TFocusControlMethod;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
+    FAfterPaint: TNotifyEvent;
 
-      FGlyphKind: TglGlyphKind;
+    FGlyphKind: TglGlyphKind;
 
-      FPrevWndProc: Pointer;
-      FNewWndProc: Pointer;
-      fActiveNow: boolean;
-      fShowAsActiveWhileControlFocused: boolean;
-      Img: TBitmap;
-      fNeedUpdateOnlyMainText: boolean;
-      fSuppressCMFontChanged: boolean;
-      fOnlyTextStyleChanged: boolean;
-      FAlignment: TLeftRight;
-      FUNCTION IsCustomGlyph: Boolean;
-      PROCEDURE SetChecked(Value: boolean);
-      PROCEDURE SetGlyph(Value: TBitmap);
-      FUNCTION GetGlyph: TBitmap;
-      PROCEDURE SetGlyphOn(Value: TBitmap);
-      FUNCTION GetGlyphOn: TBitmap;
-      PROCEDURE SetGlyphOff(Value: TBitmap);
-      FUNCTION GetGlyphOff: TBitmap;
-      PROCEDURE SetGlyphDisabled(Value: TBitmap);
-      FUNCTION GetGlyphDisabled: TBitmap;
-      PROCEDURE SetGroupIndex(Value: integer);
-      PROCEDURE SetOptions(Value: TglCBoxOptions);
-      PROCEDURE SetTransparent(Value: boolean);
-      PROCEDURE SetDisabledMaskColor(Value: TColor);
-      PROCEDURE SetInterspace(Value: integer);
-      PROCEDURE SetFocusControl(Value: TWinControl);
-      PROCEDURE SetGlyphKind(Value: TglGlyphKind);
+    FPrevWndProc: Pointer;
+    FNewWndProc: Pointer;
+    fActiveNow: boolean;
+    fShowAsActiveWhileControlFocused: boolean;
+    Img: TBitmap;
+    fNeedUpdateOnlyMainText: boolean;
+    fSuppressCMFontChanged: boolean;
+    fOnlyTextStyleChanged: boolean;
+    FAlignment: TLeftRight;
+    function IsCustomGlyph: Boolean;
+    procedure SetChecked(Value: boolean);
+    procedure SetGlyph(Value: TBitmap);
+    function GetGlyph: TBitmap;
+    procedure SetGlyphOn(Value: TBitmap);
+    function GetGlyphOn: TBitmap;
+    procedure SetGlyphOff(Value: TBitmap);
+    function GetGlyphOff: TBitmap;
+    procedure SetGlyphDisabled(Value: TBitmap);
+    function GetGlyphDisabled: TBitmap;
+    procedure SetGroupIndex(Value: integer);
+    procedure SetOptions(Value: TglCBoxOptions);
+    procedure SetTransparent(Value: boolean);
+    procedure SetDisabledMaskColor(Value: TColor);
+    procedure SetInterspace(Value: integer);
+    procedure SetFocusControl(Value: TWinControl);
+    procedure SetGlyphKind(Value: TglGlyphKind);
 
-      PROCEDURE OnGradientChanged(Sender: TObject);
-      PROCEDURE OnIlluminationChanged(Sender: TObject);
-      PROCEDURE WMSize(VAR Message: TMessage); MESSAGE WM_SIZE;
-      PROCEDURE CMFontChanged(VAR Message: TMessage); MESSAGE CM_FONTCHANGED;
-      PROCEDURE OnLButtonUp(VAR Message: TMessage); MESSAGE WM_LBUTTONUP;
-      PROCEDURE OnLButtonDown(VAR Message: TMessage); MESSAGE WM_LBUTTONDOWN;
-      PROCEDURE CMMouseEnter(VAR Message: TMessage); MESSAGE CM_MOUSEENTER;
-      PROCEDURE CMMouseLeave(VAR Message: TMessage); MESSAGE CM_MOUSELEAVE;
-      PROCEDURE CMTextChanged(VAR Message: TMessage); MESSAGE CM_TEXTCHANGED;
-      PROCEDURE CallMouseEnter; VIRTUAL;
-      PROCEDURE CallMouseLeave; VIRTUAL;
-      PROCEDURE SetAlignment(CONST Value: TLeftRight);
-   PROTECTED
-      PROCEDURE Paint; OVERRIDE;
-      PROCEDURE HookFocusControlWndProc;
-      PROCEDURE UnhookFocusControlWndProc;
-      PROCEDURE FocusControlWndHookProc(VAR Msg_: TMessage);
-      PROCEDURE Notification(AComponent: TComponent; Operation: TOperation);
-         OVERRIDE;
-   PUBLIC
-      fNeedRebuildBackground: boolean;
-      FUNCTION GetCheckedItemInGroup: TJvgCheckBox;
-      PROCEDURE SetCheckedItemInGroup(TagNo: integer);
-      CONSTRUCTOR Create(AOwner: TComponent); OVERRIDE;
-      DESTRUCTOR Destroy; OVERRIDE;
+    procedure OnGradientChanged(Sender: TObject);
+    procedure OnIlluminationChanged(Sender: TObject);
+    procedure WMSize(var Message: TMessage); message WM_SIZE;
+    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
+    procedure OnLButtonUp(var Message: TMessage); message WM_LBUTTONUP;
+    procedure OnLButtonDown(var Message: TMessage); message WM_LBUTTONDOWN;
+    procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
+    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
+    procedure CMTextChanged(var Message: TMessage); message CM_TEXTCHANGED;
+    procedure CallMouseEnter; virtual;
+    procedure CallMouseLeave; virtual;
+    procedure SetAlignment(const Value: TLeftRight);
+  protected
+    procedure Paint; override;
+    procedure HookFocusControlWndProc;
+    procedure UnhookFocusControlWndProc;
+    procedure FocusControlWndHookProc(var Msg_: TMessage);
+    procedure Notification(AComponent: TComponent; Operation: TOperation);
+      override;
+  public
+    fNeedRebuildBackground: boolean;
+    function GetCheckedItemInGroup: TJvgCheckBox;
+    procedure SetCheckedItemInGroup(TagNo: integer);
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
 
-   PUBLISHED
-      {$IFDEF COMPILER5_UP}
-      PROPERTY Anchors;
-      {$ENDIF}
-      PROPERTY Align;
-      PROPERTY Caption;
-      PROPERTY Enabled;
-      PROPERTY ParentShowHint;
-      PROPERTY ShowHint;
-      PROPERTY Visible;
-      PROPERTY OnClick;
-      PROPERTY OnDblClick;
-      PROPERTY OnDragDrop;
-      PROPERTY OnDragOver;
-      PROPERTY OnEndDrag;
-      PROPERTY OnMouseDown;
-      PROPERTY OnMouseMove;
-      PROPERTY OnMouseUp;
-      PROPERTY OnStartDrag;
-      PROPERTY DragCursor;
-      PROPERTY DragMode;
-      PROPERTY Font;
+  published
+    {$IFDEF COMPILER5_UP}
+    property Anchors;
+    {$ENDIF}
+    property Align;
+    property Caption;
+    property Enabled;
+    property ParentShowHint;
+    property ShowHint;
+    property Visible;
+    property OnClick;
+    property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnStartDrag;
+    property DragCursor;
+    property DragMode;
+    property Font;
 
-      PROPERTY Alignment: TLeftRight READ FAlignment WRITE SetAlignment DEFAULT
-         taRightJustify;
-      PROPERTY GlyphKind: TglGlyphKind READ FGlyphKind WRITE SetGlyphKind DEFAULT
-         fgkDefault;
-      PROPERTY Checked: boolean READ FChecked WRITE SetChecked DEFAULT false;
-      PROPERTY Glyph: TBitmap READ GetGlyph WRITE SetGlyph;
-      PROPERTY GlyphOn: TBitmap READ GetGlyphOn WRITE SetGlyphOn STORED
-         IsCustomGlyph;
-      PROPERTY GlyphOff: TBitmap READ GetGlyphOff WRITE SetGlyphOff STORED
-         IsCustomGlyph;
-      PROPERTY GlyphDisabled: TBitmap READ GetGlyphDisabled WRITE
-         SetGlyphDisabled STORED IsCustomGlyph;
-      PROPERTY GroupIndex: integer READ FGroupIndex WRITE SetGroupIndex DEFAULT
-         0;
-      PROPERTY GlyphShift: TJvgPointClass READ FGlyphShift WRITE FGlyphShift;
-      PROPERTY Transparent: boolean READ FTransparent WRITE SetTransparent
-         DEFAULT false;
-      PROPERTY TextStyles: TJvgLabelTextStyles READ FTextStyles WRITE
-         FTextStyles;
-      PROPERTY Colors: TJvgLabelColors READ FColors WRITE FColors;
-      PROPERTY Options: TglCBoxOptions READ FOptions WRITE SetOptions;
-      PROPERTY Gradient: TJvgGradient READ FGradient WRITE FGradient;
-      PROPERTY Illumination: TJvgIllumination READ FIllumination WRITE
-         FIllumination;
-      PROPERTY DisabledMaskColor: TColor READ FDisabledMaskColor WRITE
-         SetDisabledMaskColor
-         DEFAULT clBlack;
-      PROPERTY Interspace: integer READ FInterspace WRITE SetInterspace DEFAULT
-         0;
-      PROPERTY FocusControl: TWinControl READ FFocusControl WRITE
-         SetFocusControl;
-      PROPERTY FocusControlMethod: TFocusControlMethod READ FFocusControlMethod
-         WRITE FFocusControlMethod
-         DEFAULT fcmOnMouseDown;
+    property Alignment: TLeftRight read FAlignment write SetAlignment default
+      taRightJustify;
+    property GlyphKind: TglGlyphKind read FGlyphKind write SetGlyphKind default
+      fgkDefault;
+    property Checked: boolean read FChecked write SetChecked default false;
+    property Glyph: TBitmap read GetGlyph write SetGlyph;
+    property GlyphOn: TBitmap read GetGlyphOn write SetGlyphOn stored
+      IsCustomGlyph;
+    property GlyphOff: TBitmap read GetGlyphOff write SetGlyphOff stored
+      IsCustomGlyph;
+    property GlyphDisabled: TBitmap read GetGlyphDisabled write
+      SetGlyphDisabled stored IsCustomGlyph;
+    property GroupIndex: integer read FGroupIndex write SetGroupIndex default
+      0;
+    property GlyphShift: TJvgPointClass read FGlyphShift write FGlyphShift;
+    property Transparent: boolean read FTransparent write SetTransparent
+      default false;
+    property TextStyles: TJvgLabelTextStyles read FTextStyles write
+      FTextStyles;
+    property Colors: TJvgLabelColors read FColors write FColors;
+    property Options: TglCBoxOptions read FOptions write SetOptions;
+    property Gradient: TJvgGradient read FGradient write FGradient;
+    property Illumination: TJvgIllumination read FIllumination write
+      FIllumination;
+    property DisabledMaskColor: TColor read FDisabledMaskColor write
+      SetDisabledMaskColor
+      default clBlack;
+    property Interspace: integer read FInterspace write SetInterspace default
+      0;
+    property FocusControl: TWinControl read FFocusControl write
+      SetFocusControl;
+    property FocusControlMethod: TFocusControlMethod read FFocusControlMethod
+      write FFocusControlMethod
+      default fcmOnMouseDown;
 
-      PROPERTY OnMouseEnter: TNotifyEvent READ FOnMouseEnter WRITE
-         FOnMouseEnter;
-      PROPERTY OnMouseLeave: TNotifyEvent READ FOnMouseLeave WRITE
-         FOnMouseLeave;
-      PROPERTY AfterPaint: TNotifyEvent READ FAfterPaint WRITE FAfterPaint;
+    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write
+      FOnMouseEnter;
+    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write
+      FOnMouseLeave;
+    property AfterPaint: TNotifyEvent read FAfterPaint write FAfterPaint;
 
-   END;
+  end;
 
-IMPLEMENTATION
+implementation
 {$R JvgCheckBox.res}
 
 //________________________________________________________ Methods _
 
-CONSTRUCTOR TJvgCheckBox.Create(AOwner: TComponent);
-BEGIN
-   INHERITED;
-   ControlStyle := [csCaptureMouse, csOpaque, csClickEvents, csSetCaption,
-      csReplicatable];
-   //  ControlStyle := ControlStyle + [csOpaque, csReplicatable];
+constructor TJvgCheckBox.Create(AOwner: TComponent);
+begin
+  inherited;
+  ControlStyle := [csCaptureMouse, csOpaque, csClickEvents, csSetCaption,
+    csReplicatable];
+  //  ControlStyle := ControlStyle + [csOpaque, csReplicatable];
 
-   //  FGlyphOn := TBitmap.Create;
-   //  FGlyphOff := TBitmap.Create;
-   Img := TBitmap.Create;
-   TextStyles := TJvgLabelTextStyles.Create;
-   Colors := TJvgLabelColors.Create;
-   Gradient := TJvgGradient.Create;
-   FIllumination := TJvgIllumination.Create;
-   FGlyphShift := TJvgPointClass.Create;
+  //  FGlyphOn := TBitmap.Create;
+  //  FGlyphOff := TBitmap.Create;
+  Img := TBitmap.Create;
+  TextStyles := TJvgLabelTextStyles.Create;
+  Colors := TJvgLabelColors.Create;
+  Gradient := TJvgGradient.Create;
+  FIllumination := TJvgIllumination.Create;
+  FGlyphShift := TJvgPointClass.Create;
 
-   //..defaults
-   Width := 80;
-   Height := 17;
-   FAlignment := taRightJustify;
-   FChecked := false;
-   FTransparent := false;
-   FGradient.OnChanged := OnGradientChanged;
-   FIllumination.OnChanged := OnIlluminationChanged;
-   TextStyles.OnChanged := OnIlluminationChanged;
-   Colors.OnChanged := OnIlluminationChanged;
-   FGlyphShift.OnChanged := OnGradientChanged;
-   FOptions := [fcoFastDraw];
-   FGroupIndex := 0;
-   FInterspace := 0;
-   FFocusControlMethod := fcmOnMouseDown;
-   fNeedRebuildBackground := true;
+  //..defaults
+  Width := 80;
+  Height := 17;
+  FAlignment := taRightJustify;
+  FChecked := false;
+  FTransparent := false;
+  FGradient.OnChanged := OnGradientChanged;
+  FIllumination.OnChanged := OnIlluminationChanged;
+  TextStyles.OnChanged := OnIlluminationChanged;
+  Colors.OnChanged := OnIlluminationChanged;
+  FGlyphShift.OnChanged := OnGradientChanged;
+  FOptions := [fcoFastDraw];
+  FGroupIndex := 0;
+  FInterspace := 0;
+  FFocusControlMethod := fcmOnMouseDown;
+  fNeedRebuildBackground := true;
 
-   Img.Canvas.Brush.Color := clBtnFace;
-   Img.Canvas.Brush.Style := bsSolid;
-   //  fNeedUpdateOnlyMainText := false;
-   {$IFDEF FR_RUS}
-   Font.CharSet := RUSSIAN_CHARSET;
-   {$ENDIF}
-   GlyphKind := fgkDefault;
-END;
+  Img.Canvas.Brush.Color := clBtnFace;
+  Img.Canvas.Brush.Style := bsSolid;
+  //  fNeedUpdateOnlyMainText := false;
+  {$IFDEF FR_RUS}
+  Font.CharSet := RUSSIAN_CHARSET;
+  {$ENDIF}
+  GlyphKind := fgkDefault;
+end;
 //______________________________________________________________
 
-DESTRUCTOR TJvgCheckBox.Destroy;
-BEGIN
-   IF Assigned(FGlyphOn) THEN
-      FGlyphOn.Free;
-   IF Assigned(FGlyphOff) THEN
-      FGlyphOff.Free;
-   IF Assigned(FGlyph) THEN
-      FGlyph.Free;
-   IF Assigned(FGlyphDisabled) THEN
-      FGlyphDisabled.Free;
-   Img.Free;
-   FTextStyles.Free;
-   FColors.Free;
-   FGradient.Free;
-   FIllumination.Free;
-   FGlyphShift.Free;
-   SetFocusControl(NIL);
-   INHERITED;
-END;
+destructor TJvgCheckBox.Destroy;
+begin
+  if Assigned(FGlyphOn) then
+    FGlyphOn.Free;
+  if Assigned(FGlyphOff) then
+    FGlyphOff.Free;
+  if Assigned(FGlyph) then
+    FGlyph.Free;
+  if Assigned(FGlyphDisabled) then
+    FGlyphDisabled.Free;
+  Img.Free;
+  FTextStyles.Free;
+  FColors.Free;
+  FGradient.Free;
+  FIllumination.Free;
+  FGlyphShift.Free;
+  SetFocusControl(nil);
+  inherited;
+end;
 //______________________________________________________________
 
-PROCEDURE TJvgCheckBox.CMFontChanged(VAR Message: TMessage);
-BEGIN
-   IF fSuppressCMFontChanged THEN
-      exit;
-   Img.Canvas.Font.Assign(Font);
-   Repaint;
-   INHERITED;
-END;
+procedure TJvgCheckBox.CMFontChanged(var Message: TMessage);
+begin
+  if fSuppressCMFontChanged then
+    exit;
+  Img.Canvas.Font.Assign(Font);
+  Repaint;
+  inherited;
+end;
 //______________________________________________________________
 
-PROCEDURE TJvgCheckBox.CMMouseEnter(VAR Message: TMessage);
-BEGIN
-   IF NOT Enabled OR (fcoIgnoreMouse IN Options) OR
-      fShowAsActiveWhileControlFocused THEN
-      exit;
-   IF Assigned(FocusControl) AND (FocusControlMethod = fcmOnMouseEnter) THEN
-      FocusControl.SetFocus;
-   fNeedRebuildBackground := true;
-   fActiveNow := true;
-   WITH TextStyles, Colors DO
-      IF (Passive <> Active) OR (fcoUnderlinedActive IN Options) THEN
-         Paint
-      ELSE IF (fcoDelineatedText IN Options) AND (DelineateActive <> Delineate)
-         THEN
-         Paint
-      ELSE IF (NOT Transparent) AND (Colors.Background <>
-         Colors.BackgroundActive) THEN
-         Paint
-      ELSE IF (TextActive <> Text) OR (fcoUnderlinedActive IN Options) THEN
-      BEGIN
-         fNeedUpdateOnlyMainText := true;
-         Paint;
-      END;
-   IF Assigned(FOnMouseEnter) THEN
-      FOnMouseEnter(self);
-END;
-//______________________________________________________________
-
-PROCEDURE TJvgCheckBox.CMMouseLeave(VAR Message: TMessage);
-BEGIN
-   IF NOT Enabled OR (fcoIgnoreMouse IN Options) OR
-      fShowAsActiveWhileControlFocused THEN
-      exit;
-   fNeedRebuildBackground := true;
-   fActiveNow := false;
-   WITH TextStyles, Colors DO
-      IF (Passive <> Active) OR (fcoUnderlinedActive IN Options) THEN
-         Paint
-      ELSE IF (fcoDelineatedText IN Options) AND (DelineateActive <> Delineate)
-         THEN
-         Paint
-      ELSE IF (NOT Transparent) AND (Colors.Background <>
-         Colors.BackgroundActive) THEN
-         Paint
-      ELSE IF TextActive <> Text THEN
-      BEGIN
-         fNeedUpdateOnlyMainText := true;
-         Paint;
-      END;
-   IF Assigned(FOnMouseLeave) THEN
-      FOnMouseLeave(self);
-END;
-//______________________________________________________________
-
-PROCEDURE TJvgCheckBox.OnLButtonUp(VAR Message: TMessage);
-VAR
-   pt                         : TPoint;
-BEGIN
-   IF NOT Enabled OR (fcoIgnoreMouse IN Options) THEN
-      exit;
-   GetCursorPos(pt);
-   pt := ScreenToClient(pt);
-   IF PtInRect(ClientRect, pt) THEN
-      SetChecked(NOT FChecked);
-   IF Assigned(FocusControl) THEN
-   BEGIN
-      IF fcoEnabledFocusControlWhileChecked IN Options THEN
-         FocusControl.Enabled := FChecked;
-      IF (FocusControlMethod = fcmOnMouseUp)
-         AND FocusControl.CanFocus THEN
-         FocusControl.SetFocus;
-   END;
-   INHERITED;
-END;
-//______________________________________________________________
-
-PROCEDURE TJvgCheckBox.OnLButtonDown(VAR Message: TMessage);
-BEGIN
-   IF NOT Enabled OR (fcoIgnoreMouse IN Options) THEN
-      exit;
-   INHERITED;
-   IF (FocusControlMethod = fcmOnMouseDown)
-      AND Assigned(FocusControl)
-      AND FocusControl.CanFocus THEN
-      FocusControl.SetFocus;
-END;
-//______________________________________________________________
-
-PROCEDURE TJvgCheckBox.WMSize(VAR Message: TMessage);
-BEGIN
-   INHERITED;
-   //  Img.Width := Width; Img.Height := Height;
-END;
-//______________________________________________________________
-
-PROCEDURE TJvgCheckBox.CMTextChanged(VAR Message: TMessage);
-BEGIN
-   Invalidate;
-END;
-//______________________________________________________________
-
-PROCEDURE TJvgCheckBox.Paint;
-VAR
-   x, y                       : integer;
-   DrawState                  : TglDrawState;
-   Bitmap                     : TBitmap;
-   FontColor                  : TColor;
-   CurrTextStyle              : TglTextStyle;
-   CurrDelinColor             : TColor;
-   isGradientActive           : boolean;
-   Size                       : TSize;
-   R                          : TRect;
-   BackBrush                  : HBRUSH;
-BEGIN
-   //fNeedUpdateOnlyMainText := false;
-   //fNeedRebuildBackground := false;
-   fSuppressCMFontChanged := true;
-   IF fcoBoldChecked IN Options THEN
-      IF Checked THEN
-         Font.Style := Font.Style + [fsBold]
-      ELSE
-         Font.Style := Font.Style - [fsBold];
-   IF Enabled THEN
-   BEGIN
-      IF Checked THEN
-         Bitmap := FGlyphOn
-      ELSE
-         Bitmap := FGlyphOff;
-      DrawState := fdsDefault;
-   END
-   ELSE
-   BEGIN
-      IF FGlyphDisabled.Handle <> 0 THEN
-      BEGIN
-         Bitmap := FGlyphDisabled;
-         DrawState := fdsDefault;
-      END
-      ELSE
-      BEGIN
-         IF Checked THEN
-            Bitmap := FGlyphOn
-         ELSE
-            Bitmap := FGlyphOff;
-         DrawState := fdsDefault;
-      END;
-   END;
-
-   //...CAPTION
-   SetBkMode(Canvas.handle, integer(Transparent));
-   WITH TextStyles, Colors DO
-   BEGIN
-      IF fActiveNow THEN
-      BEGIN
-         CurrTextStyle := Active;
-         CurrDelinColor := DelineateActive;
-         FontColor := TextActive;
-      END
-      ELSE IF Enabled THEN
-      BEGIN
-         CurrTextStyle := Passive;
-         CurrDelinColor := Delineate;
-         FontColor := Text;
-      END
-      ELSE
-      BEGIN
-         CurrTextStyle := Disabled;
-         CurrDelinColor := Delineate;
-         FontColor := TextDisabled;
-      END;
-
-      IF fcoUnderlinedActive IN Options THEN
-         IF fActiveNow THEN
-            Font.Style := Font.Style + [fsUnderline]
-         ELSE
-            Font.Style := Font.Style - [fsUnderline];
-   END;
-   GetTextExtentPoint32(Img.Canvas.Handle, PChar(Caption),
-      length(Caption), Size);
-   y := max(0, (Height - Size.cy) DIV 2);
-   X := 0;
-   IF Assigned(FGlyphOn) THEN
-      X := max(X, FGlyphOn.Width);
-   IF Assigned(FGlyphOff) THEN
-      X := max(X, FGlyphOff.Width);
-   IF Assigned(FGlyphDisabled) THEN
-      X := max(X, FGlyphDisabled.Width);
-   IF Assigned(FGlyph) THEN
-      X := max(X, FGlyph.Width);
-
-   Img.Width := Width;
-   Img.Height := Height;
-
-   IF (NOT fNeedUpdateOnlyMainText) {and (not Transparent)} THEN
-   BEGIN
-      R := GetClientRect;
-      IF fActiveNow THEN
-         BackBrush := CreateSolidBrush(ColorToRGB(Colors.BackgroundActive))
-      ELSE
-         BackBrush := CreateSolidBrush(ColorToRGB(Colors.Background));
-      FillRect(Img.Canvas.Handle, R, BackBrush);
-      DeleteObject(BackBrush);
-   END;
-
-   IF FTransparent AND (NOT fNeedUpdateOnlyMainText) THEN
-      IF (NOT (fcoFastDraw IN Options)) OR fNeedRebuildBackground OR (csDesigning
-         IN ComponentState) THEN
-         GetParentImageRect(self, Bounds(Left, Top, Width, Height),
-            Img.Canvas.Handle);
-
-   IF Alignment = taLeftJustify THEN
-   BEGIN
-      X := 0;
-      IF FGlyph <> NIL THEN
-         inc(X, FGlyph.Width);
-   END
-   ELSE
-      inc(X, Interspace);
-
-   //...Supress Gradient if needed
-   isGradientActive := Gradient.Active;
-   IF fActiveNow AND (Colors.TextActive <> Colors.Text) THEN
-      Gradient.FActive := false;
-
-   ExtTextOutExt(Img.Canvas.Handle, X, y, GetClientRect, Caption,
-      CurrTextStyle, fcoDelineatedText IN Options,
-      fNeedUpdateOnlyMainText, FontColor, CurrDelinColor,
-      Colors.Highlight, Colors.Shadow,
-      Illumination, Gradient, Font);
-
-   Gradient.FActive := isGradientActive;
-
-   IF NOT fNeedUpdateOnlyMainText THEN
-   BEGIN
-      IF (NOT (fcoFastDraw IN Options)) OR fNeedRebuildBackground OR (csDesigning
-         IN ComponentState) THEN
-      BEGIN
-         IF FGlyph <> NIL THEN //...TransparentColor -> Left Bottom Pixel
-         BEGIN
-            IF NOT Transparent THEN
-               ChangeBitmapColor(FGlyph, GetPixel(FGlyph.Canvas.Handle, 0,
-                  FGlyph.Height - 1), clBtnFace);
-
-            // glyph always left
-            CreateBitmapExt(Img.Canvas.Handle, FGlyph, ClientRect, 0, max(0,
-               (Height - FGlyph.Height) DIV 2),
-               fwoNone, DrawState, Transparent,
-               GetPixel(FGlyph.Canvas.Handle, 0, FGlyph.Height - 1)
-                  {TransparentColor},
-               DisabledMaskColor);
-         END;
-         fNeedRebuildBackground := false;
-      END;
-      IF NOT Transparent THEN
-         IF fActiveNow THEN
-            ChangeBitmapColor(Bitmap, GetPixel(Bitmap.Canvas.Handle, 0,
-               Bitmap.Height - 1), Colors.BackgroundActive)
-         ELSE
-            ChangeBitmapColor(Bitmap, GetPixel(Bitmap.Canvas.Handle, 0,
-               Bitmap.Height - 1), Colors.Background);
-
-      IF Alignment = taRightJustify THEN
-         X := GlyphShift.X
-      ELSE
-         X := Width - Bitmap.Width;
-
-      IF Assigned(Bitmap) THEN
-         CreateBitmapExt(Img.Canvas.Handle, Bitmap, ClientRect, X,
-            integer(GlyphShift.Y + max(0, (Height - Bitmap.Height) DIV 2)),
-            fwoNone, DrawState, Transparent,
-            GetPixel(Bitmap.Canvas.Handle, 0, Bitmap.Height - 1),
-            DisabledMaskColor);
-   END;
-
-   BitBlt(Canvas.Handle, 0, 0, Img.Width, Img.Height, Img.Canvas.Handle, 0, 0,
-      SRCCOPY);
-
-   fSuppressCMFontChanged := false;
-   fOnlyTextStyleChanged := false;
-   fNeedUpdateOnlyMainText := false;
-   IF Assigned(FAfterPaint) THEN
-      FAfterPaint(self);
-END;
-//______________________________________________________________
-
-PROCEDURE TJvgCheckBox.Notification(AComponent: TComponent; Operation:
-   TOperation);
-BEGIN
-   INHERITED Notification(AComponent, Operation);
-   IF (AComponent = FocusControl) AND (Operation = opRemove) THEN
-   BEGIN                                {UnhookFocusControlWndProc;}
-      FFocusControl := NIL;
-   END;
-END;
-//______
-
-PROCEDURE TJvgCheckBox.CallMouseEnter;
-VAR
-   EmptyMsg                   : TMessage;
-BEGIN
-   CMMouseEnter(EmptyMsg);
-END;
-//______
-
-PROCEDURE TJvgCheckBox.CallMouseLeave;
-VAR
-   EmptyMsg                   : TMessage;
-BEGIN
-   CMMouseLeave(EmptyMsg);
-END;
-//______________________________________________________________
-
-PROCEDURE TJvgCheckBox.HookFocusControlWndProc;
-VAR
-   P                          : Pointer;
-BEGIN
-   P := Pointer(GetWindowLong(FocusControl.Handle, GWL_WNDPROC));
-   IF (P <> FNewWndProc) THEN
-   BEGIN
-      FPrevWndProc := P;
-      FNewWndProc := MakeObjectInstance(FocusControlWndHookProc);
-      SetWindowLong(FocusControl.Handle, GWL_WNDPROC, LongInt(FNewWndProc));
-   END;
-END;
-//______
-
-PROCEDURE TJvgCheckBox.UnhookFocusControlWndProc;
-BEGIN
-   //  if not(csDesigning in ComponentState) then exit;
-   IF (FNewWndProc <> NIL) AND (FPrevWndProc <> NIL)
-      AND (Pointer(GetWindowLong(FocusControl.Handle, GWL_WNDPROC)) =
-         FNewWndProc) THEN
-   BEGIN
-      SetWindowLong(FocusControl.Handle, GWL_WNDPROC, LongInt(FPrevWndProc));
-      FNewWndProc := NIL;
-   END;
-END;
-//______
-
-PROCEDURE TJvgCheckBox.FocusControlWndHookProc(VAR Msg_: TMessage);
-BEGIN
-   CASE Msg_.Msg OF
-      WM_SETFOCUS:
-         BEGIN
-            CallMouseEnter;
-            fShowAsActiveWhileControlFocused := true;
-         END;
-      WM_KILLFOCUS:
-         BEGIN
-            fShowAsActiveWhileControlFocused := false;
-            CallMouseLeave;
-         END;
-      WM_DESTROY: {fNeedRehookFocusControl := true};
-   END;
-   WITH Msg_ DO
-      Result := CallWindowProc(FPrevWndProc, TForm(Owner).Handle, Msg, WParam,
-         LParam);
-END;
-//______
-
-PROCEDURE TJvgCheckBox.SetFocusControl(Value: TWinControl);
-BEGIN
-   IF FFocusControl = Value THEN
-      exit;
-   IF (fcoActiveWhileControlFocused IN Options) AND Assigned(FFocusControl) THEN
-      UnhookFocusControlWndProc;
-   FFocusControl := Value;
-   IF (fcoActiveWhileControlFocused IN Options) AND Assigned(FFocusControl) THEN
-      HookFocusControlWndProc;
-END;
-//______
-
-PROCEDURE TJvgCheckBox.OnGradientChanged(Sender: TObject);
-BEGIN
-   IF NOT (csLoading IN ComponentState) THEN
+procedure TJvgCheckBox.CMMouseEnter(var Message: TMessage);
+begin
+  if not Enabled or (fcoIgnoreMouse in Options) or
+    fShowAsActiveWhileControlFocused then
+    exit;
+  if Assigned(FocusControl) and (FocusControlMethod = fcmOnMouseEnter) then
+    FocusControl.SetFocus;
+  fNeedRebuildBackground := true;
+  fActiveNow := true;
+  with TextStyles, Colors do
+    if (Passive <> Active) or (fcoUnderlinedActive in Options) then
+      Paint
+    else if (fcoDelineatedText in Options) and (DelineateActive <> Delineate) then
+      Paint
+    else if (not Transparent) and (Colors.Background <>
+      Colors.BackgroundActive) then
+      Paint
+    else if (TextActive <> Text) or (fcoUnderlinedActive in Options) then
+    begin
       fNeedUpdateOnlyMainText := true;
-   Repaint;
-END;
+      Paint;
+    end;
+  if Assigned(FOnMouseEnter) then
+    FOnMouseEnter(self);
+end;
 //______________________________________________________________
 
-PROCEDURE TJvgCheckBox.OnIlluminationChanged(Sender: TObject);
-BEGIN
-   CalcShadowAndHighlightColors((Parent AS TWinControl).Brush.Color, Colors);
-   Repaint;
-END;
+procedure TJvgCheckBox.CMMouseLeave(var Message: TMessage);
+begin
+  if not Enabled or (fcoIgnoreMouse in Options) or
+    fShowAsActiveWhileControlFocused then
+    exit;
+  fNeedRebuildBackground := true;
+  fActiveNow := false;
+  with TextStyles, Colors do
+    if (Passive <> Active) or (fcoUnderlinedActive in Options) then
+      Paint
+    else if (fcoDelineatedText in Options) and (DelineateActive <> Delineate) then
+      Paint
+    else if (not Transparent) and (Colors.Background <>
+      Colors.BackgroundActive) then
+      Paint
+    else if TextActive <> Text then
+    begin
+      fNeedUpdateOnlyMainText := true;
+      Paint;
+    end;
+  if Assigned(FOnMouseLeave) then
+    FOnMouseLeave(self);
+end;
+//______________________________________________________________
+
+procedure TJvgCheckBox.OnLButtonUp(var Message: TMessage);
+var
+  pt: TPoint;
+begin
+  if not Enabled or (fcoIgnoreMouse in Options) then
+    exit;
+  GetCursorPos(pt);
+  pt := ScreenToClient(pt);
+  if PtInRect(ClientRect, pt) then
+    SetChecked(not FChecked);
+  if Assigned(FocusControl) then
+  begin
+    if fcoEnabledFocusControlWhileChecked in Options then
+      FocusControl.Enabled := FChecked;
+    if (FocusControlMethod = fcmOnMouseUp)
+      and FocusControl.CanFocus then
+      FocusControl.SetFocus;
+  end;
+  inherited;
+end;
+//______________________________________________________________
+
+procedure TJvgCheckBox.OnLButtonDown(var Message: TMessage);
+begin
+  if not Enabled or (fcoIgnoreMouse in Options) then
+    exit;
+  inherited;
+  if (FocusControlMethod = fcmOnMouseDown)
+    and Assigned(FocusControl)
+    and FocusControl.CanFocus then
+    FocusControl.SetFocus;
+end;
+//______________________________________________________________
+
+procedure TJvgCheckBox.WMSize(var Message: TMessage);
+begin
+  inherited;
+  //  Img.Width := Width; Img.Height := Height;
+end;
+//______________________________________________________________
+
+procedure TJvgCheckBox.CMTextChanged(var Message: TMessage);
+begin
+  Invalidate;
+end;
+//______________________________________________________________
+
+procedure TJvgCheckBox.Paint;
+var
+  x, y: integer;
+  DrawState: TglDrawState;
+  Bitmap: TBitmap;
+  FontColor: TColor;
+  CurrTextStyle: TglTextStyle;
+  CurrDelinColor: TColor;
+  isGradientActive: boolean;
+  Size: TSize;
+  R: TRect;
+  BackBrush: HBRUSH;
+begin
+  //fNeedUpdateOnlyMainText := false;
+  //fNeedRebuildBackground := false;
+  fSuppressCMFontChanged := true;
+  if fcoBoldChecked in Options then
+    if Checked then
+      Font.Style := Font.Style + [fsBold]
+    else
+      Font.Style := Font.Style - [fsBold];
+  if Enabled then
+  begin
+    if Checked then
+      Bitmap := FGlyphOn
+    else
+      Bitmap := FGlyphOff;
+    DrawState := fdsDefault;
+  end
+  else
+  begin
+    if FGlyphDisabled.Handle <> 0 then
+    begin
+      Bitmap := FGlyphDisabled;
+      DrawState := fdsDefault;
+    end
+    else
+    begin
+      if Checked then
+        Bitmap := FGlyphOn
+      else
+        Bitmap := FGlyphOff;
+      DrawState := fdsDefault;
+    end;
+  end;
+
+  //...CAPTION
+  SetBkMode(Canvas.handle, integer(Transparent));
+  with TextStyles, Colors do
+  begin
+    if fActiveNow then
+    begin
+      CurrTextStyle := Active;
+      CurrDelinColor := DelineateActive;
+      FontColor := TextActive;
+    end
+    else if Enabled then
+    begin
+      CurrTextStyle := Passive;
+      CurrDelinColor := Delineate;
+      FontColor := Text;
+    end
+    else
+    begin
+      CurrTextStyle := Disabled;
+      CurrDelinColor := Delineate;
+      FontColor := TextDisabled;
+    end;
+
+    if fcoUnderlinedActive in Options then
+      if fActiveNow then
+        Font.Style := Font.Style + [fsUnderline]
+      else
+        Font.Style := Font.Style - [fsUnderline];
+  end;
+  GetTextExtentPoint32(Img.Canvas.Handle, PChar(Caption),
+    length(Caption), Size);
+  y := max(0, (Height - Size.cy) div 2);
+  X := 0;
+  if Assigned(FGlyphOn) then
+    X := max(X, FGlyphOn.Width);
+  if Assigned(FGlyphOff) then
+    X := max(X, FGlyphOff.Width);
+  if Assigned(FGlyphDisabled) then
+    X := max(X, FGlyphDisabled.Width);
+  if Assigned(FGlyph) then
+    X := max(X, FGlyph.Width);
+
+  Img.Width := Width;
+  Img.Height := Height;
+
+  if (not fNeedUpdateOnlyMainText) {and (not Transparent)} then
+  begin
+    R := GetClientRect;
+    if fActiveNow then
+      BackBrush := CreateSolidBrush(ColorToRGB(Colors.BackgroundActive))
+    else
+      BackBrush := CreateSolidBrush(ColorToRGB(Colors.Background));
+    FillRect(Img.Canvas.Handle, R, BackBrush);
+    DeleteObject(BackBrush);
+  end;
+
+  if FTransparent and (not fNeedUpdateOnlyMainText) then
+    if (not (fcoFastDraw in Options)) or fNeedRebuildBackground or (csDesigning
+      in ComponentState) then
+      GetParentImageRect(self, Bounds(Left, Top, Width, Height),
+        Img.Canvas.Handle);
+
+  if Alignment = taLeftJustify then
+  begin
+    X := 0;
+    if FGlyph <> nil then
+      inc(X, FGlyph.Width);
+  end
+  else
+    inc(X, Interspace);
+
+  //...Supress Gradient if needed
+  isGradientActive := Gradient.Active;
+  if fActiveNow and (Colors.TextActive <> Colors.Text) then
+    Gradient.FActive := false;
+
+  ExtTextOutExt(Img.Canvas.Handle, X, y, GetClientRect, Caption,
+    CurrTextStyle, fcoDelineatedText in Options,
+    fNeedUpdateOnlyMainText, FontColor, CurrDelinColor,
+    Colors.Highlight, Colors.Shadow,
+    Illumination, Gradient, Font);
+
+  Gradient.FActive := isGradientActive;
+
+  if not fNeedUpdateOnlyMainText then
+  begin
+    if (not (fcoFastDraw in Options)) or fNeedRebuildBackground or (csDesigning
+      in ComponentState) then
+    begin
+      if FGlyph <> nil then //...TransparentColor -> Left Bottom Pixel
+      begin
+        if not Transparent then
+          ChangeBitmapColor(FGlyph, GetPixel(FGlyph.Canvas.Handle, 0,
+            FGlyph.Height - 1), clBtnFace);
+
+        // glyph always left
+        CreateBitmapExt(Img.Canvas.Handle, FGlyph, ClientRect, 0, max(0,
+          (Height - FGlyph.Height) div 2),
+          fwoNone, DrawState, Transparent,
+          GetPixel(FGlyph.Canvas.Handle, 0, FGlyph.Height - 1)
+          {TransparentColor},
+          DisabledMaskColor);
+      end;
+      fNeedRebuildBackground := false;
+    end;
+    if not Transparent then
+      if fActiveNow then
+        ChangeBitmapColor(Bitmap, GetPixel(Bitmap.Canvas.Handle, 0,
+          Bitmap.Height - 1), Colors.BackgroundActive)
+      else
+        ChangeBitmapColor(Bitmap, GetPixel(Bitmap.Canvas.Handle, 0,
+          Bitmap.Height - 1), Colors.Background);
+
+    if Alignment = taRightJustify then
+      X := GlyphShift.X
+    else
+      X := Width - Bitmap.Width;
+
+    if Assigned(Bitmap) then
+      CreateBitmapExt(Img.Canvas.Handle, Bitmap, ClientRect, X,
+        integer(GlyphShift.Y + max(0, (Height - Bitmap.Height) div 2)),
+        fwoNone, DrawState, Transparent,
+        GetPixel(Bitmap.Canvas.Handle, 0, Bitmap.Height - 1),
+        DisabledMaskColor);
+  end;
+
+  BitBlt(Canvas.Handle, 0, 0, Img.Width, Img.Height, Img.Canvas.Handle, 0, 0,
+    SRCCOPY);
+
+  fSuppressCMFontChanged := false;
+  fOnlyTextStyleChanged := false;
+  fNeedUpdateOnlyMainText := false;
+  if Assigned(FAfterPaint) then
+    FAfterPaint(self);
+end;
+//______________________________________________________________
+
+procedure TJvgCheckBox.Notification(AComponent: TComponent; Operation:
+  TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (AComponent = FocusControl) and (Operation = opRemove) then
+  begin {UnhookFocusControlWndProc;}
+    FFocusControl := nil;
+  end;
+end;
 //______
 
-FUNCTION TJvgCheckBox.IsCustomGlyph: Boolean;
-BEGIN
-   Result := FGlyphKind = fgkCustom;
-END;
+procedure TJvgCheckBox.CallMouseEnter;
+var
+  EmptyMsg: TMessage;
+begin
+  CMMouseEnter(EmptyMsg);
+end;
+//______
 
-FUNCTION TJvgCheckBox.GetCheckedItemInGroup: TJvgCheckBox;
-VAR
-   i                          : integer;
-BEGIN
-   IF FChecked THEN
-   BEGIN
-      Result := self;
-      exit;
-   END;
-   Result := NIL;
-   IF GroupIndex <> 0 THEN
-   BEGIN
-      FOR i := 0 TO Owner.ComponentCount - 1 DO
-         IF (OWner.Components[i] IS TJvgCheckBox)
-            AND (TJvgCheckBox(OWner.Components[i]).GroupIndex = GroupIndex)
-            AND (TJvgCheckBox(OWner.Components[i]).Checked) THEN
-         BEGIN
-            Result := TJvgCheckBox(OWner.Components[i]);
-            break;
-         END;
-   END;
-END;
+procedure TJvgCheckBox.CallMouseLeave;
+var
+  EmptyMsg: TMessage;
+begin
+  CMMouseLeave(EmptyMsg);
+end;
+//______________________________________________________________
 
-PROCEDURE TJvgCheckBox.SetCheckedItemInGroup(TagNo: integer);
-VAR
-   i                          : integer;
-BEGIN
-   IF GroupIndex <> 0 THEN
-   BEGIN
-      FOR i := 0 TO Owner.ComponentCount - 1 DO
-         IF (OWner.Components[i] IS TJvgCheckBox)
-            AND (TJvgCheckBox(OWner.Components[i]).GroupIndex = GroupIndex)
-            AND (TJvgCheckBox(OWner.Components[i]).Tag = TagNo) THEN
-         BEGIN
-            TJvgCheckBox(OWner.Components[i]).Checked := true;
-            break;
-         END;
-   END;
-END;
+procedure TJvgCheckBox.HookFocusControlWndProc;
+var
+  P: Pointer;
+begin
+  P := Pointer(GetWindowLong(FocusControl.Handle, GWL_WNDPROC));
+  if (P <> FNewWndProc) then
+  begin
+    FPrevWndProc := P;
+    FNewWndProc := MakeObjectInstance(FocusControlWndHookProc);
+    SetWindowLong(FocusControl.Handle, GWL_WNDPROC, LongInt(FNewWndProc));
+  end;
+end;
+//______
+
+procedure TJvgCheckBox.UnhookFocusControlWndProc;
+begin
+  //  if not(csDesigning in ComponentState) then exit;
+  if (FNewWndProc <> nil) and (FPrevWndProc <> nil)
+    and (Pointer(GetWindowLong(FocusControl.Handle, GWL_WNDPROC)) =
+    FNewWndProc) then
+  begin
+    SetWindowLong(FocusControl.Handle, GWL_WNDPROC, LongInt(FPrevWndProc));
+    FNewWndProc := nil;
+  end;
+end;
+//______
+
+procedure TJvgCheckBox.FocusControlWndHookProc(var Msg_: TMessage);
+begin
+  case Msg_.Msg of
+    WM_SETFOCUS:
+      begin
+        CallMouseEnter;
+        fShowAsActiveWhileControlFocused := true;
+      end;
+    WM_KILLFOCUS:
+      begin
+        fShowAsActiveWhileControlFocused := false;
+        CallMouseLeave;
+      end;
+    WM_DESTROY: {fNeedRehookFocusControl := true};
+  end;
+  with Msg_ do
+    Result := CallWindowProc(FPrevWndProc, TForm(Owner).Handle, Msg, WParam,
+      LParam);
+end;
+//______
+
+procedure TJvgCheckBox.SetFocusControl(Value: TWinControl);
+begin
+  if FFocusControl = Value then
+    exit;
+  if (fcoActiveWhileControlFocused in Options) and Assigned(FFocusControl) then
+    UnhookFocusControlWndProc;
+  FFocusControl := Value;
+  if (fcoActiveWhileControlFocused in Options) and Assigned(FFocusControl) then
+    HookFocusControlWndProc;
+end;
+//______
+
+procedure TJvgCheckBox.OnGradientChanged(Sender: TObject);
+begin
+  if not (csLoading in ComponentState) then
+    fNeedUpdateOnlyMainText := true;
+  Repaint;
+end;
+//______________________________________________________________
+
+procedure TJvgCheckBox.OnIlluminationChanged(Sender: TObject);
+begin
+  CalcShadowAndHighlightColors((Parent as TWinControl).Brush.Color, Colors);
+  Repaint;
+end;
+//______
+
+function TJvgCheckBox.IsCustomGlyph: Boolean;
+begin
+  Result := FGlyphKind = fgkCustom;
+end;
+
+function TJvgCheckBox.GetCheckedItemInGroup: TJvgCheckBox;
+var
+  i: integer;
+begin
+  if FChecked then
+  begin
+    Result := self;
+    exit;
+  end;
+  Result := nil;
+  if GroupIndex <> 0 then
+  begin
+    for i := 0 to Owner.ComponentCount - 1 do
+      if (OWner.Components[i] is TJvgCheckBox)
+        and (TJvgCheckBox(OWner.Components[i]).GroupIndex = GroupIndex)
+        and (TJvgCheckBox(OWner.Components[i]).Checked) then
+      begin
+        Result := TJvgCheckBox(OWner.Components[i]);
+        break;
+      end;
+  end;
+end;
+
+procedure TJvgCheckBox.SetCheckedItemInGroup(TagNo: integer);
+var
+  i: integer;
+begin
+  if GroupIndex <> 0 then
+  begin
+    for i := 0 to Owner.ComponentCount - 1 do
+      if (OWner.Components[i] is TJvgCheckBox)
+        and (TJvgCheckBox(OWner.Components[i]).GroupIndex = GroupIndex)
+        and (TJvgCheckBox(OWner.Components[i]).Tag = TagNo) then
+      begin
+        TJvgCheckBox(OWner.Components[i]).Checked := true;
+        break;
+      end;
+  end;
+end;
 //...______________________________________________PROPERTIES METHODS
 
-PROCEDURE TJvgCheckBox.SetChecked(Value: boolean);
-VAR
-   i                          : integer;
-BEGIN
-   IF FChecked = Value THEN
-      exit;
-   fNeedRebuildBackground := true;
-   IF GroupIndex <> 0 THEN
-   BEGIN
-      IF NOT FChecked THEN
-      BEGIN
-         FOR i := 0 TO Owner.ComponentCount - 1 DO
-            IF (OWner.Components[i] IS TJvgCheckBox)
-               AND (TJvgCheckBox(OWner.Components[i]).GroupIndex = GroupIndex)
-               AND (TJvgCheckBox(OWner.Components[i]).Checked)
-               AND (OWner.Components[i] <> Self) THEN
-            BEGIN
-               TJvgCheckBox(OWner.Components[i]).FChecked := false;
-               TJvgCheckBox(OWner.Components[i]).fNeedRebuildBackground := true;
-               TJvgCheckBox(OWner.Components[i]).Repaint;
-            END;
-         FChecked := true;
-      END;
-   END
-   ELSE
-      FChecked := Value;
-   Repaint;
-END;
-
-PROCEDURE TJvgCheckBox.SetGlyph(Value: TBitmap);
-BEGIN
-   IF Assigned(FGlyph) THEN
-      FGlyph.Free;
-   FGlyph := TBitmap.Create;
-   FGlyph.Assign(Value);
-   fNeedRebuildBackground := true;
-   Invalidate;
-END;
-
-FUNCTION TJvgCheckBox.GetGlyph: TBitmap;
-BEGIN
-   IF NOT Assigned(FGlyph) THEN
-      FGlyph := TBitmap.Create;
-   Result := FGlyph;
-END;
-
-PROCEDURE TJvgCheckBox.SetGlyphOn(Value: TBitmap);
-BEGIN
-   IF Assigned(FGlyphOn) THEN
-      FGlyphOn.Free;
-   FGlyphOn := TBitmap.Create;
-   FGlyphKind := fgkCustom;
-   FGlyphOn.Assign(Value);
-   Invalidate;
-END;
-
-FUNCTION TJvgCheckBox.GetGlyphOn: TBitmap;
-BEGIN
-   IF NOT Assigned(FGlyphOn) THEN
-      FGlyphOn := TBitmap.Create;
-   Result := FGlyphOn;
-END;
-
-PROCEDURE TJvgCheckBox.SetGlyphOff(Value: TBitmap);
-BEGIN
-   IF Assigned(FGlyphOff) THEN
-      FGlyphOff.Free;
-   FGlyphOff := TBitmap.Create;
-   FGlyphKind := fgkCustom;
-   FGlyphOff.Assign(Value);
-   Invalidate;
-END;
-
-FUNCTION TJvgCheckBox.GetGlyphOff: TBitmap;
-BEGIN
-   IF NOT Assigned(FGlyphOff) THEN
-      FGlyphOff := TBitmap.Create;
-   Result := FGlyphOff;
-END;
-
-PROCEDURE TJvgCheckBox.SetGlyphDisabled(Value: TBitmap);
-BEGIN
-   IF Assigned(FGlyphDisabled) THEN
-      FGlyphDisabled.Free;
-   FGlyphDisabled := TBitmap.Create;
-   FGlyphDisabled.Assign(Value);
-   Invalidate;
-END;
-
-FUNCTION TJvgCheckBox.GetGlyphDisabled: TBitmap;
-BEGIN
-   IF NOT Assigned(FGlyphDisabled) THEN
-      FGlyphDisabled := TBitmap.Create;
-   Result := FGlyphDisabled;
-END;
-
-PROCEDURE TJvgCheckBox.SetGroupIndex(Value: integer);
-BEGIN
-   IF FGroupIndex = Value THEN
-      exit;
-   FGroupIndex := Value;
-   IF FChecked AND (Value <> 0) THEN
-   BEGIN
-      FChecked := false;
-      //    SetChecked( true );
+procedure TJvgCheckBox.SetChecked(Value: boolean);
+var
+  i: integer;
+begin
+  if FChecked = Value then
+    exit;
+  fNeedRebuildBackground := true;
+  if GroupIndex <> 0 then
+  begin
+    if not FChecked then
+    begin
+      for i := 0 to Owner.ComponentCount - 1 do
+        if (OWner.Components[i] is TJvgCheckBox)
+          and (TJvgCheckBox(OWner.Components[i]).GroupIndex = GroupIndex)
+          and (TJvgCheckBox(OWner.Components[i]).Checked)
+          and (OWner.Components[i] <> Self) then
+        begin
+          TJvgCheckBox(OWner.Components[i]).FChecked := false;
+          TJvgCheckBox(OWner.Components[i]).fNeedRebuildBackground := true;
+          TJvgCheckBox(OWner.Components[i]).Repaint;
+        end;
       FChecked := true;
-   END;
-END;
+    end;
+  end
+  else
+    FChecked := Value;
+  Repaint;
+end;
 
-PROCEDURE TJvgCheckBox.SetOptions(Value: TglCBoxOptions);
-BEGIN
-   IF FOptions = Value THEN
-      exit;
-   FOptions := Value;
-   CalcShadowAndHighlightColors((Parent AS TWinControl).Brush.Color, Colors);
-   Invalidate;
-END;
+procedure TJvgCheckBox.SetGlyph(Value: TBitmap);
+begin
+  if Assigned(FGlyph) then
+    FGlyph.Free;
+  FGlyph := TBitmap.Create;
+  FGlyph.Assign(Value);
+  fNeedRebuildBackground := true;
+  Invalidate;
+end;
 
-PROCEDURE TJvgCheckBox.SetTransparent(Value: boolean);
-BEGIN
-   IF FTransparent = Value THEN
-      exit;
-   FTransparent := Value;
-   Repaint;
-END;
+function TJvgCheckBox.GetGlyph: TBitmap;
+begin
+  if not Assigned(FGlyph) then
+    FGlyph := TBitmap.Create;
+  Result := FGlyph;
+end;
 
-PROCEDURE TJvgCheckBox.SetDisabledMaskColor(Value: TColor);
-BEGIN
-   IF FDisabledMaskColor = Value THEN
-      exit;
-   FDisabledMaskColor := Value;
-   fNeedRebuildBackground := true;
-   Invalidate;
-END;
+procedure TJvgCheckBox.SetGlyphOn(Value: TBitmap);
+begin
+  if Assigned(FGlyphOn) then
+    FGlyphOn.Free;
+  FGlyphOn := TBitmap.Create;
+  FGlyphKind := fgkCustom;
+  FGlyphOn.Assign(Value);
+  Invalidate;
+end;
 
-PROCEDURE TJvgCheckBox.SetInterspace(Value: integer);
-BEGIN
-   IF FInterspace = Value THEN
-      exit;
-   FInterspace := Value;
-   fNeedRebuildBackground := true;
-   Invalidate;
-END;
+function TJvgCheckBox.GetGlyphOn: TBitmap;
+begin
+  if not Assigned(FGlyphOn) then
+    FGlyphOn := TBitmap.Create;
+  Result := FGlyphOn;
+end;
 
-PROCEDURE TJvgCheckBox.SetGlyphKind(Value: TglGlyphKind);
-BEGIN
-   IF FGlyphKind <> Value THEN
-      FGlyphKind := Value;
+procedure TJvgCheckBox.SetGlyphOff(Value: TBitmap);
+begin
+  if Assigned(FGlyphOff) then
+    FGlyphOff.Free;
+  FGlyphOff := TBitmap.Create;
+  FGlyphKind := fgkCustom;
+  FGlyphOff.Assign(Value);
+  Invalidate;
+end;
 
-   IF (FGlyphKind = fgkCustom) AND (csReading IN ComponentState) THEN
-   BEGIN
-      GlyphOn := NIL;
-      GlyphOff := NIL;
-      GlyphDisabled := NIL;
-   END
-   ELSE
-      //if (csDesigning in ComponentState){and not(csLoading in ComponentState)}then
-   BEGIN
-      IF NOT Assigned(FGlyphOn) THEN
-         FGlyphOn := TBitmap.Create;
-      IF NOT Assigned(FGlyphOff) THEN
-         FGlyphOff := TBitmap.Create;
-      IF NOT Assigned(FGlyphDisabled) THEN
-         FGlyphDisabled := TBitmap.Create;
-      FGlyphOn.LoadFromResourceName(hInstance, 'ON');
-      FGlyphOff.LoadFromResourceName(hInstance, 'OFF');
-      FGlyphDisabled.LoadFromResourceName(hInstance, 'DISABLED');
-   END;
+function TJvgCheckBox.GetGlyphOff: TBitmap;
+begin
+  if not Assigned(FGlyphOff) then
+    FGlyphOff := TBitmap.Create;
+  Result := FGlyphOff;
+end;
 
-END;
+procedure TJvgCheckBox.SetGlyphDisabled(Value: TBitmap);
+begin
+  if Assigned(FGlyphDisabled) then
+    FGlyphDisabled.Free;
+  FGlyphDisabled := TBitmap.Create;
+  FGlyphDisabled.Assign(Value);
+  Invalidate;
+end;
 
-PROCEDURE TJvgCheckBox.SetAlignment(CONST Value: TLeftRight);
-BEGIN
-   FAlignment := Value;
-   Invalidate;
-END;
+function TJvgCheckBox.GetGlyphDisabled: TBitmap;
+begin
+  if not Assigned(FGlyphDisabled) then
+    FGlyphDisabled := TBitmap.Create;
+  Result := FGlyphDisabled;
+end;
 
-END.
+procedure TJvgCheckBox.SetGroupIndex(Value: integer);
+begin
+  if FGroupIndex = Value then
+    exit;
+  FGroupIndex := Value;
+  if FChecked and (Value <> 0) then
+  begin
+    FChecked := false;
+    //    SetChecked( true );
+    FChecked := true;
+  end;
+end;
 
+procedure TJvgCheckBox.SetOptions(Value: TglCBoxOptions);
+begin
+  if FOptions = Value then
+    exit;
+  FOptions := Value;
+  CalcShadowAndHighlightColors((Parent as TWinControl).Brush.Color, Colors);
+  Invalidate;
+end;
+
+procedure TJvgCheckBox.SetTransparent(Value: boolean);
+begin
+  if FTransparent = Value then
+    exit;
+  FTransparent := Value;
+  Repaint;
+end;
+
+procedure TJvgCheckBox.SetDisabledMaskColor(Value: TColor);
+begin
+  if FDisabledMaskColor = Value then
+    exit;
+  FDisabledMaskColor := Value;
+  fNeedRebuildBackground := true;
+  Invalidate;
+end;
+
+procedure TJvgCheckBox.SetInterspace(Value: integer);
+begin
+  if FInterspace = Value then
+    exit;
+  FInterspace := Value;
+  fNeedRebuildBackground := true;
+  Invalidate;
+end;
+
+procedure TJvgCheckBox.SetGlyphKind(Value: TglGlyphKind);
+begin
+  if FGlyphKind <> Value then
+    FGlyphKind := Value;
+
+  if (FGlyphKind = fgkCustom) and (csReading in ComponentState) then
+  begin
+    GlyphOn := nil;
+    GlyphOff := nil;
+    GlyphDisabled := nil;
+  end
+  else
+    //if (csDesigning in ComponentState){and not(csLoading in ComponentState)}then
+  begin
+    if not Assigned(FGlyphOn) then
+      FGlyphOn := TBitmap.Create;
+    if not Assigned(FGlyphOff) then
+      FGlyphOff := TBitmap.Create;
+    if not Assigned(FGlyphDisabled) then
+      FGlyphDisabled := TBitmap.Create;
+    FGlyphOn.LoadFromResourceName(hInstance, 'ON');
+    FGlyphOff.LoadFromResourceName(hInstance, 'OFF');
+    FGlyphDisabled.LoadFromResourceName(hInstance, 'DISABLED');
+  end;
+
+end;
+
+procedure TJvgCheckBox.SetAlignment(const Value: TLeftRight);
+begin
+  FAlignment := Value;
+  Invalidate;
+end;
+
+end.
