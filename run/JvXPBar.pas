@@ -25,7 +25,6 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
-
 {$IFNDEF USEJVCL}
 // sorry no theming
 {$UNDEF JVCLThemesEnabled}
@@ -269,6 +268,7 @@ type
     FRollChangeLink: TChangeLink;
     FGrouped: Boolean;
     FHeaderHeight: integer;
+    FStoredHint: string;
     function IsFontStored: Boolean;
     procedure FontChange(Sender: TObject);
     procedure SetCollapsed(Value: Boolean);
@@ -623,13 +623,12 @@ begin
     Result := FWinXPBar.FImageList;
 end;
 
-procedure TJvXPBarItem.ActionChange(Sender: TObject;
-  CheckDefaults: Boolean);
+procedure TJvXPBarItem.ActionChange(Sender: TObject; CheckDefaults: Boolean);
 begin
   if Action is TCustomAction then
     with TCustomAction(Sender) do
     begin
-      if (CheckDefaults or Update()) then // mw added to update action
+      if (not CheckDefaults or Update()) then // mw added to update action
       begin
         if not CheckDefaults or (Self.Caption = '') then
           Self.Caption := Caption;
@@ -1084,6 +1083,7 @@ end;
 constructor TJvXPCustomWinXPBar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FStoredHint := '|'; // no one in their right mind uses a pipe as the only character in a hint...
   ControlStyle := ControlStyle - [csDoubleClicks] + [csAcceptsControls];
   ExControlStyle := [csRedrawCaptionChanged];
   Height := 46;
@@ -1289,6 +1289,22 @@ begin
     NewIndex := -1
   else
     NewIndex := (Y - Header) div ((Height - Header) div FVisibleItems.Count);
+  if NewIndex <> -1 then
+  begin
+    if FStoredHint = '|' then
+      FStoredHint := Hint;
+    if Action is TCustomAction then
+      inherited Hint := TCustomAction(Action).Hint
+    else
+      inherited Hint := VisibleItems[NewIndex].Hint;
+  end
+  else
+  begin
+    if FStoredHint <> '|' then
+      inherited Hint := FStoredHint;
+    FStoredHint := '|';
+  end;
+
   if NewIndex <> FHoverIndex then
   begin
     if FHoverIndex <> -1 then
@@ -1775,7 +1791,7 @@ end;
 
 procedure TJvXPCustomWinXPBar.CMHintShow(var Msg: TCMHintShow);
 begin
-  Msg.Result := Ord(HintShow(@Msg.HintInfo));
+  Msg.Result := Ord(HintShow(Msg.HintInfo^));
 end;
 {$ENDIF USEJVCL}
 
