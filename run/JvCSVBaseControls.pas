@@ -31,51 +31,59 @@ unit JvCSVBaseControls;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, Buttons;
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms, Dialogs, StdCtrls, ExtCtrls,
+  Buttons,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms, QDialogs, QStdCtrls, QExtCtrls, QButtons,
+  Types,
+  {$ENDIF VisualCLX}
+  SysUtils, Classes;
 
 type
-  TOnCursorChanged = procedure(Sender: Tobject; NameValues: TstringList; Fieldcount: integer) of object;
+  // (ahuer) changed NameValues: TStringList to TStrings
+  TCursorChangedEvent = procedure(Sender: TObject; NameValues: TStrings;
+    FieldCount: Integer) of object;
+
   TJvCSVBase = class(TComponent)
   private
-    { Private declarations }
-    DBOpen: boolean;
-    DB: Tstringlist;
-    DBRecord: TStringlist;
-    DBFields: TStringlist;
-    DBCursor: integer;
-    FonCursorChanged: TOnCursorChanged;
+    FDBOpen: Boolean;
+    FDB: TStrings;
+    FDBRecord: TStrings;
+    FDBFields: TStrings;
+    FDBCursor: Integer;
+    FOnCursorChanged: TCursorChangedEvent;
     FCSVFileName: string;
-    FCSVFieldNames: TStringlist;
-    procedure SetonCursorChanged(const Value: TOnCursorChanged);
+    FCSVFieldNames: TStrings;
     procedure DoCursorChange;
     procedure SetCSVFileName(const Value: string);
-    procedure SetCSVFieldNames(const Value: TStringlist);
-    procedure DisPlayFields(NameValues: TStringlist);
+    procedure SetCSVFieldNames(const Value: TStrings);
+    procedure DisPlayFields(NameValues: TStrings);
   protected
-    procedure CursorChanged(NameValues: TStringList; FieldCount: integer);
+    procedure DoCursorChanged(NameValues: TStrings; FieldCount: Integer); virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure DataBaseCreate(aFile: string; FieldNames: TStringList);
-    procedure DataBaseOpen(AFile: string);
+    procedure DataBaseCreate(const AFile: string; FieldNames: TStrings);
+    procedure DataBaseOpen(const AFile: string);
     procedure DataBaseClose;
-    procedure DataBaseRestructure(aFile: string; Fieldnames: TstringList);
+    procedure DataBaseRestructure(const AFile: string; FieldNames: TStrings);
     procedure RecordNew;
-    procedure RecordGet(var NameValues: TstringList);
-    procedure RecordSet(NameValues: TStringList);
+    procedure RecordGet(NameValues: TStrings);
+    procedure RecordSet(NameValues: TStrings);
     procedure RecordDelete;
-    function RecordNext: boolean;
-    function RecordPrevious: boolean;
-    function RecordFirst: boolean;
-    function RecordLast: boolean;
+    function RecordNext: Boolean;
+    function RecordPrevious: Boolean;
+    function RecordFirst: Boolean;
+    function RecordLast: Boolean;
     procedure RecordPost;
-    function RecordFind(Atext: string): boolean;
+    function RecordFind(AText: string): Boolean;
     procedure DisPlay;
   published
     property CSVFileName: string read FCSVFileName write SetCSVFileName;
-    property CSVFieldNames: TStringlist read FCSVFieldNames write SetCSVFieldNames;
-    property OnCursorChanged: TOnCursorChanged read FonCursorChanged write SetonCursorChanged;
+    property CSVFieldNames: TStrings read FCSVFieldNames write SetCSVFieldNames;
+    property OnCursorChanged: TCursorChangedEvent read FOnCursorChanged write FOnCursorChanged;
   end;
 
   TJvCSVEdit = class(TEdit)
@@ -86,7 +94,6 @@ type
     procedure SetCSVField(const Value: string);
   protected
     procedure Notification(Acomponent: TComponent; Operation: TOperation); override;
-  public
   published
     property CSVDataBase: TJvCSVBase read FCSVDataBase write SetCSVDataBase;
     property CSVField: string read FCSVField write SetCSVField;
@@ -100,7 +107,6 @@ type
     procedure SetCSVField(const Value: string);
   protected
     procedure Notification(Acomponent: TComponent; Operation: TOperation); override;
-  public
   published
     property CSVDataBase: TJvCSVBase read FCSVDataBase write SetCSVDataBase;
     property CSVField: string read FCSVField write SetCSVField;
@@ -133,23 +139,23 @@ type
     FbtnRefresh: TSpeedButton;
     FCSVDataBase: TJvCSVBase;
     procedure CreateButtons;
-    procedure btnFirstClick(sender: TObject);
-    procedure btnPreviousClick(sender: TObject);
-    procedure btnFindClick(sender: TObject);
-    procedure btnNextClick(sender: TObject);
-    procedure btnLastClick(sender: TObject);
-    procedure btnAddClick(sender: TObject);
-    procedure btnDeleteClick(sender: TObject);
-    procedure btnPostClick(sender: TObject);
-    procedure btnRefreshClick(sender: TObject);
+    procedure btnFirstClick(Sender: TObject);
+    procedure btnPreviousClick(Sender: TObject);
+    procedure btnFindClick(Sender: TObject);
+    procedure btnNextClick(Sender: TObject);
+    procedure btnLastClick(Sender: TObject);
+    procedure btnAddClick(Sender: TObject);
+    procedure btnDeleteClick(Sender: TObject);
+    procedure btnPostClick(Sender: TObject);
+    procedure btnRefreshClick(Sender: TObject);
     procedure SetCSVDataBase(const Value: TJvCSVBase);
-
   protected
     procedure Notification(Acomponent: TComponent; Operation: TOperation); override;
   public
     constructor Create(AOwner: Tcomponent); override;
-    destructor Destroy; override;
+    {$IFDEF VCL}
     procedure CreateWnd; override;
+    {$ENDIF VCL}
     procedure Resize; override;
   published
     property CSVDataBase: TJvCSVBase read FCSVDataBase write SetCSVDataBase;
@@ -160,362 +166,367 @@ implementation
 uses
   JvThemes, JvResources;
 
+{$IFDEF MSWINDOWS}
 {$R ..\Resources\JvCSVBase.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+{$R ../Resources/JvCSVBase.res}
+{$ENDIF LINUX}
 
 { TJvCSVBase }
 
 constructor TJvCSVBase.Create(AOwner: TComponent);
 begin
-  inherited;
-  DB := tstringlist.create;
-  DBRecord := tstringlist.create;
-  DBFields := tstringlist.create;
-  FCSVFieldNames := TStringList.create;
-  DBCursor := -1;
-  DBOpen := false;
+  inherited Create(AOwner);
+  FDB := TStringList.Create;
+  FDBRecord := TStringList.Create;
+  FDBFields := TStringList.Create;
+  FCSVFieldNames := TStringList.Create;
+  FDBCursor := -1;
+  FDBOpen := False;
 end;
 
 procedure TJvCSVBase.DataBaseClose;
 begin
   FCSVFileName := '';
-  DBCursor := -1;
+  FDBCursor := -1;
   DoCursorChange;
 end;
 
-procedure TJvCSVBase.DataBaseCreate(aFile: string; FieldNames: TStringList);
+procedure TJvCSVBase.DataBaseCreate(const AFile: string; FieldNames: TStrings);
 var
   newfile: string;
-  Alist: tstringlist;
+  AList: TStrings;
 begin
-  newfile := changefileext(aFile, '.csv');
-  if fileexists(newfile) then
-    if messagedlg(RsReplaceExistingDatabase, mtconfirmation, [mbyes, mbno], 0) = mrno then exit;
-  alist := tstringlist.create;
-  if (FieldNames <> nil) then
-    if FieldNames.count > 0 then
-      alist.Text := FieldNames.CommaText;
-  alist.SaveToFile(newfile);
+  newfile := ChangeFileExt(AFile, '.csv');
+  if FileExists(newfile) then
+    if MessageDlg(RsReplaceExistingDatabase, mtConfirmation, [mbYes, mbNo], 0) = mrNo then
+      Exit;
+  AList := TStringList.Create;
+  try
+    if (FieldNames <> nil) then
+      if FieldNames.Count > 0 then
+        AList.Text := FieldNames.CommaText;
+    AList.SaveToFile(newfile);
+  finally
+    AList.Free;
+  end;
 end;
 
-procedure TJvCSVBase.DataBaseOpen(AFile: string);
+procedure TJvCSVBase.DataBaseOpen(const AFile: string);
 begin
-  if not fileexists(Afile) then
-    DataBaseCreate(Afile, nil);
+  if not FileExists(AFile) then
+    DataBaseCreate(AFile, nil);
   FCSVFileName := AFile;
-  DB.LoadFromFile(CSVFileName);
-  DBCursor := -1;
-  DBFields.Clear;
-  DBRecord.Clear;
-  if DB.Count > 0 then
+  FDB.LoadFromFile(CSVFileName);
+  FDBCursor := -1;
+  FDBFields.Clear;
+  FDBRecord.Clear;
+  if FDB.Count > 0 then
   begin
-    DBCursor := 0;
-    DBFields.CommaText := DB[0];
-    FCSVFieldNames.commatext := DB[0];
-    if DB.count > 1 then
+    FDBCursor := 0;
+    FDBFields.CommaText := FDB[0];
+    FCSVFieldNames.CommaText := FDB[0];
+    if FDB.Count > 1 then
     begin
-      DBCursor := 1;
-      DBRecord.commatext := DB[DBCursor];
+      FDBCursor := 1;
+      FDBRecord.CommaText := FDB[FDBCursor];
       DoCursorChange;
     end;
   end;
 end;
 
-procedure TJvCSVBase.DataBaseRestructure(aFile: string; Fieldnames: TstringList);
+procedure TJvCSVBase.DataBaseRestructure(const AFile: string; FieldNames: TStrings);
 var
-  OldBase: tstringlist;
-  OldRec: Tstringlist;
-  OldFields: TStringlist;
-  NewBase: tstringlist;
-  NewRec: TStringlist;
-  NewFields: TStringlist;
-  index, rec, fld: integer;
+  OldBase: TStrings;
+  OldRec: TStrings;
+  OldFields: TStrings;
+  NewBase: TStringS;
+  NewRec: TStrings;
+  NewFields: TStrings;
+  Index, rec, fld: Integer;
 begin
   DataBaseClose;
-  if Fieldnames.count = 0 then
-  begin
-    showmessage(RsNoFieldsDefined);
-    exit;
-  end;
-  OldBase := tstringlist.create;
-  OldRec := Tstringlist.create;
-  OldFields := TStringlist.create;
-  NewBase := tstringlist.create;
-  NewRec := TStringlist.create;
-  NewFields := TStringlist.create;
-  OldBase.LoadFromFile(afile);
-  if OldBase.count = 0 then
-  begin
-    NewFields.assign(FieldNames);
-    NewBase.Append(NewFields.commatext);
-  end
-  else
-  begin
-    //restructure
-    OldFields.CommaText := Oldbase[0];
-    NewFields.assign(FieldNames);
-    NewBase.Append(NewFields.commatext);
-    if OldBase.count > 1 then
-      for rec := 1 to OldBase.count - 1 do
-      begin
-        OldRec.CommaText := OldBase[rec];
-        Newrec.Clear;
-        for fld := 0 to NewFields.count - 1 do
+  if FieldNames.Count = 0 then
+    raise Exception.Create(RsNoFieldsDefined);
+
+  OldBase := TStringList.Create;
+  OldRec := TStringList.Create;
+  OldFields := TStringList.Create;
+  NewBase := TStringList.Create;
+  NewRec := TStringList.Create;
+  NewFields := TStringList.Create;
+  try
+    OldBase.LoadFromFile(AFile);
+    if OldBase.Count = 0 then
+    begin
+      NewFields.assign(FieldNames);
+      NewBase.Append(NewFields.CommaText);
+    end
+    else
+    begin
+      //restructure
+      OldFields.CommaText := Oldbase[0];
+      NewFields.assign(FieldNames);
+      NewBase.Append(NewFields.CommaText);
+      if OldBase.Count > 1 then
+        for rec := 1 to OldBase.Count - 1 do
         begin
-          index := OldFields.IndexOf(NewFields[fld]);
-          if index = -1 then
-            NewRec.Append('-')
-          else
-            NewRec.Append(OldRec[index]);
+          OldRec.CommaText := OldBase[rec];
+          Newrec.Clear;
+          for fld := 0 to NewFields.Count - 1 do
+          begin
+            Index := OldFields.IndexOf(NewFields[fld]);
+            if Index = -1 then
+              NewRec.Append('-')
+            else
+              NewRec.Append(OldRec[Index]);
+          end;
+          NewBase.Append(NewRec.CommaText);
         end;
-        NewBase.Append(NewRec.commatext);
-      end;
+    end;
+    NewBase.SaveToFile(AFile);
+  finally
+    OldBase.Free;
+    OldRec.Free;
+    OldFields.Free;
+    NewBase.Free;
+    NewRec.Free;
+    NewFields.Free;
   end;
-  NewBase.SaveToFile(afile);
-  OldBase.free;
-  OldRec.free;
-  OldFields.free;
-  NewBase.free;
-  NewRec.free;
-  NewFields.free;
 end;
 
 destructor TJvCSVBase.Destroy;
 begin
-  DB.Free;
-  DBRecord.free;
-  DBFields.Free;
+  FDB.Free;
+  FDBRecord.Free;
+  FDBFields.Free;
   FCSVFieldNames.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvCSVBase.RecordNew;
 var
-  i: integer;
+  i: Integer;
 begin
-  if DBCursor <> -1 then
+  if FDBCursor <> -1 then
   begin
-    DBRecord.Clear;
-    for i := 0 to DBFields.Count - 1 do
-      DBRecord.Append('-');
-    DB.Append(DBRecord.commatext);
-    DBCursor := DB.count - 1;
-    DB.SaveToFile(CSVFileName);
+    FDBRecord.Clear;
+    for i := 0 to FDBFields.Count - 1 do
+      FDBRecord.Append('-');
+    FDB.Append(FDBRecord.CommaText);
+    FDBCursor := FDB.Count - 1;
+    FDB.SaveToFile(CSVFileName);
     DoCursorChange;
   end;
 end;
 
 procedure TJvCSVBase.RecordDelete;
 begin
-  if DBCursor > 0 then
+  if FDBCursor > 0 then
   begin
-    DB.Delete(DBCursor);
-    if DBCursor > (DB.count - 1) then dec(DBCursor);
-    if DBCursor > 0 then
+    FDB.Delete(FDBCursor);
+    if FDBCursor > (FDB.Count - 1) then
+      Dec(FDBCursor);
+    if FDBCursor > 0 then
     begin
-      DBRecord.commatext := DB[DBCursor];
-      DB.SaveToFile(CSVFileName);
+      FDBRecord.CommaText := FDB[FDBCursor];
+      FDB.SaveToFile(CSVFileName);
     end;
     DoCursorChange;
   end;
 end;
 
-function TJvCSVBase.RecordFind(Atext: string): boolean;
+function TJvCSVBase.RecordFind(AText: string): Boolean;
 var
-  i, from: integer;
+  i, from: Integer;
   fs: string;
 begin
-  result := false;
-  if DBCursor < 1 then exit;
-  if DBCursor < (DB.Count - 1) then
+  Result := False;
+  if FDBCursor < 1 then Exit;
+  if FDBCursor < (FDB.Count - 1) then
   begin
-    from := DBCursor + 1;
-    fs := lowercase(AText);
-    for i := from to DB.Count - 1 do
-      if pos(fs, lowercase(DB[i])) > 0 then
+    from := FDBCursor + 1;
+    fs := LowerCase(AText);
+    for i := from to FDB.Count - 1 do
+      if Pos(fs, LowerCase(FDB[i])) > 0 then
       begin
-        DBCursor := i;
-        DBRecord.commatext := DB[DBCursor];
-        result := true;
+        FDBCursor := i;
+        FDBRecord.CommaText := FDB[FDBCursor];
+        Result := True;
         DoCursorChange;
-        break;
+        Break;
       end;
   end;
 end;
 
-function TJvCSVBase.RecordFirst: boolean;
+function TJvCSVBase.RecordFirst: Boolean;
 begin
-  result := false;
-  if DBCursor <> -1 then
-    if DB.count > 1 then
+  Result := False;
+  if FDBCursor <> -1 then
+    if FDB.Count > 1 then
     begin
-      DBCursor := 1;
-      DBRecord.commatext := DB[DBCursor];
-      result := true;
+      FDBCursor := 1;
+      FDBRecord.CommaText := FDB[FDBCursor];
+      Result := True;
       DoCursorChange;
     end;
 end;
 
-procedure TJvCSVBase.RecordGet(var NameValues: TstringList);
+procedure TJvCSVBase.RecordGet(NameValues: TStrings);
 var
-  i: integer;
+  i: Integer;
 begin
-  NameValues.clear;
-  if DBCursor < 1 then exit;
-  for i := 0 to DBFields.Count - 1 do
-    NameValues.Append(DBFields[i] + '=' + DBRecord[i]);
+  NameValues.Clear;
+  if FDBCursor < 1 then Exit;
+  for i := 0 to FDBFields.Count - 1 do
+    NameValues.Append(FDBFields[i] + '=' + FDBRecord[i]);
 end;
 
-function TJvCSVBase.RecordLast: boolean;
+function TJvCSVBase.RecordLast: Boolean;
 begin
-  result := false;
-  if DBCursor <> -1 then
-    if DB.count > 1 then
+  Result := False;
+  if FDBCursor <> -1 then
+    if FDB.Count > 1 then
     begin
-      DBCursor := DB.count - 1;
-      DBRecord.commatext := DB[DBCursor];
-      result := true;
+      FDBCursor := FDB.Count - 1;
+      FDBRecord.CommaText := FDB[FDBCursor];
+      Result := True;
       DoCursorChange;
     end;
 end;
 
-function TJvCSVBase.RecordNext: boolean;
+function TJvCSVBase.RecordNext: Boolean;
 begin
-  result := false;
-  if DBCursor <> -1 then
+  Result := False;
+  if FDBCursor <> -1 then
   begin
-    if DBCursor < (DB.Count - 1) then
+    if FDBCursor < (FDB.Count - 1) then
     begin
-      inc(DBCursor);
-      DBRecord.commatext := DB[DBCursor];
-      result := true;
+      Inc(FDBCursor);
+      FDBRecord.CommaText := FDB[FDBCursor];
+      Result := True;
       DoCursorChange;
     end;
   end;
-
 end;
 
-function TJvCSVBase.RecordPrevious: boolean;
+function TJvCSVBase.RecordPrevious: Boolean;
 begin
-  result := false;
-  if DBCursor <> -1 then
+  Result := False;
+  if FDBCursor <> -1 then
   begin
-    if DBCursor > 1 then
+    if FDBCursor > 1 then
     begin
-      dec(DBCursor);
-      DBRecord.commatext := DB[DBCursor];
-      result := true;
+      Dec(FDBCursor);
+      FDBRecord.CommaText := FDB[FDBCursor];
+      Result := True;
       DoCursorChange;
     end;
   end;
-
 end;
 
-procedure TJvCSVBase.RecordSet(NameValues: TStringList);
+procedure TJvCSVBase.RecordSet(NameValues: TStrings);
 var
-  i, index: integer;
+  i, Index: Integer;
   FieldName: string;
 begin
-  if NameValues.count > 0 then
+  if NameValues.Count > 0 then
   begin
-    for i := 0 to NameValues.count - 1 do
+    for i := 0 to NameValues.Count - 1 do
     begin
       FieldName := NameValues.names[i];
-      index := DBFields.IndexOf(FieldName);
-      if index <> -1 then
-        DBRecord[index] := NameValues.Values[FieldName];
+      Index := FDBFields.IndexOf(FieldName);
+      if Index <> -1 then
+        FDBRecord[Index] := NameValues.Values[FieldName];
     end;
-    DB[DBCursor] := DBRecord.CommaText;
-    DB.SaveToFile(CSVFileName);
+    FDB[FDBCursor] := FDBRecord.CommaText;
+    FDB.SaveToFile(CSVFileName);
   end;
 end;
 
-procedure TJvCSVBase.SetonCursorChanged(const Value: TOnCursorChanged);
+procedure TJvCSVBase.DoCursorChanged(NameValues: TStrings; FieldCount: Integer);
 begin
-  FonCursorChanged := Value;
-end;
-
-procedure TJvCSVBase.CursorChanged(NameValues: TStringList; FieldCount: integer);
-begin
-  if assigned(onCursorchanged) then
-    onCursorChanged(self, NameValues, FieldCount);
+  if Assigned(OnCursorChanged) then
+    OnCursorChanged(Self, NameValues, FieldCount);
 end;
 
 procedure TJvCSVBase.DoCursorChange;
 var
-  NameValues: TStringlist;
+  NameValues: TStrings;
 begin
-  NameValues := TStringList.create;
+  NameValues := TStringList.Create;
   try
     RecordGet(NameValues);
     DisPlayFields(NameValues);
-    CursorChanged(NameValues, NameValues.count);
+    DoCursorChanged(NameValues, NameValues.Count);
   finally
     NameValues.Free;
   end;
 end;
 
-procedure TJvCSVBase.DisPlayFields(NameValues: TStringlist);
+procedure TJvCSVBase.DisPlayFields(NameValues: TStrings);
 var
   Aform: TForm;
-  i, index: integer;
+  i, Index: Integer;
   ed: TJvCSVEdit;
   cbo: TJvCSVComboBox;
   ck: TJvCSVCheckBox;
   AField: string;
 begin
-  Aform := TForm(self.Owner);
+  Aform := TForm(Self.Owner);
   for i := 0 to aForm.ComponentCount - 1 do
-    if aform.Components[i].classname = 'TJvCSVEdit' then
+    if aform.Components[i].ClassName = 'TJvCSVEdit' then
     begin
       ed := TJvCSVEdit(aform.Components[i]);
-      if ed.CSVDataBase = self then
+      if ed.CSVDataBase = Self then
       begin
         Afield := ed.CSVField;
-        index := CSVFieldNames.IndexOf(AField);
-        if index <> -1 then
-          if DBCursor > 0 then
-            ed.Text := DBRecord[index]
+        Index := CSVFieldNames.IndexOf(AField);
+        if Index <> -1 then
+          if FDBCursor > 0 then
+            ed.Text := FDBRecord[Index]
           else
             ed.Text := '[' + Afield + ']';
       end;
     end
-    else if aform.Components[i].classname = 'TJvCSVComboBox' then
+    else if aform.Components[i].ClassName = 'TJvCSVComboBox' then
     begin
       cbo := TJvCSVComboBox(aform.Components[i]);
-      if cbo.CSVDataBase = self then
+      if cbo.CSVDataBase = Self then
       begin
         Afield := cbo.CSVField;
-        index := CSVFieldNames.IndexOf(AField);
-        if index <> -1 then
-          if DBCursor > 0 then
-            cbo.Text := DBRecord[index]
+        Index := CSVFieldNames.IndexOf(AField);
+        if Index <> -1 then
+          if FDBCursor > 0 then
+            cbo.Text := FDBRecord[Index]
           else
             cbo.Text := '[' + Afield + ']';
       end;
     end
-    else if aform.Components[i].classname = 'TJvCSVCheckBox' then
+    else if aform.Components[i].ClassName = 'TJvCSVCheckBox' then
     begin
       ck := TJvCSVCheckBox(aform.Components[i]);
-      if ck.CSVDataBase = self then
+      if ck.CSVDataBase = Self then
       begin
         Afield := ck.CSVField;
-        index := CSVFieldNames.IndexOf(AField);
-        if index <> -1 then
-          if DBCursor > 0 then
-            ck.checked := DBRecord[index] = 'true'
+        Index := CSVFieldNames.IndexOf(AField);
+        if Index <> -1 then
+          if FDBCursor > 0 then
+            ck.checked := FDBRecord[Index] = 'True'
           else
-            ck.Checked := false;
+            ck.Checked := False;
       end;
     end;
 end;
 
 procedure TJvCSVBase.SetCSVFileName(const Value: string);
 begin
-  if value <> FCSVFileName then
+  if Value <> FCSVFileName then
   begin
     DatabaseClose;
     FCSVFileName := Value;
-    if fileexists(CSVFileName) then
+    if FileExists(CSVFileName) then
       DataBaseOpen(CSVFileName)
     else
       DataBaseCreate(CSVFileName, nil);
@@ -530,68 +541,68 @@ end;
 procedure TJvCSVBase.RecordPost;
 var
   Aform: TForm;
-  i, index: integer;
+  i, Index: Integer;
   ed: TJvCSVEdit;
   cbo: TJvCSVComboBox;
   ck: TJvCSVCheckBox;
   AField: string;
 begin
-  if DBCursor < 1 then exit;
-  Aform := TForm(self.Owner);
+  if FDBCursor < 1 then Exit;
+  Aform := TForm(Self.Owner);
   for i := 0 to aForm.ComponentCount - 1 do
-    if aform.Components[i].classname = 'TJvCSVEdit' then
+    if aform.Components[i].ClassName = 'TJvCSVEdit' then
     begin
       ed := TJvCSVEdit(aform.Components[i]);
-      if ed.CSVDataBase = self then
+      if ed.CSVDataBase = Self then
       begin
         Afield := ed.CSVField;
-        index := CSVFieldNames.IndexOf(AField);
-        if index <> -1 then
-          DBRecord[index] := ed.text;
+        Index := CSVFieldNames.IndexOf(AField);
+        if Index <> -1 then
+          FDBRecord[Index] := ed.Text;
       end;
     end
-    else if aform.Components[i].classname = 'TJvCSVComboBox' then
+    else if aform.Components[i].ClassName = 'TJvCSVComboBox' then
     begin
       cbo := TJvCSVComboBox(aform.Components[i]);
-      if cbo.CSVDataBase = self then
+      if cbo.CSVDataBase = Self then
       begin
         Afield := cbo.CSVField;
-        index := CSVFieldNames.IndexOf(AField);
-        if index <> -1 then
-          DBRecord[index] := cbo.text;
+        Index := CSVFieldNames.IndexOf(AField);
+        if Index <> -1 then
+          FDBRecord[Index] := cbo.Text;
       end;
     end
-    else if aform.Components[i].classname = 'TJvCSVCheckBox' then
+    else if aform.Components[i].ClassName = 'TJvCSVCheckBox' then
     begin
       ck := TJvCSVCheckBox(aform.Components[i]);
-      if ck.CSVDataBase = self then
+      if ck.CSVDataBase = Self then
       begin
         Afield := ck.CSVField;
-        index := CSVFieldNames.IndexOf(AField);
-        if index <> -1 then
+        Index := CSVFieldNames.IndexOf(AField);
+        if Index <> -1 then
           if ck.Checked then
-            DBRecord[index] := 'true'
+            FDBRecord[Index] := 'True'
           else
-            DBRecord[index] := 'false';
+            FDBRecord[Index] := 'False';
       end;
     end;
 
-  DB[DBCursor] := DBRecord.CommaText;
-  DB.SaveToFile(CSVFileName);
+  FDB[FDBCursor] := FDBRecord.CommaText;
+  FDB.SaveToFile(CSVFileName);
 end;
 
 { TCSVFileNameProperty }
 
-procedure TJvCSVBase.SetCSVFieldNames(const Value: TStringlist);
+procedure TJvCSVBase.SetCSVFieldNames(const Value: TStrings);
 var
   oldfile: string;
 begin
-  if (CSVFileName <> '') and (value.Count > 0) then
+  if (CSVFileName <> '') and (Value.Count > 0) then
   begin
     OldFile := CSVFileName;
     DataBaseClose;
     FCSVFieldNames.Assign(Value);
-    DataBaseRestructure(oldFile, value);
+    DataBaseRestructure(oldFile, Value);
     DataBaseOpen(OldFile);
   end;
 end;
@@ -616,10 +627,10 @@ end;
 
 procedure TJvCSVEdit.SetCSVField(const Value: string);
 begin
-  if value <> FCSVField then
+  if Value <> FCSVField then
   begin
     FCSVField := Value;
-    if assigned(FCSVDataBase) then
+    if Assigned(FCSVDataBase) then
       CSVDataBase.display;
   end;
 end;
@@ -628,97 +639,89 @@ end;
 
 { TJvCSVNavigator }
 
-procedure TJvCSVNavigator.btnAddClick(sender: TObject);
+procedure TJvCSVNavigator.btnAddClick(Sender: TObject);
 begin
-  if assigned(FCSVDataBase) then
+  if Assigned(FCSVDataBase) then
     CSVDataBase.RecordNew;
-
 end;
 
-procedure TJvCSVNavigator.btnDeleteClick(sender: TObject);
+procedure TJvCSVNavigator.btnDeleteClick(Sender: TObject);
 begin
-  if assigned(FCSVDataBase) then
+  if Assigned(FCSVDataBase) then
     CSVDataBase.RecordDelete;
-
 end;
 
-procedure TJvCSVNavigator.btnFindClick(sender: TObject);
+procedure TJvCSVNavigator.btnFindClick(Sender: TObject);
 var
-  Atext: string;
+  AText: string;
 begin
-  if assigned(FCSVDataBase) then
+  if Assigned(FCSVDataBase) then
   begin
-    Atext := inputbox(RsCVSDatabase, RsFindText, '');
-    if Atext <> '' then
-      CSVDataBase.RecordFind(Atext);
+    AText := inputbox(RsCVSDatabase, RsFindText, '');
+    if AText <> '' then
+      CSVDataBase.RecordFind(AText);
   end;
-
 end;
 
-procedure TJvCSVNavigator.btnFirstClick(sender: TObject);
+procedure TJvCSVNavigator.btnFirstClick(Sender: TObject);
 begin
-  if assigned(FCSVDataBase) then
+  if Assigned(FCSVDataBase) then
     CSVDataBase.RecordFirst;
 end;
 
-procedure TJvCSVNavigator.btnLastClick(sender: TObject);
+procedure TJvCSVNavigator.btnLastClick(Sender: TObject);
 begin
-  if assigned(FCSVDataBase) then
+  if Assigned(FCSVDataBase) then
     CSVDataBase.RecordLast;
-
 end;
 
-procedure TJvCSVNavigator.btnNextClick(sender: TObject);
+procedure TJvCSVNavigator.btnNextClick(Sender: TObject);
 begin
-  if assigned(FCSVDataBase) then
+  if Assigned(FCSVDataBase) then
     CSVDataBase.RecordNext;
-
 end;
 
-procedure TJvCSVNavigator.btnPostClick(sender: TObject);
+procedure TJvCSVNavigator.btnPostClick(Sender: TObject);
 begin
-  if assigned(FCSVDataBase) then
+  if Assigned(FCSVDataBase) then
     CSVDataBase.RecordPost;
 end;
 
-procedure TJvCSVNavigator.btnPreviousClick(sender: TObject);
+procedure TJvCSVNavigator.btnPreviousClick(Sender: TObject);
 begin
-  if assigned(FCSVDataBase) then
+  if Assigned(FCSVDataBase) then
     CSVDataBase.RecordPrevious;
-
 end;
 
-procedure TJvCSVNavigator.btnRefreshClick(sender: TObject);
+procedure TJvCSVNavigator.btnRefreshClick(Sender: TObject);
 begin
-  if assigned(FCSVDataBase) then
+  if Assigned(FCSVDataBase) then
     CSVDataBase.display;
-
 end;
 
-constructor TJvCSVNavigator.create(AOwner: Tcomponent);
+constructor TJvCSVNavigator.Create(AOwner: Tcomponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   IncludeThemeStyle(Self, [csParentBackground]);
-  height := 24;
-  width := 217;
+  Height := 24;
+  Width := 217;
   CreateButtons;
   Caption := '';
 end;
 
 procedure TJvCSVNavigator.CreateButtons;
 
-procedure ib(b: TSpeedButton);
+  procedure ib(b: TSpeedButton);
   begin
     b.Width := 23;
-    b.height := 22;
-    b.flat := true;
-    b.parent := self;
+    b.Height := 22;
+    b.flat := True;
+    b.parent := Self;
     b.top := 1;
-    showhint := true;
+    showhint := True;
   end;
 
 begin
-
   FbtnFirst := TSpeedButton.Create(Self);
   with FbtnFirst do
   begin
@@ -726,7 +729,7 @@ begin
     Glyph.LoadFromResourceName(HInstance, 'JVCSVFIRST');
     Left := 1;
     OnClick := BtnFirstClick;
-    hint := RsFirstHint;
+    Hint := RsFirstHint;
   end;
 
   FbtnPrevious := TSpeedButton.Create(Self);
@@ -736,7 +739,7 @@ begin
     Glyph.LoadFromResourceName(HInstance, 'JVCSVPREVIOUS');
     Left := 25;
     OnClick := BtnPreviousClick;
-    hint := RsPreviousHint;
+    Hint := RsPreviousHint;
   end;
 
   FbtnFind := TSpeedButton.Create(Self);
@@ -746,7 +749,7 @@ begin
     Glyph.LoadFromResourceName(HInstance, 'JVCSVFIND');
     Left := 49;
     OnClick := BtnFindClick;
-    hint := RsFindHint;
+    Hint := RsFindHint;
   end;
 
   FbtnNext := TSpeedButton.Create(Self);
@@ -756,7 +759,7 @@ begin
     Glyph.LoadFromResourceName(HInstance, 'JVCSVNEXT');
     Left := 73;
     OnClick := BtnNextClick;
-    hint := RsNextHint;
+    Hint := RsNextHint;
   end;
 
   FbtnLast := TSpeedButton.Create(Self);
@@ -766,7 +769,7 @@ begin
     Glyph.LoadFromResourceName(HInstance, 'JVCSVLAST');
     Left := 97;
     OnClick := BtnLastClick;
-    hint := RsLastHint;
+    Hint := RsLastHint;
   end;
 
   FbtnAdd := TSpeedButton.Create(Self);
@@ -776,7 +779,7 @@ begin
     Glyph.LoadFromResourceName(HInstance, 'JVCSVADD');
     Left := 121;
     OnClick := BtnAddClick;
-    hint := RsAddHint;
+    Hint := RsAddHint;
   end;
 
   FbtnDelete := TSpeedButton.Create(Self);
@@ -786,7 +789,7 @@ begin
     Glyph.LoadFromResourceName(HInstance, 'JVCSVDELETE');
     Left := 145;
     OnClick := BtnDeleteClick;
-    hint := RsDeleteHint;
+    Hint := RsDeleteHint;
   end;
 
   FbtnPost := TSpeedButton.Create(Self);
@@ -796,7 +799,7 @@ begin
     Glyph.LoadFromResourceName(HInstance, 'JVCSVPOST');
     Left := 169;
     OnClick := BtnPostClick;
-    hint := RsPostHint;
+    Hint := RsPostHint;
   end;
 
   FbtnRefresh := TSpeedButton.Create(Self);
@@ -806,40 +809,33 @@ begin
     Glyph.LoadFromResourceName(HInstance, 'JVCSVREFRESH');
     Left := 193;
     OnClick := BtnRefreshClick;
-    hint := RsRefreshHint;
+    Hint := RsRefreshHint;
   end;
-
 end;
 
+{$IFDEF VCL}
 procedure TJvCSVNavigator.CreateWnd;
 begin
-  inherited;
-  caption := '';
+  inherited CreateWnd;
+  Caption := '';
 end;
-
-destructor TJvCSVNavigator.destroy;
-begin
-  inherited;
-
-end;
+{$ENDIF VCL}
 
 procedure TJvCSVNavigator.Notification(Acomponent: TComponent;
   Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
   if (Operation = opRemove) and (AComponent = FCSVDataBase) then
-  begin
     FCSVDataBase := nil;
-  end;
-
 end;
 
 procedure TJvCSVNavigator.Resize;
 begin
-  inherited;
-  height := 24;
-  if width < 221 then width := 221;
-  if assigned(onresize) then onresize(self);
+  inherited Resize;
+  Height := 24;
+  if Width < 221 then Width := 221;
+  if Assigned(OnResize) then
+    OnResize(Self);
 end;
 
 procedure TJvCSVNavigator.SetCSVDataBase(const Value: TJvCSVBase);
@@ -867,10 +863,10 @@ end;
 
 procedure TJvCSVComboBox.SetCSVField(const Value: string);
 begin
-  if value <> FCSVField then
+  if Value <> FCSVField then
   begin
     FCSVField := Value;
-    if assigned(FCSVDataBase) then
+    if Assigned(FCSVDataBase) then
       CSVDataBase.display;
   end;
 end;
@@ -895,10 +891,10 @@ end;
 
 procedure TJvCSVCheckBox.SetCSVField(const Value: string);
 begin
-  if value <> FCSVField then
+  if Value <> FCSVField then
   begin
     FCSVField := Value;
-    if assigned(FCSVDataBase) then
+    if Assigned(FCSVDataBase) then
       CSVDataBase.display;
   end;
 end;

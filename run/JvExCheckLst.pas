@@ -106,12 +106,16 @@ type
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
   {$ENDIF NeedMouseEnterLeave}
   protected
+    procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
+    procedure DoFocusChanged(Control: TWinControl); dynamic;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
+    procedure DoSetFocus(PreviousControl: TWinControl); dynamic;
+    procedure DoKillFocus(NextControl: TWinControl); dynamic;
   {$IFDEF VisualCLX}
   private
     FCanvas: TCanvas;
@@ -277,6 +281,16 @@ begin
     inherited NeedKey(Key, Shift, KeyText));
 end;
 {$ENDIF VisualCLX}
+procedure TJvExCheckListBox.CMFocusChanged(var Msg: TCMFocusChanged);
+begin
+  inherited;
+  DoFocusChanged(Msg.Sender);
+end;
+
+procedure TJvExCheckListBox.DoFocusChanged(Control: TWinControl);
+begin
+end;
+
 function TJvExCheckListBox.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   {$IFDEF VCL}
@@ -286,6 +300,14 @@ begin
   {$ENDIF VCL}
 end;
 procedure TJvExCheckListBox.DoGetDlgCode(var Code: TDlgCodes);
+begin
+end;
+
+procedure TJvExCheckListBox.DoSetFocus(PreviousControl: TWinControl);
+begin
+end;
+
+procedure TJvExCheckListBox.DoKillFocus(NextControl: TWinControl);
 begin
 end;
 

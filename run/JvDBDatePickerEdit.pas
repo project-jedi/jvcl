@@ -67,7 +67,7 @@ type
     procedure UpdateData(Sender: TObject);
     function IsLinked: Boolean;
     procedure Change; override;
-    procedure DoKillFocus(const ANextControl: TWinControl); override;
+    procedure DoKillFocusEvent(const ANextControl: TWinControl); override;
     procedure DropDown; override;
     function EditCanModify: Boolean; override;
     procedure SetChecked(const AValue: Boolean); override;
@@ -234,7 +234,7 @@ begin
   Result := Assigned(FDataLink) and Assigned(FDataLink.Field);
 end;
 
-procedure TJvCustomDBDatePickerEdit.DoKillFocus(const ANextControl: TWinControl);
+procedure TJvCustomDBDatePickerEdit.DoKillFocusEvent(const ANextControl: TWinControl);
 begin
   if IsLinked and FDataLink.Editing then
     try
@@ -243,7 +243,7 @@ begin
       SetFocus;
       raise;
     end;
-  inherited DoKillFocus(ANextControl);
+  inherited DoKillFocusEvent(ANextControl);
 end;
 
 procedure TJvCustomDBDatePickerEdit.SetDataField(const AValue: string);

@@ -25,6 +25,7 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
+{$I windowsonly.inc} // (ahuser) VisualCLX has no CoolBar
 
 unit JvCoolBar;
 
@@ -76,20 +77,18 @@ begin
     FSaved := Application.HintColor;
     Application.HintColor := FHintColor;
     FOver := True;
+    inherited MouseEnter(AControl);
   end;
-  inherited MouseEnter(AControl);
 end;
 
 procedure TJvCoolBar.MouseLeave(AControl: TControl);
 begin
-  if csDesigning in ComponentState then
-    Exit;
   if FOver then
   begin
     FOver := False;
     Application.HintColor := FSaved;
+    inherited MouseLeave(AControl);
   end;
-  inherited MouseLeave(AControl);
 end;
 
 procedure TJvCoolBar.ParentColorChanged;

@@ -36,7 +36,7 @@ uses
   {$IFDEF VCL}
   Windows, Messages, StdCtrls, Controls, ExtCtrls, Forms, CheckLst, ComCtrls,
   {$ELSE}
-  Types, QTypes, QStdCtrls,  QExtCtrls, QControls, QForms, QCheckLst, QComCtrls,
+  Types, QTypes, QStdCtrls, QExtCtrls, QControls, QForms, QCheckLst, QComCtrls,
   {$ENDIF VCL}
   {$IFDEF USE_DXGETTEXT}
   gnugettext,
@@ -57,12 +57,6 @@ type
   TJvGraphicControl = class(TJvExGraphicControl)
   private
     FAboutJVCL: TJVCLAboutInfo;
-  {$IFDEF VisualCLX}
-    FText: TCaption; // TControl does not save the Caption property
-  protected
-    function GetText: TCaption; override;
-    procedure SetText(const Value: TCaption); override;
-  {$ENDIF VisualCLX}
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
@@ -117,24 +111,5 @@ begin
   TranslateComponent(Self);
 end;
 {$ENDIF USE_DXGETTEXT}
-
-
-//=== TJvGraphicControl ======================================================
-
-{$IFDEF VisualCLX}
-function TJvGraphicControl.GetText: TCaption;
-begin
-  Result := FText;
-end;
-
-procedure TJvGraphicControl.SetText(const Value: TCaption);
-begin
-  if Value <> FText then
-  begin
-    FText := Value;
-    TextChanged;
-  end;
-end;
-{$ENDIF VisualCLX}
 
 end.

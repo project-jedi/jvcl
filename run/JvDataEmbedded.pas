@@ -32,11 +32,13 @@ interface
 
 uses
   SysUtils, Classes,
-  JvComponent;
+  JVCLVer;
 
 type
-  TJvDataEmbedded = class(TJvComponent)
+  TJvDataEmbedded = class(TComponent)
   private
+    FAboutJVCL: TJVCLAboutInfo; // (ahuser) removed JvComponent dependency for easy CLX usage
+
     FStream: TMemoryStream;
     function GetSize: Integer;
     procedure WriteData(Stream: TStream);
@@ -54,6 +56,8 @@ type
     // (rom) These properties were published. Silly.
     property Size: Integer read GetSize write SetSize;
     property Data: TStream read GetStream write SetStream;
+  published
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
 implementation

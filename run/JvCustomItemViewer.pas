@@ -28,11 +28,12 @@ Known Issues:
  * drag'n'drop edge scrolling - DONE (almost, needs some tweaks to look good as well)
  * icons don't scale, should be handled differently - DONE (explicitly calls DrawIconEx)
 -----------------------------------------------------------------------------}
+{$I jvcl.inc}
 
 unit JvCustomItemViewer;
 
-{$I jvcl.inc}
 interface
+
 uses
   Windows, SysUtils, Forms, Messages, Classes, Controls,
   Graphics, StdCtrls, ComCtrls, ImgList,
@@ -202,7 +203,6 @@ type
     procedure WMHScroll(var Message: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Message: TWMVScroll); message WM_VSCROLL;
     procedure WMPaint(var Message: TWMPaint); message WM_PAINT;
-    procedure WMSize(var Message: TWMSize); message WM_SIZE;
     procedure WMSetFocus(var Message: TWMSetFocus); message WM_SETFOCUS;
     procedure WMNCHitTest(var Message: TMessage); message WM_NCHITTEST;
     procedure WMLButtonUp(var Message: TWMLButtonUp); message WM_LBUTTONUP;
@@ -227,6 +227,7 @@ type
   protected
     procedure MouseLeave(Control: TControl); override;
     procedure DoGetDlgCode(var Code: TDlgCodes); override;
+    procedure Resize; override;
 
     procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean); override;
     procedure DoEndDrag(Sender: TObject; X, Y: Integer); override;
@@ -1691,12 +1692,12 @@ begin
   end;
 end;
 
-procedure TJvCustomItemViewer.WMSize(var Message: TWMSize);
+procedure TJvCustomItemViewer.Resize;
 begin
-  inherited;
   UpdateAll;
   if HandleAllocated then
     InvalidateClipRect(ClientRect);
+  inherited Resize;
 end;
 
 procedure TJvCustomItemViewer.WMVScroll(var Message: TWMVScroll);

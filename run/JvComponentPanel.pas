@@ -74,7 +74,6 @@ type
     procedure MoveClick(Sender: TObject);
     {$IFDEF VCL}
     procedure WMSetText(var Msg: TWMSetText); message WM_SETTEXT;
-    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     procedure SetText(const Value: TCaption); override;
@@ -305,21 +304,18 @@ end;
 
 {$IFDEF VCL}
 procedure TJvComponentPanel.WMSetText(var Msg: TWMSetText);
-{$ELSE}
-procedure TJvComponentPanel.SetText(const Value: TCaption);
-{$ENDIF VCL}
 begin
   inherited;
   Caption := '';
 end;
-
-{$IFDEF VCL}
-procedure TJvComponentPanel.WMSize(var Msg: TWMSize);
-begin
-  inherited;
-  Resize;
-end;
 {$ENDIF VCL}
+{$IFDEF VisualCLX}
+procedure TJvComponentPanel.SetText(const Value: TCaption);
+begin
+  inherited SetText('');
+  //Caption := '';
+end;
+{$ENDIF VisualCLX}
 
 procedure TJvComponentPanel.Resize;
 var

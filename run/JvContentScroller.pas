@@ -85,6 +85,9 @@ type
     {$IFDEF VCL}
     procedure CreateWnd; override;
     {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    procedure SetText(const Value: TCaption); override;
+    {$ENDIF VisualCLX}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -370,10 +373,6 @@ end;
 
 procedure TJvContentScroller.Paint;
 begin
-  {$IFDEF VisualCLX}
-  if Caption <> '' then
-    Caption := '';
-  {$ENDIF VisualCLX}
   inherited Paint;
   if csDesigning in ComponentState then
     with Canvas do
@@ -383,6 +382,13 @@ begin
       Rectangle(0, 0, Width, Height);
     end;
 end;
+
+{$IFDEF VisualCLX}
+procedure TJvContentScroller.SetText(const Value: TCaption);
+begin
+  inherited SetText('');
+end;
+{$ENDIF VisualCLX}
 
 end.
 

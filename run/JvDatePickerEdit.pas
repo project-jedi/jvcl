@@ -143,7 +143,7 @@ type
     procedure Change; override;
     procedure Loaded; override;
 
-    procedure DoKillFocus(const ANextControl: TWinControl); override;
+    procedure DoKillFocusEvent(const ANextControl: TWinControl); override;
     procedure KeyDown(var AKey: Word; AShift: TShiftState); override;
     procedure GetInternalMargins(var ALeft, ARight: Integer); override;
     procedure DoCtl3DChanged; override;
@@ -748,7 +748,7 @@ begin
   end;
 end;
 
-procedure TJvCustomDatePickerEdit.DoKillFocus(const ANextControl: TWinControl);
+procedure TJvCustomDatePickerEdit.DoKillFocusEvent(const ANextControl: TWinControl);
 var
   lDate: TDateTime;
 begin
@@ -757,7 +757,7 @@ begin
     if not FDateError then
     begin
       CloseUp;
-      inherited DoKillFocus(ANextControl);
+      inherited DoKillFocusEvent(ANextControl);
       if EnableValidation then
       try
         lDate := Self.Date;
@@ -776,7 +776,7 @@ begin
       end;
     end
     else
-      inherited DoKillFocus(ANextControl);
+      inherited DoKillFocusEvent(ANextControl);
 end;
 
 function TJvCustomDatePickerEdit.GetEnableValidation: Boolean;
