@@ -66,6 +66,7 @@ type
     procedure SetActiveFont(const Value: TFont);
     procedure SetInactiveFont(const Value: TFont);
   protected
+    procedure SettingChange(Sender: TObject);
     procedure ResetDockControlOption; override;
     procedure SetDefaultSystemCaptionInfo; virtual;
   public
@@ -138,7 +139,6 @@ type
     FSystemInfoChange: TJvDockSystemInfoChange;
   protected
     function DockClientWindowProc(DockClient: TJvDockClient; var Msg: TMessage): Boolean; override;
-    procedure ParentFormWindowProc(var Msg: TMessage); override;
     procedure FormDockDrop(DockClient: TJvDockClient;
       Source: TJvDockDragDockObject; X, Y: Integer); override;
     procedure FormGetSiteInfo(Source: TJvDockDragDockObject; DockClient: TJvDockClient;
@@ -1112,18 +1112,6 @@ begin
     TmpPage.InactiveSheetColor := TmpOption.InactiveSheetColor;
     TmpPage.HotTrackColor := TmpOption.HotTrackColor;
     TmpPage.ShowTabImages := TmpOption.ShowTabImages;
-  end;
-end;
-
-procedure TJvDockVIDVCStyle.ParentFormWindowProc(var Msg: TMessage);
-begin
-  inherited ParentFormWindowProc(Msg);
-  if (Msg.Msg = WM_SETTINGCHANGE) or (Msg.Msg = WM_SYSCOLORCHANGE) then
-  begin
-    ParentForm.Caption := '';
-    if ConjoinServerOption is TJvDockVIDVCConjoinServerOption then
-      if TJvDockVIDVCConjoinServerOption(ConjoinServerOption).SystemInfo then
-        TJvDockVIDVCConjoinServerOption(ConjoinServerOption).SetDefaultSystemCaptionInfo;
   end;
 end;
 
@@ -4443,6 +4431,8 @@ end;
 
 destructor TJvDockVIDVCConjoinServerOption.Destroy;
 begin
+  { Make sure we unregister, can be called more than once }
+  UnRegisterSettingChangeClient(Self);
   FActiveFont.Free;
   FInactiveFont.Free;
   inherited Destroy;
@@ -4460,7 +4450,7 @@ begin
     FActiveTitleStartColor := TJvDockVIDVCConjoinServerOption(Source).FActiveTitleStartColor;
     FActiveFont.Assign(TJvDockVIDVCConjoinServerOption(Source).FActiveFont);
     FInactiveFont.Assign(TJvDockVIDVCConjoinServerOption(Source).FInactiveFont);
-    FSystemInfo := TJvDockVIDVCConjoinServerOption(Source).FSystemInfo;
+    SystemInfo := TJvDockVIDVCConjoinServerOption(Source).FSystemInfo;
   end;
   inherited Assign(Source);
 end;
@@ -4470,7 +4460,7 @@ begin
   if FActiveTitleEndColor <> Value then
   begin
     FActiveTitleEndColor := Value;
-    FSystemInfo := False;
+    SystemInfo := False;
     ResetDockControlOption;
   end;
 end;
@@ -4480,7 +4470,7 @@ begin
   if FActiveTitleStartColor <> Value then
   begin
     FActiveTitleStartColor := Value;
-    FSystemInfo := False;
+    SystemInfo := False;
     ResetDockControlOption;
   end;
 end;
@@ -4490,7 +4480,7 @@ begin
   if FInactiveTitleEndColor <> Value then
   begin
     FInactiveTitleEndColor := Value;
-    FSystemInfo := False;
+    SystemInfo := False;
     ResetDockControlOption;
   end;
 end;
@@ -4500,7 +4490,7 @@ begin
   if FInactiveTitleStartColor <> Value then
   begin
     FInactiveTitleStartColor := Value;
-    FSystemInfo := False;
+    SystemInfo := False;
     ResetDockControlOption;
   end;
 end;
@@ -4509,10 +4499,15 @@ procedure TJvDockVIDVCConjoinServerOption.SetSystemInfo(const Value: Boolean);
 begin
   if FSystemInfo <> Value then
   begin
+    if FSystemInfo then
+      UnRegisterSettingChangeClient(Self);
     FSystemInfo := Value;
     if FSystemInfo then
+    begin
+      RegisterSettingChangeClient(Self, SettingChange);
       SetDefaultSystemCaptionInfo;
-    ResetDockControlOption;
+      ResetDockControlOption;
+    end;
   end;
 end;
 
@@ -4522,7 +4517,7 @@ begin
   if FTextAlignment <> Value then
   begin
     FTextAlignment := Value;
-    FSystemInfo := False;
+    SystemInfo := False;
     ResetDockControlOption;
   end;
 end;
@@ -4532,7 +4527,7 @@ begin
   if FTextEllipsis <> Value then
   begin
     FTextEllipsis := Value;
-    FSystemInfo := False;
+    SystemInfo := False;
     ResetDockControlOption;
   end;
 end;
@@ -4557,21 +4552,29 @@ end;
 procedure TJvDockVIDVCConjoinServerOption.SetActiveFont(const Value: TFont);
 begin
   FActiveFont.Assign(Value);
-  FSystemInfo := False;
+  SystemInfo := False;
   ResetDockControlOption;
 end;
 
 procedure TJvDockVIDVCConjoinServerOption.SetInactiveFont(const Value: TFont);
 begin
   FInactiveFont.Assign(Value);
-  FSystemInfo := False;
+  SystemInfo := False;
   ResetDockControlOption;
+end;
+
+procedure TJvDockVIDVCConjoinServerOption.SettingChange(Sender: TObject);
+begin
+  { ?? }
+  //DockStyle.ParentForm.Caption := '';
+  if SystemInfo then
+    SetDefaultSystemCaptionInfo;
 end;
 
 procedure TJvDockVIDVCConjoinServerOption.ResetDockControlOption;
 begin
   inherited ResetDockControlOption;
-  FSystemInfo := FSystemInfo and (GrabbersSize = VIDDefaultDockGrabbersSize) and
+  SystemInfo := SystemInfo and (GrabbersSize = VIDDefaultDockGrabbersSize) and
     (SplitterWidth = VIDDefaultDockSplitterWidth);
   TJvDockVIDVCStyle(DockStyle).DoSystemInfoChange(FSystemInfo);
 end;

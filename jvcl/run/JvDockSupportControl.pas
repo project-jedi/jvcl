@@ -40,7 +40,7 @@ uses
   {$IFDEF USEJVCL}
   JvComponent, JvAppStorage,
   {$ENDIF USEJVCL}
-  JvDockHashTable, JvDockTree;
+  JvDockTree;
 
 type
   TJvDockDragDockObject = class(TObject)
@@ -110,7 +110,7 @@ type
     property CtrlDown: Boolean read FCtrlDown write FCtrlDown;
     property TargetControl: TWinControl read GetTargetControl write SetTargetControl;
 
-    {DockClient: Opaque reference to TJvDockClient. Nil if none.}    
+    {DockClient: Opaque reference to TJvDockClient. Nil if none.}
     // property DockClient:TObject read FDockClient write FDockClient;
   end;
 
@@ -404,11 +404,6 @@ type
 
   TJvDockManager = class(TObject)
   private
-    FDockServersList: TList;
-    FDockClientsList: TList;
-    FDockServersHash: TJvDockControlHashTable;
-    FDockClientsHash: TJvDockControlHashTable;
-    FDockableFormList: TList;
     FLoadCount: Integer;
     FSaveCount: Integer;
     FDragObject: TJvDockDragDockObject;
@@ -430,13 +425,6 @@ type
     procedure CalcDockSizes(Control: TControl);
     constructor Create; virtual;
     destructor Destroy; override;
-    procedure AddDockServerToDockManager(AControl: TControl);
-    procedure AddDockClientToDockManager(AControl: TControl);
-    procedure RemoveDockServerFromDockManager(AControl: TControl);
-    procedure RemoveDockClientFromDockManager(AControl: TControl);
-    function FindDockServerForm(const AName: string): TControl;
-    function FindDockClientForm(const AName: string): TControl;
-    function FindDockControlForm(const AName: string): TControl;
     function IsDockLoading: Boolean;
     function IsSaving: Boolean;
     procedure ShowDockForm(DockWindow: TWinControl);
@@ -475,11 +463,6 @@ type
     function GetDockSiteAtPos(MousePos: TPoint; Client: TControl): TWinControl; virtual;
     procedure DoGetDockEdge(Target: TControl; MousePos: TPoint; var DropAlign: TAlign); virtual;
     procedure RegisterDockSite(Site: TWinControl; DoRegister: Boolean); virtual;
-    property DockServersList: TList read FDockServersList;
-    property DockClientsList: TList read FDockClientsList;
-    property DockServersHash: TJvDockControlHashTable read FDockServersHash;
-    property DockClientsHash: TJvDockControlHashTable read FDockClientsHash;
-    property DockableFormList: TList read FDockableFormList;
     property DragObject: TJvDockDragDockObject read FDragObject write FDragObject;
   end;
 
@@ -2125,7 +2108,7 @@ begin
     end;
   except
     if JvGlobalDockManager.FDragControl <> nil then
-        DoDragDone(False); //JvGlobalDockManager.DragDone(False);
+      DoDragDone(False); //JvGlobalDockManager.DragDone(False);
     raise;
   end;
 end;
@@ -2167,35 +2150,13 @@ end;
 constructor TJvDockManager.Create;
 begin
   inherited Create;
-  FDockServersList := TList.Create;
-  FDockClientsList := TList.Create;
-  FDockServersHash := TJvDockControlHashTable.Create(10, False);
-  FDockClientsHash := TJvDockControlHashTable.Create(30, False);
-  FDockableFormList := TList.Create;
   FDockSiteList := TList.Create;
 end;
 
 destructor TJvDockManager.Destroy;
 begin
-  FDockableFormList.Free;
-  FDockServersList.Free;
-  FDockClientsList.Free;
-  FDockServersHash.Free;
-  FDockClientsHash.Free;
   FDockSiteList.Free;
   inherited Destroy;
-end;
-
-procedure TJvDockManager.AddDockClientToDockManager(AControl: TControl);
-begin
-  FDockClientsList.Add(AControl);
-  FDockClientsHash.Insert(AControl.Name, AControl);
-end;
-
-procedure TJvDockManager.AddDockServerToDockManager(AControl: TControl);
-begin
-  FDockServersList.Add(AControl);
-  FDockServersHash.Insert(AControl.Name, AControl);
 end;
 
 procedure TJvDockManager.BeginDrag(Control: TControl; Immediate: Boolean; Threshold: Integer);
@@ -2225,19 +2186,10 @@ begin
 end;
 
 procedure TJvDockManager.BeginLoad;
-var
-  I: Integer;
 begin
   Inc(FLoadCount);
   if FLoadCount = 1 then
   begin
-    FDockServersHash.MakeEmpty;
-    for I := 0 to FDockServersList.Count - 1 do
-      FDockServersHash.Insert(TControl(FDockServersList[I]).Name, FDockServersList[I]);
-
-    FDockClientsHash.MakeEmpty;
-    for I := 0 to FDockClientsList.Count - 1 do
-      FDockClientsHash.Insert(TControl(FDockClientsList[I]).Name, FDockClientsList[I]);
   end;
 end;
 
@@ -2438,7 +2390,7 @@ begin
         TargetPos := DragObject.DragPos;
 
       {Check before we undock, then check if the drop is going to be accepted }
-      
+
       Accepted := {local function:} CheckUndock and {DragDone parameter:} Drop;
 
       if FActiveDrag = dopDock then
@@ -2591,7 +2543,7 @@ end;
 
   There is a lot of boilerplate code here that isn't used, such
   as the ability to draw a drag image (not useful when dragging forms).
-    
+
 }
 procedure TJvDockManager.DragTo(const Pos: TPoint);
 var
@@ -2677,8 +2629,6 @@ begin
   if FLoadCount <= 0 then
   begin
     FLoadCount := 0;
-    FDockServersHash.MakeEmpty;
-    FDockClientsHash.MakeEmpty;
   end;
 end;
 
@@ -2687,39 +2637,6 @@ begin
   Dec(FSaveCount);
   if FSaveCount <= 0 then
     FSaveCount := 0;
-end;
-
-function TJvDockManager.FindDockClientForm(const AName: string): TControl;
-var
-  I: Integer;
-begin
-  Result := nil;
-  for I := 0 to FDockServersList.Count - 1 do
-    if TControl(FDockServersList[I]).Name = AName then
-    begin
-      Result := TControl(FDockServersList[I]);
-      Break;
-    end;
-end;
-
-function TJvDockManager.FindDockControlForm(const AName: string): TControl;
-begin
-  Result := FindDockServerForm(AName);
-  if Result = nil then
-    FindDockClientForm(AName);
-end;
-
-function TJvDockManager.FindDockServerForm(const AName: string): TControl;
-var
-  I: Integer;
-begin
-  Result := nil;
-  for I := 0 to FDockClientsList.Count - 1 do
-    if TControl(FDockClientsList[I]).Name = AName then
-    begin
-      Result := TControl(FDockClientsList[I]);
-      Break;
-    end;
 end;
 
 function TJvDockManager.GetDockSiteAtPos(MousePos: TPoint;
@@ -2897,18 +2814,6 @@ begin
         FDockSiteList.Delete(Index);
     end;
   end;
-end;
-
-procedure TJvDockManager.RemoveDockClientFromDockManager(AControl: TControl);
-begin
-  FDockClientsList.Remove(AControl);
-  FDockClientsHash.Remove(AControl.Name);
-end;
-
-procedure TJvDockManager.RemoveDockServerFromDockManager(AControl: TControl);
-begin
-  FDockServersList.Remove(AControl);
-  FDockServersHash.Remove(AControl.Name);
 end;
 
 procedure TJvDockManager.ResetCursor;
