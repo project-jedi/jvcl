@@ -441,6 +441,7 @@ type
     function FocusedItem: TJvCustomInspectorItem; virtual;
     function VisibleIndex(const AItem: TJvCustomInspectorItem): Integer; virtual;
     procedure RefreshValues;
+    procedure SaveValues;
     { some easier to use methods added by WAP }
     procedure AddComponent(const AComponent: TComponent; DisplayName: string; Expanded: Boolean);
     procedure Clear;
@@ -3914,6 +3915,16 @@ begin
   if (Selected <> nil) and Selected.Editing then
   begin
     Selected.DoneEdit(True);
+    Selected.InitEdit;
+  end;
+  Invalidate;
+end;
+
+procedure TJvCustomInspector.SaveValues;
+begin
+  if (Selected <> nil) and Selected.Editing then
+  begin
+    Selected.DoneEdit(False);
     Selected.InitEdit;
   end;
   Invalidate;
