@@ -635,7 +635,7 @@ destructor TJvAppEvents.Destroy;
 begin
   if not (csDesigning in ComponentState) then
     Application.UnhookMainWindow(MessageHook);
-  if Self <> nil then
+  if (Self <> nil) and (AppList <> nil) then
     AppList.RemoveEvents(Self);
   FCanvas.Free;
   inherited Destroy;
