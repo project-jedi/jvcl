@@ -31,7 +31,8 @@ unit JvRas32;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Controls, Forms, JvHRas32,
+  Windows, Messages, SysUtils, Classes, Controls, Forms,
+  Ras32,
   JvComponent, JvTypes;
 
 type

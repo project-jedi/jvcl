@@ -40,6 +40,9 @@ type
     FCaption: TJvTextShape;
     FSelected: Boolean;
     FWasCovered: Boolean;
+    FMultiSelect: Boolean;
+    FRightClickSelect: Boolean;
+    FAlignment: TAlignment;
   protected
     procedure SetCaption(Value: TJvTextShape); virtual;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;

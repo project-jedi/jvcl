@@ -31,7 +31,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Controls,
-  JvHWinamp, JvTypes, JvComponent;
+  Winamp,
+  JvTypes, JvComponent;
 
 type
   TWStatus = (wsNotAvailable, wsStopped, wsPlaying, wsPaused);

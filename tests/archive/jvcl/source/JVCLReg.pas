@@ -125,7 +125,7 @@ uses
   JvCopyError, JvDeleteError, JvRenameError, JvPageSetupTitled, JvPageSetup,
 
   // WinDialogs
-  JvBrowseFolder, JvObjPickerComp, JvConnectNetwork, JvDisconnectNetwork,
+  JvBrowseFolder, JvObjPickerComp, JvConnectNetwork,
   JvAddPrinter, JvWinDialogs,
 
   // Win32
