@@ -10,13 +10,14 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: WINDOWSONLY.INC, released on 2002-07-04.
 
-Last Modified: 2004-05-07
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
+
+{$I jedi.inc}
 
 {$IFDEF COMPILER6_UP}
 {$WARN UNIT_PLATFORM OFF}
@@ -27,6 +28,10 @@ Known Issues:
 {$IFDEF COMPILER6_UP}
 {$MESSAGE FATAL 'This unit is only supported on Windows!'}
 {$ELSE}
+{$IFNDEF BCB5}
+{$IFNDEF DELPHI5}
 This unit is only supported on Windows!
+{$ENDIF DELPHI5}
+{$ENDIF BCB5}
 {$ENDIF COMPILER6_UP}
 {$ENDIF MSWINDOWS}
