@@ -438,6 +438,7 @@ begin
       Log('OnTerminate Exception: "' + E.Message+'"'); // do not localize
   end;
   {$IFDEF COMPILER5}
+  FIntThread.OnTerminate := nil;
   Synchronize(SyncOnIntThreadTerminate);
   {$ENDIF COMPILER5}
 end;
