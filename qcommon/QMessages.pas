@@ -80,7 +80,7 @@ const
   WM_KILLFOCUS        = $0008;
   WM_GETTEXTLENGTH    = $000E;
   WM_ERASEBKGND       = $0014;  { 20 }
-//  WM_NCPAINT        = $0085;  { 133 }
+  WM_NCPAINT          = $0085;  { 133 }
   WM_GETDLGCODE       = $0087;
 
   EM_GETRECT          = $00B2;  { 178 }  // TODO
@@ -355,8 +355,24 @@ type
       pt: TPoint
     );
   end;
+  
+procedure BroadCastMsg(AControl: TWidgetControl; var Mesg);
 
 implementation
+
+procedure BroadCastMsg(AControl: TWidgetControl; var Mesg);
+var
+  I: integer;
+begin
+  with AControl do
+    for I := 0 to ControlCount - 1 do
+    begin
+      Controls[I].Dispatch(Mesg);
+      if TMessage(Mesg).Result <> 0 then
+        Exit;
+    end;
+end;
+
 
 end.
 

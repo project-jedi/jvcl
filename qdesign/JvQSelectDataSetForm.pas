@@ -27,9 +27,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQSelectDataSetForm;
+
+{$I jvcl.inc}
 
 interface
 
@@ -57,7 +57,7 @@ type
 
 function SelectDataSet(ADesigner: IJvFormDesigner; const ACaption: string; ExcludeDataSet: TDataSet): TDataSet;
 
-{$ENDIF DelphiPersonalEdition}
+{$ENDIF !DelphiPersonalEdition}
 
 implementation
 
@@ -65,34 +65,35 @@ implementation
 
 uses
   TypInfo,
-  {DsnDbCst,}
-  {DSDesign,}
+  DsnDbCst, DSDesign,
   JvQJVCLUtils, JvQConsts;
 
 
+
 {$R *.xfm}
+
 
 function SelectDataSet(ADesigner: IJvFormDesigner; const ACaption: string; ExcludeDataSet: TDataSet): TDataSet;
 begin
   Result := nil;
   with TJvSelectDataSetForm.Create(Application) do
-  try
-    if ACaption <> '' then
-      Caption := ACaption;
-    FDesigner := ADesigner;
-    FillDataSetList(ExcludeDataSet);
-    if ShowModal = mrOk then
-      if DataSetList.ItemIndex >= 0 then
-      begin
-        with DataSetList do 
-          Result := FDesigner.GetComponent(Items[ItemIndex]) as TDataSet; 
-      end;
-  finally
-    Free;
-  end;
+    try
+      if ACaption <> '' then
+        Caption := ACaption;
+      FDesigner := ADesigner;
+      FillDataSetList(ExcludeDataSet);
+      if ShowModal = mrOk then
+        if DataSetList.ItemIndex >= 0 then
+        begin
+          with DataSetList do 
+            Result := FDesigner.GetComponent(Items[ItemIndex]) as TDataSet; 
+        end;
+    finally
+      Free;
+    end;
 end;
 
-//=== TJvSelectDataSetForm ===================================================
+//=== { TJvSelectDataSetForm } ===============================================
 
 procedure TJvSelectDataSetForm.AddDataSet(const S: string);
 begin
@@ -135,7 +136,7 @@ begin
     ModalResult := mrOk;
 end;
 
-{$ENDIF DelphiPersonalEdition}
+{$ENDIF !DelphiPersonalEdition}
 
 end.
 
