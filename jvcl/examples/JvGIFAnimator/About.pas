@@ -140,11 +140,11 @@ end;
 
 constructor TAboutDialog.Create(AOwner: TComponent);
 begin
-{$IFDEF CBUILDER}
+{$IFDEF BCB}
   inherited CreateNew(AOwner, 0);
 {$ELSE}
   inherited CreateNew(AOwner);
-{$ENDIF}
+{$ENDIF BCB}
   BorderStyle := bsDialog;
   Position := poScreenCenter;
   ClientHeight := 143;

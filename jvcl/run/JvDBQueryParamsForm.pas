@@ -136,11 +136,11 @@ begin
     end;
     if csDesigning in DataSet.ComponentState then
       Caption := Format(SParamEditor,
-        {$IFDEF CBUILDER}
+        {$IFDEF BCB}
         [DataSet.Owner.Name, '->', DataSet.Name]);
         {$ELSE}
         [DataSet.Owner.Name, '.', DataSet.Name]);
-        {$ENDIF}
+        {$ENDIF BCB}
     InitList := List;
     Edit;
     Result := PressedOk;

@@ -38,10 +38,10 @@ unit JvTypes;
 interface
 
 uses
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
   Windows, Messages, Controls, Forms, Graphics,
 {$ENDIF}
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
   Qt, QTypes, Types, QControls, QForms, QGraphics,
 {$ENDIF}
   SysUtils, Classes;
@@ -91,7 +91,7 @@ type
   TJvHTTPProgressEvent = procedure(Sender: TObject; UserData, Position: Integer; TotalSize: Integer; Url: string; var Continue: Boolean) of object;
   TJvFTPProgressEvent = procedure(Sender: TObject; Position: Integer; Url: string) of object;
 
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
 //  HWnd = QWidgetH;
   HCursor = QCursorH;
   TControlClass = class of TControl;
@@ -125,7 +125,7 @@ type
     rgbtRed: Byte;
   end;
 //  TRGBArray = array[0..MaxPixelCount - 1] of TRGBQuad;
-{$ENDIF COMPLIB_CLX}
+{$ENDIF VisualCLX}
 
   PRGBArray = ^TRGBArray; // JvThumbImage, JvImageSplit, JvRegion
   TRGBArray = array [0..MaxPixelCount - 1] of TRGBTriple;
@@ -229,7 +229,7 @@ type
 
 //  TCoordChanged = procedure(Sender: TObject; Coord: string) of object;
   TJvNotifyParamsEvent = procedure(Sender: TObject; Params: Pointer) of object;
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
   TJvFileInfoRec = record
     Attributes: DWORD;
     DisplayName: string;
@@ -239,7 +239,7 @@ type
     TypeName: string;
     SysIconIndex: Integer;
   end;
-{$ENDIF COMPLIB_VCL}  
+{$ENDIF VCL}  
   TJvAnimation = (anLeftRight, anRightLeft, anRightAndLeft, anLeftVumeter, anRightVumeter);
   TJvAnimations = set of TJvAnimation;
   TJvDropEvent = procedure(Sender: TObject; Pos: TPoint; Value: TStringList) of object;
@@ -366,7 +366,7 @@ const
 implementation
 
 uses
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
   QWinCursors,
 {$ENDIF}
   JvConsts; // includes cursor resources

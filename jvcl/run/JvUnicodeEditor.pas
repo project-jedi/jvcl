@@ -50,7 +50,7 @@ const
   {max symbols per row for scrollbar}
   GutterRightMargin = 2;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
   WM_EDITCOMMAND = WM_USER + $101;
 {$ELSE}
   WM_EDITCOMMAND = CM_BASE + $101;
@@ -434,7 +434,7 @@ type
     procedure WMPaste(var Msg: TMessage); message WM_PASTE;
     procedure WMUndo(var Msg: TMessage); message WM_UNDO;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
     // (p3) added to be compatible with JvFixedEditPopup
     procedure WMClear(var Msg: TMessage); message WM_CLEAR;
     procedure EMSetReadOnly(var Msg: TMessage); message EM_SETREADONLY;
@@ -493,7 +493,7 @@ type
     procedure CreateWnd; override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure Loaded; override;
-    {$IFDEF COMPLIB_CLX}
+    {$IFDEF VisualCLX}
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
       const MousePos: TPoint): Boolean; override;
@@ -522,8 +522,8 @@ type
     procedure DoCut; dynamic;
     procedure DoEnter; override;
     procedure DoExit; override;
-    procedure CursorChanged; {$IFDEF COMPLIB_CLX} override; {$ELSE} dynamic; {$ENDIF}
-    procedure FontChanged; {$IFDEF COMPLIB_CLX} override; {$ELSE} dynamic; {$ENDIF}
+    procedure CursorChanged; {$IFDEF VisualCLX} override; {$ELSE} dynamic; {$ENDIF}
+    procedure FontChanged; {$IFDEF VisualCLX} override; {$ELSE} dynamic; {$ENDIF}
 
     procedure DrawRightMargin;
     procedure PaintSelection;
@@ -1892,7 +1892,7 @@ procedure TJvCustomWideEditor.CursorChanged;
 var
   P: TPoint;
 begin
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
   inherited;
 {$ENDIF}
   GetCursorPos(P);
@@ -1903,7 +1903,7 @@ end;
 
 procedure TJvCustomWideEditor.FontChanged;
 begin
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
   inherited;
 {$ENDIF}
   if HandleAllocated then
@@ -2271,7 +2271,7 @@ begin
   end;
 end;
 
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
 function TJvCustomWideEditor.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
 begin
 {  case QEvent_type(Event) of
@@ -2315,7 +2315,7 @@ begin
       { it is optimized [translated] }
       OldFTopRow := FTopRow;
       FTopRow := ScrollPos;
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
       if Abs((OldFTopRow - ScrollPos) * FCellRect.Height) < EditorClient.Height
         then
       begin
@@ -2344,7 +2344,7 @@ begin
       { it is not optimized [translated] }
       OldFLeftCol := FLeftCol;
       FLeftCol := ScrollPos;
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
       if Abs((OldFLeftCol - ScrollPos) * FCellRect.Width) < EditorClient.Width then
       begin
         R := EditorClient.ClientRect;
@@ -7013,7 +7013,7 @@ begin
   FLines.Assign(Value); // assign to the WideString list
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 type
   TWinControlAccess = class(TWinControl);
 

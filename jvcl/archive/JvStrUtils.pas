@@ -182,10 +182,10 @@ function RomanToInt(const S: string): Longint;
 
 const
   DigitChars = ['0'..'9'];
-  {$IFNDEF CBUILDER}
+  {$IFNDEF BCB}
   Brackets = ['(', ')', '[', ']', '{', '}'];
   StdWordDelims = [#0..' ', ',', '.', ';', '/', '\', ':', '''', '"', '`'] + Brackets;
-  {$ENDIF}
+  {$ENDIF BCB}
 
 implementation
 

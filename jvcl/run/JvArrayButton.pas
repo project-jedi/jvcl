@@ -31,12 +31,12 @@ unit JvArrayButton;
 interface
 
 uses
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, ExtCtrls, Buttons,
-  {$ENDIF COMPLIB_VCL}
-  {$IFDEF COMPLIB_CLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   Types, QGraphics, QControls, QForms, QExtCtrls, QButtons,
-  {$ENDIF COMPLIB_CLX}
+  {$ENDIF VisualCLX}
   SysUtils, Classes,
   JvClxUtils;
 
@@ -67,24 +67,24 @@ type
     function CellRect(ACol, ARow: Integer): TRect;
     procedure SetHints(const Value: TStringList);
   protected
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
-    {$ENDIF COMPLIB_VCL}
-    {$IFDEF COMPLIB_CLX}
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
     procedure FontChanged; override;
-    {$ENDIF COMPLIB_CLX}
+    {$ENDIF VisualCLX}
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     {$IFDEF JVCLThemesEnabled}
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
-    {$ENDIF COMPLIB_VCL}
-    {$IFDEF COMPLIB_CLX}
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
-    {$ENDIF COMPLIB_CLX}
+    {$ENDIF VisualCLX}
     {$ENDIF JVCLThemesEnabled}
   public
     constructor Create(AOwner: TComponent); override;
@@ -93,7 +93,7 @@ type
     {Destroys an instance of TJvArrayButton.}
     procedure Paint; override;
     {Renders the image of the button.}
-    procedure DoShowHint(var HintStr: {$IFDEF COMPLIB_VCL} string {$ELSE} WideString {$ENDIF};
+    procedure DoShowHint(var HintStr: {$IFDEF VCL} string {$ELSE} WideString {$ENDIF};
       var CanShow: Boolean; var HintInfo: THintInfo);
 
     {this procedure can be used in response to a Application.OnShowHint event
@@ -222,35 +222,35 @@ begin
   end;
 end;
 
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
 procedure TJvArrayButton.MouseEnter(AControl: TControl);
 begin
   inherited MouseEnter(AControl);
   Paint;
 end;
-{$ENDIF COMPLIB_CLX}
-{$IFDEF COMPLIB_VCL}
+{$ENDIF VisualCLX}
+{$IFDEF VCL}
 procedure TJvArrayButton.CMMouseEnter(var Message: TMessage);
 begin
   inherited;
   Paint;
 end;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
 procedure TJvArrayButton.MouseLeave(AControl: TControl);
 begin
   inherited MouseLeave(AControl);
   Paint;
 end;
-{$ENDIF COMPLIB_CLX}
-{$IFDEF COMPLIB_VCL}
+{$ENDIF VisualCLX}
+{$IFDEF VCL}
 procedure TJvArrayButton.CMMouseLeave(var Message: TMessage);
 begin
   inherited;
   Paint;
 end;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 {$ENDIF JVCLThemesEnabled}
 
@@ -277,9 +277,9 @@ var
     begin
       R := DrawThemedButtonFace(Self, Canvas, R, 0, bsAutoDetect, False, False, False,
         PtInRect(R, ScreenToClient(Mouse.CursorPos)));
-      {$IFDEF COMPLIB_VCL}
+      {$IFDEF VCL}
       SetBkMode(Canvas.Handle, Windows.TRANSPARENT);
-      {$ENDIF COMPLIB_VCL}
+      {$ENDIF VCL}
     end
     else
     {$ENDIF JVCLThemesEnabled}
@@ -298,9 +298,9 @@ var
     begin
       R := DrawThemedButtonFace(Self, Canvas, R, 0, bsAutoDetect, False, True, False,
         PtInRect(R, ScreenToClient(Mouse.CursorPos)));
-      {$IFDEF COMPLIB_VCL}
+      {$IFDEF VCL}
       SetBkMode(Canvas.Handle, Windows.TRANSPARENT);
-      {$ENDIF COMPLIB_VCL}
+      {$ENDIF VCL}
     end
     else
     {$ENDIF JVCLThemesEnabled}
@@ -392,12 +392,12 @@ begin
   Invalidate;
 end;
 
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
 procedure TJvArrayButton.FontChanged;
-{$ENDIF COMPLIB_CLX}
-{$IFDEF COMPLIB_VCL}
+{$ENDIF VisualCLX}
+{$IFDEF VCL}
 procedure TJvArrayButton.CMFontChanged(var Message: TMessage);
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 begin
   Canvas.Font.Assign(Font);
   Invalidate;
@@ -423,7 +423,7 @@ begin
   Result := Rect(X0, Y0, X0 + dw, Y0 + dh);
 end;
 
-procedure TJvArrayButton.DoShowHint(var HintStr: {$IFDEF COMPLIB_VCL} string {$ELSE} WideString {$ENDIF};
+procedure TJvArrayButton.DoShowHint(var HintStr: {$IFDEF VCL} string {$ELSE} WideString {$ENDIF};
   var CanShow: Boolean; var HintInfo: THintInfo);
 var
   ACol, ARow, X, Y: Integer;

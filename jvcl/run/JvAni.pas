@@ -31,10 +31,10 @@ unit JvAni;
 interface
 
 uses
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   Windows, Graphics, Forms, ExtCtrls,
-  {$ENDIF COMPLIB_VCL}
-  {$IFDEF COMPLIB_CLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   QGraphics, QForms, QExtCtrls, Types,
   {$ENDIF QForms}
   SysUtils, Classes, Consts,
@@ -74,10 +74,10 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure LoadFromStream(Stream: TStream); override;
     procedure SaveToStream(Stream: TStream); override;
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     procedure LoadFromClipboardFormat(AFormat: Word; AData: THandle; APalette: HPALETTE); override;
     procedure SaveToClipboardFormat(var Format: Word; var Data: THandle; var APalette: HPALETTE); override;
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     procedure Draw(ACanvas: TCanvas; const Rect: TRect); override;
 
     property Author: string read FAuthor;
@@ -136,14 +136,14 @@ begin
   FRate.Clear;
   FSequence.Clear;
   FImage.Size := 0;
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   if FCurrentIcon.Handle <> 0 then
     DestroyIcon(FCurrentIcon.Handle);
   FCurrentIcon.Handle := 0;
   {$ELSE}
   if not FCurrentIcon.Empty then
     FCurrentIcon.Assign(nil);
-  {$ENDIF COMPLIB_VCL}
+  {$ENDIF VCL}
   FIndex := -1;
 
   if not (csDestroying in Application.ComponentState) then
@@ -195,7 +195,7 @@ begin
   Result := FHeader.dwCY;
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 
 procedure TJvAni.LoadFromClipboardFormat(AFormat: Word; AData: THandle; APalette: HPALETTE);
 begin
@@ -207,7 +207,7 @@ begin
   raise EInvalidGraphicOperation.Create(sIconToClipboard);
 end;
 
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 procedure TJvAni.LoadFromStream(Stream: TStream);
 const
@@ -355,13 +355,13 @@ end;
 
 procedure TJvAni.Draw(ACanvas: TCanvas; const Rect: TRect);
 begin
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   if FCurrentIcon.Handle <> 0 then
     DrawIcon(ACanvas.Handle, Rect.Left, Rect.Top, FCurrentIcon.Handle);
   {$ELSE}
   if not FCurrentIcon.Empty then
     Canvas.Draw(Rect.Left, Rect.Top, FCurrentIcon);
-  {$ENDIF COMPLIB_VCL}
+  {$ENDIF VCL}
 end;
 
 procedure TJvAni.SetIndex(const Value: Integer);
@@ -382,11 +382,11 @@ type
     dwImageOffset: LongInt;
   end;
 var
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   P: Integer;
   {$ELSE}
   MStream: TMemoryStream;
-  {$ENDIF COMPLIB_VCL}
+  {$ENDIF VCL}
   Len: Integer;
   IconHeader: TIconHeader;
 begin
@@ -394,32 +394,32 @@ begin
     if FIndex <> Value then
     begin
       FIndex := Value;
-      {$IFDEF COMPLIB_CLX}
+      {$IFDEF VisualCLX}
       if not FCurrentIcon.Empty then
         FCurrentIcon.Assign(nil);
-      {$ENDIF COMPLIB_CLX}
-      {$IFDEF COMPLIB_VCL}
+      {$ENDIF VisualCLX}
+      {$IFDEF VCL}
       if FCurrentIcon.Handle <> 0 then
         DestroyIcon(FCurrentIcon.Handle);
       P := Integer(FImage.Memory);
-      {$ENDIF COMPLIB_VCL}
+      {$ENDIF VCL}
       FImage.Position := Integer(FImages[FIndex]);
       FImage.Read(Len, SizeOf(Len));
       FImage.Read(IconHeader, SizeOf(IconHeader));
       FImage.Position := FImage.Position + (SizeOf(TIconDirEntry) * IconHeader.NumIcons);
       Dec(Len, SizeOf(IconHeader) + (SizeOf(TIconDirEntry) * IconHeader.NumIcons));
-      {$IFDEF COMPLIB_VCL}
+      {$IFDEF VCL}
       Inc(P, FImage.Position);
       P := CreateIconFromResource(Pointer(p), Len, True, $30000);
       FCurrentIcon.Handle := p;
-      {$ENDIF COMPLIB_VCL}
-      {$IFDEF COMPLIB_CLX}
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
       MStream := TMemoryStream.Create;
       MStream.CopyFrom(FImage, Len);
       MStream.Position := 0; // set start 
       FCurrentIcon.LoadFromStream(MStream);
       MStream.Free;
-      {$ENDIF COMPLIB_CLX}
+      {$ENDIF VisualCLX}
       Changed(Self);
     end;
 end;

@@ -41,10 +41,10 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   Windows, Controls, Graphics, ExtCtrls,
   {$ENDIF}
-  {$IFDEF COMPLIB_CLX}
+  {$IFDEF VisualCLX}
   QControls, QGraphics, QExtCtrls,
   {$ENDIF}
   JvComponent, JvTransLED;
@@ -71,7 +71,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     property DragCursor;
     property DragKind;
     property OnStartDock;

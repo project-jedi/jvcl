@@ -29,10 +29,10 @@ interface
 
 uses
   SysUtils,
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
   Windows, Graphics,
 {$ENDIF}
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
   Qt, Types, QGraphics,
 {$ENDIF}
   Classes, JvClxUtils, JvJCLUtils;
@@ -60,7 +60,7 @@ type
       Rect: PRect; const Text: WideString; lpDx: Pointer): Boolean; overload;
   {$ENDIF}
 
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
    {$IFDEF COMPILER_6UP}
     function TextExtent(const Text: WideString): TSize; overload;
     function TextWidth(const Text: WideString): Integer; overload;
@@ -70,7 +70,7 @@ type
    {$ENDIF}
   {$ENDIF}
 
-  {$IFDEF COMPLIB_CLX}
+  {$IFDEF VisualCLX}
     procedure TextOutVCL(X, Y: Integer; const Text: WideString);
     procedure TextRectVCL(Rect: TRect; X, Y: Integer;
       const Text: WideString; TextFlags: Integer = 0);
@@ -79,7 +79,7 @@ type
 
 implementation
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 function ExtTextOutOptionsToInt(Options: TExtTextOutOptions): Integer;
 begin
   Result := 0;
@@ -168,9 +168,9 @@ begin
 end;
  {$ENDIF COMPILER_6UP}
 
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
 
 function TUnicodeCanvas.TextExtentW(const Text: WideString): TSize;
 begin
@@ -220,7 +220,7 @@ begin
   TextRect(Rect, X, Y, Text, TextFlags);
 end;
 
-{$ENDIF COMPLIB_CLX}
+{$ENDIF VisualCLX}
 
 function TUnicodeCanvas.ExtTextOut(X, Y: Integer; Options: TExtTextOutOptions; Rect: PRect;
   const Text: String; lpDx: Pointer): Boolean;

@@ -60,7 +60,7 @@ implementation
 {$R *.DFM}
 
 uses Messages, SysUtils {$IFDEF USE_Jv_GIF}, JvGIF {$ENDIF}
-  {$IFDEF COMPILER3_UP} {$IFNDEF CBUILDER}, Jpeg {$ENDIF} {$ENDIF};
+  {$IFDEF COMPILER3_UP} {$IFNDEF BCB}, Jpeg {$ENDIF} {$ENDIF};
 
 function PictureEdit(DataSet: TDataSet; const FieldName: string): Boolean;
 begin

@@ -1211,11 +1211,11 @@ constructor TJvSelectDateDlg.Create(AOwner: TComponent);
 var
   Control: TWinControl;
 begin
-  {$IFDEF CBUILDER}
+  {$IFDEF BCB}
   inherited CreateNew(AOwner, 0);
   {$ELSE}
   inherited CreateNew(AOwner);
-  {$ENDIF}
+  {$ENDIF BCB}
   Caption := SDateDlgTitle;
   BorderStyle := bsToolWindow;
   BorderIcons := [biSystemMenu];

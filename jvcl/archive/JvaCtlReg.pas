@@ -37,21 +37,21 @@ procedure Register;
 implementation
 
 uses
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   Windows,
-  {$ENDIF COMPLIB_VCL}
-  {$IFDEF COMPLIB_VCL}
+  {$ENDIF VCL}
+  {$IFDEF VCL}
   SysUtils, Controls,
   JvRegAutoEditor, JvHtControls, JvDlg,
   JvButtons, JvComponentPanel, JvScrollMax,
   JvEditor, JvHLEditor, JvHLEdPropDlg, JvaScrollText, JvHTHintEditor,
-  {$ENDIF COMPLIB_VCL}
+  {$ENDIF VCL}
   JvIDEZoom, JvHLEditEditor, JvScrollMaxEditor,
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, PropertyCategories,
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   VCLEditors,
-  {$ENDIF COMPLIB_VCL}
+  {$ENDIF VCL}
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
@@ -59,7 +59,7 @@ uses
 
 {$R ..\resources\ractl.dcr}
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 
 {$IFDEF COMPILER5}
 
@@ -78,11 +78,11 @@ end;
 
 {$ENDIF COMPILER5}
 
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 procedure Register;
 begin
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   {JvEditor unit}
   RegisterComponents(srJvCustomPalette, [TJvEditor]);
   {JvHLEditor unit}
@@ -112,12 +112,12 @@ begin
   RegisterComponents(srJvDialogsPalette, [TJvProgressForm]);
   {JvComponentPanel unit}
   RegisterComponents(srJvCustomPalette, [TJvComponentPanel]);
-  {$ENDIF COMPLIB_VCL}
+  {$ENDIF VCL}
 
-  {$IFDEF COMPLIB_CLX}
+  {$IFDEF VisualCLX}
   {JvRegAuto unit}
   RegisterComponents(RALibTabName, [TJvRegAuto]);
-  {$ENDIF COMPLIB_CLX}
+  {$ENDIF VisualCLX}
 
   {Zoom unit}
   RegisterZoom;
@@ -140,7 +140,7 @@ begin
   {$ENDIF}
 
   {$IFDEF COMPILER6_UP}
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   RegisterPropertiesInCategory('Editor', TJvCustomEditor,
     ['InsertMode', 'DoubleClickLine', 'Completion', 'SmartTab',
      'BackSpaceUnindents', 'AutoIndent', 'KeepTrailingBlanks', 'CursorBeyondEOF',

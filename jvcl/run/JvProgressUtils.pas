@@ -30,15 +30,15 @@ unit JvProgressUtils;
 interface
 
 uses
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   Controls, ComCtrls,
   {$ENDIF}
-  {$IFDEF COMPLIB_CLX}
+  {$IFDEF VisualCLX}
   QControls, QComCtrls,
   {$ENDIF}
   SysUtils, Classes;
 
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
 type
   TControlClass = class of TControl;
 {$ENDIF}

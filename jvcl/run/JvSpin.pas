@@ -145,11 +145,11 @@ type
     property OnStartDock;
   end;
 
-  {$IFDEF CBUILDER}
+  {$IFDEF BCB}
   TValueType = (vtInt, vtFloat, vtHex);
   {$ELSE}
   TValueType = (vtInteger, vtFloat, vtHex);
-  {$ENDIF}
+  {$ENDIF BCB}
 
   TSpinButtonKind = (bkStandard, bkDiagonal, bkClassic);
 
@@ -288,7 +288,7 @@ type
     //default False;
     //Polaris
     property ValueType: TValueType read FValueType write SetValueType
-      default {$IFDEF CBUILDER} vtInt {$ELSE} vtInteger {$ENDIF};
+      default {$IFDEF BCB} vtInt {$ELSE} vtInteger {$ENDIF};
     property Value: Extended read GetValue write SetValue stored IsValueStored;
     property Thousands: Boolean read FThousands write SetThousands default False;
     property OnBottomClick: TNotifyEvent read FOnBottomClick write FOnBottomClick;
@@ -2074,7 +2074,7 @@ begin
   begin
     FValueType := NewType;
     Value := GetValue;
-    if FValueType in [{$IFDEF CBUILDER}vtInt{$ELSE}vtInteger{$ENDIF}, vtHex] then
+    if FValueType in [{$IFDEF BCB} vtInt {$ELSE} vtInteger {$ENDIF}, vtHex] then
     begin
       FIncrement := Round(FIncrement);
       if FIncrement = 0 then

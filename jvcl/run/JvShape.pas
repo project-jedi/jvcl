@@ -32,12 +32,12 @@ interface
 
 uses
   SysUtils, Classes,
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
   Messages, Graphics, Controls, ExtCtrls, Forms,
-{$ENDIF COMPLIB_VCL}
-{$IFDEF COMPLIB_CLX}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
   QGraphics, QControls, QExtCtrls, QForms,
-{$ENDIF COMPLIB_CLX}
+{$ENDIF VisualCLX}
   JVCLVer;
 
 type
@@ -47,20 +47,20 @@ type
     FSaved: TColor;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     FOnCtl3DChanged: TNotifyEvent;
     {$ENDIF}
     FOnParentColorChanged: TNotifyEvent;
     FOver: Boolean;
     FAboutJVCL: TJVCLAboutInfo;
   protected
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     {$ENDIF}
-    {$IFDEF COMPLIB_CLX}
+    {$IFDEF VisualCLX}
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
     procedure ParentColorChanged; override;
@@ -74,7 +74,7 @@ type
     property HintColor: TColor read FColor write FColor default clInfoBk;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnEndDock;
     property OnStartDock;
@@ -103,7 +103,7 @@ type
 implementation
 
 {**************************************************}
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 procedure TJvShape.CMCtl3DChanged(var Msg: TMessage);
 begin
   inherited;
@@ -113,7 +113,7 @@ end;
 {$ENDIF}
 
 {**************************************************}
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
 procedure TJvShape.ParentColorChanged;
 {$ELSE}
 procedure TJvShape.CMParentColorChanged(var Msg: TMessage);
@@ -134,7 +134,7 @@ begin
 end;
 
 {**************************************************}
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
 procedure TJvShape.MouseEnter(AControl: TControl);
 {$ELSE}
 procedure TJvShape.CMMouseEnter(var Msg: TMessage);
@@ -152,7 +152,7 @@ end;
 
 {**************************************************}
 
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
 procedure TJvShape.MouseLeave(AControl: TControl);
 {$ELSE}
 procedure TJvShape.CMMouseLeave(var Msg: TMessage);

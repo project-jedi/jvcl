@@ -35,28 +35,28 @@ unit JvAppInfo;
 interface
 
 uses
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   Windows, Registry,
-  {$ENDIF COMPLIB_VCL}
+  {$ENDIF VCL}
   Classes, SysUtils;
 
 type
   TJvAppInfo = class(TPersistent)
   private
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     FUseRegistry: Boolean;
     FRegKey: DWORD;
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     FSavePath: string;
     FSection: string;
     FUnAssigned: string;
     procedure CheckPath;
     function LoadIni: Boolean;
     function SaveIni: Boolean;
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     function LoadRegistry: Boolean;
     function SaveRegistry: Boolean;
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
   public
     constructor Create;
     procedure Assign(Source: TPersistent); override;
@@ -64,10 +64,10 @@ type
     function Load: Boolean; virtual;
     property SavePath: string read FSavePath write FSavePath;
     //  If set to True, SavePath is interpreted as a registry path
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     property UseRegistry: Boolean read FUseRegistry write FUseRegistry;
     property RegRootKey: DWORD read FRegKey write FRegKey;
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     property Section: string read FSection write FSection;
     property UnAssignedValue: string read FUnAssigned write FUnAssigned;
   end;
@@ -149,7 +149,7 @@ begin
   Result := True;
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 
 function TJvAppInfo.LoadRegistry: Boolean;
 var
@@ -223,27 +223,27 @@ begin
   Result := True;
 end;
 
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 function TJvAppInfo.Load: Boolean;
 begin
   CheckPath;
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   if UseRegistry then
     Result := LoadRegistry
   else
-  {$ENDIF COMPLIB_VCL}
+  {$ENDIF VCL}
     Result := LoadIni;
 end;
 
 function TJvAppInfo.Save: Boolean;
 begin
   CheckPath;
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   if UseRegistry then
     Result := SaveRegistry
   else
-  {$ENDIF COMPLIB_VCL}
+  {$ENDIF VCL}
     Result := SaveIni;
 end;
 
@@ -256,9 +256,9 @@ end;
 constructor TJvAppInfo.Create;
 begin
   inherited Create;
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   FRegKey := HKEY_CURRENT_USER;
-  {$ENDIF COMPLIB_VCL}
+  {$ENDIF VCL}
   FUnAssigned := '';
 end;
 
@@ -267,10 +267,10 @@ begin
   if Source is TJvAppInfo then
   begin
     SavePath := TJvAppInfo(Source).SavePath;
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     UseRegistry := TJvAppInfo(Source).UseRegistry;
     RegRootKey := TJvAppInfo(Source).RegRootKey;
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     Section := TJvAppInfo(Source).Section;
     UnAssignedValue := TJvAppInfo(Source).UnAssignedValue;
     Exit;

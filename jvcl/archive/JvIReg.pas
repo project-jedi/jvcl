@@ -48,9 +48,9 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   JvInterpreterFm,
-  {$ENDIF COMPLIB_VCL}
+  {$ENDIF VCL}
   JvInterpreter, JvxDConst;
 
 {$R ..\resources\rai.dcr}
@@ -177,9 +177,9 @@ procedure Register;
 begin
   {JvInterpreter unit}
   RegisterComponents(srJvInterpreterPalette, [TJvInterpreterProgram]);
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   RegisterComponents(srJvInterpreterPalette, [TJvInterpreterFm]);
-  {$ENDIF COMPLIB_VCL}
+  {$ENDIF VCL}
   {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
   {$IFDEF JvInterpreter_INTEGERPROPERTY}
   RegisterPropertyEditor(TypeInfo(Integer), TObject, '', TJvIntegerProperty);

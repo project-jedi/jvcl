@@ -59,7 +59,7 @@ const
   cItemField = 'ItemField';
   cStartMasterValue = 'StartMasterValue';
   {$IFDEF COMPILER6_UP}
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   cDatabase = 'Database';
   cUseFilter = 'UseFilter';
   {$ENDIF}
@@ -93,7 +93,7 @@ begin
   RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeView, cIconField, TJvListFieldProperty);
 
   {$IFDEF COMPILER6_UP}
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   RegisterPropertiesInCategory(cDatabase, TJvDBTreeView,
     [cItemField, cMasterField, cDetailField, cIconField, cStartMasterValue, cUseFilter]);
   RegisterPropertiesInCategory(cDatabase, TJvDBLookupTreeView,

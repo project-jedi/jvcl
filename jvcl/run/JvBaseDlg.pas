@@ -32,12 +32,12 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Dialogs,
-  {$ENDIF COMPLIB_VCL}
-  {$IFDEF COMPLIB_CLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QDialogs,
-  {$ENDIF COMPLIB_CLX}
+  {$ENDIF VisualCLX}
   JVCLVer, JvComponent;
 
 type

@@ -44,20 +44,20 @@ const
   JvEditorCompletionChars = #8+'0123456789QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm';
 
   {IParser}
-  {$IFDEF Delphi}
+  {$IFDEF DELPHI}
   StIdSymbols      = ['_', '0'..'9', 'A'..'Z', 'a'..'z'];
   StIdFirstSymbols = ['_', 'A'..'Z', 'a'..'z'];
   StConstSymbols   = ['0'..'9', 'A'..'F', 'a'..'f'];
   StConstSymbols10 = ['0'..'9'];
   StSeparators     = ['(', ')', ',', '.', ';'];
-  {$ENDIF Delphi}
-  {$IFDEF CBUILDER}
+  {$ENDIF DELPHI}
+  {$IFDEF LINUX}
   StIdSymbols      = '_0123456789QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm';
   StIdFirstSymbols = '_QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm';
   StConstSymbols   = '0123456789ABCDEFabcdef';
   StConstSymbols10 = '0123456789';
   StSeparators     = '(),.;';
-  {$ENDIF CBUILDER}
+  {$ENDIF BCB}
 
   {$IFDEF RAINTER}
   {RAInter}

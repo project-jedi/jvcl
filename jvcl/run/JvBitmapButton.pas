@@ -29,10 +29,10 @@ unit JvBitmapButton;
 interface
 
 uses
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   Windows, Messages,  Graphics, Controls, Forms, Dialogs,
   {$ENDIF}
-  {$IFDEF COMPLIB_CLX}
+  {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QDialogs, Types, JvTypes,
   {$ENDIF}
   SysUtils, Classes;
@@ -76,10 +76,10 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure Click; override;
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     procedure CMMouseLeave(var Message: TMessage); message CM_MouseLeave;
     {$ENDIF}
-    {$IFDEF COMPLIB_CLX}
+    {$IFDEF VisualCLX}
     procedure MouseLeave(AControl: TControl); override;
     {$ENDIF}
     procedure Loaded; override;
@@ -318,10 +318,10 @@ begin
   end;
 end;
 
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
 procedure TJvBitmapButton.MouseLeave(AControl: TControl);
 {$ENDIF}
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 procedure TJvBitmapButton.CMMouseLeave(var Message: TMessage);
 {$ENDIF}
 begin

@@ -33,12 +33,12 @@ unit JvAnalogClock;
 interface
 
 uses
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   Windows, Graphics, Controls, ExtCtrls,
-  {$ENDIF COMPLIB_VCL}
-  {$IFDEF COMPLIB_CLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   QGraphics, QControls, QExtCtrls,
-  {$ENDIF COMPLIB_CLX}
+  {$ENDIF VisualCLX}
   SysUtils, Classes,
   JvTypes, JvJCLUtils, JvComponent, JvThemes;
 

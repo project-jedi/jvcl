@@ -32,7 +32,7 @@ interface
 
 uses
   SysUtils, Classes,
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
   Windows, Messages, Graphics, ExtCtrls, Controls, Forms,
 {$ELSE}
   QGraphics, QExtCtrls, QControls, QForms,
@@ -49,7 +49,7 @@ type
     FOver: Boolean;
     FAboutJVCL: TJVCLAboutInfo;
   protected
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
   {$ELSE}
@@ -67,7 +67,7 @@ type
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
     property OnEndDock;
     property OnStartDock;
   {$ENDIF}
@@ -88,7 +88,7 @@ begin
   FOver := False;
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 procedure TJvBevel.CMMouseEnter(var Msg: TMessage);
 begin
 {$ELSE}
@@ -109,7 +109,7 @@ begin
     FOnMouseEnter(Self);
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 procedure TJvBevel.CMMouseLeave(var Msg: TMessage);
 begin
 {$ELSE}

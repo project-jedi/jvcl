@@ -35,10 +35,10 @@ uses
   {$IFDEF INUX}
   Libc,
   {$ENDIF}
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   Graphics,
   {$ENDIF}
-  {$IFDEF COMPLIB_CLX}
+  {$IFDEF VisualCLX}
   Qt, QTypes, Types, QGraphics, QForms,
   {$ENDIF}
   SysUtils, Classes,
@@ -49,7 +49,7 @@ type
   TColorRef = Integer;
 {$ENDIF}
 
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
 
 const
   VK_UP = Key_Up;
@@ -133,7 +133,7 @@ const
   ClipName = 16382 { $4000 };
   CalcRect =  32764 { $8000 } ;
   pf24bit = pf32bit;
-{$ENDIF COMPLIB_CLX}
+{$ENDIF VisualCLX}
 
 const
   DT_ELLIPSIS = DT_END_ELLIPSIS;
@@ -207,7 +207,7 @@ function ClxExtTextOutW(Canvas: TCanvas; X, Y: Integer; Flags: Integer;
 
 implementation
 
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
 
 function GetSysColor(Color: Integer): TColorRef;
 begin
@@ -453,18 +453,18 @@ begin
   end;
 end;
 
-{$ENDIF COMPLIB_CLX}
+{$ENDIF VisualCLX}
 
 type
   TOpenCanvas = class(TCanvas);
 
 function ClxDrawText(Canvas: TCanvas; var Caption: string; var R: TRect;
   Flags: Integer): Integer;
-{$IFNDEF COMPLIB_VCL}
+{$IFNDEF VCL}
 var W: WideString;
 {$ENDIF}
 begin
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
   TOpenCanvas(Canvas).Changing;
   Result := DrawText(Canvas.Handle, PChar(Caption), Length(Caption), R, Flags);
   TOpenCanvas(Canvas).Changed;
@@ -478,18 +478,18 @@ end;
 
 function ClxDrawTextW(Canvas: TCanvas; var Caption: WideString; var R: TRect;
   Flags: Integer): Integer;
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
 var
   Flgs: Word;
   Text: string;
 {$ENDIF}
 begin
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
   TOpenCanvas(Canvas).Changing;
   Result := DrawTextW(Canvas.Handle, PWideChar(Caption), Length(Caption), R, Flags);
   TOpenCanvas(Canvas).Changed;
 {$ENDIF}
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
   Text := Caption;
   with Canvas do
   begin
@@ -531,13 +531,13 @@ begin
       Caption := Text;
   end;
   Result := 1;
-{$ENDIF COMPLIB_CLX}
+{$ENDIF VisualCLX}
 end;
 
 function ClxExtTextOut(Canvas: TCanvas; X, Y: Integer; Flags: Integer; Rect: PRect;
   const Text: String; lpDx: Pointer): Boolean;
 begin
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
   TOpenCanvas(Canvas).Changing;
   Result := ExtTextOut(Canvas.Handle, X, Y, Flags, Rect, PChar(Text),
     Length(Text), lpDx);
@@ -549,7 +549,7 @@ end;
 
 function ClxExtTextOutW(Canvas: TCanvas; X, Y: Integer; Flags: Integer;
   Rect: PRect; const Text: WideString; lpDx: Pointer): Boolean;
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
 { missing feature: horizontal text alignment }
 var
   RecallBrush: TBrush;
@@ -561,13 +561,13 @@ var
   TextLen: Integer;
 {$ENDIF}
 begin
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
   TOpenCanvas(Canvas).Changing;
   Result := ExtTextOutW(Canvas.Handle, X, Y, Flags, Rect, PWideChar(Text),
     Length(Text), lpDx);
   TOpenCanvas(Canvas).Changed;
-{$ENDIF COMPLIB_VCL}
-{$IFDEF COMPLIB_CLX}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
   with Canvas do
   begin
     Result := False;
@@ -662,7 +662,7 @@ begin
     end;
     PenPos := RecallPenPos;
   end;
-{$ENDIF COMPLIB_CLX}
+{$ENDIF VisualCLX}
 end;
 
 end.

@@ -150,7 +150,7 @@ type
     property Description: DRVType read FDescription;
   end;
 
-{$IFNDEF CBUILDER}
+{$IFNDEF BCB}
 { Obsolete classes, for backward compatibility only }
 
 type
@@ -183,7 +183,7 @@ type
     constructor Create(AOwner: TComponent); override;
   end;
 
-{$ENDIF CBUILDER}
+{$ENDIF BCB}
 
 implementation
 
@@ -581,7 +581,7 @@ begin
   end;
 end;
 
-{$IFNDEF CBUILDER}
+{$IFNDEF BCB}
 
 //=== TJvLangDrivList ========================================================
 
@@ -612,7 +612,7 @@ begin
   FItemType := dtIndices;
 end;
 
-{$ENDIF CBUILDER}
+{$ENDIF BCB}
 
 end.
 

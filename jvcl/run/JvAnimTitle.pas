@@ -31,12 +31,12 @@ unit JvAnimTitle;
 interface
 
 uses
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   Controls, ExtCtrls, Forms,
-  {$ENDIF COMPLIB_VCL}
-  {$IFDEF COMPLIB_CLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   QControls, QExtCtrls, QForms,
-  {$ENDIF COMPLIB_CLX}
+  {$ENDIF VisualCLX}
   SysUtils, Classes,
   JvComponent;
 
@@ -133,11 +133,11 @@ begin
       FSens := True
     else
       SetLength(FTitle, Length(FTitle) - 1);
-    {$IFDEF UNIX}
+    {$IFDEF LINUX}
     if FTitle = '' then
       FForm.Caption := ' '   // else caption becomes <1>
     else
-    {$ENDIF UNIX}
+    {$ENDIF LINUX}
     FForm.Caption := FTitle;
   end;
 end;

@@ -269,11 +269,11 @@ var
 begin
   if not ValidPicture(Image.Picture) then
     Exit;
-  {$IFDEF CBUILDER}
+  {$IFDEF BCB}
   PreviewForm := TForm.CreateNew(Self, 0);
   {$ELSE}
   PreviewForm := TForm.CreateNew(Self);
-  {$ENDIF CBUILDER}
+  {$ENDIF BCB}
   with PreviewForm do
   try
     Caption := SPreview;

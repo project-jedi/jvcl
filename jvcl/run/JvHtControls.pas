@@ -99,12 +99,12 @@ interface
 
 uses
   SysUtils, Classes,
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
   Windows, Messages, Graphics, Controls, StdCtrls, ShellAPI, Dialogs;
-{$ENDIF COMPLIB_VCL}
-{$IFDEF COMPLIB_CLX}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
   QGraphics, QControls, QStdCtrls, Types;
-{$ENDIF COMPLIB_CLX}
+{$ENDIF VisualCLX}
 
 type
   THyperLinkClick = procedure (Sender: TObject; LinkName: string) of object;
@@ -116,27 +116,27 @@ type
     FSelectedColor: TColor;         // <-+-- Kaczkowski: from JvMultilineListBox
     FSelectedTextColor: TColor;     // <-+
     FDisabledTextColor: TColor;     // <-+
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
     procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
-{$ENDIF COMPLIB_VCL}
-{$IFDEF COMPLIB_CLX}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
     procedure FontChanged; override;
-{$ENDIF COMPLIB_CLX}
+{$ENDIF VisualCLX}
     procedure SetHideSel(Value: Boolean);
     function GetPlainItems(Index: Integer): string;
   protected
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
     procedure DrawItem(Index: Integer; Rect: TRect;
       State: TOwnerDrawState); override;
     procedure MeasureItem(Index: Integer; var Height: Integer); override;
-{$ENDIF COMPLIB_VCL}
-{$IFDEF COMPLIB_CLX}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
     function DrawItem(Index: Integer; Rect: TRect;
       State: TOwnerDrawState): Boolean; override;
-{$ENDIF COMPLIB_CLX}
+{$ENDIF VisualCLX}
   public
     constructor Create(AOwner: TComponent); override;
     property PlainItems[Index: Integer]: string read GetPlainItems;
@@ -153,10 +153,10 @@ type
     property BorderStyle;
     property Color;
     property Columns;
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
     property Ctl3D;
     property DragCursor;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
     property DragMode;
     property Enabled;
     property ExtendedSelect;
@@ -166,9 +166,9 @@ type
     property Items;
     property MultiSelect;
     property ParentColor;
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
     property ParentCtl3D;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -177,9 +177,9 @@ type
   //  property Style;
     property TabOrder;
     property TabStop;
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
     property TabWidth;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
     property Visible;
     property OnClick;
     property OnDblClick;
@@ -197,22 +197,22 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
     property ImeMode;
     property ImeName;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
     property Anchors;
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
     property AutoSize;
     property BiDiMode;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
     property Constraints;
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
     property DragKind;
     property ParentBiDiMode;
     property OnEndDock;
     property OnStartDock;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
     property OnHyperLinkClick: THyperLinkClick read FHyperLinkClick write FHyperLinkClick;
   end;
 
@@ -227,16 +227,16 @@ type
     function GetPlainItems(Index: Integer): string;
     procedure SetDropWidth(ADropWidth: Integer);
   protected
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
     procedure DrawItem(Index: Integer; Rect: TRect;
       State: TOwnerDrawState); override;
     procedure CreateWnd; override;
-{$ENDIF COMPLIB_VCL}
-{$IFDEF COMPLIB_CLX}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
     function DrawItem(Index: Integer; Rect: TRect;
       State: TOwnerDrawState): Boolean; override;
     procedure CreateWidget; override;
-{$ENDIF COMPLIB_CLX}
+{$ENDIF VisualCLX}
   public
     constructor Create(AOwner: TComponent); override;
     property PlainItems[Index: Integer]: string read GetPlainItems;
@@ -253,7 +253,7 @@ type
   published
     property Color;
 //    property Style;
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
     property AutoSize;
     property Ctl3D;
     property DragCursor;
@@ -265,7 +265,7 @@ type
     property ParentBiDiMode;
     property OnEndDock;
     property OnStartDock;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
     property DragMode;
     property DropDownCount;
     property Enabled;
@@ -304,16 +304,16 @@ type
   TJvHTLabel = class(TCustomLabel)
   private
     FHyperLinkClick: THyperLinkClick;
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
     procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
   protected
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
     procedure FontChanged; override;
-{$ENDIF COMPLIB_CLX}
+{$ENDIF VisualCLX}
     procedure AdjustBounds; override;
     procedure SetAutoSize(Value: Boolean); override;
     procedure Paint; override;
@@ -324,9 +324,9 @@ type
     property AutoSize;
     property Caption;
     property Color;
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
     property DragCursor;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
     property DragMode;
     property Enabled;
     property FocusControl;
@@ -350,16 +350,16 @@ type
     property OnMouseUp;
     property OnStartDrag;
     property Layout;
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
     property BiDiMode;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
     property Constraints;
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
     property DragKind;
     property ParentBiDiMode;
     property OnEndDock;
     property OnStartDock;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
     property OnHyperLinkClick: THyperLinkClick read FHyperLinkClick write FHyperLinkClick;
   end;
 
@@ -746,7 +746,7 @@ begin
 // Kaczkowski
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 procedure TJvHTListBox.DrawItem(Index: Integer; Rect: TRect;
   State: TOwnerDrawState);
 begin
@@ -772,9 +772,9 @@ begin
   Canvas.Font := Font;
   ItemHeight := Canvas.TextHeight('Äy');
 end;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
 function TJvHTListBox.DrawItem(Index: Integer; Rect: TRect;
   State: TOwnerDrawState): Boolean;
 begin
@@ -787,7 +787,7 @@ begin
   Canvas.Font := Font;
   ItemHeight := Canvas.TextHeight('Äy');
 end;
-{$ENDIF COMPLIB_CLX}
+{$ENDIF VisualCLX}
 
 
 procedure TJvHTListBox.SetHideSel(Value: Boolean);
@@ -841,11 +841,11 @@ begin
                      else Canvas.Font.Color := Font.Color;
  if IsHyperLink(Canvas, R, State, Items[I], X, Y, LinkName) then
   begin
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
    if (Pos('://', LinkName) > 0) or // ftp:// http:// e2k://
       (Pos('MAILTO:', UpperCase(LinkName)) > 0) then // ex: mailto:name@server.com
       ShellExecute(0, 'open', PChar(LinkName), nil, nil, SW_NORMAL);
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
    if Assigned(FHyperLinkClick) then
      FHyperLinkClick(Self, LinkName);
   end;
@@ -864,7 +864,7 @@ begin
 // Kaczkowski
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 procedure TJvHTComboBox.DrawItem(Index: Integer; Rect: TRect;
   State: TOwnerDrawState);
 begin
@@ -880,16 +880,16 @@ begin
  ItemHTDraw(Canvas, Rect, State, Items[Index]);
  SendMessage(Self.Handle, CB_SETITEMHEIGHT, Index, ItemHTHeight(Canvas, Items[Index])); // Kaczkowski
 end;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
 function TJvHTComboBox.DrawItem(Index: Integer; Rect: TRect;
   State: TOwnerDrawState): Boolean;
 begin
   ItemHTDraw(Canvas, Rect, State, Items[Index], FHideSel);
   Result := True;
 end;
-{$ENDIF COMPLIB_CLX}
+{$ENDIF VisualCLX}
 
 // Kaczkowski - begin
 function TJvHTComboBox.GetHeight: integer;
@@ -914,7 +914,7 @@ begin
   Result := ItemHTPlain(Items[Index]);
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 procedure TJvHTComboBox.CreateWnd;
 var
   Tmp: Integer;
@@ -929,9 +929,9 @@ begin
     DropWidth := Tmp;
   end;
 end;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
 procedure TJvHTComboBox.CreateWidget;
 var
   Tmp: Integer;
@@ -946,36 +946,36 @@ begin
     DropWidth := Tmp;
   end;
 end;
-{$ENDIF COMPLIB_CLX}
+{$ENDIF VisualCLX}
 
 procedure TJvHTComboBox.SetDropWidth(ADropWidth: Integer);
 begin
   if FDropWidth <> ADropWidth then
   begin
     FDropWidth := ADropWidth;
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
     Perform(CB_SETDROPPEDWIDTH, FDropWidth, 0);
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
   end;
 end;
 
 //=== TJvHTLabel =============================================================
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 procedure TJvHTLabel.CMFontChanged(var Msg: TMessage);
 begin
   inherited;
   AdjustBounds;
 end;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
 procedure TJvHTLabel.FontChanged;
 begin
   inherited FontChanged;
   AdjustSize;
 end;
-{$ENDIF COMPLIB_CLX}
+{$ENDIF VisualCLX}
 
 procedure TJvHTLabel.Loaded;
 begin
@@ -1084,11 +1084,11 @@ begin
  end;
  if IsHyperLink(Canvas, R, Caption, X, Y, LinkName) then
   begin
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
    if (Pos('://', LinkName) > 0) or // ftp:// http:// e2k://
       (Pos('MAILTO:', UpperCase(LinkName)) > 0) then // ex: mailto:name@server.com
       ShellExecute(0, 'open', PChar(LinkName), nil, nil, SW_NORMAL);
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
    if Assigned(FHyperLinkClick) then
      FHyperLinkClick(Self, LinkName);
   end;

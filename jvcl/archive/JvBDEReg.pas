@@ -82,12 +82,12 @@ begin
   { Database lists }
   RegisterComponents(srJvDataAccessPalette, [TJvBDEItems, TJvDatabaseItems,
     TJvTableItems]);
-  {$IFNDEF CBUILDER}
+  {$IFNDEF BCB}
   {$IFDEF USE_OLD_DBLISTS}
   RegisterComponents(srJvDataAccessPalette, [TJvDatabaseList, TJvLangDrivList,
     TJvTableList, TJvStoredProcList, TJvFieldList, TJvIndexList]);
   {$ENDIF USE_OLD_DBLISTS}
-  {$ENDIF CBUILDER}
+  {$ENDIF BCB}
 
   RegisterNonActiveX([TJvQuery, TJvSQLScript, TJvMemoryTable, TJvQBEQuery,
     TJvDBFilter, TJvDBIndexCombo, TJvDBProgress, TJvDBSecurity, TJvBDEItems,

@@ -41,10 +41,10 @@ uses
 {$IFDEF MSWINDOWS}
   Windows,
 {$ENDIF}
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
   Graphics,
 {$ENDIF}
-{$IFDEF COMPLIB_CLX}
+{$IFDEF VisualCLX}
   QGraphics,
 {$ENDIF}
   SysUtils, Classes;

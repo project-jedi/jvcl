@@ -36,16 +36,16 @@ unit JvRegAuto;
 interface
 
 uses
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   Windows, SysUtils, Classes, Controls, Forms,
   TypInfo, Registry, IniFiles,
   JvComponent;
-  {$ENDIF COMPLIB_VCL}
-  {$IFDEF COMPLIB_CLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   SysUtils, Classes, QForms,
   //Graphics, Controls, Forms,
   TypInfo, IniFiles;
-  {$ENDIF COMPLIB_CLX}
+  {$ENDIF VisualCLX}
 
 type
   TJvIniStrings = class;
@@ -69,9 +69,9 @@ type
     CurSection: string;
     CurKey: string;
     FStorage: TStorageMedia;
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     FRegPath: string;
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     FIniFile: string;
     FIniStrings: TStrings;
     FGlobalSettings: Boolean;
@@ -84,9 +84,9 @@ type
     FAfterLoad: TNotifyEvent;
     FAfterSave: TNotifyEvent;
     OldIniFile: string;
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     OldRegPath: string;
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     procedure LoadPropInf(lObjProp: string);
     function GetOrdPrp: Longint;
     procedure SetOrdPrp(Value: Longint);
@@ -95,9 +95,9 @@ type
     function GetFloatPrp: Extended;
     procedure SetFloatPrp(Value: Extended);
     procedure SetFProps(lProps: TStrings);
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     procedure SetSaveWindowPlace(F: Boolean);
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     procedure SetIniStrings(AIniStrings: TStrings);
     function GetUse(Index: TStorageMedia): Boolean;
     procedure SetUse(Index: TStorageMedia; Value: Boolean);
@@ -108,9 +108,9 @@ type
     procedure ReadUseIniProperty(Reader: TReader);
     procedure ReadUseStrProperty(Reader: TReader);
   protected
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     Reg: TRegIniFile;
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     Ini: TJvMyIniFile;
     Str: TJvIniStrings;
     procedure CreateFile;
@@ -122,17 +122,17 @@ type
     destructor Destroy; override;
     procedure Save;
     procedure Load;
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     procedure SaveWindowPlacement;
     procedure LoadWindowPlacement;
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
 
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     function ReadRootString(const Section, Ident, Default: string): string;
     function ReadRootInteger(const Section, Ident: string; Default: Longint): Longint;
     procedure WriteRootString(const Section, Ident, Value: string);
     procedure WriteRootInteger(const Section, Ident: string; Value: Longint);
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     function ReadString(const Section, Ident, Default: string): string;
     procedure WriteString(const Section, Ident, Value: string);
     function ReadInteger(const Section, Ident: string; Default: Longint): Longint;
@@ -159,13 +159,13 @@ type
     function GetFullIniFileName: string;
   published
     // Path in the registry [translated]
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     property RegPath: string read FRegPath write FRegPath;
     property Storage: TStorageMedia read FStorage write FStorage default raRegistry;
-    {$ENDIF COMPLIB_VCL}
-    {$IFDEF COMPLIB_CLX}
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
     property Storage: TStorageMedia read FStorage write FStorage default raIniFile;
-    {$ENDIF COMPLIB_CLX}
+    {$ENDIF VisualCLX}
     // Name of the ini-file [translated]
     property IniFile: string read FIniFile write FIniFile;
     property IniStrings: TStrings read FIniStrings write SetIniStrings;
@@ -173,9 +173,9 @@ type
     property Props: TStrings read FProps write SetFProps;
     property AutoMode: Boolean read FAutoMode write FAutoMode default True;
     // To save a size and position of the window [translated]
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     property SaveWindowPlace: Boolean read FSaveWindowPlace write SetSaveWindowPlace default False;
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     property BeforeLoad: TNotifyEvent read FBeforeLoad write FBeforeLoad;
     property AfterLoad: TNotifyEvent read FAfterLoad write FAfterLoad;
     property BeforeSave: TNotifyEvent read FBeforeSave write FBeforeSave;
@@ -245,12 +245,12 @@ var
 begin
   inherited Create(AOwner);
   FNotifiers := TList.Create;
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   FStorage := raRegistry;
-  {$ENDIF COMPLIB_VCL}
-  {$IFDEF COMPLIB_CLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   FStorage := raIniFile;
-  {$ENDIF COMPLIB_CLX}
+  {$ENDIF VisualCLX}
   FGlobalSettings := True;
   FProps := TStringList.Create;
   FIniStrings := TStringList.Create;
@@ -262,7 +262,7 @@ begin
     ProjName := ChangeFileExt(ProjName, '');
     if ProjName = '' then
       ProjName := 'NONAME';
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     with TRegIniFile.Create('') do
     try
       RootKey := HKEY_LOCAL_MACHINE;
@@ -275,14 +275,14 @@ begin
     finally
       Reg.Free;
     end;
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     FIniFile := '$HOME/.' + ProjName;
   end
   else
   begin
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     FRegPath := 'Software\Unknown Delphi Application';
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
   end;
   FAutoMode := True;
   FSaveWindowPlace := False;
@@ -514,10 +514,10 @@ begin
           SaveStrPrp;
       end;
     end;
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     if SaveWindowPlace then
       SaveWindowPlacement;
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
   except
     raise EJvRegAutoError.Create('Could not save property ' + ObjProp);
   end;
@@ -564,10 +564,10 @@ begin
   if Assigned(FBeforeLoad) then
     FBeforeLoad(Self);
   try
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     if SaveWindowPlace then
       LoadWindowPlacement;
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     for I := 0 to FProps.Count - 1 do
     begin
       LoadPropInf(FProps[I]);
@@ -593,7 +593,7 @@ begin
     TRegAutoEvent(FNotifiers[I]^)(Self, roAfterLoad);
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 
 procedure TJvRegAuto.LoadWindowPlacement;
 var
@@ -646,14 +646,14 @@ begin
   WriteInteger(CurSection, '.WindowState', Integer(Form.WindowState));
 end;
 
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 procedure TJvRegAuto.SetFProps(lProps: TStrings);
 begin
   FProps.Assign(lProps);
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 
 function TJvRegAuto.ReadRootString(const Section, Ident, Default: string): string;
 var
@@ -697,7 +697,7 @@ begin
     FSaveWindowPlace := F;
 end;
 
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 procedure TJvRegAuto.SetIniStrings(AIniStrings: TStrings);
 begin
@@ -731,23 +731,23 @@ end;
 procedure TJvRegAuto.CreateFile;
 begin
   OldIniFile := FIniFile;
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   OldRegPath := FRegPath;
-  {$ENDIF COMPLIB_VCL}
+  {$ENDIF VCL}
   if FGlobalSettings then
   begin
     if GlobalIniFile <> '' then
       FIniFile := GlobalIniFile;
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     if GlobalRegPath <> '' then
       FRegPath := GlobalRegPath;
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
   end;
   case FStorage of
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     raRegistry:
       Reg := TRegIniFile.Create(FRegPath);
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     raIniFile:
       Ini := TJvMyIniFile.Create(GetFullIniFileName);
     raIniStrings:
@@ -757,10 +757,10 @@ end;
 
 procedure TJvRegAuto.DestroyFile;
 begin
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   Reg.Free;
   Reg := nil;
-  {$ENDIF COMPLIB_VCL}
+  {$ENDIF VCL}
   {$IFDEF LINUX}
   if Ini <> nil then
     Ini.UpdateFile;
@@ -772,11 +772,11 @@ begin
   if FGlobalSettings then
   begin
     FIniFile := OldIniFile;
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     if GlobalRegPath <> '' then
       FRegPath := GlobalRegPath;
     FRegPath := OldRegPath;
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
   end;
 end;
 
@@ -784,10 +784,10 @@ procedure TJvRegAuto.EraseSection(const Section: string);
 begin
   CreateFile;
   case FStorage of
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     raRegistry:
       Reg.EraseSection(ConcatSep(FSection, Section, cSlash));
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     raIniFile:
       Ini.EraseSection(ConcatSep(FSection, Section, cSlash));
   end;
@@ -798,10 +798,10 @@ procedure TJvRegAuto.DeleteKey(const Section, Ident: string);
 begin
   CreateFile;
   case FStorage of
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     raRegistry:
       Reg.DeleteKey(ConcatSep(FSection, Section, cSlash), Ident);
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     raIniFile:
       Ini.DeleteKey(ConcatSep(FSection, Section, cSlash), Ident);
   end;
@@ -813,10 +813,10 @@ begin
   Result := Default;
   CreateFile;
   case FStorage of
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     raRegistry:
       Result := Reg.ReadString(ConcatSep(FSection, Section, cSlash), Ident, Default);
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     raIniFile:
       Result := Ini.ReadString(ConcatSep(FSection, Section, cSlash), Ident, Default);
     raIniStrings:
@@ -829,10 +829,10 @@ procedure TJvRegAuto.WriteString(const Section, Ident, Value: string);
 begin
   CreateFile;
   case FStorage of
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     raRegistry:
       Reg.WriteString(ConcatSep(FSection, Section, cSlash), Ident, Value);
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     raIniFile:
       Ini.WriteString(ConcatSep(FSection, Section, cSlash), Ident, Value);
     raIniStrings:
@@ -847,10 +847,10 @@ begin
   Result := Default;
   CreateFile;
   case FStorage of
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     raRegistry:
       Result := Reg.ReadInteger(ConcatSep(FSection, Section, cSlash), Ident, Default);
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     raIniFile:
       Result := Ini.ReadInteger(ConcatSep(FSection, Section, cSlash), Ident, Default);
     raIniStrings:
@@ -863,10 +863,10 @@ procedure TJvRegAuto.WriteInteger(const Section, Ident: string; Value: Longint);
 begin
   CreateFile;
   case FStorage of
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     raRegistry:
       Reg.WriteInteger(ConcatSep(FSection, Section, cSlash), Ident, Value);
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     raIniFile:
       Ini.WriteInteger(ConcatSep(FSection, Section, cSlash), Ident, Value);
     raIniStrings:
@@ -881,10 +881,10 @@ begin
   Result := Default;
   CreateFile;
   case FStorage of
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     raRegistry:
       Result := Reg.ReadBool(ConcatSep(FSection, Section, cSlash), Ident, Default);
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     raIniFile:
       Result := Ini.ReadBool(ConcatSep(FSection, Section, cSlash), Ident, Default);
     raIniStrings:
@@ -897,10 +897,10 @@ procedure TJvRegAuto.WriteBool(const Section, Ident: string; Value: Boolean);
 begin
   CreateFile;
   case FStorage of
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     raRegistry:
       Reg.WriteBool(ConcatSep(FSection, Section, cSlash), Ident, Value);
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     raIniFile:
       Ini.WriteBool(ConcatSep(FSection, Section, cSlash), Ident, Value);
     raIniStrings:
@@ -914,10 +914,10 @@ begin
   Result := Default;
   CreateFile;
   case FStorage of
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     raRegistry:
       Result := StrToFloat(Reg.ReadString(ConcatSep(FSection, Section, cSlash), Ident, FloatToStr(Default)));
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     raIniFile:
       Result := Ini.ReadFloat(ConcatSep(FSection, Section, cSlash), Ident, Default);
     raIniStrings:
@@ -930,10 +930,10 @@ procedure TJvRegAuto.WriteFloat(const Section, Ident: string; Value: Double);
 begin
   CreateFile;
   case FStorage of
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     raRegistry:
       Reg.WriteString(ConcatSep(FSection, Section, cSlash), Ident, FloatToStr(Value));
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     raIniFile:
       Ini.WriteFloat(ConcatSep(FSection, Section, cSlash), Ident, Value);
     raIniStrings:
@@ -966,10 +966,10 @@ procedure TJvRegAuto.ReadSection(const Section: string; Ss: TStrings);
 begin
   CreateFile;
   case FStorage of
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     raRegistry:
       Reg.ReadSection(ConcatSep(FSection, Section, cSlash), Ss);
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     raIniFile:
       Ini.ReadSection(ConcatSep(FSection, Section, cSlash), Ss);
     raIniStrings:
@@ -982,10 +982,10 @@ procedure TJvRegAuto.ReadSectionValues(const Section: string; Ss: TStrings);
 begin
   CreateFile;
   case FStorage of
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     raRegistry:
       Reg.ReadSectionValues(ConcatSep(FSection, Section, cSlash), Ss);
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     raIniFile:
       Ini.ReadSectionValues(ConcatSep(FSection, Section, cSlash), Ss);
     raIniStrings:
@@ -998,11 +998,11 @@ procedure TJvRegAuto.ReadWholeSection(const Section: string; Ss: TStrings);
 begin
   CreateFile;
   case FStorage of
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     raRegistry:
       { ReadWholeSection not supported for registry }
       Reg.ReadSection(ConcatSep(FSection, Section, cSlash), Ss);
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     raIniFile:
       Ini.ReadWholeSection(ConcatSep(FSection, Section, cSlash), Ss);
     raIniStrings:
@@ -1015,10 +1015,10 @@ procedure TJvRegAuto.ReadSections(Ss: TStrings);
 begin
   CreateFile;
   case FStorage of
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     raRegistry:
       Reg.ReadSections(Ss);
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     raIniFile:
       Ini.ReadSections(Ss);
     raIniStrings:

@@ -40,12 +40,12 @@ procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapt
 implementation
 
 uses
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   Windows, Classes, Graphics, JvInterpreter_Windows;
-  {$ENDIF COMPLIB_VCL}
-  {$IFDEF COMPLIB_CLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   Types, Classes, QGraphics, JvInterpreter_Types;
-  {$ENDIF COMPLIB_CLX}
+  {$ENDIF VisualCLX}
 
 { TFont }
 
@@ -67,24 +67,24 @@ end;
 
 procedure TFont_Read_Handle(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   Value := Integer(TFont(Args.Obj).Handle);
-  {$ENDIF COMPLIB_VCL}
-  {$IFDEF COMPLIB_CLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   Value := P2V(TFont(Args.Obj).Handle);
-  {$ENDIF COMPLIB_CLX}
+  {$ENDIF VisualCLX}
 end;
 
 { property Write Handle(Value: HFont) }
 
 procedure TFont_Write_Handle(const Value: Variant; Args: TJvInterpreterArgs);
 begin
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   TFont(Args.Obj).Handle := Value;
-  {$ENDIF COMPLIB_VCL}
-  {$IFDEF COMPLIB_CLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   TFont(Args.Obj).Handle := V2P(Value);
-  {$ENDIF COMPLIB_CLX}
+  {$ENDIF VisualCLX}
 end;
 
 { property Read PixelsPerInch: Integer }
@@ -219,24 +219,24 @@ end;
 
 procedure TPen_Read_Handle(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   Value := Integer(TPen(Args.Obj).Handle);
-  {$ENDIF COMPLIB_VCL}
-  {$IFDEF COMPLIB_CLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   Value := P2V(TPen(Args.Obj).Handle);
-  {$ENDIF COMPLIB_CLX}
+  {$ENDIF VisualCLX}
 end;
 
 { property Write Handle(Value: HPen) }
 
 procedure TPen_Write_Handle(const Value: Variant; Args: TJvInterpreterArgs);
 begin
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   TPen(Args.Obj).Handle := Value;
-  {$ENDIF COMPLIB_VCL}
-  {$IFDEF COMPLIB_CLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   TPen(Args.Obj).Handle := V2P(Value);
-  {$ENDIF COMPLIB_CLX}
+  {$ENDIF VisualCLX}
 end;
 
 { property Read Color: TColor }
@@ -329,24 +329,24 @@ end;
 
 procedure TBrush_Read_Handle(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   Value := Integer(TBrush(Args.Obj).Handle);
-  {$ENDIF COMPLIB_VCL}
-  {$IFDEF COMPLIB_CLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   Value := P2V(TBrush(Args.Obj).Handle);
-  {$ENDIF COMPLIB_CLX}
+  {$ENDIF VisualCLX}
 end;
 
 { property Write Handle(Value: HBrush) }
 
 procedure TBrush_Write_Handle(const Value: Variant; Args: TJvInterpreterArgs);
 begin
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   TBrush(Args.Obj).Handle := Value;
-  {$ENDIF COMPLIB_VCL}
-  {$IFDEF COMPLIB_CLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   TBrush(Args.Obj).Handle := V2P(Value);
-  {$ENDIF COMPLIB_CLX}
+  {$ENDIF VisualCLX}
 end;
 
 { property Read Color: TColor }
@@ -396,13 +396,13 @@ end;
 
 { procedure BrushCopy(const Dest: TRect; Bitmap: TBitmap; const Source: TRect; Color: TColor); }
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 procedure TCanvas_BrushCopy(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   TCanvas(Args.Obj).BrushCopy(Var2Rect(Args.Values[0]), V2O(Args.Values[1]) as TBitmap, Var2Rect(Args.Values[2]),
     Args.Values[3]);
 end;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 { procedure Chord(X1, Y1, X2, Y2, X3, Y3, X4, Y4: Integer); }
 
@@ -447,7 +447,7 @@ begin
   TCanvas(Args.Obj).FillRect(Var2Rect(Args.Values[0]));
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 
 { procedure FloodFill(X, Y: Integer; Color: TColor; FillStyle: TFillStyle); }
 
@@ -463,7 +463,7 @@ begin
   TCanvas(Args.Obj).FrameRect(Var2Rect(Args.Values[0]));
 end;
 
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 { procedure LineTo(X, Y: Integer); }
 
@@ -604,24 +604,24 @@ end;
 
 procedure TCanvas_Read_Handle(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   Value := Integer(TCanvas(Args.Obj).Handle);
-  {$ENDIF COMPLIB_VCL}
-  {$IFDEF COMPLIB_CLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   Value := P2V(TCanvas(Args.Obj).Handle);
-  {$ENDIF COMPLIB_CLX}
+  {$ENDIF VisualCLX}
 end;
 
 { property Write Handle(Value: HDC) }
 
 procedure TCanvas_Write_Handle(const Value: Variant; Args: TJvInterpreterArgs);
 begin
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   TCanvas(Args.Obj).Handle := Value;
-  {$ENDIF COMPLIB_VCL}
-  {$IFDEF COMPLIB_CLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   TCanvas(Args.Obj).Handle := V2P(Value);
-  {$ENDIF COMPLIB_CLX}
+  {$ENDIF VisualCLX}
 end;
 
 { property Read LockCount: Integer }
@@ -732,7 +732,7 @@ begin
   TGraphic(Args.Obj).SaveToStream(V2O(Args.Values[0]) as TStream);
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 
 { procedure LoadFromClipboardFormat(AFormat: Word; AData: THandle; APalette: HPALETTE); }
 
@@ -749,7 +749,7 @@ begin
     THandle(TVarData(Args.Values[1]).VInteger), HPALETTE(TVarData(Args.Values[2]).VInteger));
 end;
 
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 { property Read Empty: Boolean }
 
@@ -786,7 +786,7 @@ begin
   TGraphic(Args.Obj).Modified := Value;
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 
 { property Read Palette: HPALETTE }
 
@@ -816,7 +816,7 @@ begin
   TGraphic(Args.Obj).PaletteModified := Value;
 end;
 
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 { property Read Transparent: Boolean }
 
@@ -871,7 +871,7 @@ begin
   TPicture(Args.Obj).SaveToFile(Args.Values[0]);
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 
 { procedure LoadFromClipboardFormat(AFormat: Word; AData: THandle; APalette: HPALETTE); }
 
@@ -895,7 +895,7 @@ begin
   Value := TPicture(Args.Obj).SupportsClipboardFormat(Args.Values[0]);
 end;
 
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 { procedure Assign(Source: TPersistent); }
 
@@ -932,7 +932,7 @@ begin
   TPicture(Args.Obj).Graphic := V2O(Value) as TGraphic;
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 
 { property Read PictureAdapter: IChangeNotifier }
 
@@ -949,7 +949,7 @@ begin
   NotImplemented('TPicture.PictureAdapter');
 end;
 
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 
 { property Read Height: Integer }
@@ -973,7 +973,7 @@ begin
   TPicture(Args.Obj).Icon := V2O(Value) as TIcon;
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 
 { property Read Metafile: TMetafile }
 
@@ -989,7 +989,7 @@ begin
   TPicture(Args.Obj).Metafile := V2O(Value) as TMetafile;
 end;
 
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 { property Read Width: Integer }
 
@@ -998,7 +998,7 @@ begin
   Value := TPicture(Args.Obj).Width;
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 
 { TMetafile }
 
@@ -1151,7 +1151,7 @@ begin
   TMetafile(Args.Obj).Inch := Value;
 end;
 
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 { TBitmap }
 
@@ -1185,12 +1185,12 @@ end;
 
 { procedure LoadFromClipboardFormat(AFormat: Word; AData: THandle; APalette: HPALETTE); }
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 procedure TBitmap_LoadFromClipboardFormat(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   TBitmap(Args.Obj).LoadFromClipboardFormat(Args.Values[0], Args.Values[1], Args.Values[2]);
 end;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 { procedure LoadFromStream(Stream: TStream); }
 
@@ -1221,7 +1221,7 @@ begin
 end;
 
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 
 { function ReleaseHandle: HBITMAP; }
 
@@ -1253,7 +1253,7 @@ begin
     THandle(TVarData(Args.Values[1]).VInteger), HPALETTE(TVarData(Args.Values[2]).VInteger));
 end;
 
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 { procedure SaveToStream(Stream: TStream); }
 
@@ -1273,27 +1273,27 @@ end;
 
 procedure TBitmap_Read_Handle(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   Value := Integer(TBitmap(Args.Obj).Handle);
-  {$ENDIF COMPLIB_VCL}
-  {$IFDEF COMPLIB_CLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   Value := P2V(TBitmap(Args.Obj).Handle);
-  {$ENDIF COMPLIB_CLX}
+  {$ENDIF VisualCLX}
 end;
 
 { property Write Handle(Value: HBITMAP) }
 
 procedure TBitmap_Write_Handle(const Value: Variant; Args: TJvInterpreterArgs);
 begin
-  {$IFDEF COMPLIB_VCL}
+  {$IFDEF VCL}
   TBitmap(Args.Obj).Handle := Value;
-  {$ENDIF COMPLIB_VCL}
-  {$IFDEF COMPLIB_CLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   TBitmap(Args.Obj).Handle := V2P(Value);
-  {$ENDIF COMPLIB_CLX}
+  {$ENDIF VisualCLX}
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 
 { property Read HandleType: TBitmapHandleType }
 
@@ -1334,7 +1334,7 @@ begin
 end;
 
 
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 { property Read Monochrome: Boolean }
 
@@ -1432,12 +1432,12 @@ end;
 
 { function ReleaseHandle: HICON; }
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 procedure TIcon_ReleaseHandle(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := Integer(TIcon(Args.Obj).ReleaseHandle);
 end;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 { procedure SaveToStream(Stream: TStream); }
 
@@ -1455,12 +1455,12 @@ end;
 
 { property Write Handle(Value: HICON) }
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
 procedure TIcon_Write_Handle(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TIcon(Args.Obj).Handle := Value;
 end;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF VCL}
 
 procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
 const
@@ -1484,9 +1484,9 @@ begin
     AddConst(cGraphics, 'psDashDot', Integer(psDashDot));
     AddConst(cGraphics, 'psDashDotDot', Integer(psDashDotDot));
     AddConst(cGraphics, 'psClear', Integer(psClear));
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     AddConst(cGraphics, 'psInsideFrame', Integer(psInsideFrame));
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     { TPenMode }
     AddConst(cGraphics, 'pmBlack', Integer(pmBlack));
     AddConst(cGraphics, 'pmWhite', Integer(pmWhite));
@@ -1563,14 +1563,14 @@ begin
     AddSet(TBrush, 'Color', TBrush_Write_Color, 0, [0]);
     AddGet(TBrush, 'Style', TBrush_Read_Style, 0, [0], varEmpty);
     AddSet(TBrush, 'Style', TBrush_Write_Style, 0, [0]);
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     { TFillStyle }
     AddConst(cGraphics, 'fsSurface', Integer(fsSurface));
     AddConst(cGraphics, 'fsBorder', Integer(fsBorder));
     { TFillMode }
     AddConst(cGraphics, 'fmAlternate', Integer(fmAlternate));
     AddConst(cGraphics, 'fmWinding', Integer(fmWinding));
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     { TCanvasStates }
     AddConst(cGraphics, 'csHandleValid', Integer(csHandleValid));
     AddConst(cGraphics, 'csFontValid', Integer(csFontValid));
@@ -1581,9 +1581,9 @@ begin
     AddGet(TCanvas, 'Create', TCanvas_Create, 0, [0], varEmpty);
     AddGet(TCanvas, 'Arc', TCanvas_Arc, 8, [varEmpty, varEmpty, varEmpty, varEmpty, varEmpty, varEmpty, varEmpty,
       varEmpty], varEmpty);
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     AddGet(TCanvas, 'BrushCopy', TCanvas_BrushCopy, 4, [varEmpty, varEmpty, varEmpty, varEmpty], varEmpty);
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     AddGet(TCanvas, 'Chord', TCanvas_Chord, 8, [varEmpty, varEmpty, varEmpty, varEmpty, varEmpty, varEmpty, varEmpty,
       varEmpty], varEmpty);
     AddGet(TCanvas, 'CopyRect', TCanvas_CopyRect, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
@@ -1591,10 +1591,10 @@ begin
     AddGet(TCanvas, 'DrawFocusRect', TCanvas_DrawFocusRect, 1, [varEmpty], varEmpty);
     AddGet(TCanvas, 'Ellipse', TCanvas_Ellipse, 4, [varEmpty, varEmpty, varEmpty, varEmpty], varEmpty);
     AddGet(TCanvas, 'FillRect', TCanvas_FillRect, 1, [varEmpty], varEmpty);
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     AddGet(TCanvas, 'FloodFill', TCanvas_FloodFill, 4, [varEmpty, varEmpty, varEmpty, varEmpty], varEmpty);
     AddGet(TCanvas, 'FrameRect', TCanvas_FrameRect, 1, [varEmpty], varEmpty);
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     AddGet(TCanvas, 'LineTo', TCanvas_LineTo, 2, [varEmpty, varEmpty], varEmpty);
     
     AddGet(TCanvas, 'Lock', TCanvas_Lock, 0, [0], varEmpty);
@@ -1646,24 +1646,24 @@ begin
     AddGet(TGraphic, 'SaveToFile', TGraphic_SaveToFile, 1, [varEmpty], varEmpty);
     AddGet(TGraphic, 'LoadFromStream', TGraphic_LoadFromStream, 1, [varEmpty], varEmpty);
     AddGet(TGraphic, 'SaveToStream', TGraphic_SaveToStream, 1, [varEmpty], varEmpty);
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     AddGet(TGraphic, 'LoadFromClipboardFormat', TGraphic_LoadFromClipboardFormat, 3, [varEmpty, varEmpty, varEmpty],
       varEmpty);
     AddGet(TGraphic, 'SaveToClipboardFormat', TGraphic_SaveToClipboardFormat, 3, [varByRef, varByRef, varByRef],
       varEmpty);
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     AddGet(TGraphic, 'Empty', TGraphic_Read_Empty, 0, [0], varEmpty);
     AddGet(TGraphic, 'Height', TGraphic_Read_Height, 0, [0], varEmpty);
     AddSet(TGraphic, 'Height', TGraphic_Write_Height, 0, [0]);
     AddGet(TGraphic, 'Modified', TGraphic_Read_Modified, 0, [0], varEmpty);
     AddSet(TGraphic, 'Modified', TGraphic_Write_Modified, 0, [0]);
     
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     AddGet(TGraphic, 'Palette', TGraphic_Read_Palette, 0, [0], varEmpty);
     AddSet(TGraphic, 'Palette', TGraphic_Write_Palette, 0, [0]);
     AddGet(TGraphic, 'PaletteModified', TGraphic_Read_PaletteModified, 0, [0], varEmpty);
     AddSet(TGraphic, 'PaletteModified', TGraphic_Write_PaletteModified, 0, [0]);
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     AddGet(TGraphic, 'Transparent', TGraphic_Read_Transparent, 0, [0], varEmpty);
     AddSet(TGraphic, 'Transparent', TGraphic_Write_Transparent, 0, [0]);
     
@@ -1674,33 +1674,33 @@ begin
     AddGet(TPicture, 'Create', TPicture_Create, 0, [0], varEmpty);
     AddGet(TPicture, 'LoadFromFile', TPicture_LoadFromFile, 1, [varEmpty], varEmpty);
     AddGet(TPicture, 'SaveToFile', TPicture_SaveToFile, 1, [varEmpty], varEmpty);
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     AddGet(TPicture, 'LoadFromClipboardFormat', TPicture_LoadFromClipboardFormat, 3, [varEmpty, varEmpty, varEmpty],
       varEmpty);
     AddGet(TPicture, 'SaveToClipboardFormat', TPicture_SaveToClipboardFormat, 3, [varByRef, varByRef, varByRef],
       varEmpty);
     AddGet(TPicture, 'SupportsClipboardFormat', TPicture_SupportsClipboardFormat, 1, [varEmpty], varEmpty);
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     AddGet(TPicture, 'Assign', TPicture_Assign, 1, [varEmpty], varEmpty);
     AddGet(TPicture, 'Bitmap', TPicture_Read_Bitmap, 0, [0], varEmpty);
     AddSet(TPicture, 'Bitmap', TPicture_Write_Bitmap, 0, [0]);
     AddGet(TPicture, 'Graphic', TPicture_Read_Graphic, 0, [0], varEmpty);
     AddSet(TPicture, 'Graphic', TPicture_Write_Graphic, 0, [0]);
     
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     AddGet(TPicture, 'PictureAdapter', TPicture_Read_PictureAdapter, 0, [0], varEmpty);
     AddSet(TPicture, 'PictureAdapter', TPicture_Write_PictureAdapter, 0, [0]);
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     
     AddGet(TPicture, 'Height', TPicture_Read_Height, 0, [0], varEmpty);
     AddGet(TPicture, 'Icon', TPicture_Read_Icon, 0, [0], varEmpty);
     AddSet(TPicture, 'Icon', TPicture_Write_Icon, 0, [0]);
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     AddGet(TPicture, 'Metafile', TPicture_Read_Metafile, 0, [0], varEmpty);
     AddSet(TPicture, 'Metafile', TPicture_Write_Metafile, 0, [0]);
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     AddGet(TPicture, 'Width', TPicture_Read_Width, 0, [0], varEmpty);
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     { TMetafile }
     AddClass(cGraphics, TMetafile, 'TMetafile');
     AddGet(TMetafile, 'Create', TMetafile_Create, 0, [0], varEmpty);
@@ -1729,7 +1729,7 @@ begin
     AddGet(TMetafile, 'Inch', TMetafile_Read_Inch, 0, [0], varEmpty);
     AddSet(TMetafile, 'Inch', TMetafile_Write_Inch, 0, [0]);
     
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     { TBitmapHandleType }
     
     AddConst(cGraphics, 'bmDIB', Integer(bmDIB));
@@ -1755,17 +1755,17 @@ begin
     AddGet(TBitmap, 'Assign', TBitmap_Assign, 1, [varEmpty], varEmpty);
     AddGet(TBitmap, 'Dormant', TBitmap_Dormant, 0, [0], varEmpty);
     AddGet(TBitmap, 'FreeImage', TBitmap_FreeImage, 0, [0], varEmpty);
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     AddGet(TBitmap, 'LoadFromClipboardFormat', TBitmap_LoadFromClipboardFormat, 3, [varEmpty, varEmpty, varEmpty],
       varEmpty);
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     AddGet(TBitmap, 'LoadFromStream', TBitmap_LoadFromStream, 1, [varEmpty], varEmpty);
     AddGet(TBitmap, 'LoadFromResourceName', TBitmap_LoadFromResourceName, 2, [varEmpty, varEmpty], varEmpty);
     AddGet(TBitmap, 'LoadFromResourceID', TBitmap_LoadFromResourceID, 2, [varEmpty, varEmpty], varEmpty);
     
     AddGet(TBitmap, 'Mask', TBitmap_Mask, 1, [varEmpty], varEmpty);
     
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     AddGet(TBitmap, 'ReleaseHandle', TBitmap_ReleaseHandle, 0, [0], varEmpty);
     
     AddGet(TBitmap, 'ReleaseMaskHandle', TBitmap_ReleaseMaskHandle, 0, [0], varEmpty);
@@ -1773,12 +1773,12 @@ begin
     AddGet(TBitmap, 'ReleasePalette', TBitmap_ReleasePalette, 0, [0], varEmpty);
     AddGet(TBitmap, 'SaveToClipboardFormat', TBitmap_SaveToClipboardFormat, 3, [varByRef, varByRef, varByRef],
       varEmpty);
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     AddGet(TBitmap, 'SaveToStream', TBitmap_SaveToStream, 1, [varEmpty], varEmpty);
     AddGet(TBitmap, 'Canvas', TBitmap_Read_Canvas, 0, [0], varEmpty);
     AddGet(TBitmap, 'Handle', TBitmap_Read_Handle, 0, [0], varEmpty);
     AddSet(TBitmap, 'Handle', TBitmap_Write_Handle, 0, [0]);
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     
     AddGet(TBitmap, 'HandleType', TBitmap_Read_HandleType, 0, [0], varEmpty);
     AddSet(TBitmap, 'HandleType', TBitmap_Write_HandleType, 0, [0]);
@@ -1788,7 +1788,7 @@ begin
     
     AddGet(TBitmap, 'MaskHandle', TBitmap_Read_MaskHandle, 0, [0], varEmpty);
     
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     AddGet(TBitmap, 'Monochrome', TBitmap_Read_Monochrome, 0, [0], varEmpty);
     AddSet(TBitmap, 'Monochrome', TBitmap_Write_Monochrome, 0, [0]);
     
@@ -1807,14 +1807,14 @@ begin
     AddGet(TIcon, 'Create', TIcon_Create, 0, [0], varEmpty);
     AddGet(TIcon, 'Assign', TIcon_Assign, 1, [varEmpty], varEmpty);
     AddGet(TIcon, 'LoadFromStream', TIcon_LoadFromStream, 1, [varEmpty], varEmpty);
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     AddGet(TIcon, 'ReleaseHandle', TIcon_ReleaseHandle, 0, [0], varEmpty);
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     AddGet(TIcon, 'SaveToStream', TIcon_SaveToStream, 1, [varEmpty], varEmpty);
     AddGet(TIcon, 'Handle', TIcon_Read_Handle, 0, [0], varEmpty);
-    {$IFDEF COMPLIB_VCL}
+    {$IFDEF VCL}
     AddSet(TIcon, 'Handle', TIcon_Write_Handle, 0, [0]);
-    {$ENDIF COMPLIB_VCL}
+    {$ENDIF VCL}
     { TFontData }
   end;
 end;
