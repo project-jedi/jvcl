@@ -399,6 +399,21 @@ resourcestring
   SID3RemoveTag = '&Remove tag...';
   SID3CommitTag = '&Commit...';
 
+  { JvDataProvider constants }
+const
+  { Consumer attributes }
+  DPA_RenderDisabledAsGrayed = 1;
+  DPA_RendersSingleItem = 2;
+  DPA_ConsumerDisplaysList = 3;
+
+resourcestring
+  SExtensibleIntObjDuplicateClass = 'Implementation of that class already exists.';
+  SExtensibleIntObjCollectionExpected = 'Expected collection.';
+  SExtensibleIntObjClassNameExpected = 'Missing ClassName property';
+  SExtensibleIntObjInvalidClass = 'Invalid class type.';
+  SDataItemRenderHasNoText = '(item doesn''t support the IJvDataItemText interface)';
+  SDataProviderNeedsItemsImpl = 'Can''t create a data provider without an IJvDataItems implementation.';
+
 implementation
 
 uses
