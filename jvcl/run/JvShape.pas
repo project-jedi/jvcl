@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
-Last Modified: 2000-02-28
+Last Modified: 2003-10-28
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -24,50 +24,69 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvShape;
 
 interface
 
 uses
-  Messages, SysUtils, Classes, Graphics, Controls, ExtCtrls, Forms,
+  SysUtils, Classes,
+{$IFDEF COMPLIB_VCL}
+  Messages, Graphics, Controls, ExtCtrls, Forms,
+{$ENDIF COMPLIB_VCL}
+{$IFDEF COMPLIB_CLX}
+  QGraphics, QControls, QExtCtrls, QForms,
+{$ENDIF COMPLIB_CLX}
   JVCLVer;
 
 type
   TJvShape = class(TShape)
   private
-    FAboutJVCL: TJVCLAboutInfo;
-    FHintColor: TColor;
+    FColor: TColor;
     FSaved: TColor;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
+    {$IFDEF COMPLIB_VCL}
     FOnCtl3DChanged: TNotifyEvent;
+    {$ENDIF}
     FOnParentColorChanged: TNotifyEvent;
     FOver: Boolean;
+    FAboutJVCL: TJVCLAboutInfo;
   protected
+    {$IFDEF COMPLIB_VCL}
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
+    {$ENDIF}
+    {$IFDEF COMPLIB_CLX}
+    procedure MouseEnter(AControl: TControl); override;
+    procedure MouseLeave(AControl: TControl); override;
+    procedure ParentColorChanged; override;
+    {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Anchors;
     property Constraints;
-    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
+    property HintColor: TColor read FColor write FColor default clInfoBk;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    {$IFDEF COMPLIB_VCL}
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
+    property OnEndDock;
+    property OnStartDock;
+    {$ENDIF}
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+
     property OnClick;
     property OnConstrainedResize;
     property OnContextPopup;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
-    property OnEndDock;
     property OnEndDrag;
     property OnMouseDown;
     property OnMouseMove;
@@ -78,49 +97,66 @@ type
     property OnMouseWheelUp;
     {$ENDIF}
     property OnResize;
-    property OnStartDock;
     property OnStartDrag;
   end;
 
 implementation
 
-constructor TJvShape.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FHintColor := clInfoBk;
-  FOver := False;
-end;
-
+{**************************************************}
+{$IFDEF COMPLIB_VCL}
 procedure TJvShape.CMCtl3DChanged(var Msg: TMessage);
 begin
   inherited;
   if Assigned(FOnCtl3DChanged) then
     FOnCtl3DChanged(Self);
 end;
+{$ENDIF}
 
+{**************************************************}
+{$IFDEF COMPLIB_CLX}
+procedure TJvShape.ParentColorChanged;
+{$ELSE}
 procedure TJvShape.CMParentColorChanged(var Msg: TMessage);
+{$ENDIF}
 begin
   inherited;
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
 
+{**************************************************}
+
+constructor TJvShape.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FColor := clInfoBk;
+  FOver := False;
+end;
+
+{**************************************************}
+{$IFDEF COMPLIB_CLX}
+procedure TJvShape.MouseEnter(AControl: TControl);
+{$ELSE}
 procedure TJvShape.CMMouseEnter(var Msg: TMessage);
+{$ENDIF}
 begin
   if not FOver then
   begin
     FSaved := Application.HintColor;
-    // for D7...
-    if csDesigning in ComponentState then
-      Exit;
-    Application.HintColor := FHintColor;
+    Application.HintColor := FColor;
     FOver := True;
   end;
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
 end;
 
+{**************************************************}
+
+{$IFDEF COMPLIB_CLX}
+procedure TJvShape.MouseLeave(AControl: TControl);
+{$ELSE}
 procedure TJvShape.CMMouseLeave(var Msg: TMessage);
+{$ENDIF}
 begin
   if FOver then
   begin
@@ -132,4 +168,3 @@ begin
 end;
 
 end.
-

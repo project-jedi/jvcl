@@ -23,6 +23,7 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
 
 unit JvArrayButton;
@@ -68,13 +69,24 @@ type
     { Private declarations }
   protected
     { Protected declarations }
+    {$IFDEF COMPLIB_VCL}
     procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
+    {$ENDIF}
+    {$IFDEF COMPLIB_CLX}
+    procedure FontChanged; override;
+    {$ENDIF}
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
   {$IFDEF JVCLThemesEnabled}
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
+    {$IFDEF COMPLIB_VCL}
     procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
+    {$ENDIF}
+    {$IFDEF COMPLIB_CLX}
+    procedure MouseEnter(AControl: TControl); override;
+    procedure MouseLeave(AControl: TControl); override;
+    {$ENDIF}
   {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
@@ -83,8 +95,8 @@ type
     {Destroys an instance of TJvArrayButton.}
     procedure Paint; override;
     {Renders the image of the button.}
-    procedure DoShowHint(var HintStr: string; var CanShow: Boolean;
-      var HintInfo: THintInfo);
+    procedure DoShowHint(var HintStr: {$IFDEF COMPLIB_VCL}string{$ELSE}WideString{$ENDIF};
+      var CanShow: Boolean; var HintInfo: THintInfo);
 
     {this procedure can be used in response to a application.onshowhint event
      button hints are stored in the hints property from arry top-left to array bottom right
@@ -203,18 +215,28 @@ begin
   end;
 end;
 
+{$IFDEF COMPLIB_CLX}
+procedure TJvArrayButton.MouseEnter(AControl: TControl);
+{$ENDIF}
+{$IFDEF COMPLIB_VCL}
 procedure TJvArrayButton.CMMouseEnter(var Message: TMessage);
+{$ENDIF}
 begin
   inherited;
   Paint;
 end;
 
+{$IFDEF COMPLIB_CLX}
+procedure TJvArrayButton.MouseLeave(AControl: TControl);
+{$ENDIF}
+{$IFDEF COMPLIB_VCL}
 procedure TJvArrayButton.CMMouseLeave(var Message: TMessage);
+{$ENDIF}
 begin
   inherited;
   Paint;
 end;
-{$ENDIF}
+{$ENDIF JVCLThemesEnabled}
 
 procedure TJvArrayButton.Paint;
 var
@@ -239,7 +261,9 @@ var
     begin
       R := DrawThemedButtonFace(Self, Canvas, R, 0, bsAutoDetect, False, False, False,
         PtInRect(R, ScreenToClient(Mouse.CursorPos)));
+      {$IFDEF COMPLIB_VCL}
       SetBkMode(Canvas.Handle, Windows.TRANSPARENT);
+      {$ENDIF}
     end
     else
 {$ENDIF}
@@ -258,7 +282,9 @@ var
     begin
       R := DrawThemedButtonFace(Self, Canvas, R, 0, bsAutoDetect, False, True, False,
         PtInRect(R, ScreenToClient(Mouse.CursorPos)));
+      {$IFDEF COMPLIB_VCL}
       SetBkMode(Canvas.Handle, Windows.TRANSPARENT);
+      {$ENDIF}
     end
     else
 {$ENDIF}
@@ -361,7 +387,12 @@ begin
   Invalidate;
 end;
 
+{$IFDEF COMPLIB_CLX}
+procedure TJvArrayButton.FontChanged;
+{$ENDIF}
+{$IFDEF COMPLIB_VCL}
 procedure TJvArrayButton.CMFontChanged(var Message: TMessage);
+{$ENDIF}
 begin
   Canvas.Font.Assign(font);
   Invalidate;
@@ -387,8 +418,8 @@ begin
   Result := Rect(x0, y0, x0 + dw, y0 + dh);
 end;
 
-procedure TJvArrayButton.DoShowHint(var HintStr: string; var CanShow: Boolean;
-  var HintInfo: THintInfo);
+procedure TJvArrayButton.DoShowHint(var HintStr: {$IFDEF COMPLIB_VCL}string{$ELSE}WideString{$ENDIF};
+  var CanShow: Boolean; var HintInfo: THintInfo);
 var
   ACol, ARow, x, y: Integer;
   Index: Integer;

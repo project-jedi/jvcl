@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
-Last Modified: 2000-02-28
+Last Modified: 2003-10-28
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -24,14 +24,20 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvBaseDlg;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  SysUtils, Classes,
+  {$IFDEF COMPLIB_VCL}
+  Windows, Messages, Graphics, Controls, Forms, Dialogs,
+  {$ENDIF}
+  {$IFDEF COMPLIB_CLX}
+  QGraphics, QControls, QForms, QDialogs,
+  {$ENDIF}
   JVCLVer, JvComponent;
 
 type
@@ -56,6 +62,4 @@ type
 implementation
 
 end.
-
-
 

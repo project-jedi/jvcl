@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
-Last Modified: 2003-10-24
+Last Modified: 2003-10-28
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -53,7 +53,7 @@ type
     FBlinker: Integer;
     FBlinked: Integer;
     FBlinking: Boolean;
-    procedure ChangeTitle(NewTitle: string);
+    procedure ChangeTitle(const NewTitle: string);
     procedure EnableChange(NewEnable: Boolean);
     procedure ChangeDelay(NewDelay: Integer);
     procedure AnimateTitle(Sender: TObject);
@@ -128,15 +128,20 @@ begin
         FTitle := FTitle + FInitialTitle[Length(FTitle) + 1];
     end
     else
-    if Length(FTitle) = 0 then
+    if FTitle = '' then
       FSens := True
     else
-      FTitle := Copy(FTitle, 0, Length(FTitle) - 1);
+      SetLength(FTitle, Length(FTitle) - 1);
+    {$IFDEF LINUX}
+    if FTitle = '' then
+      FForm.Caption := ' '   // else caption becomes <1>
+    else
+    {$ENDIF}
     FForm.Caption := FTitle;
   end;
 end;
 
-procedure TJvAnimTitle.ChangeTitle(NewTitle: string);
+procedure TJvAnimTitle.ChangeTitle(const NewTitle: string);
 begin
   FInitialTitle := NewTitle;
   FTitle := '';

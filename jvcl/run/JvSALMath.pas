@@ -16,22 +16,22 @@ All Rights Reserved.
 
 Contributor(s): Robert Love [rlove@slcdug.org].
 
-Last Modified: 2000-06-15
+Last Modified: 2003-10-28
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$I JVCL.INC}
+{$I jvcl.inc}
 unit JvSALMath;
 
 // SAL math package
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvSAL, Math;
+  SysUtils, Classes, Math,
+  JvSAL, JvTypes;
 
 type
   TJvSALMath = class(TComponent)
@@ -58,9 +58,6 @@ type
   end;
 
 implementation
-
-uses
-  JvTypes;
 
   { TJvSALMathBasic }
 

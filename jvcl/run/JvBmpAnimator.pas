@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2002-05-26
+Last Modified: 2003-10-28
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -24,7 +24,7 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvBmpAnimator;
 
@@ -34,9 +34,15 @@ interface
   like the explorer logo in Internet Explorer and Netscape Navigator. }
 
 uses
-  SysUtils, Windows, Messages, Classes, Graphics, Controls, CommCtrl,
+  SysUtils,  Classes,
+  {$IFDEF COMPLIB_VCL}
+  Windows, Messages, Graphics, Controls, CommCtrl,
   ExtCtrls, ImgList,
+  {$ELSE}
+  QGraphics, QControls,  QExtCtrls, QImgList,
+  {$ENDIF}
   JvComponent;
+
 
 type
   TJvAnimateDirection = (tdForward, tdBack, tdFwdBack, tdBackFwd);
@@ -74,7 +80,7 @@ type
   protected
     procedure Paint; override;
     {$IFDEF COMPILER6_UP}
-    procedure SetAutoSize(Value: Boolean); override;
+    procedure SetAutoSize(Value: Boolean); {$IFDEF COMPLIB_VCL} override; {$ENDIF}
     property AutoSize: Boolean read FAutoSize write SetAutoSize default False;
     {$ENDIF}
     procedure Notification(AComponent: TComponent; AOperation: TOperation); override;
@@ -331,7 +337,7 @@ end;
 
 procedure TJvCustomBmpAnimator.SetCenter(Value: Boolean);
 begin
-  if FCenter <> value then
+  if FCenter <> Value then
   begin
     FCenter := Value;
     Invalidate;
@@ -399,7 +405,11 @@ begin
     with Canvas do
     begin
       Brush.Color := clBlack;
+      {$IFDEF COMPLIB_CLX}
+      Rectangle(GetClientRect);
+      {$ELSE}
       FrameRect(GetClientRect);
+      {$ENDIF}
     end;
 end;
 

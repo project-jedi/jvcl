@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
-Last Modified: 2000-02-28
+Last Modified: 2003-10-28
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -24,14 +24,19 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvBevel;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, ExtCtrls, Controls, Forms,
+  SysUtils, Classes,
+{$IFDEF COMPLIB_VCL}
+  Windows, Messages, Graphics, ExtCtrls, Controls, Forms,
+{$ELSE}
+  QGraphics, QExtCtrls, QControls, QForms,
+{$ENDIF}
   JVCLVer;
 
 type
@@ -44,8 +49,13 @@ type
     FOver: Boolean;
     FAboutJVCL: TJVCLAboutInfo;
   protected
+  {$IFDEF COMPLIB_VCL}
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
+  {$ELSE}
+    procedure MouseEnter(AControl: TControl); override;
+    procedure MouseLeave(AControl: TControl); override;
+  {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -57,13 +67,15 @@ type
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
+  {$IFDEF COMPLIB_VCL}
     property OnEndDock;
+    property OnStartDock;
+  {$ENDIF}
     property OnEndDrag;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
-    property OnStartDock;
     property OnStartDrag;
   end;
 
@@ -76,8 +88,14 @@ begin
   FOver := False;
 end;
 
+{$IFDEF COMPLIB_VCL}
 procedure TJvBevel.CMMouseEnter(var Msg: TMessage);
 begin
+{$ELSE}
+procedure TJvBevel.MouseEnter(AControl: TControl);
+begin
+  inherited;
+{$ENDIF}
   if not FOver then
   begin
     FSaved := Application.HintColor;
@@ -91,8 +109,14 @@ begin
     FOnMouseEnter(Self);
 end;
 
+{$IFDEF COMPLIB_VCL}
 procedure TJvBevel.CMMouseLeave(var Msg: TMessage);
 begin
+{$ELSE}
+procedure TJvBevel.MouseLeave(AControl: TControl);
+begin
+  inherited;
+{$ENDIF}
   if FOver then
   begin
     Application.HintColor := FSaved;

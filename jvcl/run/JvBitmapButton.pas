@@ -16,54 +16,59 @@ All Rights Reserved.
 
 Contributor(s): Robert Love [rlove@slcdug.org].
 
-Last Modified: 2000-06-15
+Last Modified: 2003-10-28
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
-{$I JVCL.INC}
+{$I jvcl.inc}
 unit JvBitmapButton;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs;
+  {$IFDEF COMPLIB_VCL}
+  Windows, Messages,  Graphics, Controls, Forms, Dialogs,
+  {$ENDIF}
+  {$IFDEF COMPLIB_CLX}
+  QGraphics, QControls, QForms, QDialogs, Types, JvTypes,
+  {$ENDIF}
+  SysUtils, Classes;
 
 type
   TJvBitmapButton = class(TGraphicControl)
   private
     FBitmap: TBitmap;
     FLighter: TBitmap;
-    FDarker: Tbitmap;
-    FNormal: Tbitmap;
-    FPushDown: boolean;
-    FMouseOver: boolean;
-    FLatching: boolean;
-    FDown: boolean;
-    FHotTrack: boolean;
+    FDarker: TBitmap;
+    FNormal: TBitmap;
+    FPushDown: Boolean;
+    FMouseOver: Boolean;
+    FLatching: Boolean;
+    FDown: Boolean;
+    FHotTrack: Boolean;
     FCaption: string;
-    FFont: Tfont;
-    FCaptionLeft: integer;
-    FCaptionTop: integer;
-    FLighterFontColor: Tcolor;
-    FDarkerFontcolor: Tcolor;
+    FFont: TFont;
+    FCaptionLeft: Integer;
+    FCaptionTop: Integer;
+    FLighterFontColor: TColor;
+    FDarkerFontColor: TColor;
     procedure SetBitmap(const Value: TBitmap);
     procedure MakeNormal;
     procedure MakeDarker;
     procedure MakeLighter;
-    procedure SetLatching(const Value: boolean);
-    procedure SetDown(const Value: boolean);
-    procedure SetHotTrack(const Value: boolean);
+    procedure SetLatching(const Value: Boolean);
+    procedure SetDown(const Value: Boolean);
+    procedure SetHotTrack(const Value: Boolean);
     procedure SetCaption(const Value: string);
-    procedure SetFont(const Value: Tfont);
-    procedure SetCaptionLeft(const Value: integer);
-    procedure SetCaptionTop(const Value: integer);
+    procedure SeTFont(const Value: TFont);
+    procedure SetCaptionLeft(const Value: Integer);
+    procedure SetCaptionTop(const Value: Integer);
     procedure UpDateBitmaps;
-    procedure SetDarkerFontcolor(const Value: Tcolor);
-    procedure SetLighterFontColor(const Value: Tcolor);
+    procedure SetDarkerFontColor(const Value: TColor);
+    procedure SetLighterFontColor(const Value: TColor);
     { Private declarations }
   protected
     { Protected declarations }
@@ -71,7 +76,12 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure Click; override;
+    {$IFDEF COMPLIB_VCL}
     procedure CMMouseLeave(var Message: TMessage); message CM_MouseLeave;
+    {$ENDIF}
+    {$IFDEF COMPLIB_CLX}
+    procedure MouseLeave(AControl: TControl); override;
+    {$ENDIF}
     procedure Loaded; override;
     procedure Resize; override;
   public
@@ -82,20 +92,20 @@ type
   published
     { Published declarations }
     property Bitmap: TBitmap read FBitmap write SetBitmap;
-    property Down: boolean read FDown write SetDown;
-    property Latching: boolean read FLatching write SetLatching;
-    property HotTrack: boolean read FHotTrack write SetHotTrack;
+    property Down: Boolean read FDown write SetDown;
+    property Latching: Boolean read FLatching write SetLatching;
+    property HotTrack: Boolean read FHotTrack write SetHotTrack;
     property OnClick;
     property OnMouseDown;
     property OnMouseUp;
     property Hint;
     property ShowHint;
     property Caption: string read FCaption write SetCaption;
-    property CaptionLeft: integer read FCaptionLeft write SetCaptionLeft;
-    property CaptionTop: integer read FCaptionTop write SetCaptionTop;
-    property Font: Tfont read FFont write SetFont;
-    property DarkerFontcolor: Tcolor read FDarkerFontcolor write SetDarkerFontcolor;
-    property LighterFontColor: Tcolor read FLighterFontColor write SetLighterFontColor;
+    property CaptionLeft: Integer read FCaptionLeft write SetCaptionLeft;
+    property CaptionTop: Integer read FCaptionTop write SetCaptionTop;
+    property Font: TFont read FFont write SeTFont;
+    property DarkerFontColor: TColor read FDarkerFontColor write SetDarkerFontColor;
+    property LighterFontColor: TColor read FLighterFontColor write SetLighterFontColor;
   end;
 
 implementation
@@ -105,29 +115,29 @@ implementation
 procedure TJvBitmapButton.Click;
 begin
   if FPushDown then
-    if assigned(onclick) then
-      onclick(self);
+    if Assigned(OnClick) then
+      OnClick(Self);
 end;
 
 constructor TJvBitmapButton.Create(AOwner: TComponent);
 begin
   inherited;
-  width := 24;
-  height := 24;
-  FPushDown := false;
-  FMouseOver := false;
-  FLatching := false;
-  FHotTrack := true;
-  FDown := false;
+  Width := 24;
+  Height := 24;
+  FPushDown := False;
+  FMouseOver := False;
+  FLatching := False;
+  FHotTrack := True;
+  FDown := False;
   FBitmap := TBitmap.create;
-  Fbitmap.width := 24;
-  Fbitmap.Height := 24;
-  Fbitmap.canvas.brush.color := clgray;
-  FBitmap.canvas.FillRect(rect(1, 1, 23, 23));
-  FLighter := Tbitmap.create;
-  FDarker := Tbitmap.create;
-  FNormal := Tbitmap.create;
-  Ffont := Tfont.Create;
+  FBitmap.Width := 24;
+  FBitmap.Height := 24;
+  FBitmap.Canvas.Brush.Color := clgray;
+  FBitmap.Canvas.FillRect(Rect(1, 1, 23, 23));
+  FLighter := TBitmap.create;
+  FDarker := TBitmap.create;
+  FNormal := TBitmap.create;
+  FFont := TFont.Create;
 end;
 
 destructor TJvBitmapButton.Destroy;
@@ -143,56 +153,56 @@ end;
 procedure TJvBitmapButton.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  if FBitmap.canvas.pixels[x, y] <> Fbitmap.canvas.pixels[0, FBitmap.height - 1] then
-    FPushDown := true
+  if FBitmap.Canvas.Pixels[x, y] <> FBitmap.Canvas.Pixels[0, FBitmap.Height - 1] then
+    FPushDown := True
   else
-    FPushDown := false;
+    FPushDown := False;
   Paint;
-  if assigned(onmousedown) then
-    onmousedown(self, button, shift, x, y);
+  if Assigned(onmousedown) then
+    onmousedown(Self, button, Shift, x, y);
 end;
 
 procedure TJvBitmapButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
-  FPushDown := false;
+  FPushDown := False;
   if Latching then
     FDown := not FDown
   else
-    FDown := false;
+    FDown := False;
   Paint;
-  if assigned(onmouseup) then
-    onmouseup(self, button, shift, x, y);
+  if Assigned(onmouseup) then
+    onmouseup(Self, button, Shift, x, y);
 end;
 
 procedure TJvBitmapButton.Paint;
 var
-  Acolor: TColor;
+  AColor: TColor;
 begin
   inherited;
-  if assigned(FBitmap) then
+  if Assigned(FBitmap) then
   begin
-    AColor := FBitmap.canvas.pixels[0, FBitmap.height - 1];
-    Fbitmap.transparent := true;
-    Fbitmap.transparentcolor := Acolor;
-    FLighter.transparent := true;
+    AColor := FBitmap.Canvas.Pixels[0, FBitmap.Height - 1];
+    FBitmap.transparent := True;
+    FBitmap.transparentColor := AColor;
+    FLighter.transparent := True;
     Flighter.TransparentColor := AColor;
-    FDarker.transparent := true;
+    FDarker.transparent := True;
     FDarker.TransparentColor := AColor;
-    FNormal.transparent := true;
+    FNormal.transparent := True;
     FNormal.TransparentColor := AColor;
     if FPushdown then
     begin
-      canvas.draw(1, 1, FDarker)
+      Canvas.Draw(1, 1, FDarker)
     end
     else
     begin
       if Down then
-        canvas.Draw(1, 1, FDarker)
+        Canvas.Draw(1, 1, FDarker)
       else if (FMouseOver and FHotTrack) then
-        canvas.draw(0, 0, FLighter)
+        Canvas.Draw(0, 0, FLighter)
       else
-        canvas.Draw(0, 0, FNormal);
+        Canvas.Draw(0, 0, FNormal);
     end;
   end;
 end;
@@ -200,10 +210,10 @@ end;
 procedure TJvBitmapButton.SetBitmap(const Value: TBitmap);
 begin
   FBitmap.assign(Value);
-  FBitmap.transparent := true;
-  FBitmap.TransparentColor := FBitmap.Canvas.pixels[0, FBitmap.Height - 1];
-  width := FBitmap.Width;
-  height := FBitmap.Height;
+  FBitmap.transparent := True;
+  FBitmap.TransparentColor := FBitmap.Canvas.Pixels[0, FBitmap.Height - 1];
+  Width := FBitmap.Width;
+  Height := FBitmap.Height;
   Updatebitmaps;
 end;
 
@@ -217,26 +227,26 @@ end;
 
 procedure TJvBitmapButton.MakeLighter;
 var
-  p1, p2: Pbytearray;
-  x, y: integer;
-  rt, gt, bt: byte;
+  p1, p2: PByteArray;
+  x, y: Integer;
+  rt, gt, bt: Byte;
 
   AColor: TColor;
-  ARect: Trect;
+  ARect: TRect;
 begin
   FLighter.Width := FBitmap.Width;
-  FLighter.Height := FBitmap.height;
-  Acolor := colortorgb(FBitmap.canvas.pixels[0, FBitmap.height - 1]);
-  rt := GetRValue(Acolor);
+  FLighter.Height := FBitmap.Height;
+  AColor := ColorToRGB(FBitmap.Canvas.Pixels[0, FBitmap.Height - 1]);
+  rt := GetRValue(AColor);
   gt := GetGValue(AColor);
   bt := getBValue(AColor);
   FBitmap.PixelFormat := pf24bit;
   FLighter.PixelFormat := pf24bit;
-  for y := 0 to Fbitmap.height - 1 do
+  for y := 0 to FBitmap.Height - 1 do
   begin
-    p1 := Fbitmap.ScanLine[y];
+    p1 := FBitmap.ScanLine[y];
     p2 := FLighter.ScanLine[y];
-    for x := 0 to FBitmap.width - 1 do
+    for x := 0 to FBitmap.Width - 1 do
     begin
       if (p1[x * 3] = bt) and (p1[x * 3 + 1] = gt) and (p1[x * 3 + 2] = rt) then
       begin
@@ -254,35 +264,35 @@ begin
   end;
   if FCaption <> '' then
   begin
-    Flighter.canvas.brush.Style := bsclear;
-    Flighter.canvas.Font.Assign(FFont);
-    FLighter.canvas.font.color := FLighterFontColor;
-    ARect := rect(0, 0, width, height);
-    FLighter.canvas.TextRect(ARect, FCaptionLeft, FCaptionTop, FCaption);
+    Flighter.Canvas.Brush.Style := bsclear;
+    Flighter.Canvas.Font.Assign(FFont);
+    FLighter.Canvas.Font.Color := FLighterFontColor;
+    ARect := Rect(0, 0, Width, Height);
+    FLighter.Canvas.TextRect(ARect, FCaptionLeft, FCaptionTop, FCaption);
   end;
 end;
 
 procedure TJvBitmapButton.MakeDarker;
 var
-  p1, p2: Pbytearray;
-  x, y: integer;
-  rt, gt, bt: byte;
+  p1, p2: PByteArray;
+  x, y: Integer;
+  rt, gt, bt: Byte;
   AColor: TColor;
-  Arect: TRect;
+  ARect: TRect;
 begin
   FDarker.Width := FBitmap.Width;
-  FDarker.Height := FBitmap.height;
-  Acolor := colortorgb(FBitmap.canvas.pixels[0, FBitmap.height - 1]);
-  rt := GetRValue(Acolor);
+  FDarker.Height := FBitmap.Height;
+  AColor := ColorToRGB(FBitmap.Canvas.Pixels[0, FBitmap.Height - 1]);
+  rt := GetRValue(AColor);
   gt := GetGValue(AColor);
-  bt := getBValue(AColor);
+  bt := GetBValue(AColor);
   FBitmap.PixelFormat := pf24bit;
   FDarker.PixelFormat := pf24bit;
-  for y := 0 to Fbitmap.height - 1 do
+  for y := 0 to FBitmap.Height - 1 do
   begin
-    p1 := Fbitmap.ScanLine[y];
+    p1 := FBitmap.ScanLine[y];
     p2 := FDarker.ScanLine[y];
-    for x := 0 to FBitmap.width - 1 do
+    for x := 0 to FBitmap.Width - 1 do
     begin
       if (p1[x * 3] = bt) and (p1[x * 3 + 1] = gt) and (p1[x * 3 + 2] = rt) then
       begin
@@ -300,17 +310,22 @@ begin
   end;
   if FCaption <> '' then
   begin
-    FDarker.canvas.brush.Style := bsclear;
-    FDarker.canvas.Font.Assign(FFont);
-    FDarker.canvas.font.color := FDarkerFontColor;
-    ARect := rect(0, 0, width, height);
-    FDarker.canvas.TextRect(ARect, FCaptionLeft, FCaptionTop, FCaption);
+    FDarker.Canvas.Brush.Style := bsclear;
+    FDarker.Canvas.Font.Assign(FFont);
+    FDarker.Canvas.Font.Color := FDarkerFontColor;
+    ARect := Rect(0, 0, Width, Height);
+    FDarker.Canvas.TextRect(ARect, FCaptionLeft, FCaptionTop, FCaption);
   end;
 end;
 
+{$IFDEF COMPLIB_CLX}
+procedure TJvBitmapButton.MouseLeave(AControl: TControl);
+{$ENDIF}
+{$IFDEF COMPLIB_VCL}
 procedure TJvBitmapButton.CMMouseLeave(var Message: TMessage);
+{$ENDIF}
 begin
-  FMouseOver := false;
+  FMouseOver := False;
   Paint;
 end;
 
@@ -325,96 +340,96 @@ begin
   end;
 end;
 
-procedure TJvBitmapButton.SetLatching(const Value: boolean);
+procedure TJvBitmapButton.SetLatching(const Value: Boolean);
 begin
   FLatching := Value;
   if not FLatching then
   begin
-    FDown := false;
-    paint;
+    FDown := False;
+    Paint;
   end;
 end;
 
-procedure TJvBitmapButton.SetDown(const Value: boolean);
+procedure TJvBitmapButton.SetDown(const Value: Boolean);
 begin
   if FLatching then
   begin
     FDown := Value;
-    paint;
+    Paint;
   end
   else
   begin
-    FDown := false;
-    paint;
+    FDown := False;
+    Paint;
   end;
 end;
 
 procedure TJvBitmapButton.Resize;
 begin
   inherited;
-  if assigned(Fbitmap) then
+  if Assigned(FBitmap) then
   begin
-    width := FBitmap.width;
-    height := FBitmap.Height;
+    Width := FBitmap.Width;
+    Height := FBitmap.Height;
   end
   else
   begin
-    width := 24;
-    height := 24;
+    Width := 24;
+    Height := 24;
   end;
 end;
 
-procedure TJvBitmapButton.SetHotTrack(const Value: boolean);
+procedure TJvBitmapButton.SetHotTrack(const Value: Boolean);
 begin
   FHotTrack := Value;
 end;
 
 procedure TJvBitmapButton.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
-  Value: boolean;
+  Value: Boolean;
 begin
   inherited;
-  Value := FBitmap.canvas.pixels[x, y] <> Fbitmap.canvas.pixels[0, FBitmap.height - 1];
-  if value <> FMouseOver then
+  Value := FBitmap.Canvas.Pixels[x, y] <> FBitmap.Canvas.Pixels[0, FBitmap.Height - 1];
+  if Value <> FMouseOver then
   begin
-    FMouseOver := value;
+    FMouseOver := Value;
     Paint;
   end;
-  if assigned(onmousemove) then
-    onmousemove(self, shift, x, y);
+  if Assigned(OnMouseMove) then
+    OnMouseMove(Self, Shift, x, y);
 end;
 
 procedure TJvBitmapButton.SetCaption(const Value: string);
 begin
-  if value <> FCaption then
+  if Value <> FCaption then
   begin
     FCaption := Value;
     UpdateBitmaps;
   end;
 end;
 
-procedure TJvBitmapButton.SetFont(const Value: Tfont);
+procedure TJvBitmapButton.SeTFont(const Value: TFont);
 begin
-  if value <> FFont then
+  if Value <> FFont then
   begin
     FFont := Value;
-    canvas.Font.Assign(FFont);
+    Canvas.Font.Assign(FFont);
     UpdateBitmaps;
   end;
 end;
 
-procedure TJvBitmapButton.SetCaptionLeft(const Value: integer);
+procedure TJvBitmapButton.SetCaptionLeft(const Value: Integer);
 begin
-  if value <> FCaptionLeft then
+  if Value <> FCaptionLeft then
   begin
     FCaptionLeft := Value;
     UpdateBitmaps;
   end;
 end;
 
-procedure TJvBitmapButton.SetCaptionTop(const Value: integer);
+procedure TJvBitmapButton.SetCaptionTop(const Value: Integer);
 begin
-  if value <> FCaptionTop then
+  if Value <> FCaptionTop then
   begin
     FCaptionTop := Value;
     UpdateBitmaps;
@@ -423,30 +438,30 @@ end;
 
 procedure TJvBitmapButton.MakeNormal;
 var
-  Arect: TRect;
+  ARect: TRect;
 begin
   FNormal.Assign(FBitmap);
   if FCaption <> '' then
   begin
-    FNormal.canvas.brush.Style := bsclear;
-    FNormal.canvas.Font.Assign(FFont);
-    ARect := rect(0, 0, width, height);
-    FNormal.canvas.TextRect(ARect, FCaptionLeft, FCaptionTop, FCaption);
+    FNormal.Canvas.Brush.Style := bsclear;
+    FNormal.Canvas.Font.Assign(FFont);
+    ARect := Rect(0, 0, Width, Height);
+    FNormal.Canvas.TextRect(ARect, FCaptionLeft, FCaptionTop, FCaption);
   end;
 end;
 
-procedure TJvBitmapButton.SetDarkerFontcolor(const Value: Tcolor);
+procedure TJvBitmapButton.SetDarkerFontColor(const Value: TColor);
 begin
-  if value <> FDarkerFontColor then
+  if Value <> FDarkerFontColor then
   begin
-    FDarkerFontcolor := Value;
+    FDarkerFontColor := Value;
     UpdateBitmaps;
   end;
 end;
 
-procedure TJvBitmapButton.SetLighterFontColor(const Value: Tcolor);
+procedure TJvBitmapButton.SetLighterFontColor(const Value: TColor);
 begin
-  if value <> FLighterFontColor then
+  if Value <> FLighterFontColor then
   begin
     FLighterFontColor := Value;
     UpdateBitmaps;

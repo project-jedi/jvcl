@@ -16,22 +16,30 @@ All Rights Reserved.
 
 Contributor(s): Robert Love [rlove@slcdug.org].
 
-Last Modified: 2000-06-15
+Last Modified: 2003-10-28
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$I JVCL.INC}
+{$I jvcl.inc}
+
 unit JvSALHashList;
 
 interface
 
-uses Classes, SysUtils, Windows;
+uses
+  {$IFDEF WINDOWS}
+  Windows,
+  {$ENDIF}
+  {$IFDEF LINUX}
+  Libc,
+  {$ENDIF}
+  Classes, SysUtils;
 
 var
-  janHashTable: array[#0..#255] of byte;
+  janHashTable: array[#0..#255] of Byte;
   janInsensitiveHashTable: array[#0..#255] of Byte;
 
 type
@@ -108,9 +116,7 @@ var
   Temp: Byte;
 begin
   for I := #0 to #255 do
-  begin
     janHashTable[I] := Ord(I);
-  end;
   RandSeed := 255;
   for I := #1 to #255 do
   begin
@@ -463,5 +469,5 @@ end;
 
 initialization
   InitTables;
-  {$R+}
+
 end.

@@ -16,22 +16,29 @@ All Rights Reserved.
 
 Contributor(s): Robert Love [rlove@slcdug.org].
 
-Last Modified: 2000-06-15
+Last Modified: 2003-10-28
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$I JVCL.INC}
+{$I jvcl.inc}
+
 unit JvSimLogic;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, extctrls,
-  JvTypes;
-
+  {$IFDEF COMPLIB_VCL}
+  Windows, Messages, Graphics, Controls, Forms, Dialogs, extctrls,
+  {$ENDIF}
+  {$IFDEF COMPLIB_CLX}
+  QGraphics, QControls, QForms, QDialogs, QExtCtrls, Types, JvTypes,
+  JvFunctionsClx,
+  {$ENDIF}
+  SysUtils, Classes;
+  
 { Copyright 2000 by Jan Verhoeven
 This unit includes several visual logic blocks that can be used without any programming.
 It is the start of a whole series of simulation blocks.
@@ -50,18 +57,18 @@ All the rest is up to the user.
 type
   TJvLogic = class;
 
-  TJanGateStyle = (jgsDI, jgsDO);
+  TjanGateStyle = (jgsDI, jgsDO);
   TJvLogicFunc = (jlfAND, jlfOR, jlfNOT);
-  TJanGate = record
-    Style: TJanGateStyle;
+  TjanGate = record
+    Style: TjanGateStyle;
     State: boolean;
     Active: Boolean;
     pos: TPoint;
   end;
 
-  TJanConMode = (jcmTL, jcmTR, jcmBR, jcmBL);
-  TJanConPos = (jcpTL, jcpTR, jcpBR, jcpBL);
-  TJanConShape = (jcsTLBR, jcsTRBL);
+  TjanConMode = (jcmTL, jcmTR, jcmBR, jcmBL);
+  TjanConPos = (jcpTL, jcpTR, jcpBR, jcpBL);
+  TjanConShape = (jcsTLBR, jcsTRBL);
 
   TJvSIMConnector = class(TGraphicControl)
   private
@@ -70,29 +77,29 @@ type
     oldp: TPoint;
     ConAnchor: TPoint;
     ConOffset: TPoint;
-    ConMode: TJanConMode;
-    ConHot: TJanConPos;
+    ConMode: TjanConMode;
+    ConHot: TjanConPos;
     doMove: boolean;
     doEdge: boolean;
     DisCon: Tcontrol;
     DisConI: integer;
-    Mode: TJanConMode;
-    Shape: TJanConShape;
+    Mode: TjanConMode;
+    Shape: TjanConShape;
     conSize: integer;
-    conPos: TJanConPos;
+    conPos: TjanConPos;
     Edge: extended;
     FFromLogic: TJvLogic;
     FToLogic: TJvLogic;
     FFromGate: integer;
     FToGate: integer;
-    FFromPoint: TJvPoint;
-    FToPoint: TJvPoint;
+    FFromPoint: TPoint;
+    FToPoint: TPoint;
     procedure SetFromLogic(const Value: TJvLogic);
     procedure SetToLogic(const Value: TJvLogic);
     procedure SetFromGate(const Value: integer);
     procedure SetToGate(const Value: integer);
-    procedure SetFromPoint(const Value: TJvPoint);
-    procedure SetToPoint(const Value: TJvPoint);
+    procedure SetFromPoint(const Value: TPoint);
+    procedure SetToPoint(const Value: TPoint);
     procedure DisConnectFinal;
   protected
     { Protected declarations }
@@ -102,12 +109,11 @@ type
   public
     { Public declarations }
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     procedure paint; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure DoMouseDown(x, y: integer);
     procedure DoMouseMove(dx, dy: integer);
-    procedure AnchorCorner(logTL: TPoint; ACorner: TJanConMode);
+    procedure AnchorCorner(logTL: TPoint; ACorner: TjanConMode);
     procedure MoveConnector(logTL: TPoint);
     procedure Connect;
     procedure DisConnect;
@@ -115,10 +121,10 @@ type
     { Published declarations }
     property FromLogic: TJvLogic read FFromLogic write SetFromLogic;
     property FromGate: integer read FFromGate write SetFromGate;
-    property FromPoint: TJvPoint read FFromPoint write SetFromPoint;
+    property FromPoint: TPoint read FFromPoint write SetFromPoint;
     property ToLogic: TJvLogic read FToLogic write SetToLogic;
     property ToGate: integer read FToGate write SetToGate;
-    property ToPoint: TJvPoint read FToPoint write SetToPoint;
+    property ToPoint: TPoint read FToPoint write SetToPoint;
   end;
 
   TJvLogic = class(TGraphicControl)
@@ -128,7 +134,7 @@ type
     StyleDown: boolean;
     mdp: TPoint;
     oldp: TPoint;
-    FGates: array[0..5] of TJanGate;
+    FGates: array[0..5] of TjanGate;
     Connectors: TList;
     newLeft: integer;
     newTop: integer;
@@ -139,7 +145,7 @@ type
     FOutPut2: boolean;
     FInput1: boolean;
     FLogicFunc: TJvLogicFunc;
-    function GetGate(Index: Integer): TJanGate;
+    function GetGate(Index: Integer): TjanGate;
     procedure AnchorConnectors;
     procedure MoveConnectors;
     procedure PaintLed(index: integer);
@@ -160,7 +166,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Paint; override;
-    property Gates[index: integer]: TJanGate read GetGate;
+    property Gates[index: integer]: TjanGate read GetGate;
   published
     property Input1: boolean read FInput1 write SetInput1;
     property Input2: boolean read FInput2 write SetInput2;
@@ -176,7 +182,7 @@ type
     doMove: boolean;
     mdp: TPoint;
     oldp: TPoint;
-    FGates: array[0..3] of TJanGate;
+    FGates: array[0..3] of TjanGate;
     Connectors: TList;
     newLeft: integer;
     newTop: integer;
@@ -184,7 +190,7 @@ type
     FInput1: boolean;
     FOutPut3: boolean;
     FOutPut2: boolean;
-    function GetGate(Index: Integer): TJanGate;
+    function GetGate(Index: Integer): TjanGate;
     procedure AnchorConnectors;
     procedure MoveConnectors;
     procedure PaintLed(index: integer);
@@ -202,7 +208,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Paint; override;
-    property Gates[index: integer]: TJanGate read GetGate;
+    property Gates[index: integer]: TjanGate read GetGate;
   published
     property Input1: boolean read FInput1 write SetInput1;
     property OutPut1: boolean read FOutPut1 write SetOutPut1;
@@ -268,15 +274,15 @@ type
     property OffColor: TColor read FOffColor write SetOffColor;
   end;
 
-  TJanSimBin = class(TGraphicControl)
+  TjanSimBin = class(TGraphicControl)
   private
     bmBin: Tbitmap;
   protected
     procedure resize; override;
   public
-    constructor Create(AOwner: Tcomponent); override;
-    destructor Destroy; override;
-    procedure Paint; override;
+    constructor create(AOwner: Tcomponent); override;
+    destructor destroy; override;
+    procedure paint; override;
   published
   end;
 
@@ -306,7 +312,7 @@ type
     procedure resize; override;
     procedure Loaded; override;
   public
-    constructor Create(AOwner: Tcomponent); override;
+    constructor create(AOwner: Tcomponent); override;
     destructor Destroy; override;
     procedure Paint; override;
   published
@@ -314,7 +320,11 @@ type
 
 implementation
 
+{$IFDEF WINDOWS}
 {$R ..\resources\JvSimImages.res}
+{$ELSE}
+{$R ../Resources/JvSimImages.res}
+{$ENDIF}
 
 procedure BinCheck(Acontrol: Tcontrol);
 // general bin procedure
@@ -359,8 +369,6 @@ begin
   conSize := 8;
   conPos := jcpTL;
   Edge := 0.5;
-  FFromPoint := TJvPoint.Create;
-  FToPoint := TJvPoint.Create;
 end;
 
 procedure TJvSIMConnector.DoMouseDown(x, y: integer);
@@ -748,17 +756,17 @@ begin
   FToLogic := Value;
 end;
 
-procedure TJvSIMConnector.SetFromPoint(const Value: TJvPoint);
+procedure TJvSIMConnector.SetFromPoint(const Value: TPoint);
 begin
   FFromPoint := Value;
 end;
 
-procedure TJvSIMConnector.SetToPoint(const Value: TJvPoint);
+procedure TJvSIMConnector.SetToPoint(const Value: TPoint);
 begin
   FToPoint := Value;
 end;
 
-procedure TJvSIMConnector.AnchorCorner(logTL: TPoint; ACorner: TJanConMode);
+procedure TJvSIMConnector.AnchorCorner(logTL: TPoint; ACorner: TjanConMode);
 var
   Rc: TRect;
 begin
@@ -1358,13 +1366,6 @@ begin
   setvo;
 end;
 
-destructor TJvSIMConnector.Destroy;
-begin
-  FFromPoint.Free;
-  FToPoint.Free;
-  inherited;
-end;
-
 { TJvLogic }
 
 constructor TJvLogic.Create(AOwner: TComponent);
@@ -1398,7 +1399,7 @@ begin
   connectors := TList.create;
 end;
 
-function TJvLogic.GetGate(Index: Integer): TJanGate;
+function TJvLogic.GetGate(Index: Integer): TjanGate;
 begin
   result := FGates[index];
 end;
@@ -1594,12 +1595,12 @@ begin
       Frame3D(canvas, R, clbtnhighlight, clbtnshadow, 1);
     // draw caption
     case FLogicFunc of
-      jlfAND: s := 'AND';
-      jlfOR: s := 'OR';
-      jlfNOT: s := 'NOT';
+      jlfAND: s := 'AND'; // do not localize
+      jlfOR: s := 'OR'; // do not localize
+      jlfNOT: s := 'NOT'; // do not localize
     end;
     brush.style := bsclear;
-    drawtext(canvas.handle, pchar(s), -1, R, DT_SINGLELINE or DT_CENTER or DT_VCENTER);
+    drawtextex(canvas, s, R, DT_SINGLELINE or DT_CENTER or DT_VCENTER);
   end;
 end;
 
@@ -2145,25 +2146,25 @@ begin
   end;
 end;
 
-{ TJanSimBin }
+{ TjanSimBin }
 
-constructor TJanSimBin.create(AOwner: Tcomponent);
+constructor TjanSimBin.create(AOwner: Tcomponent);
 begin
   inherited;
   width := 65;
   height := 65;
   bmBin := tbitmap.create;
-  bmBin.LoadFromResourceName(HInstance, 'RBIN');
+  bmBin.LoadFromResourceName(HInstance, 'RBIN'); // do not localize
 end;
 
-destructor TJanSimBin.destroy;
+destructor TjanSimBin.destroy;
 begin
   bmBin.free;
   inherited;
 
 end;
 
-procedure TJanSimBin.paint;
+procedure TjanSimBin.paint;
 var
   Rf: trect;
 begin
@@ -2174,7 +2175,7 @@ begin
   canvas.draw(16, 16, bmBin);
 end;
 
-procedure TJanSimBin.resize;
+procedure TjanSimBin.resize;
 begin
   inherited;
   width := 65;
@@ -2218,13 +2219,13 @@ begin
   bmButton := TBitmap.create;
   bmLight := TBitmap.create;
   bmRev := TBitmap.create;
-  bmCon.LoadFromResourceName(HInstance, 'RCON');
-  bmLogic.LoadFromResourceName(HInstance, 'RLOGIC');
-  bmButton.LoadFromResourceName(HInstance, 'RBUTTON');
-  bmLight.LoadFromResourceName(HInstance, 'RLIGHT');
-  bmRev.LoadFromResourceName(HInstance, 'RREV');
+  bmCon.LoadFromResourceName(HInstance, 'RCON'); // do not localize
+  bmLogic.LoadFromResourceName(HInstance, 'RLOGIC'); // do not localize
+  bmButton.LoadFromResourceName(HInstance, 'RBUTTON'); // do not localize
+  bmLight.LoadFromResourceName(HInstance, 'RLIGHT'); // do not localize
+  bmRev.LoadFromResourceName(HInstance, 'RREV'); // do not localize
   bmBin := tbitmap.create;
-  bmBin.LoadFromResourceName(HInstance, 'RBIN');
+  bmBin.LoadFromResourceName(HInstance, 'RBIN'); // do not localize
   RCon := rect(0, 0, 32, 32);
   RLogic := rect(33, 0, 64, 32);
   RButton := rect(0, 33, 32, 64);
@@ -2463,7 +2464,7 @@ begin
   inherited;
 end;
 
-function TJvSimReverse.GetGate(Index: Integer): TJanGate;
+function TJvSimReverse.GetGate(Index: Integer): TjanGate;
 begin
   result := FGates[index];
 end;

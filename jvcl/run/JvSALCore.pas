@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Robert Love [rlove@slcdug.org].
 
-Last Modified: 2000-06-15
+Last Modified: 2003-10-28
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -30,7 +30,13 @@ unit JvSALCore;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  SysUtils, Classes,
+  {$IFDEF COMPLIB_VCL}
+  Windows, Messages, Graphics, Controls, Forms, Dialogs,
+  {$ENDIF}
+  {$IFDEF COMPLIB_CLX}
+  QGraphics, QControls, QForms, QDialogs,
+  {$ENDIF}
   JvSAL, JvConsts, JvTypes, Math{$IFDEF DELPHI6_UP}, Variants{$ENDIF};
 
 type
@@ -102,28 +108,23 @@ type
     { Published declarations }
   end;
 
+implementation
+
+{$IFDEF BCB}
+uses Variants;
+{$ENDIF}
 
 resourcestring
   sVariablesIsNotInitialized = 'variable %s is not initialized';
   sDivisionByZeroError = 'division by zero error';
   sMissingendselect = 'missing "endselect"';
 
-implementation
-
-  {$IFDEF BCB}
-  {$IFNDEF BCB5}
-uses Variants;
-  {$ENDIF}
-  {$ENDIF}
-
-const
-  tab = chr(9);
-
   { TJvSALCoreBasic }
 
 procedure TJvSALCore.AddProcedures(aSal: TJvSAL);
 begin
   sal := aSal;
+ // begin - do not localize
   sal.AddProcedure('if', xif, xpif);
   sal.AddProcedure('ifnot', xifnot, xpifnot);
   sal.AddProcedure('else', xelse, xpelse);
@@ -169,6 +170,7 @@ begin
   sal.AddProcedure('drop', xdrop, nil);
   sal.AddProcedure('swap', xswap, nil);
   sal.AddProcedure('cap', xcap, nil);
+ // end - do not localize
 end;
 
 procedure TJvSALCore.X_Or;
@@ -286,7 +288,7 @@ begin
   //  c:=sal.atoms.count;
   while sal.pc < sal.atoms.count do
   begin
-    if sal.atoms[sal.pc] = 'endselect' then
+    if sal.atoms[sal.pc] = 'endselect' then // do not localize
     begin
       sal.pc := sal.pc + 1;
       exit;
