@@ -60,7 +60,7 @@ uses
   {$IFDEF LINUX}
   Xlib, QStdCtrls, StrUtils,
   {$ENDIF LINUX}
-  SysUtils, Classes, QGraphics, QClipbrd, 
+  SysUtils, Classes, QGraphics, QClipbrd, QControls, 
   Qt, QWindows, 
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,

@@ -35,10 +35,11 @@ unit JvQLookOut;
 interface
 
 uses
-  SysUtils, Classes, 
+  SysUtils, Classes,
+  QWindows, QMessages,  
   QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QButtons, QMenus, QImgList, 
-  QTypes, Qt, QWindows, 
-  JvQTypes, JvQConsts, JvQComponent, JvQThemes, JvQExControls, JvQExButtons;
+  Qt,	 
+  JvQJCLUtils, JvQTypes, JvQConsts, JvQComponent, JvQThemes, JvQExControls, JvQExButtons;
 
 const
   CM_IMAGESIZECHANGED = CM_BASE + 100;
@@ -324,8 +325,8 @@ type
     procedure CalcArrows; virtual;
     procedure ScrollChildren(Start: Word); virtual;
     procedure AlignControls(Control: TControl; var Rect: TRect); override;
-    procedure SetParent( const  AParent: TWinControl); override;  
-    procedure CreateWidget; override; 
+    procedure SetParent( const  AParent: TWinControl); override;
+    procedure CreateWnd; override;
     procedure SmoothScroll(AControl: TControl; NewTop, AInterval: Integer; Smooth: Boolean); virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -456,9 +457,9 @@ type
     procedure CalcArrows; override;
     procedure ScrollChildren(Start: Word); override;
     procedure DrawTopButton; override;
-    procedure Paint; override; 
-    procedure WMNCPaint(var Msg: TMessage); message WM_NCPAINT; 
-    procedure CreateWidget; override; 
+    procedure Paint; override;
+    procedure CreateWnd; override; 
+    procedure WMNCPaint(var Msg: TMessage); message WM_NCPAINT;
   public
     constructor Create(AOwner: TComponent); override;
     function AddButton: TJvExpressButton;
@@ -1241,8 +1242,8 @@ begin
       Flags := DT_END_ELLIPSIS or DT_WORDBREAK or DT_CENTER or DT_VCENTER ;
     if FDown then
       OffsetRect(R, FOffset, FOffset);
-    FTextRect := R;  
-    H := DrawText(Canvas, Caption, -1, FTextRect, Flags or DT_CALCRECT); 
+    FTextRect := R;
+    H := DrawText(Canvas, Caption, -1, FTextRect, Flags or DT_CALCRECT);
     if ImageSize = isLarge then
     begin
       FTextRect.Top := R.Top;
@@ -1254,8 +1255,8 @@ begin
       FTextRect.Top := (Height - Canvas.TextHeight(Caption)) div 2;
       FTextRect.Bottom := FTextRect.Top + Canvas.TextHeight(Caption);
       FTextRect.Right := R.Left + Canvas.TextWidth(Caption);
-    end;  
-    DrawText(Canvas, Caption, -1, R, Flags); 
+    end;
+    DrawText(Canvas, Caption, -1, R, Flags);
   end;
 end;
 
@@ -1901,14 +1902,11 @@ begin
   FInScroll := False;
 end;
 
-
-
-procedure TJvLookOutPage.CreateWidget;
-
+procedure TJvLookOutPage.CreateWnd;
 var
   R: TRect;
-begin  
-  inherited CreateWidget; 
+begin
+  inherited CreateWnd;
   R := GetClientRect;
   if not Assigned(FUpArrow) then
   begin
@@ -2235,16 +2233,16 @@ begin
     begin
       { draw disabled text }
       SetTextColor(DC, ColorToRGB(clBtnHighlight));
-      OffsetRect(R, 1, 1);  
-      DrawTextW(DC, PWideChar(FCaption), Length(FCaption), R, DT_CENTER or DT_VCENTER or DT_SINGLELINE); 
+      OffsetRect(R, 1, 1);
+      DrawText(DC, FCaption, Length(FCaption), R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
       OffsetRect(R, -1, -1);
       SetTextColor(DC, ColorToRGB(clBtnShadow));
     end
     else
       SetTextColor(DC, ColorToRGB(Canvas.Font.Color));
     if FShowPressed and FDown then
-      OffsetRect(R, 1, 1);  
-    DrawTextW(DC, PWideChar(FCaption), Length(FCaption), R, DT_CENTER or DT_VCENTER or DT_SINGLELINE); 
+      OffsetRect(R, 1, 1);
+    DrawText(DC, FCaption, Length(FCaption), R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
   end;
 end;
 
@@ -2374,8 +2372,8 @@ begin
   begin
     FFlatButtons := Value;
     //    for I := 0 to PageCount - 1 do
-    //      Pages[I].DrawTopButton;  
-    RecreateWidget; 
+    //      Pages[I].DrawTopButton;
+    RecreateWnd;
   end;
 end;
 
@@ -2482,8 +2480,8 @@ procedure TJvLookOut.SetBorderStyle(Value: TBorderStyle);
 begin
   if FBorderStyle <> Value then
   begin
-    FBorderStyle := Value;  
-    RecreateWidget; 
+    FBorderStyle := Value;
+    RecreateWnd;
   end;
 end;
 
@@ -2631,7 +2629,7 @@ begin
     OffsetRect(RW, -RW.Left, -RW.Top);
     if FBorderStyle = bsSingle then
     begin 
-      DrawEdge(DC, RW, EDGE_SUNKEN, BF_RECT)
+      QWindows.DrawEdge(DC, RW, EDGE_SUNKEN, BF_RECT)
     end
     else
     begin
@@ -2674,7 +2672,7 @@ end;
 
 procedure TJvExpress.Paint;
 begin 
-  Perform(WM_NCPAINT, 0, 0); 
+  Perform(WM_NCPAINT, 0, 0); // paint the borders 
   if not FBitmap.Empty then
   begin
     ControlStyle := ControlStyle + [csOpaque];
@@ -2795,12 +2793,9 @@ end;
 
 
 
-
-
-procedure TJvExpress.CreateWidget;
+procedure TJvExpress.CreateWnd;
 begin
-  inherited CreateWidget;
-
+  inherited CreateWnd;
   if not Assigned(FUpArrow) then
     FUpArrow := TJvUpArrowBtn.Create(nil);
 
@@ -2840,7 +2835,7 @@ begin
     OffsetRect(RW, -RW.Left, -RW.Top);
     if FBorderStyle = bsSingle then
     begin 
-      DrawEdge(DC, RW, EDGE_SUNKEN, BF_RECT);
+      QWindows.DrawEdge(DC, RW, EDGE_SUNKEN, BF_RECT);
     end
     else
     begin

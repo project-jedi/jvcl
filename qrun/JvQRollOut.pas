@@ -289,10 +289,8 @@ type
   end;
 
 implementation
-
-
 uses
-  QForms; 
+  QForms; // for IsAccel()
 
 // (p3) not used
 // const
@@ -596,13 +594,11 @@ end;
 procedure TJvCustomRollOut.RedrawControl(DrawAll: Boolean);
 begin
   if DrawAll then
-  begin 
-    Canvas.Brush.Style := bsSolid; 
+  begin
     Invalidate;
   end
   else
-  begin 
-    Canvas.Brush.Style := bsClear; 
+  begin
     DrawButtonFrame;
   end;
 end;
@@ -852,8 +848,8 @@ procedure TJvCustomRollOut.DrawButtonFrame;
 var
   R: TRect;
   TopC, BottomC: TColor;
-  FIndex: Integer; 
-  WS: WideString; 
+  FIndex: Integer;
+  Text: TCaption;
 begin
   if FPlacement = plTop then
     FButtonRect := Rect(BevelWidth, BevelWidth, Width - BevelWidth, FButtonHeight + BevelWidth)
@@ -925,15 +921,15 @@ begin
 
   if Length(Caption) > 0 then
   begin
+    Text := Caption;
     SetBkMode(Canvas.Handle, Transparent);
     if FMouseDown and FInsideButton then
-      OffsetRect(R, 1, 1);  
-    WS := Caption;
+      OffsetRect(R, 1, 1);
     SetPenColor(Canvas.Handle, Font.Color);
     if Placement = plLeft then
-      DrawText(Canvas.Handle, WS, -1, R, DT_VCENTER, 270)
+      DrawText(Canvas.Handle, Text, -1, R, DT_VCENTER, 270)
     else
-      DrawText(Canvas.Handle, WS, -1, R, DT_VCENTER, 0) 
+      DrawText(Canvas.Handle, Text, -1, R, DT_VCENTER, 0)
   end;
   if ShowFocus and Focused then
   begin

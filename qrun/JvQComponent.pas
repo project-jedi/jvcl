@@ -51,6 +51,8 @@ const
   NullHandle = nil;
 
 type
+  HDC = QWindows.HDC;
+  {$NODEFINE HDC}
   TMessage = QWindows.TMessage;
   {$NODEFINE TMessage}
   TMsg = QWindows.TMsg;
@@ -60,6 +62,11 @@ type
   TBevelKind = JvQExControls.TBevelKind;
   {$NODEFINE TBevelKind}
   function ColorToRGB(Color: TColor; Instance: TWidgetControl = nil): TColor;
+
+const
+  clBtnHighlight = clNormalLight;
+  clBtnShadow = clNormalDark;
+
 
 
 type

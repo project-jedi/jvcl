@@ -37,7 +37,7 @@ interface
 
 uses
   SysUtils, Classes, TypInfo, QWindows, QGraphics, QControls,
-  JvQXPCore;
+  JvQJCLUtils, JvQXPCore;
 
 function JvXPMethodsEqual(const Method1, Method2: TMethod): Boolean;
 procedure JvXPDrawLine(const ACanvas: TCanvas; const X1, Y1, X2, Y2: Integer);
@@ -274,9 +274,8 @@ procedure JvXPRenderText(const AParent: TControl; const ACanvas: TCanvas;
   var Rect: TRect; Flags: Integer); overload;
 
   procedure DoDrawText;
-  begin  
-    SetPenColor(ACanvas.Handle, ACanvas.Font.Color);
-    DrawText(ACanvas.Handle, WideString(AText), -1, Rect, Flags); 
+  begin
+    DrawText(ACanvas, AText, -1, Rect, Flags);
   end;
 
 begin
