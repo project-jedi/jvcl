@@ -41,7 +41,6 @@ type
   TCaptionAlignment = (fcaNone, fcaLeft, fcaRight, fcaCenter, fcaWidth);
   TJvgGroupBox = class(TCustomGroupBox)
   private
-    FEnabled: boolean;
     FBorder: TJvgBevelOptions;
     FCaptionBorder: TJvgBevelOptions;
     FGradient: TJvgGradient;
@@ -85,17 +84,20 @@ type
     procedure Collapse_(fCollapse: boolean);
     procedure SmthChanged(Sender: TObject);
   protected
-    procedure SetEnabled(Value: boolean); override;
     procedure ReadFullHeight(Reader: TReader);
     procedure WriteFullHeight(Writer: TWriter);
     procedure Paint; override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure AdjustClientRect(var Rect: TRect); override;
     //    procedure WMLButtonDown(var Message: TWMLButtonDown); message WM_LBUTTONDOWN;
+
     procedure WMLButtonDown(var Message: TWMLButtonDown); message
       WM_LBUTTONDOWN;
     procedure WMMouseMove(var Message: TWMMouseMove); message WM_MOUSEMOVE;
     procedure WMLButtonUp(var Message: TWMLButtonUp); message WM_LBUTTONUP;
+    procedure CMEnabledchanged(var Message: TMessage);
+      message CM_ENABLEDCHANGED;
+
   public
     procedure Collapse(fCollapse: boolean);
     constructor Create(AOwner: TComponent); override;
@@ -131,7 +133,7 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
-    property Enabled: boolean read FEnabled write SetEnabled default true;
+    property Enabled;
     property Border: TJvgBevelOptions read FBorder write FBorder;
     property CaptionAlignment: TCaptionAlignment
       read FCaptionAlignment write SetCaptionAlignment default fcaNone;
@@ -174,7 +176,6 @@ constructor TJvgGroupBox.Create(AOwner: TComponent);
 begin
   inherited;
   //  ControlStyle := ControlStyle + [csOpaque];
-  FEnabled := true;
   FBorder := TJvgBevelOptions.Create;
   FCaptionBorder := TJvgBevelOptions.Create;
   FGradient := TJvgGradient.Create;
@@ -281,6 +282,14 @@ begin
     exit;
   fScrolling := false;
   Screen.Cursor := crDefault;
+end;
+
+procedure TJvgGroupBox.CMEnabledchanged(var Message: TMessage);
+var
+  i: integer;
+begin
+  for i := 0 to ControlCount - 1 do
+    Controls[i].Enabled := Enabled;
 end;
 
 procedure TJvgGroupBox.ReadFullHeight(Reader: TReader);
@@ -643,20 +652,10 @@ begin
 end;
 //____________________________________________________ Properties Methods _
 
-procedure TJvgGroupBox.SetEnabled(Value: boolean);
-var
-  i: integer;
-begin
-  FEnabled := Value;
-  inherited Enabled := FEnabled;
-  for i := 0 to ControlCount - 1 do
-    Controls[i].Enabled := FEnabled;
-end;
-
 procedure TJvgGroupBox.SetCaptionAlignment(Value: TCaptionAlignment);
 begin
   if FCaptionAlignment = Value then
-    exit;
+    Exit;
   FCaptionAlignment := Value;
   Invalidate;
 end;
