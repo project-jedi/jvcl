@@ -4384,7 +4384,9 @@ var
 begin
   for Position := Low(TJvDockPosition) to High(TJvDockPosition) do
   begin
-    SplitterStyle[Position].Splitter := nil;
+    { SplitterStyles may already be destroyed }
+    if Assigned(SplitterStyle[Position]) then
+      SplitterStyle[Position].Splitter := nil;
     FreeAndNil(FDockPanels[Position]);
     FreeAndNil(FSplitters[Position]);
   end;
