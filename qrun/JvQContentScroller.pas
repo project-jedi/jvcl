@@ -177,7 +177,7 @@ var
   Flag: Integer;
 begin
   if not Assigned(FTimer) then
-    FTimer := TTimer.Create(nil);
+    FTimer := TTimer.Create(self);
   // FPosition := -Abs(FScrollStart);
   // ScrollBy(0,FScrollStart);
   FTimer.Enabled := False;
@@ -196,6 +196,7 @@ end;
 
 procedure TJvContentScroller.FreeTimer;
 begin
+  (*)
   if Assigned(FTimer) then
   begin
     FTimer.Enabled := False;
@@ -203,6 +204,7 @@ begin
     FTimer.Free;
     FTimer := nil;
   end;
+  (*)
   if FScrollDirection = sdUp then
     ScrollBy(0, FPosition)
   else
@@ -212,6 +214,7 @@ begin
   if FileExists(FMediaFile) then
     PlaySound(nil, 0, SND_ASYNC);
   {$ENDIF MSWINDOWS}
+
 end;
 
 procedure TJvContentScroller.DoTimer(Sender: TObject);

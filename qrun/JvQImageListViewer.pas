@@ -29,8 +29,9 @@ unit JvQImageListViewer;
 {$I jvcl.inc}
 interface
 uses
-  Windows, SysUtils, Messages, Classes, Controls,
-  Graphics, StdCtrls, ComCtrls, ImgList, JvQCustomItemViewer;
+  SysUtils, Classes,
+  QControls, QGraphics, QStdCtrls, QComCtrls, QImgList,
+  JvQCustomItemViewer;
 
 type
   TJvImageListViewerOptions = class(TJvCustomItemViewerOptions)
@@ -259,6 +260,7 @@ begin
       DrawStyle := DrawingStyles[Options.DrawingStyle];
     ImageList_Draw(Images.Handle, Index, Canvas.Handle, X, Y, DrawStyle or
       DrawMask[Images.ImageType = itImage]);
+    Images.
     if S <> '' then
     begin
       if cdsSelected in State then

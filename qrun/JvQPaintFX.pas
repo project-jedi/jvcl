@@ -34,8 +34,6 @@ unit JvQPaintFX;
 
 interface
 
-
-
 uses
   
   
@@ -1698,11 +1696,9 @@ var
   contrib: PCListList;
   rgb: TRGB;
   color: TColorRGB;
-  
   SourceLine, DestLine: PRGBList;
   SourcePixel, DestPixel: PColorRGB;
   Delta, DestDelta: Integer;
-  
   SrcWidth, SrcHeight, DstWidth, DstHeight: Integer;
 
   function Color2RGB(Color: TColor): TColorRGB;
@@ -1743,11 +1739,9 @@ begin
       yscale := (DstHeight - 1) / (SrcHeight - 1);
     // This implementation only works on 24-bit images because it uses
     // TBitmap.ScanLine
-    
     Src.PixelFormat := pf24bit;
     Dst.PixelFormat := Src.PixelFormat;
     Work.PixelFormat := Src.PixelFormat;
-    
 
     // --------------------------------------------
     // Pre-calculate filter contributions for a row
@@ -1827,10 +1821,8 @@ begin
     // ----------------------------------------------------
     for k := 0 to SrcHeight - 1 do
     begin
-      
       SourceLine := Src.ScanLine[k];
       DestPixel := Work.ScanLine[k];
-      
       for i := 0 to DstWidth - 1 do
       begin
         rgb.R := 0.0;
@@ -1838,9 +1830,7 @@ begin
         rgb.B := 0.0;
         for j := 0 to contrib^[i].n - 1 do
         begin
-          
           color := SourceLine^[contrib^[i].p^[j].pixel];
-          
           weight := contrib^[i].p^[j].weight;
           if (weight = 0.0) then
             Continue;
@@ -1869,12 +1859,10 @@ begin
           color.B := 0
         else
           color.B := Round(rgb.B);
-        
         // Set new pixel value
         DestPixel^ := color;
         // Move on to next column
         Inc(DestPixel);
-        
       end;
     end;
 
@@ -1960,17 +1948,13 @@ begin
     // --------------------------------------------------
     // Apply filter to sample vertically from Work to Dst
     // --------------------------------------------------
-    
     SourceLine := Work.ScanLine[0];
     Delta := Integer(Work.ScanLine[1]) - Integer(SourceLine);
     DestLine := Dst.ScanLine[0];
     DestDelta := Integer(Dst.ScanLine[1]) - Integer(DestLine);
-    
     for k := 0 to DstWidth - 1 do
     begin
-      
       DestPixel := pointer(DestLine);
-      
       for i := 0 to DstHeight - 1 do
       begin
         rgb.R := 0;
@@ -1979,9 +1963,7 @@ begin
         // weight := 0.0;
         for j := 0 to contrib^[i].n - 1 do
         begin
-          
           color := PColorRGB(Integer(SourceLine) + contrib^[i].p^[j].pixel * Delta)^;
-          
           weight := contrib^[i].p^[j].weight;
           if (weight = 0.0) then
             Continue;
@@ -2010,15 +1992,11 @@ begin
           color.B := 0
         else
           color.B := Round(rgb.B);
-        
         DestPixel^ := color;
         Inc(Integer(DestPixel), DestDelta);
-        
       end;
-      
       Inc(SourceLine, 1);
       Inc(DestLine, 1);
-      
     end;
 
     // Free the memory allocated for vertical filter weights

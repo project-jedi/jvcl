@@ -381,6 +381,7 @@ type
     function GetBlobIndex(const Index: Word): Word;
     function GetEof: boolean;
     function GetUniqueRelationName: string;
+    function GetBof: boolean;
   protected
     function GetAsString(const Index: Word): String; override;
     function GetAsWideString(const Index: Word): WideString; override;
@@ -410,6 +411,7 @@ type
     function GetBlobSize(const Index: Word): Cardinal;
 
     property Eof: boolean read GetEof;
+    property Bof: boolean read GetBof;
 
     property CachedFetch: boolean read FCachedFetch;
     property FetchBlobs: boolean read FFetchBlobs;
@@ -3113,9 +3115,17 @@ const
 
   function TSQLResult.GetEof: boolean;
   begin
-    Result := FScrollEOF;
+    Result := FScrollEOF and (
+       (not CachedFetch) or
+       (RecordCount = 0) or
+       (FCurrentRecord = RecordCount - 1));
   end;
 
+  function TSQLResult.GetBof: boolean;
+  begin
+    Result := (FCurrentRecord = 0) or (RecordCount = 0);
+  end;
+  
   procedure TSQLResult.ReadBlob(const Index: Word; var str: string);
   begin
     CheckRange(Index);
@@ -3571,8 +3581,12 @@ end;
 function TSQLDA.GetFieldType(const Index: Word): TUIBFieldType;
 begin
   CheckRange(Index);
-  if FXSQLDA.sqlvar[Index].SqlScale < 0 then
-    Result := uftNumeric else
+  if (FXSQLDA.sqlvar[Index].SqlScale < 0) then
+  begin
+    if FXSQLDA.sqlvar[Index].sqltype and not (1) = SQL_DOUBLE  then
+      Result := uftDoublePrecision else
+      Result := uftNumeric;
+  end else
   case FXSQLDA.sqlvar[Index].sqltype and not (1) of
     SQL_TEXT        : Result := uftChar;
     SQL_VARYING     : Result := uftVarchar;

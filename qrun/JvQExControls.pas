@@ -554,6 +554,7 @@ begin
 end;
 
 {$IFDEF COMPILER6}
+
 // redirect Kylix 3 / Delphi 7 function names to Delphi 6 available function
 {$IF not declared(PatchedVCLX)}
 type
@@ -578,6 +579,7 @@ begin
     QKeyEvent_destroy(Event);
   end;
 end;
+
 {$ENDIF COMPILER6}
 
 
@@ -596,7 +598,7 @@ end;
 
 procedure TCustomEdit_Copy(Instance: TWinControl);
 begin
-
+  
   
   if Instance is TCustomMemo then
     QMultiLineEdit_copy(QMultiLineEditH(Instance.Handle))
@@ -627,7 +629,7 @@ begin
 end;
 
 procedure TCustomEdit_Paste(Instance: TWinControl);
-
+  
   procedure LineEditPaste;
   var
     WValue: WideString;
@@ -642,7 +644,7 @@ procedure TCustomEdit_Paste(Instance: TWinControl);
     QClxLineEdit_insert(QClxLineEditH(Instance.Handle), PWideString(@WValue));
     QClxLineEdit_resetSelection(QClxLineEditH(Instance.Handle));
   end;
-
+  
 begin
   
   
@@ -1254,7 +1256,107 @@ begin
   end;
 end;
 
+{$IFDEF COMPILER5}
+var
+  AutoSizeOffset: Cardinal;
+  TControl_SetAutoSize: Pointer;
 
+procedure OrgSetAutoSize(Instance: TControl; Value: Boolean);
+asm
+  dd    0, 0, 0, 0  // 16 Bytes
+end;
+
+procedure TOpenControl_SetAutoSize(Instance: TControl; Value: Boolean);
+begin
+  with TOpenControl(Instance) do
+  begin
+    if AutoSize <> Value then
+    begin
+      PBoolean(Cardinal(Instance) + AutoSizeOffset)^ := Value;
+      if Value then
+        AdjustSize;
+    end;
+  end;
+  // same as OrgSetAutoSize(Instance, Value); but secure
+end;
+
+procedure SetAutoSizeHook(Instance: TControl; Value: Boolean);
+var
+  IntfControl: IJvControlEvents;
+begin
+  if Instance.GetInterface(IJvControlEvents, IntfControl) then
+    IntfControl.SetAutoSize(Value)
+  else
+    TOpenControl_SetAutoSize(Instance, Value);
+end;
+
+{$OPTIMIZATION ON} // be sure to have optimization activated
+function GetCode(Instance: TOpenControl): Boolean; register;
+begin
+  { generated code:
+      8A40xx       mov al,[eax+Byte(Offset)]
+  }
+  Result := Instance.AutoSize;
+end;
+
+procedure SetCode(Instance: TOpenControl); register;
+begin
+  { generated code:
+      B201         mov dl,$01
+      E8xxxxxxxx   call TControl.SetAutoSize
+  }
+  Instance.AutoSize := True;
+end;
+
+type
+  PGetCodeRec = ^TGetCodeRec;
+  TGetCodeRec = packed record
+    Sign: Word; // $408a   bytes swapped
+    Offset: Byte;
+  end;
+
+type
+  PSetCodeRec = ^TSetCodeRec;
+  TSetCodeRec = packed record
+    Sign1: Word; // $01b2  bytes swapped
+    Sign2: Byte; // $e8
+    Offset: Integer;
+  end;
+
+const
+  GetCodeSign = $408a;
+  SetCodeSign1 = $01b2;
+  SetCodeSign2 = $e8;
+
+procedure InitHookVars;
+var
+  PGetCode: PGetCodeRec;
+  PSetCode: PSetCodeRec;
+begin
+  TControl_SetAutoSize := nil;
+  AutoSizeOffset := 0;
+
+  PGetCode := @GetCode;
+  PSetCode := @SetCode;
+
+  if (PGetCode^.Sign = GetCodeSign) and
+     (PSetCode^.Sign1 = SetCodeSign1) and (PSetCode^.Sign2 = SetCodeSign2) then
+  begin
+    AutoSizeOffset := PGetCode^.Offset;
+    TControl_SetAutoSize := GetRelocAddress(
+      Pointer(Integer(@SetCode) + SizeOf(TSetCodeRec) + PSetCode^.Offset)
+    );
+  end;
+end;
+
+initialization
+  InitHookVars;
+  InstallProcHook(TControl_SetAutoSize, @SetAutoSizeHook, @OrgSetAutoSize);
+
+finalization
+  UninstallProcHook(@OrgSetAutoSize);
+
+{$ENDIF COMPILER5}
 
 
 

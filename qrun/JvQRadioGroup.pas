@@ -169,6 +169,7 @@ begin
       Flags := DrawTextBiDiModeFlags(DT_SINGLELINE);
       DrawTextW(Handle, PWideChar(Text), Length(Text), R, Flags or DT_CALCRECT);
       Brush.Color := Color;
+      SetBkMode(Handle, OPAQUE);     // asn
       DrawTextW(Handle, PWideChar(Text), Length(Text), R, Flags);
     end;
   end;

@@ -38,7 +38,7 @@ uses
   SysUtils, Classes,
   
   
-  Types, QGraphics, QControls, QStdCtrls, QWindows,
+  QTypes, Types, QGraphics, QControls, QStdCtrls, QWindows,
   
   JvQExStdCtrls;
 
@@ -66,10 +66,9 @@ type
     FWaiting: Boolean;
     FScale: Real;
     // (p3) renamed
-    FText: string;
+    FText: TCaption;
     FCharHeight: Integer;
     FCharWidth: Integer;
-    function GetCol(Ch: Char): Word;
     function GetScrollBy: Integer;
     procedure SetActive(Value: Boolean);
     procedure SetStretch(Value: Boolean);
@@ -80,9 +79,14 @@ type
     procedure Deactivate;
     procedure UpdatePos;
     procedure DoOnTimer(Sender: TObject);
-    function GetRow(Ch: Char): Word;
-    procedure SetText(Value: string);
+    
   protected
+    
+    function GetText: TCaption; override;
+    procedure SetText(const Value: TCaption); override;
+    function GetCol(Ch: WideChar): Word;
+    function GetRow(Ch: WideChar): Word;
+    
     procedure ColorChanged; override;
     procedure Paint; override;
     // (rom) made protected property
@@ -99,7 +103,7 @@ type
     property WaitOnEnd: Integer read FWait write FWait;
     property Skin: TPicture read FPicture write SetPicture;
     property Color;
-    property Text: string read FText write SetText;
+    property Text: TCaption read FText write SetText;
     property Align;
     property Alignment;
     property FocusControl;
@@ -135,7 +139,12 @@ implementation
 uses
   JvQTypes, JvQResources;
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvWinampLabel.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvWinampLabel.res}
+{$ENDIF LINUX}
 
 const
   // (p3) fixed as suggested by Remko Bonte
@@ -303,7 +312,20 @@ begin
   Repaint;
 end;
 
-function TJvWinampLabel.GetCol(Ch: Char): Word;
+
+function UpCase(Ch: WideChar): WideChar;
+var
+  W: WideString;
+begin
+  W := WideUpperCase(Ch);
+  Result := W[1];
+end;
+
+
+
+
+function TJvWinampLabel.GetCol(Ch: WideChar): Word;
+
 var
   Index: Integer;
 begin
@@ -321,7 +343,10 @@ begin
     Result := (Index - 1) * CharWidth;
 end;
 
-function TJvWinampLabel.GetRow(Ch: Char): Word;
+
+
+function TJvWinampLabel.GetRow(Ch: WideChar): Word;
+
 begin
   Ch := UpCase(Ch);
   Result := 0;
@@ -435,7 +460,14 @@ begin
   end;
 end;
 
-procedure TJvWinampLabel.SetText(Value: string);
+
+function TJvWinampLabel.GetText: TCaption;
+begin
+  Result := FText;
+end;
+
+
+procedure TJvWinampLabel.SetText(const Value: TCaption);
 var
   Rec: TRect;
 begin

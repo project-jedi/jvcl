@@ -134,8 +134,8 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure FontChanged; override;
-    
-    
+
+    procedure Loaded; override;
     function DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState): Boolean; override;
     
   public
@@ -555,10 +555,10 @@ var
 
 begin
   // (p3) remove warnings
-  OldFontColor := 0;
-  OldBrushColor := 0;
-  RemFontColor := 0;
-  RemBrushColor := 0;
+//  OldFontColor := 0;
+//  OldBrushColor := 0;
+//  RemFontColor := 0;
+//  RemBrushColor := 0;
   OldAlignment := taLeftJustify;
 
   if Canvas <> nil then
@@ -807,13 +807,18 @@ constructor TJvCustomHTListBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   // Kaczkowski
-  Style := lbOwnerDrawVariable;
   ColorHighlight := clHighlight;
   ColorHighlightText := clHighlightText;
   ColorDisabledText := clGrayText;
+//  Style := lbOwnerDrawVariable;
   // Kaczkowski
 end;
 
+procedure TJvCustomHTListBox.Loaded;
+begin
+  inherited;
+  Style := lbOwnerDrawVariable;
+end;
 
 
 function TJvCustomHTListBox.DrawItem(Index: Integer; Rect: TRect;

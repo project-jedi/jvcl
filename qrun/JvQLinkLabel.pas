@@ -99,8 +99,8 @@ type
     procedure SetAutoHeight(const Value: Boolean);
     procedure SetMarginHeight(const Value: Integer);
     procedure SetMarginWidth(const Value: Integer);
-    function GetText: TStrings;
-    procedure SetText(const Value: TStrings);
+    function GetText: TStrings;  reintroduce; 
+    procedure SetText(const Value: TStrings);  reintroduce; 
     procedure SetLayout(AValue: TTextLayout);     // Bianconi
   protected
     FNodeTree: TNodeTree;

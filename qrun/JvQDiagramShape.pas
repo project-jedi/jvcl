@@ -37,10 +37,10 @@ uses
   {$ENDIF MSWINDOWS}
   
   
-  Types, QGraphics, QControls, QExtCtrls, QImgList, QWindows,
+  QTypes, Types, QGraphics, QControls, QExtCtrls, QImgList, QWindows,
   
   SysUtils, Classes,
-  JvQComponent;
+  JvQComponent, JvQTypes;
 
 type
   TJvTextShape = class;
@@ -88,7 +88,6 @@ type
     property Selected: Boolean read FSelected write SetSelected;
     property Caption: TJvTextShape read FCaption write SetCaption;
     property RightClickSelect: Boolean read FRightClickSelect write FRightClickSelect default True;
-    
     property OnDblClick;
   end;
 
@@ -153,10 +152,10 @@ type
 
   TJvTextShape = class(TJvSizeableShape)
   private
-    FText: string;
+    FText: TCaption;
     FAutoSize: Boolean;
     FFont: TFont;
-    procedure SetText(Value: string);
+    
     procedure SetFont(Value: TFont);
     procedure FontChange(Sender: TObject);
   protected
@@ -165,6 +164,8 @@ type
     
     
     procedure SetParent(const AParent: TWidgetControl); override;
+    procedure SetText(const Value: TCaption); override;
+    function GetText: TCaption; override;
     
     procedure Paint; override;
   public
@@ -172,7 +173,7 @@ type
     destructor Destroy; override;
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
   published
-    property Text: string read FText write SetText;
+    property Text: TCaption read FText write SetText;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
     property Font: TFont read FFont write SetFont;
   end;
@@ -554,7 +555,7 @@ begin
     CoveredShape.FWasCovered := True;
   end
   else
-    if Assigned(Parent) then
+  if Assigned(Parent) then
   begin
     // Send mouse down message to Parent. The typecast is purely to gain access
     // to the Parent.MouseDown method. Need to convert coordinates to parent's
@@ -751,12 +752,9 @@ begin
     Exit;
 
   if Selected then
-    Result := (Left + DeltaX >= 0) and
-      (Top + DeltaY >= 0) and
-      (Left + DeltaX + Width - 1 <
-      Parent.ClientRect.Right - Parent.ClientRect.Left) and
-      (Top + DeltaY + Height - 1 <
-      Parent.ClientRect.Bottom - Parent.ClientRect.Top);
+    Result := (Left + DeltaX >= 0) and (Top + DeltaY >= 0) and
+      (Left + DeltaX + Width - 1 < Parent.ClientRect.Right - Parent.ClientRect.Left) and
+      (Top + DeltaY + Height - 1 < Parent.ClientRect.Bottom - Parent.ClientRect.Top);
 end;
 
 procedure TJvMoveableShape.MoveShapes(DeltaX, DeltaY: Integer);
@@ -1153,7 +1151,14 @@ begin
   SetBounds(Left, Top, FMinWidth, FMinHeight);
 end;
 
-procedure TJvTextShape.SetText(Value: string);
+
+function TJvTextShape.GetText: TCaption;
+begin
+  Result := FText;
+end;
+
+
+procedure TJvTextShape.SetText(const Value: TCaption);
 begin
   if FText <> Value then
   begin
@@ -1198,8 +1203,11 @@ begin
     Exit;
   Canvas.Font := Font;
   TempRect := ClientRect; // So can pass as a var parameter
-  DrawText(Canvas.Handle, PChar(FText), Length(FText), TempRect,
+  
+  
+  DrawTextW(Canvas.Handle, PWideChar(FText), Length(FText), TempRect,
     DT_CENTER or DT_NOPREFIX or DT_WORDBREAK);
+  
   inherited Paint;
 end;
 
@@ -1868,10 +1876,10 @@ begin
       Inc(Corner2Pt.X, RectHeight(EndTermRect) div 2);
     end;
     //    Polyline([Corner1Pt,PointPt,Corner2Pt]);
-    MoveTo(PointPt.x, PointPt.y);
-    LineTo(Corner1Pt.x, Corner1Pt.y);
-    MoveTo(PointPt.x, PointPt.y);
-    LineTo(Corner2Pt.x, Corner2Pt.y);
+    MoveTo(PointPt.X, PointPt.Y);
+    LineTo(Corner1Pt.X, Corner1Pt.Y);
+    MoveTo(PointPt.X, PointPt.Y);
+    LineTo(Corner2Pt.X, Corner2Pt.Y);
   end;
 end;
 

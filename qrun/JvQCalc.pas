@@ -128,7 +128,12 @@ uses
   Math,
   JvQJVCLUtils, JvQJCLUtils, JvQConsts, JvQResources;
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvCalc.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvCalc.res}
+{$ENDIF LINUX}
 
 type
   TCalcBtnKind =
@@ -374,7 +379,7 @@ constructor TJvCalculatorPanel.CreateLayout(AOwner: TComponent;
   ALayout: TCalcPanelLayout);
 var
   
-  GlyphList : TImageList;
+  GlyphList: TImageList;
   
   Bmp: TBitmap;
   I: TCalcBtnKind;
@@ -414,6 +419,7 @@ begin
     MinHeight := Height ;
     MinWidth := Width ;
   end;
+  GlyphList := nil;
   Bmp := TBitmap.Create;
   
   try

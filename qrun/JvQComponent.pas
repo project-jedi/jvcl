@@ -48,7 +48,7 @@ type
   private
     FAboutJVCL: TJVCLAboutInfo;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    property AboutJVCLX : TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
   TJvGraphicControl = class(TJvExGraphicControl);

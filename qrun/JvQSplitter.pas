@@ -72,7 +72,7 @@ uses
 constructor TJvSplitter.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  IncludeThemeStyle(Self, [csParentBackground]);
+//  IncludeThemeStyle(Self, [csParentBackground]);
   FHintColor := clInfoBk;
   FOver := False;
 end;
