@@ -3,6 +3,8 @@
   <Description>JVCL Core Runtime Package</Description>
   <C5PFlags/>
   <C6PFlags/>
+  <C5Libs/>
+  <C6Libs/>
   <Requires>
     <Package Name="CJCL50" Targets="C5" Condition=""/>
     <Package Name="CJCL60" Targets="C6,C6p" Condition=""/>
