@@ -33,7 +33,7 @@ interface
 
 uses
   Windows, SysUtils, Classes, Graphics, Controls,
-  StdCtrls, Menus, ShellApi, ImgList,
+  StdCtrls, Menus, ShellAPI, ImgList,
   JvTypes, JvButton, JvDirectories, JvJVCLUtils;
 
 type

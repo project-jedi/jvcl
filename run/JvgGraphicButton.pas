@@ -100,7 +100,7 @@ begin
   FGlyphPassive := TPicture.Create;
   FGlyphPushed := TPicture.Create;
   //...defaults
-  FAutoSize := false;
+  FAutoSize := False;
   FState := bsPassive;
 end;
 
@@ -168,16 +168,16 @@ end;
 
 procedure TJvgGraphicButton.MouseEnter(Control: TControl);
 begin
+  inherited MouseEnter(Control);
   FState := bsActive;
-  Paint;
-  inherited;
+  Repaint;
 end;
 
 procedure TJvgGraphicButton.MouseLeave(Control: TControl);
 begin
+  inherited MouseLeave(Control);
   FState := bsPassive;
-  Paint;
-  inherited;
+  Repaint;
 end;
 
 procedure TJvgGraphicButton.MouseDown(Button: TMouseButton; Shift: TShiftState;

@@ -21,11 +21,15 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-unit JvOwnerDrawViewer;
 {$I JVCL.INC}
+
+unit JvOwnerDrawViewer;
+
 interface
+
 uses
-  Classes, Graphics, ComCtrls, JvCustomItemViewer;
+  Classes, Graphics, ComCtrls,
+  JvCustomItemViewer;
 
 type
   TJvOwnerDrawViewerOptions = class(TJvCustomItemViewerOptions)
@@ -106,16 +110,11 @@ type
     property OnUnDock;
   end;
 
-
-
-
 implementation
-
-{ TJvOwnerDrawViewer }
 
 constructor TJvOwnerDrawViewer.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   Color := clWindow;
 end;
 

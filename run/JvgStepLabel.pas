@@ -32,7 +32,8 @@ unit JvgStepLabel;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  JvComponent;
 
 type
   TJvgStepLabel = class(TJvGraphicControl)
@@ -53,14 +54,7 @@ type
     property Font;
   end;
 
-procedure Register;
-
 implementation
-
-procedure Register;
-begin
-  RegisterComponents('Gl Controls', [TJvgStepLabel]);
-end;
 
 constructor TJvgStepLabel.Create(AOwner: TComponent);
 begin

@@ -75,7 +75,8 @@ uses
   JvResources;
 
 type
-  TGeneticMember = class
+  TGeneticMember = class(TObject)
+  public
     Points: Cardinal;
     Data: PByte;
   end;
@@ -152,13 +153,15 @@ begin
 end;
 
 procedure TJvGenetic.KillThemAll(Value: TStringList);
+var
+  I: Integer;
 begin
-  while Value.Count > 0 do
+  for I := 0 to Value.Count-1 do
   begin
-    FreeMem(TGeneticMember(Value.Objects[0]).Data, FSize);
-    TGeneticMember(Value.Objects[0]).Free;
-    Value.Delete(0);
+    FreeMem(TGeneticMember(Value.Objects[I]).Data);
+    TGeneticMember(Value.Objects[I]).Free;
   end;
+  Value.Clear;
 end;
 
 function TJvGenetic.Mutate(Value: Byte): Byte;

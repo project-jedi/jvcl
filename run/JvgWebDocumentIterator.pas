@@ -30,6 +30,7 @@ Known Issues:
 unit JvgWebDocumentIterator;
 
 interface
+
 uses
   Windows, Classes, SysUtils, Graphics, Controls, Menus, ExtCtrls, SHDocVw,
   JvgCommClasses, JvgTypes;
