@@ -1,9 +1,11 @@
 :start
 @echo off
-REM Change the line below to use the make program of your choice or from a specific Delphi/BCB version
-REM (f ex C:\Program Files\Borland\Delphi5\bin\make.exe to use the Delphi 5 make)
-REM Defaults to: make.exe (whatever that is on your system), always build
-SET JVCLMAKE=make.exe -B -f
-REM Make all examples:
 cls
+echo. Change the JVCLMAKE line in this batch file to use the make program of your choice 
+echo. or from a specific Delphi/BCB version (f ex C:\Program Files\Borland\Delphi5\bin\make.exe 
+echo. to use the Delphi 5 make).
+echo. Defaults to: make.exe (whatever that is on your system), always build
+pause
+SET JVCLMAKE=make.exe -B -f
+echo. Making all examples (get some coffeee, this takes a while!):
 %JVCLMAKE% makefile.mak
