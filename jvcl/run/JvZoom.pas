@@ -52,6 +52,7 @@ type
     FCacheBitmap: TBitmap;
     procedure SetActive(const Value: Boolean);
     procedure SetDelay(const Value: Cardinal);
+    procedure SetZoomLevel(const Value: Integer);
     procedure SetCacheOnDeactivate(const Value: Boolean);
     procedure PaintMe(Sender: TObject);
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
@@ -63,10 +64,11 @@ type
     procedure FlushCache;
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Active: Boolean read FActive write SetActive default True;
-    property ZoomLevel: Integer read FZoomLevel write FZoomLevel default 100;
+    property ZoomLevel: Integer read FZoomLevel write SetZoomLevel default 100;
     property Delay: Cardinal read FDelay write SetDelay default 100;
     property Crosshair: Boolean read FCrosshair write FCrosshair default False;
     property CrosshairColor: TColor read FCrosshairColor write FCrosshairColor default clBlack;
@@ -106,6 +108,14 @@ begin
   FTimer := TTimer.Create(Self);
   FTimer.OnTimer := PaintMe;
   FTimer.Interval := 100;
+end;
+
+destructor TJvZoom.Destroy;
+begin
+  FCacheBitmap.Free;
+  FCacheBitmap := nil;
+  { Timer is automatically freed }
+  inherited Destroy;
 end;
 
 procedure TJvZoom.Cache;
@@ -270,6 +280,13 @@ procedure TJvZoom.SetDelay(const Value: Cardinal);
 begin
   FDelay := Value;
   FTimer.Interval := Value;
+end;
+
+procedure TJvZoom.SetZoomLevel(const Value: Integer);
+begin
+  FZoomLevel := Value;
+  { Forget the old point; thus force repaint }
+  FLastPoint := Point(MaxLongint, MaxLongint);
 end;
 
 procedure TJvZoom.WMSize(var Msg: TWMSize);

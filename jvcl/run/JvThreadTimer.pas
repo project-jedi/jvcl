@@ -66,6 +66,7 @@ type
   protected
     procedure DoOnTimer;
     procedure Loaded; override;
+    procedure StopTimer;
     procedure UpdateTimer;
   public
     constructor Create(AOwner: TComponent); override;
@@ -206,9 +207,7 @@ end;
 
 destructor TJvThreadTimer.Destroy;
 begin
-  if FThread is TJvTimerThread then
-    TJvTimerThread(FThread).Stop;
-  FThread := nil;
+  StopTimer;
   inherited Destroy;
 end;
 
@@ -249,8 +248,7 @@ begin
   if FEnabled <> Value then
   begin
     FEnabled := Value;
-    if not (csDesigning in ComponentState) then
-      UpdateTimer;
+    UpdateTimer;
   end;
 end;
 
@@ -259,8 +257,7 @@ begin
   if FInterval <> Value then
   begin
     FInterval := Value;
-    if ComponentState * [csDesigning, csLoading] = [] then
-      UpdateTimer;
+    UpdateTimer;
   end;
 end;
 
@@ -268,10 +265,7 @@ procedure TJvThreadTimer.SetKeepAlive(const Value: Boolean);
 begin
   if Value <> KeepAlive then
   begin
-    if FThread is TJvTimerThread then
-      TJvTimerThread(FThread).Stop;
-    FThread := nil;
-
+    StopTimer;
     FKeepAlive := Value;
     UpdateTimer;
   end;
@@ -282,8 +276,7 @@ begin
   if @FOnTimer <> @Value then
   begin
     FOnTimer := Value;
-    if ComponentState * [csDesigning, csLoading] = [] then
-      UpdateTimer;
+    UpdateTimer;
   end;
 end;
 
@@ -297,18 +290,24 @@ begin
   end;
 end;
 
+procedure TJvThreadTimer.StopTimer;
+begin
+  if FThread is TJvTimerThread then
+    TJvTimerThread(FThread).Stop;
+  FThread := nil;
+end;
+
 procedure TJvThreadTimer.UpdateTimer;
 var
   DoEnable: Boolean;
 begin
+  if ComponentState * [csDesigning, csLoading] <> [] then
+    Exit;
+
   DoEnable := FEnabled and Assigned(FOnTimer) and (FInterval > 0);
 
   if not KeepAlive then
-  begin
-    if FThread is TJvTimerThread then
-      TJvTimerThread(FThread).Stop;
-    FThread := nil;
-  end;
+    StopTimer;
 
   if DoEnable then
   begin
