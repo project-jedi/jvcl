@@ -16,6 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
+Rob den Braasem [rbraasem@xs4all.nl]
 
 Last Modified:  2003-01-15
 
@@ -32,7 +33,7 @@ unit JvgDBGrid;
 interface
 uses
   Windows, Messages, Classes, Controls, Graphics, JvgTypes, JvgCommClasses,
-  JvgUtils, ExtCtrls, grids, dbgrids, JVCLVer, ImgList;
+  JvgUtils, StdCtrls, ExtCtrls, grids, dbgrids, JVCLVer, ImgList;
 
 type
 
@@ -49,6 +50,8 @@ type
     GlyphsChangeLink: TChangeLink;
     Glyph: TBitmap;
     FAboutJVCL: TJVCLAboutInfo;
+    FFixedWidthCols: integer;
+doRecalculateWidth: boolean;
     procedure SetAlignment(Value: TAlignment);
     procedure SetCaptionHeight(Value: integer);
     function GetBitmap: TBitmap;
@@ -56,10 +59,14 @@ type
     procedure SetImage(Value: TImage);
     procedure SetGlyphs(Value: TImageList);
     procedure SetSingleGlyph(Value: boolean);
+    procedure WMSize(var Message: TWMSize); message WM_SIZE;
+    procedure SetAutoColumnSize(const Value: boolean);
+    procedure UpdateSize;
   protected
     procedure Loaded; override;
     procedure DrawCell(ACol, ARow: Longint; ARect: TRect; AState: TGridDrawState); override;
     procedure GlyphsListChanged(Sender: TObject);
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     AlignAll: boolean;
     constructor Create(AOwner: TComponent); override;
@@ -75,6 +82,8 @@ type
     property Glyphs: TImageList read FGlyphs write SetGlyphs;
     property SingleGlyph: boolean read FSingleGlyph write SetSingleGlyph
       default false;
+    property AutoColumnSize: boolean read FAutoColumnSize write SetAutoColumnSize default true;
+    property FixedWidthCols: integer read FFixedWidthCols write FFixedWidthCols;
   end;
 
 implementation
@@ -88,6 +97,8 @@ begin
   Glyph := TBitmap.Create;
   GlyphsChangeLink := TChangeLink.Create;
   GlyphsChangeLink.OnChange := GlyphsListChanged;
+  // defaults
+  FAutoColumnSize := true;
 end;
 
 destructor TJvgDBGrid.Destroy;
@@ -103,6 +114,7 @@ begin
   inherited;
   if Assigned(FBitmap) and (not FBitmap.Empty) then Bmp := FBitmap;
   RowHeights[0] := FCaptionHeight;
+  if AutoColumnSize then UpdateSize;
 end;
 
 procedure TJvgDBGrid.DrawCell(ACol, ARow: Longint; ARect: TRect; AState: TGridDrawState);
@@ -270,5 +282,56 @@ begin
   Repaint;
 end;
 //-------------------------------------------------------------------------------
+
+
+procedure TJvgDBGrid.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if Assigned(Glyphs)and(AComponent = Glyphs) and (Operation = opRemove) then Glyphs := nil;
+  if Assigned(Image)and(AComponent = Image) and (Operation = opRemove) then Image := nil;
+end;
+
+procedure TJvgDBGrid.UpdateSize;
+var
+  Message: TWMSize;
+begin
+  WMSize(Message);
+end;
+
+procedure TJvgDBGrid.SetAutoColumnSize(const Value: boolean);
+begin
+  if FAutoColumnSize = Value then exit;
+  FAutoColumnSize := Value;
+  UpdateSize;
+end;
+
+procedure TJvgDBGrid.WMSize(var Message: TWMSize);
+var
+  i, TotalWidth, FreeClientWidth: integer;
+begin
+  if Message.Msg <> 0 then inherited;
+
+  if doRecalculateWidth then exit;
+  doRecalculateWidth := true;
+
+  try
+    if (not AutoColumnSize)or(Width=0) then exit;
+    TotalWidth := 0;
+    for i:=FixedWidthCols to Columns.Count-1 do inc(TotalWidth, Columns[i].Width+1);
+    FreeClientWidth := ClientWidth - 2;
+    if dgIndicator in Options then dec(FreeClientWidth, 10);
+    dec(FreeClientWidth, Columns.Count);
+    if ScrollBars in [ssVertical, ssBoth] then dec(FreeClientWidth, GetSystemMetrics(SM_CXHSCROLL)+2);
+
+    for i:=0 to FixedWidthCols-1 do dec(FreeClientWidth, Columns[i].Width);
+
+    for i:=FixedWidthCols to Columns.Count-1 do
+      Columns[i].Width := MulDiv(Columns[i].Width, FreeClientWidth, TotalWidth)-1;
+  finally
+    doRecalculateWidth := false;
+  end;
+
+end;
 
 end.

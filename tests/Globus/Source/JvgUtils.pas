@@ -143,8 +143,23 @@ function GetFileType(const FileName: string): TglFileType;
 function FindControlAtPt(Control: TWinControl; pt: TPoint; MinClass: TClass): TControl;
 function StrPosExt(const Str1, Str2: PChar; Str2Len: DWORD): PChar; assembler;
 
+{$IFDEF glDEBUG}
+function DeleteObject(p1: HGDIOBJ): BOOL; stdcall;
+{$ENDIF}
+
 implementation
 uses shlobj;
+
+{ debug func }
+{$IFDEF glDEBUG}
+function DeleteObject(p1: HGDIOBJ): BOOL; stdcall;
+begin
+  Result := Windows.DeleteObject(p1);
+  if Result = false then
+    raise Exception.Create('leak');
+end;
+{$ENDIF}
+
 //_________________________________________________________________\\
 
 function Min(i1, i2: integer): integer;
@@ -549,8 +564,8 @@ begin
   else
     begin
       DrawMain(fDelineated, 0);
-      //	SetTextColor( DC , ColorToRGB(FontColor) );
-      //	ExtTextOut( DC, x, y,  ETO_CLIPPED, @r, PChar(Text), Length(Text), nil);
+      //    SetTextColor( DC , ColorToRGB(FontColor) );
+      //    ExtTextOut( DC, x, y,  ETO_CLIPPED, @r, PChar(Text), Length(Text), nil);
     end;
   end;
   SelectObject(DC, OldFont);
@@ -583,7 +598,7 @@ begin
         r.left := r.left + 2;
         r.right := r.right - 2;
         r.bottom := r.bottom - 1;
-        //	Frame3D(Canvas, r,clBtnShadow,clBtnHighlight,1);
+        //  Frame3D(Canvas, r,clBtnShadow,clBtnHighlight,1);
       end;
     //    fbsStatusControl:
     fbsRaised: //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -816,7 +831,7 @@ var
             MoveToEx(DC, r.right, r.top, nil);
             LineTo(DC, r.right, r.bottom);
             dec(r_.right);
-            //.	if Bold then dec(r_.right);
+            //. if Bold then dec(r_.right);
           end;
         {$IFDEF COMPILER4_UP}
         bvSpace:
@@ -861,11 +876,11 @@ var
         bvLowered:
           begin
             SelectObject(DC, LPen);
-            //	  if Borders.Left then i:=1 else i:=0;
+            //    if Borders.Left then i:=1 else i:=0;
             MoveToEx(DC, r.left, r.bottom {-1}, nil);
             LineTo(DC, r.right + 1, r.bottom {-1});
             dec(r_.bottom);
-            //.	if Bold then dec(r_.bottom);
+            //. if Bold then dec(r_.bottom);
             //dec(r_.bottom);
           end;
         {$IFDEF COMPILER4_UP}
@@ -1087,6 +1102,10 @@ begin
   OldMemBMP := 0;
   OldMonoBMP := 0;
   OldScreenImageBMP := 0;
+  MemDC := 0; ImageDC := 0;
+  Mono_BMP := 0; ScreenImageBMP := 0; MemBMP := 0;
+  MonoDC := 0; ScreenImageDC := 0;
+
   IWidth := SourceBitmap.Width; //min( SourceBitmap.Width, r.right-r.left );
   IHeight := SourceBitmap.Height; //min( SourceBitmap.Height, r.bottom-r.top );
   TmpImage := TBitmap.Create;
@@ -1118,7 +1137,7 @@ begin
             { Convert gray to clBtnShadow }
             ChangeBitmapColor(TmpImage, clGray, clBtnShadow);
             { Convert transparent color to clBtnFace }
-         //	    ChangeBitmapColor(TmpImage,ColorToRGB(}TransparentColor),clBtnFace);
+         //     ChangeBitmapColor(TmpImage,ColorToRGB(}TransparentColor),clBtnFace);
           end;
         end;
       fdsDisabled: //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1402,14 +1421,14 @@ begin
   with LF do
   begin
     lfHeight := F.Height;
-    //    lfWidth		 := 8;//FHeight div 4;
+    //    lfWidth        := 8;//FHeight div 4;
     lfEscapement := Escapement;
     lfOrientation := 0;
     if fsBold in F.Style then
       lfWeight := FW_BOLD
     else
       lfWeight := FW_NORMAL;
-    //    if FFontWeight	 <> fwDONTCARE then lfWeight:=uFontWeight;
+    //    if FFontWeight     <> fwDONTCARE then lfWeight:=uFontWeight;
     lfItalic := Byte(fsItalic in F.Style);
     lfUnderline := Byte(fsUnderline in F.Style);
     lfStrikeOut := Byte(fsStrikeOut in F.Style);
@@ -1571,7 +1590,7 @@ var
     while true do
     begin
       case cCurrChar of
-        //	Case "-":    NextChar
+        //  Case "-":    NextChar
         '*':
           begin
             NextChar;

@@ -212,7 +212,8 @@ begin
          TJvgSingleInstance,
          TJvgFixFont, TJvgComponentDescription,
          TJvgQRLabel,
-         TJvgQRDBText
+         TJvgQRDBText,
+         TJvgMyQRPreview
          ]);
 
    RegisterComponentEditor(TJvgPropertyCenter, TJvgComponentListEditor);

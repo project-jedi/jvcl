@@ -16,6 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
+Rob den Braasem [rbraasem@xs4all.nl]
 
 Last Modified:  2003-01-15
 
@@ -175,6 +176,8 @@ type
   public
     OnChanged: TNotifyEvent;
     constructor Create; virtual;
+    function BordersHeight: integer;
+    function BordersWidth: integer;
   published
     property Inner: TPanelBevel read FInner write SetInner stored true; //    default bvLowered;
     property Outer: TPanelBevel read FOuter write SetOuter stored true; //    default bvNone;
@@ -386,6 +389,8 @@ type
     property OnChanged: TNotifyEvent read FOnChanged write SetOnChanged;
     constructor Create; virtual;
     destructor Destroy; override;
+    function HighlightColor: TColor;
+    function ShadowColor: TColor;
   published
     property Color: TColor read FColor write SetColor;
     property DelineateColor: TColor read FDelineateColor write SetDelineateColor;
@@ -397,13 +402,23 @@ type
   TJvgListBoxItemStyle = class(TJvgCustomListBoxItemStyle)
   private
     FGradient: TJvgGradient;
+    FTextGradient: TJvgGradient;
   protected
+    property TextGradient: TJvgGradient read FTextGradient write FTextGradient;
     procedure SetOnChanged(Value: TNotifyEvent); override;
   public
     constructor Create; override;
     destructor Destroy; override;
   published
     property Gradient: TJvgGradient read FGradient write FGradient;
+end;
+
+TJvgHintStyle = class(TJvgListBoxItemStyle)
+end;
+
+TglSpeedButtonStyle = class(TJvgListBoxItemStyle)
+published
+  property TextGradient;
   end;
   //*************************************{ . TglListItemStyle . }
   TJvgAskListBoxItemStyle = class(TJvgCustomListBoxItemStyle)
@@ -1068,11 +1083,13 @@ constructor TJvgListBoxItemStyle.Create;
 begin
   inherited Create;
   FGradient := TJvgGradient.Create;
+  FTextGradient := TJvgGradient.Create;
 end;
 
 destructor TJvgListBoxItemStyle.Destroy;
 begin
   FGradient.Free;
+  FTextGradient.Free;
   inherited;
 end;
 
@@ -1451,5 +1468,51 @@ begin
   end;
 
 end;
+
+function TJvgBevel.BordersHeight: integer;
+begin
+  Result := 0;
+  if Inner <> bvNone then
+  begin
+    if fsdTop in Sides then inc(Result);
+    if fsdBottom in Sides then
+      if Bold then inc(Result, 1) else inc(Result);
+  end;
+  if Outer <> bvNone then
+  begin
+    if fsdTop in Sides then inc(Result);
+    if fsdBottom in Sides then
+      if Bold then inc(Result, 1) else inc(Result);
+  end;
+end;
+
+function TJvgBevel.BordersWidth: integer;
+begin
+  Result := 0;
+  if Inner <> bvNone then
+  begin
+    if fsdLeft in Sides then inc(Result);
+    if fsdRight in Sides then
+      if Bold then inc(Result, 1) else inc(Result);
+  end;
+  if Outer <> bvNone then
+  begin
+    if fsdLeft in Sides then inc(Result);
+    if fsdRight in Sides then
+      if Bold then inc(Result, 1) else inc(Result);
+  end;
+end;
+
+function TJvgCustomListBoxItemStyle.HighlightColor: TColor;
+begin
+  Result := incColor(Color, 60);
+end;
+
+function TJvgCustomListBoxItemStyle.ShadowColor: TColor;
+begin
+  Result := decColor(Color, 60);
+end;
+
+
 
 end.

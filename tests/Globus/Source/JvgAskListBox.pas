@@ -16,6 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
+Rob den Braasem [rbraasem@xs4all.nl]
 
 Last Modified:  2003-01-15
 
@@ -27,12 +28,12 @@ Known Issues:
 
 {$I JVCL.INC}
 
-{ ListBox-based component  that	provides  convenient  interface  for
- realization of the different  tests for users.  Component  is	very
+{ ListBox-based component  that provides  convenient  interface  for
+ realization of the different  tests for users.  Component  is  very
  useful during setup and install processes.
- Items	captions align in one of 9 positions.  Component can display
- glyphs on own items and fill background  with	bitmap.  You can set
- different fonts  for  selected  item  and  for  other	list  items.
+ Items  captions align in one of 9 positions.  Component can display
+ glyphs on own items and fill background  with  bitmap.  You can set
+ different fonts  for  selected  item  and  for  other  list  items.
 }
 unit JvgAskListBox;
 
@@ -129,6 +130,7 @@ type
          CN_MEASUREITEM;
    protected
       procedure Loaded; override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
       procedure InitState(var State: TOwnerDrawState; ByteState: Byte);
    public                               //_____________________________for users
       function IsFilled: boolean;
@@ -958,6 +960,12 @@ begin
       Include(State, odGrayed);
    if ByteState and ODS_SELECTED <> 0 then
       Include(State, odSelected);
+end;
+procedure TJvgAskListBox.Notification(AComponent: TComponent; Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (AComponent = WallpaperImage) and (Operation = opRemove) then WallpaperImage := nil;
+  if (AComponent = FGlyphs) and (Operation = opRemove) then Glyphs := nil;
 end;
 
 end.

@@ -27,9 +27,9 @@ Known Issues:
 
 {$I JVCL.INC}
 
-{  Enhanced ListBox component that  can  display	its  items in  three
- dimensional  styles.	Items  captions align in one of 9 positions.
- Component can display glyphs on own items and fill background	with
+{  Enhanced ListBox component that  can  display    its  items in  three
+ dimensional  styles.   Items  captions align in one of 9 positions.
+ Component can display glyphs on own items and fill background  with
  bitmap.  You can set different fonts  for  selected  item  and  for
  other list items.
 }
@@ -286,7 +286,6 @@ begin
    NumGlyphs := 1;
    FTransparentColor := clOlive;
    FAutoTrColor := ftcLeftBottomPixel;
-   //  FTextAlign_ := DT_WORDBREAK or DT_NOPREFIX{ or DT_SINGLELINE};
    FOptions := [fboHotTrack, fboWordWrap, fboExcludeGlyphs];
    FChangeGlyphColor.FromColor := clBlack;
    FChangeGlyphColor.ToColor := clWhite;
