@@ -1,6 +1,7 @@
 object JvFormPropsDlg: TJvFormPropsDlg
-  Left = 200
-  Top = 111
+  Left = 407
+  Top = 190
+  ActiveControl = ComponentsList
   BorderStyle = bsDialog
   Caption = 'Form Storage Designer'
   ClientHeight = 319
@@ -49,10 +50,11 @@ object JvFormPropsDlg: TJvFormPropsDlg
   end
   object Label30: TLabel
     Left = 12
-    Top = 53
+    Top = 56
     Width = 82
     Height = 13
     Caption = '&Components   '
+    FocusControl = ComponentsList
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -11
@@ -63,10 +65,11 @@ object JvFormPropsDlg: TJvFormPropsDlg
   end
   object Label31: TLabel
     Left = 224
-    Top = 53
+    Top = 55
     Width = 70
     Height = 13
     Caption = '&Properties   '
+    FocusControl = PropertiesList
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -11
@@ -77,10 +80,11 @@ object JvFormPropsDlg: TJvFormPropsDlg
   end
   object Label2: TLabel
     Left = 12
-    Top = 169
+    Top = 167
     Width = 111
     Height = 13
     Caption = '&Stored Properties   '
+    FocusControl = StoredList
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -11
@@ -134,7 +138,6 @@ object JvFormPropsDlg: TJvFormPropsDlg
       Height = 17
       Caption = ' Acti&ve Control'
       TabOrder = 0
-      OnClick = ListClick
     end
     object PositionBox: TCheckBox
       Left = 124
@@ -145,7 +148,6 @@ object JvFormPropsDlg: TJvFormPropsDlg
       Checked = True
       State = cbChecked
       TabOrder = 1
-      OnClick = ListClick
     end
     object StateBox: TCheckBox
       Left = 236
@@ -156,7 +158,6 @@ object JvFormPropsDlg: TJvFormPropsDlg
       Checked = True
       State = cbChecked
       TabOrder = 2
-      OnClick = ListClick
     end
   end
   object AddButton: TButton
@@ -207,7 +208,7 @@ object JvFormPropsDlg: TJvFormPropsDlg
     TabOrder = 8
   end
   object ComponentsList: TJvTextListBox
-    Left = 16
+    Left = 12
     Top = 72
     Width = 105
     Height = 89
@@ -225,15 +226,19 @@ object JvFormPropsDlg: TJvFormPropsDlg
     MultiSelect = True
     Sorted = True
     TabOrder = 3
+    OnClick = ListClick
     OnDblClick = PropertiesListDblClick
   end
   object StoredList: TJvTextListBox
-    Left = 16
+    Left = 12
     Top = 184
     Width = 241
     Height = 97
+    DragMode = dmAutomatic
     ItemHeight = 13
     TabOrder = 4
     OnClick = StoredListClick
+    OnDragDrop = StoredListDragDrop
+    OnDragOver = StoredListDragOver
   end
 end
