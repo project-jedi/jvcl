@@ -97,6 +97,7 @@ type
     function GetItems: TStrings;
     procedure SetAlignment(const Value: TAlignment);
   protected
+    
     procedure LBAddString(var Msg: TMessage); message LB_ADDSTRING;
     procedure LBDeleteString(var Msg: TMessage); message LB_DELETEstring;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
@@ -154,6 +155,8 @@ type
     procedure MoveSelectedDown; virtual;
     procedure DeleteSelected; {$IFDEF COMPILER6_UP}override;{$ENDIF}
     procedure DeleteAllButSelected;
+    procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
+      AHeight: Integer); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
@@ -690,6 +693,14 @@ begin
           alignflags[FAlignment]);
     end;
   end;
+end;
+
+procedure TJvCustomListBox.SetBounds(ALeft, ATop, AWidth,
+  AHeight: Integer);
+begin
+  inherited;
+  if Alignment <> taLeftJustify then
+    Invalidate;
 end;
 
 end.

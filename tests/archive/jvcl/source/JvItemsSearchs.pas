@@ -28,8 +28,6 @@ Known Issues:
 
 unit JvItemsSearchs;
 
-
-
 interface
 
 uses
@@ -76,12 +74,18 @@ var
 begin
   Result := -1;
   if CaseSensitive then
-    Result := Items.IndexOf(Value)
+  begin
+    for i := 0 to Items.Count - 1 do
+      if AnsiCompareStr(Value, Items[i]) = 0 then
+      begin
+        Result := i;
+        Exit;
+      end;
+  end
   else
   begin
-    Value := UpperCase(Value);
     for i := 0 to Items.Count - 1 do
-      if Pos(Value, UpperCase(Items[i])) = 1 then
+      if AnsiCompareText(Value, Items[i]) = 1 then
       begin
         Result := i;
         Exit;
@@ -108,9 +112,9 @@ begin
   end
   else
   begin
-    Value := UpperCase(Value);
+    Value := AnsiUpperCase(Value);
     for i := 0 to Items.Count - 1 do
-      if Pos(Value, UpperCase(Items[i])) = 1 then
+      if Pos(Value, AnsiUpperCase(Items[i])) = 1 then
       begin
         Result := i;
         Exit;
@@ -137,9 +141,9 @@ begin
   end
   else
   begin
-    Value := UpperCase(Value);
+    Value := AnsiUpperCase(Value);
     for i := 0 to Items.Count - 1 do
-      if Pos(Value, UpperCase(Items[i])) <> 0 then
+      if Pos(Value, AnsiUpperCase(Items[i])) <> 0 then
       begin
         Result := i;
         Exit;
@@ -148,3 +152,4 @@ begin
 end;
 
 end.
+
