@@ -656,7 +656,7 @@ type
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
   end;
 
-  TJvDynControlCxTreeView= class(TcxTreeView, IUnknown,
+  TJvDynControlCxTreeView = class(TcxTreeView, IUnknown,
     IJvDynControl, IJvDynControlTreeView,
     IJvDynControlDevExpCx)
   public
