@@ -1060,6 +1060,8 @@ begin
     begin
       OldMode := SetErrorMode(SEM_NOOPENFILEERRORBOX);
       try
+        { rb : better use SysUtils.SetCurrentDir?, ie without try..except
+               but don't know if it's available in D5/6 }
         try
           ChDir(NewDrive + ':');
         except
@@ -1067,6 +1069,8 @@ begin
             raise
           else
           begin
+            { rb : This will be an endless loop if NewDrive isn't changed in the
+                   event handler (maybe make it explicit to retry) }
             DriveChange(NewDrive);
             Exit;
           end;
