@@ -74,9 +74,12 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   private
-    FAboutJVCL: TJVCLAboutInfo;
+  
+  
+    FAboutJVCLX: TJVCLAboutInfo;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
+  
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
@@ -145,9 +148,12 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   private
-    FAboutJVCL: TJVCLAboutInfo;
+  
+  
+    FAboutJVCLX: TJVCLAboutInfo;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
+  
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
@@ -217,9 +223,12 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   private
-    FAboutJVCL: TJVCLAboutInfo;
+  
+  
+    FAboutJVCLX: TJVCLAboutInfo;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
+  
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
@@ -295,9 +304,12 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   private
-    FAboutJVCL: TJVCLAboutInfo;
+  
+  
+    FAboutJVCLX: TJVCLAboutInfo;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
+  
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;

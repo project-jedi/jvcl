@@ -19,7 +19,6 @@ Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
 All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
-                André Snepvangers [asn@xs4all.nl]
 
 Last Modified:
 2003-01-19 - (asn) support for CLX

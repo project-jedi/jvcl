@@ -73,9 +73,12 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   private
-    FAboutJVCL: TJVCLAboutInfo;
+  
+  
+    FAboutJVCLX: TJVCLAboutInfo;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
+  
   
   end;
   TJvExPubShape = class(TJvExShape)
@@ -106,9 +109,12 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   private
-    FAboutJVCL: TJVCLAboutInfo;
+  
+  
+    FAboutJVCLX: TJVCLAboutInfo;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
+  
   
   end;
   TJvExPubPaintBox = class(TJvExPaintBox)
@@ -139,9 +145,12 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   private
-    FAboutJVCL: TJVCLAboutInfo;
+  
+  
+    FAboutJVCLX: TJVCLAboutInfo;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
+  
   
   end;
   TJvExPubImage = class(TJvExImage)
@@ -172,9 +181,12 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   private
-    FAboutJVCL: TJVCLAboutInfo;
+  
+  
+    FAboutJVCLX: TJVCLAboutInfo;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
+  
   
   end;
   TJvExPubBevel = class(TJvExBevel)
@@ -210,9 +222,12 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   private
-    FAboutJVCL: TJVCLAboutInfo;
+  
+  
+    FAboutJVCLX: TJVCLAboutInfo;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
+  
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
@@ -254,9 +269,12 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   private
-    FAboutJVCL: TJVCLAboutInfo;
+  
+  
+    FAboutJVCLX: TJVCLAboutInfo;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
+  
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
@@ -298,9 +316,12 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   private
-    FAboutJVCL: TJVCLAboutInfo;
+  
+  
+    FAboutJVCLX: TJVCLAboutInfo;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
+  
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
@@ -348,9 +369,12 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   private
-    FAboutJVCL: TJVCLAboutInfo;
+  
+  
+    FAboutJVCLX: TJVCLAboutInfo;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
+  
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
@@ -393,9 +417,12 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   private
-    FAboutJVCL: TJVCLAboutInfo;
+  
+  
+    FAboutJVCLX: TJVCLAboutInfo;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
+  
   
   end;
   TJvExPubSplitter = class(TJvExSplitter)
@@ -432,9 +459,12 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   private
-    FAboutJVCL: TJVCLAboutInfo;
+  
+  
+    FAboutJVCLX: TJVCLAboutInfo;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
+  
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
@@ -481,9 +511,12 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   private
-    FAboutJVCL: TJVCLAboutInfo;
+  
+  
+    FAboutJVCLX: TJVCLAboutInfo;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
+  
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
