@@ -30,24 +30,39 @@ unit JvPrint;
 interface
 
 uses
-  SysUtils, Classes, Graphics, Printers,
+  Windows, SysUtils, Classes, Graphics, Printers,
   JvTypes, JvComponent;
 
 type
+  TJvPrintMeasureItemEvent = procedure (Sender:TObject; ACanvas:TCanvas; AIndex:integer; const AItem:string; var AHeight:Integer) of object;
+  TJvPrintDrawItemEvent = procedure (Sender:TObject; ACanvas:TCanvas; ARect:TRect; AIndex:integer; const AItem:string) of object;
   TJvPrint = class(TJvComponent)
   private
     FOnBeginPrint: TNotifyEvent;
     FOnFinishedPrint: TNotifyEvent;
     FOnProgress: TJvProgressEvent;
     FOnNextPage: TJvNextPageEvent;
+    FOwnerDraw: boolean;
+    FOnMeasureItem: TJvPrintMeasureItemEvent;
+    FOnDrawItem: TJvPrintDrawItemEvent;
+  protected
+    function MeasureItem(ACanvas:TCanvas; AIndex:integer; AItem:string):Integer;virtual;
+    procedure DrawItem(ACanvas:TCanvas; ARect:TRect; AIndex:integer; const AItem:string);virtual;
+  public
+    function GetScaleX:Integer;
+    function GetScaleY: Integer;
   published
     procedure Print(Value: TStringList);
+    procedure PrintHTML(Value: TStrings);
     procedure PrintImage(Value: TBitmap; Style: TJvBitmapStyle);
     procedure Abort;
+    property OwnerDraw:boolean read FOwnerDraw write FOwnerDraw default false;
     property OnBeginPrint: TNotifyEvent read FOnBeginPrint write FOnBeginPrint;
     property OnFinishedPrint: TNotifyEvent read FOnFinishedPrint write FOnFinishedPrint;
     property OnProgress: TJvProgressEvent read FOnProgress write FOnProgress;
     property OnNextPage: TJvNextPageEvent read FOnNextPage write FOnNextPage;
+    property OnMeasureItem:TJvPrintMeasureItemEvent read FOnMeasureItem write FOnMeasureItem;
+    property OnDrawItem:TJvPrintDrawItemEvent read FOnDrawItem write FOnDrawItem;
   end;
 
 implementation
@@ -56,7 +71,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JvJCLUtils;
+  JvJCLUtils, JvJVCLUtils;
 
 procedure TJvPrint.Abort;
 begin
@@ -65,30 +80,73 @@ end;
 
 procedure TJvPrint.Print(Value: TStringList);
 var
-  I, Line, PageNum: Integer;
+  I, LineTop, LineHeight, PageNum: Integer;
+  ARect:TRect;
 begin
   //let's print
   if Assigned(FOnBeginPrint) then
     FOnBeginPrint(Self);
-  Line := 0;
+  LineTop := 0;
   Printer.BeginDoc;
   PageNum := 1;
   for I := 0 to Value.Count - 1 do
   begin
     if Assigned(FOnProgress) then
       FOnProgress(Self, I + 1, Value.Count);
-
-    Line := Line + Printer.Canvas.TextHeight(Value[I]);
-    if Line + Printer.Canvas.TextHeight(Value[I]) > Printer.PageHeight then
+    LineHeight := MeasureItem(Printer.Canvas, I, Value[i]);
+    // JvHtControls:
+    // AHeight := ItemHTHeight(ACanvas, AItem, GetScaleX)+1;
+    if LineTop + LineHeight > Printer.PageHeight then
     begin
-      Line := Printer.Canvas.TextHeight(Value[I]);
+      LineTop := 0;
       Printer.NewPage;
       Inc(PageNum);
       if Assigned(FOnNextPage) then
         FOnNextPage(Self, PageNum);
     end;
+    ARect := Rect(0, LineTop, Printer.PageWidth, LineTop + LineHeight);
+    DrawItem(Printer.Canvas, ARect, I, Value[I]);
+    LineTop := LineTop + LineHeight;
+    // JvHTControls:
+    // ARect.Bottom := ARect.Bottom - ARect.Top;
+    // ItemHTDraw(ACanvas,ARect,[odReserved1],AItem, GetScaleX);
+  end;                          
+  Printer.EndDoc;
+  if Assigned(FOnFinishedPrint) then
+    FOnFinishedPrint(Self);
+end;
 
-    Printer.Canvas.TextOut(0, Line, Value[I]);
+procedure TJvPrint.PrintHTML(Value: TStrings);
+var
+  I, Line, Pagenum: Integer;
+  lHeight : Integer;
+  lRect   : TRect;
+  lPixels : Integer;
+begin
+  //let's print
+  if Assigned(FOnBeginPrint) then
+    FOnBeginPrint(Self);
+  line := 0;
+  Printer.BeginDoc;
+  Pagenum := 1;
+  lPixels :=  GetScaleX;
+  for I := 0 to Value.Count - 1 do
+  begin
+    if Assigned(FOnProgress) then
+      FOnProgress(Self, I + 1, Value.Count);
+    lHeight := HTMLTextHeight(Printer.Canvas, Value[I], lPixels) + 1;
+
+    if Line + LHeight > Printer.PageHeight then
+    begin
+      Line := 0;
+      Printer.NewPage;
+      Inc(PageNum);
+      if Assigned(FOnNextPage) then
+        FOnNextPage(Self, PageNum);
+    end;
+    lRect := Rect(0,line, Printer.PageWidth , lHeight);
+    HTMLDrawText(Printer.Canvas,lRect,[odReserved1], Value[i], lPixels);
+    Line := Line + lHeight;
   end;
   Printer.EndDoc;
   if Assigned(FOnFinishedPrint) then
@@ -131,6 +189,34 @@ begin
   end;
   if Assigned(FOnFinishedPrint) then
     FOnFinishedPrint(Self);
+end;
+
+function TJvPrint.GetScaleX: Integer;
+begin
+  Result := GetDeviceCaps(Printer.Handle, LogPixelsX);
+end;
+
+function TJvPrint.GetScaleY: Integer;
+begin
+  Result := GetDeviceCaps(Printer.Handle, LogPixelsY);
+end;
+
+function TJvPrint.MeasureItem(ACanvas: TCanvas; AIndex: integer;
+  AItem: string): Integer;
+begin
+  if OwnerDraw and Assigned(FOnMeasureItem) then
+    FOnMeasureItem(Self, ACanvas, AIndex, AItem, Result)
+  else
+    Result := ACanvas.TextHeight(AItem); 
+end;
+
+procedure TJvPrint.DrawItem(ACanvas: TCanvas; ARect: TRect;
+  AIndex: integer; const AItem: string);
+begin
+  if OwnerDraw and Assigned(FOnDrawItem) then
+    FOnDrawItem(Self, ACanvas, ARect, AIndex, AItem)
+  else
+    ACanvas.TextOut(ARect.Left, ARect.Top, AItem);
 end;
 
 {$IFDEF UNITVERSIONING}
