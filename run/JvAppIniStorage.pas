@@ -33,16 +33,7 @@ unit JvAppIniStorage;
 interface
 
 uses
-  {$IFDEF MSWINDOWS}
-  Windows,
-  {$ENDIF MSWINDOWS}
-  {$IFDEF HAS_UNIT_LIBC}
-  Libc,
-  {$ENDIF HAS_UNIT_LIBC}
-  {$IFDEF LINUX}
-  QWindows,
-  {$ENDIF LINUX}
-  Classes, IniFiles,
+  Windows, Classes, IniFiles,
   JvAppStorage;
 
 type
@@ -239,27 +230,27 @@ function TJvCustomAppIniStorage.DoReadFloat(const Path: string; Default: Extende
 var
   Section: string;
   Key: string;
-  Value: string;
+//  Value: string;
+  Value: Extended;
 begin
   SplitKeyPath(Path, Section, Key);
   if ValueExists(Section, Key) then
   begin
-    Value := ReadValue(Section, Key);
-    if Value = '' then
-      Value := cNullDigit;
-    Result := StrToFloat(Value);
+    Value := 0.0;
+    ReadBinary(Path, Value, Sizeof(Value));
+    Result := Value;
+//    Value := ReadValue(Section, Key);
+//    if Value = '' then
+//      Value := cNullDigit;
+//    Result := StrToFloat(Value);
   end
   else
     Result := Default;
 end;
 
 procedure TJvCustomAppIniStorage.DoWriteFloat(const Path: string; Value: Extended);
-var
-  Section: string;
-  Key: string;
 begin
-  SplitKeyPath(Path, Section, Key);
-  WriteValue(Section, Key, FloatToStr(Value));
+  WriteBinary(Path, Value, SizeOf(Value));
 end;
 
 function TJvCustomAppIniStorage.DoReadString(const Path: string; const Default: string): string;
@@ -325,8 +316,8 @@ begin
     I := Strings.Count - 1;
     while I >= 0 do
     begin
-      if (RefPath <> '') and ((Copy(Strings[I], 1, Length(RefPath) + 1) <> RefPath + '\') or
-        (Pos('\', Copy(Strings[I], 2 + Length(RefPath), Length(Strings[I]) - Length(RefPath))) > 0)) then
+      if (RefPath <> '') and ((Copy(Strings[I], 1, Length(RefPath) + 1) <> RefPath + PathDelim) or
+        (Pos(PathDelim, Copy(Strings[I], 2 + Length(RefPath), Length(Strings[I]) - Length(RefPath))) > 0)) then
         Strings.Delete(I)
       else
       if ReportListAsValue and ValueExists(Strings[I], cCount) then
