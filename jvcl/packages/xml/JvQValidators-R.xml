@@ -5,7 +5,6 @@
     <Package Name="JvQCore-R" Targets="D7,K3" Condition=""/>
     <Package Name="rtl" Targets="D7,K3" Condition=""/>
     <Package Name="visualclx" Targets="D7,K3" Condition=""/>
-    <Package Name="vclx" Targets="D7,K3" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\qrun\JvQValidators.pas" Targets="D7,K3" Formname="" Condition="VisualCLX"/>

@@ -2,16 +2,15 @@
 <Package Name="JvQWizard" Design="-1">
   <Description>JVCLX Wizard Design Time Package</Description>
   <Requires>
-    <Package Name="JvQWizard-R" Targets="D7,K3,K3p" Condition=""/>
-    <Package Name="JvQCore-R" Targets="D7,K3,K3p" Condition="USEJVCL"/>
-    <Package Name="JvQCore-D" Targets="D7,K3,K3p" Condition="USEJVCL"/>
-    <Package Name="rtl" Targets="D7,K3,K3p" Condition=""/>
-    <Package Name="designide" Targets="D7,K3,K3p" Condition=""/>
-    <Package Name="visualclx" Targets="D7,K3,K3p" Condition=""/>
+    <Package Name="JvQWizard-R" Targets="allclx" Condition=""/>
+    <Package Name="JvQCore-R" Targets="allclx" Condition=""/>
+    <Package Name="JvQCore-D" Targets="allclx" Condition=""/>
+    <Package Name="rtl" Targets="allclx" Condition=""/>
+    <Package Name="designide" Targets="allclx" Condition=""/>
+    <Package Name="visualclx" Targets="allclx" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\qdesign\JvQWizardEditorForm.pas" Targets="K3,K3p" Formname="JvWizardPageListEditor" Condition=""/>
-    <File Name="..\..\qdesign\JvQWizardReg.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
-    <File Name="..\..\qdesign\JvQWizardAboutInfoForm.pas" Targets="D7,K3,K3p" Formname="JvWizardAboutDialog" Condition=""/>
+    <File Name="..\..\qdesign\JvQWizardEditorForm.pas" Targets="k3,k3p" Formname="JvWizardPageListEditor" Condition=""/>
+    <File Name="..\..\qdesign\JvQWizardReg.pas" Targets="allclx" Formname="" Condition=""/>
   </Contains>
 </Package>

@@ -2,11 +2,11 @@
 <Package Name="JvQCrypt" Design="-1">
   <Description>JVCLX Encryption and Compression Components</Description>
   <Requires>
-    <Package Name="JvQCrypt-R" Targets="D7,K3,K3p" Condition=""/>
-    <Package Name="rtl" Targets="D7,K3,K3p" Condition=""/>
-    <Package Name="JvQCore-D" Targets="D7,K3,K3p" Condition=""/>
+    <Package Name="JvQCrypt-R" Targets="allclx" Condition=""/>
+    <Package Name="rtl" Targets="allclx" Condition=""/>
+    <Package Name="JvQCore-D" Targets="allclx" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\qdesign\JvQCryptReg.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
+    <File Name="..\..\qdesign\JvQCryptReg.pas" Targets="allclx" Formname="" Condition=""/>
   </Contains>
 </Package>

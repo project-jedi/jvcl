@@ -2,17 +2,17 @@
 <Package Name="JvQCmp" Design="-1">
   <Description>JVCLX Non-Visual Components</Description>
   <Requires>
-    <Package Name="JvQCore-D" Targets="D7,K3,K3p" Condition=""/>
-    <Package Name="JvQCmp-R" Targets="D7,K3,K3p" Condition=""/>
-    <Package Name="JvQStdCtrls-R" Targets="D7,K3,K3p" Condition=""/>
-    <Package Name="DesignIde" Targets="D7,K3,K3p" Condition=""/>
-    <Package Name="visualclx" Targets="D7,K3,K3p" Condition=""/>
+    <Package Name="JvQCore-D" Targets="allclx" Condition=""/>
+    <Package Name="JvQCmp-R" Targets="allclx" Condition=""/>
+    <Package Name="JvQStdCtrls-R" Targets="allclx" Condition=""/>
+    <Package Name="DesignIde" Targets="allclx" Condition=""/>
+    <Package Name="visualclx" Targets="allclx" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\qdesign\JvQPageManagerForm.pas" Targets="K3,K3p" Formname="JvProxyEditor" Condition=""/>
-    <File Name="..\..\qdesign\JvQPatcherEditor.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
-    <File Name="..\..\qdesign\JvQCmpReg.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
-    <File Name="..\..\qesign\JvQDataEmbeddedEditor.pas" Targets="D7,K3,K3p" Formname="" Condition=""/>
-    <File Name="..\..\qrun\JvQPatchForm.pas" Targets="D7,K3,K3p" Formname="FoPatch" Condition=""/>
+    <File Name="..\..\qdesign\JvQPageManagerForm.pas" Targets="" Formname="JvProxyEditor" Condition=""/>
+    <File Name="..\..\qdesign\JvQPatcherEditor.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qdesign\JvQCmpReg.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qdesign\JvQDataEmbeddedEditor.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQPatchForm.pas" Targets="allclx" Formname="FoPatch" Condition=""/>
   </Contains>
 </Package>
