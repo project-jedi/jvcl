@@ -1,6 +1,6 @@
 package JvCustomD7D;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN 8}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
@@ -27,19 +27,21 @@ package JvCustomD7D;
 {$IMPLICITBUILD OFF}
 
 requires
+  JvCoreD7D,
   JvCustomD7R,
   designide,
-  JvCoreD7D,
-  dclstd;
+  dclstd
+  ;
 
 contains
-  JvCustomReg in '..\..\design\JvCustomReg.pas',
+  JvLookoutEditor in '..\..\design\JvLookoutEditor.pas' ,
+  JvOutlookBarEditors in '..\..\design\JvOutlookBarEditors.pas' ,
   JvOutlookBarForm in '..\..\design\JvOutlookBarForm.pas' {FrmOLBEditor},
-  JvOutlookBarEditors in '..\..\design\JvOutlookBarEditors.pas',
-  JvTimeLineEditor in '..\..\design\JvTimeLineEditor.pas',
-  JVHLEditEditor in '..\..\design\JvHLEditEditor.pas',
-  JvScheduleEditors in '..\..\design\JvScheduleEditors.pas',
   JvScheduleEditorForm in '..\..\design\JvScheduleEditorForm.pas' {FrmScheduleEditor},
-  JvLookoutEditor in '..\..\design\JvLookoutEditor.pas';
+  JvScheduleEditors in '..\..\design\JvScheduleEditors.pas' ,
+  JvTimeLineEditor in '..\..\design\JvTimeLineEditor.pas' ,
+  JvCustomReg in '..\..\design\JvCustomReg.pas' ,
+  JvHLEditEditor in '..\..\design\JvHLEditEditor.pas' 
+  ;
 
 end.

@@ -1,7 +1,7 @@
 package JvStdCtrlsD5D;
 
-{$R *.res}
-
+{$R *.RES}
+{$ALIGN ON}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
 {$DEBUGINFO OFF}
@@ -27,13 +27,15 @@ package JvStdCtrlsD5D;
 {$IMPLICITBUILD OFF}
 
 requires
-  JvStdCtrlsD5R,
   JvCoreD5D,
-  dclstd50;
+  JvStdCtrlsD5R,
+  dclstd50
+  ;
 
 contains
-  JvStdCtrlsReg in '..\..\design\JvStdCtrlsReg.pas',
-  JvProgressEditor in '..\..\design\JvProgressEditor.pas',
-  JvCheckedItemsForm in '..\..\design\JvCheckedItemsForm.pas' {JvTimerItemsEditor};
+  JvCheckedItemsForm in '..\..\design\JvCheckedItemsForm.pas' {JvCheckItemsEditor},
+  JvProgressEditor in '..\..\design\JvProgressEditor.pas' ,
+  JvStdCtrlsReg in '..\..\design\JvStdCtrlsReg.pas' 
+  ;
 
 end.

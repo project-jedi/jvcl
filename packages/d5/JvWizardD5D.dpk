@@ -2,19 +2,19 @@ package JvWizardD5D;
 
 {$R *.RES}
 {$ALIGN ON}
-{$ASSERTIONS ON}
+{$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
-{$DEBUGINFO ON}
+{$DEBUGINFO OFF}
 {$EXTENDEDSYNTAX ON}
 {$IMPORTEDDATA ON}
 {$IOCHECKS ON}
-{$LOCALSYMBOLS ON}
+{$LOCALSYMBOLS OFF}
 {$LONGSTRINGS ON}
 {$OPENSTRINGS ON}
 {$OPTIMIZATION ON}
 {$OVERFLOWCHECKS OFF}
-{$RANGECHECKS OFF}
-{$REFERENCEINFO ON}
+{$RANGECHECKS ON}
+{$REFERENCEINFO OFF}
 {$SAFEDIVIDE OFF}
 {$STACKFRAMES OFF}
 {$TYPEDADDRESS OFF}
@@ -27,13 +27,15 @@ package JvWizardD5D;
 {$IMPLICITBUILD OFF}
 
 requires
-  vcl50,
   JvWizardD5R,
-  JvCoreD5D;
+  JvCoreD5D,
+  vcl50
+  ;
 
 contains
-  JvWizardReg in '..\..\design\JvWizardReg.pas',
-  JvWizardAboutInfoForm in '..\..\design\JvWizardAboutInfoForm.pas' {JvWizardAboutDialog},
-  JvWizardEditorForm in '..\..\design\JvWizardEditorForm.pas' {frmWizardEditor};
+  JvWizardEditorForm in '..\..\design\JvWizardEditorForm.pas' {JvWizardPageListEditor},
+  JvWizardReg in '..\..\design\JvWizardReg.pas' ,
+  JvWizardAboutInfoForm in '..\..\design\JvWizardAboutInfoForm.pas' {JvWizardAboutDialog}
+  ;
 
 end.

@@ -2,19 +2,19 @@ package JvUIBD5R;
 
 {$R *.RES}
 {$ALIGN ON}
-{$ASSERTIONS ON}
+{$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
-{$DEBUGINFO ON}
+{$DEBUGINFO OFF}
 {$EXTENDEDSYNTAX ON}
 {$IMPORTEDDATA ON}
 {$IOCHECKS ON}
-{$LOCALSYMBOLS ON}
+{$LOCALSYMBOLS OFF}
 {$LONGSTRINGS ON}
 {$OPENSTRINGS ON}
 {$OPTIMIZATION ON}
 {$OVERFLOWCHECKS OFF}
-{$RANGECHECKS OFF}
-{$REFERENCEINFO ON}
+{$RANGECHECKS ON}
+{$REFERENCEINFO OFF}
 {$SAFEDIVIDE OFF}
 {$STACKFRAMES OFF}
 {$TYPEDADDRESS OFF}
@@ -22,23 +22,25 @@ package JvUIBD5R;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
+{$DESCRIPTION 'UIB - Unified Interbase Components'}
 {$RUNONLY}
 {$IMPLICITBUILD OFF}
 
 requires
-  vcl50,
-  Vclx50,
   JvCoreD5R,
-  Vcldb50;
+  vcl50,
+  vcldb50,
+  vclx50
+  ;
 
 contains
-  JvUIB in '..\..\run\JvUIB.pas',
-  JvUIBase in '..\..\run\JvUIBase.pas',
-  JvUIBError in '..\..\run\JvUIBError.pas',
-  JvUIBLib in '..\..\run\JvUIBLib.pas',
-  JvUIBConst in '..\..\run\JvUIBConst.pas',
-  JvUIBSQLParser in '..\..\run\JvUIBSQLParser.pas',
-  JvUIBDataSet in '..\..\run\JvUIBDataSet.pas',
-  JvUIBMetaData in '..\..\run\JvUIBMetaData.pas';
+  JvUIBMetaData in '..\..\run\JvUIBMetaData.pas' ,
+  JvUIBSQLParser in '..\..\run\JvUIBSQLParser.pas' ,
+  JvUIB in '..\..\run\JvUIB.pas' ,
+  JvUIBase in '..\..\run\JvUIBase.pas' ,
+  JvUIBConst in '..\..\run\JvUIBConst.pas' ,
+  JvUIBError in '..\..\run\JvUIBError.pas' ,
+  JvUIBLib in '..\..\run\JvUIBLib.pas' 
+  ;
 
 end.

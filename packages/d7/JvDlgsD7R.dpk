@@ -1,6 +1,6 @@
 package JvDlgsD7R;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN 8}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
@@ -28,37 +28,39 @@ package JvDlgsD7R;
 
 requires
   JvCoreD7R,
-  JvSystemD7R,
-  JvStdCtrlsD7R;
+  JvStdCtrlsD7R,
+  JvSystemD7R
+  ;
 
 contains
-  JvDSADialogs in '..\..\run\JvDSADialogs.pas',
-  JvTipOfDay in '..\..\run\JvTipOfDay.pas',
-  JvWinDialogs in '..\..\run\JvWinDialogs.pas',
-  JvAddPrinter in '..\..\run\JvAddPrinter.pas',
-  JvCommonDialogD in '..\..\run\JvCommonDialogD.pas',
-  JvCommonExecDlg in '..\..\run\JvCommonExecDlg.pas',
-  JvDialogActns in '..\..\run\JvDialogActns.pas',
-  JvDialogs in '..\..\run\JvDialogs.pas',
-  JvProgressComponent in '..\..\run\JvProgressComponent.pas',
-  JvPageSetupTitled in '..\..\run\JvPageSetupTitled.pas',
-  JvPageSetup in '..\..\run\JvPageSetup.pas',
-  JvConnectNetwork in '..\..\run\JvConnectNetwork.pas',
-  JvSelectDirectory in '..\..\run\JvSelectDirectory.pas',
-  JvCopyError in '..\..\run\JvCopyError.pas',
-  JvDeleteError in '..\..\run\JvDeleteError.pas',
-  JvRenameError in '..\..\run\JvRenameError.pas',
-  JvDiskPrompt in '..\..\run\JvDiskPrompt.pas',
-  JvFindFiles in '..\..\run\JvFindFiles.pas',
-  JvObjectPickerDialog in '..\..\run\JvObjectPickerDialog.pas',
-  JvLoginForm in '..\..\run\JvLoginForm.pas' {JvLoginForm},
-  JvImageDlg in '..\..\run\JvImageDlg.pas',
+  JvDualListForm in '..\..\run\JvDualListForm.pas' {JvDualListForm},
+  JvExceptionForm in '..\..\run\JvExceptionForm.pas' {JvErrorDialog},
+  JvFindFiles in '..\..\run\JvFindFiles.pas' ,
+  JvFindReplace in '..\..\run\JvFindReplace.pas' ,
+  JvImageDlg in '..\..\run\JvImageDlg.pas' ,
   JvImageForm in '..\..\run\JvImageForm.pas' {FormImg},
-  JvProgressForm in '..\..\run\JvProgressForm.pas' {FormProg},
-  JvExceptionForm in '..\..\run\JvExceptionForm.pas',
-  JvProgressDialog in '..\..\run\JvProgressDialog.pas',
-  JvFindReplace in '..\..\run\JvFindReplace.pas',
-  JvDualList in '..\..\run\JvDualList.pas',
-  JvDualListForm in '..\..\run\JvDualListForm.pas';
+  JvLoginForm in '..\..\run\JvLoginForm.pas' {JvLoginForm},
+  JvObjectPickerDialog in '..\..\run\JvObjectPickerDialog.pas' ,
+  JvPageSetup in '..\..\run\JvPageSetup.pas' ,
+  JvPageSetupTitled in '..\..\run\JvPageSetupTitled.pas' ,
+  JvProgressComponent in '..\..\run\JvProgressComponent.pas' ,
+  JvProgressDialog in '..\..\run\JvProgressDialog.pas' ,
+  JvProgressForm in '..\..\run\JvProgressForm.pas' {frmProgress},
+  JvRenameError in '..\..\run\JvRenameError.pas' ,
+  JvSelectDirectory in '..\..\run\JvSelectDirectory.pas' ,
+  JvTipOfDay in '..\..\run\JvTipOfDay.pas' ,
+  JvWinDialogs in '..\..\run\JvWinDialogs.pas' ,
+  JvAddPrinter in '..\..\run\JvAddPrinter.pas' ,
+  JvCommonDialogD in '..\..\run\JvCommonDialogD.pas' ,
+  JvCommonExecDlg in '..\..\run\JvCommonExecDlg.pas' ,
+  JvConnectNetwork in '..\..\run\JvConnectNetwork.pas' ,
+  JvCopyError in '..\..\run\JvCopyError.pas' ,
+  JvDeleteError in '..\..\run\JvDeleteError.pas' ,
+  JvDialogs in '..\..\run\JvDialogs.pas' ,
+  JvDiskPrompt in '..\..\run\JvDiskPrompt.pas' ,
+  JvDSADialogs in '..\..\run\JvDSADialogs.pas' ,
+  JvDualList in '..\..\run\JvDualList.pas' ,
+  JvDialogActns in '..\..\run\JvDialogActns.pas' 
+  ;
 
 end.

@@ -1,6 +1,6 @@
 package JvBandsD7D;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN 8}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
@@ -27,14 +27,16 @@ package JvBandsD7D;
 {$IMPLICITBUILD OFF}
 
 requires
+  JvBandsD7R,
   JvCoreD7R,
   JvCoreD7D,
-  designide,
-  JvBandsD7R;
+  designide
+  ;
 
 contains
-  JvBandObjectDLLWizardForm in '..\..\design\JvBandObjectDLLWizardForm.pas' {zWizardForm},
-  JvBandObjectDLLWizard in '..\..\design\JvBandObjectDLLWizard.pas',
-  JvBandsReg in '..\..\design\JvBandsReg.pas';
+  JvBandsReg in '..\..\design\JvBandsReg.pas' ,
+  JvBandObjectDLLWizard in '..\..\design\JvBandObjectDLLWizard.pas' ,
+  JvBandObjectDLLWizardForm in '..\..\design\JvBandObjectDLLWizardForm.pas' {zWizardForm}
+  ;
 
 end.

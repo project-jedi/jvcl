@@ -1,40 +1,41 @@
 package JvValidatorsD5R;
 
-{$R *.res}
-
-{$ASSERTIONS ON}
+{$R *.RES}
+{$ALIGN ON}
+{$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
-{$DEBUGINFO ON}
+{$DEBUGINFO OFF}
 {$EXTENDEDSYNTAX ON}
 {$IMPORTEDDATA ON}
 {$IOCHECKS ON}
-{$LOCALSYMBOLS ON}
+{$LOCALSYMBOLS OFF}
 {$LONGSTRINGS ON}
 {$OPENSTRINGS ON}
-{$OPTIMIZATION OFF}
+{$OPTIMIZATION ON}
 {$OVERFLOWCHECKS OFF}
-{$RANGECHECKS OFF}
+{$RANGECHECKS ON}
 {$REFERENCEINFO OFF}
 {$SAFEDIVIDE OFF}
-{$STACKFRAMES ON}
+{$STACKFRAMES OFF}
 {$TYPEDADDRESS OFF}
 {$VARSTRINGCHECKS ON}
-{$WRITEABLECONST OFF}
+{$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DESCRIPTION 'JVCL Validators and Error Provider Components'}
+{$DESCRIPTION 'JVCL Validators and Error Indicator Components'}
 {$RUNONLY}
 {$IMPLICITBUILD OFF}
 
 requires
-  
+  JvCoreD5R,
   vcl50,
   vclx50,
-  JvCoreD5R,
-  DJCL50;
+  DJCL50
+  ;
 
 contains
-  JvValidators in '..\..\run\JvValidators.pas',
-  JvErrorIndicator in '..\..\run\JvErrorIndicator.pas';
+  JvValidators in '..\..\run\JvValidators.pas' ,
+  JvErrorIndicator in '..\..\run\JvErrorIndicator.pas' 
+  ;
 
 end.

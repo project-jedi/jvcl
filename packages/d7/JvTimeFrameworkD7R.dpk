@@ -1,25 +1,25 @@
 package JvTimeFrameworkD7R;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN 8}
-{$ASSERTIONS ON}
+{$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
-{$DEBUGINFO ON}
+{$DEBUGINFO OFF}
 {$EXTENDEDSYNTAX ON}
 {$IMPORTEDDATA ON}
 {$IOCHECKS ON}
-{$LOCALSYMBOLS ON}
+{$LOCALSYMBOLS OFF}
 {$LONGSTRINGS ON}
 {$OPENSTRINGS ON}
 {$OPTIMIZATION ON}
 {$OVERFLOWCHECKS OFF}
-{$RANGECHECKS OFF}
-{$REFERENCEINFO ON}
+{$RANGECHECKS ON}
+{$REFERENCEINFO OFF}
 {$SAFEDIVIDE OFF}
 {$STACKFRAMES OFF}
 {$TYPEDADDRESS OFF}
 {$VARSTRINGCHECKS ON}
-{$WRITEABLECONST OFF}
+{$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL Time Framework'}
@@ -27,21 +27,23 @@ package JvTimeFrameworkD7R;
 {$IMPLICITBUILD OFF}
 
 requires
+  JvCoreD7R,
   rtl,
   vcl,
-  vclx,
-  JvCoreD7R;
+  vclx
+  ;
 
 contains
-  JvTFUtils in '..\..\run\JvTFUtils.pas',
-  JvTFGantt in '..\..\run\JvTFGantt.pas',
-  JvTFManager in '..\..\run\JvTFManager.pas',
-  JvTFWeeks in '..\..\run\JvTFWeeks.pas',
-  JvTFAlarm in '..\..\run\JvTFAlarm.pas',
-  JvTFDays in '..\..\run\JvTFDays.pas',
-  JvTFGlance in '..\..\run\JvTFGlance.pas',
-  JvTFGlanceTextViewer in '..\..\run\JvTFGlanceTextViewer.pas',
-  JvTFMonths in '..\..\run\JvTFMonths.pas',
-  JvTFSparseMatrix in '..\..\run\JvTFSparseMatrix.pas';
+  JvTFSparseMatrix in '..\..\run\JvTFSparseMatrix.pas' ,
+  JvTFUtils in '..\..\run\JvTFUtils.pas' ,
+  JvTFWeeks in '..\..\run\JvTFWeeks.pas' ,
+  JvTFAlarm in '..\..\run\JvTFAlarm.pas' ,
+  JvTFDays in '..\..\run\JvTFDays.pas' ,
+  JvTFGantt in '..\..\run\JvTFGantt.pas' ,
+  JvTFGlance in '..\..\run\JvTFGlance.pas' ,
+  JvTFGlanceTextViewer in '..\..\run\JvTFGlanceTextViewer.pas' ,
+  JvTFManager in '..\..\run\JvTFManager.pas' ,
+  JvTFMonths in '..\..\run\JvTFMonths.pas' 
+  ;
 
 end.

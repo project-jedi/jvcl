@@ -1,41 +1,41 @@
 package JvPageCompsD5D;
 
-{$R *.res}
-
-{$ASSERTIONS ON}
+{$R *.RES}
+{$ALIGN ON}
+{$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
-{$DEBUGINFO ON}
+{$DEBUGINFO OFF}
 {$EXTENDEDSYNTAX ON}
 {$IMPORTEDDATA ON}
 {$IOCHECKS ON}
-{$LOCALSYMBOLS ON}
+{$LOCALSYMBOLS OFF}
 {$LONGSTRINGS ON}
 {$OPENSTRINGS ON}
-{$OPTIMIZATION OFF}
+{$OPTIMIZATION ON}
 {$OVERFLOWCHECKS OFF}
-{$RANGECHECKS OFF}
+{$RANGECHECKS ON}
 {$REFERENCEINFO OFF}
 {$SAFEDIVIDE OFF}
-{$STACKFRAMES ON}
+{$STACKFRAMES OFF}
 {$TYPEDADDRESS OFF}
 {$VARSTRINGCHECKS ON}
-{$WRITEABLECONST OFF}
+{$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DESCRIPTION 'JVCL Page Style Components Design Package for Delphi 6'}
+{$DESCRIPTION 'JVCL Page Style Components'}
 {$DESIGNONLY}
 {$IMPLICITBUILD OFF}
 
 requires
-  
-  
   JvPageCompsD5R,
-  dclstd50,
-  JvCoreD5D;
+  JvCoreD5D,
+  dclstd50
+  ;
 
 contains
-  JvTreeItemsEditorForm in '..\..\design\JvTreeItemsEditorForm.pas' {frmTreeViewItems},
-  JvPageListTreeViewReg in '..\..\design\JvPageListTreeViewReg.pas',
-  JvPageLinkEditorForm in '..\..\design\JvPageLinkEditorForm.pas' {frmJvTreeViewLinksEditor};
+  JvPageLinkEditorForm in '..\..\design\JvPageLinkEditorForm.pas' {frmJvTreeViewLinksEditor},
+  JvPageListTreeViewReg in '..\..\design\JvPageListTreeViewReg.pas' ,
+  JvTreeItemsEditorForm in '..\..\design\JvTreeItemsEditorForm.pas' {frmTreeViewItems}
+  ;
 
 end.

@@ -1,6 +1,6 @@
 package JvDlgsD7D;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN 8}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
@@ -27,14 +27,16 @@ package JvDlgsD7D;
 {$IMPLICITBUILD OFF}
 
 requires
-  designide,
   JvDlgsD7R,
-  JvCoreD7D;
+  JvCoreD7D,
+  designide
+  ;
 
 contains
-  JvDlgsReg in '..\..\design\JvDlgsReg.pas',
-  JvTipOfDayEditor in '..\..\design\JvTipOfDayEditor.pas',
-  JvCommonDialogDEditor in '..\..\design\JvCommonDialogDEditor.pas',
-  JvAppletEditor in '..\..\design\JvAppletEditor.pas';
+  JvTipOfDayEditor in '..\..\design\JvTipOfDayEditor.pas' ,
+  JvAppletEditor in '..\..\design\JvAppletEditor.pas' ,
+  JvCommonDialogDEditor in '..\..\design\JvCommonDialogDEditor.pas' ,
+  JvDlgsReg in '..\..\design\JvDlgsReg.pas' 
+  ;
 
 end.

@@ -1,25 +1,25 @@
 package JvPrintPreviewD5R;
 
-{$R *.res}
-
-{$ASSERTIONS ON}
+{$R *.RES}
+{$ALIGN ON}
+{$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
-{$DEBUGINFO ON}
+{$DEBUGINFO OFF}
 {$EXTENDEDSYNTAX ON}
 {$IMPORTEDDATA ON}
 {$IOCHECKS ON}
-{$LOCALSYMBOLS ON}
+{$LOCALSYMBOLS OFF}
 {$LONGSTRINGS ON}
 {$OPENSTRINGS ON}
-{$OPTIMIZATION OFF}
+{$OPTIMIZATION ON}
 {$OVERFLOWCHECKS OFF}
-{$RANGECHECKS OFF}
+{$RANGECHECKS ON}
 {$REFERENCEINFO OFF}
 {$SAFEDIVIDE OFF}
-{$STACKFRAMES ON}
+{$STACKFRAMES OFF}
 {$TYPEDADDRESS OFF}
 {$VARSTRINGCHECKS ON}
-{$WRITEABLECONST OFF}
+{$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL Print Preview Components'}
@@ -27,13 +27,14 @@ package JvPrintPreviewD5R;
 {$IMPLICITBUILD OFF}
 
 requires
-  
+  JvCoreD5R,
   vcl50,
-  vclx50,
-  JvCoreD5R;
+  vclx50
+  ;
 
 contains
-  JvPrvwRender in '..\..\run\JvPrvwRender.pas',
-  JvPrvwDoc in '..\..\run\JvPrvwDoc.pas';
+  JvPrvwRender in '..\..\run\JvPrvwRender.pas' ,
+  JvPrvwDoc in '..\..\run\JvPrvwDoc.pas' 
+  ;
 
 end.

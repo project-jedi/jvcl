@@ -1,6 +1,6 @@
 package JvDBD7R;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN 8}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
@@ -28,30 +28,32 @@ package JvDBD7R;
 
 requires
   JvCoreD7R,
-  dbrtl,
-  vcldb,
+  JvStdCtrlsD7R,
   JvSystemD7R,
-  JvStdCtrlsD7R;
+  dbrtl,
+  vcldb
+  ;
 
 contains
-  JvDBConsts in '..\..\common\JvDBConsts.pas',
-  JvDBDatePickerEdit in '..\..\run\JvDBDatePickerEdit.pas',
-  JvDBDateTimePicker in '..\..\run\JvDBDateTimePicker.pas',
-  JvDBLookupTreeView in '..\..\run\JvDBLookupTreeView.pas',
-  JvDBProgressBar in '..\..\run\JvDBProgressBar.pas',
-  JvDBRichEdit in '..\..\run\JvDBRichEdit.pas',
-  JvDBSpinEdit in '..\..\run\JvDBSpinEdit.pas',
-  JvDBTreeView in '..\..\run\JvDBTreeView.pas',
-  JvDBLookup in '..\..\run\JvDBLookup.pas',
-  JvDBUtils in '..\..\run\JvDBUtils.pas',
-  JvCsvData in '..\..\run\JvCsvData.pas',
-  JvCsvParse in '..\..\run\JvCsvParse.pas',
-  JvDBCombobox in '..\..\run\JvDBCombobox.pas',
-  JvDBControls in '..\..\run\JvDBControls.pas',
+  JvDBConsts in '..\..\common\JvDBConsts.pas' ,
+  JvMemoryDataset in '..\..\run\JvMemoryDataset.pas' ,
+  JvCsvData in '..\..\run\JvCsvData.pas' ,
+  JvCsvParse in '..\..\run\JvCsvParse.pas' ,
+  JvDBCombobox in '..\..\run\JvDBCombobox.pas' ,
+  JvDBControls in '..\..\run\JvDBControls.pas' ,
+  JvDBDatePickerEdit in '..\..\run\JvDBDatePickerEdit.pas' ,
+  JvDBDateTimePicker in '..\..\run\JvDBDateTimePicker.pas' ,
+  JvDBLookup in '..\..\run\JvDBLookup.pas' ,
+  JvDBLookupComboEdit in '..\..\run\JvDBLookupComboEdit.pas' ,
+  JvDBLookupTreeView in '..\..\run\JvDBLookupTreeView.pas' ,
+  JvDBProgressBar in '..\..\run\JvDBProgressBar.pas' ,
   JvDBQueryParamsForm in '..\..\run\JvDBQueryParamsForm.pas' {JvQueryParamsDialog},
-  JvDBRemoteLogin in '..\..\run\JvDBRemoteLogin.pas',
-  JvMemoryDataset in '..\..\run\JvMemoryDataset.pas',
-  JvDBLookupComboEdit in '..\..\run\JvDBLookupComboEdit.pas',
-  JvDBRadioPanel in '..\..\run\JvDBRadioPanel.pas';
+  JvDBRadioPanel in '..\..\run\JvDBRadioPanel.pas' ,
+  JvDBRemoteLogin in '..\..\run\JvDBRemoteLogin.pas' ,
+  JvDBRichEdit in '..\..\run\JvDBRichEdit.pas' ,
+  JvDBSpinEdit in '..\..\run\JvDBSpinEdit.pas' ,
+  JvDBTreeView in '..\..\run\JvDBTreeView.pas' ,
+  JvDBUtils in '..\..\run\JvDBUtils.pas' 
+  ;
 
 end.

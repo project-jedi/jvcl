@@ -1,6 +1,6 @@
 package JvDBD7D;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN 8}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
@@ -27,18 +27,20 @@ package JvDBD7D;
 {$IMPLICITBUILD OFF}
 
 requires
-  JvDBD7R,
   JvCoreD7D,
+  JvDBD7R,
   designide,
-  dclstd,
-  dcldb;
+  dcldb,
+  dclstd
+  ;
 
 contains
+  JvSelectDataSetForm in '..\..\design\JvSelectDataSetForm.pas' {JvSelectDataSetForm},
+  JvCsvDataEditor in '..\..\design\JvCsvDataEditor.pas' ,
   JvCsvDataForm in '..\..\design\JvCsvDataForm.pas' {JvCsvDefStrDialog},
-  JvCsvDataEditor in '..\..\design\JvCsvDataEditor.pas',
-  JvDBReg in '..\..\design\JvDBReg.pas',
-  JVDBEditors in '..\..\design\JvDBEditors.pas',
-  JvDBMemDatasetEditor in '..\..\design\JvDBMemDatasetEditor.pas',
-  JvSelectDataSetForm in '..\..\design\JvSelectDataSetForm.pas' {JvSelectDataSetForm};
+  JvDBMemDatasetEditor in '..\..\design\JvDBMemDatasetEditor.pas' ,
+  JvDBReg in '..\..\design\JvDBReg.pas' ,
+  JvDBEditors in '..\..\design\JvDBEditors.pas' 
+  ;
 
 end.

@@ -1,20 +1,20 @@
 package JvManagedThreadsD5R;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN ON}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
-{$DEBUGINFO ON}
+{$DEBUGINFO OFF}
 {$EXTENDEDSYNTAX ON}
 {$IMPORTEDDATA ON}
 {$IOCHECKS ON}
-{$LOCALSYMBOLS ON}
+{$LOCALSYMBOLS OFF}
 {$LONGSTRINGS ON}
 {$OPENSTRINGS ON}
 {$OPTIMIZATION ON}
 {$OVERFLOWCHECKS OFF}
-{$RANGECHECKS OFF}
-{$REFERENCEINFO ON}
+{$RANGECHECKS ON}
+{$REFERENCEINFO OFF}
 {$SAFEDIVIDE OFF}
 {$STACKFRAMES OFF}
 {$TYPEDADDRESS OFF}
@@ -24,18 +24,20 @@ package JvManagedThreadsD5R;
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL Managed Threads - runtime package'}
 {$RUNONLY}
-{$IMPLICITBUILD ON}
+{$IMPLICITBUILD OFF}
 
 requires
-  vcl50,
-  JvCoreD5R;
+  JvCoreD5R,
+  vcl50
+  ;
 
 contains
-  JvMTConsts in '..\..\run\JvMTConsts.pas',
-  JvMTData in '..\..\run\JvMTData.pas',
-  JvMTThreading in '..\..\run\JvMTThreading.pas',
-  JvMTSyncMon in '..\..\run\JvMTSyncMon.PAS',
-  JvMTSync in '..\..\run\JvMTSync.pas',
-  JvMTComponents in '..\..\run\JvMTComponents.pas';
+  JvMTComponents in '..\..\run\JvMTComponents.pas' ,
+  JvMTConsts in '..\..\run\JvMTConsts.pas' ,
+  JvMTData in '..\..\run\JvMTData.pas' ,
+  JvMTSync in '..\..\run\JvMTSync.pas' ,
+  JvMTSyncMon in '..\..\run\JvMTSyncMon.pas' ,
+  JvMTThreading in '..\..\run\JvMTThreading.pas' 
+  ;
 
 end.

@@ -1,6 +1,6 @@
 package JvSystemD7D;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN 8}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
@@ -27,21 +27,24 @@ package JvSystemD7D;
 {$IMPLICITBUILD OFF}
 
 requires
-  designide,
-  dclstd,
-  rtl,
-  vcljpg,
   JvCoreD7D,
   JvCoreD7R,
+  JvSystemD7R,
   DJCL70,
-  JvSystemD7R;
+  rtl,
+  vclx,
+  vcljpg,
+  designide,
+  dclstd
+  ;
 
 contains
-  JvSystemReg in '..\..\design\JvSystemReg.pas',
-  JvChangeNotifyEditor in '..\..\design\JvChangeNotifyEditor.pas',
-  JvTimerListEditor in '..\..\design\JvTimerListEditor.pas',
-  JvPerfStatEditor in '..\..\design\JvPerfStatEditor.pas',
-  JvFormPropertiesForm in '..\..\design\JvFormPropertiesForm.pas' {JvFormPropsDlg},
-  JvMinMaxForm in '..\..\design\JvMinMaxForm.pas' {MinMaxInfoEditDialog};
+  JvMinMaxForm in '..\..\design\JvMinMaxForm.pas' {MinMaxInfoEditDialog},
+  JvPerfStatEditor in '..\..\design\JvPerfStatEditor.pas' ,
+  JvSystemReg in '..\..\design\JvSystemReg.pas' ,
+  JvTimerListEditor in '..\..\design\JvTimerListEditor.pas' ,
+  JvChangeNotifyEditor in '..\..\design\JvChangeNotifyEditor.pas' ,
+  JvFormPropertiesForm in '..\..\design\JvFormPropertiesForm.pas' {JvFormPropsDlg}
+  ;
 
 end.
