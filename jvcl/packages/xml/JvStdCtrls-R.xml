@@ -21,7 +21,7 @@
     <Package Name="vclx" Targets="C6,C6p,D7,D7p" Condition=""/>
     <Package Name="bcbsmp" Targets="C6,C6p" Condition=""/>
     <Package Name="bcbie" Targets="C6,C6p" Condition=""/>
-    <Package Name="vcljpg" Targets="D7,D7p" Condition=""/>
+    <Package Name="vcljpg" Targets="D7,D7p,D9" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvDynControlEngineJVCL.pas" Targets="allbutclx" Formname="" Condition=""/>

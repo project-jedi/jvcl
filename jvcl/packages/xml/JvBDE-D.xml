@@ -22,7 +22,7 @@
     <Package Name="vclbde50" Targets="C5,C5s" Condition=""/>
     <Package Name="bcbsmp50" Targets="C5,C5s" Condition=""/>
     <Package Name="rtl" Targets="C6,C6p" Condition=""/>
-    <Package Name="designide" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
+    <Package Name="designide" Targets="C6,C6p,D6,D6p,D7,D7p,D9" Condition=""/>
     <Package Name="CJCL" Targets="C6,C6p" Condition=""/>
     <Package Name="dcldb" Targets="C6,C6p" Condition=""/>
     <Package Name="dbrtl" Targets="C6,C6p" Condition=""/>
@@ -32,7 +32,7 @@
     <Package Name="bdertl" Targets="C6,C6p" Condition=""/>
     <Package Name="bcbsmp" Targets="C6,C6p" Condition=""/>
     <Package Name="dclstd50" Targets="C5,C5s,D5,D5s" Condition=""/>
-    <Package Name="dclstd" Targets="D6,D6p,D7,D7p" Condition=""/>
+    <Package Name="dclstd" Targets="D6,D6p,D7,D7p,D9" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\design\JvBDESecurityEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
