@@ -49,10 +49,10 @@ uses
 procedure Register;
 
 {$IFDEF MSWINDOWS}
-{$R ../Resources/JvPageListTreeViewReg.dcr}
+{$R ..\Resources\JvPageListTreeViewReg.dcr}
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
-{$R ..\Resources\JvPageListTreeViewReg.dcr}
+{$R ../Resources/JvPageListTreeViewReg.dcr}
 {$ENDIF LINUX}
 
 implementation

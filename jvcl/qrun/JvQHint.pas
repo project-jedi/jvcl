@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -20,8 +20,6 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2004-01-06
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -30,6 +28,7 @@ description : Custom activated hint
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -43,7 +42,7 @@ uses
   
   QWindows, QControls, QForms, QExtCtrls, QGraphics, QTypes, Types, Qt,
   
-  JvQHtControls, JvQTypes;
+  JvQHTControls, JvQTypes;
 
 type
   TJvHintWindow = class(THintWindow)

@@ -31,11 +31,9 @@ Known Issues:
 
 {$I jvcl.inc}
 
-unit JVQCLVer;
+unit JvQCLVer;
 
 interface
-
-
 
 const
   JVCL_VERSIONSTRING = '1.00';

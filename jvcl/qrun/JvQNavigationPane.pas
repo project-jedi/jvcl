@@ -39,7 +39,7 @@ uses
   QControls, QGraphics, QMenus, QExtCtrls, QImgList, Types, Qt,
   QTypes, QWindows,
   
-  JvQButton, JvQPageList, JvQComponent, JvQExExtCtrls;
+  JvQTypes, JvQButton, JvQPageList, JvQComponent, JvQExExtCtrls;
 
 type
   TJvCustomNavigationPane = class;
@@ -235,9 +235,13 @@ type
     FNavPanelFont: TFont;
     FDividerFont: TFont;
     FOnChange: TNotifyEvent;
+    FNavPanelHotTrackFont: TFont;
+    FNavPanelHotTrackFontOptions: TJvTrackFontOptions;
     procedure SetDividerFont(const Value: TFont);
     procedure SetHeaderFont(const Value: TFont);
     procedure SetNavPanelFont(const Value: TFont);
+    procedure SetNavPanelHotTrackFont(const Value: TFont);
+    procedure SetNavPanelHotTrackFontOptions(const Value: TJvTrackFontOptions);
   protected
     procedure Change;
     procedure DoFontChange(Sender: TObject);
@@ -247,6 +251,9 @@ type
     destructor Destroy; override;
   published
     property NavPanelFont: TFont read FNavPanelFont write SetNavPanelFont;
+    property NavPanelHotTrackFont: TFont read FNavPanelHotTrackFont write SetNavPanelHotTrackFont;
+    property NavPanelHotTrackFontOptions:TJvTrackFontOptions read FNavPanelHotTrackFontOptions write SetNavPanelHotTrackFontOptions default DefaultTrackFontOptions;
+
     property DividerFont: TFont read FDividerFont write SetDividerFont;
     property HeaderFont: TFont read FHeaderFont write SetHeaderFont;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -383,7 +390,7 @@ type
     property Font;
     property GroupIndex;
 
-    property HotTrack;
+    property HotTrack default True;
     property HotTrackFont;
     property HotTrackFontOptions;
     property ParentFont;
@@ -450,10 +457,31 @@ type
   published
     property Color;
     property Caption: TCaption read GetCaption write SetCaption;
+    property DragMode;
     property Iconic: Boolean read GetIconic write SetIconic default False;
     property ImageIndex: TImageIndex read GetImageIndex write SetImageIndex default -1;
     property Hint: string read GetHint write SetHint;
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
+    property OnContextPopup;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
+    property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnMouseWheel;
+    property OnMouseWheelDown;
+    property OnMouseWheelUp;
+    property OnResize;
+    property OnShow;
+    property OnStartDrag;
   end;
 
   TJvNavPaneToolPanel = class;
@@ -601,6 +629,8 @@ type
     FButtonHeight: Integer;
     FStyleManager: TJvNavPaneStyleManager;
     FStyleLink: TJvNavStyleLink;
+    FNavPanelHotTrackFont: TFont;
+    FNavPanelHotTrackFontOptions: TJvTrackFontOptions;
     function GetDropDownMenu: TPopupMenu;
     function GetSmallImages: TCustomImageList;
     procedure SetDropDownMenu(const Value: TPopupMenu);
@@ -617,6 +647,9 @@ type
     procedure DoSplitterCanResize(Sender: TObject; var NewSize: Integer; var Accept: Boolean);
     procedure DoColorsChange(Sender: TObject);
     procedure SetNavPanelFont(const Value: TFont);
+    procedure SetNavPanelHotTrackFont(const Value: TFont);
+    procedure SetNavPanelHotTrackFontOptions(const Value: TJvTrackFontOptions);
+
     procedure DoNavPanelFontChange(Sender: TObject);
     function IsNavPanelFontStored: Boolean;
     procedure SetButtonHeight(const Value: Integer);
@@ -646,6 +679,8 @@ type
     property ButtonHeight: Integer read FButtonHeight write SetButtonHeight default 28;
     property ButtonWidth: Integer read FButtonWidth write SetButtonWidth default 22;
     property NavPanelFont: TFont read FNavPanelFont write SetNavPanelFont stored IsNavPanelFontStored;
+    property NavPanelHotTrackFont: TFont read FNavPanelHotTrackFont write SetNavPanelHotTrackFont;
+    property NavPanelHotTrackFontOptions:TJvTrackFontOptions read FNavPanelHotTrackFontOptions write SetNavPanelHotTrackFontOptions default DefaultTrackFontOptions;
     property Color default clWindow;
     property Colors: TJvNavPanelColors read FColors write SetColors;
     property StyleManager: TJvNavPaneStyleManager read FStyleManager write SetStyleManager;
@@ -690,6 +725,8 @@ type
     property NavPanelFont;
     property Resizable;
     property SmallImages;
+    property OnChange;
+    property OnChanging;
   end;
 
   TJvNavStyleLink = class(TObject)
@@ -891,13 +928,16 @@ begin
   FIconPanel.Parent := Self;
   FIconPanel.Align := alBottom;
   FNavPanelFont := TFont.Create;
+  FNavPanelHotTrackFont := TFont.Create;
   
   
   FNavPanelFont.Assign(Application.Font);
   
   FNavPanelFont.Style := [fsBold];
   FNavPanelFont.OnChange := DoNavPanelFontChange;
-
+  FNavPanelHotTrackFont.Assign(FNavPanelFont);
+  FNavPanelHotTrackFont.OnChange := DoNavPanelFontChange;
+  FNavPanelHotTrackFontOptions := DefaultTrackFontOptions;
   FSplitter := TJvOutlookSplitter.Create(Self);
   with FSplitter do
   begin
@@ -1152,6 +1192,22 @@ begin
   FNavPanelFont.Assign(Value);
 end;
 
+procedure TJvCustomNavigationPane.SetNavPanelHotTrackFont(const Value: TFont);
+begin
+  FNavPanelHotTrackFont.Assign(Value);
+end;
+
+procedure TJvCustomNavigationPane.SetNavPanelHotTrackFontOptions(const Value: TJvTrackFontOptions);
+var i:integer;
+begin
+  if FNavPanelHotTrackFontOptions <> Value then
+  begin
+    FNavPanelHotTrackFontOptions := Value;
+    for i := 0 to PageCount - 1 do
+      NavPages[i].NavPanel.HotTrackFontOptions := FNavPanelHotTrackFontOptions;
+  end;
+end;
+
 function TJvCustomNavigationPane.IsNavPanelFontStored: Boolean;
 var
   F: TFont;
@@ -1170,7 +1226,10 @@ var
   i: Integer;
 begin
   for i := 0 to PageCount - 1 do
+  begin
     NavPages[i].NavPanel.Font := FNavPanelFont;
+    NavPages[i].NavPanel.HotTrackFont := FNavPanelHotTrackFont;
+  end;
 end;
 
 procedure TJvCustomNavigationPane.RemovePage(APage: TJvCustomPage);
@@ -1241,6 +1300,8 @@ procedure TJvCustomNavigationPane.DoStyleChange(Sender: TObject);
 begin
   Colors := (Sender as TJvNavPaneStyleManager).Colors;
   NavPanelFont := (Sender as TJvNavPaneStyleManager).Fonts.NavPanelFont;
+  NavPanelHotTrackFont := (Sender as TJvNavPaneStyleManager).Fonts.NavPanelHotTrackFont;
+  NavPanelHotTrackFontOptions := (Sender as TJvNavPaneStyleManager).Fonts.NavPanelHotTrackFontOptions;
 end;
 
 { TJvNavIconButton }
@@ -1555,7 +1616,7 @@ var
   R: TRect;
 begin
   R := ClientRect;
-  if bsMouseInside in MouseStates then
+  if HotTrack  and (bsMouseInside in MouseStates) then
   begin
     if (bsMouseDown in MouseStates) then
       GradientFillRect(Canvas, R, Colors.ButtonSelectedColorTo, Colors.ButtonSelectedColorFrom, fdTopToBottom, 32)
@@ -1564,6 +1625,8 @@ begin
   end
   else if Down then
     GradientFillRect(Canvas, R, Colors.ButtonSelectedColorFrom, Colors.ButtonSelectedColorTo, fdTopToBottom, 32)
+  else if (bsMouseDown in MouseStates) then
+    GradientFillRect(Canvas, R, Colors.ButtonSelectedColorTo, Colors.ButtonSelectedColorFrom, fdTopToBottom, 32)
   else
     GradientFillRect(Canvas, ClientRect, Colors.ButtonColorFrom, Colors.ButtonColorTo, fdTopToBottom, 32);
 
@@ -1577,7 +1640,10 @@ begin
     OffsetRect(R, 8, 0);
   if Caption <> '' then
   begin
-    Canvas.Font := Font;
+    if HotTrack and (bsMouseInside in MouseStates) then
+      Canvas.Font := HotTrackFont
+    else
+      Canvas.Font := Font;
     SetBkMode(Canvas.Handle, TRANSPARENT);
     
     
@@ -1859,7 +1925,7 @@ begin
   inherited Create;
   FDividerFont := TFont.Create;
   FNavPanelFont := TFont.Create;
-
+  FNavPanelHotTrackFont := TFont.Create;
   FHeaderFont := TFont.Create;
   FHeaderFont.Name := 'Arial';
   FHeaderFont.Size := 12;
@@ -1873,9 +1939,12 @@ begin
   FNavPanelFont.Assign(Application.Font);
   
   FNavPanelFont.Style := [fsBold];
+  FNavPanelHotTrackFont.Assign(FNavPanelFont);
+  FNavPanelHotTrackFontOptions := DefaultTrackFontOptions;
 
   FDividerFont.OnChange := DoFontChange;
   FNavPanelFont.OnChange := DoFontChange;
+  FNavPanelHotTrackFont.OnChange := DoFontChange;
 end;
 
 destructor TJvNavPanelFonts.Destroy;
@@ -1883,6 +1952,7 @@ begin
   FDividerFont.Free;
   FHeaderFont.Free;
   FNavPanelFont.Free;
+  FNavPanelHotTrackFont.Free;
   inherited;
 end;
 
@@ -1906,11 +1976,27 @@ begin
   FNavPanelFont.Assign(Value);
 end;
 
+procedure TJvNavPanelFonts.SetNavPanelHotTrackFont(const Value: TFont);
+begin
+  FNavPanelHotTrackFont.Assign(Value);
+end;
+
+procedure TJvNavPanelFonts.SetNavPanelHotTrackFontOptions(
+  const Value: TJvTrackFontOptions);
+begin
+  if FNavPanelHotTrackFontOptions <> Value then
+  begin
+    FNavPanelHotTrackFontOptions := Value;
+    Change;
+  end;
+end;
+
 { TJvNavPanelPage }
 
 constructor TJvNavPanelPage.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  ControlStyle := ControlStyle + [csDisplayDragImage]; 
   FStyleLink := TJvNavStyleLink.Create;
   FStyleLink.OnChange := DoStyleChange;
 
@@ -1953,6 +2039,9 @@ end;
 procedure TJvNavPanelPage.DoStyleChange(Sender: TObject);
 begin
   Colors := (Sender as TJvNavPaneStyleManager).Colors;
+  NavPanel.Font := (Sender as TJvNavPaneStyleManager).Fonts.NavPanelFont;
+  NavPanel.HotTrackFont := (Sender as TJvNavPaneStyleManager).Fonts.NavPanelHotTrackFont;
+  NavPanel.HotTrackFontOptions := (Sender as TJvNavPaneStyleManager).Fonts.NavPanelHotTrackFontOptions;
 end;
 
 function TJvNavPanelPage.GetCaption: TCaption;
@@ -2096,6 +2185,8 @@ begin
     NavPanel.Height := TJvCustomNavigationPane(AParent).ButtonHeight;
     NavPanel.Images := TJvCustomNavigationPane(AParent).LargeImages;
     NavPanel.Font := TJvCustomNavigationPane(AParent).NavPanelFont;
+    NavPanel.HotTrackFont := TJvCustomNavigationPane(AParent).NavPanelHotTrackFont;
+    NavPanel.HotTrackFontOptions := TJvCustomNavigationPane(AParent).NavPanelHotTrackFontOptions;
 
     IconButton.Images := TJvCustomNavigationPane(AParent).SmallImages;
     IconButton.Width := TJvCustomNavigationPane(AParent).ButtonWidth;

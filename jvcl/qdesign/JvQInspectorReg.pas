@@ -40,28 +40,8 @@ implementation
 uses
   Classes,
   JvQInspector,
-  JvQDsgnConsts;
-(*  Classes, ImgList,
-  {$IFDEF COMPILER6_UP}
-  DesignEditors, DesignIntf,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
-  FiltEdit,
-  {$IFNDEF COMPILER7_UP}
-  ExptIntf,
-  {$ENDIF COMPILER7_UP}
-  ToolsAPI,
-  JclSchedule,
-  JvDsgnConsts,
-  JvTrayIcon, JvGammaPanel, JvInspector, JvLinkLabel,
-  JvLookOut, JvOutlookBar, JvScheduledEvents, JvThumbImage,
-  JvThumbnails, JvThumbviews, JvTimeLine, JvTMTimeLine, JvBalloonHint,
-  JvValidateEdit, JvEditor, JvHLEditor, JvHLEditorPropertyForm, JvHLParser,
-  JvEditorCommon, JvUnicodeEditor, JvUnicodeHLEditor,
-  JvImagesViewer, JvImageListViewer, JvOwnerDrawViewer,
-  JvTimeLineEditor, JvHLEditEditor, JvScheduleEditors,
-  JvOutlookBarEditors, JvLookoutEditor, JvChart;*)
+  JvQDsgnConsts
+  ;
 
 {$IFDEF MSWINDOWS}
 {$R ..\resources\JvCustomReg.dcr}

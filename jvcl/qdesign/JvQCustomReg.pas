@@ -38,29 +38,23 @@ procedure Register;
 implementation
 
 uses
-  Classes, ImgList,
-  
+  Classes, QImgList,
+
   DesignEditors, DesignIntf,
-  
-  FiltEdit,
-  
+
   ToolsAPI,
   JclSchedule,
   JvQDsgnConsts,
-  JvQTrayIcon, JvQGammaPanel, JvQLinkLabel,
-  JvQLookOut, JvQOutlookBar, JvQScheduledEvents, JvQThumbImage,
-  JvQThumbnails, JvQThumbviews, JvQTimeLine, JvQTMTimeLine, JvQBalloonHint,
-  JvQValidateEdit, JvQEditor, JvQHLEditor, JvQHLEditorPropertyForm, JvQHLParser,
-  JvQEditorCommon, JvQUnicodeEditor, JvQUnicodeHLEditor,
-  JvQImagesViewer, JvQImageListViewer, JvQOwnerDrawViewer,
-  JvQTimeLineEditor, JvQHLEditEditor, JvQScheduleEditors,
+  JvQGammaPanel, JvQLinkLabel,
+  JvQTMTimeLine, JvQLookOut, JvQOutlookBar,
+  JvQValidateEdit, JvQHLParser,
   JvQOutlookBarEditors, JvQLookoutEditor, JvQChart;
 
 {$IFDEF MSWINDOWS}
-{$R ..\resources\JvCustomReg.dcr}
+{$R ..\Resources\JvCustomReg.dcr}
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
-{$R ../resources/JvCustomReg.dcr}
+{$R ../Resources/JvCustomReg.dcr}
 {$ENDIF LINUX}
 
 procedure Register;
@@ -72,17 +66,10 @@ const
   cFilter = 'Filter';
 begin
   RegisterComponents(RsPaletteButton, [TJvLookOutButton, TJvExpressButton]);
-  RegisterComponents(RsPaletteEdit, [TJvValidateEdit, TJvEditor, TJvHLEditor,
-    TJvWideEditor, TJvWideHLEditor, TJvHLEdPropDlg]);
+  RegisterComponents(RsPaletteEdit, [TJvValidateEdit]);
   RegisterComponents(RsPaletteBarPanel, [TJvGammaPanel, TJvOutlookBar,
-    TJvLookout, {TJvLookOutPage, } TJvExpress]);
+    TJvLookout, TJvLookOutPage,  TJvExpress]);
   RegisterComponents(RsPaletteLabel, [TJvLinkLabel]);
-  RegisterComponents(RsPaletteImageAnimator, [TJvThumbView, TJvThumbnail,
-    TJvThumbImage]);
-  RegisterComponents(RsPaletteVisual, [TJvTimeLine, TJvTMTimeLine, TJvChart,
-      TJvImagesViewer, TJvImageListViewer,TJvOwnerDrawViewer]);
-  RegisterComponents(RsPaletteNonVisual, [TJvTrayIcon, TJvScheduledEvents,
-    TJvBalloonHint]);
 
   RegisterPropertyEditor(TypeInfo(Integer), TJvCustomOutlookBar,
     cActivePageIndex, TJvOutlookBarActivePageEditor);
@@ -95,26 +82,14 @@ begin
   RegisterPropertyEditor(TypeInfo(TImageIndex), TJvOutlookBarPage,
     cImageIndex, TJvOutlookBarPageImageIndexProperty);
 
-  RegisterPropertyEditor(TypeInfo(TJvColors), TJvHLEditor,
-    cColors, TJvHLEditorColorProperty);
-  RegisterPropertyEditor(TypeInfo(TJvColors), TJvWideHLEditor,
-    cColors, TJvHLEditorColorProperty);
-  RegisterPropertyEditor(TypeInfo(IJclSchedule), TJvEventCollectionItem,
-    cSchedule, TJvSchedulePropertyEditor);
   RegisterPropertyEditor(TypeInfo(TImageIndex), TJvLookoutButton,
     cImageIndex, TJvLookOutImageIndexProperty);
   RegisterPropertyEditor(TypeInfo(TImageIndex), TJvExpressButton,
     cImageIndex, TJvLookOutImageIndexProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvThumbView,
-    cFilter, TFilterProperty);
 
-  RegisterComponentEditor(TJvHLEdPropDlg, TJvHLEdPropDlgEditor);
-  RegisterComponentEditor(TJvCustomOutlookBar, TJvOutlookBarComponentEditor);
-  RegisterComponentEditor(TJvCustomTimeLine, TJvTimeLineEditor);
   RegisterComponentEditor(TJvLookOut, TJvLookOutEditor);
   RegisterComponentEditor(TJvLookOutPage, TJvLookOutPageEditor);
   RegisterComponentEditor(TJvExpress, TJvExpressEditor);
-  RegisterComponentEditor(TJvCustomScheduledEvents, TJvSchedEventComponentEditor);
   RegisterClass(TJvLookoutPage);
 end;
 
