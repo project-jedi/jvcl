@@ -32,20 +32,7 @@ unit JvDBConsts;
 
 interface
 
-const
-  { TJvDBTreeView }
-  SDeleteNode             = 'Delete %s ?';
-  SDeleteNode2            = 'Delete %s (with all children) ?';
-  SMasterFieldEmpty       = '"MasterField" property must be filled';
-  SDetailFieldEmpty       = '"DetailField" property must be filled';
-  SItemFieldEmpty         = '"ItemField" property must be filled';
-  SMasterDetailFieldError = '"MasterField" and "DetailField" must be of same type';
-  SMasterFieldError       = '"MasterField" must be integer type';
-  SDetailFieldError       = '"DetailField" must be integer type';
-  SItemFieldError         = '"ItemField" must be string, date or integer type';
-  SIconFieldError         = '"IconField" must be integer type';
-  SMoveToModeError        = 'Invalid move mode for RADBTreeNode';
-  SDataSetNotActive       = 'DataSet not active';
+// (rom) all now in JvResources.pas
 
 implementation
 

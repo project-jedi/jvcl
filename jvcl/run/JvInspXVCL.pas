@@ -77,19 +77,19 @@ begin
   if JvxNode.TypeInfo^.Kind = tkFloat then
     Result := JvxNode.AsFloat
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorFloat]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorFloat]);
 end;
 
 function TJvInspectorxNodeData.GetAsInt64: Int64;
 begin
   CheckReadAccess;
-  raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorInt64]);
+  raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorInt64]);
 end;
 
 function TJvInspectorxNodeData.GetAsMethod: TMethod;
 begin
   CheckReadAccess;
-  raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorTMethod]);
+  raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorTMethod]);
 end;
 
 function TJvInspectorxNodeData.GetAsOrdinal: Int64;
@@ -104,7 +104,7 @@ begin
       Result := JvxNode.AsInteger;
   end
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorOrdinal]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorOrdinal]);
 end;
 
 function TJvInspectorxNodeData.GetAsString: string;
@@ -113,7 +113,7 @@ begin
   if JvxNode.TypeInfo^.Kind in [tkString, tkLString, tkWString] then
     Result := JvxNode.AsString
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorString]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorString]);
 end;
 
 function TJvInspectorxNodeData.GetJvxNode: TJvxNode;
@@ -142,19 +142,19 @@ begin
   if JvxNode.TypeInfo^.Kind = tkFloat then
     JvxNode.AsFloat := Value
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorFloat]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorFloat]);
 end;
 
 procedure TJvInspectorxNodeData.SetAsInt64(const Value: Int64);
 begin
   CheckWriteAccess;
-  raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorInt64]);
+  raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorInt64]);
 end;
 
 procedure TJvInspectorxNodeData.SetAsMethod(const Value: TMethod);
 begin
   CheckWriteAccess;
-  raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorTMethod]);
+  raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorTMethod]);
 end;
 
 procedure TJvInspectorxNodeData.SetAsOrdinal(const Value: Int64);
@@ -220,7 +220,7 @@ begin
   if TypeInfo.Kind = tkClass then
     JvxNode.AsInteger := Integer(Value)
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorOrdinal]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorOrdinal]);
 end;
 
 procedure TJvInspectorxNodeData.SetAsString(const Value: string);
@@ -229,7 +229,7 @@ begin
   if JvxNode.TypeInfo.Kind in [tkString, tkLString, tkWString] then
     JvxNode.AsString := Value
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorString]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorString]);
 end;
 
 procedure TJvInspectorxNodeData.SetJvxNode(Value: TJvxNode);
@@ -257,7 +257,7 @@ var
 begin
   CheckReadAccess;
   if JvxNode.TypeInfo.Kind <> tkSet then
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorSet]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorSet]);
   CompType := GetTypeData(TypeInfo).CompType^;
   EnumMin := GetTypeData(CompType).MinValue;
   EnumMax := GetTypeData(CompType).MaxValue;
@@ -289,7 +289,7 @@ var
   Data: TJvInspectorxNodeData;
 begin
   if AJvxNode = nil then
-    raise EJVCLException.Create(SNoNodeSpecified);
+    raise EJVCLException.Create(RsENoNodeSpecified);
   if AJvxNode.NodeName <> '' then
     Data := TJvInspectorxNodeData.CreatePrim(AJvxNode.NodeName, AJvxNode.TypeInfo))
   else
@@ -312,7 +312,7 @@ var
 begin
   CheckWriteAccess;
   if JvxNode.TypeInfo.Kind <> tkSet then
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, [cJvInspectorSet]);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorSet]);
   CompType := GetTypeData(TypeInfo).CompType^;
   EnumMin := GetTypeData(CompType).MinValue;
   EnumMax := GetTypeData(CompType).MaxValue;

@@ -294,9 +294,7 @@ begin
       if not StartCmd then
       begin
         if S[I] <> '[' then
-          {$TYPEDADDRESS OFF}
-          raise EJvADCParserError.CreateResRec(@SErrorCommandStart);
-          {$TYPEDADDRESS ON}
+          raise EJvADCParserError.Create(RsEErrorCommandStart);
         StartCmd := True;
         StartParams := False;
         StartString := False;
@@ -348,9 +346,7 @@ begin
       Inc(I);
     end;
     if StartCmd or StartParams or StartString then
-      {$TYPEDADDRESS OFF}
-      raise EJvADCParserError.CreateResRecFmt(@SErrorCommandFormat, [S]);
-      {$TYPEDADDRESS ON}
+      raise EJvADCParserError.CreateFmt(RsEErrorCommandFormat, [S]);
   finally
     Params.Free;
   end;

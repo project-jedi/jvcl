@@ -102,7 +102,8 @@ function GetFieldName(const AField: TField): string;
 implementation
 
 uses
-  Consts;
+  Consts,
+  JvResources;
 
 var
   FDBReg: TJvInspectorRegister;
@@ -180,7 +181,7 @@ begin
   if TypeInfo.Kind = tkFloat then
     Result := Field.AsFloat
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['Float']);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorFloat]);
 end;
 
 function TJvInspectorDBData.GetAsInt64: Int64;
@@ -189,13 +190,13 @@ begin
   if TypeInfo.Kind = tkInt64 then
     Result := TLargeIntField(Field).AsLargeInt
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['Int64']);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorInt64]);
 end;
 
 function TJvInspectorDBData.GetAsMethod: TMethod;
 begin
   CheckReadAccess;
-  raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['TMethod']);
+  raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorTMethod]);
 end;
 
 function TJvInspectorDBData.GetAsOrdinal: Int64;
@@ -212,7 +213,7 @@ begin
       Result := Field.AsInteger;
   end
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['Ordinal']);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorOrdinal]);
 end;
 
 function TJvInspectorDBData.GetAsString: string;
@@ -221,7 +222,7 @@ begin
   if TypeInfo.Kind in [tkString, tkLString, tkWString] then
     Result := Field.AsString
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['string']);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorString]);
 end;
 
 function TJvInspectorDBData.GetDataSource: TDataSource;
@@ -291,7 +292,7 @@ begin
     Field.AsFloat := Value;
   end
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['Float']);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorFloat]);
 end;
 
 procedure TJvInspectorDBData.SetAsInt64(const Value: Int64);
@@ -303,13 +304,13 @@ begin
     TLargeIntField(Field).AsLargeInt := Value;
   end
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['Int64']);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorInt64]);
 end;
 
 procedure TJvInspectorDBData.SetAsMethod(const Value: TMethod);
 begin
   CheckWriteAccess;
-  raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['TMethod']);
+  raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorTMethod]);
 end;
 
 procedure TJvInspectorDBData.SetAsOrdinal(const Value: Int64);
@@ -390,7 +391,7 @@ begin
     Field.AsInteger := Integer(Value);
   end
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['Ordinal']);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorOrdinal]);
 end;
 
 procedure TJvInspectorDBData.SetAsString(const Value: string);
@@ -402,7 +403,7 @@ begin
     Field.AsString := Value;
   end
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['string']);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorString]);
 end;
 
 procedure TJvInspectorDBData.SetDataSource(const Value: TDataSource);
@@ -455,7 +456,7 @@ var
 begin
   CheckReadAccess;
   if TypeInfo.Kind <> tkSet then
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['set']);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorSet]);
   CompType := GetTypeData(TypeInfo).CompType^;
   EnumMin := GetTypeData(CompType).MinValue;
   EnumMax := GetTypeData(CompType).MaxValue;
@@ -556,7 +557,7 @@ var
 begin
   CheckWriteAccess;
   if TypeInfo.Kind <> tkSet then
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['set']);
+    raise EJvInspectorData.CreateFmt(RsEJvInspDataNoAccessAs, [cJvInspectorSet]);
   CompType := GetTypeData(TypeInfo).CompType^;
   EnumMin := GetTypeData(CompType).MinValue;
   EnumMax := GetTypeData(CompType).MaxValue;

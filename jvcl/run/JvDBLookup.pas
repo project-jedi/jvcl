@@ -631,7 +631,7 @@ implementation
 
 uses
   DBConsts, Dialogs, Math,
-  JvThemes, JvConsts, JvJVCLUtils, JvJCLUtils, JvResources;
+  JvThemes, JvTypes, JvJVCLUtils, JvJCLUtils, JvResources;
 
 procedure CheckLookupFormat(const AFormat: string);
 var
@@ -644,10 +644,10 @@ begin
   begin
     Inc(P);
     if P^ = #0 then
-      raise Exception.Create(sInvalidFormatNotAllowed)
+      raise EJVCLException.Create(RsEInvalidFormatNotAllowed)
     else
     if not (P^ in ['%', 's', 'S']) then
-      raise Exception.Create(Format(sInvalidFormatsNotAllowed,
+      raise EJVCLException.Create(Format(RsEInvalidFormatsNotAllowed,
         [QuotedStr('%' + P^)]));
     P := StrScan(P + 1, '%');
   end;

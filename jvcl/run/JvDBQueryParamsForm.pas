@@ -84,7 +84,7 @@ var
 begin
   for J := Low(TFieldType) to High(TFieldType) do
     FieldTypes[J] := EmptyStr;
-  ParamString := SDataTypes;
+  ParamString := RsDataTypes;
   J := Low(TFieldType);
   I := 1;
   while I <= Length(ParamString) do
@@ -129,7 +129,7 @@ begin
       CancelBtn.Left := CancelBtn.Left + HelpBtn.Width div 2;
     end;
     if csDesigning in DataSet.ComponentState then
-      Caption := Format(SParamEditor,
+      Caption := Format(RsParamEditor,
         {$IFDEF BCB}
         [DataSet.Owner.Name, '->', DataSet.Name]);
         {$ELSE}
@@ -218,7 +218,7 @@ begin
     if (TypeList.Text = '') and TypeList.CanFocus then
     begin
       TypeList.SetFocus;
-      raise EJVCLException.Create(SInvalidParamFieldType);
+      raise EJVCLException.Create(RsEInvalidParamFieldType);
     end;
     if ParamValue.Text = '' then
       with InitList.ParamByName(ParamList.Items[ParamList.ItemIndex]) do
