@@ -900,6 +900,7 @@ type
     property Enabled;
     property Visible;
   end;
+
 resourcestring
   rsFirstButtonCaption = 'To &Start Page';
   rsLastButtonCaption = 'To &Last Page';
@@ -909,7 +910,7 @@ resourcestring
   rsWelcome = 'Welcome';
   rsTitle = 'Title';
   rsSubtitle = 'Subtitle';
-  rsInvalidParentControl = 'The Parent should be TJvWizard or a descendants.';
+  rsInvalidParentControl = 'The Parent should be TJvWizard or a descendant.';
   rsInvalidWizardPage = 'The pages belong to another wizard.';
 
 implementation

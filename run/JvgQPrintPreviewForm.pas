@@ -111,7 +111,7 @@ uses
 {$R *.dfm}
 
 resourcestring
-  sPagedOfd = 'Page %d of $d';
+  sPagedOfd = 'Page %d of %d';
 
 procedure TJvgfPrintPreview.FormCreate(Sender: TObject);
 begin

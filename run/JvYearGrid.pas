@@ -138,12 +138,12 @@ resourcestring
   sCopy = '&Copy';
   sCut = 'Cu&t';
   sPaste = '&Paste';
-  sDelete = '&Delete';
+  sDeleteItem = '&Delete';
   sSaveAllInfo = '&Save All Info';
   sSaveFoundInfo = 'Save Found Info';
   sBorderColor = '&Border Color...';
   sBookMarkColor = 'Book&Mark Color...';
-  sFind = '&Find...';
+  sFindItem = '&Find...';
   sClearFind = 'Clear Find';
   sYearGridFind = 'YearGrid Find';
   sEnterSeachText = 'Enter seach text:';
@@ -641,7 +641,7 @@ begin
   m.OnClick := paste1click;
   g.Items.Add(m);
   m := tmenuitem.Create(g);
-  m.Caption := sDelete;
+  m.Caption := sDeleteItem;
   m.OnClick := delete1click;
   g.Items.Add(m);
   m := tmenuitem.Create(g);
@@ -674,7 +674,7 @@ begin
   m.Caption := '-';
   g.Items.Add(m);
   m := tmenuitem.Create(g);
-  m.Caption := sFind;
+  m.Caption := sFindItem;
   m.OnClick := find1click;
   m.tag := 1;
   g.Items.Add(m);

@@ -1,5 +1,3 @@
-unit JvCsvParse;
-
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
@@ -24,30 +22,25 @@ Last Modified: 2003-07-29 by Warren Postma - New features (Sorting, Indexing, Us
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
-description : Internal pchar-manipulation functions required by TJvCsvDataSet data access component. 
+Description:
+  Internal pchar-manipulation functions required by TJvCsvDataSet data access component.
+
+  Useful extra functions for parsing strings using pascal,
+  not present in your basic vanilla Pascal/Delphi standard
+  libraries.
+
+  MOST use PChars and char buffers, not the String type.
+
+  These functions are used to implement the
+  CsvDataSource component but are generally reuseable in
+  any string parsing code.
 
 Known Issues:
 -----------------------------------------------------------------------------}
 
-//--------------------------------------------------------------
-// JvCsvParse.pas
-//
-// Useful extra functions for parsing strings using pascal,
-// not present in your basic vanilla Pascal/Delphi standard
-// libraries.
-//
-// MOST use PChars and char buffers, not the String type.
-//
-// These functions are used to implement the
-// CsvDataSource component but are generally reuseable in
-// any string parsing code.
-//
-//
-// Original by Warren Postma.
-//
-// Donated to delphi jedi project.
-//
-//--------------------------------------------------------------
+{$I JVCL.INC}
+
+unit JvCsvParse;
 
 interface
 

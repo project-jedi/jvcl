@@ -653,7 +653,7 @@ resourcestring
   sFieldNotFound = 'Field %s not found in the data file.';
   sCsvStringTooLong = 'CSV String is too long: %s...';
   sInternalLimit = 'JvCsvData - Internal Limit of MAXCOLUMNS (%d) reached. CSV Data has too many columns';
-  sError = '<ERROR>';
+  sErrorRowItem = '<ERROR>';
 
 var
   CallCount: integer;
@@ -3515,7 +3515,7 @@ var
 begin
   if (ColumnIndex < 0) or (ColumnIndex > MAXCOLUMNS) then
   begin
-    Result := sError;
+    Result := sErrorRowItem;
     Exit;
   end;
 

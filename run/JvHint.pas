@@ -79,7 +79,7 @@ uses
   JvConsts;
 
 resourcestring
-  sJvHint = 'Jv hint';
+  SHint = 'Hint';
 
 //=== TJvHint ================================================================
 
@@ -175,7 +175,7 @@ begin
             ShowWindow(HintWindow.Handle, SW_HIDE);
           FDelay := 0;
           if bPoint then
-            HintWindow.Caption := sJvHint;
+            HintWindow.Caption := SHint;
           State := tmStopped;
         end
         else
@@ -190,7 +190,7 @@ begin
           ShowWindow(HintWindow.Handle, SW_HIDE);
         if bPoint then
         begin
-          HintWindow.Caption := sJvHint;
+          HintWindow.Caption := SHint;
           TimerHint.Enabled := False;
         end;
       end;

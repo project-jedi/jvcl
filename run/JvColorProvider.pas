@@ -515,16 +515,6 @@ const
 type
   TOpenWriter = class(TWriter);
 
-function GetItemColorValue(Item: IJvDataItem; out Color: TColor): Boolean;
-var
-  S: string;
-begin
-  S := Item.GetID;
-  Result := Copy(S, 1, 7) = cColorItemIDPrefix;
-  if Result then
-    Color := StrToInt('$0' + Copy(S, 8, 8));
-end;
-
 resourcestring
   SDelphiConstantNames = 'Delphi constant names';
   SEnglishNames = 'English names';
@@ -543,6 +533,16 @@ resourcestring
   SUnknownColor = 'Unknown color ''%s''';
   SInvalidColor = 'Invalid color (%d)';
   SItemNotForList = 'Item does not belong to this list';
+
+function GetItemColorValue(Item: IJvDataItem; out Color: TColor): Boolean;
+var
+  S: string;
+begin
+  S := Item.GetID;
+  Result := Copy(S, 1, 7) = cColorItemIDPrefix;
+  if Result then
+    Color := StrToInt('$0' + Copy(S, 8, 8));
+end;
 
 function GetUniqueMappingName(Mappings: TJvColorProviderNameMappings; Prefix: string): string;
 var

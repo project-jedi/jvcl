@@ -141,11 +141,11 @@ resourcestring
 (*  {$IFDEF RUSSIAN}
   ERR_OpenXMLTagNotFound = 'Открывающий тег не найден: <%s>';
   ERR_CloseXMLTagNotFound = 'Закрывающий тег не найден: </%s>';
-  ERR_UncknownProperty = 'Uncknown property: %s'
+  ERR_UnknownProperty = 'Unknown property: %s';
   {$ELSE}*)
   ERR_OpenXMLTagNotFound = 'Open tag not found: <%s>';
   ERR_CloseXMLTagNotFound = 'Close tag not found: </%s>';
-  ERR_UncknownProperty = 'Uncknown property: %s';
+  ERR_UnknownProperty = 'Unknown property: %s';
 (*  {$ENDIF}*)
 
 type
@@ -739,7 +739,7 @@ begin
           TokenPtr := TagStart;
 
         if not IgnoreUnknownTags then
-          check(PropIndex <> -1, Format(ERR_UncknownProperty, [TagName]),
+          check(PropIndex <> -1, Format(ERR_UnknownProperty, [TagName]),
             EJvgXMLUncknownPropertyException);
 
         if PropIndex <> -1 then
