@@ -1040,12 +1040,14 @@ begin
     while not EOF(f) and not Found do
     begin
       ReadLn(f, S);
-      Found := SameText(S, '-u"' + Edition.RootDir + '\lib";"' + Edition.RootDir + '\lib\obj"') or
-               SameText(S, '-u"' + ExtractShortPathName(Edition.RootDir) + '\lib";"' + ExtractShortPathName(Edition.RootDir) + '\lib\obj"') or
-               SameText(S, '-u' + ExtractShortPathName(Edition.RootDir) + '\lib;' + ExtractShortPathName(Edition.RootDir) + '\lib\obj') or
-               SameText(S, '-u"' + Edition.RootDir + '\lib"') or
-               SameText(S, '-u"' + ExtractShortPathName(Edition.RootDir) + '\lib"') or
-               SameText(S, '-u' + ExtractShortPathName(Edition.RootDir) + '\lib');
+      if Edition.Typ = Delphi then
+        Found := SameText(S, '-u"' + Edition.RootDir + '\lib"') or
+                 SameText(S, '-u"' + ExtractShortPathName(Edition.RootDir) + '\lib"') or
+                 SameText(S, '-u' + ExtractShortPathName(Edition.RootDir) + '\lib')
+      else
+        Found := SameText(S, '-u"' + Edition.RootDir + '\lib";"' + Edition.RootDir + '\lib\obj"') or
+                 SameText(S, '-u"' + ExtractShortPathName(Edition.RootDir) + '\lib";"' + ExtractShortPathName(Edition.RootDir) + '\lib\obj"') or
+                 SameText(S, '-u' + ExtractShortPathName(Edition.RootDir) + '\lib;' + ExtractShortPathName(Edition.RootDir) + '\lib\obj');
     end;
     CloseFile(f);
     if not Found then
@@ -1055,14 +1057,15 @@ begin
       {$I+}
       if IOResult = 0 then
       begin
-        if Edition.Typ = BCB then
+        if Edition.Typ <> Delphi then
           WriteLn(f, '-u"', Edition.RootDir, '\lib";"', Edition.RootDir, '\lib\obj"')
         else
           WriteLn(f, '-u"', Edition.RootDir, '\lib"');
         CloseFile(f);
-      end;
+      end
+      else
       begin
-        WriteLn('You do not have the required permission to alter the defect ', Edition.RootDir, '\bin\dcc32.cfg');
+        WriteLn('You do not have the required permissions to alter the defect ', Edition.RootDir, '\bin\dcc32.cfg');
         Halt(0);
       end;
     end;
