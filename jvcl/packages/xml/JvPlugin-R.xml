@@ -12,7 +12,7 @@
     <Package Name="rtl" Targets="C6,C6p" Condition=""/>
     <Package Name="vcl" Targets="C6,C6p" Condition=""/>
     <Package Name="vclx" Targets="C6,C6p" Condition=""/>
-    <Package Name="CJCL60" Targets="C6,C6p" Condition=""/>
+    <Package Name="CJCL" Targets="C6,C6p" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvPluginManager.pas" Targets="all" Formname="" Condition=""/>

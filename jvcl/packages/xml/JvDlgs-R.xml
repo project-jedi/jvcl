@@ -17,7 +17,7 @@
     <Package Name="bcbie50" Targets="C5" Condition=""/>
     <Package Name="rtl" Targets="C6,C6p" Condition=""/>
     <Package Name="vcl" Targets="C6,C6p" Condition=""/>
-    <Package Name="CJCL60" Targets="C6,C6p" Condition=""/>
+    <Package Name="CJCL" Targets="C6,C6p" Condition=""/>
     <Package Name="vclx" Targets="C6,C6p" Condition=""/>
     <Package Name="vcljpg" Targets="C6,C6p" Condition=""/>
     <Package Name="bcbsmp" Targets="C6,C6p" Condition=""/>

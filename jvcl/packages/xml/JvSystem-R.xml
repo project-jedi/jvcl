@@ -8,7 +8,7 @@
   <Requires>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
     <Package Name="CJCL50" Targets="C5" Condition=""/>
-    <Package Name="CJCL60" Targets="C6,C6p" Condition=""/>
+    <Package Name="CJCL" Targets="C6,C6p" Condition=""/>
     <Package Name="vcl50" Targets="C5,D5,D5s" Condition=""/>
     <Package Name="vclx50" Targets="C5" Condition=""/>
     <Package Name="vcljpg50" Targets="C5" Condition=""/>
