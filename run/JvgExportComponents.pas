@@ -230,9 +230,11 @@ type
 implementation
 
 uses
+  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$ENDIF USEJVCL}
   ComObj, FileCtrl,
   {$IFDEF USEJVCL}
   JvResources,
@@ -243,7 +245,7 @@ uses
 {$IFNDEF USEJVCL}
 resourcestring
   RsEDataSetIsUnassigned = 'DataSet is unassigned';
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 {$IFDEF COMPILER5}
 function BoolToStr(Value: Boolean; AsString: Boolean = False): string;
@@ -826,6 +828,7 @@ end;
 
 {$ENDIF USEJVCL}
 
+{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -841,6 +844,7 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
 end.
 

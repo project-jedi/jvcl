@@ -209,6 +209,7 @@ begin
   Result := PSearchData(FLSearchRecs[FLSearchRecs.Count - 1])^.Path;
 end;
 
+{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -224,6 +225,7 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
 end.
 

@@ -60,10 +60,12 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   JvTypes;
-{$ELSE}
+{$ENDIF USEJVCL}
+
+{$IFNDEF USEJVCL}
 type
   EJVCLException = class(Exception);
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 constructor TJvgCGI.Create(AutoHeaderAndFooter: Boolean);
 //var
@@ -209,6 +211,7 @@ begin
   Result := -1;
 end;
 
+{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -224,5 +227,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
 end.

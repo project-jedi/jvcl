@@ -152,10 +152,10 @@ function CanvasMaxTextHeight(Canvas: TCanvas): Integer;
 implementation
 
 uses
+  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF USEJVCL}
   ShlObj, Math,
   JvResources, JvConsts;
   {$ELSE}
@@ -2165,6 +2165,7 @@ end;
 
 {$ENDIF !USEJVCL}
 
+{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -2180,6 +2181,7 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
 end.
 

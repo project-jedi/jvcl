@@ -54,12 +54,10 @@ uses
   {$ENDIF UNITVERSIONING}
   FileCtrl,
   JvJCLUtils;
+
 {$ELSE}
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   FileCtrl;
 
 const
@@ -213,6 +211,7 @@ begin
   RemoveDirectory(PChar(FilePath));
 end;
 
+{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -228,6 +227,7 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
 end.
 

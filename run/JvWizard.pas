@@ -339,9 +339,9 @@ uses
   {$IFDEF COMPILER6_UP}
   Types,
   {$ENDIF COMPILER6_UP}
-  {.$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
   JvComponent, JvThemes,
-  {.$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
   JvWizardCommon;
 
 type

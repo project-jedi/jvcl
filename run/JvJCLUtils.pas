@@ -8524,6 +8524,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 function DrawText(Canvas: TCanvas; Text: PAnsiChar; Len: Integer; var R: TRect; WinFlags: Integer): Integer;
 begin
   Result := Windows.DrawText(Canvas.Handle, Text, Len, R, WinFlags);
@@ -8550,6 +8551,7 @@ begin
 end;
 
 {$IFDEF COMPILER6_UP}
+
 function DrawText(Canvas: TCanvas; const Text: WideString; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
 begin
   Result := DrawTextW(Canvas, Text, Len, R, WinFlags and not DT_MODIFYSTRING);
@@ -8559,6 +8561,7 @@ function DrawTextEx(Canvas: TCanvas; const Text: WideString; cchText: Integer; v
 begin
   Result := DrawTextExW(Canvas, Text, cchText, p4, dwDTFormat and not DT_MODIFYSTRING, DTParams);
 end;
+
 {$ENDIF COMPILER6_UP}
 
 function DrawTextW(Canvas: TCanvas; const Text: WideString; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
@@ -8664,7 +8667,9 @@ function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSr
 begin
   Result := Windows.BitBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, WinRop);
 end;
+
 {$ENDIF VCL}
+
 {$IFDEF VisualCLX}
 
 { JclQGraphics: Crossplatform versions  }

@@ -24,11 +24,13 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{.$I jvcl.inc}
+{$I jvcl.inc}
 
 unit JvXPProgressBar;
 
 interface
+
+{$IFDEF USEJVCL}
 
 uses
   Windows, SysUtils, Classes, Graphics,
@@ -91,7 +93,11 @@ type
     property OnStartDrag;
   end;
 
+{$ENDIF USEJVCL}
+
 implementation
+
+{$IFDEF USEJVCL}
 
 uses
   {$IFDEF UNITVERSIONING}
@@ -278,6 +284,8 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+
+{$ENDIF USEJVCL}
 
 end.
 

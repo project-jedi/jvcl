@@ -106,9 +106,11 @@ type
 implementation
 
 uses
+  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$ENDIF USEJVCL}
   Math;
 
 constructor TJvgStaticText.Create(AOwner: TComponent);
@@ -180,7 +182,7 @@ begin
       LocalAlignment := ftaLeftJustify;
   end;
   Rect := ClientRect;
-  DrawText(Canvas.Handle, PChar(Caption), Length(Caption), Rect,
+  Windows.DrawText(Canvas.Handle, PChar(Caption), Length(Caption), Rect,
     DT_EXPANDTABS or WordWraps[WordWrap] or Alignments[LocalAlignment]);
 end;
 
@@ -370,6 +372,7 @@ begin
   end;
 end;
 
+{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -385,6 +388,7 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
 end.
 
