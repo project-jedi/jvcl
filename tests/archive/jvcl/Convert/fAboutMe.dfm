@@ -25,17 +25,17 @@ object frmAboutMe: TfrmAboutMe
     object Version: TLabel
       Left = 16
       Top = 136
-      Width = 61
+      Width = 67
       Height = 13
-      Caption = 'Version: 1.2 '
+      Caption = 'Version: 1.21 '
       IsControl = True
     end
     object Comments: TLabel
-      Left = 88
+      Left = 95
       Top = 136
-      Width = 56
+      Width = 58
       Height = 13
-      Caption = '2002-08-19'
+      Caption = '2002-09-10'
       WordWrap = True
       IsControl = True
     end

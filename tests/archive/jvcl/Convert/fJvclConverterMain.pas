@@ -20,6 +20,7 @@ Dave Jewell (new GUI for Igor's code)
 Martin Waldenburg (FastTime)
 
 Contributor(s): Peter Thörnqvist <peter3@peter3.com>
+                Arioch <the_Arioch@chat.ru>
 
 Last Modified: 2002-07-18
 
@@ -28,8 +29,8 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
-{$I JEDI.INC}
+{$I JVCL.INC}
+
 unit fJvclConverterMain;
 
 interface
@@ -87,7 +88,6 @@ type
     btnAboutMe: TToolButton;
     btnExit: TToolButton;
     ActionList1: TActionList;
-    StandardImages: TImageList;
     FileExit1: TFileExit;
     FileOpen: TAction;
     Convert: TAction;
@@ -126,6 +126,7 @@ type
     SelectAll: TAction;
     Edit: TMenuItem;
     SelectAll1: TMenuItem;
+    StandardImages: TImageList;
     procedure btnAddClick(Sender: TObject);
     procedure btnRemoveClick(Sender: TObject);
     procedure btnStartClick(Sender: TObject);
@@ -248,7 +249,7 @@ begin
           ch := #0;
           InputStream.Read(ch, 1);
           case ch of
-            'o', 'O': Lines.LoadFromFile(FullFileName); //ok - text
+            'o', 'O', 'i','I': Lines.LoadFromFile(FullFileName); //ok - text
             #$FF: //memLog.Lines.Add('Form been saved as BINary: ' + s);
               begin
                 OutputStream := TMemoryStream.Create;
