@@ -210,12 +210,7 @@ type
 implementation
 
 uses
-  {$IFDEF VCL}
   Consts,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QConsts,
-  {$ENDIF VisualCLX}
   JvThemes, JvJCLUtils;
 
 {$IFDEF MSWINDOWS}
@@ -594,6 +589,10 @@ begin
 end;
 
 procedure TJvCustomImageButton.DrawButtonImage(ImageBounds: TRect);
+{$IFDEF VisualCLX}
+var
+  glyph: TBitmap;
+{$ENDIF VisualCLX}
 begin
   if csDestroying in ComponentState then
     Exit;
@@ -609,7 +608,13 @@ begin
       if Assigned(FImages) then
         FImages.Draw(FCanvas, Left, Top, GetImageIndex, itImage, Enabled)
       else
-        DefaultImgBtnImagesList.Draw(FCanvas, Left, Top, GetKindImageIndex, itImage, Enabled);
+      begin
+        Glyph := TBitmap.Create;
+        DefaultImgBtnImagesList.GetBitmap(GetKindImageIndex, Glyph);
+        Glyph.TransparentColor := clOlive;
+        FCanvas.draw(Left, Top, Glyph);
+        Glyph.Free;
+      end;
       {$ENDIF VisualCLX}
 end;
 
@@ -734,8 +739,8 @@ begin
     {$IFDEF VisualCLX}
     ResBmp := TBitmap.Create;
     try
-      ResBmp.LoadFromResourceName(0, 'JVIMGBTNDEFAULT');
-      DefaultImgBtnImagesList.AddMasked(ResBmp, clOlive);
+      ResBmp.LoadFromResourceName(HInstance, 'JVIMGBTNDEFAULT');
+      DefaultImgBtnImagesList.Add(ResBmp, nil);
     finally
       ResBmp.Free;
     end;
