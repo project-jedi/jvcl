@@ -43,9 +43,9 @@ contains
   JvFullColorRotate in 'JvFullColorRotate.pas',
   JvFullColorSpaces in 'JvFullColorSpaces.pas',
   JvFullColorSpacesEditors in 'JvFullColorSpacesEditors.pas',
-  JvFullColorFrm in 'JvFullColorFrm.pas' {FullColorForm},
-  JvFullColorCircleFrm in 'JvFullColorCircleFrm.pas' {JvFullColorCircleForm},
-  JvFullColorListFrm in 'JvFullColorListFrm.pas' {JvFullColorListForm},
+  JvFullColorForm in 'JvFullColorForm.pas' {JvFullColorFrm},
+  JvFullColorCircleForm in 'JvFullColorCircleForm.pas' {JvFullColorCircleFrm},
+  JvFullColorListForm in 'JvFullColorListForm.pas' {JvFullColorListFrm},
   JvFullColorCtrls in 'JvFullColorCtrls.pas',
   JvFullColorDialogs in 'JvFullColorDialogs.pas';
 
