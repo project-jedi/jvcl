@@ -20,6 +20,7 @@ object MainFormDlg: TMainFormDlg
     Width = 376
     Height = 19
     Panels = <>
+    SimplePanel = False
   end
   object Panel1: TPanel
     Left = 0
@@ -101,16 +102,28 @@ object MainFormDlg: TMainFormDlg
         Top = 32
         Width = 121
         Height = 24
+        Orientation = trHorizontal
+        Frequency = 1
+        Position = 0
+        SelEnd = 0
+        SelStart = 0
         TabOrder = 6
         ThumbLength = 15
+        TickMarks = tmBottomRight
+        TickStyle = tsAuto
       end
       object DateTimePicker1: TDateTimePicker
         Left = 248
         Top = 64
         Width = 116
         Height = 21
-        Date = 38114.956064340280000000
-        Time = 38114.956064340280000000
+        CalAlignment = dtaLeft
+        Date = 38114.9560643403
+        Time = 38114.9560643403
+        DateFormat = dfShort
+        DateMode = dmComboBox
+        Kind = dtkDate
+        ParseInput = False
         TabOrder = 7
       end
       object Button1: TButton

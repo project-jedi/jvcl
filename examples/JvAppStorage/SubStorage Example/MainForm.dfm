@@ -20,6 +20,7 @@ object MainFormDlg: TMainFormDlg
     Width = 394
     Height = 19
     Panels = <>
+    SimplePanel = False
   end
   object Panel1: TPanel
     Left = 0
@@ -234,6 +235,7 @@ object MainFormDlg: TMainFormDlg
   end
   object JvFormStorage1: TJvFormStorage
     AppStorage = JvAppStorage1
+    AppStoragePath = '%FORM_NAME%'
     OnRestorePlacement = JvFormStorage1RestorePlacement
     StoredProps.Strings = (
       'Option1.Checked'
