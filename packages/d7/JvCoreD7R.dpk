@@ -28,9 +28,7 @@ package JvCoreD7R;
 
 requires
   DJCL70,
-  vclx,
-  vcl,
-  rtl;
+  vclx;
 
 contains
   JvConsts in '..\..\common\JvConsts.pas',

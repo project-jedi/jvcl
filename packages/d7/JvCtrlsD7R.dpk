@@ -28,9 +28,7 @@ package JvCtrlsD7R;
 
 requires
   JvCoreD7R,
-  JvStdCtrlsD7R,
-  vcl,
-  rtl;
+  JvStdCtrlsD7R;
 
 contains
   JvZoom in '..\..\run\JvZoom.pas',

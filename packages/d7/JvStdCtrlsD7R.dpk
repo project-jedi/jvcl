@@ -28,9 +28,7 @@ package JvStdCtrlsD7R;
 
 requires
   JvCoreD7R,
-  JvSystemD7R,
-  vcl,
-  rtl;
+  JvSystemD7R;
 
 contains
   JvSpin in '..\..\run\JvSpin.pas',

@@ -28,9 +28,7 @@ package JvSystemD7R;
 
 requires
   JvCoreD7R,
-  DJCL70,
-  vcl,
-  rtl;
+  DJCL70;
 
 contains
   JvClipboardMonitor in '..\..\run\JvClipboardMonitor.pas',

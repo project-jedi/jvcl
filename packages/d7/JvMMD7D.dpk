@@ -29,16 +29,7 @@ package JvMMD7D;
 requires
   JvMMD7R,
   designide,
-  vcl,
-  rtl,
-  vclactnband,
-  vclx,
-  JvCoreD7R,
   DJCL70,
-  vcljpg,
-  JvStdCtrlsD7R,
-  JvSystemD7R,
-  JvCtrlsD7R,
   JvCmpD7R;
 
 contains

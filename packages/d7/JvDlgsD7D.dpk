@@ -30,9 +30,7 @@ requires
   JvCoreD7R,
   JvCoreD7D,
   JvDlgsD7R,
-  designide,
-  vcl,
-  rtl;
+  designide;
 
 contains
   JvDlgsReg in '..\..\design\JvDlgsReg.pas',

@@ -27,12 +27,7 @@ package JvBandsD7R;
 {$IMPLICITBUILD OFF}
 
 requires
-  JvCoreD7R,
-  vcl,
-  rtl,
-  vclx,
-  DJCL70,
-  vcljpg;
+  JvCoreD7R;
 
 contains
   JvBandObject in '..\..\run\JvBandObject.pas',

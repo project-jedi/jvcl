@@ -30,11 +30,7 @@ requires
   JvCoreD7R,
   JvSystemD7R,
   JvCmpD7R,
-  vcl,
-  rtl,
   designide,
-  vclactnband,
-  vclx,
   JvStdCtrlsD7R,
   JvCtrlsD7R;
 

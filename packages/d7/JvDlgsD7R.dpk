@@ -29,10 +29,7 @@ package JvDlgsD7R;
 requires
   JvCoreD7R,
   DJCL70,
-  JvStdCtrlsD7R,
-  vcl,
-  rtl,
-  vcljpg;
+  JvStdCtrlsD7R;
 
 contains
   JvDSADialogs in '..\..\run\JvDSADialogs.pas',

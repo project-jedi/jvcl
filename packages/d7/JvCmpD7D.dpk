@@ -31,10 +31,6 @@ requires
   designide,
   dclstd,
   JvCoreD7D,
-  vcl,
-  rtl,
-  vclactnband,
-  vclx,
   JvStdCtrlsD7R;
 
 contains

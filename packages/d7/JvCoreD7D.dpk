@@ -29,12 +29,7 @@ package JvCoreD7D;
 requires
   JvCoreD7R,
   designide,
-  dclstd,
-  vcl,
-  rtl,
-  vclactnband,
-  vclx,
-  visualclx;
+  dclstd;
 
 contains
   JvJVCLAboutEditor in '..\..\design\JvJVCLAboutEditor.pas',
