@@ -141,7 +141,7 @@ end;
 
 type
   THackPages = class(TJvOutlookBarPages);
-  THackButtons = class(TjvOutlookBarButtons);
+  THackButtons = class(TJvOutlookBarButtons);
 
 function TJvOutlookBarPagesPropertyEditor.GetOutlookBar: TJvCustomOutlookBar;
 begin

@@ -33,7 +33,7 @@ uses
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF COMPILER6_UP}
-  JvTypes, JvDynControlEngine, JvDynControlEngineIntf, jvDsaDialogs,
+  JvTypes, JvDynControlEngine, JvDynControlEngineIntf, JvDsaDialogs,
   JvComponent, JvPanel, JvPropertyStore, JvAppStorage, JvAppStorageSelectList;
 
 type

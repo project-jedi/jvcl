@@ -68,7 +68,7 @@ type
     function GetLinkedControls: TJvLinkedControls;
     procedure SetLinkedControls(const Value: TJvLinkedControls);
     {$IFDEF VCL}
-    procedure BMSetCheck(var Msg:TMessage); message BM_SETCHECK;
+    procedure BMSetCheck(var Msg: TMessage); message BM_SETCHECK;
     {$ENDIF VCL}
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation);override;

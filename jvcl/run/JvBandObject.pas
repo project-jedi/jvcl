@@ -100,7 +100,7 @@ type
     FHasFocus: Boolean;
     FHook: HHook;
   protected
-    function CreateBandForm(const ParentWnd: HWND): TjvBandForm; virtual; abstract;
+    function CreateBandForm(const ParentWnd: HWND): TJvBandForm; virtual; abstract;
     procedure BandWndProc(var Msg: TMessage);
     procedure FocusChange(HasFocus: Boolean);
   public
