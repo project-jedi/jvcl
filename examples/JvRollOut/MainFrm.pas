@@ -1,3 +1,4 @@
+{$I jvcl.inc}
 unit MainFrm;
 
 interface
@@ -5,7 +6,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls, JvExExtCtrls, JvComponent, JvRollOut, ImgList,
-  StdCtrls;
+  StdCtrls, ActnList, StdActns, Menus;
 
 type
   TForm1 = class(TForm)
@@ -83,6 +84,13 @@ type
     Edit11: TEdit;
     Edit12: TEdit;
     chkImages: TCheckBox;
+    ActionList1: TActionList;
+    JvRollOutAction1: TJvRollOutAction;
+    JvRollOutAction2: TJvRollOutAction;
+    MainMenu1: TMainMenu;
+    Actions1: TMenuItem;
+    Action1Ctrl11: TMenuItem;
+    Action2Ctrl21: TMenuItem;
     procedure chkShowFocusClick(Sender: TObject);
     procedure chkTabStopClick(Sender: TObject);
     procedure chkToggleAnywhereClick(Sender: TObject);
@@ -90,6 +98,9 @@ type
     procedure chkHideButtonClick(Sender: TObject);
     procedure chkHideFrameClick(Sender: TObject);
     procedure chkImagesClick(Sender: TObject);
+    procedure JvRollOutAction1Execute(Sender: TObject);
+    procedure JvRollOutAction2Execute(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
   public
@@ -174,6 +185,28 @@ begin
       else
         TJvRollOut(Components[i]).ImageOptions.Images := nil;
     end;
+end;
+
+procedure TForm1.JvRollOutAction1Execute(Sender: TObject);
+begin
+  Caption := 'Action 1 executed!';
+end;
+
+procedure TForm1.JvRollOutAction2Execute(Sender: TObject);
+begin
+  Caption := 'Action 2 executed!';
+  {$IFNDEF COMPILER6_UP}
+  // Delphi 5 doesn't have TAction.AutoCheck
+  with Sender as TAction do
+    Checked := not Checked;
+  {$ENDIF}
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  {$IFDEF COMPILER6_UP}
+  JvRollOutAction2.AutoCheck := true;
+  {$ENDIF}
 end;
 
 end.

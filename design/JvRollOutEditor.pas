@@ -45,6 +45,7 @@ end;
 procedure TJvRollOutDefaultEditor.Edit;
 var R:TJvRollOut;
 begin
+  {$IFDEF COMPILER6_UP}
   if (GetComponent is TJvRollOut) then
   begin
     R := TJvRollOut(GetComponent);
@@ -54,6 +55,17 @@ begin
       Designer.Modified;
     end;
   end;
+  {$ELSE}
+  if (Component is TJvRollOut) then
+  begin
+    R := TJvRollOut(Component);
+    if R.MouseIsOnButton then
+    begin
+      R.Collapsed := not R.Collapsed;
+      Designer.Modified;
+    end;
+  end;
+  {$ENDIF COMPILER6_UP}
 
 end;
 

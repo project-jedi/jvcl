@@ -35,7 +35,7 @@ procedure Register;
 implementation
 
 uses
-  Classes, Controls, ImgList, 
+  Classes, Controls, ImgList, ActnList,
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
   {$ELSE}
@@ -103,6 +103,7 @@ begin
   RegisterNoIcon([TJvSpeedItem, TJvSpeedbarSection]);
   RegisterClass(TJvScrollMaxBand);
   RegisterClass(TJvFooterBtn);
+  RegisterActions('JVCL',[TJvRollOutAction],nil);
 end;
 
 end.

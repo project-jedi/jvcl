@@ -51,7 +51,7 @@ unit JvRollOut;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, ImgList, Controls, ExtCtrls,
+  Windows, Messages, SysUtils, Classes, Graphics, ImgList, Controls, ExtCtrls, ACtnList,
   JvComponent, JvThemes;
 
 const
@@ -132,7 +132,6 @@ type
     FAHeight: Integer;
     FButtonHeight: Integer;
     FChildOffset: Integer;
-    FCaption: TCaption;
     FOnExpand: TNotifyEvent;
     FOnCollapse: TNotifyEvent;
     FColors: TJvRollOutColors;
@@ -154,7 +153,6 @@ type
     procedure SetCollapsed(Value: Boolean);
     procedure SetButtonHeight(Value: Integer);
     procedure SetChildOffset(Value: Integer);
-    procedure SetCaption(Value: TCaption);
     procedure RedrawControl(DrawAll: Boolean);
     procedure DrawButtonFrame;
     procedure UpdateGroup;
@@ -164,9 +162,26 @@ type
     procedure ChangeHeight(NewHeight: Integer);
     procedure ChangeWidth(NewWidth: Integer);
     procedure SetShowFocus(const Value: boolean);
-
   protected
-    procedure DoChildTabStop;
+    // Sets or gets the TabStop value of child controls depending on the value of Collapsed.
+    // When Collapsed is true, calls GetChildTabStops.
+    // When Collapsed is false, calls SetChildTabStops.
+    procedure CheckChildTabStops;
+    // Checks the TabStop value of all child controls and adds the control to
+    // an internal list if TabStop is true. TabStop is then set to false.
+    // This is done to disable tabbing into the child control when the rollout
+    // is collapsed. Normally, you don't need to call this method.
+    procedure GetChildTabStops;
+    // Resets the TabStop value of child controls to true if they where added to
+    // an internal list with a previous call to GetTabStops.
+    // Does nothing if GetChildTabStops hasn't been called.
+    // Normally, you don't need to call this method.
+    procedure SetChildTabStops;
+    // Clears the internal list with children TabStop values *without* restoring
+    // the childrens TabStop values first.
+    // Normally, you don't need to call this method.
+    procedure ClearChildTabStops;
+
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
@@ -174,7 +189,6 @@ type
     procedure ParentColorChanged; override;
     procedure CreateWnd; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-
     procedure AlignControls(AControl: TControl; var Rect: TRect); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -198,7 +212,6 @@ type
 
     property OnCollapse: TNotifyEvent read FOnCollapse write FOnCollapse;
     property OnExpand: TNotifyEvent read FOnExpand write FOnExpand;
-    property Caption: TCaption read FCaption write SetCaption;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -209,8 +222,30 @@ type
     procedure Expand; virtual;
   end;
 
+  TJvRollOutAction = class(TAction)
+  private
+    FRollOut: TJvCustomRollOut;
+    FLinkCheckedToCollapsed: boolean;
+    procedure SetRollOut(const Value: TJvCustomRollOut);
+    procedure SetLinkCheckedToCollapsed(const Value: boolean);
+  protected
+    procedure Notification(AComponent: TComponent; Operation: TOperation);
+      override;
+  public
+
+    procedure ExecuteTarget(Target: TObject); override;
+    procedure UpdateTarget(Target: TObject); override;
+    function HandlesTarget(Target: TObject): Boolean; override;
+    function Execute: Boolean; override;
+    destructor Destroy; override;
+  published
+    property RollOut: TJvCustomRollOut read FRollOut write SetRollOut;
+    property LinkCheckedToCollapsed: boolean read FLinkCheckedToCollapsed write SetLinkCheckedToCollapsed;
+  end;
+
   TJvRollOut = class(TJvCustomRollOut)
   published
+    property Action;
     property Align;
     property BevelWidth;
     property BorderWidth;
@@ -332,7 +367,7 @@ end;
 destructor TJvRollOutImageOptions.Destroy;
 begin
   FChangeLink.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvRollOutImageOptions.DoChangeLink(Sender: TObject);
@@ -345,14 +380,16 @@ begin
   if FImages <> nil then
   begin
     FImages.UnRegisterChanges(FChangeLink);
-    FImages.RemoveFreeNotification(FOwner);
+    if FOwner <> nil then
+      FImages.RemoveFreeNotification(FOwner);
   end;
 
   FImages := Value;
   if FImages <> nil then
   begin
     FImages.RegisterChanges(FChangeLink);
-    FImages.FreeNotification(FOwner);
+    if FOwner <> nil then
+      FImages.FreeNotification(FOwner);
   end;
   Change;
 end;
@@ -481,7 +518,6 @@ begin
   FColors.OnChange := DoColorsChange;
   FToggleAnywhere := true;
   FGroupIndex := 0;
-  Caption := 'Rollout';
   FCollapsed := False;
   FMouseDown := False;
   FInsideButton := False;
@@ -496,10 +532,18 @@ begin
   FShowFocus := true;
 end;
 
+destructor TJvCustomRollOut.Destroy;
+begin
+  FreeAndNil(FImageOptions);
+  FreeAndNil(FTabStops);
+  FreeAndNil(FColors);
+  inherited Destroy;
+end;
+
 procedure TJvCustomRollOut.Click;
 begin
-  if MouseIsOnButton or ToggleAnywhere then
-    SetCollapsed(not FCollapsed);
+  if (Action = nil) and (MouseIsOnButton or ToggleAnywhere) then
+    Collapsed := not FCollapsed;
   inherited Click;
   RedrawControl(False);
 end;
@@ -622,7 +666,7 @@ begin
       DoExpand;
       UpdateGroup;
     end;
-    DoChildTabStop;
+    CheckChildTabStops;
   end;
 end;
 
@@ -776,12 +820,6 @@ begin
   end;
 end;
 
-procedure TJvCustomRollOut.SetCaption(Value: TCaption);
-begin
-  FCaption := Value;
-  ReDrawControl(True);
-end;
-
 procedure TJvCustomRollOut.MouseEnter(Control: TControl);
 begin
   inherited MouseEnter(Control);
@@ -847,7 +885,7 @@ begin
     BottomC := Colors.Color;
   end;
 //  if not (csDesigning in ComponentState) then
-    InternalFrame3D(Canvas, R, TopC, BottomC, 1);
+  InternalFrame3D(Canvas, R, TopC, BottomC, 1);
   if Collapsed then
     FIndex := ImageOptions.IndexCollapsed
   else
@@ -864,7 +902,7 @@ begin
     end
     else
       R.Left := ImageOptions.Offset * 2 + BevelWidth;
-    R.Top := R.Top - (Canvas.TextHeight(FCaption) - (FButtonRect.Bottom - FButtonRect.Top)) div 2 + BevelWidth div 2;
+    R.Top := R.Top - (Canvas.TextHeight(Caption) - (FButtonRect.Bottom - FButtonRect.Top)) div 2 + BevelWidth div 2;
   end
   else
   begin
@@ -876,20 +914,20 @@ begin
     end
     else
       R.Top := ImageOptions.Offset * 2 + BevelWidth;
-    R.Left := R.Left + (Canvas.TextHeight(FCaption) + (FButtonRect.Right - FButtonRect.Left)) div 2 + BevelWidth div 2;
+    R.Left := R.Left + (Canvas.TextHeight(Caption) + (FButtonRect.Right - FButtonRect.Left)) div 2 + BevelWidth div 2;
   end;
   Canvas.Font := Font;
   if FInsideButton then
     Canvas.Font.Color := Colors.HotTrackText;
 
-  if Length(FCaption) > 0 then
+  if Length(Caption) > 0 then
   begin
     SetBkMode(Canvas.Handle, Transparent);
     if Placement = plLeft then
       SetTextAngle(Canvas, 270);
     if FMouseDown and FInsideButton then
       OffsetRect(R, 1, 1);
-    DrawText(Canvas.Handle, PChar(FCaption), -1, R, DT_NOCLIP);
+    DrawText(Canvas.Handle, PChar(Caption), -1, R, DT_NOCLIP);
     if Placement = plLeft then
       SetTextAngle(Canvas, 0);
   end;
@@ -958,15 +996,8 @@ begin
     Sender := TJvCustomRollOut(Msg.LParam);
     if (Sender <> Self) then
     begin
-{      if Msg.Result <> 0 then
-      begin
-        if (Align = alRight) then
-          Left := Left - Msg.Result
-        else if (Align = alBottom) and (Top > Sender.Top) then
-          Top := Top + Msg.Result;
-      end;}
       SetCollapsed(True);
-      DoChildTabStop;
+      CheckChildTabStops;
       Invalidate;
     end;
   end;
@@ -986,11 +1017,11 @@ end;
 function TJvCustomRollOut.WantKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
-  Result := Enabled and (IsAccel(Key, FCaption) and (ssAlt in Shift)) or ((Key = VK_SPACE) and Focused);
+  Result := Enabled and (IsAccel(Key, Caption) and (ssAlt in Shift)) or ((Key = VK_SPACE) and Focused);
   if Result then
   begin
     SetCollapsed(not FCollapsed);
-    if CanFocus {and not (csDesigning in ComponentState)} then
+    if CanFocus then
       SetFocus;
   end
   else
@@ -1010,8 +1041,8 @@ end;
 procedure TJvCustomRollOut.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
-  inherited;
-  if (Operation = opRemove) and (AComponent = ImageOptions.Images) then
+  inherited Notification(AComponent, Operation);
+  if (Operation = opRemove) and (ImageOptions <> nil) and (AComponent = ImageOptions.Images) then
     ImageOptions.Images := nil;
 end;
 
@@ -1036,14 +1067,14 @@ end;
 
 procedure TJvCustomRollOut.WmKillFocus(var Msg: TMessage);
 begin
-  DoChildTabStop;
+  CheckChildTabStops;
   inherited;
   Invalidate;
 end;
 
 procedure TJvCustomRollOut.WmSetFocus(var Msg: TMessage);
 begin
-  DoChildTabStop;
+  CheckChildTabStops;
   inherited;
   Invalidate;
 end;
@@ -1058,28 +1089,36 @@ begin
   end;
 end;
 
-procedure TJvCustomRollOut.DoChildTabStop;
+procedure TJvCustomRollOut.CheckChildTabStops;
+begin
+  if csDesigning in ComponentState then Exit;
+  if Collapsed then
+    GetChildTabStops
+  else
+    SetChildTabStops;
+end;
+
+procedure TJvCustomRollOut.GetChildTabStops;
 var
   i: integer;
 begin
-  if csDesigning in ComponentState then Exit;
-  if Collapsed {and Focused} then
+  if FTabStops = nil then
   begin
-    if FTabStops = nil then
+    FTabStops := TStringList.Create;
+    FTabStops.Sorted := true;
+  end;
+  for i := 0 to ControlCount - 1 do
+    if (Controls[i] is TWinControl) and (TWinControl(Controls[i]).TabStop) then
     begin
-      FTabStops := TStringList.Create;
-      FTabStops.Sorted := true;
+      FTabStops.AddObject(Controls[i].Name, Controls[i]);
+      TWinControl(Controls[i]).TabStop := false;
     end;
-//    else
-//      FTabStops.Clear;
-    for i := 0 to ControlCount - 1 do
-      if (Controls[i] is TWinControl) and (TWinControl(Controls[i]).TabStop) then
-      begin
-        FTabStops.AddObject(Controls[i].Name, Controls[i]);
-        TWinControl(Controls[i]).TabStop := false;
-      end;
-  end
-  else if not Collapsed and (FTabStops <> nil) then
+end;
+
+procedure TJvCustomRollOut.SetChildTabStops;
+var i: integer;
+begin
+  if FTabStops <> nil then
   begin
     for i := 0 to FTabStops.Count - 1 do
       if FindChildControl(FTabStops[i]) <> nil then
@@ -1088,10 +1127,113 @@ begin
   end;
 end;
 
-destructor TJvCustomRollOut.Destroy;
+procedure TJvCustomRollOut.ClearChildTabStops;
 begin
   FreeAndNil(FTabStops);
+end;
+
+{ TJvRollOutAction }
+
+destructor TJvRollOutAction.Destroy;
+begin
+  if RollOut <> nil then
+    RollOut.RemoveFreeNotification(self);
   inherited;
+end;
+
+function TJvRollOutAction.Execute: Boolean;
+begin
+  Result := inherited Execute;
+  if Result then
+  begin
+    {$IFDEF COMPILER6_UP}
+    if ActionComponent is TJvCustomRollOut then
+    begin
+      if LinkCheckedToCollapsed then
+        TJvCustomRollOut(ActionComponent).Collapsed := not Checked
+      else
+        TJvCustomRollOut(ActionComponent).Collapsed := not TJvCustomRollOut(ActionComponent).Collapsed;
+    end
+    else
+    {$ENDIF COMPILER6_UP}
+    if RollOut <> nil then
+    begin
+      if LinkCheckedToCollapsed then
+        RollOut.Collapsed := not Checked
+      else
+        RollOut.Collapsed := not RollOut.Collapsed;
+    end;
+  end;
+end;  
+
+procedure TJvRollOutAction.ExecuteTarget(Target: TObject);
+begin
+  inherited;
+  if Target is TJvCustomRollOut then
+  begin
+    if LinkCheckedToCollapsed then
+      TJvCustomRollOut(Target).Collapsed := not Checked
+    else
+      TJvCustomRollOut(Target).Collapsed := not TJvCustomRollOut(Target).Collapsed;
+  end
+  else
+    if RollOut <> nil then
+    begin
+      if LinkCheckedToCollapsed then
+        RollOut.Collapsed := not Checked
+      else
+        RollOut.Collapsed := not RollOut.Collapsed;
+    end;
+end;
+
+function TJvRollOutAction.HandlesTarget(Target: TObject): Boolean;
+begin
+  Result := ((RollOut <> nil) and (Target = RollOut) or
+    (RollOut = nil) and (Target is TJvCustomRollOut)) and TJvCustomRollOut(Target).Enabled;
+end;
+
+procedure TJvRollOutAction.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if AComponent = RollOut then
+    RollOut := nil;
+end;
+
+procedure TJvRollOutAction.SetLinkCheckedToCollapsed(const Value: boolean);
+begin
+  if FLinkCheckedToCollapsed <> Value then
+  begin
+    FLinkCheckedToCollapsed := Value;
+    if FLinkCheckedToCollapsed then
+    begin
+      if RollOut <> nil then
+        RollOut.Collapsed := not Checked
+      else
+      {$IFDEF COMPILER6_UP}
+      if ActionComponent is TJvCustomRollOut then
+        TJvCustomRollOut(ActionComponent).Collapsed := not Checked;
+      {$ENDIF COMPILER6_UP}
+    end;
+  end;
+end;
+
+procedure TJvRollOutAction.SetRollOut(const Value: TJvCustomRollOut);
+begin
+  if FRollOut <> Value then
+  begin
+    if FRollOut <> nil then
+      FRollOut.RemoveFreeNotification(self);
+    FRollOut := Value;
+    if FRollOut <> nil then
+      FRollOut.FreeNotification(self);
+  end;
+end;
+
+procedure TJvRollOutAction.UpdateTarget(Target: TObject);
+begin
+  if LinkCheckedToCollapsed then
+    Checked := not (Target as TJvCustomRollOut).Collapsed;
 end;
 
 end.
