@@ -41,7 +41,7 @@ type
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(Value: String);
+    procedure ControlSetHint(const Value: String);
   end;
 
   IJvDynControlData = interface

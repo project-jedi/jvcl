@@ -41,13 +41,12 @@ type
     procedure ControlSetReadOnly(Value: Boolean);
     procedure ControlSetCaption(const Value: string);
     procedure ControlSetTabOrder(Value: Integer);
-    procedure ControlSetHint(Value: String);
+    procedure ControlSetHint(const Value: string);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(Value: string);
 
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
@@ -77,13 +76,12 @@ type
     procedure ControlSetReadOnly(Value: Boolean);
     procedure ControlSetCaption(const Value: string);
     procedure ControlSetTabOrder(Value: Integer);
-    procedure ControlSetHint(Value: string);
+    procedure ControlSetHint(const Value: string);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(Value: string);
 
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
@@ -132,13 +130,12 @@ type
     procedure ControlSetReadOnly(Value: Boolean);
     procedure ControlSetCaption(const Value: string);
     procedure ControlSetTabOrder(Value: Integer);
-    procedure ControlSetHint(Value: string);
+    procedure ControlSetHint(const Value: string);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(Value: string);
 
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
@@ -180,13 +177,12 @@ type
     procedure ControlSetReadOnly(Value: Boolean);
     procedure ControlSetCaption(const Value: string);
     procedure ControlSetTabOrder(Value: Integer);
-    procedure ControlSetHint(Value: string);
+    procedure ControlSetHint(const Value: string);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(Value: string);
 
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
@@ -212,13 +208,12 @@ type
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
     procedure ControlSetTabOrder(Value: Integer);
-    procedure ControlSetHint(Value: string);
+    procedure ControlSetHint(const Value: string);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(Value: string);
 
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
@@ -238,13 +233,12 @@ type
     procedure ControlSetReadOnly(Value: Boolean);
     procedure ControlSetCaption(const Value: string);
     procedure ControlSetTabOrder(Value: Integer);
-    procedure ControlSetHint(Value: string);
+    procedure ControlSetHint(const Value: string);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(Value: string);
 
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
@@ -271,13 +265,12 @@ type
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
     procedure ControlSetTabOrder(Value: Integer);
-    procedure ControlSetHint(Value: string);
+    procedure ControlSetHint(const Value: string);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(Value: string);
 
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
@@ -301,13 +294,12 @@ type
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
     procedure ControlSetTabOrder(Value: Integer);
-    procedure ControlSetHint(Value: string);
+    procedure ControlSetHint(const Value: string);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(Value: string);
 
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
@@ -332,13 +324,12 @@ type
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
     procedure ControlSetTabOrder(Value: Integer);
-    procedure ControlSetHint(Value: string);
+    procedure ControlSetHint(const Value: string);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(Value: string);
 
     procedure ControlSetValue(Value: Variant);
     function ControlGetValue: Variant;
@@ -362,12 +353,11 @@ type
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
     procedure ControlSetTabOrder(Value: Integer);
-    procedure ControlSetHint(Value: string);
+    procedure ControlSetHint(const Value: string);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(Value: string);
 
     procedure ControlSetAutoSize(Value: Boolean);
     procedure ControlSetIncrementalDisplay(Value: Boolean);
@@ -393,12 +383,11 @@ type
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
     procedure ControlSetTabOrder(Value: Integer);
-    procedure ControlSetHint(Value: string);
+    procedure ControlSetHint(const Value: string);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(Value: string);
 
     //IJvDynControlDatabase
     procedure ControlSetDatasource(Value: TDatasource);
@@ -413,12 +402,11 @@ type
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
     procedure ControlSetTabOrder(Value: Integer);
-    procedure ControlSetHint(Value: string);
+    procedure ControlSetHint(const Value: string);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(Value: string);
 
     //IJvDynControlDatabase
     procedure ControlSetDatasource(Value: TDatasource);
@@ -432,12 +420,11 @@ type
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
     procedure ControlSetTabOrder(Value: Integer);
-    procedure ControlSetHint(Value: string);
+    procedure ControlSetHint(const Value: string);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(Value: string);
 
     //IJvDynControlDatabase
     procedure ControlSetDatasource(Value: TDatasource);
@@ -487,7 +474,7 @@ begin
   TabOrder := Value;
 end;
 
-procedure TJvDynControlVCLDBEdit.ControlSetHint(Value: string);
+procedure TJvDynControlVCLDBEdit.ControlSetHint(const Value: string);
 begin
   Hint := Value;
 end;
@@ -510,11 +497,6 @@ end;
 procedure TJvDynControlVCLDBEdit.ControlSetOnClick(Value: TNotifyEvent);
 begin
 end;                                                                    
-
-procedure TJvDynControlVCLDBEdit.ControlSetHint(Value: String);
-begin
-  Hint := Value;
-end;
 
 procedure TJvDynControlVCLDBEdit.ControlSetValue(Value: Variant);
 begin
@@ -609,7 +591,7 @@ begin
   TabOrder := Value;
 end;
 
-procedure TJvDynControlVCLDBButtonEdit.ControlSetHint(Value: string);
+procedure TJvDynControlVCLDBButtonEdit.ControlSetHint(const Value: string);
 begin
   Hint := Value;
 end;
@@ -633,11 +615,6 @@ procedure TJvDynControlVCLDBButtonEdit.ControlSetOnClick(Value: TNotifyEvent);
 begin
   FEditControl.OnClick := Value;
 end;                                                                          
-
-procedure TJvDynControlVCLDBButtonEdit.ControlSetHint(Value: String);
-begin
-  Hint := Value;
-end;
 
 procedure TJvDynControlVCLDBButtonEdit.ControlSetValue(Value: Variant);
 begin
@@ -835,7 +812,7 @@ begin
   TabOrder := Value;
 end;
 
-procedure TJvDynControlVCLDBFileNameEdit.ControlSetHint(Value: string);
+procedure TJvDynControlVCLDBFileNameEdit.ControlSetHint(const Value: string);
 begin
   Hint := Value;
 end;
@@ -857,11 +834,6 @@ end;
 
 procedure TJvDynControlVCLDBFileNameEdit.ControlSetOnClick(Value: TNotifyEvent);
 begin
-end;
-
-procedure TJvDynControlVCLDBFileNameEdit.ControlSetHint(Value: String);
-begin
-  FEditControl.Hint := Value;
 end;
 
 procedure TJvDynControlVCLDBFileNameEdit.ControlSetValue(Value: Variant);
@@ -1012,7 +984,7 @@ begin
   TabOrder := Value;
 end;
 
-procedure TJvDynControlVCLDBDirectoryEdit.ControlSetHint(Value: string);
+procedure TJvDynControlVCLDBDirectoryEdit.ControlSetHint(const Value: string);
 begin
   Hint := Value;
 end;
@@ -1035,11 +1007,6 @@ end;
 procedure TJvDynControlVCLDBDirectoryEdit.ControlSetOnClick(Value: TNotifyEvent);
 begin
 
-end;
-
-procedure TJvDynControlVCLDBDirectoryEdit.ControlSetHint(Value: String);
-begin
-  FEditControl.Hint := Value;
 end;
 
 procedure TJvDynControlVCLDBDirectoryEdit.ControlSetValue(Value: Variant);
@@ -1108,7 +1075,7 @@ begin
   TabOrder := Value;
 end;
 
-procedure TJvDynControlVCLDBCheckBox.ControlSetHint(Value: string);
+procedure TJvDynControlVCLDBCheckBox.ControlSetHint(const Value: string);
 begin
   Hint := Value;
 end;
@@ -1131,11 +1098,6 @@ end;
 procedure TJvDynControlVCLDBCheckBox.ControlSetOnClick(Value: TNotifyEvent);
 begin
   OnClick := Value;
-end;
-
-procedure TJvDynControlVCLDBCheckBox.ControlSetHint(Value: String);
-begin
-  Hint := Value;
 end;
 
 procedure TJvDynControlVCLDBCheckBox.ControlSetValue(Value: Variant);
@@ -1191,7 +1153,7 @@ begin
   TabOrder := Value;
 end;
 
-procedure TJvDynControlVCLDBMemo.ControlSetHint(Value: string);
+procedure TJvDynControlVCLDBMemo.ControlSetHint(const Value: string);
 begin
   Hint := Value;
 end;
@@ -1214,11 +1176,6 @@ end;
 procedure TJvDynControlVCLDBMemo.ControlSetOnClick(Value: TNotifyEvent);
 begin
   OnClick := Value;
-end;
-
-procedure TJvDynControlVCLDBMemo.ControlSetHint(Value: String);
-begin
-  Hint := Value;
 end;
 
 procedure TJvDynControlVCLDBMemo.ControlSetValue(Value: Variant);
@@ -1301,7 +1258,7 @@ begin
   TabOrder := Value;
 end;
 
-procedure TJvDynControlVCLDBRadioGroup.ControlSetHint(Value: string);
+procedure TJvDynControlVCLDBRadioGroup.ControlSetHint(const Value: string);
 begin
   Hint := Value;
 end;
@@ -1324,11 +1281,6 @@ end;
 procedure TJvDynControlVCLDBRadioGroup.ControlSetOnClick(Value: TNotifyEvent);
 begin
   OnClick := Value;
-end;
-
-procedure TJvDynControlVCLDBRadioGroup.ControlSetHint(Value: String);
-begin
-  Hint := Value;
 end;
 
 procedure TJvDynControlVCLDBRadioGroup.ControlSetValue(Value: Variant);
@@ -1399,7 +1351,7 @@ begin
   TabOrder := Value;
 end;
 
-procedure TJvDynControlVCLDBListBox.ControlSetHint(Value: string);
+procedure TJvDynControlVCLDBListBox.ControlSetHint(const Value: string);
 begin
   Hint := Value;
 end;
@@ -1422,11 +1374,6 @@ end;
 procedure TJvDynControlVCLDBListBox.ControlSetOnClick(Value: TNotifyEvent);
 begin
   OnClick := Value;
-end;
-
-procedure TJvDynControlVCLDBListBox.ControlSetHint(Value: String);
-begin
-  Hint := Value;
 end;
 
 procedure TJvDynControlVCLDBListBox.ControlSetValue(Value: Variant);
@@ -1498,7 +1445,7 @@ begin
   TabOrder := Value;
 end;
 
-procedure TJvDynControlVCLDBComboBox.ControlSetHint(Value: string);
+procedure TJvDynControlVCLDBComboBox.ControlSetHint(const Value: string);
 begin
   Hint := Value;
 end;
@@ -1521,11 +1468,6 @@ end;
 procedure TJvDynControlVCLDBComboBox.ControlSetOnClick(Value: TNotifyEvent);
 begin
   OnClick := Value;
-end;
-
-procedure TJvDynControlVCLDBComboBox.ControlSetHint(Value: String);
-begin
-  Hint := Value;
 end;
 
 procedure TJvDynControlVCLDBComboBox.ControlSetValue(Value: Variant);
@@ -1601,7 +1543,7 @@ begin
 //  TabOrder := Value;
 end;
 
-procedure TJvDynControlVCLDBImage.ControlSetHint(Value: string);
+procedure TJvDynControlVCLDBImage.ControlSetHint(const Value: string);
 begin
   Hint := Value;
 end;
@@ -1619,11 +1561,6 @@ end;
 procedure TJvDynControlVCLDBImage.ControlSetOnClick(Value: TNotifyEvent);
 begin
   OnClick := Value;
-end;
-
-procedure TJvDynControlVCLDBImage.ControlSetHint(Value: String);
-begin
-  Hint := Value;
 end;
 
 procedure TJvDynControlVCLDBImage.ControlSetAutoSize(Value: Boolean);
@@ -1710,7 +1647,7 @@ procedure TJvDynControlVCLDBText.ControlSetTabOrder(Value: Integer);
 begin
 end;
 
-procedure TJvDynControlVCLDBText.ControlSetHint(Value: string);
+procedure TJvDynControlVCLDBText.ControlSetHint(const Value: string);
 begin
   Hint := Value;
 end;
@@ -1727,11 +1664,6 @@ procedure TJvDynControlVCLDBText.ControlSetOnClick(Value: TNotifyEvent);
 begin
 end;
     
-procedure TJvDynControlVCLDBText.ControlSetHint(Value: String);
-begin
-  Hint := Value;
-end;
-
 procedure TJvDynControlVCLDBText.ControlSetDatasource(Value: TDatasource);
 begin
   Datasource := Value;
@@ -1767,7 +1699,7 @@ begin
   TabOrder := Value;
 end;
 
-procedure TJvDynControlVCLDBGrid.ControlSetHint(Value: string);
+procedure TJvDynControlVCLDBGrid.ControlSetHint(const Value: string);
 begin
   Hint := Value;
 end;
@@ -1785,11 +1717,6 @@ end;
 procedure TJvDynControlVCLDBGrid.ControlSetOnClick(Value: TNotifyEvent);
 begin
 end;                                                                    
-
-procedure TJvDynControlVCLDBGrid.ControlSetHint(Value: String);
-begin
-  Hint := Value;
-end;
 
 procedure TJvDynControlVCLDBGrid.ControlSetDatasource(Value: TDatasource);
 begin
@@ -1825,7 +1752,7 @@ begin
   TabOrder := Value;
 end;
 
-procedure TJvDynControlVCLDBNavigator.ControlSetHint(Value: string);
+procedure TJvDynControlVCLDBNavigator.ControlSetHint(const Value: string);
 begin
   Hint := Value;
 end;
@@ -1842,11 +1769,6 @@ end;
 
 procedure TJvDynControlVCLDBNavigator.ControlSetOnClick(Value: TNotifyEvent);
 begin
-end;
-
-procedure TJvDynControlVCLDBNavigator.ControlSetHint(Value: String);
-begin
-  Hint := Value;
 end;
 
 procedure TJvDynControlVCLDBNavigator.ControlSetDatasource(Value: TDatasource);
