@@ -33,7 +33,8 @@ unit JvGradientCaption;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, JvGradient, JvTypes, JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  StdCtrls, JvGradient, JvTypes, JVCLVer;
 
 type
   TJvGradientCaption = class(TWinControl)
