@@ -4,7 +4,7 @@ body
 	background: #ffffff; 
 	color: #000000;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 70%;
+	font-size: 9pt;
 	}
 h1, h2, h3, h4
 	{
@@ -106,7 +106,7 @@ pre
 pre,code
 	{
 	font-family: Courier New, Courier, mono;
-        font-size: 100%; 
+        // font-size: 100%; 
 	color: #660000;
 	}
 

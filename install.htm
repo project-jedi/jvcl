@@ -25,17 +25,16 @@ YYYY-MM-DD</p>
 </ul>
 <p>&nbsp;</p>
 <h2>Uninstalling previous versions of JVCL</h2>
-<p>If you have a previous version of the JVCL installed (i.e 2.10 or
-earlier), you must remove it completely along with the JCL before
+<p>If you have a previous version of the JVCL installed, you must remove it completely along with the JCL before
 installing this version. To remove a previous installation, proceed as
 follows:</p>
 <ol>
   <li>Start the IDE, open the packages page by selecting <b>Component
-- Install   Packages</b>.</li>
+- Install   Packages</b></li>
   <li>Select each of the JCL / JVCL packages in the list and click the <b>Remove</b>
 button</li>
   <li>Open <b>Tools - Environment Options - Library</b> and remove all
-library paths pointing to JVCL and JCL folders. </li>
+library paths pointing to JVCL and JCL folders</li>
   <li>Repeat step 1 to 3 for every version of Delphi and C++ Builder
 you have installed</li>
   <li>Close the IDE<br>
@@ -43,12 +42,12 @@ you have installed</li>
   <li>Browse to the folder where your bpl and dcp files are located
 (default is $(DELPHI)\Projects\Bpl for Delphi, $(BCB)\Projects\Bpl for
 C++ Builder). Delete all of the files related to JVCL and JCL</li>
-  <li>Delete or rename the top folder where JCL and JVCL is installed.</li>
-  <li>Start regedit (click <b>Start - Run</b>, type "regedit.exe" and
-hit <b>Enter</b>). Open the   key <font face="Courier New" size="1">HKEY_CURRENT_USER\Software\Borland\&lt;compiler&gt;\&lt;version&gt;\Palette</font>
-and delete all name/value items in the list related to JVCL.
-(&lt;compiler&gt; is either "Delphi" or "C++Builder", &lt;version&gt; is
-the IDE version you have installed). </li>
+  <li>Delete or rename the top folder where JCL and JVCL is installed</li>
+  <li>Start regedit (click <b>Start - Run</b>, type &quot;regedit.exe&quot; and hit <b>
+  Enter</b>). Open the key <font size="2" face="Courier New">HKEY_CURRENT_USER\Software\Borland\&lt;compiler&gt;\&lt;version&gt;\Palette</font> 
+  and delete all name/value items in the list related to JVCL. (&lt;compiler&gt; is 
+  either &quot;Delphi&quot; or &quot;C++Builder&quot;, &lt;version&gt; is the IDE version you have 
+  installed)</li>
 </ol>
 <br>
 <h2>Getting required packages</h2>
@@ -57,8 +56,8 @@ of JCL (JEDI Code Library). Currently, this is the JCL Preview, but
 newer versions might have been released since this document was
 published. Instructions on where to download JCL can be found on this
 page: <a href="http://sourceforge.net/projects/jcl">
-http://sourceforge.net/projects/jcl</a>.<br>
-As of today (30th of September 2003), the JCL package must be updated
+http://sourceforge.net/projects/jcl</a>.</p>
+<p align="left">As of today (30th of September 2003), the JCL package must be updated
 with numerous bug fixes. For your convenience, these bug fixes are
 included in the distribution file but please note that as soon as the
 JCL group does a new release, we recommend you use it instead as it will
@@ -71,17 +70,17 @@ include our fixes plus many others.<br>
 <p>Start by unpacking the JVCL and JCL zip files into a folder of your
 own choice. Make sure your zip extractor is set to maintain folder
 structure or all files will be put into the same folder (<b>not</b> what
-you want!). </p>
-<p>Since JVCL assumes that the JCL is installed in the same base folder
-as JVCL, the JCL and JVCL folders must be created as siblings, i.e the
-folder structure should look like this:</p>
+you want!). We recommend but do not require that the JCL and JVCL folders should be created as siblings, i.e the
+folder structure  looks like this:</p>
 <p><font face="Courier New" size="2">JEDI<br>
 &nbsp; JCL<br>
 &nbsp;&nbsp;&nbsp; &lt;JCL subfolders&gt;<br>
 &nbsp; JVCL<br>
 &nbsp;&nbsp;&nbsp; &lt;JVCL subfolders&gt;<br>
 </font></p>
-<p>Start Delphi, open the package group file (bpg) for your version of
+<p dir="ltr">Before you can install the JVCL you must first compile the JCL 
+packages. How to do this is documented in the JCL download. If the JCL 
+works as expected, open the JVCL package group file (bpg) for your version of
 Delphi that is located in the jvcl\packages folder. Select <b>Project -
 Build All Projects</b> from the Delphi menu. Go get a cup of coffee (this
 takes a while). After Delphi has compiled all the packages, open the <b>Project
@@ -115,13 +114,13 @@ benefits.&nbsp;</p>
 source and see it at run-time but be aware that if you build with
 run-time packages, you need to recompile the packages to see the changes
 in the application. To add the source folder locations to Delphi, select <b>Tools-Environment
-Options-Library</b> and add the paths to JCL\source, JVCL\run and
+Options-Library</b> and add the paths to JVCL\run and
 JVCL\common to the Library path.</p>
 <p>&nbsp;</p>
 <p>Adding the pre-compiled DCU paths means that Delphi won't recompile
-the DCU's unless you recompile the packages so compiling your
+the DCU's unless you recompile the packages, so compiling your
 application should be faster. To add the DCU folder location, select <b>Tools-Environment
-Options-Library</b> and add JCL\dcu, JVCL\libX (where X is your version
+Options-Library</b> and add JVCL\libX (where X is your version
 of Delphi, i.e for Delphi 6, it's "6") and JVCL\common (for the INC
 files) to the Library path. If you still want to be able to open the
 JVCL source files in the IDE, add JVCL\run (and maybe even JVCL\design)
@@ -222,7 +221,7 @@ two list and click the related 'Modify' button. Add ';c:\mypath\jcl\dcu'
 (without the quotes) at the end of the already existing value, and click
 on Ok buttons until the 'System properties' applet is closed. This
 modification is required because C++&nbsp;Builder parses this value when
-it searches for pascal units untis and there are no direct way in the
+it searches for pascal units and there are no direct way in the
 IDE to specify additional units paths (contrary to Delphi). You may
 also use overrides in the environment options, but this has not been
 tested. If it works this way, please let us know.<br>
@@ -245,7 +244,7 @@ for the next time you want to compile the JVCL.<br>
 <h2>Adding JVCL paths to C++&nbsp;Builder<br>
 </h2>
 <p>To make your applications find the JVCL header files when you
-compile, you need to add the paths to JVCL to C++&nbsp;Builder's
+compile, you need to add the  JVCL paths to C++&nbsp;Builder's
 environment paths. <br>
 </p>
 <p>All you need to do is to start C++&nbsp;Builder and select <b>Tools-Environment
