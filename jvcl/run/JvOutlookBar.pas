@@ -1946,12 +1946,13 @@ end;
 
 procedure TJvCustomOutlookBar.DoButtonClick(Index: Integer);
 begin
-  if (Index > -1) and Assigned(FOnButtonClick) then
+  if (Index > -1) then
   begin
     with ActivePage.Buttons[Index] do
       if AutoToggle then
         Down := not Down;
-    FOnButtonClick(Self, Index);
+    if Assigned(FOnButtonClick) then
+      FOnButtonClick(Self, Index);
   end;
 end;
 
@@ -2055,7 +2056,7 @@ begin
     (ButtonIndex < Pages[PageIndex].TopButtonIndex) then
     Exit;
   R := GetButtonFrameRect(PageIndex, ButtonIndex);
-  if DoDrawButtonFrame(R, ButtonIndex, PressedIndex = ButtonIndex, True) then
+  if DoDrawButtonFrame(R, ButtonIndex, (PressedIndex = ButtonIndex) or Pages[PageIndex].Buttons[ButtonIndex].Down, True) then
   begin
 {$IFDEF JVCLThemesEnabled}
     if ThemeServices.ThemesEnabled then
