@@ -133,9 +133,9 @@ type
     function IsActive: Boolean;
     procedure SaveFormPlacement;
     procedure RestoreFormPlacement;
-    function ReadString(const Ident, Default: string): string;
-    procedure WriteString(const Ident, Value: string);
-    function ReadInteger(const Ident: string; Default: Longint): Longint;
+    function ReadString(const Ident: string; const Default: string = ''): string;
+    procedure WriteString(const Ident: string; const Value: string);
+    function ReadInteger(const Ident: string; Default: Longint = 0): Longint;
     procedure WriteInteger(const Ident: string; Value: Longint);
     procedure EraseSections;
   published
@@ -177,7 +177,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function StrippedPath: string;
     procedure SetNotification;
     property StoredValue[const Name: string]: Variant read GetStoredValue write SetStoredValue;
     property DefaultValue[const Name: string; DefValue: Variant]: Variant read GetDefaultStoredValue write SetDefaultStoredValue;
@@ -697,10 +696,12 @@ begin
   NotifyLinks(poRestore);
 end;
 
-function TJvFormPlacement.ReadString(const Ident, Default: string): string;
+
+function TJvFormPlacement.ReadString(const Ident: string; const Default: string = '') : string;
 begin
   if Assigned(AppStorage) then
-    Result := AppStorage.ReadString(AppStorage.ConcatPaths([Ident]), Default)
+    with AppStorage do
+      Result := ReadString(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, True)]), Default)
   else
     Result := Default;
 end;
@@ -708,13 +709,15 @@ end;
 procedure TJvFormPlacement.WriteString(const Ident, Value: string);
 begin
   if Assigned(AppStorage) then
-    AppStorage.WriteString(AppStorage.ConcatPaths([Ident]), Value);
+    with AppStorage do
+      WriteString(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, False)]), Value);
 end;
 
-function TJvFormPlacement.ReadInteger(const Ident: string; Default: Longint): Longint;
+function TJvFormPlacement.ReadInteger(const Ident: string; Default: Longint = 0): Longint;
 begin
   if Assigned(AppStorage) then
-    Result := AppStorage.ReadInteger(AppStoragePath + Ident, Default)
+    with AppStorage do
+      Result := ReadInteger(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, False)]), Default)
   else
     Result := Default;
 end;
@@ -722,7 +725,8 @@ end;
 procedure TJvFormPlacement.WriteInteger(const Ident: string; Value: Longint);
 begin
   if Assigned(AppStorage) then
-    AppStorage.WriteInteger(AppStoragePath + Ident, Value);
+    with AppStorage do
+      WriteInteger(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, False)]), Value);
 end;
 
 procedure TJvFormPlacement.EraseSections;
@@ -761,7 +765,7 @@ begin
     Restore;
     if (fpActiveControl in Options) and (Owner is TCustomForm) then
     begin
-      cActive := Form.FindComponent(AppStorage.ReadString(AppStoragePath + siActiveCtrl, ''));
+      cActive := Form.FindComponent(AppStorage.ReadString(AppStorage.ConcatPaths([AppStoragePath, siActiveCtrl]), ''));
       if (cActive <> nil) and (cActive is TWinControl) and
         TWinControl(cActive).CanFocus then
         Form.ActiveControl := TWinControl(cActive);
@@ -951,9 +955,8 @@ procedure TJvFormStorage.SaveProperties;
 begin
   with TJvPropertyStorage.Create do
   try
-    Section := StrippedPath;
-    OnWriteString := WriteString;
-    OnEraseSection := AppStorage.DeleteSubTree;
+    AppStoragePath := Self.AppStoragePath;
+    AppStorage := Self.AppStorage;
     StoreObjectsProps(Owner, FStoredProps);
   finally
     Free;
@@ -964,8 +967,8 @@ procedure TJvFormStorage.RestoreProperties;
 begin
   with TJvPropertyStorage.Create do
   try
-    Section := StrippedPath;
-    OnReadString := ReadString;
+    AppStoragePath := Self.AppStoragePath;
+    AppStorage := Self.AppStorage;
     try
       LoadObjectsProps(Owner, FStoredProps);
     except
@@ -1214,17 +1217,6 @@ begin
     StoredValue[Name] := DefValue
   else
     StoredValue[Name] := Value;
-end;
-
-function TJvFormStorage.StrippedPath: string;
-var
-  I: Integer;
-begin
-  Result := AppStoragePath;
-  I := Length(Result);
-  while (I > 0) and (Result[I] = '\') do
-    Dec(I);
-  SetLength(Result, I);
 end;
 
 end.
