@@ -35,8 +35,6 @@ This unit is only supported on Windows!
 
 unit JvZlibMultiple;
 
-
-
 interface
 
 uses
@@ -105,18 +103,21 @@ function TJvZlibMultiple.CompressDirectory(Directory: string;
     Res: Integer;
   begin
     Res := FindFirst(Directory + SDirectory + '*.*', faAnyFile, SearchRec);
-    while (Res = 0) do
-    begin
-      if (SearchRec.Name <> '.') and (SearchRec.Name <> '..') then
+    try
+      while (Res = 0) do
       begin
-        if (SearchRec.Attr and faDirectory = 0) then
-          AddFile(SearchRec.Name, SDirectory, Directory + SDirectory + SearchRec.Name, Result)
-        else if Recursive then
-          SearchDirectory(SDirectory + SearchRec.Name + '\');
+        if (SearchRec.Name <> '.') and (SearchRec.Name <> '..') then
+        begin
+          if (SearchRec.Attr and faDirectory = 0) then
+            AddFile(SearchRec.Name, SDirectory, Directory + SDirectory + SearchRec.Name, Result)
+          else if Recursive then
+            SearchDirectory(SDirectory + SearchRec.Name + '\');
+        end;
+        Res := FindNext(SearchRec);
       end;
-      Res := FindNext(SearchRec);
+    finally
+      FindClose(SearchRec);
     end;
-    FindClose(SearchRec);
   end;
 
 begin
@@ -163,27 +164,32 @@ var
 begin
   Stream := TMemoryStream.Create;
   FStream := TFileStream.Create(FilePath, fmOpenRead or fmShareDenyWrite);
-  ZStream := TCompressionStream.Create(clDefault, Stream);
+  try
+    ZStream := TCompressionStream.Create(clDefault, Stream);
+    try
 
-  if Assigned(FOnCompressFile) then
-    FOnCompressFile(Self, FilePath);
+      if Assigned(FOnCompressFile) then
+        FOnCompressFile(Self, FilePath);
 
-  repeat
-    count := FStream.Read(buf, SizeOf(buf));
-    ZStream.Write(buf, count);
-    if Assigned(FOnProgress) then
-      FOnProgress(Self, FStream.Position, FStream.Size);
-  until count = 0;
-  ZStream.Free;
+      repeat
+        count := FStream.Read(buf, SizeOf(buf));
+        ZStream.Write(buf, count);
+        if Assigned(FOnProgress) then
+          FOnProgress(Self, FStream.Position, FStream.Size);
+      until count = 0;
+    finally
+      ZStream.Free;
+    end;
 
-  if Assigned(FOnCompressedFile) then
-    FOnCompressedFile(Self, FilePath);
+    if Assigned(FOnCompressedFile) then
+      FOnCompressedFile(Self, FilePath);
 
-  WriteFileRecord(Directory, FileName, FStream.Size, Stream.Size);
-  DestStream.CopyFrom(Stream, 0);
-
-  FStream.Free;
-  Stream.Free;
+    WriteFileRecord(Directory, FileName, FStream.Size, Stream.Size);
+    DestStream.CopyFrom(Stream, 0);
+  finally
+    FStream.Free;
+    Stream.Free;
+  end;
 end;
 
 {***********************************************}
@@ -194,8 +200,11 @@ var
   Stream: TFileStream;
 begin
   Stream := TFileStream.Create(FileName, fmCreate);
-  Stream.CopyFrom(CompressDirectory(Directory, Recursive), 0);
-  Stream.Free;
+  try
+    Stream.CopyFrom(CompressDirectory(Directory, Recursive), 0);
+  finally
+    Stream.Free;
+  end;
 end;
 
 {***********************************************}
@@ -239,8 +248,11 @@ var
   Stream: TFileStream;
 begin
   Stream := TFileStream.Create(FileName, fmCreate);
-  Stream.CopyFrom(CompressFiles(Files), 0);
-  Stream.Free;
+  try
+    Stream.CopyFrom(CompressFiles(Files), 0);
+  finally
+    Stream.Free;
+  end;
 end;
 
 {***********************************************}
@@ -281,33 +293,38 @@ begin
     Stream.Read(fsize, SizeOf(fsize));
     Stream.Read(i, SizeOf(i));
     CStream := TMemoryStream.Create;
-    CStream.CopyFrom(Stream, i);
-    CStream.Position := 0;
+    try
+      CStream.CopyFrom(Stream, i);
+      CStream.Position := 0;
 
-    //Decompress the file
-    st := Directory + st;
-    if Overwrite or not FileExists(st) then
-    begin
-      FStream := TFileStream.Create(st, fmCreate or fmShareExclusive);
-      ZStream := TDecompressionStream.Create(CStream);
+      //Decompress the file
+      st := Directory + st;
+      if Overwrite or not FileExists(st) then
+      begin
+        FStream := TFileStream.Create(st, fmCreate or fmShareExclusive);
+        ZStream := TDecompressionStream.Create(CStream);
+        try
 
-      if Assigned(FOnDecompressFile) then
-        FOnDecompressFile(Self, st);
+          if Assigned(FOnDecompressFile) then
+            FOnDecompressFile(Self, st);
 
-      repeat
-        count := ZStream.Read(buf, 1024);
-        FStream.Write(buf, count);
-        if Assigned(FOnProgress) then
-          FOnProgress(Self, FStream.Size, fsize);
-      until count = 0;
+          repeat
+            count := ZStream.Read(buf, 1024);
+            FStream.Write(buf, count);
+            if Assigned(FOnProgress) then
+              FOnProgress(Self, FStream.Size, fsize);
+          until count = 0;
 
-      if Assigned(FOnDecompressedFile) then
-        FOnDecompressedFile(Self, st);
-
-      FStream.Free;
+          if Assigned(FOnDecompressedFile) then
+            FOnDecompressedFile(Self, st);
+        finally
+          FStream.Free;
+          ZStream.Free;
+        end;
+      end;
+    finally
+      CStream.Free;
     end;
-
-    CStream.Free;
   end;
 end;
 
@@ -319,9 +336,13 @@ var
   Stream: TFileStream;
 begin
   Stream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
-  Stream.Position := 0;
-  DecompressStream(Stream, Directory, Overwrite);
-  Stream.Free;
+  try
+    Stream.Position := 0;
+    DecompressStream(Stream, Directory, Overwrite);
+  finally
+    Stream.Free;
+  end;
 end;
 
 end.
+
