@@ -4056,7 +4056,7 @@ procedure TJvCustomInspectorItem.Apply;
 var
   TmpOnChange: TNotifyEvent;
 begin
-  if Editing and (EditCtrl <> nil) and (DisplayValue <> EditCtrl.Text) then
+  if Editing and (EditCtrl <> nil) and (not Data.IsAssigned or (DisplayValue <> EditCtrl.Text)) then
   begin
     DisplayValue := EditCtrl.Text;
     InvalidateItem;
@@ -7047,7 +7047,10 @@ procedure TJvInspectorBooleanItem.MouseDown(Button: TMouseButton;
 var
   Bool: Boolean;
 begin
-  Bool := not (Data.AsOrdinal <> Ord(False));
+  if Data.IsAssigned then
+    Bool := not (Data.AsOrdinal <> Ord(False))
+  else
+    Bool := True;
   if PtInRect(FCheckRect, Point(X, Y)) and (Shift = [ssLeft]) and
     Editing and ShowAsCheckbox then
   begin
@@ -7171,7 +7174,10 @@ end;
 
 procedure TJvInspectorDateItem.SetDisplayValue(const Value: string);
 begin
-  Data.AsFloat := Trunc(StrToDate(Value)) + Frac(Data.AsFloat);
+  if Data.IsAssigned then
+    Data.AsFloat := Trunc(StrToDate(Value)) + Frac(Data.AsFloat)
+  else
+    Data.AsFloat := Trunc(StrToDate(Value));
 end;
 
 procedure TJvInspectorDateItem.SetFormat(Value: string);
@@ -7272,7 +7278,10 @@ end;
 
 procedure TJvInspectorTimeItem.SetDisplayValue(const Value: string);
 begin
-  Data.AsFloat := Frac(StrToTime(Value)) + Trunc(Data.AsFloat);
+  if Data.IsAssigned then
+    Data.AsFloat := Frac(StrToTime(Value)) + Trunc(Data.AsFloat)
+  else
+    Data.AsFloat := Frac(StrToTime(Value)) + Trunc(Data.AsFloat);
 end;
 
 procedure TJvInspectorTimeItem.SetFormat;

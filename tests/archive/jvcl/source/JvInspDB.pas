@@ -312,7 +312,10 @@ var
 begin
   CheckWriteAccess;
   if Field is TBooleanField then
-    TBooleanField(Field).AsBoolean := Value <> 0
+  begin
+    DataLink.Edit;
+    TBooleanField(Field).AsBoolean := Value <> 0;
+  end
   else if TypeInfo.Kind in [tkInteger, tkChar, tkEnumeration, tkWChar] then
   begin
     case GetTypeData(TypeInfo).OrdType of
