@@ -23,7 +23,7 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvJVCLUtils;
 
@@ -268,6 +268,8 @@ function WaitCursor: IInterface;
 function ScreenCursor(ACursor: TCursor): IInterface;
 // loads the more modern looking drag cursors from OLE32.DLL
 function LoadOLEDragCursors: Boolean;
+// set some default cursor from JVCL
+procedure SetDefaultJVCLCursors;
 
 {$IFDEF VCL}
 function LoadAniCursor(Instance: THandle; ResID: PChar): HCURSOR;
@@ -777,8 +779,7 @@ begin
   begin
     if R = Max then
       H := (60 * (G - B)) div Delta
-    else
-    if G = Max then
+    else if G = Max then
       H := 120 + (60 * (B - R)) div Delta
     else
       H := 240 + (60 * (R - G)) div Delta;
@@ -1445,26 +1446,26 @@ begin
       else
         if (Control.Parent.Controls[i] <> nil) and
         (Control.Parent.Controls[i] is TGraphicControl) then
+      begin
+        with TGraphicControl(Control.Parent.Controls[i]) do
         begin
-          with TGraphicControl(Control.Parent.Controls[i]) do
+          CtlR := Bounds(Left, Top, Width, Height);
+          if IntersectRect(r, SelfR, CtlR) and Visible then
           begin
-            CtlR := Bounds(Left, Top, Width, Height);
-            if IntersectRect(r, SelfR, CtlR) and Visible then
-            begin
-              ControlState := ControlState + [csPaintCopy];
+            ControlState := ControlState + [csPaintCopy];
+            SaveIndex := SaveDC(DC);
+            try
               SaveIndex := SaveDC(DC);
-              try
-                SaveIndex := SaveDC(DC);
-                SetViewPortOrgEx(DC, Left + X, Top + Y, nil);
-                IntersectClipRect(DC, 0, 0, Width, Height);
-                Perform(WM_PAINT, DC, 0);
-              finally
-                RestoreDC(DC, SaveIndex);
-                ControlState := ControlState - [csPaintCopy];
-              end;
+              SetViewPortOrgEx(DC, Left + X, Top + Y, nil);
+              IntersectClipRect(DC, 0, 0, Width, Height);
+              Perform(WM_PAINT, DC, 0);
+            finally
+              RestoreDC(DC, SaveIndex);
+              ControlState := ControlState - [csPaintCopy];
             end;
           end;
         end;
+      end;
     end;
   finally
     with Control.Parent do
@@ -2251,16 +2252,15 @@ begin
       end;
     end;
   end
-  else
-    if Control.Parent <> nil then
+  else if Control.Parent <> nil then
+  begin
+    with Control do
     begin
-      with Control do
-      begin
-        Parent.HandleNeeded;
-        X := (Parent.ClientWidth - Width) div 2;
-        Y := (Parent.ClientHeight - Height) div 2;
-      end;
+      Parent.HandleNeeded;
+      X := (Parent.ClientWidth - Width) div 2;
+      Y := (Parent.ClientHeight - Height) div 2;
     end;
+  end;
   if X < 0 then
     X := 0;
   if Y < 0 then
@@ -2317,11 +2317,10 @@ begin
         Style := Style or WS_EX_CLIENTEDGE
       else
         Exit
+    else if Style and WS_EX_CLIENTEDGE <> 0 then
+      Style := Style and not WS_EX_CLIENTEDGE
     else
-      if Style and WS_EX_CLIENTEDGE <> 0 then
-        Style := Style and not WS_EX_CLIENTEDGE
-      else
-        Exit;
+      Exit;
     SetWindowLong(ClientHandle, GWL_EXSTYLE, Style);
     SetWindowPos(ClientHandle, 0, 0, 0, 0, 0, SWP_FRAMECHANGED or SWP_NOACTIVATE
       or
@@ -2467,7 +2466,7 @@ procedure GradientFillRect(Canvas: TCanvas; ARect: TRect; StartColor,
 var
   StartRGB: array[0..2] of byte; { Start RGB values }
   RGBDelta: array[0..2] of Integer;
-    { Difference between start and end RGB values }
+  { Difference between start and end RGB values }
   ColorBand: TRect; { Color band rectangular coordinates }
   i, Delta: Integer;
 {$IFDEF VCL}
@@ -2687,9 +2686,8 @@ begin
   begin
     if Result >= crSizeAll then Result := crSizeAll - 1;
   end
-  else
-    if Result <= crDefault then
-      Result := crDefault + 1;
+  else if Result <= crDefault then
+    Result := crDefault + 1;
   while (Screen.Cursors[Result] <> Screen.Cursors[crDefault]) do
   begin
     if PreDefined then
@@ -2768,19 +2766,44 @@ var
   Handle: Cardinal;
 begin
   Result := False;
-  Handle := GetModuleHandle(cOle32DLL);
-  if Handle = 0 then
-    Handle := LoadLibraryEx(cOle32DLL, 0, LOAD_LIBRARY_AS_DATAFILE);
-  if Handle <> 0 then // (p3) don't free the lib handle!
+  if Screen <> nil then
   begin
-    Screen.Cursors[crNoDrop] := LoadCursor(Handle, PChar(1));
-    Screen.Cursors[crDrag] := LoadCursor(Handle, PChar(2));
-    Screen.Cursors[crMultiDrag] := LoadCursor(Handle, PChar(3));
-    Screen.Cursors[crMultiDragLink] := LoadCursor(Handle, PChar(4));
-    Screen.Cursors[crDragAlt] := LoadCursor(Handle, PChar(5));
-    Screen.Cursors[crMultiDragAlt] := LoadCursor(Handle, PChar(6));
-    Screen.Cursors[crMultiDragLinkAlt] := LoadCursor(Handle, PChar(7));
-    Result := True;
+    Handle := GetModuleHandle(cOle32DLL);
+    if Handle = 0 then
+      Handle := LoadLibraryEx(cOle32DLL, 0, LOAD_LIBRARY_AS_DATAFILE);
+    if (Handle <> 0) then // (p3) don't free the lib handle!
+    begin
+      Screen.Cursors[crNoDrop] := LoadCursor(Handle, PChar(1));
+      Screen.Cursors[crDrag] := LoadCursor(Handle, PChar(2));
+      Screen.Cursors[crMultiDrag] := LoadCursor(Handle, PChar(3));
+      Screen.Cursors[crMultiDragLink] := LoadCursor(Handle, PChar(4));
+      Screen.Cursors[crDragAlt] := LoadCursor(Handle, PChar(5));
+      Screen.Cursors[crMultiDragAlt] := LoadCursor(Handle, PChar(6));
+      Screen.Cursors[crMultiDragLinkAlt] := LoadCursor(Handle, PChar(7));
+      Result := True;
+    end;
+  end;
+end;
+
+procedure SetDefaultJVCLCursors;
+begin
+  if Screen <> nil then
+  begin
+    // dynamically assign the first available cursor id to our cursor defines
+    crMultiDragLink := GetNextFreeCursorIndex(crJVCLFirst, false);
+    Screen.Cursors[crMultiDragLink] := Screen.Cursors[crMultiDrag];
+    crDragAlt := GetNextFreeCursorIndex(crJVCLFirst, false);
+    Screen.Cursors[crDragAlt] := Screen.Cursors[crDrag];
+    crMultiDragAlt := GetNextFreeCursorIndex(crJVCLFirst, false);
+    Screen.Cursors[crMultiDragAlt] := Screen.Cursors[crMultiDrag];
+    crMultiDragLinkAlt := GetNextFreeCursorIndex(crJVCLFirst, false);
+    Screen.Cursors[crMultiDragLinkAlt] := Screen.Cursors[crMultiDrag];
+    { begin RxLib }
+    crHand := GetNextFreeCursorIndex(crJVCLFirst, false);
+    Screen.Cursors[crHand] := LoadCursor(hInstance, 'JV_HANDCUR');
+    crDragHand := GetNextFreeCursorIndex(crJVCLFirst, false);
+    Screen.Cursors[crDragHand] := LoadCursor(hInstance, 'JV_DRAGCUR');
+    { end RxLib }
   end;
 end;
 
@@ -2805,7 +2828,7 @@ end;
 
 procedure WriteText(ACanvas: TCanvas; ARect: TRect; DX, DY: Integer;
   const Text: string; Alignment: TAlignment; WordWrap: Boolean; ARightToLeft:
-    Boolean = False);
+  Boolean = False);
 const
   AlignFlags: array[TAlignment] of Integer =
   (DT_LEFT or DT_EXPANDTABS or DT_NOPREFIX,
@@ -2880,7 +2903,7 @@ end;
 procedure DrawCellTextEx(Control: TCustomControl; ACol, ARow: Longint;
   const s: string; const ARect: TRect; Align: TAlignment;
   VertAlign: TVertAlignment; WordWrap: Boolean; ARightToLeft: Boolean);
-    overload;
+  overload;
 const
   MinOffs = 2;
 var
@@ -3171,14 +3194,12 @@ begin
     end;
     if Left < 0 then
       Left := 0
-    else
-      if Left > Screen.Width then
-        Left := Screen.Width - Width;
+    else if Left > Screen.Width then
+      Left := Screen.Width - Width;
     if Top < 0 then
       Top := 0
-    else
-      if Top > Screen.Height then
-        Top := Screen.Height - Height;
+    else if Top > Screen.Height then
+      Top := Screen.Height - Height;
     HelpContext := AHelpContext;
 
     Btn := FindComponent(ButtonNames[DefButton]) as TButton;
@@ -3769,9 +3790,8 @@ begin
   if IniFile is TCustomIniFile then
     TCustomIniFile(IniFile).ReadSections(Strings)
 {$IFDEF MSWINDOWS}
-  else
-    if IniFile is TRegIniFile then
-      TRegIniFile(IniFile).ReadSections(Strings);
+  else if IniFile is TRegIniFile then
+    TRegIniFile(IniFile).ReadSections(Strings);
 {$ENDIF}
 end;
 *)
@@ -3837,11 +3857,11 @@ begin
   begin
     AppStorage.WriteInteger(AppStorage.ConcatPaths([StorePath, siMDIChild,
       siListCount]),
-      MainForm.MDIChildCount);
+        MainForm.MDIChildCount);
     for i := 0 to MainForm.MDIChildCount - 1 do
       AppStorage.WriteString(AppStorage.ConcatPaths([StorePath, siMDIChild,
         Format(siItem, [i])]),
-        MainForm.MDIChildren[i].ClassName);
+          MainForm.MDIChildren[i].ClassName);
   end;
 end;
 
@@ -3889,7 +3909,7 @@ end;
 procedure InternalSaveFormPlacement(Form: TForm; const AppStorage:
   TJvCustomAppStorage;
   const StorePath: string; SaveState: Boolean = True; SavePosition: Boolean =
-    True);
+  True);
 var
   Placement: TWindowPlacement;
 begin
@@ -3923,7 +3943,7 @@ end;
 procedure InternalRestoreFormPlacement(Form: TForm; const AppStorage:
   TJvCustomAppStorage;
   const StorePath: string; LoadState: Boolean = True; LoadPosition: Boolean =
-    True);
+  True);
 const
   Delims = [',', ' '];
 var
@@ -5048,11 +5068,10 @@ begin
       begin
         if Gm > Rm then
           Gm := Gm shl 1
+        else if Rm > BM then
+          Rm := Rm shl 1
         else
-          if Rm > BM then
-            Rm := Rm shl 1
-          else
-            BM := BM shl 1;
+          BM := BM shl 1;
         ClearHistogram(Hist, Rm, Gm, BM);
       end;
     until False;
@@ -5165,12 +5184,10 @@ begin
     begin
       if PalSize <= 2 then
         Result := pf1bit
-      else
-        if PalSize <= 16 then
-          Result := pf4bit
-        else
-          if PalSize <= 256 then
-            Result := pf8bit;
+      else if PalSize <= 16 then
+        Result := pf4bit
+      else if PalSize <= 256 then
+        Result := pf8bit;
     end;
   end;
 end;
@@ -5202,20 +5219,19 @@ begin
   Bytes := GetObject(Bitmap, SizeOf(DS), @DS);
   if Bytes = 0 then
     InvalidBitmap
-  else
-    if (Bytes >= (SizeOf(DS.dsbm) + SizeOf(DS.dsbmih))) and
+  else if (Bytes >= (SizeOf(DS.dsbm) + SizeOf(DS.dsbmih))) and
     (DS.dsbmih.biSize >= DWORD(SizeOf(DS.dsbmih))) then
-      BI := DS.dsbmih
-    else
+    BI := DS.dsbmih
+  else
+  begin
+    FillChar(BI, SizeOf(BI), 0);
+    with BI, DS.dsbm do
     begin
-      FillChar(BI, SizeOf(BI), 0);
-      with BI, DS.dsbm do
-      begin
-        biSize := SizeOf(BI);
-        biWidth := bmWidth;
-        biHeight := bmHeight;
-      end;
+      biSize := SizeOf(BI);
+      biWidth := bmWidth;
+      biHeight := bmHeight;
     end;
+  end;
   case PixelFormat of
     pf1bit: BI.biBitCount := 1;
     pf4bit: BI.biBitCount := 4;
@@ -5339,24 +5355,23 @@ begin
   end;
   if not (PixelFormat in [pf1bit, pf4bit, pf8bit, pf24bit]) then
     raise EJVCLException.Create(RsEPixelFormatNotImplemented)
-  else
-    if PixelFormat in [pf1bit, pf4bit] then
-    begin
-      P := DIBFromBit(Bitmap.Handle, Bitmap.Palette, PixelFormat, Length);
+  else if PixelFormat in [pf1bit, pf4bit] then
+  begin
+    P := DIBFromBit(Bitmap.Handle, Bitmap.Palette, PixelFormat, Length);
+    try
+      Result := TMemoryStream.Create;
       try
-        Result := TMemoryStream.Create;
-        try
-          Result.Write(P^, Length);
-          Result.Position := 0;
-        except
-          Result.Free;
-          raise;
-        end;
-      finally
-        FreeMemo(P);
+        Result.Write(P^, Length);
+        Result.Position := 0;
+      except
+        Result.Free;
+        raise;
       end;
-      Exit;
+    finally
+      FreeMemo(P);
     end;
+    Exit;
+  end;
   { pf8bit - expand to 24bit first }
   InitData := DIBFromBit(Bitmap.Handle, Bitmap.Palette, pf24bit, Len);
   try
@@ -5437,14 +5452,12 @@ var
 begin
   if Colors <= 2 then
     PixelFormat := pf1bit
+  else if Colors <= 16 then
+    PixelFormat := pf4bit
+  else if Colors <= 256 then
+    PixelFormat := pf8bit
   else
-    if Colors <= 16 then
-      PixelFormat := pf4bit
-    else
-      if Colors <= 256 then
-        PixelFormat := pf8bit
-      else
-        PixelFormat := pf24bit;
+    PixelFormat := pf24bit;
   Result := BitmapToMemoryStream(Bitmap, PixelFormat, DefaultMappingMethod);
 end;
 
@@ -5881,11 +5894,10 @@ begin
     Selected := Assigned(ListView.Selected);
     if Focused then
       TempItem := ListView.ItemFocused
+    else if Selected then
+      TempItem := ListView.Selected
     else
-      if Selected then
-        TempItem := ListView.Selected
-      else
-        TempItem := nil;
+      TempItem := nil;
     if TempItem <> nil then
     begin
       Caption := TempItem.Caption;
@@ -5913,13 +5925,12 @@ begin
       TempItem.Focused := Data.Focused;
       TempItem.Selected := Data.Selected;
     end
-    else
-      if FocusFirst and (Items.Count > 0) then
-      begin
-        TempItem := Items[0];
-        TempItem.Focused := True;
-        TempItem.Selected := True;
-      end;
+    else if FocusFirst and (Items.Count > 0) then
+    begin
+      TempItem := Items[0];
+      TempItem.Focused := True;
+      TempItem.Selected := True;
+    end;
     if MakeVisible and (TempItem <> nil) then
 {$IFDEF VCL}
       TempItem.MakeVisible(True);
@@ -6157,10 +6168,10 @@ initialization
     {$ENDIF VCL}
   end;
 
-{ begin JvVCLUtils }
+  { begin JvVCLUtils }
 finalization
   ReleaseBitmap;
-{ end from JvVCLUtils }
+  { end from JvVCLUtils }
 
 end.
 
