@@ -550,6 +550,7 @@ begin
     if Execute then { Display Open dialog box }
     begin
       LoadDATFile(Filename);
+      Caption:='JVCL Convert:  '+ExtractFileName(Filename);
       JvPageControl.ActivePage := tbsStrings;
     end;
   finally // wrap up
@@ -681,11 +682,11 @@ begin
     with TIniFile.Create(ChangeFileExt(Application.ExeName, '.ini')) do
     try
       JvSearchFiles1.RootDirectory := ReadString('Settings', 'Path', '');
-      JvSearchFiles1.FileParams.FileMask := ReadString('Settings', 'Mask', '*.dpr;*.dpk;*.pas');
+      JvSearchFiles1.FileParams.FileMask := ReadString('Settings', 'Mask', '*.dpr;*.dpk;*.pas;*.dfm');
       fCurrentDataFile := ReadString('Settings', 'DATFile', '');
       mnuBackup.Checked := ReadBool('Settings', 'Backup', true);
       mnuWholeWords.Checked := ReadBool('Settings', 'WholeWords', true);
-      mnuReplaceFileNames.Checked := ReadBool('Settings', 'ReaplceFileNames', true);
+      mnuReplaceFileNames.Checked := ReadBool('Settings', 'ReplaceFileNames', true);
       mnuSimulate.Checked := ReadBool('Settings', 'Simulate', false);
     finally
       Free;
@@ -697,6 +698,7 @@ begin
       ShowMessage(E.Message);
   end;
   LoadDATFile(fCurrentDataFile);
+  Caption:='JVCL Convert:  '+ExtractFileName(fCurrentDataFile);
 end;
 
 procedure TfrmMain.SaveSettings;
@@ -709,7 +711,7 @@ begin
       WriteString('Settings', 'DATFile', fCurrentDataFile);
       WriteBool('Settings', 'Backup', mnuBackup.Checked);
       WriteBool('Settings', 'WholeWords', mnuWholeWords.Checked);
-      WriteBool('Settings', 'ReaplceFileNames', mnuReplaceFileNames.Checked);
+      WriteBool('Settings', 'ReplaceFileNames', mnuReplaceFileNames.Checked);
       WriteBool('Settings', 'Simulate', mnuSimulate.Checked);
     finally
       Free;

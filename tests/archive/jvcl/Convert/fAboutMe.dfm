@@ -28,7 +28,7 @@ object frmAboutMe: TfrmAboutMe
       Top = 136
       Width = 67
       Height = 13
-      Caption = 'Version: 1.22 '
+      Caption = 'Version: 1.23 '
       IsControl = True
     end
     object Comments: TLabel
@@ -36,7 +36,7 @@ object frmAboutMe: TfrmAboutMe
       Top = 136
       Width = 56
       Height = 13
-      Caption = '2002-12-12'
+      Caption = '2003-01-10'
       WordWrap = True
       IsControl = True
     end
@@ -384,7 +384,7 @@ object frmAboutMe: TfrmAboutMe
       Width = 156
       Height = 13
       AutoSize = False
-      Caption = 'Copyright: (c) 2002 '
+      Caption = 'Copyright: (c) 2003 '
       WordWrap = True
       IsControl = True
     end

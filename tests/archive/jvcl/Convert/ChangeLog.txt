@@ -1,5 +1,9 @@
 JVCL Convert changes:
 =====================
+ver. 1.23 (2003-01-10)
+- added *.dfm to file mask
+- added file name to form's caption on load
+
 ver. 1.22 (2002-12-13)
 - can now handle '=' in replace strings. Added statusbar
 - faster multi-select delete
