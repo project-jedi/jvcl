@@ -33,23 +33,51 @@ unit JvConnectNetwork;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  JvBaseDlg;
+  Forms, JvBaseDlg;
 
 type
   TJvConnectNetwork = class(TJvCommonDialog)
-  private
   published
     function Execute: Boolean; override;
   end;
 
+  TJvDisconnectNetwork = class(TJvCommonDialog)
+  published
+    function Execute: Boolean; override;
+  end;
+
+  TJvNetworkConnect = class(TJvCommonDialog)
+  private
+    FConnect: boolean;
+  published
+    property Connect:boolean read FConnect write FConnect;
+    function Execute: Boolean; override;
+  end;
+
 implementation
+uses
+  Windows;
 
 {**************************************************}
 
 function TJvConnectNetwork.Execute: Boolean;
 begin
   Result := WNetConnectionDialog(Application.Handle, RESOURCETYPE_DISK) = NO_ERROR;
+end;
+
+function TJvDisconnectNetwork.Execute: Boolean;
+begin
+  Result := WNetDisconnectDialog(Application.Handle, RESOURCETYPE_DISK) = NO_ERROR;
+end;
+
+{ TJvNetworkConnect }
+
+function TJvNetworkConnect.Execute: Boolean;
+begin
+  if FConnect then
+    Result := WNetConnectionDialog(Application.Handle, RESOURCETYPE_DISK) = NO_ERROR
+  else
+    Result := WNetDisconnectDialog(Application.Handle, RESOURCETYPE_DISK) = NO_ERROR;
 end;
 
 end.
