@@ -164,7 +164,8 @@ type
     procedure Click; override;
   end;
 
-  // TJvDropDownButton draws a DropDown button with the DropDown glyph (also themed)
+  // TJvDropDownButton draws a DropDown button with the DropDown glyph
+  // (also themed). It ignores the properties Glyph and Flat
   TJvDropDownButton = class(TSpeedButton)
   protected
     procedure Paint; override;
@@ -738,50 +739,53 @@ end;
 constructor TJvDropDownButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  Glyph.Handle := LoadBitmap(0, PChar(OBM_COMBO));
+  Width := 16;
+  Height := 16;
 end;
 
 procedure TJvDropDownButton.Paint;
-{$IFDEF JVCLThemesEnabled}
-const
-  DownStyles: array[Boolean] of Integer = (BDR_RAISEDINNER, BDR_SUNKENOUTER);
-  FillStyles: array[Boolean] of Integer = (BF_MIDDLE, 0);
 var
   PaintRect: TRect;
   DrawFlags: Integer;
-  Offset: TPoint;
-  h: THandle;
+  dc: HDC;
   Bmp: TBitmap;
-{$ENDIF JVCLThemesEnabled}
 begin
-  {$IFDEF JVCLThemesEnabled}
-  if not Flat and ThemeServices.ThemesEnabled then
-  begin
-    // adjust FState and FDragging
-    h := Canvas.Handle;
-    Bmp := TBitmap.Create;
+  // adjust FState and FDragging
+  dc := Canvas.Handle;
+  Bmp := TBitmap.Create;
+  try
+    Bmp.Width := 1;
+    Bmp.Height := 1;
+    Canvas.Handle := Bmp.Canvas.Handle;
     try
-      Bmp.Width := 1;
-      Bmp.Height := 1;
-      Canvas.Handle := Bmp.Canvas.Handle;
-      try
-        inherited Paint;
-      finally
-        Canvas.Handle := h;
-      end;
+      inherited Paint;
     finally
-      Bmp.Free;
+      Canvas.Handle := dc;
     end;
+  finally
+    Bmp.Free;
+  end;
 
-    PaintRect := Rect(0, 0, Width, Height);
-    DrawFlags := DFCS_SCROLLCOMBOBOX or DFCS_ADJUSTRECT;
-    if FState in [bsDown, bsExclusive] then
-      DrawFlags := DrawFlags or DFCS_PUSHED;
-    DrawThemedFrameControl(Self, Canvas.Handle, PaintRect, DFC_SCROLL, DrawFlags);
-  end
+  PaintRect := Rect(0, 0, Width, Height);
+  DrawFlags := DFCS_SCROLLCOMBOBOX or DFCS_ADJUSTRECT;
+  if FState in [bsDown, bsExclusive] then
+    DrawFlags := DrawFlags or DFCS_PUSHED;
+
+  {$IFDEF JVCLThemesEnabled}
+  if ThemeServices.ThemesEnabled then
+    DrawThemedFrameControl(Self, Canvas.Handle, PaintRect, DFC_SCROLL, DrawFlags)
   else
   {$ENDIF JVCLThemesEnabled}
-    inherited Paint;
+  begin
+    {$IFDEF VisualCLX}
+    Canvas.Start;
+    {$ENDIF VisualCLX}
+    DrawFrameControl(Canvas.Handle, PaintRect, DFC_SCROLL, DrawFlags);
+
+    {$IFDEF VisualCLX}
+    Canvas.Stop;
+    {$ENDIF VisualCLX}
+  end;
 end;
 
 
