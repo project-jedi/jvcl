@@ -1,5 +1,9 @@
 Changelog for JVCL 3.0
 ======================
+2004-07-24
+- JvOfficeColorPanel can now select its buttons with a right click. Set RightClickSelect to True if you want that, it
+  is False by default to keep the previous behaviour. If there is a popup menu the button will only be selected if
+  SelectIfPopup is True (it is False by Default). This is for Mantis #1904 and is based on the code given by cpall  // obones
 2004-07-22
 - Fixed: JvComCtrls.TJvTreeView tree nodes do not keep their checked state when set before the first WM_PAINT event // ahuser
 - Improved: JvComCtrls.TJvIPAddress now supports the TAB for each field. Property TabThroughFields controls this feature // ahuser
