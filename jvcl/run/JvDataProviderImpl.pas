@@ -1,5 +1,3 @@
-{.$DEFINE DEBUG}
-
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
@@ -822,10 +820,6 @@ implementation
 
 uses
   ActiveX, Consts, {$IFDEF COMPILER6_UP}RTLConsts, {$ENDIF}Controls, TypInfo,
-  {$IFDEF DEBUG}
-  Dialogs, 
-  DBugIntf,
-  {$ENDIF}
   JvTypes;
 
 const
@@ -2854,7 +2848,7 @@ begin
   begin
     if ProviderIntf = nil then
     begin
-      if csLoading in VCLComponent.ComponentState then
+      if (VCLComponent <> nil) and (csLoading in VCLComponent.ComponentState) then
         FFixupContext := Value
       else
         raise EJVCLException.Create('You must specify a provider before setting the context.');
@@ -3033,17 +3027,10 @@ function TJvDataConsumerAggregatedObject.RootItems: IJvDataItems;
 var
   RootSelect: IJvDataConsumerItemSelect;
 begin
-try
   if Supports(Consumer, IJvDataConsumerItemSelect, RootSelect) and (RootSelect.GetItem <> nil) then
     RootSelect.GetItem.QueryInterface(IJvDataItems, Result)
   else
     ConsumerImpl.ProviderIntf.QueryInterface(IJvDataItems, Result);
-finally
-  {$IFDEF DEBUG}
-  if Result = nil then
-    DBugIntf.SendDebugEx('RootItems returns nil!', mtError);
-  {$ENDIF DEBUG}
-end;
 end;
 
 //===TJvDataConsumerContext=========================================================================
@@ -3086,7 +3073,7 @@ begin
     begin
       if (ConsumerImpl.ProviderIntf = nil) then
       begin
-        if csLoading in Consumer.VCLComponent.ComponentState then
+        if (VCLComponent <> nil) and (csLoading in Consumer.VCLComponent.ComponentState) then
         begin
           FItemID := Value;
           NotifyFixups;
@@ -3266,24 +3253,12 @@ procedure TJvCustomDataConsumerViewList.RebuildView;
 var
   Idx: Integer;
 begin
-  {$IFDEF DEBUG}
-  DBugIntf.SendMethodEnter('TJvCustomDataConsumerViewList.RebuildView');
-  {$ENDIF DEBUG}
   ClearView;
-  {$IFDEF DEBUG}
-    DBugIntf.SendDebug('View has been cleared.');
-  {$ENDIF DEBUG}
   if (ConsumerImpl <> nil) and (ConsumerImpl.ProviderIntf <> nil) then
   begin
     Idx := 0;
-  {$IFDEF DEBUG}
-    DBugIntf.SendDebug('Calling AddItems...');
-  {$ENDIF DEBUG}
     AddItems(Idx, RootItems, AutoExpandLevel);
   end;
-  {$IFDEF DEBUG}
-  DBugIntf.SendMethodExit('TJvCustomDataConsumerViewList.RebuildView');
-  {$ENDIF DEBUG}
 end;
 
 constructor TJvCustomDataConsumerViewList.Create(AOwner: TExtensibleInterfacedPersistent);
