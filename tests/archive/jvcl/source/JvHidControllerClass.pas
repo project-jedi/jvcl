@@ -27,16 +27,21 @@ Known Issues:
 
 {$I JVCL.INC}
 
+// (rom) switch to make this component independent of JVCL
+{.DEFINE STANDALONE}
+
 unit JvHidControllerClass;
 
 interface
 
 uses
   Windows, Messages, Classes, Forms, SysUtils,
+  {$IFDEF STANDALONE}
   DBT, SetupApi, Hid, ModuleLoader;
-
-// (rom) switch to make this component independent of JVCL
-{.DEFINE STANDALONE}
+  {$ELSE}
+  DBT, SetupApi, Hid, ModuleLoader,
+  JvComponent;
+  {$ENDIF STANDALONE}
 
 const
   // a version string for the component
@@ -298,7 +303,11 @@ type
 
   // controller class to manage all HID devices
 
+  {$IFDEF STANDALONE}
   TJvHidDeviceController = class(TComponent)
+  {$ELSE}
+  TJvHidDeviceController = class(TJvComponent)
+  {$ENDIF STANDALONE}
   private
     // internal properties part
     FHidGuid:              TGUID;
