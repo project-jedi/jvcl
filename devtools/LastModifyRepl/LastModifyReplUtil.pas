@@ -1,3 +1,29 @@
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+The Original Code is: LastModifyReplUtil.PAS, released on 2004-03-26
+
+The Initial Developers of the Original Code are: Andreas Hausladen <ahuser@users.sourceforge.net>
+All Rights Reserved.
+
+Last Modified: 2004-03-26
+
+Contributers:
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------}
+// $Id$
+
 unit LastModifyReplUtil;
 
 interface
@@ -12,14 +38,14 @@ implementation
 uses StrUtils;
 
 const
-  LastModifiedLine = 'Last Modified: $Date$';
-  LDLine = '// $ld$';
+  LastModifiedLine = 'Last Modified: $' + 'Date$';
+  IDLine = '// $' + 'Id$';
 
 var
   StartDir: string = '';
   Filemask: string = '*.pas';
   LastModify: Integer = 0;
-  LD: Integer = 1;
+  ID: Integer = 1;
 
 procedure ParseParams;
 var
@@ -37,8 +63,8 @@ begin
     WriteLn('  -LastModify=0  (default)   remove "Last modified" line');
     WriteLn('  -LastModify=1              insert "Last modified" line');
     WriteLn('  -LastModify=2              replace "Last modified" line');
-    WriteLn('  -LD=0                      remove "// $ld$" line');
-    WriteLn('  -LD=1          (default)   insert "// $ld$" line');
+    WriteLn('  -Id=0                      remove "// $', 'Id$" line');
+    WriteLn('  -Id=1          (default)   insert "// $', 'Id$" line');
     Halt(1);
   end;
   i := 1;
@@ -51,8 +77,8 @@ begin
       if AnsiStartsText('-LastModify=', S) then
         LastModify := StrToInt(Copy(S, 13, 1))
       else
-      if AnsiStartsText('-LD=', S) then
-        LD := StrToInt(Copy(S, 5, 1));
+      if AnsiStartsText('-Id=', S) then
+        ID := StrToInt(Copy(S, 5, 1));
     end
     else
     begin
@@ -69,16 +95,16 @@ procedure ProcessFile(const Filename: string);
 var
   Lines: TStrings;
   i: Integer;
-  LastModifyInsertLineNum, LDInsertLineNum: Integer;
-  LastModifyInserted, LDInserted: Boolean;
+  LastModifyInsertLineNum, IDInsertLineNum: Integer;
+  LastModifyInserted, IDInserted: Boolean;
   Modified: Boolean;
   S, TS: string;
 begin
   LastModifyInserted := False;
-  LDInserted := False;
+  IDInserted := False;
   Modified := False;
 
-  LDInsertLineNum := -1;
+  IDInsertLineNum := -1;
   LastModifyInsertLineNum := -1;
 
   Lines := TStringList.Create;
@@ -102,7 +128,7 @@ begin
             end;
           1, 3:
             begin
-              if (S <> LastModifiedLine) and (not AnsiStartsText('// $ld:', S)) then
+              if (S <> LastModifiedLine) and (not AnsiStartsText('// $' + 'Id:', S)) then
               begin
                 Lines[i] := LastModifiedLine;
                 Modified := True;
@@ -111,9 +137,9 @@ begin
             end;
         end;
       end
-      else if AnsiStartsText('// $ld$', TS) or (AnsiStartsText('// $Id:', TS)) then
+      else if AnsiStartsText('// $' + 'Id$', TS) or (AnsiStartsText('// $' + 'Id:', TS)) then
       begin
-        case LD of
+        case ID of
           0:
             begin
               Lines.Delete(i);
@@ -122,23 +148,26 @@ begin
             end;
           1:
             begin
-              LDInserted := True;
+              IDInserted := True;
             end;
         end;
       end
       else if AnsiStartsText('You may retrieve', TS) then
         LastModifyInsertLineNum := i - 1
       else if AnsiEndsStr('----------}', TS) then
-        LDInsertLineNum := i + 1
+      begin
+        IDInsertLineNum := i + 1;
+        Break;
+      end;
       ;
 
       Inc(i);
     end;
 
-   // first the "// $ld$" line
-    if (LD = 1) and not LDInserted and (LDInsertLineNum <> -1) then
+   // first the "// S|Id|S" line
+    if (ID = 1) and not IDInserted and (IDInsertLineNum <> -1) then
     begin
-      Lines.Insert(LDInsertLineNum, LDLine);
+      Lines.Insert(IDInsertLineNum, IDLine);
       Modified := True;
     end;
 
