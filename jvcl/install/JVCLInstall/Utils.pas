@@ -345,7 +345,7 @@ var
 begin
   Result := False;
   Attr := GetFileAttributes(PChar(FileName));
-  if Attr = -1 then
+  if Attr = $FFFFFFFF then
     Exit;
   if ReadOnly then
     Attr := Attr or FILE_ATTRIBUTE_READONLY
