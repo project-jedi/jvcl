@@ -273,6 +273,9 @@ var
   AWidth, AHeight: Integer;
   ASize: TSize;
   R: TRect;
+  {$IFDEF VisualCLX}
+  ws : WideString;
+  {$ENDIF}
 begin
   if (Parent = nil) or not AutoSize or (csDestroying in ComponentState) or
     (csLoading in ComponentState) then
@@ -289,8 +292,11 @@ begin
     DrawText(FCanvas.Handle, PChar(Caption), Length(Caption), R,
       Flags[WordWrap] or DT_LEFT or DT_NOCLIP or DT_CALCRECT);
     {$ELSE}
-    DrawTextW(FCanvas.Handle, PWideChar(Caption), Length(Caption), R,
+    FCanvas.start;
+    RequiredState(Fcanvas, [csHandleValid, csFontValid]);
+    DrawTextW(FCanvas.Handle, PWideChar(Caption), -1, R,
       Flags[WordWrap] or DT_LEFT or DT_NOCLIP or DT_CALCRECT);
+    FCanvas.Stop;
     {$ENDIF VCL}
     AWidth := (R.Right - R.Left) + ASize.cx + 8;
     AHeight := R.Bottom - R.Top;
