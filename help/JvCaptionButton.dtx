@@ -21,9 +21,9 @@ Description
 
   To use a caption button:
   * Drop a TJvCaptionButton on a form.
-  * Specify if it is shown as a <LINK TJvCaptionButton.Standard,standard button> (Minimize, 
+  * Specify if it is shown as a <LINK TJvCaptionButton.Standard,standard button> (Minimize,
      Maximize button etc).
-  * If it's not a standard button, specify a <LINK TJvCaptionButton.Caption,caption> and/or 
+  * If it's not a standard button, specify a <LINK TJvCaptionButton.Caption,caption> and/or
      <LINK TJvCaptionButton.ImageIndex,image>.
   * You can <LINK TJvCaptionButton.Action,assign an action> to the caption button.
   * Use the ButtonLeft, ButtonTop and Position properties to horizontally and vertically position the button,
@@ -122,14 +122,14 @@ See Also
 Summary
   Determines the state of the button.
 Description
-  Down determines if the button is pressed (True) or not (False). Down is a read only property and
+  Down determines if the button is pressed (true) or not (false). Down is a read only property and
   can only be controlled through the UI.
 
-  If Toggle is set to True, Down will toggle from False to True and vice versa each time it the
+  If Toggle is set to true, Down will toggle from false to true and vice versa each time it the
   button is clicked.
 
-  If Toggle is set to False, Down will be True when the left mouse button is down and will revert
-  to False when the left mouse button is released.
+  If Toggle is set to false, Down will be true when the left mouse button is down and will revert
+  to false when the left mouse button is released.
 See Also
   Toggle, OnClick
 ----------------------------------------------------------------------------------------------------
@@ -202,6 +202,12 @@ Description
   IsImageVisible is used by TJvCaptionButton to determine whether property Images is assigned and
   property ImageIndex is a valid index for an image.
 ----------------------------------------------------------------------------------------------------
+@@TJvCaptionButton.IsThemed
+Summary
+  Indicates whether the caption button will be painted using XP themes.
+Description
+  Read IsThemed to determine whether XP themes will be used to paint the caption button.
+----------------------------------------------------------------------------------------------------
 @@TJvCaptionButton.Layout
 Summary
   Specifies where the image appears on the bitmap button.
@@ -270,7 +276,6 @@ Summary
   Occurs when the user clicks a caption button.
 Description
   Write an OnClick event handler to take specific action when the user clicks the caption button.
- 
 See Also
   Click, OnMouseDown, OnMouseUp
 ----------------------------------------------------------------------------------------------------
@@ -415,11 +420,11 @@ Summary
 Description
   Toggle determines if the button functions as a normal push button or as a switch.
 
-  If Toggle is set to True, <LINK Down> will toggle between True and False every time the user clicks
+  If Toggle is set to true, <LINK Down> will toggle between true and false every time the user clicks
   the button.
 
-  If Toggle is set to False, <LINK Down> will be set to True when the left mouse button is pressed and set
-  to False when the mouse button is released.
+  If Toggle is set to false, <LINK Down> will be set to true when the left mouse button is pressed and set
+  to false when the mouse button is released.
 See Also
   <LINK Down>
 ----------------------------------------------------------------------------------------------------
@@ -427,7 +432,7 @@ See Also
 Summary
   Indicates if the button is visible.
 Description
-  Visible indicates whether or not the button is rendered. When set to True the button will be shown,
+  Visible indicates whether or not the button is rendered. When set to true the button will be shown,
   otherwise it will not.
 See Also
   Enabled

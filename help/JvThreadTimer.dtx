@@ -32,8 +32,9 @@ Description
   values for the timer as follows:
 
   * Interval is set to 100.
-  * Enabled is set to false
+  * Enabled is set to false.
   * Priority is set to tpNormal
+  * KeepAlive is set to false.
 Parameters
   AOwner - A component, typically the form, that is responsible for freeing the timer.
 See Also
@@ -52,10 +53,10 @@ See Also
 Summary
   \Controls whether the timer generates OnTimer events periodically.
 Description
-  Use Enabled to enable or disable the timer. If Enabled is True, the timer responds normally. If Enabled
-  is False, the timer does not generate OnTimer events. The default is False.
+  Use Enabled to enable or disable the timer. If Enabled is true, the timer responds normally. If Enabled
+  is false, the timer does not generate OnTimer events. The default is false.
 See Also
-  OnTimer
+  KeepAlive, OnTimer
 ----------------------------------------------------------------------------------------------------
 @@TJvThreadTimer.Interval
 Summary
@@ -69,6 +70,19 @@ Description
   is 100 (1/10 second).
 See Also
   OnTimer
+----------------------------------------------------------------------------------------------------
+@@TJvThreadTimer.KeepAlive
+Summary
+  Indicates whether to keep the thread alive while disabling the timer.
+Description
+  Use KeepAlive to specify whether the timer should keep the thread alive or destroy the thread
+  when Enabled is set to false. 
+  
+  Set KeepAlive to false to destroy the thread when Enabled is set to false. When Enabled is set to
+  true again, the timer will create a new thread. Set KeepAlive to true to suspend but not destroy
+  the thread if Enabled is set to false.
+See Also
+  Enabled
 ----------------------------------------------------------------------------------------------------
 @@TJvThreadTimer.OnTimer
 Summary
