@@ -4026,7 +4026,7 @@ begin
     DrawBitmap := TBitmap.Create;
 end;
 
-procedure ReleaseBitmap; far;
+procedure ReleaseBitmap;
 begin
   if DrawBitmap <> nil then
     DrawBitmap.Free;
@@ -5840,7 +5840,7 @@ end;
 
 { truncate to 6Rx6Gx6B one line }
 
-procedure TruncLine6R6G6B(Src, Dest: Pointer; CX: Integer); far;
+procedure TruncLine6R6G6B(Src, Dest: Pointer; CX: Integer);
 var
   X: Integer;
   R, G, B: Byte;
@@ -5892,7 +5892,7 @@ end;
 
 { truncate to 7Rx8Gx4B one line }
 
-procedure TruncLine7R8G4B(Src, Dest: Pointer; CX: Integer); far;
+procedure TruncLine7R8G4B(Src, Dest: Pointer; CX: Integer);
 var
   X: Integer;
   R, G, B: Byte;

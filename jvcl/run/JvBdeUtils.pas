@@ -949,7 +949,7 @@ begin
     SaveIndexFieldNames := TStringList.Create;
 end;
 
-procedure ReleaseSaveIndexies; far;
+procedure ReleaseSaveIndexies;
 begin
   if SaveIndexFieldNames <> nil then
   begin

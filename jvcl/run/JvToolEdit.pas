@@ -3159,7 +3159,7 @@ begin
       IterateControls(Screen.Forms[I]);
 end;
 
-procedure DestroyLocals; far;
+procedure DestroyLocals; 
 begin
   FileBitmap.Free;
   FileBitmap := nil;

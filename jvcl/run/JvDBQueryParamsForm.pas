@@ -117,7 +117,7 @@ begin
     FieldTypes[I] := EmptyStr;
 end;
 
-procedure DoneQBind; far;
+procedure DoneQBind;
 begin
   ClearFieldTypes;
 end;

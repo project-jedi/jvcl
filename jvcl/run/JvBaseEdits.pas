@@ -941,7 +941,7 @@ begin
   end;
 end;
 
-procedure DestroyLocals; far;
+procedure DestroyLocals;
 begin
   CalcBitmap.Free;
   CalcBitmap := nil;
