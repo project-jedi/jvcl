@@ -45,26 +45,25 @@ type
     FJoinColumns: TStringList;
     //    aColWidths: array[0..255] of word;
     FEqualSize: Boolean;
-    FSections: THeaderSections;
-  public
-    FActiveSectionNo: Integer;
-    procedure ResizeColumns;
+    // FSections: THeaderSections;
+    function GetJoinColumns: TStrings;
+    procedure SetJoinColumns(Value: TStrings);
+    procedure SetEqualSize(Value: Boolean);
   protected
     procedure Loaded; override;
     procedure Resize; override;
-    procedure SetSections(Value: THeaderSections);
-    procedure SetJoinColumns(Value: TStringList);
-    procedure SetEqualSize(Value: Boolean);
+    // procedure SetSections(Value: THeaderSections);
     procedure SectionResize(Section: THeaderSection); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure ResizeColumns;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Grid: TCustomGrid read FGrid write FGrid;
-    property JoinColumns: TStringList read FJoinColumns write SetJoinColumns;
+    property JoinColumns: TStrings read GetJoinColumns write SetJoinColumns;
     property EqualSize: Boolean read FEqualSize write SetEqualSize default True;
-    //    property Sections: THeaderSections read FSections write SetSections;
+    // property Sections: THeaderSections read FSections write SetSections;
   end;
 
   TJvgPublicGrid = class(TCustomGrid)
@@ -79,7 +78,7 @@ constructor TJvgGridHeaderControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FJoinColumns := TStringList.Create;
-  FSections := THeaderSections.Create(Self);
+  // FSections := THeaderSections.Create(Self);
   FEqualSize := True;
 end;
 
@@ -126,13 +125,13 @@ begin
 
   G := TJvgPublicGrid(Grid);
   //   ItemsCount := min(G.ColCount, Sections.Count);
-  for I := 0 to Max(FJoinColumns.Count - 1, Sections.Count - 1) do
+  for I := 0 to Max(JoinColumns.Count - 1, Sections.Count - 1) do
   try
-    if FJoinColumns.Count <= I then
-      FJoinColumns.Add('1');
-    FJoinColumns.Objects[I] := Pointer(StrToInt(FJoinColumns[I]));
+    if JoinColumns.Count <= I then
+      JoinColumns.Add('1');
+    JoinColumns.Objects[I] := Pointer(StrToInt(JoinColumns[I]));
   except
-    FJoinColumns.Objects[I] := Pointer(1);
+    JoinColumns.Objects[I] := Pointer(1);
   end;
 
   Col := 0;
@@ -148,7 +147,7 @@ begin
 
   while (Col < G.ColCount) and (Sect < Sections.Count) do
   begin
-    ColsToJoin := Min(Integer(FJoinColumns.Objects[Sect]), G.ColCount - Col);
+    ColsToJoin := Min(Integer(JoinColumns.Objects[Sect]), G.ColCount - Col);
 
     ColsToJoinWidth := 0;
     for I := 0 to ColsToJoin - 1 do
@@ -183,12 +182,19 @@ begin
     G.ColWidths[1] := G.ColWidths[1] - 12;
 end;
 
+{ (rom) disabled  unused
 procedure TJvgGridHeaderControl.SetSections(Value: THeaderSections);
 begin
   FSections.Assign(Value);
 end;
+}
 
-procedure TJvgGridHeaderControl.SetJoinColumns(Value: TStringList);
+function TJvgGridHeaderControl.GetJoinColumns: TStrings;
+begin
+  Result := FJoinColumns;
+end;
+
+procedure TJvgGridHeaderControl.SetJoinColumns(Value: TStrings);
 begin
   FJoinColumns.Assign(Value);
   ResizeColumns;

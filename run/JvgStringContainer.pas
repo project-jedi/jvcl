@@ -44,14 +44,15 @@ type
     FOnReadItem: TOnReadItem;
     function GetString(Idx: Integer): string;
     function GetCount: Integer;
+    function GetItems: TStrings;
     procedure SetString(Idx: Integer; const Value: string);
-    procedure SetItems(Value: TStringList);
+    procedure SetItems(Value: TStrings);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property Strings[Idx: Integer]: string read GetString write SetString; default;
   published
-    property Items: TStringList read FItems write SetItems;
+    property Items: TStrings read GetItems write SetItems;
     property Count: Integer read GetCount;
     property ReadOnly: Boolean read FReadOnly write FReadOnly default False;
     property OnReadItem: TOnReadItem read FOnReadItem write FOnReadItem;
@@ -76,7 +77,7 @@ end;
 
 function TJvgStringContainer.GetString(Idx: Integer): string;
 begin
-  Result := FItems[Idx];
+  Result := Items[Idx];
   if Assigned(FOnReadItem) then
     FOnReadItem(Self, Idx);
 end;
@@ -84,17 +85,22 @@ end;
 procedure TJvgStringContainer.SetString(Idx: Integer; const Value: string);
 begin
   if not ReadOnly then
-    FItems[Idx] := Value;
+    Items[Idx] := Value;
 end;
 
-procedure TJvgStringContainer.SetItems(Value: TStringList);
+function TJvgStringContainer.GetItems: TStrings;
+begin
+  Result := FItems;
+end;
+
+procedure TJvgStringContainer.SetItems(Value: TStrings);
 begin
   FItems.Assign(Value);
 end;
 
 function TJvgStringContainer.GetCount: Integer;
 begin
-  Result := FItems.Count;
+  Result := Items.Count;
 end;
 
 end.
