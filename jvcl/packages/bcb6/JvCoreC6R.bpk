@@ -13,8 +13,8 @@
       ..\..\dcu\JvDataProviderImpl.obj ..\..\dcu\JvContextProvider.obj 
       ..\..\dcu\JvAppStore.obj ..\..\dcu\JvAppRegistryStore.obj 
       ..\..\dcu\JvAppIniStore.obj ..\..\dcu\JvJVCLAboutForm.obj 
-      ..\..\dcu\JvActnResForm.obj ..\..\dcu\JvJVCLUtils.obj"
-      ..\..\dcu\JvThemes.obj/>
+      ..\..\dcu\JvActnResForm.obj ..\..\dcu\JvJVCLUtils.obj
+      ..\..\dcu\JvThemes.obj ..\..\dcu\JvColorProvider.obj"/>
     <RESFILES value="JvCoreC6R.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -82,6 +82,7 @@
       <FILE FILENAME="..\..\design\JvActnResForm.pas" FORMNAME="JvStandardActions" UNITNAME="JvActnResForm" CONTAINERID="PascalCompiler" DESIGNCLASS="TDataModule" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvJVCLUtils.pas" FORMNAME="" UNITNAME="JvJVCLUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvThemes.pas" FORMNAME="" UNITNAME="JvThemes" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\run\JvColorProvider.pas" FORMNAME="" UNITNAME="JvColorProvider" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="bcbsmp.bpi" FORMNAME="" UNITNAME="bcbsmp" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
