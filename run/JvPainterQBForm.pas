@@ -37,10 +37,10 @@ uses
   Forms, Dialogs, StdCtrls, ExtCtrls, Menus, ComCtrls,
   {$ENDIF}
   {$IFDEF VisualCLX}
-  QGraphics, QControls,
+  QTypes, QGraphics, QControls,
   QForms, QDialogs, QStdCtrls, QExtCtrls, QMenus, QComCtrls,
   {$ENDIF}
-  JvDrawImage, JvComponent, QTypes;
+  JvDrawImage, JvComponent;
 
 type
   TPainterQBForm = class(TJvForm)
