@@ -19,13 +19,20 @@
 { http://www.sourceforge.net/projects/dpp32                                                        }
 {                                                                                                  }
 {**************************************************************************************************}
+// $Id$
+
 unit dpp_PascalParser;
+
 interface
-uses SysUtils, Classes;
+
+uses
+  SysUtils, Classes;
+
 const
   WhiteChars = [#1..#32];
-  OneSymbolChars = ['(', ')', '[', ']', ';', '@', '+', '-', '"', '/', '^', '.', ',', '*', '/'];
+  OneSymbolChars = ['(', ')', '[', ']', ';', '@', '+', '-', '"', '/', '^', '.', ',', '*'];
   NumberChars = ['0'..'9'];
+  HexNumberChars = NumberChars + ['A'..'F', 'a'..'f'];
   IdentFirstChars = ['a'..'z', 'A'..'Z', '_'];
   IdentChars = IdentFirstChars + NumberChars;
   SymbolChars = [#1..#255] - (WhiteChars + IdentChars + OneSymbolChars + ['{', '''']);
@@ -36,9 +43,12 @@ type
   TPascalParser = class;
 
   TTokenKind = (tkNone, tkIdent, tkSymbol, tkComment, tkString, tkNumber);
+  TTokenExKind = (tekNone, tekHex, tekInt, tekFloat, tekComment, tekOption);
+
   PTokenInfo = ^TTokenInfo;
   TTokenInfo = record
     Kind: TTokenKind;
+    ExKind: TTokenExKind;
     pFilename: PString;
     StartLine, EndLine: Integer;
     StartIndex, EndIndex: Integer;
@@ -63,8 +73,7 @@ type
     function GetCurToken: PTokenInfo;
     function GetPreToken: PTokenInfo;
   public
-    constructor Create(const AFileName, AText: string;
-      StartLineNum: Integer = 1);
+    constructor Create(const AFileName, AText: string; StartLineNum: Integer = 1);
     destructor Destroy; override;
 
     function GetToken: PTokenInfo; overload;
@@ -100,29 +109,35 @@ function TPascalParser.GetToken: PTokenInfo;
 var
   PText, F, P: PChar;
   IndexAdd: Integer;
+  IsDecimal: Boolean;
+  IsExp: Boolean;
+  IsExpSign: Boolean;
 begin
   Result := nil;
-  if FIndex > FTextLen then Exit;
+  if FIndex > FTextLen then
+    Exit;
 
   PText := Pointer(FText);
   P := PText + FIndex - 1;
  // go to next token and skip white chars
   while P[0] in WhiteChars do
   begin
-    if P[0] = #10 then Inc(FLineNum);
+    if P[0] = #10 then
+      Inc(FLineNum);
     Inc(P);
   end;
 
-  if P[0] = #0 then Exit;
+  if P[0] = #0 then
+    Exit;
 
   Inc(FTokenIndex);
-  if FTokenIndex >= MaxCachedTokens then FTokenIndex := 0; // ring buffer
+  if FTokenIndex >= MaxCachedTokens then
+    FTokenIndex := 0; // ring buffer
 
   Result := FTokens[FTokenIndex];
-//  Result.Kind := tkNone;
   Result.StartLine := FLineNum;
   Result.StartIndex := P - PText + 1;
-//  Result.Value := '';
+  Result.ExKind := tekNone;
 
   F := P;
   IndexAdd := 0;
@@ -133,79 +148,162 @@ begin
     while True do
     begin
       case P[0] of
-        #0: Break;
+        #0:
+          Break;
         '''':
-          if (P[1] = '''') then
-            Inc(P)
-          else
-            Break;
-        #10: Inc(FLineNum);
+          begin
+            if (P[1] = '''') then
+              Inc(P)
+            else
+              Break;
+          end;
+        #10, #13:
+          begin
+            Dec(P);
+            Break; // line end is string end in pascal
+          end;
       end;
       Inc(P);
     end;
-    if P[0] <> #0 then Inc(P); // include P[0] which is now P[-1]
+    if P[0] <> #0 then
+      Inc(P); // include P[0] which is now P[-1]
     Result.Kind := tkString;
   end
   else if (P[0] = '{') then
   begin
     // comment { ... } -> find comment end
     Inc(P);
-(*    while (not (P[0] in [#0, '}'])) do
+    if P[0] = '$' then
     begin
-      if P[0] = #10 then Inc(FLineNum);
+      Result.ExKind := tekOption;
       Inc(P);
-    end;*)
+    end
+    else
+      Result.ExKind := tekComment;
+
     while True do
     begin
       case P[0] of
-        #0, '}': Break;
-        #10: Inc(FLineNum);
+        #0, '}':
+          Break;
+        #10:
+          Inc(FLineNum);
       end;
       Inc(P);
     end;
     Result.Kind := tkComment;
-    if P[0] <> #0 then Inc(P); // include P[0] which is now P[-1]
+    if P[0] <> #0 then
+      Inc(P); // include P[0] which is now P[-1]
   end
   else if (P[0] = '(') and (P[1] = '*') then
   begin
     // comment (* ... *) -> find comment end
     Inc(P, 2);
+    if P[0] = '$' then
+    begin
+      Result.ExKind := tekOption;
+      Inc(P);
+    end
+    else
+      Result.ExKind := tekComment;
+
     while (P[0] <> #0) and not ((P[0] = '*') and (P[1] = ')')) do
     begin
-      if P[0] = #10 then Inc(FLineNum);
+      if P[0] = #10 then
+        Inc(FLineNum);
       Inc(P);
     end;
     Result.Kind := tkComment;
-    if P[0] <> #0 then Inc(P, 2); // include P[0],P[1] which is now P[-2],P[-1]
+    if P[0] <> #0 then
+      Inc(P, 2); // include P[0],P[1] which is now P[-2],P[-1]
   end
   else if (P[0] = '/') and (P[1] = '/') then
   begin
     // comment "// ..." -> find comment end
     Inc(P, 2);
-    while not (P[0] in [#0, #10, #13]) do Inc(P);
+    while not (P[0] in [#0, #10, #13]) do
+      Inc(P);
     Result.Kind := tkComment;
     if P[0] <> #0 then
     begin
-      if P[0] = #13 then IndexAdd := 1; {do not parse the #13 again}
+      if P[0] = #13 then
+        IndexAdd := 1; {do not parse the #13 again}
       Inc(FLineNum);
       Inc(IndexAdd); {do not parse the #10 again}
     end;
   end
-  else if (P[0] in IdentFirstChars) then
+  else if P[0] in IdentFirstChars then
   begin
     // identifier
     Inc(P);
-    while (P[0] in IdentChars) do
+    while P[0] in IdentChars do
       Inc(P);
     Result.Kind := tkIdent;
   end
-  else if (P[0] in NumberChars) then
+  else if P[0] in NumberChars then
   begin
     // number
     Inc(P);
-    while (P[0] in NumberChars) do
+    IsDecimal := False;
+    IsExp := False;
+    IsExpSign := False;
+    repeat
+      case P[0] of
+        '0'..'9': ;
+
+        '.':
+          if IsDecimal or IsExp then
+            Break
+          else
+            IsDecimal := True;
+
+        '+', '-':
+          if not IsExp or IsExpSign then
+            Break
+          else
+            IsExpSign := True;
+
+        'e', 'E':
+          if IsDecimal or IsExp then
+            Break
+          else
+            IsExp := True;
+
+      else
+        Break;
+      end;
+      Inc(P);
+    until False;
+    Result.Kind := tkNumber;
+    if IsExp or IsDecimal then
+      Result.ExKind := tekFloat
+    else
+      Result.ExKind := tekInt;
+  end
+  else if (P[0] = '$') and (P[1] in HexNumberChars) then
+  begin
+    // hex number
+    Inc(P, 2);
+    while P[0] in HexNumberChars do
       Inc(P);
     Result.Kind := tkNumber;
+    Result.ExKind := tekHex;
+  end
+  else if (P[0] = '#') and ((P[1] = '$') or (P[1] in NumberChars)) then
+  begin
+    // char
+    Inc(P, 2);
+    if P[-1] = '$' then
+    begin
+      while P[0] in HexNumberChars do
+        Inc(P);
+    end
+    else
+    begin
+      while P[0] in NumberChars do
+        Inc(P);
+    end;
+    Result.Kind := tkString;
   end
   else if P[0] in OneSymbolChars then
   begin
@@ -214,11 +312,8 @@ begin
   end
   else
   begin
-    while (P[0] in SymbolChars) do
-    begin
-      if P[0] = #10 then Inc(FLineNum);
+    while P[0] in SymbolChars do
       Inc(P);
-    end;
     Result.Kind := tkSymbol;
   end;
   FIndex := P - PText + 1;
@@ -232,7 +327,8 @@ end;
 
 constructor TPascalParser.Create(const AFilename, AText: string;
   StartLineNum: Integer);
-var i: Integer;
+var
+  i: Integer;
 begin
   inherited Create;
   FFilename := AFilename;
@@ -252,9 +348,11 @@ begin
 end;
 
 destructor TPascalParser.Destroy;
-var i: Integer;
+var
+  i: Integer;
 begin
-  for i := 0 to MaxCachedTokens - 1 do Dispose(FTokens[i]);
+  for i := 0 to MaxCachedTokens - 1 do
+    Dispose(FTokens[i]);
   inherited Destroy;
 end;
 
@@ -296,9 +394,11 @@ begin
 end;
 
 procedure TPascalParser.ClearCache;
-var i: Integer;
+var
+  i: Integer;
 begin
-  for i := 0 to MaxCachedTokens - 1 do FTokens[i].Kind := tkNone;
+  for i := 0 to MaxCachedTokens - 1 do
+    FTokens[i].Kind := tkNone;
   FTokenIndex := -1;
 end;
 
@@ -349,20 +449,26 @@ end;
 function TPascalParser.GetCurToken: PTokenInfo;
 begin
   Result := nil;
-  if FTokenIndex = -1 then Exit;
+  if FTokenIndex = -1 then
+    Exit;
   Result := FTokens[FTokenIndex];
-  if Result.Kind = tkNone then Result := nil;
+  if Result.Kind = tkNone then
+    Result := nil;
 end;
 
 function TPascalParser.GetPreToken: PTokenInfo;
-var Index: Integer;
+var
+  Index: Integer;
 begin
   Result := nil;
-  if FTokenIndex = -1 then Exit;
+  if FTokenIndex = -1 then
+    Exit;
   Index := FTokenIndex - 1;
-  if Index < 0 then Index := MaxCachedTokens - 1;
+  if Index < 0 then
+    Index := MaxCachedTokens - 1;
   Result := FTokens[Index];
-  if Result.Kind = tkNone then Result := nil;
+  if Result.Kind = tkNone then
+    Result := nil;
 end;
 
 end.
