@@ -370,12 +370,6 @@ uses
   JvDataProviderIntf,
   JvItemsSearchs, JvThemes, JvConsts, JvResources;
 
-resourcestring
-  // for TCheckedComboBox
-  sCapSelAll = '&Select all';
-  sCapDeselAll = '&Deselect all';
-  sNoMoreLength = 'Too many items selected';
-
 //=== { TJvComboBoxStrings } =================================================
 
 constructor TJvComboBoxStrings.Create;
@@ -1534,8 +1528,8 @@ begin
   FCheckedCount := 0;
   FNoFocusColor := clWindow;
   Caption := '';
-  FCapSelAll := sCapSelAll;
-  FCapDeselAll := sCapDeselAll;
+  FCapSelAll := RsCapSelAll;
+  FCapDeselAll := RsCapDeselAll;
   Height := 24;
   Width := 121;
 
@@ -1692,7 +1686,7 @@ begin
   Result := False;
   if Length(Str) + Length(Sub) + 1 >= MAXSELLENGTH then
   begin
-    raise Exception.Create(sNoMoreLength);
+    raise Exception.CreateRes(@RsENoMoreLength);
     Exit;
   end;
   if Str = '' then
@@ -1746,7 +1740,7 @@ end;
 procedure TJvCheckedComboBox.KeyListBox(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_ESCAPE then
+  if (Key = VK_ESCAPE) and (Shift * KeyboardShiftStates = []) then
   begin
     FPrivForm.Close;
     FMouseOverButton := False;
@@ -2016,12 +2010,12 @@ end;
 
 function TJvCheckedComboBox.IsStoredCapDeselAll: Boolean;
 begin
-  Result := FCapSelAll <> sCapSelAll;
+  Result := FCapSelAll <> RsCapSelAll;
 end;
 
 function TJvCheckedComboBox.IsStoredCapSelAll: Boolean;
 begin
-  Result := FCapDeselAll <> sCapDeselAll;
+  Result := FCapDeselAll <> RsCapDeselAll;
 end;
 
 end.

@@ -341,7 +341,7 @@ implementation
 
 uses
   SysUtils, Math,
-  JvJCLUtils, JvJVCLUtils, JvThemes, JvFinalize;
+  JvConsts, JvJCLUtils, JvJVCLUtils, JvThemes, JvFinalize;
 
 const
   sUnitName = 'JvCustomItemViewer';
@@ -978,7 +978,7 @@ var
 begin
   if not inherited DoMouseWheel(Shift, WheelDelta, MousePos) then
   begin
-    if ssCtrl in Shift then
+    if Shift * KeyboardShiftStates = [ssShift] then
       WD := WheelDelta * 3
     else
       WD := WheelDelta;
@@ -1262,7 +1262,7 @@ var
 begin
   inherited KeyDown(Key, Shift);
   LIndex := -1;
-  if Focused then
+  if Focused and (Shift * KeyboardShiftStates = []) then
     case Key of
       VK_UP:
         LIndex := SelectedIndex - FCols;
@@ -1693,10 +1693,10 @@ begin
     begin
       if Options.MultiSelect then
       begin
-        if ssCtrl in Shift then
+        if (Shift * KeyboardShiftStates = [ssCtrl]) then
           ToggleSelection(FTempSelected, True)
         else
-        if ssShift in Shift then
+        if Shift * KeyboardShiftStates = [ssShift] then
           ShiftSelection(FTempSelected, True)
         else
         begin

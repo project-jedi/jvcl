@@ -164,10 +164,7 @@ implementation
 
 uses
   Math,
-  JvJCLUtils, JvTypes;
-
-resourcestring
-  RsESourceBitmapTooSmall = 'Source bitmap too small';
+  JvJCLUtils, JvResources, JvTypes;
 
 const
   // TJvRGBTriple = TRGBQuad for VisualCLX

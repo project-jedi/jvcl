@@ -295,7 +295,7 @@ implementation
 
 uses
   SysUtils, Math, StdCtrls, Printers,
-  JvResources, JvTypes;
+  JvConsts, JvResources, JvTypes;
 
 {.$IFDEF MSWINDOWS}
 {$R ..\Resources\JvColorCombo.res}
@@ -1258,7 +1258,9 @@ end;
 
 procedure TJvFontComboBox.KeyDown(var Key: Word; Shift: TShiftState);
 begin
-  if (Key = VK_RETURN) and FShowMRU then
+  // (rom) only accept without Shift, Alt or Ctrl down
+  if (Shift * KeyboardShiftStates = []) and
+    (Key = VK_RETURN) and FShowMRU then
     ItemIndex := AddToMRU;
   inherited KeyDown(Key, Shift);
 end;

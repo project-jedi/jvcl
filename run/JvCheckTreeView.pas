@@ -144,6 +144,9 @@ type
 
 implementation
 
+uses
+  JvConsts;
+
 procedure ToggleTreeViewCheckBoxes(Node: TTreeNode;
   AUnChecked, AChecked, ARadioUnchecked, ARadioChecked: Integer);
 var
@@ -314,7 +317,8 @@ end;
 procedure TJvCheckTreeView.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyDown(Key, Shift);
-  if (CheckBoxOptions.Style = cbsJVCL) and (Key = VK_SPACE) and Assigned(Selected) then
+  if (CheckBoxOptions.Style = cbsJVCL) and Assigned(Selected) and
+    (Key = VK_SPACE) and (Shift * KeyboardShiftStates = []) then
     InternalSetChecked(Selected, not Checked[Selected], CheckBoxOptions.CascadeLevels);
 end;
 
@@ -322,7 +326,6 @@ procedure TJvCheckTreeView.SetCheckBox(Node: TTreeNode; const Value: Boolean);
 begin
   with CheckBoxOptions do
     if (Node <> nil) and (Style = cbsJVCL) then
-    begin
       if Value then
       begin
         if Checked[Node] then
@@ -332,7 +335,6 @@ begin
       end
       else
         Node.StateIndex := 0;
-    end;
 end;
 
 procedure TJvCheckTreeView.SetCheckBoxOptions(const Value: TJvTreeViewCheckBoxOptions);

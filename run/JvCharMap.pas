@@ -381,7 +381,8 @@ type
 implementation
 
 uses
-  SysUtils, Math, Forms;
+  SysUtils, Math, Forms,
+  JvConsts;
 
 const
   cShadowAlpha = 100;
@@ -859,52 +860,53 @@ begin
   ARow := Row;
   // update new location
   inherited KeyDown(Key, Shift);
-  case Key of
-    VK_RETURN:
-      ShowCharPanel(Col, Row);
-    VK_SPACE:
-      if not (ssAlt in Shift) then
-        PanelVisible := not PanelVisible;
-    VK_ESCAPE:
-      PanelVisible := False;
-    VK_UP, VK_DOWN, VK_PRIOR, VK_NEXT, VK_HOME, VK_END:
-      if PanelVisible then
+  // (rom) only accept without Shift, Alt or Ctrl down
+  if Shift * KeyboardShiftStates = [] then
+    case Key of
+      VK_RETURN:
         ShowCharPanel(Col, Row);
-    VK_LEFT:
-      begin
-        if (ACol = 0) and (ARow > 0) then
-        begin
-          ACol := ColCount - 1;
-          Dec(ARow);
-        end
-        else
-        begin
-          ACol := Col;
-          ARow := Row;
-        end;
-        Col := ACol;
-        Row := ARow;
+      VK_SPACE:
+        PanelVisible := not PanelVisible;
+      VK_ESCAPE:
+        PanelVisible := False;
+      VK_UP, VK_DOWN, VK_PRIOR, VK_NEXT, VK_HOME, VK_END:
         if PanelVisible then
-          ShowCharPanel(ACol, ARow);
-      end;
-    VK_RIGHT:
-      begin
-        if (ACol = ColCount - 1) and (ARow < RowCount - 1) then
+          ShowCharPanel(Col, Row);
+      VK_LEFT:
         begin
-          ACol := 0;
-          Inc(ARow);
-        end
-        else
-        begin
-          ACol := Col;
-          ARow := Row;
+          if (ACol = 0) and (ARow > 0) then
+          begin
+            ACol := ColCount - 1;
+            Dec(ARow);
+          end
+          else
+          begin
+            ACol := Col;
+            ARow := Row;
+          end;
+          Col := ACol;
+          Row := ARow;
+          if PanelVisible then
+            ShowCharPanel(ACol, ARow);
         end;
-        Col := ACol;
-        Row := ARow;
-        if PanelVisible then
-          ShowCharPanel(ACol, ARow);
-      end;
-  end;
+      VK_RIGHT:
+        begin
+          if (ACol = ColCount - 1) and (ARow < RowCount - 1) then
+          begin
+            ACol := 0;
+            Inc(ARow);
+          end
+          else
+          begin
+            ACol := Col;
+            ARow := Row;
+          end;
+          Col := ACol;
+          Row := ARow;
+          if PanelVisible then
+            ShowCharPanel(ACol, ARow);
+        end;
+    end;
 end;
 
 procedure TJvCustomCharMap.MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -923,8 +925,8 @@ begin
     if SelectCell(ACol, ARow) then
       ShowCharPanel(ACol, ARow)
     else
-      if SelectCell(Col, Row) then
-        ShowCharPanel(Col, Row);
+    if SelectCell(Col, Row) then
+      ShowCharPanel(Col, Row);
   end;
 end;
 
@@ -1276,18 +1278,22 @@ end;
 
 procedure TCharZoomPanel.KeyDown(var Key: Word; Shift: TShiftState);
 begin
-  case Key of
-    VK_ESCAPE:
-      begin
-        Visible := False;
-        if Parent.CanFocus then
-          Parent.SetFocus;
-      end;
-    VK_LEFT, VK_RIGHT, VK_UP, VK_DOWN:
-      TJvCustomCharMap(Parent).KeyDown(Key, Shift);
+  // (rom) only accept without Shift, Alt or Ctrl down
+  if Shift * KeyboardShiftStates = [] then
+    case Key of
+      VK_ESCAPE:
+        begin
+          Visible := False;
+          if Parent.CanFocus then
+            Parent.SetFocus;
+        end;
+      VK_LEFT, VK_RIGHT, VK_UP, VK_DOWN:
+        TJvCustomCharMap(Parent).KeyDown(Key, Shift);
+    else
+      inherited KeyDown(Key, Shift);
+    end
   else
     inherited KeyDown(Key, Shift);
-  end;
 end;
 
 {$IFDEF VCL}

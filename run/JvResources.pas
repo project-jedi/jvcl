@@ -106,6 +106,8 @@ resourcestring
   RsEInterfaceNotSupported = '%s does not support the %s interface';
   RsECircularReference = 'Circular reference not allowed';
 
+  RsESourceBitmapTooSmall = 'Source bitmap too small';
+
 //=== JvAni.pas ==============================================================
 resourcestring
   RsAniExtension = 'ani';
@@ -327,6 +329,12 @@ resourcestring
   RsEUnknownColor = 'Unknown color ''%s''';
   RsEInvalidColor = 'Invalid color (%d)';
   RsEItemNotForList = 'Item does not belong to this list';
+
+//=== JvCombobox.pas =========================================================
+resourcestring
+  RsCapSelAll = '&Select all';
+  RsCapDeselAll = '&Deselect all';
+  RsENoMoreLength = 'Too many items selected';
 
 //=== JvComputerInfoEx.pas ===================================================
 resourcestring
@@ -610,6 +618,11 @@ resourcestring
 resourcestring
   RsERedoNotYetImplemented = 'Redo not yet implemented';
   RsEInvalidCompletionMode = 'Invalid JvEditor Completion Mode';
+
+//=== JvEmbeddedForms.pas ====================================================
+resourcestring
+  RsEFormLinkSingleInstanceOnly = 'You only need one form link per form.';
+  RsELinkCircularRef = 'Circular references not allowed.';
 
 //=== JvErrorIndicator.pas ===================================================
 resourcestring
@@ -1480,10 +1493,6 @@ resourcestring
   RsMyComputer = 'My Computer';
   RsDefaultNoValue = '(value not set)';
   RsUnknownCaption = '(Unknown)';
-
-//=== JvResample.pas =========================================================
-resourcestring
-  RsESourceBitmapTooSmall = 'Source bitmap too small';
 
 //=== JvRichEdit.pas =========================================================
 resourcestring

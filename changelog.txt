@@ -1,6 +1,9 @@
 Changelog for JVCL 3.0
 ======================
 2004-07-25
+- Started to tighten Shift check for all keyboard input. // (rom)
+=======
+2004-07-25
 - Mantis 1912: TJvSpinEdit now has a ShowButton property. // obones
 - Bug fix and Mantis 1912: TJvStandardMenuItemPainter now paints correctly its checkmarks if there are
   no image lists set. // obones

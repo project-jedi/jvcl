@@ -47,7 +47,6 @@ type
     FLinkedForm: TForm;
     FAlwaysVisible: Boolean;
     FPaintProcedure: TJvEmbeddedPaintProcedure;
-
     procedure DrawFormImage;
     procedure SetLinkedForm;
     procedure UpdateLinkedForm;
@@ -55,20 +54,16 @@ type
     procedure SetFormLink(const Value: TJvEmbeddedFormLink);
   protected
     procedure Paint; override;
-
     procedure InitLinkedForm; virtual;
     procedure ClearLinkedForm; virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-
   public
     procedure DockLinkedForm; virtual;
     procedure UndockLinkedForm(ABorderStyle: TFormBorderStyle; APosition: TPosition); virtual;
-    function IsLinkedFormDocked:Boolean;
+    function IsLinkedFormDocked: Boolean;
     property LinkedForm: TForm read FLinkedForm;
-
   published
     property AlwaysVisible: Boolean read FAlwaysVisible write FAlwaysVisible;
-
     property FormLink: TJvEmbeddedFormLink read FLink write SetFormLink;
     property Align;
     property Anchors;
@@ -79,9 +74,6 @@ type
     property ParentShowHint;
     property ShowHint;
     property Visible;
-
-
-
     property OnClick;
     property OnDblClick;
     property OnContextPopup;
@@ -137,13 +129,10 @@ type
 implementation
 
 uses
-  SysUtils, Graphics, Controls;
+  SysUtils, Graphics, Controls,
+  JvResources;
 
-resourcestring
-  RsEFormLinkSingleInstanceOnly = 'You only need one form link per form.';
-  RsELinkCircularRef = 'Circular references not allowed.';
-
-//=== { TJvEmbeddedFormLink  } =================================================
+//=== { TJvEmbeddedFormLink } ================================================
 
 constructor TJvEmbeddedFormLink.Create(AOwner: TComponent);
 var
@@ -156,7 +145,7 @@ begin
   inherited Create(AOwner);
 end;
 
-//=== { TJvEmbeddedFormPanel  } ================================================
+//=== { TJvEmbeddedFormPanel } ===============================================
 
 procedure TJvEmbeddedFormPanel.Paint;
 begin
@@ -201,6 +190,7 @@ end;
 
 procedure TJvEmbeddedFormPanel.UpdateLinkedForm;
 
+  // (rom) a really bad name. Owner in name, but uses Parent.
   function IsOwnerFormActive: Boolean;
   var
     FParent: TWinControl;
@@ -210,6 +200,7 @@ procedure TJvEmbeddedFormPanel.UpdateLinkedForm;
       FParent := FParent.Parent;
     Result := (FParent is TForm) and TForm(FParent).Active;
   end;
+
 begin
   if (FLinkedForm.Parent <> Self) and (FLinkedForm.Parent <> nil) and IsOwnerFormActive then
     SetLinkedForm
@@ -260,7 +251,7 @@ begin
       ClearLinkedForm
     else
     if Value.Owner = Owner then
-      raise Exception.Create(RsELinkCircularRef)
+      raise Exception.CreateRes(@RsELinkCircularRef)
     else
     begin
       FLink := Value;
@@ -280,7 +271,7 @@ end;
 procedure TJvEmbeddedFormPanel.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if (Operation = opRemove) then
+  if Operation = opRemove then
   begin
     if AComponent = FLinkedForm then
       FLinkedForm := nil;
@@ -289,7 +280,44 @@ begin
   end;
 end;
 
-//=== { TJvEmbeddedInstanceFormPanel  } ========================================
+procedure TJvEmbeddedFormPanel.DockLinkedForm;
+begin
+  if (FLinkedForm <> nil) and (FLinkedForm.Parent <> Self) then
+    with FLinkedForm do
+    begin
+      Hide;
+      BorderStyle := bsNone;
+      Parent := Self;
+      Align := alClient;
+      Show;
+    end;
+end;
+
+procedure TJvEmbeddedFormPanel.UndockLinkedForm(ABorderStyle: TFormBorderStyle; APosition: TPosition);
+var
+  B: Boolean;
+begin
+  if (FLinkedForm <> nil) and (FLinkedForm.Parent = Self) then
+    with FLinkedForm do
+    begin
+      B := AutoScroll;
+      Hide;
+      Align := alNone;
+      Parent := nil;
+      // IMPORTANT!!! Don't set BorderStyle unless Parent = nil!!!
+      BorderStyle := ABorderStyle;
+      Position := APosition;
+      AutoScroll := B;
+      Show;
+    end;
+end;
+
+function TJvEmbeddedFormPanel.IsLinkedFormDocked: Boolean;
+begin
+  Result := (FLinkedForm <> nil) and (FLinkedForm.Parent = Self);
+end;
+
+//=== { TJvEmbeddedInstanceFormPanel  } ======================================
 
 procedure TJvEmbeddedInstanceFormPanel.CreateFormInstance;
 begin
@@ -302,7 +330,8 @@ end;
 procedure TJvEmbeddedInstanceFormPanel.ClearLinkedForm;
 begin
   if not (csDesigning in ComponentState) then
-    FLinkedForm.Free;
+    // (rom) FreeAndNil for safety
+    FreeAndNil(FLinkedForm);
 
   FFormClass := nil;
   inherited ClearLinkedForm;
@@ -321,45 +350,6 @@ begin
     FPaintProcedure := CreateFormInstance;
   end;
 end;
-
-procedure TJvEmbeddedFormPanel.DockLinkedForm;
-begin
-  if (FLinkedForm <> nil) and (FLinkedForm.Parent <> Self) then
-    with FLinkedForm do
-    begin
-      Hide;
-      BorderStyle := bsNone;
-      Parent := Self;
-      Align := alClient;
-      Show;
-    end;
-end;
-
-procedure TJvEmbeddedFormPanel.UndockLinkedForm(ABorderStyle: TFormBorderStyle; APosition: TPosition);
-var B:Boolean;
-begin
-  if (FLinkedForm <> nil) and (FLinkedForm.Parent = Self) then
-    with FLinkedForm do
-    begin
-      B := AutoScroll;
-      Hide;
-      Align := alNone;
-      Parent := nil;
-    // IMPORTANT!!! Don't set BorderStyle unless Parent = nil!!!
-      BorderStyle := ABorderStyle;
-      Position := APosition;
-      AutoScroll := B;
-      Show;
-    end;
-end;
-
-function TJvEmbeddedFormPanel.IsLinkedFormDocked: Boolean;
-begin
-  Result := (FLinkedForm <> nil) and (FLinkedForm.Parent = Self);
-end;
-
-
-
 
 end.
 

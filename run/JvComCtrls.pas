@@ -341,7 +341,7 @@ type
   protected
     {$IFDEF VisualCLX}
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X: Integer; Y: Integer); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     function DrawTab(TabIndex: Integer; const Rect: TRect; Active: Boolean): Boolean; override;
     {$ENDIF VisualCLX}
     {$IFDEF VCL}
@@ -378,7 +378,6 @@ type
     procedure SetReduceMemoryUse(const Value: Boolean);
     procedure SetTabPainter(const Value: TJvTabControlPainter);
   protected
-
     function HintShow(var HintInfo: THintInfo): Boolean; override;
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
@@ -389,7 +388,7 @@ type
     {$IFDEF VisualCLX}
     function DrawTab(TabIndex: Integer; const Rect: TRect; Active: Boolean): Boolean; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
-      X: Integer; Y: Integer); override;
+      X, Y: Integer); override;
     {$ENDIF VisualCLX}
     {$IFDEF VCL}
     procedure DrawTab(TabIndex: Integer; const Rect: TRect; Active: Boolean); override;
@@ -463,7 +462,8 @@ type
     {$ENDIF VCL}
   end;
 
-{$IFDEF VCL}
+  {$IFDEF VCL}
+
   TJvTreeNode = class(TTreeNode)
   private
     FBold: Boolean;
@@ -513,16 +513,14 @@ type
       Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
     function GetSelectedCount: Integer;
     function GetSelectedItem(Index: Integer): TTreeNode;
-{$IFNDEF COMPILER6_UP}
+    {$IFNDEF COMPILER6_UP}
     procedure SetMultiSelect(const Value: Boolean);
-{$ENDIF COMPILER6_UP}
+    {$ENDIF COMPILER6_UP}
     procedure SetScrollDirection(const Value: Integer);
-    {$IFDEF VCL}
     procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
     procedure WMTimer(var Msg: TWMTimer); message WM_TIMER;
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
-    {$ENDIF VCL}
     procedure SetCheckBoxes(const Value: Boolean);
     function GetItemHeight: Integer;
     procedure SetItemHeight(Value: Integer);
@@ -544,13 +542,11 @@ type
     function IsMenuItemClick(Node: TTreeNode): Boolean;
     function DoComparePage(Page: TTabSheet; Node: TTreeNode): Boolean; virtual;
     function CreateNode: TTreeNode; override;
-    {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
     procedure DestroyWnd; override;
     procedure CNNotify(var Msg: TWMNotify); message CN_NOTIFY;
     procedure WMPaint(var Msg: TMessage); message WM_PAINT;
-    {$ENDIF VCL}
     procedure Change(Node: TTreeNode); override;
     procedure Delete(Node: TTreeNode); override;
     procedure DoEditCancelled; dynamic;
@@ -597,22 +593,17 @@ type
     property ItemHeight: Integer read GetItemHeight write SetItemHeight default 16;
     property Menu: TMenu read FMenu write SetMenu;
     property MenuDblClick: Boolean read FMenuDblClick write FMenuDblClick default False;
-
     property HintColor;
-
     property ItemIndex: Integer read GetItemIndex write SetItemIndex stored False;
-
     property Checkboxes: Boolean read FCheckBoxes write SetCheckBoxes default False;
-    property OnVerticalScroll: TNotifyEvent read FOnVScroll write FOnVScroll;
-    property OnHorizontalScroll: TNotifyEvent read FOnHScroll write FOnHScroll;
     property PageControl: TPageControl read FPageControl write SetPageControl;
-    property OnPageChanged: TPageChangedEvent read FOnPage write FOnPage;
-
-
     property AutoDragScroll: Boolean read FAutoDragScroll write FAutoDragScroll default False;
     {$IFNDEF COMPILER6_UP}
     property MultiSelect: Boolean read FMultiSelect write SetMultiSelect default False;
     {$ENDIF COMPILER6_UP}
+    property OnVerticalScroll: TNotifyEvent read FOnVScroll write FOnVScroll;
+    property OnHorizontalScroll: TNotifyEvent read FOnHScroll write FOnHScroll;
+    property OnPageChanged: TPageChangedEvent read FOnPage write FOnPage;
     property OnComparePage: TJvTreeViewComparePageEvent read FOnComparePage write FOnComparePage;
     property OnMouseEnter;
     property OnMouseLeave;
@@ -621,16 +612,18 @@ type
     property OnEditCancelled: TNotifyEvent read FOnEditCancelled write FOnEditCancelled;
     property OnSelectionChange: TNotifyEvent read FOnSelectionChange write FOnSelectionChange;
   end;
-{$ENDIF VCL}
+
+  {$ENDIF VCL}
 
 implementation
 
 uses
   SysUtils,
   JclStrings,
-  JvJCLUtils;
+  JvConsts, JvJCLUtils;
 
 {$IFDEF VCL}
+
 const
   TVIS_CHECKED = $2000;
 
@@ -786,9 +779,7 @@ constructor TJvIPAddress.Create(AOwner: TComponent);
 var
   I: Integer;
 begin
-  {$IFDEF MSWINDOWS}
   CheckCommonControl(ICC_INTERNET_CLASSES);
-  {$ENDIF MSWINDOWS}
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csFixedHeight, csReflector];
 
@@ -821,7 +812,6 @@ begin
     FEditControls[I].Free;
 end;
 
-{$IFDEF VCL}
 procedure TJvIPAddress.CreateParams(var Params: TCreateParams);
 begin
   InitCommonControl(ICC_INTERNET_CLASSES);
@@ -833,7 +823,6 @@ begin
     WindowClass.style := WindowClass.style and not (CS_HREDRAW or CS_VREDRAW);
   end;
 end;
-{$ENDIF VCL}
 
 procedure TJvIPAddress.CreateWnd;
 var
@@ -1185,14 +1174,12 @@ begin
   with Msg do
     case Event of
       WM_CREATE:
+        if (FEditControlCount <= Length(FEditControls)) and
+          (FEditControls[FEditControlCount] <> nil) then
         begin
-          if (FEditControlCount <= Length(FEditControls)) and
-            (FEditControls[FEditControlCount] <> nil) then
-          begin
-            FEditControls[FEditControlCount].Handle := ChildWnd;
-            EnableWindow(ChildWnd, Enabled and not (csDesigning in ComponentState));
-            Inc(FEditControlCount);
-          end;
+          FEditControls[FEditControlCount].Handle := ChildWnd;
+          EnableWindow(ChildWnd, Enabled and not (csDesigning in ComponentState));
+          Inc(FEditControlCount);
         end;
       WM_DESTROY:
         ClearEditControls;
@@ -1220,6 +1207,7 @@ begin
     Application.HandleException(Self);
   end;
 end;
+
 {$ENDIF VCL}
 
 //=== { TJvTabControlPainter } ===============================================
@@ -1553,6 +1541,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TJvTabControl.CMDialogKey(var Msg: TWMKey);
 begin
   if (Msg.CharCode = VK_TAB) and (GetKeyState(VK_CONTROL) < 0) and
@@ -1603,11 +1592,12 @@ end;
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}
+
 procedure TJvTabControl.KeyDown(var Key: Word; Shift: TShiftState);
 begin
-  if (Key = VK_TAB) and (ssCtrl in Shift) then
+  if (Key = VK_TAB) and (Shift * KeyboardShiftStates >= [ssCtrl]) then
   begin
-    if ssShift in Shift then
+    if (Shift * KeyboardShiftStates >= [ssShift]) then
     begin
       if TabIndex = 0 then
         TabIndex := Tabs.Count - 1
@@ -1646,7 +1636,7 @@ begin
       end;
     end;
   end;
-  inherited;
+  inherited MouseDown(Button, Shift, X, Y);
 end;
 
 function TJvTabControl.DrawTab(TabIndex: Integer; const Rect: TRect; Active: Boolean): Boolean;
@@ -1657,6 +1647,7 @@ begin
   else
     Result := inherited DrawTab(TabIndex, Rect, Active);
 end;
+
 {$ENDIF VisualCLX}
 
 {$IFDEF VCL}
@@ -1721,10 +1712,11 @@ var
   Forwrd: Boolean;
 begin
   Result := False;
-  if HandleGlobalTab and not FormKeyPreview and (Key = VK_TAB) and (GetKeyState(VK_CONTROL) < 0) then
+  if HandleGlobalTab and not FormKeyPreview and
+    (Key = VK_TAB) and (Shift * KeyboardShiftStates >= [ssCtrl]) then
   begin
     ThisTab := ActivePage;
-    Forwrd := GetKeyState(VK_SHIFT) >= 0;
+    Forwrd := (Shift * KeyboardShiftStates >= [ssShift]);
     Tab := ThisTab;
     repeat
       Tab := FindNextPage(Tab, Forwrd, True);
@@ -1990,7 +1982,7 @@ begin
       end;
     end;
   end;
-  inherited;
+  inherited MouseDown(Button, Shift, X, Y);
 end;
 {$ENDIF VisualCLX}
 
@@ -2007,6 +1999,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TJvTrackBar.CNHScroll(var Msg: TWMHScroll);
 begin
   if Msg.ScrollCode <> SB_ENDSCROLL then
@@ -2046,6 +2039,7 @@ begin
   if HandleAllocated and (GetComCtlVersion >= ComCtlVersionIE3) then
     SendMessage(Handle, TBM_SETTIPSIDE, ToolTipSides[FToolTipSide], 0);
 end;
+
 {$ENDIF VCL}
 
 procedure TJvTrackBar.MouseUp(Button: TMouseButton; Shift: TShiftState;
@@ -2496,7 +2490,7 @@ begin
   end;
   inherited KeyDown(Key, Shift);
   if ((Key = VK_SPACE) or (Key = VK_RETURN)) and MenuDblClick and IsMenuItemClick(Selected) then
-      TMenuItem(Selected.Data).OnClick(TMenuItem(Selected.Data));
+    TMenuItem(Selected.Data).OnClick(TMenuItem(Selected.Data));
 end;
 
 procedure TJvTreeView.KeyPress(var Key: Char);
