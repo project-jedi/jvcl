@@ -39,26 +39,29 @@ type
   TJvRadioGroup = class(TRadioGroup)
   private
     FAboutJVCL: TJVCLAboutInfo;
-    FOnMouseEnter: TNotifyEvent;
     FHintColor: TColor;
     FSaved: TColor;
-    FOnMouseLeave: TNotifyEvent;
-    FOnCtl3DChanged: TNotifyEvent;
-    FOnParentColorChanged: TNotifyEvent;
     FOver: Boolean;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
+    FOnParentColorChanged: TNotifyEvent;
+    FOnCtl3DChanged: TNotifyEvent;
     FReadOnly: Boolean;
-  {$IFDEF JVCLThemesEnabledD56}
-    function GetParentBackground: Boolean;
-  protected
-    procedure SetParentBackground(Value: Boolean);
-  {$ENDIF JVCLThemesEnabledD56}
-  protected
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
+    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
     {$IFDEF JVCLThemesEnabledD56}
+    function GetParentBackground: Boolean;
+    {$ENDIF JVCLThemesEnabledD56}
+  protected
+    procedure MouseEnter(AControl: TControl); dynamic;
+    procedure MouseLeave(AControl: TControl); dynamic;
+    procedure ParentColorChanged; dynamic;
+    procedure Ctl3DChanged; dynamic;
+    {$IFDEF JVCLThemesEnabledD56}
+    procedure SetParentBackground(Value: Boolean);
     procedure Paint; override;
     {$ENDIF JVCLThemesEnabledD56}
     function CanModify: Boolean; override;
@@ -67,20 +70,31 @@ type
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-    property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     {$IFDEF JVCLThemesEnabledD56}
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
     {$ENDIF JVCLThemesEnabledD56}
-    property ReadOnly: Boolean read FReadOnly write FReadOnly;
+    property ReadOnly: Boolean read FReadOnly write FReadOnly default False;
+    property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
+    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
+    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   end;
 
 implementation
 
 uses
   Math;
+
+constructor TJvRadioGroup.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FHintColor := clInfoBk;
+  FOver := False;
+  FReadOnly := False;
+  {$IFDEF JVCLThemesEnabledD56}
+  IncludeThemeStyle(Self, [csParentBackground]);
+  {$ENDIF JVCLThemesEnabledD56}
+end;
 
 {$IFDEF JVCLThemesEnabledD56}
 
@@ -93,66 +107,6 @@ procedure TJvRadioGroup.SetParentBackground(Value: Boolean);
 begin
   JvThemes.SetParentBackground(Self, Value);
 end;
-
-{$ENDIF JVCLThemesEnabledD56}
-
-constructor TJvRadioGroup.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FHintColor := clInfoBk;
-  // ControlStyle := ControlStyle + [csAcceptsControls];
-  {$IFDEF JVCLThemesEnabledD56}
-  IncludeThemeStyle(Self, [csParentBackground]);
-  {$ENDIF JVCLThemesEnabledD56}
-  FOver := False;
-end;
-
-procedure TJvRadioGroup.CMCtl3DChanged(var Msg: TMessage);
-begin
-  inherited;
-  if Assigned(FOnCtl3DChanged) then
-    FOnCtl3DChanged(Self);
-end;
-
-procedure TJvRadioGroup.CMParentColorChanged(var Msg: TMessage);
-begin
-  inherited;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
-end;
-
-procedure TJvRadioGroup.CMDenySubClassing(var Msg: TMessage);
-begin
-  Msg.Result := 1;
-end;
-
-procedure TJvRadioGroup.CMMouseEnter(var Msg: TMessage);
-begin
-  if not FOver then
-  begin
-    FSaved := Application.HintColor;
-    // for D7...
-    if csDesigning in ComponentState then
-      Exit;
-    Application.HintColor := FHintColor;
-    FOver := True;
-  end;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
-end;
-
-procedure TJvRadioGroup.CMMouseLeave(var Msg: TMessage);
-begin
-  if FOver then
-  begin
-    Application.HintColor := FSaved;
-    FOver := False;
-  end;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
-end;
-
-{$IFDEF JVCLThemesEnabledD56}
 
 procedure TJvRadioGroup.Paint;
 var
@@ -181,12 +135,82 @@ end;
 
 {$ENDIF JVCLThemesEnabledD56}
 
-function TJvRadioGroup.CanModify: Boolean; 
+function TJvRadioGroup.CanModify: Boolean;
 begin
   if FReadOnly then
     Result := False
   else
-    Result := Inherited CanModify;
+    Result := inherited CanModify;
+end;
+
+procedure TJvRadioGroup.CMCtl3DChanged(var Msg: TMessage);
+begin
+  inherited;
+  Ctl3DChanged;
+end;
+
+procedure TJvRadioGroup.Ctl3DChanged;
+begin
+  if Assigned(FOnCtl3DChanged) then
+    FOnCtl3DChanged(Self);
+end;
+
+procedure TJvRadioGroup.CMMouseEnter(var Msg: TMessage);
+begin
+  inherited;
+  MouseEnter(Self);
+end;
+
+procedure TJvRadioGroup.MouseEnter(AControl: TControl);
+begin
+  // for D7...
+  if csDesigning in ComponentState then
+    Exit;
+  if not FOver then
+  begin
+    FSaved := Application.HintColor;
+    Application.HintColor := FHintColor;
+    FOver := True;
+  end;
+  if Assigned(FOnMouseEnter) then
+    FOnMouseEnter(Self);
+end;
+
+procedure TJvRadioGroup.CMMouseLeave(var Msg: TMessage);
+begin
+  inherited;
+  MouseLeave(Self);
+end;
+
+procedure TJvRadioGroup.MouseLeave(AControl: TControl);
+begin
+  // for D7...
+  if csDesigning in ComponentState then
+    Exit;
+  if FOver then
+  begin
+    FOver := False;
+    Application.HintColor := FSaved;
+  end;
+  if Assigned(FOnMouseLeave) then
+    FOnMouseLeave(Self);
+end;
+
+procedure TJvRadioGroup.CMParentColorChanged(var Msg: TMessage);
+begin
+  inherited;
+  ParentColorChanged;
+end;
+
+procedure TJvRadioGroup.ParentColorChanged;
+begin
+  if Assigned(FOnParentColorChanged) then
+    FOnParentColorChanged(Self);
+end;
+
+procedure TJvRadioGroup.CMDenySubClassing(var Msg: TMessage);
+begin
+  Msg.Result := 1;
 end;
 
 end.

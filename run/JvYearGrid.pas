@@ -747,16 +747,16 @@ begin
   command := afile;
   params := #0;
   workdir := #0;
-{$IFDEF COMPLIB_VCL}
+{$IFDEF VCL}
   shellexecute(application.handle, 'open', @command[1],
   @params[1], @workdir[1], SW_SHOWNORMAL);
-{$ENDIF}
-{$IFDEF COMPLIB_CLX}
-{$IFDEF WINDOWS}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+{$IFDEF MSWINDOWS}
   shellexecute(0, 'open', @command[1],
-  @params[1], @workdir[1], SW_SHOWNORMAL);
-{$ENDIF}
-{$ENDIF}
+    @params[1], @workdir[1], SW_SHOWNORMAL);
+{$ENDIF MSWINDOWS}
+{$ENDIF VisualCLX}
 {$IFDEF LINUX}
   libc.system(PChar(AFile + ' &'));
 {$ENDIF}
