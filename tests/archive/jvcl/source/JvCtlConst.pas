@@ -41,7 +41,7 @@ const
   sRegAutoEditorSort           = 'Sort';
 
   {JvEditor}
-  RAEditorCompletionChars = #8+'0123456789QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm';
+  JvEditorCompletionChars = #8+'0123456789QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm';
 
   {IParser}
   {$IFDEF Delphi}

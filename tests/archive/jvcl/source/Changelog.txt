@@ -1,3 +1,33 @@
+2003-03-29
+Andreas Hausladen:
+==================
+JvEditor.pas
+    - added new mouse wheel functionality: [Ctrl]+Wheel and [Shift]+Wheel
+    - faster TJvReplaceUndo and ReplaceWord/ReplaceWord2
+    - bug fixed: first complete selected line stops drawing selection on cell 80
+    - added SelectAll, ClearSelection
+    - full support for SelBlockFormat = bfColumn and bfLine
+    - improved TJvCompletion.ReplaceWord
+    - undo system overworked
+    - fixed bug: [Shift][Tab] is the same as [Tab]
+    - reduced TextAllChanged() calls
+    - added: Un-/IndentColumns, Un-/IndentLines, Un-/IndentSelLines
+    - new Undo: TJvUnindentColumnUndo, TJvIndentColumnUndo
+    - moved: FSelBegX, FSelBegY, ... FSelected into TJvSelectionRec
+    - added GetAutoIndentStop and removed AutoIndent code from GetTabStop
+    - fixed bug: CanPaste raises Exception SCannotOpenClipboard (new: catches exception)
+    - fixed bug: in readonly mode [Return] does nothing
+    - added BlockOverwrite property
+    - added PeristentBlocks
+
+JvHLEditor.pas
+    - faster RescanLong
+    - faster KeyWord search for drawing
+
+JvStrUtil.pas
+     - changed: GetXYByPos counts #13 instead of #10. It was too windows related
+     - fixed bug: FindNotBlankCharPos always returns 1
+==================
 2003-03-26
 - Merged JvMultilineButton and JvOneSizeFitsAllButton into JvButton. TJvButton renamed to TJvCustomButton. Removed registration for TJvButton. TJvImgBtn now derives from TJvCustomButton. // peter3
 - Moved JvObserverLabel.pas, JvObserverMessages.pas and JvObservibleCheckBox.pas to \archive. This seems to be a "proof of concept" with little real value. // peter3

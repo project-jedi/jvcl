@@ -24,7 +24,7 @@ located at http://jvcl.sourceforge.net
 component   : TJvHLEditor
 description : JvEditor with built-in highlighting for:
               pascal, cbuilder, sql, python, jscript,
-              vbscript, perl, ini
+              vbscript, perl, ini, html, not quite c
 
 Known Issues:
   (rom) source cleaning incomplete
@@ -65,7 +65,7 @@ Known Issues:
     - new: in html-highlighter unknown (not html) tag highlighted with
       "statement" color. This allows to use html-highlighter to display
       xml-files.
-  2.05: (changes by Andreas Hausladen)
+  2.10.2: (changes by Andreas Hausladen)
     - C/C++ line continuation symbol '\' extends the highlight colors to the
       next line (LongToken=True)
     - "Not Quite C" highlighter (C similar, for programming LEGO MindStorm(R) robots)
@@ -79,6 +79,9 @@ Known Issues:
       still exists but uses "FIdentifier"
     - added some new DelphiKeyWord
     - fixed bug: RescanLong() may exceed FLongDesc[] dimension
+  2.10.3
+    - faster RescanLong
+    - faster KeyWord search for drawing
 
 }
 
@@ -158,14 +161,17 @@ type
     FColors: TJvColors;
     FLine: string;
     FLineNum: Integer;
-    FLong: Byte;
+    FLong: Integer;
     FLongTokens: Boolean;
     FLongDesc: array [0..Max_Line] of Byte;
     FSyntaxHighlighting: Boolean;
     FOnReservedWord: TOnReservedWord;
+
+//    FCachedHighligher: THighLighter;
+
     // Coco/R
     ProductionsLine: Integer;
-    function RescanLong: Boolean;
+    function RescanLong(iLine: Integer): Boolean;
     procedure CheckInLong;
     function FindLongEnd: Integer;
     procedure SetHighLighter(Value: THighLighter);
@@ -174,8 +180,8 @@ type
   protected
     procedure Loaded; override;
     procedure GetAttr(Line, ColBeg, ColEnd: Integer); override;
-    procedure TextModified(Pos: Integer; Action: TModifiedAction; Text: string);
-      override;
+    procedure TextModified(ACaretX, ACaretY: Integer; Action: TModifiedAction;
+      const Text: string); override;
     function GetReservedWord(const Token: string; var Reserved: Boolean): Boolean; virtual;
     function UserReservedWords: Boolean; virtual;
   public
@@ -204,6 +210,7 @@ const
   lgString          = 4;
   lgTag             = 5;
   lgPreproc         = 6;
+  lgUndefined       = 255;
 
 function StrScan(const Str: PChar; Chr: Char): PChar;
 { faster than the SysUtils.StrScan function on Pentium CPUs }
@@ -271,7 +278,7 @@ begin
        // count the backslashes
         i := 1;
         while (P-1-i > F) and (P[-1-i] = '\') do inc(i);
-        if i and $01 = 0 then IsOpen := not IsOpen; { faster than if i mod 2 = 0 then IsOpen := not IsOpen; }
+        if i and $01 = 0 then IsOpen := not IsOpen; { faster than: if i mod 2 = 0 then IsOpen := not IsOpen; }
       end;
       inc(P);
     end;
@@ -373,12 +380,12 @@ begin
     inherited Assign(Source);
 end;
 
-function TJvColors.GetIdentifer: TJvSymbolColor; {$IFDEF COMPILER6_UP}deprecated;{$ENDIF}
+function TJvColors.GetIdentifer: TJvSymbolColor; {deprecated;}
 begin
   Result := Identifier;
 end;
 
-procedure TJvColors.SetIdentifer(const Value: TJvSymbolColor); {$IFDEF COMPILER6_UP}deprecated;{$ENDIF}
+procedure TJvColors.SetIdentifer(const Value: TJvSymbolColor); {deprecated;}
 begin
   Identifier := Value;
 end;
@@ -407,7 +414,7 @@ end;
 procedure TJvHLEditor.Loaded;
 begin
   inherited Loaded;
-  RescanLong;
+  RescanLong(0);
 end;
 
 procedure TJvHLEditor.SetHighLighter(Value: THighLighter);
@@ -435,7 +442,7 @@ begin
       hlPhp:
         Parser.Style := psPhp;
     end;
-    RescanLong;
+    RescanLong(0);
     Invalidate;
   end;
 end;
@@ -450,81 +457,80 @@ const
     '#', '|', '&'];
 const
   DelphiKeyWords =
-    '  constructor  destructor  string  record  procedure  with  of  ' +
-    'repeat  until  try  finally  except  for  to  downto  case  ' +
-    'type  interface  implementation  initialization  finalization  ' +
-    'default  private  public  protected  published   automated  property  ' +
-    'program  read  write  override  object  nil  raise  ' +
-    'on  set  xor  shr  shl  begin  end  args  if  then  else  ' +
-    'endif  goto  while  do  var  or  and  not  mod  div  unit  ' +
-    'function  uses  external  const  class  inherited  ' +
-    'register  stdcall  cdecl  safecall  pascal  is  as  package  program ' +
-    'external  overload  platform  deprecated  implements  export  contains  ' +
-    'requires  resourcestring';
+    ' constructor destructor string record procedure with of' +
+    ' repeat until try finally except for to downto case' +
+    ' type interface implementation initialization finalization' +
+    ' default private public protected published automated property' +
+    ' program read write override object nil raise' +
+    ' on set xor shr shl begin end args if then else' +
+    ' endif goto while do var or and not mod div unit' +
+    ' function uses external const class inherited' +
+    ' register stdcall cdecl safecall pascal is as package program' +
+    ' external overload platform deprecated implements export contains' +
+    ' requires resourcestring';
 
   BuilderKeyWords =
-    ' __asm  _asm  asm  auto  __automated  break  bool  case  catch  __cdecl  ' +
-    '_cdecl  cdecl  char  class  __classid  __closure  const  const_cast  ' +
-    'continue  __declspec  default  delete  __dispid  do  double  dynamic_cast  ' +
-    'else  enum  __except  explicit  _export  __export  extern  false  __fastcall  ' +
-    '_fastcall  __finally  float  for  friend  goto  if  __import  _import  inline  ' +
-    'int  __int8  __int16  __int32  __int64  long  mutable  namespace  new  operator  ' +
-    '__pascal  _pascal  pascal  private  protected  __property  public  __published  ' +
-    'register  reinterpret_cast  return  __rtti  short  signed  sizeof  static  static_cast  ' +
-    '__stdcall  _stdcall  struct  switch  template  this  __thread  throw  true  __try  ' +
-    'try  typedef  typename  typeid  union  using  unsigned  virtual  void  volatile  ' +
-    'wchar_t  while  ';
+    ' __asm _asm asm auto __automated break bool case catch __cdecl' +
+    ' _cdecl cdecl char class __classid __closure const const_cast' +
+    ' continue __declspec default delete __dispid do double dynamic_cast' +
+    ' else enum __except explicit _export __export extern false __fastcall' +
+    ' _fastcall __finally float for friend goto if __import _import inline' +
+    ' int __int8 __int16 __int32 __int64 long mutable namespace new operator' +
+    ' __pascal _pascal pascal private protected __property public __published' +
+    ' register reinterpret_cast return __rtti short signed sizeof static static_cast' +
+    ' __stdcall _stdcall struct switch template this __thread throw true __try' +
+    ' try typedef typename typeid union using unsigned virtual void volatile' +
+    ' wchar_t while ';
 
   NQCKeyWords: string = {Not Quite C - a C similar language for programming LEGO MindStorm(R) robots }
-    ' __event_src  __type  acquire  break  __sensor  abs  asm  case  catch  const  ' +
-    'continue  default  do  else  false  for  if  inline  ' +
-    'int  monitor  repeat  return  signed  start  stop  sub  switch  task  true  ' +
-    'until  void  while  '
-    ;
+    ' __event_src __type acquire break __sensor abs asm case catch const' +
+    ' continue default do else false for if inline' +
+    ' int monitor repeat return signed start stop sub switch task true' +
+    ' until void while ';
 
   SQLKeyWords: string =
-  '  active  as  add  asc  after  ascending  all  at  alter  auto  ' +
-    'and  autoddl  any  avg  based  between  basename  blob  ' +
-    'base_name  blobedit  before  buffer  begin  by  cache   compiletime  ' +
-    'cast   computed  char   close  character   conditional  character_length   connect  ' +
-    'char_length   constraint  check   containing  check_point_len   continue  check_point_length   count  ' +
-    'collate   create  collation   cstring  column   current  commit   cursor  ' +
-    'committed  database   descending  date   describe  db_key   descriptor  debug   disconnect  ' +
-    'dec   display  decimal  distinct  declare  do  default   domain  ' +
-    'delete   double  desc  drop  echo  exception  edit  execute  ' +
-    'else   exists  end   exit  entry_point   extern  escape   external  ' +
-    'event   extract  fetch  foreign  file   found  filter   from  ' +
-    'float   full  for   function  gdscode  grant  generator  group  ' +
-    'gen_id  commit_group_wait  global  group_commit_wait_time  goto  ' +
-    'having  help  if   input_type  immediate   insert  in  int  ' +
-    'inactive   integer  index  into  indicator   is  init   isolation  ' +
-    'inner  isql  input  join  key  ' +
-    'lc_messages   like  lc_type   logfile  left  log_buffer_size  length  log_buf_size  ' +
-    'lev   long  level  manual   merge  max   message  ' +
-    'maximum   min  maximum_segment  minimum  max_segment   module_name  names  not  ' +
-    'national   null  natural   numeric  nchar  num_log_bufs  no  num_log_buffers  ' +
-    'noauto  octet_length  or  of   order  on   outer  only  output  ' +
-    'open  output_type  option  overflow  page  post_event  pagelength   precision  ' +
-    'pages   prepare  page_size  procedure  parameter   protected  password   primary  ' +
-    'plan   privileges  position   public  quit  ' +
-    'raw_partitions   retain  rdb  db_key   return  read   returning_values  real   returns  ' +
-    'record_version  revoke  references   right  release   rollback  reserv  runtime  ' +
-    'reserving  schema   sql  segment   sqlcode  select   sqlerror  set   sqlwarning  ' +
-    'shadow   stability  shared   starting  shell   starts  show   statement  ' +
-    'singular   static  size   statistics  smallint   sub_type  snapshot   sum  ' +
-    'some  suspend  sort  table   translate  terminator   translation  then   trigger  to   trim  ' +
-    'transaction  uncommitted  upper  union   user  unique  using  update  ' +
-    'value  varying  values  version  varchar  view  variable  ' +
-    'wait  while  when  with  whenever  work  where  write  ' +
-    'term  new  old ';
+    ' active as add asc after ascending all at alter auto' +
+    ' and autoddl any avg based between basename blob' +
+    ' base_name blobedit before buffer begin by cache  compiletime' +
+    ' cast  computed char  close character  conditional character_length  connect' +
+    ' char_length  constraint check  containing check_point_len  continue check_point_length  count' +
+    ' collate  create collation  cstring column  current commit  cursor' +
+    ' committed database  descending date  describe db_key  descriptor debug  disconnect' +
+    ' dec  display decimal distinct declare do default  domain' +
+    ' delete  double desc drop echo exception edit execute' +
+    ' else  exists end  exit entry_point  extern escape  external' +
+    ' event  extract fetch foreign file  found filter  from' +
+    ' float  full for  function gdscode grant generator group' +
+    ' gen_id commit_group_wait global group_commit_wait_time goto' +
+    ' having help if  input_type immediate  insert in int' +
+    ' inactive  integer index into indicator  is init  isolation' +
+    ' inner isql input join key' +
+    ' lc_messages  like lc_type  logfile left log_buffer_size length log_buf_size' +
+    ' lev  long level manual  merge max  message' +
+    ' maximum  min maximum_segment minimum max_segment  module_name names not' +
+    ' national  null natural  numeric nchar num_log_bufs no num_log_buffers' +
+    ' noauto octet_length or of  order on  outer only output' +
+    ' open output_type option overflow page post_event pagelength  precision' +
+    ' pages  prepare page_size procedure parameter  protected password  primary' +
+    ' plan  privileges position  public quit' +
+    ' raw_partitions  retain rdb db_key  return read  returning_values real  returns' +
+    ' record_version revoke references  right release  rollback reserv runtime' +
+    ' reserving schema  sql segment  sqlcode select  sqlerror set  sqlwarning' +
+    ' shadow  stability shared  starting shell  starts show  statement' +
+    ' singular  static size  statistics smallint  sub_type snapshot  sum' +
+    ' some suspend sort table  translate terminator  translation then  trigger to  trim' +
+    ' transaction uncommitted upper union  user unique using update' +
+    ' value varying values version varchar view variable' +
+    ' wait while when with whenever work where write' +
+    ' term new old ';
 
   PythonKeyWords =
-    ' and  del  for  is  raise  ' +
-    'assert  elif  from  lambda  return  ' +
-    'break  else  global  not  try  ' +
-    'class  except  if  or  while  ' +
-    'continue  exec  import  pass  ' +
-    'def  finally  in  print ';
+    ' and del for is raise' +
+    ' assert elif from lambda return' +
+    ' break else global not try' +
+    ' class except if or while' +
+    ' continue exec import pass' +
+    ' def finally in print ';
 
   JavaKeyWords =
     ' abstract delegate if boolean do implements break double import' +
@@ -601,74 +607,126 @@ const
     ' tokens create destroy errors comments from nested chr any ' +
     ' description ';
 
+  function PosI(const S1, S2: string): Boolean;
+  var
+    F, P: PChar;
+    Len: Integer;
+  begin
+    Len := Length(S1);
+    Result := True;
+    P := PChar(S2);
+    while P[0] <> #0 do
+    begin
+      while P[0] = ' ' do Inc(P);
+      F := P;
+      while not (P[0] <= #32) do Inc(P);
+      if (P - F) = Len then
+        if StrLIComp(Pointer(S1), F, Len) = 0 then Exit;
+    end;
+    Result := False;
+  end;
+
+  function PosNI(const S1, S2: string): Boolean;
+  var
+    F, P: PChar;
+    Len: Integer;
+  begin
+    Len := Length(S1);
+    Result := True;
+    P := PChar(S2);
+    while P[0] <> #0 do
+    begin
+      while P[0] = ' ' do Inc(P);
+      F := P;
+      while not (P[0] <= #32) do Inc(P);
+      if (P - F) = Len then
+        if StrLComp(Pointer(S1), F, Len) = 0 then Exit;
+    end;
+    Result := False;
+  end;
+
   function IsDelphiKeyWord(const St: string): Boolean;
   begin
-    Result := Pos(' ' + AnsiLowerCase(St) + ' ', DelphiKeyWords) <> 0;
+//    Result := Pos(' ' + AnsiLowerCase(St) + ' ', DelphiKeyWords) <> 0;
+    Result := PosI(St, DelphiKeyWords);
   end;
 
   function IsBuilderKeyWord(const St: string): Boolean;
   begin
-    Result := Pos(' ' + St + ' ', BuilderKeyWords) <> 0;
+//    Result := Pos(' ' + St + ' ', BuilderKeyWords) <> 0;
+    Result := PosNI(St, BuilderKeyWords);
   end;
 
   function IsNQCKeyWord(const St: string): Boolean;
   begin
-    Result := Pos(' ' + St + ' ', NQCKeyWords) <> 0;
+//    Result := Pos(' ' + St + ' ', NQCKeyWords) <> 0;
+    Result := PosNI(St, NQCKeyWords);
   end;
 
   function IsJavaKeyWord(const St: string): Boolean;
   begin
-    Result := Pos(' ' + St + ' ', JavaKeyWords) <> 0;
+//    Result := Pos(' ' + St + ' ', JavaKeyWords) <> 0;
+    Result := PosNI(St, JavaKeyWords);
   end;
 
   function IsVBKeyWord(const St: string): Boolean;
   begin
-    Result := Pos(' ' + LowerCase(St) + ' ', VBKeyWords) <> 0;
+//    Result := Pos(' ' + LowerCase(St) + ' ', VBKeyWords) <> 0;
+    Result := PosI(St, VBKeyWords);
   end;
 
   function IsVBStatement(const St: string): Boolean;
   begin
-    Result := Pos(' ' + LowerCase(St) + ' ', VBStatements) <> 0;
+//    Result := Pos(' ' + LowerCase(St) + ' ', VBStatements) <> 0;
+    Result := PosI(St, VBStatements);
   end;
 
   function IsSQLKeyWord(const St: string): Boolean;
   begin
-    Result := Pos(' ' + AnsiLowerCase(St) + ' ', SQLKeyWords) <> 0;
+//    Result := Pos(' ' + AnsiLowerCase(St) + ' ', SQLKeyWords) <> 0;
+    Result := PosI(St, SQLKeyWords);
   end;
 
   function IsPythonKeyWord(const St: string): Boolean;
   begin
-    Result := Pos(' ' + St + ' ', PythonKeyWords) <> 0;
+//    Result := Pos(' ' + St + ' ', PythonKeyWords) <> 0;
+    Result := PosNI(St, PythonKeyWords);
   end;
 
   function IsHtmlTag(const St: string): Boolean;
   begin
-    Result := Pos(' ' + AnsiLowerCase(St) + ' ', HtmlTags) <> 0;
+//    Result := Pos(' ' + AnsiLowerCase(St) + ' ', HtmlTags) <> 0;
+    Result := PosI(St, HtmlTags);
   end;
 
   function IsHtmlSpecChar(const St: string): Boolean;
   begin
-    Result := Pos(' ' + AnsiLowerCase(St) + ' ', HtmlSpecChars) <> 0;
+//    Result := Pos(' ' + AnsiLowerCase(St) + ' ', HtmlSpecChars) <> 0;
+    Result := PosI(St, HtmlSpecChars);
   end;
 
   function IsPerlKeyWord(const St: string): Boolean;
   begin
-    Result := Pos(' ' + St + ' ', PerlKeyWords) <> 0;
+//    Result := Pos(' ' + St + ' ', PerlKeyWords) <> 0;
+    Result := PosNI(St, PerlKeyWords);
   end;
 
   function IsPerlStatement(const St: string): Boolean;
   begin
-    Result := Pos(' ' + St + ' ', PerlStatements) <> 0;
+//    Result := Pos(' ' + St + ' ', PerlStatements) <> 0;
+    Result := PosNI(St, PerlStatements);
   end;
 
   function IsCocoKeyWord(const St: string): Boolean;
   begin
-    Result := Pos(' ' + AnsiLowerCase(St) + ' ', CocoKeyWords) <> 0;
+//    Result := Pos(' ' + AnsiLowerCase(St) + ' ', CocoKeyWords) <> 0;
+    Result := PosI(St, CocoKeyWords);
   end;
 
   function IsPhpKeyWord(const St: string): Boolean;
   begin
-    Result := Pos(' ' + St + ' ', PerlKeyWords) <> 0;
+//    Result := Pos(' ' + St + ' ', PerlKeyWords) <> 0;
+    Result := PosNI(St, PerlKeyWords);
   end;
 
   function IsComment(const St: string): Boolean;
@@ -721,7 +779,7 @@ const
   var
     I: Integer;
   begin
-    iEnd := Min(iEnd, Max_X);
+    if iEnd > Max_X then iEnd := Max_X;
     for I := iBeg to iEnd do
       with LineAttrs[I] do
       begin
@@ -874,15 +932,15 @@ begin
   LineAttrs[1].Style := C.Style;
   LineAttrs[1].BC := C.BackColor;
   N := Min(Max_X, Length(S));
-  for i := 1 to N do
-    Move(LineAttrs[1], LineAttrs[i], sizeof(LineAttrs[1]));
+  for i := 2 to N do
+    Move(LineAttrs[1], LineAttrs[i], SizeOf(LineAttrs[1]));
   if Length(S) < Max_X then
   begin
     LineAttrs[N + 1].FC := Font.Color;
     LineAttrs[N + 1].Style := Font.Style;
     LineAttrs[N + 1].BC := Color;
-    for i := N + 1 to Max_X do
-      Move(LineAttrs[N + 1], LineAttrs[i], sizeof(LineAttrs[1]));
+    for i := N + 1 + 1 to Max_X do
+      Move(LineAttrs[N + 1], LineAttrs[i], SizeOf(LineAttrs[1]));
   end;
 
   if (FHighLighter = hlNone) and not UserReservedWords then
@@ -1078,41 +1136,77 @@ begin
     Exit;
   end;
   if FLineNum < Length(FLongDesc) then
-    FLong := FLongDesc[FLineNum]
+  begin
+    FLong := FLongDesc[FLineNum];
+    if FLong = lgUndefined then
+    begin
+      RescanLong(FLineNum); // scan the line
+      FLong := FLongDesc[FLineNum];
+    end;
+  end
   else
     { oh my god!, it's very big text }
     FLong := lgNone;
 end;
 
-function TJvHLEditor.RescanLong: Boolean;
+function TJvHLEditor.RescanLong(iLine: Integer): Boolean;
+const
+  MaxScanLinesAtOnce = 5000;
 var
   P, F: PChar;
-  iLine, MaxLines: Integer;
+  MaxLine, MaxScanLine: Integer;
   S: string;
   i, i1, L1: Integer;
 begin
-  Result := False;
-  if not FSyntaxHighlighting then Exit;
-  if not FLongTokens or (FHighLighter in [hlNone, hlIni]) then
-  begin
-    FLong := lgNone;
-    Exit;
-  end;
-  if Lines.Count = 0 then
-    Exit;
   FLong := lgNone;
-  iLine := 0;
-  ProductionsLine := High(Integer);
-  MaxLines := Lines.Count - 1;
-  if MaxLines > High(FLongDesc) then
-    MaxLines := High(FLongDesc);
+  Result := False; // no Invalidate
 
-  while iLine < MaxLines do
+  if (not FSyntaxHighlighting) or
+     (not FLongTokens or (FHighLighter in [hlNone, hlIni])) or
+     (Lines.Count = 0) then
+    Exit;
+
+  ProductionsLine := High(Integer);
+  MaxLine := Lines.Count - 1;
+  if MaxLine > High(FLongDesc) then
+    MaxLine := High(FLongDesc);
+  if iLine > MaxLine then Exit;;
+
+  MaxScanLine := MaxLine;
+  FLong := lgNone;
+  if iLine < 0 then
+  begin
+    FillChar(FLongDesc[0], SizeOf(FLongDesc[0]) * (1 + MaxLine), lgUndefined);
+    FLongDesc[0] := lgNone;
+    iLine := 0;
+  end
+  else
+  begin
+    FLong := FLongDesc[iLine];
+    if FLong = lgUndefined then
+    begin
+      if (iLine > 0) and (FLongDesc[iLine - 1] = lgUndefined) then
+      begin
+        iLine := 0; // scan all
+        FLong := lgNone;
+      end
+      else
+      begin
+        Dec(iLine);
+        FLong := FLongDesc[iLine];
+        MaxScanLine := Min(iLine + MaxScanLinesAtOnce, MaxLine);
+      end;
+    end
+    else
+      MaxScanLine := Min(iLine + MaxScanLinesAtOnce, MaxLine);
+  end;
+
+  while iLine < MaxScanLine do
   begin
     { only real programmer can write loop on 5 pages }
     // (rom) real programmers do not add comments to end ;-)
     S := Lines[iLine];
-    P := PChar(S);
+    P := Pointer(S);
     F := P;
     L1 := Length(S);
     if (L1 = 0) and (FLong in [lgPreproc, lgString]) then FLong := lgNone;
@@ -1417,13 +1511,17 @@ begin
       ProductionsLine := iLine;
     end;
 
+
     Inc(iLine);
     if FLongDesc[iLine] <> FLong then
     begin
-      Result := True; // don't invalidate() if there was no change
       FLongDesc[iLine] := FLong;
+      Result := True; // Invalidate
     end;
   end;
+ // undefine following lines
+  if MaxScanLine < MaxLine then
+    FillChar(FLongDesc[MaxScanLine + 1], SizeOf(FLongDesc[0]) * (MaxLine - MaxScanLine), lgUndefined);
 end;
 
 function TJvHLEditor.FindLongEnd: Integer;
@@ -1526,8 +1624,8 @@ begin
   end;
 end;
 
-procedure TJvHLEditor.TextModified(Pos: Integer; Action: TModifiedAction; Text:
-  string);
+procedure TJvHLEditor.TextModified(ACaretX, ACaretY: Integer; Action: TModifiedAction;
+  const Text: string);
 var
   S: string;
 {  LP, i: Integer;
@@ -1552,9 +1650,12 @@ begin
   else
     S := #13; { unknown highlighter ? }
   end;
-  if (Action = maAll) or HasAnyChar(S, Text) then
+  if (Action in [maAll, maReplace]) or HasAnyChar(S, Text) then
   begin
-    if RescanLong then
+    if Action = maAll then
+      ACaretY := -1;  // rescan all lines
+
+    if RescanLong(ACaretY) then
       Invalidate;
   end;
  {
@@ -1625,7 +1726,7 @@ const
   DelphiColor_Identifier: TDelphiColor = (ForeColor: clBlack; BackColor: clWindow; Style: []);
   DelphiColor_PlainText: TDelphiColor = (ForeColor: clWindowText; BackColor: clWindow; Style: []);
 
-function TJvHLEditor.GetDelphiColors: Boolean; {$IFDEF COMPILER6_UP}deprecated;{$ENDIF}
+function TJvHLEditor.GetDelphiColors: Boolean;
   function CompareColor(Symbol: TJvSymbolColor; const DelphiColor: TDelphiColor): Boolean;
   begin
     Result := (Symbol.ForeColor = DelphiColor.ForeColor) and
@@ -1644,7 +1745,7 @@ begin
   Result := True;
 end;
 
-procedure TJvHLEditor.SetDelphiColors(Value: Boolean); {$IFDEF COMPILER6_UP}deprecated;{$ENDIF}
+procedure TJvHLEditor.SetDelphiColors(Value: Boolean);
   procedure SetColor(Symbol: TJvSymbolColor; const DelphiColor: TDelphiColor);
   begin
     with DelphiColor do
