@@ -5879,14 +5879,6 @@ begin
     inherited Assign(Source);
 end;
 
-{$IFDEF UNITVERSIONING}
-initialization
-  RegisterUnitVersion(HInstance, UnitVersioning);
-
-finalization
-  UnregisterUnitVersion(HInstance);
-{$ENDIF UNITVERSIONING}
-
 procedure TJvCustomEditorBase.SetCurrentLineHighlight(const Value: TColor);
 begin
   if Value <> FCurrentLineHighlight then
@@ -5896,5 +5888,14 @@ begin
       PaintLine(CaretY);
   end;
 end;
+
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
