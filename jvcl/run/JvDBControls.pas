@@ -66,6 +66,10 @@ type
     AFont: TFont; var Background: TColor) of object; { obsolete }
   TDBEditShowEvent = procedure(Sender: TObject; Field: TField;
     var AllowEdit: Boolean) of object;
+  TDrawColumnTitleEvent = procedure(Sender: TObject; ACanvas: TCanvas;
+    ARect: TRect; Field: TField; ASortMarker: TBitmap; IsDown: Boolean;
+    var Offset: integer; var DeafaultDrawText,
+    DefaultDrawSortMarker: boolean) of object;
 
   TJvDBGrid = class(TDBGrid)
   private
@@ -96,6 +100,7 @@ type
     FOnShowEditor: TDbEditShowEvent;
     FOnTopLeftChanged: TNotifyEvent;
     FSelectionAnchor: TBookmarkStr;
+    FOnDrawColumnTitle: TDrawColumnTitleEvent;
     function GetImageIndex(Field: TField): Integer;
     procedure SetShowGlyphs(Value: Boolean);
     procedure SetRowsHeight(Value: Integer);
@@ -159,6 +164,9 @@ type
     procedure CalcSizingState(X, Y: Integer; var State: TGridState;
       var Index: Longint; var SizingPos, SizingOfs: Integer;
       var FixedInfo: TGridDrawInfo); override;
+    procedure DoDrawColumnTitle(Canvas: TCanvas; ARect: TRect; AField: TField;
+      ASortMarker: TBitmap; IsDown: Boolean; var Offset: integer;
+      var DefaultDrawText, DefaultDrawSortMarker: boolean); virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -215,6 +223,7 @@ type
     property OnTitleBtnClick: TTitleClickEvent read FOnTitleBtnClick write FOnTitleBtnClick;
     property OnKeyPress: TKeyPressEvent read FOnKeyPress write FOnKeyPress;
     property OnTopLeftChanged: TNotifyEvent read FOnTopLeftChanged write FOnTopLeftChanged;
+    property OnDrawColumnTitle: TDrawColumnTitleEvent read FOnDrawColumnTitle write FOnDrawColumnTitle;
     property OnContextPopup;
     property OnMouseDown;
     property OnMouseMove;
@@ -1805,6 +1814,7 @@ var
   MasterCol: TColumn;
   InBiDiMode: Boolean;
   DrawColumn: TColumn;
+  DefaultDrawText, DefaultDrawSortMarker: boolean;
 const
   EdgeFlag: array [Boolean] of UINT = (BDR_RAISEDINNER, BDR_SUNKENINNER);
 begin
@@ -1847,7 +1857,7 @@ begin
   end
   else
   if not (csLoading in ComponentState) and
-    (FTitleButtons  or (FixedCols > 0)) and
+    (FTitleButtons or (FixedCols > 0)) and
     (gdFixed in AState) and (dgTitles in Options) and (ARow < TitleOffset) then
   begin
     SavePen := Canvas.Pen.Color;
@@ -1931,23 +1941,35 @@ begin
           Indicator := Bmp.Width + 6
         else
           Indicator := 1;
+        DefaultDrawText:=True;
+        DefaultDrawSortMarker:=True;
+        DoDrawColumnTitle(Canvas,TitleRect,AField,Bmp,Down,Indicator,
+          DefaultDrawText,DefaultDrawSortMarker);
         TextRect := TitleRect;
-        if DrawColumn.Expandable then
-          DrawExpandBtn(TitleRect, TextRect, InBiDiMode, DrawColumn.Expanded);
-        with DrawColumn.Title do
-          DrawCellText(Self, ACol, ARow, MinimizeText(Caption, Canvas,
-            WidthOf(TextRect) - Indicator), TextRect, Alignment, vaCenter, IsRightToLeft);
-        if Bmp <> nil then
-        begin
-          ALeft := TitleRect.Right - Bmp.Width - 3;
-          if Down then
-            Inc(ALeft);
-          if IsRightToLeft then
-            ALeft := TitleRect.Left + 3;
-          if (ALeft > TitleRect.Left) and (ALeft + Bmp.Width < TitleRect.Right) then
-            DrawBitmapTransparent(Canvas, ALeft, (TitleRect.Bottom +
-              TitleRect.Top - Bmp.Height) div 2, Bmp, clFuchsia);
-        end;
+        if DefaultDrawText then
+          begin
+            if DrawColumn.Expandable then
+              DrawExpandBtn(TitleRect, TextRect, InBiDiMode, DrawColumn.Expanded);
+            with DrawColumn.Title do
+              DrawCellText(Self, ACol, ARow, MinimizeText(Caption, Canvas,
+                WidthOf(TextRect) - Indicator), TextRect, Alignment, vaCenter
+                , IsRightToLeft);
+          end;
+        if DefaultDrawSortMarker then
+          begin
+            if Bmp <> nil then
+            begin
+    //          ALeft := TitleRect.Right - Bmp.Width - 3;
+              ALeft := TitleRect.Right - Indicator + 3;
+              if Down then
+                Inc(ALeft);
+              if IsRightToLeft then
+                ALeft := TitleRect.Left + 3;
+              if (ALeft > TitleRect.Left) and (ALeft + Bmp.Width < TitleRect.Right) then
+                DrawBitmapTransparent(Canvas, ALeft, (TitleRect.Bottom +
+                  TitleRect.Top - Bmp.Height) div 2, Bmp, clFuchsia);
+            end;
+          end;
       end
       else
         DrawCellText(Self, ACol, ARow, '', ARect, taLeftJustify, vaCenter);
@@ -2213,6 +2235,17 @@ begin
   end;
   FSizingIndex := Index;
   FSizingOfs := SizingOfs;
+end;
+
+procedure TJvDBGrid.DoDrawColumnTitle(Canvas: TCanvas; ARect: TRect;
+  AField: TField; ASortMarker: TBitmap; IsDown: Boolean; var Offset: integer;
+  var DefaultDrawText, DefaultDrawSortMarker: boolean);
+begin
+  if Assigned(FOnDrawColumnTitle) then
+    begin
+      FOnDrawColumnTitle(Self,Canvas,ARect,AField,ASortMarker,IsDown,Offset,
+        DefaultDrawText,DefaultDrawSortMarker);
+    end;
 end;
 
 //=== TJvDBComboEdit =========================================================
