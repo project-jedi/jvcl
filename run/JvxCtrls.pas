@@ -19,9 +19,16 @@ Contributor(s):
   Polaris Software
   Peter Thornqvist [peter3@peter3.com]
 
-Last Modified: 2003-08-17
+Last Modified: 2003-09-13
 
 Changes:
+2003-09-13:
+  * Turned TJvCustomLabel into a consumer.
+    Notes: * angled labels will simply use the current item's Text to render and ignore any provider
+             specified rendering implementations.
+           * D5 users: when changing a property that might clear out the provider (Caption,
+             ImageIndex and Image) you can run into Access Violations if the Provider property is
+             collapsed. This is due to a limitation in D5 property editors and can not be solved.  
 2003-08-17:
   * All implementation moved from TJvLabel to TJvCustomLabel. TJvLabel now only publishes
     properties and events.
@@ -48,7 +55,8 @@ uses
   {$ENDIF}
   Messages, Classes, Controls, Graphics, StdCtrls, ExtCtrls, Forms,
   Buttons, Menus, IniFiles, ImgList,
-  JvAppStore, JvTimer, JvConsts, JvFormPlacement, JvComponent, JVCLVer, JvTypes;
+  JvAppStore, JvTimer, JvConsts, JvFormPlacement, JvComponent, JVCLVer, JvTypes,
+  JvDataProvider, JvDataProviderImpl;
 
 type
   TPositiveInt = 1..MaxInt;
@@ -409,6 +417,7 @@ type
     FAngle: TJvLabelRotateAngle;
     FSpacing: integer;
     FHotTrackFontOptions: TJvTrackFontOptions;
+    FConsumerSvc: TJvDataConsumer;
     function GetTransparent: Boolean;
     procedure UpdateTracking;
     procedure SetAlignment(Value: TAlignment);
@@ -447,6 +456,7 @@ type
     procedure SetSpacing(const Value: integer);
     procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
   protected
+    procedure DoDrawCaption(var Rect: TRect; Flags: Word); virtual;
     procedure DoDrawText(var Rect: TRect; Flags: Word); virtual;
     procedure AdjustBounds;
     {$IFDEF COMPILER6_UP}
@@ -465,6 +475,10 @@ type
     procedure MouseLeave; dynamic;
     function GetImageWidth:integer;virtual;
     function GetImageHeight:integer;virtual;
+    procedure SetConsumerService(Value: TJvDataConsumer);
+    function ProviderActive: Boolean;
+    procedure ConsumerServiceChanged(Sender: TObject);
+    procedure NonProviderChange;
     property Angle: TJvLabelRotateAngle read FAngle write SetAngle default 0;
     property AutoOpenURL: boolean read FAutoOpenURL write FAutoOpenURL;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
@@ -489,6 +503,7 @@ type
     property ShowFocus: Boolean read FShowFocus write SetShowFocus default False;
     property Transparent: Boolean read GetTransparent write SetTransparent default False;
     property URL: string read FURL write FURL;
+    property Provider: TJvDataConsumer read FConsumerSvc write SetConsumerService;
     property WordWrap: Boolean read FWordWrap write SetWordWrap default False;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
@@ -2700,6 +2715,9 @@ end;
 constructor TJvCustomLabel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FConsumerSvc := TJvDataConsumer.Create(Self, [DPA_RenderDisabledAsGrayed,
+    DPA_RendersSingleItem]);
+  FConsumerSvc.OnChanged := ConsumerServiceChanged;
   FChangeLink := TChangeLink.Create;
   FChangeLink.OnChange := DoImagesChange;
   ControlStyle := ControlStyle + [csOpaque, csReplicatable];
@@ -2728,8 +2746,23 @@ begin
 end;
 
 function TJvCustomLabel.GetLabelCaption: string;
+var
+  ItemText: IJvDataItemText;
 begin
-  Result := Caption;
+  if ProviderActive then
+  begin
+    Provider.Enter;
+    try
+      if Supports((Provider as IJvDataConsumerItemSelect).GetItem, IJvDataItemText, ItemText) then
+        Result := ItemText.Caption
+      else
+        Result := Caption;
+    finally
+      Provider.Leave;
+    end;
+  end
+  else
+    Result := Caption;
 end;
 
 function TJvCustomLabel.GetDefaultFontColor: TColor;
@@ -2737,7 +2770,7 @@ begin
   Result := Font.Color;
 end;
 
-procedure TJvCustomLabel.DoDrawText(var Rect: TRect; Flags: Word);
+procedure TJvCustomLabel.DoDrawCaption(var Rect: TRect; Flags: Word);
 var
   Text: string;
   PosShadow: TShadowPosition;
@@ -2776,6 +2809,55 @@ begin
     SizeShadow, ColorToRGB(ColorShadow), PosShadow);
 end;
 
+procedure TJvCustomLabel.DoDrawText(var Rect: TRect; Flags: Word);
+var
+  Tmp: TSize;
+  TmpItem: IJvDataItem;
+  ItemsRenderer: IJvDataItemsRenderer;
+  ItemRenderer: IJvDataItemRenderer;
+  DrawState: TProviderDrawStates;
+begin
+  if ProviderActive then
+  begin
+    Provider.Enter;
+    try
+      if not Enabled then
+        DrawState := [pdsDisabled]
+      else
+        DrawState := [];
+      TmpItem := (Provider as IJvDataConsumerItemSelect).GetItem;
+      if (TmpItem <> nil) and (Supports(TmpItem.GetItems, IJvDataItemsRenderer, ItemsRenderer) or
+        Supports(TmpItem, IJvDataItemRenderer, ItemRenderer)) then
+      begin
+        Canvas.Brush.Color := Color;
+        Canvas.Font := Font;
+        if (Flags and DT_CALCRECT <> 0) then
+        begin
+          if ItemsRenderer <> nil then
+            Tmp := ItemsRenderer.MeasureItem(Canvas, TmpItem)
+          else
+            Tmp := ItemRenderer.Measure(Canvas);
+          Rect.Right := Tmp.cx;
+          Rect.Bottom := Tmp.cy;
+        end
+        else
+        begin
+          if ItemsRenderer <> nil then
+            ItemsRenderer.DrawItem(Canvas, Rect, TmpItem, DrawState)
+          else
+            ItemRenderer.Draw(Canvas, Rect, DrawState);
+        end;
+      end
+      else
+        DoDrawCaption(Rect, Flags);
+    finally
+      Provider.Leave;
+    end;
+  end
+  else
+    DoDrawCaption(Rect, Flags);
+end;
+
 procedure TJvCustomLabel.DrawAngleText(Flags: Word);
 var
   Text: array[0..4096] of Char;
@@ -2787,7 +2869,7 @@ var
   Angle10: Integer;
 begin
   Angle10 := Angle * 10;
-  GetTextBuf(Text, SizeOf(Text));
+  StrLCopy(@Text, PChar(GetLabelCaption), SizeOf(Text) - 1);
   if (Flags and DT_CALCRECT <> 0) and ((Text[0] = #0) or ShowAccelChar and
     (Text[0] = '&') and (Text[1] = #0)) then
     StrCopy(Text, ' ');
@@ -3120,6 +3202,7 @@ end;
 
 procedure TJvCustomLabel.CMTextChanged(var Msg: TMessage);
 begin
+  NonProviderChange;
   Invalidate;
   AdjustBounds;
 end;
@@ -3208,6 +3291,8 @@ procedure TJvCustomLabel.SetImageIndex(const Value: TImageIndex);
 begin
   if FImageIndex <> Value then
   begin
+    if Images <> nil then
+      NonProviderChange;
     FImageIndex := Value;
     Invalidate;
   end;
@@ -3217,6 +3302,7 @@ procedure TJvCustomLabel.SetImages(const Value: TCustomImageList);
 begin
   if FImages <> Value then
   begin
+    NonProviderChange;
     if FImages <> nil then
     begin
       FImages.RemoveFreeNotification(self);
@@ -3235,14 +3321,34 @@ end;
 function TJvCustomLabel.GetImageHeight: integer;
 begin
   Result := 0;
-  if Images <> nil then
+  if not ProviderActive and (Images <> nil) then
     Result := Images.Height;
+end;
+
+procedure TJvCustomLabel.SetConsumerService(Value: TJvDataConsumer);
+begin
+end;
+
+function TJvCustomLabel.ProviderActive: Boolean;
+begin
+  Result := Provider.ProviderIntf <> nil;
+end;
+
+procedure TJvCustomLabel.ConsumerServiceChanged(Sender: TObject);
+begin
+  if ProviderActive then
+    AdjustBounds;
+end;
+
+procedure TJvCustomLabel.NonProviderChange;
+begin
+  Provider.Provider := nil;
 end;
 
 function TJvCustomLabel.GetImageWidth: integer;
 begin
   Result := 0;
-  if Images <> nil then
+  if not ProviderActive and (Images <> nil) then
     Result := Images.Width;
 end;
 
@@ -3266,10 +3372,29 @@ begin
 end;
 
 procedure TJvCustomLabel.Click;
+var
+  HasBeenHandled: Boolean;
+  TmpItem: IJvDataItem;
+  ItemHandler: IJvDataItemBasicAction;
 begin
-  inherited;
-  if AutoOpenURL and (URL <> '') then
-    OpenObject(URL);
+  HasBeenHandled := False;
+  if ProviderActive then
+  begin
+    Provider.Enter;
+    try
+      TmpItem := (Provider as IJvDataConsumerItemSelect).GetItem;
+      if (TmpItem <> nil) and Supports(TmpItem, IJvDataItemBasicAction, ItemHandler) then
+        HasBeenHandled := ItemHandler.Execute(Self);
+    finally
+      Provider.Leave;
+    end;
+  end;
+  if not HasBeenHandled then
+  begin
+    inherited Click;
+    if AutoOpenURL and (URL <> '') then
+      OpenObject(URL);
+  end;
 end;
 
 procedure TJvCustomLabel.SetAngle(const Value: TJvLabelRotateAngle);
