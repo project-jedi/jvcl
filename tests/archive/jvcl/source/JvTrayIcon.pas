@@ -360,8 +360,11 @@ begin
 
           NIN_BALLOONHIDE: //sb
             begin
-              if Assigned(FOnBalloonHide) then
-                FOnBalloonHide(self);
+              try
+                if Assigned(FOnBalloonHide) then
+                  FOnBalloonHide(self);
+              except
+              end;
               result := Integer(true);
             end;
           NIN_BALLOONTIMEOUT: //sb
@@ -373,8 +376,11 @@ begin
             end;
           NIN_BALLOONUSERCLICK: //sb
             begin
-              if Assigned(FOnBalloonClick) then
-                FOnBalloonClick(self);
+              try
+                if Assigned(FOnBalloonClick) then
+                  FOnBalloonClick(self);
+              except
+              end;
               result := Integer(true);
               //Result := DefWindowProc(FHandle, Msg, wParam, lParam);
               BalloonHint('','');
