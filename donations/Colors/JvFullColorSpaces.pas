@@ -246,20 +246,24 @@ type
   TJvDEFColorSpace = class(TJvColorSpace)
   private
     FDelphiColors: TStringList;
-    procedure AddDelphiColor(const S: string);
+    procedure GetColorValuesCallBack(const S: String);
   protected
     function GetName:string; override;
     function GetShortName: string; override;
     function GetNumberOfColors: Cardinal; override;
     function GetColorName(Index: Integer): string;
+    function GetPretyName(Index: Integer): string;
     function GetColorValue(Index: Integer): TColor;
   public
     constructor Create(ColorID: TJvFullColorSpaceID); override;
     destructor Destroy; override;
     function ConvertFromColor(AColor: TColor): TJvFullColor; override;
     function ConvertToColor(AColor: TJvFullColor): TColor; override;
+    procedure AddCustomColor(AColor:TColor; ShortName:string; PretyName:string);
+    procedure AddDelphiColor(Value:TColor);
     property ColorCount:Cardinal read GetNumberOfColors;
     property ColorName[Index:Integer]:string read GetColorName;
+    property ColorPretyName[Index:Integer]:string read GetPretyName;
     property ColorValue[Index:Integer]:TColor read GetColorValue; default;
   end;
 
@@ -305,7 +309,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  TypInfo, Math;
+  TypInfo, Math, ExtCtrls, StdCtrls;
 
 var
   GlobalColorSpaceManager: TJvColorSpaceManager = nil;
@@ -1396,6 +1400,60 @@ begin
   Result := RsLAB_ShortName;
 end;
 
+//=== { TJvHookColorBox } ====================================================
+
+// (outchy) Hook of TColorBox to have access to color's prety names.
+// Shame on me but that's the only way to access ColorToPretyName array in the
+// ExtCtrls unit. Thanks Borland.
+
+{type
+  TJvHookColorBox = class (TColorBox)
+  protected
+    procedure CreateWindowHandle; override;
+    procedure DestroyWindowHandle; override;
+    function GetItemsClass: TCustomComboBoxStringsClass; override;
+  public
+    constructor Create; reintroduce;
+  end;
+
+constructor TJvHookColorBox.Create;
+begin
+  inherited Create(nil);
+  Styles := [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeNone,
+             cbIncludeDefault, cbPrettyNames];
+  Items.Free;
+end;
+
+procedure CreateWindowHandle; override;
+begin
+  WindowHandle := 1;
+end;
+
+procedure DestroyWindowHandle; override;
+begin
+  WindowHandle := 0;
+end;
+
+var
+  GlobalHookColorBox: TJvHookColorBox = nil;
+
+function HookColorBox: TJvHookColorBox;
+begin
+  if GlobalHookColorBox = nil then
+    GlobalHookColorBox := TJvHookColorBox.Create;
+  Result:=GlobalHookColorBox;
+end;
+
+function ColorToPretyName(Value: TColor):string;
+begin
+
+end;
+
+function PretyNameToString(Value: string):TColor;
+begin
+  Result:=clNone;
+end; }
+
 //=== { TJvDEFColorSpace } ===================================================
 
 constructor TJvDEFColorSpace.Create(ColorID: TJvFullColorSpaceID);
@@ -1404,8 +1462,8 @@ begin
   FDelphiColors := TStringList.Create;
   // ignore duplicates
   FDelphiColors.Duplicates:=dupIgnore;
-  GetColorValues(AddDelphiColor);
-  AddDelphiColor('clNone');
+  GetColorValues(GetColorValuesCallBack);
+  AddDelphiColor(clNone);
 end;
 
 destructor TJvDEFColorSpace.Destroy;
@@ -1414,12 +1472,22 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvDEFColorSpace.AddDelphiColor(const S: string);
-var
-  C: Integer;
+procedure TJvDEFColorSpace.GetColorValuesCallBack(const S: String);
 begin
-  if IdentToColor(S, C) then
-    FDelphiColors.AddObject(S, TObject(C));
+  AddCustomColor(StringToColor(S),S,'');
+end;
+
+procedure TJvDEFColorSpace.AddDelphiColor(Value: TColor);
+begin
+  AddCustomColor(Value,ColorToString(Value),'');//ColorToPretyName(Value));
+end;
+
+procedure TJvDEFColorSpace.AddCustomColor(AColor: TColor; ShortName,
+  PretyName: string);
+begin
+  //FDelphiColors.ValueFromIndex[
+  FDelphiColors.AddObject(ShortName,TObject(AColor));
+  //]:=PretyName;
 end;
 
 function TJvDEFColorSpace.ConvertFromColor(AColor: TColor): TJvFullColor;
@@ -1479,6 +1547,11 @@ begin
     Result := FDelphiColors.Strings[Index]
   else
     Result := '';
+end;
+
+function TJvDEFColorSpace.GetPretyName(Index: Integer): string;
+begin
+
 end;
 
 function TJvDEFColorSpace.GetColorValue(Index: Integer): TColor;

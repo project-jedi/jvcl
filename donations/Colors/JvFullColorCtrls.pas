@@ -219,6 +219,7 @@ type
     procedure AxisConfigChange; override;
     procedure ColorSpaceChange; override;
     procedure Paint; override;
+    procedure InvalidateColors(AColor1, AColor2: TJvFullColor);
     procedure PenChanged(Sender: TObject);
     procedure DrawBuffer; override;
     procedure CalcSize; override;
@@ -227,6 +228,7 @@ type
       X, Y: Integer); override;
     procedure MouseColor(Shift: TShiftState;
       X, Y: Integer); override;
+    procedure KeyMove(KeyCode: TJvKeyCode; MoveCount: Integer); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure TrackBarColorChange(Sender: TObject); override;
   public
@@ -1739,7 +1741,7 @@ var
     Distance: Integer;
     Point: TPoint;
   begin
-    Point := FullColorToPosition(LFullColor);
+    Point := FullColorToPosition(AFullColor);
     Distance := Round(Sqrt(Sqr(X - CrossSize - Point.X) + Sqr(Y - CrossSize - Point.Y)));
     if Distance < CrossSize then
     begin
@@ -1813,6 +1815,13 @@ begin
   inherited MouseUp(Button, Shift, X, Y);
 end;
 
+procedure TJvFullColorCircle.KeyMove(KeyCode: TJvKeyCode;
+  MoveCount: Integer);
+begin
+  // (outchy) todo implementation but how to select a cursor ???
+
+end;
+
 procedure TJvFullColorCircle.PenChanged(Sender: TObject);
 begin
   WantDrawBuffer := True;
@@ -1838,9 +1847,65 @@ begin
   end;
 end;
 
-procedure TJvFullColorCircle.SetFullColor(const Value: TJvFullColor);
+procedure TJvFullColorCircle.InvalidateColors(AColor1, AColor2: TJvFullColor);
 var
   AxisX, AxisY: TJvAxisIndex;
+  APosition1,
+  APosition2:TPoint;
+  ARect:TRect;
+  CenterX, CenterY:Integer;
+begin
+  AxisX := GetIndexAxisX(AxisConfig);
+  AxisY := GetIndexAxisY(AxisConfig);
+
+  if (GetAxisValue(AColor1, AxisX) <> GetAxisValue(AColor2, AxisX)) or
+     (GetAxisValue(AColor1, AxisY) <> GetAxisValue(AColor2, AxisY)) then
+  begin
+    APosition1:=FullColorToPosition(AColor1);
+    APosition2:=FullColorToPosition(AColor2);
+    if APosition1.X<APosition2.X then
+    begin
+      ARect.Left:=APosition1.X;
+      ARect.Right:=APosition2.X;
+    end
+    else
+    begin
+      ARect.Left:=APosition2.X;
+      ARect.Right:=APosition1.X;
+    end;
+    if APosition1.Y<APosition2.Y then
+    begin
+      ARect.Top:=APosition1.Y;
+      ARect.Bottom:=APosition2.Y;
+    end
+    else
+    begin
+      ARect.Top:=APosition2.Y;
+      ARect.Bottom:=APosition1.Y;
+    end;
+
+    CenterX:=Width div 2;
+    CenterY:=Height div 2;
+    if (ARect.Left>CenterX) then
+      ARect.Left:=CenterX;
+    if (ARect.Top>CenterY) then
+      ARect.Top:=CenterY;
+    if (ARect.Right<CenterX) then
+      ARect.Right:=CenterX;
+    if (ARect.Bottom<CenterY) then
+      ARect.Bottom:=CenterY;
+
+    ARect.Left:=ARect.Left-CrossStyle.Width;
+    ARect.Top:=ARect.Top-CrossStyle.Width;
+    ARect.Right:=ARect.Right+CrossStyle.Width+(2*CrossSize);
+    ARect.Bottom:=ARect.Bottom+CrossStyle.Width+(2*CrossSize);
+
+    InvalidateRect(Handle,@ARect,False);
+  end;
+end;
+
+procedure TJvFullColorCircle.SetFullColor(const Value: TJvFullColor);
+var
   OldColor: TJvFullColor;
 begin
   ConvertToID(Value);
@@ -1855,19 +1920,14 @@ begin
     FColorChanging := False;
   end;
 
-  AxisX := GetIndexAxisX(AxisConfig);
-  AxisY := GetIndexAxisY(AxisConfig);
+  InvalidateColors(OldColor,FullColor);
 
-  if (GetAxisValue(OldColor, AxisX) <> GetAxisValue(FullColor, AxisX)) or
-    (GetAxisValue(OldColor, AxisY) <> GetAxisValue(FullColor, AxisY)) then
-    Invalidate;
   if ColorSpaceManager.GetColorSpaceID(OldColor) <> ColorSpaceManager.GetColorSpaceID(FullColor) then
     CalcSize;
 end;
 
 procedure TJvFullColorCircle.SetBlueColor(const Value: TJvFullColor);
 var
-  AxisX, AxisY: TJvAxisIndex;
   OldColor: TJvFullColor;
 begin
   ConvertToID(Value);
@@ -1882,12 +1942,7 @@ begin
     FColorChanging := False;
   end;
 
-  AxisX := GetIndexAxisX(AxisConfig);
-  AxisY := GetIndexAxisY(AxisConfig);
-
-  if (GetAxisValue(OldColor, AxisX) <> GetAxisValue(BlueColor, AxisX)) or
-    (GetAxisValue(OldColor, AxisY) <> GetAxisValue(BlueColor, AxisY)) then
-    Invalidate;
+  InvalidateColors(OldColor,BlueColor);
 
   if Assigned(FOnBlueColorChange) then
     FOnBlueColorChange(Self);
@@ -1895,7 +1950,6 @@ end;
 
 procedure TJvFullColorCircle.SetGreenColor(const Value: TJvFullColor);
 var
-  AxisX, AxisY: TJvAxisIndex;
   OldColor: TJvFullColor;
 begin
   ConvertToID(Value);
@@ -1910,12 +1964,7 @@ begin
     FColorChanging := False;
   end;
 
-  AxisX := GetIndexAxisX(AxisConfig);
-  AxisY := GetIndexAxisY(AxisConfig);
-
-  if (GetAxisValue(OldColor, AxisX) <> GetAxisValue(GreenColor, AxisX)) or
-    (GetAxisValue(OldColor, AxisY) <> GetAxisValue(GreenColor, AxisY)) then
-    Invalidate;
+  InvalidateColors(OldColor, GreenColor);
 
   if Assigned(FOnGreenColorChange) then
     FOnGreenColorChange(Self);
@@ -1923,7 +1972,6 @@ end;
 
 procedure TJvFullColorCircle.SetRedColor(const Value: TJvFullColor);
 var
-  AxisX, AxisY: TJvAxisIndex;
   OldColor: TJvFullColor;
 begin
   ConvertToID(Value);
@@ -1938,12 +1986,7 @@ begin
     FColorChanging := False;
   end;
 
-  AxisX := GetIndexAxisX(AxisConfig);
-  AxisY := GetIndexAxisY(AxisConfig);
-
-  if (GetAxisValue(OldColor, AxisX) <> GetAxisValue(RedColor, AxisX)) or
-    (GetAxisValue(OldColor, AxisY) <> GetAxisValue(RedColor, AxisY)) then
-    Invalidate;
+  InvalidateColors(OldColor,RedColor);
 
   if Assigned(FOnRedColorChange) then
     FOnRedColorChange(Self);

@@ -171,7 +171,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Math, SysUtils, GraphUtil, DesignConst, TypInfo, Forms,
-  JvFullColorDialogs, JvFullColorCtrls, JvFullColorListFrm;
+  JvFullColorDialogs, JvFullColorCtrls, JvFullColorListForm;
 
 const
   COLOR_PREVIEW_RECT = 16;
@@ -678,11 +678,11 @@ end;
 
 procedure TJvFullColorListEditor.Edit;
 var
-  FullColorListForm: TJvFullColorListForm;
+  FullColorListForm: TJvFullColorListFrm;
   FullColorList:TJvFullColorList;
   IndexList, IndexColor:Integer;
 begin
-  FullColorListForm := TJvFullColorListForm.Create(Application);
+  FullColorListForm := TJvFullColorListFrm.Create(Application);
   try
     FullColorList:=TJvFullColorList.Create;
     try
@@ -706,7 +706,7 @@ end;
 
 procedure TJvFullColorListEditor.FormApply(Sender: TObject);
 begin
-  SetOrdValue(Cardinal((Sender as TJvFullColorListForm).ColorList));
+  SetOrdValue(Cardinal((Sender as TJvFullColorListFrm).ColorList));
 end;
 
 function TJvFullColorListEditor.GetAttributes: TPropertyAttributes;
