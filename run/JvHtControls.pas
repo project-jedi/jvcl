@@ -255,6 +255,7 @@ type
 
   TJvHTComboBox = class(TJvCustomHTComboBox)
   published
+    property Anchors;
     property HideSel;
     property DropWidth;
     // Kaczkowski - based on JvMultilineListBox
@@ -331,6 +332,7 @@ type
   published
     property Align;
     // property Alignment;  // Kaczkowski
+    property Anchors;
     property AutoSize;
     property Caption;
     property Color;
