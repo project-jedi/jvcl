@@ -111,10 +111,10 @@ type
     procedure SetString(Index: Integer; Value: string);
     procedure SetObject(Index: Integer; Value: TObject);
     function GetCount: Integer;
-    procedure ReadSLOItem(Sender: TJvCustomAppStorage; const Path: string; const List: TObject;const Index: Integer);
-    procedure WriteSLOItem(Sender: TJvCustomAppStorage; const Path: string; const List: TObject; const Index: Integer);
+    procedure ReadSLOItem(Sender: TJvCustomAppStorage; const Path: string; const List: TObject;const Index: Integer; const ItemName: string);
+    procedure WriteSLOItem(Sender: TJvCustomAppStorage; const Path: string; const List: TObject; const Index: Integer; const ItemName: string);
     procedure DeleteSLOItems(Sender: TJvCustomAppStorage; const Path: string; const List: TObject;
-      const First, Last: Integer);
+      const First, Last: Integer; const ItemName: string);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -152,7 +152,6 @@ uses
 const
   cLastSaveTime = 'Last Save Time';
   cObject = 'Object';
-  cItem = 'Item';
 
 //=== { TCombinedStrings } ===================================================
 
@@ -637,7 +636,7 @@ begin
 end;
 
 procedure TJvCustomPropertyListStore.ReadSLOItem(Sender: TJvCustomAppStorage; const Path: string;
-  const List: TObject; const Index: Integer);
+  const List: TObject; const Index: Integer; const ItemName: string);
 var
   NewObject:  TObject;
   ObjectName: string;
@@ -662,14 +661,14 @@ begin
           Sender.ReadPersistent(Sender.ConcatPaths([Path, cObject + IntToStr(Index)]),
             TPersistent(NewObject), True, True, CombinedIgnoreProperties);
       end;
-      if Sender.ValueStored(Sender.ConcatPaths([Path, cItem + IntToStr(Index)])) then
-        ObjectName := Sender.ReadString(Sender.ConcatPaths([Path, cItem + IntToStr(Index)]))
+      if Sender.ValueStored(Sender.ConcatPaths([Path, ItemName + IntToStr(Index)])) then
+        ObjectName := Sender.ReadString(Sender.ConcatPaths([Path, ItemName + IntToStr(Index)]))
       else
         ObjectName := '';
       Items.AddObject(ObjectName, NewObject);
     end
     else
-      Items.Add(Sender.ReadString(Sender.ConcatPaths([Path, cItem + IntToStr(Index)])))
+      Items.Add(Sender.ReadString(Sender.ConcatPaths([Path, ItemName + IntToStr(Index)])))
   end
   else
   if Sender.ValueStored(Sender.ConcatPaths([Path, cObject + IntToStr(Index)])) then
@@ -687,17 +686,17 @@ begin
         Sender.ReadPersistent(Sender.ConcatPaths([Path, cObject + IntToStr(Index)]),
           TPersistent(Objects[Index]), True, True, CombinedIgnoreProperties);
     end;
-    if Sender.ValueStored(Sender.ConcatPaths([Path, cItem + IntToStr(Index)])) then
-      Strings[Index] := Sender.ReadString(Sender.ConcatPaths([Path, cItem + IntToStr(Index)]))
+    if Sender.ValueStored(Sender.ConcatPaths([Path, ItemName + IntToStr(Index)])) then
+      Strings[Index] := Sender.ReadString(Sender.ConcatPaths([Path, ItemName + IntToStr(Index)]))
     else
       Strings[Index] := '';
   end
   else
-    Strings[Index] := Sender.ReadString(Sender.ConcatPaths([Path, cItem + IntToStr(Index)]));
+    Strings[Index] := Sender.ReadString(Sender.ConcatPaths([Path, ItemName + IntToStr(Index)]));
 end;
 
 procedure TJvCustomPropertyListStore.WriteSLOItem(Sender: TJvCustomAppStorage; const Path: string; const List: TObject;
-  const Index: Integer);
+  const Index: Integer; const ItemName: string);
 begin
   if Assigned(Objects[Index]) then
   begin
@@ -712,20 +711,20 @@ begin
       Sender.WritePersistent(Sender.ConcatPaths([Path, cObject + IntToStr(Index)]),
         TPersistent(Objects[Index]), True, CombinedIgnoreProperties);
     if Strings[Index] <> '' then
-      Sender.WriteString(Sender.ConcatPaths([Path, cItem + IntToStr(Index)]), Strings[Index]);
+      Sender.WriteString(Sender.ConcatPaths([Path, ItemName + IntToStr(Index)]), Strings[Index]);
   end
   else
-    Sender.WriteString(Sender.ConcatPaths([Path, cItem + IntToStr(Index)]), Strings[Index]);
+    Sender.WriteString(Sender.ConcatPaths([Path, ItemName + IntToStr(Index)]), Strings[Index]);
 end;
 
 procedure TJvCustomPropertyListStore.DeleteSLOItems(Sender: TJvCustomAppStorage; const Path: string;
-  const List: TObject; const First, Last: Integer);
+  const List: TObject; const First, Last: Integer; const ItemName: string);
 var
   I: Integer;
 begin
   for I := First to Last do
   begin
-    Sender.DeleteValue(Sender.ConcatPaths([Path, cItem + IntToStr(I)]));
+    Sender.DeleteValue(Sender.ConcatPaths([Path, ItemName + IntToStr(I)]));
     Sender.DeleteValue(Sender.ConcatPaths([Path, cObject + IntToStr(I)]));
   end;
 end;
