@@ -55,11 +55,11 @@ interface
 
 uses
   Classes, SysUtils,
-  Windows, Messages, Controls, Graphics, Forms, ImgList, ActnList, ExtCtrls,
+  Windows, Controls, Messages, Graphics, Forms, ImgList, ActnList, ExtCtrls,
   {$IFDEF VisualCLX}
   Qt, JvQTypes, QTypes,
   {$ENDIF VisualCLX}
-  JvConsts, JvXPCore, JvXPCoreUtils;
+  JvConsts, JvXPCore, JvXPCoreUtils, JvJCLUtils;
 
 type
   { Warning: Never change order of enumeration because of
@@ -886,17 +886,9 @@ begin
     if (ItemCaption = '') and ((csDesigning in lBar.ComponentState) or (lBar.ControlCount = 0)) then
       ItemCaption := Format('(%s %d)', [RsUntitled, Index]);
     Inc(Rect.Left, 20);
-
-    {$IFDEF VCL}
-    SetBkMode(HAndle, Windows.TRANSPARENT);
-    DrawText(Handle, PChar(ItemCaption), -1, Rect, DT_SINGLELINE or
-      DT_VCENTER or DT_END_ELLIPSIS);
-    {$ENDIF VCL}
-
-    {$IFDEF VisualCLX}
+    SetBkMode(Handle, Windows.TRANSPARENT);
     DrawText(ACanvas, ItemCaption, -1, Rect, DT_SINGLELINE or
       DT_VCENTER or DT_END_ELLIPSIS);
-    {$ENDIF VisualCLX}
   end;
 end;
 
@@ -1265,10 +1257,11 @@ end;
 constructor TJvXPFadeThread.Create(WinXPBar: TJvXPCustomWinXPBar;
   RollDirection: TJvXPBarRollDirection);
 begin
-  inherited Create(False);
+  inherited Create(True);
   FWinXPBar := WinXPBar;
   FRollDirection := RollDirection;
   FreeOnTerminate := True;
+  Suspended := false;
 end;
 
 procedure TJvXPFadeThread.Execute;
@@ -2115,14 +2108,8 @@ begin
       Font.Color := FHotTrackColor;
     Rect.Bottom := Rect.Top + FHeaderHeight;
     Dec(Rect.Right, 3);
-    {$IFDEF VCL}
-    DrawText(Handle, PChar(Caption), -1, Rect, DT_SINGLELINE or DT_VCENTER or
-      DT_END_ELLIPSIS);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
     DrawText(Canvas, Caption, -1, Rect, DT_SINGLELINE or DT_VCENTER or
       DT_END_ELLIPSIS or DT_NOPREFIX);
-    {$ENDIF VisualCLX}
     { draw visible items }
     Brush.Color := FColors.BodyColor;
     if not FCollapsed or FRolling then
