@@ -43,7 +43,8 @@ implementation
 
 uses
   InspectorExampleTestForm,
-  JclRTTI;
+  JclRTTI,
+  JVCLVer;
 
 type
   TTestOption = (toOption1, toOption2, toOption3, toOption4, toOption5, toOption6, toOption7, toOption8);
@@ -56,6 +57,7 @@ var
   FirstName: string = 'Marcel';
   Initial: string;
   LastName: string = 'Bestebroer';
+  VerInfoStr: string = JVCL_VERSIONSTRING;
 
 { TfrmInspector }
 
@@ -64,8 +66,7 @@ var
   InspCat: TJvInspectorCustomCategoryItem;
   I: Integer;
 const
-  PropArray: array[0..3, 0..1] of string = (
-    ('AboutJVCL', 'About JVCL'),
+  PropArray: array[0..2, 0..1] of string = (
     ('UseBands', 'Use bands'),
     ('WantTabs', 'TAB navigates'),
     ('Painter', 'Paint style')
@@ -75,7 +76,7 @@ begin
   InspCat.DisplayName := 'JvInspector Settings';
   for I := Low(PropArray) to High(PropArray) do
     TJvInspectorPropData.Create(InspCat, JvInspector1, GetPropInfo(JvInspector1, PropArray[I, 0])).Name := PropArray[I, 1];
-//    TJvInspectorPropData.Create(InspCat, StyleChanger, GetPropInfo(StyleChanger, 'StyleClass')).Name := 'Paint style';
+  TJvInspectorVarData.Create('AboutJVCL', TypeInfo(string), InspCat, VerInfoStr).Name := 'About JVCL';
   InspCat.Expanded := True;
 end;
 
@@ -90,7 +91,6 @@ begin
     OnGetAsOrdinal := GetBoolsAsChecks;
     OnSetAsOrdinal := SetBoolsAsChecks;
   end;
-//    TJvInspectorPropData.Create(InspCat, StyleChanger, GetPropInfo(StyleChanger, 'BoolsAsCheckMarks')).Name := 'Use check marks';
   InspCat.Expanded := True;
 end;
 
@@ -171,7 +171,7 @@ procedure TfrmInspector.JvInspector1AfterItemCreate(Sender: TObject; const Item:
 begin
   if Item is TJvInspectorBooleanItem then
     TJvInspectorBooleanItem(Item).ShowAsCheckbox := True;
-  if (Item.Data <> nil) and (CompareText(Item.Data.Name, 'AboutMe') = 0) then
+  if (Item.Data <> nil) and (CompareText(Item.Data.Name, 'AboutJVCL') = 0) then
     Item.Readonly := True;
   if (Item.Data <> nil) and (CompareText(Item.Data.Name, 'Painter') = 0) then
     with Item as TJvInspectorComponentItem do
