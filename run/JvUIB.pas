@@ -142,6 +142,7 @@ type
     FBeforeConnect: TNotifyEvent;
     FBeforeDisconnect: TNotifyEvent;
     FTransactions: TList;
+    FOnConnectionLost: TNotifyEvent;
     function ReadParamString(Param: String; Default: String = ''): String;
     procedure WriteParamString(Param: String; Value: String);
     function ReadParamInteger(Param: String; Default: Integer): Integer;
@@ -166,6 +167,8 @@ type
     procedure SetLibraryName(const Lib: string);
     function GetTransactions(const Index: Cardinal): TJvUIBTransaction;
     function GetTransactionsCount: Cardinal;
+  protected
+    procedure DoOnConnectionLost(Lib: TUIBLibrary); virtual;
   public
 {$IFDEF UIBNOCOMPONENT}
     constructor Create; override;
@@ -206,6 +209,9 @@ type
     property AfterDisconnect: TNotifyEvent read FAfterDisconnect write FAfterDisconnect;
     { This event occur before the component is disconnected from database. }
     property BeforeDisconnect: TNotifyEvent read FBeforeDisconnect write FBeforeDisconnect;
+    { When connection lost, Database, Transactions and Queries are automatically closed.
+      Only one exception is raised to terminate the current stack and this event occur. }
+    property OnConnectionLost: TNotifyEvent read FOnConnectionLost write FOnConnectionLost;
   end;
 
   { Describe how a transaction is closed. }
@@ -263,6 +269,7 @@ type
   TJvUIBTransaction = class(TJvUIBComponent)
   private
     FDataBase: TJvUIBDataBase;
+    FDataBases: TList;
     FTransaction: IscTrHandle;
     FSQLComponent: TList;
     FStatements: Integer;
@@ -288,13 +295,16 @@ type
     procedure RemoveSQLComponent(Component: TJvUIBStatement);
     procedure ClearSQLComponents;
     procedure Close(const Mode: TEndTransMode = etmStayIn);
-    function GetStatements(const Index: Cardinal): TJvUIBStatement;
-    function GetStatementsCount: Cardinal;
+    function GetStatements(const Index: Integer): TJvUIBStatement;
+    function GetStatementsCount: Integer;
+    procedure ClearDataBases;
+    function GetDatabases(const Index: Integer): TJvUIBDataBase;
+    function GetDatabasesCount: Integer;
   protected
 {$IFNDEF UIBNOCOMPONENT}
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 {$ENDIF}
-    procedure SetDataBase(const Database: TJvUIBDataBase); virtual;
+    procedure SetDataBase(const ADatabase: TJvUIBDataBase); virtual;
   public
 {$IFDEF UIBNOCOMPONENT}
     constructor Create; override;
@@ -304,6 +314,9 @@ type
     destructor Destroy; override;
     procedure Lock; override;
     procedure UnLock; override;
+    procedure AddDataBase(ADataBase: TJvUIBDataBase);
+    procedure RemoveDatabase(ADataBase: TJvUIBDataBase); overload;
+    procedure RemoveDatabase(Index: Integer); overload;
     {Commit transaction.}
     procedure Commit;
     {Commit transaction but keep transaction handle.}
@@ -321,8 +334,10 @@ type
     property InTransaction: Boolean read GetInTransaction;
     {Transaction handle.}
     property Handle: IscTrHandle read FTransaction;
-    property Statements[const Index: Cardinal]: TJvUIBStatement read GetStatements;
-    property StatementsCount: Cardinal read GetStatementsCount;
+    property Statements[const Index: Integer]: TJvUIBStatement read GetStatements;
+    property StatementsCount: Integer read GetStatementsCount;
+    property Databases[const Index: Integer]: TJvUIBDataBase read GetDatabases;
+    property DatabasesCount: Integer read GetDatabasesCount;
   published
     {Database connection.}
     property DataBase  : TJvUIBDataBase read GetDataBase write SetDataBase;
@@ -342,6 +357,7 @@ type
   private
     FCurrentState: TQueryState;
     FTransaction: TJvUIBTransaction;
+    FDataBase: TJvUIBDataBase;
     FStatement: IscStmtHandle;
     FOnError: TEndTransMode;
     FCursorName: string;
@@ -361,8 +377,10 @@ type
     procedure DoSQLChange(Sender: TObject);
     function GetFields: TSQLResult;
     function GetEof: boolean;
+    function FindDataBase: TJvUIBDataBase;
   protected
     procedure SetTransaction(const Transaction: TJvUIBTransaction); virtual;
+    procedure SetDataBase(ADataBase: TJvUIBDataBase);
 {$IFNDEF UIBNOCOMPONENT}
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 {$ENDIF}
@@ -440,6 +458,7 @@ type
   published
     property SQL: TStrings read FSQL write SetSQL;
     property Transaction: TJvUIBTransaction read FTransaction write SetTransaction;
+    property DataBase: TJvUIBDataBase read FDataBase write SetDataBase;
     property OnError: TEndTransMode read FOnError write FOnError default etmRollback;
     property CachedFetch: boolean read FCachedFetch write FCachedFetch default True;
     property FetchBlobs: boolean read FFetchBlobs write FFetchBlobs default False;
@@ -593,7 +612,7 @@ end;
 procedure TJvUIBDataBase.ClearTransactions;
 begin
   while (FTransactions <> nil) do
-    TJvUIBTransaction(FTransactions.Last).SetDataBase(nil);
+    TJvUIBTransaction(FTransactions.Last).RemoveDatabase(Self); 
 end;
 
 procedure TJvUIBDataBase.CloseTransactions;
@@ -613,6 +632,7 @@ begin
   inherited;
   FLibrary := TUIBLibrary.Create;
   FLiBraryName := GDS32DLL;
+  FLibrary.OnConnectionLost := DoOnConnectionLost;
   FDbHandle := nil;
   FHandleShared := False;
   FParams := TStringList.Create;
@@ -632,6 +652,18 @@ begin
     FLibrary.Free;
   end;
   inherited;
+end;
+
+procedure TJvUIBDataBase.DoOnConnectionLost(Lib: TUIBLibrary);
+begin
+  Lib.RaiseErrors := False;
+  try
+    Connected := False;
+  finally
+    Lib.RaiseErrors := True;
+    if Assigned(FOnConnectionLost) then
+      FOnConnectionLost(Self);
+  end;
 end;
 
 function TJvUIBDataBase.GetCharacterSet: TCharacterSet;
@@ -871,6 +903,15 @@ begin
   end;
 end;
 
+procedure TJvUIBStatement.SetDataBase(ADataBase: TJvUIBDataBase);
+begin
+  if (FDataBase <> ADataBase) then
+  begin
+    Close(etmCommit);
+    FDataBase := ADataBase;
+  end;
+end;
+
 procedure TJvUIBStatement.BeginTransaction;
 begin
   if FTransaction <> nil then
@@ -901,7 +942,7 @@ begin
     try
       try
         FSQLResult.ClearRecords;
-        with FTransaction.FDataBase.FLibrary do
+        with FindDataBase.FLibrary do
           DSQLFreeStatement(FStatement, DSQL_close);
       except
         Close(FOnError);
@@ -972,10 +1013,10 @@ begin
   begin
     Lock;
     try
-      with FTransaction.FDataBase.FLibrary do
+      with FindDataBase.FLibrary do
       try
         if FSQLResult.FetchBlobs then
-          DSQLFetchWithBlobs(FTransaction.FDataBase.FDbHandle,
+          DSQLFetchWithBlobs(FindDataBase.FDbHandle,
             FTransaction.FTransaction, FStatement, FTransaction.FSQLDialect, FSQLResult) else
           DSQLFetch(FStatement, FTransaction.FSQLDialect, FSQLResult);
       except
@@ -1013,10 +1054,10 @@ begin
   BeginTransaction;
   Lock;
   try
-    with FTransaction.FDataBase.FLibrary do
+    with FindDataBase.FLibrary do
     try
       FStatement := nil;
-      DSQLAllocateStatement(FTransaction.FDataBase.FDbHandle, FStatement);
+      DSQLAllocateStatement(FindDataBase.FDbHandle, FStatement);
     except
       EndTransaction(FOnError);
       raise;
@@ -1032,7 +1073,7 @@ procedure TJvUIBStatement.EndStatement(const ETM: TEndTransMode);
 begin
   Lock;
   try
-    with FTransaction.FDataBase.FLibrary do
+    with FindDataBase.FLibrary do
       DSQLFreeStatement(FStatement, DSQL_drop);
 
     FStatement := nil;
@@ -1054,7 +1095,7 @@ begin
   FSQLResult := ResultClass.Create(0, FCachedFetch, FFetchBlobs, FBufferChunks);
   Lock;
   try
-    with FTransaction.FDataBase.FLibrary do
+    with FindDataBase.FLibrary do
     try
     if (FQuickScript or (not FParseParams)) then
       DSQLPrepare(FTransaction.FTransaction, FStatement, FSQL.Text,
@@ -1088,7 +1129,7 @@ begin
   if (FSQLResult = nil) then BeginPrepare;
   Lock;
   try
-    with FTransaction.FDataBase.FLibrary do
+    with FindDataBase.FLibrary do
     try
       DSQLExecute(FTransaction.FTransaction, FStatement,
         FTransaction.FSQLDialect, FParameter);
@@ -1117,9 +1158,9 @@ var
     if (Trim(AQuery) = '') then exit;
     Lock;
     try
-      with FTransaction.FDataBase.FLibrary do
+      with FindDataBase.FLibrary do
       try
-        DSQLExecuteImmediate(FTransaction.FDataBase.FDbHandle, FTransaction.FTransaction,
+        DSQLExecuteImmediate(FindDataBase.FDbHandle, FTransaction.FTransaction,
           AQuery, FTransaction.FSQLDialect, Params);
       except
         if (FOnError <> etmStayIn) then
@@ -1183,7 +1224,7 @@ begin
   try
     if (FCurrentState < qsPrepare) then
       Raise EUIBError.Create(EUIB_MUSTBEPREPARED)else
-      Result := FTransaction.FDataBase.FLibrary.DSQLInfoPlan(FStatement);
+        Result := FindDataBase.FLibrary.DSQLInfoPlan(FStatement);
   finally
     UnLock
   end;
@@ -1196,7 +1237,7 @@ begin
   try
     if (FCurrentState < qsPrepare) then
       Raise EUIBError.Create(EUIB_MUSTBEPREPARED)else
-      Result := FTransaction.FDataBase.FLibrary.DSQLInfoStatementType(FStatement);
+      Result := FindDataBase.FLibrary.DSQLInfoStatementType(FStatement);
   finally
     UnLock
   end;
@@ -1221,6 +1262,15 @@ begin
   if Assigned(FSQLResult) then
     Result := FSQLResult.Eof else
     Result := True;
+end;
+
+function TJvUIBStatement.FindDataBase: TJvUIBDataBase;
+begin
+  if FDataBase <> nil then
+    result := FDataBase else
+     if FTransaction <> nil then
+       result := FTransaction.FDataBase else
+       raise EUIBError.Create(EUIB_DATABASENOTDEF);  
 end;
 
 {$IFNDEF UIBNOCOMPONENT}
@@ -1309,9 +1359,9 @@ begin
     BeginTransaction;
   BlobHandle := nil;
   Lock;
-  with FTransaction.FDataBase.FLibrary do
+  with FindDataBase.FLibrary do
   try
-    Params.AsQuad[Index] := BlobCreate(FTransaction.FDataBase.FDbHandle,
+    Params.AsQuad[Index] := BlobCreate(FindDataBase.FDbHandle,
       FTransaction.FTransaction, BlobHandle);
     try
       BlobWriteStream(BlobHandle, Stream);
@@ -1330,9 +1380,9 @@ begin
     BeginTransaction;
   BlobHandle := nil;
   Lock;
-  with FTransaction.FDataBase.FLibrary do
+  with FindDataBase.FLibrary do
   try
-    Params.AsQuad[Index] := BlobCreate(FTransaction.FDataBase.FDbHandle,
+    Params.AsQuad[Index] := BlobCreate(FindDataBase.FDbHandle,
       FTransaction.FTransaction, BlobHandle);
     try
       BlobWriteString(BlobHandle, str);
@@ -1352,9 +1402,9 @@ begin
     BeginTransaction;
   BlobHandle := nil;
   Lock;
-  with FTransaction.FDataBase.FLibrary do
+  with FindDataBase.FLibrary do
   try
-    Params.AsQuad[Index] := BlobCreate(FTransaction.FDataBase.FDbHandle,
+    Params.AsQuad[Index] := BlobCreate(FindDataBase.FDbHandle,
       FTransaction.FTransaction, BlobHandle);
     try
       BlobWriteSegment(BlobHandle, Size, Buffer);
@@ -1373,9 +1423,9 @@ begin
     BeginTransaction;
   BlobHandle := nil;
   Lock;
-  with FTransaction.FDataBase.FLibrary do
+  with FindDataBase.FLibrary do
   try
-    Params.ByNameAsQuad[Name] := BlobCreate(FTransaction.FDataBase.FDbHandle,
+    Params.ByNameAsQuad[Name] := BlobCreate(FindDataBase.FDbHandle,
       FTransaction.FTransaction, BlobHandle);
     try
       BlobWriteStream(BlobHandle, Stream);
@@ -1394,9 +1444,9 @@ begin
     BeginTransaction;
   BlobHandle := nil;
   Lock;
-  with FTransaction.FDataBase.FLibrary do
+  with FindDataBase.FLibrary do
   try
-    Params.ByNameAsQuad[Name] := BlobCreate(FTransaction.FDataBase.FDbHandle,
+    Params.ByNameAsQuad[Name] := BlobCreate(FindDataBase.FDbHandle,
       FTransaction.FTransaction, BlobHandle);
     try
       BlobWriteString(BlobHandle, str);
@@ -1415,9 +1465,9 @@ begin
     BeginTransaction;
   BlobHandle := nil;
   Lock;
-  with FTransaction.FDataBase.FLibrary do
+  with FindDataBase.FLibrary do
   try
-    Params.ByNameAsQuad[Name] := BlobCreate(FTransaction.FDataBase.FDbHandle,
+    Params.ByNameAsQuad[Name] := BlobCreate(FindDataBase.FDbHandle,
       FTransaction.FTransaction, BlobHandle);
     try
       BlobWriteSegment(BlobHandle, Size, Buffer);
@@ -1439,10 +1489,10 @@ begin
   if (not sqlda.IsNull[Index]) then
   begin
     Lock;
-    with FTransaction.FDataBase.FLibrary do
+    with FindDataBase.FLibrary do
     try
       BlobHandle := nil;
-      BlobOpen(FTransaction.FDataBase.FDbHandle, FTransaction.FTransaction,
+      BlobOpen(FindDataBase.FDbHandle, FTransaction.FTransaction,
         BlobHandle, sqlda.AsQuad[Index]);
       try
         BlobSaveToStream(BlobHandle, Stream);
@@ -1466,10 +1516,10 @@ begin
      str := '' else
   begin
     Lock;
-    with FTransaction.FDataBase.FLibrary do
+    with FindDataBase.FLibrary do
     try
       BlobHandle := nil;
-      BlobOpen(FTransaction.FDataBase.FDbHandle, FTransaction.FTransaction,
+      BlobOpen(FindDataBase.FDbHandle, FTransaction.FTransaction,
         BlobHandle, sqlda.AsQuad[Index]);
       try
         BlobReadString(BlobHandle, str);
@@ -1492,10 +1542,10 @@ begin
   if (not sqlda.IsNull[Index]) then
   begin
     Lock;
-    with FTransaction.FDataBase.FLibrary do
+    with FindDataBase.FLibrary do
     try
       BlobHandle := nil;
-      BlobOpen(FTransaction.FDataBase.FDbHandle, FTransaction.FTransaction,
+      BlobOpen(FindDataBase.FDbHandle, FTransaction.FTransaction,
         BlobHandle, sqlda.AsQuad[Index]);
       try
         BlobReadVariant(BlobHandle, Value);
@@ -1627,12 +1677,14 @@ begin
   FOptions       := [tpConcurrency,tpWait,tpWrite];
   FTransaction   := nil;
   FStatements    := 0;
+  FDataBases     := TList.Create;
 end;
 
 destructor TJvUIBTransaction.Destroy;
 begin
   ClearSQLComponents;
-  SetDataBase(nil);
+  ClearDataBases;
+  FDataBases.Free;
   inherited;
 end;
 
@@ -1640,67 +1692,108 @@ end;
 procedure TJvUIBTransaction.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if ((AComponent = FDataBase) and (Operation = opRemove)) then
-    SetDataBase(nil);
+  if ((AComponent is TJvUIBDataBase) and (Operation = opRemove)) then
+    RemoveDatabase(TJvUIBDataBase(AComponent));
 end;
 {$ENDIF}
 
-procedure TJvUIBTransaction.SetDataBase(const Database: TJvUIBDataBase);
+procedure TJvUIBTransaction.SetDataBase(const ADatabase: TJvUIBDataBase);
 begin
-  if (FDataBase <> Database) then
-  begin
-    if (FDataBase <> nil) then
-    begin
-      Close(etmCommit);
-      FDataBase.RemoveTransaction(Self);
-    end;
-    FDataBase := Database;
-    if (Database <> nil) then
-    begin
-      DataBase.AddTransaction(Self);
-      FSQLDialect := Database.SQLDialect;
-    end;
-  end;
+  RemoveDatabase(FDataBase);
+  AddDataBase(ADatabase);
+  FDataBase := ADatabase;
 end;
 
 procedure TJvUIBTransaction.Close(const Mode: TEndTransMode = etmStayIn);
-var i: Integer;
+var
+  i: Integer;
 begin
-  if (FSQLComponent <> nil) then
-    for i := 0 to FSQLComponent.Count -1 do
-      TJvUIBQuery(FSQLComponent.Items[i]).Close(Mode);
+  lock;
+  try
+    if (FStatements > 0) and (FSQLComponent <> nil) then
+      for i := 0 to FSQLComponent.Count -1 do
+        TJvUIBQuery(FSQLComponent.Items[i]).Close(Mode);
+  finally
+    UnLock;
+  end;
   EndTransaction(Mode);
 end;
 
-function TJvUIBTransaction.GetStatements(const Index: Cardinal): TJvUIBStatement;
+function TJvUIBTransaction.GetStatements(const Index: Integer): TJvUIBStatement;
 begin
   if FSQLComponent <> nil then
     Result := FSQLComponent.Items[Index] else
     raise EListError.CreateFmt(EUIB_INDEXERROR,[Index]);
 end;
 
-function TJvUIBTransaction.GetStatementsCount: Cardinal;
+function TJvUIBTransaction.GetStatementsCount: Integer;
 begin
   if FSQLComponent <> nil then
     Result := FSQLComponent.Count else
     Result := 0;
 end;
 
+procedure TJvUIBTransaction.ClearDataBases;
+var i: Integer;
+begin
+  FDataBase := nil;
+  for i := 0 to FDataBases.Count - 1 do
+    TJvUIBDataBase(FDataBases[i]).RemoveTransaction(Self);
+  FDataBases.Clear;
+end;
+
+function TJvUIBTransaction.GetDatabases(const Index: Integer): TJvUIBDataBase;
+begin
+  Result := FDataBases[Index];
+end;
+
+function TJvUIBTransaction.GetDatabasesCount: Integer;
+begin
+  Result := FDataBases.Count;
+end;
+
 procedure TJvUIBTransaction.BeginDataBase;
+var i: Integer;
 begin
   if (FDataBase = nil) then raise Exception.Create(EUIB_DATABASENOTDEF);
-  FDataBase.Connected := True;
+  for i := 0 to FDataBases.Count - 1 do
+    TJvUIBDataBase(FDataBases[i]).Connected := True;
 end;
 
 procedure TJvUIBTransaction.BeginTransaction;
+type
+  TEBDynArray = array of TISCTEB;
+var
+  Buffer: Pointer;
+  i: Integer;
+  ATPB: string;
 begin
-  if not FDataBase.Connected then BeginDataBase;
+  BeginDataBase;
   Lock;
   try
     with FDataBase.FLibrary do
     if (FTransaction = nil) then
     begin
-      TransactionStart(FTransaction, FDataBase.FDbHandle, TPB);
+      if FDataBases.Count = 1 then
+      begin
+        TransactionStart(FTransaction, FDataBase.FDbHandle, TPB);
+      end else
+      begin
+        GetMem(Buffer,  SizeOf(TISCTEB) * FDataBases.Count);
+        try
+          ATPB := TPB;
+          for i := 0 to FDataBases.Count - 1 do
+            with TEBDynArray(Buffer)[i] do
+            begin
+              Handle  := @TJvUIBDatabase(FDataBases[i]).FDbHandle;
+              Len     := Length(ATPB);
+              Address := PChar(ATPB);
+            end;
+          TransactionStartMultiple(FTransaction, FDataBases.Count, Buffer);
+        finally
+          FreeMem(Buffer);
+        end;
+      end;
       if Assigned(FOnStartTransaction) then
         FOnStartTransaction(Self);
     end;
@@ -1768,17 +1861,63 @@ begin
 end;
 
 procedure TJvUIBTransaction.Lock;
+var i: Integer;
 begin
   inherited;
-  if (FDataBase <> nil) then
-    FDataBase.Lock;
+  for i := 0 to FDataBases.Count - 1 do
+    TJvUIBDataBase(FDataBases[i]).Lock;
 end;
 
 procedure TJvUIBTransaction.UnLock;
+var i: Integer;
 begin
-  if (FDataBase <> nil) then
-    FDataBase.UnLock;
+  for i := 0 to FDataBases.Count - 1 do
+    TJvUIBDataBase(FDataBases[i]).UnLock;
   inherited;
+end;
+
+procedure TJvUIBTransaction.AddDataBase(ADataBase: TJvUIBDataBase);
+var i: Integer;
+begin
+  if (ADataBase <> nil) then
+  begin
+    for i := 0 to FDataBases.Count - 1 do
+      if FDataBases[i] = ADataBase then
+        Exit;
+    Close(etmCommit);
+    FDataBases.Add(ADataBase);
+    ADataBase.AddTransaction(Self);
+    FSQLDialect := ADatabase.SQLDialect;
+  end;
+end;
+
+procedure TJvUIBTransaction.RemoveDatabase(ADataBase: TJvUIBDataBase);
+var
+  i: Integer;
+begin
+  if (ADataBase <> nil) then
+  begin
+    if ADataBase = FDataBase then
+      FDataBase := nil;
+    for i := 0 to FDataBases.Count - 1 do
+      if FDataBases[i] = ADataBase then
+      begin
+        Close(etmCommit);
+        ADataBase.RemoveTransaction(Self);
+        FDataBases.Delete(i);
+        Exit;
+      end;
+  end;
+end;
+
+procedure TJvUIBTransaction.RemoveDatabase(Index: Integer);
+begin
+  with TJvUIBDataBase(FDataBases[Index]) do
+  begin
+    Close(etmCommit);
+    RemoveTransaction(Self);
+    FDataBases.Delete(Index);
+  end;
 end;
 
 procedure TJvUIBTransaction.Commit;
@@ -2225,8 +2364,6 @@ var
   begin
     if (Transaction = nil) then
        raise EUIBError.Create(EUIB_TRANSACTIONNOTDEF);
-    if (Transaction.DataBase = nil) then
-       raise EUIBError.Create(EUIB_DATABASENOTDEF);
   end;
 
   function Statement: string;
@@ -2257,7 +2394,7 @@ begin
             begin
               CheckDatabase;
               if TryStrToInt(Grammar.RootNode.Nodes[i].Value, Dialect) then
-                Transaction.DataBase.SQLDialect := Dialect else
+                FQuery.FindDataBase.SQLDialect := Dialect else
                 raise EUIBError.Create('Parse error: SET SQL DIALECT');
             end;
           NodeSetNames:
@@ -2267,7 +2404,7 @@ begin
               begin
                 if (CompareText(CharacterSetStr[j], Grammar.RootNode.Nodes[i].Value) = 0) then
                 begin
-                  Transaction.DataBase.CharacterSet := j;
+                  FQuery.FindDataBase.CharacterSet := j;
                   Break;
                 end;
                 raise EUIBError.Create('Parse error: SET NAMES');
@@ -2276,34 +2413,34 @@ begin
           NodeCreateDatabase:
             begin
               CheckDatabase;
-              Transaction.DataBase.Connected := False;
+              FQuery.FindDataBase.Connected := False;
               TrHandle := nil;
-              with Transaction.DataBase do
+              with FQuery.FindDataBase do
               begin
                 FLibrary.Load(FLiBraryName);
                 // I MUST provide the real DB Handle (not nil)
                 // because altering forein key can fail otherwise.
-                Transaction.DataBase.Lock;
+                FQuery.FindDataBase.Lock;
                 try
                   FLibrary.DSQLExecuteImmediate(
                     FDbHandle, TrHandle, Statement, SQLDialect);
                 finally
-                  Transaction.DataBase.UnLock;
+                  FQuery.FindDataBase.UnLock;
                 end;
               end;
               with Grammar.RootNode.Nodes[i].Nodes[0] do
               for k := 0 to NodesCount - 1 do
               case Nodes[k].NodeType of
-                NodeName     : Transaction.DataBase.DatabaseName :=
+                NodeName     : FQuery.FindDataBase.DatabaseName :=
                   copy(Nodes[k].Value ,2, Length(Nodes[k].Value) - 2);
-                NodeUsername : Transaction.DataBase.UserName :=
+                NodeUsername : FQuery.FindDataBase.UserName :=
                   copy(Nodes[k].Value ,2, Length(Nodes[k].Value) - 2);
-                NodePassWord : Transaction.DataBase.PassWord :=
+                NodePassWord : FQuery.FindDataBase.PassWord :=
                   copy(Nodes[k].Value ,2, Length(Nodes[k].Value) - 2);
               end;
             end;
           NodeConnect:
-            with Transaction.DataBase do
+            with FQuery.FindDataBase do
             begin
               Connected := False;
               with Grammar.RootNode.Nodes[i] do

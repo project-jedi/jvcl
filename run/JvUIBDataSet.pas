@@ -66,6 +66,8 @@ type
     function GetFetchBlobs: boolean;
     procedure SetFetchBlobs(const Value: boolean);
     function GetParams: TSQLParams;
+    procedure SetDatabase(const Value: TJvUIBDataBase);
+    function GetDatabase: TJvUIBDataBase;
   protected
 
     procedure InternalOpen; override;
@@ -99,6 +101,7 @@ type
     procedure SetActive(Value: Boolean); override;
 
     property Transaction: TJvUIBTransaction read GetTransaction write SetTransaction;
+    property Database: TJvUIBDataBase read GetDatabase write SetDatabase;
     property UniDirectionnal: boolean read  GetUniDirectional write SetUniDirectional default False;
     property OnClose: TEndTransMode read FOnClose write SetOnClose default etmCommit;
     property OnError: TEndTransMode read GetOnError write SetOnError default etmRollback;
@@ -119,6 +122,22 @@ type
     function CreateBlobStream(Field: TField; Mode: TBlobStreamMode): TStream; override;
     procedure Execute;
     procedure ExecSQL;
+
+    procedure ReadBlob(const Index: Word; Stream: TStream); overload;
+    procedure ReadBlob(const Index: Word; var str: string); overload;
+    procedure ReadBlob(const Index: Word; var Value: Variant); overload;
+    procedure ReadBlob(const name: string; Stream: TStream); overload;
+    procedure ReadBlob(const name: string; var str: string); overload;
+    procedure ReadBlob(const name: string; var Value: Variant); overload;
+
+    procedure ParamsSetBlob(const Index: Word; Stream: TStream); overload;
+    procedure ParamsSetBlob(const Index: Word; var str: string); overload;
+    procedure ParamsSetBlob(const Index: Word; Buffer: Pointer; Size: Word); overload;
+    procedure ParamsSetBlob(const Name: string; Stream: TStream); overload;
+    procedure ParamsSetBlob(const Name: string; var str: string); overload;
+    procedure ParamsSetBlob(const Name: string; Buffer: Pointer; Size: Word); overload;
+
+    property InternalStatement: TJvUIBStatement read FStatement;
   end;
 
   TJvUIBDataSet = class(TJvUIBCustomDataSet)
@@ -126,6 +145,7 @@ type
     property Params;
   published
     property Transaction;
+    property Database;
 {$IFDEF COMPILER6_UP}
     property UniDirectionnal;
 {$ENDIF}
@@ -422,7 +442,7 @@ begin
     with FieldDefs.AddFieldDef, FStatement.Fields do
     begin
       Name := AliasName[i];
-      FieldNo := i+1;
+      FieldNo := i;
       Required := not IsNullable[i];
       case FieldType[i] of
         uftNumeric:
@@ -507,6 +527,7 @@ function TJvUIBCustomDataSet.GetFieldData(FieldNo: Integer;
 var
   FieldType: TUIBFieldType;
 begin
+  dec(FieldNo);
   Result := False;
 
   if (FCurrentRecord < 0) then
@@ -516,6 +537,12 @@ begin
 
   if FStatement.Fields.IsNull[FieldNo] then
     Exit;
+
+  if Buffer = nil then
+  begin
+    Result := True;
+    Exit;
+  end;
 
   FieldType := FStatement.Fields.FieldType[FieldNo];
   with FStatement.Fields.Data.sqlvar[FieldNo] do
@@ -609,7 +636,7 @@ function TJvUIBCustomDataSet.GetFieldData(Field: TField;
   Buffer: Pointer): Boolean;
 begin
   CheckActive;
-  Result := GetFieldData(Field.Index, Buffer);
+  Result := GetFieldData(Field.FieldNo, Buffer);
 end;
 
 function TJvUIBCustomDataSet.GetCanModify: Boolean;
@@ -680,5 +707,85 @@ begin
   Result := True;
 end;
 {$ENDIF}
+
+procedure TJvUIBCustomDataSet.SetDatabase(const Value: TJvUIBDataBase);
+begin
+  FStatement.DataBase := Value;
+end;
+
+function TJvUIBCustomDataSet.GetDatabase: TJvUIBDataBase;
+begin
+  Result := FStatement.DataBase;
+end;
+
+procedure TJvUIBCustomDataSet.ParamsSetBlob(const Name: string;
+  Stream: TStream);
+begin
+  FStatement.ParamsSetBlob(Name, Stream);
+end;
+
+procedure TJvUIBCustomDataSet.ParamsSetBlob(const Name: string;
+  var str: string);
+begin
+  FStatement.ParamsSetBlob(Name, str);
+end;
+
+procedure TJvUIBCustomDataSet.ParamsSetBlob(const Name: string;
+  Buffer: Pointer; Size: Word);
+begin
+  FStatement.ParamsSetBlob(Name, Buffer, Size);
+end;
+
+procedure TJvUIBCustomDataSet.ParamsSetBlob(const Index: Word;
+  Stream: TStream);
+begin
+  FStatement.ParamsSetBlob(Index, Stream);
+end;
+
+procedure TJvUIBCustomDataSet.ParamsSetBlob(const Index: Word;
+  var str: string);
+begin
+  FStatement.ParamsSetBlob(Index, str);
+end;
+
+procedure TJvUIBCustomDataSet.ParamsSetBlob(const Index: Word;
+  Buffer: Pointer; Size: Word);
+begin
+  FStatement.ParamsSetBlob(Index, Buffer, Size);
+end;
+
+procedure TJvUIBCustomDataSet.ReadBlob(const name: string;
+  Stream: TStream);
+begin
+  FStatement.ReadBlob(name, Stream);
+end;
+
+procedure TJvUIBCustomDataSet.ReadBlob(const name: string;
+  var str: string);
+begin
+  FStatement.ReadBlob(name, str);
+end;
+
+procedure TJvUIBCustomDataSet.ReadBlob(const name: string;
+  var Value: Variant);
+begin
+  FStatement.ReadBlob(name, Value);
+end;
+
+procedure TJvUIBCustomDataSet.ReadBlob(const Index: Word; Stream: TStream);
+begin
+  FStatement.ReadBlob(Index, Stream);
+end;
+
+procedure TJvUIBCustomDataSet.ReadBlob(const Index: Word; var str: string);
+begin
+  FStatement.ReadBlob(Index, str);
+end;
+
+procedure TJvUIBCustomDataSet.ReadBlob(const Index: Word;
+  var Value: Variant);
+begin
+  FStatement.ReadBlob(Index, Value);
+end;
 
 end.
