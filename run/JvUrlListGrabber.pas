@@ -105,7 +105,7 @@ type
 
     // stops all the grabbers
     procedure StopAll;
-    
+
     // the Grabber objects associated with the Urls
     property Grabbers[const Index : Integer]: TJvCustomUrlGrabber read GetGrabbers;
   published
@@ -772,6 +772,7 @@ end;
 
 procedure TJvCustomUrlGrabberThread.Progress;
 begin
+  FContinue := True;
   FGrabber.DoProgress(FGrabber.BytesRead, FContinue);
 end;
 
