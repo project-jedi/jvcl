@@ -144,14 +144,6 @@ type
 
     property ClipboardCommands: TJvClipboardCommands read FClipboardCommands
       write SetClipboardCommands default [caCopy..caUndo];
-  {$IFDEF VisualCLX}
-  public
-    procedure Clear; override;
-    procedure CopyToClipboard; override;
-    procedure CutToClipboard; override;
-    procedure PasteFromClipboard; override;
-    procedure Undo; override;
-  {$ENDIF VisualCLX}
   private
     FBeepOnError: Boolean;
   protected
@@ -259,14 +251,6 @@ type
 
     property ClipboardCommands: TJvClipboardCommands read FClipboardCommands
       write SetClipboardCommands default [caCopy..caUndo];
-  {$IFDEF VisualCLX}
-  public
-    procedure Clear; override;
-    procedure CopyToClipboard; override;
-    procedure CutToClipboard; override;
-    procedure PasteFromClipboard; override;
-    procedure Undo; override;
-  {$ENDIF VisualCLX}
   private
     FBeepOnError: Boolean;
   protected
@@ -537,35 +521,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
-procedure TJvExCustomMaskEdit.Clear;
-begin
-  if DoClearText then
-    inherited Clear;
-end;
-
-procedure TJvExCustomMaskEdit.Undo;
-begin
-  if DoUndo then
-    inherited Undo;
-end;
-
-procedure TJvExCustomMaskEdit.CopyToClipboard;
-begin
-  if DoClipboardCopy then
-    inherited CopyToClipboard;
-end;
-
-procedure TJvExCustomMaskEdit.CutToClipboard;
-begin
-  if DoClipboardCut then
-    inherited CutToClipboard;
-end;
-
-procedure TJvExCustomMaskEdit.PasteFromClipboard;
-begin
-  if DoClipboardPaste then
-    inherited PasteFromClipboard;
-end;
 
 procedure TJvExCustomMaskEdit.EMGetRect(var Msg: TMessage);
 begin
@@ -859,35 +814,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
-procedure TJvExMaskEdit.Clear;
-begin
-  if DoClearText then
-    inherited Clear;
-end;
-
-procedure TJvExMaskEdit.Undo;
-begin
-  if DoUndo then
-    inherited Undo;
-end;
-
-procedure TJvExMaskEdit.CopyToClipboard;
-begin
-  if DoClipboardCopy then
-    inherited CopyToClipboard;
-end;
-
-procedure TJvExMaskEdit.CutToClipboard;
-begin
-  if DoClipboardCut then
-    inherited CutToClipboard;
-end;
-
-procedure TJvExMaskEdit.PasteFromClipboard;
-begin
-  if DoClipboardPaste then
-    inherited PasteFromClipboard;
-end;
 
 procedure TJvExMaskEdit.EMGetRect(var Msg: TMessage);
 begin
