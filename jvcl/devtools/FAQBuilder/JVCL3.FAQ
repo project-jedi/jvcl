@@ -1,5 +1,5 @@
 [FAQ]
-Count=9
+Count=12
 Q0=What is the JVCL?
 A0=The JVCL is a library of more than 500 visual and non-visual components for Delphi, C++Builder and Kylix. The components have been donated by developers from all around the world and can be used in commercial as well as shareware and freeware and open source projects without cost.{CRLF}
 Q1=Where can I get it?
@@ -18,3 +18,9 @@ Q7=I'm getting an error ("Cannot load package JvNet. It contains zlib.pas which 
 A7=Open the JvNet run-time package and add the other run-time package ("YYYY") to it's requires node. Try to install again.{CRLF}
 Q8="The procedure entry point SHGetSpecialFolderPathA could not be located in XXX".
 A8=You probably have an older Internet Explorer installed. Install the latest IE release.{CRLF}{CRLF}You might also want to try to update your ComCtl32.dll. {CRLF}{CRLF}Since Microsoft keep moving their pages around, we cannot give you a reliable link. Instead, go to <a href="http://www.microsoft.com">Microsoft's website</a> and search for 50comupd.exe.{CRLF}{CRLF}
+Q9=How do I dock a form at design-time with the JvDocking components?
+A9=You can't dock the forms at design-time. You will have to do it programmatically.{CRLF}{CRLF}
+Q10=How do I change the docking style at runtime?
+A10=You can't change it at runtime, only at design-time. We are working on resolving this issue.{CRLF}{CRLF}
+Q11="Cannot load JvMM. It contains VFW.pas which is also contained in GLSCENE."
+A11=Resolve it by either adding the GLSCENE package to the requires of JVMM {CRLF}or add JvMM to the requires of GLSCENE. Rebuild the packages.{CRLF}{CRLF}

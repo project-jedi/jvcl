@@ -1,13 +1,107 @@
 <html>
-
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
-<link rel="STYLESHEET" href="styles/default.css" type="text/css">
-<title>JVCL FAQ</title>
+<title>Frequently Asked Questions</title>
+<link rel="stylesheet" type="text/css" href="styles/default.css">
+<style>
+div a { text-decoration:underline; font-weight: normal;}
+a { text-decoration:none; font-weight: bold;}
+a:link {color: #336699;}
+a:hover {color: #336699;}
+a:visited { color: #336699;}
+</style>
+
+<script language="JavaScript" type="text/javascript">
+<!--
+var lastobj = null;
+var allvisible = false;
+function ToggleAll() {
+  for (var i = 0;i <document.all.length;i++) {
+    if (document.all(i).id.indexOf('FAQ') == 0) {
+	    document.all(i).style.display = allvisible ? 'none':'block';
+   }
+ }
+  allvisible = !allvisible;
+}
+
+function ToggleVisible(obj) {
+
+  if (obj == null) return;
+  if ((lastobj) && (lastobj != obj)) {
+    lastobj.style.display = "none";
+  }
+  obj.style.display = (obj.style.display == 'none') ? 'block': 'none';
+  lastobj = obj;
+}
+//-->
+</script>
 </head>
 <body>
-<h2>JEDI-VCL FAQ</h2>
-<hr>
-<p>TODO...</p>
+<h1>Frequently Asked Questions</h1>
+<a style="text-decoration:none;" href="javascript:void(1)" onClick="ToggleAll()">
+<div style="font-family: Verdana; font-size:90%;text-decoration:none;font-weight:bold;" align=right>Expand/Collapse</div></a>
+
+
+<img src="images/q.gif" border=0>&nbsp;<a href="javascript:void(1)" onClick="ToggleVisible(FAQ0);">What is the JVCL?</a><br>
+<div id="FAQ0" style="color: #334499;display:none;margin-left:25px; margin-top: 5px; margin-bottom:10px;">
+<img src="images/a.gif" border=0>&nbsp;The JVCL is a library of more than 500 visual and non-visual components for Delphi, C++Builder and Kylix. The components have been donated by developers from all around the world and can be used in commercial as well as shareware and freeware and open source projects without cost.<br></div>
+
+
+<img src="images/q.gif" border=0>&nbsp;<a href="javascript:void(1)" onClick="ToggleVisible(FAQ1);">Where can I get it?</a><br>
+<div id="FAQ1" style="color: #334499;display:none;margin-left:25px; margin-top: 5px; margin-bottom:10px;">
+<img src="images/a.gif" border=0>&nbsp;You can always download the latest release of JVCL from the JVCL homepage at <a href="http://jvcl.sf.net">http://jvcl.sf.net</a>.<br><br>You can also get the JVCL from CVS or from the daily zips. See the download page on the <a href="http://jvcl.sf.net">JVCL website</a> for more information.<br></div>
+
+
+<img src="images/q.gif" border=0>&nbsp;<a href="javascript:void(1)" onClick="ToggleVisible(FAQ2);">How is the JVCL licensed?</a><br>
+<div id="FAQ2" style="color: #334499;display:none;margin-left:25px; margin-top: 5px; margin-bottom:10px;">
+<img src="images/a.gif" border=0>&nbsp;The JVCL is licensed under the <a href="http://www.mozilla.org/MPL/MPL-1.1.html">Mozilla Public License</a> (MPL 1.1) license.<br><br>In short, the MPL allows you to use the JVCL components in commercial, shareware, freeware and open source projects as long as you give due credit to the JVCL in your application (including a notice in your About Box is a good idea). <br><br>If you extend, derive from or modify any unit in the JVCL, you are obliged to make the source of the modifications available to your customers. You are also encouraged to donate any modifications back to the JVCL community.<br><br>To learn more about the MPL, see the License FAQ on the <a href="http://jvcl.sf.net"> JVCL website</a>.<br></div>
+
+
+<img src="images/q.gif" border=0>&nbsp;<a href="javascript:void(1)" onClick="ToggleVisible(FAQ3);">How can I contribute?</a><br>
+<div id="FAQ3" style="color: #334499;display:none;margin-left:25px; margin-top: 5px; margin-bottom:10px;">
+<img src="images/a.gif" border=0>&nbsp;There are several ways you can contribute to the development of JVCL. Among other things, you can write new or extend existing components, write help, fix bugs or write demos. <br><br>If you are a writer, you could write articles about the JVCL or about specific components in the JVCL. If you speak a foreign language (foreign to english speaking people, that is), you could help translate the JVCL to other languages.<br><br>For more information , see the JVCL webpage on contributing (<a href="http://jvcl.sf.net">http://jvcl.sf.net</a>).<br></div>
+
+
+<img src="images/q.gif" border=0>&nbsp;<a href="javascript:void(1)" onClick="ToggleVisible(FAQ4);">Required Package 'Inet' Not Found</a><br>
+<div id="FAQ4" style="color: #334499;display:none;margin-left:25px; margin-top: 5px; margin-bottom:10px;">
+<img src="images/a.gif" border=0>&nbsp;<i>From Julien Ferraro:</i><br><br>It's probably because you didn't choose to install the Internet components. Just launch your Delphi setup and select "Internet components" (or whatever the name is) and you should be OK. <br></div>
+
+
+<img src="images/q.gif" border=0>&nbsp;<a href="javascript:void(1)" onClick="ToggleVisible(FAQ5);">In D7, when I press F1, I am not getting JVCL help information</a><br>
+<div id="FAQ5" style="color: #334499;display:none;margin-left:25px; margin-top: 5px; margin-bottom:10px;">
+<img src="images/a.gif" border=0>&nbsp;Go to Help/Customize, delete the JCL.cnt and JVCL.cnt references, add them again, and save the project.<br></div>
+
+
+<img src="images/q.gif" border=0>&nbsp;<a href="javascript:void(1)" onClick="ToggleVisible(FAQ6);">When I try to compile my apps, I get an error message "line is too long (>1023 chars)"</a><br>
+<div id="FAQ6" style="color: #334499;display:none;margin-left:25px; margin-top: 5px; margin-bottom:10px;">
+<img src="images/a.gif" border=0>&nbsp;The files probably have UNIX carriage returns in them. <br><br>Use something like <a href="http://ccrma-www.stanford.edu/~craig/utility/flip/">http://ccrma-www.stanford.edu/~craig/utility/flip/</a> to correct it.  <br><br></div>
+
+
+<img src="images/q.gif" border=0>&nbsp;<a href="javascript:void(1)" onClick="ToggleVisible(FAQ7);">I'm getting an error ("Cannot load package JvNet. It contains zlib.pas which is also in package  YYYY") when I try to install the JvNet package.</a><br>
+<div id="FAQ7" style="color: #334499;display:none;margin-left:25px; margin-top: 5px; margin-bottom:10px;">
+<img src="images/a.gif" border=0>&nbsp;Open the JvNet run-time package and add the other run-time package ("YYYY") to it's requires node. Try to install again.<br></div>
+
+
+<img src="images/q.gif" border=0>&nbsp;<a href="javascript:void(1)" onClick="ToggleVisible(FAQ8);">"The procedure entry point SHGetSpecialFolderPathA could not be located in XXX".</a><br>
+<div id="FAQ8" style="color: #334499;display:none;margin-left:25px; margin-top: 5px; margin-bottom:10px;">
+<img src="images/a.gif" border=0>&nbsp;You probably have an older Internet Explorer installed. Install the latest IE release.<br><br>You might also want to try to update your ComCtl32.dll. <br><br>Since Microsoft keep moving their pages around, we cannot give you a reliable link. Instead, go to <a href="http://www.microsoft.com">Microsoft's website</a> and search for 50comupd.exe.<br><br></div>
+
+
+<img src="images/q.gif" border=0>&nbsp;<a href="javascript:void(1)" onClick="ToggleVisible(FAQ9);">How do I dock a form at design-time with the JvDocking components?</a><br>
+<div id="FAQ9" style="color: #334499;display:none;margin-left:25px; margin-top: 5px; margin-bottom:10px;">
+<img src="images/a.gif" border=0>&nbsp;You can't dock the forms at design-time. You will have to do it programmatically.<br><br></div>
+
+
+<img src="images/q.gif" border=0>&nbsp;<a href="javascript:void(1)" onClick="ToggleVisible(FAQ10);">How do I change the docking style at runtime?</a><br>
+<div id="FAQ10" style="color: #334499;display:none;margin-left:25px; margin-top: 5px; margin-bottom:10px;">
+<img src="images/a.gif" border=0>&nbsp;You can't change it at runtime, only at design-time. We are working on resolving this issue.<br><br></div>
+
+
+<img src="images/q.gif" border=0>&nbsp;<a href="javascript:void(1)" onClick="ToggleVisible(FAQ11);">"Cannot load JvMM. It contains VFW.pas which is also contained in GLSCENE."</a><br>
+<div id="FAQ11" style="color: #334499;display:none;margin-left:25px; margin-top: 5px; margin-bottom:10px;">
+<img src="images/a.gif" border=0>&nbsp;Resolve it by either adding the GLSCENE package to the requires of JVMM <br>or add JvMM to the requires of GLSCENE. Rebuild the packages.<br><br></div>
+
+
 </body>
 </html>
+
+
