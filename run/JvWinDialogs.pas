@@ -31,14 +31,12 @@ unit JvWinDialogs;
 interface
 
 uses
+  {$IFDEF VisualCLX}
+  Qt, Windows,
+  {$ENDIF VisualCLX}
   Windows, ShellAPI, ShlObj, ComObj, ActiveX, CommDlg, UrlMon,
   SysUtils, Classes,
-  {$IFDEF VCL}
   Graphics, Controls, Forms, Dialogs,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Qt, QGraphics, QControls, QForms, QDialogs, Types, QWindows,
-  {$ENDIF VisualCLX}
   JvBaseDlg, JvTypes, JvComponent, JvJCLUtils; // For OSCheck
 
 {$HPPEMIT '#include "dbt.h"'}
@@ -615,9 +613,25 @@ var
   URLHandle: THandle = 0;
   SHDocvwHandle: THandle = 0;
 
+{$IFDEF VisualCLX}
+function GetForegroundWindow: HWND;
+begin
+  Result := Windows.GetForegroundWindow ;
+end;
+
+function GetDesktopWindow: HWND;
+begin
+  Result := Windows.GetDeskTopWindow ;
+end;
+
+{$ENDIF VisualCLX}
+
+
+
+
 procedure LoadJvDialogs;
 begin
-  ShellHandle := Windows.LoadLibrary(PChar(Shell32));
+  ShellHandle := LoadLibrary(PChar(Shell32));
   if ShellHandle > 0 then
   begin
     if Win32Platform = VER_PLATFORM_WIN32_NT then
@@ -638,17 +652,17 @@ begin
     SHOpenWith := GetProcAddress(ShellHandle, PChar('OpenAs_RunDLLA'));
   end;
 
-  CommHandle := Windows.LoadLibrary('comdlg32.dll');
+  CommHandle := LoadLibrary('comdlg32.dll');
   if CommHandle > 0 then
   begin
     GetOpenFileNameEx := GetProcAddress(CommHandle, PChar('GetOpenFileNameA'));
     GetSaveFileNameEx := GetProcAddress(CommHandle, PChar('GetSaveFileNameA'));
   end;
 
-  AppWizHandle := Windows.LoadLibrary('appwiz.cpl');
+  AppWizHandle := LoadLibrary('appwiz.cpl');
   if AppWizHandle > 0 then
     NewLinkHere := GetProcAddress(AppWizHandle, PChar('NewLinkHereA'));
-  URLHandle := Windows.LoadLibrary('url.dll');
+  URLHandle := LoadLibrary('url.dll');
   if URLHandle > 0 then
   begin
     @URLAssociationDialogA := GetProcAddress(URLHandle, 'URLAssociationDialogA');
@@ -657,7 +671,7 @@ begin
 //    @URLAssociationDialogW  := GetProcAddress(URLHandle,'URLAssociationDialogW');
 //    @MIMEAssociationDialogW := GetProcAddress(URLHandle,'MIMEAssociationDialogW');
   end;
-  SHDocvwHandle := Windows.LoadLibrary('shdocvw.dll');
+  SHDocvwHandle := LoadLibrary('shdocvw.dll');
   if SHDocvwHandle > 0 then
     SoftwareUpdateMessageBox := GetProcAddress(SHDocvwHandle, 'SoftwareUpdateMessageBox');
 end;
@@ -786,7 +800,7 @@ begin
       'DoOrganizeFavDlg'));
     if not Assigned(lpfnDoOrganizeFavDlg) then
       raise EWinDialogError.CreateRes(@RsEFunctionNotSupported);
-    lpfnDoOrganizeFavDlg(Windows.GetForegroundWindow, PChar(Path));
+    lpfnDoOrganizeFavDlg(GetForegroundWindow, PChar(Path));
   finally
     FreeLibrary(SHModule);
   end;
@@ -1730,9 +1744,9 @@ begin
       {$ENDIF VisualCLX}
   end;
   if Result = 0 then
-    Result := Windows.GetForegroundWindow;
+    Result := GetForegroundWindow;
   if Result = 0 then
-    Result := Windows.GetDesktopWindow;
+    Result := GetDesktopWindow;
 end;
 
 { TJvMIMEAssociationDialog }
@@ -1776,9 +1790,9 @@ begin
       {$ENDIF VisualCLX}
   end;
   if Result = 0 then
-    Result := Windows.GetForegroundWindow;
+    Result := GetForegroundWindow;
   if Result = 0 then
-    Result := Windows.GetDesktopWindow;
+    Result := GetDesktopWindow;
 end;
 
 { TJvSoftwareUpdateDialog }
@@ -1804,7 +1818,7 @@ begin
   if Assigned(SoftwareUpdateMessageBox) then
   begin
     psdi := FDistInfo.SoftDistInfo;
-    FReturnValue := SoftwareUpdateMessageBox(Windows.GetDesktopWindow, '', 0, psdi);
+    FReturnValue := SoftwareUpdateMessageBox(GetDesktopWindow, '', 0, psdi);
     Result := ReturnValue = IDYES;
     if ReturnValue <> IDABORT then
       FDistInfo.SoftDistInfo := psdi;
