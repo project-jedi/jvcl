@@ -139,6 +139,11 @@ classes.<blockquote>
 <blockquote>
  <ul>
   <li>Introduces published property AboutJVCL</li>
+  <li>Introduces protected property HintColor that is assigned to Application.HintColor if it is 
+  not clNone and the mouse is over the control. When the mouse leaves the control the original
+  Application.HintColor is restored.</li>
+  <li>Introduces protected event OnParentColorChange</li>
+  <li>Introduces protected property MouseOver that is True when the mouse is over the control.</li>
  </ul>
 </blockquote>
 
