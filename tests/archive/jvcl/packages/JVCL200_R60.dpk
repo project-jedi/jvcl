@@ -131,7 +131,6 @@ contains
   JvFormPass in '..\source\JvFormPass.pas',
   JvFormPatch in '..\source\JvFormPatch.pas',
   JvFormPlace in '..\source\JvFormPlace.pas',
-  JvFormProgress in '..\source\JvFormProgress.pas',
   JvFormSerial in '..\source\JvFormSerial.pas',
   JvFormTips in '..\source\JvFormTips.pas',
   JvFormToHtml in '..\source\JvFormToHtml.pas',
@@ -341,7 +340,6 @@ contains
   JvInspDB in '..\source\JvInspDB.pas',
   JvHidControllerClass in '..\source\JvHidControllerClass.pas',
   JvAnalogClock in '..\source\JvAnalogClock.pas',
-  // RX Controls
   JvxCtrls in '..\source\JvxCtrls.pas',
   JvGrids in '..\source\JvGrids.pas',
   JvCurrEdit in '..\source\JvCurrEdit.pas',
@@ -405,7 +403,6 @@ contains
   JvTConst in '..\source\JvTConst.pas',
   JvOle2Auto in '..\source\JvOle2Auto.pas',
   JvVerInf in '..\source\JvVerInf.pas',
-  // Rx DB Controls
   JvDBCtrl in '..\source\JvDBCtrl.pas',
   JvLookup in '..\source\JvLookup.pas',
   JvxLogin in '..\source\JvxLogin.pas',
@@ -414,7 +411,6 @@ contains
   JvDBComb in '..\source\JvDBComb.pas',
   JvDBRichEd in '..\source\JvDBRichEd.pas',
   JvMemDS in '..\source\JvMemDS.pas',
-  // Rx BDE Controls
   JvDBQBE in '..\source\JvDBQBE.pas',
   JvDBFilter in '..\source\JvDBFilter.pas',
   JvDBLists in '..\source\JvDBLists.pas',
@@ -427,6 +423,8 @@ contains
   JvBdeUtils in '..\source\JvBdeUtils.pas',
   JvQuery in '..\source\JvQuery.pas',
   JvMemTable in '..\source\JvMemTable.pas',
-  JvDBExcpt in '..\source\JvDBExcpt.pas';
+  JvDBExcpt in '..\source\JvDBExcpt.pas',
+  JvFormProgress in '..\source\JvFormProgress.pas' {FormProg},
+  JvRadioCtl in '..\source\JvRadioCtl.pas';
 
 end.

@@ -377,6 +377,7 @@ contains
   JvTConst in '..\source\JvTConst.pas',
   JvOle2Auto in '..\source\JvOle2Auto.pas',
   JvVerInf in '..\source\JvVerInf.pas',
-  JvProgressBar in '..\source\JvProgressBar.pas';
+  JvProgressBar in '..\source\JvProgressBar.pas',
+  JvRadioCtl in '..\source\JvRadioCtl.pas';
 
 end.

@@ -401,6 +401,7 @@ contains
   JvBdeUtils in '..\source\JvBdeUtils.pas',
   JvQuery in '..\source\JvQuery.pas',
   JvMemTable in '..\source\JvMemTable.pas',
-  JvDBExcpt in '..\source\JvDBExcpt.pas';
+  JvDBExcpt in '..\source\JvDBExcpt.pas',
+  JvRadioCtl in '..\source\JvRadioCtl.pas';
 
 end.
