@@ -736,6 +736,7 @@ type
     function GetHint: string;
     function GetImageIndex: TImageIndex;
   public
+    procedure Assign(Source:TPersistent);override;
     constructor Create(Collection: TCollection); override;
     destructor Destroy; override;
     property Button: TJvNavPanelToolButton read FRealButton;
@@ -4965,6 +4966,22 @@ end;
 
 //=== { TJvNavPaneToolButton } ===============================================
 
+procedure TJvNavPaneToolButton.Assign(Source: TPersistent);
+begin
+  if Source is TJvNavPaneToolButton then
+  begin
+//    if Source <> Self then
+    begin
+      Action := TJvNavPaneToolButton(Source).Action;
+      Hint   := TJvNavPaneToolButton(Source).Hint;
+      ImageIndex := TJvNavPaneToolButton(Source).ImageIndex;
+      Enabled := TJvNavPaneToolButton(Source).Enabled
+    end;
+  end
+  else
+    inherited Assign(Source);
+end;
+
 constructor TJvNavPaneToolButton.Create(Collection: TCollection);
 begin
   FRealButton := TJvNavPanelToolButton.Create(nil);
@@ -5059,6 +5076,7 @@ begin
   FChangeLink.OnChange := DoImagesChange;
   DrawPartialMenuFrame := False;
   TransparentDown := False;
+  HotTrack := True;
 end;
 
 destructor TJvNavPanelToolButton.Destroy;
