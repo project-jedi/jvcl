@@ -763,10 +763,8 @@ function DefaultDoPaintBackground(Instance: TWinControl; Canvas: TCanvas; Param:
 {$IFDEF VisualCLX}
 procedure WidgetControl_Painting(Instance: TWidgetControl; Canvas: TCanvas;
   EventRegion: QRegionH);
-  // - returns NIL if the Instance is in csDestroying.
-  // - enters the painting and returns an interface that leaves the painting when
-  //   is is released.
   // - redirects Canvas.Handle to a Pixmap if Instance.DoubleBuffered is set
+  // - calls Instance.Paint
 procedure WidgetControl_DefaultPaint(Instance: TWidgetControl; Canvas: TCanvas);
 
 function TWidgetControl_NeedKey(Instance: TWidgetControl; Key: Integer;
