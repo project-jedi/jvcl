@@ -31,7 +31,8 @@ unit PgIDESelection;
 interface
 
 uses
-  Windows, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, Dialogs,
+  Windows, ShellAPI,
+  SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, Dialogs,
   ExtCtrls, Core, JVCL3Install, DelphiData, JVCLData, JCLData;
 
 type
@@ -297,6 +298,7 @@ var
   Version: Integer;
   Tg: TTargetConfig;
   Cmd, Dir: string;
+  JCLExitCode: Cardinal;
 begin
   Version := 5; // find the newest Delphi version
   Tg := nil;
@@ -321,8 +323,8 @@ begin
 
   Assert(Tg <> nil, 'No Delphi/BCB installed'); // do not localize
 
-  Dir := ExtractShortPathName(Installer.JCLDir) + '\install';
-  Cmd := ExtractShortPathName(Tg.Target.Make);
+  Dir := ExtractShortPathName(Installer.JCLDir) + '\install\build';
+  Cmd := Dir + '\build.exe newest "--make=installer"';
 
   StartupInfo.cb := SizeOf(StartupInfo);
   GetStartupInfo(StartupInfo);
@@ -332,10 +334,17 @@ begin
   begin
     CloseHandle(ProcessInfo.hThread);
     WaitForSingleObject(ProcessInfo.hProcess, INFINITE);
+    GetExitCodeProcess(ProcessInfo.hProcess, JCLExitCode);
+    CloseHandle(ProcessInfo.hProcess);
+    if JCLExitCode <> 0 then
+      ShellExecute(0, 'open', 'http://jcl.sf.net', nil, nil, SW_NORMAL);
     PackageInstaller.RebuildPage;
   end
   else
-    raise Exception.Create(RsErrorInstallingJCL);
+  begin
+    if ShellExecute(0, 'open', 'http://jcl.sf.net', nil, nil, SW_NORMAL) < 32 then
+      raise Exception.Create(RsErrorInstallingJCL);
+  end;
 end;
 
 procedure TIDESelectionPage.DoClickUninstallDeleteFiles(Sender: TObject);

@@ -395,8 +395,9 @@ begin
       if (S = 'delphi') or (S = 'bcb') or (S = 'bds') then // do not localize
         NewS := FRootDir
       else if IsBDS and (S = 'bdsprojectsdir') then
-        NewS := BDSProjectsDir;
-
+        NewS := BDSProjectsDir
+      else
+        NewS := GetEnvironmentVariable(S);
 
       if NewS <> S then
       begin

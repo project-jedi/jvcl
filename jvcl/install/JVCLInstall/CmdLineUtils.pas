@@ -269,7 +269,13 @@ function TBoolItem.IsItem(const ParStr: string): Boolean;
 begin
   Result := CompareText(ParStr, Name) = 0;
   if Result then
-    FValue^ := True;
+    FValue^ := True
+  else
+  begin
+    Result := CompareText(ParStr, Name + '-') = 0;
+    if Result then
+      FValue^ := False;
+  end;
 end;
 
 { TDirItem }
