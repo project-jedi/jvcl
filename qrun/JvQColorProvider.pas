@@ -39,7 +39,7 @@ uses
   Classes, Contnrs,
   
   
-  Types, QWindows, QGraphics, QDialogs,
+  Types, QWindows, QGraphics, QDialogs, 
   
   JclBase,
   JvQDataProvider, JvQDataProviderIntf, JvQTypes;
@@ -69,12 +69,9 @@ type
     var Color: TColor; var DoAdd: Boolean) of object;
 
   IJvColorProvider = interface
-    
-    
-    ['{2C41B41B-D6DD-4B7D-A1D5-FC6E6C219CE4}']
-    
+    ['{3DF32721-553B-4759-A628-35F5CA62F3D5}']
     procedure DoAddColor(ColorType: TColorType; var Color: TColor; var DoAdd: Boolean);
-    function AddColor(ColorType: TColorType; Color: TColor): Boolean;
+    function AddColor(ColorType: TColorType; Color: TColor): Boolean; 
     function IndexOfMapping(Mapping: TJvColorProviderNameMapping): Integer;
     function IndexOfMappingName(Name: string): Integer;
     function Get_MappingCount: Integer;
@@ -110,10 +107,7 @@ type
   end;
 
   IJvColorMappingProvider = interface
-    
-    
-    ['{6DF9034C-01D1-4420-8971-9BB20AEE7637}']
-    
+    ['{B6BA8036-8ECF-463B-BAD3-6855D4845F3F}']
     function Get_ClientProvider: IJvColorProvider;
     procedure Set_ClientProvider(Value: IJvColorProvider);
 
@@ -121,20 +115,14 @@ type
   end;
 
   IJvColorItem = interface
-    
-    
-    ['{FD4DF8E6-0DA4-4448-A355-006D7A5A81B7}']
-    
+    ['{ED95EC41-EEE2-4E14-ABF6-5B7B5EA47FFF}']
     function Get_Color: TColor;
 
     property Color: TColor read Get_Color;
   end;
 
   IJvColorMapItem = interface
-    
-    
-    ['{7C18F286-321A-4990-9FBE-6A275B79CCD4}']
-    
+    ['{8906A180-71C0-4DF6-9029-5513B341541E}']
     function Get_NameMapping: TJvColorProviderNameMapping;
 
     property NameMapping: TJvColorProviderNameMapping read Get_NameMapping;
@@ -519,10 +507,7 @@ implementation
 
 uses
   
-  
-  
-  QControls,
-  
+  Controls,
   
   RTLConsts,
   

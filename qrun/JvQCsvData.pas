@@ -1848,24 +1848,24 @@ begin
     end;
     //AutoCalcFields?
     {$IFDEF DEBUGINFO_ON}
-    OutputDebugString(PChar('GetFieldData '+Field.FieldName+' Buffer='+IntToHex(Integer(Buffer),8)) );    
-    {$ENDIF}
+    OutputDebugString(PChar('GetFieldData ' + Field.FieldName + ' Buffer=' + IntToHex(Integer(Buffer), 8)));
+    {$ENDIF DEBUGINFO_ON}
 
     Inc(pSource, SizeOf(TJvCsvRow) + Field.Offset);
-    if (Buffer = nil) then begin // NULL CHECK MEANS THAT SOMEONE IS ASKING IF THIS FIELD HAS A VALUE. RETURN TRUE.
-        result := (Field.DataSize>0); // Yes, we could read this field if you asked us to!
-        exit;
+    if Buffer = nil then
+    begin
+      // NULL CHECK MEANS THAT SOMEONE IS ASKING IF THIS FIELD HAS A VALUE. RETURN TRUE.
+      Result := (Field.DataSize > 0); // Yes, we could read this field if you asked us to!
+      Exit;
     end;
 
-    if (Field.DataSize<=0) then
+    if Field.DataSize <= 0 then
       PChar(Buffer)[0] := Chr(0)
     else // Get the field data from the buffer:
       CopyMemory(Buffer, @pSource[1], Field.DataSize);
 
-
-    if (Buffer<>nil ) and (Field.DataSize>0) then
+    if (Buffer <> nil) and (Field.DataSize > 0) then
        Result := True;
-
     Exit;
   end;
 

@@ -242,7 +242,7 @@ function DrawShadowText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect;
 
 implementation
 uses
-  JvQThemes, JvQJCLUtils, JvQJVCLUtils, QMath;
+  JvQThemes, JvQJCLUtils, JvQJVCLUtils, Math;
 
 const
   Alignments: array[TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
@@ -369,11 +369,12 @@ begin
   ColorShadow := FShadowColor;
   if not Enabled then
   begin
-    if (FShadowSize = 0) and NewStyleControls then
+(*)    if (FShadowSize = 0) and NewStyleControls then
     begin
       PosShadow := spRightBottom;
       SizeShadow := 1;
     end;
+(*)    
     Canvas.Font.Color := clGrayText;
     ColorShadow := clBtnHighlight;
   end;

@@ -46,10 +46,7 @@ type
     var CanIgnore: Boolean) of object;
 
   IJvSpellChecker = interface
-    
-    
-    ['{84655F8C-1E0A-4E68-9E62-9D25C9B76DD2}']
-    
+    ['{819CE37A-E3C1-4F54-B9E1-1CFAA8AFB887}']
     // GetCurrentWord returns the currently found misspelled or missing word
     function GetCurrentWord: string;
     // Seek moves the internal text pointer to the position in Text given by Position.

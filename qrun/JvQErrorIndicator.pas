@@ -57,10 +57,7 @@ type
 
   // IJvErrorIndicator is implemented by the TJvErrorIndicator
   IJvErrorIndicator = interface
-    
-    
-    ['{AE6423D2-8001-4750-855E-A3318AD06AFA}']
-    
+    ['{5BCB5404-9C17-4CC6-96EC-46567CA19A12}']
     procedure SetError(AControl: TControl; const AErrorMessage: WideString);
     procedure SetClientError(const AClient: IJvErrorIndicatorClient);
   end;
@@ -68,10 +65,7 @@ type
   // IJvErrorIndicatorClient should be implemented by controls that wants to be able
   // to update the error indicator through it's own properties
   IJvErrorIndicatorClient = interface
-    
-    
-    ['{0C4010FC-EE5B-40F1-8B45-DE8B10E41BC0}']
-    
+    ['{9871F250-631E-4119-B073-71B28711C9B8}']
     procedure SetErrorIndicator(const Value: IJvErrorIndicator);
     function GetErrorIndicator: IJvErrorIndicator;
     function GetControl: TControl;

@@ -169,32 +169,14 @@ implementation
 uses
   JvQConsts, JvQResources, JvQTypes;
 
-//=== TJvAtom ================================================================
-
-destructor TJvAtoms.Destroy;
-begin
-  ClearAll;
-  inherited Destroy;
-end;
-
-procedure TJvAtom.SetActor(const Value: TJvSALProc);
-begin
-  FActor := Value;
-end;
-
-procedure TJvAtom.SetValue(const AValue: Variant);
-begin
-  FValue := AValue;
-end;
-
-procedure TJvAtoms.ClearAll;
-var
-  I: Integer;
-begin
-  for I := 0 to Count - 1 do
-    TJvAtom(Objects[I]).Free;
-  Clear;
-end;
+const
+  // do not localize these strings
+  cSAL = 'SAL';
+  cUse = 'use::';
+  cLiteral = 'literal';
+  cProc = 'proc-';
+  cEndProc = 'end-proc';
+  cVar = 'var-';
 
 //=== TJvSAL =================================================================
 
@@ -204,8 +186,8 @@ begin
   FAtoms := TJvAtoms.Create;
   FProcs := TJvSALHashList.Create(ITinyHash, HashSecondaryOne, SameText);
   FUnits := TStringList.Create;
-  FCaption := 'SAL'; // do not localize
-  FUseDirective := 'use::'; // do not localize
+  FCaption := cSAL;
+  FUseDirective := cUse;
   FBeginOfComment := '{';
   FEndOfComment := '}';
   FStringDelimiter := '"';
@@ -272,7 +254,7 @@ var
   AActor: TJvSALProc;
   AParser: TJvSALProc;
   I, P, P2: Integer;
-  fv: double;
+  fv: Double;
   A: TJvAtom;
   fn, TheUnit: string;
   Handled: Boolean;
@@ -346,7 +328,7 @@ begin
       A := TJvAtom.Create;
       A.Value := Token;
       A.Actor := xValue;
-      Atoms.AddObject('literal', A); // do not localize
+      Atoms.AddObject(cLiteral, A);
     end
     else
     begin
@@ -372,22 +354,22 @@ begin
         A := TJvAtom.Create;
         A.Value := fv;
         A.Actor := xValue;
-        Atoms.AddObject('literal', A); // do not localize
-      except //
-        if Pos('proc-', Token) = 1 then // do not localize
+        Atoms.AddObject(cLiteral, A);
+      except
+        if Pos(cProc, Token) = 1 then
         begin // begin of procedure
-          if Pos('end-proc', S) = 0 then // do not localize
+          if Pos(cEndProc, S) = 0 then
             raise EJVCLException.CreateFmt(RsEUnterminatedProcedureNears, [S]);
           APO(Token, xBoSub);
         end
         else
-        if Token = 'end-proc' then // do not localize
+        if Token = cEndProc then
           APO(Token, xEoSub)
         else
         if Copy(Token, Length(Token) - 1, 2) = '()' then
           APO(Token, xProc) // proc call
         else
-        if Pos('var-', Token) = 1 then // do not localize
+        if Pos(cVar, Token) = 1 then
         begin // define variable
           if Atoms.IndexOf(Token) <> -1 then
             raise EJVCLException.CreateFmt(RsEVariablesAllreadyDefineds, [Token, S]);
@@ -399,7 +381,7 @@ begin
         if Token[1] = '$' then
         begin // variable value
           // find address
-          I := Atoms.IndexOf('var-' + Copy(Token, 2, MaxInt)); // do not localize
+          I := Atoms.IndexOf(cVar + Copy(Token, 2, MaxInt));
           if I = -1 then
             raise EJVCLException.CreateFmt(RsEVariablesIsNotYetDefineds, [Token, S]);
           A := TJvAtom.Create;
@@ -429,7 +411,7 @@ begin
     S := Atoms[I];
     if Copy(S, Length(S) - 1, 2) = '()' then
     begin
-      S := 'proc-' + Copy(S, 1, Length(S) - 2); // do not localize
+      S := cProc + Copy(S, 1, Length(S) - 2);
       P := Atoms.IndexOf(S);
       if P = -1 then
         raise EJVCLException.CreateFmt(RsEUndefinedProcedures, [S]);
@@ -549,8 +531,8 @@ begin
   repeat
     Op := Atoms[PC];
     Inc(FPC);
-    if Op = 'end-proc' then
-      Exit; // do not localize
+    if Op = cEndProc then
+      Exit;
   until PC >= C;
   raise EJVCLException.Create(RsECouldNotFindEndOfProcedure);
 end;
@@ -633,6 +615,35 @@ end;
 procedure TJvSAL.xNoParser;
 begin
   // do nothing
+end;
+
+//=== TJvAtom ================================================================
+
+procedure TJvAtom.SetActor(const Value: TJvSALProc);
+begin
+  FActor := Value;
+end;
+
+procedure TJvAtom.SetValue(const AValue: Variant);
+begin
+  FValue := AValue;
+end;
+
+//=== TJvAtoms ===============================================================
+
+destructor TJvAtoms.Destroy;
+begin
+  ClearAll;
+  inherited Destroy;
+end;
+
+procedure TJvAtoms.ClearAll;
+var
+  I: Integer;
+begin
+  for I := 0 to Count - 1 do
+    TJvAtom(Objects[I]).Free;
+  Clear;
 end;
 
 //=== TJvSALProcAtom =========================================================

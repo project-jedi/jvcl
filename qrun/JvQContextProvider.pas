@@ -42,37 +42,25 @@ uses
 type
   { Context provider related interfaces. }
   IJvDataContextProvider = interface
-    
-    
-    ['{E7BC35BA-832D-4A92-BCF4-D4A8446EC7F6}']
-    
+    ['{78EB1037-11A5-4871-8115-4AE1AC60B59C}']
     function Get_ClientProvider: IJvDataProvider;
     procedure Set_ClientProvider(Value: IJvDataProvider);
     property ClientProvider: IJvDataProvider read Get_ClientProvider write Set_ClientProvider;
   end;
 
   IJvDataContextSearch = interface
-    
-    
-    ['{52FD0D44-093E-4DE9-9CA2-83F7BF52F13C}']
-    
+    ['{C8513B84-FAA0-4794-A4A9-B2899797F52B}']
     function Find(Context: IJvDataContext; const Recursive: Boolean = False): IJvDataItem;
     function FindByName(Name: string; const Recursive: Boolean = False): IJvDataItem;
   end;
 
   IJvDataContextItems = interface
-    
-    
-    ['{C61207C3-C462-46BA-A37C-F9C1FDFA9249}']
-    
+    ['{3303276D-2596-4FDB-BA1C-CE6E043BEB7A}']
     function GetContexts: IJvDataContexts;
   end;
 
   IJvDataContextItem = interface
-    
-    
-    ['{D79D9EC9-5E56-4129-A92C-6E991AF471E6}']
-    
+    ['{7156CAC8-0DB9-43B7-96C5-5A56723C5158}']
     function GetContext: IJvDataContext;
   end;
 

@@ -65,7 +65,7 @@ type
     procedure HTMLClearBreaks;
     procedure HTMLElementDimensions;
     procedure SetBackColor(const Value: TColor);
-    procedure SetText(const Value: TCaption);
+    procedure SetText(const Value: TCaption); override;
     procedure SetMarginLeft(const Value: Integer);
     procedure SetMarginRight(const Value: Integer);
     procedure SetMarginTop(const Value: Integer);

@@ -224,7 +224,7 @@ implementation
 
 uses
   
-  QMath;
+  Math;
 
 constructor TJvCustomEdit.Create(AOwner: TComponent);
 begin

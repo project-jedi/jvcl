@@ -42,7 +42,7 @@ uses
   
   Types, QControls, QButtons, QGraphics, QExtCtrls, QForms, QImgList, QWindows,
   
-  JvQComponent, JvQExControls, JvQResources;
+  JvQComponent, JvQExControls;
 
 type
   TDate = TDateTime;
@@ -232,7 +232,7 @@ type
     property LeftButton;
     
   published
-    // property AboutJVCL; //X;
+    property AboutJVCLX;
     // gets / sets the borderstyle of the control and the scroll-buttons
     property BorderStyle;
     // gets / sets the width of the buttons
@@ -325,7 +325,7 @@ type
 implementation
 
 uses
-  QConsts,
+  Consts,
   JvQJVCLUtils, JvQThemes;
 
 {$IFDEF MSWINDOWS}
@@ -1221,7 +1221,7 @@ begin
   ClearImages;
   ClearObjects;
   if not ReadMagic(Stream) then
-    raise EStreamError.Create(RSInvalidImage);
+    raise EStreamError.Create(SInvalidImage);
   FDateImages.Text := ReadStr(Stream);
   for I := 0 to FDateImages.Count - 1 do
     FDateImages.Objects[I] := TObject(ReadInt(Stream));

@@ -63,7 +63,7 @@ uses
   Qt, QTypes, Types, QGraphics, QControls, QStdCtrls, QExtCtrls, QWindows,
   JvQExExtCtrls,
   
-  JvQComponent, JvQTypes, JvQExControls;
+  JvQComponent, JvQTypes, JvQExControls, JvQFinalize;
 
 const
   { Inspector Row Size constants }
@@ -196,8 +196,10 @@ type
   TJvInspAsSet = procedure(Sender: TJvInspectorEventData; var Value; var BufSize: Integer) of object;
   TJvInspSupportsMethodPointers = procedure(Sender: TJvInspectorEventData; var SupportsTMethod: Boolean) of object;
   TJvInspConfSectionEvent = procedure(var SectionName: string; var Parse: Boolean) of object;
+//  TJvInspConfKeyEvent = procedure(const SectionName: string; var ItemName: string; var ATypeInfo: PTypeInfo; var Allow:
+//    Boolean) of object;
   TJvInspConfKeyEvent = procedure(const SectionName: string; var ItemName: string; var ATypeInfo: PTypeInfo; var Allow:
-    Boolean) of object;
+    Boolean; var Flags:TInspectorItemFlags) of object;
 
   EJvInspector = class(EJVCLException);
   EJvInspectorItem = class(EJvInspector);
@@ -208,6 +210,9 @@ type
 
   TOnJvInspectorMouseDown = procedure(Sender: TJvCustomInspector; Item: TJvCustomInspectorItem; Button: TMouseButton;
     Shift: TShiftState; X, Y: Integer) of object;
+
+  TOnJvInspectorItemEdit = procedure (Sender:TJvCustomINspector; Item: TJvCustomInspectorItem;
+     var DisplayStr:String ) of object; // NEW! -WP.
 
   
   
@@ -260,6 +265,8 @@ type
     FOnKeyPress: TKeyPressEvent;
     FOnKeyUp: TKeyEvent;
     FOnMouseDown: TOnJvInspectorMouseDown;
+    FOnItemEdit : TOnJvInspectorItemEdit;//NEW!
+    
     FInspectObject: TObject;
     procedure SetInspectObject(const Value: TObject);
     //    FOnMouseDown: TInspectorMouseDownEvent;
@@ -416,6 +423,9 @@ type
     property OnKeyPress: TKeyPressEvent read FOnKeyPress write FOnKeyPress;
     property OnKeyUp: TKeyEvent read FOnKeyUp write FOnKeyUp;
     property OnMouseDown: TOnJvInspectorMouseDown read FOnMouseDown write FOnMouseDown;
+    property OnItemEdit : TOnJvInspectorItemEdit read FOnItemEdit write FOnItemEdit; //NEW!
+
+
   public
     constructor Create(AOwner: TComponent); override;
     procedure BeforeDestruction; override;
@@ -466,6 +476,7 @@ type
     property OnDataValueChanged;
     property OnItemSelected;
     property OnItemValueChanged;
+    property OnItemEdit; // NEW!       
 
     property OnEnter;
     property OnContextPopup;
@@ -673,6 +684,8 @@ type
     procedure Deactivate; dynamic;
     procedure DoAfterItemCreate; virtual;
     function DoCompare(const Item: TJvCustomInspectorItem): Integer; virtual;
+
+
     
     
     procedure DoDrawListItem(Control: TObject; Index: Integer; Rect: TRect;
@@ -686,6 +699,7 @@ type
       var Width: Integer); virtual;
     procedure DoValueChanged; virtual;
     procedure DropDown; dynamic;
+    // Defines what to do when the property editor of this inspector item is invoked.  Ie, '...' button is clicked on items with iifEdit in their flags.
     procedure Edit; virtual;
     procedure EditChange(Sender: TObject); virtual;
     procedure EditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -782,7 +796,7 @@ type
     property IsCompoundColumn: Boolean read GetIsCompoundColumn;
     property LastPaintGeneration: Integer read FLastPaintGen;
     property ListBox: TCustomListBox read GetListBox;
-    property OnGetValueList: TInspectorItemGetValueListEvent read FOnGetValueList write FOnGetValueList;
+    //promoted:property OnGetValueList: TInspectorItemGetValueListEvent read FOnGetValueList write FOnGetValueList;
     property Pressed: Boolean read FPressed write FPressed;
     property Tracking: Boolean read FTracking write FTracking;
   public
@@ -835,6 +849,8 @@ type
     property Visible: Boolean read GetVisible write SetVisible;
     property OnCompare: TInspectorItemSortCompare read FOnCompare write SetOnCompare;
     property OnValueChanged: TNotifyEvent read FOnValueChanged write FOnValueChanged;
+    //WP made public so we can add drop downs (without declaring an ENUM type)
+    property OnGetValueList: TInspectorItemGetValueListEvent read FOnGetValueList write FOnGetValueList;
   end;
 
   TJvInspectorCustomCategoryItem = class(TJvCustomInspectorItem)
@@ -1829,10 +1845,26 @@ uses
   JclRTTI, JclLogic,
   JvQJCLUtils, JvQJVCLUtils, JvQThemes, JvQResources, JclStrings;
 
+const
+  sUnitName = 'JvInspector';
+    
 // BCB Type Info support
 var
-  TypeInfoHelpersList : TClassList;
-    
+  GlobalTypeInfoHelpersList: TClassList;
+
+function TypeInfoHelpersList: TClassList;
+begin
+  if not Assigned(GlobalTypeInfoHelpersList) then
+  begin
+    GlobalTypeInfoHelpersList := TClassList.Create;
+    AddFinalizeObjectNil(sUnitName, TObject(GlobalTypeInfoHelpersList));
+
+   // register
+    RegisterTypeInfoHelper(TJvTypeInfoHelper);
+  end;
+  Result := GlobalTypeInfoHelpersList;
+end;
+
 function TypeInfoFromName(TypeName : string): PTypeInfo;
 var
   I : Integer;
@@ -1844,12 +1876,12 @@ begin
   I := 0;
   PropInfo := nil;
 
-  while (I<TypeInfoHelpersList.Count) and (PropInfo=Nil) do
+  while (I < TypeInfoHelpersList.Count) and (PropInfo = nil) do
   begin
     PropInfo := GetPropInfo(TypeInfoHelpersList[I], TypeName+'Prop');
     Inc(I);
   end;
-  
+
   if PropInfo <> nil then
     Result := PropInfo.PropType^
   else
@@ -1871,6 +1903,9 @@ var
   GlobalGenItemReg: TJvInspectorRegister = nil;
   GlobalVarItemReg: TJvInspectorRegister = nil;
   GlobalPropItemReg: TJvInspectorRegister = nil;
+
+procedure RegisterDataTypeKinds; forward;
+procedure RegisterPropDataTypeKinds; forward;
 
 //=== TCanvasStack ===========================================================
 
@@ -1997,7 +2032,10 @@ end;
 function CanvasStack: TCanvasStack;
 begin
   if GlobalCanvasStack = nil then
+  begin
     GlobalCanvasStack := TCanvasStack.Create(512);
+    AddFinalizeObjectNil(sUnitName, TObject(GlobalCanvasStack));
+  end;
   Result := GlobalCanvasStack;
 end;
 
@@ -2048,7 +2086,17 @@ type
   end;
 
 var
-  GlobalInspReg: TInspReg = nil;
+  FieldGlobalInspReg: TInspReg = nil;
+
+function GlobalInspReg: TInspReg;
+begin
+  if not Assigned(FieldGlobalInspReg) then
+  begin
+    FieldGlobalInspReg := TInspReg.Create;
+    AddFinalizeObjectNil(sUnitName, TObject(FieldGlobalInspReg));
+  end;
+  Result := FieldGlobalInspReg;
+end;
 
 function TInspReg.ApplicationDeactivate(var Msg: TMessage): Boolean;
 var
@@ -2223,7 +2271,17 @@ end;
 //=== TJvCustomInspector =====================================================
 
 var
-  DataRegister: TJvInspDataReg = nil;
+  GlobalDataRegister: TJvInspDataReg = nil;
+
+function DataRegister: TJvInspDataReg;
+begin
+  if not Assigned(GlobalDataRegister) then
+  begin
+    GlobalDataRegister := TJvInspDataReg.Create;
+    AddFinalizeObjectNil(sUnitName, TObject(GlobalDataRegister));
+  end;
+  Result := GlobalDataRegister;
+end;
 
 
 
@@ -3455,7 +3513,7 @@ begin
 //        Position := Round(IdxToY(TopIndex) / ScFactor);
         if ImageHeight > ClientHeight then
           Max := ImageHeight-Clientheight;
-        LargeChange := self.ClientHeight;
+        LargeChange := Self.ClientHeight;
         Position := IdxToY(TopIndex);
       except
         on E: Exception do ShowMessage(E.Message);
@@ -3638,8 +3696,8 @@ begin
   inherited Create(AOwner);
   
   ControlStyle := ControlStyle - [csAcceptsControls, csNoFocus];
-  FHorzScrollBar := TScrollBar.Create(self);
-  FVertScrollBar := TScrollBar.Create(self);
+  FHorzScrollBar := TScrollBar.Create(Self);
+  FVertScrollBar := TScrollBar.Create(Self);
 
   FHorzScrollBar.Parent := Self;
   FHorzScrollBar.Visible := False;
@@ -4285,12 +4343,12 @@ var
   TmpRect: TRect;
 begin
   if [iifValueList, iifEditButton] * Item.Flags = [] then
-  begin
+  begin // Value takes up entire edit value rect, there is no edit button:
     Rects[iprEditValue] := Rects[iprValue];
     Rects[iprEditButton] := Rect(0, 0, 0, 0);
   end
   else
-  begin
+  begin // The edit button is on the right of the edit value area:
     TmpRect := Rects[iprValue];
     Dec(TmpRect.Right, Inspector.ItemHeight);
     Rects[iprEditValue] := TmpRect;
@@ -4996,8 +5054,26 @@ begin
   end;
 end;
 
+
 procedure TJvCustomInspectorItem.Edit;
+var
+  DisplayStr: string;
 begin
+  //
+  // Overload this virtual method to define what happens when item is
+  // Edited. If you don't, then this is the default handler.
+  // To use it, set iifEdit in one of your item's Flags fields,
+  // and then catch the JvInspector.OnItemEdit event.
+  //
+  if Assigned(FInspector) then
+    if Assigned(FInspector.FOnItemEdit) then
+    begin
+      
+      DisplayStr := FData.AsString;
+      FInspector.FOnItemEdit(FInspector, Self, DisplayStr);
+      if DisplayStr <> Self.FData.AsString then
+        FData.SetAsString(DisplayStr); // modified!
+    end;
 end;
 
 procedure TJvCustomInspectorItem.EditChange(Sender: TObject);
@@ -6108,6 +6184,12 @@ begin
     Dec(Result);
 end;
 
+
+// PROTECTED
+//NEW: prevent lost data entry if focus shifts away, and that change of focus causes a refresh of the inspector!
+
+
+
 procedure TJvCustomInspectorItem.InitEdit;
 var
   Edit: TEdit;
@@ -6130,7 +6212,10 @@ begin
       Memo.WordWrap := True;
       Memo.WantReturns := False;
       Memo.ScrollBars := ssVertical;
+
+      //NEW: prevent lost data entry if focus shifts away, and that change of focus causes a refresh of the inspector!
       
+      //SetEditCtrl(Memo);
     end
     else
     begin
@@ -6143,6 +6228,7 @@ begin
         Edit.OnKeyUp := Inspector.FOnKeyUp;
       if Assigned(Inspector.FOnKeyPress) then
         Edit.OnKeyPress := Inspector.FOnKeyPress;
+      
       SetEditCtrl(Edit);
 
     end;
@@ -6209,7 +6295,9 @@ begin
     if not CancelEdits and EditCtrl.Modified and (not Data.IsAssigned or (DisplayValue <> EditCtrl.Text)) then
       DisplayValue := EditCtrl.Text;
     FreeAndNil(FListBox);
+
     SetEditCtrl(nil);
+//    FEditChanged := false;
     
     if HadFocus then
       SetFocus;
@@ -9222,7 +9310,12 @@ end;
 class function TJvCustomInspectorData.ItemRegister: TJvInspectorRegister;
 begin
   if GlobalGenItemReg = nil then
+  begin
     GlobalGenItemReg := TJvInspectorRegister.Create(TJvCustomInspectorData);
+    AddFinalizeObjectNil(sUnitName, TObject(GlobalGenItemReg));
+   // register
+    RegisterDataTypeKinds;
+  end;
   Result := GlobalGenItemReg;
 end;
 
@@ -9554,7 +9647,10 @@ end;
 class function TJvInspectorVarData.ItemRegister: TJvInspectorRegister;
 begin
   if GlobalVarItemReg = nil then
+  begin
     GlobalVarItemReg := TJvInspectorRegister.Create(TJvInspectorVarData);
+    AddFinalizeObjectNil(sUnitName, TObject(GlobalVarItemReg));
+  end;
   Result := GlobalVarItemReg;
 end;
 
@@ -9797,7 +9893,13 @@ end;
 class function TJvInspectorPropData.ItemRegister: TJvInspectorRegister;
 begin
   if GlobalPropItemReg = nil then
+  begin
     GlobalPropItemReg := TJvInspectorRegister.Create(TJvInspectorPropData);
+    AddFinalizeObjectNil(sUnitName, TObject(GlobalPropItemReg));
+
+   // register
+    RegisterPropDataTypeKinds;
+  end;
   Result := GlobalPropItemReg;
 end;
 
@@ -10649,14 +10751,16 @@ var
   KeyName: string;
   KeyTypeInfo: PTypeInfo;
   TmpItem: TJvCustomInspectorItem;
+  NewFlags : TInspectorItemFlags;
 
   function AllowAddKey: Boolean;
   begin
     KeyName := SL[I];
     KeyTypeInfo := System.TypeInfo(string);
     Result := True;
+    NewFlags := [iifVisible];    
     if Assigned(AOnAddKey) then
-      AOnAddKey(ASection, KeyName, KeyTypeInfo, Result);
+      AOnAddKey(ASection, KeyName, KeyTypeInfo, Result, NewFlags);
   end;
 
 begin
@@ -10672,6 +10776,7 @@ begin
       begin
         TmpItem := TJvInspectorINIFileData.New(AParent, KeyName, ASection, SL[I], KeyTypeInfo,
           AINIFile);
+        TmpItem.FFlags := NewFlags;
         // XXX Warren's first attempt to make inspector items know their data's names:
         //if (TmpItem.Parent.Name <> ASection) then
         //  TmpItem.Parent.Name := ASection;
@@ -11126,7 +11231,7 @@ begin
   end;
 end;
 
-procedure RegisterTypeKinds;
+procedure RegisterDataTypeKinds;
 begin
   if TJvCustomInspectorData.ItemRegister = nil then
     raise EJvInspectorReg.Create(RsEJvInspNoGenReg);
@@ -11156,6 +11261,12 @@ begin
     Add(TJvInspectorTypeInfoRegItem.Create(TJvInspectorTimeItem, TypeInfo(TTime)));
     Add(TJvInspectorTypeInfoRegItem.Create(TJvInspectorDateTimeItem, TypeInfo(TDateTime)));
   end;
+end;
+
+procedure RegisterPropDataTypeKinds;
+begin
+  if TJvCustomInspectorData.ItemRegister = nil then
+    raise EJvInspectorReg.Create(RsEJvInspNoGenReg);
   with TJvInspectorPropData.ItemRegister do
     Add(TJvInspectorPropRegItem.Create(TJvInspectorFontNameItem, TFont, 'Name', nil));
 end;
@@ -11256,26 +11367,10 @@ end;
 
 
 initialization
-  GlobalInspReg := TInspReg.Create;
-  RegisterTypeKinds;
   RegisterConsts;
-  DataRegister := TJvInspDataReg.Create;
-  TypeInfoHelpersList := TClassList.Create;
-  RegisterTypeInfoHelper(TJvTypeInfoHelper);
 
 finalization
-  DataRegister.Free; // Can't use FreeAndNil as it will set DataRegister to nil before it's destroyed.
-  DataRegister := nil;
-  GlobalGenItemReg.Free;
-  GlobalGenItemReg := nil;
-  GlobalPropItemReg.Free;
-  GlobalPropItemReg := nil;
-  GlobalVarItemReg.Free;
-  GlobalVarItemReg := nil;
-  GlobalInspReg.Free;
-  GlobalInspReg := nil;
-  FreeAndNil(GlobalCanvasStack);
-  TypeInfoHelpersList.Free;
+  FinalizeUnit(sUnitName);
 
 end.
 

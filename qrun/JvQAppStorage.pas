@@ -2283,12 +2283,14 @@ begin
     case Location of
       flCustom:
         Result := DoGetFilename;
+      {$IFDEF MSWINDOWS}
       flWindows:
         Result := PathAddSeparator(GetWindowsFolder) + NameOnly;
       flExeFile:
         Result := PathAddSeparator(ExtractFilePath(ParamStr(0))) + NameOnly;
       flUserFolder:
         Result := PathAddSeparator(GetAppdataFolder) + RelPathName;
+      {$ENDIF MSWINDOWS}
     end;
   end;
 end;

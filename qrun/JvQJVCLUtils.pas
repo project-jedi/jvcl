@@ -4657,6 +4657,7 @@ var
   
 begin
   // (p3) has this even been tested? Returns the exact same thing as Canvas.TextHeight(' ')
+  // (rom) to centralize various different calls to be on the safe side 
   
   
   // (ahuser) Qt returns different values for TextHeight('Ay') and TextHeigth(#1..#255)

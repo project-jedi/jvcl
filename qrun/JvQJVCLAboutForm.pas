@@ -134,10 +134,7 @@ var
   VersionInfo: TOSVersionInfoEx;
 {$ENDIF MSWINDOWS}
 begin
-  
-  
-  lblVersion.Caption := 'Version: ' + JVCLX_VERSIONSTRING;
-  
+  lblVersion.Caption := 'Version: ' + JVCL_VERSIONSTRING;
   {$IFDEF MSWINDOWS}
   FillChar(VersionInfo, SizeOf(TOSVersionInfoEx), #0);
   VersionInfo.dwOSVersionInfoSize := SizeOf(TOSVersionInfoEx);
@@ -162,7 +159,7 @@ end;
 procedure TJvJVCLAboutForm.Panel1MouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  ReleaseCapture;
+//  ReleaseCapture;
   
 end;
 

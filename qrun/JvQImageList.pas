@@ -395,8 +395,8 @@ begin
   if (not (csDesigning in ComponentState)) and (csLoading in ComponentState) then
     Exit;
 
-  if (FFileName <> '') and FileExists(FFilename)
-   {$IFDEF LINUX} and not DirectoryExists(FFilename) {$ENDIF} then
+  if (FFileName <> '') and FileExists(FFileName)
+   {$IFDEF LINUX} and not DirectoryExists(FFileName) {$ENDIF} then
   try
     FPicture.LoadFromFile(FFileName);
   except

@@ -69,10 +69,7 @@ type
   IJvDataConsumerClientNotify = interface;
 
   IJvDataProvider = interface
-    
-    
-    ['{FF97DB5E-73D0-4D47-AFDA-0564C568BA93}']
-    
+    ['{62A7A17D-1E21-427E-861D-C92FBB9B09A6}']
     procedure RegisterChangeNotify(ANotify: IJvDataProviderNotify);
     procedure UnregisterChangeNotify(ANotify: IJvDataProviderNotify);
     function GetItems: IJvDataItems;
@@ -95,20 +92,14 @@ type
   end;
 
   IJvDataProviderNotify = interface
-    
-    
-    ['{82DB52CA-C680-47C8-A747-5E8E10C879CA}']
-    
+    ['{5B9D1847-6D35-4D9C-8BC2-2054997AB120}']
     procedure DataProviderChanging(const ADataProvider: IJvDataProvider; AReason: TDataProviderChangeReason; Source: IUnknown);
     procedure DataProviderChanged(const ADataProvider: IJvDataProvider; AReason: TDataProviderChangeReason; Source: IUnknown);
     function Consumer: IJvDataConsumer;
   end;
 
   IJvDataItems = interface
-    
-    
-    ['{B5503745-873F-4B33-B2BC-8C7B9378B816}']
-    
+    ['{93747660-24FB-4294-BF4E-C7F88EA23983}']
     function GetCount: Integer;
     function GetItem(Index: Integer): IJvDataItem;
     function GetItemByID(ID: string): IJvDataItem;
@@ -125,11 +116,7 @@ type
   end;
 
   IJvDataItemsImages = interface
-    
-    
-    ['{DC8A0887-9A79-4557-99EC-6BB2BB923A40}']
-    
-
+    ['{735755A6-AD11-460C-B985-46464D73EDBC}']
     function GetDisabledImages: TCustomImageList;
     procedure SetDisabledImages(const Value: TCustomImageList);
     function GetHotImages: TCustomImageList;
@@ -142,10 +129,7 @@ type
   end;
 
   IJvDataItemsRenderer = interface
-    
-    
-    ['{3C0F0964-E0CF-4EBD-892E-F83D70BC44BA}']
-    
+    ['{4EA490F4-7CCF-44A1-AA26-5320CDE9FAFC}']
     procedure DrawItemByIndex(ACanvas: TCanvas; var ARect: TRect; Index: Integer; State: TProviderDrawStates);
     function MeasureItemByIndex(ACanvas: TCanvas; Index: Integer): TSize;
     procedure DrawItem(ACanvas: TCanvas; var ARect: TRect; Item: IJvDataItem; State: TProviderDrawStates);
@@ -154,11 +138,7 @@ type
   end;
 
   IJvDataItemsManagement = interface
-    
-    
-    ['{9E857FAB-67B3-459A-AC19-759069122597}']
-    
-
+    ['{76611CC0-9DCD-4394-8B6E-1ADEF1942BC3}']
     function Add(Item: IJvDataItem): IJvDataItem;
     function New: IJvDataItem;
     procedure Clear;
@@ -167,37 +147,24 @@ type
   end;
 
   IJvDataItemsDesigner = interface
-    
-    
-    ['{F0AD7891-8EA4-4553-8F31-F2B88B88B5F2}']
-    
+    ['{31B2544C-8E4F-40FE-94B8-04243EF40821}']
     function GetCount: Integer;
     function GetKind(Index: Integer; out Caption: string): Boolean;
     function NewByKind(Kind: Integer): IJvDataItem;
   end;
 
   IJvDataIDSearch = interface
-    
-    
-    ['{4EFC2D23-B76E-4AAA-9803-BAC20F754A6E}']
-    
+    ['{0F5BDC79-893B-45C9-94E9-C2B2FD4ABFE7}']
     function Find(ID: string; const Recursive: Boolean = False): IJvDataItem;
   end;
 
   IJvDataTextSearch = interface
-    
-    
-    ['{548887D7-E10F-44C6-9FB7-72C83E77AE30}']
-    
-
+    ['{E3BC388D-50F6-402D-9E30-36D5F7F40616}']
     function Find(Text: string; const Recursive: Boolean = False): IJvDataItem;
   end;
 
   IJvDataItem = interface
-    
-    
-    ['{7052A0F7-73EB-4980-AE85-399D970BE291}']
-    
+    ['{C965CF64-A1F2-44A4-B856-3A4EC6B693E1}']
     function GetItems: IJvDataItems;
     function GetIndex: Integer;
     function GetImplementer: TObject;
@@ -210,19 +177,13 @@ type
   end;
 
   IJvDataItemRenderer = interface
-    
-    
-    ['{E55FCE97-339F-4724-98BF-C128E5FF5729}']
-    
+    ['{9E877A0D-01C2-4204-AA74-84D6516BBEB9}']
     procedure Draw(ACanvas: TCanvas; var ARect: TRect; State: TProviderDrawStates);
     function Measure(ACanvas: TCanvas): TSize;
   end;
 
   IJvDataItemText = interface
-    
-    
-    ['{170E40A0-6BE2-4578-BAF1-4EDE2FA8E549}']
-    
+    ['{94FA56D9-281B-4252-B46D-15E7BADA70DA}']
     function GetCaption: string;
     procedure SetCaption(const Value: string);
     function Editable: Boolean;
@@ -230,10 +191,7 @@ type
   end;
 
   IJvDataItemImage = interface
-    
-    
-    ['{25E45D22-B910-4CA5-85D6-0F66FEE239A3}']
-    
+    ['{6425D73A-90CF-42ED-9AB2-63125A4C0774}']
     function GetAlignment: TAlignment;
     procedure SetAlignment(Value: TAlignment);
     function GetImageIndex: Integer;
@@ -246,18 +204,12 @@ type
   end;
 
   IJvDataItemBasicAction = interface
-    
-    
-    ['{7B6239D1-F94C-4E9F-B0D8-22FA0663A656}']
-    
+    ['{86859A20-560D-4E9A-AC8B-2457789451B0}']
     function Execute(Sender: TObject): Boolean;
   end;
 
   IJvDataItemStates = interface
-    
-    
-    ['{8D665C15-C519-4F5A-AB51-715ECC6C88E1}']
-    
+    ['{5BD81E0B-DAD2-4560-943A-205E0FF2A97F}']
     function Get_Enabled: TDataItemState;
     procedure Set_Enabled(Value: TDataItemState);
     function Get_Checked: TDataItemState;
@@ -270,10 +222,7 @@ type
   end;
 
   IJvDataItemDesigner = interface
-    
-    
-    ['{11E15F61-F2E5-4958-B3ED-DE1C14FA5FA0}']
-    
+    ['{8F1A1283-2D13-4A28-9616-08B3EF73F29A}']
     function GetVerbCount: Integer;
     function GetVerb(Index: Integer; out Caption: string; out Enabled, Checked, Visible,
       RadioItem: Boolean): Boolean;
@@ -281,10 +230,7 @@ type
   end;
 
   IJvDataContextSensitive = interface
-    
-    
-    ['{DADF606F-BA0F-410A-87AF-DED9F9D09A2D}']
-    
+    ['{7067F5C1-05DC-4DAC-A595-AF9151695FBB}']
     procedure RevertToAncestor;
     function IsEqualToAncestor: Boolean;
   end;
@@ -292,55 +238,37 @@ type
   
 
   IJvDataConsumer = interface
-    
-    
-    ['{AD1CC0CE-81A6-49D6-81E1-28EB83102522}']
-    
+    ['{B2F18D03-F615-4AA2-A51A-74D330C05C0E}']
     function VCLComponent: TComponent;
     function AttributeApplies(Attr: Integer): Boolean;
   end;
 
   IJvDataConsumerProvider = interface
-    
-    
-    ['{43A5B0F7-DDA0-447D-A178-8F8E77440EB3}']
-    
+    ['{1F01D2E5-2ACB-4B84-AFE6-67E563FB470B}']
     function GetProvider: IJvDataProvider;
   end;
 
   IJvDataConsumerContext = interface
-    
-    
-    ['{AFDA7988-415E-4B81-BE93-8D01E2E271F3}']
-    
+    ['{7AA9F53D-BBD4-4B64-916A-AAF4AB25A496}']
     function GetContext: IJvDataContext;
     procedure SetContext(Value: IJvDataContext);
   end;
 
   IJvDataConsumerItemState = interface
-    
-    
-    ['{9777CD34-19B2-44FA-9E6B-7B754195F985}']
-    
+    ['{09EBDED8-502E-4C2E-9842-312850FF3358}']
     function Enabled(Item: IJvDataItem): TDataItemState;
     function Checked(Item: IJvDataItem): TDataItemState;
     function Visible(Item: IJvDataItem): TDataItemState;
   end;
 
   IJvDataConsumerItemSelect = interface
-    
-    
-    ['{5CD1C5E9-5F54-4590-9057-5C8700F3B30D}']
-    
+    ['{F11554AE-263D-4C04-BCDB-79F04DE89609}']
     function GetItem: IJvDataItem;
     procedure SetItem(Value: IJvDataItem);
   end;
 
   IJvDataConsumerViewList = interface
-    
-    
-    ['{812AB5BD-0EE5-4A6A-9304-3507102F208A}']
-    
+    ['{F3A78F68-D998-4877-8C73-1E0D2987808D}']
     function Get_AutoExpandLevel: Integer;
     procedure Set_AutoExpandLevel(Value: Integer);
     function Get_ExpandOnNewItem: Boolean;
@@ -374,10 +302,7 @@ type
   end;
 
   IJvDataConsumerServerNotify = interface
-    
-    
-    ['{5D5A20F7-C541-4F6F-A068-C04FF0295B98}']
-    
+    ['{636CF1CD-6A5A-414F-9506-EAC461202119}']
     procedure AddClient(Client: IJvDataConsumerClientNotify);
     procedure RemoveClient(Client: IJvDataConsumerClientNotify);
     procedure NotifyProviderChanged(Client: IJvDataConsumerClientNotify);
@@ -385,20 +310,14 @@ type
   end;
 
   IJvDataConsumerClientNotify = interface
-    
-    
-    ['{F75820BB-E565-4771-AFEB-3F2E94DDE36A}']
-    
+    ['{D1AAAFDF-BEB1-44DB-B8D8-A60080CEF3C7}']
     procedure ItemSelected(Server: IJvDataConsumerServerNotify; Value: IJvDataItem);
     procedure LinkAdded(Server: IJvDataConsumerServerNotify);
     procedure LinkRemoved(Server: IJvDataConsumerServerNotify);
   end;
 
   IJvDataContexts = interface
-    
-    
-    ['{9AC039D7-2AE0-4848-86F5-EBBB662DA3BE}']
-    
+    ['{BA5DC787-29C6-40FA-9542-F0A1E92A2B30}']
     function Provider: IJvDataProvider;
     function Ancestor: IJvDataContext;
     function GetCount: Integer;
@@ -408,10 +327,7 @@ type
   end;
 
   IJvDataContextsManager = interface
-    
-    
-    ['{0C3877D1-596F-411A-824C-E47886174B48}']
-    
+    ['{A94D62CA-F9B4-4DAA-9091-86D01A962BB1}']
     function Add(Context: IJvDataContext): IJvDataContext;
     function New: IJvDataContext;
     procedure Delete(Context: IJvDataContext);
@@ -419,10 +335,7 @@ type
   end;
 
   IJvDataContext = interface
-    
-    
-    ['{B9D0DF44-ECEB-41AF-9503-FC5B95A48955}']
-    
+    ['{F226D92A-3493-4EF8-9CE6-037357EB0CEA}']
     function GetImplementer: TObject;
     function Contexts: IJvDataContexts;
     function Name: string;
@@ -430,10 +343,7 @@ type
   end;
 
   IJvDataContextManager = interface
-    
-    
-    ['{83ACF887-A6D6-437D-B8A5-2A24EB5777FC}']
-    
+    ['{530367D8-601C-4E36-B5F0-357160497C50}']
     procedure SetName(Value: string);
   end;
 

@@ -36,11 +36,7 @@ unit JvQJoystick;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, MMSystem,
-  
-  
-  QForms,
-  
+  Windows, Messages, SysUtils, Classes, MMSystem, Forms,
   JvQTypes, JvQComponent;
 
 // (rom) in the time of USB this unit may have to support more than 2 joysticks

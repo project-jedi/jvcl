@@ -98,9 +98,9 @@ type
   TJvEditButton = class(TJvImageSpeedButton)
   private
     FNoAction: Boolean;
-
+    
   protected
-
+    
     FStandard: Boolean; // Polaris
     FDrawGlyph: Boolean;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -109,7 +109,6 @@ type
       AState: TJvButtonState; DrawMark: Boolean); override;
     procedure Paint; override;
   public
-    NewStyleControls: boolean;
     constructor Create(AOwner: TComponent); override;
     procedure Click; override;
   end;
@@ -272,7 +271,6 @@ type
     property PopupVisible: Boolean read GetPopupVisible;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
   public
-    NewStyleControls: boolean;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure DoClick;

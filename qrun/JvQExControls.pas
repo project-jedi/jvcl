@@ -120,10 +120,7 @@ type
   end;
 
 const
-
-
   CM_DENYSUBCLASSING = JvQThemes.CM_DENYSUBCLASSING;
-
 
 type
   { Add IJvDenySubClassing to the base class list if the control should not
@@ -555,7 +552,7 @@ begin
   end;
 end;
 
-{$IFDEF COMPILER6}
+{$IFDEF _COMPILER7}
 // redirect Kylix 3 / Delphi 7 function names to Delphi 6 available function
 {$IF not declared(PatchedVCLX)}
 type
@@ -1211,7 +1208,7 @@ begin
         OrgCallCode.Address := ProcAddress;
 
         WriteProtectedMemory(OrgCallProc, OrgCallCode, SizeOf(OrgCallCode));
-        FlushInstructionCache(GetCurrentProcess, OrgCallProc, SizeOf(OrgCallCode));
+        FlushInstructionCache;//(GetCurrentProcess, OrgCallProc, SizeOf(OrgCallCode));
       end;
     end;
 
@@ -1229,7 +1226,7 @@ begin
     if WriteProtectedMemory(Pointer(Cardinal(ProcAddress) + 1), Code,
          SizeOf(Code)) then
     begin
-      FlushInstructionCache(GetCurrentProcess, ProcAddress, SizeOf(Code));
+      FlushInstructionCache; //(GetCurrentProcess, ProcAddress, SizeOf(Code));
       Result := True;
     end;
   end;
@@ -1250,7 +1247,7 @@ begin
         ProcAddress := OrgCallCode.Address;
 
         Result := WriteProtectedMemory(ProcAddress, OrgCallCode, 1 + SizeOf(TJumpCode));
-        FlushInstructionCache(GetCurrentProcess, ProcAddress, SizeOf(OrgCallCode));
+        FlushInstructionCache; //(GetCurrentProcess, ProcAddress, SizeOf(OrgCallCode));
       end;
     end;
   end;
