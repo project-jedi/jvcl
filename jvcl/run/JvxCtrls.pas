@@ -48,7 +48,7 @@ uses
   {$ENDIF}
   Messages, Classes, Controls, Graphics, StdCtrls, ExtCtrls, Forms,
   Buttons, Menus, IniFiles, ImgList,
-  JvTimer, JvConsts, JvFormPlacement, JvComponent, JVCLVer, JvTypes;
+  JvAppStore, JvTimer, JvConsts, JvFormPlacement, JvComponent, JVCLVer, JvTypes;
 
 type
   TPositiveInt = 1..MaxInt;
@@ -259,8 +259,6 @@ type
     procedure WriteVersion(Writer: TWriter);
     procedure ReadCheckData(Reader: TReader);
     procedure WriteCheckData(Writer: TWriter);
-    procedure InternalSaveStates(IniFile: TObject; const Section: string);
-    procedure InternalRestoreStates(IniFile: TObject; const Section: string);
     function GetStorage: TJvFormPlacement;
     procedure SetStorage(Value: TJvFormPlacement);
     procedure IniSave(Sender: TObject);
@@ -292,13 +290,15 @@ type
     procedure WMDestroy(var Msg: TWMDestroy); message WM_DESTROY;
     function GetCheckWidth: Integer;
     procedure SetItems(Value: TStrings); override;
+    procedure InternalLoad(const Section: string);
+    procedure InternalSave(const Section: string);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure SaveStatesReg(IniFile: TRegIniFile);
-    procedure RestoreStatesReg(IniFile: TRegIniFile);
-    procedure SaveStates(IniFile: TIniFile);
-    procedure RestoreStates(IniFile: TIniFile);
+    procedure LoadFromAppStore(const AppStorage: TJvCustomAppStore; const Path: string);
+    procedure SaveToAppStore(const AppStorage: TJvCustomAppStore; const Path: string);
+    procedure Load;
+    procedure Save;
     procedure ApplyState(AState: TCheckBoxState; EnabledOnly: Boolean);
     property Checked[Index: Integer]: Boolean read GetChecked write SetChecked;
     property State[Index: Integer]: TCheckBoxState read GetState write SetState;
@@ -1999,51 +1999,39 @@ const
   sCount = 'Count';
   sItem = 'Item';
 
-procedure TJvxCheckListBox.InternalSaveStates(IniFile: TObject;
-  const Section: string);
-var
-  I: Integer;
-begin
-  IniEraseSection(IniFile, Section);
-  IniWriteInteger(IniFile, Section, sCount, Items.Count);
-  for I := 0 to Items.Count - 1 do
-    IniWriteInteger(IniFile, Section, sItem + IntToStr(I), Integer(State[I]));
-end;
-
-procedure TJvxCheckListBox.InternalRestoreStates(IniFile: TObject;
-  const Section: string);
+procedure TJvxCheckListBox.LoadFromAppStore(const AppStorage: TJvCustomAppStore; const Path: string);
 var
   I: Integer;
   ACount: Integer;
 begin
-  ACount := Min(IniReadInteger(IniFile, Section, sCount, 0), Items.Count);
+  ACount := Min(AppStorage.ReadInteger(AppStorage.ConcatPaths([Path, sCount]), 0), Items.Count);
   for I := 0 to ACount - 1 do
   begin
-    State[I] := TCheckBoxState(IniReadInteger(IniFile, Section,
-      sItem + IntToStr(I), Integer(clbDefaultState)));
+    State[I] := TCheckBoxState(AppStorage.ReadInteger(AppStorage.ConcatPaths([Path, sItem + IntToStr(I)]),
+      Integer(clbDefaultState)));
     if (State[I] = cbChecked) and (FCheckKind = ckRadioButtons) then
       Exit;
   end;
 end;
 
-procedure TJvxCheckListBox.SaveStatesReg(IniFile: TRegIniFile);
+procedure TJvxCheckListBox.SaveToAppStore(const AppStorage: TJvCustomAppStore; const Path: string);
+var
+  I: Integer;
 begin
-  InternalSaveStates(IniFile, GetDefaultSection(Self));
+  AppStorage.DeleteSubTree(Path);
+  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, sCount]), Items.Count);
+  for I := 0 to Items.Count - 1 do
+    AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, sItem + IntToStr(I)]), Integer(State[I]));
 end;
 
-procedure TJvxCheckListBox.RestoreStatesReg(IniFile: TRegIniFile);
+procedure TJvxCheckListBox.Load;
 begin
-  InternalRestoreStates(IniFile, GetDefaultSection(Self));
+  IniLoad(nil);
 end;
 
-procedure TJvxCheckListBox.SaveStates(IniFile: TIniFile);
+procedure TJvxCheckListBox.Save;
 begin
-  InternalSaveStates(IniFile, GetDefaultSection(Self));
-end;
-
-procedure TJvxCheckListBox.RestoreStates(IniFile: TIniFile);
-begin
-  InternalRestoreStates(IniFile, GetDefaultSection(Self));
+  IniSave(nil);
 end;
 
 function TJvxCheckListBox.GetStorage: TJvFormPlacement;
@@ -2058,16 +2046,14 @@ end;
 
 procedure TJvxCheckListBox.IniSave(Sender: TObject);
 begin
-  if (Name <> '') and (FIniLink.IniObject <> nil) then
-    InternalSaveStates(FIniLink.IniObject, FIniLink.RootSection +
-      GetDefaultSection(Self));
+  if (Name <> '') and (IniStorage.IsActive) then
+    InternalSave(GetDefaultSection(Self));
 end;
 
 procedure TJvxCheckListBox.IniLoad(Sender: TObject);
 begin
-  if (Name <> '') and (FIniLink.IniObject <> nil) then
-    InternalRestoreStates(FIniLink.IniObject, FIniLink.RootSection +
-      GetDefaultSection(Self));
+  if (Name <> '') and (IniStorage.IsActive) then
+    InternalLoad(GetDefaultSection(Self));
 end;
 
 procedure TJvxCheckListBox.ReadCheckData(Reader: TReader);
@@ -2221,6 +2207,20 @@ begin
   finally
     Items.EndUpdate;
   end;
+end;
+
+procedure TJvxCheckListBox.InternalLoad(const Section: string);
+begin
+  if IniStorage.IsActive then
+    with IniStorage do
+      LoadFromAppStore(AppStorage, AppStorage.ConcatPaths([AppStoragePath, Section]));
+end;
+
+procedure TJvxCheckListBox.InternalSave(const Section: string);
+begin
+  if IniStorage.IsActive then
+    with IniStorage do
+      SaveToAppStore(AppStorage, AppStorage.ConcatPaths([AppStoragePath, Section]));
 end;
 
 function TJvxCheckListBox.GetItemWidth(Index: Integer): Integer;

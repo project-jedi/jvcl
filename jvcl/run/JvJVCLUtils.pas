@@ -110,12 +110,12 @@ procedure LaunchCpl(FileName: string);
   The function returns True if any Control Panel Applets were found (i.e Strings.Count is > 0 when returning)
 }
 
-function GetControlPanelApplets(const APath, AMask: string; Strings: TStrings; Images: TCustomImageList = nil): Boolean;
+function GetControlPanelApplets(const APath, AMask: string; Strings: TStrings; Images: TImageList = nil): Boolean;
 { GetControlPanelApplet works like GetControlPanelApplets, with the difference that it only loads and searches one cpl file (according to AFilename).
   Note though, that some CPL's contains multiple applets, so the Strings and Images lists can contain multiple return values.
   The function returns True if any Control Panel Applets were found in AFilename (i.e if items were added to Strings)
 }
-function GetControlPanelApplet(const AFilename: string; Strings: TStrings; Images: TCustomImageList = nil): Boolean;
+function GetControlPanelApplet(const AFilename: string; Strings: TStrings; Images: TImageList = nil): Boolean;
 
 // execute a program without waiting
 procedure Exec(FileName, Parameters, Directory: string);
@@ -302,7 +302,7 @@ function CreateDisabledBitmap(FOriginal: TBitmap; OutlineColor: TColor): TBitmap
 function ChangeBitmapColor(Bitmap: TBitmap; Color, NewColor: TColor): TBitmap;
 procedure AssignBitmapCell(Source: TGraphic; Dest: TBitmap; Cols, Rows,
   Index: Integer);
-procedure ImageListDrawDisabled(Images: TCustomImageList; Canvas: TCanvas;
+procedure ImageListDrawDisabled(Images: TImageList; Canvas: TCanvas;
   X, Y, Index: Integer; HighlightColor, GrayColor: TColor; DrawHighlight: Boolean);
 
 function MakeIcon(ResID: PChar): TIcon;
@@ -498,7 +498,7 @@ procedure SetWindowTop(const Handle: HWND; const Top: Boolean);
 
 { LoadIcoToImage loads two icons from resource named NameRes,
   into two image lists ALarge and ASmall}
-procedure LoadIcoToImage(ALarge, ASmall: TCustomImageList; const NameRes: string);
+procedure LoadIcoToImage(ALarge, ASmall: TImageList; const NameRes: string);
 
 { DefineCursor load cursor from resource, and return
   available cursor number, assigned to it }
@@ -554,35 +554,15 @@ function FindShowForm(FormClass: TFormClass; const Caption: string): TForm;
 function ShowDialog(FormClass: TFormClass): Boolean;
 function InstantiateForm(FormClass: TFormClass; var Reference): TForm;
 
-(*
-old stuff:
+procedure SaveFormPlacement(Form: TForm; const AppStore: TJvCustomAppStore;
+  SaveState: Boolean = True; SavePosition: Boolean = True);
+procedure RestoreFormPlacement(Form: TForm; const AppStore: TJvCustomAppStore;
+  LoadState: Boolean = True; LoadPosition: Boolean = True);
 
-procedure SaveFormPlacement(Form: TForm; const IniFileName: string;
-  UseRegistry: Boolean);
-procedure RestoreFormPlacement(Form: TForm; const IniFileName: string;
-  UseRegistry: Boolean);
-procedure WriteFormPlacementReg(Form: TForm; IniFile: TRegIniFile;
-  const Section: string);
-procedure ReadFormPlacementReg(Form: TForm; IniFile: TRegIniFile;
-  const Section: string; LoadState, LoadPosition: Boolean);
-*)
-
-procedure SaveFormPlacement(Form: TForm; const AppStore: TJvCustomAppStore; const StorePath: string);
-procedure RestoreFormPlacement(Form: TForm; const AppStore: TJvCustomAppStore; const StorePath: string; LoadState: Boolean = True; LoadPosition: Boolean = True);
-
-procedure SaveMDIChildrenReg(MainForm: TForm; IniFile: TRegIniFile);
-procedure RestoreMDIChildrenReg(MainForm: TForm; IniFile: TRegIniFile);
-procedure RestoreGridLayoutReg(Grid: TCustomGrid; IniFile: TRegIniFile);
-procedure SaveGridLayoutReg(Grid: TCustomGrid; IniFile: TRegIniFile);
-
-(*procedure WriteFormPlacement(Form: TForm; IniFile: TCustomIniFile;
-  const Section: string);
-procedure ReadFormPlacement(Form: TForm; IniFile: TCustomIniFile;
-  const Section: string; LoadState, LoadPosition: Boolean);*)
-procedure SaveMDIChildren(MainForm: TForm; IniFile: TCustomIniFile);
-procedure RestoreMDIChildren(MainForm: TForm; IniFile: TCustomIniFile);
-procedure RestoreGridLayout(Grid: TCustomGrid; IniFile: TCustomIniFile);
-procedure SaveGridLayout(Grid: TCustomGrid; IniFile: TCustomIniFile);
+procedure SaveMDIChildren(MainForm: TForm; const AppStore: TJvCustomAppStore);
+procedure RestoreMDIChildren(MainForm: TForm; const AppStore: TJvCustomAppStore);
+procedure RestoreGridLayout(Grid: TCustomGrid; const AppStore: TJvCustomAppStore);
+procedure SaveGridLayout(Grid: TCustomGrid; const AppStore: TJvCustomAppStore);
 
 function GetUniqueFileNameInDir(const Path, FileNameMask: string): string;
 
@@ -611,12 +591,18 @@ procedure AppTaskbarIcons(AppOnly: Boolean);
 
 { Internal using utilities }
 
-procedure InternalSaveGridLayout(Grid: TCustomGrid; IniFile: TObject;
-  const Section: string);
-procedure InternalRestoreGridLayout(Grid: TCustomGrid; IniFile: TObject;
-  const Section: string);
-procedure InternalSaveMDIChildren(MainForm: TForm; IniFile: TObject);
-procedure InternalRestoreMDIChildren(MainForm: TForm; IniFile: TObject);
+procedure InternalSaveFormPlacement(Form: TForm; const AppStore: TJvCustomAppStore;
+  const StorePath: string; SaveState: Boolean = True; SavePosition: Boolean = True);
+procedure InternalRestoreFormPlacement(Form: TForm; const AppStore: TJvCustomAppStore;
+  const StorePath: string; LoadState: Boolean = True; LoadPosition: Boolean = True);
+procedure InternalSaveGridLayout(Grid: TCustomGrid; const AppStore: TJvCustomAppStore;
+  const StorePath: string);
+procedure InternalRestoreGridLayout(Grid: TCustomGrid; const AppStore: TJvCustomAppStore;
+  const StorePath: string);
+procedure InternalSaveMDIChildren(MainForm: TForm; const AppStore: TJvCustomAppStore;
+  const StorePath: string);
+procedure InternalRestoreMDIChildren(MainForm: TForm; const AppStore: TJvCustomAppStore;
+  const StorePath: string);
 
 { end JvAppUtils }
 { begin JvGraph }
@@ -808,7 +794,7 @@ end;
 function IconToBitmap2(Ico: HICON; Size: Integer = 32; TransparentColor: TColor = clNone): TBitmap;
 begin
   // (p3) this seems to generate "better" bitmaps...
-  with TCustomImageList.CreateSize(Size, Size) do
+  with TImageList.CreateSize(Size, Size) do
   try
     Masked := True;
     BkColor := TransparentColor;
@@ -1283,7 +1269,7 @@ type
     szHelpFile: array [0..127] of WideChar;
   end;
 
-function GetControlPanelApplet(const AFilename: string; Strings: TStrings; Images: TCustomImageList = nil): Boolean;
+function GetControlPanelApplet(const AFilename: string; Strings: TStrings; Images: TImageList = nil): Boolean;
 var
   hLib: HMODULE; // Library Handle to *.cpl file
   hIco: HICON;
@@ -1362,7 +1348,7 @@ begin
   end;
 end;
 
-function GetControlPanelApplets(const APath, AMask: string; Strings: TStrings; Images: TCustomImageList = nil): Boolean;
+function GetControlPanelApplets(const APath, AMask: string; Strings: TStrings; Images: TImageList = nil): Boolean;
 var
   H: THandle;
   F: TSearchRec;
@@ -2847,7 +2833,7 @@ begin
     clBtnFace, clBtnHighlight, clBtnShadow, True);
 end;
 
-procedure ImageListDrawDisabled(Images: TCustomImageList; Canvas: TCanvas;
+procedure ImageListDrawDisabled(Images: TImageList; Canvas: TCanvas;
   X, Y, Index: Integer; HighlightColor, GrayColor: TColor; DrawHighlight: Boolean);
 var
   Bmp: TBitmap;
@@ -2956,7 +2942,7 @@ end;
 
 function CreateIconFromBitmap(Bitmap: TBitmap; TransparentColor: TColor): TIcon;
 begin
-  with TCustomImageList.CreateSize(Bitmap.Width, Bitmap.Height) do
+  with TImageList.CreateSize(Bitmap.Width, Bitmap.Height) do
   try
     if TransparentColor = clDefault then
       TransparentColor := Bitmap.TransparentColor;
@@ -4458,7 +4444,7 @@ begin
     SWP_NOSIZE or SWP_NOACTIVATE);
 end;
 
-procedure LoadIcoToImage(ALarge, ASmall: TCustomImageList; const NameRes: string);
+procedure LoadIcoToImage(ALarge, ASmall: TImageList; const NameRes: string);
 var
   Ico: TIcon;
 begin
@@ -5002,182 +4988,6 @@ begin
     TRegIniFile(IniFile).ReadSections(Strings);
 end;
 
-procedure InternalSaveMDIChildren(MainForm: TForm; IniFile: TObject);
-var
-  I: Integer;
-begin
-  if (MainForm = nil) or (MainForm.FormStyle <> fsMDIForm) then
-    raise EInvalidOperation.Create(SNoMDIForm);
-  IniEraseSection(IniFile, siMDIChild);
-  if MainForm.MDIChildCount > 0 then
-  begin
-    IniWriteInteger(IniFile, siMDIChild, siListCount,
-      MainForm.MDIChildCount);
-    for I := 0 to MainForm.MDIChildCount - 1 do
-      IniWriteString(IniFile, siMDIChild, Format(siItem, [I]),
-        MainForm.MDIChildren[I].ClassName);
-  end;
-end;
-
-procedure InternalRestoreMDIChildren(MainForm: TForm; IniFile: TObject);
-var
-  I: Integer;
-  Count: Integer;
-  FormClass: TFormClass;
-begin
-  if (MainForm = nil) or (MainForm.FormStyle <> fsMDIForm) then
-    raise EInvalidOperation.Create(SNoMDIForm);
-  StartWait;
-  try
-    Count := IniReadInteger(IniFile, siMDIChild, siListCount, 0);
-    if Count > 0 then
-    begin
-      for I := 0 to Count - 1 do
-      begin
-        FormClass := TFormClass(GetClass(IniReadString(IniFile, siMDIChild,
-          Format(siItem, [Count - I - 1]), '')));
-        if FormClass <> nil then
-          InternalFindShowForm(FormClass, '', False);
-      end;
-    end;
-  finally
-    StopWait;
-  end;
-end;
-
-procedure SaveMDIChildrenReg(MainForm: TForm; IniFile: TRegIniFile);
-begin
-  InternalSaveMDIChildren(MainForm, IniFile);
-end;
-
-procedure RestoreMDIChildrenReg(MainForm: TForm; IniFile: TRegIniFile);
-begin
-  InternalRestoreMDIChildren(MainForm, IniFile);
-end;
-
-procedure SaveMDIChildren(MainForm: TForm; IniFile: TCustomIniFile);
-begin
-  InternalSaveMDIChildren(MainForm, IniFile);
-end;
-
-procedure RestoreMDIChildren(MainForm: TForm; IniFile: TCustomIniFile);
-begin
-  InternalRestoreMDIChildren(MainForm, IniFile);
-end;
-
-procedure InternalSaveGridLayout(Grid: TCustomGrid; IniFile: TObject;
-  const Section: string);
-var
-  I: Longint;
-begin
-  for I := 0 to TDrawGrid(Grid).ColCount - 1 do
-    IniWriteInteger(IniFile, Section, Format(siItem, [I]),
-      TDrawGrid(Grid).ColWidths[I]);
-end;
-
-procedure InternalRestoreGridLayout(Grid: TCustomGrid; IniFile: TObject;
-  const Section: string);
-var
-  I: Longint;
-begin
-  for I := 0 to TDrawGrid(Grid).ColCount - 1 do
-    TDrawGrid(Grid).ColWidths[I] := IniReadInteger(IniFile, Section,
-      Format(siItem, [I]), TDrawGrid(Grid).ColWidths[I]);
-end;
-
-procedure RestoreGridLayoutReg(Grid: TCustomGrid; IniFile: TRegIniFile);
-begin
-  InternalRestoreGridLayout(Grid, IniFile, GetDefaultSection(Grid));
-end;
-
-procedure SaveGridLayoutReg(Grid: TCustomGrid; IniFile: TRegIniFile);
-begin
-  InternalSaveGridLayout(Grid, IniFile, GetDefaultSection(Grid));
-end;
-
-procedure RestoreGridLayout(Grid: TCustomGrid; IniFile: TCustomIniFile);
-begin
-  InternalRestoreGridLayout(Grid, IniFile, GetDefaultSection(Grid));
-end;
-
-procedure SaveGridLayout(Grid: TCustomGrid; IniFile: TCustomIniFile);
-begin
-  InternalSaveGridLayout(Grid, IniFile, GetDefaultSection(Grid));
-end;
-
-function CrtResString: string;
-begin
-  Result := Format('(%dx%d)', [GetSystemMetrics(SM_CXSCREEN),
-    GetSystemMetrics(SM_CYSCREEN)]);
-end;
-
-(*
-function ReadPosStr(IniFile: TObject; const Section, Ident: string): string;
-begin
-  Result := IniReadString(IniFile, Section, Ident + CrtResString, '');
-  if Result = '' then
-    Result := IniReadString(IniFile, Section, Ident, '');
-end;
-
-procedure WritePosStr(IniFile: TObject; const Section, Ident, Value: string);
-begin
-  IniWriteString(IniFile, Section, Ident + CrtResString, Value);
-  IniWriteString(IniFile, Section, Ident, Value);
-end;
-
-procedure InternalWriteFormPlacement(Form: TForm; IniFile: TObject;
-  const Section: string);
-var
-  Placement: TWindowPlacement;
-begin
-  Placement.Length := SizeOf(TWindowPlacement);
-  GetWindowPlacement(Form.Handle, @Placement);
-  with Placement, TForm(Form) do
-  begin
-    if (Form = Application.MainForm) and IsIconic(Application.Handle) then
-      ShowCmd := SW_SHOWMINIMIZED;
-    if (FormStyle = fsMDIChild) and (WindowState = wsMinimized) then
-      Flags := Flags or WPF_SETMINPOSITION;
-    IniWriteInteger(IniFile, Section, siFlags, Flags);
-    IniWriteInteger(IniFile, Section, siShowCmd, ShowCmd);
-    IniWriteInteger(IniFile, Section, siPixels, Screen.PixelsPerInch);
-    WritePosStr(IniFile, Section, siMinMaxPos, Format('%d,%d,%d,%d',
-      [ptMinPosition.X, ptMinPosition.Y, ptMaxPosition.X, ptMaxPosition.Y]));
-    WritePosStr(IniFile, Section, siNormPos, Format('%d,%d,%d,%d',
-      [rcNormalPosition.Left, rcNormalPosition.Top, rcNormalPosition.Right,
-      rcNormalPosition.Bottom]));
-  end;
-end;
-
-procedure WriteFormPlacementReg(Form: TForm; IniFile: TRegIniFile;
-  const Section: string);
-begin
-  InternalWriteFormPlacement(Form, IniFile, Section);
-end;
-
-procedure WriteFormPlacement(Form: TForm; IniFile: TCustomIniFile;
-  const Section: string);
-begin
-  InternalWriteFormPlacement(Form, IniFile, Section);
-end;
-*)
-
-(*procedure SaveFormPlacement(Form: TForm; const IniFileName: string;
-  UseRegistry: Boolean);
-var
-  IniFile: TObject;
-begin
-  if UseRegistry then
-    IniFile := TRegIniFile.Create(IniFileName)
-  else
-    IniFile := TIniFile.Create(IniFileName);
-  try
-    InternalWriteFormPlacement(Form, IniFile, Form.ClassName);
-  finally
-    IniFile.Free;
-  end;
-end;*)
-
 {$HINTS OFF}
 type
 
@@ -5206,6 +5016,12 @@ type
   TJvHackComponent = class(TComponent);
   {$HINTS ON}
 
+function CrtResString: string;
+begin
+  Result := Format('(%dx%d)', [GetSystemMetrics(SM_CXSCREEN),
+    GetSystemMetrics(SM_CYSCREEN)]);
+end;
+
 function ReadPosStr(AppStore: TJvCustomAppStore; const Path: string): string;
 begin
   if AppStore.ValueStored(Path + CrtResString) then
@@ -5220,10 +5036,68 @@ begin
   AppStore.WriteString(Path, Value);
 end;
 
-procedure SaveFormPlacement(Form: TForm; const AppStore: TJvCustomAppStore; const StorePath: string);
+procedure InternalSaveMDIChildren(MainForm: TForm; const AppStore: TJvCustomAppStore;
+  const StorePath: string);
+var
+  I: Integer;
+begin
+  if (MainForm = nil) or (MainForm.FormStyle <> fsMDIForm) then
+    raise EInvalidOperation.Create(SNoMDIForm);
+  AppStore.DeleteSubTree(AppStore.ConcatPaths([StorePath, siMDIChild]));
+  if MainForm.MDIChildCount > 0 then
+  begin
+    AppStore.WriteInteger(AppStore.ConcatPaths([StorePath, siMDIChild, siListCount]),
+      MainForm.MDIChildCount);
+    for I := 0 to MainForm.MDIChildCount - 1 do
+      AppStore.WriteString(AppStore.ConcatPaths([StorePath, siMDIChild, Format(siItem, [I])]),
+        MainForm.MDIChildren[I].ClassName);
+  end;
+end;
+
+procedure InternalRestoreMDIChildren(MainForm: TForm; const AppStore: TJvCustomAppStore;
+  const StorePath: string);
+var
+  I: Integer;
+  Count: Integer;
+  FormClass: TFormClass;
+begin
+  if (MainForm = nil) or (MainForm.FormStyle <> fsMDIForm) then
+    raise EInvalidOperation.Create(SNoMDIForm);
+  StartWait;
+  try
+    Count := AppStore.ReadInteger(AppStore.ConcatPaths([StorePath, siMDIChild, siListCount]), 0);
+    if Count > 0 then
+    begin
+      for I := 0 to Count - 1 do
+      begin
+        FormClass := TFormClass(GetClass(AppStore.ReadString(AppStore.ConcatPaths([StorePath,
+          siMDIChild, Format(siItem, [I])]), '')));
+        if FormClass <> nil then
+          InternalFindShowForm(FormClass, '', False);
+      end;
+    end;
+  finally
+    StopWait;
+  end;
+end;
+
+procedure SaveMDIChildren(MainForm: TForm; const AppStore: TJvCustomAppStore);
+begin
+  InternalSaveMDIChildren(MainForm, AppStore, '');
+end;
+
+procedure RestoreMDIChildren(MainForm: TForm; const AppStore: TJvCustomAppStore);
+begin
+  InternalRestoreMDIChildren(MainForm, AppStore, '');
+end;
+
+procedure InternalSaveFormPlacement(Form: TForm; const AppStore: TJvCustomAppStore;
+  const StorePath: string; SaveState: Boolean = True; SavePosition: Boolean = True);
 var
   Placement: TWindowPlacement;
 begin
+  if not (SaveState or SavePosition) then
+    Exit;
   Placement.Length := SizeOf(TWindowPlacement);
   GetWindowPlacement(Form.Handle, @Placement);
   with Placement, TForm(Form) do
@@ -5232,19 +5106,25 @@ begin
       ShowCmd := SW_SHOWMINIMIZED;
     if (FormStyle = fsMDIChild) and (WindowState = wsMinimized) then
       Flags := Flags or WPF_SETMINPOSITION;
-    AppStore.WriteInteger(StorePath + '\' + siFlags, Flags);
-    AppStore.WriteInteger(StorePath + '\' + siShowCmd, ShowCmd);
-    AppStore.WriteInteger(StorePath + '\' + siPixels, Screen.PixelsPerInch);
-    WritePosStr(AppStore, StorePath + '\' + siMinMaxPos, Format('%d,%d,%d,%d',
-      [ptMinPosition.X, ptMinPosition.Y, ptMaxPosition.X, ptMaxPosition.Y]));
-    WritePosStr(AppStore, StorePath + '\' + siNormPos, Format('%d,%d,%d,%d',
-      [rcNormalPosition.Left, rcNormalPosition.Top, rcNormalPosition.Right,
-      rcNormalPosition.Bottom]));
+    if SaveState then
+    begin
+      AppStore.WriteInteger(StorePath + '\' + siShowCmd, ShowCmd);
+    end;
+    if SavePosition then
+    begin
+      AppStore.WriteInteger(StorePath + '\' + siFlags, Flags);
+      AppStore.WriteInteger(StorePath + '\' + siPixels, Screen.PixelsPerInch);
+      WritePosStr(AppStore, StorePath + '\' + siMinMaxPos, Format('%d,%d,%d,%d',
+        [ptMinPosition.X, ptMinPosition.Y, ptMaxPosition.X, ptMaxPosition.Y]));
+      WritePosStr(AppStore, StorePath + '\' + siNormPos, Format('%d,%d,%d,%d',
+        [rcNormalPosition.Left, rcNormalPosition.Top, rcNormalPosition.Right,
+        rcNormalPosition.Bottom]));
+    end;
   end;
 end;
 
-procedure RestoreFormPlacement(Form: TForm; const AppStore: TJvCustomAppStore;
-  const StorePath: string; LoadState, LoadPosition: Boolean);
+procedure InternalRestoreFormPlacement(Form: TForm; const AppStore: TJvCustomAppStore;
+  const StorePath: string; LoadState: Boolean = True; LoadPosition: Boolean = True);
 const
   Delims = [',', ' '];
 var
@@ -5339,136 +5219,47 @@ begin
   end;
 end;
 
-(*
-procedure InternalReadFormPlacement(Form: TForm; IniFile: TObject;
-  const Section: string; LoadState, LoadPosition: Boolean);
-const
-  Delims = [',', ' '];
+procedure InternalSaveGridLayout(Grid: TCustomGrid; const AppStore: TJvCustomAppStore;
+  const StorePath: string);
 var
-  PosStr: string;
-  Placement: TWindowPlacement;
-  WinState: TWindowState;
-  DataFound: Boolean;
+  I: Longint;
 begin
-  if not (LoadState or LoadPosition) then
-    Exit;
-  Placement.Length := SizeOf(TWindowPlacement);
-  GetWindowPlacement(Form.Handle, @Placement);
-  with Placement, TForm(Form) do
-  begin
-    if not IsWindowVisible(Form.Handle) then
-      ShowCmd := SW_HIDE;
-    if LoadPosition then
-    begin
-      DataFound := False;
-      Flags := IniReadInteger(IniFile, Section, siFlags, Flags);
-      PosStr := ReadPosStr(IniFile, Section, siMinMaxPos);
-      if PosStr <> '' then
-      begin
-        DataFound := True;
-        ptMinPosition.X := StrToIntDef(ExtractWord(1, PosStr, Delims), 0);
-        ptMinPosition.Y := StrToIntDef(ExtractWord(2, PosStr, Delims), 0);
-        ptMaxPosition.X := StrToIntDef(ExtractWord(3, PosStr, Delims), 0);
-        ptMaxPosition.Y := StrToIntDef(ExtractWord(4, PosStr, Delims), 0);
-      end;
-      PosStr := ReadPosStr(IniFile, Section, siNormPos);
-      if PosStr <> '' then
-      begin
-        DataFound := True;
-        rcNormalPosition.Left := StrToIntDef(ExtractWord(1, PosStr, Delims), Left);
-        rcNormalPosition.Top := StrToIntDef(ExtractWord(2, PosStr, Delims), Top);
-        rcNormalPosition.Right := StrToIntDef(ExtractWord(3, PosStr, Delims), Left + Width);
-        rcNormalPosition.Bottom := StrToIntDef(ExtractWord(4, PosStr, Delims), Top + Height);
-      end;
-      if Screen.PixelsPerInch <> IniReadInteger(IniFile, Section, siPixels,
-        Screen.PixelsPerInch) then
-        DataFound := False;
-      if DataFound then
-      begin
-        if not (BorderStyle in [bsSizeable, bsSizeToolWin]) then
-          rcNormalPosition := Rect(rcNormalPosition.Left, rcNormalPosition.Top,
-            rcNormalPosition.Left + Width, rcNormalPosition.Top + Height);
-        if rcNormalPosition.Right > rcNormalPosition.Left then
-        begin
-          if (Position in [poScreenCenter, poDesktopCenter]) and
-            not (csDesigning in ComponentState) then
-          begin
-            TJvHackComponent(Form).SetDesigning(True);
-            try
-              Position := poDesigned;
-            finally
-              TJvHackComponent(Form).SetDesigning(False);
-            end;
-          end;
-          SetWindowPlacement(Handle, @Placement);
-        end;
-      end;
-    end;
-    if LoadState then
-    begin
-      WinState := wsNormal;
-      { default maximize MDI main form }
-      if ((Application.MainForm = Form) or
-        (Application.MainForm = nil)) and ((FormStyle = fsMDIForm) or
-        ((FormStyle = fsNormal) and (Position = poDefault))) then
-        WinState := wsMaximized;
-      ShowCmd := IniReadInteger(IniFile, Section, siShowCmd, SW_HIDE);
-      case ShowCmd of
-        SW_SHOWNORMAL, SW_RESTORE, SW_SHOW:
-          WinState := wsNormal;
-        SW_MINIMIZE, SW_SHOWMINIMIZED, SW_SHOWMINNOACTIVE:
-          WinState := wsMinimized;
-        SW_MAXIMIZE:
-          WinState := wsMaximized;
-      end;
-      if (WinState = wsMinimized) and ((Form = Application.MainForm)
-        or (Application.MainForm = nil)) then
-      begin
-        TJvNastyForm(Form).FWindowState := wsNormal;
-        PostMessage(Application.Handle, WM_SYSCOMMAND, SC_MINIMIZE, 0);
-        Exit;
-      end;
-      if FormStyle in [fsMDIChild, fsMDIForm] then
-        TJvNastyForm(Form).FWindowState := WinState
-      else
-        WindowState := WinState;
-    end;
-    Update;
-  end;
+  for I := 0 to TDrawGrid(Grid).ColCount - 1 do
+    AppStore.WriteInteger(AppStore.ConcatPaths([StorePath, Format(siItem, [I])]),
+      TDrawGrid(Grid).ColWidths[I]);
 end;
 
-procedure ReadFormPlacementReg(Form: TForm; IniFile: TRegIniFile;
-  const Section: string; LoadState, LoadPosition: Boolean);
-begin
-  InternalReadFormPlacement(Form, IniFile, Section, LoadState, LoadPosition);
-end;
-
-procedure ReadFormPlacement(Form: TForm; IniFile: TCustomIniFile;
-  const Section: string; LoadState, LoadPosition: Boolean);
-begin
-  InternalReadFormPlacement(Form, IniFile, Section, LoadState, LoadPosition);
-end;
-
-
-procedure RestoreFormPlacement(Form: TForm; const IniFileName: string;
-  UseRegistry: Boolean);
+procedure InternalRestoreGridLayout(Grid: TCustomGrid; const AppStore: TJvCustomAppStore;
+  const StorePath: string);
 var
-  IniFile: TObject;
+  I: Longint;
 begin
-  if UseRegistry then
-  begin
-    IniFile := TRegIniFile.Create(IniFileName);
-    TRegIniFile(IniFile).Access := KEY_READ;
-  end
-  else
-    IniFile := TIniFile.Create(IniFileName);
-  try
-    InternalReadFormPlacement(Form, IniFile, Form.ClassName, True, True);
-  finally
-    IniFile.Free;
-  end;
+  for I := 0 to TDrawGrid(Grid).ColCount - 1 do
+    TDrawGrid(Grid).ColWidths[I] := AppStore.ReadInteger(AppStore.ConcatPaths([StorePath,
+      Format(siItem, [I])]), TDrawGrid(Grid).ColWidths[I]);
 end;
-*)
+
+procedure RestoreGridLayout(Grid: TCustomGrid; const AppStore: TJvCustomAppStore);
+begin
+  InternalRestoreGridLayout(Grid, AppStore, GetDefaultSection(Grid));
+end;
+
+procedure SaveGridLayout(Grid: TCustomGrid; const AppStore: TJvCustomAppStore);
+begin
+  InternalSaveGridLayout(Grid, AppStore, GetDefaultSection(Grid));
+end;
+
+procedure SaveFormPlacement(Form: TForm; const AppStore: TJvCustomAppStore; SaveState,
+  SavePosition: Boolean);
+begin
+  InternalSaveFormPlacement(Form, AppStore, GetDefaultSection(Form), SaveState, SavePosition);
+end;
+
+procedure RestoreFormPlacement(Form: TForm; const AppStore: TJvCustomAppStore; LoadState,
+  LoadPosition: Boolean);
+begin
+  InternalRestoreFormPlacement(Form, AppStore, GetDefaultSection(Form), LoadState, LoadPosition);
+end;
 
 function GetUniqueFileNameInDir(const Path, FileNameMask: string): string;
 var
