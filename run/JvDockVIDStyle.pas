@@ -1704,9 +1704,8 @@ begin
       else
         Canvas.Font.Assign(Option.InactiveFont);
       Canvas.Brush.Style := bsClear;
-      DrawRect := ARect;
       GetCaptionRect(DrawRect);
-      uFormat := DT_SINGLELINE or (UINT(Option.TextEllipsis) * DT_END_ELLIPSIS) or TextAlignment[Option.TextAlignment];
+      uFormat := DT_VCENTER or DT_SINGLELINE or (UINT(Option.TextEllipsis) * DT_END_ELLIPSIS) or TextAlignment[Option.TextAlignment];
       DrawText(Canvas.Handle, PChar(TForm(Control).Caption), -1, DrawRect, uFormat);
       DrawCloseButton(Canvas, FindControlZone(Control), Right - RightOffset - ButtonWidth, Top + TopOffset);
     end
@@ -2256,7 +2255,7 @@ end;
 procedure TJvDockVIDTree.GetCaptionRect(var Rect: TRect);
 begin
   Inc(Rect.Left, 2 + CaptionLeftOffset);
-  Inc(Rect.Top, 3);
+  Inc(Rect.Top, 1);
   Dec(Rect.Right, ButtonWidth + CaptionRightOffset - 1);
   Dec(Rect.Bottom, 2);
 end;

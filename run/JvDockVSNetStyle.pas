@@ -1243,7 +1243,7 @@ begin
   else
   begin
     Inc(Rect.Left, 2 + CaptionLeftOffset);
-    Inc(Rect.Top, 3);
+    Inc(Rect.Top, 1);
     Dec(Rect.Right, 2 * ButtonWidth + ButtonSplitter + CaptionRightOffset - 1);
     Dec(Rect.Bottom, 2);
   end;
@@ -1775,7 +1775,6 @@ var
         Continue;
 
       GetBlockRect(Block, I, DrawRect);
-
       Canvas.Brush.Color := (DockServer.DockStyle as TJvDockVSNetStyle).ChannelOption.TabColor;
       Canvas.FillRect(DrawRect);
       Canvas.Brush.Color := clGray;
@@ -1804,6 +1803,7 @@ var
         Dec(DrawRect.Right, 3);
 
         OldGraphicsMode := SetGraphicsMode(Canvas.Handle, GM_ADVANCED);
+        Canvas.Brush.Style := bsClear;
         DrawText(Canvas.Handle, PChar(Block.VSPanes[I].FDockForm.Caption), -1, DrawRect, DT_END_ELLIPSIS or DT_NOCLIP);
         SetGraphicsMode(Canvas.Handle, OldGraphicsMode);
       end;
