@@ -29,10 +29,12 @@ package JvHMID6D;
 requires
   rtl,
   JvHMID6R,
+  JvCoreD6D,
   designide;
 
 contains
+  JvHMIReg in '..\..\design\JvHMIReg.pas',
   JvSegmentedLEDDisplayEditors in '..\..\design\JvSegmentedLEDDisplayEditors.pas',
-  JvHMIReg in '..\..\design\JvHMIReg.pas';
+  JvSegmentedLEDDisplayMappingForm in '..\..\design\JvSegmentedLEDDisplayMappingForm.pas' {frmJvSLDMappingEditor};
 
 end.

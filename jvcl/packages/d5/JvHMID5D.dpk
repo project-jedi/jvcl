@@ -28,10 +28,12 @@ package JvHMID5D;
 
 requires
   vcl50,
-  JvHMID5R;
+  JvHMID5R,
+  JvCoreD5D;
 
 contains
   JvHMIReg in '..\..\design\JvHMIReg.pas',
-  JvSegmentedLEDDisplayEditors in '..\..\design\JvSegmentedLEDDisplayEditors.pas';
+  JvSegmentedLEDDisplayEditors in '..\..\design\JvSegmentedLEDDisplayEditors.pas',
+  JvSegmentedLEDDisplayMappingForm in '..\..\design\JvSegmentedLEDDisplayMappingForm.pas' {frmJvSLDMappingEditor};
 
 end.

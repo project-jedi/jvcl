@@ -49,10 +49,9 @@ type
   TJvCustomSegmentedLEDDisplay = class;
   TJvSegmentedLEDDigits = class;
   TJvCustomSegmentedLEDDigit = class;
-  TJvBaseSegmentedLEDCharacterMapper = class;
+  TJvSegmentedLEDCharacterMapper = class;
 
   TJvSegmentedLEDDigitClass = class of TJvCustomSegmentedLEDDigit;
-  TJvSegmentedLEDCharacterMapperClass = class of TJvBaseSegmentedLEDCharacterMapper;
 
   TJvSegmentedLEDDigitClassName = type string;
   TUnlitColor = type TColor;
@@ -70,7 +69,7 @@ type
 
   TJvCustomSegmentedLEDDisplay = class(TJvGraphicControl)
   private
-    FCharacterMapper: TJvBaseSegmentedLEDCharacterMapper;
+    FCharacterMapper: TJvSegmentedLEDCharacterMapper;
     FDigitClass: TJvSegmentedLEDDigitClass;
     FDigits: TJvSegmentedLEDDigits;
     FDotSize: Integer;
@@ -85,12 +84,11 @@ type
     FSlant: TSlantAngle;
     FText: string;
   protected
+    procedure DefineProperties(Filer: TFiler); override;
     procedure Loaded; override;
-    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Paint; override;
     function GetText: string;
     procedure SetText(Value: string);
-    procedure SetCharacterMapper(Value: TJvBaseSegmentedLEDCharacterMapper);
     procedure SetDigitHeight(Value: Integer);
     procedure SetDigits(Value: TJvSegmentedLEDDigits);
     procedure SetDigitSpacing(Value: Integer);
@@ -117,8 +115,7 @@ type
     procedure UpdateBounds;
 
     property AutoSize default True;
-    property CharacterMapper: TJvBaseSegmentedLEDCharacterMapper read FCharacterMapper
-      write SetCharacterMapper;
+    property CharacterMapper: TJvSegmentedLEDCharacterMapper read FCharacterMapper;
     property DigitClass: TJvSegmentedLEDDigitClass read FDigitClass write SetDigitClass;
     // Solely needed for design time support of DigitClass
     property DigitClassName: TJvSegmentedLEDDigitClassName read GetDigitClassName write SetDigitClassName;
@@ -136,7 +133,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
+    procedure RemapText;
     function GetHitInfo(X, Y: Integer): TSLDHitInfo; overload;
     function GetHitInfo(X, Y: Integer; out Digit: TJvCustomSegmentedLEDDigit;
       out SegmentIndex: Integer): TSLDHitInfo; overload;
@@ -151,7 +148,6 @@ type
     property Anchors;
     property AutoSize;
     property Color;
-    property CharacterMapper;
     property DigitClassName;
     property DigitHeight;
     property Digits;
@@ -219,6 +215,7 @@ type
     function GetWidth: Integer; virtual;
     procedure SetText(Value: string); virtual;
 
+    procedure EnableAllSegs; dynamic;
     function GetSegmentRenderInfo(Index: Integer; out RenderType: TSegmentRenderType;
       out Points: TPointArray): Boolean;
     procedure SetSegmentRenderInfo(Index: Integer; RenderType: TSegmentRenderType;
@@ -227,7 +224,6 @@ type
     procedure SetSegmentState(Index: Integer; Value: Boolean);
     procedure SetSegmentStates(Value: Int64);
     procedure UpdateText(Value: string);
-    class function MapperClass: TJvSegmentedLEDCharacterMapperClass; virtual; abstract;
     procedure RecalcRefPoints; virtual; abstract;
     procedure RecalcSegments; virtual; abstract;
     function GetLitSegColor(Index: Integer): TColor; virtual;
@@ -240,6 +236,8 @@ type
     function NeedsPainting: Boolean;
     procedure Paint;
     procedure PaintSegment(Index: Integer);
+
+    class function MapperFileID: string; dynamic; abstract;
 
     property BaseTop: Integer read GetBaseTop;
     property Height: Integer read GetHeight;
@@ -272,6 +270,7 @@ type
     FRefTop: Integer;
     FRefCenterY: Integer;
     FRefBottom: Integer;
+    procedure EnableAllSegs; override;
     procedure SetUseDP(Value: Boolean); virtual;
     function GetDPWidth: Integer;
     procedure SetDPWidth(Value: Integer);
@@ -297,33 +296,37 @@ type
     class function GetSegmentIndex(Name: string): Integer; override;
   end;
 
-  TJvBaseSegmentedLEDCharacterMapper = class(TJvComponent)
+  TJvSegmentedLEDCharacterMapper = class(TPersistent)
   private
     FCurDigit: TJvCustomSegmentedLEDDigit;
     FTextForDigit: string;
     FSegMapRemoves: Boolean;
     FActiveMapping: array[Char] of Int64;
+    FMappingChanged: Boolean;
+    FDisplay: TJvCustomSegmentedLEDDisplay;
   protected
     function GetCharMapping(Chr: Char): Int64;
     procedure SetCharMapping(Chr: Char; Value: Int64);
-    class function MapperFileID: string; dynamic; abstract;
     function MaxSegments: Integer; dynamic;
     function MapToSeparators: Boolean; dynamic;
     procedure PrimReadMapping(const HdrInfo: TSegCharMapHeader; Stream: TStream); dynamic;
     function UpdateStates(var Segments: Int64; SegMask: Int64): Boolean;
     procedure HandleDecimalSeparator(var Text: PChar; var Segments: Int64); virtual;
-    function CharToSegments(Ch: Char; var Segments: Int64): Boolean; virtual; abstract;
+    function CharToSegments(Ch: Char; var Segments: Int64): Boolean; virtual;
     procedure ControlItemToSegments(var ControlItem: PChar; var Segments: Int64); virtual;
     procedure MapControlItems(var Text: PChar; var Segments: Int64); virtual;
     procedure MapSimpleText(var Text: PChar; var Segments: Int64); virtual;
     procedure MapSegNamesToSegments(var Text: Pchar; var Segments: Int64); virtual;
     procedure PrimMapText(var Text: PChar; var Segments: Int64); virtual;
+    procedure Modified;
 
     property CurDigit: TJvCustomSegmentedLEDDigit read FCurDigit;
+    property Display: TJvCustomSegmentedLEDDisplay read FDisplay;
     property SegMapRemoves: Boolean read FSegMapRemoves write FSegMapRemoves;
     property TextForDigit: string read FTextForDigit write FTextForDigit;
+    property MappingChanged: Boolean read FMappingChanged;
   public
-    constructor Create(AOwner: TComponent); override;
+    constructor Create(ADisplay: TJvCustomSegmentedLEDDisplay);
     procedure MapText(var Text: PChar; ADigit: TJvCustomSegmentedLEDDigit);
     procedure Clear;
     procedure LoadDefaultMapping; dynamic;
@@ -341,10 +344,11 @@ type
   private
     FUseColon: T7SegColonUsage;
   protected
+    procedure EnableAllSegs; override;
     function GetUseColon: T7SegColonUsage;
     procedure SetUseColon(Value: T7SegColonUsage);
-    class function MapperClass: TJvSegmentedLEDCharacterMapperClass; override;
     procedure RecalcSegments; override;
+    class function MapperFileID: string; override;
     procedure CalcCHSeg(Index: Integer); virtual;
     procedure CalcCLSeg(Index: Integer); virtual;
   public
@@ -355,13 +359,6 @@ type
     property UseDP;
     property UseColon: T7SegColonUsage read GetUseColon write SetUseColon;
     property Text;
-  end;
-
-  // 7-segmented character mapper
-  TJv7SegmentedLEDCharacterMapper = class(TJvBaseSegmentedLEDCharacterMapper)
-  protected
-    class function MapperFileID: string; override;
-    function CharToSegments(Ch: Char; var Segments: Int64): Boolean; override;
   end;
 
 function IdentToUnlitColor(const Ident: string; var Int: Longint): Boolean;
@@ -457,18 +454,17 @@ end;
 
 //===TJvCustomSegmentedLEDDisplay===================================================================
 
-procedure TJvCustomSegmentedLEDDisplay.Loaded; 
+procedure TJvCustomSegmentedLEDDisplay.DefineProperties(Filer: TFiler);
 begin
-  inherited Loaded;
-  PrimSetText(Text);
+  inherited DefineProperties(Filer);
+  Filer.DefineBinaryProperty('MapperData', CharacterMapper.LoadFromStream,
+    CharacterMapper.SaveToStream, CharacterMapper.MappingChanged);
 end;
 
-procedure TJvCustomSegmentedLEDDisplay.Notification(AComponent: TComponent; Operation: TOperation);
+procedure TJvCustomSegmentedLEDDisplay.Loaded;
 begin
-  if (AComponent = CharacterMapper) and (Operation = opRemove) then
-    CharacterMapper := nil
-  else
-    inherited Notification(AComponent, Operation);
+  inherited Loaded;
+  RemapText;
 end;
 
 procedure TJvCustomSegmentedLEDDisplay.Paint;
@@ -492,31 +488,6 @@ procedure TJvCustomSegmentedLEDDisplay.SetText(Value: string);
 begin
   if Value <> Text then
     PrimSetText(Value);
-end;
-
-procedure TJvCustomSegmentedLEDDisplay.SetCharacterMapper(Value: TJvBaseSegmentedLEDCharacterMapper);
-begin
-  if CharacterMapper <> Value then
-  begin
-    if (csLoading in ComponentState) or (
-      (Value = nil) or ((DigitClass <> nil) and Value.InheritsFrom(DigitClass.MapperClass))) then
-    begin
-      if CharacterMapper <> nil then
-        CharacterMapper.RemoveFreeNotification(Self);
-      FCharacterMapper := Value;
-      if CharacterMapper <> nil then
-      begin
-        CharacterMapper.FreeNotification(Self);
-        if not (csLoading in ComponentState) then
-          PrimSetText(Text);
-      end;
-    end
-    else
-    if DigitClass = nil then
-      raise EJVCLSegmentedLEDException.Create('Cannot specify mapper without DigitClass being set.')
-    else
-      raise EJVCLSegmentedLEDException.Create('Invalid mapper class for current digit class.');
-  end;
 end;
 
 procedure TJvCustomSegmentedLEDDisplay.SetDigitHeight(Value: Integer);
@@ -585,10 +556,10 @@ begin
       Digits.Add;
       Dec(I);
     end;
-    if not (csLoading in ComponentState) and (CharacterMapper <> nil) and not CharacterMapper.InheritsFrom(DigitClass.MapperClass) then
-      FCharacterMapper := nil
-    else if not (csLoading in ComponentState) then
-      PrimSetText(Text);
+    if CharacterMapper <> nil then
+      CharacterMapper.LoadDefaultMapping;  
+    if not (csLoading in ComponentState) then
+      RemapText;
   end;
 end;
 
@@ -832,6 +803,7 @@ begin
   inherited Create(AOwner);
   AutoSize := True;
   FDigitClass := TJv7SegmentedLEDDigit;
+  FCharacterMapper := TJvSegmentedLEDCharacterMapper.Create(Self);
   FDigits := TJvSegmentedLEDDigits.Create(Self);
   FDigitHeight := 30;
   FDigitSpacing := 2;
@@ -849,6 +821,11 @@ destructor TJvCustomSegmentedLEDDisplay.Destroy;
 begin
   FreeAndNil(FDigits);
   inherited Destroy;
+end;
+
+procedure TJvCustomSegmentedLEDDisplay.RemapText;
+begin
+  PrimSetText(Text);
 end;
 
 function TJvCustomSegmentedLEDDisplay.GetHitInfo(X, Y: Integer): TSLDHitInfo;
@@ -979,6 +956,10 @@ begin
       UpdateText(Value);
     Display.UpdateText;
   end;
+end;
+
+procedure TJvCustomSegmentedLEDDigit.EnableAllSegs;
+begin
 end;
 
 function TJvCustomSegmentedLEDDigit.GetSegmentRenderInfo(Index: Integer;
@@ -1205,6 +1186,12 @@ end;
 
 //===TJvBaseSegmentedLEDDigit=======================================================================
 
+procedure TJvBaseSegmentedLEDDigit.EnableAllSegs;
+begin
+  inherited EnableAllSegs;
+  UseDP := True;
+end;
+
 procedure TJvBaseSegmentedLEDDigit.SetUseDP(Value: Boolean);
 begin
   if Value <> UseDP then
@@ -1389,46 +1376,30 @@ begin
     Result := 7;
 end;
 
-//===TJvBaseSegmentedLEDCharacterMapper=============================================================
+//===TJvSegmentedLEDCharacterMapper=============================================================
 
-function TJvBaseSegmentedLEDCharacterMapper.GetCharMapping(Chr: Char): Int64;
+function TJvSegmentedLEDCharacterMapper.GetCharMapping(Chr: Char): Int64;
 begin
   Result := FActiveMapping[Chr];
 end;
 
-procedure TJvBaseSegmentedLEDCharacterMapper.SetCharMapping(Chr: Char; Value: Int64);
+procedure TJvSegmentedLEDCharacterMapper.SetCharMapping(Chr: Char; Value: Int64);
 begin
   FActiveMapping[Chr] := Value;
+  Modified;
 end;
 
-function TJvBaseSegmentedLEDCharacterMapper.MaxSegments: Integer;
-var
-  I: Integer;
-  CT: TClass;
+function TJvSegmentedLEDCharacterMapper.MaxSegments: Integer;
 begin
-  { Generic solution: find registered digit class(es) using this mapper class and determine number
-    of segments of that(those) class(es) }
-  Result := 0;
-  CT := ClassType;
-  with DigitClassList.LockList do
-  try
-    for I := 0 to Count - 1 do
-    begin
-      if TJvSegmentedLEDDigitClass(Items[I]).MapperClass.InheritsFrom(CT) then
-        if TJvSegmentedLEDDigitClass(Items[I]).SegmentCount > Result then
-          Result := TJvSegmentedLEDDigitClass(Items[I]).SegmentCount;
-    end;
-  finally
-    DigitClassList.UnlockList;
-  end;
+  Result := Display.DigitClass.SegmentCount;
 end;
 
-function TJvBaseSegmentedLEDCharacterMapper.MapToSeparators: Boolean;
+function TJvSegmentedLEDCharacterMapper.MapToSeparators: Boolean;
 begin
   Result := True;
 end;
 
-procedure TJvBaseSegmentedLEDCharacterMapper.PrimReadMapping(const HdrInfo: TSegCharMapHeader;
+procedure TJvSegmentedLEDCharacterMapper.PrimReadMapping(const HdrInfo: TSegCharMapHeader;
   Stream: TStream);
 var
   Chr: Char;
@@ -1452,7 +1423,7 @@ begin
   end;
 end;
 
-function TJvBaseSegmentedLEDCharacterMapper.UpdateStates(var Segments: Int64;
+function TJvSegmentedLEDCharacterMapper.UpdateStates(var Segments: Int64;
   SegMask: Int64): Boolean;
 var
   OldValue: Int64;
@@ -1465,7 +1436,7 @@ begin
   Result := Segments <> OldValue;
 end;
 
-procedure TJvBaseSegmentedLEDCharacterMapper.HandleDecimalSeparator(var Text: PChar;
+procedure TJvSegmentedLEDCharacterMapper.HandleDecimalSeparator(var Text: PChar;
   var Segments: Int64);
 begin
   if (CurDigit is TJvBaseSegmentedLEDDigit) and TJvBaseSegmentedLEDDigit(CurDigit).UseDP then
@@ -1477,7 +1448,12 @@ begin
   end;
 end;
 
-procedure TJvBaseSegmentedLEDCharacterMapper.ControlItemToSegments(var ControlItem: PChar;
+function TJvSegmentedLEDCharacterMapper.CharToSegments(Ch: Char; var Segments: Int64): Boolean;
+begin
+  Result := UpdateStates(Segments, FActiveMapping[Ch]) or (Ch = ' ');
+end;
+
+procedure TJvSegmentedLEDCharacterMapper.ControlItemToSegments(var ControlItem: PChar;
   var Segments: Int64);
 var
   OrdValue: Byte;
@@ -1532,7 +1508,7 @@ begin
     Inc(ControlItem);
 end;
 
-procedure TJvBaseSegmentedLEDCharacterMapper.MapControlItems(var Text: PChar; var Segments: Int64);
+procedure TJvSegmentedLEDCharacterMapper.MapControlItems(var Text: PChar; var Segments: Int64);
 begin
   Inc(Text);
   TextForDigit := TextForDigit + '[';
@@ -1547,7 +1523,7 @@ begin
     HandleDecimalSeparator(Text, Segments);
 end;
 
-procedure TJvBaseSegmentedLEDCharacterMapper.MapSimpleText(var Text: PChar; var Segments: Int64);
+procedure TJvSegmentedLEDCharacterMapper.MapSimpleText(var Text: PChar; var Segments: Int64);
 begin
   if CharToSegments(Text^, Segments) then
     TextForDigit := TextForDigit + Text^;
@@ -1556,7 +1532,7 @@ begin
     HandleDecimalSeparator(Text, Segments);
 end;
 
-procedure TJvBaseSegmentedLEDCharacterMapper.MapSegNamesToSegments(var Text:Pchar;
+procedure TJvSegmentedLEDCharacterMapper.MapSegNamesToSegments(var Text: Pchar;
   var Segments: Int64);
 var
   SortedSegNames: TStrings;
@@ -1567,6 +1543,7 @@ begin
     for I := 0 to CurDigit.SegmentCount - 1 do
       SortedSegNames.Add(CurDigit.GetSegmentName(I));
     TStringList(SortedSegNames).Sort;
+
     while not (Text[0] in [#0, ']', ';']) do
     begin
       I := SortedSegNames.Count - 1;
@@ -1591,7 +1568,7 @@ begin
    end;
 end;
 
-procedure TJvBaseSegmentedLEDCharacterMapper.PrimMapText(var Text: PChar; var Segments: Int64);
+procedure TJvSegmentedLEDCharacterMapper.PrimMapText(var Text: PChar; var Segments: Int64);
 begin
   case Text^ of
     #0:
@@ -1603,13 +1580,20 @@ begin
   end;
 end;
 
-constructor TJvBaseSegmentedLEDCharacterMapper.Create(AOwner: TComponent);
+procedure TJvSegmentedLEDCharacterMapper.Modified;
 begin
-  inherited Create(AOwner);
+  FMappingChanged := True;
+  Display.RemapText;
+end;
+
+constructor TJvSegmentedLEDCharacterMapper.Create(ADisplay: TJvCustomSegmentedLEDDisplay);
+begin
+  inherited Create;
+  FDisplay := ADisplay;
   LoadDefaultMapping;
 end;
 
-procedure TJvBaseSegmentedLEDCharacterMapper.MapText(var Text: PChar;
+procedure TJvSegmentedLEDCharacterMapper.MapText(var Text: PChar;
   ADigit: TJvCustomSegmentedLEDDigit);
 var
   States: Int64;
@@ -1620,27 +1604,30 @@ begin
   FSegMapRemoves := False;
   PrimMapText(Text, States);
   CurDigit.SetSegmentStates(States);
+  if FTextForDigit = '' then // assume a space was used
+    FTextForDigit := ' ';
   CurDigit.UpdateText(FTextForDigit);
 end;
 
-procedure TJvBaseSegmentedLEDCharacterMapper.Clear;
+procedure TJvSegmentedLEDCharacterMapper.Clear;
 begin
   FillChar(FActiveMapping[#0], SizeOf(FActiveMapping), 0);
 end;
 
-procedure TJvBaseSegmentedLEDCharacterMapper.LoadDefaultMapping;
+procedure TJvSegmentedLEDCharacterMapper.LoadDefaultMapping;
 var
   Stream: TStream;
 begin
-  Stream := TResourceStream.Create(HInstance, MapperFileID + '_DEFAULT', RT_RCDATA);
+  Stream := TResourceStream.Create(HInstance, Display.DigitClass.MapperFileID + '_DEFAULT', RT_RCDATA);
   try
     LoadFromStream(Stream);
+    FMappingChanged := False;
   finally
     FreeAndNil(Stream);
   end;
 end;
 
-procedure TJvBaseSegmentedLEDCharacterMapper.LoadFromFile(const FileName: string);
+procedure TJvSegmentedLEDCharacterMapper.LoadFromFile(const FileName: string);
 var
   FS: TFileStream;
 begin
@@ -1652,7 +1639,7 @@ begin
    end;
 end;
 
-procedure TJvBaseSegmentedLEDCharacterMapper.LoadFromStream(Stream: TStream);
+procedure TJvSegmentedLEDCharacterMapper.LoadFromStream(Stream: TStream);
 var
   OrgPos: Integer;
   Hdr: TSegCharMapHeader;
@@ -1660,7 +1647,7 @@ begin
   OrgPos := Stream.Position;
   try
     Stream.ReadBuffer(Hdr, SizeOf(Hdr));
-    if StrLIComp(Hdr.ID, PChar(MapperFileID), Length(MapperFileID)) = 0 then
+    if StrLIComp(Hdr.ID, PChar(Display.DigitClass.MapperFileID), Length(Display.DigitClass.MapperFileID)) = 0 then
       PrimReadMapping(Hdr, Stream)
     else
       raise EJVCLSegmentedLEDException.Create('Invalid mapping file.');
@@ -1670,7 +1657,7 @@ begin
   end;
 end;
 
-procedure TJvBaseSegmentedLEDCharacterMapper.SaveToFile(const FileName: string);
+procedure TJvSegmentedLEDCharacterMapper.SaveToFile(const FileName: string);
 var
   FS: TFileStream;
 begin
@@ -1682,7 +1669,7 @@ begin
    end;
 end;
 
-procedure TJvBaseSegmentedLEDCharacterMapper.SaveToStream(Stream: TStream);
+procedure TJvSegmentedLEDCharacterMapper.SaveToStream(Stream: TStream);
 var
   Hdr: TSegCharMapHeader;
   TmpID: string;
@@ -1692,7 +1679,7 @@ var
   TmpComma: Int64;
 begin
   FillChar(Hdr, SizeOf(Hdr), 0);
-  TmpID := MapperFileID;
+  TmpID := Display.DigitClass.MapperFileID;
   Move(TmpID[1], Hdr.ID, Length(TmpID));
   Hdr.Flags := MaxSegments;
   MapSize := (Hdr.Flags div 8) + Ord((Hdr.Flags mod 8) <> 0);
@@ -1725,6 +1712,12 @@ end;
 
 //===TJv7SegmentedLEDDigit==========================================================================
 
+procedure TJv7SegmentedLEDDigit.EnableAllSegs;
+begin
+  inherited EnableAllSegs;
+  UseColon := scuFull;
+end;
+
 function TJv7SegmentedLEDDigit.GetUseColon: T7SegColonUsage;
 begin
   Result := FUseColon;
@@ -1737,11 +1730,6 @@ begin
     FUseColon := Value;
     InvalidateRefPoints;
   end;
-end;
-
-class function TJv7SegmentedLEDDigit.MapperClass: TJvSegmentedLEDCharacterMapperClass;
-begin
-  Result := TJv7SegmentedLEDCharacterMapper;
 end;
 
 class function TJv7SegmentedLEDDigit.SegmentCount: Integer;
@@ -1784,6 +1772,11 @@ begin
     CalcCHSeg(9);
 end;
 
+class function TJv7SegmentedLEDDigit.MapperFileID: string;
+begin
+  Result := 'SLDCM_7SEG';
+end;
+
 procedure TJv7SegmentedLEDDigit.CalcCHSeg(Index: Integer);
 var
   UpperLeftPoint: TPoint;
@@ -1806,18 +1799,6 @@ begin
     UpperLeftPoint,
     Point(UpperLeftPoint.X + DotSize, UpperLeftPoint.Y + DotSize)
   ]);
-end;
-
-//===TJv7SegmentedLEDCharacterMapper================================================================
-
-class function TJv7SegmentedLEDCharacterMapper.MapperFileID: string;
-begin
-  Result := 'SLDCM_7SEG';
-end;
-
-function TJv7SegmentedLEDCharacterMapper.CharToSegments(Ch: Char; var Segments: Int64): Boolean;
-begin
-  Result := UpdateStates(Segments, FActiveMapping[Ch]) or (Ch = ' ');
 end;
 
 procedure ModuleUnload(Instance: Longint);
@@ -1877,6 +1858,9 @@ initialization
 
   RegisterIntegerConsts(TypeInfo(TUnlitColor), IdentToUnlitColor, UnlitColorToIdent);
 finalization
+  {$IFDEF COMPILER6_UP}
+  UnregisterIntegerConsts(TypeInfo(TUnlitColor), IdentToUnlitColor, UnlitColorToIdent);
+  {$ENDIF COMPILER6_UP}
   UnregisterModuleSegmentedLEDDigitClasses(HInstance);
   FreeAndNil(GDigitClassList);
   RemoveModuleUnloadProc(ModuleUnload);

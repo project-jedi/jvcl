@@ -13,12 +13,12 @@ implementation
 uses
   Classes,
   {$IFDEF COMPILER6_UP}
-  DesignIntf,
+  DesignIntf, DesignEditors, ToolsApi,
   {$ELSE}
-  DsgnIntf,
+  DsgnIntf, ToolsApi,
   {$ENDIF COMPILER6_UP}
   JvConsts, JvSegmentedLEDDisplay, JvLED, JvDialButton,
-  JvSegmentedLEDDisplayEditors;
+  JvSegmentedLEDDisplayEditors, JvSegmentedLEDDisplayMapperFrame;
 
 procedure Register;
 begin
@@ -28,16 +28,15 @@ begin
     ]);
 
   RegisterComponents(SPaletteHMIControls, [
-    TJvDialButton]);
-
-  RegisterComponents(SPaletteHMINonVisual, [
-    TJv7SegmentedLEDCharacterMapper
+    TJvDialButton
     ]);
 
   RegisterPropertyEditor(TypeInfo(TJvSegmentedLEDDigitClassName), TPersistent, '', TJvSegmentedLEDDigitClassProperty);
   RegisterPropertyEditor(TypeInfo(TUnlitColor), TPersistent, '', TUnlitColorProperty);
 
   RegisterComponentEditor(TJvCustomSegmentedLEDDisplay, TJvSegmentedLEDDisplayEditor);
+
+  RegisterCustomModule(TfmeJvSegmentedLEDDisplayMapper, TCustomModule);
 end;
 
 end.
