@@ -36,28 +36,33 @@ type
   { a component editor that by default opens the editor for the Items property in TTimeline }
   TTimeLineEditor = class(TDefaultEditor)
   public
-    procedure ExecuteVerb(Index:integer);override;
  {$IFDEF COMPILER6_UP}
     procedure EditProperty(const Prop: IProperty; var Continue: Boolean); override;
-{$ELSE}
- procedure EditProperty(PropertyEditor: TPropertyEditor; var Continue, FreeEditor: Boolean); override;
-{$ENDIF}
-
-
+  {$ELSE}
+   procedure EditProperty(PropertyEditor: TPropertyEditor; var Continue, FreeEditor: Boolean); override;
+  {$ENDIF}
+    procedure ExecuteVerb(Index:integer);override;
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
   end;
 
-resourcestring
+const
   SEditProperty = 'Items Editor...';
+
+procedure Register;
 
 implementation
 uses
-  SysUtils;
+  JvTimeLine, SysUtils;
+  
+procedure Register;
+begin
+  RegisterComponentEditor(TJvCustomTimeLine, TTimeLineEditor);
+end;
 
 { TTimeLineEditor }
 
- {$IFDEF COMPILER6_UP}
+{$IFDEF COMPILER6_UP}
 procedure TTimeLineEditor.EditProperty(const Prop: IProperty;  var Continue: Boolean);
 var PropName:string;
 begin
@@ -83,12 +88,12 @@ end;
 
 procedure TTimeLineEditor.ExecuteVerb(Index: integer);
 begin
-  if Index = 0 then Edit else inherited;
+  if Index = 0 then Edit else inherited ExecuteVerb(Index);
 end;
 
 function TTimeLineEditor.GetVerb(Index: Integer): string;
 begin
-  if Index = 0 then Result := SEditProperty else Result := '';
+  if Index = 0 then Result := SEditProperty else Result := inherited GetVerb(Index);
 end;
 
 function TTimeLineEditor.GetVerbCount: Integer;

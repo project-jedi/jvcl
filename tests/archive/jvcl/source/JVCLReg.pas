@@ -221,15 +221,12 @@ end;
 
 procedure RegCompEds;
 begin
-
   RegisterComponentEditor(TJvMail, TJvMailEditor);
   RegisterComponentEditor(TCommonDialog, TJvOpenDialogEditor);
   RegisterComponentEditor(TJvCommonDialog, TJvBaseDlgEditor);
   RegisterComponentEditor(TJvCommonDialogP, TJvBaseDlgEditor);
   RegisterComponentEditor(TJvCommonDialogD, TJvCommonDialogDEditor);
   RegisterComponentEditor(TCommonDialog, TJvBaseDlgEditor);
-  RegisterComponentEditor(TJvCustomTimeLine, TTimeLineEditor);
-
   RegisterComponentEditor(TJvTipOfDay, TJvTipOfDayEditor);
   RegisterComponentEditor(TJvLookOut, TLookOutEditor);
   RegisterComponentEditor(TJvLookOutPage, TLookOutPageEditor);
