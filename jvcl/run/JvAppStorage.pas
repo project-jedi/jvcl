@@ -99,13 +99,13 @@ type
 
   EJVCLAppStorageError = class(EJVCLException);
 
-  IAppStorageHandler = interface
+  IJvAppStorageHandler = interface
   ['{E3754817-49A3-4612-A228-5D44A088681D}']
     procedure ReadFromAppStorage(AppStorage: TJvCustomAppStorage; BasePath: string);
     procedure WriteToAppStorage(AppStorage: TJvCustomAppStorage; BasePath: string);
   end;
 
-  IAppStoragePublishedProps = interface
+  IJvAppStoragePublishedProps = interface
   ['{0211AEF7-CCE9-4F13-B3CE-287251C89182}']
   end;
 
@@ -2086,14 +2086,14 @@ var
   PropName: string;
   KeyName: string;
   PropPath: string;
-  AppStorageHandler: IAppStorageHandler;
+  JvAppStorageHandler: IJvAppStorageHandler;
 begin
   if not Assigned(PersObj) then
     Exit;
-  if Supports(PersObj, IAppStorageHandler, AppStorageHandler)then
-    AppStorageHandler.ReadFromAppStorage(Self, Path);
-  if not Supports (PersObj, IAppStorageHandler) or
-     Supports (PersObj, IAppStoragePublishedProps) then
+  if Supports(PersObj, IJvAppStorageHandler, JvAppStorageHandler)then
+    JvAppStorageHandler.ReadFromAppStorage(Self, Path);
+  if not Supports (PersObj, IJvAppStorageHandler) or
+     Supports (PersObj, IJvAppStoragePublishedProps) then
     for Index := 0 to GetPropCount(PersObj) - 1 do
     begin
       PropName := GetPropName(PersObj, Index);
@@ -2111,14 +2111,14 @@ var
   PropName: string;
   KeyName: string;
   PropPath: string;
-  AppStorageHandler: IAppStorageHandler;
+  JvAppStorageHandler: IJvAppStorageHandler;
 begin
   if not Assigned(PersObj) then
     Exit;
-  if Supports(PersObj, IAppStorageHandler, AppStorageHandler)then
-    AppStorageHandler.WriteToAppStorage(Self, Path);
-  if not Supports (PersObj, IAppStorageHandler) or
-     Supports (PersObj, IAppStoragePublishedProps) then
+  if Supports(PersObj, IJvAppStorageHandler, JvAppStorageHandler)then
+    JvAppStorageHandler.WriteToAppStorage(Self, Path);
+  if not Supports (PersObj, IJvAppStorageHandler) or
+     Supports (PersObj, IJvAppStoragePublishedProps) then
     for Index := 0 to GetPropCount(PersObj) - 1 do
     begin
       PropName := GetPropName(PersObj, Index);
