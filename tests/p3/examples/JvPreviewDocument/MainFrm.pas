@@ -89,7 +89,7 @@ type
     procedure OpenTxtFile(const Filename: string);
     procedure OpenImage(const Filename: string);
     procedure DoChange(Sender: TObject);
-    procedure DoVertScroll(Sender: TObject);
+    procedure DoAfterScroll(Sender: TObject);
     procedure BuildRTFPreview;
     procedure BuildTXTPreview;
     procedure BuildImagePreview;
@@ -168,7 +168,7 @@ begin
     pd.Options.Cols := udCols.Position;
     pd.Options.Shadow.Offset := udShadowWidth.Position;
     pd.Options.Scale := udZoom.Position;
-    pd.OnVertScroll := DoVertScroll;
+    pd.OnAfterScroll := DoAfterScroll;
 
     cbPreview.ItemIndex := 1; // printer
     cbPreviewChange(nil);
@@ -353,7 +353,7 @@ begin
   cbScaleMode.ItemIndex := Ord(pd.Options.ScaleMode);
 end;
 
-procedure TfrmMain.DoVertScroll(Sender: TObject);
+procedure TfrmMain.DoAfterScroll(Sender: TObject);
 begin
   Statusbar1.Panels[2].Text := Format('Cols: %d, Rows: %d, Row %d', [pd.TotalCols, pd.VisibleRows, pd.TopRow]);
 end;
