@@ -27,7 +27,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvgLogicItemEditor;
+unit JvgLogicItemEditorForm;
 
 interface
 

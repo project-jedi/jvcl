@@ -27,14 +27,14 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvgQPrintPreview;
+unit JvgQPrintPreviewForm;
 
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, QuickRpt, Qrctrls, JvgQRLabel, QRPrntr, ComCtrls, ToolWin,
-  JvgBevel, ImgList, JvgLabel, shellApi, StdCtrls;
+  JvgBevel, ImgList, JvgLabel, shellApi, StdCtrls, JvComponent;
 
 type
   TJvgfPrintPreview = class(TForm)
@@ -102,7 +102,7 @@ var
   l: TJvgQRLabel;
 
 implementation
-uses JvgTypes, JvgExport, JvgQPrintSetup, printers; //, mdrpt;
+uses JvgTypes, JvgExport, JvgQPrintSetupForm, printers; //, mdrpt;
 {$R *.DFM}
 
 procedure TJvgfPrintPreview.FormCreate(Sender: TObject);

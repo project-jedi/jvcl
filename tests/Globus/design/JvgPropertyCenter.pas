@@ -85,7 +85,7 @@ type
 implementation
 uses JvgUtils,
   JvgTypes,
-  JvgComponentListEditor;
+  JvgComponentListEditorForm;
 
 constructor TJvgPropertyCenter.Create(AOwner: TComponent);
 begin

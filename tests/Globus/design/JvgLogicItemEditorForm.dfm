@@ -1,4 +1,4 @@
-object fLogicItemEditor: TJvgLogicItemEditor
+object JvgLogicItemEditor: TJvgLogicItemEditor
   Left = 310
   Top = 202
   Width = 454
@@ -15,21 +15,24 @@ object fLogicItemEditor: TJvgLogicItemEditor
   OldCreateOrder = False
   OnCreate = FormCreate
   OnShow = FormShow
+  DesignSize = (
+    446
+    411)
   PixelsPerInch = 96
   TextHeight = 13
   object Label2: TLabel
     Left = 19
     Top = 230
-    Width = 37
+    Width = 35
     Height = 13
-    Caption = 'Истина'
+    Caption = #200#241#242#232#237#224
   end
   object Label3: TLabel
     Left = 12
     Top = 144
-    Width = 28
+    Width = 27
     Height = 13
-    Caption = 'Ложь'
+    Caption = #203#238#230#252
   end
   object Shape4: TShape
     Left = 0
@@ -44,6 +47,7 @@ object fLogicItemEditor: TJvgLogicItemEditor
     Top = 74
     Width = 446
     Height = 292
+    Style = lbOwnerDrawFixed
     Align = alTop
     Anchors = [akLeft, akTop, akRight, akBottom]
     BorderStyle = bsNone
@@ -55,7 +59,6 @@ object fLogicItemEditor: TJvgLogicItemEditor
       '4'
       '5'
       '6')
-    Style = lbOwnerDrawFixed
     TabOrder = 2
     OnDrawItem = LBDrawItem
     OnMeasureItem = LBMeasureItem
@@ -114,6 +117,9 @@ object fLogicItemEditor: TJvgLogicItemEditor
     Height = 16
     BevelOuter = bvNone
     TabOrder = 4
+    DesignSize = (
+      302
+      16)
     object Panel10: TPanel
       Left = 0
       Top = 0
@@ -178,6 +184,9 @@ object fLogicItemEditor: TJvgLogicItemEditor
     Height = 16
     BevelOuter = bvNone
     TabOrder = 5
+    DesignSize = (
+      302
+      16)
     object Panel15: TPanel
       Left = 0
       Top = 15
@@ -242,6 +251,9 @@ object fLogicItemEditor: TJvgLogicItemEditor
     Height = 16
     BevelOuter = bvNone
     TabOrder = 6
+    DesignSize = (
+      302
+      16)
     object Panel20: TPanel
       Left = 0
       Top = 15
@@ -310,9 +322,9 @@ object fLogicItemEditor: TJvgLogicItemEditor
     object Label1: TLabel
       Left = 9
       Top = 3
-      Width = 61
+      Width = 58
       Height = 13
-      Caption = 'Значение:'
+      Caption = #199#237#224#247#229#237#232#229':'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
@@ -323,9 +335,9 @@ object fLogicItemEditor: TJvgLogicItemEditor
     object Label4: TLabel
       Left = 257
       Top = 3
-      Width = 56
+      Width = 54
       Height = 13
-      Caption = 'Условие:'
+      Caption = #211#241#235#238#226#232#229':'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
@@ -336,9 +348,9 @@ object fLogicItemEditor: TJvgLogicItemEditor
     object Label5: TLabel
       Left = 9
       Top = 35
-      Width = 63
+      Width = 60
       Height = 13
-      Caption = 'Варианты:'
+      Caption = #194#224#240#232#224#237#242#251':'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
@@ -496,8 +508,9 @@ object fLogicItemEditor: TJvgLogicItemEditor
     Height = 22
     AutoSize = True
     ButtonHeight = 21
-    ButtonWidth = 57
+    ButtonWidth = 54
     Caption = 'TB'
+    Color = clBtnFace
     EdgeInner = esNone
     Flat = True
     ParentColor = False
@@ -506,14 +519,14 @@ object fLogicItemEditor: TJvgLogicItemEditor
     object ToolButton1: TToolButton
       Left = 0
       Top = 0
-      Caption = 'Добавить'
+      Caption = #196#238#225#224#226#232#242#252
       ImageIndex = 0
       OnClick = ToolButton1Click
     end
     object ToolButton2: TToolButton
-      Left = 57
+      Left = 54
       Top = 0
-      Caption = 'Удалить'
+      Caption = #211#228#224#235#232#242#252
       ImageIndex = 1
     end
   end

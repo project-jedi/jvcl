@@ -39,18 +39,18 @@ requires
 
 contains
   JvgRegLibDelphi in '..\design\JvgRegLibDelphi.pas',
-  JvCompEditorTemplate in '..\design\JvCompEditorTemplate.pas' {JvgCompEditorTemplate},
+  JvCompEditorTemplateForm in '..\design\JvCompEditorTemplateForm.pas' {JvgCompEditorTemplate},
   JvgLabelEditor in '..\design\JvgLabelEditor.pas' {JvgLabelEditorDlg},
   JvgReportEditor in '..\design\JvgReportEditor.pas',
   JvgReportParamEditor in '..\design\JvgReportParamEditor.pas',
   JvgReportParamEditorForm in '..\design\JvgReportParamEditorForm.pas',
   JvgShadowEditor in '..\design\JvgShadowEditor.pas',
   JvgCompDescription in '..\design\JvgCompDescription.pas',
-  JvgComponentListEditor in '..\design\JvgComponentListEditor.pas',
+  JvgComponentListEditorForm in '..\design\JvgComponentListEditorForm.pas',
   JvgPropertyCenter in '..\design\JvgPropertyCenter.pas',
   JvgHelpPanelEditor in '..\design\JvgHelpPanelEditor.pas',
   JvgRTFPreviewEditor in '..\design\JvgRTFPreviewEditor.pas',
-  JvgLogicsEditor in '..\design\JvgLogicsEditor.pas',
-  JvgLogicItemEditor in '..\design\JvgLogicItemEditor.pas';
+  JvgLogicsEditorForm in '..\design\JvgLogicsEditorForm.pas',
+  JvgLogicItemEditorForm in '..\design\JvgLogicItemEditorForm.pas';
 
 end.

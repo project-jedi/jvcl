@@ -27,7 +27,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvgLogicsEditor;
+unit JvgLogicsEditorForm;
 
 interface
 
@@ -196,7 +196,7 @@ var
 implementation
 uses JvgTypes,
   JvgUtils,
-  JvgLogicItemEditor,
+  JvgLogicItemEditorForm,
   clipbrd;
 {$R *.DFM}
 

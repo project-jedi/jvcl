@@ -30,7 +30,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvCompEditorTemplate, Buttons, JvgSpeedButton, ComCtrls,
+  JvCompEditorTemplateForm, Buttons, JvgSpeedButton, ComCtrls,
   {$IFDEF COMPILER6_UP}
   DesignIntf,
   DesignEditors,

@@ -1,14 +1,16 @@
-object glMresEdit: TJvgMultipleResourceEdit
+object JvgMultipleResourceEdit: TJvgMultipleResourceEdit
   Left = 198
   Top = 109
   Width = 565
   Height = 450
   Caption = 'glMresEdit'
+  Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
+  OldCreateOrder = True
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow

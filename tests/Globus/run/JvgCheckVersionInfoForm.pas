@@ -27,7 +27,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvgCheckVersionInfo;
+unit JvgCheckVersionInfoForm;
 
 interface
 

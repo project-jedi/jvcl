@@ -1,9 +1,9 @@
-object fCheckVersionInfo: TJvgfCheckVersionInfo
+object JvgfCheckVersionInfo: TJvgfCheckVersionInfo
   Left = 466
   Top = 175
   ActiveControl = reComments
   BorderStyle = bsDialog
-  Caption = 'Проверка новой версии'
+  Caption = #207#240#238#226#229#240#234#224' '#237#238#226#238#233' '#226#229#240#241#232#232
   ClientHeight = 298
   ClientWidth = 428
   Color = clBtnFace
@@ -15,6 +15,9 @@ object fCheckVersionInfo: TJvgfCheckVersionInfo
   OldCreateOrder = False
   Position = poMainFormCenter
   Scaled = False
+  DesignSize = (
+    428
+    298)
   PixelsPerInch = 96
   TextHeight = 13
   object JvgWizardHeader: TJvgWizardHeader
@@ -39,11 +42,11 @@ object fCheckVersionInfo: TJvgfCheckVersionInfo
     SymbolFont.Style = [fsBold]
     PageNo = 0
     Captions.Strings = (
-      'Проверка выхода новой версии программы SiteBuilder')
+      #207#240#238#226#229#240#234#224' '#226#251#245#238#228#224' '#237#238#226#238#233' '#226#229#240#241#232#232' '#239#240#238#227#240#224#236#236#251' SiteBuilder')
     Comments.Strings = (
       
-        'Данные об обновлениях загружаются через WWW с сервера разработчи' +
-        'ков программы.')
+        #196#224#237#237#251#229' '#238#225' '#238#225#237#238#226#235#229#237#232#255#245' '#231#224#227#240#243#230#224#254#242#241#255' '#247#229#240#229#231' WWW '#241' '#241#229#240#226#229#240#224' '#240#224#231#240#224#225#238#242#247#232 +
+        #234#238#226' '#239#240#238#227#240#224#236#236#251'.')
     Gradient.FromColor = clHighlight
     Gradient.ToColor = clWindow
     Gradient.Active = True
@@ -113,8 +116,13 @@ object fCheckVersionInfo: TJvgfCheckVersionInfo
     Height = 25
     Anchors = [akLeft, akBottom]
     Caption = 'Ok'
+    Enabled = True
     OnClick = sbNextClick
+    Color = 15134450
+    ActiveColor = 15792380
+    FrameColor = clBlack
     DefaultStyle = False
+    ModalResult = 0
   end
   object Bevel1: TBevel
     Left = 0
@@ -127,37 +135,37 @@ object fCheckVersionInfo: TJvgfCheckVersionInfo
   object Label1: TLabel
     Left = 16
     Top = 74
-    Width = 81
+    Width = 73
     Height = 13
-    Caption = 'Данная версия:'
+    Caption = #196#224#237#237#224#255' '#226#229#240#241#232#255':'
   end
   object Label2: TLabel
     Left = 16
     Top = 98
-    Width = 69
+    Width = 65
     Height = 13
-    Caption = 'Дата выхода:'
+    Caption = #196#224#242#224' '#226#251#245#238#228#224':'
   end
   object Label3: TLabel
     Left = 216
     Top = 74
-    Width = 98
+    Width = 86
     Height = 13
-    Caption = 'Последняя версия:'
+    Caption = #207#238#241#235#229#228#237#255#255' '#226#229#240#241#232#255':'
   end
   object Label4: TLabel
     Left = 216
     Top = 98
-    Width = 69
+    Width = 65
     Height = 13
-    Caption = 'Дата выхода:'
+    Caption = #196#224#242#224' '#226#251#245#238#228#224':'
   end
   object Label5: TLabel
     Left = 16
     Top = 136
-    Width = 172
+    Width = 168
     Height = 13
-    Caption = 'Страница загрузки новой версии:'
+    Caption = #209#242#240#224#237#232#246#224' '#231#224#227#240#243#231#234#232' '#237#238#226#238#233' '#226#229#240#241#232#232':'
   end
   object Shape1: TShape
     Left = 11
@@ -185,9 +193,9 @@ object fCheckVersionInfo: TJvgfCheckVersionInfo
   object Label7: TLabel
     Left = 16
     Top = 180
-    Width = 156
+    Width = 131
     Height = 13
-    Caption = 'Дополнительная информация:'
+    Caption = #196#238#239#238#235#237#232#242#229#235#252#237#224#255' '#232#237#244#238#240#236#224#246#232#255':'
   end
   object glShadow1: TJvgShadow
     Left = 12
