@@ -1,16 +1,21 @@
 object JvInspectorDBDemoMainForm: TJvInspectorDBDemoMainForm
-  Left = 130
-  Top = 211
-  Width = 698
+  Left = 224
+  Top = 196
+  Width = 604
   Height = 481
   Caption = 'JvInspectorDBDemoMainForm'
   Color = clBtnFace
+  Constraints.MinHeight = 200
+  Constraints.MinWidth = 450
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  Position = poDesktopCenter
+  Scaled = False
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -34,7 +39,7 @@ object JvInspectorDBDemoMainForm: TJvInspectorDBDemoMainForm
   object DBGrid1: TDBGrid
     Left = 236
     Top = 0
-    Width = 437
+    Width = 357
     Height = 409
     Anchors = [akLeft, akTop, akRight, akBottom]
     DataSource = DataSource1
@@ -70,7 +75,7 @@ object JvInspectorDBDemoMainForm: TJvInspectorDBDemoMainForm
       end>
   end
   object btnOpenCloseDS: TButton
-    Left = 248
+    Left = 240
     Top = 416
     Width = 75
     Height = 25
@@ -80,7 +85,7 @@ object JvInspectorDBDemoMainForm: TJvInspectorDBDemoMainForm
     OnClick = btnOpenCloseDSClick
   end
   object btnClose: TButton
-    Left = 571
+    Left = 517
     Top = 416
     Width = 75
     Height = 25
@@ -90,21 +95,21 @@ object JvInspectorDBDemoMainForm: TJvInspectorDBDemoMainForm
     OnClick = btnCloseClick
   end
   object JvInspectorBorlandPainter1: TJvInspectorBorlandPainter
-    Left = 92
-    Top = 116
+    Left = 88
+    Top = 96
   end
   object dbInspector: TDatabase
     AliasName = 'DBDEMOS'
     DatabaseName = 'InspDemo'
     LoginPrompt = False
     SessionName = 'Default'
-    Left = 144
+    Left = 88
     Top = 32
   end
   object Table1: TTable
     DatabaseName = 'DBDEMOS'
     TableName = 'employee.db'
-    Left = 96
+    Left = 24
     Top = 32
     object Table1EmpNo: TIntegerField
       FieldName = 'EmpNo'
@@ -131,7 +136,7 @@ object JvInspectorDBDemoMainForm: TJvInspectorDBDemoMainForm
   end
   object DataSource1: TDataSource
     DataSet = Table1
-    Left = 168
-    Top = 112
+    Left = 152
+    Top = 32
   end
 end

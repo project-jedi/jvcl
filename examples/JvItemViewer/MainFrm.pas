@@ -34,7 +34,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Mask, ExtCtrls, ImgList, ComCtrls, Menus,
   JvToolEdit,
-  jpeg, JvPCX, JvGIF,
+  jpeg, JvPcx, JvGIF, JvAni,
     // if you have units that supports other image formats, add them here *before* including JvItemViewer
 //  GraphicEx, // http://www.delphi-gems.com/Graphics.php#GraphicEx
   JvCustomItemViewer,
@@ -45,28 +45,32 @@ uses
   JvInspector, JvExMask;
 
 type
-  // loads .ani and .cur files
+  // loads .cur files
   TCursorImage = class(TGraphic)
   private
-    FHandle: THandle;
+    FHandle: HICON;
   protected
     procedure Draw(ACanvas: TCanvas; const Rect: TRect); override;
     function GetEmpty: Boolean; override;
     function GetHeight: Integer; override;
     function GetWidth: Integer; override;
+    function GetTransparent: Boolean; override;
     procedure SetHeight(Value: Integer); override;
     procedure SetWidth(Value: Integer); override;
+    procedure SetTransparent(Value: Boolean); override;
+    procedure AssignTo(Dest: TPersistent); override;
   public
+    destructor Destroy; override;
     procedure LoadFromStream(Stream: TStream); override;
     procedure SaveToStream(Stream: TStream); override;
     procedure LoadFromClipboardFormat(AFormat: Word; AData: THandle;
       APalette: HPALETTE); override;
     procedure SaveToClipboardFormat(var AFormat: Word; var AData: THandle;
       var APalette: HPALETTE); override;
-    procedure LoadFromFile(const Filename: string); override;
-
-    property Handle:THandle read FHandle;
-  end;      
+    procedure LoadFromFile(const FileName: string); override;
+    procedure Assign(Source: TPersistent); override;
+    property Handle: HICON read FHandle;
+  end;
 
   TfrmMain = class(TForm)
     pnlSettings: TPanel;
@@ -104,27 +108,24 @@ type
     procedure chkDisconnectClick(Sender: TObject);
     procedure SelectAll1Click(Sender: TObject);
   private
-    { Private declarations }
-    FDragIndex: integer;
+    FDragIndex: Integer;
     procedure BuildColorList;
-    procedure SetDisplayDragImage(AControl:TControl);
-
+    procedure SetDisplayDragImage(AControl: TControl);
     procedure DoITV2DragOver(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
     procedure DoITV2DragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure DoITV2MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-    procedure DoITV2GetCaption(Sender: TObject; ImageINdex: integer; var ACaption: string);
+    procedure DoITV2GetCaption(Sender: TObject; ImageINdex: Integer; var ACaption: string);
     procedure DoITVClick(Sender: TObject);
     procedure DoITVDblClick(Sender: TObject);
     procedure DITVLoadBegin(Sender: TObject);
     procedure DoITVLoadEnd(Sender: TObject);
     procedure DoITVLoadProgress(Sender: TObject; Item: TJvImageItem; Stage: TProgressStage;
       PercentDone: Byte; RedrawNow: Boolean; const R: TRect; const Msg: string);
-    procedure DoITV3DrawItem(Sender: TObject; AIndex: integer; AState: TCustomDrawState; ACanvas: TCanvas; ItemRect,
+    procedure DoITV3DrawItem(Sender: TObject; AIndex: Integer; AState: TCustomDrawState; ACanvas: TCanvas; ItemRect,
       TextRect: TRect);
     procedure DoITV3Click(Sender: TObject);
-    procedure ViewItem(Item: TJvImageItem; LoadFromFile: boolean);
+    procedure ViewItem(Item: TJvImageItem; LoadFromFile: Boolean);
   public
-    { Public declarations }
     ITV: TJvImagesViewer;
     ITV2: TJvImageListViewer;
     ITV3: TJvOwnerDrawViewer;
@@ -136,77 +137,21 @@ var
   frmMain: TfrmMain;
 
 implementation
+
 uses
   JvConsts, // for clMoneyGreen
-  CommCtrl,
+  CommCtrl, Consts,
   {$IFNDEF COMPILER6_UP}
   FileCtrl,
   {$ENDIF}
-  JclRegistry, ViewerFrm;
+  JclRegistry,
+  ViewerFrm;
 
 {$R *.dfm}
 
-procedure TCursorImage.Draw(ACanvas: TCanvas; const Rect: TRect);
-const
-  cTransparent: array [boolean] of Cardinal = (DI_IMAGE, DI_NORMAL);
-begin
-  with Rect do
-    DrawIconEx(ACanvas.Handle, Left, Top, Handle, Right - Left, Bottom - Top, 0, 0, cTransparent[Transparent]);
-end;
+//=== TfrmMain ===============================================================
 
-function TCursorImage.GetEmpty: Boolean;
-begin
-  Result := FHandle = 0;
-end;
-
-function TCursorImage.GetHeight: Integer;
-begin
-  Result := GetSystemMetrics(SM_CYCURSOR);
-end;
-
-function TCursorImage.GetWidth: Integer;
-begin
-  Result := GetSystemMetrics(SM_CXCURSOR);
-end;
-
-procedure TCursorImage.LoadFromClipboardFormat(AFormat: Word; AData: THandle;
-  APalette: HPALETTE);
-begin
-  raise Exception.Create('LoadFromClipboardFormat not supported');
-end;
-
-procedure TCursorImage.LoadFromFile(const Filename: string);
-begin
-  FHandle := LoadCursorFromFile(PChar(Filename));
-end;
-
-procedure TCursorImage.LoadFromStream(Stream: TStream);
-begin
-  raise Exception.Create('LoadFromStream not supported!');
-end;
-
-procedure TCursorImage.SaveToClipboardFormat(var AFormat: Word;
-  var AData: THandle; var APalette: HPALETTE);
-begin
-  raise Exception.Create('SaveToClipboardFormat not supported');
-end;
-
-procedure TCursorImage.SaveToStream(Stream: TStream);
-begin
-  raise Exception.Create('SaveToStream not supported!');
-end;
-
-procedure TCursorImage.SetHeight(Value: Integer);
-begin
-//
-end;
-
-procedure TCursorImage.SetWidth(Value: Integer);
-begin
-//
-end;
-
-procedure TfrmMain.DoITV3DrawItem(Sender: TObject; AIndex: integer; AState: TCustomDrawState; ACanvas:
+procedure TfrmMain.DoITV3DrawItem(Sender: TObject; AIndex: Integer; AState: TCustomDrawState; ACanvas:
   TCanvas; ItemRect, TextRect: TRect);
 var
   AColor: TColor;
@@ -254,25 +199,25 @@ end;
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   Randomize;
-  SetDisplayDragImage(self);
-  APainter := TJvInspectorBorlandPainter.Create(self);
-  AInspector := TJvInspector.Create(self);
-  AInspector.Parent := self;
+  SetDisplayDragImage(Self);
+  APainter := TJvInspectorBorlandPainter.Create(Self);
+  AInspector := TJvInspector.Create(Self);
+  AInspector.Parent := Self;
   AInspector.Left := -100;
   AInspector.Width := StatusBar1.Panels[0].Width - 2;
-  AInspector.Parent := self;
+  AInspector.Parent := Self;
   AInspector.Align := alLeft;
   AInspector.Painter := APainter;
 
-  ITV := TJvImagesViewer.Create(self);
+  ITV := TJvImagesViewer.Create(Self);
   ITV.Align := alClient;
   ITV.PopupMenu := PopupMenu1;
 //  ITV.Cursor := crHandPoint;
-  ITV.Options.RightClickSelect := true;
+  ITV.Options.RightClickSelect := True;
   ITV.Options.ImagePadding := 8;
-  ITV.Options.MultiSelect := true;
-  ITV.Options.HotTrack := true;
-//  ITV.Options.Smooth := true; // don't use smooth with images - looks ugly when scrolling
+  ITV.Options.MultiSelect := True;
+  ITV.Options.HotTrack := True;
+//  ITV.Options.Smooth := True; // don't use smooth with images - looks ugly when scrolling
 
   ITV.OnDblClick := DoITVDblClick;
   ITV.OnClick := DoITVClick;
@@ -285,28 +230,28 @@ begin
   if edFileMask.Text = '' then
     edFileMask.Text := ITV.Filemask;
 
-  ITV2 := TJvImageListViewer.Create(self);
+  ITV2 := TJvImageListViewer.Create(Self);
   ITV2.Align := alClient;
   ITV2.Options.Width := ImageList1.Width * 2;
   ITV2.Options.Height := ImageList1.Height * 2;
-  ITV2.Options.FillCaption := false;
-  ITV2.Options.BrushPattern.Active := false;
+  ITV2.Options.FillCaption := False;
+  ITV2.Options.BrushPattern.Active := False;
 //  ITV2.Options.BrushPattern.OddColor := clHighlight;
 
   ITV2.Images := ImageList1;
   ITV2.Parent := tabILViewer;
 //  ITV2.Options.BrushPattern.OddColor := clHighlight;
-  //  ITV2.Options.BrushPattern.Active := false;
+  //  ITV2.Options.BrushPattern.Active := False;
   ITV2.OnMouseDown := DoITV2MouseDown;
   ITV2.OnDragOver := DoITV2DragOver;
   ITV2.OnDragDrop := DoITV2DragDrop;
   ITV2.OnGetCaption := DoITV2GetCaption;
   ITV2.Color := clWindow;
-  ITV2.Options.ShowCaptions := true;
+  ITV2.Options.ShowCaptions := True;
 
-  ITV3 := TJvOwnerDrawViewer.Create(self);
-  ITV3.Options.Smooth := true; // Smooth looks OK here, because these items renders faster
-  ITV3.Options.HotTrack := false;
+  ITV3 := TJvOwnerDrawViewer.Create(Self);
+  ITV3.Options.Smooth := True; // Smooth looks OK here, because these items renders faster
+  ITV3.Options.HotTrack := False;
   ITV3.Options.Width := 18;
   ITV3.Options.Height := 18;
   ITV3.Options.VertSpacing := 2;
@@ -336,7 +281,7 @@ end;
 procedure TfrmMain.DoITVClick(Sender: TObject);
 begin
   if ITV.SelectedIndex > -1 then
-    StatusBar1.Panels[1].Text := '  ' + ITV.Items[ITV.SelectedIndex].Filename
+    StatusBar1.Panels[1].Text := '  ' + ITV.Items[ITV.SelectedIndex].FileName
   else
     StatusBar1.Panels[1].Text := '';
 end;
@@ -348,15 +293,15 @@ end;
 
 procedure TfrmMain.BuildColorList;
 var
-  i, j: Cardinal;
+  I, J: Cardinal;
 begin
   // example of storing stuff in item's Data property
   ITV3.Count := $3FFF;
   Randomize;
-  for i := 0 to $3FFE do
+  for I := 0 to $3FFE do
   begin
-    j := ($3FFE - i) + 500;
-    ITV3.Items[i].Data := Pointer(RGB(Random(j) mod 256, Random(j) mod 256, Random(j) mod 256));
+    J := ($3FFE - I) + 500;
+    ITV3.Items[I].Data := Pointer(RGB(Random(J) mod 256, Random(J) mod 256, Random(J) mod 256));
   end;
 end;
 
@@ -365,9 +310,9 @@ procedure TfrmMain.DoITV2MouseDown(Sender: TObject; Button: TMouseButton;
 begin
   if Button = mbLeft then
   begin
-    FDragIndex := ITV2.ItemAtPos(X, Y, true);
+    FDragIndex := ITV2.ItemAtPos(X, Y, True);
     if FDragIndex > -1 then
-      ITV2.BeginDrag(false, 10);
+      ITV2.BeginDrag(False, 10);
   end;
   //  ITV2.Invalidate;
 end;
@@ -375,23 +320,24 @@ end;
 procedure TfrmMain.DoITV2DragOver(Sender, Source: TObject; X, Y: Integer;
   State: TDragState; var Accept: Boolean);
 //var
-//  i: integer;
+//  I: Integer;
 begin
   Accept := Source = ITV2;
-  //  i := ITV2.ItemAtPos(X, Y);
-  //  if i > -1 then
-  //    ITV2.SelectedIndex := i;
+  //  I := ITV2.ItemAtPos(X, Y);
+  //  if I > -1 then
+  //    ITV2.SelectedIndex := I;
 end;
 
 procedure TfrmMain.DoITV2DragDrop(Sender, Source: TObject; X, Y: Integer);
 var
-  i: integer;
+  I: Integer;
 begin
-  i := ITV2.ItemAtPos(X, Y, false);
-  if i >= ITV2.Images.Count then i := ITV2.Images.Count - 1;
-  if (i > -1) and (i <> FDragIndex) then
-    ITV2.Images.Move(FDragIndex, i);
-  ITV2.SelectedIndex := i;
+  I := ITV2.ItemAtPos(X, Y, False);
+  if I >= ITV2.Images.Count then
+    I := ITV2.Images.Count - 1;
+  if (I > -1) and (I <> FDragIndex) then
+    ITV2.Images.Move(FDragIndex, I);
+  ITV2.SelectedIndex := I;
 end;
 
 procedure TfrmMain.Reload1Click(Sender: TObject);
@@ -405,13 +351,13 @@ end;
 
 procedure TfrmMain.DoITVDblClick(Sender: TObject);
 begin
-  Viewfromfile1Click(Sender);
+  Viewfrompicture1Click(Sender);
 end;
 
-procedure TfrmMain.ViewItem(Item: TJvImageItem; LoadFromFile: boolean);
+procedure TfrmMain.ViewItem(Item: TJvImageItem; LoadFromFile: Boolean);
 begin
-  if LoadFromFile and FileExists(Item.Filename) then
-    TfrmImageViewer.View(Item.Filename, ITV.Options.Transparent, ITV.Color)
+  if LoadFromFile and FileExists(Item.FileName) then
+    TfrmImageViewer.View(Item.FileName, ITV.Options.Transparent, ITV.Color)
   else
     TfrmImageViewer.View(Item.Picture, ITV.Color);
 end;
@@ -423,7 +369,7 @@ begin
   if ITV.Focused and (ITV.SelectedIndex >= 0) then
   begin
     Item := ITV.Items[ITV.SelectedIndex];
-    ViewItem(Item, true);
+    ViewItem(Item, True);
   end;
 end;
 
@@ -434,7 +380,7 @@ begin
   if ITV.Focused and (ITV.SelectedIndex >= 0) then
   begin
     Item := ITV.Items[ITV.SelectedIndex];
-    ViewItem(Item, false);
+    ViewItem(Item, False);
   end;
 end;
 
@@ -445,24 +391,30 @@ begin
   if PercentDone >= 100 then
     StatusBar1.Panels[1].Text := ''
   else
-    StatusBar1.Panels[1].Text := Format(' Loading "%s", %d%% done...', [Item.Filename, PercentDone]);
+    StatusBar1.Panels[1].Text := Format(' Loading "%s", %d%% done...', [Item.FileName, PercentDone]);
   StatusBar1.Update;
 end;
 
 procedure TfrmMain.DoITVLoadEnd(Sender: TObject);
+var
+  I: Integer;
 begin
   Screen.Cursor := crDefault;
   pgViewersChange(Sender);
+  for I := 0 to ITV.Count - 1 do
+    if Assigned(ITV.Items[I].Picture) and Assigned(ITV.Items[I].Picture.Graphic) and
+      (ITV.Items[I].Picture.Graphic is TJvAni) then
+      TJvAni(ITV.Items[I].Picture.Graphic).Animated := True;
 end;
 
-procedure EnableControls(AControl: TControl; Enable: boolean);
+procedure EnableControls(AControl: TControl; Enable: Boolean);
 var
-  i: integer;
+  I: Integer;
 begin
   AControl.Enabled := Enable;
   if AControl is TWinControl then
-    for i := 0 to TWinControl(AControl).ControlCount - 1 do
-      EnableControls(TWinControl(AControl).Controls[i], Enable);
+    for I := 0 to TWinControl(AControl).ControlCount - 1 do
+      EnableControls(TWinControl(AControl).Controls[I], Enable);
 end;
 
 procedure TfrmMain.pgViewersChange(Sender: TObject);
@@ -470,20 +422,20 @@ begin
   case pgViewers.ActivePageIndex of
     0:
       begin
-        EnableControls(pnlSettings, true);
+        EnableControls(pnlSettings, True);
         Statusbar1.Panels[1].Text := ' Double-click to view full size, right-click for popup menu';
         AInspector.InspectObject := ITV;
       end;
     1:
       begin
-        EnableControls(pnlSettings, false);
+        EnableControls(pnlSettings, False);
         Statusbar1.Panels[1].Text := ' Drag and drop images to rearrange';
         AInspector.InspectObject := ITV2;
       end;
     2:
       begin
-        EnableControls(pnlSettings, false);
-        Statusbar1.Panels[1].Text := ' Click color square to see it''s color value in status bar';
+        EnableControls(pnlSettings, False);
+        Statusbar1.Panels[1].Text := ' Click color square to see its color value in status bar';
         AInspector.InspectObject := ITV3;
       end;
   end;
@@ -495,15 +447,15 @@ begin
     StatusBar1.Panels[0].Text := ColorToString(TColor(ITV3.Items[ITV3.SelectedIndex].Data));
 end;
 
-procedure TfrmMain.DoITV2GetCaption(Sender: TObject; ImageIndex: integer;
+procedure TfrmMain.DoITV2GetCaption(Sender: TObject; ImageIndex: Integer;
   var ACaption: string);
 begin
   if ITV2.Options.ShowCaptions then
   begin
     if Odd(ImageIndex) then
-      ACaption := Format('#%d',[ImageIndex])
+      ACaption := Format('#%d', [ImageIndex])
     else
-      ACaption := Format('$%x',[ImageIndex])
+      ACaption := Format('$%x', [ImageIndex])
   end;
 end;
 
@@ -518,16 +470,17 @@ var
   S: string;
   AItem: TJvImageItem;
 begin
-  if ITV.SelectedIndex < 0 then Exit;
+  if ITV.SelectedIndex < 0 then
+    Exit;
   AItem := ITV.Items[ITV.SelectedIndex];
-  S := AItem.Filename;
-  if InputQuery('Rename', 'New name', S) and not AnsiSameText(AItem.Filename, S) then
+  S := AItem.FileName;
+  if InputQuery('Rename', 'New name', S) and not AnsiSameText(AItem.FileName, S) then
   begin
-    S := ExpandUNCFilename(S);
-    if RenameFile(ITV.ITems[ITV.SelectedIndex].Filename, S) then
+    S := ExpandUNCFileName(S);
+    if RenameFile(ITV.ITems[ITV.SelectedIndex].FileName, S) then
     begin
-      AItem.Filename := S;
-      AItem.Caption := ExtractFilename(S);
+      AItem.FileName := S;
+      AItem.Caption := ExtractFileName(S);
     end
     else
       ShowMessage('Could not rename file!');
@@ -538,18 +491,16 @@ procedure TfrmMain.Delete1Click(Sender: TObject);
 var
   AItem: TJvImageItem;
 begin
-  if ITV.SelectedIndex < 0 then Exit;
+  if ITV.SelectedIndex < 0 then
+    Exit;
   if MessageDlg('Are you sure you want to delete the selected file?',
     mtConfirmation, [mbYes, mbNo], 0) = mrYEs then
   begin
     AItem := ITV.Items[ITV.SelectedIndex];
-    if not DeleteFile(AItem.Filename) then
+    if not DeleteFile(AItem.FileName) then
       ShowMessage('Could not delete the file!')
     else
-    begin
       AItem.Delete;
-//      ShowMessage('File deleted!');
-    end;
   end;
 end;
 
@@ -558,34 +509,154 @@ begin
   if chkDisconnect.Checked then
   begin
     AInspector.InspectObject := nil;
-    AInspector.Visible := false;
+    AInspector.Visible := False;
   end
   else
   begin
-    AInspector.Visible := true;
+    AInspector.Visible := True;
     pgViewersChange(Sender);
   end;
 end;
 
-procedure TfrmMain.SetDisplayDragImage(AControl:TControl);
-var i:integer;
+procedure TfrmMain.SetDisplayDragImage(AControl: TControl);
+var
+  I: Integer;
 begin
   AControl.ControlStyle := AControl.ControlStyle + [csDisplayDragImage];
   if AControl is TWinControl then
-    for i := 0 to TWinControl(AControl).ControlCOunt -1 do
-      SetDisplayDragImage(TWinControl(AControl).Controls[i]);
+    for I := 0 to TWinControl(AControl).ControlCOunt - 1 do
+      SetDisplayDragImage(TWinControl(AControl).Controls[I]);
 end;
-
 
 procedure TfrmMain.SelectAll1Click(Sender: TObject);
 begin
   ITV.SelectAll;
 end;
 
+//=== TCursorImage ===========================================================
+
+procedure DestroyAndNilCursor(var Handle: HICON);
+begin
+  if Handle <> 0 then
+    DestroyCursor(Handle);
+  Handle := 0;
+end;
+
+destructor TCursorImage.Destroy;
+begin
+  DestroyAndNilCursor(FHandle);
+  inherited Destroy;
+end;
+
+procedure TCursorImage.Draw(ACanvas: TCanvas; const Rect: TRect);
+begin
+  with Rect do
+    DrawIconEx(ACanvas.Handle, Left, Top, Handle, Right - Left, Bottom - Top, 0, 0, DI_NORMAL);
+end;
+
+function TCursorImage.GetEmpty: Boolean;
+begin
+  Result := (FHandle = 0);
+end;
+
+function TCursorImage.GetHeight: Integer;
+begin
+  Result := GetSystemMetrics(SM_CYCURSOR);
+end;
+
+function TCursorImage.GetWidth: Integer;
+begin
+  Result := GetSystemMetrics(SM_CXCURSOR);
+end;
+
+function TCursorImage.GetTransparent: Boolean;
+begin
+  Result := True;
+end;
+
+procedure TCursorImage.LoadFromClipboardFormat(AFormat: Word; AData: THandle;
+  APalette: HPALETTE);
+begin
+  raise Exception.Create('LoadFromClipboardFormat not supported');
+end;
+
+procedure TCursorImage.LoadFromFile(const FileName: string);
+begin
+  FHandle := LoadCursorFromFile(PChar(FileName));
+end;
+
+procedure TCursorImage.LoadFromStream(Stream: TStream);
+begin
+  raise Exception.Create('LoadFromStream not supported!');
+end;
+
+procedure TCursorImage.SaveToClipboardFormat(var AFormat: Word;
+  var AData: THandle; var APalette: HPALETTE);
+begin
+  raise Exception.Create('SaveToClipboardFormat not supported');
+end;
+
+procedure TCursorImage.SaveToStream(Stream: TStream);
+begin
+  raise Exception.Create('SaveToStream not supported!');
+end;
+
+procedure TCursorImage.SetHeight(Value: Integer);
+begin
+  raise EInvalidGraphicOperation.Create(SChangeIconSize);
+end;
+
+procedure TCursorImage.SetWidth(Value: Integer);
+begin
+  raise EInvalidGraphicOperation.Create(SChangeIconSize);
+end;
+
+procedure TCursorImage.SetTransparent(Value: Boolean);
+begin
+  // Cursors are always transparent
+end;
+
+procedure TCursorImage.Assign(Source: TPersistent);
+begin
+  if Source = nil then
+    DestroyAndNilCursor(FHandle)
+  else
+  if Source is TCursorImage then
+  begin
+    DestroyAndNilCursor(FHandle);
+    if TCursorImage(Source).Handle <> 0 then
+      FHandle := CopyImage(TCursorImage(Source).Handle, IMAGE_CURSOR, Width, Height, 0);
+  end
+  else
+    inherited Assign(Source);
+end;
+
+procedure TCursorImage.AssignTo(Dest: TPersistent);
+begin
+  if Dest is TIcon then
+  begin
+    TIcon(Dest).ReleaseHandle;
+    if Handle <> 0 then
+      TIcon(Dest).Handle := CopyImage(Handle, IMAGE_CURSOR, Width, Height, 0);
+  end
+  else
+  if Dest is TBitmap then
+    with TBitmap(Dest) do
+    begin
+      Width := Self.Width;
+      Height := Self.Height;
+      Transparent := True;
+      Draw(Canvas, Rect(0, 0, Width, Height));
+    end
+  else
+    inherited AssignTo(Dest);
+end;
+
 initialization
   RegisterClass(TCursorImage);
   TPicture.RegisterFileFormat('cur', 'Cursor files', TCursorImage);
-  TPicture.RegisterFileFormat('ani', 'Animated cursor files', TCursorImage);
+  // this is already better handled by JvAni
+  //TPicture.RegisterFileFormat('ani', 'Animated cursor files', TCursorImage);
 
 finalization
   TPicture.UnregisterGraphicClass(TCursorImage);

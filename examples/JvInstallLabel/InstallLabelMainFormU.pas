@@ -44,8 +44,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
   private
-    { Private declarations }
-    FIndex:integer;
+    FIndex: Integer;
   end;
 
 var
@@ -59,11 +58,11 @@ procedure TInstallLabelMainForm.NextClick(Sender: TObject);
 begin
   Next.Caption := '&Next >>';
   if FIndex = 0 then { first line, so clear all others }
-    InstallLabel1.SetExclusive(FIndex,0,[fsBold])
+    InstallLabel1.SetExclusive(FIndex, 0, [fsBold])
   else
   begin
-    InstallLabel1.SetStyle(FIndex,0,[fsBold]); { current line is an arrow }
-    InstallLabel1.SetStyle(FIndex - 1,1,[]); { prev line is a check mark }
+    InstallLabel1.SetStyle(FIndex, 0, [fsBold]); { current line is an arrow }
+    InstallLabel1.SetStyle(FIndex - 1, 1, []); { prev line is a check mark }
 
     if FIndex = InstallLabel1.Lines.Count - 1 then { this is the last line }
     begin
@@ -80,15 +79,10 @@ begin
   FIndex := 0;
 end;
 
-
 procedure TInstallLabelMainForm.Button1Click(Sender: TObject);
 begin
   Close;
 end;
 
-
-
-
-
 end.
- 
+

@@ -47,7 +47,7 @@ uses
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QWindows, QGraphics, QExtCtrls, QDialogs, Types,
-  {$ENDIF QForms}
+  {$ENDIF VisualCLX}
   JvTypes;
 
 type
@@ -389,6 +389,7 @@ begin
             raise;
           end;
         end;
+        Self.FIndex := Index;
         Self.Animated := Animated;
       end;
     except
