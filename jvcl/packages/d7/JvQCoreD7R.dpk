@@ -73,6 +73,10 @@ contains
   QWinCursors in '..\..\qcommon\QWinCursors.pas',
   QExtDlgs in '..\..\qcommon\QExtDlgs.pas',
   QToolWin in '..\..\qcommon\QToolWin.pas',
-  JvQWStrUtils in '..\..\qcommon\JvQWStrUtils.pas';
+  JvQWStrUtils in '..\..\qcommon\JvQWStrUtils.pas',
+  JvQFinalize in '..\..\qcommon\JvQFinalize.pas',
+  JvQDynControlEngineIntf in '..\..\qrun\JvQDynControlEngineIntf.pas',
+  JvQDynControlEngine in '..\..\qrun\JvQDynControlEngine.pas',
+  JvQDynControlEngineVCL in '..\..\qrun\JvQDynControlEngineVCL.pas';
 
 end.
