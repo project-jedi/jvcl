@@ -759,6 +759,7 @@ end;
 procedure TJvColorComboBox.Loaded;
 begin
   inherited;
+  HandleNeeded;
   if HandleAllocated then
     GetColors;
 end;
@@ -1006,6 +1007,7 @@ end;
 procedure TJvFontComboBox.Loaded;
 begin
   inherited;
+  HandleNeeded;
   if HandleAllocated then
     GetFonts;
 end;
