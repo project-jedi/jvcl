@@ -27,11 +27,8 @@ package JvCoreD7R;
 {$IMPLICITBUILD ON}
 
 requires
-  rtl,
-  vcl,
-  vclx,
   DJCL70,
-  vcljpg;
+  vclx;
 
 contains
   JvConsts in '..\..\common\JvConsts.pas',

@@ -27,10 +27,6 @@ package JvMMD7R;
 {$IMPLICITBUILD ON}
 
 requires
-  rtl,
-  vcljpg,
-  vcl,
-  vclx,
   JvCoreD7R,
   JvSystemD7R,
   JvCmpD7R;

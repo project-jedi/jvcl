@@ -27,7 +27,6 @@ package JvNetD7R;
 {$IMPLICITBUILD ON}
 
 requires
-  rtl,
   JvCoreD7R;
 
 contains

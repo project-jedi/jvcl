@@ -27,9 +27,6 @@ package JvCryptD7R;
 {$IMPLICITBUILD ON}
 
 requires
-  rtl,
-  vcl,
-  vclx,
   JvCoreD7R;
 
 contains

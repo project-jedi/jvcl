@@ -27,19 +27,10 @@ package JvDBD7R;
 {$IMPLICITBUILD ON}
 
 requires
-  rtl,
   JvCoreD7R,
   dbrtl,
-  vcldb,
   JvStdCtrlsD7R,
-  vcl,
-  vclie,
-  vcljpg,
-  qrpt,
-  vclx,
-  VclSmp,
-  dsnap,
-  dsnapcon;
+  vcldb;
 
 contains
   JvDBConsts in '..\..\common\JvDBConsts.pas',

@@ -28,11 +28,7 @@ package JvCustomD7D;
 
 requires
   JvCustomD7R,
-  vcl,
-  rtl,
   designide,
-  vclactnband,
-  vclx,
   JvCoreD7D;
 
 contains

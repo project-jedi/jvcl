@@ -27,10 +27,8 @@ package JvAppFrmD7R;
 {$IMPLICITBUILD ON}
 
 requires
-  rtl,
   JvCoreD7R,
   JvStdCtrlsD7R,
-  vcl,
   JvMMD7R;
 
 contains
