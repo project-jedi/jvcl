@@ -1,6 +1,8 @@
 Changelog for JVCL 3.0
 ======================
 2003-11-02:
+- Added IFDEFS excluding Variants from the uses clause for BCB5 (only) in JvSALCore.pas and JvXmlTree.pas. These exclusions are required for proper compilation under BCB5.
+2003-11-02:
 - JvUrlListGrabber is now almost complete, it works if created dynamically // olivier
 - Merged TJvPanel with donated TArrangePanel // andreas
 2003-11-01:

@@ -16,7 +16,7 @@
       ..\..\dcu\JvSpecialImage.obj ..\..\dcu\JvSpecialProgress.obj 
       ..\..\dcu\JvSplashWindow.obj ..\..\dcu\JvStarfield.obj 
       ..\..\dcu\JvVirtualKeySelectionFrame.obj ..\..\dcu\JvWaitingGradient.obj 
-      ..\..\dcu\JvWaitingProgress.obj ..\..\dcu\JvMMC5R.obj"/>
+      ..\..\dcu\JvWaitingProgress.obj ..\..\dcu\VFW.obj ..\..\dcu\JvMMC5R.obj"/>
     <RESFILES value="JvMMC5R.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -38,7 +38,7 @@
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JvMMC5R.cpp"/>
     <INCLUDEPATH value="..\..\common;..\..\run;..\..\..\JCL\source;$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="..\..\common;..\..\dcu;..\..\run;..\..\resources;..\..\..\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib;$(PATH)"/>
+    <LIBPATH value="..\..\common;..\..\dcu;..\..\run;..\..\resources;..\..\..\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-par"/>
   </MACROS>
   <OPTIONS>
@@ -50,9 +50,8 @@
       -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-I..\..\dcu 
-      -D&quot;JVCL Multimedia and Image Components Runtime Package&quot; -aa -Tpp -Gpr -x 
-      -Gn -Gl -Gi -v"/>
+    <LFLAGS value="-I..\..\dcu -D&quot;JVCL Multimedia and Image Components Runtime Package&quot; -aa 
+      -Tpp -Gpr -x -Gn -Gl -Gi -v"/>
   </OPTIONS>
   <LINKER>
     <ALLOBJ value="c0pkg32.obj $(PACKAGES) Memmgr.Lib sysinit.obj $(OBJFILES)"/>

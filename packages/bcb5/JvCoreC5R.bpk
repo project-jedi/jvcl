@@ -35,7 +35,7 @@
     <SYSDEFINES value="_RTLDLL;NO_STRICT"/>
     <MAINSOURCE value="JvCoreC5R.cpp"/>
     <INCLUDEPATH value="..\..\design;..\..\run;..\..\common;..\..\..\JCL\source;$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="..\..\design;..\..\run;..\..\common;..\..\resources;..\..\..\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug;$(PATH)"/>
+    <LIBPATH value="..\..\design;..\..\run;..\..\common;..\..\resources;..\..\..\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug"/>
     <WARNINGS value="-w-par"/>
   </MACROS>
   <OPTIONS>
