@@ -72,7 +72,7 @@ Summary
 Description
   When the value of Drive changes, the Directory value changes to the current directory on the specified drive.
 See Also
-  Directory, DirList
+  Directory, DirList, OnDriveChangeError
 ----------------------------------------------------------------------------------------------------
 @@TJvDirectoryListBox.DriveCombo
 Summary
@@ -119,18 +119,21 @@ Summary
 Description
   Write a handler for the \OnChange event to take specific action when the currently selected
   item changes.
+See Also
+  OnDriveChangeError
 ----------------------------------------------------------------------------------------------------
 @@TJvDirectoryListBox.OnDriveChangeError
 Summary
-  Write here a summary (1 line)
+  Occurs when a change of the current drive failed.
 Description
-  Write here a description
+  Write an OnDriveChangeError to respond when changing the current drive failed. Set NewDrive to #0 to
+  cancel the drive change. If you do not set NewDrive to #0, TJvDirectoryListBox retries to set the
+  current drive to the value of NewDrive.
 Parameters
-  Sender   - Description for this parameter
-  NewDrive - Description for this parameter
+  Sender   - Sender of this event.
+  NewDrive - Determines the drive to which the component tries to set the current drive to.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnChange
 ----------------------------------------------------------------------------------------------------
 @@TJvDirectoryListBox.OpenCurrent
 Summary

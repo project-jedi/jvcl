@@ -893,18 +893,20 @@ See Also
 @@TJvDSADataEvent
 <TITLE TJvDSADataEvent type>
 Summary
-  Write here a summary (1 line)
+  The type for event handlers that respond when the DSA state is read from or written to the DSA storage.
 Description
-  This type is used by (for reference):
-    TJvDSADialog.OnApplyKeys
-    TJvDSADialog.OnUpdateKeys
+  The event handlers for <LINK TJvDSADialog.OnApplyKeys,OnApplyKeysOn> and <LINK TJvDSADialog.OnUpdateKeys,OnUpdateKeys>
+  can respond when the DSA state is read from or written to the DSA storage. Use these events to retrieve
+  or store additional (custom) data from the DSA storage 
+  related to this dialog. These events allow you to store and retrieve
+  additional information (e.g. the ItemIndex of a combo box) along with the DSA state and modal
+  result for the dialog.
 Parameters
-  Sender  - Description for this parameter
-  DSAInfo - Description for this parameter
-  Storage - Description for this parameter
+  Sender  - reference to the TJvDSADialog component.
+  DSAInfo - reference to the DSA registration item for the dialog.
+  Storage - reference to the storage where the dialog info is stored.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvDSADialog.OnApplyKeys, TJvDSADialog.OnUpdateKeys
 ----------------------------------------------------------------------------------------------------
 @@TJvDSADialog
 <TITLEIMG TJvDSADialog>
@@ -1080,10 +1082,6 @@ Description
   related to this dialog. This event (together with OnUpdateKeys) allows you to store and retrieve
   additional information (e.g. the ItemIndex of a combo box) along with the DSA state and modal
   result for the dialog.
-Parameters
-  Sender  - reference to the TJvDSADialog component.
-  DSAInfo - reference to the DSA registration item for the dialog.
-  Storage - reference to the storage where the dialog info is stored.
 See Also
   OnUpdateKeys
 ----------------------------------------------------------------------------------------------------
@@ -1116,10 +1114,6 @@ Description
   related to this dialog. This event (together with OnApplyKeys) allows you to store and retrieve
   additional information (e.g. the ItemIndex of a combo box) along with the DSA state and modal
   result for the dialog.
-Parameters
-  Sender  - reference to the TJvDSADialog component.
-  DSAInfo - reference to the DSA registration item for the dialog.
-  Storage - reference to the storage where the dialog info is stored.
 See Also
   OnApplyKeys
 ----------------------------------------------------------------------------------------------------
