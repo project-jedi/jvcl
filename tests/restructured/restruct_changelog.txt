@@ -255,6 +255,7 @@ Others:
 * Changed JvClock slightly: removed the predefined border  - set your own border using a panel or bevel or similar
 * Renamed TJvImageBox2 to TJvImageSquare and changed icon name in JvP3Reg.dcr
 * Moved TAppletFileProperty from jvDialogsReg to new unit JvAppletProperty
+* Added JvObjPickerDialog and JvObjSel from Marcel van Brakel
 
 Merging of TJvStringGrid:
 -------------------------
