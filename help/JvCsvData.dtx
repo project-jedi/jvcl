@@ -137,13 +137,13 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@EJvCsvDataSetError
 Summary
-  Write here a summary (1 line)
+  Exception class for dataset errors.
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
 @@EJvCsvKeyError
 Summary
-  Write here a summary (1 line)
+  Exception class for CSV key errors.
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
@@ -162,15 +162,12 @@ See Also
 @@JvCsvBackupPreviousFiles
 <TITLE JvCsvBackupPreviousFiles function>
 Summary
-  Write here a summary (1 line)
+  Backups a CSV file.
 Description
-  Write here a description
+  Call JvCsvBackupPreviousFiles to create a backup of a CSV file.
 Parameters
-  FileName - Description for this parameter
-  MaxFiles - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  FileName - The base filename of the backup file.
+  MaxFiles - The maximum number of backup files to keep with the same base Filename.
 ----------------------------------------------------------------------------------------------------
 @@JvCsvWildcardMatch
 <TITLE JvCsvWildcardMatch function>
@@ -489,15 +486,12 @@ Return value
 ----------------------------------------------------------------------------------------------------
 @@TJvCsvRows.InsertRow
 Summary
-  Write here a summary (1 line)
+  Inserts a row in the dataset.
 Description
-  Write here a description
+  Call InsertRow to insert a new row of data in the dataset.
 Parameters
-  position - Description for this parameter
-  Item     - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  position - The 0-based index where the new item should be inserted.
+  Item     - The item to insert.
 ----------------------------------------------------------------------------------------------------
 @@TJvCsvRows.SetARowItem
 Summary
@@ -521,25 +515,23 @@ Parameters
 ----------------------------------------------------------------------------------------------------
 @@TJvCsvRows.UserData
 Summary
-  Write here a summary (1 line)
+  Provides indexed access to user data storage.
 Description
-  Write here a description
+  UserData has no predefined meaning. It is provided for the convenience of developers.
 Parameters
-  Index - Description for this parameter
+  Index - The 0-based index of the item to access or write to.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  UserTag
 ----------------------------------------------------------------------------------------------------
 @@TJvCsvRows.UserTag
 Summary
-  Write here a summary (1 line)
+  Provides indexed access to user data storage.
 Description
-  Write here a description
+  UserTag has no predefined meaning. It is provided for the convenience of developers.
 Parameters
-  Index - Description for this parameter
+  Index - The 0-based index of the item to access or write to.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  UserData
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet
 Summary
