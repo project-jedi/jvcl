@@ -29,10 +29,8 @@ package JvSystemD6D;
 requires
   JvSystemD6R,
   designide,
-  JvStdCtrlsD6R,
   dclstd,
-  JvCoreD6D,
-  JvCustomD6D;
+  JvCoreD6D;
 
 contains
   JvSystemReg in '..\..\design\JvSystemReg.pas',

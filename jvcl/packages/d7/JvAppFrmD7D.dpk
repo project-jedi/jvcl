@@ -44,7 +44,6 @@ requires
 
 contains
   JvAppFrmReg in '..\..\design\JvAppFrmReg.pas',
-  JvWallpaperEditForm in '..\..\design\JvWallpaperEditForm.pas',
   JvGradientCaptionForm in '..\..\design\JvGradientCaptionForm.pas' {GradCaptionsEditor};
 
 end.
