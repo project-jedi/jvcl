@@ -15,12 +15,17 @@ a:visited { color: #336699;}
 var lastobj = null;
 var allvisible = false;
 function ToggleAll() {
-  for (var i = 0;i <document.all.length;i++) {
-    if (document.all(i).id.indexOf('FAQ') == 0) {
-	    document.all(i).style.display = allvisible ? 'none':'block';
-   }
- }
-  allvisible = !allvisible;
+   var i = 0
+   var obj;
+   do {
+     obj = document.getElementById('FAQ' + i);
+     if (obj != null) {
+       obj.style.display = allvisible ? 'none':'block';
+       i += 1;
+     }
+   } while(obj != null);
+
+   allvisible = !allvisible;
 }
 
 function ToggleVisible(objId) {
