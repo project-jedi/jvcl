@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 256
-  Top = 138
+  Left = 163
+  Top = 126
   Width = 807
   Height = 600
   Caption = 'JVCL Package editor and generator'
@@ -308,7 +308,7 @@ object frmMain: TfrmMain
     object ledDescription: TEdit
       Left = 92
       Top = 32
-      Width = 552
+      Width = 445
       Height = 21
       Anchors = [akLeft, akTop, akRight]
       TabOrder = 3
@@ -409,9 +409,19 @@ object frmMain: TfrmMain
       TabOrder = 7
       OnClick = btnAdvancedBCBClick
     end
+    object btnCLXDescription: TButton
+      Left = 544
+      Top = 32
+      Width = 97
+      Height = 21
+      Caption = 'CLX Description'
+      TabOrder = 8
+      OnClick = btnCLXDescriptionClick
+    end
   end
   object jmmMain: TJvMainMenu
     Images = imlActive
+    Style = msOffice
     DisabledImages = imlDisabled
     ImageMargin.Left = 1
     ImageMargin.Top = 1
@@ -419,7 +429,6 @@ object frmMain: TfrmMain
     ImageMargin.Bottom = 1
     ImageSize.Height = 0
     ImageSize.Width = 0
-    Style = msOffice
     Left = 760
     Top = 116
     object mnuFile: TMenuItem
@@ -1422,6 +1431,7 @@ object frmMain: TfrmMain
   end
   object jpmDepPopup: TJvPopupMenu
     Images = imlActive
+    Style = msOffice
     DisabledImages = imlDisabled
     ImageMargin.Left = 1
     ImageMargin.Top = 1
@@ -1429,7 +1439,6 @@ object frmMain: TfrmMain
     ImageMargin.Bottom = 1
     ImageSize.Height = 0
     ImageSize.Width = 0
-    Style = msOffice
     Left = 676
     Top = 144
     object mnuUpD: TMenuItem
@@ -1455,6 +1464,7 @@ object frmMain: TfrmMain
   end
   object jpmFilesPopup: TJvPopupMenu
     Images = imlActive
+    Style = msOffice
     DisabledImages = imlDisabled
     ImageMargin.Left = 1
     ImageMargin.Top = 1
@@ -1462,7 +1472,6 @@ object frmMain: TfrmMain
     ImageMargin.Bottom = 1
     ImageSize.Height = 0
     ImageSize.Width = 0
-    Style = msOffice
     Left = 704
     Top = 144
     object mnuUpF: TMenuItem
