@@ -116,6 +116,8 @@ type
     FLastSnoozeInterval: TSystemTime;
     FScheduleFire: TTimeStamp;
     FSnoozeFire: TTimeStamp;
+    FReqTriggerTime: TTimeStamp;
+    FActualTriggerTime: TTimeStamp;
     procedure Triggered;
   protected
     procedure DefineProperties(Filer: TFiler); override;
@@ -194,6 +196,10 @@ type
     property LastSnoozeInterval: TSystemTime read FLastSnoozeInterval;
     property NextFire: TTimeStamp read GetNextFire;
     property State: TScheduledEventState read FState;
+    property NextScheduleFire: TTimeStamp read FScheduleFire;
+    property RequestedTriggerTime: TTimeStamp read FReqTriggerTime;
+    property ActualTriggerTime: TTimeStamp read FActualTriggerTime;
+
   published
     property CountMissedEvents: Boolean read FCountMissedEvents write FCountMissedEvents default False;
     property Name: string read FName write SetName;
@@ -769,14 +775,23 @@ var
   IsSnoozeFire: Boolean;
 begin
   if State <> sesTriggered then Exit; // Ignore this message, something is wrong.
-  IsSnoozeFire := EqualTimeStamps(NextFire, FSnoozeFire);
+  FActualTriggerTime := DateTimeToTimeStamp(Now);
+  IsSnoozeFire := CompareTimeStamps(FActualTriggerTime, FSnoozeFire) >= 0;
+  if IsSnoozeFire and (CompareTimeStamps(FActualTriggerTime, FScheduleFire) >= 0) then
+  begin
+    { We can't have both, the schedule will win (other possibility: generate two succesive events
+      from this method, one as a snooze, the other as a schedule) }
+    FSnoozeFire := NullStamp;
+    IsSnoozeFire := False;
+  end;
   FState := sesExecuting;
   try
+    FReqTriggerTime := NextFire;
+    if not IsSnoozeFire then
+      FScheduleFire := Schedule.NextEventFromNow(CountMissedEvents);
     FSnoozeFire := NullStamp;
     DoExecute(IsSnoozeFire);
   finally
-    if not IsSnoozeFire then
-      FScheduleFire := Schedule.NextEventFromNow(CountMissedEvents);
     if IsNullTimeStamp(NextFire) then
       FState := sesEnded
     else
