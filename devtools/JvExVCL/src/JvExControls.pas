@@ -51,7 +51,7 @@ type
   TDlgCode = (
     dcWantAllKeys, dcWantArrows, dcWantTab, dcWantChars,
     dcButton,
-    dcNative // if dcNative is in the set the native functions are used and DoGetDlgCode is ignored
+    dcNative // if dcNative is in the set the native functions are used and GetDlgCode is ignored
   );
   TDlgCodes = set of TDlgCode;
 
@@ -80,7 +80,7 @@ type
     function HitTest(X, Y: Integer): Boolean; // CM_HITTEST
     procedure MouseEnter(AControl: TControl);
     procedure MouseLeave(AControl: TControl);
-    procedure DoFocusChanged(Control: TWinControl);
+    procedure FocusChanged(Control: TWinControl);
     procedure SetAutoSize(Value: Boolean);
   end;
 
@@ -92,16 +92,16 @@ type
     {$ENDIF BCB}
     )
     ['{B5F7FB62-78F0-481D-AFF4-7A24ED6776A0}']
-    procedure DoBoundsChanged;
+    procedure BoundsChanged;
     procedure CursorChanged;
     procedure ShowingChanged;
     procedure ShowHintChanged;
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean);
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean);
-    procedure DoGetDlgCode(var Code: TDlgCodes); // WM_GETDLGCODE
+    procedure GetDlgCode(var Code: TDlgCodes); // WM_GETDLGCODE
     procedure DoSetFocus(FocusedWnd: HWND);  // WM_SETFOCUS
     procedure DoKillFocus(FocusedWnd: HWND); // WM_KILLFOCUS
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; // WM_ERASEBKGND
+    function PaintBackground(Canvas: TCanvas; Param: Integer): Boolean; // WM_ERASEBKGND
   end;
 
   IJvEditControlEvents = interface(IPerformControl)
@@ -153,7 +153,7 @@ procedure Control_MouseEnter(Instance, Control: TControl; var FMouseOver: Boolea
 
 procedure Control_MouseLeave(Instance, Control: TControl; var FMouseOver: Boolean; var Event: TNotifyEvent);
 
-function DefaultDoPaintBackground(Instance: TWinControl; Canvas: TCanvas; Param: Integer): Boolean;
+function DefaultPaintBackground(Instance: TWinControl; Canvas: TCanvas; Param: Integer): Boolean;
 
 procedure TCustomEdit_Undo(Instance: TWinControl);
 procedure TCustomEdit_Copy(Instance: TWinControl);
@@ -369,7 +369,7 @@ begin
 
                   if Helper.IsValid then
                   begin
-                    DoGetDlgCode(DlgCodes);
+                    GetDlgCode(DlgCodes);
 
                     if not (dcNative in DlgCodes) then
                     begin
@@ -414,7 +414,7 @@ begin
               end;
             WM_SIZE:
               begin
-                DoBoundsChanged;
+                BoundsChanged;
                 IntfWinControl := nil;
                 InheritMessage(Instance, PMsg^);
               end;
@@ -424,7 +424,7 @@ begin
                 Canvas := TCanvas.Create;
                 try
                   Canvas.Handle := HDC(PMsg^.WParam);
-                  PMsg^.Result := Ord(DoPaintBackground(Canvas, PMsg^.LParam));
+                  PMsg^.Result := Ord(PaintBackground(Canvas, PMsg^.LParam));
                 finally
                   Canvas.Handle := 0;
                   Canvas.Free;
@@ -537,7 +537,7 @@ end;
 
 procedure Control_MouseLeave(Instance, Control: TControl; var FMouseOver: Boolean; var Event: TNotifyEvent);
 begin
-  // (HEG) Control is nil iff Instance is the control that the mouse has left.
+  // (HEG) Control is nil if Instance is the control that the mouse has left.
   // Otherwise this is just a notification that the mouse left
   // one of its child controls
   if (Control = nil) and FMouseOver and not (csDesigning in Instance.ComponentState) then
@@ -549,7 +549,7 @@ begin
   InheritMsgEx(Instance, CM_MOUSELEAVE, 0, Integer(Control));
 end;
 
-function DefaultDoPaintBackground(Instance: TWinControl; Canvas: TCanvas; Param: Integer): Boolean;
+function DefaultPaintBackground(Instance: TWinControl; Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := InheritMsgEx(Instance, WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
 end;

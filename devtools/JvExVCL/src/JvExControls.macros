@@ -98,7 +98,7 @@
   {$ENDIF NeedMouseEnterLeave}
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
-    procedure DoFocusChanged(Control: TWinControl); dynamic;
+    procedure FocusChanged(Control: TWinControl); dynamic;
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
@@ -121,6 +121,7 @@
 (*$DEFINE JV_WINCONTROL_EVENTS_DECL_VCL
   protected
    // IJvWinControlEvents
+    procedure BoundsChanged; reintroduce; dynamic; 
     procedure CursorChanged; dynamic;
     procedure ShowingChanged; dynamic;
     procedure ShowHintChanged; dynamic;
@@ -141,7 +142,6 @@
     InternalFontChanged: TNotifyEvent;
     procedure OnFontChanged(Sender: TObject);
   protected
-    procedure BoundsChanged; override;
     procedure DoFontChanged(Sender: TObject); dynamic;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
@@ -160,11 +160,10 @@
 
 (*$DEFINE JV_WINCONTROL_EVENTS_DECL_COMMON
   protected
-    procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
+    procedure GetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
-    procedure DoBoundsChanged; dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function PaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
 *)
 
 // ********************************************************
@@ -550,10 +549,10 @@ end;
 procedure TJvEx##ClassName.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
   inherited;
-  DoFocusChanged(Msg.Sender);
+  FocusChanged(Msg.Sender);
 end;
 
-procedure TJvEx##ClassName.DoFocusChanged(Control: TWinControl);
+procedure TJvEx##ClassName.FocusChanged(Control: TWinControl);
 begin
 end;
   EMPTYLINE
@@ -561,6 +560,10 @@ end;
 
 
 (*$DEFINE JV_WINCONTROL_EVENTS_IMPL_VCL(ClassName)
+procedure TJvEx##ClassName.BoundsChanged;
+begin
+end;
+
 procedure TJvEx##ClassName.CursorChanged;
 asm
         MOV     EDX, CM_CURSORCHANGED
@@ -626,12 +629,6 @@ begin
     InternalFontChanged(Self);
 end;
 
-procedure TJvEx##ClassName.BoundsChanged;
-begin
-  inherited BoundsChanged;
-  DoBoundsChanged;
-end;
-
 procedure TJvEx##ClassName.RecreateWnd;
 begin
   RecreateWidget;
@@ -673,11 +670,7 @@ end;
 *) // MACRO END WINCONTROL_VISUALCLX
 
 (*$DEFINE JV_WINCONTROL_EVENTS_IMPL_COMMON(ClassName)
-procedure TJvEx##ClassName.DoBoundsChanged;
-begin
-end;
-
-procedure TJvEx##ClassName.DoGetDlgCode(var Code: TDlgCodes);
+procedure TJvEx##ClassName.GetDlgCode(var Code: TDlgCodes);
 begin
 end;
 
@@ -689,9 +682,9 @@ procedure TJvEx##ClassName.DoKillFocus(FocusedWnd: HWND);
 begin
 end;
 
-function TJvEx##ClassName.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvEx##ClassName.PaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 asm
-        JMP     DefaultDoPaintBackground
+        JMP     DefaultPaintBackground
 end;
   EMPTYLINE
 *) // MACRO END WINCONTROL_COMMON
