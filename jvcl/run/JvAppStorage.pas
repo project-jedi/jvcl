@@ -780,6 +780,9 @@ const
   cItemName = 'Itemname';
   cClassName = 'Classname';
   cInvalidIdentifier = ' #!@not known@!# ';
+  // (rom) should this be PathDelim + '*' as implemented before i changed it
+  // (rom) or \* as comments say?
+  cSubStorePath = '\*';
 
 {$IFNDEF COMPILER6_UP}
 
@@ -1762,7 +1765,7 @@ var
   TargetStore: TJvCustomAppStorage;
   TargetPath: string;
 begin
-  ResolvePath(Path + '\*', TargetStore, TargetPath);
+  ResolvePath(Path + cSubStorePath, TargetStore, TargetPath);
   Delete(TargetPath, Length(TargetPath) - 1, 2);
   Result := TargetStore.ReadIntegerInt(ConcatPaths([TargetPath, cCount]), 0);
   for I := 0 to Result - 1 do
@@ -1780,7 +1783,7 @@ var
   PrevListCount: Integer;
   I: Integer;
 begin
-  ResolvePath(Path + '\*', TargetStore, TargetPath);
+  ResolvePath(Path + cSubStorePath, TargetStore, TargetPath);
   Delete(TargetPath, Length(TargetPath) - 1, 2);
   PrevListCount := TargetStore.ReadIntegerInt(ConcatPaths([TargetPath, cCount]), 0);
   TargetStore.WriteIntegerInt(ConcatPaths([TargetPath, cCount]), ItemCount);
@@ -1804,7 +1807,7 @@ var
   TargetStore: TJvCustomAppStorage;
   TargetPath: string;
 begin
-  ResolvePath(Path + PathDelim + '*', TargetStore, TargetPath);
+  ResolvePath(Path + cSubStorePath, TargetStore, TargetPath);
   Delete(TargetPath, Length(TargetPath) - 1, 2);
   if ClearFirst then
     List.Clear;
@@ -1819,7 +1822,7 @@ var
   TargetStore: TJvCustomAppStorage;
   TargetPath: string;
 begin
-  ResolvePath(Path + PathDelim + '*', TargetStore, TargetPath);
+  ResolvePath(Path + cSubStorePath, TargetStore, TargetPath);
   Delete(TargetPath, Length(TargetPath) - 1, 2);
   TargetStore.WriteList(TargetPath, List, List.Count,
     TargetStore.WriteObjectListItem, TargetStore.DeleteObjectListItem, ItemName);
@@ -1831,7 +1834,7 @@ var
   TargetStore: TJvCustomAppStorage;
   TargetPath: string;
 begin
-  ResolvePath(Path + PathDelim + '*', TargetStore, TargetPath);
+  ResolvePath(Path + cSubStorePath, TargetStore, TargetPath);
   Delete(TargetPath, Length(TargetPath) - 1, 2);
   if ClearFirst then
     List.Clear;
@@ -1844,7 +1847,7 @@ var
   TargetStore: TJvCustomAppStorage;
   TargetPath: string;
 begin
-  ResolvePath(Path + PathDelim + '*', TargetStore, TargetPath);
+  ResolvePath(Path + cSubStorePath, TargetStore, TargetPath);
   Delete(TargetPath, Length(TargetPath) - 1, 2);
   TargetStore.WriteList(TargetPath, List, List.Count,
     TargetStore.WriteCollectionItem, TargetStore.DeleteCollectionItem, ItemName);
@@ -1858,7 +1861,7 @@ var
 begin
   SL.BeginUpdate;
   try
-    ResolvePath(Path + PathDelim + '*', TargetStore, TargetPath);
+    ResolvePath(Path + cSubStorePath, TargetStore, TargetPath);
     Delete(TargetPath, Length(TargetPath) - 1, 2);
     if ClearFirst then
       SL.Clear;
@@ -1874,7 +1877,7 @@ var
   TargetStore: TJvCustomAppStorage;
   TargetPath: string;
 begin
-  ResolvePath(Path + PathDelim + '*', TargetStore, TargetPath);
+  ResolvePath(Path + cSubStorePath, TargetStore, TargetPath);
   Delete(TargetPath, Length(TargetPath) - 1, 2);
   TargetStore.WriteList(TargetPath, SL, SL.Count,
     TargetStore.WriteStringListItem, TargetStore.DeleteStringListItem, ItemName);
@@ -1895,7 +1898,7 @@ var
 begin
   SL.BeginUpdate;
   try
-    ResolvePath(Path + PathDelim + '*', TargetStore, TargetPath);
+    ResolvePath(Path + cSubStorePath, TargetStore, TargetPath);
     Delete(TargetPath, Length(TargetPath) - 1, 2);
     if ClearFirst then
       SL.Clear;
@@ -1910,7 +1913,7 @@ var
   TargetStore: TJvCustomAppStorage;
   TargetPath: string;
 begin
-  ResolvePath(Path + PathDelim + '*', TargetStore, TargetPath);
+  ResolvePath(Path + cSubStorePath, TargetStore, TargetPath);
   Delete(TargetPath, Length(TargetPath) - 1, 2);
   TargetStore.WriteList(TargetPath, SL, SL.Count, TargetStore.WriteStringObjectListItem, TargetStore.DeleteStringObjectListItem, ItemName);
 end;
@@ -2528,7 +2531,7 @@ end;
 
 function TJvAppSubStorages.CheckUniqueBase(const APath: string; IgnoreIndex: Integer): Boolean;
 begin
-  Result := MatchFor(OptimizePaths([APath]) + PathDelim + '*', IgnoreIndex) = nil;
+  Result := MatchFor(OptimizePaths([APath]) + cSubStorePath, IgnoreIndex) = nil;
 end;
 
 function TJvAppSubStorages.MatchFor(APath: string; IgnoreIndex: Integer): TJvAppSubStorage;

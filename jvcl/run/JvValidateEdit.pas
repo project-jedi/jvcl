@@ -260,7 +260,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Math,
-  JvJCLUtils;
+  JvJCLUtils, JvResources;
 
 //=== { TJvCustomValidateEdit } ==============================================
 
@@ -849,14 +849,13 @@ end;
 procedure TJvCustomValidateEdit.DisplayText;
 begin
   // The number types need to be formatted
-  if (FDisplayFormat in [dfBinary, dfCurrency, dfFloat, dfInteger, dfOctal,
-     dfPercent, dfScientific, dfYear]) and
+  if (FDisplayFormat in [dfBinary, dfCurrency, dfFloat, dfInteger, dfOctal, dfPercent, dfScientific, dfYear]) and
     (AsFloat = 0) and FZeroEmpty then
     ChangeText('')
   else
   begin
-    if (FCriticalPoints.CheckPoints <> cpNone) and (FDisplayFormat in
-      [dfBinary, dfCurrency, dfFloat, dfHex, dfInteger, dfOctal, dfPercent, dfScientific, dfYear]) then
+    if (FCriticalPoints.CheckPoints <> cpNone) and
+      (FDisplayFormat in [dfBinary, dfCurrency, dfFloat, dfHex, dfInteger, dfOctal, dfPercent, dfScientific, dfYear]) then
       SetFontColor;
     case FDisplayFormat of
       dfCurrency:
@@ -919,8 +918,8 @@ var
   end;
 
 begin
-  Assert(Base <= 36, 'BaseToInt: Base > 36 not supported');
-  Assert(Base > 1, 'BaseToInt: Base must be greater than 1');
+  Assert(Base <= 36, RsEBaseTooBig);
+  Assert(Base > 1, RsEBaseTooSmall);
 
   Result := 0;
   for I := 1 to Length(BaseValue) do
@@ -943,8 +942,8 @@ var
   end;
 
 begin
-  Assert(Base <= 36, 'IntToBase: Base > 36 not supported');
-  Assert(Base > 1, 'IntToBase: Base must be greater than 1');
+  Assert(Base <= 36, RsEBaseTooBig);
+  Assert(Base > 1, RsEBaseTooSmall);
 
   Result := '';
   iRemainder := NewValue;

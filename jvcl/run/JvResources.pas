@@ -419,8 +419,9 @@ resourcestring
   RsETableNameNotSet = 'TableName not specified';
   RsEGetMode = 'Invalid option to GetMode';
   RsENoTableName = 'TableName not specified';
-  RsETableNameRequired = 'LoadFromFile=True, so a TableName is required';
+  RsETableNameRequired = 'LoadFromFile = True, so a TableName is required';
   RsEInternalCompare = 'InternalCompare. Nil value detected';
+  RsEInvalidTableName = 'TJvCustomCsvDataSet.GetFileName - TableName property is not set';
 
 //=== JvCsvParse.pas =========================================================
 resourcestring
@@ -1933,50 +1934,50 @@ resourcestring
   RsClShadow = 'Shadow 3D elements';
   RsClDark = 'Dark Shadow 3D elements';
 
-  RsClNormalText ='Normal edit text';
-  RsClNormalForeground ='Normal window text';
-  RsClNormalBrightText ='Normal bright text';
-  RsClNormalButtonText ='Normal button text';
-  RsClNormalHighlightedText ='Normal selection text';
-  RsClNormalHighlight ='Normal selection background';
-  RsClNormalBackground ='Normal window background';
-  RsClNormalBase ='Normal edit background';
-  RsClNormalLight ='Normal light 3D elements';
-  RsClNormalMidlight ='Normal medium light 3D elements';
-  RsClNormalButton ='Normal button face';
-  RsClNormalMid  ='Normal light shadow 3D elements';
-  RsClNormalShadow ='Normal shadow 3D elements';
-  RsClNormalDark ='Normal dark shadow 3D elements';
+  RsClNormalText = 'Normal edit text';
+  RsClNormalForeground = 'Normal window text';
+  RsClNormalBrightText = 'Normal bright text';
+  RsClNormalButtonText = 'Normal button text';
+  RsClNormalHighlightedText = 'Normal selection text';
+  RsClNormalHighlight = 'Normal selection background';
+  RsClNormalBackground = 'Normal window background';
+  RsClNormalBase = 'Normal edit background';
+  RsClNormalLight = 'Normal light 3D elements';
+  RsClNormalMidlight = 'Normal medium light 3D elements';
+  RsClNormalButton = 'Normal button face';
+  RsClNormalMid  = 'Normal light shadow 3D elements';
+  RsClNormalShadow = 'Normal shadow 3D elements';
+  RsClNormalDark = 'Normal dark shadow 3D elements';
 
-  RsClDisabledText ='Disabled edit text';
-  RsClDisabledForeground ='Disabled window text';
-  RsClDisabledBrightText ='Disabled bright text';
-  RsClDisabledButtonText ='Disabled button text';
-  RsClDisabledHighlightedText ='Disabled selection text';
-  RsClDisabledHighlight ='Disabled selection background';
-  RsClDisabledBackground ='Disabled window background';
-  RsClDisabledBase ='Disabled edit background';
-  RsClDisabledLight ='Disabled light 3D elements';
-  RsClDisabledMidlight ='Disabled medium light 3D elements';
-  RsClDisabledButton ='Disabled button face';
-  RsClDisabledMid  ='Disabled light shadow 3D elements';
-  RsClDisabledShadow ='Disabled shadow 3D elements';
-  RsClDisabledDark ='Disabled dark shadow 3D elements';
+  RsClDisabledText = 'Disabled edit text';
+  RsClDisabledForeground = 'Disabled window text';
+  RsClDisabledBrightText = 'Disabled bright text';
+  RsClDisabledButtonText = 'Disabled button text';
+  RsClDisabledHighlightedText = 'Disabled selection text';
+  RsClDisabledHighlight = 'Disabled selection background';
+  RsClDisabledBackground = 'Disabled window background';
+  RsClDisabledBase = 'Disabled edit background';
+  RsClDisabledLight = 'Disabled light 3D elements';
+  RsClDisabledMidlight = 'Disabled medium light 3D elements';
+  RsClDisabledButton = 'Disabled button face';
+  RsClDisabledMid  = 'Disabled light shadow 3D elements';
+  RsClDisabledShadow = 'Disabled shadow 3D elements';
+  RsClDisabledDark = 'Disabled dark shadow 3D elements';
 
-  RsClActiveText ='Active edit text';
-  RsClActiveForeground ='Active window text';
-  RsClActiveBrightText ='Active bright text';
-  RsClActiveButtonText ='Active button text';
-  RsClActiveHighlightedText ='Active selection text';
-  RsClActiveHighlight ='Active selection background';
-  RsClActiveBackground ='Active window background';
-  RsClActiveBase ='Active edit background';
-  RsClActiveLight ='Active light 3D elements';
-  RsClActiveMidlight ='Active medium light 3D elements';
-  RsClActiveButton ='Active button face';
-  RsClActiveMid  ='Active light shadow 3D elements';
-  RsClActiveShadow ='Active shadow 3D elements';
-  RsClActiveDark ='Active dark shadow 3D elements';
+  RsClActiveText = 'Active edit text';
+  RsClActiveForeground = 'Active window text';
+  RsClActiveBrightText = 'Active bright text';
+  RsClActiveButtonText = 'Active button text';
+  RsClActiveHighlightedText = 'Active selection text';
+  RsClActiveHighlight = 'Active selection background';
+  RsClActiveBackground = 'Active window background';
+  RsClActiveBase = 'Active edit background';
+  RsClActiveLight = 'Active light 3D elements';
+  RsClActiveMidlight = 'Active medium light 3D elements';
+  RsClActiveButton = 'Active button face';
+  RsClActiveMid  = 'Active light shadow 3D elements';
+  RsClActiveShadow = 'Active shadow 3D elements';
+  RsClActiveDark = 'Active dark shadow 3D elements';
   // non standard colors introduced in QWindows.pas
   RsClDesktop = 'Desktop background';
   RsClInfoBk = 'Tooltip background';
@@ -1990,6 +1991,11 @@ resourcestring
 resourcestring
   RsENoGrabberForUrl = 'There is no grabber capable of handling URL: %s';
   RsEGrabberNotStopped = 'The grabber is not stopped, you cannot change its URL.';
+
+//=== JvValidateEdit.pas =====================================================
+resourcestring
+  RsEBaseTooBig = 'Base > 36 not supported';
+  RsEBaseTooSmall = 'Base must be greater than 1';
 
 //=== JvValidators.pas =======================================================
 resourcestring
