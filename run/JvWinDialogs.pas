@@ -32,7 +32,7 @@ interface
 
 uses
   {$IFDEF VisualCLX}
-  Qt, Windows,
+  Qt, QWindows,
   {$ENDIF VisualCLX}
   Windows, ShellAPI, ShlObj, ComObj, ActiveX, CommDlg, UrlMon,
   SysUtils, Classes,

@@ -41,12 +41,10 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  {$IFDEF VCL}
+  {$IFDEF LINUX}
+  Libc,
+  {$ENDIF LINUX}
   Graphics,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics,
-  {$ENDIF VisualCLX}
   SysUtils, Classes;
 
 {regular expressions}

@@ -481,7 +481,7 @@ procedure TJvInspectorColorItem.DoDrawListItem(Control: TWinControl; Index: Inte
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
 procedure TJvInspectorColorItem.DoDrawListItem(Control: TObject; Index: Integer; Rect: TRect;
-      State: TOwnerDrawState; var Handled: Boolean); override;
+      State: TOwnerDrawState; var Handled: Boolean);
 {$ENDIF VisualCLX}
 begin
   with TListBox(Control) do
@@ -869,7 +869,7 @@ procedure TJvInspectorTImageIndexItem.DoDrawListItem(Control: TWinControl; Index
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
 procedure TJvInspectorTImageIndexItem.DoDrawListItem(Control: TObject; Index: Integer; Rect: TRect;
-      State: TOwnerDrawState; var Handled: Boolean); override;
+      State: TOwnerDrawState; var Handled: Boolean);
 {$ENDIF VisualCLX}
 begin
   with TListBox(Control) do

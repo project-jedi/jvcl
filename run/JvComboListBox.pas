@@ -36,12 +36,12 @@ interface
 
 uses
   SysUtils, Classes,
+  Windows, Messages, Controls, Graphics, StdCtrls, ExtCtrls, Menus,
   {$IFDEF VCL}
-  Windows, Messages, Controls, Graphics, StdCtrls, ExtCtrls, Menus, JvListBox,
+  JvListBox,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Qt, QControls, QGraphics, QStdCtrls, QExtCtrls, QMenus, Types, QWindows,
-  JvExStdCtrls,
+  Qt, JvQExStdCtrls,
   {$ENDIF VisualCLX}
   JvTypes;
 

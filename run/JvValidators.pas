@@ -31,12 +31,7 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
   Windows, Controls, Forms,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QControls, QForms,
-  {$ENDIF VisualCLX}
   JvComponent, JvErrorIndicator, JvFinalize;
 
 type
@@ -267,7 +262,7 @@ uses
   JclUnicode, // for reg exp support
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  JvWStrUtils,
+  JvQWStrUtils,
   {$ENDIF VisualCLX}
   JvTypes, JvResources;
 

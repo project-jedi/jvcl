@@ -32,12 +32,10 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, StdCtrls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Qt, QGraphics, QControls, QForms, QWindows,
-  JvConsts,
+  Qt, JvQConsts,
   {$ENDIF VisualCLX}
   JvComponent;
 
@@ -133,9 +131,9 @@ begin
       ws := Tab;
 
       QApplication_postEvent(GetParentForm(Self).Handle,
-        QKeyEvent_create(QEventType_KeyPress, Key_Tab, Tab, 0, @ws, False, 1));
+        QKeyEvent_create(QEventType_KeyPress, Key_Tab, Ord(Tab), 0, @ws, False, 1));
       QApplication_postEvent(GetParentForm(Self).Handle,
-        QKeyEvent_create(QEventType_KeyRelease, Key_Tab, Tab, 0, @ws, False, 1));
+        QKeyEvent_create(QEventType_KeyRelease, Key_Tab, Ord(Tab), 0, @ws, False, 1));
 
       Result := True;
     end;

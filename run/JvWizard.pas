@@ -335,12 +335,7 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
   Windows, Messages, Controls, Forms, Graphics, Buttons, ImgList,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QWindows, QControls, QForms, QGraphics, QButtons, QImgList,
-  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   Types,
   {$ENDIF COMPILER6_UP}
@@ -917,17 +912,11 @@ type
 
 implementation
 
-{$IFDEF VCL}
 uses
   {$IFDEF USEJVCL}
   JvResources,
   {$ENDIF USEJVCL}
   Consts;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-uses
-  QConsts, JvResources;
-{$ENDIF VisualCLX}
 
 const
   ciButtonWidth = 75;
