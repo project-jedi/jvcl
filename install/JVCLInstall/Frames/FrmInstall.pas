@@ -343,7 +343,7 @@ begin
     TranslateComponent(FormCompileMessages, 'JVCLInstall');
     {$ENDIF USE_DXGETTEXT}
 
-    Compiler := TJVCLCompiler.Create(Installer.Data);
+    Compiler := TCompiler.Create(Installer.Data);
     try
       Compiler.OnProgress := EvProgress;
       Compiler.OnCaptureLine := EvCaptureLine;
