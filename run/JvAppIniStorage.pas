@@ -100,7 +100,9 @@ implementation
 
 uses
   SysUtils,
-  JvTypes, JvResources;
+  JvTypes,
+  JvConsts,  // For PathDelim under D5 and BCB5
+  JvResources;
 
 const
   cNullDigit = '0';
