@@ -73,8 +73,7 @@ begin
   if csDesigning in ComponentState then
   begin
     if not IsSmallFonts then
-      ShowMessage('Cannot design application with Large Fonts!'#13#10' +
-        'Component TJvgSmallFontsDefence refuses to work in such conditions.');
+      ShowMessage('TJvgSmallFontsDefence cannot be used with large fonts.');
   end
   else
 end;
