@@ -768,7 +768,6 @@ const
   BF_FLAT = $4000;    { For flat rather than 3D borders }
   BF_MONO = $8000;    { For monochrome borders }
 
-
 function DrawText(Handle: QPainterH; var Text: WideString; Len: Integer;
   var R: TRect; WinFlags: Integer): Integer; overload;
 { limited implementation of }
@@ -3612,17 +3611,21 @@ var
   fm: QFontMetricsH;
   fi: QFontInfoH;
 begin
-  QPainter_fontMetrics(Handle, @fm);
   with tt do
   begin
-    tmHeight := QFontMetrics_height(fm);
-    tmAscent := QFontMetrics_ascent(fm);
-    tmDescent := QFontMetrics_descent(fm);
-    tmAveCharWidth := QFontMetrics_width(fm, 'x');
-    tmMaxCharWidth := QFontMetrics_maxWidth(fm);
-    //tmInternalLeading := 0;
-    tmExternalLeading := QFontMetrics_leading(fm);
-    //tmOverhang := 0;
+    fm := QFontMetrics_create(QPainter_font(Handle));
+    try
+      tmHeight := QFontMetrics_height(fm);
+      tmAscent := QFontMetrics_ascent(fm);
+      tmDescent := QFontMetrics_descent(fm);
+      tmAveCharWidth := QFontMetrics_width(fm, 'x');
+      tmMaxCharWidth := QFontMetrics_maxWidth(fm);
+      //tmInternalLeading := 0;
+      tmExternalLeading := QFontMetrics_leading(fm);
+      //tmOverhang := 0;
+    finally
+      QFontMetrics_destroy(fm);
+    end;
 
     fi := QFontInfo_create(QPainter_font(Handle));
     try
