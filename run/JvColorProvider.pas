@@ -220,7 +220,7 @@ procedure Register;
 implementation
 
 uses
-  Controls, SysUtils,
+  Consts, Controls, SysUtils,
   JclRTTI,
   JvConsts;
 
@@ -249,6 +249,18 @@ type
     procedure AfterConstruction; override;
   end;
 
+  TJvColorItemsList = class(TJvColorItems)
+  private
+    FListNum: Integer;
+  protected
+    function GetCount: Integer; override;
+    function GetItem(I: Integer): IJvDataItem; override;
+
+    property ListNum: Integer read FListNum write FListNum;
+  public
+    procedure AfterConstruction; override;
+  end;
+
   TJvColorItem = class(TJvBaseDataItem, IJvDataItemText)
   private
     FListNumber: Integer; // 0 = StdColors, 1 = SysColors, 2 = CstColors
@@ -271,15 +283,10 @@ type
     function GetCaption: string;
     procedure SetCaption(const Value: string); 
     procedure InitID; override;
+    procedure InitImplementers; override;
     property ListNumber: Integer read FListNumber;
   public
     constructor Create(AOwner: IJvDataItems; AListNumber: Integer);
-  end;
-
-  TJvColorItemText = class(TJvBaseDataItemTextImpl)
-  protected
-    function GetCaption: string; override;
-    procedure SetCaption(const Value: string); override;
   end;
 
   TJvColorItemsRenderer = class(TJvCustomDataItemsRenderer)
@@ -636,12 +643,20 @@ begin
   Result := 0;
   if Settings = nil then
     Exit;
-  if Settings.StandardColorSettings.Active then
-    Inc(Result, Length(ProviderComp.StdColors) +
-      Ord(Settings.StandardColorSettings.ShowHeader and Settings.GroupingSettings.Active));
-  if Settings.SystemColorSettings.Active then
-    Inc(Result, Length(ProviderComp.SysColors) +
-      Ord(Settings.SystemColorSettings.ShowHeader and Settings.GroupingSettings.Active));
+  if Settings.GroupingSettings.Active and not Settings.GroupingSettings.FlatList then
+  begin
+    Inc(Result, Ord(Settings.StandardColorSettings.Active) +
+      Ord(Settings.SystemColorSettings.Active) + Ord(Settings.CustomColorSettings.Active));
+  end
+  else
+  begin
+    if Settings.StandardColorSettings.Active then
+      Inc(Result, Length(ProviderComp.StdColors) +
+        Ord(Settings.StandardColorSettings.ShowHeader and Settings.GroupingSettings.Active));
+    if Settings.SystemColorSettings.Active then
+      Inc(Result, Length(ProviderComp.SysColors) +
+        Ord(Settings.SystemColorSettings.ShowHeader and Settings.GroupingSettings.Active));
+  end;
 end;
 
 function TJvColorItems.GetItem(I: Integer): IJvDataItem;
@@ -651,32 +666,54 @@ var
   ListNum: Integer;
 begin
   if I < 0 then
-    TList.Error('Index', I);
+    TList.Error(SListIndexError, I);
   OrgIdx := I;
   Settings := GetColorSettings;
   if Settings = nil then
     Exit;
   ListNum := -1;
-  if Settings.StandardColorSettings.Active then
+  if Settings.GroupingSettings.Active and not Settings.GroupingSettings.FlatList then
   begin
-    if Settings.StandardColorSettings.ShowHeader and Settings.GroupingSettings.Active then
+    if Settings.StandardColorSettings.Active then
       Dec(I);
-    if I < Length(ProviderComp.StdColors) then
-      ListNum := 0
-    else
-      Dec(I, Length(ProviderComp.StdColors));
-  end;
-  if (ListNum < 0) and Settings.SystemColorSettings.Active then
+    if I < 0 then
+      ListNum := 0;
+    if (ListNum < 0) and Settings.SystemColorSettings.Active then
+    begin
+      Dec(I);
+      if I < 0 then
+        ListNum := 1;
+    end;
+    if (ListNum < 0) and Settings.CustomColorSettings.Active then
+    begin
+      Dec(I);
+      if I < 0 then
+        ListNum := 2;
+    end;
+  end
+  else
   begin
-    if Settings.SystemColorSettings.ShowHeader and Settings.GroupingSettings.Active then
-      Dec(I);
-    if I < Length(ProviderComp.SysColors) then
-      ListNum := 1
-    else
-      Dec(I, Length(ProviderComp.SysColors));
+    if Settings.StandardColorSettings.Active then
+    begin
+      if Settings.StandardColorSettings.ShowHeader and Settings.GroupingSettings.Active then
+        Dec(I);
+      if I < Length(ProviderComp.StdColors) then
+        ListNum := 0
+      else
+        Dec(I, Length(ProviderComp.StdColors));
+    end;
+    if (ListNum < 0) and Settings.SystemColorSettings.Active then
+    begin
+      if Settings.SystemColorSettings.ShowHeader and Settings.GroupingSettings.Active then
+        Dec(I);
+      if I < Length(ProviderComp.SysColors) then
+        ListNum := 1
+      else
+        Dec(I, Length(ProviderComp.SysColors));
+    end;
   end;
   if ListNum < 0 then
-    TList.Error('Index', OrgIdx);
+    TList.Error(SListIndexError, OrgIdx);
   if I < 0 then
     Result := TJvColorHeaderItem.Create(Self, ListNum)
   else
@@ -686,7 +723,8 @@ end;
 procedure TJvColorItems.InitImplementers;
 begin
   inherited InitImplementers;
-  TJvColorItemsRenderer.Create(Self);
+  if GetParent = nil then
+    TJvColorItemsRenderer.Create(Self);
 end;
 
 procedure TJvColorItems.AfterConstruction;
@@ -696,6 +734,54 @@ begin
   inherited AfterConstruction;
   if Supports(GetProvider, IInterfaceComponentReference, ICR) then
     FProviderComp := ICR.GetComponent as TJvColorProvider;
+end;
+
+//===TJvColorItemsList==============================================================================
+
+function TJvColorItemsList.GetCount: Integer;
+begin
+  case ListNum of
+    0:
+      Result := Length(ProviderComp.StdColors);
+    1:
+      Result := Length(ProviderComp.SysColors);
+    2:
+      Result := 0;
+    else
+      Result := 0;
+  end;
+end;
+
+function TJvColorItemsList.GetItem(I: Integer): IJvDataItem;
+begin
+  if I < 0 then
+    TList.Error(SListIndexError, I);
+  case ListNum of
+    0:
+      begin
+        if I > Length(ProviderComp.StdColors) then
+          TList.Error(SListIndexError, I)
+        else
+          Result := TJvColorItem.Create(Self, 0, I);
+      end;
+    1:
+      begin
+        if I > Length(ProviderComp.SysColors) then
+          TList.Error(SListIndexError, I)
+        else
+          Result := TJvColorItem.Create(Self, 1, I);
+      end;
+    2:
+      TList.Error(SListIndexError, I);
+    else
+      TList.Error(SListIndexError, I);
+  end;
+end;
+
+procedure TJvColorItemsList.AfterConstruction;
+begin
+  inherited AfterConstruction;
+  ListNum := TJvColorHeaderItem(GetParent.GetImplementer).ListNumber;
 end;
 
 //===TJvColorItem===================================================================================
@@ -767,35 +853,18 @@ begin
   SetID('ColorGroupHeader_' + IntToStr(ListNumber));
 end;
 
+procedure TJvColorHeaderItem.InitImplementers;
+begin
+  inherited InitImplementers;
+  {$WARNINGS OFF}
+  TJvColorItemsList.CreateParent(Self);
+  {$WARNINGS ON}
+end;
+
 constructor TJvColorHeaderItem.Create(AOwner: IJvDataItems; AListNumber: Integer);
 begin
   inherited Create(AOwner);
   FListNumber := AListNumber;
-end;
-
-//===TJvColorItemText===============================================================================
-
-function TJvColorItemText.GetCaption: string;
-(*var
-  ColorValue: TColor;
-  ItemsImpl: TJvColorItems;
-  ColorIdx: Integer;*)
-begin
-(*  if GetItemColorValue(Item, ColorValue) then
-  begin
-    ItemsImpl := TJvColorItems(Item.GetItems.GetImplementer);
-    ColorIdx := ItemsImpl.FColors.IndexOfObject(TObject(ColorValue));
-    if ColorIdx >= 0 then
-      Result := ItemsImpl.FColors[ColorIdx]
-    else
-      Result := '$' + IntToHex(ColorValue, 8);
-  end
-  else
-    Result := 'Invalid ID:' + Item.GetID;*)
-end;
-
-procedure TJvColorItemText.SetCaption(const Value: string);
-begin
 end;
 
 //===TJvColorProvider===============================================================================
