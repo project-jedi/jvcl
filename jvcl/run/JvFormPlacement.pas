@@ -164,9 +164,8 @@ type
     procedure SetStoredValues(Value: TJvStoredValues);
     function GetStoredValue(const Name: string): Variant;
     procedure SetStoredValue(const Name: string; Value: Variant);
-    function GetDefaultStoredValue(const Name: string;
-      Default: Variant): Variant;
-    procedure SetDefaultStoredValue(const Name: string; Default: Variant; const Value: Variant);
+    function GetDefaultStoredValue(const Name: string; DefValue: Variant): Variant;
+    procedure SetDefaultStoredValue(const Name: string; DefValue: Variant; const Value: Variant);
   protected
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -178,10 +177,10 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function StrippedPath:string;
+    function StrippedPath: string;
     procedure SetNotification;
     property StoredValue[const Name: string]: Variant read GetStoredValue write SetStoredValue;
-    property DefaultValue[const Name: string;Default:Variant]: Variant read GetDefaultStoredValue write SetDefaultStoredValue;
+    property DefaultValue[const Name: string; DefValue: Variant]: Variant read GetDefaultStoredValue write SetDefaultStoredValue;
   published
     property StoredProps: TStrings read GetStoredProps write SetStoredProps;
     property StoredValues: TJvStoredValues read FStoredValues write SetStoredValues;
@@ -1201,31 +1200,31 @@ begin
     Items[I].Restore;
 end;
 
-function TJvFormStorage.GetDefaultStoredValue(const Name: string;
-  Default: Variant): Variant;
+function TJvFormStorage.GetDefaultStoredValue(const Name: string; DefValue: Variant): Variant;
 begin
   Result := StoredValue[Name];
-  if Result = NULL then
-    Result := Default;
+  if Result = Null then
+    Result := DefValue;
 end;
 
 procedure TJvFormStorage.SetDefaultStoredValue(const Name: string;
-  Default: Variant; const Value: Variant);
+  DefValue: Variant; const Value: Variant);
 begin
-  if Value = NULL then
-    StoredValue[Name] := Default
+  if Value = Null then
+    StoredValue[Name] := DefValue
   else
     StoredValue[Name] := Value;
 end;
 
 function TJvFormStorage.StrippedPath: string;
-var i:Integer;
+var
+  I: Integer;
 begin
   Result := AppStoragePath;
-  i := Length(Result);
-  while (i > 0) and (Result[i] = '\') do
-    Dec(i);
-  SetLength(Result,i);
+  I := Length(Result);
+  while (I > 0) and (Result[I] = '\') do
+    Dec(I);
+  SetLength(Result, I);
 end;
 
 end.

@@ -419,7 +419,8 @@ begin
 end;
 
 {function TJvgInspectorGrid.GetEditText(ACol, ARow: Longint): string;
-var I: Integer;
+var
+  I: Integer;
 begin
   inherited GetEditText(ACol, ARow);
   for I := 0 to Items.Count-1 do

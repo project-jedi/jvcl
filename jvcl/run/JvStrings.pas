@@ -2057,7 +2057,7 @@ end;
 
 function InsertLastBlock(var sourceStr: string; blockStr: string): Boolean;
 var
-  // phead:Integer;
+  // phead: Integer;
   pblock, pe, pb: Integer;
   sbb, sbe, sb, sbr: string;
   sbbL, sbeL: Integer;

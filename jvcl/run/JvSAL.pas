@@ -246,7 +246,7 @@ end;
 procedure TJvSAL.ParseScript;
 var
   S: string;
-  //  iprocs:Integer;
+  //  iprocs: Integer;
   haveproc: Boolean;
   AActor: TJvSALProc;
   AParser: TJvSALProc;
@@ -484,7 +484,7 @@ end;
 
 procedure TJvSAL.AddProcedure(AName: string; AProcedure, AParser: TJvSALProc);
 //var
-//  A:TJvSALProcAtom;
+//  A: TJvSALProcAtom;
 begin
   //  A:=TJvSALProcAtom.Create;
   //  A.Actor:=AProcedure;

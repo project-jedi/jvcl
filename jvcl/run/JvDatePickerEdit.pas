@@ -112,7 +112,7 @@ type
   private
     FAllowNoDate: Boolean;
     FDropButton: TJvDropDownButton;
-    FButtonHolder:TWinControl;
+    FButtonHolder: TWinControl;
     FCalAppearance: TJvMonthCalAppearance;
     FDate: TDateTime;
     FDateError: Boolean;

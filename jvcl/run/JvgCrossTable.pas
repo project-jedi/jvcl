@@ -47,7 +47,7 @@ Known Issues:
 //
 //  Компоненту можно передавать DataSet с установленным свойством Filter;
 //--------------
-//  Свойство Optons:TPCTOptions;
+//  Свойство Optons: TPCTOptions;
 //
 //  TPCTOptions = set of ( fcoIntermediateColResults, fcoIntermediateRowResults,
 //      fcoColResults, fcoRowResults,

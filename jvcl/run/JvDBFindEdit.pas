@@ -200,7 +200,7 @@ end;
 
 function TJvDBFindEdit.IsDate(s1: string): Boolean;
 var
-  i, k, p1, p2 :Integer;
+  i, k, p1, p2: Integer;
   sm, sd, sj, ss: string;
 begin
   Result := False;

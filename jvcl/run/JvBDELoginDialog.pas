@@ -42,7 +42,7 @@ type
 
   TDialogMode = (dmAppLogin, dmDBLogin, dmUnlock);
 
-  TJvDBLoginEvent = procedure (Sender:TObject; const UserName, Password: string) of object;
+  TJvDBLoginEvent = procedure(Sender: TObject; const UserName, Password: string) of object;
 
   TJvDBLoginDialog = class(TObject)
   private

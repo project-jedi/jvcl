@@ -401,15 +401,15 @@ begin
 end;
 
 //+++pfh
-{procedure Delete(var S: string; Index, Count:Integer);}
+{procedure Delete(var S: string; Index, Count: Integer);}
 
-procedure JvInterpreter_Delete(var value: Variant; Args: TJvInterpreterArgs);
+procedure JvInterpreter_Delete(var Value: Variant; Args: TJvInterpreterArgs);
 var
-  s: string;
+  S: string;
 begin
-  s := Args.Values[0];
+  S := Args.Values[0];
   Delete(S, Integer(Args.Values[1]), Integer(Args.Values[2]));
-  Args.Values[0] := s;
+  Args.Values[0] := S;
   Value := S;
 end;
 
@@ -596,10 +596,10 @@ begin
     AddFunction(cSystem, 'Pos', JvInterpreter_Pos, 2, [varEmpty, varEmpty], varEmpty);
 
     //+++pfh
-    // some Stringfunctions
+    // some string functions
     AddFunction(cSystem, 'Delete', JvInterpreter_Delete, 3, [varByRef, varEmpty, varEmpty], varEmpty);
     AddFunction(cSystem, 'Insert', JvInterpreter_Insert, 3, [varEmpty, varByRef, varEmpty], varEmpty);
-    // some mathfunctions
+    // some math functions
     AddFunction(cSystem, 'Sqr', JvInterpreter_Sqr, 1, [varEmpty], varEmpty);
     AddFunction(cSystem, 'Sqrt', JvInterpreter_Sqrt, 1, [varEmpty], varEmpty);
     AddFunction(cSystem, 'Exp', JvInterpreter_Exp, 1, [varEmpty], varEmpty);

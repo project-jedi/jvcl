@@ -678,7 +678,7 @@ procedure DeleteFileLink(const DisplayName: string; Folder: Integer);
 { begin JvXMLDatabase D5 compatiblility functions }
 function StrToDateTimeDef(const S: string; Default: TDateTime): TDateTime;
 function CompareDateTime(const A, B: TDateTime): Integer;
-// function StrToFloatDef(const Str:String;Default:Extended):Extended;
+// function StrToFloatDef(const Str: string; Default: Extended): Extended;
 { end JvXMLDatabase D5 compatiblility functions }
 
 { D5 compatibility functions }
@@ -980,10 +980,10 @@ function DrawText(Canvas: TCanvas; const Text: WideString; Len: Integer; var R: 
 function DrawTextEx(Canvas: TCanvas; const Text: WideString; cchText: Integer; var p4: TRect; dwDTFormat: UINT; DTParams: PDrawTextParams): Integer; overload;
 {$ENDIF COMPILER6_UP}
 
-function DrawTextW(Canvas :TCanvas; const Text: WideString; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
-function DrawTextW(Canvas :TCanvas; Text: PWideChar; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
-function DrawTextExW(Canvas:TCanvas; lpchText: PWideChar; cchText: Integer; var p4: TRect; dwDTFormat: UINT; DTParams: PDrawTextParams): Integer; overload;
-function DrawTextExW(Canvas:TCanvas; const Text: WideString; cchText: Integer; var p4: TRect; dwDTFormat: UINT; DTParams: PDrawTextParams): Integer; overload;
+function DrawTextW(Canvas: TCanvas; const Text: WideString; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
+function DrawTextW(Canvas: TCanvas; Text: PWideChar; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
+function DrawTextExW(Canvas: TCanvas; lpchText: PWideChar; cchText: Integer; var p4: TRect; dwDTFormat: UINT; DTParams: PDrawTextParams): Integer; overload;
+function DrawTextExW(Canvas: TCanvas; const Text: WideString; cchText: Integer; var p4: TRect; dwDTFormat: UINT; DTParams: PDrawTextParams): Integer; overload;
 
 type
   {$IFDEF COMPILER6_UP}
@@ -1125,7 +1125,8 @@ end;}
 
 {$IFDEF MSWINDOWS}
 function GetRecentFolder: string;
-var ItemIDList:PItemIDList;
+var
+  ItemIDList: PItemIDList;
 begin
   OleCheck(SHGetSpecialFolderLocation(0, CSIDL_RECENT, ItemIDList));
   SetLength(Result, MAX_PATH);
@@ -2089,11 +2090,11 @@ end;
 
 function HasChar(const Ch: Char; const S: string): Boolean;
 var
-  i: Integer;
+  I: Integer;
 begin
   Result := True;
-  for i := 1 to Length(S) do
-    if S[i] = Ch then
+  for I := 1 to Length(S) do
+    if S[I] = Ch then
       Exit;
   Result := False;
 end;
@@ -7114,12 +7115,12 @@ end;
 function StrToCurrDef(const Str: string; Def: Currency): Currency;
 var
   lStr: string;
-  i:integer;
+  I: Integer;
 begin
   lStr := '';
-  for i := 1 to Length(Str) do
-    if Str[i] in ['0'..'9','-','+', DecimalSeparator] then
-      lStr := LStr + Str[i];
+  for I := 1 to Length(Str) do
+    if Str[I] in ['0'..'9','-','+', DecimalSeparator] then
+      lStr := LStr + Str[I];
   try
     if not TextToFloat(PChar(lStr), Result, fvCurrency) then
       Result := Def;
@@ -7131,11 +7132,11 @@ end;
 function StrToFloatDef(const Str: string; Def: Extended): Extended;
 var
   lStr: string;
-  i:integer;
+  I: Integer;
 begin
-  for i := 1 to Length(Str) do
-    if Str[i] in ['0'..'9','-','+', DecimalSeparator] then
-      lStr := LStr + Str[i];
+  for I := 1 to Length(Str) do
+    if Str[I] in ['0'..'9','-','+', DecimalSeparator] then
+      lStr := LStr + Str[I];
   Result := Def;
   if lStr <> '' then
   try
@@ -8394,7 +8395,8 @@ end;
 {$ENDIF VCL}
 
 function TextToValText(const AValue: string): string;
-var i, j:integer;
+var
+  I, J: Integer;
 begin
   Result := DelRSpace(AValue);
   if DecimalSeparator <> ThousandSeparator then
@@ -8405,14 +8407,14 @@ begin
   if (DecimalSeparator <> ',') and (ThousandSeparator <> ',') then
     Result := ReplaceStr(Result, ',', DecimalSeparator);
 
-  j := 1;
-  for i := 1 to Length(Result) do
-    if Result[i] in ['-','+','0'..'9', DecimalSeparator, ThousandSeparator] then
+  J := 1;
+  for I := 1 to Length(Result) do
+    if Result[I] in ['-','+','0'..'9', DecimalSeparator, ThousandSeparator] then
     begin
-      Result[j] := Result[i];
-      Inc(j);
+      Result[J] := Result[I];
+      Inc(J);
     end;
-  SetLength(Result, j - 1);
+  SetLength(Result, J - 1);
 
   if Result = '' then
     Result := '0'
@@ -8454,22 +8456,22 @@ begin
 end;
 {$ENDIF COMPILER6_UP}
 
-function DrawTextW(Canvas :TCanvas; const Text: WideString; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
+function DrawTextW(Canvas: TCanvas; const Text: WideString; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
 begin
   Result := DrawTextW(Canvas, PWideChar(Text), Len, R, WinFlags and not DT_MODIFYSTRING);
 end;
 
-function DrawTextW(Canvas :TCanvas; Text: PWideChar; Len: Integer; var R: TRect; WinFlags: Integer): Integer;
+function DrawTextW(Canvas: TCanvas; Text: PWideChar; Len: Integer; var R: TRect; WinFlags: Integer): Integer;
 begin
   Result := Windows.DrawTextW(Canvas.Handle, Text, Len, R, WinFlags);
 end;
 
-function DrawTextExW(Canvas:TCanvas; lpchText: PWideChar; cchText: Integer; var p4: TRect; dwDTFormat: UINT; DTParams: PDrawTextParams): Integer;
+function DrawTextExW(Canvas: TCanvas; lpchText: PWideChar; cchText: Integer; var p4: TRect; dwDTFormat: UINT; DTParams: PDrawTextParams): Integer;
 begin
   Result := Windows.DrawTextExW(Canvas.Handle, lpchText, cchText, p4, dwDTFormat, DTParams);
 end;
 
-function DrawTextExW(Canvas:TCanvas; const Text: WideString; cchText: Integer; var p4: TRect; dwDTFormat: UINT; DTParams: PDrawTextParams): Integer;
+function DrawTextExW(Canvas: TCanvas; const Text: WideString; cchText: Integer; var p4: TRect; dwDTFormat: UINT; DTParams: PDrawTextParams): Integer;
 begin
   Result := Windows.DrawTextExW(Canvas.Handle, PWideChar(Text), cchText, p4, dwDTFormat and not DT_MODIFYSTRING, DTParams);
 end;

@@ -226,7 +226,7 @@ type
     procedure Loaded; override;
     procedure DrawProviderItem(Canvas: TCanvas; Rect: TRect; Index: Integer;
       State: TOwnerDrawState);
-    procedure DoGetText(Index:integer; var AText:string);virtual;
+    procedure DoGetText(Index: Integer; var AText: string); virtual;
 
     property LimitToClientWidth: Boolean read GetLimitToClientWidth;
     property MaxWidth: Integer read FMaxWidth write SetMaxWidth;
@@ -1528,7 +1528,7 @@ var
   ItemsRenderer: IJvDataItemsRenderer;
   ItemRenderer: IJvDataItemRenderer;
   ItemText: IJvDataItemText;
-  AText:string;
+  AText: string;
 begin
   DrawState := DP_OwnerDrawStateToProviderDrawState(State);
   if not Enabled then
@@ -1566,7 +1566,7 @@ begin
   end;
 end;
 
-procedure TJvCustomListBox.DoGetText(Index:integer; var AText:string);
+procedure TJvCustomListBox.DoGetText(Index: Integer; var AText: string);
 begin
   if Assigned(FOnGetText) then
     FOnGetText(Self, Index, AText);

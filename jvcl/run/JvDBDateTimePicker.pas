@@ -60,7 +60,7 @@ type
     procedure SetDataField(Value: string);
     procedure SetDataSource(Value: TDataSource);
   protected
-    function IsDateAndTimeField:Boolean;
+    function IsDateAndTimeField: Boolean;
     // Adding capability to edit
     procedure DoExit; override;
     procedure DataChange(Sender: TObject);
@@ -80,7 +80,7 @@ type
     property BeepOnError: Boolean read FBeepOnError write FBeepOnError default True;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
-    property TrimValue:boolean read FTrimValue write FTrimValue default True;
+    property TrimValue: Boolean read FTrimValue write FTrimValue default True;
   end;
 
 implementation

@@ -590,9 +590,9 @@ end;
 { Encoding function named in honor of Dennis Forbes' favourite word }
 {procedure Gibble(var S: string);
 var
- t,l,c1: integer;
- lo,hi:byte;
- x: array[0..255] of char;
+ t, l, c1: Integer;
+ lo, hi: Byte;
+ x: array [0..255] of Char;
 begin
  l := Length(S);
  for t:= 0 to l-1 do

@@ -38,11 +38,11 @@ a class that can handle the OnProgress event, there are times when you can't use
 has methods and properties you can call directly (ProgressStepIt is the most important) to update the dialog.
 
 Methods:
-Execute:boolean - shows the dialog modally and returns true if the user did not cancel it. The user
-                  can cancel the dialog only when the Cancel button is visible by clicking it or hitting Esc key
-ShowModal:integer - same as Execute but returns mrCancel on cancel and mrOK otherwise
-Show              - shows the dialog non-modally
-Hide              - hides (closes) the dialog if it is visible
+Execute: boolean - shows the dialog modally and returns true if the user did not cancel it. The user
+                   can cancel the dialog only when the Cancel button is visible by clicking it or hitting Esc key
+ShowModal: integer - same as Execute but returns mrCancel on cancel and mrOK otherwise
+Show               - shows the dialog non-modally
+Hide               - hides (closes) the dialog if it is visible
 
 Properties:
 Cancelled  - returns true if the user has cancelled the dialog. Only used in non-modal mode
@@ -161,7 +161,7 @@ type
     property Max: Integer read FMax write SetMax default 100;
     property Position: Integer read FPosition write SetPosition default 0;
     property ShowCancel: Boolean read FShowCancel write SetShowCancel default True;
-    property Smooth:Boolean read FSmooth write FSmooth default False;
+    property Smooth: Boolean read FSmooth write FSmooth default False;
     property Text: string read FText write SetText;
     property Transparent: Boolean read FTransparent write FTransparent default False;
     property ScreenPosition: TPosition read FScreenPosition write FScreenPosition; // added 28/05/2004, RK

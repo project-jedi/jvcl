@@ -96,7 +96,7 @@ type
     procedure SetBevelOuter(Value: TPanelBevel);
     procedure SetBold(Value: Boolean);
     procedure SetBackgrColor(Value: TColor);
-    //  procedure SetFillBackgr( Value:Boolean );
+    //  procedure SetFillBackgr(Value: Boolean);
     procedure SetFont(Value: TFont);
     procedure SetTextStyle(Value: TglTextStyle);
     procedure SetCaptionHAlign(Value: TglHorAlign);
@@ -118,7 +118,7 @@ type
     property BevelOuter: TPanelBevel read FBevelOuter write SetBevelOuter;
     property Bold: Boolean read FBold write SetBold;
     property BackgrColor: TColor read FBackgrColor write SetBackgrColor; // default clBtnFace;
-    //  property FillBackgr  :Boolean read FFillBackgr write SetFillBackgr default clBtnFace;
+    //  property FillBackgr: Boolean read FFillBackgr write SetFillBackgr default clBtnFace;
     property Font: TFont read FFont write SetFont;
     property TextStyle: TglTextStyle read FTextStyle write SetTextStyle default fstNone;
     property CaptionHAlign: TglHorAlign read FCaptionHAlign write SetCaptionHAlign default fhaLeft;
@@ -252,9 +252,13 @@ begin
   end;
 end;
 
-{procedure TJvgTabStyle.SetFillBackgr( Value:Boolean );
-begin if FFillBackgr=Value then exit;
-  FFillBackgr:=Value; if Assigned(OnChanged) then OnChanged(Self);
+{procedure TJvgTabStyle.SetFillBackgr(Value: Boolean);
+begin
+  if FFillBackgr = Value then
+    Exit;
+  FFillBackgr := Value;
+  if Assigned(OnChanged) then
+    OnChanged(Self);
 end;
 }
 

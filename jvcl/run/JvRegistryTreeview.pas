@@ -232,8 +232,9 @@ begin
 end;
 
 {
-function GetPreviousKey(Key:string):string;
-var I:Integer;
+function GetPreviousKey(Key: string): string;
+var
+  I: Integer;
 begin
   Result := Key;
   if (Result = '') or (Result = '\') then Exit;
@@ -245,8 +246,9 @@ begin
     end;
 end;
 
-function StripChars(Str:string;Ch:Char):string;
-var I:Integer;
+function StripChars(Str: string; Ch: Char): string;
+var
+  I: Integer;
 begin
   Result := '';
   for I := 1 to Length(Str) do

@@ -11349,7 +11349,8 @@ procedure TJvTFDays.CalcTextPos(var aRect: TRect; aAngle: Integer;
 //==========================================================================
 // Calculate text pos. depend. on: Font, Escapement, Alignment and length
 //--------------------------------------------------------------------------
-var DC    : HDC;
+var
+   DC    : HDC;
    hSavFont: HFont;
    Size  : TSize;
    x,y   : Integer;

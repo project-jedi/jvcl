@@ -69,7 +69,7 @@ type
     procedure SetImageIndex(const Value: Integer);
     procedure SetText(const Value: string);
     procedure SetIndent(const Value: Integer);
-    function GetWinControl:TWinControl;
+    function GetWinControl: TWinControl;
     procedure Change;
     function GetText: string;
     function GetOwnerStrings: TStrings;
@@ -142,7 +142,7 @@ type
     FButtonFrame: Boolean;
     FDroppedWidth: Integer;
     FButtonStyle: TJvButtonColors;
-    FIndentSelected: boolean;
+    FIndentSelected: Boolean;
     function GetCanvas: TCanvas;
     procedure SetColorHighlight(Value: TColor);
     procedure SetColorHighlightText(Value: TColor);
@@ -153,7 +153,7 @@ type
     procedure SetDroppedWidth(Value: Integer);
     procedure SetDefaultIndent(const Value: Integer);
     procedure SetItems(const Value: TJvImageItems); reintroduce;
-    procedure SetIndentSelected(const Value: boolean);
+    procedure SetIndentSelected(const Value: Boolean);
   protected
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
@@ -184,7 +184,7 @@ type
     property ImageHeight: Integer read FImageHeight write FImageHeight;
     property ImageWidth: Integer read FImageWidth write FImageWidth;
     property Items: TJvImageItems read FItems write SetItems;
-    property IndentSelected:boolean read FIndentSelected write SetIndentSelected default false;
+    property IndentSelected: Boolean read FIndentSelected write SetIndentSelected default False;
     property ItemIndex;
     property DefaultIndent: Integer read FDefaultIndent write SetDefaultIndent default 0;
     property DroppedWidth: Integer read GetDroppedWidth write SetDroppedWidth;
@@ -318,7 +318,7 @@ type
 { utility }
 
 {
-function DropArrowWidth:Integer;
+function DropArrowWidth: Integer;
 begin
   Result := GetSystemMetrics(SM_CXVSCROLL);
 end;
@@ -864,7 +864,7 @@ begin
   FItems.Update(nil);
 end;
 
-procedure TJvImageComboBox.SetIndentSelected(const Value: boolean);
+procedure TJvImageComboBox.SetIndentSelected(const Value: Boolean);
 begin
   if FIndentSelected <> Value then
   begin

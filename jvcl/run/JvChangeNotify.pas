@@ -130,7 +130,7 @@ type
     procedure CheckActive(const Name: string);
     function NotifyError(const Msg: string): string;
     procedure DoThreadChangeNotify(Sender: TObject; Index: Integer);
-    procedure DoThreadTerminate(Sender:TObject);
+    procedure DoThreadTerminate(Sender: TObject);
   protected
     procedure Change(Item: TJvChangeItem); virtual;
     procedure Loaded; override;

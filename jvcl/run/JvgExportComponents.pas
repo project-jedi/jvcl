@@ -46,7 +46,7 @@ type
   TJvExportFieldEvent = procedure(Sender: TObject; const Field: TField; var
     FieldValue: string) of object;
 
-  TJvExportProgressEvent = procedure(Sender:TObject; Min, Max, Position: Integer;
+  TJvExportProgressEvent = procedure(Sender: TObject; Min, Max, Position: Integer;
     const Msg: string) of object;
 
   TJvGetLineFontEvent = procedure(Sender: TObject; LineNo: Integer;
@@ -73,7 +73,7 @@ type
     procedure SetTransliterateRusToEng(const Value: Boolean);
   protected
     function GetFieldValue(const Field: TField): string;
-    procedure DoGetTableName(var ATableName:string);virtual;
+    procedure DoGetTableName(var ATableName: string); virtual;
     procedure DoProgress(Min, Max, Position: Integer; const Msg: string); virtual;
   public
     procedure Execute; virtual;
@@ -89,8 +89,8 @@ type
     property OnGetCaption: TJvExportGetValue read FOnGetCaption write FOnGetCaption;
     property OnExportRecord: TJvExportRecordEvent read FOnExportRecord write FOnExportRecord;
     property OnExportField: TJvExportFieldEvent read FOnExportField write FOnExportField;
-    property OnProgress:TJvExportProgressEvent read FOnProgress write FOnProgress;
-    property OnGetTableName:TJvExportGetValue read FOnGetTableName write FOnGetTableName;
+    property OnProgress: TJvExportProgressEvent read FOnProgress write FOnProgress;
+    property OnGetTableName: TJvExportGetValue read FOnGetTableName write FOnGetTableName;
   end;
 
   TJvgExportExcel = class(TJvgCommonExport)
@@ -154,8 +154,8 @@ type
     property OnExportField;
   end;
 
-  TJvCreateDataset = procedure (Sender:TObject; var Dataset:TDataset) of object;
-  TJvSaveDataset = procedure (Sender:TObject; Dataset:TDataset) of object;
+  TJvCreateDataset = procedure(Sender: TObject; var Dataset: TDataset) of object;
+  TJvSaveDataset = procedure(Sender: TObject; Dataset: TDataset) of object;
 
   TJvgExportDataset = class(TJvgCommonExport)
   private
@@ -170,8 +170,8 @@ type
     property OnGetCaption;
     property OnExportRecord;
     property OnExportField;
-    property OnCreateDest:TJvCreateDataset read FOnCreateDest write FOnCreateDest;
-    property OnSaveDest:TJvCreateDataset read FOnSaveDest write FOnSaveDest;
+    property OnCreateDest: TJvCreateDataset read FOnCreateDest write FOnCreateDest;
+    property OnSaveDest: TJvCreateDataset read FOnSaveDest write FOnSaveDest;
   end;
 
   TJvgExportHTML = class(TJvgCommonExport)

@@ -115,17 +115,18 @@ procedure TJvTimerThread.Execute;
   begin
     Result := Terminated or Application.Terminated or (FOwner = nil);
   end;
-{$IFDEF LINUX}
-  function SleepEx(ms: cardinal; bAlertable: boolean):cardinal;
+
+  {$IFDEF LINUX}
+  function SleepEx(Ms: Cardinal; Alertable: Boolean): Cardinal;
   begin
-    Sleep(ms);
+    Sleep(Ms);
     Result := 0;
   end;
-{$ENDIF LINUX}
+  {$ENDIF LINUX}
+
 begin
   repeat
-    if (not ThreadClosed) and
-        (SleepEx(FInterval, False) = 0) and
+    if (not ThreadClosed) and (SleepEx(FInterval, False) = 0) and
        (not ThreadClosed) and FOwner.FEnabled then
       with FOwner do
       begin

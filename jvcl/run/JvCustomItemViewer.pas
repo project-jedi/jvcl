@@ -162,7 +162,7 @@ type
     property Owner: TJvCustomItemViewer read FOwner;
   public
     property State: TCustomDrawState read FState write SetState;
-    property Hint:string read FHint write FHint;
+    property Hint: string read FHint write FHint;
     property Data: Pointer read FData write SetData;
   end;
 
@@ -273,8 +273,8 @@ type
     function GetItemClass: TJvViewerItemClass; virtual;
     function GetOptionsClass: TJvItemViewerOptionsClass; virtual;
     function GetItemState(Index: Integer): TCustomDrawState; virtual;
-    procedure Inserted(Item:TJvViewerItem);virtual;
-    procedure Deleted(Item:TJvViewerItem);virtual;
+    procedure Inserted(Item: TJvViewerItem); virtual;
+    procedure Deleted(Item: TJvViewerItem); virtual;
     procedure ItemChanging(Item: TJvViewerItem; var AllowChange: Boolean); virtual;
     procedure ItemChanged(Item: TJvViewerItem); virtual;
     function HintShow(var HintInfo: THintInfo): Boolean; override;
@@ -298,9 +298,9 @@ type
     property OnOptionsChanged: TNotifyEvent read FOnOptionsChanged write FOnOptionsChanged;
     property OnItemChanging: TJvViewerItemChangingEvent read FOnItemChanging write FOnItemChanging;
     property OnItemChanged: TJvViewerItemChangedEvent read FOnItemChanged write FOnItemChanged;
-    property OnInsertion:TJvViewerItemChangedEvent read FOnInsertion write FOnInsertion;
-    property OnDeletion:TJvViewerItemChangedEvent read FOnDeletion write FOnDeletion;
-    property OnItemHint:TJvViewerItemHintEvent read FOnItemHint write FOnItemHint;
+    property OnInsertion: TJvViewerItemChangedEvent read FOnInsertion write FOnInsertion;
+    property OnDeletion: TJvViewerItemChangedEvent read FOnDeletion write FOnDeletion;
+    property OnItemHint: TJvViewerItemHintEvent read FOnItemHint write FOnItemHint;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;

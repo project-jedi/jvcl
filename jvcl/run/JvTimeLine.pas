@@ -136,7 +136,7 @@ type
   TJvTimeLineStyle = (tlDefault, tlOwnerDrawFixed, tlOwnerDrawVariable);
   TJvScrollArrow = (scrollLeft, scrollRight, scrollUp, scrollDown);
   TJvScrollArrows = set of TJvScrollArrow;
-  TJvTimeItemClickEvent = procedure (Sender:TObject; Item:TJvTimeItem) of object;
+  TJvTimeItemClickEvent = procedure(Sender: TObject; Item: TJvTimeItem) of object;
   TJvDrawTimeItemEvent = procedure(Sender: TObject; Canvas: TCanvas; Item:
     TJvTimeItem; var R: TRect) of object;
   TJvMeasureTimeItemEvent = procedure(Sender: TObject; Item: TJvTimeItem; var
@@ -260,7 +260,7 @@ type
     procedure SetMultiSelect(Value: Boolean);
     procedure SetTopOffset(Value: Integer);
     procedure SetTopLevel(Value: Integer);
-    //     procedure SetItemAlign(Value:TItemAlign);
+    //     procedure SetItemAlign(Value: TItemAlign);
     procedure SetSupportLines(Value: Boolean);
     procedure SetStyle(Value: TJvTimeLineStyle);
     procedure SetItemHeight(Value: Integer);
@@ -342,9 +342,8 @@ type
     procedure DrawItem(Item: TJvTimeItem; ACanvas: TCanvas; var R: TRect); virtual;
     procedure UpdateItem(Index: Integer; ACanvas: TCanvas); virtual;
     procedure UpdateItems; virtual;
-    procedure UpdateItemHint(X,Y:integer);
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
-      override;
+    procedure UpdateItemHint(X,Y: Integer);
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     {$IFDEF VCL}
     procedure CreateWnd; override;
     function GetDragImages: TDragImageList; override;
@@ -363,20 +362,16 @@ type
     property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle
       default bsSingle;
     property DragLine: Boolean read FDragLine write FDragLine default True;
-    property ShowItemHint: Boolean read FShowItemHint write FShowItemHint default
-      False;
+    property ShowItemHint: Boolean read FShowItemHint write FShowItemHint default False;
     {$IFDEF VCL}
     property AutoSize: Boolean read FAutoSize write SetAutoSize default False;
     {$ENDIF VCL}
-    property HelperYears: Boolean read FHelperYears write SetHelperYears default
-      True;
-    property MultiSelect: Boolean read FMultiSelect write SetMultiSelect default
-      False;
+    property HelperYears: Boolean read FHelperYears write SetHelperYears default True;
+    property MultiSelect: Boolean read FMultiSelect write SetMultiSelect default False;
     property Flat: Boolean read FFlat write SetFlat default False;
-    property Hint:string read GetHint write SetHint; 
+    property Hint: string read GetHint write SetHint;
     property YearFont: TFont read FYearFont write SetYearFont;
-    property YearWidth: TJvYearWidth read FYearWidth write SetYearWidth default
-      140;
+    property YearWidth: TJvYearWidth read FYearWidth write SetYearWidth default 140;
     property TopOffset: Integer read FTopOffset write SetTopOffset default 21;
     property ShowMonthNames: Boolean read FShowMonths write SetShowMonths;
     property ShowDays: Boolean read FShowDays write SetShowDays default False;
@@ -384,32 +379,24 @@ type
     property Images: TCustomImageList read FImages write SetImages;
     property Items: TJvTimeItems read FTimeItems write SetTimeItems;
     property ItemHeight: Integer read FItemHeight write SetItemHeight default 12;
-    //    property ItemAlign:TItemAlign read FItemAlign write SetItemAlign default tiCenter;
-    property VertSupports: Boolean read FSupportLines write SetSupportLines
-      default False;
+    //    property ItemAlign: TItemAlign read FItemAlign write SetItemAlign default tiCenter;
+    property VertSupports: Boolean read FSupportLines write SetSupportLines default False;
     property HorzSupports: Boolean read FHorzSupport write SetHorzSupport;
-    property Style: TJvTimeLineStyle read FStyle write SetStyle default
-      tlDefault;
+    property Style: TJvTimeLineStyle read FStyle write SetStyle default tlDefault;
     property TopLevel: Integer read FTopLevel write SetTopLevel default 0;
     property ScrollArrows: TJvScrollArrows read FScrollArrows write
       SetScrollArrows default [scrollLeft..scrollDown];
-    property OnItemClick: TJvTimeItemClickEvent read FOnItemClick write
-      FOnItemClick;
-    property OnItemDblClick: TJvTimeItemClickEvent read FOnItemDblClick write
-      FOnItemDblClick;
+    property OnItemClick: TJvTimeItemClickEvent read FOnItemClick write FOnItemClick;
+    property OnItemDblClick: TJvTimeItemClickEvent read FOnItemDblClick write FOnItemDblClick;
     property OnSize: TNotifyEvent read FOnSize write FOnSize;
     property OnHorzScroll: TScrollEvent read FOnHorzScroll write FOnHorzScroll;
     property OnVertScroll: TScrollEvent read FOnVertScroll write FOnVertScroll;
-    property OnDrawItem: TJvDrawTimeItemEvent read FOnDrawItem write
-      FOnDrawItem;
-    property OnMeasureItem: TJvMeasureTimeItemEvent read FOnMeasureItem write
-      FOnMeasureItem;
+    property OnDrawItem: TJvDrawTimeItemEvent read FOnDrawItem write FOnDrawItem;
+    property OnMeasureItem: TJvMeasureTimeItemEvent read FOnMeasureItem write FOnMeasureItem;
     property OnSaveItem: TJvStreamItemEvent read FOnSaveItem write FOnSaveItem;
     property OnLoadItem: TJvStreamItemEvent read FOnLoadItem write FOnLoadItem;
-    property OnItemMoved: TJvItemMovedEvent read FOnItemMoved write
-      FOnItemMoved;
-    property OnItemMoving: TJvItemMovingEvent read FOnItemMoving write
-      FOnItemMoving;
+    property OnItemMoved: TJvItemMovedEvent read FOnItemMoved write FOnItemMoved;
+    property OnItemMoving: TJvItemMovingEvent read FOnItemMoving write FOnItemMoving;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -2021,7 +2008,7 @@ end;
 procedure TJvCustomTimeLine.DrawFocus;
 var
   Tmp: TColor;
-  // R:TRect;
+  // R: TRect;
 begin
   if csDestroying in ComponentState then
     Exit;
@@ -2903,14 +2890,15 @@ begin
 end;
 {$ENDIF VCL}
 
-procedure TJvCustomTimeLine.UpdateItemHint(X,Y:integer);
-var ti:TJvTimeItem;
+procedure TJvCustomTimeLine.UpdateItemHint(X,Y: Integer);
+var
+  Ti: TJvTimeItem;
 begin
   if ShowHint and ShowItemHint then
   begin
-    ti := ItemAtPos(X,Y);
-    if (ti <> nil) and (ti.Hint <> '') then
-      inherited Hint := ti.Hint
+    Ti := ItemAtPos(X,Y);
+    if (Ti <> nil) and (Ti.Hint <> '') then
+      inherited Hint := Ti.Hint
     else
       inherited Hint := FOldHint;
 //    if Application <> nil then // (p3) "tracking" hint

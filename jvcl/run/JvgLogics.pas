@@ -160,7 +160,7 @@ type
     procedure SetDictionary(const Value: TStrings);
     function ParseExpression(const Value: string): string;
   public
-    constructor Create(AOwner:TPersistent; ItemClass: TCollectionItemClass);
+    constructor Create(AOwner: TPersistent; ItemClass: TCollectionItemClass);
     destructor Destroy; override;
     procedure Loaded;
     procedure Analyze;
@@ -331,7 +331,7 @@ end;
 
 //=== TJvgLogics =============================================================
 
-constructor TJvgLogics.Create(AOwner:TPersistent; ItemClass: TCollectionItemClass);
+constructor TJvgLogics.Create(AOwner: TPersistent; ItemClass: TCollectionItemClass);
 begin
   inherited Create(AOwner, ItemClass);
   FDictionary := TStringList.Create;

@@ -420,7 +420,7 @@ var
   AItem: TJvImageItem;
   S: string;
 
-  procedure ModifyRect(var R:TRect; ALeft, ATop, ARight, ABottom: Integer);
+  procedure ModifyRect(var R: TRect; ALeft, ATop, ARight, ABottom: Integer);
   begin
     Inc(R.Left, ALeft);
     Inc(R.Top, ATop);

@@ -336,9 +336,9 @@ type
     procedure DoDrawItem(ACanvas: TCanvas; var ARect: TRect; Item: IJvDataItem; State: TProviderDrawStates); virtual; abstract;
     function DoMeasureItem(ACanvas: TCanvas; Item: IJvDataItem): TSize; virtual; abstract;
     { IJvDataItemsRenderer methods }
-    procedure DrawItemByIndex(ACanvas:TCanvas; var ARect: TRect; Index: Integer;
+    procedure DrawItemByIndex(ACanvas: TCanvas; var ARect: TRect; Index: Integer;
       State: TProviderDrawStates); virtual;
-    function MeasureItemByIndex(ACanvas:TCanvas; Index: Integer): TSize; virtual;
+    function MeasureItemByIndex(ACanvas: TCanvas; Index: Integer): TSize; virtual;
     procedure DrawItem(ACanvas: TCanvas; var ARect: TRect; Item: IJvDataItem;
       State: TProviderDrawStates); virtual;
     function MeasureItem(ACanvas: TCanvas; Item: IJvDataItem): TSize; virtual;

@@ -60,14 +60,16 @@ resourcestring
 
 { semaphore
 
-Var hs:THandle;
+var
+  hs: THandle;
 begin
-  hs:=CreateSemaphore(Nil,0,2,'MyProgSemaphore');
-  If GetLastError=ERROR_ALREADY_EXISTS Then halt;
+  hs := CreateSemaphore(nil, 0, 2, 'MyProgSemaphore');
+  if GetLastError = ERROR_ALREADY_EXISTS then
+    Halt;
   Application.Initialize;
   Application.CreateForm(TForm1, Form1);
   Application.Run;
-  ReleaseSemaphore(hs,2,0);
+  ReleaseSemaphore(hs, 2, 0);
 end.
 }
 

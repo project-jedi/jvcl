@@ -29,11 +29,11 @@ Description:
   instead of the default, i.e:
   interface:
 
-    function GetPopupMenu:TPopupMenu;override;
+    function GetPopupMenu: TPopupMenu; override;
 
   implementation:
 
-    function TMyEdit.GetPopupMenu:TPopupMenu;
+    function TMyEdit.GetPopupMenu: TPopupMenu;
     begin
       Result := inherited GetPopupMenu;
       if Result = nil then // user has not assigned his own popup menu, so use fixed default

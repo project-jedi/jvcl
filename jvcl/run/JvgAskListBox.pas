@@ -298,8 +298,8 @@ var
   Shift, OldPushedBtn, I: Integer;
   Rect1: TRect;
   ItemStyle: TJvgAskListBoxItemStyle;
-  //  TS:TglTextStyle;
-  //  TA:UINT;
+  //  TS: TglTextStyle;
+  //  TA: UINT;
 
   procedure DrawLBItem(ItemSt: TglItemsDrawStyle; R: TRect);
   begin

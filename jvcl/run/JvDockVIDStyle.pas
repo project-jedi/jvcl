@@ -720,7 +720,8 @@ procedure SetTabControlPreview(VIDSource: TJvDockVIDDragDockObject;
   TabControl: TJvDockVIDTabPageControl;
   State: TDragState; DropAlign: TAlign);
 
-var I: Integer;
+var
+  I: Integer;
   Index: Integer;
 begin
   if TabControl <> nil then

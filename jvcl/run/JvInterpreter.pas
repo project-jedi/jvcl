@@ -286,7 +286,7 @@ type
                                 TClassIdentifier.Identifier}
     FParamCount: Integer; { - 1..cJvInterpreterMaxArgs }
     FParamTypes: TTypeArray;
-    FParamTypeNames:TNameArray;//dejoy added
+    FParamTypeNames: TNameArray; //dejoy added
     FParamNames: TNameArray;
     FResTyp: Word;
     FResTypName: String;
@@ -932,7 +932,7 @@ type
     procedure InterpretRaise;
     function ParseDataType: IJvInterpreterDataType;
     function NewEvent(const UnitName, FunctionName, EventType: string;
-      Instance: TObject; const APropName:string): TSimpleEvent;
+      Instance: TObject; const APropName: string): TSimpleEvent;
     function FindEvent(const UnitName: string;Instance: TObject;
       const PropName: string ): TJvInterpreterEvent;
     procedure InternalSetValue(const Identifier: string);
@@ -2642,12 +2642,13 @@ end;
 
 function TJvInterpreterFunctionDesc.GetDefine: string;
 var
-  Fun,s,t:string;
-  Param,Ret:string;
-  i:integer;
+  Fun,s,t: string;
+  Param,Ret: string;
+  i: Integer;
 begin
   Result:='';
-  if FIdentifier='' then Exit;
+  if FIdentifier='' then
+    Exit;
 
   t:='%s %s(%s)%s;';
 
@@ -6230,7 +6231,7 @@ begin
 end;
 
 function TJvInterpreterFunction.NewEvent(const UnitName: string; const FunctionName,
-  EventType: string; Instance: TObject; const APropName:string): TSimpleEvent;
+  EventType: string; Instance: TObject; const APropName: string): TSimpleEvent;
 begin
   Result := FAdapter.NewEvent(UnitName, FunctionName, EventType, Self, Instance, APropName);
   if not Assigned(Result) then
@@ -6242,8 +6243,8 @@ end;
 function TJvInterpreterFunction.FindEvent(const UnitName: string;
   Instance: TObject; const PropName: string): TJvInterpreterEvent;
 var
-  i:integer;
-  Event,Event1 :TJvInterpreterEvent;
+  i: Integer;
+  Event,Event1: TJvInterpreterEvent;
   Method: TMethod;
 begin
   Result:=nil;
@@ -6273,8 +6274,8 @@ var
   MyArgs: TJvInterpreterArgs;
   Variable: Variant;
   Method: TMethod;
-  t:TObject;
-  Event:TJvInterpreterEvent;
+  t: TObject;
+  Event: TJvInterpreterEvent;
 begin
   { may be event assignment }
   if (FCurrArgs.Obj <> nil) and (FCurrArgs.ObjTyp = varObject) then

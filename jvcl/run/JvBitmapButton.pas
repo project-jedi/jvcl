@@ -389,7 +389,8 @@ begin
 end;
 
 procedure TJvBitmapButton.MakeCaption(Target: TBitmap; FontColor: TColor);
-var ARect: TRect;
+var
+  ARect: TRect;
 begin
   if FCaption <> '' then
   begin

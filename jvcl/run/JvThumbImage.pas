@@ -90,16 +90,15 @@ type
     procedure SaveToFile(AFile: string);
     procedure Save;
     procedure BitmapNeeded;
-    //    Procedure FilterFactory(Filter:TFilterArray;Divider:Byte);
+    //    Procedure FilterFactory(Filter: TFilterArray; Divider: Byte);
     procedure Invert;
     procedure Contrast(const Percent: TPercent);
     procedure Lightness(const Percent: TPercent);
     procedure Grayscale;
     procedure Rotate(AAngle: TAngle);
     function GetFilter: string;
-    //Property JpegScale : TJPegScale read vJPegScale write vJpegScale;
+    //property JpegScale: TJPegScale read vJPegScale write vJpegScale;
   published
-    { Published declarations }
     property Angle: TAngle read FAngle write SetAngle;
     property Modified: Boolean read FModified;
     //Property OnRelease : TdestroyNotify read EVonrelease write Evonrelease;
@@ -638,10 +637,10 @@ begin
             end;
         end;
         {    stretchblt(RotateBmp.Canvas.Handle,Dest.Left,Dest.Top,Dest.Right,Dest.Bottom,
-             MemBmp.Canvas.Handle,0,0,MemBmp.Width,MemBmp.Height,SRCCOPY);{}
-        {procedure Rotate180Grad(Bitmap:Graphics.TBitmap);Forward;
-        procedure Rotate90Grad(Bitmap:Graphics.TBitmap);Forward;
-        procedure Rotate270Grad(Bitmap:Graphics.TBitmap);Forward;{}
+             MemBmp.Canvas.Handle,0,0,MemBmp.Width,MemBmp.Height,SRCCOPY);}
+        {procedure Rotate180Grad(Bitmap: Graphics.TBitmap); forward;
+        procedure Rotate90Grad(Bitmap: Graphics.TBitmap); forward;
+        procedure Rotate270Grad(Bitmap: Graphics.TBitmap); forward;}
         StretchBlt(MemBmp.Canvas.Handle, Dest.Left, Dest.Top, Dest.Right, Dest.Bottom,
           MemBmp.Canvas.Handle, 0, 0, MemBmp.Width, MemBmp.Height, SRCCOPY);
         Picture.Graphic.Assign(MemBmp);

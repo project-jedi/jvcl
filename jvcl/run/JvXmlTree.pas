@@ -1418,8 +1418,8 @@ var
   attName, attValue: string;
   attOperator: TJvXMLFilterOperator;
   Atom: TJvXMLFilterAtom;
-  //    a:TJvXMLAttribute;
-  //    n:TJvXMLNode;
+  //    a: TJvXMLAttribute;
+  //    n: TJvXMLNode;
 
   function trimquotes(const s: string): string;
   var

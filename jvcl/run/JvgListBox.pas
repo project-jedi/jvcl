@@ -441,7 +441,7 @@ var
     end;
   end;
 
-  procedure DrawWallpaper; //( DC: HDC; r:TRect );
+  procedure DrawWallpaper; //(DC: HDC; r: TRect);
 
     procedure FillTiled(R: TRect; yOffset: Integer);
     var

@@ -170,9 +170,9 @@ type
     property MaxPixel: TJvMaxPixel read FMaxPixel write FMaxPixel;
     property ReadOnly: Boolean read FReadOnly write SetReadOnly default False; // ain
     {$IFDEF VCL}
-    property Text:TCaption read GetText write SetText;
-    property EmptyValue:string read FEmptyValue write SetEmptyValue;
-    property EmptyFontColor:TColor read FEmptyFontColor write FEmptyFontColor default clGrayText;
+    property Text: TCaption read GetText write SetText;
+    property EmptyValue: string read FEmptyValue write SetEmptyValue;
+    property EmptyFontColor: TColor read FEmptyFontColor write FEmptyFontColor default clGrayText;
     {$ENDIF VCL}
   public
     constructor Create(AOwner: TComponent); override;
@@ -1279,6 +1279,7 @@ procedure TJvCustomComboBox.SetText(const Value: TCaption);
 begin
   inherited Text := Value;
 end;
+
 {$ENDIF VCL}
 
 procedure TJvCustomComboBox.DestroyWnd;

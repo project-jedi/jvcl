@@ -39,7 +39,7 @@ Changes:
     a URL (or file-path) to the URL property.
   * JvAngleLabel merged into JvLabel: set Angle > 0 and font to a TrueTrype font to rotate the text // peter3
 
-  Contributor(s):dierk schmid
+  Contributor(s): dierk schmid
   //dierk 2004-5-04
   --add property RoundedFrame in TJvCustomLabel (Integer>0 is the radius corner)
 

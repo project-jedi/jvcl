@@ -159,7 +159,7 @@ const
 var
   W2kFixMsAcmLibrary: THandle = 0;
 
-function IsWin2kOrAbove:boolean;
+function IsWin2kOrAbove: Boolean;
 begin
   Result := (Win32Platform = VER_PLATFORM_WIN32_NT) and  (Win32MajorVersion >= 5);
 end;

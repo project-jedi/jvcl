@@ -150,8 +150,8 @@ type
     procedure ResetItemHeight;
     procedure SetImageSize(Value: TJvImageSize);
     procedure SetOffset(Value: Integer);
-    function GetDrives(Index: integer): String;
-    function GetDriveCount: integer;
+    function GetDrives(Index: Integer): string;
+    function GetDriveCount: Integer;
   protected
     procedure Resize; override;
     procedure FontChanged; override;
@@ -170,8 +170,8 @@ type
     procedure CreateWnd; override;
     destructor Destroy; override;
     procedure Refresh;
-    property Drives[Index:integer]:String read GetDrives;
-    property DriveCount:integer read GetDriveCount;
+    property Drives[Index: Integer]: string read GetDrives;
+    property DriveCount: Integer read GetDriveCount;
   published
     property MultiSelect;
     property ScrollBars default ssNone;
@@ -272,7 +272,7 @@ type
            in Items, see comment at TJvCustomListBox.LBAddString }
     FDisplayNames: TStringList;
     FOnDriveChangeError: TJvDriveChangeError;
-    FShowAllFolders: boolean;
+    FShowAllFolders: Boolean;
     function GetDrive: Char;
     procedure SetFileList(Value: TJvFileListBox);
     procedure SetDirLabel(Value: TLabel);
@@ -283,7 +283,7 @@ type
     procedure SetDirectory(const NewDirectory: string); virtual;
     procedure ResetItemHeight;
     procedure SetDriveCombo(const Value: TJvDriveCombo);
-    procedure SetShowAllFolders(const Value: boolean);
+    procedure SetShowAllFolders(const Value: Boolean);
   protected
     FImages: TImageList;
     FDirectory: string;
@@ -337,7 +337,7 @@ type
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
-    property ShowAllFolders:boolean read FShowAllFolders write SetShowAllFolders default False;
+    property ShowAllFolders: Boolean read FShowAllFolders write SetShowAllFolders default False;
     property ShowHint;
     property ScrollBars default ssNone;
     property TabOrder;
@@ -1455,7 +1455,7 @@ begin
   inherited Click;
 end;
 
-procedure TJvDirectoryListBox.SetShowAllFolders(const Value: boolean);
+procedure TJvDirectoryListBox.SetShowAllFolders(const Value: Boolean);
 begin
   if FShowAllFolders <> Value then
   begin
@@ -1657,12 +1657,12 @@ begin
   end;
 end;
 
-function TJvDriveList.GetDrives(Index: integer): String;
+function TJvDriveList.GetDrives(Index: Integer): string;
 begin
   Result := FDrives[Index];
 end;
 
-function TJvDriveList.GetDriveCount: integer;
+function TJvDriveList.GetDriveCount: Integer;
 begin
   Result := FDrives.Count;
 end;

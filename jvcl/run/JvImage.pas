@@ -73,7 +73,7 @@ type
     FState: TPicState;
     FPicture: TPicture;
     FClickCount: Integer;
-    FPictureChange:TNotifyEvent;
+    FPictureChange: TNotifyEvent;
     procedure SetState(Value: TPicState);
     procedure PicturesChanged(Sender: TObject);
     procedure DoPictureChange(Sender: TObject);
