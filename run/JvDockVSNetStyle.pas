@@ -512,6 +512,14 @@ begin
     GlobalApplicationEvents := TJvDockAppEvents.Create(nil);
   Result := GlobalApplicationEvents;
 end;
+
+procedure DragControl(WinControl: TWinControl);
+const
+  SM = $F012;
+begin
+  ReleaseCapture;
+  WinControl.Perform(WM_SYSCOMMAND, SM, 0);
+end;
 }
 
 procedure HideAllPopupPanel(ExcludeChannel: TJvDockVSChannel);
@@ -627,14 +635,6 @@ end;
 procedure TJvDockVSNetStyle.CreateTabServerOption(var Option: TJvDockBasicTabServerOption);
 begin
   Option := TJvDockVSNETTabServerOption.Create(Self);
-end;
-
-procedure DragControl(WinControl: TWinControl);
-const
-  SM = $F012;
-begin
-  ReleaseCapture;
-  WinControl.Perform(WM_SYSCOMMAND, SM, 0);
 end;
 
 function TJvDockVSNetStyle.DockClientWindowProc(DockClient: TJvDockClient;
