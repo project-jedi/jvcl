@@ -830,7 +830,8 @@ begin
 end;
 
 initialization
-//  RegisterClasses([TJvValidators, TJvValidationSummary]);
+  // (p3) do NOT touch! This is required to make the registration work!!!
+  RegisterBaseValidators;
 
 finalization
   FinalizeUnit(sUnitName);
