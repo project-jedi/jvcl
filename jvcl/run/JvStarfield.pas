@@ -136,40 +136,6 @@ begin
   end;
 end;
 
-procedure TJvStarfield.Refresh(Sender: TObject);
-var
-  I, J: Integer;
-begin
-  if (FBmp.Height <> Height) or (FBmp.Width <> Width) then
-    Resize
-  else
-  begin
-    FBmp.Canvas.Brush.Color := clBlack;
-    FBmp.Canvas.Brush.Style := bsSolid;
-    FBmp.Canvas.FillRect(Rect(0, 0, Width, Height));
-    for I := 0 to FStars - 1 do
-    begin
-      if FStarfield[I].X < Width then
-        FBmp.Canvas.Pixels[FStarfield[I].X, FStarfield[I].Y] := FStarfield[I].Color;
-      FStarfield[I].X := FStarfield[I].X - FStarfield[I].Speed;
-      if FStarfield[I].X < 0 then
-      begin
-        FStarfield[I].X := Width;
-        FStarfield[I].Y := Random(Height);
-        FStarfield[I].Speed := Random(FMaxSpeed) + 1;
-        J := Random(120) + 120;
-        FStarfield[I].Color := RGB(J, J, J);
-      end;
-    end;
-    Canvas.Lock;
-    try
-      Canvas.Draw(0, 0, FBmp);
-    finally
-      Canvas.Unlock;
-    end;
-  end;
-end;
-
 procedure TJvStarfield.SetActive(const Value: Boolean);
 begin
   FActive := Value;
@@ -186,7 +152,15 @@ begin
   FThread.Delay := Value;
 end;
 
+procedure TJvStarfield.Refresh(Sender: TObject);
+begin
+  Invalidate;
+  Update;
+end;
+
 procedure TJvStarfield.Paint;
+var
+  I, J: Integer;
 begin
   if csDesigning in ComponentState then
   begin
@@ -194,6 +168,37 @@ begin
     Canvas.Pen.Style := psDot;
     Canvas.Pen.Color := clBlack;
     Canvas.Rectangle(ClientRect);
+  end
+  else
+  begin
+    if (FBmp.Height <> Height) or (FBmp.Width <> Width) then
+      Resize
+    else
+    begin
+      FBmp.Canvas.Brush.Color := clBlack;
+      FBmp.Canvas.Brush.Style := bsSolid;
+      FBmp.Canvas.FillRect(Rect(0, 0, Width, Height));
+      for I := 0 to FStars - 1 do
+      begin
+        if FStarfield[I].X < Width then
+          FBmp.Canvas.Pixels[FStarfield[I].X, FStarfield[I].Y] := FStarfield[I].Color;
+        FStarfield[I].X := FStarfield[I].X - FStarfield[I].Speed;
+        if FStarfield[I].X < 0 then
+        begin
+          FStarfield[I].X := Width;
+          FStarfield[I].Y := Random(Height);
+          FStarfield[I].Speed := Random(FMaxSpeed) + 1;
+          J := Random(120) + 120;
+          FStarfield[I].Color := RGB(J, J, J);
+        end;
+      end;
+      Canvas.Lock;
+      try
+        Canvas.Draw(0, 0, FBmp);
+      finally
+        Canvas.Unlock;
+      end;
+    end;
   end;
 end;
 
