@@ -1005,7 +1005,7 @@ uses
   ComObj, ShellAPI, MMSystem, Registry,
   {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
-  Consts, JclSysInfo,
+  Consts, 
   {$ELSE}
   QConsts,
   {$ENDIF VCL}
@@ -3402,6 +3402,14 @@ begin
           end;
           Inc(I, Length(CL) + 1 {'>'});
         end;
+        Inc(I);
+        if (Text[I] = Chr(13)) and Cmp1(string(Chr(10))) then
+        begin
+          Rect.Left := OriRect.Left;
+          Rect.Top := Rect.Top + Canvas.TextHeight(M1 + 'W');
+          Inc(I);
+        end;
+        Dec(I);
         M1 := '';
       end
       else
@@ -3412,7 +3420,7 @@ begin
         Draw(M1);
         PlainItem := PlainItem + M1;
         Rect.Left := OriRect.Left;
-        Rect.Top := Rect.Top + Canvas.TextHeight(M1);
+        Rect.Top := Rect.Top + Canvas.TextHeight(M1 + 'W');
         M1 := '';
       end
       else
