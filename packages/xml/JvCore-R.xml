@@ -45,5 +45,6 @@
     <File Name="..\..\run\JVCLVer.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
     <File Name="..\..\run\JvClxUtils.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
     <File Name="..\..\design\JvActnResForm.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="JvStandardActions: TDataModule" Condition=""/>
+    <File Name="..\..\run\JvPropertyStore.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
   </Contains>
 </Package>
