@@ -1498,7 +1498,7 @@ function ShellExecute(Handle: Integer; Operation, FileName, Parameters,
 function GetTickCount: Cardinal;
 function GetUserName(Buffer: PChar; var Size: Cardinal): LongBool;
 function GetComputerName(Buffer: PChar; var Size: Cardinal): LongBool;
-procedure OutputDebugString(lpOutputString: PChar);
+procedure OutputDebugString(lpOutputString: PAnsiChar);
 function InterlockedIncrement(var I: Integer): Integer;
 function InterlockedDecrement(var I: Integer): Integer;
 function InterlockedExchange(var A: Integer; B: Integer): Integer;
@@ -1638,12 +1638,12 @@ implementation
 
 {$IFDEF MSWINDOWS}
 uses
-  ShellAPI, DateUtils,
+  ShellAPI, DateUtils;
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
-  Xlib,
+uses
+  Xlib;
 {$ENDIF LINUX}
-  QMessages;
 
 const
   VersionInfo = '$RCSfile$' + #13 + '$Revision$' + #13 + '$Date$' + #13;
@@ -6588,7 +6588,7 @@ begin
   QApplication_beep;
 end;
 
-procedure OutputDebugString(lpOutputString: PChar);
+procedure OutputDebugString(lpOutputString: PAnsiChar);
 begin
   WriteLn(ErrOutput, string(lpOutputString));
 end;
@@ -7793,7 +7793,7 @@ var
   TimeVal: TTimeVal;
 begin
   gettimeofday(TimeVal, nil);
-  Performance := CLOCKS_PER_SEC * TimeVal.tv_sec + Timeval.tv_usec;
+  PerformanceCount := CLOCKS_PER_SEC * TimeVal.tv_sec + Timeval.tv_usec;
   Result := true;
 end;
 
@@ -7984,7 +7984,7 @@ begin
   Result := Windows.PulseEvent(Event);
 end;
 
-procedure OutputDebugString(lpOutputString: PChar);
+procedure OutputDebugString(lpOutputString: PAnsiChar);
 begin
   Windows.OutputDebugString(lpOutputString);
 end;
@@ -8463,7 +8463,7 @@ end;
 
 function PostMessage(AControl: TWidgetControl; MsgId: Integer; WPar, LPar: Longint): LongBool;
 begin
-  OutputDebugString(Pchar(Format('Posted message %d', [ MsgId-CM_BASE ])));
+//  OutputDebugString(Pchar(Format('Posted message %d', [ MsgId-CM_BASE ])));
   Result := PostMessage(AControl.Handle, MsgId, WPar, LPar);
 end;
 
@@ -8609,20 +8609,21 @@ function AppEventFilter(App: TApplication; Receiver: QObjectH; Event: QEventH): 
 var
   WinTimer: TWinTimer;
   Mesg: TMessage;
-  PMesg: PMessage;
   Id: Integer;
+  Instance: TWidgetControl;
 begin
   Result := false;
   case QEvent_Type(Event) of
 
   QEventType_Message:
     begin
-      PMesg := PMessage(QCustomEvent_data(QCustomEventH(Event)));
-      PMesg^.Result := 0;
-      FindObject(Receiver).Dispatch(PMesg);
-      OutputDebugString(Pchar(Format('QWindows: Dispatched %d', [PMesg^.msg - CM_BASE])));
+      Mesg := TMessage(QCustomEvent_data(QCustomEventH(Event))^);
+      Mesg.Result := 0;
+      Instance := FindControl(QWidgetH(Receiver));
+      Instance.Dispatch(Mesg);
       Result := True;
     end;
+
   QEventType_Timer:
     begin
       if not QObject_isWidgetType(Receiver) then
@@ -8678,11 +8679,16 @@ initialization
   OutputDebugString('Loading QWindows.pas');
   {$IFDEF LINUX}
   InitGetTickCount;
-  WaitObjectList := THandleObjectList.Create(Application.MainWidget);
+  WaitObjectList := THandleObjectList.Create;
   {$ENDIF LINUX}
   TAppEventHook.Create(Application);
   GlobalCaret := TEmulatedCaret.Create(Application);
   TCriticalSections.Create(Application);
+
+finalization
+  {$IFDEF LINUX}
+  WaitObjectList.Free;
+  {$ENDIF LINUX}
 
 end.
 
