@@ -141,8 +141,8 @@ type
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     procedure SetCaption(const Value: TCaption); override;
-    procedure SetHint(const Value: widestring); override;
-    function DoShowHint(var HintStr: widestring): Boolean; virtual;
+    procedure SetHint(const Value: WideString); override;
+    function DoShowHint(var HintStr: WideString): Boolean; virtual;
     {$ENDIF VisualCLX}
     procedure SetChecked(Value: Boolean); override;
     procedure SetEnabled(Value: Boolean); override;
@@ -208,7 +208,7 @@ type
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); dynamic;
 
     procedure DrawItem(AWinXPBar: TJvXPCustomWinXPBar; ACanvas: TCanvas;
-      Rect: TRect; State: TJvXPDrawState; ShowItemFrame: boolean; Bitmap: TBitmap); virtual;
+      Rect: TRect; State: TJvXPDrawState; ShowItemFrame: Boolean; Bitmap: TBitmap); virtual;
     property ActionLink: TJvXPBarItemActionLink read FActionLink write FActionLink;
   public
     constructor Create(Collection: TCollection); override;
@@ -366,7 +366,7 @@ type
     FGrouped: Boolean;
     FHeaderHeight: Integer;
     FStoredHint: string;
-    FShowItemFrame: boolean;
+    FShowItemFrame: Boolean;
     FRoundedItemFrame: Integer;  // DS
     function IsFontStored: Boolean;
     procedure FontChange(Sender: TObject);
@@ -437,7 +437,7 @@ type
     property RollStep: TJvXPBarRollStep read FRollStep write FRollStep default 3;
     property ShowLinkCursor: Boolean read FShowLinkCursor write FShowLinkCursor default True;
     property ShowRollButton: Boolean read FShowRollButton write SetShowRollButton default True;
-    property ShowItemFrame: boolean read FShowItemFrame write FShowItemFrame;
+    property ShowItemFrame: Boolean read FShowItemFrame write FShowItemFrame;
     property RoundedItemFrame: Integer read FRoundedItemFrame write FRoundedItemFrame default 1; //DS
 
     property AfterCollapsedChange: TJvXPBarOnCollapsedChangeEvent read FAfterCollapsedChange write
@@ -705,7 +705,7 @@ end;
 procedure TJvXPBarItemActionLink.SetHint(const Value: string);
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
-procedure TJvXPBarItemActionLink.SetHint(const Value: widestring);
+procedure TJvXPBarItemActionLink.SetHint(const Value: WideString);
 {$ENDIF VisualCLX}
 begin
   if IsHintLinked then
@@ -832,7 +832,7 @@ begin
 end;
 
 procedure TJvXPBarItem.DrawItem(AWinXPBar: TJvXPCustomWinXPBar; ACanvas: TCanvas;
-  Rect: TRect; State: TJvXPDrawState; ShowItemFrame: boolean; Bitmap: TBitmap);
+  Rect: TRect; State: TJvXPDrawState; ShowItemFrame: Boolean; Bitmap: TBitmap);
 var
   ItemCaption: TCaption;
   HasImages: Boolean;
@@ -1919,7 +1919,9 @@ end;
 procedure TJvXPCustomWinXPBar.Click;
 var
   AllowChange, CallInherited: Boolean;
+  {$IFDEF VCL}
   lItem: TJvXPBarItem;
+  {$ENDIF VCL}
 begin
   CallInherited := True;
   if (FShowRollButton) and (FHitTest <> htNone) then
@@ -2259,7 +2261,7 @@ end;
 function TJvXPBarItemActionLink.DoShowHint(var HintStr: string): Boolean;
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
-function TJvXPBarItemActionLink.DoShowHint(var HintStr: widestring): Boolean;
+function TJvXPBarItemActionLink.DoShowHint(var HintStr: WideString): Boolean;
 {$ENDIF VisualCLX}
 begin
   Result := True;
@@ -2354,11 +2356,8 @@ begin
   begin
     lItem := FVisibleItems[FHoverIndex];
     if Assigned(lItem.FOnDblClick) then
-    begin
       lItem.FOnDblClick(lItem);
-    end;
   end;
-
   inherited DblClick;
 end;
 
