@@ -228,7 +228,8 @@ var
 begin
   S := Trim(RemoveCommentBrackets(Token.Value));
 
-  if IsDirective(S, '$IFDEF') or IsDirective(S, '$IF') then
+  if IsDirective(S, '$IFDEF') or IsDirective(S, '$IF') or
+     IsDirective(S, '$IFNDEF') then
     Inc(InAutoConfig)
   else if IsDirective(S, '$ENDIF') or IsDirective(S, '$IFEND') then
     Dec(InAutoConfig);
