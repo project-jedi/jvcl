@@ -34,8 +34,6 @@ uses
   Windows, Messages, SysUtils, Classes, Forms, TypInfo, ComCtrls, JvSimpleXml,
   JvComponent, IniFiles, Dialogs;
 
-{.$DEFINE GX_OUTLOOK}
-
 type
   TJvTranslator = class(TJvComponent)
   private
@@ -68,11 +66,6 @@ type
   end;
 
 implementation
-
-{$IFDEF GX_OUTLOOK}
- uses
- GX_Outlook; //Haven't found better :-/
-{$ENDIF}
 
 {*******************************************************************}
 procedure TJvTranslator.Translate(const FileName: string);
@@ -115,125 +108,185 @@ var
  ok: Boolean;
  st: string;
 
- function AnalyseCRLF(Value: string):string;
- begin
-   result := StringReplace(Value,'\n',#13#10,[rfReplaceAll]);
- end;
+  procedure TransObject(const Obj: TObject;const Elem: TJvSimpleXmlElem);forward;
 
- procedure TransStrings(const Obj: TObject;const Elem: TJvSimpleXmlElem);
- var
-  i,j: Integer;
- begin
-   for i:=0 to Elem.Items.Count-1 do
-   begin
-     j := Elem.Items[i].Properties.IntValue('Index',MAXINT);
-     if j<TStrings(obj).Count then
-       TStrings(obj).Strings[j] := Elem.Items[i].Properties.Value('Value');
-   end;
- end;
+  function AnalyseCRLF(Value: string):string;
+  begin
+    result := StringReplace(Value,'\n',#13#10,[rfReplaceAll]);
+  end;
 
- procedure TransTreeNodes(const Obj: TObject;const Elem: TJvSimpleXmlElem);
- var
-  i,j: Integer;
- begin
-   for i:=0 to Elem.Items.Count-1 do
-   begin
-     j := Elem.Items[i].Properties.IntValue('Index',MAXINT);
-     if j<TTreeNodes(obj).Count then
-       TTreeNodes(obj).Item[j].Text := Elem.Items[i].Properties.Value('Value');
-   end;
- end;
+  function IsObject(const Obj: TClass; ClassName: string):Boolean;
+  begin
+    if Obj=nil then
+      result := false
+    else
+      result := (Obj.ClassName=ClassName) or (IsObject(Obj.ClassParent,ClassName));
+  end;
 
- procedure TransColumns(const Obj: TObject;const Elem: TJvSimpleXmlElem);
- var
-  i,j: Integer;
- begin
-   for i:=0 to Elem.Items.Count-1 do
-   begin
-     j := Elem.Items[i].Properties.IntValue('Index',MAXINT);
-     if j<TListColumns(obj).Count then
-       TListColumns(obj).Items[j].Caption := Elem.Items[i].Properties.Value('Value');
-   end;
- end;
+  procedure TransStrings(const Obj: TObject;const Elem: TJvSimpleXmlElem);
+  var
+   i,j: Integer;
+  begin
+    for i:=0 to Elem.Items.Count-1 do
+    begin
+      j := Elem.Items[i].Properties.IntValue('Index',MAXINT);
+      if j<TStrings(obj).Count then
+        TStrings(obj).Strings[j] := Elem.Items[i].Properties.Value('Value');
+    end;
+  end;
 
- procedure TransVars;
- var
-  i,j: Integer;
- begin
-   with TJvTranslatorStrings(Component) do
-     for i:=0 to Elem.Items.Count-1 do
-     begin
-       j := TJvTranslatorStrings(Component).IndexOf(Elem.Items[i].Properties.Value('Name'));
-       if j<>-1 then
-         TJvTranslatorStrings(Component).Strings[j] := AnalyseCRLF(Elem.Items[i].Properties.Value('Value'));
-     end;
- end;
+  procedure TransTreeNodes(const Obj: TObject;const Elem: TJvSimpleXmlElem);
+  var
+   i,j: Integer;
+  begin
+    for i:=0 to Elem.Items.Count-1 do
+    begin
+      j := Elem.Items[i].Properties.IntValue('Index',MAXINT);
+      if j<TTreeNodes(obj).Count then
+        TTreeNodes(obj).Item[j].Text := Elem.Items[i].Properties.Value('Value');
+    end;
+  end;
 
- procedure TransListItems(const Obj: TObject;const Elem: TJvSimpleXmlElem);
- var
-  i,j: Integer;
- begin
-   for i:=0 to Elem.Items.Count-1 do
-   begin
-     j := Elem.Items[i].Properties.IntValue('Index',MAXINT);
-     if j<TListItems(obj).Count then
-       with TListItems(obj).Item[j] do
-       begin
-         j := Elem.Items[i].Properties.IntValue('Column',MAXINT);
-         if j=0 then
-           Caption := Elem.Items[i].Properties.Value('Value')
-         else
-         begin
-           dec(j);
-           if j<SubItems.Count then
-             SubItems[j] := Elem.Items[i].Properties.Value('Value');
-         end;
-       end;
-   end;
- end;
+  procedure TransVars;
+  var
+   i,j: Integer;
+  begin
+    with TJvTranslatorStrings(Component) do
+      for i:=0 to Elem.Items.Count-1 do
+      begin
+        j := TJvTranslatorStrings(Component).IndexOf(Elem.Items[i].Properties.Value('Name'));
+        if j<>-1 then
+          TJvTranslatorStrings(Component).Strings[j] := AnalyseCRLF(Elem.Items[i].Properties.Value('Value'));
+      end;
+  end;
 
- procedure TransProperties(const Obj: TObject;const Elem: TJvSimpleXmlElem);
- var
-  i: Integer;
-  prop: PPropInfo;
- begin
+  procedure TransListItems(const Obj: TObject;const Elem: TJvSimpleXmlElem);
+  var
+   i,j: Integer;
+  begin
+    for i:=0 to Elem.Items.Count-1 do
+    begin
+      j := Elem.Items[i].Properties.IntValue('Index',MAXINT);
+      if j<TListItems(obj).Count then
+        with TListItems(obj).Item[j] do
+        begin
+
+          j := Elem.Items[i].Properties.IntValue('Column',MAXINT);
+          if j=0 then
+            Caption := Elem.Items[i].Properties.Value('Value')
+          else
+          begin
+            dec(j);
+            if j<SubItems.Count then
+              SubItems[j] := Elem.Items[i].Properties.Value('Value');
+          end;
+        end;
+    end;
+  end;
+
+  procedure TransProperties(const Obj: TObject;const Elem: TJvSimpleXmlElem);
+  var
+   i,j: Integer;
+   prop: PPropInfo;
+   st: string;
+  begin
+    if Obj=nil then
+      Exit;
     for i:=0 to Elem.Properties.Count-1 do
     try
       prop := GetPropInfo(Obj,Elem.Properties[i].Name,[tkInteger,
-        tkEnumeration, tkString, tkLString]);
+        tkEnumeration, tkSet, tkString, tkLString, tkWString]);
       if prop<>nil then
        case Prop^.PropType^.Kind of
-         tkstring, tkLString:
+         tkstring, tkLString, tkWString:
            SetStrProp(Obj, Prop, StringReplace(Elem.Properties[i].Value,'\n',#13#10,[]));
-         tkEnumeration, tkInteger:
+         tkSet:
+           SetSetProp(Obj, Prop, Elem.Properties[i].Value);
+         tkEnumeration:
+           begin
+             st := Elem.Properties[i].Value;
+             if (StrToIntDef(st,0)=0) and (st<>'0') then
+             begin
+               try
+                 j := GetEnumValue(Prop.PropType^,st);
+               except
+                 j := 0;
+               end;
+             end
+             else
+               j := StrToIntDef(st,0);
+             SetOrdProp(Obj, Prop, j);
+           end;
+         tkInteger:
            SetOrdProp(Obj, Prop, Elem.Properties[i].IntValue);
        end;
     except
     end;
- end;
+  end;
 
- function IsObject(const Obj: TClass; ClassName: string):Boolean;
- begin
-   if Obj=nil then
-     result := false
-   else
-     result := (Obj.ClassName=ClassName) or (IsObject(Obj.ClassParent,ClassName));
- end;
+  procedure TranslateCollection(const Collection: TCollection;const Elem: TJvSimpleXmlElem);
+  var
+   i,j: Integer;
+  begin
+    for i:=0 to Elem.Items.Count-1 do
+    begin
+      j := Elem.Items[i].Properties.IntValue('Index',-1);
+      if j=-1 then
+        Continue;
+      TransProperties(Collection.Items[j],Elem.Items[i]);
+      TransObject(Collection.Items[j],Elem.Items[i]);
+    end;
+  end;
 
- {$IFDEF GX_OUTLOOK}
- procedure TransOutlook;
- var
-  i,j: Integer;
- begin
-   with TFEGXOutlookBar(Component) do
-     for i:=0 to Elem.Items.Count-1 do
-     begin
-       j := Elem.Items[i].Properties.IntValue('Index',MAXINT);
-       if j<TFEGXOutlookBar(Component).Count then
-         TFEGXOutlookBar(Component).Items[j].Caption := Elem.Items[i].Properties.Value('Value');
-     end;
- end;
- {$ENDIF}
+  procedure TransObject(const Obj: TObject;const Elem: TJvSimpleXmlElem);
+  var
+   i,j: Integer;
+   prop: PPropInfo;
+   st: string;
+   lObj: TObject;
+  begin
+    if Obj=nil then
+      Exit;
+    if IsObject(Obj.ClassType,'TCollection') then
+      TranslateCollection(TCollection(Obj),Elem)
+    else
+      for i:=0 to Elem.Items.Count-1 do
+      try
+        prop := GetPropInfo(Obj,Elem.Items[i].Name,[tkInteger,
+          tkEnumeration, tkSet, tkString, tkLString, tkClass]);
+        if prop<>nil then
+         case Prop^.PropType^.Kind of
+           tkstring, tkLString:
+             SetStrProp(Obj, Prop, StringReplace(Elem.Items[i].Value,'\n',#13#10,[]));
+           tkSet:
+             SetSetProp(Obj, Prop, Elem.Items[i].Value);
+           tkEnumeration:
+             begin
+               st := Elem.Items[i].Value;
+               if (StrToIntDef(st,0)=0) and (st<>'0') then
+               begin
+                 try
+                   j := GetEnumValue(Prop.PropType^,st);
+                 except
+                   j := 0;
+                 end;
+               end
+               else
+                 j := StrToIntDef(st,0);
+               SetOrdProp(Obj, Prop, j);
+             end;
+           tkInteger:
+             SetOrdProp(Obj, Prop, Elem.Items[i].IntValue);
+           tkClass:
+             begin
+               lObj := GetObjectProp(Obj,Elem.Items[i].Name);
+               TransProperties(lObj,Elem.Items[i]);
+               TransObject(lObj,Elem.Items[i]);
+             end;
+         end;
+      except
+      end;
+  end;
 
 begin
   if IsObject(Component.ClassType,'TJvTranslatorStrings') then
@@ -241,13 +294,6 @@ begin
     TransVars;
     Exit;
   end;
-  {$IFDEF GX_OUTLOOK}
-  if IsObject(Component.ClassType,'TFEGXOutlookBar') then
-  begin
-    TransOutlook;
-    Exit;
-  end;
-  {$ENDIF}
 
   try
     //Transform properties
@@ -280,12 +326,13 @@ begin
               TransStrings(obj,Elem.Items[i])
             else if IsObject(obj.ClassType,'TTreeNodes') then
               TransTreeNodes(obj,Elem.Items[i])
-            else if IsObject(obj.ClassType,'TListColumns') then
-              TransColumns(obj,Elem.Items[i])
             else if IsObject(obj.ClassType,'TListItems') then
               TransListItems(obj,Elem.Items[i])
             else
+            begin
               TransProperties(obj,Elem.Items[i]);
+              TransObject(obj,Elem.Items[i]);
+            end;
           end;
         end;
       end;
