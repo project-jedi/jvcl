@@ -86,6 +86,7 @@ resourcestring
   RsPaletteGlobusComponents1 = 'JVCL Globus Components 1';
   RsPaletteGlobusComponents2 = 'JVCL Globus Components 2';
   RsPaletteValidators = 'Jv Validators';
+  RsPaletteEDI = 'Jv EDI';
   {$IFDEF USEJVCL}
   RsPaletteUIB = 'Jv UIB';
   RsPaletteMTThreads = 'Jv Threading';
