@@ -209,9 +209,14 @@ type
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
   end;
 
+
+resourcestring
+  sErrorDuringAccessGlyphsListOrGlyphP = 'Error during access GlyphsList or Glyph property';
+
 implementation
 
-uses JvThemes;
+uses
+  JvConsts, JvThemes;
 
 {$R ..\Resources\JvgButton.res}
 
@@ -1152,7 +1157,7 @@ begin
       Bmp.Assign(Glyph);
     end;
   except
-    MessageDlg('Error during access GlyphsList or Glyph property', mtError, [mbOk], 0);
+    MessageDlg(sErrorDuringAccessGlyphsListOrGlyphP, mtError, [mbOk], 0);
     raise;
   end;
 end;

@@ -74,6 +74,10 @@ uses
   SysUtils,
   JclRegistry, JclResources, JclStrings;
 
+resourcestring
+  SUnableToCreateKey = 'Unable to create key ''%s''';
+  SErrorEnumeratingRegistry = 'Error enumerating registry.';
+
 const
   HKEY_Names: array[HKEY_CLASSES_ROOT .. HKEY_DYN_DATA, 0 .. 1] of string = (
     ('HKEY_CLASSES_ROOT', 'HKCR'),
@@ -107,7 +111,7 @@ begin
     if Windows.RegCreateKey(FRegHKEY, PChar(Key), ResKey) = ERROR_SUCCESS then
       RegCloseKey(ResKey)
     else
-      raise Exception.CreateFmt('Unable to create key ''%s''', [Key]);
+      raise Exception.CreateFmt(SUnableToCreateKey, [Key]);
   end;
 end;
 
@@ -134,7 +138,7 @@ begin
         Inc(I);
       until EnumRes <> ERROR_SUCCESS;
       if EnumRes <> ERROR_NO_MORE_ITEMS then
-        raise EJclRegistryError.Create('Error enumerating registry.');
+        raise EJclRegistryError.Create(SErrorEnumeratingRegistry);
     finally
       RegCloseKey(TmpHKEY);
     end;
@@ -170,7 +174,7 @@ begin
         Inc(I);
       until EnumRes <> ERROR_SUCCESS;
       if EnumRes <> ERROR_NO_MORE_ITEMS then
-        raise EJclRegistryError.Create('Error enumerating registry.');
+        raise EJclRegistryError.Create(SErrorEnumeratingRegistry);
     finally
       RegCloseKey(TmpHKEY);
     end;
@@ -203,7 +207,7 @@ begin
         Inc(I);
       until (EnumRes <> ERROR_SUCCESS) or Result;
       if EnumRes <> ERROR_NO_MORE_ITEMS then
-        raise EJclRegistryError.Create('Error enumerating registry.');
+        raise EJclRegistryError.Create(SErrorEnumeratingRegistry);
     end;
   finally
     RegCloseKey(PathHKEY);

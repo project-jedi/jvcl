@@ -626,11 +626,16 @@ type
     property OnStartDock;
   end;
 
+
+resourcestring
+  sInvalidFormatNotAllowed = 'Invalid format: % not allowed';
+  sInvalidFormatsNotAllowed = 'Invalid format: %s not allowed';
+
 implementation
 
 uses
   DBConsts, Dialogs, Math,
-  JvThemes, JvJVCLUtils, JvJCLUtils;
+  JvThemes, JvConsts, JvJVCLUtils, JvJCLUtils;
 
 procedure CheckLookupFormat(const AFormat: string);
 var
@@ -643,10 +648,10 @@ begin
   begin
     Inc(P);
     if P^ = #0 then
-      raise Exception.Create('Invalid format: % not allowed')
+      raise Exception.Create(sInvalidFormatNotAllowed)
     else
     if not (P^ in ['%', 's', 'S']) then
-      raise Exception.Create(Format('Invalid format: %s not allowed',
+      raise Exception.Create(Format(sInvalidFormatsNotAllowed,
         [QuotedStr('%' + P^)]));
     P := StrScan(P + 1, '%');
   end;

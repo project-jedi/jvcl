@@ -108,6 +108,9 @@ uses
   Math,
   JvID3v2Types;
 
+resourcestring
+  SNotActive = 'Not active';
+
 const
   CID3v1Tag = 'TAG'; { do not change case }
   CTagSize = 128;
@@ -214,7 +217,7 @@ end;
 procedure TJvID3v1.CheckActive;
 begin
   if not FActive then
-    raise Exception.Create('Not active');
+    raise Exception.Create(SNotActive);
 end;
 
 procedure TJvID3v1.Close;

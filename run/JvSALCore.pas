@@ -30,8 +30,8 @@ unit JvSALCore;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, jvSAL,
-  math{$IFDEF DELPHI6_UP}, Variants{$ENDIF};
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  JvSAL, JvConsts, JvTypes, Math{$IFDEF DELPHI6_UP}, Variants{$ENDIF};
 
 type
   TJvSALCore = class(TComponent)
@@ -102,6 +102,12 @@ type
     { Published declarations }
   end;
 
+
+resourcestring
+  sVariablesIsNotInitialized = 'variable %s is not initialized';
+  sDivisionByZeroError = 'division by zero error';
+  sMissingendselect = 'missing "endselect"';
+
 implementation
 
 {$IFDEF BCB}
@@ -109,7 +115,6 @@ uses Variants;
 {$ENDIF}
 
 const
-  cr = chr(13) + chr(10);
   tab = chr(9);
 
   { TJvSALCoreBasic }
@@ -226,14 +231,14 @@ end;
 procedure TJvSALCore.xdec;
 begin
   if VarIsEmpty(sal.variable.value) then
-    raise exception.Create('variable ' + sal.variablename + ' is not initialized');
+    raise exception.CreateFmt(sVariablesIsNotInitialized, [sal.variablename]);
   sal.variable.Value := sal.variable.value - 1;
 end;
 
 procedure TJvSALCore.xdeczero; // dec?  decrements a variable and test for zero
 begin
   if VarIsEmpty(sal.variable.value) then
-    raise exception.Create('variable ' + sal.variablename + ' is not initialized');
+    raise exception.CreateFmt(sVariablesIsNotInitialized, [sal.variablename]);
   sal.variable.Value := sal.variable.value - 1;
   if sal.variable.value = 0 then
     sal.boolpush(true)
@@ -247,7 +252,7 @@ var
 begin
   v2 := sal.pop;
   if v2 = 0 then
-    raise exception.create('division by zero error');
+    raise exception.create(sDivisionByZeroError);
   v1 := sal.pop;
   sal.push(v1 / v2);
 end;
@@ -286,7 +291,7 @@ begin
     end;
     sal.pc := sal.pc + 1;
   end;
-  raise exception.create('missing "endselect"');
+  raise exception.create(sMissingendselect);
 end;
 
 procedure TJvSALCore.xEndIf;
@@ -348,7 +353,7 @@ end;
 procedure TJvSALCore.xinc;
 begin
   if VarIsEmpty(sal.variable.value) then
-    raise exception.Create('variable ' + sal.variablename + ' is not initialized');
+    raise exception.CreateFmt(sVariablesIsNotInitialized, [sal.variablename]);
   sal.variable.Value := sal.variable.value + 1;
 end;
 
@@ -449,24 +454,24 @@ var
   v1: variant;
 begin
   if VarIsEmpty(sal.variable.value) then
-    raise exception.Create('variable ' + sal.variablename + ' is not initialized');
+    raise exception.CreateFmt(sVariablesIsNotInitialized, [sal.variablename]);
   v1 := sal.pop;
   if v1 = 0 then
-    raise exception.create('division by zero error');
+    raise exception.create(sDivisionByZeroError);
   sal.variable.Value := sal.variable.value / v1;
 end;
 
 procedure TJvSALCore.xvMul; // *=
 begin
   if VarIsEmpty(sal.variable.value) then
-    raise exception.Create('variable ' + sal.variablename + ' is not initialized');
+    raise exception.CreateFmt(sVariablesIsNotInitialized, [sal.variablename]);
   sal.variable.Value := sal.variable.value * sal.pop;
 end;
 
 procedure TJvSALCore.xvSub; // -=
 begin
   if VarIsEmpty(sal.variable.value) then
-    raise exception.Create('variable ' + sal.variablename + ' is not initialized');
+    raise exception.CreateFmt(sVariablesIsNotInitialized, [sal.variablename]);
   sal.variable.Value := sal.variable.value - sal.pop;
 end;
 

@@ -168,6 +168,9 @@ uses
 
 //uses {$IFNDEF COMPILER6_UP}Gifimage,{$ENDIF} Pcx_unit, Targa, PngImage, jpeg;
 
+resourcestring
+  sUnknown = 'Unknown';
+
 constructor TJvThumbnail.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -398,21 +401,21 @@ begin
     try
       FDFileAccessed := DateTimeToStr(FileDateToDateTime(Dft));
     except
-      FDFileAccessed := 'Unknown'
+      FDFileAccessed := sUnknown;
     end;
     FileTimeToLocalFileTime(FileInfo.ftLastwriteTime, Lft);
     FileTimeToDosDateTime(Lft, LongRec(Dft).Hi, LongRec(Dft).Lo);
     try
       FDFileChanged := DateTimeToStr(FileDateToDateTime(Dft));
     except
-      FDFileChanged := 'Unknown';
+      FDFileChanged := sUnknown;
     end;
     FileTimeToLocalFileTime(FileInfo.ftCreationTime, Lft);
     FileTimeToDosDateTime(Lft, LongRec(Dft).Hi, LongRec(Dft).Lo);
     try
       FDFileCreated := DateTimeToStr(FileDateToDateTime(Dft));
     except
-      FDFileCreated := 'Unknown';
+      FDFileCreated := sUnknown;
     end;
     FDFileSize := (FileInfo.nFileSizeHigh * MAXDWORD) + FileInfo.nFileSizeLow;
   end;

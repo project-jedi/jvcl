@@ -136,11 +136,19 @@ uses
   {$ENDIF}
   JvTypes;
 
+resourcestring
+  sFileNameChange = 'Filename Change';
+  sDirectoryNameChange = 'Directory Name Change';
+  sAttributesChange = 'Attributes Change';
+  sSizeChange = 'Size Change';
+  sWriteChange = 'Write Change';
+  sSecurityChange = 'Security Change';
+
 function ActionsToString(Actions: TJvChangeActions): string;
 const
-  ActionStrings: array [TJvChangeAction] of PChar =
-    ('Filename Change', 'Directory Name Change', 'Attributes Change',
-     'Size Change', 'Write Change', 'Security Change');
+  ActionStrings: array [TJvChangeAction] of string =
+    (sFileNameChange, sDirectoryNameChange, sAttributesChange,
+     sSizeChange, sWriteChange, sSecurityChange);
 var
   I: TJvChangeAction;
 begin

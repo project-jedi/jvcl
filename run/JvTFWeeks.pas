@@ -105,6 +105,9 @@ type
 
 implementation
 
+resourcestring
+  sWeekOf = 'Week of %d';
+
 { TJvTFWeeks }
 
 procedure TJvTFWeeks.ConfigCells;
@@ -505,7 +508,7 @@ procedure TJvTFWeeks.UpdateTitle;
 var
   NewTitle : String;
 begin
-  NewTitle := 'Week of ' + FormatDateTime('mmm d, yyyy', OriginDate);
+  NewTitle := Format(sWeekOf, [FormatDateTime('mmm d, yyyy', OriginDate)]);
   If NewTitle <> TitleAttr.Title Then
     Begin
       If Assigned(FOnUpdateTitle) Then

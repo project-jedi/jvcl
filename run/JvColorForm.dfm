@@ -3,7 +3,7 @@ object JvClrFrm: TJvClrFrm
   Top = 177
   BorderIcons = []
   BorderStyle = bsDialog
-  Caption = ' '
+  Caption = ''
   ClientHeight = 143
   ClientWidth = 128
   Color = clBtnFace

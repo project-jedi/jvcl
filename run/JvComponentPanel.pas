@@ -112,6 +112,9 @@ implementation
 
 {$R ..\resources\JvComponentPanel.res}
 
+resourcestring
+  SInvalidButtonCount = 'Invalid ButtonCount';
+
 constructor TJvComponentPanel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -217,7 +220,7 @@ var
   TmpButton: TSpeedButton;
 begin
   if (AButtonCount < 0) or (AButtonCount > 100) then
-    raise Exception.Create('Invalid ButtonCount');
+    raise Exception.Create(SInvalidButtonCount);
   BeginUpdate;
   try
     SetMainButton;

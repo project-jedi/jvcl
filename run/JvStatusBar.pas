@@ -98,9 +98,14 @@ type
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   end;
 
+
+resourcestring
+  sInvalidControlSelection = 'Invalid control selection.';
+
 implementation
 uses
-  Math;
+  Math,
+  JvConsts;
   
 constructor TJvStatusBar.Create(AOwner: TComponent);
 begin
@@ -292,7 +297,7 @@ begin
     if FControl <> nil then
     begin
       if FControl = S then
-        raise Exception.Create('Invalid control selection.');
+        raise Exception.Create(sInvalidControlSelection);
       FControl.Parent := S;
       FControl.Height := S.ClientHeight - 4;
       FControl.FreeNotification(S);

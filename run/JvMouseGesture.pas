@@ -440,6 +440,9 @@ implementation
 
 //******************************************************************************
 
+resourcestring
+  sCannotHookTwice = 'Fatal: You can''t hook this event twice :-(';
+
 const
 
   JVMG_LEFT = 0;
@@ -829,7 +832,7 @@ procedure TJvMouseGestureHook.CreateForThreadOrSystem(aOwner: TComponent; aDwThr
 begin
   if JvMouseGestureHookAlreadyInstalled then
   begin
-    raise Exception.Create('[JVMouseGesture] Fatal: You can''t hook this event twice :-(');
+    raise Exception.Create('[JVMouseGesture] ' + sCannotHookTwice);
     halt;
   end;
 

@@ -197,9 +197,19 @@ type
     property ImageIndex: integer read FImageIndex write SetImageIndex;
   end;
 
+
+resourcestring
+  sControlNotFoundInGetError = 'Control not found in GetError';
+  sControlNotFoundInGetImageAlignment = 'Control not found in GetImageAlignment';
+  sControlNotFoundInGetImagePadding = 'Control not found in GetImagePadding';
+  sUnableToAddControlInSetError = 'Unable to add control in SetError';
+  sUnableToAddControlInSetImageAlignme = 'Unable to add control in SetImageAlignment';
+  sUnableToAddControlInSetImagePadding = 'Unable to add control in SetImagePadding';
+
 implementation
 uses
-  CommCtrl;
+  CommCtrl,
+  JvConsts;
 
 const
   cDefBlinkCount = 5;
@@ -272,7 +282,7 @@ begin
   if (i > -1) then
     Result := Controls[i].Error
   else
-    raise Exception.Create('Control not found in GetError');
+    raise Exception.Create(sControlNotFoundInGetError);
 end;
 
 function TJvErrorIndicator.GetImageAlignment(
@@ -283,7 +293,7 @@ begin
   if (i > -1) then
     Result := Controls[i].ImageAlignment
   else
-    raise Exception.Create('Control not found in GetImageAlignment');
+    raise Exception.Create(sControlNotFoundInGetImageAlignment);
 end;
 
 function TJvErrorIndicator.GetImagePadding(AControl: TControl): integer;
@@ -293,7 +303,7 @@ begin
   if (i > -1) then
     Result := Controls[i].ImagePadding
   else
-    raise Exception.Create('Control not found in GetImagePadding');
+    raise Exception.Create(sControlNotFoundInGetImagePadding);
 end;
 
 function TJvErrorIndicator.IndexOf(AControl: TControl): integer;
@@ -397,7 +407,7 @@ begin
       UpdateControls;
     end
     else
-      raise Exception.Create('Unable to add control in SetError');
+      raise Exception.Create(sUnableToAddControlInSetError);
   end;
 end;
 
@@ -414,7 +424,7 @@ begin
     if i > -1 then
       Controls[i].ImageAlignment := Value
     else
-      raise Exception.Create('Unable to add control in SetImageAlignment');
+      raise Exception.Create(sUnableToAddControlInSetImageAlignme);
   end;
 end;
 
@@ -431,7 +441,7 @@ begin
     if i > 1 then
       Controls[i].ImagePadding := Value
     else
-      raise Exception.Create('Unable to add control in SetImagePadding');
+      raise Exception.Create(sUnableToAddControlInSetImagePadding);
   end;
 end;
 

@@ -262,10 +262,15 @@ type
 
   EJvDBTreeViewError = class(ETreeViewError);
 
+
+resourcestring
+  sErrorValueForDetailValue = 'error value for DetailValue';
+  sInternalError = 'internal error';
+
 implementation
 
 uses
-  JvDBConsts;
+  JvConsts, JvDBConsts;
 
 // (rom) moved to implementation and removed type
 // (rom) never rely on assignable consts
@@ -737,7 +742,7 @@ var
     begin
       Result := FGetDetailValue(AMasterValue, DetailValue);
       if DetailValue = FStartMasterValue then
-        raise EJvDBTreeViewError.Create('error value for DetailValue');
+        raise EJvDBTreeViewError.Create(sErrorValueForDetailValue);
     end
     else
     begin
@@ -747,7 +752,7 @@ var
       begin
         DetailValue := V[1];
         if DetailValue = FStartMasterValue then
-          raise EJvDBTreeViewError.Create('internal error');
+          raise EJvDBTreeViewError.Create(sInternalError);
       end;
     end;
   end;

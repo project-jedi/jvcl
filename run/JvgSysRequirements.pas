@@ -85,15 +85,9 @@ type
     property OnWarning: OnWarningEvent read FOnWarning write FOnWarning;
   end;
 
-procedure Register;
-
 implementation
-uses JvgConstSysRequirements;
-
-procedure Register;
-begin
-  //  RegisterComponents('Gl Components', [TJvgSysRequirements]);
-end;
+uses
+  JvgConstSysRequirements;
 
 { TJvgSysRequirements }
 

@@ -33,7 +33,7 @@ unit JvgUtils;
 interface
 uses
   Windows, Messages, Graphics, ExtCtrls, SysUtils, Classes, Controls, Forms,
-  JvgTypes, JvgCommClasses, Jvg3DColors, mmsystem;
+  JvgTypes, JvgCommClasses, Jvg3DColors, MMSystem;
 
 function Min(i1, i2: integer): integer;
 function Max(i1, i2: integer): integer;
@@ -144,8 +144,19 @@ function StrPosExt(const Str1, Str2: PChar; Str2Len: DWORD): PChar; assembler;
 function DeleteObject(p1: HGDIOBJ): BOOL; stdcall;
 {$ENDIF}
 
+
+resourcestring
+  sRightBraketsNotFound = 'Right brakets not found';
+  sRightBraketHavntALeftOnePosd = 'Right braket havn''t a left one. Pos: %d';
+  sDivideBy = 'Divide by 0';
+  sDuplicateSignsPos = 'Duplicate signs. Pos:';
+  sDuplicateSignsAtPos = 'Duplicate signs at. Pos:';
+  sExpressionStringIsEmpty = 'Expression string is empty.';
+
 implementation
-uses shlobj;
+uses
+  ShlObj,
+  JvConsts;
 
 { debug func }
 {$IFDEF glDEBUG}
@@ -1579,7 +1590,7 @@ var
               NextChar;
             if cCurrChar <> ')' then
             begin
-              raise Exception.Create('Right brakets not found');
+              raise Exception.Create(sRightBraketsNotFound);
               fCalcResult := false;
               Result := 0;
             end
@@ -1594,7 +1605,7 @@ var
     begin
       dec(BracketsCount);
       if BracketsCount < 0 then
-        raise Exception.Create('Right braket havn''t a left one. Pos:' + IntToStr(ExpressionPtr - 1));
+        raise Exception.Create(Format(sRightBraketHavntALeftOnePosd, [ExpressionPtr - 1]));
     end;
   end;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1622,7 +1633,7 @@ var
             else
             begin
               fCalcResult := false;
-              raise Exception.Create('Divide by 0');
+              raise Exception.Create(sDivideBy);
             end;
           end;
       else //case else
@@ -1643,14 +1654,14 @@ var
           begin
             NextChar;
             if cCurrChar in ['+', '-', '/', '*'] then
-              raise Exception.Create('Duplicate signs. Pos:' + IntToStr(ExpressionPtr - 1));
+              raise Exception.Create(sDuplicateSignsPos + IntToStr(ExpressionPtr - 1));
             Result := Result + TestFor_MulDiv;
           end;
         '-':
           begin
             NextChar;
             if cCurrChar in ['+', '-', '/', '*'] then
-              raise Exception.Create('Duplicate signs at. Pos:' + IntToStr(ExpressionPtr - 1));
+              raise Exception.Create(sDuplicateSignsAtPos + IntToStr(ExpressionPtr - 1));
             Result := Result - TestFor_MulDiv;
           end;
       else
@@ -1666,7 +1677,7 @@ begin //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~MAIN PROC
   sExpression := trim(sExpression);
 
   ExpressionLength := Length(sExpression);
-  if ExpressionLength = 0 then Exception.Create('Expression string is empty.');
+  if ExpressionLength = 0 then Exception.Create(sExpressionStringIsEmpty);
   fCalcResult := true;
   NextChar;
   Result := Expression;

@@ -33,8 +33,8 @@ unit JvHLEditorPropertyForm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, ComCtrls, Controls, 
-  Forms, StdCtrls, ExtCtrls, 
+  Windows, Messages, SysUtils, Classes, Graphics, ComCtrls, Controls,
+  Forms, StdCtrls, ExtCtrls,
   JvFormPlacement, JvEditor, JvHLEditor;
 
 type
@@ -178,6 +178,10 @@ const
     'Perl', 'Ini', 'CocoR', 'Php'
     {$IFDEF HL_NOT_QUITE_C}, 'NQC'{$ENDIF HL_NOT_QUITE_C}, 'User Defined'
     );
+
+
+resourcestring
+  sGridCellNotFound = 'Grid cell not found';
 
 implementation
 
@@ -594,7 +598,7 @@ function TJvHLEditorParamsForm.GetCell(const Index: Integer): TPanel;
 begin
   Result := FindComponent('Cell' + IntToStr(Index)) as TPanel;
   if Result = nil then
-    raise Exception.Create('Grid cell not found');
+    raise Exception.Create(sGridCellNotFound);
 end;
 
 function TJvHLEditorParamsForm.ColorToIndex(const AColor: TColor): Integer;

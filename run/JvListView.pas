@@ -118,7 +118,14 @@ type
 
   end;
 
+
+resourcestring
+  sTooManyColumns = 'too many columns';
+
 implementation
+
+uses
+  JvConsts;
 
 //=== TJvListItem ============================================================
 
@@ -946,7 +953,7 @@ begin
   ListView_GetColumnOrderArray(Columns.Owner.Handle, Columns.Count, @Res[0]);
   Result := '';
   if Columns.Count > cColumnsHandled then
-    raise EJvListViewError.Create('TJvListView.GetColumnsOrder: too many columns');
+    raise EJvListViewError.Create('TJvListView.GetColumnsOrder: ' + sTooManyColumns);
   for I := 0 to Columns.Count - 1 do
   begin
     if Result <> '' then

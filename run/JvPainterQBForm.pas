@@ -85,7 +85,17 @@ var
   QBFile: string;
   QBDRed, QBDBlue, QBDGreen: byte;
 
+
+resourcestring
+  sPainterQuickBackdrops = 'Painter Quick Backdrops';
+  sEnterName = 'Enter Name:';
+  sNoItemSelected = 'No item selected!';
+  sErrorInPresets = 'Error in Presets';
+
 implementation
+
+uses
+  JvConsts;
 
 {$R *.DFM}
 
@@ -432,7 +442,7 @@ procedure TPainterQBF.AddBackdrop1Click(Sender: TObject);
 var
   s: string;
 begin
-  s := inputbox('Painter Quick Backdrops', 'Enter Name:', '');
+  s := inputbox(sPainterQuickBackdrops, sEnterName, '');
   if s = '' then exit;
   s := s + '=' + inttostr(QBRedfn) + ','
     + inttostr(QBGreenfn) + ','
@@ -501,13 +511,13 @@ var
 begin
   if not (qbpresets.ItemIndex >= 0) then
   begin
-    showmessage('No item selected!');
+    showmessage(sNoItemSelected);
     exit;
   end;
   s := qbpresets.items[qbpresets.itemindex];
   p := pos('=', s);
   s := copy(s, 1, p - 1);
-  s := inputbox('Painter Quick Backdrops', 'Enter Name:', s);
+  s := inputbox(sPainterQuickBackdrops, sEnterName, s);
   if s = '' then exit;
   s := s + '=' + inttostr(QBRedfn) + ','
     + inttostr(QBGreenfn) + ','
@@ -547,7 +557,7 @@ begin
     QuickBack;
     result := true;
   except
-    showmessage('Error in Presets');
+    showmessage(sErrorInPresets);
     result := false;
   end;
   Alist.free;

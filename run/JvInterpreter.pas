@@ -1018,6 +1018,15 @@ const
   irEndOfFile = 304;
   irClass = 305;
 
+
+resourcestring
+  sSorryDynamicArraysSupportIsMadeForO = 'Sorry. Dynamic arrays support is made for one-dimensional arrays only.';
+  sSorryForOnedimensionalArraysOnly = 'Sorry. For one-dimensional arrays only.';
+  sSorryForOnedimensionalArraysOnly_ = 'Sorry.For one-dimensional arrays only.';
+  snotImplemented = ' not implemented';
+  sUnknownRecordType = 'Unknown RecordType';
+  sRangeCheckError = 'range check error';
+
 implementation
 
 uses
@@ -1026,7 +1035,7 @@ uses
   OleConst,
   ActiveX, ComObj,
 {$ENDIF JvInterpreter_OLEAUTO}
-  JvInterpreterConst, JvJVCLUtils, JvJCLUtils;
+  JvConsts, JvInterpreterConst, JvJVCLUtils, JvJCLUtils;
 
 {$R ..\resources\JvInterpreter.res} { error messages }
 
@@ -1998,7 +2007,7 @@ var
 begin
   ArrayRec := PJvInterpreterArrayRec(TVarData(AArray).VPointer);
   if ArrayRec^.Dimension > 1 then
-    raise exception.Create('Sorry. Dynamic arrays support is made for one-dimensional arrays only.');
+    raise exception.Create(sSorryDynamicArraysSupportIsMadeForO);
   OldSize := ArrayRec^.Size;
   if OldSize > ASize then
   begin
@@ -2028,7 +2037,7 @@ var
 begin
   ArrayRec := PJvInterpreterArrayRec(TVarData(AArray).VPointer);
   if ArrayRec^.Dimension > 1 then
-    raise exception.Create('Sorry. For one-dimensional arrays only.');
+    raise exception.Create(sSorryForOnedimensionalArraysOnly);
   Result := ArrayRec^.Size;
 end;
 
@@ -2038,7 +2047,7 @@ var
 begin
   ArrayRec := PJvInterpreterArrayRec(TVarData(AArray).VPointer);
   if ArrayRec^.Dimension > 1 then
-    raise exception.Create('Sorry. For one-dimensional arrays only.');
+    raise exception.Create(sSorryForOnedimensionalArraysOnly);
   Result := ArrayRec^.BeginPos[0];
 end;
 
@@ -2048,7 +2057,7 @@ var
 begin
   ArrayRec := PJvInterpreterArrayRec(TVarData(AArray).VPointer);
   if ArrayRec^.Dimension > 1 then
-    raise exception.Create('Sorry. For one-dimensional arrays only.');
+    raise exception.Create(sSorryForOnedimensionalArraysOnly);
   Result := ArrayRec^.EndPos[0];
 end;
 
@@ -2058,7 +2067,7 @@ var
 begin
   ArrayRec := PJvInterpreterArrayRec(TVarData(AArray).VPointer);
   if ArrayRec^.Dimension > 1 then
-    raise exception.Create('Sorry. For one-dimensional arrays only.');
+    raise exception.Create(sSorryForOnedimensionalArraysOnly);
   if (AElement < ArrayRec^.BeginPos[0]) or (AElement > ArrayRec^.EndPos[0]) then
     JvInterpreterError(ieArrayIndexOutOfBounds, -1);
   ArrayRec^.EndPos[0] := ArrayRec^.EndPos[0] - 1;
@@ -2079,7 +2088,7 @@ var
 begin
   ArrayRec := PJvInterpreterArrayRec(TVarData(AArray).VPointer);
   if ArrayRec^.Dimension > 1 then
-    raise exception.Create('Sorry.For one-dimensional arrays only.');
+    raise exception.Create(sSorryForOnedimensionalArraysOnly_);
   if (AElement < ArrayRec^.BeginPos[0]) or (AElement > ArrayRec^.EndPos[0]) then
     JvInterpreterError(ieArrayIndexOutOfBounds, -1);
   ArrayRec^.EndPos[0] := ArrayRec^.EndPos[0] + 1;
@@ -2108,7 +2117,7 @@ begin
   begin
     ArrayRec := PJvInterpreterArrayRec(TVarData(V).VPointer);
     if ArrayRec^.Dimension > 1 then
-      raise exception.Create('Sorry.For one-dimensional arrays only.');
+      raise exception.Create(sSorryForOnedimensionalArraysOnly_);
     Size := ArrayRec^.Size;
     for i := 0 to Size - 1 do
     begin
@@ -4651,7 +4660,7 @@ end;
 
 procedure TJvInterpreterExpression.ErrorNotImplemented(Message: string);
 begin
-  JvInterpreterErrorN(ieInternal, PosBeg, Message + ' not implemented');
+  JvInterpreterErrorN(ieInternal, PosBeg, Message + snotImplemented);
 end;
 
 function TJvInterpreterExpression.PosBeg: Integer;
@@ -5230,7 +5239,7 @@ begin
       if not (FAdapter.SetRecord(Result) or
         (Assigned(GlobalJvInterpreterAdapter) and (FAdapter <> GlobalJvInterpreterAdapter) and
         GlobalJvInterpreterAdapter.SetRecord(Result))) then
-        JvInterpreterErrorN(ieRecordNotDefined, -1, 'Unknown RecordType');
+        JvInterpreterErrorN(ieRecordNotDefined, -1, sUnknownRecordType);
     { Args.HasVars may be changed in previous call to GetValue }
     if Args.HasVars then
       UpdateVarParams;
@@ -5293,7 +5302,7 @@ begin
       if Args.Count > 1 then
         JvInterpreterError(ieArrayTooManyParams, -1);
       if Length(Variable) = 0 then
-        raise ERangeError.Create('range check error');
+        raise ERangeError.Create(sRangeCheckError);
       Value := string(Variable)[Integer(Args.Values[0])];
       Result := True;
     end

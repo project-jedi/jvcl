@@ -70,6 +70,7 @@ uses
 
 const
   cInvalidPropertyFmt = 'Invalid property: %s';
+  SNoPathSpecified = 'No path specified';
 
 function TJvAppInfo.LoadRegistry: Boolean;
 var
@@ -231,7 +232,7 @@ end;
 procedure TJvAppInfo.CheckPath;
 begin
   if SavePath = '' then
-    raise EJVCLException.Create('No path specified');
+    raise EJVCLException.Create(SNoPathSpecified);
 end;
 
 constructor TJvAppInfo.Create;

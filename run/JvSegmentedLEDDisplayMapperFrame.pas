@@ -143,7 +143,17 @@ type
     property OnMappingChanged: TNotifyEvent read FOnMappingChanged write FOnMappingChanged;
   end;
 
+
+resourcestring
+  sTheCurrentCharacterHasBeenModifiedA = 'The current character has been modified. Apply changes?';
+  sTheCurrentMappingHasBeenModifiedSav = 'The current mapping has been modified. Save changes to file?';
+  sSegmentedLEDDisplayMappingFilessdms = 'Segmented LED display mapping files (*.sdm)|*.sdm|All files (*.*)|*.*';
+  sSelectCharacter = 'Select character...';
+  sSpecifyANewCharacter = 'Specify a new character';
+
 implementation
+
+uses JvConsts;
 
 {$R *.DFM}
 
@@ -162,7 +172,7 @@ var
 begin
   if FCharModified then
   begin
-    mr := MessageDlg('The current character has been modified. Apply changes?', mtConfirmation,
+    mr := MessageDlg(sTheCurrentCharacterHasBeenModifiedA, mtConfirmation,
       [mbYes, mbNo, mbCancel], 0);
     Result := mr <> mrCancel;
     if mr = mrYes then
@@ -180,7 +190,7 @@ var
 begin
   if FMapperModified then
   begin
-    mr := MessageDlg('The current mapping has been modified. Save changes to file?', mtConfirmation,
+    mr := MessageDlg(sTheCurrentMappingHasBeenModifiedSav, mtConfirmation,
       [mbYes, mbNo, mbCancel], 0);
     Result := mr <> mrCancel;
     if mr = mrYes then
@@ -199,7 +209,7 @@ begin
     InitialDir := LastSaveFolder;
     Options := [ofOverwritePrompt, ofNoChangeDir, ofNoValidate, ofPathMustExist, ofShareAware,
       ofNoReadOnlyReturn, ofNoTestFileCreate, ofEnableSizing];
-    Filter := 'Segmented LED display mapping files (*.sdm)|*.sdm|All files (*.*)|*.*';
+    Filter := sSegmentedLEDDisplayMappingFilessdms;
     FilterIndex := 0;
     FileName := FLastSaveFileName;
     Result := Execute;
@@ -334,7 +344,7 @@ begin
       InitialDir := LastOpenFolder;
       Options := [ofNoChangeDir, ofPathMustExist, ofFileMustExist, ofShareAware, ofNoNetworkButton,
         ofNoLongNames, ofEnableSizing];
-      Filter := 'Segmented LED display mapping files (*.sdm)|*.sdm|All files (*.*)|*.*';
+      Filter := sSegmentedLEDDisplayMappingFilessdms;
       FilterIndex := 0;
       if Execute then
       begin
@@ -429,7 +439,7 @@ begin
     S := '';
   Done := False;
   repeat
-    if InputQuery('Select character...', 'Specify a new character', S) then
+    if InputQuery(sSelectCharacter, sSpecifyANewCharacter, S) then
     begin
       if Length(S) > 0 then
       begin

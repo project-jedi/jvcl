@@ -39,9 +39,17 @@ type
   TLogicRule = (lrEqual, lrBeginWith, lrEndWith, lrContains, lrContainsIn,
     ltNotEmpty);
 
+resourcestring
+  sEqualTo = 'equal to';
+  sStartingWith = 'starting with';
+  sEndsWith = 'ends with';
+  sContains = 'contains';
+  sIsContainedWithin = 'is contained within';
+  sNotEmpty = 'not empty';
+  
 const
-  LogicRuleLabels: array[TLogicRule] of string = ('equal to',
-    'starting with', 'ends with', 'contains', 'is contained within', 'not empty');
+  LogicRuleLabels: array[TLogicRule] of string = (sEqualTo,
+    sStartingWith, sEndsWith, sContains, sIsContainedWithin, sNotEmpty);
 
 type
   TJvgLogics = class;
@@ -237,13 +245,19 @@ type
     SetItem; default;
   end;
 
+
+resourcestring
+  sStep = 'Step ';
+  sComments = 'Comments';
+
 implementation
-uses JvgUtils;
+uses
+  JvConsts, JvgUtils;
 
 constructor TJvgLogicElement.Create(Collection: TCollection);
 begin
   inherited Create(Collection);
-  Caption := 'Step ' + IntToStr(ID);
+  Caption := sStep + IntToStr(ID);
   FNextElementID := -1;
   FNextFalseElementID := -1;
   FLogicVariants := TJvgLogicVariants.Create(TJvgLogicVariant);
@@ -561,7 +575,7 @@ end;
 function TJvgCommentAreas.Add: TJvgCommentArea;
 begin
   Result := TJvgCommentArea(inherited Add);
-  Result.Text := 'Comments';
+  Result.Text := sComments;
 end;
 
 function TJvgCommentAreas.GetItem(Index: Integer): TJvgCommentArea;

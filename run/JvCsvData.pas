@@ -615,6 +615,36 @@ uses
   {$ENDIF}
   ;
 
+resourcestring
+  sProblemReadingRow = 'Problem reading row %d';
+  sNoRecord = 'No records';
+  sTimeTConvError = 'SetFieldData Error - TimeT-to-DateTime conversion error.';
+  sFieldTypeNotHandled = 'SetFieldData Error - Field type not handled.';
+  sUndableToLocateCSVFileInfo = 'Unable to locate CSV file information for field %s';
+  sPhysicalLocationOfCSVField = 'Physical location of CSV field %s unknown.';
+  sInvalidFieldTypeCharacter = 'Invalid field type character: %s';
+  sUnexpectedError = 'Unexpected error parsing CSV Field Definitions';
+  sFieldDefinitionError = 'Field Definition Error. CsvFieldDef, FieldDefs, and file contents must match.';
+  sInvalidCsvKeyDef = 'Invalid CsvKeyDef property. InternalInitFieldDefs failed.';
+  sInternalErrorParsingCsvKeyDef = 'Internal Error parsing CsvKeyDef. InternalInitFieldDefs failed.';
+  sContainsField = 'CsvKeyDef contains field ''%s'' which is not defined. InternalInitFieldDefs failed.';
+  sInsertBlocked = 'InternalAddRecord Can''t Add. Insert blocked.';
+  sPostingHasBeenBlocked = 'Posting to this database has been blocked.';
+  sKeyNotUnique = '%s - Key is not unique ';
+  sCannotInsertNewRow = 'Can''t insert new row. Insert blocked.';
+  sCannotPost = 'Post: Can''t post. Not in not dsEdit or dsInsert mode';
+  sSortFailedCommaSeparated = 'Sort failed. You must give a comma separated list of field names.';
+  sSortFailedFieldNames = 'Sort failed. Unable to parse field names. ';
+  sSortFailedInvalidFieldNameInList = 'Sort failed. Invalid field name in list: %s';
+  sDataSetNotOpen = 'AppendRowString: DataSet is not open (active not set to true)';
+  sErrorProcessingFirstLine = 'Error processing first line of CSV file.';
+  sFieldInFileButNotInDefinition = 'ProcessCsvHeaderRow: Field %s found in file, but not in field definitions.';
+  sCsvFieldLocationError = 'Csv field location error: %s';
+  sFieldNotFound = 'Field %s not found in the data file.';
+  sCsvStringTooLong = 'CSV String is too long: %s...';
+  sInternalLimit = 'JvCsvData - Internal Limit of MAXCOLUMNS (%d) reached. CSV Data has too many columns';
+  sError = '<ERROR>';
+
 var
   CallCount: integer;
   AsciiTime_MinValue : array[1..6] of integer     = ( 1900, 1 , 1, 0, 0, 0 );
@@ -1280,7 +1310,7 @@ begin
       GetCalcFields(Buffer);
 
     except
-      JvCsvDatabaseError(FTableName, 'Problem reading row ' + IntToStr(FRecordPos));
+      JvCsvDatabaseError(FTableName, Format(SProblemReadingRow, [FRecordPos]));
     end;
   end
   else
@@ -1291,7 +1321,7 @@ begin
           RowPtr^.bookmark.data := FRecordPos;}
 
     if (Result = grError) and DoCheck then
-      JvCsvDatabaseError(FTableName, 'No records');
+      JvCsvDatabaseError(FTableName, sNoRecord);
   end;
 
 //    if (Result = grError) then
@@ -1471,10 +1501,10 @@ begin
             end;
 
         else
-          JvCsvDatabaseError(FTableName, 'SetFieldData Error - TimeT-to-DateTime conversion error.');
+          JvCsvDatabaseError(FTableName, sTimeTConvError);
         end;
     else
-      JvCsvDatabaseError(FTableName, 'SetFieldData Error - Field type not handled.');
+      JvCsvDatabaseError(FTableName, sFieldTypeNotHandled);
     end;
 
  // Set new data value (NewVal = String)
@@ -1621,13 +1651,13 @@ begin
   CsvColumnData := FCsvColumns.FindByFieldNo(Field.FieldNo);
   if not Assigned(CsvColumnData) then
   begin
-    JvCsvDatabaseError(FTableName, 'Unable to locate CSV file information for field ' + Field.Name);
+    JvCsvDatabaseError(FTableName, Format(sUndableToLocateCSVFileInfo, [Field.Name]));
     Exit;
   end;
   PhysicalLocation := CsvColumnData^.FPhysical;
   if PhysicalLocation < 0 then
   begin // does it really exist in the CSV Row?
-    JvCsvDatabaseError(FTableName, 'Physical location of CSV field ' + Field.FieldName + ' unknown.');
+    JvCsvDatabaseError(FTableName, Format(sPhysicalLocationOfCSVField, [Field.FieldName]));
     Exit;
   end;
 
@@ -1766,10 +1796,10 @@ begin
               FTimeZoneCorrection)));
 
         else
-          JvCsvDatabaseError(FTableName, 'GetFieldData Error - TimeT-to-DateTime conversion error.');
+          JvCsvDatabaseError(FTableName, sTimeTConvError);
         end; {end case}
     else // not a valid ftXXXX type for this TDataSet descendant!?
-      JvCsvDatabaseError(FTableName, 'GetFieldData Error- Field type not handled.');
+      JvCsvDatabaseError(FTableName, sFieldTypeNotHandled);
     end // end case.
   except
     on E: EConvertError do
@@ -1973,12 +2003,12 @@ begin
           end;
 
       else
-        JvCsvDatabaseError(FTableName, 'Invalid field type character: ' + FieldTypeChar);
+        JvCsvDatabaseError(FTableName, Format(sInvalidFieldTypeCharacter, [FieldTypeChar]));
       end;
 
       if Length(CsvFieldName) = 0 then
       begin
-        JvCsvDatabaseError(FTableName, 'Unexpected error parsing CSV Field Definitions');
+        JvCsvDatabaseError(FTableName, sUnexpectedError);
         break;
       end;
 
@@ -2012,7 +2042,7 @@ begin
         ProcessCsvHeaderRow; // process FHeaderRow
   end
   else
-    JvCsvDatabaseError(FTableName, 'Field Definition Error. CsvFieldDef, FieldDefs, and file contents must match.');
+    JvCsvDatabaseError(FTableName, sFieldDefinitionError);
 
   if Length(FCsvKeyDef) = 0 then
   begin
@@ -2024,16 +2054,15 @@ begin
     FCsvKeyCount := StrSplit(FCsvKeyDef, JvCsvSep, {Chr(0)=No Quoting} Chr(0), CsvKeys, FCsvColumns.Count);
     SetLength(FCsvKeyFields, FCsvKeyCount);
     if (FCsvKeyCount < 1) or (FCsvKeyCount > FCsvColumns.Count) then
-      JvCsvDatabaseError(FTableName, 'Invalid CsvKeyDef property. InternalInitFieldDefs failed.');
+      JvCsvDatabaseError(FTableName, sInvalidCsvKeyDef);
     for t := 0 to FCsvKeyCount - 1 do
     begin
       if (CsvKeys[t] = '') then
-        JvCsvDatabaseError(FTableName, 'Internal Error parsing CsvKeyDef. InternalInitFieldDefs failed.');
+        JvCsvDatabaseError(FTableName, sInternalErrorParsingCsvKeyDef);
       pCsvFieldDef := FCsvColumns.FindByName(CsvKeys[t]);
       if not Assigned(pCsvFieldDef) then
       begin
-        JvCsvDatabaseError(FTableName, 'CsvKeyDef contains field ''' + CsvKeys[t] +
-          ''' which is not defined. InternalInitFieldDefs failed.');
+        JvCsvDatabaseError(FTableName, Format(sContainsField, [CsvKeys[t]]));
       end
       else
       begin
@@ -2178,7 +2207,7 @@ begin
 
   if FInsertBlocked then
   begin
-    JvCsvDatabaseError(FTableName, 'InternalAddRecord Can''t Add. Insert blocked.');
+    JvCsvDatabaseError(FTableName, sInsertBlocked);
     Exit;
   end;
 
@@ -2382,7 +2411,7 @@ begin
 
   if FPostBlocked then
   begin
-    JvCsvDatabaseError(FTableName, 'Posting to this database has been blocked.');
+    JvCsvDatabaseError(FTableName, sPostingHasBeenBlocked);
     Exit;
   end;
 
@@ -2395,7 +2424,7 @@ begin
     if keyIndex >= 0 then
       if (State = dsInsert) or ((State = dsEdit) and (keyIndex <> FRecordPos)) then
       begin
-        raise EJvCsvKeyError.Create(FTableName + ' - Key is not unique ');
+        raise EJvCsvKeyError.CreateFmt(sKeyNotUnique, [FTableName]);
         Exit; // never get here, since normally JvCsvDatabaseError raises an exception.
       end;
   end;
@@ -2411,7 +2440,7 @@ begin
   begin
     if FInsertBlocked then
     begin
-      JvCsvDatabaseError(FTableName, 'Can''t insert new row. Insert blocked.');
+      JvCsvDatabaseError(FTableName, sCannotInsertNewRow);
       Exit;
     end;
     FFileDirty := true;
@@ -2423,7 +2452,7 @@ begin
     pInsertRec^.Bookmark.data := FRecordPos;
   end
   else
-    JvCsvDatabaseError(FTableName, 'Post: Can''t post. Not in not dsEdit or dsInsert mode');
+    JvCsvDatabaseError(FTableName, sCannotPost);
 end;
 
 function TJvCsvCustomInMemoryDataSet.IsCursorOpen: boolean;
@@ -2607,16 +2636,16 @@ begin
   SortColumnCount := StrSplit(SortFields, JvCsvSep, {Chr(0)=No Quoting} Chr(0), SortFieldNames, FCsvColumns.Count);
   SetLength(SortColumns, SortColumnCount);
   if (SortFields = '') or (SortColumnCount = 0) then
-    JvCsvDatabaseError(FTableName, 'Sort failed. You must give a comma separated list of field names.');
+    JvCsvDatabaseError(FTableName, sSortFailedCommaSeparated);
 
   // Now check if the fields exist, and find the pointers to the fields
   for t := 0 to SortColumnCount - 1 do
   begin
     if (SortFieldNames[t] = '') then
-      JvCsvDatabaseError(FTableName, 'Sort failed. Unable to parse field names. ');
+      JvCsvDatabaseError(FTableName, sSortFailedFieldNames);
     SortColumns[t] := FCsvColumns.FindByName(SortFieldNames[t]);
     if not Assigned(SortColumns[t]) then
-      JvCsvDatabaseError(FTableName, 'Sort failed. Invalid field name in list: ' + SortFieldNames[t]);
+      JvCsvDatabaseError(FTableName, Format(sSortFailedInvalidFieldNameInList, [SortFieldNames[t]]));
   end;
 
   //  bubble sort, compare in the middle,
@@ -2924,7 +2953,7 @@ end;
 procedure TJvCsvCustomInMemoryDataSet.AppendRowString(RowAsString:String);
 begin
    if not Active then
-     JvCsvDatabaseError(FTableName, 'AppendRowString: DataSet is not open (active not set to true)');
+     JvCsvDatabaseError(FTableName, sDataSetNotOpen);
   ProcessCsvDataRow(RowAsString, FData.Count);
   Last;
 end;
@@ -2993,21 +3022,20 @@ begin
           CsvFieldName := StrEatWhiteSpace(GetCsvRowItem(@CsvFieldRec, colnum));
 
           if (Length(CsvFieldName) = 0) then
-            JvCsvDatabaseError(FTableName, 'Error processing first line of CSV file.');
+            JvCsvDatabaseError(FTableName, sErrorProcessingFirstLine);
 
           ptrCsvColumn := FCsvColumns.FindByName(CsvFieldName);
 
           if (ptrCsvColumn = nil) then
           begin // raise database exception:
-            JvCsvDatabaseError(FTableName, 'ProcessCsvHeaderRow:Field ' + CsvFieldName +
-              ' found in file, but not in field definitions.');
+            JvCsvDatabaseError(FTableName, Format(sFieldInFileButNotInDefinition, [CsvFieldName]));
             Exit;
           end;
 
           try
             ptrCsvColumn^.FPhysical := colnum; // numbered from 0.
           except
-            JvCsvDatabaseError(FTableName, 'Csv field location error: ' + CsvFieldName);
+            JvCsvDatabaseError(FTableName, Format(sCsvFieldLocationError, [CsvFieldName]));
             break;
           end;
           Inc(colnum);
@@ -3024,7 +3052,7 @@ begin
           // If there is no header row we can't cope with fields that aren't in the file
           // because FCsvHeader is not written into the file, so we can't just go expanding
           // what goes into that file.
-         JvCsvDatabaseError(FTableName, 'Field ' + ptrCsvColumn^.FFieldDef.Name + ' not found in the data file.');
+         JvCsvDatabaseError(FTableName, Format(sFieldNotFound, [ptrCsvColumn^.FFieldDef.Name]));
          Exit;
          // Now go fix the CSV file by hand until it matches your new CSVFieldDef.
          // Sounds like not much fun, eh?
@@ -3058,7 +3086,7 @@ begin
     Exit;
   if (Length(datarow) >= (MAXLINELENGTH - 1)) then
   begin
-    raise Exception.Create('CSV String is too long: ' + Copy(datarow, 1, 40) + '...');
+    raise Exception.Create(Format(sCsvStringTooLong, [Copy(datarow, 1, 40)]));
   end;
   pNewRow := AllocMem(sizeof(TJvCsvRow));
   StringToCsvRow(datarow, pNewRow, true, FEnquoteBackslash);
@@ -3220,8 +3248,7 @@ begin
     end;
     if (Col >= MAXCOLUMNS) or (t >= MAXLINELENGTH) then
     begin
-      raise ERangeError.Create('JvCsvData - Internal Limit of MAXCOLUMNS (' + IntToStr(MAXCOLUMNS) +
-        ') reached. CSV Data has too many columns');
+      raise ERangeError.CreateFmt(sInternalLimit, [MAXCOLUMNS]);
       Exit;
     end;
   end; // end of string, new flag:
@@ -3316,7 +3343,7 @@ var
 begin
   if (ColumnIndex < 0) or (ColumnIndex > MAXCOLUMNS) then
   begin
-    Result := '<ERROR>';
+    Result := sError;
     Exit;
   end;
 

@@ -150,7 +150,7 @@ begin
   FRLabel.Left := 5;
   FRLabel.Font.Size := 8;
   FRLabel.AutoSize := True;
-  FRLabel.Font.Name := 'arial';
+  FRLabel.Font.Name := 'Arial';
   FRLabel.Caption := RC_DefaultR;
   FRLabel.Transparent := True;
   FRLabel.Parent := FPanel4;
@@ -159,7 +159,7 @@ begin
   FGLabel.Top := 14;
   FGLabel.Left := 5;
   FGLabel.AutoSize := True;
-  FGLabel.Font.Name := 'arial';
+  FGLabel.Font.Name := 'Arial';
   FGLabel.Font.Size := 8;
   FGLabel.Caption := RC_DefaultG;
   FGLabel.Transparent := True;

@@ -71,7 +71,14 @@ type
 
 procedure RegisterHtHints;
 
+
+resourcestring
+  sJvHint = 'Jv hint';
+
 implementation
+
+uses
+  JvConsts;
 
 //=== TJvHint ================================================================
 
@@ -167,7 +174,7 @@ begin
             ShowWindow(HintWindow.Handle, SW_HIDE);
           FDelay := 0;
           if bPoint then
-            HintWindow.Caption := 'Jv hint';
+            HintWindow.Caption := sJvHint;
           State := tmStopped;
         end
         else
@@ -182,7 +189,7 @@ begin
           ShowWindow(HintWindow.Handle, SW_HIDE);
         if bPoint then
         begin
-          HintWindow.Caption := 'Jv hint';
+          HintWindow.Caption := sJvHint;
           TimerHint.Enabled := False;
         end;
       end;

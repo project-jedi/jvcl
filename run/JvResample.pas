@@ -128,7 +128,10 @@ const
 implementation
 
 uses
-  math;
+  Math;
+
+resourcestring
+  sSourceBitmapTooSmall = 'Source bitmap too small';
 
 // -----------------------------------------------------------------------------
 //
@@ -347,7 +350,7 @@ begin
   SrcWidth := Src.Width;
   SrcHeight := Src.Height;
   if (SrcWidth < 1) or (SrcHeight < 1) then
-    raise Exception.Create('Source bitmap too small');
+    raise Exception.Create(sSourceBitmapTooSmall);
 
   // Create intermediate image to hold horizontal zoom
   Work := TBitmap.Create;

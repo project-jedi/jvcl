@@ -55,6 +55,9 @@ type
 
 implementation
 
+resourcestring
+  sError = 'Error';
+
 procedure TJvSerialMaker.ChangeUser(User: string);
 begin
   FUsername := User;
@@ -72,7 +75,7 @@ var
   S: string;
   A: Integer;
 begin
-  S := 'Error';
+  S := sError;
   if (Base <> 0) and (Username <> '') then
   begin
     A := Base * Length(Username) + Ord(Username[1]) * 666;

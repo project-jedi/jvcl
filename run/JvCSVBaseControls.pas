@@ -163,6 +163,21 @@ uses
 
 {$R ..\Resources\JvCSVBase}
 
+resourcestring
+  sReplaceExistingDatabase = 'Replace existing database?';
+  sNoFieldsDefined = 'no fields defined';
+  sCVSDatabase = 'CSV DataBase';
+  sFindText = 'Find Text:';
+  sFirst = 'First';
+  sPrevious = 'Previous';
+  sFind = 'Find';
+  sNext = 'Next';
+  sLast = 'Last';
+  sAdd = 'Add';
+  sDelete = 'Delete';
+  sPost = 'Post';
+  sRefresh = 'Refresh';
+
 { TJvCSVBase }
 
 constructor TJvCSVBase.Create(AOwner: TComponent);
@@ -190,7 +205,7 @@ var
 begin
   newfile := changefileext(aFile, '.csv');
   if fileexists(newfile) then
-    if messagedlg('Replace existing database?', mtconfirmation, [mbyes, mbno], 0) = mrno then exit;
+    if messagedlg(sReplaceExistingDatabase, mtconfirmation, [mbyes, mbno], 0) = mrno then exit;
   alist := tstringlist.create;
   if (FieldNames <> nil) then
     if FieldNames.count > 0 then
@@ -234,7 +249,7 @@ begin
   DataBaseClose;
   if Fieldnames.count = 0 then
   begin
-    showmessage('no fields defined');
+    showmessage(sNoFieldsDefined);
     exit;
   end;
   OldBase := tstringlist.create;
@@ -649,7 +664,7 @@ var
 begin
   if assigned(FCSVDataBase) then
   begin
-    Atext := inputbox('CSV DataBase', 'Find Text:', '');
+    Atext := inputbox(sCVSDatabase, sFindText, '');
     if Atext <> '' then
       CSVDataBase.RecordFind(Atext);
   end;
@@ -727,7 +742,7 @@ begin
     Glyph.LoadFromResourceName(HInstance, 'FIRST');
     Left := 1;
     OnClick := BtnFirstClick;
-    hint := 'First';
+    hint := sFirst;
   end;
 
   FbtnPrevious := TSpeedButton.Create(Self);
@@ -737,7 +752,7 @@ begin
     Glyph.LoadFromResourceName(HInstance, 'PREVIOUS');
     Left := 25;
     OnClick := BtnPreviousClick;
-    hint := 'Previous';
+    hint := sPrevious;
   end;
 
   FbtnFind := TSpeedButton.Create(Self);
@@ -747,7 +762,7 @@ begin
     Glyph.LoadFromResourceName(HInstance, 'FIND');
     Left := 49;
     OnClick := BtnFindClick;
-    hint := 'Find';
+    hint := sFind;
   end;
 
   FbtnNext := TSpeedButton.Create(Self);
@@ -757,7 +772,7 @@ begin
     Glyph.LoadFromResourceName(HInstance, 'NEXT');
     Left := 73;
     OnClick := BtnNextClick;
-    hint := 'Next';
+    hint := sNext;
   end;
 
   FbtnLast := TSpeedButton.Create(Self);
@@ -767,7 +782,7 @@ begin
     Glyph.LoadFromResourceName(HInstance, 'LAST');
     Left := 97;
     OnClick := BtnLastClick;
-    hint := 'Last';
+    hint := sLast;
   end;
 
   FbtnAdd := TSpeedButton.Create(Self);
@@ -777,7 +792,7 @@ begin
     Glyph.LoadFromResourceName(HInstance, 'ADD');
     Left := 121;
     OnClick := BtnAddClick;
-    hint := 'Add';
+    hint := sAdd;
   end;
 
   FbtnDelete := TSpeedButton.Create(Self);
@@ -787,7 +802,7 @@ begin
     Glyph.LoadFromResourceName(HInstance, 'DELETE');
     Left := 145;
     OnClick := BtnDeleteClick;
-    hint := 'Delete';
+    hint := sDelete;
   end;
 
   FbtnPost := TSpeedButton.Create(Self);
@@ -797,7 +812,7 @@ begin
     Glyph.LoadFromResourceName(HInstance, 'POST');
     Left := 169;
     OnClick := BtnPostClick;
-    hint := 'Post';
+    hint := sPost;
   end;
 
   FbtnRefresh := TSpeedButton.Create(Self);
@@ -807,7 +822,7 @@ begin
     Glyph.LoadFromResourceName(HInstance, 'REFRESH');
     Left := 193;
     OnClick := BtnRefreshClick;
-    hint := 'Refresh';
+    hint := sRefresh;
   end;
 
 end;

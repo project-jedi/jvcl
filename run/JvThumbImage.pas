@@ -118,6 +118,10 @@ implementation
 uses
   JvThumbnails;
 
+resourcestring
+  sUnknownFileExitension = 'Unknown file extension %s';
+  sFileFilters = '|PCX Files(*.pcx)|*.pcx|Targa Files(*.tga)|*.tga';
+
 type
   TRGBTripleArray = array [0..MaxListSize] of TRGBTriple;
   PRGBTripleArray = ^TRGBTripleArray;
@@ -173,7 +177,7 @@ begin
   InsertStr(Result, '*.pcx;*.tga;', p);
   P := Pos('|', Result);
   InsertStr(Result, '*.pcx;*.tga;', p);
-  Result := Result + '|PCX Files(*.pcx)|*.pcx|Targa Files(*.tga)|*.tga';
+  Result := Result + sFileFilters;
     //Graphics.GraphicFilter(TGraphic)+'|PCX File|*.PCX|Targa File|*.TGA';
   { TODO : Add in the filter the rest of the images we support but are not registered to the Graphics unit }
 end;
@@ -413,7 +417,7 @@ begin
     Gr.SaveToFile(AFile);
   end
   else
-    raise Exception.Create('Unknown file extension ' + Ext);
+    raise Exception.CreateFmt(sUnknownFileExitension, [Ext]);
 end;
 
 procedure TJvThumbImage.Save;

@@ -384,6 +384,10 @@ uses
 
 {$R ..\resources\JvSegmentedLEDDisplay.res}
 
+resourcestring
+  sInvalidClass = 'Invalid class.';
+  sInvalidMappingFile = 'Invalid mapping file.';
+
 var
   GDigitClassList: TThreadList;
 
@@ -643,7 +647,7 @@ begin
       if AClass.InheritsFrom(TJvCustomSegmentedLEDDigit) then
         DigitClass := TJvSegmentedLEDDigitClass(FindClass(Value))
       else
-        raise EJVCLSegmentedLEDException.Create('Invalid class.');
+        raise EJVCLSegmentedLEDException.Create(sInvalidClass);
     end
     else
       DigitClass := nil;
@@ -1703,7 +1707,7 @@ begin
     if StrLIComp(Hdr.ID, PChar(Display.DigitClass.MapperFileID), Length(Display.DigitClass.MapperFileID)) = 0 then
       PrimReadMapping(Hdr, Stream)
     else
-      raise EJVCLSegmentedLEDException.Create('Invalid mapping file.');
+      raise EJVCLSegmentedLEDException.Create(sInvalidMappingFile);
   except
     Stream.Position := OrgPos;
     raise;

@@ -113,6 +113,11 @@ function IsClassByName(Obj: TObject; ClassName: ShortString): Boolean;
 
 implementation
 
+resourcestring
+  sResultDoesNotFallInMonth = 'Result does not fall in given month';
+  sInvalidMonthValue = 'Invalid Month Value (%d)';
+  sInvalidDayOfWeekValue = 'Invalid value for day of week (%d)';
+
 function ExtractYear(aDate : TDateTime) : Word;
 var
   M, D : Word;
@@ -160,7 +165,7 @@ begin
   Result := ExtractDay(WorkDate);
   // Finally, check to make sure WorkDate is in the given month
   If Trunc(EncodeDate(Year, Month, 1)) <> Trunc(FirstOfMonth(WorkDate)) Then
-    Raise EJvTFDateError.Create('Result does not fall in given month');
+    Raise EJvTFDateError.Create(sResultDoesNotFallInMonth);
 end;
 
 function GetWeeksInMonth(Year, Month : Word; StartOfWeek: Integer): Word;
@@ -301,14 +306,13 @@ end;
 procedure EnsureMonth(Month: Word);
 begin
   If (Month < 1) or (Month > 12) Then
-    Raise EJvTFDateError.Create('Invalid Month Value (' + IntToStr(Month) + ')');
+    Raise EJvTFDateError.CreateFmt(sInvalidMonthValue, [Month]);
 end;
 
 procedure EnsureDOW(DOW: Word);
 begin
   If (DOW < 1) or (DOW > 7) Then
-    Raise EJvTFDateError.Create('Invalid value for day of week (' +
-      IntToStr(DOW) + ')');
+    Raise EJvTFDateError.CreateFmt(sInvalidDayOfWeekValue, [DOW]);
 end;
 
 function EqualDates(D1, D2 : TDateTime) : Boolean;

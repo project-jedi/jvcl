@@ -130,15 +130,9 @@ type
     { Published declarations }
   end;
 
-procedure Register;
-
 implementation
-uses JvgUtils;
-
-procedure Register;
-begin
-  //  RegisterComponents('Gl Controls', [TJvgInspectorGrid]);
-end;
+uses
+  JvgUtils;
 
 { TJvgGridItems }
 

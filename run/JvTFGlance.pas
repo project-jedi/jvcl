@@ -785,7 +785,21 @@ type
 
 
 
+
+resourcestring
+  sCellDatesCannotBeChanged = 'Cell Dates cannot be changed';
+  sCellMapHasBeenCorrupteds = 'Cell map has been corrupted %s';
+  sCellObjectNotAssigned = 'Cell object not assigned';
+  sInvalidColIndexd = 'Invalid col index (%d)';
+  sInvalidRowIndexd = 'Invalid row index (%d)';
+  sApptIndexOutOfBoundsd = 'Appt index out of bounds (%d)';
+  sCellCannotBeSplit = 'Cell cannot be split';
+  sASubcellCannotBeSplit = 'A subcell cannot be split';
+
 implementation
+
+uses
+  JvConsts;
 
 { TJvTFGlanceCell }
 { TODO 3 -cMisc : Complete TGlance.Assign }
@@ -1014,7 +1028,7 @@ begin
   If Assigned(CellCollection.GlanceControl) and
      (not CellCollection.GlanceControl.AllowCustomDates and
       not (csLoading in CellCollection.GlanceControl.ComponentState)) Then
-    Raise EJvTFGlanceError.Create('Cell Dates cannot be changed');
+    Raise EJvTFGlanceError.Create(sCellDatesCannotBeChanged);
 
   InternalSetCellDate(Value);
 end;
@@ -1222,7 +1236,7 @@ begin
         Begin
           S := '(' + IntToStr(Result.ColIndex) + ':' + IntToStr(ColIndex) + ') ' +
                '(' + IntToStr(Result.RowIndex) + ':' + IntToStr(RowIndex) + ')';
-          Raise EJvTFGlanceError.Create('Cell map has been corrupted ' + S);
+          Raise EJvTFGlanceError.CreateFmt(sCellMapHasBeenCorrupteds, [S]);
         End;
     End;
 end;
@@ -1417,10 +1431,6 @@ begin
 
   AllowCustomDates := False;
   Inherited;
-{$ifdef Shareware}
-   if not (csDesigning in ComponentState) then
-      ShowMessage('This software was compiled with the trial version of the UIL Time Framework. Please register at http://www.uil.net.');
-{$endif}  // Shareware
   ControlStyle := ControlStyle + [csOpaque, csCaptureMouse, csClickEvents,
                                   csDoubleClicks];
   TabStop := True;
@@ -1713,19 +1723,19 @@ end;
 procedure TJvTFCustomGlance.EnsureCell(aCell: TJvTFGlanceCell);
 begin
   If not Assigned(aCell) Then
-    Raise EJvTFGlanceError.Create('Cell object not assigned');
+    Raise EJvTFGlanceError.Create(sCellObjectNotAssigned);
 end;
 
 procedure TJvTFCustomGlance.EnsureCol(Col : Integer);
 begin
   If (Col < 0) or (Col >= ColCount) Then
-    Raise EJvTFGlanceError.Create('Invalid col index (' + IntToStr(Col) + ')');
+    Raise EJvTFGlanceError.CreateFmt(sInvalidColIndexd, [Col]);
 end;
 
 procedure TJvTFCustomGlance.EnsureRow(Row : Integer);
 begin
   If (Row < 0) or (Row >= RowCount) Then
-    Raise EJvTFGlanceError.Create('Invalid row index (' + IntToStr(Row) + ')');
+    Raise EJvTFGlanceError.CreateFmt(sInvalidRowIndexd, [Row]);
 end;
 
 function TJvTFCustomGlance.GetCellAttr(aCell: TJvTFGlanceCell): TJvTFGlanceCellAttr;
@@ -3556,8 +3566,7 @@ var
   AbsIndex : Integer;
 begin
   If (Index < 0) or (Index > ApptCount - 1) Then
-    Raise EGlanceViewerError.Create('Appt index out of bounds (' +
-      IntToStr(Index) + ')');
+    Raise EGlanceViewerError.CreateFmt(sApptIndexOutOfBoundsd, [Index]);
 
   AbsIndex := 0;
   I := -1;
@@ -3584,8 +3593,7 @@ begin
   Try
     GetDistinctAppts(ApptList);
     If (Index < 0) or (Index >= ApptList.Count) Then
-      Raise EGlanceViewerError.Create('Appt index out of bounds (' +
-        IntToStr(Index) + ')');
+      Raise EGlanceViewerError.CreateFmt(sApptIndexOutOfBoundsd, [Index]);
 
     Result := TJvTFAppt(ApptList.Objects[Index]);
   Finally
@@ -4060,10 +4068,10 @@ begin
   If Assigned(CellCollection.GlanceControl) and
      not CellCollection.GlanceControl.AllowCustomDates and
      not CellCollection.Configuring Then
-    Raise EJvTFGlanceError.Create('Cell cannot be split');
+    Raise EJvTFGlanceError.Create(sCellCannotBeSplit);
 
   If IsSubCell Then
-    Raise EJvTFGlanceError.Create('A subcell cannot be split');
+    Raise EJvTFGlanceError.Create(sASubcellCannotBeSplit);
 
   If not IsSplit Then
     Begin

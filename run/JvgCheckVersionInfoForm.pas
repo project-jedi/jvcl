@@ -67,9 +67,14 @@ type
 var
   fCheckVersionInfo: TJvgfCheckVersionInfo;
 
+
+resourcestring
+  sNoNewerVersionOfProgramAvailable = 'No newer version of program available';
+
 implementation
 uses
-  ShellApi, JvgHTTPVersionInfo;
+  JvConsts, ShellApi, JvgHTTPVersionInfo;
+  
 {$R *.DFM}
 
 { TJvgfCheckVersionInfo }
@@ -77,6 +82,7 @@ uses
 procedure TJvgfCheckVersionInfo.Execute(WinControl: TWinControl);
 var
   VersionInfo: TJvgHTTPVersionInfo;
+  S: string;
 begin
   //  eCurentVersion.Text := globCon.APP_VERSION;
   //  eCurentVersionDate.Text := globCon.APP_DATE;
@@ -95,7 +101,10 @@ begin
       ShowModal;
     end
     else
-      Application.MessageBox('No newer version of program available', 'SiteBuilder', MB_OK + MB_ICONINFORMATION);
+    begin
+      S := sNoNewerVersionOfProgramAvailable;
+      Application.MessageBox(PChar(S), 'SiteBuilder', MB_OK + MB_ICONINFORMATION);
+    end;
 
   finally
     VersionInfo.Free;

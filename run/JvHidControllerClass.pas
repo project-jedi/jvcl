@@ -387,6 +387,33 @@ procedure Register;
 
 {$ENDIF}
 
+
+resourcestring
+  sDeviceCannotBeIdentified = 'device cannot be identified';
+  sDeviceCannotBeOpened = 'device cannot be opened';
+  sOnlyOneTJvHidDeviceControllerAllowe = 'Only one TJvHidDeviceController allowed per program';
+  sHIDErrorABooleanFunctionFailed = 'HID Error: a boolean function failed';
+  sDeviceNotPluggedIn = 'device not plugged in';
+  sInvalidPreparsedData = 'invalid preparsed data';
+  sInvalidReportType = 'invalid report type';
+  sInvalidReportLength = 'invalid report length';
+  sUsageNotFound = 'usage not found';
+  sValueOutOfRange = 'value out of range';
+  sBadLogicalOrPhysicalValues = 'bad logical or physical values';
+  sBufferTooSmall = 'buffer too small';
+  sInternalError = 'internal error';
+  sKeyTranslationImpossible = '8042 key translation impossible';
+  sIncompatibleReportID = 'incompatible report ID';
+  sNotAValueArray = 'not a value array';
+  sIsAValueArray = 'is a value array';
+  sDataIndexNotFound = 'data index not found';
+  sDataIndexOutOfRange = 'data index out of range';
+  sButtonNotPressed = 'button not pressed';
+  sReportDoesNotExist = 'report does not exist';
+  sNotImplemented = 'not implemented';
+  sUnknownHIDErrorx = 'unknown HID error %x';
+  sHIDError = 'HID Error: ';
+
 implementation
 
 {$IFDEF STANDALONE}
@@ -395,10 +422,15 @@ type
   EControllerError = class(Exception);
   EHidClientError  = class(Exception);
 
+function _(const Text: string): string;
+begin
+  Result := Text;
+end;
+
 {$ELSE}
 
 uses
-  JvTypes;
+  JvConsts, JvTypes;
 
 type
   EControllerError = class(EJVCLException);
@@ -581,10 +613,10 @@ begin
   begin
     FAttributes.Size := SizeOf(THIDDAttributes);
     if not HidD_GetAttributes(HidFileHandle, FAttributes) then
-      raise EControllerError.Create('device cannot be identified');
+      raise EControllerError.Create(sDeviceCannotBeIdentified);
   end
   else
-    raise EControllerError.Create('device cannot be opened');
+    raise EControllerError.Create(sDeviceCannotBeOpened);
   // the file is closed to stop using up resources
   CloseFile;
 end;
@@ -1469,7 +1501,7 @@ begin
   // this is just to remind you that one controller is sufficient
   Inc(GlobalInstanceCount);
   if GlobalInstanceCount > 1 then
-    raise EControllerError.Create('Only one TJvHidDeviceController allowed per program');
+    raise EControllerError.Create(sOnlyOneTJvHidDeviceControllerAllowe);
 
   FillInList(FList);
   FNumCheckedInDevices := FList.Count;
@@ -1938,7 +1970,7 @@ end;
 function HidCheck(const RetVal: LongBool): LongBool;
 begin
   if not RetVal then
-    raise EHidClientError.Create('HID Error: a boolean function failed');
+    raise EHidClientError.Create(sHIDErrorABooleanFunctionFailed);
   Result := RetVal;
 end;
 
@@ -1965,28 +1997,28 @@ begin
      ((RetVal and NTSTATUS($C0000000)) <> 0) then
   begin
     case RetVal of
-      HIDP_STATUS_NULL:                    Result := 'device not plugged in';
-      HIDP_STATUS_INVALID_PREPARSED_DATA:  Result := 'invalid preparsed data';
-      HIDP_STATUS_INVALID_REPORT_TYPE:     Result := 'invalid report type';
-      HIDP_STATUS_INVALID_REPORT_LENGTH:   Result := 'invalid report length';
-      HIDP_STATUS_USAGE_NOT_FOUND:         Result := 'usage not found';
-      HIDP_STATUS_VALUE_OUT_OF_RANGE:      Result := 'value out of range';
-      HIDP_STATUS_BAD_LOG_PHY_VALUES:      Result := 'bad logical or physical values';
-      HIDP_STATUS_BUFFER_TOO_SMALL:        Result := 'buffer too small';
-      HIDP_STATUS_INTERNAL_ERROR:          Result := 'internal error';
-      HIDP_STATUS_I8042_TRANS_UNKNOWN:     Result := '8042 key translation impossible';
-      HIDP_STATUS_INCOMPATIBLE_REPORT_ID:  Result := 'incompatible report ID';
-      HIDP_STATUS_NOT_VALUE_ARRAY:         Result := 'not a value array';
-      HIDP_STATUS_IS_VALUE_ARRAY:          Result := 'is a value array';
-      HIDP_STATUS_DATA_INDEX_NOT_FOUND:    Result := 'data index not found';
-      HIDP_STATUS_DATA_INDEX_OUT_OF_RANGE: Result := 'data index out of range';
-      HIDP_STATUS_BUTTON_NOT_PRESSED:      Result := 'button not pressed';
-      HIDP_STATUS_REPORT_DOES_NOT_EXIST:   Result := 'report does not exist';
-      HIDP_STATUS_NOT_IMPLEMENTED:         Result := 'not implemented';
+      HIDP_STATUS_NULL:                    Result := sDeviceNotPluggedIn;
+      HIDP_STATUS_INVALID_PREPARSED_DATA:  Result := sInvalidPreparsedData;
+      HIDP_STATUS_INVALID_REPORT_TYPE:     Result := sInvalidReportType;
+      HIDP_STATUS_INVALID_REPORT_LENGTH:   Result := sInvalidReportLength;
+      HIDP_STATUS_USAGE_NOT_FOUND:         Result := sUsageNotFound;
+      HIDP_STATUS_VALUE_OUT_OF_RANGE:      Result := sValueOutOfRange;
+      HIDP_STATUS_BAD_LOG_PHY_VALUES:      Result := sBadLogicalOrPhysicalValues;
+      HIDP_STATUS_BUFFER_TOO_SMALL:        Result := sBufferTooSmall;
+      HIDP_STATUS_INTERNAL_ERROR:          Result := sInternalError;
+      HIDP_STATUS_I8042_TRANS_UNKNOWN:     Result := sKeyTranslationImpossible;
+      HIDP_STATUS_INCOMPATIBLE_REPORT_ID:  Result := sIncompatibleReportID;
+      HIDP_STATUS_NOT_VALUE_ARRAY:         Result := sNotAValueArray;
+      HIDP_STATUS_IS_VALUE_ARRAY:          Result := sIsAValueArray;
+      HIDP_STATUS_DATA_INDEX_NOT_FOUND:    Result := sDataIndexNotFound;
+      HIDP_STATUS_DATA_INDEX_OUT_OF_RANGE: Result := sDataIndexOutOfRange;
+      HIDP_STATUS_BUTTON_NOT_PRESSED:      Result := sButtonNotPressed;
+      HIDP_STATUS_REPORT_DOES_NOT_EXIST:   Result := sReportDoesNotExist;
+      HIDP_STATUS_NOT_IMPLEMENTED:         Result := sNotImplemented;
     else
-      Result := Format('unknown HID error %x', [RetVal]);
+      Result := Format(sUnknownHIDErrorx, [RetVal]);
     end;
-    Result := 'HID Error: ' + Result;
+    Result := sHIDError + Result;
   end;
 end;
 

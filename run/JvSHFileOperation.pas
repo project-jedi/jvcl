@@ -102,10 +102,14 @@ type
     property OnFileMapping: TJvShFileMappingEvent read FOnFileMapping write FOnFileMapping;
   end;
 
+
+resourcestring
+  sNoFilesSpecifiedToTJvSHFileOperatio = 'No files specified to TJvSHFileOperation Execute function';
+
 implementation
 
 uses
-  JvTypes;
+  JvConsts, JvTypes;
 
 // helper object for file mappings
 type
@@ -153,7 +157,7 @@ var
   S, D: string;
 begin
   if Length(FSourceFiles.Text) = 0 then
-    EJVCLException.Create('No files specified to TJvSHFileOperation Execute function');
+    EJVCLException.Create(sNoFilesSpecifiedToTJvSHFileOperatio);
 
   FillChar(SFOS, SizeOf(TShFileOpStruct), #0);
 

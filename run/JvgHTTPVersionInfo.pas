@@ -63,14 +63,14 @@ type
 
   end;
 
-procedure Register;
+
+resourcestring
+  sUncknownURLPropertyVersionDataURLIs = 'Uncknown URL: property VersionDataURL is empty';
 
 implementation
 
-procedure Register;
-begin
-  //   RegisterComponents('Gl Components', [TJvgHTTPVersionInfo]);
-end;
+uses
+  JvConsts;
 
 { TJvgHTTPVersionInfo }
 
@@ -109,7 +109,7 @@ end;
 function TJvgHTTPVersionInfo.GetVersionInfo(WinControl: TWinControl): boolean;
 begin
   if trim(VersionDataURL) = '' then
-    raise Exception.Create('Uncknown URL: property VersionDataURL is empty');
+    raise Exception.Create(sUncknownURLPropertyVersionDataURLIs);
 
   WebBrowser := TWebBrowser.Create(nil);
   WebBrowser.Visible := false;
