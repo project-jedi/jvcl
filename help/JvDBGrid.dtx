@@ -1,5 +1,5 @@
 ##Package: DB
-##Status: Generated
+##Status: Locked by peter3
 ----------------------------------------------------------------------------------------------------
 @@JvDBGrid.pas
 Summary
@@ -35,21 +35,20 @@ Author
 @@TJvDBGrid
 <TITLEIMG TJvDBGrid>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.DBAware.Grid
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  Descendant of the standard TDBGrid with additional properties and events.
 Description
-  Write here a description
+  Use TJvDBGrid as a replacement for TDBGrid when you need additional control over how the grid component 
+  works. TJvDBGrid introduces new properties to control the appearance and functionality of the grid.
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.AlternateRowColor
 Summary
-  Write here a summary (1 line)
+  Indicates the color to use on odd rows in the grid.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use AlternateRowColor to specify a different color for every other row in the grid. Setting AlternateRowColor 
+  to the same color as the background or to clNone disables the feature.
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.AutoAppend
 Summary
@@ -62,21 +61,29 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.AutoSizeColumnIndex
 Summary
-  Write here a summary (1 line)
+  Indicates the column that will be autosized when the grid or its columns are resized.
 Description
-  Write here a description
+  Use AutoSizeColumnIndex to specify the column or columns that are auto sized. AutoSizeColumnIndex can be 
+  set to any of the following values:
+  
+  -2    Indicates that the right-most visible column should be auto sized. If the number of visible columns changes
+        so might the column that is sized. 
+  -1    Auto size all visible columns proportionally.
+  0..n  Auto size the column with the specified index. If the column is hidden, autosizing is disabled.
+
+  Auto sizing only works when all visible columns in the grid can be shown at once in the control. The 
+  values of MinColumnWidth and MaxColumnWidth are also taken into consideration when auto sizing.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AutoSizeColumns, MinColumnWidth, MaxColumnWidth
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.AutoSizeColumns
 Summary
-  Write here a summary (1 line)
+  Indicates whether columns are autosized or not.
 Description
-  Write here a description
+  Use AutoSizeColumns to specify whether auto sizing is active or not. The actual column or columns
+  that are auto sized are controlled with the AutoSizeColumnIndex property.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AutoSizeColumnIndex
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.BeepOnError
 Summary
