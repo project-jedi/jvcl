@@ -35,6 +35,12 @@ type
     cbStyle: TComboBox;
     StatusBar1: TStatusBar;
     Label4: TLabel;
+    cbCascadeLevels: TComboBox;
+    Label5: TLabel;
+    N1: TMenuItem;
+    Clear1: TMenuItem;
+    Label6: TLabel;
+    cbCascadeOptions: TComboBox;
     procedure FormCreate(Sender: TObject);
     procedure btnAddClick(Sender: TObject);
     procedure btnAddChildClick(Sender: TObject);
@@ -47,6 +53,9 @@ type
     procedure chkFlatClick(Sender: TObject);
     procedure btnRandomClick(Sender: TObject);
     procedure cbStyleChange(Sender: TObject);
+    procedure cbCascadeLevelsChange(Sender: TObject);
+    procedure Clear1Click(Sender: TObject);
+    procedure cbCascadeOptionsChange(Sender: TObject);
   private
     { Private declarations }
     procedure SetupNode(Node: TTreeNode);
@@ -75,13 +84,23 @@ begin
   tv.StateImages := ilChecks;
   tv.HideSelection := false;
   tv.PopupMenu := popTree;
-  cbStyle.ItemIndex := Ord(tv.CheckBoxOptions.Style);
+
   tv.OnContextPopup := DoTreeContextPopup;
   tv.OnToggling := DoToggling;
   tv.OnToggled  := DoToggled;
 
   udImageIndex.Max := ilStandard.Count - 1;
-  cbNodeType.ItemIndex := 0;
+  cbNodeType.ItemIndex := 1; // checkboxes
+  cbNodeTypeChange(Sender);
+
+  cbStyle.ItemIndex := 2; //cbsJVCL
+  cbStyleChange(Sender);
+
+  cbCascadeLevels.ItemIndex := 0;
+  cbCascadeLevelsChange(Sender);
+
+  cbCascadeOptions.ItemIndex := 2; // cascade all
+  cbCascadeOptionsChange(Sender);
 end;
 
 procedure TfrmCheckTVDemo.SetupNode(Node:TTreeNode);
@@ -249,12 +268,15 @@ end;
 procedure TfrmCheckTVDemo.cbStyleChange(Sender: TObject);
 begin
   tv.CheckBoxOptions.Style := TJvTVCheckBoxStyle(cbStyle.ItemIndex);
-  if tv.CheckBoxOptions.Style = cbsNative then
-    tv.StateImages := nil
-  else if chkFlat.Checked then
-    tv.StateImages := ilFlatChecks
-  else
-    tv.StateImages := ilChecks;
+  case tv.CheckBoxOptions.Style of
+    cbsNative,cbsNone:
+      tv.StateImages := nil;
+    cbsJVCL:
+      if chkFlat.Checked then
+        tv.StateImages := ilFlatChecks
+      else
+        tv.StateImages := ilChecks;
+  end;
 end;
 
 const
@@ -269,6 +291,28 @@ procedure TfrmCheckTVDemo.DoToggling(Sender: TObject; Node: TTreeNode;
   var AllowChange: boolean);
 begin
   StatusBar1.Panels[0].Text := Format('Node %s about to be toggled %s',[Node.Text,cOnOff[not tv.Checked[Node]]]);
+end;
+
+procedure TfrmCheckTVDemo.cbCascadeLevelsChange(Sender: TObject);
+begin
+  tv.CheckBoxOptions.CascadeLevels := cbCascadeLevels.ItemIndex - 1;
+end;
+
+procedure TfrmCheckTVDemo.Clear1Click(Sender: TObject);
+begin
+  tv.Items.Clear;
+end;
+
+procedure TfrmCheckTVDemo.cbCascadeOptionsChange(Sender: TObject);
+var F:TJvTVCascadeOptions;
+begin
+  F := [];
+  case cbCascadeOptions.ItemIndex of
+    0: F := [poOnCheck];
+    1: F := [poOnUnCheck];
+    2: F := [poOnCheck,poOnUnCheck];
+  end;
+  tv.CheckBoxOptions.CascadeOptions := F;
 end;
 
 end.

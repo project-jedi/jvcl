@@ -62,6 +62,20 @@ object frmCheckTVDemo: TfrmCheckTVDemo
       Caption = '&Style:'
       FocusControl = cbStyle
     end
+    object Label5: TLabel
+      Left = 12
+      Top = 246
+      Width = 82
+      Height = 13
+      Caption = 'Cascade Checks:'
+    end
+    object Label6: TLabel
+      Left = 12
+      Top = 294
+      Width = 111
+      Height = 13
+      Caption = 'Cascade Checks when:'
+    end
     object edText: TEdit
       Left = 13
       Top = 24
@@ -162,6 +176,43 @@ object frmCheckTVDemo: TfrmCheckTVDemo
         'MS implementation'
         'JVCL implementation')
     end
+    object cbCascadeLevels: TComboBox
+      Left = 12
+      Top = 264
+      Width = 145
+      Height = 21
+      Style = csDropDownList
+      ItemHeight = 13
+      TabOrder = 10
+      OnChange = cbCascadeLevelsChange
+      Items.Strings = (
+        'Always'
+        'Never'
+        '1 Level'
+        '2 Levels'
+        '3 Levels'
+        '4 Levels'
+        '5 Levels'
+        '6 Levels'
+        '7 Levels'
+        '8 Levels'
+        '9 Levels'
+        '10 Levels')
+    end
+    object cbCascadeOptions: TComboBox
+      Left = 12
+      Top = 312
+      Width = 145
+      Height = 21
+      Style = csDropDownList
+      ItemHeight = 13
+      TabOrder = 11
+      OnChange = cbCascadeOptionsChange
+      Items.Strings = (
+        'Checking'
+        'Unchecking'
+        'Unchecking and Checking')
+    end
   end
   object StatusBar1: TStatusBar
     Left = 0
@@ -170,6 +221,7 @@ object frmCheckTVDemo: TfrmCheckTVDemo
     Height = 19
     Panels = <
       item
+        Text = '  Right-click any node in the treeview for more options'
         Width = 50
       end>
     SimplePanel = False
@@ -1045,12 +1097,19 @@ object frmCheckTVDemo: TfrmCheckTVDemo
       Caption = 'Delete'
       OnClick = mnuDeleteClick
     end
+    object N1: TMenuItem
+      Caption = '-'
+    end
+    object Clear1: TMenuItem
+      Caption = 'Clear'
+      OnClick = Clear1Click
+    end
   end
   object ilFlatChecks: TImageList
     Left = 234
     Top = 12
     Bitmap = {
-      494C010105000900040010001000FFFFFFFFFF00FFFFFFFFFFFFFFFF424D3600
+      494C010105000900040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000003000000001001000000000000018
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -1258,6 +1317,7 @@ object frmCheckTVDemo: TfrmCheckTVDemo
       FFFF80038003FC3FFFFF80038003F00FFFFF80038003E007FFFF80038003E007
       FFFF80038003C003FFFF80038003C003FFFF80038003C003FFFF80038003C003
       FFFF80038003E007FFFF80038003E007FFFF80038003F00FFFFF80038003FC3F
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000000000000000000000000000
+      000000000000}
   end
 end
