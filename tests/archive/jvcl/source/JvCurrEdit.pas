@@ -228,6 +228,11 @@ type
   end;
 
   TJvCustomCalcEdit = class(TJvCustomNumEdit)
+  private
+    FEnablePopupChange: boolean;
+  protected
+    procedure PopupChange;override;
+    property EnablePopupChange:boolean read FEnablePopupChange write FEnablePopupChange default false;
   public
     constructor Create(AOwner: TComponent); override;
   end;
@@ -253,6 +258,7 @@ type
     property DragCursor;
     property DragMode;
     property Enabled;
+    property EnablePopupChange;
     property Font;
     property FormatOnEditing;
     property GlyphKind;
@@ -987,7 +993,17 @@ begin
   CalcBitmap := nil;
 end;
 
+{ TJvCustomCalcEdit }
+
+procedure TJvCustomCalcEdit.PopupChange;
+begin
+  inherited;
+  if EnablePopupChange then
+    DoChange;
+end;
+
 {$IFDEF WIN32}
+
 initialization
 
 finalization
