@@ -31,13 +31,23 @@ unit JvSlider;
 interface
 
 uses
-  Windows, SysUtils, Classes, Graphics, Controls, ExtCtrls,
-  JVCLVer;
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ELSE}
+  Types,
+  {$ENDIF}
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Graphics, Controls, ExtCtrls,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QExtCtrls,
+  {$ENDIF}
+  JVCLVer, JvComponent;
 
 type
-  TJvSlider = class(TCustomControl)
+  TJvSlider = class(TJvCustomControl)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FImageRuler: TBitmap;
     FImageThumb: TBitmap;
     FThumb1: TBitmap;
@@ -74,7 +84,6 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure Paint; override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property ImageRuler: TBitmap read FImageRuler write SetImageRuler;
     property ImageThumb: TBitmap read FImageThumb write SetImageThumb;
     property Align;
@@ -110,7 +119,12 @@ type
 
 implementation
 
-{$R ..\resources\JvSlider.res}
+{$IFDEF MSWINDOWS}
+ {$R ..\Resources\JvSlider.res}
+{$ENDIF}
+{$IFDEF LINUX}
+ {$R ../Resources/JvSlider.res}
+{$ENDIF}
 
 constructor TJvSlider.Create(AOwner: TComponent);
 begin
@@ -281,8 +295,8 @@ begin
   begin
     Tmp := TBitmap.Create;
     Tmp.Assign(FThumb1);
-    Fthumb1.Assign(FThumb2);
-    Fthumb2.Assign(Tmp);
+    FThumb1.Assign(FThumb2);
+    FThumb2.Assign(Tmp);
     Tmp.Free;
     FChanged := True;
   end;

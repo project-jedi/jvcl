@@ -34,8 +34,16 @@ unit JvContentScroller;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls,
-  Forms, Dialogs, ExtCtrls,
+  {$IFDEF MSWINDOWS}
+  Windows, Messages,
+  {$ENDIF}
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Graphics, Controls, Forms, Dialogs, ExtCtrls,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  Types, QGraphics, QControls, QForms, QDialogs, QExtCtrls,
+  {$ENDIF}
   JvComponent;
 
 type
@@ -59,7 +67,7 @@ type
     FCurLoop: Integer;
     // FScrollStart: Integer;
     procedure SetActive(Value: Boolean);
-    procedure SeTJvScrollAmount(Value: TJvScrollAmount);
+    procedure SetJvScrollAmount(Value: TJvScrollAmount);
     procedure SetScrollIntervall(Value: TJvScrollAmount);
     procedure SetMediaFile(Value: TFileName);
     procedure DoTimer(Sender: TObject);
@@ -74,7 +82,9 @@ type
     procedure Paint; override;
     procedure DoBeforeScroll; dynamic;
     procedure DoAfterScroll; dynamic;
+    {$IFDEF VCL}
     procedure CreateWnd; override;
+    {$ENDIF VCL}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -86,31 +96,42 @@ type
     property ScrollLength: TJvScrollAmount read FScrollLength write SetScrollLength default 250;
     property ScrollDirection: TJvContentScrollDirection read FScrollDirection write SetScrollDirection default sdUp;
     // property ScrollStart: Integer read FScrollStart write SetScrollStart;
+    {$IFDEF MSWINDOWS}
     property MediaFile: TFileName read FMediaFile write SetMediaFile;
     property LoopMedia: Boolean read FLoopMedia write SetLoopMedia default True;
     property LoopCount: Integer read FLoopCount write SetLoopCount default -1;
-    property Action;
-    property Anchors;
+    {$ENDIF MSWINDOWS}
+    {$IFDEF VCL}
     property BiDiMode;
-    property Constraints;
     property DockSite;
     property DragKind;
     property FullRepaint;
     property ParentBiDiMode;
     property UseDockManager;
+    property DragCursor;
+    property Ctl3D;
+    property ParentCtl3D;
+    property OnCanResize;
+    property OnDockDrop;
+    property OnDockOver;
+    property OnEndDock;
+    property OnGetSiteInfo;
+    property OnStartDock;
+    property OnUnDock;
+    {$ENDIF}
+    property Action;
+    property Anchors;
+    property Constraints;
     property Align;
     property BorderStyle;
     property BorderWidth;
-    property DragCursor;
     property DragMode;
     property Enabled;
     property HelpContext;
     property Hint;
     property Color;
-    property Ctl3D;
     property Cursor;
     property ParentColor;
-    property ParentCtl3D;
     property ParentShowHint;
     property PopupMenu;
     property ShowHint;
@@ -120,14 +141,7 @@ type
     property Visible;
     property OnAfterScroll: TNotifyEvent read FOnAfterScroll write FOnAfterScroll;
     property OnBeforeScroll: TNotifyEvent read FOnBeforeScroll write FOnBeforeScroll;
-    property OnCanResize;
     property OnConstrainedResize;
-    property OnDockDrop;
-    property OnDockOver;
-    property OnEndDock;
-    property OnGetSiteInfo;
-    property OnStartDock;
-    property OnUnDock;
     property OnClick;
     property OnDblClick;
     property OnDragDrop;
@@ -147,8 +161,10 @@ type
 
 implementation
 
+{$IFDEF MSWINDOWS}
 uses
   MMSystem;
+{$ENDIF}
 
 constructor TJvContentScroller.Create(AOwner: TComponent);
 begin
@@ -182,11 +198,13 @@ begin
   FTimer.OnTimer := DoTimer;
   FTimer.Interval := ScrollIntervall;
   FTimer.Enabled := True;
+  {$IFDEF MSWINDOWS}
   Flag := SND_ASYNC or SND_FILENAME;
   if FLoopMedia then
     Flag := Flag or SND_LOOP;
   if FileExists(FMediaFile) then
     PlaySound(PChar(FMediaFile), 0, Flag);
+  {$ENDIF}
   FCurLoop := FLoopCount;
 end;
 
@@ -296,7 +314,7 @@ begin
   end;
 end;
 
-procedure TJvContentScroller.SeTJvScrollAmount(Value: TJvScrollAmount);
+procedure TJvContentScroller.SetJvScrollAmount(Value: TJvScrollAmount);
 begin
   FScrollAmount := Value;
 end;
@@ -337,11 +355,13 @@ begin
   end;
 end;
 
+{$IFDEF VCL}
 procedure TJvContentScroller.CreateWnd;
 begin
   inherited CreateWnd;
   Caption := '';
 end;
+{$ENDIF VCL}
 
 {
 procedure TJvContentScroller.SetScrollStart(const Value: Integer);
@@ -353,6 +373,10 @@ end;
 
 procedure TJvContentScroller.Paint;
 begin
+  {$IFDEF VisualCLX}
+  if Caption <> '' then
+    Caption := '';
+  {$ENDIF VisualCLX}
   inherited Paint;
   if csDesigning in ComponentState then
     with Canvas do
