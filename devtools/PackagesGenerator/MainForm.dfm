@@ -45,6 +45,9 @@ object frmMain: TfrmMain
     Align = alLeft
     BevelOuter = bvLowered
     TabOrder = 1
+    DesignSize = (
+      137
+      502)
     object jlbList: TJvListBox
       Left = 8
       Top = 8
@@ -80,9 +83,9 @@ object frmMain: TfrmMain
       Caption = 'Menus'
       EdgeBorders = []
       Flat = True
+      Menu = jmmMain
       ShowCaptions = True
       TabOrder = 0
-      Menu = jmmMain
     end
     object jtbTools: TJvToolBar
       Left = 11
@@ -195,6 +198,9 @@ object frmMain: TfrmMain
     Align = alClient
     BevelOuter = bvLowered
     TabOrder = 3
+    DesignSize = (
+      653
+      502)
     object lblDependencies: TLabel
       Left = 12
       Top = 132
@@ -333,7 +339,7 @@ object frmMain: TfrmMain
         Width = 545
         Height = 220
         Align = alClient
-        ColCount = 14
+        ColCount = 4
         DefaultColWidth = 40
         DefaultRowHeight = 18
         FixedCols = 0
@@ -357,7 +363,7 @@ object frmMain: TfrmMain
         Width = 545
         Height = 165
         Align = alTop
-        ColCount = 14
+        ColCount = 3
         DefaultColWidth = 40
         DefaultRowHeight = 18
         FixedCols = 0
@@ -1363,5 +1369,22 @@ object frmMain: TfrmMain
       Caption = '&Down'
       OnClick = mnuDownClick
     end
+  end
+  object jfsStore: TJvFormStorage
+    AppStorage = jaiIniStore
+    AppStoragePath = 'pgEdit\'
+    StoredProps.Strings = (
+      'pnlList.Width'
+      'jsgDependencies.Height'
+      'pnlEdit.Width'
+      'jsgFiles.Height')
+    StoredValues = <>
+    Left = 648
+  end
+  object jaiIniStore: TJvAppINIFileStore
+    Buffered = False
+    FileName = 'pgEdit.ini'
+    Left = 648
+    Top = 28
   end
 end

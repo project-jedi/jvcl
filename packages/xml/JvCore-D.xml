@@ -4,44 +4,44 @@
   <C5PFlags/>
   <C6PFlags/>
   <Requires>
-    <Package Name="JvCore" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Design="" Condition=""/>
-    <Package Name="designide" D5="" D5s="" D6="y" D6p="y" D7="y" D7p="y" C5="" C6="y" C6p="y" K2="" K3="" Design="" Condition=""/>
-    <Package Name="dclstd" D5="" D5s="" D6="y" D6p="y" D7="y" D7p="y" C5="" C6="y" C6p="y" K2="" K3="" Design="" Condition=""/>
-    <Package Name="dclstd50" D5="y" D5s="y" D6="" D6p="" D7="" D7p="" C5="y" C6="" C6p="" K2="" K3="" Design="" Condition=""/>
-    <Package Name="CJCL50" D5="" D5s="" D6="" D6p="" D7="" D7p="" C5="y" C6="" C6p="" K2="" K3="" Design="" Condition=""/>
-    <Package Name="vclx50" D5="" D5s="" D6="" D6p="" D7="" D7p="" C5="y" C6="" C6p="" K2="" K3="" Design="" Condition=""/>
-    <Package Name="vcl50" D5="" D5s="" D6="" D6p="" D7="" D7p="" C5="y" C6="" C6p="" K2="" K3="" Design="" Condition=""/>
-    <Package Name="rtl" D5="" D5s="" D6="" D6p="" D7="" D7p="" C5="" C6="y" C6p="y" K2="" K3="" Design="" Condition=""/>
-    <Package Name="vcl" D5="" D5s="" D6="" D6p="" D7="" D7p="" C5="" C6="y" C6p="y" K2="" K3="" Design="" Condition=""/>
-    <Package Name="vclx" D5="" D5s="" D6="" D6p="" D7="" D7p="" C5="" C6="y" C6p="y" K2="" K3="" Design="" Condition=""/>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="designide" Targets="D6,D6p,D7,D7p,C6,C6p" Condition=""/>
+    <Package Name="dclstd" Targets="D6,D6p,D7,D7p,C6,C6p" Condition=""/>
+    <Package Name="dclstd50" Targets="D5,D5s,C5" Condition=""/>
+    <Package Name="CJCL50" Targets="C5" Condition=""/>
+    <Package Name="vclx50" Targets="C5" Condition=""/>
+    <Package Name="vcl50" Targets="C5" Condition=""/>
+    <Package Name="rtl" Targets="C6,C6p" Condition=""/>
+    <Package Name="vcl" Targets="C6,C6p" Condition=""/>
+    <Package Name="vclx" Targets="C6,C6p" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvProviderTreeListDsgnFrame.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="fmeJvProviderTreeListDsgn: TFrame" Condition=""/>
-    <File Name="..\..\design\JvProviderTreeListFrame.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="fmeJvProviderTreeList: TFrame" Condition=""/>
-    <File Name="..\..\design\JvStdToolbarDsgnFrame.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="fmeJvStdToolbarDesign: TFrame" Condition=""/>
-    <File Name="..\..\design\JvStringsForm.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="JvStrEditDlg" Condition=""/>
-    <File Name="..\..\design\JvBaseDlgEditor.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
-    <File Name="..\..\design\JvBaseDsgnForm.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="JvBaseDesign" Condition=""/>
-    <File Name="..\..\design\JvBaseDsgnFrame.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="fmeJvBaseDesign: TFrame" Condition=""/>
-    <File Name="..\..\design\JvBaseDsgnToolbarFrame.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="fmeJvBaseToolbarDesign: TFrame" Condition=""/>
-    <File Name="..\..\design\JvColorEditor.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
-    <File Name="..\..\design\JvColorProviderDesignerForm.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="frmJvColorProviderDesigner" Condition=""/>
-    <File Name="..\..\design\JvColorProviderEditors.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
-    <File Name="..\..\design\JvCoreReg.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
-    <File Name="..\..\design\JvDataConsumerContextSelectForm.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="frmDataConsumerContextSelect" Condition=""/>
-    <File Name="..\..\design\JvDataConsumerItemSelectForm.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="frmJvDataConsumerItemSelect" Condition=""/>
-    <File Name="..\..\design\JvDataContextManagerForm.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="frmJvDataContextManager" Condition=""/>
-    <File Name="..\..\design\JvDataProviderDesignerForm.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="frmDataProviderDesigner" Condition=""/>
-    <File Name="..\..\design\JvDataProviderEditors.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
-    <File Name="..\..\design\JvDataProviderItemDesign.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
-    <File Name="..\..\design\JvDateTimeForm.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="frmSelectDateTimeDlg" Condition=""/>
-    <File Name="..\..\design\JvDesignerUtils.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
-    <File Name="..\..\design\JvDsgnConsts.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
-    <File Name="..\..\design\JvDsgnEditors.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
-    <File Name="..\..\design\JvIDEZoom.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
-    <File Name="..\..\design\JvJVCLAboutEditor.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
-    <File Name="..\..\design\JvPaintBoxEditor.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
-    <File Name="..\..\design\JvProviderToolbarFrame.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="fmeJvProviderToolbar: TFrame" Condition=""/>
-    <File Name="..\..\design\JvDsgnTypes.pas" D5="y" D5s="y" D6="y" D6p="y" D7="y" D7p="y" C5="y" C6="y" C6p="y" K2="y" K3="y" Formname="" Condition=""/>
+    <File Name="..\..\design\JvProviderTreeListDsgnFrame.pas" Targets="all" Formname="fmeJvProviderTreeListDsgn: TFrame" Condition=""/>
+    <File Name="..\..\design\JvProviderTreeListFrame.pas" Targets="all" Formname="fmeJvProviderTreeList: TFrame" Condition=""/>
+    <File Name="..\..\design\JvStdToolbarDsgnFrame.pas" Targets="all" Formname="fmeJvStdToolbarDesign: TFrame" Condition=""/>
+    <File Name="..\..\design\JvStringsForm.pas" Targets="all" Formname="JvStrEditDlg" Condition=""/>
+    <File Name="..\..\design\JvBaseDlgEditor.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvBaseDsgnForm.pas" Targets="all" Formname="JvBaseDesign" Condition=""/>
+    <File Name="..\..\design\JvBaseDsgnFrame.pas" Targets="all" Formname="fmeJvBaseDesign: TFrame" Condition=""/>
+    <File Name="..\..\design\JvBaseDsgnToolbarFrame.pas" Targets="all" Formname="fmeJvBaseToolbarDesign: TFrame" Condition=""/>
+    <File Name="..\..\design\JvColorEditor.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvColorProviderDesignerForm.pas" Targets="all" Formname="frmJvColorProviderDesigner" Condition=""/>
+    <File Name="..\..\design\JvColorProviderEditors.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvCoreReg.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDataConsumerContextSelectForm.pas" Targets="all" Formname="frmDataConsumerContextSelect" Condition=""/>
+    <File Name="..\..\design\JvDataConsumerItemSelectForm.pas" Targets="all" Formname="frmJvDataConsumerItemSelect" Condition=""/>
+    <File Name="..\..\design\JvDataContextManagerForm.pas" Targets="all" Formname="frmJvDataContextManager" Condition=""/>
+    <File Name="..\..\design\JvDataProviderDesignerForm.pas" Targets="all" Formname="frmDataProviderDesigner" Condition=""/>
+    <File Name="..\..\design\JvDataProviderEditors.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDataProviderItemDesign.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDateTimeForm.pas" Targets="all" Formname="frmSelectDateTimeDlg" Condition=""/>
+    <File Name="..\..\design\JvDesignerUtils.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDsgnConsts.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDsgnEditors.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvIDEZoom.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvJVCLAboutEditor.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvPaintBoxEditor.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvProviderToolbarFrame.pas" Targets="all" Formname="fmeJvProviderToolbar: TFrame" Condition=""/>
+    <File Name="..\..\design\JvDsgnTypes.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>

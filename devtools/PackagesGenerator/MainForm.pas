@@ -81,6 +81,8 @@ type
     lblDescription: TLabel;
     lblC5PFlags: TLabel;
     lblC6PFlags: TLabel;
+    jfsStore: TJvFormStorage;
+    jaiIniStore: TJvAppINIFileStore;
     procedure actExitExecute(Sender: TObject);
     procedure actNewExecute(Sender: TObject);
     procedure aevEventsHint(Sender: TObject);
@@ -170,63 +172,30 @@ begin
 end;
 
 constructor TfrmMain.Create(AOwner: TComponent);
-var i : integer;
 begin
   inherited;
+  jaiIniStore.FileName := StrEnsureSuffix('\', ExtractFilePath(Application.exename)) + 'pgEdit.ini';
+
   with jsgDependencies do
   begin
     Cells[0, 0] := 'Name';
-    Cells[1,  0] := 'D5';
-    Cells[2,  0] := 'D5s';
-    Cells[3,  0] := 'D6';
-    Cells[4,  0] := 'D6p';
-    Cells[5,  0] := 'D7';
-    Cells[6,  0] := 'D7p';
-    Cells[7,  0] := 'C5';
-    Cells[8,  0] := 'C6';
-    Cells[9,  0] := 'C6p';
-    Cells[10, 0] := 'K2';
-    Cells[11, 0] := 'K3';
-    Cells[12, 0] := 'Design';
-    Cells[13, 0] := 'Condition';
+    Cells[1, 0] := 'Targets';
+    Cells[2, 0] := 'Condition';
     ColWidths[0] := 120;
-    for i := 1 to 11 do
-    begin
-      if Length(Cells[i,0]) = 2 then
-        ColWidths[i] := 18
-      else
-        ColWidths[i] := 23;
-    end;
-    ColWidths[12] := 40;
-    ColWidths[13] := 146;
+    ColWidths[1] := 150;
+    ColWidths[2] := 70;
   end;
 
   with jsgFiles do
   begin
-    Cells[0,  0] := 'Name';
-    Cells[1,  0] := 'D5';
-    Cells[2,  0] := 'D5s';
-    Cells[3,  0] := 'D6';
-    Cells[4,  0] := 'D6p';
-    Cells[5,  0] := 'D7';
-    Cells[6,  0] := 'D7p';
-    Cells[7,  0] := 'C5';
-    Cells[8,  0] := 'C6';
-    Cells[9,  0] := 'C6p';
-    Cells[10, 0] := 'K2';
-    Cells[11, 0] := 'K3';
-    Cells[12, 0] := 'Form name';
-    Cells[13, 0] := 'Condition';
-    ColWidths[0] := 120;
-    for i := 1 to 11 do
-    begin
-      if Length(Cells[i,0]) = 2 then
-        ColWidths[i] := 18
-      else
-        ColWidths[i] := 23;
-    end;
-    ColWidths[12] := 86;
-    ColWidths[13] := 100;
+    Cells[0, 0] := 'Name';
+    Cells[1, 0] := 'Targets';
+    Cells[2, 0] := 'Form name';
+    Cells[3, 0] := 'Condition';
+    ColWidths[0] := 230;
+    ColWidths[1] := 50;
+    ColWidths[2] := 170;
+    ColWidths[3] := 70;
   end;
 
   // Load the list of packages
@@ -237,9 +206,7 @@ procedure TfrmMain.jsgDependenciesGetCellAlignment(Sender: TJvStringGrid;
   AColumn, ARow: Integer; State: TGridDrawState;
   var CellAlignment: TAlignment);
 begin
-  if (ARow > 0) and
-     ((AColumn = 0) or
-      (AColumn >= 12)) then
+  if (ARow > 0) then
     CellAlignment := taLeftJustify
   else
     CellAlignment := taCenter;
@@ -249,7 +216,6 @@ procedure TfrmMain.jsgDependenciesExitCell(Sender: TJvStringGrid; AColumn,
   ARow: Integer; const EditText: String);
 var
   row : TStrings;
-  ColIndex : Integer;
 begin
   if AColumn = 0 then
   begin
@@ -263,18 +229,14 @@ begin
     begin
       Sender.InsertRow(Sender.RowCount);
       row := Sender.Rows[ARow];
-      for ColIndex := 1 to 11 do
-        row[ColIndex] := 'y';
-      if rbtDesign.Checked and (Sender = jsgDependencies) then
-        row[8] := 'y';
-    end; 
+      row[1] := 'all';
+    end;
   end;
 end;
 
 procedure TfrmMain.actAddFilesExecute(Sender: TObject);
 var
   i : Integer;
-  ColIndex : Integer;
   Name : string;
   PackagesDir : string;
   FormName : string;
@@ -297,8 +259,7 @@ begin
       Name := odlAddFiles.Files[i];
       Dir := GetRelativePath(PackagesDir, ExtractFilePath(Name));
       row[0] := '..\' + StrEnsureSuffix('\', Dir) + ExtractFileName(Name);
-      for ColIndex := 1 to 11 do
-        row[ColIndex] := 'y';
+      row[1] := 'all';
 
       // try to find if there is a dfm associated with the file
       // if there is one, open it and read the first line to get the
@@ -334,9 +295,9 @@ begin
         if (FormType = 'TForm') or
            (FormType = 'TJvForm') or
            (FormType = '') then
-          row[12] := FormName
+          row[2] := FormName
         else
-          row[12] := FormName + ': ' + FormType;
+          row[2] := FormName + ': ' + FormType;
       end;
     end;
     Changed := True;
@@ -721,7 +682,7 @@ begin
   begin
     Result := True;
     case Application.MessageBox(
-          'The values for this package have been changed.'#13#10 + 
+          'The values for this package have changed.'#13#10 + 
           'Do you want to save before the next action ?',
           'Package has changed',
           MB_ICONQUESTION or MB_YESNOCANCEL) of
