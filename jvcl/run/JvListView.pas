@@ -1042,13 +1042,11 @@ begin
 end;
 
 procedure TJvListView.UpdateHeaderImages(HeaderHandle: integer);
-var
-  WP: TWindowPlacement;
+//var
+//  WP: TWindowPlacement;
 begin
-
   if (HeaderHandle <> 0) and (ViewStyle = vsReport) and ShowColumnHeaders then
   begin
-
 //    WP.length := sizeof(WP);
 //    GetWindowPlacement(HeaderHandle, @WP);
     if (HeaderImages <> nil) then
@@ -1086,7 +1084,8 @@ begin
 end;
 
 procedure TJvListView.WMNCCalcSize(var Message: TWMNCCalcSize);
-var R:TRect;
+//var
+//  R: TRect;
 begin
   inherited;
 //  if Message.CalcValidRects and Assigned(HeaderImages) and (ViewStyle = vsReport) and ShowColumnHeaders then

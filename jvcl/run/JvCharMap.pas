@@ -428,9 +428,9 @@ var
   begin
     ModH := GetModuleHandle(sUser32);
     if ModH <> 0 then
-       @DynamicSetLayeredWindowAttributes := GetProcAddress(ModH, 'SetLayeredWindowAttributes');
+       @DynamicSetLayeredWindowAttributes := GetProcAddress(ModH, 'SetLayeredWindowAttributes')
     else
-      @DynamicSetLayeredWindowAttributes := mil;
+      @DynamicSetLayeredWindowAttributes := nil;
   end;
 
 begin
