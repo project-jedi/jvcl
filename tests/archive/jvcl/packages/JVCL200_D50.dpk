@@ -37,6 +37,15 @@ requires
   JVCL200_R50;
 
 contains
+
+  JvaDBReg in '..\Source\JvaDBReg.pas',
+  JvaCtlReg in '..\Source\JvaCtlReg.pas',
+  JvIDEZoom in '..\Source\JvIDEZoom.pas',
+  JvaDsgn in '..\Source\JvaDsgn.pas',
+  JvRegAutoEditor in '..\Source\JvRegAutoEditor.pas' {RegEditor},
+  JvHTHintEditor in '..\Source\JvHTHintEditor.pas' {HintEditor},
+  JvIReg in '..\Source\JvIReg.pas',
+//-------------------------------------
   JVCLReg in '..\Source\JVCLReg.pas',
   JvAlarmsEditor in '..\Source\JvAlarmsEditor.pas',
   JvBaseDlgEditor in '..\Source\JvBaseDlgEditor.pas',
