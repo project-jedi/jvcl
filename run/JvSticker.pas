@@ -32,10 +32,10 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, StdCtrls,
-  Forms;
+  Forms, JvComponent;
 
 type
-  TJvStickSizer = class(TCustomControl)
+  TJvStickSizer = class(TJvCustomControl)
   private
     FControl: TControl;
     FRectList: array [1..8] of TRect;
@@ -51,17 +51,17 @@ type
     procedure SizerControlExit(Sender: TObject);
   end;
 
-  TJvSticker = class(TGraphicControl)
+  TJvSticker = class(TJvGraphicControl)
   private
     FStickColor: TColor;
     procedure SetStickColor(const Value: TColor);
     function CaptionDialog(S: string): string;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
     procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
   protected
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
   public
     constructor Create(AOwner: TComponent); override;
     procedure Paint; override;
@@ -198,14 +198,16 @@ begin
   Invalidate;
 end;
 
-procedure TJvSticker.CMMouseEnter(var Msg: TMessage);
+procedure TJvSticker.MouseEnter(Control: TControl);
 begin
   // Cursor := crHandPoint;
+  inherited;
 end;
 
-procedure TJvSticker.CMMouseLeave(var Msg: TMessage);
+procedure TJvSticker.MouseLeave(Control: TControl);
 begin
   Cursor := crDefault;
+  inherited;
 end;
 
 procedure TJvSticker.CMTextChanged(var Msg: TMessage);

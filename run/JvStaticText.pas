@@ -63,8 +63,6 @@ type
 
   TJvCustomStaticText = class(TJvWinControl)
   private
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
     FOnCtl3DChanged: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FHintColor: TColor;
@@ -93,8 +91,6 @@ type
     procedure SetHotTrackFont(const Value: TFont);
     procedure SetLayout(const Value: TTextLayout);
 
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
@@ -104,6 +100,8 @@ type
     procedure SetHotTrackFontOptions(const Value: TJvTrackFOntOptions);
   protected
     procedure Loaded; override;
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
     procedure AdjustBounds; dynamic;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure SetAutoSize(Value: Boolean);
@@ -122,8 +120,8 @@ type
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property Layout: TTextLayout read FLayout write SetLayout;
     property WordWrap: Boolean read FWordWrap write SetWordWrap;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   public
@@ -239,11 +237,8 @@ begin
     FOnParentColorChanged(Self);
 end;
 
-procedure TJvCustomStaticText.CMMouseEnter(var Msg: TMessage);
+procedure TJvCustomStaticText.MouseEnter(Control: TControl);
 begin
-  // for D7...
-  if csDesigning in ComponentState then
-    Exit;
   if not FOver then
   begin
     FSaved := Application.HintColor;
@@ -255,16 +250,11 @@ begin
     end;
     FOver := True;
   end;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
   inherited;
 end;
 
-procedure TJvCustomStaticText.CMMouseLeave(var Msg: TMessage);
+procedure TJvCustomStaticText.MouseLeave(Control: TControl);
 begin
-  // for D7...
-  if csDesigning in ComponentState then
-    Exit;
   if FOver then
   begin
     Application.HintColor := FSaved;
@@ -272,8 +262,6 @@ begin
       Font.Assign(FFontSave);
     FOver := False;
   end;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
   inherited;
 end;
 

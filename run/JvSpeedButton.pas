@@ -71,8 +71,6 @@ type
     FMenuTracking: Boolean;
     FModalResult: TModalResult;
     FMouseInControl: Boolean;
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FRepeatPause: Word;
     FRepeatTimer: TTimer;
@@ -112,8 +110,6 @@ type
     procedure CMDialogChar(var Msg: TCMDialogChar); message CM_DIALOGCHAR;
     procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
     procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure CMSysColorChange(var Msg: TMessage); message CM_SYSCOLORCHANGE;
     procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
@@ -127,8 +123,8 @@ type
     function GetDropDownMenuPos: TPoint;
     procedure Loaded; override;
     procedure Paint; override;
-    procedure MouseEnter; dynamic;
-    procedure MouseLeave; dynamic;
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -180,8 +176,8 @@ type
     property Transparent: Boolean read FTransparent write SetTransparent default False;
     property WordWrap: Boolean read GetWordWrap write SetWordWrap default False;
 
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   end;
 
@@ -799,24 +795,19 @@ begin
   Invalidate;
 end;
 
-procedure TJvCustomSpeedButton.CMMouseEnter(var Msg: TMessage);
+procedure TJvCustomSpeedButton.MouseEnter(Control: TControl);
 var
   NeedRepaint: Boolean;
 begin
-  inherited;
-  // for D7...
-  if csDesigning in ComponentState then
-    Exit;
-
   if not MouseInControl and Enabled then
   begin
     { Don't draw a border if DragMode <> dmAutomatic since this button is meant to
       be used as a dock client. }
     NeedRepaint :=
       {$IFDEF JVCLThemesEnabled}
-    ThemeServices.ThemesEnabled or
+      ThemeServices.ThemesEnabled or
       {$ENDIF}
-    FHotTrack or
+      FHotTrack or
       (FFlat and not FMouseInControl and Enabled and (DragMode <> dmAutomatic) and (GetCapture = 0));
 
     FMouseInControl := True;
@@ -828,27 +819,22 @@ begin
     if NeedRepaint then
       Repaint;
 
-    MouseEnter;
+    inherited; // tigger event
   end;
 end;
 
-procedure TJvCustomSpeedButton.CMMouseLeave(var Msg: TMessage);
+procedure TJvCustomSpeedButton.MouseLeave(Control: TControl);
 var
   NeedRepaint: Boolean;
 begin
-  inherited;
-  // for D7...
-  if csDesigning in ComponentState then
-    Exit;
-
   if MouseInControl and Enabled then
   begin
     NeedRepaint :=
       {$IFDEF JVCLThemesEnabled}
-    { Windows XP introduced hot states also for non-flat buttons. }
-    ThemeServices.ThemesEnabled or
+      { Windows XP introduced hot states also for non-flat buttons. }
+      ThemeServices.ThemesEnabled or
       {$ENDIF}
-    HotTrack or
+      HotTrack or
       (FFlat and FMouseInControl and Enabled and not FDragging);
 
     FMouseInControl := False;
@@ -858,7 +844,7 @@ begin
     if NeedRepaint then
       Repaint;
 
-    MouseLeave;
+    inherited;
   end;
 end;
 
@@ -1082,18 +1068,6 @@ begin
       FRepeatTimer.Enabled := True;
     end;
   end;
-end;
-
-procedure TJvCustomSpeedButton.MouseEnter;
-begin
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
-end;
-
-procedure TJvCustomSpeedButton.MouseLeave;
-begin
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
 end;
 
 procedure TJvCustomSpeedButton.MouseMove(Shift: TShiftState; X, Y: Integer);
