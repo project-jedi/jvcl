@@ -173,6 +173,7 @@ object frmMain: TfrmMain
         'Full Page'
         'Page Width'
         'Use Scale'
+        'Use Auto Scale'
         'Use Cols and Rows')
     end
   end
