@@ -111,7 +111,7 @@ type
     procedure Find; virtual;
     procedure FindAgain; virtual;
     procedure Replace; virtual;
-    procedure ReplaceAll(const S, R: string); virtual;
+    procedure ReplaceAll(const SearchText, ReplaceText: string); virtual;
     property Position: TPoint read GetPosition write SetPosition;
     property Top: Integer read GetTop write SetDialogTop default -1;
     property Left: Integer read GetLeft write SetDialogLeft default -1;
@@ -266,10 +266,13 @@ begin
   begin
     Result.StartAt := Found + FromPos - 1;
     Result.EndAt := Length(Search);
-    S := Copy(Text, Result.StartAt - 1, Result.EndAt + 3);
+//    S := Copy(Text, Result.StartAt - 1, Result.EndAt + 3);
+    S := Copy(Text, Result.StartAt - 1, Result.EndAt + 2);
     Result.isWhole := IsValidWholeWord(S);
-    S := Copy(S, 3, Length(S) - 3);
-    Result.isSameCase := (AnsiCompareStr(Search, S) = 0);
+//    S := Copy(S, 3, Length(S) - 3);
+//    Result.isSameCase := (AnsiCompareStr(Search, S) = 0);
+    S := Copy(S, 1, Length(S) - 1);
+    Result.isSameCase := (AnsiCompareStr(trim(Search), trim(S)) = 0);
   end;
 end;
 
@@ -328,7 +331,7 @@ begin
     DoOnReplace(FReplaceDialog);
 end;
 
-procedure TJvFindReplace.ReplaceAll;
+procedure TJvFindReplace.ReplaceAll(const SearchText, ReplaceText: string);
 var
   Txt: string;
   FoundPos: TFoundText;
@@ -341,10 +344,10 @@ begin
   Terminate := False;
   TmpOptions := FReplaceDialog.Options;
   Txt := FEditControl.Text;
-  SLen := Length(S);
-  RLen := Length(FReplaceText);
+  SLen := Length(SearchText);
+  RLen := Length(ReplaceText);
   TLen := Length(Txt);
-  FoundPos := FindInText(Txt, FFindText, 0, TLen, True);
+  FoundPos := FindInText(Txt, SearchText, 0, TLen, True);
 
   if FoundPos.StartAt > -1 then
   begin
@@ -354,12 +357,18 @@ begin
     begin
       Inc(FNumberReplaced);
       if (frWholeWord in TmpOptions) and not FoundPos.isWhole then
+      begin
+        FoundPos := FindInText(Txt, SearchText, FoundPos.StartAt + RLen + 1, TLen + (RLen - SLen), True);
         Continue;
+      end;
       if (frMatchCase in TmpOptions) and not FoundPos.isSameCase then
+      begin
+        FoundPos := FindInText(Txt, SearchText, FoundPos.StartAt + RLen + 1, TLen + (RLen - SLen), True);
         Continue;
+      end;
       Delete(Txt, FoundPos.StartAt + 1, SLen);
-      Insert(FReplaceText, Txt, FoundPos.StartAt + 1);
-      FoundPos := FindInText(Txt, FFindText, FoundPos.StartAt + RLen + 1, TLen + (RLen - SLen), True);
+      Insert(ReplaceText, Txt, FoundPos.StartAt + 1);
+      FoundPos := FindInText(Txt, SearchText, FoundPos.StartAt + RLen + 1, TLen + (RLen - SLen), True);
       if FoundPos.StartAt mod 60 = 0 then
       begin
         DoProgress(FoundPos.StartAt, Terminate);
