@@ -168,6 +168,9 @@ begin
   Steps := FGradientWidth;
   if Steps > Width then
     Steps := Width;
+  if Steps <= 0 then
+    Exit;
+
   Deltas[0] := (GetRValue(LEndColor) - GetRValue(LStartColor)) / Steps;
   Deltas[1] := (GetGValue(LEndColor) - GetGValue(LStartColor)) / Steps;
   Deltas[2] := (GetBValue(LEndColor) - GetBValue(LStartColor)) / Steps;
