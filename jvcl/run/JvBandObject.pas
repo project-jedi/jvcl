@@ -173,6 +173,12 @@ uses
 const
   cIERegistryBase = 'Software\Microsoft\Internet Explorer\';
   cCLSID = 'CLSID\';
+  cBarSize = 'BarSize';
+  cExplorerBars = 'Explorer Bars\';
+  cInstanceInitPropertyBagUrl = '\Instance\InitPropertyBag\Url';
+  cInstanceInitPropertyBag = '\Instance\InitPropertyBag';
+  cInstanceCLSID = '\Instance\CLSID';
+  cInstance = '\Instance';
 
 {$IFDEF DEBUGINFO_ON}
 // (rom) debugging deactivated
@@ -318,17 +324,17 @@ begin
     inherited UpdateRegistry(Reg);
     if GetURL <> '' then
     begin
-      CreateRegKey(cCLSID + ClassIDString + '\Instance\CLSID', '', '{4D5C8C2A-D075-11D0-B416-00C04FB90376}');
-      CreateRegKey(cCLSID + ClassIDString + '\Instance\InitPropertyBag\Url', '', GetURL);
+      CreateRegKey(cCLSID + ClassIDString + cInstanceCLSID, '', '{4D5C8C2A-D075-11D0-B416-00C04FB90376}');
+      CreateRegKey(cCLSID + ClassIDString + cInstanceInitPropertyBagUrl, '', GetURL);
     end;
     if (GetBarWidth <> 0) or (GetBarHeight <> 0) then
     begin
       with TRegistry.Create do
       try
         RootKey := HKEY_CURRENT_USER;
-        if OpenKey(cIERegistryBase + 'Explorer Bars\' + ClassIDString, True) then
+        if OpenKey(cIERegistryBase + cExplorerBars + ClassIDString, True) then
         try
-          WriteString('BarSize', BarSize)
+          WriteString(cBarSize, BarSize)
         finally
           CloseKey;
         end;
@@ -342,20 +348,20 @@ begin
     with TRegistry.Create do
     try
       RootKey := HKEY_CURRENT_USER;
-      if OpenKey(cIERegistryBase + 'Explorer Bars\' + ClassIDString, True) then
+      if OpenKey(cIERegistryBase + cExplorerBars + ClassIDString, True) then
       try
-        DeleteValue('BarSize');
+        DeleteValue(cBarSize);
       finally
         CloseKey;
       end;
-      DeleteKey(cIERegistryBase + 'Explorer Bars\' + ClassIDString);
+      DeleteKey(cIERegistryBase + cExplorerBars + ClassIDString);
     finally
       Free;
     end;
-    DeleteRegKey(cCLSID + ClassIDString + '\Instance\InitPropertyBag\Url');
-    DeleteRegKey(cCLSID + ClassIDString + '\Instance\InitPropertyBag');
-    DeleteRegKey(cCLSID + ClassIDString + '\Instance\CLSID');
-    DeleteRegKey(cCLSID + ClassIDString + '\Instance');
+    DeleteRegKey(cCLSID + ClassIDString + cInstanceInitPropertyBagUrl);
+    DeleteRegKey(cCLSID + ClassIDString + cInstanceInitPropertyBag);
+    DeleteRegKey(cCLSID + ClassIDString + cInstanceCLSID);
+    DeleteRegKey(cCLSID + ClassIDString + cInstance);
     inherited UpdateRegistry(Reg);
   end;
 end;

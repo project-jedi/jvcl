@@ -79,7 +79,7 @@ implementation
 uses
   SysUtils,
   JclRegistry, JclResources, JclStrings,
-  JvResources;
+  JvConsts, JvResources;
 
 const
   cCount = 'Count';
@@ -145,7 +145,7 @@ begin
         repeat
           EnumRes := RegEnumKey(TmpHKEY, I, SubKeyName, SizeOf(SubKeyName));
           if (EnumRes = ERROR_SUCCESS) and (not ReportListAsValue or
-              not ListStored(Path + '\' + SubKeyName)) then
+              not ListStored(Path + RegPathDelim + SubKeyName)) then
             Strings.Add(SubKeyName);
           Inc(I);
         until EnumRes <> ERROR_SUCCESS;
@@ -229,7 +229,7 @@ var
   ValueName: string;
 begin
   SplitKeyPath(Path, SubKey, ValueName);
-  Result := RegKeyExists(FRegHKEY, SubKey + '\' + ValueName);
+  Result := RegKeyExists(FRegHKEY, SubKey + RegPathDelim + ValueName);
 end;
 
 function TJvAppRegistryStore.ValueStoredInt(const Path: string): Boolean;
