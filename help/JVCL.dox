@@ -2,10 +2,10 @@
 Version=204
 
 [General]
-Title=JEDI-VCL
+Title=JEDI-VCL 2.0 (Beta) help system
 VersionMajor=2
 VersionMinor=0
-Copyright=Copyright (c) 2002 project JEDI. All rights reserved.
+Copyright=Copyright (c) 2002 Project JEDI. All rights reserved.
 Type=1
 
 [Source Files]
@@ -236,7 +236,7 @@ NestedClasses-4=1
 
 [Text Variables]
 Count=1
-Var_0=JVCL_VERSION=2.00 (Alpha)
+Var_0=JVCL_VERSION=2.00 (Beta)
 
 [Enabled Topics]
 Count=1
