@@ -32,9 +32,6 @@ interface
 uses
   Windows, Messages,
   SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls, ToolWin,
-  {$IFDEF VisualCLX}
-  QTypes,
-  {$ENDIF VisualCLX}
   JvJCLUtils, JvThemes, JvExControls, JvExExtCtrls;
 
 type
