@@ -67,7 +67,7 @@ type
 
 implementation
 
-constructor TJvSimIndicator.Create(AOwner: Tcomponent);
+constructor TJvSimIndicator.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   Width := 25;

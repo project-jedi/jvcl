@@ -293,7 +293,7 @@ end;
 
 function TJvThread.GetThreads(Index: Integer): TThread;
 var
-  List: TLIst;
+  List: TList;
 begin
   List := FThreads.LockList;
   try

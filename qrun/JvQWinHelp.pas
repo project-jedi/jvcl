@@ -29,9 +29,8 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
-{$I windowsonly.inc}
 
-unit JvQWinHelp;
+unit JvQWinHelp platform;
 
 interface
 
@@ -159,12 +158,12 @@ end;
 
 function TJvWinHelp.ShowKeyword(Keyword: string): Boolean;
 begin
-  Result := WinHelp(GetOwnerHandle, GetHelpFile, HELP_KEY, Longint(PChar(KeyWord)));
+  Result := WinHelp(GetOwnerHandle, GetHelpFile, HELP_KEY, Longint(PChar(Keyword)));
 end;
 
 function TJvWinHelp.ShowPartialKeyWord(Keyword: string): Boolean;
 begin
-  Result := WinHelp(GetOwnerHandle, GetHelpFile, HELP_PARTIALKEY, Longint(PChar(KeyWord)));
+  Result := WinHelp(GetOwnerHandle, GetHelpFile, HELP_PARTIALKEY, Longint(PChar(Keyword)));
 end;
 
 end.

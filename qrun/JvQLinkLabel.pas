@@ -120,9 +120,7 @@ type
     procedure DoLinkClicked(LinkNumber: Integer; LinkText: string); virtual;
     procedure DoDynamicTagInit(out Source: string; Number: Integer); virtual;
     property Parser: IParser read FParser;
-    property Renderer: IRenderer read FRenderer;
-    property Caption: TCaption read FCaption write SetText;
-    
+    property Renderer: IRenderer read FRenderer; 
     property Text: TStrings read GetStrings write SetStrings;
     property Transparent: Boolean read GetTransparent write SetTransparent default False;
     property Layout: TTextLayout read FLayout write SetLayout default tlTop;                // Bianconi
@@ -130,7 +128,7 @@ type
     property LinkColorClicked: TColor read GetLinkColorClicked write SetLinkColorClicked default clRed;
     property LinkColorHot: TColor read GetLinkColorHot write SetLinkColorHot default clPurple;
     property LinkCursor : TCursor read GetLinkCursor write SetLinkCursor default crHandPoint;
-    property LinkStyle: TFontStyles read GetLinkStyle write SetLinkStyle default [fsUnderLine];
+    property LinkStyle: TFontStyles read GetLinkStyle write SetLinkStyle default [fsUnderline];
     property HotLinks: Boolean read FHotLinks write FHotLinks default False;
     property AutoHeight: Boolean read FAutoHeight write SetAutoHeight default True;
     property MarginWidth: Integer read FMarginWidth write SetMarginWidth default 0;
@@ -570,14 +568,15 @@ end;
 
 function TJvCustomLinkLabel.GetText: TCaption;
 begin
-  Result := FCaption;
+  Result := FText.Text;
 end;
 
 
 procedure TJvCustomLinkLabel.SetText(const Value: TCaption);
 begin
   if Value <> FCaption then
-  begin
+  begin 
+    inherited SetText(Value); 
     FCaption := Value;
     Text.Clear;
     Text.Add(FCaption);
@@ -589,6 +588,8 @@ begin
     Invalidate;
     DoCaptionChanged;
   end;
+
+
 end;
 
 procedure TJvCustomLinkLabel.SetLinkColor(const Value: TColor);

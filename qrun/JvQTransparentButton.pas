@@ -321,6 +321,7 @@ begin
 
     with TmpImage.Canvas do
     begin
+      Start;
       Brush.Color := clBtnFace;
       FillRect(Rect(0, 0, W, H));
       Brush.Color := clBtnHighlight;
@@ -331,6 +332,7 @@ begin
       SetTextColor(Handle, clBlack);
       SetBkColor(Handle, clWhite);
       BitBlt(Handle, 0, 0, W, H, MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
+      Stop;
     end;
     Bmp.Assign(TmpImage);
   finally

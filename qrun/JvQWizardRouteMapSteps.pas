@@ -256,7 +256,7 @@ begin
     if ShowNavigators then
     begin
       if TextRect.Left + FIndent + ArrowRect.Right - ArrowRect.Left < Width then
-        OffSetRect(TextRect, ArrowRect.Right, 0);
+        OffsetRect(TextRect, ArrowRect.Right, 0);
       if (csDesigning in ComponentState) or (bkBack in Wizard.WizardPages[PageIndex].EnabledButtons) then
         DrawFrameControl(Canvas.Handle, ArrowRect, DFC_SCROLL,
           DFCS_SCROLLLEFT or DFCS_FLAT);

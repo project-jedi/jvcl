@@ -181,7 +181,7 @@ begin
   ControlStyle := ControlStyle - [csSetCaption];
   BevelOuter := bvLowered;
   FTextStyle := bvNone;
-  FLines := TStringlist.Create;
+  FLines := TStringList.Create;
   FLines.OnChange := LinesChanged;
   FGlyph := TBitmap.Create;
   FGlyph.OnChange := GlyphChanged;
