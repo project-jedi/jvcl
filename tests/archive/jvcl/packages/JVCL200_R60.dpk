@@ -72,6 +72,7 @@ contains
   JvAppearingLabel in '..\source\JvAppearingLabel.pas',
   JvApplication in '..\source\JvApplication.pas',
   JvAutoSizeCompo in '..\source\JvAutoSizeCompo.pas',
+  JvBalloonHint in '..\source\JvBalloonHint.pas',
   JvBaseDlg in '..\source\JvBaseDlg.pas',
   JvBevel in '..\source\JvBevel.pas',
   JvBitBtn in '..\source\JvBitBtn.pas',
