@@ -48,7 +48,6 @@ JvgCheckBox.res \
 JvgHint.res \
 JvgLabelEditorForm.res \
 JvgTreeView.res \
-JvInterpreter.res \
 JvLED.res \
 JvLinkLabel.res \
 JvOutlookBar.res \
@@ -145,7 +144,6 @@ JvToolEdit.res: JvToolEdit.rc
 JvWinampLabel.res: JvWinampLabel.rc
 JvxCheckListBox.res: JvxCheckListBox.rc
 JvxSlider.res: JvxSlider.rc
-JvInterpreter.res: JvInterpreter.rc
 JvXPBar.res: JvXPBar.rc
 JvXPCore.res: JvXPCore.rc
 

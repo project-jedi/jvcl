@@ -1043,6 +1043,63 @@ resourcestring
   RsESizeMustBeEven = 'The size of bounds array must be even!';
 
 //=== JvInterpreterConst.pas =================================================
+resourcestring
+  RsEInterpreter0 = 'Ok';
+  RsEInterpreter1 = 'Unknown error';
+  RsEInterpreter2 = 'Internal interpreter error: %s';
+  RsEInterpreter3 = 'User break';
+  RsEInterpreter4 = 'Re-raising an exception only allowed in exception handler';
+  RsEInterpreter5 = 'Error in unit ''%s'' on line %d : %s';
+  RsEInterpreter6 = 'External error in unit ''%s'' on line %d : %s';
+  RsEInterpreter7 = 'Access denied to ''%s''';
+  RsEInterpreter8 = 'Expression is too complex - overflow';
+  RsEInterpreter31 = 'Record ''%s'' not defined';
+
+  RsEInterpreter52 = 'Stack overflow';
+  RsEInterpreter53 = 'Type mismatch';
+  RsEInterpreter55 = 'Function ''main'' undefined';
+  RsEInterpreter56 = 'Unit ''%s'' not found';
+  RsEInterpreter57 = 'Event ''%s'' not registered';
+  RsEInterpreter58 = 'DFM ''%s'' not found';
+
+  RsEInterpreter101 = 'Error in remark'; // (rom) in comment?
+  RsEInterpreter103 = '%s expected but %s found';
+  RsEInterpreter104 = 'Undeclared Identifier ''%s''';
+  RsEInterpreter105 = 'Type of expression must be boolean';
+  RsEInterpreter106 = 'Class type required';
+  RsEInterpreter107 = ' not allowed before else';
+  RsEInterpreter108 = 'Type of expression must be integer';
+  RsEInterpreter109 = 'Record, object or class type required';
+  RsEInterpreter110 = 'Missing operator or semicolon';
+  RsEInterpreter111 = 'Identifier redeclared: ''%s''';
+
+  RsEInterpreter171 = 'Array index out of bounds';
+  RsEInterpreter172 = 'Too many array bounds';
+  RsEInterpreter173 = 'Not enough array bounds';
+  RsEInterpreter174 = 'Invalid array dimension';
+  RsEInterpreter175 = 'Invalid array range';
+  RsEInterpreter176 = 'Array type required';
+
+  RsEInterpreter181 = 'Too many actual parameters';
+  RsEInterpreter182 = 'Not enough parameters';
+  RsEInterpreter183 = 'Incompatible types: ''%s'' and ''%s''';
+  RsEInterpreter184 = 'Error loading library ''%s''';
+  RsEInterpreter185 = 'Invalid type of argument in call to function ''%s''';
+  RsEInterpreter186 = 'Invalid type of result in call to function ''%s''';
+  RsEInterpreter187 = 'Can''t get proc address for function ''%s''';
+  RsEInterpreter188 = 'Invalid type of argument in call to function ''%s''';
+  RsEInterpreter189 = 'Invalid type of result in call to function ''%s''';
+  RsEInterpreter190 = 'Invalid calling convention for function ''%s''';
+
+  RsEInterpreter201 = 'Calling ''%s'' failed: ''%s''';
+
+  RsEInterpreter301 = 'Expression';
+  RsEInterpreter302 = 'Identifier';
+  RsEInterpreter303 = 'Declaration';
+  RsEInterpreter304 = 'End of File';
+  RsEInterpreter305 = 'Class declaration';
+
+  RsEInterpreter401 = 'Implementation of unit not found';
 
 //=== JvInterpreterFm.pas ====================================================
 resourcestring
