@@ -31,7 +31,7 @@ interface
 
 uses
   Windows, Messages, Classes, Graphics, Forms, Controls, Dialogs, Menus,
-  StdCtrls, ExtCtrls, Buttons,
+  StdCtrls, ExtCtrls, ExtDlgs, Buttons,
   JvMRUManager, JvFormPlacement, JvClipboardMonitor, JvComponent,
   JvAppStore, JvAppRegistryStore;
 
@@ -46,7 +46,6 @@ type
     CancelButton: TButton;
     HelpBtn: TButton;
     DecreaseBox: TCheckBox;
-    UsePreviewBox: TCheckBox;
     FormStorage: TJvFormStorage;
     GroupBox: TGroupBox;
     ImagePanel: TPanel;
@@ -91,8 +90,8 @@ type
   public
     Pic: TPicture;
     IconColor: TColor;
-    FileDialog: TOpenDialog;
-    SaveDialog: TSaveDialog;
+    FileDialog: TOpenPictureDialog;
+    SaveDialog: TSavePictureDialog;
     procedure ValidateImage;
     property DecreaseColors: Boolean read GetDecreaseColors;
     property GraphicClass: TGraphicClass read FGraphicClass write SetGraphicClass;
@@ -207,8 +206,8 @@ end;
 procedure TPictureEditDialog.FormCreate(Sender: TObject);
 begin
   Pic := TPicture.Create;
-  FileDialog := TOpenDialog.Create(Self);
-  SaveDialog := TSaveDialog.Create(Self);
+  FileDialog := TOpenPictureDialog.Create(Self);
+  SaveDialog := TSavePictureDialog.Create(Self);
   FileDialog.Title := sLoadPicture;
   SaveDialog.Title := sSavePictureAs;
   Bevel.Visible := False;
