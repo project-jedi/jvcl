@@ -4938,9 +4938,10 @@ var
   WorkVal: Integer;
   SourceLayout: TJvTFPrinterPageLayout;
 begin
-  if (Source is TJvTFPrinterPageLayout) and Assigned(Printer) and
-    Assigned(TJvTFPrinterPageLayout(Source).Printer) then
+  if (Source is TJvTFPrinterPageLayout) then
   begin
+    if not Assigned(Printer) or not Assigned(TJvTFPrinterPageLayout(Source).Printer) then
+      Exit; // raise?
     SourceLayout := TJvTFPrinterPageLayout(Source);
     SourceMeas := SourceLayout.Printer.Measure;
     DestMeas := Printer.Measure;
