@@ -50,7 +50,7 @@ type
     procedure FormKeyPress(Sender: TObject; var Key: Char);
   private
     FDataSource: TDataSource;
-    FJvMyDBGrid: TJvDBGrid;
+    FJvDBGrid: TJvDBGrid;
     FSelectColumn: TSelectColumn;
     FColumnUpdate: boolean;
     FCanHide: boolean;
@@ -59,7 +59,7 @@ type
     { Déclarations privées }
   public
     property DataSource: TDataSource read FDataSource write FDataSource;
-    property JvMyDBGrid: TJvDBGrid read FJvMyDBGrid write FJvMyDBGrid;
+    property Grid: TJvDBGrid read FJvDBGrid write FJvDBGrid;
     property SelectColumn: TSelectColumn read FSelectColumn write FSelectColumn;
   end;
 
