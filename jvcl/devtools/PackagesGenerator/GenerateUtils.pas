@@ -1354,6 +1354,7 @@ begin
              'DESCRIPTION%', GetDescription(xml, target),
              'C5PFLAGS%', EnsurePFlagsCondition(xml.C5PFlags, target),
              'C6PFLAGS%', EnsurePFlagsCondition(xml.C6PFlags, target),
+             'GUID%', xml.GUID,
              'TYPE%', Iff(xml.IsDesign, 'DESIGN', 'RUN'),
              'DATETIME%', FormatDateTime('dd-mm-yyyy  hh:nn:ss', NowUTC) + ' UTC',
              'type%', OneLetterType]) then
