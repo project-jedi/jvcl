@@ -66,7 +66,7 @@ uses Classes,
 
 procedure Register;
 begin
-  RegisterComponents('Gl Controls', [TJvgSplitter, TJvgBevel, TJvgLabel, TJvgBitBtn, TJvgGraphicButton, TJvgMaskEdit, TJvgCheckBox, TJvgTreeView, TJvgCheckTreeView, TJvgFlyingText,
+  RegisterComponents('JVCL Globus Controls', [TJvgSplitter, TJvgBevel, TJvgLabel, TJvgBitBtn, TJvgGraphicButton, TJvgMaskEdit, TJvgCheckBox, TJvgTreeView, TJvgCheckTreeView, TJvgFlyingText,
     TJvgPageControl, TJvgTabControl, TJvgProgress, TJvgHoleShape,
       TJvgDigits, TJvgShadow, TJvgGroupBox, TJvgBitmapImage, TJvgStaticTextLabel, TJvgListBox,
       TJvgCheckListBox, TJvgAskListBox, TJvgScrollBox, TJvgMaskEdit, TJvgRuler, TJvgStringGrid,
@@ -74,20 +74,20 @@ begin
       TJvgHelpPanel, TJvgWizardHeader
       ]);
 
-  RegisterComponents('Gl Components', [Tgl3DColors, TJvgCaption, TJvgHint, TJvgProcess, TJvgSysInfo,
+  RegisterComponents('JVCL Globus Components', [Tgl3DColors, TJvgCaption, TJvgHint, TJvgProcess, TJvgSysInfo,
     TJvgJumpingComponent, TJvgMailSlotServer, TJvgMailSlotClient,
       //TJvgReport, TJvgReportEditor,
     TJvgExceptionHandler, TJvgSingleInstance, TJvgStringContainer, TJvgSysRequirements,
       TJvgSmallFontsDefence, TJvgXMLSerializer {, TJvgMultipleResources}]);
 
-  //  RegisterComponents( 'Gl QReport', [ TJvgQRLabel, TJvgQRDBText ] );
+  //  RegisterComponents( 'JVCL Globus QReport', [ TJvgQRLabel, TJvgQRDBText ] );
 
-  //  RegisterComponents('Gl ExportImport', [TJvgExportExcel, TJvgExportDBETable{, TJvgExportHTML, TJvgExportXML}]);
+  //  RegisterComponents('JVCL Globus ExportImport', [TJvgExportExcel, TJvgExportDBETable{, TJvgExportHTML, TJvgExportXML}]);
 
   {$IFDEF INC_ALPHA_UNITS}
-  RegisterComponents('Gl Controls', [TJvgGridHeaderControl, TJvgInspectorGrid {, TJvgButton}]);
-  RegisterComponents('Gl Components', [TJvgReportParamsEditor, TJvgLogicProducer {, TJvgMultipleResources}]);
-  RegisterComponents('Gl DB', [TJvgPrintCrossTable]);
+  RegisterComponents('JVCL Globus Controls', [TJvgGridHeaderControl, TJvgInspectorGrid {, TJvgButton}]);
+  RegisterComponents('JVCL Globus Components', [TJvgReportParamsEditor, TJvgLogicProducer {, TJvgMultipleResources}]);
+  RegisterComponents('JVCL Globus DB', [TJvgPrintCrossTable]);
 
   RegisterComponentEditor(TJvgPropertyCenter, TJvgComponentListEditor);
   RegisterPropertyEditor(TypeInfo(TStringList), TJvgPropertyCenter, 'ComponentList', TJvgComponentListProperty);
@@ -95,11 +95,11 @@ begin
   RegisterComponentEditor(TJvgGridHeaderControl, TglGridHeaderControl_Editor);
   RegisterComponentEditor(TJvgLogicProducer, TJvgLogicsComponentEditor);
   {
-    RegisterComponents( 'Gl Components', [ Tgl3DColors, TJvgCaption,
+    RegisterComponents( 'JVCL Globus Components', [ Tgl3DColors, TJvgCaption,
           TJvgHint, TJvgJumpingComponent, TJvgProcess, TJvgStringContainer,
           TJvgMultipleResources , TJvgPropertyCenter, TJvgSysInfo,
                         TJvgReport, TJvgReportEditor, TJvgReportParamsEditor] );
-    RegisterComponents( 'Gl DBAware', [ TJvgDBGrid, TJvgVertDBSGrid, TJvgPrintCrossTable ] );
+    RegisterComponents( 'JVCL Globus DBAware', [ TJvgDBGrid, TJvgVertDBSGrid, TJvgPrintCrossTable ] );
   }
   //  RegisterPropertyEditor(TypeInfo(string), TglEdit, 'EditMask', TMaskProperty);
   //  RegisterPropertyEditor(TypeInfo(string), TJvgProcess, 'FileName', TFilenameProperty);

@@ -48,26 +48,26 @@ uses Classes, DsgnIntf,
 
 procedure Register;
 begin
-  RegisterComponents('Gl Controls', [TJvgBevel, TJvgButton, TJvgGraphicButton, TJvgCheckBox,
+  RegisterComponents('JVCL Globus Controls', [TJvgBevel, TJvgButton, TJvgGraphicButton, TJvgCheckBox,
     TJvgDigits, TJvgShadow, TJvgFlyingText, TJvgGroupBox, TJvgBitmapImage,
       TJvgLabel, TJvgBitBtn, TJvgMaskEdit, TJvgStaticTextLabel, TJvgListBox,
       TJvgCheckListBox, TJvgAskListBox,
       TJvgPageControl, TJvgTabControl, TJvgScrollBox, TJvgHoleShape,
       TJvgTreeView, TJvgCheckTreeView, TJvgProgress, TJvgRuler, TJvgStringGrid]);
 
-  RegisterComponents('Gl Components', [Tgl3DColors, TJvgCaption,
+  RegisterComponents('JVCL Globus Components', [Tgl3DColors, TJvgCaption,
     TJvgHint, TJvgJumpingComponent, TJvgProcess, TJvgStringContainer,
       TJvgMultipleResources, TJvgPropertyCenter, TJvgSysInfo,
       TJvgReport, TJvgReportEditor, TJvgReportParamsEditor,
       TJvgSmallFontsDefence]);
 
   {$IFDEF INC_ALPHA_UNITS}
-  RegisterComponents('Gl DBAware', [TJvgDBGrid, TJvgVertDBSGrid, TJvgPrintCrossTable]);
+  RegisterComponents('JVCL Globus DBAware', [TJvgDBGrid, TJvgVertDBSGrid, TJvgPrintCrossTable]);
   {$ENDIF};
 
-  {RegisterComponents('Gl ExportImport', [TJvgExportExcel, TJvgExportDBETable]);}
+  {RegisterComponents('JVCL Globus ExportImport', [TJvgExportExcel, TJvgExportDBETable]);}
 
-  RegisterComponents('Gl QReport', [TJvgQRLabel, TJvgQRDBText]);
+  RegisterComponents('JVCL Globus QReport', [TJvgQRLabel, TJvgQRDBText]);
 
   //  RegisterPropertyEditor(TypeInfo(string), TglEdit, 'EditMask', TMaskProperty);
   //  RegisterPropertyEditor(TypeInfo(string), TJvgProcess, 'FileName', TFilenameProperty);
