@@ -69,6 +69,7 @@ contains
   JvMRUManager in '..\..\run\JvMRUManager.pas',
   JvDirectories in '..\..\run\JvDirectories.pas',
   JvPerfMon95 in '..\..\run\JvPerfMon95.pas',
-  JvXmlDatabase in '..\..\run\JvXMLDatabase.pas';
+  JvXmlDatabase in '..\..\run\JvXMLDatabase.pas',
+  JvAppInst in '..\..\run\JvAppInst.pas';
 
 end.
