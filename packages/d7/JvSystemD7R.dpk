@@ -22,6 +22,7 @@ package JvSystemD7R;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
+{$DESCRIPTION 'JVCL System Runtime Package'}
 {$RUNONLY}
 {$IMPLICITBUILD ON}
 
@@ -31,21 +32,17 @@ requires
   vclx,
   vcljpg,
   JvCoreD7R,
-  DJCL70,
-  vclactnband,
-  designide;
+  DJCL70;
 
 contains
-  JvClipMon in '..\..\run\JvClipmon.pas',
-  JvClipView in '..\..\run\JvClipView.pas',
+  JvClipboardMonitor in '..\..\run\JvClipboardMonitor.pas',
+  JvClipboardViewer in '..\..\run\JvClipboardViewer.pas',
   JvCommStatus in '..\..\run\JvCommStatus.pas',
   JvComputerInfo in '..\..\run\JvComputerInfo.pas',
-  JvControlPanel in '..\..\run\JvControlPanel.pas',
   JvCpuUsage in '..\..\run\JvCpuUsage.pas',
   JvDdeCmd in '..\..\run\JvDdeCmd.pas',
   JvDeviceChanged in '..\..\run\JvDeviceChanged.pas',
   JvDragDrop in '..\..\run\JvDragDrop.pas',
-  JvFavoritesButton in '..\..\run\JvFavoritesButton.pas',
   JvHidControllerClass in '..\..\run\JvHidControllerClass.pas',
   JvJoystick in '..\..\run\JvJoystick.pas',
   JvKeyboardStates in '..\..\run\JvKeyboardStates.pas',
@@ -58,18 +55,23 @@ contains
   JvScreenResolution in '..\..\run\JvScreenResolution.pas',
   JvScreenSaver in '..\..\run\JvScreenSaver.pas',
   JvShellHook in '..\..\run\JvShellHook.pas',
-  JvSHFileOp in '..\..\run\JvSHFileOp.pas',
+  JvSHFileOperation in '..\..\run\JvSHFileOperation.pas',
   JvSoundControl in '..\..\run\JvSoundControl.pas',
   JvSystemColors in '..\..\run\JvSystemColors.pas',
   JvThread in '..\..\run\JvThread.pas',
   JvThreadTimer in '..\..\run\JvThreadTimer.pas',
-  JvTimerLst in '..\..\run\JvTimerLst.pas',
+  JvTimerList in '..\..\run\JvTimerList.pas',
   JvChangeNotify in '..\..\run\JvChangeNotify.pas',
   JvObjPickerComp in '..\..\run\JvObjPickerComp.pas',
   JvSimpleXml in '..\..\run\JvSimpleXML.pas',
   Ras32 in '..\..\common\Ras32.pas',
-  JvStartMenuBtn in '..\..\run\JvStartMenuBtn.pas',
-  JvRecentMenuBtn in '..\..\run\JvRecentMenuBtn.pas',
-  JvWinSysList in '..\..\run\JvWinSysList.pas';
+  JvWndProcHook in '..\..\run\JvWndProcHook.pas',
+  JvHook in '..\..\run\JvHook.pas',
+  JvFormPlacement in '..\..\run\JvFormPlacement.pas',
+  JvPropsStorage in '..\..\run\JvPropsStorage.pas',
+  JvAppUtils in '..\..\run\JvAppUtils.pas',
+  JvTimer in '..\..\run\JvTimer.pas',
+  JvCaret in '..\..\run\JvCaret.pas',
+  JvSearchFiles in '..\..\run\JvSearchFiles.pas';
 
 end.

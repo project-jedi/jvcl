@@ -22,16 +22,20 @@ package JvStdCtrlsD7R;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
+{$DESCRIPTION 'JVCL Standard Controls Runtime Package'}
+{$RUNONLY}
 {$IMPLICITBUILD ON}
 
 requires
   rtl,
-  JvCoreD7R;
+  JvCoreD7R,
+  JvSystemD7R,
+  vcl;
 
 contains
   JvSpin in '..\..\run\JvSpin.pas',
   JvEdit in '..\..\run\JvEdit.pas',
-  JvRichEd in '..\..\run\JvRichEd.pas',
+  JvRichEdit in '..\..\run\JvRichEdit.pas',
   JvProgressBar in '..\..\run\JvProgressBar.pas',
   JvDateTimePicker in '..\..\run\JvDateTimePicker.pas',
   JvDatePickerEdit in '..\..\run\JvDatePickerEdit.pas',
@@ -39,14 +43,11 @@ contains
   JvMaskEdit in '..\..\run\JvMaskEdit.pas',
   JvDropDownForm in '..\..\run\JvDropDownForm.pas',
   JvCalendar in '..\..\run\JvCalendar.pas',
-  JvCurrEdit in '..\..\run\JvCurrEdit.pas',
+  JvBaseEdits in '..\..\run\JvBaseEdits.pas',
   JvCalc in '..\..\run\JvCalc.pas',
   JvToolEdit in '..\..\run\JvToolEdit.pas',
   JvPickDate in '..\..\run\JvPickDate.pas',
   JvxCtrls in '..\..\run\JvxCtrls.pas',
-  JvPlacemnt in '..\..\run\JvPlacemnt.pas',
-  JvProps in '..\..\run\JvProps.pas',
-  JvAppUtils in '..\..\run\JvAppUtils.pas',
   JvxSlider in '..\..\run\JvxSlider.pas',
   JvBevel in '..\..\run\JvBevel.pas',
   JvButton in '..\..\run\JvButton.pas',
@@ -81,13 +82,17 @@ contains
   JvTabControl in '..\..\run\JvTabControl.pas',
   JvToolBar in '..\..\run\JvToolBar.pas',
   JvUpDown in '..\..\run\JvUpDown.pas',
-  JvxAnimate in '..\..\run\JvxAnimate.pas',
   JvItemsSearchs in '..\..\run\JvItemsSearchs.pas',
   JvBitBtn in '..\..\run\JvBitBtn.pas',
-  JvCtlConst in '..\..\run\JvCtlConst.pas',
   JvBoxProcs in '..\..\run\JvBoxProcs.pas',
   JvPanel in '..\..\run\JvPanel.pas',
   JvMonthCalendar in '..\..\run\JvMonthCalendar.pas',
-  JvFindReplace in '..\..\run\JvFindReplace.pas';
+  JvFindReplace in '..\..\run\JvFindReplace.pas',
+  JvControlPanelButton in '..\..\run\JvControlPanelButton.pas',
+  JvStartMenuButton in '..\..\run\JvStartMenuButton.pas',
+  JvRecentMenuButton in '..\..\run\JvRecentMenuButton.pas',
+  JvFavoritesButton in '..\..\run\JvFavoritesButton.pas',
+  JvBrowseFolder in '..\..\run\JvBrowseFolder.pas',
+  JvTransparentPanel in '..\..\run\JvTransparentPanel.pas';
 
 end.

@@ -22,6 +22,7 @@ package JvDBD7R;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
+{$DESCRIPTION 'JVCL Database Components Runtime Package'}
 {$RUNONLY}
 {$IMPLICITBUILD ON}
 
@@ -29,7 +30,8 @@ requires
   rtl,
   JvCoreD7R,
   dbrtl,
-  vcldb;
+  vcldb,
+  JvStdCtrlsD7R;
 
 contains
   JvDBConst in '..\..\run\JvDBConst.pas',
@@ -37,7 +39,7 @@ contains
   JvDBDateTimePicker in '..\..\run\JvDBDateTimePicker.pas',
   JvDBLookupTreeView in '..\..\run\JvDBLookupTreeView.pas',
   JvDBProgressBar in '..\..\run\JvDBProgressBar.pas',
-  JvDBRichEd in '..\..\run\JvDBRichEd.pas',
+  JvDBRichEdit in '..\..\run\JvDBRichEdit.pas',
   JvDBSpinEdit in '..\..\run\JvDBSpinEdit.pas',
   JvDBTreeView in '..\..\run\JvDBTreeView.pas',
   JvLookup in '..\..\run\JvLookup.pas',

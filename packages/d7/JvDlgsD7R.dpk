@@ -22,6 +22,7 @@ package JvDlgsD7R;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
+{$DESCRIPTION 'JVCL Dialog Controls Runtime Package'}
 {$RUNONLY}
 {$IMPLICITBUILD ON}
 
@@ -30,9 +31,9 @@ requires
   vcljpg,
   vcl,
   vclx,
-  JvCoreD7D,
   JvCoreD7R,
-  DJCL70;
+  DJCL70,
+  JvStdCtrlsD7R;
 
 contains
   JvDSADialogs in '..\..\run\JvDSADialogs.pas',
@@ -43,12 +44,11 @@ contains
   JvCommonExecDlg in '..\..\run\JvCommonExecDlg.pas',
   JvDialogActns in '..\..\run\JvDialogActns.pas',
   JvDialogs in '..\..\run\JvDialogs.pas',
-  JvDlg in '..\..\run\JvDlg.pas',
+  JvProgressForm in '..\..\run\JvProgressForm.pas',
   JvPageSetupTitled in '..\..\run\JvPageSetupTitled.pas',
   JvPageSetup in '..\..\run\JvPageSetup.pas',
   JvConnectNetwork in '..\..\run\JvConnectNetwork.pas',
   JvSelectDirectory in '..\..\run\JvSelectDirectory.pas',
-  JvBrowseFolder in '..\..\run\JvBrowseFolder.pas',
   JvCopyError in '..\..\run\JvCopyError.pas',
   JvDeleteError in '..\..\run\JvDeleteError.pas',
   JvRenameError in '..\..\run\JvRenameError.pas',

@@ -22,6 +22,7 @@ package JvCmpD7R;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
+{$DESCRIPTION 'JVCL Components Runtime Package'}
 {$RUNONLY}
 {$IMPLICITBUILD ON}
 
@@ -31,29 +32,29 @@ requires
   vcl,
   vclx,
   JvCoreD7R,
-  DJCL70;
+  DJCL70,
+  JvSystemD7R;
 
 contains
   JvAlarms in '..\..\run\JvAlarms.pas',
   JvAni in '..\..\run\JvAni.pas',
   JvAniFile in '..\..\run\JvAniFile.pas',
   JvAnimate in '..\..\run\JvAnimate.pas',
-  JvBmpAnim in '..\..\run\JvBmpAnim.pas',
-  JvDataConv in '..\..\run\JvDataConv.pas',
+  JvBmpAnimator in '..\..\run\JvBmpAnimator.pas',
+  JvConverter in '..\..\run\JvConverter.pas',
   JvDataEmbedded in '..\..\run\JvDataEmbedded.pas',
   JvEnterTab in '..\..\run\JvEnterTab.pas',
-  JvMrgMngr in '..\..\run\JvMrgMngr.pas',
-  JvPageMngr in '..\..\run\JvPageMngr.pas',
+  JvMergeManager in '..\..\run\JvMergeManager.pas',
+  JvPageManager in '..\..\run\JvPageManager.pas',
   JvPatchFile in '..\..\run\JvPatchFile.pas',
   JvPicClip in '..\..\run\JvPicclip.pas',
-  JvStrHlder in '..\..\run\JvStrHlder.pas',
+  JvStringHolder in '..\..\run\JvStringHolder.pas',
   JvTimeLimit in '..\..\run\JvTimeLimit.pas',
   JvWinHelp in '..\..\run\JvWinHelp.pas',
   JvRle in '..\..\run\JvRle.pas',
   JvGraph in '..\..\run\JvGraph.pas',
-  JvIcoList in '..\..\run\JvIcoList.pas',
   JvTranslator in '..\..\run\JvTranslator.pas',
   JvPrint in '..\..\run\JvPrint.pas',
-  JvSearchFiles in '..\..\run\JvSearchFiles.pas';
+  JvIconList in '..\..\run\JvIconList.pas';
 
 end.

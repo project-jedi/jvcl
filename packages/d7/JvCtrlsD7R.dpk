@@ -22,6 +22,7 @@ package JvCtrlsD7R;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
+{$DESCRIPTION 'JVCL Controls Runtime Package'}
 {$RUNONLY}
 {$IMPLICITBUILD ON}
 
@@ -31,19 +32,20 @@ requires
   vcl,
   vclx,
   JvCoreD7R,
-  DJCL70;
+  DJCL70,
+  JvStdCtrlsD7R;
 
 contains
   JvZoom in '..\..\run\JvZoom.pas',
   JvAnalogClock in '..\..\run\JvAnalogClock.pas',
   JvBehaviorLabel in '..\..\run\JvBehaviorLabel.pas',
-  JvArrowBtn in '..\..\run\JvArrowBtn.pas',
+  JvArrowButton in '..\..\run\JvArrowButton.pas',
   JvaScrollText in '..\..\run\JvaScrollText.pas',
   JvCaptionButton in '..\..\run\JvCaptionButton.pas',
   JvClock in '..\..\run\JvClock.pas',
-  JvCntScr in '..\..\run\JvCntScr.pas',
+  JvContentScroller in '..\..\run\JvContentScroller.pas',
   JvColorBox in '..\..\run\JvColorBox.pas',
-  JvColorBtn in '..\..\run\JvColorBtn.pas',
+  JvColorButton in '..\..\run\JvColorButton.pas',
   JvDice in '..\..\run\JvDice.pas',
   JvDriveCtrls in '..\..\run\JvDriveCtrls.pas',
   JvFooter in '..\..\run\JvFooter.pas',
@@ -52,7 +54,7 @@ contains
   JvItemsPanel in '..\..\run\JvItemsPanel.pas',
   JvListComb in '..\..\run\JvListComb.pas',
   JvPageScroller in '..\..\run\JvPageScroller.pas',
-  JvRegTV in '..\..\run\JvRegTV.pas',
+  JvRegistryTreeView in '..\..\run\JvRegistryTreeView.pas',
   JvRollOut in '..\..\run\JvRollOut.pas',
   JvScrollPanel in '..\..\run\JvScrollPanel.pas',
   JvScrollText in '..\..\run\JvScrollText.pas',
@@ -62,14 +64,15 @@ contains
   JvSplitter in '..\..\run\JvSplitter.pas',
   JvSwitch in '..\..\run\JvSwitch.pas',
   JvSyncSplitter in '..\..\run\JvSyncSplitter.pas',
-  JvTransBtn in '..\..\run\JvTransBtn.pas',
+  JvTransparentButton in '..\..\run\JvTransparentButton.pas',
   JvTransLED in '..\..\run\JvTransLED.pas',
   JvxClock in '..\..\run\JvxClock.pas',
-  JvSbSetup in '..\..\run\JvSBSetup.pas' {JvSpeedbarSetupWindow},
+  JvSpeedbarSetupForm in '..\..\run\JvSpeedbarSetupForm.pas' {JvSpeedbarSetupWindow},
   JvColorForm in '..\..\run\JvColorform.pas',
   JvDsgnIntf in '..\..\run\JvDsgnIntf.pas',
   JvStrUtil in '..\..\run\JvStrUtil.pas',
   JvImageDrawThread in '..\..\run\JvImageDrawThread.pas',
-  JvRegAuto in '..\..\run\JvRegAuto.pas';
+  JvRegAuto in '..\..\run\JvRegAuto.pas',
+  JvWinampLabel in '..\..\run\JvWinampLabel.pas';
 
 end.

@@ -22,6 +22,7 @@ package JvCustomD7R;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
+{$DESCRIPTION 'JVCL Custom Controls Runtime Package'}
 {$RUNONLY}
 {$IMPLICITBUILD ON}
 
@@ -31,7 +32,9 @@ requires
   vclx,
   vcljpg,
   JvCoreD7R,
-  DJCL70;
+  DJCL70,
+  JvSystemD7R,
+  JvCtrlsD7R;
 
 contains
   JvTrayIcon in '..\..\run\JvTrayIcon.pas',
@@ -47,19 +50,26 @@ contains
   JvLinkLabelTools in '..\..\run\JvLinkLabelTools.pas',
   JvLinkLabelTree in '..\..\run\JvLinkLabelTree.pas',
   JvLookOut in '..\..\run\JvLookOut.pas',
-  JvOLBar in '..\..\run\JvOLBar.pas',
-  JvRadioCtl in '..\..\run\JvRadioCtl.pas',
+  JvOutlookBar in '..\..\run\JvOutlookBar.pas',
+  JvRadioControl in '..\..\run\JvRadioControl.pas',
   JvSchedEvtStore in '..\..\run\JvSchedEvtStore.pas',
   JvScheduledEvents in '..\..\run\JvScheduledEvents.pas',
   JvThumbImage in '..\..\run\JvThumbImage.pas',
   JvThumbnails in '..\..\run\JvThumbNails.pas',
   JvThumbviews in '..\..\run\JvThumbviews.pas',
   JvTimeLine in '..\..\run\JvTimeLine.pas',
-  JvTMTL in '..\..\run\JvTMTL.pas',
+  JvTMTimeLine in '..\..\run\JvTMTimeLine.pas',
   JvBalloonHint in '..\..\run\JvBalloonHint.pas',
   JvBandForms in '..\..\run\JvBandForms.pas',
   JvBandObject in '..\..\run\JvBandObject.pas',
   JvUtils in '..\..\run\JvUtils.pas',
-  JvBaseThumbnail in '..\..\run\JvBaseThumbnail.pas';
+  JvBaseThumbnail in '..\..\run\JvBaseThumbnail.pas',
+  JvPluginManager in '..\..\run\JvPluginManager.pas',
+  JvPlugin in '..\..\run\JvPlugin.pas',
+  JvHLEditor in '..\..\run\JvHLEditor.pas',
+  JvEditor in '..\..\run\JvEditor.pas',
+  JvHLParser in '..\..\run\JvHLParser.pas',
+  JvValidateEdit in '..\..\run\JvValidateEdit.pas',
+  JvHLEditorPropertyForm in '..\..\run\JvHLEditorPropertyForm.pas' {JvHLEditorParamsForm};
 
 end.

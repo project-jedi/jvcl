@@ -22,6 +22,7 @@ package JvCoreD7R;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
+{$DESCRIPTION 'JVCL Core Runtime Package'}
 {$RUNONLY}
 {$IMPLICITBUILD ON}
 
@@ -30,16 +31,13 @@ requires
   vcl,
   vclx,
   DJCL70,
-  vcljpg,
-  designide,
-  vclactnband;
+  vcljpg;
 
 contains
-  JvWndProcHook in '..\..\run\JvWndProcHook.pas',
   JVCLVer in '..\..\run\JVCLVer.pas',
   JvComponent in '..\..\run\JvComponent.pas',
   JvFunctions in '..\..\run\JvFunctions.pas',
-  JvVerInf in '..\..\run\JvVerInf.pas',
+  JvVersionInfo in '..\..\run\JvVersionInfo.pas',
   JvTypes in '..\..\run\JvTypes.pas',
   JvVCLUtils in '..\..\run\JvVCLUtils.pas',
   JvConst in '..\..\run\JvConst.pas',
@@ -48,14 +46,15 @@ contains
   JvMaxPixel in '..\..\run\JvMaxPixel.pas',
   JvxRConst in '..\..\run\JvxRConst.pas',
   JvFileUtil in '..\..\run\JvFileUtil.pas',
-  JvPrgrss in '..\..\run\JvPrgrss.pas',
-  JvPropAutoSave in '..\..\run\JvPropAutoSave.pas',
-  JvHook in '..\..\run\JvHook.pas',
-  JvClipIcon in '..\..\run\JvClipIcon.pas',
+  JvProgressUtils in '..\..\run\JvProgressUtils.pas',
+  JvAutoSave in '..\..\run\JvAutoSave.pas',
+  JvIconClipboardUtils in '..\..\run\JvIconClipboardUtils.pas',
   JvDirectories in '..\..\run\JvDirectories.pas',
   JvBaseDlg in '..\..\run\JvBaseDlg.pas',
   JvJVCLAbout in '..\..\run\JvJVCLAbout.pas' {JvJVCLAboutForm},
-  JvTimer in '..\..\run\JvTimer.pas',
-  JvActions in '..\..\design\JvActions.pas';
+  JvActions in '..\..\run\JvActions.pas',
+  JvMouseTimer in '..\..\run\JvMouseTimer.pas',
+  JvCtlConst in '..\..\run\JvCtlConst.pas',
+  JvActnRes in '..\..\design\JvActnRes.pas' {JvStandardActions: TDataModule};
 
 end.
