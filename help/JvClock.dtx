@@ -6,25 +6,24 @@ Summary
   Contains the TJvClock component.
 <INCLUDE JVCL.UnitText.dtx>
 Author
-  Sébastien Buysse
-----------------------------------------------------------------------------------------------------
-@@TClockStyle
-<TITLE TClockStyle type>
+  Fedor Koshevnikov, Igor Pavluk and Serge Korolev
+---------------------------------------------------------------------------------------------------
+@@TJvClockTime
+<TITLE TJvClockTime type>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-@@TClockStyle.csTime
-  Description for csTime
-@@TClockStyle.csTimeDate
-  Description for csTimeDate
-@@TClockStyle.csDateTime
-  Description for csDateTime
-@@TClockStyle.csDate
-  Description for csDate
+@@TJvClockTime.Hour
+  Description for Hour
+@@TJvClockTime.Minute
+  Description for Minute
+@@TJvClockTime.Second
+  Description for Second
+----------------------------------------------------------------------------------------------------
+@@TJvGetTimeEvent
+<TITLE TJvGetTimeEvent type>
+<COMBINE TJvClock.OnGetTime>
 ----------------------------------------------------------------------------------------------------
 @@TJvClock
 <TITLEIMG TJvClock>
@@ -36,7 +35,7 @@ Summary
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
-@@TJvClock.ClockStyle
+@@TJvClock.AlarmEnabled
 Summary
   Write here a summary (1 line)
 Description
@@ -45,7 +44,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvClock.Font
+@@TJvClock.AlarmHour
 Summary
   Write here a summary (1 line)
 Description
@@ -54,47 +53,137 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvClock.HintColor
+@@TJvClock.AlarmMinute
 Summary
-  Determines the color of the hint boxes for the Help Hints for the <xxx>.
+  Write here a summary (1 line)
 Description
-  Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
-  HintColor property in the constructor when the application is created. To change the HintColor
-  assign it a new TColor value.
+  Write here a description
 See Also
-  HotTrack
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvClock.OnMouseEnter
+@@TJvClock.AlarmSecond
 Summary
-  Occurs when the mouse pointer moves over the <xxx>.
+  Write here a summary (1 line)
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
-  <xxx>.
+  Write here a description
 See Also
-  HotTrack, OnMouseLeave
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvClock.OnMouseLeave
+@@TJvClock.AutoSize
 Summary
-  Occurs when the mouse pointer moves off the <xxx>.
+  Write here a summary (1 line)
 Description
-  Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
-  <xxx>. For example, you can use this event to undo changes that were made in an OnMouseEnter
-  event handler.
+  Write here a description
 See Also
-  HotTrack, OnMouseEnter
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvClock.OnTime
+@@TJvClock.DotsColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvClock.LeadingZero
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvClock.OnAlarm
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvClock.OnGetTime
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
   Sender - Description for this parameter
-  Value  - Description for this parameter
+  ATime  - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TOnUpdate
-<TITLE TOnUpdate type>
-<COMBINE TJvClock.OnTime>
+@@TJvClock.SetAlarmTime
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AlarmTime - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvClock.ShowMode
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvClock.ShowSeconds
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvClock.TwelveHour
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvClock.UpdateClock
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TPaintMode
+<TITLE TPaintMode type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+@@TPaintMode.pmPaintAll
+  Description for pmPaintAll
+@@TPaintMode.pmHandPaint
+  Description for pmHandPaint
+----------------------------------------------------------------------------------------------------
+@@TShowClock
+<TITLE TShowClock type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+@@TShowClock.scDigital
+  Description for scDigital
+@@TShowClock.scAnalog
+  Description for scAnalog
