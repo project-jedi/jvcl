@@ -36,6 +36,17 @@ Known Issues:
   The conditional defines and disabled code will be removed and this file
   will be cleaned up after the time block code has been fully integrated
   and tested.
+Changes to JvTFDays by deanh:
+============================
+
+These changes peform the following functions.
+
+1) The addition of a new time entry is aborted if the user presses escape.
+2) New property for FancyHeader to only show the '00' minutes. This emulates outlook's behaviour.
+3) Few changes to clean up the dithering of the background.
+4) Hide the blank area that sometimes appears at the bottom of the Calendar when scrolling right down to the bottom.
+5) Remove the focus rectangle when ShowFocus is false (the focus rect is not shown in Outlook).
+
 -----------------------------------------------------------------------------}
 // $Id$
 
@@ -47,8 +58,14 @@ interface
 
 uses
   SysUtils, Classes,
+  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ImgList,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms, QDialogs,
+  QStdCtrls, QImgList, QWindows, Types,
+  {$ENDIF VisualCLX}
   JvTFManager, JvTFSparseMatrix, JvTFUtils;
 
 // (ahuser) do not convert to JvExVCL. This package is USEJVCL'ed
@@ -252,6 +269,7 @@ type
   TJvTFInPlaceApptEditor = class(TMemo)
   private
     FLinkedAppt: TJvTFAppt;
+    FQuickCreate: Boolean;
   protected
     FCancelEdit: Boolean;
     procedure DoExit; override;
@@ -259,6 +277,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     property LinkedAppt: TJvTFAppt read FLinkedAppt write FLinkedAppt;
+    property QuickCreate: Boolean read FQuickCreate write FQuickCreate;
   end;
 
   TJvTFApptMap = class(TObject)
@@ -554,11 +573,13 @@ type
     FMinorFont: TFont;
     FMajorFont: TFont;
     FTickColor: TColor;
+    FOnlyShow00Minutes: boolean;
     procedure SetColor(Value: TColor);
     procedure SetHr2400(Value: Boolean);
     procedure SetMinorFont(Value: TFont);
     procedure SetMajorFont(Value: TFont);
     procedure SetTickColor(Value: TColor);
+    procedure SetOnlyShow00Minutes(Value: Boolean);
   protected
     FGrid: TJvTFDays;
     procedure Change; virtual;
@@ -574,6 +595,8 @@ type
     property MajorFont: TFont read FMajorFont write SetMajorFont;
     property TickColor: TColor read FTickColor write SetTickColor
       default clGray;
+    property OnlyShow00Minutes: Boolean read FOnlyShow00Minutes write SetOnlyShow00Minutes
+       default True;
   end;
 
   TJvTFDaysHdrAttr = class(TPersistent)
@@ -868,6 +891,7 @@ type
     FOnGranularityChanged: TNotifyEvent;
     FOnFocusedRowChanged: TNotifyEvent;
     FOnFocusedColChanged: TNotifyEvent;
+    FShowFocus: Boolean;
 
     {$IFDEF VCL}
     // internal stuff
@@ -942,6 +966,7 @@ type
    // ok
     procedure SetWeekendColor(Value: TColor);
     procedure SetDitheredBackground(const Value: Boolean);
+    procedure SetShowFocus(const Value: Boolean);
     {$ENDIF Jv_TIMEBLOCKS}
   protected
     FState: TJvTFDaysState;
@@ -1285,6 +1310,7 @@ type
       agoShowText, agoShowApptHints, agoQuickEntry, agoShowSelHint];
     property RowHdrWidth: Integer read FRowHdrWidth write SetRowHdrWidth default 50;
     property RowHeight: Integer read FRowHeight write SetRowHeight default 19;
+    property ShowFocus:Boolean read FShowFocus write SetShowFocus default True;
     property Template: TJvTFDaysTemplate read FTemplate write FTemplate;
     property Grouping: TJvTFDaysGrouping read FGrouping write SetGrouping;
     property GroupHdrHeight: Integer read FGroupHdrHeight write SetGroupHdrHeight default 25;
@@ -1731,6 +1757,7 @@ type
     property GridEndTime: TTime read FGridEndTime write SetGridEndTime;
   end;
 
+
 implementation
 
 uses
@@ -1767,7 +1794,7 @@ resourcestring
   RsEAnotherTimeBlockWithTheName = 'Another time block with the name ' +
     '"%s" already exists';
   RsEATimeBlockWithTheNamesDoesNotExist = 'A time block with the name "%s" does not exist';
-{$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
 
 //Type
   // DEF TIMEBLOCK (not conditionally compiled, just marked for reference)
@@ -2280,6 +2307,7 @@ begin
   ControlStyle := ControlStyle + [csNoDesignVisible];
 
   BorderStyle := bsNone;
+  FQuickCreate := False;
   {$IFDEF VCL}
   ParentCtl3D := False;
   Ctl3D := False;
@@ -2291,7 +2319,10 @@ begin
   inherited DoExit;
   try
     if not FCancelEdit then
-      TJvTFDays(Parent).FinishEditAppt;
+      TJvTFDays(Parent).FinishEditAppt
+    else if FQuickCreate then
+      // Free the appointment
+      FLinkedAppt.Free;
   finally
     FCancelEdit := False;
     Parent.SetFocus;
@@ -3590,6 +3621,7 @@ begin
 
   FMinorFont.OnChange := FontChange;
   FMajorFont.OnChange := FontChange;
+  FOnlyShow00Minutes := True;
 end;
 
 destructor TJvTFDaysFancyRowHdrAttr.Destroy;
@@ -3635,6 +3667,15 @@ begin
   if Value <> FTickColor then
   begin
     FTickColor := Value;
+    Change;
+  end;
+end;
+
+procedure TJvTFDaysFancyRowHdrAttr.SetOnlyShow00Minutes(Value: Boolean);
+begin
+  if Value <> FOnlyShow00Minutes then
+  begin
+    FOnlyShow00Minutes := Value;
     Change;
   end;
 end;
@@ -4263,6 +4304,7 @@ begin
   FHint := GeTJvTFHintClass.Create(Self);
   FHint.RefProps := FHintProps;
   PaintBuffer := TBitmap.Create;
+  FShowFocus := True;
 end;
 
 destructor TJvTFDays.Destroy;
@@ -5265,12 +5307,18 @@ begin
     FOnShadeCell(Self, ColIndex, RowIndex, CellColor);
 
   if IsWeekend(ColIndex) and (CellColor = WeekendColor) then
-    Windows.StretchBlt(ACanvas.Handle, ARect.Left, ARect.Top, RectWidth(ARect),
-      RectHeight(ARect), FWeekendFillPic.Canvas.Handle,
-      0, 0, FWeekendFillPic.Width,
-      FWeekendFillPic.Height, SRCCOPY)
-  else
-  if IsPrimeTimeCell and (CellColor = PrimeTime.Color) then
+  begin
+      if FDitheredBackground then
+        DrawDither(ACanvas, ARect, CellColor, clWhite)
+      else
+      begin
+        Windows.StretchBlt(aCanvas.Handle, aRect.Left, aRect.Top, RectWidth(aRect),
+          RectHeight(aRect), FWeekendFillPic.Canvas.Handle,
+          0, 0, FWeekendFillPic.Width,
+          FWeekendFillPic.Height, SRCCOPY)
+      end;
+  end
+  else if IsPrimeTimeCell and (CellColor = PrimeTime.Color) then
   begin
     if FDitheredBackground then
       DrawDither(ACanvas, ARect, CellColor, clWhite)
@@ -5287,6 +5335,11 @@ begin
   begin
     ACanvas.Brush.Color := CellColor;
     ACanvas.FillRect(ARect);
+  end
+  else
+  begin
+    if FDitheredBackground then
+      DrawDither(ACanvas, ARect, CellColor, clWhite)
   end;
 
   {
@@ -5409,7 +5462,7 @@ begin
       ACanvas.FillRect(ARect);
     end;
 
-  if (ColIndex = FocusedCol) and (RowIndex = FocusedRow) and Focused then
+  if (ColIndex = FocusedCol) and (RowIndex = FocusedRow) and Focused and ShowFocus then
   begin
     FocusRect := ARect;
     Windows.InflateRect(FocusRect, -1, -1);
@@ -6195,7 +6248,7 @@ begin
             {$IFDEF Jv_TIMEBLOCKS}
            // ok
             DrawFrame(ACanvas, ARect, False, GridLineColor);
-            {$ELSE}
+        {$ELSE}
            // remove
            //DrawFrame(ACanvas, ARect, False);
             {$ENDIF Jv_TIMEBLOCKS}
@@ -6270,7 +6323,7 @@ begin
 
   DrawTxt(ACanvas, ARect, Txt, taCenter, vaCenter);
 
-  if (Index = FocusedRow) and Focused then
+  if (Index = FocusedRow) and Focused and ShowFocus then
   begin
     Windows.InflateRect(ARect, -2, -2);
     ManualFocusRect(ACanvas, ARect);
@@ -6651,7 +6704,7 @@ var
   PTxt: PChar;
   PrevHour,
     CurrentHour: Word;
-  FirstMajor,
+//  FirstMajor,
     Selected,
     PrevHrSel,
     CurrHrSel,
@@ -6660,7 +6713,7 @@ begin
   MajorTickLength := GetMajorTickLength;
   MinorTickLength := GetMinorTickLength;
 
-  FirstMajor := True;
+//  FirstMajor := True;
   PrevHour := RowToHour(TopRow);
   PrevHrSel := False;
   CurrHrSel := False;
@@ -6734,11 +6787,12 @@ begin
           else
             aLabel := IntToStr(PrevHour);
 
-          if FirstMajor or (PrevHour = 0) or (PrevHour = 12) then
+{          if FirstMajor or (PrevHour = 0) or (PrevHour = 12) then
             if PrevHour < 12 then
               aLabel := aLabel + 'a'
             else
               aLabel := aLabel + 'p';
+}            
         end;
 
         if PrevHrSel then
@@ -6758,7 +6812,7 @@ begin
         if Assigned(FOnDrawMajorRowHdr) then
           FOnDrawMajorRowHdr(Self, ACanvas, ARect, I - 1, PrevHrSel);
 
-        FirstMajor := False;
+//        FirstMajor := False;
       end;
       if Switch then
         PrevHour := CurrentHour;
@@ -6816,7 +6870,7 @@ begin
   StrPCopy(PTxt, LabelStr);
 
   // draw the focus rect if needed
-  if (RowNum = FocusedRow) and Focused then
+  if (RowNum = FocusedRow) and Focused and ShowFocus then
   begin
     Windows.InflateRect(MinorRect, -2, -2);
     MinorRect.Left := MinorRect.Right - ACanvas.TextWidth(LabelStr) - 2;
@@ -6837,7 +6891,9 @@ const
   FullAP = 'h:nna/p';
   MinOnly = ':nn';
 var
+  iFirstHourRow: Integer;
   aTimeFormat: string;
+  tRowTime: TTime;
 //  LastFullRow,
 //    LastHourStart: Integer;
 //  LastHour: Word;
@@ -6865,7 +6921,37 @@ begin
   if (aTimeFormat = Full24) and not FancyRowHdrAttr.Hr2400 then
     aTimeFormat := FullAP;
 
-  Result := FormatDateTime(aTimeFormat, RowToTime(RowNum));
+  // Get the Row Time
+  tRowTime := RowToTime(RowNum);
+
+  if (FancyRowHdrAttr.OnlyShow00Minutes and (ExtractMins(tRowTime) = 0)) or
+     (not FancyRowHdrAttr.OnlyShow00Minutes) then
+  begin
+    if (not FancyRowHdrAttr.Hr2400) and (Granularity < 60) then
+    begin
+      // Get the first row with a 00 hour
+      iFirstHourRow := TopRow;
+      while (iFirstHourRow < BottomRow) and (ExtractMins(RowToTime(iFirstHourRow)) <> 0) do
+        Inc(iFirstHourRow);
+      if (tRowTime = 0) then
+        Result := 'am'
+      else if (tRowTime = 0.50) then
+        Result := 'pm'
+      else if (RowNum = iFirstHourRow) and (ExtractMins(tRowTime) = 0) then
+      begin
+        if (tRowTime < 0.50) then
+          Result := 'am'
+        else
+          Result := 'pm'
+      end
+      else
+        Result := FormatDateTime(aTimeFormat, tRowTime);
+    end
+    else
+      Result := FormatDateTime(aTimeFormat, tRowTime);
+  end
+  else
+    Result := '';
 end;
 
 function TJvTFDays.GetMinorTickLength: Integer;
@@ -7072,7 +7158,7 @@ begin
   if vsbVert in VisibleScrollBars then
     with FVScrollBar do
     begin
-      Max := RowCount - 1;
+      Max := RowCount - 2;
       LargeChange := FullVisibleRows;
     end;
 
@@ -8820,6 +8906,7 @@ begin
        // Put the Key in the editor and set the caret
       FEditor.Text := Key;
       FEditor.SelStart := 1;
+      FEditor.QuickCreate := True;
 
       if Assigned(FOnQuickEntry) then
         FOnQuickEntry(Self);
@@ -9515,6 +9602,7 @@ var
   DrawInfo: TJvTFDaysApptDrawInfo;
   AllowEdit: Boolean;
 begin
+  FEditor.QuickCreate := False;
   EnsureCol(Col);
   Schedule := Cols[Col].Schedule;
   if not Assigned(Schedule) or not Assigned(Appt) or
@@ -12012,6 +12100,16 @@ begin
   FDitheredBackground := Value;
   Refresh;
 end;
+
+procedure TJvTFDays.SetShowFocus(const Value: Boolean);
+begin
+  if FShowFocus <> Value then
+  begin
+    FShowFocus := Value;
+    Invalidate;
+  end;
+end;
+
 
 //=== { TJvTFDaysPrinter } ===================================================
 
@@ -14947,12 +15045,12 @@ const
     LogPath: 'JVCL\run'
   );
 
+
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-
 end.
 
