@@ -159,7 +159,7 @@ object MainForm: TMainForm
           Top = 1
           Width = 190
           Height = 21
-          ImeName = #215#207#185#226#198#180#210#244#202#228#200#235#183#168
+          ImeName = '◊œπ‚∆¥“Ù ‰»Î∑®'
           ItemHeight = 13
           TabOrder = 0
         end

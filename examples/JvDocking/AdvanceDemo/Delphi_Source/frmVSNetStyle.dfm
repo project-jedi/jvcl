@@ -95,9 +95,8 @@ object Form4: TForm4
     Width = 177
     Height = 172
     Align = alClient
-    BevelKind = bkTile
     BorderStyle = bsNone
-    ImeName = #215#207#185#226#198#180#210#244#202#228#200#235#183#168
+    ImeName = '◊œπ‚∆¥“Ù ‰»Î∑®'
     TabOrder = 0
   end
   object lbDockClient1: TJvDockClient

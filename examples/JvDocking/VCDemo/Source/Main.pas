@@ -15,6 +15,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 {$I jvcl.inc}
 unit Main;
+{$IFNDEF USEJVCL}
+Sorry, this demo requires the JVCL!
+{$ENDIF}
 
 interface
 
@@ -962,7 +965,6 @@ end;
 
 procedure TMainForm.LoadDockInfo;
 begin
-
   CreateDockableForm;
   GetToolbarWidthArr;
   {$IFDEF USEJVCL}
