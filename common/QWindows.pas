@@ -4,7 +4,7 @@
  Copyright (c) 2003, Andre Snepvangers (asn@xs4all.nl)
  All rights reserved.
 
- Version 0.4
+ Version 0.5
   Description: Qt based wrappers for common MS Windows API's
   Purpose: Reduce coding effort for porting VCL based components to VisualCLX
            compatible components
@@ -28,7 +28,7 @@
  THE SOFTWARE.
 --------------------------------------------------------------------------------
 
-Last Modified: 2004-01-01
+Last Modified: 2004-01-02
 
 Known Issues:
   - Covers only a small part of the Windows APIs
@@ -296,6 +296,12 @@ function BitBlt(DestDC: QPainterH; X, Y, Width, Height: Integer; SrcDC: QPainter
   XSrc, YSrc: Integer; WinRop: Cardinal): LongBool; overload;
 function PatBlt(Handle: QPainterH; X, Y, Width, Height: Integer;
   WinRop: Cardinal): LongBool; //overload;
+
+function StretchBlt(dst: QPainterH; dx, dy, dw, dh: Integer;
+  src: QPainterH; sx, sy, sw, sh: Integer; winrop: Cardinal): LongBool; overload;
+function StretchBlt(dst: QPainterH; dx, dy, dw, dh: Integer; src: QPainterH;
+  sx, sy, sw, sh: Integer; Rop: RasterOp): LongBool; overload;
+(*)
 function StretchBlt(DestDC: QPainterH; X, Y, Width, Height: Integer; SrcDC: QPainterH;
   XSrc, YSrc, SrcWidth, SrcHeight: Integer; Rop: RasterOp): LongBool; overload;
 function StretchBlt(DestDC: QPainterH; X, Y, Width, Height: Integer; SrcDC: QPainterH;
@@ -308,7 +314,7 @@ procedure stretchBlt(dst: QPaintDeviceH; dx, dy, dw, dh: Integer;
 procedure stretchBlt(dst: QPaintDeviceH; dr: PRect; src: QPaintDeviceH; sr: PRect;
   rop: RasterOp; IgnoreMask: Boolean = False); overload;
 {$IFEND}
-
+(*)
 const
   { BitBlt:  windows dwRop values
     asn: limited implementation, possible to extend }
@@ -1044,16 +1050,19 @@ begin
 end;
 
 function GetClientRect(Handle: QWidgetH; var R: TRect): LongBool;
-var
-  Control: TWidgetControl;
+// var
+//  Control: TWidgetControl;
 begin
   try
+(*)
     // some CLX controls have a modified ClientRect
-    Control := FindControl(Handle);
-    if Control <> nil then
+    // asn: exactly  (no difference with VCL)
+    Control := FindControl(Handle);  // asn: define another api if you want this
+    if Control <> nil then           //      behavior ( GetCLXClientRect ? ) 
       R := Control.ClientRect
     else
-      QWidget_rect(Handle, @R);
+(*)
+    QWidget_rect(Handle, @R);
     Result := True;
   except
     Result := False;
@@ -1185,13 +1194,36 @@ begin
   end;
 end;
 
+function RasterOpToWinRop(Rop: RasterOp): cardinal;
+begin
+  case Rop of
+    RasterOp_ClearROP   : Result := BLACKNESS;
+    RasterOp_NotROP     : Result := DSTINVERT;
+    RasterOp_NotOrRop   : Result := MERGEPAINT;
+    RasterOp_NotCopyROP : Result := NOTSRCCOPY;
+    RasterOp_NorROP     : Result := NOTSRCERASE;
+    RasterOp_AndROP     : Result := SRCAND;
+    RasterOp_CopyROP    : Result := SRCCOPY;
+    RasterOp_AndNotROP  : Result := SRCERASE;
+    RasterOp_XorROP     : Result := SRCINVERT;
+    RasterOp_OrROP      : Result := SRCPAINT;
+    RasterOp_SetROP     : Result := WHITENESS;
+    RasterOp_NotAndROP  : Result := ROP_DSna;
+    RasterOp_NopROP     : Result := ROP_D;
+    RasterOp_OrNotROP   : Result := ROP_SDno;
+    RasterOp_NandROP    : Result := ROP_DSan;
+  else
+    Result := 0;   // to satisfy compiler
+  end;
+end;
+
 function WinRopToRasterOp(WinRop: Cardinal; var Rop: RasterOp): Boolean;
 begin
   Result := True;
   case WinRop of
     BLACKNESS  : Rop := RasterOp_ClearROP;
     DSTINVERT  : Rop := RasterOp_NotROP;
-    MERGECOPY  : Rop := RasterOp_OrROP;
+//    MERGECOPY  : Rop := RasterOp_OrROP;     {DSa}
     MERGEPAINT : Rop := RasterOp_NotOrRop;
     NOTSRCCOPY : Rop := RasterOp_NotCopyROP;
     NOTSRCERASE: Rop := RasterOp_NorROP;
@@ -1238,9 +1270,29 @@ var
   TempDC: QPainterH;
   Rop: RasterOp;
 begin
-  if not WinRopToRasterOp(WinRop, Rop) then
+  if WinRopToRasterOp(WinRop, Rop)  // directly maps ?
+  then
+    Result := BitBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Rop)
+  else // no
   begin
     case WinRop of
+      MERGECOPY: { PSa: Dest := Pattern AND Source }
+        begin
+          try
+            TempDC := CreateCompatibleDC(DestDC, Width, Height);
+            try
+              PatternPaint(TempDc, 0, 0, Width, Height, RasterOp_CopyROP); // Create Pattern
+              BitBlt(TempDc, 0, 0, Width, Height, SrcDC, XSrc, YSrc, RasterOp_AndRop); {PSa}
+              Result := BitBlt(DestDc, X, Y, Width, Height, tempDC, XSrc, YSrc, RasterOp_CopyROP);
+            except
+              Result := false;
+            end;
+            QPainter_destroy(tempDC);
+          except
+            Result := false;
+          end;
+        end;
+
       PATCOPY:
         Result := PatternPaint(DestDC, X, Y, Width, Height, RasterOp_CopyROP);
 
@@ -1249,7 +1301,8 @@ begin
 
       PATPAINT:
         begin  // DPSnoo   = PDSnoo
-          Result := BitBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, RasterOp_NotOrRop); // DSno
+          Result := BitBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc,
+                           RasterOp_NotOrRop); // DSno
           if Result then
             Result := PatternPaint(DestDC, X, Y, Width, Height, RasterOp_XOrROP);
         end;
@@ -1258,9 +1311,9 @@ begin
         begin
           TempDC := CreateCompatibleDC(DestDC, Width, Height);
           try
-              // copy DestDC to pixmap
+            // copy DestDC to pixmap
             BitBlt(TempDC, 0, 0, Width, Height, DestDC, X, Y,  RasterOp_CopyROP);
-            BitBlt(TempDC, 0, 0, Width, Height, nil, 0, 0, PATINVERT);  // PDx
+            BitBlt(TempDC, 0, 0, Width, Height, TempDC, 0, 0, PATINVERT);  // PDx
             BitBlt(TempDC, 0, 0, Width, Height, SrcDC, XSrc, YSrc, RasterOp_AndROP); // SPDxa
             Result := BitBlt(DestDC, X, Y, Width, Height, TempDC, 0, 0, RasterOp_XorROP); // DSPDxax
           except
@@ -1272,8 +1325,6 @@ begin
       Result := False;
     end;
   end
-  else
-    Result := BitBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Rop);
 end;
 
 function BitBlt(DestDC: QPainterH; X, Y, Width, Height: Integer; SrcDC: QPainterH;
@@ -1303,6 +1354,48 @@ begin
   Result := BitBlt(Handle, X, Y, Width, Height, Handle, X, Y, WinRop);
 end;
 
+function StretchBlt(dst: QPainterH; dx, dy, dw, dh: Integer;
+  src: QPainterH; sx, sy, sw, sh: Integer;
+  winrop: Cardinal): LongBool;
+var
+  bmp1, bmp2: QPixmapH;
+  painter : QPainterH;
+begin
+  // written by André Snepvangers
+  // - supports same winrop as bitblt(..., winrop)
+  // - destination and source don't have to be compatible with one and another
+  try
+    bmp1:= CreateCompatibleBitmap(src, sw, sh);
+    try
+      bmp2:= CreateCompatibleBitmap(dst, dw, dh);
+      Qt.BitBlt(bmp1, 0, 0, QPainter_device(Src), sx, sy, sw, sh, RasterOp_CopyROP, false);
+      painter := QPainter_create(bmp2);
+      QPainter_save(painter);
+      QPainter_scale(painter, dw/sw, dh/sh);
+      QPainter_drawPixmap(painter, 0, 0, bmp1, 0, 0, sw, sh);
+      QPainter_restore(painter);
+      Result := BitBlt(dst, dx, dy, dw, dh, Painter, 0, 0, winrop);
+      QPainter_destroy(Painter);
+      QPixmap_destroy(bmp2);
+    except
+      Result := false;
+    end;
+    QPixmap_destroy(bmp1);
+  except
+    Result := false;
+  end;
+end;
+
+function StretchBlt(dst: QPainterH; dx, dy, dw, dh: Integer; src: QPainterH;
+  sx, sy, sw, sh: Integer; Rop: RasterOp): LongBool;
+begin
+  Result := StretchBlt(dst, dx, dy, dw, dh,
+                       src,  sx, sy, sw, sh,
+                       RasterOpToWinRop(Rop));
+end;
+
+
+(*)
 // the stretchBlt functions are introduced by VisualCLX patch version 3.1
 procedure stretchBlt(dst: QPaintDeviceH; dx, dy, dw, dh: Integer;
   src: QPaintDeviceH; sx, sy, sw, sh: Integer;
@@ -1415,6 +1508,7 @@ begin
     Result := StretchBlt(DestDC, X, Y, Width, Height,
       SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Rop);
 end;
+(*)
 
 function SetROP2(Handle: QPainterH; Rop: Integer): Integer;
 var
@@ -1803,6 +1897,24 @@ end;
 
 function CreateRoundRectRgn(x1, y1, x2, y2, WidthEllipse, HeightEllipse: Integer): QRegionH;
 var
+  bmp: QBitmapH;
+  painter: QPainterH;
+begin
+  bmp := QBitmap_create(x2-x1+1, y2-y1+1, true, QPixmapOptimization_DefaultOptim);
+  painter := QPainter_create(bmp);
+  QPainter_setBrush(painter, QPen_color(QPainter_pen(painter)));
+  QPainter_drawRoundRect(painter, 0, 0, x2-x1, y2-y1, WidthEllipse, HeightEllipse);
+  QPainter_destroy(painter);
+  Result := QRegion_create(bmp);
+  QBitmap_destroy(bmp);
+  QRegion_translate(Result, x1, y1);
+end;
+
+
+(*)
+// asn: erroneous
+function CreateRoundRectRgn(x1, y1, x2, y2, WidthEllipse, HeightEllipse: Integer): QRegionH;
+var
   Ellipse, R: QRegionH;
 begin
   Result := CreateRectRgn(x1 + WidthEllipse div 2, y1 + HeightEllipse div 2,
@@ -1852,6 +1964,7 @@ begin
     Result := nil;
   end;
 end;
+(*)
 
 function CreatePolygonRgn(const Points; Count, FillMode: Integer): QRegionH;
 var
@@ -3188,6 +3301,9 @@ begin
     Result := QPainter_create(Pixmap);
     try
       SetPainterInfo(Result).IsCompatibleDC := True;
+      QPainter_setPen(Result, QPainter_pen(Handle));
+      QPainter_setBackgroundColor(Result, QPainter_BackgroundColor(Handle));
+      QPainter_setFont(Result, QPainter_Font(Handle));
       QPainter_begin(Result, QPainter_device(Result));
     except
       DeleteObject(Result);
@@ -3206,16 +3322,19 @@ begin
     Result := nil
   else
   begin
-    pdm := QPaintDeviceMetrics_create(QPainter_device(Handle));
     try
+      pdm := QPaintDeviceMetrics_create(QPainter_device(Handle));
       Result := QPixmap_create(Width, Height, QPaintDeviceMetrics_depth(pdm),
         QPixmapOptimization_DefaultOptim);
-    finally
+      QPaintDeviceMetrics_destroy(pdm);
+    except
+      Result := nil ;
     end;
   end;
 end;
 
-(*function CreateCompatibleBitmap(Handle: QPainterH; Width, Height: Integer): QPainterH;
+(*)
+function CreateCompatibleBitmap(Handle: QPainterH; Width, Height: Integer): QPainterH;
 var
   depth: Integer;
   Pixmap: QPixmapH;
