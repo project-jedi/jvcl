@@ -1,4 +1,4 @@
-@@JVCL.HWG.Struct.Basics
+@@JVCL.HWG.Struct.Files
 <GROUP JVCL.HWG.Struct>
 <TITLE Basic topic file structure>
 <TOPICORDER 100>
@@ -16,25 +16,74 @@
 
     * Unit symbol *
     
-    The unit symbol is required for all units.
+    The unit symbol is required for all units. This symbol uses a fixed way of describing, as is
+    explained <LINK JVCL.HWG.Basics.HowUnit, here>.
         
-    1. Always start with the unit symbol.
-    2. Describe the main component/class/routine first (do not include the members of the main class
-       or component).
-    3. If the main component or class is inherited from another class in the same unit (e.g. 
-       TJvInspector is derived from TJvCustomInspector), describe that base class.
-    4. Add all members of the base component/class in alphabetical order. Exception: if the
-       constructor and/or destructor should be documented, add them as the first members.
-    5. Add all members of the main component/class in alphabetical order. Exception: if the
-       constructor and/or destructor should be documented, add them as the first members.
-    6. Add all other classes in alphabetical order. For class hierarchies, start with the root class
-       and work your way down. Each class should be followed by their members in alphabetical order.
-       Exception: if the constructor and/or destructor should be documented, add them as the first
-       members.
-    7. Add all types in alphabetical order. For types that refer to eachother in the declaration,
-       start with the simple type and followup with the related type(s) (such as a set referring to
-       an enumeration or a pointer type referring to a record). For enumerations and records you
-       should add the members (enumeration values or record fields) within the same topic as the
-       base type.
-    8. Add all constants and variables in alphabetical order.
-    9. Add all helper procedures/functions in alphabetical order.
+    * Main component/class/routines *
+    
+    Next you should describe the main component/class/routines of the unit. After each
+    class/component description, you should immediately continue with the members. Members,
+    regardless of visibility and kind (property, method or event) are always documented in
+    alphabetical order, except for the constructors/destructors. Constructors and destructors
+    are always documented as the first members (constructor first, destructor second).
+    
+    More information on how to document components and classes can be found here and information
+    on topic structuring can be found here.
+    
+    More information on how to document routines can be found here and information on topic 
+    structuring can be found here.
+    
+    * Classes *
+    
+    Describe all (remaining) classes in the unit. After each description, you should immediately
+    continue with the members. Members, regardless of visibility and kind (property, method or
+    event) are always documented in alphabetical order, except for the constructors/destructors.
+    Constructors and destructors are always documented as the first members (constructor first,
+    destructor second).
+    
+    More information on how to document components and classes can be found here and information
+    on topic structuring can be found here.
+    
+    More information on how to document routines can be found here and information on topic 
+    structuring can be found here.
+    
+    * Types *
+
+    All type should be described in alphabetical order. Exceptions to this rule are
+    enumeration/set combinations and pointer-to-type/type combinations (eg. PRec = ^TRec). These
+    combinations always follow eachother (first describe the enumeration/base type; followed by a
+    topic for the set/pointer-to-type topic).
+      
+    Example1: enumeration/set combination
+
+<CODE>
+<I>Declaration:</I>
+
+<B>type</B>
+  TEnum = (enValue1, enValue2);
+  TSet = <B>set of</B> TEnum;
+  
+<I>Topic file:</I>
+
+\@@TEnum
+\Summary
+  Example enumeration
+\Description
+  Enumeration to explain proper way of describing enumeration/set combinations
+\@@TEnum.enValue1
+  Description of first enumeration value
+\@@TEnum.enValue2
+  Description of second enumeration value
+----------------------------------------------------------------------------------------------------
+\@@TSet
+\<COMBINEWITH TEnum>
+----------------------------------------------------------------------------------------------------
+</CODE>
+
+    * Constants and variables *
+    
+    Constants and variables are described in alphabetical order.
+    
+    * Helper routines *
+    
+    Helper routines are described in alphabetical order.

@@ -15,14 +15,15 @@ Count=0
 Count=0
 
 [Description Files]
-Count=7
+Count=8
 File0=Basics.dtx
 File1=Basics.HowClasses.dtx
 File2=Basics.HowEnums.dtx
 File3=Basics.HowUnit.dtx
 File4=Structuring.Basics.dtx
 File5=Structuring.dtx
-File6=Welcome.dtx
+File6=Structuring.Topics.dtx
+File7=Welcome.dtx
 
 [Description Include Directories]
 Count=1
