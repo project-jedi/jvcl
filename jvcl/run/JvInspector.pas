@@ -12619,6 +12619,7 @@ var
   Count: Integer;
   Index: Integer;
   LbPos: TPoint;
+  MinPos, MaxPos: Integer;
 begin
   if (Selected <> nil) and Selected.DroppedDown then
   begin
@@ -12632,11 +12633,21 @@ begin
   end
   else
   begin
-    Count := -WheelDelta div (120 div 5); // 5 items per scroll
-    Index := TopIndex + Count;
-    if Index < 0 then
-      Index := 0;
-    TopIndex := Index;
+    {$IFDEF VCL}
+    GetScrollRange(Handle, SB_VERT, MinPos, MaxPos);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    MinPos := FVertScrollBar.Min;
+    MaxPos := FVertScrollBar.Max;
+    {$ENDIF VisualCLX}
+    if MinPos <> MaxPos then // no scroll bar enabled
+    begin
+      Count := -WheelDelta div (120 div 5); // 5 items per scroll
+      Index := TopIndex + Count;
+      if Index < 0 then
+        Index := 0;
+      TopIndex := Index;
+    end;
   end;
   Result := True;
 end;
