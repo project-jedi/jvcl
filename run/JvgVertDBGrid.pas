@@ -31,8 +31,8 @@ unit JvgVertDBGrid;
 
 interface
 uses
-  Windows, Messages, Classes, Controls, Graphics, JvgTypes, JvgCommClasses,
-  JvgUtils, JVClVer, grids, JvgStringGrid, DB, SysUtils;
+  Windows, Messages, Classes, Controls, Graphics, Grids, DB, SysUtils,
+  JvgTypes, JvgCommClasses, JvgUtils, JVCLVer, JvgStringGrid;
 
 type
 
@@ -40,110 +40,97 @@ type
   private
     FDataSource: TDataSource;
     FDataSet: TDataSet;
-    FShowFromFieldNo: word;
-    FNumFieldsToShow: word;
-    fIgnoreSetText: boolean;
-    LastEditTextRow: integer;
-    LastEditValue: string;
-    FAboutJVCL: TJVCLAboutInfo;
-    procedure SetDataToFiled(Field: TField; Str: string);
-    function GetDataFromFiled(Field: TField): string;
-
+    FShowFromFieldNo: Word;
+    FNumFieldsToShow: Word;
+    FIgnoreSetText: Boolean;
+    FLastEditTextRow: Integer;
+    FLastEditValue: string;
+    procedure SetDataToField(Field: TField; Str: string);
+    function GetDataFromField(Field: TField): string;
     procedure SetDataSource(Value: TDataSource);
     procedure SetDataSet(Value: TDataSet);
-    procedure SetShowFromFieldNo(Value: word);
-    procedure SetNumFieldsToShow(Value: word);
+    procedure SetShowFromFieldNo(Value: Word);
+    procedure SetNumFieldsToShow(Value: Word);
     procedure SaveEditTextToDB;
     procedure UndoEditText;
     procedure DataChange(Sender: TObject; Field: TField);
   protected
-
     property DataSet: TDataSet read FDataSet write SetDataSet;
     procedure DoExit; override;
     procedure SetEditText(ACol, ARow: Longint; const Value: string); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
-
     //    procedure DrawCell(ACol, ARow: Longint; ARect: TRect; AState: TGridDrawState); override;
+    property DataSource: TDataSource read FDataSource write SetDataSource;
+    property ShowFromFieldNo: Word read FShowFromFieldNo write SetShowFromFieldNo default 0;
+    property NumFieldsToShow: Word read FNumFieldsToShow write SetNumFieldsToShow default 100;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     procedure FillGridWithData;
-  protected
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property DataSource: TDataSource read FDataSource write SetDataSource;
-    property ShowFromFieldNo: word read FShowFromFieldNo write SetShowFromFieldNo
-      default 0;
-    property NumFieldsToShow: word read FNumFieldsToShow write SetNumFieldsToShow
-      default 100;
+  published
   end;
 
   TJvgVertDBSGrid = class(TJvgCustomVertDBSGrid)
+  private
+    FAboutJVCL: TJVCLAboutInfo;
   published
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property DataSource;
     property ShowFromFieldNo;
     property NumFieldsToShow;
   end;
 
-procedure Register;
-
 implementation
-{~~~~~~~~~~~~~~~~~~~~~~~~~}
-
-procedure Register;
-begin
-end;
-{~~~~~~~~~~~~~~~~~~~~~~~~~}
 
 constructor TJvgCustomVertDBSGrid.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FNumFieldsToShow := 100;
   ColCount := 2;
-  LastEditTextRow := -1;
-end;
-
-destructor TJvgCustomVertDBSGrid.Destroy;
-begin
-  inherited;
+  FLastEditTextRow := -1;
 end;
 
 procedure TJvgCustomVertDBSGrid.SetEditText(ACol, ARow: Longint; const Value: string);
 begin
-  if (LastEditTextRow = ARow) and
-    (FDataSet.State <> dsEdit) and
-    (FDataSet.Fields[ARow + ShowFromFieldNo].AsString <> LastEditValue) then FDataSet.Edit;
+  if (FLastEditTextRow = ARow) and (FDataSet.State <> dsEdit) and
+    (FDataSet.Fields[ARow + ShowFromFieldNo].AsString <> FLastEditValue) then
+    FDataSet.Edit;
 
-  if fIgnoreSetText then
+  if FIgnoreSetText then
   begin
-    fIgnoreSetText := false;
-    exit;
+    FIgnoreSetText := False;
+    Exit;
   end;
-  LastEditValue := Value;
-  LastEditTextRow := ARow;
-  if FDataSet.State = dsEdit then SaveEditTextToDB;
-  inherited;
+  FLastEditValue := Value;
+  FLastEditTextRow := ARow;
+  if FDataSet.State = dsEdit then
+    SaveEditTextToDB;
+  inherited SetEditText(ACol, ARow, Value);
 end;
 
 procedure TJvgCustomVertDBSGrid.SaveEditTextToDB;
 begin
-  if LastEditTextRow < 0 then exit;
-  with FDataSet do
-  begin
-    if Fields[LastEditTextRow + ShowFromFieldNo].Value = LastEditValue then exit;
-    if State <> dsEdit then Edit;
-    SetDataToFiled(Fields[LastEditTextRow + ShowFromFieldNo], LastEditValue);
-    FDataSet.Post;
-    //fIgnoreSetText := true;
-    //Cells[1,LastEditTextRow] := LastEditValue;
-  end;
+  if FLastEditTextRow >= 0 then
+    with FDataSet do
+    begin
+      if Fields[FLastEditTextRow + ShowFromFieldNo].Value = FLastEditValue then
+        Exit;
+      if State <> dsEdit then
+        Edit;
+      SetDataToField(Fields[FLastEditTextRow + ShowFromFieldNo], FLastEditValue);
+      FDataSet.Post;
+      //FIgnoreSetText := True;
+      //Cells[1,FLastEditTextRow] := FLastEditValue;
+    end;
 end;
 
 procedure TJvgCustomVertDBSGrid.UndoEditText;
 begin
-  if LastEditTextRow < 0 then exit;
-  with FDataSet do
-    Cells[1, LastEditTextRow] := GetDataFromFiled(Fields[LastEditTextRow + ShowFromFieldNo]);
-  LastEditTextRow := -1;
+  if FLastEditTextRow >= 0 then
+  begin
+    with FDataSet do
+      Cells[1, FLastEditTextRow] := GetDataFromField(Fields[FLastEditTextRow + ShowFromFieldNo]);
+    FLastEditTextRow := -1;
+  end;
 end;
 
 procedure TJvgCustomVertDBSGrid.KeyDown(var Key: Word; Shift: TShiftState);
@@ -152,11 +139,12 @@ begin
     VK_ESCAPE:
       if EditorMode then
       begin
-        fIgnoreSetText := true;
-        //EditorMode := false;
+        FIgnoreSetText := True;
+        //EditorMode := False;
         UndoEditText;
       end;
-    VK_LEFT: InplaceEditor.SelLength := 0;
+    VK_LEFT:
+      InplaceEditor.SelLength := 0;
     VK_RIGHT:
       begin
         InplaceEditor.SelStart := InplaceEditor.SelLength;
@@ -165,12 +153,13 @@ begin
     {VK_UP, VK_DOWN,} VK_RETURN:
       begin
         SaveEditTextToDB;
-        inherited;
+        inherited KeyDown(Key, Shift);
       end;
   else
-    inherited;
+    inherited KeyDown(Key, Shift);
   end;
 end;
+
 {procedure TJvgCustomVertDBSGrid.DrawCell(ACol, ARow: Longint; ARect: TRect; AState: TGridDrawState);
 const
   aAlignments: array[TAlignment] of Longint = ( ES_LEFT, ES_RIGHT, ES_CENTER );
@@ -180,8 +169,8 @@ var
 begin
   if (ACol = 0)and(FixedCols>0) then
   begin
-//    DefaultDrawing := false;
-//    DefaultDrawing := true;
+//    DefaultDrawing := False;
+//    DefaultDrawing := True;
     InflateRect(ARect, -1, -1 );
     Canvas.Font := FCaptFont;
     R := ARect;
@@ -198,7 +187,7 @@ begin
 end;
 }
 
-procedure TJvgCustomVertDBSGrid.SetDataToFiled(Field: TField; Str: string);
+procedure TJvgCustomVertDBSGrid.SetDataToField(Field: TField; Str: string);
 begin
   case Field.DataType of
     ftString:
@@ -218,11 +207,13 @@ begin
   end;
 end;
 
-function TJvgCustomVertDBSGrid.GetDataFromFiled(Field: TField): string;
+function TJvgCustomVertDBSGrid.GetDataFromField(Field: TField): string;
 begin
   case Field.DataType of
-    ftString: Result := Field.AsString;
-    ftFloat, ftCurrency: Result := FloatToStr(Field.AsFloat);
+    ftString:
+      Result := Field.AsString;
+    ftFloat, ftCurrency:
+      Result := FloatToStr(Field.AsFloat);
   else
     Result := IntToStr(Field.AsInteger);
   end;
@@ -232,12 +223,12 @@ procedure TJvgCustomVertDBSGrid.SetDataSource(Value: TDataSource);
 begin
   FDataSource := Value;
   if not Assigned(FDataSource) then
+    DataSet := nil
+  else
   begin
-    DataSet := nil;
-    exit;
+    FDataSource.OnDataChange := DataChange;
+    DataSet := FDataSource.DataSet;
   end;
-  FDataSource.OnDataChange := DataChange;
-  DataSet := FDataSource.DataSet;
 end;
 
 procedure TJvgCustomVertDBSGrid.SetDataSet(Value: TDataSet);
@@ -249,19 +240,18 @@ begin
     //    for i:=0 to RowCount-1 do Cells[1,i] := '';
     //    Captions.Clear;
     RowCount := 0; // ColCount := 0;
-    exit;
   end
   else
     FillGridWithData;
 end;
 
-procedure TJvgCustomVertDBSGrid.SetShowFromFieldNo(Value: word);
+procedure TJvgCustomVertDBSGrid.SetShowFromFieldNo(Value: Word);
 begin
   FShowFromFieldNo := Value;
   FillGridWithData;
 end;
 
-procedure TJvgCustomVertDBSGrid.SetNumFieldsToShow(Value: word);
+procedure TJvgCustomVertDBSGrid.SetNumFieldsToShow(Value: Word);
 begin
   FNumFieldsToShow := Value;
   FillGridWithData;
@@ -270,27 +260,28 @@ end;
 procedure TJvgCustomVertDBSGrid.DoExit;
 begin
   if Assigned(FDataSet) then
-    if FDataSet.State = dsEdit then FDataSet.Post;
-  inherited;
+    if FDataSet.State = dsEdit then
+      FDataSet.Post;
+  inherited DoExit;
 end;
 
 procedure TJvgCustomVertDBSGrid.FillGridWithData;
 var
-  i, j: integer;
+  I, J: Integer;
 begin
   if Assigned(FDataSet) then
     with FDataSet do
     begin
       RowCount := FieldCount; //	 RowCount := min( FieldCount - ShowFromFieldNo, NumFieldsToShow );
-      j := 0;
-      for i := 0 {ShowFromFieldNo} to RowCount - 1 {+ShowFromFieldNo} do //max( FieldCount-1, RowCount-1 ) do
+      J := 0;
+      for I := 0 {ShowFromFieldNo} to RowCount - 1 {+ShowFromFieldNo} do //max( FieldCount-1, RowCount-1 ) do
       begin
-        //if i >= RowCount then break;
-        //if i >= FieldCount then Cells[1,i] := ''
+        //if I >= RowCount then break;
+        //if I >= FieldCount then Cells[1,I] := ''
         //else
         //if Cells[0,j]='' then Cells[0,j] := Fields[i].Text;
-        Cells[1, j] := Fields[i].AsString; //GetDataFromFiled(Fields[i]);
-        inc(j);
+        Cells[1, J] := Fields[I].AsString; //GetDataFromField(Fields[i]);
+        Inc(J);
       end;
       //Repaint;
     end;
@@ -298,7 +289,8 @@ end;
 
 procedure TJvgCustomVertDBSGrid.DataChange(Sender: TObject; Field: TField);
 begin
-  if DataSet <> FDataSource.DataSet then DataSet := FDataSource.DataSet;
+  if DataSet <> FDataSource.DataSet then
+    DataSet := FDataSource.DataSet;
   //  if field = nil then FillGridWithData;
 end;
 

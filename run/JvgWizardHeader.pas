@@ -32,37 +32,38 @@ unit JvgWizardHeader;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, JVComponent, Graphics,
-  Controls, Forms, Dialogs, comctrls, JvgCommClasses;
+  Windows, Messages, SysUtils, Classes, Graphics,
+  Controls, Forms, Dialogs, ComCtrls,
+  JvgCommClasses, JvComponent;
 
 type
   TJvgWizardHeader = class(TJvGraphicControl)
   private
-    FComments: TStrings;
-    FCaptions: TStrings;
+    FComments: TStringList;
+    FCaptions: TStringList;
     FPageControl: TPageControl;
-    FPageNo: integer;
+    FPageNo: Integer;
     FCommentFont: TFont;
     FCaptionFont: TFont;
     FSymbolFont: TFont;
     FSymbol: string;
     FGradient: TJvgGradient;
     FGlyph: TBitmap;
-    FBufferedDraw: boolean;
+    FBufferedDraw: Boolean;
+    function GetCaptions: TStrings;
+    function GetComments: TStrings;
+    function GetGlyph: TBitmap;
     procedure SetCaptions(const Value: TStrings);
     procedure SetComments(const Value: TStrings);
-    procedure SetPageNo(const Value: integer);
+    procedure SetPageNo(const Value: Integer);
     procedure SetCaptionFont(const Value: TFont);
     procedure SetCommentFont(const Value: TFont);
     procedure SetSymbolFont(const Value: TFont);
     procedure SetSymbol(const Value: string);
     procedure SetGradient(const Value: TJvgGradient);
     procedure SetGlyph(const Value: TBitmap);
-    function GetGlyph: TBitmap;
-    { Private declarations }
   protected
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
-      override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -73,39 +74,31 @@ type
     property CaptionFont: TFont read FCaptionFont write SetCaptionFont;
     property CommentFont: TFont read FCommentFont write SetCommentFont;
     property SymbolFont: TFont read FSymbolFont write SetSymbolFont;
-    property PageNo: integer read FPageNo write SetPageNo;
-    property Captions: TStrings read FCaptions write SetCaptions;
-    property Comments: TStrings read FComments write SetComments;
+    property PageNo: Integer read FPageNo write SetPageNo default 1;
+    property Captions: TStrings read GetCaptions write SetCaptions;
+    property Comments: TStrings read GetComments write SetComments;
     property Symbol: string read FSymbol write SetSymbol;
     property Gradient: TJvgGradient read FGradient write SetGradient;
     property Glyph: TBitmap read GetGlyph write SetGlyph;
-    property BufferedDraw: boolean read FBufferedDraw write FBufferedDraw;
+    property BufferedDraw: Boolean read FBufferedDraw write FBufferedDraw;
     //    property PageControl: TPageControl read FPageControl write SetPageControl;
   end;
 
-procedure Register;
-
 implementation
-uses JvgTypes,
-  JvgUtils;
 
-procedure Register;
-begin
-  //  RegisterComponents('Gl Controls', [TJvgWizardHeader]);
-end;
-
-{ TJvgWizardHeader }
+uses
+  JvgTypes, JvgUtils;
 
 constructor TJvgWizardHeader.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   ControlStyle := ControlStyle + [csOpaque];
   Align := alTop;
   Height := 60;
   FCaptions := TStringList.Create;
   FComments := TStringList.Create;
   FGradient := TJvgGradient.Create;
-  FGradient.Active := true;
+  FGradient.Active := True;
   FGradient.FromColor := clHighlight;
   FGradient.ToColor := clWindow;
   FGradient.Orientation := fgdVertical;
@@ -117,6 +110,7 @@ begin
   FSymbolFont.Size := 26;
   FSymbolFont.Color := clHighlightText;
   FSymbolFont.Style := [fsBold];
+  FPageNo := 1;
   //  FSymbol := '4';
 end;
 
@@ -126,7 +120,17 @@ begin
   FComments.Free;
   FCommentFont.Free;
   FGradient.Free;
-  inherited;
+  inherited Destroy;
+end;
+
+function TJvgWizardHeader.GetCaptions: TStrings;
+begin
+  Result := FCaptions;
+end;
+
+function TJvgWizardHeader.GetComments: TStrings;
+begin
+  Result := FComments;
 end;
 
 function TJvgWizardHeader.GetGlyph: TBitmap;
@@ -136,25 +140,23 @@ begin
   Result := FGlyph;
 end;
 
-procedure TJvgWizardHeader.Notification(AComponent: TComponent; Operation:
-  TOperation);
+procedure TJvgWizardHeader.Notification(AComponent: TComponent;
+  Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
   if (AComponent = FPageControl) and (Operation = opRemove) then
-  begin
     FPageControl := nil;
-  end;
 end;
 
 procedure TJvgWizardHeader.Paint;
 var
   R, SR: TRect;
-  Offset: integer;
+  Offset: Integer;
   Buffer: TBitmap;
   Caption, Comment: string;
   TargetCanvas: TCanvas;
 begin
-  FSymbol := copy(FSymbol, 1, 1);
+  FSymbol := Copy(FSymbol, 1, 1);
 
   if BufferedDraw then
   begin
@@ -170,11 +172,10 @@ begin
   end;
 
   try
-
     if FCaptions.Count = 0 then
       Caption := 'Caption'
     else
-      Caption := FCaptions[Min(FCaptions.Count - 1, PageNo)];
+      Caption := FCaptions[Min(FCaptions.Count-1, PageNo)];
     if FComments.Count = 0 then
       Comment := 'Some comment text' // do not localize
     else
@@ -191,19 +192,19 @@ begin
     Dec(R.Bottom, 5);
 
     TargetCanvas.Font.Assign(CaptionFont);
-    DrawText(TargetCanvas.Handle, PChar(Caption), length(Caption), R,
+    DrawText(TargetCanvas.Handle, PChar(Caption), Length(Caption), R,
       DT_SINGLELINE);
 
-    inc(R.Top, TargetCanvas.TextHeight('Hy'));
-    inc(R.Left, 20);
+    Inc(R.Top, TargetCanvas.TextHeight('Hy'));
+    Inc(R.Left, 20);
 
     TargetCanvas.Font.Assign(CommentFont);
     SR := R;
-    DrawText(TargetCanvas.Handle, PChar(Comment), length(Comment), SR,
+    DrawText(TargetCanvas.Handle, PChar(Comment), Length(Comment), SR,
       DT_WORDBREAK or DT_CALCRECT);
 
     OffsetRect(SR, 0, (R.Bottom - SR.Bottom) div 2);
-    DrawText(TargetCanvas.Handle, PChar(Comment), length(Comment), SR,
+    DrawText(TargetCanvas.Handle, PChar(Comment), Length(Comment), SR,
       DT_WORDBREAK);
 
     if Assigned(FGlyph) and (FGlyph.Width > 0) then
@@ -214,10 +215,11 @@ begin
       //    BitBlt(TargetCanvas.Handle, R.Right-FGlyph.Width-Offset, R.Top+Offset, FGlyph.Width, FGlyph.Height, FGlyph.TargetCanvas.Handle, 0, 0, SRCCOPY);
       DrawBitmapExt(TargetCanvas.Handle, FGlyph, R, R.Right - FGlyph.Width -
         Offset, R.Top + Offset,
-        fwoNone, fdsDefault, true, GetTransparentColor(FGlyph,
+        fwoNone, fdsDefault, True, GetTransparentColor(FGlyph,
         ftcLeftBottomPixel), 0);
     end
-    else if length(FSymbol) > 0 then
+    else
+    if Length(FSymbol) > 0 then
     begin
       TargetCanvas.Brush.Color := clHighlight;
       R := ClientRect;
@@ -228,7 +230,7 @@ begin
 
       TargetCanvas.Font.Assign(SymbolFont);
       SetBkMode(TargetCanvas.Handle, TRANSPARENT);
-      DrawText(TargetCanvas.Handle, PChar(Symbol), length(FSymbol), SR,
+      DrawText(TargetCanvas.Handle, PChar(Symbol), Length(FSymbol), SR,
         DT_SINGLELINE or DT_CENTER or DT_VCENTER);
     end;
 
@@ -242,7 +244,6 @@ begin
     if BufferedDraw then
       BitBlt(Canvas.Handle, 0, 0, Width, Height, TargetCanvas.Handle, 0, 0,
         SRCCOPY);
-
   finally
     if BufferedDraw then
       Buffer.Free;
@@ -251,8 +252,11 @@ end;
 
 procedure TJvgWizardHeader.SetCaptionFont(const Value: TFont);
 begin
-  FCaptionFont.Assign(Value);
-  Invalidate;
+  if FCaptionFont <> Value then
+  begin
+    FCaptionFont.Assign(Value);
+    Invalidate;
+  end;
 end;
 
 procedure TJvgWizardHeader.SetCaptions(const Value: TStrings);
@@ -263,8 +267,11 @@ end;
 
 procedure TJvgWizardHeader.SetCommentFont(const Value: TFont);
 begin
-  FCommentFont.Assign(Value);
-  Invalidate;
+  if FCommentFont <> Value then
+  begin
+    FCommentFont.Assign(Value);
+    Invalidate;
+  end;
 end;
 
 procedure TJvgWizardHeader.SetComments(const Value: TStrings);
@@ -285,16 +292,22 @@ begin
   FGradient.Assign(Value);
 end;
 
-procedure TJvgWizardHeader.SetPageNo(const Value: integer);
+procedure TJvgWizardHeader.SetPageNo(const Value: Integer);
 begin
-  FPageNo := Value;
-  Paint;
+  if FPageNo <> Value then
+  begin
+    FPageNo := Value;
+    Invalidate;
+  end;
 end;
 
 procedure TJvgWizardHeader.SetSymbol(const Value: string);
 begin
-  FSymbol := Value;
-  Invalidate;
+  if FSymbol <> Value then
+  begin
+    FSymbol := Value;
+    Invalidate;
+  end;
 end;
 
 procedure TJvgWizardHeader.SetSymbolFont(const Value: TFont);
