@@ -50,7 +50,8 @@ type
     procedure PaintAlignBox(const Align: TAlign; const ACanvas: TCanvas; const ARect: TRect;
       const UseUnassigned: Boolean);
   public
-    procedure AfterConstruction; override;
+    constructor Create(const AParent: TJvCustomInspectorItem;
+      const AData: TJvCustomInspectorData); override;
     procedure DoneEdit(const CancelEdits: Boolean = False); override;
     procedure DrawValue(const ACanvas: TCanvas); override;
     procedure InitEdit; override;
@@ -75,7 +76,8 @@ type
     procedure PaintAnchorsBox(const Anchors: TAnchors; const ACanvas: TCanvas; const ARect: TRect;
       const UseUnassigned: Boolean);
   public
-    procedure AfterConstruction; override;
+    constructor Create(const AParent: TJvCustomInspectorItem;
+      const AData: TJvCustomInspectorData); override;
     procedure DoneEdit(const CancelEdits: Boolean = False); override;
     procedure DrawValue(const ACanvas: TCanvas); override;
     procedure InitEdit; override;
@@ -108,7 +110,8 @@ type
     procedure SetFlags(const Value: TInspectorItemFlags); override;
     procedure SetRects(const RectKind: TInspectorPaintRect; Value: TRect); override;
   public
-    procedure AfterConstruction; override;
+    constructor Create(const AParent: TJvCustomInspectorItem;
+      const AData: TJvCustomInspectorData); override;
     procedure BeforeDestruction; override;
     procedure DrawValue(const ACanvas: TCanvas); override;
     class procedure RegisterAsDefaultItem;
@@ -303,9 +306,10 @@ begin
   RenderAlign(alLeft, ARect.Left + 2, ARect.Top + 1);
 end;
 
-procedure TJvInspectorAlignItem.AfterConstruction;
+constructor TJvInspectorAlignItem.Create(const AParent: TJvCustomInspectorItem;
+  const AData: TJvCustomInspectorData);
 begin
-  inherited AfterConstruction;
+  inherited Create(AParent, AData);
   FUnassignedColor := clGrayText;
   FNormalColor := clWindowText;
   FActiveColor := clBlue;
@@ -519,9 +523,10 @@ begin
   inherited SetRects(RectKind, Value);
 end;
 
-procedure TJvInspectorColorItem.AfterConstruction;
+constructor TJvInspectorColorItem.Create(const AParent: TJvCustomInspectorItem;
+  const AData: TJvCustomInspectorData);
 begin
-  inherited AfterConstruction;
+  inherited Create(AParent, AData);
   FColors := TStringList.Create;
   FStdColors := TStringList.Create;
   GetColorValues(AddStdColor);
@@ -731,9 +736,10 @@ begin
   RenderAnchors(akLeft, ARect.Left + 2, ARect.Top + 1);
 end;
 
-procedure TJvInspectorAnchorsItem.AfterConstruction;
+constructor TJvInspectorAnchorsItem.Create(const AParent: TJvCustomInspectorItem;
+  const AData: TJvCustomInspectorData);
 begin
-  inherited AfterConstruction;
+  inherited Create(AParent, AData);
   FUnassignedColor := clGrayText;
   FNormalColor := clWindowText;
   FActiveColor := clBlue;

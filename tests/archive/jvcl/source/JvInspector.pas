@@ -1083,7 +1083,8 @@ type
     procedure SetDisplayValue(const Value: string); override;
     procedure SetFlags(const Value: TInspectorItemFlags); override;
   public
-    procedure AfterConstruction; override;
+    constructor Create(const AParent: TJvCustomInspectorItem;
+      const AData: TJvCustomInspectorData); override;
     procedure BeforeDestruction; override;
     procedure AddInstance(const Instance: TObject; const InstanceName: string);
     procedure AddMethod(const Method: TMethod; const MethodName: string); overload;
@@ -7843,8 +7844,8 @@ type
     Methods: TStrings;
     MethodStartIdx: Integer;
     Item: TJvInspectorTMethodItem;
-    procedure AfterConstruction; override;
-    procedure BeforeDestruction; override;
+    constructor Create;
+    destructor Destroy; override;
     procedure AddMethod(const Name: string; const MethodAddr: Pointer);
     procedure DeleteMethod(const Name: string); overload;
     procedure DeleteMethod(const MethodAddr: Pointer); overload;
@@ -7854,16 +7855,16 @@ type
     function IndexOf(const MethodAddr: Pointer): Integer; overload;
   end;
 
-procedure TInstanceItem.AfterConstruction;
+constructor TInstanceItem.Create;
 begin
-  inherited AfterConstruction;
+  inherited Create;
   Methods := TStringList.Create;
 end;
 
-procedure TInstanceItem.BeforeDestruction;
+destructor TInstanceItem.Destroy;
 begin
   Methods.Free;
-  inherited BeforeDestruction; 
+  inherited Destroy;
 end;
 
 procedure TInstanceItem.AddMethod(const Name: string; const MethodAddr: Pointer);
@@ -8260,9 +8261,10 @@ begin
   inherited SetFlags(Value + [iifValueList]);
 end;
 
-procedure TJvInspectorTMethodItem.AfterConstruction;
+constructor TJvInspectorTMethodItem.Create(const AParent: TJvCustomInspectorItem;
+  const AData: TJvCustomInspectorData);
 begin
-  inherited AfterConstruction;
+  inherited Create(AParent, AData);
   FList := TStringList.Create;
   ItemTMethodFlags := [imfShowInstanceNames, imfNoShowFirstInstanceName,
     imfKeepFirstInstanceAsFirst, imfSortInstances, imfSortMethods];
