@@ -1,6 +1,3 @@
 [Directories]
-OutputDir=
-UnitOutputDir=..\..\lib5
-PackageDLLOutputDir=
-PackageDCPOutputDir=
+UnitOutputDir=..\..\lib6
 SearchPath=..\..\common;..\..\Resources
