@@ -29,7 +29,7 @@
  THE SOFTWARE.
 --------------------------------------------------------------------------------
 
-Last Modified: 2004-03-10
+Last Modified: 2004-03-21
 
 Known Issues:
   - Covers only a small part of the Windows APIs
@@ -1293,8 +1293,8 @@ procedure FlushInstructionCache(PID: cardinal; OrgCalProc: Pointer; size: intege
 { Limitations:
     - GetKeyState calls GetAsyncKeyState
     - GetAsyncKeyState only supports VK_SHIFT, VK_CONTROL and VK_MENU }
-function GetKeyState(nVirtKey: Integer): Word;
-function GetAsyncKeyState(vKey: Integer): Word;
+function GetKeyState(nVirtKey: Integer): SmallInt;
+function GetAsyncKeyState(vKey: Integer): SmallInt;
 
 
 const
@@ -1303,7 +1303,6 @@ const
 type
   PSecurityAttributes = Pointer;
 
-{$IFDEF DEBUG}
 // events are limited to the process
 function CreateEvent(EventAttributes: PSecurityAttributes;
   ManualReset, InitialState: LongBool; Name: PChar): THandle;
@@ -1326,8 +1325,13 @@ function OpenSemaphore(DesiredAccess: Longword; InheritHandle: LongBool;
 function ReleaseSemaphore(Semaphore: THandle; ReleaseCount: Longint;
   PreviousCount: PInteger): LongBool;
 
+function semtimedop(semid: Integer; sops: PSemaphoreBuffer;
+  nsops: size_t;timeout: PTimeSpec): Integer; {$IFDEF DEBUG}cdecl;{$ENDIF}
 
 function WaitForSingleObject(Handle: THandle; Milliseconds: Cardinal): Cardinal;
+
+{ Operate on semaphore.  }
+
 
 const
   STATUS_WAIT_0           = $00000000;
@@ -1341,7 +1345,6 @@ const
 
 // all Handles are TObject derived classes
 function CloseHandle(hObject: THandle): LongBool;
-{$ENDIF}
 
 // memory management
 function GlobalAllocPtr(Flags: Integer; Bytes: Longint): Pointer;
@@ -6160,12 +6163,12 @@ asm
 @@Exit:
 end;
 
-function GetKeyState(nVirtKey: Integer): Word;
+function GetKeyState(nVirtKey: Integer): SmallInt;
 begin
   Result := GetAsyncKeyState(nVirtKey);
 end;
 
-function GetAsyncKeyState(vKey: Integer): Word;
+function GetAsyncKeyState(vKey: Integer): SmallInt;
 var
   Root: Window;
   Child: Window;
@@ -6179,17 +6182,16 @@ begin
   case vKey of
     VK_SHIFT:
       if Mask and ShiftMask <> 0 then
-        Result := $8000;
+        Result := -32768;
     VK_CONTROL:
       if Mask and ControlMask <> 0 then
-        Result := $8000;
+        Result := -32768;
     VK_MENU:
       if Mask and Mod1Mask <> 0 then
-        Result := $8000;
+        Result := -32768;
   end;
 end;
 
-{$IFDEF DEBUG}
 
 // Handle-Values and IPC
 type
@@ -6369,9 +6371,60 @@ end;
 
 { TSemaphoreWaitObject }
 
+{$IFDEF DEBUG}
+// asn: documented, but (afaics) not in libc.so.6
+function semtimedop; external libcmodulename name 'semtimedop';
+{$ELSE}
 function semtimedop(semid: Integer; sops: PSemaphoreBuffer;
-   nsops: size_t; timeout: PTimeSpec): Integer; cdecl;
-   external libpthreadmodulename name 'semtimedop';
+  nsops: size_t;timeout: PTimeSpec): Integer;
+var
+  sem: TSemaphoreBuffer;
+  psem: PSemaphoreBuffer;
+  i: integer;
+  WaitTime: integer;
+begin
+  if timeout = nil then
+    Result := semop(semid, sops, nsops)
+  else
+  begin
+    Result := 0; // incase nsops = 0
+    WaitTime := 1000 * timeout.tv_sec  + timeout.tv_nsec div 1000000;
+    psem := sops;
+    StartTime := GetTickCount ;
+    try
+      for i:= 0 to nsops-1 do
+      begin
+        sem := psem^ ;
+        sem.sem_flg := sem.sem_flg OR IPC_NOWAIT;
+        // process sem
+        while (GetTickCount - StartTime) >= WaitTime do
+        begin
+          Result := semop(semid, @sem, 1);
+          case Result of
+          0:
+            begin
+              inc(psem);  // next one
+              break;
+            end;
+          EAGAIN:
+            if (psem^.sem_flg and IPC_NOWAIT) <> 0 then  // original flag
+              break
+            else
+              Sleep(10);  // try again
+          else
+            break;   // error
+          end; // case Result
+        end; // while
+
+        if Result <> 0 then
+          break;
+      end;  // for i:= 0 to ..
+    except
+      Result := 1; // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+    end;
+  end;
+end;
+{$ENDIF DEBUG}
 
 function GetIPCKey(const AName: string; What: Integer): Integer;
 var
@@ -6460,7 +6513,8 @@ begin
   else
   begin
     timespec.tv_sec := Timeout div 1000;
-    timespec.tv_nsec := (Timeout mod 1000) * 1000;
+//    timespec.tv_nsec := (Timeout mod 1000) * 1000;
+    timespec.tv_nsec := (Timeout mod 1000) * 1000000;
     RetValue := semtimedop(FSemId, @Buf, 1, @timespec); // Timeout=0 -> INFINTE
   end;
 
@@ -6925,8 +6979,6 @@ begin
     WaitObjectList.Leave;
   end;
 end;
-{$ENDIF DEBUG}
-
 
 function GlobalAllocPtr(Flags: Integer; Bytes: Longint): Pointer;
 begin
