@@ -163,7 +163,8 @@ type
   TOptionsDir = set of TOptionsDirectory;
 
   // (rom) changed name
-  TJvBrowseForFolderDialog = class(TJvCommonDialogF, IFolderFilter)
+  TJvBrowseForFolderDialog = class(TJvCommonDialogF, IFolderFilter
+    {$IFNDEF COMPILER6_UP}, IUnknown {$ENDIF COMPILER6_UP})
   private
     // (rom) changed names to Window and type to HWND
     { Handle to the owner form of the dialog, used if Position = fpFormCenter }

@@ -41,7 +41,9 @@ uses
 type
   TJvListBox = class(TJvCustomListBox)
   public
+    {$IFDEF COMPILER6_UP}
     property Count;
+    {$ENDIF COMPILER6_UP}
   published
     property Align;
     property Anchors;

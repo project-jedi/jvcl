@@ -31,7 +31,7 @@ unit JvEasterEgg;
 interface
 
 uses
-  Messages, SysUtils, Classes, Controls, Forms,
+  Messages, SysUtils, Classes, Controls, Forms, Windows,
   JvComponent;
 
 type
@@ -90,6 +90,7 @@ end;
 function TJvEasterEgg.NewWndProc(var Msg: TMessage): Boolean;
 var
   Shift: TShiftState;
+  KeyState: TKeyBoardState;
 begin
   Result := False;
   with Msg do
@@ -100,7 +101,8 @@ begin
       case Msg of
         WM_KEYUP, WM_SYSKEYUP:
           begin
-            Shift := KeyboardStateToShiftState;
+            GetKeyboardState(KeyState);
+            Shift := KeyboardStateToShiftState(KeyState);
             if Shift = FControlKeys then
             begin
               if ssShift in Shift then
