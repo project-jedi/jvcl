@@ -5,7 +5,7 @@
     <VERSION value="BCB.06.00"/>
     <PROJECT value="JvManagedThreadsC6D.bpl"/>
     <OBJFILES value="..\..\dcu\JvManagedThreadsC6D.obj ..\..\dcu\JvManagedThreadsReg.obj"/>
-    <RESFILES value="JvManagedThreadsC6D.res ..\..\resources\JvManagedThreadsReg.dcr"/>
+    <RESFILES value="JvManagedThreadsC6D.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
     <DEFFILE value=""/>
