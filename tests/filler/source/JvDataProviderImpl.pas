@@ -19,7 +19,7 @@ Contributor(s):
   Remko Bonte
   Peter Thörnqvist
 
-Last Modified: 2003-06-19
+Last Modified: 2003-06-20
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -327,11 +327,13 @@ type
   end;
 
   // Generic data provider implementation
+  TJvDataProviderTree = type Integer;
   TJvCustomDataProvider = class(TJvComponent, {$IFNDEF COMPILER6_UP}IInterfaceComponentReference, {$ENDIF}
     IJvDataProvider, IJvDataItems)
   private
     FDataItemsImpl: TJvBaseDataItems;
     FNotifiers: TInterfaceList;
+    FTreeItems: TJvDataProviderTree;
   protected
     function QueryInterface(const IID: TGUID; out Obj): HResult; override;
     procedure Changing(ChangeReason: TDataProviderChangeReason; Source: IUnknown = nil);
@@ -351,6 +353,7 @@ type
     procedure UnregisterChangeNotify(ANotify: IJvDataProviderNotify); virtual;
 
     property DataItemsImpl: TJvBaseDataItems read FDataItemsImpl implements IJvDataItems;
+    property Items: TJvDataProviderTree read FTreeItems write FTreeItems stored False;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
