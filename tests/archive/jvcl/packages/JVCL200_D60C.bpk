@@ -3,8 +3,8 @@
 <PROJECT>
   <MACROS>
     <VERSION value="BCB.06.00"/>
-    <PROJECT value="jvcl200_D60C.bpl"/>
-    <OBJFILES value="..\lib6\jvcl200_D60C.obj ..\lib6\JvaDBReg.obj ..\lib6\JvaCtlReg.obj 
+    <PROJECT value="JVCL200_D60C.bpl"/>
+    <OBJFILES value="..\lib6\JVCL200_D60C.obj ..\lib6\JvaDBReg.obj ..\lib6\JvaCtlReg.obj 
       ..\lib6\JvIDEZoom.obj ..\lib6\JvaDsgn.obj ..\lib6\JvRegAutoEditor.obj 
       ..\lib6\JvHTHintEditor.obj ..\lib6\JvIReg.obj ..\lib6\JVCLReg.obj 
       ..\lib6\JvAlarmsEditor.obj ..\lib6\JvBaseDlgEditor.obj 
@@ -29,7 +29,7 @@
       ..\lib6\JvPluginParams.obj ..\lib6\JvActnRes.obj 
       ..\lib6\JvDatePickerReg.obj ..\lib6\JvSchedEvntReg.obj 
       ..\lib6\ScheduleEditor.obj ..\lib6\JvTransLEDReg.obj 
-      ..\lib6\JvJVCLAboutProperty.obj"/>
+      ..\lib6\JvJVCLAboutProperty.obj ..\lib6\JvxDConst.obj"/>
     <RESFILES value="jvcl200_D60C.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -58,15 +58,15 @@
       designdgm.bpi dclstd.bpi vcldb.bpi bdertl.bpi CJCL60.bpi vcljpg.bpi 
       bcbsmp.bpi bcbie.bpi"/>
     <PATHCPP value=".;"/>
-    <PATHPAS value=".;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\source;..\Source;..\Source;..\Source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source"/>
+    <PATHPAS value=".;..\Source"/>
     <PATHRC value=".;"/>
     <PATHASM value=".;"/>
     <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
     <RELEASELIBPATH value="$(BCB)\lib\release"/>
     <LINKER value="ilink32"/>
-    <USERDEFINES value="_DEBUG"/>
+    <USERDEFINES value=""/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
-    <MAINSOURCE value="jvcl200_D60C.cpp"/>
+    <MAINSOURCE value="JVCL200_D60C.cpp"/>
     <INCLUDEPATH value="..\Source;$(BCB)\Projects;$(BCB)\include;$(BCB)\include\vcl;..\common"/>
     <LIBPATH value="$(BCB)\Projects\Lib;..\Source;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Projects;..\lib6"/>
     <WARNINGS value="-w-par"/>
@@ -74,14 +74,13 @@
   </MACROS>
   <OPTIONS>
     <IDLCFLAGS value="-I..\Source -I$(BCB)\Projects -I$(BCB)\include -I$(BCB)\include\vcl 
-      -I..\common -src_suffix cpp -D_DEBUG -boa"/>
-    <CFLAG1 value="-Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
-      -tWM"/>
-    <PFLAGS value="-N2..\lib6 -N0..\lib6 -$YD -$W -$O- -$A8 -v -JPHNE -M -LUdesignide 
+      -I..\common -src_suffix cpp -boa"/>
+    <CFLAG1 value="-O2 -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -a8 -b- -k- -vi -c -tWM"/>
+    <PFLAGS value="-N2..\lib6 -N0..\lib6 -$Y- -$L- -$D- -$A8 -v -JPHNE -M -LUdesignide 
       -LUdclstd -LUdcldb"/>
     <RFLAGS value=""/>
-    <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-I..\lib6 -D&quot;JEDI-VCL Components&quot; -aa -Tpp -Gpd -x -Gn -Gl -Gi -v"/>
+    <AFLAGS value="/mx /w2 /zn"/>
+    <LFLAGS value="-I..\lib6 -D&quot;JEDI-VCL Components&quot; -aa -Tpp -Gpd -x -Gn -Gl -Gi"/>
     <OTHERFILES value=""/>
   </OPTIONS>
   <LINKER>
@@ -92,8 +91,8 @@
   </LINKER>
   <FILELIST>
       <FILE FILENAME="jvcl200_D60C.res" FORMNAME="" UNITNAME="jvcl200_D60C.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="jvcl200_D60C.cpp" FORMNAME="" UNITNAME="jvcl200_D60C" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="JVCL200_D60C.cpp" FORMNAME="" UNITNAME="jvcl200_D60C" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\source\rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\Source\JvaDBReg.pas" FORMNAME="" UNITNAME="JvaDBReg" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\Source\JvaCtlReg.pas" FORMNAME="" UNITNAME="JvaCtlReg" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\Source\JvIDEZoom.pas" FORMNAME="" UNITNAME="JvIDEZoom" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -156,20 +155,21 @@
       <FILE FILENAME="..\source\ScheduleEditor.pas" FORMNAME="frmScheduleEditor" UNITNAME="ScheduleEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvTransLEDReg.pas" FORMNAME="" UNITNAME="JvTransLedReg" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvJVCLAboutProperty.pas" FORMNAME="" UNITNAME="JvJVCLAboutProperty" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="designide.bpi" FORMNAME="" UNITNAME="designide" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="vclx.bpi" FORMNAME="" UNITNAME="vclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="visualclx.bpi" FORMNAME="" UNITNAME="visualclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="dbrtl.bpi" FORMNAME="" UNITNAME="dbrtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="dcldb.bpi" FORMNAME="" UNITNAME="dcldb" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="designdgm.bpi" FORMNAME="" UNITNAME="designdgm" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="dclstd.bpi" FORMNAME="" UNITNAME="dclstd" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="vcldb.bpi" FORMNAME="" UNITNAME="vcldb" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="bdertl.bpi" FORMNAME="" UNITNAME="bdertl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="CJCL60.bpi" FORMNAME="" UNITNAME="CJCL60" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="vcljpg.bpi" FORMNAME="" UNITNAME="vcljpg" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="bcbsmp.bpi" FORMNAME="" UNITNAME="bcbsmp" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="bcbie.bpi" FORMNAME="" UNITNAME="bcbie" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\source\designide.bpi" FORMNAME="" UNITNAME="designide" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\source\vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\source\vclx.bpi" FORMNAME="" UNITNAME="vclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\source\visualclx.bpi" FORMNAME="" UNITNAME="visualclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\source\dbrtl.bpi" FORMNAME="" UNITNAME="dbrtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\source\dcldb.bpi" FORMNAME="" UNITNAME="dcldb" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\source\designdgm.bpi" FORMNAME="" UNITNAME="designdgm" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\source\dclstd.bpi" FORMNAME="" UNITNAME="dclstd" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\source\vcldb.bpi" FORMNAME="" UNITNAME="vcldb" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\source\bdertl.bpi" FORMNAME="" UNITNAME="bdertl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\source\CJCL60.bpi" FORMNAME="" UNITNAME="CJCL60" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\source\vcljpg.bpi" FORMNAME="" UNITNAME="vcljpg" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\source\bcbsmp.bpi" FORMNAME="" UNITNAME="bcbsmp" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\source\bcbie.bpi" FORMNAME="" UNITNAME="bcbie" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\source\JvxDConst.pas" FORMNAME="" UNITNAME="JvxDConst" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>
@@ -187,8 +187,8 @@ PreRelease=0
 Special=0
 Private=0
 DLL=0
-Locale=2052
-CodePage=936
+Locale=1033
+CodePage=1252
 
 [Version Info Keys]
 CompanyName=
@@ -200,7 +200,6 @@ LegalTrademarks=
 OriginalFilename=
 ProductName=
 ProductVersion=1.0.0.0
-Comments=
 
 [HistoryLists\hlIncludePath]
 Count=2

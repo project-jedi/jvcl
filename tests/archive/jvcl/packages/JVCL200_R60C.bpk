@@ -23,28 +23,28 @@
       ..\lib6\JvCpuUsage.obj ..\lib6\JvDataEmbedded.obj 
       ..\lib6\JvDateTimePicker.obj ..\lib6\JvDBDateTimePicker.obj 
       ..\lib6\JvDeleteError.obj ..\lib6\JvDeviceChanged.obj 
-      ..\lib6\JvDirectories.obj ..\lib6\JvDisconnectNetwork.obj 
-      ..\lib6\JvDiskPrompt.obj ..\lib6\JvDragDrop.obj ..\lib6\JvDrawGrid.obj 
-      ..\lib6\JvEasterEgg.obj ..\lib6\JvEdit.obj ..\lib6\JvFavoritesButton.obj 
-      ..\lib6\JvFloatEdit.obj ..\lib6\JvFormAlarms.obj 
-      ..\lib6\JvFormAnimatedIcon.obj ..\lib6\JvFormAnimation.obj 
-      ..\lib6\JvFormImage.obj ..\lib6\JvFormLogin.obj ..\lib6\JvFormParser.obj 
-      ..\lib6\JvFormPass.obj ..\lib6\JvFormPatch.obj ..\lib6\JvFormPlace.obj 
-      ..\lib6\JvFormSerial.obj ..\lib6\JvFormToHtml.obj 
-      ..\lib6\JvFormWallpaper.obj ..\lib6\JvFormWallpaperEdit.obj 
-      ..\lib6\JvFtpGrabber.obj ..\lib6\JvFunctions.obj ..\lib6\JvGammaPanel.obj 
-      ..\lib6\JvGenetic.obj ..\lib6\JvGradient.obj ..\lib6\JvGradientCaption.obj 
+      ..\lib6\JvDirectories.obj ..\lib6\JvDiskPrompt.obj ..\lib6\JvDragDrop.obj 
+      ..\lib6\JvDrawGrid.obj ..\lib6\JvEasterEgg.obj ..\lib6\JvEdit.obj 
+      ..\lib6\JvFavoritesButton.obj ..\lib6\JvFloatEdit.obj 
+      ..\lib6\JvFormAlarms.obj ..\lib6\JvFormAnimatedIcon.obj 
+      ..\lib6\JvFormAnimation.obj ..\lib6\JvFormImage.obj 
+      ..\lib6\JvFormLogin.obj ..\lib6\JvFormParser.obj ..\lib6\JvFormPass.obj 
+      ..\lib6\JvFormPatch.obj ..\lib6\JvFormPlace.obj ..\lib6\JvFormSerial.obj 
+      ..\lib6\JvFormToHtml.obj ..\lib6\JvFormWallpaper.obj 
+      ..\lib6\JvFormWallpaperEdit.obj ..\lib6\JvFtpGrabber.obj 
+      ..\lib6\JvFunctions.obj ..\lib6\JvGammaPanel.obj ..\lib6\JvGenetic.obj 
+      ..\lib6\JvGradient.obj ..\lib6\JvGradientCaption.obj 
       ..\lib6\JvHeaderControl.obj ..\lib6\JvHotKey.obj ..\lib6\JvHotLink.obj 
-      ..\lib6\JvHRas32.obj ..\lib6\JvHtmlParser.obj ..\lib6\JvHttpGrabber.obj 
-      ..\lib6\JvHWinamp.obj ..\lib6\JvId3v1.obj ..\lib6\JvId3v2.obj 
-      ..\lib6\JvId3v2Types.obj ..\lib6\JvImage.obj ..\lib6\JvImageDlg.obj 
-      ..\lib6\JvImageRotate.obj ..\lib6\JvImageTransform.obj 
-      ..\lib6\JvItemsSearchs.obj ..\lib6\JvJoystick.obj 
-      ..\lib6\JvKeyboardStates.obj ..\lib6\JvLabel.obj ..\lib6\JvListBox.obj 
-      ..\lib6\JvListView.obj ..\lib6\JvMagnet.obj ..\lib6\JvMaskEdit.obj 
-      ..\lib6\JvMaxPixel.obj ..\lib6\JvMemo.obj ..\lib6\JvMemoryInfos.obj 
-      ..\lib6\JvMonthCalendar.obj ..\lib6\JvMousePositionner.obj 
-      ..\lib6\JvMru.obj ..\lib6\JvMultiHttpGrabber.obj ..\lib6\JvNagScreen.obj 
+      ..\lib6\JvHtmlParser.obj ..\lib6\JvHttpGrabber.obj ..\lib6\JvId3v1.obj 
+      ..\lib6\JvId3v2.obj ..\lib6\JvId3v2Types.obj ..\lib6\JvImage.obj 
+      ..\lib6\JvImageDlg.obj ..\lib6\JvImageRotate.obj 
+      ..\lib6\JvImageTransform.obj ..\lib6\JvItemsSearchs.obj 
+      ..\lib6\JvJoystick.obj ..\lib6\JvKeyboardStates.obj ..\lib6\JvLabel.obj 
+      ..\lib6\JvListBox.obj ..\lib6\JvListView.obj ..\lib6\JvMagnet.obj 
+      ..\lib6\JvMaskEdit.obj ..\lib6\JvMaxPixel.obj ..\lib6\JvMemo.obj 
+      ..\lib6\JvMemoryInfos.obj ..\lib6\JvMonthCalendar.obj 
+      ..\lib6\JvMousePositionner.obj ..\lib6\JvMru.obj 
+      ..\lib6\JvMultiHttpGrabber.obj ..\lib6\JvNagScreen.obj 
       ..\lib6\JvPageScroller.obj ..\lib6\JvPanel.obj ..\lib6\JvPasswordForm.obj 
       ..\lib6\JvPatchFile.obj ..\lib6\JvPcx.obj ..\lib6\JvPerforated.obj 
       ..\lib6\JvPlaylist.obj ..\lib6\JvPrint.obj ..\lib6\JvProgressBar.obj 
@@ -77,10 +77,10 @@
       ..\lib6\JvWinHelp.obj ..\lib6\JvXorCipher.obj ..\lib6\JvZoom.obj 
       ..\lib6\JvBMPListBox.obj ..\lib6\JvButtonDrawGrid.obj 
       ..\lib6\JvCoupler.obj ..\lib6\JvHighlighter.obj ..\lib6\JvMLButton.obj 
-      ..\lib6\JvMultilineListbox.obj ..\lib6\JvMultiselectChecklistbox.obj 
-      ..\lib6\JvOneSizeFitsAllButton.obj ..\lib6\JvGroupBox.obj 
-      ..\lib6\JvReorderListBox.obj ..\lib6\JvSyncSplitter.obj 
-      ..\lib6\JvPopupMemo.obj ..\lib6\JvSizeablePanel.obj ..\lib6\JvSpacer.obj 
+      ..\lib6\JvMultilineListbox.obj ..\lib6\JvOneSizeFitsAllButton.obj 
+      ..\lib6\JvGroupBox.obj ..\lib6\JvReorderListBox.obj 
+      ..\lib6\JvSyncSplitter.obj ..\lib6\JvPopupMemo.obj 
+      ..\lib6\JvSizeablePanel.obj ..\lib6\JvSpacer.obj 
       ..\lib6\JvTransparentPanel.obj ..\lib6\JvMousePanel.obj 
       ..\lib6\JvObserverLabel.obj ..\lib6\JvObservibleCheckBox.obj 
       ..\lib6\JvMouseTimerU.obj ..\lib6\JvObserverMessages.obj 
@@ -97,16 +97,15 @@
       ..\lib6\JvAppInfo.obj ..\lib6\JvCalendar.obj ..\lib6\JvChangeNotify.obj 
       ..\lib6\JvCntScr.obj ..\lib6\JvCmdEdit.obj ..\lib6\JvEnterTab.obj 
       ..\lib6\JvFileInfo.obj ..\lib6\JvFindFiles.obj ..\lib6\JvAppHotKey.obj 
-      ..\lib6\JvSHFmt.obj ..\lib6\JvUCB.obj ..\lib6\JvFindReplace.obj 
-      ..\lib6\JvImageWindow.obj ..\lib6\JvInstallLabel.obj 
-      ..\lib6\JvItemsPanel.obj ..\lib6\JvListComb.obj ..\lib6\JvLookOut.obj 
-      ..\lib6\JvProfiler32.obj ..\lib6\JvRegTV.obj ..\lib6\JvRollOut.obj 
-      ..\lib6\JvScrollPanel.obj ..\lib6\JvSearchFiles.obj ..\lib6\JvSHFileOp.obj 
-      ..\lib6\JvTimeLine.obj ..\lib6\JvTransBtn.obj ..\lib6\JvTransBtn2.obj 
-      ..\lib6\JvDriveCtrls.obj ..\lib6\JvOLBar.obj ..\lib6\JvTMTL.obj 
-      ..\lib6\JvColorForm.obj ..\lib6\JvArrow.obj ..\lib6\JvTypedEdit.obj 
-      ..\lib6\JvTranslator.obj ..\lib6\JvSimpleXml.obj ..\lib6\JvHotkeyEx.obj 
-      ..\lib6\JvObjSel.obj ..\lib6\JvObjPickerComp.obj 
+      ..\lib6\JvUCB.obj ..\lib6\JvFindReplace.obj ..\lib6\JvImageWindow.obj 
+      ..\lib6\JvInstallLabel.obj ..\lib6\JvItemsPanel.obj ..\lib6\JvListComb.obj 
+      ..\lib6\JvLookOut.obj ..\lib6\JvProfiler32.obj ..\lib6\JvRegTV.obj 
+      ..\lib6\JvRollOut.obj ..\lib6\JvScrollPanel.obj ..\lib6\JvSearchFiles.obj 
+      ..\lib6\JvSHFileOp.obj ..\lib6\JvTimeLine.obj ..\lib6\JvTransBtn.obj 
+      ..\lib6\JvTransBtn2.obj ..\lib6\JvDriveCtrls.obj ..\lib6\JvOLBar.obj 
+      ..\lib6\JvTMTL.obj ..\lib6\JvColorForm.obj ..\lib6\JvArrow.obj 
+      ..\lib6\JvTypedEdit.obj ..\lib6\JvTranslator.obj ..\lib6\JvSimpleXml.obj 
+      ..\lib6\JvHotkeyEx.obj ..\lib6\JvObjPickerComp.obj 
       ..\lib6\JvImageDrawThread.obj ..\lib6\JvInspector.obj ..\lib6\JvInspDB.obj 
       ..\lib6\JvHidControllerClass.obj ..\lib6\JvAnalogClock.obj 
       ..\lib6\JvxCtrls.obj ..\lib6\JvGrids.obj ..\lib6\JvCurrEdit.obj 
@@ -115,27 +114,27 @@
       ..\lib6\JvSpin.obj ..\lib6\JvRichEd.obj ..\lib6\JvSwitch.obj 
       ..\lib6\JvDice.obj ..\lib6\JvVCLUtils.obj ..\lib6\JvAniFile.obj 
       ..\lib6\JvIcoList.obj ..\lib6\JvObjStr.obj ..\lib6\JvPickDate.obj 
-      ..\lib6\JvMaxMin.obj ..\lib6\JvConst.obj ..\lib6\JvAppUtils.obj 
-      ..\lib6\JvStrUtils.obj ..\lib6\JvFileUtil.obj ..\lib6\JvTimer.obj 
-      ..\lib6\JvHook.obj ..\lib6\JvPlacemnt.obj ..\lib6\JvProps.obj 
-      ..\lib6\JvPrgrss.obj ..\lib6\JvHints.obj ..\lib6\JvCalc.obj 
-      ..\lib6\JvExcptDlg.obj ..\lib6\JvBoxProcs.obj ..\lib6\JvClipIcon.obj 
-      ..\lib6\JvClipMon.obj ..\lib6\JvParsing.obj ..\lib6\JvGraph.obj 
-      ..\lib6\JvGIF.obj ..\lib6\JvGIFCtrl.obj ..\lib6\JvPicClip.obj 
-      ..\lib6\JvDualList.obj ..\lib6\JvFDualLst.obj ..\lib6\JvClipView.obj 
-      ..\lib6\JvSpeedbar.obj ..\lib6\JvSbSetup.obj ..\lib6\JvPageMngr.obj 
-      ..\lib6\JvMrgMngr.obj ..\lib6\JvStrHlder.obj ..\lib6\JvAppEvent.obj 
-      ..\lib6\JvTimerLst.obj ..\lib6\JvMRUList.obj ..\lib6\JvIni.obj 
-      ..\lib6\JvMenus.obj ..\lib6\JvNotify.obj ..\lib6\JvGrdCpt.obj 
-      ..\lib6\JvSplshWnd.obj ..\lib6\JvDataConv.obj ..\lib6\JvOle2Auto.obj 
-      ..\lib6\JvVerInf.obj ..\lib6\JvDBCtrl.obj ..\lib6\JvLookup.obj 
-      ..\lib6\JvxLogin.obj ..\lib6\JvDBUtils.obj ..\lib6\JvDBComb.obj 
-      ..\lib6\JvDBRichEd.obj ..\lib6\JvMemDS.obj ..\lib6\JvDBQBE.obj 
-      ..\lib6\JvDBFilter.obj ..\lib6\JvDBLists.obj ..\lib6\JvDBIndex.obj 
-      ..\lib6\JvDBPrgrss.obj ..\lib6\JvxLoginDlg.obj ..\lib6\JvDBSecur.obj 
-      ..\lib6\JvRemLog.obj ..\lib6\JvChPswDlg.obj ..\lib6\JvBdeUtils.obj 
-      ..\lib6\JvQuery.obj ..\lib6\JvMemTable.obj ..\lib6\JvDBExcpt.obj 
-      ..\lib6\JvFormProgress.obj ..\lib6\JvRadioCtl.obj ..\lib6\JvThumbImage.obj 
+      ..\lib6\JvConst.obj ..\lib6\JvAppUtils.obj ..\lib6\JvStrUtils.obj 
+      ..\lib6\JvFileUtil.obj ..\lib6\JvTimer.obj ..\lib6\JvHook.obj 
+      ..\lib6\JvPlacemnt.obj ..\lib6\JvProps.obj ..\lib6\JvPrgrss.obj 
+      ..\lib6\JvHints.obj ..\lib6\JvCalc.obj ..\lib6\JvExcptDlg.obj 
+      ..\lib6\JvBoxProcs.obj ..\lib6\JvClipIcon.obj ..\lib6\JvClipMon.obj 
+      ..\lib6\JvParsing.obj ..\lib6\JvGraph.obj ..\lib6\JvGIF.obj 
+      ..\lib6\JvGIFCtrl.obj ..\lib6\JvPicClip.obj ..\lib6\JvDualList.obj 
+      ..\lib6\JvFDualLst.obj ..\lib6\JvClipView.obj ..\lib6\JvSpeedbar.obj 
+      ..\lib6\JvSbSetup.obj ..\lib6\JvPageMngr.obj ..\lib6\JvMrgMngr.obj 
+      ..\lib6\JvStrHlder.obj ..\lib6\JvAppEvent.obj ..\lib6\JvTimerLst.obj 
+      ..\lib6\JvMRUList.obj ..\lib6\JvIni.obj ..\lib6\JvMenus.obj 
+      ..\lib6\JvNotify.obj ..\lib6\JvGrdCpt.obj ..\lib6\JvSplshWnd.obj 
+      ..\lib6\JvDataConv.obj ..\lib6\JvOle2Auto.obj ..\lib6\JvVerInf.obj 
+      ..\lib6\JvDBCtrl.obj ..\lib6\JvLookup.obj ..\lib6\JvxLogin.obj 
+      ..\lib6\JvDBUtils.obj ..\lib6\JvDBComb.obj ..\lib6\JvDBRichEd.obj 
+      ..\lib6\JvMemDS.obj ..\lib6\JvDBQBE.obj ..\lib6\JvDBFilter.obj 
+      ..\lib6\JvDBLists.obj ..\lib6\JvDBIndex.obj ..\lib6\JvDBPrgrss.obj 
+      ..\lib6\JvxLoginDlg.obj ..\lib6\JvDBSecur.obj ..\lib6\JvRemLog.obj 
+      ..\lib6\JvChPswDlg.obj ..\lib6\JvBdeUtils.obj ..\lib6\JvQuery.obj 
+      ..\lib6\JvMemTable.obj ..\lib6\JvDBExcpt.obj ..\lib6\JvFormProgress.obj 
+      ..\lib6\JvRadioCtl.obj ..\lib6\JvThumbImage.obj 
       ..\lib6\JvBaseThumbnail.obj ..\lib6\JvThumbnails.obj 
       ..\lib6\JvThumbViews.obj ..\lib6\JvMovableBevel.obj 
       ..\lib6\JvDBSpinEdit.obj ..\lib6\JvDSADialogs.obj ..\lib6\JvBandForms.obj 
@@ -163,12 +162,13 @@
       ..\lib6\JvInterpreter_Contnrs.obj ..\lib6\JvInterpreter_JvUtils.obj 
       ..\lib6\JvUtils.obj ..\lib6\JvInterpreter_JvInterpreter.obj 
       ..\lib6\JvNTEventLog.obj ..\lib6\JvGroupHeader.obj ..\lib6\JvFooter.obj 
-      ..\lib6\JvPlugin.obj ..\lib6\JvPluginMan.obj ..\lib6\JvPlugCommon.obj 
-      ..\lib6\JvDatePickerEdit.obj ..\lib6\JvCheckedMaskEdit.obj 
-      ..\lib6\JvDropDownForm.obj ..\lib6\JvDBDatePickerEdit.obj 
-      ..\lib6\JvScheduledEvents.obj ..\lib6\JvSchedEvtStore.obj 
-      ..\source\JvShellHook.obj ..\lib6\JvWndProcHook.obj ..\lib6\JvxRConst.obj 
-      ..\lib6\JvTransLED.obj ..\lib6\JvJVCLAbout.obj"/>
+      ..\lib6\JvPlugin.obj ..\lib6\JvPluginMan.obj ..\lib6\JvDatePickerEdit.obj 
+      ..\lib6\JvCheckedMaskEdit.obj ..\lib6\JvDropDownForm.obj 
+      ..\lib6\JvDBDatePickerEdit.obj ..\lib6\JvScheduledEvents.obj 
+      ..\lib6\JvSchedEvtStore.obj ..\lib6\JvShellHook.obj 
+      ..\lib6\JvWndProcHook.obj ..\lib6\JvxRConst.obj ..\lib6\JvTransLED.obj 
+      ..\lib6\JvJVCLAbout.obj ..\lib6\JvCaret.obj ..\lib6\ObjSel.obj 
+      ..\lib6\Ras32.obj ..\lib6\Winamp.obj"/>
     <RESFILES value="jvcl200_R60C.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -195,13 +195,13 @@
     <PACKAGES value="rtl.bpi vcl.bpi vclx.bpi vcljpg.bpi inet.bpi vcldb.bpi bdertl.bpi qrpt.bpi 
       CJCL60.bpi vclsmp.bpi dbrtl.bpi bcbsmp.bpi bcbie.bpi"/>
     <PATHCPP value=".;"/>
-    <PATHPAS value=".;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\Source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source;..\source"/>
+    <PATHPAS value=".;..\source;..\common"/>
     <PATHRC value=".;"/>
     <PATHASM value=".;"/>
     <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
     <RELEASELIBPATH value="$(BCB)\lib\release"/>
     <LINKER value="ilink32"/>
-    <USERDEFINES value="_DEBUG"/>
+    <USERDEFINES value=""/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JVCL200_R60C.cpp"/>
     <INCLUDEPATH value="..\source;&quot;C:\Program Files\Borland\CBuilder6\Projects&quot;;$(BCB)\include;$(BCB)\include\vcl;..\common"/>
@@ -211,14 +211,13 @@
   </MACROS>
   <OPTIONS>
     <IDLCFLAGS value="-I..\source -I&quot;C:\Program Files\Borland\CBuilder6\Projects&quot; 
-      -I$(BCB)\include -I$(BCB)\include\vcl -I..\common -src_suffix cpp -D_DEBUG 
-      -boa"/>
-    <CFLAG1 value="-Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
-      -tWM"/>
-    <PFLAGS value="-N2..\lib6 -N0..\lib6 -$YD -$W -$O- -$A8 -v -JPHNE -M -LUvcl"/>
+      -I$(BCB)\include -I$(BCB)\include\vcl -I..\common -src_suffix cpp -boa"/>
+    <CFLAG1 value="-O2 -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -a8 -b- -k- -vi -c -tWM"/>
+    <PFLAGS value="-N2..\lib6 -N0..\lib6 -$Y- -$L- -$D- -$A8 -v -JPHNE -M -LUvcl"/>
     <RFLAGS value=""/>
-    <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-I..\lib6 -D&quot;&quot; -aa -Tpp -Gpr -x -Gn -Gl -Gi -v"/>
+    <AFLAGS value="/mx /w2 /zn"/>
+    <LFLAGS value="-I..\lib6 -D&quot;Runtime support package for JEDI VCL&quot; -aa -Tpp -Gpr -x -Gn 
+      -Gl -Gi"/>
     <OTHERFILES value=""/>
   </OPTIONS>
   <LINKER>
@@ -277,7 +276,6 @@
       <FILE FILENAME="..\source\JvDeleteError.pas" FORMNAME="" UNITNAME="JvDeleteError" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvDeviceChanged.pas" FORMNAME="" UNITNAME="JvDeviceChanged" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvDirectories.pas" FORMNAME="" UNITNAME="JvDirectories" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\JvDisconnectNetwork.pas" FORMNAME="" UNITNAME="JvDisconnectNetwork" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvDiskPrompt.pas" FORMNAME="" UNITNAME="JvDiskPrompt" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvDragDrop.pas" FORMNAME="" UNITNAME="JvDragDrop" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvDrawGrid.pas" FORMNAME="" UNITNAME="JvDrawGrid" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -307,10 +305,8 @@
       <FILE FILENAME="..\source\JvHeaderControl.pas" FORMNAME="" UNITNAME="JvHeaderControl" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvHotKey.pas" FORMNAME="" UNITNAME="JvHotKey" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvHotLink.pas" FORMNAME="" UNITNAME="JvHotLink" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\JvHRas32.pas" FORMNAME="" UNITNAME="JvHRas32" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvHtmlParser.pas" FORMNAME="" UNITNAME="JvHtmlParser" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvHttpGrabber.pas" FORMNAME="" UNITNAME="JvHttpGrabber" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\JvHWinamp.pas" FORMNAME="" UNITNAME="JvHWinamp" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvId3v1.pas" FORMNAME="" UNITNAME="JvId3v1" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvId3v2.pas" FORMNAME="" UNITNAME="JvId3v2" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvId3v2Types.pas" FORMNAME="" UNITNAME="JvId3v2Types" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -412,7 +408,6 @@
       <FILE FILENAME="..\source\JvHighlighter.pas" FORMNAME="" UNITNAME="JvHighlighter" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvMLButton.pas" FORMNAME="" UNITNAME="JvMLButton" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvMultilineListbox.pas" FORMNAME="" UNITNAME="JvMultilineListbox" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\JvMultiselectChecklistbox.pas" FORMNAME="" UNITNAME="JvMultiselectChecklistbox" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvOneSizeFitsAllButton.pas" FORMNAME="" UNITNAME="JvOneSizeFitsAllButton" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvGroupBox.pas" FORMNAME="" UNITNAME="JvGroupBox" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvReorderListBox.pas" FORMNAME="" UNITNAME="JvReorderListBox" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -461,7 +456,6 @@
       <FILE FILENAME="..\source\JvFileInfo.pas" FORMNAME="" UNITNAME="JvFileInfo" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvFindFiles.pas" FORMNAME="" UNITNAME="JvFindFiles" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvAppHotKey.pas" FORMNAME="" UNITNAME="JvAppHotKey" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\JvSHFmt.pas" FORMNAME="" UNITNAME="JvSHFmt" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvUCB.pas" FORMNAME="" UNITNAME="JvUCB" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvFindReplace.pas" FORMNAME="" UNITNAME="JvFindReplace" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvImageWindow.pas" FORMNAME="" UNITNAME="JvImageWindow" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -487,7 +481,6 @@
       <FILE FILENAME="..\source\JvTranslator.pas" FORMNAME="" UNITNAME="JvTranslator" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvSimpleXml.pas" FORMNAME="" UNITNAME="JvSimpleXml" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvHotkeyEx.pas" FORMNAME="" UNITNAME="JvHotkeyEx" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\JvObjSel.pas" FORMNAME="" UNITNAME="JvObjSel" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvObjPickerComp.pas" FORMNAME="" UNITNAME="JvObjPickerComp" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvImageDrawThread.pas" FORMNAME="" UNITNAME="JvImageDrawThread" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvInspector.pas" FORMNAME="" UNITNAME="JvInspector" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -512,7 +505,6 @@
       <FILE FILENAME="..\source\JvIcoList.pas" FORMNAME="" UNITNAME="JvIcoList" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvObjStr.pas" FORMNAME="" UNITNAME="JvObjStr" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvPickDate.pas" FORMNAME="" UNITNAME="JvPickDate" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\JvMaxMin.pas" FORMNAME="" UNITNAME="JvMaxMin" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvConst.pas" FORMNAME="" UNITNAME="JvConst" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvAppUtils.pas" FORMNAME="" UNITNAME="JvAppUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvStrUtils.pas" FORMNAME="" UNITNAME="JvStrUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -639,7 +631,6 @@
       <FILE FILENAME="..\source\JvFooter.pas" FORMNAME="" UNITNAME="JvFooter" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvPlugin.pas" FORMNAME="" UNITNAME="JvPlugin" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvPluginMan.pas" FORMNAME="" UNITNAME="JvPluginMan" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\JvPlugCommon.pas" FORMNAME="" UNITNAME="JvPlugCommon" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvDatePickerEdit.pas" FORMNAME="" UNITNAME="JvDatePickerEdit" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvCheckedMaskEdit.pas" FORMNAME="" UNITNAME="JvCheckedMaskEdit" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvDropDownForm.pas" FORMNAME="" UNITNAME="JvDropDownForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -661,8 +652,12 @@
       <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Projects\CJCL60.bpi" FORMNAME="" UNITNAME="CJCL60" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="c:\program files\borland\cbuilder6\lib\release\vclsmp.bpi" FORMNAME="" UNITNAME="vclsmp" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="c:\program files\borland\cbuilder6\lib\release\dbrtl.bpi" FORMNAME="" UNITNAME="dbrtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="bcbsmp.bpi" FORMNAME="" UNITNAME="bcbsmp" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="bcbie.bpi" FORMNAME="" UNITNAME="bcbie" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\common\bcbsmp.bpi" FORMNAME="" UNITNAME="bcbsmp" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\common\bcbie.bpi" FORMNAME="" UNITNAME="bcbie" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\source\JvCaret.pas" FORMNAME="" UNITNAME="JvCaret" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\common\ObjSel.pas" FORMNAME="" UNITNAME="ObjSel" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\common\Ras32.pas" FORMNAME="" UNITNAME="Ras32" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\common\Winamp.pas" FORMNAME="" UNITNAME="Winamp" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>
