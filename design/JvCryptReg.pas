@@ -10,14 +10,22 @@ implementation
 uses
   Classes,
   JvConsts, JvVigenereCipher, JvCabFile, JvCaesarCipher, JvGenetic, JvSerialMaker,
-  JvXorCipher, JvZlibMultiple;
+  JvXorCipher
+  {$IFNDEF BCB}
+  , JvZlibMultiple
+  {$ENDIF}
+  ;
 {$R ..\resources\JvCryptReg.dcr}
 
 procedure Register;
 begin
   RegisterComponents(SPaletteEncryptCompress,[
     TJvVigenereCipher, TJvXORCipher, TJvCaesarCipher, TJvGenetic,
-    TJvCABFile, TJvZlibMultiple, TJvSerialMaker
+    TJvCABFile
+    {$IFNDEF BCB}
+    , TJvZlibMultiple
+    {$ENDIF}
+    , TJvSerialMaker
     ]);
 end;
 
