@@ -32,7 +32,17 @@ unit JvBaseDsgnFrame;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs;
+  {$IFDEF MSWINDOWS}
+  Windows, Messages,
+  {$ENDIF MSWINDOWS}
+  SysUtils,
+  {$IFDEF VCL}
+  Graphics, Controls, Forms, Dialogs,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms, QDialogs, 
+  {$ENDIF}
+  Classes;
 
 type
   TfmeJvBaseDesign = class(TFrame)

@@ -32,15 +32,29 @@ unit JvBaseDsgnForm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  {$IFDEF MSWINDOWS}
+  Windows, Messages,
+  {$ENDIF MSWINDOWS}
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Graphics, Controls, Forms, Dialogs,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms, QDialogs,
+  {$ENDIF VisualCLX}
   JvComponent;
 
 type
   TJvBaseDesign = class(TJvForm)
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+  {$IFDEF VCL}
   private
     procedure CMShowingChanged(var Msg: TMessage); message CM_SHOWINGCHANGED;
+  {$ENDIF}
   protected
+  {$IFDEF VisualCLX}
+    procedure ShowingChanged; override;
+  {$ENDIF VisuaLCLX}
     { Determines the key to write the settings to or read from. Generally you don't need to override
       this method.
       Default will return (DELPHIRootKey)\Property Editors\(DesignerFormName)\(ClassName), where
@@ -74,7 +88,9 @@ function GetDesignerForm(CompareFunc: TCompareDsgFunc; const Args: array of cons
 implementation
 
 uses
+  {$IFDEF MSWINDOWS}
   Registry,
+  {$ENDIF MSWINDOWS}
   JvBaseDsgnFrame, JvConsts, JvDsgnConsts;
 
 {$R *.dfm}
@@ -103,7 +119,12 @@ begin
   end
 end;
 
+{$IFDEF VCL}
 procedure TJvBaseDesign.CMShowingChanged(var Msg: TMessage);
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+procedure TJvBaseDesign.ShowingChanged;
+{$ENDIF VisuaLCLX}
 begin
   inherited;
   if not (csDesigning in ComponentState) and AutoStoreSettings then
