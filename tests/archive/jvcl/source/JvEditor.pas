@@ -553,7 +553,7 @@ type
     procedure SetRightMarginColor(Value: TColor);
   protected
     LineAttrs: TLineAttrs;
-    procedure Resize; {$IFDEF Delphi4_Up} override; {$ELSE} dynamic; {$ENDIF COMPILER4_UP}
+    procedure Resize; {$IFDEF COMPILER4_UP} override; {$ELSE} dynamic; {$ENDIF}
     procedure CreateWnd; override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure Loaded; override;
