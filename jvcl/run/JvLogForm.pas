@@ -35,7 +35,7 @@ uses
   Controls, Forms, Dialogs, ComCtrls, ActnList, ImgList, ToolWin,
   {$ENDIF}
   {$IFDEF VisualCLX}
-  QControls, QForms, QDialogs, QComCtrls, QActnList, QImgList{, ToolWin},
+  QControls, QForms, QDialogs, QComCtrls, QActnList, QImgList,
   {$ENDIF}
   SysUtils, Classes;
 
