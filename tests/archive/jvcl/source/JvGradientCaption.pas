@@ -72,6 +72,7 @@ type
     function GetAlignment: TAlignment;
     procedure Setalignment(const Value: TAlignment);
   protected
+    procedure WMSize(var Message: TWMSize); message WM_SIZE;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -91,9 +92,10 @@ type
     property LabelFont: Tfont read GetFont write SetFont;
     property ShowHint: Boolean read FHint write SetHints default False;
     property Gradientstyle: TGradStyle read GetGStyle write SetGstyle;
-    property LabelAlignment: TAlignment read GetAlignment write Setalignment;
+    property LabelAlignment: TAlignment read GetAlignment write SetAlignment;
     property Align;
     property DoubleBuffered;
+    property Visible;
   end;
 
 implementation
@@ -320,6 +322,13 @@ end;
 procedure TJvGradientCaption.Setalignment(const Value: TAlignment);
 begin
   FLabel1.Alignment := Value;
+end;
+{***************************************************}
+
+procedure TJvGradientCaption.WMSize(var Message: TWMSize);
+begin
+  inherited;
+  FLabel1.Width := Message.Width - FLabel1.Left;
 end;
 {***************************************************}
 
