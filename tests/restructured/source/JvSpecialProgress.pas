@@ -43,7 +43,6 @@ type
     FTransparent: Boolean;
     FSolid: Boolean;
     FCentered: Boolean;
-    FSolidBlocks: Boolean;
     FPosition: Integer;
     FMaximum: Integer;
     FStep: Integer;
@@ -176,7 +175,6 @@ begin
   if Transparent then
   begin
     FIsChanged := True;
-    PaintRectangle;
     UpdateBuffer;
   end;
 
@@ -204,7 +202,7 @@ begin
   FSolid := False;
   FTextVisible := False;
   FCentered := False;
-  FSolidBlocks := False;
+  FGradientBlocks := False;
   FStep := 10;
 
   Width := 150;
@@ -242,6 +240,7 @@ end;
 procedure TJvSpecialProgress.Loaded;
 begin
   inherited;
+  UpdateTaille;
   UpdateBuffer;
 end;
 
@@ -267,7 +266,6 @@ begin
     FIsChanged := True;
     UpdateTaille;
     UpdateBuffer;
-    PaintRectangle;
   end;
   if (ClientWidth > 2) and (ClientHeight > 2) then
     BitBlt(Canvas.Handle, 0, 0, ClientWidth, ClientHeight,
@@ -338,7 +336,7 @@ begin
 
     for i := 0 to LBlockCount - 1 do
     begin
-      if FSolidBlocks then
+      if not FGradientBlocks then
       begin
         FBuffer.Canvas.Brush.Color := RGB(Round(Red), Round(Green),
           Round(Blue));
@@ -369,7 +367,7 @@ begin
     end;
     if FLastBlockPartial then
     begin
-      if FSolidBlocks then
+      if not FGradientBlocks then
       begin
         FBuffer.Canvas.Brush.Color := RGB(Round(Red), Round(Green),
           Round(Blue));
@@ -475,10 +473,6 @@ begin
   //    FBuffer.Canvas.Brush.Color := clNone;
   //    FBuffer.Canvas.Brush.Style := bsClear;
   FBuffer.Canvas.TextOut(X, Y, S);
-
-  { It is possible that the text overwrites the border so redraw the border,
-    to be safe }
-  PaintRectangle;
 end;
 
 procedure TJvSpecialProgress.SetCentered(const Value: Boolean);
@@ -501,7 +495,6 @@ begin
     if Transparent then
       Exit;
 
-    PaintRectangle;
     FIsChanged := True;
     UpdateBuffer;
   end;
@@ -535,9 +528,9 @@ end;
 
 procedure TJvSpecialProgress.SetGradientBlocks(const Value: Boolean);
 begin
-  if Value <> FSolidBlocks then
+  if Value <> FGradientBlocks then
   begin
-    FSolidBlocks := Value;
+    FGradientBlocks := Value;
     if not Solid then
     begin
       FIsChanged := True;
@@ -657,7 +650,6 @@ begin
     FTransparent := Value;
 
     FIsChanged := True;
-    PaintRectangle;
     UpdateBuffer;
   end;
 end;
@@ -691,6 +683,7 @@ begin
 
   PaintBackground;
   PaintText;
+  PaintRectangle;
   Repaint;
 end;
 
