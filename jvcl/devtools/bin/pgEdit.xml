@@ -36,6 +36,7 @@
                 $IFDEF that relate to the compiler being used
        PathSep  Indicates which character is to be used as a path separator for 
                 the target. If not specified, this value defaults to "\"
+       IsClx    If set to 1 (True), then the target is a CLX target
 
     Then aliases:
 
@@ -54,15 +55,15 @@
     be available.
   -->
   <models>
-    <model name="JVCL" prefix="Jv" format="%p%n%e%v%t" packages="..\..\packages" incfile="..\..\common\jvcl.inc">
+    <model name="JVCL" prefix="Jv" format="%p%n%e%v%t" clxPrefix="JvQ" packages="..\..\packages" incfile="..\..\common\jvcl.inc">
       <targets>
         <target name="c5"/>
         <target name="c6" pname="c6p" pdir="c6per"/>
         <target name="d5" pname="d5s" pdir="d5std"/>
         <target name="d6" pname="d6p" pdir="d6per"/>
         <target name="d7" pname="d7p" pdir="d7per"/>
-        <target name="d7clx"/>
-        <target name="k3" pathsep="/"/>
+        <target name="d7clx" IsClx="1"/>
+        <target name="k3" pathsep="/" IsClx="1"/>
       </targets>
       <aliases>
         <alias name="Delphi" value="d5,d5s,d6,d6p,d7,d7p,d7clx"/>
@@ -76,7 +77,7 @@
         <alias name="allbutperso" value="c5,c6,d5,d6,d7"/>
       </aliases>
     </model>
-    <Model Name="JCL" format="%e%p%n,%e%p%n%v0" prefix="Jcl" packages="" incfile="">
+    <Model Name="JCL" format="%e%p%n" NoLibSuffixFormat="%e%p%n%v0" prefix="Jcl" packages="" incfile="">
       <targets>
         <target name="c5"/>
         <target name="c6"/>
