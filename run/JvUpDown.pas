@@ -18,20 +18,17 @@ Contributor(s):
 Sebastien Buysse [sbuysse@buypin.com].
 Peter Thörnqvist [peter3@peter3.com] - TJvDomainUpDown
 
-
 Last Modified: 2003-05-30
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  TJvDomainUpDown works just like a TJvUpDown but instead of scrolling
+  a range of integer value, it scrolls a list of strings (as defined by Items)
+
 Known Issues:
 - Can't set Position of TJvDomainUpDown at design-time. SOLVED 2003-05-30
-
-Description:
-
-- TJvDomainUpDown works just like a TJvUpDown but instead of scrolling
-a range of integer value, it scrolls a list of strings (as defined by Items)
-
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
@@ -41,18 +38,19 @@ unit JvUpDown;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
-  ComCtrls, CommCtrl,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  StdCtrls, ComCtrls, CommCtrl,
   JVCLVer;
 
 type
   TJvAlignButton = (abLeft, abRight, abNone);
-  TJvUpDownFormat = (ufInt,ufHex);
+  TJvUpDownFormat = (ufInt, ufHex);
   TJvCustomUpDown = class(TCustomUpDown)
   private
     FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FSaved: TColor;
+    FOver: Boolean;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
@@ -64,10 +62,8 @@ type
     FHotTrack: Boolean;
     FAlignButton: TJvAlignButton;
     FFormat: TJvUpDownFormat;
-    FAcceptsInteger,FFirstTime:boolean;
-    procedure MouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure MouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMParentColorChanged(var Msg: TMessage); message CM_ParentColorChangeD;
+    FAcceptsInteger: Boolean;
+    FFirstTime: Boolean;
     function GetPosition: Integer;
     procedure SetIncrement(const Value: Integer);
     procedure SetMax(const Value: Integer);
@@ -79,53 +75,55 @@ type
     procedure SetAlignButton(const Value: TJvAlignButton);
     procedure SetFormat(const Value: TJvUpDownFormat);
     procedure UndoAutoResizing(Value: TWinControl);
+    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
+    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
+    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
   protected
-    procedure UpdateAssociate;virtual;
+    procedure MouseEnter(AControl: TControl); dynamic;
+    procedure MouseLeave(AControl: TControl); dynamic;
+    procedure ParentColorChanged; dynamic;
+    procedure UpdateAssociate; virtual;
     procedure CreateWnd; override;
     procedure CreateParams(var Params: TCreateParams); override;
-    function AcceptPosition(Value: Integer): Boolean;virtual;
+    function AcceptPosition(Value: Integer): Boolean; virtual;
     function CanChange: Boolean; override;
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
-      override;
-  public
-
-    constructor Create(AOwner: TComponent); override;
-    function AcceptInteger: Boolean;
-  protected
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     property AlignButton: TJvAlignButton read FAlignButton write SetAlignButton default abRight;
+    property Associate: TWinControl read FAssociate write SetAssociate;
+    property Format: TJvUpDownFormat read FFormat write SetFormat default ufInt;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
-    property Format:TJvUpDownFormat read FFormat write SetFormat default ufInt;
+    property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
+    property Increment: Integer read FIncrement write SetIncrement default 1;
+    property Max: Integer read FMax write SetMax default 100;
+    property Min: Integer read FMin write SetMin default 0;
+    property Position: Integer read GetPosition write SetPosition default 0;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-    property Color;
-    property Min: Integer read FMin write SetMin;
-    property Max: Integer read FMax write SetMax default 100;
-    property Increment: Integer read FIncrement write SetIncrement default 1;
-    property Position: Integer read GetPosition write SetPosition;
-    property Associate: TWinControl read FAssociate write SetAssociate;
-    property HotTrack: Boolean read FHotTrack write SetHotTrack default false;
+  public
+    constructor Create(AOwner: TComponent); override;
+    function AcceptInteger: Boolean;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
   TJvCustomDomainUpDown = class(TJvCustomUpDown)
   private
-    FItems: TStrings;
-    FCurrentText:string;
-    function GetText:string;
+    FItems: TStringList;
+    FCurrentText: string;
+    function GetText: string;
+    function GetItems: TStrings;
     procedure SetItems(const Value: TStrings);
     procedure SetText(const Value: string);
   protected
-    procedure DoItemsChange(Sender:TObject);
+    procedure DoItemsChange(Sender: TObject);
     procedure CreateParams(var Params: TCreateParams); override;
-
-    procedure UpdateAssociate;override;
+    procedure UpdateAssociate; override;
     procedure Click(Button: TUDBtnType); override;
-    function AcceptPosition(Value: Integer): Boolean;override;
-    property Thousands default false;
-    property Items:TStrings read FItems write SetItems;
-    property Text:string read GetText write SetText;
+    function AcceptPosition(Value: Integer): Boolean; override;
+    property Thousands default False;
+    property Items: TStrings read GetItems write SetItems;
+    property Text: string read GetText write SetText;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -208,51 +206,82 @@ type
     property OnMouseMove;
     property OnMouseUp;
   end;
-  
+
 implementation
 
 const
-  UDM_SETPOS32 = (WM_USER + 113);
-  UDM_GETPOS32 = (WM_USER + 114);
+  UDM_SETPOS32 = WM_USER + 113;
+  UDM_GETPOS32 = WM_USER + 114;
   UDS_HOTTRACK = $0100;
+
+//=== TJvCustomUpDown ========================================================
 
 constructor TJvCustomUpDown.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FHintColor := clInfoBk;
+  FOver := False;
   FMin := 0;
   FMax := 100;
-  FHintColor := clInfoBk;
-  FHotTrack := false;
+  FPosition := 0;
+  FHotTrack := False;
   FIncrement := 1;
-  // ControlStyle := ControlStyle + [csAcceptsControls];
   FAlignButton := abRight;
   FFormat := ufInt;
-  FFirstTime := true;
+  FFirstTime := True;
+end;
+
+procedure TJvCustomUpDown.CMMouseEnter(var Msg: TMessage);
+begin
+  inherited;
+  MouseEnter(Self);
+end;
+
+procedure TJvCustomUpDown.MouseEnter(AControl: TControl);
+begin
+  // for D7...
+  if csDesigning in ComponentState then
+    Exit;
+  if not FOver then
+  begin
+    FSaved := Application.HintColor;
+    Application.HintColor := FHintColor;
+    FOver := True;
+  end;
+  if Assigned(FOnMouseEnter) then
+    FOnMouseEnter(Self);
+end;
+
+procedure TJvCustomUpDown.CMMouseLeave(var Msg: TMessage);
+begin
+  inherited;
+  MouseLeave(Self);
+end;
+
+procedure TJvCustomUpDown.MouseLeave(AControl: TControl);
+begin
+  // for D7...
+  if csDesigning in ComponentState then
+    Exit;
+  if FOver then
+  begin
+    FOver := False;
+    Application.HintColor := FSaved;
+  end;
+  if Assigned(FOnMouseLeave) then
+    FOnMouseLeave(Self);
 end;
 
 procedure TJvCustomUpDown.CMParentColorChanged(var Msg: TMessage);
 begin
   inherited;
+  ParentColorChanged;
+end;
+
+procedure TJvCustomUpDown.ParentColorChanged;
+begin
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
-end;
-
-procedure TJvCustomUpDown.MouseEnter(var Msg: TMessage);
-begin
-  FSaved := Application.HintColor;
-  // for D7...
-  if csDesigning in ComponentState then
-    Exit;
-  Application.HintColor := FHintColor;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
-end;
-
-procedure TJvCustomUpDown.MouseLeave(var Msg: TMessage);
-begin
-  Application.HintColor := FSaved;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
 end;
 
 function TJvCustomUpDown.GetPosition: Integer;
@@ -318,7 +347,7 @@ begin
           SendMessage(Handle, UDM_SETPOS32, 0, FPosition)
         else
           SendMessage(Handle, UDM_SETPOS, 0, FPosition);
-      END;
+      end;
     end;
   end;
   UpdateAssociate;
@@ -370,9 +399,9 @@ end;
 
 procedure TJvCustomUpDown.CreateWnd;
 const
-  cBase:array[TJvUpDownFormat] of integer = (10,16);
+  cBase: array [TJvUpDownFormat] of Integer = (10, 16);
 var
-  OrigWidth:integer;
+  OrigWidth: Integer;
 begin
   OrigWidth := Width;
   inherited CreateWnd;
@@ -383,7 +412,7 @@ begin
     SendMessage(Handle, UDM_SETBUDDY, FAssociate.Handle, 0);
   end;
   SendMessage(Handle, UDM_SETRANGE32, FMin, FMax);
-  SendMessage(Handle,UDM_SETBASE,cBase[Format],0);
+  SendMessage(Handle, UDM_SETBASE, cBase[Format], 0);
   SetPosition(Position);
   SetAssociate(FAssociate);
   Increment := 1;
@@ -445,28 +474,28 @@ var
   Tmp: DWORD;
   Major, Minor: Integer;
 begin
-  //SETPOS32 are only supported with comctl32.dll version 5.80 or later
+  // SETPOS32 is only supported with comctl32.dll version 5.80 or later
   if FFirstTime then
   begin
-  Result := False;
-  try
-    InfoSize := GetFileVersionInfoSize('comctl32.dll', Tmp);
-    if InfoSize = 0 then
-      Exit;
-    GetMem(Info, InfoSize);
+    Result := False;
     try
-      GetFileVersionInfo('comctl32.dll', 0, InfoSize, Info);
-      VerQueryValue(Info, '\', Pointer(FileInfo), FileInfoSize);
-      Major := FileInfo^.dwFileVersionMS shr 16;
-      Minor := FileInfo^.dwFileVersionMS and $FFFF;
-      Result := (Major > 5) or ((Major = 5) and (Minor > 80));
-    finally
-      FreeMem(Info, FileInfoSize);
+      InfoSize := GetFileVersionInfoSize('comctl32.dll', Tmp);
+      if InfoSize = 0 then
+        Exit;
+      GetMem(Info, InfoSize);
+      try
+        GetFileVersionInfo('comctl32.dll', 0, InfoSize, Info);
+        VerQueryValue(Info, '\', Pointer(FileInfo), FileInfoSize);
+        Major := FileInfo^.dwFileVersionMS shr 16;
+        Minor := FileInfo^.dwFileVersionMS and $FFFF;
+        Result := (Major > 5) or ((Major = 5) and (Minor > 80));
+      finally
+        FreeMem(Info, FileInfoSize);
+      end;
+    except
     end;
-  except
-  end;
     FAcceptsInteger := Result;
-    FFirstTime := false;
+    FFirstTime := False;
   end
   else
     Result := FAcceptsInteger;
@@ -474,12 +503,12 @@ end;
 
 procedure TJvCustomUpDown.SetFormat(const Value: TJvUpDownFormat);
 const
-  cBase:array[TJvUpDownFormat] of integer = (10,16);
+  cBase: array [TJvUpDownFormat] of Integer = (10, 16);
 begin
   if FFormat <> Value then
   begin
     if HandleAllocated then
-      SendMessage(Handle,UDM_SETBASE,cBase[Value],0);
+      SendMessage(Handle, UDM_SETBASE, cBase[Value], 0);
     FFormat := Value;
     UpdateAssociate;
   end;
@@ -490,39 +519,37 @@ begin
   // do nothing
 end;
 
-{ TJvUpDown }
+//=== TJvUpDown ==============================================================
 
 procedure TJvUpDown.UpdateAssociate;
 begin
-  inherited;
-  if (FAssociate is TCustomEdit) then
-  begin
+  inherited UpdateAssociate;
+  if FAssociate is TCustomEdit then
     if Format = ufHex then
-     TCustomEdit(FAssociate).Text := '0x'+ IntToHex(Position,4)
+      TCustomEdit(FAssociate).Text := '0x' + IntToHex(Position, 4)
     else
       TCustomEdit(FAssociate).Text := IntToStr(Position);
-  end;
 end;
 
-{ TJvCustomDomainUpDown }
+//=== TJvCustomDomainUpDown ==================================================
 
 constructor TJvCustomDomainUpDown.Create(AOwner: TComponent);
 begin
-  inherited;
-  FItems := TStringlist.Create;
-  TStringlist(FItems).OnChange := DoItemsChange;
+  inherited Create(AOwner);
+  FItems := TStringList.Create;
+  FItems.OnChange := DoItemsChange;
+end;
+
+destructor TJvCustomDomainUpDown.Destroy;
+begin
+  FItems.Free;
+  inherited Destroy;
 end;
 
 procedure TJvCustomDomainUpDown.CreateParams(var Params: TCreateParams);
 begin
   inherited;
   Params.Style := Params.Style and (not UDS_SETBUDDYINT) or UDS_NOTHOUSANDS;
-end;
-
-destructor TJvCustomDomainUpDown.Destroy;
-begin
-  FItems.Free;
-  inherited;
 end;
 
 procedure TJvCustomDomainUpDown.DoItemsChange(Sender: TObject);
@@ -543,6 +570,11 @@ begin
     Result := FCurrentText;
 end;
 
+function TJvCustomDomainUpDown.GetItems: TStrings;
+begin
+  Result := FItems;
+end;
+
 procedure TJvCustomDomainUpDown.SetItems(const Value: TStrings);
 begin
   FItems.Assign(Value);
@@ -550,10 +582,10 @@ end;
 
 procedure TJvCustomDomainUpDown.UpdateAssociate;
 begin
-  if (FAssociate is TCustomEdit) then
-     TCustomEdit(FAssociate).Text := Text;
+  if FAssociate is TCustomEdit then
+    TCustomEdit(FAssociate).Text := Text;
 //  if (Associate <> nil) and Associate.HandleAllocated then
-//    SendMessage(Associate.Handle, WM_SETTEXT, 0, longint(PChar(Text)));
+//    SendMessage(Associate.Handle, WM_SETTEXT, 0, Longint(PChar(Text)));
 end;
 
 procedure TJvCustomDomainUpDown.SetText(const Value: string);
@@ -564,15 +596,15 @@ end;
 
 procedure TJvCustomDomainUpDown.Click(Button: TUDBtnType);
 begin
-  inherited;
+  inherited Click(Button);
   UpdateAssociate;
 end;
 
 procedure TJvCustomUpDown.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
-  inherited;
-  if (Operation = opRemove) and (AComponent = FAssociate) then
+  inherited Notification(AComponent, Operation);
+  if (Operation = opRemove) and (AComponent = Associate) then
     Associate := nil;
 end;
 
