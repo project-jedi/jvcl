@@ -579,28 +579,10 @@ type
     property PageSize: Cardinal read FPageSize write FPageSize default 0;
   end;
 
-
 implementation
 uses JvUIBConst;
 
 { TJvUIBDataBase }
-
-const
-  CharacterSetStr : array[TCharacterSet] of string = (
-    'NONE', 'ASCII', 'BIG_5', 'CYRL', 'DOS437', 'DOS850', 'DOS852', 'DOS857',
-    'DOS860', 'DOS861', 'DOS863', 'DOS865', 'EUCJ_0208', 'GB_2312', 'ISO8859_1',
-    'ISO8859_2', 'KSC_5601', 'NEXT', 'OCTETS', 'SJIS_0208', 'UNICODE_FSS',
-    'WIN1250', 'WIN1251', 'WIN1252', 'WIN1253', 'WIN1254'
-{$IFDEF FB15_UP}
-    ,'DOS737', 'DOS775', 'DOS858', 'DOS862', 'DOS864', 'DOS866', 'DOS869',
-    'WIN1255', 'WIN1256', 'WIN1257', 'ISO8859_3', 'ISO8859_4', 'ISO8859_5',
-    'ISO8859_6', 'ISO8859_7', 'ISO8859_8', 'ISO8859_9', 'ISO8859_13'
-{$ENDIF}
-{$IFDEF IB71_UP}
-    ,'ISO8859_15', 'KOI8R'
-{$ENDIF}
-
-    );
 
 procedure TJvUIBDataBase.AddTransaction(Transaction: TJvUIBTransaction);
 begin
@@ -1002,8 +984,6 @@ begin
       UnLock;
     end;
   end;
-  if eof then
-    beep;
 end;
 
 procedure TJvUIBStatement.InternalPrior;
