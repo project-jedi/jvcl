@@ -446,7 +446,7 @@ type
     property HelperYears;
     property Hint;
     property Left;
-    property PopUpMenu;
+    property PopupMenu;
     property ParentShowHint;
     property ShowHint;
     property Top;
