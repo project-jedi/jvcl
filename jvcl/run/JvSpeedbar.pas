@@ -35,7 +35,7 @@ uses
   {$IFDEF COMPILER6_UP}
   RTLConsts,
   {$ENDIF}
-  JvSpeedButton, JvAppStore, JvConsts, JvTypes, JvFormPlacement,
+  JvSpeedButton, JvAppStorage, JvConsts, JvTypes, JvFormPlacement,
   JvComponent, JvThemes;
 
 const
@@ -190,8 +190,8 @@ type
     procedure Customize(HelpCtx: THelpContext);
     procedure SaveLayout;
     procedure RestoreLayout;
-    procedure LoadFromAppStore(const AppStorage: TJvCustomAppStore; const Path: string);
-    procedure SaveToAppStore(const AppStorage: TJvCustomAppStore; const Path: string);
+    procedure LoadFromAppStorage(const AppStorage: TJvCustomAppStorage; const Path: string);
+    procedure SaveToAppStorage(const AppStorage: TJvCustomAppStorage; const Path: string);
     procedure Load;
     procedure Save;
     function ItemsCount(Section: Integer): Integer;
@@ -2825,14 +2825,14 @@ end;
 procedure TJvSpeedBar.IniSave(Sender: TObject);
 begin
   if (Name <> '') and IniStorage.IsActive then
-    SaveToAppStore(IniStorage.AppStorage, IniStorage.AppStorage.ConcatPaths([
+    SaveToAppStorage(IniStorage.AppStorage, IniStorage.AppStorage.ConcatPaths([
       IniStorage.AppStoragePath, GetDefaultSection(Self)]));
 end;
 
 procedure TJvSpeedBar.IniLoad(Sender: TObject);
 begin
   if (Name <> '') and IniStorage.IsActive then
-    LoadFromAppStore(IniStorage.AppStorage, IniStorage.AppStorage.ConcatPaths([
+    LoadFromAppStorage(IniStorage.AppStorage, IniStorage.AppStorage.ConcatPaths([
       IniStorage.AppStoragePath, GetDefaultSection(Self)]));
 end;
 
@@ -2850,7 +2850,7 @@ const
 type
   PIniData = ^TIniData;
   TIniData = record
-    AppStore: TJvCustomAppStore;
+    AppStorage: TJvCustomAppStorage;
     I: Integer;
     Path: string;
   end;
@@ -2866,7 +2866,7 @@ begin
   begin
     Inc(PIniData(Data)^.I);
     with PIniData(Data)^ do
-      AppStore.WriteString(AppStore.ConcatPaths([Path, sBtn + IntToStr(I)]),
+      AppStorage.WriteString(AppStorage.ConcatPaths([Path, sBtn + IntToStr(I)]),
       Format('%s,%d,%d', [Item.Name, Item.Left, Item.Top]));
   end;
 end;
@@ -2881,7 +2881,7 @@ begin
   Load;
 end;
 
-procedure TJvSpeedBar.LoadFromAppStore(const AppStorage: TJvCustomAppStore; const Path: string);
+procedure TJvSpeedBar.LoadFromAppStorage(const AppStorage: TJvCustomAppStorage; const Path: string);
 const
   Delims = [' ', ','];
 var
@@ -2947,11 +2947,11 @@ begin
   Repaint;
 end;
 
-procedure TJvSpeedBar.SaveToAppStore(const AppStorage: TJvCustomAppStore; const Path: string);
+procedure TJvSpeedBar.SaveToAppStorage(const AppStorage: TJvCustomAppStorage; const Path: string);
 var
   Data: TIniData;
 begin
-  Data.AppStore := AppStorage;
+  Data.AppStorage := AppStorage;
   Data.Path := Path;
   Data.I := 0;
   AppStorage.DeleteSubTree(Path);

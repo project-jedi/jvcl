@@ -65,8 +65,8 @@ type
     property RemoteServer: TCustomRemoteServer read FRemoteServer write SetRemoteServer;
     property Active;
     property AllowEmptyPassword;
-    property AppStore;
-    property AppStorePath;
+    property AppStorage;
+    property AppStoragePath;
     property AttemptNumber;
     property MaxPasswordLen;
     property UpdateCaption;
@@ -240,14 +240,14 @@ end;
 
 procedure TJvDBRemoteLogin.WriteUserName(const UserName: string);
 begin
-  if Assigned(AppStore) then
-    AppStore.WriteString (AppStore.ConcatPaths([AppStorePath, RsLastLoginUserName]), UserName);
+  if Assigned(AppStorage) then
+    AppStorage.WriteString (AppStorage.ConcatPaths([AppStoragePath, RsLastLoginUserName]), UserName);
 end;
 
 function TJvDBRemoteLogin.ReadUserName(const UserName: string): string;
 begin
-  if Assigned(AppStore) then
-    Result := AppStore.ReadString (AppStore.ConcatPaths([AppStorePath, RsLastLoginUserName]), UserName)
+  if Assigned(AppStorage) then
+    Result := AppStorage.ReadString (AppStorage.ConcatPaths([AppStoragePath, RsLastLoginUserName]), UserName)
   else
     Result := UserName;
 end;

@@ -931,7 +931,7 @@ object ClientAssistant: TClientAssistant
     Top = 296
   end
   object FormStorage: TJvFormStorage
-    AppStorage = MainForm.JvAppRegistryStore
+    AppStorage = MainForm.JvAppRegistryStorage
     AppStoragePath = 'Page Manager\'
     StoredProps.Strings = (
       'DoSearchBtn.Checked'

@@ -90,11 +90,12 @@ initialization
   IntDynControlEngineVCLRed.RegisterControl(jctTimeEdit, TJvDynControlVCLTimeEdit);
   IntDynControlEngineVCLRed.RegisterControl(jctDateEdit, TJvDynControlVCLDateEdit);
   IntDynControlEngineVCLRed.RegisterControl(jctEdit, TJvDynControlVCLMaskEdit);
- //  IntDynControlEngineVCLRed.RegisterControl(jctCalculateEdit, TJvDynControlVCLMaskEdit);
- //  IntDynControlEngineVCLRed.RegisterControl(jctSpinEdit, TJvDynControlVCLMaskEdit);
+//  IntDynControlEngineVCLRed.RegisterControl(jctCalculateEdit, TJvDynControlVCLMaskEdit);
+//  IntDynControlEngineVCLRed.RegisterControl(jctSpinEdit, TJvDynControlVCLMaskEdit);
   IntDynControlEngineVCLRed.RegisterControl(jctDirectoryEdit, TJvDynControlVCLDirectoryEdit);
   IntDynControlEngineVCLRed.RegisterControl(jctFileNameEdit, TJvDynControlVCLFileNameEdit);
   IntDynControlEngineVCLRed.RegisterControl(jctMemo, TJvDynControlVCLMemo);
+  IntDynControlEngineVCLRed.RegisterControl(jctButtonEdit, TJvDynControlVCLButtonEdit);
   SetDefaultDynControlEngine(IntDynControlEngineVCLRed);
 
 finalization

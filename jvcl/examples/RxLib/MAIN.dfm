@@ -623,16 +623,16 @@ object MainForm: TMainForm
     Left = 88
     Top = 88
   end
-  object JvAppRegistryStore: TJvAppRegistryStore
-    StoreOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
-    StoreOptions.BooleanStringFalseValues = 'FALSE, NO, N'
+  object JvAppRegistryStorage: TJvAppRegistryStorage
+    StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
+    StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
     Root = 'Software\JVCL\Examples\JVCL Rx Library Demo'
-    SubStores = <>
+    SubStorages = <>
     Left = 10
     Top = 150
   end
   object JvFormStorage: TJvFormStorage
-    AppStorage = JvAppRegistryStore
+    AppStorage = JvAppRegistryStorage
     AppStoragePath = 'MainForm\'
     StoredValues = <>
     Left = 90

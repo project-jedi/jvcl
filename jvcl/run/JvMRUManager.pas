@@ -31,17 +31,17 @@ interface
 
 uses
   SysUtils, Classes, Menus, 
-  JvAppStore, JvComponent, JvFormPlacement;
+  JvAppStorage, JvComponent, JvFormPlacement;
 
 type
   TJvRecentStrings = class;
 
   TGetItemEvent = procedure(Sender: TObject; var Caption: string;
     var ShortCut: TShortCut; UserData: Longint) of object;
-  TReadItemEvent = procedure(Sender: TObject; AppStorage: TJvCustomAppStore;
+  TReadItemEvent = procedure(Sender: TObject; AppStorage: TJvCustomAppStorage;
     const Path: string; Index: Integer; var RecentName: string;
     var UserData: Longint) of object;
-  TWriteItemEvent = procedure(Sender: TObject; AppStorage: TJvCustomAppStore;
+  TWriteItemEvent = procedure(Sender: TObject; AppStorage: TJvCustomAppStorage;
     const Path: string; Index: Integer; const RecentName: string;
     UserData: Longint) of object;
   TClickMenuEvent = procedure(Sender: TObject; const RecentName,
@@ -98,9 +98,9 @@ type
   protected
     procedure Change; dynamic;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    procedure DoReadItem(AppStorage: TJvCustomAppStore; const Path: string; Index: Integer;
+    procedure DoReadItem(AppStorage: TJvCustomAppStorage; const Path: string; Index: Integer;
       var RecentName: string; var UserData: Longint); dynamic;
-    procedure DoWriteItem(AppStorage: TJvCustomAppStore; const Path: string; Index: Integer;
+    procedure DoWriteItem(AppStorage: TJvCustomAppStorage; const Path: string; Index: Integer;
       const RecentName: string; UserData: Longint); dynamic;
     procedure GetItemData(var Caption: string; var ShortCut: TShortCut;
       UserData: Longint); dynamic;
@@ -116,8 +116,8 @@ type
     procedure Remove(const RecentName: string);
     procedure UpdateRecentMenu;
     procedure RemoveInvalid;
-    procedure LoadFromAppStore(const AppStorage: TJvCustomAppStore; const Path: string);
-    procedure SaveToAppStore(const AppStorage: TJvCustomAppStore; const Path: string);
+    procedure LoadFromAppStorage(const AppStorage: TJvCustomAppStorage; const Path: string);
+    procedure SaveToAppStorage(const AppStorage: TJvCustomAppStorage; const Path: string);
     procedure Load;
     procedure Save;
     property Strings: TStrings read FList;
@@ -484,7 +484,7 @@ begin
     FOnChange(Self);
 end;
 
-procedure TJvMRUManager.DoReadItem(AppStorage: TJvCustomAppStore; const Path: string;
+procedure TJvMRUManager.DoReadItem(AppStorage: TJvCustomAppStorage; const Path: string;
   Index: Integer; var RecentName: string; var UserData: Longint);
 begin
   if Assigned(FOnReadItem) then
@@ -498,7 +498,7 @@ begin
   end;
 end;
 
-procedure TJvMRUManager.DoWriteItem(AppStorage: TJvCustomAppStore; const Path: string;
+procedure TJvMRUManager.DoWriteItem(AppStorage: TJvCustomAppStorage; const Path: string;
   Index: Integer; const RecentName: string; UserData: Longint);
 begin
   if Assigned(FOnWriteItem) then
@@ -520,17 +520,17 @@ procedure TJvMRUManager.InternalLoad(const Section: string);
 begin
   if IniStorage.IsActive then
     with IniStorage do
-      LoadFromAppStore(AppStorage, AppStorage.ConcatPaths([AppStoragePath, Section]));
+      LoadFromAppStorage(AppStorage, AppStorage.ConcatPaths([AppStoragePath, Section]));
 end;
 
 procedure TJvMRUManager.InternalSave(const Section: string);
 begin
   if IniStorage.IsActive then
     with IniStorage do
-      SaveToAppStore(AppStorage, AppStorage.ConcatPaths([AppStoragePath, Section]));
+      SaveToAppStorage(AppStorage, AppStorage.ConcatPaths([AppStoragePath, Section]));
 end;
 
-procedure TJvMRUManager.LoadFromAppStore(const AppStorage: TJvCustomAppStore; const Path: string);
+procedure TJvMRUManager.LoadFromAppStorage(const AppStorage: TJvCustomAppStorage; const Path: string);
 var
   I: Integer;
   S: string;
@@ -556,7 +556,7 @@ begin
   end;
 end;
 
-procedure TJvMRUManager.SaveToAppStore(const AppStorage: TJvCustomAppStore; const Path: string);
+procedure TJvMRUManager.SaveToAppStorage(const AppStorage: TJvCustomAppStorage; const Path: string);
 var
   I: Integer;
 begin

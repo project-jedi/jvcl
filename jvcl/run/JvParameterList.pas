@@ -35,7 +35,7 @@ uses
   Variants,
   {$ENDIF COMPILER6_UP}
   JvTypes, JvDynControlEngine, JvDynControlEngineIntf, jvDsaDialogs,
-  JvComponent, JvPanel, JvPropertyStore, JvAppStore, JvAppStoreSelectList;
+  JvComponent, JvPanel, JvPropertyStore, JvAppStorage, JvAppStorageSelectList;
 
 type
   TJvParameterList = class;
@@ -119,7 +119,7 @@ type
     FSearchName: string;
     FRequired: Boolean;
     FReadOnly: Boolean;
-    FReloadValueFromAppStore: Boolean;
+    FReloadValueFromAppStorage: Boolean;
     FParentParameterName: string;
     FTabOrder: Integer;
     FParameterList: TJvParameterList;
@@ -194,7 +194,7 @@ type
      this value must be defined before inserting into the parameterlist }
     property SearchName: string read FSearchName write FSearchName;
     {should this value be saved by the parameterlist }
-    property ReloadValueFromAppStore: Boolean read FReloadValueFromAppStore write FReloadValueFromAppStore;
+    property ReloadValueFromAppStorage: Boolean read FReloadValueFromAppStorage write FReloadValueFromAppStorage;
     {the searchname of the parentparameter. The parameter must be a
      descent of TJvPanelParameter or TTabControlParamter. If the
      parent parameter is a TJvTabControlParameter, then the ParentParameterName must be
@@ -273,8 +273,8 @@ type
     procedure SetArrangeSettings(Value: TJvArrangeSettings);
     procedure SetPath(Value: string);
     function GetPath: string;
-    function GetAppStore: TJvCustomAppStore;
-    procedure SetAppStore(Value: TJvCustomAppStore);
+    function GeTJvAppStorage: TJvCustomAppStorage;
+    procedure SeTJvAppStorage(Value: TJvCustomAppStorage);
 
     procedure SetDynControlEngine(Value: TJvDynControlEngine);
 
@@ -306,9 +306,9 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
-    { Saves the data of all allowed parameters to the appstore }
+    { Saves the data of all allowed parameters to the AppStorage }
     procedure StoreData;
-    { load the data of all allowed parameters from the appstore }
+    { load the data of all allowed parameters from the AppStorage }
     procedure LoadData;
     {Adds a new Parameter to the parameterlist }
     procedure AddParameter(AParameter: TJvBaseParameter);
@@ -362,7 +362,7 @@ type
   published
     property ArrangeSettings: TJvArrangeSettings read FArrangeSettings write SetArrangeSettings;
     property Messages: TJvParameterListMessages read FMessages;
-    {Path for the Parameter-Storage using AppStore}
+    {Path for the Parameter-Storage using AppStorage}
     property Path: string read GetPath write SetPath;
     {Width of the dialog. When width = 0, then the width will be calculated }
     property Width: Integer read FWidth write FWidth;
@@ -376,18 +376,18 @@ type
     property CancelButtonVisible: Boolean read FCancelButtonVisible write FCancelButtonVisible;
     property HistoryEnabled: Boolean read FHistoryEnabled write FHistoryEnabled;
     property LastHistoryName: string read FLastHistoryName write FLastHistoryName;
-    property AppStore: TJvCustomAppStore read GetAppStore write SetAppStore;
+    property AppStorage: TJvCustomAppStorage read GeTJvAppStorage write SeTJvAppStorage;
   end;
 
-  TJvParameterListSelectList = class(TJvAppStoreSelectList)
+  TJvParameterListSelectList = class(TJvAppStorageSelectList)
   private
     FParameterList: TJvParameterList;
   protected
     function GetDynControlEngine: TJvDynControlEngine; override;
     function GetParameterList: TJvParameterList; virtual;
     procedure SetParameterList(Value: TJvParameterList); virtual;
-    function GetAppStore: TJvCustomAppStore; override;
-    procedure SetAppStore(Value: TJvCustomAppStore); override;
+    function GeTJvAppStorage: TJvCustomAppStorage; override;
+    procedure SeTJvAppStorage(Value: TJvCustomAppStorage); override;
   public
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure RestoreParameterList(ACaption: string = '');
@@ -655,7 +655,7 @@ end;
 constructor TJvBaseParameter.Create(AParameterList: TJvParameterList);
 begin
   inherited Create(AParameterList);
-  FReloadValueFromAppStore := True;
+  FReloadValueFromAppStorage := True;
   FTabOrder := -1;
   FParameterList := AParameterList;
   FWinControl := nil;
@@ -905,7 +905,7 @@ begin
   Height := TJvBaseParameter(Source).Height;
   Required := TJvBaseParameter(Source).Required;
   ParentParameterName := TJvBaseParameter(Source).ParentParameterName;
-  ReloadValueFromAppStore := TJvBaseParameter(Source).ReloadValueFromAppStore;
+  ReloadValueFromAppStorage := TJvBaseParameter(Source).ReloadValueFromAppStorage;
   TabOrder := TJvBaseParameter(Source).TabOrder;
   FParameterList := TJvBaseParameter(Source).ParameterList;
   Color := TJvBaseParameter(Source).Color;
@@ -1022,7 +1022,7 @@ begin
   inherited Assign(Source);
   Messages.Assign(TJvParameterList(Source).Messages);
   ArrangeSettings := TJvParameterList(Source).ArrangeSettings;
-  AppStore := TJvParameterList(Source).AppStore;
+  AppStorage := TJvParameterList(Source).AppStorage;
   Width := TJvParameterList(Source).Width;
   Height := TJvParameterList(Source).Height;
   MaxWidth := TJvParameterList(Source).MaxWidth;
@@ -1037,8 +1037,8 @@ end;
 procedure TJvParameterList.SetPath(Value: string);
 begin
   FParameterListPropertyStore.Path := Value;
-  if Assigned(AppStore) then
-    FParameterListSelectList.SelectPath := AppStore.ConcatPaths([Value, RsHistorySelectPath])
+  if Assigned(AppStorage) then
+    FParameterListSelectList.SelectPath := AppStorage.ConcatPaths([Value, RsHistorySelectPath])
 end;
 
 function TJvParameterList.GetPath: string;
@@ -1046,14 +1046,14 @@ begin
   Result := FParameterListPropertyStore.Path;
 end;
 
-function TJvParameterList.GetAppStore: TJvCustomAppStore;
+function TJvParameterList.GeTJvAppStorage: TJvCustomAppStorage;
 begin
-  Result := FParameterListPropertyStore.AppStore;
+  Result := FParameterListPropertyStore.AppStorage;
 end;
 
-procedure TJvParameterList.SetAppStore(Value: TJvCustomAppStore);
+procedure TJvParameterList.SeTJvAppStorage(Value: TJvCustomAppStorage);
 begin
-  FParameterListPropertyStore.AppStore := Value;
+  FParameterListPropertyStore.AppStorage := Value;
   if Assigned(Value) then
     FParameterListSelectList.SelectPath := Value.ConcatPaths([FParameterListPropertyStore.Path, RsHistorySelectPath])
 end;
@@ -1684,12 +1684,12 @@ begin
     for I := 0 to ParameterList.Count - 1 do
       if not (Parameters[I] is TJvNoDataParameter) then
         with Parameters[I] do
-          if ReloadValueFromAppStore then
+          if ReloadValueFromAppStorage then
             if Parameters[I] is TJvListParameter then
               with TJvListParameter(Parameters[I]) do
-                ItemIndex := AppStore.ReadInteger(AppStore.ConcatPaths([Path, SearchName]), ItemIndex)
+                ItemIndex := AppStorage.ReadInteger(AppStorage.ConcatPaths([Path, SearchName]), ItemIndex)
             else
-              AsString := AppStore.ReadString(AppStore.ConcatPaths([Path, SearchName]), AsString);
+              AsString := AppStorage.ReadString(AppStorage.ConcatPaths([Path, SearchName]), AsString);
 end;
 
 procedure TJvParameterListPropertyStore.StoreData;
@@ -1700,12 +1700,12 @@ begin
     for I := 0 to ParameterList.Count - 1 do
       if not (Parameters[I] is TJvNoDataParameter) then
         with Parameters[I] do
-          if ReloadValueFromAppStore then
+          if ReloadValueFromAppStorage then
             if Parameters[I] is TJvListParameter then
               with TJvListParameter(Parameters[I]) do
-                AppStore.WriteInteger(AppStore.ConcatPaths([Path, SearchName]), ItemIndex)
+                AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, SearchName]), ItemIndex)
             else
-              AppStore.WriteString(AppStore.ConcatPaths([Path, SearchName]), AsString);
+              AppStorage.WriteString(AppStorage.ConcatPaths([Path, SearchName]), AsString);
 end;
 
 //=== TJvParameterListPropertyStore ==========================================
@@ -1725,18 +1725,18 @@ begin
   FParameterList := Value;
 end;
 
-function TJvParameterListSelectList.GetAppStore: TJvCustomAppStore;
+function TJvParameterListSelectList.GeTJvAppStorage: TJvCustomAppStorage;
 begin
   if Assigned(FParameterList) then
-    Result := FParameterList.AppStore
+    Result := FParameterList.AppStorage
   else
     Result := nil;
 end;
 
-procedure TJvParameterListSelectList.SetAppStore(Value: TJvCustomAppStore);
+procedure TJvParameterListSelectList.SeTJvAppStorage(Value: TJvCustomAppStorage);
 begin
   if Assigned(FParameterList) then
-    FParameterList.AppStore := Value;
+    FParameterList.AppStorage := Value;
 end;
 
 procedure TJvParameterListSelectList.Notification(AComponent: TComponent; Operation: TOperation);

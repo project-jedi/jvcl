@@ -32,7 +32,7 @@ interface
 uses
   Windows,
   SysUtils, Messages, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
-  JvComponent, JvBaseDlg, JvAppStore;
+  JvComponent, JvBaseDlg, JvAppStorage;
 
 type
   TUpdateCaption = (ucNoChange, ucAppTitle, ucFormCaption);
@@ -52,8 +52,8 @@ type
     FMaxPasswordLen: Integer;
     FAllowEmptyPassword: Boolean;
     FUpdateCaption: TUpdateCaption;
-    FAppStore: TJvCustomAppStore;
-    FAppStorePath : String;
+    FAppStorage: TJvCustomAppStorage;
+    FAppStoragePath : String;
     FLocked: Boolean;
     FUnlockDlgShowing: Boolean;
     FSaveOnRestore: TNotifyEvent;
@@ -65,7 +65,7 @@ type
     FPasswordChar: char;
     function GetLoggedUser: string;
     function UnlockHook(var Msg: TMessage): Boolean;
-    procedure SetAppStore(Value : TJvCustomAppStore);
+    procedure SeTJvAppStorage(Value : TJvCustomAppStorage);
   protected
     function CheckUnlock(const UserName, Password: string): Boolean; dynamic;
     function CreateLoginForm(UnlockMode: Boolean): TJvLoginForm; virtual;
@@ -88,8 +88,8 @@ type
     property OnUnlock: TCheckUnlockEvent read FOnUnlock write FOnUnlock; { obsolete }
     property OnUnlockApp: TUnlockAppEvent read FOnUnlockApp write FOnUnlockApp;
     property OnIconDblClick: TNotifyEvent read FOnIconDblClick write FOnIconDblClick;
-    property AppStore: TJvCustomAppStore read FAppStore write SetAppStore;
-    property AppStorePath : String read FAppStorePath write FAppStorePath;
+    property AppStorage: TJvCustomAppStorage read FAppStorage write SeTJvAppStorage;
+    property AppStoragePath : String read FAppStoragePath write FAppStoragePath;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -112,8 +112,8 @@ type
     procedure Loaded; override;
   published
     property Active;
-    property AppStore;
-    property AppStorePath;
+    property AppStorage;
+    property AppStoragePath;
     property AttemptNumber;
     property MaxPasswordLen;
     property UpdateCaption;
@@ -208,9 +208,9 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvCustomLogin.SetAppStore(Value : TJvCustomAppStore);
+procedure TJvCustomLogin.SeTJvAppStorage(Value : TJvCustomAppStorage);
 begin
-  FAppStore := Value;
+  FAppStorage := Value;
 end;
 
 function TJvCustomLogin.GetLoggedUser: string;
@@ -475,14 +475,14 @@ end;
 
 procedure TJvLoginDialog.WriteUserName(const UserName: string);
 begin
-  if Assigned(AppStore) then
-    AppStore.WriteString (AppStore.ConcatPaths([AppStorePath, RsLastLoginUserName]), UserName);
+  if Assigned(AppStorage) then
+    AppStorage.WriteString (AppStorage.ConcatPaths([AppStoragePath, RsLastLoginUserName]), UserName);
 end;
 
 function TJvLoginDialog.ReadUserName(const UserName: string): string;
 begin
-  if Assigned(AppStore) then
-    Result := AppStore.ReadString (AppStore.ConcatPaths([AppStorePath, RsLastLoginUserName]), UserName)
+  if Assigned(AppStorage) then
+    Result := AppStorage.ReadString (AppStorage.ConcatPaths([AppStoragePath, RsLastLoginUserName]), UserName)
   else
     Result := UserName;
 end;

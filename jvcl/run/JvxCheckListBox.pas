@@ -42,7 +42,7 @@ uses
   RTLConsts,
   {$ENDIF}
   Messages, Classes, Controls, Graphics, StdCtrls, Forms,
-  JvAppStore, JvFormPlacement, JvComponent;
+  JvAppStorage, JvFormPlacement, JvComponent;
 
 type
   TGetItemWidthEvent = procedure(Control: TWinControl; Index: Integer;
@@ -227,8 +227,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure LoadFromAppStore(const AppStorage: TJvCustomAppStore; const Path: string);
-    procedure SaveToAppStore(const AppStorage: TJvCustomAppStore; const Path: string);
+    procedure LoadFromAppStorage(const AppStorage: TJvCustomAppStorage; const Path: string);
+    procedure SaveToAppStorage(const AppStorage: TJvCustomAppStorage; const Path: string);
     procedure Load;
     procedure Save;
     procedure ApplyState(AState: TCheckBoxState; EnabledOnly: Boolean);
@@ -1298,7 +1298,7 @@ const
   sCount = 'Count';
   sItem = 'Item';
 
-procedure TJvxCheckListBox.LoadFromAppStore(const AppStorage: TJvCustomAppStore; const Path: string);
+procedure TJvxCheckListBox.LoadFromAppStorage(const AppStorage: TJvCustomAppStorage; const Path: string);
 var
   I: Integer;
   ACount: Integer;
@@ -1313,7 +1313,7 @@ begin
   end;
 end;
 
-procedure TJvxCheckListBox.SaveToAppStore(const AppStorage: TJvCustomAppStore; const Path: string);
+procedure TJvxCheckListBox.SaveToAppStorage(const AppStorage: TJvCustomAppStorage; const Path: string);
 var
   I: Integer;
 begin
@@ -1512,14 +1512,14 @@ procedure TJvxCheckListBox.InternalLoad(const Section: string);
 begin
   if IniStorage.IsActive then
     with IniStorage do
-      LoadFromAppStore(AppStorage, AppStorage.ConcatPaths([AppStoragePath, Section]));
+      LoadFromAppStorage(AppStorage, AppStorage.ConcatPaths([AppStoragePath, Section]));
 end;
 
 procedure TJvxCheckListBox.InternalSave(const Section: string);
 begin
   if IniStorage.IsActive then
     with IniStorage do
-      SaveToAppStore(AppStorage, AppStorage.ConcatPaths([AppStoragePath, Section]));
+      SaveToAppStorage(AppStorage, AppStorage.ConcatPaths([AppStoragePath, Section]));
 end;
 
 function TJvxCheckListBox.GetItemWidth(Index: Integer): Integer;

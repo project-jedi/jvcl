@@ -15,8 +15,8 @@ uses
   cxImage, cxCheckListBox,
   cxGroupBox,
   {$ENDIF}
-  ExtCtrls, JvFormPlacement, JvComponent, JvAppStore,
-  JvAppRegistryStore, JvDynControlEngine, ComCtrls, Buttons, JvBitBtn,
+  ExtCtrls, JvFormPlacement, JvComponent, JvAppStorage,
+  JvAppRegistryStorage, JvDynControlEngine, ComCtrls, Buttons, JvBitBtn,
   JvCombobox, CheckLst, ShlObj, ExtDlgs, JvImage,
   JvMaskEdit, JvSpin, JvBaseEdits, JvGroupBox, cxButtonEdit;
 
@@ -35,7 +35,7 @@ type
     WidthEdit: TMaskEdit;
     Label4: TLabel;
     HeightEdit: TMaskEdit;
-    JvAppRegistryStore: TJvAppRegistryStore;
+    JvAppRegistryStorage: TJvAppRegistryStorage;
     JvFormStorage1: TJvFormStorage;
     JvFormStorage2: TJvFormStorage;
     HistoryEnabledCheckBox: TCheckBox;
@@ -80,7 +80,6 @@ type
     StaticText2: TStaticText;
     StaticText3: TStaticText;
     StaticText4: TStaticText;
-    cxButtonEdit1: TcxButtonEdit;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -335,7 +334,7 @@ begin
     ParameterList.Height    := StrToInt(HeightEdit.Text);
     ParameterList.Width     := StrToInt(WidthEdit.Text);
     ParameterList.HistoryEnabled := HistoryEnabledCheckBox.Checked;
-    ParameterList.AppStore  := JvAppRegistryStore;
+    ParameterList.AppStorage  := JvAppRegistryStorage;
     ParameterList.Path      := 'Dialog 1';
     if LoadFromCheckBox.Checked then
       ParameterList.LoadData;
@@ -432,7 +431,7 @@ begin
     ParameterList.Height    := StrToInt(HeightEdit.Text);
     ParameterList.Width     := StrToInt(WidthEdit.Text);
     ParameterList.HistoryEnabled := HistoryEnabledCheckBox.Checked;
-    ParameterList.AppStore  := JvAppRegistryStore;
+    ParameterList.AppStorage  := JvAppRegistryStorage;
     ParameterList.Path      := 'Dialog 2';
     if LoadFromCheckBox.Checked then
       ParameterList.LoadData;
@@ -548,7 +547,7 @@ begin
  //  ParameterList.Height    := StrToInt(HeightEdit.Text);
     ParameterList.Width    := 240;
     ParameterList.HistoryEnabled := HistoryEnabledCheckBox.Checked;
-    ParameterList.AppStore := JvAppRegistryStore;
+    ParameterList.AppStorage := JvAppRegistryStorage;
     ParameterList.Path     := 'Dialog 3';
     if LoadFromCheckBox.Checked then
       ParameterList.LoadData;

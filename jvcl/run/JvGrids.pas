@@ -32,7 +32,7 @@ interface
 uses
   Windows,
   Messages, Classes, Controls, Graphics, StdCtrls, Forms, Grids,
-  JvAppStore, JvConsts, JvFormPlacement;
+  JvAppStorage, JvConsts, JvFormPlacement;
 
 type
   TAcceptKeyEvent = function(Sender: TObject; var Key: Char): Boolean of object;
@@ -158,8 +158,8 @@ type
     procedure InvalidateCell(ACol, ARow: Longint);
     procedure InvalidateCol(ACol: Longint);
     procedure InvalidateRow(ARow: Longint);
-    procedure LoadFromAppStore(const AppStorage: TJvCustomAppStore; const Path: string);
-    procedure SaveToAppStore(const AppStorage: TJvCustomAppStore; const Path: string);
+    procedure LoadFromAppStorage(const AppStorage: TJvCustomAppStorage; const Path: string);
+    procedure SaveToAppStorage(const AppStorage: TJvCustomAppStorage; const Path: string);
     procedure Load;
     procedure Save;
     property InplaceEditor;
@@ -741,14 +741,14 @@ end;
 procedure TJvDrawGrid.IniSave(Sender: TObject);
 begin
   if (Name <> '') and IniStorage.IsActive then
-    SaveToAppStore(IniStorage.AppStorage, IniStorage.AppStorage.ConcatPaths([
+    SaveToAppStorage(IniStorage.AppStorage, IniStorage.AppStorage.ConcatPaths([
       IniStorage.AppStoragePath, GetDefaultSection(Self)]));
 end;
 
 procedure TJvDrawGrid.IniLoad(Sender: TObject);
 begin
   if (Name <> '') and IniStorage.IsActive then
-    LoadFromAppStore(IniStorage.AppStorage, IniStorage.AppStorage.ConcatPaths([
+    LoadFromAppStorage(IniStorage.AppStorage, IniStorage.AppStorage.ConcatPaths([
       IniStorage.AppStoragePath, GetDefaultSection(Self)]));
 end;
 
@@ -815,13 +815,13 @@ begin
     inherited InvalidateCell(I, ARow);
 end;
 
-procedure TJvDrawGrid.LoadFromAppStore(const AppStorage: TJvCustomAppStore; const Path: string);
+procedure TJvDrawGrid.LoadFromAppStorage(const AppStorage: TJvCustomAppStorage; const Path: string);
 begin
   if (Name <> '') then
     InternalRestoreGridLayout(Self, IniStorage.AppStorage, Path);
 end;
 
-procedure TJvDrawGrid.SaveToAppStore(const AppStorage: TJvCustomAppStore; const Path: string);
+procedure TJvDrawGrid.SaveToAppStorage(const AppStorage: TJvCustomAppStorage; const Path: string);
 begin
   if (Name <> '') then
     InternalSaveGridLayout(Self, IniStorage.AppStorage, Path);
