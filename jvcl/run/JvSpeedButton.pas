@@ -151,13 +151,10 @@ type
     procedure Paint; override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
-    procedure Notification(AComponent: TComponent;
-      Operation: TOperation); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure PaintImage(Canvas: TCanvas; ARect: TRect; const Offset: TPoint;
       AState: TJvButtonState; DrawMark: Boolean); virtual; abstract;
     property ButtonGlyph: Pointer read FGlyph;
@@ -563,7 +560,7 @@ function DrawButtonFrame(Canvas: TCanvas; const Client: TRect;
   IsDown, IsFlat: Boolean; Style: TButtonStyle): TRect;
 {$IFDEF VisualCLX}
 const
-  clWindowFrame = QGraphics.cl3DDkShadow;
+  clWindowFrame = cl3DDkShadow; // clWindowFrame is a blue tone 
 {$ENDIF VisualCLX}
 var
   NewStyle: Boolean;
@@ -725,8 +722,6 @@ end;
 //=== TJvCustomSpeedButton ===================================================
 
 procedure TJvCustomSpeedButton.ButtonClick;
-var
-  FirstTickCount, Now: Longint;
 begin
   if FMenuTracking or (not Enabled) or (Assigned(FDropDownMenu) and
     DropDownMenu.AutoPopup) then
@@ -737,10 +732,7 @@ begin
     Repaint;
   end;
   try
-    FirstTickCount := GetTickCount;
-    repeat
-      Now := GetTickCount;
-    until (Now - FirstTickCount >= 20) or (Now < FirstTickCount);
+    Sleep(20); // (ahuser) why? 
     if FGroupIndex = 0 then
       Click;
   finally
