@@ -80,7 +80,7 @@ const
   {$ENDIF DELPHI9}
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
-  SDelphiKey = '.borland'; // relative to ~ 
+  SDelphiKey = '.borland/.jvclx1';
   {$ENDIF UNIX}
   { JvDataProvider constants }
   { Consumer attributes }
@@ -112,8 +112,7 @@ const
 
   // (outchy) now used 
   // (outchy) it was defined as $000000FF
-  clSystemColor = $FF000000;
-  DEFAULT_SYSCOLOR_MASK = clSystemColor;  // $FF000000
+  DEFAULT_SYSCOLOR_MASK = clSystemColor;  // $FF000000 
  
  
   sLineBreakLen = Length(sLineBreak);
@@ -196,7 +195,30 @@ const
   KeyboardShiftStates = [ssShift, ssAlt, ssCtrl];
   MouseShiftStates = [ssLeft, ssRight, ssMiddle, ssDouble];
 
+
+
 implementation
+
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\common'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 
