@@ -292,7 +292,8 @@ function IncColor(lColor: LongInt; bOffset: byte): LongInt;
 var
   R, G, B: byte;
 begin
-  if lColor < 0 then lColor := GetSysColor(lColor and $FF);
+  if lColor < 0 then
+    lColor := GetSysColor(lColor and $FF);
   R := min(255, GetRValue(lColor) + bOffset);
   G := min(255, GetGValue(lColor) + bOffset);
   B := min(255, GetBValue(lColor) + bOffset);
@@ -306,7 +307,8 @@ function DecColor(lColor: LongInt; bOffset: byte): LongInt;
 var
   R, G, B: byte;
 begin
-  if lColor < 0 then lColor := GetSysColor(lColor and $FF);
+  if lColor < 0 then
+    lColor := GetSysColor(lColor and $FF);
   R := Max(0, GetRValue(lColor) - bOffset);
   G := Max(0, GetGValue(lColor) - bOffset);
   B := Max(0, GetBValue(lColor) - bOffset);
@@ -398,8 +400,10 @@ var
   ShadowColor_, HighlightColor_: TColor;
 begin
 
-  if not Assigned(Fnt) then exit;
-  if FLAGS = 0 then FLAGS := DT_LEFT or DT_VCENTER or DT_SINGLELINE;
+  if not Assigned(Fnt) then
+    exit;
+  if FLAGS = 0 then
+    FLAGS := DT_LEFT or DT_VCENTER or DT_SINGLELINE;
   iOldBkMode := SetBkMode(DC, integer(Transparent));
   FontColor := Fnt.Color;
 
@@ -523,7 +527,8 @@ var
     end;
   end;
 begin
-  if (not Assigned(Font)) then exit;
+  if (not Assigned(Font)) then
+    exit;
   OldFont := SelectObject(DC, Font.Handle);
   iOldBkMode := SetBkMode(DC, TRANSPARENT);
 
@@ -971,12 +976,14 @@ begin //_________________________________________MAIN_
   SelectObject(DC, LPen);
   r_ := rect;
   r := rect;
-  if BevelOuter <> bvNone then DrawBevel(BevelOuter);
+  if BevelOuter <> bvNone then
+    DrawBevel(BevelOuter);
   r := r_;
   //  if (BevelOuter = bvRaised)and(BevelInner = bvLowered)and Bold then
   //  begin dec(r.top); dec(r.left); end;
 
-  if BevelInner <> bvNone then DrawBevel(BevelInner);
+  if BevelInner <> bvNone then
+    DrawBevel(BevelInner);
 
   SelectObject(DC, OldPen);
   DeleteObject(BPen);
@@ -1016,7 +1023,8 @@ var
   MonoBMP, OldBMP: HBitmap;
   MonoDC: HDC;
 begin
-  if (Bitmap.Width or Bitmap.Height) = 0 then Exit;
+  if (Bitmap.Width or Bitmap.Height) = 0 then
+    Exit;
   IWidth := Bitmap.Width;
   IHeight := Bitmap.Height;
   DRect := Rect(0, 0, IWidth, IHeight);
@@ -1099,7 +1107,8 @@ const
     begin
       { create copy of drawing image }
       BitBlt(MemDC, 0, 0, IWidth, IHeight, ImageDC, 0, 0, SRCCOPY);
-      if DrawState = fdsDisabled then TransparentColor := clBtnFace;
+      if DrawState = fdsDisabled then
+        TransparentColor := clBtnFace;
       OldBkColor := SetBkColor(MemDC, ColorToRGB(TransparentColor));
       { create monohrome mask: TransparentColor -> white, other color -> black }
       BitBlt(MonoDC, 0, 0, IWidth, IHeight, MemDC, 0, 0, SRCCOPY);
@@ -1123,7 +1132,8 @@ const
   end; //*******************************************END LOCAL PROC
 
 begin
-  if (SourceBitmap.Width or SourceBitmap.Height) = 0 then Exit;
+  if (SourceBitmap.Width or SourceBitmap.Height) = 0 then
+    Exit;
 
   x := x + r.left;
   y := y + r.top;
@@ -1227,7 +1237,8 @@ begin
         begin
           D_ := W / IWidth;
           D := H / IHeight;
-          if D > D_ then D := D_; //...D == min
+          if D > D_ then
+            D := D_; //...D == min
           W := trunc(IWidth * D);
           H := trunc(IHeight * D);
         end;
@@ -1282,11 +1293,13 @@ begin
         while x_ < r.right do
         begin
           //IWidth:=SavedIWidth; //SavedIWidth:=IWidth;
-          if x_ + IWidth > r.right then IWidth := r.right - x_;
+          if x_ + IWidth > r.right then
+            IWidth := r.right - x_;
           while y_ < r.bottom do
           begin
             IHeight := SavedIHeight; // SavedIHeight:=IHeight;
-            if y_ + IHeight > r.bottom then IHeight := r.bottom - y_;
+            if y_ + IHeight > r.bottom then
+              IHeight := r.bottom - y_;
             BitBltWorks;
             Inc(y_, IHeight);
           end;
@@ -1321,7 +1334,8 @@ procedure BringParentWindowToTop(Wnd: TWinControl);
 begin
   if Wnd is TForm then
     BringWindowToTop(Wnd.Handle)
-  else if Wnd.Parent is TWinControl then
+  else
+  if Wnd.Parent is TWinControl then
     BringParentWindowToTop(Wnd.Parent);
 end;
 
@@ -1335,7 +1349,8 @@ begin
     Result := TForm(Control);
     exit;
   end
-  else if Control.Parent is TWinControl then
+  else
+  if Control.Parent is TWinControl then
     Result := GetParentForm(Control.Parent)
   else
     Result := nil;
@@ -1351,7 +1366,8 @@ procedure GetWindowImageFrom(Control: TWinControl; X, Y: integer; fDrawSelf, fDr
 var
   I, Count, SaveIndex: Integer;
 begin
-  if Control = nil then exit;
+  if Control = nil then
+    exit;
   Count := Control.ControlCount;
 
   { Copy self image }
@@ -1367,7 +1383,8 @@ begin
   begin
     if (Control.Controls[I] <> nil) then
     begin
-      if Control.Controls[I] = Control then Break;
+      if Control.Controls[I] = Control then
+        Break;
       if (Control.Controls[I] is TWinControl) and fDrawChildWindows then
         GetWindowImageFrom(TWinControl(Control.Controls[I]),
           TWinControl(Control.Controls[I]).Left,
@@ -1402,7 +1419,8 @@ var
   I, Count, X, Y, SaveIndex: Integer;
   R, SelfR, CtlR: TRect;
 begin
-  if Control.Parent = nil then exit;
+  if Control.Parent = nil then
+    exit;
   Count := Control.Parent.ControlCount;
   SelfR := Bounds(Control.Left, Control.Top, Control.Width, Control.Height);
   //  OffsetRect( Rect, Control.Left, Control.Top );
@@ -1423,7 +1441,8 @@ begin
     if (Control.Parent.Controls[I] <> nil) and
       not (Control.Parent.Controls[I] is TWinControl) then
     begin
-      if Control.Parent.Controls[I] = Control then Break;
+      if Control.Parent.Controls[I] = Control then
+        Break;
       with Control.Parent.Controls[I] do
       begin
         CtlR := Bounds(Left, Top, Width, Height);
@@ -1485,7 +1504,8 @@ end;
 function FindMainWindow(sWndClass, sWndTitle: string): HWND;
 begin
   Result := 0;
-  if (sWndClass = '') and (sWndTitle = '') then exit;
+  if (sWndClass = '') and (sWndTitle = '') then
+    exit;
   Result := FindWindow(PChar(sWndClass), PChar(sWndTitle));
 end;
 
@@ -1539,9 +1559,12 @@ var
       cCurrChar := sExpression[ExpressionPtr]
     else
       cCurrChar := #0;
-    if cCurrChar = ' ' then NextChar;
-    if cCurrChar = #0 then exit;
-    if not (cCurrChar in ['0'..'9', ',', '.', '-', '+', '/', '*', '(', ')']) then NextChar;
+    if cCurrChar = ' ' then
+      NextChar;
+    if cCurrChar = #0 then
+      exit;
+    if not (cCurrChar in ['0'..'9', ',', '.', '-', '+', '/', '*', '(', ')']) then
+      NextChar;
   end;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -1562,14 +1585,16 @@ var
       begin
         Result := Result * 10 + ord(cCurrChar) - ord('0');
         NextChar;
-        if fPoint then inc(PointDepth);
+        if fPoint then
+          inc(PointDepth);
         if (cCurrChar = '.') or (cCurrChar = ',') then
         begin
           NextChar;
           fPoint := true;
         end;
       end; //While
-      if PointDepth <> 0 then Result := Result / (10 * PointDepth);
+      if PointDepth <> 0 then
+        Result := Result / (10 * PointDepth);
     end
     else //...............................................sign or braket_
     begin
@@ -1803,7 +1828,8 @@ var
       repeat inc(Pos);
       until (Pos > length(Text)) or (Text[Pos] <> ' ');
     Pos2 := Pos;
-    if fTrimleft and (LineNo > 0) then Pos1 := Pos;
+    if fTrimleft and (LineNo > 0) then
+      Pos1 := Pos;
     repeat inc(Pos2);
     until (Pos2 > length(Text)) or (Text[Pos2] = ' ');
 
@@ -1829,16 +1855,19 @@ var
       GetTextExtentPoint32(Canvas.Handle, PChar(Lexem), length(Lexem), Size);
       inc(LineWidth, trunc(X));
       X := X + Size.cx;
-      if (trunc(X) > Width) and (LexemCount > 1) then exit;
+      if (trunc(X) > Width) and (LexemCount > 1) then
+        exit;
 
-      if (LexemCount > 1) and fBroadwiseLine then X := X + AdditSpace / (LexemCount - 1);
+      if (LexemCount > 1) and fBroadwiseLine then
+        X := X + AdditSpace / (LexemCount - 1);
       TextOut(Canvas.Handle, R.Left + trunc(X_), R.Top + LineNo * TextHeight, PChar(Lexem), length(Lexem));
       X_ := X;
       DrawPos1 := DrawPos2;
     end;
   end;
 begin
-  if Text = '' then exit;
+  if Text = '' then
+    exit;
   if (Alignment <> ftaBroadwise) then
   begin
     DrawText(Canvas.Handle, PChar(Text), Length(Text), R,
@@ -1861,13 +1890,16 @@ begin
     GetTextExtentPoint32(Canvas.Handle, PChar(Lexem), length(Lexem), Size);
     inc(LineWidth, Size.cx);
     inc(LexemCount);
-    if TextHeight < Size.cy then TextHeight := Size.cy;
+    if TextHeight < Size.cy then
+      TextHeight := Size.cy;
     if (LineWidth > Width) or (Pos2 >= length(Text)) then
     begin
       if (LineWidth > Width) then
       begin
-        if LexemCount = 1 then Pos1 := Pos2;
-        if LexemCount > 1 then dec(LexemCount);
+        if LexemCount = 1 then
+          Pos1 := Pos2;
+        if LexemCount > 1 then
+          dec(LexemCount);
         DrawLine(Width - (LineWidth - Size.cx));
         DrawPos := Pos1;
         inc(LineNo);
@@ -2044,7 +2076,8 @@ var
   i: integer;
 begin
   Result := str;
-  if Length(Result) >= len then exit;
+  if Length(Result) >= len then
+    exit;
   SetLength(Result, len);
 
   for i := 1 to length(Result) do

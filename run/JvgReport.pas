@@ -428,7 +428,8 @@ begin
       DrawTextExtAligned(Canvas, sPrintText, R_, Alignments[Alignment],
         True);
     end
-    else if (OLELinkToFile <> '') and (ExtractFileExt(OLELinkToFile) = '.bmp') then
+    else
+    if (OLELinkToFile <> '') and (ExtractFileExt(OLELinkToFile) = '.bmp') then
     begin
       if Assigned(OLEContainer) then
         OLEContainer.Visible := False;
@@ -1326,9 +1327,11 @@ var
       Exit;
     if Text[i - 1] = '{' then
       ParamType := gptEdit
-    else if Text[i - 1] = '<' then
+    else
+    if Text[i - 1] = '<' then
       ParamType := gptRadio
-    else if Text[i - 1] = '[' then
+    else
+    if Text[i - 1] = '[' then
       ParamType := gptCheck
     else
       ParamType := gptUnknown;

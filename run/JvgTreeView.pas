@@ -708,7 +708,8 @@ begin
 
   if CheckedCount = 0 then
     Result := ncsUnChecked
-  else if CheckedCount = Node.Count then
+  else
+  if CheckedCount = Node.Count then
     Result := ncsChecked
   else
     Result := ncsPartChecked;

@@ -252,7 +252,8 @@ begin
   begin
     if Key = #8 then exit
   //  if Length(ACodeEdit.Text)>=CodeDigitsCount then Key := #0
-    else if (Key<'0')or(Key>'9') then Key := #0;
+    else
+    if (Key<'0')or(Key>'9') then Key := #0;
   end;
   if Assigned(FOnKeyPress) then FOnKeyPress(Self, Key);
 end;
@@ -371,7 +372,8 @@ begin
     except
       fIsDigit := False;
     end;
-    if fIsDigit then Control.Text := Value;
+    if fIsDigit then
+      Control.Text := Value;
   end
  else Control.Text := Value;
 
@@ -383,7 +385,8 @@ procedure TJvgShadow.SetDigitsOnly(Value: Boolean);
 //var
 //  I: Integer;
 begin //{$O-}
-  {  if DigitsOnly = Value then exit;
+  {  if DigitsOnly = Value then
+      exit;
     FDigitsOnly := Value;
     if DigitsOnly then
     begin

@@ -78,14 +78,15 @@ begin
         PropObject := GetObjectProp(Component, PropInfo);
         Result := GetValueFromPropertyName(PropObject, PropertyName);
       end
-      else if CompareText(PropName, PropertyName) = 0 then
+      else
+      if CompareText(PropName, PropertyName) = 0 then
       begin
         Result := GetPropValue(Component, PropName, true);
         break;
       end;
 
-      if Result <> '' then exit;
-
+      if Result <> '' then
+        Exit;
     end;
   finally
     FreeMem(PropList);

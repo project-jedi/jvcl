@@ -399,7 +399,8 @@ begin
       CurrDelinColor := DelineateActive;
       FontColor := TextActive;
     end
-    else if Enabled then
+    else
+    if Enabled then
     begin
       CurrTextStyle := Passive;
       CurrDelinColor := Delineate;

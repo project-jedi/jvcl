@@ -259,7 +259,7 @@ var
 begin
   inherited;
   if fgoIgnoreMouse in Options then
-    exit;
+    Exit;
   pt.x := Message.Pos.x;
   pt.y := Message.Pos.y;
   if (fgoCanCollapse in Options) and PtInRect(CaptionRect, pt) then
@@ -285,7 +285,7 @@ procedure TJvgGroupBox.WMLButtonUp(var Message: TWMLButtonUp);
 begin
   inherited;
   if fgoIgnoreMouse in Options then
-    exit;
+    Exit;
   fScrolling := false;
   Screen.Cursor := crDefault;
 end;
@@ -322,7 +322,7 @@ var
   Color: TgbColor;
 begin
   //inherited;
-  //exit;
+  //Exit;
   Interspace := 2;
   if Collapsed then
   begin
@@ -427,12 +427,12 @@ var
   fAnotherExpandedWasFound: boolean;
 begin
   if csLoading in ComponentState then
-    exit;
+    Exit;
 
   if fCollapse then
   begin
     if Align = alClient then
-      exit;
+      Exit;
     if (FGroupIndex <> 0) and (fgoOneAlwaysExpanded in Options) then
     begin //...One Stay Always Expanded in group
       fAnotherExpandedWasfound := false;
@@ -448,10 +448,11 @@ begin
               break;
             end; //...are another expanded controls in group
       if not fAnotherExpandedWasFound then
-        exit; //..i'm last- can't collapse
+        Exit; //..i'm last- can't collapse
     end;
   end
-  else if (FGroupIndex <> 0) and (fgoCollapseOther in Options) then
+  else
+  if (FGroupIndex <> 0) and (fgoCollapseOther in Options) then
     for i := 0 to Owner.ComponentCount - 1 do
       with TControl(Owner) do
         if (Components[i] is TJvgGroupBox) and
@@ -479,7 +480,7 @@ var
     LastTickCount: Integer;}
 begin
   if Align = alClient then
-    exit;
+    Exit;
 
   FCollapsed := fCollapse;
   if fCollapse then
@@ -528,7 +529,7 @@ begin
 
   end;
 
-  exit; { patch for win 98 }
+  Exit; { patch for win 98 }
 
   (*
   if fCollapse then
@@ -611,7 +612,7 @@ end;
 procedure TJvgGroupBox.SetCaptionTextStyle(Value: TglTextStyle);
 begin
   if FCaptionTextStyle = Value then
-    exit;
+    Exit;
   FCaptionTextStyle := Value;
   Invalidate;
 end;
@@ -619,19 +620,19 @@ end;
 procedure TJvgGroupBox.SetCollapsed(Value: boolean);
 begin
   if FCollapsed = Value then
-    exit;
+    Exit;
   if not (fgoCanCollapse in Options) and Value then
-    exit;
+    Exit;
   FCollapsed := Value;
   if csLoading in ComponentState then
-    exit;
+    Exit;
   Collapse_(Value);
 end;
 
 procedure TJvgGroupBox.SetOptions(Value: TglGroupBoxOptions);
 begin
   if FOptions = Value then
-    exit;
+    Exit;
   FOptions := Value;
   //  if not(fgoCanCollapse in Options) then Collapsed := false;
   if Assigned(Parent) then
@@ -643,7 +644,7 @@ end;
 procedure TJvgGroupBox.SetTransparent(Value: boolean);
 begin
   if FTransparent = Value then
-    exit;
+    Exit;
   FTransparent := Value;
   RecreateWnd;
 end;
@@ -651,7 +652,7 @@ end;
 procedure TJvgGroupBox.SetTransparentCaption(Value: boolean);
 begin
   if FTransparentCaption = Value then
-    exit;
+    Exit;
   FTransparentCaption := Value;
   RecreateWnd;
 end;
@@ -661,10 +662,10 @@ var
   i: Integer;
 begin
   if FGroupIndex = Value then
-    exit;
+    Exit;
   FGroupIndex := Value;
   if csLoading in ComponentState then
-    exit;
+    Exit;
   if (not Collapsed) and (FGroupIndex <> 0) then
     for i := 0 to Owner.ComponentCount - 1 do
       with TControl(Owner) do
@@ -793,7 +794,8 @@ begin
     else
       inc(r.bottom, FIllumination.ShadowDepth)
   end
-  else if CaptionTextStyle <> fstNone then
+  else
+  if CaptionTextStyle <> fstNone then
     inc(r.bottom, 2);
 
   CaptionRect := R;

@@ -337,13 +337,14 @@ const
   WordBreak: array[Boolean] of Integer = (0, DT_WORDBREAK);
 begin
   if csReading in ComponentState then
-    exit;
+    Exit;
   R := Rect(0, 0, Width - FLeftIndent, 0);
   Shift := 0;
   if (fboExcludeGlyphs in Options) and Assigned(FGlyphs) then
     if FGlyphsAlign.Horizontal = fhaLeft then
       r.left := FGlyphs.Width
-    else if FGlyphsAlign.Horizontal = fhaRight then
+    else
+    if FGlyphsAlign.Horizontal = fhaRight then
       r.right := r.right - FGlyphs.Width;
   with Message.MeasureItemStruct^ do
   begin
@@ -396,7 +397,7 @@ var
     OldRect: TRect;
   begin
     if (FGlyphs = nil) or (FGlyphs.Count = 0) then
-      exit;
+      Exit;
     OldRect := r;
     inc(r.top);
     inc(r.left);
@@ -411,7 +412,8 @@ var
 
     if fboSingleGlyph in Options then
       i := 0
-    else if Index < NumGlyphs then
+    else
+    if Index < NumGlyphs then
       i := Index
     else
       i := -1;
@@ -514,11 +516,12 @@ var
   end;
 begin
   if Items.Count = 0 then
-    exit;
+    Exit;
 
   if not FWallpaper.Empty then
     WallpaperBmp := FWallpaper
-  else if Assigned(FWallpaperImage) and Assigned(FWallpaperImage.Picture) and
+  else
+  if Assigned(FWallpaperImage) and Assigned(FWallpaperImage.Picture) and
     Assigned(FWallpaperImage.Picture.Bitmap) then
     WallpaperBmp := FWallpaperImage.Picture.Bitmap
   else
@@ -534,7 +537,7 @@ begin
       if IsItAFilledBitmap(WallpaperBmp) then
         BitBlt(hDC, 0, 0, Width, Height, WallpaperBmp.Canvas.Handle, 0, 0,
           SRCCOPY);
-      exit;
+      Exit;
     end;
 
     InitState(State, WordRec(LongRec(ItemState).Lo).Lo);
@@ -616,7 +619,8 @@ begin
     if (fboExcludeGlyphs in Options) then
       if FGlyphsAlign.Horizontal = fhaLeft then
         R.left := R.left + FGlyphs.Width
-      else if FGlyphsAlign.Horizontal = fhaRight then
+      else
+      if FGlyphsAlign.Horizontal = fhaRight then
         R.right := R.right - FGlyphs.Width
   end;
   inc(R.Left, FLeftIndent);
@@ -687,19 +691,19 @@ var
 begin
   inherited;
   if not (fboHotTrack in Options) and not (fboHotTrackSelect in Options) then
-    exit;
+    Exit;
   pt.x := LOWORD(Message.lParam);
   pt.y := HIWORD(Message.lParam);
   itemIndex := ItemAtPos(pt, True);
 
   if itemIndex = HotTrackingItemIndex then
-    exit;
+    Exit;
 
   if fboHotTrackSelect in Options then
   begin
     Self.ItemIndex := itemIndex;
     InvalidateRect(Handle, nil, False);
-    exit;
+    Exit;
   end;
 
   if HotTrackingItemIndex <> -1 then
@@ -733,7 +737,7 @@ var
 begin
   FDragImage.Clear;
   if ItemIndex = -1 then
-    exit;
+    Exit;
   R := ItemRect(ItemIndex);
 
   Bmp := TBitmap.Create;
@@ -777,7 +781,7 @@ end;
 procedure TJvgListBox.SetAutoTrColor(Value: TglAutoTransparentColor);
 begin
   if FAutoTrColor = Value then
-    exit;
+    Exit;
   FAutoTrColor := Value;
   Invalidate;
 end;
@@ -810,7 +814,7 @@ end;
 procedure TJvgListBox.SetNumGlyphs(Value: word);
 begin
   if Value < 1 then
-    exit;
+    Exit;
   FNumGlyphs := Value;
   Invalidate;
 end;
@@ -859,7 +863,7 @@ var
   R: TRect;
 begin
   if FHotTrackColor = Value then
-    exit;
+    Exit;
   FHotTrackColor := Value;
   if HotTrackingItemIndex <> -1 then //...user can programm hottrack blinking effect!
   begin
@@ -871,7 +875,7 @@ end;
 procedure TJvgListBox.SetOptions(Value: TglListBoxOptions);
 begin
   if FOptions = Value then
-    exit;
+    Exit;
   if not (csLoading in ComponentState) then
     {  if (fboTransparent in Value) and not (fboTransparent in FOptions)then
       begin
@@ -925,7 +929,7 @@ end;
 procedure TJvgListBox.SmthChanged(Sender: TObject);
 begin
   if (csLoading in ComponentState) then
-    exit;
+    Exit;
   RecalcHeights;
   SetAlign;
   Invalidate;
