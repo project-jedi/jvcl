@@ -53,6 +53,7 @@ type
   private
     FImageIndex: integer;
     FCaption: TCaption;
+    FTag: integer;
     procedure SetCaption(const Value: TCaption);
     procedure SetImageIndex(const Value: integer);
     procedure Change;
@@ -65,6 +66,7 @@ type
   published
     property Caption:TCaption read FCaption write SetCaption;
     property ImageIndex:integer read FImageIndex write SetImageIndex;
+    property Tag:integer read FTag write FTag;
   end;
 
   TJvOutlookBarButtons = class(TOwnedCollection)
@@ -357,6 +359,7 @@ begin
   begin
     Caption := TJvOutlookbarButton(Source).Caption;
     ImageIndex := TJvOutlookbarButton(Source).ImageIndex;
+    Tag        := TJvOutlookbarButton(Source).Tag;
     Change;
     Exit;
   end;
