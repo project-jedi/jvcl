@@ -38,24 +38,11 @@ unit JvExForms;
 interface
 
 uses
-  {$IFDEF VCL}
-  Windows, Messages,
-  {$ENDIF VCL}
-  Graphics, Controls, Forms, ToolWin,
-  {$IFDEF VisualCLX}
-  Qt, Types, QWindows,
-  {$ENDIF VisualCLX}
+  Windows, Messages, Graphics, Controls, Forms, ToolWin,
   Classes, SysUtils,
   JvTypes, JvThemes, JVCLVer, JvExControls;
 
-{$IFDEF VCL}
  {$DEFINE NeedMouseEnterLeave}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
- {$IF not declared(PatchedVCLX)}
-  {$DEFINE NeedMouseEnterLeave}
- {$IFEND}
-{$ENDIF VisualCLX}
 
 type
   TJvExScrollingWinControl = class(TScrollingWinControl, IJvWinControlEvents, IJvControlEvents, IPerformControl)
@@ -1285,6 +1272,7 @@ begin
   Font.OnChange := OnFontChanged;
   {$ENDIF VisualCLX}
   FHintColor := Application.HintColor;
+  
 end;
 
 {$IFDEF VisualCLX}
@@ -1599,6 +1587,7 @@ begin
   Font.OnChange := OnFontChanged;
   {$ENDIF VisualCLX}
   FHintColor := Application.HintColor;
+  
 end;
 
 {$IFDEF VisualCLX}
@@ -1913,6 +1902,7 @@ begin
   Font.OnChange := OnFontChanged;
   {$ENDIF VisualCLX}
   FHintColor := Application.HintColor;
+  
 end;
 
 {$IFDEF VisualCLX}
@@ -2227,6 +2217,7 @@ begin
   Font.OnChange := OnFontChanged;
   {$ENDIF VisualCLX}
   FHintColor := Application.HintColor;
+  
 end;
 
 {$IFDEF VisualCLX}
@@ -3245,6 +3236,7 @@ begin
   Font.OnChange := OnFontChanged;
   {$ENDIF VisualCLX}
   FHintColor := Application.HintColor;
+  
 end;
 
 {$IFDEF VisualCLX}

@@ -38,24 +38,11 @@ unit JvExCheckLst;
 interface
 
 uses
-  {$IFDEF VCL}
-  Windows, Messages,
-  {$ENDIF VCL}
-  Graphics, Controls, Forms, CheckLst,
-  {$IFDEF VisualCLX}
-  Types, Qt, QWindows,
-  {$ENDIF VisualCLX}
+  Windows, Messages, Graphics, Controls, Forms, CheckLst,
   Classes, SysUtils,
   JvTypes, JvThemes, JVCLVer, JvExControls;
 
-{$IFDEF VCL}
  {$DEFINE NeedMouseEnterLeave}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
- {$IF not declared(PatchedVCLX)}
-  {$DEFINE NeedMouseEnterLeave}
- {$IFEND}
-{$ENDIF VisualCLX}
 
 type
   TJvExCheckListBox = class(TCheckListBox, IJvWinControlEvents, IJvControlEvents, IPerformControl)
@@ -488,6 +475,7 @@ begin
   Font.OnChange := OnFontChanged;
   {$ENDIF VisualCLX}
   FHintColor := Application.HintColor;
+  
 end;
 
 {$IFDEF VisualCLX}

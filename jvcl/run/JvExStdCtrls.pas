@@ -2918,6 +2918,7 @@ begin
   Font.OnChange := OnFontChanged;
   {$ENDIF VisualCLX}
   FHintColor := Application.HintColor;
+  
 end;
 
 {$IFDEF VisualCLX}
@@ -3578,6 +3579,7 @@ begin
   Font.OnChange := OnFontChanged;
   {$ENDIF VisualCLX}
   FHintColor := Application.HintColor;
+  
 end;
 
 {$IFDEF VisualCLX}
@@ -3899,6 +3901,7 @@ begin
   Font.OnChange := OnFontChanged;
   {$ENDIF VisualCLX}
   FHintColor := Application.HintColor;
+  FClipboardCommands := [caCopy..caUndo];
 end;
 
 {$IFDEF VisualCLX}
@@ -4286,6 +4289,7 @@ begin
   Font.OnChange := OnFontChanged;
   {$ENDIF VisualCLX}
   FHintColor := Application.HintColor;
+  FClipboardCommands := [caCopy..caUndo];
 end;
 
 {$IFDEF VisualCLX}
@@ -4678,6 +4682,7 @@ begin
   Font.OnChange := OnFontChanged;
   {$ENDIF VisualCLX}
   FHintColor := Application.HintColor;
+  
 end;
 
 {$IFDEF VisualCLX}
@@ -4994,6 +4999,7 @@ begin
   Font.OnChange := OnFontChanged;
   {$ENDIF VisualCLX}
   FHintColor := Application.HintColor;
+  
 end;
 
 {$IFDEF VisualCLX}
@@ -5308,6 +5314,7 @@ begin
   Font.OnChange := OnFontChanged;
   {$ENDIF VisualCLX}
   FHintColor := Application.HintColor;
+  
 end;
 
 {$IFDEF VisualCLX}
@@ -5622,6 +5629,7 @@ begin
   Font.OnChange := OnFontChanged;
   {$ENDIF VisualCLX}
   FHintColor := Application.HintColor;
+  
 end;
 
 {$IFDEF VisualCLX}
@@ -5936,6 +5944,7 @@ begin
   Font.OnChange := OnFontChanged;
   {$ENDIF VisualCLX}
   FHintColor := Application.HintColor;
+  
 end;
 
 {$IFDEF VisualCLX}
@@ -6250,6 +6259,7 @@ begin
   Font.OnChange := OnFontChanged;
   {$ENDIF VisualCLX}
   FHintColor := Application.HintColor;
+  
 end;
 
 {$IFDEF VisualCLX}
@@ -6564,6 +6574,7 @@ begin
   Font.OnChange := OnFontChanged;
   {$ENDIF VisualCLX}
   FHintColor := Application.HintColor;
+  
 end;
 
 {$IFDEF VisualCLX}
@@ -6878,6 +6889,7 @@ begin
   Font.OnChange := OnFontChanged;
   {$ENDIF VisualCLX}
   FHintColor := Application.HintColor;
+  
 end;
 
 {$IFDEF VisualCLX}
@@ -7193,6 +7205,7 @@ begin
   Font.OnChange := OnFontChanged;
   {$ENDIF VisualCLX}
   FHintColor := Application.HintColor;
+  
 end;
 
 {$IFDEF VisualCLX}
@@ -7507,6 +7520,7 @@ begin
   Font.OnChange := OnFontChanged;
   {$ENDIF VisualCLX}
   FHintColor := Application.HintColor;
+  
 end;
 
 {$IFDEF VisualCLX}
@@ -7821,6 +7835,7 @@ begin
   Font.OnChange := OnFontChanged;
   {$ENDIF VisualCLX}
   FHintColor := Application.HintColor;
+  
 end;
 
 {$IFDEF VisualCLX}
@@ -8135,6 +8150,7 @@ begin
   Font.OnChange := OnFontChanged;
   {$ENDIF VisualCLX}
   FHintColor := Application.HintColor;
+  
 end;
 
 {$IFDEF VisualCLX}

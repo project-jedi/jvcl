@@ -679,6 +679,8 @@ begin
   Font.OnChange := OnFontChanged;
   {$ENDIF VisualCLX}
   FHintColor := Application.HintColor;
+  FBeepOnError := True;
+  FClipboardCommands := [caCopy..caUndo];
 end;
 
 {$IFDEF VisualCLX}
@@ -1078,6 +1080,8 @@ begin
   Font.OnChange := OnFontChanged;
   {$ENDIF VisualCLX}
   FHintColor := Application.HintColor;
+  FBeepOnError := True;
+  FClipboardCommands := [caCopy..caUndo];
 end;
 
 {$IFDEF VisualCLX}
