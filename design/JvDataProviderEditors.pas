@@ -42,44 +42,20 @@ uses
   JvDataProvider, JvDataProviderImpl, JvDataProviderDesignerForm;
 
 type
-{$IFNDEF COMPILER6_UP}
-
-{ Since D5 doesn't support published properties of type interface (or rather, the OI/streaming
-  system doesn't), D5 will use a simple TComponent property. A property editor is created that
-  will only list components that support both the IJvDataProvider as well as the
-  IInterfaceComponentRef interfaces. Note: Peter also has a TInterfaceProperty. Merge later. }
-
-  TInterfaceProperty = class(TComponentProperty)
-  private
-    FOrgStrProc: TGetStrProc;
-    function IntfSupported(Component: TComponent): Boolean;
-    procedure CheckAndAddComp(const S: string);
-  protected
-    function GetInterfaceGUID: TGUID; virtual; abstract;
-    property OrgStrProc: TGetStrProc read FOrgStrProc write FOrgStrProc;
-  public
-    procedure GetValues(Proc: TGetStrProc); override;
-    procedure SetValue(const Value: string); override;
-  end;
-{$ELSE}
+{$IFDEF COMPILER6_UP}
   TGetPropEditProc = TGetPropProc;
 {$ENDIF COMPILER6_UP}
 
-  TJvDataConsumerProperty = class(TInterfaceProperty)
+  TJvDataConsumerProperty = class(TEnumProperty)
   private
-    {$IFDEF COMPILER6_UP}
     OrgStrProc: TGetStrProc;
     procedure CheckAndAddComp(const S: string);
-    {$ENDIF COMPILER6_UP}
   protected
     function GetConsumerServiceAt(Index: Integer): TJvDataConsumer;
     function GetProviderIntfAt(Index: Integer): IJvDataProvider; dynamic;
     procedure SetProviderIntfAt(Index: Integer; Value: IJvDataProvider); dynamic;
     function GetProviderIntf: IJvDataProvider;
     procedure SetProviderIntf(Value: IJvDataProvider);
-    {$IFNDEF COMPILER6_UP}
-    function GetInterfaceGUID: TGUID; override;
-    {$ENDIF COMPILER6_UP}
     procedure GetExtensionsProperties(ConsumerSvc: TJvDataConsumer; Proc: TGetPropEditProc);
     procedure GetExtensionProperties(ConsumerSvcExt: TJvDataConsumerAggregatedObject; Proc: TGetPropEditProc);
   public
@@ -109,56 +85,8 @@ type
 
   TOpenSvc = class(TJvDataConsumer);
 
-{$IFNDEF COMPILER6_UP}
-
-{ TInterfaceProperty }
-
-function TInterfaceProperty.IntfSupported(Component: TComponent): Boolean;
-var
-  Ref: IUnknown;
-begin
-  with Component do
-    Result := GetInterface(IInterfaceComponentReference, Ref) and GetInterface(GetInterfaceGUID, Ref);
-end;
-
-procedure TInterfaceProperty.CheckAndAddComp(const S: string);
-var
-  Comp: TComponent;
-begin
-  Comp := Designer.GetComponent(S);
-  if (Comp <> nil) and IntfSupported(Comp) then
-    OrgStrProc(S);
-end;
-
-procedure TInterfaceProperty.GetValues(Proc: TGetStrProc);
-begin
-  OrgStrProc := Proc;
-  try
-    inherited GetValues(CheckAndAddComp);
-  finally
-    OrgStrProc := nil;
-  end;
-end;
-
-procedure TInterfaceProperty.SetValue(const Value: string);
-var
-  Comp: TComponent;
-begin
-  if Value = '' then
-    Comp := nil
-  else
-  begin
-    Comp := Designer.GetComponent(Value);
-    if not (Comp is GetTypeData(GetPropType)^.ClassType) and not IntfSupported(Comp) then
-      raise EPropertyError.CreateRes(@SInvalidPropertyValue);
-  end;
-  SetOrdValue(Longint(Comp));
-end;
-{$ENDIF COMPILER6_UP}
-
 //===TJvDataConsumerProperty========================================================================
 
-{$IFDEF COMPILER6_UP}
 procedure TJvDataConsumerProperty.CheckAndAddComp(const S: string);
 var
   Comp: TComponent;
@@ -174,7 +102,6 @@ begin
       OrgStrProc(S);
   end;
 end;
-{$ENDIF COMPILER6_UP}
 
 function TJvDataConsumerProperty.GetConsumerServiceAt(Index: Integer): TJvDataConsumer;
 begin
@@ -232,13 +159,6 @@ begin
   for I := 0 to PropCount - 1 do
     SetProviderIntfAt(I, Value);
 end;
-
-{$IFNDEF COMPILER6_UP}
-function TJvDataConsumerProperty.GetInterfaceGUID: TGUID;
-begin
-  Result := IJvDataProvider;
-end;
-{$ENDIF COMPILER6_UP}
 
 procedure TJvDataConsumerProperty.GetExtensionsProperties(ConsumerSvc: TJvDataConsumer;
   Proc: TGetPropEditProc);
@@ -370,7 +290,7 @@ end;
 type
   TOpenConsumerAggregate = class(TJvDataConsumerAggregatedObject)
   end;
-  
+
 procedure TJvDataProviderItemIDProperty.GetValues(Proc: TGetStrProc);
 type
   TStackItem = record
