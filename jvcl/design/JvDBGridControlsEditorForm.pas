@@ -23,7 +23,7 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-unit JvDBGridProp;
+unit JvDBGridControlsEditorForm;
 
 {$I jvcl.inc}
 
@@ -40,14 +40,7 @@ uses
   JvDBGrid, TypInfo;
 
 type
-  TJvDBGridControlsEditor = class(TPropertyEditor)
-  public
-    procedure Edit; override;
-    function GetAttributes: TPropertyAttributes; override;
-    function GetValue: string; override;
-  end;
-
-  TfmGridProp = class(TForm)
+  TfrmJvDBGridControlsEditor = class(TForm)
     GroupBoxFields: TGroupBox;
     lbFields: TListBox;
     GroupBoxSelected: TGroupBox;
@@ -76,66 +69,21 @@ type
   end;
 
 var
-  fmGridProp: TfmGridProp;
+  frmJvDBGridControlsEditor: TfrmJvDBGridControlsEditor;
 
 implementation
 
 uses
-  SysUtils, Dialogs,
-  JvDsgnConsts, JvTypes;
+  SysUtils, Dialogs, JvDsgnConsts;
 
 {$R *.dfm}
 
-procedure TJvDBGridControlsEditor.Edit;
-var
-  Dlg: TfmGridProp;
-  CloseDataset: Boolean;
-begin
-  CloseDataset := False;
-  if TJvDBGrid(GetComponent(0)).DataSource = nil then
-    raise EJVCLException.CreateRes(@RsEJvDBGridDataSourceNeeded);
-  if TJvDBGrid(GetComponent(0)).DataSource.DataSet = nil then
-    raise EJVCLException.CreateRes(@RsEJvDBGridDataSetNeeded);
-  if not TJvDBGrid(GetComponent(0)).DataSource.DataSet.Active then
-  begin
-    TJvDBGrid(GetComponent(0)).DataSource.DataSet.Open;
-    CloseDataset := True;
-  end;
-
-  Dlg := TfmGridProp.Create(Application);
-  try
-    Dlg.JvDBGridControls.Assign(TJvDBGridControls(GetOrdValue));
-    Dlg.Grid := TJvDBGrid(GetComponent(0));
-    Dlg.Initialize;
-    Dlg.ShowModal;
-    if Dlg.ModalResult = mrOk then
-    begin
-      TJvDBGridControls(GetOrdValue).Assign(Dlg.JvDBGridControls);
-      Modified;
-    end;
-  finally
-    Dlg.Free;
-    if CloseDataset then
-      TJvDBGrid(GetComponent(0)).DataSource.DataSet.Close;
-  end;
-end;
-
-function TJvDBGridControlsEditor.GetAttributes: TPropertyAttributes;
-begin
-  Result := [paDialog, paReadOnly];
-end;
-
-function TJvDBGridControlsEditor.GetValue: string;
-begin
-  Result := '(' + GetPropType^.Name + ')';
-end;
-
-procedure TfmGridProp.FormCreate(Sender: TObject);
+procedure TfrmJvDBGridControlsEditor.FormCreate(Sender: TObject);
 begin
   JvDBGridControls := TJvDBGridControls.Create(nil);
 end;
 
-procedure TfmGridProp.Initialize;
+procedure TfrmJvDBGridControlsEditor.Initialize;
 var
   I: Integer;
 begin
@@ -150,7 +98,7 @@ begin
   lbSelectedClick(lbSelected);
 end;
 
-procedure TfmGridProp.SetControl(Name: string);
+procedure TfrmJvDBGridControlsEditor.SetControl(Name: string);
 var
   I: Integer;
 begin
@@ -163,7 +111,7 @@ begin
   cbControl.ItemIndex := -1;
 end;
 
-procedure TfmGridProp.lbSelectedClick(Sender: TObject);
+procedure TfrmJvDBGridControlsEditor.lbSelectedClick(Sender: TObject);
 begin
   if lbSelected.ItemIndex >= 0 then
   begin
@@ -183,19 +131,19 @@ begin
   end;
 end;
 
-procedure TfmGridProp.cbControlClick(Sender: TObject);
+procedure TfrmJvDBGridControlsEditor.cbControlClick(Sender: TObject);
 begin
   if lbSelected.ItemIndex >= 0 then
     JvDBGridControls.Items[lbSelected.ItemIndex].ControlName := cbControl.Text;
 end;
 
-procedure TfmGridProp.cbFillCellClick(Sender: TObject);
+procedure TfrmJvDBGridControlsEditor.cbFillCellClick(Sender: TObject);
 begin
   if lbSelected.ItemIndex >= 0 then
     JvDBGridControls.Items[lbSelected.ItemIndex].FitCell := TJvDBGridControlSize(cbFillCell.ItemIndex);
 end;
 
-procedure TfmGridProp.sbAddClick(Sender: TObject);
+procedure TfrmJvDBGridControlsEditor.sbAddClick(Sender: TObject);
 begin
   if lbFields.ItemIndex >= 0 then
   begin
@@ -214,7 +162,7 @@ begin
   end;
 end;
 
-procedure TfmGridProp.sbDeleteClick(Sender: TObject);
+procedure TfrmJvDBGridControlsEditor.sbDeleteClick(Sender: TObject);
 begin
   if lbSelected.ItemIndex >= 0 then
   begin
@@ -223,7 +171,7 @@ begin
   end;
 end;
 
-procedure TfmGridProp.FormDestroy(Sender: TObject);
+procedure TfrmJvDBGridControlsEditor.FormDestroy(Sender: TObject);
 begin
   JvDBGridControls.Free;
 end;
