@@ -857,10 +857,11 @@ begin
       end;
     end;
 
-    DccOpt := '-Q- -M';
+    { dcc32.exe crashes if the path is too long (> 100 + line number, ...}
+    if Length(JVCLPackagesDir) < 100 then DccOpt := '-Q- -M' else DccOpt := '-Q -M';
     // setup environment variables
     if TargetConfig.Build then
-      DccOpt := '-Q- -M -B';
+      if Length(JVCLPackagesDir) < 100 then DccOpt := '-Q- -M -B' else DccOpt := '-Q -M -B';
     if TargetConfig.GenerateMapFiles then
       DccOpt := DccOpt + ' -GD';
 
@@ -1035,8 +1036,13 @@ begin
         information. }
       if AutoDepend then
       begin
-        SetEnvironmentVariable('MAKEOPTIONS', '-n');
-          // get the number of packages that needs compilation
+        if not TargetConfig.DeveloperInstall and TargetConfig.DebugUnits and not DebugUnits then
+          SetEnvironmentVariable('MAKEOPTIONS', '-B -n') { make a complete make pass when the release units
+                                                           should be compiled while TargetConfig.DebugUnits are active }
+        else
+          SetEnvironmentVariable('MAKEOPTIONS', '-n');
+
+        // get the number of packages that needs compilation
         FCount := 0;
         if Make(TargetConfig, Args + ' CompilePackages', CaptureLineGetCompileCount) <> 0 then
         begin
@@ -1047,6 +1053,9 @@ begin
         FPkgCount := FCount;
       end;
       SetEnvironmentVariable('MAKEOPTIONS', nil);
+      if not TargetConfig.DeveloperInstall and TargetConfig.DebugUnits and not DebugUnits then
+        SetEnvironmentVariable('MAKEOPTIONS', '-B'); { make a complete make pass when the release units
+                                                       should be compiled while TargetConfig.DebugUnits are active }
 
       if FPkgCount > 0 then
       begin
@@ -1133,7 +1142,7 @@ begin
     Lines.Add('ROOT = $(MAKEDIR)\..');
     Lines.Add('!endif');
     Lines.Add('!ifndef DCCOPT');
-    Lines.Add('DCCOPT = -Q- -M');
+    if Length(Data.JVCLPackagesDir) < 100 then Lines.Add('DCCOPT = -Q- -M') else Lines.Add('DCCOPT = -Q -M'); { dcc32.exe bug }
     Lines.Add('!endif');
     Lines.Add('');
     Lines.Add('BPR2MAK = "$(ROOT)\bin\bpr2mak" -t..\BCB.bmk');
