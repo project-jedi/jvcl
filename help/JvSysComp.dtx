@@ -5,28 +5,32 @@
   
   First use the properties of TJvCreateProcess to specify how and which process must be created:
   
-  * Set ApplicationName to a string to specify the module to execute. 
-  * Set CommandLine to a string to specify the command line to execute.
-  * Use WaitForTerminate to specify whether TJvCreateProcess must wait for the process to end. If
-    you set WaitForTerminate to True, specify an OnTerminate event handler to execute code after 
+  * Set <LINK TJvCreateProcess.ApplicationName,ApplicationName> to a string to specify the module to execute. 
+  * Set <LINK TJvCreateProcess.CommandLine,CommandLine to a string to specify the command line to execute.
+  * Use <LINK TJvCreateProcess.WaitForTerminate,WaitForTerminate> to specify whether TJvCreateProcess
+    must wait for the process to end. If you set <LINK TJvCreateProcess.WaitForTerminate,WaitForTerminate>
+    to True, specify an <LINK TJvCreateProcess.OnTerminate,OnTerminate> event handler to execute code after 
     the process finishes executing. 
 
   You might also set the following properties:
   
-  * Use StartupInfo to specify the window station, desktop, and appearance of the main window for 
-    the new process.
-  * Set CurrentDirectory to a drive and directory to specify another drive and directory for the 
-    new process than the current application.
-  * Use Environment to specify another environment for the new process than the current application.
-  * Set CreationFlags to control the creation of the process.
-  * Set Priority to specify another priority class for the new process than the default ppNormal.
+  * Use <LINK TJvCreateProcess.StartupInfo,StartupInfo> to specify the window station, desktop, and
+    appearance of the main window for the new process.
+  * Set <LINK TJvCreateProcess.CurrentDirectory,CurrentDirectory> to a drive and directory to specify
+    another drive and directory for the new process than the current application.
+  * Use <LINK TJvCreateProcess.Environment,Environment> to specify another environment for the new
+    process than the current application.
+  * Set <LINK TJvCreateProcess.CreationFlags.CreationFlags> to control the creation of the process.
+  * Set <LINK TJvCreateProcess.Priority.Priority> to specify another priority class for the new process
+    than the default ppNormal.
   
-  After setting these properties you can call Run to start the application or process. After 
-  succesfully creating the new process, you can call CloseApplication or Terminate to stop the
-  application. 
+  After setting these properties you can call <LINK TJvCreateProcess.Run,Run> to start the application
+  or process. After succesfully creating the new process, you can call <LINK TJvCreateProcess.CloseApplication,
+  CloseApplication> or <LINK TJvCreateProcess.Terminate,Terminate> to stop the application. 
   
-  If WaitForTerminate is set to True, the component waits for the process to end and then triggers
-  an OnTerminate event. You can stop waiting for the process to end by calling StopWaiting.
+  If <LINK TJvCreateProcess.WaitForTerminate,WaitForTerminate> is set to True, the component waits
+  for the process to end and then triggers an <LINK TJvCreateProcess.OnTerminate,OnTerminate> event.
+  You can stop waiting for the process to end by calling <LINK TJvCreateProcess.StopWaiting,StopWaiting>.
 ----------------------------------------------------------------------------------------------------
 @@JvSysComp.pas
 Summary
@@ -42,17 +46,18 @@ Description
   EJvProcessError is raised when the user calls a method of TJvCreateProcess while <LINK TJvCreateProcess.State,
   State> has an invalid value.
   
-  For example, if TJvCreateProcess is waiting for a process to end, calling Run raises an 
-  EJvProcessError error.
+  For example, if TJvCreateProcess is waiting for a process to end, calling <LINK TJvCreateProcess.Run,
+  Run> raises an EJvProcessError error.
 ----------------------------------------------------------------------------------------------------
 @@TJvCPSFlag
 Summary
-  Controls the creation of the process.
+  \Controls the creation of a process by a TJvCreateProcess component.
 Description
-  Use CreationFlags to control the creation of the process.
+  TJvCPSFlag values controls the creation of a process by a TJvCreateProcess component.
 
-  CreationFlags can have any of the following values:
+  TJvCPSFlags is a set of TJvCPSFlag values.
 
+  The following table lists the possible values:
 @@TJvCPSFlag.cfDefaultErrorMode
   The new process does not inherit the error mode of the calling process. Instead, the new process 
   gets the current default error mode. 
@@ -82,7 +87,7 @@ Description
   The new process is run in the shared Virtual DOS Machine.
 @@TJvCPSFlag.cfSuspended
   The primary thread of the new process is created in a suspended state, and does not run until the 
-  <LINK TJvCreateProcess.ResumeThread,ResumeThread> function is called.
+  Windows API function ResumeThread is called.
 @@TJvCPSFlag.cfUnicode
   Windows NT/2000/XP: Indicates the format of the <LINK TJvCreateProcess.Environment,Environment> 
   property. If this flag is set, property <LINK TJvCreateProcess.Environment,Environment> uses Unicode 
@@ -91,7 +96,8 @@ Description
   For console processes, the new process does not inherit its parent's console (the default). The 
   new process can call the AllocConsole function at a later time to create a console. For more 
   information, see 'Creation of a Console' in the MSDN library. 
-  This option is only valid if <TJvCreateProcess.CreationFlags,CreationFlags> doesn't include cfNewConsole.  
+  This option is only valid if <LINK TJvCreateProcess.CreationFlags,CreationFlags> doesn't include
+  cfNewConsole.  
 See Also
   Priority, Run
 ----------------------------------------------------------------------------------------------------
@@ -100,12 +106,10 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCPSShowWindow
 Summary
-  Specifies how the launched application window appears.
+  Represents different ways how a launched application window can appear.
 Description
-  Use ShowWindow to indicate how you want the application window to appear when TJvCreateProcess 
-  creates a new process. Set DefaultWindowState to True to ignore this property.
-
-  ShowWindow can have any of the following values:
+  The TJvCPSShowWindow type defines values describing how the launched application window appears,
+  when TJvCreateProcess creates a new process. TJvCPSShowWindow represents the following values:
 @@TJvCPSShowWindow.swHide
   The external application window is hidden. If it was active, another window is activated.
 @@TJvCPSShowWindow.swMinimize
@@ -140,8 +144,6 @@ Description
   * DefaultPosition is set to True.
   * DefaultWindowState is set to True.
   * ShowWindow is set to swNormal.
-Parameters
-  None.
 ----------------------------------------------------------------------------------------------------
 @@TJvCPSStartupInfo.AssignTo
 Summary
@@ -285,21 +287,21 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCPSState
 Summary
-  Indicates the current operating mode of a TJvCreateProcess component.
+  Represents different operating modes of a TJvCreateProcess component.
 Description
-  TJvCPSState indicates the current operating mode of that JvCreateProcess component.
-  The following table lists all possible values in the TJvCPSState type and describes what they 
-  indicate in the State property:
-  
+  The TJvCPSState type represents diffent operating modes of a JvCreateProcess component.
+  TJvCPSState represents the following values:
 @@TJvCPSState.psReady
-  TJvCreateProcess isn't monitoring any process. A process can be started by calling Run.
+  TJvCreateProcess isn't monitoring any process. A process can be started by calling 
+  <LINK TJvCreateProcess.Run,Run>.
 @@TJvCPSState.psRunning
-  A process is started, it can be stopped by calling Terminate. Another process can be started by calling
-  Run.
+  A process is started, it can be stopped by calling <LINK TJvCreateProcess.Terminate,Terminate>.
+  Another process can be started by calling <LINK TJvCreateProcess.Run,Run>.
 @@TJvCPSState.psWaiting
   TJvCreateProcess has started a process, and is now waiting for it to end; the process can be stopped
-  by calling Terminate. The user cannot call Run until the process ends, or StopWaiting must be called 
-  to stop waiting for the process to end. 
+  by calling <LINK TJvCreateProcess.Terminate,Terminate>. The user cannot call <LINK TJvCreateProcess.Run,
+  Run> until the process ends, or <LINK TJvCreateProcess.StopWaiting,StopWaiting> must be called to
+  stop waiting for the process to end. 
 ----------------------------------------------------------------------------------------------------
 @@TJvCreateProcess
 <TITLEIMG TJvCreateProcess>
@@ -346,7 +348,6 @@ Description
   * Priority is set to ppNormal.
   * State is set to psReady.
   * WaitForTerminate is set to True.
-  
 Parameters
   AOwner - A component, typically the form, that is responsible for freeing the component.
 See Also
@@ -358,8 +359,6 @@ Summary
 Description
   Do not call Destroy directly in an application. Instead, call Free. Free verifies that the 
   TJvCreateProcess object is not nil and only then calls Destroy.
-Parameters
-  None.
 See Also
   Create
 ----------------------------------------------------------------------------------------------------
@@ -379,13 +378,13 @@ Description
   first white space-delimited token in the string specified by CommandLine. If you are using a long 
   file name that contains a space, use quoted strings to indicate where the file name ends and the 
   arguments begin; otherwise, the file name is ambiguous. For example, consider the string 
-  "c:\program files\sub dir\program name". This string can be interpreted in a number of ways. 
+  "c:\\program files\\sub dir\\program name". This string can be interpreted in a number of ways. 
   The system tries to interpret the possibilities in the following order: 
 
-  * <B>c:\program.exe</B> files\sub dir\program name
-  * <B>c:\program files\sub.exe</B> dir\program name
-  * <B>c:\program files\sub dir\program.exe</B> name
-  * <B>c:\program files\sub dir\program name.exe</B> 
+  * <B>c:\\program.exe</B> files\\sub dir\\program name
+  * <B>c:\\program files\\sub.exe</B> dir\\program name
+  * <B>c:\\program files\\sub dir\\program.exe</B> name
+  * <B>c:\\program files\\sub dir\\program name.exe</B> 
 See Also
   CommandLine, Run
 ----------------------------------------------------------------------------------------------------
@@ -395,8 +394,6 @@ Summary
 Description
   Applications can’t call this protected method. It is used internally in methods that affect the
   process, to check whether the change is permitted, and if not, raise an exception.
-Parameters
-  None.
 See Also
   CheckRunning
 ----------------------------------------------------------------------------------------------------
@@ -406,8 +403,6 @@ Summary
 Description
   Applications can’t call this protected method. It is used internally in methods that affect the
   process, to check whether the change is permitted, and if not, raise an exception.
-Parameters
-  None.
 See Also
   CheckNotWaiting
 ----------------------------------------------------------------------------------------------------
@@ -431,8 +426,6 @@ Summary
 Description
   Applications can’t call the protected CloseProcessHandles method. It is used internally by TJvCreateProcess
   to close used handles.
-Parameters
-  None.
 ----------------------------------------------------------------------------------------------------
 @@TJvCreateProcess.CommandLine
 Summary
@@ -465,7 +458,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCreateProcess.CreationFlags
 Summary
-  Controls the creation of the process.
+  \Controls the creation of the process.
 Description
   Use CreationFlags to control the creation of the process.
 ----------------------------------------------------------------------------------------------------
@@ -511,7 +504,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCreateProcess.Priority
 Summary
-  Controls the priority class of a process created with TJvCreateProcess.
+  \Controls the priority class of a process created with TJvCreateProcess.
 Description
   Priority controls the new process's priority class, which is used to determine the scheduling 
   priorities of the process's threads. The system schedules CPU cycles to each process based 
@@ -539,8 +532,6 @@ Description
   You can stop the created process by calling StopApplication or Terminate.
   
   Note that you cannot call Run if State is psWaiting.
-Parameters
-  None.
 See Also
   ApplicationName, CloseApplication, CommandLine, CreationFlags, CurrentDirectory, Environment,
   OnTerminate, Priority, ProcessInfo, StartupInfo, State, StopWaiting, Terminate, WaitForTerminate
@@ -592,8 +583,6 @@ Description
   If the process ends, no OnTerminate event will be fired.
 
   Note that you cannot call StopWaiting if State is psReady.
-Parameters
-  None.
 See Also
   Terminate, WaitForTerminate
 ----------------------------------------------------------------------------------------------------
@@ -605,8 +594,6 @@ Description
   the created process to exit. Use it only in extreme circumstances, otherwise use CloseApplication.
 
   Note that you cannot call Terminate if State is psReady.
-Parameters
-  None.
 See Also
   CloseApplication, StopWaiting
 ----------------------------------------------------------------------------------------------------
@@ -616,8 +603,6 @@ Summary
 Description
   Applications can’t call this protected method. It is used internally by StopWaiting to stop waiting
   for the process to end.
-Parameters
-  None.
 See Also
   StopWaiting
 ----------------------------------------------------------------------------------------------------
@@ -756,14 +741,10 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvProcessPriority
 Summary
-  Controls the priority class of a process created with TJvCreateProcess.
+  Represents types of priority classes of a process created with TJvCreateProcess.
 Description
-  Priority controls the new process's priority class, which is used to determine the scheduling 
-  priorities of the process's threads. The system schedules CPU cycles to each process based 
-  on a priority scale; the Priority property adjusts a process's priority higher or lower on the scale. 
-
-  Priority can have any of the following values:
-
+  The TJvProcessPriority type defines values that represents the priority class of a process created
+  with TJvCreateProcess. TJvProcessPriority represents the following values:
 @@TJvProcessPriority.ppIdle
   Process whose threads run only when the system is idle and are preempted by the threads of any process 
   running in a higher priority class. An example is a screen saver. The idle priority class is inherited 
@@ -782,5 +763,5 @@ Description
   For example, a real-time process that executes for more than a very brief interval can cause disk 
   caches not to flush or cause the mouse to be unresponsive.
 See Also
-  CreationFlags, Run
+  <LINK TJvCreateProcess.CreationFlags,CreationFlags>, <LINK TJvCreateProcess.Run,Run>
 ----------------------------------------------------------------------------------------------------

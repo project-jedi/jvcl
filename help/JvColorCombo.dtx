@@ -102,7 +102,7 @@ See Also
 Summary
   Occurs when the users adds a new color to the combo box.
 Description
-  Write an OnNewColor event handler to take specific actions as an user adds a new color to the
+  \Write an OnNewColor event handler to take specific actions as an user adds a new color to the
   combo box.
 Parameters
   Sender      - The TJvColorComboBox component that has sent this event.
@@ -119,14 +119,29 @@ See Also
   ColorDialogText, NewColorText, Options
 ----------------------------------------------------------------------------------------------------
 @@TJvColorComboBox.Options
-<COMBINEWITH TJvColorComboOption>
-----------------------------------------------------------------------------------------------------
-@@TJvColorComboOption
 Summary
   Determines the appearance and behavior of the color combo box.
 Description
-  Use the Options property to customize the appearance and functionality of the combo box. The 
-  possible values of Options are:
+  Use the Options property to customize the appearance and functionality of the combo box.
+  
+  Use Options to
+  
+  * Specify how the color value must be displayed.
+  * Enable the user to add colors to the combo box.
+  * Add the system colors to the combo box.
+See Also
+  TJvColorComboOption
+----------------------------------------------------------------------------------------------------
+@@TJvColorComboOption
+Summary
+  Defines values that control the appearance and behavior of a color combo box.
+Description
+  The TJvColorComboOption type defines values that control the appearance and behavior of a color
+  combo box.
+
+  TJvColorComboOptions is a set of TJvColorComboOption values.
+
+  The following table lists the possible values:
 @@TJvColorComboOption.coText
   Displays the name of the color.
 @@TJvColorComboOption.coHex
@@ -138,6 +153,8 @@ Description
 @@TJvColorComboOption.coCustomColors
   Allows the user to add colors to the combo box, by selecting the special combo box item with text
   ColorDialogText.
+See Also
+  <LINK TJvColorComboBox.Options,TJvColorComboBox.Options>
 ----------------------------------------------------------------------------------------------------
 @@TJvColorComboOptions
 <COMBINEWITH TJvColorComboOption>
@@ -195,7 +212,17 @@ See Also
   HiliteColor
 ----------------------------------------------------------------------------------------------------
 @@TJvFontComboBox.Options
-<COMBINEWITH TJvFontComboOption>
+Summary
+  Determines the appearance and behavior of the font combo box.
+Description
+  Use the Options property to customize the appearance and functionality of the combo box.
+  
+  Use Options to
+  
+  * Specify which type of fonts the combobox should contain.
+  * Display each font name in the combo box using the specific font.
+See Also
+  TJvFontComboOptions
 ----------------------------------------------------------------------------------------------------
 @@TJvFontComboBox.UseImages
 Summary
@@ -215,10 +242,14 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvFontComboOption
 Summary
-  Determines the appearance and behavior of the Font combo box.
+  Defines values that control the appearance and behavior of a font combo box.
 Description
-  Use the Options property to customize the appearance and functionality of the combo box. The 
-  possible values of Options are:
+  The TJvFontComboOption type defines values that control the appearance and behavior of a font
+  combo box.
+
+  TJvFontComboOptions is a set of TJvFontComboOption values.
+
+  The following table lists the possible values:
 @@TJvFontComboOption.foAnsiOnly
   Displays only fonts that use the Windows character set. Symbol fonts are not listed in the dialog.
 @@TJvFontComboOption.foTrueTypeOnly
@@ -234,6 +265,8 @@ Description
   Displays only scalable fonts in the combo box. Non-scalable (bitmap) fonts are removed from the list.
 @@TJvFontComboOption.foWysiWyg
   Displays each font name in the combo box using the specific font.
+See Also
+  <LINK TJvFontComboBox.Options,TJvFontComboBox.Options>
 ----------------------------------------------------------------------------------------------------
 @@TJvFontComboOptions
 <COMBINEWITH TJvFontComboOption>
