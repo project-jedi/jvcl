@@ -28,6 +28,7 @@ default: \
   JvDialogs.exe \
   JvEdits.exe \
   JvInstallProj.exe \
+  JvLinkLabelDemo.exe \
   JvMousePositionnerProj.exe \
   JvMruList.exe \
   JvOutlookPanelProj.exe \
@@ -41,13 +42,13 @@ default: \
   JvZoomProj.exe
 #---------------------------------------------------------------------------------------------------
 
-UseCase.exe: DiagramUseCaseEditor\UseCase.dpr
-  cd DiagramUseCaseEditor
+UseCase.exe: Diagram2UseCaseEditor\UseCase.dpr
+  cd Diagram2UseCaseEditor
   $(DCC) $&.dpr
   cd ..
 
-WebMapper.exe: DiagramWebSiteScanner\WebMapper.dpr
-  cd DiagramWebSiteScanner
+WebMapper.exe: Diagram1WebSiteScanner\WebMapper.dpr
+  cd Diagram1WebSiteScanner
   $(DCC) $&.dpr
   cd ..
 
@@ -88,6 +89,11 @@ JvEdits.exe: JvEdits\JvEdits.dpr
 
 JvInstallProj.exe: JvInstall\JvInstallProj.dpr
   cd JvInstall
+  $(DCC) $&.dpr
+  cd ..
+
+JvLinkLabelDemo.exe: JvLinkLabel\JvLinkLabelDemo.dpr
+  cd JvLinkLabel
   $(DCC) $&.dpr
   cd ..
 
