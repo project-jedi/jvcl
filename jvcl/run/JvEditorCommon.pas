@@ -2934,14 +2934,11 @@ begin
           0, // handle of scrolling region
           @RUpdate // address of structure for update rectangle
           );
-        if (RUpdate.Left = 0) and (RUpdate.Top = 0) and
-           (RUpdate.Right = 0) and (RUpdate.Bottom = 0) then
-          Invalidate
-        else
-        begin
-          Inc(RUpdate.Bottom, CellRect.Height);
-          InvalidateRect(Handle, @RUpdate, False);
-        end;
+        // (ahuser) WinNT seams to have problems with ScrollDC in vertical direction. (Mantis #2528)
+        if (Win32Platform = VER_PLATFORM_WIN32_NT) and (Win32MajorVersion < 5) then
+          Dec(RUpdate.Top, CellRect.Height);
+        Inc(RUpdate.Bottom, CellRect.Height);
+        InvalidateRect(Handle, @RUpdate, False);
       end
       else
       {$ENDIF VCL}
@@ -2969,14 +2966,8 @@ begin
           0, // handle of scrolling region
           @RUpdate // address of structure for update rectangle
           );
-        if (RUpdate.Left = 0) and (RUpdate.Top = 0) and
-           (RUpdate.Right = 0) and (RUpdate.Bottom = 0) then
-          Invalidate
-        else
-        begin
-          Inc(RUpdate.Right, CellRect.Width); // draw italic chars correctly
-          InvalidateRect(Handle, @RUpdate, False);
-        end;
+        Inc(RUpdate.Right, CellRect.Width); // draw italic chars correctly
+        InvalidateRect(Handle, @RUpdate, False);
       end
       else
       {$ENDIF VCL}
