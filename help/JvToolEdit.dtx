@@ -177,6 +177,50 @@ See Also
 @@TGlyphKind.gkEllipsis
   Ellipsis.
 ----------------------------------------------------------------------------------------------------
+@@TJvAutoCompleteOption
+<TITLE TJvAutoCompleteOption type>
+Summary
+  Enumerates auto completion options.
+Description
+  Use the TJvAutoCompleteOption type to specify auto completion options.
+  
+  TJvAutoCompleteOptions is a set of TJvAutoCompleteOption values.
+See Also
+  TJvFileDirEdit.AutoCompleteOptions
+@@TJvAutoCompleteOption.acoAutoappendForceOff
+  Ignores the registry default and force the autoappend feature off.
+@@TJvAutoCompleteOption.acoAutoappendForceOn
+  Ignore the registry value and force the autoappend feature on. The completed string will be displayed 
+  in the edit box with the added characters highlighted. 
+@@TJvAutoCompleteOption.acoAutosuggestForceOff
+  Ignore the registry default and force the autosuggest feature off.
+@@TJvAutoCompleteOption.acoAutosuggestForceOn
+  Ignore the registry value and force the autosuggest feature on. A selection of possible completed
+  strings will be displayed as a drop-down list, below the edit box. 
+@@TJvAutoCompleteOption.acoDefault
+  The default setting, currently equivalent to acoFileSystem and acoURLAll. acoDefault cannot be combined
+  with any other flags.
+@@TJvAutoCompleteOption.acoFileSystem
+  Includes the file system.
+@@TJvAutoCompleteOption.acoFileSysDirs
+  Includes the file system, but only directories, UNC servers, and UNC server shares.
+@@TJvAutoCompleteOption.acoURLAll
+  Includes the URLs in the users History and Recently Used lists. Equivalent to acoURLHistory and SHACF_URLMRU.
+@@TJvAutoCompleteOption.acoURLHistory
+  Includes the URLs in the user's History list.
+@@TJvAutoCompleteOption.acoURLMRU
+  Includes the URLs in the user's Recently Used list.
+@@TJvAutoCompleteOption.acoUseTab
+  Allows the user to select from the autosuggest list by pressing the Tab key. If this flag is not set,
+  pressing the Tab key will shift focus to the next control and close the autosuggest list. 
+  If acoUseTab is set, pressing the TAB key will select the first item in the list. Pressing Tab again 
+  will select the next item in the list, and so on. When the user reaches the end of the list, the next 
+  Tab key press will cycle the focus back to the edit control. 
+----------------------------------------------------------------------------------------------------
+@@TJvAutoCompleteOptions
+<TITLE TJvAutoCompleteOptions type>
+<COMBINE TJvAutoCompleteOption>
+----------------------------------------------------------------------------------------------------
 @@TJvComboEdit
 <TITLEIMG TJvComboEdit>
 JVCLInfo
@@ -757,6 +801,35 @@ Description
   dropped files.
 See Also
   TJvDirectoryEdit.MultipleDirs, OnDropFiles
+----------------------------------------------------------------------------------------------------
+@@TJvFileDirEdit.AutoComplete
+Summary
+  Specifies whether to use auto completion for the edit box.
+Description
+  Use the AutoComplete property to specify whether to use auto completion to help complete URLs or 
+  file system paths. 
+
+  Use AutoCompleteOptions to control the auto completion.
+See Also
+  AutoCompleteOptions
+----------------------------------------------------------------------------------------------------
+@@TJvFileDirEdit.AutoCompleteOptions
+Summary
+  Controls the auto completion.
+Description
+  Use AutoCompleteOptions to specify whether to:
+  
+  * Force on or off the autoappend feature. The completed string will be displayed in the edit box 
+     with the added characters highlighted. 
+  * Force on or off the autosuggest feature. A selection of possible completed strings will be 
+     displayed as a drop-down list, below the edit box.
+  * Include the file system.
+  * Include URLs.
+  * Allow the user to select from the autosuggest list by pressing the Tab key.
+Note
+  AutoComplete must be set to true, otherwise no auto completion is done.
+See Also
+  AutoComplete
 ----------------------------------------------------------------------------------------------------
 @@TJvFileDirEdit.LongName
 Summary
