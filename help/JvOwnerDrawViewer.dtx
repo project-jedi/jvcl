@@ -1,5 +1,5 @@
 ##Package: Custom
-##Status: Locked by peter3
+##Status: Completed
 ----------------------------------------------------------------------------------------------------
 @@JvOwnerDrawViewer.pas
 Summary
@@ -15,15 +15,6 @@ Description
   TJvOwnerDrawViewer provides the Options property to control the
   appearance of the items in the grid, as well as the OnDrawItem event to draw the items.
 ----------------------------------------------------------------------------------------------------
-@@TJvOwnerDrawViewer.GetOptionsClass
-Summary
-  Returns the class of the Options property.
-Description
-  TJvOwnerDrawViewer overrides the GetOptionsClass method to return an Option class of type
-  TJvOwnerDrawViewerOptions.
-See Also
-  Options, TJvOwnerDrawViewerOptions
-----------------------------------------------------------------------------------------------------
 @@TJvOwnerDrawViewer.OnDrawItem
 Summary
   Event that is called when the items in the grid needs to be painted.
@@ -35,9 +26,10 @@ Description
 Summary
   Defines the available options for the control.
 Description
-  Options defines the available options of a TJvOwnerDrawViewer control and is of type TJvOwnerDrawViewerOptions.
+  Options defines the available options of a TJvOwnerDrawViewer control and is of
+  type TJvOwnerDrawViewerOptions.
 See Also
-  GetOptionsClass, TJvOwnerDrawViewerOptions
+  TJvOwnerDrawViewerOptions
 ----------------------------------------------------------------------------------------------------
 @@TJvOwnerDrawViewerOptions
 Summary
@@ -73,7 +65,7 @@ Summary
   Defines the color pattern used for selected items.
 Description
   Use the properties and methods of BrushPattern to define how the background of selected items should be
-  drawn. 
+  drawn.
 ----------------------------------------------------------------------------------------------------
 @@TJvOwnerDrawViewerOptions.DragAutoScroll
 Summary
@@ -165,8 +157,8 @@ Summary
 Description
   Set ShowCaptions to true to adjust the TRects passed to OnDrawItem to make room for a caption.
 
-  Since the owner draw viewer doesn't have its own Caption, it is up to you to draw the text on the items in the
-  OnDrawItem.
+  Since the owner draw viewer doesn't have its own Caption, it is up to you to draw the text of each item
+  in the OnDrawItem.
 See Also
   Alignment, Layout
 ----------------------------------------------------------------------------------------------------
