@@ -68,6 +68,11 @@ type
   end;
 
 const
+  { References:
+      http://www.w3.org/TR/REC-html40/charset.html#h-5.3
+      http://www.w3.org/TR/REC-html40/sgml/entities.html#h-24.2.1
+      http://www.w3.org/TR/REC-html40/sgml/entities.html#h-24.4.1
+  }
   Conversions: array [1..72] of TJvHtmlCodeRec = (
     (Ch: '"'; Html: '&quot;'),
     (Ch: '<'; Html: '&lt;'),
