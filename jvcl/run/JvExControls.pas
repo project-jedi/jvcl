@@ -64,6 +64,14 @@ type
   );
   TDlgCodes = set of TDlgCode;
 
+  TResizeReason = (rrRestored, rrMinimized, rrMaximized, rrMaxShow, rrMaxHide);
+
+  TSizeChangedInfo = record
+    Reason: TResizeReason;
+    NewWidth: Integer;
+    NewHeight: Integer;
+  end;
+
 {$IFDEF VisualCLX}
   HWND = QWindows.HWND;
 {$ENDIF VisualCLX}
@@ -105,6 +113,7 @@ type
     procedure DoGetDlgCode(var Code: TDlgCodes); // WM_GETDLGCODE
     procedure DoSetFocus(FocusedWnd: HWND);  // WM_SETFOCUS
     procedure DoKillFocus(FocusedWnd: HWND); // WM_KILLFOCUS
+    procedure DoSizeChanged(var Info: TSizeChangedInfo); // WM_SIZE
   end;
 
   IJvCustomControlEvents = interface
@@ -260,6 +269,7 @@ type
     procedure MouseLeave(Control: TControl); override;
    {$IFEND}
   protected
+    procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
@@ -287,6 +297,7 @@ type
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
+    procedure DoSizeChanged(var Info: TSizeChangedInfo); virtual;
   {$IFDEF VisualCLX}
   private
     FCanvas: TCanvas;
@@ -430,6 +441,7 @@ type
     procedure MouseLeave(Control: TControl); override;
    {$IFEND}
   protected
+    procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
@@ -457,6 +469,7 @@ type
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
+    procedure DoSizeChanged(var Info: TSizeChangedInfo); virtual;
   
   end;
   TJvExPubCustomControl = class(TJvExCustomControl)
@@ -519,6 +532,7 @@ type
     procedure MouseLeave(Control: TControl); override;
    {$IFEND}
   protected
+    procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
@@ -546,6 +560,7 @@ type
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
+    procedure DoSizeChanged(var Info: TSizeChangedInfo); virtual;
   
   end;
   TJvExPubHintWindow = class(TJvExHintWindow)
@@ -642,6 +657,7 @@ var
   CallInherited: Boolean;
   Canvas: TCanvas;
   DlgCodes: TDlgCodes;
+  Info: TSizeChangedInfo;
 begin
   CallInherited := True;
   PMsg := @Msg;
@@ -775,6 +791,15 @@ begin
               with PMsg^ do
                 Result := InheritMsg(Instance, Msg, WParam, LParam);
               DoKillFocus(HWND(PMsg^.WParam));
+            end;
+
+          WM_SIZE:
+            with PMsg^ do
+            begin
+              Info.Reason := TResizeReason(WParam);
+              Info.NewWidth := Word(LParam);
+              Info.NewHeight := Word(LParam shr 16);
+              DoSizeChanged(Info);
             end;
         else
           CallInherited := True;
@@ -1359,6 +1384,17 @@ begin
   Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
     inherited NeedKey(Key, Shift, KeyText));
 end;
+
+procedure TJvExWinControl.BoundsChanged;
+var
+  Info: TSizeChangedInfo;
+begin
+  Info.Reason := rrRestored;
+  Info.NewWidth := Width;
+  Info.NewHeight := Height;
+  DoSizeChanged(Info);
+  inherited BoundsChanged;
+end;
 {$ENDIF VisualCLX}
 procedure TJvExWinControl.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
@@ -1388,6 +1424,14 @@ end;
 
 procedure TJvExWinControl.DoKillFocus(FocusedWnd: HWND);
 begin
+end;
+
+procedure TJvExWinControl.DoSizeChanged(var Info: TSizeChangedInfo);
+begin
+  {$IFDEF VCL}
+  InheritMsg(Self, WM_SIZE, Integer(Info.Reason),
+    MakeLParam(Word(Info.NewWidth), Word(Info.NewHeight)));
+  {$ENDIF VCL}
 end;
 
 {$IFDEF VCL}
@@ -1726,6 +1770,17 @@ begin
   Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
     inherited NeedKey(Key, Shift, KeyText));
 end;
+
+procedure TJvExCustomControl.BoundsChanged;
+var
+  Info: TSizeChangedInfo;
+begin
+  Info.Reason := rrRestored;
+  Info.NewWidth := Width;
+  Info.NewHeight := Height;
+  DoSizeChanged(Info);
+  inherited BoundsChanged;
+end;
 {$ENDIF VisualCLX}
 procedure TJvExCustomControl.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
@@ -1755,6 +1810,14 @@ end;
 
 procedure TJvExCustomControl.DoKillFocus(FocusedWnd: HWND);
 begin
+end;
+
+procedure TJvExCustomControl.DoSizeChanged(var Info: TSizeChangedInfo);
+begin
+  {$IFDEF VCL}
+  InheritMsg(Self, WM_SIZE, Integer(Info.Reason),
+    MakeLParam(Word(Info.NewWidth), Word(Info.NewHeight)));
+  {$ENDIF VCL}
 end;
 
 constructor TJvExCustomControl.Create(AOwner: TComponent);
@@ -1920,6 +1983,17 @@ begin
   Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
     inherited NeedKey(Key, Shift, KeyText));
 end;
+
+procedure TJvExHintWindow.BoundsChanged;
+var
+  Info: TSizeChangedInfo;
+begin
+  Info.Reason := rrRestored;
+  Info.NewWidth := Width;
+  Info.NewHeight := Height;
+  DoSizeChanged(Info);
+  inherited BoundsChanged;
+end;
 {$ENDIF VisualCLX}
 procedure TJvExHintWindow.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
@@ -1949,6 +2023,14 @@ end;
 
 procedure TJvExHintWindow.DoKillFocus(FocusedWnd: HWND);
 begin
+end;
+
+procedure TJvExHintWindow.DoSizeChanged(var Info: TSizeChangedInfo);
+begin
+  {$IFDEF VCL}
+  InheritMsg(Self, WM_SIZE, Integer(Info.Reason),
+    MakeLParam(Word(Info.NewWidth), Word(Info.NewHeight)));
+  {$ENDIF VCL}
 end;
 
 constructor TJvExHintWindow.Create(AOwner: TComponent);
@@ -2190,7 +2272,7 @@ finalization
 
 {$IFDEF VisualCLX}
 
-// Handles DoSetFocus and DoKillFocus
+// Handles DoSetFocus and DoKillFocus, DoSizeChanged, DoMoved
 
 function AppEventFilter(App: TApplication; Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 var
