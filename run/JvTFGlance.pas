@@ -39,6 +39,10 @@ uses
 {$I JVCL.INC}
 
 type
+{$IFDEF BCB}
+  TDate = TDateTime;
+{$ENDIF}
+
   EJvTFGlanceError = class(Exception);
   EGlanceViewerError = class(EJvTFGlanceError);
 

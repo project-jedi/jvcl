@@ -48,19 +48,10 @@ interface
 // and tested.
 
 uses
-   Windows,
-   Messages,
-   SysUtils,
-   Classes,
-   Graphics,
-   Controls,
-   Forms,
-   Dialogs,
-   StdCtrls,
-   JvTFManager,
-   JvTFSparseMatrix,
-   ImgList,
-   {$IFDEF UseJVCL}JvTypes, {$ENDIF}
+   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+   StdCtrls, ImgList,
+   JvTFManager, JvTFSparseMatrix,
+   {$IFDEF UseJVCL}JvTypes, {$ENDIF},
    JvTFUtils;
 
 const
@@ -70,7 +61,13 @@ const
    gcGroupHdr = -2;
    gcHdr = -1;
 
+{$HPPEMIT '#define TDate Controls::TDate'}
 type
+{$IFDEF BCB}
+  TDate = TDateTime;
+  TTime = TDateTime;
+{$ENDIF}
+
    EJvTFDaysError = class(Exception);
 
 {$IFDEF TIMEBLOCKS}

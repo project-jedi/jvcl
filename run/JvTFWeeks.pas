@@ -36,6 +36,10 @@ uses
   JvTFManager, JvTFGlance, JvTFUtils{$IFDEF UseJVCL}, JvTypes{$ENDIF};
 
 type
+{$IFDEF BCB}
+  TDate = TDateTime;
+{$ENDIF}
+
   TJvTFDispOrder = (doLeftRight, doTopBottom);
 
   TJvTFWeeks = class(TJvTFCustomGlance)

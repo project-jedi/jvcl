@@ -33,14 +33,15 @@ unit JvTFAlarm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Controls, ExtCtrls, JvTFManager, 
-  Graphics, 
-  Forms, 
-  Dialogs, 
-  Menus, 
-  StdCtrls;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Menus, StdCtrls, ExtCtrls, JvTFManager;
 
 type
+{$IFDEF BCB}
+  TDate = TDateTime;
+  TTime = TDateTime;
+{$ENDIF}
+
   TJvTFAlarm = class;
 
   TJvTFAlarmInfo = class
