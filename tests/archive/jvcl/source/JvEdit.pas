@@ -26,8 +26,11 @@ Merging done 2002-06-05 by Peter Thornqvist [peter3@peter3.com]
 Contributor(s):
   Anthony Steele [asteele@iafrica.com]
   Peter Below [100113.1101@compuserve.com]
+  Rob den Braasem [rbraasem@xs4all.nl] (GroupIndex property - using several TJvEdits with the same GroupIndex
+    will clear the text from the other edits when something is typed into one of them.
+    To disable GroupIndex, set it to -1)
 
-Last Modified: 2002-06-10
+Last Modified: 2002-11-18
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -45,12 +48,11 @@ This unit is only supported on Windows!
 
 unit JvEdit;
 
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, StdCtrls, Dialogs, Forms, JvComponent,
-  JvPropAutoSave, JvMaxPixel, JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, StdCtrls, Dialogs, Forms,
+  JvComponent, JvPropAutoSave, JvMaxPixel, JVCLVer;
 
 type
   TJvCustomEdit = class(TCustomEdit)
@@ -72,6 +74,8 @@ type
     FMaxPixel: TJvMaxPixel;
     FCaret: TJvCaret;
     FClipBoardCommands: TJvClipboardCommands;
+    FGroupIndex: Integer;
+    FOnKeyDown: TKeyEvent;
     procedure SetCaret(const Value: TJvCaret);
     procedure CaretChanged(sender: TObject); dynamic;
     procedure WMSetFocus(var msg: TMessage); message WM_SETFOCUS;
@@ -94,6 +98,10 @@ type
     function GetReadOnly: boolean;
     procedure SetReadOnly(const Value: boolean);
     procedure SetClipBoardCommands(const Value: TJvClipboardCommands);
+    procedure SetGroupIndex(const Value: Integer);
+    procedure UpdateEdit;
+    procedure LocalKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   protected
     procedure Change; override;
     procedure MaxPixelChanged(Sender: TObject);
@@ -116,12 +124,13 @@ type
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
     property MaxPixel: TJvMaxPixel read FMaxPixel write FMaxPixel;
     property ReadOnly: boolean read GetReadOnly write SetReadOnly;
-
+    property GroupIndex: Integer read FGroupIndex write SetGroupIndex;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property OnRestored: TNotifyEvent read FOnRestored write FOnRestored;
+    property OnKeyDown: TKeyEvent read FOnKeyDown write FOnKeyDown;
   end;
 
   TJvEdit = class(TJvCustomEdit)
@@ -142,6 +151,7 @@ type
     property DisabledColor;
     property HintColor;
     property HotTrack;
+    property GroupIndex;
     property MaxPixel;
     property Modified;
     property SelStart;
@@ -215,8 +225,8 @@ uses
 constructor TJvCustomEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  // (p3) this is a hack to avoid (Control "" has no parent window) - fixed by checking for Parent in Change
-//  Parent := TWinControl(AOwner);
+   // (p3) this is a hack to avoid (Control "" has no parent window) - fixed by checking for Parent in Change
+ //  Parent := TWinControl(AOwner);
   FColor := clInfoBk;
   FHotTrack := False;
   FOver := False;
@@ -230,6 +240,16 @@ begin
   FAutoSave := TJvAutoSave.Create(Self);
   FMaxPixel := TJvMaxPixel.Create(Self);
   FMaxPixel.OnChanged := MaxPixelChanged;
+  FGroupIndex := -1;
+  inherited OnKeyDown := LocalKeyDown;
+end;
+
+
+procedure TJvCustomEdit.LocalKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  UpdateEdit;
+  if Assigned(fOnkeyDown) then fOnkeyDown(Sender, Key, Shift);
 end;
 
 procedure TJvCustomEdit.Loaded;
@@ -265,7 +285,7 @@ begin
   if st <> Text then
   begin
     Text := st;
-    SelStart := Min(SelStart,Length(Text));
+    SelStart := Min(SelStart, Length(Text));
   end;
   FAutoSave.SaveValue(Text);
 end;
@@ -305,7 +325,8 @@ begin
 end;
 
 procedure TJvCustomEdit.CMMouseLeave(var Msg: TMessage);
-var i, j: integer;
+var
+  i, j: integer;
 begin
   // for D7...
   if csDesigning in ComponentState then Exit;
@@ -369,7 +390,7 @@ begin
   if st <> Text then
   begin
     Text := st;
-    SelStart := Min(SelStart,Length(Text));
+    SelStart := Min(SelStart, Length(Text));
   end;
 end;
 
@@ -502,6 +523,7 @@ procedure TJvCustomEdit.WMPaste(var Msg: TWMPaste);
 begin
   if caPaste in ClipBoardCommands then
     inherited;
+  UpdateEdit;
 end;
 
 procedure TJvCustomEdit.WMUndo(var Msg: TWMUndo);
@@ -529,6 +551,33 @@ begin
   begin
     FClipBoardCommands := Value;
     ReadOnly := FClipBoardCommands <= [caCopy];
+  end;
+end;
+
+procedure TJvCustomEdit.SetGroupIndex(const Value: Integer);
+begin
+  FGroupIndex := Value;
+  UpdateEdit;
+end;
+
+procedure TJvCustomEdit.UpdateEdit;
+var
+  i: Integer;
+begin
+  for I := 0 to self.Owner.ComponentCount - 1 do
+  begin
+    if (Self.Owner.Components[i] is TJvCustomEdit) then
+    begin
+      if
+        ((Self.Owner.Components[i].Name <> Self.Name)
+        and
+        ((Self.Owner.Components[i] as TJvCustomEdit).GroupIndex <> -1)
+        and
+        ((Self.Owner.Components[i] as TJvCustomEdit).fGroupIndex = Self.fGroupIndex)
+        )
+        then
+        (Self.Owner.Components[i] as TJvCustomEdit).Caption := '';
+    end;
   end;
 end;
 
