@@ -1,9 +1,11 @@
 object frmMain: TfrmMain
-  Left = 200
-  Top = 87
-  Width = 586
-  Height = 627
+  Left = 224
+  Top = 108
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsSingle
   Caption = 'ShFileOperation demo'
+  ClientHeight = 600
+  ClientWidth = 581
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -13,52 +15,41 @@ object frmMain: TfrmMain
   OldCreateOrder = False
   ShowHint = True
   OnCreate = FormCreate
+  DesignSize = (
+    581
+    600)
   PixelsPerInch = 96
   TextHeight = 13
-  object JvLabel1: TJvLabel
+  object JvLabel1: TLabel
     Left = 8
     Top = 16
     Width = 37
     Height = 13
     Caption = 'Source:'
-    HotTrackFont.Charset = DEFAULT_CHARSET
-    HotTrackFont.Color = clWindowText
-    HotTrackFont.Height = -11
-    HotTrackFont.Name = 'MS Shell Dlg 2'
-    HotTrackFont.Style = []
   end
-  object JvLabel2: TJvLabel
+  object JvLabel2: TLabel
     Left = 8
     Top = 176
     Width = 58
     Height = 13
     Caption = 'Destination:'
-    HotTrackFont.Charset = DEFAULT_CHARSET
-    HotTrackFont.Color = clWindowText
-    HotTrackFont.Height = -11
-    HotTrackFont.Name = 'MS Shell Dlg 2'
-    HotTrackFont.Style = []
   end
-  object JvBevel1: TJvBevel
+  object JvBevel1: TBevel
     Left = 8
     Top = 336
-    Width = 569
+    Width = 558
     Height = 5
+    Anchors = [akLeft, akTop, akRight]
     Shape = bsTopLine
   end
-  object JvLabel3: TJvLabel
+  object JvLabel3: TLabel
     Left = 8
     Top = 344
     Width = 128
     Height = 13
     Caption = 'Renamed files / messages:'
-    HotTrackFont.Charset = DEFAULT_CHARSET
-    HotTrackFont.Color = clWindowText
-    HotTrackFont.Height = -11
-    HotTrackFont.Name = 'MS Shell Dlg 2'
-    HotTrackFont.Style = []
   end
-  object btnCopy: TJvButton
+  object btnCopy: TButton
     Left = 248
     Top = 304
     Width = 75
@@ -67,13 +58,8 @@ object frmMain: TfrmMain
     Caption = 'Copy'
     TabOrder = 0
     OnClick = btnCopyClick
-    HotTrackFont.Charset = DEFAULT_CHARSET
-    HotTrackFont.Color = clWindowText
-    HotTrackFont.Height = -11
-    HotTrackFont.Name = 'MS Shell Dlg 2'
-    HotTrackFont.Style = []
   end
-  object btnMove: TJvButton
+  object btnMove: TButton
     Left = 328
     Top = 304
     Width = 75
@@ -82,13 +68,8 @@ object frmMain: TfrmMain
     Caption = 'Move'
     TabOrder = 1
     OnClick = btnMoveClick
-    HotTrackFont.Charset = DEFAULT_CHARSET
-    HotTrackFont.Color = clWindowText
-    HotTrackFont.Height = -11
-    HotTrackFont.Name = 'MS Shell Dlg 2'
-    HotTrackFont.Style = []
   end
-  object btnRename: TJvButton
+  object btnRename: TButton
     Left = 408
     Top = 304
     Width = 75
@@ -97,13 +78,8 @@ object frmMain: TfrmMain
     Caption = 'Rename'
     TabOrder = 2
     OnClick = btnRenameClick
-    HotTrackFont.Charset = DEFAULT_CHARSET
-    HotTrackFont.Color = clWindowText
-    HotTrackFont.Height = -11
-    HotTrackFont.Name = 'MS Shell Dlg 2'
-    HotTrackFont.Style = []
   end
-  object btnDelete: TJvButton
+  object btnDelete: TButton
     Left = 488
     Top = 304
     Width = 75
@@ -112,13 +88,8 @@ object frmMain: TfrmMain
     Caption = 'Delete'
     TabOrder = 3
     OnClick = btnDeleteClick
-    HotTrackFont.Charset = DEFAULT_CHARSET
-    HotTrackFont.Color = clWindowText
-    HotTrackFont.Height = -11
-    HotTrackFont.Name = 'MS Shell Dlg 2'
-    HotTrackFont.Style = []
   end
-  object memSource: TJvMemo
+  object memSource: TMemo
     Left = 8
     Top = 32
     Width = 225
@@ -127,17 +98,14 @@ object frmMain: TfrmMain
       'List that specifies one or more source file names. '#13#10'Multiple na' +
       'mes must be on separate rows.'#13#10'Accept wildcards in filenames but' +
       ' not in foldernames.'
-    AutoSize = False
-    MaxLines = 0
-    HideCaret = False
+    HideSelection = False
     Lines.Strings = (
       'C:\temp\*.*')
-    ReadOnly = False
     ScrollBars = ssBoth
     TabOrder = 4
-    Wordwrap = False
+    WordWrap = False
   end
-  object memDest: TJvMemo
+  object memDest: TMemo
     Left = 8
     Top = 192
     Width = 225
@@ -147,17 +115,14 @@ object frmMain: TfrmMain
       '. '#13#10'The list can contain mutiple destination file names if "Mult' +
       'i Destination Files" is checked'#13#10'Multiple names must be on separ' +
       'ate lines.'
-    AutoSize = False
-    MaxLines = 0
-    HideCaret = False
+    HideSelection = False
     Lines.Strings = (
       'C:\temp\temp')
-    ReadOnly = False
     ScrollBars = ssBoth
     TabOrder = 5
-    Wordwrap = False
+    WordWrap = False
   end
-  object JvGroupBox1: TJvGroupBox
+  object JvGroupBox1: TGroupBox
     Left = 240
     Top = 24
     Width = 321
@@ -171,7 +136,7 @@ object frmMain: TfrmMain
       Height = 13
       Caption = 'Title:'
     end
-    object chkUndo: TJvCheckBox
+    object chkUndo: TCheckBox
       Left = 16
       Top = 32
       Width = 201
@@ -181,14 +146,8 @@ object frmMain: TfrmMain
       Checked = True
       State = cbChecked
       TabOrder = 0
-      AutoSize = False
-      HotTrackFont.Charset = DEFAULT_CHARSET
-      HotTrackFont.Color = clWindowText
-      HotTrackFont.Height = -11
-      HotTrackFont.Name = 'MS Shell Dlg 2'
-      HotTrackFont.Style = []
     end
-    object chkFiles: TJvCheckBox
+    object chkFiles: TCheckBox
       Left = 16
       Top = 48
       Width = 201
@@ -200,14 +159,8 @@ object frmMain: TfrmMain
       Checked = True
       State = cbChecked
       TabOrder = 1
-      AutoSize = False
-      HotTrackFont.Charset = DEFAULT_CHARSET
-      HotTrackFont.Color = clWindowText
-      HotTrackFont.Height = -11
-      HotTrackFont.Name = 'MS Shell Dlg 2'
-      HotTrackFont.Style = []
     end
-    object chkMulti: TJvCheckBox
+    object chkMulti: TCheckBox
       Left = 16
       Top = 64
       Width = 201
@@ -218,14 +171,8 @@ object frmMain: TfrmMain
         'll source files are to be deposited.'
       Caption = 'Multi destination files'
       TabOrder = 2
-      AutoSize = False
-      HotTrackFont.Charset = DEFAULT_CHARSET
-      HotTrackFont.Color = clWindowText
-      HotTrackFont.Height = -11
-      HotTrackFont.Name = 'MS Shell Dlg 2'
-      HotTrackFont.Style = []
     end
-    object chkNoConfirm: TJvCheckBox
+    object chkNoConfirm: TCheckBox
       Left = 16
       Top = 80
       Width = 201
@@ -233,14 +180,8 @@ object frmMain: TfrmMain
       Hint = 'Responds with "yes to all" for any dialog box that is displayed.'
       Caption = 'Don'#39't confirm'
       TabOrder = 3
-      AutoSize = False
-      HotTrackFont.Charset = DEFAULT_CHARSET
-      HotTrackFont.Color = clWindowText
-      HotTrackFont.Height = -11
-      HotTrackFont.Name = 'MS Shell Dlg 2'
-      HotTrackFont.Style = []
     end
-    object chkNoDirCreate: TJvCheckBox
+    object chkNoDirCreate: TCheckBox
       Left = 16
       Top = 96
       Width = 201
@@ -250,14 +191,8 @@ object frmMain: TfrmMain
         'n requires one to be created.'
       Caption = 'Don'#39't confirm dir create'
       TabOrder = 4
-      AutoSize = False
-      HotTrackFont.Charset = DEFAULT_CHARSET
-      HotTrackFont.Color = clWindowText
-      HotTrackFont.Height = -11
-      HotTrackFont.Name = 'MS Shell Dlg 2'
-      HotTrackFont.Style = []
     end
-    object chkRename: TJvCheckBox
+    object chkRename: TCheckBox
       Left = 16
       Top = 112
       Width = 201
@@ -270,14 +205,8 @@ object frmMain: TfrmMain
       Checked = True
       State = cbChecked
       TabOrder = 5
-      AutoSize = False
-      HotTrackFont.Charset = DEFAULT_CHARSET
-      HotTrackFont.Color = clWindowText
-      HotTrackFont.Height = -11
-      HotTrackFont.Name = 'MS Shell Dlg 2'
-      HotTrackFont.Style = []
     end
-    object chkSilent: TJvCheckBox
+    object chkSilent: TCheckBox
       Left = 16
       Top = 128
       Width = 201
@@ -285,14 +214,8 @@ object frmMain: TfrmMain
       Hint = 'Does not display a progress dialog box.'
       Caption = 'Silent'
       TabOrder = 6
-      AutoSize = False
-      HotTrackFont.Charset = DEFAULT_CHARSET
-      HotTrackFont.Color = clWindowText
-      HotTrackFont.Height = -11
-      HotTrackFont.Name = 'MS Shell Dlg 2'
-      HotTrackFont.Style = []
     end
-    object chkSimple: TJvCheckBox
+    object chkSimple: TCheckBox
       Left = 16
       Top = 144
       Width = 201
@@ -300,14 +223,8 @@ object frmMain: TfrmMain
       Hint = 'Displays a progress dialog box, but does not show the filenames.'
       Caption = 'Simple Progress'
       TabOrder = 7
-      AutoSize = False
-      HotTrackFont.Charset = DEFAULT_CHARSET
-      HotTrackFont.Color = clWindowText
-      HotTrackFont.Height = -11
-      HotTrackFont.Name = 'MS Shell Dlg 2'
-      HotTrackFont.Style = []
     end
-    object chkMappings: TJvCheckBox
+    object chkMappings: TCheckBox
       Left = 16
       Top = 160
       Width = 201
@@ -317,14 +234,8 @@ object frmMain: TfrmMain
       Checked = True
       State = cbChecked
       TabOrder = 8
-      AutoSize = False
-      HotTrackFont.Charset = DEFAULT_CHARSET
-      HotTrackFont.Color = clWindowText
-      HotTrackFont.Height = -11
-      HotTrackFont.Name = 'MS Shell Dlg 2'
-      HotTrackFont.Style = []
     end
-    object chkNoErrors: TJvCheckBox
+    object chkNoErrors: TCheckBox
       Left = 16
       Top = 176
       Width = 201
@@ -332,12 +243,6 @@ object frmMain: TfrmMain
       Hint = 'Don'#39't show any error dialogs (just return false).'
       Caption = 'Don'#39't show errors'
       TabOrder = 9
-      AutoSize = False
-      HotTrackFont.Charset = DEFAULT_CHARSET
-      HotTrackFont.Color = clWindowText
-      HotTrackFont.Height = -11
-      HotTrackFont.Name = 'MS Shell Dlg 2'
-      HotTrackFont.Style = []
     end
     object edTitle: TEdit
       Left = 16
@@ -348,15 +253,13 @@ object frmMain: TfrmMain
       TabOrder = 10
     end
   end
-  object memMessages: TJvMemo
+  object memMessages: TMemo
     Left = 8
     Top = 360
     Width = 561
     Height = 233
-    AutoSize = False
-    ClipboardCommands = [caCopy]
-    MaxLines = 0
-    HideCaret = False
+    Anchors = [akLeft, akTop, akRight, akBottom]
+    HideSelection = False
     Lines.Strings = (
       'Before running this demo, make sure the files you'
       'are using for testing has been BACKUPPED!'
@@ -364,7 +267,7 @@ object frmMain: TfrmMain
     ReadOnly = True
     ScrollBars = ssBoth
     TabOrder = 7
-    Wordwrap = False
+    WordWrap = False
   end
   object JvSHFileOperation1: TJvSHFileOperation
     Options = []
