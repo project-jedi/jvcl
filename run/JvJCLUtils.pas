@@ -117,10 +117,26 @@ function StrToFloatUSDef(const Text: string; Default: Extended): Extended;
 { GetWordOnPos returns Word from string, S, on the cursor position, P}
 function GetWordOnPos(const S: string; const P: Integer): string;
 function GetWordOnPosW(const S: WideString; const P: Integer): WideString;
+function GetWordOnPos2(const S: string; P: Integer; var iBeg, iEnd: Integer): string;
+function GetWordOnPos2W(const S: WideString; P: Integer; var iBeg, iEnd: Integer): WideString;
 { GetWordOnPosEx working like GetWordOnPos function, but
   also returns Word position in iBeg, iEnd variables }
 function GetWordOnPosEx(const S: string; const P: Integer; var iBeg, iEnd: Integer): string;
 function GetWordOnPosExW(const S: WideString; const P: Integer; var iBeg, iEnd: Integer): WideString;
+function GetNextWordPosEx(const Text: string; StartIndex: Integer;
+  var iBeg, iEnd: Integer): string;
+function GetNextWordPosExW(const Text: WideString; StartIndex: Integer;
+  var iBeg, iEnd: Integer): WideString;
+procedure GetEndPosCaret(const Text: string; CaretX, CaretY: Integer;
+  var X, Y: Integer);
+{ GetEndPosCaret returns the caret position of the last char. For the position
+  after the last char of Text you must add 1 to the returned X value. }
+procedure GetEndPosCaretW(const Text: WideString; CaretX, CaretY: Integer;
+  var X, Y: Integer); 
+ { GetEndPosCaret returns the caret position of the last char. For the position
+   after the last char of Text you must add 1 to the returned X value. }
+
+
 { SubStr returns substring from string, S, separated with Separator string}
 function SubStr(const S: string; const Index: Integer; const Separator: string): string;
 function SubStrW(const S: WideString; const Index: Integer; const Separator: WideString): WideString;
@@ -1146,6 +1162,59 @@ begin
     Result := S[P];
 end;
 
+function GetWordOnPos2(const S: string; P: Integer; var iBeg, iEnd: Integer): string;
+begin
+  Result := '';
+  if P < 1 then
+    Exit;
+  if (S[P] in Separators) and ((P < 1) or (S[P - 1] in Separators)) then
+    Inc(P);
+  iBeg := P;
+  while iBeg >= 1 do
+    if (S[iBeg] in Separators) then
+      Break
+    else
+      Dec(iBeg);
+  Inc(iBeg);
+  iEnd := P;
+  while iEnd <= Length(S) do
+    if (S[iEnd] in Separators) then
+      Break
+    else
+      Inc(iEnd);
+  if iEnd > iBeg then
+    Result := Copy(S, iBeg, iEnd - iBeg)
+  else
+    Result := S[P];
+end;
+
+function GetWordOnPos2W(const S: WideString; P: Integer; var iBeg, iEnd: Integer): WideString;
+begin
+  Result := '';
+  if P < 1 then
+    Exit;
+  if (CharInSetW(S[P], Separators)) and
+     ((P < 1) or (CharInSetW(S[P - 1], Separators))) then
+    Inc(P);
+  iBeg := P;
+  while iBeg >= 1 do
+    if CharInSetW(S[iBeg],Separators) then
+      Break
+    else
+      Dec(iBeg);
+  Inc(iBeg);
+  iEnd := P;
+  while iEnd <= Length(S) do
+    if CharInSetW(S[iEnd], Separators) then
+      Break
+    else
+      Inc(iEnd);
+  if iEnd > iBeg then
+    Result := Copy(S, iBeg, iEnd - iBeg)
+  else
+    Result := S[P];
+end;
+
 function GetWordOnPosEx(const S: string; const P: Integer; var iBeg, iEnd: Integer): string;
 begin
   Result := '';
@@ -1206,6 +1275,106 @@ begin
     Result := Copy(S, iBeg, iEnd - iBeg)
   else
     Result := S[P];
+end;
+
+function GetNextWordPosEx(const Text: string; StartIndex: Integer;
+  var iBeg, iEnd: Integer): string;
+var
+  Len: Integer;
+begin
+  Len := Length(Text);
+  Result := '';
+  if (StartIndex < 1) or (StartIndex > Len) then
+    Exit;
+  if (Text[StartIndex] in Separators) and
+     ((StartIndex < 1) or (Text[StartIndex - 1] in Separators)) then
+    Inc(StartIndex);
+  iBeg := StartIndex;
+  while iBeg >= 1 do
+    if (Text[iBeg] in Separators) then
+      Break
+    else
+      Dec(iBeg);
+  Inc(iBeg);
+  iEnd := StartIndex;
+  while iEnd <= Len do
+    if (Text[iEnd] in Separators) then
+      Break
+    else
+      Inc(iEnd);
+  Dec(iEnd);                                 
+  if iEnd >= iBeg then
+    Result := Copy(Text, iBeg, iEnd - iBeg)
+  else
+    Result := Text[StartIndex];
+
+ // go right
+  iEnd := iBeg;
+  while (iEnd <= Len) and (not (Text[iEnd] in Separators)) do Inc(iEnd);
+  if iEnd > Len then iEnd := Len else Dec(iEnd);
+  Result := Copy(Text, iBeg, iEnd - iBeg + 1);
+end;
+
+function GetNextWordPosExW(const Text: WideString; StartIndex: Integer;
+  var iBeg, iEnd: Integer): WideString;
+var
+  Len: Integer;
+begin
+  Len := Length(Text);
+  Result := '';
+  if (StartIndex < 1) or (StartIndex > Len) then
+    Exit;
+  if CharInSetW(Text[StartIndex], Separators) and
+     ((StartIndex < 1) or CharInSetW(Text[StartIndex - 1], Separators)) then
+    Inc(StartIndex);
+  iBeg := StartIndex;
+  while iBeg >= 1 do
+    if CharInSetW(Text[iBeg], Separators) then
+      Break
+    else
+      Dec(iBeg);
+  Inc(iBeg);
+  iEnd := StartIndex;
+  while iEnd <= Len do
+    if CharInSetW(Text[iEnd], Separators) then
+      Break
+    else
+      Inc(iEnd);
+  Dec(iEnd);
+  if iEnd >= iBeg then
+    Result := Copy(Text, iBeg, iEnd - iBeg)
+  else
+    Result := Text[StartIndex];
+
+ // go right
+  iEnd := iBeg;
+  while (iEnd <= Len) and (not CharInSetW(Text[iEnd], Separators)) do Inc(iEnd);
+  if iEnd > Len then iEnd := Len else Dec(iEnd);
+  Result := Copy(Text, iBeg, iEnd - iBeg + 1);
+end;
+
+procedure GetEndPosCaret(const Text: string; CaretX, CaretY: Integer;
+  var X, Y: Integer);
+begin
+  GetXYByPos(Text, Length(Text), X, Y);
+  if Y = 0 then
+    Inc(X, CaretX)
+  else
+    Inc(X);
+  Dec(X);
+  Inc(Y, CaretY);
+end;
+
+procedure GetEndPosCaretW(const Text: WideString; CaretX, CaretY: Integer;
+  var X, Y: Integer);
+begin
+  GetXYByPosW(Text, Length(Text), X, Y);
+  if Y = 0 then
+    Inc(X, CaretX)
+  else
+    Inc(X);
+  Dec(X);
+  Inc(Y, CaretY);
 end;
 
 { (rb) This function seems to translate a number to a russian string, but is

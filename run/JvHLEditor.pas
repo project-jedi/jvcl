@@ -96,72 +96,17 @@ uses
   Windows,
   {$ENDIF COMPILER6_UP}
   SysUtils, Classes, Graphics,
-  JvEditor, JvHLParser;
-
-const
-  { Max_Line - maximum line numbers, scanned by editor for comments }
-  Max_Line = 64 * 1024;
+  JvEditor, JvEditorCommon, JvHLParser;
 
 type
-  THighlighter = (hlNone, hlPascal, hlCBuilder, hlSql, hlPython, hlJava, hlVB,
-    hlHtml, hlPerl, hlIni, hlCocoR, hlPhp, hlNQC, hlSyntaxHighlighter);
-  TLongTokenType = 0..255;
-
   TJvHLEditor = class;
-
-  TJvSymbolColor = class(TPersistent)
-  private
-    FStyle: TFontStyles;
-    FForeColor: TColor;
-    FBackColor: TColor;
-  public
-    constructor Create;
-    procedure SetColor(const ForeColor, BackColor: TColor; const Style: TFontStyles);
-    procedure Assign(Source: TPersistent); override;
-  published
-    // (rom) defaults and constructor added
-    property Style: TFontStyles read FStyle write FStyle default [];
-    property ForeColor: TColor read FForeColor write FForeColor default clWindowText;
-    property BackColor: TColor read FBackColor write FBackColor default clWindow;
-  end;
-
-  TJvColors = class(TPersistent)
-  private
-    FComment: TJvSymbolColor;
-    FNumber: TJvSymbolColor;
-    FString: TJvSymbolColor;
-    FSymbol: TJvSymbolColor;
-    FReserved: TJvSymbolColor;
-    FIdentifier: TJvSymbolColor;
-    FPreproc: TJvSymbolColor;
-    FFunctionCall: TJvSymbolColor;
-    FDeclaration: TJvSymbolColor;
-    FStatement: TJvSymbolColor;
-    FPlainText: TJvSymbolColor;
-  public
-    constructor Create;
-    destructor Destroy; override;
-    procedure Assign(Source: TPersistent); override;
-  published
-    property Comment: TJvSymbolColor read FComment write FComment;
-    property Number: TJvSymbolColor read FNumber write FNumber;
-    property Strings: TJvSymbolColor read FString write FString;
-    property Symbol: TJvSymbolColor read FSymbol write FSymbol;
-    property Reserved: TJvSymbolColor read FReserved write FReserved;
-    property Identifier: TJvSymbolColor read FIdentifier write FIdentifier;
-    property Preproc: TJvSymbolColor read FPreproc write FPreproc;
-    property FunctionCall: TJvSymbolColor read FFunctionCall write FFunctionCall;
-    property Declaration: TJvSymbolColor read FDeclaration write FDeclaration;
-    property Statement: TJvSymbolColor read FStatement write FStatement;
-    property PlainText: TJvSymbolColor read FPlainText write FPlainText;
-  end;
 
   TOnReservedWord = procedure(Sender: TObject; Token: string;
     var Reserved: Boolean) of object;
 
   TJvEditorHighlighter = class(TComponent)
   protected
-    procedure GetAttr(Editor: TJvHLEditor; Lines: Tstrings; Line, ColBeg, ColEnd: Integer;
+    procedure GetAttr(Editor: TJvHLEditor; Lines: TStrings; Line, ColBeg, ColEnd: Integer;
       LongToken: TLongTokenType; var LineAttrs: TLineAttrs); virtual; abstract;
     procedure ScanLongTokens(Editor: TJvHLEditor; Lines: TStrings; Line: Integer;
       var FLong: TLongTokenType); virtual; abstract;
@@ -169,10 +114,10 @@ type
       ACaretX, ACaretY: Integer; const Text: string): Boolean; virtual; abstract;
   end;
 
-  TJvHLEditor = class(TJvEditor)
+  TJvHLEditor = class(TJvEditor, IJvHLEditor)
   private
     Parser: TJvIParser;
-    FHighlighter: THighlighter;
+    FHighlighter: TJvHighlighter;
     FColors: TJvColors;
     FLine: string;
     FLineNum: Integer;
@@ -188,9 +133,14 @@ type
     function RescanLong(iLine: Integer): Boolean;
     procedure CheckInLong;
     function FindLongEnd: Integer;
-    procedure SetHighlighter(Value: THighlighter);
+    procedure SetHighlighter(const Value: TJvHighlighter);
     function GetDelphiColors: Boolean;
     procedure SetDelphiColors(Value: Boolean);
+    function GetColors: TJvColors;
+    procedure SetColors(const Value: TJvColors);
+    function GetSyntaxHighlighting: Boolean;
+    procedure SetSyntaxHighlighting(Value: Boolean);
+    function GetHighlighter: TJvHighlighter;
   protected
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -205,12 +155,12 @@ type
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
   published
-    property Highlighter: THighlighter read FHighlighter write SetHighlighter default hlPascal;
-    property Colors: TJvColors read FColors write FColors;
+    property Highlighter: TJvHighlighter read GetHighlighter write SetHighlighter default hlPascal;
+    property Colors: TJvColors read GetColors write SetColors;
     property DelphiColors: Boolean read GetDelphiColors write SetDelphiColors stored False;
     property LongTokens: Boolean read FLongTokens write FLongTokens default True;
     property OnReservedWord: TOnReservedWord read FOnReservedWord write FOnReservedWord;
-    property SyntaxHighlighting: Boolean read FSyntaxHighlighting write FSyntaxHighlighting stored False;
+    property SyntaxHighlighting: Boolean read GetSyntaxHighlighting write SetSyntaxHighlighting stored False;
     property SyntaxHighlighter: TJvEditorHighlighter read FSyntaxHighlighter write SetSyntaxHighlighter;
   end;
 
@@ -219,17 +169,6 @@ implementation
 uses
   Math,
   JvJCLUtils;
-
-const
-  lgNone      = TLongTokenType(0);
-  lgComment1  = TLongTokenType(1);
-  lgComment2  = TLongTokenType(2);
-  lgString    = TLongTokenType(4);
-  lgTag       = TLongTokenType(5);
-  lgPreproc   = TLongTokenType(6);
-  lgPreproc1  = lgPreproc;
-  lgPreproc2  = TLongTokenType(7);
-  lgUndefined = High(TLongTokenType);
 
 function LastNonSpaceChar(const S: string): Char;
 var
@@ -312,101 +251,6 @@ begin
   end;
 end;
 
-//=== TJvSymbolColor =========================================================
-
-constructor TJvSymbolColor.Create;
-begin
-  inherited Create;
-  FStyle :=  [];
-  FForeColor := clWindowText;
-  FBackColor := clWindow;
-end;
-
-procedure TJvSymbolColor.SetColor(const ForeColor, BackColor: TColor; const Style: TFontStyles);
-begin
-  FForeColor := ForeColor;
-  FBackColor := BackColor;
-  FStyle := Style;
-end;
-
-procedure TJvSymbolColor.Assign(Source: TPersistent);
-begin
-  if Source is TJvSymbolColor then
-  begin
-    FForeColor := TJvSymbolColor(Source).FForeColor;
-    FBackColor := TJvSymbolColor(Source).FBackColor;
-    FStyle := TJvSymbolColor(Source).FStyle;
-  end
-  else
-    inherited Assign(Source);
-end;
-
-//=== TJvColors ==============================================================
-
-constructor TJvColors.Create;
-begin
-  inherited Create;
-  FComment := TJvSymbolColor.Create;
-  FNumber := TJvSymbolColor.Create;
-  FString := TJvSymbolColor.Create;
-  FSymbol := TJvSymbolColor.Create;
-  FReserved := TJvSymbolColor.Create;
-  FStatement := TJvSymbolColor.Create;
-  FIdentifier := TJvSymbolColor.Create;
-  FPreproc := TJvSymbolColor.Create;
-  FFunctionCall := TJvSymbolColor.Create;
-  FDeclaration := TJvSymbolColor.Create;
-  FPlainText := TJvSymbolColor.Create;
-  FPreproc.SetColor(clGreen, clWindow, []);
-  FComment.SetColor(clOlive, clWindow, [fsItalic]);
-  FNumber.SetColor(clNavy, clWindow, []);
-  FString.SetColor(clPurple, clWindow, []);
-  FSymbol.SetColor(clBlue, clWindow, []);
-  FReserved.SetColor(clWindowText, clWindow, [fsBold]);
-  FStatement.SetColor(clWindowText, clWindow, [fsBold]);
-  FIdentifier.SetColor(clWindowText, clWindow, []);
-  FFunctionCall.SetColor(clWindowText, clWindow, []);
-  FDeclaration.SetColor(clWindowText, clWindow, []);
-  FPlainText.SetColor(clWindowText, clWindow, []);
-end;
-
-destructor TJvColors.Destroy;
-begin
-  FComment.Free;
-  FNumber.Free;
-  FString.Free;
-  FSymbol.Free;
-  FReserved.Free;
-  FStatement.Free;
-  FIdentifier.Free;
-  FPreproc.Free;
-  FFunctionCall.Free;
-  FDeclaration.Free;
-  FPlainText.Free;
-  inherited Destroy;
-end;
-
-procedure TJvColors.Assign(Source: TPersistent);
-begin
-  if Source is TJvColors then
-  begin
-    FComment.Assign(TJvColors(Source).FComment);
-    FNumber.Assign(TJvColors(Source).FNumber);
-    FString.Assign(TJvColors(Source).FString);
-    FSymbol.Assign(TJvColors(Source).FSymbol);
-    FReserved.Assign(TJvColors(Source).FReserved);
-    FStatement.Assign(TJvColors(Source).FStatement);
-    FIdentifier.Assign(TJvColors(Source).FIdentifier);
-    FPreproc.Assign(TJvColors(Source).FPreproc);
-    FFunctionCall.Assign(TJvColors(Source).FFunctionCall);
-    FDeclaration.Assign(TJvColors(Source).FDeclaration);
-    FPlainText.Assign(TJvColors(Source).FPlainText);
-  end
-  else
-    inherited Assign(Source);
-end;
-
-
 //=== TJvHLEditor ============================================================
 
 constructor TJvHLEditor.Create(AOwner: TComponent);
@@ -441,7 +285,7 @@ begin
   RescanLong(0);
 end;
 
-procedure TJvHLEditor.SetHighlighter(Value: THighlighter);
+procedure TJvHLEditor.SetHighlighter(const Value: TJvHighlighter);
 begin
   if FHighlighter <> Value then
   begin
@@ -504,13 +348,13 @@ const
     ' try typedef typename typeid union using unsigned virtual void volatile' +
     ' wchar_t while ';
 
-  NQCKeyWords: string = {Not Quite C - a C similar language for programming LEGO MindStorm(R) robots }
+  NQCKeyWords = {Not Quite C - a C similar language for programming LEGO MindStorm(R) robots }
     ' __event_src __type acquire break __sensor abs asm case catch const' +
     ' continue default do else false for if inline' +
     ' int monitor repeat return signed start stop sub switch task true' +
     ' until void while ';
 
-  SQLKeyWords: string =
+  SQLKeyWords =
     ' active as add asc after ascending all at alter auto' +
     ' and autoddl any avg based between basename blob' +
     ' base_name blobedit before buffer begin by cache  compiletime' +
@@ -1731,9 +1575,7 @@ begin
     hlSyntaxHighlighter:
       if FSyntaxHighlighter <> nil then
       begin
-        if Action = maAll then
-          ACaretY := -1  // rescan all lines
-        else if FSyntaxHighlighter.GetRescanLongKeys(Self, Action, ACaretX, ACaretY, Text) then
+        if FSyntaxHighlighter.GetRescanLongKeys(Self, Action, ACaretX, ACaretY, Text) then
         begin
           if RescanLong(ACaretY) then
             Invalidate;
@@ -1757,14 +1599,14 @@ begin
   end
   else
   begin
-    if (Highlighter = hlPascal) and (ACaretY < Max_Line) then
+    if (Highlighter = hlPascal) and (Cardinal(ACaretY) < Max_Line) then
     begin
      // comment <-> preproc
       S := Lines[ACaretY];
-      if ((ACaretX > 0) and (S[ACaretX - 1] = '{')) or
-         ((ACaretX > 1) and (S[ACaretX - 2] = '(') and (S[ACaretX - 1] = '*')) or
-         ((ACaretX > 0) and (S[ACaretX] = '{')) or
-         ((ACaretX > 1) and (S[ACaretX - 1] = '(') and (S[ACaretX] = '*')) then
+      if ((ACaretX > 1) and (S[ACaretX - 1] = '{')) or
+         ((ACaretX > 2) and (S[ACaretX - 2] = '(') and (S[ACaretX - 1] = '*')) or
+         ((ACaretX > 1) and (S[ACaretX] = '{')) or
+         ((ACaretX > 2) and (S[ACaretX - 1] = '(') and (S[ACaretX] = '*')) then
       begin
         if RescanLong(ACaretY) then
           Invalidate;
@@ -1810,36 +1652,19 @@ end;
 
 procedure TJvHLEditor.Assign(Source: TPersistent);
 begin
+  inherited Assign(Source);
   if Source is TJvHLEditor then
   begin
-    Colors.Assign((Source as TJvHLEditor).Colors);
-    SelForeColor := (Source as TJvHLEditor).SelForeColor;
-    SelBackColor := (Source as TJvHLEditor).SelBackColor;
-    Color := (Source as TJvHLEditor).Color;
-    FSyntaxHighlighter := (Source as TJvHLEditor).SyntaxHighlighter;
-    RightMarginColor := (Source as TJvHLEditor).RightMarginColor;
+    FHighlighter := TJvHLEditor(Source).Highlighter;
+    Colors.Assign(TJvHLEditor(Source).Colors);
+    SelForeColor := TJvHLEditor(Source).SelForeColor;
+    SelBackColor := TJvHLEditor(Source).SelBackColor;
+    Color := TJvHLEditor(Source).Color;
+    FSyntaxHighlighting := TJvHLEditor(Source).SyntaxHighlighting;
+    RightMarginColor := TJvHLEditor(Source).RightMarginColor;
     Invalidate;
-  end
-  else
-    inherited Assign(Source);
-end;
-
-
-type
-  TDelphiColor = record
-    ForeColor, BackColor: TColor;
-    Style: TFontStyles;
   end;
-
-const
-  DelphiColor_Comment: TDelphiColor = (ForeColor: clNavy; BackColor: clWindow; Style: [fsItalic]);
-  DelphiColor_Preproc: TDelphiColor = (ForeColor: clGreen; BackColor: clWindow; Style: []);
-  DelphiColor_Number: TDelphiColor = (ForeColor: clNavy; BackColor: clWindow; Style: []);
-  DelphiColor_Strings: TDelphiColor = (ForeColor: clBlue; BackColor: clWindow; Style: []);
-  DelphiColor_Symbol: TDelphiColor = (ForeColor: clBlack; BackColor: clWindow; Style: []);
-  DelphiColor_Reserved: TDelphiColor = (ForeColor: clBlack; BackColor: clWindow; Style: [fsBold]);
-  DelphiColor_Identifier: TDelphiColor = (ForeColor: clBlack; BackColor: clWindow; Style: []);
-  DelphiColor_PlainText: TDelphiColor = (ForeColor: clWindowText; BackColor: clWindow; Style: []);
+end;
 
 function TJvHLEditor.GetDelphiColors: Boolean;
   function CompareColor(Symbol: TJvSymbolColor; const DelphiColor: TDelphiColor): Boolean;
@@ -1895,6 +1720,32 @@ begin
     RescanLong(0);
     Invalidate;
   end;
+end;
+
+function TJvHLEditor.GetColors: TJvColors;
+begin
+  Result := FColors;
+end;
+
+procedure TJvHLEditor.SetColors(const Value: TJvColors);
+begin
+  FColors.Assign(Value);
+end;
+
+function TJvHLEditor.GetSyntaxHighlighting: Boolean;
+begin
+  Result := FSyntaxHighlighting;
+end;
+
+procedure TJvHLEditor.SetSyntaxHighlighting(Value: Boolean);
+begin
+  FSyntaxHighlighting := Value;
+  Invalidate;
+end;
+
+function TJvHLEditor.GetHighlighter: TJvHighlighter;
+begin
+  Result := FHighlighter;
 end;
 
 end.
