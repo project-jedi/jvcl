@@ -30,9 +30,9 @@ interface
 uses
   Classes, SysUtils, Windows, Messages,
   StdCtrls, ExtCtrls, Graphics, Forms, Controls, Dialogs, ComCtrls,
-  {$IFDEF COMPILER6_UP}
+  {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF HAS_UNIT_VARIANTS}
   JvTypes, JvDynControlEngine, JvDynControlEngineIntf, JvDSADialogs,
   JvComponent, JvPanel, JvPropertyStore, JvAppStorage, JvAppStorageSelectList;
 

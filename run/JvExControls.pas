@@ -40,9 +40,9 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF HAS_UNIT_LIBC}
   Libc,
-  {$ENDIF LINUX}
+  {$ENDIF HAS_UNIT_LIBC}
   {$IFDEF VCL}
   Messages, Graphics, Controls, Forms,
   {$ENDIF VCL}
@@ -52,7 +52,6 @@ uses
   {$ENDIF VisualCLX}
   Classes, SysUtils,
   JvTypes, JvThemes, JVCLVer;
-
 
 {$IFDEF VCL}
  {$DEFINE NeedMouseEnterLeave}

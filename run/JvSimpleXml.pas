@@ -31,9 +31,9 @@ interface
 
 uses
   SysUtils, Classes, IniFiles,
-  {$IFDEF COMPILER6_UP}
+  {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF HAS_UNIT_VARIANTS}
   JvFinalize;
 
 type

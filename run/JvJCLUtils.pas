@@ -49,16 +49,19 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, Messages, ShlObj, ActiveX,
   {$ENDIF MSWINDOWS}
+  {$IFDEF HAS_UNIT_LIBC}
+  Libc,
+  {$ENDIF HAS_UNIT_LIBC}
   {$IFDEF LINUX}
-  Libc, Xlib, QStdCtrls, StrUtils,
+  Xlib, QStdCtrls, StrUtils,
   {$ENDIF LINUX}
   SysUtils, Classes, Graphics, Clipbrd,
   {$IFDEF VisualCLX}
   Qt, QWindows,
   {$ENDIF VisualCLX}
-  {$IFDEF COMPILER6_UP}
+  {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF HAS_UNIT_VARIANTS}
   TypInfo;
 
 const
@@ -702,7 +705,7 @@ function PtInRectInclusive(R: TRect; Pt: TPoint): Boolean;
 // Works like PtInRect but excludes all edges from comparision
 function PtInRectExclusive(R: TRect; Pt: TPoint): Boolean;
 
-function FourDigitYear: Boolean; {$IFDEF COMPILER6_UP} deprecated; {$ENDIF}
+function FourDigitYear: Boolean; {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
 function IsFourDigitYear: Boolean;
 
 { moved from JvJVCLUTils }
@@ -1057,9 +1060,9 @@ function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC;
 implementation
 
 uses
-  {$IFDEF COMPILER6_UP}
+  {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF HAS_UNIT_RTLCONSTS}
   SysConst,
   {$IFDEF MSWINDOWS}
   ComObj, ShellAPI, MMSystem, Registry,

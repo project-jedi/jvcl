@@ -27,7 +27,9 @@ unit JvVersionInfo;
 {$I jvcl.inc}
 {$I windowsonly.inc}
 
-{$WEAKPACKAGEUNIT}
+{$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
+{$WEAKPACKAGEUNIT ON}
+{$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
 
 interface
 

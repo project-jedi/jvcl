@@ -30,9 +30,12 @@ unit JvFormPlacement;
 interface
 
 uses
-  {$IFDEF COMPILER6_UP}
-  RTLConsts, Variants,
-  {$ENDIF COMPILER6_UP}
+  {$IFDEF HAS_UNIT_VARIANTS}
+  Variants,
+  {$ENDIF HAS_UNIT_VARIANTS}
+  {$IFDEF HAS_UNIT_RTLCONSTS}
+  RTLConsts,
+  {$ENDIF HAS_UNIT_RTLCONSTS}
   SysUtils, Classes,
   {$IFDEF VCL}
   Windows, Messages,

@@ -11,8 +11,7 @@ the specific language governing rights and limitations under the License.
 The Original Code is: JvDataProviderImpl.pas, released on --.
 
 The Initial Developer of the Original Code is Marcel Bestebroer
-Portions created by Marcel Bestebroer are Copyright (C) 2002 - 2003 Marcel
-Bestebroer
+Portions created by Marcel Bestebroer are Copyright (C) 2002 - 2003 Marcel Bestebroer
 All Rights Reserved.
 
 Contributor(s):
@@ -40,9 +39,9 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF HAS_UNIT_LIBC}
   Libc,
-  {$ENDIF LINUX}
+  {$ENDIF HAS_UNIT_LIBC}
   {$IFDEF VisualCLX}
   Types, QWindows,
   QStdCtrls, // type TOwnerDrawState
@@ -1199,9 +1198,9 @@ uses
   ActiveX,
   {$ENDIF MSWINDOWS}
   SysUtils, Consts, TypInfo,
-  {$IFDEF COMPILER6_UP}
+  {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF HAS_UNIT_RTLCONSTS}
   JclStrings,
   JvTypes, JvConsts, JvResources;
 

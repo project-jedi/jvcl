@@ -663,9 +663,9 @@ type
 implementation
 
 uses
-  {$IFDEF COMPILER6_UP}
+  {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF HAS_UNIT_VARIANTS}
   SysUtils, Math, Forms,
   JvJCLUtils, JvJVCLUtils, JvCalc, JvTypes, JvConsts, JvResources;
 

@@ -39,9 +39,9 @@ interface
 
 uses
   Windows, Messages, Classes, Controls, Graphics, StdCtrls, Forms,
-  {$IFDEF COMPILER6_UP}
+  {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF HAS_UNIT_RTLCONSTS}
   JvAppStorage, JvFormPlacement, JvComponent, JvFinalize;
 
 type

@@ -34,8 +34,11 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, Messages,
   {$ENDIF MSWINDOWS}
+  {$IFDEF HAS_UNIT_LIBC}
+  Libc,
+  {$ENDIF HAS_UNIT_LIBC}
   {$IFDEF LINUX}
-  Libc, QWindows,
+  QWindows,
   {$ENDIF LINUX}
   {$IFDEF COMPILER5}
   Forms,

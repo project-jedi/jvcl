@@ -428,10 +428,13 @@ type
 implementation
 
 uses
-  {$IFDEF COMPILER6_UP}
-  Variants, JvDBLookup,
-  {$ENDIF COMPILER6_UP}
+  {$IFDEF HAS_UNIT_VARIANTS}
+  Variants,
+  {$ENDIF HAS_UNIT_VARIANTS}
   SysUtils, Math, TypInfo, Forms, StdCtrls, Dialogs, DBConsts,
+  {$IFDEF COMPILER6_UP}
+  JvDBLookup,
+  {$ENDIF COMPILER6_UP}
   JvConsts, JvResources, JvDBUtils, JvJCLUtils, JvJVCLUtils,
   JvDBGridSelectColumnForm, JvFinalize;
 

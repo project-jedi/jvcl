@@ -143,13 +143,13 @@ const
 const
   ServerDateFmt: string[50] = sdfStandard16;
 
-  {.$NODEFINE ftNonTextTypes}
-  (*$HPPEMIT 'namespace JvDBUtils'*)
-  (*$HPPEMIT '{'*)
-  (*$HPPEMIT '#define ftNonTextTypes (System::Set<TFieldType, ftUnknown, ftCursor> () \'*)
-  (*$HPPEMIT '        << ftBytes << ftVarBytes << ftBlob << ftMemo << ftGraphic \'*)
-  (*$HPPEMIT '        << ftFmtMemo << ftParadoxOle << ftDBaseOle << ftTypedBinary << ftCursor )'*)
-  (*$HPPEMIT '}'*)
+{.$NODEFINE ftNonTextTypes}
+(*$HPPEMIT 'namespace JvDBUtils'*)
+(*$HPPEMIT '{'*)
+(*$HPPEMIT '#define ftNonTextTypes (System::Set<TFieldType, ftUnknown, ftCursor> () \'*)
+(*$HPPEMIT '        << ftBytes << ftVarBytes << ftBlob << ftMemo << ftGraphic \'*)
+(*$HPPEMIT '        << ftFmtMemo << ftParadoxOle << ftDBaseOle << ftTypedBinary << ftCursor )'*)
+(*$HPPEMIT '}'*)
 
 type
   Largeint = Longint;
@@ -162,9 +162,9 @@ procedure _DBError(const Msg: string);
 implementation
 
 uses
-  {$IFDEF COMPILER6_UP}
+  {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF HAS_UNIT_VARIANTS}
   DBConsts, Math, Controls, Forms, Dialogs,
   JvJVCLUtils, JvJCLUtils, JvTypes, JvConsts, JvResources;
 

@@ -622,8 +622,11 @@ type
 implementation
 
 uses
+  {$IFDEF HAS_UNIT_VARIANTS}
+  Variants,
+  {$ENDIF HAS_UNIT_VARIANTS}
   {$IFDEF COMPILER6_UP}
-  Variants, VDBConsts,
+  VDBConsts,
   {$ENDIF COMPILER6_UP}
   DBConsts, SysUtils, Math,
   JvJCLUtils, JvJVCLUtils, JvThemes, JvTypes, JvConsts, JvResources;

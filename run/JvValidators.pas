@@ -255,15 +255,15 @@ implementation
 
 uses
   Masks,
-  {$IFDEF COMPILER6_UP}
+  {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF HAS_UNIT_VARIANTS}
   TypInfo,
   {$IFDEF VCL}
   JclUnicode, // for reg exp support
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  JvQWStrUtils,
+  JclWideStrings,
   {$ENDIF VisualCLX}
   JvTypes, JvResources;
 

@@ -37,7 +37,7 @@ uses
   Windows, Messages, Controls, Forms, Graphics,
   {$IFDEF VisualCLX}
   Qt, QTypes,
-  JvQWStrUtils,
+  JclWideStrings,
   {$ENDIF VisualCLX}
   JvConsts, JvResources;
 

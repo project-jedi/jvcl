@@ -35,8 +35,6 @@ Known Issues:
   {$IFDEF SUPPORTS_COMPILETIME_MESSAGES}
     {$MESSAGE FATAL 'This unit is only supported on Unix!'}
   {$ELSE}
-    {$IFDEF XPLATFORM_RTL}
-      'This unit is only supported on Unix!'
-    {$ENDIF XPLATFORM_RTL}
+    'This unit is only supported on Unix!'
   {$ENDIF SUPPORTS_COMPILETIME_MESSAGES}
 {$ENDIF !UNIX}

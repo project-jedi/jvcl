@@ -81,7 +81,7 @@ begin
   if not Search('fish', ResultCol, ResultField, False, False, True) then ...
 end;
 
-// Then:
+// then:
 if not MyUltimGrid.SearchNext(ResultCol, ResultField, False, False, True) then ...
 
 ---= BCB example =---
@@ -97,7 +97,7 @@ MyUltimGrid->SearchFields->Add("Species Name");
 MyUltimGrid->SearchFields->Add("Notes");
 if (!MyUltimGrid->Search("fish", ResultCol, ResultField, false, false, true)) ...
 
-// Then:
+// then:
 if (!MyUltimGrid->SearchNext(ResultCol, ResultField, false, false, true)) ...
 
 -----------------------------------------------------------------------------
@@ -115,11 +115,11 @@ uses
   {$IFDEF VCL}
   Windows,
   {$ENDIF VCL}
-  {$IFDEF COMPILER6_UP}
+  {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
-  {$ENDIF COMPILER6_UP}
-  Classes, Graphics, Controls, DB, JvDBGrid,
-  JvTypes; {JvTypes contains Exception base class}
+  {$ENDIF HAS_UNIT_VARIANTS}
+  Classes, Graphics, Controls, DB,
+  JvDBGrid, JvTypes; {JvTypes contains Exception base class}
 
 const
   JvGridSort_ASC = True;
@@ -196,8 +196,9 @@ type
 implementation
 
 uses
-  TypInfo, Forms, SysUtils,
-  JvResources, DBGrids, JclStrings;
+  TypInfo, Forms, SysUtils, DBGrids,
+  JclStrings,
+  JvResources;
 
 //=== { TJvDBUltimGrid } ==========================================================
 
@@ -281,8 +282,8 @@ var
         //   and the index found has no desc fields but its flag ixDescending is true
         if DescString = '' then
         begin
-          if (IndexDefs.Items[I].DescFields = '')
-          and not (ixDescending in IndexDefs.Items[I].Options) then
+          if (IndexDefs.Items[I].DescFields = '') and
+            not (ixDescending in IndexDefs.Items[I].Options) then
           begin
             UpdateProp(cIndexName, IndexDefs.Items[I].Name);
             Break;
@@ -295,8 +296,8 @@ var
           Break;
         end
         else
-        if (IndexDefs.Items[I].DescFields = '')
-        and (ixDescending in IndexDefs.Items[I].Options) then
+        if (IndexDefs.Items[I].DescFields = '') and
+          (ixDescending in IndexDefs.Items[I].Options) then
         begin
           for J := 0 to MaxFTS do
             FieldsToSort[J].Order := JvGridSort_DESC;
@@ -352,16 +353,16 @@ begin
         if SortWith = swIndex then
         begin
           // Sort with index
-          if SortString <> '' Then
+          if SortString <> '' then
             SortString := SortString + ';';
           SortString := SortString + FieldsToSort[FTS].Name;
           if FieldsToSort[FTS].Order = JvGridSort_DESC then
           begin
-            if DescString <> '' Then
+            if DescString <> '' then
               DescString := DescString + ';';
             DescString := DescString + FieldsToSort[FTS].Name;
           end;
-          if FTS = MaxFTS Then
+          if FTS = MaxFTS then
           begin
             SearchIndex;
             if not SortOK then
@@ -386,7 +387,7 @@ begin
         if (SortWith = swFields) or (SortWith = swUserFunc) then
         begin
           // Sort with fields (temporary index) or user function
-          if SortString <> '' Then
+          if SortString <> '' then
             SortString := SortString + ',';
           SortString := SortString + '[' + FieldsToSort[FTS].Name + ']';
           if FieldsToSort[FTS].Order = JvGridSort_ASC then
@@ -432,13 +433,13 @@ begin
       begin
         ShiftOrCtrlKeyPressed := GetKeyBoardState(Keys);
         if ShiftOrCtrlKeyPressed then
-          ShiftOrCtrlKeyPressed := (((Keys[VK_SHIFT] and $80) <> 0)
-                                 or ((Keys[VK_CONTROL] and $80) <> 0));
+          ShiftOrCtrlKeyPressed :=
+            (((Keys[VK_SHIFT] and $80) <> 0) or ((Keys[VK_CONTROL] and $80) <> 0));
         SetLength(FieldsToSort, Length(FSortedFields));
         for I := 0 to Length(FSortedFields) - 1 do
         begin
           FieldsToSort[I].Name := FSortedFields[I].Name;
-          if AnsiSameText(AField.FieldName, FSortedFields[I].Name) Then
+          if AnsiSameText(AField.FieldName, FSortedFields[I].Name) then
           begin
             Found := True;
             if not ShiftOrCtrlKeyPressed then

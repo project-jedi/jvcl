@@ -256,9 +256,9 @@ implementation
 
 uses
   Consts,
-  {$IFDEF COMPILER6_UP}
+  {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF HAS_UNIT_RTLCONSTS}
   SysUtils, Math, Graphics, Clipbrd,
   JvUnicodeCanvas, JvJCLUtils, JvThemes, JvConsts, JvResources;
 

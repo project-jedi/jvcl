@@ -41,7 +41,7 @@ uses
   SysUtils, Classes,
   Types, QWindows, QMessages, QControls, QForms, QGraphics, 
   Qt, QTypes,
-  JvQWStrUtils, 
+  JclWideStrings, 
   JvQConsts, JvQResources;
 
 const

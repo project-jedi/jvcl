@@ -45,8 +45,11 @@ uses
   QForms, QControls, QStdCtrls, QExtCtrls, QComCtrls,
   QActnList, QMenus,
   {$ENDIF VisualCLX}
+  {$IFDEF HAS_UNIT_VARIANTS}
+  Variants,
+  {$ENDIF HAS_UNIT_VARIANTS}
   {$IFDEF COMPILER6_UP}
-  DesignEditors, Variants, DesignIntf,
+  DesignEditors, DesignIntf,
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
