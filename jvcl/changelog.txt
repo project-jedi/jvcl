@@ -1,5 +1,7 @@
 Changelog for JVCL 3.0
 ======================
+2004-12-13:
+- Added donation TJvDebugHandler by Robert Meek // AHUser
 2004-12-11:
 - JvEditor now has BracketHighlighting which is extensible with Word-Pairs // AHUser
 - JvEditor's TLineAttrs structure has changed. A new field "Border: TColor" was added // AHUser
