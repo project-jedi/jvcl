@@ -4342,7 +4342,7 @@ procedure TJvDockServer.CreateDockPanelAndSplitter;
     if (FDockPanelClass <> nil) and
       (FDockPanelClass <> TJvDockPanelClass(ClassType)) then
     begin
-      Result := FDockPanelClass.Create(Owner);
+      Result := FDockPanelClass.Create({Owner}Self); // (ahuser) Delphi 5's TComponent.Notification() will fail if Owner=Self.Owner
       Result.Parent := ParentForm;
       Result.Name := Name;
       Result.Caption := '';
@@ -4368,7 +4368,7 @@ procedure TJvDockServer.CreateDockPanelAndSplitter;
     if (FDockSplitterClass <> nil) and
       (FDockSplitterClass <> TJvDockSplitterClass(ClassType)) then
     begin
-      Result := FDockSplitterClass.Create(Owner);
+      Result := FDockSplitterClass.Create({Owner}Self); // (ahuser) Delphi 5's TComponent.Notification() will fail if Owner=Self.Owner
       Result.Parent := ParentForm;
       Result.Name := Name;
       Result.Visible := False;
