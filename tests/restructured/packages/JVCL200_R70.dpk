@@ -113,7 +113,7 @@ contains
   JvEdit in '..\source\JvEdit.pas',
   JvFavoritesButton in '..\source\JvFavoritesButton.pas',
   JvFloatEdit in '..\source\JvFloatEdit.pas',
-  JvFormAlarms in '..\source\JvFormAlarms.pas' {FormAlarm}, 
+  JvFormAlarms in '..\source\JvFormAlarms.pas' {FormAlarm},
   JvFormAnimatedIcon in '..\source\JvFormAnimatedIcon.pas',
   JvFormAnimation in '..\source\JvFormAnimation.pas',
   JvFormImage in '..\source\JvFormImage.pas' {FormImg},
@@ -417,5 +417,7 @@ contains
   JvThumbnails in '..\Source\JvThumbnails.pas',
   JvThumbViews in '..\Source\JvThumbViews.pas',
   JvMovableBevel in '..\Source\JvMovableBevel.pas',
+  JvDBSpinEdit in '..\Source\JvDBSpinEdit.pas',
   JvDSADialogs in '..\Source\JvDSADialogs.pas';
+
 end.

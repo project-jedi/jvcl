@@ -393,6 +393,7 @@ contains
   JvThumbnails in '..\Source\JvThumbnails.pas',
   JvThumbViews in '..\Source\JvThumbViews.pas',
   JvMovableBevel in '..\Source\JvMovableBevel.pas',
+  JvDBSpinEdit in '..\Source\JvDBSpinEdit.pas',
   JvDSADialogs in '..\Source\JvDSADialogs.pas';
 
 end.

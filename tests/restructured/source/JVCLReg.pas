@@ -146,6 +146,7 @@ uses
   //DB-Aware components
   JvDBDateTimePicker,
   JvDBProgressBar,
+  JvDBSpinEdit,
 {$ENDIF}
 
   //Editors
@@ -371,7 +372,8 @@ begin
   // ================
   RegisterComponents('Jv Data Controls', [
     TJvDBDateTimePicker,
-      TJvDBProgressBar
+      TJvDBProgressBar,
+      TJvDBSpinEdit
       ]);
 {$ENDIF}
 
