@@ -7,8 +7,8 @@
 msgid ""
 msgstr "#-#-#-#-#  ..\\..\\run\\default.po (PACKAGE VERSION)  #-#-#-#-#\n"
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2003-10-04 19:45\n"
-"PO-Revision-Date: 2003-10-04 19:45\n"
+"POT-Creation-Date: 2003-10-10 20:24\n"
+"PO-Revision-Date: 2003-10-10 20:24\n"
 "Last-Translator: Somebody <your.email@address.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -16,8 +16,8 @@ msgstr "#-#-#-#-#  ..\\..\\run\\default.po (PACKAGE VERSION)  #-#-#-#-#\n"
 "X-Generator: Dxgettext 1.1.1\n"
 "#-#-#-#-#  ..\\..\\design\\default.po (PACKAGE VERSION)  #-#-#-#-#\n"
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2003-10-04 19:44\n"
-"PO-Revision-Date: 2003-10-04 19:44\n"
+"POT-Creation-Date: 2003-10-10 20:23\n"
+"PO-Revision-Date: 2003-10-10 20:23\n"
 "Last-Translator: Somebody <your.email@address.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -25,8 +25,8 @@ msgstr "#-#-#-#-#  ..\\..\\run\\default.po (PACKAGE VERSION)  #-#-#-#-#\n"
 "X-Generator: Dxgettext 1.1.1\n"
 "#-#-#-#-#  ..\\..\\common\\default.po (PACKAGE VERSION)  #-#-#-#-#\n"
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2003-10-04 19:44\n"
-"PO-Revision-Date: 2003-10-04 19:44\n"
+"POT-Creation-Date: 2003-10-10 20:23\n"
+"PO-Revision-Date: 2003-10-10 20:23\n"
 "Last-Translator: Somebody <your.email@address.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -767,10 +767,6 @@ msgstr ""
 msgid "txt"
 msgstr ""
 
-msgid "Unable to get alarm number %d. Index out of "
-"bounds"
-msgstr ""
-
 msgid "ANI Image"
 msgstr ""
 
@@ -820,9 +816,6 @@ msgid "Shell not compatible with BrowseForFolder"
 msgstr ""
 
 msgid "Unable to find SetupApi.dll"
-msgstr ""
-
-msgid "Invalid date to TJvMonthCalendar2 (%d,%d,%d)"
 msgstr ""
 
 msgid "Invalid date specification to TMonthCalStrings "
@@ -898,6 +891,9 @@ msgstr ""
 msgid "No values here!"
 msgstr ""
 
+msgid "No OnRenderFormat was given."
+msgstr ""
+
 msgid "Custom..."
 msgstr ""
 
@@ -924,12 +920,6 @@ msgid "System colors"
 msgstr ""
 
 msgid "Invalid ButtonCount"
-msgstr ""
-
-msgid "Process list index error"
-msgstr ""
-
-msgid "ProcessID %.8x not found"
 msgstr ""
 
 msgid "Can't perform this operation when process is "
@@ -1086,10 +1076,6 @@ msgid "<ERROR>"
 msgstr ""
 
 msgid "HexStrToInt: Invalid hex literal"
-msgstr ""
-
-msgid "ListBox doesn't allow sorting in virtual "
-"mode"
 msgstr ""
 
 msgid "Internal error."
@@ -2892,10 +2878,6 @@ msgstr ""
 msgid "Invalid drive (%s)"
 msgstr ""
 
-msgid "Unsupported drive (%s): JvDiskFullDialog only supports fixed "
-"drives."
-msgstr ""
-
 msgid "Owner must be of type TCustomForm"
 msgstr ""
 
@@ -4174,9 +4156,10 @@ msgstr ""
 msgid "Band Name\n"
 "Enter a band name, e.g. MyBand.\n"
 "This will be the class name of the band object.\n"
-"No need to prefix it with 'T' as it will be generated.Description\n"
-"Enter a menuitem text, e.g. &My Band\n"
-"This text will appear in the Explorer Bar or Toolbars menu.Band Type\n"
+"No need to prefix it with 'T' as it will be generated.\n"
+"\nDescription\nEnter a menuitem text, e.g. &My Band\n"
+"This text will appear in the Explorer Bar or Toolbars menu.\n"
+"\nBand Type\n"
 "Select the type of band object to create."
 msgstr ""
 
@@ -4971,6 +4954,9 @@ msgid "Jv HMI Controls"
 msgstr ""
 
 msgid "Jv BDE Components"
+msgstr ""
+
+msgid "Jv Threading"
 msgstr ""
 
 msgid "JVCL"
