@@ -1510,7 +1510,6 @@ begin
       JvDockInfoTree.WriteInfoToIni;
       TMemIniFile(JvDockInfoTree.DockInfoIni).UpdateFile;
     finally
-      JvDockInfoTree.DockInfoIni.UpdateFile;
       JvDockInfoTree.DockInfoIni.Free;
     end;
   finally
