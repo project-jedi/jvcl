@@ -231,3 +231,5 @@ BackgrColor=BackgroundColor
 InsertSpSymbolAt=InsertSpecialSymbolAt
 TCustomJvDBTreeView=TJvCustomDBTreeView
 OnParentColorChange=OnParentColorChanged
+LeftMargin=ItemPainter.LeftMargin
+OnDrawMargin=ItemPainter.OnDrawLeftMargin
