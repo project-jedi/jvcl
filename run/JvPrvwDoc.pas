@@ -62,7 +62,7 @@ unit JvPrvwDoc;
 interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, StdCtrls,
-  Forms, Dialogs, JvComponent;
+  Forms, Dialogs, JvComponent, JvExControls;
 
 
 type
@@ -260,7 +260,6 @@ type
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
     procedure CalcScrollRange;
-    procedure WMGetDlgCode(var Message: TMessage); message WM_GETDLGCODE;
     // returns the optimal scale value using current cols and rows
     function GetOptimalScale: Cardinal;
     function GetLesserScale(AHeight, AWidth: Cardinal): Cardinal;
@@ -272,7 +271,8 @@ type
     procedure SetHideScrollBars(const Value: Boolean);
     function IsPageMode: Boolean;
   protected
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override; 
+    procedure DoGetDlgCode(var Code: TDlgCodes); override;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
       MousePos: TPoint): Boolean; override;
     procedure DoScrollHint(NewPos: Integer);
@@ -1351,9 +1351,9 @@ begin
   Refresh;
 end;
 
-procedure TJvCustomPreviewControl.WMGetDlgCode(var Message: TMessage);
+procedure TJvCustomPreviewControl.DoGetDlgCode(var Code: TDlgCodes);
 begin
-  Message.Result := DLGC_WANTALLKEYS;
+  Code := [dcWantAllKeys];
 end;
 
 procedure TJvCustomPreviewControl.PrintRange(const APrinter: IJvPrinter;

@@ -58,7 +58,7 @@ uses
   {$IFDEF VisualCLX}
   Qt, Types, QGraphics, QControls, QStdCtrls, QExtCtrls,
   {$ENDIF VisualCLX}
-  JvClxUtils, JvComponent, JvTypes;
+  JvClxUtils, JvComponent, JvTypes, JvExControls;
 
 const
   { Inspector Row Size constants }
@@ -328,14 +328,12 @@ type
     function ViewWidth: Integer;
     procedure WMHScroll(var Msg: TWMScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMScroll); message WM_VSCROLL;
+    procedure DoGetDlgCode(var Code: TDlgCodes); override;
     {$IFDEF VCL}
-    procedure WMGetDlgCode(var Msg: TWMGetDlgCode); message WM_GETDLGCODE;
     procedure WMSetFocus(var Msg: TWMSetFocus); message WM_SETFOCUS;
     procedure WMMouseWheel(var Msg: TWMMouseWheel); message WM_MOUSEWHEEL;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    function NeedKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override;
     procedure DoEnter; override;
     procedure Scrolled(Sender: TObject; ScrollCode: TScrollCode;
       var ScrollPos: Integer); dynamic;
@@ -3410,23 +3408,13 @@ begin
   Result := RectWidth(ViewRect);
 end;
 
-{$IFDEF VCL}
-procedure TJvCustomInspector.WMGetDlgCode(var Msg: TWMGetDlgCode);
+procedure TJvCustomInspector.DoGetDlgCode(var Code: TDlgCodes);
 begin
-  inherited;
-  Msg.Result := DLGC_WANTARROWS;
+  Code := [dcWantArrows];
   if WantTabs then
-    Msg.Result := Msg.Result + DLGC_WANTTAB;
+    Include(Code, dcWantTab);
 end;
-{$ELSE}
-function TJvCustomInspector.NeedKey(Key: Integer; Shift: TShiftState;
-  const KeyText: WideString): Boolean;
-begin
-  Result := (((Key = Key_Tab) or (Key = Key_BackTab)) and FWantTabs)
-    or ((Key = Key_Left) or (Key = Key_Right) or (Key = Key_Up) or (Key = Key_Down)) or
-    inherited NeedKey(Key, Shift, KeyText);
-end;
-{$ENDIF VCL}
+
 {$IFDEF VCL}
 procedure TJvCustomInspector.WMSetFocus(var Msg: TWMSetFocus);
 {$ELSE}

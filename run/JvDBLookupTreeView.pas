@@ -53,7 +53,7 @@ uses
   {$ENDIF COMPILER6_UP}
   Windows, Messages, SysUtils, Classes, Controls, Forms, Graphics,
   CommCtrl, ComCtrls, Db,
-  JvDBTreeView, JvToolEdit;
+  JvDBTreeView, JvToolEdit, JvComponent, JvExControls;
 
 // (rom) obviously not used
 //const
@@ -81,7 +81,7 @@ type
     procedure DataSetChanged; override;
   end;
 
-  TJvDBLookupControl = class(TCustomControl)
+  TJvDBLookupControl = class(TJvCustomControl)
   private
     FLookupSource: TDataSource;
     FDataLink: TJvLookupDataSourceLink;
@@ -126,11 +126,11 @@ type
     procedure SetListSource(Value: TDataSource);
     procedure SetLookupMode(Value: Boolean);
     procedure SetReadOnly(Value: Boolean);
-    procedure WMGetDlgCode(var Message: TMessage); message WM_GETDLGCODE;
     procedure WMKillFocus(var Message: TMessage); message WM_KILLFOCUS;
     procedure WMSetFocus(var Message: TMessage); message WM_SETFOCUS;
     procedure CMGetDataLink(var Message: TMessage); message CM_GETDATALINK;
   protected
+    procedure DoGetDlgCode(var Code: TDlgCodes); override;
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
     property DataField: string read FDataFieldName write SetDataFieldName;
@@ -802,9 +802,9 @@ begin
   FDataLink.ReadOnly := Value;
 end;
 
-procedure TJvDBLookupControl.WMGetDlgCode(var Message: TMessage);
+procedure TJvDBLookupControl.DoGetDlgCode(var Code: TDlgCodes);
 begin
-  Message.Result := DLGC_WANTARROWS or DLGC_WANTCHARS;
+  Code := [dcWantArrows, dcWantChars];
 end;
 
 procedure TJvDBLookupControl.WMKillFocus(var Message: TMessage);

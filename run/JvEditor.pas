@@ -210,7 +210,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Menus,
   ExtCtrls, StdCtrls, Clipbrd, JvJCLUtils, JvFixedEditPopup,
-  JvUnicodeCanvas, JvComponent;
+  JvUnicodeCanvas, JvComponent, JvExControls;
 
 const
   Max_X = 1024; {max symbols per row}
@@ -555,7 +555,6 @@ type
     { internal message processing }
     procedure WMSetFocus(var Msg: TWMSetFocus); message WM_SETFOCUS;
     procedure WMKillFocus(var Msg: TWMSetFocus); message WM_KILLFOCUS;
-    procedure WMGetDlgCode(var Msg: TWMGetDlgCode); message WM_GETDLGCODE;
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
     procedure WMMouseWheel(var Msg: TWMMouseWheel); message WM_MOUSEWHEEL;
@@ -644,6 +643,8 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseWheel(Shift: TShiftState; WheelDelta: Integer; const MousePos: TPoint); dynamic;
     procedure DblClick; override;
+
+    procedure DoGetDlgCode(var Code: TDlgCodes); override;
 
     procedure DoPaste; dynamic;
     procedure DoCopy; dynamic;
@@ -1942,9 +1943,9 @@ begin
   DoExit;
 end;
 
-procedure TJvCustomEditor.WMGetDlgCode(var Msg: TWMGetDlgCode);
+procedure TJvCustomEditor.DoGetDlgCode(var Code: TDlgCodes);
 begin
-  Msg.Result := DLGC_WANTARROWS or DLGC_WANTTAB or DLGC_WANTCHARS or DLGC_WANTMESSAGE;
+  Code := [dcWantArrows, dcWantTab, dcWantChars, dcWantMessage];
 end;
 
 procedure TJvCustomEditor.WMHScroll(var Msg: TWMHScroll);

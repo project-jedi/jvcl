@@ -82,6 +82,11 @@ type
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   {$ENDIF JVCLThemesEnabledD56}
+    {$IFDEF VisualCLX}
+    function NeedKey(Key: Integer; Shift: TShiftState;
+      const KeyText: WideString): Boolean; override;
+    {$ENDIF VisualCLX}
+    procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
   public
     procedure Dispatch(var Msg); override;
   {$ENDIF VCL}
@@ -148,6 +153,11 @@ type
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   {$ENDIF JVCLThemesEnabledD56}
+    {$IFDEF VisualCLX}
+    function NeedKey(Key: Integer; Shift: TShiftState;
+      const KeyText: WideString): Boolean; override;
+    {$ENDIF VisualCLX}
+    procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
   public
     procedure Dispatch(var Msg); override;
   {$ENDIF VCL}
@@ -212,6 +222,11 @@ type
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   {$ENDIF JVCLThemesEnabledD56}
+    {$IFDEF VisualCLX}
+    function NeedKey(Key: Integer; Shift: TShiftState;
+      const KeyText: WideString): Boolean; override;
+    {$ENDIF VisualCLX}
+    procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
   public
     procedure Dispatch(var Msg); override;
   {$ENDIF VCL}
@@ -274,6 +289,11 @@ type
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   {$ENDIF JVCLThemesEnabledD56}
+    {$IFDEF VisualCLX}
+    function NeedKey(Key: Integer; Shift: TShiftState;
+      const KeyText: WideString): Boolean; override;
+    {$ENDIF VisualCLX}
+    procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
   public
     procedure Dispatch(var Msg); override;
   {$ENDIF VCL}
@@ -342,6 +362,11 @@ type
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   {$ENDIF JVCLThemesEnabledD56}
+    {$IFDEF VisualCLX}
+    function NeedKey(Key: Integer; Shift: TShiftState;
+      const KeyText: WideString): Boolean; override;
+    {$ENDIF VisualCLX}
+    procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
   public
     procedure Dispatch(var Msg); override;
   {$ENDIF VCL}
@@ -404,6 +429,11 @@ type
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   {$ENDIF JVCLThemesEnabledD56}
+    {$IFDEF VisualCLX}
+    function NeedKey(Key: Integer; Shift: TShiftState;
+      const KeyText: WideString): Boolean; override;
+    {$ENDIF VisualCLX}
+    procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
   public
     procedure Dispatch(var Msg); override;
   {$ENDIF VCL}
@@ -542,6 +572,11 @@ begin
 end;
  {$IFEND}
 {$ENDIF VisualCLX}
+
+procedure TJvExInplaceEdit.DoGetDlgCode(var Code: TDlgCodes);
+begin
+end;
+
 {$IFDEF VisualCLX}
 procedure TJvExInplaceEdit.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
@@ -551,6 +586,14 @@ begin
     Paint;
   end;
 end;
+
+function TWidgetControl.NeedKey(Key: Integer; Shift: TShiftState;
+  const KeyText: WideString): Boolean;
+begin
+  Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
+    inherited NeedKey(Key, Shift, KeyText));
+end;
+
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
 procedure TJvExInplaceEdit.CursorChanged;
@@ -740,6 +783,11 @@ begin
 end;
  {$IFEND}
 {$ENDIF VisualCLX}
+
+procedure TJvExCustomGrid.DoGetDlgCode(var Code: TDlgCodes);
+begin
+end;
+
 {$IFDEF VisualCLX}
 procedure TJvExCustomGrid.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
@@ -749,6 +797,14 @@ begin
     Paint;
   end;
 end;
+
+function TWidgetControl.NeedKey(Key: Integer; Shift: TShiftState;
+  const KeyText: WideString): Boolean;
+begin
+  Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
+    inherited NeedKey(Key, Shift, KeyText));
+end;
+
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
 procedure TJvExCustomGrid.CursorChanged;
@@ -918,6 +974,11 @@ begin
 end;
  {$IFEND}
 {$ENDIF VisualCLX}
+
+procedure TJvExCustomDrawGrid.DoGetDlgCode(var Code: TDlgCodes);
+begin
+end;
+
 {$IFDEF VisualCLX}
 procedure TJvExCustomDrawGrid.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
@@ -927,6 +988,14 @@ begin
     Paint;
   end;
 end;
+
+function TWidgetControl.NeedKey(Key: Integer; Shift: TShiftState;
+  const KeyText: WideString): Boolean;
+begin
+  Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
+    inherited NeedKey(Key, Shift, KeyText));
+end;
+
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
 procedure TJvExCustomDrawGrid.CursorChanged;
@@ -1094,6 +1163,11 @@ begin
 end;
  {$IFEND}
 {$ENDIF VisualCLX}
+
+procedure TJvExInplaceEditList.DoGetDlgCode(var Code: TDlgCodes);
+begin
+end;
+
 {$IFDEF VisualCLX}
 procedure TJvExInplaceEditList.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
@@ -1103,6 +1177,14 @@ begin
     Paint;
   end;
 end;
+
+function TWidgetControl.NeedKey(Key: Integer; Shift: TShiftState;
+  const KeyText: WideString): Boolean;
+begin
+  Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
+    inherited NeedKey(Key, Shift, KeyText));
+end;
+
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
 procedure TJvExInplaceEditList.CursorChanged;
@@ -1294,6 +1376,11 @@ begin
 end;
  {$IFEND}
 {$ENDIF VisualCLX}
+
+procedure TJvExDrawGrid.DoGetDlgCode(var Code: TDlgCodes);
+begin
+end;
+
 {$IFDEF VisualCLX}
 procedure TJvExDrawGrid.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
@@ -1303,6 +1390,14 @@ begin
     Paint;
   end;
 end;
+
+function TWidgetControl.NeedKey(Key: Integer; Shift: TShiftState;
+  const KeyText: WideString): Boolean;
+begin
+  Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
+    inherited NeedKey(Key, Shift, KeyText));
+end;
+
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
 procedure TJvExDrawGrid.CursorChanged;
@@ -1470,6 +1565,11 @@ begin
 end;
  {$IFEND}
 {$ENDIF VisualCLX}
+
+procedure TJvExStringGrid.DoGetDlgCode(var Code: TDlgCodes);
+begin
+end;
+
 {$IFDEF VisualCLX}
 procedure TJvExStringGrid.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
@@ -1479,6 +1579,14 @@ begin
     Paint;
   end;
 end;
+
+function TWidgetControl.NeedKey(Key: Integer; Shift: TShiftState;
+  const KeyText: WideString): Boolean;
+begin
+  Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
+    inherited NeedKey(Key, Shift, KeyText));
+end;
+
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
 procedure TJvExStringGrid.CursorChanged;

@@ -39,7 +39,7 @@ uses
   {$IFNDEF COMPILER6_UP}
   JvConsts,  // for clSkyBlue
   {$ENDIF COMPILER6_UP}
-  ExtCtrls;
+  ExtCtrls, JvExControls, JvExForms;
 
 const
   CM_UNSELECTITEMS = WM_USER + 1;
@@ -54,7 +54,7 @@ type
     FPattern: TBitmap;
     FOddColor: TColor;
     FEvenColor: TColor;
-    FActive: boolean;
+    FActive: Boolean;
     procedure SetEvenColor(const Value: TColor);
     procedure SetOddColor(const Value: TColor);
   public
@@ -63,7 +63,7 @@ type
     destructor Destroy; override;
 
   published
-    property Active: boolean read FActive write FActive default true;
+    property Active: Boolean read FActive write FActive default True;
     property EvenColor: TColor read FEvenColor write SetEvenColor default clWhite;
     property OddColor: TColor read FOddColor write SetOddColor default clSkyBlue;
   end;
@@ -74,42 +74,42 @@ type
   // and override GetOptionsClass to return the property class type
   TJvCustomItemViewerOptions = class(TPersistent)
   private
-    FVertSpacing: integer;
-    FHorzSpacing: integer;
-    FHeight: integer;
-    FWidth: integer;
+    FVertSpacing: Integer;
+    FHorzSpacing: Integer;
+    FHeight: Integer;
+    FWidth: Integer;
     FScrollBar: TJvItemViewerScrollBar;
     FOwner: TJvCustomItemViewer;
-    FAutoCenter: boolean;
-    FSmooth: boolean;
-    FTracking: boolean;
-    FHotTrack: boolean;
-    FMultiSelect: boolean;
+    FAutoCenter: Boolean;
+    FSmooth: Boolean;
+    FTracking: Boolean;
+    FHotTrack: Boolean;
+    FMultiSelect: Boolean;
     FBrushPattern: TJvBrushPattern;
-    FLazyRead: boolean;
+    FLazyRead: Boolean;
     FAlignment: TAlignment;
     FLayout: TTextLayout;
-    FShowCaptions: boolean;
-    FRightClickSelect: boolean;
-    FReduceMemoryUsage: boolean;
-    FDragAutoScroll: boolean;
-    procedure SetRightClickSelect(const Value: boolean);
-    procedure SetShowCaptions(const Value: boolean);
+    FShowCaptions: Boolean;
+    FRightClickSelect: Boolean;
+    FReduceMemoryUsage: Boolean;
+    FDragAutoScroll: Boolean;
+    procedure SetRightClickSelect(const Value: Boolean);
+    procedure SetShowCaptions(const Value: Boolean);
     procedure SetAlignment(const Value: TAlignment);
     procedure SetLayout(const Value: TTextLayout);
-    procedure SetHeight(const Value: integer);
-    procedure SetHorzSpacing(const Value: integer);
+    procedure SetHeight(const Value: Integer);
+    procedure SetHorzSpacing(const Value: Integer);
     procedure SetScrollBar(const Value: TJvItemViewerScrollBar);
-    procedure SetVertSpacing(const Value: integer);
-    procedure SetWidth(const Value: integer);
-    procedure SetAutoCenter(const Value: boolean);
-    procedure SetSmooth(const Value: boolean);
-    procedure SetTracking(const Value: boolean);
-    procedure SetHotTrack(const Value: boolean);
-    procedure SetMultiSelect(const Value: boolean);
+    procedure SetVertSpacing(const Value: Integer);
+    procedure SetWidth(const Value: Integer);
+    procedure SetAutoCenter(const Value: Boolean);
+    procedure SetSmooth(const Value: Boolean);
+    procedure SetTracking(const Value: Boolean);
+    procedure SetHotTrack(const Value: Boolean);
+    procedure SetMultiSelect(const Value: Boolean);
     procedure SetBrushPattern(const Value: TJvBrushPattern);
-    procedure SetLazyRead(const Value: boolean);
-    procedure SetReduceMemoryUsage(const Value: boolean);
+    procedure SetLazyRead(const Value: Boolean);
+    procedure SetReduceMemoryUsage(const Value: Boolean);
   protected
     procedure Change; virtual;
   public
@@ -119,23 +119,23 @@ type
   protected
     property Owner: TJvCustomItemViewer read FOwner;
     property Alignment: TAlignment read FAlignment write SetAlignment default taCenter;
-    property DragAutoScroll: boolean read FDragAutoScroll write FDragAutoScroll default true;
+    property DragAutoScroll: Boolean read FDragAutoScroll write FDragAutoScroll default True;
     property Layout: TTextLayout read FLayout write SetLayout default tlBottom;
-    property Width: integer read FWidth write SetWidth default 120;
-    property Height: integer read FHeight write SetHeight default 120;
-    property VertSpacing: integer read FVertSpacing write SetVertSpacing default 4;
-    property HorzSpacing: integer read FHorzSpacing write SetHorzSpacing default 4;
+    property Width: Integer read FWidth write SetWidth default 120;
+    property Height: Integer read FHeight write SetHeight default 120;
+    property VertSpacing: Integer read FVertSpacing write SetVertSpacing default 4;
+    property HorzSpacing: Integer read FHorzSpacing write SetHorzSpacing default 4;
     property ScrollBar: TJvItemViewerScrollBar read FScrollBar write SetScrollBar default tvVertical;
-    property ShowCaptions: boolean read FShowCaptions write SetShowCaptions default true;
-    property LazyRead: boolean read FLazyRead write SetLazyRead default true;
-    property ReduceMemoryUsage: boolean read FReduceMemoryUsage write SetReduceMemoryUsage default false;
-    property AutoCenter: boolean read FAutoCenter write SetAutoCenter;
-    property Smooth: boolean read FSmooth write SetSmooth default false;
-    property Tracking: boolean read FTracking write SetTracking default true;
-    property HotTrack: boolean read FHotTrack write SetHotTrack;
-    property MultiSelect: boolean read FMultiSelect write SetMultiSelect;
+    property ShowCaptions: Boolean read FShowCaptions write SetShowCaptions default True;
+    property LazyRead: Boolean read FLazyRead write SetLazyRead default True;
+    property ReduceMemoryUsage: Boolean read FReduceMemoryUsage write SetReduceMemoryUsage default False;
+    property AutoCenter: Boolean read FAutoCenter write SetAutoCenter;
+    property Smooth: Boolean read FSmooth write SetSmooth default False;
+    property Tracking: Boolean read FTracking write SetTracking default True;
+    property HotTrack: Boolean read FHotTrack write SetHotTrack;
+    property MultiSelect: Boolean read FMultiSelect write SetMultiSelect;
     property BrushPattern: TJvBrushPattern read FBrushPattern write SetBrushPattern;
-    property RightClickSelect: boolean read FRightClickSelect write SetRightClickSelect default false;
+    property RightClickSelect: Boolean read FRightClickSelect write SetRightClickSelect default False;
   end;
 
   TJvItemViewerOptionsClass = class of TJvCustomItemViewerOptions;
@@ -145,18 +145,18 @@ type
     FOwner: TJvCustomItemViewer;
     FData: Pointer;
     FState: TCustomDrawState;
-    FDeleting: boolean;
+    FDeleting: Boolean;
     procedure SetData(const Value: Pointer);
     procedure SetState(const Value: TCustomDrawState);
   protected
-    function Changing: boolean; virtual;
+    function Changing: Boolean; virtual;
     procedure Changed; virtual;
     procedure ReduceMemoryUsage; virtual;
   public
     constructor Create(AOwner: TJvCustomItemViewer); virtual;
     procedure Delete;
   protected
-    property Deleting: boolean read FDeleting;
+    property Deleting: Boolean read FDeleting;
     property Owner: TJvCustomItemViewer read FOwner;
   public
     property State: TCustomDrawState read FState write SetState;
@@ -168,17 +168,17 @@ type
   // TODO
   TJvViewerDrawStage = (vdsBeforePaint, vdsAfterPaint);
   TJvViewerAdvancedDrawEvent = procedure(Sender: TObject; Stage: TJvViewerDrawStage;
-    Canvas: TCanvas; R: TRect; var DefaultDraw: boolean) of object;
+    Canvas: TCanvas; R: TRect; var DefaultDraw: Boolean) of object;
   TJvViewerAdvancedItemDrawEvent = procedure(Sender: TObject; Stage: TJvViewerDrawStage;
-    Index: integer; State: TCustomDrawState; Canvas: TCanvas; ItemRect, TextRect: TRect;
-    var DefaultDraw: boolean) of object;
+    Index: Integer; State: TCustomDrawState; Canvas: TCanvas; ItemRect, TextRect: TRect;
+    var DefaultDraw: Boolean) of object;
 
-  TJvViewerItemDrawEvent = procedure(Sender: TObject; Index: integer; State: TCustomDrawState;
+  TJvViewerItemDrawEvent = procedure(Sender: TObject; Index: Integer; State: TCustomDrawState;
     Canvas: TCanvas; ItemRect, TextRect: TRect) of object;
-  TJvViewerItemChangingEvent = procedure(Sender: TObject; Item: TJvViewerItem; var Allow: boolean) of object;
+  TJvViewerItemChangingEvent = procedure(Sender: TObject; Item: TJvViewerItem; var Allow: Boolean) of object;
   TJvViewerItemChangedEvent = procedure(Sender: TObject; Item: TJvViewerItem) of object;
 
-  TJvCustomItemViewer = class(TScrollingWinControl)
+  TJvCustomItemViewer = class(TJvExScrollingWinControl)
   private
     FCanvas: TCanvas;
     FItems: TList;
@@ -187,23 +187,22 @@ type
     FItemSize: TSize;
     FOnDrawItem: TJvViewerItemDrawEvent;
     FDragImages: TDragImageList;
-    FUpdateCount, FCols, FRows, FTempSelected, FSelectedIndex, FLastHotTrack: integer;
+    FUpdateCount, FCols, FRows, FTempSelected, FSelectedIndex, FLastHotTrack: Integer;
     FBorderStyle: TBorderStyle;
-    FTopLeftIndex: integer;
-    FBottomRightIndex: integer;
+    FTopLeftIndex: Integer;
+    FBottomRightIndex: Integer;
     FOnScroll: TNotifyEvent;
     FOnOptionsChanged: TNotifyEvent;
     FOnItemChanged: TJvViewerItemChangedEvent;
     FOnItemChanging: TJvViewerItemChangingEvent;
     FScrollTimer: TTimer;
-    ScrollEdge: integer;
+    ScrollEdge: Integer;
     procedure DoScrollTimer(Sender: TObject);
 
     procedure WMHScroll(var Message: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Message: TWMVScroll); message WM_VSCROLL;
     procedure WMPaint(var Message: TWMPaint); message WM_PAINT;
     procedure WMSize(var Message: TWMSize); message WM_SIZE;
-    procedure WMGetDlgCode(var Message: TWMGetDlgCode); message WM_GETDLGCODE;
     procedure WMSetFocus(var Message: TWMSetFocus); message WM_SETFOCUS;
     procedure WMNCHitTest(var Message: TMessage); message WM_NCHITTEST;
     procedure WMLButtonUp(var Message: TWMLButtonUp); message WM_LBUTTONUP;
@@ -211,32 +210,34 @@ type
     procedure WMRButtonDown(var Message: TWMRButtonDown); message WM_RBUTTONDOWN;
     procedure WMCancelMode(var Message: TWMCancelMode); message WM_CANCELMODE;
 
-    procedure CMMouseleave(var Message: TMessage); message CM_MOUSELEAVE;
     procedure CMUnselectItem(var Message: TMessage); message CM_UNSELECTITEMS;
     procedure CMDeleteItem(var Message: TMessage); message CM_DELETEITEM;
     procedure CMCtl3DChanged(var Message: TMessage); message CM_CTL3DCHANGED;
 
     procedure SetOptions(const Value: TJvCustomItemViewerOptions);
-    function GetItems(Index: integer): TJvViewerItem;
-    procedure SetItems(Index: integer; const Value: TJvViewerItem);
-    procedure SetSelectedIndex(const Value: integer);
+    function GetItems(Index: Integer): TJvViewerItem;
+    procedure SetItems(Index: Integer; const Value: TJvViewerItem);
+    procedure SetSelectedIndex(const Value: Integer);
     procedure SetBorderStyle(const Value: TBorderStyle);
-    function GetCount: integer;
-    procedure SetCount(const Value: integer);
-    function GetSelected(Item: TJvViewerItem): boolean;
-    procedure SetSelected(Item: TJvViewerItem; const Value: boolean);
+    function GetCount: Integer;
+    procedure SetCount(const Value: Integer);
+    function GetSelected(Item: TJvViewerItem): Boolean;
+    procedure SetSelected(Item: TJvViewerItem; const Value: Boolean);
     procedure StopScrollTimer;
   protected
+    procedure MouseLeave(Control: TControl); override;
+    procedure DoGetDlgCode(var Code: TDlgCodes); override;
+
     procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean); override;
-    procedure DoEndDrag(Sender: TObject; X, Y: integer); override;
+    procedure DoEndDrag(Sender: TObject; X, Y: Integer); override;
     procedure DragCanceled; override;
 
-    procedure DoUnSelectItems(ExcludeIndex: integer);
-    procedure ToggleSelection(Index: integer; SetSelection: boolean);
-    procedure ShiftSelection(Index: integer; SetSelection: boolean);
-    procedure ScrollIntoView(Index: integer);
-    function FindFirstSelected: integer;
-    function FindLastSelected: integer;
+    procedure DoUnSelectItems(ExcludeIndex: Integer);
+    procedure ToggleSelection(Index: Integer; SetSelection: Boolean);
+    procedure ShiftSelection(Index: Integer; SetSelection: Boolean);
+    procedure ScrollIntoView(Index: Integer);
+    function FindFirstSelected: Integer;
+    function FindLastSelected: Integer;
     procedure UpdateAll;
     procedure UpdateOffset;
     procedure CalcIndices;
@@ -244,13 +245,13 @@ type
 
     procedure CheckHotTrack;
     procedure InvalidateClipRect(R: TRect);
-    function ItemRect(Index: integer; IncludeSpacing: boolean): TRect;
-    function ColRowToIndex(ACol, ARow: integer): integer;
+    function ItemRect(Index: Integer; IncludeSpacing: Boolean): TRect;
+    function ColRowToIndex(ACol, ARow: Integer): Integer;
     procedure OptionsChanged;
     procedure Changed;
 
     function GetTextRect(const S: string; var ItemRect: TRect): TRect; virtual;
-    function GetTextHeight: integer; virtual;
+    function GetTextHeight: Integer; virtual;
     function GetDragImages: TDragImageList; override;
     function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
       MousePos: TPoint): Boolean; override;
@@ -259,26 +260,26 @@ type
     procedure Paint; virtual;
     procedure PaintWindow(DC: HDC); override;
     procedure CreateParams(var Params: TCreateParams); override;
-    procedure IndexToColRow(Index: integer; var ACol, ARow: integer);
-    procedure DrawItem(Index: integer; State: TCustomDrawState; Canvas: TCanvas; ItemRect, TextRect: TRect); virtual;
+    procedure IndexToColRow(Index: Integer; var ACol, ARow: Integer);
+    procedure DrawItem(Index: Integer; State: TCustomDrawState; Canvas: TCanvas; ItemRect, TextRect: TRect); virtual;
     function GetItemClass: TJvViewerItemClass; virtual;
     function GetOptionsClass: TJvItemViewerOptionsClass; virtual;
-    function GetItemState(Index: integer): TCustomDrawState; virtual;
-    procedure ItemChanging(Item: TJvViewerItem; var AllowChange: boolean); virtual;
+    function GetItemState(Index: Integer): TCustomDrawState; virtual;
+    procedure ItemChanging(Item: TJvViewerItem; var AllowChange: Boolean); virtual;
     procedure ItemChanged(Item: TJvViewerItem); virtual;
 
-    property TopLeftIndex: integer read FTopLeftIndex;
-    property BottomRightIndex: integer read FBottomRightIndex;
-    property UpdateCount: integer read FUpdateCount;
+    property TopLeftIndex: Integer read FTopLeftIndex;
+    property BottomRightIndex: Integer read FBottomRightIndex;
+    property UpdateCount: Integer read FUpdateCount;
 
     property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
     property ParentColor default False;
-    property SelectedIndex: integer read FSelectedIndex write SetSelectedIndex;
-    property Selected[Item: TJvViewerItem]: boolean read GetSelected write SetSelected;
+    property SelectedIndex: Integer read FSelectedIndex write SetSelectedIndex;
+    property Selected[Item: TJvViewerItem]: Boolean read GetSelected write SetSelected;
     property Canvas: TCanvas read FCanvas;
     property Options: TJvCustomItemViewerOptions read FOptions write SetOptions;
-    property Count: integer read GetCount write SetCount;
-    property Items[Index: integer]: TJvViewerItem read GetItems write SetItems;
+    property Count: Integer read GetCount write SetCount;
+    property Items[Index: Integer]: TJvViewerItem read GetItems write SetItems;
     property ItemSize: TSize read FItemSize;
     property OnDrawItem: TJvViewerItemDrawEvent read FOnDrawItem write FOnDrawItem;
     property OnScroll: TNotifyEvent read FOnScroll write FOnScroll;
@@ -291,14 +292,14 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
     procedure SelectAll;
-    procedure SelectItems(StartIndex, EndIndex: integer; AppendSelection: boolean);
-    procedure UnselectItems(StartIndex, EndIndex: integer);
+    procedure SelectItems(StartIndex, EndIndex: Integer; AppendSelection: Boolean);
+    procedure UnselectItems(StartIndex, EndIndex: Integer);
     procedure Clear;
-    function Add(AItem: TJvViewerItem): integer;
-    procedure Insert(Index: integer; AItem: TJvViewerItem);
-    procedure Delete(Index: integer);
-    function IndexOf(Item: TJvViewerItem): integer;
-    function ItemAtPos(X, Y: integer; Existing: boolean): integer; virtual;
+    function Add(AItem: TJvViewerItem): Integer;
+    procedure Insert(Index: Integer; AItem: TJvViewerItem);
+    procedure Delete(Index: Integer);
+    function IndexOf(Item: TJvViewerItem): Integer;
+    function ItemAtPos(X, Y: Integer; Existing: Boolean): Integer; virtual;
   end;
 
   // Creates a 8x8 brush pattern with alternate odd and even colors
@@ -315,8 +316,8 @@ procedure ReleasePattern(EvenColor, OddColor: TColor);
 // that are only used short times
 procedure ClearBrushPatterns;
 
-function ViewerDrawText(Canvas: TCanvas; S: PChar; aLength: integer;
-  var R: TRect; Format: Cardinal; Alignment: TAlignment; Layout: TTextLayout; WordWrap: boolean): integer;
+function ViewerDrawText(Canvas: TCanvas; S: PChar; aLength: Integer;
+  var R: TRect; Format: Cardinal; Alignment: TAlignment; Layout: TTextLayout; WordWrap: Boolean): Integer;
 function CenterRect(InnerRect, OuterRect: TRect): TRect;
 
 implementation
@@ -331,7 +332,7 @@ type
   TScrollEdge = (seNone, seLeft, seTop, seRight, seBottom);
   TColorPattern = record
     EvenColor, OddColor: TColor;
-    UsageCount: integer;
+    UsageCount: Integer;
     Bitmap: TBitmap;
   end;
 
@@ -345,7 +346,7 @@ var
 
 procedure ReleasePattern(EvenColor, OddColor: TColor);
 var
-  i: integer;
+  i: Integer;
 begin
   for i := 0 to Length(__Patterns) - 1 do
     if (__Patterns[i].EvenColor = EvenColor) and (__Patterns[i].OddColor = OddColor) then
@@ -360,7 +361,7 @@ end;
 
 procedure ClearBrushPatterns;
 var
-  i: integer;
+  i: Integer;
 begin
   for i := 0 to Length(__Patterns) - 1 do
     __Patterns[i].Bitmap.Free;
@@ -370,16 +371,16 @@ end;
 function CreateBrushPattern(const EvenColor: TColor = clWhite; const OddColor: TColor = clBtnFace):
   TBitmap;
 var
-  i, X, Y: integer;
-  Found: boolean;
+  i, X, Y: Integer;
+  Found: Boolean;
 begin
-  Found := false;
+  Found := False;
   Result := nil;
   for i := 0 to Length(__Patterns) - 1 do
     if (__Patterns[i].EvenColor = EvenColor) and (__Patterns[i].OddColor = OddColor) then
     begin
       Result := __Patterns[i].Bitmap;
-      Found := true;
+      Found := True;
       Break;
     end;
 
@@ -411,12 +412,12 @@ begin
   Inc(__Patterns[i].UsageCount);
 end;
 
-function ViewerDrawText(Canvas: TCanvas; S: PChar; aLength: integer;
-  var R: TRect; Format: Cardinal; Alignment: TAlignment; Layout: TTextLayout; WordWrap: boolean): integer;
+function ViewerDrawText(Canvas: TCanvas; S: PChar; aLength: Integer;
+  var R: TRect; Format: Cardinal; Alignment: TAlignment; Layout: TTextLayout; WordWrap: Boolean): Integer;
 const
   Alignments: array[TAlignment] of Cardinal = (DT_LEFT, DT_RIGHT, DT_CENTER);
   Layouts: array[TTextLayout] of Cardinal = (DT_TOP, DT_VCENTER, DT_BOTTOM);
-  WordWraps: array[boolean] of Cardinal = (DT_SINGLELINE, DT_WORDBREAK);
+  WordWraps: array[Boolean] of Cardinal = (DT_SINGLELINE, DT_WORDBREAK);
 var
   Flags: Cardinal;
 begin
@@ -439,7 +440,7 @@ begin
   inherited Create;
   FEvenColor := clWhite;
   FOddColor := clSkyBlue;
-  FActive := true;
+  FActive := True;
 end;
 
 destructor TJvBrushPattern.Destroy;
@@ -528,13 +529,13 @@ begin
   FVertSpacing := 4;
   FHorzSpacing := 4;
   FScrollBar := tvVertical;
-  FSmooth := false;
-  FTracking := true;
-  FLazyRead := true;
-  FShowCaptions := false;
+  FSmooth := False;
+  FTracking := True;
+  FLazyRead := True;
+  FShowCaptions := False;
   FAlignment := taCenter;
   FLayout := tlBottom;
-  FDragAutoScroll := true;
+  FDragAutoScroll := True;
   FBrushPattern := TJvBrushPattern.Create;
 end;
 
@@ -554,7 +555,7 @@ begin
   end;
 end;
 
-procedure TJvCustomItemViewerOptions.SetAutoCenter(const Value: boolean);
+procedure TJvCustomItemViewerOptions.SetAutoCenter(const Value: Boolean);
 begin
   if FAutoCenter <> Value then
   begin
@@ -569,7 +570,7 @@ begin
   //  FBrushPattern := Value;
 end;
 
-procedure TJvCustomItemViewerOptions.SetHeight(const Value: integer);
+procedure TJvCustomItemViewerOptions.SetHeight(const Value: Integer);
 begin
   if FHeight <> Value then
   begin
@@ -578,7 +579,7 @@ begin
   end;
 end;
 
-procedure TJvCustomItemViewerOptions.SetHorzSpacing(const Value: integer);
+procedure TJvCustomItemViewerOptions.SetHorzSpacing(const Value: Integer);
 begin
   if FHorzSpacing <> Value then
   begin
@@ -587,7 +588,7 @@ begin
   end;
 end;
 
-procedure TJvCustomItemViewerOptions.SetHotTrack(const Value: boolean);
+procedure TJvCustomItemViewerOptions.SetHotTrack(const Value: Boolean);
 begin
   if FHotTrack <> Value then
   begin
@@ -606,18 +607,18 @@ begin
   end;
 end;
 
-procedure TJvCustomItemViewerOptions.SetLazyRead(const Value: boolean);
+procedure TJvCustomItemViewerOptions.SetLazyRead(const Value: Boolean);
 begin
   if LazyRead <> Value then
   begin
     FLazyRead := Value;
     if not FLazyRead then
-      FReduceMemoryUsage := false;
+      FReduceMemoryUsage := False;
     Change;
   end;
 end;
 
-procedure TJvCustomItemViewerOptions.SetMultiSelect(const Value: boolean);
+procedure TJvCustomItemViewerOptions.SetMultiSelect(const Value: Boolean);
 begin
   if FMultiSelect <> Value then
   begin
@@ -627,20 +628,20 @@ begin
 end;
 
 procedure TJvCustomItemViewerOptions.SetReduceMemoryUsage(
-  const Value: boolean);
+  const Value: Boolean);
 begin
   if FReduceMemoryUsage <> Value then
   begin
     FReduceMemoryUsage := Value;
     if FReduceMemoryUsage then
     begin
-      FLazyRead := true;
+      FLazyRead := True;
       FOwner.DoReduceMemory;
     end;
   end;
 end;
 
-procedure TJvCustomItemViewerOptions.SetRightClickSelect(const Value: boolean);
+procedure TJvCustomItemViewerOptions.SetRightClickSelect(const Value: Boolean);
 begin
   FRightClickSelect := Value;
   // no need to tell owner
@@ -655,7 +656,7 @@ begin
   end;
 end;
 
-procedure TJvCustomItemViewerOptions.SetShowCaptions(const Value: boolean);
+procedure TJvCustomItemViewerOptions.SetShowCaptions(const Value: Boolean);
 begin
   if FShowCaptions <> Value then
   begin
@@ -664,7 +665,7 @@ begin
   end;
 end;
 
-procedure TJvCustomItemViewerOptions.SetSmooth(const Value: boolean);
+procedure TJvCustomItemViewerOptions.SetSmooth(const Value: Boolean);
 begin
   if FSmooth <> Value then
   begin
@@ -673,7 +674,7 @@ begin
   end;
 end;
 
-procedure TJvCustomItemViewerOptions.SetTracking(const Value: boolean);
+procedure TJvCustomItemViewerOptions.SetTracking(const Value: Boolean);
 begin
   if FTracking <> Value then
   begin
@@ -682,7 +683,7 @@ begin
   end;
 end;
 
-procedure TJvCustomItemViewerOptions.SetVertSpacing(const Value: integer);
+procedure TJvCustomItemViewerOptions.SetVertSpacing(const Value: Integer);
 begin
   if FVertSpacing <> Value then
   begin
@@ -691,7 +692,7 @@ begin
   end;
 end;
 
-procedure TJvCustomItemViewerOptions.SetWidth(const Value: integer);
+procedure TJvCustomItemViewerOptions.SetWidth(const Value: Integer);
 begin
   if FWidth <> Value then
   begin
@@ -708,9 +709,9 @@ begin
     FOwner.ItemChanged(Self);
 end;
 
-function TJvViewerItem.Changing: boolean;
+function TJvViewerItem.Changing: Boolean;
 begin
-  Result := true;
+  Result := True;
   if FOwner <> nil then
     FOwner.ItemChanging(Self, Result);
 end;
@@ -725,8 +726,8 @@ procedure TJvViewerItem.Delete;
 begin
   if FOwner <> nil then
   begin
-    FDeleting := true;
-    PostMessage(FOwner.Handle, CM_DELETEITEM, integer(Self), 0);
+    FDeleting := True;
+    PostMessage(FOwner.Handle, CM_DELETEITEM, Integer(Self), 0);
   end;
 end;
 
@@ -755,7 +756,7 @@ end;
 
 { TJvCustomItemViewer }
 
-function TJvCustomItemViewer.Add(AItem: TJvViewerItem): integer;
+function TJvCustomItemViewer.Add(AItem: TJvViewerItem): Integer;
 begin
   Assert(AItem is GetItemClass);
   Result := FItems.Add(AItem);
@@ -768,10 +769,10 @@ end;
 
 procedure TJvCustomItemViewer.CalcIndices;
 begin
-  FTopLeftIndex := ItemAtPos(0, 0, true);
-  FBottomRightIndex := ItemAtPos(ClientWidth, ClientHeight, true);
+  FTopLeftIndex := ItemAtPos(0, 0, True);
+  FBottomRightIndex := ItemAtPos(ClientWidth, ClientHeight, True);
   if FBottomRightIndex < 0 then
-    FBottomRightIndex := ItemAtPos(ClientWidth, ClientHeight, false) - 1;
+    FBottomRightIndex := ItemAtPos(ClientWidth, ClientHeight, False) - 1;
   if FTopLeftIndex < 0 then FTopLeftIndex := 0;
   if FTopLeftIndex >= Count then FTopLeftIndex := Count - 1;
   if FBottomRightIndex < 0 then FBottomRightIndex := 0;
@@ -788,7 +789,7 @@ end;
 procedure TJvCustomItemViewer.CheckHotTrack;
 var
   P: TPoint;
-  i: integer;
+  i: Integer;
 begin
   if Options.HotTrack and GetCursorPos(P) then
   begin
@@ -796,7 +797,7 @@ begin
     if not PtInRect(ClientRect, P) then
       i := -1
     else
-      i := ItemAtPos(P.X, P.Y, true);
+      i := ItemAtPos(P.X, P.Y, True);
     // remove hot track state from previous item
     if (FLastHotTrack >= 0) and (FLastHotTrack < Count) and (i <> FLastHotTrack) then
       Items[FLastHotTrack].State := Items[FLastHotTrack].State - [cdsHot];
@@ -812,7 +813,7 @@ end;
 
 procedure TJvCustomItemViewer.Clear;
 var
-  i: integer;
+  i: Integer;
 begin
   BeginUpdate;
   try
@@ -832,7 +833,7 @@ end;
 
 procedure TJvCustomItemViewer.CMDeleteItem(var Message: TMessage);
 var
-  i: integer;
+  i: Integer;
 begin
   i := FItems.IndexOf(TObject(Message.wParam));
   if (i >= 0) and (i < Count) then
@@ -842,22 +843,24 @@ begin
   end;
 end;
 
-procedure TJvCustomItemViewer.CMMouseleave(var Message: TMessage);
+procedure TJvCustomItemViewer.MouseLeave(Control: TControl);
 begin
-  inherited;
+  if csDesigning in ComponentState then
+    Exit;
+  inherited MouseLeave(Control);
   CheckHotTrack;
 end;
 
 procedure TJvCustomItemViewer.CMUnselectItem(var Message: TMessage);
 var
-  i: integer;
+  i: Integer;
 begin
-  if (Message.WParam = integer(self)) then
+  if (Message.WParam = Integer(self)) then
   begin
     BeginUpdate;
     try
       for i := 0 to Count - 1 do
-        if (integer(Items[i]) <> Message.LParam) and (cdsSelected in
+        if (Integer(Items[i]) <> Message.LParam) and (cdsSelected in
           Items[i].State) then
           Items[i].State := Items[i].State - [cdsSelected];
     finally
@@ -866,7 +869,7 @@ begin
   end;
 end;
 
-function TJvCustomItemViewer.ColRowToIndex(ACol, ARow: integer): integer;
+function TJvCustomItemViewer.ColRowToIndex(ACol, ARow: Integer): Integer;
 begin
   Result := ACol + ARow * FCols
 end;
@@ -882,16 +885,16 @@ begin
   TControlCanvas(FCanvas).Control := self;
   FSelectedIndex := -1;
   FLastHotTrack := -1;
-  AutoScroll := false;
+  AutoScroll := False;
   HorzScrollBar.Smooth := Options.Smooth;
   HorzScrollBar.Tracking := Options.Tracking;
   VertScrollBar.Smooth := Options.Smooth;
   VertScrollBar.Tracking := Options.Tracking;
-  DoubleBuffered := true;
+  DoubleBuffered := True;
   FBorderStyle := bsSingle;
   Width := 185;
   Height := 150;
-  TabStop := true;
+  TabStop := True;
 end;
 
 procedure TJvCustomItemViewer.CreateParams(var Params: TCreateParams);
@@ -912,7 +915,7 @@ begin
     Style := Style or (CS_HREDRAW or CS_VREDRAW) { or CS_SAVEBITS};
 end;
 
-procedure TJvCustomItemViewer.Delete(Index: integer);
+procedure TJvCustomItemViewer.Delete(Index: Integer);
 begin
   TObject(FItems[Index]).Free;
   FItems.Delete(Index);
@@ -933,7 +936,7 @@ end;
 function TJvCustomItemViewer.DoMouseWheel(Shift: TShiftState;
   WheelDelta: Integer; MousePos: TPoint): Boolean;
 var
-  WD: integer;
+  WD: Integer;
 begin
   if not inherited DoMouseWheel(Shift, WheelDelta, MousePos) then
   begin
@@ -948,12 +951,12 @@ begin
     UpdateOffset;
     Invalidate;
   end;
-  Result := true;
+  Result := True;
 end;
 
 procedure TJvCustomItemViewer.DoReduceMemory;
 var
-  i: integer;
+  i: Integer;
 begin
   if Options.ReduceMemoryUsage then
   begin
@@ -966,7 +969,7 @@ begin
   end;
 end;
 
-procedure TJvCustomItemViewer.DrawItem(Index: integer; State: TCustomDrawState;
+procedure TJvCustomItemViewer.DrawItem(Index: Integer; State: TCustomDrawState;
   Canvas: TCanvas; ItemRect, TextRect: TRect);
 begin
   if Assigned(FOnDrawItem) then
@@ -984,7 +987,7 @@ begin
   end;
 end;
 
-function TJvCustomItemViewer.FindFirstSelected: integer;
+function TJvCustomItemViewer.FindFirstSelected: Integer;
 begin
   for Result := 0 to Count - 1 do
     if cdsSelected in Items[Result].State then
@@ -992,7 +995,7 @@ begin
   Result := -1;
 end;
 
-function TJvCustomItemViewer.FindLastSelected: integer;
+function TJvCustomItemViewer.FindLastSelected: Integer;
 begin
   for Result := Count - 1 downto 0 do
     if cdsSelected in Items[Result].State then
@@ -1000,7 +1003,7 @@ begin
   Result := -1;
 end;
 
-function TJvCustomItemViewer.GetCount: integer;
+function TJvCustomItemViewer.GetCount: Integer;
 begin
   Result := FItems.Count;
 end;
@@ -1009,12 +1012,12 @@ function TJvCustomItemViewer.GetDragImages: TDragImageList;
 var
   B: TBitmap;
   P: TPoint;
-  i: integer;
+  i: Integer;
   ItemRect, TextRect: TRect;
 begin
   GetCursorPos(P);
   P := ScreenToClient(P);
-  i := ItemAtPos(P.X, P.Y, true);
+  i := ItemAtPos(P.X, P.Y, True);
   // create an image of the currently selected item
   if i >= 0 then
   begin
@@ -1039,7 +1042,7 @@ begin
       B.Free;
     end;
     //    FDragImages.SetDragImage(0, 0, 0);
-    ItemRect := self.ItemRect(i, true);
+    ItemRect := self.ItemRect(i, True);
     FDragImages.SetDragImage(0, P.X - ItemRect.Left, P.Y - ItemRect.Top);
     Result := FDragImages;
     SelectedIndex := i;
@@ -1054,7 +1057,7 @@ begin
   Result := TJvViewerItem;
 end;
 
-function TJvCustomItemViewer.GetItems(Index: integer): TJvViewerItem;
+function TJvCustomItemViewer.GetItems(Index: Integer): TJvViewerItem;
 begin
   Result := FItems[Index];
   if Result = nil then
@@ -1062,7 +1065,7 @@ begin
   FItems[Index] := Result;
 end;
 
-function TJvCustomItemViewer.GetItemState(Index: integer): TCustomDrawState;
+function TJvCustomItemViewer.GetItemState(Index: Integer): TCustomDrawState;
 begin
   // (p3) safer than calling Items[Index].State directly
   if (Index >= 0) and (Index < Count) then
@@ -1076,12 +1079,12 @@ begin
   Result := TJvCustomItemViewerOptions;
 end;
 
-function TJvCustomItemViewer.GetSelected(Item: TJvViewerItem): boolean;
+function TJvCustomItemViewer.GetSelected(Item: TJvViewerItem): Boolean;
 begin
   Result := (Item <> nil) and (cdsSelected in Item.State);
 end;
 
-function TJvCustomItemViewer.GetTextHeight: integer;
+function TJvCustomItemViewer.GetTextHeight: Integer;
 var
   R: TRect;
   S: string;
@@ -1089,13 +1092,13 @@ begin
   S := 'Wg';
   R := Rect(0, 0, 100, 100);
   Result := ViewerDrawText(Canvas, PChar(S), Length(S),
-    R, DT_END_ELLIPSIS or DT_CALCRECT, taCenter, tlTop, false) + 4;
+    R, DT_END_ELLIPSIS or DT_CALCRECT, taCenter, tlTop, False) + 4;
   //  Result := Canvas.TextHeight('Wg');
 end;
 
 function TJvCustomItemViewer.GetTextRect(const S: string; var ItemRect: TRect): TRect;
 var
-  TextHeight: integer;
+  TextHeight: Integer;
 begin
   TextHeight := GetTextHeight;
 
@@ -1120,7 +1123,7 @@ begin
   end;
 end;
 
-function TJvCustomItemViewer.IndexOf(Item: TJvViewerItem): integer;
+function TJvCustomItemViewer.IndexOf(Item: TJvViewerItem): Integer;
 begin
   // (p3) need to do it like this because items aren't created until Items[] is called
   for Result := 0 to Count - 1 do
@@ -1128,14 +1131,14 @@ begin
   Result := -1;
 end;
 
-procedure TJvCustomItemViewer.IndexToColRow(Index: integer; var ACol, ARow: integer);
+procedure TJvCustomItemViewer.IndexToColRow(Index: Integer; var ACol, ARow: Integer);
 begin
   Assert(FCols > 0);
   ACol := Index mod FCols;
   ARow := Index div FCols;
 end;
 
-procedure TJvCustomItemViewer.Insert(Index: integer; AItem: TJvViewerItem);
+procedure TJvCustomItemViewer.Insert(Index: Integer; AItem: TJvViewerItem);
 begin
   Assert(AItem is GetItemClass);
   FItems.Insert(Index, AItem);
@@ -1145,12 +1148,12 @@ procedure TJvCustomItemViewer.InvalidateClipRect(R: TRect);
 begin
   if IsRectEmpty(R) then
     R := Canvas.ClipRect;
-  InvalidateRect(Handle, @R, true);
+  InvalidateRect(Handle, @R, True);
 end;
 
-function TJvCustomItemViewer.ItemAtPos(X, Y: integer; Existing: boolean): integer;
+function TJvCustomItemViewer.ItemAtPos(X, Y: Integer; Existing: Boolean): Integer;
 var
-  ARow, ACol: integer;
+  ARow, ACol: Integer;
 begin
   Result := -1;
   if (FItemSize.cx < 1) or (FItemSize.cy < 1) then Exit;
@@ -1166,7 +1169,7 @@ end;
 
 procedure TJvCustomItemViewer.ItemChanged(Item: TJvViewerItem);
 var
-  i: integer;
+  i: Integer;
 begin
   if FUpdateCount <> 0 then Exit;
   if (Item <> nil) then
@@ -1176,7 +1179,7 @@ begin
     begin
       if (cdsSelected in Item.State) and not Options.MultiSelect then
         FSelectedIndex := i;
-      InvalidateClipRect(ItemRect(i, true));
+      InvalidateClipRect(ItemRect(i, True));
     end;
   end
   else
@@ -1186,16 +1189,16 @@ begin
 end;
 
 procedure TJvCustomItemViewer.ItemChanging(Item: TJvViewerItem;
-  var AllowChange: boolean);
+  var AllowChange: Boolean);
 begin
-  AllowChange := true;
+  AllowChange := True;
   if Assigned(FOnItemChanging) then
     FOnItemChanging(self, Item, AllowChange);
 end;
 
-function TJvCustomItemViewer.ItemRect(Index: integer; IncludeSpacing: boolean): TRect;
+function TJvCustomItemViewer.ItemRect(Index: Integer; IncludeSpacing: Boolean): TRect;
 var
-  ACol, ARow: integer;
+  ACol, ARow: Integer;
 begin
   IndexToColRow(Index, ACol, ARow);
   if (Index < 0) or (Index >= Count) then
@@ -1212,7 +1215,7 @@ end;
 
 procedure TJvCustomItemViewer.KeyDown(var Key: Word; Shift: TShiftState);
 var
-  aIndex: integer;
+  aIndex: Integer;
 begin
   inherited;
   aIndex := -1;
@@ -1246,10 +1249,10 @@ end;
 
 procedure TJvCustomItemViewer.Paint;
 var
-  i: integer;
+  i: Integer;
   ItemRect, TextRect, AClientRect: TRect;
 
-  function IsRectVisible(const R: TRect): boolean;
+  function IsRectVisible(const R: TRect): Boolean;
   begin
     Result := (R.Top < AClientRect.Bottom) and (R.Bottom > AClientRect.Top) and
       (R.Left < AClientRect.Right) and (R.Right > AClientRect.Left)
@@ -1314,11 +1317,11 @@ begin
   end;
 end;
 
-procedure TJvCustomItemViewer.ScrollIntoView(Index: integer);
+procedure TJvCustomItemViewer.ScrollIntoView(Index: Integer);
 var
   Rect: TRect;
 begin
-  Rect := ItemRect(Index, true);
+  Rect := ItemRect(Index, True);
   Dec(Rect.Left, HorzScrollBar.Margin);
   Inc(Rect.Right, HorzScrollBar.Margin);
   Dec(Rect.Top, VertScrollBar.Margin);
@@ -1356,9 +1359,9 @@ begin
   end;
 end;
 
-procedure TJvCustomItemViewer.SetCount(const Value: integer);
+procedure TJvCustomItemViewer.SetCount(const Value: Integer);
 var
-  i: integer;
+  i: Integer;
   Obj: TJvViewerItem;
 begin
   if Value <> Count then
@@ -1389,7 +1392,7 @@ begin
   end;
 end;
 
-procedure TJvCustomItemViewer.SetItems(Index: integer;
+procedure TJvCustomItemViewer.SetItems(Index: Integer;
   const Value: TJvViewerItem);
 var
   Item: TJvViewerItem;
@@ -1412,13 +1415,13 @@ begin
 end;
 
 procedure TJvCustomItemViewer.SetSelected(Item: TJvViewerItem;
-  const Value: boolean);
+  const Value: Boolean);
 begin
   if (Item <> nil) and not (cdsSelected in Item.State) then
     Item.State := Item.State + [cdsSelected];
 end;
 
-procedure TJvCustomItemViewer.SetSelectedIndex(const Value: integer);
+procedure TJvCustomItemViewer.SetSelectedIndex(const Value: Integer);
 begin
   //  if (FSelectedIndex <> Value) then
   begin
@@ -1432,8 +1435,8 @@ begin
   end;
 end;
 
-procedure TJvCustomItemViewer.ToggleSelection(Index: integer; SetSelection:
-  boolean);
+procedure TJvCustomItemViewer.ToggleSelection(Index: Integer; SetSelection:
+  Boolean);
 begin
   if cdsSelected in Items[Index].State then
   begin
@@ -1449,16 +1452,16 @@ begin
   end;
 end;
 
-procedure TJvCustomItemViewer.ShiftSelection(Index: integer; SetSelection: boolean);
+procedure TJvCustomItemViewer.ShiftSelection(Index: Integer; SetSelection: Boolean);
 
-  function InRange(Value, Min, Max: integer): boolean;
+  function InRange(Value, Min, Max: Integer): Boolean;
   begin
     Result := (Value >= Min) and (Value <= Max);
   end;
 
-  procedure Swap(var X, Y: integer);
+  procedure Swap(var X, Y: Integer);
   var
-    i: integer;
+    i: Integer;
   begin
     i := X;
     X := Y;
@@ -1469,7 +1472,7 @@ var
   i,
     AFromCol, AFromRow,
     AToCol, AToRow,
-    ACurrCol, ACurrRow: integer;
+    ACurrCol, ACurrRow: Integer;
 begin
   BeginUpdate;
   try
@@ -1495,7 +1498,7 @@ begin
   end;
 end;
 
-procedure TJvCustomItemViewer.DoUnSelectItems(ExcludeIndex: integer);
+procedure TJvCustomItemViewer.DoUnSelectItems(ExcludeIndex: Integer);
 var
   Item: TJvViewerItem;
 begin
@@ -1503,7 +1506,7 @@ begin
     Item := Items[ExcludeIndex]
   else
     Item := nil;
-  PostMessage(Handle, CM_UNSELECTITEMS, integer(self), integer(Item));
+  PostMessage(Handle, CM_UNSELECTITEMS, Integer(self), Integer(Item));
 end;
 
 procedure TJvCustomItemViewer.UpdateAll;
@@ -1536,8 +1539,8 @@ begin
     if FCols < 1 then FCols := 1;
     while (FRows * FCols) < Count do
       Inc(FCols);
-    HorzScrollbar.Visible := true;
-    VertScrollbar.Visible := false;
+    HorzScrollbar.Visible := True;
+    VertScrollbar.Visible := False;
   end
   else
   begin
@@ -1553,8 +1556,8 @@ begin
     if FRows < 1 then FRows := 1;
     while (FRows * FCols) < Count do
       Inc(FRows);
-    HorzScrollbar.Visible := false;
-    VertScrollbar.Visible := true;
+    HorzScrollbar.Visible := False;
+    VertScrollbar.Visible := True;
   end;
   HorzScrollbar.Range := FCols * FItemSize.cx;
   VertScrollbar.Range := FRows * FItemSize.cy;
@@ -1585,10 +1588,9 @@ begin
     Dec(FTopLeft.Y, VertScrollBar.Position);
 end;
 
-procedure TJvCustomItemViewer.WMGetDlgCode(var Message: TWMGetDlgCode);
+procedure TJvCustomItemViewer.DoGetDlgCode(var Code: TDlgCodes);
 begin
-  inherited;
-  Message.Result := DLGC_WANTARROWS;
+  Code := [dcWantArrows];
 end;
 
 procedure TJvCustomItemViewer.WMHScroll(var Message: TWMHScroll);
@@ -1606,7 +1608,7 @@ begin
   with Message do
   begin
     P := SmallPointToPoint(Pos);
-    FTempSelected := ItemAtPos(P.X, P.Y, true);
+    FTempSelected := ItemAtPos(P.X, P.Y, True);
     if CanFocus then SetFocus;
   end;
   inherited;
@@ -1615,20 +1617,20 @@ end;
 procedure TJvCustomItemViewer.WMLButtonUp(var Message: TWMLButtonUp);
 var
   P: TPoint;
-  i: integer;
+  i: Integer;
 begin
   with Message do
   begin
     P := SmallPointToPoint(Pos);
-    i := ItemAtPos(P.X, P.Y, true);
+    i := ItemAtPos(P.X, P.Y, True);
     if (i = FTempSelected) and (i >= 0) and (i < Count) then
     begin
       if Options.MultiSelect then
       begin
         if (ssCtrl in KeysToShiftState(Keys)) then
-          ToggleSelection(FTempSelected, true)
+          ToggleSelection(FTempSelected, True)
         else if ssShift in KeysToShiftState(Keys) then
-          ShiftSelection(FTempSelected, true)
+          ShiftSelection(FTempSelected, True)
         else
         begin
           DoUnSelectItems(FTempSelected);
@@ -1671,7 +1673,7 @@ begin
     with Message do
     begin
       P := SmallPointToPoint(Pos);
-      FTempSelected := ItemAtPos(P.X, P.Y, true);
+      FTempSelected := ItemAtPos(P.X, P.Y, True);
       if CanFocus then SetFocus;
       SelectedIndex := FTempSelected;
       Invalidate;
@@ -1719,11 +1721,11 @@ end;
 
 procedure TJvCustomItemViewer.DoScrollTimer(Sender: TObject);
 var
-  DoInvalidate: boolean;
+  DoInvalidate: Boolean;
 begin
-  FScrollTimer.Enabled := false;
+  FScrollTimer.Enabled := False;
   FScrollTimer.Interval := cScrollIntervall;
-  DoInvalidate := false;
+  DoInvalidate := False;
   case TScrollEdge(ScrollEdge) of
     seLeft:
       if (Options.ScrollBar = tvHorizontal) and HorzScrollBar.Visible and (HorzScrollBar.Position > 0) then
@@ -1743,7 +1745,7 @@ begin
   if (ScrollEdge <> Ord(seNone)) and DoInvalidate then
     Invalidate;
   //  UpdateWindow(Handle);
-  FScrollTimer.Enabled := true;
+  FScrollTimer.Enabled := True;
 end;
 
 procedure TJvCustomItemViewer.DragOver(Source: TObject; X, Y: Integer;
@@ -1769,10 +1771,10 @@ begin
     else if (ScrollEdge <> Ord(seNone)) and not Assigned(FScrollTimer) then
     begin
       FScrollTimer := TTimer.Create(nil);
-      FScrollTimer.Enabled := false;
+      FScrollTimer.Enabled := False;
       FScrollTimer.Interval := cScrollDelay;
       FScrollTimer.OnTimer := DoScrollTimer;
-      FScrollTimer.Enabled := true;
+      FScrollTimer.Enabled := True;
     end;
   end
   else
@@ -1785,7 +1787,7 @@ begin
   StopScrollTimer;
 end;
 
-procedure TJvCustomItemViewer.DoEndDrag(Sender: TObject; X, Y: integer);
+procedure TJvCustomItemViewer.DoEndDrag(Sender: TObject; X, Y: Integer);
 begin
   inherited;
   StopScrollTimer;
@@ -1808,13 +1810,13 @@ end;
 
 procedure TJvCustomItemViewer.SelectAll;
 begin
-  SelectItems(0, Count - 1, true);
+  SelectItems(0, Count - 1, True);
 end;
 
-procedure TJvCustomItemViewer.SelectItems(StartIndex, EndIndex: integer;
-  AppendSelection: boolean);
+procedure TJvCustomItemViewer.SelectItems(StartIndex, EndIndex: Integer;
+  AppendSelection: Boolean);
 var
-  i, AIndex: integer;
+  i, AIndex: Integer;
 begin
   AIndex := SelectedIndex;
   BeginUpdate;
@@ -1832,9 +1834,9 @@ begin
   end;
 end;
 
-procedure TJvCustomItemViewer.UnselectItems(StartIndex, EndIndex: integer);
+procedure TJvCustomItemViewer.UnselectItems(StartIndex, EndIndex: Integer);
 var
-  i: integer;
+  i: Integer;
 begin
   BeginUpdate;
   try

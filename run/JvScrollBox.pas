@@ -32,7 +32,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  JVCLVer, JvExForms;
+  JVCLVer, JvExControls, JvExForms;
 
 type
   TJvScrollBox = class(TJvExScrollBox)
@@ -47,9 +47,9 @@ type
     FOnVerticalScroll: TNotifyEvent;
     procedure SetHotTrack(const Value: Boolean);
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
-    procedure WMGetDlgCode(var Msg: TWMGetDlgCode); message WM_GETDLGCODE;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
   protected
+    procedure DoGetDlgCode(var Code: TDlgCodes); override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
@@ -142,9 +142,9 @@ begin
     Ctl3D := False;
 end;
 
-procedure TJvScrollBox.WMGetDlgCode(var Msg: TWMGetDlgCode);
+procedure TJvScrollBox.DoGetDlgCode(var Code: TDlgCodes);
 begin
-  Msg.Result := DLGC_WANTALLKEYS or DLGC_WANTARROWS;
+  Code := [dcWantAllKeys, dcWantArrows];
 end;
 
 procedure TJvScrollBox.WndProc(var Msg: TMessage);

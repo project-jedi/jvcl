@@ -34,7 +34,7 @@ unit JvCharMap;
 interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Grids,
-  JVCLVer, JvComponent, JvExGrids;
+  JVCLVer, JvComponent, JvExControls, JvExGrids;
 
 type
   TJvCharMapValidateEvent = procedure(Sender: TObject; AChar: WideChar;
@@ -383,8 +383,8 @@ type
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure WMNCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
-    procedure WMGetDlgCode(var Msg: TWMGetDlgCode); message WM_GETDLGCODE;
     procedure WMSetFocus(var Msg: TWMSetFocus); message WM_SETFOCUS;
+    procedure DoGetDlgCode(var Code: TDlgCodes); override;
     procedure VisibleChanged; override;
     procedure FontChanged; override;
 
@@ -1179,9 +1179,9 @@ begin
   end;
 end;
 
-procedure TCharZoomPanel.WMGetDlgCode(var Msg: TWMGetDlgCode);
+procedure TCharZoomPanel.DoGetDlgCode(var Code: TDlgCodes);
 begin
-  Msg.Result := DLGC_WANTARROWS;
+  Code := [dcWantArrows];
 end;
 
 procedure TCharZoomPanel.WMNCHitTest(var Msg: TWMNCHitTest);

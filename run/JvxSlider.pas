@@ -32,7 +32,7 @@ interface
 uses
   Windows,
   Controls, ExtCtrls, Classes, Graphics, Messages, Menus,
-  JVCLVer, JvComponent;
+  JVCLVer, JvComponent, JvExControls;
 
 type
   TNumThumbStates = 1..2;
@@ -111,12 +111,12 @@ type
     function GetOffsetByValue(Value: Longint): Integer;
     function GetRulerLength: Integer;
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
-    procedure WMGetDlgCode(var Msg: TWMGetDlgCode); message WM_GETDLGCODE;
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     procedure WMSetCursor(var Msg: TWMSetCursor); message WM_SETCURSOR;
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
     procedure WMTimer(var Msg: TMessage); message WM_TIMER;
   protected
+    procedure DoGetDlgCode(var Code: TDlgCodes); override;
     procedure EnabledChanged; override;
     procedure AlignControls(AControl: TControl; var Rect: TRect); override;
     procedure DefineProperties(Filer: TFiler); override;
@@ -1090,9 +1090,9 @@ begin
   inherited;
 end;
 
-procedure TJvCustomSlider.WMGetDlgCode(var Msg: TWMGetDlgCode);
+procedure TJvCustomSlider.DoGetDlgCode(var Code: TDlgCodes);
 begin
-  Msg.Result := DLGC_WANTARROWS;
+  Code := [dcWantArrows];
 end;
 
 procedure TJvCustomSlider.WMSize(var Msg: TWMSize);
