@@ -25,6 +25,10 @@
  page, located at http://www.delphi-jedi.org
 
  RECENT CHANGES:
+    Apr 11, 2004, Marcel Bestebroer:
+      - Index out of range errors and/or AV could show up when closing an
+        application. This happened mostly in cases where you had a number
+        of class items with sub items for the properties of that class.
     Apr 10, 2004, Marcel Bestebroer:
       - Double clicking a category item will now expand/collapse regardless
         of the position of the mouse (used to work only when clicking left of
@@ -2372,8 +2376,18 @@ begin
       Move(FInstanceList[I + 1], FInstanceList[I], (Length(FInstanceList) - I) * SizeOf(TJvCustomInspectorData));
     SetLength(FInstanceList, High(FInstanceList));
     if not FClearing then
-      for I := Low(FInstanceList) to High(FInstanceList) do
+    begin
+      I := High(FInstanceList);
+      while I >= 0 do
+      begin
         Items[I].NotifyRemoveData(Instance);
+        Dec(I);
+        { Additional safety: more than 1 instance might have been removed at this point; make sure
+          I stays in range. }
+        if I > High(FInstanceList) then
+          I := High(FInstanceList);
+      end;
+    end;
   end;
 end;
 
@@ -10181,7 +10195,7 @@ end;
 
 procedure TJvInspectorPropData.NotifyRemoveData(const Instance: TJvCustomInspectorData);
 begin
-  if (Instance <> Self) and (Instance.TypeInfo.Kind = tkClass) and
+  if (Instance <> nil) and (Instance <> Self) and (Instance.TypeInfo.Kind = tkClass) and
     (TObject(Instance.AsOrdinal) = Self.Instance) then
     Free;
 end;
