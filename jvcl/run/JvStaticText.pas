@@ -192,7 +192,7 @@ type
 
 implementation
 uses
-  JvJVCLUtils;
+  JvJVCLUtils, JvThemes;
 
 //=== TJvCustomStaticText ====================================================
 
@@ -209,6 +209,7 @@ begin
   FLayout := tlTop;
   ControlStyle := [csCaptureMouse, csClickEvents, csSetCaption,
     csOpaque, csReplicatable, csDoubleClicks];
+  IncludeThemeStyle(Self, [csParentBackground]);
 
   Width := 65;
   Height := 17;
@@ -318,7 +319,7 @@ begin
     with DrawItemStruct do
     begin
       R := rcItem;
-      FillRect(hDC, R, B);
+      DrawThemedBackground(Self, hDC, R, B);
       if BorderStyle <> sbsNone then
         DrawEdge(hDC, R, BDR_SUNKENOUTER, BF_ADJUST or BF_RECT or cBorders[BorderStyle]);
       DrawStyle := GetTextDisplayInfo(hDC, R);

@@ -2716,6 +2716,7 @@ begin
   FChangeLink := TChangeLink.Create;
   FChangeLink.OnChange := DoImagesChange;
   ControlStyle := ControlStyle + [csOpaque, csReplicatable];
+  IncludeThemeStyle(Self, [csParentBackground]);
   FHotTrack := False;
   // (rom) needs better font handling
   FHotTrackFont := TFont.Create;
@@ -2932,7 +2933,7 @@ begin
     begin
       Brush.Color := Self.Color;
       Brush.Style := bsSolid;
-      FillRect(ClientRect);
+      DrawThemedBackground(Self, Canvas, ClientRect);
     end;
     Brush.Style := bsClear;
     if Angle <> 0 then
@@ -3106,9 +3107,15 @@ begin
   if Transparent <> Value then
   begin
     if Value then
-      ControlStyle := ControlStyle - [csOpaque]
+    begin
+      ControlStyle := ControlStyle - [csOpaque];
+      ExcludeThemeStyle(Self, [csParentBackground]);
+    end
     else
+    begin
       ControlStyle := ControlStyle + [csOpaque];
+      IncludeThemeStyle(Self, [csParentBackground]);
+    end;
     Invalidate;
   end;
 end;

@@ -37,7 +37,7 @@ uses
   SysUtils, Classes, Messages, Menus, Buttons, Controls, Graphics, Forms,
   ImgList, ActnList,
   ExtCtrls, Grids, IniFiles,
-  JvAppStore, JvTypes, JvxCtrls, JvFormPlacement, JvComponent;
+  JvAppStore, JvTypes, JvxCtrls, JvFormPlacement, JvComponent, JvThemes;
 
 const
   DefButtonWidth = 24;
@@ -149,6 +149,7 @@ type
     procedure IniLoad(Sender: TObject);
     procedure CMVisibleChanged(var Msg: TMessage); message CM_VISIBLECHANGED;
     procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
+    procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
   protected
     procedure AlignControls(AControl: TControl; var Rect: TRect); override;
     function AppendSection(Value: TJvSpeedBarSection): Integer; virtual;
@@ -1468,6 +1469,7 @@ begin
   FEditWin := 0;
   FOptions := [sbAllowDrag, sbGrayedBtns];
   ControlStyle := ControlStyle - [csSetCaption, csReplicatable];
+  IncludeThemeStyle(Self, [csNeedsBorderPaint]);
   ParentShowHint := False;
   ShowHint := True;
   SetFontDefault;
@@ -1686,6 +1688,11 @@ begin
   inherited;
   if not ((csLoading in ComponentState) or (csDesigning in ComponentState)) then
     ForEachItem(SetItemEnabled, 0);
+end;
+
+procedure TJvSpeedBar.CMDenySubClassing(var Msg: TMessage);
+begin
+  Msg.Result := 1;
 end;
 
 procedure TJvSpeedBar.WallpaperChanged(Sender: TObject);
