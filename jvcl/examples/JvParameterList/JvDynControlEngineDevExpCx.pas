@@ -32,7 +32,7 @@ uses
   Buttons, Dialogs, FileCtrl,
   cxLookAndFeels, cxMaskEdit, cxLabel, cxButtons, cxListBox, cxDropDownEdit,
   cxButtonEdit, cxCalendar, cxCheckBox, cxMemo, cxRadioGroup, cxImage,
-  cxEdit, cxCalc, cxSpinEdit, cxTimeEdit, cxCheckListBox,
+  cxEdit, cxCalc, cxSpinEdit, cxTimeEdit, cxCheckListBox, cxGroupBox,
   JvDynControlEngine, JvDynControlEngineIntf;
 
 type
@@ -461,6 +461,18 @@ type
 
     procedure ControlSetNewEntriesAllowed(Value: boolean);
   end;
+
+  TJvDynControlCxGroupBox = class (TcxGroupBox, IUnknown, IJvDynControl)
+  public
+    procedure ControlSetDefaultProperties;
+    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetTabOrder(Value: integer);
+
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+  end;
+
 
   TJvDynControlCxPanel = class (TPanel, IUnknown, IJvDynControl, IJvDynControlPanel)
   public
@@ -1940,6 +1952,36 @@ begin
     Properties.DropDownListStyle := lsEditFixedList;
 end;
 
+//=== TJvDynControlCxGroupBox ===================================================
+
+procedure TJvDynControlCxGroupBox.ControlSetDefaultProperties;
+begin
+end;
+
+procedure TJvDynControlCxGroupBox.ControlSetCaption(const Value: string);
+begin
+  Caption := Value;
+end;
+
+procedure TJvDynControlCxGroupBox.ControlSetTabOrder(Value: integer);
+begin
+  TabOrder := Value;
+end;
+
+procedure TJvDynControlCxGroupBox.ControlSetOnEnter(Value: TNotifyEvent);
+begin
+  OnEnter := Value;
+end;
+
+procedure TJvDynControlCxGroupBox.ControlSetOnExit(Value: TNotifyEvent);
+begin
+  OnExit := Value;
+end;
+
+procedure TJvDynControlCxGroupBox.ControlSetOnClick(Value: TNotifyEvent);
+begin
+end;
+
 //=== TJvDynControlCxPanel ===================================================
 
 procedure TJvDynControlCxPanel.ControlSetDefaultProperties;
@@ -2251,6 +2293,7 @@ begin
   IntDynControlEngineDevExpCx.RegisterControl(jctStaticText, TJvDynControlCxStaticText);
   IntDynControlEngineDevExpCx.RegisterControl(jctButton, TJvDynControlCxButton);
   IntDynControlEngineDevExpCx.RegisterControl(jctScrollBox, TJvDynControlCxScrollBox);
+  IntDynControlEngineDevExpCx.RegisterControl(jctGroupBox, TJvDynControlCxGroupBox);
   IntDynControlEngineDevExpCx.RegisterControl(jctPanel, TJvDynControlCxPanel);
   IntDynControlEngineDevExpCx.RegisterControl(jctImage, TJvDynControlCxImage);
   IntDynControlEngineDevExpCx.RegisterControl(jctCheckBox, TJvDynControlCxCheckBox);
