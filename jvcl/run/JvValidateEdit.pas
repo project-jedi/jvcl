@@ -952,7 +952,7 @@ begin
   begin
     iDivisor := 1;
     iBaseIterations := -1;
-    while (NewValue div iDivisor) > 0 do
+    while (Int64(NewValue) div iDivisor) > 0 do  // Int64 to remove warning about size of operands
     begin
       iDivisor := iDivisor * Base;
       Inc(iBaseIterations);
