@@ -20,18 +20,18 @@ Michael Beck [mbeck att bigfoot dott com].
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  Enhanced ListBox component that can display its items in three
+  dimensional styles. Items captions align in one of 9 positions.
+  Component can display glyphs on own items and fill background  with
+  bitmap. You can set different fonts for selected item and for
+  other list items.
+
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
 {$I jvcl.inc}
-
-{  Enhanced ListBox component that  can  display    its  items in  three
- dimensional  styles.   Items  captions align in one of 9 positions.
- Component can display glyphs on own items and fill background  with
- bitmap.  You can set different fonts  for  selected  item  and  for
- other list items.
-}
 
 unit JvgListBox;
 
@@ -39,29 +39,27 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls,
-  Forms, Dialogs, StdCtrls, CommCtrl, ExtCtrls, Imglist,
+  Forms, Dialogs, StdCtrls, CommCtrl, ExtCtrls, ImgList,
   JvgTypes, JVCLVer, JvgCommClasses, Jvg3DColors;
 
 const
-  WordWraps: array[Boolean] of Word = (0, DT_WORDBREAK);
+  WordWraps: array [Boolean] of Word = (0, DT_WORDBREAK);
 
 type
   TglLBWallpaperOption = (fwlNone, fwlStretch, fwlTile, fwlGlobal);
-  TglLBChangeEvent = procedure(Sender: TObject; OldSelItemIndex, SelItemIndex:
-    Integer) of object;
-  TglLBOnDrawEvent = procedure(Sender: TObject; Message: TWMDrawItem) of
-    object;
-  TglOnGetDragImageEvent = procedure(Sender: TObject; Bitmap: TBitmap; var
-    TransparentColor: TColor;
-    var HotSpotX, HotSpotY: Integer) of object;
+  TglLBChangeEvent = procedure(Sender: TObject;
+    FOldSelItemIndex, FSelItemIndex: Integer) of object;
+  TglLBOnDrawEvent = procedure(Sender: TObject; Msg: TWMDrawItem) of object;
+  TglOnGetDragImageEvent = procedure(Sender: TObject; Bitmap: TBitmap;
+    var TransparentColor: TColor; var HotSpotX, HotSpotY: Integer) of object;
 
   TJvgListBox = class(TCustomListBox)
   private
-    FAutoTrColor: TglAutoTransparentColor;
+    FAutoTransparentColor: TglAutoTransparentColor;
     FWallpaper: TBitmap;
     FWallpaperImage: TImage;
     FWallpaperOption: TglLBWallpaperOption;
-    FNumGlyphs: word;
+    FNumGlyphs: Word;
     FGlyphsAlign: TJvg2DAlign;
     FTextAlign: TJvg2DAlign;
     FTransparentColor: TColor;
@@ -69,7 +67,7 @@ type
     FItemStyle: TJvgListBoxItemStyle;
     FItemSelStyle: TJvgListBoxItemStyle;
     FGlyphs: TImageList;
-    FItemHeight: word;
+    FItemHeight: Word;
     FTextAlign_: UINT;
     HotTrackingItemIndex: Integer;
     FOptions: TglListBoxOptions;
@@ -80,40 +78,36 @@ type
     FOnGetItemColor: TglOnGetItemColorEvent;
     FOnGetItemFontColor: TglOnGetItemColorEvent;
     FOnGetDragImage: TglOnGetDragImageEvent;
-    //'''''''''''''''''''''''''''''''''''''''''
     ThreeDColors: TJvg3DLocalColors;
-    WallpaperBmp: TBitmap;
-    TmpBitmap: TBitmap;
-    OldSelItemIndex,
-      SelItemIndex: Integer;
-    fUseWallpaper: Boolean;
-    fAboutJVCL: TJVCLAboutInfo;
-    procedure SetAutoTrColor(Value: TglAutoTransparentColor);
+    FWallpaperBmp: TBitmap;
+    FTmpBitmap: TBitmap;
+    FOldSelItemIndex: Integer;
+    FSelItemIndex: Integer;
+    FUseWallpaper: Boolean;
+    FAboutJVCL: TJVCLAboutInfo;
+    procedure SetAutoTransparentColor(Value: TglAutoTransparentColor);
     procedure SetWallpaper(Value: TBitmap);
     function GetWallpaper: TBitmap;
-    procedure SetWallpaperImage(Value: Timage);
+    procedure SetWallpaperImage(Value: TImage);
     procedure SetWOpt(Value: TglLBWallpaperOption);
-    procedure SetNumGlyphs(Value: word);
+    procedure SetNumGlyphs(Value: Word);
     procedure SetGlyphs(Value: TImageList);
-    procedure SetItemHeight(Value: word);
+    procedure SetItemHeight(Value: Word);
     procedure SetTransparentColor(Value: TColor);
     procedure SetHotTrackColor(Value: TColor);
     procedure SetAlign;
     procedure SetOptions(Value: TglListBoxOptions);
     function GetSelectedObject: Pointer;
-
     procedure RecalcHeights;
     procedure SmthChanged(Sender: TObject);
-    procedure CNDrawItem(var Message: TWMDrawItem); message CN_DRAWITEM;
-    procedure CNMeasureItem(var Message: TWMMeasureItem); message
-      CN_MEASUREITEM;
-    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
-    procedure WMMouseMove(var Message: TMessage); message WM_MOUSEMOVE;
+    procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
+    procedure CNMeasureItem(var Msg: TWMMeasureItem); message CN_MEASUREITEM;
+    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
+    procedure WMMouseMove(var Msg: TMessage); message WM_MOUSEMOVE;
   protected
     function GetSelCount: Integer; {$IFDEF COMPILER6_UP} override; {$ENDIF}
     procedure Loaded; override;
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
-      override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure DestroyWnd; override;
     procedure CreateDragImage;
     procedure DoStartDrag(var DragObject: TDragObject); override;
@@ -121,15 +115,16 @@ type
   public
     FLeftIndent: Integer;
     FreeObjectsOnDestroy: Boolean;
-    IndentLeft, IndentRight, TextIndent: Integer;
-    property SelectedObject: Pointer read GetSelectedObject;
-    property SelCount: Integer read GetSelCount;
+    IndentLeft: Integer;
+    IndentRight: Integer;
+    TextIndent: Integer;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function GetDragImages: TDragImageList; override;
+    property SelectedObject: Pointer read GetSelectedObject;
+    property SelCount: Integer read GetSelCount;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-
     property Anchors;
     property Align;
     property BorderStyle;
@@ -162,19 +157,18 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
-
     property AutoTransparentColor: TglAutoTransparentColor
-      read FAutoTrColor write SetAutoTrColor default ftcLeftBottomPixel;
+      read FAutoTransparentColor write SetAutoTransparentColor default ftcLeftBottomPixel;
     property Wallpaper: TBitmap read GetWallpaper write SetWallpaper;
     property WallpaperImage: TImage read FWallpaperImage write SetWallpaperImage;
     property WallpaperOption: TglLBWallpaperOption read FWallpaperOption write SetWOpt default fwlNone;
-    property NumGlyphs: word read FNumGlyphs write SetNumGlyphs default 1;
+    property NumGlyphs: Word read FNumGlyphs write SetNumGlyphs default 1;
     property GlyphsAlign: TJvg2DAlign read FGlyphsAlign write FGlyphsAlign;
     property ItemStyle: TJvgListBoxItemStyle read FItemStyle write FItemStyle;
     property ItemSelStyle: TJvgListBoxItemStyle read FItemSelStyle write FItemSelStyle;
     property Glyphs: TImageList read FGlyphs write SetGlyphs;
     property TextAlign: TJvg2DAlign read FTextAlign write FTextAlign;
-    property ItemHeight: word read FItemHeight write SetItemHeight default 0;
+    property ItemHeight: Word read FItemHeight write SetItemHeight default 0;
     property TransparentColor: TColor read FTransparentColor write SetTransparentColor;
     property HotTrackColor: TColor read FHotTrackColor write SetHotTrackColor default clBlue;
     property Options: TglListBoxOptions read FOptions write SetOptions;
@@ -182,24 +176,23 @@ type
     property OnDrawItem: TglLBOnDrawEvent read FOnDrawItem write FOnDrawItem;
     property OnChange: TglLBChangeEvent read FOnChange write FOnChange;
     property OnGetItemColor: TglOnGetItemColorEvent read FOnGetItemColor write FOnGetItemColor;
-    property OnGetItemFontColor: TglOnGetItemColorEvent read FOnGetItemFontColor
-       write FOnGetItemFontColor;
+    property OnGetItemFontColor: TglOnGetItemColorEvent read FOnGetItemFontColor write FOnGetItemFontColor;
     property OnGetDragImage: TglOnGetDragImageEvent read FOnGetDragImage write FOnGetDragImage;
   end;
 
   TJvgCheckListBox = class(TJvgListBox)
   private
-    FCheckWidth, FCheckHeight: Integer;
+    FCheckWidth: Integer;
+    FCheckHeight: Integer;
     function GetState(Index: Integer): TCheckBoxState;
     procedure SetChecked(Index: Integer; State: TCheckBoxState);
     function GetChecked(Index: Integer): TCheckBoxState;
     //    procedure ToggleClickCheck( Index: Integer );
     //    procedure InvalidateCheck( Index: Integer );
-    procedure CNDrawItem(var Message: TWMDrawItem); message CN_DRAWITEM;
+    procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
     procedure DrawCheck(R: TRect; AState: TCheckBoxState);
   protected
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
   public
     property Checked[Index: Integer]: TCheckBoxState read GetChecked write SetChecked;
     constructor Create(AOwner: TComponent); override;
@@ -211,7 +204,7 @@ uses
   Math,
   JvgUtils;
 
-//*****************************************_____________LowLevel METHODS
+//=== { TJvgListBox } ========================================================
 
 constructor TJvgListBox.Create(AOwner: TComponent);
 begin
@@ -220,7 +213,7 @@ begin
   Style := lbOwnerDrawVariable;
   ThreeDColors := TJvg3DLocalColors.Create(Self);
   FWallpaper := TBitmap.Create;
-  TmpBitmap := TBitmap.Create;
+  FTmpBitmap := TBitmap.Create;
   FGlyphsAlign := TJvg2DAlign.Create;
   FTextAlign := TJvg2DAlign.Create;
   FItemStyle := TJvgListBoxItemStyle.Create;
@@ -234,21 +227,15 @@ begin
   //...defaults
   if csDesigning in ComponentState then
   begin
-    with FItemStyle do
-    begin
-      Color := clBtnFace;
-      TextStyle := fstNone;
-    end;
-    with FItemSelStyle do
-    begin
-      Color := clBtnShadow;
-      TextStyle := fstNone;
-    end;
+    FItemStyle.Color := clBtnFace;
+    FItemStyle.TextStyle := fstNone;
+    FItemSelStyle.Color := clBtnShadow;
+    FItemSelStyle.TextStyle := fstNone;
   end;
   FWallpaperOption := fwlNone;
   NumGlyphs := 1;
   FTransparentColor := clOlive;
-  FAutoTrColor := ftcLeftBottomPixel;
+  FAutoTransparentColor := ftcLeftBottomPixel;
   FOptions := [fboHotTrack, fboWordWrap, fboExcludeGlyphs];
   FChangeGlyphColor.FromColor := clBlack;
   FChangeGlyphColor.ToColor := clWhite;
@@ -258,7 +245,6 @@ begin
   FItemSelStyle.OnChanged := SmthChanged;
   FChangeGlyphColor.OnChanged := SmthChanged;
 end;
-//------
 
 destructor TJvgListBox.Destroy;
 begin
@@ -266,24 +252,23 @@ begin
   ThreeDColors.Free;
   FGlyphsAlign.Free;
   FTextAlign.Free;
-  TmpBitmap.Free;
+  FTmpBitmap.Free;
   FItemStyle.Free;
   FItemSelStyle.Free;
   FChangeGlyphColor.Free;
   FDragImage.Free;
   inherited Destroy;
 end;
-//______________________________________________________________
 
 procedure TJvgListBox.Loaded;
 begin
-  inherited;
+  inherited Loaded;
   Font := ItemStyle.Font;
   Canvas.Font := ItemStyle.Font;
   SetAlign;
   RecalcHeights;
 
-  if (fboTransparent in FOptions) then
+  if fboTransparent in FOptions then
   begin
     if not Assigned(FWallpaper) then
       FWallpaper := TBitmap.Create;
@@ -291,49 +276,45 @@ begin
     FWallpaper.Height := Height;
     GetParentImageRect(Self, Bounds(Left, Top, Width, Height),
       FWallpaper.Canvas.Handle);
-    WallpaperBmp := FWallpaper;
-    fUseWallpaper := True;
+    FWallpaperBmp := FWallpaper;
+    FUseWallpaper := True;
   end
   else
   begin
     if Assigned(FWallpaper) and not FWallpaper.Empty then
-      WallpaperBmp := FWallpaper;
-    fUseWallpaper := IsItAFilledBitmap(WallpaperBmp);
+      FWallpaperBmp := FWallpaper;
+    FUseWallpaper := IsItAFilledBitmap(FWallpaperBmp);
   end;
 end;
 
-//______________________________________________________________
-
-procedure TJvgListBox.Notification(AComponent: TComponent; Operation:
-  TOperation);
+procedure TJvgListBox.Notification(AComponent: TComponent;
+  Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
   if (AComponent = WallpaperImage) and (Operation = opRemove) then
     WallpaperImage := nil;
 end;
-//______________________________________________________________
 
 procedure TJvgListBox.DestroyWnd;
 var
-  i: Integer;
-begin //...free all objects is assotiated with items
+  I: Integer;
+begin
   if FreeObjectsOnDestroy then
-    for i := 0 to Items.Count do
-    try
-      if Assigned(Items.Objects[i]) then
-        Items.Objects[i].Free;
-    except
-    end;
-  inherited;
+    for I := 0 to Items.Count do
+      try
+        Items.Objects[I].Free;
+        Items.Objects[I] := nil;
+      except
+      end;
+  inherited DestroyWnd;
 end;
-//______________________________________________________________
 
-procedure TJvgListBox.CNMeasureItem(var Message: TWMMeasureItem);
+procedure TJvgListBox.CNMeasureItem(var Msg: TWMMeasureItem);
 var
-  r: TRect;
+  R: TRect;
   Shift: Integer;
 const
-  WordBreak: array[Boolean] of Integer = (0, DT_WORDBREAK);
+  WordBreak: array [Boolean] of Integer = (0, DT_WORDBREAK);
 begin
   if csReading in ComponentState then
     Exit;
@@ -341,201 +322,196 @@ begin
   Shift := 0;
   if (fboExcludeGlyphs in Options) and Assigned(FGlyphs) then
     if FGlyphsAlign.Horizontal = fhaLeft then
-      r.left := FGlyphs.Width
+      R.Left := FGlyphs.Width
     else
     if FGlyphsAlign.Horizontal = fhaRight then
-      r.right := r.right - FGlyphs.Width;
-  with Message.MeasureItemStruct^ do
+      R.Right := R.Right - FGlyphs.Width;
+  with Msg.MeasureItemStruct^ do
   begin
     DrawText(Canvas.Handle, PChar(Items[itemID]),
-      Length(Items[itemID]), r, DT_CALCRECT or WordBreak[fboWordWrap in
-      Options]);
-    if r.bottom = 0 then
-      r.bottom := 14;
-    Message.MeasureItemStruct^.itemHeight := r.bottom - r.top;
-    if (ItemStyle.Bevel.Inner <> bvNone) or (ItemSelStyle.Bevel.Inner <>
-      bvNone) then
+      Length(Items[itemID]), R, DT_CALCRECT or WordBreak[fboWordWrap in Options]);
+    if R.Bottom = 0 then
+      R.Bottom := 14;
+    Msg.MeasureItemStruct^.itemHeight := R.Bottom - R.Top;
+    if (ItemStyle.Bevel.Inner <> bvNone) or (ItemSelStyle.Bevel.Inner <> bvNone) then
       if (ItemStyle.Bevel.Bold) or (ItemSelStyle.Bevel.Bold) then
-        inc(Shift, 2)
+        Inc(Shift, 2)
       else
-        inc(Shift);
-    if (ItemStyle.Bevel.Outer <> bvNone) or (ItemSelStyle.Bevel.Outer <>
-      bvNone) then
+        Inc(Shift);
+    if (ItemStyle.Bevel.Outer <> bvNone) or (ItemSelStyle.Bevel.Outer <> bvNone) then
       if (ItemStyle.Bevel.Bold) or (ItemSelStyle.Bevel.Bold) then
-        inc(Shift, 2)
+        Inc(Shift, 2)
       else
-        inc(Shift);
+        Inc(Shift);
     if (ItemStyle.TextStyle <> fstNone) or (ItemSelStyle.TextStyle <> fstNone) then
-      inc(Shift, 2);
+      Inc(Shift, 2);
     if Assigned(FGlyphs) and (FGlyphs.Height > Integer(itemHeight)) then
       itemHeight := FGlyphs.Height;
-    inc(Message.MeasureItemStruct^.itemHeight, Shift);
-    if (FItemHeight > 0)
-      {and(Message.MeasureItemStruct^.itemHeight<FItemHeight)}then
-      Message.MeasureItemStruct^.itemHeight := FItemHeight;
+    Inc(Msg.MeasureItemStruct^.itemHeight, Shift);
+    if FItemHeight > 0 then
+      Msg.MeasureItemStruct^.itemHeight := FItemHeight;
   end;
-  //  Message.MeasureItemStruct^.itemHeight:=13;
+  //  Msg.MeasureItemStruct^.itemHeight:=13;
 end;
-//______________________________________________________________
 
-procedure TJvgListBox.CNDrawItem(var Message: TWMDrawItem);
+procedure TJvgListBox.CNDrawItem(var Msg: TWMDrawItem);
 var
   Index: Integer;
   R, TxtRect: TRect;
   State: TOwnerDrawState;
   ItemStyle: TJvgListBoxItemStyle;
-  fSelected, fDrawWallpapper: Boolean;
+  LSelected, LDrawWallpaper: Boolean;
   DC: HDC;
   Image: TBitmap;
   TargetCanvas: TCanvas;
   ItemColor, FontColor, GrFromColor, GrToColor: TColor;
 
-  procedure DrawGlyph(r: TRect);
+  procedure DrawGlyph(R: TRect);
   var
-    i, FTranspColor: Integer;
+    I, FTranspColor: Integer;
     OldRect: TRect;
   begin
     if (FGlyphs = nil) or (FGlyphs.Count = 0) then
       Exit;
-    OldRect := r;
-    inc(r.top);
-    inc(r.left);
+    OldRect := R;
+    Inc(R.Top);
+    Inc(R.Left);
     case FGlyphsAlign.Horizontal of
-      fhaCenter: OffsetRect(r, (r.right - r.left - Glyphs.Width) div 2, 0);
-      fhaRight: OffsetRect(r, r.right - r.left - Glyphs.Width - 1, 0);
+      fhaCenter:
+        OffsetRect(R, (R.Right - R.Left - Glyphs.Width) div 2, 0);
+      fhaRight:
+        OffsetRect(R, R.Right - R.Left - Glyphs.Width - 1, 0);
     end;
     case GlyphsAlign.Vertical of
-      fvaCenter: OffsetRect(r, 0, (r.bottom - r.top - Glyphs.height) div 2);
-      fvaBottom: OffsetRect(r, 0, r.bottom - r.top - Glyphs.height - 1);
+      fvaCenter:
+        OffsetRect(R, 0, (R.Bottom - R.Top - Glyphs.Height) div 2);
+      fvaBottom:
+        OffsetRect(R, 0, R.Bottom - R.Top - Glyphs.Height - 1);
     end;
 
     if fboSingleGlyph in Options then
-      i := 0
+      I := 0
     else
     if Index < NumGlyphs then
-      i := Index
+      I := Index
     else
-      i := -1;
+      I := -1;
 
-    if i >= 0 then
+    if I >= 0 then
     begin
-      FGlyphs.GetBitmap(i, TmpBitmap);
-      if fSelected and (fboChangeGlyphColor in Options) then
-        ChangeBitmapColor(TmpBitmap, FChangeGlyphColor.FromColor,
+      FGlyphs.GetBitmap(I, FTmpBitmap);
+      if LSelected and (fboChangeGlyphColor in Options) then
+        ChangeBitmapColor(FTmpBitmap, FChangeGlyphColor.FromColor,
           FChangeGlyphColor.ToColor);
 
-      if FAutoTrColor = ftcUser then
+      if FAutoTransparentColor = ftcUser then
         FTranspColor := FTransparentColor
       else
-        FTranspColor := GetTransparentColor(TmpBitmap, FAutoTrColor);
+        FTranspColor := GetTransparentColor(FTmpBitmap, FAutoTransparentColor);
 
-      //      if fDrawWallpapper then
-      CreateBitmapExt(DC, TmpBitmap, Rect(0, 0, 100, 100), r.left, r.top,
-        fwoNone, fdsDefault, True, FTranspColor, clBlack)
+      //      if LDrawWallpaper then
+      CreateBitmapExt(DC, FTmpBitmap, Rect(0, 0, 100, 100), R.Left, R.Top,
+        fwoNone, fdsDefault, True, FTranspColor, clBlack);
         //      else
         //      begin
- //        ChangeBitmapColor( TmpBitmap, FTranspColor, ItemStyle.Color );
- //        BitBlt( DC, r.left, r.top, TmpBitmap.Width, TmpBitmap.Height, TmpBitmap.Canvas.handle,
+ //        ChangeBitmapColor( FTmpBitmap, FTranspColor, ItemStyle.Color );
+ //        BitBlt( DC, R.Left, R.Top, FTmpBitmap.Width, FTmpBitmap.Height, FTmpBitmap.Canvas.Handle,
  //                0, 0, SRCCOPY );
  //      end;
     end;
   end;
 
-  procedure DrawWallpaper; //(DC: HDC; r: TRect);
+  procedure DrawWallpaper;
 
-    procedure FillTiled(R: TRect; yOffset: Integer);
+    procedure FillTiled(R: TRect; YOffset: Integer);
     var
-      Y, x_, y_, IWidth, IHeight: Integer;
+      Y, X1, Y1, IWidth, IHeight: Integer;
     begin
-      IWidth := min(r.right - r.left + 1, WallpaperBmp.Width);
-      IHeight := min(r.bottom - r.top, WallpaperBmp.Height);
-      x_ := r.Left;
-      y_ := r.top;
-      y := y_;
-      while x_ < r.right do
+      IWidth := Min(R.Right - R.Left + 1, FWallpaperBmp.Width);
+      IHeight := Min(R.Bottom - R.Top, FWallpaperBmp.Height);
+      X1 := R.Left;
+      Y1 := R.Top;
+      Y := Y1;
+      while X1 < R.Right do
       begin
-        if x_ + IWidth > r.right then
-          IWidth := r.right - x_;
-        while y_ < r.bottom do
+        if X1 + IWidth > R.Right then
+          IWidth := R.Right - X1;
+        while Y1 < R.Bottom do
         begin
-          //if y_+IHeight > r.bottom then IHeight:=r.bottom-y_;
-          BitBlt(DC, x_, y_, IWidth, IHeight, WallpaperBmp.Canvas.Handle,
-            0, yOffset, SRCCOPY);
-          Inc(y_, IHeight);
+          //if Y1+IHeight > R.Bottom then IHeight:=R.Bottom-Y1;
+          BitBlt(DC, X1, Y1, IWidth, IHeight, FWallpaperBmp.Canvas.Handle,
+            0, YOffset, SRCCOPY);
+          Inc(Y1, IHeight);
           YOffset := 0;
         end;
-        Inc(x_, IWidth);
-        y_ := y;
+        Inc(X1, IWidth);
+        Y1 := Y;
       end;
     end;
+
   begin
-    if Assigned(WallpaperBmp) then
+    if Assigned(FWallpaperBmp) then
     begin
       case WallpaperOption of
         fwlStretch:
-          Canvas.StretchDraw(r, WallpaperBmp);
+          Canvas.StretchDraw(R, FWallpaperBmp);
         fwlTile:
-          begin
-            FillTiled(R, 0);
-          end;
+          FillTiled(R, 0);
         fwlGlobal:
           begin {
-            if fboBufferedDraw in Options then with Message.DrawItemStruct^ do
-              y :=  r.top + rcItem.Top else y := r.top;
+            if fboBufferedDraw in Options then with Msg.DrawItemStruct^ do
+              Y :=  R.Top + rcItem.Top else Y := R.Top;
 
-            y := y-trunc((y div WallpaperBmp.Height)*WallpaperBmp.Height);
-            FillTiled( R, y );
+            Y := Y-trunc((Y div FWallpaperBmp.Height)*FWallpaperBmp.Height);
+            FillTiled( R, Y );
 
-            if Message.DrawItemStruct^.itemID = UINT(Items.Count-1) then
+            if Msg.DrawItemStruct^.itemID = UINT(Items.Count-1) then
             begin
-              if fboBufferedDraw in Options then with Message.DrawItemStruct^ do
-                y :=  r.bottom + rcItem.Top else y := r.bottom;
-              R2 := Rect ( r.left-1, r.bottom+2, r.right+1, height );
-              y := y-trunc((y div WallpaperBmp.Height)*WallpaperBmp.Height);
-              FillTiled( R2, y );
+              if fboBufferedDraw in Options then with Msg.DrawItemStruct^ do
+                Y :=  R.Bottom + rcItem.Top else Y := R.Bottom;
+              R2 := Rect ( R.Left-1, R.Bottom+2, R.Right+1, Height );
+              Y := Y-trunc((Y div FWallpaperBmp.Height)*FWallpaperBmp.Height);
+              FillTiled( R2, Y );
             end;}
-            BitBlt(DC, r.left + 1, r.top, r.right - r.left - 1, r.bottom -
-              r.top, WallpaperBmp.Canvas.Handle, 0, r.top, SRCCOPY);
+            BitBlt(DC, R.Left + 1, R.Top, R.Right - R.Left - 1, R.Bottom -
+              R.Top, FWallpaperBmp.Canvas.Handle, 0, R.Top, SRCCOPY);
 
-            with Message.DrawItemStruct^ do
+            with Msg.DrawItemStruct^ do
               if itemID = UINT(Items.Count - 1) then
-              begin
-                BitBlt(DC, rcItem.left, rcItem.bottom, rcItem.right -
-                  rcItem.left, height, WallpaperBmp.Canvas.Handle,
-                  rcItem.left, rcItem.bottom, SRCCOPY);
-              end;
-
+                BitBlt(DC, rcItem.Left, rcItem.Bottom, rcItem.Right -
+                  rcItem.Left, Height, FWallpaperBmp.Canvas.Handle,
+                  rcItem.Left, rcItem.Bottom, SRCCOPY);
           end;
       else
-        BitBlt(DC, r.left, r.top, min(WallpaperBmp.Width, r.right - r.left),
-          min(WallpaperBmp.Height, r.bottom - r.top),
-          WallpaperBmp.Canvas.Handle, 0, 0, SRCCOPY);
+        BitBlt(DC, R.Left, R.Top, Min(FWallpaperBmp.Width, R.Right - R.Left),
+          Min(FWallpaperBmp.Height, R.Bottom - R.Top),
+          FWallpaperBmp.Canvas.Handle, 0, 0, SRCCOPY);
       end;
     end;
   end;
+
 begin
   if Items.Count = 0 then
     Exit;
 
   if not FWallpaper.Empty then
-    WallpaperBmp := FWallpaper
+    FWallpaperBmp := FWallpaper
   else
   if Assigned(FWallpaperImage) and Assigned(FWallpaperImage.Picture) and
     Assigned(FWallpaperImage.Picture.Bitmap) then
-    WallpaperBmp := FWallpaperImage.Picture.Bitmap
+    FWallpaperBmp := FWallpaperImage.Picture.Bitmap
   else
-    WallpaperBmp := nil;
+    FWallpaperBmp := nil;
 
-  fUseWallpaper := IsItAFilledBitmap(WallpaperBmp);
+  FUseWallpaper := IsItAFilledBitmap(FWallpaperBmp);
 
-  with Message.DrawItemStruct^ do
+  with Msg.DrawItemStruct^ do
   begin
     Index := UINT(itemID);
     if Index = -1 then
     begin
-      if IsItAFilledBitmap(WallpaperBmp) then
-        BitBlt(hDC, 0, 0, Width, Height, WallpaperBmp.Canvas.Handle, 0, 0,
-          SRCCOPY);
+      if IsItAFilledBitmap(FWallpaperBmp) then
+        BitBlt(hDC, 0, 0, Width, Height, FWallpaperBmp.Canvas.Handle, 0, 0, SRCCOPY);
       Exit;
     end;
 
@@ -544,16 +520,16 @@ begin
     Canvas.Handle := hDC;
     R := rcItem;
   end;
-  inc(R.Left, IndentLeft);
-  dec(R.Right, IndentRight);
+  Inc(R.Left, IndentLeft);
+  Dec(R.Right, IndentRight);
   if fboBufferedDraw in Options then
   begin
     Image := TBitmap.Create;
-    Image.Width := R.right - R.left;
-    Image.Height := R.bottom - R.top;
+    Image.Width := R.Right - R.Left;
+    Image.Height := R.Bottom - R.Top;
     TargetCanvas := Image.Canvas;
-    dec(R.Bottom, R.top);
-    R.top := 0;
+    Dec(R.Bottom, R.Top);
+    R.Top := 0;
   end
   else
   begin
@@ -562,36 +538,34 @@ begin
   end;
   DC := TargetCanvas.Handle;
 
-  fSelected := (State = [odSelected, odFocused]) or (State = [odSelected]);
-  if fSelected then
+  LSelected := (State = [odSelected, odFocused]) or (State = [odSelected]);
+  if LSelected then
     ItemStyle := FItemSelStyle
   else
     ItemStyle := FItemStyle;
 
-  fDrawWallpapper := (not (fSelected and (FItemStyle.Color <>
-    FItemSelStyle.Color))) and fUseWallpaper;
+  LDrawWallpaper := (not (LSelected and (FItemStyle.Color <> FItemSelStyle.Color))) and FUseWallpaper;
 
   //...DrawLBItem
-  inc(R.left);
-  dec(R.right);
-  dec(R.bottom);
+  Inc(R.Left);
+  Dec(R.Right);
+  Dec(R.Bottom);
   ItemColor := ItemStyle.Color;
-  if Assigned(OnGetItemColor) then
-    OnGetItemColor(Self, Index, ItemColor);
+  if Assigned(FOnGetItemColor) then
+    FOnGetItemColor(Self, Index, ItemColor);
   if fboAutoCtl3DColors in Options then
   begin
     ThreeDColors.CreateAuto3DColors(ItemColor);
     ThreeDColors.MakeGlobal;
   end;
   R := DrawBoxEx(DC, R, ItemStyle.Bevel.Sides, ItemStyle.Bevel.Inner,
-    ItemStyle.Bevel.Outer,
-    ItemStyle.Bevel.Bold, ItemColor, fDrawWallpapper);
+    ItemStyle.Bevel.Outer, ItemStyle.Bevel.Bold, ItemColor, LDrawWallpaper);
   if fboAutoCtl3DColors in Options then
     ThreeDColors.MakeLocal;
 
-  dec(R.left);
-  inc(R.right);
-  inc(R.bottom);
+  Dec(R.Left);
+  Inc(R.Right);
+  Inc(R.Bottom);
   if ItemStyle.Gradient.Active then
     with ItemStyle do
     begin
@@ -609,26 +583,26 @@ begin
       Gradient.RGBToColor := GrToColor;
     end;
 
-  if fDrawWallpapper then
+  if LDrawWallpaper then
     DrawWallpaper;
 
   if Assigned(FGlyphs) then
   begin
     DrawGlyph(R);
-    if (fboExcludeGlyphs in Options) then
+    if fboExcludeGlyphs in Options then
       if FGlyphsAlign.Horizontal = fhaLeft then
-        R.left := R.left + FGlyphs.Width
+        R.Left := R.Left + FGlyphs.Width
       else
       if FGlyphsAlign.Horizontal = fhaRight then
-        R.right := R.right - FGlyphs.Width
+        R.Right := R.Right - FGlyphs.Width
   end;
-  inc(R.Left, FLeftIndent);
+  Inc(R.Left, FLeftIndent);
   SetBkMode(DC, TRANSPARENT);
-  inc(R.Left);
-  dec(R.right, 2);
+  Inc(R.Left);
+  Dec(R.Right, 2);
 
   TxtRect := R;
-  inc(TxtRect.Left, TextIndent);
+  Inc(TxtRect.Left, TextIndent);
   if not (fboHideText in Options) then
   begin
     if Assigned(OnGetItemFontColor) then
@@ -641,35 +615,34 @@ begin
     if HotTrackingItemIndex = Index then
     begin
       ItemStyle.Font.Color := FHotTrackColor;
-      //      if fSelected then ItemStyle.Font.Color := clWhite;
+      //      if LSelected then ItemStyle.Font.Color := clWhite;
     end;
-    DrawTextInRect(TargetCanvas.handle, TxtRect, Items[Index],
+    DrawTextInRect(TargetCanvas.Handle, TxtRect, Items[Index],
       ItemStyle.TextStyle, ItemStyle.Font, FTextAlign_);
     ItemStyle.Font.Color := FontColor;
   end;
   if TargetCanvas <> Canvas then
-    BitBlt(Message.DrawItemStruct^.hDC, Message.DrawItemStruct^.rcItem.Left,
-      Message.DrawItemStruct^.rcItem.Top,
-      Image.Width, Image.Height, Image.Canvas.handle, 0, 0, SRCCOPY);
+    BitBlt(Msg.DrawItemStruct^.hDC, Msg.DrawItemStruct^.rcItem.Left,
+      Msg.DrawItemStruct^.rcItem.Top,
+      Image.Width, Image.Height, Image.Canvas.Handle, 0, 0, SRCCOPY);
 
-  with Message.DrawItemStruct^ do
+  with Msg.DrawItemStruct^ do
     if (odFocused in State) and (fboShowFocus in Options) then
       DrawFocusRect(hDC, rcItem);
 
-  if Assigned(Image) then
-    Image.Free;
+  Image.Free;
   if Assigned(FOnDrawItem) then
-    FOnDrawItem(Self, Message);
+    FOnDrawItem(Self, Msg);
   if Assigned(FOnChange) then
   begin
-    OldSelItemIndex := SelItemIndex;
-    SelItemIndex := ItemIndex;
-    if OldSelItemIndex <> SelItemIndex then
-      FOnChange(Self, OldSelItemIndex, SelItemIndex);
+    FOldSelItemIndex := FSelItemIndex;
+    FSelItemIndex := ItemIndex;
+    if FOldSelItemIndex <> FSelItemIndex then
+      FOnChange(Self, FOldSelItemIndex, FSelItemIndex);
   end;
 end;
 
-procedure TJvgListBox.CMMouseLeave(var Message: TMessage);
+procedure TJvgListBox.CMMouseLeave(var Msg: TMessage);
 var
   R: TRect;
 begin
@@ -682,25 +655,25 @@ begin
   end;
 end;
 
-procedure TJvgListBox.WMMouseMove(var Message: TMessage);
+procedure TJvgListBox.WMMouseMove(var Msg: TMessage);
 var
-  pt: Tpoint;
+  Pt: TPoint;
   R: TRect;
-  itemIndex: Integer;
+  ItemIndex: Integer;
 begin
   inherited;
   if not (fboHotTrack in Options) and not (fboHotTrackSelect in Options) then
     Exit;
-  pt.x := LOWORD(Message.lParam);
-  pt.y := HIWORD(Message.lParam);
-  itemIndex := ItemAtPos(pt, True);
+  Pt.X := LOWORD(Msg.lParam);
+  Pt.Y := HiWord(Msg.lParam);
+  ItemIndex := ItemAtPos(Pt, True);
 
-  if itemIndex = HotTrackingItemIndex then
+  if ItemIndex = HotTrackingItemIndex then
     Exit;
 
   if fboHotTrackSelect in Options then
   begin
-    Self.ItemIndex := itemIndex;
+    Self.ItemIndex := ItemIndex;
     InvalidateRect(Handle, nil, False);
     Exit;
   end;
@@ -710,7 +683,7 @@ begin
     R := ItemRect(HotTrackingItemIndex);
     InvalidateRect(Handle, @R, False);
   end;
-  HotTrackingItemIndex := itemIndex;
+  HotTrackingItemIndex := ItemIndex;
   if HotTrackingItemIndex <> -1 then
   begin
     R := ItemRect(HotTrackingItemIndex);
@@ -731,7 +704,7 @@ var
   HotSpotX, HotSpotY: Integer;
   TranspColor: TColor;
   Bmp: TBitmap;
-  pt: TPoint;
+  Pt: TPoint;
   R: TRect;
 begin
   FDragImage.Clear;
@@ -742,14 +715,14 @@ begin
   Bmp := TBitmap.Create;
   with Bmp do
   try
-    GetCursorPos(pt);
-    with ScreenToClient(pt) do
+    GetCursorPos(Pt);
+    with ScreenToClient(Pt) do
     begin
       HotSpotX := X - R.Left;
       HotSpotY := Y - R.Top
     end;
-    if Assigned(OnGetDragImage) then
-      OnGetDragImage(Self, Bmp, TranspColor, HotSpotX, HotSpotY)
+    if Assigned(FOnGetDragImage) then
+      FOnGetDragImage(Self, Bmp, TranspColor, HotSpotX, HotSpotY)
     else
     begin
       Width := R.Right - R.Left;
@@ -771,18 +744,17 @@ end;
 
 procedure TJvgListBox.DoStartDrag(var DragObject: TDragObject);
 begin
-  inherited;
+  inherited DoStartDrag(DragObject);
   CreateDragImage;
 end;
 
-//*****************************************_____________PROPERTY METHODS
-
-procedure TJvgListBox.SetAutoTrColor(Value: TglAutoTransparentColor);
+procedure TJvgListBox.SetAutoTransparentColor(Value: TglAutoTransparentColor);
 begin
-  if FAutoTrColor = Value then
-    Exit;
-  FAutoTrColor := Value;
-  Invalidate;
+  if FAutoTransparentColor <> Value then
+  begin
+    FAutoTransparentColor := Value;
+    Invalidate;
+  end;
 end;
 
 function TJvgListBox.GetWallpaper: TBitmap;
@@ -794,7 +766,7 @@ end;
 
 procedure TJvgListBox.SetWallpaper(Value: TBitmap);
 begin
-  FWallpaper.Assign(Value);
+  Wallpaper.Assign(Value);
   Invalidate;
 end;
 
@@ -810,12 +782,13 @@ begin
   Invalidate;
 end;
 
-procedure TJvgListBox.SetNumGlyphs(Value: word);
+procedure TJvgListBox.SetNumGlyphs(Value: Word);
 begin
-  if Value < 1 then
-    Exit;
-  FNumGlyphs := Value;
-  Invalidate;
+  if Value >= 1 then
+  begin
+    FNumGlyphs := Value;
+    Invalidate;
+  end;
 end;
 
 procedure TJvgListBox.SetGlyphs(Value: TImageList);
@@ -824,7 +797,7 @@ begin
   Invalidate;
 end;
 
-procedure TJvgListBox.SetItemHeight(Value: word);
+procedure TJvgListBox.SetItemHeight(Value: Word);
 begin
   FItemHeight := Value;
   RecalcHeights;
@@ -837,14 +810,18 @@ begin
   else
     FTextAlign_ := DT_SINGLELINE or DT_NOPREFIX;
   case FTextAlign.Horizontal of
-    fhaLeft: FTextAlign_ := FTextAlign_ or DT_LEFT;
-    fhaCenter: FTextAlign_ := FTextAlign_ or DT_CENTER;
+    fhaLeft:
+      FTextAlign_ := FTextAlign_ or DT_LEFT;
+    fhaCenter:
+      FTextAlign_ := FTextAlign_ or DT_CENTER;
   else
     FTextAlign_ := FTextAlign_ or DT_RIGHT;
   end;
   case FTextAlign.Vertical of
-    fvaTop: FTextAlign_ := FTextAlign_ or DT_TOP;
-    fvaCenter: FTextAlign_ := FTextAlign_ or DT_VCENTER;
+    fvaTop:
+      FTextAlign_ := FTextAlign_ or DT_TOP;
+    fvaCenter:
+      FTextAlign_ := FTextAlign_ or DT_VCENTER;
   else
     FTextAlign_ := FTextAlign_ or DT_BOTTOM;
   end;
@@ -853,7 +830,7 @@ end;
 procedure TJvgListBox.SetTransparentColor(Value: TColor);
 begin
   FTransparentColor := Value;
-  if FAutoTrColor <> ftcUser then
+  if FAutoTransparentColor <> ftcUser then
     Invalidate;
 end;
 
@@ -864,7 +841,7 @@ begin
   if FHotTrackColor = Value then
     Exit;
   FHotTrackColor := Value;
-  if HotTrackingItemIndex <> -1 then //...user can programm hottrack blinking effect!
+  if HotTrackingItemIndex <> -1 then //...user can program hottrack blinking effect!
   begin
     R := ItemRect(HotTrackingItemIndex);
     InvalidateRect(Handle, @R, False);
@@ -881,8 +858,8 @@ begin
         FWallpaper.Width := Width; FWallpaper.Height := Height;
         GetParentImageRect( Self, Bounds(Left,Top,Width,Height),
                      FWallpaper.Canvas.Handle );
-        WallpaperBmp := FWallpaper;
-        fUseWallpaper := True;
+        FWallpaperBmp := FWallpaper;
+        FUseWallpaper := True;
       end;  }
     FOptions := Value;
   SetAlign;
@@ -900,41 +877,41 @@ end;
 
 function TJvgListBox.GetSelCount: Integer;
 var
-  i: Integer;
+  I: Integer;
 begin
   Result := 0;
-  for i := 0 to Items.Count - 1 do
-    if Selected[i] then
-      inc(Result);
+  for I := 0 to Items.Count - 1 do
+    if Selected[I] then
+      Inc(Result);
 end;
-//_______________________________________________SERVEICE PROCs
 
 procedure TJvgListBox.RecalcHeights;
 var
-  i: Integer;
+  I: Integer;
 begin
   Items.BeginUpdate;
-  for i := 0 to Items.Count - 1 do
+  for I := 0 to Items.Count - 1 do
   begin
-    if Assigned(Items.Objects[i]) then
-      Items.InsertObject(i, Items.Strings[i], Items.Objects[i])
+    if Assigned(Items.Objects[I]) then
+      Items.InsertObject(I, Items.Strings[I], Items.Objects[I])
     else
-      Items.Insert(i, Items.Strings[i]);
-    Items.Delete(i + 1);
+      Items.Insert(I, Items.Strings[I]);
+    Items.Delete(I + 1);
   end;
   Items.EndUpdate;
 end;
 
 procedure TJvgListBox.SmthChanged(Sender: TObject);
 begin
-  if (csLoading in ComponentState) then
-    Exit;
-  RecalcHeights;
-  SetAlign;
-  Invalidate;
+  if not (csLoading in ComponentState) then
+  begin
+    RecalcHeights;
+    SetAlign;
+    Invalidate;
+  end;
 end;
 
-//==============================================
+//=== { TJvgCheckListBox } ===================================================
 
 constructor TJvgCheckListBox.Create(AOwner: TComponent);
 begin
@@ -944,14 +921,14 @@ begin
   FLeftIndent := 22;
 end;
 
-procedure TJvgCheckListBox.CNDrawItem(var Message: TWMDrawItem);
+procedure TJvgCheckListBox.CNDrawItem(var Msg: TWMDrawItem);
 var
   R: TRect;
   Index: Integer;
   State: TOwnerDrawState;
 begin
   inherited;
-  with Message.DrawItemStruct^ do
+  with Msg.DrawItemStruct^ do
   begin
     InitState(State, WordRec(LongRec(ItemState).Lo).Lo);
 
@@ -1030,16 +1007,19 @@ var
   APoint: TPoint;
   Index: Integer;
 begin
-  inherited;
+  inherited MouseDown(Button, Shift, X, Y);
   if Button = mbLeft then
   begin
     APoint.X := X;
     APoint.Y := Y;
     Index := ItemAtPos(APoint, True);
     case TCheckBoxState(Items.Objects[Index]) of
-      cbUnchecked: Items.Objects[Index] := Pointer(cbChecked);
-      cbChecked: Items.Objects[Index] := Pointer(cbUnchecked);
-      cbGrayed: ;
+      cbUnchecked:
+        Items.Objects[Index] := Pointer(cbChecked);
+      cbChecked:
+        Items.Objects[Index] := Pointer(cbUnchecked);
+      cbGrayed:
+       ;
     end;
     Invalidate;
   end;

@@ -201,6 +201,7 @@ uses
   FGraphicExtensions  : array[1..9] of string = ('*.BMP','*.JPG','*.WMF','*.EMF',
                                              '*.ICO','*.GIF','*.PCX',
                                              '*.TGA','*.PNG'); {}
+
 constructor TJvThumbView.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -237,13 +238,10 @@ end;
 
 destructor TJvThumbView.Destroy;
 begin
-  if Assigned(FFileListSorted) then
-    FreeAndNil(FFileListSorted);
-  if Assigned(FFileList) then
-    FreeAndNil(FFileList);
-  if Assigned(FThumbList) then
-    FreeAndNil(FThumbList);
-  //If Assigned(FFilter) then FreeAndNil(FFilter);
+  FreeAndNil(FFileListSorted);
+  FreeAndNil(FFileList);
+  FreeAndNil(FThumbList);
+  //FreeAndNil(FFilter);
   inherited Destroy;
 end;
 
@@ -344,59 +342,47 @@ begin
   end;
 end;
 
-procedure TJvThumbview.ScrollTo(const number: longint);
+procedure TJvThumbView.ScrollTo(const Number: Longint);
+var
+  TN: TJvThumbnail;
 begin
-// if AutoScrolling then if (number>-1) then
-  if (number < 0) or (number > FThumbList.count - 1) then exit;
-  case scrollmode of
-    smvertical:
+// if AutoScrolling then if (Number>-1) then
+  if (Number < 0) or (Number > FThumbList.Count - 1) then
+    Exit;
+  TN := TJvThumbnail(FThumbList.Objects[Number]);
+  case ScrollMode of
+    smVertical:
       begin
-        if TJvThumbnail(FThumbList.objects[number]).top < 0 then
-          vertscrollbar.position := vertscrollbar.position +
-            (TJvThumbnail(FThumbList.objects[number]).top -
-            (TJvThumbnail(FThumbList.objects[number]).width div 2));
-        if TJvThumbnail(FThumbList.objects[number]).top +
-          TJvThumbnail(FThumbList.objects[number]).height > height then
-          vertscrollbar.position := vertscrollbar.position +
-            (TJvThumbnail(FThumbList.objects[number]).top -
-            (height - TJvThumbnail(FThumbList.objects[number]).height -
-            (TJvThumbnail(FThumbList.objects[number]).height div 2)));
+        if TN.Top < 0 then
+          VertScrollBar.Position := VertScrollBar.Position +
+            (TN.Top - (TN.Width div 2));
+        if TN.Top + TN.Height > Height then
+          VertScrollBar.Position := VertScrollBar.Position +
+            (TN.Top - (Height - TN.Height - (TN.Height div 2)));
       end;
-    smhorizontal:
+    smHorizontal:
       begin
-        if TJvThumbnail(FThumbList.objects[number]).left < 0 then
-          horzscrollbar.position := Horzscrollbar.position +
-            (TJvThumbnail(FThumbList.objects[number]).left -
-            (TJvThumbnail(FThumbList.objects[number]).width div 2));
-        if TJvThumbnail(FThumbList.objects[number]).left +
-          TJvThumbnail(FThumbList.objects[number]).width > width then
-          Horzscrollbar.position := Horzscrollbar.position +
-            (TJvThumbnail(FThumbList.objects[number]).left -
-            (width - TJvThumbnail(FThumbList.objects[number]).width -
-            (TJvThumbnail(FThumbList.objects[number]).width div 2)));
+        if TN.Left < 0 then
+          HorzScrollBar.Position := HorzScrollBar.Position +
+            (TN.Left - (TN.Width div 2));
+        if TN.Left + TN.Width > Width then
+          HorzScrollBar.Position := HorzScrollBar.Position +
+            (TN.Left - (Width - TN.Width - (TN.Width div 2)));
       end;
     smBoth:
       begin
-        if TJvThumbnail(FThumbList.objects[number]).top < 0 then
-          vertscrollbar.position := vertscrollbar.position +
-            (TJvThumbnail(FThumbList.objects[number]).top -
-            (TJvThumbnail(FThumbList.objects[number]).width div 2));
-        if TJvThumbnail(FThumbList.objects[number]).top +
-          TJvThumbnail(FThumbList.objects[number]).height > height then
-          vertscrollbar.position := vertscrollbar.position +
-            (TJvThumbnail(FThumbList.objects[number]).top -
-            (TJvThumbnail(FThumbList.objects[number]).height -
-            (TJvThumbnail(FThumbList.objects[number]).height div 2)));
-        if TJvThumbnail(FThumbList.objects[number]).left < 0 then
-          horzscrollbar.position := Horzscrollbar.position +
-            (TJvThumbnail(FThumbList.objects[number]).left -
-            (TJvThumbnail(FThumbList.objects[number]).width div 2));
-        if TJvThumbnail(FThumbList.objects[number]).left +
-          TJvThumbnail(FThumbList.objects[number]).width > width then
-          Horzscrollbar.position := Horzscrollbar.position +
-            (TJvThumbnail(FThumbList.objects[number]).left -
-            (width - TJvThumbnail(FThumbList.objects[number]).width -
-            (TJvThumbnail(FThumbList.objects[number]).width div 2)));
+        if TN.Top < 0 then
+          VertScrollBar.Position := VertScrollBar.Position +
+            (TN.Top - (TN.Width div 2));
+        if TN.Top + TN.Height > Height then
+          VertScrollBar.Position := VertScrollBar.Position +
+            (TN.Top - (TN.Height - (TN.Height div 2)));
+        if TN.Left < 0 then
+          HorzScrollBar.Position := HorzScrollBar.Position +
+            (TN.Left - (TN.Width div 2));
+        if TN.Left + TN.Width > Width then
+          HorzScrollBar.Position := HorzScrollBar.Position +
+            (TN.Left - (Width - TN.Width - (TN.Width div 2)));
       end;
   end;
   if FSelected <> Number then
@@ -406,6 +392,7 @@ begin
       OnClick(Self);
   end;
 end;
+
 (*
 function TJvThumbView.GetBufferName(AName: string): string;
 var
@@ -448,29 +435,27 @@ end;
 //end;
 
 procedure TJvThumbView.SetSelected(Number: Longint);
+var
+  TN: TJvThumbnail;
 begin
   if FThumbList.Count > 0 then
   begin
     if FSelected <> -1 then
     begin
-      TJvThumbnail(FThumbList.Objects[FSelected]).titlecolor :=
-        TJvThumbnail(FThumbList.Objects[FSelected]).Color;
-      TJvThumbnail(FThumbList.Objects[FSelected]).TitleFont.Color :=
-        TJvThumbnail(FThumbList.Objects[FSelected]).Font.Color;
+      TN := TJvThumbnail(FThumbList.Objects[FSelected]);
+      TN.TitleColor := TN.Color;
+      TN.TitleFont.Color := TN.Font.Color;
     end;
     if Number <> -1 then
     begin
-      TJvThumbnail(FThumbList.Objects[Number]).titlecolor := clHighlight;
-      TJvThumbnail(FThumbList.Objects[Number]).TitleFont.Color := clHighlightText;
+      TN := TJvThumbnail(FThumbList.Objects[Number]);
+      TN.TitleColor := clHighlight;
+      TN.TitleFont.Color := clHighlightText;
       if AutoScrolling then
       begin
-        if (TJvThumbnail(FThumbList.Objects[Number]).Top +
-          TJvThumbnail(FThumbList.Objects[Number]).Height > Height) or
-          (TJvThumbnail(FThumbList.Objects[Number]).Top < 0) then
+        if (TN.Top + TN.Height > Height) or (TN.Top < 0) then
           ScrollTo(Number);
-        if (TJvThumbnail(FThumbList.Objects[Number]).Left +
-          TJvThumbnail(FThumbList.Objects[Number]).Width > Width) or
-          (TJvThumbnail(FThumbList.Objects[Number]).Left < 0) then
+        if (TN.Left + TN.Width > Width) or (TN.Left < 0) then
           ScrollTo(Number);
       end
     end;
@@ -498,9 +483,9 @@ var
   I: Longint;
   Dir: string;
 begin
-  Dir := extractfiledir(AFile);
-  if Dir[length(Dir)] = '\' then
-    Dir := Copy(Dir, 0, length(Dir) - 1);
+  Dir := ExtractFileDir(AFile);
+  if Dir[Length(Dir)] = '\' then
+    Dir := Copy(Dir, 0, Length(Dir) - 1);
   Directory := Dir;
   for I := 0 to FThumbList.Count - 1 do
     if TJvThumbnail(FThumbList.Objects[I]).FileName = AFile then
@@ -565,7 +550,7 @@ begin
           FOnStopScanning(Self);
       end;
     finally
-      FreeandNil(ReadFileList);
+      FreeAndNil(ReadFileList);
       FFilling := False;
       Cursor := OldCursor;
     end
@@ -583,22 +568,23 @@ var
   I: Integer;
   Tmp1: Longint;
   Tmp2: Longint;
+  TN: TJvThumbnail;
 begin
   Tmp2 := HorzScrollBar.Position;
   HorzScrollBar.Position := 0;
   Tmp1 := VertScrollBar.Position;
   VertScrollBar.Position := 0;
-  if FThumbList.Count > 0 then
-    for I := Start to FThumbList.Count - 1 do
+  for I := Start to FThumbList.Count - 1 do
+  begin
+    TN := TJvThumbnail(FThumbList.Objects[I]);
+    if TN <> nil then
     begin
-      if TJvThumbnail(FThumbList.Objects[I]) <> nil then
-      begin
-        TJvThumbnail(FThumbList.Objects[I]).Left := CalculateXPos(I + 1);
-        TJvThumbnail(FThumbList.Objects[I]).Top := CalculateYPos(I + 1);
-        TJvThumbnail(FThumbList.Objects[I]).Width := FThumbSize.X;
-        TJvThumbnail(FThumbList.Objects[I]).Height := FThumbSize.Y;
-      end;
+      TN.Left := CalculateXPos(I + 1);
+      TN.Top := CalculateYPos(I + 1);
+      TN.Width := FThumbSize.X;
+      TN.Height := FThumbSize.Y;
     end;
+  end;
   HorzScrollBar.Position := Tmp2;
   VertScrollBar.Position := Tmp1;
 end;
@@ -625,8 +611,8 @@ end;
 
 procedure TJvThumbView.CalculateSize;
 begin
-  FThumbSize.X := Trunc((MaxWidth / 100) * Size);
-  FThumbSize.Y := Trunc((MaxHeight / 100) * Size);
+  FThumbSize.X := Trunc((MaxWidth / 100.0) * Size);
+  FThumbSize.Y := Trunc((MaxHeight / 100.0) * Size);
   CalculateMaxX;
 end;
 
@@ -644,9 +630,7 @@ begin
       smVertical, smBoth:
         begin
           if (FAlignView = vtFitToScreen) and (FScrollMode = smVertical) then
-          begin
             Spact := ((Width - 20) - (FThumbSize.X * FMaxX)) div (FMaxX + 1);
-          end;
           VPos := JkCeil(Num / FMaxX);
           HPos := (Num - (VPos * FMaxX)) + FMaxX;
           Temp := (FThumbSize.X * (HPos - 1)) + (HPos * Spact);
@@ -760,8 +744,7 @@ begin
                 TJvThumbnail(FThumbList.Objects[No]).Width) and
                 (Y > TJvThumbnail(FThumbList.Objects[No]).Top) and
                 (Y < TJvThumbnail(FThumbList.Objects[No]).Top +
-                TJvThumbnail(FThumbList.Objects[No]).Height)
-                then
+                TJvThumbnail(FThumbList.Objects[No]).Height) then
                 SetSelected(No)
               else
                 SetSelected(-1)
@@ -971,52 +954,45 @@ procedure TJvThumbView.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   if AutoHandleKeyb and (FThumbList.Count > 0) then
     case Key of
-      39:
+      VK_RIGHT:
         begin
           GoRight;
           ScrollTo(Selected);
-        end; // Right arrow pressed
-      40:
+        end;
+      VK_DOWN:
         begin
           GoDown;
           ScrollTo(Selected);
-        end; // Down arrow pressed
-      37:
+        end;
+      VK_LEFT:
         begin
           GoLeft;
           ScrollTo(Selected);
-        end; // Left arrow pressed
-      38:
+        end;
+      VK_UP:
         begin
           GoUp;
           ScrollTo(Selected);
-        end; // Up arrow pressed
-      46:
+        end;
+      VK_DELETE:
         begin
-          //Delete(FSelected);
-        end; // Delete Key pressed;
-      33:
-        begin // pageup;
-          //showmessage('Page Up');
-          //tscrollbox
         end;
-      34:
-        begin // PageDown
-          //showmessage('Page Down');
+      VK_PRIOR:
+        begin
         end;
-      35:
-        begin // End Pressed;
-          //showmessage('End');
+      VK_NEXT:
+        begin
+        end;
+      VK_END:
+        begin
           Selected := Count - 1;
           ScrollTo(Selected);
         end;
-      36:
-        begin // Home Pressed
+      VK_HOME:
+        begin
           Selected := 0;
           ScrollTo(Selected);
         end;
-      {      else
-              Showmessage(inttostr(Key));{}
     end;
   inherited KeyDown(Key, Shift);
 end;
@@ -1104,26 +1080,24 @@ end;
 
 procedure TJvThumbView.SetAsButton(const NewVal: Boolean);
 var
-  Dummy: Longint;
+  I: Longint;
 begin
   if NewVal <> FAsButtons then
   begin
-    if FThumbList.Count > 0 then
-      for Dummy := 0 to FThumbList.Count - 1 do
-        FThumbList.Thumbnail[Dummy].AsButton := NewVal;
+    for I := 0 to FThumbList.Count - 1 do
+      FThumbList.Thumbnail[I].AsButton := NewVal;
     FAsButtons := NewVal;
   end;
 end;
 
 procedure TJvThumbView.SetTitlePos(const NewVal: TTitlePos);
 var
-  Dummy: Longint;
+  I: Longint;
 begin
   if NewVal <> FTitlePlacement then
   begin
-    if FThumbList.Count > 0 then
-      for Dummy := 0 to FThumbList.Count - 1 do
-        FThumbList.Thumbnail[Dummy].TitlePlacement := NewVal;
+    for I := 0 to FThumbList.Count - 1 do
+      FThumbList.Thumbnail[I].TitlePlacement := NewVal;
     FTitlePlacement := NewVal;
   end;
 end;
