@@ -31,7 +31,7 @@ interface
 
 uses
   {$IFDEF MSWINDOWS}
-  Windows,
+  Windows, Messages,
   {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
   Graphics, Controls, Forms,
@@ -328,8 +328,10 @@ begin
     end;
 end;
 
+{$IFDEF VisualCLX}
 type
   TOpenWidgetControl = class(TWidgetControl);
+{$ENDIF}
 
 procedure TJvImageControl.DoPaintControl;
 var
