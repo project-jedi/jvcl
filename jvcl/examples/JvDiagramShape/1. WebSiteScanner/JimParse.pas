@@ -396,7 +396,7 @@ end;  {Value}
 
 function TjimHtmlParser.Identifier : string;
   const
-      IdentifierSet = ['A'..'Z','a'..'z','0'..'9','-','!'];
+      IdentifierSet = ['A'..'Z','a'..'z','0'..'9','-','!',':','/'];
 begin {Identifier}
   Result := '';
 
