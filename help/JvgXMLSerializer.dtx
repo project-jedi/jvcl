@@ -4,37 +4,49 @@
 @@JvgXMLSerializer.pas
 Summary
   Contains the TJvgXMLSerializer component.
-<INCLUDE JVCL.UnitText.dtx>
+  <INCLUDE JVCL.UnitText.dtx>
 Author
   Andrey V. Chudin,
+
+
 ----------------------------------------------------------------------------------------------------
 @@EJvgXMLCloseTagNotFoundException
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+
+
 ----------------------------------------------------------------------------------------------------
 @@EJvgXMLOpenTagNotFoundException
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+
+
 ----------------------------------------------------------------------------------------------------
 @@EJvgXMLSerializerException
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+
+
 ----------------------------------------------------------------------------------------------------
 @@EJvgXMLUncknownPropertyException
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+
+
 ----------------------------------------------------------------------------------------------------
 @@TBeforeParsingEvent
 <TITLE TBeforeParsingEvent type>
 <COMBINE TJvgXMLSerializer.BeforeParsing>
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvgXMLSerializer
 <TITLEIMG TJvgXMLSerializer>
@@ -42,9 +54,21 @@ JVCLInfo
   GROUP=JVCL.??
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  This component converts a given component to XML and back according to published interface of its
+  class.
 Description
-  Write here a description
+  The root tag is named after the class of the object. Inner tags are named after the names of the
+  published properties.
+  Tag containing TCollectionItem are named after the name of the class.
+  
+  Tags' nesting is unlimited and reproduces the whole published interface of the class of the given
+  object
+  
+  The following types are supported: integers, floats, enumerations,  sets, strings and chars,
+  variants, classes, stringlists and collections.
+  
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvgXMLSerializer.BeforeParsing
 Summary
@@ -57,6 +81,8 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvgXMLSerializer.DefaultXMLHeader
 Summary
@@ -66,6 +92,8 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvgXMLSerializer.DeSerialize
 Summary
@@ -78,6 +106,8 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvgXMLSerializer.ExcludeDefaultValues
 Summary
@@ -87,6 +117,8 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvgXMLSerializer.ExcludeEmptyValues
 Summary
@@ -96,6 +128,8 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvgXMLSerializer.GenerateDTD
 Summary
@@ -108,6 +142,8 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvgXMLSerializer.GenerateFormattedXML
 Summary
@@ -117,6 +153,8 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvgXMLSerializer.IgnoreUnknownTags
 Summary
@@ -126,6 +164,8 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvgXMLSerializer.OnGetXMLHeader
 Summary
@@ -138,6 +178,8 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvgXMLSerializer.ReplaceReservedSymbols
 Summary
@@ -147,6 +189,8 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvgXMLSerializer.Serialize
 Summary
@@ -159,6 +203,8 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvgXMLSerializer.StrongConformity
 Summary
@@ -168,6 +214,8 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvgXMLSerializer.tickCounter
 Summary
@@ -177,6 +225,8 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvgXMLSerializer.WrapCollections
 Summary
@@ -186,21 +236,30 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvgXMLSerializerException
 <TITLE TJvgXMLSerializerException type>
 Summary
   Defines the metaclass for XMLSerializerException.
 Description
-  TJvgXMLSerializerException is the metaclass for XMLSerializerException. Its value is the class reference for
+  TJvgXMLSerializerException is the metaclass for XMLSerializerException. Its value is the class
+  reference for
   XMLSerializerException or for one of its descendants.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TOnGetXMLHeader
 <TITLE TOnGetXMLHeader type>
 <COMBINE TJvgXMLSerializer.OnGetXMLHeader>
+
+
 ----------------------------------------------------------------------------------------------------
 @@XMLSerializerException
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+
+
