@@ -177,6 +177,8 @@ const
 
   INFINITE = Longword($FFFFFFFF); // Infinite timeout
 
+  MaxWord = High(Cardinal);
+
   WM_HSCROLL = 101;
   WM_VSCROLL = 102;
   CM_DEACTIVATE = 100;
@@ -1206,6 +1208,8 @@ function PostMsg(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): LongB
  { SendMsg synchronizes with the main thread }
 function SendMsg(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): Integer; overload;
 function SendMsg(AControl: TWidgetControl; Msg: Integer; WParam, LParam: Longint): Integer; overload;
+function PostMessage(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): LongBool;
+function SendMessage(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): Integer; overload;
 
 
 function SetTimer(Wnd: QWidgetH; IDEvent, Elapse: Cardinal;
@@ -7409,6 +7413,11 @@ begin
   Result := M.Result;
 end;
 
+function PostMessage(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): LongBool;
+begin
+  Result := PostMsg(Handle, Msg, WParam, LParam);
+end;
+
 function PostMsg(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): LongBool;
 var
   M: PMessageData;
@@ -7440,6 +7449,11 @@ end;
 function SendMsg(AControl: TWidgetControl; Msg: Integer; WParam, LParam: Longint): Integer;
 begin
   Result := SendMsg(AControl.Handle, Msg, WParam, LParam);
+end;
+
+function SendMessage(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): Integer;
+begin
+  Result := SendMsg(Handle, Msg, WParam, LParam);
 end;
 
 function SendMsg(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): Integer;
