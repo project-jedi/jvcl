@@ -181,7 +181,7 @@ FiltEdit,
   //JvPlugin
   JvPlugin,
   JvPluginMan,
-  JvPluginWizard
+  JvPluginWizard,
 
   //Actions
   JvActions;

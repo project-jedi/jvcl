@@ -305,7 +305,6 @@ begin
     BrowseInfo.lpszTitle := PChar(FTitle);
   BrowseInfo.lpfn := @lpfnBrowseProc;
   BrowseInfo.lParam := LongInt(Self);
-  BrowseInfo.iImage := 0;
 
   try
     CoInitialize(nil);
