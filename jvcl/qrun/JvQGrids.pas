@@ -1107,7 +1107,7 @@ begin
       if ((FrameFlags1 and BF_BOTTOM) = 0) and
         (goFixedVertLine in Options) then
         Inc(TempRect.Bottom, GridLineWidth);
-      RequiredState(Canvas, [csHandleValid, csPenValid, csBrushValid]);
+      //RequiredState(Canvas, [csHandleValid, csPenValid, csBrushValid]);
       DrawEdge(Canvas.Handle, TempRect, EdgeFlag[Down], FrameFlags1);
       DrawEdge(Canvas.Handle, TempRect, EdgeFlag[Down], FrameFlags2);
     end;

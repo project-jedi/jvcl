@@ -661,7 +661,7 @@ begin
   FLocation := TJvDesktopAlertLocation.Create;
   FLocation.OnChange := DoLocationChange;
 
-  FDesktopForm := TJvFormDesktopAlert.Create(Self);
+  FDesktopForm := TJvFormDesktopAlert.CreateNew(Self, 0);
   AlertStyle := asFade;
 
   FOptions := [daoCanClick..daoCanClose];
