@@ -851,112 +851,89 @@ end;
 
 {---------------------------------------}
 type
-  IPainterInfo = interface
-    function GetIsCompatibleDC: Boolean;
-    procedure SetIsCompatibleDC(Value: Boolean);
-    function GetTextAlignment: Cardinal;
-    procedure SetTextAlignment(Value: Cardinal);
-
-    property IsCompatibleDC: Boolean read GetIsCompatibleDC write SetIsCompatibleDC;
-    property TextAlignment: Cardinal read GetTextAlignment write SetTextAlignment;
+  PPainterInfo = ^TPainterInfo;
+  TPainterInfo = record
+    Painter: QPainterH;
+    IsCompatibleDC: Boolean;
+    TextAlignment: Cardinal;
   end;
 
-  TPainterInfo = class(TInterfacedObject, IPainterInfo)
-  private
-   // format: '1234567890'
-   //         1='c': CompatibleDC or 1=' '
-   //         23456=Word(Alignment) (not binary)
-    FHandle: QObjectH;
-    function GetText: string;
-    procedure SetText(const Value: string);
-  protected
-    function GetField(StartIndex, Len: Integer): string;
-    procedure SetField(StartIndex, Len: Integer; const Value: string);
-  public
-    constructor Create(AHandle: QPainterH);
-
-    function GetIsCompatibleDC: Boolean;
-    procedure SetIsCompatibleDC(Value: Boolean);
-    function GetTextAlignment: Cardinal;
-    procedure SetTextAlignment(Value: Cardinal);
-  end;
-
-function GetPainterInfo(Handle: QPainterH): IPainterInfo;
-begin
-  Result := TPainterInfo.Create(Handle);
-end;
-
-{ TPainterInfo }
-constructor TPainterInfo.Create(AHandle: QPainterH);
-begin
-  inherited Create;
-  FHandle := QObjectH(AHandle);
-end;
-
-function TPainterInfo.GetText: string;
-begin
-  Result := QObject_name(FHandle);
-end;
-
-procedure TPainterInfo.SetText(const Value: string);
-begin
-  QObject_setName(FHandle, PChar(Value));
-end;
-
-function TPainterInfo.GetField(StartIndex, Len: Integer): string;
-begin
-  Result := GetText;
-  Delete(Result, 1, StartIndex - 1);
-  Delete(Result, Len + 1, MaxInt);
-  Result := Trim(Result);
-end;
-
-procedure TPainterInfo.SetField(StartIndex, Len: Integer; const Value: string);
 var
-  S: string;
-begin
-  S := GetText;
-  if StartIndex + Len > Length(S) then
-    SetLength(S, StartIndex + Len - 1);
-  FillChar(S[StartIndex], Len * SizeOf(Char), ' ');
-  if Value <> '' then
-    Move(Value[1], S[StartIndex], Length(Value) * SizeOf(Char));
-  SetText(S);
-end;
+  PainterInfos: TList = nil;
 
-function TPainterInfo.GetIsCompatibleDC: Boolean;
+function GetPainterInfo(Handle: QPainterH; var Info: PPainterInfo): Boolean;
+var
+  i: Integer;
 begin
-  Result := GetField(1, 1) = 'c';
-end;
-
-procedure TPainterInfo.SetIsCompatibleDC(Value: Boolean);
-begin
-  if Value <> GetIsCompatibleDC then
+  Result := False;
+  Info := nil;
+  if PainterInfos <> nil then
   begin
-    if Value then
-      SetField(1, 1, 'c')
-    else
-      SetField(1, 1, ' ');
+    for i := 0 to PainterInfos.Count - 1 do
+      if PPainterInfo(PainterInfos[i])^.Painter = Handle then
+      begin
+        Result := True;
+        Info := PPainterInfo(PainterInfos[i]);
+        Exit;
+      end;
   end;
 end;
 
-function TPainterInfo.GetTextAlignment: Cardinal;
+function NewPainterInfo(Handle: QPainterH): PPainterInfo;
+begin
+  New(Result);
+  Result^.Painter := Handle;
+  Result^.IsCompatibleDC := False;
+  Result^.TextAlignment := TA_LEFT or TA_TOP;
+  if PainterInfos = nil then
+    PainterInfos := TList.Create;
+  PainterInfos.Add(Result);
+end;
+
+function SetPainterInfo(Handle: QPainterH): PPainterInfo;
 var
-  S: string;
+  i: Integer;
 begin
-  S := GetField(2, 5);
-  if S = '' then
-    Result := TA_LEFT or TA_TOP
-  else
-    Result := StrToIntDef(GetField(2, 5), 0);
+  Result := nil;
+  if PainterInfos <> nil then
+  begin
+    for i := 0 to PainterInfos.Count - 1 do
+      if PPainterInfo(PainterInfos[i])^.Painter = Handle then
+      begin
+        Result := PPainterInfo(PainterInfos[i]);
+        Exit;
+      end;
+  end;
+  if Result = nil then
+    Result := NewPainterInfo(Handle);
 end;
 
-procedure TPainterInfo.SetTextAlignment(Value: Cardinal);
+procedure DeletePainterInfo(Handle: QPainterH);
+var
+  P: PPainterInfo;
 begin
-  SetField(2, 5, IntToStr(Word(Value)));
+  if PainterInfos <> nil then
+  begin
+    if GetPainterInfo(Handle, P) then
+    begin
+      PainterInfos.Delete(PainterInfos.IndexOf(P));
+      Dispose(P);
+    end;
+  end;
 end;
-{---------------------------------------}
 
+procedure FreePainterInfos;
+var
+  i: Integer;
+begin
+  if PainterInfos <> nil then
+  begin
+    for i := 0 to PainterInfos.Count - 1 do
+      Dispose(PPainterInfo(PainterInfos[i]));
+    PainterInfos.Free;
+  end;
+end;
+{----------------------------------------}
 
 function DrawTextBiDiModeFlagsReadingOnly: Longint;
 begin
@@ -1000,11 +977,14 @@ end;
 
 function DeleteObject(Handle: QBrushH): LongBool;
 begin
-  try
-    QBrush_destroy(Handle);
-    Result := True;
-  except
-    Result := False;
+  Result := False;
+  if Handle <> nil then
+  begin
+    try
+      QBrush_destroy(Handle);
+      Result := True;
+    except
+    end;
   end;
 end;
 
@@ -1763,8 +1743,10 @@ begin
 end;
 
 function SelectObject(Handle: QPainterH; Bitmap: QPixmapH): QPixmapH;
+var
+  P: PPainterInfo;
 begin
-  if GetPainterInfo(Handle).IsCompatibleDC then
+  if GetPainterInfo(Handle, P) and (P.IsCompatibleDC) then
   begin
     Result := QPixmapH(QPainter_device(Handle)); // IsCompatihbleDC -> device is QPixmapH
     if QPainter_isActive(Handle) then
@@ -2954,14 +2936,20 @@ begin
 end;
 
 function GetTextAlign(Handle: QPainterH): Cardinal;
+var
+  P: PPainterInfo;
 begin
-  Result := GetPainterInfo(Handle).TextAlignment;
+  if GetPainterInfo(Handle, P) then
+    Result := P.TextAlignment
+  else
+    Result := TA_LEFT or TA_TOP;
 end;
 
 function SetTextAlign(Handle: QPainterH; Mode: Cardinal): Cardinal;
 begin
   Result := GetTextAlign(Handle);
-  GetPainterInfo(Handle).TextAlignment := Mode;
+  if Result <> Mode then
+    SetPainterInfo(Handle).TextAlignment := Mode;
 end;
 
 function FillRect(Handle: QPainterH; R: TRect; Brush: QBrushH): LongBool;
@@ -3179,8 +3167,10 @@ begin
 end;
 
 function DeleteDC(Handle: QPainterH): LongBool;
+var
+  P: PPainterInfo;
 begin
-  if GetPainterInfo(Handle).IsCompatibleDC then
+  if GetPainterInfo(Handle, P) and P.IsCompatibleDC then
     Result := DeleteObject(Handle)
   else
     Result := ReleaseDC(0, Handle) = 1;
@@ -3188,21 +3178,20 @@ end;
 
 function CreateCompatibleDC(Handle: QPainterH; Width: Integer = 1; Height: Integer = 1): QPainterH;
 var
-  pdm: QPaintDeviceMetricsH;
+  Pixmap: QPixmapH;
 begin
+  Result := nil;
   try
-    pdm := QPaintDeviceMetrics_create(QPainter_device(Handle));
+    Pixmap := CreateCompatibleBitmap(Handle, Width, Height);
+    if Pixmap = nil then
+      Exit;
+    Result := QPainter_create(Pixmap);
     try
-      Result := QPainter_create(CreateCompatibleBitmap(Handle, Width, Height));
-      try
-        GetPainterInfo(Result).IsCompatibleDC := True;
-        QPainter_begin(Result, QPainter_device(Result));
-      except
-        DeleteObject(Result);
-        Result := nil;
-      end;
-    finally
-      QPaintDeviceMetrics_destroy(pdm);
+      SetPainterInfo(Result).IsCompatibleDC := True;
+      QPainter_begin(Result, QPainter_device(Result));
+    except
+      DeleteObject(Result);
+      Result := nil;
     end;
   except
     Result := nil;
@@ -3213,16 +3202,15 @@ function CreateCompatibleBitmap(Handle: QPainterH; Width, Height: Integer): QPix
 var
   pdm: QPaintDeviceMetricsH;
 begin
-  if (Width <= 0) or (Height <= 0) then
+  if (Width <= 0) or (Height <= 0) or (QPainter_device(Handle) = nil) then
     Result := nil
   else
   begin
     pdm := QPaintDeviceMetrics_create(QPainter_device(Handle));
     try
       Result := QPixmap_create(Width, Height, QPaintDeviceMetrics_depth(pdm),
-                               QPixmapOptimization_DefaultOptim);
+        QPixmapOptimization_DefaultOptim);
     finally
-      QPaintDeviceMetrics_destroy(pdm);
     end;
   end;
 end;
@@ -3322,14 +3310,21 @@ end;
 function DeleteObject(Handle: QPainterH): LongBool;
 var
   Pixmap: QPaintDeviceH;
+  P: PPainterInfo;
   IsCompatible: Boolean;
 begin
+  if Handle = nil then
+    Result := False
+  else
   try
     Pixmap := QPainter_device(Handle); // get paintdevice
     if QPainter_isActive(Handle) then
       QPainter_end(Handle);
 
-    IsCompatible := GetPainterInfo(Handle).IsCompatibleDC;
+
+    IsCompatible := GetPainterInfo(Handle, P) and (P.IsCompatibleDC);
+    if P <> nil then
+      DeletePainterInfo(Handle);
     QPainter_destroy(Handle);  // destroy painter
     if IsCompatible then
       QPixmap_destroy(QPixmapH(Pixmap)); // destroy pixmap paintdevice
@@ -3900,5 +3895,6 @@ initialization
 
 finalization
   GlobalCaret.Free;
+  FreePainterInfos;
 
 end.
