@@ -50,32 +50,55 @@ uses
   Dialogs, ExtCtrls;
 
 type
-  TJvSimScope = class(TGraphicControl)
+  TJvScopeLine = class(TCollectionItem)
+  private
+    FPosition, FOldPos, FPrevPos: integer;
+    FColor: TColor;
+    FName: string;
+  protected
+    function GetDisplayName: String; override;
+  public
+    constructor Create(Collection: TCollection); override;
+    procedure Assign(Source: TPersistent); override;
+  published
+    property Name:string read FName write FName;
+    property Color:TColor read FColor write FColor default clLime;
+    property Position:integer read FPosition write FPosition default 50;
+  end;
 
+  TJvScopeLines = class(TOwnedCollection)
+  private
+    function GetItem(Index: integer): TJvScopeLine;
+    procedure SetItem(Index: integer; const Value: TJvScopeLine);
+  public
+    constructor Create(AOwner:TPersistent);
+    procedure Assign(Source: TPersistent); override;
+
+    function Add:TJvScopeLine;
+    function IndexOfName(const AName:string):integer;
+    property Items[Index:integer]:TJvScopeLine read GetItem write SetItem;default;
+  end;
+
+  TJvSimScope = class(TGraphicControl)
   private
     fAllowed: boolean;
     fOnUpdate: TNotifyEvent;
     DrawBuffer: TBitmap;
     DrawTimer: TTimer;
     fActive: boolean;
-    fBaseColor, { Baseline color }
-    fColor, { Background color }
-    fGridColor, { Grid line color }
-    fLineColor: TColor; { Position line color }
-    fBaseLine,
-      fGridSize,
-      fPosition, { Value to plot }
-    fInterval: integer;
-    FPosition2: integer;
-    FLineColor2: Tcolor; { Update speed in 1/10 seconds }
+    fBaseColor,
+    fColor,
+    fGridColor : TColor;
+    fBaseLine, fGridSize, fInterval: integer;
+    FLines: TJvScopeLines;
     procedure SetActive(value: boolean);
     procedure SetGridSize(value: integer);
     procedure SetBaseLine(value: integer);
     procedure SetInterval(value: integer);
+    procedure SetLines(const Value: TJvScopeLines);
+    procedure UpdateDisplay(ClearFirst:boolean);
 
   protected
-    Oldpos, PrevPos: integer;
-    Oldpos2, PrevPos2: integer;
     CalcBase, Counter: integer;
     procedure UpdateScope(Sender: TObject);
     procedure Loaded; override;
@@ -83,22 +106,18 @@ type
     procedure Paint; override;
     constructor Create(AnOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Free;
     procedure Clear;
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
   published
-    property Baseline: integer read fBaseline write SetBaseLine;
-    property Gridsize: integer read fGridSize write SetGridSize;
+    property BaseLine: integer read fBaseline write SetBaseLine;
+    property GridSize: integer read fGridSize write SetGridSize;
     property Active: boolean read fActive write SetActive;
-    property Position: Integer read fPosition write fPosition;
-    property Position2: integer read FPosition2 write fPosition2;
     property Interval: Integer read fInterval write SetInterval;
     { Color properties }
     property Color: TColor read fColor write fColor;
-    property Gridcolor: TColor read fGridColor write fGridColor;
-    property Linecolor: TColor read fLineColor write fLineColor;
-    property LineColor2: Tcolor read FLineColor2 write fLineColor2;
-    property Basecolor: TColor read fBaseColor write fBaseColor;
+    property GridColor: TColor read fGridColor write fGridColor;
+    property Lines:TJvScopeLines read FLines write SetLines;
+    property BaseColor: TColor read fBaseColor write fBaseColor;
 
     property OnUpdate: TNotifyEvent read fOnUpdate write fOnUpdate;
     { Standard properties }
@@ -111,6 +130,77 @@ type
   end;
 
 implementation
+
+{ --- TJvScopeLine --------------------------------------------------------------- }
+
+procedure TJvScopeLine.Assign(Source: TPersistent);
+begin
+  if Source is TJvScopeLine then
+  begin
+    Name := TJvScopeLine(Source).Name;
+    Color := TJvScopeLine(Source).Color;
+    Position := TJvScopeLine(Source).Position;
+    Exit;
+  end;
+  inherited;
+end;
+
+constructor TJvScopeLine.Create(Collection: TCollection);
+begin
+  inherited;
+  FPosition := 50;
+  FColor := clLime;
+end;
+
+function TJvScopeLine.GetDisplayName: String;
+begin
+  if Name = '' then
+    Result := inherited GetDisplayName
+  else
+    Result := Name;
+end;
+
+{ --- TJvScopeLines -------------------------------------------------------------- }
+
+function TJvScopeLines.Add: TJvScopeLine;
+begin
+  Result := TJvScopeLine(inherited Add);
+end;
+
+procedure TJvScopeLines.Assign(Source: TPersistent);
+var i:integer;
+begin
+  if Source is TJvScopeLines then
+  begin
+    Clear;
+    for i := 0 to TJvScopeLines(Source).Count - 1 do
+      Add.Assign(TJvScopeLines(Source)[i]);
+    Exit;
+  end;
+  inherited;
+end;
+
+constructor TJvScopeLines.Create(AOwner: TPersistent);
+begin
+  inherited Create(AOwner, TJvScopeLine);
+end;
+
+function TJvScopeLines.GetItem(Index: integer): TJvScopeLine;
+begin
+  Result := TJvScopeLine(inherited Items[Index])
+end;
+
+function TJvScopeLines.IndexOfName(const AName: string): integer;
+begin
+  for Result := 0 to Count - 1 do
+    if AnsiSameStr(Items[Result].Name, AName) then Exit;
+  Result := -1;
+end;
+
+procedure TJvScopeLines.SetItem(Index: integer; const Value: TJvScopeLine);
+begin
+  inherited Items[Index] := Value;
+end;
 
 { --- TJvSimScope ----------------------------------------------------------------- }
 
@@ -136,19 +226,16 @@ begin
 
   Color := clBlack;
   GridColor := clGreen;
-  LineColor := clLime;
-  LineColor2 := clFuchsia;
   BaseColor := clRed;
 
   BaseLine := 50;
   GridSize := 16;
 
-  Position := 50;
-  Position2 := 50;
+  FLines := TJvScopeLines.Create(self);
   Interval := 50;
   Counter := 1;
 
-  ControlStyle := [csDesignInteractive, csFramed, csOpaque];
+  ControlStyle := [csFramed, csOpaque];
   fAllowed := TRUE;
 end;
 
@@ -164,8 +251,9 @@ procedure TJvSimScope.Clear;
 { Redraw control, re-calculate grid etc
 }
 var
-  a: integer;
+  a, i: integer;
 begin
+  if not fAllowed then Exit;
   CalcBase := (height - round(height / 100 * FBaseline));
   with DrawBuffer.Canvas do
   begin
@@ -205,11 +293,11 @@ begin
     LineTo(Width, CalcBase);
 
     { Start new position-line on baseline... }
-    OldPos := CalcBase;
-    PrevPos := CalcBase;
-    OldPos2 := CalcBase;
-    PrevPos2 := CalcBase;
-
+    for i := 0 to FLines.Count - 1 do
+    begin
+      FLines[i].FOldPos := CalcBase;
+      FLines[i].FPrevPos := CalcBase;
+    end;
     {
     // Draws a line from 0,baseline to width, new pos
     Pen.Color:=FLineColor;
@@ -220,21 +308,12 @@ begin
   end;
 end;
 
-procedure TJvSimScope.Free;
-{ Free control and all internal objects
-}
-begin
-  DrawTimer.Free;
-  DrawBuffer.Free;
-  inherited Free;
-end;
 
 destructor TJvSimScope.Destroy;
 begin
-  if DrawTimer <> nil then
-    DrawTimer.Destroy;
-  if DrawBuffer <> nil then
-    DrawBuffer.Destroy;
+  DrawTimer.Free;
+  DrawBuffer.Free;
+  FLines.Free;
   inherited Destroy;
 end;
 
@@ -244,42 +323,38 @@ procedure TJvSimScope.SetBaseLine(value: integer);
 begin
   fBaseLine := value;
   CalcBase := (height - round(height / 100 * FBaseline));
-  if fAllowed then
-  begin
-    Clear;
-    if parent <> nil then Paint;
-  end;
+  UpdateDisplay(true);
 end;
 
-procedure TJvSimScope.SetInterval(value: integer);
+procedure TJvSimScope.SetInterval(Value: integer);
 { Set Scroll delay
 }
 begin
   DrawTimer.Enabled := FALSE;
-  CalcBase := (height - round(height / 100 * FBaseline));
-  DrawTimer.Interval := value * 10;
-  fInterval := value;
+  CalcBase := (Height - round(Height / 100 * FBaseline));
+  DrawTimer.Interval := Value * 10;
+  fInterval := Value;
   DrawTimer.Enabled := FActive;
 end;
 
 procedure TJvSimScope.SetGridSize(value: integer);
 { Set grid size }
 begin
-  fGridSize := (value div 2) * 2;
-  if fAllowed then
+  Value := (Value div 2) * 2;
+  if fGridSize <> Value then
   begin
-    Clear;
-    if parent <> nil then Paint;
+    fGridSize := Value;
+    UpdateDisplay(true);
   end;
 end;
 
-procedure TJvSimScope.SetActive(value: boolean);
+procedure TJvSimScope.SetActive(Value: boolean);
 { Start scrolling
 }
 begin
-  CalcBase := (height - round(height / 100 * FBaseline));
+  CalcBase := (Height - round(Height / 100 * FBaseline));
   DrawTimer.Interval := Interval * 10;
-  DrawTimer.Enabled := value;
+  DrawTimer.Enabled := Value;
   fActive := Value;
 end;
 
@@ -289,7 +364,7 @@ procedure TJvSimScope.UpdateScope(Sender: TObject);
   copies the contents of the drawbuffer.
 }
 var
-  a: integer;
+  a, i: integer;
   Des, Src: TRect;
 begin
   with DrawBuffer.Canvas do
@@ -343,25 +418,20 @@ begin
     Pen.Color := FBaseColor;
     MoveTo(Width - 2, CalcBase);
     LineTo(Width, CalcBase);
-    { Draw position for line 1}
-    Pen.Color := FLineColor;
-    a := height - round(height / 100 * position);
-    MoveTo(Width - 4, OldPos);
-    LineTo(Width - 2, PrevPos);
-    LineTo(Width - 0, a);
-    OldPos := PrevPos;
-    PrevPos := a;
-    { Draw position for line 2}
-    Pen.Color := FLineColor2;
-    a := height - round(height / 100 * position2);
-    MoveTo(Width - 4, OldPos2);
-    LineTo(Width - 2, PrevPos2);
-    LineTo(Width - 0, a);
-    OldPos2 := PrevPos2;
-    PrevPos2 := a;
+    { Draw position for lines}
+    for i := 0 to FLines.Count - 1 do
+    begin
+      Pen.Color := FLines[i].Color;
+      a := height - round(height / 100 * FLines[i].Position);
+      MoveTo(Width - 4, FLines[i].FOldPos);
+      LineTo(Width - 2, FLines[i].FPrevPos);
+      LineTo(Width - 0, a);
+      FLines[i].FOldPos := FLines[i].fPrevPos;
+      FLines[i].FPrevPos := a;
+    end;
   end;
-  paint;
-  if assigned(FOnUpdate) then fOnUpdate(SELF);
+  Paint;
+  if Assigned(FOnUpdate) then FOnUpdate(self);
 end;
 
 procedure TJvSimScope.Paint;
@@ -388,10 +458,20 @@ begin
   inherited SetBounds(ALeft, ATop, AWidth, AHeight);
   DrawBuffer.Height := Height;
   DrawBuffer.Width := Width;
-  if (csDesigning in ComponentState) and (fAllowed) then
-  begin
-    Clear;
-  end;
+  Clear;
+end;
+
+procedure TJvSimScope.SetLines(const Value: TJvScopeLines);
+begin
+  FLines.Assign(Value);
+  Clear;
+end;
+
+procedure TJvSimScope.UpdateDisplay(ClearFirst: boolean);
+begin
+  if Parent = nil then Exit;
+  if ClearFirst then Clear;
+  Paint;
 end;
 
 end.
