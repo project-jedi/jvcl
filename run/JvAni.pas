@@ -140,7 +140,13 @@ function LoadJvAniDialog: TJvAni;
 implementation
 
 uses
-  Consts, Math,
+  {$IFDEF VCL}
+  Consts,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QConsts,
+  {$ENDIF VisualCLX}
+  Math,
   JvJVCLUtils, JvJCLUtils, JvIconList, JvConsts, JvResources;
 
 //=== TJvAnimatedCursorImage helper ==========================================

@@ -37,7 +37,7 @@ uses
   Graphics, Controls, Forms,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Qt, Types, QGraphics, QControls, QForms,
+  Qt, Types, QGraphics, QControls, QForms, QWindows,
   {$ENDIF VisualCLX}
   SysUtils, Classes,
   JvTimer, JvComponent;

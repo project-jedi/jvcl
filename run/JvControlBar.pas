@@ -31,13 +31,14 @@ unit JvControlBar;
 interface
 
 uses
+  SysUtils, Classes,
   {$IFDEF VCL}
   Windows, Messages, Graphics, ExtCtrls, Controls, Forms, Menus,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, QGraphics, QExtCtrls, QControls, QForms, QMenus,
+  Types, QGraphics, QExtCtrls, QControls, QForms, QMenus, QWindows,
   {$ENDIF VisualCLX}
-  SysUtils, Classes, JvThemes, JvExControls, JvExExtCtrls;
+  JvThemes, JvExControls, JvExExtCtrls;
 
 type
   TPopupNames = (pnHint, pnName);
