@@ -268,7 +268,7 @@ type
   end;
 
   // the status of a grabber
-  TJvGrabberStatus = (gsStopped, gsConnecting, gsGrabbing);
+  TJvGrabberStatus = (gsStopped, gsConnecting, gsGrabbing, gsStopping);
 
   // The exception triggered if someone tries to set the Url property while the
   // grabber is not stopped
@@ -441,6 +441,11 @@ type
     procedure Ended;
     procedure UpdateGrabberProgress;
     procedure UpdateGrabberStatus;
+
+    // Procedure used by derived classes to set the value of FStatus
+    // which is a private member of TJvCustomUrlGrabber
+    procedure SetGrabberStatus(Status: TJvGrabberStatus);
+
     property ErrorText: string read FErrorText write FErrorText;
     property Continue: Boolean read FContinue write FContinue;
   public
@@ -1056,7 +1061,14 @@ end;
 
 procedure TJvCustomUrlGrabberThread.Error;
 begin
+  FGrabber.FStatus := gsStopped;
   FGrabber.DoError(FErrorText);
+end;
+
+procedure TJvCustomUrlGrabberThread.SetGrabberStatus(
+  Status: TJvGrabberStatus);
+begin
+  FGrabber.FStatus := Status;
 end;
 
 procedure TJvCustomUrlGrabberThread.UpdateGrabberProgress;
