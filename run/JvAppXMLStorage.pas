@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
   Marcel Bestebroer
 
-Last Modified: 2004-01-13
+Last Modified: 2004-01-18
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -42,14 +42,19 @@ uses
   JvAppStorage, JvSimpleXml;
 
 type
-  TJvAppXMLStorage = class(TJvCustomAppStorage)
+  // This is the base class for an in memory XML file storage
+  // There is at the moment only one derived class that simply
+  // allows to flush into a disk file.
+  // But there may be a new descendent that stores into a
+  // database field, if anyone is willing to write such
+  // a class (nothing much is involved, use the AsString property).
+  TJvCustomAppXMLStorage = class(TJvCustomAppMemoryFileStorage)
   protected
-    FFileName: TJvAppStorageFileName;
     FXml: TJvSimpleXml;
     FCurrentNode: TJvSimpleXmlElem;
-    function GetFileName: TJvAppStorageFileName;
-    procedure SetFileName(const Value: TJvAppStorageFileName);
-    procedure FileLocationChanged(Sender: TObject);
+    function GetAsString: string; override;
+    procedure SetAsString(const Value: string); override;
+
     function GetRootNodeName: string;
     procedure SetRootNodeName(const Value: string);
     // Returns the last node in path, if it exists.
@@ -81,17 +86,32 @@ type
     procedure DoWriteString(const Path: string; Value: string); override;
     function DoReadBinary(const Path: string; var Buf; BufSize: Integer): Integer; override;
     procedure DoWriteBinary(const Path: string; const Buf; BufSize: Integer); override;
+
+    property Xml: TJvSimpleXml read FXml;
+    property RootNodeName: string read GetRootNodeName write SetRootNodeName;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Flush;
-    procedure Reload;
-    property Xml: TJvSimpleXml read FXml;
-  published
-    property FileName: TJvAppStorageFileName read GetFileName write SetFileName;
-    property RootNodeName: string read GetRootNodeName write SetRootNodeName;
+    
   end;
 
+  // This class handles the flushing into a disk file
+  // and publishes a few properties for them to be
+  // used by the user in the IDE
+  TJvAppXMLFileStorage = class (TJvCustomAppXMLStorage)
+  public
+    property Xml;
+
+    procedure Flush; override;
+    procedure Reload; override;
+    
+    property AsString;
+  published
+    property FileName;
+    property Location;
+    property RootNodeName;
+  end;
+  
 implementation
 
 uses
@@ -143,24 +163,23 @@ end;
 
 //=== TJvAppXMLStorage =======================================================
 
-constructor TJvAppXMLStorage.Create(AOwner: TComponent);
+constructor TJvCustomAppXMLStorage.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FFileName := TJvAppStorageFileName.Create('xml');
-  FFileName.OnChange := FileLocationChanged;
   FXml := TJvSimpleXml.Create(nil);
   RootNodeName := 'Configuration';
   FCurrentNode := FXml.Root;
 end;
 
-destructor TJvAppXMLStorage.Destroy;
+destructor TJvCustomAppXMLStorage.Destroy;
 begin
-  Flush;
-  FXml.Free;
   inherited Destroy;
+  // delete after the inherited call, see comment in
+  // the base class, TJvCustomMemoryFileAppStorage
+  FXml.Free;
 end;
 
-procedure TJvAppXMLStorage.SetRootNodeName(const Value: string);
+procedure TJvCustomAppXMLStorage.SetRootNodeName(const Value: string);
 begin
   if Value = '' then
     raise EPropertyError.Create(RsENodeCannotBeEmpty)
@@ -171,14 +190,14 @@ begin
   end;
 end;
 
-procedure TJvAppXMLStorage.SplitKeyPath(const Path: string; out Key, ValueName: string);
+procedure TJvCustomAppXMLStorage.SplitKeyPath(const Path: string; out Key, ValueName: string);
 begin
   inherited SplitKeyPath(Path, Key, ValueName);
   if Key = '' then
     Key := Path;
 end;
 
-function TJvAppXMLStorage.ValueStoredInt(const Path: string): Boolean;
+function TJvCustomAppXMLStorage.ValueStoredInt(const Path: string): Boolean;
 var
   Section: string;
   Key: string;
@@ -191,7 +210,7 @@ begin
     Result := Assigned(Node.Items.ItemNamed[Key]);
 end;
 
-procedure TJvAppXMLStorage.DeleteValueInt(const Path: string);
+procedure TJvCustomAppXMLStorage.DeleteValueInt(const Path: string);
 var
   Node: TJvSimpleXmlElem;
   Section: string;
@@ -206,7 +225,7 @@ begin
   end;
 end;
 
-procedure TJvAppXMLStorage.DeleteSubTreeInt(const Path: string);
+procedure TJvCustomAppXMLStorage.DeleteSubTreeInt(const Path: string);
 var
   TopNode: string;
   Node: TJvSimpleXmlElem;
@@ -226,7 +245,7 @@ begin
   end;
 end;
 
-function TJvAppXMLStorage.DoReadInteger(const Path: string; Default: Integer): Integer;
+function TJvCustomAppXMLStorage.DoReadInteger(const Path: string; Default: Integer): Integer;
 var
   ParentPath: string;
   ValueName: string;
@@ -254,7 +273,7 @@ begin
     raise EJVCLException.CreateFmt(RsEPathDoesntExists, [Path]);
 end;
 
-procedure TJvAppXMLStorage.DoWriteInteger(const Path: string; Value: Integer);
+procedure TJvCustomAppXMLStorage.DoWriteInteger(const Path: string; Value: Integer);
 var
   ParentPath: string;
   ValueName: string;
@@ -266,7 +285,7 @@ begin
   FXml.Options := [sxoAutoIndent];
 end;
 
-function TJvAppXMLStorage.DoReadFloat(const Path: string; Default: Extended): Extended;
+function TJvCustomAppXMLStorage.DoReadFloat(const Path: string; Default: Extended): Extended;
 var
   ParentPath: string;
   ValueName: string;
@@ -296,7 +315,7 @@ begin
     raise EJVCLException.CreateFmt(RsEPathDoesntExists, [Path]);
 end;
 
-procedure TJvAppXMLStorage.DoWriteFloat(const Path: string; Value: Extended);
+procedure TJvCustomAppXMLStorage.DoWriteFloat(const Path: string; Value: Extended);
 var
   ParentPath: string;
   ValueName: string;
@@ -308,7 +327,7 @@ begin
   FXml.Options := [sxoAutoIndent];
 end;
 
-function TJvAppXMLStorage.DoReadString(const Path: string; Default: string): string;
+function TJvCustomAppXMLStorage.DoReadString(const Path: string; Default: string): string;
 var
   ParentPath: string;
   ValueName: string;
@@ -336,7 +355,7 @@ begin
     raise EJVCLException.CreateFmt(RsEPathDoesntExists, [Path]);
 end;
 
-procedure TJvAppXMLStorage.DoWriteString(const Path: string; Value: string);
+procedure TJvCustomAppXMLStorage.DoWriteString(const Path: string; Value: string);
 var
   ParentPath: string;
   ValueName: string;
@@ -348,7 +367,7 @@ begin
   FXml.Options := [sxoAutoIndent];
 end;
 
-function TJvAppXMLStorage.DoReadBinary(const Path: string; var Buf; BufSize: Integer): Integer;
+function TJvCustomAppXMLStorage.DoReadBinary(const Path: string; var Buf; BufSize: Integer): Integer;
 var
   Value: string;
 begin
@@ -356,34 +375,12 @@ begin
   Result := BinStrToBuf(Value, Buf, BufSize);
 end;
 
-procedure TJvAppXMLStorage.DoWriteBinary(const Path: string; const Buf; BufSize: Integer);
+procedure TJvCustomAppXMLStorage.DoWriteBinary(const Path: string; const Buf; BufSize: Integer);
 begin
   DoWriteString(Path, BufToBinStr(Buf, BufSize));
 end;
 
-procedure TJvAppXMLStorage.Flush;
-begin
-  if FFileName.GetFileName <> '' then
-    FXml.SaveToFile(FFileName.GetFileName);
-end;
-
-function TJvAppXMLStorage.GetFileName: TJvAppStorageFileName;
-begin
-  Result := FFileName;
-end;
-
-procedure TJvAppXMLStorage.SetFileName(const Value: TJvAppStorageFileName);
-begin
-//  FFileName := Value;
-//  Reload;
-end;
-
-procedure TJvAppXMLStorage.FileLocationChanged(Sender: TObject);
-begin
-  Reload;
-end;
-
-procedure TJvAppXMLStorage.EnumFolders(const Path: string;
+procedure TJvCustomAppXMLStorage.EnumFolders(const Path: string;
   const Strings: TStrings; const ReportListAsValue: Boolean);
 var
   RefPath: string;
@@ -406,7 +403,7 @@ begin
     raise EJVCLException.CreateFmt(RsEPathDoesntExists, [RefPath]);
 end;
 
-procedure TJvAppXMLStorage.EnumValues(const Path: string;
+procedure TJvCustomAppXMLStorage.EnumValues(const Path: string;
   const Strings: TStrings; const ReportListAsValue: Boolean);
 var
   PathIsList: Boolean;
@@ -437,7 +434,7 @@ begin
     raise EJVCLException.CreateFmt(RsEPathDoesntExists, [RefPath]);
 end;
 
-function TJvAppXMLStorage.IsFolderInt(Path: string;
+function TJvCustomAppXMLStorage.IsFolderInt(Path: string;
   ListIsValue: Boolean): Boolean;
 var
   RefPath: string;
@@ -470,25 +467,19 @@ begin
   end;
 end;
 
-function TJvAppXMLStorage.GetRootNodeName: string;
+function TJvCustomAppXMLStorage.GetRootNodeName: string;
 begin
   Result := FXml.Root.Name;
 end;
 
-procedure TJvAppXMLStorage.Reload;
-begin
-  if FileExists(FFileName.GetFileName) then
-    FXml.LoadFromFile(FFileName.GetFileName);
-end;
-
-procedure TJvAppXMLStorage.CreateAndSetNode(Key: string);
+procedure TJvCustomAppXMLStorage.CreateAndSetNode(Key: string);
 begin
   FXml.Options := [sxoAutoCreate, sxoAutoIndent];
   FCurrentNode := GetNodeFromPath(Key, FXml.Root);
   FXml.Options := [sxoAutoIndent];
 end;
 
-function TJvAppXMLStorage.GetNodeFromPath(Path: string; StartNode: TJvSimpleXmlElem = nil): TJvSimpleXmlElem;
+function TJvCustomAppXMLStorage.GetNodeFromPath(Path: string; StartNode: TJvSimpleXmlElem = nil): TJvSimpleXmlElem;
 var
   NodeList: TStringList;
   I: Integer;
@@ -522,7 +513,7 @@ begin
   Result := Node;
 end;
 
-function TJvAppXMLStorage.PathExistsInt(const Path: string): boolean;
+function TJvCustomAppXMLStorage.PathExistsInt(const Path: string): boolean;
 var
   SubKey: string;
   ValueName: string;
@@ -535,7 +526,7 @@ begin
     Result := Assigned(Node.Items.ItemNamed[ValueName]);
 end;
 
-function TJvAppXMLStorage.DoReadBoolean(const Path: string;
+function TJvCustomAppXMLStorage.DoReadBoolean(const Path: string;
   Default: Boolean): Boolean;
 var
   ParentPath: string;
@@ -564,7 +555,7 @@ begin
     raise EJVCLException.CreateFmt(RsEPathDoesntExists, [Path]);
 end;
 
-procedure TJvAppXMLStorage.DoWriteBoolean(const Path: string;
+procedure TJvCustomAppXMLStorage.DoWriteBoolean(const Path: string;
   Value: Boolean);
 var
   ParentPath: string;
@@ -575,6 +566,30 @@ begin
   FXml.Options := [sxoAutoCreate, sxoAutoIndent];
   FCurrentNode.Items.ItemNamed[ValueName].BoolValue := Value;
   FXml.Options := [sxoAutoIndent];
+end;
+
+function TJvCustomAppXMLStorage.GetAsString: string;
+begin
+  Result := FXml.SaveToString;
+end;
+
+procedure TJvCustomAppXMLStorage.SetAsString(const Value: string);
+begin
+  FXml.LoadFromString(Value);
+end;
+
+{ TJvAppXMLFileStorage }
+
+procedure TJvAppXMLFileStorage.Flush;
+begin
+  if FullFileName <> '' then
+    FXml.SaveToFile(FullFileName);
+end;
+
+procedure TJvAppXMLFileStorage.Reload;
+begin
+  if FileExists(FullFileName) then
+    FXml.LoadFromFile(FullFileName);
 end;
 
 end.
