@@ -24,6 +24,17 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Known Issues:
+
+//=== NEW IN JVCL 3.0 ==
+
+    TJvDBMaskEdit is a new control, added by Warren Postma.
+
+    Major Issues:
+        EditMask property enables operation as masked edit, which doesn't
+        work properly in a Control Grid, yet, if you set the EditMask.
+        You can use it as a generic editor control inside a control grid.
+          -- Warren Postma (warrenpstma@hotmail.com) 
+
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
@@ -39,7 +50,8 @@ uses
   {$ENDIF}
   Messages, Classes, Controls, Forms, Grids, Graphics, Buttons, Menus,
   StdCtrls, Mask, IniFiles, DB, DBGrids,
-  JvAppStore, JvToolEdit, JvFormPlacement, JvJCLUtils, DBCtrls, JvxCtrls, JvBaseEdits;
+  JvAppStore, JvToolEdit, JvFormPlacement, JvJCLUtils, DBCtrls, JvxCtrls,
+  JvMaskEdit, JvBaseEdits;
 
 { TJvDBGrid }
 
@@ -52,6 +64,9 @@ const
   {$ENDIF}
 
 type
+  { NEW VALIDATION EVENT }
+  TJvDbAcceptValueEvent  = procedure (Sender:TObject; oldValue:String;var newValue:String; var Accept,Post:Boolean) of Object;
+   
   TTitleClickEvent = procedure(Sender: TObject; ACol: Longint;
     Field: TField) of object;
   TCheckTitleBtnEvent = procedure(Sender: TObject; ACol: Longint;
@@ -64,15 +79,148 @@ type
     IsDown: Boolean) of object;
   TGetCellPropsEvent = procedure(Sender: TObject; Field: TField;
     AFont: TFont; var Background: TColor) of object; { obsolete }
-  TDBEditShowEvent = procedure(Sender: TObject; Field: TField;
+  TJvDBEditShowEvent = procedure(Sender: TObject; Field: TField;
     var AllowEdit: Boolean) of object;
   TDrawColumnTitleEvent = procedure(Sender: TObject; ACanvas: TCanvas;
     ARect: TRect; Field: TField; ASortMarker: TBitmap; IsDown: Boolean;
     var Offset: integer; var DeafaultDrawText,
     DefaultDrawSortMarker: boolean) of object;
 
+ {NEW IN JVCL3.0 - Enhanced DBEdit/DBMaskEdit }
+  TJvDBMaskEdit = class(TJvCustomMaskEdit) // same base as TJvMaskEdit, plus data aware.
+  private
+    {Standard data-aware crap}
+    FDataLink: TFieldDataLink;
+    FCanvas: TControlCanvas;
+    FAlignment: TAlignment;
+    FFocused: Boolean;
+    FBeepOnError : Boolean; { allows us to get rid of the standard beep on error yuckiness if we want}
+
+    {new: Specific to this component}
+      // value of text in the edit control at the time
+      // that keyboard focus enters the control:
+    FOriginalValue : String;
+      // Validation/event.
+    FOnAcceptNewValue : TJvDbAcceptValueEvent;
+
+    procedure ActiveChange(Sender: TObject);
+    procedure DataChange(Sender: TObject);
+    procedure EditingChange(Sender: TObject);
+    function GetDataField: string;
+    function GetDataSource: TDataSource;
+    function GetField: TField;
+    function GetReadOnly: Boolean;
+    function GetTextMargins: TPoint;
+    procedure ResetMaxLength;
+    procedure SetDataField(const Value: string);
+    procedure SetDataSource(Value: TDataSource);
+    procedure SetFocused(Value: Boolean);
+    procedure SetReadOnly(Value: Boolean);
+    procedure UpdateData(Sender: TObject);
+    procedure WMCut(var Message: TMessage); message WM_CUT;
+    procedure WMPaste(var Message: TMessage); message WM_PASTE;
+    procedure WMUndo(var Message: TMessage); message WM_UNDO;
+    procedure CMEnter(var Message: TCMEnter); message CM_ENTER;
+    procedure CMExit(var Message: TCMExit); message CM_EXIT;
+    procedure WMPaint(var Message: TWMPaint); message WM_PAINT; 
+    procedure CMGetDataLink(var Message: TMessage); message CM_GETDATALINK;
+
+
+  protected
+    procedure Change; override;
+    function EditCanModify: Boolean; override;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure KeyPress(var Key: Char); override;
+    procedure Loaded; override;
+    procedure Notification(AComponent: TComponent;
+      Operation: TOperation); override;
+    procedure Reset; override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    function ExecuteAction(Action: TBasicAction): Boolean; override;
+    function UpdateAction(Action: TBasicAction): Boolean; override;
+    function UseRightToLeftAlignment: Boolean; override;
+    property Field: TField read GetField;
+  published
+    { Here are the common designtime properties, exactly like the VCL TDBEdit  }
+    property Anchors;
+    property AutoSelect;
+    property AutoSize;
+    property BevelEdges;
+    property BevelInner;
+    property BevelOuter;
+    property BevelKind;
+    property BevelWidth;
+    property BiDiMode;
+    property BorderStyle;
+    property CharCase;
+    property Color;
+    property Constraints;
+    property Ctl3D;
+    property DataField: string read GetDataField write SetDataField;
+    property DataSource: TDataSource read GetDataSource write SetDataSource;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property Enabled;
+    property Font;
+    property ImeMode;
+    property ImeName;
+    property MaxLength;
+    property ParentBiDiMode;
+    property ParentColor;
+    property ParentCtl3D;
+    property ParentFont;
+    property ParentShowHint;
+    property PasswordChar;
+    property PopupMenu;
+    property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property Visible;
+    property OnChange;
+    property OnClick;
+    property OnContextPopup;
+    property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDock;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnStartDock;
+    property OnStartDrag;
+    { designtime properties SPECIFIC to only JvDBMaskEdit: }
+    property EditMask; { from TJvCustomMaskEdit }
+
+     {new event}
+     // This event is fired when a new value has been entered, and the Enter key is
+     // hit, and the mask checking worked, and we are asking the user
+     // for whether to accept the entry, or not, and if so, the end
+     // user may also want to automatically set a flag to cause an automatic Post
+     // after the db control does a write to the fieldlink.
+     property OnAcceptNewValue: TJvDbAcceptValueEvent read FOnAcceptNewValue write FOnAcceptNewValue;
+
+
+    {Common JEDI Niceties}
+    property BeepOnError : Boolean read FBeepOnError  write FBeepOnError default true; { allows us to get rid of the standard beep on error yuckiness if we want}
+
+
+
+  end;
+  {END TJvDBMaskEdit}
+ 
   TJvDBGrid = class(TDBGrid)
   private
+    FBeepOnError : Boolean; //WAP
     FAutoAppend: Boolean; // Polaris
     FSizingIndex: Integer; // Polaris
     FSizingOfs: Integer; // Polaris
@@ -97,7 +245,7 @@ type
     FOnEditChange: TNotifyEvent;
     FOnKeyPress: TKeyPressEvent;
     FOnTitleBtnClick: TTitleClickEvent;
-    FOnShowEditor: TDbEditShowEvent;
+    FOnShowEditor: TJvDBEditShowEvent;
     FOnTopLeftChanged: TNotifyEvent;
     FSelectionAnchor: TBookmarkStr;
     FOnDrawColumnTitle: TDrawColumnTitleEvent;
@@ -217,7 +365,7 @@ type
     property OnGetCellParams: TGetCellParamsEvent read FOnGetCellParams write FOnGetCellParams;
     property OnGetBtnParams: TGetBtnParamsEvent read FOnGetBtnParams write FOnGetBtnParams;
     property OnEditChange: TNotifyEvent read FOnEditChange write FOnEditChange;
-    property OnShowEditor: TDBEditShowEvent read FOnShowEditor write FOnShowEditor;
+    property OnShowEditor: TJvDBEditShowEvent read FOnShowEditor write FOnShowEditor;
     property OnTitleBtnClick: TTitleClickEvent read FOnTitleBtnClick write FOnTitleBtnClick;
     property OnKeyPress: TKeyPressEvent read FOnKeyPress write FOnKeyPress;
     property OnTopLeftChanged: TNotifyEvent read FOnTopLeftChanged write FOnTopLeftChanged;
@@ -229,7 +377,10 @@ type
     property OnResize;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
+    property BeepOnError:Boolean read FBeepOnError write FBeepOnError default true; // WAP.
   end;
+
+
 
   TJvDBComboEdit = class(TJvCustomComboEdit)
   private
@@ -769,6 +920,421 @@ end;
 
 //=== TBookmarkList ==========================================================
 
+
+//=== NEW IN JVCL 3.0 ==
+//=== TJvDBMaskEdit ==============================================================
+procedure TJvDBMaskEdit.ResetMaxLength;
+var
+  F: TField;
+begin
+  if (MaxLength > 0) and Assigned(DataSource) and Assigned(DataSource.DataSet) then
+  begin
+    F := DataSource.DataSet.FindField(DataField);
+    if Assigned(F) and (F.DataType in [ftString, ftWideString]) and (F.Size = MaxLength) then
+      MaxLength := 0;
+  end;
+end;
+
+constructor TJvDBMaskEdit.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  inherited ReadOnly := True;
+  ControlStyle := ControlStyle + [csReplicatable];
+  FDataLink := TFieldDataLink.Create;
+  FDataLink.Control := Self;
+  FDataLink.OnDataChange := DataChange;
+  FDataLink.OnEditingChange := EditingChange;
+  FDataLink.OnUpdateData := UpdateData;
+  FDataLink.OnActiveChange := ActiveChange;
+  // new stuff that isn't in the VCL version.
+  FBeepOnError  := true;  
+end;
+
+destructor TJvDBMaskEdit.Destroy;
+begin
+  FDataLink.Free;
+  FDataLink := nil;
+  FCanvas.Free;
+  inherited Destroy;
+end;
+
+procedure TJvDBMaskEdit.Loaded;
+begin
+  inherited Loaded;
+  ResetMaxLength;
+  if (csDesigning in ComponentState) then DataChange(Self);
+end;
+
+procedure TJvDBMaskEdit.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (Operation = opRemove) and (FDataLink <> nil) and
+    (AComponent = DataSource) then DataSource := nil;
+end;
+
+function TJvDBMaskEdit.UseRightToLeftAlignment: Boolean;
+begin
+  Result := DBUseRightToLeftAlignment(Self, Field);
+end;
+
+procedure TJvDBMaskEdit.KeyDown(var Key: Word; Shift: TShiftState);
+begin
+  inherited KeyDown(Key, Shift);
+  if (Key = VK_DELETE) or ((Key = VK_INSERT) and (ssShift in Shift)) then
+    FDataLink.Edit;
+end;
+
+procedure TJvDBMaskEdit.KeyPress(var Key: Char);
+begin
+  inherited KeyPress(Key);
+  if (Key in [#32..#255]) and (FDataLink.Field <> nil) and
+    not FDataLink.Field.IsValidChar(Key) then
+  begin
+    if FBeepOnError then
+      MessageBeep(0);
+    Key := #0;
+  end;
+  case Key of
+    ^H, ^V, ^X, #32..#255:
+      FDataLink.Edit;
+    #27:
+      begin
+        FDataLink.Reset;
+        SelectAll;
+        Key := #0;
+      end;
+  end;
+end;
+
+function TJvDBMaskEdit.EditCanModify: Boolean;
+begin
+  Result := FDataLink.Edit;
+end;
+
+procedure TJvDBMaskEdit.Reset;
+begin
+  FDataLink.Reset;
+  SelectAll;
+end;
+
+procedure TJvDBMaskEdit.SetFocused(Value: Boolean);
+begin
+  if FFocused <> Value then
+  begin
+    FFocused := Value;
+    if (FAlignment <> taLeftJustify) and not IsMasked then Invalidate;
+    FDataLink.Reset;
+  end;
+end;
+
+procedure TJvDBMaskEdit.Change;
+begin
+  FDataLink.Modified;
+  inherited Change;
+end;
+
+function TJvDBMaskEdit.GetDataSource: TDataSource;
+begin
+  Result := FDataLink.DataSource;
+end;
+
+procedure TJvDBMaskEdit.SetDataSource(Value: TDataSource);
+begin
+  if not (FDataLink.DataSourceFixed and (csLoading in ComponentState)) then
+    FDataLink.DataSource := Value;
+  if Value <> nil then Value.FreeNotification(Self);
+end;
+
+function TJvDBMaskEdit.GetDataField: string;
+begin
+  Result := FDataLink.FieldName;
+end;
+
+procedure TJvDBMaskEdit.SetDataField(const Value: string);
+begin
+  if not (csDesigning in ComponentState) then
+    ResetMaxLength;
+  FDataLink.FieldName := Value;
+end;
+
+function TJvDBMaskEdit.GetReadOnly: Boolean;
+begin
+  Result := FDataLink.ReadOnly;
+end;
+
+procedure TJvDBMaskEdit.SetReadOnly(Value: Boolean);
+begin
+  FDataLink.ReadOnly := Value;
+end;
+
+function TJvDBMaskEdit.GetField: TField;
+begin
+  Result := FDataLink.Field;
+end;
+
+procedure TJvDBMaskEdit.ActiveChange(Sender: TObject);
+begin
+  ResetMaxLength;
+end;
+
+procedure TJvDBMaskEdit.DataChange(Sender: TObject);
+begin
+  if FDataLink.Field <> nil then
+  begin
+    if FAlignment <> FDataLink.Field.Alignment then
+    begin
+      EditText := '';  {forces update}
+      FAlignment := FDataLink.Field.Alignment;
+    end;
+    EditMask := FDataLink.Field.EditMask;
+    if not (csDesigning in ComponentState) then
+    begin
+      if (FDataLink.Field.DataType in [ftString, ftWideString]) and (MaxLength = 0) then
+        MaxLength := FDataLink.Field.Size;
+    end;
+    if FFocused and FDataLink.CanModify then
+      Text := FDataLink.Field.Text
+    else
+    begin
+      EditText := FDataLink.Field.DisplayText;
+      if FDataLink.Editing {and FDataLink.FModified XXX } then
+        Modified := True;
+    end;
+  end else
+  begin
+    FAlignment := taLeftJustify;
+    EditMask := '';
+    if csDesigning in ComponentState then
+      EditText := Name else
+      EditText := '';
+  end;
+end;
+
+procedure TJvDBMaskEdit.EditingChange(Sender: TObject);
+begin
+  inherited ReadOnly := not FDataLink.Editing;
+end;
+
+procedure TJvDBMaskEdit.UpdateData(Sender: TObject);
+begin
+  ValidateEdit;
+  FDataLink.Field.Text := Text;
+end;
+
+procedure TJvDBMaskEdit.WMUndo(var Message: TMessage);
+begin
+  FDataLink.Edit;
+  inherited;
+end;
+
+procedure TJvDBMaskEdit.WMPaste(var Message: TMessage);
+begin
+  FDataLink.Edit;
+  inherited;
+end;
+
+procedure TJvDBMaskEdit.WMCut(var Message: TMessage);
+begin
+  FDataLink.Edit;
+  inherited;
+end;
+
+procedure TJvDBMaskEdit.CMEnter(var Message: TCMEnter);
+begin
+  FOriginalValue := Self.Text;
+  SetFocused(True);
+  inherited;
+  if SysLocale.FarEast and FDataLink.CanModify then
+    inherited ReadOnly := False;
+end;
+
+procedure TJvDBMaskEdit.CMExit(var Message: TCMExit);
+var
+ newValue:String;
+ Accept,Post:Boolean;
+begin
+  Accept := true;
+  Post := false;
+  newValue := Text;
+  // When we hit enter, check if there was a change, and if so,
+  // we can fire the confirmation event.
+  if (FOriginalValue<>newValue) then
+      if Assigned(FOnAcceptNewValue) then begin
+
+
+          FOnAcceptNewValue(Self,FOriginalValue,newValue,Accept,Post);
+          if not Accept then begin
+              Text := FOriginalValue;
+          end;
+      end;
+  try
+     if Accept then
+        FDataLink.UpdateRecord;
+  except
+    SelectAll;
+    SetFocus;
+    raise;
+  end;
+  SetFocused(False);
+  CheckCursor;
+  if Accept then
+      DoExit;
+
+  { A nifty little way to keep simple database applications happy.
+    Just set POST flag in your validation, and the dataset is updated.
+    If you don't like this feature, just DON'T set Post to true, it
+    defaults to false.
+  }
+    if (Accept and Post) and (Assigned(DataSource)) then
+       if Assigned(DataSource.DataSet) and (DataSource.DataSet.Active) then
+          if DataSource.DataSet.State = dsEdit then
+              DataSource.DataSet.Post;
+
+end;
+
+procedure TJvDBMaskEdit.WMPaint(var Message: TWMPaint);
+(*const
+  AlignmentValues: array[False..True, TAlignment] of TAlignment = (
+    (taLeftJustify, taRightJustify, taCenter),
+    (taRightJustify, taLeftJustify, taCenter)
+  ); *)
+const
+  AlignStyle : array[Boolean, TAlignment] of DWORD =
+   ((WS_EX_LEFT, WS_EX_RIGHT, WS_EX_LEFT),
+    (WS_EX_RIGHT, WS_EX_LEFT, WS_EX_LEFT));
+var
+  Left: Integer;
+  Margins: TPoint;
+  R: TRect;
+  DC: HDC;
+  PS: TPaintStruct;
+  S: string;
+  AAlignment: TAlignment;
+  ExStyle: DWORD;
+begin
+  AAlignment := FAlignment;
+  if UseRightToLeftAlignment then ChangeBiDiModeAlignment(AAlignment);
+  if ((AAlignment = taLeftJustify) or FFocused) and
+    not (csPaintCopy in ControlState) then
+  begin
+    if SysLocale.MiddleEast and HandleAllocated and (IsRightToLeft) then
+    begin { This keeps the right aligned text, right aligned }
+      ExStyle := DWORD(GetWindowLong(Handle, GWL_EXSTYLE)) and (not WS_EX_RIGHT) and
+        (not WS_EX_RTLREADING) and (not WS_EX_LEFTSCROLLBAR);
+      if UseRightToLeftReading then ExStyle := ExStyle or WS_EX_RTLREADING;
+      if UseRightToLeftScrollbar then ExStyle := ExStyle or WS_EX_LEFTSCROLLBAR;
+      ExStyle := ExStyle or
+        AlignStyle[UseRightToLeftAlignment, AAlignment];
+      if DWORD(GetWindowLong(Handle, GWL_EXSTYLE)) <> ExStyle then
+        SetWindowLong(Handle, GWL_EXSTYLE, ExStyle);
+    end;
+    // MAIN THING FOR MOST PEOPLE IS WE JUST CALL OUR BASE CLASS METHOD HERE:
+    inherited; // This is where the main Non Control-Grid Paint Code lives.
+    Exit;
+  end;
+{ Handler code here is for
+  Data Aware Controls drawing themselves into their own internal
+  canvas, for purpose of being displayed in a DBControl Grid:
+}
+  if FCanvas = nil then
+  begin
+    FCanvas := TControlCanvas.Create;
+    FCanvas.Control := Self;
+  end;
+  DC := Message.DC;
+  if DC = 0 then DC := BeginPaint(Handle, PS);
+  FCanvas.Handle := DC;
+  try
+    FCanvas.Font := Font;
+    with FCanvas do
+    begin
+      R := ClientRect;
+      if not (NewStyleControls and Ctl3D) and (BorderStyle = bsSingle) then
+      begin
+        Brush.Color := clWindowFrame;
+        FrameRect(R);
+        InflateRect(R, -1, -1);
+      end;
+      Brush.Color := Color;
+      if not Enabled then
+        Font.Color := clGrayText;
+      if (csPaintCopy in ControlState) and (FDataLink.Field <> nil) then
+      begin
+        S := FDataLink.Field.DisplayText;
+        case CharCase of
+          ecUpperCase: S := AnsiUpperCase(S);
+          ecLowerCase: S := AnsiLowerCase(S);
+        end;
+      end else
+        S := EditText;
+      if PasswordChar <> #0 then FillChar(S[1], Length(S), PasswordChar);
+      Margins := GetTextMargins;
+      case AAlignment of
+        taLeftJustify: Left := Margins.X;
+        taRightJustify: Left := ClientWidth - TextWidth(S) - Margins.X - 1;
+      else
+        Left := (ClientWidth - TextWidth(S)) div 2;
+      end;
+      if SysLocale.MiddleEast then UpdateTextFlags;
+      TextRect(R, Left, Margins.Y, S);
+    end;
+  finally
+    FCanvas.Handle := 0;
+    if Message.DC = 0 then EndPaint(Handle, PS);
+  end;
+end;  
+
+procedure TJvDBMaskEdit.CMGetDataLink(var Message: TMessage);
+begin
+  Message.Result := Integer(FDataLink);
+end;
+
+function TJvDBMaskEdit.GetTextMargins: TPoint;
+var
+  DC: HDC;
+  SaveFont: HFont;
+  I: Integer;
+  SysMetrics, Metrics: TTextMetric;
+begin
+  if NewStyleControls then
+  begin
+    if BorderStyle = bsNone then I := 0 else
+      if Ctl3D then I := 1 else I := 2;
+    Result.X := SendMessage(Handle, EM_GETMARGINS, 0, 0) and $0000FFFF + I;
+    Result.Y := I;
+  end else
+  begin
+    if BorderStyle = bsNone then I := 0 else
+    begin
+      DC := GetDC(0);
+      GetTextMetrics(DC, SysMetrics);
+      SaveFont := SelectObject(DC, Font.Handle);
+      GetTextMetrics(DC, Metrics);
+      SelectObject(DC, SaveFont);
+      ReleaseDC(0, DC);
+      I := SysMetrics.tmHeight;
+      if I > Metrics.tmHeight then I := Metrics.tmHeight;
+      I := I div 4;
+    end;
+    Result.X := I;
+    Result.Y := I;
+  end;
+end;
+
+function TJvDBMaskEdit.ExecuteAction(Action: TBasicAction): Boolean;
+begin
+  Result := inherited ExecuteAction(Action) or (FDataLink <> nil) and
+    FDataLink.ExecuteAction(Action);
+end;
+
+function TJvDBMaskEdit.UpdateAction(Action: TBasicAction): Boolean;
+begin
+  Result := inherited UpdateAction(Action) or (FDataLink <> nil) and
+    FDataLink.UpdateAction(Action);
+end;
+
+
 //=== TJvDBGrid ==============================================================
 
 type
@@ -780,6 +1346,7 @@ var
 begin
   inherited Create(AOwner);
   inherited DefaultDrawing := False;
+  FBeepOnError := true;
   Options := DefJvGridOptions;
   Bmp := TBitmap.Create;
   try
@@ -1530,7 +2097,8 @@ begin
           TrackButton(X, Y);
         end
         else
-          Beep;
+          if FBeepOnError then
+              Beep;
         Exit;
       end;
     end;
