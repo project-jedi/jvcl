@@ -45,7 +45,7 @@ uses
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGraphics, Types,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvLinkLabelTools, JvTypes;
 
 type

@@ -342,7 +342,7 @@ const
   );
 
   SysColorValues: array [0 .. SysColCount - 1] of TDefColorItem = (
-  {$IFDEF VCL}
+    {$IFDEF VCL}
     (Value: clScrollBar;           Constant: 'clScrollBar';           Description: RsClScrollBar),
     (Value: clBackground;          Constant: 'clBackground';          Description: RsClBackground),
     (Value: clActiveCaption;       Constant: 'clActiveCaption';       Description: RsClActiveCaption),
@@ -368,8 +368,8 @@ const
     (Value: cl3DLight;             Constant: 'cl3DLight';             Description: RsCl3DLight),
     (Value: clInfoText;            Constant: 'clInfoText';            Description: RsClInfoText),
     (Value: clInfoBk;              Constant: 'clInfoBk';              Description: RsClInfoBk)
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
     (Value: clForeground;              Constant: 'clForeground';              Description: RsClForeground),
     (Value: clButton;                  Constant: 'clButton';                  Description: RsClButton),
     (Value: clLight;                   Constant: 'clLight';                   Description: RsClLight),
@@ -432,8 +432,7 @@ const
 
     (Value: clDesktop;                 Constant: 'clDesktop';                 Description: RsClDesktop),
     (Value: clInfoBk;                  Constant: 'clInfoBk';                  Description: RsClInfoBk)
-
-  {$ENDIF}
+    {$ENDIF VisualCLX}
   );
 
 implementation

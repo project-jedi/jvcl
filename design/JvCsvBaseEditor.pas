@@ -60,14 +60,13 @@ type
 
 implementation
 
-{$IFDEF VCL}
 uses
+  {$IFDEF VCL}
   Forms, Dialogs;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-uses
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   QForms, QDialogs;
-{$ENDIF}
+  {$ENDIF VisualCLX}
 
 //=== TCSVFileNameProperty ===================================================
 

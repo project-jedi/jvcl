@@ -68,9 +68,10 @@ uses
 
 {$IFDEF VCL}
 {$R *.dfm}
-{$ELSE}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
 {$R *.xfm}
-{$ENDIF}
+{$ENDIF VisualCLX}
 
 procedure TFoPatch.LoadFromStr(Value: TStringList);
 begin

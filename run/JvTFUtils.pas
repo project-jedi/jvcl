@@ -37,10 +37,10 @@ uses
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGraphics, Types,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   Classes, SysUtils;
 
-Type
+type
   TJvTFVisibleScrollBars  = set of (vsbHorz, vsbVert);
   EJvTFDateError = class(Exception);
 
@@ -110,6 +110,7 @@ function IsClassByName(Obj: TObject; ClassName: ShortString): Boolean;
 
 
 implementation
+
 {$IFDEF USEJVCL}
 uses
   JvResources;

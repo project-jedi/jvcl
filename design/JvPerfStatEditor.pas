@@ -37,7 +37,7 @@ uses
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QDialogs,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
   {$ELSE}
