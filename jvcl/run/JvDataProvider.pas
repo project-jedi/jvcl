@@ -39,7 +39,7 @@ uses
 type
   TDataProviderChangeReason = (pcrAdd, pcrDelete, pcrUpdateItem, pcrUpdateItems, pcrDestroy,
     pcrContextAdd, pcrContextDelete, pcrContextUpdate);
-  TDataItemState = (disFalse, disTrue, disIndeterminate, disNotUsed);
+  TDataItemState = (disFalse, disTrue, disIndetermined, disNotUsed);
   TProviderDrawState = (pdsSelected, pdsGrayed, pdsDisabled, pdsChecked, pdsFocused, pdsDefault,
     pdsHot);
   TProviderDrawStates = set of TProviderDrawState;
@@ -56,97 +56,49 @@ type
   IJvDataContexts = interface;
   IJvDataContext = interface;
 
-  { base interface for components that supports storing lists of data (0..M items) }
   IJvDataProvider = interface
   ['{62A7A17D-1E21-427E-861D-C92FBB9B09A6}']
-    { Register a notification listener (a client control) }
     procedure RegisterChangeNotify(ANotify: IJvDataProviderNotify);
-    { Unregister a notification listener (a client control) }
     procedure UnregisterChangeNotify(ANotify: IJvDataProviderNotify);
-    { Return a reference to the list of items at the root (you can also use
-      <ProviderIntf> as IJvDataItems). }
     function GetItems: IJvDataItems;
-    { Notify clients a change is about to occur. }
     procedure Changing(ChangeReason: TDataProviderChangeReason; Source: IUnknown = nil);
-    { Notify clients a changes has just occured. }
     procedure Changed(ChangeReason: TDataProviderChangeReason; Source: IUnknown = nil);
-    { Return an array of consumer setting classes to add to the consumer. Returned array may depend
-      on the currently selected consumer/context pair. }
     function ConsumerClasses: TClassArray;
-    { Selects a new consumer. The current consumer is pushed onto a stack. Use ReleaseConsumer to
-      return to it. When the provider is created no consumer is selected. }
     procedure SelectConsumer(Consumer: IJvDataConsumer);
-    { Currently selected consumer. }
     function SelectedConsumer: IJvDataConsumer;
-    { Deselect the current consumer and revert back to the consumer that was selected before it. }
     procedure ReleaseConsumer;
-    { Selects a new context. The current context is pushed onto a stack. Use ReleaseContext to
-      return to it. When the provider is create it's implicit context is preselected. If you select
-      a nil context the data provider implicit context is selected. }
     procedure SelectContext(Context: IJvDataContext);
-    { Currently selected context. }
     function SelectedContext: IJvDataContext;
-    { Deselect the current context and revert back to the context that was selected before it. }
     procedure ReleaseContext;
-    { Called when the context is about to be destroyed. Should be handed over to the items list. }
     procedure ContextDestroying(Context: IJvDataContext);
-    { Called when a consumer is about to be destroyed. }
     procedure ConsumerDestroying(Consumer: IJvDataConsumer);
-    { Used to determine if the provider allows the use of the item designer. }
     function AllowProviderDesigner: Boolean;
-    { Used to determine if the provider allows the use of the context manager. }
     function AllowContextManager: Boolean;
   end;
 
-  { Implemented by clients (i.e list/comboboxes, labels, buttons, edits, listviews, treeviews, menus etc)
-   to get notifications from IFiller }
   IJvDataProviderNotify = interface
   ['{5B9D1847-6D35-4D9C-8BC2-2054997AB120}']
-    { Called when a change is about to occur at the provider. }
     procedure DataProviderChanging(const ADataProvider: IJvDataProvider; AReason: TDataProviderChangeReason; Source: IUnknown);
-    { Called when a change has occured at the provider. }
     procedure DataProviderChanged(const ADataProvider: IJvDataProvider; AReason: TDataProviderChangeReason; Source: IUnknown);
   end;
 
-  { Item list. (0..N items)
-    Must be supported/implemented by IJvDataProvider implementers.
-    May be Supported by IJvDataItem implementers. }
   IJvDataItems = interface
   ['{93747660-24FB-4294-BF4E-C7F88EA23983}']
-    { Retrieves the number of items in the list. }
     function GetCount: Integer;
-    { Retrieve an item in the list }
     function GetItem(Index: Integer): IJvDataItem;
-    { Retrieve an item in the list given it's ID (path) }
     function GetItemByID(ID: string): IJvDataItem;
-    { Retrieve an item given it's index path. }
     function GetItemByIndexPath(IndexPath: array of Integer): IJvDataItem;
-    { Reference to the parent item or nil if this list is the root list (i.e. implemented at the
-      IJvDataProvider level). }
     function GetParent: IJvDataItem;
-    { Reference to the data provider instance. }
     function GetProvider: IJvDataProvider;
-    { Reference to the implementing object. }
     function GetImplementer: TObject;
-    { Determines if the list is a dynamic list of items (i.e. items are generated as needed and
-      disposed of when the last reference to it goes out of scope). }
     function IsDynamic: Boolean;
-    { Called when the specified context is about to be destroyed. Should iterate over all it's items
-      and call it's ContextDestroying method. }
     procedure ContextDestroying(Context: IJvDataContext);
-
-    { Number of items in the list }
     property Count: Integer read GetCount;
-    { Array of list items. }
     property Items[Index: Integer]: IJvDataItem read GetItem;
-    { Reference to the parent item or nil if this list is the root list (i.e. implemented at the
-      IJvDataProvider level). }
     property Parent: IJvDataItem read GetParent;
-    { Reference to the data provider instance. }
     property Provider: IJvDataProvider read GetProvider;
   end;
 
-  { May be supported by IJvDataItems implementers. }
   IJvDataItemsImages = interface
   ['{735755A6-AD11-460C-B985-46464D73EDBC}']
     function GetDisabledImages: TCustomImageList;
@@ -155,60 +107,33 @@ type
     procedure SetHotImages(const Value: TCustomImageList);
     function GetImages: TCustomImageList;
     procedure SetImages(const Value: TCustomImageList);
-
-    { Get or set the image list to use when an item is disabled. If left unassigned, the standard
-      image list is used (set by Images). }
     property DisabledImages: TCustomImageList read GetDisabledImages write SetDisabledImages;
-    { Get or set the image list to use when an item is 'hot'. If left unassigned, the standard image
-      list is used (set by Images). }
     property HotImages: TCustomImageList read GetHotImages write SetHotImages;
-    { Get or set the image list to use. }
     property Images: TCustomImageList read GetImages write SetImages;
   end;
 
-  { Rendering interface. Provides support for both rendering and measuring of items.
-    Implemented by IFillerItems. }
   IJvDataItemsRenderer = interface
     ['{4EA490F4-7CCF-44A1-AA26-5320CDE9FAFC}']
-    { Draw an item in the IJvDataItems list, using an index to specify which item. }
     procedure DrawItemByIndex(ACanvas: TCanvas; var ARect: TRect; Index: Integer; State: TProviderDrawStates);
-    { Measure an item in the IJvDataItems list, using an index to specify which item. }
     function MeasureItemByIndex(ACanvas: TCanvas; Index: Integer): TSize;
-    { Draw the specified item. If the item is not part of the IJvDataItems list or nil is specified, an exception will be raised. }
     procedure DrawItem(ACanvas: TCanvas; var ARect: TRect; Item: IJvDataItem; State: TProviderDrawStates);
-    { Measure the specified item. If the item is not part of the IJvDataItems list or nil is specified, an exception will be raised. }
     function MeasureItem(ACanvas: TCanvas; Item: IJvDataItem): TSize;
-    { Retrieve the average size of the items in the list. This depends on the implementation on how
-      this value is determined (either by iterating over the items and calculate the real average
-      or by assuming data depending on current font, etc). }
     function AvgItemSize(ACanvas: TCanvas): TSize;
   end;
 
-  { Implemented by servers that allows editing the list. Supported by IJvDataItems implementers. }
   IJvDataItemsManagement = interface
   ['{76611CC0-9DCD-4394-8B6E-1ADEF1942BC3}']
-    { Add the specified item to the list. }
     function Add(Item: IJvDataItem): IJvDataItem;
-    { Create a new item and add it to the list. }
     function New: IJvDataItem;
-    { Clear the list of items. }
     procedure Clear;
-    { Delete the item at the given index. }
     procedure Delete(Index: Integer);
-    { Remove the specified item from the list. }
     procedure Remove(var Item: IJvDataItem);
   end;
 
-  { Support interface for provider editor. May be implemented by IJvDataItemsManagement implementers
-    who allow their list/tree to be edited. }
   IJvDataItemsDesigner = interface
     ['{31B2544C-8E4F-40FE-94B8-04243EF40821}']
-    { Number of item types the designer can support. }
     function GetCount: Integer;
-    { Retrieve the name of item type specified by the index. If the Index is out of range, False
-      is returned, otherwise True is returned and Caption contains the type name. }
     function GetKind(Index: Integer; out Caption: string): Boolean;
-    { Create and add a new item based on the specified type. }
     function NewByKind(Kind: Integer): IJvDataItem;
   end;
 
@@ -235,34 +160,16 @@ type
     function Find(Text: string; const Recursive: Boolean = False): IJvDataItem;
   end;
 
-  { base item interface: holds reference to the IJvDataItems owner as well as provide a reference to
-    the implementer. }
   IJvDataItem = interface
   ['{C965CF64-A1F2-44A4-B856-3A4EC6B693E1}']
-    { Retrieve the reference to the IJvDataItems owner. }
     function GetItems: IJvDataItems;
-    { Retrive the index in the IJvDataItems owner. }
     function GetIndex: Integer;
-    { Retrieve a reference to the implementing object. }
     function GetImplementer: TObject;
-    { Retrieve the items ID string. }
     function GetID: string;
-    { Called when the specified context is about to be destroyed. If the item supports sub items,
-      these should also be notified (by calling the IJvDataItems.ContextDestroying method). }
     procedure ContextDestroying(Context: IJvDataContext);
-    { Determines if the item is a parent for the specified item. DirectParent controls whether or
-      not the entire hierarchie is checked. Setting it to True means the the specified item should
-      be a direct child, otherwise it may be at deeper levels. }
     function IsParentOf(AnItem: IJvDataItem; DirectParent: Boolean = False): Boolean;
-    { Determines if the item can be deleted. Some providers may generate some fixed items that
-      should never be deleted if the ProviderDesigner is used. This may depend on which context is
-      active (from contexts point-of-view, a deletetion is just removal from view; not a permanent
-      delete) }
     function IsDeletable: Boolean;
-
-    { Reference to the IJvDataItems owner. }
     property Items: IJvDataItems read GetItems;
-    { Reference to the implementing object. }
     property Implementer: TObject read GetImplementer;
   end;
 
@@ -287,8 +194,6 @@ type
     property Caption: string read GetCaption write SetCaption;
   end;
 
-  { supported by the IJvDataItem implementer if it supports images.
-    Note that the IJvDataItems owner needs to implement the IJvDataItemImages interface as well. }
   IJvDataItemImage = interface
   ['{6425D73A-90CF-42ED-9AB2-63125A4C0774}']
     function GetAlignment: TAlignment;
@@ -297,26 +202,16 @@ type
     procedure SetImageIndex(Index: Integer);
     function GetSelectedIndex: Integer;
     procedure SetSelectedIndex(Value: Integer);
-
-    { Alignment to use for the image (left of the item, center of the item, right of the item). Note
-      that center alignment means the optional text should be rendered below the image }
     property Alignment: TAlignment read GetAlignment write SetAlignment;
-    { Index into the image list of the image to render. }
     property ImageIndex: Integer read GetImageIndex write SetImageIndex;
-    { Index into the image list of the image to render when the item is selected. }
     property SelectedIndex: Integer read GetSelectedIndex write SetSelectedIndex;
   end;
 
-  { implemented by servers that supports a default action for an item. }
   IJvDataItemBasicAction = interface
   ['{86859A20-560D-4E9A-AC8B-2457789451B0}']
-    { Called in response to a click/double click of an item. Sender is the control that initiated
-      the action. Result is set to False when nothing happened and set to True when the action was
-      executed. }
     function Execute(Sender: TObject): Boolean;
   end;
 
-  { Implemented by servers that support one or more states for an item. }
   IJvDataItemStates = interface
   ['{5BD81E0B-DAD2-4560-943A-205E0FF2A97F}']
     function Get_Enabled: TDataItemState;
@@ -325,7 +220,6 @@ type
     procedure Set_Checked(Value: TDataItemState);
     function Get_Visible: TDataItemState;
     procedure Set_Visible(Value: TDataItemState);
-
     property Enabled: TDataItemState read Get_Enabled write Set_Enabled;
     property Checked: TDataItemState read Get_Checked write Set_Checked;
     property Visible: TDataItemState read Get_Visible write Set_Visible;
@@ -342,8 +236,6 @@ type
     function ExecVerb(Index: Integer): Boolean;
   end;
 
-  { Support interface for all IJvDataItem support interfaces as well as for the IJvDataItem itself.
-    Allows to revert to the default setting for the support interface or for the item in general. }
   IJvDataContextSensitive = interface
     ['{7067F5C1-05DC-4DAC-A595-AF9151695FBB}']
     procedure RevertToAncestor;
@@ -360,15 +252,9 @@ type
   end;
   {$ENDIF}
 
-  { Interface used to link back to the data consumer (the component/control). It's primary use is
-    to retrieve a reference to VCLComponent (if any) and check if certain attributes apply for a
-    consumer. Other interfaces maybe supported, depending on the control. Not all providers may be
-    interested in all the interfaces or even who the consumer is. }
   IJvDataConsumer = interface
     ['{B2F18D03-F615-4AA2-A51A-74D330C05C0E}']
     function VCLComponent: TComponent;
-    { Checks if a certain attribute applies (attributes are declared in JvDataProviderConsts). If
-      the specified attribute applies for the consumer True should be returned False otherwise. }
     function AttributeApplies(Attr: Integer): Boolean;
   end;
 

@@ -56,7 +56,10 @@ type
   TJvDataContextsClass = class of TJvBaseDataContexts;
   TJvDataContextsManagerClass = class of TJvBaseDataContextsManager;
   TJvDataContextClass = class of TJvBaseDataContext;
-  
+
+  // Types
+  TItemPathsArray = array of TDynIntegerArray;
+  TCtxItemPathsArray = array of TItemPathsArray;
 
   // Generic classes (move to some other unit?)
   TExtensibleInterfacedPersistent = class(TPersistent, IUnknown)
@@ -248,9 +251,26 @@ type
     FProvider: IJvDataProvider;
     FSubAggregate: TAggregatedPersistentEx;
   protected
-    { Adds an item to the list. Called by the various add methods of the IJvDataItemsManagement and
-      IJvDataItemsDesigner. }
+    { Adds an item to the list. }
     procedure InternalAdd(Item: IJvDataItem); virtual; abstract;
+    { Removes an item from the list. }
+    procedure InternalDelete(Index: Integer); virtual; abstract;
+    { Moves an item in the list to a new index. }
+    procedure InternalMove(OldIndex, NewIndex: Integer); virtual; abstract;
+    { Called by the IJvDataItemsManagement and IJvDataItemsDesigner implementations to add a new
+      item. It will redirect it to InternalAdd. InternalAdd will perform the add, but may also
+      perform addition steps if needed (in case of context specific list it might need to copy the
+      list first). }
+    procedure ItemAdd(Item: IJvDataItem);
+    { Called by the IJvDataItemsManagement implementation to remove an item. It will redirect it to
+      InternalDelete. InternalDelete will perform the removal, but may also perform addition steps
+      if needed (i.e. notify the other contexts if the delete is performed on the context-less list
+      or copy the list for a context specific list that inherits from an ancestor). }
+    procedure ItemDelete(Index: Integer);
+    { Called by the IJvDataItem implementation to move an item. It will redirect it to
+      InternalMove. InternalMove will perform the moving if it's called from within a context.
+      The context-less list does not allow moving of items. }
+    procedure ItemMove(OldIndex, NewIndex: Integer);
     { Determines if the item is streamable. }
     function IsStreamableItem(Item: IJvDataItem): Boolean; virtual;
     { Streaming methods }
@@ -264,7 +284,7 @@ type
     function GetItem(I: Integer): IJvDataItem; virtual; abstract;
     function GetItemByID(ID: string): IJvDataItem;
     function GetItemByIndexPath(IndexPath: array of Integer): IJvDataItem;
-    function GetParent: IJvDataItem;
+    function GetParent: IJvDataItem; virtual;
     function GetProvider: IJvDataProvider;
     function GetImplementer: TObject;
     function IsDynamic: Boolean; virtual;
@@ -273,8 +293,8 @@ type
     function FindByID(ID: string; const Recursive: Boolean = False): IJvDataItem;
   public
     constructor Create; virtual;
-    constructor CreateProvider(const Provider: IJvDataProvider);
-    constructor CreateParent(const Parent: IJvDataItem);
+    constructor CreateProvider(const Provider: IJvDataProvider); virtual;
+    constructor CreateParent(const Parent: IJvDataItem); virtual;
     procedure BeforeDestruction; override;
   end;
 
@@ -466,9 +486,9 @@ type
   TJvDataProviderItemID = type string;
   TJvDataProviderContexts = type Integer;
   TJvCustomDataProvider = class(TJvComponent, IUnknown, {$IFNDEF COMPILER6_UP}IInterfaceComponentReference, {$ENDIF}
-    IJvDataProvider, IJvDataItems)
+    IJvDataProvider)
   private
-    FDataItemsImpl: TJvBaseDataItems;
+    FDataItems: IJvDataItems;
     FDataContextsImpl: TJvBaseDataContexts;
     FNotifiers: TInterfaceList;
     FTreeItems: TJvDataProviderTree;
@@ -495,12 +515,13 @@ type
     function IndexOfClass(AClassArray: TClassArray; AClass: TClass): Integer;
     procedure RemoveFromArray(var ClassArray: TClassArray; AClass: TClass);
     function IsTreeProvider: Boolean; dynamic;
+    function GetDataItemsImpl: TJvBaseDataItems;
     {$IFNDEF COMPILER6_UP}
     { IInterfaceComponentReference }
     function GetComponent: TComponent;
     {$ENDIF COMPILER6_UP}
     { IDataProvider }
-    function GetItems: IJvDataItems; 
+    function GetItems: IJvDataItems;
     procedure RegisterChangeNotify(ANotify: IJvDataProviderNotify); dynamic;
     procedure UnregisterChangeNotify(ANotify: IJvDataProviderNotify); dynamic;
     function ConsumerClasses: TClassArray; dynamic;
@@ -515,7 +536,7 @@ type
     function AllowProviderDesigner: Boolean; dynamic;
     function AllowContextManager: Boolean; dynamic;
 
-    property DataItemsImpl: TJvBaseDataItems read FDataItemsImpl implements IJvDataItems;
+    property DataItemsImpl: TJvBaseDataItems read GetDataItemsImpl;
     property DataContextsImpl: TJvBaseDataContexts read FDataContextsImpl;
     property Items: TJvDataProviderTree read FTreeItems write FTreeItems stored False;
     property Contexts: TJvDataProviderContexts read FContexts write FContexts stored False;
@@ -640,6 +661,12 @@ function DP_OwnerDrawStateToProviderDrawState(State: TOwnerDrawState): TProvider
 procedure DP_SelectConsumerContext(Provider: IJvDataProvider; Consumer: IJvDataConsumer; Context: IJvDataContext);
 { Atomically release a consumer/context pair, reinstating the prior pair on the respective stacks. }
 procedure DP_ReleaseConsumerContext(Provider: IJvDataProvider);
+{ Retrieve the specified context's name path. }
+function GetContextPath(Context: IJvDataContext): string;
+{ Retrieve the specified item's ID path. The path is based on the currently active context. }
+function GetItemIDPath(Item: IJvDataItem): string;
+{ Retrieve the specified item's index path. The path is based on the currently active context. }
+function GetItemIndexPath(Item: IJvDataItem): TDynIntegerArray;
 
 // Helper classes: rendering helpers
 type
@@ -1007,6 +1034,7 @@ implementation
 
 uses
   ActiveX, Consts, {$IFDEF COMPILER6_UP}RTLConsts, {$ENDIF}Controls, TypInfo,
+  JclStrings,
   JvTypes;
 
 const
@@ -1151,6 +1179,71 @@ end;
 function IsExtensionSpecificIntf(IID: TGUID): Boolean;
 begin
   Result := IsEqualGuid(IID, IJvDataContextSensitive);
+end;
+
+function GetContextPath(Context: IJvDataContext): string;
+begin
+  if Context <> nil then
+  begin
+    Result := Context.Name;
+    while Context <> nil do
+    begin
+      Context := Context.Contexts.Ancestor;
+      if Context <> nil then
+        Result := Context.Name + '\' + Result;
+    end;
+  end;
+end;
+
+function GetItemIDPath(Item: IJvDataItem): string;
+begin
+  if Item <> nil then
+  begin
+    Result := Item.GetID;
+    while Item <> nil do
+    begin
+      Item := Item.Items.Parent;
+      if Item <> nil then
+        Result := Item.GetID + '\' + Result;
+    end;
+  end;
+end;
+
+procedure InsertIntArray(var Arr: TDynIntegerArray; Index: Integer; Item: Integer);
+begin
+  SetLength(Arr, Length(Arr) + 1);
+  if Index < High(Arr) then
+    Move(Arr[Index], Arr[Index + 1], (High(Arr) - Index) * SizeOf(Integer));
+  Arr[Index] := Item;
+end;
+
+function GetItemIndexPath(Item: IJvDataItem): TDynIntegerArray;
+begin
+  if Item <> nil then
+  begin
+    SetLength(Result, 1);
+    Result[0] := Item.GetIndex;
+    while Item <> nil do
+    begin
+      Item := Item.Items.Parent;
+      if Item <> nil then
+        InsertIntArray(Result, 0, Item.GetIndex);
+    end;
+  end
+  else
+    SetLength(Result, 0);
+end;
+
+procedure CopyPaths(Source: TItemPathsArray; var Dest: TItemPathsArray);
+var
+  Path: Integer;
+begin
+  SetLength(Dest, Length(Source));
+  for Path := 0 to High(Source) do
+  begin
+    SetLength(Dest[Path], Length(Source[Path]));
+    Move(Source[Path][0], Dest[Path][0], Length(Source[Path]) * SizeOf(Source[0][0]));
+  end;
 end;
 
 { TJvDP_ProviderBaseRender }
@@ -1904,7 +1997,48 @@ begin
   inherited Destroy;
 end;
 
-{ TJvBaseDataItems }
+//===TJvBaseDataItems===============================================================================
+
+procedure TJvBaseDataItems.ItemAdd(Item: IJvDataItem);
+begin
+  GetProvider.Changing(pcrAdd, Self);
+  InternalAdd(Item);
+  GetProvider.Changed(pcrAdd, Item);
+end;
+
+procedure TJvBaseDataItems.ItemDelete(Index: Integer);
+var
+  Item: IJvDataItem;
+begin
+  Item := GetItem(Index);
+  if (Item <> nil) and (Item.IsDeletable) then
+  begin
+    GetProvider.Changing(pcrDelete, Item);
+    Item := nil;
+    InternalDelete(Index);
+    GetProvider.Changed(pcrDelete, Self);
+  end;
+end;
+
+procedure TJvBaseDataItems.ItemMove(OldIndex, NewIndex: Integer);
+begin
+  if OldIndex <> NewIndex then
+  begin
+    if (NewIndex <= GetCount) and (NewIndex >= 0) then
+    begin
+      if GetProvider.SelectedContext <> nil then
+      begin
+        GetProvider.Changing(pcrUpdateItems, Self);
+        InternalMove(OldIndex, NewIndex);
+        GetProvider.Changed(pcrUpdateItems, Self);
+      end
+      else
+        raise EJVCLDataItems.Create('Items may not be moved in the main tree.');
+    end
+    else
+      raise EJVCLDataItems.Create('Invalid index');
+  end;
+end;
 
 function TJvBaseDataItems.IsStreamableItem(Item: IJvDataItem): Boolean;
 var
@@ -2461,18 +2595,28 @@ end;
 
 function TJvBaseDataItem._AddRef: Integer;
 begin
-  if GetItems.IsDynamic then
-    Result := inherited _AddRef
-  else
-    Result := -1;
+  GetItems.GetProvider.SelectContext(nil);
+  try
+    if GetItems.IsDynamic then
+      Result := inherited _AddRef
+    else
+      Result := -1;
+  finally
+    GetItems.GetProvider.ReleaseContext;
+  end;
 end;
 
 function TJvBaseDataItem._Release: Integer;
 begin
-  if GetItems.IsDynamic then
-    Result := inherited _Release
-  else
-    Result := -1;
+  GetItems.GetProvider.SelectContext(nil);
+  try
+    if GetItems.IsDynamic then
+      Result := inherited _Release
+    else
+      Result := -1;
+  finally
+    GetItems.GetProvider.ReleaseContext;
+  end;
 end;
 
 procedure TJvBaseDataItem.DefineProperties(Filer: TFiler);
@@ -2833,6 +2977,14 @@ begin
   Result := I >= 0;
 end;
 
+function TJvCustomDataProvider.GetDataItemsImpl: TJvBaseDataItems;
+begin
+  if FDataItems <> nil then
+    Result := TJvBaseDataItems(FDataItems.GetImplementer)
+  else
+    Result := nil;
+end;
+
 {$IFNDEF COMPILER6_UP}
 function TJvCustomDataProvider.GetComponent: TComponent;
 begin
@@ -2842,7 +2994,7 @@ end;
 
 function TJvCustomDataProvider.GetItems: IJvDataItems;
 begin
-  Result := DataItemsImpl;
+  Result := FDataItems;
 end;
 
 procedure TJvCustomDataProvider.RegisterChangeNotify(ANotify: IJvDataProviderNotify);
@@ -2950,12 +3102,11 @@ begin
   FConsumerStack := TInterfaceList.Create;
   FContextStack := TInterfaceList.Create;
   if ContextsClass <> nil then
-    FDataContextsImpl := ContextsClass.CreateManaged(Self, nil, ContextsManagerClass);    
+    FDataContextsImpl := ContextsClass.CreateManaged(Self, nil, ContextsManagerClass);
   if ItemsClass <> nil then
-    FDataItemsImpl := ItemsClass.CreateProvider(Self)
+    FDataItems := ItemsClass.CreateProvider(Self)
   else
     raise EJVCLDataProvider.Create(SDataProviderNeedsItemsImpl);
-  FDataItemsImpl._AddRef;
 end;
 
 destructor TJvCustomDataProvider.Destroy;
@@ -2963,21 +3114,18 @@ begin
   FreeAndNil(FNotifiers);
   FreeAndNil(FConsumerStack);
   FreeAndNil(FContextStack);
-  FDataItemsImpl._Release;
   inherited Destroy;
 end;
 
 procedure TJvCustomDataProvider.BeforeDestruction;
 begin
-  if (FDataItemsImpl <> nil) and (FDataItemsImpl.RefCount > 1) then
-    RunError(2);
   inherited BeforeDestruction;
   Changing(pcrDestroy);
 end;
 
 function TJvCustomDataProvider.GetInterface(const IID: TGUID; out Obj): Boolean;
 begin
-  Result := inherited GetInterface(IID, Obj) or FDataItemsImpl.GetInterface(IID, Obj) or (
+  Result := inherited GetInterface(IID, Obj) or Supports(GetItems, IID, Obj) or (
     // If we have contexts, check the interface table of that implementation as well.
     (FDataContextsImpl <> nil) and Supports(TObject(FDataContextsImpl), IID, Obj)
   );
