@@ -101,6 +101,7 @@ type
     function GetMake: string;
     function GetBplDir: string;
     function GetDcpDir: string;
+    function GetProjectDir: string;
   public
     constructor Create(const AName, AVersion, ARegSubKey: string);
     destructor Destroy; override;
@@ -150,6 +151,7 @@ type
     property DebugDcuPaths: TStringList read FDebugDcuPaths; // with macros
 
     property BDSProjectsDir: string read FBDSProjectsDir;
+    property ProjectDir: string read GetProjectDir; // Delphi 5-7: RootDir\Projects BDS: BDSProjectDir\Projects
     property BplDir: string read GetBplDir; // macros are expanded
     property DcpDir: string read GetDcpDir; // macros are expanded
 
@@ -797,6 +799,15 @@ begin
     Result := Filename
   else
     Result := ChangeFileExt(Filename, '') + IntToStr(Version) + '0' + ExtractFileExt(Filename);
+end;
+
+function TCompileTarget.GetProjectDir: string;
+begin
+  if IsBDS then
+    Result := BDSProjectsDir
+  else
+    Result := RootDir;
+  Result := Result + PathDelim + 'Projects';
 end;
 
 { TDelphiPackageList }
