@@ -15,7 +15,7 @@
     <LIBRARIES value=""/>
     <SPARELIBS value="rtl.lib"/>
     <PACKAGES value="CJCL60.bpi vcl.bpi vclx.bpi rtl.bpi designide.bpi dclstd.bpi
-      JvCoreC6D.bpi JvValidatorsC6R.bpi"/>
+      JvCoreC6D.bpi JvCoreC6R.bpi JvValidatorsC6R.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;..\..\design"/>
     <PATHRC value=".;"/>
@@ -54,6 +54,7 @@
       <FILE FILENAME="JvValidatorsC6D.res" FORMNAME="" UNITNAME="JvValidatorsC6D.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="JvValidatorsC6D.cpp" FORMNAME="" UNITNAME="JvValidatorsC6D" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="JvCoreC6D.bpi" FORMNAME="" UNITNAME="JvCoreC6D" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="JvCoreC6R.bpi" FORMNAME="" UNITNAME="JvCoreC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="JvValidatorsC6R.bpi" FORMNAME="" UNITNAME="JvValidatorsC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="CJCL60.bpi" FORMNAME="" UNITNAME="CJCL60" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvValidatorsReg.pas" FORMNAME="" UNITNAME="JvValidatorsReg" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
