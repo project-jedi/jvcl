@@ -287,7 +287,7 @@ begin
     FScrollBox.Align := alClient;
     FScrollBox.BorderStyle := bsNone;
     FScrollBox.AutoScroll := True;
-    FScrollBox.Constraints := ArrangeConstraints;
+    FForm.Constraints := ArrangeConstraints;
     ArrangePanel := TJvPanel.Create(FForm);
     with ArrangePanel do
     begin
@@ -324,7 +324,7 @@ begin
       OnCreateDataControlsEvent(IntDynControlEngineDB, ArrangePanel, FieldCreateOptions)
     else
       IntDynControlEngineDB.CreateControlsFromDatasourceOnControl(DataSource, ArrangePanel, FieldCreateOptions);
-    ArrangePanel.ArrangeControls;
+//    ArrangePanel.ArrangeControls;
     ArrangePanel.ArrangeSettings.AutoArrange := True;
     Result := FForm.ShowModal;
   finally
