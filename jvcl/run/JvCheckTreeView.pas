@@ -308,7 +308,10 @@ end;
 function TJvCheckTreeView.GetChecked(Node: TTreeNode): Boolean;
 begin
   with CheckBoxOptions do
-    Result := (Node <> nil) and (Node.StateIndex in [RadioCheckedIndex, CheckBoxCheckedIndex]);
+    if Style = cbsJVCL then
+      Result := (Node <> nil) and (Node.StateIndex in [RadioCheckedIndex, CheckBoxCheckedIndex])
+    else
+      Result := inherited Checked[Node];
 end;
 
 function TJvCheckTreeView.GetRadioItem(Node: TTreeNode): Boolean;
