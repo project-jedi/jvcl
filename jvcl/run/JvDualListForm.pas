@@ -25,16 +25,12 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvFDualLst;
+unit JvDualListForm;
 
 interface
 
 uses
-  {$IFDEF WIN32}
   Windows,
-  {$ELSE}
-  WinTypes, WinProcs,
-  {$ENDIF}
   SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
   JvListBox, JvCtrls;
 
@@ -83,7 +79,7 @@ implementation
 
 uses
   Consts,
-  JvVCLUtils, JvBoxProcs;
+  JvJVCLUtils, JvBoxProcs;
 
 {$R *.DFM}
 

@@ -36,7 +36,7 @@ uses
   WinTypes, WinProcs,
   {$ENDIF}
   Messages, Classes, Controls, Graphics, StdCtrls, Forms, Grids,
-  JvConst, JvPlacemnt;
+  JvConsts, JvFormPlacement;
 
 type
   TAcceptKeyEvent = function(Sender: TObject; var Key: Char): Boolean of object;
@@ -217,7 +217,7 @@ implementation
 
 uses
   SysUtils, Math,
-  JvVCLUtils, JvAppUtils;
+  JvJVCLUtils;
 
 const
   {$IFDEF WIN32}

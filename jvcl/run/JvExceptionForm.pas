@@ -26,7 +26,7 @@ Known Issues:
 {$I JVCL.INC}
 {$I WINDOWSONLY.INC}
 
-unit JvExcptDlg;
+unit JvExceptionForm;
 
 interface
 
@@ -92,19 +92,10 @@ procedure JvErrorIntercept;
 implementation
 
 uses
-  {$IFDEF WIN32}
   Windows,
-  {$IFDEF COMPILER3_UP}
   ComObj,
-  {$ELSE}
-  OleAuto,
-  {$ENDIF COMPILER3_UP}
-  {$ELSE WIN32}
-  WinProcs, WinTypes, ToolHelp,
-  JvStr16,
-  {$ENDIF WIN32}
   Consts,
-  JvTypes, JvxRConst, JvStrUtils, JvVCLUtils;
+  JvTypes, JvConsts, JvJVCLUtils, JvJCLUtils;
 
 {$R *.DFM}
 

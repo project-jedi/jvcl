@@ -85,7 +85,7 @@ implementation
 
 uses
   SysUtils, Forms, Consts,
-  JvFDualLst, JvxRConst, JvVCLUtils;
+  JvDualListForm, JvConsts, JvJVCLUtils;
 
 constructor TJvDualListDialog.Create(AOwner: TComponent);
 begin
