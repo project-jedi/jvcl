@@ -80,8 +80,8 @@ procedure Register;
 begin
   RegisterComponents(RsPaletteButton, [TJvTransparentButton,
     TJvTransparentButton2, TJvArrowButton, TJvColorButton,
-    TJvHTButton, TJvSpacer, TJvSwitch, TJvColorBox, TJvColorSquare,
-    TJvDropButton, TJvOfficeColorButton, TJvOfficeColorPanel]);
+    TJvHTButton, TJvSpacer, TJvSwitch, {TJvColorBox, TJvColorSquare,
+    TJvDropButton,} TJvOfficeColorButton, TJvOfficeColorPanel]);
   RegisterComponents(RsPaletteBarPanel, [{$IFDEF LINUX}TJvSpeedBar,{$ENDIF}
     TJvCaptionPanel, TJvItemsPanel, TJvMovableBevel, TJvRollOut,
     TJvFooter, TJvGroupHeader, TJvComponentPanel]);

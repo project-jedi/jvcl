@@ -42,7 +42,7 @@ procedure Register;
 
 implementation
 
-{$R ..\Resources\JvManagedThreadsReg.dcr}
+{$R ../Resources/JvManagedThreadsReg.dcr}
 
 {$IFNDEF USEJVCL}
 resourcestring

@@ -49,7 +49,7 @@ uses
   JvQHTMLParserEditor, JvQUrlListGrabber, JvQUrlGrabbers,
   JvQUrlListGrabberEditors;
 
-{$R ..\Resources\JvNetReg.dcr}
+{$R ../Resources/JvNetReg.dcr}
 
 procedure Register;
 begin
