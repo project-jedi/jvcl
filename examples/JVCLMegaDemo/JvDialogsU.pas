@@ -176,13 +176,13 @@ procedure TJvDialogs.JvPasswordForm1Ok(Sender: TObject; Password: String;
   var Accept: Boolean);
 begin
   if Application.MessageBox(PChar('You click OK with password <' + Password + '>. ' +
-                          'Click OK to accept or Cancel to refuse.'),'OnOK event handle',MB_OKCANCEL) = MB_OK then
-      Accept := true;
+    'Click OK to accept or Cancel to refuse.'), 'OnOK event handle', MB_OKCANCEL) = MB_OK then
+    Accept := True;
 end;
 
 procedure TJvDialogs.JvPasswordForm1Cancel(Sender: TObject);
 begin
-  Application.MessageBox(PChar('You pressed Cancel'),'OnCancel event handle',MB_OK);
+  Application.MessageBox(PChar('You pressed Cancel'), 'OnCancel event handler', MB_OK);
 end;
 
 procedure TJvDialogs.JvBitBtn3Click(Sender: TObject);
@@ -192,62 +192,62 @@ end;
 
 procedure TJvDialogs.JvBitBtn4Click(Sender: TObject);
 begin
-  jvSelectDirectory1.Execute;
+  JvSelectDirectory1.Execute;
 end;
 
 procedure TJvDialogs.JvBitBtn5Click(Sender: TObject);
 begin
-  jvOpenDialog1.Execute;
+  JvOpenDialog1.Execute;
 end;
 
 procedure TJvDialogs.JvBitBtn7Click(Sender: TObject);
 begin
-  jvSaveDialog1.Execute;
+  JvSaveDialog1.Execute;
 end;
 
 procedure TJvDialogs.JvBitBtn9Click(Sender: TObject);
 begin
-  jvConnectNetwork1.Execute;
+  JvConnectNetwork1.Execute;
 end;
 
 procedure TJvDialogs.JvBitBtn10Click(Sender: TObject);
 begin
-  jvDisconnectNetwork1.Execute;
+  JvDisconnectNetwork1.Execute;
 end;
 
 procedure TJvDialogs.JvBitBtn11Click(Sender: TObject);
 begin
-  jvPageSetupDialog1.Execute;
+  JvPageSetupDialog1.Execute;
 end;
 
 procedure TJvDialogs.JvBitBtn12Click(Sender: TObject);
 begin
-  jvPageSetupTitledDialog1.Execute;
+  JvPageSetupTitledDialog1.Execute;
 end;
 
 procedure TJvDialogs.JvBitBtn13Click(Sender: TObject);
 begin
-  jvAddPrinterDialog1.Execute;
+  JvAddPrinterDialog1.Execute;
 end;
 
 procedure TJvDialogs.JvBitBtn15Click(Sender: TObject);
 begin
-  jvFindFilesDialog1.Execute;
+  JvFindFilesDialog1.Execute;
 end;
 
 procedure TJvDialogs.JvBitBtn14Click(Sender: TObject);
 begin
-  jvFormatDriveDialog1.Execute;
+  JvFormatDriveDialog1.Execute;
 end;
 
 procedure TJvDialogs.JvBitBtn16Click(Sender: TObject);
 begin
-  jvColorDialog1.Execute;
+  JvColorDialog1.Execute;
 end;
 
 procedure TJvDialogs.JvBitBtn17Click(Sender: TObject);
 begin
-  jvOrganizeFavoritesDialog1.Execute;
+  JvOrganizeFavoritesDialog1.Execute;
 end;
 
 procedure TJvDialogs.JvBitBtn18Click(Sender: TObject);
@@ -257,8 +257,7 @@ end;
 
 procedure TJvDialogs.JvBitBtn20Click(Sender: TObject);
 var
-  WinDir: array[0..255] of char;
-  FileToFind: string;
+  WinDir: array [0..255] of Char;
 begin
   GetWindowsDirectory(WinDir, SizeOf(WinDir));
 
@@ -273,7 +272,7 @@ end;
 
 procedure TJvDialogs.JvBitBtn21Click(Sender: TObject);
 begin
-  jvChangeIconDialog1.Execute;
+  JvChangeIconDialog1.Execute;
 end;
 
 procedure TJvDialogs.JvBitBtn22Click(Sender: TObject);
@@ -283,7 +282,7 @@ end;
 
 procedure TJvDialogs.JvBitBtn23Click(Sender: TObject);
 begin
-  jvRunDialog1.Execute;
+  JvRunDialog1.Execute;
 end;
 
 procedure TJvDialogs.JvBitBtn25Click(Sender: TObject);
@@ -298,7 +297,7 @@ end;
 
 procedure TJvDialogs.JvBitBtn28Click(Sender: TObject);
 begin
-  jvAddHardwareDialog1.Execute;
+  JvAddHardwareDialog1.Execute;
 end;
 
 procedure TJvDialogs.JvBitBtn27Click(Sender: TObject);
@@ -308,12 +307,12 @@ end;
 
 procedure TJvDialogs.JvBitBtn26Click(Sender: TObject);
 begin
-  jvDiskFullDialog1.Execute;
+  JvDiskFullDialog1.Execute;
 end;
 
 procedure TJvDialogs.JvBitBtn29Click(Sender: TObject);
 begin
-  jvExitWindowsDialog1.Execute;
+  JvExitWindowsDialog1.Execute;
 end;
 
 procedure TJvDialogs.JvBitBtn30Click(Sender: TObject);
@@ -323,7 +322,7 @@ end;
 
 procedure TJvDialogs.JvBitBtn31Click(Sender: TObject);
 begin
-  jvObjectPickerDialog1.Execute;
+  JvObjectPickerDialog1.Execute;
 end;
 
 procedure TJvDialogs.JvBitBtn40Click(Sender: TObject);
@@ -370,13 +369,14 @@ begin
 end;
 
 procedure TJvDialogs.JvBitBtn44Click(Sender: TObject);
-var
-  Form1: TForm;
 begin
-  Form1 := TFindReplaceMainForm.Create(nil);
-  Form1.Position := poScreenCenter;
-  Form1.ShowModal;
-  Form1.Free;
+  with TFindReplaceMainForm.Create(nil) do
+    try
+      Position := poScreenCenter;
+      ShowModal;
+    finally
+      Free;
+    end;
 end;
 
 end.

@@ -159,7 +159,6 @@ procedure TfrmInspector.AddCtrl(const Parent: TJvCustomInspectorItem; const Ctrl
 var
   InspCat: TJvInspectorCustomCategoryItem;
   M: TNotifyEvent;
-  i: Integer;
 begin
   InspCat := TJvInspectorCustomCategoryItem.Create(Parent, nil);
   InspCat.DisplayName := Ctrl.Name + ': ' + Ctrl.ClassName;

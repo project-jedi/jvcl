@@ -32,7 +32,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Forms, Classes, Controls, JvInterpreter, JvInterpreterFm, JvComponent,
-  JvFormPlacement, StdCtrls, JvHTControls;
+  JvFormPlacement, StdCtrls, JvHTControls, JvExStdCtrls;
 
 type
   TReports = class(TForm)
@@ -73,9 +73,11 @@ begin
 end;
 
 procedure TReports.FormCreate(Sender: TObject);
+{
 var
   Ss, Ss2: TStringlist;
   i: integer;
+}
 begin
 (*
 //!!!  RegAuto2.IniStrings.Clear;
@@ -113,9 +115,11 @@ begin
 end; { RunReport }
 
 procedure TReports.bReportClick(Sender: TObject);
+{
 var
   F1: TFileName;
   T1: string;
+}
 begin
 (*
 //!!!

@@ -482,7 +482,7 @@ end;
 procedure TfrmMain.DoScrollHint(Sender: TObject; AScrollPos: integer;
   var AHint: string);
 begin
-  AHint := Format('Page %d',[pd.TopRow * pd.Options.Cols + 1]);
+  AHint := Format('Page %d', [Cardinal(pd.TopRow) * pd.Options.Cols + 1]);
 end;
 
 end.

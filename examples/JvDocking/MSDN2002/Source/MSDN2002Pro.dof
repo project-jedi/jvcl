@@ -4,5 +4,5 @@ UnsafeCode=0
 UnsafeCast=0
 [Directories]
 OutputDir=..\bin
-UnitOutputDir=..\..\..\..\..\dcu
+UnitOutputDir=..\..\..\..\dcu
 SearchPath=..\..\..\..\..\run;..\..\..\..\..\common

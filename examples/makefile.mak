@@ -24,7 +24,7 @@ DCCHH = $(ROOT)\dcc32.exe -e..\..\$(BIN) -i$(SRCHH) -n..\..\$(DCU) -r$(SRCHH) -u
 DCCHHH = $(ROOT)\dcc32.exe -e..\..\..\$(BIN) -i$(SRCHHH) -n..\..\..\$(DCU) -r$(SRCHHH) -u$(SRCHHH) -q -w -B
 BRCC = $(ROOT)\brcc32.exe $**
 #---------------------------------------------------------------------------------------------------
-all: uib globus docking inspector standard threads diagram ralib rxlib plugin xml mega surveyor
+all: uib globus docking inspector standard threads ralib rxlib plugin xml mega surveyor diagram
 #---------------------------------------------------------------------------------------------------
 surveyor: jsb.exe jsr.exe sc.exe js.exe
 #---------------------------------------------------------------------------------------------------
