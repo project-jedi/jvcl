@@ -206,9 +206,9 @@ begin
   RegisterComponentEditor(TJvGIFAnimator, TJvGraphicsEditor);
 {$ENDIF}
 
-  RegisterPropertyEditor(TypeInfo(TPicture), nil, '', TJvPictProperty);
-  RegisterPropertyEditor(TypeInfo(TGraphic), nil, '', TJvGraphicPropertyEditor);
-  RegisterComponentEditor(TImage, TJvGraphicsEditor);
+//  RegisterPropertyEditor(TypeInfo(TPicture), nil, '', TJvPictProperty);
+//  RegisterPropertyEditor(TypeInfo(TGraphic), nil, '', TJvGraphicPropertyEditor);
+//  RegisterComponentEditor(TImage, TJvGraphicsEditor);
 
 {$IFDEF WIN32}
   { TJvxGradientCaption }

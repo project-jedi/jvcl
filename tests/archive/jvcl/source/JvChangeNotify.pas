@@ -188,15 +188,10 @@ procedure TJvChangeItem.SetSubTrees(Value: boolean);
 begin
   if (FSubTrees <> Value) then
   begin
-    if (Win32Platform = VER_PLATFORM_WIN32_NT) then
-      FSubTrees := Value
-    else if Value then
-    begin
-      Assert(FParent <> nil,'FParent is nil in TJvChangeItem'); 
-      Assert(FParent.FOwner <> nil,'FParent.FOWner is nil in TJvChangeItem');
-      if not (csDesigning in FParent.FOwner.ComponentState) then
-        raise EJVCLException.Create('This option only available on Windows NT');
-    end;
+    if Value then
+      FSubTrees := Value and (Win32Platform = VER_PLATFORM_WIN32_NT)
+    else
+      FSubTrees := false;
   end;
 end;
 
