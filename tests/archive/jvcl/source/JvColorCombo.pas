@@ -198,6 +198,8 @@ type
     procedure WMFontChange(var Message: TMessage); message WM_FONTCHANGE;
     function GetFontName: string;
     procedure SetFontName(const Value: string);
+    function GetSorted: boolean;
+    procedure SetSorted(const Value: boolean);
   protected
     procedure GetFonts; virtual;
     procedure Click; override;
@@ -243,7 +245,7 @@ type
     property ParentShowHint;
     property PopupMenu;
     property ShowHint;
-    property Sorted;
+    property Sorted:boolean read GetSorted write SetSorted;
     property TabOrder;
     property TabStop;
     property Visible;
@@ -771,7 +773,10 @@ begin
   inherited;
   HandleNeeded;
   if HandleAllocated then
+  begin
+    AutoSave.LoadValue(integer(FColorValue));
     GetColors;
+  end;
 end;
 
 function TJvColorComboBox.DoInsertColor(AIndex: integer; AColor: TColor;
@@ -802,7 +807,10 @@ end;
 procedure TJvColorComboBox.Change;
 begin
   if HandleAllocated then
+  begin
     inherited;
+    AutoSave.SaveValue(ColorValue);
+  end;
 end;
 
 function TJvColorComboBox.ColorName(AColor: TColor): string;
@@ -842,7 +850,8 @@ var
   DC: HDC;
   Proc: TFarProc;
 begin
-  if not HandleAllocated {or (csDesigning in ComponentState) } then
+  HandleNeeded;
+  if not HandleAllocated then
     Exit;
   Clear;
   DC := GetDC(0);
@@ -996,6 +1005,7 @@ end;
 procedure TJvFontComboBox.Click;
 begin
   inherited Click;
+  AutoSave.SaveValue(FontName);
   Change;
 end;
 
@@ -1023,11 +1033,30 @@ begin
 end;
 
 procedure TJvFontComboBox.Loaded;
+var S:string;
 begin
   inherited;
   HandleNeeded;
   if HandleAllocated then
+  begin
     GetFonts;
+    S := FontName;
+    if AutoSave.LoadValue(S) then
+      FontName := S;
+  end;
+end;
+
+function TJvFontComboBox.GetSorted: boolean;
+begin
+  Result := inherited Sorted;
+end;
+
+procedure TJvFontComboBox.SetSorted(const Value: boolean);
+var S:string;
+begin
+  S := FontName;
+  inherited Sorted := Value;
+  FontName := S;
 end;
 
 end.
