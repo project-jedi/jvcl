@@ -714,7 +714,6 @@ var
   Flags: Longint;
 begin
   Flags := 0;
-  {O}
   {$IFDEF VCL}
   if FBiDiMode <> bdLeftToRight then
     Flags := DT_RTLREADING;
@@ -849,7 +848,7 @@ begin
     Inc(Y, Client.Top + Offset.Y);
   end;
   OffsetRect(TextBounds, TextPos.X + Client.Left + Offset.X,
-    TextPos.Y + Client.Top + Offset.X);
+    TextPos.Y + Client.Top + Offset.Y);
 end;
 
 function TJvButtonGlyph.Draw(Canvas: TCanvas; const Client: TRect;
@@ -900,7 +899,8 @@ end;
 
 procedure TJvHTButtonGlyph.DrawButtonText(Canvas: TCanvas; const Caption: string;
   TextBounds: TRect; State: TButtonState);
-var cap: String;
+var
+  cap: String;
 begin
   cap := '<ALIGN CENTER>' + Caption; // Kaczkowski
   with Canvas do
@@ -923,7 +923,7 @@ end;
 procedure TJvHTButtonGlyph.CalcTextRect(Canvas: TCanvas; var TextRect: TRect;
   Caption: string);
 begin
-TextRect := Rect(0, 0, ItemHtWidth(Canvas, TextRect, [], Caption),
+  TextRect := Rect(0, 0, ItemHtWidth(Canvas, TextRect, [], Caption),
     ItemHtHeight(Canvas, Caption));     // Kaczkowski
 end;
 
