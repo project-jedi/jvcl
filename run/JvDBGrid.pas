@@ -622,7 +622,7 @@ procedure TInternalInplaceEdit.KeyDown(var Key: Word; Shift: TShiftState);
 
   function Ctrl: Boolean;
   begin
-    Result := ssCtrl in Shift;
+    Result := (Shift * KeyboardShiftStates = [ssCtrl]);
   end;
 
   function Selection: TSelection;
@@ -674,7 +674,7 @@ begin
 
   // Ideally we would transmit the action to the DatalList but
   // DoMouseWheel is protected
-  //  Result := FDataList.DoMouseWheel(Shift, WheelDelta, MousePos);
+  // Result := FDataList.DoMouseWheel(Shift, WheelDelta, MousePos);
   Result := inherited DoMouseWheel(Shift, WheelDelta, MousePos);
 end;
 
@@ -1025,7 +1025,7 @@ var
     BeginUpdate;
     try
       if MultiSelect and DataLink.Active then
-        if Select and (ssShift in Shift) then
+        if Select and (Shift * KeyboardShiftStates = [ssShift]) then
         begin
           if not FSelecting then
           begin
@@ -1119,7 +1119,7 @@ begin
   if not DataLink.Active or not CanGridAcceptKey(Key, Shift) then
     Exit;
   with DataLink.DataSet do
-    if ssCtrl in Shift then
+    if (Shift * KeyboardShiftStates = [ssCtrl]) then
     begin
       if Key in [VK_UP, VK_PRIOR, VK_DOWN, VK_NEXT, VK_HOME, VK_END] then
         ClearSelections;
@@ -1147,23 +1147,21 @@ begin
     end
     else
     begin
-      case Key of
-        VK_LEFT:
-          if (FixedCols > 0) and not (dgRowSelect in Options) then
-          begin
-            if SelectedIndex <= CalcLeftColumn - IndicatorOffset then
+      if Shift * KeyboardShiftStates = [] then
+        case Key of
+          VK_LEFT:
+            if (FixedCols > 0) and not (dgRowSelect in Options) then
+              if SelectedIndex <= CalcLeftColumn - IndicatorOffset then
+                Exit;
+          VK_HOME:
+            if (FixedCols > 0) and (ColCount <> IndicatorOffset + 1) and
+              not (dgRowSelect in Options) then
+            begin
+              SelectedIndex := CalcLeftColumn - IndicatorOffset;
               Exit;
-          end;
-        VK_HOME:
-          if (FixedCols > 0) and (ColCount <> IndicatorOffset + 1) and
-            not (dgRowSelect in Options) then
-          begin
-            SelectedIndex := CalcLeftColumn - IndicatorOffset;
-            Exit;
-          end;
-      end;
-      if DataLink.DataSet.State = dsBrowse then
-      begin
+            end;
+        end;
+      if (DataLink.DataSet.State = dsBrowse) and (Shift * KeyboardShiftStates = []) then
         case Key of
           VK_UP:
             begin
@@ -1176,12 +1174,10 @@ begin
               Exit;
             end;
         end;
-      end;
       if ((Key in [VK_LEFT, VK_RIGHT]) and (dgRowSelect in Options)) or
         ((Key in [VK_HOME, VK_END]) and ((ColCount = IndicatorOffset + 1) or
-        (dgRowSelect in Options))) or (Key in [VK_ESCAPE, VK_NEXT,
-        VK_PRIOR]) or ((Key = VK_INSERT) and (CanModify and
-        (not ReadOnly) and (dgEditing in Options))) then
+        (dgRowSelect in Options))) or (Key in [VK_ESCAPE, VK_NEXT, VK_PRIOR]) or
+        ((Key = VK_INSERT) and (CanModify and (not ReadOnly) and (dgEditing in Options))) then
         ClearSelections
       else
       if (Key = VK_TAB) and not (ssAlt in Shift) then
@@ -1637,7 +1633,7 @@ begin
   begin
     if not AcquireFocus then
       Exit;
-    if ssCtrl in Shift then
+    if Shift * KeyboardShiftStates = [ssCtrl] then
       Distance := VisibleRowCount - 1
     else
       Distance := 1;
@@ -1794,11 +1790,11 @@ begin
         with SelectedRows do
         begin
           FSelecting := False;
-          if ssCtrl in Shift then
+          if Shift * KeyboardShiftStates = [ssCtrl] then
             CurrentRowSelected := not CurrentRowSelected
           else
           begin
-            if (ssShift in Shift) and (Count > 0) then
+            if (Shift * KeyboardShiftStates = [ssShift]) and (Count > 0) then
             begin
               lLastSelected := Items[Count - 1];
               CurrentRowSelected := not CurrentRowSelected;

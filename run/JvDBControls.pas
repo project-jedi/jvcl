@@ -741,7 +741,8 @@ end;
 procedure TJvDBMaskEdit.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyDown(Key, Shift);
-  if (Key = VK_DELETE) or ((Key = VK_INSERT) and (ssShift in Shift)) then
+  if ((Key = VK_DELETE) and (Shift * KeyboardShiftStates = [])) or
+    ((Key = VK_INSERT) and (Shift * KeyboardShiftStates = [ssShift])) then
     FDataLink.Edit;
 end;
 
@@ -1176,7 +1177,8 @@ end;
 procedure TJvDBComboEdit.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyDown(Key, Shift);
-  if (Key = VK_DELETE) or ((Key = VK_INSERT) and (ssShift in Shift)) then
+  if ((Key = VK_DELETE) and (Shift * KeyboardShiftStates = [])) or
+    ((Key = VK_INSERT) and (Shift * KeyboardShiftStates = [ssShift])) then
     FDataLink.Edit;
 end;
 
@@ -1450,8 +1452,9 @@ end;
 procedure TJvDBDateEdit.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyDown(Key, Shift);
-  if not ReadOnly and ((Key = VK_DELETE) or ((Key = VK_INSERT)
-    and (ssShift in Shift))) then
+  if not ReadOnly and
+    ((Key = VK_DELETE) and (Shift * KeyboardShiftStates = [])) or
+    ((Key = VK_INSERT) and (Shift * KeyboardShiftStates = [ssShift])) then
     FDataLink.Edit;
 end;
 
@@ -1802,8 +1805,9 @@ end;
 procedure TJvDBCalcEdit.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyDown(Key, Shift);
-  if not ReadOnly and ((Key = VK_DELETE) or ((Key = VK_INSERT) and
-    (ssShift in Shift))) then
+  if not ReadOnly and
+    ((Key = VK_DELETE) and (Shift * KeyboardShiftStates = [])) or
+    ((Key = VK_INSERT) and (Shift * KeyboardShiftStates = [ssShift])) then
     FDataLink.Edit;
 end;
 
