@@ -70,9 +70,6 @@ object JvHTMLParserMainForm: TJvHTMLParserMainForm
         BevelOuter = bvNone
         TabOrder = 2
         MultiLine = False
-        DesignSize = (
-          518
-          34)
         object btnProcessTable: TJvButton
           Left = 442
           Top = 5
@@ -117,9 +114,6 @@ object JvHTMLParserMainForm: TJvHTMLParserMainForm
         BevelOuter = bvNone
         TabOrder = 1
         MultiLine = False
-        DesignSize = (
-          518
-          34)
         object btnProcessHTML2Text: TJvButton
           Left = 442
           Top = 5
@@ -164,9 +158,6 @@ object JvHTMLParserMainForm: TJvHTMLParserMainForm
         BevelOuter = bvNone
         TabOrder = 1
         MultiLine = False
-        DesignSize = (
-          518
-          34)
         object btnProcessURL: TJvButton
           Left = 442
           Top = 5
@@ -211,9 +202,6 @@ object JvHTMLParserMainForm: TJvHTMLParserMainForm
         BevelOuter = bvNone
         TabOrder = 1
         MultiLine = False
-        DesignSize = (
-          518
-          34)
         object btnProcessTags: TJvButton
           Left = 442
           Top = 5

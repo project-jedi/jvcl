@@ -13,9 +13,6 @@ object JvColorCombo: TJvColorCombo
   OldCreateOrder = False
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
-  DesignSize = (
-    467
-    429)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel

@@ -12,9 +12,6 @@ object JvMailForm: TJvMailForm
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
-  DesignSize = (
-    700
-    475)
   PixelsPerInch = 96
   TextHeight = 13
   object ClientLabel: TLabel

@@ -19,9 +19,6 @@ object frmDSAExamplesProgressDlg: TfrmDSAExamplesProgressDlg
   Position = poOwnerFormCenter
   OnCloseQuery = FormCloseQuery
   OnResize = FormResize
-  DesignSize = (
-    245
-    162)
   PixelsPerInch = 96
   TextHeight = 13
   object lblItemCount: TLabel

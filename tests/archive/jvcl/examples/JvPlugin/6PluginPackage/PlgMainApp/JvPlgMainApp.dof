@@ -1,3 +1,4 @@
 [Directories]
-SearchPath=..\
-
+OutputDir=..\..\Bin
+UnitOutputDir=..\..\Dcu
+SearchPath=..\..\Source;..\..\Common

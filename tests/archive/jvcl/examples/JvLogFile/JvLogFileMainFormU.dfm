@@ -13,9 +13,6 @@ object JvLogFileMainForm: TJvLogFileMainForm
   OldCreateOrder = False
   OnCreate = FormCreate
   OnMouseMove = FormMouseMove
-  DesignSize = (
-    413
-    275)
   PixelsPerInch = 96
   TextHeight = 13
   object lblActive: TLabel

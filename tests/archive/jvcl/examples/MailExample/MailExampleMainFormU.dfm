@@ -14,9 +14,6 @@ object MailExampleMainForm: TMailExampleMainForm
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
-  DesignSize = (
-    557
-    431)
   PixelsPerInch = 96
   TextHeight = 13
   object ClientLabel: TLabel

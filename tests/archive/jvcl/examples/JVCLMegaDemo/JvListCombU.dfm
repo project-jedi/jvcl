@@ -59,9 +59,6 @@ object JvListCombForm: TJvListCombForm
     Align = alRight
     BevelOuter = bvNone
     TabOrder = 1
-    DesignSize = (
-      257
-      385)
     object Button2: TButton
       Left = 16
       Top = 124

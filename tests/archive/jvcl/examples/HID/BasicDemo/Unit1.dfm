@@ -11,9 +11,6 @@ object Form1: TForm1
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
-  DesignSize = (
-    314
-    381)
   PixelsPerInch = 96
   TextHeight = 13
   object ListBox1: TListBox

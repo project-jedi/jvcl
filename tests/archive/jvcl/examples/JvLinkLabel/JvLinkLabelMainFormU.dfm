@@ -17,9 +17,6 @@ object JvLinkLabelMainForm: TJvLinkLabelMainForm
   Position = poScreenCenter
   OnCreate = FormCreate
   OnKeyPress = FormKeyPress
-  DesignSize = (
-    531
-    434)
   PixelsPerInch = 96
   TextHeight = 14
   object imgLogo: TImage

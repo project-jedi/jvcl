@@ -23,7 +23,6 @@ object JvHLEditorParamsForm: TJvHLEditorParamsForm
     Width = 419
     Height = 321
     ActivePage = tsEditor
-    TabIndex = 0
     TabOrder = 0
     object tsEditor: TTabSheet
       Caption = 'Editor'

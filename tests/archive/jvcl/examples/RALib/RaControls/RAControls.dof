@@ -1,6 +1,4 @@
 [Directories]
-OutputDir=..\..\..\Bin
-UnitOutputDir=..\..\..\Dcu
-SearchPath=..\..\..\source;..\..\..\resources
-
-
+OutputDir=..\..\Bin
+UnitOutputDir=..\..\Dcu
+SearchPath=..\..\Source;..\..\Common

@@ -11,9 +11,6 @@ object ContentScrollerMainForm: TContentScrollerMainForm
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
-  DesignSize = (
-    265
-    456)
   PixelsPerInch = 96
   TextHeight = 13
   object ContentScroller1: TJvContentScroller

@@ -23,9 +23,6 @@ object MemoEditFrm: TMemoEditFrm
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
-    DesignSize = (
-      297
-      41)
     object btnOK: TButton
       Left = 129
       Top = 8

@@ -47,9 +47,6 @@ object JvControlsMainForm: TJvControlsMainForm
     HideAllTabs = True
     object TabSheet1: TTabSheet
       Caption = 'TabSheet1'
-      DesignSize = (
-        491
-        340)
       object Bevel1: TBevel
         Left = 0
         Top = 0

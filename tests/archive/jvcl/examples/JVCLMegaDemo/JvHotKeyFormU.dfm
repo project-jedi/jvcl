@@ -28,9 +28,6 @@ object JvHotKeyForm: TJvHotKeyForm
     CaptionFont.Style = [fsBold]
     OutlookLook = False
     TabOrder = 0
-    DesignSize = (
-      401
-      406)
     object Label1: TLabel
       Left = 40
       Top = 64

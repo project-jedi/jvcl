@@ -17,9 +17,6 @@ object JvSeachFilesForm: TJvSeachFilesForm
   Position = poScreenCenter
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
-  DesignSize = (
-    443
-    453)
   PixelsPerInch = 96
   TextHeight = 13
   object GroupBox1: TGroupBox
@@ -29,9 +26,6 @@ object JvSeachFilesForm: TJvSeachFilesForm
     Height = 139
     Anchors = [akLeft, akTop, akRight]
     TabOrder = 0
-    DesignSize = (
-      434
-      139)
     object Label1: TLabel
       Left = 10
       Top = 16
@@ -131,9 +125,6 @@ object JvSeachFilesForm: TJvSeachFilesForm
     Height = 240
     Anchors = [akLeft, akTop, akRight, akBottom]
     TabOrder = 5
-    DesignSize = (
-      434
-      240)
     object reFoundFiles: TRichEdit
       Left = 6
       Top = 12

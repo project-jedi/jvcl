@@ -12,9 +12,6 @@ object JvInspectorDBForm: TJvInspectorDBForm
   Font.Style = []
   OldCreateOrder = False
   OnShow = FormShow
-  DesignSize = (
-    604
-    459)
   PixelsPerInch = 96
   TextHeight = 13
   object JvInspector1: TJvInspector

@@ -27,9 +27,6 @@ object JvContenScrollerForm: TJvContenScrollerForm
     CaptionFont.Style = [fsBold]
     OutlookLook = False
     TabOrder = 0
-    DesignSize = (
-      321
-      438)
     object Button1: TButton
       Left = 176
       Top = 408

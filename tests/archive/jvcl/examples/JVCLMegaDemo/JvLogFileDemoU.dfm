@@ -11,9 +11,6 @@ object JvLogFileDemo: TJvLogFileDemo
   ParentFont = False
   TabOrder = 0
   OnMouseMove = FormMouseMove
-  DesignSize = (
-    421
-    300)
   object lblActive: TLabel
     Left = 40
     Top = 104
