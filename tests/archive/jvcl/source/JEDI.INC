@@ -114,7 +114,7 @@
   COMPILER1_UP Defined when compiling with Delphi 1 or higher
   COMPILER2_UP Defined when compiling with Delphi 2 or C++ Builder 1 or higher
   COMPILER3_UP Defined when compiling with Delphi 3 or higher
-  COMPILER35UP Defined when compiling with C++ Builder 3 or higher
+  COMPILER35_UP Defined when compiling with C++ Builder 3 or higher
   COMPILER4_UP Defined when compiling with Delphi 4 or C++ Builder 4 or higher
   COMPILER5_UP Defined when compiling with Delphi 5 or C++ Builder 5 or higher
   COMPILER6_UP Defined when compiling with Delphi 6 or C++ Builder 6 or higher
@@ -197,7 +197,6 @@
 //------------------------------------------------------------------------------
 // VERXXX to COMPILERX, DELPHIX and BCBX mappings
 //------------------------------------------------------------------------------
-
 
 {$IFDEF VER140}
   {$DEFINE COMPILER6}
@@ -342,6 +341,7 @@
 //------------------------------------------------------------------------------
 // COMPILERX_UP from COMPILERX mappings
 //------------------------------------------------------------------------------
+
 
 {$IFDEF COMPILER6}
   {$DEFINE COMPILER6_UP}

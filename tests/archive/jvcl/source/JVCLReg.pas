@@ -164,7 +164,7 @@ uses
   JvChangeNotify, JvEnterTab, JvFindFiles,
   JvFileInfo, JvItemsPanel, JvDsgnEditors, JvCntScr, JvCmdEdit,
   JvTMTL, JvCalendar, JvUCB, JvChNtfyProperty, JvOLBar, JvOLBarEditor, JvSHFmt,
-  JvInspector, JvHidControllerClass;
+  JvInspector, JvHidControllerClass, JvAnalogClock;
 
 {******************************************************************************}
 
@@ -534,6 +534,7 @@ begin
       TJvThreadTimer,
       TJvAlarms,
       TJvClock,
+      TjvAnalogClock,
 
     TJvMruList,
       TJvWinHelp,
