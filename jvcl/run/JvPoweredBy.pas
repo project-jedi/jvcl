@@ -39,6 +39,7 @@ uses
 type
   TJvPoweredBy = class(TJvGraphicControl)
   private
+    FResourceName: string;
     FImage: TBitmap;
     FURL: string;
     {$IFDEF VisualCLX}
@@ -162,11 +163,14 @@ const
 constructor TJvPoweredBy.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FImage := TBitmap.Create;
   {$IFDEF VisualCLX}
   FAutoSize := True;
   {$ENDIF VisualCLX}
   Cursor := crHandPoint;
+  FImage := TBitmap.Create;
+  FImage.LoadFromResourceName(HInstance, FResourceName);
+  Width := FImage.Width;
+  Height := FImage.Height;
 end;
 
 destructor TJvPoweredBy.Destroy;
@@ -236,22 +240,19 @@ end;
 
 constructor TJvPoweredByJCL.Create(AOwner: TComponent);
 begin
+  FResourceName := cPoweredByJCL;
+  // simple trick with inherited
   inherited Create(AOwner);
-  FImage.LoadFromResourceName(HInstance, cPoweredByJCL);
   FURL := RsURLPoweredByJCL;
-  Width := 195;
-  Height := 31;
 end;
 
 //=== { TJvPoweredByJVCL } ===================================================
 
 constructor TJvPoweredByJVCL.Create(AOwner: TComponent);
 begin
+  FResourceName := cPoweredByJVCL;
   inherited Create(AOwner);
-  FImage.LoadFromResourceName(HInstance, cPoweredByJVCL);
   FURL := RsURLPoweredByJVCL;
-  Width := 209;
-  Height := 31;
 end;
 
 {$IFDEF UNITVERSIONING}
