@@ -1,6 +1,7 @@
 Changelog for JVCL 3.0
 ======================
 2004-04-08
+- Moved "HMI Controls" and "HMI Non-Visual" and "HMI Indicators" to "HIM Components" palettte // ahuser
 - Compatible to newest JCL // ahuser
 - All components compile and run under BCB 6 without any error or hint // ahuser
 2004-04-07
