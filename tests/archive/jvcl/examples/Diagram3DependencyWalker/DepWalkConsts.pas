@@ -1,12 +1,24 @@
 unit DepWalkConsts;
 
 interface
+uses
+  Graphics;
+  
 type
   TPrintFormat = (pfText,pfHTML,pfXML);
 const
   cPascalExt = '.pas';
   cIniFileExt = '.ini';
-  
+// icon offsets
+  cStartX = 50;
+  cStartY = 50;
+  cOffsetX = 100;
+  cOffsetY = 100;
+  cIntfLineColor = clBlack;
+  cImplLineColor = clBtnShadow;
+  cIntfSelColor = clRed;
+  cImplSelColor = clBlue;
+
 
 resourcestring
   SParsedStatusFmt = '  Done (%d units parsed, %d units in diagram)';

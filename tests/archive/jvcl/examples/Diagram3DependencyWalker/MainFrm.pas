@@ -16,7 +16,6 @@ type
     procedure Save(Storage: TCustomIniFile);
   end;
  *)
-
   TfrmMain = class(TForm, IUnknown, IPersistSettings)
     StatusBar1: TStatusBar;
     mmMain: TMainMenu;
@@ -156,7 +155,6 @@ type
     procedure SaveSkipList;
     function InSkipList(const Filename: string): boolean;
     procedure Arrange(AList: TList);
-//    procedure CreateScrollBox(AParent: TWinControl);
     procedure DoShapeClick(Sender: TObject);
     procedure SortItems(ATag: integer; AList: TList; InvertedSort: boolean);
 
@@ -164,6 +162,9 @@ type
     procedure Load(Storage: TCustomIniFile);
     procedure Save(Storage: TCustomIniFile);
     procedure CreateDiagramBitmap(Bmp: TBitmap);
+    procedure HighlightConnectors(AShape: TJvCustomDiagramShape);
+    procedure DoShapeMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
   public
     { Public declarations }
   end;
@@ -175,11 +176,6 @@ implementation
 uses
   JCLParseUses, Clipbrd, StatsFrm, ShellAPI, PrintFrm;
 
-const
-  FStartX = 50;
-  FStartY = 50;
-  FOffsetX = 75;
-  FOffsetY = 50;
 
 {$R *.dfm}
 
@@ -376,19 +372,57 @@ end;
 *)
 { TfrmMain }
 
-procedure TfrmMain.DoShapeClick(Sender: TObject);
+procedure TfrmMain.HighlightConnectors(AShape:TJvCustomDiagramShape);
+var i:integer;C:TJvConnector;Changed:boolean;
 begin
-  if Sender is TJvBitmapShape then
+  Changed := false;
+  for i := 0 to AShape.Parent.ControlCount - 1 do
   begin
-    TJvBitmapShape(Sender).BringToFront;
-    TJvBitmapShape(Sender).Caption.BringToFront;
-  end
-  else if Sender is TJvTextShape then
+    if AShape.Parent.Controls[i] is TJvConnector then
+    begin
+      C := TJvConnector(AShape.Parent.Controls[i]);
+      if (C.StartConn.Shape = AShape) or (C.EndConn.Shape = AShape) then
+      begin
+        if C.LineColour = cIntfLineColor then
+          C.LineColour := cIntfSelColor
+        else
+          C.LineColour := cImplSelColor;
+        Changed := true;
+        C.Invalidate;
+      end
+      else // reset to standard color
+      begin
+        Changed := true;
+        if C.LineColour = cIntfSelColor then
+          C.LineColour := cIntfLineColor
+        else if C.LineColour = cImplSelColor then
+          C.LineColour := cImplLineColor
+        else
+          Changed := false;
+        if Changed then C.Invalidate;
+      end;
+    end;
+  end;
+  if Changed then
   begin
-    TJvTextShape(Sender).BringToFront;
-    TJvBitmapShape(TJvTextShape(Sender).Tag).BringToFront;
+    AShape.Parent.Repaint;
+//    AShape.BringToFront;
   end;
 end;
+
+procedure TfrmMain.DoShapeClick(Sender: TObject);
+begin
+  TJvBitmapShape(Sender).BringToFront;
+  TJvBitmapShape(Sender).Caption.BringToFront;
+//  HighlightConnectors(TJvBitmapShape(Sender));
+end;
+
+procedure TfrmMain.DoShapeMouseDown(Sender:TObject;Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  if Button = mbLeft then
+    HighLightConnectors(Sender as TJvCustomDiagramShape);
+end;
+
 // (p3) returns an existing or new shape
 // Filename is considered unique
 
@@ -407,6 +441,8 @@ begin
     Result.Hint := AFilename;
     Result.ShowHint := True;
     Result.OnClick := DoShapeClick;
+    Result.OnMouseDown := DoShapeMouseDown;
+
     Result.PopupMenu := popShape;
     Result.Top := FTop;
     Result.Left := FLeft;
@@ -414,7 +450,6 @@ begin
     Result.Caption := TJvTextShape.Create(self);
     Result.Caption.Parent := sb;
     Result.Caption.Enabled := false;
-    //    Result.Caption.OnClick := DoShapeClick;
     Result.Caption.Tag := integer(Result);
     Result.Caption.Text := AFilename;
     Result.Caption.AlignCaption(taLeftJustify);
@@ -425,7 +460,7 @@ begin
 end;
 
 // (p3) connects two shapes with a single head arrow pointing towards EndShape
-
+// colors differently depending on if it's interface link or an implementation link
 procedure TfrmMain.Connect(StartShape, EndShape: TJvCustomDiagramShape; IsInterface: boolean);
 var
   arr: TJvSingleHeadArrow;
@@ -434,9 +469,9 @@ begin
   with arr do
   begin
     if IsInterface then
-      LineColour := clBlack
+      LineColour := cIntfLineColor
     else
-      LineColour := clBtnFace;
+      LineColour := cImplLineColor;
     // Set the start connection
     StartConn.Side := csRight;
     StartConn.Offset := StartShape.Height div 2;
@@ -509,25 +544,25 @@ begin
     Exit;
   AUsesIntf := TStringlist.Create;
   AUsesImpl := TStringlist.Create;
-  FTop := FStartY;
+  FTop := cStartY;
   try
     if not GetUses(Filename, AUsesIntf, AUsesImpl, ErrMsg) then
       Errors.Add(Format('%s: %s', [AFilename, ErrMsg]));
     // add the actual file
     FS := GetFileShape(AFilename);
     FS.ImageIndex := 1; // this is a parsed file
-    Inc(FLeft, FOffsetX);
+    Inc(FLeft, cOffsetX);
     for i := 0 to AUsesIntf.Count - 1 do
     begin
       //add the used unit and connect to the parsed file
       Connect(FS, GetFileShape(ChangeFileExt(ExtractFileName(AUsesIntf[i]), '')), true);
-      Inc(FTop, FOffsetY);
+      Inc(FTop, cOffsetY);
     end;
     for i := 0 to AUsesImpl.Count - 1 do
     begin
       //add the used unit and connect to the parsed file
       Connect(FS, GetFileShape(ChangeFileExt(ExtractFileName(AUsesImpl[i]), '')), false);
-      Inc(FTop, FOffsetY);
+      Inc(FTop, cOffsetY);
     end;
   finally
     AUsesIntf.Free;
@@ -550,7 +585,7 @@ begin
       StatusBar1.Panels[0].Text := Files[i];
       StatusBar1.Update;
       if i > 0 then
-        Inc(FLeft, FOffsetX);
+        Inc(FLeft, cOffsetX);
       ParseUnit(Files[i], Errors);
     end;
   finally
@@ -567,8 +602,8 @@ begin
   WaitCursor;
   FFileShapes.Clear;
   TJvCustomDiagramShape.DeleteAllShapes(sb);
-  FLeft := FStartX;
-  FTop := FStartY;
+  FLeft := cStartX;
+  FTop := cStartY;
   StatusBar1.Panels[0].Text := SStatusReady;
 end;
 
@@ -577,10 +612,9 @@ begin
   FFileShapes := TStringlist.Create;
   FFileShapes.Sorted := true;
   FFileShapes.Duplicates := dupError;
-  FLeft := FStartX;
-  FTop := FStartY;
+  FLeft := cStartX;
+  FTop := cStartY;
   LoadSettings;
-//  CreateScrollBox(pnlDiagram);
 end;
 
 procedure TfrmMain.LoadSkipList;
@@ -635,14 +669,17 @@ begin
   FTop := 0;
   for i := 0 to AList.Count - 1 do
   begin
-    if (i mod Cols = 0) then // new row
+    if (i mod Cols = 0) then // new row or first row
     begin
-      FLeft := FStartX;
-      Inc(FTop, FOffsetY);
+      FLeft := cStartX;
+      if i = 0 then
+        Inc(FTop, cStartY)  // first row
+      else
+        Inc(FTop, cOffsetY);
     end;
     FS := TJvCustomDiagramShape(AList[i]);
     FS.SetBounds(FLeft, FTop, FS.Width, FS.Height);
-    Inc(FLeft, FOffsetX);
+    Inc(FLeft, cOffsetX);
   end;
 end;
 
@@ -665,22 +702,6 @@ begin
     else if (VertScrollBar.IsScrollBarVisible) then
       VertScrollBar.Position := VertScrollBar.Position - iff(ssCtrl in Shift, WheelDelta * 3, WheelDelta);
 end;
-
-{
-procedure TfrmMain.CreateScrollBox(AParent: TWinControl);
-begin
-  sb.Free;
-  sb := TScrollBox.Create(self);
-  sb.HorzScrollBar.Smooth := True;
-  sb.VertScrollBar.Smooth := True;
-  sb.Align := alClient;
-  sb.BorderStyle := bsNone;
-  sb.TabStop := True;
-  sb.OnMouseWheel := SbMouseWheel;
-  sb.Parent := AParent;
-  sb.Color := clWindow;
-end;
-}
 
 procedure TfrmMain.acOpenExecute(Sender: TObject);
 var
@@ -837,6 +858,8 @@ begin
   // (p3) reset checked here so it will be easier to check wich one is used as radio-item
   AList := TList.Create;
   try
+    FLeft := cStartX;
+    FTop := cStartY;
     acSortName.Checked := false;
     acSortLinksTo.Checked := false;
     acSortLinksFrom.Checked := false;
@@ -974,7 +997,9 @@ var
 begin
   AShape := GetFirstSelectedShape(sb);
   if AShape = nil then
-    Exit;
+    AShape := TJvCustomDiagramShape(popShape.PopupComponent);
+  if AShape = nil then Exit;
+
   // (p3) collect the stats for the file
   // since we can't guarantee that the file can be found
   // on the system, only collect what we know explicitly (name, links):
