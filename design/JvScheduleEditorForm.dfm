@@ -26,9 +26,6 @@ object FrmScheduleEditor: TFrmScheduleEditor
   OldCreateOrder = False
   Position = poDesktopCenter
   OnCreate = FormCreate
-  DesignSize = (
-    765
-    407)
   PixelsPerInch = 96
   TextHeight = 13
   object bvlDailyFreq: TBevel

@@ -13,9 +13,6 @@ inherited frmJvDataConsumerItemSelect: TfrmJvDataConsumerItemSelect
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
-    DesignSize = (
-      564
-      33)
     object btnOK: TButton
       Left = 405
       Top = 5
