@@ -28,6 +28,9 @@ unit JvThumbnailChildFormU;
 
 interface
 
+{$I jvcl.inc}
+{$I windowsonly.inc}
+
 uses
   Classes, Controls, Forms, StdCtrls, ExtCtrls, FileCtrl, ComCtrls, JvThumbImage,
   JvThumbNails, JvBaseThumbnail, JvExExtCtrls;

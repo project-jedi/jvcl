@@ -344,8 +344,8 @@ begin
   cbLocales.Items.BeginUpdate;
   try
     cbLocales.Items.Clear;
-    cbLocales.Items.AddObject('System Default',TObject(LOCALE_SYSTEM_DEFAULT));
-    cbLocales.Items.AddObject('User Default',TObject(LOCALE_USER_DEFAULT));
+    cbLocales.Items.AddObject('System Default', TObject(LOCALE_SYSTEM_DEFAULT));
+    cbLocales.Items.AddObject('User Default', TObject(LOCALE_USER_DEFAULT));
     for I := 0 to Languages.Count - 1 do
       cbLocales.Items.AddObject(Languages.Name[I], TObject(Languages.LocaleID[I]));
   finally

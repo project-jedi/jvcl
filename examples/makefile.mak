@@ -79,11 +79,11 @@ JvStringGridDemo.exe JvSystemPopupProj.exe SystemPopupTest.exe JvThreadProj.exe 
 PhotoOp.exe TimeLineDemo.exe TipsDemo.exe SimpleTLTest1.exe TransparentButtonDemo.exe \
 JvTrayIconDemo.exe JvTreeViewAsMenu.exe JvUninstallCtrlsDemo.exe JvUrlListGrabberDemo.exe \
 JvFormatEditDemo.exe JvValidatorsDemo.exe JvWinDialogsDemo.exe JvWindowsTitleProj.exe WndProcHookDemo.exe \
-Hospital.exe WinXPBarDemo.exe SimpleDemo.exe JvZLibMultipleDemo.exe JvZoomProj.exe LinkedConsumers.exe
+WinXPBarDemo.exe SimpleDemo.exe JvZLibMultipleDemo.exe JvZoomProj.exe LinkedConsumers.exe \
+PageListDemo.exe TVDemo.exe BkgndDemo.exe JvComputerInfoExDemo.exe JvStarfieldDemo.exe
 #
-# (rom) temporarily deactivated  does not compile
-# JvMultiHTTPGrabberDemo.exe
-# PageListDemo.exe
+# (rom) deactivated  requires components not always installed
+#Hospital.exe
 #---------------------------------------------------------------------------------------------------
 Gl_demo.exe: "Globus\Visual Components Demo\Gl_demo.dpr"
   @cd Globus\Visual Components Demo
@@ -497,6 +497,26 @@ pm.exe: "JvPackageModify\pm.dpr"
 
 PageListDemo.exe: "JvPageListTreeView\PageListDemo.dpr"
   @cd JvPageListTreeView
+  $(DCC) $&.dpr
+  @cd ..
+
+TVDemo.exe: "JvBackground\BackgroundControl\TVDemo.dpr"
+  @cd JvBackground\BackgroundControl
+  $(DCCH) $&.dpr
+  @cd ..\..
+
+BkgndDemo.exe: "JvBackground\MDIForm\BkgndDemo.dpr"
+  @cd JvBackground\MDIForm
+  $(DCCH) $&.dpr
+  @cd ..\..
+
+JvComputerInfoExDemo.exe: "JvComputerInfoEx\JvComputerInfoExDemo.dpr"
+  @cd JvComputerInfoEx
+  $(DCC) $&.dpr
+  @cd ..
+
+JvStarfieldDemo.exe: "JvStarfield\JvStarfieldDemo.dpr"
+  @cd JvStarfield
   $(DCC) $&.dpr
   @cd ..
 
