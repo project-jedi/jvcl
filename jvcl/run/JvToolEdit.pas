@@ -77,6 +77,7 @@ type
   TJvEditButton = class(TJvSpeedButton)
   private
     FNoAction: Boolean;
+    procedure WMContextMenu(var Msg: TWMContextMenu); message WM_CONTEXTMENU;
   protected
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
@@ -152,6 +153,7 @@ type
     procedure WMPaste(var Msg: TWMPaste); message WM_PASTE;
     procedure WMSetFocus(var Msg: TMessage); message WM_SETFOCUS;
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
+    procedure WMClear(var Msg: TWMClear); message WM_CLEAR;
     {$IFDEF JVCLThemesEnabled}
     procedure WMNCPaint(var Msg: TWMNCPaint); message WM_NCPAINT;
     procedure WMNCCalcSize(var Msg: TWMNCCalcSize); message WM_NCCALCSIZE;
@@ -1977,6 +1979,11 @@ begin
   FPopupVisible := (FPopup <> nil) and FPopup.Visible;
 end;
 
+procedure TJvCustomComboEdit.WMClear(var Msg: TWMClear);
+begin
+  Text := '';
+end;
+
 procedure TJvCustomComboEdit.WMCopy(var Msg: TWMCopy);
 begin
   if caCopy in ClipboardCommands then
@@ -2816,6 +2823,7 @@ end;
 procedure TJvEditButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
+  inherited MouseDown(Button, Shift, X, Y);
   if (Button = mbLeft) and (Owner <> nil) then
     with TJvCustomComboEdit(Owner) do
     begin
@@ -2828,7 +2836,6 @@ begin
       else
         PopupCloseUp(FPopup, FStandard); // Polaris
     end;
-  inherited MouseDown(Button, Shift, X, Y);
 end;
 
 procedure TJvEditButton.Paint;
@@ -2879,6 +2886,14 @@ begin
         LineTo(1, Self.Height - 2);
       end;
   end;
+end;
+
+procedure TJvEditButton.WMContextMenu(var Msg: TWMContextMenu);
+begin
+  { (rb) Without this, we get 2 context menu's (1 from the form, another from
+         the combo edit; don't know exactly what is causing this. (I guess
+         it's related to FBtnControl being a TWinControl) }
+  Msg.Result := 1;
 end;
 
 //=== TJvFileDirEdit =========================================================
