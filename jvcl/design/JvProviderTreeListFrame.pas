@@ -183,7 +183,7 @@ function TfmeJvProviderTreeList.GetDataItem(Index: Integer): IJvDataItem;
 begin
   if UsingVirtualRoot and (Index = 0) then
     Result := FVirtualRoot
-  else
+  else if (Index >= Ord(UsingVirtualRoot)) then
     Result := GetViewList.Item(Index - Ord(UsingVirtualRoot));
 end;
 
@@ -211,7 +211,10 @@ end;
 
 function TfmeJvProviderTreeList.GetSelectedIndex: Integer;
 begin
-  Result := LastSelectIdx;
+  if lvProvider.Selected = nil then
+    Result := -1
+  else
+    Result := lvProvider.Selected.Index;
 end;
 
 procedure TfmeJvProviderTreeList.lvProviderCustomDrawItem(

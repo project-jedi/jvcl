@@ -40,11 +40,10 @@ uses
   JvStdToolbarDsgnFrame, JvProviderToolbarFrame;
 
 type
+  {$IFDEF COMPILER6_UP}
+  IFormDesigner = IDesigner
+  {$ENDIF}
   TfrmDataProviderDesigner = class(TJvBaseDesign)
-    alProviderEditor: TActionList;
-    aiAddItem: TAction;
-    aiDeleteItem: TAction;
-    aiClearSub: TAction;
     pmProviderEditor: TPopupMenu;
     miAddItem: TMenuItem;
     miDivider1: TMenuItem;
@@ -59,22 +58,24 @@ type
     procedure aiDeleteItemExecute(Sender: TObject);
     procedure aiClearSubExecute(Sender: TObject);
     procedure cbContextsChange(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     { Private declarations }
-    FDesigner: {$IFDEF COMPILER6_UP}IDesigner{$ELSE}IFormDesigner{$ENDIF};
+    FDesigner: IFormDesigner;
   protected
     FOrgSelect: IDesignerSelections;
     FPropView: TJvDataProviderItem;
     FRootItem: IJvDataItem;
     procedure ResetSelection;
     procedure SetNewSelection(AnItem: IJvDataItem);
-    procedure NeedRoot(Sender: TObject; var AVirtualRoot: IJvDataItem);
+    procedure NeedRoot(Sender: TObject; var AVirtualRoot: IJvDataItem); 
     procedure UpdateSelectedItem(Sender: TObject);
     procedure InitContexts;
     procedure InitViewList(Sender: TJvDataConsumer; SubSvc: TJvDataConsumerAggregatedObject);
-    function GetProvider: IJvDataProvider;
-    procedure SetProvider(Value: IJvDataProvider);
-    procedure SetDesigner(Value: {$IFDEF COMPILER6_UP}IDesigner{$ELSE}IFormDesigner{$ENDIF});
+    function InternalProvider: IJvDataProvider;
+    function GetProvider: IJvDataProvider; virtual;
+    procedure SetProvider(Value: IJvDataProvider); virtual;
+    procedure SetDesigner(Value: IFormDesigner);
     procedure Loaded; override;
     function DesignerFormName: string; override;
     function AutoStoreSettings: Boolean; override;
@@ -83,11 +84,11 @@ type
     PropName: string;
     destructor Destroy; override;
     property Provider: IJvDataProvider read GetProvider write SetProvider;
-    property Designer: {$IFDEF COMPILER6_UP}IDesigner{$ELSE}IFormDesigner{$ENDIF} read FDesigner write SetDesigner;
+    property Designer: IFormDesigner read FDesigner write SetDesigner;
   end;
 
 procedure DesignProvider(AProvider: IJvDataProvider;
-  ADesigner: {$IFDEF COMPILER6_UP}IDesigner{$ELSE}IFormDesigner{$ENDIF}; PropName: string);
+  ADesigner: IFormDesigner; PropName: string);
 
 implementation
 
@@ -109,7 +110,7 @@ begin
 end;
 
 procedure DesignProvider(AProvider: IJvDataProvider;
-  ADesigner: {$IFDEF COMPILER6_UP}IDesigner{$ELSE}IFormDesigner{$ENDIF}; PropName: string);
+  ADesigner: IFormDesigner; PropName: string);
 var
   Form: TfrmDataProviderDesigner;
 begin
@@ -118,7 +119,8 @@ begin
   begin
     Form := TfrmDataProviderDesigner.Create(nil);
     try
-      Form.PropName := PropName;
+      if PropName <> '' then
+        Form.PropName := '.' + PropName;
       Form.Provider := AProvider;
       Form.Designer := ADesigner;
     except
@@ -190,7 +192,7 @@ var
     Dsgn.GetKind(Idx, S);
     Result := TMenuItem.Create(AOwner);
     Result.Caption := S;
-    Result.OnClick := aiAddItem.OnExecute;
+    Result.OnClick := fmeToolbar.aiAddItem.OnExecute;
     Result.Tag := Idx;
   end;
 
@@ -208,7 +210,7 @@ begin
   end
   else
   begin
-    if Supports(Provider, IJvDataItems, Items) then
+    if Supports(InternalProvider, IJvDataItems, Items) then
     begin
       if Supports(Items, IJvDataItemsManagement, Man) then
         Supports(Items, IJvDataItemsDesigner, Dsgn);
@@ -226,8 +228,8 @@ begin
   pmAddMenu.Items.Clear;
   if (Dsgn = nil) or (Dsgn.GetCount = 0) then
   begin
-    miAddItem.Action := aiAddItem;
-    fmeToolbar.tbAddItem.Action := aiAddItem;
+    miAddItem.Action := fmeToolbar.aiAddItem;
+    fmeToolbar.tbAddItem.Action := fmeToolbar.aiAddItem;
     fmeToolbar.tbAddItem.Style := tbsButton;
   end
   else
@@ -247,9 +249,10 @@ begin
     fmeToolbar.tbAddItem.Visible := miAddItem.Visible;
     fmeToolbar.tbAddItem.Enabled := miAddItem.Enabled;
   end;
-  aiAddItem.Enabled := (Man <> nil) and (Items <> nil);
-  aiDeleteItem.Enabled := (ParentMan <> nil) and (Item <> nil) and (Item <> FRootItem);
-  aiClearSub.Enabled := (Man <> nil) and (Items <> nil) and (Items.Count > 0);
+  fmeToolbar.aiAddItem.Enabled := (Man <> nil) and (Items <> nil);
+  fmeToolbar.aiDeleteItem.Enabled := (ParentMan <> nil) and (Item <> nil) and
+    (Item <> FRootItem) and Item.IsDeletable;
+  fmeToolbar.aiDeleteSubItems.Enabled := (Man <> nil) and (Items <> nil) and (Items.Count > 0);
 end;
 
 procedure TfrmDataProviderDesigner.InitContexts;
@@ -262,7 +265,7 @@ begin
     fmeToolbar.cbContexts.ItemIndex := -1;
     fmeToolbar.cbContexts.Items.Clear;
     fmeToolbar.cbContexts.Sorted := False;
-    if (Provider <> nil) and Supports(Provider, IJvDataContexts, Ctx) then
+    if (InternalProvider <> nil) and Supports(InternalProvider, IJvDataContexts, Ctx) then
     begin
       for I := 0 to Ctx.GetCount - 1 do
         fmeToolbar.cbContexts.Items.AddObject(Ctx.GetContext(I).Name, TObject(I));
@@ -291,6 +294,11 @@ begin
   end;
 end;
 
+function TfrmDataProviderDesigner.InternalProvider: IJvDataProvider;
+begin
+  Result := fmeTreeList.Provider.ProviderIntf;
+end;
+
 function TfrmDataProviderDesigner.GetProvider: IJvDataProvider;
 begin
   Result := fmeTreeList.Provider.ProviderIntf;
@@ -311,13 +319,13 @@ begin
     if Supports(fmeTreeList.Provider as IJvDataConsumer, IJvDataConsumerViewList, ViewList) then
       ViewList.RebuildView;
     ProviderImpl := (Provider as IInterfaceComponentReference).GetComponent;
-    Caption := Format(SDataProviderDesignerCaption, [ProviderImpl.Name, '.' + PropName]);
+    Caption := Format(SDataProviderDesignerCaption, [ProviderImpl.Name, PropName]);
   end;
   InitContexts;
   UpdateSelectedItem(Self);
 end;
 
-procedure TfrmDataProviderDesigner.SetDesigner(Value: {$IFDEF COMPILER6_UP}IDesigner{$ELSE}IFormDesigner{$ENDIF});
+procedure TfrmDataProviderDesigner.SetDesigner(Value: IFormDesigner);
 begin
   if Value <> FDesigner then
   begin
@@ -359,9 +367,6 @@ end;
 
 destructor TfrmDataProviderDesigner.Destroy;
 begin
-  ResetSelection;
-  Provider := nil;
-  Designer := nil;
   inherited Destroy;
 end;
 
@@ -381,7 +386,7 @@ begin
       raise EJVCLException.Create(SDataItemNotFound);
   end
   else
-    Items := Provider as IJvDataItems;
+    Items := InternalProvider as IJvDataItems;
   Item := nil;
   if Items <> nil then
   begin
@@ -470,7 +475,7 @@ begin
     if CtxIdx >= 0 then
     begin
       { Retrieve context and activate it in the consumer service. }
-      if Supports(Provider, IJvDataContexts, CtxList) then
+      if Supports(InternalProvider, IJvDataContexts, CtxList) then
         fmeTreeList.Provider.SetContextIntf(CtxList.GetContext(CtxIdx))
       else
         raise EJVCLException.Create('Internal error: unable to retrieve context list.');
@@ -480,6 +485,15 @@ begin
   end
   else
     fmeTreeList.Provider.SetContextIntf(nil);
+end;
+
+procedure TfrmDataProviderDesigner.FormDestroy(Sender: TObject);
+begin
+  inherited;
+  ResetSelection;
+  FRootItem := nil;
+  Provider := nil;
+  Designer := nil;
 end;
 
 end.

@@ -15,17 +15,18 @@ uses
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
   JvConsts, JvJCLUtils, JVCLVer, JvComponent, JvActions, JvActnResForm, JvJVCLAboutForm, JvDsgnEditors, JvIDEZoom,
-  JvJVCLAboutEditor, JvBaseDlgEditor, JvColorEditor, JvPaintBoxEditor;
+  JvJVCLAboutEditor, JvBaseDlgEditor, JvColorEditor, JvPaintBoxEditor, JvContextProvider;
 
 {$R ..\resources\JvCoreReg.dcr}
 
 procedure Register;
 const
  BaseClass:TClass = TComponent;
- 
+
 begin
   RegisterComponents(SPaletteNonVisual,[
-    TJvJVCLAboutComponent
+    TJvJVCLAboutComponent,
+    TJvContextProvider
     ]);
 
   RegisterPropertyEditor(TypeInfo(TJVCLAboutInfo), nil, 'AboutJVCL', TJVCLAboutDialogProperty);

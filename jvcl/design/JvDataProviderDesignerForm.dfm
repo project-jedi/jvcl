@@ -4,6 +4,7 @@ inherited frmDataProviderDesigner: TfrmDataProviderDesigner
   Caption = 'frmDataProviderDesigner'
   ClientWidth = 621
   OldCreateOrder = True
+  OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13
   inline fmeToolbar: TfmeJvProviderToolbar
@@ -41,25 +42,6 @@ inherited frmDataProviderDesigner: TfrmDataProviderDesigner
       Width = 621
       Height = 222
       PopupMenu = pmProviderEditor
-    end
-  end
-  object alProviderEditor: TActionList
-    Left = 25
-    Top = 95
-    object aiAddItem: TAction
-      Caption = '&Add item'
-      ImageIndex = 0
-      OnExecute = aiAddItemExecute
-    end
-    object aiDeleteItem: TAction
-      Caption = '&Delete item'
-      ImageIndex = 1
-      OnExecute = aiDeleteItemExecute
-    end
-    object aiClearSub: TAction
-      Caption = 'Delete &subitems'
-      ImageIndex = 4
-      OnExecute = aiClearSubExecute
     end
   end
   object pmProviderEditor: TPopupMenu
