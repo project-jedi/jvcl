@@ -37,13 +37,17 @@ type
     jctEdit, jctCheckBox, jctComboBox, jctGroupBox, jctImage, jctRadioGroup,
     jctMemo, jctListBox, jctCheckListBox, jctDateTimeEdit, jctDateEdit, jctTimeEdit,
     jctCalculateEdit, jctSpinEdit, jctDirectoryEdit, jctFileNameEdit,
-    jctButton, jctButtonEdit, jctForm);
+    jctButton, jctButtonEdit, jctForm,
+    jctDBEdit, jctDBText, jctDBListBox, jctDBCheckBox, jctDBComboBox, jctDBImage, jctDBRadioGroup,
+    jctDBMemo, jctDBDateTimeEdit, jctDBDateEdit, jctDBTimeEdit,
+    jctDBCalculateEdit, jctDBSpinEdit, jctDBDirectoryEdit, jctDBFileNameEdit, jctDBGrid,
+    jctDBButtonEdit, jctDBNavigator);
 
   TControlClass = class of TControl;
 
   TJvAfterCreateControl = procedure(AControl: TControl) of object;
 
-  TJvDynControlEngine = class(TPersistent)
+  TJvCustomDynControlEngine = class(TPersistent)
   private
     FRegisteredControlTypes: array [TJvDynControlType] of TControlClass;
     FRegisterControlsExecuted: Boolean;
@@ -57,11 +61,33 @@ type
     procedure NeedRegisterControls;
     procedure RegisterControls; virtual;
   public
-    constructor Create; virtual;
+    constructor create; virtual;
     function CreateControl(AControlType: TJvDynControlType; AOwner: TComponent;
       AParentControl: TWinControl; AControlName: string): TControl; virtual;
     function CreateControlClass(AControlClass: TControlClass; AOwner: TComponent;
       AParentControl: TWinControl; AControlName: string): TControl; virtual;
+
+    function IsControlTypeRegistered(const ADynControlType: TJvDynControlType): Boolean;
+
+    function IsControlTypeValid (const ADynControlType: TJvDynControlType;
+      AControlClass: TControlClass) : Boolean; virtual;
+    procedure RegisterControlType(const ADynControlType: TJvDynControlType;
+      AControlClass: TControlClass); virtual;
+
+    procedure SetControlCaption(AControl: IJvDynControl; const Value: string);
+    procedure SetControlTabOrder(AControl: IJvDynControl; Value: Integer);
+
+    procedure SetControlOnEnter(AControl: IJvDynControl; Value: TNotifyEvent);
+    procedure SetControlOnExit(AControl: IJvDynControl; Value: TNotifyEvent);
+    procedure SetControlOnClick(AControl: IJvDynControl; Value: TNotifyEvent);
+  published
+    property OnAfterCreateControl: TJvAfterCreateControl read FAfterCreateControl write FAfterCreateControl;
+  end;
+
+  TJvDynControlEngine = class(TJvCustomDynControlEngine)
+  private
+  protected
+  public
     function CreateLabelControl(AOwner: TComponent; AParentControl: TWinControl;
       const AControlName, ACaption: string; AFocusControl: TWinControl): TControl; virtual;
     function CreateStaticTextControl(AOwner: TComponent; AParentControl: TWinControl;
@@ -83,7 +109,6 @@ type
     function CreateRadioGroupControl(AOwner: TComponent; AParentControl: TWinControl;
       const AControlName, ACaption: string; AItems: TStrings;
       AItemIndex: Integer = 0): TWinControl; virtual;
-    // function CreatePageControlControl(AOwner: TComponent; AParentControl: TWinControl; AControlName: string): TWinControl; virtual;
     function CreateMemoControl(AOwner: TComponent; AParentControl: TWinControl;
       const AControlName: string): TWinControl; virtual;
     function CreateListBoxControl(AOwner: TComponent; AParentControl: TWinControl;
@@ -112,20 +137,13 @@ type
       const AControlName: string; AOnButtonClick: TNotifyEvent): TWinControl; virtual;
     function CreateForm(const ACaption, AHint: string): TCustomForm; virtual;
 
-    function IsControlTypeRegistered(const ADynControlType: TJvDynControlType): Boolean;
+    function CreateLabelControlPanel (AOwner: TComponent; AParentControl: TWinControl;
+      const AControlName, ACaption: string; AFocusControl: TWinControl;
+      ALabelOnTop : Boolean = True; ALabelDefaultWidth : Integer = 0): TWinControl; virtual;
 
-    procedure RegisterControl(const ADynControlType: TJvDynControlType;
-      AControlClass: TControlClass); virtual;
-
-    procedure SetControlCaption(AControl: IJvDynControl; const Value: string);
-    procedure SetControlTabOrder(AControl: IJvDynControl; Value: Integer);
-
-    procedure SetControlOnEnter(AControl: IJvDynControl; Value: TNotifyEvent);
-    procedure SetControlOnExit(AControl: IJvDynControl; Value: TNotifyEvent);
-    procedure SetControlOnClick(AControl: IJvDynControl; Value: TNotifyEvent);
   published
-    property OnAfterCreateControl: TJvAfterCreateControl read FAfterCreateControl write FAfterCreateControl;
   end;
+
 
 {$IFNDEF COMPILER6_UP}
 function Supports(Instance: TObject; const Intf: TGUID): Boolean; overload;
@@ -146,7 +164,7 @@ uses
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
-  SysUtils, TypInfo, 
+  SysUtils, TypInfo,
   JvResources, JvTypes, JvDynControlEngineVCL;
 
 var
@@ -172,28 +190,32 @@ begin
     raise EIntfCastError.CreateRes(@RsEIntfCastError);
 end;
 
-constructor TJvDynControlEngine.Create;
+constructor TJvCustomDynControlEngine.create;
 begin
-  inherited Create;
+  inherited create;
 end;
 
-function TJvDynControlEngine.IsControlTypeRegistered(const ADynControlType: TJvDynControlType): Boolean;
+
+function TJvCustomDynControlEngine.IsControlTypeRegistered(const ADynControlType: TJvDynControlType): Boolean;
 begin
   NeedRegisterControls;
   Result := Assigned(FRegisteredControlTypes[ADynControlType]);
 end;
 
-procedure TJvDynControlEngine.RegisterControl(const ADynControlType: TJvDynControlType;
-  AControlClass: TControlClass);
+
+
+function TJvCustomDynControlEngine.IsControlTypeValid (const ADynControlType: TJvDynControlType;
+      AControlClass: TControlClass) : Boolean;
 var
   Valid: Boolean;
 begin
-  NeedRegisterControls;
-  FRegisteredControlTypes[ADynControlType] := nil;
   Valid := Supports(AControlClass, IJvDynControl);
   case ADynControlType of
     jctButton:
       Valid := Valid and Supports(AControlClass, IJvDynControlButton);
+    jctButtonEdit:
+      Valid := Valid and Supports(AControlClass, IJvDynControlButton)
+                     and Supports(AControlClass, IJvDynControlData);
     jctPanel:
       Valid := Valid and Supports(AControlClass, IJvDynControlPanel);
     jctLabel:
@@ -211,13 +233,21 @@ begin
       jctCheckBox, jctDateTimeEdit, jctDateEdit, jctTimeEdit:
       Valid := Valid and Supports(AControlClass, IJvDynControlData);
   end;
-  if Valid then
+  Result := Valid;
+end;
+
+procedure TJvCustomDynControlEngine.RegisterControlType(const ADynControlType: TJvDynControlType;
+  AControlClass: TControlClass);
+begin
+  NeedRegisterControls;
+  FRegisteredControlTypes[ADynControlType] := nil;
+  if IsControlTypeValid (ADynControlType, AControlClass) then
     FRegisteredControlTypes[ADynControlType] := AControlClass
   else
     raise EJVCLException.CreateRes(@RsEUnsupportedControlClass);
 end;
 
-function TJvDynControlEngine.GetPropCount(Instance: TPersistent): Integer;
+function TJvCustomDynControlEngine.GetPropCount(Instance: TPersistent): Integer;
 var
   Data: PTypeData;
 begin
@@ -225,7 +255,7 @@ begin
   Result := Data^.PropCount;
 end;
 
-function TJvDynControlEngine.GetPropName(Instance: TPersistent; Index: Integer): string;
+function TJvCustomDynControlEngine.GetPropName(Instance: TPersistent; Index: Integer): string;
 var
   PropList: PPropList;
   PropInfo: PPropInfo;
@@ -243,7 +273,7 @@ begin
   end;
 end;
 
-procedure TJvDynControlEngine.SetPropertyValue(const APersistent: TPersistent;
+procedure TJvCustomDynControlEngine.SetPropertyValue(const APersistent: TPersistent;
   const APropertyName: string; const AValue: Variant);
 var
   Index: Integer;
@@ -288,7 +318,7 @@ begin
   end;
 end;
 
-function TJvDynControlEngine.GetPropertyValue(const APersistent: TPersistent;
+function TJvCustomDynControlEngine.GetPropertyValue(const APersistent: TPersistent;
   const APropertyName: string): Variant;
 var
   Index: Integer;
@@ -337,13 +367,13 @@ begin
   end;
 end;
 
-procedure TJvDynControlEngine.AfterCreateControl(AControl: TControl);
+procedure TJvCustomDynControlEngine.AfterCreateControl(AControl: TControl);
 begin
   if Assigned(FAfterCreateControl) then
     FAfterCreateControl(AControl);
 end;
 
-function TJvDynControlEngine.CreateControl(AControlType: TJvDynControlType;
+function TJvCustomDynControlEngine.CreateControl(AControlType: TJvDynControlType;
   AOwner: TComponent; AParentControl: TWinControl; AControlName: string): TControl;
 begin
   NeedRegisterControls;
@@ -364,7 +394,7 @@ begin
   AfterCreateControl(Result);
 end;
 
-function TJvDynControlEngine.CreateControlClass(AControlClass: TControlClass;
+function TJvCustomDynControlEngine.CreateControlClass(AControlClass: TControlClass;
   AOwner: TComponent; AParentControl: TWinControl; AControlName: string): TControl;
 var
   DynCtrl: IJvDynControl;
@@ -378,6 +408,42 @@ begin
   if AControlName <> '' then
     Result.Name := AControlName;
 end;
+
+procedure TJvCustomDynControlEngine.SetControlCaption(AControl: IJvDynControl; const Value: string);
+begin
+end;
+
+procedure TJvCustomDynControlEngine.SetControlTabOrder(AControl: IJvDynControl; Value: Integer);
+begin
+end;
+
+procedure TJvCustomDynControlEngine.SetControlOnEnter(AControl: IJvDynControl; Value: TNotifyEvent);
+begin
+end;
+
+procedure TJvCustomDynControlEngine.SetControlOnExit(AControl: IJvDynControl; Value: TNotifyEvent);
+begin
+end;
+
+procedure TJvCustomDynControlEngine.SetControlOnClick(AControl: IJvDynControl; Value: TNotifyEvent);
+begin
+end;
+
+procedure TJvCustomDynControlEngine.NeedRegisterControls;
+begin
+  if not FRegisterControlsExecuted then
+  begin
+    FRegisterControlsExecuted := True;
+    RegisterControls;
+  end;
+end;
+
+procedure TJvCustomDynControlEngine.RegisterControls;
+begin
+  // no registration
+end;
+
+
 
 function TJvDynControlEngine.CreateLabelControl(AOwner: TComponent;
   AParentControl: TWinControl; const AControlName, ACaption: string;
@@ -494,11 +560,6 @@ begin
   DynCtrlData.ControlValue := AItemIndex;
 end;
 
-//function TJvDynControlEngine.CreatePageControlControl(AOwner : TComponent; AParentControl : TWinControl; AControlName : string) : TWinControl;
-//begin
-//  Result := TWinControl(CreateControl (jctPageControl, AOwner, AParentControl, AControlName));
-//end;
-
 function TJvDynControlEngine.CreateMemoControl(AOwner: TComponent;
   AParentControl: TWinControl; const AControlName: string): TWinControl;
 begin
@@ -599,25 +660,47 @@ begin
   Result.Hint := AHint;
 end;
 
-procedure TJvDynControlEngine.SetControlCaption(AControl: IJvDynControl; const Value: string);
+function TJvDynControlEngine.CreateLabelControlPanel (AOwner: TComponent; AParentControl: TWinControl;
+      const AControlName, ACaption: string; AFocusControl: TWinControl; ALabelOnTop : Boolean = True; ALabelDefaultWidth : Integer = 0): TWinControl;
+Var
+  Panel : TWinControl;
+  LabelControl : TControl;
 begin
+  if not Assigned(AFocusControl) then
+    raise Exception.Create('TJvDynControlEngine.CreateLabelControlPanel : AFocusControl must be assigned');
+  Panel := CreatePanelControl (AOwner, AParentControl, '', '', alNone);
+  LabelControl := CreateLabelControl (AOwner, Panel, '', ACaption, AFocusControl);
+//  LabelControl.Width := panel.Canvas.
+  AFocusControl.Parent := Panel;
+  LabelControl.Top := 1;
+  LabelControl.Left := 1;
+  if ALabelOnTop then
+  begin
+    AFocusControl.Top := LabelControl.Height+1;
+    AFocusControl.Left := 1;
+    if LabelControl.Width > AFocusControl.Width then
+      Panel.Width := LabelControl.Width
+    else
+      Panel.Width := AFocusControl.Width;
+    Panel.Height := AFocusControl.Height+LabelControl.Height;
+  end
+  else
+  begin
+    if ALabelDefaultWidth > 0 then
+     LabelControl.Width := ALabelDefaultWidth;
+    AFocusControl.Left := LabelControl.Width+1;
+    AFocusControl.Top := 1;
+    if LabelControl.Height > AFocusControl.Height then
+      Panel.Height := LabelControl.Height
+    else
+      Panel.Height := AFocusControl.Height;
+    Panel.Width := AFocusControl.Width+LabelControl.Width;
+  end;
+  Panel.Width := Panel.Width + 1;
+  Panel.Height := Panel.Height + 1;
+  Result := Panel;
 end;
 
-procedure TJvDynControlEngine.SetControlTabOrder(AControl: IJvDynControl; Value: Integer);
-begin
-end;
-
-procedure TJvDynControlEngine.SetControlOnEnter(AControl: IJvDynControl; Value: TNotifyEvent);
-begin
-end;
-
-procedure TJvDynControlEngine.SetControlOnExit(AControl: IJvDynControl; Value: TNotifyEvent);
-begin
-end;
-
-procedure TJvDynControlEngine.SetControlOnClick(AControl: IJvDynControl; Value: TNotifyEvent);
-begin
-end;
 
 procedure SetDefaultDynControlEngine(AEngine: TJvDynControlEngine);
 begin
@@ -630,19 +713,7 @@ begin
   Result := GlobalDefaultDynControlEngine;
 end;
 
-procedure TJvDynControlEngine.NeedRegisterControls;
-begin
-  if not FRegisterControlsExecuted then
-  begin
-    FRegisterControlsExecuted := True;
-    RegisterControls;
-  end;
-end;
 
-procedure TJvDynControlEngine.RegisterControls;
-begin
-  // no registration
-end;
 
 {$IFDEF UNITVERSIONING}
 const
