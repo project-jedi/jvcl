@@ -275,29 +275,19 @@ end;
 
 procedure ShowFileInfo(AController: TJvID3Controller);
 const
-  cVersion: array [TJvMPEGVersion] of PChar =
-    ('MPEG 2.5', '??', 'MPEG 2.0', 'MPEG 1.0');
-  cLayer: array [TJvMPEGLayer] of PChar =
-    ('??', 'Layer 3', 'Layer 2', 'Layer 1');
-  cChannelMode: array [TJvMPEGChannelMode] of PChar =
-    ('Stereo', 'Joint Stereo', 'Dual Channel', 'Mono');
-  cEmphasis: array [TJvMPEGEmphasis] of PChar =
-    ('None', '50/15 microsec', '??', 'CCIT J.17');
-  cBool: array [Boolean] of PChar =
-    ('No', 'Yes');
-  cVbr: array [Boolean] of PChar =
-    ('', ' (VBR)');
-  cFileInfo =
-    'Size: %d bytes' + sLineBreak +
-    'Header found at: %d bytes' + sLineBreak +
-    'Length: %d seconds' + sLineBreak +
-    '%s %s' + sLineBreak +
-    '%dkbit%s, %d frames' + sLineBreak +
-    '%dHz %s' + sLineBreak +
-    'CRCs: %s' + sLineBreak +
-    'Copyrighted: %s' + sLineBreak +
-    'Original: %s' + sLineBreak +
-    'Emphasis: %s';
+  cVersion: array [TJvMPEGVersion] of string =
+    (SMPEG25, SMPEGUnknown, SMPEG20, SMPEG10);
+  cLayer: array [TJvMPEGLayer] of string =
+    (SLayerUnknown, SLayer3, SLayer2, SLayer1);
+  cChannelMode: array [TJvMPEGChannelMode] of string =
+    (SChannelModeStereo, SChannelModeJointStereo,
+     SChannelModeDualChannel, SChannelModeMono);
+  cEmphasis: array [TJvMPEGEmphasis] of string =
+    (SEmphasisNone, SEmphasisMicrosec, SEmphasisUnknown, SEmphasisCCITTJ17);
+  cBool: array [Boolean] of string =
+    (SBoolNo, SBoolYes);
+  cVbr: array [Boolean] of string =
+    (SVbrNo, SVbrVbr);
 var
   Msg: string;
   SavedActive: Boolean;
@@ -329,7 +319,7 @@ begin
           Exit;
         end;
 
-        Msg := Format(cFileInfo, [FileSize, HeaderFoundAt, LengthInSec,
+        Msg := Format(SIDV2FileInfo, [FileSize, HeaderFoundAt, LengthInSec,
           cVersion[Version], cLayer[Layer], Bitrate, cVbr[IsVbr], FrameCount,
           SamplingRateFrequency, cChannelMode[ChannelMode],
           cBool[mbProtection in Bits], cBool[mbCopyrighted in Bits],
@@ -341,7 +331,7 @@ begin
     with CreateMessageDialog(Msg, mtCustom, [mbOK]) do
     try
       Position := poScreenCenter;
-      Caption := 'File info';
+      Caption := SIDV2FileInfoCaption;
       ShowModal;
     finally
       Free;

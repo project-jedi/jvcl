@@ -117,32 +117,39 @@ begin
   SetString(Result, Buffer, GetClipboardFormatName(Format, Buffer, 255));
   if Result = '' then
     case Format of
+      CF_TEXT:
+        Result := 'Text';
       CF_BITMAP:
         Result := 'Bitmap';
-      CF_DIB:
-        Result := 'DIB Bitmap';
-      CF_DIF:
-        Result := 'DIF';
       CF_METAFILEPICT:
         Result := 'Metafile Picture';
-      CF_ENHMETAFILE:
-        Result := 'Enchanced Metafile';
+      CF_SYLK:
+        Result := 'SYLK';
+      CF_DIF:
+        Result := 'DIF';
+      CF_TIFF:
+        Result := 'Tag Image';
       CF_OEMTEXT:
         Result := 'OEM Text';
+      CF_DIB:
+        Result := 'DIB Bitmap';
       CF_PALETTE:
         Result := 'Palette';
       CF_PENDATA:
         Result := 'Pen Data';
       CF_RIFF:
         Result := 'RIFF File';
-      CF_SYLK:
-        Result := 'SYLK';
-      CF_TEXT:
-        Result := 'Text';
-      CF_TIFF:
-        Result := 'Tag Image';
       CF_WAVE:
         Result := 'Wave';
+      // (rom) check for problems before uncomment
+      //CF_UNICODETEXT:
+      //  Result := 'Unicode text';
+      CF_ENHMETAFILE:
+        Result := 'Enchanced Metafile';
+      //CF_HDROP:
+      //  Result := 'Drop files';
+      //CF_LOCALE:
+      //  Result := 'Locale data';
     end;
 end;
 

@@ -78,7 +78,7 @@ uses
   JvTypes;
 
 resourcestring
-  cInvalidPropertyFmt = 'Invalid property: %s';
+  SInvalidPropertyFmt = 'Invalid property: %s';
   SNoPathSpecified = 'No path specified';
 
 function TJvAppInfo.LoadIni: Boolean;
@@ -105,7 +105,7 @@ begin
             tkString,tkLString:
               SetStrProp(Self, PropList[I], Value);
           else
-            raise EJVCLException.CreateFmt(cInvalidPropertyFmt, [PropList[I].Name]);
+            raise EJVCLException.CreateFmt(SInvalidPropertyFmt, [PropList[I].Name]);
           end;
         Inc(I);
       end;
@@ -137,7 +137,7 @@ begin
           tkString, tkLString:
             Value := GetStrProp(Self, PropList[I]);
           else
-            raise EJVCLException.CreateFmt(cInvalidPropertyFmt, [PropList[I].Name]);
+            raise EJVCLException.CreateFmt(SInvalidPropertyFmt, [PropList[I].Name]);
           end;
           Ini.WriteString(Section, PropList[I].Name, Value);
           Inc(I);
@@ -177,7 +177,7 @@ begin
             tkString, tkLString:
               SetStrProp(Self, PropList[I], Value);
           else
-            raise EJVCLException.CreateFmt(cInvalidPropertyFmt, [PropList[I].Name]);
+            raise EJVCLException.CreateFmt(SInvalidPropertyFmt, [PropList[I].Name]);
           end;
         Inc(I);
       end;
@@ -210,7 +210,7 @@ begin
           tkString, tkLString:
             Value := GetStrProp(Self, PropList[I]);
         else
-          raise EJVCLException.CreateFmt(cInvalidPropertyFmt, [PropList[I].Name]);
+          raise EJVCLException.CreateFmt(SInvalidPropertyFmt, [PropList[I].Name]);
         end;
         Reg.WriteString(Section, PropList[i].Name, Value);
         Inc(I);

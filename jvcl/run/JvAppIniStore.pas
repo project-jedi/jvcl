@@ -137,6 +137,13 @@ type
 
 implementation
 
+const
+  cNullDigit = '0';
+  cCount = 'Count';
+  cSectionHeaderStart = '[';
+  cSectionHeaderEnd = ']';
+  cKeyValueSeparator = '=';
+
 {$IFDEF LINUX}
 function GetTickCount: Cardinal;
 var
@@ -153,7 +160,8 @@ function AnsiSameTextShortest(S1, S2: string): Boolean;
 begin
   if Length(S1) > Length(S2) then
     SetLength(S1, Length(S2))
-  else if Length(S2) > Length(S1) then
+  else
+  if Length(S2) > Length(S1) then
     SetLength(S2, Length(S1));
   Result := AnsiSameText(S1, S2);
 end;
@@ -163,7 +171,7 @@ var
   P: PChar;
 begin
   if Odd(Length(Value)) then
-    Value := '0' + Value;
+    Value := cNullDigit + Value;
   if (Length(Value) div 2) < BufSize then
     BufSize := Length(Value) div 2;
   Result := 0;
@@ -284,7 +292,7 @@ begin
   begin
     Value := ReadValue(Section, Key);
     if Value = '' then
-      Value := '0';
+      Value := cNullDigit;
     Result := StrToInt(Value);
   end
   else
@@ -311,7 +319,7 @@ begin
   begin
     Value := ReadValue(Section, Key);
     if Value = '' then
-      Value := '0';
+      Value := cNullDigit;
     Result := StrToFloat(Value);
   end
   else
@@ -464,9 +472,10 @@ begin
         (Pos('\', Copy(Strings[I], 2 + Length(RefPath), Length(Strings[I]) - Length(RefPath))) > 0))  then
       Strings.Delete(I)
     else
-    if ReportListAsValue and ValueExists(Strings[I], 'Count') then
+    if ReportListAsValue and ValueExists(Strings[I], cCount) then
       Strings.Delete(I)
-    else if RefPath <> '' then
+    else
+    if RefPath <> '' then
       Strings[I] := Copy(Strings[I], 1 + Length(RefPath), Length(Strings[I]) - Length(RefPath));
     Dec(I);
   end;
@@ -484,8 +493,8 @@ begin
   IniFile.ReadSectionValues(RefPath, Strings);
   for I := Strings.Count - 1 downto 0 do
   begin
-    Strings[I] := Copy(Strings[I], 1, Pos('=', Strings[I]) - 1);
-    if PathIsList and (AnsiSameText('Count', Strings[I]) or NameIsListItem(Strings[I])) then
+    Strings[I] := Copy(Strings[I], 1, Pos(cKeyValueSeparator, Strings[I]) - 1);
+    if PathIsList and (AnsiSameText(cCount, Strings[I]) or NameIsListItem(Strings[I])) then
       Strings.Delete(I);
   end;
   if PathIsList then
@@ -503,7 +512,7 @@ end;
 
 function TJvAppINIFileStore.ReadValue(const Section, Key: string): string;
 begin
-  if Section = '' THEN
+  if Section = '' then
     raise Exception.Create ('TJvAppINIFileStore.ReadValue : Section undefined');
   if IniFile <> nil then
     Result := IniFile.ReadString(Section, Key, '')
@@ -515,7 +524,7 @@ procedure TJvAppINIFileStore.WriteValue(const Section, Key, Value: string);
 begin
   if IniFile <> nil then
   begin
-    if Section = '' THEN
+    if Section = '' then
       raise Exception.Create ('TJvAppINIFileStore.WriteValue : Section undefined');
     IniFile.WriteString(Section, Key, Value);
     FLastUserAct := GetTickCount;
@@ -533,7 +542,8 @@ begin
       FLastUserAct := GetTickCount;
       FHasWritten := True;
     end
-    else if IniFile.SectionExists(Section + '\' + Key) then
+    else
+    if IniFile.SectionExists(Section + '\' + Key) then
     begin
       IniFile.EraseSection(Section + '\' + Key);
       FLastUserAct := GetTickCount;
@@ -564,7 +574,7 @@ var
   Key: string;
 begin
   SplitKeyPath(ConcatPaths([BaseSection, Path]), Section, Key);
-  Result := IniFile.SectionExists(Section+'\'+Key);
+  Result := IniFile.SectionExists(Section + '\' + Key);
 End;
 
 procedure TJvAppINIFileStore.Flush;
@@ -584,7 +594,7 @@ var
 begin
   RefPath := GetAbsPath(Path);
   Result := IniFile.SectionExists(RefPath);
-  if Result and ListIsValue and IniFile.ValueExists(RefPath, 'Count') then
+  if Result and ListIsValue and IniFile.ValueExists(RefPath, cCount) then
   begin
     Result := False;
     ValueNames := TStringList.Create;
@@ -593,7 +603,7 @@ begin
       I := ValueNames.Count - 1;
       while Result and (I >= 0) do
       begin
-        Result := not AnsiSameText(ValueNames[I], 'Count') and not NameIsListItem(ValueNames[I]);
+        Result := not AnsiSameText(ValueNames[I], cCount) and not NameIsListItem(ValueNames[I]);
         Dec(I);
       end;
     finally
@@ -622,7 +632,7 @@ begin
   FSections.Clear;
   for I := 0 to FStrings.Count - 1 do
   begin
-    if Copy(FStrings[I], 1, 1) = '[' then
+    if Copy(FStrings[I], 1, 1) = cSectionHeaderStart then
       FSections.AddObject(Copy(FStrings[I], 2, Length(FStrings[I]) - 2), TObject(I));
   end;
   TStringList(FSections).Sort;
@@ -644,7 +654,7 @@ end;
 
 function TJvCustomAppINIStringsStore.LocateValueInSection(const Key: string; var Index: Integer): Boolean;
 begin
-  while (Index < FStrings.Count) and not AnsiSameTextShortest(FStrings[Index], Key + '=') do
+  while (Index < FStrings.Count) and not AnsiSameTextShortest(FStrings[Index], Key + cKeyValueSeparator) do
     Inc(Index);
   Result := Index < FStrings.Count;
 end;
@@ -675,20 +685,20 @@ begin
   try
     if not LocateSection(Section, SectIdx) then
     begin
-      SectIdx := FStrings.Add('[' + Section + ']');
+      SectIdx := FStrings.Add(cSectionHeaderStart + Section + cSectionHeaderEnd);
       FSections.AddObject(Section, TObject(SectIdx));
       TStringList(FSections).Sort;
     end;
     KeyIdx := SectIdx + 1;
     if not LocateValueInSection(Key, KeyIdx) then
     begin
-      FStrings.Insert(KeyIdx, Key + '=' + Value);
+      FStrings.Insert(KeyIdx, Key + cKeyValueSeparator + Value);
       for SectIdx := 0 to FSections.Count - 1 do
         if Integer(FSections.Objects[SectIdx]) >= KeyIdx then
           FSections.Objects[SectIdx] := TObject(Integer(FSections.Objects[SectIdx]) + 1);
     end
     else
-      FStrings[KeyIdx] := Key + '=' + Value;
+      FStrings[KeyIdx] := Key + cKeyValueSeparator + Value;
   finally
     FIsInternalChange := False;
   end;
@@ -717,7 +727,7 @@ begin
         repeat
           FStrings.Delete(Idx);
           Inc(DelCount);
-        until (Idx > FStrings.Count) or (Copy(FStrings[Idx], 1, 1) = '[');
+        until (Idx > FStrings.Count) or (Copy(FStrings[Idx], 1, 1) = cSectionHeaderStart);
       end;
     end;
     if DelCount > 0 then

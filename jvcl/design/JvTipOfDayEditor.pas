@@ -40,7 +40,7 @@ uses
   {$ENDIF COMPILER6_UP}
 
 type
-  { a component editor that shows the 'Tip of the Day' dialog }
+  { a component editor that shows the "Tip of the Day" dialog }
   TJvTipOfDayEditor = class(TComponentEditor)
   public
     procedure ExecuteVerb(Index: Integer); override;

@@ -40,7 +40,7 @@ uses
   {$IFDEF COMPLIB_CLX}
   QGraphics, QForms, QDialogs, Types,
   {$ENDIF}
-  JvTypes, JvConsts;
+  JvTypes;
 
 type
   TJvIconFrame = class(TPersistent)
@@ -107,12 +107,12 @@ function LoadJvAnimatedCursorImageDialog: TJvAnimatedCursorImage;
 
 implementation
 
-{ This implementation based on animated cursor editor source code
-  (ANIEDIT.C, copyright (C) Microsoft Corp., 1993-1996) }
-
 uses
   Consts, Math,
-  JvJVCLUtils, JvJCLUtils, JvIconList;
+  JvJVCLUtils, JvJCLUtils, JvIconList, JvConsts;
+
+{ This implementation based on animated cursor editor source code
+  (ANIEDIT.C, copyright (C) Microsoft Corp., 1993-1996) }
 
 const
   FOURCC_ACON = 'ACON';
@@ -274,7 +274,7 @@ begin
   with TOpenDialog.Create(Application) do
     try
       Options := [ofHideReadOnly, ofFileMustExist];
-      DefaultExt := 'ani';
+      DefaultExt := RC_AniExtension;
       Filter := srAniCurFilter;
       if Execute then
       begin
@@ -650,14 +650,14 @@ begin
       else
       begin
         { Not the fram list or the INFO list. Skip the rest of this
-          chunk. (Don't forget that we have already skipped one dword) }
+          chunk. (Do not forget that we have already skipped one dword) }
         Tag.ckSize := cbChunk;
         SkipChunk(Stream, @Tag);
       end;
     end
     else
     begin
-      { We're not interested in this chunk, skip it. }
+      { We are not interested in this chunk, skip it. }
       if not SkipChunk(Stream, @Tag) then
         Break;
     end;
