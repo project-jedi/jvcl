@@ -44,7 +44,7 @@ uses
   QGraphics, QControls, QForms, QDialogs, QActnList, QMenus, QImgList,
   QComCtrls, QExtCtrls, Types,
   
-  JvQBaseDsgnFrame, QTypes;
+  JvQBaseDsgnFrame;
 
 type
   TfmeJvBaseToolbarDesign = class(TfmeJvBaseDesign)

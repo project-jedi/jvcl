@@ -203,7 +203,7 @@ begin
       UpdateStoredList(ACompOwner, AStoredList, False);
       SetStoredList(AStoredList);
       ActiveCtrlBox.Checked := fpActiveControl in Options;
-      PositionBox.Checked := fpPosition in Options;
+      PositionBox.Checked := fpLocation in Options;
       StateBox.Checked := fpState in Options;
     finally
       Screen.Cursor := crDefault;
@@ -216,7 +216,7 @@ begin
       if ActiveCtrlBox.Checked then
         Include(Options, fpActiveControl);
       if PositionBox.Checked then
-        Include(Options, fpPosition);
+        Include(Options, fpLocation);
       if StateBox.Checked then
         Include(Options, fpState);
     end;
