@@ -359,7 +359,7 @@ type
       out HTFlag: Integer; Zone: TJvDockZone): TJvDockZone; override;
     procedure DrawDockGrabber(Control: TControl; const ARect: TRect); override;
     procedure PaintDockGrabberRect(Canvas: TCanvas; Control: TControl;
-      const ARect: TRect); override;
+      const ARect: TRect; PaintAlways: Boolean = False); override;
     procedure DrawCloseButton(Canvas: TCanvas; Zone: TJvDockZone;
       Left, Top: Integer); override;
     procedure DrawAutoHideButton(Zone: TJvDockZone;
@@ -2879,12 +2879,12 @@ begin
 end;
 
 procedure TJvDockVSNETTree.PaintDockGrabberRect(Canvas: TCanvas;
-  Control: TControl; const ARect: TRect);
+  Control: TControl; const ARect: TRect; PaintAlways: Boolean = False);
 var
   DrawRect: TRect;
 begin
   inherited PaintDockGrabberRect(Canvas, Control, ARect);
-  if GetActiveControl <> Control then
+  if (GetActiveControl <> Control) or PaintAlways then
   begin
     Canvas.Pen.Color := clGray;
     DrawRect := ARect;
