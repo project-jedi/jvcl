@@ -45,7 +45,7 @@ type
 
 implementation
 
-// (rom) use JCL
+// (rom) move to JCL
 
 function ItemIDListCreate(const Allocator: IMalloc; const Size: Integer): PItemIDList;
 begin

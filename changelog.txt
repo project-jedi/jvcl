@@ -1,5 +1,9 @@
 Changelog for JVCL 3.0
 ======================
+2003-11-18:
+- improved JvTurtle, some small API changes (method Interpret) // (rom)
+- JvAnalogClock, changed all name suffixes Hr to proper Hour (dtx updated)
+- removed the really ugly NotImplemented from JvJVCLUtils.pas and replaced it with Exceptions.
 2003-11-16:
 - Updated the package generator // olivier
 - Finished creating the xml files for all packages. // olivier

@@ -37,10 +37,10 @@ interface
 uses
   {$IFDEF COMPLIB_VCL}
   ExtCtrls,
-  {$ENDIF}
+  {$ENDIF COMPLIB_VCL}
   {$IFDEF COMPLIB_CLX}
   QExtCtrls,
-  {$ENDIF}
+  {$ENDIF COMPLIB_CLX}
   SysUtils, Classes,
   JvTypes, JvComponent;
 
@@ -290,6 +290,7 @@ begin
     Time := TJvAlarmItem(Source).Time;
     Kind := TJvAlarmItem(Source).Kind;
   end;
+  // (rom) is this correct or should there be an else here?
   inherited Assign(Source);
 end;
 

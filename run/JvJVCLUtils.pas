@@ -190,7 +190,6 @@ procedure ShowMDIClientEdge(ClientHandle: THandle; ShowEdge: Boolean);
 {$ENDIF MSWINDOWS}
 procedure Delay(MSecs: Longint);
 procedure CenterControl(Control: TControl);
-procedure NotImplemented;
 
 {$IFDEF LINUX}
 const
@@ -666,6 +665,8 @@ uses
 
 resourcestring
   RsNotForMdi = 'MDI forms are not allowed';
+  SPixelFormatNotImplemented = 'BitmapToMemoryStream: pixel format not implemented';
+  SBitCountNotImplemented = 'BitmapToMemoryStream: bit count not implemented';
 
 const
   RC_ControlRegistry = 'Control Panel\Desktop';
@@ -2008,12 +2009,14 @@ end;
 type
   TJvHack = class(TCustomControl);
 
+{
 procedure NotImplemented;
 begin
   Screen.Cursor := crDefault;
   MessageDlg(SNotImplemented, mtInformation, [mbOK], 0);
   SysUtils.Abort;
 end;
+}
 
 {$IFDEF MSWINDOWS}
 
@@ -3981,7 +3984,7 @@ begin
       Result := Values[i];
 end;
 
-procedure InvalidBitmap; near;
+procedure InvalidBitmap;
 begin
   raise EInvalidGraphic.Create(SInvalidBitmap);
 end;
@@ -5181,12 +5184,12 @@ var
   P, InitData: Pointer;
   ColorCount: Integer;
 begin
+  Result := nil;
   if Bitmap.Handle = 0 then
     InvalidBitmap;
   if (GetBitmapPixelFormat(Bitmap) = PixelFormat) and
     (Method <> mmGrayscale) then
   begin
-
     Result := TMemoryStream.Create;
     try
       Bitmap.SaveToStream(Result);
@@ -5198,7 +5201,7 @@ begin
     Exit;
   end;
   if not (PixelFormat in [pf1bit, pf4bit, pf8bit, pf24bit]) then
-    NotImplemented
+    raise EJVCLException.Create(SPixelFormatNotImplemented)
   else
     if PixelFormat in [pf1bit, pf4bit] then
     begin
@@ -5222,7 +5225,7 @@ begin
   try
     BI := PBitmapInfoHeader(Longint(InitData) + SizeOf(TBitmapFileHeader));
     if BI^.biBitCount <> 24 then
-      NotImplemented; {!!!}
+      raise EJVCLException.Create(SBitCountNotImplemented);
     Bits := Pointer(Longint(BI) + SizeOf(TBitmapInfoHeader));
     InternalGetDIBSizes(Bitmap.Handle, NewHeaderSize, ImageSize, PixelFormat);
     Length := SizeOf(TBitmapFileHeader) + NewHeaderSize;

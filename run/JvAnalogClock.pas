@@ -33,12 +33,12 @@ unit JvAnalogClock;
 interface
 
 uses
-{$IFDEF COMPLIB_VCL}
+  {$IFDEF COMPLIB_VCL}
   Windows, Graphics, Controls, ExtCtrls,
-{$ENDIF}
-{$IFDEF COMPLIB_CLX}
+  {$ENDIF COMPLIB_VCL}
+  {$IFDEF COMPLIB_CLX}
   QGraphics, QControls, QExtCtrls,
-{$ENDIF}
+  {$ENDIF COMPLIB_CLX}
   SysUtils, Classes,
   JvTypes, JvJCLUtils, JvComponent, JvThemes;
 
@@ -59,17 +59,16 @@ type
     FColorOn: TColor;
     FVisible: Boolean;
     FTrigger: TJvTriggerKind;
-    FWidthM: Integer;
-    FWidthH: Integer;
-
+    FWidthMin: Integer;
+    FWidthHour: Integer;
     procedure SetAlarmEnabled(AValue: Boolean);
     function GetAlarmDate: TDateTime;
     procedure SetAlarmDate(AValue: TDateTime);
     procedure SetColorOn(AValue: TColor);
     procedure SetColorOff(AValue: TColor);
     procedure SetVisible(AValue: Boolean);
-    procedure SetWidthM(AValue: Integer);
-    procedure SetWidthH(AValue: Integer);
+    procedure SetWidthMin(AValue: Integer);
+    procedure SetWidthHour(AValue: Integer);
   public
     constructor Create(AOwner: TJvAnalogClock);
     destructor Destroy; override;
@@ -80,10 +79,12 @@ type
     property ColorOff: TColor read FColorOff write SetColorOff;
     property Visible: Boolean read FVisible write SetVisible;
     property Trigger: TJvTriggerKind read FTrigger write FTrigger;
-    property WidthMin: Integer read FWidthM write SetWidthM;
-    property WidthHour: Integer read FWidthH write SetWidthH;
+    property WidthMin: Integer read FWidthMin write SetWidthMin;
+    property WidthHour: Integer read FWidthHour write SetWidthHour;
   end;
   // End of Bianconi
+
+  // (rom) renamed all Hr name parts to proper Hour
 
   TJvAnalogClock = class(TJvCustomPanel)
   private
@@ -105,18 +106,18 @@ type
     FShowDate: Boolean;
 
     FMinMarks: Boolean;
-    FColorHr: TColor;
+    FColorHour: TColor;
     FColorHourIn: TColor;
     FColorMin: TColor;
     FColorMinIn: TColor;
-    FColorHandHr: TColor;
+    FColorHandHour: TColor;
     FColorHandMin: TColor;
     FColorHandSec: TColor;
 
     FWidthHandMin: Byte;
-    FWidthHandHr: Byte;
+    FWidthHandHour: Byte;
     FWidthHandSec: Byte;
-    FWidthHr: Byte;
+    FWidthHour: Byte;
     FWidthMin: Byte;
 
     FCenterSize: Byte;
@@ -128,10 +129,16 @@ type
     FClockHour: Integer;
     FClockMin: Integer;
     FClockSec: Integer;
-    FCenterX, FCenterY: Integer;
-    FCurMarkX, FCurMarkY, FCurMark, FCurMark23: Integer;
+    FCenterX: Integer;
+    FCenterY: Integer;
+    FCurMarkX: Integer;
+    FCurMarkY: Integer;
+    FCurMark: Integer;
+    FCurMark23: Integer;
 
-    FOldHour, FOldMin, FOldSec: Integer;
+    FOldHour: Integer;
+    FOldMin: Integer;
+    FOldSec: Integer;
     FDrawRect: TRect;
     FOldDate: string;
     DateBottom: Boolean;
@@ -160,23 +167,22 @@ type
     procedure SetMinFontSize(Value: Integer);
     procedure SetTime(Value: TDateTime);
     procedure SetOffset(Value: Integer);
-    procedure SetColorHr(Value: TColor);
-    procedure SetColorHrIn(Value: TColor);
+    procedure SetColorHour(Value: TColor);
+    procedure SetColorHourIn(Value: TColor);
     procedure SetColorMin(Value: TColor);
     procedure SetColorMinIn(Value: TColor);
 
-    procedure SetColorHandHr(Value: TColor);
+    procedure SetColorHandHour(Value: TColor);
     procedure SetColorHandMin(Value: TColor);
     procedure SetColorHandSec(Value: TColor);
 
     procedure SetWidthHandMin(Value: Byte);
-    procedure SetWidthHandHr(Value: Byte);
+    procedure SetWidthHandHour(Value: Byte);
     procedure SetWidthHandSec(Value: Byte);
-    procedure SetWidthHr(Value: Byte);
+    procedure SetWidthHour(Value: Byte);
     procedure SetWidthMin(Value: Byte);
 
     procedure InternalPaint;
-
   protected
     procedure Loaded; override;
     procedure Resize; override;
@@ -207,34 +213,33 @@ type
     property HourSize: Integer read FHourSize write SetHourSize default 12;
     property MinuteSize: Integer read FMinuteSize write SetMinSize default 7;
     property MinuteFontSize: Integer read FMinuteFontSize write SetMinFontSize default 7;
-    property ColorHr: TColor read FColorHr write SetColorHr default clBlack;
-    property ColorHrIn: TColor read FColorHourIn write SetColorHrIn default clBlack;
+    property ColorHour: TColor read FColorHour write SetColorHour default clBlack;
+    property ColorHourIn: TColor read FColorHourIn write SetColorHourIn default clBlack;
     property ColorMin: TColor read FColorMin write SetColorMin default clBlack;
     property ColorMinIn: TColor read FColorMinIn write SetColorMinIn default clBlack;
-    property ColorHandHr: TColor read FColorHandHr write SetColorHandHr default clBlack;
+    property ColorHandHour: TColor read FColorHandHour write SetColorHandHour default clBlack;
     property ColorHandMin: TColor read FColorHandMin write SetColorHandMin default clBlack;
     property ColorHandSec: TColor read FColorHandSec write SetColorHandSec default clBlack;
-
     property WidthHandSec: Byte read FWidthHandSec write SetWidthHandSec default 1;
     property WidthHandMin: Byte read FWidthHandMin write SetWidthHandMin default 3;
-    property WidthHandHr: Byte read FWidthHandHr write SetWidthHandHr default 5;
-    property WidthHr: Byte read FWidthHr write SetWidthHr default 2;
+    property WidthHandHour: Byte read FWidthHandHour write SetWidthHandHour default 5;
+    property WidthHour: Byte read FWidthHour write SetWidthHour default 2;
     property WidthMin: Byte read FWidthMin write SetWidthMin default 1;
-
     // Bianconi
     property Alarm: TJvAlarmInfo read FAlarm write FAlarm;
     // End of Bianconi
-
     //    property MinFont :TFont read pfMinFont write pfMinFont;
-
     property CenterSize: Byte read FCenterSize write FCenterSize default 5;
     property CenterCol: TColor read FCenterColor write FCenterColor default clBlack;
-
     property Align;
+    property BevelWidth;
+    property BevelInner default bvRaised;
+    property BevelOuter default bvLowered;
     property Color default clBtnFace;
     property Cursor;
     property DragCursor;
     property DragMode;
+    property Height default 137;
     property ParentColor;
     property Font;
     property ParentFont;
@@ -244,11 +249,10 @@ type
     property TabOrder;
     property TabStop;
     property Visible;
-
+    property Width default 137;
     property OnChangeSec: TJvNotifyTime read FOnChangeSec write FOnChangeSec;
     property OnChangeMin: TJvNotifyTime read FOnChangeMin write FOnChangeMin;
     property OnChangeHour: TJvNotifyTime read FOnChangeHour write FOnChangeHour;
-
     // Bianconi
     property OnAlarm: TNotifyEvent read FOnAlarm write FOnAlarm;
     // End of Bianconi
@@ -264,22 +268,37 @@ type
     property OnMouseUp;
     property OnResize;
     property OnStartDrag;
-
-    property Width default 137;
-    property Height default 137;
-    property BevelWidth;
-    property BevelInner default bvRaised;
-    property BevelOuter default bvLowered;
   end;
 
 implementation
 
-// TJvAlarmInfo implementation
+//=== TJvAlarmInfo ===========================================================
+
 // Bianconi
+
+constructor TJvAlarmInfo.Create(AOwner: TJvAnalogClock);
+begin
+  inherited Create;
+  FOwner := AOwner;
+  FDate := Now;
+  FEnabled := False;
+  FColorOn := clTeal;
+  FColorOff := clGray;
+  FTrigger := tkOneShot;
+  FWidthHour := FOwner.WidthHandHour;
+  FWidthMin := FOwner.WidthHandMin;
+end;
+
+destructor TJvAlarmInfo.Destroy;
+begin
+  FOwner := nil;
+  FEnabled := False;
+  inherited Destroy;
+end;
 
 procedure TJvAlarmInfo.SetAlarmEnabled(AValue: Boolean);
 begin
-  if (FEnabled <> AValue) then
+  if FEnabled <> AValue then
   begin
     FEnabled := AValue;
     FOwner.Invalidate;
@@ -299,7 +318,7 @@ end;
 
 procedure TJvAlarmInfo.SetColorOn(AValue: TColor);
 begin
-  if (FColorOn <> AValue) then
+  if FColorOn <> AValue then
   begin
     FColorOn := AValue;
     FOwner.Invalidate;
@@ -308,7 +327,7 @@ end;
 
 procedure TJvAlarmInfo.SetColorOff(AValue: TColor);
 begin
-  if (FColorOff <> AValue) then
+  if FColorOff <> AValue then
   begin
     FColorOff := AValue;
     FOwner.Invalidate;
@@ -317,56 +336,38 @@ end;
 
 procedure TJvAlarmInfo.SetVisible(AValue: Boolean);
 begin
-  if (FVisible <> AValue) then
+  if FVisible <> AValue then
   begin
     FVisible := AValue;
     FOwner.Invalidate;
   end;
 end;
 
-procedure TJvAlarmInfo.SetWidthM(AValue: Integer);
+procedure TJvAlarmInfo.SetWidthMin(AValue: Integer);
 begin
-  if (FWidthM <> AValue) then
+  if FWidthMin <> AValue then
   begin
-    FWidthM := AValue;
+    FWidthMin := AValue;
     FOwner.Invalidate;
   end;
 end;
 
-procedure TJvAlarmInfo.SetWidthH(AValue: Integer);
+procedure TJvAlarmInfo.SetWidthHour(AValue: Integer);
 begin
-  if (FWidthH <> AValue) then
+  if FWidthHour <> AValue then
   begin
-    FWidthH := AValue;
+    FWidthHour := AValue;
     FOwner.Invalidate;
   end;
-end;
-
-constructor TJvAlarmInfo.Create(AOwner: TJvAnalogClock);
-begin
-  inherited Create;
-  FOwner := AOwner;
-  FDate := Now;
-  FEnabled := False;
-  FColorOn := clTeal;
-  FColorOff := clGray;
-  FTrigger := tkOneShot;
-  FWidthH := FOwner.WidthHandHr;
-  FWidthM := FOwner.WidthHandMin;
-end;
-
-destructor TJvAlarmInfo.Destroy;
-begin
-  FOwner := nil;
-  FEnabled := False;
-  inherited Destroy;
 end;
 
 // End of Bianconi
 
+//=== TJvAnalogClock =========================================================
+
 constructor TJvAnalogClock.Create(AOwner: TComponent);
 var
-  h, m, s, ms: Word;
+  H, M, S, Ms: Word;
 begin
   inherited Create(AOwner);
   BevelInner := bvRaised;
@@ -391,18 +392,18 @@ begin
   FMinuteStyle := hsLine;
   FHourMarks := hmAll;
 
-  FColorHr := clBlack;
+  FColorHour := clBlack;
   FColorHourIn := clBlack;
   FColorMin := clBlack;
   FColorMinIn := clBlack;
-  FColorHandHr := clBlack;
+  FColorHandHour := clBlack;
   FColorHandMin := clBlack;
   FColorHandSec := clBlack;
 
   FWidthHandSec := 1;
   FWidthHandMin := 3;
-  FWidthHandHr := 5;
-  FWidthHr := 2;
+  FWidthHandHour := 5;
+  FWidthHour := 2;
   FWidthMin := 1;
 
   FCenterColor := clBlack;
@@ -412,12 +413,12 @@ begin
   FAlarm := TJvAlarmInfo.Create(Self);
   // End of Bianconi
 
-  DecodeTime(Now, h, m, s, ms);
-  FOldMin := m;
-  FOldHour := h;
-  FOldSec := s;
+  DecodeTime(Now, H, M, S, Ms);
+  FOldHour := H;
+  FOldMin := M;
+  FOldSec := S;
 
-  FTimer := TTimer.Create(Self);
+  FTimer := TTimer.Create(nil);
   FTimer.Enabled := FActive;
   FTimer.Interval := 500;
   FTimer.OnTimer := ActTimer;
@@ -523,13 +524,13 @@ begin
   Invalidate;
 end;
 
-procedure TJvAnalogClock.SetColorHr(Value: TColor);
+procedure TJvAnalogClock.SetColorHour(Value: TColor);
 begin
-  FColorHr := Value;
+  FColorHour := Value;
   Invalidate;
 end;
 
-procedure TJvAnalogClock.SetColorHrIn(Value: TColor);
+procedure TJvAnalogClock.SetColorHourIn(Value: TColor);
 begin
   FColorHourIn := Value;
   Invalidate;
@@ -547,9 +548,9 @@ begin
   Invalidate;
 end;
 
-procedure TJvAnalogClock.SetColorHandHr(Value: TColor);
+procedure TJvAnalogClock.SetColorHandHour(Value: TColor);
 begin
-  FColorHandHr := Value;
+  FColorHandHour := Value;
   Invalidate;
 end;
 
@@ -577,15 +578,15 @@ begin
   Invalidate;
 end;
 
-procedure TJvAnalogClock.SetWidthHandHr(Value: Byte);
+procedure TJvAnalogClock.SetWidthHandHour(Value: Byte);
 begin
-  FWidthHandHr := Value;
+  FWidthHandHour := Value;
   Invalidate;
 end;
 
-procedure TJvAnalogClock.SetWidthHr(Value: Byte);
+procedure TJvAnalogClock.SetWidthHour(Value: Byte);
 begin
-  FWidthHr := Value;
+  FWidthHour := Value;
   Invalidate;
 end;
 
@@ -652,9 +653,9 @@ end;
 procedure TJvAnalogClock.InternalPaint;
 var
   AFactor: Real;
-  i: Integer;
+  I: Integer;
   ACurrMinute: Integer; //??
-  npkT, AMinuteX, AMinuteY: Integer;
+  NPkT, AMinuteX, AMinuteY: Integer;
   ARect: TRect;
   AMinuteStr: ShortString;
   ADateX, ADateY: Integer;
@@ -662,14 +663,15 @@ var
   AColor: TColor;
 begin
   // Bianconi
-  if ((csLoading in ComponentState) or (csDestroying in ComponentState)) then Exit;
+  if (csLoading in ComponentState) or (csDestroying in ComponentState) then
+    Exit;
   // End of Bianconi
 
-  FCenterX := (Width div 2); {Center}
-  FCenterY := (Height div 2);
-  //if FShowDate then FCenterY := ((Height - pFDate.Height) div 2);
+  FCenterX := Width div 2;
+  FCenterY := Height div 2;
+  //if FShowDate then FCenterY := (Height - pFDate.Height) div 2;
    // if FShowDate then
-   //   FCenterY := ((Height - (Font.Height + 4)) div 2);
+   //   FCenterY := (Height - (Font.Height + 4)) div 2;
 
   FCurMarkX := FCenterX - (1 + HourSize);
   if BevelInner <> bvNone then
@@ -686,10 +688,10 @@ begin
   FCurMark := FCurMarkY;
   if FCurMarkX < FCurMarkY then
     FCurMark := FCurMarkX;
-  FCurMark := FCurMark - FWidthHr;
+  FCurMark := FCurMark - FWidthHour;
   FCurMark23 := FCurMark div 3;
 
-  ADateStr := DateToStr(Sysutils.Date);
+  ADateStr := DateToStr(SysUtils.Date);
   ADateX := FCenterX - ((Canvas.TextWidth(ADateStr)) div 2);
   ADateY := FCenterY div 2;
   if BevelInner <> bvNone then
@@ -713,33 +715,30 @@ begin
     begin
       Canvas.Pen.Color := FColorMin;
       Canvas.Pen.Width := FWidthMin;
-      for i := 0 to 59 do
+      for I := 0 to 59 do
       begin
-        if (HourStyle = hsNumberInCircle) or ((i mod 5) > 0) or (HourMarks = hmNone) or
-          ((HourMarks = hmFour) and (((i div 5) mod 3) > 0)) then
+        if (HourStyle = hsNumberInCircle) or
+          ((I mod 5) > 0) or (HourMarks = hmNone) or
+          ((HourMarks = hmFour) and (((I div 5) mod 3) > 0)) then
         begin
-          ACurrMinute := i * 100;
+          ACurrMinute := I * 100;
           if FSpider then
-          begin
-            npkT := Round(Sqrt(Abs((FCurMarkY) * Cos(ACurrMinute * AFactor)) * Abs((FCurMarkY) *
+            NPkT := Round(Sqrt(Abs((FCurMarkY) * Cos(ACurrMinute * AFactor)) * Abs((FCurMarkY) *
               Cos(ACurrMinute * AFactor)) + Abs((FCurMarkX) * Sin(ACurrMinute * AFactor)) * Abs((FCurMarkX) *
-              Sin(ACurrMinute * AFactor))));
-          end
+              Sin(ACurrMinute * AFactor))))
           else
-          begin
-            if FCurMarkY < FCurMarkX then
-              npkT := FCurMarkY
-            else
-              npkT := FCurMarkX;
-          end;
+          if FCurMarkY < FCurMarkX then
+            NPkT := FCurMarkY
+          else
+            NPkT := FCurMarkX;
           Canvas.MoveTo(FCenterX + Round((FCurMark + 1) * Sin(ACurrMinute * AFactor)), FCenterY -
             Round((FCurMark + 1) * Cos(ACurrMinute * AFactor)));
-          AMinuteX := FCenterX + Round((npkT + MinuteSize) * Sin(ACurrMinute * AFactor));
+          AMinuteX := FCenterX + Round((NPkT + MinuteSize) * Sin(ACurrMinute * AFactor));
           if AMinuteX > FCenterX + FCurMarkX + MinuteSize then
             AMinuteX := FCenterX + FCurMarkX + MinuteSize;
           if AMinuteX < FCenterX - FCurMarkX - MinuteSize then
             AMinuteX := FCenterX - FCurMarkX - MinuteSize;
-          AMinuteY := FCenterY - Round((npkT + MinuteSize) * Cos(ACurrMinute * AFactor));
+          AMinuteY := FCenterY - Round((NPkT + MinuteSize) * Cos(ACurrMinute * AFactor));
           if AMinuteY > FCenterY + FCurMarkY + MinuteSize then
             AMinuteY := FCenterY + FCurMarkY + MinuteSize;
           if AMinuteY < FCenterY - FCurMarkY - MinuteSize then
@@ -757,23 +756,23 @@ begin
         Canvas.Font := Font;
         Canvas.Font.Size := MinuteFontSize;
       end;
-      for i := 0 to 59 do
+      for I := 0 to 59 do
       begin
-        if ((i mod 5) > 0) or (HourMarks = hmNone) or ((HourMarks = hmFour) and
-          (((i div 5) mod 3) > 0)) then
-          //      if ((i mod 5) > 0) then
+        if ((I mod 5) > 0) or (HourMarks = hmNone) or ((HourMarks = hmFour) and
+          (((I div 5) mod 3) > 0)) then
+          //      if ((I mod 5) > 0) then
         begin
-          ACurrMinute := i * 100;
+          ACurrMinute := I * 100;
           if FCurMarkY < FCurMarkX then
-            npkT := FCurMarkY
+            NPkT := FCurMarkY
           else
-            npkT := FCurMarkX;
+            NPkT := FCurMarkX;
 
-          AMinuteX := FCenterX + 1 + Round((npkT + (MinuteSize div 2)) * Sin(ACurrMinute * AFactor));
-          AMinuteY := FCenterY + 1 - Round((npkT + (MinuteSize div 2)) * Cos(ACurrMinute * AFactor));
+          AMinuteX := FCenterX + 1 + Round((NPkT + (MinuteSize div 2)) * Sin(ACurrMinute * AFactor));
+          AMinuteY := FCenterY + 1 - Round((NPkT + (MinuteSize div 2)) * Cos(ACurrMinute * AFactor));
           ARect := Rect(AMinuteX - (MinuteSize div 2), AMinuteY - (MinuteSize div 2), AMinuteX +
             (MinuteSize div 2), AMinuteY + (MinuteSize div 2));
-          AMinuteStr := IntToStr(i);
+          AMinuteStr := IntToStr(I);
           if (MinuteStyle = hsCircle) or (MinuteStyle = hsNumberInCircle) then
           begin
             Canvas.Brush.Color := FColorMinIn;
@@ -796,34 +795,30 @@ begin
   begin
     if HourStyle = hsLine then
     begin
-      Canvas.Pen.Color := FColorHr;
-      Canvas.Pen.Width := FWidthHr;
-      for i := 1 to 12 do
+      Canvas.Pen.Color := FColorHour;
+      Canvas.Pen.Width := FWidthHour;
+      for I := 1 to 12 do
       begin
-        if (HourMarks = hmAll) or ((HourMarks = hmFour) and ((i mod 3) = 0)) then
+        if (HourMarks = hmAll) or ((HourMarks = hmFour) and ((I mod 3) = 0)) then
         begin
-          ACurrMinute := ((i) * 100) * 30 div 6;
+          ACurrMinute := ((I) * 100) * 30 div 6;
           if FSpider then
-          begin
-            npkT := Round(Sqrt(Abs((FCurMarkY) * Cos(ACurrMinute * AFactor)) * Abs((FCurMarkY) *
+            NPkT := Round(Sqrt(Abs((FCurMarkY) * Cos(ACurrMinute * AFactor)) * Abs((FCurMarkY) *
               Cos(ACurrMinute * AFactor)) + Abs((FCurMarkX) * Sin(ACurrMinute * AFactor)) * Abs((FCurMarkX) *
-              Sin(ACurrMinute * AFactor))));
-          end
+              Sin(ACurrMinute * AFactor))))
           else
-          begin
-            if FCurMarkY < FCurMarkX then
-              npkT := FCurMarkY
-            else
-              npkT := FCurMarkX;
-          end;
+          if FCurMarkY < FCurMarkX then
+            NPkT := FCurMarkY
+          else
+            NPkT := FCurMarkX;
           Canvas.MoveTo(FCenterX + Round((FCurMark + 1) * Sin(ACurrMinute * AFactor)), FCenterY -
             Round((FCurMark + 1) * Cos(ACurrMinute * AFactor)));
-          AMinuteX := FCenterX + Round((npkT + HourSize) * Sin(ACurrMinute * AFactor));
+          AMinuteX := FCenterX + Round((NPkT + HourSize) * Sin(ACurrMinute * AFactor));
           if AMinuteX > FCenterX + FCurMarkX + HourSize then
             AMinuteX := FCenterX + FCurMarkX + HourSize;
           if AMinuteX < FCenterX - FCurMarkX - HourSize then
             AMinuteX := FCenterX - FCurMarkX - HourSize;
-          AMinuteY := FCenterY - Round((npkT + HourSize) * Cos(ACurrMinute * AFactor));
+          AMinuteY := FCenterY - Round((NPkT + HourSize) * Cos(ACurrMinute * AFactor));
           if AMinuteY > FCenterY + FCurMarkY + HourSize then
             AMinuteY := FCenterY + FCurMarkY + HourSize;
           if AMinuteY < FCenterY - FCurMarkY - HourSize then
@@ -834,24 +829,24 @@ begin
     end
     else
     begin
-      Canvas.Pen.Color := FColorHr;
-      Canvas.Pen.Width := FWidthHr;
+      Canvas.Pen.Color := FColorHour;
+      Canvas.Pen.Width := FWidthHour;
       if (HourStyle = hsNumber) or (HourStyle = hsNumberInCircle) then
         Canvas.Font := Font;
-      for i := 1 to 12 do
+      for I := 1 to 12 do
       begin
-        if (HourMarks = hmAll) or ((HourMarks = hmFour) and ((i mod 3) = 0)) then
+        if (HourMarks = hmAll) or ((HourMarks = hmFour) and ((I mod 3) = 0)) then
         begin
-          ACurrMinute := ((i) * 100) * 30 div 6;
+          ACurrMinute := ((I) * 100) * 30 div 6;
           if FCurMarkY < FCurMarkX then
-            npkT := FCurMarkY
+            NPkT := FCurMarkY
           else
-            npkT := FCurMarkX;
-          AMinuteX := FCenterX + 1 + Round((npkT + (HourSize div 2)) * Sin(ACurrMinute * AFactor));
-          AMinuteY := FCenterY + 1 - Round((npkT + (HourSize div 2)) * Cos(ACurrMinute * AFactor));
+            NPkT := FCurMarkX;
+          AMinuteX := FCenterX + 1 + Round((NPkT + (HourSize div 2)) * Sin(ACurrMinute * AFactor));
+          AMinuteY := FCenterY + 1 - Round((NPkT + (HourSize div 2)) * Cos(ACurrMinute * AFactor));
           ARect := Rect(AMinuteX - (HourSize div 2), AMinuteY - (HourSize div 2), AMinuteX +
             (HourSize div 2), AMinuteY + (HourSize div 2));
-          AMinuteStr := inttostr(i);
+          AMinuteStr := IntToStr(I);
           if (HourStyle = hsCircle) or (HourStyle = hsNumberInCircle) then
           begin
             Canvas.Brush.Color := FColorHourIn;
@@ -862,8 +857,8 @@ begin
           begin
             Canvas.Brush.Style := bsClear;
             Canvas.TextRect(ARect, ARect.Right - ((ARect.Right - ARect.Left) div 2) -
-              (Canvas.TextWidth(AMinuteStr) div 2) - 1, ARect.Bottom - ((ARect.Bottom - ARect.Top)
-              div 2) - (Canvas.TextHeight(AMinuteStr) div 2) - 1, AMinuteStr);
+              (Canvas.TextWidth(AMinuteStr) div 2) - 1, ARect.Bottom - ((ARect.Bottom - ARect.Top) div 2) -
+              (Canvas.TextHeight(AMinuteStr) div 2) - 1, AMinuteStr);
           end;
         end;
       end;
@@ -879,10 +874,10 @@ end;
 
 procedure TJvAnalogClock.ActTimer(Sender: TObject);
 var
-  h, m, s, ms: Word;
-  h1, m1, s1, ms1: Word;
+  H, M, S, Ms: Word;
+  H1, M1, S1, Ms1: Word;
   AFactor: Real;
-  i: Integer;
+  I: Integer;
   ADateTime: TDateTime;
   ADateStr: string;
   ADateBottom: Boolean;
@@ -891,7 +886,8 @@ begin
   if not FActive then
     FTimer.Enabled := FActive;
 
-  if ((csLoading in ComponentState) or (csDestroying in ComponentState)) then Exit;
+  if (csLoading in ComponentState) or (csDestroying in ComponentState) then
+    Exit;
 
   if FActive then
     ADateTime := Now
@@ -899,34 +895,34 @@ begin
     ADateTime := FTime;
 
   ADateTime := ADateTime + (FOffset / (60 * 24));
-  DecodeTime(ADateTime, h, m, s, ms);
+  DecodeTime(ADateTime, H, M, S, Ms);
   Inc(FHalfSecond);
   if FSecJump then
   begin
-    if s = FOldSecond then
+    if S = FOldSecond then
       if FActive then
         Exit;
-    FOldSecond := s;
-    ms := 0;
+    FOldSecond := S;
+    Ms := 0;
   end;
 
   if FShowDate then
   begin
     ADateStr := DateToStr(ADateTime);
-    ADateBottom := ((h mod 12) < 2) or ((h mod 12) > 7);
+    ADateBottom := ((H mod 12) < 2) or ((H mod 12) > 7);
     if (ADateBottom <> DateBottom) or (ADateStr <> FOldDate) then
     begin
       Canvas.Brush.Color := Color;
       Canvas.Brush.Style := bsSolid;
       Canvas.TextRect(FDrawRect, FDrawRect.Left, FDrawRect.Top, '');
-      Canvas.TextRect(Rect(FDrawRect.left, FDrawRect.Top * 3, FDrawRect.Right,
+      Canvas.TextRect(Rect(FDrawRect.Left, FDrawRect.Top * 3, FDrawRect.Right,
         FDrawRect.Top * 2 + FDrawRect.Bottom), FDrawRect.Left, FDrawRect.Top * 3, '');
     end;
     DateBottom := ADateBottom;
     FOldDate := ADateStr;
     Canvas.Brush.Style := bsClear;
     if DateBottom then
-      Canvas.TextRect(Rect(FDrawRect.left, FDrawRect.Top * 3, FDrawRect.Right,
+      Canvas.TextRect(Rect(FDrawRect.Left, FDrawRect.Top * 3, FDrawRect.Right,
         FDrawRect.Top * 2 + FDrawRect.Bottom), FDrawRect.Left, FDrawRect.Top * 3, ADateStr)
     else
       Canvas.TextRect(FDrawRect, FDrawRect.Left, FDrawRect.Top, ADateStr);
@@ -935,28 +931,28 @@ begin
   //event handler by Ujlaki Sándor e-mail: ujlaki.sandor@drotposta.hu
   if FActive and (s <> FOldSec) then //every seconds
   begin
-    FOldSec := s;
-    DoChangeSec(h, m, s);
-    DecodeTime(FTime, h1, m1, s1, ms1);
+    FOldSec := S;
+    DoChangeSec(H, M, S);
+    DecodeTime(FTime, H1, M1, S1, Ms1);
 
     // Bianconi
     //    if (s1 = s) and (m1 = m) and (h1 = h) then
     //      DoAlarm;
     // End of Bianconi
 
-    if m <> FOldMin then
+    if M <> FOldMin then
     begin
-      FOldMin := m;
-      DoChangeMin(h, m, s);
+      FOldMin := M;
+      DoChangeMin(H, M, S);
       if h <> FOldHour then
       begin
-        FOldHour := h;
-        DoChangeHour(h, m, s);
+        FOldHour := H;
+        DoChangeHour(H, M, S);
       end;
     end;
   end;
 
-  i := (((s) * 1000) + ms) div 10;
+  I := (((S) * 1000) + Ms) div 10;
   AFactor := Pi / 3000;
   if FSeconds then
     Inc(FHalfSecond);
@@ -980,15 +976,15 @@ begin
   if FHalfSecond > 50 then
   begin
     Canvas.Pen.Color := Color;
-    Canvas.Pen.Width := FWidthHandHr;
+    Canvas.Pen.Width := FWidthHandHour;
     ASin := Sin(FClockMin * AFactor);
     ACos := Cos(FClockMin * AFactor);
 
     //Urni kazalec
-    Canvas.MoveTo(FCenterX + Round(03 * ASin), FCenterY - Round(03 * ACos));
+    Canvas.MoveTo(FCenterX + Round(3 * ASin), FCenterY - Round(3 * ACos));
     Canvas.LineTo(FCenterX + Round((FCurMark - FCurMark23) * ASin), FCenterY - Round((FCurMark - FCurMark23) * ACos));
 
-    Canvas.MoveTo(FCenterX - Round(03 * ASin), FCenterY + Round(03 * ACos));
+    Canvas.MoveTo(FCenterX - Round(3 * ASin), FCenterY + Round(3 * ACos));
     Canvas.LineTo(FCenterX - Round(10 * ASin), FCenterY + Round(10 * ACos));
 
     //Minutni kazalec
@@ -1003,28 +999,24 @@ begin
     Canvas.MoveTo(FCenterX - Round(3 * ASin), FCenterY + Round(3 * ACos));
     Canvas.LineTo(FCenterX - Round(10 * ASin), FCenterY + Round(10 * ACos));
 
-    FClockHour := (((m) * 60 + S) * 10) div 6;
-    FClockMin := (((h) * 60 + m) * 25) div 3;
+    FClockHour := ((M * 60 + S) * 10) div 6;
+    FClockMin := ((H * 60 + M) * 25) div 3;
   end;
 
   // Draw Alarm mark
-  if (FAlarm.Visible) then
+  if FAlarm.Visible then
   begin
-    if (FAlarm.Enabled and FActive) then
-    begin
-      Canvas.Pen.Color := FAlarm.ColorOn;
-    end
+    if FAlarm.Enabled and FActive then
+      Canvas.Pen.Color := FAlarm.ColorOn
     else
-    begin
       Canvas.Pen.Color := FAlarm.ColorOff;
-    end;
 
-    DecodeTime(FAlarm.Date, H1, M1, S1, ms1);
+    DecodeTime(FAlarm.Date, H1, M1, S1, Ms1);
     H1 := (((H1 * 60) + M1) * 25) div 3;
     M1 := (((M1 * 60) + S1) * 10) div 6;
     //    S1 := ((S1 * 1000) + ms1) div 10;
 
-    // Don'i draw Second
+    // Don't draw Second
     //    Canvas.Pen.Width := FWidthHandSec;
     //    Canvas.MoveTo( FCenterX + Round(4 * Sin(S1 * AFactor)),
     //                   FCenterY - Round(4 * Cos(S1 * AFactor)));
@@ -1066,7 +1058,7 @@ begin
   end;
 
   //Draw hand
-  if ((FHalfSecond > 50) or FSecOver) then
+  if (FHalfSecond > 50) or FSecOver then
   begin
     FSecOver := False;
 
@@ -1086,15 +1078,15 @@ begin
     //Urni kazalec
     ASin := Sin(FClockMin * AFactor);
     ACos := Cos(FClockMin * AFactor);
-    Canvas.Pen.Color := FColorHandHr;
-    Canvas.Pen.Width := FWidthHandHr;
-    Canvas.MoveTo(FCenterX + Round(3 * ASin), FCenterY - Round(03 * ACos));
+    Canvas.Pen.Color := FColorHandHour;
+    Canvas.Pen.Width := FWidthHandHour;
+    Canvas.MoveTo(FCenterX + Round(3 * ASin), FCenterY - Round(3 * ACos));
     Canvas.LineTo(FCenterX + Round((FCurMark - FCurMark23) * ASin), FCenterY - Round((FCurMark - FCurMark23) * ACos));
 
-    Canvas.MoveTo(FCenterX - Round(3 * ASin), FCenterY + Round(03 * ACos));
+    Canvas.MoveTo(FCenterX - Round(3 * ASin), FCenterY + Round(3 * ACos));
     Canvas.LineTo(FCenterX - Round(10 * ASin), FCenterY + Round(10 * ACos));
 
-    if (FHalfSecond > 50) then
+    if FHalfSecond > 50 then
       FHalfSecond := 0;
   end;
 
@@ -1102,22 +1094,22 @@ begin
   begin
     Canvas.Pen.Width := FWidthHandSec;
     Canvas.Pen.Color := FColorHandSec;
-    ASin := Sin(i * AFactor);
-    ACos := Cos(i * AFactor);
+    ASin := Sin(I * AFactor);
+    ACos := Cos(I * AFactor);
 
     Canvas.MoveTo(FCenterX + Round(4 * ASin), FCenterY - Round(4 * ACos));
     Canvas.LineTo(FCenterX + Round(FCurMark * ASin), FCenterY - Round(FCurMark * ACos));
 
     Canvas.MoveTo(FCenterX - Round(4 * ASin), FCenterY + Round(4 * ACos));
     Canvas.LineTo(FCenterX - Round(15 * ASin), FCenterY + Round(15 * ACos));
-    FClockSec := i;
+    FClockSec := I;
 
     FSecOver := True;
 
     // Bianconi - Removed
-    //    if (FCenterSize > 0) then
+    //    if FCenterSize > 0 then
     //    begin
-    //      Canvas.Pen.Color := FColorHandHr;
+    //      Canvas.Pen.Color := FColorHandHour;
     //      Canvas.Brush.Color := FCenterColor;
     //      Canvas.Brush.Style := bsSolid;
     //      Canvas.Pen.Width := 1;
@@ -1133,9 +1125,9 @@ begin
   end;
 
   // Draw center point
-  if (FCenterSize > 0) then
+  if FCenterSize > 0 then
   begin
-    Canvas.Pen.Color := FColorHandHr;
+    Canvas.Pen.Color := FColorHandHour;
     Canvas.Brush.Color := FCenterColor;
     Canvas.Brush.Style := bsSolid;
     Canvas.Pen.Width := 1;
@@ -1144,44 +1136,28 @@ begin
   end;
 
   // Check Alarm information
-  if (FActive and FAlarm.Enabled) then
-  begin
-    if (FAlarm.Date <= Now) then
+  if FActive and FAlarm.Enabled then
+    if FAlarm.Date <= Now then
     begin
       case FAlarm.Trigger of
         tkOneShot:
-          begin
-            FAlarm.Enabled := False;
-          end;
+          FAlarm.Enabled := False;
         tkEachSecond:
-          begin
-            JvJCLUtils.IncSecond(FAlarm.Date, 1);
-          end;
+          JvJCLUtils.IncSecond(FAlarm.Date, 1);
         tkEachMinute:
-          begin
-            JvJCLUtils.IncMinute(FAlarm.Date, 1);
-          end;
+          JvJCLUtils.IncMinute(FAlarm.Date, 1);
         tkEachHour:
-          begin
-            JvJCLUtils.IncHour(FAlarm.Date, 1);
-          end;
+          JvJCLUtils.IncHour(FAlarm.Date, 1);
         tkEachDay:
-          begin
-            JvJCLUtils.IncDay(FAlarm.Date, 1);
-          end;
+          JvJCLUtils.IncDay(FAlarm.Date, 1);
         tkEachMonth:
-          begin
-            JvJCLUtils.IncMonth(FAlarm.Date, 1);
-          end;
+          JvJCLUtils.IncMonth(FAlarm.Date, 1);
         tkEachYear:
-          begin
-            JvJCLUtils.IncYear(FAlarm.Date, 1);
-          end;
+          JvJCLUtils.IncYear(FAlarm.Date, 1);
       end;
       // We set FAlarm params before call event to allow user make changes on it.
       DoAlarm;
     end;
-  end;
 end;
 
 end.

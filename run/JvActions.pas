@@ -62,15 +62,14 @@ type
     function Execute: Boolean;
     property MapiComponent: TJclEmail read FMail write FMail;
   published
-    property ShowDialogs: Boolean read FShowDialogs write FShowDialogs default True;
-
     property Attachments: TStrings read GetAttachments write SetAttachment;
     property Body: string read GetBody write SetBody;
     property FindOptions: TJclEmailFindOptions read GetFindOptions write SetFindOptions;
     property HtmlBody: Boolean read GetHtmlBody write SetHtmlBody;
     property LogonOptions: TJclEmailLogonOptions read GetLogonOptions write SetLogonOptions;
     property ReadMsg: TJclEmailReadMsg read GetReadMsg;
-    property Recipients: string read GetRecipients write SetRecipients; 
+    property Recipients: string read GetRecipients write SetRecipients;
+    property ShowDialogs: Boolean read FShowDialogs write FShowDialogs default True;
     property Subject: string read GetSubject write SetSubject;
     property UserLogged: Boolean read GetUserLogged;
   end;
