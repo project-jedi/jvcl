@@ -28,7 +28,7 @@
  THE SOFTWARE.
 --------------------------------------------------------------------------------
 
-Last Modified: 2004-01-02
+Last Modified: 2004-01-10
 
 Known Issues:
   - Covers only a small part of the Windows APIs
@@ -379,8 +379,8 @@ type
   BITMAPINFO = tagBITMAPINFO;
 
 { brushes }
-function CreateSolidBrush(crColor: TColorRef): QBrushH;
-function CreateHatchBrush(bStyle: BrushStyle; crColor: TColorRef): QBrushH;
+function CreateSolidBrush(Color: TColor): QBrushH;
+function CreateHatchBrush(bStyle: BrushStyle; Color: TColor): QBrushH;
 function DeleteObject(Handle: QBrushH): LongBool; overload;
 
 const
@@ -392,7 +392,7 @@ const
   HS_HORIZONTAL = BrushStyle_HorPattern;      // Horizontal hatch
   HS_VERTICAL   = BrushStyle_VerPattern;      // Vertical hatch
 
-function CreatePen(Style, Width: Integer; Color: TColorRef): QPenH;
+function CreatePen(Style, Width: Integer; Color: TColor): QPenH;
 function DeleteObject(Handle: QPenH): LongBool; overload;
 
 const
@@ -507,14 +507,14 @@ const
   OPAQUE      = 2; // BGMode_OpaqueMode
 
 function GetPixel(Handle: QPainterH; X, Y: Integer): TColorRef;
-function SetPixel(Handle: QPainterH; X, Y: Integer; Color: TColorRef): TColorRef;
-function SetTextColor(Handle: QPainterH; color: TColor): TColor;
-function SetBkColor(Handle: QPainterH; color: TColor): TColor;
+function SetPixel(Handle: QPainterH; X, Y: Integer; Color: TColor): TColorRef;
+function SetTextColor(Handle: QPainterH; color: TColor): TColorRef;
+function SetBkColor(Handle: QPainterH; color: TColor): TColorRef;
 function GetBkMode(Handle: QPainterH): Integer;
 function SetBkMode(Handle: QPainterH; BkMode: Integer): Integer;
-function SetDCBrushColor(Handle: QPainterH; Color: TColorRef): TColorRef;
-function SetDCPenColor(Handle: QPainterH; Color: TColorRef): TColorRef;
-function SetPenColor(Handle: QPainterH; Color: TColor): TColor;
+function SetDCBrushColor(Handle: QPainterH; Color: TColor): TColorRef;
+function SetDCPenColor(Handle: QPainterH; Color: TColor): TColorRef;
+function SetPenColor(Handle: QPainterH; Color: TColor): TColorRef;
 
 function CreateCompatibleDC(Handle: QPainterH; Width: Integer = 1; Height: Integer = 1): QPainterH;
 function CreateCompatibleBitmap(Handle: QPainterH; Width, Height: Integer): QPixmapH;
@@ -1110,7 +1110,7 @@ implementation
 
 {$IFDEF LINUX}
 uses
-  Libc, Xlib, Windows;
+  Libc, Xlib;
 {$ENDIF LINUX}
 {$IFDEF MSWINDOWS}
 uses
@@ -1571,9 +1571,13 @@ begin
 end;
 
 
-function CreatePen(Style, Width: Integer; Color: TColorRef): QPenH;
+function CreatePen(Style, Width: Integer; Color: TColor): QPenH;
+var
+  QC: QColorH;
 begin
-  Result := QPen_create(QColorEx(Color).Handle, Width, PenStyle(Style));
+  QC := QColor(Color);
+  Result := QPen_create(QC, Width, PenStyle(Style));
+  QColor_destroy(QC);
 end;
 
 function DeleteObject(Handle: QPenH): LongBool;
@@ -1587,14 +1591,22 @@ begin
   end;
 end;
 
-function CreateSolidBrush(crColor: TColorRef): QBrushH;
+function CreateSolidBrush(Color: TColor): QBrushH;
+var
+  QC: QColorH;
 begin
-  Result := QBrush_create(QColorEx(crColor).Handle, BrushStyle_SolidPattern);
+  QC := QColor(Color);
+  Result := QBrush_create(QC, BrushStyle_SolidPattern);
+  QColor_destroy(QC);
 end;
 
-function CreateHatchBrush(bStyle: BrushStyle; crColor: TColorRef): QBrushH;
+function CreateHatchBrush(bStyle: BrushStyle; Color: TColor): QBrushH;
+var
+  QC: QColorH;
 begin
-  Result := QBrush_create(QColorEx(crColor).Handle, bStyle);
+  QC := QColor(Color);
+  Result := QBrush_create(QC, bStyle);
+  QColor_destroy(QC);
 end;
 
 function DeleteObject(Handle: QBrushH): LongBool;
@@ -1624,31 +1636,20 @@ end;
 function SetWindowPlacement(Handle: QWidgetH; W: PWindowPlacement): LongBool;
 begin
   try
+    Result := ShowWindow(Handle, W.ShowCmd);
     with W.rcNormalPosition do
        QWidget_setGeometry(Handle, Left, Top, Right - Left, Bottom - Top);
-    Result := ShowWindow(Handle, W.ShowCmd);
   except
     Result := False;
   end;
 end;
-
-{function SetWindowPos(Handle: QWidgetH; W: PWindowPlacement): LongBool;
-begin // (ahuser) unused and not in the interface section
-  try
-    with W.rcNormalPosition do
-       QWidget_setGeometry(Handle, Left, Top, Right - Left, Bottom - Top);
-    Result := ShowWindow(Handle, W.ShowCmd);
-  except
-    Result := False;
-  end;
-end;}
 
 function GetWindowPlacement(Handle: QWidgetH; W: PWindowPlacement): LongBool;
 var
   R: TRect;
 begin
   try
-    QWidget_geometry(Handle, @R);
+    QWidget_Geometry(Handle, @R);
     W.rcNormalPosition.Left := R.Left;
     W.rcNormalPosition.Top := R.Top;
     W.rcNormalPosition.Right := R.Right;
@@ -1903,30 +1904,42 @@ begin
   end;
 end;
 
-function SetPenColor(Handle: QPainterH; Color: TColor): TColor;
+function SetPenColor(Handle: QPainterH; Color: TColor): TColorRef;
+var
+  QC: QColorH;
 begin
   Result :=  QColorColor(QPen_color(QPainter_pen(Handle)));
-  QPainter_setPen(Handle, QColorEx(Color).Handle);
+  QC := QColor(Color);
+  QPainter_setPen(Handle, QC);
+  QColor_destroy(QC);
 end;
 
-function SetTextColor(Handle: QPainterH; Color: TColor): TColor;
+function SetTextColor(Handle: QPainterH; Color: TColor): TColorRef;
 begin
   Result := SetPenColor(Handle, Color);
 end;
 
-function SetBkColor(Handle: QPainterH; Color: TColor): TColor;
+function SetBkColor(Handle: QPainterH; Color: TColor): TColorRef;
+var
+  QC: QColorH;
 begin
   Result := QColorColor(QPainter_backgroundColor(Handle));
-  QPainter_setBackgroundColor(Handle, QColorEx(Color).Handle);
+  QC := QColor(Color);
+  QPainter_setBackgroundColor(Handle, QC);
+  QColor_destroy(QC);
 end;
 
-function SetDCBrushColor(Handle: QPainterH; Color: TColorRef): TColorRef;
+function SetDCBrushColor(Handle: QPainterH; Color: TColor): TColorRef;
+var
+  QC: QColorH;
 begin
   Result := QColorColor(QBrush_color(QPainter_brush(Handle)));
-  QPainter_setBrush(Handle, QColorEx(Color).Handle);
+  QC := QColor(Color);
+  QPainter_setBrush(Handle, QC);
+  QColor_destroy(QC);
 end;
 
-function SetDCPenColor(Handle: QPainterH; Color: TColorRef): TColorRef;
+function SetDCPenColor(Handle: QPainterH; Color: TColor): TColorRef;
 begin
   Result := SetPenColor(Handle, Color);
 end;
@@ -3673,8 +3686,6 @@ var
   end;
 
 begin
-  if Len = -1 then
-    Len := Length(Text);
   FontSaved := nil;
   FontSet := nil;
   if WinFlags and DT_INTERNAL <> 0 then
@@ -3704,8 +3715,6 @@ begin
       Caption := WordEllipsis(Text, Handle, R, flags)
     else
       Caption := Text;
-{    if QBrush_style(QPainter_brush(Handle)) <> BrushStyle_NoBrush then
-      FillRect(Handle, R, QPainter_brush(Handle));}
     QPainter_DrawText(Handle, @R, Flags, PWideString(@Caption), Len, @R2, nil);
     if ModifyString and Flags <> 0 then
       Text := Caption;
@@ -4730,7 +4739,7 @@ begin
   end;
 end;
 
-function SetPixel(Handle: QPainterH; X, Y: Integer; Color: TColorRef): TColorRef;
+function SetPixel(Handle: QPainterH; X, Y: Integer; Color: TColor): TColorRef;
 var
   Brush: QBrushH;
   OldRop: RasterOp;
