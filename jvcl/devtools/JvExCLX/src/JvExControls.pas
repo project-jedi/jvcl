@@ -61,6 +61,7 @@ function GetCanvas(Instance: TWinControl): TControlCanvas;
 function GetHintColor(Instance: TWinControl): TColor;
 function InputKeysToDlgCodes(InputKeys: TInputKeys): Integer;
 function ShiftStateToKeyData(Shift: TShiftState): Longint;
+function DoClipBoardCommands(Msg: Integer; ClipBoardCommands: TJvClipBoardCommands): Boolean;
 
 implementation
 
@@ -139,6 +140,19 @@ begin
   if DlgCodes and DLGC_BUTTON <> 0 then
     Include(Result, ikButton);
 end;
+
+function DoClipBoardCommands(Msg: Integer; ClipBoardCommands: TJvClipBoardCommands): Boolean;
+begin
+  case Msg of
+    WM_COPY          : Result := caCopy in ClipBoardCommands;
+    WM_CUT           : Result := caCut in ClipBoardCommands;
+    WM_PASTE         : Result := caPaste in ClipBoardCommands;
+    WM_UNDO, EM_UNDO : Result := caUndo in ClipBoardCommands;
+  else
+    Result := False;
+  end;
+end;
+
 
 JV_CONTROL_IMPL(Control)
 JV_WINCONTROL_IMPL(WinControl)

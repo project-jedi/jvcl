@@ -61,22 +61,7 @@ type
   JV_WINCONTROL(CustomStaticText)
   JV_WINCONTROL(StaticText)
 
-function DoClipBoardCommands(Msg: Integer; ClipBoardCommands: TJvClipBoardCommands): Boolean;
-
 implementation
-
-function DoClipBoardCommands(Msg: Integer; ClipBoardCommands: TJvClipBoardCommands): Boolean;
-begin
-  case Msg of
-    WM_COPY          : Result := caCopy in ClipBoardCommands;
-    WM_CUT           : Result := caCut in ClipBoardCommands;
-    WM_PASTE         : Result := caPaste in ClipBoardCommands;
-    WM_UNDO, EM_UNDO : Result := caUndo in ClipBoardCommands;
-  else
-    Result := False;
-  end;
-end;
-
 
 JV_WINCONTROL_IMPL(CustomGroupBox)
 {$DEFINE HASAUTOSIZE}
