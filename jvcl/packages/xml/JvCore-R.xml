@@ -89,7 +89,6 @@
     <File Name="..\..\run\JvResources.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvClipbrd.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvAutoComplete.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\common\JvFinalize.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvBackgrounds.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQRegistryIniFile.pas" Targets="linux" Formname="" Condition=""/>
   </Contains>
