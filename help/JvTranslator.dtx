@@ -28,23 +28,24 @@ Summary
   Converts the properties of a TComponent to an XML string.
 Description
   Use ComponentToXML to convert the name and published properties of a TComponent instance into a
-  correctly formatted XML string compatible with the format used by JvTranslator. You can create a
-  translation template file for your application by calling ComponentToXML for each form, combine the
-  returned strings, wrap the string in the \<Translation\> root node and finally save the string to a file. Note that
-  ComponentToXML lists all published properties of a component and you might have to clean the returned
-  XML from properties you don't need to translate.
+  correctly formatted XML string compatible with the format used by JvTranslator. You can create a complete
+  translation template file for your application by calling ComponentToXML for the Application object.
+
+  Note that ComponentToXML lists all published properties not skipped by a call to SkipProperty of a
+  component and you might have to clean the returned XML from properties you don't need to translate.
 Parameters
   AComponent - The component to create the XL fragment for. If AComponent is found in the skip list, it's
-               properties will not be listed.
+               properties will not be listed. If any of the component's properties is found in the skiplist,
+               the property will not be listed. If AComponent is Application, a root node with the name 'Translation'
+               is automatically added to the returned XML.
   Recurse    - Set this parameter to true to recurse the Components array of AComponent and create the XML for
                owned components as well. If AComponent is in the skip list and Recurse is true, the owned
                components of AComponent will still be checked and its properties added to the XML string.
 Return value
   An XML string then can be used in calls to TJvTranslator.Translate or as a building block for a XML
-  translation template file. Note that the returned XML string does not include the root node (\<Translation\>)
-  necessary when reading translations from a file. You must add this manually yourself (or in code).
+  translation template file. 
 See Also
-  SkipClass, InSkipList
+  SkipClass, SkipProperty, InSkipList
 ----------------------------------------------------------------------------------------------------
 @@TJvTranslator.InSkipList@TClass
 Summary
@@ -53,11 +54,52 @@ Description
   InSkipList returns true if the specified class has been added to the skip list by a call to
   SkipClass. If a class is in the skip list, it's properties will not be included in the XML string.
 Parameters
-  AClass - The class to check.
+  AClass - The class to check. The specified class and all classes inherited from it are checked.
 Return Value
   True if AClass is in the skip list, false if it is not.
 See Also
   SkipClass, ComponentToXML
+----------------------------------------------------------------------------------------------------
+@@TJvTranslator.InSkipList@TClass@string
+Summary
+  Checks if a specific class is skipped when creating XML with ComponentToXML
+Description
+  InSkipList returns true if the specified class has been added to the skip list by a call to
+  SkipClass. If a class is in the skip list, it's properties will not be included in the XML string.
+Parameters
+  AClass - The class to check. The specified class and all classes inherited from it are checked.
+  PropName - The name of the property to check.
+Return value
+  True if PropName of AClass is in the skip list, false if it is not.
+See Also
+  SkipClass, SkipProperty, ComponentToXML
+----------------------------------------------------------------------------------------------------
+@@TJvTranslator.InSkipList@TObject
+Summary
+  Checks if a specific class instance is skipped when creating XML with ComponentToXML
+Description
+  InSkipList returns true if the specified class instance has been added to the skip list by a call to
+  SkipClass. If a class is in the skip list, it's properties will not be included in the XML string.
+Parameters
+  Obj - The class instance to check.
+Return value
+  True if Obj is in the skip list, false if it is not.
+See Also
+  SkipClass, SkipProperty, ComponentToXML
+----------------------------------------------------------------------------------------------------
+@@TJvTranslator.InSkipList@TObject@string
+Summary
+  Checks if a specific class is skipped when creating XML with ComponentToXML
+Description
+  InSkipList returns true if the specified class has been added to the skip list by a call to
+  SkipClass. If a class is in the skip list, it's properties will not be included in the XML string.
+Parameters
+  Obj      - The class instance to check.
+  PropName - The name of the property.
+Return value
+  True if PropName of Obj is in the skip list, false if it is not.
+See Also
+  SkipClass, SkipProperty, ComponentToXML
 ----------------------------------------------------------------------------------------------------
 @@TJvTranslator.SkipClass
 Summary
@@ -65,12 +107,30 @@ Summary
 Description
   Call SkipClass with a class name to add the class to the skip list. The skip list is used by
   ComponentToXML to determine whether the properties of a class should be added to the returned XML
-  string. Note that even if a class is in the skip list, the Components array of the skipped class will
+  string and by Translate to determine what to translate.
+
+  Note that even if a class is in the skip list, the Components array of the skipped class will
   still be iterated and checked if the Recurse parameter to ComponentToXML is true.
 Parameters
   AClass - The class to skip. Calling SkipClass with the same class multiple times, does nothing.
 See Also
-  ComponentToXML, InSkipList
+  ComponentToXML, InSkipList, UnSkipClass, SkipProperty, UnskipProperty
+----------------------------------------------------------------------------------------------------
+@@TJvTranslator.SkipProperty
+Summary
+  Adds a class property to the internal skip list.
+Description
+  Call SkipProperty with a class and property name to add the property of the class to the skip list. The
+  skip list is used by ComponentToXML to determine whether the properties of a class should be added to the
+  returned XML string and by Translate to determine what to translate.
+
+  Note that even if a class is in the skip list, the Components array of the skipped class will
+  still be iterated and checked if the Recurse parameter to ComponentToXML is true.
+Parameters
+  AClass - The class containing the property.
+  APropName - the property to skip in the class.
+See Also
+  ComponentToXML, InSkipList, SkipClass, UnSkipClass, UnskipProperty
 ----------------------------------------------------------------------------------------------------
 @@TJvTranslator.Translate@string
 Summary
@@ -168,6 +228,51 @@ Description
 Parameters
   Stream - The stream to read the XML from. The reading starts at the current position in the stream.
 ----------------------------------------------------------------------------------------------------
+@@TJvTranslator.TranslateString@string
+Summary
+  Translates all forms on the screen.
+Description
+  Translates all forms maintained by the global Screen object. Only instantiated forms and their
+  components are translated.
+Parameters
+  S - The string to read the XML from.
+----------------------------------------------------------------------------------------------------
+@@TJvTranslator.TranslateString@string@TCustomForm
+  Translates a form.
+Description
+  Translates a form and all contained components on the form using the XML in the string.
+Parameters
+  S    - The string to read the XML from.
+  Form - The form to translate.
+----------------------------------------------------------------------------------------------------
+@@TJvTranslator.UnskipClass
+Summary
+  Removes a class from the internal skip list.
+Description
+  Call UnskipClass to remove a class from the skip list.
+Parameters
+  AClass - The class to remove
+See Also
+  unskipProperty
+----------------------------------------------------------------------------------------------------
+@@TJvTranslator.UnskipProperty
+Summary
+  Removes a property from the internal skip list.
+Description
+  Call UnskipProperty to remove a property from the internal skip list. Removing the same property several times
+  does nothing.
+Parameters
+  AClass   - The class containing the property.
+  PropName - The name of the property.
+See Also
+  UnSkipClass
+----------------------------------------------------------------------------------------------------
+@@TJvTranslator.XML
+Summary
+  Provides access to the internal XML object.
+Description
+  Use the XML property to access the internal TJvSimpleXML object used to read and write the XML data.
+----------------------------------------------------------------------------------------------------
 @@TJvTranslatorStrings
 <TITLEIMG TJvTranslatorStrings>
 JVCLInfo
@@ -255,3 +360,4 @@ Description
   Use Value to read the value of a string at a particular position. Index gives the position of the
   string, where 0 is the position of the first string, 1 is the position of the second string, and so
   \on.
+
