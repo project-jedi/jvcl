@@ -104,12 +104,9 @@ function TJvUrlGrabberDefaultPropertiesEditor.GetName: string;
 var
   EditorTrick: TJvUrlGrabberDefPropEdTrick;
 begin
-  // get classname of real default properties
+  // get Supported URL name from the real default properties
   EditorTrick := TJvUrlGrabberDefPropEdTrick(GetComponent(0));
-  Result := EditorTrick.DefaultProperties.ClassName;
-
-  // remove TJv and everything from Url
-  Result := Copy(Result, 4, Pos('Url', Result)-4);
+  Result := EditorTrick.DefaultProperties.SupportedURLName;
 end;
 
 end.
