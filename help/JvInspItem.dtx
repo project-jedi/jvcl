@@ -291,7 +291,7 @@ Description
   DoDropDownKeys is called from Edit_WndProc when the item has a value list
   and a key has been pressed.
 See Also
-  CloseUp, DropDown, Edit_WndProc, iifValueList
+  CloseUp, DropDown, Edit_WndProc, TInspectorItemFlag.iifValueList
 --------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.DoGetValueList
 Summary
@@ -398,7 +398,8 @@ Description
   items, determining the correct position and size of the list box and finally
   showing it on screen.
 See Also
-  CloseUp, DroppedDown, iifValueList, DoMeasureListItem, DoMeasureListItemWidth
+  CloseUp, DroppedDown, TInspectorItemFlag.iifValueList, DoMeasureListItem,
+  DoMeasureListItemWidth
 --------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.DroppedDown
 Summary
@@ -413,13 +414,13 @@ Summary
   Non-inline editing of the item.
 Description
   Edit allows for non-inline editing of the item. This usually is the case for
-  items with the iifEditButton flag, which often use a dialog box to change the
-  value.
+  items with the <LINK TInspectorItemFlag.iifEditButton, iifEditButton> flag, which often use a
+  dialog box to change the value.
 
   Edit is called automatically when the button is clicked, but can be called
   from code if needed.
 See Also
-  ButtonClick, iifEditButton
+  ButtonClick, TInspectorItemFlag.iifEditButton
 --------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.Edit_WndProc
 Summary
@@ -599,7 +600,7 @@ Parameters
   Strings - Instance of a TStrings descendant to receive the list. This list is
               not cleared on entry, although the event handler called might.
 See Also
-  DoGetValueList, iifValueList, OnGetValueList
+  DoGetValueList, TInspectorItemFlag.iifValueList, OnGetValueList
 --------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.HasViewableItems
 Summary
@@ -1144,7 +1145,7 @@ Description
   * Use AddOwner to add a list of component owners (such as forms and
     data modules) to be scanned for assignable components.
   * Optionally in addition to or instead of the above AddOwner, assign an
-    <LINK TJvInspectorClassItem.OnGetValueList, OnGetValueList> event handler to
+    <LINK TJvCustomInspectorItem.OnGetValueList, OnGetValueList> event handler to
     provide additionally selectable components.
 
   TJvCustomInspectorData registers this item for the TComponent type.
@@ -1297,7 +1298,7 @@ Description
   TJvInspectorCompoundItem is an inspector item that allows some of it's child
   items to be shown as sub columns of itself.
 See Also
-  IsCompoundColumn
+  TJvCustomInspectorItem.IsCompoundColumn
 --------------------------------------------------------------------------------
 @@TJvInspectorCompoundItem.AddColumn
 Summary
@@ -1366,7 +1367,8 @@ Parameters
           item.
   ItemIndex - Index into the Items item list of the item to add.
 See Also
-  AddColumn, DeleteColumn, ColumnCount, Columns
+  AddColumn, DeleteColumn, TJvInspectorCustomCompoundItem.ColumnCount,
+  TJvInspectorCustomCompoundItem.Columns
 --------------------------------------------------------------------------------
 @@TJvInspectorClassItem
 --------------------------------------------------------------------------------
@@ -1379,7 +1381,8 @@ Description
   and/or if the value is assignable.
 
   * To specify the item is assignable, specify the iifValueList in the Flags
-    property and assign a handler to the OnGetValueList event.
+    property and assign a handler to the
+    <LINK TJvCustomInspectorItem.OnGetValueList, OnGetValueList> event.
   * To specify the assigned classes properties should be shown, set the
     CreateClassMembers property to True.
 
@@ -1403,10 +1406,11 @@ Summary
   Creates the class properties as child items.
 Description
   CreateMembers will create all published properties of the class it represents
-  as child items. CreateMembers will be called from InvalidateMetaData if the
+  as child items. CreateMembers will be called from
+  <LINK TJvCustomInspectorItem.InvalidateMetaData, InvalidateMetaData> if the
   CreateMemberItems property is set to True.
 See Also
-  CreateMemberItems, DeleteMemberItems, InvalidateMetaData
+  CreateMemberItems, DeleteMembers, TJvCustomInspectorItem.InvalidateMetaData
 --------------------------------------------------------------------------------
 @@TJvInspectorClassItem.DeleteMembers
 Summary
@@ -1416,7 +1420,7 @@ Description
   class it represents. DeleteMembers will be called from CreateMembers to
   refresh the member list.
 See Also
-  CreateMemberItems
+  CreateMembers
 --------------------------------------------------------------------------------
 @@TJvInspectorClassItem.ItemClassFlags
 Summary
@@ -1425,7 +1429,7 @@ Description
   ItemClassFlags are the flags specific to the class inspector item. Read
   ItemClassFlags to determine the current flags or set it to a new value.
 See Also
-  CreateMemberItems, ShowClassName
+  CreateMembers, ShowClassName
 --------------------------------------------------------------------------------
 @@TJvInspectorClassItem.ShowClassName
 Summary
@@ -1471,7 +1475,7 @@ Description
   SingleName and SingleNameUseFirstCol properties into account when retrieving/setting
   the DisplayName.
 See Also
-  IsCompoundColumn
+  TJvCustomInspectorItem.IsCompoundColumn
 --------------------------------------------------------------------------------
 @@TJvInspectorCustomCompoundItem.AddColumnPrim
 Summary
@@ -1835,7 +1839,7 @@ Description
   items. CreateMembers will be called from InvalidateMetaData if the
   CreateMemberItems property is set to True.
 See Also
-  CreateMemberItems, DeleteMemberItems, InvalidateMetaData
+  CreateMemberItems, DeleteMembers, TJvCustomInspectorItem.InvalidateMetaData
 --------------------------------------------------------------------------------
 @@TJvInspectorSetItem.DeleteMembers
 Summary
@@ -1844,7 +1848,7 @@ Description
   DeleteMembers will delete all sub items that are members of a set.
   DeleteMembers will be called from CreateMembers to refresh the member list.
 See Also
-  CreateMemberItems
+  CreateMembers
 --------------------------------------------------------------------------------
 @@TJvInspectorSetItem.EditString
 Summary

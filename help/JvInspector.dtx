@@ -6,7 +6,7 @@ Summary
 Author
   Marcel Bestebroer
 See Also
-  JVCL.Info.Inspector
+  $JVCL.Info.Inspector
 ----------------------------------------------------------------------------------------------------
 @@TJvInspector
 ##JVCL:Component
@@ -460,11 +460,11 @@ Summary
 Description
   PaintGeneration holds the number of times the inspector has rendered it's
   image. It's primary goal is to keep track which items have been painted during
-  the last iteration. For that purpose, an item also has a PaintGeneration
+  the last iteration. For that purpose, each item has a LastPaintGeneration
   property. If the two values are equal, the item has been displayed during the
   last render.
 See Also
-  TJvCustomInspectorItem.PaintGeneration
+  TJvCustomInspectorItem.LastPaintGeneration
 --------------------------------------------------------------------------------
 @@TJvCustomInspector.RebuildVisible
 Summary
@@ -494,7 +494,7 @@ Description
 Note:  
   This method is usually called by the destructor of an item.
 See Also
-  NotifySort, TJvCustomInspectorItem.Destroy
+  NotifySort
 --------------------------------------------------------------------------------
 @@TJvCustomInspector.Root
 Summary
@@ -648,7 +648,7 @@ Description
 
   Use VisibleItems to find out which items are visible.
 See Also
-  VisibleItems.
+  VisibleItems
 --------------------------------------------------------------------------------
 @@TJvCustomInspector.FocusedItem
 Summary
@@ -658,7 +658,8 @@ Description
   as Selected, unless the selected item is a compound item, in which case it
   will be set to the item of the currently selected column.
 See Also
-  Selected, TJvInspectorCompoundItem, TJvInspectorCompoundItem.SelectedColumn
+  Selected, TJvInspectorCustomCompoundItem, 
+  TJvInspectorCustomCompoundItem.SelectedColumn
 --------------------------------------------------------------------------------
 @@TJvCustomInspector.VisibleIndex
 Summary
@@ -1310,8 +1311,6 @@ Description
   * SelectedTextColor
 
   Descendants can override this method to preset additional properties.
-See Also
-  SetDefaultProp
 --------------------------------------------------------------------------------
 @@TJvInspectorPainter.Initializing
 Summary
@@ -1364,7 +1363,7 @@ See Also
 Summary
   The index of the current item.
 Description
-  ItemIndex holds the index into the <LINK TJvCustomInspector.VisibleItem,
+  ItemIndex holds the index into the <LINK TJvCustomInspector.VisibleItems,
   Inspector.VisibleItems> array of the item currently painted. If ItemIndex < 0,
   an item reference was supplied to the PaintItem method.
 See Also
@@ -1378,7 +1377,7 @@ Description
   notation for csLoading <B>in</B> ComponentState.
 
   Loading is used in the set methods of the color properties to avoid calls to
-  <LINK TJvCustomInspector.Invalidate, Inspector.Invalidate>.
+  Inspector.Invalidate.
 --------------------------------------------------------------------------------
 @@TJvInspectorPainter.NameColor
 Summary
@@ -1486,7 +1485,7 @@ Description
   Descendants can override this method to do additional initialization if
   needed.
 See Also
-  BackgroundColor, Canvas, <LINK TJvCustomInspector.Paint>
+  BackgroundColor, Canvas, TJvCustomInspector.Paint
 --------------------------------------------------------------------------------
 @@TJvInspectorPainter.SetupItem
 Summary
@@ -1592,7 +1591,7 @@ Description
   which color is used to render the right side of the divider bar or set it to
   another value to change it.
 See Also
-  DividerColor, TJvCustomInspector.Divider
+  TJvInspectorPainter.DividerColor, TJvCustomInspector.Divider
 --------------------------------------------------------------------------------
 ## Painter Objects: .NET / Visual Studio style
 --------------------------------------------------------------------------------

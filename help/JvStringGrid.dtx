@@ -161,7 +161,7 @@ Parameters
   Msg - Represents the parameters of the Windows message that informs the grid of the parent
         color change.
 See Also
-  OnParentColorChanged
+  OnParentColorChange
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.CreateEditor
 Summary
@@ -184,7 +184,7 @@ Parameters
   State - Indicates whether the cell has input focus, whether the cell is selected, and whether the cell
            is a fixed (nonscrolling) cell.
 See Also
-  OnDrawCell, OnGetCellAlignment
+  OnGetCellAlignment
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.DrawCell
 Summary
@@ -205,7 +205,7 @@ Parameters
   State - Indicates whether the cell has input focus, whether the cell is selected, and whether the cell
            is a fixed (nonscrolling) cell.
 See Also
-  DefaultDrawCell, OnDrawCell, OnSetCanvasProperties
+  DefaultDrawCell, OnSetCanvasProperties
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.ExitCell
 Summary
@@ -291,7 +291,7 @@ Parameters
   FileName  - Name of a CSV file from which to read the string grid. 
   Separator - Character used in the CSV file to seperate cell strings.
 See Also
-  LoadFromFile, LoadFromStream, OnLoadProgress, SaveToCVS
+  LoadFromFile, LoadFromStream, OnLoadProgress, SaveToCSV
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.LoadFromFile
 Summary
@@ -305,7 +305,7 @@ Description
 Parameters
   FileName - Name of a file that was saved using the SaveToFile method
 See Also
-  LoadFromCVS, LoadFromStream, OnLoadProgress, SaveToFile
+  LoadFromCSV, LoadFromStream, OnLoadProgress, SaveToFile
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.LoadFromStream
 Summary
@@ -319,7 +319,7 @@ Description
 Parameters
   Stream - Specifies the stream from which to read the string grid. 
 See Also
-  LoadFromCVS, LoadFromFile, OnLoadProgress, SaveToStream
+  LoadFromCSV, LoadFromFile, OnLoadProgress, SaveToStream
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.MouseDown
 Summary
