@@ -329,7 +329,7 @@ var
   I: Integer;
 begin
   for I := 0 to Count - 1 do
-    Items[I].AppendToFile(I + 1);
+    Items[I].AppendToFile(-Count + I);
 end;
 
 //--------------------------------------------------------------------------------------------------
