@@ -301,11 +301,11 @@ type
   protected
     function GetValue: Variant; override;
     procedure SetValue(const Value: Variant); override;
-    function GetPopupText: string; override;
-
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
+    function GetPopupText: string; override;
   end;
 
   TJvDBLookupTreeView = class(TJvDBLookupControl)
