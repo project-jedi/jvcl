@@ -805,31 +805,31 @@ procedure TJvCaptionButton.Assign(Source: TPersistent);
 begin
   if Source is TJvCaptionButton then
   begin
-    Alignment      := TJvCaptionButton(Source).Alignment;
-    ButtonHeight   := TJvCaptionButton(Source).ButtonHeight;
-    ButtonLeft     := TJvCaptionButton(Source).ButtonLeft;
-    ButtonTop      := TJvCaptionButton(Source).ButtonTop;
-    ButtonWidth    := TJvCaptionButton(Source).ButtonWidth;
-    Caption        := TJvCaptionButton(Source).Caption;
-    ShowHint       := TJvCaptionButton(Source).ShowHint;
+    Alignment := TJvCaptionButton(Source).Alignment;
+    ButtonHeight := TJvCaptionButton(Source).ButtonHeight;
+    ButtonLeft := TJvCaptionButton(Source).ButtonLeft;
+    ButtonTop := TJvCaptionButton(Source).ButtonTop;
+    ButtonWidth := TJvCaptionButton(Source).ButtonWidth;
+    Caption := TJvCaptionButton(Source).Caption;
+    ShowHint := TJvCaptionButton(Source).ShowHint;
     ParentShowHint := TJvCaptionButton(Source).ParentShowHint;
-    Enabled        := TJvCaptionButton(Source).Enabled;
-    Font           := TJvCaptionButton(Source).Font;
-    Hint           := TJvCaptionButton(Source).Hint;
-    ImageIndex     := TJvCaptionButton(Source).ImageIndex;
-    Images         := TJvCaptionButton(Source).Images;
-    Layout         := TJvCaptionButton(Source).Layout;
-    Margin         := TJvCaptionButton(Source).Margin;
-    Position       := TJvCaptionButton(Source).Position;
-    Spacing        := TJvCaptionButton(Source).Spacing;
-    Standard       := TJvCaptionButton(Source).Standard;
+    Enabled := TJvCaptionButton(Source).Enabled;
+    Font := TJvCaptionButton(Source).Font;
+    Hint := TJvCaptionButton(Source).Hint;
+    ImageIndex := TJvCaptionButton(Source).ImageIndex;
+    Images := TJvCaptionButton(Source).Images;
+    Layout := TJvCaptionButton(Source).Layout;
+    Margin := TJvCaptionButton(Source).Margin;
+    Position := TJvCaptionButton(Source).Position;
+    Spacing := TJvCaptionButton(Source).Spacing;
+    Standard := TJvCaptionButton(Source).Standard;
     // set toggle before down
-    Toggle         := TJvCaptionButton(Source).Toggle;
-    Down           := TJvCaptionButton(Source).Down;
-    Visible        := TJvCaptionButton(Source).Visible;
-    Exit;
-  end;
-  inherited Assign(Source);
+    Toggle := TJvCaptionButton(Source).Toggle;
+    Down := TJvCaptionButton(Source).Down;
+    Visible := TJvCaptionButton(Source).Visible;
+  end
+  else
+    inherited Assign(Source);
 end;
 
 procedure TJvCaptionButton.CalcButtonParts(ACanvas: TCanvas;

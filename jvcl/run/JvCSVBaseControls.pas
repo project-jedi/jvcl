@@ -269,14 +269,14 @@ begin
     OldBase.LoadFromFile(AFile);
     if OldBase.Count = 0 then
     begin
-      NewFields.assign(FieldNames);
+      NewFields.Assign(FieldNames);
       NewBase.Append(NewFields.CommaText);
     end
     else
     begin
       //restructure
       OldFields.CommaText := Oldbase[0];
-      NewFields.assign(FieldNames);
+      NewFields.Assign(FieldNames);
       NewBase.Append(NewFields.CommaText);
       if OldBase.Count > 1 then
         for rec := 1 to OldBase.Count - 1 do

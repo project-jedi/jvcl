@@ -901,7 +901,7 @@ begin
         errStr := Format(RsECanNotFindIncludeFiles, [incfile]);
         Handled := False;
         incScript := '';
-        if not assigned(oninclude) then
+        if not Assigned(oninclude) then
           raise EJvJanScriptError.CreateResFmt(@RsEOnIncludeHandlerNotAssignedCanNotHa, [Copy(s, p, Length(s))]);
         oninclude(Self, incfile, incScript, Handled, errStr);
         if not Handled then
@@ -1385,7 +1385,7 @@ begin
   vpush(Value);
   Handled := False;
   err := Format(RsECanNotAssignVariables, [FCurrentSymbol]);
-  if assigned(onSetVariable) then
+  if Assigned(onSetVariable) then
   begin
     onSetVariable(Self, FCurrentSymbol, Value, Handled, Err);
     if not Handled then
@@ -1637,7 +1637,7 @@ var
 begin
   Handled := False;
   err := Format(RsEVariablesNotDefined, [FCurrentSymbol]);
-  if assigned(onGetVariable) then
+  if Assigned(onGetVariable) then
     onGetVariable(Self, FCurrentSymbol, Value, Handled, Err);
   if not Handled then
     raise EJvJanScriptError.Create(err)
@@ -1819,7 +1819,7 @@ begin
   prompt := vpop;
   Handled := False;
   err := Format(RsESystemsNotDefined, [FCurrentSymbol]);
-  if assigned(onGetSystem) then
+  if Assigned(onGetSystem) then
     onGetSystem(Self, FCurrentSymbol, prompt, Value, Handled, Err);
   if not Handled then
     raise EJvJanScriptError.Create(err)
@@ -1837,7 +1837,7 @@ begin
   vpush(Value);
   Handled := False;
   err := Format(RsECanNotAssignSystems, [FCurrentSymbol]);
-  if assigned(onSetSystem) then
+  if Assigned(onSetSystem) then
   begin
     onSetSystem(Self, FCurrentSymbol, Value, Handled, Err);
     if not Handled then

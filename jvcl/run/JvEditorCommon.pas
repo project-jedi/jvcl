@@ -5311,6 +5311,7 @@ begin
       EndUpdate;
     end;
   end;
+  // (rom) else inherited Assign(Source) missing?
 end;
 
 end.

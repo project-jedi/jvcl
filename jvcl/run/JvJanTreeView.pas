@@ -261,7 +261,7 @@ begin
     if (copy(s, 1, 7) = 'http://') or (copy(s, 1, 7) = 'mailto:') then
       ShellExecute(handle, 'open', @s[1], nil, nil, SW_SHOWNORMAL);
   end;
-  if assigned(onDblClick) then
+  if Assigned(onDblClick) then
     onDblClick(Self);
 end;
 
@@ -337,7 +337,7 @@ begin
       selected.MoveTo(n, nainsert);
     end;
   end;
-  if assigned(ondragdrop) then
+  if Assigned(ondragdrop) then
     ondragdrop(Self, source, x, y);
 end;
 
@@ -470,7 +470,7 @@ begin
     if MCloseTree then
       DoCloseTree;
   end;
-  if assigned(onKeyDown) then
+  if Assigned(onKeyDown) then
     onkeyDown(Self, key, shift);
 end;
 
@@ -502,7 +502,7 @@ begin
   end
   else
     cursor := crdefault;
-  if assigned(onmousemove) then
+  if Assigned(onmousemove) then
     onmousemove(Self, shift, x, y);
 end;
 
@@ -1457,7 +1457,7 @@ procedure TJvJanTreeView.KeyPress(var Key: Char);
 begin
   if key = char(vk_return) then
     recalculate;
-  if assigned(onkeyPress) then
+  if Assigned(onkeyPress) then
     onkeyPress(Self, key);
 end;
 

@@ -326,6 +326,7 @@ begin
     Parent := TJvgCustomTreeView(Source).Parent;
     Items.Assign(TJvgCustomTreeView(Source).Items);
   end;
+  // (rom) else inherited Assign(Source) missing?
 end;
 
 procedure TJvgCustomTreeView.CreateParams(var Params: TCreateParams);
@@ -403,7 +404,7 @@ begin
       inherited;
       if Assigned(FOnDraw) then
         FOnDraw(Self, Message);
-      exit;
+      Exit;
     end;
 
     fPaintingNow := true;
@@ -442,7 +443,7 @@ begin
     //  inherited;
     //  bmp2.Width := Width; bmp2.Height := Height;
     //  Self.PaintWindow(bmp2.Canvas.Handle);
-    //exit;
+    //Exit;
     BitBlt(bmp2.Canvas.Handle, 0, 0, IWidth, IHeight, FCanvas.handle, 0, 0,
       SRCCOPY);
 
@@ -497,7 +498,7 @@ begin
             SetNodeState_(itemNew.hItem, TVIS_BOLD, TVIS_BOLD);
           end;
           inherited;
-          exit;
+          Exit;
         end;
       TVN_BEGINLABELEDIT:
         isEditing_ := true;
@@ -532,7 +533,7 @@ end;
 procedure TJvgCustomTreeView.SetCheckboxes(Value: Boolean);
 begin
   if FCheckboxes = Value then
-    exit;
+    Exit;
   FCheckboxes := Value;
   RecreateWnd;
 end;
@@ -540,7 +541,7 @@ end;
 procedure TJvgCustomTreeView.SetHotTrack(Value: Boolean);
 begin
   if FHotTrack = Value then
-    exit;
+    Exit;
   FHotTrack := Value;
   RecreateWnd;
 end;
@@ -548,7 +549,7 @@ end;
 procedure TJvgCustomTreeView.SetToolTips(Value: Boolean);
 begin
   if FToolTips = Value then
-    exit;
+    Exit;
   FToolTips := Value;
   RecreateWnd;
 end;
@@ -633,6 +634,7 @@ begin
     FChecksScheme := TJvgCheckTreeView(Source).ChecksScheme;
     FCheckStateInheritance := TJvgCheckTreeView(Source).CheckStateInheritance;
   end;
+  // (rom) else inherited Assign(Source) missing?
 end;
 
 procedure TJvgCheckTreeView.TVMInsertItem(var Message: TMessage);
@@ -663,7 +665,7 @@ begin
   if htOnStateIcon in GetHitTestInfoAt(pt.x, pt.y) then
   begin
     if Selected.StateIndex = -1 then
-      exit;
+      Exit;
     if (Selected.StateIndex = ncsChecked) and (FCheckKind <> fckRadioButtons) then
       SetStateIndex(Selected, ncsUnChecked)
     else
@@ -718,7 +720,7 @@ end;
 procedure TJvgCheckTreeView.SetGlyphChecked(Value: TBitmap);
 begin
   if not Assigned(Value) then
-    exit;
+    Exit;
   FGlyphChecked.Assign(Value);
   FChecksScheme := -1;
   SetChecksBitmap;
@@ -728,7 +730,7 @@ end;
 procedure TJvgCheckTreeView.SetGlyphUnChecked(Value: TBitmap);
 begin
   if not Assigned(Value) then
-    exit;
+    Exit;
   FGlyphUnChecked.Assign(Value);
   FChecksScheme := -1;
   SetChecksBitmap;
@@ -738,7 +740,7 @@ end;
 procedure TJvgCheckTreeView.SetGlyphSemiChecked(Value: TBitmap);
 begin
   if not Assigned(Value) then
-    exit;
+    Exit;
   FGlyphSemiChecked.Assign(Value);
   FChecksScheme := -1;
   SetChecksBitmap;
@@ -748,7 +750,7 @@ end;
 procedure TJvgCheckTreeView.SetChecksScheme(Value: integer);
 begin
   if FChecksScheme = Value then
-    exit;
+    Exit;
   FChecksScheme := Value;
   if ChecksScheme > -1 then
   begin
@@ -781,16 +783,16 @@ function TJvgCheckTreeView.Checked(Node: TTreeNode): boolean;
 begin
   Result := false;
   if not Assigned(Node) then
-    exit;
+    Exit;
   Result := boolean(Node.StateIndex - 1);
 end;
 
 procedure TJvgCheckTreeView.SetChecked(Node: TTreeNode; Value: boolean);
 begin
   if not Assigned(Node) then
-    exit;
+    Exit;
   if Node.StateIndex = integer(Value) + 1 then
-    exit;
+    Exit;
   SetStateIndex(Node, integer(Value) + 1);
   if Assigned(FOnChangeCheck) then
     FOnChangeCheck(Self, Node);

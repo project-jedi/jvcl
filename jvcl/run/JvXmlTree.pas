@@ -280,7 +280,7 @@ begin
     end;
     inc(p1);
   until p1 > c;
-  alist.assign(oList);
+  alist.Assign(oList);
   oList.Free;
 end;
 
@@ -1327,7 +1327,7 @@ end;
 
 procedure TJvXMLTree.SetLines(const Value: TStringList);
 begin
-  FLines.assign(Value);
+  FLines.Assign(Value);
 end;
 
 procedure TJvXMLTree.LoadFromStream(Stream: TStream);

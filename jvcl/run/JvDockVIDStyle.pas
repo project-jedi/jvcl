@@ -4141,6 +4141,7 @@ begin
     FInactiveSheetColor := TJvDockVIDTabServerOption(Source).FInactiveSheetColor;
     FShowTabImages := TJvDockVIDTabServerOption(Source).FShowTabImages;
   end;
+  // (rom) else missing?
   inherited Assign(Source);
 end;
 
@@ -4282,6 +4283,7 @@ begin
     FInactiveFont.Assign(TJvDockVIDConjoinServerOption(Source).FInactiveFont);
     FSystemInfo := TJvDockVIDConjoinServerOption(Source).FSystemInfo;
   end;
+  // (rom) else missing?
   inherited Assign(Source);
 end;
 
