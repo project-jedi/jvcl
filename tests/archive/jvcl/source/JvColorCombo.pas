@@ -92,6 +92,9 @@ type
     destructor Destroy; override;
     procedure Loaded; override;
     procedure GetColors; virtual;
+    // Returns the current name for AColor. Note that this implicitly might call the
+    // OnGetDisplayName event if the protected GetColorName returns an emtpy string
+    function ColorName(AColor:TColor):string;
 
     procedure AddColor(AColor: TColor; const DisplayName: string);
     procedure ChangeColor(AIndex: integer; AColor: TColor; const DisplayName: string);
@@ -648,7 +651,7 @@ procedure TJvColorComboBox.DoGetDisplayName(Index: integer; AColor: TColor;
   var DisplayName: string);
 begin
   if Assigned(FOnGetDisplayName) then
-    FOnGetDisplayName(self, Index, AColor, DisplayName)
+    FOnGetDisplayName(self, Index, AColor, DisplayName);
   else
     DisplayName := GetColorName(AColor, DisplayName);
 end;
@@ -800,6 +803,13 @@ procedure TJvColorComboBox.Change;
 begin
   if HandleAllocated then
     inherited;
+end;
+
+function TJvColorComboBox.ColorName(AColor: TColor): string;
+begin
+  Result := GetColorName(AColor,'');
+  if Result = '' then
+    DoGetDisplayName(-1,AColor,Result);
 end;
 
 { TJvFontComboBox }
