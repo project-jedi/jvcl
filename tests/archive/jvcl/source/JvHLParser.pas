@@ -84,8 +84,8 @@ type
   EJvIParserError = class(Exception)
   public
     ErrCode: Integer;
-    Pos: Integer;
-    constructor Create(AErrCode: Integer; APos: Integer);
+    Pos: Cardinal;
+    constructor Create(AErrCode: Integer; APos: Cardinal);
   end;
 
 function IsStringConstant(const St: string): Boolean;
@@ -121,7 +121,7 @@ end;
 
 //=== EJvIParserError ========================================================
 
-constructor EJvIParserError.Create(AErrCode: Integer; APos: Integer);
+constructor EJvIParserError.Create(AErrCode: Integer; APos: Cardinal);
 begin
   ErrCode := AErrCode;
   Pos := APos;
