@@ -69,7 +69,7 @@ contains
   JvExDBGrids in '..\..\run\JvExDBGrids.pas' ,
   JvDBHTLabel in '..\..\run\JvDBHTLabel.pas' ,
   JvDBSearchEdit in '..\..\run\JvDBSearchEdit.pas' ,
-  JvDBSearchComoBox in '..\..\run\JvDBSearchComoBox.pas' ,
+  JvDBSearchComboBox in '..\..\run\JvDBSearchComboBox.pas' ,
   JvAppDBStorage in '..\..\run\JvAppDBStorage.pas' 
   ;
 
