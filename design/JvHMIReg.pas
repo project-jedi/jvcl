@@ -22,17 +22,17 @@ uses
 
 procedure Register;
 begin
-  RegisterComponents('HMI Indicators', [
+  RegisterComponents(SPaletteHMIIndicator, [
     TJvSegmentedLEDDisplay,
     TJvLED
     ]);
 
-  RegisterComponents('HMI Non Visual', [
+  RegisterComponents(SPaletteHMIControls, [
+    TJvRadioControl]);
+
+  RegisterComponents(SPaletteHMINonVisual, [
     TJv7SegmentedLEDCharacterMapper
     ]);
-
-  RegisterComponents('HMI Controls', [
-    TJvRadioControl]);
 
   RegisterPropertyEditor(TypeInfo(TJvSegmentedLEDDigitClassName), TPersistent, '', TJvSegmentedLEDDigitClassProperty);
   RegisterPropertyEditor(TypeInfo(TUnlitColor), TPersistent, '', TUnlitColorProperty);
