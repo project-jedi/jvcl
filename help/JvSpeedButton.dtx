@@ -1,10 +1,11 @@
 ##Package: StdCtrls
-##Status: Completed
+##Status: Completed (III)
 ##Skip: TJvButtonImage
 ##Skip: TJvButtonState
 ##Skip: TJvImageSpeedButtonActionLink
 ##Skip: TJvSpeedButtonActionLink
 ##Skip: TJvxButtonGlyph
+##Skip: DrawButtonFrame
 ----------------------------------------------------------------------------------------------------
 @@JvSpeedButton.pas
 Summary
@@ -12,22 +13,6 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-----------------------------------------------------------------------------------------------------
-@@DrawButtonFrame
-<TITLE DrawButtonFrame function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Canvas - Description for this parameter
-  Client - Description for this parameter
-  IsDown - Description for this parameter
-  IsFlat - Description for this parameter
-  Style  - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSpeedButton
 Summary
@@ -133,12 +118,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSpeedButton.ButtonGlyph
 Summary
-  Write here a summary (1 line)
+  Gives access to the internal button render object.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use ButtonGlyph to access the internal button render object.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSpeedButton.CheckBtnMenuDropDown
 Summary
@@ -185,8 +167,8 @@ Summary
   Identifies a pop-up menu associated with the speed button.
 Description
   Assign a value to DropDownMenu to make a menu appear when the button is pressed. (To display the
-  menu programmatically, call the speed button’s Click or ButtonClickmethod.) If the menu’s 
-  AutoPopup property is set to true, the menu appears automatically. If AutoPopup is false, 
+  menu programmatically, call the speed button’s Click or ButtonClickmethod.) If the menu’s
+  AutoPopup property is set to true, the menu appears automatically. If AutoPopup is false,
   display the menu by calling the menu’s Popup method in the speed button’s OnClick event handler.
 See Also
   Click, MarkDropDown, MenuPosition

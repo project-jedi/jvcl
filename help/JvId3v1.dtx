@@ -1,5 +1,5 @@
 ##Package: MM
-##Status: Completed
+##Status: Completed (II)
 ----------------------------------------------------------------------------------------------------
 @@JvId3v1.pas
 Summary
@@ -68,6 +68,92 @@ Description
 @@TID3v1Tag.Genre
   Contains the offset of a genre in a <LINK TJvID3Genre_Table,predefined list>, the byte is treated
   as an unsigned byte. The offset is starting from 0.
+----------------------------------------------------------------------------------------------------
+@@TJvID3Genre_Table
+<TITLE ID3 Genres Table>
+<HASTOCENTRY OFF>
+JVCLInfo
+  GROUP=TJvID3v1.Genre
+Description
+  The genres with offset 0 to 79 are defined in ID3v1. The other genres are Winamp extensions.
+
+<TABLE>
+===  -----------------------             ===   ----------------------------
+0    Blues                               74    Acid Jazz
+1    Classic Rock                        75    Polka
+2    Country                             76    Retro
+3    Dance                               77    Musical
+4    Disco                               78    Rock & Roll
+5    Funk                                79    Hard Rock
+6    Grunge                              80    Folk
+7    Hip-Hop                             81    Folk-Rock
+8    Jazz                                82    National Folk
+9    Metal                               83    Swing
+10   \New Age                            84    Fast Fusion
+11   Oldies                              85    Bebob
+12   Other                               86    Latin
+13   Pop                                 87    Revival
+14   R&B                                 88    Celtic
+15   Rap                                 89    Bluegrass
+16   Reggae                              90    Avantgarde
+17   Rock                                91    Gothic Rock
+18   Techno                              92    Progressive Rock
+19   Industrial                          93    Psychedelic Rock
+20   Alternative                         94    Symphonic Rock
+21   Ska                                 95    Slow Rock
+22   Death Metal                         96    Big Band
+23   Pranks                              97    Chorus
+24   Soundtrack                          98    Easy Listening
+25   Euro-Techno                         99    Acoustic
+26   Ambient                             100   Humour
+27   Trip-Hop                            101   Speech
+28   Vocal                               102   Chanson
+29   Jazz+Funk                           103   Opera
+30   Fusion                              104   Chamber Music
+31   Trance                              105   Sonata
+32   Classical                           106   Symphony
+33   Instrumental                        107   Booty Bass
+34   Acid                                108   Primus
+35   House                               109   Porn Groove
+36   Game                                110   Satire
+37   Sound Clip                          111   Slow Jam
+38   Gospel                              112   Club
+39   Noise                               113   Tango
+40   AlternRock                          114   Samba
+41   Bass                                115   Folklore
+42   Soul                                116   Ballad
+43   Punk                                117   \Power Ballad
+44   Space                               118   Rhythmic Soul
+45   Meditative                          119   Freestyle
+46   Instrumental Pop                    120   Duet
+47   Instrumental Rock                   121   Punk Rock
+48   Ethnic                              122   Drum Solo
+49   Gothic                              123   A capella
+50   Darkwave                            124   Euro-House
+51   Techno-Industrial                   125   Dance Hall
+52   Electronic                          126   Goa
+53   Pop-Folk                            127   Drum & Bass
+54   Eurodance                           128   Club-House
+55   Dream                               129   Hardcore
+56   Southern Rock                       130   Terror
+57   Comedy                              131   Indie
+58   Cult                                132   BritPop
+59   Gangsta                             133   Negerpunk
+60   Top 40                              134   Polsk Punk
+61   Christian Rap                       135   Beat
+62   Pop/Funk                            136   Christian Gangsta Rap
+63   Jungle                              137   Heavy Metal
+64   Native American                     138   Black Metal
+65   Cabaret                             139   Crossover
+66   \New Wave                           140   Contemporary Christian
+67   Psychedelic                         141   Christian Rock
+68   Rave                                142   Merengue
+69   Showtunes                           143   Salsa
+70   Trailer                             144   Trash Metal
+71   \Lo-Fi                              145   Anime
+72   Tribal                              146   JPop
+73   Acid Punk                           147   SynthPop
+</TABLE>
 ----------------------------------------------------------------------------------------------------
 @@TJvID3v1
 <TITLEIMG TJvID3v1>
@@ -279,90 +365,3 @@ Parameters
   ATag      - Specifies the new tag data for the file.
 See Also
   <LINK HasID3v1Tag>, <LINK ReadID3v1Tag>, <LINK RemoveID3v1Tag>, TJvID3v1.Commit
-----------------------------------------------------------------------------------------------------
-@@TJvID3Genre_Table
-<TITLE ID3 Genres Table>
-<HASTOCENTRY OFF>
-JVCLInfo
-  GROUP=TJvID3v1.Genre
-Description
-  The genres with offset 0 to 79 are defined in ID3v1. The other genres are Winamp extensions.
-
-<TABLE>
-===  -----------------------             ===   ----------------------------
-0    Blues                               74    Acid Jazz
-1    Classic Rock                        75    Polka
-2    Country                             76    Retro
-3    Dance                               77    Musical
-4    Disco                               78    Rock & Roll
-5    Funk                                79    Hard Rock
-6    Grunge                              80    Folk
-7    Hip-Hop                             81    Folk-Rock
-8    Jazz                                82    National Folk
-9    Metal                               83    Swing
-10   \New Age                            84    Fast Fusion
-11   Oldies                              85    Bebob
-12   Other                               86    Latin
-13   Pop                                 87    Revival
-14   R&B                                 88    Celtic
-15   Rap                                 89    Bluegrass
-16   Reggae                              90    Avantgarde
-17   Rock                                91    Gothic Rock
-18   Techno                              92    Progressive Rock
-19   Industrial                          93    Psychedelic Rock
-20   Alternative                         94    Symphonic Rock
-21   Ska                                 95    Slow Rock
-22   Death Metal                         96    Big Band
-23   Pranks                              97    Chorus
-24   Soundtrack                          98    Easy Listening
-25   Euro-Techno                         99    Acoustic
-26   Ambient                             100   Humour
-27   Trip-Hop                            101   Speech
-28   Vocal                               102   Chanson
-29   Jazz+Funk                           103   Opera
-30   Fusion                              104   Chamber Music
-31   Trance                              105   Sonata
-32   Classical                           106   Symphony
-33   Instrumental                        107   Booty Bass
-34   Acid                                108   Primus
-35   House                               109   Porn Groove
-36   Game                                110   Satire
-37   Sound Clip                          111   Slow Jam
-38   Gospel                              112   Club
-39   Noise                               113   Tango
-40   AlternRock                          114   Samba
-41   Bass                                115   Folklore
-42   Soul                                116   Ballad
-43   Punk                                117   \Power Ballad
-44   Space                               118   Rhythmic Soul
-45   Meditative                          119   Freestyle
-46   Instrumental Pop                    120   Duet
-47   Instrumental Rock                   121   Punk Rock
-48   Ethnic                              122   Drum Solo
-49   Gothic                              123   A capella
-50   Darkwave                            124   Euro-House
-51   Techno-Industrial                   125   Dance Hall
-52   Electronic                          126   Goa
-53   Pop-Folk                            127   Drum & Bass
-54   Eurodance                           128   Club-House
-55   Dream                               129   Hardcore
-56   Southern Rock                       130   Terror
-57   Comedy                              131   Indie
-58   Cult                                132   BritPop
-59   Gangsta                             133   Negerpunk
-60   Top 40                              134   Polsk Punk
-61   Christian Rap                       135   Beat
-62   Pop/Funk                            136   Christian Gangsta Rap
-63   Jungle                              137   Heavy Metal
-64   Native American                     138   Black Metal
-65   Cabaret                             139   Crossover
-66   \New Wave                           140   Contemporary Christian
-67   Psychedelic                         141   Christian Rock
-68   Rave                                142   Merengue
-69   Showtunes                           143   Salsa
-70   Trailer                             144   Trash Metal
-71   \Lo-Fi                              145   Anime
-72   Tribal                              146   JPop
-73   Acid Punk                           147   SynthPop
-</TABLE>
-----------------------------------------------------------------------------------------------------

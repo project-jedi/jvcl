@@ -1,5 +1,5 @@
 ##Package: StdCtrls
-##Status: Incomplete
+##Status: Completed (III)
 ##Skip: TGMActivateCell
 ----------------------------------------------------------------------------------------------------
 @@JvStringGrid.pas
@@ -28,7 +28,7 @@ Summary
 Description
   Use the TJvSortType to specify a specific comparison method to sort a \string grid.
 @@TJvSortType.stNone
-  Description for stNone
+  No comparison.
 @@TJvSortType.stAutomatic
   The comparison function automatically determines the type of the strings when comparing two strings.
   If both strings represent a integer, floating-point value or a date, then the two strings are compared
@@ -355,7 +355,7 @@ Note
 Parameters
   FileName  - Name of a CSV file from which to read the \string grid.
   Separator - Character used in the CSV file to seperate cell strings.
-  QuoteChar - Description for this parameter
+  QuoteChar - Specifies the quote char.
 See Also
   LoadFromFile, LoadFromStream, OnLoadProgress, SaveToCSV
 ----------------------------------------------------------------------------------------------------
@@ -490,7 +490,7 @@ See Also
 Summary
   Removes a column from the grid.
 Description
-  Call RemoveCol to remove the column specified by Index from the grid. All columns to the right of 
+  Call RemoveCol to remove the column specified by Index from the grid. All columns to the right of
   the removed column will be moved left one step.
 Parameters
   Index - Position of the column to remove.
@@ -516,12 +516,12 @@ Description
   from the file into a new \string grid object using the LoadFromCSV method. SaveToCSV writes the cell
   strings to the file, seperated with the character specified by Seperator, and one row per line.
 
-  Note: String grid files contain only the text of the \string grid cells. They do not contain any data
+  \Note: String grid files contain only the text of the \string grid cells. They do not contain any data
   associated with a cell.
 Parameters
   FileName  - Name of the CSV file where to write the \string grid to.
   Separator - Character to be used in the CSV file to seperate cell strings.
-  QuoteChar - Description for this parameter
+  QuoteChar - Specifies the quote char.
 See Also
   LoadFromCSV, OnSaveProgress, SaveToFile, SaveToStream
 ----------------------------------------------------------------------------------------------------

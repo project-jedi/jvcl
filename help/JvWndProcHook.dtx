@@ -1,5 +1,5 @@
 ##Package: System
-##Status: Completed
+##Status: Completed (I)
 ----------------------------------------------------------------------------------------------------
 @@JvWndProcHook.pas
 Summary
@@ -7,6 +7,10 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Peter Thörnqvist, Remko Bonte
+----------------------------------------------------------------------------------------------------
+@@RegisterWndProcHook@HWND@TJvControlHook@TJvHookOrder
+<TITLE RegisterWndProcHook function>
+<COMBINE RegisterWndProcHook@TControl@TJvControlHook@TJvHookOrder>
 ----------------------------------------------------------------------------------------------------
 @@RegisterWndProcHook@TControl@TJvControlHook@TJvHookOrder
 <TITLE RegisterWndProcHook function>
@@ -31,10 +35,6 @@ Parameters
   Order    - Specifies whether to receive messages before or after the control handles them.
 See Also
   TJvControlHook, TJvWindowHook, UnRegisterWndProcHook
-----------------------------------------------------------------------------------------------------
-@@RegisterWndProcHook@HWND@TJvControlHook@TJvHookOrder
-<TITLE RegisterWndProcHook function>
-<COMBINE RegisterWndProcHook@TControl@TJvControlHook@TJvHookOrder>
 ----------------------------------------------------------------------------------------------------
 @@ReleaseObj
 <TITLE ReleaseObj procedure>
@@ -194,6 +194,10 @@ Description
 See Also
   Active, Control
 ----------------------------------------------------------------------------------------------------
+@@UnRegisterWndProcHook@HWND@TJvControlHook@TJvHookOrder
+<TITLE UnRegisterWndProcHook function>
+<COMBINE UnRegisterWndProcHook@TControl@TJvControlHook@TJvHookOrder>
+----------------------------------------------------------------------------------------------------
 @@UnRegisterWndProcHook@TControl@TJvControlHook@TJvHookOrder
 <TITLE UnRegisterWndProcHook function>
 Summary
@@ -212,8 +216,3 @@ Parameters
               RegisterWndProcHook.
 See Also
   TJvControlHook, TJvWindowHook, RegisterWndProcHook
-----------------------------------------------------------------------------------------------------
-@@UnRegisterWndProcHook@HWND@TJvControlHook@TJvHookOrder
-<TITLE UnRegisterWndProcHook function>
-<COMBINE UnRegisterWndProcHook@TControl@TJvControlHook@TJvHookOrder>
-----------------------------------------------------------------------------------------------------

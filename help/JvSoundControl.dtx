@@ -1,5 +1,5 @@
 ##Package: System
-##Status: Completed
+##Status: Completed (I)
 ----------------------------------------------------------------------------------------------------
 @@JvSoundControl.pas
 Summary
@@ -27,6 +27,20 @@ Description
   These properties all have a Balance and Volume property, which can be used to change the balance
   and volume of these devices.
 ----------------------------------------------------------------------------------------------------
+@@TJvSoundControl.Cd
+Summary
+  Contains information about the first auxiliary output device available on your system.
+Description
+  Access Cd at runtime to view and set volume and balance of the first auxiliary output device
+  available on your system dynamically (at design time use the object inspector to set the 
+  properties of Cd). 
+  
+  Auxiliary audio devices are audio devices whose output is mixed with the MIDI and waveform-audio 
+  output devices in a multimedia computer. An example of an auxiliary audio device is the CD audio 
+  output from a CD-ROM drive. 
+See Also
+  Midi, Wave
+----------------------------------------------------------------------------------------------------
 @@TJvSoundControl.Create
 Summary
   Creates and initializes an instance of TJvSoundControl.
@@ -49,20 +63,6 @@ Description
   TJvSoundControl object is not nil and only then calls Destroy.
 See Also
   Create
-----------------------------------------------------------------------------------------------------
-@@TJvSoundControl.Cd
-Summary
-  Contains information about the first auxiliary output device available on your system.
-Description
-  Access Cd at runtime to view and set volume and balance of the first auxiliary output device
-  available on your system dynamically (at design time use the object inspector to set the 
-  properties of Cd). 
-  
-  Auxiliary audio devices are audio devices whose output is mixed with the MIDI and waveform-audio 
-  output devices in a multimedia computer. An example of an auxiliary audio device is the CD audio 
-  output from a CD-ROM drive. 
-See Also
-  Midi, Wave
 ----------------------------------------------------------------------------------------------------
 @@TJvSoundControl.LastError
 Summary
@@ -111,16 +111,6 @@ Description
   * Find or set the volume of a device. 
   * Find or set the balance between the left and right volume of a device.
 ----------------------------------------------------------------------------------------------------
-@@TJvSoundValue.Create
-Summary
-  Creates and initializes an instance of TJvSoundValue.
-Description
-  Applications should not call \Create directly. A TJvSoundValue is created automatically by a
-  TJvSoundControl for the first auxiliary output device, the first MIDI output device and the first
-  waveform device available on your system.
-Params
-  AOwner - The owner for the instance of TJvSoundValue.
-----------------------------------------------------------------------------------------------------
 @@TJvSoundValue.Balance
 Summary
   Specifies the balance between the left and right volume of a device.
@@ -131,6 +121,16 @@ Description
   Use <LINK TJvSoundControl.LastError, LastError> to determine if the operation was successfull.
 See Also
   Volume
+----------------------------------------------------------------------------------------------------
+@@TJvSoundValue.Create
+Summary
+  Creates and initializes an instance of TJvSoundValue.
+Description
+  Applications should not call \Create directly. A TJvSoundValue is created automatically by a
+  TJvSoundControl for the first auxiliary output device, the first MIDI output device and the first
+  waveform device available on your system.
+Params
+  AOwner - The owner for the instance of TJvSoundValue.
 ----------------------------------------------------------------------------------------------------
 @@TJvSoundValue.GetValue
 Summary

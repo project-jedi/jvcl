@@ -1,11 +1,11 @@
 ##Package: System
-##Status: Completed (peter3), Review
+##Status: Incomplete (peter3)
+##Skip: CF_FILECONTENTS
+##Skip: CF_FILEDESCRIPTOR
+##Skip: FileContentFormatEtc
 ##Skip: FileDescriptorFormatEtc
 ##Skip: FileDropFormatEtc
 ##Skip: Malloc
-##Skip: FileContentFormatEtc
-##Skip: CF_FILECONTENTS
-##Skip: CF_FILEDESCRIPTOR
 ----------------------------------------------------------------------------------------------------
 @@JvDragDrop.pas
 Summary
@@ -149,7 +149,7 @@ Summary
 Description
   Set AcceptDrag to True to accept dropped files or set it to False to not accept dropped files.
 See Also
-  Control, DropTarget, OnDrop
+  Control
 ----------------------------------------------------------------------------------------------------
 @@TJvDropTarget.Control
 Summary
@@ -200,7 +200,7 @@ Parameters
 Return value
   The number of items added to List.
 See Also
-  GetFilenames.
+  GetFilenames
 ----------------------------------------------------------------------------------------------------
 @@TJvDropTarget.GetFilenames
 Summary
@@ -249,9 +249,9 @@ Summary
 Description
   Write a handler for the OnDragEnter event to take specific action when the mouse cursor enters the control
   in a drag and drop action.
-Parameters
-  Sender - The TJvDropTarget that called the event.
-  Effect - The effect to apply to the mouse cursor.
+##Parameters
+##  Sender - The TJvDropTarget that called the event.
+##  Effect - The effect to apply to the mouse cursor.
 See Also
   OnDragLeave
 ----------------------------------------------------------------------------------------------------
@@ -271,9 +271,8 @@ Summary
   Occurs when the user drags files over the control.
 Description
   Write a handler for the OnDragOver event to take specific action when the user drags files over the control.
-Parameters
-  Sender - The TJvDropTarget that called the event.
-  Effect - The effect to apply to the mouse cursor.
+##Parameters
+##  Sender - The TJvDropTarget that called the event.
+##  Effect - The effect to apply to the mouse cursor.
 See Also
   OnDragEnter, OnDragLeave, OnDragAccept
-

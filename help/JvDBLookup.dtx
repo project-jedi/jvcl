@@ -1,5 +1,5 @@
 ##Package: DB
-##Status: Locked by Remko Bonte
+##Status: Incomplete
 ----------------------------------------------------------------------------------------------------
 @@JvDBLookup.pas
 Summary
@@ -35,7 +35,7 @@ Description
 @@TJvDBLookupCombo
 <TITLEIMG TJvDBLookupCombo>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.EditsMemosAndCombos.Combos,JVCL.DBAware.EditsMemosAndCombos.Combos
   FLAG=Component
 Summary
   Expands the capabilities of a regular data aware combo-box. 
@@ -188,10 +188,140 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
+@@TJvDBLookupEdit
+<TITLEIMG TJvDBLookupEdit>
+JVCLInfo
+  GROUP=JVCL.EditsMemosAndCombos.Combos,JVCL.DBAware.EditsMemosAndCombos.Combos
+  FLAG=Component
+Summary
+  Data aware edit with look up 
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvDBLookupEdit.DropDownCount
+Summary
+  How much rows are displayed in the drop down list
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDBLookupEdit.DropDownWidth
+Summary
+  Drop down list width (-1 = automatic)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDBLookupEdit.FieldsDelimiter
+Summary
+  Character to delimit fields in the drop down list
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDBLookupEdit.ListStyle
+Summary
+  Style of the look up list (fixed or delimited)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDBLookupEdit.LookupDisplay
+Summary
+  Field or field list to display in the look up
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDBLookupEdit.LookupDisplayIndex
+Summary
+  Index of the lookup field to display
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDBLookupEdit.LookupField
+Summary
+  Look up field
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDBLookupEdit.LookupSource
+Summary
+  Look up datasource
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDBLookupEdit.LookupValue
+Summary
+  Write here a summary (1 line)
+Description
+  Returns the look up value
+  Run-time only
+  Read-only
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDBLookupEdit.OnCloseUp
+Summary
+  Write here a summary (1 line)
+Description
+  Fired when list is closed
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDBLookupEdit.OnDropDown
+Summary
+  Write here a summary (1 line)
+Description
+  Fired when list is dropped down
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDBLookupEdit.OnGetImage
+Summary
+  OnGetImage event is triggered when an image is requested.
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDBLookupEdit.PopupOnlyLocate
+Summary
+  Write here a summary (1 line)
+Description
+  (Rx 2.60)
+  If true (default) this property affects the component behavior when the edit value is changing.
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvDBLookupList
 <TITLEIMG TJvDBLookupList>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.ListsAndTrees.Lists,JVCL.DBAware.GridsTreesLists.Lists
   FLAG=Component
 Summary
   Write here a summary (1 line)
@@ -555,136 +685,6 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDBLookupEdit
-<TITLEIMG TJvDBLookupEdit>
-JVCLInfo
-  GROUP=JVCL.??
-  FLAG=Component
-Summary
-  Data aware edit with look up 
-Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvDBLookupEdit.DropDownCount
-Summary
-  How much rows are displayed in the drop down list
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDBLookupEdit.DropDownWidth
-Summary
-  Drop down list width (-1 = automatic)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDBLookupEdit.FieldsDelimiter
-Summary
-  Character to delimit fields in the drop down list
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDBLookupEdit.ListStyle
-Summary
-  Style of the look up list (fixed or delimited)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDBLookupEdit.LookupDisplay
-Summary
-  Field or field list to display in the look up
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDBLookupEdit.LookupDisplayIndex
-Summary
-  Index of the lookup field to display
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDBLookupEdit.LookupField
-Summary
-  Look up field
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDBLookupEdit.LookupSource
-Summary
-  Look up datasource
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDBLookupEdit.LookupValue
-Summary
-  Write here a summary (1 line)
-Description
-  Returns the look up value
-  Run-time only
-  Read-only
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDBLookupEdit.OnCloseUp
-Summary
-  Write here a summary (1 line)
-Description
-  Fired when list is closed
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDBLookupEdit.OnDropDown
-Summary
-  Write here a summary (1 line)
-Description
-  Fired when list is dropped down
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDBLookupEdit.OnGetImage
-Summary
-  OnGetImage event is triggered when an image is requested.
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvDBLookupEdit.PopupOnlyLocate
-Summary
-  Write here a summary (1 line)
-Description
-  (Rx 2.60)
-  If true (default) this property affects the component behavior when the edit value is changing.
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references

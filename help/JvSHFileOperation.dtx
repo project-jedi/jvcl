@@ -1,5 +1,5 @@
 ##Package: System
-##Status: Completed
+##Status: Completed (I)
 ----------------------------------------------------------------------------------------------------
 @@JvSHFileOperation.pas
 Summary
@@ -160,14 +160,6 @@ Note
 @@TJvSHFileOption.fofNoConfirmMkDir
   Does not ask for confirmation before creating a new directory if the operation requires one to be
   created.
-@@TJvSHFileOption.fofNoCopySecurityAttributes
-  Version 4.71. Does not copy the security attributes of the file.
-@@TJvSHFileOption.fofNoRecursion
-  Only operates in the local directory. Does not operate recursively into subdirectories.
-@@TJvSHFileOption.fofNoConnectedElements
-  Version 5.0. Does not move connected files as a group. Only moves the specified files.
-@@TJvSHFileOption.fofNoRecurseParse
-  Version 5.0. Treats reparse points as objects, not containers.
 @@TJvSHFileOption.fofRenameOnCollision
   Gives the file being operated on a new name in a move, copy, or rename operation if a file with
   the target name already exists. If this flag is not set, the component shows a dialog box that
@@ -181,6 +173,14 @@ Note
   if fofRenameOnCollision is included in <LINK TJvSHFileOperation.Options,Options> and any files were renamed.
 @@TJvSHFileOption.fofNoErrorUI
   Does not display a user interface if an error occurs.
+@@TJvSHFileOption.fofNoCopySecurityAttributes
+  Version 4.71. Does not copy the security attributes of the file.
+@@TJvSHFileOption.fofNoRecursion
+  Only operates in the local directory. Does not operate recursively into subdirectories.
+@@TJvSHFileOption.fofNoConnectedElements
+  Version 5.0. Does not move connected files as a group. Only moves the specified files.
+@@TJvSHFileOption.fofNoRecurseParse
+  Version 5.0. Treats reparse points as objects, not containers.
 @@TJvSHFileOption.fofWantNukeWarning
   Version 5.0. Sends a warning if a file is being destroyed during a delete operation rather than
   recycled. This flag partially overrides fofNoConfirmation.
@@ -207,4 +207,3 @@ Description
 @@TJvSHFileOpType.foRename
   Renames the file specified by <LINK TJvSHFileOperation.SourceFiles,SourceFiles>. This operation
   cannot rename multiple files with a single function call. Use foMove instead.
-

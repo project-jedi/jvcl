@@ -1,5 +1,5 @@
 ##Package: Plugin
-##Status: Review
+##Status: Incomplete
 ----------------------------------------------------------------------------------------------------
 @@JvPluginManager.pas
 Summary
@@ -171,7 +171,7 @@ Description
   If an exception occured during the steps above, the OnLoadingError event will be called. Any
   additional files will still be loaded.
 See Also
-  OnAfterLoad, OnBeforeLoad, OnErrorLoading, OnNewCommand, LoadPlugin, Extension, PluginFolder,
+  OnAfterLoad, OnBeforeLoad, OnPlugInError, OnNewCommand, LoadPlugin, Extension, PluginFolder,
   PluginKind
 ----------------------------------------------------------------------------------------------------
 @@TJvPluginManager.OnAfterLoad
@@ -189,7 +189,7 @@ Parameters
   ALibHandle - Description for this parameter
   AllowLoad  - Description for this parameter
 See Also
-  OnBeforeLoad, OnErrorLoading, OnNewCommand, LoadPlugins
+  OnBeforeLoad, OnPlugInError, OnNewCommand, LoadPlugins
 ----------------------------------------------------------------------------------------------------
 @@TJvPluginManager.OnAfterNewCommand
 Summary
@@ -219,7 +219,7 @@ Parameters
   AllowLoad - Flag to indicate if the plugin should be loaded. Set this to False to prevent the
               plugin from loading.
 See Also
-  OnAfterLoad, OnErrorLoading, OnNewCommand, LoadPlugins
+  OnAfterLoad, OnPlugInError, OnNewCommand, LoadPlugins
 ----------------------------------------------------------------------------------------------------
 @@TJvPluginManager.OnBeforeNewCommand
 Summary
@@ -232,21 +232,6 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvPluginManager.OnErrorLoading
-Summary
-  Event called when an exception has occured while loading a plugin.
-Description
-  Write an OnErrorLoading event handler to responds to exceptions while loading a plugin. The S
-  parameter will contain the message of the exception.
-
-  The OnErrorLoading event will only occur when an exception occurs while loading a plugin found by
-  a call to LoadPlugins.
-Parameters
-  Sender -  Reference to this plugin manager.
-  S -       Value of the exception message property.
-See Also
-  OnAfterLoad, OnBeforeLoad, OnNewCommand, LoadPlugins
 ----------------------------------------------------------------------------------------------------
 @@TJvPluginManager.OnNewCommand
 Summary
@@ -264,19 +249,22 @@ Parameters
   ABitmap -   The value of the command's <LINK TJvPluginCommand.Bitmap, Bitmap> property.
   AEvent -    The value of the command's <LINK TJvPluginCommand.OnExecute, OnExecute> event.
 See Also
-  OnAfterLoad, OnBeforeLoad, OnErrorLoading, LoadPlugins
+  OnAfterLoad, OnBeforeLoad, OnPlugInError, LoadPlugins
 ----------------------------------------------------------------------------------------------------
 @@TJvPluginManager.OnPlugInError
 Summary
-  Write here a summary (1 line)
+  Event called when an exception has occured while loading a plugin.
 Description
-  Write here a description
+  Write an OnPlugInError event handler to responds to exceptions while loading a plugin. The S
+  parameter will contain the message of the exception.
+
+  The OnPlugInError event will only occur when an exception occurs while loading a plugin found by
+  a call to LoadPlugins.
 Parameters
-  Sender - Description for this parameter
-  AError - Description for this parameter
+  Sender - Reference to this plugin manager.
+  AError - Value of the exception message property.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnAfterLoad, OnBeforeLoad, OnNewCommand, LoadPlugins
 ----------------------------------------------------------------------------------------------------
 @@TJvPluginManager.PluginCount
 Summary

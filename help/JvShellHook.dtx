@@ -1,9 +1,9 @@
 ##Package: System
-##Status: Completed
-##Skip: SHELLHOOKINFO
+##Status: Completed (I)
 ##Skip: InitJvShellHooks
-##Skip: UnInitJvShellHooks
 ##Skip: LPSHELLHOOKINFO
+##Skip: SHELLHOOKINFO
+##Skip: UnInitJvShellHooks
 ----------------------------------------------------------------------------------------------------
 @@JvShellHook.pas
 Summary
@@ -241,7 +241,6 @@ Summary
 Description
   TShellHookInfo is used by the Msg parameter of the OnShellMessage event in TJvShellHook. When
   the wParam of the message is HSHELL_GETMINRECT, lParam contains a TShellHookInfo record.
-----------------------------------------------------------------------------------------------------
 @@TShellHookInfo.hwnd
   Handle to the window.
 @@TShellHookInfo.rc

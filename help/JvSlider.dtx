@@ -1,5 +1,5 @@
 ##Package: MM
-##Status: Completed.
+##Status: Completed (I)
 ----------------------------------------------------------------------------------------------------
 @@JvSlider.pas
 Summary
@@ -26,6 +26,19 @@ Description
 
   Set Maximum to indicate an upper limit to the value that can be represented using the slider. Use
   Position to get the actual value the slider represents.
+----------------------------------------------------------------------------------------------------
+@@TJvSlider.AutoSize
+Summary
+  Determines whether the size of the slider control automatically resizes to accommodate the ruler
+  image.
+Description
+  Use AutoSize to make the slider adjust its size automatically so the client area accommodates the
+  height and width of the ruler image. When AutoSize is false, the slider is fixed in size. When AutoSize
+  is true, the size of the slider readjusts whenever the ruler image changes.
+
+  By default, AutoSize is true.
+See Also
+  ImageRuler
 ----------------------------------------------------------------------------------------------------
 @@TJvSlider.Create
 Summary
@@ -56,19 +69,6 @@ Description
   TJvSlider object is not nil and only then calls Destroy.
 See Also
   Create
-----------------------------------------------------------------------------------------------------
-@@TJvSlider.AutoSize
-Summary
-  Determines whether the size of the slider control automatically resizes to accommodate the ruler
-  image.
-Description
-  Use AutoSize to make the slider adjust its size automatically so the client area accommodates the
-  height and width of the ruler image. When AutoSize is false, the slider is fixed in size. When AutoSize
-  is true, the size of the slider readjusts whenever the ruler image changes.
-
-  By default, AutoSize is true.
-See Also
-  ImageRuler
 ----------------------------------------------------------------------------------------------------
 @@TJvSlider.Horizontal
 Summary

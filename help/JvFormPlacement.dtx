@@ -1,5 +1,5 @@
 ##Package: System
-##Status: Incomplete
+##Status: Incomplete (III)
 ##Skip: TPlacementOperation
 ----------------------------------------------------------------------------------------------------
 @@JvFormPlacement.pas
@@ -23,7 +23,7 @@ Description
 
   * Drop an TJvFormPlacement on a form.
   * Use Options to specify what information about the parent form should be stored.
-  * Use the AppStorage property to link the component to a storage component. 
+  * Use the AppStorage property to link the component to a storage component.
   * Use AppStoragePath to specify the location in the storage to save and read the data to.
   * You can then set property Active to true to allow automatically save and restore the specified
     properties, or call the RestoreFormPlacement and SaveFormPlacement methods at run-time to
@@ -52,13 +52,13 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.AppStorage
 Summary
-  Links the component to a storage component. 
+  Links the component to a storage component.
 Description
   Set AppStorage to an application storage component that gives access to a specific storage, such as
   a xml file or the registry. AppStorage allows the TJvFormPlacement component to read from and write to the
   storage.
-  
-  To allow the placement data of a form to be read or written from a storage, both the AppStorage and 
+
+  To allow the placement data of a form to be read or written from a storage, both the AppStorage and
   the AppStoragePath properties must be set.
 See Also
   AppStoragePath
@@ -72,7 +72,7 @@ Description
   The storage system uses paths and uses the concept of folders and values (much like folders and
   files on an OS). AppStoragePath is a path relative to the root folder of the storage component.
 
-  To allow the placement data of a form to be read or written from a storage, both the AppStorage and 
+  To allow the placement data of a form to be read or written from a storage, both the AppStorage and
   the AppStoragePath properties must be set.
 See Also
   AppStorage
@@ -160,7 +160,7 @@ Description
 Summary
   Retrieves an integer value from the storage.
 Description
-  Call ReadInteger to retrieve an integer value from the storage. 
+  Call ReadInteger to retrieve an integer value from the storage.
 Parameters
   Ident   - Identifies the name of the data value from which to retrieve the value.
   Default - Specifies an integer value to use if the data value is not in the storage.
@@ -171,7 +171,7 @@ See Also
 Summary
   Retrieves a string value from the storage.
 Description
-  Call ReadString to retrieve an integer value from the storage. 
+  Call ReadString to retrieve an integer value from the storage.
 Parameters
   Ident   - Identifies the name of the data value from which to retrieve the value.
   Default - Specifies a string value to use if the data value is not in the storage.
@@ -221,7 +221,7 @@ See Also
 Summary
   Writes an integer value to the storage.
 Description
-  Call WriteInteger to store an integer value in the storage. 
+  Call WriteInteger to store an integer value in the storage.
 Parameters
   Ident - Identifies the name of the data value into which to write.
   Value - The integer value to write.
@@ -232,7 +232,7 @@ See Also
 Summary
   Writes a \string value to the storage.
 Description
-  Call WriteInteger to store an integer value in the storage. 
+  Call WriteInteger to store an integer value in the storage.
 Parameters
   Ident - Identifies the name of the data value into which to write.
   Value - The \string value to write.
@@ -264,7 +264,7 @@ Description
   * Use either the <LINK TJvFormStorage_StoredProps_Editor,StoredProps editor> by double-clicking
     the component, or the component's properties, to specify which properties of what components
     you want to be stored and retrieved.
-  * Use the AppStorage property to link the component to a storage component. 
+  * Use the AppStorage property to link the component to a storage component.
   * Use AppStoragePath to specify the location in the storage to save and read the data to.
   * You can then set property <LINK TJvFormPlacement.Active,Active> to true to allow automatically
     save and restore the specified properties, or call the <LINK TJvFormPlacement.RestoreFormPlacement,
