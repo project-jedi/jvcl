@@ -408,6 +408,11 @@ type
 
 implementation
 
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
+
 type
 {$IFDEF VCL}
   TCanvasX = TCanvas;
@@ -1633,6 +1638,11 @@ begin
 
     InflateRect(R, -1, -1);
 
+    if Tab.Enabled then
+      Font.Assign(Self.Font)
+    else
+      Font.Assign(Self.DisabledFont);
+
     if not Tab.TabBar.CloseButton then
       Inc(R.Left, 2);
 
@@ -1643,11 +1653,6 @@ begin
       Inc(R.Left, Tab.GetImages.Width + 2);
     end;
 
-    if Tab.Enabled then
-      Font.Assign(Self.Font)
-    else
-      Font.Assign(Self.DisabledFont);
-    
     Brush.Style := bsClear;
     TextRect(R, R.Left + 3, R.Top + 3, Tab.Caption);
   end;
