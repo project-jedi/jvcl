@@ -1,0 +1,3221 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr "Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2003-10-03 10:35\n"
+"PO-Revision-Date: 2003-10-03 10:35\n"
+"Last-Translator: Somebody <your.email@address.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: dxgettext 1.1.1\n"
+
+msgid "OK"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "&Other..."
+msgstr ""
+	
+msgid "Query parameters"
+msgstr ""
+
+msgid "Define Parameters"
+msgstr ""
+
+msgid "&Parameter name:"
+msgstr ""
+
+msgid "&Value:"
+msgstr ""
+
+msgid "&Data type:"
+msgstr ""
+
+msgid "&Null Value"
+msgstr ""
+
+msgid "&Help"
+msgstr ""
+
+msgid "Help"
+msgstr ""
+
+msgid "Error address: "
+msgstr ""
+
+msgid "Error Type: "
+msgstr ""
+
+msgid "Alignment"
+msgstr ""
+
+msgid "Horizontal"
+msgstr ""
+
+msgid "&No change"
+msgstr ""
+
+msgid "&Left sides"
+msgstr ""
+
+msgid "&Centers"
+msgstr ""
+
+msgid "&Right sides"
+msgstr ""
+
+msgid "&Space equally"
+msgstr ""
+
+msgid "Center in &window"
+msgstr ""
+
+msgid "Cl&ose"
+msgstr ""
+
+msgid "Vertical"
+msgstr ""
+
+msgid "No chan&ge"
+msgstr ""
+
+msgid "&Tops"
+msgstr ""
+
+msgid "C&enters"
+msgstr ""
+
+msgid "&Bottoms"
+msgstr ""
+
+msgid "Space e&qually"
+msgstr ""
+
+msgid "Center &in window"
+msgstr ""
+
+msgid "Clo&se"
+msgstr ""
+
+msgid "Ok"
+msgstr ""
+
+msgid "Checking for new version"
+msgstr ""
+
+msgid "Wingdings"
+msgstr ""
+
+msgid "Checking for new version of SiteBuilder "
+"application."
+msgstr ""
+
+msgid "Information about updates is downloading from www-server os the "
+"developers."
+msgstr ""
+
+msgid "Current version:"
+msgstr ""
+
+msgid "Release date:"
+msgstr ""
+
+msgid "Last version:"
+msgstr ""
+
+msgid "Download page for new version:"
+msgstr ""
+
+msgid "More info:"
+msgstr ""
+
+msgid "fPrintPreview"
+msgstr ""
+
+msgid "First page"
+msgstr ""
+
+msgid "Previous page"
+msgstr ""
+
+msgid "Next page"
+msgstr ""
+
+msgid "Last page"
+msgstr ""
+
+msgid "Printer setup"
+msgstr ""
+
+msgid "Print current page"
+msgstr ""
+
+msgid "Print all pages"
+msgstr ""
+
+msgid "Load report from file"
+msgstr ""
+
+msgid "Save report to file"
+msgstr ""
+
+msgid "Export report to MS Excel"
+msgstr ""
+
+msgid "Print double-sided"
+msgstr ""
+
+msgid "Quick Report Files|*.qrp"
+msgstr ""
+
+msgid "Print Setup"
+msgstr ""
+
+msgid "Orientation"
+msgstr ""
+
+msgid "Portrait"
+msgstr ""
+
+msgid "Landscape"
+msgstr ""
+
+msgid "Printing"
+msgstr ""
+
+msgid "Single-sided"
+msgstr ""
+
+msgid "Double-sided"
+msgstr ""
+
+msgid "Preview"
+msgstr ""
+
+msgid "Full View"
+msgstr ""
+
+msgid "Header"
+msgstr ""
+
+msgid "HeaderText"
+msgstr ""
+
+msgid "FooterText"
+msgstr ""
+
+msgid "DateFormat"
+msgstr ""
+
+msgid "TimeFormat"
+msgstr ""
+
+msgid "Logo"
+msgstr ""
+
+msgid "Borders"
+msgstr ""
+
+msgid "MarginTop"
+msgstr ""
+
+msgid "MarginHeader"
+msgstr ""
+
+msgid "MarginLeft"
+msgstr ""
+
+msgid "MarginRight"
+msgstr ""
+
+msgid "MarginBottom"
+msgstr ""
+
+msgid "PaddingLeft"
+msgstr ""
+
+msgid "HeaderSize"
+msgstr ""
+
+msgid "FooterSize"
+msgstr ""
+
+msgid "Live"
+msgstr ""
+
+msgid "Bitmap Files|*.bmp"
+msgstr ""
+
+msgid "Editor Properties"
+msgstr ""
+
+msgid "Editor"
+msgstr ""
+
+msgid "Editor SpeedSettings"
+msgstr ""
+
+msgid "&Tab stops:"
+msgstr ""
+
+msgid "Default keymapping"
+msgstr ""
+
+msgid "Editor options:"
+msgstr ""
+
+msgid "&Undo after sa&ve"
+msgstr ""
+
+msgid "&Double click line"
+msgstr ""
+
+msgid "&Keep trailing blanks"
+msgstr ""
+
+msgid "Use &syntax highlight"
+msgstr ""
+
+msgid "&Auto indent mode"
+msgstr ""
+
+msgid "S&mart tab"
+msgstr ""
+
+msgid "Backspace &unindents"
+msgstr ""
+
+msgid "&Group undo"
+msgstr ""
+
+msgid "Cursor beyond &EOF"
+msgstr ""
+
+msgid "Colors"
+msgstr ""
+
+msgid "Color SpeedSettings for"
+msgstr ""
+
+msgid "&Element:"
+msgstr ""
+
+msgid "&Color:"
+msgstr ""
+
+msgid "JvHLEditorPreview will be created here in "
+"run-time"
+msgstr ""
+
+msgid "Default"
+msgstr ""
+
+msgid "Whitespace"
+msgstr ""
+
+msgid "Comment"
+msgstr ""
+
+msgid "Reserved word"
+msgstr ""
+
+msgid "Identifer"
+msgstr ""
+
+msgid "Symbol"
+msgstr ""
+
+msgid "String"
+msgstr ""
+
+msgid "Number"
+msgstr ""
+
+msgid "Preprocessor"
+msgstr ""
+
+msgid "Declaration"
+msgstr ""
+
+msgid "Function call"
+msgstr ""
+
+msgid "Statement"
+msgstr ""
+
+msgid "Plain text"
+msgstr ""
+
+msgid "Marked block"
+msgstr ""
+
+msgid "Right margin"
+msgstr ""
+
+msgid "Text attributes:"
+msgstr ""
+
+msgid "&Bold"
+msgstr ""
+
+msgid "&Italic"
+msgstr ""
+
+msgid "&Underline"
+msgstr ""
+
+msgid "Use defaults for:"
+msgstr ""
+
+msgid "&Foreground"
+msgstr ""
+
+msgid "&Background"
+msgstr ""
+
+msgid "Image Viewer"
+msgstr ""
+
+msgid "About JEDI-VCL"
+msgstr ""
+
+msgid "Visit JEDI-VCL on the Web:"
+msgstr ""
+
+msgid "JEDI-VCL Support Mailing List:"
+msgstr ""
+
+msgid "JEDI-VCL Support Newsgroup:"
+msgstr ""
+
+msgid "All rights reserved."
+msgstr ""
+
+msgid "Reporting a Bug/Issue:"
+msgstr ""
+
+msgid "JVCL Help"
+msgstr ""
+
+msgid "Set JVCL Help"
+msgstr ""
+
+msgid "Memory Available to Windows:"
+msgstr ""
+
+msgid "Help files|*.chm; *.hlp"
+msgstr ""
+
+msgid "FoLog"
+msgstr ""
+
+msgid "Time"
+msgstr ""
+
+msgid "Title"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "Save"
+msgstr ""
+
+msgid "&Print"
+msgstr ""
+
+msgid "Print"
+msgstr ""
+
+msgid "csv"
+msgstr ""
+
+msgid "CSV File (*.csv)|*.csv|Binary File (*.dat)|*.dat"
+msgstr ""
+
+msgid "Painter Effects"
+msgstr ""
+
+msgid "Inner"
+msgstr ""
+
+msgid "Outer"
+msgstr ""
+
+msgid "&Add Backdrop"
+msgstr ""
+
+msgid "&Delete Backdrop"
+msgstr ""
+
+msgid "&Update Backdrop"
+msgstr ""
+
+msgid "Parser - Edit "
+msgstr ""
+
+msgid "Properties"
+msgstr ""
+
+msgid "Keyword"
+msgstr ""
+
+msgid "Start Tag"
+msgstr ""
+
+msgid "End Tag"
+msgstr ""
+
+msgid "Where the start text must be"
+msgstr ""
+
+msgid "Must be "
+msgstr ""
+
+msgid "Take text"
+msgstr ""
+
+msgid "Put here the keyword\n"
+"you want the component to send\n"
+"when he has found this item"
+msgstr ""
+
+msgid "Put here the string that\n"
+"is just before the part\n"
+"you want"
+msgstr ""
+
+msgid "Put here the tag you want to find \n"
+"to end the tag"
+msgstr ""
+
+msgid "Tell the component\n"
+"which part you want of the string"
+msgstr ""
+
+msgid "Between limits"
+msgstr ""
+
+msgid "All before start tag"
+msgstr ""
+
+msgid "All after start tag"
+msgstr ""
+
+msgid "The whole line if respecting the condition"
+msgstr ""
+
+msgid "Put here the position of the start tag\n"
+"\n1 if you don't care, \n0 if it can't be in the string, \n"
+"1 if you want it in the first position\n"
+"2 if you want it in the second position\n"
+"...."
+msgstr ""
+
+msgid "Add an item to the list"
+msgstr ""
+
+msgid "&Add"
+msgstr ""
+
+msgid "Delete the selected item \n"
+"from the list"
+msgstr ""
+
+msgid "&Remove"
+msgstr ""
+
+msgid "Apply changes"
+msgstr ""
+
+msgid "&OK"
+msgstr ""
+
+msgid "Cancel Changes"
+msgstr ""
+
+msgid "&Cancel"
+msgstr ""
+
+msgid "Patcher Editor"
+msgstr ""
+
+msgid "Source"
+msgstr ""
+
+msgid "Destination"
+msgstr ""
+
+msgid "Password"
+msgstr ""
+
+msgid "Profiler Report"
+msgstr ""
+
+msgid "Save report to a file (compatible with "
+"Excel)"
+msgstr ""
+
+msgid "&Save..."
+msgstr ""
+
+msgid "Close report window"
+msgstr ""
+
+msgid "&Close"
+msgstr ""
+
+msgid "Remove unused calls from the list"
+msgstr ""
+
+msgid "&Trim"
+msgstr ""
+
+msgid "Click the top column to sort the items"
+msgstr ""
+
+msgid "Function / Procedure "
+msgstr ""
+
+msgid "Total time (ms)"
+msgstr ""
+
+msgid "Calls"
+msgstr ""
+
+msgid "Average time (ms)"
+msgstr ""
+
+msgid "Percent (%)"
+msgstr ""
+
+msgid "Caption"
+msgstr ""
+
+msgid "Label"
+msgstr ""
+
+msgid "Painter Preview"
+msgstr ""
+
+msgid "Use"
+msgstr ""
+
+msgid "&File"
+msgstr ""
+
+msgid "&Edit"
+msgstr ""
+
+msgid "&Open..."
+msgstr ""
+
+msgid "&Default"
+msgstr ""
+
+msgid "&Copy"
+msgstr ""
+
+msgid "&Paste"
+msgstr ""
+
+msgid "&Empty segments"
+msgstr ""
+
+msgid "&Set all segments"
+msgstr ""
+
+msgid "&Invert segments"
+msgstr ""
+
+msgid "Select c&har..."
+msgstr ""
+
+msgid "&Revert"
+msgstr ""
+
+msgid "&Apply"
+msgstr ""
+
+msgid "Mapping Editor..."
+msgstr ""
+
+msgid "Digit class:"
+msgstr ""
+
+msgid "# of segments:"
+msgstr ""
+
+msgid "Character:"
+msgstr ""
+
+msgid "Mapping value:"
+msgstr ""
+
+msgid "Segments:"
+msgstr ""
+
+msgid "&Available buttons:    "
+msgstr ""
+
+msgid "&Categories:    "
+msgstr ""
+
+msgid "To add command buttons, drag and drop buttons onto the JvSpeedbar. To "
+"remove command buttons, drag them off of the "
+"JvSpeedbar."
+msgstr ""
+
+msgid "Spelling checker"
+msgstr ""
+
+msgid "look ahead box"
+msgstr ""
+
+msgid "lblcontext"
+msgstr ""
+
+msgid "txtspell"
+msgstr ""
+
+msgid "Skip this word"
+msgstr ""
+
+msgid "Skip"
+msgstr ""
+
+msgid "Change to corrected word"
+msgstr ""
+
+msgid "Change"
+msgstr ""
+
+msgid "Abort all changes"
+msgstr ""
+
+msgid "Add to user Dictionary"
+msgstr ""
+
+msgid "Add"
+msgstr ""
+
+msgid "Skip all, update and finish"
+msgstr ""
+
+msgid "Skip All"
+msgstr ""
+
+msgid "Wallpaper Chooser"
+msgstr ""
+
+msgid "&Clear"
+msgstr ""
+
+msgid "Directory"
+msgstr ""
+
+msgid "Virtual key"
+msgstr ""
+
+msgid "Modifiers"
+msgstr ""
+
+msgid "Shift"
+msgstr ""
+
+msgid "Ctrl"
+msgstr ""
+
+msgid "YearGrid Edit"
+msgstr ""
+
+msgid "&Load..."
+msgstr ""
+
+msgid "Text Files|*.txt|All Files|*.*"
+msgstr ""
+
+msgid "txt"
+msgstr ""
+
+msgid "Unable to get alarm number %d. Index out of "
+"bounds"
+msgstr ""
+
+msgid "ANI Image"
+msgstr ""
+
+msgid "Not connected"
+msgstr ""
+
+msgid "Error #"
+msgstr ""
+
+msgid "Control '%s' has no parent window"
+msgstr ""
+
+msgid "Parent given is not a parent of '%s'"
+msgstr ""
+
+msgid "(none)"
+msgstr ""
+
+msgid "Unable to find SetupApi.dll"
+msgstr ""
+
+msgid "Custom..."
+msgstr ""
+
+msgid "Custom"
+msgstr ""
+
+msgid "Process list index error"
+msgstr ""
+
+msgid "ProcessID %.8x not found"
+msgstr ""
+
+msgid "Can't perform this operation when process is "
+"running"
+msgstr ""
+
+msgid "Process is not running"
+msgstr ""
+
+msgid "Idle"
+msgstr ""
+
+msgid "Normal"
+msgstr ""
+
+msgid "High"
+msgstr ""
+
+msgid "RealTime"
+msgstr ""
+
+msgid "ListBox doesn't allow sorting in virtual "
+"mode"
+msgstr ""
+
+msgid ";String;SmallInt;Integer;Word;Boolean;Float;Currency;BCD;Date;Time;Dat"
+"eTime;;;;Blob;Memo;Graphic;;;;;Cursor;"
+msgstr ""
+
+msgid "%s%s%s Parameters"
+msgstr ""
+
+msgid "Must have a valid field type selected"
+msgstr ""
+
+msgid "Invalid command start format"
+msgstr ""
+
+msgid "Invalid command format: %s"
+msgstr ""
+
+msgid "Unable to create key %s"
+msgstr ""
+
+msgid "DSA dialog with ID '%d' is already assigned to another dialog "
+"name."
+msgstr ""
+
+msgid "DSA dialog named '%s' is already assigned to another dialog "
+"ID."
+msgstr ""
+
+msgid "DSA dialog %d does not exist."
+msgstr ""
+
+msgid "CheckMarkText ID %d already registered."
+msgstr ""
+
+msgid "DSA dialog %d has not been stored."
+msgstr ""
+
+msgid "Key %s does not exist."
+msgstr ""
+
+msgid "Key %s cannot be accessed as %s."
+msgstr ""
+
+msgid "Boolean"
+msgstr ""
+
+msgid "Float"
+msgstr ""
+
+msgid "Integer"
+msgstr ""
+
+msgid "string"
+msgstr ""
+
+msgid "Don't show this dialog again"
+msgstr ""
+
+msgid "Don't ask me again"
+msgstr ""
+
+msgid "Don't warn me again"
+msgstr ""
+
+msgid "LastResult"
+msgstr ""
+
+msgid "The specified control has no \"Checked\" "
+"property."
+msgstr ""
+
+msgid "The specified control has no \"Caption\" "
+"property."
+msgstr ""
+
+msgid "The dialog ID can only be changed at design "
+"time."
+msgstr ""
+
+msgid "TJvDSADialog is only allowed on forms."
+msgstr ""
+
+msgid "The form already has a TJvDSADialog "
+"component."
+msgstr ""
+
+msgid "This dialog is closing in %d %s."
+msgstr ""
+
+msgid "second"
+msgstr ""
+
+msgid "seconds"
+msgstr ""
+
+msgid "%s.\n"
+"Error Code: %.8x (%1:d)."
+msgstr ""
+
+msgid "Exception in module %s.\n"
+"%s"
+msgstr ""
+
+msgid "<Empty>"
+msgstr ""
+
+msgid "Search string '%s' not found"
+msgstr ""
+
+msgid "Replace"
+msgstr ""
+
+msgid "Find"
+msgstr ""
+
+msgid "No edit control assigned!"
+msgstr ""
+
+msgid "&Undo"
+msgstr ""
+
+msgid "Cu&t"
+msgstr ""
+
+msgid "&Delete"
+msgstr ""
+
+msgid "Select &All"
+msgstr ""
+
+msgid "R : %3D"
+msgstr ""
+
+msgid "G : %3D"
+msgstr ""
+
+msgid "B : %3D"
+msgstr ""
+
+msgid "Background Color"
+msgstr ""
+
+msgid "Foreground Color"
+msgstr ""
+
+msgid "X"
+msgstr ""
+
+msgid "Exchange colors"
+msgstr ""
+
+msgid "B : ---"
+msgstr ""
+
+msgid "G : ---"
+msgstr ""
+
+msgid "R : ---"
+msgstr ""
+
+msgid "The monitor refresh rate should be %d hertz or higher. Change monitor "
+"refresh rate in Monitor Control Panel."
+msgstr ""
+
+msgid "The screen resolution should be equal %s pixels or higher. Change "
+"screen resolution in Monitor Control "
+"Panel."
+msgstr ""
+
+msgid "The number of colors of the screen should be equal to %s colors or "
+"higher. Change screen colors in Monitor Control "
+"Panel."
+msgstr ""
+
+msgid "In system the small font should be established. Change to small fonts "
+"in Monitor Control Panel."
+msgstr ""
+
+msgid "The program requires %s or better."
+msgstr ""
+
+msgid "TJvGenetic: OnTestMember must be Assigned "
+"!"
+msgstr ""
+
+msgid "Put your text here ..."
+msgstr ""
+
+msgid "Uncknown property: %s"
+msgstr ""
+
+msgid "Close tag not found: </%s>"
+msgstr ""
+
+msgid "Item already assigned to another parent."
+msgstr ""
+
+msgid "Exception "
+msgstr ""
+
+msgid "(uninitialized)"
+msgstr ""
+
+msgid "(unassigned)"
+msgstr ""
+
+msgid "(no value)"
+msgstr ""
+
+msgid "Specified Item is not a child of this "
+"item."
+msgstr ""
+
+msgid "Specified column does not belong to this compound "
+"item."
+msgstr ""
+
+msgid "Specified item is not a column of this compound "
+"item."
+msgstr ""
+
+msgid "Invalid property value %s."
+msgstr ""
+
+msgid "Data cannot be accessed as %s."
+msgstr ""
+
+msgid "Data not initialized."
+msgstr ""
+
+msgid "Data not assigned."
+msgstr ""
+
+msgid "Data has no value."
+msgstr ""
+
+msgid "String too long."
+msgstr ""
+
+msgid "Cannot compare %s to %s."
+msgstr ""
+
+msgid "Unable to create generic item registration "
+"list."
+msgstr ""
+
+msgid "Painter is not the active painter of the specified "
+"inspector."
+msgstr ""
+
+msgid "Inspector painter can only be linked to one "
+"inspector."
+msgstr ""
+
+msgid "TJvCustomInspector.SetTopIndex: unexpected MaxIdx <= "
+"-1"
+msgstr ""
+
+msgid "TJvInspectorCustomCompoundItem.DivideRect: unexpected "
+"Inspector.Painter = nil"
+msgstr ""
+
+msgid "TJvInspectorSetMemberData.New: unexpected ADataParent = "
+"nil"
+msgstr ""
+
+msgid "TJvInspectorSetMemberData.New: unexpected AParent = "
+"nil"
+msgstr ""
+
+msgid "TJvInspectorPropData.New: unexpected PropInfo = "
+"nil"
+msgstr ""
+
+msgid "TJvInspectorINIFileData.New: unexpected AINIFile = "
+"nil"
+msgstr ""
+
+msgid "List index out of bounds (%d)"
+msgstr ""
+
+msgid "The joystick driver is not present."
+msgstr ""
+
+msgid "Can't capture the joystick"
+msgstr ""
+
+msgid "The specified joystick is not connected to the "
+"system."
+msgstr ""
+
+msgid "The specified joystick device identifier is "
+"invalid."
+msgstr ""
+
+msgid "Unable to initialize joystick driver"
+msgstr ""
+
+msgid "Win32 Error.  Code: %d.\n"
+"%s"
+msgstr ""
+
+msgid "MDI forms are not allowed"
+msgstr ""
+
+msgid "Cannot set GlobalLogLevel to llGlobal. Valid values are llNone, "
+"llSilent, llNormal, llVerbose and llDebug"
+msgstr ""
+
+msgid "Cannot set CurrentLogLevel to llGlobal. Valid values are llNone, "
+"llSilent, llNormal, llVerbose and llDebug"
+msgstr ""
+
+msgid "Entering"
+msgstr ""
+
+msgid "Exiting"
+msgstr ""
+
+msgid "object %s: %s"
+msgstr ""
+
+msgid "  properties:"
+msgstr ""
+
+msgid "  no published properties available"
+msgstr ""
+
+msgid "object (nil): %s"
+msgstr ""
+
+msgid "Unable to convert variant"
+msgstr ""
+
+msgid "Attached file \"%s\" not found"
+msgstr ""
+
+msgid "Recipient %s has invalid address"
+msgstr ""
+
+msgid "There is no MAPI-enabled client on the "
+"machine"
+msgstr ""
+
+msgid "There must be a user logged before call this "
+"function"
+msgstr ""
+
+msgid "No data found"
+msgstr ""
+
+msgid "Unable to create MRU"
+msgstr ""
+
+msgid "Windows NT required for Unicode in MRU"
+msgstr ""
+
+msgid "Unable to connect"
+msgstr ""
+
+msgid "TJvMultiHTTPGrabber Component"
+msgstr ""
+
+msgid "%d is not a valid attribute index"
+msgstr ""
+
+msgid "%d is not a valid selection index"
+msgstr ""
+
+msgid "%s does not support the %s interface"
+msgstr ""
+
+msgid "Value must be greater then zero"
+msgstr ""
+
+msgid "PCX: Unknown format"
+msgstr ""
+
+msgid "PCX: Unable to retrieve palette"
+msgstr ""
+
+msgid "PCX: Invalid PCX file"
+msgstr ""
+
+msgid "PCX Image"
+msgstr ""
+
+msgid "Performance registry key not found"
+msgstr ""
+
+msgid "Can't start performance statistics (%s)"
+msgstr ""
+
+msgid "Can't stop performance statistics (%s)"
+msgstr ""
+
+msgid "Specified key \"%s\" does not exist"
+msgstr ""
+
+msgid "TJvPerfMon95 component is intended for Win95/98 "
+"only"
+msgstr ""
+
+msgid "Resource Not Found: %s"
+msgstr ""
+
+msgid "Extension may not be empty"
+msgstr ""
+
+msgid "RAS: Unable to find RasApi32.dll"
+msgstr ""
+
+msgid "(Default)"
+msgstr ""
+
+msgid "My Computer"
+msgstr ""
+
+msgid "(value not set)"
+msgstr ""
+
+msgid "(Unknown)"
+msgstr ""
+
+msgid "Invalid XML file"
+msgstr ""
+
+msgid "'%s' is not a valid Boolean value"
+msgstr ""
+
+msgid "Cannot set this property value while Position is "
+"bpAuto"
+msgstr ""
+
+msgid "No IJvSpellChecker implementation available!"
+msgstr ""
+
+msgid "TJvSyncSplitter.SetPartner: cannot set Partner to "
+"Self!"
+msgstr ""
+
+msgid "The test period has expired, please register this "
+"application"
+msgstr ""
+
+msgid "&Next Tip"
+msgstr ""
+
+msgid "Tips and Tricks"
+msgstr ""
+
+msgid "Did you know..."
+msgstr ""
+
+msgid "&Show Tips on Startup"
+msgstr ""
+
+msgid "True"
+msgstr ""
+
+msgid "False"
+msgstr ""
+
+msgid "Incorrect Database Server version, check compiler "
+"options."
+msgstr ""
+
+msgid "Can't load library: %s."
+msgstr ""
+
+msgid "Database handle allready assigned, first disconnect "
+"database."
+msgstr ""
+
+msgid "Transaction not assigned."
+msgstr ""
+
+msgid "Database not assigned."
+msgstr ""
+
+msgid "Query not open."
+msgstr ""
+
+msgid "Cast error."
+msgstr ""
+
+msgid "Unexpected error."
+msgstr ""
+
+msgid "Field num: %d not found."
+msgstr ""
+
+msgid "Field \"%s\" not found."
+msgstr ""
+
+msgid "Parameter \"%s\" not found."
+msgstr ""
+
+msgid "Blob field num: %d not found."
+msgstr ""
+
+msgid "FetchBlob property must be set to use this "
+"method."
+msgstr ""
+
+msgid "Index out of bound (%d)"
+msgstr ""
+
+msgid "Size name too big (%s)"
+msgstr ""
+
+msgid "The query must be prepared first."
+msgstr ""
+
+msgid "Can't connect to server."
+msgstr ""
+
+msgid "Class not found."
+msgstr ""
+
+msgid "Data type error."
+msgstr ""
+
+msgid "Vrai"
+msgstr ""
+
+msgid "Faux"
+msgstr ""
+
+msgid "Impossible de charger la DLL: %s."
+msgstr ""
+
+msgid "Transtypage incorrect."
+msgstr ""
+
+msgid "Erreur innatendue."
+msgstr ""
+
+msgid "Le champ \"%s\" n'existe pas."
+msgstr ""
+
+msgid "Le Parametre \"%s\" n'existe pas."
+msgstr ""
+
+msgid "Indice de liste hors limites (%d)"
+msgstr ""
+
+msgid "La taille du nom est trop grande (%s)"
+msgstr ""
+
+msgid "Impossible de se connecter au serveur."
+msgstr ""
+
+msgid "Ano"
+msgstr ""
+
+msgid "Ne"
+msgstr ""
+
+msgid "Parametr \"%s\" neexistuje."
+msgstr ""
+
+msgid "Index je mimo rozsah (%d)"
+msgstr ""
+
+msgid "Circular reference not allowed"
+msgstr ""
+
+msgid "Cannot insert nil validator"
+msgstr ""
+
+msgid "Cannot remove nil validator"
+msgstr ""
+
+msgid "Validator is not owned by this component"
+msgstr ""
+
+msgid "Invalid skin"
+msgstr ""
+
+msgid "This function is not supported by your version of "
+"Windows"
+msgstr ""
+
+msgid "Invalid drive (%s)"
+msgstr ""
+
+msgid "Unsupported drive (%s): JvDiskFullDialog only supports fixed "
+"drives."
+msgstr ""
+
+msgid "Owner must be of type TCustomForm"
+msgstr ""
+
+msgid "To &Start Page"
+msgstr ""
+
+msgid "To &Last Page"
+msgstr ""
+
+msgid "< &Back"
+msgstr ""
+
+msgid "&Next >"
+msgstr ""
+
+msgid "&Finish"
+msgstr ""
+
+msgid "Welcome"
+msgstr ""
+
+msgid "Subtitle"
+msgstr ""
+
+msgid "The Parent should be TJvWizard or a "
+"descendants."
+msgstr ""
+
+msgid "The pages belong to another wizard."
+msgstr ""
+
+msgid "Step %d of %d"
+msgstr ""
+
+msgid "Band Object DLL Project Wizard"
+msgstr ""
+
+msgid "Band &Name (e.g. MyBand)"
+msgstr ""
+
+msgid "&Description (e.g. &&My Band)"
+msgstr ""
+
+msgid " Band &Type "
+msgstr ""
+
+msgid "IE Info Band (Vertical)"
+msgstr ""
+
+msgid "IE Comm Band (Horizontal)"
+msgstr ""
+
+msgid "IE Tool Band"
+msgstr ""
+
+msgid "Desk Band"
+msgstr ""
+
+msgid "JvBaseDesign"
+msgstr ""
+
+msgid "Toolbar"
+msgstr ""
+
+msgid "Text &Labels"
+msgstr ""
+
+msgid "Move do&wn"
+msgstr ""
+
+msgid "Move &up"
+msgstr ""
+
+msgid "&Clear all"
+msgstr ""
+
+msgid "&Add Strings"
+msgstr ""
+
+msgid "&New"
+msgstr ""
+
+msgid "cbC&hecked"
+msgstr ""
+
+msgid "cb&Grayed"
+msgstr ""
+
+msgid "cb&Unchecked"
+msgstr ""
+
+msgid "&Enabled"
+msgstr ""
+
+msgid "JEDI VCL Component Editor"
+msgstr ""
+
+msgid "JEDI VCL JvgLabel Editor"
+msgstr ""
+
+msgid "Text"
+msgstr ""
+
+msgid "JvCsvDataSet.CSVFieldDef Editor"
+msgstr ""
+
+msgid "CSVFieldDef="
+msgstr ""
+
+msgid "Field Types"
+msgstr ""
+
+msgid "Field Name"
+msgstr ""
+
+msgid "&Modify"
+msgstr ""
+
+msgid "Length"
+msgstr ""
+
+msgid "Fields"
+msgstr ""
+
+msgid "Delphi Jedi Project (www.delphi-jedi.org)"
+msgstr ""
+
+msgid "Boolean (0 or 1 only)"
+msgstr ""
+
+msgid "String (String with Maximum Length)"
+msgstr ""
+
+msgid "Integer (1234)"
+msgstr ""
+
+msgid "Float (123.45)"
+msgstr ""
+
+msgid "DateTime (YYYY/MM/DD HH:MM:SS)"
+msgstr ""
+
+msgid "Hex Timestamp (GMTTIME Hex)"
+msgstr ""
+
+msgid "Hex LocalTime (LOCALTIME Hex)"
+msgstr ""
+
+msgid "Select context..."
+msgstr ""
+
+msgid "&Add item"
+msgstr ""
+
+msgid "Select date time"
+msgstr ""
+
+msgid "&Date:"
+msgstr ""
+
+msgid "&Time:"
+msgstr ""
+
+msgid "Now"
+msgstr ""
+
+msgid "Date"
+msgstr ""
+
+msgid "Directory list"
+msgstr ""
+
+msgid "Add..."
+msgstr ""
+
+msgid "Remove"
+msgstr ""
+
+msgid "Modify"
+msgstr ""
+
+msgid "Form Storage Designer"
+msgstr ""
+
+msgid "&Components   "
+msgstr ""
+
+msgid "&Properties   "
+msgstr ""
+
+msgid "&Stored Properties   "
+msgstr ""
+
+msgid " Form Properties "
+msgstr ""
+
+msgid " Acti&ve Control"
+msgstr ""
+
+msgid " &Form Position"
+msgstr ""
+
+msgid " &Window State"
+msgstr ""
+
+msgid "Cl&ear"
+msgstr ""
+
+msgid "TJvgPropertyCenter: Component list editor"
+msgstr ""
+
+msgid "Color property"
+msgstr ""
+
+msgid "Font property"
+msgstr ""
+
+msgid "component"
+msgstr ""
+
+msgid "Add component"
+msgstr ""
+
+msgid "Remove component"
+msgstr ""
+
+msgid "Text Active"
+msgstr ""
+
+msgid "Text Disabled"
+msgstr ""
+
+msgid "Highlight"
+msgstr ""
+
+msgid "Shadow"
+msgstr ""
+
+msgid "Background"
+msgstr ""
+
+msgid "Background Active"
+msgstr ""
+
+msgid "Delineate"
+msgstr ""
+
+msgid "DelineateActive"
+msgstr ""
+
+msgid "Passive"
+msgstr ""
+
+msgid "Pushed"
+msgstr ""
+
+msgid "Raised"
+msgstr ""
+
+msgid "Recessed"
+msgstr ""
+
+msgid "Volumetric"
+msgstr ""
+
+msgid "Active"
+msgstr ""
+
+msgid "Disabled"
+msgstr ""
+
+msgid "Text Style"
+msgstr ""
+
+msgid "Bold"
+msgstr ""
+
+msgid "Italic"
+msgstr ""
+
+msgid "Underline"
+msgstr ""
+
+msgid "StrikeOut"
+msgstr ""
+
+msgid "Direction"
+msgstr ""
+
+msgid "Sizes"
+msgstr ""
+
+msgid "Shadow Depth"
+msgstr ""
+
+msgid "Font Size"
+msgstr ""
+
+msgid "Surface"
+msgstr ""
+
+msgid "Gradient"
+msgstr ""
+
+msgid "% Filling"
+msgstr ""
+
+msgid "Brush Style"
+msgstr ""
+
+msgid "From Color"
+msgstr ""
+
+msgid "To Color"
+msgstr ""
+
+msgid "Buffered Draw"
+msgstr ""
+
+msgid "LeftBias"
+msgstr ""
+
+msgid "RightBias"
+msgstr ""
+
+msgid "Rectangle"
+msgstr ""
+
+msgid "HorzConvergent"
+msgstr ""
+
+msgid "VertConvergent"
+msgstr ""
+
+msgid "Solid"
+msgstr ""
+
+msgid "Clear"
+msgstr ""
+
+msgid "FDiagonal"
+msgstr ""
+
+msgid "BDiagonal"
+msgstr ""
+
+msgid "Cross"
+msgstr ""
+
+msgid "DiagCross"
+msgstr ""
+
+msgid "Open"
+msgstr ""
+
+msgid "Texture"
+msgstr ""
+
+
+msgid "Bitmaps (*.bmp)|*.bmp"
+msgstr ""
+
+msgid "Value:"
+msgstr ""
+
+msgid "Condition:"
+msgstr ""
+
+msgid "Variants/Choices:"
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+msgid "Element:"
+msgstr ""
+
+msgid "Next"
+msgstr ""
+
+msgid "State:"
+msgstr ""
+
+msgid "Free item"
+msgstr ""
+
+msgid "First element"
+msgstr ""
+
+msgid "eStepName"
+msgstr ""
+
+msgid "Ignore spaces"
+msgstr ""
+
+msgid "Add item"
+msgstr ""
+
+msgid "Remove item"
+msgstr ""
+
+msgid "Event Log"
+msgstr ""
+
+msgid "Log Event"
+msgstr ""
+
+msgid "Dictionary"
+msgstr ""
+
+msgid "Caption Editor"
+msgstr ""
+
+msgid "Caption properties"
+msgstr ""
+
+msgid "Caption &Text: "
+msgstr ""
+
+msgid "&Inactive Color: "
+msgstr ""
+
+msgid "Caption &Font:  "
+msgstr ""
+
+msgid "&Parent Font"
+msgstr ""
+
+msgid "&Glue Next Caption"
+msgstr ""
+
+msgid "&Visible"
+msgstr ""
+
+msgid "&Captions"
+msgstr ""
+
+msgid "Globus  Report Editor"
+msgstr ""
+
+msgid "Text alignment"
+msgstr ""
+
+msgid "Vertical positioning of page (Portrait)"
+msgstr ""
+
+msgid "Horizontal positioning of page (Landscape)"
+msgstr ""
+
+msgid "OLE object"
+msgstr ""
+
+msgid "Snap to grid"
+msgstr ""
+
+msgid "Bevel"
+msgstr ""
+
+msgid "Lock all elements"
+msgstr ""
+
+msgid "Lock element"
+msgstr ""
+
+msgid "Font size"
+msgstr ""
+
+msgid "Choice for color"
+msgstr ""
+
+msgid "Font"
+msgstr ""
+
+msgid "Back"
+msgstr ""
+
+msgid "Transparent"
+msgstr ""
+
+msgid "Component:"
+msgstr ""
+
+msgid "Left:"
+msgstr ""
+
+msgid "Top:"
+msgstr ""
+
+msgid "Width:"
+msgstr ""
+
+msgid "Height:"
+msgstr ""
+
+msgid "   Parameters"
+msgstr ""
+
+msgid "Reports(*.glr)|*.glr"
+msgstr ""
+
+msgid "Report(*.glr)|*.glr"
+msgstr ""
+
+msgid "Bring to front"
+msgstr ""
+
+msgid "Send to back"
+msgstr ""
+
+msgid "Show object"
+msgstr ""
+
+msgid "OLE object's scale"
+msgstr ""
+
+msgid "Clip"
+msgstr ""
+
+msgid "Center"
+msgstr ""
+
+msgid "Scale"
+msgstr ""
+
+msgid "Stretch"
+msgstr ""
+
+msgid "AutoSize"
+msgstr ""
+
+msgid "All Registered OLE Files|*.*"
+msgstr ""
+
+msgid "Report parameter"
+msgstr ""
+
+msgid " Parameter type "
+msgstr ""
+
+msgid "Radio group"
+msgstr ""
+
+msgid "Checkbox"
+msgstr ""
+
+msgid "Database source"
+msgstr ""
+
+msgid "TextMask"
+msgstr ""
+
+msgid " Text mask "
+msgstr ""
+
+msgid "Mask:"
+msgstr ""
+
+msgid "Test:"
+msgstr ""
+
+msgid "RadioGroup"
+msgstr ""
+
+msgid " Radio Group "
+msgstr ""
+
+msgid "Items:"
+msgstr ""
+
+msgid "Insert"
+msgstr ""
+
+msgid "Caption:"
+msgstr ""
+
+msgid "DataSource"
+msgstr ""
+
+msgid " Database source "
+msgstr ""
+
+msgid "Table name:"
+msgstr ""
+
+msgid "Field name:"
+msgstr ""
+
+msgid "Globus  Report Parameters Editor"
+msgstr ""
+
+msgid "RTF Preview"
+msgstr ""
+
+msgid "JvHtHint Editor"
+msgstr ""
+
+msgid "Hint"
+msgstr ""
+
+msgid "Drag mouse over this label to see hint"
+msgstr ""
+
+msgid "Icon List Editor"
+msgstr ""
+
+msgid "Icons Count:  "
+msgstr ""
+
+msgid "Selected index:  "
+msgstr ""
+
+msgid "Load"
+msgstr ""
+
+msgid "LoadAni"
+msgstr ""
+
+msgid "Copy"
+msgstr ""
+
+msgid "Paste"
+msgstr ""
+
+msgid "Frame Kind:"
+msgstr ""
+
+msgid "Frame Editor"
+msgstr ""
+
+msgid "&New frame..."
+msgstr ""
+
+msgid "Se&lect all"
+msgstr ""
+
+msgid "Select Image"
+msgstr ""
+
+msgid "ImageName"
+msgstr ""
+
+msgid "List files of &type:  "
+msgstr ""
+
+msgid "Dri&ves: "
+msgstr ""
+
+msgid "File &name:  "
+msgstr ""
+
+msgid "&Folders:  "
+msgstr ""
+
+msgid "Preview|"
+msgstr ""
+
+msgid "*.bmp;*.ico;*.wmf"
+msgstr ""
+
+msgid "Image Files (*.bmp, *.ico, *.wmf)|*.bmp;*.ico;*.wmf|Bitmap Files "
+"(*.bmp)|*.bmp|Icons (*.ico)|*.ico|Metafiles (*.wmf)|*.wmf|All files "
+"(*.*)|*.*"
+msgstr ""
+
+msgid " &Stretch "
+msgstr ""
+
+msgid "StretchCheck.Checked"
+msgstr ""
+
+msgid "MinMaxInfo"
+msgstr ""
+
+msgid "Left: "
+msgstr ""
+
+msgid "Top: "
+msgstr ""
+
+msgid "Maximize Position:  "
+msgstr ""
+
+msgid "Width: "
+msgstr ""
+
+msgid "Height: "
+msgstr ""
+
+msgid "Maximize Size:  "
+msgstr ""
+
+msgid "Max Track Size:  "
+msgstr ""
+
+msgid "Min Track Size:  "
+msgstr ""
+
+msgid "Set from current\n"
+"form state|"
+msgstr ""
+
+msgid "OutlookBar Editor"
+msgstr ""
+
+msgid "New Page"
+msgstr ""
+
+msgid "Add New Page"
+msgstr ""
+
+msgid "New Button"
+msgstr ""
+
+msgid "Add New Button"
+msgstr ""
+
+msgid "Delete selected item"
+msgstr ""
+
+msgid "Move Up"
+msgstr ""
+
+msgid "Move item up"
+msgstr ""
+
+msgid "Move Down"
+msgstr ""
+
+msgid "Move item down"
+msgstr ""
+
+msgid "Update"
+msgstr ""
+
+msgid "Update list"
+msgstr ""
+
+msgid "Text Labels"
+msgstr ""
+
+msgid "ToolBar"
+msgstr ""
+
+msgid "JvTreeViewLinks Editor"
+msgstr ""
+
+msgid "&Nodes:"
+msgstr ""
+
+msgid "pnlRight"
+msgstr ""
+
+msgid "&Pages:"
+msgstr ""
+
+msgid "<- Create &Link ->"
+msgstr ""
+
+msgid "Page Proxy Editor"
+msgstr ""
+
+msgid "Close"
+msgstr ""
+
+msgid "Picture Editor"
+msgstr ""
+
+msgid " &Use preview dialog box "
+msgstr ""
+
+msgid "P&aths"
+msgstr ""
+
+msgid " &Decrease to 16 colors when paste "
+msgstr ""
+
+msgid "UsePreviewBox.Checked"
+msgstr ""
+
+msgid "DecreaseBox.Checked"
+msgstr ""
+
+msgid "Setup Plugin Parameters"
+msgstr ""
+
+msgid " Plugin settings "
+msgstr ""
+
+msgid "&Name:"
+msgstr ""
+
+msgid "&Author:"
+msgstr ""
+
+msgid "&Description:"
+msgstr ""
+
+msgid "&Copyright:"
+msgstr ""
+
+msgid "&Unique ID:"
+msgstr ""
+
+msgid "Plugin &Host Project:"
+msgstr ""
+
+msgid "PluginName"
+msgstr ""
+
+msgid "Package plugin"
+msgstr ""
+
+msgid "DLL plugin (old style)"
+msgstr ""
+
+msgid "JEDI VCL"
+msgstr ""
+
+msgid "Plugin Description"
+msgstr ""
+
+msgid "JVCL.<ProjectName>"
+msgstr ""
+
+msgid "PluginHostProject"
+msgstr ""
+
+msgid "Schedule Editor"
+msgstr ""
+
+msgid "Date:"
+msgstr ""
+
+msgid "Time:"
+msgstr ""
+
+msgid "Start"
+msgstr ""
+
+msgid "End"
+msgstr ""
+
+msgid "Never"
+msgstr ""
+
+msgid "Event count"
+msgstr ""
+
+msgid "Day count"
+msgstr ""
+
+msgid "Schedule type"
+msgstr ""
+
+msgid "One-shot"
+msgstr ""
+
+msgid "Daily"
+msgstr ""
+
+msgid "Weekly"
+msgstr ""
+
+msgid "Monthly"
+msgstr ""
+
+msgid "Yearly"
+msgstr ""
+
+msgid "Daily frequency"
+msgstr ""
+
+msgid "between"
+msgstr ""
+
+msgid "and"
+msgstr ""
+
+msgid "Occurs once at"
+msgstr ""
+
+msgid "Occurs every"
+msgstr ""
+
+msgid "Milliseconds"
+msgstr ""
+
+msgid "Seconds"
+msgstr ""
+
+msgid "Minutes"
+msgstr ""
+
+msgid "Hours"
+msgstr ""
+
+msgid "Every"
+msgstr ""
+
+msgid "week(s) on:"
+msgstr ""
+
+msgid "Monday"
+msgstr ""
+
+msgid "Tuesday"
+msgstr ""
+
+msgid "Wednesday"
+msgstr ""
+
+msgid "Thursday"
+msgstr ""
+
+msgid "Friday"
+msgstr ""
+
+msgid "Saturday"
+msgstr ""
+
+msgid "Sunday"
+msgstr ""
+
+msgid " Test Settings "
+msgstr ""
+
+msgid "Start with current date"
+msgstr ""
+
+msgid "Count missed events"
+msgstr ""
+
+msgid "Run"
+msgstr ""
+
+msgid "year(s)"
+msgstr ""
+
+msgid "of"
+msgstr ""
+
+msgid "of every"
+msgstr ""
+
+msgid "On"
+msgstr ""
+
+msgid "The"
+msgstr ""
+
+msgid "Last"
+msgstr ""
+
+msgid "day"
+msgstr ""
+
+msgid "weekday"
+msgstr ""
+
+msgid "weekendday"
+msgstr ""
+
+msgid "monday"
+msgstr ""
+
+msgid "tuesday"
+msgstr ""
+
+msgid "wednesday"
+msgstr ""
+
+msgid "thursday"
+msgstr ""
+
+msgid "friday"
+msgstr ""
+
+msgid "saturday"
+msgstr ""
+
+msgid "sunday"
+msgstr ""
+
+msgid "januari"
+msgstr ""
+
+msgid "february"
+msgstr ""
+
+msgid "march"
+msgstr ""
+
+msgid "april"
+msgstr ""
+
+msgid "may"
+msgstr ""
+
+msgid "june"
+msgstr ""
+
+msgid "july"
+msgstr ""
+
+msgid "august"
+msgstr ""
+
+msgid "september"
+msgstr ""
+
+msgid "october"
+msgstr ""
+
+msgid "november"
+msgstr ""
+
+msgid "december"
+msgstr ""
+
+msgid "day(s)"
+msgstr ""
+
+msgid "Every weekday"
+msgstr ""
+
+msgid "month(s)"
+msgstr ""
+
+msgid "Day"
+msgstr ""
+
+msgid "Segmented LED Display Mapping Editor..."
+msgstr ""
+
+msgid "Memory DataSet Structure"
+msgstr ""
+
+msgid " Borrow Structure From "
+msgstr ""
+
+msgid "JvSpeedbar Designer"
+msgstr ""
+
+msgid "&Section name: "
+msgstr ""
+
+msgid "To add command buttons, drag and drop button onto the JvSpeedbar. To "
+"remove command buttons, drag them off of the "
+"JvSpeedbar."
+msgstr ""
+
+msgid " Sections "
+msgstr ""
+
+msgid " Available buttons "
+msgstr ""
+
+msgid "Move up|"
+msgstr ""
+
+msgid "Move Down|"
+msgstr ""
+
+msgid "Cut"
+msgstr ""
+
+msgid "&Delete item"
+msgstr ""
+
+msgid "Delete &Subitems"
+msgstr ""
+
+msgid "Move &Up"
+msgstr ""
+
+msgid "Move &Down"
+msgstr ""
+
+msgid "String list editor"
+msgstr ""
+
+msgid "0 lines"
+msgstr ""
+
+msgid "TXT"
+msgstr ""
+
+msgid "Text files (*.TXT)|*.TXT|Config files (*.SYS;*.INI)|*.SYS;*.INI|Batch "
+"files (*.BAT)|*.BAT|All files (*.*)|*.*"
+msgstr ""
+
+msgid "Load string list"
+msgstr ""
+
+msgid "Save string list"
+msgstr ""
+
+msgid "TreeView Items Editor"
+msgstr ""
+
+msgid " Properties: "
+msgstr ""
+
+msgid "&Text:"
+msgstr ""
+
+msgid "&Image Index:"
+msgstr ""
+
+msgid "&Selected Index:"
+msgstr ""
+
+msgid "State Inde&x:"
+msgstr ""
+
+msgid "TreeView"
+msgstr ""
+
+msgid "&New Item"
+msgstr ""
+
+msgid "N&ew SubItem"
+msgstr ""
+
+msgid "Move left"
+msgstr ""
+
+msgid "Move right"
+msgstr ""
+
+msgid "Move up"
+msgstr ""
+
+msgid "Move down"
+msgstr ""
+
+msgid "Load..."
+msgstr ""
+
+msgid "Save..."
+msgstr ""
+
+msgid "JvValidator Items Editor"
+msgstr ""
+
+msgid "Add Required Field Validator"
+msgstr ""
+
+msgid "Required Field Validator"
+msgstr ""
+
+msgid "Compare Validator"
+msgstr ""
+
+msgid "Add Compare Validator"
+msgstr ""
+
+msgid "Range Validator"
+msgstr ""
+
+msgid "Add Range Validator"
+msgstr ""
+
+msgid "Regular Expression Validator"
+msgstr ""
+
+msgid "Add Regular Expression Validator"
+msgstr ""
+
+msgid "Custom Validator"
+msgstr ""
+
+msgid "Add Custom validator"
+msgstr ""
+
+msgid "Choose a virtual key"
+msgstr ""
+
+msgid "Jv Wizard"
+msgstr ""
+
+msgid "JvWizard, the easy to use Wizard VCL "
+"component"
+msgstr ""
+
+msgid "K Wizard Page Editor"
+msgstr ""
+
+msgid "Add Welcome Page"
+msgstr ""
+
+msgid "Add Welcome page"
+msgstr ""
+
+msgid "Add Interior Page"
+msgstr ""
+
+msgid "Add Interior page"
+msgstr ""
+
+msgid "Delete selected page(s)"
+msgstr ""
+
+msgid "Notifications..."
+msgstr ""
+
+msgid "Select Date"
+msgstr ""
+
+msgid "Select Time"
+msgstr ""
+
+msgid "Select Date and Time"
+msgstr ""
+
+msgid "Editing %s%s..."
+msgstr ""
+
+msgid "Editing contexts for '%s'..."
+msgstr ""
+
+msgid "Root"
+msgstr ""
+
+msgid "Item has no text support."
+msgstr ""
+
+msgid "Item ID \"%s\" not found!"
+msgstr ""
+
+msgid "Item not found."
+msgstr ""
+
+msgid "Failed to add a new item."
+msgstr ""
+
+msgid "unable to add new item; %s."
+msgstr ""
+
+msgid "Unable to delete item; %s."
+msgstr ""
+
+msgid "neither IJvDataItemsManagement nor IJvDataItemsDesigner are "
+"supported"
+msgstr ""
+
+msgid "item doesn't support IJvDataItems"
+msgstr ""
+
+msgid "IJvDataItemsManagement is not supported"
+msgstr ""
+
+msgid "Items"
+msgstr ""
+
+msgid "%s Editor..."
+msgstr ""
+
+msgid "Please select \"JvHLEditor\" first"
+msgstr ""
+
+msgid "Cannot edit"
+msgstr ""
+
+msgid "OutlookBar Editor..."
+msgstr ""
+
+msgid "Editing %s"
+msgstr ""
+
+msgid "%s does not support the required interface "
+"(%s)"
+msgstr ""
+
+msgid "Ne&xt Page"
+msgstr ""
+
+msgid "&Previous Page"
+msgstr ""
+
+msgid "&New Page"
+msgstr ""
+
+msgid "&Delete Page"
+msgstr ""
+
+msgid "Line"
+msgstr ""
+
+msgid "Lines"
+msgstr ""
+
+msgid "Events..."
+msgstr ""
+
+msgid "Preview..."
+msgstr ""
+
+msgid "Page List ..."
+msgstr ""
+
+msgid "New Welcome Page"
+msgstr ""
+
+msgid "New Interior Page"
+msgstr ""
+
+msgid "Next Page"
+msgstr ""
+
+msgid "Previous Page"
+msgstr ""
+
+msgid "Delete Page"
+msgstr ""
+
+msgid "(None)"
+msgstr ""
+
+msgid "This option can't be changed. Sorry."
+msgstr ""
+
+msgid "JvHLEditor property is not assigned"
+msgstr ""
+
+msgid "RegAuto property is not assigned"
+msgstr ""
+
+msgid "Browse"
+msgstr ""
+
+msgid "All files (*.*)|*.*"
+msgstr ""
+
+msgid "Select a Date"
+msgstr ""
+
+msgid "Next Year|"
+msgstr ""
+
+msgid "Next Month|"
+msgstr ""
+
+msgid "Previous Year|"
+msgstr ""
+
+msgid "Previous Month|"
+msgstr ""
+
+msgid "Function not yet implemented"
+msgstr ""
+
+msgid "File specified is not an executable file, dynamic-link library, or "
+"icon file"
+msgstr ""
+
+msgid "Could not load library '%s'"
+msgstr ""
+
+msgid "Details"
+msgstr ""
+
+msgid "&Source"
+msgstr ""
+
+msgid "&Destination"
+msgstr ""
+
+msgid "Cannot display. Data in Clipboard is in an unknown "
+"format."
+msgstr ""
+
+msgid "Clipboard is empty"
+msgstr ""
+
+msgid "Customize Speedbar"
+msgstr ""
+
+msgid "&Available buttons:"
+msgstr ""
+
+msgid "&Categories:"
+msgstr ""
+
+msgid "To add command buttons, drag and drop buttons onto the SpeedBar. To "
+"remove command buttons, drag them off of the "
+"SpeedBar."
+msgstr ""
+
+msgid "Syntax error"
+msgstr ""
+
+msgid "Invalid condition (no cramp)"
+msgstr ""
+
+msgid "Divide by zero"
+msgstr ""
+
+msgid "Invalid floating operation"
+msgstr ""
+
+msgid "CompuServe GIF Image"
+msgstr ""
+
+msgid "Cannot change the Size of a GIF image"
+msgstr ""
+
+msgid "No GIF Data to write"
+msgstr ""
+
+msgid "Unrecognized extension block: %.2x"
+msgstr ""
+
+msgid "Wrong number of colors; must be a power of "
+"2"
+msgstr ""
+
+msgid "GIF code size not in range 2 to 9"
+msgstr ""
+
+msgid "GIF encoded data is corrupt"
+msgstr ""
+
+msgid "GIF image encoding error"
+msgstr ""
+
+msgid "Unknown GIF version"
+msgstr ""
+
+msgid "Cannot perform this operation on a local "
+"database"
+msgstr ""
+
+msgid "Do you wish to retry the connect to "
+"database?"
+msgstr ""
+
+msgid "Field '%s' is not of type Boolean"
+msgstr ""
+
+msgid "NULL only allowed with '=' and '<>'"
+msgstr ""
+
+msgid "Field '%s' cannot be used in a filter "
+"expression"
+msgstr ""
+
+msgid "Cannot perform this operation when controls are "
+"captured"
+msgstr ""
+
+msgid "Cannot perform this operation when controls are not "
+"captured"
+msgstr ""
+
+msgid "Closed"
+msgstr ""
+
+msgid "Edit"
+msgstr ""
+
+msgid "Search"
+msgstr ""
+
+msgid "Calculate"
+msgstr ""
+
+msgid "Registration"
+msgstr ""
+
+msgid "Application \"%s\""
+msgstr ""
+
+msgid "Type your user name and password"
+msgstr ""
+
+msgid "&User name:"
+msgstr ""
+
+msgid "&Password:"
+msgstr ""
+
+msgid "Invalid user name or password"
+msgstr ""
+
+msgid "Change password"
+msgstr ""
+
+msgid "&Old password:"
+msgstr ""
+
+msgid "&New password:"
+msgstr ""
+
+msgid "&Confirm password:"
+msgstr ""
+
+msgid "Password has been changed"
+msgstr ""
+
+msgid "Password has not been changed"
+msgstr ""
+
+msgid "The new and confirmed passwords do not "
+"match"
+msgstr ""
+
+msgid "Database Engine Error"
+msgstr ""
+
+msgid "BDE Error"
+msgstr ""
+
+msgid "Server Error"
+msgstr ""
+
+msgid "Error message"
+msgstr ""
+
+msgid "&Next"
+msgstr ""
+
+msgid "&Prev"
+msgstr ""
+
+msgid "Incorrectly formed filter expression"
+msgstr ""
+
+msgid "Filter expression incorrectly terminated"
+msgstr ""
+
+msgid "Unterminated field name"
+msgstr ""
+
+msgid "Unterminated string constant"
+msgstr ""
+
+msgid "Invalid filter expression character: "
+"'%s'"
+msgstr ""
+
+msgid "')' expected but %s found"
+msgstr ""
+
+msgid "Expression expected but %s found"
+msgstr ""
+
+msgid "Relational operators require a field and a "
+"constant"
+msgstr ""
+
+msgid "The data were changed. Save them?"
+msgstr ""
+
+msgid "Unlock application"
+msgstr ""
+
+msgid "Type your password"
+msgstr ""
+
+msgid "Delete all selected records?"
+msgstr ""
+
+msgid "Enter a date before \"%s\""
+msgstr ""
+
+msgid "Enter a date after \"%s\""
+msgstr ""
+
+msgid "%s - Enter a date between \"%s\" and \"%s\""
+msgstr ""
+
+msgid "%s - Enter a date after \"%s\""
+msgstr ""
+
+msgid "%s - Enter a date before \"%s\""
+msgstr ""
+
+msgid "Frame not found"
+msgstr ""
+
+msgid "Unknown encoding"
+msgstr ""
+
+msgid "Unknown version"
+msgstr ""
+
+msgid "Frame is a duplicate of another frame in the "
+"tag."
+msgstr ""
+
+msgid "Tag already contains a '%s' frame."
+msgstr ""
+
+msgid "Controller is not active"
+msgstr ""
+
+msgid "Encoding not supported in this version."
+msgstr ""
+
+msgid "Version not supported."
+msgstr ""
+
+msgid "No controller specified."
+msgstr ""
+
+msgid "'%s' is an invalid language value."
+msgstr ""
+
+msgid "'%s' is an invalid 'part in set' value."
+msgstr ""
+
+msgid "'%s' is an invalid time value.Value must be of format "
+"'HHMM'."
+msgstr ""
+
+msgid "'%s' is an invalid date value.Value must be of format "
+"'DDMM'."
+msgstr ""
+
+msgid "'%d' is an invalid value. Value is too "
+"big."
+msgstr ""
+
+msgid "'%s' is an invalid value. String is too "
+"long."
+msgstr ""
+
+msgid "Invalid char '%s' in string '%s' in "
+"list."
+msgstr ""
+
+msgid "Frame class '%s' can't be used to represent frame ID "
+"'%s'"
+msgstr ""
+
+msgid "Frame ID '%s' not supported by this "
+"frame"
+msgstr ""
+
+msgid "Frame ID string '%s' not supported by this "
+"frame"
+msgstr ""
+
+msgid "Samples"
+msgstr ""
+
+msgid "Jv System"
+msgstr ""
+
+msgid "Jv Dialogs"
+msgstr ""
+
+msgid "Jv Buttons"
+msgstr ""
+
+msgid "Jv Edits"
+msgstr ""
+
+msgid "Jv Bars and Panels"
+msgstr ""
+
+msgid "Jv Labels"
+msgstr ""
+
+msgid "Jv Lists, Combos and Trees"
+msgstr ""
+
+msgid "Jv Scrollers and Trackers"
+msgstr ""
+
+msgid "Jv Sliders and Splitters"
+msgstr ""
+
+msgid "Jv Images and Animators"
+msgstr ""
+
+msgid "Jv Visual"
+msgstr ""
+
+msgid "Jv Non-Visual"
+msgstr ""
+
+msgid "Jv Application and Forms"
+msgstr ""
+
+msgid "Jv Internet and Network"
+msgstr ""
+
+msgid "Jv Encrypt and Compress"
+msgstr ""
+
+msgid "Jv Data Controls"
+msgstr ""
+
+msgid "Jv Data Access"
+msgstr ""
+
+msgid "Jv HMI Indicators"
+msgstr ""
+
+msgid "Jv HMI Non-Visual"
+msgstr ""
+
+msgid "Jv HMI Controls"
+msgstr ""
+
+msgid "Jv BDE Components"
+msgstr ""
+
+msgid "JVCL"
+msgstr ""
+
+msgid "Jv Dialog"
+msgstr ""
+
+msgid "Save to bitmap..."
+msgstr ""
+
+msgid "Form Storage Designer..."
+msgstr ""
+
+msgid "Edit Proxies..."
+msgstr ""
+
+msgid "%s Page Proxies"
+msgstr ""
+
+msgid "Page Proxy Name"
+msgstr ""
+
+msgid "Page Name"
+msgstr ""
+
+msgid "Cannot create a new Speedbar button"
+msgstr ""
+
+msgid "Are you sure you want to delete current "
+"section?"
+msgstr ""
+
+msgid "Speedbar designer..."
+msgstr ""
+
+msgid "Untitled (%d)"
+msgstr ""
+
+msgid "Cannot create a new event"
+msgstr ""
+
+msgid "Edit Events..."
+msgstr ""
+
+msgid "%s.Events"
+msgstr ""
+
+msgid "Animated Cursors (*.ani)|*.ani|Any files "
+"(*.*)|*.*"
+msgstr ""
+
+msgid "Edit picture..."
+msgstr ""
+
+msgid "Load from ANI..."
+msgstr ""
+
+msgid "Load Icon"
+msgstr ""
+
+msgid "Edit Captions..."
+msgstr ""
+
+msgid "Captions"
+msgstr ""
+
+msgid "Borrow structure..."
+msgstr ""
+
+msgid "Click to edit..."
+msgstr ""
+
+msgid "&Commit"
+msgstr ""
+
+msgid "File &info"
+msgstr ""
+
+msgid "Frame edi&tor"
+msgstr ""
+
+msgid "&Remove tag..."
+msgstr ""
+
+msgid "Remove tag?"
+msgstr ""
+
+msgid "File %s does not exists"
+msgstr ""
+
+msgid "No file specified"
+msgstr ""
+
+msgid "This file has not a valid MPEG tag"
+msgstr ""
+
+msgid "Implementation of that class already "
+"exists."
+msgstr ""
+
+msgid "Expected collection."
+msgstr ""
+
+msgid "Missing ClassName property"
+msgstr ""
+
+msgid "Invalid class type."
+msgstr ""
+
+msgid "(item doesn't support the IJvDataItemText "
+"interface)"
+msgstr ""
+
+msgid "Can't create a data provider without an IJvDataItems "
+"implementation."
+msgstr ""
