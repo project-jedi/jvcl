@@ -35,16 +35,32 @@ uses
   {$IFDEF USE_DXGETTEXT}
   JvGnugettext,
   {$ENDIF USE_DXGETTEXT}
-  {$IFDEF MSWINDOWS}
-  Windows,
-  {$ENDIF MSWINDOWS}
-  {$IFDEF VCL}
-  Messages, Controls,
-  {$ENDIF VCL}
+  Windows, Messages, Controls,
   {$IFDEF VisualCLX}
-  Qt, QWindows,
+  Qt, QStdCtrls, // TOwnerDrawState
   {$ENDIF VisualCLX}
   JVCLVer, JvExControls, JvExExtCtrls, JvExComCtrls, JvExForms, JvExStdCtrls;
+
+{$IFDEF VCL}
+const
+  NullHandle = 0;
+{$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+const
+  NullHandle = nil;
+
+type
+  TMessage = QWindows.TMessage;
+  {$NODEFINE TMessage}
+  TMsg = QWindows.TMsg;
+  {$NODEFINE TMsg}
+  TOwnerDrawState = QStdCtrls.TOwnerDrawState;
+  {$NODEFINE TOwnerDrawState}
+  TBevelKind = JvQExControls.TBevelKind;
+  {$NODEFINE TBevelKind}
+  function ColorToRGB(Color: TColor; Instance: TWidgetControl = nil): TColor;
+{$ENDIF VisualCLX}
 
 type
   TJvComponent = class(TComponent)
@@ -107,6 +123,14 @@ implementation
 const
   cDomainName = 'jvcl';
 {$ENDIF USE_DXGETTEXT}
+
+{$IFDEF VisualCLX}
+function ColorToRGB(Color: TColor; Instance: TWidgetControl = nil): TColor;
+begin
+  result :=  QWindows.ColorToRGB(Color, Instance);
+end;
+{$ENDIF VisualCLX}
+
 
 //=== { TJvForm } ============================================================
 
