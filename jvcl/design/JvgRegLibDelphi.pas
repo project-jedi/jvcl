@@ -52,21 +52,21 @@ uses Classes,
   JvgRichEditUtils, JvgCommClasses, JvgRttiUtils, JvgScrollBox,
   JvgConstSysRequirements, JvgCrossTable, JvgShade, JvgDBNav, JvgDigits,
   JvgDrawTab, JvgEdit, JvgExceptionHandler, JvgExport, JvgShadowEditor,
-  JvgFileIterator, JvgFileUtils, JvgFixFont, JvgShadow, JvgGraph,
+  JvgFileIterator, JvgFileUtils, JvgFixFont, JvgShadow, {JvgGraph,}
   JvgGraphicButton, JvgGridHeaderControl, JvgSingleInstance, JvgShape,
   JvgSpeedButton, JvgStaticText, JvgHoleShape, JvgHTTPVersionInfo, JvgSplit,
-  JvgImageGroup, JvgInspectorGrid, JvgJump, JvgSmallFontsDefense, JvgSysInf,
+  {JvgImageGroup, }JvgInspectorGrid, JvgJump, JvgSmallFontsDefense, JvgSysInf,
   JvgLogicItemEditorForm, JvgLogics, JvgStringContainer, JvgMailSlots,
   JvgStringGrid, JvgTabComm, JvgTab, JvgSysRequirements, JvgProcess,
   JvgProcessUtils, JvgPropertyCenter, JvgQPrintPreviewForm, JvgQPrintSetupForm,
   JvgQRLabel, JvgTransparentMemo, JvgTreeView, JvgTypes, JvgVertDBGrid,
-  JvgUtils, JvgWinMask, JvgWebDocumentIterator, JvgRTFPreviewForm,
+  JvgUtils, {JvgWinMask, } JvgWebDocumentIterator, JvgRTFPreviewForm,
   JvgWizardHeader, JvgXMLSerializer, Jvg3DColors, JvgAskListBox, JvgBevel,
   JvgButton, JvgCheckBox, JvgCheckVersionInfoForm, JvgCompDescription,
   JvgComponentListEditorForm, JvgDBGrid, JvgExportComponents, JvgFlyingText,
   JvgGroupBox, JvgHelpPanel, JvgHelpPanelEditor, JvgHint, JvgImage,
   JvgLabel, JvgLanguageLoader, JvgListBox, JvgLogicsEditorForm,
-  JvgMultiResourceEditorForm, JvgMultiResources, JvgPage, JvgProgress,
+  JvgMultiResourceEditorForm, { JvgMultiResources, } JvgPage, JvgProgress,
   JvgLabelEditorForm;
 // JvgStepLabel,
 // JvgTagParser,
@@ -77,9 +77,9 @@ begin
   RegisterComponents('JVCL Globus Components 1', [TJvgExportDBETable,
     TJvgDBNAvigator, TJvgPrintCrossTable, TJvgDBGrid, TJvgVertDBSGrid,
       TJvgSysInfo, TJvgMaskEdit, TJvgBevel, TJvgBitBtn, TJvgGraphicButton,
-      TJvgGraph, TJvgTreeView, TJvgCheckTreeView, TJvgSplitter, TJvgShadow,
-      TJvgShade, TJvgButton, TJvgImageGroup, TJvgProgress, TJvgTransparentMemo,
-      TJvgWinMask, TJvgGroupBox, TJvgBitmapImage, TJvgListBox, TJvgCheckListBox,
+      { TJvgGraph, } TJvgTreeView, TJvgCheckTreeView, TJvgSplitter, TJvgShadow,
+      TJvgShade, TJvgButton, {TJvgImageGroup, }TJvgProgress, TJvgTransparentMemo,
+      {TJvgWinMask, } TJvgGroupBox, TJvgBitmapImage, TJvgListBox, TJvgCheckListBox,
       TJvgAskListBox, TJvgScrollBox, TJvgStringGrid, TJvgSpeedButton,
       TJvgWizardHeader, TJvgCaption, TJvgGridHeaderControl]);
 
@@ -91,8 +91,8 @@ begin
       TJvgJumpingComponent, TJvgStringContainer, TJvgSysRequirements,
       TJvg3DColors, TJvgHint, TJvginspectorGrid, TJvgReport,
       TJvgReportParamsEditor, TJvgLogicProducer, TJvgSmallFontsDefence,
-      TJvgMultipleResources, TJvgSingleInstance, TJvgFixFont,
-      TJvgComponentDescription, TJvgQRLabel, TJvgQRDBText, TJvgMyQRPreview]);
+      {TJvgMultipleResources, }TJvgSingleInstance, TJvgFixFont,
+      {TJvgComponentDescription, } TJvgQRLabel, TJvgQRDBText, TJvgMyQRPreview]);
 
   RegisterComponentEditor(TJvgPropertyCenter, TJvgComponentListEditor);
   RegisterPropertyEditor(TypeInfo(TStringList), TJvgPropertyCenter,
@@ -105,8 +105,8 @@ begin
   RegisterComponentEditor(TJvgShadow, TJvgShadowEditor);
   RegisterComponentEditor(TJvgHelpPanel, TJvgHelpPanelEditor);
   RegisterComponentEditor(TJvgLabel, TJvgLabelEditor);
-  RegisterPropertyEditor(TypeInfo(TJvgResStringList), TJvgMultipleResources,
-    'Resources', TJvgResourcesProperty);
+{  RegisterPropertyEditor(TypeInfo(TJvgResStringList), TJvgMultipleResources,
+    'Resources', TJvgResourcesProperty); }
 
   //RegisterComponentEditor(TJvgGridHeaderControl, TJvgGridHeaderControl_Editor);
   //RegisterPropertyEditor(TypeInfo(STRING), TJvgMaskEdit, 'EditMask',
