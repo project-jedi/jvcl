@@ -2635,8 +2635,14 @@ begin
       Exit;
     if not (IsRectEmpty(ARect) and (GetMapMode(Canvas.Handle) = MM_TEXT)) then
     begin
+      {$IFDEF VCL}
       StartColor := ColorToRGB(StartColor);
       EndColor := ColorToRGB(EndColor);
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      StartColor := ColorFromColormap(StartColor);
+      EndColor := ColorFromColormap(EndColor);
+      {$ENDIF VisualCLX}
       if Direction in [fdBottomToTop, fdRightToLeft] then
       begin
         // just swap the colors
