@@ -3,6 +3,7 @@ Changelog for JVCL 3.0
 2004-03-23_
 - Added TJvComputerInfoEx to JvSystem and also removed TJvDeviceChanged, TJvSystemColors, TJvKeyboardStates, TJvDirectories since they are incorporated in JvComputerInfoEx // peter3
 - Added JvDBFindEdit to JvDB and JvDotNetDBFindEdit to JvDotNetCtrls donated from yul // peter3
+- Updated JvMemoryDataset with new properties and events from Claudio F. Zwitkovits // peter3
 2004-03-20
 - JvFtpGrabber moved to Archive, replaced by TJvFtpUrlGrabber  // obones
 - JvHttpGrabber moved to Archive, replaced by TJvHttpUrlGrabber  // obones
