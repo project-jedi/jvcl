@@ -31,7 +31,7 @@ Known Issues:
 
 {$I jvcl.inc}
 
-unit JvQAppXMLStorage;
+unit JvQAppXmlStorage;
 
 interface
 
