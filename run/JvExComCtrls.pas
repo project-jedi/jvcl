@@ -39,6 +39,9 @@ interface
 
 uses
   Windows, Messages, Graphics, Controls, Forms, ComCtrls,
+  {$IFDEF COMPILER6_UP}
+  Types,
+  {$ENDIF COMPILER6_UP}
   Classes, SysUtils,
   JvTypes, JvThemes, JVCLVer, JvExControls;
 
