@@ -757,6 +757,7 @@ end;
 constructor TJvCustomUrlGrabberThread.Create(Grabber: TJvCustomUrlGrabber);
 begin
   inherited Create(True);
+  FContinue := True;
   FGrabber := Grabber;
 end;
 
@@ -772,7 +773,6 @@ end;
 
 procedure TJvCustomUrlGrabberThread.Progress;
 begin
-  FContinue := True;
   FGrabber.DoProgress(FGrabber.BytesRead, FContinue);
 end;
 
