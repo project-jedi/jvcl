@@ -32,16 +32,22 @@ interface
 
 uses
   Classes,
+  {$IFDEF USEJVCL}
+  JvComponent,
+  {$ENDIF USEJVCL}
   {$IFDEF VCL}
-  Windows, Graphics, Controls,
+  Windows, Graphics, Controls;
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QGraphics, QControls,
+  QGraphics, QControls;
   {$ENDIF VisualCLX}
-  JvComponent;
 
 type
+  {$IFDEF USEJVCL}
   TJvgFixFont = class(TJvComponent)
+  {$ELSE}
+  TJvgFixFont = class(TComponent)
+  {$ENDIF USEJVCL}
   private
     FFont: TFont;
     procedure FixFont(Window: TWinControl);

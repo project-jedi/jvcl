@@ -47,9 +47,19 @@ procedure RemoveDirectories(const FilePath: string);
 
 implementation
 
+{$IFDEF USEJVCL}
 uses
   FileCtrl,
   JvJCLUtils;
+{$ELSE}
+
+uses
+  FileCtrl;
+
+const
+  AllFilesMask = '*.*';
+
+{$ENDIF USEJVCL}
 
 function GetOwnPath: string;
 var

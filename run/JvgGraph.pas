@@ -32,13 +32,20 @@ interface
 
 uses
   Windows, Messages, Classes, Controls, Graphics, ExtCtrls,
-  JvgTypes, JvgCommClasses, JvgUtils, JvComponent;
+  {$IFDEF USEJVCL}
+  JvComponent,
+  {$ENDIF USEJVCL}
+  JvgTypes, JvgCommClasses, JvgUtils;
 
 const
   MaxPointsCount = 30;
 
 type
+  {$IFDEF USEJVCL}
   TJvgGraph = class(TJvGraphicControl)
+  {$ELSE}
+  TJvgGraph = class(TGraphicControl)
+  {$ENDIF USEJVCL}
   protected
     procedure Paint; override;
   public

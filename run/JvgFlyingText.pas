@@ -33,7 +33,10 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls,
-  JvgTypes, JvgUtils, JvComponent, JvgCommClasses;
+  {$IFDEF USEJVCL}
+  JvComponent,
+  {$ENDIF USEJVCL}
+  JvgTypes, JvgUtils, JvgCommClasses;
 
 type
   TMyRect = record
@@ -45,7 +48,11 @@ type
 
   TTextLineChangingEvent = procedure(Sender: TObject; LineNum: Integer) of object;
 
+  {$IFDEF USEJVCL}
   TJvgFlyingText = class(TJvCustomPanel)
+  {$ELSE}
+  TJvgFlyingText = class(TCustomPanel)
+  {$ENDIF USEJVCL}
   private
     FHorAlign: TglHorAlign;
     FVertAlign: TglVertAlign;

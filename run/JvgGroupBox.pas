@@ -33,13 +33,19 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls,
-  Forms, Dialogs, StdCtrls, ExtCtrls, JVCLVer, JvgTypes,
-  JvgCommClasses;
+  Forms, Dialogs, StdCtrls, ExtCtrls,
+  {$IFDEF USEJVCL}
+  JVCLVer,
+  {$ENDIF USEJVCL}
+  JvgTypes, JvgCommClasses;
 
 type
   TCaptionAlignment = (fcaNone, fcaLeft, fcaRight, fcaCenter, fcaWidth);
   TJvgGroupBox = class(TCustomGroupBox)
-  protected
+  private
+    {$IFDEF USEJVCL}
+    FAboutJVCL: TJVCLAboutInfo;
+    {$ENDIF USEJVCL}
     FBorder: TJvgBevelOptions;
     FCaptionBorder: TJvgBevelOptions;
     FGradient: TJvgGradient;
@@ -66,8 +72,6 @@ type
     CaptionRect: TRect;
     ptScroll: TPoint;
     fScrolling: Boolean;
-    FAboutJVCL: TJVCLAboutInfo;
-
     procedure SetCaptionAlignment(Value: TCaptionAlignment);
     procedure SetCaptionTextStyle(Value: TglTextStyle);
     procedure SetCollapsed(Value: Boolean);
@@ -86,26 +90,26 @@ type
     procedure SetCaption(const Value: string);
     procedure ReadFullHeight(Reader: TReader);
     procedure WriteFullHeight(Writer: TWriter);
-    procedure Paint; override;
-    procedure CreateParams(var Params: TCreateParams); override;
-    procedure AdjustClientRect(var Rect: TRect); override;
-
-    procedure ComputeCaptionRect;
-
     //    procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
 
     procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
     procedure WMMouseMove(var Msg: TWMMouseMove); message WM_MOUSEMOVE;
     procedure WMLButtonUp(var Msg: TWMLButtonUp); message WM_LBUTTONUP;
     procedure CMEnabledChanged(var Msg: TMessage);  message CM_ENABLEDCHANGED;
+  protected
+    procedure Paint; override;
+    procedure CreateParams(var Params: TCreateParams); override;
+    procedure AdjustClientRect(var Rect: TRect); override;
+    procedure ComputeCaptionRect;
   public
     procedure Collapse(fCollapse: Boolean);
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure DefineProperties(Filer: TFiler); override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored
-      False;
+    {$IFDEF USEJVCL}
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    {$ENDIF USEJVCL}
     property Anchors;
     property Align;
     property Caption : string read GetCaption write SetCaption;
@@ -136,43 +140,30 @@ type
     property Border: TJvgBevelOptions read FBorder write FBorder;
     property CaptionAlignment: TCaptionAlignment
       read FCaptionAlignment write SetCaptionAlignment default fcaNone;
-    property CaptionBorder: TJvgBevelOptions read FCaptionBorder write
-      FCaptionBorder;
-    property CaptionGradient: TJvgGradient read FCaptionGradient write
-      FCaptionGradient;
-    property CaptionShift: TJvgPointClass read FCaptionShift write
-      FCaptionShift;
-    property CaptionTextStyle: TglTextStyle
-      read FCaptionTextStyle write SetCaptionTextStyle default fstNone;
+    property CaptionBorder: TJvgBevelOptions read FCaptionBorder write FCaptionBorder;
+    property CaptionGradient: TJvgGradient read FCaptionGradient write FCaptionGradient;
+    property CaptionShift: TJvgPointClass read FCaptionShift write FCaptionShift;
+    property CaptionTextStyle: TglTextStyle read FCaptionTextStyle write SetCaptionTextStyle default fstNone;
     property Collapsed: Boolean read FCollapsed write SetCollapsed default False;
     property Colors: TJvgGroupBoxColors read FColors write FColors;
     property Gradient: TJvgGradient read FGradient write FGradient;
-    property Illumination: TJvgIllumination read FIllumination write
-      FIllumination stored False;
+    property Illumination: TJvgIllumination read FIllumination write FIllumination stored False;
     property Options: TglGroupBoxOptions read FOptions write SetOptions;
-    property Transparent: Boolean
-      read FTransparent write SetTransparent default False;
-    property TransparentCaption: Boolean
-      read FTransparentCaption write SetTransparentCaption default False;
-    property GroupIndex: Integer read FGroupIndex write SetGroupIndex default
-      0;
-    property GlyphCollapsed: TBitmap read GetGlyphCollapsed write
-      SetGlyphCollapsed;
-    property GlyphExpanded: TBitmap read GetGlyphExpanded write
-      SetGlyphExpanded;
+    property Transparent: Boolean read FTransparent write SetTransparent default False;
+    property TransparentCaption: Boolean read FTransparentCaption write SetTransparentCaption default False;
+    property GroupIndex: Integer read FGroupIndex write SetGroupIndex default 0;
+    property GlyphCollapsed: TBitmap read GetGlyphCollapsed write SetGlyphCollapsed;
+    property GlyphExpanded: TBitmap read GetGlyphExpanded write SetGlyphExpanded;
     property AfterPaint: TNotifyEvent read FAfterPaint write FAfterPaint;
     property OnCollapsed: TNotifyEvent read FOnCollapsed write FOnCollapsed;
     property OnExpanded: TNotifyEvent read FOnExpanded write FOnExpanded;
   end;
-
 
 implementation
 
 uses
   Math,
   JvgUtils;
-
-//____________________________________________________ Methods _
 
 constructor TJvgGroupBox.Create(AOwner: TComponent);
 begin
@@ -302,13 +293,17 @@ end;
 
 procedure TJvgGroupBox.WriteFullHeight(Writer: TWriter);
 begin
-  Writer.writeInteger(FullHeight);
+  Writer.WriteInteger(FullHeight);
 end;
 
 procedure TJvgGroupBox.Paint;
 type
   TgbColor = record
-    Text, Caption, Background, Client, Delineate: TColor;
+    Text: TColor;
+    Caption: TColor;
+    Background: TColor;
+    Client: TColor;
+    Delineate: TColor;
   end;
 var
   H, GlyphWidth: Integer;
@@ -461,7 +456,6 @@ begin
     FOnCollapsed(Self);
   if not fCollapse and Assigned(FOnExpanded) then
     FOnExpanded(Self);
-
 end;
 
 procedure TJvgGroupBox.Collapse_(fCollapse: Boolean);
@@ -487,8 +481,7 @@ begin
     Height := CaptionRect.Bottom + 1;
 
     //...set all Children invisible
-    if (fgoHideChildrenWhenCollapsed in Options) or (fgoSaveChildFocus in
-      Options) then
+    if (fgoHideChildrenWhenCollapsed in Options) or (fgoSaveChildFocus in Options) then
       for I := 0 to Owner.ComponentCount - 1 do
         with TControl(Owner) do
           if (Components[I] is TControl) and
@@ -500,7 +493,6 @@ begin
             if fgoHideChildrenWhenCollapsed in Options then //...hide
               TControl(Components[I]).Visible := False;
           end;
-
   end
   else
   begin
@@ -521,7 +513,6 @@ begin
       ChildFocusedControl.SetFocus;
     except
     end;
-
   end;
 
   Exit; { patch for win 98 }
@@ -594,62 +585,67 @@ procedure TJvgGroupBox.SmthChanged(Sender: TObject);
 begin
   Invalidate;
 end;
-//____________________________________________________ Properties Methods _
 
 procedure TJvgGroupBox.SetCaptionAlignment(Value: TCaptionAlignment);
 begin
-  if FCaptionAlignment = Value then
-    Exit;
-  FCaptionAlignment := Value;
-  Invalidate;
+  if FCaptionAlignment <> Value then
+  begin
+    FCaptionAlignment := Value;
+    Invalidate;
+  end;
 end;
 
 procedure TJvgGroupBox.SetCaptionTextStyle(Value: TglTextStyle);
 begin
-  if FCaptionTextStyle = Value then
-    Exit;
-  FCaptionTextStyle := Value;
-  Invalidate;
+  if FCaptionTextStyle <> Value then
+  begin
+    FCaptionTextStyle := Value;
+    Invalidate;
+  end;
 end;
 
 procedure TJvgGroupBox.SetCollapsed(Value: Boolean);
 begin
-  if FCollapsed = Value then
-    Exit;
-  if not (fgoCanCollapse in Options) and Value then
-    Exit;
-  FCollapsed := Value;
-  if csLoading in ComponentState then
-    Exit;
-  Collapse_(Value);
+  if FCollapsed <> Value then
+  begin
+    if not (fgoCanCollapse in Options) and Value then
+      Exit;
+    FCollapsed := Value;
+    if csLoading in ComponentState then
+      Exit;
+    Collapse_(Value);
+  end;
 end;
 
 procedure TJvgGroupBox.SetOptions(Value: TglGroupBoxOptions);
 begin
-  if FOptions = Value then
-    Exit;
-  FOptions := Value;
-  //  if not(fgoCanCollapse in Options) then Collapsed := False;
-  if Assigned(Parent) then
-    CalcShadowAndHighlightColors((Parent as TWinControl).Brush.Color,
-      TJvgLabelColors(Colors));
-  Invalidate;
+  if FOptions <> Value then
+  begin
+    FOptions := Value;
+    //  if not(fgoCanCollapse in Options) then Collapsed := False;
+    if Assigned(Parent) then
+      CalcShadowAndHighlightColors((Parent as TWinControl).Brush.Color,
+        TJvgLabelColors(Colors));
+    Invalidate;
+  end;
 end;
 
 procedure TJvgGroupBox.SetTransparent(Value: Boolean);
 begin
-  if FTransparent = Value then
-    Exit;
-  FTransparent := Value;
-  RecreateWnd;
+  if FTransparent <> Value then
+  begin
+    FTransparent := Value;
+    RecreateWnd;
+  end;
 end;
 
 procedure TJvgGroupBox.SetTransparentCaption(Value: Boolean);
 begin
-  if FTransparentCaption = Value then
-    Exit;
-  FTransparentCaption := Value;
-  RecreateWnd;
+  if FTransparentCaption <> Value then
+  begin
+    FTransparentCaption := Value;
+    RecreateWnd;
+  end;
 end;
 
 procedure TJvgGroupBox.SetGroupIndex(Value: Integer);
@@ -679,10 +675,7 @@ end;
 
 procedure TJvgGroupBox.SetGlyphCollapsed(Value: TBitmap);
 begin
-  if Assigned(FGlyphCollapsed) then
-    FGlyphCollapsed.Free;
-  FGlyphCollapsed := TBitmap.Create;
-  FGlyphCollapsed.Assign(Value);
+  GlyphCollapsed.Assign(Value);
   Invalidate;
 end;
 
@@ -695,10 +688,7 @@ end;
 
 procedure TJvgGroupBox.SetGlyphExpanded(Value: TBitmap);
 begin
-  if Assigned(FGlyphExpanded) then
-    FGlyphExpanded.Free;
-  FGlyphExpanded := TBitmap.Create;
-  FGlyphExpanded.Assign(Value);
+  GlyphExpanded.Assign(Value);
   Invalidate;
 end;
 
@@ -731,7 +721,7 @@ begin
   else
     GlyphWidth := 0;
   if Assigned(FGlyphCollapsed) then
-    GlyphWidth := max(FGlyphCollapsed.Width, GlyphWidth);
+    GlyphWidth := Max(FGlyphCollapsed.Width, GlyphWidth);
 
   Windows.DrawText(Canvas.Handle, PChar(Text), Length(Text), R, DT_LEFT or DT_SINGLELINE or DT_CALCRECT);
 
