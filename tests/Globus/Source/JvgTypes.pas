@@ -157,14 +157,6 @@ type
          False;
    end;
 
-   TJvCustomListBox = class(TCustomListBox)
-   private
-      FAboutJVCL: TJVCLAboutInfo;
-   published
-      property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored
-         False;
-   end;
-
 const
    ALLGLSIDES                 = [fsdLeft, fsdTop, fsdRight, fsdBottom];
    { OEM Resource Ordinal Numbers }

@@ -98,6 +98,7 @@ type
       TmpBitmap: TBitmap;
       BtnRect, BtnTxtRect: TRect;
       MouseClickPoint: TPoint;
+    FAboutJVCL: TJVCLAboutInfo;
       procedure SetAutoTrColor(Value: TglAutoTransparentColor);
       procedure SetWallpaper(Value: TBitmap);
       function GetWallpaper: TBitmap;
@@ -137,6 +138,9 @@ type
       constructor Create(AOwner: TComponent); override;
       destructor Destroy; override;
    published
+      property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored
+         False;
+
       property Align;
       property BorderStyle;
       property Color;

@@ -32,21 +32,31 @@ unit JvgTransparentMemo;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls;
+   Windows,
+   JVCLVer,
+   Messages,
+   SysUtils,
+   Classes,
+   Graphics,
+   Controls,
+   Forms,
+   Dialogs,
+   StdCtrls;
 
 type
-  TJvgTranspMemo = class(TMemo)
-  private
-    procedure OnWMPaint(var Msg: TWMPaint); message WM_PAINT;
-  protected
-    { Protected declarations }
-  public
-    constructor Create(AOwner: TComponent); override;
-    procedure CreateParams(var Params: TCreateParams); override;
-  published
-    { Published declarations }
-  end;
+   TJvgTranspMemo = class(TMemo)
+   private
+    FAboutJVCL: TJVCLAboutInfo;
+      procedure OnWMPaint(var Msg: TWMPaint); message WM_PAINT;
+   protected
+      { Protected declarations }
+   public
+      constructor Create(AOwner: TComponent); override;
+      procedure CreateParams(var Params: TCreateParams); override;
+   published
+      { Published declarations }
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+   end;
 
 procedure Register;
 
@@ -58,25 +68,26 @@ end;
 
 constructor TJvgTranspMemo.Create(AOwner: TComponent);
 begin
-  inherited;
-  //Canvas.Brush.Style:=bsClear;
+   inherited;
+   //Canvas.Brush.Style:=bsClear;
 end;
 
 procedure TJvgTranspMemo.CreateParams(var Params: TCreateParams);
 begin
-  inherited CreateParams(Params);
-  //if Transparent then
-  Params.ExStyle := Params.ExStyle or WS_EX_Transparent;
+   inherited CreateParams(Params);
+   //if Transparent then
+   Params.ExStyle := Params.ExStyle or WS_EX_Transparent;
 end;
 
 procedure TJvgTranspMemo.OnWMPaint(var Msg: TWMPaint);
 var
-  dc: HDC;
+   dc                         : HDC;
 begin
-  dc := GetDC(handle);
-  SetBkMode(dc, TRANSPARENT);
-  releaseDC(handle, dc);
-  inherited;
+   dc := GetDC(handle);
+   SetBkMode(dc, TRANSPARENT);
+   releaseDC(handle, dc);
+   inherited;
 end;
 
 end.
+

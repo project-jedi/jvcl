@@ -52,6 +52,7 @@ uses Classes,
   JvgReportParamEditorForm,
   JvgBitBtn,
   JvgRuler,
+  JvgReport,
   JvgCaption,
   JvgCGI,
   JvgReportParamEditor,
@@ -138,8 +139,7 @@ uses Classes,
   JvgMultiResources,
   JvgPage,
   //   JvgPointEditor,
-  JvgProgress,
-  JvgReport;
+  JvgProgress;
 
 procedure Register;
 begin
@@ -235,6 +235,7 @@ begin
          TJvg3DColors,
          TJvgHint,
          TJvginspectorGrid,
+         TJvgReport,
          TJvgReportParamsEditor,
          TJvgLogicProducer,
          TJvgSmallFontsDefence,
