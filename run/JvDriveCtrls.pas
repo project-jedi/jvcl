@@ -37,19 +37,14 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   FileCtrl, StdCtrls, ShellAPI, ImgList,
-  JvComboBox, JvListBox, JVCLVer, JvSearchFiles;
+  JvComboBox, JvListBox, JVCLVer, JvTypes, JvSearchFiles;
 
-type
-  TJvDriveType = (dtUnknown, dtRemovable, dtFixed, dtRemote, dtCDROM, dtRamDisk);
-  TJvDriveTypes = set of TJvDriveType;
 
 const
   dtStandard: TJvDriveTypes = [dtFixed, dtRemote, dtCDROM];
 
 type
   TJvDirectoryListBox = class;
-  TJvImageSize = (isSmall, isLarge);
-  TJvImageAlign = (iaLeft, iaCentered);
 
   TJvDriveCombo = class(TJvCustomComboBox)
   private
