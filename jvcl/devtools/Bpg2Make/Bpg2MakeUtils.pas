@@ -6,7 +6,7 @@ procedure Run;
 
 implementation
 uses
-  Windows, Classes, SysUtils, JclStrings;
+  Windows, Classes, SysUtils;
 
 {$IFNDEF MSWINDOWS}
  {$IFNDEF LINUX}
@@ -38,11 +38,92 @@ const
     'SRCH = ..\$(SRC);..\$(COM);..\$(JCL);..\$(ARCH);..\$(DCU)' + sLineBreak +}
     '#---------------------------------------------------------------------------------------------------' + sLineBreak +
     'MAKE = $(ROOT)\make.exe -$(MAKEFLAGS) -f$**' + sLineBreak +
-    'DCC  = $(ROOT)\dcc32.exe -Q -W -H -M -$O+ $**' + sLineBreak +
+    'DCC  = $(ROOT)\dcc32.exe -Q -W -H -M -$O+ $&.dpk' + sLineBreak +
 //    'DCC  = $(ROOT)\dcc32.exe -e$(BIN) -i$(SRCP) -n$(DCU) -r$(SRCP) -u$(SRCP) -q -w -m' + sLineBreak +
     'BRCC = $(ROOT)\brcc32.exe $**' + sLineBreak +
     '#---------------------------------------------------------------------------------------------------' + sLineBreak;
 
+//--------------------------------------------------------------------------------------------------
+
+function StrEqualText(Text: PChar; SearchText: PChar; MaxLen: Integer;
+  IgnoreCase: Boolean): Boolean;
+var
+  i: Integer;
+begin
+  if IgnoreCase then
+    Result := StrLIComp(Text, SearchText, MaxLen) = 0
+  else
+  begin 
+    Result := False;
+    for i := 0 to MaxLen - 1 do
+      if (Text[i] = #0) or {(SearchText[i] = #0) or}
+         (Text[i] <> SearchText[i]) then Exit;
+    Result := True;
+  end;
+end;
+
+
+function FastStringReplace(const Text, SearchText, ReplaceText: string;
+  ReplaceAll, IgnoreCase: Boolean): string;
+var
+  LenSearchText, LenReplaceText, LenText: Integer;
+  Index, Len, StartIndex: Integer;
+begin
+  LenSearchText := Length(SearchText);
+  LenReplaceText := Length(ReplaceText);
+  LenText := Length(Text);
+  if LenSearchText = 0 then
+  begin
+    Result := Text;
+    Exit;
+  end;
+
+  if ReplaceAll then
+  begin
+    if LenReplaceText - LenSearchText > 0 then
+      SetLength(Result, LenText +
+        (LenReplaceText - LenSearchText) * (LenText div LenSearchText))
+    else
+      SetLength(Result, LenText);
+  end
+  else
+    SetLength(Result, LenText + (LenReplaceText - LenSearchText));
+
+
+  Len := 0;
+  StartIndex := 1;
+  for Index := 1 to LenText do
+  begin
+    if StrEqualText(PChar(Pointer(Text)) + Index - 1, Pointer(SearchText),
+                   LenSearchText, IgnoreCase) then
+    begin
+      if Index > StartIndex then
+      begin 
+        Move(Text[StartIndex], Result[Len + 1], Index - StartIndex); 
+        Inc(Len, Index - StartIndex); 
+      end; 
+      StartIndex := Index + LenSearchText; 
+
+     // Ersetzungstext einfügen 
+      if LenReplaceText > 0 then 
+      begin 
+        Move(ReplaceText[1], Result[Len + 1], LenReplaceText); 
+        Inc(Len, LenReplaceText); 
+      end; 
+
+      if not ReplaceAll then Break; 
+    end; 
+  end; 
+
+  Index := LenText + 1;
+  if Index > StartIndex then
+  begin
+    Move(Text[StartIndex], Result[Len + 1], Index - StartIndex);
+    Inc(Len, Index - StartIndex);
+  end;
+
+  SetLength(Result, Len);
+end;
 
 procedure ShowHelp;
 begin
@@ -73,9 +154,9 @@ end;
 function CreateMakeFile(const Filename: string): Boolean;
 var
   i, ps: Integer;
-  List, MkLines, Targets: TStringlist;
+  List, MkLines, Targets, Commands: TStringlist;
   S, SourceFile, Dir: string;
-  Commands, ProjectCommands : string;
+  ProjectCommands: string;
 begin
   Result := False;
   if not FileExists(Filename) then
@@ -87,6 +168,7 @@ begin
   List := TStringList.Create;
   MkLines := TStringList.Create;
   Targets := TStringList.Create;
+  Commands := TStringList.Create;
   try
     List.LoadFromFile(Filename);
 
@@ -100,13 +182,15 @@ begin
       if ps <> 0 then
       begin
         Targets.Add(Trim(Copy(S, 1, ps + 2)) + '=' + Trim(Copy(S, ps + 5, MaxInt)));
-        Commands := '';
+        ProjectCommands := '';
         Inc(i);
         while (i < List.Count) and (List[i] <> '') do
         begin
-          Commands := Commands + List[i] + #13#10;
+          ProjectCommands := ProjectCommands + #9 + Trim(List[i]) + #13#10;
           Inc(i);
         end;
+        SetLength(ProjectCommands, Length(ProjectCommands) - 2);
+        Commands.Add(ProjectCommands);
       end;
 
       if StrLIComp('PROJECTS =', PChar(S), 10) = 0 then
@@ -137,17 +221,18 @@ begin
       SourceFile := ExtractFileName(SourceFile);
       if Dir <> '' then
         MkLines.Add(#9'@cd ' + Dir);
-      ProjectCommands := Commands;
-      StrReplace(ProjectCommands, '$**', SourceFile, [rfReplaceAll]);
-      StrReplace(ProjectCommands, '$*', Copy(SourceFile, 1, Length(SourceFile) - Length(ExtractFileExt(SourceFile))), [rfReplaceAll]);
+
+      ProjectCommands := Commands[i];
+      ProjectCommands := FastStringReplace(ProjectCommands, '$**', SourceFile, True, False);
+      ProjectCommands := FastStringReplace(ProjectCommands, '$*', Copy(SourceFile, 1, Length(SourceFile) - Length(ExtractFileExt(SourceFile))), True, False);
       MkLines.Add(ProjectCommands);
-      //MkLines.Add(#9'$(DCC) $&' + ExtractFileExt(SourceFile));
       if Dir <> '' then
         MkLines.Add(#9'@cd ' + GetReturnPath(Dir));
       MkLines.Add('');
     end;
     MkLines.SaveToFile(ChangeFileExt(FileName, '.mak'));
   finally
+    Commands.Free;
     Targets.Free;
     MkLines.Free;
     List.Free;
