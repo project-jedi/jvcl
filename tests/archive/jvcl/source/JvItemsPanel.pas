@@ -43,7 +43,7 @@ type
   private
     FItems: TStrings;
     FItemHeight: integer;
-//    FAutoSize: boolean;
+    FAutoSize: boolean;
     FAutoGrow: boolean;
     FDown: boolean;
     FClickable: boolean;
