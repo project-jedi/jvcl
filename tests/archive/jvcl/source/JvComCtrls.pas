@@ -52,9 +52,9 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, Menus, ComCtrls, CommCtrl, StdActns,
-  {$IFDEF COMPILER5_UP}
+{$IFDEF COMPILER5_UP}
   Contnrs,
-  {$ENDIF}
+{$ENDIF}
   JclBase, JVCLVer;
 
 const
@@ -182,9 +182,9 @@ type
     property TabStop default True;
     property Visible;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
-    {$IFDEF COMPILER5_UP}
+{$IFDEF COMPILER5_UP}
     property OnContextPopup;
-    {$ENDIF}
+{$ENDIF}
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
@@ -925,17 +925,20 @@ var
   I: Integer;
   SaveActivePage: TTabSheet;
 begin
-  FHideAllTabs := Value;
-  if (csDesigning in ComponentState) then
-    Exit;
-  if HandleAllocated then
+  if FHideAllTabs <> Value then
   begin
-    SaveActivePage := ActivePage;
-    for I := 0 to PageCount - 1 do
-      Pages[I].TabVisible := not FHideAllTabs;
-    ActivePage := SaveActivePage;
-    if FHideAllTabs then
-      TabStop := False;
+    FHideAllTabs := Value;
+    if (csDesigning in ComponentState) then
+      Exit;
+    if HandleAllocated then
+    begin
+      SaveActivePage := ActivePage;
+      for I := 0 to PageCount - 1 do
+        Pages[I].TabVisible := not FHideAllTabs;
+      ActivePage := SaveActivePage;
+      if FHideAllTabs then
+        TabStop := False;
+    end;
   end;
 end;
 
@@ -1339,9 +1342,9 @@ begin
     ScrollDirection := -1
   else
     if Y > ClientHeight - AutoScrollMargin then
-    ScrollDirection := 1
-  else
-    ScrollDirection := 0;
+      ScrollDirection := 1
+    else
+      ScrollDirection := 0;
 end;
 
 procedure TJvTreeView.Edit(const Item: TTVItem);
@@ -1405,10 +1408,10 @@ begin
       end
       else
         if not HideSelection then
-      begin
-        Canvas.Font.Color := Font.Color;
-        Canvas.Brush.Color := clInactiveBorder;
-      end;
+        begin
+          Canvas.Font.Color := Font.Color;
+          Canvas.Brush.Color := clInactiveBorder;
+        end;
     end
     else
     begin
@@ -1518,7 +1521,7 @@ begin
     FSelectedList.Remove(Node)
   else
     if not IsNodeSelected(Node) then
-    FSelectedList.Add(Node);
+      FSelectedList.Add(Node);
   if HandleAllocated then
     InvalidateNode(Node);
   DoSelectionChange;
@@ -1563,7 +1566,7 @@ begin
       KillTimer(Handle, AutoScrollTimerID)
     else
       if (Value <> 0) and (FScrollDirection = 0) then
-      SetTimer(Handle, AutoScrollTimerID, 200, nil);
+        SetTimer(Handle, AutoScrollTimerID, 200, nil);
     FScrollDirection := Value;
   end;
 end;
