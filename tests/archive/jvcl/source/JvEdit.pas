@@ -604,24 +604,35 @@ begin
 end;
 
 function TJvCustomEdit.GetText:string;
+var tmp:boolean;
 begin
-  if not ProtectPassword then
-    Result := inherited Text
-  else
-    Result := '';
+  tmp := ProtectPassword;
+  try
+    ProtectPassword := false;
+    Result := inherited Text;
+  finally
+    ProtectPassword := tmp;
+  end;
 end;
 
 procedure TJvCustomEdit.SetPasswordChar(Value:char);
+var tmp:boolean;
 begin
-  if not ProtectPassword then
+  tmp := ProtectPassword;
+  try
+    ProtectPassword := false;
     inherited PasswordChar := Value;
+  finally
+    ProtectPassword := tmp;
+  end;
 end;
 
 procedure TJvCustomEdit.DefaultHandler(var Msg);
 begin
   case TMessage(Msg).Msg of
     WM_CUT,WM_PASTE,EM_SETPASSWORDCHAR,WM_GETTEXT,WM_GETTEXTLENGTH:
-      if not ProtectPassword then inherited;
+      if not ProtectPassword then
+        inherited;
   else
     inherited;
   end;
@@ -629,10 +640,7 @@ end;
 
 function TJvCustomEdit.GetPasswordChar: char;
 begin
-  if not ProtectPassword then
-    Result := inherited PasswordChar
-  else
-    Result := #0;
+  Result := inherited PasswordChar;
 end;
 
 end.
