@@ -362,8 +362,10 @@ function TargetToDir(target : string) : string;
 begin
   if Assigned(TargetList[target]) then
     Result := TargetList[target].Dir
+  else if Assigned(TargetList[GetNonPersoTarget(target)]) then
+    Result := TargetList[GetNonPersoTarget(target)].PDir
   else
-    Result := TargetList[GetNonPersoTarget(target)].PDir;
+    raise Exception.CreateFmt('Target "%s" not found.', [target]);
 end;
 
 function ExpandPackageName(Name, target, prefix, format : string) : string;
