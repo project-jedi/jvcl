@@ -1726,12 +1726,7 @@ begin
   end;
 end;
 
-procedure TJvExCustomGroupBox.Paint;
-begin
-  WidgetControl_DefaultPaint(Self, Canvas);
-end;
-
-function TWidgetControl.NeedKey(Key: Integer; Shift: TShiftState;
+function TJvExCustomGroupBox.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
   Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
@@ -1777,6 +1772,11 @@ begin
   
   FCanvas.Free;
   inherited Destroy;
+end;
+
+procedure TJvExCustomGroupBox.Paint;
+begin
+  WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
@@ -1925,12 +1925,7 @@ begin
   end;
 end;
 
-procedure TJvExGroupBox.Paint;
-begin
-  WidgetControl_DefaultPaint(Self, Canvas);
-end;
-
-function TWidgetControl.NeedKey(Key: Integer; Shift: TShiftState;
+function TJvExGroupBox.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
   Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
@@ -1976,6 +1971,11 @@ begin
   
   FCanvas.Free;
   inherited Destroy;
+end;
+
+procedure TJvExGroupBox.Paint;
+begin
+  WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
 {$DEFINE HASAUTOSIZE}
@@ -2370,12 +2370,7 @@ begin
   end;
 end;
 
-procedure TJvExCustomEdit.Paint;
-begin
-  WidgetControl_DefaultPaint(Self, Canvas);
-end;
-
-function TWidgetControl.NeedKey(Key: Integer; Shift: TShiftState;
+function TJvExCustomEdit.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
   Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
@@ -2421,6 +2416,11 @@ begin
   
   FCanvas.Free;
   inherited Destroy;
+end;
+
+procedure TJvExCustomEdit.Paint;
+begin
+  WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
@@ -2569,12 +2569,7 @@ begin
   end;
 end;
 
-procedure TJvExEdit.Paint;
-begin
-  WidgetControl_DefaultPaint(Self, Canvas);
-end;
-
-function TWidgetControl.NeedKey(Key: Integer; Shift: TShiftState;
+function TJvExEdit.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
   Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
@@ -2620,6 +2615,11 @@ begin
   
   FCanvas.Free;
   inherited Destroy;
+end;
+
+procedure TJvExEdit.Paint;
+begin
+  WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
@@ -2768,12 +2768,7 @@ begin
   end;
 end;
 
-procedure TJvExCustomMemo.Paint;
-begin
-  WidgetControl_DefaultPaint(Self, Canvas);
-end;
-
-function TWidgetControl.NeedKey(Key: Integer; Shift: TShiftState;
+function TJvExCustomMemo.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
   Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
@@ -2819,6 +2814,11 @@ begin
   
   FCanvas.Free;
   inherited Destroy;
+end;
+
+procedure TJvExCustomMemo.Paint;
+begin
+  WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
@@ -2967,12 +2967,7 @@ begin
   end;
 end;
 
-procedure TJvExMemo.Paint;
-begin
-  WidgetControl_DefaultPaint(Self, Canvas);
-end;
-
-function TWidgetControl.NeedKey(Key: Integer; Shift: TShiftState;
+function TJvExMemo.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
   Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
@@ -3018,6 +3013,11 @@ begin
   
   FCanvas.Free;
   inherited Destroy;
+end;
+
+procedure TJvExMemo.Paint;
+begin
+  WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
@@ -3168,12 +3168,7 @@ begin
   end;
 end;
 
-procedure TJvExCustomCombo.Paint;
-begin
-  WidgetControl_DefaultPaint(Self, Canvas);
-end;
-
-function TWidgetControl.NeedKey(Key: Integer; Shift: TShiftState;
+function TJvExCustomCombo.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
   Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
@@ -3219,6 +3214,11 @@ begin
   
   FCanvas.Free;
   inherited Destroy;
+end;
+
+procedure TJvExCustomCombo.Paint;
+begin
+  WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
  {$ENDIF COMPILER6_UP}
@@ -3369,12 +3369,7 @@ begin
   end;
 end;
 
-procedure TJvExCustomComboBox.Paint;
-begin
-  WidgetControl_DefaultPaint(Self, Canvas);
-end;
-
-function TWidgetControl.NeedKey(Key: Integer; Shift: TShiftState;
+function TJvExCustomComboBox.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
   Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
@@ -3420,6 +3415,11 @@ begin
   
   FCanvas.Free;
   inherited Destroy;
+end;
+
+procedure TJvExCustomComboBox.Paint;
+begin
+  WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
@@ -3568,12 +3568,7 @@ begin
   end;
 end;
 
-procedure TJvExComboBox.Paint;
-begin
-  WidgetControl_DefaultPaint(Self, Canvas);
-end;
-
-function TWidgetControl.NeedKey(Key: Integer; Shift: TShiftState;
+function TJvExComboBox.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
   Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
@@ -3619,6 +3614,11 @@ begin
   
   FCanvas.Free;
   inherited Destroy;
+end;
+
+procedure TJvExComboBox.Paint;
+begin
+  WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
@@ -3767,12 +3767,7 @@ begin
   end;
 end;
 
-procedure TJvExButtonControl.Paint;
-begin
-  WidgetControl_DefaultPaint(Self, Canvas);
-end;
-
-function TWidgetControl.NeedKey(Key: Integer; Shift: TShiftState;
+function TJvExButtonControl.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
   Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
@@ -3818,6 +3813,11 @@ begin
   
   FCanvas.Free;
   inherited Destroy;
+end;
+
+procedure TJvExButtonControl.Paint;
+begin
+  WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
@@ -3966,12 +3966,7 @@ begin
   end;
 end;
 
-procedure TJvExButton.Paint;
-begin
-  WidgetControl_DefaultPaint(Self, Canvas);
-end;
-
-function TWidgetControl.NeedKey(Key: Integer; Shift: TShiftState;
+function TJvExButton.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
   Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
@@ -4017,6 +4012,11 @@ begin
   
   FCanvas.Free;
   inherited Destroy;
+end;
+
+procedure TJvExButton.Paint;
+begin
+  WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
@@ -4165,12 +4165,7 @@ begin
   end;
 end;
 
-procedure TJvExCustomCheckBox.Paint;
-begin
-  WidgetControl_DefaultPaint(Self, Canvas);
-end;
-
-function TWidgetControl.NeedKey(Key: Integer; Shift: TShiftState;
+function TJvExCustomCheckBox.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
   Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
@@ -4216,6 +4211,11 @@ begin
   
   FCanvas.Free;
   inherited Destroy;
+end;
+
+procedure TJvExCustomCheckBox.Paint;
+begin
+  WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
@@ -4364,12 +4364,7 @@ begin
   end;
 end;
 
-procedure TJvExCheckBox.Paint;
-begin
-  WidgetControl_DefaultPaint(Self, Canvas);
-end;
-
-function TWidgetControl.NeedKey(Key: Integer; Shift: TShiftState;
+function TJvExCheckBox.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
   Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
@@ -4415,6 +4410,11 @@ begin
   
   FCanvas.Free;
   inherited Destroy;
+end;
+
+procedure TJvExCheckBox.Paint;
+begin
+  WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
@@ -4563,12 +4563,7 @@ begin
   end;
 end;
 
-procedure TJvExRadioButton.Paint;
-begin
-  WidgetControl_DefaultPaint(Self, Canvas);
-end;
-
-function TWidgetControl.NeedKey(Key: Integer; Shift: TShiftState;
+function TJvExRadioButton.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
   Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
@@ -4614,6 +4609,11 @@ begin
   
   FCanvas.Free;
   inherited Destroy;
+end;
+
+procedure TJvExRadioButton.Paint;
+begin
+  WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
@@ -4762,12 +4762,7 @@ begin
   end;
 end;
 
-procedure TJvExCustomListBox.Paint;
-begin
-  WidgetControl_DefaultPaint(Self, Canvas);
-end;
-
-function TWidgetControl.NeedKey(Key: Integer; Shift: TShiftState;
+function TJvExCustomListBox.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
   Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
@@ -4813,6 +4808,11 @@ begin
   
   FCanvas.Free;
   inherited Destroy;
+end;
+
+procedure TJvExCustomListBox.Paint;
+begin
+  WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
@@ -4961,12 +4961,7 @@ begin
   end;
 end;
 
-procedure TJvExListBox.Paint;
-begin
-  WidgetControl_DefaultPaint(Self, Canvas);
-end;
-
-function TWidgetControl.NeedKey(Key: Integer; Shift: TShiftState;
+function TJvExListBox.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
   Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
@@ -5012,6 +5007,11 @@ begin
   
   FCanvas.Free;
   inherited Destroy;
+end;
+
+procedure TJvExListBox.Paint;
+begin
+  WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
@@ -5160,12 +5160,7 @@ begin
   end;
 end;
 
-procedure TJvExScrollBar.Paint;
-begin
-  WidgetControl_DefaultPaint(Self, Canvas);
-end;
-
-function TWidgetControl.NeedKey(Key: Integer; Shift: TShiftState;
+function TJvExScrollBar.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
   Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
@@ -5211,6 +5206,11 @@ begin
   
   FCanvas.Free;
   inherited Destroy;
+end;
+
+procedure TJvExScrollBar.Paint;
+begin
+  WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
@@ -5360,12 +5360,7 @@ begin
   end;
 end;
 
-procedure TJvExCustomStaticText.Paint;
-begin
-  WidgetControl_DefaultPaint(Self, Canvas);
-end;
-
-function TWidgetControl.NeedKey(Key: Integer; Shift: TShiftState;
+function TJvExCustomStaticText.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
   Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
@@ -5411,6 +5406,11 @@ begin
   
   FCanvas.Free;
   inherited Destroy;
+end;
+
+procedure TJvExCustomStaticText.Paint;
+begin
+  WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
@@ -5559,12 +5559,7 @@ begin
   end;
 end;
 
-procedure TJvExStaticText.Paint;
-begin
-  WidgetControl_DefaultPaint(Self, Canvas);
-end;
-
-function TWidgetControl.NeedKey(Key: Integer; Shift: TShiftState;
+function TJvExStaticText.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
   Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
@@ -5610,6 +5605,11 @@ begin
   
   FCanvas.Free;
   inherited Destroy;
+end;
+
+procedure TJvExStaticText.Paint;
+begin
+  WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
 {$ENDIF VCL}

@@ -270,12 +270,7 @@ begin
   end;
 end;
 
-procedure TJvExCheckListBox.Paint;
-begin
-  WidgetControl_DefaultPaint(Self, Canvas);
-end;
-
-function TWidgetControl.NeedKey(Key: Integer; Shift: TShiftState;
+function TJvExCheckListBox.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
   Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
@@ -321,6 +316,11 @@ begin
   
   FCanvas.Free;
   inherited Destroy;
+end;
+
+procedure TJvExCheckListBox.Paint;
+begin
+  WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
 

@@ -364,12 +364,7 @@ begin
   end;
 end;
 
-procedure TJvExCustomMaskEdit.Paint;
-begin
-  WidgetControl_DefaultPaint(Self, Canvas);
-end;
-
-function TWidgetControl.NeedKey(Key: Integer; Shift: TShiftState;
+function TJvExCustomMaskEdit.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
   Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
@@ -415,6 +410,11 @@ begin
   
   FCanvas.Free;
   inherited Destroy;
+end;
+
+procedure TJvExCustomMaskEdit.Paint;
+begin
+  WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
 procedure TJvExCustomMaskEdit.DoBeepOnError;
@@ -576,12 +576,7 @@ begin
   end;
 end;
 
-procedure TJvExMaskEdit.Paint;
-begin
-  WidgetControl_DefaultPaint(Self, Canvas);
-end;
-
-function TWidgetControl.NeedKey(Key: Integer; Shift: TShiftState;
+function TJvExMaskEdit.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
   Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
@@ -627,6 +622,11 @@ begin
   
   FCanvas.Free;
   inherited Destroy;
+end;
+
+procedure TJvExMaskEdit.Paint;
+begin
+  WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
 procedure TJvExMaskEdit.DoBeepOnError;
