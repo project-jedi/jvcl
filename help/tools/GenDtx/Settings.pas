@@ -443,7 +443,7 @@ begin
 
       WriteBinaryString(Section, 'Default', FOutputTypeDefaults[OutputType]);
       WriteList(Section, 'DescCount', 'Desc', FOutputTypeDesc[OutputType]);
-      WriteBinaryList(Section, 'StringCount', 'String', FOutputTypeDesc[OutputType]);
+      WriteBinaryList(Section, 'StringCount', 'String', FOutputTypeStrings[OutputType]);
       IniFile.WriteBool(Section, 'Enabled', FOutputTypeEnabled[OutputType]);
     end;
 
