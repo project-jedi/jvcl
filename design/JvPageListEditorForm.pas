@@ -60,6 +60,12 @@ type
     acMoveDown: TAction;
     ilButtons: TImageList;
     StatusBar1: TStatusBar;
+    popEditor: TPopupMenu;
+    Add1: TMenuItem;
+    Delete1: TMenuItem;
+    N1: TMenuItem;
+    MoveUp1: TMenuItem;
+    MoveDown1: TMenuItem;
     procedure acAddExecute(Sender: TObject);
     procedure acDeleteExecute(Sender: TObject);
     procedure acMoveUpExecute(Sender: TObject);
@@ -94,6 +100,8 @@ type
 procedure ShowPageListEditor(Designer: IDesigner; APageList: TJvCustomPageList);
 
 implementation
+uses
+  JvDsgnConsts;
 
 {$R *.dfm}
 
@@ -133,6 +141,8 @@ begin
       raise;
     end;
   end;
+  if APageListEditor <> nil then
+    APageListEditor.Caption := Format(RsFmtCaption,[APageList.Name]);
 end;
 
 type
