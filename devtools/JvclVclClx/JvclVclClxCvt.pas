@@ -180,7 +180,7 @@ begin
     Fail;
   ExpandPackageTargetsObj := FModel.ExpandTargets;
 
-  FCvt := TJVCLConverter.Create(ExtractFilePath(ParamStr(0)) + 'data');
+  FCvt := TJVCLConverter.Create(ExtractFilePath(ParamStr(0)) + 'VclClxData');
 end;
 
 destructor TConverter.Destroy;
