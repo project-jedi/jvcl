@@ -104,8 +104,8 @@ type
     {$ENDIF VCL}
   end;
 
-  IJvWinControlEvents = interface(IPerformControl)
-    ['{B5F7FB62-78F0-481D-AFF4-7A24ED6776A0}']
+  IJvStdControlEvents = interface(IPerformControl)
+    ['{62259013-4F43-44BC-AA8C-9E862F9FEE36}']
     procedure DoBoundsChanged;
     procedure CursorChanged;
     procedure ShowingChanged;
@@ -116,12 +116,18 @@ type
     procedure DoSetFocus(FocusedWnd: HWND);  // WM_SETFOCUS
     procedure DoKillFocus(FocusedWnd: HWND); // WM_KILLFOCUS
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; // WM_ERASEBKGND
+  end;
+
+
+  IJvWinControlEvents = interface(IJvStdControlEvents)
+    ['{B5F7FB62-78F0-481D-AFF4-7A24ED6776A0}']
     {$IFDEF VisualCLX}
-    function GetColor: TColor;
     function GetDoubleBuffered: Boolean;
     procedure Paint;
     {$ENDIF VisualCLX}
   end;
+
+
 
   IJvCustomControlEvents = interface(IPerformControl)
     ['{7804BD3A-D7A5-4314-9259-6DE08A0DC38A}']
@@ -217,7 +223,7 @@ procedure Control_MouseEnter(Instance, Control: TControl; var FMouseOver: Boolea
   var FSavedHintColor: TColor; FHintColor: TColor; var Event: TNotifyEvent);
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
-procedure Control_MouseEnter(Instance: TControl; var FMouseOver: Boolean;
+procedure Control_MouseEnter(Instance, Control: TControl; var FMouseOver: Boolean;
   var FSavedHintColor: TColor; FHintColor: TColor);
 {$ENDIF VisualCLX}
 
@@ -226,7 +232,7 @@ procedure Control_MouseLeave(Instance, Control: TControl; var FMouseOver: Boolea
   var FSavedHintColor: TColor; var Event: TNotifyEvent);
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
-procedure Control_MouseLeave(var FMouseOver: Boolean; FSavedHintColor: TColor);
+procedure Control_MouseLeave(Instance, Control: TControl; var FMouseOver: Boolean; FSavedHintColor: TColor);
 {$ENDIF VisualCLX}
 
 function DefaultDoPaintBackground(Instance: TWinControl; Canvas: TCanvas; Param: Integer): Boolean;
@@ -615,14 +621,14 @@ procedure Control_MouseEnter(Instance, Control: TControl; var FMouseOver: Boolea
   var FSavedHintColor: TColor; FHintColor: TColor; var Event: TNotifyEvent);
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
-procedure Control_MouseEnter(Instance: TControl; var FMouseOver: Boolean;
+procedure Control_MouseEnter(Instance, Control: TControl; var FMouseOver: Boolean;
   var FSavedHintColor: TColor; FHintColor: TColor);
 {$ENDIF VisualCLX}
 begin
-  // (HEG) Control is nil iff Instance is the control that the mouse has left.
+  // (HEG) VCL: Control is nil iff Instance is the control that the mouse has left.
   // Otherwise this is just a notification that the mouse entered
   // one of it's child controls
-  if (Control = nil) and not FMouseOver and not (csDesigning in Instance.ComponentState) then
+  if {$IFDEF VCL}(Control = nil) and{$ENDIF} not FMouseOver and not (csDesigning in Instance.ComponentState) then
   begin
     FMouseOver := True;
     FSavedHintColor := Application.HintColor;
@@ -643,13 +649,13 @@ procedure Control_MouseLeave(Instance, Control: TControl; var FMouseOver: Boolea
   var FSavedHintColor: TColor; var Event: TNotifyEvent);
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
-procedure Control_MouseLeave(var FMouseOver: Boolean; FSavedHintColor: TColor);
+procedure Control_MouseLeave(Instance, Control: TControl; var FMouseOver: Boolean; FSavedHintColor: TColor);
 {$ENDIF VisualCLX}
 begin
   // (HEG) Control is nil iff Instance is the control that the mouse has left.
   // Otherwise this is just a notification that the mouse left
   // one of it's child controls
-  if (Control = nil) and FMouseOver and not (csDesigning in Instance.ComponentState) then
+  if {$IFDEF VCL}(Control = nil) and{$ENDIF} FMouseOver and not (csDesigning in Instance.ComponentState) then
   begin
     FMouseOver := False;
     Application.HintColor := FSavedHintColor;
@@ -707,25 +713,19 @@ begin
     begin
       Pixmap := QPixmap_create(Instance.Width, Instance.Height, -1, QPixmapOptimization_DefaultOptim);
       // fill with parent's background if the control has a parent
-      if Instance.Parent <> nil then
-        QPixmap_fill(Pixmap, Instance.Parent.Handle, QWidget_x(Instance.Handle), QWidget_y(Instance.Handle));
+//      if Instance.Parent <> nil then
+//        QPixmap_fill(Pixmap, Instance.Parent.Handle, QWidget_x(Instance.Handle), QWidget_y(Instance.Handle));
       OriginalPainter := Canvas.Handle;
       Canvas.Handle := QPainter_create(Pixmap);
       TControlCanvas(Canvas).StartPaint;
-      {$IFDEF MSWINDOWS}
       QPainter_setClipRegion(Canvas.Handle, EventRegion);
       QPainter_setClipping(Canvas.Handle, True);
       R := Rect(0, 0, 0, 0);
       QRegion_boundingRect(EventRegion, @R);
-      {$ENDIF MSWINDOWS}
-      {$IFDEF LINUX}
-      // asn: region ignored, so paint all
-      R := Rect(0, 0, Width, Height);
-      {$ENDIF LINUX}
     end;
 
     try
-      Canvas.Brush.Color := Intf.GetColor;
+      Canvas.Brush.Color := Instance.Brush.Color;
       QPainter_setFont(Canvas.Handle, Font.Handle);
       QPainter_setPen(Canvas.Handle, Font.FontPen);
       Canvas.Font.Assign(Font);
@@ -778,6 +778,7 @@ begin
         TControlCanvas(Canvas).StopPaint;
         QPainter_destroy(Canvas.Handle);
         Canvas.Handle := OriginalPainter;
+        QPainter_setClipRegion(Canvas.Handle, EventRegion);
         if (R.Right - R.Left > 0) or (R.Bottom - R.Top > 0) then
           bitBlt(QPainter_device(Canvas.Handle), R.Left, R.Top,
             Pixmap, R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top,
@@ -876,17 +877,22 @@ end;
 procedure TWidgetControl_ColorChanged(Instance: TWidgetControl);
 var
   TC: QColorH;
+  Intf: IJvWinControlEvents;
 begin
   with TWidgetControlAccessProtected(Instance) do
   begin
     HandleNeeded;
+    Instance.GetInterface(IJvWinControlEvents, Intf);
     if Bitmap.Empty then
     begin
       Palette.Color := Color;
       Brush.Color := Color;
-      TC := QColor(Color);
-      QWidget_setBackgroundColor(Handle, TC);
-      QColor_destroy(TC);
+      if not Intf.GetDoubleBuffered then
+      begin
+        TC := QColor(Color);
+        QWidget_setBackgroundColor(Handle, TC);
+        QColor_destroy(TC);
+      end;
     end;
     NotifyControls(CM_PARENTCOLORCHANGED);
     Invalidate;
