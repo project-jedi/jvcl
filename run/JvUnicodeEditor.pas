@@ -104,6 +104,9 @@ type
     function GetLineLength(Index: Integer): Integer; override;
     function FindNotBlankCharPosInLine(Line: Integer): Integer; override;
 
+    function GetAnsiTextLine(Y: Integer; out Text: AnsiString): Boolean; override;
+    function GetAnsiWordOnCaret: AnsiString; override;
+
     procedure ReLine; override;
     function GetTabStop(X, Y: Integer; Next: Boolean): Integer; override;
     function GetBackStop(X, Y: Integer): Integer; override;
@@ -176,6 +179,7 @@ type
     property AutoIndent;
     property KeepTrailingBlanks;
     property CursorBeyondEOF;
+    property BracketHighlighting;
     property SelForeColor;
     property SelBackColor;
     property SelBlockFormat;
@@ -228,6 +232,8 @@ type
     property OnGetSiteInfo;
     property OnStartDock;
     property OnUnDock;
+    property OnEnter;
+    property OnExit;
   end;
 
   TJvWideCompletion = class(TJvCompletionBase)
@@ -727,8 +733,8 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvCustomWideEditor.PaintLineText(Line: Integer;
-  ColBeg, ColEnd: Integer; var ColPainted: Integer);
+procedure TJvCustomWideEditor.PaintLineText(Line: Integer; ColBeg, ColEnd: Integer;
+  var ColPainted: Integer);
 var
   Ch: WideString;
   iC, jC, SL, MX: Integer;
@@ -745,14 +751,15 @@ begin
     {left line}
     if Canvas.Brush.Color <> LineAttrs[LeftCol + 1].BC then // change GDI object only if necessary
       Canvas.Brush.Color := LineAttrs[LeftCol + 1].BC;
+
     Canvas.FillRect(Bounds(EditorClient.Left, (Line - TopRow) *
       CellRect.Height, 1, CellRect.Height));
-
     {optimized, paint group of chars with identical attributes}
     SL := Length(S);
     MX := ColEnd;
 
     while ColPainted < MX do
+    begin
       with Canvas do
       begin
         iC := ColPainted + 1;
@@ -767,8 +774,8 @@ begin
           CompareMem(@LA, @LineAttrs[jC], SizeOf(LineAttrs[1])) do
             Inc(jC);
         Ch := Copy(S, jCStart - 1, jC - jCStart + 1);
-        if jC > SL then
-          Ch := Ch + SpacesW(jC - SL);
+        if jC > SL + 1 then
+          Ch := Ch + Spaces(jC - SL - 1);
 
         if Brush.Color <> LA.BC then // change GDI object only if necessary
           Brush.Color := LA.BC;
@@ -778,17 +785,21 @@ begin
         {bottom line}
         FillRect(Bounds(R.Left, R.Bottom - 1, CellRect.Width * Length(Ch), 1));
 
-{        if (ColPainted = ColBeg) and (ColPainted < SL) then
+        TJvUnicodeCanvas(Canvas).ExtTextOutW(R.Left, R.Top, [etoOpaque, etoClipped], nil, Ch, @FMyDi[0]);
+
+        if LA.Border <> clNone then
         begin
+          Pen.Color := LA.Border;
           R.Right := R.Left + CellRect.Width * Length(Ch);
-          Ch := S[ColPainted] + Ch; // (ahuser) this meight add a #0 - is this correct?
-          TJvUnicodeCanvas(Canvas).TextRectW(R, R.Left - CellRect.Width, R.Top, Ch);
-        end
-        else}
-          TJvUnicodeCanvas(Canvas).ExtTextOutW(R.Left, R.Top, [etoOpaque, etoClipped], nil, Ch, @FMyDi[0]);
-          // Windows.ExtTextOutW(Canvas.Handle, R.Left, R.Top, 0, nil, PWideChar(Ch), Length(Ch), @FMyDi[0]);
+          Dec(R.Left);
+          Brush.Style := bsClear;
+          Rectangle(R);
+          Brush.Style := bsSolid;
+        end;
+
         ColPainted := jC - 1;
       end;
+    end;
   end;
 end;
 
@@ -811,6 +822,7 @@ var
         begin
           LineAttrs[I+1].FC := SelForeColor;
           LineAttrs[I+1].BC := SelBackColor;
+          LineAttrs[I+1].Border := clNone;
         end;
       end
       else
@@ -821,6 +833,7 @@ var
           Color := LineAttrs[I+1].FC;
           LineAttrs[I+1].FC := LineAttrs[I+1].BC;
           LineAttrs[I+1].BC := Color;
+          LineAttrs[I+1].Border := clNone;
         end;
       end;
     end;
@@ -858,6 +871,7 @@ begin
   LineAttrs[ColBeg].Style := Font.Style;
   LineAttrs[ColBeg].FC := Font.Color;
   LineAttrs[ColBeg].BC := Color;
+  LineAttrs[ColBeg].Border := clNone;
 
   for I := ColBeg + 1 to ColEnd do
     Move(LineAttrs[ColBeg], LineAttrs[I], SizeOf(LineAttrs[1]));
@@ -892,14 +906,36 @@ begin
     begin
       LineAttrs[I].FC := LineAttrs[ColBeg].FC;
       LineAttrs[I].BC := LineAttrs[ColBeg].BC;
+      LineAttrs[I].Border := LineAttrs[ColBeg].Border;
     end;
   end;
 
+  GetBracketHighlightAttr(Line, LineAttrs);
+  
   if Assigned(FOnGetLineAttr) then
     FOnGetLineAttr(Self, S, Line, LineAttrs);
   if FSelection.IsSelected then
     ChangeSelectedAttr(LineStyle); { we change the attributes of the chosen block [translated] }
   ChangeAttr(Line, ColBeg, ColEnd);
+end;
+
+function TJvCustomWideEditor.GetAnsiTextLine(Y: Integer; out Text: AnsiString): Boolean; 
+begin
+  if (Y >= 0) and (Y < Lines.Count) then
+  begin
+    Text := Lines[Y];
+    Result := True;
+  end
+  else
+  begin
+    Text := '';
+    Result := False;
+  end;
+end;
+
+function TJvCustomWideEditor.GetAnsiWordOnCaret: AnsiString;
+begin
+  Result := GetWordOnCaret;
 end;
 
 procedure TJvCustomWideEditor.ReLine;

@@ -343,7 +343,12 @@ const
     ' function uses external const class inherited' +
     ' register stdcall cdecl safecall pascal is as package program' +
     ' external overload platform deprecated implements export contains' +
-    ' requires resourcestring';
+    ' requires resourcestring message dispid assembler asm abstract absolute' +
+    ' dispinterface file threadvar library' +
+    // TurboPascal
+    ' interrupt inline near far' +
+    // Delphi 8
+    ' operator strict final unsafe sealed static ';
 
   BuilderKeyWords =
     ' __asm _asm asm auto __automated break bool case catch __cdecl' +
@@ -690,6 +695,7 @@ const
         FC := Color.ForeColor;
         BC := Color.BackColor;
         Style := Color.Style;
+        Border := clNone;
       end;
   end;
 
@@ -742,6 +748,7 @@ const
                 FC := Colors.Preproc.ForeColor;
                 BC := Colors.Preproc.BackColor;
                 Style := Colors.Preproc.Style;
+                Border := clNone;
               end;
         end;
       end;
@@ -861,6 +868,7 @@ begin
   LineAttrs[1].FC := C.ForeColor;
   LineAttrs[1].Style := C.Style;
   LineAttrs[1].BC := C.BackColor;
+  LineAttrs[1].Border := clNone;
   N := Min(Max_X, Length(S));
   for I := 2 to N do
     Move(LineAttrs[1], LineAttrs[I], SizeOf(LineAttrs[1]));
@@ -869,6 +877,7 @@ begin
     LineAttrs[N + 1].FC := Font.Color;
     LineAttrs[N + 1].Style := Font.Style;
     LineAttrs[N + 1].BC := Color;
+    LineAttrs[N + 1].Border := clNone;
     for I := N + 1 + 1 to Max_X do
       Move(LineAttrs[N + 1], LineAttrs[I], SizeOf(LineAttrs[1]));
   end;
