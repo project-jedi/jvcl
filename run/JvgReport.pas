@@ -232,7 +232,7 @@ const
 resourcestring
   RsOLELinkedObjectNotFound = 'OLE: Linked object not found.';
   RsErrorText = 'Error';
-  sErrorReadingComponent = 'Error reading component.';
+  RsErrorReadingComponent = 'Error reading component.';
 {$ENDIF USEJVCL}
 
 //=== TJvgReportScrollBox ====================================================
