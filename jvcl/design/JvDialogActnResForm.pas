@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvActnResForm.PAS, released on 2002-07-04.
+The Original Code is: JvDialogActnResForm.PAS, released on 2004-04-01.
 
 The Initial Developers of the Original Code are:
 All Rights Reserved.
@@ -18,50 +18,41 @@ Contributor(s):
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
-description :
-
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
-
 {$I jvcl.inc}
 
-unit JvActnResForm;
+unit JvDialogActnResForm;
 
 interface
 
 uses
-  {$IFDEF VCL}
-  ActnList, ImgList,  Controls,
-  {$IFNDEF COMPILER6_UP}
-  Forms,
-  {$ENDIF COMPILER6_UP}
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QActnList, QImgList, QControls, QForms,
-  {$ENDIF VisualCLX}
-  SysUtils, Classes, JvActions, StdActns;
+  SysUtils, Classes, JvDialogActns, StdActns,
+  JvActions, ActnList, ImgList, Controls;
 
 type
-  TJvStandardActions = class(TDataModule)
+  TJvDialogActions = class(TDataModule)
     ImageList1: TImageList;
     ActionList1: TActionList;
-    JvSendMailAction1: TJvSendMailAction;
-    JvWebAction1: TJvWebAction;
+    JvBrowseForFolderAction1: TJvBrowseForFolderAction;
+    JvSelectDirectoryAction1: TJvSelectDirectoryAction;
+    JvConnectNetworkAction1: TJvConnectNetworkAction;
+    JvFloppyFormatAction1: TJvFloppyFormatAction;
+    JvOrganizeFavoritesAction1: TJvOrganizeFavoritesAction;
+    JvControlPanelAction1: TJvControlPanelAction;
+    JvOpenFileAction1: TJvOpenFileAction;
+    JvSaveFileAction1: TJvSaveFileAction;
+    JvPageSetupAction1: TJvPageSetupAction;
+    JvPageSetupTitledAction1: TJvPageSetupTitledAction;
+  private
+    { Private declarations }
   public
+    { Public declarations }
   end;
-
-// (rom) unused
-// var
-//   JvStandardActions: TJvStandardActions;
 
 implementation
 
-{$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-{$R *.xfm}
-{$ENDIF VisualCLX}
 
 end.

@@ -144,8 +144,7 @@ begin
   RegisterComponentEditor(TJvCustomDataProvider, TJvProviderEditor);
   RegisterComponentEditor(TJvColorProvider, TJvColorProviderEditor);
 
-  RegisterActions(RsJVCLActionsCategory, [
-  {$IFDEF MSWINDOWS}TJvSendMailAction,{$ENDIF}TJvWebAction], TJvStandardActions);
+  RegisterActions(RsJVCLActionsCategory, [{$IFDEF MSWINDOWS}TJvSendMailAction,{$ENDIF}TJvWebAction], TJvStandardActions);
   RegisterZoom;
 end;
 

@@ -46,7 +46,7 @@ uses
   {$IFNDEF BCB5}  // removed because BCB5 cannot compile/link JvDialogActns
   JvDialogActns,
   {$ENDIF BCB5}
-  JvActnResForm, JvDialogs, JvProgressComponent, JvPageSetupTitled, JvPageSetup,
+  JvDialogActnResForm, JvDialogs, JvProgressComponent, JvPageSetupTitled, JvPageSetup,
   JvConnectNetwork, JvSelectDirectory, JvCopyError, JvDeleteError,
   JvRenameError, JvDiskPrompt, JvFindFiles, JvImageDlg, JvLoginForm, JvDualList,
   JvProgressDialog, JvAppletEditor, JvObjectPickerDialog, JvBaseDlgEditor,
@@ -95,8 +95,8 @@ begin
     TJvSelectDirectoryAction, TJvConnectNetworkAction, TJvFloppyFormatAction,
     TJvOrganizeFavoritesAction, TJvControlPanelAction, TJvOpenFileAction,
     TJvSaveFileAction, TJvPageSetupAction, TJvPageSetupTitledAction],
-    // TJvStandardActions is a datamodule with default settings for our actions
-    TJvStandardActions);
+    // TJvDialogActions is a datamodule with default settings for our dialog actions
+    TJvDialogActions);
   {$ENDIF BCB5}
 end;
 
