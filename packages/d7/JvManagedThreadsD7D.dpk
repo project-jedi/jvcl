@@ -32,6 +32,6 @@ requires
   JvManagedThreadsD7R;
 
 contains
-  JvMtComponentsReg in 'JvMtComponentsReg.pas';
+  JvManagedThreadsReg in '..\..\design\JvManagedThreadsReg.pas';
 
 end.

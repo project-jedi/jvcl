@@ -33,11 +33,11 @@ requires
   JvCoreD7R;
 
 contains
-  MTConst in '..\..\run\JvMTConsts.pas',
-  MTData in '..\..\run\JvMTData.pas',
-  MTThreading in '..\..\run\JvMTThreading.pas',
-  MTSyncMon in '..\..\run\JvMTSyncMon.PAS',
-  MTSync in '..\..\run\JvMTSync.pas',
+  JvMTConsts in '..\..\run\JvMTConsts.pas',
+  JvMTData in '..\..\run\JvMTData.pas',
+  JvMTThreading in '..\..\run\JvMTThreading.pas',
+  JvMTSyncMon in '..\..\run\JvMTSyncMon.PAS',
+  JvMTSync in '..\..\run\JvMTSync.pas',
   JvMtComponents in '..\..\run\JvMtComponents.pas';
 
 end.
