@@ -77,20 +77,6 @@ object frmMain: TfrmMain
     Height = 13
     Caption = 'Location:'
   end
-  object JvLabel1: TJvLabel
-    Left = 208
-    Top = 112
-    Width = 45
-    Height = 13
-    Caption = 'JvLabel1'
-    AutoOpenURL = False
-    HotTrack = True
-    HotTrackFont.Charset = DEFAULT_CHARSET
-    HotTrackFont.Color = clWindowText
-    HotTrackFont.Height = -11
-    HotTrackFont.Name = 'MS Sans Serif'
-    HotTrackFont.Style = []
-  end
   object btnPreview: TButton
     Left = 264
     Top = 384
