@@ -2108,7 +2108,6 @@ procedure TJvCustomAppStorage.WriteEnumerationInt(const Path: string;
 var
   Conv: TIntToIdent;
   S: string;
-  B: Byte;
 begin
   if TypeInfo = System.TypeInfo(Boolean) then
     WriteBooleanInt(Path, Boolean(Value))
