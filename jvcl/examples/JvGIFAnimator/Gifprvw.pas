@@ -119,8 +119,8 @@ end;
 
 procedure TPreviewForm.EnableButtons;
 begin
-  PlayBtn.Enabled := not Image.JvxAnimate and (Image.Image.Count > 1);
-  StopBtn.Enabled := Image.JvxAnimate;
+  PlayBtn.Enabled := not Image.Animate and (Image.Image.Count > 1);
+  StopBtn.Enabled := Image.Animate;
   RewindBtn.Enabled := Image.FrameIndex > 0;
   BackBtn.Enabled := ((Image.FrameIndex > 0) or Image.Loop)
     and (Image.Image.Count > 1);
@@ -144,13 +144,13 @@ end;
 
 procedure TPreviewForm.PlayBtnClick(Sender: TObject);
 begin
-  Image.JvxAnimate := True;
+  Image.Animate := True;
   EnableButtons;
 end;
 
 procedure TPreviewForm.StopBtnClick(Sender: TObject);
 begin
-  Image.JvxAnimate := False;
+  Image.Animate := False;
   EnableButtons;
 end;
 
@@ -210,11 +210,11 @@ end;
 procedure TPreviewForm.FormKeyPress(Sender: TObject; var Key: Char);
 begin
   if Key = #27 then begin
-    if Image.JvxAnimate then StopBtnClick(nil)
+    if Image.Animate then StopBtnClick(nil)
     else ModalResult := mrCancel;
   end
   else if Key = Char(VK_RETURN) then begin
-    if not Image.JvxAnimate then PlayBtnClick(nil);
+    if not Image.Animate then PlayBtnClick(nil);
   end;
 end;
 
