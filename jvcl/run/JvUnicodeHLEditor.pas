@@ -38,7 +38,7 @@ uses
   Windows,
   {$ENDIF COMPILER6_UP}
   SysUtils, Classes, Graphics,
-  JvEditorCommon, JvUnicodeEditor, JvHLParser, WStrUtils;
+  JvEditorCommon, JvUnicodeEditor, JvHLParser, JvWStrUtils;
 
 type
   TJvWideHLEditor = class;
