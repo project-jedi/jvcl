@@ -304,6 +304,8 @@ type
     FSegMapRemoves: Boolean;
     FActiveMapping: array[Char] of Int64;
   protected
+    function GetCharMapping(Chr: Char): Int64;
+    procedure SetCharMapping(Chr: Char; Value: Int64);
     class function MapperFileID: string; dynamic; abstract;
     function MaxSegments: Integer; dynamic;
     function MapToSeparators: Boolean; dynamic;
@@ -321,12 +323,15 @@ type
     property SegMapRemoves: Boolean read FSegMapRemoves write FSegMapRemoves;
     property TextForDigit: string read FTextForDigit write FTextForDigit;
   public
+    constructor Create(AOwner: TComponent); override;
     procedure MapText(var Text: PChar; ADigit: TJvCustomSegmentedLEDDigit);
     procedure Clear;
     procedure LoadFromFile(const FileName: string);
     procedure LoadFromStream(Stream: TStream);
     procedure SaveToFile(const FileName: string);
-    procedure SaveToStream(Stream: TStream); dynamic; 
+    procedure SaveToStream(Stream: TStream); dynamic;
+
+    property CharMapping[Chr: Char]: Int64 read GetCharMapping write SetCharMapping;
   end;
 
   // 7-segmented digit
@@ -356,8 +361,6 @@ type
   protected
     class function MapperFileID: string; override;
     function CharToSegments(Ch: Char; var Segments: Int64): Boolean; override;
-  public
-    constructor Create(AOwner: TComponent); override;
   end;
 
 function IdentToUnlitColor(const Ident: string; var Int: Longint): Boolean;
@@ -1387,6 +1390,16 @@ end;
 
 //===TJvBaseSegmentedLEDCharacterMapper=============================================================
 
+function TJvBaseSegmentedLEDCharacterMapper.GetCharMapping(Chr: Char): Int64;
+begin
+  Result := FActiveMapping[Chr];
+end;
+
+procedure TJvBaseSegmentedLEDCharacterMapper.SetCharMapping(Chr: Char; Value: Int64);
+begin
+  FActiveMapping[Chr] := Value;
+end;
+
 function TJvBaseSegmentedLEDCharacterMapper.MaxSegments: Integer;
 var
   I: Integer;
@@ -1583,6 +1596,19 @@ begin
       MapControlItems(Text, Segments);
     else
       MapSimpleText(Text, Segments);
+  end;
+end;
+
+constructor TJvBaseSegmentedLEDCharacterMapper.Create(AOwner: TComponent);
+var
+  Stream: TStream;
+begin
+  inherited Create(AOwner);
+  Stream := TResourceStream.Create(HInstance, MapperFileID + '_DEFAULT', RT_RCDATA);
+  try
+    LoadFromStream(Stream);
+  finally
+    FreeAndNil(Stream);
   end;
 end;
 
@@ -1783,19 +1809,6 @@ end;
 function TJv7SegmentedLEDCharacterMapper.CharToSegments(Ch: Char; var Segments: Int64): Boolean;
 begin
   Result := UpdateStates(Segments, FActiveMapping[Ch]) or (Ch = ' ');
-end;
-
-constructor TJv7SegmentedLEDCharacterMapper.Create(AOwner: TComponent);
-var
-  Stream: TStream;
-begin
-  inherited Create(AOwner);
-  Stream := TResourceStream.Create(HInstance, 'SLDCM_7SEG_DEFAULT', RT_RCDATA);
-  try
-    LoadFromStream(Stream);
-  finally
-    FreeAndNil(Stream);
-  end;
 end;
 
 procedure ModuleUnload(Instance: Longint);
