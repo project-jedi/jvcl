@@ -1076,7 +1076,7 @@ begin
     AddFunction(cDialogs, 'InputQuery', JvInterpreter_InputQuery, 3, [varEmpty, varEmpty, varByRef], varEmpty);
   end;
   RegisterClasses([TOpenDialog, TSaveDialog, TFontDialog, TColorDialog,
-    {$IFDEF VCL} TPrintDialog, TPrinterSetupDialog, {$ENDIF VCL}
+    {$IFDEF VCL} TPrintDialog, TPrinterSetupDialog, {$ENDIF}
     TFindDialog, TReplaceDialog]);
 end;
 

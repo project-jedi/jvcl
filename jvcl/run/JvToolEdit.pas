@@ -53,7 +53,7 @@ uses
   {$ENDIF VisualCLX}
   {$IFDEF VCL}
   JvExControls,
-  {$ENDIF}
+  {$ENDIF VCL}
   JvSpeedButton, JvTypes, JvExMask, JvExForms, JvButton;
 
 const
@@ -70,10 +70,10 @@ type
 
   {$IFDEF VisualCLX}
   TJvPopupWindow = class(TJvExCustomForm)
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   {$IFDEF VCL}
   TJvPopupWindow = class(TJvExCustomControl)
-  {$ENDIF}
+  {$ENDIF VCL}
   private
     FEditor: TWinControl;
     FCloseUp: TCloseUpEvent;
@@ -1060,6 +1060,7 @@ function PaintEdit(Editor: TCustomEdit; const AText: WideString;
 const
   OBM_COMBO = 1;
 {$ENDIF VisualCLX}
+
 function LoadDefaultBitmap(Bmp: TBitmap; Item: Integer): Boolean;
 
 function IsInWordArray(Value: Word; const A: array of Word): Boolean;
@@ -1083,9 +1084,9 @@ uses
   {$IFDEF VCL}
   JvBrowseFolder, ActiveX,
   {$ENDIF VCL}
-  {$IFDEF VisualClx}
+  {$IFDEF VisualCLX}
   JvExControls,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvPickDate, JvJCLUtils, JvJVCLUtils,
   JvThemes, JvResources, JvConsts, JvFinalize;
 
@@ -1138,6 +1139,7 @@ const
 {$IFDEF VCL}
 
 {$IFDEF COMPILER7_UP}
+
 const
   ACLO_NONE            = 0;  // don't enumerate anything
   ACLO_CURRENTDIR      = 1;  // enumerate current directory
@@ -1195,6 +1197,7 @@ type
   public
     constructor Create(AComboEdit: TJvCustomComboEdit; const StartIndex: Integer); virtual;
   end;
+
 {$ENDIF COMPILER7_UP}
 
 type
@@ -1630,7 +1633,7 @@ end;
 {$IFDEF VisualCLX}
 
 { PaintEdit (CLX) needs an implemented EM_GETRECT message handler. If no
-  EM_GETTEXT handler exists or the edit control does not implements
+  EM_GETTEXT handler exists or the edit control does not implement
   IComboEditHelper, it uses the ClientRect of the edit control. }
 
 function PaintEdit(Editor: TCustomEdit; const AText: WideString;
@@ -2126,25 +2129,17 @@ begin
   DoCtl3DChanged;
 end;
 
-{$ENDIF VCL}
-
-{$IFDEF VCL}
 procedure TJvCustomComboEdit.CMPopupCloseup(var Msg: TMessage);
 begin
   PopupCloseUp(Self, Boolean(Msg.WParam));
 end;
-{$ENDIF VCL}
 
-{$IFDEF VCL}
 procedure TJvCustomComboEdit.CMWantSpecialKey(var Msg: TCMWantSpecialKey);
 begin
   inherited;
   { Ignore tabs when popup is visible }
   if PopupVisible and (Msg.CharCode = VK_TAB) then Msg.Result := 1;
 end;
-{$ENDIF VCL}
-
-{$IFDEF VCL}
 
 procedure TJvCustomComboEdit.CNCtlColor(var Msg: TMessage);
 var
@@ -2159,10 +2154,6 @@ begin
     SetTextColor(Msg.WParam, TextColor);
   end;
 end;
-
-{$ENDIF VCL}
-
-{$IFDEF VCL}
 
 {$IFDEF COMPILER7_UP}
 procedure TJvCustomComboEdit.CreateAutoComplete;
@@ -2647,7 +2638,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
-
 procedure TJvCustomComboEdit.Paint;
 begin
   if Enabled then
@@ -2659,7 +2649,6 @@ begin
       inherited Paint;
   end;
 end;
-
 {$ENDIF VisualCLX}
 
 procedure TJvCustomComboEdit.PopupChange;
@@ -2764,7 +2753,7 @@ end;
 
 procedure TJvCustomComboEdit.ReadGlyphKind(Reader: TReader);
 const
-  sEnumValues: array [TGlyphKind] of string =
+  sEnumValues: array [TGlyphKind] of PChar =
     ('gkCustom', 'gkDefault', 'gkDropDown', 'gkEllipsis');
 var
   S: string;
@@ -3325,12 +3314,7 @@ begin
   else
   {$ENDIF JVCLThemesEnabled}
   if (BorderStyle = bsSingle) and
-    {$IFDEF VCL}
-    Ctl3D then
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    not Flat then
-    {$ENDIF VisualCLX}
+    {$IFDEF VCL} Ctl3D {$ENDIF}{$IFDEF VisualCLX} not Flat {$ENDIF} then
     LTop := 2;
 
   GetInternalMargins(LLeft, LRight);
@@ -3534,12 +3518,7 @@ begin
     UpdateFormat;
     {$IFDEF DEFAULT_POPUP_CALENDAR}
     FPopup := TJvPopupWindow(CreatePopupCalendar(Self,
-      {$IFDEF VCL}
-      BiDiMode,
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      bdLeftToRight,
-      {$ENDIF VisualCLX}
+      {$IFDEF VCL} BiDiMode, {$ENDIF}{$IFDEF VisualCLX} bdLeftToRight, {$ENDIF}
       // Polaris
       FMinDate, FMaxDate));
     TJvPopupWindow(FPopup).OnCloseUp := PopupCloseUp;
@@ -3660,6 +3639,7 @@ begin
     UpdateMask;
 end;
 {$ENDIF VisualCLX}
+
 {$IFDEF VCL}
 procedure TJvCustomDateEdit.CreateWindowHandle(const Params: TCreateParams);
 begin
@@ -3862,29 +3842,20 @@ end;
 procedure TJvCustomDateEdit.SetCalendarStyle(Value: TCalendarStyle);
 begin
   if Value <> CalendarStyle then
-  begin
     case Value of
       csPopup:
         begin
           if FPopup = nil then
             FPopup := TJvPopupWindow(CreatePopupCalendar(Self,
-              {$IFDEF VCL}
-              BiDiMode,
-              {$ENDIF VCL}
-              {$IFDEF VisualCLX}
-              bdLeftToRight,
-              {$ENDIF VisualCLX}
+              {$IFDEF VCL} BiDiMode, {$ENDIF}{$IFDEF VisualCLX} bdLeftToRight, {$ENDIF}
               FMinDate, FMaxDate)); // Polaris
           TJvPopupWindow(FPopup).OnCloseUp := PopupCloseUp;
           TJvPopupWindow(FPopup).Color := FPopupColor;
           UpdatePopup;
         end;
       csDialog:
-        begin
-          FreeAndNil(FPopup);
-        end;
+        FreeAndNil(FPopup);
     end;
-  end;
 end;
 
 // Polaris
@@ -4084,13 +4055,11 @@ begin
 end;
 
 {$IFDEF VCL}
-
 procedure TJvCustomDateEdit.WMContextMenu(var Msg: TWMContextMenu);
 begin
   if not PopupVisible then
     inherited;
 end;
-
 {$ENDIF VCL}
 
 //=== { TJvDateEdit } ========================================================
@@ -4960,12 +4929,12 @@ end;
 
 constructor TJvPopupWindow.Create(AOwner: TComponent);
 begin
-  {$IFDEF VisualClx}
+  {$IFDEF VisualCLX}
   // (p3) have to use CreateNew for VCL as well since there is no dfm
   inherited CreateNew(AOwner);
   {$ELSE}
   inherited Create(AOwner);
-  {$ENDIF}
+  {$ENDIF VisualCLX}
 
   FEditor := TWinControl(AOwner);
   ControlStyle := ControlStyle + [csNoDesignVisible, csReplicatable, csAcceptsControls];

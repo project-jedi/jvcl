@@ -2063,7 +2063,7 @@ begin
           R.Top + FImages.Height));
         with FImages do
           Draw(ACanvas, R.Left + Item.ImageOffset, R.Top, Item.ImageIndex,
-            {$IFDEF VisualCLX} itImage, {$ENDIF VisualCLX} Item.Enabled);
+            {$IFDEF VisualCLX} itImage, {$ENDIF} Item.Enabled);
       end;
       Inc(R.Top, FImages.Height + 4); { adjust top to make room for text drawing }
     end;

@@ -96,7 +96,7 @@ type
   protected
     procedure TextChanged; override;
     procedure FontChanged; override;
-    procedure SetAutoSize(Value: Boolean); {$IFDEF VCL} override;{$ENDIF VCL}
+    procedure SetAutoSize(Value: Boolean); {$IFDEF VCL} override; {$ENDIF}
     procedure Alarm; dynamic;
     procedure AlignControls(AControl: TControl; var Rect: TRect); override;
     {$IFDEF VCL}
@@ -391,6 +391,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TJvClock.CreateWnd;
 begin
   inherited CreateWnd;
@@ -417,6 +418,7 @@ begin
   if ShowMode = scAnalog then
     Invalidate;
 end;
+
 {$ENDIF VCL}
 
 procedure TJvClock.TextChanged;
@@ -433,6 +435,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TJvClock.WMTimeChange(var Msg: TMessage);
 begin
   inherited;
@@ -452,6 +455,7 @@ begin
       end;
   end;
 end;
+
 {$ENDIF VCL}
 
 function TJvClock.GetSystemTime: TDateTime;
