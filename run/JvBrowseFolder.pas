@@ -1174,7 +1174,7 @@ begin
   if (Screen <> nil) and (Screen.ActiveCustomForm <> nil) then
     Result := Screen.ActiveCustomForm.Handle
   else
-    Result := GetFocus;
+    Result := GetForegroundWindow;
 end;
 
 function TJvBrowseForFolderDialog.GetRootDirectoryPath: string;

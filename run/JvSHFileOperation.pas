@@ -247,7 +247,7 @@ begin
   if Owner is TWinControl then
     Result := TWinControl(Owner).Handle
   else
-    Result := GetFocus;
+    Result := GetForegroundWindow;
 end;
 
 procedure TJvSHFileOperation.DoFileMapping(const OldFilename, NewFilename: string);

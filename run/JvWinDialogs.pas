@@ -771,7 +771,7 @@ begin
       'DoOrganizeFavDlg'));
     if not Assigned(lpfnDoOrganizeFavDlg) then
       raise EWinDialogError.Create(RsENotSupported);
-    lpfnDoOrganizeFavDlg(Application.Handle, PChar(Path));
+    lpfnDoOrganizeFavDlg(GetForegroundWindow, PChar(Path));
   finally
     FreeLibrary(SHModule);
   end;
@@ -822,7 +822,7 @@ var
 begin
   if (FModule > HINSTANCE_ERROR) and Assigned(FAppletFunc) then
   begin
-    FAppletFunc(Application.Handle, CPL_EXIT, AppletIndex, AppletInfo[AppletIndex].lData);
+    FAppletFunc(GetForegroundWindow, CPL_EXIT, AppletIndex, AppletInfo[AppletIndex].lData);
     FreeLibrary(FModule);
   end;
   for I := 0 to Count - 1 do
@@ -850,13 +850,13 @@ begin
     if FModule <= HINSTANCE_ERROR then
       Exit;
     FAppletFunc := TCplApplet(GetProcAddress(FModule, 'CPlApplet'));
-    if Assigned(FAppletFunc) and (FAppletFunc(Application.Handle, CPL_INIT, 0, 0) <> 0) then
+    if Assigned(FAppletFunc) and (FAppletFunc(GetForegroundWindow, CPL_INIT, 0, 0) <> 0) then
     begin
-      FCount := FAppletFunc(Application.Handle, CPL_GETCOUNT, 0, 0);
+      FCount := FAppletFunc(GetForegroundWindow, CPL_GETCOUNT, 0, 0);
       SetLength(FAppletInfo, FCount);
       for I := 0 to Count - 1 do
       begin
-        FAppletFunc(Application.Handle, CPL_INQUIRE, I, Longint(@AplInfo));
+        FAppletFunc(GetForegroundWindow, CPL_INQUIRE, I, Longint(@AplInfo));
         with FAppletInfo[I] do
         begin
           Icon := TIcon.Create;
@@ -896,7 +896,7 @@ function TJvAppletDialog.Execute: Boolean;
 begin
   Result := ValidApplet;
   if Result then
-    FAppletFunc(Application.Handle, CPL_DBLCLK, AppletIndex, AppletInfo[AppletIndex].lData)
+    FAppletFunc(GetForegroundWindow, CPL_DBLCLK, AppletIndex, AppletInfo[AppletIndex].lData)
   else
     ShellExecute(GetFocus, 'open', 'Control.exe', nil, nil, SW_SHOWDEFAULT);
 end;
@@ -918,12 +918,12 @@ var
 begin
   Result := False;
 
-  if Failed(SHGetSpecialFolderLocation(Application.Handle, CSIDL_NETWORK,
+  if Failed(SHGetSpecialFolderLocation(GetForegroundWindow, CSIDL_NETWORK,
     ItemIDList)) then
     Exit;
 
   FillChar(BrowseInfo, SizeOf(BrowseInfo), 0);
-  BrowseInfo.hwndOwner := Application.Handle;
+  BrowseInfo.hwndOwner := GetForegroundWindow;
   BrowseInfo.pidlRoot := ItemIDList;
   BrowseInfo.pszDisplayName := NameBuffer;
   BrowseInfo.lpszTitle := PChar(FCaption);
@@ -957,7 +957,7 @@ var
 begin
   ItemIDList := nil;
   FillChar(BrowseInfo, SizeOf(BrowseInfo), 0);
-  BrowseInfo.hwndOwner := Application.Handle;
+  BrowseInfo.hwndOwner := GetForegroundWindow;
   BrowseInfo.pidlRoot := ItemIDList;
   BrowseInfo.pszDisplayName := NameBuffer;
   BrowseInfo.lpszTitle := PChar(FCaption);
@@ -1183,7 +1183,7 @@ begin
       StrPCopy(PChar(CaptionBuffer), FCaption);
   end;
   if Assigned(SHOutOfMemoryMessageBox) then
-    Result := Boolean(SHOutOfMemoryMessageBox(Application.Handle, CaptionBuffer,
+    Result := Boolean(SHOutOfMemoryMessageBox(GetForegroundWindow, CaptionBuffer,
       MB_OK or MB_ICONHAND))
   else
     raise EWinDialogError.Create(RsENotSupported);
@@ -1279,7 +1279,7 @@ begin
   end;
 
   if Assigned(SHRunDialog) then
-    SHRunDialog(Application.Handle, FIcon.Handle, nil, CaptionBuffer,
+    SHRunDialog(GetForegroundWindow, FIcon.Handle, nil, CaptionBuffer,
       DescriptionBuffer, 0)
   else
     raise EWinDialogError.Create(RsENotSupported);
@@ -1320,7 +1320,7 @@ begin
       begin
         StrPCopy(PChar(TabNameBuffer), InitialTab);
       end;
-      Result := SHObjectProperties(Application.Handle,
+      Result := SHObjectProperties(GetForegroundWindow,
         ShellObjectTypeEnumToConst(ObjectType), ObjectNameBuffer,
         TabNameBuffer);
     finally
@@ -1536,7 +1536,7 @@ begin
     raise EWinDialogError.Create(RsENotSupported);
   Result := GetDriveType(PChar(DriveChar + ':\')) = 3;
   if Result then
-    SHHandleDiskFull(GetFocus, GetDrive);
+    SHHandleDiskFull(GetForegroundWindow, GetDrive);
   // (rom) disabled to make Result work
   //else
   //  raise EWinDialogError.CreateFmt(RsEUnSupportedDisk, [DriveChar]);
@@ -1555,7 +1555,7 @@ end;
 
 procedure TJvExitWindowsDialog.Execute;
 begin
-  SHShutDownDialog(Application.Handle);
+  SHShutDownDialog(GetForegroundWindow);
 end;
 
 //=== TJvChangeIconDialog ====================================================
@@ -1568,14 +1568,14 @@ begin
   if Assigned(SHChangeIconW) then
   begin
     StringToWideChar(FileName, BufW, SizeOf(BufW));
-    Result := SHChangeIconW(Application.Handle, BufW, SizeOf(BufW), FIconIndex) = 1;
+    Result := SHChangeIconW(GetForegroundWindow, BufW, SizeOf(BufW), FIconIndex) = 1;
     if Result then
       FileName := BufW;
   end
   else if Assigned(SHChangeIcon) then
   begin
     StrPCopy(Buf, FileName);
-    Result := SHChangeIcon(Application.Handle, Buf, SizeOf(Buf), FIconIndex) = 1;
+    Result := SHChangeIcon(GetForegroundWindow, Buf, SizeOf(Buf), FIconIndex) = 1;
     if Result then
       FileName := Buf;
   end
@@ -1673,7 +1673,7 @@ begin
       Result := F.Handle;
   end;
   if Result = 0 then
-    Result := GetFocus;
+    Result := GetForegroundWindow;
   if Result = 0 then
     Result := GetDesktopWindow;
 end;
@@ -1714,7 +1714,7 @@ begin
       Result := F.Handle;
   end;
   if Result = 0 then
-    Result := GetFocus;
+    Result := GetForegroundWindow;
   if Result = 0 then
     Result := GetDesktopWindow;
 end;

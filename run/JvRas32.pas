@@ -172,7 +172,7 @@ begin
   if AOwner is TWinControl then
     FPHandle := (AOwner as TWinControl).Handle
   else
-    FPHandle := Application.Handle;
+    FPHandle := GetForegroundWindow;
   FEntryIndex := -1;
 
   FDll := LoadLibrary(PChar(RsRasDllName));

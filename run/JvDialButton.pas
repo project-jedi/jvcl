@@ -990,7 +990,7 @@ begin
   Canvas.Pen.Color := Parent.Brush.Color;
   Canvas.Rectangle(ARect.Left, ARect.Top, ARect.Right, ARect.Bottom);
   Canvas.Brush.Style := bsSolid;
-  if GetFocus = Self.Handle then
+  if Focused then
     Canvas.DrawFocusRect(ARect);
 end;
 
