@@ -2149,12 +2149,14 @@ var
     JvXPDrawLine(ACanvas, 1, ARect.Top + FHeaderHeight, Width - 1, ARect.Top + FHeaderHeight);
 
     { draw icon }
-    Inc(ARect.Left, 22);
+//    Inc(ARect.Left, 22);
     if not FIcon.Empty then
     begin
       ACanvas.Draw(2, 1, FIcon);
-      Inc(ARect.Left, 16);
-    end;
+      Inc(ARect.Left, 6);
+    end
+    else
+      Dec(ARect.Left, 16);
     SetBkMode(ACanvas.Handle, TRANSPARENT);
     ACanvas.Font.Assign(FHeaderFont);
     if FHotTrack and (dsHighlight in DrawState) and (FHitTest <> htNone) and (FHotTrackColor <> clNone) then
@@ -2162,10 +2164,10 @@ var
     ARect.Bottom := ARect.Top + FHeaderHeight;
     Dec(ARect.Right, 3);
     {$IFDEF USEJVCL}
-    DrawText(ACanvas, Caption, -1, ARect, DT_SINGLELINE or DT_VCENTER or
+    DrawText(ACanvas, Caption, -1, ARect, DT_SINGLELINE or DT_LEFT or DT_VCENTER or
       DT_END_ELLIPSIS or DT_NOPREFIX);
     {$ELSE}
-    DrawText(ACanvas.Handle, PChar(Caption), -1, ARect, DT_SINGLELINE or DT_VCENTER or
+    DrawText(ACanvas.Handle, PChar(Caption), -1, ARect, DT_SINGLELINE or DT_LEFT or DT_VCENTER or
       DT_END_ELLIPSIS or DT_NOPREFIX);
     {$ENDIF USEJVCL}
   end;
