@@ -103,9 +103,10 @@ type
     procedure SetHeight(Value: Integer); override;
     procedure SetWidth(Value: Integer); override;
     procedure SetTabOrder(Value: Integer); override;
+    procedure SetLabelArrangeMode(Value: TJvParameterLabelArrangeMode); virtual;
     procedure CreateWinControlOnParent(ParameterParent: TWinControl); override;
   published
-    property LabelArrangeMode: TJvParameterLabelArrangeMode read FLabelArrangeMode write FLabelArrangeMode;
+    property LabelArrangeMode: TJvParameterLabelArrangeMode read FLabelArrangeMode write SetLabelArrangeMode;
     property LabelWidth: Integer read FLabelWidth write FLabelWidth;
     property EditWidth: Integer read FEditWidth write FEditWidth;
     property RightSpace: Integer read FRightSpace write FRightSpace;
@@ -283,6 +284,7 @@ type
     procedure CreateWinControl(AParameterParent: TWinControl); override;
     procedure SetWinControlProperties; override;
   public
+    constructor Create(AParameterList: TJvParameterList); override;
     procedure Assign(Source: TPersistent); override;
     function Validate(var AData: Variant): Boolean; override;
   published
@@ -308,6 +310,7 @@ type
     procedure CreateWinControl(AParameterParent: TWinControl); override;
     procedure SetWinControlProperties; override;
   public
+    constructor Create(AParameterList: TJvParameterList); override;
     procedure Assign(Source: TPersistent); override;
     function Validate(var AData: Variant): Boolean; override;
   published
@@ -376,6 +379,7 @@ type
     function GetWinControlData: Variant; override;
     procedure SetWinControlData(Value: Variant); override;
   public
+    constructor Create(AParameterList: TJvParameterList); override;
     procedure GetData; override;
     procedure SetData; override;
     procedure Assign(Source: TPersistent); override;
@@ -639,11 +643,14 @@ begin
 end;
 
 procedure TJvBasePanelEditParameter.ArrangeLabelAndWinControlOnPanel;
+Var tmpLabelArrangeMode : TJvParameterLabelArrangeMode;
 begin
   if not Assigned(FramePanel) or not Assigned(WinControl) then
     Exit;
   if (LabelArrangeMode = lamBefore) and not Assigned(LabelControl) then
-    LabelArrangeMode := lamAbove;
+    tmpLabelArrangeMode := lamAbove
+  else
+    tmpLabelArrangeMode := LabelArrangeMode;
 
   if not Assigned(LabelControl) then
   begin
@@ -680,7 +687,7 @@ begin
     LabelControl.Top := 0;
     LabelControl.Left := 0;
   end;
-  if (LabelArrangeMode = lamAbove) or not Assigned(LabelControl) then
+  if (tmpLabelArrangeMode = lamAbove) or not Assigned(LabelControl) then
   begin
     if Assigned(LabelControl) then
       WinControl.Top := LabelControl.Height + 2
@@ -739,14 +746,14 @@ begin
     begin
       WinControl.Width := EditWidth;
       if FramePanel.Width <= 0 then
-        FramePanel.Width := WinControl.Width + LabelControl.Width + 3;
+        FramePanel.Width := WinControl.Width + WinControl.Left + 1;
     end
     else
     begin
       if FramePanel.Width > 0 then
-        WinControl.Width := FramePanel.Width - (LabelControl.Width + 3)
+        WinControl.Width := FramePanel.Width - (WinControl.Left + 1)
       else
-        FramePanel.Width := WinControl.Width + LabelControl.Width + 3;
+        FramePanel.Width := WinControl.Width + WinControl.Left + 1;
     end;
   end;
 end;
@@ -789,6 +796,12 @@ procedure TJvBasePanelEditParameter.SetTabOrder(Value: Integer);
 begin
   if Assigned(FramePanel) then
     FramePanel.TabOrder := Value;
+end;
+
+procedure TJvBasePanelEditParameter.SetLabelArrangeMode(Value: TJvParameterLabelArrangeMode);
+begin
+  FLabelArrangeMode := Value;
+  ArrangeLabelAndWinControlOnPanel;
 end;
 
 procedure TJvBasePanelEditParameter.Assign(Source: TPersistent);
@@ -1246,6 +1259,14 @@ end;
 
 //=== { TJvComboBoxParameter } ===============================================
 
+constructor TJvComboBoxParameter.Create(AParameterList: TJvParameterList);
+begin
+  inherited Create(AParameterList);
+  LabelArrangeMode := lamBefore;
+  FSorted:= False;
+  FNewEntriesAllowed:= False;
+end;
+
 procedure TJvComboBoxParameter.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
@@ -1626,8 +1647,8 @@ begin
   FEditMask := '';
   FLabelWidth := 0;
   FEditWidth := 0;
-  FLabelArrangeMode := lamAbove;
   FRightSpace := 0;
+  LabelArrangeMode := lamBefore;
 end;
 
 procedure TJvEditParameter.Assign(Source: TPersistent);
@@ -1639,7 +1660,6 @@ begin
     PasswordChar := TJvEditParameter(Source).PasswordChar;
     LabelWidth := TJvEditParameter(Source).LabelWidth;
     EditWidth := TJvEditParameter(Source).EditWidth;
-    LabelArrangeMode := TJvEditParameter(Source).LabelArrangeMode;
     RightSpace := TJvEditParameter(Source).RightSpace;
   end;
 end;
@@ -1869,6 +1889,12 @@ end;
 
 //=== { TJvFileNameParameter } ===============================================
 
+constructor TJvFileNameParameter.Create(AParameterList: TJvParameterList);
+begin
+  inherited Create(AParameterList);
+  LabelArrangeMode := lamBefore;
+end;
+
 procedure TJvFileNameParameter.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
@@ -1956,6 +1982,12 @@ begin
 end;
 
 //=== { TJvDirectoryParameter } ==============================================
+
+constructor TJvDirectoryParameter.Create(AParameterList: TJvParameterList);
+begin
+  inherited Create(AParameterList);
+  LabelArrangeMode := lamBefore;
+end;
 
 procedure TJvDirectoryParameter.Assign(Source: TPersistent);
 begin
