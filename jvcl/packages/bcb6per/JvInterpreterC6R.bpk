@@ -27,7 +27,7 @@
     <LIBRARIES value=""/>
     <SPARELIBS value=""/>
     <PACKAGES value="rtl.bpi vcl.bpi CJCL60.bpi vclx.bpi JvSystemC6R.bpi
-      JvCtrlsC6R.bpi JvCustomC6R.bpi JvStdCtrlsC6R.bpi"/>
+      JvCtrlsC6R.bpi JvCustomC6R.bpi JvStdCtrlsC6R.bpi JvCoreC6R.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;..\..\run"/>
     <PATHRC value=".;"/>
@@ -95,6 +95,7 @@
       <FILE FILENAME="JvCtrlsC6R.bpi" FORMNAME="" UNITNAME="JvCtrlsC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="JvCustomC6R.bpi" FORMNAME="" UNITNAME="JvCustomC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="JvStdCtrlsC6R.bpi" FORMNAME="" UNITNAME="JvStdCtrlsC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="JvCoreC6R.bpi" FORMNAME="" UNITNAME="JvCoreC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>
