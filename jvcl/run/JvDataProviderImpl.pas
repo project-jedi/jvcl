@@ -490,6 +490,7 @@ type
   private
     FDataItems: IJvDataItems;
     FDataContextsImpl: TJvBaseDataContexts;
+    FDataContextsIntf: IJvDataContexts;
     FNotifiers: TInterfaceList;
     FTreeItems: TJvDataProviderTree;
     FConsumerStack: TInterfaceList;
@@ -521,7 +522,7 @@ type
     function GetComponent: TComponent;
     {$ENDIF COMPILER6_UP}
     { IDataProvider }
-    function GetItems: IJvDataItems;
+    function GetItems: IJvDataItems; virtual;
     procedure RegisterChangeNotify(ANotify: IJvDataProviderNotify); dynamic;
     procedure UnregisterChangeNotify(ANotify: IJvDataProviderNotify); dynamic;
     function ConsumerClasses: TClassArray; dynamic;
@@ -3102,7 +3103,10 @@ begin
   FConsumerStack := TInterfaceList.Create;
   FContextStack := TInterfaceList.Create;
   if ContextsClass <> nil then
+  begin
     FDataContextsImpl := ContextsClass.CreateManaged(Self, nil, ContextsManagerClass);
+    FDataContextsIntf := FDataContextsImpl;
+  end;
   if ItemsClass <> nil then
     FDataItems := ItemsClass.CreateProvider(Self)
   else
