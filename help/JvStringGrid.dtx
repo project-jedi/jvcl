@@ -1,5 +1,5 @@
 ##Package: StdCtrls
-##Status: Completed
+##Status: Incomplete
 ----------------------------------------------------------------------------------------------------
 @@JvStringGrid.pas
 Summary
@@ -105,6 +105,17 @@ Description
 See Also
   OnGetCellAlignment
 ----------------------------------------------------------------------------------------------------
+@@TJvStringGrid.AutoSizeCol
+Summary
+  Calculates and sets the width of a specific column or all columns.
+Description
+  Call AutoSizeCol to calculates and set the width of column specified by parameter Index, based
+  on the text in the affected cells.
+Parameters
+  Index    - The index of the column to resize. If Index < 0, all columns are resized.
+  MinWidth - Specifies a minimum width for the column(s). If MinWidth is < 0,
+              DefaultColWidth is used instead.
+----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.CaptionClick
 Summary
   Responds when the user clicks a fixed cell.
@@ -116,6 +127,14 @@ Parameters
   ARow    - Indicates the row index of the cell that is clicked.
 See Also
   OnCaptionClick
+----------------------------------------------------------------------------------------------------
+@@TJvStringGrid.Clear
+Summary
+  Removes the content in the Cells, but does not remove any rows or columns.
+Description
+  Call Clear to remove the content in the Cells. Calling Clear will <i>not</i> remove any rows or columns.
+See Also
+  HideAll
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.CMCtl3DChanged
 Summary
@@ -221,6 +240,12 @@ Parameters
 See Also
   OnExitCell
 ----------------------------------------------------------------------------------------------------
+@@TJvStringGrid.FixedFont
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.GetCellAlignment
 Summary
   Returns the alignment of a cell in the grid.
@@ -236,6 +261,49 @@ Parameters
 See Also
   OnGetCellAlignment
 ----------------------------------------------------------------------------------------------------
+@@TJvStringGrid.HideAll
+Summary
+  Hides all rows and columns.
+Description
+  Call HideAll to hide all rows and columns of the grid.
+See Also
+  Clear, HideCell, HideCol, HideRow, ShowAll
+----------------------------------------------------------------------------------------------------
+@@TJvStringGrid.HideCell
+Summary
+  Hides a complete row and column of the grid.
+Description
+  Call HideCell to hide a complete row and cell of the grid.
+Parameters
+  ACol - Specifies the column to hide.
+  ARow - Specifies the row to hide.
+See Also
+  HideAll, HideCol, HideRow, ShowCell
+----------------------------------------------------------------------------------------------------
+@@TJvStringGrid.HideCol
+Summary
+  Hides a complete column of the grid.
+Description
+  Call HideCol to hide the column at position Index. This is done by setting it's ColWidth to -1.
+Note
+  Calling this method repeatedly does nothing (the hidden column retains it's Index even if it's hidden)
+Parameters
+  Index - The index of the column to hide.
+See Also
+  HideAll, HideCell, HideRow, ShowCol, RemoveCol
+----------------------------------------------------------------------------------------------------
+@@TJvStringGrid.HideRow
+Summary
+  Hides a complete row of the grid.
+Description
+  Call HideRow to hide the column at position Index. This is done by setting it's ColHeight to -1.
+Note
+  Calling this method repeatedly does nothing (the hidden row retains it's Index even if it's hidden)
+Parameters
+  Index - The index of the row to hide.
+See Also
+  HideAll, HideCell, HideCol, ShowRow, RemoveRow
+----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.HintColor
 Summary
   Determines the color of the hint boxes for the Help Hints for the grid.
@@ -243,6 +311,32 @@ Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor
   assign it a new TColor value.
+----------------------------------------------------------------------------------------------------
+@@TJvStringGrid.InsertCol
+Summary
+  nserts a new column in the grid.
+Description
+  Call InsertCol to insert a new column at the specified Index. All existing columns left of and at
+  the insertion point will be moved one step to the right.
+Parameters
+  Index - The position in the grid where to insert a new column.
+Return value
+  Returns the inserted column as an empty TStrings.
+See Also
+  InsertRow
+----------------------------------------------------------------------------------------------------
+@@TJvStringGrid.InsertRow
+Summary
+  Inserts a new column in the grid.
+Description
+  Call InsertRow to insert a new row at the specified Index. All existing rows below and at the insertion
+  point will be moved down one step.
+Parameters
+  Index - The position in the grid where to insert a new row.
+Return value
+  Returns the inserted row as an empty TStrings.
+See Also
+  InsertCol
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.InvalidateCell
 Summary
@@ -278,6 +372,20 @@ Parameters
 See Also
   <LINK InvalidateCell>, <LINK InvalidateCol>
 ----------------------------------------------------------------------------------------------------
+@@TJvStringGrid.IsHidden
+Summary
+  Indicates whether a specific cell is hidden.
+Description
+  Call IsHidden to determine whether a specific cell, as specified by the ACol and ARow parameters,
+  is hidden. A cell is determined to be hidden, if it's RowHeight or ColWidth is smaller than 0.
+Parameters
+  ACol - The column coordinate of the cell.
+  ARow - The row coordinate of the cell.
+Return value
+  Returns true if the cell is hidden, otherwise false.
+See Also
+  HideCell
+----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.LoadFromCSV
 Summary
   Reads the comma seperated file specified in FileName and loads the data into the \string grid.
@@ -285,12 +393,13 @@ Description
   Use the LoadFromCSV method to retrieve a \string grid from a comma seperated file. LoadFromCSV can
   read files that list the cell strings - seperated with the character specified by Seperator - one row
   per line.
-
-  Note: String grid files contain only the text of the \string grid cells. They do not contain any data
+Note
+  String grid files contain only the text of the \string grid cells. They do not contain any data
   associated with a cell.
 Parameters
   FileName  - Name of a CSV file from which to read the \string grid.
   Separator - Character used in the CSV file to seperate cell strings.
+  QuoteChar - Description for this parameter
 See Also
   LoadFromFile, LoadFromStream, OnLoadProgress, SaveToCSV
 ----------------------------------------------------------------------------------------------------
@@ -300,8 +409,8 @@ Summary
 Description
   Use the LoadFromFile method to change the grid into the grid specified by the data. FileName should
   reference a file that was saved using the SaveToFile method.
-
-  Note: String grid files contain only the text of the \string grid cells. They do not contain any data
+Note
+  String grid files contain only the text of the \string grid cells. They do not contain any data
   associated with a cell.
 Parameters
   FileName - Name of a file that was saved using the SaveToFile method
@@ -314,8 +423,8 @@ Summary
 Description
   Use LoadFromStream to read the cell strings of the grid from the specified stream. LoadFromStream
   changes the grid into the grid specified by the stream.
-
-  Note: String grid files contain only the text of the \string grid cells. They do not contain any data
+Note
+  String grid files contain only the text of the \string grid cells. They do not contain any data
   associated with a cell.
 Parameters
   Stream - Specifies the stream from which to read the \string grid.
@@ -476,6 +585,28 @@ Description
 See Also
   OnHorizontalScroll
 ----------------------------------------------------------------------------------------------------
+@@TJvStringGrid.RemoveCol
+Summary
+  Removes a column from the grid.
+Description
+  Call RemoveCol to remove the column specified by Index from the grid. All columns right of the removed column
+  will be left one step.
+Parameters
+  Index - Position of the column to remove.
+See Also
+  HideCol, RemoveRow
+----------------------------------------------------------------------------------------------------
+@@TJvStringGrid.RemoveRow
+Summary
+  Removes a row from the grid.
+Description
+  Call RemoveRow to remove the row specified by Index from the grid. All rows below the removed row
+  will be moved up one step.
+Parameters
+  Index - Position of the row to remove.
+See Also
+  HideRow, RemoveCol
+----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.SaveToCSV
 Summary
   Saves the \string grid to the file specified in FileName.
@@ -489,6 +620,7 @@ Description
 Parameters
   FileName  - Name of the CSV file where to write the \string grid to.
   Separator - Character to be used in the CSV file to seperate cell strings.
+  QuoteChar - Description for this parameter
 See Also
   LoadFromCSV, OnSaveProgress, SaveToFile, SaveToStream
 ----------------------------------------------------------------------------------------------------
@@ -534,6 +666,62 @@ Parameters
              is a fixed (nonscrolling) cell.
 See Also
   DefaultDrawCell, OnSetCanvasProperties
+----------------------------------------------------------------------------------------------------
+@@TJvStringGrid.ShowAll
+Summary
+  Shows all previously hidden rows and columns.
+Description
+  Call ShowAll to show all previously hidden rows and columns.
+Parameters
+  AWidth  - The new width of hidden columns. If AWidth is set to a value < 0, DefaultColWidth
+             determines the new width of hidden columns.
+  AHeight - The new height of hidden rows. If AHeight is set to a value < 0, DefaultRowHeight
+             determines the new height of hidden columns.
+See Also
+  ShowCell, ShowCol, ShowRow
+----------------------------------------------------------------------------------------------------
+@@TJvStringGrid.ShowCell
+Summary
+  Shows a previously hidden row and column.
+Description
+  Call ShowCell to show a previoulsy hidden row and column.
+Parameters
+  ACol    - Specifies the column to show.
+  ARow    - Specifies the row to show.
+  AWidth  - The new width for the hidden column. If AWidth is set to a value < 0, DefaultColWidth
+             determines the new width. If the column is not hidden, then the width of the column is not
+             affected.
+  AHeight - The new height of hidden row. If AHeight is set to a value < 0, DefaultRowHeight
+             determines the new height. If the row is not hidden, then the height of the row is not
+             affected.
+See Also
+  ShowAll, ShowCol, ShowRow
+----------------------------------------------------------------------------------------------------
+@@TJvStringGrid.ShowCol
+Summary
+  Shows a previously column.
+Description
+  Call ShowCol to show a previoulsy hidden column.
+Parameters
+  Index   - Position of the hidden column.
+  AWidth  - The new width for the hidden column. If AWidth is set to a value < 0, DefaultColWidth
+             determines the new width. If the column is not hidden, then the width of the column is not
+             affected.
+See Also
+  ShowAll, ShowCell, ShowRow
+----------------------------------------------------------------------------------------------------
+@@TJvStringGrid.ShowRow
+Summary
+  Shows a previously hidden row.
+Description
+  Call ShowRow to show a previoulsy hidden row.
+Parameters
+  Index   - Position of the hidden row.
+  AHeight - The new height of hidden row. If AHeight is set to a value < 0, DefaultRowHeight
+             determines the new height. If the row is not hidden, then the height of the row is not
+             affected.
+See Also
+  ShowAll, ShowCell, ShowCol
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.SortGrid
 Summary
@@ -610,3 +798,6 @@ Parameters
   Progression - Indicates how much of the load or save operation has already been completed,
                  on a scale of 0 to Total.
   Total       - Specifies a value that must be reached by Progression to complete the operation.
+See Also
+    TJvStringGrid.OnLoadProgress
+    TJvStringGrid.OnSaveProgress
