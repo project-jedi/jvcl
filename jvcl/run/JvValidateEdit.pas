@@ -103,8 +103,6 @@ type
     FAutoAlignment: Boolean;
     FOldFontChange: TNotifyEvent;
     procedure DisplayText;
-    function IsValidChar(const S: string; Key: Char; Posn: Integer): boolean; virtual;
-    function MakeValid(ParseString: string): string;
     function ScientificStrToFloat(SciString: string): Double;
     procedure SetHasMaxValue(NewValue: Boolean);
     procedure SetHasMinValue(NewValue: Boolean);
@@ -144,6 +142,8 @@ type
     function GetText: TCaption;
     {$ENDIF VCL}
   protected
+    function IsValidChar(const S: string; Key: Char; Posn: Integer): boolean; virtual;
+    function MakeValid(ParseString: string): string;virtual;
     procedure Change; override; // (ahuser) CM_CHANGED is only called by TCustomEdit.Change
     procedure DoKillFocus(FocusedWnd: HWND); override;
     procedure DoSetFocus(FocusedWnd: HWND); override;
@@ -381,7 +381,6 @@ var
 begin
   if FDisplayFormat <> NewValue then
   begin
-    EnterText := FEditText;
     OldFormat := FDisplayFormat;
     FDisplayFormat := NewValue;
     case FDisplayFormat of
@@ -485,7 +484,6 @@ begin
     begin
       // ...or just display the value
       EditText := FEditText;
-      DoValueChanged;
     end;
   end;
 end;
@@ -515,7 +513,6 @@ end;
 
 procedure TJvCustomValidateEdit.SetAsInteger(NewValue: Integer);
 begin
-  EnterText := FEditText;
   case FDisplayFormat of
     dfAlphabetic, dfAlphaNumeric, dfCheckChars, dfCustom,
     dfNonCheckChars, dfNone:
@@ -529,7 +526,6 @@ begin
     dfCurrency, dfFloat, dfInteger, dfPercent, dfScientific, dfYear:
       EditText := IntToStr(IntRangeValue(NewValue));
   end;
-  DoValueChanged;
 end;
 
 function TJvCustomValidateEdit.GetAsCurrency: Currency;
@@ -548,7 +544,6 @@ end;
 
 procedure TJvCustomValidateEdit.SetAsCurrency(NewValue: Currency);
 begin
-  EnterText := FEditText;
   case FDisplayFormat of
     dfAlphabetic, dfAlphaNumeric, dfCheckChars, dfCustom,
     dfNonCheckChars, dfNone:
@@ -562,7 +557,6 @@ begin
     dfCurrency, dfFloat, dfInteger, dfPercent, dfScientific, dfYear:
       EditText := CurrToStr(CurrRangeValue(NewValue));
   end;
-  DoValueChanged;
 end;
 
 function TJvCustomValidateEdit.GetAsFloat: Double;
@@ -583,7 +577,6 @@ end;
 
 procedure TJvCustomValidateEdit.SetAsFloat(NewValue: Double);
 begin
-  EnterText := FEditText;
   case FDisplayFormat of
     dfAlphabetic, dfAlphaNumeric, dfCheckChars, dfCustom,
     dfNonCheckChars, dfNone:
@@ -600,7 +593,6 @@ begin
     dfScientific:
       EditText := Format('%e', [FloatRangeValue(NewValue)]);
   end;
-  DoValueChanged;
 end;
 
 function TJvCustomValidateEdit.GetValue: Variant;
@@ -648,7 +640,6 @@ end;
 
 procedure TJvCustomValidateEdit.DoClipboardPaste;
 begin
-  EnterText := FEditText;
   inherited DoClipboardPaste;
   EditText := MakeValid(inherited Text);
 end;
@@ -732,9 +723,15 @@ end;
 
 procedure TJvCustomValidateEdit.KeyDown(var Key: Word; Shift: TShiftState);
 begin
+// if Key = VK_DELETE then    EditText := MakeValid(inherited Text);
+  if Key = VK_ESCAPE then
+  begin
+    Key := 0;
+    EditText := EnterText;
+    SelStart := 0;
+    SelLength := length(FEditText);
+  end;
   inherited KeyDown(Key, Shift);
-  if Key = VK_DELETE then
-    EditText := MakeValid(inherited Text);
 end;
 
 function TJvCustomValidateEdit.CurrRangeValue(CheckValue: Currency): Currency;
@@ -785,13 +782,13 @@ begin
     EnForceMaxValue;
     EnforceMinValue;
   end;
-  ChangeText(FEditText);
+//  ChangeText(FEditText); 
   DisplayText;
+  DoValueChanged;
 end;
 
 procedure TJvCustomValidateEdit.DoSetFocus(FocusedWnd: HWND);
 begin
-  EnterText := FEditText;
   DisplayText;
   inherited DoSetFocus(FocusedWnd);
 end;
@@ -825,7 +822,8 @@ end;
 procedure TJvCustomValidateEdit.DisplayText;
 begin
   // The number types need to be formatted
-  if (FDisplayFormat in [dfBinary, dfCurrency, dfFloat, dfInteger, dfOctal, dfPercent, dfScientific, dfYear]) and
+  if (FDisplayFormat in [dfBinary, dfCurrency, dfFloat, dfInteger, dfOctal,
+     dfPercent, dfScientific, dfYear]) and
     (AsFloat = 0) and FZeroEmpty then
     ChangeText('')
   else
@@ -947,6 +945,7 @@ procedure TJvCustomValidateEdit.DoValueChanged;
 begin
   if Assigned(FOnValueChanged) and (EnterText <> FEditText) then
     FOnValueChanged(Self);
+  EnterText := FEditText;
 end;
 
 {procedure TJvCustomValidateEdit.CMChanged(var Message: TMessage);}
@@ -972,7 +971,6 @@ end;
 
 procedure TJvCustomValidateEdit.SetText(const NewValue: TCaption);
 begin
-  EnterText := FEditText;
   EditText := NewValue;
   DoValueChanged;
 end;
