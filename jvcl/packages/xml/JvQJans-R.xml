@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JvQJans" Design="0">
+  <Description>JVCLX Jans Components</Description>
+  <Requires>
+    <Package Name="rtl" Targets="D7,K3" Condition=""/>
+    <Package Name="visualclx" Targets="D7,K3" Condition=""/>
+    <Package Name="JvQCore-R" Targets="D7,K3" Condition=""/>
+    <Package Name="JvQStdCtrls-R" Targets="D7,K3" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\qrun\JvQMarkupCommon.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQMarkupLabel.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQMarkupViewer.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQPainterEffectsForm.pas" Targets="D7,K3" Formname="PainterEffectsF" Condition=""/>
+    <File Name="..\..\qrun\JvQPainterQBForm.pas" Targets="D7,K3" Formname="PainterQBF" Condition=""/>
+    <File Name="..\..\qrun\JvQPaintFX.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQQuickPreviewForm.pas" Targets="D7,K3" Formname="QuickPreviewF" Condition=""/>
+    <File Name="..\..\qrun\JvQResample.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQSAL.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQSALCore.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQSALHashList.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQSALMath.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQShapedButton.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQSimLogic.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQSimPID.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQSimPIDLinker.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQSimScope.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQSpellerForm.pas" Targets="D7,K3" Formname="JvSpellerForm" Condition=""/>
+    <File Name="..\..\qrun\JvQSticker.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQStrings.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQTracker.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQTurtle.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQXmlTree.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQYearGrid.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQYearGridEditForm.pas" Targets="D7,K3" Formname="YearGridEditF" Condition=""/>
+    <File Name="..\..\qrun\JvQAirBrush.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQArrayButton.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQBitmapButton.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQCSVBaseControls.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQDrawImage.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQForth.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQGridFilter.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQGridPreviewForm.pas" Targets="D7,K3" Formname="jvGridPreviewF" Condition=""/>
+    <File Name="..\..\qrun\JvQGridPrinter.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQJanTreeView.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQSimIndicator.pas" Targets="D7,K3" Formname="" Condition=""/>
+  </Contains>
+</Package>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JvQJans" Design="-1">
+  <Description>JVCLX Jans Components</Description>
+  <Requires>
+    <Package Name="JvQJans-R" Targets="D7,K3" Condition=""/>
+    <Package Name="rtl" Targets="D7,K3" Condition=""/>
+    <Package Name="designide" Targets="D7,K3" Condition=""/>
+    <Package Name="visualclx" Targets="D7,K3" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\qdesign\JvQJansReg.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qdesign\JvQCsvBaseEditor.pas" Targets="D7,K3" Formname="" Condition=""/>
+  </Contains>
+</Package>
