@@ -182,7 +182,7 @@ const
     'Description for',
     'Description for this parameter');
 
-//=== Local procedures =======================================================
+  //=== Local procedures =======================================================
 
 procedure DetermineDuplicates(Source, Duplicates: TStrings);
 var
@@ -948,6 +948,22 @@ begin
   end;
 end;
 
+function RemoveBackslashes(const S: string): string;
+var
+  I, L: Integer;
+begin
+  // Remove '\' from S
+  SetLength(Result, Length(S));
+  L := 0;
+  for I := 1 to Length(S) do
+    if S[I] <> '\' then
+    begin
+      Result[L + 1] := S[I];
+      Inc(L);
+    end;
+  SetLength(Result, L);
+end;
+
 procedure TMainCtrl.CompareParameters(APasItems: TPasItems; ADtxItems: TDtxItems;
   NotInDtx, NotInPas: TStrings);
 var
@@ -983,10 +999,10 @@ begin
           // 1 param -> optional
           // more params -> required
           if Params.Count = 1 then
-            AllOptionalPasParameters.Add(TagName + ' - ' + Params[0])
+            AllOptionalPasParameters.Add(TagName + ' - ' + RemoveBackslashes(Params[0]))
           else
             for J := 0 to Params.Count - 1 do
-              AllPasParameters.Add(TagName + ' - ' + Params[J]);
+              AllPasParameters.Add(TagName + ' - ' + RemoveBackslashes(Params[J]));
         end
         else
         begin
@@ -998,7 +1014,7 @@ begin
             if DtxItem.Combine > '' then
               TagName := '@@' + DtxItem.Combine;
             for J := 0 to Params.Count - 1 do
-              AllPasParameters.Add(TagName + ' - ' + Params[J]);
+              AllPasParameters.Add(TagName + ' - ' + RemoveBackslashes(Params[J]));
           end;
         end;
       end;
@@ -1010,7 +1026,7 @@ begin
         Params := TDtxHelpItem(ADtxItems[I]).Parameters;
         if Params <> nil then
           for J := 0 to Params.Count - 1 do
-            AllDtxParameters.Add(TDtxHelpItem(ADtxItems[I]).Tag + ' - ' + Params[J]);
+            AllDtxParameters.Add(TDtxHelpItem(ADtxItems[I]).Tag + ' - ' + RemoveBackslashes(Params[J]));
       end;
 
     //AllPasParameters.Sorted := False;
@@ -2113,7 +2129,7 @@ var
       [rfReplaceAll, rfIgnoreCase]);
     S := StringReplace(S, '%author', APasItems.Author, [rfReplaceAll, rfIgnoreCase]);
     S := StringReplace(S, '%unitname', UnitName, [rfReplaceAll, rfIgnoreCase]);
-    FileStream.write(PChar(S)^, Length(S));
+    FileStream.Write(PChar(S)^, Length(S));
   end;
 var
   I: Integer;
@@ -2145,3 +2161,4 @@ begin
 end;
 
 end.
+

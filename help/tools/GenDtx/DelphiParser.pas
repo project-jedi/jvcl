@@ -566,7 +566,7 @@ const
   SNotNumberExpected = 'Not number expected';
   SNotStringExpected = 'Not string expected';
 
-//=== Local procedures =======================================================
+  //=== Local procedures =======================================================
 
 function CheckText(const Short, Long: string; const CaseSensitive: Boolean): TCheckTextResult;
 var
@@ -616,11 +616,11 @@ end;
 
 function RemoveStartEndCRLF(const S: string): string;
 var
-  I, J: integer;
+  I, J: Integer;
 begin
   I := 1;
   J := Length(S);
-  while (I <= J) and (S[i] in [#10, #13]) do
+  while (I <= J) and (S[I] in [#10, #13]) do
     Inc(I);
   while (I <= J) and (S[J] in [#10, #13]) do
     Dec(J);
@@ -798,7 +798,7 @@ begin
     Msg := '';
     for I := Low(List) to High(List) do
     begin
-      Msg := Msg + List[i];
+      Msg := Msg + List[I];
       if I = High(List) - 1 then
         Msg := Msg + ' or '
       else
@@ -940,7 +940,7 @@ begin
   Inc(FOrigin, FSourcePtr - FBuffer);
 
   if Assigned(FLowOutputStream) then
-    FLowOutputStream.write(FBuffer^, FSourcePtr - FBuffer);
+    FLowOutputStream.Write(FBuffer^, FSourcePtr - FBuffer);
 
   if LowRecording and (FSourcePtr > FLowRecordPtr) then
     AddToLowRecording(FLowRecordPtr, FSourcePtr);
@@ -964,7 +964,7 @@ begin
   FBufPtr := FBuffer + Count;
   if FBufEnd = FBufPtr then
     raise Exception.Create('ReadBuffer Error');
-  Inc(FBufPtr, FStream.read(FBufPtr[0], FBufEnd - FBufPtr));
+  Inc(FBufPtr, FStream.Read(FBufPtr[0], FBufEnd - FBufPtr));
 
   Start := FBuffer;
   if Assigned(FSavedSourcePtr) then
@@ -1366,8 +1366,8 @@ procedure TDelphiParser.EndBlock(const AllowDoubleEnd: Boolean);
       FBlockDEFList.Assign(DEFList);
       for I := 0 to Tmp.Count - 1 do
       begin
-        Index := FBlockDEFList.IndexOf(Tmp[i]);
-        if (Index >= 0) and (FBlockDEFList.Objects[Index] = Tmp.Objects[i]) then
+        Index := FBlockDEFList.IndexOf(Tmp[I]);
+        if (Index >= 0) and (FBlockDEFList.Objects[Index] = Tmp.Objects[I]) then
           FBlockDEFList.Delete(Index);
       end;
 
@@ -1496,7 +1496,7 @@ begin
   WantCompilerDirectives := True;
   while IsInverseOf(NewBlockDEFStr, NewBlockDEFType) do
   begin
-    CheckNotToken(toEOF);
+    CheckNotToken(toEof);
     DoNextToken(False);
   end;
   WantCompilerDirectives := False;
@@ -1504,7 +1504,7 @@ end;
 
 procedure TDelphiParser.EndDefine;
 begin
-  if FDefList.Count = 0 then
+  if FDEFList.Count = 0 then
     Error('Unexpected {$ENDIF}');
   FDEFList.Delete(FDEFList.Count - 1);
 end;
@@ -2327,7 +2327,7 @@ begin
   Haakjes := 0;
   while True do
   begin
-    CheckNotToken(toEOF);
+    CheckNotToken(toEof);
     case Token of
       toSemiColon:
         if Haakjes = 0 then
@@ -3119,7 +3119,10 @@ begin
             end;
           end
           else
-            Recording := True;
+          begin
+            if not Recording then
+              Recording := True;
+          end;
       end;
       DoNextToken;
     end;
@@ -4165,7 +4168,7 @@ begin
   { Token = ; or Directive is valid }
   while True do
   begin
-    CheckNotToken(toEOF);
+    CheckNotToken(toEof);
 
     if Token = toSemiColon then
     begin
@@ -4239,7 +4242,7 @@ begin
   Haakjes := 0;
   while True do
   begin
-    CheckNotToken(toEOF);
+    CheckNotToken(toEof);
     case Token of
       toSemiColon:
         if Haakjes = 0 then
@@ -4457,7 +4460,7 @@ begin
     FPasItems.Add(Result);
   end
   else
-    result := nil;
+    Result := nil;
 
   SkipInterfaceMethods;
   CheckToken(toSemiColon);
@@ -5079,7 +5082,7 @@ procedure TDelphiParser.SwitchDefine;
 var
   Current: TDefineType;
 begin
-  if FDefList.Count = 0 then
+  if FDEFList.Count = 0 then
     Error('Unexpected {$ELSE}');
 
   Current := TDefineType(FDEFList.Objects[FDEFList.Count - 1]);
@@ -5831,7 +5834,7 @@ var
   S: string;
 begin
   S := Tag + #13#10 + FData;
-  AStream.write(PChar(S)^, Length(S));
+  AStream.Write(PChar(S)^, Length(S));
 end;
 
 //=== TDtxItems ==============================================================
@@ -5842,9 +5845,9 @@ var
 begin
   FSkipList.Clear;
   for I := 0 to Count - 1 do
-    if (Items[i] is TDtxStartItem) and (TDtxStartItem(Items[i]).Symbol = dssSkip) then
+    if (Items[I] is TDtxStartItem) and (TDtxStartItem(Items[I]).Symbol = dssSkip) then
       FSkipList.Add(
-        AddLeading(RemoveStartEndCRLF(TDtxStartItem(Items[i]).Data)));
+        AddLeading(RemoveStartEndCRLF(TDtxStartItem(Items[I]).Data)));
 end;
 
 constructor TDtxItems.Create;
@@ -5875,7 +5878,7 @@ var
   I: Integer;
 begin
   for I := 0 to Count - 1 do
-    if Items[i] is TDtxHelpItem then
+    if Items[I] is TDtxHelpItem then
       with TDtxHelpItem(Items[I]) do
         if HasTocEntry then
           Dest.Add(Tag);
@@ -5911,9 +5914,9 @@ begin
   try
     for I := 0 to Count - 1 do
     begin
-      if Items[i] is TDtxHelpItem then
-        Stream.write(PChar(Sep)^, cSepLength + 2);
-      (Items[i] as TDtxBaseItem).WriteToStream(Stream);
+      if Items[I] is TDtxHelpItem then
+        Stream.Write(PChar(Sep)^, cSepLength + 2);
+      (Items[I] as TDtxBaseItem).WriteToStream(Stream);
     end;
   finally
     Stream.Free;
@@ -5965,7 +5968,7 @@ var
   S: string;
 begin
   S := SymbolStr + ' ' + Data;
-  AStream.write(PChar(S)^, Length(S));
+  AStream.Write(PChar(S)^, Length(S));
 end;
 
 //=== TFunctionParser ========================================================
@@ -6088,8 +6091,8 @@ begin
     GlobalProcedureNames.Sorted := True;
     GlobalProcedureNames.Duplicates := dupIgnore;
     for I := 0 to FPasItems.Count - 1 do
-      if FPasItems[i].DelphiType in [dtFunction, dtProcedure] then
-        GlobalProcedureNames.Add(FPasItems[i].SimpleName);
+      if FPasItems[I].DelphiType in [dtFunction, dtProcedure] then
+        GlobalProcedureNames.Add(FPasItems[I].SimpleName);
     FPasItems.Clear;
 
     CheckTokenSymbolC('implementation');
@@ -6101,8 +6104,8 @@ begin
     ReadImplementationBlock;
 
     for I := 0 to FPasItems.Count - 1 do
-      if FPasItems[i] is TBaseFuncItem then
-        with TBaseFuncItem(FPasItems[i]) do
+      if FPasItems[I] is TBaseFuncItem then
+        with TBaseFuncItem(FPasItems[I]) do
           IsLocal := GlobalProcedureNames.IndexOf(SimpleName) < 0;
 
     if SortImplementation then
@@ -6268,7 +6271,7 @@ begin
 
   BeginOutputTo(FOutputStream);
 
-  while Token <> toEOF do
+  while Token <> toEof do
     DoNextToken;
 
   EndOutputTo;
@@ -6364,3 +6367,4 @@ begin
 end;
 
 end.
+
