@@ -36,13 +36,13 @@ unit JvTimeLine;
 interface
 
 uses
+  SysUtils, Classes,
   {$IFDEF VCL}
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  StdCtrls, ExtCtrls, ImgList,
+  Windows, Messages, Graphics, Controls, Forms, StdCtrls, ExtCtrls, ImgList,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  SysUtils, Classes, QGraphics, QControls, QForms,
-  QWindows, QStdCtrls, QExtCtrls, QImgList, 
+  QGraphics, QControls, QForms, QStdCtrls, QExtCtrls,
+  QImgList, Types, QWindows,
   {$ENDIF VisualCLX}
   {$IFDEF BCB}
   JvTypes, // TDate / TTime macros
@@ -237,7 +237,9 @@ type
     FShowHiddenItemHints: Boolean;
     FOnItemDblClick: TJvTimeItemClickEvent;
     FCanvas: TControlCanvas;
+    {$IFDEF VCL}
     FDragImages: TDragImageList;
+    {$ENDIF VCL}
     FStartPos: TPoint;
     FStates: TJvTimeLineStates;
     FRangeAnchor: TJvTimeItem;
@@ -432,7 +434,6 @@ type
   public
     property Selected;
   published
-    property AboutJVCL;
     property Align;
     property Color;
     property Cursor;
@@ -1147,7 +1148,9 @@ end;
 
 destructor TJvCustomTimeLine.Destroy;
 begin
+  {$IFDEF VCL}
   FDragImages.Free;
+  {$ENDIF VCL}
   FCanvas.Free;
   FYearList.Free;
   FBmp.Free;
@@ -1905,7 +1908,7 @@ begin
   fYr := Y;
   DecodeDate(GetLastDate, Y, M, D);
   aShadowRight := IntToStr(Y);
-  SetBkMode(Canvas.Handle, Windows.Transparent);
+  SetBkMode(Canvas.Handle, TRANSPARENT);
   LastDate := FFirstDate;
   FirstYear := True;
   while LastDate <= (GetLastDate + 5) do

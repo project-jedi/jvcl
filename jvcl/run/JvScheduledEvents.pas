@@ -32,7 +32,16 @@ unit JvScheduledEvents;
 interface
 
 uses
-  SysUtils, Windows, Classes, SyncObjs, Messages,
+  SysUtils, Classes, Contnrs, SyncObjs,
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}
+  {$IFDEF VCL}
+  Messages, Forms,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Qt, QForms, Types, QWindows,
+  {$ENDIF VisualCLX}
   JclSchedule, JvAppStorage, JvFinalize;
 
 const
@@ -71,7 +80,10 @@ type
     procedure DeleteSingleEvent(Sender: TJvCustomAppStorage; const Path: string;
       const List: TObject; const First, Last: Integer);
     procedure SetEvents(Value: TJvEventCollection);
+    {$IFDEF VCL}
     procedure WndProc(var Msg: TMessage); virtual;
+    {$ENDIF VCL}
+    procedure CMExecEvent(var Msg: TMessage); message CM_EXECEVENT;
     property AutoSave: Boolean read FAutoSave write FAutoSave;
     property OnStartEvent: TNotifyEvent read FOnStartEvent write FOnStartEvent;
     property OnEndEvent: TNotifyEvent read FOnEndEvent write FOnEndEvent;
@@ -87,7 +99,6 @@ type
     procedure StartAll;
     procedure StopAll;
     procedure PauseAll;
-  published
   end;
 
   TJvScheduledEvents = class(TJvCustomScheduledEvents)
@@ -214,7 +225,7 @@ type
 implementation
 
 uses
-  Contnrs, Forms, TypInfo,
+  TypInfo,
   JclDateTime, JclRTTI,
   JvJVCLUtils, JvResources, JvTypes;
 
@@ -427,8 +438,14 @@ begin
     ScheduleThread.RemoveEventComponent(Self);
     if AutoSave then
       SaveEventStates;
+    {$IFDEF VCL}
     if FWnd <> 0 then
       DeallocateHWndEx(FWnd);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    if FWnd <> nil then
+      DeallocateMessageObject(FWnd);
+    {$ENDIF VisualCLX}
   end;
   FEvents.Free;
   inherited Destroy;
@@ -474,7 +491,12 @@ procedure TJvCustomScheduledEvents.Loaded;
 begin
   if not (csDesigning in ComponentState) then
   begin
+    {$IFDEF VCL}
     FWnd := AllocateHWndEx(WndProc);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    FWnd := QWidgetH(AllocateMessageObject(Self));
+    {$ENDIF VisualCLX}
     if AutoSave then
       LoadEventStates;
     InitEvents;
@@ -604,10 +626,20 @@ begin
   FEvents.Assign(Value);
 end;
 
+{$IFDEF VCL}
 procedure TJvCustomScheduledEvents.WndProc(var Msg: TMessage);
 begin
   with Msg do
     if Msg = CM_EXECEVENT then
+      Dispatch(Msg)
+    else
+      Result := DefWindowProc(Handle, Msg, WParam, LParam);
+end;
+{$ENDIF VCL}
+
+procedure TJvCustomScheduledEvents.CMExecEvent(var Msg: TMessage);
+begin
+  with Msg do
     try
       DoStartEvent(TJvEventCollectionItem(WParam));
       TJvEventCollectionItem(WParam).Execute;
@@ -621,8 +653,6 @@ begin
       Application.HandleException(Self);
       {$ENDIF COMPILER6_UP}
     end
-    else
-      Result := DefWindowProc(Handle, Msg, WParam, LParam);
 end;
 
 //=== TJvEventCollection =====================================================

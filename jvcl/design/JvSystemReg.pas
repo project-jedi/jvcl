@@ -34,7 +34,13 @@ procedure Register;
 implementation
 
 uses
-  Classes, Controls,
+  Classes,
+  {$IFDEF VCL}
+  Controls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QControls,
+  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   FiltEdit, DesignEditors, DesignIntf,
   {$ELSE}
@@ -46,7 +52,7 @@ uses
   JvDragDrop, JvDdeCmd, JvWndProcHook,
   {$ENDIF VCL}
   {$IFDEF MSWINDOWS}
-  JvMRUList, JvMRUManager, 
+  JvMRUList, JvMRUManager,
   JvCommStatus, {JvComputerInfo,}
   {JvDeviceChanged, JvDirectories, JvSystemColors, JvKeyboardStates,} JvJoystick,
   JvNTEventLog, JvRas32, JvAppInst, JvScreenSaver,
@@ -104,15 +110,17 @@ begin
   RegisterPropertyEditor(TypeInfo(TWinControl), TJvWindowHook,
     'WinControl', TJvComponentFormProperty);
   {$ENDIF VCL}
+  {$IFDEF MSWINDOWS}
   RegisterPropertyEditor(TypeInfo(string), TJvChangeItem,
     'Directory', TJvDirectoryProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvPerfStatItem,
     'PerfStatKey', TJvPerfStatProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvSearchFiles,
     'RootDirectory', TJvDirectoryProperty);
+  RegisterComponentEditor(TJvChangeNotify, TJvChangeNotifyEditor);
+  {$ENDIF MSWINDOWS}
 
   RegisterComponentEditor(TJvFormStorage, TJvFormStorageEditor);
-  RegisterComponentEditor(TJvChangeNotify, TJvChangeNotifyEditor);
   RegisterComponentEditor(TJvTimerList, TJvTimerListDefaultEditor);
 end;
 

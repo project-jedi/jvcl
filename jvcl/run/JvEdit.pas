@@ -82,11 +82,9 @@ type
     FPasswordChar: Char;
     FNullPixmap: QPixmapH;
     {$ENDIF VisualCLX}
-    {$IFDEF VCL}
     FEmptyValue: string;
     FIsEmptyValue: boolean;
     FEmptyFontColor, FOldFontColor: TColor;
-    {$ENDIF VCL}
     function GetPasswordChar: Char;
     procedure SetAlignment(Value: TAlignment);
     procedure SetCaret(const Value: TJvCaret);
@@ -96,11 +94,11 @@ type
     procedure SetHotTrack(const Value: Boolean);
     {$IFDEF VCL}
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
-    procedure SetEmptyValue(const Value: string);
     {$ENDIF VCL}
-    procedure SetGroupIndex(const Value: Integer);
+    procedure SetEmptyValue(const Value: string);
+    procedure SetGroupIndex(Value: Integer);
     function GetFlat: Boolean;
-    procedure SetAutoHint(const Value: Boolean);
+    procedure SetAutoHint(Value: Boolean);
   protected
     procedure DoClipboardCut; override;
     procedure DoClipboardPaste; override;
@@ -120,13 +118,14 @@ type
     {$IFDEF VCL}
     function GetText: TCaption; virtual;
     procedure SetText(const Value: TCaption); virtual;
+    procedure CreateHandle; override;
+    {$ENDIF VCL}
     procedure DoEnter; override;
     procedure DoExit; override;
     procedure DoEmptyValueEnter; virtual;
     procedure DoEmptyValueExit; virtual;
-    procedure CreateHandle; override;
-    {$ENDIF VCL}
     {$IFDEF VisualCLX}
+    procedure InitWidget; override;
     procedure Paint; override;
     procedure TextChanged; override;
     procedure KeyPress(var Key: Char); override;
@@ -154,10 +153,8 @@ type
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property AutoHint: Boolean read FAutoHint write SetAutoHint default False;
     property Caret: TJvCaret read FCaret write SetCaret;
-    {$IFDEF VCL}
     property EmptyValue: string read FEmptyValue write SetEmptyValue;
     property EmptyFontColor:TColor read FEmptyFontColor write FEmptyFontColor default clGrayText;
-    {$ENDIF}
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
     property PasswordChar: Char read GetPasswordChar write SetPasswordChar;
     // set to True to disable read/write of PasswordChar and read of Text
@@ -586,7 +583,7 @@ begin
   UpdateEdit;
 end;
 
-procedure TJvCustomEdit.SetGroupIndex(const Value: Integer);
+procedure TJvCustomEdit.SetGroupIndex(Value: Integer);
 begin
   FGroupIndex := Value;
   UpdateEdit;
@@ -788,7 +785,7 @@ begin
   end;
 end;
 
-procedure TJvCustomEdit.SetAutoHint(const Value: Boolean);
+procedure TJvCustomEdit.SetAutoHint(Value: Boolean);
 begin
   if FAutoHint <> Value then
   begin
@@ -807,17 +804,15 @@ begin
   UpdateAutoHint;
 end;
 
-{$IFDEF VCL}
-
 procedure TJvCustomEdit.DoEnter;
 begin
-  inherited;
+  inherited DoEnter;
   DoEmptyValueEnter;
 end;
 
 procedure TJvCustomEdit.DoExit;
 begin
-  inherited;
+  inherited DoExit;
   DoEmptyValueExit;
 end;
 
@@ -852,7 +847,12 @@ begin
   end;
 end;
 
+{$IFDEF VCL}
 procedure TJvCustomEdit.CreateHandle;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+procedure TJvCustomEdit.InitWidget;
+{$ENDIF VisualCLX}
 begin
   inherited;
   if Focused then
@@ -872,7 +872,6 @@ begin
       DoEmptyValueExit;
   end;
 end;
-{$ENDIF VCL}
 
 
 end.

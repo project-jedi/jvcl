@@ -51,8 +51,8 @@ uses
   {$ENDIF JVCLThemesEnabled}
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, QControls, QButtons, QGraphics, QTypes,
-  QImgList, QForms, QStdCtrls, QExtCtrls, QWindows,
+  QControls, QButtons, QGraphics, QTypes, QImgList, QForms, QStdCtrls,
+  QExtCtrls, Types, QWindows,
   {$ENDIF VisualCLX}
   JvThemes, JvComponent, JvExButtons;
 

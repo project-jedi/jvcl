@@ -34,7 +34,13 @@ procedure Register;
 implementation
 
 uses
-  Classes, Controls, ImgList, ActnList,
+  Classes,
+  {$IFDEF VCL}
+  Controls, ImgList, ActnList,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QControls, QImgList, QActnList,
+  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
   {$ELSE}
@@ -52,12 +58,11 @@ uses
   {$IFDEF VisualCLX}
   QTypes,
   {$ENDIF VisualCLX}
-  JvZoom, JvBehaviorLabel, JvArrowButton,
-  JvaScrollText, JvClock, JvContentScroller, JvColorBox,
-  JvColorButton, JvDice, JvFooter, JvGroupHeader, JvHint,
-  JvHtControls, JvInstallLabel, JvItemsPanel,
-  JvRollOut, JvScrollPanel, JvScrollText, JvSpacer,
-  JvSpeedBar, JvSpeedbarSetupForm, JvSwitch, JvSplit, JvSplitter, JvSyncSplitter,
+  JvZoom, JvBehaviorLabel, JvArrowButton, JvaScrollText, JvClock,
+  JvContentScroller, JvColorBox, JvColorButton, JvDice, JvFooter,
+  JvGroupHeader, JvHint, JvHtControls, JvInstallLabel, JvItemsPanel,
+  JvRollOut, JvScrollPanel, JvScrollText, JvSpacer, JvSpeedBar,
+  JvSpeedbarSetupForm, JvSwitch, JvSplit, JvSplitter, JvSyncSplitter,
   JvTransparentButton, JvColorForm, JvImageDrawThread, JvWinampLabel,
   JvComponentPanel, JvButtons, JvCaptionPanel, JvScrollMax, JvMovableBevel,
   JvComboListBox, JvCharMap, JvOfficeColorButton, JvOfficeColorPanel,
@@ -111,7 +116,7 @@ begin
   RegisterComponents(RsPaletteSliderSplitter, [TJvSplitter, TJvxSplitter,
     TJvSyncSplitter, TJvNetscapeSplitter]);
   RegisterComponents(RsPaletteVisual, [TJvClock, TJvZoom, TJvDice, TJvCharMap]);
-  RegisterComponents(RsPaletteNonVisual, [TJvHint {, TJvRegAuto}]);
+  RegisterComponents(RsPaletteNonVisual, [TJvHint]);
 
   RegisterPropertyEditor(TypeInfo(TCaption), TJvHTLabel, 'Caption', TJvHintProperty);
   RegisterPropertyEditor(TypeInfo(TJvLabelBehaviorName), TJvBehaviorLabel, 'Behavior', TJvLabelBehaviorProperty);
@@ -135,7 +140,6 @@ begin
   RegisterComponentEditor(TJvImageComboBox, TJvStringsEditor);
   {$ENDIF VCL}
   RegisterComponentEditor(TJvSpeedBar, TJvSpeedbarCompEditor);
-  // RegisterComponentEditor(TJvRegAuto, TJvRegAutoEditor);
 
   RegisterNoIcon([TJvSpeedItem, TJvSpeedbarSection]);
   RegisterClass(TJvScrollMaxBand);

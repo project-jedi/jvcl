@@ -307,11 +307,11 @@ implementation
 uses
   TypInfo, Math,
   {$IFDEF VCL}
-  FileCtrl, Dlgs, Consts,
-  JvDateTimeForm, 
+  FileCtrl, Dlgs, Consts, Registry,
+  JvDateTimeForm,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QFileCtrls, QConsts, Registry,
+  QFileCtrls, QConsts, JvQRegistryIniFile,
   {$ENDIF VisualCLX}
   JvTypes, JvStringsForm, JvDsgnConsts;
 
@@ -1138,9 +1138,10 @@ const
 procedure TJvQColorProperty.Edit;
 var
   ColorDialog: TColorDialog;
-  IniFile: TRegIniFile;
+//  IniFile: TRegIniFile;
+//  BaseRegistryKey: string;
 
-  procedure GetCustomColors;
+(*  procedure GetCustomColors;
   begin
     if BaseRegistryKey = '' then
       Exit;
@@ -1171,20 +1172,22 @@ var
           end;
         end;
   end;
+*)
 
 begin
-  IniFile := nil;
+//  BaseRegistryKey := HKEY_CURRENT_USER + '/.borland/jvcl.ini';
+//  IniFile := nil;
   ColorDialog := TColorDialog.Create(Application);
   try
-    GetCustomColors;
+//    GetCustomColors;
     ColorDialog.Color := GetOrdValue;
     ColorDialog.HelpContext := hcDColorEditor;
 //    ColorDialog.Options := [cdShowHelp];
     if ColorDialog.Execute then
       SetOrdValue(ColorDialog.Color);
-    SaveCustomColors;
+//    SaveCustomColors;
   finally
-    IniFile.Free;
+//    IniFile.Free;
     ColorDialog.Free;
   end;
 end;

@@ -236,12 +236,6 @@ type
     property LeftButton;
     {$ENDIF COMPILER6_UP}
   published
-    {$IFDEF VCL}
-    property AboutJVCL;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    property AboutJVCL;
-    {$ENDIF VisualCLX}
     // gets / sets the borderstyle of the control and the scroll-buttons
     property BorderStyle;
     // gets / sets the width of the buttons
