@@ -1954,7 +1954,7 @@ end;
 
 procedure TJvCustomAppStorage.ReadProperty(const Path: string; const PersObj: TPersistent; const PropName : string; const Recursive, ClearFirst: Boolean);
 var
-  Index: Integer;
+  //Index: Integer;
   TmpValue: Integer;
   SubObj: TObject;
 begin
