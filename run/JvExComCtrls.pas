@@ -531,7 +531,7 @@ type
     property OnStartDock;
   end;
   
-  TJvExPageControl = class(TPageControl,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)
+  TJvExPageControl = class(TPageControl, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   protected
    // IJvControlEvents
     procedure VisibleChanged; dynamic;
@@ -595,6 +595,7 @@ type
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+  
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -611,7 +612,7 @@ type
     property OnStartDock;
   end;
   
-  TJvExCustomTabControl = class(TCustomTabControl,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)
+  TJvExCustomTabControl = class(TCustomTabControl, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   protected
    // IJvControlEvents
     procedure VisibleChanged; dynamic;
@@ -675,6 +676,7 @@ type
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+  
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -691,7 +693,7 @@ type
     property OnStartDock;
   end;
   
-  TJvExTabControl = class(TTabControl,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)
+  TJvExTabControl = class(TTabControl, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   protected
    // IJvControlEvents
     procedure VisibleChanged; dynamic;
@@ -755,6 +757,7 @@ type
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+  
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -4004,6 +4007,7 @@ begin
   inherited Create(AOwner);
   FHintColor := Application.HintColor;
 end;
+
 
 
 destructor TJvExCustomStatusBar.Destroy;

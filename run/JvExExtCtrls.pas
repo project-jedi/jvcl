@@ -293,7 +293,7 @@ type
     property OnStartDock;
   end;
   
-  TJvExCustomPanel = class(TCustomPanel,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)
+  TJvExCustomPanel = class(TCustomPanel, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   protected
    // IJvControlEvents
     procedure VisibleChanged; dynamic;
@@ -357,6 +357,7 @@ type
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+  
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -518,7 +519,7 @@ type
   end;
   
 
-  TJvExCustomControlBar = class(TCustomControlBar,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)
+  TJvExCustomControlBar = class(TCustomControlBar, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   protected
    // IJvControlEvents
     procedure VisibleChanged; dynamic;
@@ -582,6 +583,7 @@ type
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+  
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -599,7 +601,7 @@ type
   end;
   
 
-  TJvExControlBar = class(TControlBar,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)
+  TJvExControlBar = class(TControlBar, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   protected
    // IJvControlEvents
     procedure VisibleChanged; dynamic;
@@ -663,6 +665,7 @@ type
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+  
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -679,7 +682,7 @@ type
     property OnStartDock;
   end;
   
-  TJvExPanel = class(TPanel,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)
+  TJvExPanel = class(TPanel, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   protected
    // IJvControlEvents
     procedure VisibleChanged; dynamic;
@@ -743,6 +746,7 @@ type
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+  
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -839,7 +843,7 @@ type
     property OnStartDock;
   end;
   
-  TJvExPage = class(TPage,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)
+  TJvExPage = class(TPage, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   protected
    // IJvControlEvents
     procedure VisibleChanged; dynamic;
@@ -903,6 +907,7 @@ type
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+  
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -919,7 +924,7 @@ type
     property OnStartDock;
   end;
   
-  TJvExNotebook = class(TNotebook,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)
+  TJvExNotebook = class(TNotebook, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   protected
    // IJvControlEvents
     procedure VisibleChanged; dynamic;
@@ -983,6 +988,7 @@ type
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+  
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -999,7 +1005,7 @@ type
     property OnStartDock;
   end;
   
-  TJvExHeader = class(THeader,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)
+  TJvExHeader = class(THeader, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   protected
    // IJvControlEvents
     procedure VisibleChanged; dynamic;
@@ -1063,6 +1069,7 @@ type
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+  
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;

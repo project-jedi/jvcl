@@ -133,7 +133,7 @@ type
     property OnStartDock;
   end;
   
-  TJvExCustomGrid = class(TCustomGrid,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)
+  TJvExCustomGrid = class(TCustomGrid, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   protected
    // IJvControlEvents
     procedure VisibleChanged; dynamic;
@@ -197,6 +197,7 @@ type
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+  
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -214,7 +215,7 @@ type
   end;
   
   {$IFDEF COMPILER6_UP}
-  TJvExCustomDrawGrid = class(TCustomDrawGrid,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)
+  TJvExCustomDrawGrid = class(TCustomDrawGrid, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   protected
    // IJvControlEvents
     procedure VisibleChanged; dynamic;
@@ -278,6 +279,7 @@ type
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+  
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -376,7 +378,7 @@ type
   
   {$ENDIF COMPILER6_UP}
 
-  TJvExDrawGrid = class(TDrawGrid,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)
+  TJvExDrawGrid = class(TDrawGrid, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   protected
    // IJvControlEvents
     procedure VisibleChanged; dynamic;
@@ -440,6 +442,7 @@ type
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+  
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -457,7 +460,7 @@ type
   end;
   
 
-  TJvExStringGrid = class(TStringGrid,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)
+  TJvExStringGrid = class(TStringGrid, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   protected
    // IJvControlEvents
     procedure VisibleChanged; dynamic;
@@ -521,6 +524,7 @@ type
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+  
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;

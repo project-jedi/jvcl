@@ -369,7 +369,7 @@ type
     property OnStartDock;
   end;
   
-  TJvExCustomForm = class(TCustomForm,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)
+  TJvExCustomForm = class(TCustomForm, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   protected
    // IJvControlEvents
     procedure VisibleChanged; dynamic;
@@ -433,6 +433,7 @@ type
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+  
   private
     procedure CMShowingChanged(var Msg: TMessage); message CM_ShowingChanged;
     procedure CMDialogKey(var Msg: TCMDialogKey); message CM_DialogKey;
@@ -452,7 +453,7 @@ type
     property OnStartDock;
   end;
    // do not implement Painting() but CreateNew
-  TJvExForm = class(TForm,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)
+  TJvExForm = class(TForm, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   protected
    // IJvControlEvents
     procedure VisibleChanged; dynamic;
@@ -516,6 +517,7 @@ type
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+  
   private
     procedure CMShowingChanged(var Msg: TMessage); message CM_ShowingChanged;
     procedure CMDialogKey(var Msg: TCMDialogKey); message CM_DialogKey;
