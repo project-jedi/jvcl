@@ -978,8 +978,7 @@ is simply the filename to which the extension was removed.<br>
       <td style="vertical-align: top;">&lt;%%% END FILES %%%&gt;<br>
       </td>
       <td style="vertical-align: top;">Must be alone on the line.
-Returns to the 'Standard Line' state.
-      </td>
+Returns to the 'Standard Line' state. </td>
     </tr>
     <tr>
       <td style="vertical-align: top;">Forms section<br>
@@ -987,8 +986,7 @@ Returns to the 'Standard Line' state.
       <td style="vertical-align: top;">&lt;%%% END FORMS %%%&gt;<br>
       </td>
       <td style="vertical-align: top;">Must be alone on the line.
-Returns to the 'Standard Line' state.
-      </td>
+Returns to the 'Standard Line' state. </td>
     </tr>
     <tr>
       <td colspan="1" rowspan="3" style="vertical-align: top;">Libs
@@ -1012,8 +1010,7 @@ file, without any path information nor extension<br>
       <td style="vertical-align: top;">&lt;%%% END LIBS %%%&gt;<br>
       </td>
       <td style="vertical-align: top;">Must be alone on the line.
-Returns to the 'Standard Line' state.
-      </td>
+Returns to the 'Standard Line' state. </td>
     </tr>
   </tbody>
 </table>
@@ -1240,17 +1237,17 @@ Copy the modified line in the memory output file<br>
 different<sup>5.</sup> from the existing output file <span
  style="font-weight: bold;">then</span><br>
 <div style="margin-left: 40px;">Write the memory output file into the
-output file on disk<br>
+output file on disk<sup>6.</sup><br>
 </div>
 <span style="font-weight: bold;">If</span> a difference was detected
-between the current target and the associated perso target<sup>6.</sup>
+between the current target and the associated perso target<sup>7.</sup>
 <span style="font-weight: bold;">then</span><br>
 <div style="margin-left: 40px;"><span style="font-weight: bold;">If</span>
 the perso directory contains a template named the same as the current
 template <span style="font-weight: bold;">then</span><br>
 <div style="margin-left: 40px;">Use that template<br>
 </div>
-Generate the output file for the perso target<sup>7.</sup><br>
+Generate the output file for the perso target<sup>8.</sup><br>
 </div>
 <div style="margin-left: 40px;">
 <div style="margin-left: 40px;"><br>
@@ -1274,11 +1271,13 @@ byte comparison.<br>
 comparison. The last %DATETIME% marker in the file will be ignored,
 thus allowing a file that is only different by the date time tag to be
 considered as not being different.<br>
-<sup>6.</sup> This is determined while processing 'package' and 'file'
+<sup>6.</sup> If no package or no file was found to be included in the
+generated package for the current target, no file will be written.<br>
+<sup>7.</sup> This is determined while processing 'package' and 'file'
 nodes. If a file or package is used by a target and not its associated
 perso target (or vice-versa), then the two 'flavors' of the package
 being generated are different.<br>
-<sup>7.</sup> The output file will be placed in the directory set for
+<sup>8.</sup> The output file will be placed in the directory set for
 the perso target. This is done by repeating all steps from the line
 where note 4 is. As the target name is a perso target, it has no
 associated perso target and the test for a difference between
