@@ -29,9 +29,9 @@ unit JvCheckedItemsForm;
 interface
 
 uses
-  SysUtils, Classes,
-  Windows, Controls, Forms, Menus, Graphics,
-  StdCtrls, CheckLst, ExtCtrls,
+  Windows,
+  SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls, Menus,
+  CheckLst,
   {$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, DesignEditors,
   VCLEditors,
