@@ -33,7 +33,7 @@ uses
   Forms, Dialogs, DB, DBTables, Grids, DBGrids, JvPicClip, JvBDEQuery,
   JvFormPlacement, JvComponent, JvBDEFilter, JvBDEQBE, StdCtrls, ExtCtrls,
   Buttons, DBCtrls, JvBDEIndex, JvDBLookup, Mask, JvLabel, JvDBControls,
-  ComCtrls, TabNotBk, JvExControls;
+  ComCtrls, TabNotBk, JvExControls, JvDBGrid, JvExStdCtrls, JvExDBGrids;
 
 type
   TDBAwareForm = class(TForm)
