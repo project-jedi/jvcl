@@ -1,5 +1,3 @@
-unit JvCsvData;
-
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
@@ -139,13 +137,15 @@ Known Issues and Updates:
 
 {$I JVCL.INC}
 
+unit JvCsvData;
+
 interface
 
 uses
   Windows, Messages, SysUtils, Classes,
-{$ifdef COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   Variants,
-{$endif}
+  {$ENDIF COMPILER6_UP}
   Graphics, DB;
 
 const
@@ -164,13 +164,12 @@ const
   Bookmark_Eql = 0; // b1 = b2
 
 type
-
-  PInteger = ^integer;
+  PInteger = ^Integer;
   PDouble = ^Double;
-  PBoolean = ^boolean;
+  PBoolean = ^Boolean;
   {$IFNDEF COMPILER6_UP}
   PWordBool = ^WordBool;
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   EJvCsvDataSetError = class(EDatabaseError);
     // Subclass DB.EDatabaseError so we can work nicely with existing Delphi apps.
 
@@ -665,7 +664,10 @@ var
 
 procedure JvCsvDatabaseError(const TableName, Message: string);
 begin
+  // (rom) no OutputDebugString in production code
+  {$IFDEF DEBUGINFO_ON}
   OutputDebugString(PChar('JvCsvDatabaseError in ' + TableName + ': ' + Message));
+  {$ENDIF DEBUGINFO_ON}
   raise EJvCsvDataSetError.Create(TableName + ':' + Message);
 end;
 
@@ -1514,7 +1516,10 @@ begin
   begin
     if (Field.Offset < 0) or (Field.Offset+Field.DataSize > MaxCalcDataOffset) then
     begin
+      // (rom) no OutputDebugString in production code
+      {$IFDEF DEBUGINFO_ON}
       OutputDebugString('JvCsvData.SetFieldData: Invalid field.Offset in Calculated or Lookup field.');
+      {$ENDIF DEBUGINFO_ON}
       Exit;
     end;
     Inc(pDestination, sizeof(TJvCsvRow) + Field.Offset);
@@ -1751,8 +1756,11 @@ begin
   begin
     if (Field.Offset < 0) or (Field.Offset+Field.DataSize > MaxCalcDataOffset) then
     begin
+      // (rom) no OutputDebugString in production code
+      {$IFDEF DEBUGINFO_ON}
        OutputDebugString('JvCsvData.GetFieldData: Invalid field.Offset in Calculated or Lookup field.');
-       exit;
+      {$ENDIF DEBUGINFO_ON}
+       Exit;
     end;
     Inc(pSource, sizeof(TJvCsvRow) + Field.Offset);
     if (pSource[0] = #0) or (Buffer = nil) then
@@ -1790,10 +1798,14 @@ begin
   //------------------------------------------------------------------------
 
   RowPtr := PCsvRow(pSource);
-  if ( Field.Offset+Field.DataSize > MAXLINELENGTH ) then begin
-      // SIMPLE WORKAROUND: MAKES FIELDS NON FUNCTIONAL BUT DOES NOT CRASH SYSTEM.
-      OutputDebugString('JvCsvData.GetFieldData: Invalid field.Offset in Data field.');
-      exit;
+  if Field.Offset+Field.DataSize > MAXLINELENGTH then
+  begin
+    // SIMPLE WORKAROUND: MAKES FIELDS NON FUNCTIONAL BUT DOES NOT CRASH SYSTEM.
+    // (rom) no OutputDebugString in production code
+    {$IFDEF DEBUGINFO_ON}
+    OutputDebugString('JvCsvData.GetFieldData: Invalid field.Offset in Data field.');
+    {$ENDIF DEBUGINFO_ON}
+    Exit;
   end;
 
   TempString := GetCsvRowItem(RowPtr, PhysicalLocation);
@@ -1902,7 +1914,10 @@ begin
               ts := DateTimeToTimeStamp(aDateTime);
               if (ts.Time = 0) and (ts.Date = 0) then
               begin
+                // (rom) no OutputDebugString in production code
+                {$IFDEF DEBUGINFO_ON}
                 OutputDebugString('DateTimeToTimeStamp internal failure.');
+                {$ENDIF DEBUGINFO_ON}
                 Exit;
               end;
                 // XXX Delphi Weirdness Ahead.  Read docs before you try to
@@ -2239,9 +2254,10 @@ end;}
 
 procedure TJvCsvCustomInMemoryDataSet.InternalClose;
 begin
-  if not FCursorOpen then begin
-      //OutputDebugString('InternalClose called on already closed dataset');
-      exit;
+  if not FCursorOpen then
+  begin
+    //OutputDebugString('InternalClose called on already closed dataset');
+    Exit;
   end;
   Flush;
   BindFields(false);
@@ -3216,7 +3232,10 @@ begin
           CsvFieldName := ptrCsvColumn^.FFieldDef.Name;
           FHeaderRow := FHeaderRow + JvCsvSep + CsvFieldName;
           Inc(FAppendedFieldCount);
+          // (rom) no OutputDebugString in production code
+          {$IFDEF DEBUGINFO_ON}
           OutputDebugString(PChar('JvCsvData: Field '+CsvFieldName+' not found in file '+Self.FTableName +', inserted new (blank) column during loading.' ));
+          {$ENDIF DEBUGINFO_ON}
       end;
     end;
   end;
@@ -3373,13 +3392,19 @@ begin
         quoteFlag := not quoteFlag;
         if quoteFlag and (charsInColumn > 1) then
         begin
+          // (rom) no OutputDebugString in production code
+          {$IFDEF DEBUGINFO_ON}
           OutputDebugString('CsvDataSource.pas: StringToCsvRow - unescaped quote character in middle of string!');
+          {$ENDIF DEBUGINFO_ON}
         end;
 
       end
       else
       begin
+        // (rom) no OutputDebugString in production code
+        {$IFDEF DEBUGINFO_ON}
         OutputDebugString('CsvDataSource.pas: StringToCsvRow - quote character found where no escape sequences are permitted!');
+        {$ENDIF DEBUGINFO_ON}
       end;
     end;
 
@@ -3399,7 +3424,10 @@ begin
   Inc(Col);
   if quoteFlag then
   begin
+    // (rom) no OutputDebugString in production code
+    {$IFDEF DEBUGINFO_ON}
     OutputDebugString('CsvDataSource.pas: StringToCsvRow - Missing end quote character!');
+    {$ENDIF DEBUGINFO_ON}
   end;
  // Terminate the column-marker list with a special end-marker:
 {RowItem.wordfield[col]   := Word(Length(RowString)+1)AND$7FFF; // length of string
@@ -3640,7 +3668,10 @@ begin
       ch := AsciiDateStr[Index];
       if (ch < '0') or (ch > '9') then
       begin
+        // (rom) no OutputDebugString in production code
+        {$IFDEF DEBUGINFO_ON}
         OutputDebugString(PChar('JvCsvData:illegal character in datetime string: ' + ch));
+        {$ENDIF DEBUGINFO_ON}
         Exit; // failed:invalid character.
       end;
       Values[t] := (Values[t] * 10) + (Ord(ch) - Ord('0'));
@@ -3658,13 +3689,20 @@ begin
       if (AsciiDateStr[Index] <> Separators[t])
         and (AsciiDateStr[Index] <> Separators2[t]) then
           begin
+            // (rom) no OutputDebugString in production code
+            {$IFDEF DEBUGINFO_ON}
             OutputDebugString('TimeTAsciiToDateTime:illegal separator char');
+            {$ENDIF DEBUGINFO_ON}
             Exit;
         end;
 
    // validate ranges:
-    if (Values[t] < AsciiTime_MinValue[t]) or (Values[t] > AsciiTime_MaxValue[t]) then begin
+    if (Values[t] < AsciiTime_MinValue[t]) or (Values[t] > AsciiTime_MaxValue[t]) then
+    begin
+      // (rom) no OutputDebugString in production code
+      {$IFDEF DEBUGINFO_ON}
       OutputDebugString('TimeTAsciiToDateTime:range error');
+      {$ENDIF DEBUGINFO_ON}
       Exit; // a value is out of range.
     end;
     Inc(Index);

@@ -23,20 +23,22 @@ located at http://www.delphi-jedi.org
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
-{$I JEDI.INC}
+
+{$I JVCL.INC}
+
 unit JvMTThreading;
 
 interface
 
 uses
-{$IFDEF MSWINDOWS}
+  SysUtils, Classes, SyncObjs, Contnrs,
+  {$IFDEF MSWINDOWS}
   Windows,
-{$ENDIF}
-{$IFDEF LINUX}
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
   Libc,
-{$ENDIF}
-  SysUtils, Classes, SyncObjs, Contnrs, JvMTConsts, JvMTSync;
+  {$ENDIF LINUX}
+  JvMTConsts, JvMTSync;
 
 type
   TMTManager = class;
@@ -44,16 +46,16 @@ type
 
   TMTEvent = procedure(Thread: TMTThread) of object;
 
-{$IFDEF COMPILER5}
+  {$IFDEF COMPILER5}
   TIntThread = class(Classes.TThread)
   public
     procedure Synchronize(Method: TThreadMethod);
   end;
-{$ELSE}
+  {$ELSE}
   TIntThread = TThread;
-{$ENDIF}
+  {$ENDIF COMPILER5}
 
-  TMTInternalThread = class (TIntThread)
+  TMTInternalThread = class(TIntThread)
   private
     FName: string;
     FOnExecute: TNotifyEvent;
@@ -65,7 +67,7 @@ type
     property OnExecute: TNotifyEvent read FOnExecute write FOnExecute;
   end;
 
-  TMTThread = class (TObject)
+  TMTThread = class(TObject)
   private
     FFinished: Boolean;
     FIntThread: TMTInternalThread;
@@ -107,7 +109,7 @@ type
     property Ticket: TMTTicket read FTicket;
   end;
 
-  TMTManager = class (TObject)
+  TMTManager = class(TObject)
   private
     FGenTicket: TCriticalSection;
     FNextTicket: TMTTicket;
@@ -132,7 +134,7 @@ type
   end;
 
 
-function  CurrentMTThread: TMTThread;
+function CurrentMTThread: TMTThread;
 
 implementation
 
@@ -140,7 +142,7 @@ resourcestring
   sCurThreadIsPartOfManager = 'Current MTThread is part of the MTManager';
   sCheckTerminateCalledByWrongThread = 'CheckTerminate can only be called by the same thread';
   sThreadNotInitializedOrWaiting = 'Can''t run: thread is not Initializing or Waiting.';
-  sCannotChangeNameOfOtherActiveThread = 'Can not change name of other active thread.';
+  sCannotChangeNameOfOtherActiveThread = 'Cannot change name of other active thread.';
   sReleaseOfUnusedTicket = 'Release of unused ticket';
 
 threadvar
@@ -168,16 +170,17 @@ var
   SyncRequestList: TList;
 
 function CheckSynchronize: Boolean;
-var SyncRequest: PSyncRequest;
+var
+  SyncRequest: PSyncRequest;
 begin
   Result := False;
- // Only the main thread is allowed to synchronize thread methods.
+  // Only the main thread is allowed to synchronize thread methods.
   if GetCurrentThreadID <> MainThreadID then
     Exit;
 
-  if (SyncRequestAvailable) and (SyncRequestList <> nil) then
+  if SyncRequestAvailable and (SyncRequestList <> nil) then
   begin
-   // Do not block while another thread is adding a new synchronization request.
+    // Do not block while another thread is adding a new synchronization request.
     EnterCriticalSection(ThreadSyncLock);
     try
       while SyncRequestList.Count > 0 do
@@ -189,7 +192,7 @@ begin
         except
           SyncRequest^.ExceptionObject := ExceptObject;
         end;
-       // inform TIntThread.Synchronize
+        // inform TIntThread.Synchronize
         SetEvent(SyncRequest.Signal);
         SyncRequestAvailable := False;
         Result := True;
@@ -217,19 +220,19 @@ begin
 
         SyncRequest.ExceptionObject := nil;
         SyncRequest.Method := Method;
-         // The function returns only when the item is deleted from the List.
+        // The function returns only when the item is deleted from the List.
         SyncRequestList.Add(@SyncRequest);
 
         SyncRequestAvailable := True;
       finally
         LeaveCriticalSection(ThreadSyncLock);
       end;
-     // Wait for CheckSynchronize. 
+      // Wait for CheckSynchronize.
       WaitForSingleObject(SyncRequest.Signal, INFINITE);
     finally
       CloseHandle(SyncRequest.Signal);
     end;
-   // An exception occured. Re-raise it in the calling thread's context.
+    // An exception occured. Re-raise it in the calling thread's context.
     if Assigned(SyncRequest.ExceptionObject) then
       raise SyncRequest.ExceptionObject;
   end;
@@ -237,7 +240,7 @@ end;
 
 {$ENDIF COMPILER5}
 
-{ TMTInternalThread }
+//=== TMTInternalThread ======================================================
 
 procedure TMTInternalThread.Execute;
 begin
@@ -249,22 +252,22 @@ procedure TMTInternalThread.RaiseName;
 {$IFDEF COMPILER7_UP}
 var
   ThreadNameInfo: TThreadNameInfo;
-{$ENDIF}
+{$ENDIF COMPILER7_UP}
 begin
-{$IFDEF COMPILER7_UP}
+  {$IFDEF COMPILER7_UP}
   ThreadNameInfo.FType := $1000;
   ThreadNameInfo.FName := PChar(FName);
   ThreadNameInfo.FThreadID := $FFFFFFFF;
   ThreadNameInfo.FFlags := 0;
   try
-    RaiseException( $406D1388, 0, sizeof(ThreadNameInfo) div sizeof(LongWord),
-      @ThreadNameInfo );
+    RaiseException($406D1388, 0, SizeOf(ThreadNameInfo) div SizeOf(LongWord),
+      @ThreadNameInfo);
   except
   end;
-{$ENDIF}
+  {$ENDIF COMPILER7_UP}
 end;
 
-{ TMTThread }
+//=== TMTThread ==============================================================
 
 constructor TMTThread.Create(Manager: TMTManager; Ticket: Integer);
 begin
@@ -288,7 +291,7 @@ begin
   if CurrentMTThread <> Self then
     raise EMTThreadError.Create(sCheckTerminateCalledByWrongThread);
 
-  if GetStatus = tsTerminating then
+  if Status = tsTerminating then
     raise EMTTerminateError.Create('');
 end;
 
@@ -316,11 +319,19 @@ function TMTThread.GetStatus: TMTThreadStatus;
 begin
   FStatusChange.Acquire;
   try
-    if FFinished then Result := tsFinished
-    else if FIntThread = nil then Result := tsInitializing
-    else if FIntThread.Suspended then Result := tsWaiting
-    else if FIntThread.Terminated then Result := tsTerminating
-    else Result := tsRunning;
+    if FFinished then
+      Result := tsFinished
+    else
+    if FIntThread = nil then
+      Result := tsInitializing
+    else
+    if FIntThread.Suspended then
+      Result := tsWaiting
+    else
+    if FIntThread.Terminated then
+      Result := tsTerminating
+    else
+      Result := tsRunning;
   finally
     FStatusChange.Release;
   end;
@@ -333,7 +344,10 @@ end;
 
 procedure TMTThread.Log(const Msg: string);
 begin
+  // (rom) no OutputDebugString in production code
+  {$IFDEF DEBUGINFO_ON}
   OutputDebugString(PChar('[' + ClassName + '] ' + Msg));
+  {$ENDIF DEBUGINFO_ON}
 end;
 
 procedure TMTThread.OnIntThreadExecute(Sender: TObject);
@@ -344,10 +358,13 @@ begin
 
   // run OnExecute event
   try
-    if Assigned(FOnExecute) then FOnExecute(Self);
+    if Assigned(FOnExecute) then
+      FOnExecute(Self);
   except
-    on E: EMTTerminateError do {nothing};
-    on E: Exception do Log('OnExecute Exception: "' + E.Message+'"'); // do not localize
+    on E: EMTTerminateError do
+      {nothing};
+    on E: Exception do
+      Log('OnExecute Exception: "' + E.Message+'"'); // do not localize
   end;
 
   // make sure terminate flag is set
@@ -355,9 +372,11 @@ begin
 
   // run OnTerminating event
   try
-    if Assigned(FOnTerminating) then FOnTerminating(Self);
+    if Assigned(FOnTerminating) then
+      FOnTerminating(Self);
   except
-    on E: Exception do Log('OnTerminate Exception: "' + E.Message+'"'); // do not localize
+    on E: Exception do
+      Log('OnTerminate Exception: "' + E.Message+'"'); // do not localize
   end;
 end;
 
@@ -370,7 +389,8 @@ begin
     FStatusChange.Release;
   end;
 
-  if Assigned(FOnFinished) then FOnFinished(Self);
+  if Assigned(FOnFinished) then
+    FOnFinished(Self);
 
   FStatusChange.Acquire;
   try
@@ -393,9 +413,10 @@ procedure TMTThread.Run;
 begin
   FStatusChange.Acquire;
   try
-    if GetStatus = tsInitializing then
+    if Status = tsInitializing then
       CreateAndRun
-    else if GetStatus = tsWaiting then
+    else
+    if Status = tsWaiting then
       FIntThread.Resume
     else
       raise EMTThreadError.Create(sThreadNotInitializedOrWaiting);
@@ -409,7 +430,7 @@ begin
   FStatusChange.Acquire;
   try
   
-    if GetStatus in [tsInitializing, tsFinished] then
+    if Status in [tsInitializing, tsFinished] then
       FName := Value
     else
     begin
@@ -432,7 +453,8 @@ procedure TMTThread.Synchronize(Method: TThreadMethod);
 begin
   if CurrentMTThread = Self then
     FIntThread.Synchronize(Method)
-  else if CurrentMTThread = nil then
+  else
+  if CurrentMTThread = nil then
     Method
   else
     CurrentMTThread.Synchronize(Method);
@@ -440,7 +462,8 @@ end;
 
 procedure TMTThread.Terminate;
 begin
-  if (GetStatus in [tsTerminating, tsFinished]) then exit;
+  if Status in [tsTerminating, tsFinished] then
+    Exit;
   
   FStatusChange.Acquire;
   try
@@ -464,14 +487,15 @@ begin
   try
     if GetCurrentThreadId = MainThreadID then
     begin
-      while GetStatus <> tsFinished do
+      while Status <> tsFinished do
       begin
         CheckSynchronize;
         Sleep(0);
       end;
     end
-    else begin
-      while GetStatus <> tsFinished do
+    else
+    begin
+      while Status <> tsFinished do
         Sleep(0);
     end;
   finally
@@ -479,7 +503,7 @@ begin
   end;
 end;
 
-{ TMTManager }
+//=== TMTManager =============================================================
 
 constructor TMTManager.Create;
 begin
@@ -514,7 +538,7 @@ end;
 
 function TMTManager.AcquireNewThread: TMTThread;
 begin
-  Result := TMTThread.Create(self, GenerateTicket);
+  Result := TMTThread.Create(Self, GenerateTicket);
   try
     Result.IncRef;
     FThreadsChange.Acquire;
@@ -542,10 +566,11 @@ begin
   end;
 end;
 
-function TMTManager.InternalActiveThreads(RaiseID: LongWord): Integer;
 // returns 0 = False
 //         1 = True
 //        -1 = RaiseID found and active
+
+function TMTManager.InternalActiveThreads(RaiseID: LongWord): Integer;
 var
   I: Integer;
 begin
@@ -610,7 +635,10 @@ end;
 
 procedure TMTManager.Log(const Msg: string);
 begin
+  // (rom) no OutputDebugString in production code
+  {$IFDEF DEBUGINFO_ON}
   OutputDebugString(PChar('[' + ClassName + '] ' + Msg));
+  {$ENDIF DEBUGINFO_ON}
 end;
 
 procedure TMTManager.OnThreadFinished(Thread: TMTThread);
@@ -660,8 +688,9 @@ begin
   end;
 end;
 
+// wait until the threads are all finished
+
 procedure TMTManager.WaitThreads;
-  // wait until the threads are all finished
 begin
   // running from inside the main VCL thread?
   if GetCurrentThreadID = MainThreadID then
@@ -673,14 +702,18 @@ begin
       Sleep(0);
     end;
   end
-  else begin
+  else
+  begin
     //running in a MTThread, just wait for all threads to finish
     while True do
     begin
       case InternalActiveThreads(GetCurrentThreadID) of
-        0: Break;
-        1: ;
-       -1: raise EMTThreadError.Create(sCurThreadIsPartOfManager);
+        0:
+          Break;
+        1:
+          { Nothing };
+       -1:
+         raise EMTThreadError.Create(sCurThreadIsPartOfManager);
       end;
       Sleep(0);
     end;
@@ -688,19 +721,20 @@ begin
 end;
 
 {$IFDEF COMPILER5}
+
 initialization
   InitializeCriticalSection(ThreadSyncLock);
   SyncRequestList := nil;
 
 finalization
   DeleteCriticalSection(ThreadSyncLock);
- // if the list is not empty there are still waiting threads
+  // if the list is not empty there are still waiting threads
   if SyncRequestList <> nil then
   begin
     CheckSynchronize;
     SyncRequestList.Free;
   end;
 
-{$ENDIF}
+{$ENDIF COMPILER5}
 
 end.
