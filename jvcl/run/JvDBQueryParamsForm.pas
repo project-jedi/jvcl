@@ -141,7 +141,7 @@ begin
         {$ENDIF BCB}
     InitList := List;
     Edit;
-    Result := PressedOk;
+    Result := PressedOK;
   finally
     Free;
   end;
@@ -171,7 +171,7 @@ begin
     ParamListChange(Self);
     ActiveControl := OkBtn;
   end;
-  PressedOk := ShowModal = mrOK;
+  PressedOK := ShowModal = mrOk;
 end;
 
 procedure TJvQueryParamsDialog.ParamListChange(Sender: TObject);

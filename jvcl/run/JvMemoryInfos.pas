@@ -58,8 +58,8 @@ type
     // (rom) i am not sure if these properties should be string
     // (rom) it limits the component to display purposes
     property TotalMemory: string read FTotalMemory write FDummy stored False;
-    property FreeMemory: string read FfreeMemory write FDummy  stored False;
-    property NumberOfPages: string read FTotalPages write FDummy  stored False;
+    property FreeMemory: string read FFreeMemory write FDummy stored False;
+    property NumberOfPages: string read FTotalPages write FDummy stored False;
     property DisponiblePages: string read FDisponiblePages write FDummy stored False;
     property NumberOfRegions: string read FNumberOfRegions write FDummy stored False;
     property DisponibleRegions: string read FDisponibleRegions write FDummy stored False;

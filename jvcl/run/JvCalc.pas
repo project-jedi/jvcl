@@ -1186,7 +1186,7 @@ begin
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   BorderStyle := fbsDialog;
-  Scaled := false;
+  Scaled := False;
   {$ENDIF VisualCLX}
   Caption := RsCalculatorCaption;
   ClientHeight := 159;

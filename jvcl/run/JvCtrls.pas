@@ -585,7 +585,7 @@ end;
 procedure TJvCustomImageButton.DrawButtonImage(ImageBounds: TRect);
 {$IFDEF VisualCLX}
 var
-  glyph: TBitmap;
+  Glyph: TBitmap;
 {$ENDIF VisualCLX}
 begin
   if csDestroying in ComponentState then
@@ -606,7 +606,7 @@ begin
         Glyph := TBitmap.Create;
         DefaultImgBtnImagesList.GetBitmap(GetKindImageIndex, Glyph);
         Glyph.TransparentColor := clOlive;
-        FCanvas.draw(Left, Top, Glyph);
+        FCanvas.Draw(Left, Top, Glyph);
         Glyph.Free;
       end;
       {$ENDIF VisualCLX}

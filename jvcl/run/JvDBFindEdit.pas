@@ -63,9 +63,9 @@ type
     procedure Change; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     function DateVal: Boolean;
-    function IsDate(s1: string): Boolean;
+    function IsDate(S1: string): Boolean;
     function GetDateDelimiter: string;
-    function IsNumeric(s1: string): Boolean;
+    function IsNumeric(S1: string): Boolean;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -174,12 +174,12 @@ begin
   Val(S, Result, Err);
 end;
 
-function TJvDBFindEdit.IsNumeric(s1: string): Boolean;
+function TJvDBFindEdit.IsNumeric(S1: string): Boolean;
 var
   ier: Integer;
 begin
   Result := True;
-  ToDoubleVal(s1, ier);
+  ToDoubleVal(S1, ier);
   if ier > 0 then
     Result := False;
 end;
@@ -198,36 +198,36 @@ begin
     end;
 end;
 
-function TJvDBFindEdit.IsDate(s1: string): Boolean;
+function TJvDBFindEdit.IsDate(S1: string): Boolean;
 var
-  i, k, p1, p2: Integer;
+  I, k, p1, p2: Integer;
   sm, sd, sj, ss: string;
 begin
   Result := False;
   ss := GetDateDelimiter;
-  k := Length(s1);
+  k := Length(S1);
   if k > 0 then
   begin
     p1 := 0;
     p2 := 0;
-    for i := 1 to k do
+    for I := 1 to k do
     begin
       if p1 = 0 then
       begin
-        if s1[i] = ss then
-          p1 := i;
+        if S1[I] = ss then
+          p1 := I;
       end
       else
       begin
-        if s1[i] = ss then
-          p2 := i;
+        if S1[I] = ss then
+          p2 := I;
       end;
     end;
     if (p1 > 0) and (p2 > 0) and (p2 > p1) then
     begin
-      sm := Copy(s1, 1, p1 - 1);
-      sd := Copy(s1, p1 + 1, p2 - p1 -1);
-      sj := Copy(s1, p2 + 1, k - p2);
+      sm := Copy(S1, 1, p1 - 1);
+      sd := Copy(S1, p1 + 1, p2 - p1 -1);
+      sj := Copy(S1, p2 + 1, k - p2);
       if IsNumeric(sm) and IsNumeric(sd) and IsNumeric(sj) then
       begin
         p1 := StrToInt(sd);

@@ -30,7 +30,7 @@ interface
 
 uses
   SysUtils, Classes,
-  Bde, DB, DBTables;
+  BDE, DB, DBTables;
 
 type
   TJvBDEMemoryTable = class(TDBDataSet)
@@ -136,7 +136,7 @@ begin
     end;
     try
       Result := 0;
-      while not ASource.EOF do
+      while not ASource.Eof do
       begin
         Append;
         AssignRecord(ASource, Self, True);
@@ -501,7 +501,7 @@ begin
   DisableControls;
   try
     First;
-    while not EOF do
+    while not Eof do
     begin
       Edit;
       for I := 0 to Max(High(FieldNames), High(Values)) do

@@ -90,7 +90,7 @@ type
     property ShowDBName: Boolean read FShowDBName write FShowDBName;
     property UsersTableName: string read FUsersTableName write FUsersTableName;
     property UserNameField: string read FUserNameField write FUserNameField;
-    property MaxPwdLen: Integer read FMaxPwdLen write fMaxPwdLen;
+    property MaxPwdLen: Integer read FMaxPwdLen write FMaxPwdLen;
     property LoginName: string read FLoginName write FLoginName;
   published
     property OnLoginFailure: TJvDBLoginEvent read FOnLoginFailure write FOnLoginFailure;
@@ -343,7 +343,7 @@ end;
 function TJvDBLoginDialog.CheckDatabaseChange: Boolean;
 begin
   Result := (FMode in [dmAppLogin, dmDBLogin]) and
-    (Pos('@', Fdialog.UserNameEdit.Text) > 0) and
+    (Pos('@', FDialog.UserNameEdit.Text) > 0) and
     ((Database <> nil) and (Database.DriverName <> '') and
     (CompareText(Database.DriverName, szCFGDBSTANDARD) <> 0));
 end;

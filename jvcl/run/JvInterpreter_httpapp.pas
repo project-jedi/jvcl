@@ -963,7 +963,7 @@ end;
 
 procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
 const
-  cHTTPapp = 'HTTPApp';
+  cHTTPApp = 'HTTPApp';
 begin
   with JvInterpreterAdapter do
   begin

@@ -58,13 +58,13 @@ type
     FDescription: string;
     FDifferentiate: Boolean;
     FKey: string; // MBCS
-    FLastPerfData: LongWord;
-    FLastTime: LongWord;
+    FLastPerfData: Longword;
+    FLastTime: Longword;
     FName: string;
     FOwner: TJvPerfStat95;
     FStarted: Boolean;
     function GetCategory: TJvPerfStatCategory;
-    function GetPerfData: LongWord;
+    function GetPerfData: Longword;
     function GetPerfDataStr: string;
     function GetKey: string;
   protected
@@ -79,7 +79,7 @@ type
     property Differentiate: Boolean read FDifferentiate;
     property Key: string read GetKey;
     property Name: string read FName;
-    property PerfData: LongWord read GetPerfData;
+    property PerfData: Longword read GetPerfData;
     property PerfDataStr: string read GetPerfDataStr;
     property Started: Boolean read FStarted;
   end;
@@ -267,7 +267,7 @@ begin
   Result := MultiByteStringToString(FKey);
 end;
 
-function TJvPerfStatActiveItem.GetPerfData: LongWord;
+function TJvPerfStatActiveItem.GetPerfData: Longword;
 var
   Size: Integer;
   Value: Longword;

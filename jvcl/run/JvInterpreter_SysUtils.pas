@@ -1747,7 +1747,7 @@ end;
 
 procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
 const
-  CSysUtils = 'SysUtils';
+  cSysUtils = 'SysUtils';
 begin
   with JvInterpreterAdapter do
   begin

@@ -169,7 +169,7 @@ begin
     if Assigned(FOldCBFunc) and (FChain = dcChain) then
       try
         DbiRegisterCallback(nil, FCBType, FOldCBData, FOldCBBufLen,
-          FOldCBBuf, pfDBICallback(FOldCBFunc));
+          FOldCBBuf, pfDBICallBack(FOldCBFunc));
       except
       end
     else

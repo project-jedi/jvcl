@@ -371,7 +371,7 @@ procedure TJvCustomBmpAnimator.Paint;
 var
   dX, dY: Integer;
 begin
-  if Assigned(FImagelist) then
+  if Assigned(FImageList) then
   begin
     if FCenter then
     begin

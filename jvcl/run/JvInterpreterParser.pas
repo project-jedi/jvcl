@@ -624,7 +624,7 @@ begin
     while (P[0] in StConstSymbols10) or (P[0] = '.') do
     begin
       if (P[0] = '.') and (P[1] = '.') then
-        break;
+        Break;
       Inc(P);
     end;
     SetString(Result, F, P - F);

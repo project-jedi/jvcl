@@ -1678,9 +1678,9 @@ begin
   end;
 end;
 
-function FormHasFocus(FormHandle: HWnd): Boolean;
+function FormHasFocus(FormHandle: HWND): Boolean;
 var
-  H: HWnd;
+  H: HWND;
 begin
   H := GetFocus;
   while IsWindow(H) and (H <> FormHandle) do

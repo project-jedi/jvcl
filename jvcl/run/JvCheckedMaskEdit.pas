@@ -260,7 +260,7 @@ begin
   inherited EnabledChanged;
   {$IFDEF VisualCLX}
   if Assigned(FOnEnabledChanged) then
-     FOnEnabledChanged(self);
+     FOnEnabledChanged(Self);
   {$ENDIF VisualCLX}
 end;
 

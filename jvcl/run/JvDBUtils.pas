@@ -275,7 +275,7 @@ begin
   with DataSet do
   begin
     First;
-    while not EOF do
+    while not Eof do
     begin
       if MatchesLookup(FLookupField) then
       begin
@@ -492,7 +492,7 @@ begin
         with DataSet do
         begin
           First;
-          while not EOF do
+          while not Eof do
           begin
             Result := CompareRecord;
             if Result then

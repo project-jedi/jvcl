@@ -26,9 +26,6 @@ object JvQueryParamsDialog: TJvQueryParamsDialog
   OldCreateOrder = True
   Position = poScreenCenter
   Scaled = False
-  DesignSize = (
-    354
-    179)
   PixelsPerInch = 96
   TextHeight = 13
   object GroupBox1: TGroupBox
@@ -39,9 +36,6 @@ object JvQueryParamsDialog: TJvQueryParamsDialog
     Anchors = [akLeft, akTop, akRight, akBottom]
     Caption = 'Define Parameters'
     TabOrder = 0
-    DesignSize = (
-      336
-      143)
     object Label1: TLabel
       Left = 8
       Top = 20

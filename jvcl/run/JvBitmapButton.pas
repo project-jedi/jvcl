@@ -130,7 +130,7 @@ begin
   FBitmap := TBitmap.Create;
   FBitmap.Width := 24;
   FBitmap.Height := 24;
-  FBitmap.PixelFormat := pf24Bit;
+  FBitmap.PixelFormat := pf24bit;
   FBitmap.Canvas.Brush.Color := clGray;
   FBitmap.Canvas.FillRect(Rect(1, 1, 23, 23));
   FBitmap.OnChange := DoBitmapChange;
@@ -374,11 +374,11 @@ end;
 
 procedure TJvBitmapButton.DoBitmapChange(Sender: TObject);
 begin
-  if FBitmap.PixelFormat <> pf24Bit then
+  if FBitmap.PixelFormat <> pf24bit then
   begin
     FBitmap.OnChange := nil;
     try
-      FBitmap.PixelFormat := pf24Bit;
+      FBitmap.PixelFormat := pf24bit;
     finally
       FBitmap.OnChange := DoBitmapChange;
     end;
@@ -423,7 +423,7 @@ begin
   gt := GetGValue(AColor);
   bt := GetBValue(AColor);
   Target.PixelFormat := pf24bit;
-  assert(FBitmap.PixelFormat = pf24Bit);
+  assert(FBitmap.PixelFormat = pf24bit);
   for Y := 0 to FBitmap.Height - 1 do
   begin
     p1 := FBitmap.ScanLine[Y];

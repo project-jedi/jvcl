@@ -1204,7 +1204,7 @@ begin
     FAngle := Value;
     if FAngle < 0 then
       Inc(FAngle, 360);
-    FNeedsResize := Autosize;
+    FNeedsResize := AutoSize;
     AdjustBounds;
     Invalidate;
   end;

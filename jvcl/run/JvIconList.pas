@@ -271,7 +271,7 @@ begin
     Ico.Handle := LoadIcon(Instance, ResId);
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    ResStream := TResourceStream.CreateFromID(Instance, Integer(ResID), RT_RCDATA);
+    ResStream := TResourceStream.CreateFromID(Instance, Integer(ResId), RT_RCDATA);
     try
       Ico.LoadFromStream(ResStream);
     finally
@@ -370,7 +370,7 @@ begin
     Ico.Handle := LoadIcon(Instance, ResId);
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    ResStream := TResourceStream.CreateFromID(Instance, Integer(ResID), RT_RCDATA);
+    ResStream := TResourceStream.CreateFromID(Instance, Integer(ResId), RT_RCDATA);
     try
       Ico.LoadFromStream(ResStream);
     finally

@@ -593,7 +593,7 @@ begin
   inherited Create(AOwner);
   FColorSamples := TStringList.Create;
   cbColorSettings.Clear;
-  for hl:=Low(TJvHighlighter) to Pred(High(TJvHighLighter)) do
+  for hl:=Low(TJvHighlighter) to Pred(High(TJvHighlighter)) do
     cbColorSettings.Items.AddObject(HighlighterNames[hl], nil);
 end;
 

@@ -346,7 +346,7 @@ begin
   begin
     ParentForm := GetParentForm(Self);
     if Assigned(ParentForm) and ParentForm.Active and
-      Parentform.HandleAllocated then
+      ParentForm.HandleAllocated then
       PostMessage(ParentForm.Handle, WM_QUERYNEWPALETTE, 0, 0);
   end;
 end;
@@ -366,7 +366,7 @@ end;
 procedure TJvPaletteGrid.DrawSquare(CellColor: TColor; CellRect: TRect;
   ShowSelector: Boolean);
 var
-  SavePal: HPalette;
+  SavePal: HPALETTE;
 begin
   Canvas.Pen.Color := clBtnFace;
   with CellRect do

@@ -66,7 +66,7 @@ type
     procedure SetLineSpacing(Value: Integer);
     procedure ImageListChange(Sender: TObject);
     procedure UpdateStyles;
-    function CheckBounds(INdex: Integer): Boolean;
+    function CheckBounds(Index: Integer): Boolean;
   protected
     procedure Paint; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
