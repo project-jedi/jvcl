@@ -31,7 +31,13 @@ unit JvTranslator;
 interface
 
 uses
-  SysUtils, Classes, Forms, ComCtrls, Menus, IniFiles, Dialogs,
+  SysUtils, Classes, IniFiles,
+  {$IFDEF VCL}
+  Forms, ComCtrls, Menus, Dialogs,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QForms, QComCtrls, QMenus, QDialogs,
+  {$ENDIF}
   JvSimpleXml, JvComponent;
 
 type

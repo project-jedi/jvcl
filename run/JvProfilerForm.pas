@@ -32,7 +32,13 @@ unit JvProfilerForm;
 interface
 
 uses
-  Windows, Dialogs, ComCtrls, StdCtrls, Controls, Classes, ExtCtrls, Forms,
+  Classes,
+  {$IFDEF VCL}
+  Windows, Dialogs, ComCtrls, StdCtrls, Controls, ExtCtrls, Forms,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QDialogs, QComCtrls, QStdCtrls, QControls, QExtCtrls, QForms,
+  {$ENDIF}
   JvComponent;
 
 const
@@ -117,10 +123,18 @@ type
 implementation
 
 uses
-  SysUtils, CommCtrl,
+  SysUtils,
+  {$IFDEF VCL}
+  CommCtrl,
+  {$ENDIF}
   JvConsts, JvTypes, JvResources;
 
+{$IFDEF VCL}
 {$R *.dfm}
+{$ENDIF}
+{$IFDEF VisualCLX}
+{$R *.xfm}
+{$ENDIF}
 
 const
   EmptyLine = '0.00';
