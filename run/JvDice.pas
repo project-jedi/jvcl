@@ -32,17 +32,15 @@ unit JvDice;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
-  Graphics, Messages, Controls, Forms, Menus,
+  Messages,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QMenus, Types, QWindows,
+  Types,
   {$ENDIF VisualCLX}
-  JvTimer, JvComponent, JvThemes, JvExControls;
+  Classes, Graphics, Controls,
+  JvTimer, JvComponent, JvExControls;
 
 type
   TJvDiceValue = 1..6;
@@ -143,12 +141,8 @@ type
 implementation
 
 uses
-  {$IFDEF VCL}
-  ImgList;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QImgList;
-  {$ENDIF VisualCLX}
+  SysUtils, ImgList,
+  JvThemes;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvDice.Res}

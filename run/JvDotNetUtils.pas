@@ -31,7 +31,7 @@ unit JvDotNetUtils;
 interface
 
 uses
-  Windows, Messages, Classes, SysUtils, Graphics, Controls;
+  Windows, Messages, Classes, Graphics, Controls;
 
 procedure DotNetMessageHandler(var Msg: TMessage; AControl: TWinControl;
   AColor: TColor; var InControl: Boolean);

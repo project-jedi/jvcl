@@ -29,13 +29,10 @@ unit JvDualList;
 interface
 
 uses
-  Classes,
-  {$IFDEF VCL}
-  Controls,
-  {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QControls, QTypes,
+  QTypes,
   {$ENDIF VisualCLX}
+  Classes, Controls,
   JvComponent;
 
 type
@@ -90,14 +87,8 @@ type
 implementation
 
 uses
-  SysUtils,
-  {$IFDEF VCL}
-  Consts, Forms,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QConsts, QForms,
-  {$ENDIF VisualCLX}
-  JvDualListForm, JvResources, JvJVCLUtils;
+  Consts, SysUtils, Forms,
+  JvDualListForm, JvResources;
 
 constructor TJvDualListDialog.Create(AOwner: TComponent);
 begin

@@ -32,8 +32,8 @@ unit JvDockControlForm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Menus,
-  ExtCtrls, ComCtrls, StdCtrls, Consts, CommCtrl,
+  Windows, Messages, Classes, Graphics, Controls, Forms, Menus,
+  ExtCtrls, ComCtrls,
   {$IFDEF USEJVCL}
   JvComponent, JvAppStorage,
   {$ENDIF USEJVCL}
@@ -870,10 +870,11 @@ procedure ReshowAllVisibleWindow;
 implementation
 
 uses
-  Dialogs, Math,
-  IniFiles, Registry,
+  SysUtils,
   {$IFDEF USEJVCL}
   JvAppRegistryStorage, JvAppIniStorage, JvTypes,
+  {$ELSE}
+  IniFiles, Registry,
   {$ENDIF USEJVCL}
   JvDockSupportProc, JvDockGlobals, JvDockInfo, JvDockVSNetStyle;
 
@@ -2411,6 +2412,7 @@ function TJvDockBaseControl.GetDockStyleVersion: string;
 begin
   Result := RsDockManagerVersion;
 end;
+
 {$ENDIF USEJVCL}
 
 procedure TJvDockBaseControl.DoFormOnClose(Sender: TObject;

@@ -230,7 +230,6 @@ uses
 {$IFNDEF USEJVCL}
 resourcestring
   RsEDataSetIsUnassigned = 'DataSet is unassigned';
-  RsESaveToFileNamePropertyIsEmpty = 'SaveToFileName property is empty';
 {$ENDIF USEJVCL}
 
 {$IFDEF COMPILER5}

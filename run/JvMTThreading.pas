@@ -184,7 +184,9 @@ var
   SyncRequestAvailable: Boolean;
   ThreadSyncLock: TRTLCriticalSection;
   SyncRequestList: TList = nil;
+  {$IFDEF USEJVCL}
   FirstSyncRequestList: Boolean = True;
+  {$ENDIF USEJVCL}
   SyncWindow: HWND;
 
 function CheckSynchronize: Boolean;

@@ -33,12 +33,12 @@ interface
 
 uses
   {$IFDEF VCL}
-  Windows, Graphics,
+  Windows,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, QGraphics,
+  Types,
   {$ENDIF VisualCLX}
-  SysUtils, Classes;
+  Classes, Graphics;
 
 { DrawDesignFrame draws frame on the rect, Rect.
   JVCL uses this function to drawing frame around controls at design-time }

@@ -31,7 +31,7 @@ unit JvDockSupportClass;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Controls, Forms;
+  Windows, Messages, Classes, Controls, Forms;
 
 type
   TJvDockBaseTree = class;

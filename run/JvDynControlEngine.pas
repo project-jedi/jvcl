@@ -28,13 +28,7 @@ unit JvDynControlEngine;
 interface
 
 uses
-  Classes,
-  {$IFDEF VCL}
-  Controls, Forms, StdCtrls, Graphics, Buttons,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QControls, QForms, QStdCtrls, QGraphics, QButtons,
-  {$ENDIF VisualCLX}
+  Classes, Controls, Forms, StdCtrls, Graphics, Buttons,
   JvDynControlEngineIntf;
 
 type
@@ -146,10 +140,10 @@ function DefaultDynControlEngine: TJvDynControlEngine;
 implementation
 
 uses
-  TypInfo, SysUtils,
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF COMPILER6_UP}
+  SysUtils, TypInfo, 
   JvResources, JvTypes, JvDynControlEngineVCL;
 
 var

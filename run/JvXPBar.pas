@@ -59,7 +59,10 @@ uses
   {$IFDEF VisualCLX}
   Qt, JvQTypes, QTypes,
   {$ENDIF VisualCLX}
-  JvConsts, JvXPCore, JvXPCoreUtils, JvJCLUtils;
+  {$IFDEF USEJVCL}
+  JvConsts,
+  {$ENDIF USEJVCL}
+  JvXPCore, JvXPCoreUtils;
 
 type
   { Warning: Never change order of enumeration because of
@@ -95,6 +98,9 @@ const
   {$IFDEF VisualCLX}
   clHotLight = clActiveHighlight;
   {$ENDIF VisualCLX}
+  {$IFNDEF USEJVCL} // VisualCLX activates USEJVCL
+  clHotLight = TColor(COLOR_HOTLIGHT or $80000000);
+  {$ENDIF !USEJVCL}
 
   dxColor_FocusedFrameColorXP = clHotLight;
   dxColor_CheckedFrameColorXP = clHighlight;
@@ -568,7 +574,7 @@ uses
   JvThemes,
   {$ENDIF JVCLThemesEnabled}
   {$IFDEF USEJVCL}
-  JvResources,
+  JvJCLUtils, JvResources,
   {$ENDIF USEJVCL}
   Menus;
 
@@ -887,8 +893,13 @@ begin
       ItemCaption := Format('(%s %d)', [RsUntitled, Index]);
     Inc(Rect.Left, 20);
     SetBkMode(Handle, Windows.TRANSPARENT);
+    {$IFDEF USEJVCL}
     DrawText(ACanvas, ItemCaption, -1, Rect, DT_SINGLELINE or
       DT_VCENTER or DT_END_ELLIPSIS);
+    {$ELSE}
+    DrawText(ACanvas.Handle, PAnsiChar(ItemCaption), -1, Rect, DT_SINGLELINE or
+      DT_VCENTER or DT_END_ELLIPSIS);
+    {$ENDIF USEJVCL}
   end;
 end;
 
@@ -2108,8 +2119,13 @@ begin
       Font.Color := FHotTrackColor;
     Rect.Bottom := Rect.Top + FHeaderHeight;
     Dec(Rect.Right, 3);
+    {$IFDEF USEJVCL}
     DrawText(Canvas, Caption, -1, Rect, DT_SINGLELINE or DT_VCENTER or
       DT_END_ELLIPSIS or DT_NOPREFIX);
+    {$ELSE}
+    DrawText(Canvas.Handle, PChar(Caption), -1, Rect, DT_SINGLELINE or DT_VCENTER or
+      DT_END_ELLIPSIS or DT_NOPREFIX);
+    {$ENDIF USEJVCL}
     { draw visible items }
     Brush.Color := FColors.BodyColor;
     if not FCollapsed or FRolling then

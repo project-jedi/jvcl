@@ -33,16 +33,16 @@ unit JvDesktopAlertForm;
 interface
 
 uses
-  SysUtils, Classes,
+  Windows,
   {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Forms, Dialogs, ImgList, ExtCtrls,
-  ActnList, Menus, StdCtrls,
+  Messages,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QDialogs, QImgList, QExtCtrls, QActnList,
-  QMenus, QStdCtrls, Types, QWindows,
+  Types,
   {$ENDIF VisualCLX}
-  JvButton, JvComponent, JvLabel;
+  Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
+  ImgList, ActnList,
+  JvButton, JvLabel, JvComponent;
 
 const
   cDefaultAlertFormWidth = 329;
@@ -152,6 +152,7 @@ type
 implementation
 
 uses
+  Menus,
   JvJVCLUtils;
 
 {.$R *.dfm}// not needed

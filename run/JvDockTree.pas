@@ -31,7 +31,7 @@ unit JvDockTree;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Consts,
+  Windows, Messages, Classes, Graphics, Controls, Forms,
   JvDockSupportClass;
 
 type
@@ -492,7 +492,7 @@ const
 implementation
 
 uses
-  Math,
+  Consts, SysUtils, Math,
   JvDockControlForm, JvDockSupportProc, JvDockGlobals, JvDockVSNetStyle;
 
 type

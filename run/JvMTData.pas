@@ -36,7 +36,7 @@ uses
   Windows,   // for OutputDebugString
   {$ENDIF DEBUGINFO_ON}
   {$ENDIF MSWINDOWS}
-  JvMTSync, JvMTConsts, JvMTThreading, JvFinalize;
+  JvMTSync, JvMTConsts, JvMTThreading;
 
 type
   TMTBoundedQueue = class(TObjectQueue)
@@ -52,7 +52,7 @@ type
     function Pop: TObject;
     procedure Push(AObject: TObject);
   end;
-  
+
   TMTAsyncBuffer = class(TObject)
   private
     FBuffer: TMTBoundedQueue;
@@ -106,11 +106,12 @@ implementation
 
 {$IFDEF USEJVCL}
 uses
-  JvResources;
-{$ENDIF USEJVCL}
+  JvResources, JvFinalize;
 
 const
   sUnitName = 'JvMTData';
+{$ENDIF USEJVCL}
+
 
 {$IFNDEF USEJVCL}
 resourcestring
@@ -125,7 +126,9 @@ begin
   if not Assigned(GlobalDataThreadsMan) then
   begin
     GlobalDataThreadsMan := TMTManager.Create;
+    {$IFDEF USEJVCL}
     AddFinalizeObjectNil(sUnitName, TObject(GlobalDataThreadsMan));
+    {$ENDIF USEJVCL}
   end;
   Result := GlobalDataThreadsMan;
 end;
@@ -369,6 +372,10 @@ finalization
   {$ENDIF DEBUGINFO_ON}
   {$ENDIF MSWINDOWS}
 
+  {$IFDEF USEJVCL}
   FinalizeUnit(sUnitName);
+  {$ELSE}
+  GlobalDataThreadsMan.Free;
+  {$ENDIF USEJVCL}
 
 end.

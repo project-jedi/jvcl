@@ -35,9 +35,9 @@ unit JvDriveCtrls;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  FileCtrl, StdCtrls, ShellAPI, ImgList,
-  JvComboBox, JvListBox, JVCLVer, JvTypes, JvSearchFiles;
+  Windows, Messages, Classes, Graphics, Controls,
+  FileCtrl, StdCtrls,
+  JvComboBox, JvListBox, JvSearchFiles, JvTypes, JVCLVer;
 
 type
   // redclare so user don't have to add JvTypes to uses manually
@@ -373,7 +373,7 @@ type
 implementation
 
 uses
-  Math,
+  ShellAPI, SysUtils, Math, Forms, ImgList,
   JvJCLUtils, JvJVCLUtils, JvConsts;
 
 const

@@ -31,15 +31,15 @@ unit JvDialogActns;
 interface
 
 uses
-  Classes, SysUtils, ActnList, StdActns,
-  {$IFNDEF COMPILER6_UP}
+  SysUtils, Classes, ActnList, StdActns,
+  {$IFDEF COMPILER5}
   Dialogs,
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER5}
   JvBaseDlg, JvBrowseFolder, JvSelectDirectory, JvConnectNetwork,
   JvWinDialogs, JvDialogs, JvPageSetupTitled, JvPageSetup;
 
 type
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
   {$IFDEF BCB5}
   // For some weird reason, directly using TCommonDialog in the declaration
   // of TCommonDialogClass will trigger a link error (bad index) with
@@ -50,12 +50,12 @@ type
   {$ELSE}
   TCommonDialogClass = class of TCommonDialog;
   {$ENDIF BCB5}
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER5}
   TJvCommonDialogClass = class of TJvCommonDialog;
   TJvCommonDialogPClass = class of TJvCommonDialogP;
   TJvCommonDialogFClass = class of TJvCommonDialogF;
 
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
   TCommonDialogAction = class(TCustomAction)
   private
     FOnAccept: TNotifyEvent;
@@ -79,7 +79,7 @@ type
     property ShortCut;
     property Visible;
   end;
-  {$ENDIF !COMPILER6_UP}
+  {$ENDIF COMPILER5}
 
   TJvCommonDialogAction = class(TCustomAction)
   private
@@ -570,7 +570,7 @@ end;
 
 //=== { TCommonDialogAction } ================================================
 
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 
 constructor TCommonDialogAction.Create(AOwner: TComponent);
 var
@@ -596,7 +596,7 @@ function TCommonDialogAction.HandlesTarget(Target: TObject): Boolean;
 begin
   Result := True;
 end;
-{$ENDIF !COMPILER6_UP}
+{$ENDIF COMPILER5}
 
 end.
 

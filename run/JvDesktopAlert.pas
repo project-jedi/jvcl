@@ -31,9 +31,8 @@ unit JvDesktopAlert;
 interface
 
 uses
-  SysUtils, Classes,
-  Windows, Controls, Graphics, Forms, Menus, ImgList,
-  JvComponent, JvBaseDlg, JvDesktopAlertForm, JvTypes;
+  Windows, Classes, Controls, Graphics, Forms, Menus, ImgList,
+  JvComponent, JvBaseDlg, JvDesktopAlertForm;
 
 const
   JvDefaultFrameColor = TColor($00943000);
@@ -149,12 +148,12 @@ type
     function GetStacker: TJvDesktopAlertStack;
     procedure SetButtons(const Value: TJvDesktopAlertButtons);
     procedure SetColors(const Value: TJvDesktopAlertColors);
-    procedure SetDropDownMenu(const Value: TPopUpMenu);
+    procedure SetDropDownMenu(const Value: TPopupMenu);
     procedure SetFont(const Value: TFont);
     procedure SetHeaderFont(const Value: TFont);
     procedure SetImage(const Value: TPicture);
     procedure SetImages(const Value: TCustomImageList);
-    procedure SetPopupMenu(const Value: TPopupMenu);
+    procedure SeTPopupMenu(const Value: TPopupMenu);
     procedure InternalOnShow(Sender: TObject);
     procedure InternalOnClose(Sender: TObject; var Action: TCloseAction);
     procedure InternalMouseEnter(Sender: TObject);
@@ -168,15 +167,15 @@ type
     function GetFont: TFont;
     function GetHeaderFont: TFont;
     function GetImage: TPicture;
-    function GetAlphaBlendValue: byte;
+    function GetAlphaBlendValue: Byte;
     function GetWaitTime: Integer;
     procedure SetFadeInTime(const Value: Integer);
     procedure SetFadeOutTime(const Value: Integer);
-    procedure SetAlphaBlendValue(const Value: byte);
-    function GetDropDownMenu: TPopUpMenu;
+    procedure SetAlphaBlendValue(const Value: Byte);
+    function GetDropDownMenu: TPopupMenu;
     function GetHeaderText: string;
     function GetMessageText: string;
-    function GetPopupMenu: TPopupMenu;
+    function GeTPopupMenu: TPopupMenu;
     procedure SetHeaderText(const Value: string);
     procedure SetLocation(const Value: TJvDesktopAlertLocation);
     procedure SetMessageText(const Value: string);
@@ -219,13 +218,13 @@ type
     property Location: TJvDesktopAlertLocation read FLocation write SetLocation;
     property Image: TPicture read GetImage write SetImage;
     property Images: TCustomImageList read FImages write SetImages;
-    property DropDownMenu: TPopUpMenu read GetDropDownMenu write SetDropDownMenu;
-    property PopupMenu: TPopupMenu read GetPopupMenu write SetPopupMenu;
+    property DropDownMenu: TPopupMenu read GetDropDownMenu write SetDropDownMenu;
+    property PopupMenu: TPopupMenu read GeTPopupMenu write SeTPopupMenu;
 
     property FadeInTime: Integer read GetFadeInTime write SetFadeInTime default 25;
     property FadeOutTime: Integer read GetFadeOutTime write SetFadeOutTime default 50;
     property WaitTime: Integer read GetWaitTime write SetWaitTime default 1400;
-    property AlphaBlendValue: byte read GetAlphaBlendValue write SetAlphaBlendValue default 255;
+    property AlphaBlendValue: Byte read GetAlphaBlendValue write SetAlphaBlendValue default 255;
 
     property OnShow: TNotifyEvent read FOnShow write FOnShow;
     property OnCloseButtonClick: TNotifyEvent read GetCloseButtonClick write SetCloseButtonClick;
@@ -260,7 +259,7 @@ type
 implementation
 
 uses
-  JvJVCLUtils, JvFinalize;
+  JvJVCLUtils, JvTypes, JvFinalize;
 
 const
   sUnitName = 'JvDesktopAlert';
@@ -668,7 +667,7 @@ begin
     Result := FStacker;
 end;
 
-function TJvDesktopAlert.GetDropDownMenu: TPopUpMenu;
+function TJvDesktopAlert.GetDropDownMenu: TPopupMenu;
 begin
   Result := FDeskTopForm.tbDropDown.DropDownMenu;
 end;
@@ -703,7 +702,7 @@ begin
   Result := FDesktopForm.imIcon.Picture;
 end;
 
-function TJvDesktopAlert.GetAlphaBlendValue: byte;
+function TJvDesktopAlert.GetAlphaBlendValue: Byte;
 begin
   Result := FDesktopForm.MaxAlphaBlendValue;
 end;
@@ -718,7 +717,7 @@ begin
   Result := FDesktopForm.ParentFont;
 end;
 
-function TJvDesktopAlert.GetPopupMenu: TPopupMenu;
+function TJvDesktopAlert.GeTPopupMenu: TPopupMenu;
 begin
   Result := FDeskTopForm.PopupMenu;
 end;
@@ -825,7 +824,7 @@ begin
   FColors.Assign(Value);
 end;
 
-procedure TJvDesktopAlert.SetDropDownMenu(const Value: TPopUpMenu);
+procedure TJvDesktopAlert.SetDropDownMenu(const Value: TPopupMenu);
 begin
   FDesktopForm.tbDropDown.DropDownMenu := Value;
 end;
@@ -880,7 +879,7 @@ begin
   //
 end;
 
-procedure TJvDesktopAlert.SetAlphaBlendValue(const Value: byte);
+procedure TJvDesktopAlert.SetAlphaBlendValue(const Value: Byte);
 begin
   FDesktopForm.MaxAlphaBlendValue := Value;
 end;
@@ -896,7 +895,7 @@ begin
   FDesktopForm.ParentFont := Value;
 end;
 
-procedure TJvDesktopAlert.SetPopupMenu(const Value: TPopupMenu);
+procedure TJvDesktopAlert.SeTPopupMenu(const Value: TPopupMenu);
 begin
   FDesktopForm.PopupMenu := Value;
 end;
