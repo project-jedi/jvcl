@@ -29,9 +29,7 @@ Known Issues:
 program JVCLInstall;
 
 uses
-  {$IFDEF USE_DXGETTEXT}
   JvGnugettext,
-  {$ENDIF USE_DXGETTEXT}
   Forms,
   Main in 'Main.pas' {FormMain},
   Core in 'Core.pas',
@@ -52,6 +50,7 @@ uses
   FileUtils in '..\..\devtools\PackagesGenerator\FileUtils.pas',
   GenerateUtils in '..\..\devtools\PackagesGenerator\GenerateUtils.pas',
   UtilsJcl in '..\..\devtools\PackagesGenerator\UtilsJcl.pas',
+  PackageInformation in '..\..\devtools\common\PackageInformation.pas',
   Utils in 'Utils.pas',
   Compile in 'Compile.pas',
   Intf in 'Intf.pas',

@@ -33,7 +33,7 @@ interface
 
 uses
   Windows, SysUtils, Classes, CapExec, JVCLData, DelphiData,
-  GenerateUtils, PackageUtils, Intf;
+  GenerateUtils, PackageUtils, Intf, PackageInformation;
 
 type
   TProgressKind = (
@@ -1224,14 +1224,14 @@ end;
 function TJVCLCompiler.IsFileUsed(ProjectGroup: TProjectGroup;
   ContainedFile: TContainedFile): Boolean;
 begin
-  Result := ContainedFile.IsUsedByTarget(ProjectGroup.TargetConfig) and
+  Result := ContainedFile.IsUsedByTarget(ProjectGroup.TargetConfig.TargetSymbol) and
             IsCondition(ContainedFile.Condition);
 end;
 
 function TJVCLCompiler.IsPackageUsed(ProjectGroup: TProjectGroup;
   RequiredPackage: TRequiredPackage): Boolean;
 begin
-  Result := RequiredPackage.IsRequiredByTarget(ProjectGroup.TargetConfig) and
+  Result := RequiredPackage.IsRequiredByTarget(ProjectGroup.TargetConfig.TargetSymbol) and
             IsCondition(RequiredPackage.Condition);
 end;
 
