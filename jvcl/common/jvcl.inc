@@ -21,6 +21,13 @@ Known Issues:
 
 {$I jedi.inc}
 
+{$IFDEF QUnit}
+ {$UNDEF VCL}
+ {$DEFINE VisualCLX}
+ {$UNDEF JVCLThemesEnabled}
+{$ENDIF}
+
+
 { Enable this define if you want to register property and component editors included in
  JVCL for non-JVCL components as well }
 {.$DEFINE JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
@@ -109,9 +116,3 @@ Known Issues:
 
 { Used by JvTimeFrameWork, see JvTFDays.pas for more info on time blocks }
 {$DEFINE TIMEBLOCKS}
-
-
-{$IFDEF QUnit}
- {$UNDEF VCL}
- {$DEFINE VisualCLX}
-{$ENDIF}
