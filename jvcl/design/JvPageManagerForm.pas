@@ -35,7 +35,7 @@ uses
   {$ELSE}
   LibIntf, DsgnIntf, DsgnWnds,
   {$ENDIF COMPILER6_UP}
-  JvSpeedButton, JvPageManager, JvJVCLUtils, JvComponent;
+  JvPageManager, JvJVCLUtils, JvComponent;
 
 type
   TJvProxyEditor = class(TDesignWindow)
@@ -195,10 +195,9 @@ begin
     Component := Designer.Form.Components[I];
     {$ENDIF COMPILER6_UP}
 
-    if (Component.InheritsFrom(TButtonControl) or
+    if (Component.Name <> '') and (Component.InheritsFrom(TButtonControl) or
       Component.InheritsFrom(TSpeedButton) or
-      Component.InheritsFrom(TJvSpeedButton)) and
-      (Component.Name <> '') then
+        AnsiSameText(Component.ClassName, 'TJvSpeedButton')) then
       Proc(Component.Name);
   end;
 end;

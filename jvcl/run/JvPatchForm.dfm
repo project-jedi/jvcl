@@ -54,27 +54,43 @@ object PatchFrm: TPatchFrm
       Width = 315
       Height = 21
       Anchors = [akLeft, akTop, akRight]
-      TabOrder = 2
+      TabOrder = 4
     end
-    object edSource: TJvFilenameEdit
+    object edSource: TEdit
       Left = 68
       Top = 14
-      Width = 315
+      Width = 285
       Height = 21
-      AddQuotes = False
-      ButtonFlat = False
       Anchors = [akLeft, akTop, akRight]
       TabOrder = 0
     end
-    object edDest: TJvFilenameEdit
+    object edDest: TEdit
       Left = 68
       Top = 40
-      Width = 315
+      Width = 285
       Height = 21
-      AddQuotes = False
-      ButtonFlat = False
       Anchors = [akLeft, akTop, akRight]
+      TabOrder = 2
+    end
+    object btnSrc: TButton
+      Left = 360
+      Top = 16
+      Width = 21
+      Height = 21
+      Anchors = [akLeft, akTop, akRight]
+      Caption = '...'
       TabOrder = 1
+      OnClick = btnSrcClick
+    end
+    object btnDest: TButton
+      Left = 360
+      Top = 40
+      Width = 21
+      Height = 21
+      Anchors = [akLeft, akTop, akRight]
+      Caption = '...'
+      TabOrder = 3
+      OnClick = btnDestClick
     end
   end
   object OkBtn: TButton
