@@ -987,6 +987,8 @@ begin
     thus ShowWindow/SetWindowPos isn't called. We do it ourselfs: }
   if FHint.ParentWindow = 0 then
     ShowWindow(FHint.Handle, SW_HIDE);
+
+  FHint.ParentWindow := 0;
 end;
 
 procedure TJvBalloonHint.Hook;
