@@ -12,7 +12,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvBandsReg.PAS, released on 2002-05-26.
+The Original Code is: JvHMIReg.PAS, released on 2002-05-26.
 
 The Initial Developer of the Original Code is John Doe.
 Portions created by John Doe are Copyright (C) 2003 John Doe.
@@ -30,7 +30,7 @@ Known Issues:
 
 {$I jvcl.inc}
 
-unit JvQCmpReg;
+unit JvQHMIReg;
 
 interface
 
@@ -38,53 +38,22 @@ procedure Register;
 
 implementation
 
+// (rom) is this needed?
+{$R ..\..\Resources\JvHMIReg.dcr}
+
 uses
-  Classes, QControls,
-
-  DesignEditors, DesignIntf,
-
+  Classes,
+  
+  DesignIntf, DesignEditors,
+  
+  ToolsAPI,
   JvQDsgnConsts,
-  JvQAlarms, JvQConverter, JvQDataEmbedded,
-  JvQMergeManager, JvQPatchFile, JvQStringHolder,
-  JvQTimeLimit, JvQTranslator, JvQPrint,
-  JvQLogFile, JvQDataEmbeddedEditor, JvQPatcherEditor,
-  JvQProfilerForm, JvQDsgnEditors
-  {$IFDEF MSWINDOWS}
-  , JvQWinHelp
-  {$ENDIF MSWINDOWS}
-  ;
-
-{$IFDEF MSWINDOWS}
-{$R ..\resources\JvCmpReg.dcr}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
-{$R ../Resources/JvCmpReg.dcr}
-{$ENDIF LINUX}
+  JvQLED, JvQDialButton;
 
 procedure Register;
 begin
-  RegisterComponents(RsPaletteNonVisual,[TJvAlarms, TJvConverter, TJvDataEmbedded,
-    
-    TJvMergeManager,
-    
-    TJvPatchFile, TJvProfiler,
-    TJvStrHolder, TJvTimeLimit,
-    {$IFDEF MSWINDOWS}
-    TJvWinHelp,
-    {$ENDIF MSWINDOWS}
-    TJvTranslator, TJvTranslatorStrings,  TJvPrint,
-    
-    TJvLogFile]);
-  
-  RegisterPropertyEditor(TypeInfo(TStrings), TJvPatchFile,
-    'Differences', TJvPatcherEditor);
-  
-  RegisterPropertyEditor(TypeInfo(TWinControl), TJvMergeManager,
-    'MergeFrame', TJvComponentFormProperty);
-  
-  RegisterComponentEditor(TJvStrHolder, TJvStringsEditor);
-  RegisterComponentEditor(TJvDataEmbedded,TJvDataEmbeddedComponentEditor);
-  
+  RegisterComponents(RsPaletteHMIIndicator, [TJvLED]);
+  RegisterComponents(RsPaletteHMIControls, [TJvDialButton]);
 end;
 
 end.

@@ -12,7 +12,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvBandsReg.PAS, released on 2002-05-26.
+The Original Code is: JvCustomReg.PAS, released on 2002-05-26.
 
 The Initial Developer of the Original Code is John Doe.
 Portions created by John Doe are Copyright (C) 2003 John Doe.
@@ -30,7 +30,7 @@ Known Issues:
 
 {$I jvcl.inc}
 
-unit JvQCmpReg;
+unit JvQCustomReg;
 
 interface
 
@@ -39,52 +39,45 @@ procedure Register;
 implementation
 
 uses
-  Classes, QControls,
+  Classes, QImgList,
 
   DesignEditors, DesignIntf,
 
+  //FiltEdit,
+
+  //ToolsAPI,
+  JclSchedule,
   JvQDsgnConsts,
-  JvQAlarms, JvQConverter, JvQDataEmbedded,
-  JvQMergeManager, JvQPatchFile, JvQStringHolder,
-  JvQTimeLimit, JvQTranslator, JvQPrint,
-  JvQLogFile, JvQDataEmbeddedEditor, JvQPatcherEditor,
-  JvQProfilerForm, JvQDsgnEditors
-  {$IFDEF MSWINDOWS}
-  , JvQWinHelp
-  {$ENDIF MSWINDOWS}
-  ;
+  JvQGammaPanel, JvQInspector, JvQLinkLabel,
+  JvQTMTimeLine,
+  JvQValidateEdit,
+  JvQChart;
 
 {$IFDEF MSWINDOWS}
-{$R ..\resources\JvCmpReg.dcr}
+{$R ..\resources\JvCustomReg.dcr}
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
-{$R ../Resources/JvCmpReg.dcr}
+{$R ../Resources/JvCustomReg.dcr}
 {$ENDIF LINUX}
 
 procedure Register;
+const
+  cActivePageIndex = 'ActivePageIndex';
+  cImageIndex = 'ImageIndex';
+  cColors = 'Colors';
+  cSchedule = 'Schedule';
+  cFilter = 'Filter';
 begin
-  RegisterComponents(RsPaletteNonVisual,[TJvAlarms, TJvConverter, TJvDataEmbedded,
-    
-    TJvMergeManager,
-    
-    TJvPatchFile, TJvProfiler,
-    TJvStrHolder, TJvTimeLimit,
-    {$IFDEF MSWINDOWS}
-    TJvWinHelp,
-    {$ENDIF MSWINDOWS}
-    TJvTranslator, TJvTranslatorStrings,  TJvPrint,
-    
-    TJvLogFile]);
-  
-  RegisterPropertyEditor(TypeInfo(TStrings), TJvPatchFile,
-    'Differences', TJvPatcherEditor);
-  
-  RegisterPropertyEditor(TypeInfo(TWinControl), TJvMergeManager,
-    'MergeFrame', TJvComponentFormProperty);
-  
-  RegisterComponentEditor(TJvStrHolder, TJvStringsEditor);
-  RegisterComponentEditor(TJvDataEmbedded,TJvDataEmbeddedComponentEditor);
-  
+//  RegisterComponents(RsPaletteButton, [TJvLookOutButton, TJvExpressButton]);
+  RegisterComponents(RsPaletteEdit, [TJvValidateEdit]);
+  RegisterComponents(RsPaletteBarPanel, [TJvGammaPanel]);
+  RegisterComponents(RsPaletteLabel, [TJvLinkLabel]);
+//  RegisterComponents(RsPaletteImageAnimator, [TJvThumbView, TJvThumbnail,
+//    TJvThumbImage]);
+  RegisterComponents(RsPaletteVisual, [TJvInspector, TJvInspectorBorlandPainter,
+    TJvInspectorDotNETPainter, TJvTMTimeLine, TJvChart]);
+//  RegisterComponents(RsPaletteNonVisual, [TJvTrayIcon, TJvScheduledEvents,
+//    TJvBalloonHint]);
 end;
 
 end.

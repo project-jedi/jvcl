@@ -42,8 +42,8 @@ uses
   Classes, Graphics, ExtCtrls,
   
   DesignEditors, DesignIntf,
-  
-  JvQDsgnConsts,
+
+  JvQDsgnConsts, JvQQtKeyEditorForm,
   JvQAni, JvQBmpAnimator,
   JvQGradient, JvQGradientHeaderPanel, JvQId3v1, JvQId3v2,
   JvQImageRotate, JvQImageTransform, JvQImageSquare, JvQStarfield,
@@ -65,7 +65,7 @@ begin
 
 //  RegisterPropertyEditor(TypeInfo(TJvIconList), nil, '', TIconListProperty);
 //  RegisterPropertyEditor(TypeInfo(TJvDriverIndex), nil, '', TJvDriverIndexEditor);
-//  RegisterPropertyEditor(TypeInfo(TJvQtKey), nil, '', TJvQtKeyEditor);
+  RegisterPropertyEditor(TypeInfo(TJvQtKey), nil, '', TJvQtKeyEditor);
 //  RegisterPropertyEditor(TypeInfo(TJvID3FileInfo), nil, '', TJvID3FileInfoEditor);
 
 //  RegisterComponentEditor(TJvAnimatedImage, TJvAnimatedEditor);

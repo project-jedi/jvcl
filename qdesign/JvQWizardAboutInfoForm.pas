@@ -132,8 +132,8 @@ end;
 procedure TJvWizardAboutDialog.Panel1MouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  ReleaseCapture;
-  Perform(WM_SYSCOMMAND, SC_MOVE + 2, 0);
+//  ReleaseCapture;
+//  Perform(WM_SYSCOMMAND, SC_MOVE + 2, 0);
 end;
 
 end.

@@ -12,9 +12,9 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvBandsReg.PAS, released on 2002-05-26.
+The Original Code is: JvAppFrmReg.PAS, released on 2002-05-26.
 
-The Initial Developer of the Original Code is John Doe.
+The Initial Developer of the Original Code is John Doe
 Portions created by John Doe are Copyright (C) 2003 John Doe.
 All Rights Reserved.
 
@@ -30,7 +30,7 @@ Known Issues:
 
 {$I jvcl.inc}
 
-unit JvQCmpReg;
+unit JvQAppFrmReg;
 
 interface
 
@@ -39,52 +39,35 @@ procedure Register;
 implementation
 
 uses
-  Classes, QControls,
+  Classes,
 
-  DesignEditors, DesignIntf,
+
+  QGraphics, Types,
+
+
+  DesignIntf,
 
   JvQDsgnConsts,
-  JvQAlarms, JvQConverter, JvQDataEmbedded,
-  JvQMergeManager, JvQPatchFile, JvQStringHolder,
-  JvQTimeLimit, JvQTranslator, JvQPrint,
-  JvQLogFile, JvQDataEmbeddedEditor, JvQPatcherEditor,
-  JvQProfilerForm, JvQDsgnEditors
-  {$IFDEF MSWINDOWS}
-  , JvQWinHelp
-  {$ENDIF MSWINDOWS}
-  ;
+  JvQAppAnimatedIcon, JvQAppEvent, JvQFormAutoSize,
+  JvQFormAnimatedIcon, JvQFormAnimation, JvQFormWallpaper,
+  JvQAnimTitle;
 
 {$IFDEF MSWINDOWS}
-{$R ..\resources\JvCmpReg.dcr}
+{$R ..\Resources\JvAppFrmReg.dcr}
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
-{$R ../Resources/JvCmpReg.dcr}
+{$R ../Resources/JvAppFrmReg.dcr}
 {$ENDIF LINUX}
 
 procedure Register;
 begin
-  RegisterComponents(RsPaletteNonVisual,[TJvAlarms, TJvConverter, TJvDataEmbedded,
-    
-    TJvMergeManager,
-    
-    TJvPatchFile, TJvProfiler,
-    TJvStrHolder, TJvTimeLimit,
-    {$IFDEF MSWINDOWS}
-    TJvWinHelp,
-    {$ENDIF MSWINDOWS}
-    TJvTranslator, TJvTranslatorStrings,  TJvPrint,
-    
-    TJvLogFile]);
-  
-  RegisterPropertyEditor(TypeInfo(TStrings), TJvPatchFile,
-    'Differences', TJvPatcherEditor);
-  
-  RegisterPropertyEditor(TypeInfo(TWinControl), TJvMergeManager,
-    'MergeFrame', TJvComponentFormProperty);
-  
-  RegisterComponentEditor(TJvStrHolder, TJvStringsEditor);
-  RegisterComponentEditor(TJvDataEmbedded,TJvDataEmbeddedComponentEditor);
-  
+  RegisterComponents(RsPaletteAppForm,
+    [TJvAppEvents, TJvAppAnimatedIcon, TJvFormAnimatedIcon, TJvFormAutoSize,
+     TJvFormAnimation, TJvFormWallpaper]);
+
+//  RegisterComponentEditor(TJvGradientCaption, TGradientCaptionEditor);
+//  RegisterPropertyEditor(TypeInfo(TPicture), TJvFormWallpaper, 'Image', TJvFormWallpaperEditor);
 end;
 
 end.
+

@@ -12,7 +12,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvBandsReg.PAS, released on 2002-05-26.
+The Original Code is: JvNetReg.PAS, released on 2002-05-26.
 
 The Initial Developer of the Original Code is John Doe.
 Portions created by John Doe are Copyright (C) 2003 John Doe.
@@ -30,7 +30,7 @@ Known Issues:
 
 {$I jvcl.inc}
 
-unit JvQCmpReg;
+unit JvQNetReg;
 
 interface
 
@@ -39,52 +39,33 @@ procedure Register;
 implementation
 
 uses
-  Classes, QControls,
-
+  Classes,
+  
   DesignEditors, DesignIntf,
+  
+  JvQTypes, JvQDsgnConsts,
+  JvQStringListToHTML, JvQFormToHTML, JvQFTPGrabber, JvQHTMLParser, JvQHTTPGrabber,
+  JvQMultiHTTPGrabber, JvQRGBToHTML, JvQStrToHTML,
+  JvQHTMLParserEditor, JvQUrlListGrabber, JvQUrlGrabbers,
+  JvQUrlListGrabberEditors;
 
-  JvQDsgnConsts,
-  JvQAlarms, JvQConverter, JvQDataEmbedded,
-  JvQMergeManager, JvQPatchFile, JvQStringHolder,
-  JvQTimeLimit, JvQTranslator, JvQPrint,
-  JvQLogFile, JvQDataEmbeddedEditor, JvQPatcherEditor,
-  JvQProfilerForm, JvQDsgnEditors
-  {$IFDEF MSWINDOWS}
-  , JvQWinHelp
-  {$ENDIF MSWINDOWS}
-  ;
-
-{$IFDEF MSWINDOWS}
-{$R ..\resources\JvCmpReg.dcr}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
-{$R ../Resources/JvCmpReg.dcr}
-{$ENDIF LINUX}
+{$R ..\Resources\JvNetReg.dcr}
 
 procedure Register;
 begin
-  RegisterComponents(RsPaletteNonVisual,[TJvAlarms, TJvConverter, TJvDataEmbedded,
-    
-    TJvMergeManager,
-    
-    TJvPatchFile, TJvProfiler,
-    TJvStrHolder, TJvTimeLimit,
-    {$IFDEF MSWINDOWS}
-    TJvWinHelp,
-    {$ENDIF MSWINDOWS}
-    TJvTranslator, TJvTranslatorStrings,  TJvPrint,
-    
-    TJvLogFile]);
-  
-  RegisterPropertyEditor(TypeInfo(TStrings), TJvPatchFile,
-    'Differences', TJvPatcherEditor);
-  
-  RegisterPropertyEditor(TypeInfo(TWinControl), TJvMergeManager,
-    'MergeFrame', TJvComponentFormProperty);
-  
-  RegisterComponentEditor(TJvStrHolder, TJvStringsEditor);
-  RegisterComponentEditor(TJvDataEmbedded,TJvDataEmbeddedComponentEditor);
-  
+  RegisterComponents(RsPaletteInterNetWork, [TJvFTPGrabber, TJvHTTPGrabber,
+    TJvMultiHTTPGrabber, TJvHTMLParser, TJvStrToHTML,
+    TJvStringListToHTML, TJvFormToHTML, TJvRGBToHTML,
+    TJvUrlListGrabber]);
+
+  RegisterPropertyEditor(TypeInfo(TJvParserInfoList),
+    TJvHTMLParser, 'Parser', TJvHTMLParserEditor);
+  RegisterPropertyEditor(TypeInfo(TJvUrlGrabberDefaultPropertiesList),
+    TJvUrlListGrabber, '', TJvUrlGrabberDefaultPropertiesListEditor);
+  RegisterPropertyEditor(TypeInfo(TJvUrlGrabberDefaultProperties),
+    TJvUrlGrabberDefPropEdTrick, '', TJvUrlGrabberDefaultPropertiesEditor);
+
+//  RegisterComponentEditor(TJvMail, TJvMailEditor);
 end;
 
 end.
