@@ -2,23 +2,28 @@ unit JvDocking_Test;
 
 interface
 uses
-  Forms, Controls, ContNrs,
+  Forms, Graphics, ExtCtrls, Controls, ContNrs,
   Classes, TestFramework, JvDockControlForm, JvDockVSNetStyle, JvDockVIDStyle,
   JvDockSupportControl;
 
 type
   TClientForm = class(TForm)
   private
+    FPanel: TPanel;
     FDockClient: TJvDockClient;
     FOnFormShowCount: Integer;
     FOnFormHideCount: Integer;
     FOnShowCount: Integer;
     FOnHideCount: Integer;
 
+    function GetShowPanel: Boolean;
     procedure DockClient1FormHide(Sender: TObject);
     procedure DockClient1FormShow(Sender: TObject);
-    procedure HandleShow(Sender: TObject);
     procedure HandleHide(Sender: TObject);
+    procedure HandleShow(Sender: TObject);
+    procedure SetShowPanel(const Value: Boolean);
+  protected
+    procedure CheckPanelAlignment(ATestCase: TTestCase);
   public
     constructor Create(AOwner: TComponent); override;
 
@@ -29,6 +34,8 @@ type
     property OnFormHideCount: Integer read FOnFormHideCount;
     property OnShowCount: Integer read FOnShowCount;
     property OnFormShowCount: Integer read FOnFormShowCount;
+
+    property ShowPanel: Boolean read GetShowPanel write SetShowPanel;
   end;
 
   TServerForm = class(TForm)
@@ -39,12 +46,13 @@ type
     function GetDockVSNetStyle: TJvDockVSNetStyle;
     function GetDefaultStyle: TJvDockBasicStyle;
     function GetDockVIDStyle: TJvDockVIDStyle;
+    procedure SetDefaultStyle(ADockStyle: TJvDockBasicStyle);
   public
     constructor Create(AOwner: TComponent); override;
     property DockVSNetStyle: TJvDockVSNetStyle read GetDockVSNetStyle;
     property DockVIDStyle: TJvDockVIDStyle read GetDockVIDStyle;
     property DockServer: TJvDockServer read FDockServer;
-    property DefaultStyle: TJvDockBasicStyle read GetDefaultStyle;
+    property DefaultStyle: TJvDockBasicStyle read GetDefaultStyle write SetDefaultStyle;
   end;
 
   TJvDockingTestCase = class(TTestCase)
@@ -64,11 +72,15 @@ type
     procedure TearDown; override;
 
     { Constructs a dockable client form }
-    function ConstructClientForm: TClientForm;
+    function ConstructClientForm(const ShowPanel: Boolean = False): TClientForm;
     { Construct ACount dockable client forms }
     procedure ConstructClientList(AList: TList; const ACount: Integer);
     { Docks DropControl onto Target }
-    procedure DoDock(Target, DropControl: TWinControl);
+    procedure DoDock(Target, DropControl: TWinControl; const Align: TAlign);
+    procedure AutoHideDockOn(AForm: TCustomForm; const Align: TAlign);
+    procedure DockOn(AForm: TCustomForm; const Align: TAlign);
+    procedure AutoHide(Form: TCustomForm);
+    procedure PopupDockForm(Form: TCustomForm);
 
     procedure CheckShowHideDockForm_ShowAll(AList: TList);
     procedure CheckShowHideDockForm_HideAll(AList: TList);
@@ -139,11 +151,19 @@ type
     procedure ShowHideDockForm_ConjoinedFloating;
     procedure ShowHideDockForm_ConjoinedDocked;
     procedure ShowHideDockForm_RandomFloating;
+
+    procedure VSNetChannelError1;
+    procedure VSNetChannelError2;
+    procedure VSNetChannelError3;
+
+    procedure VSNetAlignment_1Form;
+    procedure VSNetAlignment_2Forms;
   end;
 
 implementation
 
 uses
+  Types,
   SysUtils, Dialogs;
 
 type
@@ -163,7 +183,12 @@ const
   cMinimalWait = 0.05;
 
   cRandomMinWindowCount = 3;
-  cRandomMaxWindowCount = 7;
+  cRandomMaxWindowCount = 6;
+
+  cBottomSpace = 10;
+  cLeftSpace = 11;
+  cRightSpace = 12;
+  cTopSpace = 13;
 
 var
   GServerForm: TServerForm;
@@ -255,6 +280,20 @@ begin
   OnHide := HandleHide;
 end;
 
+procedure TClientForm.CheckPanelAlignment(ATestCase: TTestCase);
+var
+  R: TRect;
+begin
+  ATestCase.CheckNotNull(FPanel, 'no panel');
+
+  R := Self.ClientRect;
+
+  ATestCase.CheckEquals(cLeftSpace, FPanel.Left);
+  ATestCase.CheckEquals(cTopSpace, FPanel.Top);
+  ATestCase.CheckEquals(cRightSpace, R.Right - R.Left - FPanel.Left - FPanel.Width);
+  ATestCase.CheckEquals(cBottomSpace, R.Bottom - R.Top - FPanel.Top - FPanel.Height);
+end;
+
 procedure TClientForm.DockClient1FormHide(Sender: TObject);
 begin
   Inc(FOnFormHideCount);
@@ -263,6 +302,11 @@ end;
 procedure TClientForm.DockClient1FormShow(Sender: TObject);
 begin
   Inc(FOnFormShowCount);
+end;
+
+function TClientForm.GetShowPanel: Boolean;
+begin
+  Result := Assigned(FPanel);
 end;
 
 procedure TClientForm.HandleHide(Sender: TObject);
@@ -283,7 +327,66 @@ begin
   FOnHideCount := 0;
 end;
 
+procedure TClientForm.SetShowPanel(const Value: Boolean);
+begin
+  if not Value then
+    FreeAndNil(FPanel)
+  else
+  if not Assigned(FPanel) then
+  begin
+    FPanel := TPanel.Create(Self);
+    with FPanel do
+    begin
+      Parent := Self;
+
+      with Self.ClientRect do
+        SetBounds(cLeftSpace, cTopSpace,
+          Right - Left - cLeftSpace - cRightSpace, Bottom - Top - cTopSpace - cBottomSpace);
+      Anchors := [akLeft, akTop, akRight, akBottom];
+      ParentBackground := False;
+      Color := clBlue;
+    end;
+  end;
+end;
+
 //=== { TJvDockingTestCase } =================================================
+
+procedure TJvDockingTestCase.AutoHide(Form: TCustomForm);
+var
+  WinControl: TWinControl;
+begin
+  WinControl := Form;
+  while Assigned(WinControl) do
+  begin
+    if WinControl.HostDockSite is TJvDockVSNETPanel then
+    begin
+      TJvDockVSNETPanel(WinControl.HostDockSite).DoHideControl(WinControl);
+      Exit;
+    end;
+    WinControl := WinControl.Parent;
+  end;
+end;
+
+procedure TJvDockingTestCase.AutoHideDockOn(AForm: TCustomForm;
+  const Align: TAlign);
+var
+  Panel: TJvDockPanel;
+  Server: TJvDockServer;
+begin
+  Server := FindDockServer(ServerForm);
+  if Assigned(Server) then
+  begin
+    Panel := Server.DockPanelWithAlign[Align];
+    if Assigned(Panel) then
+    begin
+      AForm.ManualDock(Panel);
+      // Already in TJvDockPanel.DockDrop:
+      //Panel.ShowDockPanel(True, Form);
+      if Panel is TJvDockVSNETPanel then
+        TJvDockVSNetPanel(Panel).DoHideControl(AForm);
+    end;
+  end;
+end;
 
 procedure TJvDockingTestCase.CheckFormCount;
 begin
@@ -527,7 +630,7 @@ begin
   FLog.Clear;
 end;
 
-function TJvDockingTestCase.ConstructClientForm: TClientForm;
+function TJvDockingTestCase.ConstructClientForm(const ShowPanel: Boolean = False): TClientForm;
 begin
   Result := TClientForm.Create(Application);
   Result.Visible := True;
@@ -535,6 +638,7 @@ begin
   Result.DockClient.DockStyle := ServerForm.DefaultStyle;
   Result.DockClient.DirectDrag := False;
   Result.DockClient.EachOtherDock := True;
+  Result.ShowPanel := ShowPanel;
 end;
 
 procedure TJvDockingTestCase.ConstructClientList(AList: TList;
@@ -640,7 +744,7 @@ begin
             begin
               LogFmt('Drop %s onto %s', [F1.Name, F2.Name]);
 
-              DoDock(F2.HostDockSite, F1);
+              DoDock(F2.HostDockSite, F1, alLeft);
               //            F1.ManualDock(F2, nil, alLeft);
               SingleClientForms.Remove(F1);
               SingleClientForms.Remove(F2);
@@ -660,11 +764,36 @@ begin
   end;
 end;
 
-procedure TJvDockingTestCase.DoDock(Target, DropControl: TWinControl);
+procedure TJvDockingTestCase.DockOn(AForm: TCustomForm;
+  const Align: TAlign);
+var
+  Panel: TJvDockPanel;
+  Server: TJvDockServer;
+begin
+  //  if Align = alClient then
+  //    TabDockOn(AForm)
+  //  else
+  //  begin
+  Server := FindDockServer(ServerForm);
+  if Assigned(Server) then
+  begin
+    Panel := Server.DockPanelWithAlign[Align];
+    if Assigned(Panel) then
+    begin
+      AForm.ManualDock(Panel);
+      // Already in TJvDockPanel.DockDrop
+      //Panel.ShowDockPanel(True, Form);
+    end;
+  end;
+  //  end;
+end;
+
+procedure TJvDockingTestCase.DoDock(Target, DropControl: TWinControl; const Align: TAlign);
 var
   ADockClient: TJvDockClient;
   DragObject: TJvDockDragDockObject;
   X, Y: Integer;
+  R: TRect;
 begin
   X := 0;
   Y := 0;
@@ -672,13 +801,44 @@ begin
   DragObject := TJvDockDragDockObject.Create(DropControl);
   try
     DragObject.DropOnControl := DropControl;
-    with DropControl.BoundsRect do
-      DragObject.DockRect := Rect(Left, Top, (Left + Right) div 2, Bottom);
-    DragObject.DropAlign := alLeft;
+    R := DropControl.BoundsRect;
+    case Align of
+      alLeft:
+        begin
+          X := 5;
+          Y := Target.Height div 2;
+          R.Right := (R.Left + R.Right) div 2;
+        end;
+      alRight:
+        begin
+          X := Target.Width - 5;
+          Y := Target.Height div 2;
+          R.Left := (R.Left + R.Right) div 2;
+        end;
+      alTop:
+        begin
+          X := Target.Width div 2;
+          Y := 10;
+          R.Bottom := (R.Top + R.Bottom) div 2;
+        end;
+      alBottom:
+        begin
+          X := Target.Width div 2;
+          Y := Target.Height - 5;
+          R.Top := (R.Top + R.Bottom) div 2;
+        end;
+      alClient:
+        begin
+          X := Target.Width div 2;
+          Y := -3;
+        end;
+    end;
+    DragObject.DockRect := R;
+    DragObject.DropAlign := Align;
     if Target is TJvDockCustomControl then
       TJvDockCustomControlAccess(Target).CustomDockDrop(DragObject, X, Y)
     else
-      if Target is TForm then
+    if Target is TForm then
     begin
       ADockClient := FindDockClient(Target);
       if ADockClient <> nil then
@@ -902,6 +1062,22 @@ procedure TJvDockingTestCase.LogFmt(const Format: string;
   const Args: array of const);
 begin
   Log(SysUtils.Format(Format, Args));
+end;
+
+procedure TJvDockingTestCase.PopupDockForm(Form: TCustomForm);
+var
+  WinControl: TWinControl;
+begin
+  WinControl := Form;
+  while Assigned(WinControl) do
+  begin
+    if WinControl.HostDockSite is TJvDockVSPopupPanel then
+    begin
+      TJvDockVSPopupPanel(WinControl.HostDockSite).VSChannel.PopupDockForm(Form);
+      Exit;
+    end;
+    WinControl := WinControl.Parent;
+  end;
 end;
 
 procedure TJvDockingTestCase.Release_ConjoinedFloating;
@@ -1143,6 +1319,304 @@ begin
   FLog.Free;
 end;
 
+procedure TJvDockingTestCase.VSNetAlignment_1Form;
+var
+  ClientForm: TClientForm;
+  Align: TAlign;
+
+begin
+  // channel contains dangling reference after forms are freed.
+
+  ServerForm.DefaultStyle := ServerForm.DockVSNetStyle;
+  ServerForm.DockVSNetStyle.ChannelOption.HideHoldTime := 4000;
+
+  ClientForm := ConstructClientForm(True);
+  Wait(cMinimalWait);
+  try
+    ClientForm.CheckPanelAlignment(Self);
+
+    // dock and float
+    for Align := alTop to alRight do
+    begin
+      DockOn(ClientForm, Align);
+      Wait(cMinimalWait);
+      ClientForm.CheckPanelAlignment(Self);
+      DoFloatForm(ClientForm);
+      Wait(cMinimalWait);
+      ClientForm.CheckPanelAlignment(Self);
+    end;
+
+    // dock, autohide, show, unautohide, float
+    for Align := alTop to alRight do
+    begin
+      DockOn(ClientForm, Align);
+      Wait(cMinimalWait);
+      ClientForm.CheckPanelAlignment(Self);
+
+      AutoHide(ClientForm);
+      Wait(cMinimalWait);
+      //      ClientForm.CheckPanelAlignment(Self);
+
+      PopupDockForm(ClientForm);
+      Wait(1);
+      ClientForm.CheckPanelAlignment(Self);
+
+      UnAutoHideDockForm(ClientForm);
+      Wait(cMinimalWait);
+      ClientForm.CheckPanelAlignment(Self);
+
+      DoFloatForm(ClientForm);
+      Wait(cMinimalWait);
+      ClientForm.CheckPanelAlignment(Self);
+    end;
+
+    // dock, autohide, unautohide, float
+    for Align := alTop to alRight do
+    begin
+      DockOn(ClientForm, Align);
+      Wait(cMinimalWait);
+      ClientForm.CheckPanelAlignment(Self);
+
+      AutoHide(ClientForm);
+      Wait(cMinimalWait);
+      //      ClientForm.CheckPanelAlignment(Self);
+
+      UnAutoHideDockForm(ClientForm);
+      Wait(cMinimalWait);
+      ClientForm.CheckPanelAlignment(Self);
+
+      DoFloatForm(ClientForm);
+      Wait(cMinimalWait);
+      ClientForm.CheckPanelAlignment(Self);
+    end;
+  finally
+    DoFloatForm(ClientForm);
+    Wait(cMinimalWait);
+    ClientForm.Free;
+  end;
+end;
+
+procedure TJvDockingTestCase.VSNetAlignment_2Forms;
+var
+  ClientForm1, ClientForm2: TClientForm;
+  Align, Align2: TAlign;
+
+  procedure CheckAlignment;
+  begin
+    Wait(cMinimalWait);
+    ClientForm1.CheckPanelAlignment(Self);
+    ClientForm2.CheckPanelAlignment(Self);
+  end;
+
+  procedure FloatForms;
+  begin
+    DoFloatForm(ClientForm1);
+    DoFloatForm(ClientForm2);
+    CheckAlignment;
+  end;
+
+begin
+  // channel contains dangling reference after forms are freed.
+
+  ServerForm.DefaultStyle := ServerForm.DockVSNetStyle;
+  ServerForm.DockVSNetStyle.ChannelOption.HideHoldTime := 4000;
+
+  ClientForm1 := ConstructClientForm(True);
+  ClientForm2 := ConstructClientForm(True);
+  Wait(cMinimalWait);
+  try
+    ClientForm1.CheckPanelAlignment(Self);
+    ClientForm2.CheckPanelAlignment(Self);
+
+    // tabbed floating
+    ManualTabDock(nil, ClientForm1, ClientForm2);
+    CheckAlignment;
+    FloatForms;
+
+    // tabbed docked
+    for Align := alTop to alRight do
+    begin
+      DockOn(ClientForm1, Align);
+      Wait(cMinimalWait);
+      DoDock(ClientForm1, ClientForm2, alClient);
+      CheckAlignment;
+      FloatForms;
+    end;
+
+    // conjoin floating
+    ManualConjoinDock(nil, ClientForm1, ClientForm2);
+    CheckAlignment;
+    FloatForms;
+
+    // conjoin docked
+    for Align := alTop to alRight do
+      for Align2 := alTop to alRight do
+      begin
+        DockOn(ClientForm1, Align);
+        Wait(cMinimalWait);
+        DoDock(ClientForm1, ClientForm2, Align2);
+        CheckAlignment;
+        FloatForms;
+      end;
+  finally
+    DoFloatForm(ClientForm1);
+    DoFloatForm(ClientForm2);
+    Wait(cMinimalWait);
+    ClientForm1.Free;
+    ClientForm2.Free;
+  end;
+end;
+
+procedure TJvDockingTestCase.VSNetChannelError1;
+var
+  ClientForm1, ClientForm2, ClientForm3: TClientForm;
+  I: Integer;
+begin
+  // channel contains dangling reference after forms are freed.
+
+  ServerForm.DefaultStyle := ServerForm.DockVSNetStyle;
+
+  // repeat a few times to reproduce
+  for I := 0 to 10 do
+  begin
+    Wait(cMinimalWait);
+
+    ClientForm1 := ConstructClientForm;
+    ClientForm2 := ConstructClientForm;
+    try
+      DockOn(ClientForm1, alTop);
+      Wait(cMinimalWait);
+      DockOn(ClientForm2, alTop);
+      Wait(cMinimalWait);
+      AutoHide(ClientForm1);
+      Wait(cMinimalWait);
+      AutoHide(ClientForm2);
+
+      Wait(cMinimalWait);
+      DoFloatForm(ClientForm1);
+      DoFloatForm(ClientForm2);
+    finally
+      ClientForm1.Free;
+      ClientForm2.Free;
+    end;
+
+    ClientForm3 := ConstructClientForm;
+    try
+      DockOn(ClientForm3, alTop);
+      Wait(cMinimalWait);
+      AutoHide(ClientForm3);
+      Wait(cMinimalWait);
+
+      DoFloatForm(ClientForm3);
+    finally
+      ClientForm3.Free;
+    end;
+  end;
+end;
+
+procedure TJvDockingTestCase.VSNetChannelError2;
+var
+  ClientForm1, ClientForm2, ClientForm3: TClientForm;
+  I: Integer;
+begin
+  // channel contains dangling reference after forms are freed.
+
+  // repeat a few times to reproduce
+  for I := 0 to 10 do
+  begin
+    ServerForm.DefaultStyle := ServerForm.DockVSNetStyle;
+    Wait(cMinimalWait);
+
+    ClientForm1 := ConstructClientForm;
+    ClientForm2 := ConstructClientForm;
+    try
+      DockOn(ClientForm1, alTop);
+      Wait(cMinimalWait);
+      DockOn(ClientForm2, alTop);
+      Wait(cMinimalWait);
+      AutoHide(ClientForm1);
+      Wait(cMinimalWait);
+      AutoHide(ClientForm2);
+      Wait(1);
+
+      ShowDockForm(ClientForm1);
+      Wait(0.5);
+
+      DoFloatForm(ClientForm1);
+      ClientForm1.Release;
+      ClientForm1 := nil;
+      Wait(0.5);
+      DoFloatForm(ClientForm2);
+      ClientForm2.Release;
+      ClientForm2 := nil;
+    finally
+      ClientForm1.Free;
+      ClientForm2.Free;
+    end;
+
+    ClientForm3 := ConstructClientForm;
+    try
+      DockOn(ClientForm3, alTop);
+      Wait(cMinimalWait);
+      AutoHide(ClientForm3);
+      Wait(cMinimalWait);
+
+      DoFloatForm(ClientForm3);
+    finally
+      ClientForm3.Free;
+    end;
+  end;
+end;
+
+procedure TJvDockingTestCase.VSNetChannelError3;
+var
+  ClientForm1, ClientForm2: TClientForm;
+begin
+  ServerForm.DefaultStyle := ServerForm.DockVSNetStyle;
+  Wait(cMinimalWait);
+
+  ClientForm1 := ConstructClientForm;
+  ClientForm2 := ConstructClientForm;
+  try
+    DockOn(ClientForm1, alTop);
+    Wait(1);
+    DoDock(ClientForm1, ClientForm2, alClient);
+    Wait(1);
+
+    AutoHide(ClientForm1);
+    Wait(1);
+
+    // switch
+    ShowDockForm(ClientForm2);
+    Wait(1);
+
+    UnAutoHideDockForm(ClientForm2);
+    Wait(1);
+
+    // switch
+    ShowDockForm(ClientForm1);
+    Wait(1);
+
+    AutoHide(ClientForm1);
+    Wait(1);
+
+    { Following call caused an error.. }
+    PopupDockForm(ClientForm2);
+    Wait(1);
+
+    DoFloatForm(ClientForm1);
+    ClientForm1.Release;
+    ClientForm1 := nil;
+    Wait(0.5);
+    DoFloatForm(ClientForm2);
+    ClientForm2.Release;
+    ClientForm2 := nil;
+  finally
+    ClientForm1.Free;
+    ClientForm2.Free;
+  end;
+end;
+
 //=== { TServerForm } ========================================================
 
 constructor TServerForm.Create(AOwner: TComponent);
@@ -1158,14 +1632,13 @@ begin
   FDockServer := TJvDockServer.Create(Self);
   with FDockServer do
   begin
-    DockStyle := DefaultStyle;
+    DockStyle := DockVSNetStyle;
   end;
 end;
 
 function TServerForm.GetDefaultStyle: TJvDockBasicStyle;
 begin
-  Result := DockVSNetStyle;
-//  Result := DockVIDStyle;
+  Result := FDockServer.DockStyle;
 end;
 
 function TServerForm.GetDockVIDStyle: TJvDockVIDStyle;
@@ -1180,6 +1653,11 @@ begin
   if FDockVSNetStyle = nil then
     FDockVSNetStyle := TJvDockVSNetStyle.Create(Self);
   Result := FDockVSNetStyle;
+end;
+
+procedure TServerForm.SetDefaultStyle(ADockStyle: TJvDockBasicStyle);
+begin
+  FDockServer.DockStyle := ADockStyle;
 end;
 
 //=== { TWindowList } ========================================================
