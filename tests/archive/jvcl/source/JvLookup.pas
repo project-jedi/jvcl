@@ -263,10 +263,8 @@ type
       X, Y: Integer); override;
     procedure Paint; override;
     procedure UpdateDisplayEmpty(const Value: string); override;
-    {$IFDEF COMPILER4_UP}
     function DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; override;
     function DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; override;
-    {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
@@ -393,7 +391,7 @@ type
     FBtnGlyph: TBitmap;
     FBtnDisabled: TBitmap;
     {$ENDIF}
-    {$IFDEF COMPILER7_UP}
+    {$IFDEF JVCLThemesEnabled}
     FOver: Boolean;
     {$ENDIF}
     FOnDropDown: TNotifyEvent;
@@ -420,7 +418,7 @@ type
     {$ENDIF}
     procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
     procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
-    {$IFDEF COMPILER7_UP}
+    {$IFDEF JVCLThemesEnabled}
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     {$ENDIF}
@@ -435,6 +433,8 @@ type
   protected
     procedure Click; override;
     procedure CreateParams(var Params: TCreateParams); override;
+    function DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; override;
+    function DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; override;
     function GetPicture(Current, Empty: Boolean; var TextMargin: Integer): TGraphic; override;
     procedure UpdateFieldText;
     procedure KeyValueChanged; override;
@@ -533,6 +533,8 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
+    property OnMouseWheelDown;
+    property OnMouseWheelUp;
     {$IFDEF WIN32}
     property OnStartDrag;
     {$ENDIF}
@@ -698,7 +700,7 @@ implementation
 
 uses
   DBConsts, Dialogs, Math,
-  {$IFDEF COMPILER7_UP}
+  {$IFDEF JVCLThemesEnabled}
   Themes,
   {$ENDIF}
   {$IFNDEF WIN32}
@@ -819,7 +821,7 @@ constructor TJvLookupControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   if NewStyleControls then
-    {$IFDEF COMPILER7_UP}
+    {$IFDEF JVCLThemesEnabled}
     ControlStyle := [csOpaque, csNeedsBorderPaint]
     {$ELSE}
     ControlStyle := [csOpaque]
@@ -2376,8 +2378,6 @@ begin
     inherited;
 end;
 
-{$IFDEF COMPILER4_UP}
-
 function TJvDBLookupList.DoMouseWheelDown(Shift: TShiftState;
   MousePos: TPoint): Boolean;
 begin
@@ -2385,7 +2385,15 @@ begin
   if not Result then
   begin
     with FLookupLink.DataSet do
-      Result := MoveBy(FRecordCount - FRecordIndex) <> 0;
+      { FRecordCount - FRecordIndex - 1  = #records till end of visible list
+        FRecordCount div 2               = half visible list.
+      }
+      if Shift * [ssShift, ssCtrl] <> [] then
+        { 1 line down }
+        Result := MoveBy(FRecordCount - FRecordIndex) <> 0
+      else
+        { Half Page down }
+        Result := MoveBy(FRecordCount - FRecordIndex + FRecordCount div 2 - 1) <> 0;
   end;
 end;
 
@@ -2396,11 +2404,17 @@ begin
   if not Result then
   begin
     with FLookupLink.DataSet do
-      Result := MoveBy(-FRecordIndex - 1) <> 0;
+      { -FRecordIndex        = #records till begin of visible list
+        FRecordCount div 2   = half visible list.
+      }
+      if Shift * [ssShift, ssCtrl] <> [] then
+        { One line up }
+        Result := MoveBy(-FRecordIndex - 1) <> 0
+      else
+        { Half Page up }
+        Result := MoveBy(-FRecordIndex - FRecordCount div 2) <> 0;
   end;
 end;
-
-{$ENDIF COMPILER4_UP}
 
 procedure TJvDBLookupList.WMVScroll(var Msg: TWMVScroll);
 begin
@@ -2583,6 +2597,66 @@ begin
   end;
 end;
 
+function TJvDBLookupCombo.DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean;
+begin
+  Result := inherited DoMouseWheelDown(Shift, MousePos);
+  if not Result then
+  begin
+    { Simulate up or down key, see code in KeyDown }
+    if FListActive then
+      if ssAlt in Shift then
+      begin
+        if FListVisible then
+          CloseUp(True)
+        else
+          DropDown;
+        Result := True;
+      end
+      else
+      if not FListVisible and not ReadOnly then
+      begin
+        if not LocateKey then
+          FLookupLink.DataSet.First
+        else
+          FLookupLink.DataSet.MoveBy(1);
+        SelectKeyValue(FKeyField.AsString);
+        Result := True;
+      end;
+    if not Result and FListVisible then
+      Result := FDataList.DoMouseWheelDown(Shift, MousePos);
+  end;
+end;
+
+function TJvDBLookupCombo.DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean;
+begin
+  Result := inherited DoMouseWheelDown(Shift, MousePos);
+  if not Result then
+  begin
+    { Simulate up or down key, see code in KeyDown }
+    if FListActive then
+      if ssAlt in Shift then
+      begin
+        if FListVisible then
+          CloseUp(True)
+        else
+          DropDown;
+        Result := True;
+      end
+      else
+      if not FListVisible and not ReadOnly then
+      begin
+        if not LocateKey then
+          FLookupLink.DataSet.First
+        else
+          FLookupLink.DataSet.MoveBy(-1);
+        SelectKeyValue(FKeyField.AsString);
+        Result := True;
+      end;
+    if not Result and FListVisible then
+      Result := FDataList.DoMouseWheelUp(Shift, MousePos);
+  end;
+end;
+
 procedure TJvDBLookupCombo.DropDown;
 var
   P: TPoint;
@@ -2724,7 +2798,7 @@ begin
       Key := 0;
     end
     else
-    if (not FListVisible) and (not ReadOnly) then
+    if not FListVisible and not ReadOnly then
     begin
       if not LocateKey then
         FLookupLink.DataSet.First
@@ -3046,7 +3120,7 @@ end;
 
 procedure TJvDBLookupCombo.Paint;
 const
-  TransColor: array[Boolean] of TColor = (clBtnFace, clWhite);
+  TransColor: array [Boolean] of TColor = (clBtnFace, clWhite);
 var
   W, X, Flags, TextMargin: Integer;
   AText: string;
@@ -3058,7 +3132,7 @@ var
   {$IFNDEF WIN32}
   Target: TRect;
   {$ENDIF}
-  {$IFDEF COMPILER7_UP}
+  {$IFDEF JVCLThemesEnabled}
   State: TThemedComboBox;
   Details: TThemedElementDetails;
   {$ENDIF}
@@ -3210,7 +3284,7 @@ begin
   end;
   {$ENDIF}
   {$IFDEF WIN32}
-  {$IFDEF COMPILER7_UP}
+  {$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled then
   begin
     if (not FListActive) or (not Enabled) or ReadOnly then
@@ -3227,9 +3301,9 @@ begin
     ThemeServices.DrawElement(Canvas.Handle, Details, R);
   end
   else
-  {$ENDIF COMPILER7_UP}
+  {$ENDIF JVCLThemesEnabled}
   begin
-    if (not FListActive) or (not Enabled) or ReadOnly then
+    if not FListActive or not Enabled or ReadOnly then
       Flags := DFCS_SCROLLCOMBOBOX or DFCS_INACTIVE
     else
     if FPressed then
@@ -3349,8 +3423,7 @@ begin
     Height := Max(Height, GetMinHeight);
 end;
 
-{$IFDEF COMPILER7_UP}
-
+{$IFDEF JVCLThemesEnabled}
 procedure TJvDBLookupCombo.CMMouseEnter(var Msg: TMessage);
 begin
   inherited;
@@ -3371,8 +3444,7 @@ begin
     Invalidate;
   end;
 end;
-
-{$ENDIF COMPILER7_UP}
+{$ENDIF JVCLThemesEnabled}
 
 procedure TJvDBLookupCombo.CMEnabledChanged(var Msg: TMessage);
 begin
