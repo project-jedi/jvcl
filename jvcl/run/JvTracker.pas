@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Robert Love [rlove@slcdug.org].
 
-Last Modified: 2000-06-15
+Last Modified: 2004-03-01
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -273,7 +273,7 @@ var
   var
     ix, iy: Integer;
     BmpWidth, BmpHeight: Integer;
-    hCanvas, BmpCanvas: THandle;
+    hCanvas, BmpCanvas: HDC;
     bm: TBitmap;
   begin
     bm := FBackBitmap;
@@ -282,7 +282,7 @@ var
       BmpHeight := bm.Height;
       BmpCanvas := bm.Canvas.Handle;
       { Changed By Steve Childs 18/04/00 - Now Points To Buffer.Canvas Bitmap}
-      hCanvas := THandle(Buffer.Canvas.handle);
+      hCanvas := HDC(Buffer.Canvas.handle);
       for iy := 0 to ClientHeight div BmpHeight do
         for ix := 0 to ClientWidth div BmpWidth do
           BitBlt(hCanvas, ix * BmpWidth, iy * BmpHeight,
