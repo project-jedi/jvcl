@@ -1007,26 +1007,26 @@ type
   TImageDataObject = class(TInterfacedObject, IDataObject)
   private
     FBitmap: TBitmap;
-    function GetExtent(dwDrawAspect: Longint; out Size: TPoint): HResult; stdcall;
+    function GetExtent(dwDrawAspect: Longint; out Size: TPoint): HRESULT; stdcall;
   public
     constructor Create(ABitmap: TBitmap); virtual;
     { IDataObject }
-    function GetData(const formatetcIn: TFormatEtc; out medium: TStgMedium):
-      HResult; stdcall;
-    function GetDataHere(const formatetc: TFormatEtc; out medium: TStgMedium):
-      HResult; stdcall;
-    function QueryGetData(const formatetc: TFormatEtc): HResult;
+    function GetData(const FormatEtcIn: TFormatEtc; out Medium: TStgMedium):
+      HRESULT; stdcall;
+    function GetDataHere(const FormatEtc: TFormatEtc; out Medium: TStgMedium):
+      HRESULT; stdcall;
+    function QueryGetData(const FormatEtc: TFormatEtc): HRESULT;
       stdcall;
-    function GetCanonicalFormatEtc(const formatetc: TFormatEtc;
-      out formatetcOut: TFormatEtc): HResult; stdcall;
-    function SetData(const formatetc: TFormatEtc; var medium: TStgMedium;
-      fRelease: BOOL): HResult; stdcall;
-    function EnumFormatEtc(dwDirection: Longint; out enumFormatEtc:
-      IEnumFormatEtc): HResult; stdcall;
-    function DAdvise(const formatetc: TFormatEtc; advf: Longint;
-      const advSink: IAdviseSink; out dwConnection: Longint): HResult; stdcall;
-    function DUnadvise(dwConnection: Longint): HResult; stdcall;
-    function EnumDAdvise(out enumAdvise: IEnumStatData): HResult;
+    function GetCanonicalFormatEtc(const FormatEtc: TFormatEtc;
+      out FormatEtcOut: TFormatEtc): HRESULT; stdcall;
+    function SetData(const FormatEtc: TFormatEtc; var Medium: TStgMedium;
+      fRelease: BOOL): HRESULT; stdcall;
+    function EnumFormatEtc(dwDirection: Longint; out EnumFormatEtc:
+      IEnumFormatEtc): HRESULT; stdcall;
+    function DAdvise(const FormatEtc: TFormatEtc; advf: Longint;
+      const advSink: IAdviseSink; out dwConnection: Longint): HRESULT; stdcall;
+    function DUnadvise(dwConnection: Longint): HRESULT; stdcall;
+    function EnumDAdvise(out enumAdvise: IEnumStatData): HRESULT;
       stdcall;
   end;
 
@@ -1123,7 +1123,7 @@ type
   private
     FDocForm: IVCLFrameForm;
     FFrameForm: IVCLFrameForm;
-    FAccelTable: HAccel;
+    FAccelTable: HACCEL;
     FAccelCount: Integer;
     FAutoScroll: Boolean;
     procedure CreateAccelTable;
@@ -1389,7 +1389,7 @@ procedure DestroyMetaPict(MetaPict: HGLOBAL);
 begin
   if MetaPict <> 0 then
   begin
-    DeleteMetaFile(PMetaFilePict(GlobalLock(MetaPict))^.hMF);
+    DeleteMetaFile(PMetafilePict(GlobalLock(MetaPict))^.hMF);
     GlobalUnlock(MetaPict);
     GlobalFree(MetaPict);
   end;
@@ -1429,7 +1429,7 @@ begin
         { Setup new cache with the new aspect }
         FillChar(FormatEtc, SizeOf(FormatEtc), 0);
         FormatEtc.dwAspect := DrawAspect;
-        FormatEtc.lIndex := -1;
+        FormatEtc.lindex := -1;
         Result := OleCache.Cache(FormatEtc, AdviseFlags, Connection);
       end;
       if Succeeded(Result) and (DrawAspect = DVASPECT_ICON) then
@@ -1447,7 +1447,7 @@ begin
           FormatEtc.cfFormat := CF_METAFILEPICT;
           FormatEtc.ptd := nil;
           FormatEtc.dwAspect := DVASPECT_ICON;
-          FormatEtc.lIndex := -1;
+          FormatEtc.lindex := -1;
           FormatEtc.tymed := TYMED_MFPICT;
           Medium.tymed := TYMED_MFPICT;
           Medium.hMetaFilePict := IconMetaPict;
@@ -1464,7 +1464,7 @@ begin
         if EnumStatData <> nil then
         try
           while EnumStatData.Next(1, StatData, nil) = 0 do
-            if StatData.formatetc.dwAspect = OldAspect then
+            if StatData.FormatEtc.dwAspect = OldAspect then
               OleCache.Uncache(StatData.dwConnection);
         finally
           ReleaseObject(EnumStatData);
@@ -1494,7 +1494,7 @@ begin
       FormatEtc.cfFormat := CF_METAFILEPICT;
       FormatEtc.ptd := nil;
       FormatEtc.dwAspect := DVASPECT_ICON;
-      FormatEtc.lIndex := -1;
+      FormatEtc.lindex := -1;
       FormatEtc.tymed := TYMED_MFPICT;
       if Succeeded(DataObject.GetData(FormatEtc, Medium)) then
         Result := Medium.hMetaFilePict;
@@ -1918,7 +1918,7 @@ begin
       FreeMem(Bits, BitsLength * 2);
     end;
   finally
-    DeleteMetafile(MetafileHandle);
+    DeleteMetaFile(MetafileHandle);
   end;
 end;
 
@@ -2019,42 +2019,42 @@ begin
   FBitmap := ABitmap;
 end;
 
-function TImageDataObject.DAdvise(const formatetc: TFormatEtc;
+function TImageDataObject.DAdvise(const FormatEtc: TFormatEtc;
   advf: Integer; const advSink: IAdviseSink;
-  out dwConnection: Integer): HResult;
+  out dwConnection: Integer): HRESULT;
 begin
   Result := OLE_E_ADVISENOTSUPPORTED;
 end;
 
-function TImageDataObject.DUnadvise(dwConnection: Integer): HResult;
+function TImageDataObject.DUnadvise(dwConnection: Integer): HRESULT;
 begin
   Result := OLE_E_ADVISENOTSUPPORTED;
 end;
 
 function TImageDataObject.EnumDAdvise(
-  out enumAdvise: IEnumStatData): HResult;
+  out enumAdvise: IEnumStatData): HRESULT;
 begin
   Result := OLE_E_ADVISENOTSUPPORTED;
 end;
 
 function TImageDataObject.EnumFormatEtc(dwDirection: Integer;
-  out enumFormatEtc: IEnumFormatEtc): HResult;
+  out EnumFormatEtc: IEnumFormatEtc): HRESULT;
 begin
-  enumFormatEtc := nil;
+  EnumFormatEtc := nil;
   Result := E_NOTIMPL;
 end;
 
-function TImageDataObject.GetCanonicalFormatEtc(
-  const formatetc: TFormatEtc; out formatetcOut: TFormatEtc): HResult;
+function TImageDataObject.GetCanonicalFormatEtc(const FormatEtc: TFormatEtc;
+  out FormatEtcOut: TFormatEtc): HRESULT;
 begin
-  formatetcOut.ptd := nil;
+  FormatEtcOut.ptd := nil;
   Result := E_NOTIMPL;
 end;
 
-function TImageDataObject.GetData(const formatetcIn: TFormatEtc;
-  out medium: TStgMedium): HResult;
+function TImageDataObject.GetData(const FormatEtcIn: TFormatEtc;
+  out Medium: TStgMedium): HRESULT;
 var
-  sizeMetric: TPoint;
+  SizeMetric: TPoint;
   DC: HDC;
   hMF: HMETAFILE;
   hMem: THandle;
@@ -2063,19 +2063,19 @@ begin
   { Basically the code from AxCtrls.pas TActiveXControl.GetData }
 
   // Handle only MetaFile
-  if (formatetcin.tymed and TYMED_MFPICT) = 0 then
+  if (FormatEtcIn.tymed and TYMED_MFPICT) = 0 then
   begin
     Result := DV_E_FORMATETC;
     Exit;
   end;
   // Retrieve Extent
-  GetExtent(DVASPECT_CONTENT, sizeMetric);
+  GetExtent(DVASPECT_CONTENT, SizeMetric);
   // Create Metafile DC and set it up
   DC := CreateMetafile(nil);
   SetWindowOrgEx(DC, 0, 0, nil);
-  SetWindowExtEx(DC, sizemetric.X, sizemetric.Y, nil);
+  SetWindowExtEx(DC, SizeMetric.X, SizeMetric.Y, nil);
 
-  StretchBlt(DC, 0, 0, sizeMetric.X, sizeMetric.Y,
+  StretchBlt(DC, 0, 0, SizeMetric.X, SizeMetric.Y,
     FBitmap.Canvas.Handle, 0, 0, FBitmap.Width, FBitmap.Height, SRCCOPY);
   hMF := CloseMetaFile(DC);
   if hMF = 0 then
@@ -2085,35 +2085,35 @@ begin
   end;
 
   // Get memory handle
-  hMEM := GlobalAlloc(GMEM_SHARE or GMEM_MOVEABLE, SizeOf(METAFILEPICT));
-  if hMEM = 0 then
+  hMem := GlobalAlloc(GMEM_SHARE or GMEM_MOVEABLE, SizeOf(METAFILEPICT));
+  if hMem = 0 then
   begin
-    DeleteMetafile(hMF);
+    DeleteMetaFile(hMF);
     Result := STG_E_MEDIUMFULL;
     Exit;
   end;
-  pMFP := PMetaFilePict(GlobalLock(hMEM));
+  pMFP := PMetafilePict(GlobalLock(hMem));
   pMFP^.hMF := hMF;
   pMFP^.mm := MM_ANISOTROPIC;
-  pMFP^.xExt := sizeMetric.X;
-  pMFP^.yExt := sizeMetric.Y;
-  GlobalUnlock(hMEM);
+  pMFP^.xExt := SizeMetric.X;
+  pMFP^.yExt := SizeMetric.Y;
+  GlobalUnlock(hMem);
 
-  medium.tymed := TYMED_MFPICT;
-  medium.hGlobal := hMEM;
-  medium.unkForRelease := nil;
+  Medium.tymed := TYMED_MFPICT;
+  Medium.hGlobal := hMem;
+  Medium.unkForRelease := nil;
 
   Result := S_OK;
 end;
 
-function TImageDataObject.GetDataHere(const formatetc: TFormatEtc;
-  out medium: TStgMedium): HResult;
+function TImageDataObject.GetDataHere(const FormatEtc: TFormatEtc;
+  out Medium: TStgMedium): HRESULT;
 begin
   Result := E_NOTIMPL;
 end;
 
 function TImageDataObject.GetExtent(dwDrawAspect: Integer;
-  out Size: TPoint): HResult;
+  out Size: TPoint): HRESULT;
 begin
   if dwDrawAspect <> DVASPECT_CONTENT then
   begin
@@ -2125,14 +2125,13 @@ begin
   Result := S_OK;
 end;
 
-function TImageDataObject.QueryGetData(
-  const formatetc: TFormatEtc): HResult;
+function TImageDataObject.QueryGetData(const FormatEtc: TFormatEtc): HRESULT;
 begin
   Result := E_NOTIMPL;
 end;
 
-function TImageDataObject.SetData(const formatetc: TFormatEtc;
-  var medium: TStgMedium; fRelease: BOOL): HResult;
+function TImageDataObject.SetData(const FormatEtc: TFormatEtc;
+  var Medium: TStgMedium; fRelease: BOOL): HRESULT;
 begin
   Result := E_NOTIMPL;
 end;
@@ -2431,7 +2430,7 @@ begin
       EN_SELCHANGE:
         SelectionChange;
       EN_REQUESTRESIZE:
-        RequestSize(PReqSize(NMHdr)^.RC);
+        RequestSize(PReqSize(NMHdr)^.rc);
       EN_SAVECLIPBOARD:
         with PENSaveClipboard(NMHdr)^ do
           if not SaveClipboard(cObjectCount, cch) then
@@ -3344,7 +3343,7 @@ function TJvCustomRichEdit.PasteSpecialDialog: Boolean;
     begin
       fmtetc.cfFormat := Format;
       fmtetc.dwAspect := DVASPECT_CONTENT;
-      fmtetc.lIndex := -1;
+      fmtetc.lindex := -1;
       fmtetc.tymed := tymed;
       if FormatName <> '' then
         lpstrFormatName := PChar(FormatName)
@@ -3500,18 +3499,18 @@ begin
     LogY := GetDeviceCaps(Handle, LOGPIXELSY);
     if IsRectEmpty(PageRect) then
     begin
-      RC.Right := PageWidth * CTwipsPerInch div LogX;
-      RC.Bottom := PageHeight * CTwipsPerInch div LogY;
+      rc.Right := PageWidth * CTwipsPerInch div LogX;
+      rc.Bottom := PageHeight * CTwipsPerInch div LogY;
     end
     else
     begin
-      RC.Left := PageRect.Left * CTwipsPerInch div LogX;
-      RC.Top := PageRect.Top * CTwipsPerInch div LogY;
-      RC.Right := PageRect.Right * CTwipsPerInch div LogX;
-      RC.Bottom := PageRect.Bottom * CTwipsPerInch div LogY;
+      rc.Left := PageRect.Left * CTwipsPerInch div LogX;
+      rc.Top := PageRect.Top * CTwipsPerInch div LogY;
+      rc.Right := PageRect.Right * CTwipsPerInch div LogX;
+      rc.Bottom := PageRect.Bottom * CTwipsPerInch div LogY;
     end;
-    rcPage := RC;
-    SaveRect := RC;
+    rcPage := rc;
+    SaveRect := rc;
     LastChar := 0;
     if RichEditVersion >= 2 then
     begin
@@ -3530,7 +3529,7 @@ begin
     SendMessage(Self.Handle, EM_FORMATRANGE, 0, 0); { flush buffer }
     try
       repeat
-        RC := SaveRect;
+        rc := SaveRect;
         chrg.cpMin := LastChar;
         LastChar := SendMessage(Self.Handle, EM_FORMATRANGE, 1, Longint(@Range));
         if (LastChar < MaxLen) and (LastChar <> -1) then
@@ -3743,7 +3742,6 @@ begin
   finally
     ABmp.Free;
   end;
-
 end;
 
 procedure TJvCustomRichEdit.SelectionChange;
@@ -4245,7 +4243,7 @@ begin
     Exit;
 
   for I := 0 to FExtensions.Count - 1 do
-    if (FExtensions[i] = '*') or (FExtensions[i] = AExtension) then
+    if (FExtensions[I] = '*') or (FExtensions[I] = AExtension) then
     begin
       Result := True;
       Exit;
@@ -6141,7 +6139,7 @@ var
   Format: TCharFormat2;
 begin
   GetAttributes(Format);
-  Result := Format.bCharset;
+  Result := Format.bCharSet;
 end;
 
 function TJvTextAttributes.GetColor: TColor;
@@ -6930,7 +6928,7 @@ end;
 
 function TRichEditOleCallback.ContextSensitiveHelp(fEnterMode: BOOL): HRESULT;
 begin
-  Result := NOERROR;
+  Result := NoError;
 end;
 
 procedure TRichEditOleCallback.CreateAccelTable;
@@ -6949,7 +6947,7 @@ function TRichEditOleCallback.DeleteObject(const oleobj: IOleObject): HRESULT;
 begin
   if Assigned(oleobj) then
     oleobj.Close(OLECLOSE_NOSAVE);
-  Result := NOERROR;
+  Result := NoError;
 end;
 
 procedure TRichEditOleCallback.DestroyAccelTable;
@@ -6992,8 +6990,8 @@ begin
     with lpFrameInfo^ do
     begin
       fMDIApp := False;
-      FFrameForm.GetWindow(hWndFrame);
-      hAccel := FAccelTable;
+      FFrameForm.GetWindow(hwndFrame);
+      haccel := FAccelTable;
       cAccelEntries := FAccelCount;
     end;
     Result := S_OK;
@@ -7022,7 +7020,7 @@ end;
 function TRichEditOleCallback.QueryInsertObject(const clsid: TCLSID; const stg: IStorage;
   cp: Longint): HRESULT;
 begin
-  Result := NOERROR;
+  Result := NoError;
 end;
 
 function TRichEditOleCallback.QueryInterface(const iid: TGUID; out Obj): HRESULT;

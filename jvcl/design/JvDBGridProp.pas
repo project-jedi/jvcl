@@ -1,190 +1,213 @@
-Unit JvDBGridProp;
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
 
-Interface
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+The Original Code is: JvDBGridProp.PAS, released on 2004-07-09.
+
+The Initial Developer of the Original Code is John Doe.
+Portions created by John Doe are Copyright (C) 2004 John Doe.
+All Rights Reserved.
+
+Contributor(s):
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
-Uses
-   Classes, Controls, Forms,
-   {$IFDEF COMPILER6_UP}
-   DesignIntf, DesignEditors,
-   {$ELSE}
-   DsgnIntf,
-   {$ENDIF COMPILER6_UP}
-   StdCtrls, Buttons, Graphics, JvDBGrid;
+unit JvDBGridProp;
 
-Type 
-   TJvDBGridControlsEditor = Class(TPropertyEditor)
-   Public
-      Procedure Edit; Override;
-      Function GetAttributes: TPropertyAttributes; Override;
-      Function GetValue: String; Override;
-   End;
+interface
 
-   TfmGridProp = Class(TForm)
-      GroupBoxFields: TGroupBox;
-      lbFields: TListBox;
-      GroupBoxSelected: TGroupBox;
-      lbSelected: TListBox;
-      sbAdd: TSpeedButton;
-      sbDelete: TSpeedButton;
-      LabelControl: TLabel;
-      cbControl: TComboBox;
-      btnOK: TButton;
-      btnCancel: TButton;
-      Procedure FormCreate(Sender: TObject);
-      Procedure lbSelectedClick(Sender: TObject);
-      Procedure cbControlClick(Sender: TObject);
-      Procedure sbAddClick(Sender: TObject);
-      Procedure sbDeleteClick(Sender: TObject);
-      Procedure FormDestroy(Sender: TObject);
-   Private
-      Procedure SetControl(Name: String);
-   Public
-      JvDBGridControls: TJvDBGridControls;
-      Grid: TJvDBGrid;
-      Procedure Initialize;
-   End;
+uses
+  Classes, Controls, Forms,
+  {$IFDEF COMPILER6_UP}
+  DesignIntf, DesignEditors,
+  {$ELSE}
+  DsgnIntf,
+  {$ENDIF COMPILER6_UP}
+  StdCtrls, Buttons, Graphics,
+  JvDBGrid;
 
-Var
-   fmGridProp: TfmGridProp;
+type
+  TJvDBGridControlsEditor = class(TPropertyEditor)
+  public
+    procedure Edit; override;
+    function GetAttributes: TPropertyAttributes; override;
+    function GetValue: string; override;
+  end;
 
-Implementation
+  TfmGridProp = class(TForm)
+    GroupBoxFields: TGroupBox;
+    lbFields: TListBox;
+    GroupBoxSelected: TGroupBox;
+    lbSelected: TListBox;
+    sbAdd: TSpeedButton;
+    sbDelete: TSpeedButton;
+    LabelControl: TLabel;
+    cbControl: TComboBox;
+    btnOK: TButton;
+    btnCancel: TButton;
+    procedure FormCreate(Sender: TObject);
+    procedure lbSelectedClick(Sender: TObject);
+    procedure cbControlClick(Sender: TObject);
+    procedure sbAddClick(Sender: TObject);
+    procedure sbDeleteClick(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+  private
+    procedure SetControl(Name: string);
+  public
+    JvDBGridControls: TJvDBGridControls;
+    Grid: TJvDBGrid;
+    procedure Initialize;
+  end;
 
-Uses SysUtils, Dialogs;
+var
+  fmGridProp: TfmGridProp;
 
-ResourceString
-  RsJvDBGridDataSourceNeeded = 'Datasource property must be set before selecting controls.';
-  RsJvDBGridDataSetNeeded = 'A dataset must be linked to the grid datasource before selecting controls.';
-  RsJvDBGridAlreadyAdded = 'The field "%s" has already been added.';
+implementation
 
-{$R *.DFM}
+uses
+  SysUtils, Dialogs,
+  JvDsgnConsts, JvTypes;
 
-Procedure TJvDBGridControlsEditor.Edit;
-Var
-   Dlg: TfmGridProp;
-   CloseDataset: Boolean;
-Begin
-   CloseDataset := False;
-   If TJvDBGrid(GetComponent(0)).DataSource = Nil Then
-      Raise Exception.Create(RsJvDBGridDataSourceNeeded);
-   If TJvDBGrid(GetComponent(0)).DataSource.DataSet = Nil Then
-      Raise Exception.Create(RsJvDBGridDataSetNeeded);
-   If Not TJvDBGrid(GetComponent(0)).DataSource.DataSet.Active Then
-   Begin
-      TJvDBGrid(GetComponent(0)).DataSource.DataSet.Open;
-      CloseDataset := True;
-   End;
+{$R *.dfm}
 
-   Dlg := TfmGridProp.Create(Application);
-   Try
-      Dlg.JvDBGridControls.Assign(TJvDBGridControls(GetOrdValue));
-      Dlg.Grid := TJvDBGrid(GetComponent(0));
-      Dlg.Initialize;
-      Dlg.ShowModal;
-      If Dlg.ModalResult = mrOk Then 
-      Begin
-         TJvDBGridControls(GetOrdValue).Assign(Dlg.JvDBGridControls);
-         Modified;
-      End;
-   Finally
-      Dlg.Free;
-      If CloseDataset Then
-         TJvDBGrid(GetComponent(0)).DataSource.DataSet.Close;
-   End;
-End;
+procedure TJvDBGridControlsEditor.Edit;
+var
+  Dlg: TfmGridProp;
+  CloseDataset: Boolean;
+begin
+  CloseDataset := False;
+  if TJvDBGrid(GetComponent(0)).DataSource = nil then
+    raise EJVCLException.CreateRes(@RsEJvDBGridDataSourceNeeded);
+  if TJvDBGrid(GetComponent(0)).DataSource.DataSet = nil then
+    raise EJVCLException.CreateRes(@RsEJvDBGridDataSetNeeded);
+  if not TJvDBGrid(GetComponent(0)).DataSource.DataSet.Active then
+  begin
+    TJvDBGrid(GetComponent(0)).DataSource.DataSet.Open;
+    CloseDataset := True;
+  end;
 
-Function TJvDBGridControlsEditor.GetAttributes: TPropertyAttributes;
-Begin
-   Result := [paDialog, paReadOnly];
-End;
+  Dlg := TfmGridProp.Create(Application);
+  try
+    Dlg.JvDBGridControls.Assign(TJvDBGridControls(GetOrdValue));
+    Dlg.Grid := TJvDBGrid(GetComponent(0));
+    Dlg.Initialize;
+    Dlg.ShowModal;
+    if Dlg.ModalResult = mrOk then
+    begin
+      TJvDBGridControls(GetOrdValue).Assign(Dlg.JvDBGridControls);
+      Modified;
+    end;
+  finally
+    Dlg.Free;
+    if CloseDataset then
+      TJvDBGrid(GetComponent(0)).DataSource.DataSet.Close;
+  end;
+end;
 
-Function TJvDBGridControlsEditor.GetValue: String;
-Begin
-   Result := '(' + GetPropType^.Name +')';
-End;
+function TJvDBGridControlsEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paDialog, paReadOnly];
+end;
 
-Procedure TfmGridProp.FormCreate(Sender: TObject);
-Begin
-   JvDBGridControls := TJvDBGridControls.Create(Nil);
-End;
+function TJvDBGridControlsEditor.GetValue: string;
+begin
+  Result := '(' + GetPropType^.Name + ')';
+end;
 
-Procedure TfmGridProp.Initialize;
-Var 
-   i: Integer;
-Begin
-   For i := 0 To Grid.Columns.Count - 1 Do
-      lbFields.Items.Add(Grid.Columns.Items[i].FieldName);
-   For i := 0 To JvDBGridControls.Count - 1 Do
-      lbSelected.Items.Add(JvDBGridControls.Items[i].FieldName);
-   For i := 0 To Grid.Owner.ComponentCount - 1 Do
-      If Grid.Owner.Components[i] Is TWinControl Then
-         cbControl.Items.Add(Grid.Owner.Components[i].Name);
-   lbSelectedClick(lbSelected);      
-End;
+procedure TfmGridProp.FormCreate(Sender: TObject);
+begin
+  JvDBGridControls := TJvDBGridControls.Create(nil);
+end;
 
-Procedure TfmGridProp.SetControl(Name: String);
-Var 
-   i: Integer;
-Begin
-   For i := 0 To cbControl.Items.Count - 1 Do
-      If CompareText(Name, cbControl.Items[i]) = 0 Then
-      Begin
-         cbControl.ItemIndex := i;
-         Exit;
-      End;
-   cbControl.ItemIndex := -1;
-End;
+procedure TfmGridProp.Initialize;
+var
+  I: Integer;
+begin
+  for I := 0 to Grid.Columns.Count - 1 do
+    lbFields.Items.Add(Grid.Columns.Items[I].FieldName);
+  for I := 0 to JvDBGridControls.Count - 1 do
+    lbSelected.Items.Add(JvDBGridControls.Items[I].FieldName);
+  for I := 0 to Grid.Owner.ComponentCount - 1 do
+    if Grid.Owner.Components[I] is TWinControl then
+      cbControl.Items.Add(Grid.Owner.Components[I].Name);
+  lbSelectedClick(lbSelected);
+end;
 
-Procedure TfmGridProp.lbSelectedClick(Sender: TObject);
-Begin
-   If lbSelected.ItemIndex >= 0 Then
-   Begin
-      cbControl.Enabled := True; 
-      cbControl.Color := clWindow;
-      SetControl(JvDBGridControls.Items[lbSelected.ItemIndex].ControlName);
-   End
-   Else
-   Begin
-      cbControl.Enabled := False;
-      cbControl.Color := clBtnface;
-   End;
-End;
+procedure TfmGridProp.SetControl(Name: string);
+var
+  I: Integer;
+begin
+  for I := 0 to cbControl.Items.Count - 1 do
+    if CompareText(Name, cbControl.Items[I]) = 0 then
+    begin
+      cbControl.ItemIndex := I;
+      Exit;
+    end;
+  cbControl.ItemIndex := -1;
+end;
 
-Procedure TfmGridProp.cbControlClick(Sender: TObject);
-Begin
-   If lbSelected.ItemIndex >= 0 Then
-      JvDBGridControls.Items[lbSelected.ItemIndex].ControlName := cbControl.Text;
-End;
+procedure TfmGridProp.lbSelectedClick(Sender: TObject);
+begin
+  if lbSelected.ItemIndex >= 0 then
+  begin
+    cbControl.Enabled := True;
+    cbControl.Color := clWindow;
+    SetControl(JvDBGridControls.Items[lbSelected.ItemIndex].ControlName);
+  end
+  else
+  begin
+    cbControl.Enabled := False;
+    cbControl.Color := clBtnFace;
+  end;
+end;
 
-Procedure TfmGridProp.sbAddClick(Sender: TObject);
-Begin
-   If (lbFields.ItemIndex >= 0) Then
-   Begin
-      If (lbSelected.Items.Indexof(lbFields.Items[lbFields.ItemIndex]) < 0) Then
-      Begin
-         lbSelected.Items.Add(lbFields.Items[lbFields.ItemIndex]);
-         With JvDBGridControls.Add Do
-            FieldName := lbFields.Items[lbFields.ItemIndex];
-      End
-      Else
-         MessageDlg(Format(RsJvDBGridAlreadyAdded, [lbFields.Items[lbFields.ItemIndex]]),
-                    mtWarning, [mbOK], 0);
-   End;
-End;
+procedure TfmGridProp.cbControlClick(Sender: TObject);
+begin
+  if lbSelected.ItemIndex >= 0 then
+    JvDBGridControls.Items[lbSelected.ItemIndex].ControlName := cbControl.Text;
+end;
 
-Procedure TfmGridProp.sbDeleteClick(Sender: TObject);
-Begin
-   If lbSelected.ItemIndex >= 0 Then
-   Begin
-      JvDBGridControls.Items[lbSelected.ItemIndex].Free;
-      lbSelected.Items.Delete(lbSelected.ItemIndex);
-   End;
-End;
+procedure TfmGridProp.sbAddClick(Sender: TObject);
+begin
+  if lbFields.ItemIndex >= 0 then
+  begin
+    if lbSelected.Items.IndexOf(lbFields.Items[lbFields.ItemIndex]) < 0 then
+    begin
+      lbSelected.Items.Add(lbFields.Items[lbFields.ItemIndex]);
+      with JvDBGridControls.Add do
+        FieldName := lbFields.Items[lbFields.ItemIndex];
+    end
+    else
+      MessageDlg(Format(RsJvDBGridAlreadyAdded,
+        [lbFields.Items[lbFields.ItemIndex]]), mtWarning, [mbOK], 0);
+  end;
+end;
 
-Procedure TfmGridProp.FormDestroy(Sender: TObject);
-Begin
-   JvDBGridControls.Free;
-End;
+procedure TfmGridProp.sbDeleteClick(Sender: TObject);
+begin
+  if lbSelected.ItemIndex >= 0 then
+  begin
+    JvDBGridControls.Items[lbSelected.ItemIndex].Free;
+    lbSelected.Items.Delete(lbSelected.ItemIndex);
+  end;
+end;
 
-End.
+procedure TfmGridProp.FormDestroy(Sender: TObject);
+begin
+  JvDBGridControls.Free;
+end;
+
+end.

@@ -26,6 +26,7 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
+{$I crossplatform.inc}
 
 unit JvDsgnEditors;
 
@@ -51,9 +52,7 @@ uses
   {$IFDEF VisualCLX}
   JvQImageIndexEdit,
   {$ENDIF VisualCLX}
-
   Classes, SysUtils;
-
 
 type
   // Special TClassProperty, that show events along with all other properties
@@ -65,7 +64,7 @@ type
     function GetAttributes: TPropertyAttributes; override;
     function GetEditLimit: Integer; override;
   end;
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF !COMPILER6_UP}
 
   TJvHintProperty = class(TStringProperty)
   public
@@ -240,10 +239,6 @@ type
 
 implementation
 
-{$IFDEF COMPILER6_UP}
-{$WARN UNIT_PLATFORM OFF}
-{$ENDIF COMPILER6_UP}
-
 uses
   TypInfo, Math, FileCtrl, Consts,
   {$IFDEF MSWINDOWS}
@@ -391,7 +386,6 @@ procedure TJvHintProperty.Edit;
 var
   Temp: string;
   Comp: TPersistent;
-//  I, Cnt: Integer;
 begin
   with TJvStrEditDlg.Create(Application) do
   try
@@ -421,7 +415,6 @@ procedure TJvStringsProperty.Edit;
 var
   Temp: string;
   Comp: TPersistent;
-//  I, Cnt: Integer;
 begin
   with TJvStrEditDlg.Create(Application) do
   try
@@ -557,7 +550,7 @@ begin
   D := GetFloatValue;
   if D = 0.0 then
     D := Now
-  else // (p3) we need the date part or we might get a "Must be in ShowCheckBox mode" error 
+  else // (p3) we need the date part or we might get a "Must be in ShowCheckBox mode" error
     D := SysUtils.Date + Frac(D);
   if TFrmSelectDateTimeDlg.SelectDateTime(D, dstTime) then
   begin
@@ -570,8 +563,8 @@ function TJvTimeExProperty.GetAttributes: TPropertyAttributes;
 begin
   Result := inherited GetAttributes + [paDialog];
 end;
-{$ENDIF VCL}
 
+{$ENDIF VCL}
 
 //=== { TJvDefaultImageIndexProperty } =======================================
 
@@ -602,6 +595,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 function TJvDefaultImageIndexProperty.GetValue: string;
 begin
   Result := IntToStr(GetOrdValue);
@@ -789,24 +783,23 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvDefaultImageIndexProperty.Edit;
 var
-  SelectedIndex: integer;
-  tmp: TImageList;
+  SelectedIndex: Integer;
+  Tmp: TImageList;
 begin
   if ImageList <> nil then
   begin
-    tmp := TImageList.Create(application);
-    tmp.Assign(ImageList);
-    SelectedIndex := strtoint(GetValue);
-    if EditImageIndex(tmp, SelectedIndex) then
+    Tmp := TImageList.Create(Application);
+    Tmp.Assign(ImageList);
+    SelectedIndex := StrToInt(GetValue);
+    if EditImageIndex(Tmp, SelectedIndex) then
     begin
-      SetValue(inttostr(SelectedIndex));
-      ImageList.assign(tmp);
+      SetValue(IntToStr(SelectedIndex));
+      ImageList.Assign(Tmp);
     end;
-    tmp.Free;
+    Tmp.Free;
   end;
 end;
 {$ENDIF VisualCLX}
-
 
 //=== { TJvShortCutProperty } ==================================================
 

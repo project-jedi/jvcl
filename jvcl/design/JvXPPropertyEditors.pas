@@ -57,7 +57,6 @@ type
     function GetAttributes: TPropertyAttributes; override;
     procedure GetValues(Proc: TGetStrProc); override;
     function GetImageListAt(Index: Integer): TCustomImageList; virtual;
-
     // ICustomPropertyListDrawing
     procedure ListMeasureHeight(const Value: string; ACanvas: TCanvas;
       var AHeight: Integer); {$IFNDEF COMPILER6_UP} override; {$ENDIF}
@@ -184,8 +183,7 @@ end;
 
 //=== { TJvXPItemImageIndexPropertyEditor } ==================================
 
-function TJvXPItemImageIndexPropertyEditor.GetImageListAt(Index: Integer):
-  TCustomImageList;
+function TJvXPItemImageIndexPropertyEditor.GetImageListAt(Index: Integer): TCustomImageList;
 var
   Item: TPersistent;
 begin

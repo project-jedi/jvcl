@@ -36,5 +36,6 @@
     <File Name="..\..\design\JvDBReg.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvDBEditors.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\design\JvDBGridExportEditors.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDBGridProp.pas" Targets="allbutclx" Formname="" Condition=""/>
   </Contains>
 </Package>
