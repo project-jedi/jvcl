@@ -7,7 +7,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, ExtDlgs, ImgList, Menus, StdCtrls, ComCtrls,
   ExtCtrls, JvDesktopAlert, JvAppStorage, JvAppIniStorage, JvComponent,
-  JvFormPlacement, JvBaseDlg;
+  JvFormPlacement, JvBaseDlg, JvExControls, JvLabel;
 
 type
   TfrmMain = class(TForm)
@@ -49,9 +49,11 @@ type
     Label9: TLabel;
     JvFormStorage1: TJvFormStorage;
     JvAppIniFileStorage1: TJvAppIniFileStorage;
+    JvLabel1: TJvLabel;
     procedure btnPreviewClick(Sender: TObject);
     procedure Clickme1Click(Sender: TObject);
     procedure btnBrowseClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     FCount:integer;
     procedure DoButtonClick(Sender: TObject);
@@ -155,6 +157,11 @@ procedure TfrmMain.btnBrowseClick(Sender: TObject);
 begin
   if OpenPictureDialog1.Execute then
     Image1.Picture.LoadFromFile(OpenPictureDialog1.Filename);
+end;
+
+procedure TfrmMain.FormCreate(Sender: TObject);
+begin
+  cbLocation.ItemIndex := 3;
 end;
 
 end.

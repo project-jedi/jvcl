@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 659
-  Top = 95
+  Left = 471
+  Top = 178
   Width = 367
   Height = 452
   Caption = 'JvDesktopAlert Demo'
@@ -11,6 +11,7 @@ object frmMain: TfrmMain
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -75,6 +76,20 @@ object frmMain: TfrmMain
     Width = 44
     Height = 13
     Caption = 'Location:'
+  end
+  object JvLabel1: TJvLabel
+    Left = 208
+    Top = 112
+    Width = 45
+    Height = 13
+    Caption = 'JvLabel1'
+    AutoOpenURL = False
+    HotTrack = True
+    HotTrackFont.Charset = DEFAULT_CHARSET
+    HotTrackFont.Color = clWindowText
+    HotTrackFont.Height = -11
+    HotTrackFont.Name = 'MS Sans Serif'
+    HotTrackFont.Style = []
   end
   object btnPreview: TButton
     Left = 264
@@ -1027,7 +1042,7 @@ object frmMain: TfrmMain
     Width = 121
     Height = 21
     TabOrder = 15
-    Text = '1'#160'400'
+    Text = '1 400'
   end
   object udWait: TUpDown
     Left = 305
@@ -1068,9 +1083,7 @@ object frmMain: TfrmMain
     Height = 21
     Style = csDropDownList
     ItemHeight = 13
-    ItemIndex = 2
     TabOrder = 19
-    Text = 'dapBottomLeft'
     Items.Strings = (
       'dapTopLeft'
       'dapTopRight'
