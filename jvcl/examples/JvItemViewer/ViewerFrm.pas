@@ -53,12 +53,10 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
   private
-    { Private declarations }
     procedure AdjustFormSize;
   public
-    { Public declarations }
-    class function View(const Filename: string; Transparent:boolean; BackColor:TColor): boolean; overload;
-    class function View(Picture: TPicture; BackColor:TColor): boolean; overload;
+    class function View(const Filename: string; Transparent: Boolean; BackColor: TColor): Boolean; overload;
+    class function View(Picture: TPicture; BackColor: TColor): Boolean; overload;
   end;
 
 implementation
@@ -67,13 +65,11 @@ uses
 
 {$R *.dfm}
 
-{ TfrmImageViewer }
-
-class function TfrmImageViewer.View(const Filename: string; Transparent:boolean; BackColor:TColor): boolean;
+class function TfrmImageViewer.View(const Filename: string; Transparent: Boolean; BackColor: TColor): Boolean;
 var
   frmImageViewer: TfrmImageViewer;
 begin
-  frmImageViewer := self.Create(Application);
+  frmImageViewer := Self.Create(Application);
   try
     frmImageViewer.Image1.Transparent := Transparent;
     frmImageViewer.Image1.Picture.LoadFromFile(Filename);
@@ -85,17 +81,17 @@ begin
     frmImageViewer.Left := (Screen.Width - frmImageViewer.Width) div 2;
     frmImageViewer.Top := (Screen.Height - frmImageViewer.Height) div 2;
     frmImageViewer.ShowModal;
-    Result := true;
+    Result := True;
   finally
     frmImageViewer.Free;
   end;
 end;
 
-class function TfrmImageViewer.View(Picture: TPicture; BackColor:TColor): boolean;
+class function TfrmImageViewer.View(Picture: TPicture; BackColor: TColor): Boolean;
 var
   frmImageViewer: TfrmImageViewer;
 begin
-  frmImageViewer := self.Create(Application);
+  frmImageViewer := Self.Create(Application);
   try
     frmImageViewer.Image1.Picture.Assign(Picture);
     frmImageViewer.Caption := Picture.Graphic.ClassName;
@@ -106,8 +102,7 @@ begin
     frmImageViewer.Top := (Screen.Height - frmImageViewer.Height) div 2;
 
     frmImageViewer.ShowModal;
-    Result := true;
-
+    Result := True;
   finally
     frmImageViewer.Free;
   end;
@@ -116,13 +111,13 @@ end;
 procedure TfrmImageViewer.FormResize(Sender: TObject);
 begin
   // make sure these are set correctly
-//  Image1.AutoSize := true;
-//  Image1.Center := true;
-  if (ScrollBox1.ClientWidth < Image1.Width) then
+//  Image1.AutoSize := True;
+//  Image1.Center := True;
+  if ScrollBox1.ClientWidth < Image1.Width then
     Image1.Left := -ScrollBox1.HorzScrollBar.Position
   else
     Image1.Left := (ScrollBox1.ClientWidth - Image1.Width) div 2;
-  if (ScrollBox1.ClientHeight < Image1.Height) then
+  if ScrollBox1.ClientHeight < Image1.Height then
     Image1.Top := -ScrollBox1.VertScrollBar.Position
   else
     Image1.Top := (ScrollBox1.ClientHeight - Image1.Height) div 2;
@@ -131,7 +126,7 @@ end;
 procedure TfrmImageViewer.FormCreate(Sender: TObject);
 begin
   // minimize flicker
-  ScrollBox1.DoubleBuffered := true;
+  ScrollBox1.DoubleBuffered := True;
 end;
 
 procedure TfrmImageViewer.FormMouseWheel(Sender: TObject;
@@ -139,7 +134,7 @@ procedure TfrmImageViewer.FormMouseWheel(Sender: TObject;
   var Handled: Boolean);
 begin
   // handle wheel event in form so scrolbox doesn't have to be focused to scroll
-  Handled := true;
+  Handled := True;
   if ScrollBox1.VertScrollBar.IsScrollBarVisible and not (ssShift in Shift) then
     ScrollBox1.VertScrollBar.Position := ScrollBox1.VertScrollBar.Position - WheelDelta
   else
@@ -151,21 +146,21 @@ var
   P: TWindowPlacement;
 begin
   acFullScreen.Checked := not acFullScreen.Checked;
-  FillChar(P, sizeof(P), 0);
-  P.length := sizeof(P);
+  FillChar(P, SizeOf(P), 0);
+  P.length := SizeOf(P);
   // get default and current values
   GetWindowPlacement(Handle, @P);
   // adjust UI
   if acFullScreen.Checked then
   begin
     BorderStyle := bsNone;
-    StatusBar1.Visible := false;
+    StatusBar1.Visible := False;
     P.showCmd := SW_SHOWMAXIMIZED;
   end
   else
   begin
     BorderStyle := bsSizeable;
-    StatusBar1.Visible := true;
+    StatusBar1.Visible := True;
     P.showCmd := SW_RESTORE;
   end;
   // set new size/position
@@ -173,28 +168,30 @@ begin
 end;
 
 procedure TfrmImageViewer.AdjustFormSize;
-var R:TRect;W,H:integer;
+var
+  R: TRect;
+  W, H: Integer;
 begin
-  SystemParametersInfo(SPI_GETWORKAREA,0,@R,0);
+  SystemParametersInfo(SPI_GETWORKAREA, 0, @R, 0);
   W := R.Right - R.Left;
   H := R.Bottom - R.Top;
   with Image1 do
   begin
-    if Picture.Width > self.Width then
+    if Picture.Width > Self.Width then
     begin
       if Picture.Width + 32 < W then
-        self.Width := Picture.Width + 32
+        Self.Width := Picture.Width + 32
       else
-        self.Width := W;
-      self.Left := R.Left + (W - self.Width) div 2;
+        Self.Width := W;
+      Self.Left := R.Left + (W - Self.Width) div 2;
     end;
-    if Picture.Height + StatusBar1.Height > self.Height then
+    if Picture.Height + StatusBar1.Height > Self.Height then
     begin
       if Picture.Height + 32 < H then
-        self.Height := Picture.Height + StatusBar1.Height + 32
+        Self.Height := Picture.Height + StatusBar1.Height + 32
       else
-        self.Height := H;
-      self.Top := R.Top + (H - self.Height) div 2;
+        Self.Height := H;
+      Self.Top := R.Top + (H - Self.Height) div 2;
     end;
   end;
 end;
@@ -215,7 +212,7 @@ end;
 procedure TfrmImageViewer.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 var
-  Value: integer;
+  Value: Integer;
 begin
   if ssCtrl in Shift then
     Value := 10

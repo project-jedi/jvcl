@@ -55,8 +55,8 @@ object frmImageViewer: TfrmImageViewer
     end
   end
   object ActionList1: TActionList
-    Left = 8
-    Top = 8
+    Left = 56
+    Top = 32
     object acFullScreen: TAction
       Caption = 'Full Screen'
       ShortCut = 122
