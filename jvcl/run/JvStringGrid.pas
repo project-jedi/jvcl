@@ -32,7 +32,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Grids,
-  JvTypes, JVCLVer, JvJCLUtils;
+  JvTypes, JVCLVer, JvJCLUtils, JvExGrids;
 
 const
   GM_ACTIVATECELL = WM_USER + 123;
@@ -55,7 +55,7 @@ type
   TJvSortType = (stNone, stAutomatic, stClassic, stCaseSensitive, stNumeric, stDate, stCurrency);
   TProgress = procedure(Sender: TObject; Progression, Total: integer) of object;
 
-  TJvStringGrid = class(TStringGrid)
+  TJvStringGrid = class(TJvExStringGrid)
   private
     FAboutJVCL: TJVCLAboutInfo;
     FAlignment: TAlignment;
@@ -63,10 +63,8 @@ type
     FGetCellAlignment: TGetCellAlignmentEvent;
     FCaptionClick: TCaptionClickEvent;
     FCellOnMouseDown: TGridCoord;
-    FOnMouseEnter: TNotifyEvent;
     FHintColor: TColor;
     FSaved: TColor;
-    FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FOver: boolean;
     FOnExitCell: TExitCellEvent;
@@ -94,9 +92,9 @@ type
     procedure CaptionClick(AColumn, ARow: Longint); dynamic;
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
+    procedure ParentColorChanged; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -174,8 +172,8 @@ type
     property OnSetCanvasProperties: TDrawCellEvent read FSetCanvasProperties write FSetCanvasProperties;
     property OnGetCellAlignment: TGetCellAlignmentEvent read FGetCellAlignment write FGetCellAlignment;
     property OnCaptionClick: TCaptionClickEvent read FCaptionClick write FCaptionClick;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property OnLoadProgress: TProgress read FOnLoadProgress write FOnLoadProgress;
     property OnSaveProgress: TProgress read FOnSaveProgress write FOnSaveProgress;
@@ -244,9 +242,9 @@ begin
   inherited;
 end;
 
-procedure TJvStringGrid.CMParentColorChanged(var Msg: TMessage);
+procedure TJvStringGrid.ParentColorChanged;
 begin
-  inherited;
+  inherited ParentColorChanged;
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
@@ -627,30 +625,27 @@ begin
     FOnVerticalScroll(Self);
 end;
 
-procedure TJvStringGrid.CMMouseEnter(var Msg: TMessage);
+procedure TJvStringGrid.MouseEnter(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   if not FOver then
   begin
     FSaved := Application.HintColor;
-    // for D7...
-    if csDesigning in ComponentState then
-      Exit;
     Application.HintColor := FHintColor;
     FOver := true;
+    inherited MouseEnter(Control);
   end;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
 end;
 
-procedure TJvStringGrid.CMMouseLeave(var Msg: TMessage);
+procedure TJvStringGrid.MouseLeave(Control: TControl);
 begin
   if FOver then
   begin
     Application.HintColor := FSaved;
     FOver := false;
+    inherited MouseLeave(Control);
   end;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
 end;
 
 procedure TJvStringGrid.SaveToFile(FileName: string);

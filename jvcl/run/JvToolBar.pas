@@ -34,17 +34,15 @@ interface
 
 uses
   Messages, SysUtils, Classes, Graphics, Controls, Forms, ComCtrls, Menus,
-  JvTypes, JVCLVer, JvMenus;
+  JvTypes, JVCLVer, JvMenus, JvExComCtrls;
 
 type
-  TJvToolBar = class(TToolBar)
+  TJvToolBar = class(TJvExToolBar)
   private
     FAboutJVCL: TJVCLAboutInfo;
     FChangeLink: TJvMenuChangeLink;
     FHintColor: TColor;
     FSaved: TColor;
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FOver: Boolean;
     {$IFNDEF COMPILER6_UP}
@@ -57,12 +55,12 @@ type
     function GetMenu: TMainMenu;
     procedure SetMenu(const Value: TMainMenu);
     procedure MenuChange(Sender: TJvMainMenu; Source: TMenuItem; Rebuild: Boolean);
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure CNNotify(var Msg: TWMNotify); message CN_NOTIFY;
     procedure CNDropDownClosed(var Msg: TMessage); message CN_DROPDOWNCLOSED;
   protected
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
+    procedure ParentColorChanged; override;
     procedure AdjustSize; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -71,8 +69,8 @@ type
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property Menu: TMainMenu read GetMenu write SetMenu;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   end;
 
@@ -102,29 +100,32 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvToolBar.CMMouseEnter(var Msg: TMessage);
+procedure TJvToolBar.MouseEnter(Control: TControl);
 begin
-  FOver := True;
-  FSaved := Application.HintColor;
-  // for D7...
   if csDesigning in ComponentState then
     Exit;
-  Application.HintColor := FHintColor;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
+  if not FOver then
+  begin
+    FOver := True;
+    FSaved := Application.HintColor;
+    Application.HintColor := FHintColor;
+    inherited MouseEnter(Control);
+  end;
 end;
 
-procedure TJvToolBar.CMMouseLeave(var Msg: TMessage);
+procedure TJvToolBar.MouseLeave(Control: TControl);
 begin
-  Application.HintColor := FSaved;
-  FOver := False;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
+  if FOver then
+  begin
+    Application.HintColor := FSaved;
+    FOver := False;
+    inherited MouseLeave(Control);
+  end;
 end;
 
-procedure TJvToolBar.CMParentColorChanged(var Msg: TMessage);
+procedure TJvToolBar.ParentColorChanged;
 begin
-  inherited;
+  inherited ParentColorChanged;
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;

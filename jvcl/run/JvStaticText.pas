@@ -79,9 +79,6 @@ type
     FTextMargins: TJvTextMargins;
     FWordWrap: Boolean;
     FHotTrackFontOptions: TJvTrackFOntOptions;
-    procedure CMDialogChar(var Msg: TCMDialogChar); message CM_DIALOGCHAR;
-    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
-    procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
     procedure SetAlignment(Value: TAlignment);
     procedure SetBorderStyle(Value: TStaticBorderStyle);
@@ -90,7 +87,6 @@ type
     procedure SetHotTrackFont(const Value: TFont);
     procedure SetLayout(const Value: TTextLayout);
 
-    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
     procedure SetTextMargins(const Value: TJvTextMargins);
     procedure SetWordWrap(const Value: Boolean);
@@ -100,6 +96,11 @@ type
     procedure Loaded; override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
+    function WantKey(Key: Integer; Shift: TShiftState;
+      const KeyText: WideString): Boolean; override;
+    procedure FontChanged; override;
+    procedure TextChanged; override;
+    procedure ParentColorChanged; override;
     procedure AdjustBounds; dynamic;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure SetAutoSize(Value: Boolean);
@@ -219,15 +220,17 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvCustomStaticText.CMParentColorChanged(var Msg: TMessage);
+procedure TJvCustomStaticText.ParentColorChanged;
 begin
-  inherited;
+  inherited ParentColorChanged;
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
 
 procedure TJvCustomStaticText.MouseEnter(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   if not FOver then
   begin
     FSaved := Application.HintColor;
@@ -238,8 +241,8 @@ begin
       Font.Assign(FHotTrackFont);
     end;
     FOver := True;
+    inherited MouseEnter(Control);
   end;
-  inherited;
 end;
 
 procedure TJvCustomStaticText.MouseLeave(Control: TControl);
@@ -250,8 +253,8 @@ begin
     if FHotTrack then
       Font.Assign(FFontSave);
     FOver := False;
+    inherited MouseLeave(Control);
   end;
-  inherited;
 end;
 
 procedure TJvCustomStaticText.SetHotTrackFont(const Value: TFont);
@@ -361,28 +364,26 @@ begin
   end;
 end;
 
-procedure TJvCustomStaticText.CMDialogChar(var Msg: TCMDialogChar);
+function TJvCustomStaticText.WantKey(Key: Integer; Shift: TShiftState;
+  const KeyText: WideString): Boolean;
 begin
-  if (FFocusControl <> nil) and Enabled and ShowAccelChar and
-    IsAccel(Msg.CharCode, Caption) then
-    with FFocusControl do
-      if CanFocus then
-      begin
-        SetFocus;
-        Msg.Result := 1;
-      end;
+  Result := (FFocusControl <> nil) and Enabled and ShowAccelChar and
+    IsAccel(Key, Caption) and (ssAlt in Shift);
+  if Result then
+    if FFocusControl.CanFocus then
+      FFocusControl.SetFocus;
 end;
 
-procedure TJvCustomStaticText.CMFontChanged(var Msg: TMessage);
+procedure TJvCustomStaticText.FontChanged;
 begin
-  inherited;
+  inherited FontChanged;
   AdjustBounds;
   UpdateTrackFont(HotTrackFont, Font, HotTrackFontOptions);
 end;
 
-procedure TJvCustomStaticText.CMTextChanged(var Msg: TMessage);
+procedure TJvCustomStaticText.TextChanged;
 begin
-  inherited;
+  inherited TextChanged;
   AdjustBounds;
 end;
 

@@ -25,7 +25,7 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvTFGlanceTextViewer;
 
@@ -713,14 +713,14 @@ end;
 procedure TJvTFGVTextControl.MouseEnter(Control: TControl);
 begin
   FMouseInControl := True;
-  inherited;
+  inherited MouseEnter(Control);
   Invalidate;
 end;
 
 procedure TJvTFGVTextControl.MouseLeave(Control: TControl);
 begin
   FMouseInControl := False;
-  inherited;
+  inherited MouseLeave(Control);
   Invalidate;
 end;
 

@@ -228,6 +228,53 @@ type
   end;
   //
   // --------------------------------------
+  TJvExProgressBar = class(TProgressBar, IJvWinControlEvents, IJvControlEvents)
+  {$IFDEF VCL}
+  protected
+   // TControl
+    procedure VisibleChanged; dynamic;
+    procedure EnabledChanged; dynamic;
+    procedure TextChanged; dynamic;
+    procedure FontChanged; dynamic;
+    procedure ColorChanged; dynamic;
+    procedure ParentFontChanged; dynamic;
+    procedure ParentColorChanged; dynamic;
+    procedure ParentShowHintChanged; dynamic;
+    function WantKey(Key: Integer; Shift: TShiftState;
+      const KeyText: WideString): Boolean; virtual;
+    function HintShow(var HintInfo : THintInfo): Boolean; dynamic;
+    function HitTest(X, Y: Integer): Boolean; dynamic;
+    procedure MouseEnter(Control: TControl); dynamic;
+    procedure MouseLeave(Control: TControl); dynamic;
+  protected
+   // TWinControl
+    procedure CursorChanged; dynamic;
+    procedure ShowingChanged; dynamic;
+    procedure ShowHintChanged; dynamic;
+    procedure ControlsListChanging(Control: TControl; Inserting: Boolean); dynamic;
+    procedure ControlsListChanged(Control: TControl; Inserting: Boolean); dynamic;
+  public
+    procedure Dispatch(var Message); override;
+  private
+    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+  protected
+    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
+    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+   {$IF not declared(PatchedVCLX)}
+  private
+    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+  protected
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
+    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
+    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+   {$IFEND}
+  {$ENDIF}
+  end;
+  //
+  // --------------------------------------
   TJvExStatusBar = class(TStatusBar, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -842,6 +889,100 @@ type
   //
   // --------------------------------------
   TJvExHotKey = class(THotKey, IJvWinControlEvents, IJvControlEvents)
+  {$IFDEF VCL}
+  protected
+   // TControl
+    procedure VisibleChanged; dynamic;
+    procedure EnabledChanged; dynamic;
+    procedure TextChanged; dynamic;
+    procedure FontChanged; dynamic;
+    procedure ColorChanged; dynamic;
+    procedure ParentFontChanged; dynamic;
+    procedure ParentColorChanged; dynamic;
+    procedure ParentShowHintChanged; dynamic;
+    function WantKey(Key: Integer; Shift: TShiftState;
+      const KeyText: WideString): Boolean; virtual;
+    function HintShow(var HintInfo : THintInfo): Boolean; dynamic;
+    function HitTest(X, Y: Integer): Boolean; dynamic;
+    procedure MouseEnter(Control: TControl); dynamic;
+    procedure MouseLeave(Control: TControl); dynamic;
+  protected
+   // TWinControl
+    procedure CursorChanged; dynamic;
+    procedure ShowingChanged; dynamic;
+    procedure ShowHintChanged; dynamic;
+    procedure ControlsListChanging(Control: TControl; Inserting: Boolean); dynamic;
+    procedure ControlsListChanged(Control: TControl; Inserting: Boolean); dynamic;
+  public
+    procedure Dispatch(var Message); override;
+  private
+    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+  protected
+    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
+    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+   {$IF not declared(PatchedVCLX)}
+  private
+    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+  protected
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
+    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
+    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+   {$IFEND}
+  {$ENDIF}
+  end;
+  //
+  // --------------------------------------
+  TJvExCustomUpDown = class(TCustomUpDown, IJvWinControlEvents, IJvControlEvents)
+  {$IFDEF VCL}
+  protected
+   // TControl
+    procedure VisibleChanged; dynamic;
+    procedure EnabledChanged; dynamic;
+    procedure TextChanged; dynamic;
+    procedure FontChanged; dynamic;
+    procedure ColorChanged; dynamic;
+    procedure ParentFontChanged; dynamic;
+    procedure ParentColorChanged; dynamic;
+    procedure ParentShowHintChanged; dynamic;
+    function WantKey(Key: Integer; Shift: TShiftState;
+      const KeyText: WideString): Boolean; virtual;
+    function HintShow(var HintInfo : THintInfo): Boolean; dynamic;
+    function HitTest(X, Y: Integer): Boolean; dynamic;
+    procedure MouseEnter(Control: TControl); dynamic;
+    procedure MouseLeave(Control: TControl); dynamic;
+  protected
+   // TWinControl
+    procedure CursorChanged; dynamic;
+    procedure ShowingChanged; dynamic;
+    procedure ShowHintChanged; dynamic;
+    procedure ControlsListChanging(Control: TControl; Inserting: Boolean); dynamic;
+    procedure ControlsListChanged(Control: TControl; Inserting: Boolean); dynamic;
+  public
+    procedure Dispatch(var Message); override;
+  private
+    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+  protected
+    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
+    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+   {$IF not declared(PatchedVCLX)}
+  private
+    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+  protected
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
+    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
+    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+   {$IFEND}
+  {$ENDIF}
+  end;
+  //
+  // --------------------------------------
+  TJvExUpDown = class(TUpDown, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
   protected
    // TControl
@@ -1732,6 +1873,135 @@ end;
 {$ENDIF VCL}
 {$IFDEF VCL}
 procedure TJvExPageControl.Dispatch(var Message);
+begin
+  if not DispatchMsg(Self, Message) then
+    inherited Dispatch(Message);
+end;
+{$ENDIF VCL}
+//
+// -----------------------------------------------------------------------------
+{$IFDEF VCL}
+procedure TJvExProgressBar.VisibleChanged;
+begin
+  InheritMsg(Self, CM_VISIBLECHANGED);
+end;
+
+procedure TJvExProgressBar.EnabledChanged;
+begin
+  InheritMsg(Self, CM_ENABLEDCHANGED);
+end;
+
+procedure TJvExProgressBar.TextChanged;
+begin
+  InheritMsg(Self, CM_TEXTCHANGED);
+end;
+
+procedure TJvExProgressBar.FontChanged;
+begin
+  InheritMsg(Self, CM_FONTCHANGED);
+end;
+
+procedure TJvExProgressBar.ColorChanged;
+begin
+  InheritMsg(Self, CM_COLORCHANGED);
+end;
+
+procedure TJvExProgressBar.ParentColorChanged;
+begin
+  InheritMsg(Self, CM_PARENTCOLORCHANGED);
+end;
+
+procedure TJvExProgressBar.ParentFontChanged;
+begin
+  InheritMsg(Self, CM_PARENTFONTCHANGED);
+end;
+
+procedure TJvExProgressBar.ParentShowHintChanged;
+begin
+  InheritMsg(Self, CM_PARENTSHOWHINTCHANGED);
+end;
+
+function TJvExProgressBar.WantKey(Key: Integer; Shift: TShiftState;
+  const KeyText: WideString): Boolean;
+begin
+  Result := InheritMsg(Self, CM_DIALOGCHAR, Word(Key), ShiftStateToKeyData(Shift)) <> 0;
+end;
+
+function TJvExProgressBar.HintShow(var HintInfo: THintInfo): Boolean;
+begin
+  Result := InheritMsg(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
+end;
+
+function TJvExProgressBar.HitTest(X, Y: Integer): Boolean;
+begin
+  Result := InheritMsg(Self, CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
+end;
+
+procedure TJvExProgressBar.MouseEnter(Control: TControl);
+begin
+  InheritMsg(Self, CM_MOUSEENTER, 0, Integer(Control));
+  if Assigned(FOnMouseEnter) then
+    FOnMouseEnter(Self);
+end;
+
+procedure TJvExProgressBar.MouseLeave(Control: TControl);
+begin
+  InheritMsg(Self, CM_MOUSELEAVE, 0, Integer(Control));
+  if Assigned(FOnMouseLeave) then
+    FOnMouseLeave(Self);
+end;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+ {$IF not declared(PatchedVCLX)}
+procedure TJvExProgressBar.MouseEnter(Control: TControl);
+begin
+  inherited MouseEnter(Control);
+  if Assigned(FOnMouseEnter) then
+    FOnMouseEnter(Self);
+end;
+
+procedure TJvExProgressBar.MouseLeave(Control: TControl);
+begin
+  inherited MouseLeave(Control);
+  if Assigned(FOnMouseLeave) then
+    FOnMouseLeave(Self);
+end;
+ {$IFEND}
+{$ENDIF VisualCLX}
+{$IFDEF VCL}
+procedure TJvExProgressBar.CursorChanged;
+begin
+  InheritMsg(Self, CM_CURSORCHANGED);
+end;
+
+procedure TJvExProgressBar.ShowHintChanged;
+begin
+  InheritMsg(Self, CM_SHOWHINTCHANGED);
+end;
+
+procedure TJvExProgressBar.ShowingChanged;
+begin
+  InheritMsg(Self, CM_SHOWINGCHANGED);
+end;
+
+procedure TJvExProgressBar.ControlsListChanging(Control: TControl; Inserting: Boolean);
+begin
+  if Inserting then
+    InheritMsg(Self, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+  else
+    InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+end;
+
+procedure TJvExProgressBar.ControlsListChanged(Control: TControl; Inserting: Boolean);
+begin
+  if not Inserting then
+    InheritMsg(Self, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+  else
+    InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+end;
+{$ENDIF VCL}
+{$IFDEF VCL}
+procedure TJvExProgressBar.Dispatch(var Message);
 begin
   if not DispatchMsg(Self, Message) then
     inherited Dispatch(Message);
@@ -3516,6 +3786,264 @@ end;
 {$ENDIF VCL}
 {$IFDEF VCL}
 procedure TJvExHotKey.Dispatch(var Message);
+begin
+  if not DispatchMsg(Self, Message) then
+    inherited Dispatch(Message);
+end;
+{$ENDIF VCL}
+//
+// -----------------------------------------------------------------------------
+{$IFDEF VCL}
+procedure TJvExCustomUpDown.VisibleChanged;
+begin
+  InheritMsg(Self, CM_VISIBLECHANGED);
+end;
+
+procedure TJvExCustomUpDown.EnabledChanged;
+begin
+  InheritMsg(Self, CM_ENABLEDCHANGED);
+end;
+
+procedure TJvExCustomUpDown.TextChanged;
+begin
+  InheritMsg(Self, CM_TEXTCHANGED);
+end;
+
+procedure TJvExCustomUpDown.FontChanged;
+begin
+  InheritMsg(Self, CM_FONTCHANGED);
+end;
+
+procedure TJvExCustomUpDown.ColorChanged;
+begin
+  InheritMsg(Self, CM_COLORCHANGED);
+end;
+
+procedure TJvExCustomUpDown.ParentColorChanged;
+begin
+  InheritMsg(Self, CM_PARENTCOLORCHANGED);
+end;
+
+procedure TJvExCustomUpDown.ParentFontChanged;
+begin
+  InheritMsg(Self, CM_PARENTFONTCHANGED);
+end;
+
+procedure TJvExCustomUpDown.ParentShowHintChanged;
+begin
+  InheritMsg(Self, CM_PARENTSHOWHINTCHANGED);
+end;
+
+function TJvExCustomUpDown.WantKey(Key: Integer; Shift: TShiftState;
+  const KeyText: WideString): Boolean;
+begin
+  Result := InheritMsg(Self, CM_DIALOGCHAR, Word(Key), ShiftStateToKeyData(Shift)) <> 0;
+end;
+
+function TJvExCustomUpDown.HintShow(var HintInfo: THintInfo): Boolean;
+begin
+  Result := InheritMsg(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
+end;
+
+function TJvExCustomUpDown.HitTest(X, Y: Integer): Boolean;
+begin
+  Result := InheritMsg(Self, CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
+end;
+
+procedure TJvExCustomUpDown.MouseEnter(Control: TControl);
+begin
+  InheritMsg(Self, CM_MOUSEENTER, 0, Integer(Control));
+  if Assigned(FOnMouseEnter) then
+    FOnMouseEnter(Self);
+end;
+
+procedure TJvExCustomUpDown.MouseLeave(Control: TControl);
+begin
+  InheritMsg(Self, CM_MOUSELEAVE, 0, Integer(Control));
+  if Assigned(FOnMouseLeave) then
+    FOnMouseLeave(Self);
+end;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+ {$IF not declared(PatchedVCLX)}
+procedure TJvExCustomUpDown.MouseEnter(Control: TControl);
+begin
+  inherited MouseEnter(Control);
+  if Assigned(FOnMouseEnter) then
+    FOnMouseEnter(Self);
+end;
+
+procedure TJvExCustomUpDown.MouseLeave(Control: TControl);
+begin
+  inherited MouseLeave(Control);
+  if Assigned(FOnMouseLeave) then
+    FOnMouseLeave(Self);
+end;
+ {$IFEND}
+{$ENDIF VisualCLX}
+{$IFDEF VCL}
+procedure TJvExCustomUpDown.CursorChanged;
+begin
+  InheritMsg(Self, CM_CURSORCHANGED);
+end;
+
+procedure TJvExCustomUpDown.ShowHintChanged;
+begin
+  InheritMsg(Self, CM_SHOWHINTCHANGED);
+end;
+
+procedure TJvExCustomUpDown.ShowingChanged;
+begin
+  InheritMsg(Self, CM_SHOWINGCHANGED);
+end;
+
+procedure TJvExCustomUpDown.ControlsListChanging(Control: TControl; Inserting: Boolean);
+begin
+  if Inserting then
+    InheritMsg(Self, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+  else
+    InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+end;
+
+procedure TJvExCustomUpDown.ControlsListChanged(Control: TControl; Inserting: Boolean);
+begin
+  if not Inserting then
+    InheritMsg(Self, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+  else
+    InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+end;
+{$ENDIF VCL}
+{$IFDEF VCL}
+procedure TJvExCustomUpDown.Dispatch(var Message);
+begin
+  if not DispatchMsg(Self, Message) then
+    inherited Dispatch(Message);
+end;
+{$ENDIF VCL}
+//
+// -----------------------------------------------------------------------------
+{$IFDEF VCL}
+procedure TJvExUpDown.VisibleChanged;
+begin
+  InheritMsg(Self, CM_VISIBLECHANGED);
+end;
+
+procedure TJvExUpDown.EnabledChanged;
+begin
+  InheritMsg(Self, CM_ENABLEDCHANGED);
+end;
+
+procedure TJvExUpDown.TextChanged;
+begin
+  InheritMsg(Self, CM_TEXTCHANGED);
+end;
+
+procedure TJvExUpDown.FontChanged;
+begin
+  InheritMsg(Self, CM_FONTCHANGED);
+end;
+
+procedure TJvExUpDown.ColorChanged;
+begin
+  InheritMsg(Self, CM_COLORCHANGED);
+end;
+
+procedure TJvExUpDown.ParentColorChanged;
+begin
+  InheritMsg(Self, CM_PARENTCOLORCHANGED);
+end;
+
+procedure TJvExUpDown.ParentFontChanged;
+begin
+  InheritMsg(Self, CM_PARENTFONTCHANGED);
+end;
+
+procedure TJvExUpDown.ParentShowHintChanged;
+begin
+  InheritMsg(Self, CM_PARENTSHOWHINTCHANGED);
+end;
+
+function TJvExUpDown.WantKey(Key: Integer; Shift: TShiftState;
+  const KeyText: WideString): Boolean;
+begin
+  Result := InheritMsg(Self, CM_DIALOGCHAR, Word(Key), ShiftStateToKeyData(Shift)) <> 0;
+end;
+
+function TJvExUpDown.HintShow(var HintInfo: THintInfo): Boolean;
+begin
+  Result := InheritMsg(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
+end;
+
+function TJvExUpDown.HitTest(X, Y: Integer): Boolean;
+begin
+  Result := InheritMsg(Self, CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
+end;
+
+procedure TJvExUpDown.MouseEnter(Control: TControl);
+begin
+  InheritMsg(Self, CM_MOUSEENTER, 0, Integer(Control));
+  if Assigned(FOnMouseEnter) then
+    FOnMouseEnter(Self);
+end;
+
+procedure TJvExUpDown.MouseLeave(Control: TControl);
+begin
+  InheritMsg(Self, CM_MOUSELEAVE, 0, Integer(Control));
+  if Assigned(FOnMouseLeave) then
+    FOnMouseLeave(Self);
+end;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+ {$IF not declared(PatchedVCLX)}
+procedure TJvExUpDown.MouseEnter(Control: TControl);
+begin
+  inherited MouseEnter(Control);
+  if Assigned(FOnMouseEnter) then
+    FOnMouseEnter(Self);
+end;
+
+procedure TJvExUpDown.MouseLeave(Control: TControl);
+begin
+  inherited MouseLeave(Control);
+  if Assigned(FOnMouseLeave) then
+    FOnMouseLeave(Self);
+end;
+ {$IFEND}
+{$ENDIF VisualCLX}
+{$IFDEF VCL}
+procedure TJvExUpDown.CursorChanged;
+begin
+  InheritMsg(Self, CM_CURSORCHANGED);
+end;
+
+procedure TJvExUpDown.ShowHintChanged;
+begin
+  InheritMsg(Self, CM_SHOWHINTCHANGED);
+end;
+
+procedure TJvExUpDown.ShowingChanged;
+begin
+  InheritMsg(Self, CM_SHOWINGCHANGED);
+end;
+
+procedure TJvExUpDown.ControlsListChanging(Control: TControl; Inserting: Boolean);
+begin
+  if Inserting then
+    InheritMsg(Self, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+  else
+    InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+end;
+
+procedure TJvExUpDown.ControlsListChanged(Control: TControl; Inserting: Boolean);
+begin
+  if not Inserting then
+    InheritMsg(Self, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+  else
+    InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+end;
+{$ENDIF VCL}
+{$IFDEF VCL}
+procedure TJvExUpDown.Dispatch(var Message);
 begin
   if not DispatchMsg(Self, Message) then
     inherited Dispatch(Message);

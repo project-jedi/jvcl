@@ -146,10 +146,10 @@ type
     procedure SetStorage(Value: TJvFormPlacement);
     procedure IniSave(Sender: TObject);
     procedure IniLoad(Sender: TObject);
-    procedure CMVisibleChanged(var Msg: TMessage); message CM_VISIBLECHANGED;
-    procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
     procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
   protected
+    procedure VisibleChanged; override;
+    procedure EnabledChanged; override;
     procedure AlignControls(AControl: TControl; var Rect: TRect); override;
     function AppendSection(Value: TJvSpeedBarSection): Integer; virtual;
     procedure AlignItemsToGrid;
@@ -1664,18 +1664,18 @@ begin
   end;
 end;
 
-procedure TJvSpeedBar.CMVisibleChanged(var Msg: TMessage);
+procedure TJvSpeedBar.VisibleChanged;
 begin
-  inherited;
+  inherited VisibleChanged;
   if not (csLoading in ComponentState) then
     ForEachItem(SetItemVisible, 0);
   if Assigned(FOnVisibleChanged) then
     FOnVisibleChanged(Self);
 end;
 
-procedure TJvSpeedBar.CMEnabledChanged(var Msg: TMessage);
+procedure TJvSpeedBar.EnabledChanged;
 begin
-  inherited;
+  inherited EnabledChanged;
   if not ((csLoading in ComponentState) or (csDesigning in ComponentState)) then
     ForEachItem(SetItemEnabled, 0);
 end;

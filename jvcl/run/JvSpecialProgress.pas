@@ -87,10 +87,6 @@ type
     procedure SetStartColor(const Value: TColor);
     procedure SetTextCentered(const Value: Boolean);
     procedure SetTextOption(const Value: TJvTextOption);
-    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
-    procedure CMColorChanged(var Msg: TMessage); message CM_COLORCHANGED;
-    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
-    procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
     procedure PaintRectangle;
     procedure PaintNonSolid;
     procedure PaintSolid;
@@ -101,6 +97,10 @@ type
     procedure Loaded; override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
+    procedure ParentColorChanged; override;
+    procedure ColorChanged; override;
+    procedure FontChanged; override;
+    procedure TextChanged; override;
     procedure UpdateBuffer;
     procedure UpdateTaille;
   public
@@ -181,15 +181,17 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvSpecialProgress.CMColorChanged(var Msg: TMessage);
+procedure TJvSpecialProgress.ColorChanged;
 begin
+  //inherited ColorChanged; calls CM_COLORCHANGED in VCL
   { No need to call inherited; Repaint is called in UpdateBuffer }
   FIsChanged := True;
   UpdateBuffer;
 end;
 
-procedure TJvSpecialProgress.CMFontChanged(var Msg: TMessage);
+procedure TJvSpecialProgress.FontChanged;
 begin
+  //inherited FontChanged; calls CM_COLORCHANGED in VCL
   { No need to call inherited; Repaint is called in UpdateBuffer }
   FBuffer.Canvas.Font := Font;
 
@@ -201,21 +203,21 @@ begin
   UpdateBuffer;
 end;
 
-procedure TJvSpecialProgress.CMParentColorChanged(var Msg: TMessage);
+procedure TJvSpecialProgress.ParentColorChanged;
 begin
-  inherited;
+  inherited ParentColorChanged;
   if Assigned(FOnParentColorChange) then
     FOnParentColorChange(Self);
 end;
 
-procedure TJvSpecialProgress.CMTextChanged(var Msg: TMessage);
+procedure TJvSpecialProgress.TextChanged;
 begin
-  { No need to call inherited; Repaint is called in UpdateBuffer }
   if TextOption in [toCaption, toFormat] then
   begin
     FIsChanged := True;
     UpdateBuffer;
   end;
+  inherited TextChanged;
 end;
 
 function TJvSpecialProgress.GetPercentDone: Longint;
