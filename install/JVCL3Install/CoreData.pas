@@ -47,7 +47,7 @@ type
     FVersion: string;
     FRootDir: string;
     FVersionType: string;
-    FLastUpdate: Integer; // 0: no Update, 1: Update #1, 2: Update #3, ...
+    FLastUpdate: Integer; // 0: no Update, 1: Update #1, 2: Update #2, ...
     FDcpDir: string;
     FBplDir: string;
     FSearchPaths: string;
@@ -553,7 +553,6 @@ begin
   Result := True;
 end;
 
-
 function ReadStringFromFile(const Filename: string): string;
 var
   Stream: TFileStream;
@@ -572,6 +571,7 @@ function SubStr(const Text: string; StartIndex, EndIndex: Integer): string;
 begin
   Result := Copy(Text, StartIndex, EndIndex - StartIndex + 1);
 end;
+
 
 { TTargetInfo }
 
@@ -1523,7 +1523,7 @@ begin
     xml.LoadFromFile(FXmlDir + '\' + FName + '.xml');
     RootNode := xml.Root;
     RequiredNode := RootNode.Items.ItemNamed['Requires'];
-    ContainsNode := rootNode.Items.ItemNamed['Contains'];
+    ContainsNode := RootNode.Items.ItemNamed['Contains'];
 
     FDisplayName := RootNode.Properties.ItemNamed['Name'].Value;
     FDescription := RootNode.Items.ItemNamed['Description'].Value;
