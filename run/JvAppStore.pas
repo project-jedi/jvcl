@@ -72,7 +72,7 @@ type
   TAppStorePropTranslate = procedure(Sender: TJvCustomAppStore; Instance: TPersistent;
     var Name: string; const Reading: Boolean) of object;
 
-  TJvAppStoreOptions = class(TPersistent)
+  TJvCustomAppStoreOptions = class(TPersistent)
   private
     FBooleanAsString: Boolean;
     FBooleanStringTrueValues: string;
@@ -102,7 +102,7 @@ type
     function DefaultFalseString: string;
     function IsValueTrueString(Value: string): Boolean;
     function IsValueFalseString(Value: string): Boolean;
-  published
+
     property BooleanStringTrueValues: string read FBooleanStringTrueValues
       write SetBooleanStringTrueValues;
     property BooleanStringFalseValues: string read FBooleanStringFalseValues
@@ -118,8 +118,21 @@ type
     property DefaultIfValueNotExists: Boolean read FDefaultIfValueNotExists
       write SetDefaultIfValueNotExists default True;
   end;
+  TJvAppStoreOptionsClass = class of TJvCustomAppStoreOptions;
 
-  TJvAppStoreOptionsClass = class of TJvAppStoreOptions;
+  TJvAppStoreOptions = class(TJvCustomAppStoreOptions)
+  published
+    property BooleanStringTrueValues;
+    property BooleanStringFalseValues;
+    property BooleanAsString;
+    property EnumerationAsString;
+    property TypedIntegerAsString;
+    property SetAsString;
+    property DateTimeAsString;
+    property FloatAsString;
+    property DefaultIfReadConvertError;
+    property DefaultIfValueNotExists;
+  end;
 
   TAppStoreEnumOption  = (
     aeoFolders,           // report folders
@@ -134,7 +147,7 @@ type
     FRoot: string;
     FCurPath: string;
     FStoreSL: TStrings;
-    FStoreOptions: TJvAppStoreOptions;
+    FStoreOptions: TJvCustomAppStoreOptions;
   protected
     //Returns the property count of an instance
     function GetPropCount(Instance: TPersistent): Integer;
@@ -186,7 +199,7 @@ type
       storages not specific to an application (such as the registry). }
     property Root: string Read GetRoot Write SetRoot;
     { Set the StoreOptions Property }
-    procedure SetStoreOptions(Value: TJvAppStoreOptions);
+    procedure SetStoreOptions(Value: TJvCustomAppStoreOptions);
 
     { Retrieves the specified Integer value. If the value is not found, the Default will be
       returned. If the value is not an Integer (or can't be converted to an Integer an EConvertError
@@ -329,7 +342,7 @@ type
       of Root (which is an absolute path) }
     property Path: string Read GetPath Write SetPath;
   published
-    property StoreOptions: TJvAppStoreOptions Read fStoreOptions Write SetStoreOptions;
+    property StoreOptions: TJvCustomAppStoreOptions read FStoreOptions write SetStoreOptions;
   end;
 
 const
@@ -431,9 +444,9 @@ begin
   end;
 end;
 
-//===TJvAppStoreOptions=============================================================================
+//===TJvCustomAppStoreOptions=============================================================================
 
-constructor TJvAppStoreOptions.Create;
+constructor TJvCustomAppStoreOptions.Create;
 begin
   inherited Create;
   BooleanStringTrueValues := 'TRUE, YES, Y';
@@ -447,7 +460,7 @@ begin
   DefaultIfValueNotExists := True;
 end;
 
-function TJvAppStoreOptions.IsValueListString(Value, List: string): Boolean;
+function TJvCustomAppStoreOptions.IsValueListString(Value, List: string): Boolean;
 var
   SL: TStringList;
 begin
@@ -460,7 +473,7 @@ begin
   end;
 end;
 
-function TJvAppStoreOptions.DefaultTrueString: string;
+function TJvCustomAppStoreOptions.DefaultTrueString: string;
 var
   I: Integer;
 begin
@@ -470,7 +483,7 @@ begin
   Result := Trim(Copy(FBooleanStringTrueValues, 1, I - 1));
 end;
 
-function TJvAppStoreOptions.DefaultFalseString: string;
+function TJvCustomAppStoreOptions.DefaultFalseString: string;
 var
   I: Integer;
 begin
@@ -480,64 +493,64 @@ begin
   Result := Trim(Copy(FBooleanStringFalseValues, 1, I - 1));
 end;
 
-function TJvAppStoreOptions.IsValueTrueString(Value: string): Boolean;
+function TJvCustomAppStoreOptions.IsValueTrueString(Value: string): Boolean;
 begin
   Result := IsValueListString(Value, FBooleanStringTrueValues);
 end;
 
-function TJvAppStoreOptions.IsValueFalseString(Value: string): Boolean;
+function TJvCustomAppStoreOptions.IsValueFalseString(Value: string): Boolean;
 begin
   Result := IsValueListString(Value, FBooleanStringFalseValues);
 end;
 
-procedure TJvAppStoreOptions.SetBooleanAsString(Value: Boolean);
+procedure TJvCustomAppStoreOptions.SetBooleanAsString(Value: Boolean);
 begin
   FBooleanAsString := Value and (DefaultTrueString <> '') and (DefaultFalseString <> '');
 end;
 
-procedure TJvAppStoreOptions.SetBooleanStringTrueValues(Value: string);
+procedure TJvCustomAppStoreOptions.SetBooleanStringTrueValues(Value: string);
 begin
   FBooleanStringTrueValues := Value;
   FBooleanAsString := FBooleanAsString and (DefaultTrueString <> '')
 end;
 
-procedure TJvAppStoreOptions.SetBooleanStringFalseValues(Value: string);
+procedure TJvCustomAppStoreOptions.SetBooleanStringFalseValues(Value: string);
 begin
   FBooleanStringFalseValues := Value;
   FBooleanAsString := FBooleanAsString and (DefaultFalseString <> '')
 end;
 
-procedure TJvAppStoreOptions.SetEnumAsStr(Value: Boolean);
+procedure TJvCustomAppStoreOptions.SetEnumAsStr(Value: Boolean);
 begin
   FEnumAsStr := Value;
 end;
 
-procedure TJvAppStoreOptions.SetIntAsStr(Value: Boolean);
+procedure TJvCustomAppStoreOptions.SetIntAsStr(Value: Boolean);
 begin
   FIntAsStr := Value;
 end;
 
-procedure TJvAppStoreOptions.SetSetAsStr(Value: Boolean);
+procedure TJvCustomAppStoreOptions.SetSetAsStr(Value: Boolean);
 begin
   FSetAsStr := Value;
 end;
 
-procedure TJvAppStoreOptions.SetDateTimeAsStr(Value: Boolean);
+procedure TJvCustomAppStoreOptions.SetDateTimeAsStr(Value: Boolean);
 begin
   FDateTimeAsString := Value;
 end;
 
-procedure TJvAppStoreOptions.SetFloatAsStr(Value: Boolean);
+procedure TJvCustomAppStoreOptions.SetFloatAsStr(Value: Boolean);
 begin
   FFloatAsString := Value;
 end;
 
-procedure TJvAppStoreOptions.SetDefaultIfReadConvertError(Value: Boolean);
+procedure TJvCustomAppStoreOptions.SetDefaultIfReadConvertError(Value: Boolean);
 begin
   FDefaultIfReadConvertError := Value;
 end;
 
-procedure TJvAppStoreOptions.SetDefaultIfValueNotExists(Value: Boolean);
+procedure TJvCustomAppStoreOptions.SetDefaultIfValueNotExists(Value: Boolean);
 begin
   FDefaultIfValueNotExists := Value;
 end;
@@ -547,7 +560,7 @@ end;
 constructor TJvCustomAppStore.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FStoreOptions := TJvAppStoreOptions.Create;
+  FStoreOptions := GetStoreOptionsClass.Create;
 end;
 
 destructor TJvCustomAppStore.Destroy;
@@ -682,7 +695,7 @@ begin
   FCurPath := OptimizePaths([Path]);
 end;
 
-procedure TJvCustomAppStore.SetStoreOptions(Value: TJvAppStoreOptions);
+procedure TJvCustomAppStore.SetStoreOptions(Value: TJvCustomAppStoreOptions);
 begin
   if (Value <> nil) and (Value <> FStoreOptions) then
     FStoreOptions.Assign(Value);
