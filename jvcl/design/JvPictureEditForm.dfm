@@ -4,7 +4,7 @@ object PictureEditDialog: TPictureEditDialog
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = 'Picture Editor'
-  ClientHeight = 335
+  ClientHeight = 322
   ClientWidth = 353
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -32,7 +32,7 @@ object PictureEditDialog: TPictureEditDialog
   TextHeight = 13
   object OKButton: TButton
     Left = 105
-    Top = 306
+    Top = 290
     Width = 75
     Height = 25
     Caption = 'OK'
@@ -42,7 +42,7 @@ object PictureEditDialog: TPictureEditDialog
   end
   object CancelButton: TButton
     Left = 188
-    Top = 306
+    Top = 290
     Width = 75
     Height = 25
     Cancel = True
@@ -52,7 +52,7 @@ object PictureEditDialog: TPictureEditDialog
   end
   object HelpBtn: TButton
     Left = 271
-    Top = 306
+    Top = 290
     Width = 75
     Height = 25
     Caption = '&Help'
