@@ -795,6 +795,7 @@ type
     function CheckBtnMenuDropDown: Boolean;
     procedure Click; override;
     procedure UpdateTracking;
+    property MouseInControl: Boolean read FMouseInControl;
   published
     property FlatStandard: Boolean read FFlatStandard write SetFlatStandard default False;
     property Action;
@@ -966,7 +967,7 @@ uses
   {$IFDEF COMPILER4_UP}
   ImgList, ActnList,
   {$ENDIF}
-  {$IFDEF COMPILER7_UP}
+  {$IFDEF JVCLThemesEnabled}
   Themes,
   {$ENDIF}
   {$IFDEF WIN32}
@@ -4995,7 +4996,7 @@ procedure TJvSpeedButton.Paint;
 var
   PaintRect: TRect;
   AState: TJvButtonState;
-  {$IFDEF COMPILER7_UP}
+  {$IFDEF JVCLThemesEnabled}
   Button: TThemedButton;
   ToolButton: TThemedToolBar;
   Details: TThemedElementDetails;
@@ -5016,7 +5017,7 @@ begin
   if FFlat and not FMouseInControl and not (csDesigning in ComponentState) then
     AState := rbsInactive;
 
-  {$IFDEF COMPILER7_UP}
+  {$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled then
   begin
     PerformEraseBackground(Self, Canvas.Handle);
@@ -5071,7 +5072,7 @@ begin
       Assigned(FDropDownMenu));
   end
   else
-    {$ENDIF COMPILER7_UP}
+  {$ENDIF JVCLThemesEnabled}
   begin
     PaintRect := Rect(0, 0, Width, Height);
     FDrawImage.Width := Self.Width;
@@ -5647,10 +5648,10 @@ begin
 end;
 
 procedure TJvSpeedButton.CMMouseEnter(var Msg: TMessage);
-{$IFDEF COMPILER7_UP}
+{$IFDEF JVCLThemesEnabled}
 var
   NeedRepaint: Boolean;
-  {$ENDIF}
+{$ENDIF}
 begin
   inherited;
   // for D7...
@@ -5673,7 +5674,7 @@ begin
     FOver := True;
   end;
 
-  {$IFDEF COMPILER7_UP}
+  {$IFDEF JVCLThemesEnabled}
   { Don't draw a border if DragMode <> dmAutomatic since this button is meant to
     be used as a dock client. }
   NeedRepaint := FFlat and not FMouseInControl and Enabled and
@@ -5687,21 +5688,21 @@ begin
       Repaint;
   end;
   {$ELSE}
-  if (not FMouseInControl) and Enabled and IsForegroundTask then
+  if not FMouseInControl and Enabled and IsForegroundTask then
   begin
     FMouseInControl := True;
     if FFlat then
       Repaint;
     MouseEnter;
   end;
-  {$ENDIF COMPILER7_UP}
+  {$ENDIF JVCLThemesEnabled}
 end;
 
 procedure TJvSpeedButton.CMMouseLeave(var Msg: TMessage);
-{$IFDEF COMPILER7_UP}
+{$IFDEF JVCLThemesEnabled}
 var
   NeedRepaint: Boolean;
-  {$ENDIF}
+{$ENDIF}
 begin
   inherited;
   // for D7...
@@ -5716,7 +5717,7 @@ begin
       Font.Assign(FFontSave);
     FOver := False;
   end;
-  {$IFDEF COMPILER7_UP}
+  {$IFDEF JVCLThemesEnabled}
   NeedRepaint := FFlat and FMouseInControl and Enabled and not FDragging;
   { Windows XP introduced hot states also for non-flat buttons. }
   if NeedRepaint or ThemeServices.ThemesEnabled then
@@ -5733,7 +5734,7 @@ begin
       Invalidate;
     MouseLeave;
   end;
-  {$ENDIF COMPILER7_UP}
+  {$ENDIF JVCLThemesEnabled}
 end;
 
 procedure TJvSpeedButton.WMMouseMove(var Msg: TMessage);

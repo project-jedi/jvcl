@@ -20,7 +20,8 @@ Last Modified: 2002-07-04
 Contributers:
   Rob den Braasem [rbraasem@xs4all.nl]
   Polaris Software
-
+  rblaurindo
+  
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -87,12 +88,13 @@ type
   protected
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
-    {$IFDEF WIN32}
     procedure Paint; override;
-    {$ENDIF WIN32}
   public
     // (rom) renamed from FStandart
     FStandard: Boolean; // Polaris
+    {$IFDEF JVCLThemesEnabled}
+    FDrawThemedDropDownBtn: Boolean;
+    {$ENDIF}
     constructor Create(AOwner: TComponent); override;
     procedure Click; override;
   end;
@@ -722,7 +724,7 @@ type
     property Formatting: Boolean read FFormatting;
     property GlyphKind default gkDefault;
     property PopupColor: TColor read GetPopupColor write SetPopupColor
-      default clBtnFace;
+      default clMenu;
     property CalendarStyle: TCalendarStyle read GetCalendarStyle
       write SetCalendarStyle default dcsDefault;
     property StartOfWeek: TDayOfWeekName read FStartOfWeek write SetStartOfWeek default Mon;
@@ -869,13 +871,13 @@ implementation
 
 uses
   ShellAPI, Consts, Math,
-  {$IFDEF COMPILER7_UP}
+  {$IFDEF JVCLThemesEnabled}
   Themes,
   {$ENDIF}
   {$IFDEF COMPILER3_UP}
   ExtDlgs,
   {$ENDIF}
-  JvxRConst, JvVCLUtils, JvStrUtils, JvFileUtil, JvPickDate;
+  JvxRConst, JvVCLUtils, JvStrUtils, JvFileUtil, JvPickDate, JvBrowseFolder;
 
 {$IFDEF WIN32}
 {$R *.Res}
@@ -947,9 +949,9 @@ var
   {$IFDEF COMPILER4_UP}
   ExStyle: DWORD;
 const
-  AlignStyle: array[Boolean, TAlignment] of DWORD =
-  ((WS_EX_LEFT, WS_EX_RIGHT, WS_EX_LEFT),
-    (WS_EX_RIGHT, WS_EX_LEFT, WS_EX_LEFT));
+  AlignStyle: array [Boolean, TAlignment] of DWORD =
+    ((WS_EX_LEFT, WS_EX_RIGHT, WS_EX_LEFT),
+     (WS_EX_RIGHT, WS_EX_LEFT, WS_EX_LEFT));
   {$ENDIF}
 begin
   Result := True;
@@ -1067,28 +1069,55 @@ begin
   ParentShowHint := True;
 end;
 
-{$IFDEF WIN32}
-
 procedure TJvEditButton.Paint;
+{$IFDEF JVCLThemesEnabled}
+var
+  ThemedState: TThemedComboBox;
+  Details: TThemedElementDetails;
+  R: TRect;
+{$ENDIF}
 begin
-  inherited Paint;
-  {$IFNDEF COMPILER7_UP}
-  if FState <> rbsDown then
-    with Canvas do
+  {$IFDEF JVCLThemesEnabled}
+  if ThemeServices.ThemesEnabled then
+  begin
+    if FDrawThemedDropDownBtn then
     begin
-      if NewStyleControls then
-        Pen.Color := clBtnFace
+      if not Enabled then
+        ThemedState := tcDropDownButtonDisabled
       else
-        Pen.Color := clBtnShadow;
-      MoveTo(0, 0);
-      LineTo(0, Self.Height - 1);
-      Pen.Color := clBtnHighlight;
-      MoveTo(1, 1);
-      LineTo(1, Self.Height - 2);
-    end;
-  {$ENDIF COMPILER7_UP}
+      if FState = rbsDown then
+        ThemedState := tcDropDownButtonPressed
+      else
+      if MouseInControl then
+        ThemedState := tcDropDownButtonHot
+      else
+        ThemedState := tcDropDownButtonNormal;
+      R := BoundsRect;
+      Details := ThemeServices.GetElementDetails(ThemedState);
+      ThemeServices.DrawElement(Canvas.Handle, Details, R);
+    end
+    else
+      inherited Paint;
+  end
+  else
+  {$ENDIF}
+  begin
+    inherited Paint;
+    if FState <> rbsDown then
+      with Canvas do
+      begin
+        if NewStyleControls then
+          Pen.Color := clBtnFace
+        else
+          Pen.Color := clBtnShadow;
+        MoveTo(0, 0);
+        LineTo(0, Self.Height - 1);
+        Pen.Color := clBtnHighlight;
+        MoveTo(1, 1);
+        LineTo(1, Self.Height - 2);
+      end;
+  end;
 end;
-{$ENDIF WIN32}
 
 procedure TJvEditButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
@@ -1396,7 +1425,7 @@ end;
 
 procedure TJvCustomComboEdit.CreateParams(var Params: TCreateParams);
 const
-  Alignments: array[TAlignment] of Longword = (ES_LEFT, ES_RIGHT, ES_CENTER);
+  Alignments: array [TAlignment] of Longword = (ES_LEFT, ES_RIGHT, ES_CENTER);
 begin
   inherited CreateParams(Params);
   Params.Style := Params.Style or ES_MULTILINE or WS_CLIPCHILDREN
@@ -1726,6 +1755,14 @@ end;
 procedure TJvCustomComboEdit.SetButtonFlat(const Value: Boolean);
 begin
   FButton.Flat := Value;
+  {$IFDEF JVCLThemesEnabled}
+  { When XP Themes are enabled, ButtonFlat = False, GlyphKind = gkDropDown then
+    the glyph is the default themed dropdown button. When ButtonFlat = True, we
+    can't use that default dropdown button, so we have to recreate the glyph
+    in this special case }
+  if ThemeServices.ThemesEnabled and (GlyphKind = gkDropDown) then
+    RecreateGlyph;
+  {$ENDIF}
 end;
 
 function TJvCustomComboEdit.GetGlyph: TBitmap;
@@ -1760,13 +1797,13 @@ var
   LLeft: Integer;
 begin
   AdjustHeight;
-  {$IFDEF COMPILER7_UP}
+  {$IFDEF JVCLThemesEnabled}
   { If flat and themes are enabled, move the left edge of the edit rectangle
     to the right, otherwise the theme edge paints over the border }
   if not Ctl3D and (BorderStyle = bsSingle) and ThemeServices.ThemesEnabled then
     LLeft := 3
   else
-    {$ENDIF}
+  {$ENDIF}
     LLeft := 0;
   SetRect(Loc, LLeft, 0, ClientWidth - FBtnControl.Width {Polaris - 2}, ClientHeight + 1);
   SendMessage(Handle, EM_SETRECTNP, 0, Longint(@Loc));
@@ -1780,7 +1817,7 @@ var
 begin
   {$IFDEF WIN32}
   if NewStyleControls then
-    {$IFDEF COMPILER7_UP}
+    {$IFDEF JVCLThemesEnabled}
     if ThemeServices.ThemesEnabled then
     begin
       if Ctl3D and (BorderStyle = bsSingle) then
@@ -1792,7 +1829,7 @@ begin
           FButton.Width, Height - 2)
     end
     else
-      {$ENDIF}
+    {$ENDIF JVCLThemesEnabled}
     begin
       if Ctl3D and (BorderStyle = bsSingle) then
         BtnRect := Bounds(Width - FButton.Width - 4, 0,
@@ -1811,7 +1848,7 @@ begin
     BtnRect := Bounds(Width - FButton.Width, 0, FButton.Width, Height);
   {$ELSE}
   BtnRect := Bounds(Width - FButton.Width, 0, FButton.Width, Height);
-  {$ENDIF}
+  {$ENDIF WIN32}
   with BtnRect do
     FBtnControl.SetBounds(Left, Top, Right - Left, Bottom - Top);
   FButton.Height := FBtnControl.Height;
@@ -1992,7 +2029,7 @@ end;
 
 procedure TJvCustomComboEdit.SetShowCaret;
 const
-  CaretWidth: array[Boolean] of Byte = (1, 2);
+  CaretWidth: array [Boolean] of Byte = (1, 2);
 begin
   CreateCaret(Handle, 0, CaretWidth[fsBold in Font.Style], GetTextHeight);
   ShowCaret(Handle);
@@ -2151,6 +2188,15 @@ var
   end;
 
 begin
+  {$IFDEF JVCLThemesEnabled}
+  { When XP Themes are enabled, ButtonFlat = False, GlyphKind = gkDropDown then
+    the glyph is the default themed dropdown button. When ButtonFlat = True, we
+    can't use that default dropdown button (because we then use toolbar buttons,
+    and there is no themed dropdown toolbar button) }
+  if ThemeServices.ThemesEnabled then
+    FButton.FDrawThemedDropDownBtn := (FGlyphKind = gkDropDown) and not ButtonFlat;
+  {$ENDIF}
+
   case FGlyphKind of
     gkDefault:
       begin
@@ -2165,6 +2211,9 @@ begin
         end;
       end;
     gkDropDown:
+      {$IFDEF JVCLThemesEnabled}
+      if ButtonFlat or not ThemeServices.ThemesEnabled then
+      {$ENDIF}
       begin
         FButton.Glyph.Handle := LoadBitmap(0, PChar(32738));
         NumGlyphs := 1;
@@ -2271,7 +2320,7 @@ end;
 
 procedure TJvFileDirEdit.WMDropFiles(var Msg: TWMDropFiles);
 var
-  AFileName: array[0..255] of Char;
+  AFileName: array [0..255] of Char;
   I, Num: Cardinal;
 begin
   Msg.Result := 0;
@@ -2601,14 +2650,11 @@ begin
     Temp := '\';
   DisableSysErrors;
   try
-    {$IFDEF WIN32}
     if NewStyleControls and (DialogKind = dkWin32) then
-      Action := BrowseDirectory(Temp, FDialogText, Self.HelpContext)
+      Action := BrowseForFolder(FDialogText, True, Temp, Self.HelpContext)
+      //BrowseDirectory(Temp, FDialogText, Self.HelpContext)
     else
       Action := SelectDirectory(Temp, FOptions, Self.HelpContext);
-    {$ELSE}
-    Action := SelectDirectory(Temp, FOptions, Self.HelpContext);
-    {$ENDIF}
   finally
     EnableSysErrors;
   end;
@@ -2707,7 +2753,7 @@ begin
 
   FBlanksChar := ' ';
   FTitle := SDateDlgTitle;
-  FPopupColor := clBtnFace;
+  FPopupColor := clMenu;
   FDefNumGlyphs := 2;
   FStartOfWeek := Mon;
   FWeekends := [Sun];
