@@ -56,7 +56,6 @@ requires
   vcl,
   dbrtl,
   vcldb,
-  designide,
   JVCL200_R60;
 
 contains
@@ -80,19 +79,16 @@ contains
   JvLoginDlg in '..\Source\JvLoginDlg.pas',
   JvPatcherEditor in '..\Source\JvPatcherEditor.pas',
   JVCLMiscal in '..\Source\JVCLMiscal.pas',
-  JvOutlookEdit in '..\Source\JvOutlookEdit.pas',
   JvDateTimeDlg in '..\Source\JvDateTimeDlg.pas' {frmSelectDateTimeDlg},
   JvDsgnEditors in '..\Source\JvDsgnEditors.pas',
   JvTimeLineEdit in '..\Source\JvTimeLineEdit.pas',
   JvOutEdit in '..\Source\JvOutEdit.pas',
   JvStrLEdit in '..\Source\JvStrLEdit.pas' {JvStrEditDlg},
-  JvOLBarEditor in '..\Source\JvOLBarEditor.pas',
-  JvOBEdFrm in '..\Source\JvOBEdFrm.pas' {frmOLBarEditFrm},
+  JvOLBEditor in '..\source\JvOLBEditor.pas' {frmOLBEditor},
   JvChNtfyProperty in '..\Source\JvChNtfyProperty.pas',
   JvLCProperty in '..\Source\JvLCProperty.pas',
   JvTipOfDayProp in '..\Source\JvTipOfDayProp.pas',
   JvAppletProperty in '..\source\JvAppletProperty.pas',
-  JvHintProp in '..\source\JvHintProp.pas',
   JvColors in '..\source\JvColors.pas',
   JvDsgn in '..\source\JvDsgn.pas',
   JvCtlReg in '..\source\JvCtlReg.pas',

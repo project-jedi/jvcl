@@ -11,10 +11,9 @@
       ..\lib6\JvLoginDlg.obj ..\lib6\JvPatcherEditor.obj ..\lib6\JVCLMiscal.obj 
       ..\lib6\JvOutlookEdit.obj ..\lib6\JvDateTimeDlg.obj 
       ..\lib6\JvDsgnEditors.obj ..\lib6\JvTimeLineEdit.obj ..\lib6\JvOutEdit.obj 
-      ..\lib6\JvStrLEdit.obj ..\lib6\JvOLBarEditor.obj ..\lib6\JvOBEdFrm.obj 
+      ..\lib6\JvStrLEdit.obj ..\lib6\JvOLBEditor.obj ..\lib6\JvOBEdFrm.obj 
       ..\lib6\JvChNtfyProperty.obj ..\lib6\JvTipProperty.obj 
-      ..\lib6\JvAppletProperty.obj ..\lib6\JvHintProp.obj 
-      ..\lib6\JvColors.obj ..\lib6\JvDsgn.obj ..\lib6\JvCtlReg.obj 
+      ..\lib6\JvAppletProperty.obj ..\lib6\JvColors.obj ..\lib6\JvDsgn.obj ..\lib6\JvCtlReg.obj 
       ..\lib6\JvTooReg.obj ..\lib6\JvDBReg.obj ..\lib6\JvBDEReg.obj 
       ..\lib6\JvImagPrvw.obj ..\lib6\JvCheckItm.obj ..\lib6\JvDirFrm.obj 
       ..\lib6\JvFormWallpaperEditor.obj ..\lib6\JvIColEdit.obj 

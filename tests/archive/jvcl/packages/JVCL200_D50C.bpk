@@ -9,11 +9,10 @@
       ..\lib5\JvExchListboxes.obj ..\lib5\JvFormLists.obj ..\lib5\JvFormLog.obj 
       ..\lib5\JvHtmlParserEditor.obj ..\lib5\JvLogFile.obj 
       ..\lib5\JvLoginDlg.obj ..\lib5\JvPatcherEditor.obj ..\lib5\JVCLMiscal.obj 
-      ..\lib5\JvOutlookEdit.obj ..\lib5\JvDateTimeDlg.obj 
-      ..\lib5\JvDsgnEditors.obj ..\lib5\JvTimeLineEdit.obj ..\lib5\JvOutEdit.obj 
-      ..\lib5\JvStrLEdit.obj ..\lib5\JvOLBarEditor.obj ..\lib5\JvOBEdFrm.obj 
+      ..\lib5\JvDateTimeDlg.obj ..\lib5\JvDsgnEditors.obj ..\lib5\JvTimeLineEdit.obj 
+      ..\lib5\JvOutEdit.obj ..\lib5\JvStrLEdit.obj ..\lib5\JvOLBEditor.obj 
       ..\lib5\JvChNtfyProperty.obj ..\lib5\JvLCProperty.obj 
-      ..\lib5\JvAppletProperty.obj ..\lib5\JvHintProp.obj ..\lib5\JvColors.obj 
+      ..\lib5\JvAppletProperty.obj ..\lib5\JvColors.obj 
       ..\lib5\JvDsgn.obj ..\lib5\JvCtlReg.obj ..\lib5\JvDBReg.obj 
       ..\lib5\JvBDEReg.obj ..\lib5\JvImagPrvw.obj ..\lib5\JvCheckItm.obj 
       ..\lib5\JvDirFrm.obj ..\lib5\JvFormWallpaperEditor.obj 
@@ -33,7 +32,7 @@
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES) ..\Source\JvFormLists.dfm ..\Source\JvFormLog.dfm 
       ..\Source\JvDateTimeDlg.dfm ..\Source\JvStrLEdit.dfm 
-      ..\Source\JvOBEdFrm.dfm ..\source\JvImagPrvw.dfm ..\source\JvCheckItm.dfm 
+      ..\Source\JvOLBEditor.dfm ..\source\JvImagPrvw.dfm ..\source\JvCheckItm.dfm 
       ..\source\JvDirFrm.dfm ..\source\JvIColEdit.dfm ..\source\JvGradedit.dfm 
       ..\source\JvJVCLAbout.dfm ..\source\JvMinMaxEd.dfm 
       ..\source\JvPgMngrEd.dfm ..\source\JvPictEdit.dfm ..\source\JvPresrDsn.dfm 
