@@ -207,6 +207,7 @@ JvLinkLabelTree
 JvListView
 JvLogFile
 JvMail
+JvMarkupCommon
 JvMarkupLabel
 JvMarkupViewer
 JvMaskEdit
@@ -287,7 +288,6 @@ JvToolEdit
 JvTracker
 JvTransparentPanel
 JvTurtle
-JvTypes
 JvUIB
 JvUIBLib
 JvUIBObj
