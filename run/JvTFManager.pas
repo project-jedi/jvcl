@@ -722,7 +722,7 @@ type
 
   TJvTFHintType = (shtAppt, shtStartEnd, shtCell, shtObj);
 
-  TJvTFShowutfHintEvent = procedure(Sender: TObject; HintType: TJvTFHintType;
+  TJvTFShowHintEvent = procedure(Sender: TObject; HintType: TJvTFHintType;
     Ref: TObject; var HintRect: TRect; var HintText: string) of object;
 
   // NOTE:
@@ -734,7 +734,7 @@ type
     FTimer: TTimer;
     FPause: integer;
     FShortPause: integer;
-    FOnShowHint: TJvTFShowutfHintEvent;
+    FOnShowHint: TJvTFShowHintEvent;
     FRefProps: TJvTFHintProps;
     procedure SetPause(Value: integer);
     procedure SetShortPause(Value: integer);
@@ -774,7 +774,7 @@ type
     // See above note on Pause and ShortPause properties
     property Pause: integer read FPause write SetPause default 3000;
     property ShortPause: integer read FShortPause write SetShortPause default 1500;
-    property OnShowHint: TJvTFShowutfHintEvent read FOnShowHint write FOnShowHint;
+    property OnShowHint: TJvTFShowHintEvent read FOnShowHint write FOnShowHint;
     property HintType: TJvTFHintType read FHintType;
     property RefProps: TJvTFHintProps read FRefProps write FRefProps;
   end;
