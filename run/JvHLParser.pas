@@ -178,12 +178,7 @@ end;
 
 function TJvIParser.Token: string;
 const
-  {$IFDEF Delphi}
   StSkip = [' ', #10, #13];
-  {$ENDIF Delphi}
-  {$IFDEF CBUILDER}
-  StSkip = ' '#10#13;
-  {$ENDIF CBUILDER}
 var
   P, F: PChar;
   F1: PChar;
@@ -550,12 +545,7 @@ end;
 
 function TJvIParserW.Token: WideString;
 const
-  {$IFDEF Delphi}
   StSkip = [' ', #10, #13];
-  {$ENDIF Delphi}
-  {$IFDEF CBUILDER}
-  StSkip = ' '#10#13;
-  {$ENDIF CBUILDER}
 var
   P, F: PWideChar;
   F1: PWideChar;

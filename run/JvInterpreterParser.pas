@@ -446,11 +446,7 @@ begin
         { may be hex constant }
         begin
           for I := 2 to L1 do
-            {$IFDEF Delphi}
             if not (Token[I] in StConstSymbols) then
-            {$ELSE}
-            if not HasChar(Token[I], StConstSymbols) then
-            {$ENDIF}
               goto Any;
           Result := ttInteger;
         end;
@@ -506,20 +502,12 @@ begin
           end
           else
             { may be Identifier }
-            {$IFDEF Delphi}
             if not (T1 in StIdFirstSymbols) then
-            {$ELSE}
-            if not HasChar(T1, StIdFirstSymbols) then
-            {$ENDIF}
               Result := ttUnknown
             else
             begin
               for I := 2 to L1 do
-                {$IFDEF Delphi}
                 if not (Token[I] in StIdSymbols) then
-                {$ELSE}
-                if not HasChar(Token[I], StIdSymbols) then
-                {$ENDIF}
                 begin
                   Result := ttUnknown;
                   Exit;
@@ -631,60 +619,33 @@ begin
     Skip;
   until F1 = P;
   F := P;
-  {$IFDEF Delphi}
   if P[0] in StIdFirstSymbols then
-  {$ELSE}
-  if HasChar(P[0], StIdFirstSymbols) then
-  {$ENDIF}
   { token }
   begin
-    {$IFDEF Delphi}
     while P[0] in StIdSymbols do
       Inc(P);
-    {$ELSE}
-    while HasChar(P[0], StIdSymbols) do
-      Inc(P);
-    {$ENDIF}
     SetString(Result, F, P - F);
   end
   else
-  {$IFDEF Delphi}
   if P[0] in StConstSymbols10 then
-  {$ELSE}
-  if HasChar(P[0], StConstSymbols10) then
-  {$ENDIF}
   { number }
   begin
-    {$IFDEF Delphi}
     while (P[0] in StConstSymbols10) or (P[0] = '.') do
     begin
       if (P[0] = '.') and (P[1] = '.') then
         break;
       Inc(P);
     end;
-    {$ELSE}
-    while HasChar(P[0], StConstSymbols10) or (P[0] = '.') do
-      Inc(P);
-    {$ENDIF}
     SetString(Result, F, P - F);
   end
   else
   if ((P[0] = '$') and
-    {$IFDEF Delphi}
     (P[1] in StConstSymbols)) then
-    {$ELSE}
-    HasChar(P[1], StConstSymbols)) then
-    {$ENDIF}
   { hex number }
   begin
     Inc(P);
-    {$IFDEF Delphi}
     while P[0] in StConstSymbols do
       Inc(P);
-    {$ELSE}
-    while HasChar(P[0], StConstSymbols) do
-      Inc(P);
-    {$ENDIF}
     SetString(Result, F, P - F);
   end
   else
@@ -713,21 +674,12 @@ begin
   end
   else
   if ((P[0] = '#') and
-    {$IFDEF Delphi}
     (P[1] in StConstSymbols10)) then
-    {$ELSE}
-    HasChar(P[1], StConstSymbols10)) then
-    {$ENDIF}
   { Char constant }
   begin
     Inc(P);
-    {$IFDEF Delphi}
     while P[0] in StConstSymbols10 do
       Inc(P);
-    {$ELSE}
-    while HasChar(P[0], StConstSymbols10) do
-      Inc(P);
-    {$ENDIF}
     SetString(Result, F + 1, P - F - 1);
     Result := '''' + Chr(StrToInt(Result)) + '''';
   end
