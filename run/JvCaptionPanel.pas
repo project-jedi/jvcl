@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck@bigfoot.com]
 
-Last Modified: 2002-05-26
+Last Modified: 2004-03-26
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -44,12 +44,9 @@ interface
 {$ENDIF VisualCLX}
 
 uses
-  {$IFDEF MSWINDOWS}
-  Windows, Messages,
-  {$ENDIF MSWINDOWS}
   SysUtils, Classes,
   {$IFDEF VCL}
-  Graphics, Controls, Forms, Dialogs, ExtCtrls,
+  Windows, Messages, Graphics, Controls, Forms, Dialogs, ExtCtrls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   Types, Qt, QWindows, QGraphics, QControls, QForms, QDialogs, QExtCtrls,
@@ -112,9 +109,11 @@ type
     FOutlookLook: Boolean;
     FCaptionOffsetSmall: Integer;
     FCaptionOffsetLarge: Integer;
+    FIcon: TIcon;
     {$IFDEF JVCAPTIONPANEL_STD_BEHAVE}
     FAnchorPos: TPoint;
     {$ENDIF JVCAPTIONPANEL_STD_BEHAVE}
+    procedure SetIcon(Value: TIcon);
     procedure SetCaptionFont(Value: TFont);
     procedure SetCaptionColor(Value: TColor);
     procedure SetFlat(Value: Boolean);
@@ -166,6 +165,7 @@ type
     property FlatButtons: Boolean read FFlat write SetFlat default False;
     property Font;
     property Hint;
+    property Icon: TIcon read FIcon write SetIcon;
     property OutlookLook: Boolean read FOutlookLook write SetOutlookLook;
     property ParentColor;
     property ParentFont;
@@ -388,20 +388,28 @@ begin
   DoubleBuffered := True;
   {$ENDIF VCL}
   FCaptionFont := TFont.Create;
+  FIcon := TIcon.Create;
+  {$IFDEF MSWINDOWS}
   // (rom) Warning! This seems no standard Windows font
   FCaptionFont.Name := 'MS Shell Dlg 2';
   FCaptionFont.Size := 10;
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  FCaptionFont.Name := 'Helvetica';
+  FCaptionFont.Height := 13;
+  {$ENDIF LINUX}
   FCaptionFont.Style := [fsBold];
   FCaptionFont.Color := clWhite;
   FCaptionFont.OnChange := DoCaptionFontChange;
   FDrawPosition := dpLeft;
   FCaptionWidth := GetSystemMetrics(SM_CYCAPTION);
-  FOffset := 8;
   FAutoDrag := True;
   {$IFDEF VCL}
+  FOffset := 8;
   FCaptionColor := clActiveCaption;
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
+  FOffset := 3;
   FCaptionColor := clActiveHighlight;
   {$ENDIF VisualCLX}
   FFlat := False;
@@ -487,6 +495,13 @@ begin
   end;
 end;
 
+procedure TJvCaptionPanel.SetIcon(Value: TIcon);
+begin
+  FIcon.Assign(Value);
+  invalidate;
+end;
+
+
 procedure TJvCaptionPanel.AlignControls(AControl: TControl; var Rect: TRect);
 begin
   case FDrawPosition of
@@ -523,25 +538,11 @@ var
 begin
   R := ClientRect;
   {$IFDEF VisualCLX}
-  (*)
-  Canvas.Start;
-  try
-    R := ClientRect;
-    InflateRect(R, -2, -2);
-    QPainter_save(Canvas.Handle);
-    ExcludeClipRect(Canvas.Handle, R);
-    inherited Paint;
-    QPainter_restore(Canvas.Handle);
-  finally
-    Canvas.Stop;
-  end;
-  (*)
   if BorderStyle = bsSingle then
   begin
-    DrawShadePanel(Canvas, R, false, 1, nil);
+    DrawShadePanel(Canvas, R, false, 2, nil);
     InflateRect(R, -2, -2);
   end;
-
   {$ENDIF VisualCLX}
   with Canvas do
   begin
@@ -583,6 +584,18 @@ begin
       FCaptionRect := Rect(FBevel, ClientHeight - FCaptionWidth - FBevel, ClientWidth - FBevel, ClientHeight - FBevel);
   end; //case
   Canvas.FillRect(FCaptionRect);
+  if not FIcon.Empty then
+  begin
+    with FCaptionRect do
+      case FDrawPosition of
+      dpRight:
+        Canvas.Draw( (Left + Right - FIcon.Width) div 2, Top + 1, FIcon);
+      dpLeft:
+        Canvas.Draw( (Left + Right - FIcon.Width) div 2, Bottom - 1 - FIcon.Height, FIcon);
+      dpBottom, dpTop:
+        Canvas.Draw(Left + 1, (Top + Bottom - FIcon.Height) div 2 , FIcon );
+      end; //case
+  end;
   DrawRotatedText(Rotation);
   DrawButtons;
 end;
@@ -594,6 +607,9 @@ var
   Tf: TFont;
   Flags: Integer;
   {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  x, y: integer;
+  {$ENDIF}
   R: TRect;
   tH, tW: Integer;
 begin
@@ -603,6 +619,7 @@ begin
   Canvas.Start;
   try
     QPainter_save(Canvas.Handle);
+    Canvas.Font.Assign(CaptionFont);
   {$ENDIF VisualCLX}
     SetBkMode(Canvas.Handle, TRANSPARENT);
     with Canvas do
@@ -622,14 +639,8 @@ begin
       end;
       {$ENDIF VCL}
       R := FCaptionRect;
-      {$IFDEF VCL}
       tH := ((R.Bottom - R.Top) - Canvas.TextHeight(FCaption)) div 2;
       tW := ((R.Right - R.Left) - Canvas.TextHeight(FCaption)) div 2;
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      tH := Canvas.TextHeight(FCaption);
-      tW := Canvas.TextHeight(FCaption);
-      {$ENDIF VisualCLX}
       if FOutlookLook then
       begin
         Dec(th);
@@ -638,20 +649,56 @@ begin
       case FDrawPosition of
         dpLeft:
           begin
-            with FCaptionRect do
+            {$IFDEF VCL}
+            if not FIcon.Empty then
+              Dec(R.Bottom, FIcon.Height + 2);
+            with R do
               R := Rect(Left, Bottom, Right, Top);
             OffsetRect(R, tW, -FOffset);
+            {$ENDIF VCL}
+            {$IFDEF VisualCLX}
+            X := R.Left + (FCaptionWidth + Canvas.TextHeight(Caption)) div 2 - FOffset;
+            Y := R.Bottom - 1;
+            if not FIcon.Empty then
+              Dec(Y, FIcon.Height + 3)
+            else
+              Dec(Y)
+            {$ENDIF VisualCLX}
           end;
-        dpTop:
-          OffsetRect(R, FOffset, tH);
+        dpTop, dpBottom:
+          begin
+            {$IFDEF VisualCLX}
+            X := R.Left;
+            Y := R.Top + th + Canvas.TextHeight(Caption) - FOffset;
+            if not FIcon.Empty then
+              Inc(X, FIcon.Width + 3)
+            else
+              Inc(X)
+            {$ENDIF}
+            {$IFDEF VCL}
+            OffsetRect(R, FOffset, tH);
+            if not FIcon.Empty then
+              Inc(R.Left, FIcon.Width + 2);
+            {$ENDIF}
+          end;
         dpRight:
           begin
-            with FCaptionRect do
+            {$IFDEF VisualCLX}
+            X := R.Left + (FCaptionWidth - Canvas.TextHeight(Caption)) div 2 + FOffset;
+            Y := R.Top;
+            if not FIcon.Empty then
+              Inc(Y, FIcon.Height + 3)
+            else
+              Inc(Y);
+            {$ENDIF VisualCLX}
+            {$IFDEF VCL}
+            if not FIcon.Empty then
+              Inc(R.Top, FIcon.Height + 2);
+            with R do
               R := Rect(Right, Top, Left, Bottom);
             OffsetRect(R, -tW, FOffset);
+            {$ENDIF VCL}
           end;
-        dpBottom:
-          OffsetRect(R, FOffset, tH);
       end;
       {$IFDEF VCL}
       Flags := DT_NOPREFIX;
@@ -662,9 +709,7 @@ begin
       DrawText(Canvas.Handle, PChar(Caption), -1, R, Flags);
       {$ENDIF VCL}
       {$IFDEF VisualCLX}
-      Canvas.Font.Assign(CaptionFont);
-      IntersectClipRect(Canvas.Handle, R);
-      TextOutAngle(Canvas, Rotation, R.Left, R.Top, Caption);
+      TextOutAngle(Canvas, Rotation, X, Y, Caption);
       {$ENDIF VisualCLX}
     end;
   {$IFDEF VisualCLX}
@@ -838,12 +883,7 @@ begin
     FDragging := True;
     ReleaseCapture;
    {$IFDEF JVCAPTIONPANEL_STD_BEHAVE}
-    {$IFDEF VCL}
     SetCapture(Handle);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    SetMouseGrabControl(Self);
-    {$ENDIF VisualCLX}
     FAnchorPos := Point(X, Y);
    {$ELSE}
     Perform(WM_SYSCOMMAND, SC_DRAGMOVE, 0);
