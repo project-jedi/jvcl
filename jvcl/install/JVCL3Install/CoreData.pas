@@ -488,7 +488,7 @@ begin
     S := Trim(S);
     if S <> '' then
       List.Add(S);
-    if P <> #0 then
+    if P^ <> #0 then
       Inc(P);
   end;
 end;
