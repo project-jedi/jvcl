@@ -33,7 +33,17 @@ unit JvBrowseFolder;
 
 interface
 
+{$IFDEF BCB6}
 {$HPPEMIT '#include <shtypes.h>'}
+{$ELSE}
+// BCB5 doesn't have the shtypes.h file, so we have to cope with it
+(*$HPPEMIT 'namespace shlobj_h'*)
+(*$HPPEMIT '{'*)
+(*$HPPEMIT '#include <shlobj.h>'*)
+(*$HPPEMIT '}'*)
+(*$HPPEMIT 'using namespace shlobj_h;'*)
+(*$HPPEMIT '#define _ITEMIDLIST shlobj_h::_ITEMIDLIST'*)
+{$ENDIF BCB6}
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
