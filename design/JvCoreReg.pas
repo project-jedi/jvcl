@@ -140,10 +140,8 @@ begin
   RegisterComponentEditor(TPaintBox, TJvPaintBoxEditor);
   RegisterComponentEditor(TCommonDialog, TJvBaseDlgEditor);
 
-  {$IFDEF VCL}
   RegisterComponentEditor(TCustomImageList, TJvImageListEditor);
   RegisterComponentEditor(TImageList, TJvImageListEditor);
-  {$ENDIF VCL}
 
   {$ENDIF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
 
