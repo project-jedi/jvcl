@@ -33,7 +33,6 @@ unit JvDsgnEditors;
 
 interface
 uses
-  Classes, SysUtils,
   {$IFDEF VCL}
   Windows, Forms, Controls, Graphics, ExtCtrls, Tabs, Dialogs,
   ExtDlgs, Menus, StdCtrls, ImgEdit, ImgList,
@@ -46,15 +45,15 @@ uses
   {$IFDEF COMPILER6_UP}
   FiltEdit, RTLConsts, DesignIntf, DesignEditors, DesignMenus,
   {$IFDEF VCL}
-  VCLEditors
+  VCLEditors,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  ClxEditors
+  ClxEditors,
   {$ENDIF VisualCLX}
-  ;
   {$ELSE}
-  LibIntf, DsgnIntf;
+  LibIntf, DsgnIntf,
   {$ENDIF COMPILER6_UP}
+  Classes, SysUtils;
 
 {$IFDEF VisualCLX}
 //
@@ -408,8 +407,8 @@ end;
 
 procedure TJvDirectoryProperty.Edit;
 var
-  AName: string
-  FolderName: TCaption;
+  AName: string;
+  FolderName: THintString; // (ahuser) TCaption is "type Xxxstring", THintString is "Xxxstring"
   C: TPersistent;
 begin
   C := GetComponent(0);
