@@ -494,11 +494,19 @@ begin
         lDiff := True;
         Result := Copy(Value, 1, I - 1);
       end;
-      Result := Result + '&#' + IntToStr(Ord(Value[I])) + ';';
+      case Value[i] of
+      '<': Result := Result + '&lt;';
+      '>': Result := Result + '&gt;';
+      '&': Result := Result + '&amp;';
+      '"': Result := Result + '&quot;';
+      '''': Result := Result + '''';
+      else
+        Result := Result + '&#' + IntToStr(Ord(Value[I])) + ';';
+      end;
     end
     else
-    if lDiff then
-      Result := Result + Value[I];
+      if lDiff then
+        Result := Result + Value[I];
 end;
 
 procedure SimpleXmlDecode(var Value: string; TrimMultiple: Boolean = True);
