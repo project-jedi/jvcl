@@ -1,7 +1,5 @@
 TODO for JVCL 3.0
 ======================
-- Make public Ini property for TJvAppIniFileStorage // obones
-- Add LeftMargin to JvMenus back, through the use of painters // obones
 - Add TJvAppStorage support to TJvMRUList // obones
 - Give some default values to TJvAviCapture properties // obones, suggested by (rom)
 
