@@ -99,6 +99,7 @@ type
     procedure WMLButtonDblClk(var Msg: TWMLButtonDblClk); message WM_LBUTTONDBLCLK;
     procedure WMTimer(var Msg: TWMTimer); message WM_TIMER;
   protected
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
     procedure CalcButtonParts(ButtonRect: TRect; var RectText, RectImage: TRect);
     procedure CreateParams(var Params: TCreateParams); override;
@@ -247,6 +248,14 @@ begin
   inherited Destroy;
   // (rom) destroy Canvas AFTER inherited Destroy
   FreeAndNil(FCanvas);
+end;
+
+procedure TJvCustomImageButton.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited;
+  if (Operation = opRemove) and (AComponent = Images) then
+    Images:= nil;
 end;
 
 procedure TJvCustomImageButton.CreateParams(var Params: TCreateParams);
