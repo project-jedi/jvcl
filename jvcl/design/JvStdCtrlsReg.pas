@@ -74,7 +74,8 @@ begin
     TJvFavoritesButton]);
   RegisterComponents(RsPaletteEdit, [TJvEdit, TJvMemo, TJvRichEdit,
     TJvCheckedMaskEdit, TJvMaskEdit, TJvHotKey, TJvCalcEdit, TJvComboEdit,
-    TJvFilenameEdit, TJvDirectoryEdit, TJvDateEdit, TJvSpinEdit, TJvIPAddress]);
+    TJvFilenameEdit, TJvDirectoryEdit, TJvDateEdit, TJvDatePickerEdit,
+    TJvSpinEdit, TJvIPAddress]);
   RegisterComponents(RsPaletteImageAnimator, [TJvImage, TJvImageList]);
   RegisterComponents(RsPaletteBarPanel, [TJvPageControl,  TJvProgressBar,
     TJvStatusBar, TJvTabControl, TJvToolBar, TJvControlBar, TJvCoolBar,
