@@ -452,7 +452,7 @@ begin
           tkIdent:
             begin
               if not CaseParseContext(Token, Context) then
-              begin
+              begin                          
                 if SameText(LastIdent, 'uses') then
                   CheckUses(Token)
                 else
@@ -839,10 +839,12 @@ begin
     end;
   end;
 
+  if (Token <> nil) and ((Token.Value = ';') or (Token.Value = 'of')) then
+    Exit;
  // ignore comments (except compiler directives)
   while Parser.GetToken(Token) and (Token.Kind = tkComment) do
     ParseComments(Token);
-  if (Token <> nil) and (Token.Value = ';') then
+  if (Token <> nil) and ((Token.Value = ';') or (Token.Value = 'of')) then
     Exit;
 
  // parse complete structure
