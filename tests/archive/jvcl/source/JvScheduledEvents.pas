@@ -33,7 +33,7 @@ interface
 
 uses
   SysUtils, Windows, Classes, syncobjs, Messages,
-  jclRegistry, jclSchedule, JclSynch;
+  jclRegistry, jclSchedule;
 
 const
   CM_ExecEvent = WM_USER + $1000;
@@ -42,6 +42,10 @@ type
   TJvCustomScheduledEvents = class;
   TJvEventCollection = class;
   TJvEventCollectionItem = class;
+
+  TScheduledEventState = (sesNotInitialized, sesWaiting, sesTriggered, sesExecuting, sesPaused,
+    sesEnded);
+  TScheduledEventExecute = procedure(Sender: TJvEventCollectionItem; const IsSnoozeEvent: Boolean) of object;
 
   TJvCustomScheduledEvents = class(TComponent)
   private
@@ -105,12 +109,16 @@ type
   private
     FCountMissedEvents: Boolean;
     FName: string;
-    FInitialized: Boolean;
-    FOnExecute: TNotifyEvent;
+    FState: TScheduledEventState;
+    FData: Pointer;
+    FOnExecute: TScheduledEventExecute;
     FSchedule: IJclSchedule;
+    FLastSnoozeInterval: TSystemTime;
+    FSnoozeFire: TTimeStamp;
+    procedure Triggered;
   protected
     procedure DefineProperties(Filer: TFiler); override;
-    procedure DoExecute;
+    procedure DoExecute(const IsSnoozeFire: Boolean);
     function GetDisplayName: string; override;
     function GetNextFire: TTimeStamp;
     procedure Execute; virtual;
@@ -167,26 +175,33 @@ type
     constructor Create(Collection: TCollection); override;
     destructor Destroy; override;
 
-    procedure LoadState(const TriggerStamp: TTimeStamp; const TriggerCount, DayCount: Integer); virtual;
-    procedure SaveState(out TriggerStamp: TTimeStamp; out TriggerCount, DayCount: Integer); virtual;
+    procedure LoadState(const TriggerStamp: TTimeStamp; const TriggerCount, DayCount: Integer;
+      const SnoozeStamp: TTimeStamp; const ALastSnoozeInterval: TSystemTime); virtual;
+    procedure Pause;
+    procedure SaveState(out TriggerStamp: TTimeStamp; out TriggerCount, DayCount: Integer;
+      out SnoozeStamp: TTimeStamp; out ALastSnoozeInterval: TSystemTime); virtual;
+    procedure Snooze(const MSecs: Word; const Secs: Word = 0; const Mins: Word = 0;
+      const Hrs: Word = 0; const Days: Word = 0);
     procedure Start;
     procedure Stop;
 
-    property Initialized: Boolean read FInitialized;
+    property Data: Pointer read FData write FData;
+    property LastSnoozeInterval: TSystemTime read FLastSnoozeInterval;
     property NextFire: TTimeStamp read GetNextFire;
+    property State: TScheduledEventState read FState;
   published
     property CountMissedEvents: Boolean read FCountMissedEvents write FCountMissedEvents default False;
     property Name: string read FName write SetName;
     property Schedule: IJclSchedule read FSchedule write FSchedule stored False;
 
-    property OnExecute: TNotifyEvent read FOnExecute write FOnExecute;
+    property OnExecute: TScheduledEventExecute read FOnExecute write FOnExecute;
   end;
 
 implementation
 
 uses
   contnrs, Forms, TypInfo,
-  JclRTTI;
+  JclDateTime, JclRTTI;
 
 { registry constants }
 
@@ -250,7 +265,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure BeforeDestruction;
+    procedure BeforeDestruction; override;
 
     procedure AddEventComponent(const AComp: TJvCustomScheduledEvents);
     procedure RemoveEventComponent(const AComp: TJvCustomScheduledEvents);
@@ -287,8 +302,13 @@ begin
           I := 0;
           while (I < TskColl.Count) and not Terminated do
           begin
-            if TskColl[I].Initialized and (CompareTimeStamps(NowStamp, TskColl[I].NextFire) >= 0) then
-              PostMessage(TJvCustomScheduledEvents(FEventComponents[FEventIdx]).Handle, CM_ExecEvent, Integer(TskColl[I]), 0);
+            if (TskColl[I].State = sesWaiting) and
+              (CompareTimeStamps(NowStamp, TskColl[I].NextFire) >= 0) then
+            begin
+              TskColl[I].Triggered;
+              PostMessage(TJvCustomScheduledEvents(FEventComponents[FEventIdx]).Handle,
+                CM_ExecEvent, Integer(TskColl[I]), 0);
+            end;
             Inc(I);
           end;
           Dec(FEventIdx);
@@ -410,9 +430,6 @@ end;
 
 { TJvCustomScheduledEvents }
 
-const
-  ElementSize = ((SizeOf(Cardinal) * 2) + SizeOf(TTimeStamp));
-
 procedure TJvCustomScheduledEvents.DoEndEvent(const Event: TJvEventCollectionItem);
 begin
   if @OnEndEvent <> nil then
@@ -443,7 +460,7 @@ var
 begin
   for I := 0 to FEvents.Count - 1 do
   begin
-    if not FEvents[I].Initialized then
+    if FEvents[I].State = sesNotInitialized then
       FEvents[I].Start;
   end;
 end;
@@ -474,6 +491,8 @@ var
   Stamp: TTimeStamp;
   TriggerCount: Integer;
   DayCount: Integer;
+  Snooze: TTimeStamp;
+  SnoozeInterval: TSystemTime;
 begin
   SubKey := FSavePath + '\' + Name + '.Events';
   if RegKeyExists(FSaveKey, SubKey) then
@@ -483,18 +502,22 @@ begin
       RegGetKeyNames(FSaveKey, SubKey, EventNames);
       for I := 0 to EventNames.Count - 1 do
       begin
-        IEvents := FEvents.Count - 1;
-        while (IEvents >= 0) and not AnsiSameText(EventNames[I], FEvents[IEvents].Name) do
-          Dec(IEvents);
-        if IEvents >= 0 then
-        begin
-          EventKey := SubKey + '\' + EventNames[I];
-          Stamp.Date := RegReadInteger(FSaveKey, EventKey, 'Stamp.Date');
-          Stamp.Time := RegReadInteger(FSaveKey, EventKey, 'Stamp.Time');
-          TriggerCount := RegReadInteger(FSaveKey, EventKey, 'TriggerCount');
-          DayCount := RegReadInteger(FSaveKey, EventKey, 'DayCount');
-          FEvents[IEvents].LoadState(Stamp, TriggerCount, DayCount);
-        end;
+        IEvents := StrToInt(EventNames[I]);
+        EventKey := SubKey + '\' + EventNames[I];
+        Stamp.Date := RegReadInteger(FSaveKey, EventKey, 'Stamp.Date');
+        Stamp.Time := RegReadInteger(FSaveKey, EventKey, 'Stamp.Time');
+        TriggerCount := RegReadInteger(FSaveKey, EventKey, 'TriggerCount');
+        DayCount := RegReadInteger(FSaveKey, EventKey, 'DayCount');
+        Snooze.Date := RegReadInteger(FSaveKey, EventKey, 'Snooze.Date');
+        Snooze.Time := RegReadInteger(FSaveKey, EventKey, 'Snooze.Time');
+        SnoozeInterval.wYear := RegReadInteger(FSaveKey, EventKey, 'SnoozeInterval.wYear');
+        SnoozeInterval.wMonth := RegReadInteger(FSaveKey, EventKey, 'SnoozeInterval.wMonth');
+        SnoozeInterval.wDay := RegReadInteger(FSaveKey, EventKey, 'SnoozeInterval.wDay');
+        SnoozeInterval.wHour := RegReadInteger(FSaveKey, EventKey, 'SnoozeInterval.wHour');
+        SnoozeInterval.wMinute := RegReadInteger(FSaveKey, EventKey, 'SnoozeInterval.wMinute');
+        SnoozeInterval.wSecond := RegReadInteger(FSaveKey, EventKey, 'SnoozeInterval.wSecond');
+        SnoozeInterval.wMilliseconds := RegReadInteger(FSaveKey, EventKey, 'SnoozeInterval.wMilliseconds');
+        FEvents[IEvents].LoadState(Stamp, TriggerCount, DayCount, Snooze, SnoozeInterval);
       end;
     finally
       EventNames.Free;
@@ -512,6 +535,10 @@ var
   DayCount: Integer;
   StampDate: Integer;
   StampTime: Integer;
+  SnoozeStamp: TTimeStamp;
+  SnoozeInterval: TSystemTime;
+  SnoozeDate: Integer;
+  SnoozeTime: Integer;
 begin
   SubKey := FSavePath + '\' + Name + '.Events';
   if RegKeyExists(FSaveKey, SubKey) then
@@ -519,15 +546,26 @@ begin
   RegCreateKey(FSaveKey, SubKey, '');
   for I := 0 to FEvents.Count - 1 do
   begin
-    EventKey := SubKey + '\' + FEvents[I].Name;
+    EventKey := SubKey + '\' + IntToStr(I);// + FEvents[I].Name;
     RegCreateKey(FSaveKey, EventKey, '');
-    FEvents[I].SaveState(Stamp, TriggerCount, DayCount);
+    FEvents[I].SaveState(Stamp, TriggerCount, DayCount, SnoozeStamp, SnoozeInterval);
     StampDate := Stamp.Date;
     StampTime := Stamp.Time;
+    SnoozeDate := SnoozeStamp.Date;
+    SnoozeTime := SnoozeStamp.Time;
     RegWriteInteger(FSaveKey, EventKey, 'Stamp.Date', StampDate);
     RegWriteInteger(FSaveKey, EventKey, 'Stamp.Time', StampTime);
     RegWriteInteger(FSaveKey, EventKey, 'TriggerCount', TriggerCount);
     RegWriteInteger(FSaveKey, EventKey, 'DayCount', DayCount);
+    RegWriteInteger(FSaveKey, EventKey, 'Snooze.Date', SnoozeDate);
+    RegWriteInteger(FSaveKey, EventKey, 'Snooze.Time', SnoozeTime);
+    RegWriteInteger(FSaveKey, EventKey, 'SnoozeInterval.wYear', SnoozeInterval.wYear);
+    RegWriteInteger(FSaveKey, EventKey, 'SnoozeInterval.wMonth', SnoozeInterval.wMonth);
+    RegWriteInteger(FSaveKey, EventKey, 'SnoozeInterval.wDay', SnoozeInterval.wDay);
+    RegWriteInteger(FSaveKey, EventKey, 'SnoozeInterval.wHour', SnoozeInterval.wHour);
+    RegWriteInteger(FSaveKey, EventKey, 'SnoozeInterval.wMinute', SnoozeInterval.wMinute);
+    RegWriteInteger(FSaveKey, EventKey, 'SnoozeInterval.wSecond', SnoozeInterval.wSecond);
+    RegWriteInteger(FSaveKey, EventKey, 'SnoozeInterval.wMilliseconds', SnoozeInterval.wMilliseconds);
   end;
 end;
 
@@ -621,6 +659,11 @@ end;
 
 { TJvEventCollectionItem }
 
+procedure TJvEventCollectionItem.Triggered;
+begin
+  FState := sesTriggered;
+end;
+
 procedure TJvEventCollectionItem.DefineProperties(Filer: TFiler);
 var
   SingleShot: Boolean;
@@ -696,10 +739,10 @@ begin
     YearlySched);
 end;
 
-procedure TJvEventCollectionItem.DoExecute;
+procedure TJvEventCollectionItem.DoExecute(const IsSnoozeFire: Boolean);
 begin
   if @FOnExecute <> nil then
-    OnExecute(Self);
+    OnExecute(Self, IsSnoozeFire);
 end;
 
 function TJvEventCollectionItem.GetDisplayName: string;
@@ -713,10 +756,23 @@ begin
 end;
 
 procedure TJvEventCollectionItem.Execute;
+var
+  IsSnoozeFire: Boolean;
 begin
-  if IsNullTimeStamp(Schedule.NextEventFromNow(CountMissedEvents)) then
-    Stop;
-  DoExecute;
+  if State <> sesTriggered then Exit; // Ignore this message, something is wrong.
+  IsSnoozeFire := EqualTimeStamps(NextFire, FSnoozeFire);
+  FState := sesExecuting;
+  try
+    FSnoozeFire := NullStamp;
+    DoExecute(IsSnoozeFire);
+  finally
+    if not IsSnoozeFire then
+      Schedule.NextEventFromNow(CountMissedEvents);
+    if IsNullTimeStamp(NextFire) then
+      FState := sesEnded
+    else
+      FState := sesWaiting;
+  end;
 end;
 
 procedure TJvEventCollectionItem.PropDateRead(Reader: TReader; var Stamp: TTimeStamp);
@@ -1052,31 +1108,89 @@ begin
   end;
 end;
 
-procedure TJvEventCollectionItem.LoadState(const TriggerStamp: TTimeStamp; const TriggerCount, DayCount: Integer);
+procedure TJvEventCollectionItem.LoadState(const TriggerStamp: TTimeStamp; const TriggerCount,
+  DayCount: Integer; const SnoozeStamp: TTimeStamp; const ALastSnoozeInterval: TSystemTime);
 begin
   Schedule.InitToSavedState(TriggerStamp, TriggerCount, DayCount);
-  FInitialized := True;
-  if IsNullTimeStamp(TriggerStamp) or
-      (CompareTimeStamps(TriggerStamp, DateTimeToTimeStamp(Now)) < 0) then
+  FSnoozeFire := SnoozeStamp;
+  FLastSnoozeInterval := ALastSnoozeInterval;
+  if IsNullTimeStamp(NextFire) or
+      (CompareTimeStamps(NextFire, DateTimeToTimeStamp(Now)) < 0) then
     Schedule.NextEventFromNow(CountMissedEvents);
+  if IsNullTimeStamp(NextFire) then
+    FState := sesEnded
+  else
+    FState := sesWaiting;
 end;
 
-procedure TJvEventCollectionItem.SaveState(out TriggerStamp: TTimeStamp; out TriggerCount, DayCount: Integer);
+procedure TJvEventCollectionItem.Pause;
 begin
-  TriggerStamp := NextFire;
+  FState := sesPaused;
+end;
+
+procedure TJvEventCollectionItem.SaveState(out TriggerStamp: TTimeStamp; out TriggerCount,
+  DayCount: Integer; out SnoozeStamp: TTimeStamp; out ALastSnoozeInterval: TSystemTime);
+begin
+  TriggerStamp := Schedule.LastTriggered;
   TriggerCount := Schedule.TriggerCount;
   DayCount := Schedule.DayCount;
+  SnoozeStamp := FSnoozeFire;
+  ALastSnoozeInterval := LastSnoozeInterval;
+end;
+
+procedure TJvEventCollectionItem.Snooze(const MSecs: Word; const Secs: Word = 0;
+  const Mins: Word = 0; const Hrs: Word = 0; const Days: Word = 0);
+var
+  IntervalMSecs: Integer;
+  SnoozeStamp: TTimeStamp;
+begin
+  // Update last snooze interval
+  FLastSnoozeInterval.wDay := Days;
+  FLastSnoozeInterval.wHour := Hrs;
+  FLastSnoozeInterval.wMinute := Mins;
+  FLastSnoozeInterval.wSecond := Secs;
+  FLastSnoozeInterval.wMilliseconds := MSecs;
+  // Calculate next event
+  IntervalMSecs := MSecs + 1000 * (Secs + 60 * Mins + 1440 * Hrs);
+  SnoozeStamp := DateTimeToTimeStamp(Now);
+  SnoozeStamp.Time := SnoozeStamp.Time + IntervalMSecs;
+  if SnoozeStamp.Time >= HoursToMSecs(24) then
+  begin
+    SnoozeStamp.Date := SnoozeStamp.Date + (SnoozeStamp.Time div HoursToMSecs(24));
+    SnoozeStamp.Time := SnoozeStamp.Time mod HoursToMSecs(24);
+  end;
+  Inc(SnoozeStamp.Date, Days);
+  FSnoozeFire := SnoozeStamp;
 end;
 
 procedure TJvEventCollectionItem.Start;
 begin
-  Schedule.NextEventFromNow(CountMissedEvents);
-  FInitialized := True;
+  if FState in [sesTriggered, sesExecuting] then
+    raise Exception.Create('Can''t restart: Event is being triggered or is executing.');
+  if State = sesPaused then
+  begin
+    Schedule.NextEventFromNow(CountMissedEvents);
+    if IsNullTimeStamp(NextFire) then
+      FState := sesEnded
+    else
+      FState := sesWaiting;
+  end
+  else
+  begin
+    FState := sesNotInitialized;
+    Schedule.Reset;
+    Schedule.NextEventFromNow(CountMissedEvents);
+    if IsNullTimeStamp(NextFire) then
+      FState := sesEnded
+    else
+      FState := sesWaiting;
+  end;
 end;
 
 procedure TJvEventCollectionItem.Stop;
 begin
-  FInitialized := False;
+  if State <> sesNotInitialized then
+    FState := sesNotInitialized
 end;
 
 initialization
