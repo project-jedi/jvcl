@@ -33,6 +33,7 @@ unit JvaScrollText;
 interface
 
 uses
+  SysUtils, Classes,
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
@@ -42,7 +43,6 @@ uses
   {$IFDEF VisualCLX}
   Types, QWindows, QControls, QExtCtrls, QForms, QGraphics,
   {$ENDIF VisualCLX}
-  SysUtils, Classes,
   JvComponent;
 
 type
@@ -104,7 +104,9 @@ const
 constructor TJvaScrollText.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  {$IFDEF VCL}
   IncludeThemeStyle(Self, [csParentBackground]);
+  {$ENDIF VCL}
   FForeImage := TImage.Create(nil);
   FBackImage := TImage.Create(nil);
   FFontMaskImage := TImage.Create(nil);
@@ -233,7 +235,7 @@ var
     end
     else
       Result := False;
-    FontHeight := -FFontImage.Canvas.Font.Height + 3;
+    FontHeight := abs(FFontImage.Canvas.Font.Height) + 3;
   end;
 
   procedure InitAll;

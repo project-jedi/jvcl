@@ -88,7 +88,9 @@ begin
   inherited Create(AOwner);
   FHintColor := clInfoBk;
   FOver := False;
+  {$IFDEF VCL}
   IncludeThemeStyle(Self, [csParentBackground]);
+  {$ENDIF VCL}
 end;
 
 procedure TJvAnimate.MouseEnter(AControl: TControl);
