@@ -32,10 +32,10 @@ interface
 
 {$IFDEF WIN32}
 uses SysUtils, Windows, Messages, Classes, Controls, Forms,
-  Graphics, Menus, StdCtrls, ExtCtrls, Bde, DB, DBTables, JvTypes;
+  Graphics, Menus, StdCtrls, ExtCtrls, Bde, DB, DBTables, JvTypes, JvComponent;
 {$ELSE}
 uses SysUtils, WinTypes, WinProcs, Messages, Classes, Controls, Forms,
-  Graphics, Menus, StdCtrls, ExtCtrls, DBITypes, DB, DBTables, JvTypes;
+  Graphics, Menus, StdCtrls, ExtCtrls, DBITypes, DB, DBTables, JvTypes, JvComponent;
 {$ENDIF}
 
 type
@@ -59,7 +59,7 @@ type
     BeforeEdit: TDataSetNotifyEvent;
   end;
 
-  TJvDBFilter = class(TComponent)
+  TJvDBFilter = class(TJvComponent)
   private
     FParser: TObject;
     FDataLink: TDataLink;
