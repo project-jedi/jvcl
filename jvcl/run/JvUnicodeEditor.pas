@@ -916,7 +916,7 @@ var
 begin
   Key := WideChar(Value);
   WasSelected := (FSelection.IsSelected) and (not PersistentBlocks);
-  if Value > 32 then
+  if Value >= 32 then
   //if Key in [#32..#255] then
   begin
     if not HasChar(Char(Key), JvEditorCompletionChars) then
