@@ -282,8 +282,10 @@ begin
       InfoTextPanel.Height := InfoText.Height+6;
       Align := alClient;
       AutoSize := False;
+{$IFDEF COMPILER6_UP}
       BevelInner := bvNone;
       BevelOuter := bvNone;
+{$ENDIF COMPILER6_UP}
       ParentFont := False;
     end;
     with TimeTextPanel do
@@ -303,7 +305,9 @@ begin
       Align := alClient;
       Alignment := taCenter;
       AutoSize := False;
+{$IFDEF COMPILER6_UP}
       BevelInner := bvLowered;
+{$ENDIF COMPILER6_UP}
       BorderStyle := sbsSunken;
       ParentFont := False;
     end;
@@ -475,8 +479,10 @@ begin
       InfoTextPanel.Height := InfoText.Height+6;
       Align := alClient;
       AutoSize := False;
+{$IFDEF COMPILER6_UP}
       BevelInner := bvNone;
       BevelOuter := bvNone;
+{$ENDIF COMPILER6_UP}
       ParentFont := False;
     end;
     with AnimatePanel do
@@ -515,7 +521,9 @@ begin
       Align := alClient;
       Alignment := taCenter;
       AutoSize := False;
+{$IFDEF COMPILER6_UP}
       BevelInner := bvLowered;
+{$ENDIF COMPILER6_UP}
       BorderStyle := sbsSunken;
       ParentFont := False;
     end;
