@@ -17,7 +17,7 @@ All Rights Reserved.
 
 Contributor(s): ______________________________________.
 
-Last Modified: 2000-mm-dd
+Last Modified: 2003-10-10
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -32,8 +32,13 @@ unit JvComponent;
 interface
 
 uses
-  Windows, SysUtils, Classes, Graphics, StdCtrls, Controls, ExtCtrls, Forms, CheckLst,
-  JVCLVer;
+  SysUtils, Classes,
+  {$IFNDEF COMPLIB_CLX}
+  StdCtrls, Controls, ExtCtrls, Forms, CheckLst,
+  {$ELSE}
+  QStdCtrls,  QExtCtrls, QControls, QForms, QCheckLst, Types,
+  {$ENDIF}
+  JVCLVer, JvTypes;
 
 type
   TJvClipboardCommand = (caCopy, caCut, caPaste, caUndo);
