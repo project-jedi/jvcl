@@ -112,7 +112,6 @@ var
  prop: PPropInfo;
  obj: TObject;
  ok: Boolean;
- lElem: TJvSimpleXmlElem;
 
  function AnalyseCRLF(Value: string):string;
  begin
@@ -273,7 +272,7 @@ end;
 {*******************************************************************}
 procedure TJvTranslator.Translate(const Form: TForm);
 var
- i,j: Integer;
+ j: Integer;
  st: string;
  lElem: TJvSimpleXmlElem;
 begin
