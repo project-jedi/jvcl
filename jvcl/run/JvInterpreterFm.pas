@@ -251,7 +251,7 @@ procedure TJvInterpreterForm.FixupMethods;
         if PropList^[I].PropType^.Kind = tkMethod then
         begin
           Method := GetMethodProp(Com, PropList^[I]);
-          if Method.Data = Self then
+          if Method.Data = Com then
           begin
             F := FMethodList.IndexOf(Method.Code);
             if F > -1 then
