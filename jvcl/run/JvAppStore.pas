@@ -1216,8 +1216,7 @@ begin
   for Index := 0 to GetPropCount(PersObj) - 1 do
   begin
     PropName := GetPropName(PersObj, Index);
-    KeyName := PropName;
-    DoTranslatePropertyName(PersObj, KeyName, True);
+    KeyName := TranslatePropertyName(PersObj, PropName, True);
     PropPath := ConcatPaths([Path, KeyName]);
     case PropType(PersObj, PropName) of
       tkLString,
@@ -1281,8 +1280,7 @@ begin
   for Index := 0 to GetPropCount(PersObj) - 1 do
   begin
     PropName := GetPropName(PersObj, Index);
-    KeyName := PropName;
-    DoTranslatePropertyName(PersObj, KeyName, False);
+    KeyName := TranslatePropertyName(PersObj, PropName, False);
     PropPath := ConcatPaths([Path, KeyName]);
     if (IgnoreProperties = nil) or (IgnoreProperties.IndexOf(PropName) = -1) then
       case PropType(PersObj, PropName) of
