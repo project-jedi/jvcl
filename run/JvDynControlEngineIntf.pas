@@ -33,10 +33,10 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF MSWINDOWS}
-  ActnList, Graphics,
+  ActnList, Graphics, ComCtrls, ImgList,
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
-  QActnList, QGraphics,
+  QActnList, QGraphics, QComCtrls, QImgList,
   {$ENDIF UNIX}
   Classes, Controls, Forms, StdCtrls, ExtCtrls, Buttons, Dialogs,
   FileCtrl, SysUtils;
@@ -211,6 +211,20 @@ type
     procedure ControlSetAllowGrayed(Value: Boolean);
     procedure ControlSetState(Value: TCheckBoxState);
     function ControlGetState: TCheckBoxState;
+  end;
+
+  IJvDynControlTreeView = interface
+    ['{8DFBBAB2-C9C4-4709-A71F-E522D3998650}']
+    procedure ControlSetAutoExpand(Value: Boolean);
+    procedure ControlSetHotTrack(Value: Boolean);
+    procedure ControlSetShowHint(Value: Boolean);
+    procedure ControlSetShowLines(Value: Boolean);
+    procedure ControlSetShowRoot(Value: Boolean);
+    procedure ControlSetToolTips(Value: Boolean);
+    procedure ControlSetItems(Value: TTreeNodes);
+    function ControlGetItems: TTreeNodes;
+    procedure ControlSetImages(Value: TCustomImageList);
+    procedure ControlSetStateImages(Value: TCustomImageList);
   end;
 
 {$IFDEF UNITVERSIONING}
