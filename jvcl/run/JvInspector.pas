@@ -846,6 +846,7 @@ type
     FTracking: Boolean;
     FUserData: Pointer;
     FDropDownCount: Integer;
+    FUpdateEditCtrl: Integer; // Used to prevent EditCtrl destruction while in Apply().
   protected
     function GetName: string; virtual; // NEW: Warren added.
     procedure AlphaSort;
@@ -4307,7 +4308,7 @@ end;
 
 procedure TJvCustomInspector.RefreshValues;
 begin
-  if (Selected <> nil) and Selected.Editing then
+  if (Selected <> nil) and Selected.Editing and (Selected.FUpdateEditCtrl = 0) then
   begin
     Selected.DoneEdit(True);
     Selected.InitEdit;
@@ -4317,7 +4318,7 @@ end;
 
 procedure TJvCustomInspector.SaveValues;
 begin
-  if (Selected <> nil) and Selected.Editing then
+  if (Selected <> nil) and Selected.Editing and (Selected.FUpdateEditCtrl = 0) then
   begin
     Selected.DoneEdit(False);
     Selected.InitEdit;
@@ -5529,11 +5530,16 @@ begin
       if (not Data.IsAssigned or (DisplayValue <> NewValue)) and
          Inspector.DoItemValueChanging(Self, NewValue) then
       begin
+        Inc(FUpdateEditCtrl);
         try
-          DisplayValue := NewValue;
-        except
-          if not Inspector.DoItemValueError(Self) then
-            raise;
+          try
+            DisplayValue := NewValue;
+          except
+            if not Inspector.DoItemValueError(Self) then
+              raise;
+          end;
+        finally
+          Dec(FUpdateEditCtrl);
         end;
         InvalidateItem;
         if EditCtrl <> nil then
