@@ -3913,7 +3913,7 @@ end;
 
 function GetWindowOrgEx(Handle: QPainterH; var Org: TPoint): LongBool;
 begin
-  GetWindowOrgEx(Handle, @Org);
+  Result := GetWindowOrgEx(Handle, @Org);
 end;
 
 function SetWindowOrgEx(Handle: QPainterH; X, Y: Integer; OldOrg: PPoint): LongBool;
