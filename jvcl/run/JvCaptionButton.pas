@@ -2771,7 +2771,6 @@ initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
 
-
 finalization
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
