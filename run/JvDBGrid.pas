@@ -72,7 +72,7 @@ type
   // Lionel
   TTitleHintEvent = procedure(Sender: TObject; Field: TField;
     var aHint: string) of object;
-  // Fin Lionel
+  // End Lionel
 
   TJvDBGrid = class(TDBGrid)
   private
@@ -118,8 +118,8 @@ type
     FTitlePopUp: TPopUpMenu;
     FOnTitleHintEvent: TTitleHintEvent;
     FOnTitleArrowMenuEvent: TNotifyEvent;
-    // Fin Lionel
-    function GetImageIndex(Field: TField): Integer; // Modification Lionel
+    // End Lionel
+    function GetImageIndex(Field: TField): Integer; // Modified by Lionel
     procedure SetShowGlyphs(Value: Boolean);
     procedure SetRowsHeight(Value: Integer);
     function GetRowsHeight: Integer;
@@ -155,36 +155,36 @@ type
     procedure SetAlternRowColor(const Value: boolean);
     procedure SetTitleArrow(const Value: Boolean);
     procedure ShowSelectColumnClick;
-    // Fin Lionel
+    // End Lionel
   protected
     function AcquireFocus: Boolean;
     function CanEditShow: Boolean; override;
-    function CreateEditor: TInplaceEdit; override; // Modification Lionel
-    procedure DoTitleClick(ACol: Longint; AField: TField); dynamic; // Modification Lionel
+    function CreateEditor: TInplaceEdit; override; // Modified by Lionel
+    procedure DoTitleClick(ACol: Longint; AField: TField); dynamic; // Modified by Lionel
     procedure CheckTitleButton(ACol, ARow: Longint; var Enabled: Boolean); dynamic;
-    procedure DrawCell(ACol, ARow: Longint; ARect: TRect; AState: TGridDrawState); override; // Modification Lionel
+    procedure DrawCell(ACol, ARow: Longint; ARect: TRect; AState: TGridDrawState); override; // Modified by Lionel
     procedure DrawDataCell(const Rect: TRect; Field: TField;
       State: TGridDrawState); override; { obsolete from Delphi 2.0 }
     procedure EditChanged(Sender: TObject); dynamic;
     procedure GetCellProps(Field: TField; AFont: TFont; var Background: TColor;
-      Highlight: Boolean); dynamic; // Modification Lionel
+      Highlight: Boolean); dynamic; // Modified by Lionel
     function HighlightCell(DataCol, DataRow: Integer; const Value: string;
       AState: TGridDrawState): Boolean; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
-    procedure KeyPress(var Key: Char); override; // Modification Lionel
+    procedure KeyPress(var Key: Char); override; // Modified by Lionel
     procedure SetColumnAttributes; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override; // Modification Lionel
-    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override; // Modification Lionel
+      X, Y: Integer); override; // Modified by Lionel
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override; // Modified by Lionel
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override; // Modification Lionel
+      X, Y: Integer); override; // Modified by Lionel
     function DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; override;
     function DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; override;
     procedure Scroll(Distance: Integer); override;
     procedure LayoutChanged; override;
     procedure TopLeftChanged; override;
     procedure DrawColumnCell(const Rect: TRect; DataCol: Integer;
-      Column: TColumn; State: TGridDrawState); override; // Modification Lionel
+      Column: TColumn; State: TGridDrawState); override; // Modified by Lionel
     procedure ColWidthsChanged; override;
     procedure Paint; override;
     // Polaris
@@ -200,10 +200,11 @@ type
     function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
       MousePos: TPoint): Boolean; override;
     procedure EditButtonClick; override;
-    // Fin Lionel
+    procedure CellClick(Column: TColumn); override;
+    // End Lionel
   public
-    constructor Create(AOwner: TComponent); override; // Modification Lionel
-    destructor Destroy; override; // Modification Lionel
+    constructor Create(AOwner: TComponent); override; // Modified by Lionel
+    destructor Destroy; override; // Modified by Lionel
     procedure DefaultDataCellDraw(const Rect: TRect; Field: TField;
       State: TGridDrawState);
     procedure DisableScroll;
@@ -220,7 +221,7 @@ type
     procedure Save;
     // Lionel
     procedure UpdateTabStops(aLimit: integer = -1);
-    // Fin Lionel
+    // End Lionel
     property SelectedRows;
     property SelCount: Longint read GetSelCount;
     property Canvas;
@@ -279,7 +280,7 @@ type
     property TitlePopup: TPopUpMenu read FTitlePopup write FTitlePopup;
     property OnTitleHintEvent: TTitleHintEvent read FOnTitleHintEvent write FOnTitleHintEvent;
     property OnTitleArrowMenuEvent: TNotifyEvent read FOnTitleArrowMenuEvent write FOnTitleArrowMenuEvent;
-    // Fin Lionel
+    // End Lionel
   end;
 
 implementation
@@ -403,7 +404,7 @@ begin
   FSelectColumn := scDataBase;
   FTitleArrow := false;
   FPostOnEnter := false;
-  // Fin Lionel
+  // End Lionel
 end;
 
 destructor TJvDBGrid.Destroy;
@@ -411,7 +412,7 @@ begin
   // Lionel
   FHintTimer.Free;
   FHintWnd.Free;
-  // Fin Lionel
+  // End Lionel
   FIniLink.Free;
   FMsIndicators.Free;
   inherited Destroy;
@@ -451,7 +452,7 @@ begin
             Result := Ord(gpChecked)
           else
             Result := Ord(gpUnChecked);
-      // Fin Lionel
+      // End Lionel
     end;
   end;
 end;
@@ -565,7 +566,7 @@ begin
   // Lionel
   {$IFDEF COMPILER6_UP}
   Result := TMyInplaceEdit.Create(Self);
-  // remplace le constructeur par défaut :
+  // replace the call to default constructor :
   //  Result := inherited CreateEditor;
   TEdit(Result).OnChange := EditChanged;
   {$ELSE}
@@ -976,7 +977,7 @@ begin
     lID := DataSource.DataSet.RecNo;
     if not Odd(lID) then Background := $DDDDDD;
   end;
-  // Fin Lionel
+  // End Lionel
   if Assigned(FOnGetCellParams) then
     FOnGetCellParams(Self, Field, AFont, Background, Highlight)
   else if Assigned(FOnGetCellProps) then
@@ -996,7 +997,7 @@ begin
     AFont.Color := clHighlightText;
     Background := clHighlight;
   end;
-  // Fin Lionel
+  // End Lionel
 end;
              
 procedure TJvDBGrid.DoTitleClick(ACol: Longint; AField: TField);
@@ -1173,7 +1174,7 @@ begin
       if (Assigned(FOnTitleArrowMenuEvent)) then
         FOnTitleArrowMenuEvent(Self);
 
-      // Affiche le TitlePopup s'il existe
+      // Display TitlePopup if it exists
       if Assigned(FTitlePopup) then
       begin
         GetCursorPos(CursorPos);
@@ -1182,7 +1183,7 @@ begin
       end;
       Exit;
     end;
-    // Fin Lionel
+    // End Lionel
 
     if (DragKind = dkDock) and (Cell.X < IndicatorOffset) and
       (Cell.Y < TitleOffset) and (not (csDesigning in ComponentState)) then
@@ -1253,7 +1254,7 @@ procedure TJvDBGrid.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
   // Lionel
   if FShowTitleHint then DoHint(X, Y);
-  // Fin Lionel
+  // End Lionel
   if FTracking then
     TrackButton(X, Y);
   inherited MouseMove(Shift, X, Y);
@@ -1307,9 +1308,9 @@ begin
     (dgTitles in Options) and (dgIndicator in Options) and
     (Cell.X = 0) and (Cell.Y = 0) and DataLink.Active then
   begin
-    ShowSelectColumnClick; // Sélection des colonnes
+    ShowSelectColumnClick; // Selection of columns
   end;
-  // Fin Lionel
+  // End Lionel
 
   inherited MouseUp(Button, Shift, X, Y);
 end;
@@ -1373,7 +1374,9 @@ var
   i, deb: integer;
 begin
   // Lionel
-    // Remarque: InplaceEditor est protected dans TCustomGrid, publié dans TJvDBGrid
+  // Remark: InplaceEditor is protected in TCustomGrid, published in TJvDBGrid
+  // Goal: Allow to go directly into the InplaceEditor when one types the first
+  // characters of a word found in the list.
   if not ReadOnly then
     if (Key = #13) and FPostOnEnter then
       DataSource.DataSet.CheckBrowseMode
@@ -1454,7 +1457,7 @@ begin
               end;
           end;
         end; // if (FieldKind = fkData)
-  // Fin Lionel
+  // End Lionel
 
   if EditorMode then
     inherited OnKeyPress := FOnKeyPress;
@@ -1614,7 +1617,7 @@ begin
         (ARect.Top + ARect.Bottom - Bmp.Height) div 2, Bmp, clwhite);
     end;
   end;
-  // Fin Lionel
+  // End Lionel
 
   InBiDiMode := Canvas.CanvasOrientation = coRightToLeft;
   if (dgIndicator in Options) and (ACol = 0) and (ARow - TitleOffset >= 0) and
@@ -1811,7 +1814,7 @@ begin
           I := Ord(gpChecked)
         else
           I := Ord(gpUnChecked);
-      // Fin Lionel
+      // End Lionel
       Bmp := GetGridBitmap(TGridPicture(I));
       Canvas.FillRect(Rect);
       DrawBitmapTransparent(Canvas, (Rect.Left + Rect.Right - Bmp.Width) div 2,
@@ -1904,6 +1907,12 @@ begin
               ColumnArray^[I].EndIndex);
             Items[I].Width := StrToIntDef(ExtractWord(2, S, Delims),
               Items[I].Width);
+            // Lionel  
+            S := ExtractWord(2, S, Delims);
+            Items[I].Width := StrToIntDef(S,Items[I].Width);
+            Items[I].Visible := (S <> '-1');
+            // End Lionel
+
           end;
         end;
         for I := 0 to Count - 1 do
@@ -2056,9 +2065,24 @@ begin
   Refresh;
 end;
 
+procedure TJvDBGrid.CellClick(Column: TColumn);
+begin
+  inherited CellClick(Column);
+
+  if not (csDesigning in ComponentState) and  not ReadOnly and
+    (not (dgRowSelect in Options)) and (dgEditing in Options) and
+     Assigned(Column.Field) and (Column.Field is TBooleanField) and
+     Assigned(DataLink) and DataLink.Active and not DataLink.Readonly and
+     (DataLink.DataSet.State in [dsInsert, dsEdit]) then
+  begin
+    Column.Field.AsBoolean := not Column.Field.AsBoolean;
+    FocusCell(Col, Row, True);
+  end;
+end;
+
 procedure TJvDBGrid.EditButtonClick;
 begin
-  // Just to have it here for the call in TMyInplaceEdit
+// Just to have it here for the call in TJvDBInplaceEdit
   inherited;
 end;
 
@@ -2082,7 +2106,7 @@ begin
 
   Text := '';
 
-  if (LogCol >= 0) and (LogRow = -1) then // Ligne de titre
+  if (LogCol >= 0) and (LogRow = -1) then // Avoid Title line
   begin
     Text := Columns[LogCol].FieldName;
     if Assigned(FOnTitleHintEvent) and DataLink.Active then
@@ -2143,7 +2167,7 @@ procedure TJvDBGrid.GetBtnParams(Sender: TObject; Field: TField;
   AFont: TFont; var Background: TColor; var SortMarker: TSortMarker;
   IsDown: Boolean);
 begin
-  // Attention à ne pas occulter cet évènement
+  // Be careful not to stop this event
   if (Field.FieldName = FSortedField) then SortMarker := smDown;
 end;
 
@@ -2164,7 +2188,7 @@ end;
 function TJvDBGrid.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
   MousePos: TPoint): Boolean;
 begin
-  // Ne pas valider un record par erreur
+  // Do not validate a record by error
   if DataLink.Active and (DataLink.DataSet.State <> dsBrowse) then
     DataLink.DataSet.Cancel;
   result := inherited DoMouseWheel(Shift, WheelDelta, MousePos);
@@ -2382,19 +2406,20 @@ end;
 function TMyInplaceEdit.DoMouseWheel(Shift: TShiftState;
   WheelDelta: Integer; MousePos: TPoint): Boolean;
 begin
-  // Ne pas valider un record par erreur
+  // Do not validate a record by error
   with TJvDBGrid(Grid) do
     if DataLink.Active and (DataLink.DataSet.State <> dsBrowse) then
       DataLink.DataSet.Cancel;
-  // L'idéal serait de transmettre l'action au DataList, mais DoMouseWheel
-  // est protected ...
+
+  // Ideally we would transmit the action to the DatalList but
+  // DoMouseWheel is protected
   //  result := FDataList.DoMouseWheel(Shift, WheelDelta, MousePos);
   Result := inherited DoMouseWheel(Shift, WheelDelta, MousePos);
 end;
 {$ENDIF COMPILER6_UP}
 
 // ***********************************************************************
-// Fin
+// End Lionel
 // ***********************************************************************
 initialization
 
