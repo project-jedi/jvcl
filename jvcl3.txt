@@ -103,7 +103,7 @@ DONE - Validators (peter3) - already compliant
 DONE - Error Provider (peter3) - already compliant 
 DONE - TreeView w. Checkbox and RadioButton support (peter3) - already compliant 
 DONE - VS.NET style TreeView and JvPageList (peter3) - already compliant 
-  LED control (marcelb)
+DONE - LED control (marcelb)
 DONE - XML Database (sebastien) - already compliant 
 DONE - JvAviCAP (obones)
   TreeViewCombo and DirPathCombo (mbeck)
