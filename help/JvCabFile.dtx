@@ -40,154 +40,6 @@ SeeAlso
   TOnCABInfo, TOnNeedNewCabinet,
   TJvCABFile.OnCabInfo, TJvCABFile.OnNeedNewCabinet
 ----------------------------------------------------------------------------------------------------
-@@TOnCABInfo
-Summary
-  Event handler for cabinet information from a Setup and Device Installer
-  API callback function.
-Parameters
-  Sender  - Object for the event notification.
-  CABInfo - Structure used to store cabinet file information from the Setup
-            API.
-Description
-  TOnCABInfo is a procedure representing an event handler signalled when
-  cabinet file information is received from a callback function in the
-  Setup and Device Installer API.
-
-  Sender is the object context for the event notification, and generally
-  contains the TJvCabFile instance to be signalled from the callback
-  function.
-
-  CABInfo contains the cabinet file information received in the callback
-  function.
-
-  TOnCABInfo is the type used to define the OnCabInfo property in
-  TJvCABFile.
-
-SeeAlso
-  TJvCABFile.OnCabInfo, TCABInfo
-----------------------------------------------------------------------------------------------------
-@@TOnExtracted
-Summary
-  Event handler signalling completed file extraction from a cabinet file.
-Parameters
-  Sender      - Object for the event notification.
-  Successed   - Indicates the file was successfully extracted.
-  Cont        - Indicates file extraction can be continued.
-  Source      - Source file name extracted from the Cabinet file.
-  Dest        - Destination file name created for the extracted file.
-Description
-  TOnExtracted is a procedure representing an event handler signalled after
-  a file has been extracted from a .CAB file using the Setup and Device
-  Installer API.  TOnExtracted is used in the internal callback function
-  when the SPFILENOTIFY_FILEEXTRACTED notification message is received.
-
-  Sender is the object context for the event notification, and generally
-  contains the TJvCabFile instance to be signalled from the callback
-  function.
-
-  Successed is Boolean value that indicates if a Win32 error occurred while
-  trying to build a file listing or extract the file specified in Source.
-  Successed contains True if a Win32 error has not been detected.
-
-  Cont is a Boolean parameter that indicates if the Setup API can or should
-  continue to extract files from the cabinet file.  The default value for
-  Cont is True, unless a Win32 error occurs in the Setup API or the event
-  handler changes the value to False.
-
-  Source is a string parameter that indicates the full path and file name
-  for the file extracted from the Cabinet file.
-
-  Dest is a string parameter that indicates the full path and file name for
-  the file extracted from the Cabinet file.
-
-  TOnExtracted is signalled after completion of the file operation.
-
-  TOnExtracted is the type used to represent the OnFileExtracted event
-  handler property in TJvCabFile.
-SeeAlso
-  TJvCABFile.OnFileExtracted
-----------------------------------------------------------------------------------------------------
-@@TOnExtractFile
-
-Summary
-  Event handler signalled before extracting a file from a cabinet file.
-
-Parameters
-  Sender    - Object for the event notification.
-  FileName  - Source file name to extract from the Cabinet file.
-  DestPath  - Destination file name to create for the extracted file.
-
-Description
-  TOnExtractFile is a procedure representing an event handler signalled
-  when extracting a file from a .CAB file using the Setup and Device
-  Installer API. TOnExtracted is used in the internal callback function
-  when the SPFILENOTIFY_FILEINCABINET notification message is received.
-
-  Sender is the object context for the event notification, and generally
-  contains the TJvCABFile instance to be signalled from the callback
-  function.
-
-  \FileName is a string parameter that represents the full path and file
-  name for the member to be extracted from the cabinet file.
-
-  DestPath is a string parameter that represents the full path and file
-  name where extracted file information will be stored.
-
-  TOnExtractFile is signalled after files in the cabinet file have been
-  listed, and immediately prior to performing the file operation.
-
-  TOnExtractFile is the type used to represent the OnStartFileExtraction
-  event handler property in TJvCABFile.
-
-SeeAlso
-  TJvCABFile.OnStartFileExtraction
-----------------------------------------------------------------------------------------------------
-@@TOnNeedNewCabinet
-
-Summary
-  Event handler signalled when a new cabinet file is needed for the file
-  operation.
-
-Parameters
-  Sender    - Object for the event notification.
-  Cont      - Indicates file extraction can be continued.
-  CabInfo   - Structure used to store cabinet file information from the
-              Setup API.
-  NewPath   - Path to use for files extracted from the new .CAB file.
-
-Description
-  TOnNeedNewCabinet is a procedure representing the event handler signalled
-  when the specified file name continues in another cabinet file.
-  TOnNeedNewCabinet is used in the internal callback function for the Setup
-  and Device Installer API when the SPFILENOTIFY_NEEDNEWCABINET
-  notification is sent during iteration over file members in a .CAB file.
-  TOnNeedNewCabinet allows an application to respond to the need for
-  changing the .CAB file.
-
-  Sender is the object context for the event notification, and generally
-  contains the TJvCABFile instance to be signalled from the callback
-  function.
-
-  Cont is a Boolean parameter that indicates if the Setup API can or should
-  continue to extract files from the new cabinet file.  The default value
-  for Cont is True, unless a Win32 error occurs in the Setup API or the
-  event handler changes the value to False.
-
-  CabInfo is the structure used to store cabinet and file information from
-  the Setup API.
-
-  NewPath is a string parameter that represents the path and file name to
-  use for the new cabinet file.
-
-  TOnNeedNewCabinet is signalled prior to allowing the Setup API to
-  continue the file operation.
-
-  TOnNeedNewCabinet is the type used to represent the OnNeedNewCabinet
-  event handler property in TJvCABFile.
-
-SeeAlso
-  TJvCABFile.OnNeedNewCabinet, TCabInfo
-----------------------------------------------------------------------------------------------------
 @@TJvCABFile
 <TITLEIMG TJvCABFile>
 JVCLInfo
@@ -233,7 +85,6 @@ Description
   to perform the desired file operation(s).
 ----------------------------------------------------------------------------------------------------
 @@TJvCABFile.Create
-
 Summary
   Constructor for the object instance.
 
@@ -260,7 +111,6 @@ See Also
   FileName, Destroy
 ----------------------------------------------------------------------------------------------------
 @@TJvCABFile.Destroy
-
 Summary
   Destructor for the object instance.
 
@@ -273,7 +123,6 @@ See Also
   Create, Files
 ----------------------------------------------------------------------------------------------------
 @@TJvCABFile.ExtractAll
-
 Summary
   Extracts files in a cabinet file to a specified path.
 
@@ -304,7 +153,6 @@ SeeAlso
   Files, FileName, <LINK ExtractFile>
 ----------------------------------------------------------------------------------------------------
 @@TJvCABFile.ExtractFile
-
 Summary
   Extracts a specific file to a destination path.
 
@@ -340,7 +188,6 @@ SeeAlso
   Files, FileName, <LINK ExtractAll>
 ----------------------------------------------------------------------------------------------------
 @@TJvCABFile.FileName
-
 Summary
   Identifies the cabinet file to use for file operations.
 
@@ -363,7 +210,6 @@ SeeAlso
   Files, OnFilesListed, TNotifyEvent, <LINK ExtractFile>, <LINK ExtractAll>
 ----------------------------------------------------------------------------------------------------
 @@TJvCABFile.Files
-
 Summary
   Contains file names found in the cabinet file listing.
 
@@ -382,7 +228,6 @@ SeeAlso
   FileName, OnFilesListed
 ----------------------------------------------------------------------------------------------------
 @@TJvCABFile.OnCABInfo
-
 Summary
   Event handler signalled for cabinet file information.
 
@@ -402,29 +247,21 @@ Description
   file is continued in a different cabinet file in the extract callback
   function.
 
+  Sender is the object context for the event notification, and generally
+  contains the TJvCabFile instance to be signalled from the callback
+  function.
+
+  CABInfo contains the cabinet file information received in the callback
+  function.
+Parameters
+  Sender  - Object for the event notification.
+  CABInfo - Structure used to store cabinet file information from the Setup
+            API.
+
 SeeAlso
   TOnCabInfo, TOnNeedNewCabinet, <LINK ExtractAll>, <LINK ExtractFile>
 ----------------------------------------------------------------------------------------------------
-@@TJvCABFile.OnFilesListed
-
-Summary
-  Occurs after completion of a file listing for the cabinet file.
-
-Description
-  OnFilesListed is a TNotifyEvent property that represents the event
-  handler signalled when the file listing in Files has been completed using
-  the Setup API.  OnFilesListed can be used to perform updates needed when
-  the Files property has been populated after changing the value in
-  FileName.
-
-  Applications must assign a procedure to the event handler to allow
-  responding to the event notification.
-
-SeeAlso
-  Files, FileName
-----------------------------------------------------------------------------------------------------
 @@TJvCABFile.OnFileExtracted
-
 Summary
   Occurs after a file has been extracted from the cabinet file.
 
@@ -447,11 +284,98 @@ Description
   Use OnStartFileExtraction to perform updates prior to performing the file
   operation.
 
+  Sender is the object context for the event notification, and generally
+  contains the TJvCabFile instance to be signalled from the callback
+  function.
+
+  Successed is Boolean value that indicates if a Win32 error occurred while
+  trying to build a file listing or extract the file specified in Source.
+  Successed contains True if a Win32 error has not been detected.
+
+  Cont is a Boolean parameter that indicates if the Setup API can or should
+  continue to extract files from the cabinet file.  The default value for
+  Cont is True, unless a Win32 error occurs in the Setup API or the event
+  handler changes the value to False.
+
+  Source is a string parameter that indicates the full path and file name
+  for the file extracted from the Cabinet file.
+
+  Dest is a string parameter that indicates the full path and file name for
+  the file extracted from the Cabinet file.
+
+  TOnExtracted is signalled after completion of the file operation.
+Parameters
+  Sender      - Object for the event notification.
+  Successed   - Indicates the file was successfully extracted.
+  Cont        - Indicates file extraction can be continued.
+  Source      - Source file name extracted from the Cabinet file.
+  Dest        - Destination file name created for the extracted file.
 SeeAlso
   TOnExtracted, <LINK ExtractFile>, <LINK ExtractAll>, OnStartFileExtraction
 ----------------------------------------------------------------------------------------------------
-@@TJvCABFile.OnStartFileExtraction
+@@TJvCABFile.OnFilesListed
+Summary
+  Occurs after completion of a file listing for the cabinet file.
 
+Description
+  OnFilesListed is a TNotifyEvent property that represents the event
+  handler signalled when the file listing in Files has been completed using
+  the Setup API.  OnFilesListed can be used to perform updates needed when
+  the Files property has been populated after changing the value in
+  FileName.
+
+  Applications must assign a procedure to the event handler to allow
+  responding to the event notification.
+
+SeeAlso
+  Files, FileName
+----------------------------------------------------------------------------------------------------
+@@TJvCABFile.OnNeedNewCabinet
+Summary
+  Occurs when a specific file continues in another cabinet.
+Description
+  OnNeedNewCabinet is a TOnNeedNewCabinet property that represents the
+  event handler signalled when a specific file continues in another cabinet
+  file.  OnNeedNewCabinet is signalled in the internal callback function
+  for the Setup API when the SPFILENOTIFY_NEEDNEWCABINET notification is
+  sent during iteration over file members in a .CAB file.
+
+  OnNeedNewCabinet can be used to allow an application to respond to the
+  disk or path changes need to access the new cabinet file prior to
+  continuing the file operation.   The file operation can be abandoned by
+  setting the value in the Cont argument to false in the event handler.
+
+  Applications must assign a procedure to the event handler to allow
+  responding to the event notification.
+
+  Sender is the object context for the event notification, and generally
+  contains the TJvCABFile instance to be signalled from the callback
+  function.
+
+  Cont is a Boolean parameter that indicates if the Setup API can or should
+  continue to extract files from the new cabinet file.  The default value
+  for Cont is True, unless a Win32 error occurs in the Setup API or the
+  event handler changes the value to False.
+
+  CABInfo is the structure used to store cabinet and file information from
+  the Setup API.
+
+  NewPath is a string parameter that represents the path and file name to
+  use for the new cabinet file.
+
+  TOnNeedNewCabinet is signalled prior to allowing the Setup API to
+  continue the file operation.
+Parameters
+  Sender    - Object for the event notification.
+  Cont      - Indicates file extraction can be continued.
+  CABInfo   - Structure used to store cabinet file information from the
+              Setup API.
+  NewPath   - Path to use for files extracted from the new .CAB file.
+
+SeeAlso
+  TOnNeedNewCabinet, <LINK ExtractFile>, <LINK ExtractAll>
+----------------------------------------------------------------------------------------------------
+@@TJvCABFile.OnStartFileExtraction
 Summary
   Occurs before extracting a file from the cabinet file.
 
@@ -472,28 +396,37 @@ Description
   Use OnFileExtracted to perform updates after completion of the file
   operation.
 
+  Sender is the object context for the event notification, and generally
+  contains the TJvCABFile instance to be signalled from the callback
+  function.
+
+  \FileName is a string parameter that represents the full path and file
+  name for the member to be extracted from the cabinet file.
+
+  DestPath is a string parameter that represents the full path and file
+  name where extracted file information will be stored.
+
+  TOnExtractFile is signalled after files in the cabinet file have been
+  listed, and immediately prior to performing the file operation.
+Parameters
+  Sender    - Object for the event notification.
+  FileName  - Source file name to extract from the Cabinet file.
+  DestPath  - Destination file name to create for the extracted file.
 SeeAlso
   TOnExtractFile, <LINK ExtractFile>, <LINK ExtractAll>, OnFileExtracted
 ----------------------------------------------------------------------------------------------------
-@@TJvCABFile.OnNeedNewCabinet
-
-Summary
-  Occurs when a specific file continues in another cabinet.
-Description
-  OnNeedNewCabinet is a TOnNeedNewCabinet property that represents the
-  event handler signalled when a specific file continues in another cabinet
-  file.  OnNeedNewCabinet is signalled in the internal callback function
-  for the Setup API when the SPFILENOTIFY_NEEDNEWCABINET notification is
-  sent during iteration over file members in a .CAB file.
-
-  OnNeedNewCabinet can be used to allow an application to respond to the
-  disk or path changes need to access the new cabinet file prior to
-  continuing the file operation.   The file operation can be abandoned by
-  setting the value in the Cont argument to false in the event handler.
-
-  Applications must assign a procedure to the event handler to allow
-  responding to the event notification.
-
-SeeAlso
-  TOnNeedNewCabinet, <LINK ExtractFile>, <LINK ExtractAll>
+@@TOnCABInfo
+<TITLE TOnCABInfo type>
+<COMBINE TJvCABFile.OnCABInfo>
 ----------------------------------------------------------------------------------------------------
+@@TOnExtracted
+<TITLE TOnExtracted type>
+<COMBINE TJvCABFile.OnFileExtracted>
+----------------------------------------------------------------------------------------------------
+@@TOnExtractFile
+<TITLE TOnExtractFile type>
+<COMBINE TJvCABFile.OnStartFileExtraction>
+----------------------------------------------------------------------------------------------------
+@@TOnNeedNewCabinet
+<TITLE TOnNeedNewCabinet type>
+<COMBINE TJvCABFile.OnNeedNewCabinet>

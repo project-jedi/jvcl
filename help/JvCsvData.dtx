@@ -1,5 +1,9 @@
 ##Package: DB
 ##Status: Needs review
+##Skip: PBoolean
+##Skip: PDouble
+##Skip: PInteger
+##Skip: TArrayOfPCsvColumn
 ----------------------------------------------------------------------------------------------------
 @@JvCsvData.pas
 Summary
@@ -164,7 +168,7 @@ Summary
 Description
   Write here a description
 Parameters
-  filename - Description for this parameter
+  FileName - Description for this parameter
   MaxFiles - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
@@ -204,7 +208,7 @@ Description
 Parameters
   pItem       - Pointer to the row record
   ColumnIndex - which column to write
-  NewValue    - new value (pchar)
+  newValue    - new value (pchar)
 See Also
   GetCsvRowItem
 ----------------------------------------------------------------------------------------------------
@@ -218,7 +222,7 @@ Parameters
   RowString             - Original string
   RowItem               - Row record to fill data into.
   permitEscapeSequences - Is this row allowed to contain escape sequences? Header row usually No, Data rows Usually Yes.
-  enquoteBackslash      - Are we using the custom backslashing enquoting method (usually this should be false)?
+  EnquoteBackslash      - Are we using the custom backslashing enquoting method (usually this should be false)?
 ----------------------------------------------------------------------------------------------------
 @@TimeTAsciiToDateTime
 <TITLE TimeTAsciiToDateTime function>
@@ -240,7 +244,7 @@ Parameters
   TimeZoneCorrection - Incoming timezone correction. Usually 0 if all data is in UTC.
 See Also
   DateTimeToTimeTHex
----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
 @@TJvCsvBookmark
 <TITLE TJvCsvBookmark type>
 Summary
@@ -251,7 +255,7 @@ Description
   flag is a standard field required for bookmark types
 @@TJvCsvBookmark.data
   data is a standard field required for bookmark types
----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
 @@TJvCsvColumn
 <TITLE TJvCsvColumn type>
 Summary
@@ -348,6 +352,26 @@ Description
 See Also
   TJvCsvDataSet.CsvFieldDef
 ----------------------------------------------------------------------------------------------------
+@@TJvCsvCustomInMemoryDataSet.AppendedFieldCount
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCsvCustomInMemoryDataSet.AppendRowString
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  RowAsString - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvCsvCustomInMemoryDataSet.AppendWith
 Summary
   Adds contents of a TStrings object to the existing rows in the database.
@@ -388,6 +412,18 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
+@@TJvCsvCustomInMemoryDataSet.DeleteRows
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  FromRow - Description for this parameter
+  ToRow   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvCsvCustomInMemoryDataSet.EmptyTable
 Summary
   Clear everything from the table.
@@ -402,10 +438,35 @@ Description
   Use this only if you want to save to a file other than the Filename property in the component.
   If you just want to save the table to the file that it was loaded from, call Flush instead.  
 Parameters
-  Filename - The file to write to.
+  FileName - The file to write to.
 See Also
   TJvCsvCustomInMemoryDataSet.Flush,TJvCsvCustomInMemoryDataSet.Filename.
-
+----------------------------------------------------------------------------------------------------
+@@TJvCsvCustomInMemoryDataSet.ExportRows
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  FileName - Description for this parameter
+  FromRow  - Description for this parameter
+  ToRow    - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCsvCustomInMemoryDataSet.FindByCsvKey
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  key - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCsvCustomInMemoryDataSet.Flush
 Summary
@@ -414,6 +475,20 @@ Description
   Saves changes back to the file that they were originally loaded from (according to the Filename property).
 See Also
   TJvCsvCustomInMemoryDataSet.ExportCsvFile,TJvCsvCustomInMemoryDataSet.Filename
+----------------------------------------------------------------------------------------------------
+@@TJvCsvCustomInMemoryDataSet.GetAsString
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Row    - Description for this parameter
+  Column - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCsvCustomInMemoryDataSet.GetColumnsAsString
 Summary
@@ -426,7 +501,6 @@ Return value
   Returns a String with all the columns names in a comma separated list. (ie 'ABC,DEF,GHI,JKL,...')
 See Also
   TJvCsvCustomInMemoryDataSet.GetCsvHeader
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCsvCustomInMemoryDataSet.GetCsvHeader
 Summary
@@ -452,6 +526,19 @@ See Also
  TJvCsvCustomInMemoryDataSet.GetCsvHeader, TJvCsvCustomInMemoryDataSet.GetColumnsAsString
   
 ----------------------------------------------------------------------------------------------------
+@@TJvCsvCustomInMemoryDataSet.GetUserData
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  recno - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvCsvCustomInMemoryDataSet.GetUserTag
 Summary
   Write here a summary (1 line)
@@ -461,6 +548,15 @@ Parameters
   recno - Description for this parameter
 Return value
   Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCsvCustomInMemoryDataSet.InternalData
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -486,7 +582,15 @@ Parameters
   Strings - The starting data.
 See Also
   TJvCsvCustomInMemoryDataSet.AssignFromStrings
-
+----------------------------------------------------------------------------------------------------
+@@TJvCsvCustomInMemoryDataSet.Refresh
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCsvCustomInMemoryDataSet.SetAllUserData
 Summary
@@ -516,8 +620,20 @@ Summary
 Description
   Write here a description
 Parameters
-  fieldname - Description for this parameter
+  FieldName - Description for this parameter
   pattern   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCsvCustomInMemoryDataSet.SetUserData
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  recno    - Description for this parameter
+  newValue - new value (pchar)
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -529,7 +645,7 @@ Description
   Write here a description
 Parameters
   recno    - Description for this parameter
-  newValue - Description for this parameter
+  newValue - new value (pchar)
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -546,7 +662,19 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
+@@TJvCsvCustomInMemoryDataSet._ClearFilter
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvCsvDataSet
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
 Summary
 
 An in-memory TDataSet component similar to TTable but with optional
@@ -711,6 +839,36 @@ Description
 See Also
   TJvCsvDataSet.Filename
 ----------------------------------------------------------------------------------------------------
+@@TJvCsvDataSet.OnGetFieldData
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender    - Description for this parameter
+  UserTag   - Description for this parameter
+  UserData  - Description for this parameter
+  FieldName - Description for this parameter
+  Value     - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCsvDataSet.OnSetFieldData
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender    - Description for this parameter
+  UserTag   - Description for this parameter
+  UserData  - Description for this parameter
+  FieldName - Description for this parameter
+  Value     - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvCsvDataSet.OnSpecialData
 Summary
   This event fires, if metadata is embedded in a csv data file. The metadata escape sequence is '>>'
@@ -785,7 +943,19 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
---------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+@@TJvCsvOnGetFieldData
+<TITLE TJvCsvOnGetFieldData type>
+<COMBINE TJvCsvDataSet.OnGetFieldData>
+----------------------------------------------------------------------------------------------------
+@@TJvCsvOnSetFieldData
+<TITLE TJvCsvOnSetFieldData type>
+<COMBINE TJvCsvDataSet.OnSetFieldData>
+----------------------------------------------------------------------------------------------------
+@@TJvCsvOnSpecialData
+<TITLE TJvCsvOnSpecialData type>
+<COMBINE TJvCsvDataSet.OnSpecialData>
+----------------------------------------------------------------------------------------------------
 @@TJvCsvRow
 <TITLE TJvCsvRow type>
 Summary
@@ -796,20 +966,18 @@ Description
   The row object's dirty bits.  True means row been modified and not yet saved to disk.
 @@TJvCsvRow.columns
   Number of columns in this row.
-@@TJvCsvRow.index
+@@TJvCsvRow.Index
   Description for index
 @@TJvCsvRow.wordfield
   Array of indexes to the beginning of each csv column.
-@@TJvCsvRow.text
+@@TJvCsvRow.Text
   The raw CSV row text.
-@@TJvCsvRow.bookmark
+@@TJvCsvRow.Bookmark
   The bookmark object for this row.
 @@TJvCsvRow.filtered
   Description for filtered
-@@TJvCsvRow.userdatapointer
-  Description for userdatapointer
-@@TJvCsvRow.usertag
-  Description for usertag
+@@TJvCsvRow.recursionFlag
+  Description for recursionFlag
 ----------------------------------------------------------------------------------------------------
 @@TJvCsvRows
 Summary
@@ -888,6 +1056,18 @@ Parameters
 Return value
   Returns row as a string
 ----------------------------------------------------------------------------------------------------
+@@TJvCsvRows.InsertRow
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  position - Description for this parameter
+  Item     - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvCsvRows.SetARowItem
 Summary
   Write a new value to a column in an existing row. 
@@ -907,6 +1087,24 @@ Parameters
   RowIndex - What row.
   Value    - The csv data.
 ----------------------------------------------------------------------------------------------------
-@@TOnSpecialData
-<TITLE TOnSpecialData type>
-<COMBINE TJvCsvDataSet.OnSpecialData>
+@@TJvCsvRows.UserData
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCsvRows.UserTag
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
