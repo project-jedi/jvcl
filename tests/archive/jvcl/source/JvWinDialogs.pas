@@ -747,12 +747,15 @@ end;
 
 function GetSpecialFolderPath(FolderName: string; CanCreate: Boolean): string;
 var
-  FilePath: array[0..MAX_PATH] of char;
-  Folder: integer;
-  Found: boolean;
-  I: integer;
+  Filepath: array[0..MAX_PATH] of Char;
+  Folder: Integer;
+  Found: Boolean;
+  i: Integer;
+  PIDL: PItemIDList;
+  buf: array[0..MAX_PATH] of Char;
+
 begin
-  Found := False;
+  Found := false;
   Folder := 0;
   Result := EmptyStr;
   for i := 0 to 29 do
@@ -760,15 +763,23 @@ begin
     if (UpperCase(FolderName) = UpperCase(SpecialFolders[i].Name)) then
     begin
       Folder := SpecialFolders[i].ID;
-      Found := true;
+      Found := True;
       break;
     end;
   end;
-  if not found then
-    Exit;
+  if not Found then
+    exit;
   { Get path of selected location }
-  SHGetSpecialFolderPath(0, FilePath, Folder, CanCreate);
-  Result := FilePath;
+
+
+ {JPR}
+  if Succeeded(SHGetSpecialFolderLocation(0, Folder, PIDL)) then
+  begin
+    if SHGetPathFromIDList(PIDL, buf) then
+      Result := buf;
+    CoTaskMemFree(PIDL);
+  end;
+ {JPR}
 end;
 
 procedure AddToRecentDocs(const Filename: string);
