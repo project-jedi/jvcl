@@ -49,9 +49,6 @@ object CollectionDemoForm: TCollectionDemoForm
     C3FFFFFFC3FFFFFF01FFFFFC003FFFFFFFFFFFFFFFFF}
   OldCreateOrder = False
   OnShow = FormShow
-  DesignSize = (
-    592
-    470)
   PixelsPerInch = 96
   TextHeight = 13
   object Description: TLabel

@@ -17,9 +17,6 @@ object MainForm: TMainForm
   Position = poScreenCenter
   OnActivate = FormActivate
   OnDestroy = DevListBoxClick
-  DesignSize = (
-    444
-    484)
   PixelsPerInch = 96
   TextHeight = 16
   object ReadBtn: TSpeedButton

@@ -14,9 +14,6 @@ object frmOptions: TfrmOptions
   Font.Style = []
   OldCreateOrder = False
   Scaled = False
-  DesignSize = (
-    456
-    399)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -115,9 +112,6 @@ object frmOptions: TfrmOptions
     Anchors = [akLeft, akTop, akRight, akBottom]
     Caption = ' New Filemask: '
     TabOrder = 6
-    DesignSize = (
-      427
-      160)
     object Label2: TLabel
       Left = 12
       Top = 22

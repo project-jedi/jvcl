@@ -14,9 +14,6 @@ object frmMain: TfrmMain
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
-  DesignSize = (
-    622
-    243)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -159,8 +156,8 @@ object frmMain: TfrmMain
         ' of a TJvErrorIndicator.'
       ''
       
-        'For more info on TJvErrorIndicator, see the demo for that compone' +
-        'nt (also included).'
+        'For more info on TJvErrorIndicator, see the demo for that compon' +
+        'ent (also included).'
       ''
       
         'By clicking any of the buttons below, you can see how the differ' +

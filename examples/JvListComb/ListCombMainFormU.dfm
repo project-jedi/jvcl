@@ -60,9 +60,6 @@ object ListCombMainForm: TListCombMainForm
     Align = alRight
     BevelOuter = bvNone
     TabOrder = 1
-    DesignSize = (
-      276
-      384)
     object Label1: TLabel
       Left = 66
       Top = 84

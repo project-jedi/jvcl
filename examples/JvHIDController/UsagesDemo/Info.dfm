@@ -51,9 +51,6 @@ object InfoForm: TInfoForm
   OldCreateOrder = False
   Position = poOwnerFormCenter
   OnShow = FormShow
-  DesignSize = (
-    563
-    372)
   PixelsPerInch = 96
   TextHeight = 16
   object InfoMemo: TMemo
