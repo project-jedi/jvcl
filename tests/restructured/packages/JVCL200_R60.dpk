@@ -46,7 +46,7 @@ package JVCL200_R60;
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'Runtime support package for JEDI VCL'}
 {$RUNONLY}
-{$IMPLICITBUILD ON}
+{$IMPLICITBUILD OFF}
 
 requires
   vcl,
@@ -418,5 +418,10 @@ contains
   JvThumbViews in '..\Source\JvThumbViews.pas',
   JvMovableBevel in '..\Source\JvMovableBevel.pas',
   JvDBSpinEdit in '..\Source\JvDBSpinEdit.pas',
-  JvDSADialogs in '..\Source\JvDSADialogs.pas';
+  JvDSADialogs in '..\Source\JvDSADialogs.pas',
+  JvBandForms in '..\Source\JvBandForms.pas',
+  JvBandUtils in '..\Source\JvBandUtils.pas',
+  JvBandWindows in '..\Source\JvBandWindows.pas',
+  JvBandObject in '..\Source\JvBandObject.pas';
+  
 end.

@@ -38,8 +38,9 @@ implementation
 {$R JVCLReg.dcr}
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls, Dlgs,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls, Dlgs, ToolsApi,
 
+  JvDSADialogs,
   //About JVCL
   JvJVCLAbout, JVCLVer,
 
@@ -142,6 +143,10 @@ uses
   JVCLMiscal,
   JvComCtrls, JvCtrls, JvDdeCmd, JvDialogs, JvMail, JvPerfMon95, JvSysComp,
 
+
+  //JvBands
+  JvBandForms, JvBandObjectDLLWizard,
+
 {$IFNDEF D6PersonalEdition}
   //DB-Aware components
   JvDBDateTimePicker,
@@ -168,7 +173,7 @@ FiltEdit,
   JvChangeNotify, JvEnterTab, JvFindFiles,
   JvFileInfo, JvItemsPanel, JvDsgnEditors, JvCntScr, JvCmdEdit,
   JvTMTL, JvCalendar, JvUCB, JvChNtfyProperty, JvOLBar, JvOLBarEditor, JvSHFmt,
-  JvInspector, JvHidControllerClass, JvAnalogClock, JvRadioCtl, JvDSADialogs;
+  JvInspector, JvHidControllerClass, JvAnalogClock, JvRadioCtl;
 
 {******************************************************************************}
 
@@ -584,6 +589,11 @@ begin
       TJvIntegerEdit,
       TJvYearEdit
       ]);
+
+//JvBands
+//============
+  RegisterCustomModule(TjvBandForm, TCustomModule);
+  RegisterPackageWizard(TjvBandObjectDLLWizard.Create);
 
   // Jv Composites
   // =============

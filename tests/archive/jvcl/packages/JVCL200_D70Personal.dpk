@@ -46,7 +46,7 @@ package JVCL200_D70Personal;
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JEDI-VCL Components for Delphi 7 Personal'}
 {$DESIGNONLY}
-{$IMPLICITBUILD ON}
+{$IMPLICITBUILD OFF}
 {$DEFINE D7PersonalEdition}
 
 requires
@@ -99,6 +99,9 @@ contains
   JvPictEdit in '..\source\JvPictEdit.pas' {PictureEditDialog},
   JvPresrDsn in '..\source\JvPresrDsn.pas' {JvFormPropsDlg},
   JvSbEdit in '..\source\JvSbEdit.pas' {JvSpeedbarEditor},
-  JvTimLstEd in '..\source\JvTimLstEd.pas' {JvTimerItemsEditor};
+  JvTimLstEd in '..\source\JvTimLstEd.pas' {JvTimerItemsEditor},
+  jvBandObjectDLLWizard in '..\source\JvBandObjectDLLWizard.pas',
+  jvBandObjectDLLWizardForm in '..\source\JvBandObjectDLLWizardForm.pas' {zWizardForm};
+
 
 end.

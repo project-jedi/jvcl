@@ -26,7 +26,7 @@ package JVCL200_D50;
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JEDI-VCL Components'}
 {$DESIGNONLY}
-{$IMPLICITBUILD ON}
+{$IMPLICITBUILD OFF}
 
 requires
   dcldb50,
@@ -84,6 +84,8 @@ contains
   JvQBndDlg in '..\source\JvQBndDlg.pas' {JvQueryParamsDialog},
   JvSbEdit in '..\source\JvSbEdit.pas' {JvSpeedbarEditor},
   JvSelDSFrm in '..\source\JvSelDSFrm.pas' {JvSelectDataSetForm},
-  JvTimLstEd in '..\source\JvTimLstEd.pas' {JvTimerItemsEditor};
+  JvTimLstEd in '..\source\JvTimLstEd.pas' {JvTimerItemsEditor},
+  jvBandObjectDLLWizard in '..\source\JvBandObjectDLLWizard.pas',
+  jvBandObjectDLLWizardForm in '..\source\JvBandObjectDLLWizardForm.pas' {zWizardForm};
 
 end.
