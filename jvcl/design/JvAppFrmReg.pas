@@ -9,7 +9,7 @@ procedure Register;
 implementation
 uses
   Classes, Graphics, {$IFDEF COMPILER6_UP} DesignIntf, {$ELSE} DsgnIntf, {$ENDIF COMPILER6_UP}
-  JvConsts, JvAppAnimatedIcon, JvAppEvent, JvAppHotKey, JvTransparentForm,
+  JvConsts, JvAppAnimatedIcon, JvAppEvent, JvAppHotKey, JvFormTransparent,
   JvFormAnimatedIcon, JvFormAnimation, JvFormWallpaper,
   JvFormMagnet, JvAnimTitle, JvFormAutoSize, JvGradientCaption,
   JvGradientCaptionForm, JvFormWallpaperEditor;

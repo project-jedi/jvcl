@@ -36,6 +36,7 @@ procedure Register;
 implementation //DesignIntf
 {$IFNDEF UIBNOCOMPONENT}
 uses Classes, JvUIB;
+{$R ..\Resources\JvUIBReg.dcr}
 
 procedure Register;
 begin

@@ -28,11 +28,10 @@ package JvPluginD5D;
 
 requires
   JvCoreD5R,
-  
   JvPluginD5R;
 
 contains
-  JvPluginParamsForm in '..\..\design\JvPluginParamsForm.pas',
+  JvPluginParamsForm in '..\..\design\JvPluginParamsForm.pas' {frmPluginParams},
   JvPluginWizard in '..\..\design\JvPluginWizard.pas',
   JvPluginReg in '..\..\design\JvPluginReg.pas';
 

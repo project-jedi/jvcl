@@ -1307,10 +1307,10 @@ var
   InBuf: array[0..3] of byte;
   OutBuf: array[0..2] of byte;
 begin
-  if (Length(S) mod 4) <> 0 then
-  begin
+  { TODO -oJVCL -cWARNING : (p3) I don't get it: why do Delphi warn about return value here? }
+  if ((Length(S) mod 4) <> 0) or (Length(S) = 0) then
     raise Exception.Create('Base64: Incorrect string format');
-  end;
+    
   SetLength(Result, ((Length(S) div 4) - 1) * 3);
   for i := 1 to ((Length(S) div 4) - 1) do
   begin

@@ -1,7 +1,7 @@
 package JvAppFrmD5R;
 
-{$R *.res}
-
+{$R *.RES}
+{$ALIGN ON}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
 {$DEBUGINFO OFF}
@@ -36,11 +36,10 @@ contains
   JvAppEvent in '..\..\run\JvAppEvent.pas',
   JvAppHotKey in '..\..\run\JvAppHotKey.pas',
   JvAppInfo in '..\..\run\JvAppInfo.pas',
-  JvTransparentForm in '..\..\run\JvTransparentForm.pas',
+  JvFormTransparent in '..\..\run\JvFormTransparent.pas',
   JvFormAnimatedIcon in '..\..\run\JvFormAnimatedIcon.pas',
   JvFormAnimation in '..\..\run\JvFormAnimation.pas',
   JvFormWallpaper in '..\..\run\JvFormWallpaper.pas',
-  JvWallpaperEditForm in '..\..\run\JvWallpaperEditForm.pas',
   JvFormMagnet in '..\..\run\JvFormMagnet.pas',
   JvAnimTitle in '..\..\run\JvAnimTitle.pas',
   JvFormAutoSize in '..\..\run\JvFormAutoSize.pas',

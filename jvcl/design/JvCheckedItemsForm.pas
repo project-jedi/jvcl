@@ -38,7 +38,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF}
-  JvFormPlacement, JvxCtrls, JvComponent;
+  JvFormPlacement, JvComponent, CheckLst;
 
 type
   TJvCheckItemEditor = class(TForm)
@@ -69,7 +69,7 @@ type
     DeleteBtn: TButton;
     NewBtn: TButton;
     EditBtn: TButton;
-    CheckList: TJvxCheckListBox;
+    CheckList: TCheckListBox;
     procedure EditBtnClick(Sender: TObject);
     procedure NewBtnClick(Sender: TObject);
     procedure DeleteBtnClick(Sender: TObject);
@@ -130,11 +130,11 @@ begin
       Caption := TComponent(Comp).Name + '.' + Self.GetName
     else
       Caption := Self.GetName;
-    if Comp is TJvxCheckListBox then
+    if Comp is TCheckListBox then
     begin
-      CheckList.AllowGrayed := TJvxCheckListBox(Comp).AllowGrayed;
-      CheckList.Sorted := TJvxCheckListBox(Comp).Sorted;
-      CheckList.CheckKind := TJvxCheckListBox(Comp).CheckKind;
+      CheckList.AllowGrayed := TCheckListBox(Comp).AllowGrayed;
+      CheckList.Sorted := TCheckListBox(Comp).Sorted;
+//      CheckList.CheckKind := TJvxCheckListBox(Comp).CheckKind;
     end;
     CheckList.Items := TStrings(GetOrdValue);
     if ShowModal = mrOk then
@@ -274,12 +274,12 @@ begin
       end;
       FEdit.Text := CheckList.Items[I];
       FComboBox.ItemIndex := Integer(CheckList.State[I]);
-      FEnableBox.Checked := CheckList.EnabledItem[I];
+      FEnableBox.Checked := CheckList.ItemEnabled[I];
       if ShowModal = mrOk then
       begin
         CheckList.Items[I] := FEdit.Text;
         CheckList.State[I] := TCheckBoxState(FComboBox.ItemIndex);
-        CheckList.EnabledItem[I] := FEnableBox.Checked;
+        CheckList.ItemEnabled[I] := FEnableBox.Checked;
       end;
       Self.CheckList.ItemIndex := I;
     finally
@@ -294,13 +294,13 @@ begin
   with TJvCheckItemEditor.Create(Application) do
   try
     FEdit.Text := '';
-    FComboBox.ItemIndex := Integer(clbDefaultState);
-    FEnableBox.Checked := clbDefaultEnabled;
+    FComboBox.ItemIndex := Integer(cbUnChecked);
+    FEnableBox.Checked := true;
     if ShowModal = mrOk then
     begin
       Index := CheckList.Items.Add(FEdit.Text);
       CheckList.State[Index] := TCheckBoxState(FComboBox.ItemIndex);
-      CheckList.EnabledItem[Index] := FEnableBox.Checked;
+      CheckList.ItemEnabled[Index] := FEnableBox.Checked;
       CheckButtons;
     end;
   finally
@@ -324,8 +324,8 @@ end;
 
 procedure TJvCheckItemsEditor.EnabledItemClick(Sender: TObject);
 begin
-  CheckList.EnabledItem[CheckList.ItemIndex] :=
-    not CheckList.EnabledItem[CheckList.ItemIndex];
+  CheckList.ItemEnabled[CheckList.ItemIndex] :=
+    not CheckList.ItemEnabled[CheckList.ItemIndex];
 end;
 
 procedure TJvCheckItemsEditor.PopupPopup(Sender: TObject);
@@ -342,7 +342,7 @@ begin
   cbUncheckedItem.Checked := False;
   if Enable then
   begin
-    EnabledItem.Checked := CheckList.EnabledItem[CheckList.ItemIndex];
+    EnabledItem.Checked := CheckList.ItemEnabled[CheckList.ItemIndex];
     case CheckList.State[CheckList.ItemIndex] of
       cbChecked:
         cbCheckedItem.Checked := True;

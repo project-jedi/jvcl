@@ -35,6 +35,6 @@ requires
 contains
   JvStdCtrlsReg in '..\..\design\JvStdCtrlsReg.pas',
   JvProgressEditor in '..\..\design\JvProgressEditor.pas',
-  JvCheckedItemsForm in '..\..\design\JvCheckedItemsForm.pas';
+  JvCheckedItemsForm in '..\..\design\JvCheckedItemsForm.pas' {JvTimerItemsEditor};
 
 end.

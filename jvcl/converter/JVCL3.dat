@@ -78,7 +78,6 @@ JvQbnddlg=JvDBQueryParamsForm
 JvHLEdPropDlg=JvHLEditorPropertyForm
 JvPresrDsn=JvFormPropertiesForm
 JvProgressFrm=JvProgressForm
-
 JvActnRes=JvActnResForm
 JvJVCLAbout=JvJVCLAboutForm
 JvProfiler32=JvProfilerForm
@@ -95,9 +94,9 @@ JvFormAlarms=JvAlarmsForm
 JvFormImage=JvImageForm
 JvFormParser=JvParserForm
 JvFormPatch=JvPatchForm
-JvFormProgress=JvProgressForm
+JvFormProgress=JvProgressComponent
 JvFormWallpaperEdit=JvWallpaperEditForm
 JvProgressFrm=JvProgressForm
 JvSpeller=JvSpellerForm
-
+JvTransparentForm=JvFormTransparent
 

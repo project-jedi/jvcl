@@ -630,7 +630,7 @@ begin
 end;
 
 function TJvPreviewGraphicItem.DestRect(RefRect: TRect;DestDC:HDC): TRect;
-var Points:TPoint;
+// var Points:TPoint;
 begin
   UpdateGraphic;
   Result := CalcDestRect(Picture.Width,Picture.Height, RefRect, Stretch, Proportional, Center);

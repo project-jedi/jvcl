@@ -218,7 +218,7 @@ type
 
   TJvCustomPreviewControl = class(TJvCustomControl)
   private
-    FDummy: integer;
+//    FDummy: integer;
     FBuffer: TBitmap;
     FOptions: TJvPreviewPageOptions;
     FPages: TList;
@@ -1088,7 +1088,7 @@ end;
 procedure TJvCustomPreviewControl.DrawPages(ACanvas: TCanvas; Offset: TPoint);
 var i, j, k, m, AOffsetX, AOffsetY, APageIndex: integer;
   APageRect, APrintRect: TRect;
-  si: TScrollInfo;
+//  si: TScrollInfo;
   tmp: boolean;
   function CanDrawPage(APageIndex: integer; APageRect: TRect): boolean;
   begin
@@ -1251,8 +1251,7 @@ procedure TJvCustomPreviewControl.WMSize(var Message: TWMSize);
 var tmpRow: integer;
 begin
   inherited;
-  if IsPageMode then
-    tmpRow := TopRow; // workaround...
+  tmpRow := TopRow; // workaround...
   Change;
   if IsPageMode then
     TopRow := tmpRow; // workaround...
@@ -1519,7 +1518,7 @@ end;
 
 procedure TJvCustomPreviewControl.SetTopRow(Value: integer);
 var ARow, tmp: integer;
-  si: TScrollInfo;
+//  si: TScrollInfo;
 begin
   ARow := Max(Min(Value, TotalRows - 1), 0);
   tmp := (FPageHeight + Options.VertSpacing) * ARow;
@@ -1632,6 +1631,7 @@ function TJvCustomPreviewControl.ItemAtPos(Pos: TPoint;
 begin
   // TODO: return the page at Pos or -1 if no page or outside range
   // if Existing is false, returns the page that should have been at Pos
+  Result := -1;
 end;
 
 procedure TJvCustomPreviewControl.SetScrollBars(const Value: TScrollStyle);

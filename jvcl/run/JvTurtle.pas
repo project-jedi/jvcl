@@ -52,7 +52,7 @@ type
     function inpot(token: string; var num: integer): boolean;
     function gettex(var tex: string): boolean;
     function getcol(var col: Tcolor): boolean;
-    function skipblock: boolean;
+//    function skipblock: boolean;
     function push(num: integer): boolean;
     function pop(var num: integer): boolean;
     function Npush(var msg: string; num: integer): boolean;
@@ -232,220 +232,220 @@ function TJvTurtle.docom: string;
 var
   com: string;
 begin
-  result := 'ready';
-  if not gettoken(com) then exit;
+  Result := 'ready';
+  if not gettoken(com) then Exit;
   if com = 'pos' then
-    result := txpos
+    Result := txpos
   else if com = 'in' then
-    result := txin
+    Result := txin
   else if com = 'inadd' then
-    result := txinadd
+    Result := txinadd
   else if com = 'insub' then
-    result := txinsub
+    Result := txinsub
   else if com = 'inmul' then
-    result := txinmult
+    Result := txinmult
   else if com = 'indiv' then
-    result := txindiv
+    Result := txindiv
   else if com = 'ininc' then
-    result := txininc
+    Result := txininc
   else if com = 'indec' then
-    result := txindec
+    Result := txindec
   else if com = 'default' then
-    result := txdefault
+    Result := txdefault
   else if com = 'angle' then
-    result := txangle
+    Result := txangle
   else if com = 'down' then
-    result := txdown
+    Result := txdown
   else if com = 'up' then
-    result := txup
+    Result := txup
   else if com = 'pensize' then
-    result := txpensize
+    Result := txpensize
   else if com = 'pencolor' then
-    result := txpencolor
+    Result := txpencolor
   else if com = 'turn' then
-    result := txturn
+    Result := txturn
   else if com = 'right' then
-    result := txright
+    Result := txright
   else if com = 'left' then
-    result := txleft
+    Result := txleft
   else if com = 'go' then
-    result := txgo
+    Result := txgo
   else if com = 'move' then
-    result := txmove
+    Result := txmove
   else if com = 'lineto' then
-    result := txlineto
+    Result := txlineto
   else if com = 'textfont' then
-    result := txtextfont
+    Result := txtextfont
   else if com = 'textsize' then
-    result := txtextsize
+    Result := txtextsize
   else if com = 'textcolor' then
-    result := txtextcolor
+    Result := txtextcolor
   else if com = 'addbrushcolor' then
-    result := txaddbrushcolor
+    Result := txaddbrushcolor
   else if com = 'addpencolor' then
-    result := txaddpencolor
+    Result := txaddpencolor
   else if com = 'text' then
-    result := txtext
+    Result := txtext
   else if com = 'bold' then
-    result := txtextbold
+    Result := txtextbold
   else if com = 'italic' then
-    result := txtextitalic
+    Result := txtextitalic
   else if com = 'underline' then
-    result := txtextunderline
+    Result := txtextunderline
   else if com = 'normal' then
-    result := txtextnormal
+    Result := txtextnormal
   else if com = 'textout' then
-    result := txtextout
+    Result := txtextout
   else if com = 'bssolid' then
-    result := txbssolid
+    Result := txbssolid
   else if com = 'bsclear' then
-    result := txbsclear
+    Result := txbsclear
   else if com = 'brushcolor' then
-    result := txbrushcolor
+    Result := txbrushcolor
   else if com = 'rectangle' then
-    result := txrectangle
+    Result := txrectangle
   else if com = 'roundrect' then
-    result := txroundrect
+    Result := txroundrect
   else if com = 'ellipse' then
-    result := txellipse
+    Result := txellipse
   else if com = 'diamond' then
-    result := txdiamond
+    Result := txdiamond
   else if com = 'polygon' then
-    result := txpolygon
+    Result := txpolygon
   else if com = 'star' then
-    result := txstar
+    Result := txstar
   else if com = 'curve' then
-    result := txcurve
+    Result := txcurve
   else if com = 'mark' then
-    result := txmark
+    Result := txmark
   else if com = 'gomark' then
-    result := txgomark
+    Result := txgomark
   else if com = 'markangle' then
-    result := txmarkangle
+    Result := txmarkangle
   else if com = 'gomarkangle' then
-    result := txgomarkangle
+    Result := txgomarkangle
   else if com = 'penmode' then
-    result := txpenmode
+    Result := txpenmode
   else if com = 'copymode' then
-    result := txcopymode
+    Result := txcopymode
   else if com = 'area' then
-    result := txArea
+    Result := txArea
   else if com = 'copy' then
-    result := txcopy
+    Result := txcopy
   else if com = 'do' then
-    result := txdo
+    Result := txdo
   else if com = 'loop' then
-    result := txloop
+    Result := txloop
   else if com = 'flood' then
-    result := txflood
+    Result := txflood
   else if com = 'background' then
-    result := txbackground
+    Result := txbackground
   else if com = 'filter' then
-    result := txfilter
+    Result := txfilter
   else if com = '{' then
-    result := txcomment
+    Result := txcomment
   else if com = '[' then
-    result := txblock
+    Result := txblock
   else if com = ']' then
-    result := txreturn
+    Result := txreturn
   else if com = 'goleft' then
-    result := txIleft
+    Result := txIleft
   else if com = 'gotop' then
-    result := txItop
+    Result := txItop
   else if com = 'goright' then
-    result := txIright
+    Result := txIright
   else if com = 'gobottom' then
-    result := txIbottom
+    Result := txIbottom
   else if com = 'gocenter' then
-    result := txIcenter
+    Result := txIcenter
   else if com = '+' then
-    result := txsum
+    Result := txsum
   else if com = '-' then
-    result := txsub
+    Result := txsub
   else if com = '*' then
-    result := txmul
+    Result := txmul
   else if com = '/' then
-    result := txdiv
+    Result := txdiv
   else if com = '.gt' then
-    result := txgt
+    Result := txgt
   else if com = '.ge' then
-    result := txge
+    Result := txge
   else if com = '.lt' then
-    result := txlt
+    Result := txlt
   else if com = '.le' then
-    result := txle
+    Result := txle
   else if com = '.eq' then
-    result := txeq
+    Result := txeq
   else if com = '.ne' then
-    result := txne
+    Result := txne
   else if com = '.not' then
-    result := txnot
+    Result := txnot
   else if com = '.and' then
-    result := txand
+    Result := txand
   else if com = '.or' then
-    result := txor
+    Result := txor
   else if com = 'neg' then
-    result := txneg
+    Result := txneg
   else if com = 'abs' then
-    result := txabs
+    Result := txabs
   else if com = 'swap' then
-    result := txswap
+    Result := txswap
   else if com = 'max' then
-    result := txmax
+    Result := txmax
   else if com = 'min' then
-    result := txmin
+    Result := txmin
   else if com = 'sqr' then
-    result := txsqr
+    Result := txsqr
   else if com = 'sqrt' then
-    result := txsqrt
+    Result := txsqrt
   else if com = 'inc' then
-    result := txinc
+    Result := txinc
   else if com = 'dec' then
-    result := txdec
+    Result := txdec
   else if com = 'if' then
-    result := txif
+    Result := txif
   else if com = 'drop' then
-    result := txdrop
+    Result := txdrop
   else if com = 'dup' then
-    result := txdup
+    Result := txdup
   else if com = '=posx' then
-    result := tx_posx
+    Result := tx_posx
   else if com = '=posy' then
-    result := tx_posy
+    Result := tx_posy
   else if com = '=pencolor' then
-    result := tx_pencolor
+    Result := tx_pencolor
   else if com = '=pensize' then
-    result := tx_pensize
+    Result := tx_pensize
   else if com = '=brushcolor' then
-    result := tx_brushcolor
+    Result := tx_brushcolor
   else if com = '=textcolor' then
-    result := tx_textcolor
+    Result := tx_textcolor
   else if com = '=textsize' then
-    result := tx_textsize
+    Result := tx_textsize
   else if com = '=angle' then
-    result := tx_angle
+    Result := tx_angle
   else if com = '=markx' then
-    result := tx_markx
+    Result := tx_markx
   else if com = '=marky' then
-    result := tx_marky
+    Result := tx_marky
   else if com = '=loop' then
-    result := tx_loop
+    Result := tx_loop
   else if com = '=right' then
-    result := tx_right
+    Result := tx_right
   else if com = '=left' then
-    result := tx_left
+    Result := tx_left
   else if com = '=top' then
-    result := tx_top
+    Result := tx_top
   else if com = '=bottom' then
-    result := tx_bottom
+    Result := tx_bottom
   else if IsNum(com) then
-    result := ''
+    Result := ''
   else if IsCol(com) then
-    result := ''
+    Result := ''
   else if IsVar(com) then
-    result := ''
+    Result := ''
   else
-    result := txUser(com);
+    Result := txUser(com);
 
 end;
 
@@ -475,23 +475,23 @@ var
   token, msg: string;
   num: integer;
 begin
-  result := false;
+  Result := false;
   if gettoken(token) then
   begin
     if token = '=' then
     begin
-      result := true;
+      Result := true;
       if Npop(msg, num) then
         col := num
       else
-        result := false;
+        Result := false;
     end
     else
     try
       col := stringtocolor(variant(token));
-      result := true
+      Result := true
     except
-      result := false;
+      Result := false;
     end;
   end;
 end;
@@ -501,14 +501,14 @@ var
 //  i: integer;
   s: string;
 begin
-  result := false;
+  Result := false;
   s := pot.Values[token];
-  if s = '' then exit;
+  if s = '' then Exit;
   try
     num := strtoint(s);
-    result := true;
+    Result := true;
   except
-    result := false;
+    Result := false;
   end;
 
 end;
@@ -518,23 +518,23 @@ var
   token, msg: string;
 //  Anum: integer;
 begin
-  result := false;
+  Result := false;
   if gettoken(token) then
   begin
     if token = '=' then
     begin
-      result := npop(msg, num);
+      Result := npop(msg, num);
     end
     else if inpot(token, num) then
     begin
-      result := true;
+      Result := true;
     end
     else
     try
       num := strtoint(token);
-      result := true;
+      Result := true;
     except
-      result := false;
+      Result := false;
     end;
   end;
 end;
@@ -542,19 +542,19 @@ end;
 function TJvTurtle.gettex(var tex: string): boolean;
 begin
   tex := '';
-  result := false;
+  Result := false;
   while (ip <= ipmax) and (scrip[ip] <> '"') do
     inc(ip);
-  if ip > ipmax then exit;
+  if ip > ipmax then Exit;
   inc(ip);
   while (ip <= ipmax) and (scrip[ip] <> '"') do
   begin
     tex := tex + scrip[ip];
     inc(ip);
   end;
-  if ip > ipmax then exit;
+  if ip > ipmax then Exit;
   inc(ip);
-  result := tex <> '';
+  Result := tex <> '';
 end;
 
 function TJvTurtle.gettoken(var token: string): boolean;
@@ -567,23 +567,23 @@ begin
     token := token + scrip[ip];
     inc(ip)
   end;
-  result := token <> '';
+  Result := token <> '';
 end;
 
 function TJvTurtle.GetWidth: integer;
 begin
   if assigned(FCanvas) then
-    result := FCanvas.pen.Width
+    Result := FCanvas.pen.Width
   else
-    result := 1;
+    Result := 1;
 end;
 
 function TJvTurtle.Interpret(var Epos: integer; s: string): string;
 var
   msg: string;
 begin
-  result := '#Error: Canvas not assigned';
-  if not assigned(FCanvas) then exit;
+  Result := '#Error: Canvas not assigned';
+  if not assigned(FCanvas) then Exit;
   s := stringreplace(s, tab, ' ', [rfreplaceall]);
   s := stringreplace(s, cr, '  ', [rfreplaceall]);
   scrip := s;
@@ -596,12 +596,12 @@ begin
     repeat
       msg := docom;
     until msg <> '';
-    result := msg;
+    Result := msg;
     Epos := ip;
     pot.free;
   end
   else
-    result := 'empty script';
+    Result := 'empty script';
 end;
 
 procedure TJvTurtle.Turn(Aangle: real);
@@ -615,7 +615,7 @@ var
   dx, dy: real;
   newpoint: Tpoint;
 begin
-  if not assigned(FCanvas) then exit;
+  if not assigned(FCanvas) then Exit;
   Rangle := fHeading * 2 * pi / 360;
   dx := Adistance * cos(Rangle);
   dy := Adistance * sin(Rangle);
@@ -634,7 +634,7 @@ var
   dx, dy: real;
   newpoint: Tpoint;
 begin
-  if not assigned(FCanvas) then exit;
+  if not assigned(FCanvas) then Exit;
   Rangle := fHeading * 2 * pi / 360;
   dx := Adistance * cos(Rangle);
   dy := Adistance * sin(Rangle);
@@ -649,23 +649,23 @@ end;
 
 function TJvTurtle.pop(var num: integer): boolean;
 begin
-  result := false;
+  Result := false;
   if sp > 0 then
   begin
     dec(sp);
     num := stack[sp];
-    result := true;
+    Result := true;
   end;
 end;
 
 function TJvTurtle.push(num: integer): boolean;
 begin
-  result := false;
+  Result := false;
   if sp < 255 then
   begin
     stack[sp] := num;
     inc(sp);
-    result := true;
+    Result := true;
   end;
 end;
 
@@ -717,7 +717,7 @@ end;
 
 function TJvTurtle.strtoCopyMode(var cm: Tcopymode; s: string): boolean;
 begin
-  result := true;
+  Result := true;
   if s = 'cmblackness' then
     cm := cmblackness
   else if s = 'cmdstinvert' then
@@ -749,12 +749,12 @@ begin
   else if s = 'cmwhiteness' then
     cm := cmWhiteness
   else
-    result := false;
+    Result := false;
 end;
 
 function TJvTurtle.strtoPenMode(var pm: Tpenmode; s: string): boolean;
 begin
-  result := true;
+  Result := true;
   if s = 'pmBlack' then
     pm := pmblack
   else if s = 'pmwhite' then
@@ -788,7 +788,7 @@ begin
   else if s = 'pmnotxor' then
     pm := pmnotxor
   else
-    result := false;
+    Result := false;
 end;
 
 procedure TJvTurtle.TextRotate(x, y, angle: integer; atext: string;
@@ -838,11 +838,11 @@ function TJvTurtle.txangle: string;
 var
   x: integer;
 begin
-  result := 'invalid integer in angle';
+  Result := 'invalid integer in angle';
   if getnum(x) then
   begin
     SetHeading(x);
-    result := '';
+    Result := '';
   end;
 end;
 
@@ -850,11 +850,11 @@ function TJvTurtle.txArea: string;
 var
   x1, y1, x2, y2: integer;
 begin
-  result := 'invalid integer in area';
+  Result := 'invalid integer in area';
   if getnum(x1) and getnum(y1) and getnum(x2) and getnum(y2) then
   begin
     FArea := rect(x1, y1, x2, y2);
-    result := '';
+    Result := '';
   end;
 end;
 
@@ -862,11 +862,11 @@ function TJvTurtle.txbrushcolor: string;
 var
   col: Tcolor;
 begin
-  result := 'invalid color in brushcolor';
+  Result := 'invalid color in brushcolor';
   if getcol(col) then
   begin
     Fcanvas.Brush.Color := col;
-    result := '';
+    Result := '';
   end;
 
 end;
@@ -874,13 +874,13 @@ end;
 function TJvTurtle.txbsclear: string;
 begin
   FCanvas.brush.Style := bsclear;
-  result := '';
+  Result := '';
 end;
 
 function TJvTurtle.txbssolid: string;
 begin
   FCanvas.brush.Style := bssolid;
-  result := '';
+  Result := '';
 end;
 
 function TJvTurtle.txCopy: string;
@@ -892,7 +892,7 @@ begin
   y := fposition.y;
   dest := rect(x, y, x + FArea.right - FArea.left, y + FArea.bottom - Farea.top);
   FCanvas.CopyRect(dest, FCanvas, Farea);
-  result := '';
+  Result := '';
 end;
 
 function TJvTurtle.txcopymode: string;
@@ -900,14 +900,14 @@ var
   s: string;
   Acopymode: TCopyMode;
 begin
-  result := 'invalid copy mode';
+  Result := 'invalid copy mode';
   if gettoken(s) then
   begin
     s := 'cm' + lowercase(s);
     if strtocopymode(Acopymode, s) then
     begin
       FCanvas.copymode := Acopymode;
-      result := '';
+      Result := '';
     end;
   end;
 end;
@@ -915,14 +915,14 @@ end;
 function TJvTurtle.txdown: string;
 begin
   FPenDown := true;
-  result := '';
+  Result := '';
 end;
 
 function TJvTurtle.txellipse: string;
 var
   x1, y1, x2, y2: integer;
 begin
-  result := 'invalid integer in ellipse';
+  Result := 'invalid integer in ellipse';
   if getnum(x2) and getnum(y2) then
   begin
     x1 := Fposition.x;
@@ -930,7 +930,7 @@ begin
     x2 := x1 + x2;
     y2 := y1 + y2;
     FCanvas.ellipse(x1, y1, x2, y2);
-    result := '';
+    Result := '';
   end;
 end;
 
@@ -938,11 +938,11 @@ function TJvTurtle.txgo: string;
 var
   x: integer;
 begin
-  result := 'invalid integer in go';
+  Result := 'invalid integer in go';
   if getnum(x) then
   begin
     MoveForward(x);
-    result := '';
+    Result := '';
   end;
 end;
 
@@ -954,18 +954,18 @@ begin
   else
     FCanvas.MoveTo(fmark.x, fmark.y);
   fPosition := fmark;
-  result := '';
+  Result := '';
 end;
 
 function TJvTurtle.txturn: string;
 var
   x: integer;
 begin
-  result := 'invalid integer in turn';
+  Result := 'invalid integer in turn';
   if getnum(x) then
   begin
     turn(x);
-    result := '';
+    Result := '';
   end;
 end;
 
@@ -973,11 +973,11 @@ function TJvTurtle.txleft: string;
 var
   x: integer;
 begin
-  result := 'invalid integer in left';
+  Result := 'invalid integer in left';
   if getnum(x) then
   begin
     fHeading := fHeading + x;
-    result := '';
+    Result := '';
   end;
 end;
 
@@ -985,18 +985,18 @@ function TJvTurtle.txright: string;
 var
   x: integer;
 begin
-  result := 'invalid integer in right';
+  Result := 'invalid integer in right';
   if getnum(x) then
   begin
     fHeading := fHeading - x;
-    result := '';
+    Result := '';
   end;
 end;
 
 function TJvTurtle.txmark: string;
 begin
   fmark := fPosition;
-  result := '';
+  Result := '';
 
 end;
 
@@ -1004,11 +1004,11 @@ function TJvTurtle.txpencolor: string;
 var
   col: tcolor;
 begin
-  result := 'invalid color in pencolor';
+  Result := 'invalid color in pencolor';
   if getcol(col) then
   begin
     FCanvas.pen.color := col;
-    result := '';
+    Result := '';
   end;
 end;
 
@@ -1017,14 +1017,14 @@ var
   s: string;
   Apenmode: TPenMode;
 begin
-  result := 'invalid pen mode';
+  Result := 'invalid pen mode';
   if gettoken(s) then
   begin
     s := 'pm' + lowercase(s);
     if strtopenmode(Apenmode, s) then
     begin
       FCanvas.pen.Mode := Apenmode;
-      result := '';
+      Result := '';
     end;
   end;
 end;
@@ -1033,11 +1033,11 @@ function TJvTurtle.txpensize: string;
 var
   x: integer;
 begin
-  result := 'invalid integer in pensize';
+  Result := 'invalid integer in pensize';
   if getnum(x) then
   begin
     FCanvas.pen.Width := x;
-    result := '';
+    Result := '';
   end;
 end;
 
@@ -1045,11 +1045,11 @@ function TJvTurtle.txpos: string;
 var
   x, y: integer;
 begin
-  result := 'invalid integer in pos';
+  Result := 'invalid integer in pos';
   if getnum(x) and getnum(y) then
   begin
     SetPosition(point(x, y));
-    result := '';
+    Result := '';
   end;
 end;
 
@@ -1057,7 +1057,7 @@ function TJvTurtle.txrectangle: string;
 var
   x1, y1, x2, y2: integer;
 begin
-  result := 'invalid integer in rectangle';
+  Result := 'invalid integer in rectangle';
   if getnum(x2) and getnum(y2) then
   begin
     x1 := Fposition.x;
@@ -1065,7 +1065,7 @@ begin
     x2 := x1 + x2;
     y2 := y1 + y2;
     FCanvas.rectangle(x1, y1, x2, y2);
-    result := '';
+    Result := '';
   end;
 
 end;
@@ -1075,12 +1075,12 @@ var
   s: string;
   a: integer;
 begin
-  result := 'invalid text in text';
+  Result := 'invalid text in text';
   if gettex(s) then
   begin
     a := variant(fHeading);
     Textrotate(Fposition.x, Fposition.y, a, s, Fcanvas.font);
-    result := '';
+    Result := '';
     DoRepaintRequest;
   end;
 end;
@@ -1088,18 +1088,18 @@ end;
 function TJvTurtle.txtextbold: string;
 begin
   FCanvas.Font.Style := FCanvas.Font.style + [fsbold];
-  result := '';
+  Result := '';
 end;
 
 function TJvTurtle.txtextcolor: string;
 var
   col: tcolor;
 begin
-  result := 'invalid color in textcolor';
+  Result := 'invalid color in textcolor';
   if getcol(col) then
   begin
     Fcanvas.Font.Color := col;
-    result := '';
+    Result := '';
   end;
 end;
 
@@ -1107,69 +1107,69 @@ function TJvTurtle.txtextfont: string;
 var
   token: string;
 begin
-  result := 'missing fontname';
+  Result := 'missing fontname';
   if gettex(token) then
   begin
     FCanvas.font.name := token;
-    result := '';
+    Result := '';
   end;
 end;
 
 function TJvTurtle.txtextitalic: string;
 begin
   FCanvas.Font.Style := FCanvas.Font.style + [fsitalic];
-  result := '';
+  Result := '';
 end;
 
 function TJvTurtle.txtextnormal: string;
 begin
   FCanvas.Font.Style := [];
-  result := '';
+  Result := '';
 end;
 
 function TJvTurtle.txtextsize: string;
 var
   x: integer;
 begin
-  result := 'invalid integer in fontsize';
+  Result := 'invalid integer in fontsize';
   if getnum(x) then
   begin
     FCanvas.font.size := x;
-    result := '';
+    Result := '';
   end;
 end;
 
 function TJvTurtle.txtextunderline: string;
 begin
   FCanvas.Font.Style := FCanvas.Font.style + [fsunderline];
-  result := '';
+  Result := '';
 end;
 
 function TJvTurtle.txup: string;
 begin
   FPenDown := false;
-  result := '';
+  Result := '';
 end;
 
 function TJvTurtle.txdo: string;
 var
   num: integer;
 begin
-  result := 'number expected in do';
-  if not getnum(num) then exit;
-  result := 'stack overflow';
-  if not push(ip) then exit;
-  if not push(num) then exit;
-  result := '';
+  Result := 'number expected in do';
+  if not getnum(num) then Exit;
+  Result := 'stack overflow';
+  if not push(ip) then Exit;
+  if not push(num) then Exit;
+  Result := '';
 end;
 
 function TJvTurtle.txloop: string;
 var
   reps, ret: integer;
 begin
-  result := 'stack underflow';
-  if not pop(reps) then exit;
-  if not pop(ret) then exit;
+  Result := 'stack underflow';
+  if not pop(reps) then Exit;
+  if not pop(ret) then Exit;
   dec(reps);
   if reps <> 0 then
   begin
@@ -1177,7 +1177,7 @@ begin
     push(ret);
     push(reps);
   end;
-  result := '';
+  Result := '';
 end;
 
 function TJvTurtle.txflood: string;
@@ -1185,14 +1185,14 @@ var
   x, y, xf, yf: integer;
   floodcolor: Tcolor;
 begin
-  result := 'invalid integer in flood';
+  Result := 'invalid integer in flood';
   if getnum(x) and getnum(y) then
   begin
     xf := Fposition.x + x;
     yf := Fposition.y + y;
     floodcolor := FCanvas.Pixels[xf, yf];
     FCanvas.FloodFill(xf, yf, floodcolor, fssurface);
-    result := '';
+    Result := '';
   end;
 end;
 
@@ -1213,12 +1213,12 @@ function TJvTurtle.txbackground: string;
 var
   aname: string;
 begin
-  result := 'invalid text in background';
+  Result := 'invalid text in background';
   if gettex(aname) then
   begin
     background := aname;
     DoRequestBackground;
-    result := '';
+    Result := '';
   end;
 end;
 
@@ -1226,11 +1226,11 @@ function TJvTurtle.txtextout: string;
 var
   s: string;
 begin
-  result := 'invalid text in text';
+  Result := 'invalid text in text';
   if gettex(s) then
   begin
     FCanvas.TextOut(Fposition.x, Fposition.y, s);
-    result := '';
+    Result := '';
   end;
 end;
 
@@ -1238,11 +1238,11 @@ function TJvTurtle.txaddbrushcolor: string;
 var
   Acolor: tcolor;
 begin
-  result := 'invalid color in addbrushcolor';
+  Result := 'invalid color in addbrushcolor';
   if getcol(Acolor) then
   begin
     Fcanvas.brush.color := Fcanvas.brush.color + Acolor;
-    result := '';
+    Result := '';
   end;
 end;
 
@@ -1250,24 +1250,24 @@ function TJvTurtle.txaddpencolor: string;
 var
   Acolor: tcolor;
 begin
-  result := 'invalid color in addbrushcolor';
+  Result := 'invalid color in addbrushcolor';
   if getcol(Acolor) then
   begin
     FCanvas.pen.color := FCanvas.pen.color + Acolor;
-    result := '';
+    Result := '';
   end;
 end;
 
 function TJvTurtle.txgomarkangle: string;
 begin
   Fheading := anglemark;
-  result := '';
+  Result := '';
 end;
 
 function TJvTurtle.txmarkangle: string;
 begin
   anglemark := variant(FHeading);
-  result := '';
+  Result := '';
 end;
 
 function TJvTurtle.IsCol(tex: string): boolean;
@@ -1277,9 +1277,9 @@ var
 begin
   try
     col := stringtocolor(variant(tex));
-    result := Npush(msg, col);
+    Result := Npush(msg, col);
   except
-    result := false;
+    Result := false;
   end;
 end;
 
@@ -1290,60 +1290,60 @@ var
 begin
   try
     num := strtoint(tex);
-    result := Npush(msg, num);
+    Result := Npush(msg, num);
   except
-    result := false;
+    Result := false;
   end;
 end;
 
 function TJvTurtle.Npop(var msg: string; var num: integer): boolean;
 begin
   msg := 'number stack underflow';
-  result := false;
-  if nsp = 0 then exit;
+  Result := false;
+  if nsp = 0 then Exit;
   dec(nsp);
   num := nstack[nsp];
   msg := '';
-  result := true;
+  Result := true;
 end;
 
 function TJvTurtle.Npush(var msg: string; num: integer): boolean;
 begin
   msg := 'number stack overflow';
-  result := false;
-  if nsp >= nspmax then exit;
+  Result := false;
+  if nsp >= nspmax then Exit;
   nstack[nsp] := num;
   inc(nsp);
   msg := '';
-  result := true;
+  Result := true;
 end;
 
 function TJvTurtle.txcomment: string;
 begin
-  result := 'missing } after comment';
+  Result := 'missing } after comment';
   while (ip <= ipmax) and (scrip[ip] <> '}') do
     inc(ip);
   if ip <= ipmax then
   begin
     inc(ip);
-    result := '';
+    Result := '';
   end;
 end;
-
+(*)
 function TJvTurtle.skipblock: boolean;
 begin
-  result := false;
+  Result := false;
   while (ip <= ipmax) and (scrip[ip] <> '[') do
     inc(ip);
-  if ip > ipmax then exit;
+  if ip > ipmax then Exit;
   inc(ip);
   while (ip <= ipmax) and (scrip[ip] <> ']') do
     inc(ip);
-  if ip > ipmax then exit;
+  if ip > ipmax then Exit;
   inc(ip);
-  result := true;
+  Result := true;
 end;
-
+(*)
 procedure TJvTurtle.SetOnRequestImageSize(const Value: TRequestImageSizeEvent);
 begin
   FOnRequestImageSize := Value;
@@ -1354,17 +1354,17 @@ begin
   if assigned(FonRequestImagesize) then
   begin
     FonRequestImageSize(self, Imagerect);
-    result := true;
+    Result := true;
   end
   else
-    result := false;
+    Result := false;
 end;
 
 function TJvTurtle.txIbottom: string;
 var
   newpoint: tpoint;
 begin
-  result := 'error in gobottom';
+  Result := 'error in gobottom';
   if DorequestImageSize then
   begin
     newpoint := point(Fposition.x, ImageRect.bottom);
@@ -1374,7 +1374,7 @@ begin
     else
       FCanvas.MoveTo(newpoint.x, newpoint.y);
     fPosition := newpoint;
-    result := '';
+    Result := '';
   end;
 end;
 
@@ -1382,7 +1382,7 @@ function TJvTurtle.txIleft: string;
 var
   newpoint: tpoint;
 begin
-  result := 'error in goleft';
+  Result := 'error in goleft';
   if DorequestImageSize then
   begin
     newpoint := point(ImageRect.left, fPosition.y);
@@ -1392,7 +1392,7 @@ begin
     else
       FCanvas.MoveTo(newpoint.x, newpoint.y);
     fPosition := newpoint;
-    result := '';
+    Result := '';
   end;
 end;
 
@@ -1400,7 +1400,7 @@ function TJvTurtle.txIright: string;
 var
   newpoint: tpoint;
 begin
-  result := 'error in goright';
+  Result := 'error in goright';
   if DorequestImageSize then
   begin
     newpoint := point(ImageRect.right, fPosition.y);
@@ -1410,7 +1410,7 @@ begin
     else
       FCanvas.MoveTo(newpoint.x, newpoint.y);
     fPosition := newpoint;
-    result := '';
+    Result := '';
   end;
 end;
 
@@ -1418,7 +1418,7 @@ function TJvTurtle.txItop: string;
 var
   newpoint: tpoint;
 begin
-  result := 'error in gotop';
+  Result := 'error in gotop';
   if DorequestImageSize then
   begin
     newpoint := point(Fposition.x, ImageRect.top);
@@ -1428,7 +1428,7 @@ begin
     else
       FCanvas.MoveTo(newpoint.x, newpoint.y);
     fPosition := newpoint;
-    result := '';
+    Result := '';
   end;
 end;
 
@@ -1436,51 +1436,51 @@ function TJvTurtle.txdiv: string;
 var
   b, a: integer;
 begin
-  if not (npop(result, b) and npop(result, a)) then exit;
+  if not (npop(Result, b) and npop(Result, a)) then Exit;
   if b <> 0 then
-    Npush(result, a div b)
+    Npush(Result, a div b)
   else
-    result := 'division by zero';
+    Result := 'division by zero';
 end;
 
 function TJvTurtle.txdrop: string;
 var
   a: integer;
 begin
-  Npop(result, a);
+  Npop(Result, a);
 end;
 
 function TJvTurtle.txdup: string;
 var
   a: integer;
 begin
-  if not npop(result, a) then exit;
-  Npush(result, a);
-  Npush(result, a);
+  if not npop(Result, a) then Exit;
+  Npush(Result, a);
+  Npush(Result, a);
 end;
 
 function TJvTurtle.txmul: string;
 var
   b, a: integer;
 begin
-  if not (npop(result, b) and npop(result, a)) then exit;
-  Npush(result, a * b);
+  if not (npop(Result, b) and npop(Result, a)) then Exit;
+  Npush(Result, a * b);
 end;
 
 function TJvTurtle.txsub: string;
 var
   b, a: integer;
 begin
-  if not (npop(result, b) and npop(result, a)) then exit;
-  Npush(result, a - b);
+  if not (npop(Result, b) and npop(Result, a)) then Exit;
+  Npush(Result, a - b);
 end;
 
 function TJvTurtle.txsum: string;
 var
   b, a: integer;
 begin
-  if not (npop(result, b) and npop(result, a)) then exit;
-  Npush(result, a + b);
+  if not (npop(Result, b) and npop(Result, a)) then Exit;
+  Npush(Result, a + b);
 end;
 
 function TJvTurtle.txIcenter: string;
@@ -1488,7 +1488,7 @@ var
   cx, cy: integer;
   newpoint: tpoint;
 begin
-  result := 'error in gocenter';
+  Result := 'error in gocenter';
   if DorequestImageSize then
   begin
     cx := (Imagerect.Right - Imagerect.Left) div 2;
@@ -1500,7 +1500,7 @@ begin
     else
       FCanvas.MoveTo(newpoint.x, newpoint.y);
     fPosition := newpoint;
-    result := '';
+    Result := '';
   end;
 end;
 
@@ -1509,7 +1509,7 @@ var
   i, x: integer;
   tdown: boolean;
 begin
-  result := 'invalid integer in diamond';
+  Result := 'invalid integer in diamond';
   if getnum(x) then
   begin
     tdown := Fpendown;
@@ -1522,7 +1522,7 @@ begin
     end;
     turn(-45);
     Fpendown := tdown;
-    result := '';
+    Result := '';
   end;
 end;
 
@@ -1531,7 +1531,7 @@ var
   pts: array[0..3] of Tpoint;
   i, px, py: integer;
 begin
-  result := 'invalid parameter in curve';
+  Result := 'invalid parameter in curve';
   if getnum(pts[1].x) and getnum(pts[1].y)
     and getnum(pts[2].x) and getnum(pts[2].y)
     and getnum(pts[3].x) and getnum(pts[3].y) then
@@ -1547,7 +1547,7 @@ begin
     end;
     FCanvas.PolyBezier(pts);
     FPosition := pts[3];
-    result := '';
+    Result := '';
   end;
 end;
 
@@ -1555,13 +1555,13 @@ function TJvTurtle.txmove: string;
 var
   x, y, x0, y0: integer;
 begin
-  result := 'invalid integer in move';
+  Result := 'invalid integer in move';
   if getnum(x) and getnum(y) then
   begin
     x0 := Fposition.x;
     y0 := Fposition.y;
     SetPosition(point(x0 + x, y0 + y));
-    result := '';
+    Result := '';
   end;
 end;
 
@@ -1581,12 +1581,12 @@ function TJvTurtle.txfilter: string;
 var
   aname: string;
 begin
-  result := 'invalid text in filter';
+  Result := 'invalid text in filter';
   if gettex(aname) then
   begin
     filter := aname;
     DoRequestFilter;
-    result := '';
+    Result := '';
   end;
 end;
 
@@ -1594,26 +1594,26 @@ function TJvTurtle.txUser(sym: string): string;
 var
   p: integer;
 begin
-  result := 'symbol ' + sym + ' is not defined';
+  Result := 'symbol ' + sym + ' is not defined';
   p := pos(sym, scrip);
-  if p = 0 then exit;
-  result := 'stack overflow';
+  if p = 0 then Exit;
+  Result := 'stack overflow';
   if push(ip) then
   begin
     ip := p + length(sym);
-    result := '';
+    Result := '';
   end;
 end;
 
 function TJvTurtle.txblock: string;
 begin
-  result := 'missing ] after block';
+  Result := 'missing ] after block';
   while (ip <= ipmax) and (scrip[ip] <> ']') do
     inc(ip);
   if ip <= ipmax then
   begin
     inc(ip);
-    result := '';
+    Result := '';
   end;
 end;
 
@@ -1621,11 +1621,11 @@ function TJvTurtle.txreturn: string;
 var
   num: integer;
 begin
-  result := 'stack underflow';
+  Result := 'stack underflow';
   if pop(num) then
   begin
     ip := num;
-    result := '';
+    Result := '';
   end;
 end;
 
@@ -1634,29 +1634,29 @@ var
   num: integer;
 begin
   num := variant(Fheading);
-  npush(result, num);
+  npush(Result, num);
 end;
 
 function TJvTurtle.tx_bottom: string;
 begin
-  result := 'error in =bottom';
+  Result := 'error in =bottom';
   if DorequestImageSize then
   begin
-    npush(result, ImageRect.bottom);
+    npush(Result, ImageRect.bottom);
   end;
 end;
 
 function TJvTurtle.tx_brushcolor: string;
 begin
-  npush(result, FCanvas.brush.color);
+  npush(Result, FCanvas.brush.color);
 end;
 
 function TJvTurtle.tx_left: string;
 begin
-  result := 'error in =left';
+  Result := 'error in =left';
   if DorequestImageSize then
   begin
-    npush(result, ImageRect.left);
+    npush(Result, ImageRect.left);
   end;
 
 end;
@@ -1665,64 +1665,64 @@ function TJvTurtle.tx_loop: string;
 var
   num: integer;
 begin
-  result := 'stack underflow in =loop';
-  if not pop(num) then exit;
+  Result := 'stack underflow in =loop';
+  if not pop(num) then Exit;
   push(num);
-  npush(result, num);
+  npush(Result, num);
 end;
 
 function TJvTurtle.tx_markx: string;
 begin
-  npush(result, mark.x);
+  npush(Result, mark.x);
 end;
 
 function TJvTurtle.tx_marky: string;
 begin
-  npush(result, mark.y);
+  npush(Result, mark.y);
 end;
 
 function TJvTurtle.tx_pencolor: string;
 begin
-  npush(result, FCanvas.pen.color);
+  npush(Result, FCanvas.pen.color);
 end;
 
 function TJvTurtle.tx_posx: string;
 begin
-  npush(result, Fposition.x);
+  npush(Result, Fposition.x);
 end;
 
 function TJvTurtle.tx_posy: string;
 begin
-  npush(result, Fposition.y);
+  npush(Result, Fposition.y);
 end;
 
 function TJvTurtle.tx_right: string;
 begin
-  result := 'error in =right';
+  Result := 'error in =right';
   if DorequestImageSize then
-    npush(result, ImageRect.right);
+    npush(Result, ImageRect.right);
 end;
 
 function TJvTurtle.tx_top: string;
 begin
-  result := 'error in =top';
+  Result := 'error in =top';
   if DorequestImageSize then
-    npush(result, ImageRect.top);
+    npush(Result, ImageRect.top);
 end;
 
 function TJvTurtle.tx_pensize: string;
 begin
-  npush(result, FCanvas.pen.Width);
+  npush(Result, FCanvas.pen.Width);
 end;
 
 function TJvTurtle.tx_textcolor: string;
 begin
-  npush(result, FCanvas.font.color);
+  npush(Result, FCanvas.font.color);
 end;
 
 function TJvTurtle.tx_textsize: string;
 begin
-  npush(result, FCanvas.font.size);
+  npush(Result, FCanvas.font.size);
 end;
 
 function TJvTurtle.txif: string;
@@ -1730,189 +1730,189 @@ var
   num: integer;
   token: string;
 begin
-  if not npop(result, num) then exit;
-  if num <> 0 then exit;
+  if not npop(Result, num) then Exit;
+  if num <> 0 then Exit;
   if gettoken(token) then
-    result := ''
+    Result := ''
   else
-    result := 'symbol expected after if';
+    Result := 'symbol expected after if';
 end;
 
 function TJvTurtle.txand: string;
 var
   b, a: integer;
 begin
-  if not (npop(result, b) and npop(result, a)) then exit;
+  if not (npop(Result, b) and npop(Result, a)) then Exit;
   if (a <> 0) and (b <> 0) then
-    Npush(result, 1)
+    Npush(Result, 1)
   else
-    Npush(result, 0)
+    Npush(Result, 0)
 end;
 
 function TJvTurtle.txeq: string;
 var
   b, a: integer;
 begin
-  if not (npop(result, b) and npop(result, a)) then exit;
+  if not (npop(Result, b) and npop(Result, a)) then Exit;
   if a = b then
-    Npush(result, 1)
+    Npush(Result, 1)
   else
-    Npush(result, 0)
+    Npush(Result, 0)
 end;
 
 function TJvTurtle.txge: string;
 var
   b, a: integer;
 begin
-  if not (npop(result, b) and npop(result, a)) then exit;
+  if not (npop(Result, b) and npop(Result, a)) then Exit;
   if a >= b then
-    Npush(result, 1)
+    Npush(Result, 1)
   else
-    Npush(result, 0)
+    Npush(Result, 0)
 end;
 
 function TJvTurtle.txgt: string;
 var
   b, a: integer;
 begin
-  if not (npop(result, b) and npop(result, a)) then exit;
+  if not (npop(Result, b) and npop(Result, a)) then Exit;
   if a > b then
-    Npush(result, 1)
+    Npush(Result, 1)
   else
-    Npush(result, 0)
+    Npush(Result, 0)
 end;
 
 function TJvTurtle.txle: string;
 var
   b, a: integer;
 begin
-  if not (npop(result, b) and npop(result, a)) then exit;
+  if not (npop(Result, b) and npop(Result, a)) then Exit;
   if a <= b then
-    Npush(result, 1)
+    Npush(Result, 1)
   else
-    Npush(result, 0)
+    Npush(Result, 0)
 end;
 
 function TJvTurtle.txlt: string;
 var
   b, a: integer;
 begin
-  if not (npop(result, b) and npop(result, a)) then exit;
+  if not (npop(Result, b) and npop(Result, a)) then Exit;
   if a < b then
-    Npush(result, 1)
+    Npush(Result, 1)
   else
-    Npush(result, 0)
+    Npush(Result, 0)
 end;
 
 function TJvTurtle.txne: string;
 var
   b, a: integer;
 begin
-  if not (npop(result, b) and npop(result, a)) then exit;
+  if not (npop(Result, b) and npop(Result, a)) then Exit;
   if a <> b then
-    Npush(result, 1)
+    Npush(Result, 1)
   else
-    Npush(result, 0)
+    Npush(Result, 0)
 end;
 
 function TJvTurtle.txnot: string;
 var
   a: integer;
 begin
-  if not npop(result, a) then exit;
+  if not npop(Result, a) then Exit;
   if a = 0 then
-    Npush(result, 1)
+    Npush(Result, 1)
   else
-    Npush(result, 0)
+    Npush(Result, 0)
 end;
 
 function TJvTurtle.txor: string;
 var
   b, a: integer;
 begin
-  if not (npop(result, b) and npop(result, a)) then exit;
+  if not (npop(Result, b) and npop(Result, a)) then Exit;
   if (a <> 0) or (b <> 0) then
-    Npush(result, 1)
+    Npush(Result, 1)
   else
-    Npush(result, 0)
+    Npush(Result, 0)
 end;
 
 function TJvTurtle.txabs: string;
 var
   a: integer;
 begin
-  if not npop(result, a) then exit;
-  Npush(result, -a)
+  if not npop(Result, a) then Exit;
+  Npush(Result, -a)
 end;
 
 function TJvTurtle.txneg: string;
 var
   a: integer;
 begin
-  if not npop(result, a) then exit;
-  Npush(result, abs(a));
+  if not npop(Result, a) then Exit;
+  Npush(Result, abs(a));
 end;
 
 function TJvTurtle.txswap: string;
 var
   b, a: integer;
 begin
-  if not (npop(result, b) and npop(result, a)) then exit;
-  Npush(result, b);
-  Npush(result, a);
+  if not (npop(Result, b) and npop(Result, a)) then Exit;
+  Npush(Result, b);
+  Npush(Result, a);
 end;
 
 function TJvTurtle.txmax: string;
 var
   b, a: integer;
 begin
-  if not (npop(result, b) and npop(result, a)) then exit;
-  Npush(result, max(a, b));
+  if not (npop(Result, b) and npop(Result, a)) then Exit;
+  Npush(Result, max(a, b));
 end;
 
 function TJvTurtle.txmin: string;
 var
   b, a: integer;
 begin
-  if not (npop(result, b) and npop(result, a)) then exit;
-  Npush(result, min(a, b));
+  if not (npop(Result, b) and npop(Result, a)) then Exit;
+  Npush(Result, min(a, b));
 end;
 
 function TJvTurtle.txsqr: string;
 var
   a: integer;
 begin
-  if not npop(result, a) then exit;
-  Npush(result, variant(sqr(a)));
+  if not npop(Result, a) then Exit;
+  Npush(Result, variant(sqr(a)));
 end;
 
 function TJvTurtle.txsqrt: string;
 var
   a: integer;
 begin
-  if not npop(result, a) then exit;
+  if not npop(Result, a) then Exit;
   if a <> 0 then
-    Npush(result, variant(sqrt(a)))
+    Npush(Result, variant(sqrt(a)))
   else
-    result := 'can not take sqrt of 0';
+    Result := 'can not take sqrt of 0';
 end;
 
 function TJvTurtle.txdec: string;
 var
   a: integer;
 begin
-  if not npop(result, a) then exit;
+  if not npop(Result, a) then Exit;
   dec(a);
-  Npush(result, a);
+  Npush(Result, a);
 end;
 
 function TJvTurtle.txinc: string;
 var
   a: integer;
 begin
-  if not npop(result, a) then exit;
+  if not npop(Result, a) then Exit;
   inc(a);
-  Npush(result, a);
+  Npush(Result, a);
 end;
 
 function TJvTurtle.txpolygon: string;
@@ -1922,12 +1922,12 @@ var
   ta, a: real;
   pt: tpoint;
 begin
-  result := 'invalid integer in polygon';
-  if not (getnum(n) and getnum(s)) then exit;
-  result := '0 not allowed in polygon';
-  if (n = 0) or (s = 0) then exit;
-  result := 'need minimum of 3 sides in polygon';
-  if (n < 3) then exit;
+  Result := 'invalid integer in polygon';
+  if not (getnum(n) and getnum(s)) then Exit;
+  Result := '0 not allowed in polygon';
+  if (n = 0) or (s = 0) then Exit;
+  Result := 'need minimum of 3 sides in polygon';
+  if (n < 3) then Exit;
   ta := Fheading;
   pt := Fposition;
   tdown := Fpendown;
@@ -1942,7 +1942,7 @@ begin
   Fpendown := tdown;
   FHeading := ta;
   Fposition := pt;
-  result := '';
+  Result := '';
 end;
 
 function TJvTurtle.txstar: string;
@@ -1952,14 +1952,14 @@ var
   a, ta: real;
   pt: tpoint;
 begin
-  result := 'invalid integer in star';
-  if not (getnum(n) and getnum(s)) then exit;
-  result := '0 not allowed in star';
-  if (n = 0) or (s = 0) then exit;
-  result := 'need minimum of 3 sides in star';
-  if (n < 3) then exit;
-  result := 'maximum 12 sides exceeded in star';
-  if (n > 12) then exit;
+  Result := 'invalid integer in star';
+  if not (getnum(n) and getnum(s)) then Exit;
+  Result := '0 not allowed in star';
+  if (n = 0) or (s = 0) then Exit;
+  Result := 'need minimum of 3 sides in star';
+  if (n < 3) then Exit;
+  Result := 'maximum 12 sides exceeded in star';
+  if (n > 12) then Exit;
   am := 1;
   case n of
     5: am := 2;
@@ -1981,14 +1981,14 @@ begin
   Fpendown := tdown;
   FHeading := ta;
   Fposition := pt;
-  result := '';
+  Result := '';
 end;
 
 function TJvTurtle.txlineto: string;
 var
   x, y, x0, y0: integer;
 begin
-  result := 'invalid integer in lineto';
+  Result := 'invalid integer in lineto';
   if getnum(x) and getnum(y) then
   begin
     x0 := Fposition.x;
@@ -1996,7 +1996,7 @@ begin
     SetPosition(point(x0 + x, y0 + y));
     Fcanvas.MoveTo(x0, y0);
     Fcanvas.LineTo(x0 + x, y0 + y);
-    result := '';
+    Result := '';
   end;
 end;
 
@@ -2004,7 +2004,7 @@ function TJvTurtle.txroundrect: string;
 var
   x1, y1, x2, y2, rx, ry: integer;
 begin
-  result := 'invalid integer in roundrect';
+  Result := 'invalid integer in roundrect';
   if getnum(x2) and getnum(y2) and getnum(rx) and getnum(ry) then
   begin
     x1 := Fposition.x;
@@ -2012,14 +2012,14 @@ begin
     x2 := x1 + x2;
     y2 := y1 + y2;
     FCanvas.roundrect(x1, y1, x2, y2, rx, ry);
-    result := '';
+    Result := '';
   end;
 
 end;
 
 function TJvTurtle.txdefault: string;
 begin
-  result := '';
+  Result := '';
   Fheading := 0;
   Fposition := point(0, 0);
   Fpendown := false;
@@ -2035,19 +2035,18 @@ var
   token: string;
   index, num: integer;
 begin
-  if not npop(result, num) then exit;
+  if not npop(Result, num) then Exit;
   if gettoken(token) then
   begin
     index := pot.IndexOfName(token);
-    { TODO -oJVCL -cPOSSIBLEBUG : index is never used... }
     if index < 0 then
-      index := pot.Add(token + '=' + inttostr(num))
+      {index := }pot.Add(token + '=' + inttostr(num)) { TODO -oJVCL -cPOSSIBLEBUG : (p3) index is never used... }
     else
       pot.Values[token] := inttostr(num);
-    result := '';
+    Result := '';
   end
   else
-    result := 'token expected';
+    Result := 'token expected';
 end;
 
 function TJvTurtle.IsVar(tex: string): boolean;
@@ -2055,14 +2054,14 @@ var
   num: integer;
   msg, s: string;
 begin
-  result := false;
+  Result := false;
   s := pot.values[tex];
-  if s = '' then exit;
+  if s = '' then Exit;
   try
     num := strtoint(s);
-    result := Npush(msg, num);
+    Result := Npush(msg, num);
   except
-    result := false;
+    Result := false;
   end;
 end;
 
@@ -2071,18 +2070,18 @@ var
   token: string;
   index, num: integer;
 begin
-  if not npop(result, num) then exit;
+  if not npop(Result, num) then Exit;
   if gettoken(token) then
   begin
     index := pot.IndexOfName(token);
-    result := '';
+    Result := '';
     if index >= 0 then
       pot.values[token] := inttostr(strtoint(pot.values[token]) + num)
     else
-      result := token + ' does not exist';
+      Result := token + ' does not exist';
   end
   else
-    result := 'token expected';
+    Result := 'token expected';
 end;
 
 function TJvTurtle.txindiv: string;
@@ -2090,18 +2089,18 @@ var
   token: string;
   index, num: integer;
 begin
-  if not npop(result, num) then exit;
+  if not npop(Result, num) then Exit;
   if gettoken(token) then
   begin
     index := pot.IndexOfName(token);
-    result := '';
+    Result := '';
     if index >= 0 then
       pot.values[token] := inttostr(strtoint(pot.values[token]) - num)
     else
-      result := token + ' does not exist';
+      Result := token + ' does not exist';
   end
   else
-    result := 'token expected';
+    Result := 'token expected';
 end;
 
 function TJvTurtle.txinmult: string;
@@ -2109,18 +2108,18 @@ var
   token: string;
   index, num: integer;
 begin
-  if not npop(result, num) then exit;
+  if not npop(Result, num) then Exit;
   if gettoken(token) then
   begin
     index := pot.IndexOfName(token);
-    result := '';
+    Result := '';
     if index >= 0 then
       pot.values[token] := inttostr(strtoint(pot.values[token]) * num)
     else
-      result := token + ' does not exist';
+      Result := token + ' does not exist';
   end
   else
-    result := 'token expected';
+    Result := 'token expected';
 end;
 
 function TJvTurtle.txinsub: string;
@@ -2128,23 +2127,23 @@ var
   token: string;
   index, num: integer;
 begin
-  if not npop(result, num) then exit;
+  if not npop(Result, num) then Exit;
   if num = 0 then
   begin
-    result := 'division by zero not allowed in in-';
-    exit;
+    Result := 'division by zero not allowed in in-';
+    Exit;
   end;
   if gettoken(token) then
   begin
     index := pot.IndexOfName(token);
-    result := '';
+    Result := '';
     if index >= 0 then
       pot.values[token] := inttostr(strtoint(pot.values[token]) div num)
     else
-      result := token + ' does not exist';
+      Result := token + ' does not exist';
   end
   else
-    result := 'token expected';
+    Result := 'token expected';
 end;
 
 function TJvTurtle.txindec: string;
@@ -2155,14 +2154,14 @@ begin
   if gettoken(token) then
   begin
     index := pot.IndexOfName(token);
-    result := '';
+    Result := '';
     if index >= 0 then
       pot.values[token] := inttostr(strtoint(pot.values[token]) - 1)
     else
-      result := token + ' does not exist';
+      Result := token + ' does not exist';
   end
   else
-    result := 'token expected';
+    Result := 'token expected';
 end;
 
 function TJvTurtle.txininc: string;
@@ -2173,14 +2172,14 @@ begin
   if gettoken(token) then
   begin
     index := pot.IndexOfName(token);
-    result := '';
+    Result := '';
     if index >= 0 then
       pot.values[token] := inttostr(strtoint(pot.values[token]) + 1)
     else
-      result := token + ' does not exist';
+      Result := token + ' does not exist';
   end
   else
-    result := 'token expected';
+    Result := 'token expected';
 end;
 
 end.
