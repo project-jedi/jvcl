@@ -37,8 +37,7 @@ uses
   {$IFDEF VisualCLX}
   Types, QGraphics, QExtCtrls, QControls, QForms, QMenus,
   {$ENDIF VisualCLX}
-  SysUtils, Classes,
-  JvThemes, JvExControls, JvExExtCtrls;
+  SysUtils, Classes, JvThemes, JvExControls, JvExExtCtrls;
 
 type
   TPopupNames = (pnHint, pnName);
@@ -96,7 +95,9 @@ begin
   FPopupControl := True;
   FPopupNames := pnHint;
   ControlStyle := ControlStyle + [csAcceptsControls];
+  {$IFDEF VCL}
   IncludeThemeStyle(Self, [csParentBackground]);
+  {$ENDIF VCL}
 end;
 
 destructor TJvControlBar.Destroy;
