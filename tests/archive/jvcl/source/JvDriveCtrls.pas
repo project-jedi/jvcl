@@ -386,20 +386,13 @@ type
     property OnStartDock;
   end;
 
-{ Should probably be moved to JvFunctions }
-function GetShellVersion: Integer;
-
 implementation
 
-var
-  ShellVersion: Integer;
+uses
+  JvFunctions;
 
-function GetShellVersion: Integer;
-begin
-  if ShellVersion = 0 then
-    ShellVersion := GetFileVersion('shell32.dll');
-  Result := ShellVersion;
-end;
+const
+  cDirPrefix = #32;
 
 function GetItemHeight(Font: TFont): Integer;
 var DC: HDC; SaveFont: HFont; Metrics: TTextMetric;
@@ -1410,9 +1403,8 @@ begin
   FSearchFiles.FileParams.FileMaskSeperator := ';';
   FSearchFiles.FileParams.SearchTypes := [stAttribute, stFileMask];
   FSearchFiles.FileParams.Attributes.IncludeAttr := 0;
-  FSearchFiles.DirParams.FileMaskSeperator := ';';
-  FSearchFiles.DirParams.SearchTypes := [stAttribute, stFileMask];
-  FSearchFiles.DirParams.Attributes.IncludeAttr := 0;
+  { No filter on drives }
+  FSearchFiles.DirParams.SearchTypes := [];
   FSearchFiles.ErrorResponse := erIgnore;
 end;
 
@@ -1461,12 +1453,7 @@ begin
       FSearchFiles.FileParams.FileMask := fMask;
       FSearchFiles.FileParams.Attributes.ExcludeAttr := not AttrWord;
       if ftDirectory in FileType then
-      begin
-        FSearchFiles.Options := FSearchFiles.Options + [soSearchDirs];
-        FSearchFiles.DirParams.FileMask := fMask;
-        FSearchFiles.DirParams.Attributes.ExcludeAttr := not (AttrWord or
-          FILE_ATTRIBUTE_DIRECTORY);
-      end
+        FSearchFiles.Options := FSearchFiles.Options + [soSearchDirs]
       else
         FSearchFiles.Options := FSearchFiles.Options - [soSearchDirs];
 
@@ -1484,9 +1471,9 @@ begin
           { Note that the strings in FSearchFiles.Directories do not include a path }
           SHGetFileInfo(PChar(Strings[J]), 0, shinf, SizeOf(shinf), Flags);
           if FForceFileExtensions then
-            I := Items.Add(Strings[J])
+            I := Items.Add(cDirPrefix + Strings[J])
           else
-            I := Items.Add(shinf.szDisplayName);
+            I := Items.Add(cDirPrefix + string(shinf.szDisplayName));
           Items.Objects[I] := TObject(shinf.iIcon);
           if I = 100 then
             Screen.Cursor := crHourGlass;
@@ -1570,10 +1557,13 @@ begin
           ImageIndex);
       Offset := FImages.Width + 6;
     end;
+
+    // Use Trim because directories have a space as prefix, so that
+    // the directory names appear above the files.
     tmpR.Left := tmpR.Left + offset - 2;
-    tmpR.Right := tmpR.Left + TextWidth(Items[Index]) + 4;
+    tmpR.Right := tmpR.Left + TextWidth(Trim(Items[Index])) + 4;
     FillRect(tmpR);
-    TextOut(Rect.Left + offset, Rect.Top, Items[Index]);
+    TextOut(Rect.Left + offset, Rect.Top, Trim(Items[Index]));
 
     if odFocused in State then
       DrawFocusRect(tmpR);

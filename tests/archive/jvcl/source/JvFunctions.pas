@@ -81,8 +81,15 @@ function GetMin(i, j, k: Integer): Integer;
 procedure RgbToHSV(r, g, b: Integer; var h, s, v: Integer);
 {$EXTERNALSYM RgbToHSV}
 
+{ GetFileVersion returns the most significant 32 bits of a file's binary
+  version number. Typically, this includes the major and minor version placed
+  together in one 32-bit integer. It generally does not include the release
+  or build numbers. It returns 0 if it failed. }
+function GetFileVersion(const AFilename: string): Cardinal;
+{$EXTERNALSYM GetFileVersion}
+
 //Get version of Shell.dll
-function GetShellVersion: Integer;
+function GetShellVersion: Cardinal;
 {$EXTERNALSYM GetShellVersion}
 
 // set the background wallpaper (two versions)
@@ -513,28 +520,39 @@ end;
 
 {**************************************************}
 
-function GetShellVersion: Integer;
+function GetFileVersion(const AFileName: string): Cardinal;
 var
+  FileName: string;
   InfoSize, Wnd: DWORD;
   VerBuf: Pointer;
   FI: PVSFixedFileInfo;
   VerSize: DWORD;
 begin
-  if ShellVersion = 0 then
+  Result := 0;
+  // GetFileVersionInfo modifies the filename parameter data while parsing.
+  // Copy the string const into a local variable to create a writeable copy.
+  FileName := AFileName;
+  UniqueString(FileName);
+  InfoSize := GetFileVersionInfoSize(PChar(FileName), Wnd);
+  if InfoSize <> 0 then
   begin
-    InfoSize := GetFileVersionInfoSize('shell32.dll', Wnd);
-    if InfoSize <> 0 then
-    begin
-      GetMem(VerBuf, InfoSize);
-      try
-        if GetFileVersionInfo('shell32.dll', Wnd, InfoSize, VerBuf) then
-          if VerQueryValue(VerBuf, '\', Pointer(FI), VerSize) then
-            ShellVersion := FI.dwFileVersionMS;
-      finally
-        FreeMem(VerBuf);
-      end;
+    GetMem(VerBuf, InfoSize);
+    try
+      if GetFileVersionInfo(PChar(FileName), Wnd, InfoSize, VerBuf) then
+        if VerQueryValue(VerBuf, '\', Pointer(FI), VerSize) then
+          Result:= FI.dwFileVersionMS;
+    finally
+      FreeMem(VerBuf);
     end;
   end;
+end;
+
+{**************************************************}
+
+function GetShellVersion: Cardinal;
+begin
+  if ShellVersion = 0 then
+    ShellVersion := GetFileVersion('shell32.dll');
   Result := ShellVersion;
 end;
 
