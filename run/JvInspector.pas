@@ -3340,7 +3340,7 @@ begin
   end;
   XB := X mod BWidth;
   ItemIndex := CalcItemIndex(X, Y, ItemRect);
-  if ItemIndex < VisibleCount then
+  if (ItemIndex < VisibleCount) and (ItemIndex >= 0) then
     Item := VisibleItems[ItemIndex]
   else
     Item := nil;
@@ -3359,7 +3359,7 @@ begin
     end
     // Check row sizing
     else
-    if (ItemIndex < VisibleCount) and (Y >= Pred(ItemRect.Bottom)) and
+    if (Item <> nil) and (Y >= Pred(ItemRect.Bottom)) and
       (Y <= Succ(ItemRect.Bottom)) and (Item.RowSizing.SizingFactor <> irsNoReSize) and
       Item.RowSizing.Sizable then
     begin
@@ -3376,10 +3376,11 @@ begin
     end
     // Check selecting
     else
-    if (ItemIndex < VisibleCount) and (ItemIndex <> SelectedIndex) then
+    if (Item <> nil) and (ItemIndex <> SelectedIndex) then
     begin
       SelectedIndex := ItemIndex;
-      Item := VisibleItems[ItemIndex];
+      if ItemIndex >= 0 then
+        Item := VisibleItems[ItemIndex];
     end;
     if not DraggingDivider and not RowSizing and not BandSizing then
       Selecting := True;
