@@ -33,7 +33,7 @@ interface
 uses
   SysUtils, Messages, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls,
-  JvxCtrls, JvComponent;
+  JvLabel, JvxCtrls, JvComponent;
 
 type
   TErrorEvent = procedure(Error: Exception; var Msg: string) of object;
@@ -52,8 +52,8 @@ type
     ButtonPanel: TPanel;
     DetailsBtn: TButton;
     OKBtn: TButton;
-    AddrLabel: TJvxLabel;
-    TypeLabel: TJvxLabel;
+    AddrLabel: TJvLabel;
+    TypeLabel: TJvLabel;
     BottomPanel: TPanel;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);

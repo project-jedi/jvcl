@@ -13,7 +13,7 @@ object frmagnet: Tfrmagnet
   OldCreateOrder = False
   PixelsPerInch = 96
   TextHeight = 13
-  object JvxLabel1: TJvxLabel
+  object JvxLabel1: TJvLabel
     Left = 40
     Top = 72
     Width = 168

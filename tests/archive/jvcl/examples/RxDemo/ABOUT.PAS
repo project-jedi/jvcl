@@ -4,14 +4,14 @@ interface
 
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
-  Forms, Dialogs, StdCtrls, Buttons, JvxCtrls, ExtCtrls, JvxAnimate,
+  Forms, Dialogs, StdCtrls, Buttons, JvxCtrls, JvLabel, ExtCtrls, JvxAnimate,
   JvComponent;
 
 type
   TAboutForm = class(TForm)
     SecretPanel1: TJvSecretPanel ;
     AppIcon: TImage;
-    WebLabel: TJvxLabel ;
+    WebLabel: TJvLabel ;
     Label1: TLabel;
     Label2: TLabel;
     OkBtn: TBitBtn;
@@ -66,7 +66,7 @@ end;
 
 procedure TAboutForm.LabelMouseEnter(Sender: TObject);
 begin
-  with Sender as TJvxLabel  do begin
+  with Sender as TJvLabel  do begin
     if MouseInControl then begin
       Font.Color := clHighlight;
     end

@@ -13,7 +13,7 @@ object frFormplace: TfrFormplace
   OldCreateOrder = False
   PixelsPerInch = 96
   TextHeight = 13
-  object JvxLabel1: TJvxLabel
+  object JvxLabel1: TJvLabel
     Left = 16
     Top = 72
     Width = 166

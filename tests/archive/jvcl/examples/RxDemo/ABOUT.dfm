@@ -208,7 +208,7 @@ object AboutForm: TAboutForm
       ShowHint = True
       OnDblClick = AppIconDblClick
     end
-    object WebLabel: TJvxLabel 
+    object WebLabel: TJvLabel
       Left = 80
       Top = 10
       Width = 145

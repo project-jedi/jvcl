@@ -38,7 +38,7 @@ uses
   {$IFDEF COMPILER3_UP}
   DBTables,
   {$ENDIF}
-  JvxCtrls, JvComponent;
+  JvxCtrls, JvLabel, JvComponent;
 
 type
   TDBErrorEvent = procedure(Error: TDBError; var Msg: string) of object;
@@ -60,8 +60,8 @@ type
     ButtonPanel: TPanel;
     DetailsBtn: TButton;
     OKBtn: TButton;
-    BDELabel: TJvxLabel;
-    NativeLabel: TJvxLabel;
+    BDELabel: TJvLabel;
+    NativeLabel: TJvLabel;
     BottomPanel: TPanel;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);

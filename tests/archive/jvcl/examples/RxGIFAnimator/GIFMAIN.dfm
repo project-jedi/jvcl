@@ -323,7 +323,7 @@ object AnimatorForm: TAnimatorForm
         Caption = 'Color Depth Method: '
         FocusControl = ColorDepthCombo
       end
-      object ThumbnailsLabel: TJvxLabel
+      object ThumbnailsLabel: TJvLabel
         Left = 30
         Top = 27
         Width = 125
@@ -334,7 +334,7 @@ object AnimatorForm: TAnimatorForm
         ShowFocus = True
         OnMouseDown = CheckLabelMouseDown
       end
-      object AlwaysOnTopLabel: TJvxLabel
+      object AlwaysOnTopLabel: TJvLabel
         Left = 30
         Top = 99
         Width = 100
@@ -493,7 +493,7 @@ object AnimatorForm: TAnimatorForm
         AutoSize = False
         Caption = '87a'
       end
-      object LoopLbl: TJvxLabel
+      object LoopLbl: TJvLabel
         Left = 27
         Top = 167
         Width = 75
@@ -655,7 +655,7 @@ object AnimatorForm: TAnimatorForm
         Caption = 'Undraw Method:  '
         FocusControl = DisposalCombo
       end
-      object TransColorLabel: TJvxLabel
+      object TransColorLabel: TJvLabel
         Left = 6
         Top = 216
         Width = 96

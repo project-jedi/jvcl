@@ -13,7 +13,7 @@ object RestructureDialog: TRestructureDialog
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
-  object ObjTypeLabel: TJvxLabel 
+  object ObjTypeLabel: TJvLabel
     Left = 12
     Top = 96
     Width = 69
@@ -22,7 +22,7 @@ object RestructureDialog: TRestructureDialog
     ShadowSize = 0
     Caption = 'Object Type:  '
   end
-  object ObjDescLabel: TJvxLabel 
+  object ObjDescLabel: TJvLabel
     Left = 12
     Top = 116
     Width = 98

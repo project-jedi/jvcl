@@ -1151,7 +1151,7 @@ object ControlsForm: TControlsForm
           Font.Style = [fsUnderline]
           ParentFont = False
         end
-        object rxLabel1: TJvxLabel
+        object rxLabel1: TJvLabel
           Left = 8
           Top = 36
           Width = 82

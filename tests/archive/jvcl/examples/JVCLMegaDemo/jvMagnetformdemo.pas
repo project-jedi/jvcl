@@ -4,12 +4,12 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvComponent, JvMagnet, JvxCtrls;
+  JvComponent, JvMagnet, JvxCtrls, JvLabel;
 
 type
   Tfrmagnet = class(TForm)
     JvFormMagnet1: TJvFormMagnet;
-    JvxLabel1: TJvxLabel;
+    JvxLabel1: TJvLabel;
   end;
 
 implementation

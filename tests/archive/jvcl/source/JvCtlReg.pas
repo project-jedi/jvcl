@@ -445,7 +445,6 @@ begin
 //  RegisterComponents(srJvConvertPalette, [TJvxCurrencyEdit]);
 
   RegisterComponents(srJvControlsPalette, [TJvxCheckListBox, TJvxSplitter, TJvxSlider,
-    TJvxLabel,
     TJvRichEdit,
     TJvxClock, TJvAnimatedImage, TJvDrawGrid, TJvxSpeedButton,
     {$IFDEF USE_JV_GIF}
@@ -479,7 +478,7 @@ begin
   RegisterComponentEditor(TJvAnimatedImage, TJvAnimatedEditor);
   RegisterPropertyEditor(TypeInfo(TCursor), TJvxSplitter, 'Cursor', nil);
 
-  RegisterPropertyEditor(TypeInfo(TCaption), TJvxLabel, cCaption, THintProperty);
+//  RegisterPropertyEditor(TypeInfo(TCaption), TJvxLabel, cCaption, THintProperty);
   RegisterPropertyEditor(TypeInfo(TCaption), TJvxSpeedButton, cCaption, THintProperty);
   {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
   RegisterPropertyEditor(TypeInfo(string), TMenuItem, cHint, TStringProperty);

@@ -41,14 +41,11 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, JVCLVer,
-  JvTypes;
+  JvTypes, JvxCtrls;
 
 type
-  TJvLabel = class(TLabel)
+  TJvLabel = class(TJvCustomLabel)
   private
-    FAboutJVCL: TJVCLAboutInfo;
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
     FOnCtl3DChanged: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FHotTrack: Boolean;
@@ -70,23 +67,64 @@ type
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
-    procedure CMDialogChar(var Msg: TCMDialogChar); message CM_DIALOGCHAR;
     procedure Click; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property Action;
+    property Align;
+    property Alignment;
+    property AutoSize;
+    property Caption;
+    property Color;
+    property DragCursor;
+    property DragMode;
+    property Enabled;
+    property FocusControl;
+    property Font;
+    {$IFDEF COMPILER4_UP}
     property Anchors;
+    property BiDiMode;
+    property Constraints;
+    property DragKind;
+    property ParentBiDiMode;
+    {$ENDIF}
+    property Layout;
+    property ParentColor;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShadowColor;
+    property ShadowSize;
+    property ShadowPos;
+    property ShowAccelChar;
+    property ShowFocus;
+    property ShowHint;
+    property Transparent;
+    property Visible;
+    property WordWrap;
+    property OnClick;
+    property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnMouseEnter;
+    property OnMouseLeave;
+    property OnStartDrag;
+    property OnContextPopup;
+    property OnEndDock;
+    property OnStartDock;
+
+    property AboutJVCL;
     property Angle: TJvLabelRotateAngle read FAngle write SetAngle default 0;
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    property AutoOpenURL: boolean read FAutoOpenURL write FAutoOpenURL;
+    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
     property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont;
     property URL: string read FURL write FURL;
-    property AutoOpenURL: boolean read FAutoOpenURL write FAutoOpenURL;
-    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   end;
@@ -143,8 +181,7 @@ begin
     end;
     FOver := True;
   end;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
+  inherited;
 end;
 
 procedure TJvLabel.CMMouseLeave(var Msg: TMessage);
@@ -159,26 +196,12 @@ begin
       Font.Assign(FFontSave);
     FOver := False;
   end;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
+  inherited;
 end;
 
 procedure TJvLabel.SetHotTrackFont(const Value: TFont);
 begin
   FHotTrackFont.Assign(Value);
-end;
-
-procedure TJvLabel.CMDialogChar(var Msg: TCMDialogChar);
-var
-  Form: TCustomForm;
-begin
-  inherited;
-  if Msg.Result = 1 then
-  begin
-    Form := GetParentForm(Self);
-    if Assigned(Form) and Assigned(Form.ActiveControl) and not Form.ActiveControl.TabStop then
-      PostMessage(Form.Handle, WM_NEXTDLGCTL, 0, 0);
-  end;
 end;
 
 procedure TJvLabel.Click;

@@ -20,7 +20,7 @@ type
     JvFontCombobox1: TJvFontComboBox;
     JvColorComboBox1: TJvColorComboBox;
     JvGammaPanel1: TJvGammaPanel;
-    JvxLabel1: TJvxLabel;
+    JvxLabel1: TJvLabel;
     JvColorDialog1: TJvColorDialog;
     JvColorBox1: TJvColorBox;
     Label2: TLabel;

@@ -89,7 +89,7 @@ object JvErrorDialog: TJvErrorDialog
     BevelInner = bvLowered
     BevelOuter = bvLowered
     TabOrder = 2
-    object AddrLabel: TJvxLabel
+    object AddrLabel: TJvLabel
       Left = 53
       Top = 11
       Width = 121
@@ -98,7 +98,7 @@ object JvErrorDialog: TJvErrorDialog
       AutoSize = False
       Caption = 'Error address: '
     end
-    object TypeLabel: TJvxLabel
+    object TypeLabel: TJvLabel
       Left = 53
       Top = 30
       Width = 121

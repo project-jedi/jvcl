@@ -16,7 +16,7 @@ uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, StdCtrls, ExtCtrls, JvPlacemnt, JvSpeedbar, Grids, JvxCtrls,
   ComCtrls {$IFDEF COMPILER3_UP}, ExtDlgs {$IFNDEF CBUILDER}, Jpeg {$ENDIF} {$ENDIF},
-  JvGIF, Mask, JvToolEdit {$IFDEF COMPILER4_UP}, ImgList, JvComponent {$ENDIF};
+  JvGIF, JvLabel, Mask, JvToolEdit {$IFDEF COMPILER4_UP}, ImgList, JvComponent {$ENDIF};
 
 type
   TAnimatorForm = class(TForm)
@@ -62,7 +62,7 @@ type
     ColorDepthCombo: TComboBox;
     Label1: TLabel;
     ThumbnailsBox: TCheckBox;
-    ThumbnailsLabel: TJvxLabel ;
+    ThumbnailsLabel: TJvLabel ;
     Frame1Lbl: TLabel;
     Frame2Lbl: TLabel;
     Frame3Lbl: TLabel;
@@ -101,19 +101,19 @@ type
     Label13: TLabel;
     TransColor: TJvComboEdit ;
     TransBox: TCheckBox;
-    TransColorLabel: TJvxLabel ;
+    TransColorLabel: TJvLabel ;
     Label14: TLabel;
     GIFVersion: TLabel;
     Bevel6: TBevel;
     FlatBtns: TCheckBox;
     AlwaysOnTop: TCheckBox;
-    AlwaysOnTopLabel: TJvxLabel ;
+    AlwaysOnTopLabel: TJvLabel ;
     GrayscaleBtn: TjvSpeedItem;
     ToolbarImages: TImageList;
     RepeatCntBtn: TUpDown;
     RepeatCnt: TEdit;
     LoopBox: TCheckBox;
-    LoopLbl: TJvxLabel ;
+    LoopLbl: TJvLabel ;
     RepeatForever: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -897,10 +897,10 @@ procedure TAnimatorForm.CheckLabelMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   if (Button = mbLeft) and not (ssDouble in Shift) then begin
-    if TJvxLabel (Sender).FocusControl.CanFocus then
-      ActiveControl := TJvxLabel (Sender).FocusControl;
-    if (TJvxLabel (Sender).FocusControl is TCheckBox) then
-      with TCheckBox(TJvxLabel (Sender).FocusControl) do
+    if TJvLabel (Sender).FocusControl.CanFocus then
+      ActiveControl := TJvLabel (Sender).FocusControl;
+    if (TJvLabel (Sender).FocusControl is TCheckBox) then
+      with TCheckBox(TJvLabel (Sender).FocusControl) do
         if Enabled then Checked := not Checked;
   end;
 end;

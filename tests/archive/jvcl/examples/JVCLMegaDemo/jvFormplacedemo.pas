@@ -4,12 +4,12 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvComponent, JvFormPlace, JvxCtrls;
+  JvComponent, JvFormPlace, JvxCtrls, JvLabel;
 
 type
   TfrFormplace = class(TForm)
     JvFormPlace1: TJvFormPlace;
-    JvxLabel1: TJvxLabel;
+    JvxLabel1: TJvLabel;
   private
     { Private-Deklarationen }
   public

@@ -101,7 +101,7 @@ object JvChoosersFrm: TJvChoosersFrm
     Height = 25
     Shape = atDownLeft
   end
-  object JvxLabel1: TJvxLabel
+  object JvxLabel1: TJvLabel
     Left = 41
     Top = 156
     Width = 187

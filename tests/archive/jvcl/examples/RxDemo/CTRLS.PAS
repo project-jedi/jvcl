@@ -6,7 +6,7 @@ uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, JvPlacemnt, StdCtrls, JvxCtrls, TabNotBk, JvxSlider, ExtCtrls,
   JvSwitch, Mask, JvToolEdit, Spin, JvCurrEdit, FileCtrl, JvSplit, Grids,
-  Outline, DirOutln, JvDice, JvxClock, JvxAnimate, JvSpin, 
+  Outline, DirOutln, JvDice, JvxClock, JvxAnimate, JvSpin, JvLabel,
   ComCtrls, JvComponent, JvColorCombo, JvCombobox, JvEdit, JvValidateEdit,
   JvMaskEdit;
 
@@ -59,7 +59,7 @@ type
     CurrencyEdit1: TJvValidateEdit;
     Label22: TLabel;
     Edit1: TEdit;
-    rxLabel1: TJvxLabel ;
+    rxLabel1: TJvLabel ;
     Label23: TLabel;
     Label24: TLabel;
     Label25: TLabel;

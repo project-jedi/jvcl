@@ -39,7 +39,7 @@ uses
   {$ENDIF}
   Messages, Classes, Controls, Graphics, StdCtrls, ExtCtrls, Forms,
   Buttons, Menus, IniFiles,
-  JvTimer, JvConst, JvPlacemnt, JvComponent;
+  JvTimer, JvConst, JvPlacemnt, JvComponent, JVCLVer;
 
 type
   TPositiveInt = 1..MaxInt;
@@ -428,6 +428,7 @@ type
     FRightMargin: Integer;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
+    FAboutJVCL: TJVCLAboutInfo;
     procedure DoDrawText(var Rect: TRect; Flags: Word);
     function GetTransparent: Boolean;
     procedure UpdateTracking;
@@ -478,7 +479,7 @@ type
     property LeftMargin: Integer read FLeftMargin write SetLeftMargin default 0;
     property RightMargin: Integer read FRightMargin write SetRightMargin default 0;
     property ShadowColor: TColor read FShadowColor write SetShadowColor default clBtnHighlight;
-    property ShadowSize: Byte read FShadowSize write SetShadowSize default 1;
+    property ShadowSize: Byte read FShadowSize write SetShadowSize default 0;
     property ShadowPos: TShadowPosition read FShadowPos write SetShadowPos default spLeftTop;
     property ShowAccelChar: Boolean read FShowAccelChar write SetShowAccelChar default True;
     property ShowFocus: Boolean read FShowFocus write SetShowFocus default False;
@@ -490,6 +491,8 @@ type
     constructor Create(AOwner: TComponent); override;
     property Canvas;
     property MouseInControl: Boolean read FMouseInControl;
+  published
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
   TJvxLabel = class(TJvCustomLabel)
@@ -881,7 +884,7 @@ type
   private
     FOriginal: TBitmap;
     FGlyphList: TImageList;
-    FIndexs: array [TJvButtonState] of Integer;
+    FIndexs: array[TJvButtonState] of Integer;
     FTransparentColor: TColor;
     FNumGlyphs: TJvNumGlyphs;
     FGrayNewStyle: Boolean;
@@ -904,7 +907,7 @@ type
     procedure CalcButtonLayout(Canvas: TCanvas; const Client: TRect;
       var Caption: string; Layout: TButtonLayout; Margin, Spacing: Integer;
       PopupMark: Boolean; var GlyphPos: TPoint; var TextBounds: TRect;
-      Flags: Word {$IFDEF WIN32}; Images: TImageList; ImageIndex: Integer {$ENDIF});
+      Flags: Word{$IFDEF WIN32}; Images: TImageList; ImageIndex: Integer{$ENDIF});
   public
     constructor Create;
     destructor Destroy; override;
@@ -964,10 +967,10 @@ uses
   JvVCLUtils, JvAppUtils;
 
 const
-  Alignments: array [TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
-  WordWraps: array [Boolean] of Word = (0, DT_WORDBREAK);
+  Alignments: array[TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
+  WordWraps: array[Boolean] of Word = (0, DT_WORDBREAK);
 
-//=== TJvTextListBox =========================================================
+  //=== TJvTextListBox =========================================================
 
 procedure TJvTextListBox.SetHorizontalExtent;
 begin
@@ -1015,7 +1018,7 @@ end;
 
 procedure TJvTextListBox.CreateParams(var Params: TCreateParams);
 const
-  TabStops: array [Boolean] of Longword = (0, LBS_USETABSTOPS);
+  TabStops: array[Boolean] of Longword = (0, LBS_USETABSTOPS);
 begin
   inherited CreateParams(Params);
   Params.Style := Params.Style or TabStops[FTabWidth <> 0];
@@ -1091,16 +1094,19 @@ type
     procedure Insert(Index: Integer; const S: string); override;
   end;
 
-{$IFNDEF COMPILER3_UP}
+  {$IFNDEF COMPILER3_UP}
+
 procedure TJvListBoxStrings.Error(Msg: Word; Data: Integer);
 
-  {$IFDEF WIN32}
-  function ReturnAddr: Pointer;
+{$IFDEF WIN32}
+
+function ReturnAddr: Pointer;
   asm
           MOV     EAX,[EBP+4]
   end;
   {$ELSE}
-  function ReturnAddr: Pointer; assembler;
+
+function ReturnAddr: Pointer; assembler;
   asm
           MOV     AX,[BP].Word[2]
           MOV     DX,[BP].Word[4]
@@ -1122,11 +1128,11 @@ function TJvListBoxStrings.Get(Index: Integer): string;
 var
   Len: Integer;
   {$IFDEF WIN32}
-  Text: array [0..4095] of Char;
+  Text: array[0..4095] of Char;
   {$ENDIF}
 begin
   Len := SendMessage(ListBox.Handle, LB_GETTEXT, Index,
-    {$IFDEF WIN32} Longint(@Text) {$ELSE} Longint(@Result) {$ENDIF});
+    {$IFDEF WIN32}Longint(@Text){$ELSE}Longint(@Result){$ENDIF});
   if Len < 0 then
     Error(SListIndexError, Index);
   {$IFDEF WIN32}
@@ -1152,8 +1158,8 @@ end;
 function TJvListBoxStrings.Add(const S: string): Integer;
 {$IFNDEF WIN32}
 var
-  Text: array [0..255] of Char;
-{$ENDIF}
+  Text: array[0..255] of Char;
+  {$ENDIF}
 begin
   {$IFDEF WIN32}
   Result := SendMessage(ListBox.Handle, LB_ADDSTRING, 0, Longint(PChar(S)));
@@ -1167,8 +1173,8 @@ end;
 procedure TJvListBoxStrings.Insert(Index: Integer; const S: string);
 {$IFNDEF WIN32}
 var
-  Text: array [0..255] of Char;
-{$ENDIF}
+  Text: array[0..255] of Char;
+  {$ENDIF}
 begin
   if SendMessage(ListBox.Handle, LB_INSERTSTRING, Index,
     {$IFDEF WIN32}
@@ -1202,13 +1208,15 @@ end;
 
 procedure ListIndexError(Index: Integer);
 
-  {$IFDEF WIN32}
-  function ReturnAddr: Pointer;
+{$IFDEF WIN32}
+
+function ReturnAddr: Pointer;
   asm
           MOV     EAX,[EBP+4]
   end;
   {$ELSE}
-  function ReturnAddr: Pointer; assembler;
+
+function ReturnAddr: Pointer; assembler;
   asm
           MOV     AX,[BP].Word[2]
           MOV     DX,[BP].Word[4]
@@ -1503,8 +1511,7 @@ begin
   begin
     if Value then
       SetItemIndex(Index)
-    else
-    if ItemIndex = Index then
+    else if ItemIndex = Index then
       SetItemIndex(-1);
   end;
 end;
@@ -1591,8 +1598,7 @@ begin
   Count := Items.Count;
   if (Index = 0) or (Index < Count) then
     Perform(LB_GETITEMRECT, Index, Longint(@Result))
-  else
-  if Index = Count then
+  else if Index = Count then
   begin
     Perform(LB_GETITEMRECT, Index - 1, Longint(@Result));
     OffsetRect(Result, 0, Result.Bottom - Result.Top);
@@ -1604,12 +1610,12 @@ end;
 procedure TJvxCustomListBox.CreateParams(var Params: TCreateParams);
 type
   PSelects = ^TSelects;
-  TSelects = array [Boolean] of Longword;
+  TSelects = array[Boolean] of Longword;
 const
-  BorderStyles: array [TBorderStyle] of Longword = (0, WS_BORDER);
-  Styles: array [TListBoxStyle] of Longword =
-    (0, LBS_OWNERDRAWFIXED, LBS_OWNERDRAWVARIABLE
-     {$IFDEF COMPILER6_UP}, LBS_OWNERDRAWFIXED, LBS_OWNERDRAWFIXED {$ENDIF});
+  BorderStyles: array[TBorderStyle] of Longword = (0, WS_BORDER);
+  Styles: array[TListBoxStyle] of Longword =
+  (0, LBS_OWNERDRAWFIXED, LBS_OWNERDRAWVARIABLE
+    {$IFDEF COMPILER6_UP}, LBS_OWNERDRAWFIXED, LBS_OWNERDRAWFIXED{$ENDIF});
   Sorteds: TSelects = (0, LBS_SORT);
   MultiSelects: TSelects = (0, LBS_MULTIPLESEL);
   ExtendSelects: TSelects = (0, LBS_EXTENDEDSEL);
@@ -1990,6 +1996,7 @@ begin
 end;
 
 {$IFDEF WIN32}
+
 procedure TJvxCustomListBox.CMCtl3DChanged(var Msg: TMessage);
 begin
   if NewStyleControls and (FBorderStyle = bsSingle) then
@@ -2277,8 +2284,9 @@ end;
 
 procedure TJvxCheckListBox.DefineProperties(Filer: TFiler);
 
-  {$IFDEF WIN32}
-  function DoWrite: Boolean;
+{$IFDEF WIN32}
+
+function DoWrite: Boolean;
   var
     I: Integer;
     Ancestor: TJvxCheckListBox;
@@ -2303,9 +2311,9 @@ procedure TJvxCheckListBox.DefineProperties(Filer: TFiler);
 begin
   inherited DefineProperties(Filer);
   Filer.DefineProperty('InternalVersion', ReadVersion, WriteVersion,
-    {$IFDEF WIN32} Filer.Ancestor = nil {$ELSE} True {$ENDIF});
+    {$IFDEF WIN32}Filer.Ancestor = nil{$ELSE}True{$ENDIF});
   Filer.DefineProperty('Strings', ReadCheckData, WriteCheckData,
-    {$IFDEF WIN32} DoWrite {$ELSE} Items.Count > 0 {$ENDIF});
+    {$IFDEF WIN32}DoWrite{$ELSE}Items.Count > 0{$ENDIF});
 end;
 
 procedure TJvxCheckListBox.CreateWnd;
@@ -2479,19 +2487,19 @@ begin
       rcItem.Left := rcItem.Left + GetCheckWidth
     else
       rcItem.Right := rcItem.Right - GetCheckWidth;
-    {$ELSE}
+  {$ELSE}
     rcItem.Left := rcItem.Left + GetCheckWidth;
-    {$ENDIF}
+  {$ENDIF}
   inherited;
 end;
 
 procedure TJvxCheckListBox.DrawCheck(R: TRect; AState: TCheckBoxState;
   Enabled: Boolean);
 const
-  CheckImages: array [TCheckBoxState, TCheckKind, Boolean] of Integer =
-    (((3, 0), (9, 6), (15, 12)), { unchecked }
-     ((4, 1), (10, 7), (16, 13)), { checked   }
-     ((5, 2), (11, 8), (17, 14))); { grayed    }
+  CheckImages: array[TCheckBoxState, TCheckKind, Boolean] of Integer =
+  (((3, 0), (9, 6), (15, 12)), { unchecked }
+    ((4, 1), (10, 7), (16, 13)), { checked   }
+    ((5, 2), (11, 8), (17, 14))); { grayed    }
 var
   DrawRect: TRect;
   SaveColor: TColor;
@@ -2568,7 +2576,7 @@ end;
 
 procedure TJvxCheckListBox.SetChecked(Index: Integer; AChecked: Boolean);
 const
-  CheckStates: array [Boolean] of TCheckBoxState = (cbUnchecked, cbChecked);
+  CheckStates: array[Boolean] of TCheckBoxState = (cbUnchecked, cbChecked);
 begin
   SetState(Index, CheckStates[AChecked]);
 end;
@@ -2879,7 +2887,7 @@ begin
   FAutoSize := True;
   FShowAccelChar := True;
   FShadowColor := clBtnHighlight;
-  FShadowSize := 1;
+  FShadowSize := 0;
   FShadowPos := spLeftTop;
 end;
 
@@ -2898,7 +2906,7 @@ var
   {$IFDEF WIN32}
   Text: string;
   {$ELSE}
-  Text: array [0..255] of Char;
+  Text: array[0..255] of Char;
   {$ENDIF}
   PosShadow: TShadowPosition;
   SizeShadow: Byte;
@@ -3380,6 +3388,7 @@ begin
 end;
 
 {$IFDEF COMPILER3_UP}
+
 procedure TJvSecretPanel.SetAsyncDrawing(Value: Boolean);
 begin
   if FAsyncDrawing <> Value then
@@ -3503,7 +3512,7 @@ end;
 
 procedure TJvSecretPanel.PaintText;
 var
-  STmp: array [0..255] of Char;
+  STmp: array[0..255] of Char;
   R: TRect;
   I: Integer;
   Flags: Longint;
@@ -3513,7 +3522,7 @@ begin
   {$IFDEF COMPILER3_UP}
   FMemoryImage.Canvas.Lock;
   try
-  {$ENDIF}
+    {$ENDIF}
     with FMemoryImage.Canvas do
     begin
       I := SaveDC(Handle);
@@ -3564,8 +3573,7 @@ begin
         StrPLCopy(STmp, FLines[I], SizeOf(STmp) - 1);
       if R.Top >= HeightOf(FTxtRect) then
         Break
-      else
-      if R.Bottom > 0 then
+      else if R.Bottom > 0 then
       begin
         if FTextStyle <> bvNone then
         begin
@@ -3603,7 +3611,7 @@ begin
       Canvas.Unlock;
     end;
     {$ENDIF}
-  {$IFDEF COMPILER3_UP}
+    {$IFDEF COMPILER3_UP}
   finally
     FMemoryImage.Canvas.Unlock;
   end;
@@ -3683,8 +3691,7 @@ begin
     if Assigned(FMemoryImage) then
       PaintText;
   end
-  else
-  if Cycled then
+  else if Cycled then
   begin
     FScrollCnt := 0;
     if Assigned(FMemoryImage) then
@@ -3710,7 +3717,7 @@ begin
   {$IFDEF COMPILER3_UP}
   FMemoryImage.Canvas.Lock;
   try
-  {$ENDIF}
+    {$ENDIF}
     FFirstLine := 0;
     while (FFirstLine < FLines.Count) and (Trim(FLines[FFirstLine]) = '') do
       Inc(FFirstLine);
@@ -3740,7 +3747,7 @@ begin
       Brush.Color := Self.Color;
       SetBkMode(Handle, Transparent);
     end;
-  {$IFDEF COMPILER3_UP}
+    {$IFDEF COMPILER3_UP}
   finally
     FMemoryImage.Canvas.Unlock;
   end;
@@ -3812,8 +3819,7 @@ begin
           if not (csDesigning in ComponentState) then
             Controls[I].Visible := False
         end
-        else
-        if FHiddenList.IndexOf(Controls[I]) >= 0 then
+        else if FHiddenList.IndexOf(Controls[I]) >= 0 then
         begin
           Controls[I].Visible := True;
           Controls[I].Invalidate;
@@ -3938,6 +3944,7 @@ end;
 
 {$IFDEF WIN32}
 {$IFNDEF COMPILER3_UP} { Delphi 2.0 bug fix }
+
 procedure TJvGlyphList.ReplaceMasked(Index: Integer; NewImage: TBitmap; MaskColor:
   TColor);
 var
@@ -4174,6 +4181,7 @@ begin
 end;
 
 {$IFDEF WIN32}
+
 function TJvButtonGlyph.CreateImageGlyph(State: TJvButtonState;
   Images: TImageList; Index: Integer): Integer;
 var
@@ -4425,8 +4433,7 @@ begin
     ImageListDrawDisabled(Images, Canvas, X, Y, ImageIndex, clBtnHighlight,
       clBtnShadow, True);
   end
-  else
-  if State = rbsInactive then
+  else if State = rbsInactive then
   begin
     Index := CreateImageGlyph(State, Images, ImageIndex);
     if Index >= 0 then
@@ -4476,7 +4483,7 @@ end;
 procedure TJvButtonGlyph.DrawButtonText(Canvas: TCanvas; const Caption: string;
   TextBounds: TRect; State: TJvButtonState; Flags: Word);
 var
-  CString: array [0..255] of Char;
+  CString: array[0..255] of Char;
 begin
   Canvas.Brush.Style := bsClear;
   StrPLCopy(CString, Caption, SizeOf(CString) - 1);
@@ -4500,12 +4507,12 @@ end;
 procedure TJvButtonGlyph.CalcButtonLayout(Canvas: TCanvas; const Client: TRect;
   var Caption: string; Layout: TButtonLayout; Margin, Spacing: Integer;
   PopupMark: Boolean; var GlyphPos: TPoint; var TextBounds: TRect; Flags: Word
-  {$IFDEF WIN32}; Images: TImageList; ImageIndex: Integer {$ENDIF});
+  {$IFDEF WIN32}; Images: TImageList; ImageIndex: Integer{$ENDIF});
 var
   TextPos: TPoint;
   MaxSize, ClientSize, GlyphSize, TextSize: TPoint;
   TotalSize: TPoint;
-  CString: array [0..255] of Char;
+  CString: array[0..255] of Char;
 begin
   { calculate the item sizes }
   ClientSize := Point(Client.Right - Client.Left, Client.Bottom - Client.Top);
@@ -4514,8 +4521,7 @@ begin
     (ImageIndex < Images.Count) then
     GlyphSize := Point(Images.Width, Images.Height)
   else
-  {$ENDIF}
-  if FOriginal <> nil then
+    {$ENDIF}if FOriginal <> nil then
     GlyphSize := Point(FOriginal.Width div FNumGlyphs, FOriginal.Height)
   else
     GlyphSize := Point(0, 0);
@@ -4560,8 +4566,7 @@ begin
   if PopupMark then
     if ((GlyphSize.X = 0) or (GlyphSize.Y = 0)) or (Layout = blGlyphLeft) then
       Inc(TextSize.X, 9)
-    else
-    if GlyphSize.X > 0 then
+    else if GlyphSize.X > 0 then
       Inc(GlyphSize.X, 6);
   { If the layout has the glyph on the right or the left, then both the
     text and the glyph are centered vertically.  If the glyph is on the top
@@ -4642,6 +4647,7 @@ begin
 end;
 
 {$IFDEF WIN32}
+
 function TJvButtonGlyph.Draw(Canvas: TCanvas; const Client: TRect;
   const Caption: string; Layout: TButtonLayout; Margin, Spacing: Integer;
   PopupMark: Boolean; State: TJvButtonState; Flags: Word): TRect;
@@ -4652,11 +4658,13 @@ end;
 {$ENDIF}
 
 {$IFDEF WIN32}
+
 function TJvButtonGlyph.DrawEx(Canvas: TCanvas; const Client: TRect;
   const Caption: string; Layout: TButtonLayout; Margin, Spacing: Integer;
   PopupMark: Boolean; Images: TImageList; ImageIndex: Integer;
   State: TJvButtonState; Flags: Word): TRect;
 {$ELSE}
+
 function TJvButtonGlyph.Draw(Canvas: TCanvas; const Client: TRect;
   const Caption: string; Layout: TButtonLayout; Margin, Spacing: Integer;
   PopupMark: Boolean; State: TJvButtonState; Flags: Word): TRect;
@@ -4671,8 +4679,8 @@ var
 begin
   CaptionText := Caption;
   CalcButtonLayout(Canvas, Client, CaptionText, Layout, Margin, Spacing,
-    PopupMark, GlyphPos, TextBounds, Flags {$IFDEF WIN32}, Images,
-    ImageIndex {$ENDIF});
+    PopupMark, GlyphPos, TextBounds, Flags{$IFDEF WIN32}, Images,
+    ImageIndex{$ENDIF});
   {$IFDEF WIN32}
   UseImages := False;
   if Assigned(Images) and (ImageIndex >= 0) and (ImageIndex < Images.Count) and
@@ -4683,12 +4691,12 @@ begin
       ImageIndex, State);
   end
   else
-  {$ENDIF}
+    {$ENDIF}
     PopupPos := DrawButtonGlyph(Canvas, GlyphPos.X, GlyphPos.Y, State);
   DrawButtonText(Canvas, CaptionText, TextBounds, State, Flags);
   if PopupMark then
     if (Layout <> blGlyphLeft) and (((FOriginal <> nil) and
-      (FOriginal.Width > 0)) {$IFDEF WIN32} or UseImages {$ENDIF}) then
+      (FOriginal.Width > 0)){$IFDEF WIN32} or UseImages{$ENDIF}) then
     begin
       PopupPos.X := GlyphPos.X + PopupPos.X + 1;
       PopupPos.Y := GlyphPos.Y + PopupPos.Y div 2;
@@ -4715,7 +4723,7 @@ var
   {$ENDIF}
   ButtonCount: Integer = 0;
 
-{ DrawButtonFrame - returns the remaining usable area inside the Client rect }
+  { DrawButtonFrame - returns the remaining usable area inside the Client rect }
 
 function DrawButtonFrame(Canvas: TCanvas; const Client: TRect;
   IsDown, IsFlat: Boolean; Style: TButtonStyle): TRect;
@@ -4839,6 +4847,7 @@ begin
 end;
 
 {$IFDEF WIN32}
+
 procedure TJvButtonImage.Draw(Canvas: TCanvas; X, Y, Margin, Spacing: Integer;
   Layout: TButtonLayout; AFont: TFont; Flags: Word);
 begin
@@ -4847,10 +4856,12 @@ end;
 {$ENDIF}
 
 {$IFDEF WIN32}
+
 procedure TJvButtonImage.DrawEx(Canvas: TCanvas; X, Y, Margin, Spacing: Integer;
   Layout: TButtonLayout; AFont: TFont; Images: TImageList; ImageIndex: Integer;
   Flags: Word);
 {$ELSE}
+
 procedure TJvButtonImage.Draw(Canvas: TCanvas; X, Y, Margin, Spacing: Integer;
   Layout: TButtonLayout; AFont: TFont; Flags: Word);
 {$ENDIF}
@@ -4955,8 +4966,8 @@ begin
     AState := rbsExclusive; // Polaris
   TJvButtonGlyph(FGlyph).Draw(Canvas, ARect, Caption, FLayout,
     FMargin, FSpacing, DrawMark, AState,
-    {$IFDEF COMPILER4_UP} DrawTextBiDiModeFlags(Alignments[Alignment]) {$ELSE}
-    Alignments[Alignment] {$ENDIF});
+    {$IFDEF COMPILER4_UP}DrawTextBiDiModeFlags(Alignments[Alignment]){$ELSE}
+    Alignments[Alignment]{$ENDIF});
 end;
 
 procedure TJvxSpeedButton.Paint;
@@ -4974,8 +4985,7 @@ begin
     FState := rbsDisabled;
     FDragging := False;
   end
-  else
-  if FState = rbsDisabled then
+  else if FState = rbsDisabled then
     if FDown and (GroupIndex <> 0) then
       FState := rbsExclusive
     else
@@ -4992,11 +5002,9 @@ begin
 
     if not Enabled then
       Button := tbPushButtonDisabled
-    else
-    if AState in [rbsDown, rbsExclusive] then
+    else if AState in [rbsDown, rbsExclusive] then
       Button := tbPushButtonPressed
-    else
-    if FMouseInControl then
+    else if FMouseInControl then
       Button := tbPushButtonHot
     else
       Button := tbPushButtonNormal;
@@ -5038,11 +5046,11 @@ begin
         Canvas.Font.Color := clHighlightText;
       OffsetRect(PaintRect, 1, 0);
     end;
-    PaintGlyph({FDrawImage.}Canvas, PaintRect, AState, FMarkDropDown and
+    PaintGlyph({FDrawImage.} Canvas, PaintRect, AState, FMarkDropDown and
       Assigned(FDropDownMenu));
   end
   else
-  {$ENDIF COMPILER7_UP}
+    {$ENDIF COMPILER7_UP}
   begin
     PaintRect := Rect(0, 0, Width, Height);
     FDrawImage.Width := Self.Width;
@@ -5058,8 +5066,7 @@ begin
       if (AState <> rbsInactive) or (FState = rbsExclusive) then
         PaintRect := DrawButtonFrame(FDrawImage.Canvas, PaintRect,
           FState in [rbsDown, rbsExclusive], FFlat, FStyle)
-      else
-      if FFlat then
+      else if FFlat then
         InflateRect(PaintRect, -2, -2);
     end;
     if (FState = rbsExclusive) and not Transparent and
@@ -5128,8 +5135,8 @@ end;
 function TJvxSpeedButton.CheckBtnMenuDropDown: Boolean;
 begin
   Result := CheckMenuDropDown(
-    {$IFDEF WIN32} PointToSmallPoint(GetDropDownMenuPos) {$ELSE}
-    GetDropDownMenuPos {$ENDIF}, True);
+    {$IFDEF WIN32}PointToSmallPoint(GetDropDownMenuPos){$ELSE}
+    GetDropDownMenuPos{$ENDIF}, True);
 end;
 
 function TJvxSpeedButton.CheckMenuDropDown(const Pos: TSmallPoint;
@@ -5266,8 +5273,7 @@ begin
       else
         Invalidate;
     end
-    else
-    if DoClick then
+    else if DoClick then
     begin
       SetDown(not FDown);
       if FDown then
@@ -5384,8 +5390,7 @@ procedure TJvxSpeedButton.SetNumGlyphs(Value: TJvNumGlyphs);
 begin
   if Value < 0 then
     Value := 1
-  else
-  if Value > Ord(High(TJvButtonState)) + 1 then
+  else if Value > Ord(High(TJvButtonState)) + 1 then
     Value := Ord(High(TJvButtonState)) + 1;
   if Value <> TJvButtonGlyph(FGlyph).NumGlyphs then
   begin
@@ -5525,6 +5530,7 @@ begin
 end;
 
 //>Polaris
+
 procedure TJvxSpeedButton.SetFlatStandard(Value: Boolean);
 begin
   if FFlatStandard <> Value then
@@ -5623,7 +5629,7 @@ procedure TJvxSpeedButton.CMMouseEnter(var Msg: TMessage);
 {$IFDEF COMPILER7_UP}
 var
   NeedRepaint: Boolean;
-{$ENDIF}
+  {$ENDIF}
 begin
   inherited;
   // for D7...
@@ -5658,7 +5664,7 @@ procedure TJvxSpeedButton.CMMouseLeave(var Msg: TMessage);
 {$IFDEF COMPILER7_UP}
 var
   NeedRepaint: Boolean;
-{$ENDIF}
+  {$ENDIF}
 begin
   inherited;
   // for D7...
@@ -5775,6 +5781,7 @@ begin
 end;
 
 {$IFDEF COMPILER4_UP}
+
 procedure TJvxSpeedButton.ActionChange(Sender: TObject; CheckDefaults: Boolean);
 
   procedure CopyImage(ImageList: TCustomImageList; Index: Integer);
@@ -5811,11 +5818,11 @@ initialization
 finalization
   DestroyLocals;
 
-{$ELSE}
+  {$ELSE}
 initialization
   FCheckBitmap := nil;
   AddExitProc(DestroyLocals);
-{$ENDIF}
+  {$ENDIF}
 
 end.
 

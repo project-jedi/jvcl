@@ -583,7 +583,7 @@ object ClientAssistant: TClientAssistant
         Caption = 'Interests'
         FocusControl = EditINTERESTS
       end
-      object RxLabel1: TJvxLabel
+      object RxLabel1: TJvLabel
         Left = 142
         Top = 17
         Width = 293

@@ -14,7 +14,7 @@ unit DBCbRest;
 interface
 
 uses Windows, SysUtils, Classes, Graphics, Forms, Controls, StdCtrls,
-  ExtCtrls, BDE, JvxCtrls;
+  ExtCtrls, BDE, JvxCtrls, JvLabel;
 
 type
   TRestructureDialog = class(TForm)
@@ -24,9 +24,9 @@ type
     IconImage: TImage;
     YesBtn: TRadioButton;
     NoBtn: TRadioButton;
-    ObjTypeLabel: TJvxLabel ;
+    ObjTypeLabel: TJvLabel ;
     ObjType: TEdit;
-    ObjDescLabel: TJvxLabel ;
+    ObjDescLabel: TJvLabel ;
     ObjDesc: TMemo;
     MsgLabel: TMemo;
     procedure FormCreate(Sender: TObject);

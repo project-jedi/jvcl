@@ -6,7 +6,7 @@ uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, StdCtrls, DBCtrls, DBTables, DB, Mask, ExtCtrls, Grids,
   DBGrids, JvDBCtrl, JvQuery, JvPlacemnt, JvToolEdit, JvPageMngr, JvxCtrls,
-  JvDBComb, JvComponent;
+  JvDBComb, JvComponent, JvLabel;
 
 type
   TClientAssistanceMode = (camNew, camEdit, camDelete, camView);
@@ -103,7 +103,7 @@ type
     EditINTERESTS: TDBEdit;
     EditIMAGE: TDBImage;
     EditDATE_OPEN: TJvDBDateEdit ;
-    RxLabel1: TJvxLabel ;
+    RxLabel1: TJvLabel ;
     ClientsLAST_NAME: TStringField;
     ClientsFIRST_NAME: TStringField;
     ClientsACCT_NBR: TFloatField;
