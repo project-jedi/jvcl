@@ -94,7 +94,7 @@ end;
 procedure TJvKeyScrollBox.WndProc(var Msg: TMessage);
 begin
   if Msg.Msg = WM_LBUTTONDOWN then
-    if not Focused then
+    if not Focused and CanFocus and not (csDesigning in ComponentState) then
       SetFocus;
   inherited;
 end;
