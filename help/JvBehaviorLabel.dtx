@@ -1,12 +1,12 @@
-##Package: ??
+##Package: Ctrls
 ##Status: Completed and spell-checked (p3)
 ----------------------------------------------------------------------------------------------------
 @@JvBehaviorLabel.pas
 Summary
-  Contains the TJvBehaviorLabel component and classes for several predefined behaviors. 
+  Contains the TJvBehaviorLabel component and classes for several predefined behaviors.
 <INCLUDE JVCL.UnitText.dtx>
 Author
-Peter Thörnqvist
+  Peter Thörnqvist
 ----------------------------------------------------------------------------------------------------
 @@GetLabelBehaviorName
 <TITLE GetLabelBehaviorName function>
@@ -104,13 +104,14 @@ Summary
   Specifies a specific behavior for the label.
 Description
   Use Behavior to select a specific effect for the label. You can select one of the following:
-  
+
+  * <LINK TJvLabelAppear,Appearing>: Scrolls the label over the form.
   * <LINK TJvLabelBlink,Blinking>: Blinks the text of the label.
   * <LINK TJvLabelBounce,Bouncing>: Bounces the label over the form.
+  * <LINK TJvLabelCodeBreaker,CodeBreaker>: Simulates breaking a code.
   * <LINK TJvLabelScroll,Scrolling>: Scrolls the text of the label.
-  * <LINK TJvLabelTyping,Typing>: Type effect: makes individual letters of the label appear one after each other.
-  * <LINK TJvLabelAppear,Appearing>: Scrolls the label over the form.
   * <LINK TJvLabelSpecial,Special>: Makes individual letters of the label appear one after each other.
+  * <LINK TJvLabelTyping,Typing>: Type effect: makes individual letters of the label appear one after each other.
 See Also
   BehaviorOptions
 ----------------------------------------------------------------------------------------------------
@@ -120,8 +121,8 @@ Summary
 Description
   Use the properties of BehaviorOptions to alter the specific behavior of the label. You can specify
   a specific behavior for the label by setting property Behavior. Different special effect have different
-  options. 
-  
+  options.
+
   For example if you set Behavior to 'Scrolling', you can use BehaviorOptions to alter the interval between
   scrolling events.
 See Also
@@ -131,13 +132,13 @@ See Also
 Summary
   Occurs when the Ctl3D property of the label changes.
 Description
-  \Write an OnCtl3DChanged event handler to take specific action when the Ctl3D property changes.
+  \Write an OnCtl3DChanged event handler to take specific actions when the Ctl3D property changes.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomBehaviorLabel.OnMouseEnter
 Summary
   Occurs when the mouse pointer moves over the label.
 Description
-  \Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  \Write an OnMouseEnter event handler to take specific actions when the user moves the mouse over the
   label.
 See Also
   OnMouseLeave
@@ -146,7 +147,7 @@ See Also
 Summary
   Occurs when the mouse pointer moves off the label.
 Description
-  \Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
+  \Write an OnMouseLeave event handler to take specific actions when the user moves the mouse off the
   label. For example, you can use this event to undo changes that were made in an OnMouseEnter
   event handler.
 See Also
@@ -156,27 +157,25 @@ See Also
 Summary
   Occurs when the color property for the parent of the label changes.
 Description
-  \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
-See Also 
+  \Write an OnParentColorChange event handler to take specific actions when the ParentColor property changes.
+See Also
   OnCtl3DChanged
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomBehaviorLabel.OnStart
 Summary
-  Write here a summary (1 line)
+  Occurs when the label effect starts.
 Description
-  Write here a description
+  \Write an OnStart event handler to take specific actions when the label effect starts.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvLabelBehavior.Active, OnStop
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomBehaviorLabel.OnStop
 Summary
-  Write here a summary (1 line)
+  Occurs when the label effect stops.
 Description
-  Write here a description
+  \Write an OnStart event handler to take specific actions when the label effect stops.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvLabelBehavior.Active, OnStart
 ----------------------------------------------------------------------------------------------------
 @@TJvLabelAppear
 Summary
@@ -224,7 +223,7 @@ Description
   Interval determines how frequently the scroll event occurs. Each time the specified interval passes,
   the label text scrolls.
 
-  Use Interval to specify any cardinal value as the interval between scroll events. The default value 
+  Use Interval to specify any cardinal value as the interval between scroll events. The default value
   is 50 (1/20 second).
 
   A 0 value is valid, however the label text will not scroll for a value of 0.
@@ -264,18 +263,19 @@ Description
   TJvLabelBehaviorName is a string type that is used for the names of label behaviors.
 ----------------------------------------------------------------------------------------------------
 @@TJvLabelBehaviorOptionsClass
+<TITLE TJvLabelBehaviorOptionsClass type>
 Summary
   The class type for TJvLabelBehaviorOptions.
 Description
   TJvLabelBehaviorOptionsClass defines a class type for calling code that needs a class type reference
-  as a parameter or return a class type. 
+  as a parameter or return a class type.
 ----------------------------------------------------------------------------------------------------
 @@TJvLabelBlink
 Summary
   Enables the label to blink.
 Description
   TJvLabelBlink enables a TJvBehaviorLabel to blink.
-  
+
   To use TJvLabelBlink capabilities with a TJvBehaviorLabel label, do the following:
   * Drop a TJvBehaviorLabel on a form.
   * Set <LINK TJvCustomBehaviorLabel.Behavior,Behavior> to 'Blinking'.
@@ -318,7 +318,7 @@ Summary
   Enables the label to bounce on the form.
 Description
   TJvLabelBounce enables a TJvBehaviorLabel to bounce on the form.
-  
+
   To use TJvLabelBounce capabilities with a TJvBehaviorLabel label, do the following:
   * Drop a TJvBehaviorLabel on a form.
   * Set <LINK TJvCustomBehaviorLabel.Behavior,Behavior> to 'Bouncing'.
@@ -347,34 +347,48 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvLabelCodeBreaker
 Summary
-  Write here a summary (1 line)
+  A behavior that simulates breaking a code.
 Description
-  Write here a description
+  Use the TJvLabelCodeBreaker behavior when you want to simulate breaking a code in the label. To enable
+  this behavior, do the follwing:
+  * Drop a TJvBehaviorLabel on a form.
+  * Set <LINK TJvCustomBehaviorLabel.Behavior,Behavior> to 'CodeBreaker'.
+  * Set the label's Caption to the initial, coded, value.
+
+  Do the following with the properties of property <LINK TJvCustomBehaviorLabel.BehaviorOptions,BehaviorOptions>:
+  * Specify the decoded text by seetting DecodedText to a suitable string.
+  * Use Interval to specify the amount of time in milliseconds between character changes.
+See Also
+  DecodedText, Interval
 ----------------------------------------------------------------------------------------------------
 @@TJvLabelCodeBreaker.DecodedText
 Summary
-  Write here a summary (1 line)
+  Specifies the text that is the decoded text of the decoding.
 Description
-  Write here a description
+  Use DecodedText to specify the text that the label should contain when the decoding is finished. The behavior
+  will examine each character in the labels \Caption one by one and simulate an attempt to find the decoded value.
+  When the character "found" by the behavior matches the character at the corresponding position in decodedText, the
+  character in the label's \Caption is replaced with the decoded character and the behavior moves on to the next character.
+
+  The speed of the decoding is controlled by the Interval property.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Interval
 ----------------------------------------------------------------------------------------------------
 @@TJvLabelCodeBreaker.Interval
 Summary
-  Write here a summary (1 line)
+  Specifies how fast the behavior checks the characters in the label.
 Description
-  Write here a description
+  Use Interval to set the time between character "decoding" attempts. Interval is expressed in milliseconds.
+  The lower the value of Interval, the faster the decoding will be performed.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DecodedText
 ----------------------------------------------------------------------------------------------------
 @@TJvLabelScroll
 Summary
   Enables the label to scroll it's text.
 Description
   TJvLabelScroll enables a TJvBehaviorLabel to scroll it's text.
-  
+
   To use TJvLabelScroll capabilities with a TJvBehaviorLabel label, do the following:
   * Drop a TJvBehaviorLabel on a form.
   * Set <LINK TJvCustomBehaviorLabel.Behavior,Behavior> to 'Scrolling'.
@@ -390,10 +404,10 @@ Summary
 Description
   Set Direction to indicate the scroll direction for the text. The direction can be: left to right
   or right to left.
-  
+
   The default value of Direction is sdLeftToRight.
 See Also
-  TJvLabelBehavior.Active, Interval
+  TJvLabelBehavior.Active, Padding
 ----------------------------------------------------------------------------------------------------
 @@TJvLabelScroll.Interval
 Summary
@@ -402,12 +416,22 @@ Description
   Interval determines how frequently the scroll event occurs. Each time the specified interval passes,
   the label text scrolls.
 
-  Use Interval to specify any cardinal value as the interval between scroll events. The default value 
+  Use Interval to specify any cardinal value as the interval between scroll events. The default value
   is 50 (1/20 second).
 
   A 0 value is valid, however the label text will not scroll for a value of 0.
 See Also
-  Direction, TJvLabelBehavior.Active
+  TJvLabelBehavior.Active
+----------------------------------------------------------------------------------------------------
+@@TJvLabelScroll.Padding
+Summary
+  Indicates whether the text scrolls over the full width of the label.
+Description
+  Set Padding to false to scroll the text over the width of the scroll text (Caption) only.
+  Set Padding to true to scroll the text over the full width of the label, this is implemented
+  such that the text is right-padded with spaces
+See Also
+  TJvLabelBehavior.Active, Direction,
 ----------------------------------------------------------------------------------------------------
 @@TJvLabelScrollDirection
 <TITLE TJvLabelScrollDirection type>
@@ -417,7 +441,7 @@ Description
   Use the TJvLabelScrollDirection type to specify a horizontal scroll direction.
 ----------------------------------------------------------------------------------------------------
 @@TJvLabelScrollDirection.sdLeftToRight
-  Scrolls from left to right. 
+  Scrolls from left to right.
 ----------------------------------------------------------------------------------------------------
 @@TJvLabelScrollDirection.sdRightToLeft
   Scrolls from right to left.
@@ -428,14 +452,14 @@ Summary
 Description
   Use TJvLabelSpecial to show a label that displays a small animation for each letter. Initially the
   label is empty, then the first letter changes until it is set to the correct letter; then the second
-  letter changes, and so on, until the last letter from the caption is set, and the label text is 
-  equal to the \string specified by Text. 
-  
+  letter changes, and so on, until the last letter from the caption is set, and the label text is
+  equal to the \string specified by Text.
+
   To use TJvLabelSpecial capabilities with a TJvBehaviorLabel label, do the following:
   * Drop a TJvBehaviorLabel on a form.
   * Set <LINK TJvCustomBehaviorLabel.Behavior,Behavior> to 'Special'.
   Do the following with the properties of property <LINK TJvCustomBehaviorLabel.BehaviorOptions,BehaviorOptions>:
-  * Set property Text at runtime to start the animation. 
+  * Set property Text at runtime to start the animation.
   * Use Interval to specify the interval between animation events.
   * Set Active to True at design-time, or set this property at run-time to start the effect.
 ----------------------------------------------------------------------------------------------------
@@ -443,7 +467,7 @@ Description
 Summary
   Determines the amount of time, in milliseconds, that passes between animation events.
 Description
-  SleepTime determines how frequently the animation event occurs. Each time the specified interval 
+  SleepTime determines how frequently the animation event occurs. Each time the specified interval
   passes, the last letter of the visible text is changed in the caption.
 
   Use SleepTime to specify any cardinal value as the interval between animation events. The default
@@ -484,41 +508,3 @@ Summary
 Description
   Use MakeErrors to specify whether the behavior shuld make occasional errors while typing or not.
   Setting MakeErrors to true makes the behavior more "human-like".
-----------------------------------------------------------------------------------------------------
-@@TJvLabelCodeBreaker
-Summary
-  A behavior that simulates breaking a code.
-Description
-  Use the TJvLabelCodeBreaker behavior when you want to simulate breaking a code in the label. To enable
-  this behavior, do the follwing:
-  * Drop a TJvBehaviorLabel on a form.
-  * Set <LINK TJvCustomBehaviorLabel.Behavior,Behavior> to 'CodeBreaker'.
-  * Set the label's Caption to the initial, coded, value.
-
-  Do the following with the properties of property <LINK TJvCustomBehaviorLabel.BehaviorOptions,BehaviorOptions>:
-  * Specify the decoded text by seetting DecodedText to a suitable string.
-  * Use Interval to specify the amount of time in milliseconds between character changes.
-See Also
-  DecodedText, Interval
-----------------------------------------------------------------------------------------------------
-@@TJvLabelCodeBreaker.DecodedText
-Summary
-  Specifies the text that is the decoded text of the decoding.
-Description
-  Use DecodedText to specify the text that the label should contain when the decoding is finished. The behavior
-  will examine each character in the labels \Caption one by one and simulate an attempt to find the decoded value.
-  When the character "found" by the behavior matches the character at the corresponding position in decodedText, the
-  character in the label's \Caption is replaced with the decoded character and the behavior moves on to the next character.
-
-  The speed of the decoding is controlled by the Interval property.
-See Also
-  Interval
-----------------------------------------------------------------------------------------------------
-@@TJvLabelCodeBreaker.Interval
-Summary
-  Specifies how fast the behavior checks the characters in the label.
-Description
-  Use Interval to set the time between character "decoding" attempts. Interval is expressed in milliseconds.
-  The lower the value of Interval, the faster the decoding will be performed.
-See Also
-  DecodedText
