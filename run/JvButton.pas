@@ -383,6 +383,10 @@ begin
   if Result then
   begin
     DropDownMenu.PopupComponent := Self;
+    case DropDownMenu.Alignment of
+      paRight:  Inc(X,Width);
+      paCenter: Inc(X,Width div 2);
+    end;
     DropDownMenu.Popup(X, Y);
    { wait 'til menu is done }
     while PeekMessage(Msg, 0, WM_MOUSEFIRST, WM_MOUSELAST, PM_REMOVE) do
