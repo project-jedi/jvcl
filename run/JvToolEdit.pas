@@ -2994,7 +2994,8 @@ begin
   if ClipboardCommands <> Value then
   begin
     inherited SetClipboardCommands(Value);
-    ReadOnly := ClipboardCommands <= [caCopy];
+    if ReadOnly and not (ClipboardCommands <= [caCopy]) then
+      ClipboardCommands := [caCopy];
   end;
 end;
 
