@@ -64,7 +64,6 @@ uses
   JvComponent, JvTypes;
 
 type
-  TJvHKey = (hkClassesRoot, hkCurrentUser, hkLocalMachine, hkUsers, hkCurrentConfig);
   TJvDataType = (dtString, dtBinary);
   TOnEnumData = procedure(Sender: TObject; Data: Pointer; Size: Integer; Index: Integer) of object;
   TOnEnumText = procedure(Sender: TObject; Value: string; Index: Integer) of object;
@@ -87,7 +86,7 @@ type
     FWantUnicode: Boolean;
     FMax: TMRUCount;
     FSubKey: WideString;
-    FKey: TJvHKey;
+    FKey: TJvRegKey;
     FList: THandle;
     FType: TJvDataType;
     FOnEnumData: TOnEnumData;
@@ -95,7 +94,7 @@ type
     FOnEnumUnicodeText: TOnEnumUnicodeText;
     FItemIndex: Integer;
     FItemData: TJvMruReturnData;
-    procedure SetKey(const Value: TJvHKey);
+    procedure SetKey(const Value: TJvRegKey);
     procedure SetMax(const Value: TMRUCount);
     function GetSubKey: string;
     procedure SetSubKeyUnicode(const Value: WideString);
@@ -151,7 +150,7 @@ type
   published
     property DelayedWrite: Boolean read FDelayedWrite write FDelayedWrite default False;
     property WantUnicode: Boolean read FWantUnicode write SetWantUnicode default False;
-    property RootKey: TJvHKey read FKey write SetKey default hkCurrentUser;
+    property RootKey: TJvRegKey read FKey write SetKey default hkCurrentUser;
     property SubKey: string read GetSubKey write SetSubKey stored False;
     // Arioch: it will be read from RCDATA for compatiblility, but unicode value should be stored!
     property SubKeyUnicode: WideString read FSubKey write SetSubKeyUnicode stored True;
@@ -505,7 +504,7 @@ begin
   FItemData.P := P;
 end;
 
-procedure TJvMruList.SetKey(const Value: TJvHKey);
+procedure TJvMruList.SetKey(const Value: TJvRegKey);
 begin
   if Value <> FKey then
   begin
