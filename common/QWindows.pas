@@ -1132,7 +1132,7 @@ const
   EM_SETRECT          = $00B3;
 
   {$IFDEF LINUX}
-  HINSTANCE_ERROR = $20;
+  HINSTANCE_ERROR = 0;
   HINSTANCE_OK    = HINSTANCE_ERROR + 1;
   {$ENDIF}
 
@@ -1295,7 +1295,7 @@ function QColorEx(Color: TColor): IQColorGuard;
 
 {$IFDEF LINUX}
 var
-  Shell: string = 'kfmclient exec';
+  Shell: string = 'kfmclient exec'; // KDE. Gnome equivalent ?  
 {$ENDIF}
 
 implementation
@@ -5741,11 +5741,14 @@ begin
     if gethostname(PChar(S), Length(S)) = -1 then
       Result := false
     else
+    begin
       SetLength(S, StrLen(PChar(Result)));
-    Size := Length(S) + 1;
-    Result := (S <> '');
-    if Result then
-      StrLCopy(Buffer, PChar(S), Size - 1);
+      Size := Length(S) + 1;
+      Result := (S <> '');
+      if Result
+      then
+        StrLCopy(Buffer, PChar(S), Size - 1);
+    end;    
   except
     Result := False;
   end;
@@ -6674,13 +6677,13 @@ begin
   {$IFDEF LINUX}
   if Operation = 'open'
   then
-    line := Format('%s "%s" %s&',[Shell, Filename, Parameters]);
+    line := Format('%s "%s" %s&',[Shell, Filename, Parameters])
   else if Operation = 'browse' then
     line := Format('%s "%s" %s&',
-      [GetEnvironmentVariable('BROWSER'), Filename, Parameters]);
+      [GetEnvironmentVariable('BROWSER'), Filename, Parameters])
   else
   begin
-    Result := THandle(-1);
+    Result := THandle(HINSTANCE_ERROR);
     exit;
   end;
   if directory <> ''
