@@ -128,13 +128,9 @@ const
 
 const
   ServerDateFmt: string[50] = sdfStandard16;
-  ftBlobTypes = [Low(TBlobType)..High(TBlobType)];
-  {$IFDEF COMPILER35_UP}
-  {$NODEFINE ftBlobTypes}
-  {$ENDIF}
 
   {$IFDEF BCB3_UP} { C++ Builder 3 or higher }
-  {$NODEFINE ftNonTextTypes}
+  {.$NODEFINE ftNonTextTypes}
   (*$HPPEMIT 'namespace JvDBUtils'*)
   (*$HPPEMIT '{'*)
   (*$HPPEMIT '#define ftNonTextTypes (System::Set<TFieldType, ftUnknown, ftCursor> () \'*)
@@ -466,8 +462,7 @@ begin
           end;
         end;
       finally
-        if not Result {$IFDEF COMPILER3_UP} and
-        DataSet.BookmarkValid(PChar(Bookmark)) {$ENDIF} then
+        if not Result and DataSet.BookmarkValid(PChar(Bookmark)) then
           DataSet.Bookmark := Bookmark;
       end;
     finally

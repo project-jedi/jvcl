@@ -70,6 +70,7 @@ USEPACKAGE("vclbde50.bpi");
 USEPACKAGE("vcljpg50.bpi");
 USEPACKAGE("dsnide50.bpi");
 USEPACKAGE("vcl50.bpi");
+USEPACKAGE("DCLDb50.bpi");
 //---------------------------------------------------------------------------
 #//---------------------------------------------------------------------------
 #pragma package(smart_init)

@@ -73,8 +73,14 @@ const
   {$IFDEF DELPHI5}
   SDelphiKey = 'Software\Borland\Delphi\5.0';
   {$ENDIF}
+  {$IFDEF BCB5}
+  SDelphiKey = 'Software\Borland\C++Builder\5.0';
+  {$ENDIF}
   {$IFDEF DELPHI6}
   SDelphiKey = 'Software\Borland\Delphi\6.0';
+  {$ENDIF}
+  {$IFDEF BCB6}
+  SDelphiKey = 'Software\Borland\C++Builder\6.0';
   {$ENDIF}
   {$IFDEF DELPHI7}
   SDelphiKey = 'Software\Borland\Delphi\7.0';
@@ -83,18 +89,10 @@ const
 implementation
 
 uses
-  {$IFDEF WIN32}
   Windows,
-  {$ELSE}
-  WinProcs,
-  {$ENDIF}
   Forms;
 
-{$IFDEF WIN32}
- {$R *.Res}
-{$ELSE}
- {$R *.R16}
-{$ENDIF}
+{$R *.Res}
 
 initialization
   Screen.Cursors[crHand] := LoadCursor(hInstance, 'JV_HANDCUR');
