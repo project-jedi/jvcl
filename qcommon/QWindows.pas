@@ -1270,20 +1270,6 @@ function QtStdAlign(Flags: Integer): Word;
 function IsCharAlpha(Ch: Char): LongBool;
 function IsCharAlphaNumeric(Ch: Char): LongBool;
 
-type
-  TSystemTime = record
-    wYear: Word;
-    wMonth: Word;
-    wDayOfWeek: Word;
-    wDay: Word;
-    wHour: Word;
-    wMinute: Word;
-    wSecond: Word;
-    wMilliseconds: Word;
-  end;
-
-procedure GetLocalTime(var st: TSystemTime);
-
 { Message }
 
 { AllocateMessageWidget allocates a new QObjectH that redirects any
@@ -1362,7 +1348,22 @@ function FileGetAttr(const FileName: string): Integer;
 function GetUserName(Buffer: PChar; var Size: Cardinal): LongBool;
 function GetComputerName(Buffer: PChar; var Size: Cardinal): LongBool;
 function MakeIntResource(Value: Integer): PChar;
+
+type
+  TSystemTime = record
+    wYear: Word;
+    wMonth: Word;
+    wDayOfWeek: Word;
+    wDay: Word;
+    wHour: Word;
+    wMinute: Word;
+    wSecond: Word;
+    wMilliseconds: Word;
+  end;
+
 function GetTickCount: Cardinal;
+procedure GetLocalTime(var st: TSystemTime);
+
 procedure MessageBeep(Value: Integer);   // value ignored
 
 function CoCreateGUID(out Guid: TGUID): HResult;
@@ -1453,7 +1454,7 @@ function ReleaseSemaphore(Semaphore: THandle; ReleaseCount: Longint;
   PreviousCount: PInteger): LongBool;
 
 function semtimedop(semid: Integer; sops: PSemaphoreBuffer;
-  nsops: size_t;timeout: PTimeSpec): Integer; {$IFDEF DEBUG}cdecl;{$ENDIF}
+  nsops: size_t; timeout: PTimeSpec): Integer; {$IFDEF DEBUG}cdecl;{$ENDIF}
 
 function WaitForSingleObject(Handle: THandle; Milliseconds: Cardinal): Cardinal;
 
@@ -6242,16 +6243,6 @@ begin
 end;
 
 
-procedure GetLocalTime(var st: TSystemTime);
-var
-  dt: TDateTime;
-begin
-  dt := Now;
-  DecodeDateTime(dt, st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute,
-    st.wSecond, st.wMilliseconds);
-  st.wDayOfWeek := DayOfTheWeek(dt);
-end;
-
 {$IFDEF LINUX}
 
 function FileGetAttr(const FileName: string): Integer;
@@ -7625,6 +7616,16 @@ end;
 procedure InitGetTickCount;
 begin
   gettimeofday(StartTimeVal, nil);
+end;
+
+procedure GetLocalTime(var st: TSystemTime);
+var
+  dt: TDateTime;
+begin
+  dt := Now;
+  DecodeDateTime(dt, st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute,
+    st.wSecond, st.wMilliseconds);
+  st.wDayOfWeek := DayOfTheWeek(dt);
 end;
 
 // Provider helpers
