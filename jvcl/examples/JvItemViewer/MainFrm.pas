@@ -34,7 +34,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Mask, ExtCtrls, ImgList, ComCtrls, Menus,
   JvToolEdit,
-  jpeg, JvPcx, JvGIF, JvAni,
+  jpeg, JvPCX, JvGIF, JvAni, JvCursor, 
     // if you have units that supports other image formats, add them here *before* including JvItemViewer
 //  GraphicEx, // http://www.delphi-gems.com/Graphics.php#GraphicEx
   JvCustomItemViewer,
@@ -42,7 +42,7 @@ uses
   JvImageListViewer,
   JvOwnerDrawViewer,
   JvComponent,
-  JvInspector, JvExMask, JvCursor;
+  JvInspector, JvExMask;
 
 type
   TfrmMain = class(TForm)

@@ -8,7 +8,7 @@ Delphi Informant (editorial@DelphiZine.com)
 Delphi 3000 (info@bluestep.com)
 UK-BUG (bug@richplum.co.uk)
 eLists Delphi (delphi@elists.org)
-
+www.devarchive.com (needs username/password)
 
 Subject: 
 ANN: JVCL 3 BETA Released!
@@ -46,7 +46,6 @@ Later on we will also provide separate downloads for those packages that can be 
 To download JVCL 3, go to http://sourceforge.net/projects/jvcl and click the "Files" link at the top or go directly at this address: http://sourceforge.net/project/showfiles.php?group_id=45786
 
 The current version is JVCL 3.00 BETA 1.
-
 
 
 The JVCL Team
