@@ -1,6 +1,36 @@
-unit JvFillIntf;
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+The Original Code is: JvFillIntf.Pas, released on --.
+
+The Initial Developers of the Original Code are Marcel Bestebroer, Peter
+Thörnqvist and Remko Bonte
+Portions created by the individuals are Copyright (C) 2002 - 2003 Project JEDI
+All Rights Reserved.
+
+Contributor(s): -
+
+Last Modified: 2003-04-23
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
+
+unit JvFillIntf;
+
 interface
+
 uses
   Windows, ImgList, Classes, Graphics;
 
@@ -37,12 +67,20 @@ type
   IFiller = interface
   ['{62A7A17D-1E21-427E-861D-C92FBB9B09A6}']
     procedure RegisterChangeNotify(AFillerNotify: IFillerNotify);
-    procedure UnRegisterChangeNotify(AFillerNotify: IFillerNotify);
-    function getSupports:TJvFillerSupports;
-    function getOptionClass: TJvFillerOptionsClass;
-    function getItems: IFillerItems;
+    procedure UnregisterChangeNotify(AFillerNotify: IFillerNotify);
+    function GetSupports: TJvFillerSupports;
+    function GetOptionClass: TJvFillerOptionsClass;
+    function GetItems: IFillerItems;
     procedure Changing(ChangeReason: TJvFillerChangeReason);
     procedure Changed(ChangeReason: TJvFillerChangeReason);
+  end;
+
+  { Implemented by clients (i.e list/comboboxes, labels, buttons, edits, listviews, treeviews, menus etc)
+   to get notifications from IFiller }
+  IFillerNotify = interface
+  ['{5B9D1847-6D35-4D9C-8BC2-2054997AB120}']
+    procedure FillerChanging(const AFiller: IFiller; AReason: TJvFillerChangeReason);
+    procedure FillerChanged(const AFiller: IFiller; AReason: TJvFillerChangeReason);
   end;
 
   { Item list. (0..N items)
@@ -50,8 +88,8 @@ type
     Supported by IFillerItem implementers only when fsSubItems is in IFiller.FillerSupports. }
   IFillerItems = interface
   ['{93747660-24FB-4294-BF4E-C7F88EA23983}']
-    function getCount: integer;
-    function getItem(Index: integer): IFillerItem;
+    function GetCount: Integer;
+    function GetItem(Index: Integer): IFillerItem;
     function GetParent: IFillerItem; // returns nil for the IFiller implementation
     function GetFiller: IFiller;
     function Attributes: TJvFillerItemsAttributes;
@@ -63,23 +101,68 @@ type
     property Filler: IFiller read GetFiller;
   end;
 
+  { only supported when fsImages is in  IFiller.FillerSupports; supported by IFillerItems implementers. }
+  IFillerItemsImages = interface
+  ['{735755A6-AD11-460C-B985-46464D73EDBC}']
+    function GetImageList: TCustomImageList;
+    procedure SetImageList(const Value: TCustomImageList);
+    property ImageList: TCustomImageList read GetImageList write SetImageList;
+  end;
+
   { Rendering interface. Provides support for both rendering and measuring of items.
     Implemented by IFillerItems. }
   IFillerItemsRenderer = interface
     ['{4EA490F4-7CCF-44A1-AA26-5320CDE9FAFC}']
-    procedure DrawItemByIndex(ACanvas:TCanvas; var ARect: TRect; Index: Integer; State: TOwnerDrawState; AOptions: TPersistent = nil);
-    function MeasureItemByIndex(ACanvas:TCanvas; Index: Integer; AOptions: TPersistent = nil): TSize;
-    procedure DrawItem(ACanvas: TCanvas; var ARect: TRect; Item: IFillerItem; State: TOwnerDrawState; AOptions: TPersistent = nil);
+    procedure DrawItemByIndex(ACanvas: TCanvas; var ARect: TRect; Index: Integer;
+      State: TOwnerDrawState; AOptions: TPersistent = nil);
+    function MeasureItemByIndex(ACanvas: TCanvas; Index: Integer;
+      AOptions: TPersistent = nil): TSize;
+    procedure DrawItem(ACanvas: TCanvas; var ARect: TRect; Item: IFillerItem;
+      State: TOwnerDrawState; AOptions: TPersistent = nil);
     function MeasureItem(ACanvas: TCanvas; Item: IFillerItem; AOptions: TPersistent = nil): TSize;
     function AvgItemSize(ACanvas: TCanvas; AOptions: TPersistent = nil): TSize;
   end;
 
-  { Rendering interface for an item. Provides support for both rendering and measuring of the item.
-    Implemneted by IFillerItem. }
-  IFillerItemRenderer = interface
-    ['{9E877A0D-01C2-4204-AA74-84D6516BBEB9}']
-    procedure Draw(ACanvas: TCanvas; var ARect: TRect; State: TOwnerDrawState; AOptions: TPersistent = nil);
-    function Measure(ACanvas:TCanvas; AOptions: TPersistent = nil): TSize;
+  { Implemented by servers that allows editing the list. Supported by IFillerItems implementers. }
+  IFillerItemsManagment = interface
+  ['{76611CC0-9DCD-4394-8B6E-1ADEF1942BC3}']
+    function Add(Item: IFillerItem): IFillerItem;
+    function New: IFillerItem;
+    procedure Clear;
+    procedure Delete(Index: Integer);
+    procedure Remove(Item: IFillerItem);
+  end;
+
+  { Support interface for filler editor. May be implemented by IFillerItemManagment implementers who
+    allow their list/tree to be edited. }
+  IFillerItemsDesigner = interface
+    ['{31B2544C-8E4F-40FE-94B8-04243EF40821}']
+    function GetCount: Integer;
+    function GetKind(Index: Integer; out Caption: string): Boolean;
+    function NewByKind(Kind: Integer): IFillerItem;
+  end;
+
+  { base search interface. Can be supported by IFillerItems implementers if the
+    implementation needs it.
+
+    The basic idea is to declare additional interfaces to implement searching on other properties
+    as well. eg. for the color filler:
+
+      IFillerColorSearch = interface
+        function IndexOfTColor(Color: TColor; const Recursive: Boolean = False): Integer;
+      end;
+
+    IFillerItems implement those search interface that apply for the implementation.
+    The recursive parameter has a default parameter value so it could be left out. }
+
+  IFillerIDSearch = interface
+    ['{0F5BDC79-893B-45C9-94E9-C2B2FD4ABFE7}']
+    function FindByID(ID: string; const Recursive: Boolean = False): IFillerItem;
+  end;
+
+  IFillerTextSearch = interface
+  ['{E3BC388D-50F6-402D-9E30-36D5F7F40616}']
+    function FindByText(Text: string; const Recursive: Boolean = False): IFillerItem;
   end;
 
   { base item interface: holds reference to the IFillerItems owner as well as provide a reference to the implementer }
@@ -93,79 +176,21 @@ type
     property Implementer: TObject read GetImplementer;
   end;
 
-  { Implemented by clients (i.e list/comboboxes, labels, buttons, edits, listviews, treeviews, menus etc)
-   to get notifications from IFiller }
-  IFillerNotify = interface
-  ['{5B9D1847-6D35-4D9C-8BC2-2054997AB120}']
-    procedure FillerChanging(const AFiller: IFiller; AReason: TJvFillerChangeReason);
-    procedure FillerChanged(const AFiller: IFiller; AReason: TJvFillerChangeReason);
-  end;
-
-  { base search interface. Can be supported by both IFiller and IFillerSubItems implementers if the
-    implementation needs it.
-
-    The basic idea is to declare additional interfaces to implement searching on other properties
-    as well. eg. for the color filler:
-
-      IFillerColorSearch = interface
-        function IndexOfTColor(Color: TColor; const Recursive: Boolean = False): Integer;
-      end;
-
-    Both IFiller and IFillerSubItems implement those search interface that apply for the implementation.
-    The recursive parameter has a default parameter value so it could be left out. }
-
-  IFillerIDSearch = interface
-    ['{0F5BDC79-893B-45C9-94E9-C2B2FD4ABFE7}']
-    function FindByID(ID: string; const Recursive: Boolean = False): IFillerItem;
-  end;
-
-  IFillerTextSearch = interface
-  ['{E3BC388D-50F6-402D-9E30-36D5F7F40616}']
-    function FindByText(Text: string; const Recursive: Boolean = False): IFillerItem;
-  end;
-
-  { Implemented by servers that allows editing the list. Supported by IFillerItems implementers. }
-  IFillerItemManagment = interface
-  ['{76611CC0-9DCD-4394-8B6E-1ADEF1942BC3}']
-    function Add(Item: IFillerItem): IFillerItem;
-    function New: IFillerItem;
-    procedure Clear;
-    procedure Delete(Index: Integer);
-    procedure Remove(Item: IFillerItem);
-  end;
-
-  { Support interface for filler editor. May be implemented by IFillerItemManagment implementers who
-    allow their list/tree to be edited. }
-  IFillerItemsDesigner = interface
-    ['{31B2544C-8E4F-40FE-94B8-04243EF40821}']
-    function getCount: Integer;
-    function getKind(Index: Integer; out Caption: string): Boolean;
-    function NewByKind(Kind: Integer): IFillerItem;
-  end;
-
-  { Support interface for filler editor. Must be implemented by IFillerItem implementers who
-    allow their item to be edited in the filler editor. }
-  IFillerItemDesigner = interface
-    ['{8F1A1283-2D13-4A28-9616-08B3EF73F29A}']
-    function getVerbCount: Integer;
-    function getVerb(Index: Integer; out Caption: string; out Enabled, Checked, Visible, RadioItem: Boolean): Boolean;
-    function ExecVerb(Index: Integer): Boolean;
-  end;
-
-  { only supported when fsImages is in  IFiller.FillerSupports; supported by IFillerItems implementers. }
-  IFillerItemImages = interface
-  ['{735755A6-AD11-460C-B985-46464D73EDBC}']
-    function getImageList: TCustomImageList;
-    procedure setImageList(const Value: TCustomImageList);
-    property ImageList: TCustomImageList read getImageList write setImageList;
+  { Rendering interface for an item. Provides support for both rendering and measuring of the item.
+    Implemneted by IFillerItem. }
+  IFillerItemRenderer = interface
+    ['{9E877A0D-01C2-4204-AA74-84D6516BBEB9}']
+    procedure Draw(ACanvas: TCanvas; var ARect: TRect; State: TOwnerDrawState;
+      AOptions: TPersistent = nil);
+    function Measure(ACanvas: TCanvas; AOptions: TPersistent = nil): TSize;
   end;
 
   { only supported when fsText is in IFiller.FillerSupports; supported by the IFillerItem implementer }
   IFillerItemText = interface
   ['{94FA56D9-281B-4252-B46D-15E7BADA70DA}']
-    function getCaption: string;
-    procedure setCaption(const Value: string);
-    property Caption: string read getCaption write setCaption;
+    function GetCaption: string;
+    procedure SetCaption(const Value: string);
+    property Caption: string read GetCaption write SetCaption;
   end;
 
   { only supported when fsImageIndex is in IFiller.FillerSupports;
@@ -174,22 +199,32 @@ type
     IFillerItemImages interface as well }
   IFillerItemImage = interface
   ['{6425D73A-90CF-42ED-9AB2-63125A4C0774}']
-    function getAlignment: TAlignment;
-    procedure setAlignment(Value: TAlignment);
-    function getImageIndex: integer;
-    procedure setImageIndex(Index: integer);
-    function getSelectedIndex: integer;
-    procedure setSelectedIndex(Value: integer);
+    function GetAlignment: TAlignment;
+    procedure SetAlignment(Value: TAlignment);
+    function GetImageIndex: integer;
+    procedure SetImageIndex(Index: integer);
+    function GetSelectedIndex: integer;
+    procedure SetSelectedIndex(Value: integer);
 
-    property Alignment: TAlignment read getAlignment write setAlignment;
-    property ImageIndex: Integer read getImageIndex write setImageIndex;
-    property SelectedIndex: Integer read getSelectedIndex write setSelectedIndex;
+    property Alignment: TAlignment read GetAlignment write SetAlignment;
+    property ImageIndex: Integer read GetImageIndex write SetImageIndex;
+    property SelectedIndex: Integer read GetSelectedIndex write SetSelectedIndex;
   end;
 
   { implemented by servers that supports a default action for each item }
   IFillerItemBasicAction = interface
   ['{86859A20-560D-4E9A-AC8B-2457789451B0}']
-    function Execute(Index: Integer): Boolean;
+    function Execute(Sender: TObject): Boolean;
+  end;
+
+  { Support interface for filler editor. Must be implemented by IFillerItem implementers who
+    allow their item to be edited in the filler editor. }
+  IFillerItemDesigner = interface
+    ['{8F1A1283-2D13-4A28-9616-08B3EF73F29A}']
+    function GetVerbCount: Integer;
+    function GetVerb(Index: Integer; out Caption: string; out Enabled, Checked, Visible,
+      RadioItem: Boolean): Boolean;
+    function ExecVerb(Index: Integer): Boolean;
   end;
 
   {$IFNDEF COMPILER6_UP}
@@ -354,7 +389,7 @@ begin
     of the property name bytes, assuming an average of 40 bytes/property will allow approximately 50
     properties to be appended to the existing property list. }
   PNewInfo := CloneTypeInfo(Pointer(PInteger(P)^), 2048);
-  if VirtualProtect(P, 4, PAGE_READWRITE, OldProtect) then
+  if VirtualProtect(P, 4, PAGE_WRITECOPY, OldProtect) then
   try
     PInteger(P)^ := Integer(PNewInfo);
   finally
@@ -372,7 +407,7 @@ begin
   Dec(P, 60);                         // Now pointing to TypeInfo of the VMT table.
   PNewType := Pointer(PInteger(P)^);  // The new type currently in use.
   Dec(PNewType, 4);                   // Points to the original PTypeInfo value.
-  if VirtualProtect(P, 4, PAGE_READWRITE, OldProtect) then
+  if VirtualProtect(P, 4, PAGE_WRITECOPY, OldProtect) then
   try
     PInteger(P)^ := Integer(PInteger(PNewType)^);
   finally

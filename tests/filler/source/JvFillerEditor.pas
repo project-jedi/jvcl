@@ -1,4 +1,33 @@
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+The Original Code is: JvFillerEditor.Pas, released on --.
+
+The Initial Developer of the Original Code is Marcel Bestebroer
+Portions created by Marcel Bestebroer are Copyright (C) 2002 - 2003 Marcel
+Bestebroer
+All Rights Reserved.
+
+Contributor(s):
+  Peter Thörnqvist
+
+Last Modified: 2003-04-23
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
+
 unit JvFillerEditor;
 
 interface
@@ -87,7 +116,8 @@ type
     property Designer: {$IFDEF COMPILER6_UP}IDesigner{$ELSE}IFormDesigner{$ENDIF} read FDesigner write SetDesigner;
   end;
 
-procedure EditFiller(AFiller: IFiller; ADesigner: {$IFDEF COMPILER6_UP}IDesigner{$ELSE}IFormDesigner{$ENDIF}; PropName: string);
+procedure EditFiller(AFiller: IFiller;
+  ADesigner: {$IFDEF COMPILER6_UP}IDesigner{$ELSE}IFormDesigner{$ENDIF}; PropName: string);
 
 implementation
 
@@ -139,10 +169,11 @@ function TJvFillerRootItem.GetInterface(const IID: TGUID; out Obj): Boolean;
 begin
   Result := inherited GetInterface(IID, Obj);
   if not Result then
-    Result := TExtensibleInterfacedObject(Items.GetImplementer).GetInterface(IID, Obj);
+    Result := TExtensibleInterfacedPersistent(Items.GetImplementer).GetInterface(IID, Obj);
 end;
 
-procedure EditFiller(AFiller: IFiller; ADesigner: {$IFDEF COMPILER6_UP}IDesigner{$ELSE}IFormDesigner{$ENDIF}; PropName: string);
+procedure EditFiller(AFiller: IFiller;
+  ADesigner: {$IFDEF COMPILER6_UP}IDesigner{$ELSE}IFormDesigner{$ENDIF}; PropName: string);
 var
   EditorForm: TfrmFillerEditor;
   I: Integer;
@@ -260,16 +291,16 @@ procedure TfrmFillerEditor.UpdateSelectedItem;
 var
   Item: IFillerItem;
   Items: IFillerItems;
-  Man: IFillerItemManagment;
+  Man: IFillerItemsManagment;
   Dsgn: IFillerItemsDesigner;
-  ParentMan: IFillerItemManagment;
+  ParentMan: IFillerItemsManagment;
   I: Integer;
 
   function MakeMenuItem(const Idx: Integer; const AOwner: TComponent): TMenuItem;
   var
     S: string;
   begin
-    Dsgn.getKind(Idx, S);
+    Dsgn.GetKind(Idx, S);
     Result := TMenuItem.Create(AOwner);
     Result.Caption := S;
     Result.OnClick := aiAddItem.OnExecute;
@@ -282,17 +313,17 @@ begin
     Item := GetFillerItem(lvFiller.Selected.Index);
     if (Item <> nil) and Supports(Item, IFillerItems, Items) then
     begin
-      if Supports(Items, IFillerItemManagment, Man) then
+      if Supports(Items, IFillerItemsManagment, Man) then
         Supports(Items, IFillerItemsDesigner, Dsgn);
     end;
     if (Item <> nil) then
-      Item.Items.QueryInterface(IFillerItemManagment, ParentMan);
+      Item.Items.QueryInterface(IFillerItemsManagment, ParentMan);
   end
   else
   begin
     if Supports(Filler, IFillerItems, Items) then
     begin
-      if Supports(Items, IFillerItemManagment, Man) then
+      if Supports(Items, IFillerItemsManagment, Man) then
         Supports(Items, IFillerItemsDesigner, Dsgn);
     end;
   end;
@@ -319,7 +350,7 @@ begin
     tbAddItem.Action := nil;
     tbAddItem.OnClick := nil;
     tbAddItem.Style := tbsDropDown;
-    for I := 0 to Dsgn.getCount - 1 do
+    for I := 0 to Dsgn.GetCount - 1 do
     begin
       miAddItem.Add(MakeMenuItem(I, miAddItem));
       pmAddMenu.Items.Add(MakeMenuItem(I, pmAddMenu));
@@ -329,11 +360,9 @@ begin
     tbAddItem.Visible := miAddItem.Visible;
     tbAddItem.Enabled := miAddItem.Enabled;
   end;
-{  aiAddItem.Visible := Man <> nil;
-  aiDeleteItem.Visible := ParentMan <> nil;
-  aiClearSub.Visible := Man <> nil;}
   aiAddItem.Enabled := (Man <> nil) and (Items <> nil);
-  aiDeleteItem.Enabled := (ParentMan <> nil) and (Item <> nil) and (Item.GetImplementer <> FRootItem);
+  aiDeleteItem.Enabled := (ParentMan <> nil) and (Item <> nil) and
+    (Item.GetImplementer <> FRootItem);
   aiClearSub.Enabled := (Man <> nil) and (Items <> nil) and (Items.Count > 0);
 end;
 
@@ -464,7 +493,7 @@ var
   I: Integer;
   J: Integer;
   SubItems: IFillerItems;
-  Man: IFillerItemManagment;
+  Man: IFillerItemsManagment;
   Dsgn: IFillerItemsDesigner;
 begin
   J := Length(FViewItems);
@@ -489,7 +518,7 @@ begin
       if Supports(Items.Items[I], IFillerItems, SubItems) then
       begin
         Flags := Flags + vifCanHaveChildren;
-        if Supports(SubItems, IFillerItemManagment, Man) then
+        if Supports(SubItems, IFillerItemsManagment, Man) then
           Flags := Flags + vifHasMan;
         if Supports(SubItems, IFillerItemsDesigner, Dsgn) then
           Flags := Flags + vifHasDsgn;
@@ -507,7 +536,7 @@ var
   FillerImpl: TComponent;
 begin
   if Filler <> nil then
-    Filler.UnRegisterChangeNotify(Self);
+    Filler.UnregisterChangeNotify(Self);
   if FRootItem <> nil then
     FreeAndNil(FRootItem);
   FFiller := Value;
@@ -526,7 +555,8 @@ begin
   UpdateSelectedItem;
 end;
 
-procedure TfrmFillerEditor.SetDesigner(Value: {$IFDEF COMPILER6_UP}IDesigner{$ELSE}IFormDesigner{$ENDIF});
+procedure TfrmFillerEditor.SetDesigner(
+  Value: {$IFDEF COMPILER6_UP}IDesigner{$ELSE}IFormDesigner{$ENDIF});
 begin
   if Value <> FDesigner then
   begin
@@ -548,15 +578,13 @@ begin
   case AReason of
     frDestroy:
       SetFiller(nil);
-    frUpdate:
-      lvFiller.Invalidate;
   end;
 end;
 
 procedure TfrmFillerEditor.FillerChanged(const AFiller: IFiller; AReason: TJvFillerChangeReason);
 begin
   case AReason of
-    frDestroy:
+    frDestroy: // Won't happen
       SetFiller(nil);
     frUpdate:
       lvFiller.Invalidate;
@@ -687,7 +715,7 @@ var
   Item: IFillerItem;
   Items: IFillerItems;
   Dsgn: IFillerItemsDesigner;
-  Mangr: IFillerItemManagment;
+  Mangr: IFillerItemsManagment;
 begin
   if lvFiller.Selected <> nil then
   begin
@@ -704,7 +732,7 @@ begin
   begin
     if Supports(Items, IFillerItemsDesigner, Dsgn) then
       Item := Dsgn.NewByKind(TMenuItem(Sender).Tag)
-    else if Supports(Items, IFillerItemManagment, Mangr) then
+    else if Supports(Items, IFillerItemsManagment, Mangr) then
       Item := Mangr.New
     else // should never occur
       raise EJVCLException.Create('Unable to add new item; neither IFillerItemManagment nor IFillerItemsDesigner are supported.');
@@ -729,7 +757,7 @@ var
   I: Integer;
   Item: IFillerItem;
   Items: IFillerItems;
-  Mangr: IFillerItemManagment;
+  Mangr: IFillerItemsManagment;
 begin
   if lvFiller.Selected <> nil then
   begin
@@ -739,7 +767,7 @@ begin
       Items := Item.Items
     else
       raise EJVCLException.Create('Item not found.');
-    if Supports(Items, IFillerItemManagment, Mangr) then
+    if Supports(Items, IFillerItemsManagment, Mangr) then
     begin
       ResetSelection;
       Mangr.Remove(Item);
@@ -757,7 +785,7 @@ procedure TfrmFillerEditor.aiClearSubExecute(Sender: TObject);
 var
   Item: IFillerItem;
   Items: IFillerItems;
-  Mangr: IFillerItemManagment;
+  Mangr: IFillerItemsManagment;
 begin
   if lvFiller.Selected <> nil then
   begin
@@ -769,7 +797,7 @@ begin
     end
     else
       raise EJVCLException.Create('Item not found.');
-    if Supports(Items, IFillerItemManagment, Mangr) then
+    if Supports(Items, IFillerItemsManagment, Mangr) then
       Mangr.Clear
     else
       raise EJVCLException.Create('Unable to delete items; IFillerItemManagment is not supported.');

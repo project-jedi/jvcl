@@ -1,6 +1,33 @@
-unit JvFillStringList;
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+The Original Code is: JvFillStringList.Pas, released on --.
+
+The Initial Developer of the Original Code is Marcel Bestebroer
+Portions created by Marcel Bestebroer are Copyright (C) 2002 - 2003 Marcel
+Bestebroer
+All Rights Reserved.
+
+Contributor(s):
+
+Last Modified: 2003-04-23
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
+
+unit JvFillStringList;
 
 interface
 
@@ -12,8 +39,8 @@ type
   TJvStringsFiller = class(TJvCustomFiller)
   protected
     class function ItemsClass: TJvFillerItemsClass; override;
-    function getSupports: TJvFillerSupports; override;
-    function getOptionClass: TJvFillerOptionsClass; override;
+    function GetSupports: TJvFillerSupports; override;
+    function GetOptionClass: TJvFillerOptionsClass; override;
 
     function GetStrings: TStrings;
     procedure SetStrings(Value: TStrings);
@@ -30,10 +57,8 @@ type
   protected
     class function PersistentFillerItems: Boolean; override;
     class function ItemsClass: TJvFillerItemsClass; override;
-    function getSupports: TJvFillerSupports; override;
-    function getOptionClass: TJvFillerOptionsClass; override;
-  public
-    procedure BeforeDestruction; override;
+    function GetSupports: TJvFillerSupports; override;
+    function GetOptionClass: TJvFillerOptionsClass; override;
   published
     property Items: TJvTreeFillerTree read FItems write FItems stored False;
   end;
@@ -50,8 +75,8 @@ type
     FItems: TStrings;
   protected
     procedure InitImplementers; override;
-    function getCount: Integer; override;
-    function getItem(I: Integer): IFillerItem; override;
+    function GetCount: Integer; override;
+    function GetItem(I: Integer): IFillerItem; override;
   public
     procedure AfterConstruction; override;
     procedure BeforeDestruction; override;
@@ -62,8 +87,8 @@ type
     FIndex: Integer;
     FStrings: TStrings;
   protected
-    function getCaption: string; override;
-    procedure setCaption(const Value: string); override;
+    function GetCaption: string; override;
+    procedure SetCaption(const Value: string); override;
   end;
 
   TJvStringsFillerItem = class(TJvBaseFillerItem)
@@ -82,12 +107,12 @@ begin
   TJvCustomFillerItemsTextRenderer.Create(Self);
 end;
 
-function TJvStringsFillerItems.getCount: Integer;
+function TJvStringsFillerItems.GetCount: Integer;
 begin
   Result := FItems.Count;
 end;
 
-function TJvStringsFillerItems.getItem(I: Integer): IFillerItem;
+function TJvStringsFillerItems.GetItem(I: Integer): IFillerItem;
 begin
   Result := TJvStringsFillerItem.Create(Self, FItems, I);
 end;
@@ -111,7 +136,8 @@ begin
   SetID(IntToHex(Impl.FIndex, 4));
 end;
 
-constructor TJvStringsFillerItem.Create(AItems: IFillerItems; AStringList: TStrings; AIndex: Integer);
+constructor TJvStringsFillerItem.Create(AItems: IFillerItems; AStringList: TStrings;
+  AIndex: Integer);
 begin
   inherited Create(AItems);
   Impl := TJvStringsFillerItemText.Create(Self);
@@ -121,14 +147,14 @@ end;
 
 { TJvStringsFillerItemText }
 
-function TJvStringsFillerItemText.getCaption: string;
+function TJvStringsFillerItemText.GetCaption: string;
 begin
   Result := FStrings[FIndex];
 end;
 
-procedure TJvStringsFillerItemText.setCaption(const Value: string);
+procedure TJvStringsFillerItemText.SetCaption(const Value: string);
 begin
-  if not (fsReadonly in Item.Items.Filler.getSupports) then
+  if not (fsReadonly in Item.Items.Filler.GetSupports) then
     FStrings[FIndex] := Value
   else
     raise EJVCLException.Create('Filler is read only; you can''t change the item.');
@@ -141,12 +167,12 @@ begin
   Result := TJvStringsFillerItems;
 end;
 
-function TJvStringsFiller.getSupports: TJvFillerSupports;
+function TJvStringsFiller.GetSupports: TJvFillerSupports;
 begin
   Result := [fsText, fsCanRender, fsCanMeasure];
 end;
 
-function TJvStringsFiller.getOptionClass: TJvFillerOptionsClass;
+function TJvStringsFiller.GetOptionClass: TJvFillerOptionsClass;
 begin
   Result := nil;
 end;
@@ -175,32 +201,14 @@ type
 
   TJvTreeFillerItemsDesigner = class(TJvFillerItemsAggregatedObject, IFillerItemsDesigner)
   protected
-    function getCount: Integer;
-    function getKind(Index: Integer; out Caption: string): Boolean;
+    function GetCount: Integer;
+    function GetKind(Index: Integer; out Caption: string): Boolean;
     function NewByKind(Kind: Integer): IFillerItem;
   end;
 
   TJvTreeFillerItemsManagment = class(TJvBaseFillerItemsListManagment)
   protected
     function New: IFillerItem; override;
-  end;
-
-  TJvTreeFillerImages = class(TJvBaseFillerItemImagesImpl)
-  private
-    FImageList: TCustomImageList;
-  protected
-    { IFillerItemImages }
-    function getImageList: TCustomImageList; override;
-    procedure setImageList(const Value: TCustomImageList); override;
-  published
-    property ImageList: TCustomImageList read getImageList write setImageList;
-  end;
-
-  TJvTreeFillerItem = class(TJvBaseFillerItem)
-  protected
-    procedure InitImplementers; override;
-  public
-    procedure BeforeDestruction; override;
   end;
 
 { TJvTreeFillerItems }
@@ -210,7 +218,7 @@ begin
   inherited InitImplementers;
   TJvTreeFillerItemsManagment.Create(Self);
   TJvTreeFillerItemsDesigner.Create(Self);
-  TJvTreeFillerImages.Create(Self);
+  TJvCustomFillerItemsImages.Create(Self);
 end;
 
 procedure TJvTreeFillerItems.BeforeDestruction;
@@ -220,12 +228,12 @@ end;
 
 { TJvTreeFillerItemsDesigner }
 
-function TJvTreeFillerItemsDesigner.getCount: Integer;
+function TJvTreeFillerItemsDesigner.GetCount: Integer;
 begin
   Result := 4;
 end;
 
-function TJvTreeFillerItemsDesigner.getKind(Index: Integer; out Caption: string): Boolean;
+function TJvTreeFillerItemsDesigner.GetKind(Index: Integer; out Caption: string): Boolean;
 begin
   Result := True;
   case Index of
@@ -239,31 +247,31 @@ end;
 
 function TJvTreeFillerItemsDesigner.NewByKind(Kind: Integer): IFillerItem;
 var
-  Man: IFillerItemManagment;
+  Man: IFillerItemsManagment;
 begin
-  if not Supports(Items, IFillerItemManagment, Man) then
+  if not Supports(Items, IFillerItemsManagment, Man) then
     raise EJVCLException.Create('IFillerItemManagment interface is not supported.');
   case Kind of
     0:
       begin
-        Result := Man.Add(TJvTreeFillerItem.Create(Items));
+        Result := Man.Add(TJvBaseFillerItem.Create(Items));
         TJvFillerTextItemImpl.Create(Result.Implementer as TJvBaseFillerItem);
       end;
     1:
       begin
-        Result := Man.Add(TJvTreeFillerItem.Create(Items));
+        Result := Man.Add(TJvBaseFillerItem.Create(Items));
         TJvFillerTextItemImpl.Create(Result.Implementer as TJvBaseFillerItem);
         TJvTreeFillerItems.CreateParent(Result);
       end;
     2:
       begin
-        Result := Man.Add(TJvTreeFillerItem.Create(Items));
+        Result := Man.Add(TJvBaseFillerItem.Create(Items));
         TJvFillerTextItemImpl.Create(Result.Implementer as TJvBaseFillerItem);
         TJvFillerImageItemImpl.Create((Result.Implementer as TJvBaseFillerItem));
       end;
     3:
       begin
-        Result := Man.Add(TJvTreeFillerItem.Create(Items));
+        Result := Man.Add(TJvBaseFillerItem.Create(Items));
         TJvFillerTextItemImpl.Create(Result.Implementer as TJvBaseFillerItem);
         TJvFillerImageItemImpl.Create((Result.Implementer as TJvBaseFillerItem));
         TJvTreeFillerItems.CreateParent(Result);
@@ -276,39 +284,8 @@ end;
 
 function TJvTreeFillerItemsManagment.New: IFillerItem;
 begin
-  Result := TJvTreeFillerItem.Create(Items);
+  Result := TJvBaseFillerItem.Create(Items);
   Add(Result);
-end;
-
-{ TJvTreeFillerImages }
-
-function TJvTreeFillerImages.getImageList: TCustomImageList;
-begin
-  Result := FImageList;
-end;
-
-procedure TJvTreeFillerImages.setImageList(const Value: TCustomImageList);
-begin
-  if Value <> getImageList then
-  begin
-    (Owner as IFillerItems).Filler.Changing(frUpdate);
-    FImageList := Value;
-    (Owner as IFillerItems).Filler.Changed(frUpdate);
-  end;
-end;
-
-{ TJvTreeFillerItem }
-
-procedure TJvTreeFillerItem.InitImplementers;
-begin
-  inherited InitImplementers;
-//  TJvTreeFillerItems.CreateParent(Self);
-//  TJvFillerTextItemImpl.Create(Self);
-end;
-
-procedure TJvTreeFillerItem.BeforeDestruction;
-begin
-  inherited;
 end;
 
 { TJvTreeFiller }
@@ -323,22 +300,16 @@ begin
   Result := TJvTreeFillerItems;
 end;
 
-function TJvTreeFiller.getSupports: TJvFillerSupports;
+function TJvTreeFiller.GetSupports: TJvFillerSupports;
 begin
   Result := [fsText, fsImages, fsImageIndex, fsCanRender, fsCanMeasure, fsSubItems];
 end;
 
-function TJvTreeFiller.getOptionClass: TJvFillerOptionsClass;
+function TJvTreeFiller.GetOptionClass: TJvFillerOptionsClass;
 begin
   Result := nil;
 end;
 
-procedure TJvTreeFiller.BeforeDestruction;
-begin
-  inherited BeforeDestruction;
-end;
-
 initialization
-  RegisterClasses([TJvTreeFillerItems, TJvTreeFillerItemsDesigner, TJvTreeFillerItemsManagment,
-    TJvTreeFillerImages, TJvTreeFillerItem]);
+  RegisterClasses([TJvTreeFillerItems, TJvTreeFillerItemsDesigner, TJvTreeFillerItemsManagment]);
 end.

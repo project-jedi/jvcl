@@ -1,8 +1,36 @@
-unit JvFillerControls;
-// peter3
-interface
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+The Original Code is: JvFillerControls.Pas, released on --.
+
+The Initial Developers of the Original Code are Peter Thörnqvist and Remko Bonte
+Portions created by these individuals are Copyright (C) 2002 - 2003 Peter Thörnqvist
+and Remko Bonte.
+All Rights Reserved.
+
+Contributor(s):
+  Marcel Bestebroer
+
+Last Modified: 2003-04-24
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
+
+unit JvFillerControls;
+
+interface
 
 uses
   Windows, Classes, StdCtrls, Controls, Graphics,
@@ -14,7 +42,7 @@ type
     FFiller: IFiller;
     procedure FillerChanging(const AFiller: IFiller; AReason: TJvFillerChangeReason);
     procedure FillerChanged(const AFiller: IFiller; AReason: TJvFillerChangeReason);
-    procedure setFiller(const Value: iFiller);
+    procedure SetFiller(const Value: iFiller);
     {$IFNDEF COMPILER6_UP}
     function GetFillerComp: TComponent;
     procedure SetFillerComp(Value: TComponent);
@@ -195,7 +223,7 @@ end;
 destructor TJvFillListBox.Destroy;
 begin
   Filler := nil;
-  inherited;
+  inherited Destroy;
 end;
 
 function TJvFillListBox.GetCount: Integer;
@@ -234,7 +262,7 @@ begin
   end
   else if FillerIntf <> nil then
   begin
-    Item := (FillerIntf as IFillerItems).getItem(Index);
+    Item := (FillerIntf as IFillerItems).GetItem(Index);
     if Supports(Item, IFillerItemRenderer, ItemRenderer) then
     begin
       Canvas.Font := Font;
@@ -260,16 +288,16 @@ begin
       Canvas.TextRect(Rect, Rect.Left, Rect.Top, ItemText.Caption);
     end
     else
-      inherited;
+      inherited DrawItem(Index, Rect, State);
   end
   else
-    inherited;
+    inherited DrawItem(Index, Rect, State);
 end;
 
 procedure TJvFillListBox.FillerChanged(const AFiller: IFiller; AReason: TJvFillerChangeReason);
 begin
   case AReason of
-    frDestroy:
+    frDestroy: // Should never occur in this method.
       begin
         if HasParent then
           Count := 0;
@@ -292,14 +320,9 @@ begin
         if HasParent then
           Count := 0;
         FFiller := nil;
-      end;
-    else
-      begin
-        if HasParent then
-          Count := (FillerIntf as IFillerItems).Count;
+        Invalidate;
       end;
   end;
-  Invalidate;
 end;
 
 procedure TJvFillListBox.MeasureItem(Index: Integer; var Height: Integer);
@@ -315,7 +338,7 @@ begin
       Height := aSize.cy;
   end
   else
-    inherited;
+    inherited MeasureItem(Index, Height);
 end;
 
 procedure TJvFillListBox.CreateParams(var Params: TCreateParams);
@@ -327,20 +350,17 @@ end;
 
 procedure TJvFillListBox.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
 begin
-  inherited;
+  inherited SetBounds(ALeft, ATop, AWidth, AHeight);
   Invalidate;
 end;
 
-procedure TJvFillListBox.setFiller(const Value: IFiller);
-{var
-  aSize:TSize;
-  ItemsRenderer: IFillerItemsRenderer;}
+procedure TJvFillListBox.SetFiller(const Value: IFiller);
 begin
   if FFiller <> Value then
   begin
     if FFiller <> nil then
     begin
-      FFiller.UnRegisterChangeNotify(self);
+      FFiller.UnregisterChangeNotify(self);
       if HasParent then
         Count := 0;
     end;
@@ -350,13 +370,8 @@ begin
       FFiller.RegisterChangeNotify(self);
       if HasParent then
         Count := (FillerIntf as IFillerItems).Count;
-{
-      aSize := FillerIntf.getItems.MeasureItemByIndex(Canvas, -1);
-      if aSize.cx <> 0 then
-        ClientWidth := aSize.cx;
-      if aSize.cy <> 0 then
-        ItemHeight := aSize.cy;}
     end;
+    Invalidate;
   end;
 end;
 
@@ -382,13 +397,13 @@ var
   FillerRef: IFiller;
 begin
   if Value = nil then
-    setFiller(nil)
+    SetFiller(nil)
   else
   begin
     if Value.GetInterface(IInterfaceComponentReference, CompRef) then
     begin
       if Value.GetInterface(IFiller, FillerRef) then
-        setFiller(FillerRef)
+        SetFiller(FillerRef)
       else
         raise EJVCLException.Create('Component does not support the IFiller interface.');
     end
@@ -402,14 +417,14 @@ end;
 
 constructor TJvFillLabel.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FIndex := -1;
 end;
 
 destructor TJvFillLabel.Destroy;
 begin
   Filler := nil;
-  inherited;
+  inherited Destroy;
 end;
 
 {$IFNDEF COMPILER6_UP}
@@ -434,13 +449,13 @@ var
   FillerRef: IFiller;
 begin
   if Value = nil then
-    setFiller(nil)
+    SetFiller(nil)
   else
   begin
     if Value.GetInterface(IInterfaceComponentReference, CompRef) then
     begin
       if Value.GetInterface(IFiller, FillerRef) then
-        setFiller(FillerRef)
+        SetFiller(FillerRef)
       else
         raise EJVCLException.Create('Component does not support the IFiller interface.');
     end
@@ -495,7 +510,7 @@ end;
 
 function TJvFillLabel.GetLabelCaption: string;
 begin
-  if (FillerIntf <> nil) and (fsText in FillerIntf.getSupports) and
+  if (FillerIntf <> nil) and (fsText in FillerIntf.GetSupports) and
       (FIndex >= 0) and (FIndex < (FillerIntf as IFillerItems).Count) then
     Result := ((FillerIntf as IFillerItems).Items[FIndex] as IFillerItemText).Caption
   else
@@ -509,7 +524,7 @@ begin
 
   if Assigned(FFiller) then
   begin
-    FFiller.UnRegisterChangeNotify(Self);
+    FFiller.UnregisterChangeNotify(Self);
     FIndex := -1;
   end;
 

@@ -83,11 +83,11 @@ object Form1: TForm1
             ClassName = 'TJvTreeFillerItemsDesigner'
           end
           item
-            ClassName = 'TJvTreeFillerImages'
+            ClassName = 'TJvCustomFillerItemsImages'
           end>
         Items = <
           item
-            ClassName = 'TJvTreeFillerItem'
+            ClassName = 'TJvBaseFillerItem'
             ID = 'F2F8F259D7E1684996DDDF31DE8F4D'
             Implementers = <
               item
@@ -96,7 +96,7 @@ object Form1: TForm1
               end>
           end
           item
-            ClassName = 'TJvTreeFillerItem'
+            ClassName = 'TJvBaseFillerItem'
             ID = 'C666F6F7BBC0B74B82C207C5C503B1'
             Implementers = <
               item
@@ -111,7 +111,7 @@ object Form1: TForm1
               end>
           end
           item
-            ClassName = 'TJvTreeFillerItem'
+            ClassName = 'TJvBaseFillerItem'
             ID = 'F1E5AF81E41905499B93F88ACAFB95'
             Implementers = <
               item
@@ -129,11 +129,11 @@ object Form1: TForm1
                     ClassName = 'TJvTreeFillerItemsDesigner'
                   end
                   item
-                    ClassName = 'TJvTreeFillerImages'
+                    ClassName = 'TJvCustomFillerItemsImages'
                   end>
                 Items = <
                   item
-                    ClassName = 'TJvTreeFillerItem'
+                    ClassName = 'TJvBaseFillerItem'
                     ID = 'CBF8B7CD0698DA4CAF7D448E14BF13'
                     Implementers = <
                       item
@@ -156,11 +156,11 @@ object Form1: TForm1
                             ClassName = 'TJvTreeFillerItemsDesigner'
                           end
                           item
-                            ClassName = 'TJvTreeFillerImages'
+                            ClassName = 'TJvCustomFillerItemsImages'
                           end>
                         Items = <
                           item
-                            ClassName = 'TJvTreeFillerItem'
+                            ClassName = 'TJvBaseFillerItem'
                             ID = 'AC3DFCD46B223C478794FE44861F81'
                             Implementers = <
                               item
@@ -169,7 +169,7 @@ object Form1: TForm1
                               end>
                           end
                           item
-                            ClassName = 'TJvTreeFillerItem'
+                            ClassName = 'TJvBaseFillerItem'
                             ID = 'E52653606C9CD749A77DD0BB01737D'
                             Implementers = <
                               item

@@ -1,8 +1,35 @@
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+The Original Code is: JvFillFontList.Pas, released on --.
+
+The Initial Developer of the Original Code is Marcel Bestebroer
+Portions created by Marcel Bestebroer are Copyright (C) 2002 - 2003 Marcel
+Bestebroer
+All Rights Reserved.
+
+Contributor(s):
+
+Last Modified: 2003-04-23
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------}
+
+{$I JVCL.INC}
+
 unit JvFillFontList;
 
 interface
-
-{$I JVCL.INC}
 
 uses
   Windows, SysUtils, Classes,
@@ -12,8 +39,8 @@ type
   TJvFontFiller = class(TJvCustomFiller)
   protected
     class function ItemsClass: TJvFillerItemsClass; override;
-    function getSupports: TJvFillerSupports; override;
-    function getOptionClass: TJvFillerOptionsClass; override;
+    function GetSupports: TJvFillerSupports; override;
+    function GetOptionClass: TJvFillerOptionsClass; override;
   end;
 
   TFontFillerOptions = class(TJvFillerOptions)
@@ -35,16 +62,16 @@ type
   TJvFontItems = class(TJvBaseFillerItems)
   protected
     procedure InitImplementers; override;
-    function getCount: Integer; override;
-    function getItem(I: Integer): IFillerItem; override;
+    function GetCount: Integer; override;
+    function GetItem(I: Integer): IFillerItem; override;
   end;
 
   TJvFontItemText = class(TJvBaseFillerTextItemImpl)
   private
     FIndex: Integer;
   protected
-    function getCaption: string; override;
-    procedure setCaption(const Value: string); override;
+    function GetCaption: string; override;
+    procedure SetCaption(const Value: string); override;
   end;
 
   TJvFontItem = class(TJvBaseFillerItem)
@@ -60,68 +87,18 @@ type
 procedure TJvFontItems.InitImplementers;
 begin
   inherited InitImplementers;
-  {AddIntfImpl(}TJvCustomFillerItemsTextRenderer.Create(Self){)};
+  TJvCustomFillerItemsTextRenderer.Create(Self);
 end;
 
-function TJvFontItems.getCount: Integer;
+function TJvFontItems.GetCount: Integer;
 begin
   Result := Screen.Fonts.Count;
 end;
 
-function TJvFontItems.getItem(I: Integer): IFillerItem;
+function TJvFontItems.GetItem(I: Integer): IFillerItem;
 begin
   Result := TJvFontItem.Create(Self, I);
 end;
-
-{
-procedure TJvFontItems.DrawItem(ACanvas: TCanvas; var ARect: TRect; Item: IFillerItem; State: TOwnerDrawState; AOptions: TPersistent);
-var
-  TmpFont: TFont;
-begin
-  if (AOptions <> nil) and (AOptions is TFontFillerOptions) and TFontFillerOptions(AOptions).UseFontNames then
-  begin
-    TmpFont := TFont.Create;
-    try
-      TmpFont.Assign(ACanvas.Font);
-      try
-        ACanvas.Font.Name := (Item as IFillerItemText).Caption;
-        ACanvas.TextRect(ARect, ARect.Left, ARect.Top, ACanvas.Font.Name);
-      finally
-        ACanvas.Font.Assign(TmpFont);
-      end;
-    finally
-      TmpFont.Free;
-    end;
-  end
-  else
-    ACanvas.TextRect(ARect, ARect.Left, ARect.Top, (Item as IFillerItemText).Caption);
-end;
-
-function TJvFontItems.MeasureItem(ACanvas: TCanvas; Item: IFillerItem; AOptions: TPersistent): TSize;
-var
-  TmpFont: TFont;
-begin
-  if (Item <> nil) and (AOptions <> nil) and (AOptions is TFontFillerOptions) and TFontFillerOptions(AOptions).UseFontNames then
-  begin
-    TmpFont := TFont.Create;
-    try
-      TmpFont.Assign(ACanvas.Font);
-      try
-        ACanvas.Font.Name := (Item as IFillerItemText).Caption;
-        Result := ACanvas.TextExtent(ACanvas.Font.Name);
-      finally
-        ACanvas.Font.Assign(TmpFont);
-      end;
-    finally
-      TmpFont.Free;
-    end;
-  end
-  else if Item <> nil then
-    Result := ACanvas.TextExtent((Item as IFillerItemText).Caption)
-  else
-    Result := ACanvas.TextExtent('WyWyWyWyWyWyWy');
-end;
-}
 
 { TJvFontItem }
 
@@ -139,12 +116,12 @@ end;
 
 { TJvFontItemText }
 
-function TJvFontItemText.getCaption: string;
+function TJvFontItemText.GetCaption: string;
 begin
   Result := Screen.Fonts[FIndex];
 end;
 
-procedure TJvFontItemText.setCaption(const Value: string);
+procedure TJvFontItemText.SetCaption(const Value: string);
 begin
   raise Exception.Create('Font filler is a read-only list.');
 end;
@@ -156,12 +133,12 @@ begin
   Result := TJvFontItems;
 end;
 
-function TJvFontFiller.getSupports: TJvFillerSupports;
+function TJvFontFiller.GetSupports: TJvFillerSupports;
 begin
   Result := [fsText, fsReadOnly, fsCanrender, fsCanMeasure];
 end;
 
-function TJvFontFiller.getOptionClass: TJvFillerOptionsClass;
+function TJvFontFiller.GetOptionClass: TJvFillerOptionsClass;
 begin
   Result := TFontFillerOptions;
 end;

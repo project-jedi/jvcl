@@ -1,12 +1,35 @@
-unit JvFillBasicImpl;
-{
-====================================================================================================
-  Basic implementers. Could be used for any other filler that needs these types.
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
 
-  Original author:
-    Marcel Bestebroer
-====================================================================================================
-}
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+The Original Code is: JvFillBasicImpl.Pas, released on --.
+
+The Initial Developer of the Original Code is Marcel Bestebroer
+Portions created by Marcel Bestebroer are Copyright (C) 2002 - 2003 Marcel
+Bestebroer
+All Rights Reserved.
+
+Contributor(s):
+  Remko Bonte
+  Peter Thörnqvist
+
+Last Modified: 2003-04-23
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------}
+
+{$I JVCL.INC}
+
+unit JvFillBasicImpl;
 
 interface
 
@@ -15,12 +38,20 @@ uses
   JvComponent, JvFillIntf;
 
 type
-  TAggregatedObjectEx = class;
+  // Forwards
+  TExtensibleInterfacedPersistent = class;
+  TAggregatedPersistentEx = class;
   TJvBaseFillerItem = class;
+  TJvBaseFillerItems = class;
 
-  TAggregatedObjectExClass = class of TAggregatedObjectEx;
+  // Class references
+  TAggregatedPersistentExClass = class of TAggregatedPersistentEx;
+  TJvFillerTextItemImplClass = class of TJvBaseFillerTextItemImpl;
+  TJvBaseFillerItemClass = class of TJvBaseFillerItem;
+  TJvFillerItemsClass = class of TJvBaseFillerItems;
 
-  TExtensibleInterfacedObject = class(TPersistent, IUnknown)
+  // Generic classes (move to some other unit?)
+  TExtensibleInterfacedPersistent = class(TPersistent, IUnknown)
   private
     FAdditionalIntfImpl: TList;
   protected
@@ -29,20 +60,20 @@ type
     function _AddRef: Integer; virtual; stdcall;
     function _Release: Integer; virtual; stdcall;
     function QueryInterface(const IID: TGUID; out Obj): HResult; virtual; stdcall;
-    procedure AddIntfImpl(const Obj: TAggregatedObjectEx);
-    procedure RemoveIntfImpl(const Obj: TAggregatedObjectEx);
-    function IndexOfImplClass(const AClass: TAggregatedObjectExClass): Integer;
+    procedure AddIntfImpl(const Obj: TAggregatedPersistentEx);
+    procedure RemoveIntfImpl(const Obj: TAggregatedPersistentEx);
+    function IndexOfImplClass(const AClass: TAggregatedPersistentExClass): Integer;
     procedure ClearIntfImpl;
     procedure InitImplementers; virtual;
     procedure SuspendRefCount;
     procedure ResumeRefCount;
 
-    function IsStreamableExtension(AnExtension: TAggregatedObjectEx): Boolean; virtual;
+    function IsStreamableExtension(AnExtension: TAggregatedPersistentEx): Boolean; virtual;
     procedure DefineProperties(Filer: TFiler); override;
     procedure ReadImplementers(Reader: TReader);
     procedure WriteImplementers(Writer: TWriter);
     procedure ReadImplementer(Reader: TReader);
-    procedure WriteImplementer(Writer: TWriter; Instance: TAggregatedObjectEx);
+    procedure WriteImplementer(Writer: TWriter; Instance: TAggregatedPersistentEx);
   public
     constructor Create;
     procedure AfterConstruction; override;
@@ -66,110 +97,26 @@ type
     property Controller: IUnknown read GetController;
   end;
 
-  TAggregatedObjectEx = class(TAggregatedPersistent)
+  TAggregatedPersistentEx = class(TAggregatedPersistent)
   private
-    FOwner: TExtensibleInterfacedObject;
+    FOwner: TExtensibleInterfacedPersistent;
   protected
-    property Owner: TExtensibleInterfacedObject read FOwner;
+    property Owner: TExtensibleInterfacedPersistent read FOwner;
   public
-    constructor Create(AOwner: TExtensibleInterfacedObject);
+    constructor Create(AOwner: TExtensibleInterfacedPersistent);
     procedure AfterConstruction; override;
     procedure BeforeDestruction; override;
     function GetInterface(const IID: TGUID; out Obj): Boolean; virtual;
   end;
 
-  // Basic implementers
-  TJvFillerItemAggregatedObject = class(TAggregatedObjectEx)
+  // Item implementation classes
+  TJvFillerItemAggregatedObject = class(TAggregatedPersistentEx)
   protected
     function Item: IFillerItem;
     function ItemImpl: TJvBaseFillerItem;
   end;
 
-  TJvBaseFillerTextItemImpl = class(TJvFillerItemAggregatedObject, IFillerItemText)
-  protected
-    function getCaption: string; virtual; abstract;
-    procedure setCaption(const Value: string); virtual; abstract;
-  public
-    property Caption: string read getCaption write setCaption;
-  end;
-
-  TJvBaseFillerImageItemImpl = class(TJvFillerItemAggregatedObject, IFillerItemImage)
-  protected
-    function getAlignment: TAlignment; virtual; abstract;
-    procedure setAlignment(Value: TAlignment); virtual; abstract;
-    function getImageIndex: integer; virtual; abstract;
-    procedure setImageIndex(Index: integer); virtual; abstract;
-    function getSelectedIndex: integer; virtual; abstract;
-    procedure setSelectedIndex(Value: integer); virtual; abstract;
-  end;
-
-  TJvBaseFillerItems = class(TExtensibleInterfacedObject, IFillerItems, IFillerIDSearch)
-  private
-    FParent: Pointer;
-    FParentIntf: IFillerItem;
-    FFiller: IFiller;
-    FSubAggregate: TAggregatedObjectEx;
-  protected
-    function _AddRef: Integer; override; stdcall;
-    function _Release: Integer; override; stdcall;
-    procedure InternalAdd(Item: IFillerItem); virtual; abstract;
-    function IsStreamableItem(Item: IFillerItem): Boolean; virtual;
-    procedure DefineProperties(Filer: TFiler); override;
-    procedure ReadItems(Reader: TReader);
-    procedure WriteItems(Writer: TWriter);
-    procedure ReadItem(Reader: TReader);
-    procedure WriteItem(Writer: TWriter; Item: IFillerItem);
-    { IFillerItems }
-    function getCount: Integer; virtual; abstract;
-    function getItem(I: Integer): IFillerItem; virtual; abstract;
-    function GetParent: IFillerItem;
-    function GetFiller: IFiller;
-    function GetImplementer: TObject;
-    function Attributes: TJvFillerItemsAttributes; virtual;
-    { IFillerIDSearch }
-    function FindByID(ID: string; const Recursive: Boolean = False): IFillerItem;
-  public
-    constructor CreateFiller(const Filler: IFiller);
-    constructor CreateParent(const Parent: IFillerItem);
-    procedure BeforeDestruction; override;
-  end;
-
-  TJvFillerItemsAggregatedObject = class(TAggregatedObjectEx)
-  protected
-    function Items: IFillerItems;
-    function ItemsImpl: TJvBaseFillerItems;
-  end;
-
-  TJvBaseFillerItemsRenderer = class(TJvFillerItemsAggregatedObject, IFillerItemsRenderer)
-  protected
-    procedure DoDrawItem(ACanvas: TCanvas; var ARect: TRect; Item: IFillerItem; State: TOwnerDrawState; AOptions: TPersistent = nil); virtual; abstract;
-    function DoMeasureItem(ACanvas: TCanvas; Item: IFillerItem; AOptions: TPersistent = nil): TSize; virtual; abstract;
-    { IFillerItemsRenderer}
-    procedure DrawItemByIndex(ACanvas:TCanvas; var ARect: TRect; Index: Integer; State: TOwnerDrawState; AOptions: TPersistent = nil); virtual;
-    function MeasureItemByIndex(ACanvas:TCanvas; Index: Integer; AOptions: TPersistent = nil): TSize; virtual;
-    procedure DrawItem(ACanvas: TCanvas; var ARect: TRect; Item: IFillerItem; State: TOwnerDrawState; AOptions: TPersistent = nil); virtual;
-    function MeasureItem(ACanvas: TCanvas; Item: IFillerItem; AOptions: TPersistent = nil): TSize; virtual;
-    function AvgItemSize(ACanvas: TCanvas; AOptions: TPersistent = nil): TSize; virtual; abstract;
-  end;
-
-  TJvBaseFillerItemManagment = class(TJvFillerItemsAggregatedObject, IFillerItemManagment)
-  protected
-    { IFillerItemManagment }
-    function Add(Item: IFillerItem): IFillerItem; virtual; abstract;
-    function New: IFillerItem; virtual; abstract;
-    procedure Clear; virtual; abstract;
-    procedure Delete(Index: Integer); virtual; abstract;
-    procedure Remove(Item: IFillerItem); virtual; abstract;
-  end;
-
-  TJvBaseFillerItemImagesImpl = class(TJvFillerItemsAggregatedObject, IFillerItemImages)
-  protected
-    { IFillerItemImages }
-    function getImageList: TCustomImageList; virtual; abstract;
-    procedure setImageList(const Value: TCustomImageList); virtual; abstract;
-  end;
-
-  TJvBaseFillerItem = class(TExtensibleInterfacedObject, IFillerItem)
+  TJvBaseFillerItem = class(TExtensibleInterfacedPersistent, IFillerItem)
   private
     FItems: Pointer;
     FItemsIntf: IFillerItems;
@@ -196,32 +143,102 @@ type
     property ID: string read GetID write SetID;
   end;
 
-  // Standard implementers
-  TJvBaseFillerSubItems = class(TJvFillerItemAggregatedObject, IFillerItems)
-  private
-    FItems: IFillerItems;
+  TJvBaseFillerTextItemImpl = class(TJvFillerItemAggregatedObject, IFillerItemText)
   protected
-    property Items: IFillerItems read FItems implements IFillerItems;
+    function GetCaption: string; virtual; abstract;
+    procedure SetCaption(const Value: string); virtual; abstract;
   public
-    constructor Create(AOwner: TExtensibleInterfacedObject; AItems: TJvBaseFillerItems);
-    destructor Destroy; override;
-    procedure BeforeDestruction; override;
-    function GetInterface(const IID: TGUID; out Obj): Boolean; override;
+    property Caption: string read getCaption write setCaption;
   end;
 
-  TJvCustomFillerItemsTextRenderer = class(TJvBaseFillerItemsRenderer)
+  TJvBaseFillerImageItemImpl = class(TJvFillerItemAggregatedObject, IFillerItemImage)
   protected
-    procedure DoDrawItem(ACanvas: TCanvas; var ARect: TRect; Item: IFillerItem; State: TOwnerDrawState; AOptions: TPersistent = nil); override;
-    function DoMeasureItem(ACanvas: TCanvas; Item: IFillerItem; AOptions: TPersistent = nil): TSize; override;
-    function AvgItemSize(ACanvas: TCanvas; AOptions: TPersistent = nil): TSize; override;
+    function GetAlignment: TAlignment; virtual; abstract;
+    procedure SetAlignment(Value: TAlignment); virtual; abstract;
+    function GetImageIndex: Integer; virtual; abstract;
+    procedure SetImageIndex(Index: Integer); virtual; abstract;
+    function GetSelectedIndex: Integer; virtual; abstract;
+    procedure SetSelectedIndex(Value: Integer); virtual; abstract;
   end;
 
+  // Items implementation classes
+  TJvFillerItemsAggregatedObject = class(TAggregatedPersistentEx)
+  protected
+    function Items: IFillerItems;
+    function ItemsImpl: TJvBaseFillerItems;
+  end;
+
+  TJvBaseFillerItems = class(TExtensibleInterfacedPersistent, IFillerItems, IFillerIDSearch)
+  private
+    FParent: Pointer;
+    FParentIntf: IFillerItem;
+    FFiller: IFiller;
+    FSubAggregate: TAggregatedPersistentEx;
+  protected
+    procedure InternalAdd(Item: IFillerItem); virtual; abstract;
+    function IsStreamableItem(Item: IFillerItem): Boolean; virtual;
+    procedure DefineProperties(Filer: TFiler); override;
+    procedure ReadItems(Reader: TReader);
+    procedure WriteItems(Writer: TWriter);
+    procedure ReadItem(Reader: TReader);
+    procedure WriteItem(Writer: TWriter; Item: IFillerItem);
+    { IFillerItems }
+    function GetCount: Integer; virtual; abstract;
+    function GetItem(I: Integer): IFillerItem; virtual; abstract;
+    function GetParent: IFillerItem;
+    function GetFiller: IFiller;
+    function GetImplementer: TObject;
+    function Attributes: TJvFillerItemsAttributes; virtual;
+    { IFillerIDSearch }
+    function FindByID(ID: string; const Recursive: Boolean = False): IFillerItem;
+  public
+    constructor CreateFiller(const Filler: IFiller);
+    constructor CreateParent(const Parent: IFillerItem);
+    procedure BeforeDestruction; override;
+  end;
+
+  TJvBaseFillerItemsRenderer = class(TJvFillerItemsAggregatedObject, IFillerItemsRenderer)
+  protected
+    procedure DoDrawItem(ACanvas: TCanvas; var ARect: TRect; Item: IFillerItem;
+      State: TOwnerDrawState; AOptions: TPersistent = nil); virtual; abstract;
+    function DoMeasureItem(ACanvas: TCanvas; Item: IFillerItem;
+      AOptions: TPersistent = nil): TSize; virtual; abstract;
+    { IFillerItemsRenderer}
+    procedure DrawItemByIndex(ACanvas:TCanvas; var ARect: TRect; Index: Integer;
+      State: TOwnerDrawState; AOptions: TPersistent = nil); virtual;
+    function MeasureItemByIndex(ACanvas:TCanvas; Index: Integer;
+      AOptions: TPersistent = nil): TSize; virtual;
+    procedure DrawItem(ACanvas: TCanvas; var ARect: TRect; Item: IFillerItem;
+      State: TOwnerDrawState; AOptions: TPersistent = nil); virtual;
+    function MeasureItem(ACanvas: TCanvas; Item: IFillerItem;
+      AOptions: TPersistent = nil): TSize; virtual;
+    function AvgItemSize(ACanvas: TCanvas; AOptions: TPersistent = nil): TSize; virtual; abstract;
+  end;
+
+  TJvBaseFillerItemsManagment = class(TJvFillerItemsAggregatedObject, IFillerItemsManagment)
+  protected
+    { IFillerItemManagment }
+    function Add(Item: IFillerItem): IFillerItem; virtual; abstract;
+    function New: IFillerItem; virtual; abstract;
+    procedure Clear; virtual; abstract;
+    procedure Delete(Index: Integer); virtual; abstract;
+    procedure Remove(Item: IFillerItem); virtual; abstract;
+  end;
+
+  TJvBaseFillerItemsImagesImpl = class(TJvFillerItemsAggregatedObject, IFillerItemsImages)
+  protected
+    { IFillerItemImages }
+    function GetImageList: TCustomImageList; virtual; abstract;
+    procedure SetImageList(const Value: TCustomImageList); virtual; abstract;
+  end;
+
+  // Standard item implementers
   TJvFillerTextItemImpl = class(TJvBaseFillerTextItemImpl)
   private
     FCaption: string;
   protected
-    function getCaption: string; override;
-    procedure setCaption(const Value: string); override;
+    function GetCaption: string; override;
+    procedure SetCaption(const Value: string); override;
   published
     property Caption: string read getCaption write setCaption;
   end;
@@ -232,21 +249,39 @@ type
     FImageIndex: Integer;
     FSelectedIndex: Integer;
   protected
-    function getAlignment: TAlignment; override;
-    procedure setAlignment(Value: TAlignment); override;
-    function getImageIndex: integer; override;
-    procedure setImageIndex(Index: integer); override;
-    function getSelectedIndex: integer; override;
-    procedure setSelectedIndex(Value: integer); override;
+    function GetAlignment: TAlignment; override;
+    procedure SetAlignment(Value: TAlignment); override;
+    function GetImageIndex: Integer; override;
+    procedure SetImageIndex(Index: Integer); override;
+    function GetSelectedIndex: Integer; override;
+    procedure SetSelectedIndex(Value: Integer); override;
   published
     property Alignment: TAlignment read getAlignment write SetAlignment default taLeftJustify;
     property ImageIndex: Integer read GetImageIndex write SetImageIndex default 0;
     property SelectedIndex: Integer read GetSelectedIndex write SetSelectedIndex default 0;
   end;
 
-  TJvFillerTextItemImplClass = class of TJvBaseFillerTextItemImpl;
-  TJvBaseFillerItemClass = class of TJvBaseFillerItem;
-  TJvFillerItemsClass = class of TJvBaseFillerItems;
+  TJvBaseFillerSubItems = class(TJvFillerItemAggregatedObject, IFillerItems)
+  private
+    FItems: IFillerItems;
+  protected
+    property Items: IFillerItems read FItems implements IFillerItems;
+  public
+    constructor Create(AOwner: TExtensibleInterfacedPersistent; AItems: TJvBaseFillerItems); virtual;
+    destructor Destroy; override;
+    procedure BeforeDestruction; override;
+    function GetInterface(const IID: TGUID; out Obj): Boolean; override;
+  end;
+
+  // Standard items implementers
+  TJvCustomFillerItemsTextRenderer = class(TJvBaseFillerItemsRenderer)
+  protected
+    procedure DoDrawItem(ACanvas: TCanvas; var ARect: TRect; Item: IFillerItem;
+      State: TOwnerDrawState; AOptions: TPersistent = nil); override;
+    function DoMeasureItem(ACanvas: TCanvas; Item: IFillerItem;
+      AOptions: TPersistent = nil): TSize; override;
+    function AvgItemSize(ACanvas: TCanvas; AOptions: TPersistent = nil): TSize; override;
+  end;
 
   TJvFillerItemsList = class(TJvBaseFillerItems)
   private
@@ -254,8 +289,8 @@ type
   protected
     procedure InternalAdd(Item: IFillerItem); override;
     function Attributes: TJvFillerItemsAttributes; override;
-    function getCount: Integer; override;
-    function getItem(I: Integer): IFillerItem; override;
+    function GetCount: Integer; override;
+    function GetItem(I: Integer): IFillerItem; override;
   public
     procedure AfterConstruction; override;
     procedure BeforeDestruction; override;
@@ -263,7 +298,7 @@ type
     property List: TObjectList read FList;
   end;
 
-  TJvBaseFillerItemsListManagment = class(TJvBaseFillerItemManagment)
+  TJvBaseFillerItemsListManagment = class(TJvBaseFillerItemsManagment)
   protected
     function Add(Item: IFillerItem): IFillerItem; override;
     procedure Clear; override;
@@ -271,6 +306,18 @@ type
     procedure Remove(Item: IFillerItem); override;
   end;
 
+  TJvCustomFillerItemsImages = class(TJvBaseFillerItemsImagesImpl)
+  private
+    FImageList: TCustomImageList;
+  protected
+    { IFillerItemImages }
+    function GetImageList: TCustomImageList; override;
+    procedure SetImageList(const Value: TCustomImageList); override;
+  published
+    property ImageList: TCustomImageList read getImageList write setImageList;
+  end;
+
+  // Generic filler implementation
   TJvCustomFiller = class(TJvComponent, {$IFNDEF COMPILER6_UP}IInterfaceComponentReference, {$ENDIF}
     IFiller, IFillerItems)
   private
@@ -290,11 +337,11 @@ type
     function GetComponent: TComponent;
     {$ENDIF COMPILER6_UP}
     { IFiller }
-    function getSupports: TJvFillerSupports; virtual;
-    function getOptionClass: TJvFillerOptionsClass; virtual;
-    function getItems: IFillerItems; virtual;
+    function GetSupports: TJvFillerSupports; virtual;
+    function GetOptionClass: TJvFillerOptionsClass; virtual;
+    function GetItems: IFillerItems; virtual;
     procedure RegisterChangeNotify(AFillerNotify: IFillerNotify); virtual;
-    procedure UnRegisterChangeNotify(AFillerNotify: IFillerNotify); virtual;
+    procedure UnregisterChangeNotify(AFillerNotify: IFillerNotify); virtual;
 
     property FillerItemsImpl: TJvBaseFillerItems read FFillerItemsImpl implements IFillerItems;
   public
@@ -304,6 +351,7 @@ type
     function GetInterface(const IID: TGUID; out Obj): Boolean; virtual;
   end;
 
+// Rename and move to JvFunctions? Converts a buffer into a string of hex digits.
 function HexBytes(const Buf; Length: Integer): string;
 
 implementation
@@ -344,7 +392,8 @@ end;
 
 { TJvCustomFillerItemsTextRenderer }
 
-procedure TJvCustomFillerItemsTextRenderer.DoDrawItem(ACanvas: TCanvas; var ARect: TRect; Item: IFillerItem; State: TOwnerDrawState; AOptions: TPersistent);
+procedure TJvCustomFillerItemsTextRenderer.DoDrawItem(ACanvas: TCanvas; var ARect: TRect;
+  Item: IFillerItem; State: TOwnerDrawState; AOptions: TPersistent);
 var
   TextIntf: IFillerItemText;
   S: string;
@@ -356,7 +405,8 @@ begin
   ACanvas.TextRect(ARect, ARect.Left, ARect.Top, S);
 end;
 
-function TJvCustomFillerItemsTextRenderer.DoMeasureItem(ACanvas: TCanvas; Item: IFillerItem; AOptions: TPersistent): TSize;
+function TJvCustomFillerItemsTextRenderer.DoMeasureItem(ACanvas: TCanvas; Item: IFillerItem;
+  AOptions: TPersistent): TSize;
 var
   TextIntf: IFillerItemText;
   S: string;
@@ -368,19 +418,20 @@ begin
   Result := ACanvas.TextExtent(S);
 end;
 
-function TJvCustomFillerItemsTextRenderer.AvgItemSize(ACanvas: TCanvas; AOptions: TPersistent): TSize;
+function TJvCustomFillerItemsTextRenderer.AvgItemSize(ACanvas: TCanvas;
+  AOptions: TPersistent): TSize;
 begin
   Result := ACanvas.TextExtent('WyWyWyWyWyWyWyWyWyWy');
 end;
 
 { TJvFillerTextItem }
 
-function TJvFillerTextItemImpl.getCaption: string;
+function TJvFillerTextItemImpl.GetCaption: string;
 begin
   Result := FCaption;
 end;
 
-procedure TJvFillerTextItemImpl.setCaption(const Value: string);
+procedure TJvFillerTextItemImpl.SetCaption(const Value: string);
 begin
   if Caption <> Value then
   begin
@@ -392,14 +443,14 @@ end;
 
 { TJvFillerImageItem }
 
-function TJvFillerImageItemImpl.getAlignment: TAlignment;
+function TJvFillerImageItemImpl.GetAlignment: TAlignment;
 begin
   Result := FAlignment;
 end;
 
-procedure TJvFillerImageItemImpl.setAlignment(Value: TAlignment);
+procedure TJvFillerImageItemImpl.SetAlignment(Value: TAlignment);
 begin
-  if getAlignment <> Value then
+  if GetAlignment <> Value then
   begin
     Item.Items.Filler.Changing(frUpdate);
     FAlignment := Value;
@@ -407,14 +458,14 @@ begin
   end;
 end;
 
-function TJvFillerImageItemImpl.getImageIndex: integer;
+function TJvFillerImageItemImpl.GetImageIndex: Integer;
 begin
   Result := FImageIndex;
 end;
 
-procedure TJvFillerImageItemImpl.setImageIndex(Index: integer);
+procedure TJvFillerImageItemImpl.SetImageIndex(Index: Integer);
 begin
-  if getImageIndex <> Index then
+  if GetImageIndex <> Index then
   begin
     Item.Items.Filler.Changing(frUpdate);
     FImageIndex := Index;
@@ -422,14 +473,14 @@ begin
   end;
 end;
 
-function TJvFillerImageItemImpl.getSelectedIndex: integer;
+function TJvFillerImageItemImpl.GetSelectedIndex: Integer;
 begin
   Result := FSelectedIndex;
 end;
 
-procedure TJvFillerImageItemImpl.setSelectedIndex(Value: integer);
+procedure TJvFillerImageItemImpl.SetSelectedIndex(Value: Integer);
 begin
-  if getSelectedIndex <> Value then
+  if GetSelectedIndex <> Value then
   begin
     Item.Items.Filler.Changing(frUpdate);
     FSelectedIndex := Value;
@@ -437,21 +488,21 @@ begin
   end;
 end;
 
-{ TExtensibleInterfacedObject }
+{ TExtensibleInterfacedPersistent }
 
-function TExtensibleInterfacedObject._AddRef: Integer;
+function TExtensibleInterfacedPersistent._AddRef: Integer;
 begin
   Result := InterlockedIncrement(FRefCount);
 end;
 
-function TExtensibleInterfacedObject._Release: Integer;
+function TExtensibleInterfacedPersistent._Release: Integer;
 begin
   Result := InterlockedDecrement(FRefCount);
   if Result = 0 then
     Destroy;
 end;
 
-function TExtensibleInterfacedObject.QueryInterface(const IID: TGUID; out Obj): HResult;
+function TExtensibleInterfacedPersistent.QueryInterface(const IID: TGUID; out Obj): HResult;
 const
   E_NOINTERFACE = HResult($80004002);
 begin
@@ -461,14 +512,14 @@ begin
     Result := E_NOINTERFACE;
 end;
 
-procedure TExtensibleInterfacedObject.AddIntfImpl(const Obj: TAggregatedObjectEx);
+procedure TExtensibleInterfacedPersistent.AddIntfImpl(const Obj: TAggregatedPersistentEx);
 begin
-  if IndexOfImplClass(TAggregatedObjectExClass(Obj.ClassType)) >= 0 then
+  if IndexOfImplClass(TAggregatedPersistentExClass(Obj.ClassType)) >= 0 then
     raise EJVCLException.Create('Implementation of that class already exists.');
   FAdditionalIntfImpl.Add(Obj);
 end;
 
-procedure TExtensibleInterfacedObject.RemoveIntfImpl(const Obj: TAggregatedObjectEx);
+procedure TExtensibleInterfacedPersistent.RemoveIntfImpl(const Obj: TAggregatedPersistentEx);
 var
   I: Integer;
 begin
@@ -481,14 +532,14 @@ begin
   end;
 end;
 
-function TExtensibleInterfacedObject.IndexOfImplClass(const AClass: TAggregatedObjectExClass): Integer;
+function TExtensibleInterfacedPersistent.IndexOfImplClass(const AClass: TAggregatedPersistentExClass): Integer;
 begin
   Result := FAdditionalIntfImpl.Count - 1;
   while (Result >= 0) and not (TObject(FAdditionalIntfImpl[Result]) is AClass) do
     Dec(Result);
 end;
 
-procedure TExtensibleInterfacedObject.ClearIntfImpl;
+procedure TExtensibleInterfacedPersistent.ClearIntfImpl;
 var
   I: Integer;
 begin
@@ -497,39 +548,39 @@ begin
   FAdditionalIntfImpl.Clear;
 end;
 
-procedure TExtensibleInterfacedObject.InitImplementers;
+procedure TExtensibleInterfacedPersistent.InitImplementers;
 begin
 end;
 
-procedure TExtensibleInterfacedObject.SuspendRefCount;
+procedure TExtensibleInterfacedPersistent.SuspendRefCount;
 begin
   InterlockedIncrement(FRefCount);
 end;
 
-procedure TExtensibleInterfacedObject.ResumeRefCount;
+procedure TExtensibleInterfacedPersistent.ResumeRefCount;
 begin
   InterlockedDecrement(FRefCount);
 end;
 
-function TExtensibleInterfacedObject.IsStreamableExtension(AnExtension: TAggregatedObjectEx): Boolean;
+function TExtensibleInterfacedPersistent.IsStreamableExtension(AnExtension: TAggregatedPersistentEx): Boolean;
 begin
   Result := GetClass(AnExtension.ClassName) <> nil;
 end;
 
-procedure TExtensibleInterfacedObject.DefineProperties(Filer: TFiler);
+procedure TExtensibleInterfacedPersistent.DefineProperties(Filer: TFiler);
 var
   I: Integer;
 begin
   inherited DefineProperties(Filer);
   I := FAdditionalIntfImpl.Count - 1;
-  while (I >= 0) and not IsStreamableExtension(TAggregatedObjectEx(FAdditionalIntfImpl[I])) do
+  while (I >= 0) and not IsStreamableExtension(TAggregatedPersistentEx(FAdditionalIntfImpl[I])) do
     Dec(I);
   Filer.DefineProperty('Implementers', ReadImplementers, WriteImplementers, I >= 0);
 end;
 
-procedure TExtensibleInterfacedObject.ReadImplementers(Reader: TReader);
+procedure TExtensibleInterfacedPersistent.ReadImplementers(Reader: TReader);
 begin
-  { When loading implementers, the interface of this object maybe referenced. We don't want the
+  { When loading implementers the interface of this object maybe referenced. We don't want the
     instance destroyed yet, so reference counting will be suspended (by incrementing it) and resumed
     when we're done (by decrementing it without checking if it became zero) }
   SuspendRefCount;
@@ -544,23 +595,23 @@ begin
   end;
 end;
 
-procedure TExtensibleInterfacedObject.WriteImplementers(Writer: TWriter);
+procedure TExtensibleInterfacedPersistent.WriteImplementers(Writer: TWriter);
 var
   I: Integer;
 begin
   TOpenWriter(Writer).WriteValue(vaCollection);
   for I := 0 to FAdditionalIntfImpl.Count - 1 do
-    if IsStreamableExtension(TAggregatedObjectEx(FAdditionalIntfImpl[I])) then
-      WriteImplementer(Writer, TAggregatedObjectEx(FAdditionalIntfImpl[I]));
+    if IsStreamableExtension(TAggregatedPersistentEx(FAdditionalIntfImpl[I])) then
+      WriteImplementer(Writer, TAggregatedPersistentEx(FAdditionalIntfImpl[I]));
   Writer.WriteListEnd;
 end;
 
-procedure TExtensibleInterfacedObject.ReadImplementer(Reader: TReader);
+procedure TExtensibleInterfacedPersistent.ReadImplementer(Reader: TReader);
 var
   ClassName: string;
   ClassType: TPersistentClass;
   I: Integer;
-  Impl: TAggregatedObjectEx;
+  Impl: TAggregatedPersistentEx;
 begin
   Reader.ReadListBegin;
   ClassName := Reader.ReadStr;
@@ -568,19 +619,20 @@ begin
     raise EReadError.Create('Missing ClassName property');
   ClassName := Reader.ReadString;
   ClassType := FindClass(ClassName);
-  if not ClassType.InheritsFrom(TAggregatedObjectEx) then
+  if not ClassType.InheritsFrom(TAggregatedPersistentEx) then
     raise EReadError.Create('Invalid class type');
-  I := IndexOfImplClass(TAggregatedObjectExClass(ClassType));
+  I := IndexOfImplClass(TAggregatedPersistentExClass(ClassType));
   if I >= 0 then
-    Impl := TAggregatedObjectEx(FAdditionalIntfImpl[I])
+    Impl := TAggregatedPersistentEx(FAdditionalIntfImpl[I])
   else
-    Impl := TAggregatedObjectExClass(ClassType).Create(Self);
+    Impl := TAggregatedPersistentExClass(ClassType).Create(Self);
   while not Reader.EndOfList do
     TOpenReader(Reader).ReadProperty(Impl);
   Reader.ReadListEnd;
 end;
 
-procedure TExtensibleInterfacedObject.WriteImplementer(Writer: TWriter; Instance: TAggregatedObjectEx);
+procedure TExtensibleInterfacedPersistent.WriteImplementer(Writer: TWriter;
+  Instance: TAggregatedPersistentEx);
 begin
   Writer.WriteListBegin;
   TOpenWriter(Writer).WritePropName('ClassName');
@@ -589,13 +641,13 @@ begin
   Writer.WriteListEnd;
 end;
 
-constructor TExtensibleInterfacedObject.Create;
+constructor TExtensibleInterfacedPersistent.Create;
 begin
   inherited Create;
   FAdditionalIntfImpl := TList.Create;
 end;
 
-procedure TExtensibleInterfacedObject.AfterConstruction;
+procedure TExtensibleInterfacedPersistent.AfterConstruction;
 begin
   inherited AfterConstruction;
   InitImplementers;
@@ -603,7 +655,7 @@ begin
   InterlockedDecrement(FRefCount);
 end;
 
-procedure TExtensibleInterfacedObject.BeforeDestruction;
+procedure TExtensibleInterfacedPersistent.BeforeDestruction;
 begin
   if RefCount <> 0 then RunError(2);
   inherited BeforeDestruction;
@@ -611,7 +663,7 @@ begin
   FAdditionalIntfImpl.Free;
 end;
 
-function TExtensibleInterfacedObject.GetInterface(const IID: TGUID; out Obj): Boolean;
+function TExtensibleInterfacedPersistent.GetInterface(const IID: TGUID; out Obj): Boolean;
 var
   I: Integer;
 begin
@@ -619,17 +671,18 @@ begin
   if not Result then
   begin
     I := FAdditionalIntfImpl.Count - 1;
-    while (I >= 0) and ((FAdditionalIntfImpl[I] = nil) or not TAggregatedObjectEx(FAdditionalIntfImpl[I]).GetInterface(IID, Obj)) do
+    while (I >= 0) and ((FAdditionalIntfImpl[I] = nil) or
+        not TAggregatedPersistentEx(FAdditionalIntfImpl[I]).GetInterface(IID, Obj)) do
       Dec(I);
     Result := I >= 0;
   end;
 end;
 
-class function TExtensibleInterfacedObject.NewInstance: TObject;
+class function TExtensibleInterfacedPersistent.NewInstance: TObject;
 begin
   Result := inherited NewInstance;
   // set a refcount to avoid destruction due to refcounting during construction
-  TExtensibleInterfacedObject(Result).FRefCount := 1;
+  TExtensibleInterfacedPersistent(Result).FRefCount := 1;
 end;
 
 { TAggregatedPersistent }
@@ -660,21 +713,21 @@ begin
   FController := Pointer(Controller);
 end;
 
-{ TAggregatedObjectEx }
+{ TAggregatedPersistentEx }
 
-constructor TAggregatedObjectEx.Create(AOwner: TExtensibleInterfacedObject);
+constructor TAggregatedPersistentEx.Create(AOwner: TExtensibleInterfacedPersistent);
 begin
   inherited Create(AOwner);
   FOwner := AOwner;
 end;
 
-procedure TAggregatedObjectEx.AfterConstruction;
+procedure TAggregatedPersistentEx.AfterConstruction;
 begin
   inherited AfterConstruction;
   FOwner.AddIntfImpl(Self);
 end;
 
-procedure TAggregatedObjectEx.BeforeDestruction;
+procedure TAggregatedPersistentEx.BeforeDestruction;
 var
   I: Integer;
 begin
@@ -684,32 +737,12 @@ begin
     FOwner.FAdditionalIntfImpl.Delete(I);
 end;
 
-function TAggregatedObjectEx.GetInterface(const IID: TGUID; out Obj): Boolean;
+function TAggregatedPersistentEx.GetInterface(const IID: TGUID; out Obj): Boolean;
 begin
   Result := inherited GetInterface(IID, Obj);
 end;
 
 { TJvBaseFillerItems }
-
-function TJvBaseFillerItems._AddRef: Integer;
-begin
-{  if FParent <> nil then
-    Result := GetParent._AddRef
-  else if FFiller <> nil then
-    Result := FFiller._AddRef
-  else}
-    Result := inherited _AddRef;
-end;
-
-function TJvBaseFillerItems._Release: Integer;
-begin
-{  if FParent <> nil then
-    Result := GetParent._Release
-  else if FFiller <> nil then
-    Result := FFiller._Release
-  else}
-    Result := inherited _Release;
-end;
 
 function TJvBaseFillerItems.IsStreamableItem(Item: IFillerItem): Boolean;
 var
@@ -850,8 +883,9 @@ begin
   FParent := Pointer(Parent);
   if (Parent <> nil) and (fiaDynamicItems in Parent.Items.Attributes) then
     FParentIntf := Parent;
-  if (Parent <> nil) and (Parent.GetImplementer is TExtensibleInterfacedObject) then
-    FSubAggregate := TJvBaseFillerSubItems.Create(TExtensibleInterfacedObject(Parent.GetImplementer), Self);
+  if (Parent <> nil) and (Parent.GetImplementer is TExtensibleInterfacedPersistent) then
+    FSubAggregate := TJvBaseFillerSubItems.Create(
+      TExtensibleInterfacedPersistent(Parent.GetImplementer), Self);
 end;
 
 procedure TJvBaseFillerItems.BeforeDestruction;
@@ -863,7 +897,7 @@ end;
 
 { TJvBaseFillerSubItems }
 
-constructor TJvBaseFillerSubItems.Create(AOwner: TExtensibleInterfacedObject;
+constructor TJvBaseFillerSubItems.Create(AOwner: TExtensibleInterfacedPersistent;
   AItems: TJvBaseFillerItems);
 begin
   inherited Create(AOwner);
@@ -901,14 +935,16 @@ end;
 
 { TJvBaseFillerItemsRenderer }
 
-procedure TJvBaseFillerItemsRenderer.DrawItemByIndex(ACanvas: TCanvas; var ARect: TRect; Index: Integer; State: TOwnerDrawState; AOptions: TPersistent);
+procedure TJvBaseFillerItemsRenderer.DrawItemByIndex(ACanvas: TCanvas; var ARect: TRect;
+  Index: Integer; State: TOwnerDrawState; AOptions: TPersistent);
 begin
   if (Index < 0) or (Index >= Items.Count) then
     raise EJVCLException.CreateFmt('Index out of range (%d)', [Index]);
   DrawItem(ACanvas, ARect, Items.Items[Index], State, AOptions);
 end;
 
-function TJvBaseFillerItemsRenderer.MeasureItemByIndex(ACanvas:TCanvas; Index: Integer; AOptions: TPersistent): TSize;
+function TJvBaseFillerItemsRenderer.MeasureItemByIndex(ACanvas:TCanvas; Index: Integer;
+  AOptions: TPersistent): TSize;
 begin
   if Index = -1 then
     Result := AvgItemSize(ACanvas, AOptions)
@@ -920,7 +956,8 @@ begin
   end;
 end;
 
-procedure TJvBaseFillerItemsRenderer.DrawItem(ACanvas: TCanvas; var ARect: TRect; Item: IFillerItem; State: TOwnerDrawState; AOptions: TPersistent);
+procedure TJvBaseFillerItemsRenderer.DrawItem(ACanvas: TCanvas; var ARect: TRect; Item: IFillerItem;
+  State: TOwnerDrawState; AOptions: TPersistent);
 var
   ImgRender: IFillerItemRenderer;
 begin
@@ -930,7 +967,8 @@ begin
     DoDrawItem(ACanvas, ARect, Item, State, AOptions);
 end;
 
-function TJvBaseFillerItemsRenderer.MeasureItem(ACanvas: TCanvas; Item: IFillerItem; AOptions: TPersistent): TSize;
+function TJvBaseFillerItemsRenderer.MeasureItem(ACanvas: TCanvas; Item: IFillerItem;
+  AOptions: TPersistent): TSize;
 var
   ImgRender: IFillerItemRenderer;
 begin
@@ -952,12 +990,12 @@ begin
   Result := [];
 end;
 
-function TJvFillerItemsList.getCount: Integer;
+function TJvFillerItemsList.GetCount: Integer;
 begin
   Result := List.Count;
 end;
 
-function TJvFillerItemsList.getItem(I: Integer): IFillerItem;
+function TJvFillerItemsList.GetItem(I: Integer): IFillerItem;
 begin
   Result := (List[I] as TJvBaseFillerItem) as IFillerItem;
 end;
@@ -1004,10 +1042,28 @@ var
 begin
   Items.Filler.Changing(frDelete);
   Impl := Item.GetImplementer;
-  if (Impl is TExtensibleInterfacedObject) and (TExtensibleInterfacedObject(Impl).RefCount = 0) then
+  if (Impl is TExtensibleInterfacedPersistent) and
+      (TExtensibleInterfacedPersistent(Impl).RefCount = 0) then
     Pointer(Item) := nil;
   TJvFillerItemsList(ItemsImpl).List.Remove(Impl);
   Items.Filler.Changed(frDelete);
+end;
+
+{ TJvCustomFillerItemsImages }
+
+function TJvCustomFillerItemsImages.GetImageList: TCustomImageList;
+begin
+  Result := FImageList;
+end;
+
+procedure TJvCustomFillerItemsImages.SetImageList(const Value: TCustomImageList);
+begin
+  if Value <> GetImageList then
+  begin
+    (Owner as IFillerItems).Filler.Changing(frUpdate);
+    FImageList := Value;
+    (Owner as IFillerItems).Filler.Changed(frUpdate);
+  end;
 end;
 
 { TJvBaseFillerItem }
@@ -1046,7 +1102,8 @@ var
   Tmp: IFillerItems;
 begin
   inherited DefineProperties(Filer);
-  Filer.DefineProperty('SubItems', ReadSubItems, WriteSubItems, Supports(Self as IFillerItem, IFillerItems, Tmp));
+  Filer.DefineProperty('SubItems', ReadSubItems, WriteSubItems,
+    Supports(Self as IFillerItem, IFillerItems, Tmp));
 end;
 
 procedure TJvBaseFillerItem.ReadSubItems(Reader: TReader);
@@ -1056,7 +1113,7 @@ var
   AClass: TPersistentClass;
   I: Integer;
 begin
-  { When loading sub items, the interface of this object may be referenced. We don't want the
+  { When loading sub items the interface of this object may be referenced. We don't want the
     instance destroyed yet, so reference counting will be suspended (by incrementing it) and resumed
     when we're done (by decrementing it without checking if it became zero) }
   SuspendRefCount;
@@ -1086,7 +1143,8 @@ begin
       I := IndexOfImplClass(TJvBaseFillerSubItems);
     end;
     while not Reader.EndOfList do
-      TOpenReader(Reader).ReadProperty(TJvBaseFillerItems(TJvBaseFillerSubItems(FAdditionalIntfImpl[I]).Items.GetImplementer));
+      TOpenReader(Reader).ReadProperty(
+        TJvBaseFillerItems(TJvBaseFillerSubItems(FAdditionalIntfImpl[I]).Items.GetImplementer));
     Reader.ReadListEnd;
   finally
     ResumeRefCount;
@@ -1211,17 +1269,17 @@ begin
 end;
 {$ENDIF COMPILER6_UP}
 
-function TJvCustomFiller.getSupports: TJvFillerSupports;
+function TJvCustomFiller.GetSupports: TJvFillerSupports;
 begin
   Result := [];
 end;
 
-function TJvCustomFiller.getOptionClass: TJvFillerOptionsClass;
+function TJvCustomFiller.GetOptionClass: TJvFillerOptionsClass;
 begin
   Result := nil;
 end;
 
-function TJvCustomFiller.getItems: IFillerItems;
+function TJvCustomFiller.GetItems: IFillerItems;
 begin
   Result := FillerItemsImpl;
 end;
@@ -1232,7 +1290,7 @@ begin
     FNotifiers.Add(AFillerNotify);
 end;
 
-procedure TJvCustomFiller.UnRegisterChangeNotify(AFillerNotify: IFillerNotify);
+procedure TJvCustomFiller.UnregisterChangeNotify(AFillerNotify: IFillerNotify);
 begin
   FNotifiers.Remove(AFillerNotify);
 end;
@@ -1270,5 +1328,6 @@ end;
 
 initialization
   RegisterClasses([TJvBaseFillerItem, TJvCustomFillerItemsTextRenderer, TJvFillerTextItemImpl,
-    TJvFillerImageItemImpl, TJvFillerItemsList, TJvBaseFillerItemsListManagment]);
+    TJvFillerImageItemImpl, TJvFillerItemsList, TJvBaseFillerItemsListManagment,
+    TJvCustomFillerItemsImages]);
 end.
