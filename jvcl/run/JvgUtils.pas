@@ -173,6 +173,7 @@ resourcestring
   sDuplicateSignsPos = 'Duplicate signs. Pos:';
   sDuplicateSignsAtPos = 'Duplicate signs at. Pos:';
   sExpressionStringIsEmpty = 'Expression string is empty.';
+  sObjectMemoryLeak = 'object memory leak';
 {$ENDIF USEJVCL}
 
 { debug func }
@@ -181,7 +182,7 @@ function DeleteObject(p1: HGDIOBJ): BOOL; stdcall;
 begin
   Result := Windows.DeleteObject(p1);
   if Result = false then
-    raise Exception.Create('leak');
+    raise Exception.Create(sObjectMemoryLeak);
 end;
 {$ENDIF}
 

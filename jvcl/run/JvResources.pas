@@ -200,6 +200,13 @@ resourcestring
 resourcestring
   SInvalidButtonCount = 'Invalid ButtonCount';
 
+//=== JvContextProvider.pas ==================================================
+resourcestring
+  SNoContextAssigned = 'No context has been assigned to this item.';
+  SNoContextItem = 'Specified item is not a context item.';
+  SNotSupportedIInterfaceComponentReference = 'Component does not support IInterfaceComponentReference.';
+  SNotSupportedIJvDataProvider = 'Component does not support IJvDataProvider.';
+
 //=== JvCreateProcess.pas ====================================================
 resourcestring
   RsProcessIsRunning = 'Can''t perform this operation when process is running';
@@ -231,7 +238,7 @@ resourcestring
   sNoRecord = 'No records';
   sTimeTConvError = 'SetFieldData Error - TimeT-to-DateTime conversion error.';
   sFieldTypeNotHandled = 'SetFieldData Error - Field type not handled.';
-  sUndableToLocateCSVFileInfo = 'Unable to locate CSV file information for field %s';
+  sUnableToLocateCSVFileInfo = 'Unable to locate CSV file information for field %s';
   sPhysicalLocationOfCSVField = 'Physical location of CSV field %s unknown.';
   sInvalidFieldTypeCharacter = 'Invalid field type character: %s';
   sUnexpectedError = 'Unexpected error parsing CSV Field Definitions';
@@ -255,6 +262,12 @@ resourcestring
   sCsvStringTooLong = 'CSV String is too long: %s...';
   sInternalLimit = 'JvCsvData - Internal Limit of MAXCOLUMNS (%d) reached. CSV Data has too many columns';
   sErrorRowItem = '<ERROR>';
+  sTableNameNotSet = 'TJvCsvCustomInMemorYDataSet.FTableName is not set.';
+
+  sGetMode = 'GetMode???';
+  sNoTableName = 'noTableName';
+  sTableNameRequired = 'LoadFromFile=True, so a TableName is required';
+  sInternalCompare = 'InternalCompare. Nil value detected.';
 
 //=== JvCsvParse.pas =========================================================
 resourcestring
@@ -279,6 +292,16 @@ resourcestring
   sYouMustSpecifyAProviderBeforeSettin_ = 'You must specify a provider before setting the item.';
   sItemNotFoundInTheSelectedContext = 'Item not found in the selected context.';
   sViewListOutOfSync = 'ViewList out of sync';
+
+  sProviderIsNoIJvDataConsumer = 'Provider property of ''%s'' does not point to a IJvDataConsumer.';
+  SComponentIsNotDataConsumer = 'Component ''%s'' is not a data consumer.';
+  sCannotAddNil = 'Cannot add a nil pointer.';
+  sConsumerNoSupportIJvDataConsumerClientNotify = 'Consumer does not support the ''IJvDataConsumerClientNotify'' interface.';
+  sNotifierNoSupprtIJvDataConsumer = 'Notifier does not support the ''IJvDataConsumer'' interface.';
+
+//=== JvDatePickerEdit.pas ===================================================
+resourcestring
+  SMustHaveADate = '%s must have a date!';
 
 //=== JvDateTimePicker.pas ===================================================
 resourcestring
@@ -359,6 +382,11 @@ resourcestring
   sCntdwnText = 'This dialog is closing in %d %s.';
   sCntdwnSecText = 'second';
   sCntdwnSecsText = 'seconds';
+
+//=== JvEditor.pas, JvUnicodeEditor.pas ======================================
+resourcestring
+  SRedoNotYetImplemented = 'Redo not yet implemented';
+  sInvalidCompletionMode = 'Invalid JvEditor Completion Mode';
 
 //=== JvErrorIndicator.pas ===================================================
 resourcestring
@@ -624,6 +652,7 @@ resourcestring
   sDuplicateSignsPos = 'Duplicate signs. Pos:';
   sDuplicateSignsAtPos = 'Duplicate signs at. Pos:';
   sExpressionStringIsEmpty = 'Expression string is empty.';
+  sObjectMemoryLeak = 'object memory leak';
 {$ENDIF USEJVCL}
 
 //=== JvgXMLSerializer.pas ===================================================
@@ -709,6 +738,30 @@ resourcestring
   sJvInspNoGenReg = 'Unable to create generic item registration list.';
   sJvInspPaintNotActive = 'Painter is not the active painter of the specified inspector.';
   sJvInspPaintOnlyUsedOnce = 'Inspector painter can only be linked to one inspector.';
+
+  sInspectorInternalError = 'Internal error: two data instances pointing to the same data are registered.';
+  sSpecifierBeforeSeparator = 'A specifier should be placed before and after a separator.';
+  sDOrDDOnlyOnce = '''d'' or ''dd'' should appear only once.';
+  sMOrMMOnlyOnce = '''m'' or ''mm'' should appear only once.';
+  sYYOrYYYYOnlyOnce = '''yy'' or ''yyyy'' should appear only once.';
+  sOnlyDOrDDAllowed = 'Only ''d'' or ''dd'' are allowed.';
+  sOnlyMOrMMAllowed = 'Only ''m'' or ''mm'' are allowed.';
+  sOnlyYYOrYYYYAllowed = 'Only ''yy'' or ''yyyy'' are allowed.';
+  sOnlyTwoSeparators = 'Only two separators are allowed.';
+  sOnlyDMYSAllowed = 'Only ''d'', ''m'', ''y'' and ''%s'' are allowed';
+  sDOrDDRequired = '''d'' or ''dd'' are required.';
+  sMOrMMRequired = '''m'' or ''mm'' are required.';
+  sYYOrYYYYRequired = '''yy'' or ''yyyy'' are required.';
+  sInstanceAlreadyExists = 'Instance already exists with another name.';
+  sNameAlreadyExistsForInstance = 'Name already exists for another instance.';
+  sInstanceNonexistent = 'Instance does not exist.';
+  sMethodAlreadyExists = 'Method already exists with another name.';
+  sNameAlreadyExistsForMethod = 'Name already exists for another method.';
+  sNamedInstanceNonexistent = 'Instance named ''%s'' does not exist.';
+  sMethodNonexistent = 'Method does not exist.';
+  sNamedMethodNonexistent = 'Method named ''%s'' does not exist.';
+  sNotSeparately = '%s cannot be created separately.';
+  sNoNewInstance = '%s does not allow a new instance to be created.';
 
   // (rom) converted assertions
   sJvAssertSetTopIndex = 'TJvCustomInspector.SetTopIndex: unexpected MaxIdx <= -1';

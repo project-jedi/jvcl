@@ -1183,6 +1183,10 @@ const
   vifCanHaveChildren = Integer($40000000);
   vifExpanded = Integer($20000000);
 
+  cClassName = 'ClassName';
+  cName = 'Name';
+  cProvider = 'Provider';
+
 function HexBytes(const Buf; Length: Integer): string;
 var
   P: PChar;
@@ -1969,7 +1973,7 @@ var
 begin
   Reader.ReadListBegin;
   ClassName := Reader.ReadStr;
-  if not AnsiSameText(ClassName, 'ClassName') then
+  if not AnsiSameText(ClassName, cClassName) then
     raise EReadError.Create(SExtensibleIntObjClassNameExpected);
   ClassName := Reader.ReadString;
   ClassType := FindClass(ClassName);
@@ -1989,7 +1993,7 @@ procedure TExtensibleInterfacedPersistent.WriteImplementer(Writer: TWriter;
   Instance: TAggregatedPersistentEx);
 begin
   Writer.WriteListBegin;
-  TOpenWriter(Writer).WritePropName('ClassName');
+  TOpenWriter(Writer).WritePropName(cClassName);
   Writer.WriteString(Instance.ClassName);
   TOpenWriter(Writer).WriteProperties(Instance);
   Writer.WriteListEnd;
@@ -2282,7 +2286,7 @@ var
 begin
   Reader.ReadListBegin;
   PropName := Reader.ReadStr;
-  if not AnsiSameText(PropName, 'ClassName') then
+  if not AnsiSameText(PropName, cClassName) then
     raise EReadError.Create(SExtensibleIntObjClassNameExpected);
   ClassName := Reader.ReadString;
   PerstClass := FindClass(ClassName);
@@ -2307,7 +2311,7 @@ var
 begin
   Writer.WriteListBegin;
   Inst := TPersistent(Item.GetImplementer);
-  Writer.WriteStr('ClassName');
+  Writer.WriteStr(cClassName);
   Writer.WriteString(Inst.ClassName);
   TOpenWriter(Writer).WriteProperties(Inst);
   Writer.WriteListEnd;
@@ -2823,7 +2827,7 @@ begin
       raise EReadError.Create(SExtensibleIntObjCollectionExpected);
     Reader.ReadListBegin;
     PropName := Reader.ReadStr;
-    if not AnsiSameText(PropName, 'ClassName') then
+    if not AnsiSameText(PropName, cClassName) then
       raise EReadError.Create(SExtensibleIntObjClassNameExpected);
     ClassName := Reader.ReadString;
     AClass := FindClass(ClassName);
@@ -2864,7 +2868,7 @@ begin
   TOpenWriter(Writer).PropPath := '';
   try
     Writer.WriteListBegin;
-    Writer.WriteStr('ClassName');
+    Writer.WriteStr(cClassName);
     Writer.WriteString(Items.GetImplementer.ClassName);
     TOpenWriter(Writer).WriteProperties(Items.GetImplementer as TPersistent);
     Writer.WriteListEnd;
@@ -3101,7 +3105,7 @@ begin
   if Index >= DataContextsImpl.GetCount then
   begin
     ClassName := Reader.ReadStr;
-    if not AnsiSameText(ClassName, 'ClassName') then
+    if not AnsiSameText(ClassName, cClassName) then
       raise EReadError.Create(SExtensibleIntObjClassNameExpected);
     ClassName := Reader.ReadString;
     ClassType := FindClass(ClassName);
@@ -3109,7 +3113,7 @@ begin
       raise EReadError.Create(SExtensibleIntObjInvalidClass);
   end;
   CtxName := Reader.ReadStr;
-  if not AnsiSameText(CtxName, 'Name') then
+  if not AnsiSameText(CtxName, cName) then
     raise EReadError.Create(sContextNameExpected);
   CtxName := Reader.ReadString;
   if Index >= DataContextsImpl.GetCount then
@@ -3134,10 +3138,10 @@ begin
   Writer.WriteListBegin;
   if AContext.IsDeletable then
   begin
-    Writer.WriteStr('ClassName');
+    Writer.WriteStr(cClassName);
     Writer.WriteString(AContext.GetImplementer.ClassName);
   end;
-  Writer.WriteStr('Name');
+  Writer.WriteStr(cName);
   Writer.WriteString(AContext.Name);
   TOpenWriter(Writer).WriteProperties(TPersistent(AContext.GetImplementer));
   Writer.WriteListEnd;
@@ -5103,20 +5107,20 @@ var
 begin
   if AComponent <> nil then
   begin
-    PI := GetPropInfo(AComponent, 'Provider');
+    PI := GetPropInfo(AComponent, cProvider);
     if PI <> nil then
     begin
-      Obj := GetObjectProp(AComponent, 'Provider');
+      Obj := GetObjectProp(AComponent, cProvider);
       if (Obj <> nil) and Supports(Obj, IJvDataConsumer, Consumer) then
         Add(Consumer)
       else
-        raise EJVCLDataConsumer.CreateFmt('Provider property of ''%s'' does not point to a IJvDataConsumer.', [AComponent.Name]);
+        raise EJVCLDataConsumer.CreateFmt(sProviderIsNoIJvDataConsumer, [AComponent.Name]);
     end
     else
-      raise EJVCLDataConsumer.CreateFmt('Component ''%s'' is not a data consumer.', [AComponent.Name]);
+      raise EJVCLDataConsumer.CreateFmt(SComponentIsNotDataConsumer, [AComponent.Name]);
   end
   else
-    raise EJVCLDataConsumer.Create('Cannot add a nil pointer.');
+    raise EJVCLDataConsumer.Create(sCannotAddNil);
 end;
 
 procedure TJvDataConsumerClientNotifyList.Add(AConsumer: IJvDataConsumer);
@@ -5130,11 +5134,11 @@ begin
       if Supports(AConsumer, IJvDataConsumerClientNotify, Notifier) then
         TJvDataConsumerClientNotifyItem.Create(Self).Notifier := Notifier
       else
-        raise EJVCLDataConsumer.Create('Consumer does not support the ''IJvDataConsumerClientNotify'' interface.');
+        raise EJVCLDataConsumer.Create(sConsumerNoSupportIJvDataConsumerClientNotify);
     end;
   end
   else
-    raise EJVCLDataConsumer.Create('Cannot add a nil pointer.');
+    raise EJVCLDataConsumer.Create(sCannotAddNil);
 end;
 
 procedure TJvDataConsumerClientNotifyList.Delete(Index: Integer);
@@ -5208,10 +5212,10 @@ begin
   begin
     if Value <> nil then
     begin
-      PI := GetPropInfo(Value, 'Provider');
+      PI := GetPropInfo(Value, cProvider);
       if PI <> nil then
       begin
-        Obj := GetObjectProp(Value, 'Provider');
+        Obj := GetObjectProp(Value, cProvider);
         if (Obj <> nil) and Supports(Obj, IJvDataConsumer, Consumer) then
         begin
           if Supports(Consumer, IJvDataConsumerClientNotify, TmpNotifier) then
@@ -5222,16 +5226,16 @@ begin
             Notifier.LinkAdded(List.Server);
           end
           else
-            raise EJVCLDataConsumer.Create('Consumer does not support the ''IJvDataConsumerClientNotify'' interface.');
+            raise EJVCLDataConsumer.Create(sConsumerNoSupportIJvDataConsumerClientNotify);
         end
         else
-          raise EJVCLDataConsumer.CreateFmt('Provider property of ''%s'' does not point to a IJvDataConsumer.', [Value.Name]);
+          raise EJVCLDataConsumer.CreateFmt(sProviderIsNoIJvDataConsumer, [Value.Name]);
       end
       else
-        raise EJVCLDataConsumer.CreateFmt('Component ''%s'' is not a data consumer.', [Value.Name]);
+        raise EJVCLDataConsumer.CreateFmt(SComponentIsNotDataConsumer, [Value.Name]);
     end
     else
-      raise EJVCLDataConsumer.Create('Cannot add a nil pointer.');
+      raise EJVCLDataConsumer.Create(sCannotAddNil);
   end;
 end;
 
@@ -5251,10 +5255,10 @@ begin
         Notifier.LinkAdded(List.Server);
       end
       else
-        raise EJVCLDataConsumer.Create('Notifier does not support the ''IJvDataConsumer'' interface.');
+        raise EJVCLDataConsumer.Create(sNotifierNoSupprtIJvDataConsumer);
     end
     else
-      raise EJVCLDataConsumer.Create('Cannot add a nil pointer.');
+      raise EJVCLDataConsumer.Create(sCannotAddNil);
   end;
 end;
 

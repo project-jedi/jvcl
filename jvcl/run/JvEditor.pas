@@ -1101,7 +1101,7 @@ implementation
 
 uses
   Consts, Math,
-  JvThemes, JvConsts;
+  JvThemes, JvConsts, JvResources;
 
 
 procedure MbcsStrLead(var P: PChar);
@@ -5810,7 +5810,7 @@ end;
 
 procedure RedoNotImplemented;
 begin
-  raise EJvEditorError.Create('Redo not yet implemented');
+  raise EJvEditorError.Create(SRedoNotYetImplemented);
 end;
 
 procedure TUndoBuffer.Add(AUndo: TUndo);
@@ -6572,7 +6572,7 @@ begin
                 NewCaret := Pos(FCaretChar, NewString) - 1;
               end;
           else
-            raise EJvEditorError.Create('Invalid JvEditor Completion Mode');
+            raise EJvEditorError.Create(sInvalidCompletionMode);
           end;
           {--- UNDO ---}
           TJvReplaceUndo.Create(FJvEditor, FCaretX, FCaretY, iBegSX - 1, FCaretY, W, S);

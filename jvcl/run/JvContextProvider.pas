@@ -93,7 +93,7 @@ implementation
 
 uses
   SysUtils,
-  JvTypes;
+  JvTypes, JvResources;
 
 type
   TContextItems = class;
@@ -429,7 +429,7 @@ begin
     end;
   end
   else
-    raise EJVCLException.Create('No context has been assigned to this item.');
+    raise EJVCLException.Create(SNoContextAssigned);
 end;
 
 function TContextItem.Editable: Boolean;
@@ -490,7 +490,7 @@ begin
     if Supports(Item, IJvDataContextItem, CtxItem) then
       Result := Item
     else
-      raise EJVCLException.Create('Specified item is not a context item.');
+      raise EJVCLException.Create(SNoContextItem);
   end;
 end;
 
@@ -576,10 +576,10 @@ begin
     if (Value = nil) or Supports(Value, IInterfaceComponentReference, ICR) then
       ProviderIntf := PI
     else
-      raise EJVCLException.Create('Component does not support IInterfaceComponentReference.');
+      raise EJVCLException.Create(SNotSupportedIInterfaceComponentReference);
   end
   else
-    raise EJVCLException.Create('Component does not support IJvDataProvider.');
+    raise EJVCLException.Create(SNotSupportedIJvDataProvider);
 end;
 
 class function TJvContextProvider.ItemsClass: TJvDataItemsClass;
