@@ -274,7 +274,7 @@ end;
 function TJvDataProviderItem.GetOwner: TPersistent;
 begin
   if Item <> nil then
-    Result := (Item.Items.Provider as IInterfaceComponentReference).GetComponent
+    Result := (Item.GetItems.Provider as IInterfaceComponentReference).GetComponent
   else
     Result := inherited GetOwner;
 end;

@@ -180,7 +180,7 @@ begin
         Dec(CtxIdx);
         while (CtxIdx >= 0) do
         begin
-          Result := TContextItem.CreateCtx(Result.Items, CtxStack[CtxIdx]);
+          Result := TContextItem.CreateCtx(Result.GetItems, CtxStack[CtxIdx]);
           Dec(CtxIdx);
         end;
       end;

@@ -12,12 +12,12 @@ The Original Code is: JvDataProvider.pas, released on --.
 
 The Initial Developers of the Original Code are Marcel Bestebroer, Peter
 Thörnqvist and Remko Bonte
-Portions created by the individuals are Copyright (C) 2002 - 2003 Project JEDI
+Portions created by these individuals are Copyright (C) 2002 - 2003 Project JEDI
 All Rights Reserved.
 
 Contributor(s): -
 
-Last Modified: 2003-07-16
+Last Modified: 2003-07-19
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -33,7 +33,8 @@ interface
 
 uses
   Windows, ImgList, Classes, Graphics,
-  JclBase;
+  JclBase,
+  JvTypes;
 
 type
   TDataProviderChangeReason = (pcrAdd, pcrDelete, pcrUpdateItem, pcrUpdateItems, pcrDestroy,
@@ -116,6 +117,10 @@ type
     function GetCount: Integer;
     { Retrieve an item in the list }
     function GetItem(Index: Integer): IJvDataItem;
+    { Retrieve an item in the list given it's ID (path) }
+    function GetItemByID(ID: string): IJvDataItem;
+    { Retrieve an item given it's index path. }
+    function GetItemByIndexPath(IndexPath: array of Integer): IJvDataItem;
     { Reference to the parent item or nil if this list is the root list (i.e. implemented at the
       IJvDataProvider level). }
     function GetParent: IJvDataItem;
@@ -127,7 +132,7 @@ type
       disposed of when the last reference to it goes out of scope). }
     function IsDynamic: Boolean;
     { Called when the specified context is about to be destroyed. Should iterate over all it's items
-      annd call it's ContextDestroying method. }
+      and call it's ContextDestroying method. }
     procedure ContextDestroying(Context: IJvDataContext);
 
     { Number of items in the list }
@@ -236,6 +241,8 @@ type
   ['{C965CF64-A1F2-44A4-B856-3A4EC6B693E1}']
     { Retrieve the reference to the IJvDataItems owner. }
     function GetItems: IJvDataItems;
+    { Retrive the index in the IJvDataItems owner. }
+    function GetIndex: Integer;
     { Retrieve a reference to the implementing object. }
     function GetImplementer: TObject;
     { Retrieve the items ID string. }
@@ -339,7 +346,8 @@ type
     Allows to revert to the default setting for the support interface or for the item in general. }
   IJvDataContextSensitive = interface
     ['{7067F5C1-05DC-4DAC-A595-AF9151695FBB}']
-    procedure RevertToDefault;
+    procedure RevertToAncestor;
+    function IsEqualToAncestor: Boolean;
   end;
 
   {$IFNDEF COMPILER6_UP}
@@ -499,6 +507,11 @@ type
     { Allows the name to be changed. }
     procedure SetName(Value: string);
   end;
+
+  EJVCLDataProvider = class(EJVCLException);
+  EJVCLDataConsumer = class(EJVCLDataProvider);
+  EJVCLDataItems = class(EJVCLDataProvider);
+  EJVCLDataContexts = class(EJVCLDataProvider);
 
 implementation
 
