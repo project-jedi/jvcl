@@ -6,19 +6,9 @@ unit JvTFGantt; { TJvTFGantt component. }
 interface
 
 uses
-  Windows,
-  SysUtils,
-  Messages,
-  Classes,
-  Graphics,
-  Controls,
-  Forms,
-  Dialogs,
-  Menus,
-  StdCtrls,
-  ExtCtrls,
-  JvTFUtils,
-  JvTFManager;
+  Windows, SysUtils, Messages, Classes, Graphics, Controls, Forms, Dialogs,
+  Menus, StdCtrls, ExtCtrls,
+  JvTFUtils, JvTFManager;
 
 type
   TJvTFGanttScrollBar = class(TScrollBar)
@@ -111,9 +101,16 @@ type
 
 
 implementation
-
+{$IFDEF USEJVCL}
 uses
   JvJVCLUtils, JvResources;
+{$ENDIF}  
+
+{$IFNDEF USEJVCL}
+resourcestring
+  RsThisIsTheMajorScale = 'This is the Major Scale';
+  RsThisIsTheMinorScale = 'This is the Minor Scale';
+{$ENDIF}
 
 procedure TJvTFGantt.DrawMajor(ACanvas: TCanvas);
 var
@@ -137,9 +134,9 @@ function TJvTFGantt.CalcHeaderHeight: integer;
 begin
   result := 0;
   Canvas.Font.Assign(FMajorScale.Font);
-  result := result + CanvasMaxTextHeight(Canvas);
+  result := result + Canvas.TextHeight('Wq');
   Canvas.Font.Assign(FMinorScale.Font);
-  result := result + CanvasMaxTextHeight(Canvas);
+  result := result + Canvas.TextHeight('Wq');
   result := result + 4;
 end;
 

@@ -763,9 +763,22 @@ type
 {$HPPEMIT '#undef TDate'}
 
 implementation
-
+{$IFDEF USEJVCL}
 uses
   JvConsts, JvResources;
+{$ENDIF}
+
+{$IFNDEF USEJVCL}
+resourcestring
+  RsECellDatesCannotBeChanged = 'Cell Dates cannot be changed';
+  RsECellMapHasBeenCorrupteds = 'Cell map has been corrupted %s';
+  RsECellObjectNotAssigned = 'Cell object not assigned';
+  RsEInvalidColIndexd = 'Invalid col index (%d)';
+  RsEInvalidRowIndexd = 'Invalid row index (%d)';
+  RsEApptIndexOutOfBoundsd = 'Appt index out of bounds (%d)';
+  RsECellCannotBeSplit = 'Cell cannot be split';
+  RsEASubcellCannotBeSplit = 'A subcell cannot be split';
+{$ENDIF}
 
 { TJvTFGlanceCell }
 { TODO 3 -cMisc : Complete TGlance.Assign }

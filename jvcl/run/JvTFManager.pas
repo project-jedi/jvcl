@@ -1044,9 +1044,52 @@ type
 implementation
 
 uses
-  Dialogs, Forms,
-  JvConsts, JvResources;
+  Dialogs, Forms
+  {$IFDEF USEJVCL}, JvConsts, JvResources {$ENDIF};
 
+{$IFNDEF USEJVCL}
+resourcestring
+  RsECouldNotCreateCustomImageMap = 'Could not create CustomImageMap.  ' +
+    'Appointment not assigned';
+  RsECouldNotCreateAppointmentObject = 'Could not create Appointment object.  ' +
+    'ScheduleManager not assigned';
+  RsEScheduleManagerNotificationFailedSc = 'ScheduleManager notification failed.  ScheduleManager not assigned';
+  RsEScheduleNotificationFailed = 'Schedule notification failed.  ' +
+    'Schedule not assigned';
+  RsEInvalidStartAndEndTimes = 'Invalid start and end times';
+  RsEInvalidStartAndEndDates = 'Invalid start and end dates';
+  RsEAppointmentNotificationFailed = 'Appointment notification failed.  ' +
+    'Appointment not assigned';
+  RsECouldNotCreateNewAppointment = 'Could not create new appointment. ' +
+    'Appointment with given ID already exists';
+  RsEInvalidTriggerForRefreshControls = 'Invalid Trigger for RefreshControls';
+  RsEInvalidScopeInReconcileRefresh = 'Invalid Scope in ReconcileRefresh';
+  RsECouldNotRetrieveSchedule = 'Could not retrieve schedule.  ' +
+    'ScheduleManager not assigned';
+  RsECouldNotReleaseSchedule = 'Could not release schedule.  ' +
+    'ScheduleManager not assigned';
+  RsECouldNotCreateADocumentBecauseA = 'Could not create a document because a ' +
+    'document already exists';
+  RsECouldNotFinishDocumentBecauseNo = 'Could not finish document because no ' +
+    'document has been created';
+  RsEDocumentDoesNotExist = 'Document does not exist';
+  RsEDocumentPagesCannotBeAccessedIf = 'Document pages cannot be accessed if ' +
+    'printing directly to the printer';
+  RsEDocumentPagesAreInaccessibleUntil = 'Document pages are inaccessible until ' +
+    'the document has been finished';
+  RsECouldNotRetrievePageCount = 'Could not retrieve page count ' +
+    'because document does not exist';
+  RsEOnlyAFinishedDocumentCanBePrinted = 'Only a finished document can be printed';
+  RsEThereAreNoPagesToPrint = 'There are no pages to print';
+  RsEDocumentMustBeFinishedToSaveToFile = 'Document must be Finished to save to file';
+  RsEThisPropertyCannotBeChangedIfA = 'This property cannot be changed if a ' +
+    'document exists';
+  RsECouldNotCreateTJvTFPrinterPageLayou = 'Could not create TJvTFPrinterPageLayout ' +
+    'because aPrinter must be assigned';
+  RsEInvalidFooterHeightd = 'Invalid Footer Height (%d)';
+  RsEInvalidHeaderHeightd = 'Invalid Header Height (%d)';
+{$ENDIF}
+  
 function AdjustEndTime(ATime: TTime): TTime;
 begin
   Result := Frac(Frac(ATime) - Frac(EncodeTime(0, 0, 1, 0)));

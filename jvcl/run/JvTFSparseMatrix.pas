@@ -65,9 +65,15 @@ type
   end;
 
 implementation
-
+{$IFDEF USEJVCL}
 uses
   JvResources;
+{$ENDIF}
+
+{$IFNDEF USEJVCL}
+resourcestring
+  RsEMatrixMustBeEmpty = 'Matrix must be empty before setting null value';
+{$ENDIF}
 
 destructor TJvTFSparseMatrix.Destroy;
 begin

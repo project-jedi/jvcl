@@ -6,7 +6,6 @@
   <C5Libs/>
   <C6Libs/>
   <Requires>
-    <Package Name="JvCore-R" Targets="all" Condition=""/>
     <Package Name="vcl50" Targets="C5,D5,D5s" Condition=""/>
     <Package Name="CJCL50" Targets="C5" Condition=""/>
     <Package Name="vcljpg50" Targets="C5" Condition=""/>
@@ -22,6 +21,8 @@
     <Package Name="vclsmp" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
     <Package Name="bcbsmp" Targets="C6,C6p" Condition=""/>
     <Package Name="bcbie" Targets="C6,C6p" Condition=""/>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvMarkupCommon.pas" Targets="all" Formname="" Condition=""/>

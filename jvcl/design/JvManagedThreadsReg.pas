@@ -27,7 +27,9 @@ interface
 
 uses
   Classes,
+  {$IFDEF USEJVCL}
   JvDsgnConsts,
+  {$ENDIF}
   JvMtComponents;
 
 procedure Register;
@@ -35,6 +37,11 @@ procedure Register;
 implementation
 
 {$R ..\Resources\JvManagedThreadsReg.dcr}
+
+{$IFNDEF USEJVCL}
+resourcestring
+  RsPaletteMTThreads = 'Jv Threading';
+{$ENDIF}
 
 procedure Register;
 begin

@@ -116,7 +116,6 @@ type
 {$HPPEMIT '#undef TTime'}
 
 implementation
-
 uses
   JvTFUtils;
 

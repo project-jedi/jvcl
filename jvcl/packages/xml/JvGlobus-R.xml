@@ -6,9 +6,6 @@
   <C5Libs/>
   <C6Libs/>
   <Requires>
-    <Package Name="JvCore-R" Targets="all" Condition=""/>
-    <Package Name="JvSystem-R" Targets="all" Condition=""/>
-    <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
     <Package Name="vcl50" Targets="C5,D5,D5s" Condition=""/>
     <Package Name="vclx50" Targets="C5,D5,D5s" Condition=""/>
     <Package Name="vcljpg50" Targets="C5,D5,D5s" Condition=""/>
@@ -29,6 +26,8 @@
     <Package Name="bdertl" Targets="C6" Condition=""/>
     <Package Name="vclsmp50" Targets="D5,D5s" Condition=""/>
     <Package Name="vclsmp" Targets="D6,D6p,D7p" Condition=""/>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvgReportParamsEditor.pas" Targets="all" Formname="" Condition=""/>
