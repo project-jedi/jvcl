@@ -410,7 +410,7 @@ end;
 function TJvDBDateTimePicker.IsDateAndTimeField: Boolean;
 begin
   with FDataLink do
-    Result := (Field <> nil) and (Field.DataType in [ftDateTime, ftTimeStamp]) and not TrimValue;
+    Result := (Field <> nil) and (Field.DataType in [ftDateTime {$IFDEF COMPILER6_UP}, ftTimeStamp {$ENDIF COMPILER6_UP}]) and not TrimValue;
 end;
 
 end.
