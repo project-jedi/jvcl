@@ -49,6 +49,9 @@ type
     ['{76942BC0-2A6E-4DC4-BFC9-8E110DB7F601}']
   end;
 
+  type
+    TDragKind = (dkDrag, dkDock);   { not implemented yet}
+
   TAlignInfo = record
     AlignList: TList;
     ControlIndex: Integer;
@@ -94,7 +97,28 @@ type
   JV_WINCONTROL(FrameControl)
   JV_CUSTOMCONTROL(HintWindow)
 
+procedure WidgetControl_PaintTo(Instance: TWidgetControl; PaintDevice: QPaintDeviceH; X, Y: Integer);
+  
 implementation
+
+procedure WidgetControl_PaintTo(Instance: TWidgetControl; PaintDevice: QPaintDeviceH; X, Y: Integer);
+var
+  PixMap: QPixmapH;
+begin
+  PixMap := QPixmap_create;
+  with Instance do
+    try
+      ControlState := ControlState + [csPaintCopy];
+      QPixmap_grabWidget(PixMap, Handle, 0, 0, Width, Height);
+      Qt.BitBlt(PaintDevice, X, Y, PixMap, 0, 0, Width, Height, RasterOp_CopyROP, True);
+    end;
+    finally
+      ControlState := ControlState - [csPaintCopy];
+      QPixMap_destroy(PixMap);
+    end;
+  end;
+end;
+
 
 JV_CONTROL_IMPL(Control)
 JV_WINCONTROL_IMPL(WinControl)
