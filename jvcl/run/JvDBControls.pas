@@ -3136,7 +3136,7 @@ procedure TJvDBDateEdit.KeyPress(var Key: Char);
 begin
   inherited KeyPress(Key);
   if (Key in [#32..#255]) and (FDataLink.Field <> nil) and
-    not (Key in ['0'..'9']) and (Key <> DateSeparator) then
+    not (Key in DigitChars) and (Key <> DateSeparator) then
   begin
     Beep;
     Key := #0;

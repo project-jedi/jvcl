@@ -945,7 +945,7 @@ end;
 
 procedure TJvCustomCalcEdit.PopupChange;
 begin
-  inherited;
+  inherited PopupChange;
   if EnablePopupChange then
     DoChange;
 end;

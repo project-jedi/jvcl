@@ -71,14 +71,6 @@ implementation
 
 {$R *.DFM}
 
-{type
-  TJvParserInfo = class
-    StartTag: string;
-    EndTag: string;
-    MustBe: Integer;
-    Take: Integer;
-  end;}
-
 procedure TFormParsers.Edit1Change(Sender: TObject);
 begin
   if ListBox1.ItemIndex <> -1 then

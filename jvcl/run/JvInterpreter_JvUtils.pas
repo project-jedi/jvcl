@@ -54,7 +54,7 @@ begin
   Value := ReplaceAllStrings(Args.Values[0], V2O(Args.Values[1]) as TStrings, V2O(Args.Values[2]) as TStrings);
 end;
 
-{ function ReplaceStrings(S: string; PosBeg, Len: integer; Words, Frases: TStrings; var NewSelStart: integer): string; }
+{ function ReplaceStrings(S: string; PosBeg, Len: Integer; Words, Frases: TStrings; var NewSelStart: Integer): string; }
 
 procedure JvInterpreter_ReplaceStrings(var Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -62,7 +62,7 @@ begin
     V2O(Args.Values[4]) as TStrings, TVarData(Args.Values[5]).vInteger);
 end;
 
-{ function CountOfLines(const S: string): integer; }
+{ function CountOfLines(const S: string): Integer; }
 
 procedure JvInterpreter_CountOfLines(var Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -83,14 +83,14 @@ begin
   SQLAddWhere(V2O(Args.Values[0]) as TStrings, Args.Values[1]);
 end;
 
-{ function ResSaveToFile(const Typ, Name: string; const Compressed: boolean; const FileName: string): boolean; }
+{ function ResSaveToFile(const Typ, Name: string; const Compressed: Boolean; const FileName: string): Boolean; }
 
 procedure JvInterpreter_ResSaveToFile(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := ResSaveToFile(Args.Values[0], Args.Values[1], Args.Values[2], Args.Values[3]);
 end;
 
-{ function ResSaveToFileEx(Instance: HINST; Typ, Name: PChar; const Compressed: boolean; const FileName: string): boolean; }
+{ function ResSaveToFileEx(Instance: HINST; Typ, Name: PChar; const Compressed: Boolean; const FileName: string): Boolean; }
 
 procedure JvInterpreter_ResSaveToFileEx(var Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -98,21 +98,21 @@ begin
     Args.Values[3], Args.Values[4]);
 end;
 
-{ function ResSaveToString(Instance: HINST; const Typ, Name: string; var S: string): boolean; }
+{ function ResSaveToString(Instance: HINST; const Typ, Name: string; var S: string): Boolean; }
 
 procedure JvInterpreter_ResSaveToString(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := ResSaveToString(Args.Values[0], Args.Values[1], Args.Values[2], string(TVarData(Args.Values[3]).vString));
 end;
 
-{ function Execute(const CommandLine, WorkingDirectory: string): integer; }
+{ function Execute(const CommandLine, WorkingDirectory: string): Integer; }
 
 procedure JvInterpreter_Execute(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := Execute(Args.Values[0],Args.Values[1]);
 end;
 
-{ function IniReadSection(const IniFileName: TFileName; const Section: string; Ss: TStrings): boolean; }
+{ function IniReadSection(const IniFileName: TFileName; const Section: string; Ss: TStrings): Boolean; }
 
 procedure JvInterpreter_IniReadSection(var Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -133,7 +133,7 @@ begin
   SaveTextFile(Args.Values[0], Args.Values[1]);
 end;
 
-{ function ReadFolder(const Folder, Mask: TFileName; FileList: TStrings): integer; }
+{ function ReadFolder(const Folder, Mask: TFileName; FileList: TStrings): Integer; }
 
 procedure JvInterpreter_ReadFolder(var Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -168,41 +168,47 @@ end;
 
 { procedure RATextOut(Canvas: TCanvas; const R, RClip: TRect; const S: string); }
 
+{ (rom) disabled because the functions drag JvClxUtils.pas into JvJCLUtils.pas
 procedure JvInterpreter_RATextOut(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   RATextOut(V2O(Args.Values[0]) as TCanvas, Var2Rect(Args.Values[1]), Var2Rect(Args.Values[2]), Args.Values[3]);
 end;
+}
 
-{ function RATextOutEx(Canvas: TCanvas; const R, RClip: TRect; const S: string; const CalcHeight: boolean): integer; }
+{ function RATextOutEx(Canvas: TCanvas; const R, RClip: TRect; const S: string; const CalcHeight: Boolean): Integer; }
 
+{ (rom) disabled because the functions drag JvClxUtils.pas into JvJCLUtils.pas
 procedure JvInterpreter_RATextOutEx(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := RATextOutEx(V2O(Args.Values[0]) as TCanvas, Var2Rect(Args.Values[1]), Var2Rect(Args.Values[2]),
     Args.Values[3], Args.Values[4]);
 end;
+}
 
-{ function RATextCalcHeight(Canvas: TCanvas; const R: TRect; const S: string): integer; }
+{ function RATextCalcHeight(Canvas: TCanvas; const R: TRect; const S: string): Integer; }
 
+{ (rom) disabled because the functions drag JvClxUtils.pas into JvJCLUtils.pas
 procedure JvInterpreter_RATextCalcHeight(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := RATextCalcHeight(V2O(Args.Values[0]) as TCanvas, Var2Rect(Args.Values[1]), Args.Values[2]);
 end;
+}
 
-{ procedure Roughed(ACanvas: TCanvas; const ARect: TRect; const AVert: boolean); }
+{ procedure Roughed(ACanvas: TCanvas; const ARect: TRect; const AVert: Boolean); }
 
 procedure JvInterpreter_Roughed(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Roughed(V2O(Args.Values[0]) as TCanvas, Var2Rect(Args.Values[1]), Args.Values[2]);
 end;
 
-{ function BitmapFromBitmap(SrcBitmap: TBitmap; const AWidth, AHeight, index: integer): TBitmap; }
+{ function BitmapFromBitmap(SrcBitmap: TBitmap; const AWidth, AHeight, index: Integer): TBitmap; }
 
 procedure JvInterpreter_BitmapFromBitmap(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := O2V(BitmapFromBitmap(V2O(Args.Values[0]) as TBitmap, Args.Values[1], Args.Values[2], Args.Values[3]));
 end;
 
-{ function TextWidth(AStr: string): integer; }
+{ function TextWidth(AStr: string): Integer; }
 
 procedure JvInterpreter_TextWidth(var Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -223,35 +229,35 @@ begin
   Value := O2V(FindFormByClassName(Args.Values[0]));
 end;
 
-{ function FindByTag(WinControl: TWinControl; ComponentClass: TComponentClass; const Tag: integer): TComponent; }
+{ function FindByTag(WinControl: TWinControl; ComponentClass: TComponentClass; const Tag: Integer): TComponent; }
 
 procedure JvInterpreter_FindByTag(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := O2V(FindByTag(V2O(Args.Values[0]) as TWinControl, TComponentClass(V2C(Args.Values[1])), Args.Values[2]));
 end;
 
-{ function ControlAtPos2(Parent: TWinControl; X, Y: integer): TControl; }
+{ function ControlAtPos2(Parent: TWinControl; X, Y: Integer): TControl; }
 
 procedure JvInterpreter_ControlAtPos2(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := O2V(ControlAtPos2(V2O(Args.Values[0]) as TWinControl, Args.Values[1], Args.Values[2]));
 end;
 
-{ function RBTag(Parent: TWinControl): integer; }
+{ function RBTag(Parent: TWinControl): Integer; }
 
 procedure JvInterpreter_RBTag(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := RBTag(V2O(Args.Values[0]) as TWinControl);
 end;
 
-{ function AppMinimized: boolean; }
+{ function AppMinimized: Boolean; }
 
 procedure JvInterpreter_AppMinimized(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := AppMinimized;
 end;
 
-{ function MsgDlg2(const Msg, ACaption: string; DlgType: TMsgDlgType; Buttons: TMsgDlgButtons; HelpContext: integer; Control: TWinControl): Integer; }
+{ function MsgDlg2(const Msg, ACaption: string; DlgType: TMsgDlgType; Buttons: TMsgDlgButtons; HelpContext: Integer; Control: TWinControl): Integer; }
 
 procedure JvInterpreter_MsgDlg2(var Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -259,7 +265,7 @@ begin
     Args.Values[4], V2O(Args.Values[5]) as TWinControl);
 end;
 
-{ function MsgDlgDef(const Msg, ACaption: string; DlgType: TMsgDlgType; Buttons: TMsgDlgButtons; DefButton: TMsgDlgBtn; HelpContext: integer; Control: TWinControl): Integer; }
+{ function MsgDlgDef(const Msg, ACaption: string; DlgType: TMsgDlgType; Buttons: TMsgDlgButtons; DefButton: TMsgDlgBtn; HelpContext: Integer; Control: TWinControl): Integer; }
 
 procedure JvInterpreter_MsgDlgDef(var Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -275,21 +281,21 @@ begin
 end;
 
 (*
-{ procedure CenterHor(Parent: TControl; MinLeft: integer; Controls: array of TControl); }
+{ procedure CenterHor(Parent: TControl; MinLeft: Integer; Controls: array of TControl); }
 procedure JvInterpreter_CenterHor(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   CenterHor(V2O(Args.Values[0]) as TControl, Args.Values[1], Args.Values[2]);
 end;
 *)
 
-{ procedure EnableControls(Control: TWinControl; const Enable: boolean); }
+{ procedure EnableControls(Control: TWinControl; const Enable: Boolean); }
 
 procedure JvInterpreter_EnableControls(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   EnableControls(V2O(Args.Values[0]) as TWinControl, Args.Values[1]);
 end;
 
-{ procedure EnableMenuItems(MenuItem: TMenuItem; const Tag: integer; const Enable: boolean); }
+{ procedure EnableMenuItems(MenuItem: TMenuItem; const Tag: Integer; const Enable: Boolean); }
 
 procedure JvInterpreter_EnableMenuItems(var Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -297,21 +303,21 @@ begin
 end;
 
 (*
-{ procedure ExpandWidth(Parent: TControl; MinWidth: integer; Controls: array of TControl); }
+{ procedure ExpandWidth(Parent: TControl; MinWidth: Integer; Controls: array of TControl); }
 procedure JvInterpreter_ExpandWidth(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   ExpandWidth(V2O(Args.Values[0]) as TControl, Args.Values[1], Args.Values[2]);
 end;
 *)
 
-{ function PanelBorder(Panel: TCustomPanel): integer; }
+{ function PanelBorder(Panel: TCustomPanel): Integer; }
 
 procedure JvInterpreter_PanelBorder(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := PanelBorder(V2O(Args.Values[0]) as TCustomPanel);
 end;
 
-{ function Pixels(Control: TControl; APixels: integer): integer; }
+{ function Pixels(Control: TControl; APixels: Integer): Integer; }
 
 procedure JvInterpreter_Pixels(var Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -421,14 +427,14 @@ begin
 end;
 
 {****************************** RAUtilsW *******************************}
-{ function GetWordOnPos(const S: string; const P: integer): string; }
+{ function GetWordOnPos(const S: string; const P: Integer): string; }
 
 procedure JvInterpreter_GetWordOnPos(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := GetWordOnPos(Args.Values[0], Args.Values[1]);
 end;
 
-{ function GetWordOnPosEx(const S: string; const P: integer; var iBeg, iEnd: integer): string; }
+{ function GetWordOnPosEx(const S: string; const P: Integer; var iBeg, iEnd: Integer): string; }
 
 procedure JvInterpreter_GetWordOnPosEx(var Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -436,14 +442,14 @@ begin
     TVarData(Args.Values[3]).vInteger);
 end;
 
-{ function SubStr(const S: string; const index: integer; const Separator: string): string; }
+{ function SubStr(const S: string; const index: Integer; const Separator: string): string; }
 
 procedure JvInterpreter_SubStr(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := SubStr(Args.Values[0], Args.Values[1], Args.Values[2]);
 end;
 
-{ function SubStrEnd(const S: string; const index: integer; const Separator: string): string; }
+{ function SubStrEnd(const S: string; const index: Integer; const Separator: string): string; }
 
 procedure JvInterpreter_SubStrEnd(var Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -465,14 +471,14 @@ begin
   Value := NumberByWord(Args.Values[0]);
 end;
 
-{ function GetLineByPos(const S: string; const Pos: integer): integer; }
+{ function GetLineByPos(const S: string; const Pos: Integer): Integer; }
 
 procedure JvInterpreter_GetLineByPos(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := GetLineByPos(Args.Values[0], Args.Values[1]);
 end;
 
-{ procedure GetXYByPos(const S: string; const Pos: integer; var X, Y: integer); }
+{ procedure GetXYByPos(const S: string; const Pos: Integer; var X, Y: Integer); }
 
 procedure JvInterpreter_GetXYByPos(var Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -500,7 +506,7 @@ begin
   Value := ConcatLeftSep(Args.Values[0], Args.Values[1], Args.Values[2]);
 end;
 
-{ function MinimizeString(const S: string; const MaxLen: integer): string; }
+{ function MinimizeString(const S: string; const MaxLen: Integer): string; }
 
 procedure JvInterpreter_MinimizeString(var Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -542,14 +548,14 @@ begin
   Value := Win2Koi(Args.Values[0]);
 end;
 
-{ function Spaces(const N: integer): string; }
+{ function Spaces(const N: Integer): string; }
 
 procedure JvInterpreter_Spaces(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := Spaces(Args.Values[0]);
 end;
 
-{ function AddSpaces(const S: string; const N: integer): string; }
+{ function AddSpaces(const S: string; const N: Integer): string; }
 
 procedure JvInterpreter_AddSpaces(var Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -570,7 +576,7 @@ begin
   Value := CurrencyToStr(Args.Values[0]);
 end;
 
-{ function Cmp(const S1, S2: string): boolean; }
+{ function Cmp(const S1, S2: string): Boolean; }
 
 procedure JvInterpreter_Cmp(var Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -584,14 +590,14 @@ begin
   Value := StringCat(string(TVarData(Args.Values[0]).vString), Args.Values[1]);
 end;
 
-{ function HasChar(const Ch: Char; const S: string): boolean; }
+{ function HasChar(const Ch: Char; const S: string): Boolean; }
 
 procedure JvInterpreter_HasChar(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := HasChar(string(Args.Values[0])[1], Args.Values[1]);
 end;
 
-{ function HasAnyChar(const Chars: string; const S: string): boolean; }
+{ function HasAnyChar(const Chars: string; const S: string): Boolean; }
 
 procedure JvInterpreter_HasAnyChar(var Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -599,7 +605,7 @@ begin
 end;
 
 (*
-{ function CharInSet(const Ch: Char; const SetOfChar: TSetOfChar): boolean; }
+{ function CharInSet(const Ch: Char; const SetOfChar: TSetOfChar): Boolean; }
 procedure JvInterpreter_CharInSet(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := CharInSet(string(Args.Values[0])[1], Args.Values[1]);
@@ -648,28 +654,28 @@ begin
   Value := GenTempFileNameExt(Args.Values[0], Args.Values[1]);
 end;
 
-{ function ClearDir(const Dir: string): boolean; }
+{ function ClearDir(const Dir: string): Boolean; }
 
 procedure JvInterpreter_ClearDir(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := ClearDir(Args.Values[0]);
 end;
 
-{ function DeleteDir(const Dir: string): boolean; }
+{ function DeleteDir(const Dir: string): Boolean; }
 
 procedure JvInterpreter_DeleteDir(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := DeleteDir(Args.Values[0]);
 end;
 
-{ function FileEquMask(FileName, Mask: TFileName): boolean; }
+{ function FileEquMask(FileName, Mask: TFileName): Boolean; }
 
 procedure JvInterpreter_FileEquMask(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := FileEquMask(Args.Values[0], Args.Values[1]);
 end;
 
-{ function FileEquMasks(FileName, Masks: TFileName): boolean; }
+{ function FileEquMasks(FileName, Masks: TFileName): Boolean; }
 
 procedure JvInterpreter_FileEquMasks(var Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -683,28 +689,28 @@ begin
   DeleteFiles(Args.Values[0], Args.Values[1]);
 end;
 
-{ function LZFileExpand(const FileSource, FileDest: string): boolean; }
+{ function LZFileExpand(const FileSource, FileDest: string): Boolean; }
 
 procedure JvInterpreter_LZFileExpand(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := LZFileExpand(Args.Values[0], Args.Values[1]);
 end;
 
-{ function FileGetInfo(FileName: TFileName; var SearchRec: TSearchRec): boolean; }
+{ function FileGetInfo(FileName: TFileName; var SearchRec: TSearchRec): Boolean; }
 
 procedure JvInterpreter_FileGetInfo(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := FileGetInfo(Args.Values[0], TSearchRec(V2R(Args.Values[1])^));
 end;
 
-{ function HasSubFolder(APath: TFileName): boolean; }
+{ function HasSubFolder(APath: TFileName): Boolean; }
 
 procedure JvInterpreter_HasSubFolder(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := HasSubFolder(Args.Values[0]);
 end;
 
-{ function IsEmptyFolder(APath: TFileName): boolean; }
+{ function IsEmptyFolder(APath: TFileName): Boolean; }
 
 procedure JvInterpreter_IsEmptyFolder(var Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -732,7 +738,7 @@ begin
   Value := AddPath(Args.Values[0], Args.Values[1]);
 end;
 
-{ function BrowseForFolder(const Handle: HWnd; const Title: string; var Folder: string): boolean; }
+{ function BrowseForFolder(const Handle: HWnd; const Title: string; var Folder: string): Boolean; }
 
 {$IFNDEF BCB1}
 procedure JvInterpreter_BrowseForFolder(var Value: Variant; Args: TJvInterpreterArgs);
@@ -741,21 +747,21 @@ begin
 end;
 {$ENDIF BCB1}
 
-{ function DeleteReadOnlyFile(const FileName: TFileName): boolean; }
+{ function DeleteReadOnlyFile(const FileName: TFileName): Boolean; }
 
 procedure JvInterpreter_DeleteReadOnlyFile(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := DeleteReadOnlyFile(Args.Values[0]);
 end;
 
-{ function HasParam(const Param: string): boolean; }
+{ function HasParam(const Param: string): Boolean; }
 
 procedure JvInterpreter_HasParam(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := HasParam(Args.Values[0]);
 end;
 
-{ function HasSwitch(const Param: string): boolean; }
+{ function HasSwitch(const Param: string): Boolean; }
 
 procedure JvInterpreter_HasSwitch(var Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -783,42 +789,42 @@ begin
   Value := CopyDir(Args.Values[0], Args.Values[1]);
 end;
 
-{ function TTFontSelected(const DC: HDC): boolean; }
+{ function TTFontSelected(const DC: HDC): Boolean; }
 
 procedure JvInterpreter_TTFontSelected(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TTFontSelected(Args.Values[0]);
 end;
 
-{ function TrueInflateRect(const R: TRect; const I: integer): TRect; }
+{ function TrueInflateRect(const R: TRect; const I: Integer): TRect; }
 
 procedure JvInterpreter_TrueInflateRect(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := Rect2Var(TrueInflateRect(Var2Rect(Args.Values[0]), Args.Values[1]));
 end;
 
-{ procedure SetWindowTop(const Handle: HWND; const Top: boolean); }
+{ procedure SetWindowTop(const Handle: HWND; const Top: Boolean); }
 
 procedure JvInterpreter_SetWindowTop(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   SetWindowTop(Args.Values[0], Args.Values[1]);
 end;
 
-{ function KeyPressed(VK: integer): boolean; }
+{ function KeyPressed(VK: Integer): Boolean; }
 
 procedure JvInterpreter_KeyPressed(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := KeyPressed(Args.Values[0]);
 end;
 
-{ function Max(x, y: integer): integer; }
+{ function Max(x, y: Integer): Integer; }
 
 procedure JvInterpreter_Max(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := Max(Args.Values[0], Args.Values[1]);
 end;
 
-{ function Min(x, y: integer): integer; }
+{ function Min(x, y: Integer): Integer; }
 
 procedure JvInterpreter_Min(var Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -832,7 +838,7 @@ begin
   SwapInt(TVarData(Args.Values[0]).vInteger, TVarData(Args.Values[1]).vInteger);
 end;
 
-{ function IntPower(Base, Exponent: integer): integer; }
+{ function IntPower(Base, Exponent: Integer): Integer; }
 
 procedure JvInterpreter_IntPower(var Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -860,7 +866,7 @@ begin
   Value := AnsiStrLIComp(PChar(string(Args.Values[0])), PChar(string(Args.Values[1])), Args.Values[2]);
 end;
 
-{ function Var2Type(V: Variant; const VarType: integer): variant; }
+{ function Var2Type(V: Variant; const VarType: Integer): Variant; }
 
 procedure JvInterpreter_Var2Type(var Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -975,11 +981,13 @@ begin
     AddFun(cJvUtils, 'ResolveLink', JvInterpreter_ResolveLink, 3, [varEmpty, varEmpty, varEmpty or varByRef],
       varEmpty);
     AddFun(cJvUtils, 'LoadIcoToImage', JvInterpreter_LoadIcoToImage, 3, [varObject, varObject, varString], varEmpty);
+    { (rom) disabled because the functions drag JvClxUtils.pas into JvJCLUtils.pas
     AddFun(cJvUtils, 'RATextOut', JvInterpreter_RATextOut, 4, [varObject, varEmpty, varEmpty, varString], varEmpty);
     AddFun(cJvUtils, 'RATextOutEx', JvInterpreter_RATextOutEx, 5, [varObject, varEmpty, varEmpty, varString,
       varBoolean], varEmpty);
     AddFun(cJvUtils, 'RATextCalcHeight', JvInterpreter_RATextCalcHeight, 3, [varObject, varEmpty, varString],
       varEmpty);
+    }
     AddFun(cJvUtils, 'Roughed', JvInterpreter_Roughed, 3, [varObject, varEmpty, varBoolean], varEmpty);
     AddFun(cJvUtils, 'BitmapFromBitmap', JvInterpreter_BitmapFromBitmap, 4, [varObject, varInteger, varInteger,
       varInteger], varEmpty);

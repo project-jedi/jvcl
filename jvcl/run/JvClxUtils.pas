@@ -24,51 +24,54 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$I jvcl.inc}
+
+{$I JVCL.INC}
 
 unit JvClxUtils;
+
 interface
+
 uses
   {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF}
-  {$IFDEF INUX}
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
   Libc,
-  {$ENDIF}
+  {$ENDIF LINUX}
   {$IFDEF VCL}
   Graphics,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   Qt, QTypes, Types, QGraphics, QForms,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   SysUtils, Classes,
   JvTypes;
 
 {$IFDEF LINUX}
 type
   TColorRef = Integer;
-{$ENDIF}
+{$ENDIF LINUX}
 
 {$IFDEF VisualCLX}
 
 const
-  VK_UP = Key_Up;
-  VK_DOWN = Key_Down;
-  VK_RIGHT = Key_Right;
-  VK_LEFT = Key_Left;
-  VK_ESCAPE = Key_Escape;
-  VK_TAB = Key_Tab;
-  VK_SPACE = Key_Space;
-  VK_ENTER = Key_Enter;
-  VK_RETURN = KEy_Return;
-  VK_BACKTAB = Key_Backtab;
+  VK_UP        = Key_Up;
+  VK_DOWN      = Key_Down;
+  VK_RIGHT     = Key_Right;
+  VK_LEFT      = Key_Left;
+  VK_ESCAPE    = Key_Escape;
+  VK_TAB       = Key_Tab;
+  VK_SPACE     = Key_Space;
+  VK_ENTER     = Key_Enter;
+  VK_RETURN    = Key_Return;
+  VK_BACKTAB   = Key_Backtab;
   VK_BACKSPACE = Key_Backspace;
-  VK_PRIOR = Key_Prior;
-  VK_NEXT = Key_Next;
-  VK_HOME = Key_Home;
-  VK_END = Key_End;
-  VK_ADD = Key_Plus;
-  VK_SUBTRACT = Key_Minus;
+  VK_PRIOR     = Key_Prior;
+  VK_NEXT      = Key_Next;
+  VK_HOME      = Key_Home;
+  VK_END       = Key_End;
+  VK_ADD       = Key_Plus;
+  VK_SUBTRACT  = Key_Minus;
 
 function GetSysColor(Color: Integer): TColorRef;
 
@@ -90,20 +93,15 @@ procedure MessageBeep(Value: Integer);
 {$IFDEF LINUX}
 function GetTickCount: Cardinal;
 function MakeIntResource(Value: Integer): PChar;
-{$ENDIF}
+{$ENDIF LINUX}
 
 type
   TSysMetrics = (
     SM_CXSCREEN, SM_CYSCREEN,
-
     SM_CXVSCROLL, SM_CYVSCROLL,
-
     SM_CXSMICON, SM_CXICON,
-
     SM_CXBORDER, SM_CYBORDER,
-
     SM_CXFRAME, SM_CYFRAME
-
   );
 
 // limited implementation of
@@ -133,6 +131,7 @@ const
   ClipName = 16382 { $4000 };
   CalcRect =  32764 { $8000 } ;
   pf24bit = pf32bit;
+
 {$ENDIF VisualCLX}
 
 const
@@ -348,6 +347,7 @@ begin
 end;
 
 {$IFDEF LINUX}
+
 function GetTickCount: Cardinal;
 var
   Info: TSysInfo;
@@ -362,6 +362,7 @@ function MakeIntResource(Value: Integer): PChar;
 begin
   Result := PChar(Value and $0000ffff);
 end;
+
 {$ENDIF LINUX}
 
 const
@@ -461,19 +462,20 @@ type
 function ClxDrawText(Canvas: TCanvas; var Caption: string; var R: TRect;
   Flags: Integer): Integer;
 {$IFNDEF VCL}
-var W: WideString;
-{$ENDIF}
+var
+  W: WideString;
+{$ENDIF VCL}
 begin
-{$IFDEF VCL}
+  {$IFDEF VCL}
   TOpenCanvas(Canvas).Changing;
   Result := DrawText(Canvas.Handle, PChar(Caption), Length(Caption), R, Flags);
   TOpenCanvas(Canvas).Changed;
-{$ELSE}
+  {$ELSE}
   W := Caption;
   Result := ClxDrawTextW(Canvas, W, R, Flags);
   if Flags and DT_MODIFYSTRING <> 0 then
     Caption := W;
-{$ENDIF}
+  {$ENDIF VCL}
 end;
 
 function ClxDrawTextW(Canvas: TCanvas; var Caption: WideString; var R: TRect;
@@ -482,14 +484,14 @@ function ClxDrawTextW(Canvas: TCanvas; var Caption: WideString; var R: TRect;
 var
   Flgs: Word;
   Text: string;
-{$ENDIF}
+{$ENDIF VisualCLX}
 begin
-{$IFDEF VCL}
+  {$IFDEF VCL}
   TOpenCanvas(Canvas).Changing;
   Result := DrawTextW(Canvas.Handle, PWideChar(Caption), Length(Caption), R, Flags);
   TOpenCanvas(Canvas).Changed;
-{$ENDIF}
-{$IFDEF VisualCLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   Text := Caption;
   with Canvas do
   begin
@@ -531,20 +533,20 @@ begin
       Caption := Text;
   end;
   Result := 1;
-{$ENDIF VisualCLX}
+  {$ENDIF VisualCLX}
 end;
 
 function ClxExtTextOut(Canvas: TCanvas; X, Y: Integer; Flags: Integer; Rect: PRect;
   const Text: String; lpDx: Pointer): Boolean;
 begin
-{$IFDEF VCL}
+  {$IFDEF VCL}
   TOpenCanvas(Canvas).Changing;
   Result := ExtTextOut(Canvas.Handle, X, Y, Flags, Rect, PChar(Text),
     Length(Text), lpDx);
   TOpenCanvas(Canvas).Changed;
-{$ELSE}
+  {$ELSE}
   Result := ClxExtTextOutW(Canvas, X, Y, Flags, Rect, WideString(Text), lpDx);
-{$ENDIF}
+  {$ENDIF VCL}
 end;
 
 function ClxExtTextOutW(Canvas: TCanvas; X, Y: Integer; Flags: Integer;
@@ -559,15 +561,15 @@ var
   Dx: PInteger;
   R, CellRect: TRect;
   TextLen: Integer;
-{$ENDIF}
+{$ENDIF VisualCLX}
 begin
-{$IFDEF VCL}
+  {$IFDEF VCL}
   TOpenCanvas(Canvas).Changing;
   Result := ExtTextOutW(Canvas.Handle, X, Y, Flags, Rect, PWideChar(Text),
     Length(Text), lpDx);
   TOpenCanvas(Canvas).Changed;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   with Canvas do
   begin
     Result := False;
@@ -662,7 +664,7 @@ begin
     end;
     PenPos := RecallPenPos;
   end;
-{$ENDIF VisualCLX}
+  {$ENDIF VisualCLX}
 end;
 
 end.
