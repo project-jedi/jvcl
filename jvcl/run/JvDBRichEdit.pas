@@ -87,10 +87,12 @@ type
     property BeepOnError: Boolean read FBeepOnError write FBeepOnError default True;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
+    property AdvancedTypography;
     property Align;
     property Alignment;
     property AllowObjects;
     property AllowInPlace;
+    property AutoAdvancedTypography;
     property AutoURLDetect;
     property AutoVerbMenu;
     property BorderStyle;
