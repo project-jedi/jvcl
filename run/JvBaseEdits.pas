@@ -37,11 +37,9 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, ImgList,
-  {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QTypes, QGraphics, QControls, QImgList, QWindows, Types,
+  QTypes, 
   {$ENDIF VisualCLX}
   JvToolEdit;
 
@@ -300,19 +298,14 @@ type
 implementation
 
 uses
-  {$IFDEF VCL}
   Consts,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QConsts,
-  {$ENDIF VisualCLX}
   Math, JvJCLUtils, JvCalc, JvConsts, JvResources;
 
 {$IFDEF MSWINDOWS}
-{$R ..\Resources\JvBaseEdits.res}
+{$R ..\Resources\JvBaseEdits.Res}
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
-{$R ../Resources/JvBaseEdits.res}
+{$R ../Resources/JvBaseEdits.Res}
 {$ENDIF LINUX}
 
 const
