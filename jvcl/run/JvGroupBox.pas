@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvAlignListbox.PAS, released on 2000-11-22.
+The Original Code is: JvGroupBox.PAS, released on 2000-11-22.
 
 The Initial Developer of the Original Code is Peter Below <100113.1101@compuserve.com>
 Portions created by Peter Below are Copyright (C) 2000 Peter Below.
@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): ______________________________________.
 
-Last Modified: 2000-mm-dd
+Last Modified: 2004-01-06
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -54,9 +54,7 @@ type
     FOver: Boolean;
     FPropagateEnable: Boolean;
     procedure SetPropagateEnable(const Value: Boolean);
-    {$IFDEF VCL}
-    procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
-    {$ENDIF}
+    procedure CMDenySubClassing(var Msg: TCMDenySubClassing); message CM_DENYSUBCLASSING;
   {$IFDEF JVCLThemesEnabledD56}
     function GetParentBackground: Boolean;
   protected
@@ -116,7 +114,7 @@ begin
   if ThemeServices.ThemesEnabled then
   begin
     {$IFDEF COMPILER7_UP}
-    inherited;
+    inherited Paint;
     {$ELSE}
     if Enabled then
       Details := ThemeServices.GetElementDetails(tbGroupBoxNormal)
@@ -221,20 +219,18 @@ begin
     FSaved := Application.HintColor;
     Application.HintColor := FHintColor;
     FOver := True;
+    inherited MouseEnter(Control);
   end;
-  inherited MouseEnter(Control);
 end;
 
 procedure TJvGroupBox.MouseLeave(Control: TControl);
 begin
-  if csDesigning in ComponentState then
-    Exit;
   if FOver then
   begin
     Application.HintColor := FSaved;
     FOver := False;
+    inherited MouseLeave(Control);
   end;
-  inherited MouseLeave(Control);
 end;
 
 procedure TJvGroupBox.ParentColorChanged;
@@ -244,12 +240,10 @@ begin
     FOnParentColorChange(Self);
 end;
 
-{$IFDEF VCL}
-procedure TJvGroupBox.CMDenySubClassing(var Msg: TMessage);
+procedure TJvGroupBox.CMDenySubClassing(var Msg: TCMDenySubClassing);
 begin
   Msg.Result := 1;
 end;
-{$ENDIF}
 
 procedure TJvGroupBox.DoHotKey;
 begin

@@ -37,10 +37,10 @@ uses
   SysUtils, Classes,
   {$IFDEF VCL}
   Windows, Controls, Forms, ExtCtrls,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QWindows, QControls, QForms, QExtCtrls,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvHtControls;
 
 type

@@ -39,7 +39,7 @@ uses
   Contnrs,
   {$IFDEF COMPILER7_UP}
   Themes,
-  {$ELSE}
+  {$ELSE}      
   ThemeSrv,
   {$ENDIF COMPILER7_UP}
   {$ENDIF JVCLThemesEnabled}
@@ -57,6 +57,15 @@ const
   CM_DENYSUBCLASSING = CM_BASE + 2000; // from ThemeMgr.pas
 
 type
+  {$IFDEF VCL}
+  TCMDenySubClassing = TMessage;
+  {$ELSE}
+  TCMDenySubClassing = record
+    Msg: Integer;
+    Result: Integer;
+  end;
+  {$ENDIF VCL}
+
   TWinControlThemeInfo = class(TWinControl)
   public
     property Color;

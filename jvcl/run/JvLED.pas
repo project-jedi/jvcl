@@ -62,13 +62,8 @@ type
     procedure SetStatus(Value: Boolean);
     function GetStatus: Boolean;
     procedure DoBlink(Sender: TObject; BlinkOn: Boolean);
-    {$IFDEF VCL}
-    procedure CMColorChanged(var Msg: TMessage); message CM_COLORCHANGED;
-    {$ENDIF}
   protected
-    {$IFDEF VisualCLX}
     procedure ColorChanged; override;
-    {$ENDIF}
     procedure Paint; override;
     property Active: Boolean read GetActive write SetActive default False;
     property Color default clLime;
@@ -302,16 +297,11 @@ begin
   end;
 end;
 
-{$IFDEF VisualCLX}
 procedure TJvCustomLED.ColorChanged;
-{$ENDIF}
-{$IFDEF VCL}
-procedure TJvCustomLED.CMColorChanged(var Msg: TMessage);
-{$ENDIF}
 var
   X, Y: Integer;
 begin
-  inherited;
+  inherited ColorChanged;
   FImgPict.LoadFromResourceName(HInstance, cGreenLEDName);
   FImgPict.PixelFormat := pf24bit;
   for X := 0 to FImgPict.Width - 1 do

@@ -34,13 +34,16 @@ interface
 { Additional editors for JvInspector. }
 
 uses
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}
   SysUtils, Classes,
   {$IFDEF VCL}
-  Windows, Controls, Graphics, ImgList,
-  {$ENDIF}
+  Graphics, Controls, StdCtrls, ImgList,
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QWindows, QControls, QGraphics, QImgList,
-  {$ENDIF}
+  QWindows, QGraphics, QControls, QStdCtrls, QImgList,
+  {$ENDIF VisualCLX}
   JvInspector;
 
 type
@@ -151,11 +154,6 @@ type
 implementation
 
 uses
-  {$IFDEF VCL}
-  StdCtrls,
-  {$ELSE}
-  QStdCtrls,
-  {$ENDIF}
   TypInfo, JclRTTI, JvResources;
 
 type

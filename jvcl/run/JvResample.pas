@@ -112,9 +112,10 @@ interface
 uses
   {$IFDEF VCL}
   Graphics,
-  {$ELSE}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   QGraphics, QWindows,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   SysUtils, Classes;
 
 type

@@ -28,13 +28,16 @@ unit JvDiagramShape;
 interface
 
 uses
-{$IFDEF VCL}
-  Windows, Controls, ExtCtrls, Graphics,
-{$ENDIF}
-{$IFDEF VisualCLX}
-  QControls, QExtCtrls, QGraphics, Types,
-{$ENDIF}
-  Classes;
+  {$IFDEF MSWINDOWS}
+  Windows, Messages,
+  {$ENDIF MSWINDOWS}
+  {$IFDEF VCL}
+  Graphics, Controls, ExtCtrls, ImgList
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Types, QGraphics, QControls, QExtCtrls, QImgList
+  {$ENDIF VisualCLX}
+  SysUtils, Classes;
 
 type
   TJvTextShape = class;
@@ -90,7 +93,6 @@ type
     FOrigin: TPoint;
     FMoving: Boolean;
   protected
-
     procedure StartMove(X, Y: Integer);
     procedure Move(DeltaX, DeltaY: Integer);
     procedure EndMove;
@@ -324,15 +326,6 @@ type
   end;
 
 implementation
-
-uses
-  {$IFDEF VCL}
-  Messages, ImgList,
-  {$ENDIF}
-  {$IFDEF VisualCLX}
-  QImgList,
-  {$ENDIF}
-  SysUtils;
 
 type
   // This type is solely for the acccess to the protected MouseDown method

@@ -91,8 +91,8 @@ type
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
+    procedure MouseLeave(Control: TControl); override;
+    procedure CMDenySubClassing(var Msg: TCMDenySubClasssing); message CM_DENYSUBCLASSING;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -296,7 +296,7 @@ begin
     Grow;
   end;
 end;
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 
 procedure TJvItemsPanel.SetItemHeight(const Value: Integer);
 begin
@@ -317,7 +317,7 @@ end;
 procedure TJvItemsPanel.WMSize(var Msg: TWMSize);
 {$ELSE}
 procedure TJvItemsPanel.AdjustSize;
-{$ENDIF}
+{$ENDIF VCL}
 begin
   inherited;
   Grow;
@@ -440,18 +440,18 @@ begin
     DrawItemText(GetItemAt(FDownRect.Left + 1, 1), FDownRect, True);
 end;
 
-procedure TJvItemsPanel.CMMouseLeave(var Msg: TMessage);
+procedure TJvItemsPanel.MouseLeave(Control: TControl);
 begin
-  inherited;
+  if csDesigning in ComponentState then
+    Exit;
+  inherited MouseLeave(Control;
   PaintUp;
 end;
 
-{$IFDEF VCL}
-procedure TJvItemsPanel.CMDenySubClassing(var Msg: TMessage);
+procedure TJvItemsPanel.CMDenySubClassing(var Msg: TCMDenySubClassing);
 begin
   Msg.Result := 1;
 end;
-{$ENDIF}
 
 procedure TJvItemsPanel.SetHotTrack(const Value: Boolean);
 begin

@@ -48,7 +48,6 @@ uses
   {$IFDEF DELPHI6_UP}
   Variants,
   {$ENDIF DELPHI6_UP}
-
   JvXMLTree, JvStrings;
 
 const
@@ -101,21 +100,20 @@ type
 
   Tprocvar = procedure of object;
 
-  TonGetVariable = procedure(Sender: TObject; Symbol: string; var value: variant; var handled: boolean; var ErrorStr: string) of object;
-  TonSetVariable = procedure(Sender: TObject; Symbol: string; value: variant; var handled: boolean; var ErrorStr: string) of object;
-  TonGetSystem = procedure(Sender: TObject; Symbol, Prompt: string; var value: variant; var handled: boolean; var ErrorStr: string) of object;
-  TonSetSystem = procedure(Sender: TObject; Symbol: string; value: variant; var handled: boolean; var ErrorStr: string) of object;
-  TonInclude = procedure(Sender: TObject; includefile: string; var value: string; var handled: boolean; var ErrorStr: string) of object;
+  TonGetVariable = procedure(Sender: TObject; Symbol: string; var Value: Variant; var Handled: Boolean; var ErrorStr: string) of object;
+  TonSetVariable = procedure(Sender: TObject; Symbol: string; Value: Variant; var Handled: Boolean; var ErrorStr: string) of object;
+  TonGetSystem = procedure(Sender: TObject; Symbol, Prompt: string; var Value: Variant; var Handled: Boolean; var ErrorStr: string) of object;
+  TonSetSystem = procedure(Sender: TObject; Symbol: string; Value: Variant; var Handled: Boolean; var ErrorStr: string) of object;
+  TonInclude = procedure(Sender: TObject; IncludeFile: string; var Value: string; var Handled: Boolean; var ErrorStr: string) of object;
 
   TJvJanDSO = class(TStringList)
   private
-    function InternalGetValue(index: integer; aField: string): string;
-    procedure InternalSetValue(index: integer; aField, aValue: string);
+    function InternalGetValue(Index: Integer; aField: string): string;
+    procedure InternalSetValue(Index: Integer; aField, aValue: string);
   public
     // when a key is not found it will be added
-    procedure SetValue(aKey: variant; aField, aValue: string);
-    function GetValue(aKey: variant; aField: string): string;
-
+    procedure SetValue(aKey: Variant; aField, aValue: string);
+    function GetValue(aKey: Variant; aField: string): string;
   end;
 
   TJvJanDSOList = class(TStringList)
@@ -134,21 +132,18 @@ type
 
   TVariantObject = class(TObject)
   private
-    Fvalue: variant;
-    procedure Setvalue(const Value: variant);
-  protected
+    FValue: Variant;
+    procedure SetValue(const Value: Variant);
   public
-    property value: variant read Fvalue write Setvalue;
+    property Value: Variant read FValue write SetValue;
   end;
 
   TVariantList = class(TStringList)
-  private
-  protected
   public
     destructor Destroy; override;
     procedure ClearObjects;
-    procedure SetVariable(symbol: string; Avalue: variant);
-    function GetVariable(symbol: string): variant;
+    procedure SetVariable(symbol: string; AValue: Variant);
+    function GetVariable(symbol: string): Variant;
     function GetObject(symbol: string): TVariantObject;reintroduce;
   end;
 
@@ -156,30 +151,27 @@ type
   private
     FToken: TToken;
     Fsymbol: string;
-    Fvalue: variant;
+    FValue: Variant;
     FProc: TProcVar;
-    FIsOperant: boolean;
+    FIsOperant: Boolean;
 
     procedure SetToken(const Value: TToken);
     procedure Setsymbol(const Value: string);
-    procedure Setvalue(const Value: variant);
+    procedure SetValue(const Value: Variant);
     procedure SetProc(const Value: TProcVar);
-    procedure SetIsOperant(const Value: boolean);
-  protected
+    procedure SetIsOperant(const Value: Boolean);
   public
     property Token: TToken read FToken write SetToken;
     property Proc: TProcVar read FProc write SetProc;
     property symbol: string read Fsymbol write Setsymbol;
-    property value: variant read Fvalue write Setvalue;
-    property IsOperant: boolean read FIsOperant write SetIsOperant;
+    property Value: Variant read FValue write SetValue;
+    property IsOperant: Boolean read FIsOperant write SetIsOperant;
   end;
 
   TAtomList = class(TList)
-  private
-  protected
   public
     destructor Destroy; override;
-    procedure clearObjects;
+    procedure ClearObjects;
   end;
 
   TJvForthScript = class(TComponent)
@@ -193,24 +185,24 @@ type
     FDSOList: TJvJanDSOList;
     FXMLList: TJvJanXMLList;
     FXMLSelect: TList;
-    FXMLSelectRecord: integer;
+    FXMLSelectRecord: Integer;
     FDSOBase: string; // root directory for DSO tables
     Atoms: TAtomList;
     // rstack if the return stack for loop, sub etc.
-    rstack: array[0..StackMax] of integer;
-    rsp: integer;
-    vstack: array[0..StackMax] of variant;
-    vsp: integer;
+    rstack: array[0..StackMax] of Integer;
+    rsp: Integer;
+    vstack: array[0..StackMax] of Variant;
+    vsp: Integer;
 //    ostack: array[0..StackMax] of TToken;
-    osp: integer;
+    osp: Integer;
     pstack: array[0..StackMax] of TToken;
-    psp: integer;
-    pc: integer;
+    psp: Integer;
+    pc: Integer;
     CurrentSymbol: string;
-    CurrentValue: variant;
+    CurrentValue: Variant;
     FonGetVariable: TonGetVariable;
     FonSetVariable: TonSetVariable;
-    FScriptTimeOut: integer;
+    FScriptTimeOut: Integer;
     FonGetSystem: TonGetSystem;
     FonSetSystem: TonSetSystem;
     FonInclude: TonInclude;
@@ -316,17 +308,17 @@ type
     procedure procSqrt;
     procedure procLeft;
     procedure procRight;
-    function vpop: variant;
-    procedure vpush(aValue: variant);
+    function vpop: Variant;
+    procedure vpush(aValue: Variant);
 //    function opop: TToken;
 //    procedure opush(aValue: TToken);
 //    function ppop: TToken;
 //    procedure ppush(aValue: TToken);
-    function rpop: integer;
+    function rpop: Integer;
     procedure rpush(aValue: Integer);
     procedure doproc;
     procedure doToken(aToken: TToken);
-    procedure SetScriptTimeOut(const Value: integer);
+    procedure SetScriptTimeOut(const Value: Integer);
     procedure ParseScript;
     procedure SetonGetSystem(const Value: TonGetSystem);
     procedure SetonSetSystem(const Value: TonSetSystem);
@@ -338,15 +330,15 @@ type
     { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function Execute: variant;
-    function popValue: variant;
-    function canPopValue: boolean;
-    procedure pushValue(aValue: variant);
-    function canPushValue: boolean;
+    function Execute: Variant;
+    function popValue: Variant;
+    function canPopValue: Boolean;
+    procedure pushValue(aValue: Variant);
+    function canPushValue: Boolean;
   published
     { Published declarations }
     property Script: string read FScript write SetScript;
-    property ScriptTimeOut: integer read FScriptTimeOut write SetScriptTimeOut;
+    property ScriptTimeOut: Integer read FScriptTimeOut write SetScriptTimeOut;
     property onGetVariable: TonGetVariable read FonGetVariable write SetonGetVariable;
     property onSetVariable: TonSetVariable read FonSetVariable write SetonSetVariable;
     property onSetSystem: TonSetSystem read FonSetSystem write SetonSetSystem;
@@ -355,37 +347,37 @@ type
   end;
 
 // runs an external file or progam
-procedure Launch(Afile: string);
+procedure Launch(const AFile: string);
 
 implementation
 
 uses
   Math,
   {$IFDEF BCB}
-  {$IFNDEF BCB5}
+   {$IFNDEF BCB5}
   Variants,
-  {$ENDIF}
-  {$ENDIF}
+   {$ENDIF BCB5}
+  {$ENDIF BCB}
   JvConsts, JvResources;
 
   { some utility functions }
 
-procedure Launch(Afile: string);
+procedure Launch(const AFile: string);
 var
-  command, params, workdir: string;
+  Command, Params, WorkDir: string;
 begin
-  command := afile;
-  params := #0;
-  workdir := #0;
-  shellexecute(application.handle, 'open', @command[1],
-    @params[1], @workdir[1], SW_SHOWNORMAL);
+  Command := AFile;
+  Params := #0;
+  WorkDir := #0;
+  ShellExecute(Application.Handle, 'open', PChar(Command),
+    PChar(Params), PChar(WorkDir), SW_SHOWNORMAL);
 end;
 
 procedure GlobalSetValue(var aText: string; aName, aValue: string);
 var
-  p, p2, L: integer;
+  p, p2, L: Integer;
 begin
-  l := length(aName) + 2;
+  l := Length(aName) + 2;
   if aText = '' then
   begin
     aText := aName + '="' + aValue + '"';
@@ -400,102 +392,102 @@ begin
     else
     begin
       p2 := PosStr('"', aText, p + L);
-      if p2 = 0 then exit;
+      if p2 = 0 then Exit;
       Delete(aText, p + L, p2 - (p + L));
-      insert(aValue, aText, p + L);
+      Insert(aValue, aText, p + L);
     end;
   end;
 end;
 
 function GlobalGetValue(aText, aName: string): string;
 var
-  p, p2, L: integer;
+  p, p2, L: Integer;
 begin
-  result := '';
-  L := length(aName) + 2;
+  Result := '';
+  L := Length(aName) + 2;
   p := PosText(aName + '="', aText);
-  if p = 0 then exit;
+  if p = 0 then Exit;
   p2 := PosStr('"', aText, p + L);
-  if p2 = 0 then exit;
-  result := copy(atext, p + L, p2 - (p + L));
-  result := stringreplace(result, '~~', sLineBreak, [rfreplaceall]);
+  if p2 = 0 then Exit;
+  Result := Copy(atext, p + L, p2 - (p + L));
+  Result := StringReplace(Result, '~~', sLineBreak, [rfreplaceall]);
 end;
 
 // some special expression functions
 
-// returns the index of integer v in aList
+// returns the Index of Integer v in aList
 
-function IndexOfInteger(aList: Tstringlist; v: variant): integer;
+function IndexOfInteger(aList: Tstringlist; v: Variant): Integer;
 var
-  c, i, index, p: integer;
+  c, i, Index, p: Integer;
   s, s1, s2: string;
 begin
-  result := -1;
+  Result := -1;
   i := v;
-  c := AList.count;
-  if c = 0 then exit;
-  for index := 0 to c - 1 do
+  c := AList.Count;
+  if c = 0 then Exit;
+  for Index := 0 to c - 1 do
   begin
     try
-      s := aList[index];
-      p := pos('..', s);
+      s := aList[Index];
+      p := Pos('..', s);
       if p = 0 then
       begin
-        if strtoint(aList[index]) = i then
+        if strtoint(aList[Index]) = i then
         begin
-          result := index;
-          exit;
+          Result := Index;
+          Exit;
         end;
       end
       else
       begin // have range
-        s1 := trim(copy(s, 1, p - 1));
-        s2 := trim(copy(s, p + 2, length(s)));
+        s1 := trim(Copy(s, 1, p - 1));
+        s2 := trim(Copy(s, p + 2, Length(s)));
         if (i >= strtoint(s1)) and (i <= strtoint(s2)) then
         begin
-          result := index;
-          exit;
+          Result := Index;
+          Exit;
         end;
       end;
     except
-      exit;
+      Exit;
     end;
   end;
 end;
 
-// returns the index of float v (single or double)in aList
+// returns the Index of float v (single or double)in aList
 
-function IndexOfFloat(aList: Tstringlist; v: variant): integer;
+function IndexOfFloat(aList: Tstringlist; v: Variant): Integer;
 var
-  c, index, p: integer;
+  c, Index, p: Integer;
   f: extended;
   s, s1, s2: string;
 begin
-  result := -1;
+  Result := -1;
   f := v;
-  c := AList.count;
-  if c = 0 then exit;
-  for index := 0 to c - 1 do
+  c := AList.Count;
+  if c = 0 then Exit;
+  for Index := 0 to c - 1 do
   begin
     try
-      s := aList[index];
-      p := pos('..', s);
+      s := aList[Index];
+      p := Pos('..', s);
       if p = 0 then
       begin
         if strtofloat(s) = f then
         begin
-          result := index;
-          exit;
+          Result := Index;
+          Exit;
         end;
       end
       else
       begin // have range
-        s1 := trim(copy(s, 1, p - 1));
-        s2 := trim(copy(s, p + 2, length(s)));
+        s1 := trim(Copy(s, 1, p - 1));
+        s2 := trim(Copy(s, p + 2, Length(s)));
         if (f >= strtofloat(s1)) and (f <= strtofloat(s2)) then
         begin
-          result := index;
-          exit;
+          Result := Index;
+          Exit;
         end;
       end;
     except
@@ -504,174 +496,174 @@ begin
   end;
 end;
 
-// returns the index of date v in aList
+// returns the Index of date v in aList
 
-function IndexOfDate(aList: Tstringlist; v: variant): integer;
+function IndexOfDate(aList: Tstringlist; v: Variant): Integer;
 var
-  c, index, p: integer;
+  c, Index, p: Integer;
   d: TDatetime;
   s, s1, s2: string;
 
 begin
-  result := -1;
+  Result := -1;
   d := v;
-  c := AList.count;
-  if c = 0 then exit;
-  for index := 0 to c - 1 do
+  c := AList.Count;
+  if c = 0 then Exit;
+  for Index := 0 to c - 1 do
   begin
     try
-      s := aList[index];
-      p := pos('..', s);
+      s := aList[Index];
+      p := Pos('..', s);
       if p = 0 then
       begin
-        if strtodate(aList[index]) = d then
+        if strtodate(aList[Index]) = d then
         begin
-          result := index;
-          exit;
+          Result := Index;
+          Exit;
         end;
       end
       else
       begin
-        s1 := trim(copy(s, 1, p - 1));
-        s2 := trim(copy(s, p + 2, length(s)));
+        s1 := trim(Copy(s, 1, p - 1));
+        s2 := trim(Copy(s, p + 2, Length(s)));
         if (d >= strtoDate(s1)) and (d <= strtoDate(s2)) then
         begin
-          result := index;
-          exit;
+          Result := Index;
+          Exit;
         end;
       end;
     except
-      exit;
+      Exit;
     end;
   end;
 end;
 
-// returns the index of string v in aList
+// returns the Index of string v in aList
 
-function IndexOfString(aList: Tstringlist; v: variant): integer;
+function IndexOfString(aList: Tstringlist; v: Variant): Integer;
 var
-  c, index, p: integer;
+  c, Index, p: Integer;
   sv: string;
   s, s1, s2: string;
 begin
-  result := -1;
+  Result := -1;
   sv := v;
-  c := AList.count;
-  if c = 0 then exit;
-  for index := 0 to c - 1 do
+  c := AList.Count;
+  if c = 0 then Exit;
+  for Index := 0 to c - 1 do
   begin
     try
-      s := aList[index];
-      p := pos('..', s);
+      s := aList[Index];
+      p := Pos('..', s);
       if p = 0 then
       begin
-        if (aList[index]) = sv then
+        if (aList[Index]) = sv then
         begin
-          result := index;
-          exit;
+          Result := Index;
+          Exit;
         end;
       end
       else
       begin
-        s1 := trim(copy(s, 1, p - 1));
-        s2 := trim(copy(s, p + 2, length(s)));
+        s1 := trim(Copy(s, 1, p - 1));
+        s2 := trim(Copy(s, p + 2, Length(s)));
         if (sv >= s1) and (sv <= s2) then
         begin
-          result := index;
-          exit;
+          Result := Index;
+          Exit;
         end;
       end;
     except
-      exit;
+      Exit;
     end;
   end;
 end;
 
 // used by dfoIN
-// tests if Avalue is in aSet
+// tests if AValue is in aSet
 
-function FuncIn(Avalue: variant; aSet: variant): boolean;
+function FuncIn(AValue: Variant; aSet: Variant): Boolean;
 var
-  list: TStringlist;
+  List: TStringlist;
   s: string;
-  p: integer;
+  p: Integer;
   token: string;
 
-  function GetToken: boolean;
+  function GetToken: Boolean;
   begin
-    result := false;
+    Result := False;
     s := trimleft(s);
-    if s = '' then exit;
+    if s = '' then Exit;
     p := 1;
     if s[1] = '"' then
     begin // get string
       p := posstr('"', s, 2);
       if p = 0 then
         raise EJvjanScriptError.CreateFmt(RsEUnterminatedStringNears, [s]);
-      token := copy(s, 2, p - 2);
-      delete(s, 1, p);
-      result := true;
+      token := Copy(s, 2, p - 2);
+      Delete(s, 1, p);
+      Result := True;
     end
     else
     begin
-      p := pos(' ', s);
+      p := Pos(' ', s);
       if p = 0 then
       begin
         token := s;
-        result := true;
+        Result := True;
         s := '';
       end
       else
       begin
-        token := copy(s, 1, p - 1);
-        delete(s, 1, p);
-        result := true
+        token := Copy(s, 1, p - 1);
+        Delete(s, 1, p);
+        Result := True
       end;
     end
   end;
 
 begin
-  result := false;
+  Result := False;
   s := aSet;
-  if s = '' then exit;
-  list := tstringlist.create;
+  if s = '' then Exit;
+  List := tstringlist.create;
   try
     while gettoken do
-      list.append(token);
-    //    c:=list.count;
+      List.append(token);
+    //    c:=List.Count;
     case vartype(AValue) of
       varString:
         begin
-          result := IndexOfString(list, Avalue) > -1;
+          Result := IndexOfString(List, AValue) > -1;
         end;
       varInteger, varByte:
         begin
-          result := IndexOfInteger(list, Avalue) > -1;
+          Result := IndexOfInteger(List, AValue) > -1;
         end;
       varSingle, varDouble:
         begin
-          result := IndexOfFloat(list, Avalue) > -1;
+          Result := IndexOfFloat(List, AValue) > -1;
         end;
       varDate:
         begin
-          result := IndexOfDate(list, Avalue) > -1;
+          Result := IndexOfDate(List, AValue) > -1;
         end;
     else
       raise EJvjanScriptError.Create(RsEUnrecognizedDataTypeInSetOperation);
     end;
   finally
-    list.free;
+    List.Free;
   end;
 end;
 
 { TJvForthScript }
 
-procedure TJvForthScript.vpush(aValue: variant);
+procedure TJvForthScript.vpush(aValue: Variant);
 begin
   //Vstack.push(aValue);
-  vstack[vsp] := avalue;
+  vstack[vsp] := aValue;
   if vsp < StackMax then
-    inc(vsp)
+    Inc(vsp)
   else
     raise EJvjanScriptError.Create(RsEStackOverflow);
 end;
@@ -679,9 +671,9 @@ end;
 (*
 procedure TJvForthScript.opush(aValue: TToken);
 begin
-  ostack[osp] := avalue;
+  ostack[osp] := aValue;
   if osp < StackMax then
-    inc(osp);
+    Inc(osp);
 end;
 *)
 (*
@@ -689,48 +681,48 @@ function TJvForthScript.opop: TToken;
 begin
   showmessage('opop');
   if osp <= 0 then
-    result := dfonop
+    Result := dfonop
   else
   begin
-    dec(osp);
-    result := ostack[osp];
+    Dec(osp);
+    Result := ostack[osp];
   end;
 end;
 *)
 (*
 procedure TJvForthScript.ppush(aValue: TToken);
 begin
-  pstack[psp] := avalue;
+  pstack[psp] := aValue;
   if psp < StackMax then
-    inc(psp);
+    Inc(psp);
 end;
 *)
 (*
 function TJvForthScript.ppop: TToken;
 begin
   if psp = 0 then
-    result := dfoError
+    Result := dfoError
   else
   begin
-    dec(psp);
-    result := pstack[psp];
+    Dec(psp);
+    Result := pstack[psp];
   end;
 end;
 *)
-function TJvForthScript.vpop: variant;
+function TJvForthScript.vpop: Variant;
 begin
   if vsp = 0 then
     raise EJvjanScriptError.Create(RsEStackUnderflow)
   else
   begin
-    dec(vsp);
-    result := vstack[vsp];
+    Dec(vsp);
+    Result := vstack[vsp];
   end;
 end;
 
 procedure TJvForthScript.SetScript(const Value: string);
 begin
-  if value <> FScript then
+  if Value <> FScript then
   begin
     FScript := Value;
     ParseScript;
@@ -741,99 +733,99 @@ end;
 procedure TJvForthScript.ParseScript;
 var
   s: string;
-  i, p, p2: integer;
+  i, p, p2: Integer;
   atom: TAtom;
   //  atomoperation:TToken;
   atomsymbol: string;
-  atomvalue: variant;
+  atomValue: Variant;
   //  atomproc:TProcVar;
   token: string;
-  vinteger: integer;
+  vinteger: Integer;
   vfloat: double;
   vdate: TdateTime;
   // handling of includes:
   incfile: string;
-  handled: boolean;
+  Handled: Boolean;
   incScript: string;
   errStr: string;
   TimeOutTicks: Cardinal;
   deltaTicks: Cardinal;
 
-  function pushatom(aToken: TToken): integer;
-    //    var cc:integer;
+  function pushatom(aToken: TToken): Integer;
+    //    var cc:Integer;
   begin
     atom := TAtom.Create;
     atom.Token := atoken;
     atom.symbol := atomsymbol;
-    atom.value := atomvalue;
-    result := atoms.Add(atom);
+    atom.Value := atomValue;
+    Result := atoms.Add(atom);
   end;
 
   procedure opush(aToken: TToken);
-    //    var cc:integer;
+    //    var cc:Integer;
   begin
     atom := TAtom.Create;
     atom.Token := atoken;
     atom.symbol := token;
-    atom.value := atomvalue;
+    atom.Value := atomValue;
     atoms.Add(atom);
   end;
 
   procedure brcpush(proc: TProcVar);
-    //    var cc:integer;
+    //    var cc:Integer;
   begin
     atom := TAtom.Create;
     atom.Proc := proc;
     atom.symbol := atomsymbol;
-    atom.value := atomvalue;
-    atom.IsOperant := false;
+    atom.Value := atomValue;
+    atom.IsOperant := False;
     atoms.Add(atom);
   end;
 
-  function GetToken: boolean;
+  function GetToken: Boolean;
   begin
-    result := false;
+    Result := False;
     s := trimleft(s);
-    if s = '' then exit;
+    if s = '' then Exit;
     p := 1;
     if s[1] = '"' then
     begin // get string
       p := posstr('"', s, 2);
       if p = 0 then
         raise EJvjanScriptError.CreateFmt(RsEUnterminatedStringNears, [s]);
-      token := copy(s, 1, p);
-      delete(s, 1, p);
-      result := true;
+      token := Copy(s, 1, p);
+      Delete(s, 1, p);
+      Result := True;
     end
     else if s[1] = '[' then
     begin // get block
       p := posstr(']', s, 2);
       if p = 0 then
         raise EJvjanScriptError.CreateFmt(RsEUnterminatedBlockNear, [s]);
-      token := copy(s, 1, p);
-      delete(s, 1, p);
-      result := true;
+      token := Copy(s, 1, p);
+      Delete(s, 1, p);
+      Result := True;
     end
     else
     begin
-      p := pos(' ', s);
+      p := Pos(' ', s);
       if p = 0 then
       begin
         token := s;
-        result := true;
+        Result := True;
         s := '';
       end
       else
       begin
-        token := copy(s, 1, p - 1);
-        delete(s, 1, p);
-        result := true
+        token := Copy(s, 1, p - 1);
+        Delete(s, 1, p);
+        Result := True
       end;
     end
   end;
 
 begin
-  Atoms.clearObjects;
+  Atoms.ClearObjects;
   FSubsList.Clear;
   // reset return stack; needed in resolving flow statements
   rsp := 0;
@@ -842,54 +834,54 @@ begin
   // when the parser detects and include file it will raise the oninclude event
   // include files can also include files (nested includes)
   deltaTicks := FScriptTimeOut * 1000;
-  TimeOutticks := gettickcount + DeltaTicks;
-  FIncludes.Clear; // clear the includes list
+  TimeOutticks := GetTickCount + DeltaTicks;
+  FIncludes.Clear; // Clear the includes List
   repeat
-    if gettickCount > timeOutTicks then
+    if GetTickCount > timeOutTicks then
       raise EJvjanScriptError.CreateFmt(RsEParserTimedOutAfterdSecondsYouMayHa, [FScriptTimeout]);
     p := posstr('$$', s);
     if p > 0 then
     begin
       p2 := posstr(';', s, p);
       if p2 = 0 then
-        raise EJvjanScriptError.CreateFmt(RsEUnterminatedIncludeNears, [copy(s, p, length(s))]);
-      incfile := copy(s, p + 2, p2 - p - 2) + '.jan';
+        raise EJvjanScriptError.CreateFmt(RsEUnterminatedIncludeNears, [Copy(s, p, Length(s))]);
+      incfile := Copy(s, p + 2, p2 - p - 2) + '.jan';
       if posstr(' ', incfile, 1) > 0 then
         raise EJvjanScriptError.CreateFmt(RsEIllegalSpaceCharacterInTheIncludeFi, [incfile]);
       i := FIncludes.IndexOf(incfile);
       if i <> -1 then
       begin
-        delete(s, p, p2 - p + 1);
+        Delete(s, p, p2 - p + 1);
       end
       else
       begin
         errStr := Format(RsECanNotFindIncludeFiles, [incfile]);
-        handled := false;
+        Handled := False;
         incScript := '';
         if not assigned(oninclude) then
-          raise EJvjanScriptError.CreateFmt(RsEOnIncludeHandlerNotAssignedCanNotHa, [copy(s, p, length(s))]);
-        oninclude(self, incfile, incScript, handled, errStr);
-        if not handled then
+          raise EJvjanScriptError.CreateFmt(RsEOnIncludeHandlerNotAssignedCanNotHa, [Copy(s, p, Length(s))]);
+        oninclude(self, incfile, incScript, Handled, errStr);
+        if not Handled then
           raise EJvjanScriptError.Create(errStr);
-        delete(s, p, p2 - p + 1);
-        insert(incScript, s, p);
+        Delete(s, p, p2 - p + 1);
+        Insert(incScript, s, p);
         FIncludes.Append(incFile);
       end;
     end;
   until p = 0;
-  s := trim(stringreplace(s, sLineBreak, ' ', [rfreplaceall]));
+  s := trim(StringReplace(s, sLineBreak, ' ', [rfreplaceall]));
   // remove comments
   repeat
-    p := pos('{', s);
+    p := Pos('{', s);
     if p > 0 then
     begin
       p2 := posstr('}', s, p);
       if p2 = 0 then
         raise EJvjanScriptError.CreateFmt(RsEMissingCommentTerminatorNears, [s]);
-      delete(s, p, p2 - p + 1);
+      Delete(s, p, p2 - p + 1);
     end;
   until p = 0;
-  if s = '' then exit;
+  if s = '' then Exit;
   while gettoken do
   begin
     if token = 'cstr' then
@@ -914,7 +906,7 @@ begin
       p := pushatom(dfoEndIf);
       p2 := rpop;
       atom := TAtom(atoms[p2]);
-      atom.value := p + 1;
+      atom.Value := p + 1;
     end
     else if token = 'else' then
     begin
@@ -922,7 +914,7 @@ begin
       p2 := rpop;
       rpush(p);
       atom := TAtom(atoms[p2]);
-      atom.value := p + 1;
+      atom.Value := p + 1;
     end
     else if token = 'repeat' then
     begin
@@ -931,7 +923,7 @@ begin
     end
     else if token = 'until' then
     begin
-      atomvalue := rpop;
+      atomValue := rpop;
       pushatom(dfoUntil);
     end
     else if token = 'now' then
@@ -1014,100 +1006,100 @@ begin
     else if token[1] = '[' then
     begin
       atomsymbol := token;
-      atomvalue := copy(token, 2, length(token) - 2);
+      atomValue := Copy(token, 2, Length(token) - 2);
       pushatom(dfoSet);
     end
       // check for sub
-    else if token[length(token)] = '=' then
+    else if token[Length(token)] = '=' then
     begin
-      atomsymbol := copy(token, 1, length(token) - 1);
+      atomsymbol := Copy(token, 1, Length(token) - 1);
       p := pushatom(dfosub);
       FSubsList.AddObject(atomsymbol, Tobject(p + 1));
     end
       // check for xml object
-    else if (token[1] = '?') and (length(token) > 1) then
+    else if (token[1] = '?') and (Length(token) > 1) then
     begin
-      p := pos('.', token);
-      if (p = 0) or (p < 3) or (p = length(token)) then
+      p := Pos('.', token);
+      if (p = 0) or (p < 3) or (p = Length(token)) then
         raise EJvjanScriptError.CreateFmt(RsEMissingXmlMethodSpecifierNears, [s]);
-      atomsymbol := copy(token, 2, p - 2);
-      atomvalue := copy(token, p + 1, length(token));
+      atomsymbol := Copy(token, 2, p - 2);
+      atomValue := Copy(token, p + 1, Length(token));
       pushatom(dfoXML);
     end
       // check for data source object
-    else if (token[1] = '_') and (length(token) > 1) then
+    else if (token[1] = '_') and (Length(token) > 1) then
     begin
-      p := pos('.', token);
-      if (p = 0) or (p < 3) or (p = length(token)) then
+      p := Pos('.', token);
+      if (p = 0) or (p < 3) or (p = Length(token)) then
         raise EJvjanScriptError.CreateFmt(RsEMissingDataSourceMethodSpecifierNea, [s]);
-      atomsymbol := copy(token, 2, p - 2);
-      atomvalue := copy(token, p + 1, length(token));
+      atomsymbol := Copy(token, 2, p - 2);
+      atomValue := Copy(token, p + 1, Length(token));
       pushatom(dfoDSO);
     end
       // system
-    else if (token[1] = ')') and (length(token) > 1) then
+    else if (token[1] = ')') and (Length(token) > 1) then
     begin
-      p := pos('.', token);
-      if (p = 0) or (p < 3) or (p = length(token)) then
+      p := Pos('.', token);
+      if (p = 0) or (p < 3) or (p = Length(token)) then
         raise EJvjanScriptError.CreateFmt(RsEMissingSystemMethodSpecifierNears, [s]);
-      atomsymbol := copy(token, 2, p - 2);
-      atomvalue := copy(token, p + 1, length(token));
+      atomsymbol := Copy(token, 2, p - 2);
+      atomValue := Copy(token, p + 1, Length(token));
       pushatom(dfoSystem);
     end
       // external variable
-    else if (token[1] = '>') and (length(token) > 1) then
+    else if (token[1] = '>') and (Length(token) > 1) then
     begin
-      p := pos('.', token);
-      if (p = 0) or (p < 3) or (p = length(token)) then
+      p := Pos('.', token);
+      if (p = 0) or (p < 3) or (p = Length(token)) then
         raise EJvjanScriptError.CreateFmt(RsEMissingExternalVariableMethodSpecif, [s]);
-      atomsymbol := copy(token, 2, p - 2);
-      atomvalue := copy(token, p + 1, length(token));
+      atomsymbol := Copy(token, 2, p - 2);
+      atomValue := Copy(token, p + 1, Length(token));
       pushatom(dfoExtVar);
     end
       // check for internal variable
-    else if (token[1] = ':') and (length(token) > 1) then
+    else if (token[1] = ':') and (Length(token) > 1) then
     begin
-      p := pos('.', token);
-      if (p = 0) or (p < 3) or (p = length(token)) then
+      p := Pos('.', token);
+      if (p = 0) or (p < 3) or (p = Length(token)) then
         raise EJvjanScriptError.CreateFmt(RsEMissingInternalVariableMethodSpecif, [s]);
-      atomsymbol := copy(token, 2, p - 2);
-      atomvalue := copy(token, p + 1, length(token));
+      atomsymbol := Copy(token, 2, p - 2);
+      atomValue := Copy(token, p + 1, Length(token));
       pushatom(dfoIntVar);
     end
       // check for string
     else if token[1] = '"' then
     begin
       atomsymbol := token;
-      atomvalue := copy(token, 2, length(token) - 2);
+      atomValue := Copy(token, 2, Length(token) - 2);
       pushatom(dfostring);
     end
-      // check integer, float or date
+      // check Integer, float or date
     else
     begin
-      try // integer
+      try // Integer
         vinteger := strtoint(token);
         atomsymbol := token;
-        atomvalue := vinteger;
+        atomValue := vinteger;
         pushatom(dfoInteger);
       except
         try // float
           vfloat := strtofloat(token);
           atomsymbol := token;
-          atomvalue := vfloat;
+          atomValue := vfloat;
           pushatom(dfofloat);
         except
           try // date
             vdate := strtodate(token);
             atomsymbol := token;
-            atomvalue := vdate;
+            atomValue := vdate;
             pushatom(dfoDate);
           except // must be call to sub
             atomsymbol := token;
             p := FSubsList.IndexOf(atomsymbol);
             if p = -1 then
               raise EJvjanScriptError.CreateFmt(RsEUndefinedWordsNears, [atomsymbol, s]);
-            p := integer(FsubsList.objects[p]);
-            atomvalue := p;
+            p := Integer(FsubsList.Objects[p]);
+            atomValue := p;
             pushatom(dfoCall);
           end;
         end;
@@ -1191,15 +1183,15 @@ begin
   end;
 end;
 
-function TJvForthScript.Execute: variant;
+function TJvForthScript.Execute: Variant;
 var
-  c: integer;
+  c: Integer;
   atom: TAtom;
   Token: TToken;
   TimeOutTicks: Cardinal;
   deltaTicks: cardinal;
 begin
-  result := null;
+  Result := null;
   osp := 0;
   vsp := 0;
   psp := 0;
@@ -1210,18 +1202,18 @@ begin
   FXMLList.ClearXMLS;
   FXMLSelect.Clear;
   FXMLSelectRecord := -1;
-  if c = 0 then exit;
+  if c = 0 then Exit;
   pc := 0;
   deltaTicks := FScriptTimeOut * 1000;
-  TimeOutticks := gettickcount + DeltaTicks;
+  TimeOutticks := GetTickCount + DeltaTicks;
   // evaluate all atoms
   while pc < c do
   begin
-    if gettickCount > timeOutTicks then
+    if GetTickCount > timeOutTicks then
       raise EJvjanScriptError.CreateFmt(RsEScriptTimedOutAfterdSeconds, [FScriptTimeout]);
     atom := TAtom(atoms[pc]);
-    inc(pc);
-    CurrentValue := atom.value;
+    Inc(pc);
+    CurrentValue := atom.Value;
     CurrentSymbol := atom.symbol;
     token := atom.Token;
     case token of
@@ -1236,9 +1228,9 @@ begin
     end
   end;
   if vsp <= 0 then
-    result := null
+    Result := null
   else
-    result := vpop;
+    Result := vpop;
 end;
 
 constructor TJvForthScript.Create(AOwner: TComponent);
@@ -1251,9 +1243,9 @@ begin
   FDSOList := TJvJanDSOList.Create;
   FXMLList := TJvJanXMLList.Create;
   FXMLSelect := TList.Create;
-  FDSOBase := extractfilepath(paramstr(0));
-  if FDSOBase[length(FDSOBase)] = '\' then
-    delete(FDSOBase, length(FDSOBase), 1);
+  FDSOBase := ExtractFilePath(paramstr(0));
+  if FDSOBase[Length(FDSOBase)] = '\' then
+    Delete(FDSOBase, Length(FDSOBase), 1);
   vsp := 0;
   osp := 0;
   rsp := 0;
@@ -1264,13 +1256,13 @@ end;
 
 destructor TJvForthScript.Destroy;
 begin
-  atoms.free;
-  FIncludes.free;
-  FSubsList.free;
-  FVarsList.free;
-  FDSOList.free;
+  atoms.Free;
+  FIncludes.Free;
+  FSubsList.Free;
+  FVarsList.Free;
+  FDSOList.Free;
   FXMLList.Free;
-  FXMLSelect.free;
+  FXMLSelect.Free;
   inherited;
 end;
 
@@ -1282,12 +1274,12 @@ end;
 (*)
 procedure TJvForthScript.ClearAtoms;
 var
-  i, c: integer;
+  i, c: Integer;
 begin
   c := atoms.Count;
-  if c = 0 then exit;
+  if c = 0 then Exit;
   for i := 0 to c - 1 do
-    Tobject(atoms[i]).free;
+    Tobject(atoms[i]).Free;
   atoms.Clear;
 end;
 (*)
@@ -1299,35 +1291,35 @@ end;
 
 procedure TJvForthScript.procAdd;
 var
-  value: variant;
+  Value: Variant;
 begin
-  value := vpop;
-  value := vpop + value;
-  vpush(value);
+  Value := vpop;
+  Value := vpop + Value;
+  vpush(Value);
 end;
 
 procedure TJvForthScript.procAnd;
 var
-  value: variant;
+  Value: Variant;
 begin
-  value := vpop;
-  vpush(vpop and value);
+  Value := vpop;
+  vpush(vpop and Value);
 end;
 
 procedure TJvForthScript.procassign;
 var
-  value: variant;
-  handled: boolean;
+  Value: Variant;
+  Handled: Boolean;
   err: string;
 begin
-  value := vpop;
-  vpush(value);
-  handled := false;
+  Value := vpop;
+  vpush(Value);
+  Handled := False;
   err := Format(RsECanNotAssignVariables, [CurrentSymbol]);
   if assigned(onSetVariable) then
   begin
-    onSetVariable(self, CurrentSymbol, value, handled, Err);
-    if not handled then
+    onSetVariable(self, CurrentSymbol, Value, Handled, Err);
+    if not Handled then
       raise EJvjanScriptError.Create(err);
   end;
 end;
@@ -1342,18 +1334,18 @@ procedure TJvForthScript.doproc;
 var
   token: TToken;
 begin
-  if psp <= 0 then exit;
-  dec(psp);
+  if psp <= 0 then Exit;
+  Dec(psp);
   token := pstack[psp];
   doToken(token);
 end;
 
 procedure TJvForthScript.procCos;
 var
-  value: variant;
+  Value: Variant;
 begin
-  value := vpop;
-  vpush(cos(value));
+  Value := vpop;
+  vpush(cos(Value));
 end;
 
 procedure TJvForthScript.procDate;
@@ -1364,18 +1356,18 @@ end;
 
 procedure TJvForthScript.procDivide;
 var
-  value: variant;
+  Value: Variant;
 begin
-  value := vpop;
-  vpush(vpop / value);
+  Value := vpop;
+  vpush(vpop / Value);
 end;
 
 procedure TJvForthScript.procEq;
 var
-  value: variant;
+  Value: Variant;
 begin
-  value := vpop;
-  vpush(vpop = value);
+  Value := vpop;
+  vpush(vpop = Value);
 end;
 
 procedure TJvForthScript.procFloat;
@@ -1386,26 +1378,26 @@ end;
 
 procedure TJvForthScript.procGe;
 var
-  value: variant;
+  Value: Variant;
 begin
-  value := vpop;
-  vpush(vpop >= value);
+  Value := vpop;
+  vpush(vpop >= Value);
 end;
 
 procedure TJvForthScript.procGt;
 var
-  value: variant;
+  Value: Variant;
 begin
-  value := vpop;
-  vpush(vpop > value);
+  Value := vpop;
+  vpush(vpop > Value);
 end;
 
 procedure TJvForthScript.procIn;
 var
-  value: variant;
+  Value: Variant;
 begin
-  value := vpop;
-  vpush(FuncIn(vpop, value));
+  Value := vpop;
+  vpush(FuncIn(vpop, Value));
 end;
 
 procedure TJvForthScript.procInteger;
@@ -1416,65 +1408,65 @@ end;
 
 procedure TJvForthScript.procLe;
 var
-  value: variant;
+  Value: Variant;
 begin
-  value := vpop;
-  vpush(vpop <= value);
+  Value := vpop;
+  vpush(vpop <= Value);
 end;
 
 procedure TJvForthScript.procLeft;
 var
-  value, v2: variant;
-  vali: integer;
+  Value, v2: Variant;
+  vali: Integer;
   vals: string;
 begin
-  value := vpop;
+  Value := vpop;
   v2 := vpop;
-  vali := value;
+  vali := Value;
   vals := v2;
-  value := copy(vals, 1, vali);
-  vpush(value);
+  Value := Copy(vals, 1, vali);
+  vpush(Value);
 end;
 
 procedure TJvForthScript.procLike;
 var
-  value: variant;
+  Value: Variant;
 begin
-  value := vartostr(vpop);
-  vpush(pos(lowercase(value), lowercase(vartostr(vpop))) > 0);
+  Value := vartostr(vpop);
+  vpush(Pos(LowerCase(Value), LowerCase(vartostr(vpop))) > 0);
 end;
 
 procedure TJvForthScript.procLt;
 var
-  value: variant;
+  Value: Variant;
 begin
-  value := vpop;
-  vpush(vpop < value);
+  Value := vpop;
+  vpush(vpop < Value);
 end;
 
 procedure TJvForthScript.procMultiply;
 var
-  value: variant;
+  Value: Variant;
 begin
-  value := vpop;
-  value := vpop * value;
-  vpush(value);
+  Value := vpop;
+  Value := vpop * Value;
+  vpush(Value);
 end;
 
 procedure TJvForthScript.procNe;
 var
-  value: variant;
+  Value: Variant;
 begin
-  value := vpop;
-  vpush(vpop <> value);
+  Value := vpop;
+  vpush(vpop <> Value);
 end;
 
 procedure TJvForthScript.procNegate;
 var
-  value: variant;
+  Value: Variant;
 begin
-  value := vpop;
-  vpush(0 - value);
+  Value := vpop;
+  vpush(0 - Value);
 end;
 
 procedure TJvForthScript.procNop;
@@ -1484,35 +1476,35 @@ end;
 
 procedure TJvForthScript.procNot;
 var
-  value: variant;
+  Value: Variant;
 begin
-  value := vpop;
-  vpush(not value);
+  Value := vpop;
+  vpush(not Value);
 end;
 
 procedure TJvForthScript.procOr;
 var
-  value: variant;
+  Value: Variant;
 begin
-  value := vpop;
-  vpush(vpop or value);
+  Value := vpop;
+  vpush(vpop or Value);
 end;
 
 procedure TJvForthScript.procRight;
 var
-  value, v2: variant;
-  vali: integer;
+  Value, v2: Variant;
+  vali: Integer;
   vals: string;
 begin
-  value := vpop;
+  Value := vpop;
   v2 := vpop;
-  vali := value;
+  vali := Value;
   vals := v2;
-  if vali <= length(vals) then
-    value := copy(vals, length(vals) - vali + 1, vali)
+  if vali <= Length(vals) then
+    Value := Copy(vals, Length(vals) - vali + 1, vali)
   else
-    value := vals;
-  vpush(value);
+    Value := vals;
+  vpush(Value);
 end;
 
 procedure TJvForthScript.procSet;
@@ -1523,26 +1515,26 @@ end;
 
 procedure TJvForthScript.procSin;
 var
-  value: variant;
+  Value: Variant;
 begin
-  value := vpop;
-  vpush(sin(value));
+  Value := vpop;
+  vpush(Sin(Value));
 end;
 
 procedure TJvForthScript.procSqr;
 var
-  value: variant;
+  Value: Variant;
 begin
-  value := vpop;
-  vpush(sqr(value));
+  Value := vpop;
+  vpush(Sqr(Value));
 end;
 
 procedure TJvForthScript.procSqrt;
 var
-  value: variant;
+  Value: Variant;
 begin
-  value := vpop;
-  vpush(sqrt(value));
+  Value := vpop;
+  vpush(Sqrt(Value));
 end;
 
 procedure TJvForthScript.procString;
@@ -1553,53 +1545,53 @@ end;
 
 procedure TJvForthScript.procSubtract;
 var
-  value: variant;
+  Value: Variant;
 begin
-  value := vpop;
-  vpush(vpop - value);
+  Value := vpop;
+  vpush(vpop - Value);
 end;
 
 procedure TJvForthScript.procUnlike;
 var
-  value: variant;
+  Value: Variant;
 begin
-  value := vartostr(vpop);
-  vpush(pos(lowercase(value), lowercase(vartostr(vpop))) = 0);
+  Value := vartostr(vpop);
+  vpush(Pos(LowerCase(Value), LowerCase(vartostr(vpop))) = 0);
 end;
 
 procedure TJvForthScript.procVariable;
 var
-  value: variant;
-  handled: boolean;
+  Value: Variant;
+  Handled: Boolean;
   err: string;
 begin
-  handled := false;
+  Handled := False;
   err := Format(RsEVariablesNotDefined, [CurrentSymbol]);
   if assigned(onGetVariable) then
-    onGetVariable(self, CurrentSymbol, value, handled, Err);
-  if not handled then
+    onGetVariable(self, CurrentSymbol, Value, Handled, Err);
+  if not Handled then
     raise EJvjanScriptError.Create(err)
   else
-    Vpush(value);
+    Vpush(Value);
 end;
 
 procedure TJvForthScript.procXor;
 var
-  value: variant;
+  Value: Variant;
 begin
-  value := vpop;
-  vpush(vpop xor value);
+  Value := vpop;
+  vpush(vpop xor Value);
 end;
 
 procedure TJvForthScript.procIf;
 var
-  v: variant;
+  v: Variant;
 begin
   v := vpop;
   if v then
-    exit
+    Exit
   else
-    pc := Currentvalue;
+    pc := CurrentValue;
 end;
 
 procedure TJvForthScript.procElse;
@@ -1614,7 +1606,7 @@ end;
 
 procedure TJvForthScript.procDup;
 var
-  v: variant;
+  v: Variant;
 begin
   v := vpop;
   vpush(v);
@@ -1623,7 +1615,7 @@ end;
 
 procedure TJvForthScript.procSwap;
 var
-  v1, v2: variant;
+  v1, v2: Variant;
 begin
   v1 := vpop;
   v2 := vpop;
@@ -1638,7 +1630,7 @@ begin
   // do nothing
 end;
 
-// keep looping until vpop=true
+// keep looping until vpop=True
 
 procedure TJvForthScript.procUntil;
 begin
@@ -1650,27 +1642,27 @@ begin
   // do nothing
 end;
 
-function TJvForthScript.rpop: integer;
+function TJvForthScript.rpop: Integer;
 begin
   if rsp <= 0 then
     raise EJvjanScriptError.Create(RsEReturnStackUnderflow)
   else
   begin
-    dec(rsp);
-    result := rstack[rsp];
+    Dec(rsp);
+    Result := rstack[rsp];
   end;
 end;
 
 procedure TJvForthScript.rpush(aValue: Integer);
 begin
-  rstack[rsp] := avalue;
+  rstack[rsp] := aValue;
   if rsp < StackMax then
-    inc(rsp)
+    Inc(rsp)
   else
     raise EJvjanScriptError.Create(RsEReturnStackOverflow);
 end;
 
-procedure TJvForthScript.SetScriptTimeOut(const Value: integer);
+procedure TJvForthScript.SetScriptTimeOut(const Value: Integer);
 begin
   FScriptTimeOut := Value;
 end;
@@ -1684,7 +1676,7 @@ end;
 
 procedure TJvForthScript.procSub;
 var
-  c: integer;
+  c: Integer;
   token: TToken;
 begin
   { TODO -oJVCL -cPOSSIBLEBUG : (p3) What should "c" really be here? }
@@ -1694,10 +1686,10 @@ begin
     token := TAtom(atoms[pc]).token;
     if token = dfoEndSub then
     begin
-      inc(pc);
-      exit;
+      Inc(pc);
+      Exit;
     end;
-    inc(pc);
+    Inc(pc);
   end;
 end;
 
@@ -1705,16 +1697,16 @@ end;
 
 procedure TJvForthScript.procCall;
 var
-  index: integer;
+  Index: Integer;
 begin
-  //  index:=FSubsList.IndexOf(CurrentSymbol);
-  index := CurrentValue;
-  if index <> -1 then
+  //  Index:=FSubsList.IndexOf(CurrentSymbol);
+  Index := CurrentValue;
+  if Index <> -1 then
   begin
     rpush(pc);
-    //    pc:=integer(FsubsList.objects[index]);
-    pc := index;
-    exit;
+    //    pc:=Integer(FsubsList.Objects[Index]);
+    pc := Index;
+    Exit;
   end
   else
     raise EJvjanScriptError.CreateFmt(RsEProceduresNotDefined, [CurrentSymbol]);
@@ -1722,7 +1714,7 @@ end;
 
 procedure TJvForthScript.procVarGet;
 var
-  v: variant;
+  v: Variant;
 begin
   v := FvarsList.GetVariable(Currentsymbol);
   if v <> null then
@@ -1733,7 +1725,7 @@ end;
 
 procedure TJvForthScript.procVarSet;
 var
-  v: variant;
+  v: Variant;
 begin
   v := vpop;
   FVarsList.SetVariable(CurrentSymbol, v);
@@ -1749,35 +1741,35 @@ end;
 
 procedure TJvForthScript.procSysGet;
 var
-  value: variant;
-  handled: boolean;
+  Value: Variant;
+  Handled: Boolean;
   err, prompt: string;
 begin
   prompt := vpop;
-  handled := false;
+  Handled := False;
   err := Format(RsESystemsNotDefined, [CurrentSymbol]);
   if assigned(onGetSystem) then
-    onGetSystem(self, CurrentSymbol, prompt, value, handled, Err);
-  if not handled then
+    onGetSystem(self, CurrentSymbol, prompt, Value, Handled, Err);
+  if not Handled then
     raise EJvjanScriptError.Create(err)
   else
-    Vpush(value);
+    Vpush(Value);
 end;
 
 procedure TJvForthScript.procSysSet;
 var
-  value: variant;
-  handled: boolean;
+  Value: Variant;
+  Handled: Boolean;
   err: string;
 begin
-  value := vpop;
-  vpush(value);
-  handled := false;
+  Value := vpop;
+  vpush(Value);
+  Handled := False;
   err := Format(RsECanNotAssignSystems, [CurrentSymbol]);
   if assigned(onSetSystem) then
   begin
-    onSetSystem(self, CurrentSymbol, value, handled, Err);
-    if not handled then
+    onSetSystem(self, CurrentSymbol, Value, Handled, Err);
+    if not Handled then
       raise EJvjanScriptError.Create(err);
   end;
 end;
@@ -1792,24 +1784,24 @@ begin
   FonSetSystem := Value;
 end;
 
-function TJvForthScript.popValue: variant;
+function TJvForthScript.popValue: Variant;
 begin
-  result := vpop;
+  Result := vpop;
 end;
 
-procedure TJvForthScript.pushValue(aValue: variant);
+procedure TJvForthScript.pushValue(aValue: Variant);
 begin
   vpush(aValue);
 end;
 
-function TJvForthScript.canPopValue: boolean;
+function TJvForthScript.canPopValue: Boolean;
 begin
-  result := vsp > 0;
+  Result := vsp > 0;
 end;
 
-function TJvForthScript.canPushValue: boolean;
+function TJvForthScript.canPushValue: Boolean;
 begin
-  result := vsp < StackMax;
+  Result := vsp < StackMax;
 end;
 
 procedure TJvForthScript.procpi;
@@ -1822,8 +1814,8 @@ var
   aName, aMethod: string;
   table: TJvJanDSO;
   aField, aValue: string;
-  akey: variant;
-  c: integer;
+  akey: Variant;
+  c: Integer;
 begin
   aName := CurrentSymbol;
   aMethod := CurrentValue;
@@ -1832,7 +1824,7 @@ begin
   begin
     akey := vpop;
     aField := vpop;
-    avalue := vpop;
+    aValue := vpop;
     table.SetValue(akey, aField, aValue);
   end
   else if aMethod = 'get' then
@@ -1840,7 +1832,7 @@ begin
     akey := vpop;
     aField := vpop;
     aValue := table.GetValue(akey, aField);
-    vpush(avalue);
+    vpush(aValue);
   end
   else if aMethod = 'load' then
   begin
@@ -1850,11 +1842,11 @@ begin
   begin
     table.SaveToFile(FDSOBase + '\' + aName + '.txt');
   end
-  else if aMethod = 'clear' then
+  else if aMethod = 'Clear' then
   begin
     table.Clear;
   end
-  else if aMethod = 'count' then
+  else if aMethod = 'Count' then
   begin
     c := table.Count;
     vpush(c);
@@ -1948,7 +1940,7 @@ var
 begin
   vo := FvarsList.GetObject(Currentsymbol);
   if vo <> nil then
-    vo.value := vo.value - 1
+    vo.Value := vo.Value - 1
   else
     raise EJvjanScriptError.CreateFmt(RsEVariablesNotDefined_, [CurrentSymbol]);
 end;
@@ -1959,7 +1951,7 @@ var
 begin
   vo := FvarsList.GetObject(Currentsymbol);
   if vo <> nil then
-    vo.value := vo.value + 1
+    vo.Value := vo.Value + 1
   else
     raise EJvjanScriptError.CreateFmt(RsEVariablesNotDefined_, [CurrentSymbol]);
 end;
@@ -1970,7 +1962,7 @@ var
 begin
   vo := FvarsList.GetObject(Currentsymbol);
   if vo <> nil then
-    vo.value := vo.value + vpop
+    vo.Value := vo.Value + vpop
   else
     raise EJvjanScriptError.CreateFmt(RsEVariablesNotDefined_, [CurrentSymbol]);
 end;
@@ -1981,7 +1973,7 @@ var
 begin
   vo := FvarsList.GetObject(Currentsymbol);
   if vo <> nil then
-    vo.value := vo.value / vpop
+    vo.Value := vo.Value / vpop
   else
     raise EJvjanScriptError.CreateFmt(RsEVariablesNotDefined_, [CurrentSymbol]);
 end;
@@ -1992,7 +1984,7 @@ var
 begin
   vo := FvarsList.GetObject(Currentsymbol);
   if vo <> nil then
-    vo.value := vo.value * vpop
+    vo.Value := vo.Value * vpop
   else
     raise EJvjanScriptError.CreateFmt(RsEVariablesNotDefined_, [CurrentSymbol]);
 end;
@@ -2003,7 +1995,7 @@ var
 begin
   vo := FvarsList.GetObject(Currentsymbol);
   if vo <> nil then
-    vo.value := vo.value - vpop
+    vo.Value := vo.Value - vpop
   else
     raise EJvjanScriptError.CreateFmt(RsEVariablesNotDefined_, [CurrentSymbol]);
 end;
@@ -2014,25 +2006,25 @@ var
 begin
   vo := FvarsList.GetObject(Currentsymbol);
   if vo <> nil then
-    vo.value := 0 - vo.value
+    vo.Value := 0 - vo.Value
   else
     raise EJvjanScriptError.CreateFmt(RsEVariablesNotDefined_, [CurrentSymbol]);
 end;
 
 procedure TJvForthScript.procPower;
 var
-  value: variant;
+  Value: Variant;
 begin
-  value := vpop;
-  vpush(power(vpop, value));
+  Value := vpop;
+  vpush(power(vpop, Value));
 end;
 
 procedure TJvForthScript.procAbs;
 var
-  value: variant;
+  Value: Variant;
 begin
-  value := vpop;
-  vpush(abs(value));
+  Value := vpop;
+  vpush(abs(Value));
 end;
 
 procedure TJvForthScript.SetonInclude(const Value: TonInclude);
@@ -2042,42 +2034,42 @@ end;
 
 procedure TJvForthScript.procTan;
 var
-  value: variant;
+  Value: Variant;
 begin
-  value := vpop;
-  vpush(tan(value));
+  Value := vpop;
+  vpush(tan(Value));
 end;
 
 procedure TJvForthScript.procarccos;
 var
-  value: variant;
+  Value: Variant;
 begin
-  value := vpop;
-  vpush(arccos(value));
+  Value := vpop;
+  vpush(arccos(Value));
 end;
 
 procedure TJvForthScript.procarcsin;
 var
-  value: variant;
+  Value: Variant;
 begin
-  value := vpop;
-  vpush(arcsin(value));
+  Value := vpop;
+  vpush(arcsin(Value));
 end;
 
 procedure TJvForthScript.procarctan;
 var
-  value: variant;
+  Value: Variant;
 begin
-  value := vpop;
-  vpush(arctan(value));
+  Value := vpop;
+  vpush(arctan(Value));
 end;
 
 procedure TJvForthScript.procarctan2;
 var
-  value: variant;
+  Value: Variant;
 begin
-  value := vpop;
-  vpush(arctan2(vpop, value));
+  Value := vpop;
+  vpush(arctan2(vpop, Value));
 end;
 
 procedure TJvForthScript.procVarLoad;
@@ -2086,13 +2078,13 @@ var
   ap, fn, s: string;
 begin
   fn := vpop;
-  ap := extractfilepath(paramstr(0));
-  fn := stringreplace(fn, '%', ap, []);
+  ap := ExtractFilePath(paramstr(0));
+  fn := StringReplace(fn, '%', ap, []);
   vo := FvarsList.GetObject(Currentsymbol);
   if vo <> nil then
   begin
     s := loadstring(fn);
-    vo.value := s;
+    vo.Value := s;
   end
   else
     raise EJvjanScriptError.CreateFmt(RsEVariablesNotDefined_, [CurrentSymbol]);
@@ -2104,12 +2096,12 @@ var
   ap, fn, s: string;
 begin
   fn := vpop;
-  ap := extractfilepath(paramstr(0));
-  fn := stringreplace(fn, '%', ap, []);
+  ap := ExtractFilePath(paramstr(0));
+  fn := StringReplace(fn, '%', ap, []);
   vo := FvarsList.GetObject(Currentsymbol);
   if vo <> nil then
   begin
-    s := vo.value;
+    s := vo.Value;
     savestring(fn, s);
   end
   else
@@ -2123,20 +2115,20 @@ var
   n: TJvXMLNode;
   a: TJvXMLAttribute;
   aPath, atName: string;
-  aValue: variant;
-  c, i, cc: integer;
+  aValue: Variant;
+  c, i, cc: Integer;
   appldir: string;
-  b: boolean;
+  b: Boolean;
 begin
   n := nil;
-  appldir := extractfilepath(paramstr(0));
+  appldir := ExtractFilePath(paramstr(0));
   aName := CurrentSymbol;
   aMethod := CurrentValue;
   xmldso := FXMLList.xml(aName);
   if aMethod = 'set' then
   begin
     aPath := vpop;
-    avalue := vpop;
+    aValue := vpop;
     n := xmldso.ForceNamePathNode(aPath);
     n.Value := aValue;
   end
@@ -2144,8 +2136,8 @@ begin
   begin
     aPath := vpop;
     atName := vpop;
-    avalue := vpop;
-    xmldso.ForceNamePathNodeAttribute(aPath, atName, avalue);
+    aValue := vpop;
+    xmldso.ForceNamePathNodeAttribute(aPath, atName, aValue);
   end
   else if aMethod = 'get' then
   begin
@@ -2155,9 +2147,9 @@ begin
       aValue := ''
     else
       aValue := n.Value;
-    vpush(avalue);
+    vpush(aValue);
   end
-  else if aMethod = 'count' then
+  else if aMethod = 'Count' then
   begin
     apath := vpop;
     n := xmldso.getNamePathNode(apath);
@@ -2165,17 +2157,17 @@ begin
     cc := 0;
     if n <> nil then
     begin
-      // now count named node
+      // now Count named node
       c := n.Nodes.Count;
       apath := vpop;
       if c > 0 then
       begin
         for i := 0 to c - 1 do
-          if TJvXMLNode(n.nodes[i]).name = apath then inc(cc);
+          if TJvXMLNode(n.nodes[i]).name = apath then Inc(cc);
       end;
       aValue := cc;
     end;
-    vpush(avalue);
+    vpush(aValue);
   end
   else if aMethod = '@get' then
   begin
@@ -2186,12 +2178,12 @@ begin
       aValue := ''
     else
       aValue := a.Value;
-    vpush(avalue);
+    vpush(aValue);
   end
   else if aMethod = 'load' then
   begin
     aPath := vpop;
-    aPath := stringreplace(aPath, '%', appldir, []);
+    aPath := StringReplace(aPath, '%', appldir, []);
     if not fileexists(aPath) then
       raise EJvjanScriptError.CreateFmt(RsEFilesDoesNotExist, [apath]);
     xmldso.LoadFromFile(apath);
@@ -2199,7 +2191,7 @@ begin
   else if aMethod = 'save' then
   begin
     apath := vpop;
-    aPath := stringreplace(aPath, '%', appldir, []);
+    aPath := StringReplace(aPath, '%', appldir, []);
     try
       xmldso.SaveToFile(apath);
     except
@@ -2208,15 +2200,15 @@ begin
   end
   else if aMethod = 'astext' then
   begin
-    avalue := xmldso.asText;
-    vpush(avalue);
+    aValue := xmldso.asText;
+    vpush(aValue);
   end
-  else if aMethod = 'delete' then
+  else if aMethod = 'Delete' then
   begin
     apath := vpop;
     xmldso.deleteNamePathNode(apath);
   end
-  else if aMethod = '@delete' then
+  else if aMethod = '@Delete' then
   begin
     apath := vpop;
     atname := vpop;
@@ -2225,11 +2217,11 @@ begin
   else if aMethod = 'select' then
   begin
     apath := vpop;
-    apath := stringreplace(apath, '''', '"', [rfreplaceall]);
+    apath := StringReplace(apath, '''', '"', [rfreplaceall]);
     FXMLSelect.Clear;
     FXMLSelectRecord := -1;
     xmldso.selectNodes(apath, FXMLSelect);
-    vpush(FXMLSelect.count > 0);
+    vpush(FXMLSelect.Count > 0);
   end
   else if aMethod = 'selectfirst' then
   begin
@@ -2238,22 +2230,22 @@ begin
       FXMLSelectRecord := 0
     else
       FXMLSelectRecord := -1;
-    avalue := b;
+    aValue := b;
     vpush(aValue);
   end
   else if aMethod = 'selectnext' then
   begin
     b := FXMLSelect.Count <> 0;
     if b then
-      inc(FXMLSelectRecord)
+      Inc(FXMLSelectRecord)
     else
       FXMLSelectRecord := -1;
-    if FXMLSelectRecord >= FXMLSelect.count then
+    if FXMLSelectRecord >= FXMLSelect.Count then
     begin
-      b := false;
+      b := False;
       FXMLSelectRecord := -1;
     end;
-    avalue := b;
+    aValue := b;
     vpush(aValue);
   end
   else if aMethod = 'selectget' then
@@ -2262,10 +2254,10 @@ begin
       raise EJvjanScriptError.Create(RsEXMLSelectionIsEmpty);
     if FXMLSelectRecord = -1 then
       raise EJvjanScriptError.Create(RsENoXMLSelectionSelected);
-    if FXMLSelectRecord >= FXMLSelect.count then
+    if FXMLSelectRecord >= FXMLSelect.Count then
       raise EJvjanScriptError.Create(RsEXMLSelectionOutOfRange);
     n := TJvXMLNode(FXMLSelect[FXMLSelectRecord]);
-    aValue := n.value;
+    aValue := n.Value;
     vpush(aValue);
   end
   else if aMethod = '@selectget' then
@@ -2274,7 +2266,7 @@ begin
       raise EJvjanScriptError.Create(RsEXMLSelectionIsEmpty);
     if FXMLSelectRecord = -1 then
       raise EJvjanScriptError.Create(RsENoXMLSelectionSelected);
-    if FXMLSelectRecord >= FXMLSelect.count then
+    if FXMLSelectRecord >= FXMLSelect.Count then
       raise EJvjanScriptError.Create(RsEXMLSelectionOutOfRange);
     n := TJvXMLNode(FXMLSelect[FXMLSelectRecord]);
     atname := vpop;
@@ -2287,14 +2279,14 @@ end;
 
 procedure TJvForthScript.procVarDecTestZero;
 var
-  v: variant;
+  v: Variant;
   vo: TVariantObject;
 begin
   vo := FvarsList.GetObject(Currentsymbol);
   if vo <> nil then
   begin
-    v := vo.value - 1;
-    vo.value := v;
+    v := vo.Value - 1;
+    vo.Value := v;
     vpush(v = 0);
   end
   else
@@ -2305,25 +2297,25 @@ procedure TJvForthScript.procVarIncIndex;
 var
   vo: TVariantObject;
   s, sidx: string;
-  pb, pe: integer;
-  index: integer;
+  pb, pe: Integer;
+  Index: Integer;
 begin
   vo := FvarsList.GetObject(Currentsymbol);
   if vo <> nil then
   begin
-    s := vo.value;
+    s := vo.Value;
     pb := lastposchar('[', s);
     if pb = 0 then
       raise EJvjanScriptError.CreateFmt(RsEIncrementIndexExpectedIns, [s]);
     pe := lastposchar(']', s);
     if pe = 0 then
       raise EJvjanScriptError.CreateFmt(RsEIncrementIndexExpectedIns_, [s]);
-    sidx := copy(s, pb + 1, pe - pb - 1);
+    sidx := Copy(s, pb + 1, pe - pb - 1);
     try
-      index := strtoint(sidx);
-      inc(index);
-      s := copy(s, 1, pb - 1) + '[' + inttostr(index) + ']';
-      vo.value := s;
+      Index := strtoint(sidx);
+      Inc(Index);
+      s := Copy(s, 1, pb - 1) + '[' + inttostr(Index) + ']';
+      vo.Value := s;
       vpush(s);
     except
       raise EJvjanScriptError.CreateFmt(RsEIncrementIndexExpectedIntegerBetwee, [s]);
@@ -2343,9 +2335,9 @@ var
   afile: string;
   appldir: string;
 begin
-  appldir := extractfilepath(paramstr(0));
+  appldir := ExtractFilePath(paramstr(0));
   afile := vpop;
-  afile := stringreplace(afile, '%', appldir, []);
+  afile := StringReplace(afile, '%', appldir, []);
   launch(afile);
 end;
 
@@ -2353,7 +2345,7 @@ procedure TJvForthScript.procdatestr;
 var
   s: string;
 begin
-  s := formatdatetime('dd-mmm-yyyy', now);
+  s := FormatDateTime('dd-mmm-yyyy', now);
   vpush(s);
 end;
 
@@ -2361,7 +2353,7 @@ procedure TJvForthScript.proctimestr;
 var
   s: string;
 begin
-  s := formatdatetime('hh:nn:ss', now);
+  s := FormatDateTime('hh:nn:ss', now);
   vpush(s);
 end;
 
@@ -2372,7 +2364,7 @@ end;
 
 { TAtom }
 
-procedure TAtom.SetIsOperant(const Value: boolean);
+procedure TAtom.SetIsOperant(const Value: Boolean);
 begin
   FIsOperant := Value;
 end;
@@ -2392,22 +2384,22 @@ begin
   Fsymbol := Value;
 end;
 
-procedure TAtom.Setvalue(const Value: variant);
+procedure TAtom.SetValue(const Value: Variant);
 begin
-  Fvalue := Value;
+  FValue := Value;
 end;
 
 { TAtomList }
 
-procedure TAtomList.clearObjects;
+procedure TAtomList.ClearObjects;
 var
-  i, c: integer;
+  i, c: Integer;
 begin
-  c := count;
-  if c = 0 then exit;
+  c := Count;
+  if c = 0 then Exit;
   for i := 0 to c - 1 do
-    TAtom(items[i]).free;
-  clear;
+    TAtom(items[i]).Free;
+  Clear;
 end;
 
 destructor TAtomList.Destroy;
@@ -2418,67 +2410,67 @@ end;
 
 { TVariantObject }
 
-procedure TVariantObject.Setvalue(const Value: variant);
+procedure TVariantObject.SetValue(const Value: Variant);
 begin
-  Fvalue := Value;
+  FValue := Value;
 end;
 
 { TVariantList }
 
 procedure TVariantList.ClearObjects;
 var
-  i, c: integer;
+  i, c: Integer;
 begin
-  c := count;
-  if c = 0 then exit;
+  c := Count;
+  if c = 0 then Exit;
   for i := 0 to c - 1 do
-    TVariantObject(Objects[i]).free;
-  clear;
+    TVariantObject(Objects[i]).Free;
+  Clear;
 end;
 
 destructor TVariantList.Destroy;
 begin
   ClearObjects;
-  inherited;
+  inherited Destroy;
 end;
 
-function TVariantList.GetObject(symbol: string): TvariantObject;
+function TVariantList.GetObject(symbol: string): TVariantObject;
 var
-  index: integer;
+  Index: Integer;
 begin
-  result := nil;
-  if count = 0 then exit;
-  index := indexof(symbol);
-  if index = -1 then exit;
-  result := TVariantObject(objects[index]);
+  Result := nil;
+  if Count = 0 then Exit;
+  Index := IndexOf(symbol);
+  if Index = -1 then Exit;
+  Result := TVariantObject(Objects[Index]);
 end;
 
-function TVariantList.GetVariable(symbol: string): variant;
+function TVariantList.GetVariable(symbol: string): Variant;
 var
-  index: integer;
+  Index: Integer;
 begin
-  result := null;
-  if count = 0 then exit;
-  index := indexof(symbol);
-  if index = -1 then exit;
-  result := TVariantObject(objects[index]).value;
+  Result := null;
+  if Count = 0 then Exit;
+  Index := IndexOf(symbol);
+  if Index = -1 then Exit;
+  Result := TVariantObject(Objects[Index]).Value;
 end;
 
-procedure TVariantList.SetVariable(symbol: string; Avalue: variant);
+procedure TVariantList.SetVariable(symbol: string; AValue: Variant);
 var
-  index: integer;
+  Index: Integer;
   obj: TVariantObject;
 begin
-  index := indexof(symbol);
-  if index = -1 then
+  Index := IndexOf(symbol);
+  if Index = -1 then
   begin
-    obj := TvariantObject.Create;
-    obj.value := Avalue;
+    obj := TVariantObject.Create;
+    obj.Value := AValue;
     addobject(symbol, obj);
   end
   else
   begin
-    TvariantObject(objects[index]).value := Avalue;
+    TVariantObject(Objects[Index]).Value := AValue;
   end;
 end;
 
@@ -2486,122 +2478,121 @@ end;
 
 procedure TJvJanDSOList.ClearTables;
 var
-  i, c: integer;
+  i, c: Integer;
 begin
-  c := count;
+  c := Count;
   if c <> 0 then
     for i := 0 to c - 1 do
-      TJvJanDSO(objects[i]).free;
-  clear;
+      TJvJanDSO(Objects[i]).Free;
+  Clear;
 end;
 
 destructor TJvJanDSOList.Destroy;
 begin
   ClearTables;
-  inherited;
-
+  inherited Destroy;
 end;
 
 function TJvJanDSOList.Table(aName: string): TJvJanDSO;
 var
-  index: integer;
+  Index: Integer;
   dso: TJvJanDSO;
 begin
-  index := indexof(aName);
-  if index = -1 then
+  Index := IndexOf(aName);
+  if Index = -1 then
   begin
     dso := TJvJanDSO.Create;
     addobject(aName, dso);
-    result := dso;
+    Result := dso;
   end
   else
-    result := TJvJanDSO(objects[index]);
+    Result := TJvJanDSO(Objects[Index]);
 end;
 
 { TJvJanDSO }
 
-function TJvJanDSO.GetValue(aKey: variant; aField: string): string;
+function TJvJanDSO.GetValue(aKey: Variant; aField: string): string;
 var
-  index: integer;
+  Index: Integer;
   key: string;
-  strkey: boolean;
+  strkey: Boolean;
 begin
   key := aKey;
-  strkey := false;
-  index := 0;
+  strkey := False;
+  Index := 0;
   try
-    index := StrToInt(key)
+    Index := StrToInt(key)
   except
-    strkey := true;
+    strkey := True;
   end;
   if not strkey then
   begin
-    if index >= count then
-      raise EJvjanScriptError.CreateFmt(RsEDSOIndexOutOfRanged, [index])
+    if Index >= Count then
+      raise EJvjanScriptError.CreateFmt(RsEDSOIndexOutOfRanged, [Index])
     else
-      result := InternalGetValue(index, aField);
+      Result := InternalGetValue(Index, aField);
   end
   else
   begin
-    index := indexofName(key);
-    if index = -1 then
+    Index := indexofName(key);
+    if Index = -1 then
       raise EJvjanScriptError.CreateFmt(RsEDSOUnknownKeys, [key]);
-    result := InternalGetValue(index, aField);
+    Result := InternalGetValue(Index, aField);
   end
 end;
 
-function TJvJanDSO.InternalGetValue(index: integer; aField: string): string;
+function TJvJanDSO.InternalGetValue(Index: Integer; aField: string): string;
 var
   key, s: string;
-  p: integer;
+  p: Integer;
 begin
-  s := strings[index];
-  p := pos('=', s);
-  key := copy(s, 1, p - 1);
-  s := copy(s, p + 1, length(s));
-  result := GlobalGetValue(s, aField);
+  s := Strings[Index];
+  p := Pos('=', s);
+  key := Copy(s, 1, p - 1);
+  s := Copy(s, p + 1, Length(s));
+  Result := GlobalGetValue(s, aField);
 end;
 
-procedure TJvJanDSO.InternalSetValue(index: integer; aField, aValue: string);
+procedure TJvJanDSO.InternalSetValue(Index: Integer; aField, aValue: string);
 var
   key, s: string;
-  p: integer;
+  p: Integer;
 begin
-  s := strings[index];
-  p := pos('=', s);
-  key := copy(s, 1, p - 1);
-  s := copy(s, p + 1, length(s));
+  s := Strings[Index];
+  p := Pos('=', s);
+  key := Copy(s, 1, p - 1);
+  s := Copy(s, p + 1, Length(s));
   GlobalSetValue(s, aField, aValue);
-  strings[index] := key + '=' + s;
+  Strings[Index] := key + '=' + s;
 end;
 
-procedure TJvJanDSO.SetValue(aKey: variant; aField, aValue: string);
+procedure TJvJanDSO.SetValue(aKey: Variant; aField, aValue: string);
 var
-  index: integer;
+  Index: Integer;
   key: string;
-  strkey: boolean;
+  strkey: Boolean;
 begin
   key := akey;
-  strkey := false;
-  index := 0;
+  strkey := False;
+  Index := 0;
   try
-    index := strtoint(key)
+    Index := strtoint(key)
   except
-    strkey := true;
+    strkey := True;
   end;
   if not strkey then
   begin
-    if index >= count then
-      raise EJvjanScriptError.CreateFmt(RsEDSOIndexOutOfRanged, [index])
+    if Index >= Count then
+      raise EJvjanScriptError.CreateFmt(RsEDSOIndexOutOfRanged, [Index])
     else
-      InternalSetValue(index, aField, aValue);
+      InternalSetValue(Index, aField, aValue);
   end
   else
   begin
-    index := indexofname(key);
-    if index = -1 then
-      index := add(key + '=');
-    InternalSetValue(index, aField, aValue);
+    Index := indexofname(key);
+    if Index = -1 then
+      Index := Add(key + '=');
+    InternalSetValue(Index, aField, aValue);
   end
 end;
 
@@ -2609,36 +2600,35 @@ end;
 
 procedure TJvJanXMLList.ClearXMLS;
 var
-  i, c: integer;
+  i, c: Integer;
 begin
-  c := count;
+  c := Count;
   if c <> 0 then
     for i := 0 to c - 1 do
-      TJvXMLTree(objects[i]).free;
-  clear;
+      TJvXMLTree(Objects[i]).Free;
+  Clear;
 end;
 
 destructor TJvJanXMLList.Destroy;
 begin
   ClearXMLS;
-  inherited;
-
+  inherited Destroy;
 end;
 
 function TJvJanXMLList.xml(aName: string): TJvXMLTree;
 var
-  index: integer;
+  Index: Integer;
   xmldso: TJvXMLTree;
 begin
-  index := indexof(aName);
-  if index = -1 then
+  Index := IndexOf(aName);
+  if Index = -1 then
   begin
     xmldso := TJvXMLTree.Create(aname, '', nil);
     addobject(aName, xmldso);
-    result := xmldso;
+    Result := xmldso;
   end
   else
-    result := TJvXMLTree(objects[index]);
+    Result := TJvXMLTree(Objects[Index]);
 end;
 
 end.

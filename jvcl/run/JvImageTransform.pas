@@ -34,10 +34,10 @@ uses
   SysUtils, Classes,
   {$IFDEF VCL}
   Windows, Graphics, Controls, ExtCtrls,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QWindows, QGraphics, QControls, QExtCtrls,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvComponent;
 
 type
@@ -67,7 +67,7 @@ type
     procedure SetAutoSize(Value: Boolean); {$IFDEF COMPILER6_UP} override; {$ENDIF}
     {$IFDEF VCL}
     function GetPalette: HPALETTE; override;
-    {$ENDIF}
+    {$ENDIF VCL}
     procedure Paint; override;
     procedure TimerTick(Sender: TObject);
   public
@@ -77,7 +77,7 @@ type
     property AutoSize: Boolean read FAutoSize write SetAutoSize default False;
     {$IFDEF VCL}
     property DragCursor;
-    {$ENDIF}
+    {$ENDIF VCL}
     property DragMode;
     property Enabled;
     property ImageShown: Byte read FImageShown write SetImageShown default 1;
@@ -138,7 +138,7 @@ begin
   else
     Result := 0;
 end;
-{$ENDIF}
+{$ENDIF VCL}
 
 procedure TJvImageTransform.SetAutoSize(Value: Boolean);
 begin
