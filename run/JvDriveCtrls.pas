@@ -1047,6 +1047,7 @@ end;
 procedure TJvDirectoryListBox.DriveChange(NewDrive: Char);
 var
   OldMode: Cardinal;
+  VolFlags, MLength: DWORD;
 begin
   if UpCase(NewDrive) <> UpCase(Drive) then
   begin
@@ -1056,6 +1057,9 @@ begin
       try
         ChDir(NewDrive + ':');
         GetDir(0, FDirectory); { store correct directory name }
+        GetVolumeInformation(PChar(NewDrive + ':\'), nil, 0, nil, MLength, VolFlags, nil, 0);
+        FPreserveCase := VolFlags and (FS_CASE_IS_PRESERVED or FS_CASE_SENSITIVE) <> 0;
+        FCaseSensitive := (VolFlags and FS_CASE_SENSITIVE) <> 0;
       finally
         SetErrorMode(OldMode);
       end;
