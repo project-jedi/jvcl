@@ -766,10 +766,13 @@ begin
 
     if CanChange(FPages.IndexOf(Page)) then
     begin
-      if FActivePage <> nil then
+      if (FActivePage <> nil) and (FActivePage <> Page) then
         FActivePage.Visible := False;
-      FActivePage := Page;
-      Change;
+      if (FActivePage <> Page) then
+      begin
+        FActivePage := Page;
+        Change;
+      end;
       if (ParentForm <> nil) and (FActivePage <> nil) and
         (ParentForm.ActiveControl = FActivePage) then
       begin
