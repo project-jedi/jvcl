@@ -1857,6 +1857,7 @@ end;
 
 procedure TJvLookOutPage.AlignControls(Control: TControl; var Rect: TRect);
 begin
+  Inc(Rect.Top, cHeight);
   inherited AlignControls(Control, Rect);
 end;
 
