@@ -11,14 +11,12 @@ object Form1: TForm1
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
-  OnCreate = FormCreate
-  OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13
   object JvFillLabel1: TJvFillLabel
     Left = 20
     Top = 135
-    Width = 82
+    Width = 83
     Height = 13
     Caption = 'JvFillLabel1'
     Font.Charset = DEFAULT_CHARSET
@@ -27,6 +25,7 @@ object Form1: TForm1
     Font.Name = 'MS Sans Serif'
     Font.Style = []
     ParentFont = False
+    AutoOpenURL = False
     HotTrackFont.Charset = DEFAULT_CHARSET
     HotTrackFont.Color = clWindowText
     HotTrackFont.Height = -11
@@ -54,24 +53,6 @@ object Form1: TForm1
     ItemHeight = 13
     TabOrder = 1
   end
-  object btnEditStrings: TButton
-    Left = 160
-    Top = 135
-    Width = 75
-    Height = 25
-    Caption = 'Edit strings'
-    TabOrder = 2
-    OnClick = btnEditStringsClick
-  end
-  object btnEditTree: TButton
-    Left = 160
-    Top = 165
-    Width = 75
-    Height = 25
-    Caption = 'Edit tree'
-    TabOrder = 3
-    OnClick = btnEditTreeClick
-  end
   object JvFontFiller1: TJvFontFiller
     Left = 300
     Top = 20
@@ -88,5 +69,9 @@ object Form1: TForm1
       'Line 8')
     Left = 300
     Top = 75
+  end
+  object JvTreeFiller1: TJvTreeFiller
+    Left = 315
+    Top = 155
   end
 end

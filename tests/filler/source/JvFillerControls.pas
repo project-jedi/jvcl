@@ -215,6 +215,9 @@ end;
 procedure TJvFillListBox.DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState);
 var
   ItemsRenderer: IFillerItemsRenderer;
+  Item: IFillerItem;
+  ItemRenderer: IFillerItemRenderer;
+  ItemText: IFillerItemText;
 begin
   if (FillerIntf <> nil) and Supports(FillerIntf, IFillerItemsRenderer, ItemsRenderer) then
   begin
@@ -227,6 +230,36 @@ begin
     else
       Canvas.Brush.Color := Color;
     ItemsRenderer.DrawItemByIndex(Canvas, Rect, Index, State);
+  end
+  else if FillerIntf <> nil then
+  begin
+    Item := (FillerIntf as IFillerItems).getItem(Index);
+    if Supports(Item, IFillerItemRenderer, ItemRenderer) then
+    begin
+      Canvas.Font := Font;
+      if odSelected in State then
+      begin
+        Canvas.Brush.Color := clHighlight;
+        Canvas.Font.Color  := clHighlightText;
+      end
+      else
+        Canvas.Brush.Color := Color;
+      ItemRenderer.Draw(Canvas, Rect, State);
+    end
+    else if Supports(Item, IFillerItemText, ItemText) then
+    begin
+      Canvas.Font := Font;
+      if odSelected in State then
+      begin
+        Canvas.Brush.Color := clHighlight;
+        Canvas.Font.Color  := clHighlightText;
+      end
+      else
+        Canvas.Brush.Color := Color;
+      Canvas.TextRect(Rect, Rect.Left, Rect.Top, ItemText.Caption);
+    end
+    else
+      inherited;
   end
   else
     inherited;

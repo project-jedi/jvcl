@@ -13,7 +13,7 @@ uses
 
 procedure Register;
 begin
-  RegisterComponents('Jv Filler Providers', [TJvFontFiller, TJvStringsFiller]);
+  RegisterComponents('Jv Filler Providers', [TJvFontFiller, TJvStringsFiller, TJvTreeFiller]);
 end;
 
 end.

@@ -142,8 +142,8 @@ type
     function NewByKind(Kind: Integer): IFillerItem;
   end;
 
-  { Support interface for filler editor. May be implemented by IFillerItem implementers who
-    allow their item to be extended with additional interfaces. }
+  { Support interface for filler editor. Must be implemented by IFillerItem implementers who
+    allow their item to be edited in the filler editor. }
   IFillerItemDesigner = interface
     ['{8F1A1283-2D13-4A28-9616-08B3EF73F29A}']
     function getVerbCount: Integer;
@@ -212,7 +212,234 @@ type
     constructor Create(AOnChanged: TNotifyEvent); virtual;
   end;
 
+  { An instance of this class is created when an item is selected in the FillerEditor. The class
+    provides a reference to the item selected. Based on the interfaces supported by the item,
+    published properties are "injected" into this class. }
+  TJvFillerItem = class(TPersistent)
+  private
+    FItem: IFillerItem;
+  protected
+    function Item: IFillerItem;
+    function GetOwner: TPersistent; override;
+  public
+    constructor Create(AnItem: IFillerItem);
+    function GetNamePath: string; override;
+  end;
+
+  TJvFillerItemClass = class of TJvFillerItem;
+
+procedure RegisterFillerIntfProp(const IID: TGUID; const PropClass: TJvFillerItemClass);
+
 implementation
+
+uses
+  SysUtils, TypInfo;
+
+type
+  PPropData = ^TPropData;
+
+  TIntfItem = record
+    GUID: TGUID;
+    PropClass: TJvFillerItemClass;
+  end;
+  TIntfItems = array of TIntfItem;
+
+var
+  GIntfPropReg: TIntfItems;
+
+function LocateReg(IID: TGUID): Integer;
+begin
+  Result := High(GIntfPropReg);
+  while (Result >= 0) and not CompareMem(@GIntfPropReg[Result].GUID, @IID, SizeOf(TGUID)) do
+    Dec(Result);
+end;
+
+procedure RegisterFillerIntfProp(const IID: TGUID; const PropClass: TJvFillerItemClass);
+var
+  IIDIdx: Integer;
+begin
+  IIDIdx := LocateReg(IID);
+  if IIDIdx < 0 then
+  begin
+    IIDIdx := Length(GIntfPropReg);
+    SetLength(GIntfPropReg, IIDIdx + 1);
+    GIntfPropReg[IIDIdx].GUID := IID;
+  end;
+  GIntfPropReg[IIDIdx].PropClass := PropClass;
+end;
+
+function StringBaseLen(NumItems: Integer; StartString: PChar): Integer;
+begin
+  Result := 0;
+  while (NumItems > 0) do
+  begin
+    Inc(Result, 1 + PByte(StartString)^);
+    Inc(StartString, 1 + PByte(StartString)^);
+    Dec(NumItems);
+  end;
+end;
+
+function PropListSize(ListPos: PChar): Integer;
+var
+  Cnt: Integer;
+  BaseInfoSize: Integer;
+begin
+  Result := SizeOf(Word);
+  Cnt := PWord(ListPos)^;
+  Inc(ListPos, Result);
+  BaseInfoSize := SizeOf(TPropInfo) - SizeOf(ShortString) + 1;
+  while Cnt > 0 do
+  begin
+    Inc(Result, BaseInfoSize + Length(PPropInfo(ListPos)^.Name));
+    Inc(ListPos, BaseInfoSize + Length(PPropInfo(ListPos)^.Name));
+    Dec(Cnt);
+  end;
+end;
+
+function TypeInfoSize(TypeInfo: PTypeInfo): Integer;
+var
+  TypeData: PTypeData;
+begin
+  Result := 2 + Length(TypeInfo.Name);
+  TypeData := GetTypeData(TypeInfo);
+  case TypeInfo.Kind of
+    tkInteger, tkChar, tkEnumeration, tkSet, tkWChar:
+      begin
+        Inc(Result, SizeOf(TOrdType));
+        case TypeInfo.Kind of
+          tkInteger, tkChar, tkEnumeration, tkWChar:
+            begin
+              Inc(Result, 8);
+              if TypeInfo.Kind = tkEnumeration then
+                Inc(Result, 4 + StringBaseLen(TypeData.MaxValue - TypeData.MinValue + 1, @TypeData.NameList));
+            end;
+          tkSet:
+            Inc(Result, 4);
+        end;
+      end;
+    tkFloat:
+      Inc(Result, SizeOf(TFloatType));
+    tkString:
+      Inc(Result);
+    tkClass:
+      begin
+        Inc(Result, SizeOf(TClass) + SizeOf(PPTypeInfo) + SizeOf(SmallInt) + StringBaseLen(1, @TypeData.UnitName));
+        Inc(Result, PropListSize(Pointer(Integer(@TypeData.UnitName) + StringBaseLen(1, @TypeData.UnitName))));
+      end;
+  end;
+end;
+
+function CloneTypeInfo(OrgTypeInfo: PTypeInfo; AdditionalSpace: Longint = 0): PTypeInfo;
+var
+  P: PChar;
+begin
+  P := AllocMem(SizeOf(Pointer) + TypeInfoSize(OrgTypeInfo) + AdditionalSpace);
+  PInteger(P)^ := Integer(OrgTypeInfo);
+  Inc(P, 4);
+  Result := PTypeInfo(P);
+  Move(OrgTypeInfo^ , Result^, TypeInfoSize(OrgTypeInfo));
+end;
+
+procedure CreateTypeInfo(const AClass: TClass);
+var
+  P: PChar;
+  PNewInfo: Pointer;
+  OldProtect: Cardinal;
+begin
+  P := Pointer(AClass);
+  Dec(P, 60);                         // Now pointing to TypeInfo of the VMT table.
+  { Below the typeinfo is cloned, while an additional 2048 bytes are reserved at the end. This 2048
+    bytes will be used to "inject" additional properties. Since each property takes 27 + the length
+    of the property name bytes, assuming an average of 40 bytes/property will allow approximately 50
+    properties to be appended to the existing property list. }
+  PNewInfo := CloneTypeInfo(Pointer(PInteger(P)^), 2048);
+  if VirtualProtect(P, 4, PAGE_READWRITE, OldProtect) then
+  try
+    PInteger(P)^ := Integer(PNewInfo);
+  finally
+    VirtualProtect(P, 4, OldProtect, OldProtect);
+  end;
+end;
+
+procedure ClearTypeInfo(const AClass: TClass);
+var
+  P: PChar;
+  PNewType: PChar;
+  OldProtect: Cardinal;
+begin
+  P := Pointer(AClass);
+  Dec(P, 60);                         // Now pointing to TypeInfo of the VMT table.
+  PNewType := Pointer(PInteger(P)^);  // The new type currently in use.
+  Dec(PNewType, 4);                   // Points to the original PTypeInfo value.
+  if VirtualProtect(P, 4, PAGE_READWRITE, OldProtect) then
+  try
+    PInteger(P)^ := Integer(PInteger(PNewType)^);
+  finally
+    VirtualProtect(P, 4, OldProtect, OldProtect);
+  end;
+end;
+
+function GetPropData(TypeData: PTypeData): PPropData;
+begin
+  Result := PPropData(Integer(@TypeData.UnitName) + StringBaseLen(1, @TypeData.UnitName));
+end;
+
+procedure ClearPropList(const AClass: TClass);
+var
+  RTTI: PTypeInfo;
+  TypeData: PTypeData;
+  PropList: PPropData;
+begin
+  RTTI := PTypeInfo(AClass.ClassInfo);
+  TypeData := GetTypeData(RTTI);
+  TypeData.PropCount := 0;
+  PropList := GetPropData(TypeData);
+  PropList.PropCount := 0;
+end;
+
+procedure CopyPropInfo(var Source, Dest: PPropInfo; var PropNum: Smallint);
+var
+  BaseInfoSize: Integer;
+  NameLen: Integer;
+begin
+  BaseInfoSize := SizeOf(TPropInfo) - SizeOf(ShortString) + 1;
+  NameLen := Length(Source.Name);
+  Move(Source^, Dest^, BaseInfoSize + NameLen);
+  Dest.NameIndex := PropNum;
+  Inc(PChar(Source), BaseInfoSize + NameLen);
+  Inc(PChar(Dest), BaseInfoSize + NameLen);
+  Inc(PropNum);
+end;
+
+procedure AppendPropList(const AClass: TClass; PropList: PPropInfo; Count: Integer);
+var
+  RTTI: PTypeInfo;
+  TypeData: PTypeData;
+  ClassPropList: PPropInfo;
+  ExistingCount: Integer;
+  BaseInfoSize: Integer;
+  PropNum: Smallint;
+begin
+  RTTI := PTypeInfo(AClass.ClassInfo);
+  TypeData := GetTypeData(RTTI);
+  TypeData.PropCount := TypeData.PropCount + Count;
+  ClassPropList := PPropInfo(GetPropData(TypeData));
+  ExistingCount := PPropData(ClassPropList).PropCount;
+  PropNum := ExistingCount;
+  PPropData(ClassPropList).PropCount := ExistingCount + Count;
+  Inc(PChar(ClassPropList), 2);
+  BaseInfoSize := SizeOf(TPropInfo) - SizeOf(ShortString) + 1;
+  while ExistingCount > 0 do
+  begin
+    Inc(PChar(ClassPropList), BaseInfoSize + Length(ClassPropList.Name));
+    Dec(ExistingCount);
+  end;
+  while Count > 0 do
+  begin
+    CopyPropInfo(PropList, ClassPropList, PropNum);
+    Dec(Count);
+  end;
+end;
 
 { TJvFillerOptions }
 
@@ -228,6 +455,131 @@ begin
   FOnChanged := AOnChanged;
 end;
 
+{ TJvFillerItem }
+
+function TJvFillerItem.Item: IFillerItem;
+begin
+  Result := FItem;
+end;
+
+function TJvFillerItem.GetOwner: TPersistent;
+begin
+  if Item <> nil then
+    Result := (Item.Items.Filler as IInterfaceComponentReference).GetComponent
+  else
+    Result := inherited GetOwner;
+end;
+
+constructor TJvFillerItem.Create(AnItem: IFillerItem);
+var
+  I: Integer;
+  IUnk: IUnknown;
+  PrpData: PPropData;
+begin
+  inherited Create;
+  FItem := AnItem;
+  ClearPropList(ClassType);
+  for I := High(GIntfPropReg) downto 0 do
+  begin
+    if Supports(AnItem, GIntfPropReg[I].GUID, IUnk) then
+    begin
+      PrpData := GetPropData(GetTypeData(GIntfPropReg[I].PropClass.ClassInfo));
+      AppendPropList(ClassType, PPropInfo(Cardinal(PrpData) + 2), PrpData.PropCount);
+    end;
+  end;
+end;
+
+function TJvFillerItem.GetNamePath: string;
+var
+  Comp: TPersistent;
+begin
+  Comp := GetOwner;
+  if (Comp <> nil) and (Comp is TComponent) then
+    Result := (Comp as TComponent).Name
+  else
+    Result := '<unknown>';
+  if Item <> nil then
+    Result := Result + ': Item[' + Item.GetID + ']'
+  else
+    Result := Result + ': <no item>';
+end;
+
+type
+  TJvFillerItemTextPropView = class(TJvFillerItem)
+  protected
+    function GetCaption: string;
+    procedure SetCaption(Value: string);
+  published
+    property Caption: string read GetCaption write SetCaption;
+  end;
+
+function TJvFillerItemTextPropView.GetCaption: string;
+begin
+  Result := (Item as IFillerItemText).Caption;
+end;
+
+procedure TJvFillerItemTextPropView.SetCaption(Value: string);
+begin
+  (Item as IFillerItemText).Caption := Value;
+end;
+
+type
+  TJvFillerItemImagePropView = class(TJvFillerItem)
+  protected
+    function GetAlignment: TAlignment;
+    procedure SetAlignment(Value: TAlignment);
+    function GetImageIndex: Integer;
+    procedure SetImageIndex(Value: Integer);
+    function GetSelectedIndex: Integer;
+    procedure SetSelectedIndex(Value: Integer);
+  published
+    property Alignment: TAlignment read GetAlignment write SetAlignment;
+    property ImageIndex: Integer read GetImageIndex write SetImageIndex;
+    property SelectedIndex: Integer read GetSelectedIndex write SetSelectedIndex;
+  end;
+
+function TJvFillerItemImagePropView.GetAlignment: TAlignment;
+begin
+  Result := (Item as IFillerItemImage).Alignment;
+end;
+
+procedure TJvFillerItemImagePropView.SetAlignment(Value: TAlignment);
+begin
+  (Item as IFillerItemImage).Alignment := Value;
+end;
+
+function TJvFillerItemImagePropView.GetImageIndex: Integer;
+begin
+  Result := (Item as IFillerItemImage).ImageIndex
+end;
+
+procedure TJvFillerItemImagePropView.SetImageIndex(Value: Integer);
+begin
+  (Item as IFillerItemImage).ImageIndex := Value;
+end;
+
+function TJvFillerItemImagePropView.GetSelectedIndex: Integer;
+begin
+  Result := (Item as IFillerItemImage).SelectedIndex;
+end;
+
+procedure TJvFillerItemImagePropView.SetSelectedIndex(Value: Integer);
+begin
+  (Item as IFillerItemImage).SelectedIndex := Value;
+end;
+
+procedure RegFillerItemInterfaces;
+begin
+  RegisterFillerIntfProp(IFillerItemText, TJvFillerItemTextPropView);
+  RegisterFillerIntfProp(IFillerItemImage, TJvFillerItemImagePropView);
+end;
+
+initialization
+  CreateTypeInfo(TJvFillerItem);
+  RegFillerItemInterfaces;
+
+finalization
+  ClearTypeInfo(TJvFillerItem);
 end.
 
 

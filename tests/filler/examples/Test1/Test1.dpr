@@ -2,8 +2,7 @@ program Test1;
 
 uses
   Forms,
-  MainTest1 in 'MainTest1.pas' {Form1},
-  JvFillerEditor in '..\..\source\JvFillerEditor.pas' {frmFillerEditor};
+  MainTest1 in 'MainTest1.pas' {Form1};
 
 {$R *.RES}
 

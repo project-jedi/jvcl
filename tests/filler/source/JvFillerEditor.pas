@@ -4,7 +4,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  JvFillIntf, ComCtrls, ImgList, ActnList, Menus;
+  ComCtrls, ImgList, ActnList, Menus, DsgnIntf, ExtCtrls,
+  ToolWin, JvFillIntf, JvFillBasicImpl;
 
 type
   TFillerEditItem = packed record
@@ -13,18 +14,27 @@ type
   end;
   TFillerEditItems = array of TFillerEditItem;
 
-  TfrmFillerEditor = class(TForm)
+  TfrmFillerEditor = class(TForm, IFillerNotify)
     lvFiller: TListView;
     alFillerEditor: TActionList;
     aiAddItem: TAction;
     aiDeleteItem: TAction;
     aiClearSub: TAction;
-    aiClear: TAction;
     pmFillerEditor: TPopupMenu;
     miAddItem: TMenuItem;
     miDeleteItem: TMenuItem;
     miClearSub: TMenuItem;
-    miClear: TMenuItem;
+    ilActions: TImageList;
+    miDivider1: TMenuItem;
+    pmToolbar: TPopupMenu;
+    miTextLabels: TMenuItem;
+    tbrActions: TToolBar;
+    tbAddItem: TToolButton;
+    tbDivider1: TToolButton;
+    tbDeleteItem: TToolButton;
+    tbClearSub: TToolButton;
+    pnlSpacer: TPanel;
+    pmAddMenu: TPopupMenu;
     procedure lvFillerData(Sender: TObject; Item: TListItem);
     procedure lvFillerCustomDrawItem(Sender: TCustomListView;
       Item: TListItem; State: TCustomDrawState; var DefaultDraw: Boolean);
@@ -36,14 +46,23 @@ type
     procedure aiAddItemExecute(Sender: TObject);
     procedure aiDeleteItemExecute(Sender: TObject);
     procedure aiClearSubExecute(Sender: TObject);
-    procedure aiClearExecute(Sender: TObject);
     procedure lvFillerResize(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure miTextLabelsClick(Sender: TObject);
   private
     { Private declarations }
     FFiller: IFiller;
+    FDesigner: IFormDesigner;
     FViewItems: TFillerEditItems;
+    FOrgSelect: IDesignerSelections;
+    FPropView: TJvFillerItem;
+    FRootItem: TJvBaseFillerItem;
     function GetFillerItem(Index: Integer): IFillerItem;
     function LocateID(ID: string): Integer;
+    procedure ResetSelection;
+    procedure SetNewSelection(AnItem: IFillerItem);
     procedure UpdateLV;
     procedure UpdateColumnSize;
     procedure UpdateSelectedItem;
@@ -54,12 +73,18 @@ type
     procedure AddSubItem(Index: Integer; Item: IFillerItem);
     procedure InsertItems(var Index: Integer; Items: IFillerItems);
     procedure SetFiller(Value: IFiller);
+    procedure SetDesigner(Value: IFormDesigner);
+    { IFillerNotify }
+    procedure FillerChanging(const AFiller: IFiller; AReason: TJvFillerChangeReason);
+    procedure FillerChanged(const AFiller: IFiller; AReason: TJvFillerChangeReason);
   public
     { Public declarations }
+    PropName: string;
     property Filler: IFiller read FFiller write SetFiller;
+    property Designer: IFormDesigner read FDesigner write SetDesigner;
   end;
 
-function EditFiller(AFiller: IFiller): Boolean;
+procedure EditFiller(AFiller: IFiller; ADesigner: IFormDesigner; PropName: string);
 
 implementation
 
@@ -68,7 +93,10 @@ implementation
 uses
   Commctrl, Dialogs,
   JvTypes;
-  
+
+resourcestring
+  SFillerEditorCaption = 'Editing %s%s...';
+
 const
   vifHasChildren = Integer($80000000);
   vifCanHaveChildren = Integer($40000000);
@@ -76,14 +104,69 @@ const
   vifHasMan = Integer($10000000);
   vifHasDsgn = Integer($08000000);
 
-function EditFiller(AFiller: IFiller): Boolean;
+var
+  EditorList: TList;
+
+type
+  TJvFillerRootItem = class(TJvBaseFillerItem)
+  protected
+    function _AddRef: Integer; override; stdcall;
+    function _Release: Integer; override; stdcall;
+    procedure InitID; override;
+  public
+    function GetInterface(const IID: TGUID; out Obj): Boolean; override;
+  end;
+
+function TJvFillerRootItem._AddRef: Integer;
 begin
-  with TfrmFillerEditor.Create(Screen.ActiveCustomForm) do
+  Result := -1;
+end;
+
+function TJvFillerRootItem._Release: Integer;
+begin
+  Result := -1;
+end;
+
+procedure TJvFillerRootItem.InitID;
+begin
+  SetID('ROOT');
+end;
+
+function TJvFillerRootItem.GetInterface(const IID: TGUID; out Obj): Boolean;
+begin
+  Result := inherited GetInterface(IID, Obj);
+  if not Result then
+    Result := TExtensibleInterfacedObject(Items.GetImplementer).GetInterface(IID, Obj);
+end;
+
+procedure EditFiller(AFiller: IFiller; ADesigner: IFormDesigner; PropName: string);
+var
+  EditorForm: TfrmFillerEditor;
+  I: Integer;
+begin
+  if EditorList = nil then
+    EditorList := TList.Create;
+
+  I := EditorList.Count - 1;
+  while (I >= 0) do
+  begin
+    EditorForm := TfrmFillerEditor(EditorList[I]);
+    if (EditorForm.Filler = AFiller) and (EditorForm.Designer = ADesigner) then
+    begin
+      EditorForm.Show;
+      EditorForm.BringToFront;
+      Exit;
+    end;
+    Dec(I);
+  end;
+  EditorForm := TfrmFillerEditor.Create(nil);
   try
-    Filler := AFiller;
-    Result := ShowModal = mrOk;
-  finally
-    Free;
+    EditorForm.PropName := PropName;
+    EditorForm.Filler := AFiller;                   
+    EditorForm.Designer := ADesigner;
+    EditorForm.Show;
+  except
+    EditorForm.Free;
   end;
 end;
 
@@ -102,7 +185,10 @@ end;
 
 function TfrmFillerEditor.GetFillerItem(Index: Integer): IFillerItem;
 begin
-  Result := (Filler as IFillerIDSearch).FindByID(FViewItems[Index].ID, True);
+  if Index = 0 then
+    Result := FRootItem
+  else
+    Result := (Filler as IFillerIDSearch).FindByID(FViewItems[Index].ID, True);
 end;
 
 function TfrmFillerEditor.LocateID(ID: string): Integer;
@@ -114,10 +200,15 @@ begin
     Dec(Result);
   if Result < 0 then
   begin
-    Item := (Filler as IFillerIDSearch).FindByID(ID, True);
+    if ID = (FRootItem as IFillerItem).GetID then
+      Item := FRootItem
+    else
+      Item := (Filler as IFillerIDSearch).FindByID(ID, True);
     if Item <> nil then
     begin
       Item := Item.Items.Parent;
+      if Item = nil then
+        Item := FRootItem;
       if Item <> nil then
       begin
         Result := LocateID(Item.GetID);
@@ -132,6 +223,23 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TfrmFillerEditor.ResetSelection;
+begin
+  if (Designer <> nil) and (FOrgSelect <> nil) then
+    Designer.SetSelections(FOrgSelect);
+  if FPropView <> nil then
+    FreeAndNil(FPropView);
+end;
+
+procedure TfrmFillerEditor.SetNewSelection(AnItem: IFillerItem);
+begin
+  if FPropView <> nil then
+    FreeAndNil(FPropView);
+  FPropView := TJvFillerItem.Create(AnItem);
+  if Designer <> nil then
+    Designer.SelectComponent(FPropView);
 end;
 
 procedure TfrmFillerEditor.UpdateLV;
@@ -154,12 +262,12 @@ var
   ParentMan: IFillerItemManagment;
   I: Integer;
 
-  function MakeMenuItem(const Idx: Integer): TMenuItem;
+  function MakeMenuItem(const Idx: Integer; const AOwner: TComponent): TMenuItem;
   var
     S: string;
   begin
     Dsgn.getKind(Idx, S);
-    Result := TMenuItem.Create(miAddItem);
+    Result := TMenuItem.Create(AOwner);
     Result.Caption := S;
     Result.OnClick := aiAddItem.OnExecute;
     Result.Tag := Idx;
@@ -185,29 +293,45 @@ begin
         Supports(Items, IFillerItemsDesigner, Dsgn);
     end;
   end;
+
+  // Update OI
+  if Item = nil then
+    ResetSelection
+  else
+    SetNewSelection(Item);
+
   // Update action states
   miAddItem.Clear;
+  pmAddMenu.Items.Clear;
   if (Dsgn = nil) or (Dsgn.getCount = 0) then
   begin
     miAddItem.Action := aiAddItem;
+    tbAddItem.Action := aiAddItem;
+    tbAddItem.Style := tbsButton;
   end
   else
   begin
     miAddItem.Action := nil;
     miAddItem.OnClick := nil;
+    tbAddItem.Action := nil;
+    tbAddItem.OnClick := nil;
+    tbAddItem.Style := tbsDropDown;
     for I := 0 to Dsgn.getCount - 1 do
-      miAddItem.Add(MakeMenuItem(I));
+    begin
+      miAddItem.Add(MakeMenuItem(I, miAddItem));
+      pmAddMenu.Items.Add(MakeMenuItem(I, pmAddMenu));
+    end;
     miAddItem.Visible := Man <> nil;
     miAddItem.Enabled := (Man <> nil) and (Items <> nil);
+    tbAddItem.Visible := miAddItem.Visible;
+    tbAddItem.Enabled := miAddItem.Enabled;
   end;
-  aiAddItem.Visible := Man <> nil;
+{  aiAddItem.Visible := Man <> nil;
   aiDeleteItem.Visible := ParentMan <> nil;
-  aiClearSub.Visible := Man <> nil;
+  aiClearSub.Visible := Man <> nil;}
   aiAddItem.Enabled := (Man <> nil) and (Items <> nil);
-  aiDeleteItem.Enabled := (ParentMan <> nil) and (Item <> nil);
+  aiDeleteItem.Enabled := (ParentMan <> nil) and (Item <> nil) and (Item.GetImplementer <> FRootItem);
   aiClearSub.Enabled := (Man <> nil) and (Items <> nil) and (Items.Count > 0);
-  aiClear.Enabled := Supports(Filler, IFillerItems, Items) and Supports(Items, IFillerItemManagment, Man) and (Items.Count > 0);
-  aiClear.Visible := Man <> nil;
 end;
 
 procedure TfrmFillerEditor.ToggleItem(Index: Integer);
@@ -217,13 +341,16 @@ var
   Items: IFillerItems;
 begin
   Info := FViewItems[Index];
-  if Info.Flags and vifHasChildren <> 0 then
+  if (Info.Flags and vifHasChildren <> 0) and ((Index > 0) or (Info.Flags and vifExpanded = 0)) then
   begin
     if Info.Flags and vifExpanded <> 0 then
       DeleteSubItems(Index)
     else
     begin
-      Item := (Filler as IFillerIDSearch).FindByID(Info.ID, True);
+      if Index = 0 then
+        Item := FRootItem
+      else
+        Item := (Filler as IFillerIDSearch).FindByID(Info.ID, True);
       if (Item <> nil) and Supports(Item, IFillerItems, Items) then
       begin
         Inc(Index);
@@ -255,7 +382,7 @@ begin
     Move(FViewItems[Index + 1], FViewItems[Index], (Length(FViewItems) - Index) * SizeOf(FViewItems[0]));
   FillChar(FViewItems[High(FViewItems)], SizeOf(FViewItems[0]), 0);
   SetLength(FViewItems, High(FViewItems));
-  if PrevIsParent and (Index <= High(FViewItems)) and ((FViewItems[Index - 1].Flags and $00FFFFFF) <> ((FViewItems[Index].Flags and $00FFFFFF) - 1)) then
+  if PrevIsParent and ((Index = High(FViewItems)) or ((FViewItems[Index - 1].Flags and $00FFFFFF) <> ((FViewItems[Index].Flags and $00FFFFFF) - 1))) then
     FViewItems[Index - 1].Flags := FViewItems[Index - 1].Flags and not (vifHasChildren or vifExpanded);
 end;
 
@@ -374,14 +501,59 @@ end;
 procedure TfrmFillerEditor.SetFiller(Value: IFiller);
 var
   LstIdx: Integer;
+  FillerImpl: TComponent;
 begin
+  if Filler <> nil then
+    Filler.UnRegisterChangeNotify(Self);
+  if FRootItem <> nil then
+    FreeAndNil(FRootItem);
   FFiller := Value;
   SetLength(FViewItems, 0); // Clears the list
-  LstIdx := 0;
   if Filler <> nil then
+  begin
+    FRootItem := TJvFillerRootItem.Create(Filler as IFillerItems);
+    AddSubItem(-1, FRootItem);
+    LstIdx := 1;
     InsertItems(LstIdx, Filler as IFillerItems);
+    Filler.RegisterChangeNotify(Self);
+    FillerImpl := (Filler as IInterfaceComponentReference).GetComponent;
+    Caption := Format(SFillerEditorCaption, [FillerImpl.Name, '.' + PropName]);
+  end;
   UpdateLV;
   UpdateSelectedItem;
+end;
+
+procedure TfrmFillerEditor.SetDesigner(Value: IFormDesigner);
+begin
+  if Value <> FDesigner then
+  begin
+    if FDesigner <> nil then
+      ResetSelection;
+    FOrgSelect := TDesignerSelectionList.Create;
+    FDesigner := Value;
+    if Designer <> nil then
+      Designer.GetSelections(FOrgSelect);
+  end;
+end;
+
+procedure TfrmFillerEditor.FillerChanging(const AFiller: IFiller; AReason: TJvFillerChangeReason);
+begin
+  case AReason of
+    frDestroy:
+      SetFiller(nil);
+    frUpdate:
+      lvFiller.Invalidate;
+  end;
+end;
+
+procedure TfrmFillerEditor.FillerChanged(const AFiller: IFiller; AReason: TJvFillerChangeReason);
+begin
+  case AReason of
+    frDestroy:
+      SetFiller(nil);
+    frUpdate:
+      lvFiller.Invalidate;
+  end;
 end;
 
 procedure TfrmFillerEditor.lvFillerData(Sender: TObject; Item: TListItem);
@@ -394,13 +566,21 @@ begin
     Exit;
   ItemData := FViewItems[Item.Index];
   Item.Indent := ItemData.Flags and $00FFFFFF;
-  FillerItem := (FFiller as IFillerIDSearch).FindByID(ItemData.ID, True);
+  if ItemData.ID = (FRootItem as IFillerItem).GetID then
+    FillerItem := FRootItem
+  else
+    FillerItem := (FFiller as IFillerIDSearch).FindByID(ItemData.ID, True);
   if FillerItem <> nil then
   begin
     if Supports(FillerItem, IFillerItemText, ItemText) then
       Item.Caption := ItemText.Caption
     else
-      Item.Caption := 'Item has no text support.';
+    begin
+      if FillerItem.GetImplementer = FRootItem then
+        Item.Caption := 'Root'
+      else
+        Item.Caption := 'Item has no text support.';
+    end;
   end
   else
     Item.Caption := 'Item not found!';
@@ -554,6 +734,7 @@ begin
       raise EJVCLException.Create('Item not found.');
     if Supports(Items, IFillerItemManagment, Mangr) then
     begin
+      ResetSelection;
       Mangr.Remove(Item);
       Pointer(Item) := nil;
     end
@@ -561,6 +742,7 @@ begin
       raise EJVCLException.Create('Unable to delete item; IFillerItemManagment is not supported.');
     DeleteItem(I);
     UpdateLV;
+    UpdateSelectedItem;
   end;
 end;
 
@@ -591,21 +773,42 @@ begin
   end;
 end;
 
-procedure TfrmFillerEditor.aiClearExecute(Sender: TObject);
-var
-  Mangr: IFillerItemManagment;
-begin
-  if Supports(Filler, IFillerItemManagment, Mangr) then
-    Mangr.Clear
-  else
-    raise EJVCLException.Create('Unable to delete items; IFillerItemManagment is not supported.');
-  SetLength(FViewItems, 0);
-  UpdateLV;
-end;
-
 procedure TfrmFillerEditor.lvFillerResize(Sender: TObject);
 begin
   UpdateColumnSize;
+end;
+
+procedure TfrmFillerEditor.FormCreate(Sender: TObject);
+begin
+  if EditorList.IndexOf(Self) = -1 then
+    EditorList.Add(Self);
+end;
+
+procedure TfrmFillerEditor.FormDestroy(Sender: TObject);
+begin
+  ResetSelection;
+  Filler := nil;
+  Designer := nil;
+  EditorList.Remove(Self);
+end;
+
+procedure TfrmFillerEditor.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  Action := caFree;
+end;
+
+procedure TfrmFillerEditor.miTextLabelsClick(Sender: TObject);
+begin
+  if TMenuItem(Sender).Checked then
+  begin
+    tbrActions.ShowCaptions := False;
+    tbrActions.ButtonWidth := 22;
+    tbrActions.ButtonHeight := 22;
+  end
+  else
+    tbrActions.ShowCaptions := True;
+  TMenuItem(Sender).Checked := not TMenuItem(Sender).Checked;
 end;
 
 end.

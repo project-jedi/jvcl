@@ -8,17 +8,16 @@ procedure RegFillerPropEdits;
 
 implementation
 
+uses
+  Classes, Consts, DsgnIntf, SysUtils, TypInfo,
+  JvFillBasicImpl, JvFillIntf, JvFillerEditor, JvFillStringList;
+
 {$IFNDEF COMPILER6_UP}
 
 { Since D5 doesn't support published properties of type interface (or rather, the OI/streaming
   system doesn't), D5 will use a simple TComponent property. A property editor is created that
   will only list components that support both the IFiller as well as the IInterfaceComponentRef
   interfaces. }
-
-uses
-  Classes, Consts, DsgnIntf, SysUtils, TypInfo,
-  JvFillBasicImpl, JvFillIntf;
-//  Dialogs; // for testing only!! remove later!!
 
 type
   TInterfaceProperty = class(TComponentProperty)
@@ -38,6 +37,17 @@ type
   protected
     function GetInterfaceGUID: TGUID; override;
   end;
+{$ENDIF COMPILER6_UP}
+
+  TTreeFillerTreeProperty = class(TEnumProperty)
+  public
+    procedure Edit; override;
+    function GetAttributes: TPropertyAttributes; override;
+    function GetValue: string; override;
+    procedure SetValue(const Value: string); override;
+  end;
+
+{$IFNDEF COMPILER6_UP}
 
 { TInterfaceProperty }
 
@@ -87,11 +97,33 @@ begin
 end;
 {$ENDIF COMPILER6_UP}
 
+{ TTreeFillerTreeProperty }
+
+procedure TTreeFillerTreeProperty.Edit;
+begin
+  EditFiller(TJvCustomFiller(GetComponent(0)), Designer, GetName);
+end;
+
+function TTreeFillerTreeProperty.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paDialog, paReadOnly];
+end;
+
+function TTreeFillerTreeProperty.GetValue: string;
+begin
+  Result := 'Filler tree';
+end;
+
+procedure TTreeFillerTreeProperty.SetValue(const Value: string);
+begin
+end;
+
 procedure RegFillerPropEdits;
 begin
 {$IFNDEF COMPILER6_UP}
   RegisterPropertyEditor(TypeInfo(TComponent), TComponent, 'Filler', TFillerProperty);
 {$ENDIF COMPILER6_UP}
+  RegisterPropertyEditor(TypeInfo(TJvTreeFillerTree), TComponent, '', TTreeFillerTreeProperty);
 end;
 
 end.

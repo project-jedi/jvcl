@@ -340,6 +340,7 @@ end;
 procedure TJvFillerTextItemImpl.setCaption(const Value: string);
 begin
   FCaption := Value;
+  Item.Items.Filler.NotifyConsumers(frUpdate);
 end;
 
 { TJvFillerImageItem }
@@ -352,6 +353,7 @@ end;
 procedure TJvFillerImageItemImpl.setAlignment(Value: TAlignment);
 begin
   FAlignment := Value;
+  Item.Items.Filler.NotifyConsumers(frUpdate);
 end;
 
 function TJvFillerImageItemImpl.getImageIndex: integer;
@@ -362,6 +364,7 @@ end;
 procedure TJvFillerImageItemImpl.setImageIndex(Index: integer);
 begin
   FImageIndex := Index;
+  Item.Items.Filler.NotifyConsumers(frUpdate);
 end;
 
 function TJvFillerImageItemImpl.getSelectedIndex: integer;
@@ -372,6 +375,7 @@ end;
 procedure TJvFillerImageItemImpl.setSelectedIndex(Value: integer);
 begin
   FSelectedIndex := Value;
+  Item.Items.Filler.NotifyConsumers(frUpdate);
 end;
 
 { TExtensibleInterfacedObject }
@@ -714,16 +718,19 @@ function TJvBaseFillerItemsListManagment.Add(Item: IFillerItem): IFillerItem;
 begin
   TJvFillerItemsList(ItemsImpl).List.Add(Item.GetImplementer);
   Result := Item;
+  Items.Filler.NotifyConsumers(frAdd);
 end;
 
 procedure TJvBaseFillerItemsListManagment.Clear;
 begin
   TJvFillerItemsList(ItemsImpl).List.Clear;
+  Items.Filler.NotifyConsumers(frUpdate);
 end;
 
 procedure TJvBaseFillerItemsListManagment.Delete(Index: Integer);
 begin
   TJvFillerItemsList(ItemsImpl).List.Delete(Index);
+  Items.Filler.NotifyConsumers(frDelete);
 end;
 
 procedure TJvBaseFillerItemsListManagment.Remove(Item: IFillerItem);
@@ -734,6 +741,7 @@ begin
   if (Impl is TExtensibleInterfacedObject) and (TExtensibleInterfacedObject(Impl).RefCount = 0) then
     Pointer(Item) := nil;
   TJvFillerItemsList(ItemsImpl).List.Remove(Impl);
+  Items.Filler.NotifyConsumers(frDelete);
 end;
 
 { TJvBaseFillerItem }
