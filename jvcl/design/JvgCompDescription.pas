@@ -112,12 +112,10 @@ end;
 
 procedure TJvgComponentDescription.LoadProperties(Component: TComponent);
 var
-  PropInfo: PPropInfo;
-  TypeInf, PropTypeInf: PTypeInfo;
+  TypeInf: PTypeInfo;
   TypeData: PTypeData;
-  i, j: integer;
-  AName, PropName, sPropValue: string;
-  PropObject: TObject;
+  i: integer;
+  AName, PropName: string;
 begin
   if NumProps > 0 then
     FreeMem(PropList, NumProps * sizeof(pointer));
@@ -139,8 +137,8 @@ begin
 
       PropName := PropList^[i]^.Name;
 
-      PropTypeInf := PropList^[i]^.PropType^;
-      PropInfo := PropList^[i];
+//      PropTypeInf := PropList^[i]^.PropType^;
+//      PropInfo := PropList^[i];
     end;
   finally
 

@@ -51,7 +51,6 @@ type
   TParr = ^Tarr;
   Tarr = array[0..0] of char;
 var
-  arr: Tarr;
   Parr: TParr;
   XL: variant;
   Sheet: variant;
@@ -141,7 +140,7 @@ procedure ExportDataSetToExcel(DataSet: TDataSet; OnExportProgress: TOnExportPro
 var
   XL: variant;
   Sheet: variant;
-  i, j, RecNo, ColIndex: integer;
+  i, RecNo, ColIndex: integer;
 begin
   try
     XL := GetActiveOleObject('Excel.Application');

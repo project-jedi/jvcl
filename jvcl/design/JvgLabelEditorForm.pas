@@ -310,6 +310,8 @@ begin
     3: TextStyle := fstShadow;
     4: TextStyle := fstRecessed;
     5: TextStyle := fstVolumetric;
+  else
+    TextStyle := fstNone;
   end; // case
 
   SetTextStyle(0, TextStyle);
@@ -349,6 +351,8 @@ begin
     3: TextStyle := fstShadow;
     4: TextStyle := fstRecessed;
     5: TextStyle := fstVolumetric;
+  else
+    TextStyle := fstNone;
   end; // case
 
   SetTextStyle(1, TextStyle);
@@ -379,6 +383,8 @@ begin
     3: TextStyle := fstShadow;
     4: TextStyle := fstRecessed;
     5: TextStyle := fstVolumetric;
+  else
+    TextStyle := fstNone;
   end; // case
 
   SetTextStyle(2, TextStyle);
@@ -528,7 +534,6 @@ function TJvgLabelEditorDlg.UpdateComponent: Boolean;
 begin
 
   inherited UpdateComponent;
-  Result := False;
 
   if (JvgLabelTest.Background <> nil) and (cbxActiveBackground.Checked) then
   begin

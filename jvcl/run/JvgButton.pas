@@ -1119,13 +1119,13 @@ begin
       else
         PixelColor := GetPixel(FGlyphInactive.Canvas.Handle, Pt.X, Pt.Y);
       end;
-    Result := (PixelColor <> FTransparentColor) and (PixelColor <> -1);
+    Result := (PixelColor <> TColorRef(FTransparentColor)) and (PixelColor <> DWORD(-1));
   end
   else //...__use mask_
   begin
     with FGlyphs do
       PixelColor := GetPixel(FGlyphMask.Canvas.Handle, Pt.X, Pt.Y);
-    Result := (PixelColor = clWhite) and (PixelColor <> -1);
+    Result := (PixelColor = TColorRef(clWhite)) and (PixelColor <> DWORD(-1));
   end;
 end;
 
@@ -1384,7 +1384,6 @@ begin
     FTransparentColor := GetPixel(TmpBmp_.Canvas.Handle, X, Y);
   finally
     TmpBmp_.Free;
-    TmpBmp_ := nil;
     GetBitmaps;
     Invalidate;
   end;

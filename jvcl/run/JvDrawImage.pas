@@ -284,17 +284,12 @@ var
 
   mycliprect: trect;
   UserFilter: TDigitalFilter;
-  appldir: string;
-  ImgDrawFactor: byte;
 
   RangeTransColor: tcolor;
 
   NSpiro: integer;
-  rotangle: integer;
   wavepen, wavebrush: tcolor;
   decoX, decoY: integer;
-
-  paintercaption: string;
 
   mybezier: array[0..3] of tpoint;
   myskew: array[0..4] of tpoint;
@@ -303,13 +298,10 @@ var
   myslinedir: string;
   myslinetol: integer;
   mydraw: boolean;
-  myoldshape: string;
   mypen: tpenmode;
   mypenstyle: tpenstyle;
-  drawmode: string;
   myoldbrushstyle: tbrushstyle;
   myoldpenwidth: integer;
-  shadowdx: integer;
   shadowdy: integer;
   shadow: tcolor;
   myround: integer;
@@ -450,7 +442,7 @@ procedure TJvDrawImage.drawspiro(center, radius: tpoint);
 var
   x0, x1, y0, y1, a0, a1, da0, da1: real;
   xs, ys, x, y, r0, r1: integer;
-  i, n: integer;
+  i: integer;
 begin
   xs := picture.Bitmap.Width div 2;
   ys := picture.Bitmap.height div 2;
@@ -548,7 +540,6 @@ procedure TJvDrawImage.TextRotate(x, y, angle: integer; atext: string;
 var
   dc: hdc;
   fnt: LogFont;
-  plf: PLogFont;
   hfnt, hfntPrev: hfont;
   i: integer;
   fname, s: string;
@@ -603,7 +594,7 @@ procedure TJvDrawImage.drawrisingwavesphere(color1, color2: tcolor; x1, y1, x2, 
 var
   t, xcenter, a, ycenter, b: integer;
   r1, g1, b1, r2, g2, b2: byte;
-  sph, i, dx, dy, xo, yo, r, bl: integer;
+  i, dx, dy, xo, yo, r, bl: integer;
 begin
   picture.bitmap.pixelformat := pf24bit;
   clip.assign(picture.bitmap);
@@ -745,7 +736,7 @@ procedure TJvDrawImage.drawdropletsphere(color1, color2: tcolor; x1, y1, x2, y2:
 var
   t, xcenter, a, ycenter, b: integer;
   r1, g1, b1, r2, g2, b2: byte;
-  sph, i, dx, dy, bl: integer;
+  i, dx, dy, bl: integer;
 begin
   picture.bitmap.pixelformat := pf24bit;
   clip.assign(picture.bitmap);
@@ -806,7 +797,7 @@ procedure TJvDrawImage.drawmultisphere(color1, color2: tcolor; x1, y1, x2, y2: i
 var
   t, xcenter, a, ycenter, b: integer;
   r1, g1, b1, r2, g2, b2: byte;
-  sph, i, dx, dy, bl: integer;
+  i, dx, dy, bl: integer;
 begin
   picture.bitmap.pixelformat := pf24bit;
   clip.assign(picture.bitmap);
@@ -864,7 +855,7 @@ end;
 procedure TJvDrawImage.Sphere(bitmap: tbitmap;
   xcenter, a, ycenter, b: integer; r1, g1, b1, r2, g2, b2: byte; smooth: boolean);
 var (* Dessine un disque color‚*)
-  zz, xx, yy: Integer; (* par remplissage avec Couleur1-2 *)
+  xx, yy: Integer; (* par remplissage avec Couleur1-2 *)
   compt, x_ll, y_ll, x_ray, y_ray: Longint;
 begin
   xx := 0;
@@ -983,7 +974,7 @@ var
     t, t2, z, iz,
     rp, rp2, gp,
     gp2, bp, bp2,
-    xx, dx, x: Integer;
+    xx, dx: Integer;
   pb: PByteArray;
   c00, c10, c01, c11: TFColor;
 begin
@@ -2060,7 +2051,7 @@ end;
 
 procedure TJvDrawImage.rimple(src, dst: tbitmap; amount: extended);
 var
-  ca, sa, a, dx, dy, r, rx, ry, sr, fr: extended;
+  ca, sa, a, dx, dy, r, sr, fr: extended;
   w, h, x, y, cx, cy, i, j, c, ci: integer;
   p1, p2: pbytearray;
 begin
@@ -2303,9 +2294,6 @@ end;
 
 procedure TJvDrawImage.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
-var
-  drw: string;
-
 begin
   wavepen := canvas.pen.color;
   wavebrush := canvas.brush.color;
@@ -4007,8 +3995,6 @@ begin
 end;
 
 procedure TJvDrawImage.lightnessbarChange(Sender: TObject);
-var
-  src: tbitmap;
 begin
   clipall;
   clip.PixelFormat := pf24bit;
@@ -4143,7 +4129,7 @@ end;
 
 procedure TJvDrawImage.wavebarchange;
 var
-  am, inf: integer;
+  am: integer;
 begin
   clipall;
   clip.PixelFormat := pf24bit;
@@ -4156,7 +4142,7 @@ end;
 
 procedure TJvDrawImage.waveextrachange;
 var
-  am, inf: integer;
+  am: integer;
 begin
   clipall;
   clip.PixelFormat := pf24bit;

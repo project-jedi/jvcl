@@ -33,7 +33,8 @@ Known Issues:
 unit JvgFileIterator;
 
 interface
-uses Windows, Classes, SysUtils;
+uses
+  Windows, Classes, SysUtils;
 
 type
 
@@ -45,7 +46,7 @@ type
 
   TJvgFileIterator = class
   private
-    FileExt: string;
+//    FileExt: string;
     FPath: string;
     FAttr: Integer;
     FRecurse: boolean;
@@ -76,6 +77,8 @@ type
   end;
 
 implementation
+uses
+  JvJVCLUtils;
 
 { TJvgFileIterator }
 
@@ -107,6 +110,7 @@ end;
 
 function TJvgFileIterator.CheckResult(Value: integer): boolean;
 begin
+  Result := true;
   case Value of
     0: Result := true;
     ERROR_NO_MORE_FILES:
@@ -115,7 +119,7 @@ begin
         Result := false;
       end;
   else
-    RaiseLastWin32Error;
+    RaiseLastOSError;
   end;
 end;
 

@@ -58,7 +58,7 @@ type
   private
     FLogics: TJvgLogics;
     FCommentAreas: TJvgCommentAreas;
-    FIgnoreSpaces: boolean;
+//    FIgnoreSpaces: boolean;
 
     procedure SetLogics(const Value: TJvgLogics);
     procedure SetDictionary(const Value: TStrings);
@@ -87,8 +87,8 @@ type
     FNextElementID: integer;
     FNextFalseElementID: integer;
 
-    FNextElement: TJvgLogicElement;
-    FNextFalseElement: TJvgLogicElement;
+//    FNextElement: TJvgLogicElement;
+//    FNextFalseElement: TJvgLogicElement;
 
     FLeft: integer;
     FTop: integer;
@@ -429,7 +429,6 @@ end;
 procedure TJvgLogics.AnalyzeStep;
 var
   f: boolean;
-  Item: TJvgLogicElement;
   LogicVariant: TJvgLogicVariant;
 begin
   LogicVariant := nil;
@@ -453,7 +452,6 @@ end;
 procedure TJvgLogics.Analyze;
 var
   i: integer;
-  Item: TJvgLogicElement;
 begin
   for i := 0 to Count - 1 do
     Items[i].IsTrue := false;
@@ -474,6 +472,7 @@ var
   Expr, Value: string;
   i: integer;
 begin
+  Result := false;
   Expr := ParseExpression(Item.Expression);
   if IgnoreSpaces then
     Expr := trim(Expr);
@@ -542,8 +541,6 @@ begin
 end;
 
 procedure TJvgLogicProducer.Loaded;
-var
-  i: integer;
 begin
   inherited;
   Logics.Loaded;

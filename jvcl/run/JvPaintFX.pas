@@ -3129,7 +3129,7 @@ end;
 
 procedure TJvPaintFX.RippleTriangle(src: TBitmap; amount: integer);
 var
-  c, x, y: integer;
+  x, y: integer;
   P1, P2: PByteArray;
   b: byte;
   doinc: boolean;
@@ -3171,7 +3171,7 @@ end;
 
 procedure TJvPaintFX.RippleRandom(src: TBitmap; amount: integer);
 var
-  c, c2, x, y: integer;
+  x, y: integer;
   P1, P2: PByteArray;
   b: byte;
 
@@ -3455,7 +3455,6 @@ procedure TJvPaintFX.Posterize(src, dst: tbitmap; amount: integer);
 var
   w, h, x, y: integer;
   ps, pd: pbytearray;
-  c: integer;
 begin
   w := src.width;
   h := src.height;

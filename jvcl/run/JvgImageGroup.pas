@@ -50,10 +50,10 @@ type
   TJvgImageGroup = class(TJvGraphicControl)
   private
     FImageList: TImageList;
-    FPassiveMask: TBitmap;
-    FActiveMask: TBitmap;
-    FSelectedMask: TBitmap;
-    FSingleSelected: boolean;
+//    FPassiveMask: TBitmap;
+//    FActiveMask: TBitmap;
+//    FSelectedMask: TBitmap;
+//    FSingleSelected: boolean;
     FTransparent: boolean;
     FTransparentColor: TColor;
     FMasked: boolean;
@@ -64,10 +64,10 @@ type
     FFastDraw: boolean;
     fNeedRemakeBackground: boolean;
     Image: TBitmap;
-    OldWidth, OldHeight,
-      OldLeft, OldTop: integer;
+//    OldWidth, OldHeight,
+//      OldLeft, OldTop: integer;
 
-    procedure SmthChanged(Sender: TObject);
+//    procedure SmthChanged(Sender: TObject);
 
     procedure SetImageList(Value: TImageList);
     procedure SetTransparent(Value: boolean);
@@ -225,12 +225,12 @@ begin
   Bitmap.Free;
 end;
 //________________________________________________________
-
+{
 procedure TJvgImageGroup.SmthChanged(Sender: TObject);
 begin
   Invalidate;
 end;
-
+}
 //*****************************************_____________PROPERTY METHODS
 //________________________________________________________
 

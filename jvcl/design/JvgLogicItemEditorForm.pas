@@ -165,7 +165,6 @@ end;
 procedure TJvgLogicItemEditor.FormCreate(Sender: TObject);
 var
   i: TLogicRule;
-  j: integer;
   Item: TMenuItem;
 begin
   for i := low(TLogicRule) to high(TLogicRule) do

@@ -220,9 +220,12 @@ end;
 
 procedure TJvCheckBox.SetAssociated(const Value: TControl);
 begin
-  FAssociated := Value;
-  if Assigned(FAssociated) then
-    FAssociated.Enabled := Checked;
+  if FAssociated <> self then
+  begin
+    FAssociated := Value;
+    if Assigned(FAssociated) then
+      FAssociated.Enabled := Checked;
+  end;
 end;
 
 procedure TJvCheckBox.SetChecked(Value: Boolean);

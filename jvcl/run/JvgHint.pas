@@ -246,6 +246,7 @@ begin
   dec(R.right, 1); dec(R.Bottom, 1);
   Canvas.Brush.Color := clWhite;
   Canvas.Pen.Color := 0;
+  glyphX := 0; glyphY := 0;
 
   with HintComponent.Style do
   begin

@@ -1,15 +1,17 @@
-object ReportParamsForm: TJvgReportParamsForm
+object JvgReportParamsForm: TJvgReportParamsForm
   Left = 343
   Top = 219
   BorderStyle = bsDialog
   Caption = 'Globus  Report Parameters Editor'
   ClientHeight = 80
   ClientWidth = 222
+  Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
+  OldCreateOrder = True
   Position = poScreenCenter
   PixelsPerInch = 96
   TextHeight = 13

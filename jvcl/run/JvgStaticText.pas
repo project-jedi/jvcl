@@ -60,7 +60,7 @@ type
     FOnMouseleave: TNotifyEvent;
 
     fActive: boolean;
-    Image: TBitmap;
+//    Image: TBitmap;
     procedure CreateImage;
     procedure DrawTextBroadwise;
     procedure AdjustBounds;
@@ -228,19 +228,19 @@ end;
 
 procedure TJvgStaticText.DrawTextBroadwise;
 var
-  i, DrawPos, Pos1, Pos2, LineWidth,
-    LineNo, LexemCount, LexemCount_, TextHeight: cardinal;
+  DrawPos, Pos1, Pos2, LineWidth,
+    LineNo, LexemCount, TextHeight: integer;
   Lexem: string;
   Size: TSIZE;
 
-  function GetNextLexem(var Pos1, Pos2: cardinal; fTrimleft: boolean): string;
+  function GetNextLexem(var Pos1, Pos2: integer; fTrimleft: boolean): string;
   var
-    Pos: cardinal;
+    Pos: integer;
   begin
     pos := pos1;
     if Caption[Pos] = ' ' then
       repeat inc(Pos);
-      until (Pos > length(Caption)) or (Caption[Pos] <> ' ');
+      until (Pos > Length(Caption)) or (Caption[Pos] <> ' ');
     Pos2 := Pos;
     if fTrimleft and (LineNo > 0) then
       Pos1 := Pos;
@@ -250,9 +250,9 @@ var
     Result := copy(Caption, Pos1, Pos2 - Pos1);
   end;
 
-  procedure DrawLine(AdditSpace: cardinal);
+  procedure DrawLine(AdditSpace: integer);
   var
-    i, DrawPos1, DrawPos2: cardinal;
+    i, DrawPos1, DrawPos2: integer;
     Lexem: string;
     Size: TSIZE;
     X, X_: single;

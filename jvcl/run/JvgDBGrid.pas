@@ -138,7 +138,7 @@ begin
   begin
     x := r.Left;
     y := r.top;
-    IHeight := r.bottom - r.top;
+//    IHeight := r.bottom - r.top;
     IWidth := r.Right - r.Left;
     x_ := x;
     y_ := y;

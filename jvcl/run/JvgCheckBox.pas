@@ -588,7 +588,7 @@ begin
   if (P <> FNewWndProc) then
   begin
     FPrevWndProc := P;
-    FNewWndProc := MakeObjectInstance(FocusControlWndHookProc);
+    FNewWndProc := Classes.MakeObjectInstance(FocusControlWndHookProc);
     SetWindowLong(FocusControl.Handle, GWL_WNDPROC, LongInt(FNewWndProc));
   end;
 end;

@@ -23,7 +23,6 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 {$I JEDI.INC}
 unit JvSpellerForm;
 
@@ -87,7 +86,7 @@ type
   end;
 
 var
-  jvSpellerF: TJvSpellerF;
+  JvSpellerF: TJvSpellerF;
 
 implementation
 
@@ -269,8 +268,6 @@ begin
 end;
 
 function TJvSpeller.ParseWord: string;
-var
-  p: integer;
 begin
   result := '';
   if not WordBegin then exit;

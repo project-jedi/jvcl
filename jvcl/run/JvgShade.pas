@@ -113,8 +113,6 @@ END;
 PROCEDURE TJvgShade.Paint;
 VAR
    i, j, o                    : integer;
-   RGB                        : COLORREF;
-   R, G, B                    : byte;
 CONST
    SHIFTCOLOR                 = $003939;
 BEGIN

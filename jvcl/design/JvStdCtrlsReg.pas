@@ -54,7 +54,7 @@ begin
     ]);
   RegisterComponents(SPaletteEdit,[
     TJvEdit, TJvMemo, TJvRichEdit, TJvCheckedMaskEdit,
-    TJvMaskEdit, TJvHotKey, TJvCalcEdit, TJvComboEdit, TJvFileDirEdit,
+    TJvMaskEdit, TJvHotKey, TJvCalcEdit, TJvComboEdit, 
     TJvFilenameEdit, TJvDirectoryEdit, TJvDateEdit, TJvSpinEdit,
     TJvIPAddress]);
 

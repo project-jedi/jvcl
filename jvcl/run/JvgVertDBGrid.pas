@@ -229,8 +229,6 @@ begin
 end;
 
 procedure TJvgCustomVertDBSGrid.SetDataSource(Value: TDataSource);
-var
-  i: integer;
 begin
   FDataSource := Value;
   if not Assigned(FDataSource) then
@@ -243,8 +241,6 @@ begin
 end;
 
 procedure TJvgCustomVertDBSGrid.SetDataSet(Value: TDataSet);
-var
-  i: integer;
 begin
   FDataSet := Value;
   if not Assigned(DataSet) then

@@ -865,7 +865,7 @@ begin
     Exit;
   MouseClickPoint.X := Msg.XPos;
   MouseClickPoint.Y := Msg.YPos;
-  if Msg.XPos > FSegment1Width then
+  if Msg.XPos > integer(FSegment1Width) then
   begin
     ItemN := ItemAtPos(SmallPointToPoint(Msg.Pos), True);
     SendMessage(Handle, LB_GETITEMRECT, ItemN, LPARAM(@R));

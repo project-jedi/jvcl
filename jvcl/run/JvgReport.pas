@@ -86,7 +86,8 @@ type
     FFixed: word;
     FOLELinkToFile: string;
     FOLESizeMode: word;
-    fSizing, fRepaintOnlyBorder: boolean;
+//    fRepaintOnlyBorder,
+    fSizing: boolean;
     R: array[1..8] of TRect;
     DownPos: TPoint;
     SizeDirection: integer;
@@ -145,7 +146,7 @@ type
     property ExternalCanvas: TCanvas read FExternalCanvas write
       FExternalCanvas;
     //    procedure RepaintBorder;
-    constructor Create(AOwner: TComponent);
+    constructor Create(AOwner: TComponent);override;
     destructor Destroy; override;
 
   published
@@ -258,9 +259,6 @@ begin
 end;
 
 procedure TJvgRepScrollBox.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
-var
-  DC: HDC;
-  Canvas: TCanvas;
 begin
   with TCanvas.Create do
   begin
@@ -864,9 +862,7 @@ end;
 
 procedure TJvgReport.SaveToFile(FileName: string);
 var
-  fs, fs2: TFileStream;
-  W: TWriter;
-  i: integer;
+  fs: TFileStream;
 begin
   ValidateWnds;
   fs := TFileStream.Create(FileName, fmCreate or fmOpenWrite);
@@ -997,11 +993,9 @@ end;
 procedure TJvgReport.CreateReport(ParentWnd: TWinControl; fNeedClearOwner:
   boolean);
 var
-  fs, fs2: TFileStream;
   ms: TMemoryStream;
   p: TParser;
   c: char;
-  i: integer;
   Compon: TComponent;
   sName, sClassName: string;
 
@@ -1267,7 +1261,7 @@ end;
 
 procedure TJvgReport.AnalyzeParams(Item: TJvgReportItem; DefName: string);
 var
-  ParamIndex, LastPos: integer;
+  LastPos: integer;
   SList: TStringList;
   ParamType: TglRepParamType;
   ParamText, ParamName, ParamMask, ParamValue: string;
@@ -1275,7 +1269,7 @@ var
   function ExtractParam(Item: TJvgReportItem; var SrchPos: integer; var
     ParamName: string; var ParamType: TglRepParamType): boolean;
   var
-    i, j, p: integer;
+    i, j: integer;
     f: boolean;
     Text: string;
   begin
@@ -1378,7 +1372,7 @@ end;
 function TJvgReport.GetParam(const sParamName: string; var sParamValue: string):
   boolean;
 var
-  i, ParamIndex: integer;
+  ParamIndex: integer;
 begin
   ParamIndex := ParamNames.IndexOf(sParamName);
   if ParamIndex = -1 then
