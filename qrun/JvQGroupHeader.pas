@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -59,6 +59,8 @@ type
     procedure DoChange;
   public
     constructor Create;
+    destructor Destroy; override;
+
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   published
     property Brush: TBrush read FBrush write SetBrush;
@@ -95,6 +97,7 @@ type
     
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     property Canvas;
   published
     property Align;
@@ -150,6 +153,13 @@ begin
   FShape := stRectangle;
   FStyle := bsLowered;
   FHeight := 2;
+end;
+
+destructor TJvGroupHeaderOptions.Destroy;
+begin
+  FPen.Free;
+  FBrush.Free;
+  inherited;
 end;
 
 procedure TJvGroupHeaderOptions.SetBrush(Value: TBrush);
@@ -214,6 +224,13 @@ begin
   FBevelSpace := 12;
   FLabelOptions := TJvGroupHeaderOptions.Create;
   FLabelOptions.OnChange := StyleChanged;
+end;
+
+destructor TJvGroupHeader.Destroy;
+begin
+  FBevelOptions.Free;
+  FLabelOptions.Free;
+  inherited;
 end;
 
 function TJvGroupHeader.GetLabelText: string;
@@ -487,6 +504,8 @@ procedure TJvGroupHeader.SetLabelOptions(Value: TJvGroupHeaderOptions);
 begin
   //
 end;
+
+
 
 end.
 

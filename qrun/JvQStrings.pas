@@ -958,7 +958,9 @@ procedure RecurseDirProgs(myDir: string; var aFileList: TStringList);
 var
   sr: TSearchRec;
   FileAttrs: Integer;
+  {$IFDEF MSWINDOWS}
   e: string;
+  {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   st: TStatBuf;
   {$ENDIF LINUX}
@@ -2079,10 +2081,12 @@ var
   sr: TSearchRec;
   FileAttrs: Integer;
 begin
-  FileAttrs := faArchive + faDirectory;
+  FileAttrs := {$IFDEF MSWINDOWS}faArchive +{$ENDIF}faDirectory;
   if FindFirst(aDir + amask, FileAttrs, sr) = 0 then
     while FindNext(sr) = 0 do
+      {$IFDEF MSWINDOWS}
       if (sr.Attr and faArchive) <> 0 then
+      {$ENDIF MSWINDOWS}
         aFileList.append(aDir + sr.Name);
   FindClose(sr);
 end;

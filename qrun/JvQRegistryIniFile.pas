@@ -92,12 +92,11 @@ end;
 constructor TJvRegistryIniFile.Create(const Root: string);
 begin
   inherited Create;
-  if Root = ''
+  if Root <> ''
   then
     FHKey := Root
   else
-    FHKey := GetEnvironmentVariable('HOME'); //+ '/.' +
-                ExtractFileName(Application.ExeName));
+    FHKey := GetEnvironmentVariable('HOME'); //+ '/.' + ExtractFileName(Application.ExeName));
 end;
 
 destructor TJvRegistryIniFile.Destroy;
