@@ -1513,11 +1513,16 @@ begin
 end;
 
 procedure TJvParameterList.DialogShow(Sender: TObject);
+var i : Integer;
 begin
-  if Count > 0 then
-    if Parameters[0].Visible then
-      if Assigned(Parameters[0].WinControl) then
-        Parameters[0].WinControl.SetFocus;
+  for i := 0 to Count-1 do
+    if Parameters[i].Visible then
+      if Assigned(Parameters[i].WinControl) then
+        if Parameters[i].WinControl.CanFocus then
+        begin
+          Parameters[i].WinControl.SetFocus;
+          break;
+        end;
 end;
 
 function TJvParameterList.GetEnableDisableReasonState(ADisableReasons: TJvParameterListEnableDisableReasonList;
@@ -1674,7 +1679,7 @@ begin
       ArrangePanel.ArrangeSettings.AutoSize := asBoth;
   end;
   if (Width > 0) and (ArrangePanel.ArrangeSettings.AutoSize = asHeight) then
-    ArrangePanel.Width := ScrollBox.Width-RightPanel.Width;
+    ArrangePanel.Width := Scrollbox.Width-RightPanel.Width;
   if MaxWidth > 0 then
     ArrangePanel.ArrangeSettings.MaxWidth := MaxWidth-RightPanel.Width-2;
   try
