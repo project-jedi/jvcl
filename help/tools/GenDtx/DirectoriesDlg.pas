@@ -44,6 +44,10 @@ type
     chbUseRootDir: TCheckBox;
     btnRootDir: TButton;
     actRootDir: TAction;
+    Label4: TLabel;
+    edtRootDelphiDir: TEdit;
+    btnRootDelphiDir: TButton;
+    actRootDelphiDir: TAction;
     procedure actCancelExecute(Sender: TObject);
     procedure actOKExecute(Sender: TObject);
     procedure actApplyExecute(Sender: TObject);
@@ -55,6 +59,7 @@ type
     procedure actRootDirExecute(Sender: TObject);
     procedure chbUseRootDirClick(Sender: TObject);
     procedure edtRootDirChange(Sender: TObject);
+    procedure actRootDelphiDirExecute(Sender: TObject);
   private
     FSettings: TSettings;
   protected
@@ -108,6 +113,7 @@ begin
     edtRealDtxDir.Text := RealDtxDir;
     edtPackageDir.Text := PackageDir;
     edtRootDir.Text := RootDir;
+    edtRootDelphiDir.Text := DelphiRootSourceDir;
     chbOverwriteExisting.Checked := OverwriteExisting;
     chbUseRootDir.Checked := UseRootDir;
   end;
@@ -196,14 +202,15 @@ procedure TfrmDirectories.SaveFiles;
 begin
   with FSettings do
   begin
-    RunTimePasDir := edtRunTimePasDir.Text;
+    DelphiRootSourceDir := edtRootDelphiDir.Text;
     DesignTimePasDir := edtDesignTimePasDir.Text;
     GeneratedDtxDir := edtGeneratedDtxDir.Text;
-    RealDtxDir := edtRealDtxDir.Text;
-    PackageDir := edtPackageDir.Text;
-    RootDir := edtRootDir.Text;
-    UseRootDir := chbUseRootDir.Checked;
     OverwriteExisting := chbOverwriteExisting.Checked;
+    PackageDir := edtPackageDir.Text;
+    RealDtxDir := edtRealDtxDir.Text;
+    RootDir := edtRootDir.Text;
+    RunTimePasDir := edtRunTimePasDir.Text;
+    UseRootDir := chbUseRootDir.Checked;
   end;
 end;
 
@@ -259,6 +266,16 @@ procedure TfrmDirectories.edtRootDirChange(Sender: TObject);
 begin
   if chbUseRootDir.Checked then
     UpdateDirs;
+end;
+
+procedure TfrmDirectories.actRootDelphiDirExecute(Sender: TObject);
+begin
+  with JvBrowseForFolderDialog1 do
+  begin
+    Directory := edtRootDelphiDir.Text;
+    if Execute then
+      edtRootDelphiDir.Text := Directory;
+  end;
 end;
 
 end.

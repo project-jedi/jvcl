@@ -2,7 +2,7 @@ object frmDirectories: TfrmDirectories
   Left = 364
   Top = 240
   Width = 516
-  Height = 360
+  Height = 404
   BorderIcons = [biSystemMenu]
   Caption = 'Directories'
   Color = clBtnFace
@@ -17,7 +17,7 @@ object frmDirectories: TfrmDirectories
   Position = poMainFormCenter
   DesignSize = (
     508
-    326)
+    370)
   PixelsPerInch = 96
   TextHeight = 13
   object lblRunTimePasDirDesc: TLabel
@@ -67,6 +67,13 @@ object frmDirectories: TfrmDirectories
     Width = 97
     Height = 13
     Caption = 'Root JVCL directory:'
+  end
+  object Label4: TLabel
+    Left = 8
+    Top = 281
+    Width = 228
+    Height = 13
+    Caption = 'Root Delphi source directory ($DELPHI)\source:'
   end
   object edtRunTimePasDir: TEdit
     Left = 8
@@ -168,7 +175,7 @@ object frmDirectories: TfrmDirectories
   end
   object btnApply: TButton
     Left = 263
-    Top = 293
+    Top = 337
     Width = 75
     Height = 25
     Action = actApply
@@ -177,7 +184,7 @@ object frmDirectories: TfrmDirectories
   end
   object btnOK: TButton
     Left = 343
-    Top = 293
+    Top = 337
     Width = 75
     Height = 25
     Action = actOK
@@ -187,7 +194,7 @@ object frmDirectories: TfrmDirectories
   end
   object btnCancel: TButton
     Left = 425
-    Top = 293
+    Top = 337
     Width = 75
     Height = 25
     Action = actCancel
@@ -223,9 +230,27 @@ object frmDirectories: TfrmDirectories
     Anchors = [akTop, akRight]
     TabOrder = 1
   end
+  object edtRootDelphiDir: TEdit
+    Left = 8
+    Top = 297
+    Width = 466
+    Height = 21
+    Anchors = [akLeft, akTop, akRight]
+    TabOrder = 17
+    Text = 'edtOutDir'
+  end
+  object btnRootDelphiDir: TButton
+    Left = 475
+    Top = 297
+    Width = 25
+    Height = 21
+    Action = actPackageDir
+    Anchors = [akTop, akRight]
+    TabOrder = 18
+  end
   object ActionList1: TActionList
-    Left = 176
-    Top = 288
+    Left = 136
+    Top = 328
     object actCancel: TAction
       Category = 'Buttons'
       Caption = 'Cancel'
@@ -271,9 +296,14 @@ object frmDirectories: TfrmDirectories
       Caption = '...'
       OnExecute = actRootDirExecute
     end
+    object actRootDelphiDir: TAction
+      Category = 'Files'
+      Caption = 'actRootDelphiDir'
+      OnExecute = actRootDelphiDirExecute
+    end
   end
   object JvBrowseForFolderDialog1: TJvBrowseForFolderDialog
-    Left = 128
-    Top = 288
+    Left = 96
+    Top = 320
   end
 end

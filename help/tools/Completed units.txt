@@ -4,6 +4,9 @@ JvAnimTitle
 JvAppAnimatedIcon
 JvAppHotKey
 JvAppInfo
+JvAppIniStore
+JvAppRegistryStore
+JvAppStore
 JvArrowButton
 JvAVICapture
 JvBalloonHint
@@ -13,7 +16,6 @@ JvBevel
 JvBitBtn
 JvBmpAnimator
 JvBrowseFolder
-JvCabFile
 JvCaesarCipher
 JvCalendar
 JvCaptionButton
@@ -36,13 +38,15 @@ JvDragDrop
 JvDriveCtrls
 JvEdit
 JvEnterTab
+JvErrProvider
 JvFindFiles
 JvFindReplace
 JvFixedEditPopUp
 JvFormAutoSize
-JvFormPlacement
 JvFormWallpaper
 JvId3v1
+JvID3v2Base
+JvId3v2Types
 JvImageWindow
 JvInstallLabel
 JvItemsPanel
@@ -66,7 +70,6 @@ JvScrollBar
 JvScrollBox
 JvScrollText
 JvSearchFiles
-JvSegmentedLEDDisplay
 JvSelectDirectory
 JvShape
 JvShellHook
@@ -78,7 +81,6 @@ JvSpecialProgress
 JvSplitter
 JvStarfield
 JvStaticText
-JvStringGrid
 JvStringListToHtml
 JvStrToHtml
 JvSyncSplitter

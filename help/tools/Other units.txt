@@ -1,8 +1,10 @@
 JvAlarms
 JvAnalogClock
+JvCabFile
 JvCalc
 JvCaptionPanel
 JvCheckBox
+JvCombobox
 JvCreateProcess
 JvCsvData
 JvCsvParse
@@ -10,9 +12,8 @@ JvDataProvider
 JvDBLookup
 JvDialButton
 JvDSADialogs
-JvErrProvider
-JvID3v2Base
-JvId3v2Types
+JvFormPlacement
+JvGif
 JvInspector
 JvListBox
 JvPlugin
@@ -21,8 +22,10 @@ JvRadioControl
 JvSchedEvtStore
 JvScheduledEvents
 JvScrollPanel
+JvSegmentedLEDDisplay
 JvSpecialImage
 JvStatusBar
+JvStringGrid
 JvTFDays
 JvTFManager
 JvTimeLine

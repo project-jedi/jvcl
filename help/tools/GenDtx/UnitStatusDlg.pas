@@ -39,6 +39,7 @@ const
   CReview = 'Review';
   COther = 'Other';
   CCompleted = 'Completed';
+  CIncomplete = 'Incomplete';
   CIgnored = 'Ignored';
   CGenerated = 'Generated';
   CLocked = 'Locked';
@@ -68,6 +69,9 @@ begin
   else
     if Pos('review', S) > 0 then
     Result := CReview
+  else
+    if Pos('incomplete', S) > 0 then
+    Result := CIncomplete
   else
     if Pos('complete', S) > 0 then
     Result := CCompleted
@@ -121,7 +125,7 @@ begin
   if FInitialized then
     Exit;
   FInitialized := True;
-  
+
   JvSearchFiles1.RootDirectory := TSettings.Instance.RealDtxDir;
 
   Cursor := Screen.Cursor;

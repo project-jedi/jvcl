@@ -34,7 +34,6 @@ JvClipboardMonitor
 JvClipboardViewer
 JvClock
 JVCLVer
-JvCombobox
 JvComCtrls
 JvCommonExecDlg
 JvCommStatus
@@ -115,7 +114,6 @@ JvgHelpPanel
 JvgHint
 JvgHoleShape
 JvgHTTPVersionInfo
-JvGif
 JvGIFCtrl
 JvgImage
 JvgImageGroup

@@ -9,6 +9,7 @@ const
   CParamDescription = 'Description for this parameter';
   CItemDescription = '  Description for %s'#13#10;
 type
+  { -- }
   TClassVisibility = (inPrivate, inProtected, inPublic, inPublished);
   TClassVisibilities = set of TClassVisibility;
 
@@ -21,15 +22,72 @@ type
   TMethodType = (mtNormal, mtConstructor, mtDestructor);
   TDirective = (diAbstract, diCdecl, diDynamic, diObject, diOf, diOverload,
     diOverride, diPascal, diRegister, diReintroduce, diSafecall, diStdcall,
-    diVirtual, diAssembler, diDeprecated, diPlatform, diForward);
+    diVirtual, diAssembler, diDeprecated, diPlatform, diForward, diExport);
   TDirectives = set of TDirective;
+
+  TPropertySpecifier = (psIndex, psRead, psWrite, psStored, psDefault, psNoDefault, psImplements);
+  TPropertySpecifiers = set of TPropertySpecifier;
+  { -- Filter }
+  TDuplicatesType = (dtHide, dtHideCaseSensitive, dtOnlyDuplicates,
+    dtOnlyCaseSensitiveDuplicates, dtAll);
+  TClassPropertyType = (cptInherited, cptNonInherited);
+  TClassPropertyTypes = set of TClassPropertyType;
+
+  TFourState = (fsNo, fsDontCare, fsOneOf, fsYes);
+  TTriState = (tsNo, tsDontCare, tsYes);
+
+  TFilterData = record
+    RShow: TDelphiTypes;
+    RDuplicates: TDuplicatesType;
+    { Class }
+    RClass_DescendantOf: string;
+    { Property }
+    RProperty_ShowInherited: TTriState;
+    RProperty_ShowArray: TTriState;
+    RProperty_MustExcludeSpecifiers: TPropertySpecifiers;
+    RProperty_MustIncludeOneOfSpecifiers: TPropertySpecifiers;
+    RProperty_MustIncludeSpecifiers: TPropertySpecifiers;
+    RProperty_Scope: TClassVisibilities;
+    RProperty_In: TStringList;
+    { Method-procedure }
+    RMethodProcedure_ShowConstructor: TTriState;
+    RMethodProcedure_ShowDestructor: TTriState;
+    RMethodProcedure_ShowClassMethod: TTriState;
+    RMethodProcedure_Scope: TClassVisibilities;
+    RMethodProcedure_MustExcludeDirectives: TDirectives;
+    RMethodProcedure_MustIncludeOneOfDirectives: TDirectives;
+    RMethodProcedure_MustIncludeDirectives: TDirectives;
+    RMethodProcedure_MinimalParamCount: Integer; { -1 -> ignore }
+    RMethodProcedure_MaximalParamCount: Integer; { -1 -> ignore }
+    { Method-function }
+    RMethodFunction_ShowClassMethod: TTriState;
+    RMethodFunction_Scope: TClassVisibilities;
+    RMethodFunction_MustExcludeDirectives: TDirectives;
+    RMethodFunction_MustIncludeOneOfDirectives: TDirectives;
+    RMethodFunction_MustIncludeDirectives: TDirectives;
+    RMethodFunction_MinimalParamCount: Integer; { -1 -> ignore }
+    RMethodFunction_MaximalParamCount: Integer; { -1 -> ignore }
+    { Procedure }
+    RProcedure_ShowClassMethod: TTriState;
+    RProcedure_MustIncludeDirectives: TDirectives;
+    RProcedure_MustIncludeOneOfDirectives: TDirectives;
+    RProcedure_MustExcludeDirectives: TDirectives;
+    { Function }
+    RFunction_ShowClassMethod: TTriState;
+    RFunction_MustIncludeDirectives: TDirectives;
+    RFunction_MustIncludeOneOfDirectives: TDirectives;
+    RFunction_MustExcludeDirectives: TDirectives;
+  end;
+  { -- }
 
 const
   CDirectives: array[TDirective] of string =
   ('abstract', 'cdecl', 'dynamic', 'object', 'of', 'overload', 'override',
     'pascal', 'register', 'reintroduce', 'safecall', 'stdcall', 'virtual',
-    'assembler', 'deprecated', 'platform', 'forward');
+    'assembler', 'deprecated', 'platform', 'forward', 'export');
 
+  CPropertySpecifiers: array[TPropertySpecifier] of string =
+  ('index', 'read', 'write', 'stored', 'default', 'nodefault', 'implements');
 type
   TAbstractItem = class;
 
@@ -99,6 +157,9 @@ type
     procedure AddCombineWith(AItem: TAbstractItem);
   public
     constructor Create(const AName: string); virtual;
+
+    function IncludedInFilter(const AData: TFilterData): Boolean; virtual;
+
     property TypeList: TTypeList read FTypeList;
     { Simple name,   zonder . zonder @ }
     property SimpleName: string read FSimpleName write FSimpleName;
@@ -170,7 +231,7 @@ type
 
   TClassItem = class;
 
-  TClassMemberOrField = class(TAbstractItem)
+  TClassMemberOrFieldItem = class(TAbstractItem)
   private
     FOwnerClass: TClassItem;
     FPosition: TClassVisibility;
@@ -178,11 +239,13 @@ type
     function GetReferenceName: string; override;
     function GetClassString: string; override;
   public
+    function IncludedInFilter(const AData: TFilterData): Boolean; override;
+
     property OwnerClass: TClassItem read FOwnerClass write FOwnerClass;
     property Position: TClassVisibility read FPosition write FPosition;
   end;
 
-  TParamClassMethod = class(TClassMemberOrField)
+  TParamClassMethodItem = class(TClassMemberOrFieldItem)
   private
     FParams: TStringList;
     FParamTypes: TStringList;
@@ -205,6 +268,8 @@ type
   TClassItem = class(TAbstractItem)
   private
     FList: TList;
+    FAncestor: string;
+    FInterfaces: TStrings;
     function GetItem(Index: Integer): TAbstractItem;
     procedure SetItem(Index: Integer; const Value: TAbstractItem);
     function GetDelphiType: TDelphiType; override;
@@ -212,10 +277,14 @@ type
     constructor Create(const AName: string); override;
     destructor Destroy; override;
 
-    procedure AddProcedure(AItem: TClassMemberOrField);
-    procedure AddFunction(AItem: TClassMemberOrField);
-    procedure AddProperty(AItem: TClassMemberOrField);
+    function IncludedInFilter(const AData: TFilterData): Boolean; override;
+
+    procedure AddProcedure(AItem: TClassMemberOrFieldItem);
+    procedure AddFunction(AItem: TClassMemberOrFieldItem);
+    procedure AddProperty(AItem: TClassMemberOrFieldItem);
     property Items[Index: Integer]: TAbstractItem read GetItem write SetItem; default;
+    property Ancestor: string read FAncestor write FAncestor;
+    property Interfaces: TStrings read FInterfaces;
   end;
 
   TInterfaceItem = class(TClassItem)
@@ -232,6 +301,8 @@ type
   private
     function GetTitleName: string; override;
     function GetDelphiType: TDelphiType; override;
+  public
+    function IncludedInFilter(const AData: TFilterData): Boolean; override;
   end;
 
   TFunctionTypeItem = class(TBaseFuncItem)
@@ -241,34 +312,52 @@ type
     function GetDelphiType: TDelphiType; override;
   end;
 
-  TMethodFunc = class(TParamClassMethod)
+  TMethodFuncItem = class(TParamClassMethodItem)
   private
     function GetDelphiType: TDelphiType; override;
+  public
+    function IncludedInFilter(const AData: TFilterData): Boolean; override;
   end;
 
-  TMethodProc = class(TParamClassMethod)
+  TMethodProcItem = class(TParamClassMethodItem)
   private
     FMethodType: TMethodType;
     function GetDelphiType: TDelphiType; override;
     function GetSortName: string; override;
   public
+    function IncludedInFilter(const AData: TFilterData): Boolean; override;
+
     property MethodType: TMethodType read FMethodType write FMethodType;
   end;
 
-  TClassProperty = class(TClassMemberOrField)
+  TClassPropertyItem = class(TClassMemberOrFieldItem)
   private
-    FInheritedProp: Boolean;
+    FIsArray: Boolean;
+    FIsInherited: Boolean;
+    FSpecifiers: TPropertySpecifiers;
     FTypeStr: string;
+    FParamTypes: TStringList;
+    FParams: TStringList;
     function GetAddDescriptionString: string; override;
-    //function GetParamList: TStrings; override;
-    function GetParamList: TStrings; override;
     function GetDelphiType: TDelphiType; override;
+    function GetParamList: TStrings; override;
+    function GetParams: TStringList;
+    function GetParamTypes: TStringList;
+    function GetRealParamList: TStrings; override;
   public
-    property InheritedProp: Boolean read FInheritedProp write FInheritedProp;
+    destructor Destroy; override;
+
+    function IncludedInFilter(const AData: TFilterData): Boolean; override;
+
+    property IsArray: Boolean read FIsArray write FIsArray;
+    property IsInherited: Boolean read FIsInherited write FIsInherited;
+    property Params: TStringList read GetParams;
+    property ParamTypes: TStringList read GetParamTypes;
+    property Specifiers: TPropertySpecifiers read FSpecifiers write FSpecifiers;
     property TypeStr: string read FTypeStr write FTypeStr;
   end;
 
-  TClassField = class(TClassMemberOrField)
+  TClassFieldItem = class(TClassMemberOrFieldItem)
   private
     FTypeStr: string;
     function GetDelphiType: TDelphiType; override;
@@ -280,6 +369,8 @@ type
   private
     function GetTitleName: string; override;
     function GetDelphiType: TDelphiType; override;
+  public
+    function IncludedInFilter(const AData: TFilterData): Boolean; override;
   end;
 
   TProcedureTypeItem = class(TBaseFuncItem)
@@ -329,7 +420,7 @@ type
 implementation
 
 uses
-  SysUtils,
+  SysUtils, Settings,
   Math; // voor Max
 
 const
@@ -337,6 +428,11 @@ const
   CTitleProcedure = '%s procedure';
   CTitleType = '%s type';
   CTitleVariable = '%s variable';
+
+function TriStateOk(const ATriState: TTriState; const ABool: Boolean): Boolean;
+begin
+  Result := (ATriState = tsDontCare) or (ABool = (ATriState = tsYes));
+end;
 
 function FillTo(const S: string; Count: Integer): string;
 begin
@@ -504,6 +600,11 @@ begin
   Result := '';
 end;
 
+function TAbstractItem.IncludedInFilter(const AData: TFilterData): Boolean;
+begin
+  Result := DelphiType in AData.RShow;
+end;
+
 { TBaseFuncItem }
 
 constructor TBaseFuncItem.Create(const AName: string);
@@ -595,19 +696,19 @@ end;
 
 { TClassItem }
 
-procedure TClassItem.AddFunction(AItem: TClassMemberOrField);
+procedure TClassItem.AddFunction(AItem: TClassMemberOrFieldItem);
 begin
   AItem.FOwnerClass := Self;
   FList.Add(AItem);
 end;
 
-procedure TClassItem.AddProcedure(AItem: TClassMemberOrField);
+procedure TClassItem.AddProcedure(AItem: TClassMemberOrFieldItem);
 begin
   AItem.FOwnerClass := Self;
   FList.Add(AItem);
 end;
 
-procedure TClassItem.AddProperty(AItem: TClassMemberOrField);
+procedure TClassItem.AddProperty(AItem: TClassMemberOrFieldItem);
 begin
   AItem.FOwnerClass := Self;
   FList.Add(AItem);
@@ -633,6 +734,16 @@ end;
 function TClassItem.GetItem(Index: Integer): TAbstractItem;
 begin
   Result := FList[Index];
+end;
+
+function TClassItem.IncludedInFilter(const AData: TFilterData): Boolean;
+begin
+  Result := inherited IncludedInFilter(AData);
+  if not Result then
+    Exit;
+
+  if (AData.RClass_DescendantOf > '') then
+    Result := TSettings.Instance.IsDescendantOf(SimpleName, AData.RClass_DescendantOf);
 end;
 
 procedure TClassItem.SetItem(Index: Integer; const Value: TAbstractItem);
@@ -674,7 +785,7 @@ var
     Indx := 0;
     while Indx < Count do
     begin
-      if (Items[Indx] is TClassProperty) and SameText(TClassProperty(Items[Indx]).TypeStr, S) then
+      if (Items[Indx] is TClassPropertyItem) and SameText(TClassPropertyItem(Items[Indx]).TypeStr, S) then
       begin
         Items[I].AddCombine(Items[Indx]);
         Items[Indx].AddCombineWith(Items[I]);
@@ -768,23 +879,23 @@ begin
   Sort(SortCompare);
 end;
 
-{ TParamClassMethod }
+{ TParamClassMethodItem }
 
-constructor TParamClassMethod.Create(const AName: string);
+constructor TParamClassMethodItem.Create(const AName: string);
 begin
   inherited Create(AName);
   FParams := TStringList.Create;
   FParamTypes := TStringList.Create;
 end;
 
-destructor TParamClassMethod.Destroy;
+destructor TParamClassMethodItem.Destroy;
 begin
   FParams.Free;
   FParamTypes.Free;
   inherited;
 end;
 
-function TParamClassMethod.GetReferenceName: string;
+function TParamClassMethodItem.GetReferenceName: string;
 var
   I: Integer;
 begin
@@ -797,12 +908,12 @@ begin
     Result := Result + '@' + FParamTypes[I];
 end;
 
-{function TParamClassMethod.GetRealParamString: string;
+{function TParamClassMethodItem.GetRealParamString: string;
 begin
   Result := ParamListToString(FParams);
 end;}
 
-function TParamClassMethod.GetAddDescriptionString: string;
+function TParamClassMethodItem.GetAddDescriptionString: string;
 begin
   Result := '';
 
@@ -821,7 +932,7 @@ begin
   Result := Result + inherited GetAddDescriptionString;
 end;
 
-{function TParamClassMethod.GetParamList: TStrings;
+{function TParamClassMethodItem.GetParamList: TStrings;
 begin
   if CanCombine then
     Result := nil
@@ -829,7 +940,7 @@ begin
     Result := FParams;
 end;}
 
-function TParamClassMethod.GetRealParamList: TStrings;
+function TParamClassMethodItem.GetRealParamList: TStrings;
 begin
   Result := FParams;
 end;
@@ -935,9 +1046,35 @@ begin
   Result := Format(CTitleProcedure, [SimpleName]);
 end;
 
-{ TClassProperty }
+function TProcedureItem.IncludedInFilter(
+  const AData: TFilterData): Boolean;
+begin
+  Result := inherited IncludedInFilter(AData);
+  if not Result then
+    Exit;
 
-function TClassProperty.GetAddDescriptionString: string;
+  with AData do
+    Result :=
+      (RProcedure_MustExcludeDirectives * Directives = []) and
+      (RProcedure_MustIncludeDirectives * Directives = RProcedure_MustIncludeDirectives) and
+
+    ((RProcedure_MustIncludeOneOfDirectives = []) or
+      (RProcedure_MustIncludeOneOfDirectives * Directives <> []));
+
+  //RProcedure_MinimalParamCount: Integer; { -1 -> ignore }
+  //RProcedure_MaximalParamCount: Integer; { -1 -> ignore }
+end;
+
+{ TClassPropertyItem }
+
+destructor TClassPropertyItem.Destroy;
+begin
+  FParams.Free;
+  FParamTypes.Free;
+  inherited;
+end;
+
+function TClassPropertyItem.GetAddDescriptionString: string;
 begin
   if Position = inPrivate then
     Result := inherited GetAddDescriptionString
@@ -945,20 +1082,20 @@ begin
     Result := '';
 end;
 
-function TClassProperty.GetDelphiType: TDelphiType;
+function TClassPropertyItem.GetDelphiType: TDelphiType;
 begin
   Result := dtProperty;
 end;
 
-function TClassProperty.GetParamList: TStrings;
+function TClassPropertyItem.GetParamList: TStrings;
 begin
   if (CombineWithCount = 1) and (TAbstractItem(FCombineWithList[0]).CombineCount = 1) then
     Result := TAbstractItem(FCombineWithList[0]).RealParamList
   else
-    Result := nil;
+    Result := RealParamList;
 end;
 
-{function TClassProperty.GetParamString: string;
+{function TClassPropertyItem.GetParamString: string;
 begin
   if (CombineWithCount = 1) and (TAbstractItem(FCombineWithList[0]).CombineCount = 1) then
     Result := TAbstractItem(FCombineWithList[0]).RealParamString
@@ -966,14 +1103,58 @@ begin
     Result := '';
 end;}
 
-{ TMethodProc }
+function TClassPropertyItem.GetParams: TStringList;
+begin
+  if FParams = nil then
+    FParams := TStringList.Create;
+  Result := FParams;
+end;
 
-function TMethodProc.GetDelphiType: TDelphiType;
+function TClassPropertyItem.GetParamTypes: TStringList;
+begin
+  if not Assigned(FParamTypes) then
+    FParamTypes := TStringList.Create;
+  Result := FParamTypes;
+end;
+
+function TClassPropertyItem.GetRealParamList: TStrings;
+begin
+  Result := FParams;
+end;
+
+function TClassPropertyItem.IncludedInFilter(
+  const AData: TFilterData): Boolean;
+begin
+  Result := inherited IncludedInFilter(AData);
+  if not Result then
+    Exit;
+
+  //Result :=
+  //  [{psIndex, psDefault,} psNoDefault, psImplements] * Specifiers <> [];
+  //  ((cptInherited in AData.RShow_PropertyTypes) and IsInherited) or
+  //  ((cptNonInherited in AData.RShow_PropertyTypes) and not IsInherited);
+  with AData do
+    Result :=
+      TriStateOk(RProperty_ShowInherited, IsInherited) and
+      TriStateOk(RProperty_ShowArray, IsArray) and
+      (Position in RProperty_Scope) and
+      (RProperty_MustExcludeSpecifiers * Specifiers = []) and
+      (RProperty_MustIncludeSpecifiers * Specifiers = RProperty_MustIncludeSpecifiers) and
+
+    ((RProperty_MustIncludeOneOfSpecifiers = []) or
+      (RProperty_MustIncludeOneOfSpecifiers * Specifiers <> [])) and
+
+    (not Assigned(RProperty_In) or (RProperty_In.IndexOf(SimpleName) >= 0));
+end;
+
+{ TMethodProcItem }
+
+function TMethodProcItem.GetDelphiType: TDelphiType;
 begin
   Result := dtMethodProc;
 end;
 
-function TMethodProc.GetSortName: string;
+function TMethodProcItem.GetSortName: string;
 begin
   case MethodType of
     mtNormal: Result := inherited GetSortName;
@@ -987,11 +1168,55 @@ begin
   end;
 end;
 
-{ TMethodFunc }
+function TMethodProcItem.IncludedInFilter(
+  const AData: TFilterData): Boolean;
+begin
+  Result := inherited IncludedInFilter(AData);
+  if not Result then
+    Exit;
 
-function TMethodFunc.GetDelphiType: TDelphiType;
+  with AData do
+    Result :=
+      TriStateOk(RMethodProcedure_ShowConstructor, MethodType = mtConstructor) and
+      TriStateOk(RMethodProcedure_ShowDestructor, MethodType = mtDestructor) and
+      TriStateOk(RMethodProcedure_ShowClassMethod, IsClassMethod) and
+      (Position in RMethodProcedure_Scope) and
+      (RMethodProcedure_MustExcludeDirectives * Directives = []) and
+      (RMethodProcedure_MustIncludeDirectives * Directives = RMethodProcedure_MustIncludeDirectives) and
+
+    ((RMethodProcedure_MustIncludeOneOfDirectives = []) or
+      (RMethodProcedure_MustIncludeOneOfDirectives * Directives <> []));
+
+  //RMethodProcedure_MinimalParamCount: Integer; { -1 -> ignore }
+  //RMethodProcedure_MaximalParamCount: Integer; { -1 -> ignore }
+end;
+
+{ TMethodFuncItem }
+
+function TMethodFuncItem.GetDelphiType: TDelphiType;
 begin
   Result := dtMethodFunc;
+end;
+
+function TMethodFuncItem.IncludedInFilter(
+  const AData: TFilterData): Boolean;
+begin
+  Result := inherited IncludedInFilter(AData);
+  if not Result then
+    Exit;
+
+  with AData do
+    Result :=
+      TriStateOk(RMethodFunction_ShowClassMethod, IsClassMethod) and
+      (Position in RMethodFunction_Scope) and
+      (RMethodFunction_MustExcludeDirectives * Directives = []) and
+      (RMethodFunction_MustIncludeDirectives * Directives = RMethodFunction_MustIncludeDirectives) and
+
+    ((RMethodFunction_MustIncludeOneOfDirectives = []) or
+      (RMethodFunction_MustIncludeOneOfDirectives * Directives <> []));
+
+  //RMethodFunction_MinimalParamCount: Integer; { -1 -> ignore }
+  //RMethodFunction_MaximalParamCount: Integer; { -1 -> ignore }
 end;
 
 { TFunctionTypeItem }
@@ -1033,6 +1258,24 @@ begin
   Result := Format(CTitleFunction, [SimpleName]);
 end;
 
+function TFunctionItem.IncludedInFilter(const AData: TFilterData): Boolean;
+begin
+  Result := inherited IncludedInFilter(AData);
+  if not Result then
+    Exit;
+
+  with AData do
+    Result :=
+      (RFunction_MustExcludeDirectives * Directives = []) and
+      (RFunction_MustIncludeDirectives * Directives = RFunction_MustIncludeDirectives) and
+
+    ((RFunction_MustIncludeOneOfDirectives = []) or
+      (RFunction_MustIncludeOneOfDirectives * Directives <> []));
+
+  //RFunction_MinimalParamCount: Integer; { -1 -> ignore }
+  //RFunction_MaximalParamCount: Integer; { -1 -> ignore }
+end;
+
 { TConstItem }
 
 function TConstItem.GetDelphiType: TDelphiType;
@@ -1040,9 +1283,9 @@ begin
   Result := dtConst;
 end;
 
-{ TClassMemberOrField }
+{ TClassMemberOrFieldItem }
 
-function TClassMemberOrField.GetAddDescriptionString: string;
+function TClassMemberOrFieldItem.GetAddDescriptionString: string;
 const
   CPosition: array[TClassVisibility] of string = (
     'private', 'protected', 'public', 'published');
@@ -1054,14 +1297,26 @@ begin
     Result := inherited GetAddDescriptionString;
 end;
 
-function TClassMemberOrField.GetClassString: string;
+function TClassMemberOrFieldItem.GetClassString: string;
 begin
   Result := OwnerClass.SimpleName;
 end;
 
-function TClassMemberOrField.GetReferenceName: string;
+function TClassMemberOrFieldItem.GetReferenceName: string;
 begin
   Result := OwnerClass.ReferenceName + '.' + inherited GetReferenceName;
+end;
+
+function TClassMemberOrFieldItem.IncludedInFilter(
+  const AData: TFilterData): Boolean;
+begin
+  Result := inherited IncludedInFilter(AData);
+  if not Result then
+    Exit;
+
+  if (AData.RClass_DescendantOf > '') then
+    Result := TSettings.Instance.IsDescendantOf(
+      OwnerClass.SimpleName, AData.RClass_DescendantOf);
 end;
 
 { TValueItem }
@@ -1076,7 +1331,7 @@ function TValueItem.FormatValue(const S: string): string;
     Result := StringReplace(Tmp, OldPattern, NewPattern, [rfReplaceAll, rfIgnoreCase]);
   end;
 begin
-  Result := S;
+  Result := Trim(S);
   StrReplace('^ ', '^');
   StrReplace('^', '^');
   StrReplace('. ', '.');
@@ -1092,7 +1347,8 @@ begin
   StrReplace('array[', 'array [');
   StrReplace(']of', '] of');
   StrReplace('of(', 'of (');
-  StrReplace('; ', ';');
+  //StrReplace('; ', ';');
+  StrReplace('@ ', '@');
   StrReplace(' ;', ';');
   StrReplace(' :', ':');
   StrReplace(',', ', ');
@@ -1118,9 +1374,9 @@ begin
   Result := dtInterface;
 end;
 
-{ TClassField }
+{ TClassFieldItem }
 
-function TClassField.GetDelphiType: TDelphiType;
+function TClassFieldItem.GetDelphiType: TDelphiType;
 begin
   Result := dtClassField;
 end;

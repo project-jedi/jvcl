@@ -438,6 +438,12 @@ object frmMain: TfrmMain
       OnExecute = actAddToIgnoreTokenListExecute
       OnUpdate = actAddToIgnoreTokenListUpdate
     end
+    object actGenerateClassStructure: TAction
+      Category = 'Generate'
+      Caption = 'Generate Class Structure'
+      OnExecute = actGenerateClassStructureExecute
+      OnUpdate = actGenerateClassStructureUpdate
+    end
   end
   object MainMenu1: TMainMenu
     Left = 32
@@ -497,6 +503,9 @@ object frmMain: TfrmMain
       end
       object GenerateRegisteredClasses1: TMenuItem
         Action = actGenerateRegisteredClasses
+      end
+      object GenerateClassStructure1: TMenuItem
+        Action = actGenerateClassStructure
       end
       object GenerateList1: TMenuItem
         Action = actGenerateList

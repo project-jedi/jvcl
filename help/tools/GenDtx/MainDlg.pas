@@ -94,6 +94,8 @@ type
     actCopyToClipboard: TAction;
     Button6: TButton;
     actAddToIgnoreTokenList: TAction;
+    actGenerateClassStructure: TAction;
+    GenerateClassStructure1: TMenuItem;
     procedure actAddToCompletedListExecute(Sender: TObject);
     procedure actAddToIgnoreUnitListExecute(Sender: TObject);
     procedure actCheckCasePasFilesExecute(Sender: TObject);
@@ -143,6 +145,8 @@ type
     procedure actCopyToClipboardExecute(Sender: TObject);
     procedure actAddToIgnoreTokenListUpdate(Sender: TObject);
     procedure actAddToIgnoreTokenListExecute(Sender: TObject);
+    procedure actGenerateClassStructureExecute(Sender: TObject);
+    procedure actGenerateClassStructureUpdate(Sender: TObject);
   private
     FMainCtrl: TMainCtrl;
     function ProcessFilesAvailable: Boolean;
@@ -561,7 +565,8 @@ procedure TfrmMain.CMCheckDirectories(var Msg: TMessage);
 begin
   with TSettings.Instance do
     if (RunTimePasDir = '') or (DesignTimePasDir = '') or
-      (PackageDir = '') or (RealDtxDir = '') or (GeneratedDtxDir = '') then
+      (PackageDir = '') or (RealDtxDir = '') or (GeneratedDtxDir = '') or
+      (DelphiRootSourceDir = '') then
 
       actDirectories.Execute;
 end;
@@ -657,7 +662,7 @@ end;
 
 procedure TfrmMain.actAddToIgnoreTokenListExecute(Sender: TObject);
 const
-  CComparing = '------------Comparing ';
+  CComparing = 'Comparing ';
 var
   I: Integer;
   UnitName: string;
@@ -672,8 +677,22 @@ begin
         UnitName := Copy(UnitName, 1, Pos(' ', UnitName) - 1);
       end;
       if Selected[I] then
-        AddToIgnoreTokenList(UnitName, Items[I]);
+        AddToIgnoreTokenList(UnitName, Trim(Items[I]));
     end;
+end;
+
+procedure TfrmMain.actGenerateClassStructureExecute(Sender: TObject);
+begin
+  FMainCtrl.GenerateClassStructure;
+end;
+
+procedure TfrmMain.actGenerateClassStructureUpdate(Sender: TObject);
+begin
+  { RunTimePasDir or DelphiDir }
+  if Sender is TAction then
+    TAction(Sender).Enabled :=
+      (TSettings.Instance.RunTimePasDir > '') or
+      (TSettings.Instance.DelphiRootSourceDir > '');
 end;
 
 end.

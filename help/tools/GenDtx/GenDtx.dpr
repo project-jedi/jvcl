@@ -13,7 +13,8 @@ uses
   UnitStatusDlg in 'UnitStatusDlg.pas' {frmUnitStatus},
   DirectoriesDlg in 'DirectoriesDlg.pas' {frmDirectories},
   FilterDlg in 'FilterDlg.pas' {frmFilter},
-  VisibilityDlg in 'VisibilityDlg.pas' {frmVisibility};
+  VisibilityDlg in 'VisibilityDlg.pas' {frmVisibility},
+  ClassStructureDlg in 'ClassStructureDlg.pas' {frmClassStructure};
 
 {$R *.res}
 

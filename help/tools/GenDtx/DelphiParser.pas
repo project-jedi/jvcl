@@ -9,13 +9,16 @@ const
   toComment = Char(6);
   toColon = Char(':');
   toSemiColon = Char(';');
-  toHaakjeOpen = Char('(');
-  toHaakjeSluiten = Char(')');
+  toLeftParens = Char('(');
+  toLeftBracket = Char('[');
+  toRightParens = Char(')');
+  toRightBracket = Char(']');
   toEquals = Char('=');
   toDot = Char('.');
   toCompilerDirective = Char(7);
 
 type
+  THaakType = (htParens, htBracket);
   TModuleType = (mtLibrary, mtUnit);
 
   TBasicParser = class(TObject)
@@ -89,33 +92,33 @@ type
     function ReadNextToken: Char; override;
 
     procedure ReadClass(const TypeName: string; const AddToList: Boolean);
-    procedure ReadClassMethods(AClassItem: TClassItem; const AddToList: Boolean);
-    procedure ReadClass_Property(AClassItem: TClassItem; Position: TClassVisibility; DoAdd: Boolean);
-    procedure ReadClass_Function(AClassItem: TClassItem; Position: TClassVisibility; DoAdd, IsClassMethod: Boolean);
-    procedure ReadClass_Procedure(AClassItem: TClassItem; Position: TClassVisibility; DoAdd, IsClassMethod: Boolean);
     procedure ReadClass_ClassMethod(AClassItem: TClassItem; Position: TClassVisibility; DoAdd: Boolean);
     procedure ReadClass_Field(AClassItem: TClassItem; Position: TClassVisibility; DoAdd: Boolean);
+    procedure ReadClass_Function(AClassItem: TClassItem; Position: TClassVisibility; DoAdd, IsClassMethod: Boolean);
+    procedure ReadClass_Procedure(AClassItem: TClassItem; Position: TClassVisibility; DoAdd, IsClassMethod: Boolean);
+    procedure ReadClass_Property(AClassItem: TClassItem; Position: TClassVisibility; DoAdd: Boolean);
+    procedure ReadClassMethods(AClassItem: TClassItem; const AddToList: Boolean);
     procedure ReadCommentBlock;
     procedure ReadConst;
+    procedure ReadConstantExpression(const ExpectDotDot: Boolean);
     procedure ReadConstValue;
     procedure ReadDirectives(var Directives: TDirectives);
     procedure ReadDispInterface(const TypeName: string; const AddToList: Boolean);
-    procedure ReadInterfaceBlock;
-    procedure ReadInterfaceStatement;
-    procedure ReadInterfaceType(const TypeName: string; const AddToList: Boolean);
-    procedure ReadInterfaceMethods(AInterfaceItem: TInterfaceItem; const AddToList: Boolean);
+    procedure ReadEnumerator(const TypeName: string; const AddToList: Boolean);
     procedure ReadFunction;
     procedure ReadFunctionType(const TypeName: string; const AddToList: Boolean);
-    procedure ReadParamList(AParams, ATypes: TStrings);
+    procedure ReadInterfaceBlock;
+    procedure ReadInterfaceMethods(AInterfaceItem: TInterfaceItem; const AddToList: Boolean);
+    procedure ReadInterfaceStatement;
+    procedure ReadInterfaceType(const TypeName: string; const AddToList: Boolean);
+    procedure ReadParamList(AParams, ATypes: TStrings; const HaakType: THaakType = htParens);
     procedure ReadProcedure;
     procedure ReadProcedureType(const TypeName: string; const AddToList: Boolean);
     procedure ReadRecord(const TypeName: string; const AddToList: Boolean);
     procedure ReadResourceString;
-    procedure ReadEnumerator(const TypeName: string; const AddToList: Boolean);
+    procedure ReadSimpleType(const TypeName: string; const AddToList: Boolean);
     procedure ReadType(const ATypeName: string; const AddToList: Boolean);
     procedure ReadTypeDef;
-    procedure ReadConstantExpression(const ExpectDotDot: Boolean);
-    procedure ReadSimpleType(const TypeName: string; const AddToList: Boolean);
     procedure ReadUnitBlock(out AModuleType: TModuleType);
     procedure ReadUsesBlock;
     procedure ReadVar;
@@ -124,7 +127,8 @@ type
     procedure SkipUntilSemiColonInHaak;
     procedure SkipUntilSymbol(const Symbol: string);
     procedure SkipUntilTokenInHaak(T: Char; const InitHaak: Integer = 0); overload;
-    procedure SkipUntilTokenInHaak(OpenHaak, CloseHaak: Char; const InitHaak: Integer = 0); overload;
+    procedure SkipUntilTokenInHaak(OpenSymbol, CloseSymbol: Char;
+      const InitialOpenCount: Integer = 0); overload;
 
     procedure Init; override;
     function Parse: Boolean; virtual;
@@ -153,7 +157,7 @@ type
 
   TDefaultText = (dtWriteSummary, dtWriteDescription, dtTypeUsedBy,
     dtListProperties, dtRemoveSeeAlso, dtDescribeReturns, dtOverridenMethod,
-    dtInheritedMethod, dtDescriptionFor, dtDescriptionForThisItem);
+    dtInheritedMethod, dtDescriptionFor, dtDescriptionForThisParameter);
 
   TDefaultTexts = set of TDefaultText;
 
@@ -607,7 +611,7 @@ begin
         if Q1 = nil then
           Q := Q2
         else
-        if (Q2 = nil) or (Q1 < Q2) then
+          if (Q2 = nil) or (Q1 < Q2) then
           Q := Q1
         else
           Q := Q2;
@@ -627,8 +631,8 @@ begin
         Move(R^, PChar(T)^, Q - R);
 
         { Remove e-mail address }
-        if Pos('[', T) > 0 then
-          T := Copy(T, 1, Pos('[', T) - 1);
+        if Pos(toLeftBracket, T) > 0 then
+          T := Copy(T, 1, Pos(toLeftBracket, T) - 1);
         if Pos('<', T) > 0 then
           T := Copy(T, 1, Pos('<', T) - 1);
 
@@ -655,28 +659,28 @@ begin
           if SameText(TokenString, 'procedure') then
             ReadProcedure
           else
-          if SameText(TokenString, 'function') then
+            if SameText(TokenString, 'function') then
             ReadFunction
           else
-          if TokenSymbolIs('resourcestring') then
+            if TokenSymbolIs('resourcestring') then
           begin
             Position := inResourceString;
             NextToken;
           end
           else
-          if SameText(TokenString, 'const') then
+            if SameText(TokenString, 'const') then
           begin
             Position := inConst;
             NextToken;
           end
           else
-          if SameText(TokenString, 'type') then
+            if SameText(TokenString, 'type') then
           begin
             Position := inType;
             NextToken;
           end
           else
-          if TokenSymbolIs('var') then
+            if TokenSymbolIs('var') or TokenSymbolIs('threadvar') then
           begin
             Position := inVar;
             NextToken;
@@ -715,7 +719,7 @@ begin
   if TokenSymbolIs('library') then
     AModuleType := mtLibrary
   else
-  if TokenSymbolIs('unit') then
+    if TokenSymbolIs('unit') then
     AModuleType := mtUnit
   else
     Error('''library'' or ''unit'' expected');
@@ -743,12 +747,12 @@ var
   FunctionItem: TFunctionItem;
   Directives: TDirectives;
 begin
-  { VB:
+  { Example:
 
     function F1(P1: T1; P2: T2);
 
-    PRE : Token staat op 'function'
-    POST: Token staat op teken na laatste ;
+    PRE : Token = 'function'
+    POST: Token is first symbol after toSemiColon
   }
   NextToken;
   SkipUntilToken(toSymbol);
@@ -761,9 +765,17 @@ begin
   FTypeList.Add(FunctionItem);
   NextToken;
 
-  { Token staat op ( of op : }
-  { TODO: Eigenlijk niet ReadParamList aanroepen als token is : }
-  ReadParamList(FunctionItem.Params, FunctionItem.ParamTypes);
+  { Token = '(' or ':' }
+  if Token = '(' then
+    ReadParamList(FunctionItem.Params, FunctionItem.ParamTypes);
+
+  CheckToken(':');
+  NextToken;
+  ReadType('', False);
+
+  if Token = ';' then
+    NextToken;
+
   Directives := [];
   ReadDirectives(Directives);
   FunctionItem.Directives := Directives;
@@ -774,13 +786,13 @@ var
   ProcedureItem: TProcedureItem;
   Directives: TDirectives;
 begin
-  { VB:
+  { Example:
 
     procedure P1(P1: T1; P2: T2);
     procedure P1;
 
     PRE : Token staat op 'procedure'
-    POST: Token staat op teken na laatste ;
+    POST: Token is first symbol after toSemiColon
   }
   NextToken;
   SkipUntilToken(toSymbol);
@@ -794,8 +806,13 @@ begin
 
   NextToken;
 
-  { Token staat op ( of op ; }
-  ReadParamList(ProcedureItem.Params, ProcedureItem.ParamTypes);
+  { Token is '(' or  ';' or some directive }
+  if Token = '(' then
+    ReadParamList(ProcedureItem.Params, ProcedureItem.ParamTypes);
+
+  if Token = ';' then
+    NextToken;
+
   Directives := [];
   ReadDirectives(Directives);
   ProcedureItem.Directives := Directives;
@@ -804,15 +821,16 @@ end;
 procedure TDelphiParser.ReadTypeDef;
 var
   TypeName: string;
+  Directives: TDirectives;
 begin
-  { VB:
+  { Example:
 
     T1 = record F1: T1; F2: T2; end;
     T1 = class() [classdef] end;
     T1 = sometype;
 
     PRE : Token staat op een typename
-    POST: Token staat op eerste teken na ;
+    POST: Token is first symbol after toSemiColon
   }
   TypeName := TokenString;
   NextToken;
@@ -821,22 +839,25 @@ begin
 
   ReadType(TypeName, True);
 
-  if Token = toSemiColon then
+  if Token = ';' then
     NextToken;
+  ReadDirectives(Directives); { 'deprecated', 'platform' }
 end;
 
 procedure TDelphiParser.ReadConst;
 var
   ConstItem: TConstItem;
+  Directives: TDirectives;
 begin
-  { VB:
+  { Example:
 
     C1 = V1;
     C1: type = V1;
     C1: array[xx] of TSpecialFolderInfo = ((), (), ());
+    C1: function (AOwner: TComponent; ActionClass: TBasicActionClass): TBasicAction = nil;
 
     PRE : Token staat op identifier [C1]
-    POST: Token staat op teken na ;
+    POST: Token is first symbol after toSemiColon
   }
 
   ConstItem := TConstItem.Create(TokenString);
@@ -846,60 +867,65 @@ begin
 
   NextToken;
   case Token of
-    '=':
+    toEquals:
       begin
         NextToken;
         ReadConstValue;
+        EndRecording;
+        if TokenSymbolIn(CDirectives) > 0 then
+          ConstItem.Value := RecordStrWithoutCurrentToken
+        else
+          ConstItem.Value := RecordStr;
+        ReadDirectives(Directives);
       end;
-    ':':
+    toColon:
       begin
         NextToken;
         ReadType('', False);
-        CheckToken('=');
+        CheckToken(toEquals);
         NextToken;
         ReadConstValue;
+        ConstItem.Value := RecordStr;
       end;
   else
     Error('''='' or '':'' expected');
   end;
 
-  //SkipUntilToken(toSemiColon); //SkipUntilSemiColonInHaak;
-  CheckToken(toSemiColon);
-  EndRecording;
-  ConstItem.Value := RecordStr;
-  NextToken;
+  if Token = ';' then
+    NextToken;
 end;
 
 procedure TDelphiParser.ReadDirectives(var Directives: TDirectives);
 var
   Directive: Integer;
 begin
-  { Pre  :
+  { Pre  : Token staat op directive
     Post : Token staat op teken na ; na directives }
-  while True do
+
+  if Token <> toSymbol then
+    Exit;
+  if not TokenSymbolIs('message') and (TokenSymbolIn(CDirectives) = 0) then
+    Exit;
+
+  while Token = toSymbol do
   begin
-    case Token of
-      toSymbol:
-        { TODO: Ook toevoegen aan object }
-        if TokenSymbolIs('message') then
-        begin
-          { message X ; }
-          SkipUntilToken(toSemiColon);
-          CheckToken(toSemiColon);
-        end
-        else
-        begin
-          Directive := TokenSymbolIn(CDirectives);
-          if Directive < 0 then
-            Exit
-          else
-            Include(Directives, TDirective(Directive));
-        end;
-      toSemiColon, toComment:
-        ;
+    { TODO: Ook toevoegen aan object }
+    if TokenSymbolIs('message') then
+      { message X ; }
+      SkipUntilToken(toSemiColon)
     else
-      Exit;
+    begin
+      Directive := TokenSymbolIn(CDirectives);
+      if Directive < 0 then
+        Exit
+      else
+        Include(Directives, TDirective(Directive));
+      NextToken;
+      if Token <> ';' then
+        Exit;
     end;
+
+    CheckToken(toSemiColon);
     NextToken;
   end;
 end;
@@ -908,8 +934,9 @@ procedure TDelphiParser.ReadClass(const TypeName: string; const AddToList: Boole
 var
   ClassItem: TClassItem;
   MetaClassItem: TMetaClassItem;
+  LAncestor: string;
 begin
-  { VB:
+  { Example:
 
     Tx = class(Tx1) .. end;
     Tx = class .. end;
@@ -919,7 +946,7 @@ begin
     Tx = class of Tx1;        -> Meta class
 
     PRE : Token staat op 'class'
-    POST: Token staat op eerste teken na ;
+    POST: Token is first symbol after toSemiColon
   }
 
   NextToken;
@@ -930,10 +957,13 @@ begin
     Exit;
   end;
 
-  if Token = toHaakjeOpen then
+  if Token = toLeftParens then
   begin
-    SkipUntilToken(toHaakjeSluiten); // SluitHaakje;
-    CheckToken(toHaakjeSluiten);
+    NextToken;
+    CheckToken(toSymbol);
+    LAncestor := TokenString;
+    SkipUntilToken(toRightParens);
+    CheckToken(toRightParens);
     NextToken;
   end;
 
@@ -951,6 +981,7 @@ begin
     else
     begin
       ClassItem := TClassItem.Create(TypeName);
+      ClassItem.Ancestor := LAncestor;
       FTypeList.Add(ClassItem);
     end
   end;
@@ -967,7 +998,7 @@ begin
     NextToken;
   end
   else
-  if Token <> toSemiColon then
+    if Token <> toSemiColon then
     ReadClassMethods(ClassItem, AddToList)
       { Token staat op eerste token na [end]; }
   else
@@ -982,7 +1013,7 @@ procedure TDelphiParser.ReadRecord(const TypeName: string; const AddToList: Bool
 var
   RecordItem: TRecordItem;
 begin
-  { VB:
+  { Example:
 
     R1 = record F1, F2: T1 end;          <-- Let op ","
     R1 = record F1: T1; F2: T2; end;
@@ -1025,12 +1056,12 @@ begin
         if TokenSymbolIs('end') then
           Break
         else
-        if TokenSymbolIs('case') then
+          if TokenSymbolIs('case') then
         begin
           SkipUntilSymbol('of');
           NextToken;
-          SkipUntilToken(toHaakjeOpen);
-          CheckToken(toHaakjeOpen);
+          SkipUntilToken(toLeftParens);
+          CheckToken(toLeftParens);
         end
         else
         begin
@@ -1047,10 +1078,10 @@ begin
             Continue;
           end;
         end;
-      toHaakjeSluiten: { empty list or closing }
+      toRightParens: { empty list or closing }
         begin
           NextToken;
-          while Token = toHaakjeSluiten do
+          while Token = toRightParens do
             NextToken;
           if Token = toSemiColon then
             NextToken;
@@ -1061,7 +1092,7 @@ begin
             SkipUntilToken(toColon);
             CheckToken(toColon);
             NextToken;
-            CheckToken(toHaakjeOpen);
+            CheckToken(toLeftParens);
           end;
         end;
       toEof:
@@ -1101,9 +1132,11 @@ var
   FunctionTypeItem: TFunctionTypeItem;
   Directives: TDirectives;
 begin
-  { VB:
+  { Example:
 
     F1 = Function();
+    TODO : Deze gaat fout : dwz ReadType leest ook directives in
+    function(ctx: PSSL_CTX; const _file: PChar; _type: Integer):Integer cdecl = nil;
 
     PRE : Token is 'Function'
     POST: Token is eerste token na ;
@@ -1121,13 +1154,25 @@ begin
 
   NextToken;
 
-  { Token staat op ( of op ; }
-  if AddToList then
-    ReadParamList(FunctionTypeItem.Params, FunctionTypeItem.ParamTypes)
-  else
-    ReadParamList(nil, nil);
+  { Token is '(' or ';' or 'of object' or ?? }
+  if Token = '(' then
+  begin
+    if AddToList then
+      ReadParamList(FunctionTypeItem.Params, FunctionTypeItem.ParamTypes)
+    else
+      ReadParamList(nil, nil);
+  end;
+
+  CheckToken(':');
+  NextToken;
+  ReadType('', False);
+
+  if Token = ';' then
+    NextToken;
+
   Directives := [];
   ReadDirectives(Directives);
+
   if AddToList then
     FunctionTypeItem.Directives := Directives;
 end;
@@ -1137,7 +1182,7 @@ var
   ProcedureTypeItem: TProcedureTypeItem;
   Directives: TDirectives;
 begin
-  { VB:
+  { Example:
 
     TStrProc = procedure(const S: string);
     TNotifyEvent = procedure(Sender: TObject) of object;
@@ -1155,19 +1200,29 @@ begin
     ProcedureTypeItem := nil;
 
   NextToken;
-  { Token staat op ( of ; }
-  if AddToList then
-    ReadParamList(ProcedureTypeItem.Params, ProcedureTypeItem.ParamTypes)
-  else
-    ReadParamList(nil, nil);
+  { Token is '(' or ';' or 'of object' or ?? }
+  if Token = '(' then
+  begin
+    if AddToList then
+      ReadParamList(ProcedureTypeItem.Params, ProcedureTypeItem.ParamTypes)
+    else
+      ReadParamList(nil, nil);
+  end;
 
   Directives := [];
+
+  if Token = ';' then
+    NextToken;
   ReadDirectives(Directives);
+
   if AddToList then
     ProcedureTypeItem.Directives := Directives;
 end;
 
-procedure TDelphiParser.ReadParamList(AParams, ATypes: TStrings);
+procedure TDelphiParser.ReadParamList(AParams, ATypes: TStrings; const HaakType: THaakType);
+const
+  CLeftHaak: array[THaakType] of Char = (toLeftParens, toLeftBracket);
+  CRightHaak: array[THaakType] of Char = (toRightParens, toRightBracket);
 
   procedure EndParamTypeRecording;
   begin
@@ -1176,7 +1231,7 @@ procedure TDelphiParser.ReadParamList(AParams, ATypes: TStrings);
 
     if Assigned(ATypes) and Assigned(AParams) then
       while ATypes.Count < AParams.Count do
-        ATypes.Add(Trim(RemoveEndChars(RecordStr, [' ', ';', '=', ')'])));
+        ATypes.Add(Trim(RemoveEndChars(RecordStr, [' ', toSemiColon, toEquals, toRightParens])));
 
     Recording := False;
   end;
@@ -1185,15 +1240,16 @@ var
   Haakjes: Integer;
   NewParam: Boolean;
 begin
-  { VB:
+  { Example:
 
     (P1: T1);
     (P1, P2: T1);
+    [Year, Month, Day: Word]  // property
     ;
 
-    PRE : Token staat voor (
-          AStrings kan nil zijn
-    POST: Token staat op teken na ; die bij paramlist hoort
+    PRE : Token = '(' or Token = toSemiColon (no param list)
+          AStrings might be nil
+    POST: Token is first symbol after ')'
   }
   Haakjes := 0;
   NewParam := True;
@@ -1215,13 +1271,19 @@ begin
         toEquals:
           { Do not add default values to the type }
           EndParamTypeRecording;
-        toHaakjeOpen:
-          Inc(Haakjes);
-        toHaakjeSluiten:
+        toLeftParens, toLeftBracket:
+          if CLeftHaak[HaakType] = Token then
+            Inc(Haakjes);
+        toRightParens, toRightBracket:
+          if CRightHaak[HaakType] = Token then
           begin
             Dec(Haakjes);
             if Haakjes = 0 then
+            begin
               EndParamTypeRecording;
+              NextToken;
+              Exit;
+            end;
           end;
         toEof:
           Exit;
@@ -1257,20 +1319,47 @@ begin
 end;
 
 procedure TDelphiParser.ReadVar;
+var
+  Directives: TDirectives;
 begin
-  { VB:
+  { Example:
 
     V1: T1;
+    IdSslCtxFree : procedure(arg0: PSSL_CTX) cdecl = nil;
+    QBDRed, QBDBlue, QBDGreen: byte;
 
-    PRE:  Token staat op identifier
-    POST: Token staat op teken na ;
+    PRE:  Token = var. identifier (V1 in example)
+    POST: Token is first symbol after toSemiColon
   }
 
   FTypeList.Add(TVarItem.Create(TokenString));
 
-  SkipUntilToken(toSemiColon); //SkipUntilSemiColon;
-  CheckToken(toSemiColon);
   NextToken;
+  while Token = ',' do
+  begin
+    NextToken;
+    CheckToken(toSymbol);
+    FTypeList.Add(TVarItem.Create(TokenString));
+    NextToken;
+  end;
+
+  CheckToken(':');
+  NextToken;
+
+  ReadType('', False);
+
+  if Token = toSemiColon then
+    NextToken;
+
+  if Token = '=' then
+  begin
+    NextToken;
+    ReadConstValue;
+  end;
+
+  if Token = ';' then
+    NextToken;
+  ReadDirectives(Directives); { 'deprecated', 'platform' }
 end;
 
 procedure TDelphiParser.ReadResourceString;
@@ -1302,7 +1391,7 @@ begin
     ['{B2F18D03-F615-4AA2-A51A-74D330C05C0E}']
 
     PRE : Token staat op 'class'
-    POST: Token staat op eerste teken na ;
+    POST: Token is first symbol after toSemiColon
   *)
   NextToken;
   if Token = toSemiColon then
@@ -1311,10 +1400,10 @@ begin
     NextToken;
     Exit;
   end;
-  if Token = '[' then
+  if Token = toLeftBracket then
   begin
-    SkipUntilToken(']');
-    CheckToken(']');
+    SkipUntilToken(toRightBracket);
+    CheckToken(toRightBracket);
   end;
 
   { Nu pas toevoegen }
@@ -1335,14 +1424,14 @@ var
   NewValue: Boolean;
   Haakjes: Integer;
 begin
-  { VB:
+  { Example:
 
     (E1, E2, E3);
     ();
     (Small = 5, Medium = 10, Large = Small + Medium);
 
     PRE : Token staat op '(';
-    POST: Token staat op ;
+    POST: Token is first symbol after toSemiColon
   }
 
   if AddToList then
@@ -1362,9 +1451,9 @@ begin
       toSemiColon:
         if Haakjes = 0 then
           Exit;
-      toHaakjeOpen:
+      toLeftParens:
         Inc(Haakjes);
-      toHaakjeSluiten:
+      toRightParens:
         begin
           Dec(Haakjes);
           if Haakjes = 0 then
@@ -1393,94 +1482,103 @@ procedure TDelphiParser.ReadSimpleType(const TypeName: string; const AddToList: 
 var
   SimpleType: TTypeItem;
 begin
-  { VB:
+  { Example:
 
     T1 = array[..] of record F1: T1; F2: T2; end;
     T1 = xx;
 
     PRE: Token staat op xx/array
-    POST: Token staat op eerste teken na ;
+    POST: Token is first symbol after toSemiColon
   }
 
   if AddToList then
     BeginRecording;
-  if TokenSymbolIs('array') then
-  begin
-    SkipUntilSymbol('of');
-    NextToken;
-    ReadType('', False);
-  end
-  else
-  if TokenSymbolIs('set') then
-  begin
-    { same as array }
-    SkipUntilSymbol('of');
-    NextToken;
-    ReadType('', False);
-  end
-  else
-  if Token = '^' then
-  begin
-    NextToken;
-    CheckToken(toSymbol);
-    NextToken;
-  end
-  else
-  if TokenSymbolIs('string') then
-  begin
-    NextToken;
-    if Token = '[' then
+  try
+    if TokenSymbolIs('array') then
     begin
-      SkipUntilTokenInHaak('[', ']');
-      CheckToken(']');
+      SkipUntilSymbol('of');
       NextToken;
-    end;
-  end
-  else
-  if TokenSymbolIn(CAllowableSymbolsInTypeDef) >= 0 then
-    ReadConstantExpression(True)
-  else
-  begin
-    { We can't skip until ; }
-
-    if TokenSymbolIs('type') then
+      ReadType('', False);
+    end
+    else
+      if TokenSymbolIs('set') then
+    begin
+      { same as array }
+      SkipUntilSymbol('of');
       NextToken;
-
-    NextToken;
-    if Token = '.' then
+      ReadType('', False);
+    end
+    else
+      if Token = '^' then
     begin
       NextToken;
-      if Token = '.' then
+      CheckToken(toSymbol);
+      NextToken;
+    end
+    else
+      if TokenSymbolIs('string') then
+    begin
+      NextToken;
+      if Token = toLeftBracket then
       begin
-        { TSomeType = a..b; }
+        SkipUntilTokenInHaak(toLeftBracket, toRightBracket);
+        CheckToken(toRightBracket);
         NextToken;
-
-        ReadConstantExpression(False);
-      end
-      else
-      begin
-        CheckToken(toSymbol);
-        NextToken;
-        while Token = '.' do
-        begin
-          NextToken;
-          CheckToken(toSymbol);
-          NextToken;
-        end;
       end;
     end
     else
-    if not (Token in [toHaakjeSluiten, toSemiColon, '=']) and not TokenSymbolIs('end') then
-      ReadConstantExpression(True);
-  end;
+      if TokenSymbolIn(CAllowableSymbolsInTypeDef) >= 0 then
+      ReadConstantExpression(True)
+    else
+    begin
+      { We can't skip until ; }
 
-  CheckNotToken(toEof);
-  if AddToList then
-  begin
-    EndRecording;
-    SimpleType := TTypeItem.Create(TypeName);
-    SimpleType.Value := RecordStr;
-    FTypeList.Add(SimpleType);
+      if TokenSymbolIs('type') then
+        NextToken;
+
+      NextToken;
+      if Token = '.' then
+      begin
+        NextToken;
+        if Token = '.' then
+        begin
+          { TSomeType = a..b; }
+          NextToken;
+
+          ReadConstantExpression(False);
+        end
+        else
+        begin
+          CheckToken(toSymbol);
+          if TokenSymbolIn(CDirectives) > 0 then
+            Exit;
+
+          NextToken;
+          while Token = '.' do
+          begin
+            NextToken;
+            CheckToken(toSymbol);
+            if TokenSymbolIn(CDirectives) > 0 then
+              Exit;
+
+            NextToken;
+          end;
+        end;
+      end
+      else
+        if not (Token in [toRightParens, toSemiColon, toEquals]) and not TokenSymbolIs('end') then
+        ReadConstantExpression(True);
+    end;
+
+    CheckNotToken(toEof);
+  finally
+    if AddToList then
+    begin
+      EndRecording;
+      SimpleType := TTypeItem.Create(TypeName);
+      SimpleType.Value := RecordStr;
+      FTypeList.Add(SimpleType);
+    end;
   end;
 
   //if Token = toSemiColon then
@@ -1509,9 +1607,9 @@ begin
       toSemiColon:
         if Haakjes <= 0 then
           Exit;
-      toHaakjeOpen:
+      toLeftParens:
         Inc(Haakjes);
-      toHaakjeSluiten:
+      toRightParens:
         Dec(Haakjes);
       toEof:
         Exit;
@@ -1543,6 +1641,8 @@ begin
   Position := inPublic;
   while True do
   begin
+    CheckNotToken(toEof);
+
     case Token of
       toSymbol:
         begin
@@ -1554,19 +1654,19 @@ begin
             Exit;
           end
           else
-          if TokenSymbolIs('private') then
+            if TokenSymbolIs('private') then
             Position := inPrivate
           else
-          if TokenSymbolIs('protected') then
+            if TokenSymbolIs('protected') then
             Position := inProtected
           else
-          if TokenSymbolIs('public') then
+            if TokenSymbolIs('public') then
             Position := inPublic
           else
-          if TokenSymbolIs('published') then
+            if TokenSymbolIs('published') then
             Position := inPublished
           else
-          if TokenSymbolIs('property') then
+            if TokenSymbolIs('property') then
           begin
             ReadClass_Property(AClassItem, Position,
               AddToList and (Position in AcceptVisibilities + [inProtected, inPublic, inPublished]));
@@ -1574,7 +1674,7 @@ begin
             Continue;
           end
           else
-          if TokenSymbolIn(['procedure', 'constructor', 'destructor']) >= 0 then
+            if TokenSymbolIn(['procedure', 'constructor', 'destructor']) >= 0 then
           begin
             ReadClass_Procedure(AClassItem, Position,
               AddToList and (Position in AcceptVisibilities), False);
@@ -1582,7 +1682,7 @@ begin
             Continue;
           end
           else
-          if TokenSymbolIs('function') then
+            if TokenSymbolIs('function') then
           begin
             ReadClass_Function(AClassItem, Position,
               AddToList and (Position in AcceptVisibilities), False);
@@ -1590,7 +1690,7 @@ begin
             Continue;
           end
           else
-          if TokenSymbolIs('class') then
+            if TokenSymbolIs('class') then
           begin
             ReadClass_ClassMethod(AClassItem, Position,
               AddToList and (Position in AcceptVisibilities));
@@ -1604,8 +1704,6 @@ begin
             Continue;
           end;
         end;
-      toEof:
-        Error('Unexpected end of file');
     end;
     NextToken;
   end;
@@ -1628,34 +1726,74 @@ end;
 procedure TDelphiParser.ReadClass_Function(AClassItem: TClassItem;
   Position: TClassVisibility; DoAdd, IsClassMethod: Boolean);
 var
-  MethodFunc: TMethodFunc;
+  MethodFunc: TMethodFuncItem;
+  LMethodName: string;
   Directives: TDirectives;
 begin
-  { function F1(P1: T1; P2: T2); }
+  { Example:
+
+    function F1(P1: T1; P2: T2);
+    function IMalloc.Alloc = Allocate;
+  }
+
   NextToken;
   SkipUntilToken(toSymbol);
-  if Token = toEof then
+  CheckToken(toSymbol);
+
+  LMethodName := TokenString;
+  NextToken;
+  if Token = '.' then
+  begin
+    { Method resolution clause }
+    NextToken;
+    CheckToken(toSymbol);
+    NextToken;
+    CheckToken('=');
+    NextToken;
+    CheckToken(toSymbol);
+    NextToken;
+    CheckToken(';');
+    NextToken;
     Exit;
+  end;
 
   if DoAdd then
   begin
-    MethodFunc := TMethodFunc.Create(TokenString);
+    MethodFunc := TMethodFuncItem.Create(LMethodName);
     MethodFunc.OwnerClass := AClassItem;
     MethodFunc.Position := Position;
     MethodFunc.IsClassMethod := IsClassMethod;
 
     FTypeList.Add(MethodFunc);
 
+    //NextToken;
+    if Token = '(' then
+      ReadParamList(MethodFunc.Params, MethodFunc.ParamTypes);
+
+    CheckToken(':');
     NextToken;
-    ReadParamList(MethodFunc.Params, MethodFunc.ParamTypes);
+    ReadType('', False);
+
+    if Token = ';' then
+      NextToken;
+
     Directives := [];
     ReadDirectives(Directives);
     MethodFunc.Directives := Directives;
   end
   else
   begin
+    //NextToken;
+    if Token = '(' then
+      ReadParamList(nil, nil);
+
+    CheckToken(':');
     NextToken;
-    ReadParamList(nil, nil);
+    ReadType('', False);
+
+    if Token = ';' then
+      NextToken;
+
     Directives := [];
     ReadDirectives(Directives);
   end;
@@ -1664,11 +1802,11 @@ end;
 procedure TDelphiParser.ReadClass_Procedure(AClassItem: TClassItem;
   Position: TClassVisibility; DoAdd, IsClassMethod: Boolean);
 var
-  MethodProc: TMethodProc;
+  MethodProc: TMethodProcItem;
   MethodType: TMethodType;
   Directives: TDirectives;
 begin
-  { VB:
+  { Example:
 
     procedure P1(P1: T1; P2: T2);
 
@@ -1679,7 +1817,7 @@ begin
   if TokenSymbolIs('constructor') then
     MethodType := mtConstructor
   else
-  if TokenSymbolIs('destructor') then
+    if TokenSymbolIs('destructor') then
     MethodType := mtDestructor
   else
     MethodType := mtNormal;
@@ -1692,7 +1830,7 @@ begin
   { Token is nu de naam van de procedure }
   if DoAdd then
   begin
-    MethodProc := TMethodProc.Create(TokenString);
+    MethodProc := TMethodProcItem.Create(TokenString);
     MethodProc.OwnerClass := AClassItem;
     MethodProc.MethodType := MethodType;
     MethodProc.Position := Position;
@@ -1700,7 +1838,12 @@ begin
 
     FTypeList.Add(MethodProc);
     NextToken;
-    ReadParamList(MethodProc.Params, MethodProc.ParamTypes);
+    if Token = '(' then
+      ReadParamList(MethodProc.Params, MethodProc.ParamTypes);
+
+    if Token = ';' then
+      NextToken;
+
     Directives := [];
     ReadDirectives(Directives);
     MethodProc.Directives := Directives;
@@ -1709,7 +1852,12 @@ begin
   begin
     NextToken;
     {SkipComments;}
-    ReadParamList(nil, nil);
+    if Token = '(' then
+      ReadParamList(nil, nil);
+
+    if Token = ';' then
+      NextToken;
+
     Directives := [];
     ReadDirectives(Directives);
   end;
@@ -1718,16 +1866,18 @@ end;
 procedure TDelphiParser.ReadClass_Property(AClassItem: TClassItem;
   Position: TClassVisibility; DoAdd: Boolean);
 var
-  ClassProperty: TClassProperty;
+  ClassProperty: TClassPropertyItem;
+  I: Integer;
 begin
   { Bv:
 
     propery P1: X1 read Get1 write Get2
     property P1;
     property P1 default X;
+    property Bold[Year, Month, Day: Word]: Boolean read IsBold write SetBold;
 
-    Pre : Token staat op 'property'
-    Post: Token staat op eerste symbool na ;
+    Pre : Token = 'property'
+    POST: Token is first symbol after toSemiColon
   }
 
   NextToken;
@@ -1736,31 +1886,47 @@ begin
 
   if DoAdd then
   begin
-    ClassProperty := TClassProperty.Create(TokenString);
+    ClassProperty := TClassPropertyItem.Create(TokenString);
     ClassProperty.OwnerClass := AClassItem;
     ClassProperty.Position := Position;
 
     FTypeList.Add(ClassProperty);
     NextToken;
-    if (Token = toSemiColon) or ((Token = toSymbol) and TokenSymbolIs('default')) then
+    if (Token = toSemiColon) or
+      ((Token = toSymbol) and (TokenSymbolIn(['default', 'stored']) >= 0)) then
     begin
-      ClassProperty.InheritedProp := True;
-      SkipUntilToken(toSemiColon); //SkipUntilSemiColon;
+      ClassProperty.IsInherited := True;
+      SkipUntilToken(toSemiColon);
     end
     else
     begin
-      ClassProperty.InheritedProp := False;
-      if Token = '[' then
-        SkipUntilTokenInHaak('[', ']');
+      ClassProperty.IsInherited := False;
+      ClassProperty.IsArray := Token = toLeftBracket;
+      if ClassProperty.IsArray then
+        ReadParamList(ClassProperty.Params, ClassProperty.ParamTypes, htBracket);
+      //SkipUntilTokenInHaak(toLeftBracket, toRightBracket);
       SkipUntilToken(toSymbol);
       CheckNotToken(toEof);
       BeginRecording;
       repeat
         NextToken;
-      until (TokenSymbolIn(['end', 'read', 'write', 'index']) >= 0) or (Token in [toEof, toSemiColon]);
+      until
+        (Token in [toEof, toSemiColon]) or
+        //TokenSymbolIs('end') or
+      (TokenSymbolIn(CPropertySpecifiers) >= 0);
       EndRecording;
+
       ClassProperty.TypeStr := RecordStrWithoutCurrentToken;
-      SkipUntilToken(toSemiColon); //SkipUntilSemiColon;
+
+      while not (Token in [toSemiColon, toEof]) do
+      begin
+        I := TokenSymbolIn(CPropertySpecifiers);
+        if (I >= Integer(Low(TPropertySpecifier))) and (I <= Integer(High(TPropertySpecifier))) then
+          ClassProperty.Specifiers := ClassProperty.Specifiers + [TPropertySpecifier(I)];
+        NextToken;
+      end;
+
+      //SkipUntilToken(toSemiColon); //SkipUntilSemiColon;
     end;
     CheckToken(toSemiColon);
     NextToken;
@@ -1782,17 +1948,17 @@ end;
 procedure TDelphiParser.ReadClass_Field(AClassItem: TClassItem;
   Position: TClassVisibility; DoAdd: Boolean);
 var
-  ClassField: TClassField;
+  ClassField: TClassFieldItem;
 begin
   { Bv:
 
     Pre : Token staat op 'field name'
-    Post: Token staat op eerste symbool na ;
+    POST: Token is first symbol after toSemiColon
   }
 
   if DoAdd then
   begin
-    ClassField := TClassField.Create(TokenString);
+    ClassField := TClassFieldItem.Create(TokenString);
     ClassField.OwnerClass := AClassItem;
     ClassField.Position := Position;
 
@@ -1971,7 +2137,7 @@ begin
           Result := toComment;
         end
         else
-          Result := toHaakjeOpen;
+          Result := toLeftParens;
       end;
     'A'..'Z', 'a'..'z', '_':
       begin
@@ -2120,17 +2286,17 @@ begin
         else
           FFloatType := #0;
       end;
-    {';':
+    {toSemiColon:
       begin
         NextChar;
         Result := toSemiColon;
       end;}
-    {')':
+    {toRightParens:
       begin
         NextChar;
-        Result := toHaakjeSluiten;
+        Result := toRightParens;
       end;
-    '=':
+    toEquals:
       begin
         NextChar;
         Result := toEquals;
@@ -2215,7 +2381,7 @@ begin
       end;
     end
     else
-    if TokenSymbolIs('IFNDEF') then
+      if TokenSymbolIs('IFNDEF') then
     begin
       if SkipUntilIfDefCount0 then
       begin
@@ -2245,7 +2411,7 @@ begin
       end;
     end
     else
-    if TokenSymbolIs('ENDIF') then
+      if TokenSymbolIs('ENDIF') then
     begin
       if SkipUntilIfDefCount0 then
       begin
@@ -2265,7 +2431,7 @@ begin
       Continue;
     end
     else
-    if TokenSymbolIs('ELSE') then
+      if TokenSymbolIs('ELSE') then
     begin
       if SkipUntilIfDefCount0 then
       begin
@@ -2314,8 +2480,8 @@ end;
 
 procedure TDelphiParser.SkipUntilToken(T: Char);
 begin
-  { PRE  :
-    POST : Token staat op ; of #0
+  { PRE : -
+    POST: Token = T or Token = toEof
   }
   while not (Token in [T, toEof]) do
     NextToken;
@@ -2337,21 +2503,21 @@ begin
             Exit;
           end
           else
-          if TokenSymbolIs('property') then
+            if TokenSymbolIs('property') then
           begin
             ReadClass_Property(AInterfaceItem, inPublic, AddToList);
             { Token is eerste token na ; }
             Continue;
           end
           else
-          if TokenSymbolIs('procedure') then
+            if TokenSymbolIs('procedure') then
           begin
             ReadClass_Procedure(AInterfaceItem, inPublic, AddToList, False);
             { Token is eerste token na ; }
             Continue;
           end
           else
-          if TokenSymbolIs('function') then
+            if TokenSymbolIs('function') then
           begin
             ReadClass_Function(AInterfaceItem, inPublic, AddToList, False);
             { Token is eerste token na ; }
@@ -2366,42 +2532,46 @@ begin
 end;
 
 procedure TDelphiParser.ReadType(const ATypeName: string; const AddToList: Boolean);
+var
+  Directives: TDirectives;
 begin
-  if Token = toHaakjeOpen then
+  if Token = toLeftParens then
     ReadEnumerator(ATypeName, AddToList)
   else
-  if TokenSymbolIs('record') then
+    if TokenSymbolIs('record') then
     ReadRecord(ATypeName, AddToList)
   else
-  if TokenSymbolIs('class') then
+    if TokenSymbolIs('class') then
     ReadClass(ATypeName, AddToList)
   else
-  if TokenSymbolIs('procedure') then
+    if TokenSymbolIs('procedure') then
     ReadProcedureType(ATypeName, AddToList)
   else
-  if TokenSymbolIs('function') then
+    if TokenSymbolIs('function') then
     ReadFunctionType(ATypeName, AddToList)
   else
-  if TokenSymbolIs('interface') then
+    if TokenSymbolIs('interface') then
     ReadInterfaceType(ATypeName, AddToList)
   else
-  if TokenSymbolIs('dispinterface') then
+    if TokenSymbolIs('dispinterface') then
     ReadDispInterface(ATypeName, AddToList)
   else
-  if TokenSymbolIs('packed') then
+    if TokenSymbolIs('packed') then
   begin
     NextToken;
     CheckToken(toSymbol);
     if TokenSymbolIs('record') then
       ReadRecord(ATypeName, AddToList)
     else
-    if TokenSymbolIs('array') then
+      if TokenSymbolIs('array') then
       ReadSimpleType(ATypeName, AddToList)
     else
       Error('record or array expected');
   end
   else
-    ReadSimpleType(ATypeName, AddToList)
+    ReadSimpleType(ATypeName, AddToList);
+
+  ReadDirectives(Directives);
 end;
 
 procedure TDelphiParser.SkipUntilTokenInHaak(T: Char; const InitHaak: Integer);
@@ -2417,9 +2587,9 @@ begin
   while True do
   begin
     case Token of
-      toHaakjeOpen:
+      toLeftParens:
         Inc(Haakjes);
-      toHaakjeSluiten:
+      toRightParens:
         Dec(Haakjes);
       toEof:
         Exit;
@@ -2450,28 +2620,28 @@ begin
   end;
 end;
 
-procedure TDelphiParser.SkipUntilTokenInHaak(OpenHaak, CloseHaak: Char;
-  const InitHaak: Integer);
+procedure TDelphiParser.SkipUntilTokenInHaak(OpenSymbol, CloseSymbol: Char;
+  const InitialOpenCount: Integer);
 var
-  Haakjes: Integer;
+  OpenCount: Integer;
 begin
-  if OpenHaak = CloseHaak then
+  { Post : Token on CloseHaak }
+
+  if OpenSymbol = CloseSymbol then
     Error('Internal error: OpenHaak = CloseHaak');
-  Haakjes := InitHaak;
-  while True do
+  OpenCount := InitialOpenCount;
+  while Token <> toEof do
   begin
-    if Token = OpenHaak then
-      Inc(Haakjes)
+    if Token = OpenSymbol then
+      Inc(OpenCount)
     else
-    if Token = CloseHaak then
+      if Token = CloseSymbol then
     begin
-      Dec(Haakjes);
-      if Haakjes = 0 then
+      Dec(OpenCount);
+      if OpenCount = 0 then
         Exit;
-    end
-    else
-    if Token = toEof then
-      Exit;
+    end;
+
     NextToken;
   end;
 end;
@@ -2479,26 +2649,43 @@ end;
 procedure TDelphiParser.ReadConstantExpression(
   const ExpectDotDot: Boolean);
 begin
-  { Post : token staat op ; of op end of op ) }
+  { Examples
+
+    const
+      DOW_WEEK : TTFDaysOfWeek = [dowSunday..dowSaturday];
+                                 _________________________
+
+      StIdSymbols = ['_', '0'..'9', 'A'..'Z', 'a'..'z'];
+                    ____________________________________
+
+      StdWordDelims = [#0..' ', ','] + Brackets;
+                      __________________________
+
+  }
+
+  { POST : Token = toSemiColon ';' or 'end' }
 
   while True do
   begin
+    if (Token = toSymbol) and (TokenSymbolIn(CDirectives) > 0) then
+      Exit;
+
     CheckNotToken(toEof);
 
+    { TODO : Nodig? }
     if TokenSymbolIn(CAllowableSymbolsInTypeDef) >= 0 then
-      SkipUntilTokenInHaak('(', ')')
+      SkipUntilTokenInHaak(toLeftParens, toRightParens)
     else
-    if TokenSymbolIs('end') then
+      if TokenSymbolIs('end') then
       Exit
     else
       case Token of
-        toHaakjeSluiten:
+        toRightParens:
           Exit;
-        toHaakjeOpen:
-          begin
-            SkipUntilTokenInHaak('(', ')');
-            NextToken;
-          end;
+        toLeftParens:
+          SkipUntilTokenInHaak(toLeftParens, toRightParens);
+        toLeftBracket:
+          SkipUntilTokenInHaak(toLeftBracket, toRightBracket);
         toDot:
           if ExpectDotDot then
           begin
@@ -2509,12 +2696,15 @@ begin
               CheckNotToken(toDot);
               ReadConstantExpression(False);
               Exit;
-            end;
+            end
+            else
+              Continue;
           end
           else
           begin
             NextToken;
             CheckNotToken(toDot);
+            Continue;
           end;
         toSemiColon:
           Exit;
@@ -2525,14 +2715,7 @@ end;
 
 procedure TDelphiParser.ReadConstValue;
 begin
-  if Token = '(' then
-  begin
-    SkipUntilTokenInHaak('(', ')');
-    NextToken;
-    CheckToken(toSemiColon);
-  end
-  else
-    SkipUntilToken(toSemiColon);
+  ReadConstantExpression(False);
 end;
 
 { TDtxCompareParser }
@@ -2584,7 +2767,7 @@ const
     'this is an overridden method, you don''t have to describe these',
     'if it does the same as the inherited method',
     'Description for', // case sensitive
-    'description for this item'
+    'description for this parameter'
     );
 
 function TDtxCompareParser.GetDtxCompareTokenType: TDtxCompareTokenType;
@@ -2597,10 +2780,10 @@ begin
     if (S[1] = '@') and (S[2] = '@') then
       Result := ctHelpTag
     else
-    if (S[1] = '#') and (S[2] = '#') then
+      if (S[1] = '#') and (S[2] = '#') then
       Result := ctParseTag
     else
-    if (S[1] = '-') and (S[2] = '-') then
+      if (S[1] = '-') and (S[2] = '-') then
       Result := ctSeperator
     else
       Result := ctText;
@@ -2692,7 +2875,7 @@ begin
     if SameText(S, 'on') then
       Item.HasTocEntry := True
     else
-    if SameText(S, 'off') then
+      if SameText(S, 'off') then
       Item.HasTocEntry := False
     else
       Include(FErrors, defHasTocEntryError);
@@ -2715,7 +2898,7 @@ begin
   if not AreEqual then
     Result := ctDifferent
   else
-  if Length(Short) = Length(Long) then
+    if Length(Short) = Length(Long) then
     Result := ctEqual
   else
     Result := ctPrefix;
@@ -2800,13 +2983,13 @@ begin
       if SameText(LTokenString, '<COMBINE') then
         ReadCombine(Item)
       else
-      if SameText(LTokenString, '<COMBINEWith') then
+        if SameText(LTokenString, '<COMBINEWith') then
         ReadCombineWith(Item)
       else
-      if SameText(LTokenString, '<HASTOCENTRY') then
+        if SameText(LTokenString, '<HASTOCENTRY') then
         ReadHasTocEntry(Item)
       else
-      if SameText(LTokenString, '<TITLEIMG') then
+        if SameText(LTokenString, '<TITLEIMG') then
         ReadTitleImg(Item)
       else
         { Token starts with < but not a known token }
@@ -2819,7 +3002,7 @@ begin
       if CompareStr(LTokenString, 'Parameters') = 0 then
         ReadParameters(Item.Parameters)
       else
-      if SameText(LTokenString, 'JVCLInfo') then
+        if SameText(LTokenString, 'JVCLInfo') then
         ReadJVCLINFO(Item)
       else
         { Token start on new line but not a known token }
@@ -2841,7 +3024,7 @@ begin
   FlagFound := False;
   GroupFound := False;
 
-  while (Token <> toEof) and (Pos('=', TokenString) > 0) do
+  while (Token <> toEof) and (Pos(toEquals, TokenString) > 0) do
   begin
     IsFlag := StrLComp(PChar(TokenString), 'FLAG=', 5) = 0;
     IsGroup := not IsFlag and (StrLComp(PChar(TokenString), 'GROUP=', 6) = 0);
@@ -2857,13 +3040,13 @@ begin
       if IsFlag then
         Include(Item.FJVCLInfoErrors, jieFlagNotFilled)
       else
-      if IsGroup then
+        if IsGroup then
         Include(Item.FJVCLInfoErrors, jieGroupNotFilled)
       else
         Include(Item.FJVCLInfoErrors, jieOtherNotFilled)
     end
     else
-    if IsFlag then
+      if IsFlag then
       Item.IsRegisteredComponent :=
         SameText('component', Trim(Copy(TokenString, 6, MaxInt)));
 
@@ -2931,13 +3114,40 @@ end;
 
 procedure TDtxCompareParser.ReadParameters(List: TStrings);
 var
+  Check: string;
+
+  procedure CheckDefaultText;
+  begin
+    if dtDescriptionForThisParameter in FDefaultTexts then Exit;
+    if Check = '' then
+      Check := TokenString
+    else
+      Check := Check + ' ' + TokenString;
+    case CheckText(Check, CDefaultText[dtDescriptionForThisParameter], False) of
+      ctPrefix:
+        Exit;
+      ctEqual:
+        begin
+          Check := '';
+          Include(FDefaultTexts, dtDescriptionForThisParameter);
+          Exit;
+        end;
+    end;
+    Check := '';
+  end;
+var
   S: string;
 begin
+  Check := '';
+
   NextToken;
   while True do
   begin
     while not FLastWasNextLine and (Token <> toEof) do
+    begin
+      CheckDefaultText;
       NextToken;
+    end;
 
     if Token = toEof then
       Exit;
@@ -2957,7 +3167,7 @@ begin
       Break;
     end;
 
-    if (Token <> toSymbol) or (TokenSymbolIn(['-', ':']) < 0) then
+    if (Token <> toSymbol) or (TokenSymbolIn(['-', toColon]) < 0) then
       Continue;
 
     List.Add(S);
@@ -3001,7 +3211,7 @@ begin
       if TokenSymbolIs('##package:') then
         ReadPackage
       else
-      if TokenSymbolIs('##status:') then
+        if TokenSymbolIs('##status:') then
         ReadStatus
       else
         ReadOther;
@@ -3234,18 +3444,18 @@ begin
   { PRE : Token = 'RegisterComponents'
     POST: Token = token after ; or )
 
-   vb:
+   Example:
 
     RegisterComponents(x, [C1]);
     RegisterComponents(x, [C1, C2, C3]);
   }
 
   NextToken;
-  CheckToken('(');
+  CheckToken(toLeftParens);
   SkipUntilToken(',');
   CheckToken(',');
   NextToken;
-  CheckToken('[');
+  CheckToken(toLeftBracket);
   NextToken;
   CheckToken(toSymbol);
   List.Add(TokenString);
@@ -3257,9 +3467,9 @@ begin
     List.Add(TokenString);
     NextToken;
   end;
-  CheckToken(']');
+  CheckToken(toRightBracket);
   NextToken;
-  CheckToken(toHaakjeSluiten);
+  CheckToken(toRightParens);
   NextToken;
   if Token = toSemiColon then
     NextToken;
@@ -3405,8 +3615,8 @@ begin
       Item := TAbstractItem(FTypeList[I]);
       FList.AddObject(Item.SimpleName, TObject(ID));
 
-      if Item is TClassProperty then
-        FList.AddObject(TClassProperty(Item).TypeStr, TObject(ID));
+      if Item is TClassPropertyItem then
+        FList.AddObject(TClassPropertyItem(Item).TypeStr, TObject(ID));
     end;
   end;
 end;

@@ -467,6 +467,7 @@ JvUIBase=UIB
 JvUIBConst=UIB
 JvUIBError=UIB
 JvUIBLib=UIB
+JvUnicodeCanvas=Custom
 JvUninstallControls=Ctrls
 JvUpDown=StdCtrls
 JvValidateEdit=Custom

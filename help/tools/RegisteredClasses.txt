@@ -1,4 +1,3 @@
-Tgl3DColors
 TJvAddHardwareDialog
 TJvAddPrinterDialog
 TJvAirBrush
@@ -73,6 +72,7 @@ TJvDBCombobox
 TJvDBComboEdit
 TJvDBDateEdit
 TJvDBDatePickerEdit
+TJvDBDateTimePicker
 TJvDBFilter
 TJvDBGrid
 TJvDBIndexCombo
@@ -172,20 +172,17 @@ TJvgLogicProducer
 TJvgMailSlotClient
 TJvgMailSlotServer
 TJvgMaskEdit
-TJvgMultipleResources
 TJvgMyQRPreview
 TJvgPageControl
 TJvgPrintCrossTable
 TJvgProcess
 TJvgProgress
-TJvgPropertyCenter
 TJvgQRDBText
 TJvgQRLabel
 TJvGradient
 TJvGradientCaption
 TJvGradientHeaderPanel
 TJvgReport
-TJvgReportEditor
 TJvgReportParamsEditor
 TJvGridFilter
 TJvGridPrinter
@@ -200,7 +197,6 @@ TJvgSmallFontsDefence
 TJvgSpeedButton
 TJvgSplitter
 TJvgStaticText
-TJvgStaticTextLabel
 TJvgStringContainer
 TJvgStringGrid
 TJvgSysInfo
@@ -324,6 +320,7 @@ TJvSALMath
 TJvSaveDialog
 TJvScheduledEvents
 TJvScreenSaver
+TJvScrollBar
 TJvScrollBox
 TJvScrollingWindow
 TJvScrollMax
@@ -354,6 +351,7 @@ TJvSpacer
 TJvSpecialImage
 TJvSpecialProgress
 TJvSpeedBar
+TJvSpeedButton
 TJvSpeller
 TJvSpinEdit
 TJvSplitter

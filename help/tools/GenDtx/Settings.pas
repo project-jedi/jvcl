@@ -48,6 +48,8 @@ const
   CRegisteredClassesFileName = 'RegisteredClasses.txt';
   CFilesInPackagesFileName = 'Files in packages.txt';
   CIgnoredTokensFileName = 'Ignored tokens.txt';
+  CDelphiClassStructureFileName = 'Delphi Classes.txt';
+  CJVCLClassStructureFileName = 'JVCL Classes.txt';
   CUnitStatusFileName: array[TUnitStatus] of string = (
     'Completed units.txt', 'Ignored units.txt', 'Generated units.txt',
     'Other units.txt');
@@ -82,6 +84,8 @@ type
     FRunTimePasDir: string;
     FRootDir: string;
     FUseRootDir: Boolean;
+    FClassStructure: TStrings;
+    FDelphiRootSourceDir: string;
 
     function GetFileName: string;
     function GetNiceName(const AClassName: string): string;
@@ -104,10 +108,13 @@ type
     procedure SetRunTimePasDir(const Value: string);
     procedure SetUnitsStatus(const AUnitStatus: TUnitStatus; const Value: TStrings);
     procedure SetUseRootDir(const Value: Boolean);
+    procedure SetDelphiRootSourceDir(const Value: string);
   protected
     procedure DoEvent(ChangeType: TSettingsChangeType);
     procedure Changed;
 
+    procedure CombineClassStructure(AIn1, AIn2, AOut: TStrings);
+    procedure LoadStringsFromFile(const AFileName: string; Strings: TStrings);
     procedure DoLoad;
   public
     constructor Create; virtual;
@@ -119,19 +126,27 @@ type
     procedure EndUpdate;
 
     procedure LoadAll;
-    procedure LoadSettings;
-    procedure LoadRegisteredClasses;
-    procedure LoadUnitStatus(const AUnitStatus: TUnitStatus);
-    procedure LoadUnitStatusAll;
     procedure LoadFilesInPackages;
     procedure LoadIgnoredTokens;
+    procedure LoadClassStructure;
+    procedure LoadRegisteredClasses;
+    procedure LoadSettings;
+    procedure LoadUnitStatus(const AUnitStatus: TUnitStatus);
+    procedure LoadUnitStatusAll;
+
     procedure SaveAll;
-    procedure SaveSettings;
-    procedure SaveRegisteredClasses;
-    procedure SaveUnitStatus(const AUnitStatus: TUnitStatus);
-    procedure SaveUnitStatusAll;
     procedure SaveFilesInPackages;
     procedure SaveIgnoredTokens;
+    procedure SaveClassStructure;
+    procedure SaveRegisteredClasses;
+    procedure SaveSettings;
+    procedure SaveUnitStatus(const AUnitStatus: TUnitStatus);
+    procedure SaveUnitStatusAll;
+
+    procedure GetDelphiClassStructure(Strings: TStrings);
+    procedure GetJVCLClassStructure(Strings: TStrings);
+    procedure SetDelphiClassStructure(Strings: TStrings);
+    procedure SetJVCLClassStructure(Strings: TStrings);
 
     procedure RegisterObserver(Observer: TObject; Event: TSettingsChangeEvent = nil); virtual;
     procedure UnRegisterObserver(Observer: TObject); virtual;
@@ -141,6 +156,7 @@ type
 
     function FileNameToPackage(const AFileName: string): string;
     function IsRegisteredClass(const S: string): Boolean;
+    function IsDescendantOf(const AClass, AAncestor: string): Boolean;
     procedure AddToUnitStatus(const AUnitStatus: TUnitStatus; const AFileName: string);
     procedure AddToIgnoreTokenList(const AUnit, AToken: string);
     function IsUnitFrom(const AUnitStatus: TUnitStatus; const AFileName: string): Boolean;
@@ -149,6 +165,7 @@ type
     property RegisteredClasses: TStrings read FRegisteredClasses write SetRegisteredClasses;
     property FilesInPackages: TStrings read FFilesInPackages write SetFilesInPackages;
 
+    property DelphiRootSourceDir: string read FDelphiRootSourceDir write SetDelphiRootSourceDir;
     property RunTimePasDir: string read FRunTimePasDir write SetRunTimePasDir;
     property DesignTimePasDir: string read FDesignTimePasDir write SetDesignTimePasDir;
     property PackageDir: string read FPackageDir write SetPackageDir;
@@ -268,6 +285,7 @@ begin
       RealDtxDir := TSettings(Source).RealDtxDir;
       PackageDir := TSettings(Source).PackageDir;
       RootDir := TSettings(Source).RootDir;
+      DelphiRootSourceDir := TSettings(Source).DelphiRootSourceDir;
 
       OverwriteExisting := TSettings(Source).OverwriteExisting;
       UseRootDir := TSEttings(Source).UseRootDir;
@@ -309,6 +327,45 @@ begin
     if ChangeType in FChanges then
       DoEvent(ChangeType);
   FChanges := [];
+end;
+
+procedure TSettings.CombineClassStructure(AIn1, AIn2, AOut: TStrings);
+var
+  I: Integer;
+  Index: Integer;
+  AncestorName: string;
+begin
+  { AIn1 =   TObject=
+             TComponent=TObject
+             TControl=TComponent
+    AIn2 =   TJvSomeClass1=TComponent
+             TJvSomeClass2=TControl
+
+    ->
+             Index  string            object
+             --------------------------
+    AOut =   0      TComponent        4
+             1      TControl          0
+             2      TJvSomeClass1     0
+             3      TJvSomeClass2     1
+             4      TObject           -1
+  }
+
+  for I := 0 to AIn1.Count - 1 do
+    AOut.AddObject(AIn1.Names[I], TObject(I));
+  for I := 0 to AIn2.Count - 1 do
+    AOut.AddObject(AIn2.Names[I], TObject(-I - 1));
+
+  for I := 0 to AOut.Count - 1 do
+  begin
+    Index := Integer(AOut.Objects[I]);
+    if Index < 0 then
+      AncestorName := AIn2.ValueFromIndex[-Index - 1]
+    else
+      AncestorName := AIn1.ValueFromIndex[Index];
+    Index := AOut.IndexOf(AncestorName);
+    AOut.Objects[I] := TObject(Index);
+  end;
 end;
 
 constructor TSettings.Create;
@@ -366,6 +423,13 @@ begin
     Sorted := True;
     Duplicates := dupIgnore;
   end;
+
+  FClassStructure := TStringList.Create;
+  with FClassStructure as TStringList do
+  begin
+    Sorted := True;
+    Duplicates := dupIgnore;
+  end;
 end;
 
 destructor TSettings.Destroy;
@@ -388,6 +452,7 @@ begin
   FAcceptCompilerDirectives.Free;
   FFilesInPackages.Free;
   FIgnoredTokens.Free;
+  FClassStructure.Free;
   inherited Destroy;
 end;
 
@@ -462,6 +527,7 @@ begin
     RealDtxDir := IniFile.ReadString('Directories', 'RealDtxDir', '');
     PackageDir := IniFile.ReadString('Directories', 'PackageDir', '');
     RootDir := IniFile.ReadString('Directories', 'RootDir', '');
+    DelphiRootSourceDir := IniFile.ReadString('Directories', 'DelphiRootSourceDir', '');
 
     UseRootDir := IniFile.ReadBool('Directories', 'UseRootDir', UseRootDir);
 
@@ -504,9 +570,19 @@ begin
     Result := '??';
 end;
 
+procedure TSettings.GetDelphiClassStructure(Strings: TStrings);
+begin
+  LoadStringsFromFile(CDelphiClassStructureFileName, Strings);
+end;
+
 function TSettings.GetFileName: string;
 begin
   Result := ChangeFileExt(Application.ExeName, '.INI')
+end;
+
+procedure TSettings.GetJVCLClassStructure(Strings: TStrings);
+begin
+  LoadStringsFromFile(CJVCLClassStructureFileName, Strings);
 end;
 
 function TSettings.GetNiceName(const AClassName: string): string;
@@ -563,6 +639,27 @@ begin
   Result := GInstance;
 end;
 
+function TSettings.IsDescendantOf(const AClass,
+  AAncestor: string): Boolean;
+var
+  Index: Integer;
+  Descendant: string;
+begin
+  Result := False;
+  Descendant := AClass;
+  while not SameText(Descendant, AAncestor) do
+  begin
+    Index := FClassStructure.IndexOf(Descendant);
+    if Index < 0 then
+      Exit;
+    Index := Integer(FClassStructure.Objects[Index]);
+    if Index < 0 then
+      Exit;
+    Descendant := FClassStructure[Index];
+  end;
+  Result := True;
+end;
+
 function TSettings.IsRegisteredClass(const S: string): Boolean;
 begin
   Result := FRegisteredClasses.IndexOf(S) >= 0;
@@ -581,29 +678,44 @@ begin
   LoadUnitStatusAll;
   LoadFilesInPackages;
   LoadIgnoredTokens;
+  LoadClassStructure;
+end;
+
+procedure TSettings.LoadClassStructure;
+var
+  DelphiClassStructure: TStringList;
+  JVCLClassStructure: TStringList;
+begin
+  DelphiClassStructure := TStringList.Create;
+  JVCLClassStructure := TStringList.Create;
+  try
+    DelphiClassStructure.Sorted := True;
+    DelphiClassStructure.Duplicates := dupIgnore;
+    JVCLClassStructure.Sorted := True;
+    JVCLClassStructure.Duplicates := dupIgnore;
+
+    LoadStringsFromFile(CDelphiClassStructureFileName, DelphiClassStructure);
+    LoadStringsFromFile(CJVCLClassStructureFileName, JVCLClassStructure);
+    CombineClassStructure(DelphiClassStructure, JVCLClassStructure, FClassStructure);
+  finally
+    DelphiClassStructure.Free;
+    JVCLClassStructure.Free;
+  end;
 end;
 
 procedure TSettings.LoadFilesInPackages;
-var
-  LFileName: string;
 begin
-  LFileName := ExtractFilePath(Application.ExeName) + CFilesInPackagesFileName;
-  if FileExists(LFileName) then
-    FFilesInPackages.LoadFromFile(LFileName);
+  LoadStringsFromFile(CFilesInPackagesFileName, FFilesInPackages);
 end;
 
 procedure TSettings.LoadIgnoredTokens;
-var
-  LFileName: string;
 begin
-  LFileName := ExtractFilePath(Application.ExeName) + CIgnoredTokensFileName;
-  if FileExists(LFileName) then
-    FIgnoredTokens.LoadFromFile(LFileName);
+  LoadStringsFromFile(CIgnoredTokensFileName, FIgnoredTokens);
 end;
 
 procedure TSettings.LoadRegisteredClasses;
 begin
-  FRegisteredClasses.LoadFromFile(CRegisteredClassesFileName);
+  LoadStringsFromFile(CRegisteredClassesFileName, FRegisteredClasses);
 end;
 
 procedure TSettings.LoadSettings;
@@ -613,13 +725,19 @@ begin
     DoLoad;
 end;
 
-procedure TSettings.LoadUnitStatus(const AUnitStatus: TUnitStatus);
+procedure TSettings.LoadStringsFromFile(const AFileName: string;
+  Strings: TStrings);
 var
   LFileName: string;
 begin
-  LFileName := ExtractFilePath(Application.ExeName) + CUnitStatusFileName[AUnitStatus];
+  LFileName := ExtractFilePath(Application.ExeName) + AFileName;
   if FileExists(LFileName) then
-    FUnitsStatus[AUnitStatus].LoadFromFile(LFileName);
+    Strings.LoadFromFile(LFileName);
+end;
+
+procedure TSettings.LoadUnitStatus(const AUnitStatus: TUnitStatus);
+begin
+  LoadStringsFromFile(CUnitStatusFileName[AUnitStatus], FUnitsStatus[AUnitStatus]);
 end;
 
 procedure TSettings.LoadUnitStatusAll;
@@ -666,6 +784,7 @@ begin
     FPackageDir := '';
     FUseRootDir := True;
     FRootDir := '';
+    FDelphiRootSourceDir := '';
 
     FOverwriteExisting := False;
     for OutputType := Low(TOutputType) to High(TOutputType) do
@@ -696,6 +815,12 @@ begin
   SaveSettings;
   SaveUnitStatusAll;
   SaveRegisteredClasses;
+  SaveClassStructure;
+end;
+
+procedure TSettings.SaveClassStructure;
+begin
+
 end;
 
 procedure TSettings.SaveFilesInPackages;
@@ -760,6 +885,7 @@ begin
     IniFile.WriteString('Directories', 'RealDtxDir', RealDtxDir);
     IniFile.WriteString('Directories', 'PackageDir', PackageDir);
     IniFile.WriteString('Directories', 'RootDir', RootDir);
+    IniFile.WriteString('Directories', 'DelphiRootSourceDir', DelphiRootSourceDir);
     IniFile.WriteBool('Directories', 'UseRootDir', UseRootDir);
 
     IniFile.WriteBool('Options', 'OverwriteExisting', OverwriteExisting);
@@ -805,6 +931,20 @@ begin
   FAcceptCompilerDirectives.Assign(Value);
 end;
 
+procedure TSettings.SetDelphiClassStructure(Strings: TStrings);
+begin
+  Strings.SaveToFile(CDelphiClassStructureFileName);
+end;
+
+procedure TSettings.SetDelphiRootSourceDir(const Value: string);
+begin
+  if Value <> FDelphiRootSourceDir then
+  begin
+    FDelphiRootSourceDir := Value;
+    DoEvent(ctDirectory);
+  end;
+end;
+
 procedure TSettings.SetDesignTimePasDir(const Value: string);
 begin
   if Value <> FDesignTimePasDir then
@@ -826,6 +966,11 @@ begin
     FGeneratedDtxDir := Value;
     DoEvent(ctDirectory);
   end;
+end;
+
+procedure TSettings.SetJVCLClassStructure(Strings: TStrings);
+begin
+  Strings.SaveToFile(CJVCLClassStructureFileName);
 end;
 
 procedure TSettings.SetOutputTypeDefaults(const OutputType: TOutputType;
