@@ -272,7 +272,7 @@ type
   { TJvCustomCsvDataSetFilterFunction: Defines callback function to be passed to CustomFilter routine }
   TJvCustomCsvDataSetFilterFunction = function(RecNo: Integer): Boolean of object;
 
-  // Easily Customizeable Dataset descendant our CSV handler and
+  // Easily Customizeable DataSet descendant our CSV handler and
   // any other variants we create:
   TJvCustomCsvDataSet = class(TDataSet)
   private
@@ -445,7 +445,7 @@ type
     function GetAutoincrement(const FieldName: string): Integer;
 
     // NEW: COPY FROM ANOTHER TDATASET (TTable, TADOTable, TQuery, or whatever)
-    function CopyFromDataset(DataSet: TDataset): Integer;
+    function CopyFromDataset(DataSet: TDataSet): Integer;
 
     // SELECT * FROM TABLE WHERE <fieldname> LIKE <pattern>:
     procedure SetFilter(const FieldName: string; Pattern: string); // Make Rows Visible Only if they match filterString
@@ -2474,7 +2474,7 @@ begin
       JvCsvBackupPreviousFiles(FOpenFileName, FAutoBackupCount);
     end;
     // Now write new file.
-    ExportCsvFile(FOpenFilename);
+    ExportCsvFile(FOpenFileName);
     FFileDirty := False;
   end;
 end;
@@ -2683,7 +2683,7 @@ begin
     FCsvFileAsStrings := TStringList.Create;
 
     if FLoadsFromFile then // The IF condition here is NEW!
-       FCsvFileAsStrings.LoadFromFile(FOpenFilename);
+       FCsvFileAsStrings.LoadFromFile(FOpenFileName);
 
     if FCsvFileAsStrings.Count > 0 then
       Result := True; // it worked!
@@ -3094,7 +3094,7 @@ begin
     if not Assigned(SortColumns[I]) then
       JvCsvDatabaseError(FTableName, Format(RsESortFailedInvalidFieldNameInList, [SortFieldNames[I]]));
   end;
-  QuickSort(FData, SortColumns, SortColumnCount, AScending);
+  QuickSort(FData, SortColumns, SortColumnCount, Ascending);
 
   //  bubble sort, compare in the middle,
   //  yes I'm feeling lazy today, yes I know a qsort would be better. - WP
@@ -4251,7 +4251,7 @@ end;
 // get contents of one dataset into this dataset. copies only fields that
 // match. Raises an exception if an error occurs. returns # of rows copied.
 
-function TJvCustomCsvDataSet.CopyFromDataset(DataSet: TDataset): Integer;
+function TJvCustomCsvDataSet.CopyFromDataset(DataSet: TDataSet): Integer;
 var
   I, MatchFieldCount: Integer;
   FieldName: string;
@@ -4288,7 +4288,7 @@ begin
   if (not Active) and (not LoadsFromFile) then
     Active := True;
 
-  while not Dataset.Eof do
+  while not DataSet.Eof do
   begin
     Append;
     for I := 0 to MatchFieldCount-1 do

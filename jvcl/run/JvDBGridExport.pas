@@ -78,7 +78,7 @@ type
     FColumnCount: Integer;
     FRecordColumns: array of TRecordColumn;
     FCaption: string;
-    FFileName: TFilename;
+    FFileName: TFileName;
     FOnProgress: TJvExportProgressEvent;
     FLastExceptionMessage: string;
     FSilent: Boolean;
@@ -449,12 +449,12 @@ begin
         DoProgress(0, lRecCount, lRecCount, Caption);
       finally
         try
-          if BookmarkValid(lBookMark) then
+          if BookmarkValid(lBookmark) then
             GotoBookmark(lBookmark);
         except
           HandleException;
         end;
-        if lBookMark <> nil then
+        if lBookmark <> nil then
           FreeBookmark(lBookmark);
         EnableControls;
       end;
@@ -541,7 +541,7 @@ begin
     FRunningInstance := False;
     try
       // create new instance
-      FExcel := CreateOLEObject(cExcelApplication);
+      FExcel := CreateOleObject(cExcelApplication);
     except
       FExcel := Unassigned;
       HandleException;
@@ -617,7 +617,7 @@ begin
         DoProgress(0, lRecCount, lRecCount, Caption);
       finally
         try
-          if BookMarkValid(lBookMark) then
+          if BookmarkValid(lBookmark) then
             GotoBookmark(lBookmark);
         except
           HandleException;
@@ -1006,12 +1006,12 @@ begin
         DoProgress(0, lRecCount, lRecCount, Caption);
       finally
         try
-          if BookmarkValid(lBookMark) then
+          if BookmarkValid(lBookmark) then
             GotoBookmark(lBookmark);
         except
           HandleException;
         end;
-        if lBookMark <> nil then
+        if lBookmark <> nil then
           FreeBookmark(lBookmark);
         EnableControls;
       end;
@@ -1132,12 +1132,12 @@ begin
         DoProgress(0, lRecCount, lRecCount, Caption);
       finally
         try
-          if BookmarkValid(lBookMark) then
+          if BookmarkValid(lBookmark) then
             GotoBookmark(lBookmark);
         except
           HandleException;
         end;
-        if lBookMark <> nil then
+        if lBookmark <> nil then
           FreeBookmark(lBookmark);
         EnableControls;
       end;

@@ -349,7 +349,7 @@ begin
         if ((Source.Control.DockOrientation = doVertical) or (Source.Control.HostDockSite = nil)) then
         begin
           R := Source.DockRect;
-          R.Bottom := Source.DockRect.Top + Source.Control.UnDockHeight - SysCaptionHeight;
+          R.Bottom := Source.DockRect.Top + Source.Control.UndockHeight - SysCaptionHeight;
           Source.DockRect := R;
         end;
       end
@@ -358,7 +358,7 @@ begin
         if (Source.Control.DockOrientation = doHorizontal) or (Source.Control.HostDockSite = nil) then
         begin
           R := Source.DockRect;
-          R.Right := Source.DockRect.Left + Source.Control.UnDockWidth - SysCaptionHeight;
+          R.Right := Source.DockRect.Left + Source.Control.UndockWidth - SysCaptionHeight;
           Source.DockRect := R;
         end;
     end;
@@ -397,19 +397,19 @@ begin
   with Client, JvGlobalDockManager.DragObject do
     case Self.Align of
       alTop:
-        if MousePos.y >= InfluenceRect.Top then
+        if MousePos.Y >= InfluenceRect.Top then
           InflateRect(InfluenceRect, 0,
             JvDockGetMinOffset(TBDockHeight, Height, MouseDeltaY));
       alBottom:
-        if MousePos.y <= InfluenceRect.Top then
+        if MousePos.Y <= InfluenceRect.Top then
           InflateRect(InfluenceRect, 0,
             JvDockGetMinOffset(TBDockHeight, Height, 1 - MouseDeltaY));
       alLeft:
-        if MousePos.x >= InfluenceRect.Left then
+        if MousePos.X >= InfluenceRect.Left then
           InflateRect(InfluenceRect,
             JvDockGetMinOffset(LRDockWidth, Width, MouseDeltaX), 0);
       alRight:
-        if MousePos.x <= InfluenceRect.Left then
+        if MousePos.X <= InfluenceRect.Left then
           InflateRect(InfluenceRect,
             JvDockGetMinOffset(LRDockWidth, Width, 1 - MouseDeltaX), 0);
     end;
@@ -888,11 +888,11 @@ begin
 
     if (DockSiteOrientation = doVertical) and
       (SizingZone.ParentZone.Orientation = doVertical) then
-      ShiftBy := SizePos.x + (SplitterWidth div 2) - SizingZone.ZoneLimit
+      ShiftBy := SizePos.X + (SplitterWidth div 2) - SizingZone.ZoneLimit
     else
     if (DockSiteOrientation = doHorizontal) and
       (SizingZone.ParentZone.Orientation = doHorizontal) then
-      ShiftBy := SizePos.y + (SplitterWidth div 2) - SizingZone.ZoneLimit;
+      ShiftBy := SizePos.Y + (SplitterWidth div 2) - SizingZone.ZoneLimit;
 
     if (ShiftBy <> 0) and (SizingZone.AfterClosestVisibleZone <> nil) then
     begin
@@ -907,7 +907,7 @@ begin
         ShiftBy := -ShiftBy;
         ShiftScaleOrientation := DockSiteOrientation;
         ForEachAt(SizingZone.AfterClosestVisibleZone, ShiftZone, tskForward);
-        SizePos := Point(SizePos.x + ShiftBy, SizePos.Y + ShiftBy);
+        SizePos := Point(SizePos.X + ShiftBy, SizePos.Y + ShiftBy);
         inherited SplitterMouseUp;
       end;
 
@@ -931,7 +931,7 @@ begin
   try
     if not JvGlobalDockIsLoading then
     begin
-      R := Docksite.ClientRect;
+      R := DockSite.ClientRect;
 
       if ResizeCount > 0 then
       begin
@@ -1229,53 +1229,53 @@ begin
   if SizingZone.ParentZone.Orientation = doHorizontal then
   begin
     TestLimit := SizingZone.Top + MinSize;
-    if TempPos.y <= TestLimit then
+    if TempPos.Y <= TestLimit then
     begin
       if DockSiteOrientation = doVertical then
       begin
-        if TempPos.y <= (SizingZone.VisiblePrevSiblingCount + 1) * MinSize - SplitterWidth div 2 then
-          TempPos.y := (SizingZone.VisiblePrevSiblingCount + 1) * MinSize - SplitterWidth div 2;
+        if TempPos.Y <= (SizingZone.VisiblePrevSiblingCount + 1) * MinSize - SplitterWidth div 2 then
+          TempPos.Y := (SizingZone.VisiblePrevSiblingCount + 1) * MinSize - SplitterWidth div 2;
       end
       else
-        TempPos.y := TestLimit;
+        TempPos.Y := TestLimit;
     end;
 
     TestLimit := GetSplitterLimit(SizingZone, False, True) - MinSize;
-    if TempPos.y >= TestLimit then
+    if TempPos.Y >= TestLimit then
     begin
       if DockSiteOrientation = doVertical then
       begin
-        if TempPos.y >= DockSiteSizeAlternate - SizingZone.VisibleNextSiblingCount * MinSize then
-          TempPos.y := DockSiteSizeAlternate - SizingZone.VisibleNextSiblingCount * MinSize;
+        if TempPos.Y >= DockSiteSizeAlternate - SizingZone.VisibleNextSiblingCount * MinSize then
+          TempPos.Y := DockSiteSizeAlternate - SizingZone.VisibleNextSiblingCount * MinSize;
       end
       else
-        TempPos.y := TestLimit;
+        TempPos.Y := TestLimit;
     end;
   end
   else
   begin
     TestLimit := SizingZone.Left + MinSize;
-    if TempPos.x <= TestLimit then
+    if TempPos.X <= TestLimit then
     begin
       if DockSiteOrientation = doHorizontal then
       begin
-        if TempPos.x <= (SizingZone.VisiblePrevSiblingCount + 1) * MinSize - SplitterWidth div 2 then
-          TempPos.x := (SizingZone.VisiblePrevSiblingCount + 1) * MinSize - SplitterWidth div 2;
+        if TempPos.X <= (SizingZone.VisiblePrevSiblingCount + 1) * MinSize - SplitterWidth div 2 then
+          TempPos.X := (SizingZone.VisiblePrevSiblingCount + 1) * MinSize - SplitterWidth div 2;
       end
       else
-        TempPos.x := TestLimit;
+        TempPos.X := TestLimit;
     end;
 
     TestLimit := GetSplitterLimit(SizingZone, False, True) - MinSize;
-    if TempPos.x >= TestLimit then
+    if TempPos.X >= TestLimit then
     begin
       if DockSiteOrientation = doHorizontal then
       begin
-        if TempPos.x >= DockSiteSizeAlternate - SizingZone.VisibleNextSiblingCount * MinSize then
-          TempPos.x := DockSiteSizeAlternate - SizingZone.VisibleNextSiblingCount * MinSize;
+        if TempPos.X >= DockSiteSizeAlternate - SizingZone.VisibleNextSiblingCount * MinSize then
+          TempPos.X := DockSiteSizeAlternate - SizingZone.VisibleNextSiblingCount * MinSize;
       end
       else
-        TempPos.x := TestLimit;
+        TempPos.X := TestLimit;
     end;
   end;
   SizePos := TempPos;

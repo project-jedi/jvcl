@@ -659,19 +659,19 @@ end;
 
 function TJvChartData.GetTimestamp(ValueIndex: Integer): TDateTime;
 begin
-  if (ValueIndex < 0) or (ValueIndex >= Length(FTimestamp)) then
+  if (ValueIndex < 0) or (ValueIndex >= Length(FTimeStamp)) then
     Result := 0.0 // null datetime
   else
-    Result := FTimestamp[ValueIndex];
+    Result := FTimeStamp[ValueIndex];
 end;
 
 procedure TJvChartData.SetTimestamp(ValueIndex: Integer; AValue: TDateTime);
 begin
   if ValueIndex < 0 then
     Exit;
-  if ValueIndex >= Length(FTimestamp) then
-    SetLength(FTimestamp, ValueIndex + 1);
-  FTimestamp[ValueIndex] := AValue;
+  if ValueIndex >= Length(FTimeStamp) then
+    SetLength(FTimeStamp, ValueIndex + 1);
+  FTimeStamp[ValueIndex] := AValue;
 end;
 
 procedure TJvChartData.Scroll;
@@ -709,7 +709,7 @@ begin
       // We Double our allocation unit size
       // until we start to get Really Huge, then grow in chunks!
       //--------------------------------------------------------
-    if (ValueIndex < 640000) then
+    if ValueIndex < 640000 then
       FDataAlloc := (ValueIndex * 2) // Double in size
     else
       FDataAlloc := ValueIndex + 64000;
@@ -846,8 +846,8 @@ end;
 
 procedure TJvChartYAxisOptions.SetYMin(NewYMin: Double);
 begin
-  if (NewYMin = FYMin) then
-    exit;
+  if NewYMin = FYMin then
+    Exit;
 
   FYMin := NewYMin;
 
@@ -855,7 +855,7 @@ begin
     Exit;
   if not Assigned(FOwner.FOwner) then
     Exit;
-  if (csLoading in FOwner.FOwner.ComponentState) then
+  if csLoading in FOwner.FOwner.ComponentState then
     Exit;
 
   // Rework other values around new YMin:
@@ -875,8 +875,8 @@ end;
 
 procedure TJvChartYAxisOptions.SetYMax(NewYMax: Double);
 begin
-  if (NewYMax = FYMax) then
-    exit;
+  if NewYMax = FYMax then
+    Exit;
 
   FYMax := NewYMax;
 
@@ -884,7 +884,7 @@ begin
     Exit;
   if not Assigned(FOwner.FOwner) then
     Exit;
-  if (csLoading in FOwner.FOwner.ComponentState) then
+  if csLoading in FOwner.FOwner.ComponentState then
     Exit;
 
   // Rework other values around new YMax:
@@ -937,7 +937,7 @@ begin
     Exit;
   if not Assigned(FOwner.FOwner) then
     Exit;
-  if (csLoading in FOwner.FOwner.ComponentState) then
+  if csLoading in FOwner.FOwner.ComponentState then
     Exit;
 
   // Rework other values around new YMax:
@@ -1264,7 +1264,7 @@ end;
 
 procedure TJvChartOptions.SetXStartOffset(Offset: Integer);
 begin
-//if (not PrintInSession) then
+//if not PrintInSession then
 //  if (Offset < 10) or (Offset > (FOwner.Width div 2)) then
   //  raise ERangeError.CreateRes(@RsEChartOptionsXStartOffsetValueOutO);
   FXStartOffset := Offset;
@@ -1426,7 +1426,7 @@ begin
 
   DesignStr := ClassName + RsChartDesigntimeLabel;
 
-  if (Options.PrimaryYAxis.YMin >= Options.PrimaryYAxis.YMax) then
+  if Options.PrimaryYAxis.YMin >= Options.PrimaryYAxis.YMax then
   begin
     if Options.PrimaryYAxis.YMax > 0 then
       Options.PrimaryYAxis.YMin := 0.0;
@@ -2134,7 +2134,7 @@ var
         Assert(Y2 < Height);
         if Y2 < 0 then
           Y2 := -1; //clip extreme negatives.
-        if (Y2 >= Y) then
+        if Y2 >= Y then
           Y2 := Y - 1;
         Assert(Y2 < Y);
         Assert(X2 > 0);
@@ -2246,9 +2246,9 @@ var
             ChartCanvas.Pen.Style := Options.PenStyle[I];
             if I > 0 then
             begin
-              for i2 := 0 to I - 1 do
+              for I2 := 0 to I - 1 do
               begin
-                V := GraphConstrainedLineY(i2, J);
+                V := GraphConstrainedLineY(I2, J);
                 if IsNan(V) then
                   Continue;
                 Y1 := Round(V);
@@ -2505,8 +2505,8 @@ var
   //YTempOrigin        : Integer; // (ahuser) conflict with YTempOrigin property?
   myLabel: string;
 
-  timestamp: TDateTime;
-  timestampStr: string;
+  Timestamp: TDateTime;
+  TimestampStr: string;
   XOverlap: Integer;
   VisiblePenCount: Integer;
   YTempOrigin: Integer;
@@ -2524,7 +2524,7 @@ begin
   if Options.XAxisDateTimeMode then
   begin { if DateTime mode then legends are painted where the division markers are painted }
     // if not Options.XAxisDivisionMarkers then Exit;
-    if (Options.XAxisValuesPerDivision <= 0) then
+    if Options.XAxisValuesPerDivision <= 0 then
       Exit;
 
     YTempOrigin := Options.YStartOffset +
@@ -2535,20 +2535,20 @@ begin
     begin
       Options.FXLegendHoriz := Round(Options.XStartOffset + Options.XPixelGap * I * Options.XAxisValuesPerDivision);
 
-      timestamp := FData.Timestamp[I * Options.XAxisValuesPerDivision - 1];
+      Timestamp := FData.Timestamp[I * Options.XAxisValuesPerDivision - 1];
 
       if Length(Options.FXAxisDateTimeFormat) = 0 then // not specified, means use Locale defaults
-        timestampStr := TimeToStr(timestamp)
+        TimestampStr := TimeToStr(Timestamp)
       else
-        timestampStr := FormatDateTime(Options.FXAxisDateTimeFormat, timestamp);
+        TimestampStr := FormatDateTime(Options.FXAxisDateTimeFormat, Timestamp);
 
       // Check if writing this label would collide with previous label, if not, plot it
-      if (Options.FXLegendHoriz - (ChartCanvas.TextWidth(timestampStr) div 2)) > XOverlap then
+      if (Options.FXLegendHoriz - (ChartCanvas.TextWidth(TimestampStr) div 2)) > XOverlap then
       begin
         MyCenterTextOut(Options.FXLegendHoriz,
           {bottom:}FXAxisPosition + Options.AxisLineWidth
           {top: Round(YTempOrigin - Options.PrimaryYAxis.YPixelGap)},
-          timestampStr);
+          TimestampStr);
 
         // draw a ticky-boo (technical term used by scientists the world over)
         // so that we can see where on the chart the X axis datetime is pointing to.
@@ -2556,7 +2556,7 @@ begin
         ChartCanvas.MoveTo(Options.FXLegendHoriz, FXAxisPosition);
         ChartCanvas.LineTo(Options.FXLegendHoriz, FXAxisPosition + Options.AxisLineWidth + 2);
 
-        XOverlap := Options.FXLegendHoriz + ChartCanvas.TextWidth(timestampStr);
+        XOverlap := Options.FXLegendHoriz + ChartCanvas.TextWidth(TimestampStr);
       end;
     end;
   end
@@ -2576,7 +2576,7 @@ begin
       Options.FXLegendHoriz := Round(Options.XStartOffset + Options.XPixelGap * I);
 
       // Don't exceed right margin:
-      if (I < Options.XLegends.Count) then
+      if I < Options.XLegends.Count then
         if ChartCanvas.TextWidth(Options.XLegends[I]) + Options.FXLegendHoriz > Options.XEnd then
           Break;
 

@@ -476,7 +476,7 @@ begin
       N.ImageIndex := ImageIndex;
       N.SelectedIndex := SelectedIndex;
       if Recurse then
-        ResetSiblingFolders(N.getFirstCHild, ImageINdex, SelectedIndex, Recurse);
+        ResetSiblingFolders(N.getFirstChild, ImageIndex, SelectedIndex, Recurse);
     end;
     N := N.getPrevSibling;
   end;
@@ -488,7 +488,7 @@ begin
       N.ImageIndex := ImageIndex;
       N.SelectedIndex := SelectedIndex;
       if Recurse then
-        ResetSiblingFolders(N.getFirstChild, ImageINdex, SelectedIndex, Recurse);
+        ResetSiblingFolders(N.getFirstChild, ImageIndex, SelectedIndex, Recurse);
     end;
     N := N.getNextSibling;
   end;
@@ -516,11 +516,11 @@ end;
 
 function TJvCustomPageListTreeView.CanChange(Node: TTreeNode): Boolean;
 begin
-	{$IFDEF VCL}
+  {$IFDEF VCL}
   Result := inherited CanChange(Node);
   {$ENDIF VCL}
-	{$IFDEF VisualCLX}
-  Result := true;
+  {$IFDEF VisualCLX}
+  Result := True;
   {$ENDIF VisualCLX}
   if Result and Assigned(Node) and Assigned(FPageList) then
     Result := FPageList.CanChange(TJvPageIndexNode(Node).PageIndex);
@@ -584,7 +584,7 @@ begin
     begin
       if TJvPageIndexNode(N).PageIndex = FPageDefault then
         TJvPageIndexNode(N).PageIndex := Value;
-      N := N.getNext;
+      N := N.GetNext;
     end;
     FPageDefault := Value;
   end;
@@ -724,7 +724,6 @@ begin
     end;
   end;
 end;
-
 
 //=== { TJvSettingsTreeImages } ==============================================
 

@@ -440,7 +440,7 @@ type
 
     FOnGetClientAlignSize: TJvDockGetClientAlignSizeEvent;
     FOnFinishSetDockPanelSize: TJvDockFinishSetDockPanelSizeEvent;
-    FAutoFocusDockedForm: boolean;
+    FAutoFocusDockedForm: Boolean;
 
     procedure CreateDockPanelAndSplitter;
 
@@ -500,7 +500,7 @@ type
     property TopSplitterStyle: TJvDockSplitterStyle read FTopSplitterStyle write SetTopSplitterStyle;
     property RightSplitterStyle: TJvDockSplitterStyle read FRightSplitterStyle write SetRightSplitterStyle;
     property BottomSplitterStyle: TJvDockSplitterStyle read FBottomSplitterStyle write SetBottomSplitterStyle;
-    property AutoFocusDockedForm: boolean read FAutoFocusDockedForm write FAutoFocusDockedForm default True;
+    property AutoFocusDockedForm: Boolean read FAutoFocusDockedForm write FAutoFocusDockedForm default True;
 
     property OnGetClientAlignSize: TJvDockGetClientAlignSizeEvent
       read FOnGetClientAlignSize write FOnGetClientAlignSize;
@@ -1522,7 +1522,7 @@ var
   MemFile: TMemIniFile;
 begin
   HideAllPopupPanel(nil);
-  MemFile := TMemIniFile.Create(Filename);
+  MemFile := TMemIniFile.Create(FileName);
   try
     JvDockInfoTree := TJvDockInfoTree.Create(TJvDockInfoZone);
     try
@@ -2929,7 +2929,7 @@ begin
       WM_NCRBUTTONDBLCLK:
         WMNCRButtonDblClk(TWMNCHitMessage(Msg));
       WM_NCMOUSEMOVE:
-        WMNCMOUSEMOVE(TWMNCHitMessage(Msg));
+        WMNCMouseMove(TWMNCHitMessage(Msg));
       WM_SIZE:
         WMSize(TWMSize(Msg));
       WM_ACTIVATE:
@@ -3220,7 +3220,7 @@ function TJvDockClient.FormUnDock(NewTarget: TWinControl;
   Client: TControl): Boolean;
 begin
   if Assigned(DockStyle) then
-    Result := DockStyle.FormUnDock(Self, Newtarget, Client)
+    Result := DockStyle.FormUnDock(Self, NewTarget, Client)
   else
     Result := False;
 end;
@@ -3334,7 +3334,7 @@ begin
   DoNCButtonUp(Msg, mbRight, msFloat);
 end;
 
-procedure TJvDockClient.WMNCMOUSEMOVE(var Msg: TWMNCHitMessage);
+procedure TJvDockClient.WMNCMouseMove(var Msg: TWMNCHitMessage);
 begin
   DoNCMouseMove(Msg, msFloat);
 end;

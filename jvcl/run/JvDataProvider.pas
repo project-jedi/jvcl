@@ -407,7 +407,7 @@ type
     function GetSelectedIndex: Integer; override;
     procedure SetSelectedIndex(Value: Integer); override;
   published
-    property Alignment: TAlignment read getAlignment write SetAlignment default taLeftJustify;
+    property Alignment: TAlignment read GetAlignment write SetAlignment default taLeftJustify;
     property ImageIndex: Integer read GetImageIndex write SetImageIndex default 0;
     property SelectedIndex: Integer read GetSelectedIndex write SetSelectedIndex default 0;
   end;
@@ -2398,10 +2398,10 @@ begin
   SavePropPath := THackWriter(Writer).PropPath;
   THackWriter(Writer).PropPath := '';
   try
-    for I := 0 to getCount - 1 do
+    for I := 0 to GetCount - 1 do
     begin
-      if IsStreamableItem(getItem(I)) then
-        WriteItem(Writer, getItem(I));
+      if IsStreamableItem(GetItem(I)) then
+        WriteItem(Writer, GetItem(I));
     end;
     Writer.WriteListEnd;
   finally
@@ -4403,7 +4403,7 @@ end;
 
 function TJvDataConsumerContext.GetContextID: TJvDataContextID;
 begin
-  Result := COnsumerImpl.Context;
+  Result := ConsumerImpl.Context;
 end;
 
 procedure TJvDataConsumerContext.SetContextID(Value: TJvDataContextID);
@@ -4946,7 +4946,7 @@ var
   PrevIsParent: Boolean;
 begin
   DeleteItems(Index);
-  PrevIsParent := (Index > 0) and (ItemLevel(Index - 1) = (Itemlevel(Index) - 1));
+  PrevIsParent := (Index > 0) and (ItemLevel(Index - 1) = (ItemLevel(Index) - 1));
   FViewItems[Index].ItemID := '';
   if Index < High(FViewItems) then
     Move(FViewItems[Index + 1], FViewItems[Index], (Length(FViewItems) - Index) * SizeOf(FViewItems[0]));

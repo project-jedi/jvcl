@@ -367,7 +367,7 @@ var
   {$IFDEF VCL}
   Msg: TMsg;
   {$ENDIF VCL}
-  Handled: boolean;
+  Handled: Boolean;
 begin
   Result := (Button = mbLeft) and (DropDownMenu <> nil);
   if Result then
@@ -394,7 +394,7 @@ begin
     {$IFDEF VisualCLX}
     repeat
       Application.ProcessMessages;
-    until not QWidget_isVisible(DropDownMenu.handle);
+    until not QWidget_isVisible(DropDownMenu.Handle);
     {$ENDIF VisualCLX}
     { release button }
     MouseUp(Button, Shift, X, Y);

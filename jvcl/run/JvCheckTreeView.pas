@@ -62,7 +62,7 @@ type
     //             of the treeview since this is overriden by the MS implementation
     // cbsJVCL  - use the custom JVCL style. With this option you can display any type of images
     //            by setting up your own StateImages ImageList and change the index properties below
-    //            (see CheckBoxUnCheckedIndex etc)
+    //            (see CheckBoxUncheckedIndex etc)
     property Style: TJvTVCheckBoxStyle read FStyle write SetStyle;
     // CascadeLevels controls how many levels down a check or uncheck of a checkbox is propagated
     // If CascadeLevels is -1, checks and unchecks are cascaded to all children recursively regardless of depth.
@@ -83,7 +83,7 @@ type
     // Use the properties below in combination with an imagelist assigned to the
     // Treeviews StateImages property to control what images are displayed for the various checkbox and radioitems states
     // The actual images used are of no significance. Rather, it is the index of the property that controls what happens when a node is
-    // checked or unchecked: if the node has its StateIndex set to CheckBoxUnCheckedIndex or CheckBoxCheckedIndex, it will be treated as
+    // checked or unchecked: if the node has its StateIndex set to CheckBoxUncheckedIndex or CheckBoxCheckedIndex, it will be treated as
     // a checkbox, if the node has its StateIndex set to RadioUncheckedIndex or RadioCheckedIndex, it will be treated as a radioitem
     // Checkboxes are toggled on and off, possibly with propagation
     // RadioItems are only toggled on when "checked" and there is no propagation but all other radioitems on the same level will
@@ -92,8 +92,8 @@ type
     // NB! the first used index in a StateImages imagelist is 1, not 0! The 0'th item is ignored by the underlying treeview, so
     // you will have to assign a dummy image as the first to make the imagelist work for you
 
-    // CheckBoxUnCheckedIndex is the index for the image in StateImages used for the unchecked checkbox state
-    property CheckBoxUnCheckedIndex: Integer index 0 read GetImageIndex write SetImageIndex default 1;
+    // CheckBoxUncheckedIndex is the index for the image in StateImages used for the unchecked checkbox state
+    property CheckBoxUncheckedIndex: Integer index 0 read GetImageIndex write SetImageIndex default 1;
     // CheckBoxCheckedIndex is the index for the image in StateImages used for the checked checkbox state
     property CheckBoxCheckedIndex: Integer index 1 read GetImageIndex write SetImageIndex default 2;
     // RadioUncheckedIndex is the index for the image in StateImages used for the unchecked radioitem state
@@ -157,17 +157,17 @@ begin
     if Node.StateIndex = AChecked then
       Node.StateIndex := AUnChecked
     else
-    if Node.StateIndex = ARadioUnChecked then
+    if Node.StateIndex = ARadioUnchecked then
     begin
       Tmp := Node.Parent;
       if not Assigned(Tmp) then
-        Tmp := TTreeView(Node.TreeView).Items.getFirstNode
+        Tmp := TTreeView(Node.TreeView).Items.GetFirstNode
       else
         Tmp := Tmp.getFirstChild;
       while Assigned(Tmp) do
       begin
-        if Tmp.StateIndex in [ARadioUnChecked, ARadioChecked] then
-          Tmp.StateIndex := ARadioUnChecked;
+        if Tmp.StateIndex in [ARadioUnchecked, ARadioChecked] then
+          Tmp.StateIndex := ARadioUnchecked;
         Tmp := Tmp.getNextSibling;
       end;
       Node.StateIndex := ARadioChecked;
@@ -195,7 +195,7 @@ begin
     Style := TJvTreeViewCheckBoxOptions(Source).Style;
     CascadeLevels := TJvTreeViewCheckBoxOptions(Source).CascadeLevels;
     CascadeOptions := TJvTreeViewCheckBoxOptions(Source).CascadeOptions;
-    CheckBoxUnCheckedIndex := TJvTreeViewCheckBoxOptions(Source).CheckBoxUnCheckedIndex;
+    CheckBoxUncheckedIndex := TJvTreeViewCheckBoxOptions(Source).CheckBoxUncheckedIndex;
     CheckBoxCheckedIndex := TJvTreeViewCheckBoxOptions(Source).CheckBoxCheckedIndex;
     RadioUncheckedIndex := TJvTreeViewCheckBoxOptions(Source).RadioUncheckedIndex;
     RadioCheckedIndex := TJvTreeViewCheckBoxOptions(Source).RadioCheckedIndex;
@@ -308,7 +308,7 @@ end;
 function TJvCheckTreeView.GetRadioItem(Node: TTreeNode): Boolean;
 begin
   with CheckBoxOptions do
-    Result := (Node <> nil) and (Node.StateIndex in [RadioCheckedIndex, RadioUnCheckedIndex]);
+    Result := (Node <> nil) and (Node.StateIndex in [RadioCheckedIndex, RadioUncheckedIndex]);
 end;
 
 procedure TJvCheckTreeView.KeyDown(var Key: Word; Shift: TShiftState);
@@ -328,7 +328,7 @@ begin
         if Checked[Node] then
           Node.StateIndex := CheckBoxCheckedIndex
         else
-          Node.StateIndex := CheckBoxUnCheckedIndex;
+          Node.StateIndex := CheckBoxUncheckedIndex;
       end
       else
         Node.StateIndex := 0;
@@ -379,7 +379,7 @@ begin
       if Value then
       begin
         B := Checked[Node];
-        Node.StateIndex := RadioUnCheckedIndex;
+        Node.StateIndex := RadioUncheckedIndex;
         // make sure to toggle the others on or off
         if B then
           ToggleNode(Node);
@@ -395,7 +395,7 @@ begin
   begin
     with CheckBoxOptions do
       ToggleTreeViewCheckBoxes(Node,
-        CheckBoxUnCheckedIndex, CheckBoxCheckedIndex, RadioUnCheckedIndex, RadioCheckedIndex);
+        CheckBoxUncheckedIndex, CheckBoxCheckedIndex, RadioUncheckedIndex, RadioCheckedIndex);
     DoToggled(Node);
   end;
 end;
