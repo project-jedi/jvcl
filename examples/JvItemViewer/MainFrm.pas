@@ -98,6 +98,8 @@ type
       TextRect: TRect);
     procedure DoITV3Click(Sender: TObject);
     procedure ViewItem(Item: TJvImageItem; LoadFromFile: Boolean);
+    procedure DoITV3ItemHint(Sender: TObject; Index: Integer;
+    var HintInfo: THintInfo; var Handled: Boolean);
   public
     ITV: TJvImagesViewer;
     ITV2: TJvImageListViewer;
@@ -232,6 +234,8 @@ begin
   ITV3.Align := alClient;
   ITV3.OnDrawItem := DoITV3DrawItem;
   ITV3.OnClick := DoITV3Click;
+  ITV3.OnItemHint := DoITV3ItemHint;
+  ITV3.ShowHint := true;
 
 //  ITV3.Count := tbThumbSize.Position;
   ITV3.Parent := tabODViewer;
@@ -506,6 +510,17 @@ begin
   ITV.SelectAll;
 end;
 
+
+procedure TfrmMain.DoITV3ItemHint(Sender: TObject; Index: Integer;
+  var HintInfo: THintInfo; var Handled: Boolean);
+var
+  AColor: TColor;
+begin
+  AColor := TColor(ITV3.Items[Index].Data);
+  HintInfo.HintColor := AColor;
+  HintInfo.HintStr := ColorToString(AColor);
+  Handled := true;
+end;
 
 end.
 

@@ -67,7 +67,6 @@ object frmMain: TfrmMain
       Height = 24
       AutoSize = False
       DialogKind = dkWin32
-      ButtonFlat = False
       Anchors = [akLeft, akTop, akRight]
       TabOrder = 0
       OnChange = edDirectoryChange
@@ -114,6 +113,7 @@ object frmMain: TfrmMain
     Height = 381
     ActivePage = tabIFViewer
     Align = alClient
+    TabIndex = 0
     TabOrder = 2
     OnChange = pgViewersChange
     object tabIFViewer: TTabSheet
