@@ -90,7 +90,7 @@ type
   protected
     procedure SetPopupMenu(const Value: TPopupMenu);
   public
-    constructor CreateEnh(AOwner: TListItems);
+    constructor CreateEnh(AOwner: TListItems; Dummy: Integer = 0);
     property PopupMenu: TPopupMenu read FPopupMenu write SetPopupMenu;
   end;
 
@@ -176,7 +176,7 @@ const
   // (rom) increased from 100
   cColumnsHandled = 1024;
 
-constructor TJvListItem.CreateEnh(AOwner: TListItems);
+constructor TJvListItem.CreateEnh(AOwner: TListItems; Dummy: Integer = 0);
 begin
   inherited Create(AOwner);
   FBold := False;
