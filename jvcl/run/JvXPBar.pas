@@ -87,7 +87,8 @@ type
 
 { TJvXPBarOnCollapsedChangeEvent }
 
-  TJvXPBarOnCollapsedChangeEvent = procedure(Sender: TObject) of object;
+  TJvXPBarOnCollapsedChangeEvent = procedure(Sender: TObject;
+    Collapsing: Boolean) of object;
 
 { TJvXPBarOnDrawItemEvent }
 
@@ -1379,7 +1380,8 @@ begin
   if csDesigning in FWinXPBar.ComponentState then
     TCustomForm(FWinXPBar.Owner).Designer.Modified
   else
-    PostMessage(FWinXPBar.Handle, WM_XPBARAFTERCOLLAPSE, 0, 0);
+    PostMessage(FWinXPBar.Handle, WM_XPBARAFTERCOLLAPSE,
+      Integer(FRollDirection=rdCollapse), 0);
 end;
 
 { TJvXPCustomWinXPBar }
@@ -1754,10 +1756,10 @@ begin
     if not (csLoading in ComponentState) then
     begin
       if Assigned(FBeforeCollapsedChange) then
-        FBeforeCollapsedChange(Self);
+        FBeforeCollapsedChange(Self, Value);
       FFadeThread := TJvXPFadeThread.Create(Self, TJvXPBarRollDirection(Value));
       if Assigned(FOnCollapsedChange) then
-        FOnCollapsedChange(Self);
+        FOnCollapsedChange(Self, Value);
     end
     else
     begin
@@ -2152,7 +2154,7 @@ end;
 procedure TJvXPCustomWinXPBar.WMAfterXPBarCollapse(var Msg: TMessage);
 begin
   if Assigned(FAfterCollapsedChange) then
-    FAfterCollapsedChange(Self);
+    FAfterCollapsedChange(Self, Boolean(Msg.WParam));
 end;
 
 end.
