@@ -948,7 +948,7 @@ var
   Lines: TStrings;
   i, depI: Integer;
   Pkg: TPackageTarget;
-  Dependencies, S, PasFile, ObjFile, FilenameOnly: string;
+  Dependencies, S, PasFile, DcuFile, ObjFile, FilenameOnly: string;
   DeleteFiles: Boolean;
   BplFilename, MapFilename: string;
   PasFileSearchDirs: string;
@@ -1124,6 +1124,14 @@ begin
                       Lines.Add(#9'-@del "' + ObjFile + '" >NUL')
                     else
                       Lines.Add(#9'-@del /f /q "' + ObjFile + '" 2>NUL');
+                  end;
+                  DcuFile := ProjectGroup.TargetConfig.UnitOutDir + '\obj\' + ChangeFileExt(FilenameOnly, '.dcu');
+                  if FileExists(DcuFile) then
+                  begin
+                    if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
+                      Lines.Add(#9'-@del "' + DcuFile + '" >NUL')
+                    else
+                      Lines.Add(#9'-@del /f /q "' + DcuFile + '" 2>NUL');
                   end;
                 end;
               end;
