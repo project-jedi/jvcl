@@ -58,15 +58,15 @@ type
   private
     FAboutJVCL: TJVCLAboutInfo;
   {$IFDEF VCL}
-    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMColorChanged(var Message: TMessage); message CM_COLORCHANGED;
+    procedure CMColorChanged(var Msg: TMessage); message CM_COLORCHANGED;
   protected
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
     procedure ColorChanged; dynamic;
-
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
   {$ENDIF VCL}
@@ -98,26 +98,30 @@ type
   TJvCustomControl = class(TCustomControl)
   private
     FAboutJVCL: TJVCLAboutInfo;
-  {$IFDEF VCL}
-    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+    {$IFDEF VCL}
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMColorChanged(var Message: TMessage); message CM_COLORCHANGED;
+    procedure CMColorChanged(var Msg: TMessage); message CM_COLORCHANGED;
+    {$ENDIF VCL}
+    {$IFDEF JVCLThemesEnabledD56}
+    function GetParentBackground: Boolean;
+    {$ENDIF JVCLThemesEnabledD56}
   protected
+    {$IFDEF VCL}
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
     procedure ColorChanged; dynamic;
-
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  {$ENDIF VCL}
-  {$IFDEF JVCLThemesEnabledD56}
-  private
-    function GetParentBackground: Boolean;
-  protected
+    {$ENDIF VCL}
+    {$IFDEF JVCLThemesEnabledD56}
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
-  {$ENDIF JVCLThemesEnabledD56}
+    {$ENDIF JVCLThemesEnabledD56}
+    {$IFDEF VCL}
+    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
+    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    {$ENDIF VCL}
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
@@ -125,26 +129,30 @@ type
   TJvWinControl = class(TWinControl)
   private
     FAboutJVCL: TJVCLAboutInfo;
-  {$IFDEF VCL}
-    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+    {$IFDEF VCL}
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMColorChanged(var Message: TMessage); message CM_COLORCHANGED;
+    procedure CMColorChanged(var Msg: TMessage); message CM_COLORCHANGED;
+    {$ENDIF VCL}
+    {$IFDEF JVCLThemesEnabledD56}
+    function GetParentBackground: Boolean;
+    {$ENDIF JVCLThemesEnabledD56}
   protected
+    {$IFDEF VCL}
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
     procedure ColorChanged; dynamic;
-
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  {$ENDIF VCL}
-  {$IFDEF JVCLThemesEnabledD56}
-  private
-    function GetParentBackground: Boolean;
-  protected
+    {$ENDIF VCL}
+    {$IFDEF JVCLThemesEnabledD56}
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
-  {$ENDIF JVCLThemesEnabledD56}
+    {$ENDIF JVCLThemesEnabledD56}
+    {$IFDEF VCL}
+    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
+    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    {$ENDIF VCL}
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
@@ -169,10 +177,12 @@ type
 
 implementation
 
-{$IFDEF JVCLThemesEnabledD56}
-
 uses
   JvThemes;
+
+//=== TJvCustomPanel =========================================================
+
+{$IFDEF JVCLThemesEnabledD56}
 
 function TJvCustomPanel.GetParentBackground: Boolean;
 begin
@@ -184,6 +194,12 @@ begin
   JvThemes.SetParentBackground(Self, Value);
 end;
 
+{$ENDIF JVCLThemesEnabledD56}
+
+//=== TJvCustomControl =======================================================
+
+{$IFDEF JVCLThemesEnabledD56}
+
 function TJvCustomControl.GetParentBackground: Boolean;
 begin
   Result := JvThemes.GetParentBackground(Self);
@@ -194,77 +210,9 @@ begin
   JvThemes.SetParentBackground(Self, Value);
 end;
 
-function TJvWinControl.GetParentBackground: Boolean;
-begin
-  Result := JvThemes.GetParentBackground(Self);
-end;
-
-procedure TJvWinControl.SetParentBackground(Value: Boolean);
-begin
-  JvThemes.SetParentBackground(Self, Value);
-end;
-
-function TJvForm.GetParentBackground: Boolean;
-begin
-  Result := JvThemes.GetParentBackground(Self);
-end;
-
-procedure TJvForm.SetParentBackground(Value: Boolean);
-begin
-  JvThemes.SetParentBackground(Self, Value);
-end;
-
 {$ENDIF JVCLThemesEnabledD56}
 
-{$IFDEF USE_DXGETTEXT}
-constructor TJvForm.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  TranslateComponent(Self);
-end;
-{$ENDIF USE_DXGETTEXT}
-
-
 {$IFDEF VCL}
-
-{ TJvGraphicControl }
-
-procedure TJvGraphicControl.CMMouseEnter(var Msg: TMessage);
-begin
-  inherited;
-  MouseEnter(Self);
-end;
-
-procedure TJvGraphicControl.CMMouseLeave(var Msg: TMessage);
-begin
-  inherited;
-  MouseLeave(Self);
-end;
-
-procedure TJvGraphicControl.CMColorChanged(var Message: TMessage);
-begin
-  inherited;
-  ColorChanged;
-end;
-
-procedure TJvGraphicControl.MouseEnter(Control: TControl);
-begin
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
-end;
-
-procedure TJvGraphicControl.MouseLeave(Control: TControl);
-begin
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
-end;
-
-procedure TJvGraphicControl.ColorChanged;
-begin
-  // do nothing
-end;
-
-{ TJvCustomControl }
 
 procedure TJvCustomControl.CMMouseEnter(var Msg: TMessage);
 begin
@@ -280,7 +228,7 @@ begin
     MouseLeave(Self);
 end;
 
-procedure TJvCustomControl.CMColorChanged(var Message: TMessage);
+procedure TJvCustomControl.CMColorChanged(var Msg: TMessage);
 begin
   inherited;
   ColorChanged;
@@ -303,7 +251,25 @@ begin
   // do nothing
 end;
 
-{ TJvWinControl }
+{$ENDIF VCL}
+
+//=== TJvWinControl ==========================================================
+
+{$IFDEF JVCLThemesEnabledD56}
+
+function TJvWinControl.GetParentBackground: Boolean;
+begin
+  Result := JvThemes.GetParentBackground(Self);
+end;
+
+procedure TJvWinControl.SetParentBackground(Value: Boolean);
+begin
+  JvThemes.SetParentBackground(Self, Value);
+end;
+
+{$ENDIF JVCLThemesEnabledD56}
+
+{$IFDEF VCL}
 
 procedure TJvWinControl.CMMouseEnter(var Msg: TMessage);
 begin
@@ -317,7 +283,7 @@ begin
   MouseLeave(Self);
 end;
 
-procedure TJvWinControl.CMColorChanged(var Message: TMessage);
+procedure TJvWinControl.CMColorChanged(var Msg: TMessage);
 begin
   inherited;
   ColorChanged;
@@ -336,6 +302,72 @@ begin
 end;
 
 procedure TJvWinControl.ColorChanged;
+begin
+  // do nothing
+end;
+
+{$ENDIF VCL}
+
+//=== TJvForm ================================================================
+
+{$IFDEF JVCLThemesEnabledD56}
+
+function TJvForm.GetParentBackground: Boolean;
+begin
+  Result := JvThemes.GetParentBackground(Self);
+end;
+
+procedure TJvForm.SetParentBackground(Value: Boolean);
+begin
+  JvThemes.SetParentBackground(Self, Value);
+end;
+
+{$ENDIF JVCLThemesEnabledD56}
+
+{$IFDEF USE_DXGETTEXT}
+constructor TJvForm.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  TranslateComponent(Self);
+end;
+{$ENDIF USE_DXGETTEXT}
+
+
+//=== TJvGraphicControl ======================================================
+
+{$IFDEF VCL}
+
+procedure TJvGraphicControl.CMMouseEnter(var Msg: TMessage);
+begin
+  inherited;
+  MouseEnter(Self);
+end;
+
+procedure TJvGraphicControl.CMMouseLeave(var Msg: TMessage);
+begin
+  inherited;
+  MouseLeave(Self);
+end;
+
+procedure TJvGraphicControl.CMColorChanged(var Msg: TMessage);
+begin
+  inherited;
+  ColorChanged;
+end;
+
+procedure TJvGraphicControl.MouseEnter(Control: TControl);
+begin
+  if Assigned(FOnMouseEnter) then
+    FOnMouseEnter(Self);
+end;
+
+procedure TJvGraphicControl.MouseLeave(Control: TControl);
+begin
+  if Assigned(FOnMouseLeave) then
+    FOnMouseLeave(Self);
+end;
+
+procedure TJvGraphicControl.ColorChanged;
 begin
   // do nothing
 end;

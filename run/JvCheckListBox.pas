@@ -43,7 +43,7 @@ type
   TJvCheckListBox = class(TCheckListBox)
   private
     FAboutJVCL: TJVCLAboutInfo;
-    FEffect: Boolean;
+    FHotTrack: Boolean;
     FOnMouseEnter: TNotifyEvent;
     FColor: TColor;
     FSaved: TColor;
@@ -58,7 +58,7 @@ type
     FItemSearchs: TJvItemsSearchs;
     procedure SetHScroll(const Value: Boolean);
     procedure RefreshH;
-    procedure SetEffect(const Value: Boolean);
+    procedure SetHotTrack(const Value: Boolean);
   protected
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
@@ -94,7 +94,7 @@ type
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property MultiSelect;
-    property HotTrack: Boolean read FEffect write SetEffect default False;
+    property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
     property HorScrollbar: Boolean read FScroll write SetHScroll default True;
     property HintColor: TColor read FColor write FColor default clInfoBk;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
@@ -118,7 +118,7 @@ constructor TJvCheckListBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FMaxWidth := 0;
-  FEffect := False;
+  FHotTrack := False;
   FColor := clInfoBk;
   FOver := False;
   FScroll := True;
@@ -218,7 +218,7 @@ begin
     if csDesigning in ComponentState then
       Exit;
     Application.HintColor := FColor;
-    if FEffect then
+    if HotTrack then
       Ctl3D := True;
     FOver := True;
   end;
@@ -259,7 +259,7 @@ begin
   if FOver then
   begin
     Application.HintColor := FSaved;
-    if FEffect then
+    if HotTrack then
       Ctl3D := False;
     FOver := False;
   end;
@@ -273,10 +273,10 @@ begin
   Result := FItemSearchs.SearchExactString(Items, Value, CaseSensitive);
 end;
 
-procedure TJvCheckListBox.SetEffect(const Value: Boolean);
+procedure TJvCheckListBox.SetHotTrack(const Value: Boolean);
 begin
-  FEffect := Value;
-  if FEffect then
+  FHotTrack := Value;
+  if FHotTrack then
     Ctl3D := False;
 end;
 
