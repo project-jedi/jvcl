@@ -41692,6 +41692,7 @@ function yygoto(state, sym : Integer; var nstate : Integer) : Boolean;
 label parse, next, error, errlab, shift, reduce, accept, abort;
 
 begin(*yyparse*)
+  yylval := nil;
 
   (* initialize: *)
 
