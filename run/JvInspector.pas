@@ -170,7 +170,7 @@ uses
   {$IFDEF VisualCLX}
   Qt, QTypes, JvQExExtCtrls,
   {$ENDIF VisualCLX}
-  JvComponent, JvTypes, JvExControls, JvFinalize;
+  JvJVCLUtils, JvComponent, JvTypes, JvExControls, JvFinalize;
 
 const
   { Inspector Row Size constants }
@@ -354,6 +354,8 @@ type
     FUseBands: Boolean;
     FVisibleList: TStringList;
     FWantTabs: Boolean;
+    FAutoComplete: Boolean;
+    FAutoDropDown: Boolean; // depends on AutoComplete
     {$IFDEF VisualCLX}
     FHorzScrollBar: TScrollBar;
     FVertScrollBar: TScrollBar;
@@ -474,6 +476,8 @@ type
       {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean; override;
     procedure ShowScrollBars(Bar: Integer; Visible: Boolean); virtual;
     function YToIdx(const Y: Integer): Integer; virtual;
+    property AutoComplete: Boolean read FAutoComplete write FAutoComplete;
+    property AutoDropDown: Boolean read FAutoDropDown write FAutoDropDown;
     property BandSizing: Boolean read FBandSizing write FBandSizing;
     property BandSizingBand: Integer read FBandSizingBand write FBandSizingBand;
     property BandStarts: TList read GetBandStarts;
@@ -493,12 +497,9 @@ type
     property OnDataValueChanged: TInspectorDataEvent read FOnDataValueChanged write FOnDataValueChanged;
     property OnItemSelected: TNotifyEvent read GetOnItemSelected write SetOnItemSelected;
     property OnItemValueChanged: TInspectorItemEvent read FOnItemValueChanged write FOnItemValueChanged;
-    property AfterDataCreate: TInspectorDataEvent read GetAfterDataCreate
-      write SetAfterDataCreate;
-    property AfterItemCreate: TInspectorItemEvent read GetAfterItemCreate
-      write SetAfterItemCreate;
-    property BeforeItemCreate: TInspectorItemBeforeCreateEvent
-      read GetBeforeItemCreate write SetBeforeItemCreate;
+    property AfterDataCreate: TInspectorDataEvent read GetAfterDataCreate write SetAfterDataCreate;
+    property AfterItemCreate: TInspectorItemEvent read GetAfterItemCreate write SetAfterItemCreate;
+    property BeforeItemCreate: TInspectorItemBeforeCreateEvent read GetBeforeItemCreate write SetBeforeItemCreate;
     {$IFDEF VCL}
     property BevelKind default bkTile;
     {$ENDIF VCL}
@@ -555,25 +556,27 @@ type
   published
     property Align;
     property Anchors;
-    property BandWidth;
+    property AutoComplete default True;
+    property AutoDropDown default False;
+    property BandWidth default 150;
     {$IFDEF VCL}
     property BevelEdges;
     property BevelKind;
     {$ENDIF VCL}
-    property BevelInner;
+    property BevelInner default bvNone;
     property BevelOuter;
     property BevelWidth;
     property CollapseButton;
     // (rom) this is usually handled in an overwritten Loaded
-    property RelativeDivider; // Must be defined before Divider
-    property Divider;
+    property RelativeDivider default False; // Must be defined before Divider
+    property Divider default 75;
     property ExpandButton;
     property Font;
     property ItemHeight;
     property Painter;
-    property ReadOnly;
-    property UseBands;
-    property WantTabs;
+    property ReadOnly default False;
+    property UseBands default False;
+    property WantTabs default False;
     property AfterDataCreate;
     property AfterItemCreate;
     property BeforeItemCreate;
@@ -799,6 +802,7 @@ type
     FEditCtrl: TOpenEdit;
     {$ENDIF VisualCLX}
     FEditing: Boolean;
+    FAutoComplete: TJvEditListBoxAutoComplete;
     FFlags: TInspectorItemFlags;
     FHeight: Integer;
     FInspector: TJvCustomInspector;
@@ -851,7 +855,8 @@ type
     procedure EditChange(Sender: TObject); virtual;
     procedure EditFocusLost(Sender: TObject); dynamic;
     procedure EditKillFocus(Sender: TObject);
-    procedure EditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState); virtual;
+    procedure EditKeyPress(Sender: TObject; var Key: Char); dynamic;
+    procedure EditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState); dynamic;
     procedure EditMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer); virtual;
     procedure EditMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer); virtual;
@@ -860,6 +865,7 @@ type
     {$IFDEF VCL}
     procedure Edit_WndProc(var Msg: TMessage); virtual;
     {$ENDIF VCL}
+    procedure AutoCompleteStart(Sender: TObject); dynamic;
     function GetAutoUpdate: Boolean; virtual;
     function GetBaseCategory: TJvCustomInspectorItem; virtual;
     function GetCategory: TJvCustomInspectorItem; virtual;
@@ -970,6 +976,7 @@ type
     property Tracking: Boolean read FTracking write FTracking;
   public
     constructor Create(const AParent: TJvCustomInspectorItem; const AData: TJvCustomInspectorData); virtual;
+    destructor Destroy; override;
     function Add(const Item: TJvCustomInspectorItem): Integer;
     procedure BeforeDestruction; override;
     procedure Clear;
@@ -2052,6 +2059,9 @@ uses
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
+  {$IFDEF HAS_UNIT_STRUTILS}
+  StrUtils,
+  {$ENDIF HAS_UNIT_STRUTILS}
   {$IFDEF VCL}
   Consts, Dialogs, Forms, Buttons,
   JvWndProcHook,
@@ -2060,7 +2070,7 @@ uses
   QDialogs, QForms, QButtons, QConsts,
   {$ENDIF VisualCLX}
   JclRTTI, JclLogic, JclStrings,
-  JvJCLUtils, JvJVCLUtils, JvThemes, JvResources;
+  JvJCLUtils, JvThemes, JvResources;
 
 const
   sUnitName = 'JvInspector';
@@ -2670,6 +2680,8 @@ begin
   Height := 100;
   Divider := 75;
   BandWidth := 150;
+  AutoComplete := True;
+  AutoDropDown := False;
 
   if not (csDesigning in ComponentState) then
     GlobalInspReg.RegInspector(Self);
@@ -5467,6 +5479,12 @@ begin
   FDropDownCount := 8;
 end;
 
+destructor TJvCustomInspectorItem.Destroy;
+begin
+  FAutoComplete.Free;
+  inherited Destroy;
+end;
+
 procedure TJvCustomInspectorItem.AlphaSort;
 var
   ItemList: TList;
@@ -5866,6 +5884,30 @@ procedure TJvCustomInspectorItem.EditKillFocus(Sender: TObject);
 begin
   if DroppedDown then
     CloseUp(False);
+end;
+
+procedure TJvCustomInspectorItem.AutoCompleteStart(Sender: TObject);
+begin
+  if Inspector.AutoDropDown and not DroppedDown then
+    DropDown
+  else
+  begin
+    ListBox.Items.Clear;
+    GetValueList(ListBox.Items);
+  end;
+end;
+
+procedure TJvCustomInspectorItem.EditKeyPress(Sender: TObject; var Key: Char);
+begin
+  if Inspector.AutoComplete and (iifValueList in Flags) and not ReadOnly then
+  begin
+    if not Assigned(FAutoComplete) then
+    begin
+      FAutoComplete := TJvEditListBoxAutoComplete.Create(EditCtrl, ListBox);
+      FAutoComplete.OnAutoComplete := AutoCompleteStart;
+    end;
+    FAutoComplete.AutoComplete(Key);
+  end;
 end;
 
 procedure TJvCustomInspectorItem.EditKeyDown(Sender: TObject; var Key: Word;
@@ -7286,6 +7328,7 @@ begin
     TCustomEditAccessProtected(EditCtrl).Font.Assign(Inspector.Font);
     EditCtrl.BoundsRect := Rects[iprEditValue];
     TCustomEditAccessProtected(EditCtrl).OnKeyDown := EditKeyDown;
+    TCustomEditAccessProtected(EditCtrl).OnKeyPress := EditKeyPress;
     TCustomEditAccessProtected(EditCtrl).OnMouseDown := EditMouseDown;
     TCustomEditAccessProtected(EditCtrl).OnMouseMove := EditMouseMove;
     TCustomEditAccessProtected(EditCtrl).OnMouseUp := EditMouseUp;

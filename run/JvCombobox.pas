@@ -37,7 +37,7 @@ uses
   {$ELSE}
   CheckLst,
   {$ENDIF USEJVCL}
-  JvDataProvider, JvMaxPixel, JvExStdCtrls, JvToolEdit;
+  JvJVCLUtils, JvDataProvider, JvMaxPixel, JvExStdCtrls, JvToolEdit;
 
 type
   TJvCustomComboBox = class;
@@ -97,8 +97,10 @@ type
   private
     {$IFDEF COMPILER5}
     FAutoComplete: Boolean;
-    FLastTime: Cardinal;      // SPM - Ported backward from Delphi 7
-    FFilter: string;          // SPM - ditto
+    FAutoCompleteCode: TJvComboBoxAutoComplete;
+    FAutoDropDown: Boolean;
+    {FLastTime: Cardinal;      // SPM - Ported backward from Delphi 7
+    FFilter: string;          // SPM - ditto}
     FIsDropping: Boolean;
     FOnSelect: TNotifyEvent;
     FOnCloseUp: TNotifyEvent;
@@ -142,6 +144,9 @@ type
     {$ENDIF COMPILER6_UP}
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     {$IFDEF COMPILER5}
+    procedure DoChange(Sender: TObject);
+    procedure DoDropDown(Sender: TObject);
+    procedure DoValueChange(Sender: TObject);
     procedure KeyPress(var Key: Char); override;  // SPM - Ported backward from D7
     {$ENDIF COMPILER5}
     procedure SetItemHeight(Value: Integer); {$IFDEF COMPILER6_UP} override; {$ENDIF}
@@ -152,7 +157,7 @@ type
     procedure DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState); override;
     procedure MeasureItem(Index: Integer; var Height: Integer); override;
     {$IFDEF COMPILER5}
-    function SelectItem(const AnItem: string): Boolean;  // SPM - Ported from D7
+    //function SelectItem(const AnItem: string): Boolean;  // SPM - Ported from D7
     procedure CloseUp; dynamic;
     procedure Select; dynamic;
     {$ENDIF COMPILER5}
@@ -176,6 +181,7 @@ type
     property OnSelect: TNotifyEvent read FOnSelect write FOnSelect;
     property OnCloseUp: TNotifyEvent read FOnCloseUp write FOnCloseUp;
     property AutoComplete: Boolean read FAutoComplete write FAutoComplete default True;
+    property AutoDropDown: Boolean read FAutoDropDown write FAutoDropDown default False;
     {$ENDIF COMPILER5}
     property MaxPixel: TJvMaxPixel read FMaxPixel write FMaxPixel;
     property ReadOnly: Boolean read FReadOnly write SetReadOnly default False; // ain
@@ -365,8 +371,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  SysUtils, Consts, TypInfo,
-  Buttons,
+  SysUtils, Consts, TypInfo, Buttons,
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
@@ -1152,8 +1157,12 @@ begin
   TJvComboBoxStrings(Items).ComboBox := Self; // link it to the combo box.
   {.$ENDIF COMPILER7_UP}
   {$IFDEF COMPILER5}
-  FAutoComplete := True;
-  FLastTime := 0;           // SPM - Ported backward from Delphi 7
+  FAutoCompleteCode := TJvComboBoxAutoComplete.Create(Self);
+  FAutoCompleteCode.OnAutoComplete := DoDropDown;
+  FAutoCompleteCode.OnChange := DoChange;
+  FAutoCompleteCode.OnValueChange := DoValueChange;
+  {FAutoComplete := True;
+  FLastTime := 0;           // SPM - Ported backward from Delphi 7}
   {$ENDIF COMPILER5}
   FSearching := False;
   FMaxPixel := TJvMaxPixel.Create(Self);
@@ -1591,7 +1600,30 @@ end;
 
 {$IFDEF COMPILER5}
 
-// SPM - Ported backward from Delphi 7 and modified:
+procedure TJvCustomComboBox.DoChange(Sender: TObject);
+begin
+  Change;
+end;
+
+procedure TJvCustomComboBox.DoDropDown(Sender: TObject);
+begin
+  if AutoDropDown and DroppedDown then
+    DroppedDown := False;
+end;
+
+procedure TJvCustomComboBox.DoValueChange(Sender: TObject);
+begin
+  Click;
+  Select;
+end;
+
+procedure TJvCustomComboBox.KeyPress(var Key: Char);
+begin
+  inherited KeyPress(Key);
+  if AutoComplete then
+    FAutoCompleteCode.AutoComplete(Key);
+end;
+{// SPM - Ported backward from Delphi 7 and modified:
 
 procedure TJvCustomComboBox.KeyPress(var Key: Char);
 var
@@ -1683,7 +1715,8 @@ begin
     if SelectItem(SaveText) then
       Key := #0;
   end;
-end;
+end;}
+
 
 {$ENDIF COMPILER5}
 
@@ -1802,14 +1835,14 @@ begin
     Change;
 end;
 
-// SPM - Ported backward from Delphi 7 and modified:
+{// SPM - Ported backward from Delphi 7 and modified:
 
 function TJvCustomComboBox.SelectItem(const AnItem: string): Boolean;
 var
   Idx: Integer;
   ValueChange: Boolean;
 begin
-  if Length(AnItem) = 0 then
+  if AnItem = '' then
   begin
     Result := False;
     ItemIndex := -1;
@@ -1837,7 +1870,7 @@ begin
     Click;
     Select;
   end;
-end;
+end;}
 
 {$ENDIF COMPILER5}
 

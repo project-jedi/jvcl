@@ -108,6 +108,110 @@ function CaptureScreen(WndHandle: Longword): TBitmap; overload;
 {$ENDIF VCL}
 *)
 
+
+type
+  { TControlAutoComplete implements a autocomplete code for a controls it is a
+    abstract base class. After you have created an instance of a derived class
+    you must either assign the AutoCompleteEvent to the OnKeyPress event of the
+    control or you must call the AutoComplete method from in a KeyPress event
+    handler. }
+  TJvControlAutoComplete = class(TObject)
+  private
+    FFilter: string;
+    FLastTime, FMaxFilterTime: Cardinal;
+    FListSearch: Boolean;
+    FActive: Boolean;
+    FOnAutoComplete: TNotifyEvent;
+    FOnChange, FOnValueChange: TNotifyEvent;
+  protected
+    function GetText: TCaption; virtual; abstract;
+    procedure SetText(const Value: TCaption); virtual; abstract;
+    procedure GetEditSel(out StartPos, EndPos: Integer); virtual; abstract;
+    procedure SetEditSel(StartPos, EndPos: Integer); virtual; abstract;
+    procedure SetItemIndex(Index: Integer); virtual; abstract;
+    function GetItemIndex: Integer; virtual; abstract;
+    function FindItemPrefix(IndexStart: Integer; const Prefix: string): Integer; virtual; abstract;
+    function GetItemAt(Index: Integer): string; virtual; abstract;
+    {$IFDEF VCL}
+    function GetEditHandle: HWND; virtual; abstract;
+    {$ENDIF VCL}
+
+    function GetActive: Boolean; virtual;
+    procedure SetFilter(const Value: string);
+  public
+    constructor Create;
+    procedure AutoCompleteEvent(Sender: TObject; var Key: Char);
+    procedure AutoComplete(var Key: Char); virtual;
+
+    property ListSearch: Boolean read FListSearch write FListSearch; // no edit possible
+    property MaxFilterTime: Cardinal read FMaxFilterTime write FMaxFilterTime; // only with ListSearch
+
+    property Active: Boolean read GetActive write FActive;
+    property OnAutoComplete: TNotifyEvent read FOnAutoComplete write FOnAutoComplete;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property OnValueChange: TNotifyEvent read FOnValueChange write FOnValueChange;
+  end;
+
+  { TEditListBoxAutoComplete implements a autocomplete code for a Edit/ListBox
+    pair. After you have created an instance of this class you must either
+    assign the AutoCompleteEvent to the OnKeyPress event of the edit control
+    or you must call the AutoComplete method from in a KeyPress event handler. }
+  TJvEditListBoxAutoComplete = class(TJvControlAutoComplete)
+  private
+    FEditCtrl: TCustomEdit;
+    FListBox: TCustomListBox;
+
+    procedure SetEditCtrl(Value: TCustomEdit);
+  protected
+    function GetText: TCaption; override;
+    procedure SetText(const Value: TCaption); override;
+    procedure GetEditSel(out StartPos, EndPos: Integer); override;
+    procedure SetEditSel(StartPos, EndPos: Integer); override;
+    procedure SetItemIndex(Index: Integer); override;
+    function GetItemIndex: Integer; override;
+    function FindItemPrefix(IndexStart: Integer; const Prefix: string): Integer; override;
+    function GetItemAt(Index: Integer): string; override;
+    {$IFDEF VCL}
+    function GetEditHandle: HWND; override;
+    {$ENDIF VCL}
+
+    function GetActive: Boolean; override;
+  public
+    constructor Create(AEditCtrl: TCustomEdit; AListBox: TCustomListBox);
+
+    property EditCtrl: TCustomEdit read FEditCtrl write SetEditCtrl;
+    property ListBox: TCustomListBox read FListBox write FListBox;
+  end;
+
+  { TEditListBoxAutoComplete implements a autocomplete code for a Edit/ListBox
+    pair. After you have created an instance of this class you must either
+    assign the AutoCompleteEvent to the OnKeyPress event of the edit control
+    or you must call the AutoComplete method from in a KeyPress event handler. }
+  TJvComboBoxAutoComplete = class(TJvControlAutoComplete)
+  private
+    FComboBox: TCustomComboBox;
+
+    procedure SetComboBox(Value: TCustomComboBox);
+  protected
+    function GetText: TCaption; override;
+    procedure SetText(const Value: TCaption); override;
+    procedure GetEditSel(out StartPos, EndPos: Integer); override;
+    procedure SetEditSel(StartPos, EndPos: Integer); override;
+    procedure SetItemIndex(Index: Integer); override;
+    function GetItemIndex: Integer; override;
+    function FindItemPrefix(IndexStart: Integer; const Prefix: string): Integer; override;
+    function GetItemAt(Index: Integer): string; override;
+    {$IFDEF VCL}
+    function GetEditHandle: HWND; override;
+    {$ENDIF VCL}
+
+    function GetActive: Boolean; override;
+  public
+    constructor Create(AComboBox: TCustomComboBox);
+
+    property ComboBox: TCustomComboBox read FComboBox write SetComboBox;
+  end;
+
 {$ENDIF MSWINDOWS}
 
 procedure RGBToHSV(R, G, B: Integer; var H, S, V: Integer);
@@ -757,6 +861,370 @@ destructor TWaitCursor.Destroy;
 begin
   Screen.Cursor := FCursor;
   inherited Destroy;
+end;
+
+// ==== { TJvControlAutoComplete } ===========================================
+
+constructor TJvControlAutoComplete.Create;
+begin
+  inherited Create;
+  FActive := True;
+  FMaxFilterTime := 500;
+end;
+
+function TJvControlAutoComplete.GetActive: Boolean;
+begin
+  Result := FActive;
+end;
+
+procedure TJvControlAutoComplete.SetFilter(const Value: string);
+begin
+  FFilter := Value;
+end;
+
+procedure TJvControlAutoComplete.AutoCompleteEvent(Sender: TObject; var Key: Char);
+begin
+  AutoComplete(Key);
+end;
+
+procedure TJvControlAutoComplete.AutoComplete(var Key: Char);
+
+  function HasSelectedText(var StartPos, EndPos: Integer): Boolean;
+  begin
+    GetEditSel(StartPos, EndPos);
+    Result := EndPos > StartPos;
+  end;
+
+  procedure DeleteSelectedText;
+  var
+    StartPos, EndPos: Integer;
+    OldText: string;
+  begin
+    OldText := GetText;
+    GetEditSel(StartPos, EndPos);
+    Delete(OldText, StartPos + 1, EndPos - StartPos);
+    SetItemIndex(-1);
+    SetText(OldText);
+    SetEditSel(StartPos, StartPos);
+  end;
+
+  function SelectItem(const AnItem: string): Boolean;
+  var
+    Idx: Integer;
+    ValueChange: Boolean;
+  begin
+    if AnItem = '' then
+    begin
+      Result := False;
+      SetItemIndex(-1);
+      if Assigned(FOnChange) then
+        FOnChange(Self);
+      Exit;
+    end;
+    Idx := FindItemPrefix(-1, AnItem);
+    Result := (Idx <> -1);
+    if not Result then
+      Exit;
+    ValueChange := Idx <> GetItemIndex;
+    SetItemIndex(Idx);
+    if ListSearch then
+    begin
+      SetItemIndex(Idx);
+      FFilter := AnItem;
+    end
+    else
+    begin
+      SetText(AnItem + Copy(GetItemAt(Idx), Length(AnItem) + 1, MaxInt));
+      SetEditSel(Length(AnItem), Length(GetText));
+    end;
+    if ValueChange and Assigned(FOnValueChange) then
+      FOnValueChange(Self);
+  end;
+
+var
+  StartPos, EndPos: Integer;
+  SaveText, OldText: TCaption;
+  LastByte: Integer;
+  LT: Int64;
+  {$IFDEF VCL}
+  Msg: TMsg;
+  {$ENDIF VCL}
+begin
+  if not Active then
+    Exit;
+
+  if ListSearch then
+  begin
+    LT := GetTickCount;
+    if FLastTime < LT then
+      LT := $100000000 + LT; // double limit.
+    if LT - FLastTime >= MaxFilterTime then
+      FFilter := '';
+    FLastTime := GetTickCount;
+  end
+  else
+    FFilter := GetText;
+  case Ord(Key) of
+    VK_ESCAPE:
+      Exit;
+    VK_TAB:
+      if Assigned(FOnAutoComplete) then
+        FOnAutoComplete(Self);
+    VK_BACK:
+      begin
+        if HasSelectedText(StartPos, EndPos) then
+          DeleteSelectedText
+        else
+        if not ListSearch and (GetText <> '') then
+        begin
+          SaveText := GetText;
+          LastByte := StartPos;
+          {$IFDEF VCL}
+          while ByteType(SaveText, LastByte) = mbTrailByte do
+            Dec(LastByte);
+          {$ENDIF VCL}
+          OldText := Copy(SaveText, 1, LastByte - 1);
+          SetItemIndex(-1);
+          SetText(OldText + Copy(SaveText, EndPos + 1, MaxInt));
+          SetEditSel(LastByte - 1, LastByte - 1);
+          FFilter := GetText;
+        end
+        else
+        begin
+          while ByteType(FFilter, Length(FFilter)) = mbTrailByte do
+            Delete(FFilter, Length(FFilter), 1);
+          Delete(FFilter, Length(FFilter), 1);
+        end;
+        Key := #0;
+        if Assigned(FOnChange) then
+          FOnChange(Self);
+      end;
+  else
+    if Assigned(FOnAutoComplete) then
+      FOnAutoComplete(Self);
+
+    if HasSelectedText(StartPos, EndPos) then
+      SaveText := Copy(FFilter, 1, StartPos) + Key
+    else
+      SaveText := FFilter + Key;
+
+    {$IFDEF VCL}
+    if Key in LeadBytes then
+    begin
+      if PeekMessage(Msg, GetEditHandle, 0, 0, PM_NOREMOVE) and (Msg.Message = WM_CHAR) then
+      begin
+        if SelectItem(SaveText + Char(Msg.WParam)) then
+        begin
+          PeekMessage(Msg, GetEditHandle, 0, 0, PM_REMOVE);
+          Key := #0;
+        end;
+      end;
+    end
+    else
+    {$ENDIF VCL}
+    if SelectItem(SaveText) then
+      Key := #0;
+  end;
+end;
+
+// ==== { TJvEditListBoxAutoComplete } =======================================
+
+constructor TJvEditListBoxAutoComplete.Create(AEditCtrl: TCustomEdit;
+  AListBox: TCustomListBox);
+begin
+  inherited Create;
+  FEditCtrl := AEditCtrl;
+  FListBox := AListBox;
+end;
+
+procedure TJvEditListBoxAutoComplete.SetEditCtrl(Value: TCustomEdit);
+begin
+  FEditCtrl := Value;
+  if FEditCtrl <> nil then
+    SetFilter(FEditCtrl.Text)
+  else
+    SetFilter('');
+end;
+
+type
+  TCustomEditAccess = class(TCustomEdit);
+
+function TJvEditListBoxAutoComplete.GetText: TCaption;
+begin
+  Result := EditCtrl.Text;
+end;
+
+procedure TJvEditListBoxAutoComplete.SetText(const Value: TCaption);
+begin
+  EditCtrl.Text := Value;
+end;
+
+procedure TJvEditListBoxAutoComplete.GetEditSel(out StartPos, EndPos: Integer);
+{$IFDEF VisualCLX}
+var
+  MarkedText: WideString;
+{$ENDIF VisualCLX}
+begin
+  {$IFDEF VCL}
+  SendMessage(EditCtrl.Handle, EM_GETSEL, Integer(@StartPos), Integer(@EndPos));
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  StartPos := EditCtrl.SelStart;
+  MarkedText := EditCtrl.SelText;
+  if Copy(EditCtrl.Text, StartPos + 1, Length(MarkedText)) = MarkedText then
+    EndPos := StartPos + EditCtrl.SelLength
+  else
+  begin
+    EndPos := StartPos;
+    StartPos := StartPos - EditCtrl.SelLength;
+  end;
+  {$ENDIF VisualCLX}
+end;
+
+procedure TJvEditListBoxAutoComplete.SetEditSel(StartPos, EndPos: Integer);
+begin
+  EditCtrl.SelStart := StartPos;
+  EditCtrl.SelLength := EndPos - StartPos;
+end;
+
+procedure TJvEditListBoxAutoComplete.SetItemIndex(Index: Integer);
+begin
+  ListBox.ItemIndex := Index;
+end;
+
+function TJvEditListBoxAutoComplete.GetItemIndex: Integer;
+begin
+  Result := ListBox.ItemIndex;
+end;
+
+function TJvEditListBoxAutoComplete.FindItemPrefix(IndexStart: Integer; const Prefix: string): Integer;
+begin
+  //Result := SendMessage(ListBox.Handle, LB_FINDSTRING, IndexStart, Integer(PChar(Prefix)));
+  for Result := IndexStart + 1 to ListBox.Items.Count - 1 do
+    if StringStartsWith(ListBox.Items[Result], Prefix) then
+      Exit;
+  for Result := 0 to IndexStart do
+    if StringStartsWith(ListBox.Items[Result], Prefix) then
+      Exit;
+  Result := -1;
+end;
+
+function TJvEditListBoxAutoComplete.GetItemAt(Index: Integer): string;
+begin
+  Result := ListBox.Items[Index];
+end;
+
+{$IFDEF VCL}
+function TJvEditListBoxAutoComplete.GetEditHandle: HWND;
+begin
+  Result := FEditCtrl.Handle;
+end;
+{$ENDIF VCL}
+
+function TJvEditListBoxAutoComplete.GetActive: Boolean;
+begin
+  Result := inherited GetActive and (EditCtrl <> nil) and (ListBox <> nil) and
+            not TCustomEditAccess(EditCtrl).ReadOnly;
+end;
+
+// ==== { TJvComboBoxAutoComplete } ==========================================
+
+constructor TJvComboBoxAutoComplete.Create(AComboBox: TCustomComboBox);
+begin
+  inherited Create;
+  FComboBox := AComboBox;
+end;
+
+type
+  TCustomComboBoxAccess = class(TCustomComboBox);
+
+function TJvComboBoxAutoComplete.GetActive: Boolean;
+begin
+  Result := inherited GetActive and (ComboBox <> nil);
+  if ComboBox <> nil then
+    FListSearch := not (TCustomComboBoxAccess(ComboBox).Style in [csDropDown, csSimple]);
+end;
+
+{$IFDEF VCL}
+function TJvComboBoxAutoComplete.GetEditHandle: HWND;
+begin
+  Result := ComboBox.Handle;
+end;
+{$ENDIF VCL}
+
+procedure TJvComboBoxAutoComplete.GetEditSel(out StartPos, EndPos: Integer);
+{$IFDEF VisualCLX}
+var
+  MarkedText: WideString;
+{$ENDIF VisualCLX}
+begin
+  {$IFDEF VCL}
+  SendMessage(ComboBox.Handle, CB_GETEDITSEL, Integer(@StartPos), Integer(@EndPos));
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  StartPos := ComboBox.SelStart;
+  MarkedText := ComboBox.SelText;
+  if Copy(GetText, StartPos + 1, Length(MarkedText)) = MarkedText then
+    EndPos := StartPos + ComboBox.SelLength
+  else
+  begin
+    EndPos := StartPos;
+    StartPos := StartPos - ComboBox.SelLength;
+  end;
+  {$ENDIF VisualCLX}
+end;
+
+procedure TJvComboBoxAutoComplete.SetEditSel(StartPos, EndPos: Integer);
+begin
+  ComboBox.SelStart := StartPos;
+  ComboBox.SelLength := EndPos - StartPos;
+end;
+
+function TJvComboBoxAutoComplete.FindItemPrefix(IndexStart: Integer;
+  const Prefix: string): Integer;
+begin
+  //Result := SendMessage(ComboBox.Handle, CB_FINDSTRING, IndexStart, Integer(PChar(Prefix)));
+  for Result := IndexStart + 1 to ComboBox.Items.Count - 1 do
+    if StringStartsWith(ComboBox.Items[Result], Prefix) then
+      Exit;
+  for Result := 0 to IndexStart do
+    if StringStartsWith(ComboBox.Items[Result], Prefix) then
+      Exit;
+  Result := -1;
+end;
+
+procedure TJvComboBoxAutoComplete.SetItemIndex(Index: Integer);
+begin
+  ComboBox.ItemIndex := Index;
+end;
+
+function TJvComboBoxAutoComplete.GetItemIndex: Integer;
+begin
+  Result := ComboBox.ItemIndex;
+end;
+
+function TJvComboBoxAutoComplete.GetItemAt(Index: Integer): string;
+begin
+  Result := ComboBox.Items[Index];
+end;
+
+function TJvComboBoxAutoComplete.GetText: TCaption;
+begin
+  Result := TCustomComboBoxAccess(ComboBox).Text;
+end;
+
+procedure TJvComboBoxAutoComplete.SetText(const Value: TCaption);
+begin
+  TCustomComboBoxAccess(ComboBox).Text := Value;
+end;
+
+procedure TJvComboBoxAutoComplete.SetComboBox(Value: TCustomComboBox);
+begin
+  FComboBox := Value;
+  if FComboBox <> nil then
+    SetFilter(TCustomComboBoxAccess(FComboBox).Text)
+  else
+    SetFilter('');
 end;
 
 {$IFDEF VisualCLX}
