@@ -33,7 +33,7 @@ type
     actPrevPackage: TAction;
     actNextPackage: TAction;
     tbtExit: TToolButton;
-    ToolButton4: TToolButton;
+    tbtSep: TToolButton;
     tbtPrevPackage: TToolButton;
     tbtNextPackage: TToolButton;
     mnuGenPackages: TMenuItem;
@@ -60,18 +60,18 @@ type
     ledC6PFlags: TEdit;
     actSaveAll: TAction;
     actAddFiles: TAction;
-    ToolButton1: TToolButton;
+    tbtAddFiles: TToolButton;
     actGenerate: TAction;
     tbtGenerate: TToolButton;
-    jpmGridPopup: TJvPopupMenu;
+    jpmDepPopup: TJvPopupMenu;
     mnuView: TMenuItem;
     actMainToolbar: TAction;
     actLocation: TAction;
     actKnown: TAction;
     mnuMainToolbar: TMenuItem;
     mnuLocationBar: TMenuItem;
-    mnuUp: TMenuItem;
-    mnuDown: TMenuItem;
+    mnuUpD: TMenuItem;
+    mnuDownD: TMenuItem;
     pnlDepAndFiles: TPanel;
     sptDepAndFiles: TSplitter;
     lblName: TLabel;
@@ -86,7 +86,7 @@ type
     N2: TMenuItem;
     mnuAddFiles: TMenuItem;
     N3: TMenuItem;
-    Exit1: TMenuItem;
+    mnuExit: TMenuItem;
     btnAdvancedBCB: TButton;
     pnlParameters: TPanel;
     shHideParameters: TShape;
@@ -95,7 +95,13 @@ type
     lblFormat: TLabel;
     cmbFormat: TComboBox;
     actParameters: TAction;
-    Parameters1: TMenuItem;
+    mnuParameters: TMenuItem;
+    jpmFilesPopup: TJvPopupMenu;
+    actUp: TAction;
+    actDown: TAction;
+    mnuUpF: TMenuItem;
+    mnuDownF: TMenuItem;
+    mnuAddFilesP: TMenuItem;
     procedure actExitExecute(Sender: TObject);
     procedure actNewExecute(Sender: TObject);
     procedure aevEventsHint(Sender: TObject);
@@ -128,8 +134,6 @@ type
     procedure actMainToolbarExecute(Sender: TObject);
     procedure actLocationExecute(Sender: TObject);
     procedure actKnownExecute(Sender: TObject);
-    procedure mnuUpClick(Sender: TObject);
-    procedure mnuDownClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure jlbListMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
@@ -141,6 +145,11 @@ type
     procedure FormShow(Sender: TObject);
     procedure actParametersExecute(Sender: TObject);
     procedure actParametersUpdate(Sender: TObject);
+    procedure actUpExecute(Sender: TObject);
+    procedure actDownExecute(Sender: TObject);
+    procedure actUpUpdate(Sender: TObject);
+    procedure actDownUpdate(Sender: TObject);
+    procedure jdePackagesLocationChange(Sender: TObject);
   private
     { Private declarations }
     Changed : Boolean; // true if current file has changed
@@ -151,6 +160,7 @@ type
 
     procedure LoadPackagesList;
     procedure LoadPackage;
+    procedure ClearAll;
     procedure MoveLine(sg : TStringGrid; direction : Integer);
     function IsOkToChange : Boolean;
   public
@@ -176,17 +186,7 @@ end;
 
 procedure TfrmMain.actNewExecute(Sender: TObject);
 begin
-  // empty everything
-  ledName.Text := '';
-  ledDescription.Text := '';
-  rbtDesign.Checked := False;
-  rbtRuntime.Checked := True;
-  ledC5PFlags.Text := '';
-  ledC6PFlags.Text := '';
-  jsgDependencies.Rows[1].Text := '';
-  jsgDependencies.RowCount := 2;
-  jsgFiles.Rows[1].Text := '';
-  jsgFiles.RowCount := 2;
+  ClearAll;
 end;
 
 procedure TfrmMain.aevEventsHint(Sender: TObject);
@@ -379,11 +379,11 @@ begin
 
   EnumeratePackages(path, jlbList.Items);
   path := StrEnsureSuffix('\', path);
-  if FileExists(path+'Default-D.xml') then
+{  if FileExists(path+'Default-D.xml') then
     jlbList.Items.Add('Default-D');
   if FileExists(path+'Default-R.xml') then
-    jlbList.Items.Add('Default-R');
-  jlbList.ItemIndex := 2;
+    jlbList.Items.Add('Default-R'}
+  jlbList.ItemIndex := 0;
   LoadPackage;
 end;
 
@@ -495,6 +495,11 @@ var
   filesNode : TJvSimpleXmlElem;
   fileNode : TJvSimpleXmlElem;
 begin
+  ClearAll;
+  
+  if jlbList.ItemIndex < 0 then
+    Exit;
+
   if PathIsAbsolute(jdePackagesLocation.Text) then
     xmlFileName := jdePackagesLocation.Text
   else
@@ -669,43 +674,6 @@ begin
   frmKnownTags.ShowModal;
 end;
 
-procedure TfrmMain.MoveLine(sg : TStringGrid; direction : Integer);
-var
-  tmpRow : TStrings;
-  RowIndex : Integer;
-begin
-  RowIndex := sg.Row;
-  if not ((RowIndex + direction = 0) or
-          (RowIndex + direction = sg.RowCount - 1)) then
-  begin
-    tmpRow := TStringList.Create;
-    try
-      tmpRow.Assign(sg.Rows[RowIndex]);
-      sg.Rows[RowIndex] := sg.Rows[RowIndex + direction];
-      sg.Rows[RowIndex + direction] := tmpRow;
-      Changed := True;
-    finally
-      tmpRow.Free;
-    end;
-  end;
-end;
-
-procedure TfrmMain.mnuUpClick(Sender: TObject);
-begin
-  if ActiveControl is TInPlaceEdit then
-  begin
-    MoveLine((ActiveControl as TInPlaceEdit).Parent as TStringGrid, -1);
-  end;
-end;
-
-procedure TfrmMain.mnuDownClick(Sender: TObject);
-begin
-  if ActiveControl is TInPlaceEdit then
-  begin
-    MoveLine((ActiveControl as TInPlaceEdit).Parent as TStringGrid, +1);
-  end;
-end;
-
 function TfrmMain.IsOkToChange: Boolean;
 begin
   if Changed then
@@ -789,6 +757,88 @@ end;
 procedure TfrmMain.actParametersUpdate(Sender: TObject);
 begin
   actParameters.Checked := pnlParameters.Visible;
+end;
+
+procedure TfrmMain.MoveLine(sg : TStringGrid; direction : Integer);
+var
+  tmpRow : TStrings;
+  RowIndex : Integer;
+begin
+  RowIndex := sg.Row;
+  if not ((RowIndex + direction = 0) or
+          (RowIndex + direction = sg.RowCount - 1)) then
+  begin
+    tmpRow := TStringList.Create;
+    try
+      tmpRow.Assign(sg.Rows[RowIndex]);
+      sg.Rows[RowIndex] := sg.Rows[RowIndex + direction];
+      sg.Rows[RowIndex + direction] := tmpRow;
+      Changed := True;
+      sg.Row := RowIndex + direction;
+    finally
+      tmpRow.Free;
+    end;
+  end;
+end;
+
+procedure TfrmMain.actUpExecute(Sender: TObject);
+begin
+  if ActiveControl is TInPlaceEdit then
+  begin
+    MoveLine((ActiveControl as TInPlaceEdit).Parent as TStringGrid, -1);
+  end;
+end;
+
+procedure TfrmMain.actDownExecute(Sender: TObject);
+begin
+  if ActiveControl is TInPlaceEdit then
+  begin
+    MoveLine((ActiveControl as TInPlaceEdit).Parent as TStringGrid, +1);
+  end;
+end;
+
+procedure TfrmMain.actUpUpdate(Sender: TObject);
+var
+  curRow : Integer;
+  sg : TStringGrid;
+begin
+  if ActiveControl is TInPlaceEdit then
+  begin
+    sg := ((ActiveControl as TInPlaceEdit).Parent as TStringGrid);
+    curRow := sg.Row ;
+    actUp.Enabled := (curRow > 1) and (curRow < sg.RowCount-1);
+  end;
+end;
+
+procedure TfrmMain.actDownUpdate(Sender: TObject);
+var
+  sg : TStringGrid;
+begin
+  if ActiveControl is TInPlaceEdit then
+  begin
+    sg := ((ActiveControl as TInPlaceEdit).Parent as TStringGrid);
+    actDown.Enabled := sg.Row < sg.RowCount-2;
+  end;
+end;
+
+procedure TfrmMain.jdePackagesLocationChange(Sender: TObject);
+begin
+  LoadPackagesList;
+end;
+
+procedure TfrmMain.ClearAll;
+begin
+  // empty everything
+  ledName.Text := '';
+  ledDescription.Text := '';
+  rbtDesign.Checked := False;
+  rbtRuntime.Checked := True;
+  ledC5PFlags.Text := '';
+  ledC6PFlags.Text := '';
+  jsgDependencies.Rows[1].Text := '';
+  jsgDependencies.RowCount := 2;
+  jsgFiles.Rows[1].Text := '';
+  jsgFiles.RowCount := 2;
 end;
 
 end.
