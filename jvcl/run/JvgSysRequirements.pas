@@ -16,6 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
+Burov Dmitry, translation of russian text.
 
 Last Modified:  2003-01-15
 
@@ -175,9 +176,9 @@ begin
 
   case SystemFont of
     fsfSmallFont: Test(GetDeviceCaps(DC, LOGPIXELSX) = 96,
-        Format(ERR_SystemFont, ['мелкий']));
+        Format(ERR_SystemFont, ['small']));
     fsfBigFont: Test(GetDeviceCaps(DC, LOGPIXELSX) = 120,
-        Format(ERR_SystemFont, ['крупный']));
+        Format(ERR_SystemFont, ['large']));
   end;
 
   OSVersionInfo.dwOSVersionInfoSize := sizeof(OSVersionInfo);

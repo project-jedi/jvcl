@@ -76,7 +76,7 @@ object JvgfPrintPreview: TJvgfPrintPreview
         Left = 25
         Top = 0
         Cursor = crHandPoint
-        Hint = #207#229#240#226#224#255' '#241#242#240#224#237#232#246#224
+        Hint = 'First page'
         Caption = 'tbFirst'
         ImageIndex = 2
         ParentShowHint = False
@@ -95,7 +95,7 @@ object JvgfPrintPreview: TJvgfPrintPreview
         Left = 75
         Top = 0
         Cursor = crHandPoint
-        Hint = #207#240#229#228#251#228#243#249#224#255' '#241#242#240#224#237#232#246#224
+        Hint = 'Previous page'
         Caption = 'tbPrior'
         Enabled = False
         ImageIndex = 0
@@ -107,7 +107,7 @@ object JvgfPrintPreview: TJvgfPrintPreview
         Left = 102
         Top = 0
         Cursor = crHandPoint
-        Hint = #209#235#229#228#243#254#249#224#255' '#241#242#240#224#237#232#246#224
+        Hint = 'Next page'
         Caption = 'tbNext'
         ImageIndex = 1
         ParentShowHint = False
@@ -126,7 +126,7 @@ object JvgfPrintPreview: TJvgfPrintPreview
         Left = 153
         Top = 0
         Cursor = crHandPoint
-        Hint = #207#238#241#235#229#228#237#255#255' '#241#242#240#224#237#232#246#224
+        Hint = 'Last page'
         Caption = 'ToolButton4'
         ImageIndex = 3
         ParentShowHint = False
@@ -145,7 +145,7 @@ object JvgfPrintPreview: TJvgfPrintPreview
         Left = 201
         Top = 0
         Cursor = crHandPoint
-        Hint = #205#224#241#242#240#238#233#234#232' '#239#229#247#224#242#232
+        Hint = 'Printer setup'
         Caption = 'tbPrinterSetup'
         ImageIndex = 4
         ParentShowHint = False
@@ -156,7 +156,7 @@ object JvgfPrintPreview: TJvgfPrintPreview
         Left = 228
         Top = 0
         Cursor = crHandPoint
-        Hint = #207#229#247#224#242#224#242#252' '#242#229#234#243#249#243#254' '#241#242#240#224#237#232#246#243
+        Hint = 'Print current page'
         Caption = 'tbPrintRange'
         ImageIndex = 5
         ParentShowHint = False
@@ -167,7 +167,7 @@ object JvgfPrintPreview: TJvgfPrintPreview
         Left = 255
         Top = 0
         Cursor = crHandPoint
-        Hint = #207#229#247#224#242#224#242#252' '#226#241#229' '#241#242#240#224#237#232#246#251
+        Hint = 'Print all pages'
         Caption = 'tbPrint'
         ImageIndex = 6
         ParentShowHint = False
@@ -186,7 +186,7 @@ object JvgfPrintPreview: TJvgfPrintPreview
         Left = 308
         Top = 0
         Cursor = crHandPoint
-        Hint = #199#224#227#240#243#231#232#242#252' '#238#242#247#229#242' '#232#231' '#244#224#233#235#224
+        Hint = 'Load report from file'
         Caption = 'tbLoad'
         ImageIndex = 7
         ParentShowHint = False
@@ -197,7 +197,7 @@ object JvgfPrintPreview: TJvgfPrintPreview
         Left = 335
         Top = 0
         Cursor = crHandPoint
-        Hint = #209#238#245#240#224#237#232#242#252' '#238#242#247#229#242' '#226' '#244#224#233#235
+        Hint = 'Save report to file'
         Caption = 'tbSave'
         ImageIndex = 8
         ParentShowHint = False
@@ -208,7 +208,7 @@ object JvgfPrintPreview: TJvgfPrintPreview
         Left = 362
         Top = 0
         Cursor = crHandPoint
-        Hint = #221#234#241#239#238#240#242' '#238#242#247#229#242#224' '#226' MS Excel'
+        Hint = 'Export report to MS Excel'
         Caption = 'tbExportExcel'
         ImageIndex = 9
         ParentShowHint = False
@@ -221,7 +221,7 @@ object JvgfPrintPreview: TJvgfPrintPreview
         Width = 130
         Height = 24
         Alignment = taLeftJustify
-        Caption = #196#226#243#241#242#238#240#238#237#237#255#255' '#239#229#247#224#242#252
+        Caption = 'Print double-sided'
         TabOrder = 0
         OnClick = cbDuplexClick
       end
@@ -255,7 +255,7 @@ object JvgfPrintPreview: TJvgfPrintPreview
     Left = 0
     Top = 26
     Width = 632
-    Height = 565
+    Height = 558
     HorzScrollBar.Smooth = True
     HorzScrollBar.Style = ssFlat
     HorzScrollBar.Tracking = True
@@ -270,7 +270,7 @@ object JvgfPrintPreview: TJvgfPrintPreview
   end
   object SB: TStatusBar
     Left = 0
-    Top = 591
+    Top = 584
     Width = 632
     Height = 19
     Panels = <

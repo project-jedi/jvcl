@@ -15,6 +15,7 @@ Copyright (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
 Contributor(s):
+Burov Dmitry, translation of russian text.
 
 Last Modified: 2002-07-04
 
@@ -3274,7 +3275,7 @@ begin
         if not FReadOnly then
           if X > 0 then
           begin
-            { into line - в середине строки }
+            //{ in the middle of line - в середине строки }
             if (not FPersistentBlocks) and (FSelection.Selected) then
               DoAndCorrectXY(RemoveSelectedBlock)
             else
@@ -3312,7 +3313,7 @@ begin
           begin
             Inc(FUpdateLock);
             try
-              { on begin of line - в начале строки}
+              //{ at begin of line - в начале строки}
               RemoveSelectedBlock;
               ReLine;
 
@@ -3357,13 +3358,13 @@ begin
           else
           if X < Length(FLines[Y]) then
           begin
-            { into line - в середине строки}
+            //{ inside line - в середине строки}
             { --- UNDO --- }
             TJvDeleteUndo.Create(Self, FCaretX, FCaretY, FLines[Y][X + 1]);
             CaretUndo := False;
             { --- /UNDO --- }
 
-           // persistent blocks: adjust selection (before DeleteText)
+            // persistent blocks: adjust selection (before DeleteText)
             AdjustPersistentBlockSelection(FCaretX + 1, FCaretY, amDelete, [1]);
 
             S := FLines[Y][X + 1];
@@ -3376,12 +3377,12 @@ begin
           else
           if (Y >= 0) and (Y <= FLines.Count - 2) then
           begin
-            { on end of line - в конце строки}
+            //{ at the end of line - в конце строки}
             { --- UNDO --- }
             TJvDeleteUndo.Create(Self, FCaretX, FCaretY, sLineBreak);
             CaretUndo := False;
             { --- /UNDO --- }
-           // persistent blocks: adjust selection (before DeleteText)
+            // persistent blocks: adjust selection (before DeleteText)
             AdjustPersistentBlockSelection(0, FCaretY + 1, amLineConcat, [FCaretX, FCaretY]);
 
             FLines.DeleteText(X, Y, -1, Y + 1);

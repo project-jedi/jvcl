@@ -16,6 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
+Burov Dmitry, translation of russian text.
 
 Last Modified:  2003-01-15
 
@@ -27,7 +28,8 @@ Known Issues:
 
 {$I JVCL.INC}
 
-{ Процедуры для удобной работы со свойствами объектов через RTTI }
+//{ Процедуры для удобной работы со свойствами объектов через RTTI }
+{ Procedures for comfort working with objects' properties via RTTI [translated] }
 
 unit JvgRttiUtils;
 
@@ -38,7 +40,9 @@ procedure SetValueByPropertyName(Component: TObject; const PropertyName, Propert
 procedure Assign(Source, Target: TObject; fRecurcive: boolean);
 
 implementation
-uses Classes, SysUtils, TypInfo;
+
+uses
+  Classes, SysUtils, TypInfo;
 
 function GetValueFromPropertyName(Component: TObject; PropertyName: string): string;
 var
@@ -60,7 +64,8 @@ begin
   Result := '';
   GetMem(PropList, NumProps * sizeof(pointer));
   try
-    { Получаем список свойств }
+    //{ Получаем список свойств }
+    { Retrieving list of properties [translated] }
     GetPropInfos(TypeInf, PropList);
 
     for i := 0 to NumProps - 1 do
@@ -107,7 +112,8 @@ begin
 
   GetMem(PropList, NumProps * sizeof(pointer));
   try
-    { Получаем список свойств }
+    //{ Получаем список свойств }
+    { Retrieving list of properties [translated] }
     GetPropInfos(TypeInf, PropList);
 
     for i := 0 to NumProps - 1 do
@@ -142,7 +148,8 @@ var
   Source_NumProps, Target_NumProps: word;
   Source_PropObject, Target_PropObject: TObject;
 
-  { Поиск в списке свойства с заданным именем }
+  //{ Поиск в списке свойства с заданным именем }
+  { Searching for given name in the list of properties [translated] }
 
   function FindProperty(const PropName: string; PropList: PPropList; NumProps: word): integer;
   var
@@ -167,7 +174,8 @@ begin
   GetMem(Source_PropList, Source_NumProps * sizeof(pointer));
   GetMem(Target_PropList, Target_NumProps * sizeof(pointer));
   try
-    { Получаем список свойств }
+    //{ Получаем список свойств }
+    { Retrieving list of properties [translated] }
     GetPropInfos(Source.ClassInfo, Source_PropList);
     GetPropInfos(Target.ClassInfo, Target_PropList);
 
@@ -176,9 +184,10 @@ begin
       PropName := Source_PropList^[i]^.Name;
 
       Index := FindProperty(PropName, Target_PropList, Target_NumProps);
-      if Index = -1 then continue; // не нашли
+      if Index = -1 then continue; // не нашли, Not found [translated]
 
-      { проверить совпадение типов }
+      //{ проверить совпадение типов }
+      { check whether the types do match }
       if Source_PropList^[i]^.PropType^.Kind <> Target_PropList^[i]^.PropType^.Kind then continue;
 
       PropTypeInf := Source_PropList^[i]^.PropType^;

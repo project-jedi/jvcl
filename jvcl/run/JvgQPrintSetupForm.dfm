@@ -33,11 +33,11 @@ object JvgPrintSetup: TJvgPrintSetup
     Top = 0
     Width = 200
     Height = 56
-    Caption = #207#229#247#224#242#252
+    Caption = 'Printing'
     ItemIndex = 0
     Items.Strings = (
-      #206#228#237#238#241#242#238#240#238#237#237#255#255
-      #196#226#243#241#242#238#240#238#237#237#255#255)
+      'Single-sided'
+      'Double-sided')
     TabOrder = 1
   end
 end

@@ -17,6 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 Rob den Braasem [rbraasem@xs4all.nl]
+Burov Dmitry, translation of russian text.
 
 Last Modified:  2003-01-15
 
@@ -1234,7 +1235,7 @@ end;
 
 { TJvgGradient }
 
-{ отрисовывает градиент }
+// { paints the gradient; отрисовывает градиент }
 
 procedure TJvgGradient.Draw(DC: HDC; r: TRect; PenStyle, PenWidth: integer);
 var

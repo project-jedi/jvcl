@@ -16,6 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
+Burov Dmitry, translation of russian text.
 
 Last Modified:  2003-01-15
 
@@ -164,7 +165,7 @@ end;
 
 procedure TJvgfPrintPreview.UpdateStatus;
 begin
-  SB.Panels[0].Text := 'Страница ' + IntToStr(QRPreview1.PageNumber) + ' из ' + IntToStr(QRPreview1.QRPrinter.PageCount);
+  SB.Panels[0].Text := 'Page ' + IntToStr(QRPreview1.PageNumber) + ' of ' + IntToStr(QRPreview1.QRPrinter.PageCount);
   try
     PB.Max := QRPreview1.QRPrinter.PageCount;
     PB.Min := QRPreview1.PageNumber;

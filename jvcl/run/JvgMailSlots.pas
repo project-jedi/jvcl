@@ -16,6 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
+Burov Dmitry, translation of russian text.
 
 Last Modified:  2003-01-15
 
@@ -106,6 +107,7 @@ destructor TJvgMailSlotServer.Destroy;
 begin
   Timer.Free;
   // закрытие канала
+  { Closing channel [translated] }
   Close;
   inherited;
 end;
@@ -120,14 +122,16 @@ procedure TJvgMailSlotServer.Open;
 begin
   //  if not FEnabled then exit;
   // создание канала с именем MailSlotName - по этому имени к нему
-    // будут обращаться клиенты
+  // будут обращаться клиенты
+  { Creating channel named MailSlotName - that is the name clients will use to
+    access the channel [translated] }
   h := CreateMailSlot(PChar('\\.\mailslot\' + MailSlotName), 0,
     MAILSLOT_WAIT_FOREVER, nil);
   //h:=CreateMailSlot('\\.\mailslot\MailSlot',0,MAILSLOT_WAIT_FOREVER,nil);
 
   if h = INVALID_HANDLE_VALUE then
   begin
-    raise Exception.Create('TJvgMailSlotServer: Ошибка создания канала !');
+    raise Exception.Create('TJvgMailSlotServer: Error creating channel!');
   end;
   Timer.Enabled := true;
 end;
@@ -147,19 +151,21 @@ begin
 
   MessageText := '';
   // определение наличия сообщения в канале
+  { Determining if there's message in channel [translated] }
   if not GetMailSlotInfo(h, nil, DWORD(MsgNext), @MsgNumber, nil) then
   begin
-    raise Exception.Create('TJvgMailSlotServer: Ошибка сбора информации!');
+    raise Exception.Create('TJvgMailSlotServer: Error gathering information!');
   end;
   if MsgNext <> MAILSLOT_NO_MESSAGE then
   begin
     beep;
     // чтение сообщения из канала и добавление в текст протокола
+    { Reading message from channel and adding it to text of log }
     if ReadFile(h, str, 200, DWORD(Read), nil) then
       MessageText := str
     else
       raise
-        Exception.Create('TJvgMailSlotServer: Ошибка чтения сообщения !');
+        Exception.Create('TJvgMailSlotServer: Error reading message!');
   end;
 
   if (MessageText <> '') and Assigned(OnNewMessage) then
@@ -193,12 +199,14 @@ var
   i: integer;
 begin
   // получение имени пользователя
+  { Querying user name [translated] }
   i := SizeOf(UserName);
   GetUserName(UserName, DWORD(i));
 
   Send('/' + UserName + '/' + FormatDateTime('hh:mm', Time) + '/' +
     Exc.Message);
   // вывод сообщения об ошибке пользователю
+  { Showing message about error to user [translated] }
   Application.ShowException(Exc);
 end;
 
@@ -211,6 +219,10 @@ begin
   // открытие канала : MyServer - имя сервера
   // (\\.\\mailslot\xxx - монитор работает на этом же ПК)
   // xxx - имя канала
+  { Opening channel: MyServer - name of server
+    (\\.\\mailslot\xxx - monitor is working on the same PC
+    xxx is the name of channel [translated]
+  }
   if FServerName = '' then
     FServerName := '.\';
   h := CreateFile(PChar('\\' + FServerName + '\mailslot\' + FMailSlotName),
@@ -220,6 +232,7 @@ begin
   begin
     strMess := str;
     // передача текста ошибки (запись в канал и закрытие канала)
+    { Transmitting text of error (putting into channel and closing channel) [translated] }
     WriteFile(h, strMess, Length(strMess) + 1, DWORD(i), nil);
     CloseHandle(h);
   end;

@@ -16,6 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
+Burov Dmitry, translation of russian text.
 
 Last Modified:  2003-01-15
 
@@ -191,14 +192,16 @@ begin
     Result := r2;
 end;
 
-{ Проверка целого числа на четность }
+//{ Проверка целого числа на четность }
+{ Checks if integer is even [translated] }
 
 function IsEven(i: integer): boolean;
 begin
   Result := i / 2 = i div 2;
 end;
 
-{ Обмен значений }
+//{ Обмен значений }
+{ Swaps the values [translated] }
 
 procedure SwapInt(var i1, i2: integer);
 var
@@ -208,8 +211,9 @@ begin
   i1 := i2;
   i2 := i_;
 end;
-//_________________________________________________________________\\
-{ Создание строки из заданого числа пробелов }
+
+//{ Создание строки из заданого числа пробелов }
+{ Makes string of given number of spaces [translated] }
 
 function Spaces(Count: integer): string;
 var
@@ -219,8 +223,9 @@ begin
   for i := 1 to Count do
     Result := Result + ' ';
 end;
-//_________________________________________________________________\\
-{ Создание строки из заданого числа символов }
+
+//{ Создание строки из заданого числа символов }
+{ Makes string of given number of character [translated] }
 
 function DupChar(C: Char; Count: integer): string;
 var
@@ -230,8 +235,9 @@ begin
   for i := 1 to Count do
     Result := Result + C;
 end;
-//_________________________________________________________________\\
-{ Создание строки из заданого числа строк }
+
+//{ Создание строки из заданого числа строк }
+{ Makes string of given number of strings [translated] }
 
 function DupStr(const str: string; Count: integer): string;
 var
@@ -241,38 +247,42 @@ begin
   for i := 1 to Count do
     Result := Result + str;
 end;
-//_________________________________________________________________\\
-{ Модальное окно с иконкой информации и одной кнопкой ОК }
+
+//{ Модальное окно с иконкой информации и одной кнопкой ОК }
+{ Modal window with (i) icon and single OK button [translated] }
 
 procedure Msg(msg: string);
 begin
   MessageBox(Application.Handle, PChar(msg), '',
     MB_APPLMODAL or MB_ICONINFORMATION or MB_OK);
 end;
-//_________________________________________________________________\\
-{ Проверка вхождения точки в примоугольник. границы не считаются }
+
+//{ Проверка вхождения точки в примоугольник. границы не считаются }
+{ Checks if point is inside rect. Rect's borders are not part of rect [translated] }
 
 function IsPointInRect(P: TPoint; R: TRect): boolean;
 begin
   Result := (P.x > R.Left) and (P.x < R.Right) and (P.y > R.Top) and (P.y < R.Bottom);
 end;
 
-{ Длина примоугольника }
+//{ Длина примоугольника }
+{ Rect's width [translated] }
 
 function RectW(R: TRect): integer;
 begin
   Result := R.Right - R.Left;
 end;
 
-{ Высота примоугольника }
+//{ Высота примоугольника }
+{ Rect's height [translated] }
 
 function RectH(R: TRect): integer;
 begin
   Result := R.Bottom - R.Top;
 end;
-//_________________________________________________________________\\
 
-{ Увеличивает составляющие цвета на заданное смещение }
+//{ Увеличивает составляющие цвета на заданное смещение }
+{ Increases components of the colour with given offset [translated] }
 
 function IncColor(lColor: LongInt; bOffset: byte): LongInt;
 var
@@ -284,9 +294,9 @@ begin
   B := min(255, GetBValue(lColor) + bOffset);
   Result := RGB(R, G, B);
 end;
-//_________________________________________________________________\\
 
-{ Уменьшает составляющие цвета на заданное смещение }
+//{ Уменьшает составляющие цвета на заданное смещение }
+{ Decreases components of the colour with given offset [translated] }
 
 function DecColor(lColor: LongInt; bOffset: byte): LongInt;
 var
@@ -298,9 +308,9 @@ begin
   B := max(0, GetBValue(lColor) - bOffset);
   Result := RGB(R, G, B);
 end;
-//_________________________________________________________________\\
 
-{ Переводит сантиметра в пиксели }
+//{ Переводит сантиметра в пиксели }
+{ Centimeter -> Pixels [translated] }
 
 function SantimsToPixels(DC: HDC; Value: single; IsHosiz: boolean): integer;
 const
@@ -308,24 +318,31 @@ const
 begin
   Result := round(Value * GetDeviceCaps(DC, LOGPIXELS[IsHosiz]) * 1.541 * 2.54 / 10);
 end;
-//_________________________________________________________________\\
 
-{ Проверяет создан ли объеки bitmap и имеет ли он размер }
+//{ Проверяет создан ли объеки bitmap и имеет ли он размер }
+{ Checks wheter bitmap object is created and is having size [translated] }
 
 function IsItAFilledBitmap(Bmp: TBitmap): boolean;
 begin
   with Bmp do
     Result := Assigned(bmp) and (Width <> 0) and (Height <> 0);
 end;
-//_________________________________________________________________\\
+
+
+// Выводит текст с выравниванием, с заданным стилем и заданым шрифтом.
+//
+// DC - handle of canvas
+// HAlign, VAlign - Выравнивание по ширине и высоте
+// Style - стиль (вдавленный, с тенью etc)
+// FLAGS - доп. параметры для Windows.DrawText
 
 {
- Выводит текст с выравниванием, с заданным стилем и заданым шрифтом.
+  Renders text wth alignment, given style and given font
 
- DC - handle of canvas
- HAlign, VAlign - Выравнивание по ширине и высоте
- Style - стиль (вдавленный, с тенью etc)
- FLAGS - доп. параметры для Windows.DrawText
+  DC             - Handle of canvas
+  HAlign, VAlign - Alingment horizontal and vertical
+  Style          - Style (embossed, with shadow, etc)
+  FLAGS          - Extra parameters for Windows.DrawText
 }
 
 procedure DrawTextInRectWithAlign(DC: HDC; r: TRect; Text: string;
@@ -346,14 +363,20 @@ begin
 
   DrawTextInRect(DC, r, Text, Style, Fnt, FLAGS);
 end;
-//_________________________________________________________________\\
+
+
+// Выводит текст с выравниванием, с заданным стилем и заданым шрифтом.
+//
+// DC - handle of canvas
+// Style - стиль (вдавленный, с тенью etc)
+// FLAGS - параметры для Windows.DrawText
 
 {
- Выводит текст с выравниванием, с заданным стилем и заданым шрифтом.
+  Renders text wth alignment, given style and given font
 
- DC - handle of canvas
- Style - стиль (вдавленный, с тенью etc)
- FLAGS - параметры для Windows.DrawText
+  DC             - Handle of canvas
+  Style          - Style (embossed, with shadow, etc)
+  FLAGS          - Extra parameters for Windows.DrawText
 }
 
 procedure DrawTextInRect(DC: HDC; r: TRect; Text: string; Style: TglTextStyle; Fnt: TFont; FLAGS: UINT);
@@ -425,17 +448,25 @@ begin
   SetBkMode(DC, iOldBkMode);
 end;
 
-//_________________________________________________________________\\
+// Выводит текст с заданным стилем, с опцией контура и заданием цветов отрисовки 3D эффектов.
+//
+// DC - handle of canvas
+// Style - стиль (вдавленный, с тенью etc)
+// fDelineated - контур цвета DelinColor
+// FontColor, DelinColor, HighlightColor, ShadowColor - цвета шрифта и 3D эффектов
+// Illumination - не используется
+// Gradient - градиент для заливки букв текста
 
 {
- Выводит текст с заданным стилем, с опцией контура и заданием цветов отрисовки 3D эффектов.
+  Renders text wth given style, countouring option and given colours fo 3D effects
 
- DC - handle of canvas
- Style - стиль (вдавленный, с тенью etc)
- fDelineated - контур цвета DelinColor
- FontColor, DelinColor, HighlightColor, ShadowColor - цвета шрифта и 3D эффектов
- Illumination - не используется
- Gradient - градиент для заливки букв текста
+  DC             - Handle of canvas
+  Style          - Style (embossed, with shadow, etc)
+  fDelineated    - Contour of colour of DelinColour
+  FontColor, DelinColor, HighlightColor, ShadowColor -
+                   Colors of font and 3D effects
+  Illumination   - Not used
+  Gradient       - Gradient for filling letters of text
 }
 
 procedure ExtTextOutExt(DC: HDC;
@@ -569,15 +600,20 @@ begin
   SetBkMode(DC, iOldBkMode);
 end;
 
-//_________________________________________________________________\\
+// Рисует прямоугольник с заданым 3D стилем.
+//
+// DC - handle of canvas
+// Style - стиль (fbsFlat, fbsCtl3D, fbsStatusControl, fbsRecessed, fbsRaised, fbsRaisedFrame, fbsRecessedFrame)
+// BackgrColor- цвет фона, если fTransparent = false
 
 {
- Рисует прямоугольник с заданым 3D стилем.
+   Draws rect with given 3D style
 
- DC - handle of canvas
- Style - стиль (fbsFlat, fbsCtl3D, fbsStatusControl, fbsRecessed, fbsRaised, fbsRaisedFrame, fbsRecessedFrame)
- BackgrColor- цвет фона, если fTransparent = false
+   DC          - Handle of canvas
+   Style       - Style (fbsFlat, fbsCtl3D, fbsStatusControl, fbsRecessed, fbsRaised, fbsRaisedFrame, fbsRecessedFrame)
+   BackgrColor - Background Color if FTransparen is false
 }
+
 
 procedure DrawBox(DC: HDC; var r: TRect; Style: TglBoxStyle;
   BackgrColor: LongInt; fTransparent: boolean);
@@ -671,16 +707,24 @@ begin
       end;
   end;
 end;
-//_________________________________________________________________\\
+
+
+// Рисует прямоугольник с заданым 3D стилем и с указанием сторон.
+//
+// DC - handle of canvas
+// Borders - стороны для отрисовки
+// BevelInner, BevelOuter - стили сторон
+// Bold - толстая рамка
+// BackgrColor- цвет фона, если fTransparent = false
 
 {
- Рисует прямоугольник с заданым 3D стилем и с указанием сторон.
+  Draws rect with given 3D style and specifing borders
 
- DC - handle of canvas
- Borders - стороны для отрисовки
- BevelInner, BevelOuter - стили сторон
- Bold - толстая рамка
- BackgrColor- цвет фона, если fTransparent = false
+  DC          - Handle of canvas
+  Borders     - Borders for drawing
+  BevelInner, BevelOuter - Borders' styles
+  Bold        - Bold border(frame)
+  BackgrColor - Background Color if fTransparent is false
 }
 
 function DrawBoxEx(DC: HDC; rect: TRect; Borders: TglSides;
@@ -942,22 +986,16 @@ begin //_________________________________________MAIN_
   Result := r_;
 end;
 
-//_________________________________________________________________\\
-
-{
- Рисует градиент TJvgGradient
-}
+// Рисует градиент TJvgGradient
+{ Draws TJvgGradient gradient [translated] }
 
 procedure GradientBox(DC: HDC; r: TRect; Gradient: TJvgGradient; PenStyle, PenWidth: integer);
 begin
   Gradient.Draw(DC, r, PenStyle, PenWidth);
 end;
 
-//_________________________________________________________________\\
-
-{
- Заменяет цвет у битмапа
-}
+// Заменяет цвет у битмапа
+{ Replaces bitmap's color [translated] }
 
 procedure ChangeBitmapColor(Bitmap: TBitmap;
   FromColor, ToColor: TColor);
@@ -968,7 +1006,6 @@ var
   MonoDC: HDC;
 const
   ROP_DSPDxax = $00E20746;
-
 begin
   if (Bitmap.Width or Bitmap.Height) = 0 then Exit;
   IWidth := Bitmap.Width;
@@ -998,12 +1035,8 @@ begin
   end;
 end;
 
-//_________________________________________________________________\\
-
-{
- Выводит битмап. Прозрачный, disabled, размноженный etc
-
-}
+// Выводит битмап. Прозрачный, disabled, размноженный etc
+{ Paints bitmap. Transparent, disabled, multiplied, etc [translated] }
 
 procedure DrawBitmapExt(DC: HDC; { DC - background & result}
   SourceBitmap: TBitmap;
@@ -1020,7 +1053,7 @@ begin
     DrawState, fTransparent, TransparentColor,
     DisabledMaskColor);
 end;
-//_________________________________________________________________\\
+
 //..DrawBitmap algorithm borrow from Delphi2 VCL Sources
 { create bimap based on  SourceBitmap and write new bitmap to DC }
 
@@ -1271,9 +1304,9 @@ begin
   end;
 
 end;
-//-----------------------------------------------------
 
-{ Выносит родительское окно на передний план }
+//{ Выносит родительское окно на передний план }
+{ Brings parent window forefront [translated] }
 
 procedure BringParentWindowToTop(Wnd: TWinControl);
 begin
@@ -1282,9 +1315,9 @@ begin
   else if Wnd.Parent is TWinControl then
     BringParentWindowToTop(Wnd.Parent);
 end;
-//-----------------------------------------------------
 
-{ Возвращает родительское окно класса TForm }
+//{ Возвращает родительское окно класса TForm }
+{ Gives parent window of TForm class }
 
 function GetParentForm(Control: TControl): TForm;
 begin
@@ -1299,12 +1332,11 @@ begin
     Result := nil;
 end;
 
-//-----------------------------------------------------
 
-{
- Отрисовывает TWinControl со всем содержимым на DC со смещением X, Y
- //...from rxLib... :( very sorry
-}
+// Отрисовывает TWinControl со всем содержимым на DC со смещением X, Y
+// ...from rxLib... :( very sorry
+{ Paints TWinControl with all its content onto DC with offset(shift) X,Y
+  ...from rxLib... :( very sorry [translated] }
 
 procedure GetWindowImageFrom(Control: TWinControl; X, Y: integer; fDrawSelf, fDrawChildWindows: boolean; DC: HDC);
 var
@@ -1345,18 +1377,16 @@ begin
   end;
 end;
 
-{
- Отрисовывает TWinControl со всем содержимым на DC со смещением 0, 0
-}
+// Отрисовывает TWinControl со всем содержимым на DC со смещением 0, 0
+{ Paints(renders) TWinControl with all its content onto DC with offset (0,0) [translated] }
 
 procedure GetWindowImage(Control: TWinControl; fDrawSelf, fDrawChildWindows: boolean; DC: HDC);
 begin
   GetWindowImageFrom(Control, 0, 0, fDrawSelf, fDrawChildWindows, DC);
 end;
 
-{
- Отрисовывает родительский TWinControl со всем содержимым на DC с ограничением по Rect
-}
+// Отрисовывает родительский TWinControl со всем содержимым на DC с ограничением по Rect
+{ Paints parent TWinControl with all its contents onto DC with limit of Rect [translated ] }
 
 procedure GetParentImageRect(Control: TControl; Rect: TRect; DC: HDC);
 var
@@ -1401,9 +1431,8 @@ begin
   end;
 end;
 
-{
- Создает шрифт с заданным углом наклона
-}
+// Создает шрифт с заданным углом наклона
+{ Makes font inclined with angle [translated] }
 
 function CreateRotatedFont(F: TFont; Escapement: Integer): hFont;
 {-create a rotated font based on the font object F}
@@ -1441,11 +1470,8 @@ begin
   Result := CreateFontIndirect(LF);
 end;
 
-//______________________________________________________________
-
-{
- Возвращает главное окно приложения
-}
+// Возвращает главное окно приложения
+{ Returns main window of application [translated] }
 
 function FindMainWindow(sWndClass, sWndTitle: string): HWND;
 begin
@@ -1453,11 +1479,9 @@ begin
   if (sWndClass = '') and (sWndTitle = '') then exit;
   Result := FindWindow(PChar(sWndClass), PChar(sWndTitle));
 end;
-//______________________________________________________________
 
-{
- Для заданного цвета BaseColor считает цвет тени и подсветки
-}
+// Для заданного цвета BaseColor считает цвет тени и подсветки
+{ Calculates colors of shadow and lighted border for given base color. [translated] }
 
 procedure CalcShadowAndHighlightColors(BaseColor: TColor; Colors: TJvgLabelColors);
 var
@@ -1487,11 +1511,9 @@ begin
     end;
   end;
 end;
-//______________________________________________________________
 
-{
- Считает арифметическое выражение из строки
-}
+// Считает арифметическое выражение из строки
+{ Calculates arithmetic expression, given in string [translated] }
 
 function CalcMathString(sExpression: string): single;
 var
@@ -1652,11 +1674,9 @@ begin //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~MAIN PROC
   //  fCalculate = fCalcResult
 
 end;
-//------------------------
 
-{
- Тренарный оператор   x ? y : z
-}
+// Тренарный оператор   x ? y : z
+{ Ternary operator: x? y : z [translated] }
 
 function IIF(fExpression: boolean; IfTrue, IfFalse: variant): variant; overload;
 begin
@@ -1665,7 +1685,6 @@ begin
   else
     Result := IfFalse;
 end;
-//------------------------
 
 function IIF(fExpression: boolean; const IfTrue, IfFalse: string): string; overload;
 begin
@@ -1674,11 +1693,9 @@ begin
   else
     Result := IfFalse;
 end;
-//------------------------
 
-{
- Возвращает цвет левой/правой нижней/верхней точки битмапа
-}
+// Возвращает цвет левой/правой нижней/верхней точки битмапа
+{ Returns colour of Leftmost/Rightmost Top/Bottom pixel of bitmap [translated] }
 
 function GetTransparentColor(Bitmap: TBitmap; AutoTrColor: TglAutoTransparentColor): TColor;
 var
@@ -1713,7 +1730,6 @@ begin
     Result := GetPixel(Bitmap.Canvas.Handle, x, y);
   end;
 end;
-//------------------------
 
 procedure TypeStringOnKeyboard(S: string);
 var
@@ -1730,7 +1746,7 @@ begin
     keybd_event(vk, 0, KEYEVENTF_KEYUP, 0);
   end;
 end;
-//------------------------------------------------------------------------------
+
 {function NextStringGridCell( Grid: TStringGrid ): boolean;
 var
   R: TRect;
@@ -1754,8 +1770,6 @@ begin
   end;
 end;
 }
-
-//------------------------------------------------------------------------------
 
 procedure DrawTextExtAligned(Canvas: TCanvas; const Text: string; R: TRect; Alignment: TglAlignment; WordWrap: boolean);
 const
@@ -1864,11 +1878,8 @@ begin
   //  if FAutoSize then Height := max( 12, LineNo*TextHeight );
 end;
 
-//------------------------------------------------------------------------------
-
-{
- Загружает компонент из текстового файла - десериализация
-}
+// Загружает компонент из текстового файла - десериализация
+{ Deserialization: loading component from text file [translated] }
 
 procedure LoadComponentFromTextFile(Component: TComponent; FileName: string);
 var
@@ -1886,11 +1897,9 @@ begin
     fs.free;
   end;
 end;
-//------------------------------------------------------------------------------
 
-{
- сериализует компонент в строку
-}
+// сериализует компонент в строку
+{ Serializing component to string [translated] }
 
 function ComponentToString(Component: TComponent): string;
 var
@@ -1911,9 +1920,8 @@ begin
   end;
 end;
 
-{
- Сохраняет компонент в текстовый файл - сериализация
-}
+// Сохраняет компонент в текстовый файл - сериализация
+{ Serialization: writing component to text file [translated] }
 
 procedure SaveComponentToTextFile(Component: TComponent; FileName: string);
 var
@@ -1931,11 +1939,9 @@ begin
     fs.free;
   end;
 end;
-//------------------------------------------------------------------------------
 
-{
- десериализует строку в компонент
-}
+// десериализует строку в компонент
+{ Deserializing component from string [translated] }
 
 procedure StringToComponent(Component: TComponent; const Value: string);
 var
@@ -1959,11 +1965,9 @@ begin
     StrStream.Free;
   end;
 end;
-//------------------------------------------------------------------------------
 
-{
- Воспроизводит ресурс WAV из ресурсов
-}
+// Воспроизводит ресурс WAV из ресурсов
+{ Plays WAV resource [translated] }
 
 function PlayWaveResource(sResName: string): boolean;
 var
@@ -1984,11 +1988,9 @@ begin
     end;
   end;
 end;
-//------------------------------------------------------------------------------
 
-{
- Имя пользователя текущего потока
-}
+// Имя пользователя текущего потока
+{ User name for current thread [translated] }
 
 function UserName: string;
 var
@@ -1999,11 +2001,9 @@ begin
   GetUserName(un, ul);
   Result := un;
 end;
-//------------------------------------------------------------------------------
 
-{
- Имя компьютера
-}
+// Имя компьютера
+{ PC name [translated] }
 
 function ComputerName: string;
 var
@@ -2014,11 +2014,9 @@ begin
   GetComputerName(un, ul);
   Result := un;
 end;
-//------------------------------------------------------------------------------
 
-{
- Создает ini файл с именем файла проекта - пользуйтесь ChangeFileExt
-}
+// Создает ini файл с именем файла проекта - пользуйтесь ChangeFileExt
+{ Creates ini-file with the same name to project's file - use ChangeFileExt [translated] }
 
 function CreateIniFileName: string;
 begin
@@ -2026,11 +2024,9 @@ begin
   SetLength(Result, length(Result) - length(ExtractFileExt(Result)));
   Result := Result + '.ini';
 end;
-//------------------------------------------------------------------------------
 
-{
- Расширяет строку пробелами до заданной длины
-}
+// Расширяет строку пробелами до заданной длины
+{ Expands string with spaces up to given length [translated] }
 
 function ExpandString(const str: string; len: integer): string;
 var
@@ -2045,12 +2041,10 @@ begin
       Result[i] := Str[i]
     else
       Result[i] := ' ';
-
 end;
 
-{
- Транслитерация строки RusToLat и обратно
-}
+// Транслитерация строки RusToLat и обратно
+{ Translitarating string Rus<->Lat [translated] }
 
 function Transliterate(const Str: string; RusToLat: boolean): string;
 const
@@ -2098,7 +2092,8 @@ begin
           end;
 end;
 
-{Значение функции TRUE если мелкий шрифт}
+// Значение функции TRUE если мелкий шрифт
+{ Function returns true, if font is small [translated] }
 
 function IsSmallFonts: boolean;
 var
@@ -2106,11 +2101,13 @@ var
 begin
   DC := GetDC(0);
   Result := (GetDeviceCaps(DC, LOGPIXELSX) = 96);
-  { В случае крупного шрифта будет 120}
+  //{ В случае крупного шрифта будет 120}
+  { For large font it would be 120 [translated] }
   ReleaseDC(0, DC);
 end;
 
-{ Глуюина цвета в системе, бит (8, 16 или 32) }
+//{ Глуюина цвета в системе, бит (8, 16 или 32) }
+{ Color depth in system: 8, 16 or 32 bits [translated] }
 
 function SystemColorDepth: integer;
 var
@@ -2139,7 +2136,8 @@ begin
     end;
 end;
 
-{ Ищет верхний контрол в заданной точке }
+//{ Ищет верхний контрол в заданной точке }
+{ Looks for upper(topmost) control at given point [translated] }
 
 function FindControlAtPt(Control: TWinControl; pt: TPoint; MinClass: TClass): TControl;
 var
@@ -2154,10 +2152,10 @@ begin
     end;
 end;
 
-{
-  StrPosExt - ищет позицию одной строки в другой с заданной длиной.
-  На длинных строках превосходит StrPos на 1-2 порядка.
-}
+//  StrPosExt - ищет позицию одной строки в другой с заданной длиной.
+//  На длинных строках превосходит StrPos на 1-2 порядка.
+{ StrPosExt - Looks for position of one string inside another with given length
+  Outperforms StrPos on long strings in 10-100 times (1-2 orders) [translated] }
 
 function StrPosExt(const Str1, Str2: PChar; Str2Len: DWORD): PChar; assembler;
 asm
@@ -2165,40 +2163,57 @@ asm
         PUSH    ESI
         PUSH    EBX
         OR      EAX,EAX         // Str1
-        JE      @@2             // если строка Str1 пуста - на выход
+        JE      @@2             // если строка Str1 пуста - на выход;
+                                // If Str1 is empty - get out [translated]
         OR      EDX,EDX         // Str2
-        JE      @@2             // если строка Str2 пуста - на выход
+        JE      @@2             // если строка Str2 пуста - на выход;
+                                // If Str2 is empty - get out [translated]
         MOV     EBX,EAX
-        MOV     EDI,EDX         // установим смещение для SCASB - подстрока Str2
-        XOR     AL,AL           // обнулим AL
+        MOV     EDI,EDX         // установим смещение для SCASB - подстрока Str2;
+                                // Setting offset for SCASB - substring Str2 [translated]
+        XOR     AL,AL           // обнулим AL; Zero AL [translated]
 
-        push ECX                // длина строки
+        push ECX                // длина строки; String length [translated]
 
-        MOV     ECX,0FFFFFFFFH  // счетчик с запасом
-        REPNE   SCASB           // ищем конец подстроки Str2
-        NOT     ECX             // инвертируем ECX - получаем длину строки+1
-        DEC     ECX             // в ECX - длина искомой подстроки Str2
+        MOV     ECX,0FFFFFFFFH  // счетчик с запасом; Counter value, large enough
+                                // to be assured it will never underflow [translated]
+        REPNE   SCASB           // ищем конец подстроки Str2;
+                                // Searching for end of Str2 substring [translated]
+        NOT     ECX             // инвертируем ECX - получаем длину строки+1;
+                                // Inverting ECX - getting string length +1 [translated]
+        DEC     ECX             // в ECX - длина искомой подстроки Str2;
+                                // And here is exact length [translated]
 
-        JE      @@2             // при нулевой длине - все на выход
-        MOV     ESI,ECX         // сохраняем длину подстроки в ESI
+        JE      @@2             // при нулевой длине - все на выход; length = 0? get out! [translated]
+        MOV     ESI,ECX         // сохраняем длину подстроки в ESI;
+                                // Saving substring length in ESI [translated]
 
         pop ECX
 
-        SUB     ECX,ESI         // ECX == разница длин строк : Str1 - Str2
-        JBE     @@2             // если длина подсроки больше длине строки - выход
-        MOV     EDI,EBX         // EDI  - начало строки Str1
-        LEA     EBX,[ESI-1]     // EBX - длина сравнения строк
-@@1:    MOV     ESI,EDX         // ESI - смещение строки Str2
-        LODSB                   // загужаем первый символ подстроки в AL
-        REPNE   SCASB           // ищем этот символ в строке EDI
-        JNE     @@2             // если символ не обнаружен - на выход
-        MOV     EAX,ECX         // сохраним разницу длин строк
-        PUSH    EDI             // запомним текущее смещение поиска
+        SUB     ECX,ESI         // ECX == разница длин строк : Str1 - Str2;
+                                // ECX := length(Str1) - length(Str2) [translated]
+        JBE     @@2             // если длина подсроки больше длине строки - выход;
+                                // length(substring) > length(containing string) ? get out! [translated]
+        MOV     EDI,EBX         // EDI  - начало строки Str1; EDI points to the beginning od Str1 [translated]
+        LEA     EBX,[ESI-1]     // EBX - длина сравнения строк; EBX - length of comparision of strings  [translated]
+@@1:    MOV     ESI,EDX         // ESI - смещение строки Str2; ESI - offset of Str2 string [translated]
+        LODSB                   // загужаем первый символ подстроки в AL;
+                                // Loading 1st byte of substring into AL [translated]
+        REPNE   SCASB           // ищем этот символ в строке EDI;
+                                // Searching that very char in EDI string [translated]
+        JNE     @@2             // если символ не обнаружен - на выход;
+                                // Char not found? get out! [translated]
+        MOV     EAX,ECX         // сохраним разницу длин строк;
+                                // Saving difference of lengths of strings [translated]
+        PUSH    EDI             // запомним текущее смещение поиска;
+                                // Saving current offset of search [translated]
         MOV     ECX,EBX
-        REPE    CMPSB           // побайтно сравниваем строки
+        REPE    CMPSB           // побайтно сравниваем строки;
+                                // per-byte comparision of strings [translated]
         POP     EDI
         MOV     ECX,EAX
-        JNE     @@1             // если строки различны - ищем следующее совпадение первого символа
+        JNE     @@1             // если строки различны - ищем следующее совпадение первого символа;
+                                // If strings do not match - searching for 1st substring's char again [translated]
         LEA     EAX,[EDI-1]
         JMP     @@3
 @@2:    XOR     EAX,EAX

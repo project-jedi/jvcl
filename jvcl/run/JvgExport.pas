@@ -16,6 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
+Burov Dmitry, translation of russian text.
 
 Last Modified:  2003-01-15
 
@@ -97,10 +98,10 @@ begin
     //  Sheet.Columns[1].ColumnWidth := 11;
 
     RecNo := 1;
-    Sheet.Cells[RecNo, 1] := 'Отчет создан ' + DateToStr(date);
+    Sheet.Cells[RecNo, 1] := 'Report created on ' + DateToStr(date);
     Sheet.Cells[RecNo, 1].Font.Italic := True;
     inc(RecNo);
-    Sheet.Cells[RecNo, 1] := 'Пользователь ' + UserName;
+    Sheet.Cells[RecNo, 1] := 'User ' + UserName;
     Sheet.Cells[RecNo, 1].Font.Italic := True;
 
     inc(RecNo, 2);
@@ -159,16 +160,17 @@ begin
   //  Sheet.Cells[2, 1] := 'Globus'; Sheet.Cells[2, 1].Font.Bold := True; Sheet.Cells[2, 1].Font.Color := clWhite;
 
   RecNo := 1;
-  Sheet.Cells[RecNo, 2] := 'Документ создан: ' + DateToStr(date) + '   ' + TimeToStr(time);
+  Sheet.Cells[RecNo, 2] := 'Document created on ' + DateToStr(date) + '   ' + TimeToStr(time);
   Sheet.Cells[RecNo, 2].Font.Italic := True;
   inc(RecNo);
-  Sheet.Cells[RecNo, 2] := 'Пользователь: ' + ComputerName + ' / ' + UserName;
+  Sheet.Cells[RecNo, 2] := 'User: ' + ComputerName + ' / ' + UserName;
   Sheet.Cells[RecNo, 2].Font.Italic := True;
   inc(RecNo);
-  Sheet.Cells[RecNo, 2] := 'Программа: ' + ExtractFileName(ParamStr(0));
+  Sheet.Cells[RecNo, 2] := 'Program: ' + ExtractFileName(ParamStr(0));
   Sheet.Cells[RecNo, 2].Font.Italic := True;
 
   // Шапка
+  { Header [translated] }
   inc(RecNo, 3);
   ColIndex := 0;
   for i := 0 to DataSet.FieldCount - 1 do
@@ -185,6 +187,7 @@ begin
   end;
 
   // Данные пошли
+  { Data has begun to pass in [translated] }
   DataSet.First;
   inc(RecNo, 3);
   while not DataSet.EOF do
