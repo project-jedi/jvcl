@@ -342,7 +342,7 @@ uses
   {$ENDIF COMPILER6_UP}
   {$ENDIF VCL}
   {$IFDEF USEJVCL}
-  JvComponent,
+  JvComponent, JvThemes,
   {$ENDIF USEJVCL}
   JvWizardCommon;
 
@@ -683,7 +683,7 @@ type
     procedure ImageChanged(Sender: TObject);
     {$IFDEF VCL}
     // (ahuser) Do not convert to JvExVCL: This package is USEJVCL'ed
-    procedure WMEraseBkgnd(var Msg: TWmEraseBkgnd); message WM_ERASEBKGND;
+    procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
     procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
     procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
     procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
@@ -2440,8 +2440,12 @@ begin
 end;
 
 {$IFDEF VCL}
-procedure TJvWizardCustomPage.WMEraseBkgnd(var Msg: TWmEraseBkgnd);
+procedure TJvWizardCustomPage.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 begin
+  {$IFDEF JVCLThemesEnabled}
+  if ThemeServices.ThemesEnabled then
+    inherited;
+  {$ENDIF JVCLThemesEnabled}
   Msg.Result := 1;
 end;
 {$ENDIF VCL}
@@ -2989,6 +2993,10 @@ end;
 {$IFDEF VCL}
 procedure TJvWizard.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 begin
+  {$IFDEF JVCLThemesEnabled}
+  if ThemeServices.ThemesEnabled then
+    inherited;
+  {$ENDIF JVCLThemesEnabled}
   Msg.Result := 1;
 end;
 {$ENDIF VCL}
