@@ -40,12 +40,8 @@ object Form1: TForm1
     object N1: TMenuItem
       Caption = '-'
     end
-    object Dontallowresize1: TMenuItem
-      Caption = 'Don'#39't allow resize'
-      OnClick = Dontallowresize1Click
-    end
     object ChangeFont1: TMenuItem
-      Caption = 'Change Font'
+      Caption = 'Font...'
       OnClick = ChangeFont1Click
     end
     object Colors1: TMenuItem
@@ -80,6 +76,13 @@ object Form1: TForm1
       end
     end
     object N2: TMenuItem
+      Caption = '-'
+    end
+    object Dontallowresize1: TMenuItem
+      Caption = 'Don'#39't allow resize'
+      OnClick = Dontallowresize1Click
+    end
+    object N3: TMenuItem
       Caption = '-'
     end
     object ShowToolPanel1: TMenuItem
@@ -700,6 +703,7 @@ object Form1: TForm1
       000000000000}
   end
   object JvNavPaneStyleManager1: TJvNavPaneStyleManager
+    Theme = nptCustom
     Colors.SplitterColorFrom = 14059090
     Colors.SplitterColorTo = 9715984
     Colors.DividerColorFrom = 16771022
