@@ -495,7 +495,7 @@ end;
 type
   TColorArray = array [0..2] of TColor;
   {$IFDEF VisualCLX}
-  TCustomFormAccessProtected = class(TCustomForm);
+  THackedCustomForm = class(TCustomForm);
   {$ENDIF VisualCLX}
 
   TJvUpDown = class(TCustomUpDown)
@@ -1131,7 +1131,7 @@ begin
       GetParentForm(Self).Perform(CM_DIALOGKEY, Byte(Key), 0);
       {$ENDIF VCL}
       {$IFDEF VisualCLX}
-      TCustomFormAccessProtected(GetParentForm(Self)).WantKey(Integer(Key), [], Key);
+      THackedCustomForm(GetParentForm(Self)).WantKey(Integer(Key), [], Key);
       {$ENDIF VisualCLX}
       if Key = Cr then
         Key := #0;
@@ -2438,8 +2438,10 @@ var
       if not CustomGlyphs then
       begin
         UpArrow.LoadFromResourceName(HInstance, sSpinUpBtnPole);
+        UpArrow.TransparentColor := clWhite;
         UpArrow.Transparent := True;
         DownArrow.LoadFromResourceName(HInstance, sSpinDownBtnPole);
+        DownArrow.TransparentColor := clWhite;
         DownArrow.Transparent := True;
         PoleDrawArrows(ABitmap.Canvas, ADownState, Enabled, UpArrow, DownArrow);
       end;
@@ -2576,22 +2578,12 @@ begin
     Source := Bounds(0, 0, AUpArrow.Width, AUpArrow.Height);
 
     if Enabled then
-      {$IFDEF VCL}
-      BrushCopy(Dest, AUpArrow, Source, AUpArrow.TransparentColor)
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      BrushCopy(ACanvas, Dest, AUpArrow, Source, AUpArrow.TransparentColor)
-      {$ENDIF VisualCLX}
+      BrushCopy({$IFDEF VisualCLX}ACanvas,{$ENDIF} Dest, AUpArrow, Source, AUpArrow.TransparentColor)
     else
     begin
       DisabledBitmap := CreateDisabledBitmap(AUpArrow, clBlack);
       try
-        {$IFDEF VCL}
-        BrushCopy(Dest, DisabledBitmap, Source, DisabledBitmap.TransparentColor);
-        {$ENDIF VCL}
-        {$IFDEF VisualCLX}
-        BrushCopy(ACanvas, Dest, DisabledBitmap, Source, DisabledBitmap.TransparentColor);
-        {$ENDIF VisualCLX}
+        BrushCopy({$IFDEF VisualCLX}ACanvas,{$ENDIF} Dest, DisabledBitmap, Source, DisabledBitmap.TransparentColor);
       finally
         DisabledBitmap.Free;
       end;
@@ -2604,22 +2596,12 @@ begin
     Source := Bounds(0, 0, ADownArrow.Width, ADownArrow.Height);
 
     if Enabled then
-      {$IFDEF VCL}
-      BrushCopy(Dest, ADownArrow, Source, ADownArrow.TransparentColor)
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      BrushCopy(ACanvas, Dest, ADownArrow, Source, ADownArrow.TransparentColor)
-      {$ENDIF VisualCLX}
+      BrushCopy({$IFDEF VisualCLX}ACanvas,{$ENDIF}Dest, ADownArrow, Source, ADownArrow.TransparentColor)
     else
     begin
       DisabledBitmap := CreateDisabledBitmap(ADownArrow, clBlack);
       try
-        {$IFDEF VCL}
-        BrushCopy(Dest, DisabledBitmap, Source, DisabledBitmap.TransparentColor);
-        {$ENDIF VCL}
-        {$IFDEF VisualCLX}
-        BrushCopy(ACanvas, Dest, DisabledBitmap, Source, DisabledBitmap.TransparentColor);
-        {$ENDIF VisualCLX}
+        BrushCopy({$IFDEF VisualCLX}ACanvas,{$ENDIF} Dest, DisabledBitmap, Source, DisabledBitmap.TransparentColor);
       finally
         DisabledBitmap.Free;
       end;
