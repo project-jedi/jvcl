@@ -713,12 +713,12 @@ end;
 
 function TJvCustomCheckedComboBox.IsStoredCapDeselAll: Boolean;
 begin
-  Result := FCapSelAll <> RsCapSelAll;
+  Result := FCapDeselAll <> RsCapSelAll;
 end;
 
 function TJvCustomCheckedComboBox.IsStoredCapSelAll: Boolean;
 begin
-  Result := FCapDeselAll <> RsCapDeselAll;
+  Result := FCapSelAll <> RsCapDeselAll;
 end;
 
 procedure TJvCustomCheckedComboBox.ItemsChange(Sender: TObject);
