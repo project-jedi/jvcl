@@ -335,7 +335,7 @@ resourcestring
 //=== JvCSVBaseControls.pas ==================================================
 resourcestring
   RsReplaceExistingDatabase = 'Replace existing database?';
-  RsNoFieldsDefined = 'no fields defined';
+  RsNoFieldsDefined = 'No fields defined';
   RsCVSDatabase = 'CSV Database';
   RsFindText = 'Find Text:';
   RsFirstHint = 'First';
@@ -381,9 +381,9 @@ resourcestring
   RsEFieldNotFound = 'Field %s not found in the data file';
   RsECsvStringTooLong = 'CSV string is too long: %s...';
   RsEInternalLimit = 'JvCsvData - Internal Limit of MAXCOLUMNS (%d) reached. CSV Data has too many columns';
-  RsETableNameNotSet = 'TJvCustomCsvDataSet.FTableName is not set';
-  RsEGetMode = 'GetMode???';
-  RsENoTableName = 'noTableName';
+  RsETableNameNotSet = 'TableName not specified';
+  RsEGetMode = 'Invalid option to GetMode';
+  RsENoTableName = 'TableName not specified';
   RsETableNameRequired = 'LoadFromFile=True, so a TableName is required';
   RsEInternalCompare = 'InternalCompare. Nil value detected';
 
@@ -830,32 +830,32 @@ resourcestring
 //=== JvHidControllerClass.pas ===============================================
 {$IFDEF USEJVCL}
 resourcestring
-  RsUnknownLocaleIDFmt = 'unknown Locale ID $%.4x';
-  RsHIDP_STATUS_NULL = 'device not plugged in';
-  RsHIDP_STATUS_INVALID_PREPARSED_DATA = 'invalid preparsed data';
-  RsHIDP_STATUS_INVALID_REPORT_TYPE = 'invalid report type';
-  RsHIDP_STATUS_INVALID_REPORT_LENGTH = 'invalid report length';
-  RsHIDP_STATUS_USAGE_NOT_FOUND = 'usage not found';
-  RsHIDP_STATUS_VALUE_OUT_OF_RANGE = 'value out of range';
-  RsHIDP_STATUS_BAD_LOG_PHY_VALUES = 'bad logical or physical values';
-  RsHIDP_STATUS_BUFFER_TOO_SMALL = 'buffer too small';
-  RsHIDP_STATUS_INTERNAL_ERROR = 'internal error';
+  RsUnknownLocaleIDFmt = 'Unknown Locale ID $%.4x';
+  RsHIDP_STATUS_NULL = 'Device not plugged in';
+  RsHIDP_STATUS_INVALID_PREPARSED_DATA = 'Invalid preparsed data';
+  RsHIDP_STATUS_INVALID_REPORT_TYPE = 'Invalid report type';
+  RsHIDP_STATUS_INVALID_REPORT_LENGTH = 'Invalid report length';
+  RsHIDP_STATUS_USAGE_NOT_FOUND = 'Usage not found';
+  RsHIDP_STATUS_VALUE_OUT_OF_RANGE = 'Value out of range';
+  RsHIDP_STATUS_BAD_LOG_PHY_VALUES = 'Bad logical or physical values';
+  RsHIDP_STATUS_BUFFER_TOO_SMALL = 'Buffer too small';
+  RsHIDP_STATUS_INTERNAL_ERROR = 'Internal error';
   RsHIDP_STATUS_I8042_TRANS_UNKNOWN = '8042 key translation impossible';
-  RsHIDP_STATUS_INCOMPATIBLE_REPORT_ID = 'incompatible report ID';
-  RsHIDP_STATUS_NOT_VALUE_ARRAY = 'not a value array';
-  RsHIDP_STATUS_IS_VALUE_ARRAY = 'is a value array';
-  RsHIDP_STATUS_DATA_INDEX_NOT_FOUND = 'data index not found';
-  RsHIDP_STATUS_DATA_INDEX_OUT_OF_RANGE = 'data index out of range';
-  RsHIDP_STATUS_BUTTON_NOT_PRESSED = 'button not pressed';
-  RsHIDP_STATUS_REPORT_DOES_NOT_EXIST = 'report does not exist';
-  RsHIDP_STATUS_NOT_IMPLEMENTED = 'not implemented';
-  RsUnknownHIDFmt = 'unknown HID error %x';
+  RsHIDP_STATUS_INCOMPATIBLE_REPORT_ID = 'Incompatible report ID';
+  RsHIDP_STATUS_NOT_VALUE_ARRAY = 'Not a value array';
+  RsHIDP_STATUS_IS_VALUE_ARRAY = 'Is a value array';
+  RsHIDP_STATUS_DATA_INDEX_NOT_FOUND = 'Data index not found';
+  RsHIDP_STATUS_DATA_INDEX_OUT_OF_RANGE = 'Data index out of range';
+  RsHIDP_STATUS_BUTTON_NOT_PRESSED = 'Button not pressed';
+  RsHIDP_STATUS_REPORT_DOES_NOT_EXIST = 'Report does not exist';
+  RsHIDP_STATUS_NOT_IMPLEMENTED = 'Not implemented';
+  RsUnknownHIDFmt = 'Unknown HID error %x';
   RsHIDErrorPrefix = 'HID Error: ';
 
   RsEDirectThreadCreationNotAllowed = 'Direct creation of a TJvDeviceReadThread object is not allowed';
   RsEDirectHidDeviceCreationNotAllowed = 'Direct creation of a TJvHidDevice object is not allowed';
-  RsEDeviceCannotBeIdentified = 'device cannot be identified';
-  RsEDeviceCannotBeOpened = 'device cannot be opened';
+  RsEDeviceCannotBeIdentified = 'Device cannot be identified';
+  RsEDeviceCannotBeOpened = 'Device cannot be opened';
   RsEOnlyOneControllerPerProgram = 'Only one TJvHidDeviceController allowed per program';
   RsEHIDBooleanError = 'HID Error: a boolean function failed';
 {$ENDIF USEJVCL}
@@ -1032,7 +1032,7 @@ resourcestring
 
   RsESorryDynamicArraysSupportIsMadeForO = 'Sorry. Dynamic arrays support is made for one-dimensional arrays only';
   RsEUnknownRecordType = 'Unknown RecordType';
-  RsERangeCheckError = 'range check error';
+  RsERangeCheckError = 'Range check error';
 
 //=== JvInterpreter_Quickrpt.pas =============================================
 resourcestring
@@ -1271,7 +1271,7 @@ resourcestring
   RsHistorySelectPath = 'History';
 
   RsDialogCaption = '';
-  RsOkButton = '&Ok';
+  RsOkButton = '&OK';
   RsCancelButton = '&Cancel';
   RsHistoryLoadButton = '&Load';
   RsHistorySaveButton = '&Save';
@@ -1395,25 +1395,25 @@ resourcestring
 
 //=== JvSAL.pas ==============================================================
 resourcestring
-  RsEBooleanStackOverflow = 'boolean stack overflow';
-  RsEBooleanStackUnderflow = 'boolean stack underflow';
-  RsEProgramStopped = 'program stopped';
-  RsEUnterminatedIncludeDirectiveNears = 'unterminated include directive near %s';
-  RsEOngetUnitEventHandlerIsNotAssigned = 'ongetUnit event handler is not assigned';
-  RsECouldNotIncludeUnits = 'could not include unit %s';
-  RsEUnterminatedCommentNears = 'unterminated comment near %s';
-  RsEUnterminatedProcedureNears = 'unterminated procedure near %s';
-  RsEVariablesAllreadyDefineds = 'variable %s allready defined;%s';
-  RsEVariablesIsNotYetDefineds = 'variable %s is not yet defined;%s';
-  RsEProceduresNears = 'procedure %s near %s';
-  RsEUndefinedProcedures = 'undefined procedure %s';
-  RsECouldNotFindEndOfProcedure = 'could not find end of procedure';
+  RsEBooleanStackOverflow = 'Boolean stack overflow';
+  RsEBooleanStackUnderflow = 'Boolean stack underflow';
+  RsEProgramStopped = 'Program stopped';
+  RsEUnterminatedIncludeDirectiveNears = 'Unterminated include directive near %s';
+  RsEOngetUnitEventHandlerIsNotAssigned = 'OngetUnit event handler is not assigned';
+  RsECouldNotIncludeUnits = 'Could not include unit %s';
+  RsEUnterminatedCommentNears = 'Unterminated comment near %s';
+  RsEUnterminatedProcedureNears = 'Unterminated procedure near %s';
+  RsEVariablesAllreadyDefineds = 'Variable %s allready defined;%s';
+  RsEVariablesIsNotYetDefineds = 'Variable %s is not yet defined;%s';
+  RsEProceduresNears = 'Procedure %s near %s';
+  RsEUndefinedProcedures = 'Undefined procedure %s';
+  RsECouldNotFindEndOfProcedure = 'Could not find end of procedure';
 
 //=== JvSALCore.pas ==========================================================
 resourcestring
-  RsEVariablesIsNotInitialized = 'variable %s is not initialized';
-  RsEDivisionByZeroError = 'division by zero error';
-  RsEMissingendselect = 'missing "endselect"';
+  RsEVariablesIsNotInitialized = 'Variable %s is not initialized';
+  RsEDivisionByZeroError = 'Division by zero error';
+  RsEMissingendselect = 'Missing "endselect"';
 
 //=== JvSchedEvtStore.pas ====================================================
 resourcestring
@@ -1677,34 +1677,34 @@ resourcestring
 
 //=== JvTurtle.pas ===========================================================
 resourcestring
-  RsErrorCanvasNotAssigned = '#Error: Canvas not assigned';
-  RsEmptyScript = 'empty script';
-  RsInvalidIntegerIns = 'invalid integer in %s';
-  RsInvalidColorIns = 'invalid color in %s';
-  RsInvalidCopyMode = 'invalid copy mode';
-  RsInvalidPenMode = 'invalid pen mode';
-  RsInvalidTextIns = 'invalid text in %s';
-  RsMissingFontname = 'missing fontname';
-  RsNumberExpectedIns = 'number expected in %s';
-  RsNumberStackUnderflow = 'number stack underflow';
-  RsNumberStackOverflow = 'number stack overflow';
-  RsMissingAfterComment = 'missing } after comment';
-  RsErrorIns = 'error in %s';
-  RsDivisionByZero = 'division by zero';
-  RsInvalidParameterIns = 'invalid parameter in %s';
-  RsSymbolsIsNotDefined = 'symbol %s is not defined';
-  RsMissingAfterBlock = 'missing ] after block';
-  RsStackUnderflowIns = 'stack underflow in %s';
-  RsSymbolExpectedAfterIf = 'symbol expected after if';
-  RsCanNotTakeSqrtOf = 'can not take sqrt of 0';
+  RsErrorCanvasNotAssigned = 'Canvas not assigned';
+  RsEmptyScript = 'Empty script';
+  RsInvalidIntegerIns = 'Invalid integer in %s';
+  RsInvalidColorIns = 'Invalid color in %s';
+  RsInvalidCopyMode = 'Invalid copy mode';
+  RsInvalidPenMode = 'Invalid pen mode';
+  RsInvalidTextIns = 'Invalid text in %s';
+  RsMissingFontname = 'Missing fontname';
+  RsNumberExpectedIns = 'Number expected in %s';
+  RsNumberStackUnderflow = 'Number stack underflow';
+  RsNumberStackOverflow = 'Number stack overflow';
+  RsMissingAfterComment = 'Missing "}" after comment';
+  RsErrorIns = 'Error in %s';
+  RsDivisionByZero = 'Division by zero';
+  RsInvalidParameterIns = 'Invalid parameter in %s';
+  RsSymbolsIsNotDefined = 'Symbol %s is not defined';
+  RsMissingAfterBlock = 'Missing "]" after block';
+  RsStackUnderflowIns = 'Stack underflow in %s';
+  RsSymbolExpectedAfterIf = 'Symbol expected after if';
+  RsCanNotTakeSqrtOf = 'Can not take sqrt of 0';
   RsNotAllowedIns = '0 not allowed in %s';
-  RsNeedMinimumOfSidesIns = 'need minimum of 3 sides in %s';
-  RsMaximumSidesExceededIns = 'maximum 12 sides exceeded in %s';
-  RsTokenExpected = 'token expected';
+  RsNeedMinimumOfSidesIns = 'Need minimum of 3 sides in %s';
+  RsMaximumSidesExceededIns = 'Maximum 12 sides exceeded in %s';
+  RsTokenExpected = 'Token expected';
   RssDoesNotExist = '%s does not exist';
-  RsDivisionByZeroNotAllowedInIn = 'division by zero not allowed in in-';
-  RsStackOverflow = 'stack overflow';
-  RsStackUnderflow = 'stack underflow';
+  RsDivisionByZeroNotAllowedInIn = 'Division by zero not allowed in in-';
+  RsStackOverflow = 'Stack overflow';
+  RsStackUnderflow = 'Stack underflow';
 
 //=== JvTypes.pas ============================================================
 resourcestring
@@ -1906,6 +1906,11 @@ resourcestring
   RsEnterSeachText = 'Enter seach text:';
   RsFounds = 'Found %s';
   RsToday = 'Today ';
+  
+//=== JvDBGrid.pas ============================================================
+  RsJvDBGridSelectTitle = 'Select columns';
+  RsJvDBGridSelectOK = '&OK';
+  RsJvDBGridSelectWarning = 'At least one column must be visible!';
 
 //=== not taken into JVCL ====================================================
 {
