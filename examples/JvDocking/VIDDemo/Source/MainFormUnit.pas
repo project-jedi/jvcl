@@ -5,7 +5,8 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ImgList, ActnList, Menus, ToolWin, ComCtrls, ExtCtrls, StdCtrls,
-  JvDockControlForm, JvDockVIDStyle;
+  JvDockControlForm, JvDockVIDStyle, JvComponent, JvAppStorage,
+  JvAppRegistryStorage;
 
 type
   TMainForm = class(TForm)
@@ -452,6 +453,7 @@ type
     lbDockServer1: TJvDockServer;
     JvDockVIDStyle1: TJvDockVIDStyle;
     MainFormStatusBar: TStatusBar;
+    JvAppStorage: TJvAppRegistryStorage;
     procedure Action_FileExecute(Sender: TObject);
     procedure MainControlBarBandMove(Sender: TObject; Control: TControl;
       var ARect: TRect);
@@ -702,7 +704,8 @@ begin
     if Str <> 'ERROR' then
     begin
       Load_Save_WindowUI_ComboBox.ItemIndex := Load_Save_WindowUI_ComboBox.Items.IndexOf(Str);
-      LoadDockTreeFromFile(ExtractFilePath(Application.EXEName) + Str + '.ini');
+//      LoadDockTreeFromFile(ExtractFilePath(Application.EXEName) + Str + '.ini');
+      LoadDockTreeFromAppStorage(JvAppStorage, Str);
     end;
   finally
     Sections.Free;
@@ -713,10 +716,12 @@ end;
 procedure TMainForm.SaveDefaultLayout;
 var IniFile: TIniFile;
 begin
+  SaveDockTreeToAppStorage(JvAppStorage, Load_Save_WindowUI_ComboBox.Text);
+  JvAppStorage.WriteString(JvAppStorage.ConcatPaths([SectionString, DefaultLayout]), Load_Save_WindowUI_ComboBox.Text);
   IniFile := TIniFile.Create(ExtractFilePath(Application.EXEName) + DefineWindowLayoutFileName);
   try
     IniFile.WriteString(SectionString, DefaultLayout, Load_Save_WindowUI_ComboBox.Text);
-    SaveDockTreeToFile(ExtractFilePath(Application.EXEName) + Load_Save_WindowUI_ComboBox.Text + '.ini');
+//    SaveDockTreeToFile(ExtractFilePath(Application.EXEName) + Load_Save_WindowUI_ComboBox.Text + '.ini');
   finally
     IniFile.Free;
   end;
@@ -724,7 +729,7 @@ end;
 
 procedure TMainForm.Load_Save_WindowUI_ComboBoxChange(Sender: TObject);
 begin
-  LoadDockTreeFromFile(ExtractFilePath(Application.EXEName) + Load_Save_WindowUI_ComboBox.Text + '.ini');
+//  LoadDockTreeFromFile(ExtractFilePath(Application.EXEName) + Load_Save_WindowUI_ComboBox.Text + '.ini');
 end;
 
 procedure TMainForm.FormClose(Sender: TObject; var Action: TCloseAction);

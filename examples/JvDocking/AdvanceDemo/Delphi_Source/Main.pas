@@ -1,3 +1,5 @@
+{$I JVCL.INC}
+
 unit Main;
 
 interface
@@ -6,7 +8,11 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, StdCtrls, Menus, ComCtrls, ToolWin, JvDockControlForm, JvDockTree,
   JvDockVCStyle, JvDockDelphiStyle, JvDockVIDStyle, JvDockVSNetStyle,
-  JvDockSupportClass, IniFiles{$IFDEF VER150}, XPMan{$ENDIF};
+  JvDockSupportClass
+  {$IFDEF USEJVCL}
+  ,JvComponent, JvAppRegistryStorage, JvAppIniStorage, JvAppXmlStorage
+  {$ENDIF}
+  {$IFDEF VER150}, XPMan{$ENDIF};
 
 type
   TMainForm = class(TForm)
@@ -21,8 +27,8 @@ type
     btnVID: TToolButton;
     ShowWindow_Menu: TMenuItem;
     DockInfo_Menu: TMenuItem;
-    SaveToFile: TMenuItem;
-    LoadFromFile: TMenuItem;
+    SaveToIniFile: TMenuItem;
+    LoadFromIniFile: TMenuItem;
     SaveToReg: TMenuItem;
     LoadFromReg: TMenuItem;
     N24: TMenuItem;
@@ -53,14 +59,17 @@ type
     ClientAllDocked: TMenuItem;
     Memo1: TMemo;
     JvDockVSNetStyle1: TJvDockVSNetStyle;
+    N1: TMenuItem;
+    SaveToXmlFile: TMenuItem;
+    LoadFromXmlFile: TMenuItem;
     procedure DelphiStyleClick(Sender: TObject);
     procedure VCStyleClick(Sender: TObject);
     procedure VIDStyleClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure bsToolWindow1Click(Sender: TObject);
     procedure bsToolWindow2Click(Sender: TObject);
-    procedure SaveToFileClick(Sender: TObject);
-    procedure LoadFromFileClick(Sender: TObject);
+    procedure SaveToIniFileClick(Sender: TObject);
+    procedure LoadFromIniFileClick(Sender: TObject);
     procedure SaveToRegClick(Sender: TObject);
     procedure LoadFromRegClick(Sender: TObject);
     procedure TopDockedClick(Sender: TObject);
@@ -82,8 +91,16 @@ type
     procedure ClientAllDockedClick(Sender: TObject);
     procedure ClientDockorFloatClick(Sender: TObject);
     procedure ClientHideClick(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure SaveToXmlFileClick(Sender: TObject);
+    procedure LoadFromXmlFileClick(Sender: TObject);
   private
     { Private declarations }
+    {$IFDEF USEJVCL}
+    FJvAppRegistryStorage: TJvAppRegistryStorage;
+    FJvAppIniFileStorage: TJvAppIniFileStorage;
+    FJvAppXmlStorage: TJvAppXmlStorage;
+    {$ENDIF}
     FForm1Count,
     FForm2Count,
     FForm3Count,
@@ -162,6 +179,23 @@ begin
   AllDocked.Checked := lbDockServer1.EnableDock;
   Memo1.WordWrap := True;
   Caption := Caption + ' (docking is set to ' + lbDockServer1.DockStyle.ClassName + ')';
+  {$IFDEF USEJVCL}
+  FJvAppRegistryStorage:= TJvAppRegistryStorage.Create(self);
+  FJvAppRegistryStorage.Path := '\Software\JVCL\Examples\JvDocking\AdvancePro';
+  FJvAppIniFileStorage:= TJvAppIniFileStorage.Create(self);
+  FJvAppIniFileStorage.FileName := ExtractFilePath(Application.ExeName) + 'DockInfo.ini';
+  FJvAppXmlStorage:= TJvAppXmlStorage.Create(self);
+  FJvAppXMLStorage.FileName := ExtractFilePath(Application.ExeName) + 'DockInfo.xml';
+  {$ENDIF}
+end;
+
+procedure TMainForm.FormDestroy(Sender: TObject);
+begin
+  {$IFDEF USEJVCL}
+  FreeAndNil(FJvAppRegistryStorage);
+  FreeAndNil(FJvAppIniFileStorage);
+  FreeAndNil(FJvAppXmlStorage);
+  {$ENDIF}
 end;
 
 procedure TMainForm.AddItemToShowDockMenu(AForm: TForm);
@@ -220,24 +254,54 @@ begin
   end;
 end;
 
-procedure TMainForm.SaveToFileClick(Sender: TObject);
+procedure TMainForm.SaveToIniFileClick(Sender: TObject);
 begin
+  {$IFDEF USEJVCL}
+  SaveDockTreeToAppStorage(FJvAppIniFileStorage);
+  {$ELSE}
   SaveDockTreeToFile(ExtractFilePath(Application.ExeName) + 'DockInfo.ini');
+  {$ENDIF}
 end;
 
-procedure TMainForm.LoadFromFileClick(Sender: TObject);
+procedure TMainForm.LoadFromIniFileClick(Sender: TObject);
 begin
+  {$IFDEF USEJVCL}
+  LoadDockTreeFromAppStorage(FJvAppIniFileStorage);
+  {$ELSE}
   LoadDockTreeFromFile(ExtractFilePath(Application.ExeName) + 'DockInfo.ini');
+  {$ENDIF}
 end;
 
 procedure TMainForm.SaveToRegClick(Sender: TObject);
 begin
+  {$IFDEF USEJVCL}
+  SaveDockTreeToAppStorage(FJvAppRegistryStorage);
+  {$ELSE}
   SaveDockTreeToReg(HKEY_CURRENT_USER, '\Software\DockInfo');
+  {$ENDIF}
 end;
 
 procedure TMainForm.LoadFromRegClick(Sender: TObject);
 begin
+  {$IFDEF USEJVCL}
+  LoadDockTreeFromAppStorage(FJvAppRegistryStorage);
+  {$ELSE}
   LoadDockTreeFromReg(HKEY_CURRENT_USER, '\Software\DockInfo');
+  {$ENDIF}
+end;
+
+procedure TMainForm.SaveToXmlFileClick(Sender: TObject);
+begin
+  {$IFDEF USEJVCL}
+  SaveDockTreeToAppStorage(FJvAppXMLStorage);
+  {$ENDIF}
+end;
+
+procedure TMainForm.LoadFromXmlFileClick(Sender: TObject);
+begin
+  {$IFDEF USEJVCL}
+  LoadDockTreeFromAppStorage(FJvAppXMLStorage);
+  {$ENDIF}
 end;
 
 procedure TMainForm.TopDockedClick(Sender: TObject);
@@ -423,5 +487,7 @@ begin
   if lbDockServer1.DockStyle <> Sender then
     ShowMessage('This form type will not be able to dock');
 end;
+
+
 
 end.
