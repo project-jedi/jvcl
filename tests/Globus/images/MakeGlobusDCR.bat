@@ -1,4 +1,4 @@
-@echo creates a resource file from a RC script
+@ECHO OFF
 brc32 Reggllib.rc -r -fo..\Resources\Reggllib.dcr
 
 
