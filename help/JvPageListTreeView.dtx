@@ -1,5 +1,5 @@
 ##Package: PageComps
-##Status: Completed (III) (peter3)
+##Status: Completed,Checked (peter3)
 ----------------------------------------------------------------------------------------------------
 @@JvPageListTreeView.pas
 Summary
@@ -18,15 +18,15 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@IPageList
 Summary
-  An interface that must be implemented by controls that wants to be assignable to the PageList property
+  An interface that must be implemented by controls that want to be assignable to the PageList property
   of other controls.
 Description
   IPageList should be implemented by controls that should be assignment compatible with the PageList property of
   other controls. For example, the TJvPageList control implements this interface making it possible to
   use it in combination with the TJvSettingsTreeview and TJvPageListTreeView controls.
 
-  The methods of IPageList is called by the IPageList consumer (any component that have an writeable
-  IPageList property). For example, TJvPageListTreeView calls the methods of the IPageList assigned to it's
+  The methods of IPageList is called by the IPageList consumer (any component that have a writeable
+  IPageList property). For example, TJvPageListTreeView calls the methods of the IPageList assigned to its
   PageList property when the selected node is changed.
 ----------------------------------------------------------------------------------------------------
 @@IPageList.CanChange
@@ -36,7 +36,7 @@ Description
   CanChange is called by the IPageList consumer when it needs to know if the IPageList implementation can
   make a page active.
 Parameters
-  AIndex - the 0-based index of the page to check if it can be activated.
+  AIndex - The 0-based index of the page to check if it can be activated.
 Return Value
   Should return true if the page at AIndex can be activated or false otherwise. If AIndex is outside
   the allowable range for the page list, return false.
@@ -47,9 +47,9 @@ Summary
 Description
   getPageCaption is called by the IPageList user to retrieve the display name of a specific page.
   The getPageCaption is only called at design-time when the IPageList consumer needs to display the
-  pages in the IPageList implementation in it's own design editor(s).
+  pages in the IPageList implementation in its own design editor(s).
 Parameters
-  AIndex - the 0-based index of the page whose caption is to be returned.
+  AIndex - The 0-based index of the page whose caption is to be returned.
 Return Value
   A string representing the caption of the page. If AIndex is outside the allowable range, this function should return an
   empty string or the value "unknown" or similar and not raise an exception or generate an error.
@@ -67,14 +67,14 @@ Summary
   Changes the currently active page.
 Description
   SetActivePageIndex is called by the IPageList consumer when it wants to change the currently active page. A call to
-  SetActivePageIndex is mostly preceded by a call to CanChange and SetActivePageIndex is only called if CanChange returns true
+  SetActivePageIndex is mostly preceded by a call to CanChange and SetActivePageIndex is only called if CanChange returns true.
 Parameters
-  AIndex - the new 0-based index of the page to make the active page. If AIndex is outside the range of the page list,
-           the IPageList implementation should do nothing
+  AIndex - The new 0-based index of the page to make the active page. If AIndex is outside the range of the page list,
+           the IPageList implementation should do nothing.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPage
 Summary
-  TJvCustomPage is the base class for a page used by a page list component.
+  Base class for a page used by a page list component.
 Description
   Don't create instances of TJvCustomPage. Instead, use it as a base class to derive new page classes from when
   you implement your own TJvCustomPageList descendant. TJvCustomPage defines and implements the basic behavior for a
@@ -92,7 +92,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPage.Left
 Summary
-  Specifies the horizontal coordinate of the left edge of the page relative to it's parent.
+  Specifies the horizontal coordinate of the left edge of the page relative to its parent.
 Description
   Use the Left property to determine where the left side of the page begins or to reposition the left side of the page.
   Pages are ordinarily client aligned to the parent page list control and changing the Left property has no effect. In page
@@ -122,8 +122,8 @@ Description
   to perform any special drawing before the default painting has started. To suppress normal drawing, set the DefaultDraw parameter to false.
 Parameters
   Sender      - The control that is calling this event.
-  ACanvas     - The canvas to draw on
-  ARect       - The rect area to draw within
+  ACanvas     - The canvas to draw on.
+  ARect       - The rect area to draw within.
   DefaultDraw - Variable that determines if the default drawing is to be performed after the event
                  returns. Set this to false to suppress normal drawing of the page.
 ----------------------------------------------------------------------------------------------------
@@ -167,15 +167,15 @@ Summary
 Description
   Specifies the PageList that owns this page. Change PageList to move the page to another page list control.
 
-  To create and add a page to a page list at run-time, create the page and set it's PageList property to the
+  To create and add a page to a page list at run-time, create the page and set its PageList property to the
   page list control that should contain it.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPage.Top
 Summary
-  Specifies the Y coordinate of the top left corner of a page, relative to it's parent or containing control in pixels.
+  Specifies the Y coordinate of the upper left corner of a page, relative to its parent or containing control in pixels.
 Description
   Use Top to locate the top of the control or reposition the page to a different Y coordinate.
-  The Top property, like the Left property, is the position of the page relative to it's container.
+  The Top property, like the Left property, is the position of the page relative to its container.
   Thus, if a control is contained in a TPanel, the Left and Top properties are relative to the panel.
 Note
   If the page is client aligned (the default), changing the Top property will have no effect.
@@ -188,24 +188,24 @@ Summary
 Description
   Use the Width property to read or change the width of the control.
 Note
-  If the page is client aligned (the default), changing it's width will have no effect.
+  If the page is client aligned (the default), changing its width will have no effect.
 See Also
   Top, Left, Height
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPageClass
 Summary
-  The class type of TJvCustomPage classes
+  The class type of TJvCustomPage classes.
 Description
   TJvCustomPageClass is the class type for TJvCustomPage and descendants.
   This type is returned by the <LINK TJvCustomPageList.GetPageClass, GetPageClass> function.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPageList
 Summary
-  TJvCustomPageList is the base class for page list components.
+  Base class for page list components.
 Description
   Use TJvCustomPageList as a base class when defining a control that should contain a series of pages where
   only one page is visible at a time. A page list is very similar to a <LINK TPageControl,TPageControl>
-  but it's pages does not have any tabs.
+  but its pages do not have any tabs.
 
   Do not create instances of TJvCustomPageList. To put a page list on a form,
   use a descendant of TJvCustomPageList, such as <LINK TJvPageList,TJvPageList>.
@@ -241,7 +241,7 @@ See Also
 Summary
   Returns the page in the page list control before or after a specified page.
 Description
-  Call FindNextPage to locate a page in the page list control by it's position relative to the
+  Call FindNextPage to locate a page in the page list control by its position relative to the
   page specified by the CurPage parameter. If the GoForward parameter is true, FindNextPage returns
   the next page in the page list control after CurPage. If GoForward is false, FindNextPage returns the previous page.
 
@@ -254,9 +254,9 @@ Description
   FindNextPage returns the next enabled page.
 
 Parameters
-  CurPage         - the page where the search starts
-  GoForward       - set to true to search forward or to false to search backwards in the Pages array
-  IncludeDisabled - set to true if you want to include disabled pages in the search, set to false to only include enabled pages
+  CurPage         - The page where the search starts.
+  GoForward       - Set to true to search forward or to false to search backwards in the Pages array.
+  IncludeDisabled - Set to true if you want to include disabled pages in the search, set to false to only include enabled pages.
 Return value
   Returns the found page or nil if no matching page was found.
 See Also
@@ -264,7 +264,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPageList.GetPageClass
 Summary
-  Returns the class type for the pages in the page list control
+  Returns the class type for the pages in the page list control.
 Description
   GetPageClass returns the class used to create pages in the page list. Override this method to return your
   own TJvCustomPage class in descendants of TJvCustomPageList.
@@ -304,15 +304,15 @@ Description
   <LINK ActivePageIndex,ActivePageIndex> properties.
 
 Parameters
-  Sender      - The page list that triggered the event
-  PageIndex   - the index of the page that is to become selected
-  AllowChange - set to false to disallow the change. This parameter is true by default.
+  Sender      - The page list that triggered the event.
+  PageIndex   - The index of the page that is to become selected.
+  AllowChange - Set to false to disallow the change. This parameter is true by default.
 See Also
   OnChange, ActivePage, ActivePageIndex
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPageList.OnParentColorChange
 Summary
-  Occurs when the Parents color changes
+  Occurs when the Parents color changes.
 Description
   Write an OnParentColorChange event handler to take specific action when the Parents color changes.
 ----------------------------------------------------------------------------------------------------
@@ -325,8 +325,8 @@ Description
   To add a new page at design-time, right-click the page list and select "New page". To delete a page
   at design-time, right-click the control and select "Delete".
 
-  To add a new page at run-time, create the page dynamically and set it's PageList property to
-  the page list control that should contain it. To remove a page at run-time, set it's PageList
+  To add a new page at run-time, create the page dynamically and set its PageList property to
+  the page list control that should contain it. To remove a page at run-time, set its PageList
   property to nil and then Free the page.
 See Also
   Pages
@@ -350,12 +350,12 @@ Description
   where an Index of 0 specifies the first page, an Index of 1 specifies the second page, and so on.
   Each page is a TJvCustomPage or descendant object.
 
-  To locate a page in the page list by it's position relative to another page, use the FindNextPage method.
+  To locate a page in the page list by its position relative to another page, use the FindNextPage method.
 Note
   Pages is a read-only property. To add a page to a page control at design time, right click and select "New Page".
-  To add a page to a page list control at runtime, create the page and set it's PageList property to the page list control.
-  To delete a page at design time, right click and selected "Delete". To delete a page at runtime, set it's PageList
-  property to nil and then destroy it by calling it's Free method.
+  To add a page to a page list control at runtime, create the page and set its PageList property to the page list control.
+  To delete a page at design time, right click and selected "Delete". To delete a page at runtime, set its PageList
+  property to nil and then destroy it by calling its Free method.
 See Also
   ActivePage, FindNextPage, PageList
 ----------------------------------------------------------------------------------------------------
@@ -384,24 +384,24 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPageList.ShowDesignCaption
 Summary
-  Specifies if page captions are visible at design-time
+  Specifies if page captions are visible at design-time.
 Description
   Use ShowDesignCaption to specify how the caption of contained pages are shown at design-time. Showing the caption can help
-  keep track of which page is currently active without having to select the page list and look at it's ActivePage property in the
+  keep track of which page is currently active without having to select the page list and look at its ActivePage property in the
   Object Inspector.
 
   Page captions are always hidden at run-time.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPageListTreeView
 Summary
-  TJvCustomPageListTreeView is the base class for treeviews that has a PageList property of type IPageList.
+  Base class for treeviews that has a PageList property of type IPageList.
 Description
   Use TJvCustomPageListTreeView as a base class when developing treeview components that should have the
   ability to be associated with an IPageList implementation.
 
   TJvCustomPageListTreeView has the same functionality as a normal treeview but in addition it can also automatically
   change the active page of an IPageList implementation when the selected node changes. Internally, the TJvCustomPageListTreeView
-  component creates it's tree nodes as TJvPageIndexNodes. A TJvPageIndexNode has a PageIndex property that specifies
+  component creates its tree nodes as TJvPageIndexNodes. A TJvPageIndexNode has a PageIndex property that specifies
   which page in the PageList to active when the node is selected.
 
   Since the nodes in the treeview is surfaced as normal TTreenodes, you must typecast the TTreeNode to
@@ -442,7 +442,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPageListTreeView.OnParentColorChange
 Summary
-  Occurs when the Parents color changes
+  Occurs when the Parents color changes.
 Description
   Write an OnParentColorChange event handler to take specific action when the Parents color changes.
 ----------------------------------------------------------------------------------------------------
@@ -462,26 +462,29 @@ Summary
 Description
   This property is only used at design-time to set up the association between a node and the page that
   should be displayed by the IPageList implementation when that node is selected. To set up a page link association
-  at run-time, type cast the tree node to TJvPageIndexNode and set it's PageIndex property.
-  Example:
+  at run-time, type cast the tree node to TJvPageIndexNode and set its PageIndex property.
+
+  \Example:
+  <AUTOLINK OFF>
   <CODE>
     TJvPageIndexNode(JvCustomPageListTreeView1.Items[SomeIndex]).PageIndex := SomePageIndex;
   </CODE>
+  <AUTOLINK ON>
   The linking will only have effect if the PageList property has been assigned.
 See Also
   PageList, TJvPageIndexNode.PageIndex
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPageListTreeView.PageList
 Summary
-  Specifies the IPageList implementation
+  Specifies the IPageList implementation.
 Description
   Use the PageList property to associate an IPageList implementation with the treeview. If a PageList is assigned,
-  the active page of the page list will change autmatically when the user selects a new node in the treeview. The page
+  the active page of the page list will change automatically when the user selects a new node in the treeview. The page
   that is activated is determined by the value of the selected nodes PageIndex property.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSettingsTreeView
 Summary
-  TJvCustomSettingsTreeView is a treeview that behaves like the tree view in the Options Dialog in VS.net
+  A treeview that behaves like the tree view in the Options Dialog in VS.net.
 Description
   TJvCustomSettingsTreeView is a base class for treeviews that behave like the
   treeview in the Settings Dialog in Visual Studio: When a node in the treeview
@@ -493,14 +496,14 @@ Description
     need to assign a TImageList to the Images property
   * When a node is expanded, it is assigned the expanded image until it is collapsed, regardless
     whether it's selected or not
-  * When a parent folder is selected, the first non-folder child has it's
+  * When a parent folder is selected, the first non-folder child has its
     normal image set as the selected image
   * By default, AutoExpand and ReadOnly is true, ShowButtons and ShowLines are false
 
   Other than that, it should work like a normal TreeView. Note that the treeview was designed with AutoExpand = true
   in mind but should work with AutoExpand = false
 
-  To get the VS look , Images should contain:
+  To get the VS look, Images should contain:
   * Image 0: Closed Folder
   * Image 1: Open Folder
   * Image 2: Right-pointing teal-colored arrow
@@ -548,7 +551,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvPageIndexNode
 Summary
-  A tree node class that has an additional PageIndex property
+  A tree node class that has an additional PageIndex property.
 Description
   TJvPageIndexNode is the class for nodes created by the TJvPageListTreeView component.
 ----------------------------------------------------------------------------------------------------
@@ -556,11 +559,11 @@ Description
 Summary
   Copies the properties of another node.
 Description
-  It the Source parameter is a TJvPageIndexNode object, Assign copies it's
+  It the Source parameter is a TJvPageIndexNode object, Assign copies its
   properties to this node. Otherwise, Assign calls the inherited method so
-  that any object that copies properties to a TJvPageIndexNode in it's AssignTo method can do so.
+  that any object that copies properties to a TJvPageIndexNode in its AssignTo method can do so.
 Parameters
-  Source - The object to copy
+  Source - The object to copy.
 See Also
   AssignTo
 ----------------------------------------------------------------------------------------------------
@@ -574,7 +577,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvPageIndexNodes
 Summary
-  TJvPageIndexNodes maintains a list of TJvPageIndexNode nodes in a tree view control.
+  Maintains a list of TJvPageIndexNode nodes in a tree view control.
 Description
   The Items property of the TJvCustomPageListTreeView is a TJvPageIndexNodes object and maintains the collection of
   nodes in the tree view. Nodes can be added, deleted, inserted, and moved within the tree view.
@@ -585,11 +588,11 @@ Summary
   Class used to facilitate linking nodes to pages in a page list.
 Description
   This class is only used at design-time and is provided to activate the design-time editor for setting up links between tree nodes and
-  the pages in an IPageList implementation. Do not try to use this class or it's methods as it isn't a "real" class.
+  the pages in an IPageList implementation. Do not try to use this class or its methods as it isn't a "real" class.
 ----------------------------------------------------------------------------------------------------
 @@TJvPageLinks.TreeView
 Summary
-  Specifies the TreeView that is the "parent" of the TJvPageLinks instance
+  Specifies the TreeView that is the "parent" of the TJvPageLinks instance.
 ----------------------------------------------------------------------------------------------------
 @@TJvPageList
 <TITLEIMG TJvPageList>
@@ -597,9 +600,9 @@ JVCLInfo
   GROUP=JVCL.PagesAndTabs.Pages
   FLAG=Component
 Summary
-  TJvPageList implements the IPageList interface
+  Implements the IPageList interface.
 Description
-  TJvPageList is derived from TJvCustomPageList and publishes most of it's properties but doesn't add any new functionality.
+  TJvPageList is derived from TJvCustomPageList and publishes most of its properties but doesn't add any new functionality.
 ----------------------------------------------------------------------------------------------------
 @@TJvPageListTreeView
 <TITLEIMG TJvPageListTreeView>
@@ -607,21 +610,21 @@ JVCLInfo
   GROUP=JVCL.ListsAndTrees.Trees
   FLAG=Component
 Summary
-  TJvPageListTreeView is a treeview that can be associated with an IPageList implementation.
+  A treeview that can be associated with an IPageList implementation.
 Description
-  TJvPageListTreeView is derived from TJvCustomPageListTreeView and publishes most of it's properties but doesn't add any new functionality.
+  TJvPageListTreeView is derived from TJvCustomPageListTreeView and publishes most of its properties but doesn't add any new functionality.
 ----------------------------------------------------------------------------------------------------
 @@TJvPagePaintEvent
 <TITLE TJvPagePaintEvent type>
 Summary
-  TJvPagePaintEvent is used for events that allows you to paint in a specific area on a canvas
+  The type of event handlers that allow you to paint in a specific area on a canvas.
 Description
   The TJvPagePaintEvent type is the type for events that allows custom painting on a specified area
   of a canvas. For example, the OnAfterPaint and OnPaint events of TJvCustomPage are of this type.
 Parameters
-  Sender  - The class that triggered the event
-  ACanvas - The canvas to draw on
-  ARect   - The area on the canvas to draw inside
+  Sender  - The class that triggered the event.
+  ACanvas - The canvas to draw on.
+  ARect   - The area on the canvas to draw inside.
 See Also
   TJvCustomPage.OnAfterPaint, TJvCustomPage.OnPaint
 ----------------------------------------------------------------------------------------------------
@@ -634,36 +637,36 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvSettingsTreeImages.CollapsedIndex
 Summary
-  Specifies which image is displayed when a node with children is in it's collapsed state.
+  Specifies which image is displayed when a node with children is in its collapsed state.
 Description
-  Use the CollapsedIndex property with the Images property of the tree view to specify the image for the node in it's collapsed state.
+  Use the CollapsedIndex property with the Images property of the tree view to specify the image for the node in its collapsed state.
   If the node doesn't have any children, use the ImageIndex and SelectedIndex properties instead.
 See Also
   ExpandedIndex, ImageIndex, SelectedIndex
 ----------------------------------------------------------------------------------------------------
 @@TJvSettingsTreeImages.ExpandedIndex
 Summary
-  Specifies which image is displayed when a node with children is in it's expanded state.
+  Specifies which image is displayed when a node with children is in its expanded state.
 Description
-  Use the ExpandedIndex property with the Images property of the tree view to specify the image for the node in it's
+  Use the ExpandedIndex property with the Images property of the tree view to specify the image for the node in its
   expanded state. If the node doesn't have any children, use the ImageIndex and SelectedIndex properties instead.
 See Also
   CollapsedIndex, ImageIndex, SelectedIndex
 ----------------------------------------------------------------------------------------------------
 @@TJvSettingsTreeImages.ImageIndex
 Summary
-  Specifies which image is displayed when a node is in it's normal state and is not currently selected.
+  Specifies which image is displayed when a node is in its normal state and is not currently selected.
 Description
-  Use the ImageIndex property with the Images property of the tree view to specify the image for the node in it's normal state.
+  Use the ImageIndex property with the Images property of the tree view to specify the image for the node in its normal state.
   If the node has children, use the ExpandedIndex and CollapsedIndex properties instead.
 See Also
   CollapsedIndex, ExpandedIndex, SelectedIndex
 ----------------------------------------------------------------------------------------------------
 @@TJvSettingsTreeImages.SelectedIndex
 Summary
-  Specifies which image is displayed when a node is in it's selected state.
+  Specifies which image is displayed when a node is in its selected state.
 Description
-  Use the SelectedIndex property with the Images property of the tree view to specify the image for the node in it's selected state.
+  Use the SelectedIndex property with the Images property of the tree view to specify the image for the node in its selected state.
   If the node has children, use the ExpandedIndex and CollapsedIndex properties instead.
 See Also
   CollapsedIndex, ExpandedIndex, ImageIndex
@@ -681,42 +684,42 @@ JVCLInfo
   GROUP=JVCL.ListsAndTrees.Trees
   FLAG=Component
 Summary
-  TJvSettingsTreeView is a treeview that behaves like the treeview in the Options Dialog in VS.Net.
+  A treeview that behaves like the treeview in the Options Dialog in VS.Net.
 Description
-  TJvSettingsTreeView is derived from TJvCustomSettingsTreeView and publishes it's properties but it
+  TJvSettingsTreeView is derived from TJvCustomSettingsTreeView and publishes its properties but it
   does not add any new functionality.
 ----------------------------------------------------------------------------------------------------
 @@TJvShowDesignCaption
 <TITLE TJvShowDesignCaption type>
 Summary
-  TJvShowDesignCaption is the type of the <LINK TJvCustomPageList.ShowDesignCaption,ShowDesignCaption>
-  property of the TJvCustomPageList component
+  The type of the <LINK TJvCustomPageList.ShowDesignCaption,ShowDesignCaption>
+  property of the TJvCustomPageList component.
 Description
   TJvShowDesignCaption can have one of the following values:
 @@TJvShowDesignCaption.sdcNone
-  Don't show any caption
+  Don't show any caption.
 @@TJvShowDesignCaption.sdcTopLeft
-  Show the caption in the top left corner of the page
+  Show the caption in the top left corner of the page.
 @@TJvShowDesignCaption.sdcTopCenter
-  Show the caption in the center of the page
+  Show the caption in the center of the page.
 @@TJvShowDesignCaption.sdcTopRight
-  Show the caption in the top right of the page
+  Show the caption in the top right of the page.
 @@TJvShowDesignCaption.sdcLeftCenter
-  Show the caption in the left center of the page
+  Show the caption in the left center of the page.
 @@TJvShowDesignCaption.sdcCenter
-  Show the caption in the center of the page
+  Show the caption in the center of the page.
 @@TJvShowDesignCaption.sdcRightCenter
-  Show the caption in the right center of the page
+  Show the caption in the right center of the page.
 @@TJvShowDesignCaption.sdcBottomLeft
-  Show the caption in the bottom left corner of the page
+  Show the caption in the bottom left corner of the page.
 @@TJvShowDesignCaption.sdcBottomCenter
-  Show the caption in the bottom center of the page
+  Show the caption in the bottom center of the page.
 @@TJvShowDesignCaption.sdcBottomRight
-  Show the caption in the bottom right corner of the page
+  Show the caption in the bottom right corner of the page.
 ----------------------------------------------------------------------------------------------------
 @@TJvStandardPage
 Summary
   Class that represents a page in a page list control.
 Description
-  TJvStandardPage derives from TJvCustomPage and publishes it's properties but does not
+  TJvStandardPage derives from TJvCustomPage and publishes its properties but does not
   add any new functionality.

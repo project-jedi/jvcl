@@ -1,5 +1,5 @@
 ##Package: Dlgs
-##Status: Completed (II)
+##Status: Completed,Checked
 ##Skip: EShellOleError
 ##Skip: FreePIDL
 ##Skip: FreePIDLProc
@@ -109,12 +109,12 @@ Summary
   Creates a Shell link.
 Description
   Call CreateShellLink to create a shell link for an application or document as specified in
-  AppName with description Desc. 
+  AppName with description Desc.
 Parameters
   AppName - The path and file name of the Shell link object.
   Desc    - The description for the Shell link object. The description can be any application-defined string.
   Dest    - The folder where the link will be located in.
-Return Value 
+Return Value
   Returns the full path name of the link file.
 ----------------------------------------------------------------------------------------------------
 @@EWinDialogError
@@ -131,9 +131,9 @@ Description
   ExtractIconFromFile is a wrapper for the ExtractIcon API. Use it to retrieve a handle to an icon from
   the specified executable file, dynamic-link library (DLL), or icon file.
 Parameters
-  FileName - The name of an executable file, DLL, or icon file. 
+  FileName - The name of an executable file, DLL, or icon file.
   Index    - The zero-based index of the icon to retrieve. For example, if this value is 0, the
-              function returns a handle to the first icon in the specified file. 
+              function returns a handle to the first icon in the specified file.
 ----------------------------------------------------------------------------------------------------
 @@GetShellLinkInfo
 <TITLE GetShellLinkInfo procedure>
@@ -150,7 +150,7 @@ See Also
 @@RecycleFile
 <TITLE RecycleFile function>
 Summary
-  Delete a file.
+  Deletes a file.
 Description
   Call RecycleFile to delete a file, but preserve Undo information, if possible.
 Parameters
@@ -216,19 +216,20 @@ Description
 Summary
   Specifies the desired subprogram.
 Description
-  Use AppletIndex to specify the desired subprogram or dialog box. AppletIndex must be in the range zero through 
-  one less than Count. 
+  Use AppletIndex to specify the desired subprogram or dialog box. AppletIndex must be in the range zero through
+  one less than Count.
 See Also
   Count, Execute
 ----------------------------------------------------------------------------------------------------
 @@TJvAppletDialog.AppletInfo
 Summary
-  Returns information about a dialog box that the applet supports. 
+  Returns information about a dialog box that the applet supports.
 Description
-  Call AppletInfo to retrieve information about a specific subprogram or dialog box.
+  Use AppletInfo to retrieve information about a specific subprogram or dialog box. You may change
+  the lData field of the returned record; changing other fields has no effect.
 Parameters
-  Index - Specifies the index of the dialog box. Index must be in the range zero through 
-           one less than Count. 
+  Index - Specifies the index of the dialog box. Index must be in the range zero through
+           one less than Count.
 See Also
   AppletIndex, Count
 ----------------------------------------------------------------------------------------------------
@@ -237,9 +238,9 @@ Summary
   Specifies the name of the Control Panel application.
 Description
   Use AppletName to specify the name of the Control Panel application.
-  
+
   Some examples are:
-  
+
   <TABLE>
   Value          Meaning
   -----          -------
@@ -248,8 +249,8 @@ Description
   SYSDM.CPL      Add New Hardware Wizard
   TIMEDATE.CPL   Date & Time Properties
   </TABLE>
-  
-  See http://vbnet.mvps.org/index.html?code/system/controlpnl.htm for more examples.
+
+  See <LINK http://vbnet.mvps.org/index.html?code/system/controlpnl.htm> for more examples.
 See Also
   AppletIndex
 ----------------------------------------------------------------------------------------------------
@@ -257,7 +258,7 @@ See Also
 Summary
   Indicates how many subprograms the applet supports.
 Description
-  Read Count to determine how many subprograms or dialog boxes the applet specified by AppletName 
+  Read Count to determine how many subprograms or dialog boxes the applet specified by AppletName
   supports. Property AppletIndex must be smaller than Count.
 See Also
   AppletIndex, AppletName
@@ -293,6 +294,8 @@ Summary
 Description
   TJvBrowseFolderDialog is a wrapper for the SHBrowseForFolder windows API. It can display the
   Browse dialog box, do this by calling the Execute method.
+
+  Use the TJvBrowseForFolderDialog component instead if you want to have more control.
 See Also
   TJvBrowseForFolderDialog
 ----------------------------------------------------------------------------------------------------
@@ -317,8 +320,8 @@ JVCLInfo
 Summary
   Displays a dialog that allows a user to select an icon from a module.
 Description
-  Use TJvChangeIconDialog to show a dialog that allows a user to select an icon from a module.
-  Do this by calling the Execute method.
+  The TJvChangeIconDialog component is a wrapper for the Windows PickIconDlg API. Use it to show a dialog
+  that allows a user to select an icon from a module. Do this by calling the Execute method.
 
   You can preview this dialog at design-time, by right-clicking the component and clicking "Preview...".
 ----------------------------------------------------------------------------------------------------
@@ -329,7 +332,7 @@ Description
   Call Execute to show a dialog that allows a user to select an icon from a module.
 Return Value
   If the user selects an icon, the return value is true. It is false if the user chooses the Cancel
-  button, or the Close command on the System menu. 
+  button, or the Close command on the System menu.
 See Also
   FileName, IconIndex
 ----------------------------------------------------------------------------------------------------
@@ -338,8 +341,8 @@ Summary
   Specifies the fully-qualified path of the default dynamic-link library (DLL) that contains the icons.
 Description
   Use FileName to specify a fully-qualified path of the default dynamic-link library (DLL) that contains
-  the icons. If the user chooses a different DLL, FileName contains that DLL's path when the function
-  returns.
+  the icons. If the user chooses a different DLL in the dialog, FileName contains that DLL's path
+  when the function returns.
 See Also
   Execute, IconIndex
 ----------------------------------------------------------------------------------------------------
@@ -363,11 +366,16 @@ JVCLInfo
 Summary
   Displays a dialog enabling the user to select a computer.
 Description
-  Use TJvComputerNameDialog to show a dialog that enables the user to select a computer. Do this 
+  Use TJvComputerNameDialog to show a dialog that enables the user to select a computer. Do this
   by calling the Execute method.
 
+  If the user selects anything other than a computer in the dialog box, the OK button is grayed.
+
   You can preview this dialog at design-time, by right-clicking the component and clicking "Preview...".
-  Only return computers. If the user selects anything other than a computer, the OK button is grayed.
+
+  Use the TJvBrowseForFolderDialog component instead if you want to have more control.
+See Also
+  TJvBrowseForFolderDialog
 ----------------------------------------------------------------------------------------------------
 @@TJvComputerNameDialog.Caption
 Summary
@@ -379,7 +387,7 @@ Description
 Summary
   Indicates the computer that the user selected in the dialog.
 Description
-  /Read ComputerName to retrieve the name of the computer that the user selected in the dialog.
+  \Read ComputerName to retrieve the name of the computer that the user selected in the dialog.
 See Also
   Execute
 ----------------------------------------------------------------------------------------------------
@@ -391,25 +399,24 @@ Description
   retrieve the name of the computer the user selected in the dialog.
 Return Value
   \Returns true when the user selects a computer and clicks the OK button, false otherwise.
-See Also 
+See Also
   ComputerName
 ----------------------------------------------------------------------------------------------------
 @@TJvCplInfo
 <TITLE TJvCplInfo type>
 Summary
-  Contains resource information and an application-defined value for a dialog box supported by a 
-  Control Panel application. 
+  Contains information and an application-defined value for a dialog box supported by a
+  Control Panel application.
 Description
   The TJvCplInfo record type contains information about a dialog box supported by a Control Panel application.
   Use the <LINK TJvAppletDialog.AppletInfo,AppletInfo> property of a TJvAppletDialog component to
   retrieve such a record.
 @@TJvCplInfo.Icon
-  Resource identifier of the icon that represents the dialog box.
+  The icon that represents the dialog box.
 @@TJvCplInfo.Name
-  Resource identifier of the string containing the short name for the dialog box. This name is intended
-  to be displayed below the icon.
+  The short name for the dialog box. This name is intended to be displayed below the icon.
 @@TJvCplInfo.Info
-  Resource identifier of the string containing the description for the dialog box that is intended to 
+  The description for the dialog box that is intended to
   be displayed when the application icon is selected.
 @@TJvCplInfo.lData
   Pointer to data defined by the application. When the Control Panel sends the CPL_DBLCLK and CPL_STOP
@@ -465,7 +472,7 @@ Summary
 Description
   Use TJvExitWindowsDialog to show a dialog that prompts the user to restart Windows. Do this by
   calling the Execute method. When the user clicks the button,
-  the function calls ExitWindowsEx to attempt to restart Windows.
+  the function calls the ExitWindowsEx API to attempt to restart Windows.
 
   You can preview this dialog at design-time, by right-clicking the component and clicking "Preview...".
 ----------------------------------------------------------------------------------------------------
@@ -474,7 +481,7 @@ Summary
   Shows a dialog that prompts the user to restart Windows.
 Description
   Call Execute to show a dialog that prompts the user to restart Windows.
-  
+
   There is no return value, so you have no way of knowing what the user selected or whether the
   operation was canceled.
 ----------------------------------------------------------------------------------------------------
@@ -486,7 +493,7 @@ JVCLInfo
 Summary
   Displays the standard Shell format dialog.
 Description
-  TJvFormatDrive is a wrapper for the Windows SHFormatDrive function.
+  TJvFormatDrive is a wrapper for the Windows SHFormatDrive API.
 
   This Windows API function displays the standard Shell format dialog. The actual format process is
   controlled by the dialog interface. It cannot be started programmatically.
@@ -495,7 +502,7 @@ Description
   in the \Format type group box of the format dialog. Note that the user can nevertheless select another
   format type. Use Capacity to specify the formatted capacity of the drive.
 
-  Some values of FormatType and Capacity are ignored on Windows NT, 2000 and XP systems. For example
+  Some values of FormatType and Capacity are ignored on Windows NT, 2000 and XP systems. For example,
   if you set Capacity to dcSize360kb, under Windows XP this value is ignored and the system uses the
   drives default capacity.
 
@@ -525,7 +532,7 @@ Summary
   Displays the standard Shell format dialog.
 Description
   Call Execute to display the standard Shell format dialog.
-  
+
   When Execute does not succeed or when the user cancels the format dialog, an OnError event is fired.
 Return Value
   Returns true on success, otherwise false.
@@ -540,7 +547,7 @@ Description
   format dialog.
 Note
   The ftBootable value is only supported on Windows 95, 98 and ME. On Windows NT
-  and XP systems, if FormatType is set to ftBootable, Execute behaves as was FormatType set to
+  and XP systems, if FormatType is set to ftBootable, Execute behaves as if FormatType was set to
   ftStandard.
 See Also
   Capacity, Drive, Execute
@@ -597,7 +604,7 @@ Summary
 Description
   TJvMIMEAssociationDialog is a wrapper for the MIMEAssociationDialog Windows API. It can display the
   unregistered Multipurpose Internet Mail Extensions (MIME) content type dialog, do this by
-  calling the Execute method. This dialog allows the user to select an application to associate with 
+  calling the Execute method. This dialog allows the user to select an application to associate with
   a previously unknown MIME content type.
 
   You have to specify a name of file - by using property FileName - that contains data of ContentType's
@@ -661,13 +668,18 @@ Description
   in ReturnValue.
 
   Possible return values are:
-  * S_OK: If the MIME content type is associated with the extension. The extension is associated as
-    the default extension for the content type.
-  * S_FALSE: If nothing is registered. Otherwise the function returns one of the following errors:
-  * E_ABORT -- The user cancelled the operation.
-  * E_FLAGS -- The options specified by Options is invalid.
-  * E_OUTOFMEMORY -- Not enough memory to complete the operation.
-  * E_POINTER -- One of the values of the properties is invalid.
+
+  <TABLE>
+  Value           Meaning
+  -----           -------
+  S_OK            If the MIME content type is associated with the extension. The extension is associated as
+                   the default extension for the content type.
+  S_FALSE         If nothing is registered.
+  E_ABORT         The user cancelled the operation.
+  E_FLAGS         The options specified by Options are invalid.
+  E_OUTOFMEMORY   Not enough memory to complete the operation.
+  E_POINTER       One of the values of the properties is invalid.
+  </TABLE>
 See Also
   Execute
 ----------------------------------------------------------------------------------------------------
@@ -707,7 +719,7 @@ Description
 Summary
   Specifies the destination folder for the shortcut.
 Description
-  Use the DestionationFolder property to specify a destionation folder for the new shortcut.
+  Use the DestinationFolder property to specify a destination folder for the new shortcut.
 See Also
   Execute
 ----------------------------------------------------------------------------------------------------
@@ -727,7 +739,7 @@ JVCLInfo
 Summary
   Displays a properties dialog for a file, folder or printer.
 Description
-  TJvObjectPropertiesDialog invokes the Properties context menu command on a Shell object. Do this by calling 
+  TJvObjectPropertiesDialog invokes the Properties context menu command on a Shell object. Do this by calling
   the Execute method.
 
   It can also be used to display the properties for a printer object.
@@ -936,7 +948,7 @@ Summary
 Description
   Call Execute to show the ShellAbout dialog.
 Return Value
-  Returns true if successful, or false otherwise. 
+  Returns true if successful, or false otherwise.
 ----------------------------------------------------------------------------------------------------
 @@TJvShellAboutDialog.Icon
 Summary
@@ -1016,7 +1028,7 @@ Summary
   Shows an application update notification dialog
 Description
   Call Execute to show an application update notification dialog.
-  
+
   If Execute returns false, then read ReturnValue to get additional information.
 Return Value
   Returns true if the user clicked the Update Now or About Update button, false otherwise.
@@ -1030,17 +1042,22 @@ Description
   in ReturnValue.
 
   Possible return values are:
-  * IDNO: The user clicked the "Don't Update" button on the dialog box. The caller should save the
-    update version from the SOFTDISTINFO and pass it in as the Advertised
-    version in future calls.
-  * IDYES: The user clicked the "Update Now" or "About Update" button. The application should navigate
-    to the HTML page referred to by the <LINK TJvSoftwareUpdateInfo.HREF,HREF> property of DistInfo to
-    initiate the install or learn about it. The caller should save the update version from DistInfo
-    and pass it in as the Advertised version in future calls.
-  * IDIGNORE: There is no pending software update. This occurs if the available version is less than
-    the installed version or is not present or if the Advertised version is greater than or equal to
-    the update version.
-  * IDABORT: An error occurred.
+
+  <TABLE>
+  Value           Meaning
+  -----           -------
+  IDNO            The user clicked the "Don't Update" button on the dialog box. The caller should save the
+                   update version from the SOFTDISTINFO and pass it in as the Advertised
+                   version in future calls.
+  IDYES           The user clicked the "Update Now" or "About Update" button. The application should navigate
+                   to the HTML page referred to by the <LINK TJvSoftwareUpdateInfo.HREF,HREF> property of DistInfo to
+                   initiate the install or learn about it. The caller should save the update version from DistInfo
+                   and pass it in as the Advertised version in future calls.
+  IDIGNORE        There is no pending software update. This occurs if the available version is less than
+                   the installed version or is not present or if the Advertised version is greater than or equal to
+                   the update version.
+  IDABORT         An error occurred.
+  </TABLE>
 See Also
   Execute
 ----------------------------------------------------------------------------------------------------
@@ -1246,9 +1263,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvURLAssociationDialog.URL
 Summary
-  Specifies an URL with an unknown protocol.
+  Specifies a URL with an unknown protocol.
 Description
-  Use URL to specify an \URL whose unregistered protocol requires a handler.
+  Use URL to specify a \URL whose unregistered protocol requires a handler.
 
   You have to provide a \URL with a protocol, otherwise calling Execute fails, without displaying a dialog.
   A URL typical takes this form:
@@ -1289,11 +1306,11 @@ See Also
 @@TShellLinkInfo.Description
   The description string for the Shell link object.
 @@TShellLinkInfo.WorkingDirectory
-  Name of the working directory for the Shell link object. 
+  Name of the working directory for the Shell link object.
 @@TShellLinkInfo.IconLocation
-  The path of the icon for the Shell link object. 
+  The path of the icon for the Shell link object.
 @@TShellLinkInfo.IconIndex
-  The index of the icon for the Shell link object. 
+  The index of the icon for the Shell link object.
 @@TShellLinkInfo.ShowCmd
   The show command for the Shell link object.
 @@TShellLinkInfo.HotKey
@@ -1305,10 +1322,10 @@ Summary
   Enumerates types of objects.
 Description
   Use the TShellObjectType to specify the type of an object.
-  
+
   TShellObjectTypes is a set of TShellObjectType objects.
 @@TShellObjectType.sdPathObject
-  The object is a file or a folder. 
+  The object is a file or a folder.
 @@TShellObjectType.sdPrinterObject
   The object is a printer.
 ----------------------------------------------------------------------------------------------------

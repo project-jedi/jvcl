@@ -1,5 +1,5 @@
 ##Package: System
-##Status: Completed (II) (peter3)
+##Status: Completed,Checked (peter3)
 ##Skip: TJvNotifyError
 ##Skip: TJvNotifyArray
 ----------------------------------------------------------------------------------------------------
@@ -13,12 +13,12 @@ Author
 @@ActionsToString
 <TITLE ActionsToString function>
 Summary
-  Converts an action to it's string representation.
+  Converts an action to its string representation.
 Description
   Call ActionsToString to convert a set of TJvChangeAction items to a user friendly string.
 Parameters
   Actions :  The actions to convert.
-Returns
+Return value
   \Returns a user friendly string describing a set of actions.
 ----------------------------------------------------------------------------------------------------
 @@TJvChangeAction
@@ -38,7 +38,7 @@ Description
 @@TJvChangeAction.caChangeLastWrite
   Send notification when the last write time of a file changes.
 @@TJvChangeAction.caChangeSecurity
-  Send notification when the security attributes of a file r directory  changes.
+  Send notification when the security attributes of a file or directory changes.
 ----------------------------------------------------------------------------------------------------
 @@TJvChangeActions
 <TITLE TJvChangeActions type>
@@ -49,13 +49,13 @@ Summary
   Maintains a single folder that should be monitored for changes.
 Description
   TJvChangeItem is a TCollectionItem descendant that contains the settings for a single directory that should
-  be monitored for changes. Instances of this class is created and used by the TJvChangeItems class.
-  To add a new instance at design time, double-click the Notifications property of TJvChangeNotify to display the
-  design editor for TJvChangeItem's. To add an instance at runtime, call TJvChangeNotify.Notifications.Add.
+  be monitored for changes. Instances of this class are created and used by the TJvChangeItems class.
+  To add a new instance at design-time, double-click the Notifications property of TJvChangeNotify to display the
+  design editor for TJvChangeItem's. To add an instance at run-time, call TJvChangeNotify.Notifications.Add.
 ----------------------------------------------------------------------------------------------------
 @@TJvChangeItem.Actions
 Summary
-  Specifies the actions to monitor
+  Specifies the actions to monitor.
 Description
   Use Actions to specify what actions should be monitored by this item. When one of the actions
   occurs in the monitored directory (or sub-directories if that is enabled), the OnChange event is triggered.
@@ -187,8 +187,8 @@ Summary
   Contains a list of monitored directories.
 Description
   Use Notifications to manage the directories that should be monitored by the component. To manage the
-  Notifications at design time, click the Notifications property in the Object Inspector to display the
-  Collection Editor. To manage Notifications at runtime, use
+  Notifications at design-time, click the Notifications property in the Object Inspector to display the
+  Collection Editor. To manage Notifications at run-time, use
   <LINK TJvChangeItems.Add,Notifications.Add> and <LINK TCollection.Delete,Notifications.Delete>
   to add and remove items.
 See Also
@@ -201,8 +201,8 @@ Description
   \Write a handler for this event to take specific action when a change has occurred in a monitored
   directory. For example, use this event to update a list of changed files or folders displayed to the user.
 Parameters
-  Sender  - The object that triggered the event
-  Dir     - The directory where the change occurred
+  Sender  - The object that triggered the event.
+  Dir     - The directory where the change occurred.
   Actions - The action or actions that triggered the event.
 ----------------------------------------------------------------------------------------------------
 @@TJvChangeThread

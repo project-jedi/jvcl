@@ -1,5 +1,5 @@
 ##Package: System
-##Status: Completed (I)
+##Status: Completed,Checked
 ----------------------------------------------------------------------------------------------------
 @@JvWndProcHook.pas
 Summary
@@ -78,7 +78,7 @@ Description
   Use TJvHookMessageEvent to respond to messages send to the hooked control.
 
   Use parameter Handled to specify
-  whether the message is handled; setting Handled to true will prevent other hooks or the hooked control -
+  whether the message is handled. Setting Handled to true will prevent other hooks or the hooked control -
   if it has not received the message yet - to respond to this message.
 Parameters
   Sender  - The hook component that has send this message.
@@ -124,8 +124,8 @@ Summary
 Description
   Use Active to determine or set whether the control specified by Control is hooked. When Active is
   false, no AfterMessage and BeforeMessage events will be triggered. When Active is true, the control
-  specified by Control is hooked; before the hooked control receives a message a BeforeMessage event with
-  that message is fired; after the hooked control has handled that message an AfterMessage event will be
+  specified by Control is hooked. Before the hooked control receives a message a BeforeMessage event with
+  that message is fired. After the hooked control has handled that message an AfterMessage event will be
   fired.
 
   At design time, set Active to true to make the control hooked when the application starts
@@ -142,7 +142,7 @@ Description
   <i>after</i> the hooked control has handled the message.
 
   Use parameter Handled to specify
-  whether the message is handled; setting Handled to true will prevent other hooks to respond to this
+  whether the message is handled. Setting Handled to true will prevent other hooks to respond to this
   message.
 
   This event is only triggered when Active is set to true.
@@ -156,7 +156,7 @@ Description
   Use BeforeMessage to respond to messages send to the hooked control. The BeforeMessage event is
   fired <i>before</i> the hooked control has handled the message.
 
-  Use parameter Handled to specify whether the hooked control may respond to this message. setting
+  Use parameter Handled to specify whether the hooked control may respond to this message. Setting
   Handled to true will prevent the hooked control or other hooks placed on the control to respond
   to this message.
 
@@ -179,7 +179,7 @@ See Also
 Summary
   Hooks the control.
 Description
-  Call HookControl to set the Active property for the hook component to true. When Active is true
+  Call HookControl to set the Active property for the hook component to true. When Active is true,
   AfterMessage and BeforeMessage will be triggered when the hooked control receives a message.
 See Also
   Active, Control

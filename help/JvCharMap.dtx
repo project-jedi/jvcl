@@ -1,12 +1,12 @@
 ##Package: Ctrls
-##Status: Completed (I) (peter3)
+##Status: Completed,Checked (peter3)
 ----------------------------------------------------------------------------------------------------
 @@JvCharMap.pas
 Summary
   Contains the TJvCharMap component.
 <INCLUDE JVCL.UnitText.dtx>
 Author
-  Peter Thornqvist.
+  Peter Thörnqvist
 ----------------------------------------------------------------------------------------------------
 @@TJvCharMap
 <TITLEIMG TJvCharMap>
@@ -30,13 +30,14 @@ Description
 Summary
   Provides options for the TJvCharMap component.
 Description
-  TJvCharMapRange provides display options for a TJvCharMap an dis the type for the CharRange property HighlightInvalid
+  TJvCharMapRange provides display options for a TJvCharMap and is the type for the
+  <LINK TJvCustomCharMap.CharRange,CharRange> property.
 ----------------------------------------------------------------------------------------------------
 @@TJvCharMapRange.EndChar
 Summary
   Determines the last character to display in a character map.
 Description
-  Use EndChar to set the last char to display in a TJvCharMap. Although EndChar is of type Word, it
+  Use EndChar to set the last char to display in a TJvCharMap. Although EndChar is of type Cardinal, it
   is actually used as a WideChar. EndChar has effect only if Filter is set to ufUndefined.
 See Also
   StartChar, Filter
@@ -65,7 +66,7 @@ Summary
   Determines the first character displayed in a character map.
 Description
   Use StartChar to set the first character to display in a TJvCharMap. Although StartChar is of type
-  Word, it is actually used as a WideChar. StartChar has effect only if Filter is set to ufUndefined.
+  Cardinal, it is actually used as a WideChar. StartChar has effect only if Filter is set to ufUndefined.
 See Also
   EndChar, Filter
 ----------------------------------------------------------------------------------------------------
@@ -190,23 +191,23 @@ See Also
 Summary
   Base class for a component that displays characters in a character set in a grid.
 Description
-  TJvCustomCharMap is the base class for TJvCharMap and defines all it's properties and events as protected.
+  TJvCustomCharMap is the base class for TJvCharMap and defines all its properties and events as protected.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCharMap.AutoSizeHeight
 Summary
-  Determines whether the component adjusts is height to match it's content.
+  Determines whether the component adjusts is height to match its content.
 Description
-  Set AutoSizeHeight to true to make the control automatically adjust it's Height property to display
-  it's content without using scrollbars.
+  Set AutoSizeHeight to true to make the control automatically adjust its Height property to display
+  its content without using scrollbars.
 See Also
   AutoSizeWidth
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCharMap.AutoSizeWidth
 Summary
-  Determines whether the component adjusts is width to match it's content.
+  Determines whether the component adjusts is width to match its content.
 Description
-  Set AutoSizeWidth to true to make the control automatically adjust it's Width property to display
-  it's content without using scrollbars.
+  Set AutoSizeWidth to true to make the control automatically adjust its Width property to display
+  its content without using scrollbars.
 See Also
   AutoSizeHeight
 ----------------------------------------------------------------------------------------------------
@@ -221,7 +222,7 @@ Return value
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCharMap.Character
 Summary
-  Determines the curerntly selected character in the grid.
+  Determines the currently selected character in the grid.
 Description
   Read Character to determine the currently selected character in the grid.
 ----------------------------------------------------------------------------------------------------
@@ -233,7 +234,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCharMap.Columns
 Summary
-  Defines the nuber fo columns to display in the gird.
+  Defines the number of columns to display in the gird.
 Description
   Use Columns to read and change the number of columns in the grid. The number of rows is automatically
   adjusted to accomodate the currently selected character range.
@@ -256,7 +257,7 @@ See Also
 Summary
   Determines the locale to use when extracting character info.
 Description
-  Use Locale to set the locale to use when the character map extracts character info. Character info is
+  Use Locale to set the locale to use when the character map extracts character info. \Character info is
   extracted using the GetStringTypeEx(W) function and, by default, only characters returning valid
   information is displayed in the grid.
 Note
@@ -287,9 +288,9 @@ Parameters
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCharMap.PanelVisible
 Summary
-  Shows or hids the zoom panel.
+  Shows or hides the zoom panel.
 Description
-  Use PanelVisible to programatically show and hide the zoom panel. Note that ShowZoomPanel must be true for this
+  Use PanelVisible to programmatically show and hide the zoom panel. Note that ShowZoomPanel must be true for this
   setting to have any effect.
 See Also
   ShowZoomPanel
@@ -318,19 +319,19 @@ Summary
 Description
   Use ShowZoomPanel to define whether a zoom panel is shown when the user selects a cell in the grid.
 
-  A zoom panel displays the currently selected character in a alrger font and in a separate window overlaying the
+  A zoom panel displays the currently selected character in a larger font and in a separate window overlaying the
   currently selected cell.
 
   To show the zoom panel at run-time, ShowZoomPanel must be true. The zoom panel can then be displayed using
   any of the following methods:
     * Programmatically by setting PanelVisible to true.
     * By clicking the left mouse button in a valid cell.
-    * By selecting a cell and pressing the ENTER key.
+    * By selecting a cell and pressing the Enter key.
 
   Once the zoom panel is visible, the user can use the arrow keys or the mouse scroll wheel to move the zoom
   panel to another cell.
 
 Note
-  A user can toggle the zoom panel on and off using the SPACEBAR and hide it using ESCAPE.
+  A user can toggle the zoom panel on and off using the Spacebar and hide it using by pressing the Escape key.
 See Also
   PanelVisible
