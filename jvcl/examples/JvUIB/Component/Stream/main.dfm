@@ -59,6 +59,7 @@ object MainForm: TMainForm
     DatabaseName = 'd:\employee.db'
     UserName = 'SYSDBA'
     PassWord = 'masterkey'
+    LibraryName = 'gds32.dll'
     Left = 88
   end
   object Transaction: TJvUIBTransaction
@@ -67,9 +68,9 @@ object MainForm: TMainForm
   end
   object Query: TJvUIBQuery
     Transaction = Transaction
+    FetchBlobs = True
     SQL.Strings = (
       'select * from employee')
-    FetchBlobs = True
     Left = 152
   end
 end

@@ -44,6 +44,7 @@ begin
   Query.Fields.SaveToStream(MemStream);
   Query.Close(etmCommit);
 
+  MemStream.Seek(0, soFromBeginning);
   FieldResult.LoadFromStream(MemStream);
   MemStream.Free;
 

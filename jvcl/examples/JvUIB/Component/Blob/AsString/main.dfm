@@ -60,6 +60,7 @@ object Form1: TForm1
     DatabaseName = 'd:\employee.db'
     UserName = 'SYSDBA'
     PassWord = 'masterkey'
+    LibraryName = 'gds32.dll'
     Left = 16
     Top = 80
   end
@@ -80,7 +81,9 @@ object Form1: TForm1
   object UpdateQuery: TJvUIBQuery
     Transaction = Transaction
     SQL.Strings = (
-      'UPDATE project SET proj_desc = ? WHERE proj_id = '#39'DGPII'#39)
+      
+        'UPDATE project SET proj_desc = :description WHERE proj_id = '#39'DGP' +
+        'II'#39)
     Left = 112
     Top = 80
   end
