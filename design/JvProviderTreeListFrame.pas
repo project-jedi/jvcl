@@ -33,7 +33,7 @@ interface
 uses
   SysUtils, Classes,
   Windows, Messages, Graphics, Controls, Forms, Dialogs, ComCtrls,
-  JvDataProvider, JvDataProviderIntf;
+  JvJCLUtils, JvDataProvider, JvDataProviderIntf;
 
 type
   TGetVirtualRootEvent = procedure(Sender: TObject; var AVirtualRoot: IJvDataItem) of object;
@@ -466,7 +466,6 @@ begin
   {$IFDEF VisualCLX}
   ARect := Item.DisplayRect;
   ARect.Right := Sender.ClientRect.Right;
-
   ACanvas := TControlCanvas.Create;
   TControlCanvas(ACanvas).Control := Sender;
   try
@@ -522,13 +521,9 @@ begin
     end;
   end;
   ARect.Left := ARect.Left + BtnWdth;
-  {$IFDEF VCL}
-  DrawText(ACanvas.Handle, PChar(Item.Caption), Length(Item.Caption), ARect,
+  DrawText(ACanvas.Handle, TCaption(Item.Caption), Length(Item.Caption), ARect,
     DT_SINGLELINE + DT_LEFT + DT_END_ELLIPSIS);
-  {$ENDIF VCL}
   {$IFDEF VisualCLX}
-    DrawTextW(ACanvas.Handle, PWideChar(Item.Caption), Length(Item.Caption), ARect,
-      DT_SINGLELINE + DT_LEFT + DT_END_ELLIPSIS);
     ACanvas.Stop;
   finally
     ACanvas.Free;
