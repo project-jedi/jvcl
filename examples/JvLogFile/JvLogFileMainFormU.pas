@@ -43,12 +43,10 @@ type
     procedure FormCreate(Sender: TObject);
     procedure btnStartClick(Sender: TObject);
     procedure btnShowClick(Sender: TObject);
-    procedure FormMouseMove(Sender: TObject; Shift: TShiftState; X,
-      Y: Integer);
+    procedure FormMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure btnResetClick(Sender: TObject);
   private
-    { Private declarations }
-    FLogFileName:string;
+    FLogFileName: string;
     procedure StartLogging;
     procedure StopLogging;
     procedure ResetLogging;
@@ -63,7 +61,7 @@ implementation
 
 procedure TJvLogFileMainForm.FormCreate(Sender: TObject);
 begin
-  FLogFileName := ChangeFileExt(Application.ExeName,'.log');
+  FLogFileName := ChangeFileExt(Application.ExeName, '.log');
 end;
 
 procedure TJvLogFileMainForm.btnStartClick(Sender: TObject);
@@ -81,12 +79,12 @@ begin
   JvLogFile1.ShowLog('Mouse Move Log');
 end;
 
-procedure TJvLogFileMainForm.FormMouseMove(Sender: TObject; Shift: TShiftState; X,
-  Y: Integer);
+procedure TJvLogFileMainForm.FormMouseMove(Sender: TObject; Shift: TShiftState;
+  X, Y: Integer);
 begin
   if btnStart.Tag = 1 then
-    JvLogFile1.Add(DateTimeToStr(Now),'Mouse Move',Format('X:%d, Y:%d',[X,Y]));
-  Caption := Format('JvLogFile Demo - X:%d, Y:%d',[X,Y]);
+    JvLogFile1.Add(DateTimeToStr(Now), 'Mouse Move', Format('X:%d, Y:%d', [X, Y]));
+  Caption := Format('JvLogFile Demo - X:%d, Y:%d', [X, Y]);
 end;
 
 procedure TJvLogFileMainForm.ResetLogging;
@@ -121,3 +119,4 @@ begin
 end;
 
 end.
+

@@ -66,13 +66,13 @@ type
     procedure edMarginHChange(Sender: TObject);
     procedure LinkLabelLinkClick(Sender: TObject; LinkNumber: Integer;
       LinkText: String);
-    procedure LinkLabelMouseMove(Sender: TObject; Shift: TShiftState; X,
-      Y: Integer);
+    procedure LinkLabelMouseMove(Sender: TObject; Shift: TShiftState;
+      X, Y: Integer);
   end;
 
 implementation
 
-{$R *.DFM}
+{$R *.dfm}
 
 uses
   InfoStrings, JvLinkLabelDebug;
@@ -94,7 +94,6 @@ end;
 procedure TfrmPlay.btnRefreshClick(Sender: TObject);
 begin
   TreeView.Items.BeginUpdate;
-
   try
     TDebugLinkLabelTools.NodeTreeToTreeNodes(LinkLabel, TreeView.Items);
     TreeView.FullExpand;
@@ -132,9 +131,9 @@ end;
 procedure TfrmPlay.LinkLabelLinkClick(Sender: TObject; LinkNumber: Integer;
   LinkText: String);
 begin
-  Application.MessageBox( PChar(LinkText + ' clicked !'),
-                          PChar('Link Clicked'),
-                          MB_APPLMODAL + MB_ICONINFORMATION + MB_OK);
+  Application.MessageBox(PChar(LinkText + ' clicked !'),
+    PChar('Link Clicked'),
+    MB_APPLMODAL + MB_ICONINFORMATION + MB_OK);
 end;
 
 procedure TfrmPlay.LinkLabelMouseMove(Sender: TObject; Shift: TShiftState;X, Y: Integer);
