@@ -26,6 +26,8 @@
 
  RECENT CHANGES:
     Apr 30, 2004, Marcel Bestebroer:
+      - Mantis 1617: Allow Ctrl+Enter to toggle Expanded state, Ctrl+Left to
+        collapse and Ctrl+Right to expand.
       - Added UseFont property to TJvInspectorFontNameItem. When set to True
         the actualy font represented is used to render the font name, \
         otherwise the standard font is used. Note: the property defaults to
@@ -3067,7 +3069,30 @@ begin
           end;
         end;
     else
-      IgnoreKey := True;
+      IgnoreKey := False;
+    end;
+    if IgnoreKey then
+      Key := 0;
+  end
+  else
+  if Shift = [ssCtrl] then
+  begin
+    IgnoreKey := True;
+    case Key of
+      VK_RIGHT:
+        if Item.HasViewableItems and not Item.Expanded then
+          Item.Expanded := True;
+      VK_LEFT:
+        if Item.Expanded then
+          Item.Expanded := False;
+      VK_RETURN:
+        if Item.HasViewableItems and not Item.Expanded then
+          Item.Expanded := True
+        else
+        if Item.Expanded then
+          Item.Expanded := False;
+    else
+      IgnoreKey := False;
     end;
     if IgnoreKey then
       Key := 0;
