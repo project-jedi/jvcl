@@ -291,6 +291,8 @@ type
     function GetRollHeight: integer;
     function GetRollWidth: integer;
   protected
+    procedure CMDialogChar(var Message: TCMDialogChar); message CM_DIALOGCHAR;
+
     function GetHitTestRect(const HitTest: TJvXPBarHitTest): TRect;
     function GetItemRect(Index: Integer): TRect; virtual;
     procedure ItemVisibilityChanged(Item: TJvXPBarItem); dynamic;
@@ -1493,8 +1495,9 @@ end;
 
 procedure TJvXPCustomWinXPBar.Click;
 var
-  AllowChange: Boolean;
+  AllowChange, CallInherited: Boolean;
 begin
+  CallInherited := True;
   if (FShowRollButton) and (FHitTest <> htNone) then
     Collapsed := not Collapsed;
   if (FHoverIndex <> -1) and (FVisibleItems[FHoverIndex].Enabled) then
@@ -1505,7 +1508,10 @@ begin
     if not AllowChange then
       Exit;
     if Assigned(FOnItemClick) then
+    begin
       FOnItemClick(Self, FVisibleItems[FHoverIndex]);
+      CallInherited := False;
+    end;
     if Assigned(FVisibleItems[FHoverIndex].FOnClick) then
     begin
       { set linked 'action' as Sender }
@@ -1513,9 +1519,12 @@ begin
         FVisibleItems[FHoverIndex].FOnClick(FVisibleItems[FHoverIndex].Action)
       else
         FVisibleItems[FHoverIndex].FOnClick(FVisibleItems[FHoverIndex]);
+      CallInherited := False;
     end;
+    Collapsed := False;
   end;
-  inherited Click;
+  if CallInherited then
+    inherited Click;
 end;
 
 procedure TJvXPCustomWinXPBar.DoDrawItem(const Index: Integer; State: TJvXPDrawState);
@@ -1554,7 +1563,7 @@ begin
         ItemCaption := Format('(%s %d)', [RsUntitled, Index]);
       Inc(ItemRect.Left, 20);
       DrawText(Handle, PChar(ItemCaption), -1, ItemRect, DT_SINGLELINE or
-        DT_VCENTER or DT_END_ELLIPSIS or DT_NOPREFIX);
+        DT_VCENTER or DT_END_ELLIPSIS);
     end;
   finally
     Bitmap.Free;
@@ -1669,7 +1678,7 @@ begin
     Rect.Bottom := Rect.Top + FHeaderHeight;
     Dec(Rect.Right, 3);
     DrawText(Handle, PChar(Caption), -1, Rect, DT_SINGLELINE or DT_VCENTER or
-      DT_END_ELLIPSIS or DT_NOPREFIX);
+      DT_END_ELLIPSIS);
 
     { draw visible items }
     Brush.Color := FColors.BodyColor;
@@ -1815,6 +1824,32 @@ begin
   // go through each item and update
   for i := 0 to Items.Count - 1 do
     Items[i].ActionChange(Items[i].Action, csLoading in ComponentState);
+end;
+
+procedure TJvXPCustomWinXPBar.CMDialogChar(var Message: TCMDialogChar);
+var I: Integer;
+begin
+  if CanFocus then
+  begin
+    if IsAccel(Message.CharCode, Caption) then
+    begin
+      Message.Result := 1;
+      FHitTest := htHeader;
+      FHoverIndex := -1;
+      Click;
+    end
+    else
+      for I := 0 to VisibleItems.Count - 1 do
+        if IsAccel(Message.CharCode, VisibleItems[I].Caption) then
+        begin
+          Message.Result := 1;
+          FHitTest := htNone;
+          FHoverIndex := I;
+          Click;
+          Exit;
+        end;
+  end;
+  inherited;
 end;
 
 end.
