@@ -600,7 +600,7 @@ uses
 {$IFNDEF USEJVCL}
 resourcestring
   RsUntitled = 'untitled';
-  RsUntitledFmt = '(%s %d)";
+  RsUntitledFmt = '(%s %d)';
   RsHintShortcutFmt = '%s (%s)';
 {$ENDIF USEJVCL}
 
