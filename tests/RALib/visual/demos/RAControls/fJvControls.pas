@@ -125,7 +125,7 @@ uses JvStrUtil;
 {$R ractl.dcr}
 {$R radb.dcr}
 //{$R rai.dcr}
-{$R res.res}
+{$R res.dcr}
 
 procedure TMainForm .TabControl1Change(Sender: TObject);
 const
