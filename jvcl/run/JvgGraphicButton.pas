@@ -197,8 +197,8 @@ procedure TJvgGraphicButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
   inherited MouseUp(Button, Shift, X, Y);
-  if FState = bsPushed then
-    Click;
+//  if FState = bsPushed then
+//    Click; // already called
   if FState = bsPushed then
     FState := bsActive
   else
