@@ -488,7 +488,14 @@ begin
 end;
 
 procedure TJvFormPropsDlg.UpBtnClick(Sender: TObject);
+var i:integer;
 begin
+  i := StoredList.ItemIndex;
+  if i > 0 then
+  begin
+    StoredList.Items.Exchange(i, i - 1);
+    StoredList.ItemIndex := i - 1;
+  end;
 //  BoxMoveFocusedItem(StoredList, StoredList.ItemIndex - 1);
   if FDesigner <> nil then
     FDesigner.Modified;
@@ -496,7 +503,14 @@ begin
 end;
 
 procedure TJvFormPropsDlg.DownBtnClick(Sender: TObject);
+var i:integer;
 begin
+  i := StoredList.ItemIndex;
+  if i < StoredList.Items.Count - 1 then
+  begin
+    StoredList.Items.Exchange(i, i+1);
+    StoredList.ItemIndex := i + 1;
+  end;
 //  BoxMoveFocusedItem(StoredList, StoredList.ItemIndex + 1);
   if FDesigner <> nil then
     FDesigner.Modified;
