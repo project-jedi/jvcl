@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): -
 
-Last Modified: 2004-01-04
+Last Modified: 2004-02-01
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -99,6 +99,9 @@ type
     TitlePanel: TPanel;
     imgProjectJEDI: TImage;
     Label4: TLabel;
+    BevelHeader: TBevel;
+    ImageSave: TImage;
+    CheckBoxCombineRuntimeDesigntime: TCheckBox;
     procedure BtnQuitClick(Sender: TObject);
     procedure BtnAdvancedOptionsClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -130,6 +133,7 @@ type
     FInFillingList: Boolean;
     FLockOptClick: Integer;
     FLockPackageCheckStates: Integer;
+    FLockPackageList: Integer;
     function GetSelTarget: TTargetInfo;
     procedure FillTargetList;
     procedure UpdateTargetList;
@@ -242,6 +246,7 @@ var
 begin
   UpdatePackageCheckStates;
   ListViewTargets.Items.BeginUpdate;
+  Inc(FLockPackageList);
   try
     for i := 0 to ListViewTargets.Items.Count - 1 do
     begin
@@ -255,6 +260,7 @@ begin
         ListItem.SubItems[1] := IntToStr(Ver);
     end;
   finally
+    Dec(FLockPackageList);
     ListViewTargets.Items.EndUpdate;
   end;
 end;
@@ -299,8 +305,9 @@ var
   i: Integer;
   ListItem: TListItem;
 begin
-  if FLockPackageCheckStates > 0 then Exit;
-  
+  if FLockPackageCheckStates > 0 then
+    Exit;
+
   for i := 0 to ListViewPackages.Items.Count - 1 do
   begin
     ListItem := ListViewPackages.Items[i];
@@ -495,9 +502,10 @@ begin
   FormMainConfig.Filename := JVCLDir + '\common\jvcl.inc';
   FormMainConfig.BtnQuit.Caption := '&Close';
   FormMainConfig.BtnReload.Click;
-  FormMainConfig.BtnSave.Glyph := BtnInstall.Glyph;
   FormMainConfig.BtnQuit.Glyph := BtnQuit.Glyph;
+  FormMainConfig.BtnSave.Glyph := ImageSave.Picture.Bitmap;
   FormMainConfig.BtnReload.Glyph := ImageOpen.Picture.Bitmap;
+  FormMainConfig.imgProjectJEDI.Picture.Assign(imgProjectJEDI.Picture);
 
   Update_JVCL_INC_Config;
   UpdatePackageList;
@@ -600,13 +608,31 @@ end;
 
 procedure TFormMain.ListViewPackagesChange(Sender: TObject;
   Item: TListItem; Change: TItemChange);
+var
+  RuntimePackage: TPackageInfo;
 begin
+  if FLockPackageList > 0 then
+    Exit;
   if Change = ctState then
   begin
     if (Item <> nil) and (Item.Data <> nil) then
     begin
-      TPackageInfo(Item.Data).Install := Item.Checked;
-      UpdatePackageCheckStates;
+      if TPackageInfo(Item.Data).Install <> Item.Checked then
+      begin
+        TPackageInfo(Item.Data).Install := Item.Checked;
+        // deactivate runtime package if not needed
+        if CheckBoxCombineRuntimeDesigntime.Checked and
+           not Item.Checked then // only if the design package becomes unchecked  
+        begin
+          if TPackageInfo(Item.Data).IsDesign then
+          begin
+            RuntimePackage := TPackageInfo(Item.Data).PackageList.GetRuntimeOf(Item.Data);
+            if RuntimePackage <> nil then
+              RuntimePackage.Install := Item.Checked;
+          end;
+        end;
+        UpdatePackageCheckStates;
+      end;
     end;
   end;
 end;

@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): -
 
-Last Modified: 2004-01-04
+Last Modified: 2004-02-01
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -236,14 +236,14 @@ type
     function DependsOn(PackageInfo: TPackageInfo): Boolean;
     procedure UpdateRuntimePackages;
 
-    property Name: string read FName;
-    property DisplayName: string read FDisplayName;
-    property BplName: string read GetBplName;
+    property Name: string read FName; // "PackageName-"[R|D]
+    property DisplayName: string read FDisplayName; // "PackageName"
+    property BplName: string read GetBplName; // "PackageName"[D|C][5-7][R|D]
     property Description: string read FDescription;
     property RequireCount: Integer read GetRequireCount;
     property Requires[Index: Integer]: TRequirePkg read GetRequires;
     property RequiresDB: Boolean read FRequiresDB;
-    property ContaionCount: Integer read GetContainCount;
+    property ContainCount: Integer read GetContainCount;
     property Contains[Index: Integer]: TContainsFile read GetContains;
     property IsInstalled: Boolean read FIsInstalled;
     property IsDesign: Boolean read FIsDesign;
@@ -266,6 +266,7 @@ type
 
     procedure ReadPackages;
     function FindPackage(const Name: string): TPackageInfo;
+    function GetRuntimeOf(Package: TPackageInfo): TPackageInfo;
 
     property Count: Integer read GetCount;
     property Items[Index: Integer]: TPackageInfo read GetItems; default;
@@ -296,7 +297,7 @@ function FindCmdSwitch(const Switch: string): Boolean;
 function MoveFile(const Source, Dest: string): Boolean;
 {$IFNDEF COMPILER6_UP}
 function DirectoryExists(const Dir: string): Boolean;
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 procedure DeleteFilesEx(const Dir, Mask: string);
 
 function CreateJclPackageList(Target: TTargetInfo): TPackageList;
@@ -312,7 +313,7 @@ const
   cComponentPalettePrefix = 'TJv';
 
   cJVCLDirList: array[Boolean, 0..2] of PChar = (
-    ('$(JVCL)\common', '$(JVCL)\libX', ''), // no developer install (libX is replaced)
+    ('$(JVCL)\common', '$(JVCL)\libX', ''), // no developer install (libX is replaced by the code)
     ('$(JVCL)\common', '$(JVCL)\run', '$(JVCL)\design') // developer install
   );
   cJVCLDirBrowseList: array[0..1] of PChar = (
@@ -320,7 +321,7 @@ const
   );
 
   cJCLDirList: array[0..0] of PChar = (
-    '$(JCL)\lib\xx\obj' // xx is replaced
+    '$(JCL)\lib\xx\obj' // xx is replaced by the code
   );
   cJCLDirBrowseList: array[0..3] of PChar = (
     '$(JCL)\source\common', '$(JCL)\source\vcl', '$(JCL)\source\visclx',
@@ -472,7 +473,7 @@ begin
   Attr := Integer(GetFileAttributes(PChar(Dir)));
   Result := (Attr <> -1) and (Attr and FILE_ATTRIBUTE_DIRECTORY <> 0);
 end;
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 
 procedure DeleteFilesEx(const Dir, Mask: string);
 var
@@ -1002,7 +1003,8 @@ procedure TTargetInfo.RegistryInstall;
 var
   i: Integer;
 begin
-  if FCompileOnly then Exit;
+  if FCompileOnly then
+    Exit;
 
   AddRemoveJVCLPaths(True);
   if FClearJVCLPalette then
@@ -1015,9 +1017,11 @@ begin
 end;
 
 procedure TTargetInfo.RegistryUninstall;
-var i: Integer;
+var
+  i: Integer;
 begin
-  if FCompileOnly then Exit;
+  if FCompileOnly then
+    Exit;
 
   AddRemoveJVCLPaths(False);
   DoClearJVCLPalette;
@@ -1033,7 +1037,8 @@ end;
 
 procedure TTargetInfo.JclRegistryInstall;
 begin
-  if FCompileOnly then Exit;
+  if FCompileOnly then
+    Exit;
 
   if JCLDir <> '' then
     AddRemoveJCLPaths(True);
@@ -1373,7 +1378,7 @@ begin
 
   for i := 0 to Packages.Count - 1 do
     if (not Packages[i].IsDesign) then
-     // WARNING: setting <Install> to False may deactivate other packages 
+     // WARNING: setting <Install> to False may deactivate other packages
       Packages[i].Install := Ini.ReadBool(Symbol + ' Runtime', Packages[i].BplName, False);
 end;
 
@@ -1769,8 +1774,26 @@ begin
   for i := 0 to Count - 1 do
   begin
     Result := Items[i];
-    if (CompareText(Result.Name, Name) = 0) or (CompareText(Result.BplName, NameBpl) = 0) then
+    if (CompareText(Result.Name, Name) = 0) or
+       (CompareText(Result.BplName, NameBpl) = 0) then
       Exit;
+  end;
+  Result := nil;
+end;
+
+function TPackageList.GetRuntimeOf(Package: TPackageInfo): TPackageInfo;
+var
+  i: Integer;
+begin
+  if (Package <> nil) and Package.IsDesign then
+  begin
+    for i := 0 to Count - 1 do
+    begin
+      Result := Items[i];
+      if not Result.IsDesign then
+        if CompareText(Result.DisplayName, Package.DisplayName) = 0 then
+          Exit;
+    end;
   end;
   Result := nil;
 end;

@@ -32,7 +32,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, JVCLConfiguration, CheckLst, Buttons, ExtCtrls;
+  Dialogs, StdCtrls, JVCLConfiguration, CheckLst, Buttons, ExtCtrls,
+  ImgList;
 
 type
   TFormMainConfig = class(TForm)
@@ -43,6 +44,13 @@ type
     BtnQuit: TBitBtn;
     BtnSave: TBitBtn;
     BevelBorder: TBevel;
+    TitlePanel: TPanel;
+    imgProjectJEDI: TImage;
+    Label4: TLabel;
+    BevelHeader: TBevel;
+    PanelSpace: TPanel;
+    LabelTmp1: TLabel;
+    Label1: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure CheckListBoxClick(Sender: TObject);
@@ -50,6 +58,7 @@ type
     procedure BtnQuitClick(Sender: TObject);
     procedure BtnSaveClick(Sender: TObject);
     procedure CheckListBoxClickCheck(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     FConfig: TJVCLConfig;
     FFileName: string;
@@ -140,6 +149,16 @@ begin
   begin
     CheckListBox.Items.Add(FConfig.Items[I].Name);
     CheckListBox.Checked[I] := FConfig.Items[I].Enabled;
+  end;
+end;
+
+procedure TFormMainConfig.FormShow(Sender: TObject);
+begin
+  ActiveControl := CheckListBox;
+  if CheckListBox.Items.Count > 0 then
+  begin
+    CheckListBox.Selected[0] := True;
+    CheckListBoxClick(CheckListBox);
   end;
 end;
 
