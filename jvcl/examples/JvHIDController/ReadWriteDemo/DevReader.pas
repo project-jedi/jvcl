@@ -88,7 +88,7 @@ begin
   ReadBtnClick(Self);
   if Assigned(DevListBox) then
   begin
-    for I := 0 to DevListBox.Count - 1 do
+    for I := 0 to DevListBox.Items.Count - 1 do
     begin
       Dev := TJvHidDevice(DevListBox.Items.Objects[I]);
       Dev.Free;
