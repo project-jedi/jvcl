@@ -18,10 +18,10 @@ DRC = $&.drc
 SRCP = $(SRC);$(COM);$(JCL);$(ARCH);$(DCU)
 SRCH = ..\$(SRC);..\$(COM);..\$(JCL);..\$(ARCH);..\$(DCU)
 #---------------------------------------------------------------------------------------------------
-MAKE = $(ROOT)\make.exe -$(MAKEFLAGS) -f$**
-DCC  = $(ROOT)\dcc32.exe -e$(BIN) -i$(SRCP) -n$(DCU) -r$(SRCP) -u$(SRCP) -q -w -m
-DCCH = $(ROOT)\dcc32.exe -e..\$(BIN) -i$(SRCH) -n..\$(DCU) -r$(SRCH) -u$(SRCH) -q -w -m
-BRCC = $(ROOT)\brcc32.exe $**
+MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
+DCC  = $(ROOT)\bin\dcc32.exe -e$(BIN) -i$(SRCP) -n$(DCU) -r$(SRCP) -u$(SRCP) -q -w -m
+DCCH = $(ROOT)\bin\dcc32.exe -e..\$(BIN) -i$(SRCH) -n..\$(DCU) -r$(SRCH) -u$(SRCH) -q -w -m
+BRCC = $(ROOT)\bin\brcc32.exe $**
 #---------------------------------------------------------------------------------------------------
 default: \
 isu.exe \
