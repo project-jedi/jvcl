@@ -99,6 +99,7 @@ contains
   JvgPage in '..\..\run\JvgPage.pas',
   JvgProgress in '..\..\run\JvgProgress.pas',
   JvgReport in '..\..\run\JvgReport.pas',
+  JvgGridHeaderControl in '..\..\run\JvgGridHeaderControl.pas',
   JvgReportParamsEditor in '..\..\run\JvgReportParamsEditor.pas';
 
 end.
