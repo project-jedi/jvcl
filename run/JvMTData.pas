@@ -113,6 +113,10 @@ uses
 var
   DataThreadsMan: TMTManager = nil;
 
+const
+  cRead = 'Read';
+  cWrite = 'Write';
+
 //=== TMTBoundedQueue ========================================================
 
 constructor TMTBoundedQueue.Create(Size: Integer; Name: string = '');
@@ -254,7 +258,7 @@ end;
 function TMTBufferToVCL.Read: TObject;
 begin
   if CurrentMTThread <> nil then
-    raise EThread.CreateFmt(sMethodOnlyForMainThread, ['Read']);
+    raise EThread.CreateFmt(sMethodOnlyForMainThread, [cRead]);
 
   // Check if data ready
   FDataReady.Wait;
@@ -270,7 +274,7 @@ procedure TMTBufferToVCL.Write(AObject: TObject; FreeOnFail: Boolean = True);
 begin
   try
     if CurrentMTThread = nil then
-      raise EThread.CreateFmt(sMethodOnlyForMainThread, ['Write']);
+      raise EThread.CreateFmt(sMethodOnlyForMainThread, [cWrite]);
 
     // Perform blocking write to buffer
     FBuffer.Push(AObject);
@@ -310,7 +314,7 @@ end;
 function TMTVCLToBuffer.Read: TObject;
 begin
   if CurrentMTThread = nil then
-    raise EThread.CreateFmt(sMethodOnlyForMainThread, ['Read']);
+    raise EThread.CreateFmt(sMethodOnlyForMainThread, [cRead]);
 
   Result := FBuffer.Pop;
 end;
@@ -319,7 +323,7 @@ procedure TMTVCLToBuffer.Write(AObject: TObject; FreeOnFail: Boolean = True);
 begin
   try
     if CurrentMTThread <> nil then
-      raise EThread.CreateFmt(sMethodOnlyForMainThread, ['Write']);
+      raise EThread.CreateFmt(sMethodOnlyForMainThread, [cWrite]);
 
     // Check if data ready
     FDataReady.Wait;

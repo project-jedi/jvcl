@@ -1988,9 +1988,9 @@ var
 begin
   // Make sure the table is open exclusively so we can get the db handle...
   if not Table.Active then
-    raise EDatabaseError.Create('Table must be opened to pack');
+    raise EDatabaseError.Create(STableNotOpen);
   if not Table.Exclusive then
-    raise EDatabaseError.Create('Table must be opened exclusively to pack');
+    raise EDatabaseError.Create(STableNotOpenExclusively);
 
   // Get the table properties to determine table type...
   Check(DbiGetCursorProps(Table.Handle, Props));
@@ -2020,7 +2020,7 @@ begin
     Check(DbiPackTable(Table.DBHandle, Table.Handle, nil, szDBASE, True))
   else
     // Pack only works on Paradox or dBASE; nothing else...
-    raise EDatabaseError.Create('Table must be either of Paradox or dBASE type to pack');
+    raise EDatabaseError.Create(SNoParadoxDBaseTable);
   Table.Open;
 end;
 }

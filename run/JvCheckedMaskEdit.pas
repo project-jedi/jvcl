@@ -150,7 +150,7 @@ implementation
 
 uses
   Windows, Forms, SysUtils,
-  JvTypes;
+  JvTypes, JvResources;
 
 constructor TJvCustomCheckedMaskEdit.Create(AOwner: TComponent);
 begin
@@ -285,7 +285,7 @@ end;
 procedure TJvCustomCheckedMaskEdit.BeginInternalChange;
 begin
   if FInternalChange then
-    raise EJVCLException.Create('TJvCustomCheckedMaskEdit.BeginInternalChange: Unsupported nested call!');
+    raise EJVCLException.Create(SBeginUnsupportedNestedCall);
   FInternalChange := True;
 end;
 
@@ -293,7 +293,7 @@ procedure TJvCustomCheckedMaskEdit.EndInternalChange;
 begin
   { TODO : if this assertion ever fails, it's time to switch to a counted locking scheme }
   if not FInternalChange then
-    raise EJVCLException.Create('TJvCustomCheckedMaskEdit.EndInternalChange: Unsupported nested call!');
+    raise EJVCLException.Create(SEndUnsupportedNestedCall);
   FInternalChange := False;
 end;
 

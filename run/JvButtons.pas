@@ -259,7 +259,7 @@ implementation
 
 uses
   Math,
-  JvHtControls, JvDsgnIntf;
+  JvHtControls, JvDsgnIntf, JvResources, JvTypes;
 
 type
   TJvGlyphList = class(TImageList)
@@ -860,7 +860,7 @@ procedure TJvHTButtonGlyph.DrawButtonText(Canvas: TCanvas; const Caption: string
   TextBounds: TRect; State: TButtonState);
 var cap: String;
 begin
-cap := '<ALIGN CENTER>'+Caption; // Kaczkowski
+  cap := '<ALIGN CENTER>' + Caption; // Kaczkowski
   with Canvas do
   begin
     Brush.Style := bsClear;
@@ -905,7 +905,7 @@ constructor TJvaCaptionButton.Create(AOwner: TComponent);
 
 begin
   if not (AOwner is TForm) then
-    raise Exception.CreateFmt('%s owner must be a TForm',[ClassName]);
+    raise EJVCLException.CreateFmt(SOwnerMustBeForm, [ClassName]);
   inherited Create(AOwner);
 
   FGlyph := TJvButtonGlyph.Create;

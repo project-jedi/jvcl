@@ -7129,7 +7129,7 @@ end;
 function TJvInspectorSetMemberData.GetAsString: string;
 begin
   CheckReadAccess;
-  raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['String']);
+  raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['string']);
 end;
 
 function TJvInspectorSetMemberData.IsEqualReference(const Ref: TJvCustomInspectorData): Boolean;
@@ -7179,13 +7179,13 @@ end;
 procedure TJvInspectorSetMemberData.SetAsString(const Value: string);
 begin
   CheckWriteAccess;
-  raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['String']);
+  raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['string']);
 end;
 
 procedure TJvInspectorSetMemberData.GetAsSet(var Buf);
 begin
   CheckReadAccess;
-  raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['Set']);
+  raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['set']);
 end;
 
 function TJvInspectorSetMemberData.HasValue: Boolean;
@@ -7231,7 +7231,7 @@ end;
 procedure TJvInspectorSetMemberData.SetAsSet(const Buf);
 begin
   CheckWriteAccess;
-  raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['Set']);
+  raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['set']);
 end;
 
 //=== TJvInspectorSetItem ====================================================
@@ -9412,7 +9412,7 @@ begin
     end;
   end
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['String']);
+    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['string']);
 end;
 
 function TJvInspectorVarData.IsEqualReference(const Ref: TJvCustomInspectorData): Boolean;
@@ -9569,7 +9569,7 @@ begin
     Invalidate;
   end
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['String']);
+    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['string']);
 end;
 
 function TJvInspectorVarData.SupportsMethodPointers: Boolean;
@@ -9594,7 +9594,7 @@ begin
     Move(PChar(Address)[0], Buf, ResBytes);
   end
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['Set']);
+    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['set']);
 end;
 
 function TJvInspectorVarData.HasValue: Boolean;
@@ -9660,7 +9660,7 @@ begin
     Invalidate;
   end
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['Set']);
+    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['set']);
 end;
 
 //=== TJvInspectorPropData ===================================================
@@ -9713,7 +9713,7 @@ begin
   if Prop.PropType^.Kind in [tkString, tkLString, tkWString] then
     Result := GetStrProp(Instance, Prop)
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['String']);
+    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['string']);
 end;
 
 function TJvInspectorPropData.GetInstance: TObject;
@@ -9795,7 +9795,7 @@ begin
   if Prop.PropType^.Kind in [tkString, tkLString, tkWString] then
     SetStrProp(Instance, Prop, Value)
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['String']);
+    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['string']);
   InvalidateData;
   Invalidate;
 end;

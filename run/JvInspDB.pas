@@ -221,7 +221,7 @@ begin
   if TypeInfo.Kind in [tkString, tkLString, tkWString] then
     Result := Field.AsString
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['String']);
+    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['string']);
 end;
 
 function TJvInspectorDBData.GetDataSource: TDataSource;
@@ -402,7 +402,7 @@ begin
     Field.AsString := Value;
   end
   else
-    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['String']);
+    raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['string']);
 end;
 
 procedure TJvInspectorDBData.SetDataSource(const Value: TDataSource);
