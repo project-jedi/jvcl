@@ -80,7 +80,6 @@ begin
   RegisterComponents(RsPaletteNonVisual, [TJvCreateProcess, TJvWinHelp]);
   {$ENDIF USEWINDOWS}
 
-
   {$IFDEF USEWINDOWS}
   RegisterPropertyEditor(TypeInfo(string), TJvCreateProcess,
     '', TJvExeNameProperty);

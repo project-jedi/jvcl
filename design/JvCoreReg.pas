@@ -92,7 +92,6 @@ begin
 
   RegisterComponents(RsPaletteNonVisual, [TJvLookupAutoComplete]);
 
-
   {$IFDEF VCL}
   RegisterPropertyEditor(TypeInfo(TJVCLAboutInfo), nil, 'AboutJVCL', TJVCLAboutDialogProperty);
   {$ENDIF VCL}
