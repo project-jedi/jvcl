@@ -633,7 +633,7 @@ begin
   else
 {$IFDEF JVCLThemesEnabled}
   if (FBorderStyle = bsSingle) and ThemeServices.ThemesEnabled then
-    PaintControlBorder(Self)
+    DrawThemedBorder(Self)
   else
 {$ENDIF}
   if FBorderStyle = bsSingle then
