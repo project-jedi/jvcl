@@ -110,7 +110,7 @@ type
     {$ENDIF !COMPILER6_UP}
   protected
     function CreateListItem: TListItem; override;
-    function CreateListItems: TListItems; override;
+    function CreateListItems: TListItems; {$IFDEF COMPILER6_UP}override;{$ENDIF COMPILER6_UP}
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
