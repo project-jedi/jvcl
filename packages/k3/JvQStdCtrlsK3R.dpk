@@ -32,8 +32,6 @@ requires
   JvQCoreK3R,
   rtl,
   visualclx,
-  vcl,
-  DJclVClx,
   DJcl;
 
 contains

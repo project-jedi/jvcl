@@ -31,7 +31,8 @@ requires
   visualclx,
   rtl,
   JvQCoreK3D,
-  JvQCoreK3R;
+  JvQCoreK3R,
+  JvQStdCtrlsK3R;
 
 contains
   JvQCheckedItemsForm in '../../qdesign/JvQCheckedItemsForm.pas' {JvCheckItemsEditor},

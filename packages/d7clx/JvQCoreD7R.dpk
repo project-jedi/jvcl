@@ -78,7 +78,6 @@ contains
   JvQDynControlEngineIntf in '..\..\qrun\JvQDynControlEngineIntf.pas',
   JvQDynControlEngine in '..\..\qrun\JvQDynControlEngine.pas',
   JvQDynControlEngineVCL in '..\..\qrun\JvQDynControlEngineVCL.pas',
-  JvQRegistryIniFiles in '..\..\qrun\JvQRegistryIniFiles.pas',
   JvQRegistryIniFile in '..\..\qrun\JvQRegistryIniFile.pas';
 
 end.
