@@ -8,7 +8,7 @@ object JvDockTabHost: TJvDockTabHost
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
-  Font.Name = 'ËÎÌו'
+  Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
   Visible = False
