@@ -46,8 +46,8 @@ const
 type
   TJvDockClientHashNode = class(TObject)
   private
-    FKeyName: string;                 
-    FKeyData: Pointer;                
+    FKeyName: string;
+    FKeyData: Pointer;
     FPrevNode: TJvDockClientHashNode;
     FNextNode: TJvDockClientHashNode;
     FListIndex: Integer;              
@@ -63,8 +63,8 @@ type
   private
     FCurrentSize: Integer;
     FTableSize: Integer;
-    FEntryList: TList;       
-    FRiseException: Boolean; 
+    FEntryList: TList;
+    FRaiseException: Boolean;
     procedure SetTableSize(const Value: Integer);     
   protected
     function HashProc(const Name: string): Integer; virtual;
@@ -111,7 +111,7 @@ begin
   // (rom) added inherited Create
   inherited Create;
   CreateDictionary(Size);
-  FRiseException := RiseExcept;
+  FRaiseException := RiseExcept;
 end;
 
 destructor TJvDockControlHashTable.Destroy;
@@ -211,22 +211,20 @@ begin
     FEntryList[Index] := CreateKeyNode(Name, Data, Index)
   else
   begin
-    {$IFDEF COMPILER9}
-    // Compiler thinks that ParentNode is not initialized.
-    ParentNode := nil;
-    {$ENDIF COMPILER9}
     Node := FEntryList[Index];
-    repeat
+    ParentNode := nil;
+    while Node <> nil do
+    begin
       Value := CompareKey(Name, Node.FKeyName);
 
-      if FRiseException then
+      if FRaiseException then
         Assert(Value <> 0, RsDockNodeExistedError)
       else
       if Value = 0 then
         Exit;
       ParentNode := Node;
       Node := Node.FNextNode;
-    until Node = nil;
+    end;
     
     Node := CreateKeyNode(Name, Data, Index);
     Node.FPrevNode := ParentNode;
