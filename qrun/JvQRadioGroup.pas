@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -35,10 +36,8 @@ interface
 
 uses
   SysUtils, Classes,
-  
-  
-  Types, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QTypes, QWindows,
-  
+  QWindows, QMessages, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QToolWin,
+  Types, QTypes, 
   JvQThemes, JvQExControls, JvQExExtCtrls;
 
 type
@@ -69,10 +68,7 @@ type
     property EdgeBorders: TEdgeBorders read FEdgeBorders write SetEdgeBorders default [ebLeft, ebTop, ebRight, ebBottom];
     property EdgeInner: TEdgeStyle read FEdgeInner write SetEdgeInner default esRaised;
     property EdgeOuter: TEdgeStyle read FEdgeOuter write SetEdgeOuter default esLowered;
-    property HintColor;
-    {$IFDEF JVCLThemesEnabledD56}
-    property ParentBackground default True;
-    {$ENDIF JVCLThemesEnabledD56}
+    property HintColor; 
     property ReadOnly: Boolean read FReadOnly write FReadOnly default False;
     property OnMouseEnter;
     property OnMouseLeave;
@@ -91,10 +87,7 @@ begin
   FEdgeBorders := [ebLeft, ebTop, ebRight, ebBottom];
   FEdgeInner := esRaised;
   FEdgeOuter := esLowered;
-  FCaptionVisible := True;
-  {$IFDEF JVCLThemesEnabledD56}
-  IncludeThemeStyle(Self, [csParentBackground]);
-  {$ENDIF JVCLThemesEnabledD56}
+  FCaptionVisible := True; 
 end;
 
 procedure TJvRadioGroup.Paint;
@@ -108,70 +101,30 @@ const
 var
   H: Integer;
   R: TRect;
-  Flags: Longint;
-  {$IFDEF JVCLThemesEnabledD56}
-  Details: TThemedElementDetails;
-  ClipRect, CaptionRect: TRect;
-  {$ENDIF JVCLThemesEnabledD56}
-begin
-  {$IFDEF JVCLThemesEnabledD56}
-  if ThemeServices.ThemesEnabled then
-  begin
-    if Enabled then
-      Details := ThemeServices.GetElementDetails(tbGroupBoxNormal)
-    else
-      Details := ThemeServices.GetElementDetails(tbGroupBoxDisabled);
-    R := ClientRect;
-    Inc(R.Top, Canvas.TextHeight('0') div 2);
-
-    if EdgeBorders <> [] then
-    begin
-      if EdgeBorders <> [ebLeft, ebTop, ebRight, ebBottom] then
-      begin
-        ClipRect := R;
-        if not (ebLeft in EdgeBorders) then
-          Inc(ClipRect.Left, 3);
-        if not (ebRight in EdgeBorders) then
-          Dec(ClipRect.Right, 3);
-        if not (ebTop in EdgeBorders) then
-          Inc(ClipRect.Top, 3);
-        if not (ebBottom in EdgeBorders) then
-          Dec(ClipRect.Bottom, 3);
-      end;
-      ThemeServices.DrawElement(Canvas.Handle, Details, R, @ClipRect);
-    end;
-    if CaptionVisible then
-    begin
-      CaptionRect := Rect(8, 0, Min(Canvas.TextWidth(Caption) + 8, ClientWidth - 8), Canvas.TextHeight(Caption));
-
-      Canvas.Brush.Color := Self.Color;
-      DrawThemedBackground(Self, Canvas, CaptionRect);
-      ThemeServices.DrawText(Canvas.Handle, Details, Caption, CaptionRect, DT_LEFT, 0);
-    end;
-    Exit;
-  end;
-  {$ENDIF JVCLThemesEnabledD56}
+  Flags: Longint; 
+begin 
   with Canvas do
   begin
     Font := Self.Font;
     H := TextHeight('0');
     R := Rect(0, H div 2 - 1, Width, Height);  
-    DrawEdge(Handle, R, InnerStyles[FEdgeInner] or OuterStyles[FEdgeOuter],
-      Byte(FEdgeBorders) {or Ctl3DStyles[Ctl3D]} or BF_ADJUST);
+    QWindows.DrawEdge(Handle, R, InnerStyles[FEdgeInner] or OuterStyles[FEdgeOuter],
+      Byte(FEdgeBorders)  or BF_ADJUST);
     if (Text <> '') and CaptionVisible then
     begin
-      if not UseRightToLeftAlignment then
-        R := Rect(8, 0, 0, H)
-      else
-        R := Rect(R.Right - Canvas.TextWidth(Text) - 8, 0, 0, H);
+        R := Rect(8, 0, 0, H);
       Flags := DrawTextBiDiModeFlags(DT_SINGLELINE);
-      
-      
+      {$IFDEF _VCL}
+      DrawText(Handle, PChar(Text), Length(Text), R, Flags or DT_CALCRECT);
+      Brush.Color := Color;
+      DrawText(Handle, PChar(Text), Length(Text), R, Flags);
+      {$ENDIF VCL}
+//      {$IFDEF VisualCLX}
       DrawText(Canvas, Text, Length(Text), R, Flags or DT_CALCRECT);
       Brush.Color := Color;
       SetBkMode(Handle, OPAQUE);
       DrawText(Canvas, Text, Length(Text), R, Flags);
-      
+//      {$ENDIF VisualCLX}
     end;
   end;
 end;

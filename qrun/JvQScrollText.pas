@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -35,18 +36,13 @@ unit JvQScrollText;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  Types, QGraphics, QControls, QForms, QStdCtrls, QWindows,
-  
+  SysUtils, Classes,  
+  Types, QGraphics, QControls, QForms, QStdCtrls, QWindows, 
   JvQTypes, JvQImageDrawThread, JVQCLVer, JvQComponent;
 
 type
-  TJvScrollTextDirection = (drFromLeft, drFromRight, drFromTop, drFromBottom); // also in JvMoveableBevel, JvAppearingLabel
-  
-  TStaticText = TLabel;
-  
+  TJvScrollTextDirection = (drFromLeft, drFromRight, drFromTop, drFromBottom); // also in JvMoveableBevel, JvAppearingLabel 
+  TStaticText = TLabel; 
 
   TJvScrollText = class(TJvCustomControl)
   private
@@ -103,8 +99,7 @@ type
     property ShowHint;
     property ParentShowHint;
     property Height default 150;
-    property Width default 200;
-    
+    property Width default 200; 
   end;
 
 implementation
@@ -114,8 +109,7 @@ uses
 
 constructor TJvScrollText.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner);
-  
+  inherited Create(AOwner); 
   Width := 200;
   Height := 150;
   FActive := False;
@@ -130,8 +124,7 @@ begin
   FText.Parent := Self;
   // FText.SetBounds(2, 2, Width-4, Height-4);
   FText.Width := Width;
-  FText.Height := Height;
-  
+  FText.Height := Height; 
   FText.TabStop := False;
   FText.Enabled := FSelectable;
   FText.AutoSize := False;
@@ -469,11 +462,13 @@ end;
 
 procedure TJvScrollText.DoBoundsChanged;
 begin
+  if FText <> nil then
+  begin
+    FText.Width := Width;
+    if FText.Height < Height then
+      FText.Height := Height;
+  end;    
   inherited DoBoundsChanged;
-  if FText = nil then exit;
-  FText.Width := Width;
-  if FText.Height < Height then
-    FText.Height := Height;
 end;
 
 function TJvScrollText.GetAlignment: TAlignment;

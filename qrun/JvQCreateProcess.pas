@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -38,8 +39,7 @@ unit JvQCreateProcess;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes,
-  
+  Windows, Messages, SysUtils, Classes, 
   ShellAPI, SyncObjs, Contnrs,
   JclStrings,
   JvQComponent, JvQTypes;
@@ -1003,13 +1003,13 @@ end;
 procedure TJvCreateProcess.CheckNotWaiting;
 begin
   if FState = psWaiting then
-    raise EJvProcessError.Create(RsEProcessIsRunning);
+    raise EJvProcessError.CreateRes(@RsEProcessIsRunning);
 end;
 
 procedure TJvCreateProcess.CheckRunning;
 begin
   if FState = psReady then
-    raise EJvProcessError.Create(RsEProcessNotRunning);
+    raise EJvProcessError.CreateRes(@RsEProcessNotRunning);
 end;
 
 function TJvCreateProcess.CloseApplication(SendQuit: Boolean): Boolean;
@@ -1445,11 +1445,9 @@ begin
     if Msg = CM_READ then
     try
       HandleReadEvent;
-    except
-      
+    except 
       if Assigned(ApplicationHandleException) then
-        ApplicationHandleException(Self);
-      
+        ApplicationHandleException(Self); 
     end
     else
       Result := DefWindowProc(Handle, Msg, WParam, LParam);

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -35,7 +36,7 @@ unit JvQDeleteError;
 interface
 
 uses
-  Windows, SysUtils, Classes,
+  Windows, SetupApi, SysUtils, Classes,
   JvQCommonDialogD, JvQTypes;
 
 type
@@ -56,7 +57,6 @@ type
 implementation
 
 uses
-  SetupApi,
   JclSysUtils;
 
 constructor TJvDeleteError.Create(AOwner: TComponent);

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -37,11 +38,8 @@ unit JvQTipOfDay;
 interface
 
 uses
-  Classes,
-  
-  
-  QGraphics, QControls, QForms, QStdCtrls,
-  
+  Classes,  
+  QGraphics, QControls, QForms, QStdCtrls, 
   JvQAppStorage, JvQBaseDlg, JvQButtonPersistent, JvQSpeedButton, JvQTypes;
 
 type
@@ -80,11 +78,8 @@ type
       'Tip of the Day' component }
     FTipLabel: TControl;
     FNextTipButton: TControl;
-    FCheckBox: TButtonControl;
-    
-    
-    procedure FormHide(Sender : TObject);
-    
+    FCheckBox: TButtonControl;  
+    procedure FormHide(Sender : TObject); 
     procedure FontChanged(Sender: TObject);
     // function GetRegKey: string;
     function GetTips: TStrings;
@@ -128,8 +123,7 @@ type
     { Hooks/Unhooks the parent form, this is done if
       toShowWhenFormShown is in Options }
     procedure HookForm;
-    procedure UnHookForm;
-    
+    procedure UnHookForm; 
     procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -161,11 +155,8 @@ type
 implementation
 
 uses
-  SysUtils,
-  
-  
-  QExtCtrls, QDialogs,
-  
+  SysUtils,  
+  QExtCtrls, QDialogs, 
   JvQButton, JvQResources;
 
 {$IFDEF MSWINDOWS}
@@ -297,8 +288,6 @@ begin
       FCurrentTip := Random(Tips.Count);
 
       UpdateTip;
-
-  
   
       OnHide := FormHide ;  // onclose
       Show ;  // Shown non modal
@@ -307,8 +296,7 @@ begin
     end;
   except
     FRunning := False;
-  end;
-  
+  end; 
 end;
 
 
@@ -323,7 +311,6 @@ begin
     Release;   // destroy it
     FRunning := False;
   end;
-  //inherited FormHide(Sender);
 end;
 
 
@@ -353,8 +340,7 @@ begin
 end;
 
 procedure TJvTipOfDay.HookForm;
-begin
-  
+begin 
 end;
 
 
@@ -362,11 +348,8 @@ end;
 procedure TJvTipOfDay.InitStandard(AForm: TForm);
 begin
   with AForm do
-  begin
-    
-    
-    BorderStyle := fbsDialog;
-    
+  begin  
+    BorderStyle := fbsDialog; 
     { Title }
     Caption := Self.Title;
     ClientHeight := 267;
@@ -472,11 +455,8 @@ end;
 procedure TJvTipOfDay.InitVC(AForm: TForm);
 begin
   with AForm do
-  begin
-    
-    
-    BorderStyle := fbsDialog;
-    
+  begin  
+    BorderStyle := fbsDialog; 
 
     { Title }
     Caption := Self.Title;
@@ -695,8 +675,7 @@ begin
 end;
 
 procedure TJvTipOfDay.UnHookForm;
-begin
-  
+begin 
 end;
 
 procedure TJvTipOfDay.UpdateFonts;

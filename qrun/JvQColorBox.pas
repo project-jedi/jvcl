@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -52,12 +53,9 @@ unit JvQColorBox;
 
 interface
 
-uses
-  
-  
+uses  
   QForms, QGraphics, QControls, QDialogs, QExtCtrls, QStdCtrls, QButtons,
-  QMenus, Types,
-  
+  QMenus, Types, 
   SysUtils, Classes,
   JvQComponent;
 
@@ -131,8 +129,7 @@ type
     FIsDown: Boolean;
     FArrowWidth: Integer;
     procedure SetArrowWidth(Value: Integer);
-    procedure SetDropDown(Value: TPopupMenu);
-    
+    procedure SetDropDown(Value: TPopupMenu); 
   protected
     procedure Resize; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -353,8 +350,7 @@ end;
 constructor TJvCustomDropButton.Create(AOWner: TComponent);
 begin
   inherited Create(AOwner);
-  ControlStyle := ControlStyle + [csSetCaption];
-  
+  ControlStyle := ControlStyle + [csSetCaption]; 
   FArrowWidth := 13;
   Width := 42;
   Height := 21;
@@ -397,14 +393,12 @@ end;
 
 procedure TJvCustomDropButton.MouseEnter(Control: TControl);
 begin
-  inherited MouseEnter(Control);
-  
+  inherited MouseEnter(Control); 
 end;
 
 procedure TJvCustomDropButton.MouseLeave(Control: TControl);
 begin
-  inherited MouseLeave(Control);
-  
+  inherited MouseLeave(Control); 
 end;
 
 procedure TJvCustomDropButton.Paint;

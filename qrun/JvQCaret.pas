@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -37,11 +38,8 @@ interface
 uses
   {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF MSWINDOWS}
-  
-  
-  QWindows, Qt, QGraphics, QControls, QForms,
-  
+  {$ENDIF MSWINDOWS}  
+  QWindows, Qt, QGraphics, QControls, QForms, 
   SysUtils, Classes,
   JvQTypes;
 
@@ -104,7 +102,7 @@ uses
 constructor TJvCaret.Create(Owner: TWinControl);
 begin
   if not Assigned(Owner) then
-    raise EJVCLException.CreateFmt(RsEInvalidCaretOwner, [ClassName]);
+    raise EJVCLException.CreateResFmt(@RsEInvalidCaretOwner, [ClassName]);
   inherited Create;
   FCaretOwner := Owner;
   FCaretBitmap := TBitmap.Create;
@@ -177,9 +175,7 @@ var
 begin
   if FCaretOwner.Focused and
     not (csDesigning in FCaretOwner.ComponentState) and not IsDefaultCaret then
-  begin
-    
-    
+  begin  
       if FCaretOwner is TScrollingWidget then
         Handle := TOpenScrollingWidget(FCaretOwner).ViewportHandle
       else
@@ -193,22 +189,17 @@ begin
       if not QWindows.CreateCaret(Handle, GrayHandles[Gray], Width, Height) then
         OSCheck(QWindows.CreateCaret(Handle, 0, Width, Height));
       FCaretCreated := True;
-      ShowCaret(Handle);
-    
+      ShowCaret(Handle); 
   end;
 end;
 
 procedure TJvCaret.DestroyCaret;
 begin
-  if CaretCreated and
-    
+  if CaretCreated and 
     not (csDesigning in FCaretOwner.ComponentState) and
     not IsDefaultCaret then
-  begin
-    
-    
-    if QWindows.DestroyCaret then
-    
+  begin  
+    if QWindows.DestroyCaret then 
       FCaretCreated := False;
   end;
 end;

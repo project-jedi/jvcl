@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -45,11 +46,8 @@ unit JvQLinkLabelRenderer;
 interface
 
 uses
-  Classes, SysUtils,
-  
-  
-  QGraphics, Types,
-  
+  Classes, SysUtils,  
+  QGraphics, Types, 
   JvQLinkLabelTree, JvQLinkLabelTextHandler, JvQTypes;
 
 type
@@ -177,7 +175,6 @@ end;
 procedure TDefaultRenderer.RenderNode(const Canvas: TCanvas; Rect: TRect;
   const Node: TAreaNode);
 begin
-  Canvas.Start;
   FTextHandler := TTextHandler.Create(Rect,
     Node.StartingPoint.X, Node.StartingPoint.Y, Canvas);
   // End of Bianconi #2
@@ -188,7 +185,6 @@ begin
   finally
     FTextHandler := nil;
   end;
-  Canvas.Stop;
 end;
 
 procedure TDefaultRenderer.RenderTree(const Canvas: TCanvas; Rect: TRect;

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -44,11 +45,8 @@ unit JvQLinkLabelParser;
 interface
 
 uses
-  Classes, SysUtils,
-  
-  
-  QGraphics,
-  
+  Classes, SysUtils,  
+  QGraphics, 
   JvQLinkLabelTree, JvQLinkLabelTools;
 
 type
@@ -185,7 +183,7 @@ function TElementEnumerator.GetNextElement(const IncrementPos: Boolean): TElemen
 
 begin
   if IsEndReached then
-    raise EParserError.Create(RsENoMoreElementsToReturn);
+    raise EParserError.CreateRes(@RsENoMoreElementsToReturn);
 
   if FOldPosInText = FPosInText then // Use cached element
     Result := FCachedElement
@@ -392,7 +390,7 @@ begin
       ekBeginTag:
         NewNode := GetNodeFromTag(Element.Text);
     else
-      raise EParserError.Create(RsEUnsupportedState);
+      raise EParserError.CreateRes(@RsEUnsupportedState);
     end;
 
     if (Node.GetNodeType = ntRootNode) then

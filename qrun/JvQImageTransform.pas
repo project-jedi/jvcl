@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -20,13 +21,12 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck att bigfoot dott com].
 
-Last Modified: 2000-02-28
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -35,11 +35,8 @@ unit JvQImageTransform;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QWindows, QGraphics, QControls, QExtCtrls, Types,
-  
+  SysUtils, Classes,  
+  QWindows, QGraphics, QControls, QExtCtrls, Types, 
   JvQComponent;
 
 type
@@ -57,10 +54,8 @@ type
     FSteps: Integer;
     FType: TJvTransformationKind;
     StepNum: Integer;
-    FOnFinished: TNotifyEvent;
-    
-    FAutoSize: Boolean;
-    
+    FOnFinished: TNotifyEvent; 
+    FAutoSize: Boolean; 
     procedure PictureChanged(Sender: TObject);
     procedure SetPicture1(Value: TPicture);
     procedure SetPicture2(Value: TPicture);
@@ -68,18 +63,14 @@ type
     procedure SetInterval(Value: Integer);
     procedure SetType(Value: TJvTransformationKind);
   protected
-    procedure SetAutoSize(Value: Boolean); 
-    
+    procedure SetAutoSize(Value: Boolean);  
     procedure Paint; override;
     procedure TimerTick(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-  published
-    
-    
-    property AutoSize: Boolean read FAutoSize write SetAutoSize;
-    
+  published  
+    property AutoSize: Boolean read FAutoSize write SetAutoSize; 
     property DragMode;
     property Enabled;
     property ImageShown: Byte read FImageShown write SetImageShown default 1;
@@ -135,11 +126,8 @@ end;
 
 
 procedure TJvImageTransform.SetAutoSize(Value: Boolean);
-begin
-  
-  
-  FAutoSize := Value;
-  
+begin  
+  FAutoSize := Value; 
   PictureChanged(Self);
 end;
 

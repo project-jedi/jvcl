@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -32,10 +33,8 @@ unit JvQStringHolder;
 
 interface
 
-uses
-  
-  Variants, RTLConsts,
-  
+uses 
+  Variants, RTLConsts, 
   SysUtils, Classes;
 
 type
@@ -151,11 +150,8 @@ type
 
 implementation
 
-uses
-  
-  
-  QConsts,
-  
+uses  
+  QConsts, 
   JvQJCLUtils, JvQTypes;
 
 const
@@ -287,9 +283,9 @@ begin
     else
       Value := TJvMacro(Source).FData;
     Name := TJvMacro(Source).Name;
-    Exit;
-  end;
-  inherited Assign(Source);
+  end
+  else
+    inherited Assign(Source);
 end;
 
 function TJvMacro.GetDisplayName: string;

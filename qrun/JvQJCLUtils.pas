@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -34,7 +35,7 @@ Known Issues:
 //          With NO_JCL defined the executable file size shrinks because
 //          the JCL has no JvFinalize support and executes all in the
 //          initialization sections.
-
+{$DEFINE NO_JCL}
 
 unit JvQJCLUtils;
 
@@ -51,14 +52,9 @@ uses
   {$IFDEF LINUX}
   Libc, Xlib, QStdCtrls, StrUtils,
   {$ENDIF LINUX}
-  SysUtils, Classes,
-  
-  
-  Qt, QGraphics, QClipbrd, Types, QWindows,
-  
-  
-  Variants,
-  
+  SysUtils, Classes,  
+  Qt, QGraphics, QClipbrd, Types, QWindows,  
+  Variants, 
   TypInfo;
 
 const
@@ -72,11 +68,8 @@ const
   PathDelim = '/';
   AllFilesMask = '*';
   {$ENDIF LINUX}
-
   
-  
-  NullHandle = nil;
-  
+  NullHandle = nil; 
 
 {$IFDEF LINUX}
 type
@@ -883,19 +876,16 @@ function TextToValText(const AValue: string): string;
 
 implementation
 
-uses
-  
-  RTLConsts,
-  
+uses 
+  RTLConsts, 
   SysConst,
   {$IFDEF MSWINDOWS}
   ComObj, ShellAPI, MMSystem, Registry,
-  {$ENDIF MSWINDOWS}
-  
-  
-  QConsts,
-  
-  
+  {$ENDIF MSWINDOWS}  
+  QConsts, 
+  {$IFNDEF NO_JCL}
+  JclStrings, JclSysInfo,
+  {$ENDIF !NO_JCL}
   Math;
 
 const
@@ -910,11 +900,11 @@ const
 
 resourcestring
   // (p3) duplicated from JvConsts since this unit should not rely on JVCL at all
-  RsPropertyNotExists = 'Property "%s" does not exist';
-  RsInvalidPropertyType = 'Property "%s" has invalid type';
-  RsPivotLessThanZero = 'JvJCLUtils.MakeYear4Digit: Pivot < 0';
+  RsEPropertyNotExists = 'Property "%s" does not exist';
+  RsEInvalidPropertyType = 'Property "%s" has invalid type';
+  RsEPivotLessThanZero = 'JvJCLUtils.MakeYear4Digit: Pivot < 0';
 
-
+{$IFDEF NO_JCL}
 
   // These are the replacement functions for the JCL.
 
@@ -939,7 +929,7 @@ end;
 
 function CharIsAlpha(Ch: AnsiChar): Boolean;
 begin
-  Result := QWindows.IsCharAlpha(Ch);
+  Result := Windows.IsCharAlpha(Ch);
 end;
 
 { (ahuser) make Delphi 5 compiler happy
@@ -968,7 +958,7 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 
-
+{$ENDIF NO_JCL}
 
 // StrToFloatUS uses US '.' as decimal separator and ',' as thousand separator
 
@@ -2080,10 +2070,8 @@ begin
   { if linker error occured with message "unresolved external 'System::RaiseList'" try
     comment this function implementation, compile,
     then uncomment and compile again. }
-  {$IFDEF MSWINDOWS}
-  
-  {$WARN SYMBOL_DEPRECATED OFF}
-  
+  {$IFDEF MSWINDOWS} 
+  {$WARN SYMBOL_DEPRECATED OFF} 
   if RaiseList <> nil then
   begin
     Result := PRaiseFrame(RaiseList)^.ExceptObject;
@@ -2211,10 +2199,8 @@ var
   P1, P2: WideString;
 begin
   SetString(P1, S1, Min(MaxLen, StrLenW(S1)));
-  SetString(P2, S2, Min(MaxLen, StrLenW(S2)));
-  
-  Result := SysUtils.WideCompareText(P1, P2);
-  
+  SetString(P2, S2, Min(MaxLen, StrLenW(S2))); 
+  Result := SysUtils.WideCompareText(P1, P2); 
 end;
 
 function StrPosW(S, SubStr: PWideChar): PWideChar;
@@ -2281,20 +2267,16 @@ end;
 
 
 procedure SetDelimitedText(List: TStrings; const Text: string; Delimiter: Char);
-var
-  
-  Ch: Char;
-  
-begin
-  
+var 
+  Ch: Char; 
+begin 
   Ch := List.Delimiter;
   try
     List.Delimiter := Delimiter;
     List.DelimitedText := Text;
   finally
     List.Delimiter := Ch;
-  end;
-  
+  end; 
 end;
 
 
@@ -3122,10 +3104,10 @@ var
 begin
   PropInf := GetPropInfo(Obj.ClassInfo, PropName);
   if PropInf = nil then
-    raise Exception.CreateFmt(RsPropertyNotExists, [PropName]);
+    raise Exception.CreateResFmt(@RsEPropertyNotExists, [PropName]);
   if not (PropInf^.PropType^.Kind in
     [tkString, tkLString, tkWString]) then
-    raise Exception.CreateFmt(RsInvalidPropertyType, [PropName]);
+    raise Exception.CreateResFmt(@RsEInvalidPropertyType, [PropName]);
   Result := GetStrProp(Obj, PropInf);
 end;
 
@@ -3135,10 +3117,10 @@ var
 begin
   PropInf := GetPropInfo(Obj.ClassInfo, PropName);
   if PropInf = nil then
-    raise Exception.CreateFmt(RsPropertyNotExists, [PropName]);
+    raise Exception.CreateResFmt(@RsEPropertyNotExists, [PropName]);
   if not (PropInf^.PropType^.Kind in
     [tkInteger, tkChar, tkWChar, tkEnumeration, tkClass]) then
-    raise Exception.CreateFmt(RsInvalidPropertyType, [PropName]);
+    raise Exception.CreateResFmt(@RsEInvalidPropertyType, [PropName]);
   Result := GetOrdProp(Obj, PropInf);
 end;
 
@@ -3148,9 +3130,9 @@ var
 begin
   PropInf := GetPropInfo(Obj.ClassInfo, PropName);
   if PropInf = nil then
-    raise Exception.CreateFmt(RsPropertyNotExists, [PropName]);
+    raise Exception.CreateResFmt(@RsEPropertyNotExists, [PropName]);
   if not (PropInf^.PropType^.Kind = tkMethod) then
-    raise Exception.CreateFmt(RsInvalidPropertyType, [PropName]);
+    raise Exception.CreateResFmt(@RsEInvalidPropertyType, [PropName]);
   Result := GetMethodProp(Obj, PropInf);
 end;
 
@@ -3265,7 +3247,7 @@ end;
 
 procedure OutOfResources;
 begin
-  raise EOutOfResources.Create(SOutOfResources);
+  raise EOutOfResources.CreateRes(@SOutOfResources);
 end;
 
 function DupBits(Src: HBITMAP; Size: TPoint; Mono: Boolean): HBITMAP;
@@ -4147,7 +4129,7 @@ end;
 function StrToDateFmt(const DateFormat, S: string): TDateTime;
 begin
   if not InternalStrToDate(DateFormat, S, Result) then
-    raise EConvertError.CreateFmt(SInvalidDate, [S]);
+    raise EConvertError.CreateResFmt(@SInvalidDate, [S]);
 end;
 
 function StrToDateDef(const S: string; Default: TDateTime): TDateTime;
@@ -5957,12 +5939,12 @@ end;
 
 procedure OpenCdDrive;
 begin
-//  mciSendString(PChar(RC_OpenCDDrive), nil, 0, GetForegroundWindow);
+  mciSendString(PChar(RC_OpenCDDrive), nil, 0, Windows.GetForegroundWindow);
 end;
 
 procedure CloseCdDrive;
 begin
-//  mciSendString(PChar(RC_CloseCDDrive), nil, 0, GetForegroundWindow);
+  mciSendString(PChar(RC_CloseCDDrive), nil, 0, Windows.GetForegroundWindow);
 end;
 
 { (rb) Duplicate of JclFileUtils.DiskInDrive }
@@ -6001,21 +5983,19 @@ begin
   end;
 end;
 
-{$IFDEF MSWINDOWS}
-// for Exec function
-function GetForegroundWindow: Windows.HWND;
-begin
-  Result := 0; // QWindows ShellExececute ignores handle under linux
-end;
-{$ENDIF MSWINDOWS}
-
 procedure Exec(FileName, Parameters, Directory: string);
 var
   Operation: string;
 begin
   Operation := 'open';
+  {$IFDEF MSWINDOWS}
+  ShellExecute(Windows.GetForegroundWindow, PChar(Operation), PChar(FileName), PChar(Parameters), PChar(Directory),
+    SW_SHOWNORMAL);
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
   ShellExecute(GetForegroundWindow, PChar(Operation), PChar(FileName), PChar(Parameters), PChar(Directory),
     SW_SHOWNORMAL);
+  {$ENDIF LINUX}
 end;
 {$IFDEF LINUX}
 // begin
@@ -6104,8 +6084,7 @@ end;
 function GetRecentDocs: TStringList;
 
 begin
-  Result := TStringList.Create;
-  
+  Result := TStringList.Create; 
 end;
 
 { (rb) Duplicate of JvWinDialogs.AddToRecentDocs }
@@ -6296,7 +6275,7 @@ var
   Century: Integer;
 begin
   if Pivot < 0 then
-    raise Exception.Create(RsPivotLessThanZero);
+    raise Exception.CreateRes(@RsEPivotLessThanZero);
 
   { map 100 to zero }
   if Year = 100 then
@@ -6721,7 +6700,7 @@ begin
     S := IntToStr(LongRec(ResID).Lo)
   else
     S := StrPas(ResID);
-  raise EResNotFound.CreateFmt(SResNotFound, [S]);
+  raise EResNotFound.CreateResFmt(@SResNotFound, [S]);
 end;
 
 function RectWidth(R: TRect): Integer;
@@ -7068,11 +7047,8 @@ var
   FN: array [0..MAX_PATH] of Char;
 begin
   with BrowseInfo do
-  begin
-    
-    
-    hwndOwner := QWidget_WinID(handle);
-    
+  begin  
+    hwndOwner := QWidget_WinID(handle); 
     pidlRoot := nil;
     pszDisplayName := FN;
     lpszTitle := PChar(Title);
@@ -7206,11 +7182,8 @@ begin
 end;
 
 type
-  // (p3) duplicated from JvTypes to avoid JVCL dependencies
-  
-  
-  TJvRGBTriple = TRGBQuad; // VisualCLX does not support pf24bit
-  
+  // (p3) duplicated from JvTypes to avoid JVCL dependencies  
+  TJvRGBTriple = TRGBQuad; // VisualCLX does not support pf24bit 
 
   PJvRGBArray = ^TJvRGBArray;
   TJvRGBArray = array [0..32766] of TJvRGBTriple;

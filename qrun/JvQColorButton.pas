@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -38,12 +39,9 @@ unit JvQColorButton;
 
 interface
 
-uses
-  
-  
+uses  
   Types, QWindows, QGraphics, QControls, QForms, QStdCtrls, QDialogs, QExtCtrls,
-  QButtons, QMenus,
-  
+  QButtons, QMenus, 
   SysUtils, Classes,
   JvQColorBox;
 
@@ -56,8 +54,7 @@ type
     FOnChange: TNotifyEvent;
     FCustomColors: TStringList;
     FEdgeWidth: Integer;
-    FColor: TColor;
-    
+    FColor: TColor; 
     function GetCustomColors: TStrings;
     procedure SetEdgeWidth(Value: Integer);
     procedure SetCustomColors(Value: TStrings);
@@ -79,8 +76,7 @@ type
   published
     property ArrowWidth;
     property OtherCaption: string read FOtherCaption write SetOtherCaption;
-    property EdgeWidth: Integer read FEdgeWidth write SetEdgeWidth default 4;
-    
+    property EdgeWidth: Integer read FEdgeWidth write SetEdgeWidth default 4; 
     property CustomColors: TStrings read GetCustomColors write SetCustomColors;
     property Color: TColor read FColor write SetColor default clBlack;
     property Enabled;
@@ -108,8 +104,7 @@ uses
 constructor TJvColorButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  TabStop := False;
-  
+  TabStop := False; 
   FCustomColors := TStringList.Create;
   Color := clBlack;
   FEdgeWidth := 4;
@@ -151,8 +146,7 @@ begin
   if (Button <> mbLeft) or not Enabled or not Assigned(FColorForm) then
     Exit;
   with TJvColorForm(FColorForm) do
-  begin
-    
+  begin 
     OtherBtn.Caption := FOtherCaption;
     ColorDialog.CustomColors.Assign(FCustomColors);
     if ArrowWidth = 0 then

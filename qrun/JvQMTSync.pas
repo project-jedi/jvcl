@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -103,12 +104,17 @@ type
 implementation
 
 uses
-  
+  {$IFDEF USEJVCL}
   JvQResources,
-  
+  {$ENDIF USEJVCL}
   JvQMTThreading;
 
-
+{$IFNDEF USEJVCL}
+resourcestring
+  RsESemaphoreFailure = 'Semaphore failure (%d)';
+  RsESemaphoreAbandoned = 'Semaphore was abandoned';
+  RsEThreadAbandoned = 'Thread was abandoned';
+{$ENDIF USEJVCL}
 
 //=== TMTSemaphore ===========================================================
 
@@ -201,7 +207,7 @@ begin
       WAIT_FAILED:
         begin
           FLastError := GetLastError;
-          raise EMTThreadError.CreateFmt(RsESemaphoreFailure, [FLastError]);
+          raise EMTThreadError.CreateResFmt(@RsESemaphoreFailure, [FLastError]);
         end;
       WAIT_TIMEOUT:
         Result := False;
@@ -210,9 +216,9 @@ begin
       WAIT_OBJECT_0 + 1:
         CurrentMTThread.CheckTerminate; // do raise EMTTerminateError
       WAIT_ABANDONED:
-        raise EMTTerminateError.Create(RsESemaphoreAbandoned);
+        raise EMTTerminateError.CreateRes(@RsESemaphoreAbandoned);
       WAIT_ABANDONED + 1:
-        raise EMTTerminateError.Create(RsEThreadAbandoned);
+        raise EMTTerminateError.CreateRes(@RsEThreadAbandoned);
     end;
   end
   else
@@ -223,13 +229,13 @@ begin
       WAIT_OBJECT_0:
         Result := True;
       WAIT_ABANDONED:
-        raise EMTTerminateError.Create(RsESemaphoreAbandoned);
+        raise EMTTerminateError.CreateRes(@RsESemaphoreAbandoned);
       WAIT_TIMEOUT:
         Result := False;
       WAIT_FAILED:
         begin
           FLastError := GetLastError;
-          raise EMTThreadError.Create(RsESemaphoreFailure);
+          raise EMTThreadError.CreateRes(@RsESemaphoreFailure);
         end;
     end;
   end;

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -35,11 +36,8 @@ unit JvQPageList;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  Types, QGraphics, QControls, Qt, QWindows,
-  
+  SysUtils, Classes,  
+  Types, QGraphics, QControls, Qt, QWindows, 
   JvQComponent, JvQThemes;
 
 type
@@ -68,11 +66,8 @@ type
     FOnAfterPaint: TJvPagePaintEvent;
     FOnHide: TNotifyEvent;
     FOnShow: TNotifyEvent;
-  protected
-    
-    
-    function WidgetFlags: Integer; override;
-    
+  protected  
+    function WidgetFlags: Integer; override; 
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure SetPageIndex(Value: Integer);virtual;
     function GetPageIndex: Integer;virtual;
@@ -118,8 +113,7 @@ type
     FPropagateEnable: Boolean;
     FOnChange: TNotifyEvent;
     FOnChanging: TJvPageChangingEvent;
-    FShowDesignCaption: TJvShowDesignCaption;
-    
+    FShowDesignCaption: TJvShowDesignCaption; 
     procedure UpdateEnabled;
     procedure SetPropagateEnable(const Value: Boolean);
     procedure SetShowDesignCaption(const Value: TJvShowDesignCaption);
@@ -167,8 +161,7 @@ type
   end;
 
   TJvStandardPage = class(TJvCustomPage)
-  published
-    
+  published 
     property Caption;
     property Color;
     property DragMode;
@@ -200,8 +193,7 @@ type
     property OnAfterPaint;
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnParentColorChange;
-    
+    property OnParentColorChange; 
   end;
 
   TJvPageList = class(TJvCustomPageList)
@@ -216,8 +208,7 @@ type
 
     property Action;
     property Align;
-    property Anchors;
-    
+    property Anchors; 
     property Constraints;
     property DragMode;
     property Enabled;
@@ -246,8 +237,7 @@ type
     property OnMouseWheelDown;
     property OnMouseWheelUp;
     property OnResize;
-    property OnStartDrag;
-    
+    property OnStartDrag; 
   end;
 
 implementation
@@ -266,8 +256,7 @@ begin
   Align := alClient;
   ControlStyle := ControlStyle + [csOpaque, csAcceptsControls, csNoDesignVisible];
   IncludeThemeStyle(Self, [csParentBackground]);
-  Visible := False;
-  
+  Visible := False; 
 end;
 
 
@@ -343,20 +332,15 @@ begin
         // make some space around the edges
         InflateRect(ARect, -4, -4);
         if not Enabled then
-        begin
-          
-          Canvas.Font.Color := clHighlightText;
-          
+        begin 
+          Canvas.Font.Color := clHighlightText; 
           SetPainterFont(Handle, Canvas.Font);
-//          SetBkMode(Handle, QWindows.TRANSPARENT);
-          
+//          SetBkMode(Handle, QWindows.TRANSPARENT); 
           DrawText(Handle, PChar(S), Length(S), ARect, GetDesignCaptionFlags(PageList.ShowDesignCaption) or DT_SINGLELINE);
           OffsetRect(ARect, -1, -1);
           Canvas.Font.Color := clGrayText;
-        end;
-        
-        SetPainterFont(Handle, Canvas.Font);
-        
+        end; 
+        SetPainterFont(Handle, Canvas.Font); 
         DrawText(Handle, PChar(S), Length(S), ARect, GetDesignCaptionFlags(PageList.ShowDesignCaption) or DT_SINGLELINE);
         InflateRect(ARect, 4, 4);
       end;
@@ -415,8 +399,7 @@ begin
 end;
 
 function TJvCustomPage.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  
+begin 
   Result := True;
 end;
 
@@ -751,11 +734,8 @@ begin
   if FShowDesignCaption <> Value then
   begin
     FShowDesignCaption := Value;
-    if HandleAllocated and (csDesigning in ComponentState) then
-      
-      
-      Invalidate;
-      
+    if HandleAllocated and (csDesigning in ComponentState) then  
+      Invalidate; 
   end;
 end;
 

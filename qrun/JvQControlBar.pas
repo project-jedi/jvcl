@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -20,13 +21,12 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck att bigfoot dott com].
 
-Last Modified: 2004-10-11
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -35,11 +35,8 @@ unit JvQControlBar;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  Types, QGraphics, QExtCtrls, QControls, QForms, QMenus, QWindows,
-  
+  SysUtils, Classes,  
+  Types, QGraphics, QExtCtrls, QControls, QForms, QMenus, QWindows, 
   JvQThemes, JvQExControls, JvQExExtCtrls;
 
 type
@@ -51,8 +48,7 @@ type
     FPopupNames: TPopupNames;
     FList: TList;
   protected
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
-    
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override; 
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure PopupMenuClick(Sender: TObject);
     procedure Loaded; override;
@@ -62,8 +58,7 @@ type
     function SavePositions: string;
     procedure LoadPositions(const Value: string);
   published
-    property HintColor;
-    
+    property HintColor; 
     property PopupControl: Boolean read FPopupControl write FPopupControl default True;
     property PopupNames: TPopupNames read FPopupNames write FPopupNames default pnHint;
     property OnMouseEnter;
@@ -84,8 +79,7 @@ begin
   FList := TList.Create;
   FPopupControl := True;
   FPopupNames := pnHint;
-  ControlStyle := ControlStyle + [csAcceptsControls];
-  
+  ControlStyle := ControlStyle + [csAcceptsControls]; 
 end;
 
 destructor TJvControlBar.Destroy;
@@ -119,8 +113,7 @@ var
     if PopupNames = pnHint then
       It.Caption := AControl.Hint
     else
-      It.Caption := AControl.Name;
-    
+      It.Caption := AControl.Name; 
     It.Tag := Index;
     It.OnClick := PopupMenuClick;
     It.Checked := AControl.Visible;
@@ -145,8 +138,7 @@ end;
 procedure TJvControlBar.PopupMenuClick(Sender: TObject);
 begin
   with Sender as TMenuItem do
-  begin
-    
+  begin 
     if (Tag >= 0) and (Tag < FList.Count) then
       TControl(FList[Tag]).Visible := Checked;
   end;
@@ -156,8 +148,7 @@ procedure TJvControlBar.LoadPositions(const Value: string);
 var
   St, St2: string;
   I, J: Integer;
-  LLeft, LTop: Integer;
-  
+  LLeft, LTop: Integer; 
 begin
   St := Value;
   J := 0;
@@ -183,16 +174,13 @@ begin
       I := Pos(',', St2);
       if I <> 0 then
       begin
-        LLeft := StrToIntDef(Copy(St2, 1, I - 1), TControl(FList[J]).Left);
-        
+        LLeft := StrToIntDef(Copy(St2, 1, I - 1), TControl(FList[J]).Left); 
         St2 := Copy(St2, I + 1, Length(St2));
         I := Pos(',', St2);
         if I <> 0 then
-        begin
-          
+        begin 
           St2 := Copy(St2, 1, I - 1);
-        end;
-        
+        end; 
         LTop := StrToIntDef(St2, TControl(FList[J]).Top);
 
         if ControlAtPos(Point(LLeft, TControl(FList[J]).Top), True) <> nil then

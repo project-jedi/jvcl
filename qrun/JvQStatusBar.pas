@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -12,7 +13,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvStatusBar.PAS, released on 2001-02-28.
+The Original Code is: JvStatusBar2.PAS, released on 2001-02-28.
 
 The Initial Developer of the Original Code is Sébastien Buysse [sbuysse att buypin dott com]
 Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
@@ -34,15 +35,12 @@ unit JvQStatusBar;
 interface
 
 uses
-  SysUtils, Classes, Contnrs,
-  
-  
-  QGraphics, QControls, QForms, QComCtrls, QStdActns,
-  
-  JvQCLVer, JvQExComCtrls;
+  SysUtils, Classes, Contnrs, 
+  QGraphics, QControls, QForms, QComCtrls, CommCtrl, QStdActns,
+  JVQCLVer, JvQExComCtrls;
 
-type
-  TStatusPanelClass = class of TStatusPanel;
+type  
+  TStatusPanelClass = class of TStatusPanel; 
   TJvStatusPanel = class(TStatusPanel)
   private
     FAboutJVCL: TJVCLAboutInfo;
@@ -61,25 +59,18 @@ type
     property Control: TControl read FControl write SetControl;
     property MarginLeft: Integer read FMarginLeft write SetMarginLeft default 3;
     property MarginTop: Integer read FMarginTop write SetMarginTop default 3;
-  end;
-  
+  end; 
 
   TJvStatusBar = class(TJvExStatusBar)
   private
     FAutoHintShown: Boolean;
-    FHiddenControls: array of TControl;
-    
+    FHiddenControls: array of TControl; 
   protected
-    procedure DoBoundsChanged; override;
-    
-    procedure Paint; override;
-    
-//    procedure CreateParams(var Params: TCreateParams); override;
+    procedure DoBoundsChanged; override; 
+    procedure Paint; override;   
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    
     procedure MovePanelControls;
-    function GetPanelClass: TStatusPanelClass; //override;
-    
+    function GetPanelClass: TStatusPanelClass;  
   public
     constructor Create(AOwner: TComponent); override;
     function ExecuteAction(Action: TBasicAction): Boolean; override;
@@ -107,22 +98,11 @@ begin
   ControlStyle := ControlStyle + [csAcceptsControls];
 end;
 
-(*)
-procedure TJvStatusBar.CreateParams(var Params: TCreateParams);
-begin
-  inherited CreateParams(Params);
-  with Params do
-    WindowClass.Style := WindowClass.Style and not CS_HREDRAW;
-end;
-(*)
-
 procedure TJvStatusBar.DoBoundsChanged;
 begin
   inherited DoBoundsChanged;
-  Realign;
-  
-  MovePanelControls;
-  
+  Realign; 
+  MovePanelControls; 
   Invalidate; //Force full redraw, cause it's a lot buggy on XP without that!!!
 end;
 
@@ -142,8 +122,7 @@ end;
 
 function TJvStatusBar.ExecuteAction(Action: TBasicAction): Boolean;
 var
-  HintText: string;
-  
+  HintText: string; 
 
   procedure CancelAutoHintShown;
   var
@@ -186,8 +165,7 @@ begin
       CancelAutoHintShown
     else
     begin
-      SetAutoHintShown;
-      
+      SetAutoHintShown; 
       // (rom) may need VisualCLX part here
     end;
     Result := True;
@@ -199,22 +177,20 @@ begin
   end;
 end;
 
-procedure TJvStatusBar.Notification(AComponent: TComponent; Operation: TOperation);
 
+
+procedure TJvStatusBar.Notification(AComponent: TComponent; Operation: TOperation);
 var
   I: Integer;
-
 begin
-  
   inherited Notification(AComponent, Operation);
-  if Operation = opRemove then
+  if (Operation = opRemove) and not (csDestroying in ComponentState) then
     for I := 0 to Panels.Count - 1 do
+    begin
       if TJvStatusPanel(Panels[I]).Control = AComponent then
         TJvStatusPanel(Panels[I]).Control := nil;
-  
+    end;
 end;
-
-
 
 procedure TJvStatusBar.MovePanelControls;
 var
@@ -277,7 +253,10 @@ begin
   if FControl <> nil then
   begin
     if FControl = S then
-      raise EJVCLException.Create(RsEInvalidControlSelection);
+    begin
+      FControl := nil; // discard new control
+      raise EJVCLException.CreateRes(@RsEInvalidControlSelection);
+    end;
     FControl.Parent := S;
     FControl.Height := S.ClientHeight - 4;
     FControl.FreeNotification(S);

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -36,28 +37,21 @@ interface
 
 uses
   Classes,
-  {$IFDEF MSWINDOWS}
-  Windows,
-  {$ENDIF MSWINDOWS}
-
-
-  Qt, QWindows,
-
   {$IFDEF USE_DXGETTEXT}
   JvQGnugettext,
   {$ENDIF USE_DXGETTEXT}
-
-  JvQCLVer, JvQExControls, JvQExExtCtrls, JvQExComCtrls, JvQExForms, JvQExStdCtrls;
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}  
+  Qt, QWindows, 
+  JVQCLVer, JvQExControls, JvQExExtCtrls, JvQExComCtrls, JvQExForms, JvQExStdCtrls;
 
 type
   TJvComponent = class(TComponent)
   private
     FAboutJVCL: TJVCLAboutInfo;
-  published
-    
-    
-    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    
+  published  
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False; 
   end;
 
   TJvGraphicControl = class(TJvExGraphicControl);
@@ -90,12 +84,9 @@ type
   private
     FSearchText: string;
     FSearchTickCount: Longint;
-  protected
-    
-    
+  protected  
     procedure CreateWidget; override;
-    function WidgetFlags: Integer; override;
-    
+    function WidgetFlags: Integer; override; 
     procedure KeyPress(var Key: Char); override;
   end;
 
@@ -162,8 +153,7 @@ begin
           FSearchText := '';
         FSearchTickCount := TickCount;
         if Length(FSearchText) < 32 then
-          FSearchText := FSearchText + Key;
-        
+          FSearchText := FSearchText + Key; 
         Key := #0;
       end;
   end;

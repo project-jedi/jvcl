@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -38,12 +39,9 @@ unit JvQOfficeColorPanel;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
+  SysUtils, Classes,  
   Types, QWindows, Qt, QGraphics, QControls, QForms, QButtons, QExtCtrls,
-  QDialogs,
-  
+  QDialogs, 
   JvQComponent, JvQSpeedButton;
 
 const
@@ -189,8 +187,7 @@ type
     FInited: Boolean;
     FOnColorChange: TNotifyEvent;
     FOnColorButtonClick: TNotifyEvent;
-    FClickColorButton: TJvClickColorButtonType;
-    
+    FClickColorButton: TJvClickColorButtonType; 
     procedure ColorButtonClick(Sender: TObject);
     procedure SetFlat(const Value: Boolean);
     procedure SetSelectedColor(const Value: TColor);
@@ -198,11 +195,8 @@ type
     procedure SetCustomColors(const Value: TStrings);
     function GetProperties: TJvOfficeColorPanelProperties;
     procedure SetProperties(const Value: TJvOfficeColorPanelProperties);
-  protected
-    
-    
-    procedure InitWidget; override;
-    
+  protected  
+    procedure InitWidget; override; 
     procedure Resize; override;
     procedure Paint; override;
     procedure ShowHintChanged; override;
@@ -223,8 +217,7 @@ type
     property Color: TColor read FSelectedColor write SetSelectedColor default clBlack;
     property Flat: Boolean read FFlat write SetFlat default True;
     property CustomColors: TStrings read GetCustomColors write SetCustomColors;
-    property Properties: TJvOfficeColorPanelProperties read GetProperties write SetProperties;
-    
+    property Properties: TJvOfficeColorPanelProperties read GetProperties write SetProperties; 
     property OnColorChange: TNotifyEvent read FOnColorChange write FOnColorChange;
     property OnColorButtonClick: TNotifyEvent read FOnColorButtonClick write FOnColorButtonClick;
   end;
@@ -233,8 +226,7 @@ type
   published
     property Flat;
     property Color;
-    property CustomColors;
-    
+    property CustomColors; 
 
     property Align;
     property Anchors;
@@ -564,8 +556,7 @@ begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle - [csAcceptsControls];
   FInited := False;
-  FSelectedColor := clBlack;
-  
+  FSelectedColor := clBlack; 
   FClickColorButton := cbctNone;
 
   FProperties := TJvOfficeColorPanelProperties.Create;
@@ -599,8 +590,7 @@ begin
     OnClick := ColorButtonClick;
   end;
 
-  FColorDialog := TJvOfficeColorDialog.Create(Self);
-  
+  FColorDialog := TJvOfficeColorDialog.Create(Self); 
 
 //  Font.Name := 'MS Shell Dlg 2';
   FAutoButton.Flat := True;
@@ -733,8 +723,7 @@ begin
      FOnColorButtonClick(Sender);
 
   if TComponent(Sender).Tag = FOtherButton.Tag then
-  begin
-    
+  begin 
     FColorDialog.Color := FSelectedColor;
     if FColorDialog.Execute then
     begin
@@ -747,14 +736,12 @@ begin
   end
   else
   begin
-    TJvSubColorButton(Sender).Down := True;
-    
+    TJvSubColorButton(Sender).Down := True; 
     //in clx have bug
     FAutoButton.Down := FAutoButton = Sender;
     FOtherButton.Down := FOtherButton = Sender;
     for I := 0 to MaxColorButtonNumber - 1 do
-      FColorButtons[I].Down := FColorButtons[I] = Sender;
-    
+      FColorButtons[I].Down := FColorButtons[I] = Sender; 
     SetSelectedColor(TJvSubColorButton(Sender).Color);
   end;
 end;
@@ -840,11 +827,8 @@ begin
   inherited Paint;
   if FFlat then
   begin
-    Canvas.Brush.Color := clBtnFace;
-    
-    
-    FrameRect(Canvas, ClientRect);
-    
+    Canvas.Brush.Color := clBtnFace;  
+    FrameRect(Canvas, ClientRect); 
     Canvas.Brush.Color := Color;
   end;
   if FInited then

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -34,10 +35,10 @@ interface
 
 uses
   SysUtils, Classes,
-  
-  
-  QWindows, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls,
-  
+  {$IFDEF MSWINDOWS}
+  Windows, // GetCurrentThreadID => Linux: System.pas
+  {$ENDIF MSWINDOWS}  
+  QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, 
   JvQComponent, JvQBaseDlg, JvQAppStorage;
 
 type
@@ -61,16 +62,13 @@ type
     FAppStorage: TJvCustomAppStorage;
     FAppStoragePath: string;
     FLocked: Boolean;
-    FUnlockDlgShowing: Boolean;
     FSaveOnRestore: TNotifyEvent;
     FAfterLogin: TNotifyEvent;
     FBeforeLogin: TNotifyEvent;
     FOnUnlock: TCheckUnlockEvent;
     FOnUnlockApp: TUnlockAppEvent;
-    FOnIconDblClick: TNotifyEvent;
-    
+    FOnIconDblClick: TNotifyEvent; 
     function GetLoggedUser: string;
-    function UnlockHook(var Msg: TMessage): Boolean;
     procedure SetAppStorage(Value: TJvCustomAppStorage);
   protected
     function CheckUnlock(const UserName, Password: string): Boolean; dynamic;
@@ -87,8 +85,7 @@ type
     property AllowEmptyPassword: Boolean read FAllowEmptyPassword write FAllowEmptyPassword default True;
     property AttemptNumber: Integer read FAttemptNumber write FAttemptNumber default 3;
     property MaxPasswordLen: Integer read FMaxPasswordLen write FMaxPasswordLen default 0;
-    property UpdateCaption: TUpdateCaption read FUpdateCaption write FUpdateCaption default ucNoChange;
-    
+    property UpdateCaption: TUpdateCaption read FUpdateCaption write FUpdateCaption default ucNoChange; 
     property AfterLogin: TNotifyEvent read FAfterLogin write FAfterLogin;
     property BeforeLogin: TNotifyEvent read FBeforeLogin write FBeforeLogin;
     property OnUnlock: TCheckUnlockEvent read FOnUnlock write FOnUnlock; { obsolete }
@@ -122,8 +119,7 @@ type
     property AppStoragePath;
     property AttemptNumber;
     property MaxPasswordLen;
-    property UpdateCaption;
-//    property PasswordChar;
+    property UpdateCaption; 
     property OnCheckUser: TJvLoginEvent read FOnCheckUser write FOnCheckUser;
     property AfterLogin;
     property BeforeLogin;
@@ -166,11 +162,8 @@ function CreateLoginDialog(UnlockMode, ASelectDatabase: Boolean;
 
 implementation
 
-uses
-  
-  
-  QConsts,
-  
+uses  
+  QConsts, 
   IniFiles,
   JvQJCLUtils, JvQJVCLUtils, JvQResources, JvQConsts;
 
@@ -206,16 +199,14 @@ begin
   inherited Create(AOwner);
   FLoggedUser := EmptyStr;
   FActive := True;
-  FAttemptNumber := 3;
-//  FPasswordChar := '*';
+  FAttemptNumber := 3; 
   FAllowEmptyPassword := True;
 end;
 
 destructor TJvCustomLogin.Destroy;
 begin
   if FLocked then
-  begin
-    Application.UnhookMainWindow(UnlockHook);
+  begin 
     FLocked := False;
   end;
   inherited Destroy;
@@ -256,7 +247,7 @@ end;
 
 procedure TJvCustomLogin.DoUpdateCaption;
 var
-  F: TForm;
+  F: TCustomForm;
 begin
   F := Application.MainForm;
   if (F = nil) and (Owner is TForm) then
@@ -291,8 +282,7 @@ end;
 procedure TJvCustomLogin.Lock;
 begin
   FSaveOnRestore := Application.OnRestore;
-  Application.Minimize;
-  Application.HookMainWindow(UnlockHook);
+  Application.Minimize; 
   FLocked := True;
 end;
 
@@ -300,9 +290,7 @@ procedure TJvCustomLogin.TerminateApplication;
 begin
   with Application do
   begin
-    ShowMainForm := False;
-    if Handle <> 0 then
-      ShowOwnedPopups(Handle, False);
+    ShowMainForm := False; 
     Terminate;
   end;
   CallTerminateProcs;
@@ -363,8 +351,7 @@ begin
         Cursor := crHand;
       end;
     end;
-    PasswordEdit.MaxLength := FMaxPasswordLen;
-    
+    PasswordEdit.MaxLength := FMaxPasswordLen; 
     AttemptNumber := Self.AttemptNumber;
   end;
 end;
@@ -387,55 +374,7 @@ begin
   end;
 end;
 
-function TJvCustomLogin.UnlockHook(var Msg: TMessage): Boolean;
 
-  function DoUnlock: Boolean;
-  var
-    Popup: HWND;
-  begin
-    with Application do
-      if IsWindowVisible(Handle) and IsWindowEnabled(Handle) then
-        SetForegroundWindow(Handle);
-    if FUnlockDlgShowing then
-    begin
-      Popup := GetLastActivePopup(Application.Handle);
-      if (Popup <> 0) and IsWindowVisible(Popup) and
-        (WindowClassName(Popup) = TJvLoginForm.ClassName) then
-        SetForegroundWindow(Popup);
-      Result := False;
-      Exit;
-    end;
-    FUnlockDlgShowing := True;
-    try
-      Result := DoUnlockDialog;
-    finally
-      FUnlockDlgShowing := False;
-    end;
-    if Result then
-    begin
-      Application.UnhookMainWindow(UnlockHook);
-      FLocked := False;
-    end;
-  end;
-
-begin
-  Result := False;
-  if not FLocked then
-    Exit;
-  with Msg do
-  begin
-    case Msg of
-      WM_QUERYOPEN:
-        UnlockHook := not DoUnlock;
-      WM_SHOWWINDOW:
-        if WParam <> 0 then
-          UnlockHook := not DoUnlock;
-      WM_SYSCOMMAND:
-        if ((WParam and $FFF0) = SC_RESTORE) or ((WParam and $FFF0) = SC_ZOOM) then
-          UnlockHook := not DoUnlock;
-    end;
-  end;
-end;
 
 //=== TJvLoginDialog =========================================================
 
@@ -523,8 +462,7 @@ end;
 
 procedure TJvLoginForm.FormCreate(Sender: TObject);
 begin
-  Icon := Application.Icon;
-  
+  Icon := Application.Icon; 
   AppIcon.Picture.Assign(Icon);
   AppTitleLabel.Caption := Format(RsAppTitleLabel, [Application.Title]);
   PasswordLabel.Caption := RsPasswordLabel;

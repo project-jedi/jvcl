@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -37,11 +38,8 @@ unit JvQPanel;
 
 interface
 
-uses
-  
-  
-  Types, QWindows, QGraphics, QControls, QForms, QExtCtrls,
-  
+uses  
+  Types, QWindows, QGraphics, QControls, QForms, QExtCtrls, 
   SysUtils, Classes,
   JvQThemes, JvQComponent, JvQExControls;
 
@@ -83,8 +81,7 @@ type
     property AutoSize: TJvAutoSizePanel read FAutoSize write SetAutoSize default asNone;
     property AutoArrange: Boolean read FAutoArrange write SetAutoArrange default False;
   end;
-
-  
+ 
 
   TJvPanel = class(TJvCustomPanel, IJvDenySubClassing)
   private
@@ -102,8 +99,7 @@ type
     FArrangeControlActive: Boolean;
     FArrangeWidth: Integer;
     FArrangeHeight: Integer;
-    FOnResizeParent: TJvPanelResizeParentEvent;
-    
+    FOnResizeParent: TJvPanelResizeParentEvent; 
     FOnPaint: TNotifyEvent;
     function GetHeight: Integer;
     procedure SetHeight(Value: Integer);
@@ -128,8 +124,7 @@ type
     procedure TextChanged; override;
     procedure Paint; override;
     procedure AdjustSize; override;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
-    
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override; 
     procedure Loaded; override;
     procedure Resize; override;
     procedure AlignControls(AControl: TControl; var Rect: TRect); override;
@@ -144,11 +139,9 @@ type
     procedure DisableArrange;
     function ArrangeEnabled: Boolean;
     property ArrangeWidth: Integer read FArrangeWidth;
-    property ArrangeHeight: Integer read FArrangeHeight;
-    
+    property ArrangeHeight: Integer read FArrangeHeight; 
     property Canvas;
-  published
-    
+  published 
     property Sizeable: Boolean read FSizeable write SetSizeable default False;
     property HintColor;
     property HotColor: TColor read FHotColor write SetHotColor default clBtnFace;
@@ -157,8 +150,7 @@ type
     property FlatBorder: Boolean read FFlatBorder write SetFlatBorder default False;
     property FlatBorderColor: TColor read FFlatBorderColor write SetFlatBorderColor default clBtnShadow;
     property OnMouseEnter;
-    property OnMouseLeave;
-    
+    property OnMouseLeave; 
     property OnParentColorChange;
     property OnPaint: TNotifyEvent read FOnPaint write FOnPaint;
 
@@ -168,8 +160,7 @@ type
     property OnResizeParent: TJvPanelResizeParentEvent read FOnResizeParent write FOnResizeParent;
     property Align;
     property Alignment;
-    property Anchors;
-    
+    property Anchors; 
     property BevelInner;
     property BevelOuter;
     property BevelWidth;
@@ -180,8 +171,7 @@ type
     property Constraints;
     property DragMode;
     property Enabled;
-    property Font;
-    
+    property Font; 
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -324,8 +314,7 @@ end;
 
 constructor TJvPanel.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner);
-  
+  inherited Create(AOwner); 
   FTransparent := False;
   FFlatBorder := False;
   FFlatBorderColor := clBtnShadow;
@@ -359,18 +348,14 @@ begin
 
   if FFlatBorder then
   begin
-    Canvas.Brush.Color := FFlatBorderColor;
-    
-    
-    FrameRect(Canvas, ClientRect);
-    
+    Canvas.Brush.Color := FFlatBorderColor;  
+    FrameRect(Canvas, ClientRect); 
     Canvas.Brush.Color := Color;
   end
   else
     DrawBorders;
   Self.DrawCaption;
-  if Sizeable then
-    
+  if Sizeable then 
       with Canvas do
       begin
         Font.Name := 'Marlett';
@@ -453,11 +438,8 @@ begin
       InflateRect(ATextRect, -BevelSize, -BevelSize);
       Flags := DT_EXPANDTABS or WordWrap[MultiLine] or Alignments[Alignment];
       Flags := DrawTextBiDiModeFlags(Flags);
-      //calculate required rectangle size
-      
-      
-      DrawText(Canvas, Caption, -1, ATextRect, Flags or DT_CALCRECT);
-      
+      //calculate required rectangle size  
+      DrawText(Canvas, Caption, -1, ATextRect, Flags or DT_CALCRECT); 
       // adjust the rectangle placement
       OffsetRect(ATextRect, 0, -ATextRect.Top + (Height - (ATextRect.Bottom - ATextRect.Top)) div 2);
       case Alignment of
@@ -471,11 +453,8 @@ begin
         Font.Color := clGrayText;
       //draw text
       if Transparent then
-        SetBkMode(Canvas.Handle, BkModeTransparent);
-      
-      
-      DrawText(Canvas, Caption, -1, ATextRect, Flags);
-      
+        SetBkMode(Canvas.Handle, BkModeTransparent);  
+      DrawText(Canvas, Caption, -1, ATextRect, Flags); 
     end;
   end;
 end;
@@ -519,11 +498,8 @@ procedure TJvPanel.SetTransparent(const Value: Boolean);
 begin
   if Value <> FTransparent then
   begin
-    FTransparent := Value;
-    
-    
-    Masked := FTransparent;
-    
+    FTransparent := Value;  
+    Masked := FTransparent; 
   end;
 end;
 
@@ -661,10 +637,8 @@ begin
 end;
 
 procedure TJvPanel.Resize;
-begin
-  
-  if Assigned(FArrangeSettings) then
-  
+begin 
+  if Assigned(FArrangeSettings) then 
     if FArrangeSettings.AutoArrange then
       ArrangeControls;
   inherited Resize;
@@ -804,11 +778,8 @@ begin
     end;
     FArrangeWidth := ControlMaxX + 2 * FArrangeSettings.BorderLeft;
     FArrangeHeight := ControlMaxY + 2 * FArrangeSettings.BorderTop;
-    if OldHeight <> Height then
-      
-      
-      UpdateWindow(GetFocus);
-      
+    if OldHeight <> Height then  
+      UpdateWindow(GetFocus); 
   finally
     FArrangeControlActive := False;
   end;

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -35,11 +36,8 @@ unit JvQEnterTab;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  Qt, QGraphics, QControls, QForms, QWindows,
-  
+  SysUtils, Classes,  
+  Qt, QGraphics, QControls, QForms, QWindows, 
   JvQComponent;
 
 type
@@ -48,11 +46,8 @@ type
     FEnterAsTab: Boolean;
     FAllowDefault: Boolean;
     FBmp: TBitmap;
-  protected
-    
-    
-    function TabKeyHook(Sender: QObjectH; Event: QEventH): Boolean; virtual;
-    
+  protected  
+    function TabKeyHook(Sender: QObjectH; Event: QEventH): Boolean; virtual; 
     procedure Paint; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -85,17 +80,13 @@ begin
     FBmp.LoadFromResourceName(hInstance, 'DESIGNENTERASTAB');
   end
   else
-    Visible := False;
-  
-  InstallApplicationHook(TabKeyHook);
-  
+    Visible := False; 
+  InstallApplicationHook(TabKeyHook); 
 end;
 
 destructor TJvEnterAsTab.Destroy;
-begin
-  
-  UninstallApplicationHook(TabKeyHook);
-  
+begin 
+  UninstallApplicationHook(TabKeyHook); 
   FBmp.Free;
   inherited Destroy;
 end;
@@ -132,13 +123,10 @@ procedure TJvEnterAsTab.Paint;
 begin
   if not (csDesigning in ComponentState) then
     Exit;
-  Canvas.Brush.Color := clBtnFace;
-  
-  
+  Canvas.Brush.Color := clBtnFace;  
   FBmp.Transparent := True;
   FBmp.TransparentColor := clFuchsia;
-  Canvas.StretchDraw(ClientRect, FBmp);
-  
+  Canvas.StretchDraw(ClientRect, FBmp); 
 end;
 
 procedure TJvEnterAsTab.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);

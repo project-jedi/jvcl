@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -41,23 +42,19 @@ unit JvQExGrids;
 
 interface
 
-uses
-  
-  
-  Qt, QGraphics, QControls, QForms, QGrids, Types, QWindows,
-  
+uses  
+  Qt, QGraphics, QControls, QForms, QGrids, Types, QWindows, 
   Classes, SysUtils,
   JvQTypes, JvQThemes, JVQCLVer, JvQExControls;
 
 
 
  {$IF not declared(PatchedVCLX)}
-  
+  {$DEFINE NeedMouseEnterLeave}
  {$IFEND}
 
 
 type
-
  
 
 
@@ -67,9 +64,7 @@ type
   {$ENDIF HAS_GRID_EDITSTYLE}
 
 
-  TJvExInplaceEdit = class(TInplaceEdit, IJvWinControlEvents, IJvControlEvents, IPerformControl)
-  
-  
+  TJvExInplaceEdit = class(TInplaceEdit, IJvWinControlEvents, IJvControlEvents, IPerformControl)  
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
     function IsRightToLeft: Boolean;
@@ -93,57 +88,48 @@ type
     procedure ColorChanged; override;
     property Color: TColor read GetColor write SetColor;
   published // asn: change to public in final
-    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
-  
+    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered; 
   private
     FHintColor: TColor;
     FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
-  
+  {$IFDEF NeedMouseEnterLeave}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  
+  {$ENDIF NeedMouseEnterLeave}
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure DoFocusChanged(Control: TWinControl); dynamic;
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-  private
-  
-  
+  private  
     FAboutJVCLX: TJVCLAboutInfo;
   published
-    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
-  
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False; 
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-  
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual; 
   private
     FCanvas: TCanvas;
   protected
     procedure Paint; virtual;
-    property Canvas: TCanvas read FCanvas;
-  
+    property Canvas: TCanvas read FCanvas; 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
-  TJvExPubInplaceEdit = class(TJvExInplaceEdit)
-  
+  TJvExPubInplaceEdit = class(TJvExInplaceEdit) 
   end;
   
-  TJvExCustomGrid = class(TCustomGrid,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)
-  
-  
+  TJvExCustomGrid = class(TCustomGrid,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)  
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
     function IsRightToLeft: Boolean;
@@ -167,33 +153,29 @@ type
     procedure ColorChanged; override;
     property Color: TColor read GetColor write SetColor;
   published // asn: change to public in final
-    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
-  
+    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered; 
   private
     FHintColor: TColor;
     FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
-  
+  {$IFDEF NeedMouseEnterLeave}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  
+  {$ENDIF NeedMouseEnterLeave}
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure DoFocusChanged(Control: TWinControl); dynamic;
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-  private
-  
-  
+  private  
     FAboutJVCLX: TJVCLAboutInfo;
   published
-    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
-  
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False; 
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
@@ -205,15 +187,11 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
-  TJvExPubCustomGrid = class(TJvExCustomGrid)
-  
+  TJvExPubCustomGrid = class(TJvExCustomGrid) 
   end;
-  
-  
+   
 
-  TJvExDrawGrid = class(TDrawGrid,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)
-  
-  
+  TJvExDrawGrid = class(TDrawGrid,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)  
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
     function IsRightToLeft: Boolean;
@@ -237,33 +215,29 @@ type
     procedure ColorChanged; override;
     property Color: TColor read GetColor write SetColor;
   published // asn: change to public in final
-    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
-  
+    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered; 
   private
     FHintColor: TColor;
     FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
-  
+  {$IFDEF NeedMouseEnterLeave}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  
+  {$ENDIF NeedMouseEnterLeave}
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure DoFocusChanged(Control: TWinControl); dynamic;
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-  private
-  
-  
+  private  
     FAboutJVCLX: TJVCLAboutInfo;
   published
-    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
-  
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False; 
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
@@ -279,14 +253,11 @@ type
     function GetEditStyle(ACol, ARow: Longint): TEditStyle; dynamic;
   {$ENDIF !HAS_GRID_EDITSTYLE}
   end;
-  TJvExPubDrawGrid = class(TJvExDrawGrid)
-  
+  TJvExPubDrawGrid = class(TJvExDrawGrid) 
   end;
   
 
-  TJvExStringGrid = class(TStringGrid,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)
-  
-  
+  TJvExStringGrid = class(TStringGrid,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)  
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
     function IsRightToLeft: Boolean;
@@ -310,33 +281,29 @@ type
     procedure ColorChanged; override;
     property Color: TColor read GetColor write SetColor;
   published // asn: change to public in final
-    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
-  
+    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered; 
   private
     FHintColor: TColor;
     FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
-  
+  {$IFDEF NeedMouseEnterLeave}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  
+  {$ENDIF NeedMouseEnterLeave}
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure DoFocusChanged(Control: TWinControl); dynamic;
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-  private
-  
-  
+  private  
     FAboutJVCLX: TJVCLAboutInfo;
   published
-    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
-  
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False; 
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
@@ -352,8 +319,7 @@ type
     function GetEditStyle(ACol, ARow: Longint): TEditStyle; dynamic;
   {$ENDIF !HAS_GRID_EDITSTYLE}
   end;
-  TJvExPubStringGrid = class(TJvExStringGrid)
-  
+  TJvExPubStringGrid = class(TJvExStringGrid) 
   end;
   
 

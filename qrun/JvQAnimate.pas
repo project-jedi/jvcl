@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -37,11 +38,8 @@ unit JvQAnimate;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QGraphics, QControls, QForms, QComCtrls,
-  
+  SysUtils, Classes,  
+  QGraphics, QControls, QForms, QComCtrls, 
   JvQThemes, JvQExComCtrls;
 
 
@@ -78,8 +76,7 @@ implementation
 
 constructor TJvAnimate.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner);
-  
+  inherited Create(AOwner); 
 end;
 
 end.

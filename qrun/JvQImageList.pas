@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -39,11 +40,8 @@ interface
 uses
   {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF MSWINDOWS}
-  
-  
-  QGraphics, QControls, QImgList,
-  
+  {$ENDIF MSWINDOWS}  
+  QGraphics, QControls, QImgList, 
   SysUtils, Classes,
   JvQFinalize;
 
@@ -88,8 +86,7 @@ type
   private
     function GetItem(AIndex: Integer): TJvImageListItem;
     procedure SetItem(AIndex: Integer; Value: TJvImageListItem);
-  protected
-    
+  protected 
     procedure Update(Item: TCollectionItem); override;
   public
     constructor Create(AOwner: TComponent);
@@ -106,8 +103,7 @@ type
     FTransparentMode: TJvImageListTransparentMode;
     FTransparentColor: TColor;
     FPicture: TPicture;
-    FFileName: TFileName;
-    
+    FFileName: TFileName; 
     FResourceIds: TStrings;
     FMode: TJvImageListMode;
 
@@ -115,8 +111,7 @@ type
     procedure SetItems(AItems: TJvImageListItems);
     procedure SetPicture(Value: TPicture);
     procedure SetTransparentMode(Value: TJvImageListTransparentMode);
-    procedure SetTransparentColor(Value: TColor);
-    
+    procedure SetTransparentColor(Value: TColor); 
     procedure SetResourceIds(Value: TStrings);
     procedure SetMode(const Value: TJvImageListMode);
 
@@ -126,21 +121,16 @@ type
   protected
     procedure ItemListError;
     procedure DefineProperties(Filer: TFiler); override;
-    procedure InitializeImageList; virtual; // called by Initialize (VCL and VCLX)
-    
-    
-    procedure Initialize(const AWidth, AHeight: Integer); override;
-    
+    procedure InitializeImageList; virtual; // called by Initialize (VCL and VCLX)  
+    procedure Initialize(const AWidth, AHeight: Integer); override; 
     procedure Change; override;
     procedure DataChanged(Sender: TObject); virtual;
-    procedure UpdateImageList;
-    
+    procedure UpdateImageList; 
   public
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure BeginUpdate;
-    procedure EndUpdate;
-    
+    procedure EndUpdate; 
     procedure SaveToFile(const Filename: string);
     procedure SaveToStream(Stream: TStream); virtual;
     procedure LoadFromFile(const Filename: string);
@@ -176,8 +166,7 @@ type
       //   imPicture: split the image in Picture
       //   imResourceIds: load the images by ResourceIds
       //   imItemList: the AddItem, DeleteItem, ClearItems and GetItemInfoStr methods are available
-
-    
+ 
     property TransparentMode: TJvImageListTransparentMode read FTransparentMode write SetTransparentMode default
       tmColor;
       // TransparentMode is used for adding the bitmaps from Picture or
@@ -216,11 +205,8 @@ function LoadImageListFromBitmap(ImgList: TCustomImageList; const Bitmap: TBitma
 
 implementation
 
-uses
-  
-  
-  QConsts,
-  
+uses  
+  QConsts, 
   TypInfo, JvQJVCLUtils, JvQResources;
 
 const
@@ -450,8 +436,7 @@ begin
   TempImageList := TCustomImageList.CreateSize(Width, Height);
   Bmp := TBitmap.Create;
   try
-    Bmp.PixelFormat := Bitmap.PixelFormat;
-    
+    Bmp.PixelFormat := Bitmap.PixelFormat; 
 
    // split Bitmap and add all bitmaps to ImgList
     for i := 0 to Result - 1 do
@@ -462,12 +447,9 @@ begin
       Bmp.Canvas.Brush.Color := MaskColor;
       Bmp.Width := 0; // clear bitmap
       Bmp.Width := Width;
-      Bmp.Height := Height;
-      
-      
+      Bmp.Height := Height;  
       Bmp.Canvas.CopyRect(Rect(0, 0, Width, Height),
-        Bitmap.Canvas, Rect(i * Width, 0, (i + 1) * Width, Height));
-      
+        Bitmap.Canvas, Rect(i * Width, 0, (i + 1) * Width, Height)); 
 
       TempImageList.AddMasked(Bmp, MaskColor);
     end;
@@ -502,29 +484,22 @@ begin
   try
     Bmp.PixelFormat := Bitmap.PixelFormat;
     MaskBmp.PixelFormat := MaskBitmap.PixelFormat;
-
-    
+ 
 
    // split Bitmap and add all bitmaps to ImgList
     for i := 0 to Result - 1 do
     begin
       Bmp.Width := 0; // clear bitmap
       Bmp.Width := Width;
-      Bmp.Height := Height;
-      
-      
+      Bmp.Height := Height;  
       Bmp.Canvas.CopyRect(Rect(0, 0, Width, Height),
-        Bitmap.Canvas, Rect(i * Width, 0, (i + 1) * Width, Height));
-      
+        Bitmap.Canvas, Rect(i * Width, 0, (i + 1) * Width, Height)); 
 
       MaskBmp.Width := 0; // clear bitmap
       MaskBmp.Width := Width;
-      MaskBmp.Height := Height;
-      
-      
+      MaskBmp.Height := Height;  
       MaskBmp.Canvas.CopyRect(Rect(0, 0, Width, Height),
-        MaskBitmap.Canvas, Rect(i * Width, 0, (i + 1) * Width, Height));
-      
+        MaskBitmap.Canvas, Rect(i * Width, 0, (i + 1) * Width, Height)); 
 
       TempImageList.Add(Bmp, MaskBmp);
     end;
@@ -548,15 +523,13 @@ end;
 procedure TJvImageList.InitializeImageList;
 begin
   FModified := False;
-
-  
+ 
 
   FUpdateLock := 0;
 
   FMode := imPicture;
   FTransparentMode := tmColor;
-  FTransparentColor := clFuchsia;
-  
+  FTransparentColor := clFuchsia; 
 
   FFileName := '';
   FPicture := TPicture.Create;
@@ -588,8 +561,7 @@ begin
       ResourceIds.Assign(ImageList.ResourceIds);
       // Do not assign Filename here.
       TransparentMode := ImageList.TransparentMode;
-      TransparentColor := ImageList.TransparentColor;
-      
+      TransparentColor := ImageList.TransparentColor; 
     end;
 
     inherited Assign(Source);

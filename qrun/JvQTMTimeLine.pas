@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -36,14 +37,8 @@ unit JvQTMTimeLine;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  Types, QControls, QButtons, QGraphics, QExtCtrls, QForms, QImgList, QWindows,
-  
-  {$IFDEF BCB}
-  JvQTypes, // TDate / TTime macros
-  {$ENDIF BCB}
+  SysUtils, Classes,  
+  Types, QControls, QButtons, QGraphics, QExtCtrls, QForms, QImgList, QWindows,  
   JvQComponent, JvQExControls;
 
 
@@ -232,11 +227,9 @@ type
   end;
 
   TJvTMTimeline = class(TJvCustomTMTimeline)
-  public
-    
+  public 
     property RightButton;
-    property LeftButton;
-    
+    property LeftButton; 
   published
     // gets / sets the borderstyle of the control and the scroll-buttons
     property BorderStyle;
@@ -322,17 +315,13 @@ type
     property OnReadObject;
     // triggered for each object when writing to a file
     property OnWriteObject;
-    property OnStartDrag;
-    
+    property OnStartDrag; 
   end;
 
 implementation
 
-uses
-  
-  
-  QConsts,
-  
+uses  
+  QConsts, 
   JvQJVCLUtils, JvQThemes;
 
 {$IFDEF MSWINDOWS}
@@ -403,14 +392,11 @@ end;
 
 constructor TJvCustomTMTimeline.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner);
-  
+  inherited Create(AOwner); 
   ControlStyle := ControlStyle - [csSetCaption, csAcceptsControls];
-  IncludeThemeStyle(Self, [csNeedsBorderPaint]);
-  
+  IncludeThemeStyle(Self, [csNeedsBorderPaint]); 
   ControlStyle := ControlStyle - [csNoFocus];
-  InputKeys := InputKeys + [ikArrows] ;
-  
+  InputKeys := InputKeys + [ikArrows] ; 
 
   FSelection := TJvTLSelFrame.Create;
   FSelection.Pen.Width := 2;
@@ -484,11 +470,9 @@ begin
 
     OnMouseDown := DoRMouseDown;
     OnMouseUp := DoMouseUp;
-  end;
-  
+  end; 
   FLeftBtn.SetSubComponent(True);
-  FRightBtn.SetSubComponent(True);
-  
+  FRightBtn.SetSubComponent(True); 
   Height := 56;
   BevelInner := bvNone;
   BevelOuter := bvNone;
@@ -636,12 +620,9 @@ begin
     R := Rect(ARect.Left + ((ARect.Right - ARect.Left) - Bmp.Width) div 2,
       ARect.Top + CanvasMaxTextHeight(ACanvas) + 2,
       ARect.Left + ((ARect.Right - ARect.Left) - Bmp.Width) div 2 + Bmp.Width,
-      ARect.Top + Bmp.Height +CanvasMaxTextHeight(ACanvas) + 2);
-    
-    
+      ARect.Top + Bmp.Height +CanvasMaxTextHeight(ACanvas) + 2);  
     Bmp.transparent := true ;
-    ACanvas.Draw( R.Left, R.Top, bmp);
-    
+    ACanvas.Draw( R.Left, R.Top, bmp); 
   finally
     ACanvas.Brush.Color := Tmp;
     Bmp.Free;
@@ -820,18 +801,12 @@ begin
     Exit;
   Tmp := ACanvas.Brush.Color;
   try
-    ACanvas.Brush.Color := AColor;
-    
-    
-    FrameRect(ACanvas, ARect);
-    
-    InflateRect(ARect, -Abs(ALineWidth) + 1, -Abs(ALineWidth) + 1);
-    
-    
+    ACanvas.Brush.Color := AColor;  
+    FrameRect(ACanvas, ARect); 
+    InflateRect(ARect, -Abs(ALineWidth) + 1, -Abs(ALineWidth) + 1);  
     FrameRect(ACanvas, ARect);
     InflateRect(ARect, -1, -1);
-    ACanvas.FillRect(ARect);
-    
+    ACanvas.FillRect(ARect); 
   finally
     ACanvas.Brush.Color := Tmp;
   end;
@@ -878,15 +853,13 @@ begin
   begin
     // erase old selection
     R := GetRectForDate(FSelDate);
-    InflateRect(R, Selection.Pen.Width + 1, Selection.Pen.Width + 1);
-     QWindows.InvalidateRect(Handle, @R, True);
+    InflateRect(R, Selection.Pen.Width + 1, Selection.Pen.Width + 1);  QWindows.InvalidateRect(Handle, @R, True);
     FSelDate := Value;
     if Enabled then
     begin
       // draw new selection
       R := GetRectForDate(FSelDate);
-      InflateRect(R, Selection.Pen.Width + 1, Selection.Pen.Width + 1);
-       QWindows.InvalidateRect(Handle, @R, True);
+      InflateRect(R, Selection.Pen.Width + 1, Selection.Pen.Width + 1);  QWindows.InvalidateRect(Handle, @R, True);
     end;
   end;
 end;
@@ -1292,16 +1265,14 @@ begin
   end;
 end;
 
-function TJvCustomTMTimeline.DoMouseWheelDown(Shift: TShiftState;
-   const  MousePos: TPoint): Boolean;
+function TJvCustomTMTimeline.DoMouseWheelDown(Shift: TShiftState;  const  MousePos: TPoint): Boolean;
 begin
   Result := inherited DoMouseWheelDown(Shift, MousePos);
   if not Result then
     ScrollDate(Self, -1);
 end;
 
-function TJvCustomTMTimeline.DoMouseWheelUp(Shift: TShiftState;
-   const  MousePos: TPoint): Boolean;
+function TJvCustomTMTimeline.DoMouseWheelUp(Shift: TShiftState;  const  MousePos: TPoint): Boolean;
 begin
   Result := inherited DoMouseWheelUp(Shift, MousePos);
   if not Result then

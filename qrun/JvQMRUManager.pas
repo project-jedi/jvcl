@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -37,11 +38,8 @@ unit JvQMRUManager;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  Qt, QMenus, QGraphics, QControls, QForms, Types, QWindows,
-  
+  SysUtils, Classes,  
+  Qt, QMenus, QGraphics, QControls, QForms, Types, QWindows, 
   JvQFormPlacement, JvQAppStorage, JvQComponent;
 
 type
@@ -799,11 +797,8 @@ begin
   if MaxLength > 0 then
   begin
     if not StartEllipsis then
-      Result := PathCompactPath(
-        
-        
-        QPainter_handle(GetCanvas.Handle),
-        
+      Result := PathCompactPath(  
+        QPainter_handle(GetCanvas.Handle), 
         S, GetCanvas.TextWidth('n') * MaxLength, cpCenter)
     else
     if Length(S) > MaxLength then

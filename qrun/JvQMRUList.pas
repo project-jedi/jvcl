@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -496,7 +497,7 @@ end;
 procedure TJvMRUList.NeedUnicode;
 begin
   if not UnicodeAvailable then
-    raise EMruException.Create(RsEErrorMRUUnicode);
+    raise EMruException.CreateRes(@RsEErrorMRUUnicode);
 end;
 
 procedure TJvMRUList.ReCreateList;
@@ -636,7 +637,7 @@ begin
       FList := CreateMruList(@FLst);
 
     if FList = 0 then
-      raise EMruException.Create(RsEErrorMRUCreating);
+      raise EMruException.CreateRes(@RsEErrorMRUCreating);
   end;
 end;
 
@@ -747,10 +748,8 @@ begin
         EnumMRUListW := GetProcAddress(hComCtlDll, PChar(403));
       end;
     end
-    else
-      
-      RaiseLastOSError;
-      
+    else 
+      RaiseLastOSError; 
     if hComCtlDll > 0 then
       AddFinalizeProc(sUnitName, FinalizeDLL);
   end;

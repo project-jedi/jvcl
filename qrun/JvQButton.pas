@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -34,12 +35,9 @@ unit JvQButton;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
+  SysUtils, Classes,  
   Qt, QGraphics, QControls, QForms, QStdCtrls, QMenus, QButtons, Types,
-  QWindows,
-  
+  QWindows, 
   JvQComponent, JvQConsts, JvQTypes, JvQExStdCtrls, JvQThemes, JvQFinalize;
 
 type
@@ -65,8 +63,7 @@ type
     procedure SetDown(Value: Boolean);
 
     procedure CMButtonPressed(var Msg: TJvCMButtonPressed); message CM_JVBUTTONPRESSED;
-    procedure CMForceSize(var Msg: TCMForceSize); message CM_FORCESIZE;
-    
+    procedure CMForceSize(var Msg: TCMForceSize); message CM_FORCESIZE; 
     procedure SetForceSameSize(const Value: Boolean);
     procedure SetAllowAllUp(const Value: Boolean);
     procedure SetGroupIndex(const Value: Integer);
@@ -136,8 +133,7 @@ type
     procedure ForceSize(Sender: TControl; AWidth, AHeight: integer);
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
-    procedure FontChanged; override;
-    
+    procedure FontChanged; override; 
     function GetRealCaption: string; dynamic;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     property WordWrap: Boolean read FWordWrap write SetWordWrap default True;
@@ -322,8 +318,7 @@ begin
   begin
     FStates := [bsMouseDown, bsMouseInside];
     RepaintBackground;
-  end;
-  
+  end; 
   Tmp := ClientToScreen(Point(0, Height));
   DoDropDownMenu(Button, Shift, Tmp.X, Tmp.Y);
 end;
@@ -331,8 +326,7 @@ end;
 procedure TJvCustomGraphicButton.MouseMove(Shift: TShiftState;
   X, Y: Integer);
 begin
-  inherited MouseMove(Shift, X, Y);
-  
+  inherited MouseMove(Shift, X, Y); 
     if not InsideBtn(X, Y) then
     begin
       Exclude(FStates, bsMouseInside);
@@ -342,14 +336,12 @@ begin
     begin
       Include(FStates, bsMouseInside);
       RepaintBackground;
-    end;
-  
+    end; 
 end;
 
 procedure TJvCustomGraphicButton.MouseUp(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
-begin
-  
+begin 
   if not Enabled then
     Exit;
   inherited MouseUp(Button, Shift, X, Y);
@@ -358,8 +350,7 @@ begin
 end;
 
 function TJvCustomGraphicButton.DoDropDownMenu(Button: TMouseButton; Shift: TShiftState; X, Y: Integer): Boolean;
-var
-  
+var 
   Handled: boolean;
 begin
   Result := (Button = mbLeft) and (DropDownMenu <> nil);
@@ -378,13 +369,10 @@ begin
     if not Handled then
       DropDownMenu.Popup(X, Y)
     else
-      Exit;
-    
-    
+      Exit;  
     repeat
       Application.ProcessMessages; // (ahuser) does this really do the job?
-    until not QWidget_isVisible(DropDownMenu.handle); // (asn) it did not, now it does
-    
+    until not QWidget_isVisible(DropDownMenu.handle); // (asn) it did not, now it does 
     { release button }
     MouseUp(Button, Shift, X, Y);
   end;
@@ -438,10 +426,8 @@ end;
 procedure TJvCustomGraphicButton.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
 var
   Form: TCustomForm;
-  Msg: TCMForceSize;
-  
-  I: Integer;
-  
+  Msg: TCMForceSize; 
+  I: Integer; 
 begin
   inherited SetBounds(ALeft, ATop, AWidth, AHeight);
   if ForceSameSize then
@@ -453,12 +439,10 @@ begin
       Msg.Sender := Self;
       Msg.NewSize.X := AWidth;
       Msg.NewSize.Y := AHeight;
-      Form.Broadcast(Msg);
-      
+      Form.Broadcast(Msg); 
       for i := 0 to Form.ControlCount - 1 do
         if Form.Controls[i] is TJvCustomGraphicButton then
-          TJvCustomGraphicButton(Form.Controls[i]).ForceSize(Self, AWidth, AHeight);
-      
+          TJvCustomGraphicButton(Form.Controls[i]).ForceSize(Self, AWidth, AHeight); 
     end;
   end;
 end;
@@ -494,10 +478,8 @@ end;
 
 procedure TJvCustomGraphicButton.UpdateExclusive;
 var
-  Msg: TJvCMButtonPressed;
-  
-  I: Integer;
-  
+  Msg: TJvCMButtonPressed; 
+  I: Integer; 
 begin
   if (GroupIndex <> 0) and (Parent <> nil) then
   begin
@@ -505,12 +487,10 @@ begin
     Msg.Index := GroupIndex;
     Msg.Control := Self;
     Msg.Result := 0;
-    Parent.Broadcast(Msg);
-    
+    Parent.Broadcast(Msg); 
     for I := 0 to Parent.ControlCount - 1 do
       if Parent.Controls[I] is TJvCustomGraphicButton then
-        TJvCustomGraphicButton(Parent.Controls[I]).ButtonPressed(Self, GroupIndex);
-    
+        TJvCustomGraphicButton(Parent.Controls[I]).ButtonPressed(Self, GroupIndex); 
   end;
 end;
 
@@ -619,11 +599,8 @@ begin
       Handled := False;
     if not Handled then
     begin
-      FDropDownMenu.Popup(MousePos.X, MousePos.Y);
-      
-      
-      MouseLeave(Self);
-      
+      FDropDownMenu.Popup(MousePos.X, MousePos.Y);  
+      MouseLeave(Self); 
     end;
   end;
 end;
@@ -703,10 +680,8 @@ end;
 procedure TJvCustomButton.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
 var
   Form: TCustomForm;
-  Msg: TCMForceSize;
-  
-  I: Integer;
-  
+  Msg: TCMForceSize; 
+  I: Integer; 
 begin
   inherited SetBounds(ALeft, ATop, AWidth, AHeight);
   if ForceSameSize then
@@ -718,12 +693,10 @@ begin
       Msg.Sender := Self;
       Msg.NewSize.X := AWidth;
       Msg.NewSize.Y := AHeight;
-      Form.Broadcast(Msg);
-      
+      Form.Broadcast(Msg); 
       for I := 0 to Form.ControlCount - 1 do
         if Form.Controls[I] is TJvCustomButton then
-          TJvCustomButton(Form.Controls[I]).ForceSize(Self, AWidth, AHeight);
-      
+          TJvCustomButton(Form.Controls[I]).ForceSize(Self, AWidth, AHeight); 
     end;
   end;
 end;
@@ -796,18 +769,13 @@ begin
   DrawFlags := DFCS_SCROLLCOMBOBOX or DFCS_ADJUSTRECT;
   if FState in [bsDown, bsExclusive] then
     DrawFlags := DrawFlags or DFCS_PUSHED;
-
-  
-  begin
-    
+ 
+  begin 
     Canvas.Start;
-    RequiredState(Canvas, [csHandleValid, csPenValid, csBrushValid]);
-    
+    RequiredState(Canvas, [csHandleValid, csPenValid, csBrushValid]); 
     DrawFrameControl(Canvas.Handle, PaintRect, DFC_SCROLL, DrawFlags);
-
-    
-    Canvas.Stop;
-    
+ 
+    Canvas.Stop; 
   end;
 end;
 

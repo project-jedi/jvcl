@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 
 (* Yacc parser template (TP Yacc V3.0), V1.2 6-17-91 AG *)
@@ -36,7 +37,7 @@
 {******************************************************************************}
 
 {$I jvcl.inc}
-{$I jvuib.inc}
+{$I JvUIB.inc}
 
 unit JvQUIBSQLParser;
 

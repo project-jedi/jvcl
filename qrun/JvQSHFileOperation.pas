@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -39,11 +40,8 @@ unit JvQSHFileOperation;
 interface
 
 uses
-  Windows, ShellAPI, SysUtils, Classes,
-  
-  
-  Qt, QControls,
-  
+  Windows, ShellAPI, SysUtils, Classes,  
+  Qt, QControls, 
   JvQBaseDlg;
 
 const
@@ -54,13 +52,7 @@ const
   FOF_NO_CONNECTED_ELEMENTS = $2000;
   // IE 5.01 and up
   FOF_NORECURSEREPARSE = $8000;
-  FOF_WANTNUKEWARNING = $4000;
-  {$IFDEF BCB6}
-  {$EXTERNALSYM FOF_NOCOPYSECURITYATTRIBS}
-  {$EXTERNALSYM FOF_NORECURSION}
-  {$EXTERNALSYM FOF_NO_CONNECTED_ELEMENTS}
-  {$EXTERNALSYM FOF_WANTNUKEWARNING}
-  {$ENDIF BCB6}
+  FOF_WANTNUKEWARNING = $4000; 
 
 type
   // type of operation to perform
@@ -251,11 +243,8 @@ end;
 
 function TJvSHFileOperation.GetWinHandle: THandle;
 begin
-  if Owner is TWinControl then
-    
-    
-    Result := QWidget_winId(TWinControl(Owner).Handle)
-    
+  if Owner is TWinControl then  
+    Result := QWidget_winId(TWinControl(Owner).Handle) 
   else
     Result := GetForegroundWindow;
 end;

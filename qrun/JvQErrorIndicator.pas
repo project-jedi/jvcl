@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -44,11 +45,8 @@ unit JvQErrorIndicator;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QImgList, QControls, QGraphics, Types,
-  
+  SysUtils, Classes,  
+  QImgList, QControls, QGraphics, Types, 
   JvQComponent;
 
 type
@@ -207,8 +205,7 @@ type
 
 implementation
 
-uses
-  
+uses 
   JvQTypes, JvQResources;
 
 {$IFDEF MSWINDOWS}
@@ -246,14 +243,11 @@ var
 
 begin
   inherited Create(AComponent);
-  FDefaultImage := TImageList.CreateSize(16, 16);
-  
-  
+  FDefaultImage := TImageList.CreateSize(16, 16);  
   Ico := TIcon.Create;
   Ico.LoadFromResourceName(hInstance, 'TJVERRORINDICATORICON');
   FDefaultImage.Assign(Ico);
-  Ico.Free;
-  
+  Ico.Free; 
   FBlinkStyle := ebsBlinkIfDifferentError;
   FBlinkRate := 250;
   FControls := TList.Create;
@@ -299,7 +293,7 @@ begin
   if I > -1 then
     Result := Controls[I].Error
   else
-    raise EJVCLException.Create(RsEControlNotFoundInGetError);
+    raise EJVCLException.CreateRes(@RsEControlNotFoundInGetError);
 end;
 
 function TJvErrorIndicator.GetImageAlignment(AControl: TControl): TJvErrorImageAlignment;
@@ -310,7 +304,7 @@ begin
   if I > -1 then
     Result := Controls[I].ImageAlignment
   else
-    raise EJVCLException.Create(RsEControlNotFoundInGetImageAlignment);
+    raise EJVCLException.CreateRes(@RsEControlNotFoundInGetImageAlignment);
 end;
 
 function TJvErrorIndicator.GetImagePadding(AControl: TControl): Integer;
@@ -321,7 +315,7 @@ begin
   if I > -1 then
     Result := Controls[I].ImagePadding
   else
-    raise EJVCLException.Create(RsEControlNotFoundInGetImagePadding);
+    raise EJVCLException.CreateRes(@RsEControlNotFoundInGetImagePadding);
 end;
 
 function TJvErrorIndicator.IndexOf(AControl: TControl): Integer;
@@ -430,7 +424,7 @@ begin
       UpdateControls;
     end
     else
-      raise EJVCLException.Create(RsEUnableToAddControlInSetError);
+      raise EJVCLException.CreateRes(@RsEUnableToAddControlInSetError);
   end;
 end;
 
@@ -448,7 +442,7 @@ begin
     if I > -1 then
       Controls[I].ImageAlignment := Value
     else
-      raise EJVCLException.Create(RsEUnableToAddControlInSetImageAlignme);
+      raise EJVCLException.CreateRes(@RsEUnableToAddControlInSetImageAlignme);
   end;
 end;
 
@@ -466,7 +460,7 @@ begin
     if I > 1 then
       Controls[I].ImagePadding := Value
     else
-      raise EJVCLException.Create(RsEUnableToAddControlInSetImagePadding);
+      raise EJVCLException.CreateRes(@RsEUnableToAddControlInSetImagePadding);
   end;
 end;
 
@@ -696,11 +690,8 @@ end;
 procedure TJvErrorControl.Paint;
 begin
   //  inherited Paint;
-  if (Images <> nil) and Visible then
-    
-    
-    Images.Draw(Canvas, 0, 0, ImageIndex);
-    
+  if (Images <> nil) and Visible then  
+    Images.Draw(Canvas, 0, 0, ImageIndex); 
 end;
 
 procedure TJvErrorControl.SetError(const Value: string);

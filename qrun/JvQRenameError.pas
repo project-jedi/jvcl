@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -28,13 +29,14 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
+{$I windowsonly.inc}
 
 unit JvQRenameError;
 
 interface
 
 uses
-  Windows, SysUtils, Classes,
+  Windows, SetupApi, SysUtils, Classes,
   JvQCommonDialogD, JvQTypes;
 
 type
@@ -57,7 +59,6 @@ type
 implementation
 
 uses
-  SetupApi,
   JclSysUtils;
 
 constructor TJvRenameError.Create(AOwner: TComponent);

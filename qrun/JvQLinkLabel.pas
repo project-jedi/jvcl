@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -44,11 +45,8 @@ unit JvQLinkLabel;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QGraphics, QControls, QForms, QStdCtrls, Types, QTypes,
-  
+  SysUtils, Classes,  
+  QGraphics, QControls, QForms, QStdCtrls, Types, QTypes, 
   JvQLinkLabelParser, JvQLinkLabelRenderer, JvQLinkLabelTree,
   JvQTypes, JvQComponent;
 
@@ -168,8 +166,7 @@ type
 
     property Align;
     property Color;
-    property Constraints;
-    
+    property Constraints; 
     property DragMode;
     property Font;
     property Height default 17;
@@ -207,8 +204,7 @@ begin
   inherited Create(AOwner);
   FLinkCursor := crHandPoint;
   FText := TStringList.Create;
-  ControlStyle := ControlStyle + [csOpaque, csReplicatable];
-  
+  ControlStyle := ControlStyle + [csOpaque, csReplicatable]; 
   Width := 160;
   Height := 17;
   FNodeTree := TNodeTree.Create;
@@ -369,7 +365,7 @@ begin
   if Assigned(Node) then
     Result := Node.Text
   else
-    raise ELinkLabelError.Create(RsEUnableToLocateMode);
+    raise ELinkLabelError.CreateRes(@RsEUnableToLocateMode);
 end;
 
 function TJvCustomLinkLabel.GetLinkColor: TColor;
@@ -541,9 +537,7 @@ begin
         end;
         // Adjust Root start point relative to control's canvas.
         FNodeTree.Root.StartingPoint := Point(TmpRect.Left, TmpRect.Top);  // Bianconi #2
-        TmpBmp.Transparent := false;
         Canvas.Draw(TmpRect.Left,TmpRect.Top,TmpBmp);
-        TmpBmp.savetofile('C:\Linklabel.bmp');
       end;
     finally
       TmpBmp.Free;
@@ -677,13 +671,11 @@ begin
   begin
     if Value then
     begin
-      ControlStyle := ControlStyle - [csOpaque];
-      
+      ControlStyle := ControlStyle - [csOpaque]; 
     end
     else
     begin
-      ControlStyle := ControlStyle + [csOpaque];
-      
+      ControlStyle := ControlStyle + [csOpaque]; 
     end;
     Invalidate;
   end;
@@ -720,7 +712,7 @@ begin
     end;
   end;
 
-  raise ELinkLabelError.Create(RsETagNotFound);
+  raise ELinkLabelError.CreateRes(@RsETagNotFound);
 end;
 
 end.

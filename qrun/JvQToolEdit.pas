@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -46,18 +47,11 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF MSWINDOWS}
-  
-  
-  RTLConsts, Variants,
-  
-  
-  Qt, QGraphics, QControls, QForms, QDialogs, QStdCtrls, QMenus, QButtons,
-  QMask, QImgList, QActnList, QExtDlgs, QComboEdits, QWindows, Types,
-  JvQExComboEdits,
-  
+  QGraphics, QControls, QForms, QDialogs, QStdCtrls, QMenus, QButtons,
+  QFileCtrls, QMask, QImgList, QActnList, QExtDlgs, 
+  RTLConsts, Variants,  
+  Qt, QComboEdits, QWindows, Types, JvQExComboEdits, 
   JvQSpeedButton, JvQTypes, JvQExMask, JvQExForms;
 
 const
@@ -74,13 +68,9 @@ type
   private
     FEditor: TWinControl;
     FCloseUp: TCloseUpEvent;
-    
-  protected
-    
-    
+  protected  
     procedure SetParent(const Value: TWidgetControl); override;
-    function WidgetFlags: Integer; override;
-    
+    function WidgetFlags: Integer; override; 
     function GetValue: Variant; virtual; abstract;
     procedure SetValue(const Value: Variant); virtual; abstract;
     procedure InvalidateEditor;
@@ -98,14 +88,12 @@ type
   TJvEditButton = class(TJvImageSpeedButton)
   private
     FNoAction: Boolean;
-    
     function GetGlyph: TBitmap;
     function GetNumGlyphs: TJvNumGlyphs;
     function GetUseGlyph: Boolean;
     procedure SetGlyph(const Value: TBitmap);
     procedure SetNumGlyphs(Value: TJvNumGlyphs);
-  protected
-    
+  protected 
     FStandard: Boolean; // Polaris
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
@@ -125,11 +113,8 @@ type
   TJvImageKind = (ikCustom, ikDefault, ikDropDown, ikEllipsis);
 
   TJvCustomComboEdit = class;
-
   
-  
-  TJvCustomComboEditActionLink = class(TWidgetControlActionLink)
-  
+  TJvCustomComboEditActionLink = class(TWidgetControlActionLink) 
   protected
     function IsCaptionLinked: Boolean; override;
     function IsHintLinked: Boolean; override;
@@ -143,11 +128,8 @@ type
   end;
 
   TJvCustomComboEditActionLinkClass = class of TJvCustomComboEditActionLink;
-
   
-  
-  TJvCustomComboEdit = class(TJvExCustomComboMaskEdit)
-  
+  TJvCustomComboEdit = class(TJvExCustomComboMaskEdit) 
   private
     FBtnControl: TWinControl;
     FOnButtonClick: TNotifyEvent;
@@ -196,8 +178,7 @@ type
     procedure SetNumGlyphs(const Value: TNumGlyphs);
     procedure UpdateBtnBounds;
     procedure UpdateEdit; // RDB
-
-    
+ 
   protected
     FButton: TJvEditButton; // Polaris
     FPopupVisible: Boolean; // Polaris
@@ -212,11 +193,9 @@ type
     procedure EnabledChanged; override;
     procedure FontChanged; override;
     procedure DoEnter; override;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
-    
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override; 
     procedure DoFlatChanged; override;
-    procedure Paint; override;
-    
+    procedure Paint; override; 
     class function DefaultImageIndex: TImageIndex; virtual;
     class function DefaultImages: TCustomImageList; virtual;
     function AcceptPopup(var Value: Variant): Boolean; virtual;
@@ -229,10 +208,7 @@ type
     procedure AdjustHeight;
     procedure ButtonClick; dynamic;
     procedure Change; override;
-    
-    
-    procedure CreateWidget; override;
-    
+    procedure CreateWidget; override; 
     procedure DefineProperties(Filer: TFiler); override;
     procedure DoChange; virtual; //virtual Polaris
     procedure HidePopup; virtual;
@@ -297,8 +273,7 @@ type
     property Alignment;
     property Anchors;
     property AutoSelect;
-    property AutoSize;
-    
+    property AutoSize; 
     property BorderStyle;
     property ButtonFlat;
     property ButtonHint;
@@ -358,8 +333,7 @@ type
 type
   TExecOpenDialogEvent = procedure(Sender: TObject; var Name: string;
     var Action: Boolean) of object;
-
-  
+ 
 
   TJvFileDirEdit = class(TJvCustomComboEdit)
   private
@@ -367,10 +341,8 @@ type
     FMultipleDirs: Boolean;
     FOnDropFiles: TNotifyEvent;
     FOnBeforeDialog: TExecOpenDialogEvent;
-    FOnAfterDialog: TExecOpenDialogEvent;
-    
-  protected
-    
+    FOnAfterDialog: TExecOpenDialogEvent; 
+  protected 
     function GetLongName: string; virtual; abstract;
     function GetShortName: string; virtual; abstract;
     procedure DoAfterDialog(var FileName: string; var Action: Boolean); dynamic;
@@ -378,16 +350,14 @@ type
     procedure ReceptFileDir(const AFileName: string); virtual; abstract;
     procedure ClearFileList; virtual;
     procedure DisableSysErrors;
-    procedure EnableSysErrors;
-    
+    procedure EnableSysErrors; 
     property ImageKind default ikDefault;
     property MaxLength;
   public
     constructor Create(AOwner: TComponent); override;
     property LongName: string read GetLongName;
     property ShortName: string read GetShortName;
-  published
-    
+  published 
     property AutoSize;
     property OnBeforeDialog: TExecOpenDialogEvent read FOnBeforeDialog
       write FOnBeforeDialog;
@@ -410,8 +380,7 @@ type
     FAddQuotes: Boolean;
     procedure CreateEditDialog;
     function GetFileName: TFileName;
-    function GetDefaultExt: TFileExt;
-    
+    function GetDefaultExt: TFileExt; 
     function GetFilter: string;
     function GetFilterIndex: Integer;
     function GetInitialDir: string;
@@ -421,8 +390,7 @@ type
     function GetDialogFiles: TStrings;
     procedure SetDialogKind(Value: TFileDialogKind);
     procedure SetFileName(const Value: TFileName);
-    procedure SetDefaultExt(Value: TFileExt);
-    
+    procedure SetDefaultExt(Value: TFileExt); 
     procedure SetFilter(const Value: string);
     procedure SetFilterIndex(Value: Integer);
     procedure SetInitialDir(const Value: string);
@@ -450,8 +418,7 @@ type
     property AddQuotes: Boolean read FAddQuotes write FAddQuotes default True;
     property DialogKind: TFileDialogKind read FDialogKind write SetDialogKind
       default dkOpen;
-    property DefaultExt: TFileExt read GetDefaultExt write SetDefaultExt;
-    
+    property DefaultExt: TFileExt read GetDefaultExt write SetDefaultExt; 
     property FileName: TFileName read GetFileName write SetFileName stored False;
     property Filter: string read GetFilter write SetFilter stored IsCustomFilter;
     property FilterIndex: Integer read GetFilterIndex write SetFilterIndex default 1;
@@ -469,8 +436,7 @@ type
     property CharCase;
     property ClickKey;
     property Color;
-    property DirectInput;
-    
+    property DirectInput; 
     property DragMode;
     property EditMask;
     property Enabled;
@@ -515,8 +481,7 @@ type
   TDirDialogKind = (dkVCL, dkWin32);
 
   TJvDirectoryEdit = class(TJvFileDirEdit)
-  private
-    
+  private 
     FInitialDir: string;
     FDialogText: string;
     FDialogKind: TDirDialogKind;
@@ -535,8 +500,7 @@ type
     property Align;
     property AutoSize;
     property DialogKind: TDirDialogKind read FDialogKind write FDialogKind default dkVCL;
-    property DialogText: string read FDialogText write FDialogText;
-    
+    property DialogText: string read FDialogText write FDialogText; 
     property InitialDir: string read FInitialDir write FInitialDir;
     property MultipleDirs: Boolean read FMultipleDirs write FMultipleDirs default False;
     property AutoSelect;
@@ -546,8 +510,7 @@ type
     property CharCase;
     property ClickKey;
     property Color;
-    property DirectInput;
-    
+    property DirectInput; 
     property DragMode;
     property EditMask;
     property Enabled;
@@ -650,8 +613,7 @@ type
     function StoreMaxDate: Boolean;
     // Polaris
     function FourDigitYear: Boolean;
-    //    function FormatSettingsChange(var Msg: TMessage): Boolean;
-    
+    //    function FormatSettingsChange(var Msg: TMessage): Boolean; 
   protected
     // Polaris
     FDateAutoBetween: Boolean;
@@ -663,11 +625,8 @@ type
     procedure DoExit; override;
     procedure Change; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
-    procedure KeyPress(var Key: Char); override;
-    
-    
-    procedure CreateWidget; override;
-    
+    procedure KeyPress(var Key: Char); override;  
+    procedure CreateWidget; override; 
     function AcceptPopup(var Value: Variant): Boolean; override;
     procedure AcceptValue(const Value: Variant); override;
     procedure SetPopupValue(const Value: Variant); override;
@@ -738,8 +697,7 @@ type
     property Color;
     property DefaultToday;
     property DialogTitle;
-    property DirectInput;
-    
+    property DirectInput; 
     property DragMode;
     property Enabled;
     property Font;
@@ -831,10 +789,7 @@ uses
   ShellAPI,
   {$ENDIF MSWINDOWS}
   Math,
-  
-  QConsts,
-  
-  
+  QConsts,  
   JvQFinalize, JvQThemes, JvQResources, JvQConsts, JvQJCLUtils, JvQExControls,
   JvQPickDate, JvQJVCLUtils;
 
@@ -857,8 +812,7 @@ const
   sDirBmp = 'JV_SEDITBMP';  { Directory editor button glyph }
   sFileBmp = 'JV_FEDITBMP';  { Filename editor button glyph }
   sDateBmp = 'JV_DEDITBMP';  { Date editor button glyph }
-
-  
+ 
 
   { TDateHook is used to only have 1 hook per application for monitoring
     date changes;
@@ -875,8 +829,7 @@ var
   GDateImageIndex: TImageIndex = -1;
   GDefaultComboEditImagesList: TImageList = nil;
   GDirImageIndex: TImageIndex = -1;
-  GFileImageIndex: TImageIndex = -1;
-  
+  GFileImageIndex: TImageIndex = -1; 
 
 //=== Local procedures =======================================================
 
@@ -1036,9 +989,7 @@ begin
 end;
 
 function LoadDefaultBitmap(Bmp: TBitmap; Item: Integer): Boolean;
-begin
-  
-  
+begin  
   Result := True;
   case Item of
     OBM_COMBO:
@@ -1054,8 +1005,7 @@ begin
     Bmp.Width := 0;
     Bmp.Height := 0;
     Result := False;
-  end;
-  
+  end; 
 end;
 
 
@@ -1256,11 +1206,8 @@ begin
   SelectObject(DC, SaveFont);
   ReleaseDC(0, DC);
   if NewStyleControls then
-  begin
-    
-    
-    if not Flat then
-    
+  begin  
+    if not Flat then 
       I := 8
     else
       I := 6;
@@ -1324,11 +1271,8 @@ begin
     ControlStyle := ControlStyle + [csReplicatable];
   FBtnControl.Width := DefEditBtnWidth;
   FBtnControl.Height := 17;
-  FBtnControl.Visible := True;
-  
-  
-  FBtnControl.Parent := Self.ClientArea;
-  
+  FBtnControl.Visible := True;  
+  FBtnControl.Parent := Self.ClientArea; 
   FButton := TJvEditButton.Create(Self);
   FButton.SetBounds(0, 0, FBtnControl.Width, FBtnControl.Height);
   FButton.Visible := True;
@@ -1664,11 +1608,8 @@ begin
     end
     else
     begin
-      { must catch and remove this, since is actually multi-line }
-      
-      
-      TCustomFormHack(GetParentForm(Self)).NeedKey(Integer(Key), [], WideChar(Key));
-      
+      { must catch and remove this, since is actually multi-line }  
+      TCustomFormHack(GetParentForm(Self)).NeedKey(Integer(Key), [], WideChar(Key)); 
       if Key = #13 then
       begin
         inherited KeyPress(Key);
@@ -1753,12 +1694,9 @@ var
   AValue: Variant;
 begin
   if (FPopup <> nil) and FPopupVisible then
-  begin
-    
-    
+  begin  
     if Mouse.Capture <> nil then
-      Mouse.Capture := nil;
-    
+      Mouse.Capture := nil; 
     AValue := GetPopupValue;
     HidePopup;
     try
@@ -1888,8 +1826,7 @@ begin
 
   case FImageKind of
     ikDropDown:
-      begin
-        
+      begin 
         begin
           LoadDefaultBitmap(TJvxButtonGlyph(FButton.ButtonGlyph).Glyph, OBM_COMBO);
           FButton.Invalidate;
@@ -1921,18 +1858,14 @@ procedure TJvCustomComboEdit.SetAlignment(Value: TAlignment);
 begin
   if FAlignment <> Value then
   begin
-    FAlignment := Value;
-    
-    
-    Invalidate;
-    
+    FAlignment := Value;  
+    Invalidate; 
   end;
 end;
 
 procedure TJvCustomComboEdit.SetButtonFlat(const Value: Boolean);
 begin
-  FButton.Flat := Value;
-  
+  FButton.Flat := Value; 
 end;
 
 procedure TJvCustomComboEdit.SetButtonHint(const Value: string);
@@ -1967,11 +1900,8 @@ begin
       FButton.Width := Value;
       with FButton do
         ControlStyle := ControlStyle - [csFixedWidth];
-      if HandleAllocated then
-        
-        
-        Invalidate;
-        
+      if HandleAllocated then  
+        Invalidate; 
       RecreateGlyph;
     end;
   end;
@@ -2026,25 +1956,18 @@ begin
   LTop := 0;
   LLeft := 0;
   LRight := 0;
-
-  
+ 
 
   if NewStyleControls and (BorderStyle = bsSingle) then
-  begin
-    
-    
-    if not Flat then
-    
+  begin  
+    if not Flat then 
       LRight := 1
     else
       LRight := 2;
   end;
 
-  SetRect(Loc, LLeft, LTop, FBtnControl.Left + LRight - CPixelsBetweenEditAndButton, ClientHeight - 1);
-  
-  
-  SetEditorRect(@Loc);
-  
+  SetRect(Loc, LLeft, LTop, FBtnControl.Left + LRight - CPixelsBetweenEditAndButton, ClientHeight - 1);  
+  SetEditorRect(@Loc); 
 
   //Polaris
   //  SendMessage(Handle, EM_SETMARGINS, EC_RIGHTMARGIN, MakeLong(0, FBtnControl.Width));
@@ -2170,15 +2093,11 @@ procedure TJvCustomComboEdit.UpdateBtnBounds;
 var
   BtnRect: TRect;
 begin
-  if NewStyleControls then
-    
+  if NewStyleControls then 
     begin
       if BorderStyle = bsSingle then
-      begin
-        
-        
-        if not Flat then
-        
+      begin  
+        if not Flat then 
           BtnRect := Bounds(Width - FButton.Width - 4, 0,
             FButton.Width, Height - 4)
         else
@@ -2398,29 +2317,22 @@ begin
   FMaxDate := NullDate;
 
   FBlanksChar := ' ';
-  FTitle := RsDateDlgCaption;
-  
-  
-  FPopupColor := clWindow;
-  
+  FTitle := RsDateDlgCaption;  
+  FPopupColor := clWindow; 
   //  FDefNumGlyphs := 2;
   FStartOfWeek := Mon;
   FWeekends := [Sun];
   FWeekendColor := clRed;
   FYearDigits := dyDefault;
   FCalendarHints := TStringList.Create;
-  FCalendarHints.OnChange := CalendarHintsChanged;
-  
+  FCalendarHints.OnChange := CalendarHintsChanged; 
 
   ControlState := ControlState + [csCreating];
   try
     UpdateFormat;
     {$IFDEF DEFAULT_POPUP_CALENDAR}
-    FPopup := TJvPopupWindow(CreatePopupCalendar(Self,
-      
-      
-      bdLeftToRight,
-      
+    FPopup := TJvPopupWindow(CreatePopupCalendar(Self,  
+      bdLeftToRight, 
       // Polaris
       FMinDate, FMaxDate));
     TJvPopupWindow(FPopup).OnCloseUp := PopupCloseUp;
@@ -2461,8 +2373,7 @@ begin
 end;
 
 destructor TJvCustomDateEdit.Destroy;
-begin
-  
+begin 
 
   if FPopup <> nil then
   begin
@@ -2621,11 +2532,8 @@ begin
       csPopup:
         begin
           if FPopup = nil then
-            FPopup := TJvPopupWindow(CreatePopupCalendar(Self,
-              
-              
-              bdLeftToRight,
-              
+            FPopup := TJvPopupWindow(CreatePopupCalendar(Self,  
+              bdLeftToRight, 
               FMinDate, FMaxDate)); // Polaris
           TJvPopupWindow(FPopup).OnCloseUp := PopupCloseUp;
           TJvPopupWindow(FPopup).Color := FPopupColor;
@@ -2872,10 +2780,8 @@ end;
 
 procedure TJvDirectoryEdit.ButtonClick;
 var
-  Temp: string;
-  
-  TempW: WideString;
-  
+  Temp: string; 
+  TempW: WideString; 
   Action: Boolean;
 begin
   inherited ButtonClick;
@@ -2894,14 +2800,11 @@ begin
   if not DirectoryExists(Temp) then
     Temp := '\';
   DisableSysErrors;
-  try
-    
-    
+  try  
     begin
       Action := SelectDirectory(FDialogText, Temp, TempW);
       Temp := TempW;
-    end;
-    
+    end; 
   finally
     EnableSysErrors;
   end;
@@ -2922,15 +2825,13 @@ end;
 
 constructor TJvDirectoryEdit.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner);
-  
+  inherited Create(AOwner); 
 end;
 
 class function TJvDirectoryEdit.DefaultImageIndex: TImageIndex;
 var
   Bmp: TBitmap;
-begin
-  
+begin 
 
   if GDirImageIndex < 0 then
   begin
@@ -3054,8 +2955,7 @@ end;
 
 procedure TJvEditButton.Paint;
 
-begin
-  
+begin 
   begin
     inherited Paint;
     if FState <> rbsDown then
@@ -3116,8 +3016,7 @@ end;
 
 constructor TJvFileDirEdit.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner);
-  
+  inherited Create(AOwner); 
   ControlState := ControlState + [csCreating];
   try
     ImageKind := ikDefault; { force update }
@@ -3214,8 +3113,7 @@ end;
 constructor TJvFilenameEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FAddQuotes := True;
-  
+  FAddQuotes := True; 
   CreateEditDialog;
 end;
 
@@ -3238,8 +3136,7 @@ begin
     begin
       with NewDialog do
       begin
-        DefaultExt := FDialog.DefaultExt;
-        
+        DefaultExt := FDialog.DefaultExt; 
         FileName := FDialog.FileName;
         Filter := FDialog.Filter;
         FilterIndex := FDialog.FilterIndex;
@@ -3265,8 +3162,7 @@ end;
 class function TJvFilenameEdit.DefaultImageIndex: TImageIndex;
 var
   Bmp: TBitmap;
-begin
-  
+begin 
 
   if GFileImageIndex < 0 then
   begin
@@ -3443,8 +3339,7 @@ begin
   inherited CreateNew(AOwner);
   FEditor := TWinControl(AOwner);
   ControlStyle := ControlStyle + [csNoDesignVisible, csReplicatable, csAcceptsControls];
-  Visible := False;
-  
+  Visible := False; 
 end;
 
 
@@ -3455,8 +3350,7 @@ begin
 end;
 
 procedure TJvPopupWindow.Hide;
-begin
-  
+begin 
   Visible := False;
 end;
 
@@ -3468,11 +3362,8 @@ begin
     with TJvCustomComboEdit(FEditor) do
       SetRect(R, 0, 0, ClientWidth - FBtnControl.Width {Polaris - 2}, ClientHeight + 1)
   else
-    R := FEditor.ClientRect;
-  
-  
-  FEditor.InvalidateRect(R, False);
-  
+    R := FEditor.ClientRect;  
+  FEditor.InvalidateRect(R, False); 
   UpdateWindow(FEditor.Handle);
 end;
 
@@ -3503,12 +3394,9 @@ end;
 
 procedure TJvPopupWindow.Show(Origin: TPoint);
 
-begin
-  
-  
+begin  
   Left := Origin.X;
-  Top := Origin.Y;
-  
+  Top := Origin.Y; 
   Visible := True;
 end;
 

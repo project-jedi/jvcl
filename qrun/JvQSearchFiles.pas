@@ -49,13 +49,7 @@ const
   FILE_ATTRIBUTE_REPARSE_POINT = $400;
   FILE_ATTRIBUTE_NOT_CONTENT_INDEXED = $2000;
   FILE_ATTRIBUTE_ENCRYPTED = $4000;
-
-  
-
-
-
-
-
+ 
 
 type
   TJvAttrFlagKind = (tsMustBeSet, tsDontCare, tsMustBeUnSet);

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -37,11 +38,8 @@ unit JvQHint;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QWindows, QControls, QForms, QExtCtrls, QGraphics, QTypes, Types, Qt,
-  
+  SysUtils, Classes,  
+  QWindows, QControls, QForms, QExtCtrls, QGraphics, QTypes, Types, Qt, 
   JvQHTControls, JvQTypes;
 
 type

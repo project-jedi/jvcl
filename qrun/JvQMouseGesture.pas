@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -65,11 +66,8 @@ unit JvQMouseGesture;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  Qt, QControls, QForms, Types, QWindows,
-  
+  SysUtils, Classes,  
+  Qt, QControls, QForms, Types, QWindows, 
   JvQComponent;
 
 type
@@ -334,8 +332,7 @@ type
     { Description
       True if a hook is installed
     }
-    FHookInstalled: Boolean;
-    
+    FHookInstalled: Boolean; 
     FOnJvMouseGestureCustomInterpretation: TOnJvMouseGestureCustomInterpretation;
     { Description
       Field for active state of component
@@ -382,8 +379,7 @@ type
     destructor Destroy; override;
     { Description
       TRUE if hook was installed successfully
-    }
-    
+    } 
   published
     { Description
       TRUE if component is active, otherwise FALSE. Can be changed during runtime
@@ -439,14 +435,11 @@ var
   }
   JvMouseGestureHookAlreadyInstalled: Boolean = False;
   //<combine JvMouseGestureHookAlreadyInstalled>
-  JvMouseGestureHookActive: Boolean = False;
-  
-  
+  JvMouseGestureHookActive: Boolean = False;  
   //<combine JvMouseGestureHookAlreadyInstalled>
   JvMouseButtonDown: ButtonState = ButtonState_RightButton;
   //<combine JvMouseGestureHookAlreadyInstalled>
-  JvMouseButtonUp: ButtonState = ButtonState_RightButton;
-  
+  JvMouseButtonUp: ButtonState = ButtonState_RightButton; 
 
 //=== TJvMouseGesture ========================================================
 
@@ -793,16 +786,13 @@ var
 begin
   FreeAndNil(JvMouseGestureInterpreter);
 
-  if JvMouseGestureHookAlreadyInstalled then
-  
-  
+  if JvMouseGestureHookAlreadyInstalled then  
   begin
     Method.Code := @JvMouseGestureHook;
     Method.Data := nil;
     UninstallApplicationHook(TApplicationHook(Method));
     JvMouseGestureHookAlreadyInstalled := False;
-  end;
-  
+  end; 
   inherited Destroy;
 end;
 
@@ -824,16 +814,13 @@ begin
   end;
 
   FActive := FActivationMode = JvOnAppStart;
-
-  
   
   Method.Code := @JvMouseGestureHook;
   Method.Data := Self;
   InstallApplicationHook(TApplicationHook(Method));
 
   JvMouseGestureHookAlreadyInstalled := True;
-  FHookInstalled := True;
-  
+  FHookInstalled := True; 
 
   // map event
   if Assigned(FOnJvMouseGestureCustomInterpretation) then
@@ -860,9 +847,7 @@ end;
 
 procedure TJvMouseGestureHook.SetMouseButton(const Value: TJvMouseGestureButton);
 begin
-  FMouseButton := Value;
-  
-  
+  FMouseButton := Value;  
   case Value of
     JvMButtonLeft:
       begin
@@ -879,8 +864,7 @@ begin
         JvMouseButtonDown := ButtonState_RightButton;
         JvMouseButtonUp := ButtonState_RightButton;
       end;
-  end;
-  
+  end; 
 end;
 
 procedure TJvMouseGestureHook.SetOnJvMouseGestureCustomInterpretation(

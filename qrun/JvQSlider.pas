@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -34,22 +35,14 @@ unit JvQSlider;
 interface
 
 uses
-  {$IFDEF MSWINDOWS}
-  Windows,
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
-  Types,
-  {$ENDIF LINUX}
-  QMessages, SysUtils, Classes,
-  
-  
-  QGraphics, QControls, QExtCtrls,
-  
+  SysUtils, Classes,
+  Types, QGraphics, QControls, QExtCtrls,
   JvQComponent;
 
 type
   TJvSlider = class(TJvCustomControl)
   private
+    FAutoSize: boolean;
     FImageRuler: TBitmap;
     FImageThumb: TBitmap;
     FThumb1: TBitmap;
@@ -75,8 +68,7 @@ type
     procedure ReCalcule(Sender: TObject);
     procedure SetPosition(Value: Integer);
     procedure Loading(Sender: TObject);
-  protected
-    
+  protected 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -100,7 +92,7 @@ type
     property TabOrder;
     property Width default 191;
     property Height default 11;
-//    property AutoSize default True;
+    property AutoSize: boolean read FAutoSize write FAutoSize default True;
     property Horizontal: Boolean read FHorizontal write FHorizontal default True;
     property Maximum: Integer read FMaximum write SetMaximum default 100;
     property Position: Integer read FPosition write SetPosition default 0;
@@ -132,7 +124,7 @@ implementation
 constructor TJvSlider.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  ControlStyle := ControlStyle + [csOpaque]; 
+  ControlStyle := ControlStyle + [csOpaque];
   Width := 191;
   Height := 11;
   FImageRuler := TBitmap.Create;
@@ -157,7 +149,7 @@ begin
   FTimer.Interval := 10;
   FTimer.OnTimer := Loading;
   FTimer.Enabled := True;
-//  AutoSize := True;
+  AutoSize := True;
 end;
 
 destructor TJvSlider.Destroy;
@@ -300,7 +292,7 @@ begin
   R := ClientRect;
   P := ClientToScreen(Point(0,0));
   OffsetRect(R, P.X, P.Y);
-//  ClipCursor(@R);
+  //ClipCursor(@R);
   if Assigned(FOnBeginChange) then
     FOnBeginChange(Self);
   if not FChanged then
@@ -321,7 +313,7 @@ var
 begin
   FTracking := False;
   FChanging := False;
-//  ClipCursor(nil);
+  //ClipCursor(nil);
   if FChanged then
   begin
     Tmp := TBitmap.Create;
@@ -371,7 +363,7 @@ end;
 procedure TJvSlider.SetImageRuler(Value: TBitmap);
 begin
   FImageRuler.Assign(Value);
-  if (Value.Width > 0) and (Value.Height > 0)  then
+  if (Value.Width > 0) and (Value.Height > 0) and AutoSize then
   begin
     Height := Value.Height;
     Width := Value.Width;
@@ -392,7 +384,7 @@ end;
 
 function TJvSlider.CanAutoSize(var NewWidth, NewHeight: Integer): Boolean;
 begin
-  if (FImageRuler.Width > 0) and (FImageRuler.Height > 0) then
+  if AutoSize and (FImageRuler.Width > 0) and (FImageRuler.Height > 0) then
   begin
     NewHeight := FImageRuler.Height;
     NewWidth := FImageRuler.Width;

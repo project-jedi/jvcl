@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -41,25 +42,20 @@ unit JvQExStdCtrls;
 
 interface
 
-uses
-  
-  
-  Qt, QGraphics, QControls, QForms, QStdCtrls, Types, QWindows,
-  
+uses  
+  Qt, QGraphics, QControls, QForms, QStdCtrls, Types, QWindows, 
   Classes, SysUtils,
   JvQTypes, JvQThemes, JVQCLVer, JvQExControls;
 
 
 
  {$IF not declared(PatchedVCLX)}
-  
+  {$DEFINE NeedMouseEnterLeave}
  {$IFEND}
 
 
 type
-  TJvExCustomGroupBox = class(TCustomGroupBox, IJvWinControlEvents, IJvControlEvents, IPerformControl)
-  
-  
+  TJvExCustomGroupBox = class(TCustomGroupBox, IJvWinControlEvents, IJvControlEvents, IPerformControl)  
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
     function IsRightToLeft: Boolean;
@@ -83,57 +79,48 @@ type
     procedure ColorChanged; override;
     property Color: TColor read GetColor write SetColor;
   published // asn: change to public in final
-    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
-  
+    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered; 
   private
     FHintColor: TColor;
     FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
-  
+  {$IFDEF NeedMouseEnterLeave}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  
+  {$ENDIF NeedMouseEnterLeave}
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure DoFocusChanged(Control: TWinControl); dynamic;
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-  private
-  
-  
+  private  
     FAboutJVCLX: TJVCLAboutInfo;
   published
-    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
-  
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False; 
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-  
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual; 
   private
     FCanvas: TCanvas;
   protected
     procedure Paint; virtual;
-    property Canvas: TCanvas read FCanvas;
-  
+    property Canvas: TCanvas read FCanvas; 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
-  TJvExPubCustomGroupBox = class(TJvExCustomGroupBox)
-  
+  TJvExPubCustomGroupBox = class(TJvExCustomGroupBox) 
   end;
   
-  TJvExGroupBox = class(TGroupBox, IJvWinControlEvents, IJvControlEvents, IPerformControl)
-  
-  
+  TJvExGroupBox = class(TGroupBox, IJvWinControlEvents, IJvControlEvents, IPerformControl)  
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
     function IsRightToLeft: Boolean;
@@ -157,60 +144,49 @@ type
     procedure ColorChanged; override;
     property Color: TColor read GetColor write SetColor;
   published // asn: change to public in final
-    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
-  
+    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered; 
   private
     FHintColor: TColor;
     FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
-  
+  {$IFDEF NeedMouseEnterLeave}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  
+  {$ENDIF NeedMouseEnterLeave}
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure DoFocusChanged(Control: TWinControl); dynamic;
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-  private
-  
-  
+  private  
     FAboutJVCLX: TJVCLAboutInfo;
   published
-    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
-  
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False; 
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-  
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual; 
   private
     FCanvas: TCanvas;
   protected
     procedure Paint; virtual;
-    property Canvas: TCanvas read FCanvas;
-  
+    property Canvas: TCanvas read FCanvas; 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
-  TJvExPubGroupBox = class(TJvExGroupBox)
-  
+  TJvExPubGroupBox = class(TJvExGroupBox) 
   end;
   
-
-  
-  
-  TJvExCustomLabel = class(TCustomLabel, IJvWinControlEvents, IJvControlEvents, IPerformControl)
-  
-  
+{$DEFINE HASAUTOSIZE}  
+  TJvExCustomLabel = class(TCustomLabel, IJvWinControlEvents, IJvControlEvents, IPerformControl)  
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
     function IsRightToLeft: Boolean;
@@ -234,57 +210,48 @@ type
     procedure ColorChanged; override;
     property Color: TColor read GetColor write SetColor;
   published // asn: change to public in final
-    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
-  
+    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered; 
   private
     FHintColor: TColor;
     FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
-  
+  {$IFDEF NeedMouseEnterLeave}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  
+  {$ENDIF NeedMouseEnterLeave}
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure DoFocusChanged(Control: TWinControl); dynamic;
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-  private
-  
-  
+  private  
     FAboutJVCLX: TJVCLAboutInfo;
   published
-    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
-  
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False; 
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-  
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual; 
   private
     FCanvas: TCanvas;
   protected
     procedure Paint; virtual;
-    property Canvas: TCanvas read FCanvas;
-  
+    property Canvas: TCanvas read FCanvas; 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
-  TJvExPubCustomLabel = class(TJvExCustomLabel)
-  
+  TJvExPubCustomLabel = class(TJvExCustomLabel) 
   end;
   
-  TJvExLabel = class(TLabel, IJvWinControlEvents, IJvControlEvents, IPerformControl)
-  
-  
+  TJvExLabel = class(TLabel, IJvWinControlEvents, IJvControlEvents, IPerformControl)  
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
     function IsRightToLeft: Boolean;
@@ -308,59 +275,49 @@ type
     procedure ColorChanged; override;
     property Color: TColor read GetColor write SetColor;
   published // asn: change to public in final
-    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
-  
+    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered; 
   private
     FHintColor: TColor;
     FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
-  
+  {$IFDEF NeedMouseEnterLeave}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  
+  {$ENDIF NeedMouseEnterLeave}
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure DoFocusChanged(Control: TWinControl); dynamic;
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-  private
-  
-  
+  private  
     FAboutJVCLX: TJVCLAboutInfo;
   published
-    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
-  
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False; 
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-  
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual; 
   private
     FCanvas: TCanvas;
   protected
     procedure Paint; virtual;
-    property Canvas: TCanvas read FCanvas;
-  
+    property Canvas: TCanvas read FCanvas; 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
-  TJvExPubLabel = class(TJvExLabel)
-  
+  TJvExPubLabel = class(TJvExLabel) 
   end;
-  
-  
-
-  TJvExCustomEdit = class(TCustomEdit,  IJvEditControlEvents, IJvWinControlEvents, IJvControlEvents, IPerformControl)
-  
-  
+   
+{$UNDEF HASAUTOSIZE}
+  TJvExCustomEdit = class(TCustomEdit,  IJvEditControlEvents, IJvWinControlEvents, IJvControlEvents, IPerformControl)  
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
     function IsRightToLeft: Boolean;
@@ -384,53 +341,45 @@ type
     procedure ColorChanged; override;
     property Color: TColor read GetColor write SetColor;
   published // asn: change to public in final
-    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
-  
+    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered; 
   private
     FHintColor: TColor;
     FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
-  
+  {$IFDEF NeedMouseEnterLeave}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  
+  {$ENDIF NeedMouseEnterLeave}
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure DoFocusChanged(Control: TWinControl); dynamic;
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-  private
-  
-  
+  private  
     FAboutJVCLX: TJVCLAboutInfo;
   published
-    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
-  
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False; 
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-  
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual; 
   private
     FCanvas: TCanvas;
   protected
     procedure Paint; virtual;
-    property Canvas: TCanvas read FCanvas;
-  
+    property Canvas: TCanvas read FCanvas; 
   private
-    FClipboardCommands: TJvClipboardCommands;
-    
+    FClipboardCommands: TJvClipboardCommands; 
     FEditRect: TRect; // EM_GETRECT
     procedure EMGetRect(var Msg: TMessage); message EM_GETRECT;
-    procedure EMSetRect(var Msg: TMessage); message EM_SETRECT;
-    
+    procedure EMSetRect(var Msg: TMessage); message EM_SETRECT; 
   protected
     procedure DoUndo; dynamic;
     procedure DoClearText; dynamic;
@@ -439,22 +388,17 @@ type
     procedure DoClipboardCut; dynamic;
     procedure SetClipboardCommands(const Value: TJvClipboardCommands); virtual;
     property ClipboardCommands: TJvClipboardCommands read FClipboardCommands
-      write SetClipboardCommands default [caCopy..caUndo];
-  
+      write SetClipboardCommands default [caCopy..caUndo]; 
   public
-    procedure Clear; override;
-  
+    procedure Clear; override; 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
-  TJvExPubCustomEdit = class(TJvExCustomEdit)
-  
+  TJvExPubCustomEdit = class(TJvExCustomEdit) 
   end;
   
-  TJvExEdit = class(TEdit,  IJvEditControlEvents, IJvWinControlEvents, IJvControlEvents, IPerformControl)
-  
-  
+  TJvExEdit = class(TEdit,  IJvEditControlEvents, IJvWinControlEvents, IJvControlEvents, IPerformControl)  
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
     function IsRightToLeft: Boolean;
@@ -478,53 +422,45 @@ type
     procedure ColorChanged; override;
     property Color: TColor read GetColor write SetColor;
   published // asn: change to public in final
-    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
-  
+    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered; 
   private
     FHintColor: TColor;
     FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
-  
+  {$IFDEF NeedMouseEnterLeave}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  
+  {$ENDIF NeedMouseEnterLeave}
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure DoFocusChanged(Control: TWinControl); dynamic;
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-  private
-  
-  
+  private  
     FAboutJVCLX: TJVCLAboutInfo;
   published
-    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
-  
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False; 
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-  
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual; 
   private
     FCanvas: TCanvas;
   protected
     procedure Paint; virtual;
-    property Canvas: TCanvas read FCanvas;
-  
+    property Canvas: TCanvas read FCanvas; 
   private
-    FClipboardCommands: TJvClipboardCommands;
-    
+    FClipboardCommands: TJvClipboardCommands; 
     FEditRect: TRect; // EM_GETRECT
     procedure EMGetRect(var Msg: TMessage); message EM_GETRECT;
-    procedure EMSetRect(var Msg: TMessage); message EM_SETRECT;
-    
+    procedure EMSetRect(var Msg: TMessage); message EM_SETRECT; 
   protected
     procedure DoUndo; dynamic;
     procedure DoClearText; dynamic;
@@ -533,22 +469,17 @@ type
     procedure DoClipboardCut; dynamic;
     procedure SetClipboardCommands(const Value: TJvClipboardCommands); virtual;
     property ClipboardCommands: TJvClipboardCommands read FClipboardCommands
-      write SetClipboardCommands default [caCopy..caUndo];
-  
+      write SetClipboardCommands default [caCopy..caUndo]; 
   public
-    procedure Clear; override;
-  
+    procedure Clear; override; 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
-  TJvExPubEdit = class(TJvExEdit)
-  
+  TJvExPubEdit = class(TJvExEdit) 
   end;
   
-  TJvExCustomMemo = class(TCustomMemo,  IJvEditControlEvents, IJvWinControlEvents, IJvControlEvents, IPerformControl)
-  
-  
+  TJvExCustomMemo = class(TCustomMemo,  IJvEditControlEvents, IJvWinControlEvents, IJvControlEvents, IPerformControl)  
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
     function IsRightToLeft: Boolean;
@@ -572,53 +503,45 @@ type
     procedure ColorChanged; override;
     property Color: TColor read GetColor write SetColor;
   published // asn: change to public in final
-    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
-  
+    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered; 
   private
     FHintColor: TColor;
     FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
-  
+  {$IFDEF NeedMouseEnterLeave}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  
+  {$ENDIF NeedMouseEnterLeave}
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure DoFocusChanged(Control: TWinControl); dynamic;
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-  private
-  
-  
+  private  
     FAboutJVCLX: TJVCLAboutInfo;
   published
-    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
-  
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False; 
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-  
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual; 
   private
     FCanvas: TCanvas;
   protected
     procedure Paint; virtual;
-    property Canvas: TCanvas read FCanvas;
-  
+    property Canvas: TCanvas read FCanvas; 
   private
-    FClipboardCommands: TJvClipboardCommands;
-    
+    FClipboardCommands: TJvClipboardCommands; 
     FEditRect: TRect; // EM_GETRECT
     procedure EMGetRect(var Msg: TMessage); message EM_GETRECT;
-    procedure EMSetRect(var Msg: TMessage); message EM_SETRECT;
-    
+    procedure EMSetRect(var Msg: TMessage); message EM_SETRECT; 
   protected
     procedure DoUndo; dynamic;
     procedure DoClearText; dynamic;
@@ -627,22 +550,17 @@ type
     procedure DoClipboardCut; dynamic;
     procedure SetClipboardCommands(const Value: TJvClipboardCommands); virtual;
     property ClipboardCommands: TJvClipboardCommands read FClipboardCommands
-      write SetClipboardCommands default [caCopy..caUndo];
-  
+      write SetClipboardCommands default [caCopy..caUndo]; 
   public
-    procedure Clear; override;
-  
+    procedure Clear; override; 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
-  TJvExPubCustomMemo = class(TJvExCustomMemo)
-  
+  TJvExPubCustomMemo = class(TJvExCustomMemo) 
   end;
   
-  TJvExMemo = class(TMemo,  IJvEditControlEvents, IJvWinControlEvents, IJvControlEvents, IPerformControl)
-  
-  
+  TJvExMemo = class(TMemo,  IJvEditControlEvents, IJvWinControlEvents, IJvControlEvents, IPerformControl)  
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
     function IsRightToLeft: Boolean;
@@ -666,53 +584,45 @@ type
     procedure ColorChanged; override;
     property Color: TColor read GetColor write SetColor;
   published // asn: change to public in final
-    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
-  
+    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered; 
   private
     FHintColor: TColor;
     FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
-  
+  {$IFDEF NeedMouseEnterLeave}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  
+  {$ENDIF NeedMouseEnterLeave}
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure DoFocusChanged(Control: TWinControl); dynamic;
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-  private
-  
-  
+  private  
     FAboutJVCLX: TJVCLAboutInfo;
   published
-    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
-  
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False; 
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-  
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual; 
   private
     FCanvas: TCanvas;
   protected
     procedure Paint; virtual;
-    property Canvas: TCanvas read FCanvas;
-  
+    property Canvas: TCanvas read FCanvas; 
   private
-    FClipboardCommands: TJvClipboardCommands;
-    
+    FClipboardCommands: TJvClipboardCommands; 
     FEditRect: TRect; // EM_GETRECT
     procedure EMGetRect(var Msg: TMessage); message EM_GETRECT;
-    procedure EMSetRect(var Msg: TMessage); message EM_SETRECT;
-    
+    procedure EMSetRect(var Msg: TMessage); message EM_SETRECT; 
   protected
     procedure DoUndo; dynamic;
     procedure DoClearText; dynamic;
@@ -721,23 +631,17 @@ type
     procedure DoClipboardCut; dynamic;
     procedure SetClipboardCommands(const Value: TJvClipboardCommands); virtual;
     property ClipboardCommands: TJvClipboardCommands read FClipboardCommands
-      write SetClipboardCommands default [caCopy..caUndo];
-  
+      write SetClipboardCommands default [caCopy..caUndo]; 
   public
-    procedure Clear; override;
-  
+    procedure Clear; override; 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
-  TJvExPubMemo = class(TJvExMemo)
-  
+  TJvExPubMemo = class(TJvExMemo) 
   end;
-  
-  
-  TJvExCustomComboBox = class(TCustomComboBox, IJvWinControlEvents, IJvControlEvents, IPerformControl)
-  
-  
+   
+  TJvExCustomComboBox = class(TCustomComboBox, IJvWinControlEvents, IJvControlEvents, IPerformControl)  
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
     function IsRightToLeft: Boolean;
@@ -761,57 +665,48 @@ type
     procedure ColorChanged; override;
     property Color: TColor read GetColor write SetColor;
   published // asn: change to public in final
-    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
-  
+    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered; 
   private
     FHintColor: TColor;
     FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
-  
+  {$IFDEF NeedMouseEnterLeave}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  
+  {$ENDIF NeedMouseEnterLeave}
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure DoFocusChanged(Control: TWinControl); dynamic;
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-  private
-  
-  
+  private  
     FAboutJVCLX: TJVCLAboutInfo;
   published
-    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
-  
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False; 
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-  
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual; 
   private
     FCanvas: TCanvas;
   protected
     procedure Paint; virtual;
-    property Canvas: TCanvas read FCanvas;
-  
+    property Canvas: TCanvas read FCanvas; 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
-  TJvExPubCustomComboBox = class(TJvExCustomComboBox)
-  
+  TJvExPubCustomComboBox = class(TJvExCustomComboBox) 
   end;
   
-  TJvExComboBox = class(TComboBox, IJvWinControlEvents, IJvControlEvents, IPerformControl)
-  
-  
+  TJvExComboBox = class(TComboBox, IJvWinControlEvents, IJvControlEvents, IPerformControl)  
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
     function IsRightToLeft: Boolean;
@@ -835,57 +730,48 @@ type
     procedure ColorChanged; override;
     property Color: TColor read GetColor write SetColor;
   published // asn: change to public in final
-    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
-  
+    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered; 
   private
     FHintColor: TColor;
     FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
-  
+  {$IFDEF NeedMouseEnterLeave}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  
+  {$ENDIF NeedMouseEnterLeave}
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure DoFocusChanged(Control: TWinControl); dynamic;
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-  private
-  
-  
+  private  
     FAboutJVCLX: TJVCLAboutInfo;
   published
-    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
-  
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False; 
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-  
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual; 
   private
     FCanvas: TCanvas;
   protected
     procedure Paint; virtual;
-    property Canvas: TCanvas read FCanvas;
-  
+    property Canvas: TCanvas read FCanvas; 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
-  TJvExPubComboBox = class(TJvExComboBox)
-  
+  TJvExPubComboBox = class(TJvExComboBox) 
   end;
   
-  TJvExButtonControl = class(TButtonControl, IJvWinControlEvents, IJvControlEvents, IPerformControl)
-  
-  
+  TJvExButtonControl = class(TButtonControl, IJvWinControlEvents, IJvControlEvents, IPerformControl)  
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
     function IsRightToLeft: Boolean;
@@ -909,57 +795,48 @@ type
     procedure ColorChanged; override;
     property Color: TColor read GetColor write SetColor;
   published // asn: change to public in final
-    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
-  
+    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered; 
   private
     FHintColor: TColor;
     FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
-  
+  {$IFDEF NeedMouseEnterLeave}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  
+  {$ENDIF NeedMouseEnterLeave}
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure DoFocusChanged(Control: TWinControl); dynamic;
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-  private
-  
-  
+  private  
     FAboutJVCLX: TJVCLAboutInfo;
   published
-    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
-  
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False; 
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-  
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual; 
   private
     FCanvas: TCanvas;
   protected
     procedure Paint; virtual;
-    property Canvas: TCanvas read FCanvas;
-  
+    property Canvas: TCanvas read FCanvas; 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
-  TJvExPubButtonControl = class(TJvExButtonControl)
-  
+  TJvExPubButtonControl = class(TJvExButtonControl) 
   end;
   
-  TJvExButton = class(TButton, IJvWinControlEvents, IJvControlEvents, IPerformControl)
-  
-  
+  TJvExButton = class(TButton, IJvWinControlEvents, IJvControlEvents, IPerformControl)  
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
     function IsRightToLeft: Boolean;
@@ -983,57 +860,48 @@ type
     procedure ColorChanged; override;
     property Color: TColor read GetColor write SetColor;
   published // asn: change to public in final
-    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
-  
+    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered; 
   private
     FHintColor: TColor;
     FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
-  
+  {$IFDEF NeedMouseEnterLeave}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  
+  {$ENDIF NeedMouseEnterLeave}
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure DoFocusChanged(Control: TWinControl); dynamic;
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-  private
-  
-  
+  private  
     FAboutJVCLX: TJVCLAboutInfo;
   published
-    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
-  
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False; 
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-  
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual; 
   private
     FCanvas: TCanvas;
   protected
     procedure Paint; virtual;
-    property Canvas: TCanvas read FCanvas;
-  
+    property Canvas: TCanvas read FCanvas; 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
-  TJvExPubButton = class(TJvExButton)
-  
+  TJvExPubButton = class(TJvExButton) 
   end;
   
-  TJvExCustomCheckBox = class(TCustomCheckBox, IJvWinControlEvents, IJvControlEvents, IPerformControl)
-  
-  
+  TJvExCustomCheckBox = class(TCustomCheckBox, IJvWinControlEvents, IJvControlEvents, IPerformControl)  
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
     function IsRightToLeft: Boolean;
@@ -1057,57 +925,48 @@ type
     procedure ColorChanged; override;
     property Color: TColor read GetColor write SetColor;
   published // asn: change to public in final
-    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
-  
+    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered; 
   private
     FHintColor: TColor;
     FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
-  
+  {$IFDEF NeedMouseEnterLeave}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  
+  {$ENDIF NeedMouseEnterLeave}
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure DoFocusChanged(Control: TWinControl); dynamic;
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-  private
-  
-  
+  private  
     FAboutJVCLX: TJVCLAboutInfo;
   published
-    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
-  
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False; 
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-  
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual; 
   private
     FCanvas: TCanvas;
   protected
     procedure Paint; virtual;
-    property Canvas: TCanvas read FCanvas;
-  
+    property Canvas: TCanvas read FCanvas; 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
-  TJvExPubCustomCheckBox = class(TJvExCustomCheckBox)
-  
+  TJvExPubCustomCheckBox = class(TJvExCustomCheckBox) 
   end;
   
-  TJvExCheckBox = class(TCheckBox, IJvWinControlEvents, IJvControlEvents, IPerformControl)
-  
-  
+  TJvExCheckBox = class(TCheckBox, IJvWinControlEvents, IJvControlEvents, IPerformControl)  
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
     function IsRightToLeft: Boolean;
@@ -1131,57 +990,48 @@ type
     procedure ColorChanged; override;
     property Color: TColor read GetColor write SetColor;
   published // asn: change to public in final
-    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
-  
+    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered; 
   private
     FHintColor: TColor;
     FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
-  
+  {$IFDEF NeedMouseEnterLeave}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  
+  {$ENDIF NeedMouseEnterLeave}
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure DoFocusChanged(Control: TWinControl); dynamic;
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-  private
-  
-  
+  private  
     FAboutJVCLX: TJVCLAboutInfo;
   published
-    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
-  
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False; 
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-  
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual; 
   private
     FCanvas: TCanvas;
   protected
     procedure Paint; virtual;
-    property Canvas: TCanvas read FCanvas;
-  
+    property Canvas: TCanvas read FCanvas; 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
-  TJvExPubCheckBox = class(TJvExCheckBox)
-  
+  TJvExPubCheckBox = class(TJvExCheckBox) 
   end;
   
-  TJvExRadioButton = class(TRadioButton, IJvWinControlEvents, IJvControlEvents, IPerformControl)
-  
-  
+  TJvExRadioButton = class(TRadioButton, IJvWinControlEvents, IJvControlEvents, IPerformControl)  
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
     function IsRightToLeft: Boolean;
@@ -1205,57 +1055,48 @@ type
     procedure ColorChanged; override;
     property Color: TColor read GetColor write SetColor;
   published // asn: change to public in final
-    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
-  
+    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered; 
   private
     FHintColor: TColor;
     FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
-  
+  {$IFDEF NeedMouseEnterLeave}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  
+  {$ENDIF NeedMouseEnterLeave}
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure DoFocusChanged(Control: TWinControl); dynamic;
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-  private
-  
-  
+  private  
     FAboutJVCLX: TJVCLAboutInfo;
   published
-    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
-  
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False; 
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-  
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual; 
   private
     FCanvas: TCanvas;
   protected
     procedure Paint; virtual;
-    property Canvas: TCanvas read FCanvas;
-  
+    property Canvas: TCanvas read FCanvas; 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
-  TJvExPubRadioButton = class(TJvExRadioButton)
-  
+  TJvExPubRadioButton = class(TJvExRadioButton) 
   end;
   
-  TJvExCustomListBox = class(TCustomListBox, IJvWinControlEvents, IJvControlEvents, IPerformControl)
-  
-  
+  TJvExCustomListBox = class(TCustomListBox, IJvWinControlEvents, IJvControlEvents, IPerformControl)  
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
     function IsRightToLeft: Boolean;
@@ -1279,57 +1120,48 @@ type
     procedure ColorChanged; override;
     property Color: TColor read GetColor write SetColor;
   published // asn: change to public in final
-    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
-  
+    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered; 
   private
     FHintColor: TColor;
     FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
-  
+  {$IFDEF NeedMouseEnterLeave}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  
+  {$ENDIF NeedMouseEnterLeave}
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure DoFocusChanged(Control: TWinControl); dynamic;
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-  private
-  
-  
+  private  
     FAboutJVCLX: TJVCLAboutInfo;
   published
-    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
-  
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False; 
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-  
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual; 
   private
     FCanvas: TCanvas;
   protected
     procedure Paint; virtual;
-    property Canvas: TCanvas read FCanvas;
-  
+    property Canvas: TCanvas read FCanvas; 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
-  TJvExPubCustomListBox = class(TJvExCustomListBox)
-  
+  TJvExPubCustomListBox = class(TJvExCustomListBox) 
   end;
   
-  TJvExListBox = class(TListBox, IJvWinControlEvents, IJvControlEvents, IPerformControl)
-  
-  
+  TJvExListBox = class(TListBox, IJvWinControlEvents, IJvControlEvents, IPerformControl)  
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
     function IsRightToLeft: Boolean;
@@ -1353,57 +1185,48 @@ type
     procedure ColorChanged; override;
     property Color: TColor read GetColor write SetColor;
   published // asn: change to public in final
-    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
-  
+    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered; 
   private
     FHintColor: TColor;
     FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
-  
+  {$IFDEF NeedMouseEnterLeave}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  
+  {$ENDIF NeedMouseEnterLeave}
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure DoFocusChanged(Control: TWinControl); dynamic;
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-  private
-  
-  
+  private  
     FAboutJVCLX: TJVCLAboutInfo;
   published
-    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
-  
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False; 
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-  
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual; 
   private
     FCanvas: TCanvas;
   protected
     procedure Paint; virtual;
-    property Canvas: TCanvas read FCanvas;
-  
+    property Canvas: TCanvas read FCanvas; 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
-  TJvExPubListBox = class(TJvExListBox)
-  
+  TJvExPubListBox = class(TJvExListBox) 
   end;
   
-  TJvExScrollBar = class(TScrollBar, IJvWinControlEvents, IJvControlEvents, IPerformControl)
-  
-  
+  TJvExScrollBar = class(TScrollBar, IJvWinControlEvents, IJvControlEvents, IPerformControl)  
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
     function IsRightToLeft: Boolean;
@@ -1427,55 +1250,47 @@ type
     procedure ColorChanged; override;
     property Color: TColor read GetColor write SetColor;
   published // asn: change to public in final
-    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
-  
+    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered; 
   private
     FHintColor: TColor;
     FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
-  
+  {$IFDEF NeedMouseEnterLeave}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  
+  {$ENDIF NeedMouseEnterLeave}
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure DoFocusChanged(Control: TWinControl); dynamic;
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-  private
-  
-  
+  private  
     FAboutJVCLX: TJVCLAboutInfo;
   published
-    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
-  
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False; 
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-  
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual; 
   private
     FCanvas: TCanvas;
   protected
     procedure Paint; virtual;
-    property Canvas: TCanvas read FCanvas;
-  
+    property Canvas: TCanvas read FCanvas; 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
-  TJvExPubScrollBar = class(TJvExScrollBar)
-  
+  TJvExPubScrollBar = class(TJvExScrollBar) 
   end;
-  
-  
+   
 
 implementation
 
@@ -1807,7 +1622,7 @@ begin
   WidgetControl_DefaultPaint(Self, Canvas);
 end;
 
-
+{$DEFINE HASAUTOSIZE}
 
 
 
@@ -2139,10 +1954,12 @@ begin
 end;
 
 
+{$UNDEF HASAUTOSIZE}
 
-
-
-
+{$UNDEF CONSTRUCTOR_CODE}
+{$DEFINE CONSTRUCTOR_CODE
+  FClipboardCommands := [caCopy..caUndo];
+}
 
 
 procedure TJvExCustomEdit.MouseEnter(Control: TControl);
@@ -2311,11 +2128,8 @@ end;
 procedure TJvExCustomEdit.DoClearText;
 begin
  // (ahuser) there is no caClear so we restrict it to caCut
-  if caCut in ClipboardCommands then
-    
-    
-    inherited Clear;
-    
+  if caCut in ClipboardCommands then  
+    inherited Clear; 
 end;
 
 procedure TJvExCustomEdit.DoUndo;
@@ -2550,11 +2364,8 @@ end;
 procedure TJvExEdit.DoClearText;
 begin
  // (ahuser) there is no caClear so we restrict it to caCut
-  if caCut in ClipboardCommands then
-    
-    
-    inherited Clear;
-    
+  if caCut in ClipboardCommands then  
+    inherited Clear; 
 end;
 
 procedure TJvExEdit.DoUndo;
@@ -2789,11 +2600,8 @@ end;
 procedure TJvExCustomMemo.DoClearText;
 begin
  // (ahuser) there is no caClear so we restrict it to caCut
-  if caCut in ClipboardCommands then
-    
-    
-    inherited Clear;
-    
+  if caCut in ClipboardCommands then  
+    inherited Clear; 
 end;
 
 procedure TJvExCustomMemo.DoUndo;
@@ -3028,11 +2836,8 @@ end;
 procedure TJvExMemo.DoClearText;
 begin
  // (ahuser) there is no caClear so we restrict it to caCut
-  if caCut in ClipboardCommands then
-    
-    
-    inherited Clear;
-    
+  if caCut in ClipboardCommands then  
+    inherited Clear; 
 end;
 
 procedure TJvExMemo.DoUndo;
@@ -3099,8 +2904,8 @@ end;
 
 
 
-
-
+{$UNDEF CONSTRUCTOR_CODE}
+{$DEFINE CONSTRUCTOR_CODE}
 
 
 
@@ -4745,6 +4550,6 @@ end;
 
 
 
- // undefine at file end
+{$UNDEF CONSTRUCTOR_CODE} // undefine at file end
 
 end.

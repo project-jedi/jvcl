@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -38,10 +39,8 @@ interface
 
 uses
   SysUtils, Classes,
-  
-  
-  Types, QGraphics, QControls, QForms, QDialogs, QExtCtrls, QTypes,
-  
+  Windows, Messages, QGraphics, QControls, QForms, QDialogs, QExtCtrls, 
+  Types, QTypes, 
   JvQComponent;
 
 type
@@ -79,11 +78,8 @@ type
   protected
     procedure Paint; override;
     procedure DoBeforeScroll; dynamic;
-    procedure DoAfterScroll; dynamic;
-    
-    
-    procedure SetText(const Value: TCaption); override;
-    
+    procedure DoAfterScroll; dynamic;  
+    procedure SetText(const Value: TCaption); override; 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -99,8 +95,7 @@ type
     property MediaFile: TFileName read FMediaFile write SetMediaFile;
     property LoopMedia: Boolean read FLoopMedia write SetLoopMedia default True;
     property LoopCount: Integer read FLoopCount write SetLoopCount default -1;
-    {$ENDIF MSWINDOWS}
-    
+    {$ENDIF MSWINDOWS} 
     property Action;
     property Anchors;
     property Constraints;

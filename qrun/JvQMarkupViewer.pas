@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -34,11 +35,8 @@ unit JvQMarkupViewer;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QGraphics, QForms, QControls, QStdCtrls, Types, QWindows, QTypes,
-  
+  SysUtils, Classes,  
+  QGraphics, QForms, QControls, QStdCtrls, Types, QWindows, QTypes, 
   JvQComponent, JvQMarkupCommon;
 
 type
@@ -61,17 +59,13 @@ type
     procedure HTMLClearBreaks;
     procedure HTMLElementDimensions;
     procedure SetBackColor(const Value: TColor);
-    //////////////////////////
+    procedure SetText(const Value: TCaption);
     procedure SetMarginLeft(const Value: Integer);
     procedure SetMarginRight(const Value: Integer);
     procedure SetMarginTop(const Value: Integer);
     procedure ScrollViewer(Sender: TObject);
-  protected
-    procedure SetText(const Value: TCaption); override;
-    
-    
-    procedure CreateWidget; override;
-    
+  protected  
+    procedure CreateWidget; override; 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -92,8 +86,7 @@ uses
 
 constructor TJvMarkupViewer.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner);
-  
+  inherited Create(AOwner); 
   FElementStack := TJvHTMLElementStack.Create;
   FTagStack := TJvHTMLElementStack.Create;
   Width := 300;

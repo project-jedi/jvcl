@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -34,14 +35,9 @@ unit JvQTimeLimit;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QControls, QDialogs, QForms, QWindows,
-  
-  JvQComponent;
-
-{$HPPEMIT '#define TDate Controls::TDate'}
+  SysUtils, Classes,  
+  QControls, QDialogs, QForms, QWindows, 
+  JvQComponent, JvQTypes;
 
 type
   TJvTimeLimit = class(TJvComponent)
@@ -54,8 +50,6 @@ type
     property EndDate: TDate read FDate write FDate;
     property OnExpire: TNotifyEvent read FOnExpire write FOnExpire;
   end;
-
-{$HPPEMIT '#undef TDate'}
 
 implementation
 

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -37,12 +38,9 @@ unit JvQColorForm;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
+  SysUtils, Classes,  
   Types, Qt, QGraphics, QControls, QForms, QButtons, QExtCtrls, QDialogs,
-  QWindows,
-  
+  QWindows, 
   JvQColorBox;
 
 const
@@ -73,15 +71,11 @@ type
     FColorDialog: TJvColorDialog;
     FSelectedColor: TColor;
     procedure ShowCD(Sender: TObject);
-    procedure HideCD(Sender: TObject);
-    
+    procedure HideCD(Sender: TObject); 
     procedure SetButtonSize(const Value: Integer);
-  protected
-    
-    
+  protected  
     function WidgetFlags: Integer; override;
-    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
-    
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override; 
     procedure UpdateSize; virtual;
   public
     constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;
@@ -102,11 +96,8 @@ begin
   inherited CreateNew(AOwner, Dummy);
   FButtonSize := cButtonWidth;
   FSelectedColor := clBlack;
-  BorderIcons := [];
-  
-  
-  BorderStyle := fbsDialog;
-  
+  BorderIcons := [];  
+  BorderStyle := fbsDialog; 
   // (rom) this is not a standard Windows font
 //  Font.Name := 'MS Shell Dlg 2';
   FormStyle := fsStayOnTop;
@@ -271,16 +262,13 @@ begin
   for I := ControlCount - 1 downto 0 do
     if (Controls[I] is TJvColorSquare) or (Controls[I] is TBevel) then
       Controls[I].Free;
-
-  
   
   ParentControl := TPanel.Create(Self);
   ParentControl.Align := alClient;
   ParentControl.Parent := Self;
   TPanel(ParentControl).BevelInner := bvRaised;
   TPanel(ParentControl).BevelOuter := bvRaised;
-  Offset := 2;
-  
+  Offset := 2; 
 
   X := Offset;
   Y := Offset;
@@ -327,17 +315,14 @@ end;
 
 procedure TJvColorForm.UpdateSize;
 begin
-  Height := OtherBtn.Top + OtherBtn.Height + 8;
-  
-  
+  Height := OtherBtn.Top + OtherBtn.Height + 8;  
   // workaround a VisualCLX bug: ClientWidth does not allow values smaller than 100
   Width := FCS.Left + FCS.Width + 2;
 
   Constraints.MaxWidth := Width;
   Constraints.MaxHeight := Height;
   Constraints.MinWidth := Constraints.MaxWidth;
-  Constraints.MinHeight := Constraints.MaxHeight;
-  
+  Constraints.MinHeight := Constraints.MaxHeight; 
 end;
 
 procedure TJvColorForm.SetButtonSize(const Value: Integer);

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -35,11 +36,8 @@ unit JvQUninstallControls;
 interface
 
 uses
-  Windows, SysUtils, Classes,
-  
-  
-  QGraphics, QControls, QStdCtrls,
-  
+  Windows, SysUtils, Classes,  
+  QGraphics, QControls, QStdCtrls, 
   JvQComponent, JvQTypes;
 
 type
@@ -63,16 +61,12 @@ type
     function GetHKey: HKEY;
     function GetHKeyName: string;
     procedure SetSorted(const Value: boolean);
-  protected
-    
-    
-    procedure CreateWidget; override;
-    
+  protected  
+    procedure CreateWidget; override; 
   public
     constructor Create(AComponent: TComponent); override;
     destructor Destroy; override;
-    procedure Clear;
-    
+    procedure Clear; 
     procedure RefreshItem;
     property Items: TStrings read GetItems;
     property Section: string read GetSection;
@@ -85,8 +79,7 @@ type
     property DisplayMode: TJvUCBDisplayModes read FDisplayMode write SetDisplayMode default [hkCurrentUser, hkLocalMachine];
     property ShowAll: Boolean read FShowAll write SetShowAll default False;
     property ShowEmptyValues: Boolean read FShowEmptyValues write SetShowEmptyValues default False;
-    property Color;
-    
+    property Color; 
     property DropDownCount;
     property Enabled;
     property Font;
@@ -136,16 +129,12 @@ type
     function GetHKey: HKEY;
     function GetHKeyName: string;
     procedure SetSorted(const Value: boolean);
-  protected
-    
-    
-    procedure CreateWidget; override;
-    
+  protected  
+    procedure CreateWidget; override; 
   public
     constructor Create(AComponent: TComponent); override;
     destructor Destroy; override;
-    procedure Clear;
-    
+    procedure Clear; 
     procedure RefreshItem;
     procedure Rebuild;
     property Items: TStrings read GetItems;
@@ -160,8 +149,7 @@ type
     property DisplayMode: TJvUCBDisplayModes read FDisplayMode write SetDisplayMode default [hkCurrentUser, hkLocalMachine];
     property ShowAll: Boolean read FShowAll write SetShowAll default False;
     property ShowEmptyValues: Boolean read FShowEmptyValues write SetShowEmptyValues default False;
-    property Color;
-    
+    property Color; 
     property Enabled;
     property Font;
     property ItemHeight;

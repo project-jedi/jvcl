@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -19,13 +20,12 @@ Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
-Last Modified: 2002-07-04
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -34,11 +34,8 @@ unit JvQDualList;
 interface
 
 uses
-  Classes,
-  
-  
-  QControls, QTypes,
-  
+  Classes,  
+  QControls, QTypes, 
   JvQComponent;
 
 type
@@ -93,11 +90,8 @@ type
 implementation
 
 uses
-  SysUtils,
-  
-  
-  QForms, QConsts,
-  
+  SysUtils,  
+  QConsts, QForms, 
   JvQDualListForm, JvQResources, JvQJVCLUtils;
 
 constructor TJvDualListDialog.Create(AOwner: TComponent);
@@ -183,8 +177,7 @@ begin
   Form := TJvDualListForm.Create(Application);
   try
     with Form do
-    begin
-        
+    begin   
       ShowHelp := Self.ShowHelp;
       SrcList.Sorted := Sorted;
       DstList.Sorted := Sorted;

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -35,15 +36,10 @@ unit JvQPickDate;
 
 interface
 
-uses
-  
-  Variants,
-  
-  
-  
+uses 
+  Variants,   
   QTypes, QControls, QGraphics, QForms, QButtons, QStdCtrls, QGrids, QExtCtrls,
-  Types, QWindows,
-  
+  Types, QWindows, 
   SysUtils, Classes,
   JvQTypes, JvQExGrids;
 
@@ -83,8 +79,7 @@ type
     function GetCellDate(ACol, ARow: Integer): TDateTime;
     function CellInRange(ACol, ARow: Integer): Boolean;
     function DateInRange(ADate: TDateTime): Boolean;
-    //<Polaris
-    
+    //<Polaris 
     procedure Change; dynamic;
     procedure ChangeMonth(Delta: Integer);
     procedure Click; override;
@@ -152,11 +147,8 @@ const
 
 implementation
 
-uses
-  
-  
-  QConsts,
-  
+uses  
+  QConsts, 
   Math,
   JvQThemes, JvQConsts, JvQResources, JvQJCLUtils,
   JvQToolEdit, JvQSpeedButton;
@@ -165,7 +157,7 @@ uses
 {$R ..\Resources\JvPickDate.res}
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
-{$R ../Resources/JvPickDate.Res}
+{$R ../Resources/JvPickDate.res}
 {$ENDIF LINUX}
 
 const
@@ -174,8 +166,7 @@ const
 
 procedure FontSetDefault(AFont: TFont);
   
-begin
-  
+begin 
     with AFont do
     begin
       Color := clWindowText;
@@ -736,8 +727,7 @@ type
   TJvLocCalendar = class(TJvCalendar)
   protected
     procedure EnabledChanged; override;
-    procedure ParentColorChanged; override;
-    
+    procedure ParentColorChanged; override; 
     procedure DrawCell(ACol, ARow: Longint; ARect: TRect; AState: TGridDrawState); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -751,8 +741,7 @@ constructor TJvLocCalendar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := [csCaptureMouse, csClickEvents, csDoubleClicks];
-  ControlStyle := ControlStyle + [csReplicatable];
-  
+  ControlStyle := ControlStyle + [csReplicatable]; 
   Enabled := False;
   BorderStyle := bsNone;
   ParentColor := True;
@@ -928,8 +917,7 @@ begin
     ShowHint := True;
   if csDesigning in ComponentState then
     Exit;
-
-  
+ 
 
   BackPanel := TPanel.Create(Self);
   with BackPanel as TPanel do
@@ -1204,11 +1192,9 @@ type
     FBtns: array [0..3] of TJvSpeedButton;
     procedure SetDate(Date: TDateTime);
     procedure CheckButton; // Polaris
-    function GetDate: TDateTime;
-  
+    function GetDate: TDateTime; 
   protected
-    function WidgetFlags: Integer; override;
-  
+    function WidgetFlags: Integer; override; 
   public
     constructor Create(AOwner: TComponent); override;
     property Date: TDateTime read GetDate write SetDate;
@@ -1219,11 +1205,8 @@ var
   Control: TWinControl;
 begin
   inherited CreateNew(AOwner, 0); // BCB compatible
-  Caption := RsDateDlgCaption;
-  
-  
-  BorderStyle := fbsToolWindow;
-  
+  Caption := RsDateDlgCaption;  
+  BorderStyle := fbsToolWindow; 
   Color := clBtnFace;
   BorderIcons := [biSystemMenu];
   ClientHeight := 158; // Polaris

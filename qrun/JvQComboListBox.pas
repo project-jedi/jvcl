@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -39,12 +40,9 @@ unit JvQComboListBox;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
+  SysUtils, Classes,  
   Qt, QControls, QGraphics, QStdCtrls, QExtCtrls, QMenus, Types, QWindows,
-  JvQExStdCtrls,
-  
+  JvQExStdCtrls, 
   JvQTypes;
 
 type
@@ -56,12 +54,9 @@ type
     const AText: string; R: TRect; var DefaultDraw: Boolean) of object;
   TJvComboListDrawImageEvent = procedure(Sender: TObject; Index: Integer;
     const APicture: TPicture; R: TRect; var DefaultDraw: Boolean) of object;
-
-  
   
   TJvListBoxDataEvent = procedure(Sender: TWinControl; Index: Integer; var Text: string) of object; // JvListBox
-  TJvComboListBox = class(TJvExCustomListBox)
-  
+  TJvComboListBox = class(TJvExCustomListBox) 
   private
     FMouseOver: Boolean;
     FPushed: Boolean;
@@ -72,10 +67,8 @@ type
     FButtonWidth: Integer;
     FHotTrackCombo: Boolean;
     FLastHotTrack: Integer;
-    FOnDropDown: TJvComboListDropDownEvent;
-    
-    FOnGetText: TJvListBoxDataEvent; // JvListBox
-    
+    FOnDropDown: TJvComboListDropDownEvent; 
+    FOnGetText: TJvListBoxDataEvent; // JvListBox 
     procedure SetDrawStyle(const Value: TJvComboListBoxDrawStyle);
     function DestRect(Picture: TPicture; ARect: TRect): TRect;
     function GetOffset(OrigRect, ImageRect: TRect): TRect;
@@ -83,12 +76,9 @@ type
     procedure SetHotTrackCombo(const Value: Boolean);
   protected
     procedure InvalidateItem(Index: Integer);
-    procedure DrawComboArrow(Canvas: TCanvas; R: TRect; Highlight, Pushed: Boolean);
-    
-    
+    procedure DrawComboArrow(Canvas: TCanvas; R: TRect; Highlight, Pushed: Boolean);  
     function DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState): Boolean; override;
-    procedure DoGetText(Index: Integer; var Text: string); virtual; // JvListBox
-    
+    procedure DoGetText(Index: Integer; var Text: string); virtual; // JvListBox 
     procedure Resize; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -106,10 +96,8 @@ type
     function AddImage(P: TPicture): Integer;
     procedure InsertImage(Index: Integer; P: TPicture);
     procedure Delete(Index: Integer);
-  published
-    
-    property OnGetText: TJvListBoxDataEvent read FOnGetText write FOnGetText; // JvListBox
-    
+  published 
+    property OnGetText: TJvListBoxDataEvent read FOnGetText write FOnGetText; // JvListBox 
     property ButtonWidth: Integer read FButtonWidth write SetButtonWidth default 20;
     property HotTrackCombo: Boolean read FHotTrackCombo write SetHotTrackCombo default False;
     property DropdownMenu: TPopupMenu read FDropdownMenu write FDropdownMenu;
@@ -118,8 +106,7 @@ type
     property OnDrawImage: TJvComboListDrawImageEvent read FOnDrawImage write FOnDrawImage;
     property OnDropDown: TJvComboListDropDownEvent read FOnDropDown write FOnDropDown;
     property Align;
-    property Anchors;
-    
+    property Anchors; 
     property BorderStyle;
     property Color;
     property Columns;
@@ -172,8 +159,7 @@ uses
 constructor TJvComboListBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  Style := lbOwnerDrawFixed;
-  
+  Style := lbOwnerDrawFixed; 
   FDrawStyle := dsOriginal;
   FButtonWidth := 20;
   FLastHotTrack := -1;
@@ -330,15 +316,11 @@ var
   Pt: TPoint;
   I: Integer;
   AText: string;
-begin
-  
-  Result := False;
-  
+begin 
+  Result := False; 
   if (Index < 0) or (Index >= Items.Count) or Assigned(OnDrawItem) then
-    Exit;
-  
-  Result := True;
-  
+    Exit; 
+  Result := True; 
   Canvas.Lock;
   try
     Canvas.Font := Font;
@@ -488,10 +470,8 @@ begin
   begin
     R.Right := R.Right - ButtonWidth;
     // don't redraw content, just button
-    ExcludeClipRect(Canvas.Handle, R.Left, R.Top, R.Right, R.Bottom);
-    
-    QWindows.
-    
+    ExcludeClipRect(Canvas.Handle, R.Left, R.Top, R.Right, R.Bottom); 
+    QWindows. 
     InvalidateRect(Handle, @R2, False);
   end;
 end;
@@ -501,8 +481,7 @@ procedure TJvComboListBox.MouseDown(Button: TMouseButton; Shift: TShiftState;
 var
   I: Integer;
   R: TRect;
-  P: TPoint;
-  
+  P: TPoint; 
 begin
   inherited MouseDown(Button, Shift, X, Y);
   if ItemIndex > -1 then
@@ -528,11 +507,8 @@ begin
         P.Y := R.Top + ItemHeight;
         P := ClientToScreen(P);
         DropdownMenu.PopupComponent := Self;
-        DropdownMenu.Popup(P.X, P.Y);
-        
-        
-        QWindows.IgnoreMouseEvents(Handle);
-        
+        DropdownMenu.Popup(P.X, P.Y);  
+        QWindows.IgnoreMouseEvents(Handle); 
       end;
       MouseUp(Button, Shift, X, Y);
     end;

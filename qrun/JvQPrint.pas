@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -34,11 +35,8 @@ unit JvQPrint;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QGraphics, QPrinters,
-  
+  SysUtils, Classes,  
+  QGraphics, QPrinters, 
   JvQTypes, JvQComponent;
 
 type
@@ -128,11 +126,8 @@ begin
       begin
         with Printer do
         begin
-          BeginDoc;
-          
-          
-          Canvas.StretchDraw(Rect(0, 0, PageWidth, PageHeight), Value);
-          
+          BeginDoc;  
+          Canvas.StretchDraw(Rect(0, 0, PageWidth, PageHeight), Value); 
           EndDoc;
         end;
       end;

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -15,13 +16,12 @@ the specific language governing rights and limitations under the License.
 The Initial Developers of the Original Code is: Jens Fudickar
 All Rights Reserved.
 
-Last Modified: 2003-12-17
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -30,11 +30,8 @@ unit JvQAppStorageSelectList;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QControls, QForms,
-  
+  SysUtils, Classes,  
+  QControls, QForms, 
   JvQComponent, JvQTypes, JvQAppStorage, JvQDynControlEngine,
   JvQDynControlEngineIntf;
 
@@ -64,8 +61,9 @@ type
     procedure SetSelectPath(Value: string);
     function GetStoragePath: string; virtual;
     function GetDynControlEngine: TJvDynControlEngine; virtual;
-    procedure SetDynControlEngine(Value: TJvDynControlEngine); virtual;
-    procedure CreateDialog(AOperation: TJvAppStorageSelectListOperation; ACaption: string = '');
+    procedure SetDynControlEngine(Value: TJvDynControlEngine); virtual; 
+    procedure CreateDialog(AOperation: TJvAppStorageSelectListOperation; ACaption: string = ''); 
+
     procedure DialogOnOkButtonClick(Sender: TObject);
     procedure DialogOnCancelButtonClick(Sender: TObject);
     procedure DialogOnListBoxChange(Sender: TObject);
@@ -199,7 +197,9 @@ begin
   FIListBoxData := nil;
 end;
 
+
 procedure TJvAppStorageSelectList.CreateDialog(AOperation: TJvAppStorageSelectListOperation; ACaption: string = '');
+
 var
   MainPanel, ButtonPanel, ListBoxPanel, ComboBoxPanel: TWinControl;
   OkButton, CancelButton: TWinControl;
@@ -208,7 +208,7 @@ var
   ITmpComboBox: IJvDynControlComboBox;
 begin
   if not Assigned(DynControlEngine) then
-    raise EJVCLException.Create(RsEDynControlEngineNotDefined);
+    raise EJVCLException.CreateRes(@RsEDynControlEngineNotDefined);
 
   Operation := AOperation;
   FreeAndNil(FSelectDialog);
@@ -217,11 +217,8 @@ begin
 
   with SelectDialog do
   begin
-    BorderIcons := [];
-    
-    
-    BorderStyle := fbsDialog;
-    
+    BorderIcons := [];  
+    BorderStyle := fbsDialog; 
     FormStyle := fsNormal;
     Position := poScreenCenter;
     OnDestroy := SelectFormDestroying;
@@ -258,20 +255,20 @@ begin
 
   ComboBoxPanel := DynControlEngine.CreatePanelControl(Self, MainPanel, 'ComboBoxPanel', '', alBottom);
   if not Supports(ComboBoxPanel, IJvDynControlPanel, ITmpPanel) then
-    raise EIntfCastError.Create(RsEIntfCastError);
+    raise EIntfCastError.CreateRes(@RsEIntfCastError);
   with ITmpPanel do
     ControlSetBorder(bvNone, bvNone, 0, bsNone, 5);
   ListBoxPanel := DynControlEngine.CreatePanelControl(Self, MainPanel, 'ListPanel', '', alClient);
   if not Supports(ListBoxPanel, IJvDynControlPanel, ITmpPanel) then
-    raise EIntfCastError.Create(RsEIntfCastError);
+    raise EIntfCastError.CreateRes(@RsEIntfCastError);
   with ITmpPanel do
     ControlSetBorder(bvNone, bvNone, 0, bsNone, 5);
 
   ComboBox := DynControlEngine.CreateComboBoxControl(Self, ComboBoxPanel, 'ComboBox', SelectList);
   if not Supports(ComboBox, IJvDynControlItems, FIComboBoxItems) then
-    raise EIntfCastError.Create(RsEIntfCastError);
+    raise EIntfCastError.CreateRes(@RsEIntfCastError);
   if not Supports(ComboBox, IJvDynControlData, FIComboBoxData) then
-    raise EIntfCastError.Create(RsEIntfCastError);
+    raise EIntfCastError.CreateRes(@RsEIntfCastError);
 
   IComboBoxItems.ControlSetSorted(True);
   if Supports(ComboBox, IJvDynControlComboBox, ITmpComboBox) then
@@ -302,7 +299,7 @@ begin
   ComboBox.Align := alClient;
 
   if not Supports(OkButton, IJvDynControl, ITmpControl) then
-    raise EIntfCastError.Create(RsEIntfCastError);
+    raise EIntfCastError.CreateRes(@RsEIntfCastError);
   with ITmpControl do
     case AOperation of
       sloLoad:
@@ -318,10 +315,10 @@ function TJvAppStorageSelectList.GetSelectListPath(AOperation: TJvAppStorageSele
   ACaption: string = ''): string;
 begin
   if not Assigned(AppStorage) then
-    raise EJVCLException.Create(RsEDynAppStorageNotDefined);
+    raise EJVCLException.CreateRes(@RsEDynAppStorageNotDefined);
   try
-    LoadSelectList;
-    CreateDialog(AOperation, ACaption);
+    LoadSelectList; 
+    CreateDialog(AOperation, ACaption); 
     SelectDialog.ShowModal;
     if SelectDialog.ModalResult = mrOk then
     begin

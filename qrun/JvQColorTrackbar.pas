@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -34,15 +35,11 @@ unit JvQColorTrackbar;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  Types, QControls, QGraphics, QForms, QWindows,
-  
+  SysUtils, Classes,  
+  Types, QControls, QGraphics, QForms, QWindows, 
   JvQComponent;
 
-type
-  
+type 
   TJvColorTrackBarIndicator = (tbiArrow, tbiLine);
   TJvColorTrackBarIndicators = set of TJvColorTrackBarIndicator;
   TJvColorTrackBar = class(TJvGraphicControl)
@@ -102,8 +99,7 @@ type
     property Align;
     property Anchors;
     property Color;
-    property Constraints;
-    
+    property Constraints; 
     property DragMode;
     property Hint;
     property ParentColor;
@@ -121,12 +117,10 @@ type
     property OnEndDrag;
     property OnMouseDown;
     property OnMouseMove;
-    property OnMouseUp;
-    
+    property OnMouseUp; 
     property OnMouseWheel;
     property OnMouseWheelDown;
-    property OnMouseWheelUp;
-    
+    property OnMouseWheelUp; 
     property OnStartDrag;
   end;
 
@@ -173,16 +167,12 @@ begin
   FBmpImage.Width := Width - WidthOffset;
   FBmpImage.Height := Height - TopOffset;
   R := Rect(0, 0, FBmpImage.Width, FBmpImage.Height);
-
-  
-  FBmpImage.Canvas.Start;
-  
+ 
+  FBmpImage.Canvas.Start; 
   GradientFillRect(FBmpImage.Canvas, R, ColorFrom, ColorTo, fdLeftToRight, 255);
   if BorderStyle = bsSingle then
-    DrawEdge(FBmpImage.Canvas.Handle, R, EDGE_SUNKEN, BF_TOP or BF_RIGHT or BF_BOTTOM or BF_LEFT);
-  
-  FBmpImage.Canvas.Stop;
-  
+    DrawEdge(FBmpImage.Canvas.Handle, R, EDGE_SUNKEN, BF_TOP or BF_RIGHT or BF_BOTTOM or BF_LEFT); 
+  FBmpImage.Canvas.Stop; 
 end;
 
 procedure TJvColorTrackBar.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -219,17 +209,13 @@ begin
   if (Height - TopOffset <> FBmpImage.Height) or (Width <> FBmpImage.Width - WidthOffset) then
     UpdateGradient;
   Canvas.Pen.Color := Color;
-  Canvas.Brush.Color := Color;
-  
+  Canvas.Brush.Color := Color; 
 //  Canvas.Draw(WidthOffset div 2, TopOffset, FBmpImage);
-  FBmpImage.Canvas.Start;
-  
+  FBmpImage.Canvas.Start; 
 //  {$IFDEF VCL}
   BitBlt(Canvas.Handle, WidthOffset div 2, TopOffset, Width, Height, FBmpImage.Canvas.Handle, 0, 0, SrcCopy);
-//  {$ENDIF VCL}
-  
-  FBmpImage.Canvas.Stop;
-  
+//  {$ENDIF VCL} 
+  FBmpImage.Canvas.Stop; 
   R := Rect(0, 0, Width, TopOffset);
   Canvas.FillRect(R);
   X := PosToX(Position);

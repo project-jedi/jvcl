@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 
@@ -87,7 +88,8 @@ type
     property Interval: Cardinal read FInterval write SetInterval default 1000;
     property KeepAlive: Boolean read FKeepAlive write SetKeepAlive default False;
     property OnTimer: TNotifyEvent read FOnTimer write SetOnTimer;
-    property Priority: TThreadPriority read FPriority write SetPriority{$IFDEF MSWINDOWS} default tpNormal{$ENDIF};
+    property Priority: TThreadPriority read FPriority write SetPriority
+      {$IFDEF MSWINDOWS} default tpNormal {$ENDIF};
   end;
 
 implementation
@@ -130,10 +132,8 @@ begin
   FreeOnTerminate := True;
   { Manually reset = false; Initial State = false }
   FEvent := CreateEvent(nil, False, False, nil);
-  if FEvent = 0 then
-    
-    RaiseLastOSError;
-    
+  if FEvent = 0 then 
+    RaiseLastOSError; 
   FInterval := ATimer.FInterval;
   FTimer := ATimer;
   Priority := ATimer.Priority;
@@ -210,7 +210,7 @@ begin
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   FPriority := 0;
-  {$ENDIF}
+  {$ENDIF LINUX}
 end;
 
 destructor TJvThreadTimer.Destroy;
@@ -227,11 +227,9 @@ begin
   try
     if Assigned(FOnTimer) then
       FOnTimer(Self);
-  except
-    
+  except 
     if Assigned(ApplicationHandleException) then
-      ApplicationHandleException(Self);
-    
+      ApplicationHandleException(Self); 
   end;
 end;
 
@@ -269,7 +267,7 @@ end;
 
 procedure TJvThreadTimer.SetKeepAlive(const Value: Boolean);
 begin
-  if Value <> KeepAlive then
+  if FKeepAlive <> Value then
   begin
     StopTimer;
     FKeepAlive := Value;

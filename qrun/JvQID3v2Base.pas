@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -38,11 +39,8 @@ unit JvQID3v2Base;
 interface
 
 uses
-  Classes, SysUtils,
-  
-  
-  JclUnicode,
-  
+  Classes, SysUtils,  
+  JclUnicode, 
   JvQComponent, JvQID3v2Types, JvQID3v1;
 
 const
@@ -1199,8 +1197,7 @@ function NiceGenreToGenre(const ANiceGenre: string): string;
 implementation
 
 uses
-  QGraphics, Windows,
-  
+  QGraphics, Windows, 
   JclBase, JclFileUtils, JclLogic, JclDateTime,
   JvQConsts, JvQResources;
 
@@ -2635,7 +2632,7 @@ end;
 procedure ID3Error(const Msg: string; Component: TComponent = nil);
 begin
   if Assigned(Component) and (Component.Name <> '') then
-    raise EJvID3Error.CreateFmt(RsENameMsgFormat, [Component.Name, Msg])
+    raise EJvID3Error.CreateResFmt(@RsENameMsgFormat, [Component.Name, Msg])
   else
     raise EJvID3Error.Create(Msg);
 end;
@@ -3524,16 +3521,14 @@ begin
 
     SaveToFile(FFileName);
     SetModified(False);
-  except
-    
+  except 
     if csDesigning in ComponentState then
       if Assigned(Classes.ApplicationHandleException) then
         Classes.ApplicationHandleException(ExceptObject)
       else
         ShowException(ExceptObject, ExceptAddr)
     else
-      raise;
-    
+      raise; 
   end;
 end;
 
@@ -3996,16 +3991,14 @@ begin
   try
     if FStreamedActive then
       SetActive(True);
-  except
-    
+  except 
     if csDesigning in ComponentState then
       if Assigned(Classes.ApplicationHandleException) then
         Classes.ApplicationHandleException(ExceptObject)
       else
         ShowException(ExceptObject, ExceptAddr)
     else
-      raise;
-    
+      raise; 
   end;
 end;
 

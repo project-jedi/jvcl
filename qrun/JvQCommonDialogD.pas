@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -26,16 +27,17 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
-{$I windowsonly.inc}
 
 {$I jvcl.inc}
+{$I windowsonly.inc}
 
 unit JvQCommonDialogD;
 
 interface
 
 uses
-  Windows, SysUtils, Classes, QControls, QWindows,
+  Windows, SetupApi, SysUtils, Classes,  
+  Qt, QControls, 
   JvQTypes, JvQComponent;
 
 type
@@ -57,7 +59,6 @@ function JvDiskStylesToDWORD(const Style: TJvDiskStyles): DWORD;
 implementation
 
 uses
-  SetupApi,
   JvQResources;
 
 const
@@ -100,13 +101,13 @@ constructor TJvCommonDialogD.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FTitle := '';
-  if Owner is TWinControl then
-    FOwnerWindow := (AOwner as TWinControl).Handle
+  if Owner is TWinControl then  
+    FOwnerWindow := QWidget_winId((AOwner as TWinControl).Handle) 
   else
     FOwnerWindow := HWND_DESKTOP;
   LoadSetupApi;
   if not IsSetupApiLoaded then
-    raise EJVCLException.Create(RsEErrorSetupDll);
+    raise EJVCLException.CreateRes(@RsEErrorSetupDll);
 end;
 
 destructor TJvCommonDialogD.Destroy;

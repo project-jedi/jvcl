@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -47,11 +48,8 @@ unit JvQBehaviorLabel;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QTypes, QControls, QGraphics, QStdCtrls, QExtCtrls, QForms, Types,
-  
+  SysUtils, Classes,  
+  QTypes, QControls, QGraphics, QStdCtrls, QExtCtrls, QForms, Types, 
   JvQExStdCtrls, JvQFinalize;
 
 type
@@ -318,11 +316,8 @@ type
   protected
     procedure Resize; override;
     procedure DoStart; dynamic;
-    procedure DoStop; dynamic;
-    
-    
-    function GetLabelText: WideString; override;
-    
+    procedure DoStop; dynamic;  
+    function GetLabelText: WideString; override; 
     property Behavior: TJvLabelBehaviorName read FBehavior write SetBehavior stored BehaviorStored;
     property Caption;
     property BehaviorOptions: TJvLabelBehavior read GetOptions write SetOptions;
@@ -337,8 +332,7 @@ type
   end;
 
   TJvBehaviorLabel = class(TJvCustomBehaviorLabel)
-  published
-    
+  published 
     property Behavior;
     property BehaviorOptions;
     property OnMouseEnter;
@@ -354,8 +348,7 @@ type
     property Caption;
     property Color;
     property Constraints;
-    property OnEndDrag;
-    
+    property OnEndDrag; 
     property DragMode;
     property Enabled;
     property FocusControl;
@@ -455,7 +448,7 @@ end;
 constructor TJvLabelBehavior.Create(ALabel: TJvCustomBehaviorLabel);
 begin
   if ALabel = nil then
-    raise EJVCLException.CreateFmt(RsENeedBehaviorLabel, [ClassName]);
+    raise EJVCLException.CreateResFmt(@RsENeedBehaviorLabel, [ClassName]);
   inherited Create;
   FLabel := ALabel;
   FActive := False;
@@ -631,12 +624,9 @@ var
 begin
   if csDesigning in ComponentState then
   begin
-    F := GetParentForm(Self);
-    
-    
+    F := GetParentForm(Self);  
     if (F <> nil) and (F.DesignerHook <> nil) then
-      F.DesignerHook.Modified;
-    
+      F.DesignerHook.Modified; 
   end;
 end;
 
@@ -802,7 +792,7 @@ begin
     Exit;
   FParent := OwnerLabel.Parent;
   if FParent = nil then
-    raise EJVCLException.CreateFmt(RsENoOwnerLabelParent, [ClassName]);
+    raise EJVCLException.CreateResFmt(@RsENoOwnerLabelParent, [ClassName]);
   inherited Start;
   FOriginalRect := OwnerLabel.BoundsRect;
   Randomize;
@@ -1035,7 +1025,7 @@ begin
     Exit;
   FParent := OwnerLabel.Parent;
   if FParent = nil then
-    raise EJVCLException.CreateFmt(RsENoOwnerLabelParent, [ClassName]);
+    raise EJVCLException.CreateResFmt(@RsENoOwnerLabelParent, [ClassName]);
   inherited Start;
   if FTimer = nil then
   begin
@@ -1223,11 +1213,8 @@ begin
   end
   else
   if FScratchPad[FCurrentPos] <> DecodedText[FCurrentPos] then
-  begin
-    
-    
-    FScratchPad[FCurrentPos] := WideChar(32 + Random(Ord(DecodedText[FCurrentPos]) + 10));
-    
+  begin  
+    FScratchPad[FCurrentPos] := WideChar(32 + Random(Ord(DecodedText[FCurrentPos]) + 10)); 
     //    OwnerLabel.EffectText := Copy(OwnerLabel.Caption, 1, FCurrentPos - 1) +
     //      FScratchPad[FCurrentPos] + Copy(OwnerLabel.Caption, FCurrentPos + 1, MaxInt);
         // (p3) this is the same without the copying...

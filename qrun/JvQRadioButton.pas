@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -36,11 +37,8 @@ unit JvQRadioButton;
 
 interface
 
-uses
-  
-  
-  QGraphics, QControls, QForms, QStdCtrls, Types, QWindows,
-  
+uses  
+  QGraphics, QControls, QForms, QStdCtrls, Types, QWindows, 
   SysUtils, Classes,
   JvQTypes, JvQExStdCtrls, JvQLinkedControls;
 
@@ -68,8 +66,7 @@ type
     procedure SetReadOnly(const Value: Boolean);
     procedure SetLeftText(const Value: Boolean);
     function GetLinkedControls: TJvLinkedControls;
-    procedure SetLinkedControls(const Value: TJvLinkedControls);
-    
+    procedure SetLinkedControls(const Value: TJvLinkedControls); 
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation);override;
     procedure MouseEnter(AControl: TControl); override;
@@ -77,12 +74,9 @@ type
     procedure TextChanged; override;
     procedure FontChanged; override;
     procedure EnabledChanged;override;
-    procedure SetAutoSize(Value: Boolean); 
-    
-    
+    procedure SetAutoSize(Value: Boolean);   
     procedure RecreateWnd;
-    procedure StateChanged(State: TToggleState); override;
-    
+    procedure StateChanged(State: TToggleState); override; 
     procedure CalcAutoSize; virtual;
     procedure Loaded; override;
 
@@ -210,12 +204,9 @@ begin
   R := Rect(0, 0, ClientWidth, ClientHeight);
   // This is slower than GetTextExtentPoint but it does consider hotkeys
   if Caption <> '' then
-  begin
-    
-    
+  begin  
     DrawText(FCanvas, Caption, Length(Caption), R,
-      Flags[WordWrap] or DT_LEFT or DT_NOCLIP or DT_CALCRECT);
-    
+      Flags[WordWrap] or DT_LEFT or DT_NOCLIP or DT_CALCRECT); 
     AWidth := (R.Right - R.Left) + ASize.cx + 8;
     AHeight := R.Bottom - R.Top;
   end

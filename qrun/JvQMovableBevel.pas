@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -34,11 +35,8 @@ unit JvQMovableBevel;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QControls, QForms, QExtCtrls, Types,
-  
+  SysUtils, Classes,  
+  QControls, QForms, QExtCtrls, Types, 
   JvQExExtCtrls;
 
 type

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -36,18 +37,10 @@ unit JvQClock;
 interface
 
 uses
-  SysUtils,  Classes,
-  
-  
+  SysUtils,  Classes,  
   Types, QGraphics, QControls,
-  QForms, QExtCtrls, QMenus, QWindows,
-  
-  {$IFDEF COMPILER6}
-  RTLConsts,
-  {$ENDIF COMPILER6}
-  
-  SysConst,
-  
+  QForms, QExtCtrls, QMenus, QWindows,   
+  SysConst, 
   JvQTimer, JvQComponent, JvQThemes, JvQExControls;
 
 type
@@ -71,8 +64,7 @@ type
     FLeadingZero: Boolean;
     FShowSeconds: Boolean;
     FAlarm: TDateTime;
-    FAlarmEnabled: Boolean;
-    
+    FAlarmEnabled: Boolean; 
     FDotsColor: TColor;
     FAlarmWait: Boolean;
     FDisplayTime: TJvClockTime;
@@ -100,15 +92,13 @@ type
     procedure PaintTimeStr(var Rect: TRect; FullTime: Boolean);
     procedure ResizeFont(const Rect: TRect);
     procedure ResetAlarm;
-    procedure CheckAlarm;
-    
+    procedure CheckAlarm; 
   protected
     procedure TextChanged; override;
     procedure FontChanged; override;
     procedure SetAutoSize(Value: Boolean); 
     procedure Alarm; dynamic;
-    procedure AlignControls(AControl: TControl; var Rect: TRect); override;
-    
+    procedure AlignControls(AControl: TControl; var Rect: TRect); override; 
     procedure Loaded; override;
     procedure Paint; override;
     function GetSystemTime: TDateTime; virtual;
@@ -135,8 +125,7 @@ type
     property BorderWidth;
     property BorderStyle;
     property Anchors;
-    property Constraints;
-    
+    property Constraints; 
     property Color;
     property Cursor;
     property DragMode;
@@ -161,8 +150,7 @@ type
     property OnResize;
     property OnContextPopup;
     property OnStartDrag;
-    property OnConstrainedResize;
-    
+    property OnConstrainedResize; 
   end;
 
 implementation
@@ -243,7 +231,7 @@ var
 begin
   sTime := IntToStr(Hour) + TimeSeparator + IntToStr(Min) +
     TimeSeparator + IntToStr(Sec);
-  raise EConvertError.CreateFmt(SInvalidTime, [sTime]);
+  raise EConvertError.CreateResFmt(@SInvalidTime, [sTime]);
 end;
 
 function VertEquiv(L: Integer): Integer;
@@ -342,8 +330,7 @@ begin
     Registered := True;
   end;
   Caption := TimeToStr(Time);
-  ControlStyle := ControlStyle - [csSetCaption]  - [csReplicatable];
-  
+  ControlStyle := ControlStyle - [csSetCaption]  - [csReplicatable]; 
   BevelInner := bvLowered;
   BevelOuter := bvRaised;
   FTimer := TJvTimer.Create(Self);
@@ -360,8 +347,7 @@ begin
 end;
 
 destructor TJvClock.Destroy;
-begin
-  
+begin 
   inherited Destroy;
 end;
 
@@ -453,11 +439,8 @@ begin
     end;
     SetNewFontSize(Canvas, TimeStr, H, W);
     Font := Canvas.Font;
-  finally
-    
-    
-    Canvas.Handle := nil;
-    
+  finally  
+    Canvas.Handle := nil; 
     ReleaseDC(0, DC);
   end;
 end;
@@ -487,8 +470,7 @@ begin
 end;
 
 procedure TJvClock.SetAutoSize(Value: Boolean);
-begin
-  
+begin 
   FAutoSize := Value;
   if FAutoSize then
   begin
@@ -628,11 +610,8 @@ begin
       InflateRect(Rect, -InflateWidth, -InflateWidth);
       PaintTimeStr(Rect, False);
     end;
-  finally
-    
-    
-    Canvas.Handle := nil;
-    
+  finally  
+    Canvas.Handle := nil; 
     ReleaseDC(Handle, DC);
   end;
   CheckAlarm;
@@ -685,8 +664,7 @@ begin
       if (Pos mod 5) <> 0 then
       begin
         if MinDots then
-        begin
-          
+        begin 
           R.Right := R.Left + 1;
           R.Bottom := R.Top + 1;
           DrawThemedBackground(Self, Canvas, R);
@@ -696,10 +674,8 @@ begin
       begin
         R.Right := R.Left + DotWidth;
         R.Bottom := R.Top + DotHeight;
-        OffsetRect(R, -DotCenter.X, -DotCenter.Y);
-        
-        Canvas.Brush.Color := Canvas.Pen.Color;
-        
+        OffsetRect(R, -DotCenter.X, -DotCenter.Y); 
+        Canvas.Brush.Color := Canvas.Pen.Color; 
           DrawThemedBackground(Self, Canvas, R);
       end;
     end;
@@ -883,13 +859,10 @@ var
       ((NewTime.Minute <> FDisplayTime.Minute) and IsPartSym(2, Num)) or
       (NewTime.Hour <> FDisplayTime.Hour) then
     begin
-      DrawThemedBackground(Self, Canvas, Rect);
-      
-      
+      DrawThemedBackground(Self, Canvas, Rect);  
       SetBkMode(Canvas.Handle, QWindows.TRANSPARENT);
       DrawText(Canvas, Sym, 1, Rect, DT_EXPANDTABS or
-        DT_VCENTER or DT_CENTER or DT_NOCLIP or DT_SINGLELINE);
-      
+        DT_VCENTER or DT_CENTER or DT_NOCLIP or DT_SINGLELINE); 
     end;
   end;
 

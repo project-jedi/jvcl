@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -20,13 +21,12 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck att bigfoot dott com].
 
-Last Modified: 2000-02-28
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -35,11 +35,8 @@ unit JvQFormAnimatedIcon;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QControls, QForms, QExtCtrls, QImgList, QGraphics,
-  
+  SysUtils, Classes,  
+  QControls, QForms, QExtCtrls, QImgList, QGraphics, 
   JvQComponent;
 
 type
@@ -99,14 +96,11 @@ var
 begin
   if (FIcons <> nil) and (FIcons.Count <> 0) then
   begin
-    FNumber := (FNumber + 1) mod FIcons.Count;
-    
-    
+    FNumber := (FNumber + 1) mod FIcons.Count;  
     Bmp := TBitmap.Create;
     FIcons.GetBitmap(FNumber, Bmp);
     TForm(FForm).Icon.Assign(Bmp);
-    Bmp.Free;
-    
+    Bmp.Free; 
   end;
 end;
 

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -34,15 +35,12 @@ unit JvQSimpleXml;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  Variants,
-  
+  SysUtils, Classes, 
+  Variants, 
   IniFiles,
   JvQFinalize;
 
-type
-  
+type 
   TJvSimpleXML = class;
   TJvSimpleXMLInvalid = class(Exception);
   TJvSimpleXMLElem = class;
@@ -441,12 +439,9 @@ const
 
 var
   GlobalSorts: TList = nil;
-
-  
-  GlobalXmlVariant: TXmlVariant = nil;
-  
-
-  
+ 
+  GlobalXmlVariant: TXmlVariant = nil; 
+ 
 
 function GSorts: TList;
 begin

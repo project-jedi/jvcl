@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -35,11 +36,8 @@ unit JvQDataProviderIntf;
 interface
 
 uses
-  Classes,
-  
-  
-  Types, QGraphics, QImgList,
-  
+  Classes,  
+  Types, QGraphics, QImgList, 
   JclBase, JvQTypes;
 
 type
@@ -232,8 +230,7 @@ type
     procedure RevertToAncestor;
     function IsEqualToAncestor: Boolean;
   end;
-
-  
+ 
 
   IJvDataConsumer = interface
     ['{B2F18D03-F615-4AA2-A51A-74D330C05C0E}']

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -20,8 +21,6 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-10-25
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -29,6 +28,7 @@ description : interface to design-time routines
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -36,11 +36,8 @@ unit JvQDsgnIntf;
 
 interface
 
-uses
-  
-  
-  Types, QGraphics,
-  
+uses  
+  Types, QGraphics, 
   SysUtils, Classes;
 
 { DrawDesignFrame draws frame on the rect, Rect.

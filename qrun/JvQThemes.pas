@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -34,12 +35,9 @@ unit JvQThemes;
 interface
 uses
   SysUtils, Classes,
-
-  
-
-  
-  QControls, QForms, QGraphics, QButtons, Types, QWindows,
-  
+ 
+ 
+  QControls, QForms, QGraphics, QButtons, Types, QWindows, 
 
   JvQFinalize;
 
@@ -48,14 +46,11 @@ const
  // should not be themed.
   CM_DENYSUBCLASSING = CM_BASE + 2000; // from ThemeMgr.pas
 
-type
-  
-  
+type  
   TCMDenySubClassing = record
     Msg: Integer;
     Result: Integer;
-  end;
-  
+  end; 
 
   TWinControlThemeInfo = class(TWinControl)
   public
@@ -64,13 +59,8 @@ type
 
 
 
-type
-  
-   
-   
-  TThemeStyle = set of (csNeedsBorderPaint, csParentBackground);
-   
-  
+type   
+  TThemeStyle = set of (csNeedsBorderPaint, csParentBackground);  
 
 {
   Instead of the ControlStyle property you should use the following functions:
@@ -129,8 +119,7 @@ procedure DrawThemedBackground(Control: TControl; Canvas: TCanvas;
   const R: TRect; Color: TColor; NeedsParentBackground: Boolean = True);
 var
   cl: TColor;
-begin
-  
+begin 
   begin
     cl := Canvas.Brush.Color;
     if cl <> Color then
@@ -144,16 +133,14 @@ end;
 procedure DrawThemedBackground(Control: TControl; DC: HDC; const R: TRect;
   Brush: HBRUSH; NeedsParentBackground: Boolean = True);
 
-begin
-  
+begin 
     FillRect(DC, R, Brush);
 end;
 
 function DrawThemedFrameControl(Control: TControl; DC: HDC; const Rect: TRect; uType, uState: UINT): BOOL;
 
 begin
-  Result := False;
-  
+  Result := False; 
 
   if not Result then
     Result := DrawFrameControl(DC, Rect, uType, uState);
@@ -165,12 +152,8 @@ function DrawThemedButtonFace(Control: TControl; Canvas: TCanvas; const Client: 
   BevelWidth: Integer; Style: TButtonStyle; IsRounded, IsDown,
   IsFocused, IsHot: Boolean): TRect;
 
-begin
-  
-  
-  
-  Result := DrawButtonFace(Canvas, Client, BevelWidth, IsDown, IsFocused);
-  
+begin   
+  Result := DrawButtonFace(Canvas, Client, BevelWidth, IsDown, IsFocused); 
 end;
 
 function IsMouseOver(Control: TControl): Boolean;

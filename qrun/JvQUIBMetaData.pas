@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {******************************************************************************}
 {                        UNIFIED INTERBASE (UIB)                               }
@@ -27,7 +28,7 @@
 { Class needed to read MetaData. }
 
 {$I jvcl.inc}
-{$I jvuib.inc}
+{$I JvUIB.inc}
 
 unit JvQUIBMetaData;
 

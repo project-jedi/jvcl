@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -47,11 +48,8 @@ unit JvQSimLogic;
 
 interface
 
-uses
-  
-  
-  QGraphics, QControls, QForms, QDialogs, QExtCtrls, Types, QWindows,
-  
+uses  
+  QGraphics, QControls, QForms, QDialogs, QExtCtrls, Types, QWindows, 
   SysUtils, Classes,
   JvQTypes;
 
@@ -1732,11 +1730,8 @@ begin
       jlfNOT:
         S := 'NOT'; // do not localize
     end;
-    Brush.Style := bsClear;
-    
-    
-    DrawText(Canvas, S, -1, R, DT_SINGLELINE or DT_CENTER or DT_VCENTER);
-    
+    Brush.Style := bsClear;  
+    DrawText(Canvas, S, -1, R, DT_SINGLELINE or DT_CENTER or DT_VCENTER); 
   end;
 end;
 

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -34,11 +35,8 @@ unit JvQProgressBar;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  Types, QGraphics, QControls, QForms, QComCtrls, QWindows,
-  
+  SysUtils, Classes,  
+  Types, QGraphics, QControls, QForms, QComCtrls, QWindows, 
   JvQExComCtrls;
 
 type
@@ -93,15 +91,11 @@ type
   end;
 
   TJvProgressBar = class(TJvExProgressBar)
-  private
-  
+  private 
   public
     constructor Create(AOwner: TComponent); override;
-  published
-    
-    
-    property FillColor default clHighlight;
-    
+  published  
+    property FillColor default clHighlight; 
     property HintColor;
     property OnMouseEnter;
     property OnMouseLeave;

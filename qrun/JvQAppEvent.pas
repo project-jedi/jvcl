@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -19,13 +20,12 @@ Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
-Last Modified: 2003-10-24
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -36,11 +36,8 @@ unit JvQAppEvent;
 
 interface
 
-uses
-  
-  
-  Qt, QTypes, Types, QGraphics, QControls, QForms, QActnList,
-  
+uses  
+  Qt, QTypes, Types, QGraphics, QControls, QForms, QActnList, 
   SysUtils, Classes,
   JvQTypes, JvQComponent, JvQFinalize;
 
@@ -67,23 +64,18 @@ type
     FMouseDragThreshold: Integer;
     FOnActionExecute: TActionEvent;
     FOnActionUpdate: TActionEvent;
-    FOnShortCut: TShortCutEvent;
-    
+    FOnShortCut: TShortCutEvent; 
     FOnPaintIcon: TNotifyEvent;
     FOnActivate: TNotifyEvent;
     FOnDeactivate: TNotifyEvent;
     FOnException: TExceptionEvent;
     FOnIdle: TIdleEvent;
     FOnHelp: THelpEvent;
-    FOnHint: TNotifyEvent;
-    
-    
-    FOnEvent : TEventEvent;
-    
+    FOnHint: TNotifyEvent;  
+    FOnEvent : TEventEvent; 
     FOnMinimize: TNotifyEvent;
     FOnRestore: TNotifyEvent;
-    FOnShowHint: TShowHintEvent;
-    
+    FOnShowHint: TShowHintEvent; 
     FOnActiveControlChange: TNotifyEvent;
     FOnActiveFormChange: TNotifyEvent;
     procedure UpdateAppProps;
@@ -107,11 +99,9 @@ type
     function GetMouseDragImmediate: Boolean;
     function GetMouseDragThreshold: Integer;
     procedure SetMouseDragImmediate(Value: Boolean);
-    procedure SetMouseDragThreshold(Value: Integer);
-    
+    procedure SetMouseDragThreshold(Value: Integer); 
   protected
-    procedure Loaded; override;
-    
+    procedure Loaded; override; 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -130,8 +120,7 @@ type
     property ShowMainForm: Boolean read GetShowMainForm write SetShowMainForm
       default True;
     property HintShortCuts: Boolean read GetHintShortCuts write SetHintShortCuts
-      default True;
-    
+      default True; 
     property MouseDragImmediate: Boolean read GetMouseDragImmediate
       write SetMouseDragImmediate default True;
     property MouseDragThreshold: Integer read GetMouseDragThreshold
@@ -148,13 +137,10 @@ type
     property OnMinimize: TNotifyEvent read FOnMinimize write FOnMinimize;
     property OnPaintIcon: TNotifyEvent read FOnPaintIcon write FOnPaintIcon;
     property OnRestore: TNotifyEvent read FOnRestore write FOnRestore;
-    property OnShowHint: TShowHintEvent read FOnShowHint write FOnShowHint;
-    
+    property OnShowHint: TShowHintEvent read FOnShowHint write FOnShowHint; 
     property OnActiveControlChange: TNotifyEvent read FOnActiveControlChange write FOnActiveControlChange;
-    property OnActiveFormChange: TNotifyEvent read FOnActiveFormChange write FOnActiveFormChange;
-    
-    property OnEvent: TEventEvent read FOnEvent write FOnEvent;
-    
+    property OnActiveFormChange: TNotifyEvent read FOnActiveFormChange write FOnActiveFormChange; 
+    property OnEvent: TEventEvent read FOnEvent write FOnEvent; 
   end;
 
 implementation
@@ -172,11 +158,8 @@ type
     FOnException: TExceptionEvent;
     FOnIdle: TIdleEvent;
     FOnHelp: THelpEvent;
-    FOnHint: TNotifyEvent;
-    
-    
-    FOnEvent: TEventEvent;
-    
+    FOnHint: TNotifyEvent;  
+    FOnEvent: TEventEvent; 
     FOnMinimize: TNotifyEvent;
     FOnRestore: TNotifyEvent;
     FOnShowHint: TShowHintEvent;
@@ -195,15 +178,12 @@ type
     procedure DoIdle(Sender: TObject; var Done: Boolean);
     procedure DoHint(Sender: TObject);
     procedure DoMinimize(Sender: TObject);
-    procedure DoRestore(Sender: TObject);
-    
-    
+    procedure DoRestore(Sender: TObject);  
     function DoHelp(HelpType: THelpType; HelpContext: THelpContext;
       const HelpKeyword: String; const HelpFile: String;
       var Handled: Boolean): Boolean;
     procedure DoShortCut(Key: Integer; Shift: TShiftState; var Handled: Boolean);
-    procedure DoEvent(Sender: QObjectH; Event: QEventH; var Handled: Boolean);
-    
+    procedure DoEvent(Sender: QObjectH; Event: QEventH; var Handled: Boolean); 
     procedure DoShowHint(var HintStr: THintString; var CanShow: Boolean;
       var HintInfo: THintInfo);
     procedure DoActiveControlChange(Sender: TObject);
@@ -236,14 +216,11 @@ begin
   begin
     Application.OnActivate := nil;
     Application.OnDeactivate := nil;
-    Application.OnException := nil;
-    
-    Application.OnEvent := nil;
-    
+    Application.OnException := nil; 
+    Application.OnEvent := nil; 
     Application.OnIdle := nil;
     Application.OnHelp := nil;
-    Application.OnHint := nil;
-    
+    Application.OnHint := nil; 
     Application.OnMinimize := nil;
     Application.OnRestore := nil;
     Application.OnShowHint := nil;
@@ -270,11 +247,8 @@ begin
       FOnException := Application.OnException;
       FOnIdle := Application.OnIdle;
       FOnHelp := Application.OnHelp;
-      FOnHint := Application.OnHint;
-      
-      
-      FOnEvent := Application.OnEvent;
-      
+      FOnHint := Application.OnHint;  
+      FOnEvent := Application.OnEvent; 
       FOnMinimize := Application.OnMinimize;
       FOnRestore := Application.OnRestore;
       FOnShowHint := Application.OnShowHint;
@@ -289,11 +263,8 @@ begin
       Application.OnException := DoException;
       Application.OnIdle := DoIdle;
       Application.OnHelp := DoHelp;
-      Application.OnHint := DoHint;
-      
-      
-      Application.OnEvent := DoEvent;
-      
+      Application.OnHint := DoHint;  
+      Application.OnEvent := DoEvent; 
       Application.OnMinimize := DoMinimize;
       Application.OnRestore := DoRestore;
       Application.OnShowHint := DoShowHint;
@@ -599,14 +570,12 @@ begin
   FHintShortCuts := True;
   FMouseDragImmediate := True;
   FMouseDragThreshold := 5;
-  FUpdateFormatSettings := True;
-  
+  FUpdateFormatSettings := True; 
   AppList.AddEvents(Self);
 end;
 
 destructor TJvAppEvents.Destroy;
-begin
-  
+begin 
   if (Self <> nil) and (AppList <> nil) then
     AppList.RemoveEvents(Self);
   inherited Destroy;
@@ -675,15 +644,13 @@ begin
 end;
 
 function TJvAppEvents.GetUpdateFormatSettings: Boolean;
-begin
-  
+begin 
     Result := FUpdateFormatSettings;
 end;
 
 procedure TJvAppEvents.SetUpdateFormatSettings(Value: Boolean);
 begin
-  FUpdateFormatSettings := Value;
-  
+  FUpdateFormatSettings := Value; 
 end;
 
 function TJvAppEvents.GetHintShortPause: Integer;
@@ -793,8 +760,7 @@ begin
       HintHidePause := FHintHidePause;
       ShowMainForm := FShowMainForm;
       HintShortCuts := FHintShortCuts;
-      UpdateFormatSettings := FUpdateFormatSettings;
-      
+      UpdateFormatSettings := FUpdateFormatSettings; 
       with Mouse do
       begin
         DragImmediate := FMouseDragImmediate;

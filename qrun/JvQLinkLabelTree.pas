@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -43,11 +44,8 @@ unit JvQLinkLabelTree;
 interface
 
 uses
-  Classes, SysUtils,
-  
-  
-  QGraphics, Types,
-  
+  Classes, SysUtils,  
+  QGraphics, Types, 
   JvQLinkLabelTools, JvQTypes;
 
 type
@@ -279,12 +277,9 @@ type
   end;
 
 const
-  
-  
-  clNormalLink = clBlue;
-  clClickedLink = clMaroon;
-  clHotLink = clNavy;
-  
+  clNormalLink = TColor($400 or $80000000);
+  clClickedLink = TColor($401 or $80000000);
+  clHotLink = TColor($402 or $80000000);
 
 procedure ResetNodeCount;
 

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -77,10 +78,8 @@ type
   public
     property ProviderComp: TComponent read GetProviderComp write SetProviderComp;
     property ProviderIntf: IJvDataProvider read GetProviderIntf write SetProviderIntf;
-  published
-    
-    property Provider: IJvDataProvider read GetProviderIntf write SetProviderIntf;
-    
+  published 
+    property Provider: IJvDataProvider read GetProviderIntf write SetProviderIntf; 
   end;
 
   TJvContextProviderServerNotify = class(TJvDataConsumerServerNotify)
@@ -437,7 +436,7 @@ begin
     end;
   end
   else
-    raise EJVCLException.Create(RsENoContextAssigned);
+    raise EJVCLException.CreateRes(@RsENoContextAssigned);
 end;
 
 function TContextItem.Editable: Boolean;
@@ -492,7 +491,7 @@ begin
     if Supports(Item, IJvDataContextItem, CtxItem) then
       Result := Item
     else
-      raise EJVCLException.Create(RsENoContextItem);
+      raise EJVCLException.CreateRes(@RsENoContextItem);
   end;
 end;
 
@@ -578,10 +577,10 @@ begin
     if (Value = nil) or Supports(Value, IInterfaceComponentReference, ICR) then
       ProviderIntf := PI
     else
-      raise EJVCLException.Create(RsENotSupportedIInterfaceComponentReference);
+      raise EJVCLException.CreateRes(@RsENotSupportedIInterfaceComponentReference);
   end
   else
-    raise EJVCLException.Create(RsENotSupportedIJvDataProvider);
+    raise EJVCLException.CreateRes(@RsENotSupportedIJvDataProvider);
 end;
 
 class function TJvContextProvider.ItemsClass: TJvDataItemsClass;

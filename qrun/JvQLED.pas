@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -37,11 +38,8 @@ unit JvQLED;
 
 interface
 
-uses
-  
-  
-  QWindows, QControls, QGraphics, Types, QExtCtrls,
-  
+uses  
+  QWindows, QControls, QGraphics, Types, QExtCtrls, 
   Classes,
   JvQComponent;
 
@@ -55,11 +53,9 @@ type
     FColorOff: TColor;
     FActive: Boolean;
     FStatus: Boolean;
-    FOnChange: TNotifyEvent;
-    
+    FOnChange: TNotifyEvent; 
     FAutoSize: Boolean;
-    procedure SetAutoSize(Value: Boolean);
-    
+    procedure SetAutoSize(Value: Boolean); 
     procedure SetColorOn(Value: TColor);
     procedure SetColorOff(Value: TColor);
     procedure SetInterval(Value: Cardinal);
@@ -77,10 +73,8 @@ type
     property ColorOn: TColor read FColorOn write SetColorOn default clLime;
     property ColorOff: TColor read FColorOff write SetColorOff default clRed;
     property Interval: Cardinal read GetInterval write SetInterval default 1000;
-    property Status: Boolean read GetStatus write SetStatus default True;
-    
-    property AutoSize: Boolean read FAutoSize write SetAutoSize;
-    
+    property Status: Boolean read GetStatus write SetStatus default True; 
+    property AutoSize: Boolean read FAutoSize write SetAutoSize; 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -92,8 +86,7 @@ type
     property Active;
     property Align;
     property Anchors;
-    property AutoSize;
-    
+    property AutoSize; 
     property ColorOn;
     property ColorOff;
     property Constraints;
@@ -152,10 +145,8 @@ begin
   ColorOn := clLime;
   ColorOff := clRed;
   Active := False;
-  Status := True;
-  
-  FAutoSize := True;
-  
+  Status := True; 
+  FAutoSize := True; 
 end;
 
 destructor TJvCustomLED.Destroy;
@@ -177,11 +168,8 @@ begin
     Canvas.Brush.Style := bsClear;
     Canvas.Rectangle(ClientRect);
   end;
-  SrcRect := Rect(0, 0, FImgPict.Width, FImgPict.Height);
-  
-  
-  DestRect := Bounds(Left, Top, Width, Height);
-  
+  SrcRect := Rect(0, 0, FImgPict.Width, FImgPict.Height);  
+  DestRect := Bounds(Left, Top, Width, Height); 
   OffsetRect(DestRect, (ClientWidth - FImgPict.Width) div 2, (ClientHeight - FImgPict.Height) div 2);
   Canvas.CopyMode := cmSrcAnd;
   Canvas.CopyRect(DestRect, FImgMask.Canvas, SrcRect);
@@ -248,10 +236,8 @@ begin
 end;
 
 procedure TJvCustomLED.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
-begin
-  
-  if AutoSize and (Align in [alNone, alCustom]) then
-  
+begin 
+  if AutoSize and (Align in [alNone, alCustom]) then 
     inherited SetBounds(ALeft, ATop, FImgPict.Width, FImgPict.Height)
   else
     inherited SetBounds(ALeft, ATop, AWidth, AHeight);

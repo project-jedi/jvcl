@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -35,17 +36,12 @@ unit JvQCalc;
 
 interface
 
-uses
-  
-  Variants,
-  
-  Classes,
-  
-  SysUtils, // SysUtils after Windows because both define Beep
-  
+uses 
+  Variants, 
+  Classes, 
+  SysUtils, // SysUtils after Windows because both define Beep 
   QGraphics, QControls, QForms, QDialogs, QStdCtrls, QMenus, QExtCtrls,
-  QButtons, QClipbrd, Types, QImgList, QWindows,
-  
+  QButtons, QClipbrd, Types, QImgList, QWindows, 
   JvQToolEdit, JvQSpeedButton, JvQBaseDlg, JvQExExtCtrls;
 
 const
@@ -59,8 +55,7 @@ type
   private
     FValue: Double;
     FMemory: Double;
-    FTitle: string;
-    
+    FTitle: string; 
     FPrecision: Byte;
     FBeepOnError: Boolean;
     FHelpContext: THelpContext;
@@ -83,8 +78,7 @@ type
     property CalcDisplay: Double read GetDisplay;
     property Memory: Double read FMemory;
   published
-    property BeepOnError: Boolean read FBeepOnError write FBeepOnError default True;
-    
+    property BeepOnError: Boolean read FBeepOnError write FBeepOnError default True; 
     property HelpContext: THelpContext read FHelpContext write FHelpContext default 0;
     property Precision: Byte read FPrecision write FPrecision default DefCalcPrecision;
     property Title: string read GetTitle write SetTitle stored TitleStored;
@@ -104,8 +98,7 @@ type
     procedure FormKeyPress(Sender: TObject; var Key: Char);
     procedure PopupMenuPopup(Sender: TObject);
     procedure CopyItemClick(Sender: TObject);
-    procedure PasteItemClick(Sender: TObject);
-    
+    procedure PasteItemClick(Sender: TObject); 
   protected
     procedure OkClick(Sender: TObject);
     procedure CancelClick(Sender: TObject);
@@ -116,8 +109,7 @@ type
   end;
 
 function CreateCalculatorForm(AOwner: TComponent; AHelpContext: THelpContext): TJvCalculatorForm;
-function CreatePopupCalculator(AOwner: TComponent
-  ): TWinControl;
+function CreatePopupCalculator(AOwner: TComponent ): TWinControl;
 procedure SetupPopupCalculator(PopupCalc: TWinControl; APrecision: Byte;
   ABeepOnError: Boolean);
 
@@ -131,7 +123,7 @@ uses
 {$R ..\Resources\JvCalc.res}
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
-{$R ../Resources/JvCalc.Res}
+{$R ../Resources/JvCalc.res}
 {$ENDIF LINUX}
 
 type
@@ -145,16 +137,13 @@ type
 
 procedure SetDefaultFont(AFont: TFont; Layout: TCalcPanelLayout);
 
-begin
-  
-  
+begin  
   with AFont do
   begin
     Color := clWindowText;
     Name := 'Helvetica';
     Height := 11;
-  end;
-  
+  end; 
   AFont.Style := [fsBold];
   {
   if Layout = clDialog then
@@ -173,8 +162,7 @@ begin
   try
     HelpContext := AHelpContext;
     if HelpContext <> 0 then
-      BorderIcons := BorderIcons + [biHelp];
-    
+      BorderIcons := BorderIcons + [biHelp]; 
   except
     Free;
     raise;
@@ -188,11 +176,8 @@ type
   private
     FKind: TCalcBtnKind;
     FFontChanging: Boolean;
-  protected
-    
-    
-    procedure ParentFontChanged; override;
-    
+  protected  
+    procedure ParentFontChanged; override; 
   public
     constructor CreateKind(AOwner: TComponent; AKind: TCalcBtnKind);
     property Kind: TCalcBtnKind read FKind;
@@ -311,8 +296,7 @@ begin
     begin
       Width := 21;
       Height := 21;
-    end;
-    
+    end; 
     OnClick := AOnClick;
     ParentFont := True;
     Parent := AParent;
@@ -352,8 +336,7 @@ type
     procedure SetDisplay(R: Double);
     function GetDisplay: Double;
     procedure UpdateMemoryLabel;
-    function FindButton(Key: Char): TJvSpeedButton;
-    
+    function FindButton(Key: Char): TJvSpeedButton; 
     procedure BtnClick(Sender: TObject);
   protected
     procedure TextChange; virtual;
@@ -378,10 +361,8 @@ constructor TJvCalculatorPanel.CreateLayout(AOwner: TComponent;
 const
   BtnGlyphs: array [cbSgn..cbCancel] of Integer = (2 {Sgn}, -1, -1, 3 {Mul},
     4 {Sub}, 5 {Add}, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1 {Ok}, 0 {Cancel});
-var
-  
-  GlyphList: TImageList;
-  
+var 
+  GlyphList: TImageList; 
   Bmp: TBitmap;
   I: TCalcBtnKind;
 begin
@@ -397,19 +378,14 @@ begin
   end
   else
   begin
-    Height := 124;
-    
-    
-    Width := 135;
-    
+    Height := 124;  
+    Width := 135; 
   end;
   SetDefaultFont(Font, ALayout);
   ParentFont := False;
   BevelOuter := bvNone;
   BevelInner := bvNone;
-  ParentColor := True;
-  
-  
+  ParentColor := True;  
   with Constraints do
   begin
     MaxHeight := Height ;
@@ -418,17 +394,14 @@ begin
     MinWidth := Width ;
   end;
   GlyphList := nil;
-  Bmp := TBitmap.Create;
-  
+  Bmp := TBitmap.Create; 
   try
     if Bmp <> nil then
 //      Bmp.Handle := LoadBitmap(HInstance, 'JVCALCBTNS');
-      Bmp.LoadFromResourceName(HInstance, 'JVCALCBTNS');
-    
+      Bmp.LoadFromResourceName(HInstance, 'JVCALCBTNS'); 
     GlyphList := TImageList.CreateSize(Bmp.Width, Bmp.Height);
     GlyphList.Width := Bmp.Width div 6 ;  // 6 glyphs in bmp
-    GlyphList.Add(Bmp, nil);
-    
+    GlyphList.Add(Bmp, nil); 
     for I := cbNum0 to cbCancel do
     begin
       if BtnPos[ALayout, I].X > 0 then
@@ -441,11 +414,8 @@ begin
             if (Kind in [cbSgn..cbCancel]) then
               if BtnGlyphs[Kind] >= 0 then
               begin
-                Caption := '';
-                
-                
-                GlyphList.GetBitmap(BtnGlyphs[Kind], Glyph);
-                
+                Caption := '';  
+                GlyphList.GetBitmap(BtnGlyphs[Kind], Glyph); 
               end;
           end
           else
@@ -490,10 +460,8 @@ begin
       end;
     end;
   finally
-    Bmp.Free;
-    
-    GlyphList.Free;
-    
+    Bmp.Free; 
+    GlyphList.Free; 
   end;
   FText := '0';
   FMemory := 0.0;
@@ -687,11 +655,8 @@ var
   Btn: TJvSpeedButton;
 begin
   Btn := FindButton(Key);
-  if Btn <> nil then
-    
-    
-    Btn.Click
-    
+  if Btn <> nil then  
+    Btn.Click 
   else
     CalcKey(Key);
 end;
@@ -804,11 +769,8 @@ begin
 end;
 
 procedure TJvCalculatorPanel.Paste;
-begin
-  
-  
-  if Clipboard.AsText <> '' then
-  
+begin  
+  if Clipboard.AsText <> '' then 
   try
     SetDisplay(StrToFloat(Trim(ReplaceStr(Clipboard.AsText,
       CurrencyString, ''))));
@@ -822,8 +784,7 @@ end;
 type
   TJvLocCalculator = class(TJvCalculatorPanel)
   protected
-    procedure EnabledChanged; override;
-    
+    procedure EnabledChanged; override; 
   public
     constructor Create(AOwner: TComponent); override;
   end;
@@ -863,11 +824,9 @@ type
     function GetPopupText: string; override;
   end;
 
-function CreatePopupCalculator(AOwner: TComponent
-  ): TWinControl;
+function CreatePopupCalculator(AOwner: TComponent ): TWinControl;
 begin
-  Result := TJvPopupCalculator.Create(AOwner);
-  
+  Result := TJvPopupCalculator.Create(AOwner); 
 end;
 
 procedure SetupPopupCalculator(PopupCalc: TWinControl; APrecision: Byte;
@@ -897,12 +856,9 @@ begin
   with FCalcPanel do
   begin
     Parent := Self;
-    Align := alClient;
-    
-    
+    Align := alClient;  
     BevelOuter := bvLowered;
-    BevelInner := bvRaised;
-    
+    BevelInner := bvRaised; 
     FPrecision := DefCalcPrecision;
     { (rb) Fix to update the text of a TJvCalcEdit }
     if AOwner is TControl then
@@ -983,8 +939,7 @@ end;
 constructor TJvCalculator.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FTitle := RsCalculatorCaption;
-  
+  FTitle := RsCalculatorCaption; 
   FPrecision := DefCalcPrecision;
   FBeepOnError := True;
 end;
@@ -1044,8 +999,7 @@ begin
   else
     FCalc := CreateCalculatorForm(Self, HelpContext);
   with FCalc do
-  try
-    
+  try 
     Caption := Self.Title;
     TJvCalculatorPanel(FCalcPanel).FMemory := Self.FMemory;
     TJvCalculatorPanel(FCalcPanel).UpdateMemoryLabel;
@@ -1082,12 +1036,9 @@ var
   Items: array [0..1] of TMenuItem;
 begin
   inherited CreateNew(AOwner, 0); // for BCB
-  BorderIcons := [biSystemMenu];
-  
-  
+  BorderIcons := [biSystemMenu];  
   BorderStyle := fbsDialog;
-  Scaled := false;
-  
+  Scaled := false; 
   Caption := RsCalculatorCaption;
   ClientHeight := 159;
   ClientWidth := 242;
@@ -1117,8 +1068,7 @@ begin
     SetBounds(6, 6, 230, 23);
     Parent := FMainPanel;
     BevelOuter := bvLowered;
-    Color := clWindow;
-    
+    Color := clWindow; 
   end;
   Control := TPanel.Create(Self);
   with TPanel(Control) do
@@ -1127,8 +1077,7 @@ begin
     Align := alClient;
     Parent := FDisplayPanel;
     BevelOuter := bvNone;
-    BorderStyle := bsSingle;
-    
+    BorderStyle := bsSingle; 
     ParentColor := True;
   end;
   FDisplayLabel := TLabel.Create(Self);
@@ -1194,11 +1143,8 @@ begin
 end;
 
 procedure TJvCalculatorForm.PopupMenuPopup(Sender: TObject);
-begin
-  
-  
-  FPasteItem.Enabled := Clipboard.AsText <> '';
-  
+begin  
+  FPasteItem.Enabled := Clipboard.AsText <> ''; 
 end;
 
 end.

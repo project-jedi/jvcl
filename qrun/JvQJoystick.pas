@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -35,11 +36,8 @@ unit JvQJoystick;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, MMSystem,
-  
-  
-  QForms,
-  
+  Windows, Messages, SysUtils, Classes, MMSystem,  
+  QForms, 
   JvQTypes, JvQComponent;
 
 // (rom) in the time of USB this unit may have to support more than 2 joysticks
@@ -371,7 +369,7 @@ constructor TJoystick.CreateJoy(AOwner: TComponent; Joy: Integer);
 begin
   FJoyNumber := Joy;
   if joyGetDevCaps(Joy, @FJoy, SizeOf(FJoy)) = MMSYSERR_NODRIVER then
-    raise EJVCLException.Create(RsEJoystickError);
+    raise EJVCLException.CreateRes(@RsEJoystickError);
   FCapabilities := [];
   if (JOYCAPS_HASZ and FJoy.wCaps) = JOYCAPS_HASZ then
     FCapabilities := FCapabilities + [joHasZCoordinate];

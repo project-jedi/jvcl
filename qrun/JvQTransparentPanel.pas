@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -33,11 +34,8 @@ unit JvQTransparentPanel;
 
 interface
 
-uses
-  
-  
-  QGraphics, QControls, QExtCtrls, Types, Qt, QWindows,
-  
+uses  
+  QGraphics, QControls, QExtCtrls, Types, Qt, QWindows, 
   SysUtils, Classes,
   JvQPanel;
 
@@ -70,8 +68,7 @@ begin
 end;
 
 procedure TJvTransparentPanel.CaptureBackground;
-var
-  
+var 
   SourceRect: TRect;
 begin
   // (rom) check here to secure against misuse
@@ -84,12 +81,9 @@ begin
     Height := ClientHeight;
   end;
   SourceRect.TopLeft := ClientToScreen(ClientRect.TopLeft);
-  SourceRect.BottomRight := ClientToScreen(ClientRect.BottomRight);
-  
-  
+  SourceRect.BottomRight := ClientToScreen(ClientRect.BottomRight);  
   QPixmap_grabWidget(FBackground.Handle, HWND_DESKTOP, SourceRect.Left, SourceRect.Top,
-     (SourceRect.Right - SourceRect.Left), (SourceRect.Bottom - SourceRect.Top));
-  
+     (SourceRect.Right - SourceRect.Left), (SourceRect.Bottom - SourceRect.Top)); 
 end;
 
 procedure TJvTransparentPanel.Paint;

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -34,12 +35,9 @@ unit JvQPainterQBForm;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
+  SysUtils, Classes,  
   QTypes, QGraphics, QControls, Types,
-  QForms, QDialogs, QStdCtrls, QExtCtrls, QMenus, QComCtrls, QWindows,
-  
+  QForms, QDialogs, QStdCtrls, QExtCtrls, QMenus, QComCtrls, QWindows, 
   JvQDrawImage, JvQComponent;
 
 type
@@ -63,8 +61,7 @@ type
     Shape2: TShape;
     Shape3: TShape;
     procedure QBListClick(Sender: TObject);
-    procedure FormShow(Sender: TObject);
-    
+    procedure FormShow(Sender: TObject); 
     procedure qbpresetsClick(Sender: TObject);
     procedure SetLabels;
     procedure AddBackdrop1Click(Sender: TObject);
@@ -78,11 +75,9 @@ type
     procedure redradioClick(Sender: TObject);
     procedure greenradioClick(Sender: TObject);
     procedure blueradioClick(Sender: TObject);
-    procedure QuickBack;
-    
+    procedure QuickBack; 
     procedure qbpresetsDrawItem(Sender: TObject; Index: Integer;
-      Rect: TRect; State: TOwnerDrawState; var Handled: Boolean);
-    
+      Rect: TRect; State: TOwnerDrawState; var Handled: Boolean); 
   private
     FPainterForm: TJvDrawImage;
   public
@@ -431,10 +426,8 @@ begin
   S := qbpresets.Items[Index];
   P := Pos('=', S);
   S := Copy(S, 1, P - 1);
-  qbpresets.Canvas.TextRect(Rect, Rect.Left, Rect.Top, S);
-  
-  Handled := True;
-  
+  qbpresets.Canvas.TextRect(Rect, Rect.Left, Rect.Top, S); 
+  Handled := True; 
 end;
 
 procedure TPainterQBForm.qbpresetsClick(Sender: TObject);

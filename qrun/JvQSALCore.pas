@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -34,14 +35,9 @@ unit JvQSALCore;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QGraphics, QControls, QForms, QDialogs,
-  
-  {$IFDEF DELPHI6_UP}
-  Variants,
-  {$ENDIF DELPHI6_UP}
+  SysUtils, Classes,  
+  QGraphics, QControls, QForms, QDialogs,  
+  Variants, 
   JvQSAL, JvQTypes;
 
 type
@@ -109,12 +105,7 @@ type
 implementation
 
 uses
-  Math,
-  {$IFDEF BCB}
-  {$IFNDEF BCB5}
-  Variants,
-  {$ENDIF BCB5}
-  {$ENDIF BCB}
+  Math, 
   JvQConsts, JvQResources;
 
 procedure TJvSALCore.AddProcedures(ASal: TJvSAL);
@@ -231,14 +222,14 @@ end;
 procedure TJvSALCore.xDec;
 begin
   if VarIsEmpty(FSal.Variable.Value) then
-    raise EJVCLException.CreateFmt(RsEVariablesIsNotInitialized, [FSal.VariableName]);
+    raise EJVCLException.CreateResFmt(@RsEVariablesIsNotInitialized, [FSal.VariableName]);
   FSal.Variable.Value := FSal.Variable.Value - 1;
 end;
 
 procedure TJvSALCore.xDecZero; // dec?  decrements a Variable and test for zero
 begin
   if VarIsEmpty(FSal.Variable.Value) then
-    raise EJVCLException.CreateFmt(RsEVariablesIsNotInitialized, [FSal.VariableName]);
+    raise EJVCLException.CreateResFmt(@RsEVariablesIsNotInitialized, [FSal.VariableName]);
   FSal.Variable.Value := FSal.Variable.Value - 1;
   FSal.BoolPush(FSal.Variable.Value = 0);
 end;
@@ -249,7 +240,7 @@ var
 begin
   V2 := FSal.Pop;
   if V2 = 0.0 then
-    raise EJVCLException.Create(RsEDivisionByZeroError);
+    raise EJVCLException.CreateRes(@RsEDivisionByZeroError);
   V1 := FSal.Pop;
   FSal.Push(V1 / V2);
 end;
@@ -288,7 +279,7 @@ begin
     end;
     FSal.PC := FSal.PC + 1;
   end;
-  raise EJVCLException.Create(RsEMissingendselect);
+  raise EJVCLException.CreateRes(@RsEMissingendselect);
 end;
 
 procedure TJvSALCore.xEndIf;
@@ -346,7 +337,7 @@ end;
 procedure TJvSALCore.xInc;
 begin
   if VarIsEmpty(FSal.Variable.Value) then
-    raise EJVCLException.CreateFmt(RsEVariablesIsNotInitialized, [FSal.VariableName]);
+    raise EJVCLException.CreateResFmt(@RsEVariablesIsNotInitialized, [FSal.VariableName]);
   FSal.Variable.Value := FSal.Variable.Value + 1;
 end;
 
@@ -447,24 +438,24 @@ var
   V1: Variant;
 begin
   if VarIsEmpty(FSal.Variable.Value) then
-    raise EJVCLException.CreateFmt(RsEVariablesIsNotInitialized, [FSal.VariableName]);
+    raise EJVCLException.CreateResFmt(@RsEVariablesIsNotInitialized, [FSal.VariableName]);
   V1 := FSal.Pop;
   if V1 = 0 then
-    raise EJVCLException.Create(RsEDivisionByZeroError);
+    raise EJVCLException.CreateRes(@RsEDivisionByZeroError);
   FSal.Variable.Value := FSal.Variable.Value / V1;
 end;
 
 procedure TJvSALCore.xvMul; // *=
 begin
   if VarIsEmpty(FSal.Variable.Value) then
-    raise EJVCLException.CreateFmt(RsEVariablesIsNotInitialized, [FSal.VariableName]);
+    raise EJVCLException.CreateResFmt(@RsEVariablesIsNotInitialized, [FSal.VariableName]);
   FSal.Variable.Value := FSal.Variable.Value * FSal.Pop;
 end;
 
 procedure TJvSALCore.xvSub; // -=
 begin
   if VarIsEmpty(FSal.Variable.Value) then
-    raise EJVCLException.CreateFmt(RsEVariablesIsNotInitialized, [FSal.VariableName]);
+    raise EJVCLException.CreateResFmt(@RsEVariablesIsNotInitialized, [FSal.VariableName]);
   FSal.Variable.Value := FSal.Variable.Value - FSal.Pop;
 end;
 

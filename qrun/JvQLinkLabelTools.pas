@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -42,11 +43,8 @@ unit JvQLinkLabelTools;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  Types, QWindows,
-  
+  SysUtils, Classes,  
+  Types, QWindows, 
   JvQTypes;
 
 type
@@ -112,7 +110,7 @@ uses
 
 constructor TStaticObject.Create;
 begin
-  raise EGenericToolsError.Create(RsECannotBeInstantiated);
+  raise EGenericToolsError.CreateRes(@RsECannotBeInstantiated);
 end;
 
 //=== TStringTools ===========================================================

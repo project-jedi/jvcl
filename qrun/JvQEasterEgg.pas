@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -34,11 +35,8 @@ unit JvQEasterEgg;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  Qt, QControls, QForms, Types, QWindows,
-  
+  SysUtils, Classes,  
+  Qt, QControls, QForms, Types, QWindows, 
   JvQComponent;
 
 type
@@ -49,11 +47,8 @@ type
     FControlKeys: TShiftState;
     FEgg: string;
     FForm: TCustomForm;
-    FCurString: string;
-    
-    
-    function NewEventFilter(Sender: QObjectH; Event: QEventH): Boolean;
-    
+    FCurString: string;  
+    function NewEventFilter(Sender: QObjectH; Event: QEventH): Boolean; 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -83,20 +78,14 @@ begin
   FActive := True;
   FControlKeys := [ssAlt];
   FForm := GetParentForm(TControl(AOwner));
-  if (FForm <> nil) and not (csDesigning in ComponentState) then
-    
-    
-    InstallApplicationHook(NewEventFilter);
-    
+  if (FForm <> nil) and not (csDesigning in ComponentState) then  
+    InstallApplicationHook(NewEventFilter); 
 end;
 
 destructor TJvEasterEgg.Destroy;
 begin
-  if (FForm <> nil) and not (csDesigning in ComponentState) then
-    
-    
-    UninstallApplicationHook(NewEventFilter);
-    
+  if (FForm <> nil) and not (csDesigning in ComponentState) then  
+    UninstallApplicationHook(NewEventFilter); 
   inherited Destroy;
 end;
 

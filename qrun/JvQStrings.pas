@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -44,12 +45,8 @@ interface
 uses
   {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
-  Libc,
-  {$ENDIF}
-  QGraphics,
-  
+  {$ENDIF MSWINDOWS}  
+  QGraphics, 
   SysUtils, Classes;
 
 {regular expressions}

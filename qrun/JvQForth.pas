@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -41,14 +42,9 @@ uses
   SysUtils, Classes,
   {$IFDEF MSWINDOWS}
   Windows, ShellAPI,
-  {$ENDIF MSWINDOWS}
-  
-  
-  Types, QWindows, QForms, QDialogs, QFileCtrls,
-  
-  {$IFDEF DELPHI6_UP}
-  Variants,
-  {$ENDIF DELPHI6_UP}
+  {$ENDIF MSWINDOWS}  
+  Types, QWindows, QForms, QDialogs, QFileCtrls,  
+  Variants, 
   JvQXMLTree, JvQComponent, JvQStrings, JvQTypes;
 
 const
@@ -347,12 +343,7 @@ procedure Launch(const AFile: string);
 implementation
 
 uses
-  Math,
-  {$IFDEF BCB}
-  {$IFNDEF BCB5}
-  Variants,
-  {$ENDIF BCB5}
-  {$ENDIF BCB}
+  Math, 
   JvQConsts, JvQResources;
 
 { some utility functions }
@@ -363,12 +354,9 @@ var
 begin
   Command := AFile;
   Params := #0;
-  WorkDir := #0;
-  
-  
+  WorkDir := #0;  
   ShellExecute(0, 'open', PChar(Command),
-    PChar(Params), PChar(WorkDir), SW_SHOWNORMAL);
-  
+    PChar(Params), PChar(WorkDir), SW_SHOWNORMAL); 
 end;
 
 procedure GlobalSetValue(var aText: string; AName, AValue: string);

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -34,11 +35,8 @@ unit JvQWaitingGradient;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  Types, QGraphics, QControls, QWindows,
-  
+  SysUtils, Classes,  
+  Types, QGraphics, QControls, QWindows, 
   JvQImageDrawThread, JvQComponent;
 
 type
@@ -78,8 +76,7 @@ type
     property Anchors;
     property Constraints;
     property Color;
-    property Cursor;
-    
+    property Cursor; 
     property DragMode;
     property GradientWidth: Integer read FGradientWidth write SetGradientWidth;
     property Enabled;
@@ -256,14 +253,10 @@ begin
   Canvas.FillRect(Rect(0, 0, FLeftOffset, Height));
   if not Assigned(FBitmap) then
     Exit;
-  Canvas.FillRect(Rect(FLeftOffset + FBitmap.Width, 0, Width, Height));
-  
-  OffsetRect(FDestRect, Left, Top);
-  
-  Canvas.CopyRect(FDestRect, FBitmap.Canvas, FSourceRect);
-  
-  OffsetRect(FDestRect, -Left, -Top);
-  
+  Canvas.FillRect(Rect(FLeftOffset + FBitmap.Width, 0, Width, Height)); 
+  OffsetRect(FDestRect, Left, Top); 
+  Canvas.CopyRect(FDestRect, FBitmap.Canvas, FSourceRect); 
+  OffsetRect(FDestRect, -Left, -Top); 
 end;
 
 procedure TJvWaitingGradient.Resize;

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -19,13 +20,12 @@ Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 2001,2002 SGB Software          
 All Rights Reserved.
 
-Last Modified: 2002-07-04
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -34,18 +34,15 @@ unit JvQDualListForm;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QTypes, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QWindows,
-  
+  SysUtils, Classes,  
+  Types, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QWindows, 
   JvQComponent, JvQExStdCtrls;
 
-type
-  
-  TJvListBox = TListBox;
-  
+type 
+  TJvListBox = TListBox; 
   TJvDualListForm = class(TJvForm)
+    SrcList: TJvListBox;
+    DstList: TJvListBox;
     SrcLabel: TLabel;
     DstLabel: TLabel;
     IncBtn: TButton;
@@ -56,8 +53,6 @@ type
     CancelBtn: TButton;
     HelpBtn: TButton;
     Bevel1: TBevel;
-    SrcList: TListBox;
-    DstList: TListBox;
     procedure IncBtnClick(Sender: TObject);
     procedure IncAllBtnClick(Sender: TObject);
     procedure ExclBtnClick(Sender: TObject);
@@ -77,8 +72,7 @@ type
     procedure ListClick(Sender: TObject);
   private
     function GetShowHelp: Boolean;
-    procedure SetShowHelp(Value: Boolean);
-  
+    procedure SetShowHelp(Value: Boolean); 
   public
     procedure SetButtons;
     property ShowHelp: Boolean read GetShowHelp write SetShowHelp default True;
@@ -86,11 +80,8 @@ end;
 
 implementation
 
-uses
-  
-  
-  QConsts,
-  
+uses  
+  QConsts, 
   JvQJVCLUtils, JvQBoxProcs;
 
 
@@ -168,15 +159,13 @@ end;
 procedure TJvDualListForm.SrcListDragOver(Sender, Source: TObject;
   X, Y: Integer; State: TDragState; var Accept: Boolean);
 begin
-  BoxDragOver(SrcList, Source, X, Y, State, Accept, SrcList.Sorted);
-  
+  BoxDragOver(SrcList, Source, X, Y, State, Accept, SrcList.Sorted); 
 end;
 
 procedure TJvDualListForm.DstListDragOver(Sender, Source: TObject;
   X, Y: Integer; State: TDragState; var Accept: Boolean);
 begin
-  BoxDragOver(DstList, Source, X, Y, State, Accept, DstList.Sorted);
-  
+  BoxDragOver(DstList, Source, X, Y, State, Accept, DstList.Sorted); 
 end;
 
 procedure TJvDualListForm.SrcListDragDrop(Sender, Source: TObject;
@@ -238,19 +227,15 @@ begin
 end;
 
 procedure TJvDualListForm.HelpBtnClick(Sender: TObject);
-begin
-  
-  
-  Application.ContextHelp(HelpContext);
-  
+begin  
+  Application.ContextHelp(HelpContext); 
 end;
 
 procedure TJvDualListForm.FormCreate(Sender: TObject);
 begin
   OkBtn.Caption := SOKButton;
   CancelBtn.Caption := SCancelButton;
-  HelpBtn.Caption := SHelpButton;
-  
+  HelpBtn.Caption := SHelpButton; 
 end;
 
 procedure TJvDualListForm.ListClick(Sender: TObject);

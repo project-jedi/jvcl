@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -32,11 +33,8 @@ unit JvQPageManager;
 
 interface
 
-uses
-  
-  
-  QControls, QForms, QStdCtrls, QExtCtrls, QActnList, QNotebook,
-  
+uses  
+  QControls, QForms, QStdCtrls, QExtCtrls, QActnList, QNotebook, 
   SysUtils, Classes;
 
 type
@@ -289,10 +287,8 @@ begin
   FChangeHelpContext := True;
   FUseHistory := False;
   if not Registered then
-  begin
-    
-    GroupDescendentsWith(TJvPageProxy, TControl);
-    
+  begin 
+    GroupDescendentsWith(TJvPageProxy, TControl); 
     RegisterClasses([TJvPageProxy]);
     Registered := True;
   end;

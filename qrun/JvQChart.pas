@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 JvChart - TJvChart Component
@@ -61,12 +62,9 @@ uses
   SysUtils, Classes,
   {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF MSWINDOWS}
-  
-  
+  {$ENDIF MSWINDOWS}  
   QGraphics, QControls, QForms, QDialogs, QExtCtrls, QPrinters, QClipbrd,
-  Types, QWindows,
-  
+  Types, QWindows, 
   JvQComponent, JvQJCLUtils, JvQResources;
 
 const
@@ -429,8 +427,7 @@ type
     FCursorPosition: Integer; // NEW: -1 means no visible cursor, 0..n means make
                               // particular value highlighted.  The highlight is painted
                               // over top of the TImage, so that we can just restore the TImage
-                              // without replotting the whole chart.
-    
+                              // without replotting the whole chart. 
     procedure PaintCursor; // called from Paint iif a Cursor is visible. does NOT modify FPicture!
   protected
     { Right Side Legend showing Pen Names, and/or Data Descriptors }
@@ -540,8 +537,7 @@ type
     property Align;
     property Anchors;
     property Constraints;
-    property OnDblClick; { TNotifyEvent from TControl }
-    
+    property OnDblClick; { TNotifyEvent from TControl } 
     property DragMode;
     property Enabled;
     property ParentShowHint;
@@ -560,8 +556,7 @@ type
 implementation
 
 uses
-  Math, // VCL math: function isNan, constant NaN.
-  
+  Math, // VCL math: function isNan, constant NaN. 
   JvQJVCLUtils, JvQConsts;
 
 const
@@ -1238,8 +1233,7 @@ end;
 destructor TJvChart.Destroy;
 begin
    {Add code for destroying my own data...here}
-  FBitmap.Free;
-  
+  FBitmap.Free; 
   FreeAndNil(FYFont);
 
   FreeAndNil(FPicture);
@@ -1363,7 +1357,7 @@ begin
   // April 2004 - Flicker Reduction!
 //  Inc(JvChart_PaintCounter);
 //  OutputDebugString(PChar('JvChart_PaintCounter='+IntToStr(JvChart_PaintCounter)));
-  SetBkMode(Canvas.Handle, OPAQUE);
+
   if csDesigning in ComponentState then // or (Options.ChartKind = ckChartNone) then // Blank.
     DesignModePaint
   else
@@ -2916,11 +2910,8 @@ var
 begin
   if Length(StrText) = 0 then
     Exit;
-  ChartCanvas.Brush.Color := Color;
-  
-  
-  MyAxisFont;
-  
+  ChartCanvas.Brush.Color := Color;  
+  MyAxisFont; 
   if Options.XStartOffset > 10 then
   begin
     {ht := MyTextHeight(StrText); }// not used (ahuser)
@@ -2929,12 +2920,9 @@ begin
     vert := (Options.YStartOffset * 2) + ((Height div 2) - (wd div 2));
     if vert < 0 then
       vert := 0;
-    horiz := 2;
-    
-    
+    horiz := 2;  
     wd := ChartCanvas.TextHeight(StrText);
-    TextOutAngle(ChartCanvas, 90, horiz + wd, vert, StrText);
-    
+    TextOutAngle(ChartCanvas, 90, horiz + wd, vert, StrText); 
   end;
   MyAxisFont;
   //   Self.MyLeftTextOut(horiz, vert+50, '*');

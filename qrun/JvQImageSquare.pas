@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -34,11 +35,8 @@ unit JvQImageSquare;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QGraphics, QControls, QImgList, QForms, QWindows, Types,
-  
+  SysUtils, Classes,  
+  QGraphics, QControls, QImgList, QForms, QWindows, Types, 
   JvQComponent;
 
 type
@@ -85,8 +83,7 @@ type
     property Action;
     property Text;
     property Visible;
-    property Enabled;
-    
+    property Enabled; 
     property DragMode;
     property PopupMenu;
     property ParentShowHint;
@@ -106,11 +103,8 @@ type
 
 implementation
 
-uses
-  
-  
-  QExtCtrls,
-  
+uses  
+  QExtCtrls, 
   JvQThemes, JvQResources;
 
 //=== TJvImageSquare =========================================================
@@ -160,8 +154,7 @@ begin
     Frame3D(Canvas, R, clBtnHighLight, clBtnHighLight, 1);
     Frame3D(Canvas, R, cl3DDkShadow, cl3DDkShadow, 1);
   end
-  else
-  
+  else 
   if FBorderStyle = bsSingle then
   begin
     Frame3D(Canvas, R, clBtnFace, clBtnFace, 1);
@@ -197,11 +190,8 @@ begin
   begin
     { draw in middle }
     dX := (Width - FImageList.Width) div 2;
-    dY := (Height - FImageList.Height) div 2;
-    
-    
-    FImageList.Draw(Canvas, dX, dY, FIndex);
-    
+    dY := (Height - FImageList.Height) div 2;  
+    FImageList.Draw(Canvas, dX, dY, FIndex); 
   end;
 end;
 

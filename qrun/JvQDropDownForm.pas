@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -20,8 +21,6 @@ All Rights Reserved.
 
 Contributor(s): ______________________________________.
 
-Last Modified: 2002-12-09
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -33,6 +32,7 @@ Description:
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -41,11 +41,8 @@ unit JvQDropDownForm;
 interface
 
 uses
-  Classes,
-  
-  
-  Qt, QControls, QStdCtrls, QForms, Types, QWindows,
-  
+  Classes,  
+  Qt, QControls, QStdCtrls, QForms, Types, QWindows, 
   JvQTypes, JvQExForms;
 
 type
@@ -63,11 +60,8 @@ type
     procedure DoSetFocusEvent(const APreviousControl: TWinControl); dynamic;
     procedure DoKillFocusEvent(const ANextControl: TWinControl); dynamic;
     procedure DoClose(var Action: TCloseAction); override;
-    procedure DoShow; override;
-    
-    
-    function WidgetFlags: Integer; override;
-    
+    procedure DoShow; override;  
+    function WidgetFlags: Integer; override; 
     property Edit: TCustomEdit read GetEdit;
   public
     constructor Create(AOwner: TComponent); override;
@@ -87,11 +81,8 @@ uses
   SysUtils,
   JvQConsts, JvQResources;
 
-const
-  
-  
-  NilHandle = nil;
-  
+const  
+  NilHandle = nil; 
 
 function IsChildWindow(const AChild, AParent: HWND): Boolean;
 var
@@ -116,15 +107,12 @@ type
 constructor TJvCustomDropDownForm.Create(AOwner: TComponent);
 begin
   if not (AOwner is TCustomEdit) then
-    raise EJVCLException.Create(RsETJvCustomDropDownFormCreateOwnerMus);
+    raise EJVCLException.CreateRes(@RsETJvCustomDropDownFormCreateOwnerMus);
 
   inherited CreateNew(AOwner);
 
-  BorderIcons := [];
-  
-  
-  BorderStyle := fbsNone;
-  
+  BorderIcons := [];  
+  BorderStyle := fbsNone; 
   Font := TCustomEditHack(AOwner).Font;
 
   FEntering := True;
@@ -158,8 +146,7 @@ procedure TJvCustomDropDownForm.DoShow;
 var
   LScreenRect: TRect;
 begin
-  inherited DoShow;
-  
+  inherited DoShow; 
     LScreenRect := Rect(0, 0, Screen.Width, Screen.Height);
   if (Left + Width > LScreenRect.Right) then
     Left := LScreenRect.Right - Width;

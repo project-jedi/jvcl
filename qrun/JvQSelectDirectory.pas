@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -35,11 +36,8 @@ unit JvQSelectDirectory;
 interface
 
 uses
-  Classes,
-  
-  
-  QDialogs,
-  
+  Classes,  
+  QDialogs, 
   JvQBaseDlg;
 
 type
@@ -48,8 +46,7 @@ type
   private
     FDirectory: string;
     FHelpContext: Longint;
-    FInitialDir: string;
-    
+    FInitialDir: string; 
     FTitle: string;
   public
     constructor Create(AOwner: TComponent); override;
@@ -57,8 +54,7 @@ type
   published
     property Directory: string read FDirectory;
     property HelpContext: Longint read FHelpContext write FHelpContext default 0;
-    property InitialDir: string read FInitialDir write FInitialDir;
-    
+    property InitialDir: string read FInitialDir write FInitialDir; 
     property Title: string read FTitle write FTitle;
   end;
 
@@ -69,8 +65,7 @@ begin
   inherited Create(AOwner);
   FDirectory := '';
   FInitialDir := '';
-  FHelpContext := 0;
-  
+  FHelpContext := 0; 
   FTitle := '';
 end;
 
@@ -80,13 +75,10 @@ var
   dir: WideString;
 
 begin
-  FDirectory := InitialDir;
-  
-  
+  FDirectory := InitialDir;  
   dir := FDirectory;
   Result := SelectDirectory(Title, InitialDir, dir);
-  FDirectory := dir;
-  
+  FDirectory := dir; 
 end;
 
 end.

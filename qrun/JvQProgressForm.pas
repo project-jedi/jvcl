@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -37,13 +38,10 @@ unit JvQProgressForm;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QWindows, QForms, QGraphics, QExtCtrls, QStdCtrls,
-  QControls, QComCtrls, QTypes,
-  
-  JvQComponent, QActnList;
+  SysUtils, Classes,  
+  QWindows, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QActnList,
+  QComCtrls, QTypes, 
+  JvQComponent;
 
 type
   TJvPrivateProgressUpdate = procedure(Sender: TObject;
@@ -57,6 +55,8 @@ type
     Label1: TLabel;
     btnCancel: TButton;
     tmProgress: TTimer;
+    ActionList1: TActionList;
+    Action1: TAction;
     procedure tmProgressTimer(Sender: TObject);
     procedure btnCancelClick(Sender: TObject);
     procedure FormPaint(Sender: TObject);
@@ -82,11 +82,8 @@ type
 
 implementation
 
-uses
-  
-  
-  QConsts;
-  
+uses  
+  QConsts; 
 
 
 

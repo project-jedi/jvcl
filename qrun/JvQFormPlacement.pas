@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -33,15 +34,10 @@ unit JvQFormPlacement;
 
 interface
 
-uses
-  
-  RTLConsts, Variants,
-  
-  SysUtils, Classes,
-  
-  
-  QControls, QForms, Types, QWindows,
-  
+uses 
+  RTLConsts, Variants, 
+  SysUtils, Classes,  
+  QControls, QForms, Types, QWindows, 
   JvQAppStorage, JvQComponent, JvQJVCLUtils, JvQTypes;
 
 type
@@ -82,20 +78,16 @@ type
     FDestroying: Boolean;
     FPreventResize: Boolean;
     FWinMinMaxInfo: TJvWinMinMaxInfo;
-    FDefMaximize: Boolean;
-    
+    FDefMaximize: Boolean; 
     FSaveFormShow: TNotifyEvent;
     FSaveFormDestroy: TNotifyEvent;
-    FSaveFormCloseQuery: TCloseQueryEvent;
-    
-    FSaveFormConstrainedResize: TConstrainedResizeEvent;
-    
+    FSaveFormCloseQuery: TCloseQueryEvent; 
+    FSaveFormConstrainedResize: TConstrainedResizeEvent; 
     FOnSavePlacement: TNotifyEvent;
     FOnRestorePlacement: TNotifyEvent;
     procedure SetAppStoragePath(Value: string);
     procedure SetEvents;
-    procedure RestoreEvents;
-    
+    procedure RestoreEvents; 
     function CheckMinMaxInfo: Boolean;
     procedure MinMaxInfoModified;
     procedure SetWinMinMaxInfo(Value: TJvWinMinMaxInfo);
@@ -107,11 +99,9 @@ type
     procedure RemoveLink(ALink: TJvIniLink);
     procedure FormShow(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
-    procedure FormDestroy(Sender: TObject);
-    
+    procedure FormDestroy(Sender: TObject); 
     procedure FormConstrainedResize(Sender: TObject; var MinWidth, MinHeight,
-      MaxWidth, MaxHeight: Integer);
-    
+      MaxWidth, MaxHeight: Integer); 
     function GetForm: TForm;
   protected
     procedure Loaded; override;
@@ -248,11 +238,8 @@ type
 
 implementation
 
-uses
-  
-  
-  QConsts,
-  
+uses  
+  QConsts, 
   JvQJCLUtils, JvQPropertyStorage;
 
 const
@@ -269,8 +256,7 @@ begin
   if AOwner is TForm then
     FOptions := [fpState, fpSize, fpLocation]
   else
-    FOptions := [];
-  
+    FOptions := []; 
   FWinMinMaxInfo := TJvWinMinMaxInfo.Create;
   FWinMinMaxInfo.FOwner := Self;
   FLinks := TList.Create;
@@ -282,8 +268,7 @@ begin
     RemoveLink(FLinks.Last);
   FLinks.Free;
   if not (csDesigning in ComponentState) then
-  begin
-    
+  begin 
     RestoreEvents;
   end;
   FWinMinMaxInfo.Free;
@@ -299,8 +284,7 @@ begin
   if not (csDesigning in ComponentState) then
   begin
     if Loading then
-      SetEvents;
-    
+      SetEvents; 
   end;
 end;
 
@@ -357,11 +341,9 @@ begin
       FSaveFormCloseQuery := OnCloseQuery;
       OnCloseQuery := FormCloseQuery;
       FSaveFormDestroy := OnDestroy;
-      OnDestroy := FormDestroy;
-      
+      OnDestroy := FormDestroy; 
       FSaveFormConstrainedResize := OnConstrainedResize;
-      OnConstrainedResize := FormConstrainedResize;
-      
+      OnConstrainedResize := FormConstrainedResize; 
       FDefMaximize := (biMaximize in BorderIcons);
     end;
     if FPreventResize then
@@ -376,10 +358,8 @@ begin
     begin
       OnShow := FSaveFormShow;
       OnCloseQuery := FSaveFormCloseQuery;
-      OnDestroy := FSaveFormDestroy;
-      
-      OnConstrainedResize := FSaveFormConstrainedResize;
-      
+      OnDestroy := FSaveFormDestroy; 
+      OnConstrainedResize := FSaveFormConstrainedResize; 
     end;
 end;
 
@@ -392,8 +372,7 @@ end;
 
 procedure TJvFormPlacement.MinMaxInfoModified;
 begin
-  UpdatePlacement;
-  
+  UpdatePlacement; 
 end;
 
 procedure TJvFormPlacement.SetWinMinMaxInfo(Value: TJvWinMinMaxInfo);
@@ -478,11 +457,8 @@ end;
 
 
 procedure TJvFormPlacement.UpdatePlacement;
-const
-  
-  
-  Metrics: array[fbsSingle..fbsSizeToolWin] of TSysMetrics =
-  
+const  
+  Metrics: array[fbsSingle..fbsSizeToolWin] of TSysMetrics = 
     (SM_CXBORDER, SM_CXFRAME, SM_CXDLGFRAME, SM_CXBORDER, SM_CXFRAME);
 var
   Placement: TWindowPlacement;
@@ -494,11 +470,8 @@ begin
       Placement.Length := SizeOf(TWindowPlacement);
       GetWindowPlacement(Form.Handle, @Placement);
       if not IsWindowVisible(Form.Handle) then
-        Placement.ShowCmd := SW_HIDE;
-      
-      
-      if Form.BorderStyle <> fbsNone then
-      
+        Placement.ShowCmd := SW_HIDE;  
+      if Form.BorderStyle <> fbsNone then 
       begin
         Placement.ptMaxPosition.X := -GetSystemMetrics(Metrics[Form.BorderStyle]);
         Placement.ptMaxPosition.Y := -GetSystemMetrics(Succ(Metrics[Form.BorderStyle]));
@@ -520,18 +493,14 @@ begin
     IsActive := Active;
     Active := False;
     try
-      if (not FPreventResize) and FDefMaximize and
-        
-        
-        (Form.BorderStyle <> fbsDialog) then
-        
+      if (not FPreventResize) and FDefMaximize and  
+        (Form.BorderStyle <> fbsDialog) then 
         Form.BorderIcons := Form.BorderIcons + [biMaximize]
       else
         Form.BorderIcons := Form.BorderIcons - [biMaximize];
     finally
       Active := IsActive;
-    end;
-    
+    end; 
   end;
 end;
 
@@ -918,7 +887,7 @@ end;
 
 procedure TJvStoredValue.Assign(Source: TPersistent);
 begin
-  if (Source is TJvStoredValue) and (Source <> nil) then
+  if Source is TJvStoredValue then
   begin
     if VarIsEmpty(TJvStoredValue(Source).FValue) then
       Clear
@@ -926,9 +895,9 @@ begin
       Value := TJvStoredValue(Source).FValue;
     Name := TJvStoredValue(Source).Name;
     KeyString := TJvStoredValue(Source).KeyString;
-    Exit;
-  end;
-  inherited Assign(Source);
+  end
+  else
+    inherited Assign(Source);
 end;
 
 function TJvStoredValue.GetDisplayName: string;

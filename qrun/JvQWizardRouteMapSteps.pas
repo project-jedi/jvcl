@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -38,11 +39,8 @@ unit JvQWizardRouteMapSteps;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QGraphics, QControls, QForms, Types, QWindows,
-  
+  SysUtils, Classes,  
+  QGraphics, QControls, QForms, Types, QWindows, 
   JvQWizard;
 
 type
@@ -89,12 +87,17 @@ type
 
 implementation
 
-
+{$IFDEF USEJVCL}
 uses
   JvQResources;
+{$ENDIF USEJVCL}
 
-
-
+{$IFNDEF USEJVCL}
+resourcestring
+  RsActiveStepFormat = 'Step %d of %d';
+  RsBackTo = 'Back to';
+  RsNextStep = 'Next Step';
+{$ENDIF USEJVCL}
 
 constructor TJvWizardRouteMapSteps.Create(AOwner: TComponent);
 begin
@@ -295,11 +298,9 @@ begin
     S := APage.Caption;
     DrawText(Canvas.Handle, PChar(S), Length(S), TextRect,
       DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
-  end;
-  
+  end; 
   except
-  end;
-  
+  end; 
 end;
 
 procedure TJvWizardRouteMapSteps.SetShowDivider(const Value: Boolean);

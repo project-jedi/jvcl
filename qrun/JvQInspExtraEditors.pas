@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -37,14 +38,8 @@ interface
 { Additional editors for JvInspector. }
 
 uses
-  {$IFDEF MSWINDOWS}
-  Windows,
-  {$ENDIF MSWINDOWS}
-  SysUtils, Classes,
-  
-  
-  QWindows, Types, QGraphics, QControls, QStdCtrls, QImgList,
-  
+  SysUtils, Classes,  
+  QWindows, Types, QGraphics, QControls, QStdCtrls, QImgList, 
   JvQInspector;
 
 type
@@ -126,12 +121,9 @@ type
     function BorderColor(const ABackgroundColor, AInternalColor: TColor): TColor;
     function NameForColor(const Color: TColor): string;
     procedure PaintValue(const Color: TColor; const ColorName: string; const ACanvas: TCanvas;
-      const ARect: TRect);
-    
-    
+      const ARect: TRect);  
     procedure DoDrawListItem(Control: TObject; Index: Integer; Rect: TRect;
-      State: TOwnerDrawState; var Handled: Boolean); override;
-    
+      State: TOwnerDrawState; var Handled: Boolean); override; 
 
     procedure DoMeasureListItem(Control: TWinControl; Index: Integer; var Height: Integer); override;
     procedure DoMeasureListItemWidth(Control: TWinControl; Index: Integer; var Width: Integer); override;
@@ -156,12 +148,9 @@ type
     FImageList: TCustomImageList;
   protected
     procedure PaintValue(const ImgNum: Integer; const ImgName: string; const ACanvas: TCanvas;
-      const ARect: TRect);
-    
-    
+      const ARect: TRect);  
     procedure DoDrawListItem(Control: TObject; Index: Integer; Rect: TRect;
-      State: TOwnerDrawState; var Handled: Boolean); override;
-    
+      State: TOwnerDrawState; var Handled: Boolean); override; 
 
     procedure DoMeasureListItem(Control: TWinControl; Index: Integer; var Height: Integer); override;
     procedure DoMeasureListItemWidth(Control: TWinControl; Index: Integer; var Width: Integer); override;
@@ -482,7 +471,7 @@ end;
 
 
 procedure TJvInspectorColorItem.DoDrawListItem(Control: TObject; Index: Integer; Rect: TRect;
-      State: TOwnerDrawState; var Handled: Boolean);
+      State: TOwnerDrawState; var Handled: Boolean); override;
 
 begin
   with TListBox(Control) do
@@ -493,10 +482,8 @@ begin
     Rect.Top := Rect.Top + 1;
     Rect.Bottom := Rect.Bottom - 1;
     PaintValue(TColor(Items.Objects[Index]), Items[Index], Canvas, Rect);
-  end;
-  
-  Handled := True;
-  
+  end; 
+  Handled := True; 
 end;
 
 procedure TJvInspectorColorItem.DoMeasureListItem(Control: TWinControl; Index: Integer;
@@ -867,7 +854,7 @@ end;
 
 
 procedure TJvInspectorTImageIndexItem.DoDrawListItem(Control: TObject; Index: Integer; Rect: TRect;
-      State: TOwnerDrawState; var Handled: Boolean);
+      State: TOwnerDrawState; var Handled: Boolean); override;
 
 begin
   with TListBox(Control) do
@@ -878,10 +865,8 @@ begin
     Rect.Top := Rect.Top + 1;
     Rect.Bottom := Rect.Bottom - 1;
     PaintValue(Integer(Items.Objects[Index]), Items[Index], Canvas, Rect);
-  end;
-  
-  Handled := True;
-  
+  end; 
+  Handled := True; 
 end;
 
 procedure TJvInspectorTImageIndexItem.DoMeasureListItem(Control: TWinControl; Index: Integer;

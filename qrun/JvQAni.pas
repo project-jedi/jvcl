@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -41,14 +42,9 @@ unit JvQAni;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  RTLConsts,
-  
-  
-  
-  QGraphics, QControls, QExtCtrls, QDialogs, Types, QTypes, QWindows,
-  
+  SysUtils, Classes, 
+  RTLConsts,   
+  QGraphics, QControls, QExtCtrls, QDialogs, Types, QTypes, QWindows, 
   JvQTypes;
 
 type
@@ -114,12 +110,9 @@ type
     procedure LoadFromStream(Stream: TStream); override;
     procedure SaveToStream(Stream: TStream); override;
     procedure LoadFromFile(const FileName: string); override;
-    procedure SaveToFile(const FileName: string); override;
-    
-    
-    procedure LoadFromMimeSource(MimeSource: TMimeSource);override;
-    procedure SaveToMimeSource(MimeSource: TClxMimeSource);override;
-    
+    procedure SaveToFile(const FileName: string); override;  
+    procedure LoadFromMimeSource(MimeSource: TMimeSource); override;
+    procedure SaveToMimeSource(MimeSource: TClxMimeSource); override; 
     procedure AssignToBitmap(Bitmap: TBitmap; BackColor: TColor;
       DecreaseColors, Vertical: Boolean);
     procedure AssignIconsToBitmap(Bitmap: TBitmap; BackColor: TColor;
@@ -141,11 +134,8 @@ function LoadJvAniDialog: TJvAni;
 
 implementation
 
-uses
-  
-  
-  QConsts,
-  
+uses  
+  QConsts, 
   Math,
   JvQJVCLUtils, JvQJCLUtils, JvQIconList, JvQConsts, JvQResources;
 
@@ -440,12 +430,12 @@ end;
 
 procedure TJvAni.SetHeight(Value: Integer);
 begin
-  raise EInvalidGraphicOperation.Create(SChangeIconSize);
+  raise EInvalidGraphicOperation.CreateRes(@SChangeIconSize);
 end;
 
 procedure TJvAni.SetWidth(Value: Integer);
 begin
-  raise EInvalidGraphicOperation.Create(SChangeIconSize);
+  raise EInvalidGraphicOperation.CreateRes(@SChangeIconSize);
 end;
 
 function TJvAni.GetWidth: Integer;
@@ -533,7 +523,7 @@ end;
 
 procedure TJvAni.RiffReadError;
 begin
-  raise EReadError.Create(SReadError);
+  raise EReadError.CreateRes(@SReadError);
 end;
 
 function TJvAni.GetIcons(Index: Integer): TIcon;
@@ -918,7 +908,7 @@ end;
 procedure TJvAni.SaveToStream(Stream: TStream);
 begin
   if IconCount = 0 then
-    raise EInvalidGraphicOperation.Create(SInvalidImage);
+    raise EInvalidGraphicOperation.CreateRes(@SInvalidImage);
   WriteAniStream(Stream);
 end;
 
@@ -954,11 +944,8 @@ end;
 procedure TJvAni.Draw(ACanvas: TCanvas; const ARect: TRect);
 begin
   if Assigned(FIcons) and (FIcons.Count > 0) then
-    if (Frames[Index] <> nil) and not Frames[Index].Icon.Empty then
-      
-      
-      ACanvas.Draw(ARect.Left, ARect.Top, Frames[Index].Icon);
-      
+    if (Frames[Index] <> nil) and not Frames[Index].Icon.Empty then  
+      ACanvas.Draw(ARect.Left, ARect.Top, Frames[Index].Icon); 
 end;
 
 procedure TJvAni.AssignToBitmap(Bitmap: TBitmap; BackColor: TColor;
@@ -1054,19 +1041,20 @@ begin
 end;
 
 
+
 procedure TJvAni.LoadFromMimeSource(MimeSource: TMimeSource);
 begin
-  raise EInvalidGraphicOperation.Create(RsENotSupported);
+  raise EInvalidGraphicOperation.CreateRes(@RsENotSupported);
 end;
 
 procedure TJvAni.SaveToMimeSource(MimeSource: TClxMimeSource);
 begin
-  raise EInvalidGraphicOperation.Create(RsENotSupported);
+  raise EInvalidGraphicOperation.CreateRes(@RsENotSupported);
 end;
 
 
-initialization
-  
+
+initialization 
   TPicture.RegisterFileFormat(RsAniExtension, RsAniFilterName, TJvAni);
 
 finalization

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -35,11 +36,8 @@ unit JvQRas32;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  Qt, QControls, QForms,
-  
+  SysUtils, Classes,  
+  Qt, QControls, QForms, 
   Windows, Messages, Ras32, // Messages must be after QControls
   JvQComponent, JvQTypes;
 
@@ -177,11 +175,8 @@ begin
   RASEvent := RegisterWindowMessage(RASDialEvent);
   if RASEvent = 0 then
     RASEvent := WM_RASDialEvent;
-  if AOwner is TWinControl then
-    
-    
-    FPHandle := QWidget_winid((AOwner as TWinControl).Handle)
-    
+  if AOwner is TWinControl then  
+    FPHandle := QWidget_winid((AOwner as TWinControl).Handle) 
   else
     // (rom) is this safe?
     FPHandle := GetForegroundWindow;

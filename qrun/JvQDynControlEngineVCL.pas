@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -37,12 +38,9 @@ unit JvQDynControlEngineVCL;
 interface
 
 uses
-  Classes,
-  
-  
+  Classes,  
   QControls, QStdCtrls, QExtCtrls, QComCtrls, QMask, QForms, QGraphics,
-  QButtons, QDialogs, QFileCtrls, QExtDlgs, Types,
-  
+  QButtons, QDialogs, QFileCtrls, QExtDlgs, Types, 
   JvQDynControlEngine, JvQDynControlEngineIntf;
 
 type
@@ -150,8 +148,7 @@ type
   private
     FEditControl: TMaskEdit;
     FButton: TBitBtn;
-    FInitialDir: string;
-    
+    FInitialDir: string; 
     FDialogTitle: string;
   public
     constructor Create(AOwner: TComponent); override;
@@ -174,11 +171,9 @@ type
 
     // IJvDynControlDirectory
     procedure ControlSetInitialDir(Value: string);
-    procedure ControlSetDialogTitle(Value: string);
-    
+    procedure ControlSetDialogTitle(Value: string); 
   end;
-
-  
+ 
 
   TJvDynControlVCLCheckBox = class (TCheckBox, IUnknown, IJvDynControl,
     IJvDynControlData)
@@ -313,8 +308,7 @@ type
 
     procedure ControlSetAutoSize(Value: Boolean);
     procedure ControlSetIncrementalDisplay(Value: Boolean);
-    procedure ControlSetCenter(Value: Boolean);
-    
+    procedure ControlSetCenter(Value: Boolean); 
     procedure ControlSetStretch(Value: Boolean);
     procedure ControlSetTransparent(Value: Boolean);
     procedure ControlSetPicture(Value: TPicture);
@@ -346,8 +340,7 @@ type
     procedure ControlSetFocusControl(Value: TWinControl);
     procedure ControlSetWordWrap(Value: Boolean);
   end;
-
-  
+ 
 
   TJvDynControlVCLButton = class (TBitBtn, IUnknown, IJvDynControl,
     IJvDynControlButton)
@@ -369,10 +362,8 @@ function DynControlEngineVCL: TJvDynControlEngine;
 
 implementation
 
-uses
-  
-  Variants,
-  
+uses 
+  Variants, 
   SysUtils;
 
 var
@@ -428,14 +419,11 @@ begin
 end;
 
 procedure TJvDynControlVCLMaskEdit.ControlSetPasswordChar(Value: Char);
-begin
-  
-  
+begin  
   if Value = #0 then
     EchoMode := emNormal
   else
-    EchoMode := emPassword;
-  
+    EchoMode := emPassword; 
 end;
 
 procedure TJvDynControlVCLMaskEdit.ControlSetEditMask(Value: string);
@@ -522,14 +510,11 @@ type
 
 
 procedure TJvDynControlVCLButtonEdit.ControlSetPasswordChar(Value: Char);
-begin
-  
-  
+begin  
   if Value = #0 then
     TOpenMaskEdit(FEditControl).EchoMode := emNormal
   else
-    TOpenMaskEdit(FEditControl).EchoMode := emPassword;
-  
+    TOpenMaskEdit(FEditControl).EchoMode := emPassword; 
 end;
 
 procedure TJvDynControlVCLButtonEdit.ControlSetEditMask(Value: string);
@@ -766,22 +751,16 @@ begin
 end;
 
 procedure TJvDynControlVCLDirectoryEdit.DefaultOnButtonClick(Sender: TObject);
-var
-  
-  
-  Dir: WideString;
-  
+var  
+  Dir: WideString; 
 begin
-  Dir := ControlGetValue;
-  
-  
+  Dir := ControlGetValue;  
   {$IFDEF MSWINDOWS}
   if SelectDirectory('', '', Dir) then
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   if SelectDirectory('', '/', Dir, False) then
-  {$ENDIF LINUX}
-  
+  {$ENDIF LINUX} 
     ControlSetValue(Dir);
 end;
 
@@ -1431,8 +1410,7 @@ end;
 
 initialization
   IntDynControlEngineVCL := TJvDynControlEngine.Create;
-  IntDynControlEngineVCL.RegisterControl(jctLabel, TJvDynControlVCLLabel);
-  
+  IntDynControlEngineVCL.RegisterControl(jctLabel, TJvDynControlVCLLabel); 
   IntDynControlEngineVCL.RegisterControl(jctButton, TJvDynControlVCLButton);
   IntDynControlEngineVCL.RegisterControl(jctScrollBox, TJvDynControlVCLScrollBox);
   IntDynControlEngineVCL.RegisterControl(jctPanel, TJvDynControlVCLPanel);
@@ -1440,8 +1418,7 @@ initialization
   IntDynControlEngineVCL.RegisterControl(jctCheckBox, TJvDynControlVCLCheckBox);
   IntDynControlEngineVCL.RegisterControl(jctComboBox, TJvDynControlVCLComboBox);
   IntDynControlEngineVCL.RegisterControl(jctListBox, TJvDynControlVCLListBox);
-  IntDynControlEngineVCL.RegisterControl(jctRadioGroup, TJvDynControlVCLRadioGroup);
-  
+  IntDynControlEngineVCL.RegisterControl(jctRadioGroup, TJvDynControlVCLRadioGroup); 
   IntDynControlEngineVCL.RegisterControl(jctEdit, TJvDynControlVCLMaskEdit);
 //  IntDynControlEngineVCL.RegisterControl(jctCalculateEdit, TJvDynControlVCLMaskEdit);
 //  IntDynControlEngineVCL.RegisterControl(jctSpinEdit, TJvDynControlVCLMaskEdit);

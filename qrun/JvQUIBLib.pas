@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {******************************************************************************}
 {                        UNIFIED INTERBASE (UIB)                               }
@@ -30,7 +31,7 @@
 unit JvQUIBLib;
 
 {$I jvcl.inc}
-{$I jvuib.inc}
+{$I JvUIB.inc}
 
 {$ALIGN ON}
 {$MINENUMSIZE 4}

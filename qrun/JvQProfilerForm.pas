@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -38,11 +39,8 @@ uses
   Classes,
   {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF MSWINDOWS}
-  
-  
-  QDialogs, QComCtrls, QStdCtrls, QControls, QExtCtrls, QForms, QWindows,
-  
+  {$ENDIF MSWINDOWS}  
+  QDialogs, QComCtrls, QStdCtrls, QControls, QExtCtrls, QForms, QWindows, 
   JvQComponent;
 
 const
@@ -127,8 +125,7 @@ type
 implementation
 
 uses
-  SysUtils,
-  
+  SysUtils, 
   JvQConsts, JvQTypes, JvQResources;
 
 
@@ -207,7 +204,7 @@ begin
     if Length(Trim(FNames[I])) < 1 then
       Continue;                         { skip empty ID's }
     if FLastProc > MaxProfEntries then
-      raise EJVCLException.CreateFmt(RsEMaxNumberOfIDsExceededd, [MaxProfEntries - 1]);
+      raise EJVCLException.CreateResFmt(@RsEMaxNumberOfIDsExceededd, [MaxProfEntries - 1]);
     Inc(FLastProc);
     with FProfileInfo[FLastProc] do
     begin
@@ -226,7 +223,7 @@ begin
   begin
     Snap := GetTickCount;
     if FStackSize > MaxStackSize then
-      raise EJVCLException.CreateFmt(RsEMaxStackSizeExceededd, [MaxStackSize]);
+      raise EJVCLException.CreateResFmt(@RsEMaxStackSizeExceededd, [MaxStackSize]);
     Inc(FStackSize);
 
     with FStack[FStackSize] do
@@ -423,8 +420,7 @@ end;
 
 procedure TProfReport.lvReportColumnClick(Sender: TObject; Column: TListColumn);
 begin
-  //  lvReport.Items.BeginUpdate;
-  
+  //  lvReport.Items.BeginUpdate; 
   OddClick := not OddClick;
   //  lvReport.Items.EndUpdate;
 end;

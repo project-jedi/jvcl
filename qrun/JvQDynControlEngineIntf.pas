@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -18,13 +19,12 @@ All Rights Reserved.
 Contributor(s):
 Jens Fudickar [jens dott fudickar att oratool dott de]
 
-Last Modified: 2003-11-03
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -38,15 +38,10 @@ unit JvQDynControlEngineIntf;
 interface
 
 uses
-  Classes,
-  
-  
-  QControls, QForms, QStdCtrls, QExtCtrls, QGraphics, QButtons,
-  
-  QFileCtrls,
-  
-  QDialogs,
-  
+  Classes,  
+  QControls, QForms, QStdCtrls, QExtCtrls, QGraphics, QButtons, 
+  QFileCtrls, 
+  QDialogs, 
   SysUtils;
 
 type
@@ -109,8 +104,7 @@ type
   IJvDynControlDirectory = interface
     ['{1EAC8D4D-F839-43FD-B859-627874E41874}']
     procedure ControlSetInitialDir(Value: string);
-    procedure ControlSetDialogTitle(Value: string);
-    
+    procedure ControlSetDialogTitle(Value: string); 
   end;
 
   IJvDynControlComboBox = interface
@@ -154,8 +148,7 @@ type
     ['{2E07C9CD-A351-4F86-91F1-45E043455669}']
     procedure ControlSetAutoSize(Value: Boolean);
     procedure ControlSetIncrementalDisplay(Value: Boolean);
-    procedure ControlSetCenter(Value: Boolean);
-    
+    procedure ControlSetCenter(Value: Boolean); 
     procedure ControlSetStretch(Value: Boolean);
     procedure ControlSetTransparent(Value: Boolean);
     procedure ControlSetPicture(Value: TPicture);

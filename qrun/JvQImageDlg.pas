@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -34,11 +35,8 @@ unit JvQImageDlg;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QGraphics, QControls, QForms, QExtCtrls,
-  
+  SysUtils, Classes,  
+  QGraphics, QControls, QForms, QExtCtrls, 
   JvQBaseDlg, JvQComponent, JvQTypes;
 
 type
@@ -83,11 +81,8 @@ begin
   if (Picture.Height <> 0) and (Picture.Width <> 0) then
   begin
     Form := TJvForm.CreateNew(Self);
-    try
-      
-      
-      Form.BorderStyle := fbsDialog;
-      
+    try  
+      Form.BorderStyle := fbsDialog; 
       Form.BorderIcons := [biSystemMenu];
       Form.Position := poScreenCenter;
       Image1 := TImage.Create(Form);

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -14,13 +15,11 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvInstallLabel.PAS, released on 2002-05-26.
 
-The Initial Developer of the Original Code is Peter Thörnqvist [peter3 att users dott sourceforge dott net]
+The Initial Developer of the Original Code is Peter Thörnqvist [peter3 at sourceforge dot net]
 Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
 Contributor(s):
-
-Last Modified: 2002-05-26
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -32,6 +31,7 @@ Description:
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -40,11 +40,8 @@ unit JvQInstallLabel;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QGraphics, QControls, QImgList, Types, Qt, QWindows,
-  
+  SysUtils, Classes,  
+  QGraphics, QControls, QImgList, Types, Qt, QWindows, 
   JvQComponent;
 
 type
@@ -92,8 +89,7 @@ type
     property ParentShowHint;
     property ParentFont;
     property TextOffset: Integer read FTextOffset write SetTextOffset default 24;
-    property ImageOffset: Integer read FImageOffset write SetImageOffset default 2;
-    
+    property ImageOffset: Integer read FImageOffset write SetImageOffset default 2; 
     property DragMode;
     property PopupMenu;
     property OnClick;
@@ -120,8 +116,7 @@ type
 
 constructor TJvInstallLabel.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner);
-  
+  inherited Create(AOwner); 
   FLines := TStringList.Create;
   FStyles := TList.Create;
   FImageChangeLink := TChangeLink.Create;
@@ -150,7 +145,7 @@ end;
 
 procedure TJvInstallLabel.UpdateStyles;
 var
-  aStyle: PStyles;
+  Style: PStyles;
 begin
   while FStyles.Count > Lines.Count do
   begin
@@ -161,10 +156,10 @@ begin
 
   while FStyles.Count < Lines.Count do
   begin
-    New(aStyle);
-    aStyle^.Style := Font.Style; { default }
-    aStyle^.Index := FDefaultImage;
-    FStyles.Add(aStyle);
+    New(Style);
+    Style^.Style := Font.Style; { default }
+    Style^.Index := FDefaultImage;
+    FStyles.Add(Style);
   end;
 end;
 
@@ -190,7 +185,7 @@ end;
 function TJvInstallLabel.GetStyles(Index: Integer): TFontStyles;
 begin
   if not CheckBounds(Index) then
-    raise EJVCLException.CreateFmt(RsEListOutOfBounds, [Index])
+    raise EJVCLException.CreateResFmt(@RsEListOutOfBounds, [Index])
   else
     Result := PStyles(FStyles[Index])^.Style;
 end;
@@ -258,11 +253,8 @@ end;
 procedure TJvInstallLabel.Paint;
 var
   Tmp, H, W, I: Integer;
-  aRect: TRect;
-  
-  
-  aHandle: QPainterH;
-  
+  aRect: TRect;  
+  aHandle: QPainterH; 
 begin
   if csDestroying in ComponentState then
     Exit;
@@ -279,11 +271,8 @@ begin
 
   UpdateStyles;
   Canvas.Font := Font;
-  aHandle := Canvas.Handle;
-  
-  
-  SetBkMode(aHandle, QWindows.Transparent);
-  
+  aHandle := Canvas.Handle;  
+  SetBkMode(aHandle, QWindows.Transparent); 
   H := CanvasMaxTextHeight(Canvas);
   for I := 0 to Lines.Count - 1 do
   begin
@@ -351,7 +340,7 @@ function TJvInstallLabel.CheckBounds(Index: Integer): Boolean;
 begin
   Result := (Index > -1) and (Index < Lines.Count);
   if not Result then
-    raise EJVCLException.CreateFmt(RsEListOutOfBounds, [Index]);
+    raise EJVCLException.CreateResFmt(@RsEListOutOfBounds, [Index]);
 end;
 
 end.
