@@ -106,7 +106,7 @@ begin
   end;
   FCurrentControl := AControl;
   if FCurrentControl <> nil then
-    FTimer.Enabled := true;
+    FTimer.Enabled := True;
 end;
 
 procedure TJvMouseTimer.Detach(AControl: TControl);
