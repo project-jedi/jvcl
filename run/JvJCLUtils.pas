@@ -75,7 +75,7 @@ uses
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF COMPILER6_UP}
-  TypInfo; //, JvClxUtils;
+  TypInfo, JvClxUtils;
 
 const
   {$IFDEF MSWINDOWS}
@@ -635,7 +635,7 @@ function RomanToInt(const S: string): Longint;
 
 function FindNotBlankCharPos(const S: string): Integer;
 function FindNotBlankCharPosW(const S: WideString): Integer;
-function AnsiChangeCase(const S: string): string; 
+function AnsiChangeCase(const S: string): string;
 function WideChangeCase(const S: string): string;
 function StringEndsWith(const Str, SubStr: string): Boolean;
 function ExtractFilePath2(const FileName: string): string;
@@ -835,7 +835,7 @@ function OSCheck(RetVal: Boolean): Boolean;
 { Shortens a fully qualified Path name so that it can be drawn with a specified length limit.
   Same as FileCtrl.MinimizeName in functionality (but not implementation). Included here to
   not be forced to use FileCtrl unnecessarily }
-// function MinimizeName(const Filename: string; Canvas: TCanvas; MaxLen: Integer): string;
+function MinimizeFileName(const Filename: string; Canvas: TCanvas; MaxLen: Integer): string;
 function MinimizeText(const Text: string; Canvas: TCanvas; MaxWidth: Integer): string;
 { MinimizeString trunactes long string, S, and appends
   '...' symbols, if Length of S is more than MaxLen }
@@ -2511,7 +2511,6 @@ begin
   Result := (S = '1') or Cmp(S, 'True') or Cmp(S, 'yes');
 end;
 
-{ (rom) disabled because the functions drag in JvClxUtils.pas
 procedure WordBreak(Canvas: TCanvas; const S: string; Ss: TStrings);
 begin
   Ss.Text := S;
@@ -2552,7 +2551,6 @@ begin
     Ss.Free;
   end;
 end;
-}
 
 procedure Cinema(Canvas: TCanvas; rS, rD: TRect);
 const
@@ -7185,8 +7183,7 @@ begin
   Result := RetVal;
 end;
 
-{ (rom) disabled because the function drags in JvClxUtils.pas
-function MinimizeName(const Filename: string; Canvas: TCanvas; MaxLen: Integer): string;
+function MinimizeFileName(const Filename: string; Canvas: TCanvas; MaxLen: Integer): string;
 var
   b: string;
   R: TRect;
@@ -7200,7 +7197,6 @@ begin
   else
     Result := Filename;
 end;
-}
 
 function MinimizeText(const Text: string; Canvas: TCanvas;
   MaxWidth: Integer): string;
