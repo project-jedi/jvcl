@@ -40,14 +40,13 @@ type
   TPackageXmlInfo = class;
   TRequiredPackage = class;
   TContainedFile = class;
-
   TPackageGroup = class;
 
   /// <summary>
-  /// TRequiredPackage contains one package that is requried by a TPackageInfo
-  /// object and it's inclusion conditions.
+  /// TPackageXmlInfoItem contains common parts of TRequiredPackage and
+  /// TContainedFile.
   /// </summary>
-  TRequiredPackage = class(TObject)
+  TPackageXmlInfoItem = class(TObject)
   private
     FName: string;
     FTargets: TStrings;
@@ -56,8 +55,9 @@ type
     constructor Create(const AName, ATargets, ACondition: string);
     destructor Destroy; override;
 
-    function IsRequiredByTarget(const TargetSymbol: string): Boolean;
-    function GetBplName(PackageGroup: TPackageGroup): string;
+    function IsIncluded(const TargetSymbol: string): Boolean;
+      { IsIncluded() returns True if the item has TargetSymbol in it's Targets
+        list. }
 
     property Name: string read FName;
     property Targets: TStrings read FTargets;
@@ -65,25 +65,28 @@ type
   end;
 
   /// <summary>
-  /// TContainedFile contains one file name that is contained in the the
-  /// TPackageInfo object and it's inclusion conditions.
+  /// TRequiredPackage contains one package that is requried by a TPackageXmlInfo
+  /// object and it's inclusion conditions.
   /// </summary>
-  TContainedFile = class(TObject)
+  TRequiredPackage = class(TPackageXmlInfoItem)
+  public
+    function IsRequiredByTarget(const TargetSymbol: string): Boolean;
+    function GetBplName(PackageGroup: TPackageGroup): string;
+  end;
+
+  /// <summary>
+  /// TContainedFile contains one file name that is contained in the the
+  /// TPackageXmlInfo object and it's inclusion conditions.
+  /// </summary>
+  TContainedFile = class(TPackageXmlInfoItem)
   private
-    FName: string;
-    FTargets: TStrings;
     FFormName: string;
-    FCondition: string;
   public
     constructor Create(const AName, ATargets, AFormName, ACondition: string);
-    destructor Destroy; override;
 
     function IsUsedByTarget(const TargetSymbol: string): Boolean;
 
-    property Name: string read FName;
-    property Targets: TStrings read FTargets;
     property FormName: string read FFormName;
-    property Condition: string read FCondition;
   end;
 
   /// <summary>
@@ -91,14 +94,11 @@ type
   /// </summary>
   TPackageXmlInfo = class(TObject)
   private
-    function GetContainCount: Integer;
-    function GetContains(Index: Integer): TContainedFile;
-    function GetRequireCount: Integer;
-    function GetRequires(Index: Integer): TRequiredPackage;
-  protected
+    FFilename: string;
     FName: string;
     FDisplayName: string;
     FDescription: string;
+    FClxDescription: string;
     FRequires: TObjectList;
     FContains: TObjectList;
     FRequiresDB: Boolean;
@@ -106,17 +106,24 @@ type
     FIsXPlatform: Boolean;
     FC5PFlags: string;
     FC6PFlags: string;
-    FC5Libs: string;
-    FC6Libs: string;
+    FC5Libs: TStrings;
+    FC6Libs: TStrings;
+
+    function GetContainCount: Integer;
+    function GetContains(Index: Integer): TContainedFile;
+    function GetRequireCount: Integer;
+    function GetRequires(Index: Integer): TRequiredPackage;
 
     procedure LoadFromFile(const Filename: string);
   public
-    constructor Create(const Filename: string);
+    constructor Create(const AFilename: string);
     destructor Destroy; override;
 
+    property Filename: string read FFilename;
     property Name: string read FName; // "PackageName-"[R|D]
     property DisplayName: string read FDisplayName; // "PackageName"
     property Description: string read FDescription;
+    property ClxDescription: string read FClxDescription;
     property RequireCount: Integer read GetRequireCount;
     property Requires[Index: Integer]: TRequiredPackage read GetRequires;
     property ContainCount: Integer read GetContainCount;
@@ -127,8 +134,8 @@ type
 
     property C5PFlags: string read FC5PFlags;
     property C6PFlags: string read FC6PFlags;
-    property C5Libs: string read FC5Libs;
-    property C6Libs: string read FC6Libs;
+    property C5Libs: TStrings read FC5Libs;
+    property C6Libs: TStrings read FC6Libs;
   end;
 
   { Package Group }
@@ -272,7 +279,9 @@ var
 
 function BplNameToGenericName(const BplName: string): string;
   { BplNameToGenericName converts a "JvCoreD7D.XXX" to "JvCore-D" }
-function GetPackageXmlInfo(const BplName, XmlDir: string): TPackageXmlInfo;
+function GetPackageXmlInfo(const BplName, XmlDir: string): TPackageXmlInfo; overload;
+  { returns a cached TPackageXmlInfo instance. }
+function GetPackageXmlInfo(const XmlFilename: string): TPackageXmlInfo; overload;
   { returns a cached TPackageXmlInfo instance. }
 
 implementation
@@ -310,20 +319,34 @@ end;
 /// <summary>
 /// GetPackageXmlInfo returns a cached TPackageXmlInfo instance.
 /// </summary>
-function GetPackageXmlInfo(const BplName, XmlDir: string): TPackageXmlInfo;
+function GetPackageXmlInfo(const BplName, XmlDir: string): TPackageXmlInfo; overload;
 var
-  i: Integer;
+  Index: Integer;
   Name: string;
 begin
-  Name := BplNameToGenericName(BplName);
+  Name := XmlDir + PathDelim + BplNameToGenericName(BplName) + '.xml';
  // already in the cache
-  if XmlFileCache.Find(Name, i) then
-    Result := TPackageXmlInfo(XmlFileCache.Objects[i])
+  if XmlFileCache.Find(Name, Index) then
+    Result := TPackageXmlInfo(XmlFileCache.Objects[Index])
+  else                                    
+  begin
+   // create a new one and add it to the cache
+    Result := TPackageXmlInfo.Create(Name); // do not localize
+    XmlFileCache.AddObject(Name, Result);
+  end;
+end;
+
+function GetPackageXmlInfo(const XmlFilename: string): TPackageXmlInfo; overload;
+var
+  Index: Integer;
+begin
+  if XmlFileCache.Find(XmlFilename, Index) then
+    Result := TPackageXmlInfo(XmlFileCache.Objects[Index])
   else
   begin
    // create a new one and add it to the cache
-    Result := TPackageXmlInfo.Create(XmlDir + PathDelim + Name + '.xml'); // do not localize
-    XmlFileCache.AddObject(Name, Result);
+    Result := TPackageXmlInfo.Create(XmlFilename);
+    XmlFileCache.AddObject(XmlFilename, Result);
   end;
 end;
 
@@ -412,9 +435,9 @@ begin
   end;
 end;
 
-{ TRequiredPackage }
+{ TPackageXmlInfoItem }
 
-constructor TRequiredPackage.Create(const AName, ATargets, ACondition: string);
+constructor TPackageXmlInfoItem.Create(const AName, ATargets, ACondition: string);
 begin
   inherited Create;
   FName := AName;
@@ -422,14 +445,24 @@ begin
   TStringList(FTargets).Duplicates := dupIgnore;
   FTargets.CommaText := ATargets;
   ExpandTargets(FTargets);
+  TStringList(FTargets).Sorted := True; // sort the targets
   FCondition := ACondition;
 end;
 
-destructor TRequiredPackage.Destroy;
+destructor TPackageXmlInfoItem.Destroy;
 begin
   FTargets.Free;
   inherited Destroy;
 end;
+
+function TPackageXmlInfoItem.IsIncluded(const TargetSymbol: string): Boolean;
+var
+  Index: Integer;
+begin
+  Result := TStringList(FTargets).Find(TargetSymbol, Index);
+end;
+
+{ TRequiredPackage }
 
 function TRequiredPackage.GetBplName(PackageGroup: TPackageGroup): string;
 begin
@@ -441,7 +474,7 @@ end;
 
 function TRequiredPackage.IsRequiredByTarget(const TargetSymbol: string): Boolean;
 begin
-  Result := Targets.IndexOf(TargetSymbol) <> -1;
+  Result := IsIncluded(TargetSymbol);
 end;
 
 { TContainedFile }
@@ -449,40 +482,36 @@ end;
 constructor TContainedFile.Create(const AName, ATargets, AFormName,
   ACondition: string);
 begin
-  inherited Create;
-  FName := AName;
-  FTargets := TStringList.Create;
-  TStringList(FTargets).Duplicates := dupIgnore;
-  FTargets.CommaText := ATargets;
-  ExpandTargets(FTargets);
+  inherited Create(AName, ATargets, ACondition);
   FFormName := AFormName;
-  FCondition := ACondition;
-end;
-
-destructor TContainedFile.Destroy;
-begin
-  FTargets.Free;
-  inherited Destroy;
 end;
 
 function TContainedFile.IsUsedByTarget(const TargetSymbol: string): Boolean;
 begin
-  Result := Targets.IndexOf(TargetSymbol) <> -1;
+  Result := IsIncluded(TargetSymbol);
 end;
 
 { TPackageXmlInfo }
 
-constructor TPackageXmlInfo.Create(const Filename: string);
+constructor TPackageXmlInfo.Create(const AFilename: string);
 begin
-  FName := ChangeFileExt(ExtractFileName(Filename), '');
+  inherited Create;
+  FFilename := AFilename;
+  FName := ChangeFileExt(ExtractFileName(FFilename), '');
   FRequires := TObjectList.Create;
   FContains := TObjectList.Create;
   FIsDesign := EndsWith(Name, '-D', True); // do not localize
-  LoadFromFile(Filename);
+    // IsDesign is updated in LoadFromFile
+  FC5Libs := TStringList.Create;
+  FC6Libs := TStringList.Create;
+
+  LoadFromFile(FFilename);
 end;
 
 destructor TPackageXmlInfo.Destroy;
 begin
+  FC5Libs.Free;
+  FC6Libs.Free;
   FRequires.Free;
   FContains.Free;
   inherited Destroy;
@@ -531,8 +560,8 @@ begin
 
     FC5PFlags := RootNode.Items.Value('C5PFlags');
     FC6PFlags := RootNode.Items.Value('C6PFlags');
-    FC5Libs := RootNode.Items.Value('C5Libs');
-    FC6Libs := RootNode.Items.Value('C6Libs');
+    FC5Libs.CommaText := RootNode.Items.Value('C5Libs');
+    FC6Libs.CommaText := RootNode.Items.Value('C6Libs');
 
     RequiredNode := RootNode.Items.ItemNamed['Requires'];               // do not localize
     ContainsNode := RootNode.Items.ItemNamed['Contains'];               // do not localize
@@ -541,6 +570,7 @@ begin
     FIsDesign := RootNode.Properties.BoolValue('Design', IsDesign);     // do not localize
     FIsXPlatform := RootNode.Properties.BoolValue('XPlatform', False);  // do not localize
     FDescription := RootNode.Items.Value('Description');                // do not localize
+    FClxDescription := RootNode.Items.Value('ClxDescription');          // do not localize
 
    // requires
     for i := 0 to RequiredNode.Items.Count -1 do
