@@ -1,6 +1,7 @@
 Changelog for JVCL 3.0
 ======================
 2004-02-26
+- Added JvOfficeColorButton, JvOfficeColorPanel and JvNetscapeSplitter from dejoy // peter3
 - Added JvDBSearchEdit and JvDBSearchComboBox to JvDB package and demo to examples. Donated by Lionel Reynaud // peter3
 - Added JvAppDBStorage, a storage implementation that can save to a database // peter3
 - Added JvWizardRouteMapList, a route map that displays the pages as a list // peter3
