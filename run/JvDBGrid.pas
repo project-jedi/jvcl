@@ -136,11 +136,13 @@ type
   private
     FControlName: string;
     FFieldName: string;
+    FFitCell: Boolean; // True: control size = cell size, False: control size = design size
   public
     procedure Assign(Source: TPersistent); override;
   published
     property ControlName: string read FControlName write FControlName;
     property FieldName: string read FFieldName write FFieldName;
+    property FitCell: Boolean read FFitCell write FFitCell;
   end;
 
   TJvDBGridControls = class(TCollection)
@@ -153,7 +155,8 @@ type
   public
     constructor Create(ParentDBGrid: TJvDBGrid);
     function Add: TJvDBGridControl;
-    function ControlByField(FieldName: string): TJvDBGridControl;
+    function ControlByField(const FieldName: string): TJvDBGridControl;
+    function ControlByName(const CtrlName: string): TJvDBGridControl;
     property Items[Index: Integer]: TJvDBGridControl read GetItem write SetItem;
   end;
 
@@ -757,6 +760,7 @@ begin
   begin
     ControlName := TJvDBGridControl(Source).ControlName;
     FieldName := TJvDBGridControl(Source).FieldName;
+    FitCell := TJvDBGridControl(Source).FitCell;
   end
   else
     inherited Assign(Source);
@@ -782,13 +786,26 @@ begin
   inherited SetItem(Index, Value);
 end;
 
-function TJvDBGridControls.ControlByField(FieldName: string): TJvDBGridControl;
+function TJvDBGridControls.ControlByField(const FieldName: string): TJvDBGridControl;
 var
   Ctrl_Idx: Integer;
 begin
   Result := nil;
   for Ctrl_Idx := 0 to Count - 1 do
     if AnsiSameText(Items[Ctrl_Idx].FieldName, FieldName) then
+    begin
+      Result := Items[Ctrl_Idx];
+      Break;
+    end;
+end;
+
+function TJvDBGridControls.ControlByName(const CtrlName: string): TJvDBGridControl;
+var
+  Ctrl_Idx: Integer;
+begin
+  Result := nil;
+  for Ctrl_Idx := 0 to Count - 1 do
+    if AnsiSameText(Items[Ctrl_Idx].ControlName, CtrlName) then
     begin
       Result := Items[Ctrl_Idx];
       Break;
@@ -1494,7 +1511,7 @@ begin
   Control := FControls.ControlByField(F.FieldName);
   Result := (Control <> nil);
   if not Result then
-    Result := not (F.DataType in [ftUnknown, ftBytes, ftVarBytes, ftAutoInc, 
+    Result := not (F.DataType in [ftUnknown, ftBytes, ftVarBytes, ftAutoInc,
       ftBlob, ftMemo, ftFmtMemo, ftGraphic, ftTypedBinary, ftParadoxOle,
       ftDBaseOle, ftCursor, ftReference, ftDataSet, ftOraClob, ftOraBlob]);
   Result := Result and (not F.ReadOnly) and F.DataSet.CanModify and
@@ -3454,7 +3471,25 @@ begin
   R.TopLeft := TControl(Control.Parent).ScreenToClient(R.TopLeft);
   R.BottomRight := ClientToScreen(R.BottomRight);
   R.BottomRight := TControl(Control.Parent).ScreenToClient(R.BottomRight);
-  Control.BoundsRect := R;
+
+  if FControls.ControlByName(Control.Name).FitCell then
+    Control.BoundsRect := R
+  else
+  begin
+    // We're showing the control at design size
+    // Horizontal alignment of the control
+    if (R.Left + Control.Width) > (Self.Left + Self.ClientWidth) then
+      Control.Left := (R.Right - Control.Width) // Right align
+    else
+      Control.Left := R.Left; // Left align
+
+    // Vertical alignment of embedded control
+    if (R.Top + Control.Height) > (Self.Top + Self.ClientHeight) then
+      Control.Top := (R.Bottom - Control.Height) // Bottom align
+    else
+      Control.Top := R.Top;
+  end;
+
   Control.BringToFront;
   Control.Show;
 
