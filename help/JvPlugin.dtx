@@ -19,7 +19,7 @@ Description
   (such as TTable, TQuery and TImageList).
 
   Because it's not a component you can not find it on the component palette. Instead you should use
-  File|New..., click on the 'Projects" tab and click on the 'JEDI Plugin Wizard'. This will generate
+  \File|\New..., click on the 'Projects" tab and click on the 'JEDI Plugin Wizard'. This will generate
   a new project with a single unit containing a TJvPlugin data module.
 
   In addition a number of properties are provided to specify the identity of the plugin (ID,
@@ -27,8 +27,7 @@ Description
   of this plugin that are generated, reference to the host application and the plugin manager.
 
   For more information on writing plugins and make applications plugin enabled, take a look at
-  Plugins.
-## !!! TODO: link to the forthcoming plugins writing tutorial.
+  <LINK $JVCL.Info.Plugins, Writing plugins and plugin enabled applications>.
 ----------------------------------------------------------------------------------------------------
 @@TJvPlugin.Author
 Summary
@@ -74,7 +73,7 @@ Summary
 Description
   The \Description property contains the description of the plugin.
 
-  As a plugin writer you should set this to a short (1 or 2 sentences) description of what 
+  As a plugin writer you should set this to a short (1 or 2 sentences) description of what
   functionality the plugin provides.
 
   The host application may read this property to provide additional information about a loaded
@@ -85,11 +84,11 @@ Summary
   Identification (name) of the plugin.
 Description
   The PluginID property contains the ID (or name) of the plugin.
-  
+
   As a plugin writer you must set this property to the name (it's not required to set this to the
   Name property or even to a valid Delphi identifier, i.e. spaces and other symbols are allowed) of
   the plugin. Make sure the identification will be unique. A recommended way of doing this would be
-  to use an identification string in the form of 
+  to use an identification string in the form of
   \<<I>company name or abbreviation</I>\><B>.</B>\<<I>plugin name</I>\>.
 
   The host application uses this property to display and identify which plugin(s) is/are loaded.
