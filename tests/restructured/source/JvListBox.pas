@@ -700,7 +700,7 @@ procedure TJvCustomListBox.SetBounds(ALeft, ATop, AWidth,
 begin
   inherited;
   if Alignment <> taLeftJustify then
-    Invalidate;
+    Repaint;
 end;
 
 end.
