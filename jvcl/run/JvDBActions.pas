@@ -1290,12 +1290,13 @@ end;
 //=== { TJvDatabaseActionEngineList } ========================================
 
 destructor TJvDatabaseActionEngineList.Destroy;
+var
+  I: Integer;
 begin
-  // (rom) this looks a bit clumsy. Is it needed or can it replaced by a for downto?
-  while Count > 0 do
+  for i := Count-1 Downto 0 do
   begin
-    TJvDatabaseActionBaseEngine(Items[0]).Free;
-    Delete(0);
+    TJvDatabaseActionBaseEngine(Items[I]).Free;
+    Delete(I);
   end;
   inherited Destroy;
 end;
