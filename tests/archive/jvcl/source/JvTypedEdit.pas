@@ -54,11 +54,10 @@ interface
 
 uses
   { delphi } Classes,
-  { local } JvMemo;
+  { local } JvEdit;
 
 type
-
-  TCustomIntegerEdit = class(TJvMemo)
+  TCustomIntegerEdit = class(TJvCustomEdit)
   private
     { property implementation }
     fiMaxValue, fiMinValue: integer;
@@ -91,11 +90,14 @@ type
     procedure Assign(Source: TPersistent); override;
 
     property Value: integer read GetValue write SetValue;
+  published
+    property AutoSize default true;
+
 
   end;
 
   { to capture and display float values }
-  TCustomFloatEdit2 = class(TJvMemo)
+  TCustomFloatEdit2 = class(TJvCustomEdit)
   private
     { property implementation }
     feMaxValue, feMinValue: extended;
@@ -132,6 +134,8 @@ type
     procedure Assign(Source: TPersistent); override;
 
     property Value: extended read GetValue write SetValue;
+  published
+    property AutoSize default true;
   end;
 
 
@@ -163,7 +167,7 @@ type
     when the control does not have focus, the number is formatted
     as per control panel currency settings
   }
-  TCustomCurrencyEdit = class(TJvMemo)
+  TCustomCurrencyEdit = class(TJvCustomEdit)
   private
     { property implementation }
     feMaxValue, feMinValue: currency;
@@ -200,6 +204,8 @@ type
     procedure Assign(Source: TPersistent); override;
 
     property Value: currency read GetValue write SetValue;
+  published
+    property AutoSize default true;
   end;
 
 
@@ -234,8 +240,8 @@ type
     procedure DoExit; override;
     procedure Change; override;
 
-    procedure Loaded; override;
   public
+    procedure Loaded; override;
     procedure FormatText; virtual;
     constructor Create(AOwner: TComponent); override;
 
@@ -272,13 +278,13 @@ type
     property ParentShowHint;
     property PopupMenu;
     property ReadOnly;
-    property ScrollBars;
+//    property ScrollBars;
     property ShowHint;
     property TabOrder;
     property TabStop;
     property Visible;
-    property WantReturns;
-    property WantTabs;
+//    property WantReturns;
+//    property WantTabs;
     property OnChange;
     property OnClick;
     property OnContextPopup;
@@ -338,13 +344,13 @@ type
     property ParentShowHint;
     property PopupMenu;
     property ReadOnly;
-    property ScrollBars;
+//    property ScrollBars;
     property ShowHint;
     property TabOrder;
     property TabStop;
     property Visible;
-    property WantReturns;
-    property WantTabs;
+//    property WantReturns;
+//    property WantTabs;
     property OnChange;
     property OnClick;
     property OnContextPopup;
@@ -405,13 +411,13 @@ type
     property ParentShowHint;
     property PopupMenu;
     property ReadOnly;
-    property ScrollBars;
+//    property ScrollBars;
     property ShowHint;
     property TabOrder;
     property TabStop;
     property Visible;
-    property WantReturns;
-    property WantTabs;
+//    property WantReturns;
+//    property WantTabs;
     property OnChange;
     property OnClick;
     property OnContextPopup;
@@ -472,13 +478,13 @@ type
     property ParentShowHint;
     property PopupMenu;
     property ReadOnly;
-    property ScrollBars;
+//    property ScrollBars;
     property ShowHint;
     property TabOrder;
     property TabStop;
     property Visible;
-    property WantReturns;
-    property WantTabs;
+//    property WantReturns;
+//    property WantTabs;
     property OnChange;
     property OnClick;
     property OnContextPopup;
@@ -538,6 +544,7 @@ begin
   { default is right aligned }
   Alignment := taRightJustify;
   Text      := '';
+  AutoSize  := true;
 
   { by default no min & max }
   fiMinValue    := 0;
@@ -600,6 +607,7 @@ begin
   { not intersted in control chars }
   if (Ord(Key)) < Ord(' ') then
   begin
+    if Key = #13 then Key := #0 else
     inherited KeyPress(Key);
     exit;
   end;
@@ -711,6 +719,7 @@ begin
 
   { default is right aligned }
   Alignment := taRightJustify;
+  AutoSize  := true;
   Text      := '';
 
   { by default no min & max }
@@ -922,6 +931,7 @@ begin
 
   { default is right aligned }
   Alignment := taRightJustify;
+  AutoSize  := true;
   Text      := '';
 
   { by default no min & max }
