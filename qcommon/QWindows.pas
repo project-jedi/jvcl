@@ -354,7 +354,7 @@ function SetRect(var R: TRect; Left, Top, Right, Bottom: Integer): LongBool;
 function IsRectEmpty(R: TRect): LongBool;
 function EqualRect(R1, R2: TRect): LongBool;
 function UnionRect(var Dst: TRect; R1, R2: TRect): LongBool;
-function CopyRect(var Dst: TRect; const Src: TRect): LongBool;
+function CopyRect(var Dst: TRect; const Src: TRect): LongBool; overload;
 function SubtractRect(var dR: TRect; const R1, R2: TRect): LongBool;
 function CenterRect(InnerRect, OuterRect: TRect): TRect;
 
@@ -521,12 +521,21 @@ function BitBlt(DestDC: QPainterH; X, Y, Width, Height: Integer; SrcDC: QPainter
   XSrc, YSrc: Integer; WinRop: Cardinal): LongBool; overload;
 //
 // does the required start/stop painting if needed
+// adjust x,y & XSrc,YSrc ico TControlCanvas (as used by TGraphicControl)
 //
 function BitBlt(DestCanvas: TCanvas; X, Y, Width, Height: Integer; SrcCanvas: TCanvas;
   XSrc, YSrc: Integer; WinRop: Cardinal): LongBool; overload;
 
+//
+// Calculates coord of TopLeft in Paintdevice coordinates
+// ((0,0) for bitmaps and TWidgetControl derived classes)
+//
+function PainterOffset(Canvas: TCanvas): TPoint;
+//procedure CopyRect(Canvas: TCanvas
 function PatBlt(Handle: QPainterH; X, Y, Width, Height: Integer;
   WinRop: Cardinal): LongBool; //overload;
+procedure CopyRect(DstCanvas: TCanvas; const Dest: TRect; Canvas: TCanvas;
+  const Source: TRect); overload;
 
 function StretchBlt(DestDC: QPainterH; dx, dy, dw, dh: Integer;
   SrcDC: QPainterH; sx, sy, sw, sh: Integer; WinRop: Cardinal): LongBool; overload;
@@ -624,7 +633,6 @@ function SetDCBrushColor(Handle: QPainterH; Color: TColor): TColorRef;
 function SetDCPenColor(Handle: QPainterH; Color: TColor): TColorRef;
 function SetPenColor(Handle: QPainterH; Color: TColor): TColorRef;
 
-//procedure SetPainterFont(Handle: QPainterH; Font: TFont);
 procedure SetPainterFont(Handle: QPainterH; Font: TFont);
 
 
@@ -887,6 +895,16 @@ function DrawText(Handle: QPainterH; Text: PAnsiChar; Len: Integer;
   var R: TRect; WinFlags: Integer): Integer; overload;
 function DrawTextW(Handle: QPainterH; Text: PWideChar; Len: Integer;
   var R: TRect; WinFlags: Integer): Integer; overload;
+//
+// additional functionality
+// - canvas start/stop
+// - sets painterfont
+//
+function DrawText(Canvas: TCanvas; Text: PAnsiChar; Len: Integer;
+  var R: TRect; WinFlags: Integer): Integer; overload;
+function DrawTextW(Canvas :TCanvas; Text: PWideChar; Len: Integer;
+  var R: TRect; WinFlags: Integer): Integer; overload;
+
 function DrawTextEx(Handle: QPainterH; var Text: WideString; Len: Integer;
   var R: TRect; WinFlags: Integer; DTParams: Pointer): Integer; overload;
 function DrawTextEx(Handle: QPainterH; Text: PChar; Len: Integer;
@@ -1294,6 +1312,12 @@ function MakeIntResource(Value: Integer): PChar;
 function GetTickCount: Cardinal;
 procedure MessageBeep(Value: Integer);   // value ignored
 
+function CoCreateGUID(out Guid: TGUID): HResult;
+
+function Succeeded(Res: HResult): Boolean;
+function Failed(Res: HResult): Boolean;
+function ResultCode(Res: HResult): Integer;
+
 // writes the string to ErrOutput
 procedure OutputDebugString(lpOutputString: PChar);
 
@@ -1312,11 +1336,12 @@ procedure SetThreadPolicy(ThreadID: TThreadID; value: Integer);
 function GetThreadPriority(ThreadID: TThreadID): Integer;
 function SetThreadPriority(ThreadID: TThreadID; priority: Integer): LongBool;
 
-const
-  THREAD_PRIORITY_ERROR_RETURN = 255;
 type
   TThreadPriority = Integer;
 
+const
+  tpIdle: TThreadPriority = 0;
+  THREAD_PRIORITY_ERROR_RETURN = 255;
 
 // virtual memory handling
 const
@@ -1340,13 +1365,11 @@ function WriteProcessMemory(hProcess: THandle; const lpBaseAddress: Pointer;
   lpBuffer: Pointer; nSize: LongWord; var lpNumberOfBytesWritten: Longword): LongBool;
 procedure FlushInstructionCache(PID: cardinal; OrgCalProc: Pointer; size: Integer);
 
-
 { Limitations:
     - GetKeyState calls GetAsyncKeyState
     - GetAsyncKeyState only supports VK_SHIFT, VK_CONTROL and VK_MENU }
 function GetKeyState(nVirtKey: Integer): SmallInt;
 function GetAsyncKeyState(vKey: Integer): SmallInt;
-
 
 const
   MAX_COMPUTERNAME_LENGTH = 15;
@@ -2601,16 +2624,82 @@ begin
   end;
 end;
 
+function PainterOffset(Canvas: TCanvas): TPoint;
+var
+  aControl: TControl;
+begin
+  Result.X := 0;
+  Result.Y := 0;
+  if Canvas is TControlCanvas then
+  begin
+    AControl := TControlCanvas(Canvas).Control;
+    if AControl = nil
+    then
+      exit;
+    while not aControl.InheritsFrom(TWidgetControl) do
+    begin
+      Result.X := aControl.Left + Result.X;
+      Result.Y := aControl.Top + Result.Y;
+      aControl := aControl.Parent;
+    end;
+  end;
+end;
+
 function BitBlt(DestCanvas: TCanvas; X, Y, Width, Height: Integer; SrcCanvas: TCanvas;
   XSrc, YSrc: Integer; WinRop: Cardinal): LongBool;
+var
+  d,s :TPoint;
 begin
   DestCanvas.Start;
   SrcCanvas.Start;
-  Result := BitBlt(DestCanvas.Handle, X, Y, Width, Height, SrcCanvas.Handle,
-    XSrc, YSrc, WinRop);
+  d := PainterOffset(DestCanvas);
+  s := PainterOffset(SrcCanvas);
+  Result := BitBlt(DestCanvas.Handle, X + d.x , Y + d.y , Width, Height, SrcCanvas.Handle,
+    XSrc + s.x, YSrc + s.y, WinRop);
   SrcCanvas.Stop;
   DestCanvas.Stop;
 end;
+
+const
+  CopyModeToRasterOp: array[TCopyMode] of RasterOp = (
+    {cmBlackness}   RasterOp_ClearROP,    {cmDstInvert}  RasterOp_NotROP,
+    {cmMergeCopy}   RasterOp_AndROP,      {cmMergePaint} RasterOP_NotOrROP,
+    {cmNotSrcCopy}  RasterOp_NotCopyROP,  {cmNotSrcErase}RasterOp_NorROP,
+    {cmPatCopy}     RasterOp_NopROP,      {cmPatInvert}  RasterOp_NopROP,
+    {cmPatPaint}    RasterOp_NotOrROP,    {cmSrcAnd}     RasterOp_AndROP,
+    {cmSrcCopy}     RasterOp_CopyROP,     {cmSrcErase}   RasterOp_AndNotROP,
+    {cmSrcInvert}   RasterOp_XorROP,      {cmSrcPaint}   RasterOP_OrROP,
+    {cmWhiteness}   RasterOp_SetROP,      {cmCreateMask} RasterOp_NopROP);
+
+
+procedure CopyRect(DstCanvas: TCanvas; const Dest: TRect; Canvas: TCanvas;
+  const Source: TRect);
+var
+  d,s: TPoint;
+begin
+  with DstCanvas do
+  begin
+    Start;
+    try
+      Canvas.Start;
+      try
+        d := PainterOffset(DstCanvas);
+        s := PainterOffset(Canvas);
+        RequiredState(DstCanvas,[csHandleValid, csFontValid, csBrushValid]);
+        RequiredState(Canvas, [csHandleValid, csBrushValid]);
+        Qt.bitBlt(QPainter_device(Handle), Dest.Left + d.x, Dest.Top + d.y,
+          QPainter_device(Canvas.Handle), Source.Left + s.x, Source.Top +s.y,
+          Source.Right - Source.Left, Source.Bottom - Source.Top,
+          CopyModeToRasterOp[CopyMode], False);
+      finally
+        Canvas.Stop;
+      end;
+    finally
+      Stop;
+    end;
+  end;  
+end;
+
 
 function PatBlt(Handle: QPainterH; X, Y, Width, Height: Integer; WinRop: Cardinal): LongBool;
 begin
@@ -4444,7 +4533,7 @@ begin
       OffsetRect(R, R2.Left, 0);
     if R.Top <> R2.Top then
       OffsetRect(R, 0, R2.Top);
-    (*)  
+    (*)
 //    QPainter_boundingRect(Handle, @R, @R, Flags and not $3F{Alignment},
 //                          @Caption, -1, nil);
     Result := R.Bottom - R.Top;
@@ -4473,7 +4562,7 @@ function DrawTextW(Handle :QPainterH; Text: PWideChar; Len: Integer;
 var
   WText: WideString;
 begin
-  WText := Text;  
+  WText := Text;
   Result := DrawText(Handle, WText, Len, R, WinFlags);
   if (DT_MODIFYSTRING and WinFlags <> 0) and (Text <> nil) then
   begin
@@ -4481,6 +4570,31 @@ begin
     //WStrCopy(Text, PChar(AText));
   end;
 end;
+
+function DrawTextW(Canvas :TCanvas; Text: PWideChar; Len: Integer;
+  var R: TRect; WinFlags: Integer): Integer;
+begin
+  with Canvas do
+  begin
+    Start;
+    RequiredState(Canvas, [csHandleValid, csBrushValid, csFontValid]);
+    Result := DrawTextW(Handle, Text, Len, R, WinFlags);
+    Stop;
+  end;
+end;
+
+function DrawText(Canvas :TCanvas; Text: PAnsiChar; Len: Integer;
+  var R: TRect; WinFlags: Integer): Integer;
+begin
+  with Canvas do
+  begin
+    Start;
+    RequiredState(Canvas, [csHandleValid, csBrushValid, csFontValid]);
+    Result := DrawText(Handle, Text, Len, R, WinFlags);
+    Stop;
+  end;
+end;
+
 
 function DrawTextEx(Handle: QPainterH; var Text: WideString; Len: Integer;
   var R: TRect; WinFlags: Integer; DTParams: Pointer): Integer; overload;
@@ -7385,6 +7499,29 @@ procedure InitGetTickCount;
 begin
   gettimeofday(StartTimeVal, nil);
 end;
+
+// Provider helpers
+
+function Succeeded(Res: HResult): Boolean;
+begin
+  Result := Res and $80000000 = 0;
+end;
+
+function Failed(Res: HResult): Boolean;
+begin
+  Result := Res and $80000000 <> 0;
+end;
+
+function ResultCode(Res: HResult): Integer;
+begin
+  Result := Res and $0000FFFF;
+end;
+
+function CoCreateGUID(out Guid: TGUID): HResult;
+begin
+  Result := CreateGuid(Guid);
+end;
+
 
 {$ENDIF LINUX}
 
