@@ -11,7 +11,10 @@ if %ROOT%!==! SET ROOT=C:\Program Files\Delphi7
 
 SET MAKE=%ROOT%\bin\make.exe
 
-if NOT EXIST "%MAKE%" SET MAKE=make
+if EXIST "%MAKE%" goto next
+  SET MAKE=make
+  SET ROOT=
+:next
 
 cd ..\devtools
 if NOT EXIST bin\pg.exe %MAKE% pg.exe
@@ -39,3 +42,5 @@ echo                   Defaults to C:\Program files\Delphi7
 echo.
 :end
 
+SET ROOT=
+SET MAKE=

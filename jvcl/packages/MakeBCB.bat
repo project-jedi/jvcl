@@ -6,6 +6,8 @@
 : some compulsory parameters
 :
 : ---------------------------------------------------------------------
+SET OLDPATH=%PATH%
+
 if %1!==! goto help
 if %2!==! goto help
 if %3!==! goto help
@@ -81,3 +83,13 @@ echo Any additional argument (up to the 9th) will be passed to make
 echo.
 :end
 
+SET PATH=%OLDPATH%
+
+SET PACKAGE=
+SET DIR=
+SET ROOT=
+SET JCLDIR=
+SET BPILIBDIR=
+SET BPLDIR=
+SET MAKE=
+SET ADDFLAGS=
