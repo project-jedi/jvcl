@@ -99,7 +99,7 @@ unit JvDBImage;
 interface
 
 uses
-  Windows, Messages, Classes, Graphics, Controls, Clipbrd, DB, DBCtrls; 
+  Windows, Messages, Classes, Graphics, Controls, Clipbrd, DB, DBCtrls, Forms, Contnrs; 
 
 type
   TJvGetGraphicClassEvent = procedure(Sender: TObject; Stream: TMemoryStream;
