@@ -28,7 +28,7 @@ unit JvParameterListMainForm;
 
 interface
 
-{.$DEFINE INCLUDE_DEVEXP_CX}
+{$DEFINE INCLUDE_DEVEXP_CX}
 
 uses
   Windows, Messages, SysUtils, {Variants, }Classes, Graphics, Controls, Forms,
@@ -45,7 +45,7 @@ uses
   JvAppRegistryStorage, JvDynControlEngine, ComCtrls, Buttons, JvBitBtn,
   JvCombobox, CheckLst, ShlObj, ExtDlgs, JvImage,
   JvMaskEdit, JvSpin, JvBaseEdits, JvGroupBox, JvExStdCtrls,
-  JvExExtCtrls, JvAppXMLStorage, JvCaesarCipher, JvVigenereCipher;
+  JvExExtCtrls, JvAppXMLStorage, JvCaesarCipher, JvVigenereCipher, JvCipher;
 
 type
   TForm1 = class (TForm)
@@ -203,11 +203,14 @@ begin
           else
             cxProperties.LookAndFeel.Kind := lfStandard;
         end;
-        CxProperties.StyleController.Style.Shadow := ShadowCheckBox.Checked;
-        if ThickLinesCheckBox.Checked then
-          CxProperties.StyleController.Style.BorderStyle := ebsThick
-        else
-          CxProperties.StyleController.Style.BorderStyle := ebsNone;
+        if Assigned(CxProperties.StyleController) then
+        begin
+          CxProperties.StyleController.Style.Shadow := ShadowCheckBox.Checked;
+          if ThickLinesCheckBox.Checked then
+            CxProperties.StyleController.Style.BorderStyle := ebsThick
+          else
+            CxProperties.StyleController.Style.BorderStyle := ebsNone;
+        end;
       end;
     {$ENDIF}
     Parameter := tjvTimeParameter.Create(ParameterList);
@@ -343,6 +346,20 @@ begin
       ItemList.Add('Listbox Test&3');
       Height := 80;
       Width  := 80;
+    end;
+    ParameterList.AddParameter(Parameter);
+    Parameter := tjvCheckListBoxParameter.Create(ParameterList);
+    with tjvCheckListBoxParameter(Parameter) do
+    begin
+      SearchName := 'CheckListBoxTest';
+      Caption    := '&CheckListBoxTest';
+      ItemList.Add('CheckListBox Test&1');
+      ItemList.Add('CheckListBox Test&2');
+      ItemList.Add('CheckListBox Test&3');
+      AddCheckListBoxItem('CheckListBox Header&1', cbUnchecked, False, True);
+      AddCheckListBoxItem('CheckListBox Test&4', cbUnchecked);
+      Height := 80;
+      Width  := 180;
     end;
     ParameterList.AddParameter(Parameter);
     Parameter := tjvImageParameter.Create(ParameterList);
@@ -717,11 +734,14 @@ begin
       else
         cxProperties.LookAndFeel.Kind := lfStandard;
     end;
-    CxProperties.StyleController.Style.Shadow := ShadowCheckBox.Checked;
-    if ThickLinesCheckBox.Checked then
-      CxProperties.StyleController.Style.BorderStyle := ebsThick
-    else
-      CxProperties.StyleController.Style.BorderStyle := ebsSingle;
+    if Assigned(CxProperties.StyleController) then
+    begin
+      CxProperties.StyleController.Style.Shadow := ShadowCheckBox.Checked;
+      if ThickLinesCheckBox.Checked then
+        CxProperties.StyleController.Style.BorderStyle := ebsThick
+      else
+        CxProperties.StyleController.Style.BorderStyle := ebsSingle;
+    end;
   end;
   {$ENDIF}
 end;
@@ -815,16 +835,16 @@ end;
 procedure TForm1.JvAppRegistryStorageDecryptPropertyValue(
   var Value: String);
 begin
-  Cipher.Encoded := Value;
-  Value := Cipher.Decoded;
+//  Cipher.Encoded := Value;
+//  Value := Cipher.Decoded;
 //  Value := Copy(Value, 3, Length(Value)-4);
 end;
 
 procedure TForm1.JvAppRegistryStorageEncryptPropertyValue(
   var Value: String);
 begin
-  Cipher.Decoded := Value;
-  Value := Cipher.Encoded;
+//  Cipher.Decoded := Value;
+//  Value := Cipher.Encoded;
 //  Value := '##'+Value+'##';
 end;
 

@@ -191,6 +191,20 @@ type
     procedure ControlSetOnDblClick(Value: TNotifyEvent);
   end;
 
+  IJvDynControlCheckListBox = interface
+    ['{9C50DD6C-E147-4719-A4E9-7F11AD45606C}']
+    procedure ControlSetAllowGrayed(Value: Boolean);
+    procedure ControlSetChecked(Index: Integer; Value: Boolean);
+    procedure ControlSetItemEnabled(Index: Integer; Value: Boolean);
+    procedure ControlSetHeader(Index: Integer; Value: Boolean);
+    procedure ControlSetState(Index: Integer; Value: TCheckBoxState);
+    function ControlGetChecked(Index: Integer): Boolean;
+    function ControlGetItemEnabled(Index: Integer): Boolean;
+    function ControlGetHeader(Index: Integer): Boolean;
+    function ControlGetState(Index: Integer): TCheckBoxState;
+  end;
+
+
 implementation
 
 end.

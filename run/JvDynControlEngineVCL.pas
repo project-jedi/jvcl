@@ -36,11 +36,11 @@ uses
   Classes,
   {$IFDEF VCL}
   Controls, StdCtrls, ExtCtrls, ComCtrls, Mask, Forms, Graphics,
-  Buttons, Dialogs, FileCtrl, ExtDlgs,
+  Buttons, Dialogs, FileCtrl, ExtDlgs, CheckLst,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QControls, QStdCtrls, QExtCtrls, QComCtrls, QMask, QForms, QGraphics,
-  QButtons, QDialogs, QFileCtrls, QExtDlgs, Types,
+  QButtons, QDialogs, QFileCtrls, QExtDlgs, Types, QCheckLst,
   {$ENDIF VisualCLX}
   JvDynControlEngine, JvDynControlEngineIntf;
 
@@ -335,6 +335,40 @@ type
     function ControlGetItems: TStrings;
 
     procedure ControlSetOnDblClick(Value: TNotifyEvent);
+  end;
+
+  TJvDynControlVCLCheckListBox = class (TCheckListBox, IUnknown, IJvDynControl,
+    IJvDynControlData, IJvDynControlItems, IJvDynControlDblClick,
+    IJvDynControlCheckListBox)
+  public
+    procedure ControlSetDefaultProperties;
+    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetTabOrder(Value: Integer);
+
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnChange(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
+
+    procedure ControlSetSorted(Value: Boolean);
+    procedure ControlSetItems(Value: TStrings);
+    function ControlGetItems: TStrings;
+
+    procedure ControlSetOnDblClick(Value: TNotifyEvent);
+
+    //IJvDynControlCheckListBox = interface
+    procedure ControlSetAllowGrayed(Value: Boolean);
+    procedure ControlSetChecked(Index: Integer; Value: Boolean);
+    procedure ControlSetItemEnabled(Index: Integer; Value: Boolean);
+    procedure ControlSetHeader(Index: Integer; Value: Boolean);
+    procedure ControlSetState(Index: Integer; Value: TCheckBoxState);
+    function ControlGetChecked(Index: Integer): Boolean;
+    function ControlGetItemEnabled(Index: Integer): Boolean;
+    function ControlGetHeader(Index: Integer): Boolean;
+    function ControlGetState(Index: Integer): TCheckBoxState;
   end;
 
   TJvDynControlVCLComboBox = class (TComboBox, IUnknown, IJvDynControl,
@@ -1457,6 +1491,129 @@ begin
   OnDblClick := Value;
 end;
 
+//=== TJvDynControlVCLCheckListBox ================================================
+
+procedure TJvDynControlVCLCheckListBox.ControlSetDefaultProperties;
+begin
+end;
+
+procedure TJvDynControlVCLCheckListBox.ControlSetCaption(const Value: string);
+begin
+end;
+
+procedure TJvDynControlVCLCheckListBox.ControlSetTabOrder(Value: Integer);
+begin
+  TabOrder := Value;
+end;
+
+procedure TJvDynControlVCLCheckListBox.ControlSetOnEnter(Value: TNotifyEvent);
+begin
+  OnEnter := Value;
+end;
+
+procedure TJvDynControlVCLCheckListBox.ControlSetOnExit(Value: TNotifyEvent);
+begin
+  OnExit := Value;
+end;
+
+procedure TJvDynControlVCLCheckListBox.ControlSetOnChange(Value: TNotifyEvent);
+begin
+//  OnChange := Value;
+end;
+
+procedure TJvDynControlVCLCheckListBox.ControlSetOnClick(Value: TNotifyEvent);
+begin
+  OnClick := Value;
+end;
+
+procedure TJvDynControlVCLCheckListBox.ControlSetValue(Value: Variant);
+begin
+  if VarType(Value) in [varSmallInt, varInteger] then
+    ItemIndex := Value
+  else
+    try
+      ItemIndex := Value
+    except
+      on E: Exception do
+        ItemIndex := Items.IndexOf(Value);
+    end;
+end;
+
+function TJvDynControlVCLCheckListBox.ControlGetValue: Variant;
+begin
+  Result := ItemIndex;
+end;
+
+procedure TJvDynControlVCLCheckListBox.ControlSetSorted(Value: Boolean);
+begin
+  Sorted := Value;
+end;
+
+procedure TJvDynControlVCLCheckListBox.ControlSetItems(Value: TStrings);
+begin
+  Items.Assign(Value);
+end;
+
+function TJvDynControlVCLCheckListBox.ControlGetItems: TStrings;
+begin
+  Result := Items;
+end;
+
+procedure TJvDynControlVCLCheckListBox.ControlSetOnDblClick(Value: TNotifyEvent);
+begin
+  OnDblClick := Value;
+end;
+
+//IJvDynControlCheckListBox = interface
+procedure TJvDynControlVCLCheckListBox.ControlSetAllowGrayed(Value: Boolean);
+begin
+  AllowGrayed := Value;
+end;
+
+procedure TJvDynControlVCLCheckListBox.ControlSetChecked(Index: Integer; Value: Boolean);
+begin
+  Checked[Index] := Value;
+end;
+
+procedure TJvDynControlVCLCheckListBox.ControlSetItemEnabled(Index: Integer; Value: Boolean);
+begin
+  ItemEnabled[Index] := Value;
+end;
+
+procedure TJvDynControlVCLCheckListBox.ControlSetHeader(Index: Integer; Value: Boolean);
+begin
+  {$IFDEF VCL}
+  Header[Index] := Value;
+  {$ENDIF}
+end;
+
+procedure TJvDynControlVCLCheckListBox.ControlSetState(Index: Integer; Value: TCheckBoxState);
+begin
+  State[Index] := Value;
+end;
+
+function TJvDynControlVCLCheckListBox.ControlGetChecked(Index: Integer): Boolean;
+begin
+  Result := Checked[Index];
+end;
+
+function TJvDynControlVCLCheckListBox.ControlGetItemEnabled(Index: Integer): Boolean;
+begin
+  Result := ItemEnabled[Index];
+end;
+
+function TJvDynControlVCLCheckListBox.ControlGetHeader(Index: Integer): Boolean;
+begin
+  {$IFDEF VCL}
+  Result := Header[Index];
+  {$ENDIF}
+end;
+
+function TJvDynControlVCLCheckListBox.ControlGetState(Index: Integer): TCheckBoxState;
+begin
+  Result := State[Index];
+end;
+
 //=== TJvDynControlVCLComboBox ===============================================
 
 procedure TJvDynControlVCLComboBox.ControlSetDefaultProperties;
@@ -1812,6 +1969,7 @@ begin
   RegisterControl(jctCheckBox, TJvDynControlVCLCheckBox);
   RegisterControl(jctComboBox, TJvDynControlVCLComboBox);
   RegisterControl(jctListBox, TJvDynControlVCLListBox);
+  RegisterControl(jctCheckListBox, TJvDynControlVCLCheckListBox);
   RegisterControl(jctRadioGroup, TJvDynControlVCLRadioGroup);
   {$IFDEF VCL}
   RegisterControl(jctDateTimeEdit, TJvDynControlVCLDateTimeEdit);

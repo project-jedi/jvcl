@@ -41,7 +41,7 @@ type
   TJvDynControlType =
     (jctLabel, jctStaticText, jctPanel, jctScrollBox,
     jctEdit, jctCheckBox, jctComboBox, jctGroupBox, jctImage, jctRadioGroup,
-    jctMemo, jctListBox, jctDateTimeEdit, jctDateEdit, jctTimeEdit,
+    jctMemo, jctListBox, jctCheckListBox, jctDateTimeEdit, jctDateEdit, jctTimeEdit,
     jctCalculateEdit, jctSpinEdit, jctDirectoryEdit, jctFileNameEdit,
     jctButton, jctButtonEdit, jctForm);
 
@@ -94,6 +94,8 @@ type
       const AControlName: string): TWinControl; virtual;
     function CreateListBoxControl(AOwner: TComponent; AParentControl: TWinControl;
       const AControlName: string; AItems: TStrings): TWinControl; virtual;
+    function CreateCheckListBoxControl(AOwner: TComponent;
+      AParentControl: TWinControl; const AControlName: string; AItems: TStrings): TWinControl;
     function CreateDateTimeControl(AOwner: TComponent; AParentControl: TWinControl;
       const AControlName: string): TWinControl; virtual;
     function CreateDateControl(AOwner: TComponent; AParentControl: TWinControl;
@@ -512,6 +514,17 @@ var
   DynCtrlItems: IJvDynControlItems;
 begin
   Result := TWinControl(CreateControl(jctListBox, AOwner, AParentControl, AControlName));
+  if not Supports(Result, IJvDynControlItems, DynCtrlItems) then
+    raise EIntfCastError.CreateRes(@RsEIntfCastError);
+  DynCtrlItems.ControlSetItems(AItems);
+end;
+
+function TJvDynControlEngine.CreateCheckListBoxControl(AOwner: TComponent;
+  AParentControl: TWinControl; const AControlName: string; AItems: TStrings): TWinControl;
+var
+  DynCtrlItems: IJvDynControlItems;
+begin
+  Result := TWinControl(CreateControl(jctCheckListBox, AOwner, AParentControl, AControlName));
   if not Supports(Result, IJvDynControlItems, DynCtrlItems) then
     raise EIntfCastError.CreateRes(@RsEIntfCastError);
   DynCtrlItems.ControlSetItems(AItems);
