@@ -187,7 +187,7 @@ begin
     {$IFDEF VCl}
     if Ctl3D then
     {$ELSE}
-    if BorderStyle = bsSunken3d then
+    if True then
     {$ENDIF VCL}
     begin
       Inc(R.Left);
