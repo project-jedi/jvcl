@@ -428,20 +428,20 @@ begin
     end
     else
     {$ENDIF JVCLThemesEnabled}
-    with Canvas do
-    begin
-      Font.Name := 'Marlett';
-      Font.Charset := DEFAULT_CHARSET;
-      Font.Size := 12;
-      Canvas.Font.Style := [];
-      Canvas.Font.Color := clBtnShadow;
-      Brush.Style := bsClear;
-      X := ClientWidth - GetSystemMetrics(SM_CXVSCROLL) - BevelWidth - 2;
-      Y := ClientHeight - GetSystemMetrics(SM_CYHSCROLL) - BevelWidth - 2;
-      if Transparent then
-        SetBkMode(Handle, BkModeTransparent);
-      TextOut(X, Y, 'o');
-    end;
+      with Canvas do
+      begin
+        Font.Name := 'Marlett';
+        Font.Charset := DEFAULT_CHARSET;
+        Font.Size := 12;
+        Canvas.Font.Style := [];
+        Canvas.Font.Color := clBtnShadow;
+        Brush.Style := bsClear;
+        X := ClientWidth - GetSystemMetrics(SM_CXVSCROLL) - BevelWidth - 2;
+        Y := ClientHeight - GetSystemMetrics(SM_CYHSCROLL) - BevelWidth - 2;
+        if Transparent then
+          SetBkMode(Handle, BkModeTransparent);
+        TextOut(X, Y, 'o');
+      end;
 end;
 
 procedure TJvPanel.AdjustSize;

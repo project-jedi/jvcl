@@ -85,7 +85,6 @@ type
     JvOutOfSpaceDlg1: TJvDiskFullDialog;
     JvPageSetupDialog1: TJvPageSetupDialog;
     JvPageSetupTitledDialog1: TJvPageSetupTitledDialog;
-    JvBrowseFolder2: TJvBrowseForFolderDialog;
     JvOrganizeFavoritesDialog1: TJvOrganizeFavoritesDialog;
     JvAppletDialog1: TJvAppletDialog;
     JvNewLinkDialog1: TJvNewLinkDialog;
@@ -101,6 +100,7 @@ type
     Button41: TButton;
     JvOpenDialog1: TJvOpenDialog;
     JvSaveDialog1: TJvSaveDialog;
+    Label1: TLabel;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -131,15 +131,16 @@ type
     procedure Button41Click(Sender: TObject);
     procedure Button32Click(Sender: TObject);
     procedure Button33Click(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
   private
-    { Private declarations }
   public
-    { Public declarations }
   end;
 var
   Form1: TForm1;
+
 implementation
-{$R *.DFM}
+
+{$R *.dfm}
 
 procedure TForm1.Button1Click(Sender: TObject);
 begin
@@ -158,7 +159,7 @@ end;
 
 procedure TForm1.Button4Click(Sender: TObject);
 begin
-  JvShellAboutDialog1.execute;
+  JvShellAboutDialog1.Execute;
 end;
 
 procedure TForm1.Button5Click(Sender: TObject);
@@ -170,7 +171,7 @@ procedure TForm1.Button8Click(Sender: TObject);
 begin
   { TODO : BUG - This routine doesn't work }
   { DONE -opeter3 : Works on Win2k... }
-  JvAddPrinterDialog1.execute;
+  JvAddPrinterDialog1.Execute;
 end;
 
 procedure TForm1.Button9Click(Sender: TObject);
@@ -180,7 +181,7 @@ end;
 
 procedure TForm1.Button10Click(Sender: TObject);
 begin
-  JvDisconnectNetwork1.execute;
+  JvDisconnectNetwork1.Execute;
 end;
 
 procedure TForm1.Button18Click(Sender: TObject);
@@ -234,9 +235,10 @@ begin
 end;
 
 procedure TForm1.Button29Click(Sender: TObject);
-var St: string;
+var
+  St: string;
 begin
-  St := GetSpecialFolderpath('My Computer', false);
+  St := GetSpecialFolderPath('My Computer', False);
   JvObjectPropertiesDlg1.ObjectName := St;
   JvObjectPropertiesDlg1.Execute;
 end;
@@ -253,12 +255,12 @@ end;
 
 procedure TForm1.Button39Click(Sender: TObject);
 begin
-  JvOrganizeFavoritesDialog1.execute;
+  JvOrganizeFavoritesDialog1.Execute;
 end;
 
 procedure TForm1.Button38Click(Sender: TObject);
 var
-  WinDir: array[0..255] of char;
+  WinDir: array [0..255] of Char;
 begin
   GetWindowsDirectory(WinDir, SizeOf(WinDir));
 
@@ -305,6 +307,12 @@ end;
 procedure TForm1.Button33Click(Sender: TObject);
 begin
   JvSaveDialog1.Execute;
+end;
+
+procedure TForm1.FormActivate(Sender: TObject);
+begin
+  Form1.ClientHeight := PageControl1.Height;
+  Form1.ClientWidth := PageControl1.Width;
 end;
 
 end.

@@ -5,6 +5,8 @@ object frmMain: TfrmMain
   Height = 313
   Caption = 'JvDBGridExport Demo'
   Color = clBtnFace
+  Constraints.MinHeight = 200
+  Constraints.MinWidth = 300
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -12,6 +14,8 @@ object frmMain: TfrmMain
   Font.Style = []
   Menu = MainMenu1
   OldCreateOrder = False
+  Position = poDesktopCenter
+  Scaled = False
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
@@ -22,10 +26,10 @@ object frmMain: TfrmMain
     Height = 245
     Align = alClient
     DataSource = DataSource1
-    Font.Charset = DEFAULT_CHARSET
+    Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
-    Font.Height = -21
-    Font.Name = 'MS Shell Dlg 2'
+    Font.Height = -16
+    Font.Name = 'Tahoma'
     Font.Style = []
     Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgCancelOnExit, dgMultiSelect]
     ParentFont = False
@@ -63,17 +67,17 @@ object frmMain: TfrmMain
         Color = clInfoBk
         Expanded = False
         FieldName = 'Size'
-        Font.Charset = DEFAULT_CHARSET
+        Font.Charset = ANSI_CHARSET
         Font.Color = clWindowText
-        Font.Height = -20
-        Font.Name = 'MS Mincho'
+        Font.Height = -16
+        Font.Name = 'Courier New'
         Font.Style = []
         Title.Alignment = taRightJustify
         Title.Color = clHighlight
-        Title.Font.Charset = DEFAULT_CHARSET
+        Title.Font.Charset = ANSI_CHARSET
         Title.Font.Color = clWhite
-        Title.Font.Height = -23
-        Title.Font.Name = 'MS Mincho'
+        Title.Font.Height = -21
+        Title.Font.Name = 'Courier New'
         Title.Font.Style = []
         Width = 100
         Visible = True
@@ -91,10 +95,10 @@ object frmMain: TfrmMain
           'T'
           '')
         Title.Color = clCaptionText
-        Title.Font.Charset = DEFAULT_CHARSET
+        Title.Font.Charset = ANSI_CHARSET
         Title.Font.Color = clWindowText
-        Title.Font.Height = -20
-        Title.Font.Name = 'MS Shell Dlg 2'
+        Title.Font.Height = -21
+        Title.Font.Name = 'Tahoma'
         Title.Font.Style = [fsItalic]
         Width = 100
         Visible = True
@@ -105,7 +109,7 @@ object frmMain: TfrmMain
         FieldName = 'Type'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
-        Font.Height = -19
+        Font.Height = -16
         Font.Name = 'Comic Sans MS'
         Font.Style = []
         Title.Alignment = taCenter
@@ -115,7 +119,7 @@ object frmMain: TfrmMain
         Title.Font.Height = -19
         Title.Font.Name = 'Comic Sans MS'
         Title.Font.Style = [fsUnderline]
-        Width = 50
+        Width = 152
         Visible = True
       end>
   end
@@ -136,7 +140,7 @@ object frmMain: TfrmMain
   end
   object MainMenu1: TMainMenu
     Left = 48
-    Top = 24
+    Top = 136
     object File1: TMenuItem
       Caption = 'File'
       object Export1: TMenuItem
@@ -184,13 +188,13 @@ object frmMain: TfrmMain
       'xml'
     Options = [ofOverwritePrompt, ofHideReadOnly, ofEnableSizing]
     OnTypeChange = SaveDialog1TypeChange
-    Left = 56
-    Top = 72
+    Left = 48
+    Top = 184
   end
   object DataSource1: TDataSource
     OnDataChange = DataSource1DataChange
-    Left = 104
-    Top = 24
+    Left = 128
+    Top = 136
   end
   object JvProgressDialog1: TJvProgressDialog
     Image.Data = {
@@ -229,7 +233,7 @@ object frmMain: TfrmMain
       FFF8CFFF700009C00000020C1E00040802F7080000030C00000031C00000020C
       2C0000030C00000031C00000300C0100000031C000000001}
     ShowCancel = False
-    Left = 108
-    Top = 72
+    Left = 128
+    Top = 184
   end
 end

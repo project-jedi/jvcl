@@ -1,16 +1,21 @@
 object Form1: TForm1
   Left = 185
   Top = 156
-  Width = 391
-  Height = 456
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsSingle
   Caption = 'JvDBMaskEdit Demo'
+  ClientHeight = 426
+  ClientWidth = 383
   Color = clBtnFace
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  Position = poDesktopCenter
+  Scaled = False
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -31,7 +36,7 @@ object Form1: TForm1
   object DBCtrlGrid1: TDBCtrlGrid
     Left = 24
     Top = 64
-    Width = 337
+    Width = 339
     Height = 255
     Anchors = [akLeft, akTop, akBottom]
     ColCount = 1
@@ -103,11 +108,12 @@ object Form1: TForm1
     Changed = False
     CsvFieldDef = 'NAME,PHONE'
     CsvUniqueKeys = False
+    ExtendedHeaderInfo = False
     CaseInsensitive = False
     AutoBackupCount = 0
     StoreDefs = True
-    Left = 228
-    Top = 332
+    Left = 144
+    Top = 176
     object JvCsvDataSet1NAME: TStringField
       FieldName = 'NAME'
       Size = 80
@@ -119,7 +125,7 @@ object Form1: TForm1
   end
   object DataSource1: TDataSource
     DataSet = JvCsvDataSet1
-    Left = 308
-    Top = 332
+    Left = 224
+    Top = 176
   end
 end

@@ -18,9 +18,7 @@ type
     procedure Button1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
-    { Private declarations }
   public
-    { Public declarations }
   end;
 
 var
@@ -32,16 +30,17 @@ implementation
 
 procedure TForm1.Button1Click(Sender: TObject);
 begin
-  JvDBHTLabel1.Mask := StringReplace(memFormat.Lines.Text,#13#10,'',[rfReplaceAll]);
+  JvDBHTLabel1.Mask := StringReplace(memFormat.Lines.Text, #13#10, '', [rfReplaceAll]);
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-  if not FileExists(JvCsvDataSet1.Filename) then
-    ShowMessage('Data file not found!')
+  if not FileExists(JvCsvDataSet1.FileName) then
+    ShowMessageFmt('Data file "%s" not found!', [JvCsvDataSet1.FileName])
   else
     JvCsvDataSet1.Open;
   memFormat.Lines.Text := JvDBHTLabel1.Mask;
 end;
 
 end.
+

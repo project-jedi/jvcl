@@ -128,7 +128,7 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvTabControl.KeyDown(var Key: Word; Shift: TShiftState);
 begin
-  if (Key = VK_TAB )  and (ssCtrl in Shift) then
+  if (Key = VK_TAB) and (ssCtrl in Shift) then
   begin
     if ssShift in Shift then
     begin
@@ -142,7 +142,7 @@ begin
     Key := 0 ;
   end
   else
-    inherited;
+    inherited KeyDown(Key, Shift);
 end;
 {$ENDIF VisualCLX}
 

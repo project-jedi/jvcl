@@ -43,17 +43,13 @@ type
     JvDomainUpDown1: TJvDomainUpDown;
     Button1: TButton;
     procedure Button1Click(Sender: TObject);
-    procedure WebBrowser1StatusTextChange(Sender: TObject;
-      const Text: WideString);
-    procedure WebBrowser1TitleChange(Sender: TObject;
-      const Text: WideString);
+    procedure WebBrowser1StatusTextChange(Sender: TObject; const Text: WideString);
+    procedure WebBrowser1TitleChange(Sender: TObject; const Text: WideString);
     procedure WebBrowser1NavigateComplete2(Sender: TObject;
       const pDisp: IDispatch; var URL: OleVariant);
     procedure FormCreate(Sender: TObject);
   private
-    { Private declarations }
   public
-    { Public declarations }
   end;
 
 var

@@ -1,12 +1,13 @@
 object MainForm: TMainForm
   Left = 292
   Top = 243
-  BorderIcons = [biSystemMenu]
+  BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'MainForm'
   ClientHeight = 324
   ClientWidth = 419
   Color = clBtnFace
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -15,6 +16,7 @@ object MainForm: TMainForm
   KeyPreview = True
   OldCreateOrder = False
   Position = poScreenCenter
+  Scaled = False
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
@@ -25,6 +27,7 @@ object MainForm: TMainForm
     Height = 274
     ActivePage = TabSheet4
     Align = alClient
+    TabIndex = 0
     TabOrder = 0
     object TabSheet4: TTabSheet
       Caption = '.Net Controls'

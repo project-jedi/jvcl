@@ -6,6 +6,8 @@ object Form1: TForm1
   ClientHeight = 330
   ClientWidth = 472
   Color = clBtnFace
+  Constraints.MinHeight = 200
+  Constraints.MinWidth = 300
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -64,31 +66,12 @@ object Form1: TForm1
     Top = 16
   end
   object JvCsvDataSet1: TJvCsvDataSet
-    FieldDefs = <
-      item
-        Name = 'FILENAME'
-        DataType = ftString
-        Size = 255
-      end
-      item
-        Name = 'SIZE'
-        DataType = ftInteger
-      end
-      item
-        Name = 'ATTRIBUTES'
-        DataType = ftString
-        Size = 64
-      end
-      item
-        Name = 'TYPE'
-        DataType = ftString
-        Size = 255
-      end>
-    FileName = 'TestData2.csv'
+    FileName = 'TestData.csv'
     ReadOnly = True
     Changed = False
     CsvFieldDef = 'FILENAME:$255,SIZE:%,ATTRIBUTES:$64,TYPE:$255'
     CsvUniqueKeys = False
+    ExtendedHeaderInfo = False
     CaseInsensitive = True
     SavesChanges = False
     AutoBackupCount = 0
