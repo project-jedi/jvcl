@@ -36,11 +36,11 @@ uses
   Controls, Forms, Dialogs, DB;
 
 type
-  TglExportCaptions = (fecDisplayLabels, fecFieldNames, fecNone);
+  TJvExportCaptions = (fecDisplayLabels, fecFieldNames, fecNone);
   TJvExportGetValue = procedure (Sender:TObject; var Value:string) of object;
-  TExportRecordEvent = procedure(Sender: TObject; var AllowExport: boolean) of object;
-  TExportFieldEvent = procedure(Sender: TObject; const Field: TField; var FieldValue: string) of object;
-  TGetLineFontEvent = procedure(Sender: TObject; LineNo: integer; const Value:string; Font: TFont) of object;
+  TJvExportRecordEvent = procedure(Sender: TObject; var AllowExport: boolean) of object;
+  TJvExportFieldEvent = procedure(Sender: TObject; const Field: TField; var FieldValue: string) of object;
+  TJvGetLineFontEvent = procedure(Sender: TObject; LineNo: integer; const Value:string; Font: TFont) of object;
 
   EJvgExportException = class(Exception)
   end;
@@ -49,15 +49,15 @@ type
   private
     FSaveToFileName: string;
     FDataSet: TDataSet;
-    FOnExportField: TExportFieldEvent;
-    FOnExportRecord: TExportRecordEvent;
+    FOnExportField: TJvExportFieldEvent;
+    FOnExportRecord: TJvExportRecordEvent;
     FOnGetCaption: TJvExportGetValue;
-    FCaptions: TglExportCaptions;
+    FCaptions: TJvExportCaptions;
     FTransliterateRusToEng: boolean;
     FMaxFieldSize: integer;
     FOnGetTableName: TJvExportGetValue;
     FOnProgress: TJvExportProgressEvent;
-    procedure SetCaptions(const Value: TglExportCaptions);
+    procedure SetCaptions(const Value: TJvExportCaptions);
     procedure SetDataSet(const Value: TDataSet);
     procedure SetSaveToFileName(const Value: string);
     procedure SetMaxFieldSize(const Value: integer);
@@ -71,7 +71,7 @@ type
     procedure Execute; virtual;
   protected
     property DataSet: TDataSet read FDataSet write SetDataSet;
-    property Captions: TglExportCaptions read FCaptions write SetCaptions;
+    property Captions: TJvExportCaptions read FCaptions write SetCaptions;
     property SaveToFileName: string read FSaveToFileName write
       SetSaveToFileName;
     property TransliterateRusToEng: boolean read FTransliterateRusToEng write
@@ -80,8 +80,8 @@ type
 
 
     property OnGetCaption: TJvExportGetValue read FOnGetCaption write FOnGetCaption;
-    property OnExportRecord: TExportRecordEvent read FOnExportRecord write FOnExportRecord;
-    property OnExportField: TExportFieldEvent read FOnExportField write FOnExportField;
+    property OnExportRecord: TJvExportRecordEvent read FOnExportRecord write FOnExportRecord;
+    property OnExportField: TJvExportFieldEvent read FOnExportField write FOnExportField;
     property OnProgress:TJvExportProgressEvent read FOnProgress write FOnProgress;
     property OnGetTableName:TJvExportGetValue read FOnGetTableName write FOnGetTableName;
   end;
@@ -94,13 +94,13 @@ type
     FAutoColumnFit: boolean;
     FExcelVisible: boolean;
     FCloseExcel: boolean;
-    FOnGetFooterLineFont: TGetLineFontEvent;
-    FOnGetHeaderLineFont: TGetLineFontEvent;
+    FOnGetFooterLineFont: TJvGetLineFontEvent;
+    FOnGetHeaderLineFont: TJvGetLineFontEvent;
     FSubHeader: TStringList;
     FSubHeaderFont: TFont;
     FHeaderFont: TFont;
     FFooterFont: TFont;
-    FOnGetSubHeaderLineFont: TGetLineFontEvent;
+    FOnGetSubHeaderLineFont: TJvGetLineFontEvent;
     function GetHeader: TStrings;
     function GetFooter: TStrings;
     function GetSubHeader: TStrings;
@@ -110,13 +110,10 @@ type
     procedure SetAutoColumnFit(const Value: boolean);
     procedure SetExcelVisible(const Value: boolean);
     procedure SetCloseExcel(const Value: boolean);
-    procedure SetOnGetFooterLineFont(const Value: TGetLineFontEvent);
-    procedure SetOnGetHeaderLineFont(const Value: TGetLineFontEvent);
     procedure SetSubHeader(const Value: TStrings);
     procedure SetFooterFont(const Value: TFont);
     procedure SetHeaderFont(const Value: TFont);
     procedure SetSubHeaderFont(const Value: TFont);
-    procedure SetOnGetSubHeaderLineFont(const Value: TGetLineFontEvent);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -140,12 +137,9 @@ type
     property ExcelVisible: boolean read FExcelVisible write SetExcelVisible;
     property CloseExcel: boolean read FCloseExcel write SetCloseExcel;
 
-    property OnGetHeaderLineFont: TGetLineFontEvent read FOnGetHeaderLineFont
-      write SetOnGetHeaderLineFont;
-    property OnGetSubHeaderLineFont: TGetLineFontEvent read
-      FOnGetSubHeaderLineFont write SetOnGetSubHeaderLineFont;
-    property OnGetFooterLineFont: TGetLineFontEvent read FOnGetFooterLineFont
-      write SetOnGetFooterLineFont;
+    property OnGetHeaderLineFont: TJvGetLineFontEvent read FOnGetHeaderLineFont write FOnGetHeaderLineFont;
+    property OnGetSubHeaderLineFont: TJvGetLineFontEvent read FOnGetSubHeaderLineFont write FOnGetSubHeaderLineFont;
+    property OnGetFooterLineFont: TJvGetLineFontEvent read FOnGetFooterLineFont write FOnGetFooterLineFont;
     property OnGetCaption;
     property OnExportRecord;
     property OnExportField;
@@ -243,7 +237,7 @@ begin
     ForceDirectories(ExtractFilePath(SaveToFileName));
 end;
 
-procedure TJvgCommonExport.SetCaptions(const Value: TglExportCaptions);
+procedure TJvgCommonExport.SetCaptions(const Value: TJvExportCaptions);
 begin
   FCaptions := Value;
 end;
@@ -334,7 +328,7 @@ var
   CellFont: TFont;
 
   procedure InsertStrings(Strings: TStrings; Font: TFont; GetLineFontEvent:
-    TGetLineFontEvent);
+    TJvGetLineFontEvent);
   var
     i: integer;
   begin
@@ -493,24 +487,6 @@ end;
 procedure TJvgExportExcel.SetHeaderFont(const Value: TFont);
 begin
   FHeaderFont.Assign(Value);
-end;
-
-procedure TJvgExportExcel.SetOnGetFooterLineFont(const Value:
-  TGetLineFontEvent);
-begin
-  FOnGetFooterLineFont := Value;
-end;
-
-procedure TJvgExportExcel.SetOnGetHeaderLineFont(const Value:
-  TGetLineFontEvent);
-begin
-  FOnGetHeaderLineFont := Value;
-end;
-
-procedure TJvgExportExcel.SetOnGetSubHeaderLineFont(const Value:
-  TGetLineFontEvent);
-begin
-  FOnGetSubHeaderLineFont := Value;
 end;
 
 function TJvgExportExcel.GetSubHeader: TStrings;
@@ -721,7 +697,7 @@ begin
     Inc(RecNo);
     DataSet.Next;
   end;
-   DoProgress(0, RecCount, RecCount, '');
+  DoProgress(0, RecCount, RecCount, '');
   XML.SaveToFile(self.FSaveToFileName);
 end;
 
