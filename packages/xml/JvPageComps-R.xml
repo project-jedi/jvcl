@@ -8,7 +8,7 @@
   <C5Libs/>
   <C6Libs/>
   <Requires>
-    <Package Name="JvCore-R" Targets="allbutclx" Condition=""/>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
     <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
     <Package Name="vcl50" Targets="C5,C5s,D5,D5s" Condition=""/>
     <Package Name="CJCL50" Targets="C5,C5s" Condition=""/>

@@ -29,7 +29,7 @@
     <File Name="..\..\run\JvChangeNotify.pas" Targets="windows" Formname="" Condition=""/>
     <File Name="..\..\run\JvClipboardMonitor.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvClipboardViewer.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvCommStatus.pas" Targets="windows" Formname="" Condition=""/>
+    <File Name="..\..\run\JvCommStatus.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvDdeCmd.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvDragDrop.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvFormPlacement.pas" Targets="all" Formname="" Condition=""/>
@@ -39,7 +39,7 @@
     <File Name="..\..\run\JvMRUList.pas" Targets="windows" Formname="" Condition=""/>
     <File Name="..\..\run\JvMRUManager.pas" Targets="windows" Formname="" Condition=""/>
     <File Name="..\..\run\JvNTEventLog.pas" Targets="windows" Formname="" Condition=""/>
-    <File Name="..\..\run\JvPerfMon95.pas" Targets="windows" Formname="" Condition=""/>
+    <File Name="..\..\run\JvPerfMon95.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvRas32.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvScreenResolution.pas" Targets="windows" Formname="" Condition=""/>
     <File Name="..\..\run\JvScreenSaver.pas" Targets="allbutclx" Formname="" Condition=""/>
@@ -47,7 +47,7 @@
     <File Name="..\..\run\JvShellHook.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvSHFileOperation.pas" Targets="windows" Formname="" Condition=""/>
     <File Name="..\..\run\JvSimpleXml.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvSoundControl.pas" Targets="windows" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSoundControl.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvThread.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvThreadTimer.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvTimer.pas" Targets="all" Formname="" Condition=""/>
@@ -56,8 +56,7 @@
     <File Name="..\..\common\Ras32.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\common\Hid.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\common\ModuleLoader.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\common\WinConvTypes.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\qcommon\QModuleLoader.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\common\WinConvTypes.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\common\DBT.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\common\SetupApi.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvAppXMLStorage.pas" Targets="all" Formname="" Condition=""/>

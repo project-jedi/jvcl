@@ -85,7 +85,7 @@
     <File Name="..\..\run\JvAppStorage.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvAppStorageSelectList.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvBaseDlg.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvCaret.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvCaret.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvResources.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvClipbrd.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvAutoComplete.pas" Targets="all" Formname="" Condition=""/>

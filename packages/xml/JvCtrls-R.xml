@@ -49,7 +49,7 @@
     <File Name="..\..\run\JvRollOut.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvScrollMax.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvScrollPanel.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvScrollText.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvScrollText.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvSpacer.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSpeedbar.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSpeedbarSetupForm.pas" Targets="all" Formname="JvSpeedbarSetupWindow" Condition=""/>
