@@ -41,6 +41,18 @@ Description
 See Also
   TJvDesktopAlertButtons
 ----------------------------------------------------------------------------------------------------
+@@TJvDesktopAlert.Close
+Summary
+  Closes the alert window.
+Description
+  Call Close to manually close the desktop alert form. Calling close also generates an OnClose event. Close
+  only closes the alert form if Showing returns true.
+Parameters
+  Immediate - If true, closes the form as if the close button was clicked. If false, fades the form according
+  to the value of FadeOutTime
+See Also
+  Execute, Showing, FadeOutTime, OnClose
+----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlert.Colors
 Summary
   Manages the colors used in the desktop alert window.
