@@ -25,13 +25,16 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
-{$I windowsonly.inc}
 
 unit JvValidatorsReg;
 
 interface
 
+{$IFDEF MSWINDOWS}
 {$R ..\resources\JvValidatorsReg.dcr}
+{$ELSE}
+{$R ../resources/JvValidatorsReg.dcr}
+{$ENDIF}
 
 procedure Register;
 

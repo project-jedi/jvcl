@@ -25,15 +25,21 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
-{$I windowsonly.inc}
 
 unit JvValidatorsEditorForm;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms,
   Dialogs, ComCtrls, ToolWin, StdCtrls, Menus, ActnList, ImgList,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms, QTypes, QExtCtrls,
+  QDialogs, QComCtrls, QToolWin, QStdCtrls, QMenus, QActnList, QImgList,
+  {$ENDIF}
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf, DesignWindows,
   {$ELSE}
@@ -142,7 +148,12 @@ uses
   TypInfo,
   JvErrorIndicator, JvDsgnConsts;
 
+{$IFDEF VCL}
 {$R *.dfm}
+{$ENDIF}
+{$IFDEF VisualCLX}
+{$R *.xfm}
+{$ENDIF}
 
 procedure ShowEditor(Designer: IDesigner; AValidator: TJvValidators);
 var

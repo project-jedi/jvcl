@@ -93,7 +93,12 @@ uses
   {$ENDIF MSWINDOWS}
   JvBaseDsgnFrame, JvConsts, JvDsgnConsts;
 
+{$IFDEF VCL}
 {$R *.dfm}
+{$ENDIF}
+{$IFDEF VisualCLX}
+{$R *.xfm}
+{$ENDIF}
 
 const
   cHeight = 'Height';

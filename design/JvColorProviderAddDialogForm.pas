@@ -32,8 +32,14 @@ unit JvColorProviderAddDialogForm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms, Dialogs,
   Buttons, StdCtrls,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms, QDialogs, QButtons, QStdCtrls,
+  {$ENDIF}
   JvColorProvider, JvDataProvider, JvDataProviderIntf, JvTypes;
 
 type
@@ -78,7 +84,12 @@ implementation
 uses
   JvConsts, JvDsgnConsts;
   
+{$IFDEF VCL}
 {$R *.dfm}
+{$ENDIF}
+{$IFDEF VisualCLX}
+{$R *.xfm}
+{$ENDIF}
 
 function DoAddDsgnColor(AColorType: TColorType; AProvider: IJvDataProvider;
   out NewColor: TColor): Boolean;

@@ -43,7 +43,12 @@ uses
   JvVigenereCipher, JvCabFile, JvCaesarCipher, JvGenetic,
   JvSerialMaker, JvXorCipher;
 
+{$IFDEF MSWINDOWS}
 {$R ..\resources\JvCryptReg.dcr}
+{$ENDIF}
+{$IFDEF LINUX}
+{$R ../resources/JvCryptReg.dcr}
+{$ENDIF}
 
 procedure Register;
 begin

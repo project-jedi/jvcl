@@ -31,8 +31,15 @@ unit JvCompEditorTemplateForm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms, Dialogs,
   ComCtrls, StdCtrls, Buttons, ExtCtrls,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms, QDialogs,
+  QComCtrls, QStdCtrls, QButtons, QExtCtrls,
+  {$ENDIF}
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, PropertyCategories,
   {$ELSE}
@@ -66,7 +73,12 @@ var
 
 implementation
 
+{$IFDEF VCL}
 {$R *.dfm}
+{$ENDIF}
+{$IFDEF VisualCLX}
+{$R *.xfm}
+{$ENDIF}
 
 procedure TJvgCompEditorTemplate.FormShow(Sender: TObject);
 begin

@@ -33,7 +33,13 @@ unit JvID3v2EditorForm;
 interface
 
 uses
-  Windows, Messages, Forms, StdCtrls, ExtCtrls, Menus, Classes, Controls,
+  Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Forms, StdCtrls, ExtCtrls, Menus, Controls,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QForms, QStdCtrls, QExtCtrls, QMenus, QControls,
+  {$ENDIF}
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf, DesignMenus, DesignWindows,
   {$ELSE}
@@ -138,10 +144,20 @@ procedure ShowFileInfo(AController: TJvID3Controller);
 implementation
 
 uses
-  Dialogs, Math, SysUtils,
+  {$IFDEF VCL}
+  Dialogs,
+  {$ELSE}
+  QDialogs,
+  {$ENDIF}
+  Math, SysUtils,
   JvID3v2DefineForm, JvTypes, JvDsgnConsts;
 
+{$IFDEF VCL}
 {$R *.dfm}
+{$ENDIF}
+{$IFDEF VisualCLX}
+{$R *.xfm}
+{$ENDIF}
 
 type
   TJvID3ControllerAccess = class(TJvID3Controller);

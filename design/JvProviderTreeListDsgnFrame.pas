@@ -95,7 +95,12 @@ uses
   CommCtrl,
   JvTypes, JvDsgnConsts, JvConsts;
 
+{$IFDEF VCL}
 {$R *.dfm}
+{$ENDIF}
+{$IFDEF VisualCLX}
+{$R *.xfm}
+{$ENDIF}
 
 function TfmeJvProviderTreeListDsgn.DoBeforeNew(Kind: Integer): Boolean;
 begin

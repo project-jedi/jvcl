@@ -35,7 +35,13 @@ procedure Register;
 implementation
 
 uses
-  Classes, Graphics,
+  Classes,
+  {$IFDEF VCL}
+  Graphics,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QGraphics, Types,
+  {$ENDIF}
   {$IFDEF COMPILER6_UP}
   DesignIntf,
   {$ELSE}
@@ -47,7 +53,12 @@ uses
   JvFormMagnet, JvAnimTitle, JvFormAutoSize, JvGradientCaption,
   JvGradientCaptionForm, JvFormWallpaperEditor;
 
+{$IFDEF MSWINDOWS}
 {$R ..\resources\JvAppFrmReg.dcr}
+{$ENDIF}
+{$IFDEF LINUX}
+{$R ../resources/JvAppFrmReg.dcr}
+{$ENDIF}
 
 procedure Register;
 begin

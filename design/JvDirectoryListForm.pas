@@ -30,7 +30,12 @@ unit JvDirectoryListForm;
 interface
 
 uses
-  Windows, SysUtils, Classes, Controls, Forms, StdCtrls, ComCtrls,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Controls, Forms, StdCtrls, ComCtrls,
+  {$ELSE}
+  QControls, QComCtrls, QStdCtrls
+  {$ENDIF}
   JvComponent;
 
 type
@@ -60,7 +65,12 @@ implementation
 uses
   JvJVCLUtils, JvJCLUtils, JvBrowseFolder, JvConsts;
 
+{$IFDEF VCL}
 {$R *.dfm}
+{$ENDIF}
+{$IFDEF VisualCLX}
+{$R *.xfm}
+{$ENDIF}
 
 function EditFolderList(Folders: TStrings): Boolean;
 var

@@ -46,8 +46,15 @@ unit JvWizardEditorForm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms, Dialogs,
   ActnList, ImgList, ComCtrls, StdCtrls, ToolWin, Menus,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms, QDialogs, Types, QTypes,
+  QActnList, QImgList, QComCtrls, QStdCtrls, QToolWin, QMenus,
+  {$ENDIF}
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, DesignWindows,
   {$ELSE}
@@ -150,7 +157,12 @@ uses
   JvDsgnConsts;
 {$ENDIF USEJVCL}
 
+{$IFDEF VCL}
 {$R *.dfm}
+{$ENDIF}
+{$IFDEF VisualCLX}
+{$R *.xfm}
+{$ENDIF}
 
 {$IFNDEF USEJVCL}
 resourcestring

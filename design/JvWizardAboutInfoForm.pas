@@ -42,13 +42,19 @@ interface
 {$I jvcl.inc}
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QStdCtrls, QExtCtrls, QGraphics, QControls, QForms, QDialogs,
+  {$ENDIF}
   {$IFDEF COMPILER6_UP}
-  DesignIntf, DesignEditors;
+  DesignIntf, DesignEditors,
   {$ELSE}
-  DsgnIntf;
+  DsgnIntf,
   {$ENDIF COMPILER6_UP}
+  SysUtils, Classes;
 
 const
   JvWizard_VERSIONSTRING = 'Version 1.70';
@@ -82,7 +88,12 @@ type
 
 implementation
 
+{$IFDEF VCL}
 {$R *.dfm}
+{$ENDIF}
+{$IFDEF VisualCLX}
+{$R *.xfm}
+{$ENDIF}
 
 //=== TJvWizardAboutDialogProperty ===========================================
 
@@ -119,11 +130,13 @@ begin
   lblCopyRight.Caption := 'Copyright © yuwei, 2001 - ' + FormatDateTime('yyyy', Now);
 end;
 
+{$IFDEF VCL}
 procedure TJvWizardAboutDialog.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
   Params.Style := (Params.Style or WS_POPUP) and (not WS_DLGFRAME);
 end;
+{$ENDIF}
 
 procedure TJvWizardAboutDialog.Panel1MouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);

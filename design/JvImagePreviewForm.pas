@@ -24,16 +24,22 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
-{$I windowsonly.inc}
 
 unit JvImagePreviewForm;
 
 interface
 
 uses
-  Windows, SysUtils, Classes, Graphics, Forms, Controls, StdCtrls, ExtCtrls,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Graphics, Forms, Controls, StdCtrls, ExtCtrls,
   FileCtrl, Buttons,
-  JvPicClip, JvFormPlacement, JvAppStorage, JvAppRegistryStorage, JvComponent;
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QStdCtrls, QFileCtrls, QExtCtrls, QControls, QButtons,
+  {$ENDIF}
+  JvPicClip, JvFormPlacement, JvAppStorage, JvAppRegistryStorage, JvComponent,
+  JvPlacemnt;
 
 type
   TImageForm = class(TJvForm)
@@ -84,7 +90,12 @@ uses
   Math,
   JvConsts, JvJVCLUtils, JvDsgnConsts;
 
+{$IFDEF VCL}
 {$R *.dfm}
+{$ENDIF}
+{$IFDEF VisualCLX}
+{$R *.xfm}
+{$ENDIF}
 
 function SelectImage(var AFileName: string; const Extensions, Filter: string): Boolean;
 var

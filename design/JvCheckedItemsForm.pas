@@ -30,10 +30,22 @@ unit JvCheckedItemsForm;
 interface
 
 uses
-  Windows, SysUtils, Classes, Controls, Forms, Menus, Graphics,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Controls, Forms, Menus, Graphics,
   StdCtrls, CheckLst,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QControls, QForms, QMenus, QGraphics,
+  QStdCtrls, QCheckLst, QWindows, Types,
+  {$ENDIF}
   {$IFDEF COMPILER6_UP}
-  RTLConsts, DesignIntf, VCLEditors, DesignEditors,
+  RTLConsts, DesignIntf, DesignEditors,
+  {$IFDEF VCL}
+  VCLEditors,
+  {$ELSE}
+  CLXEditors,
+  {$ENDIF}
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
@@ -98,18 +110,30 @@ type
 
 implementation
 
+{$IFDEF VCL}
 {$R *.dfm}
+{$ENDIF}
+{$IFDEF VisualCLX}
+{$R *.xfm}
+{$ENDIF}
 
 // (rom) needs explanation
 {$D-}
 
 uses
+  {$IFDEF VCL}
   Consts,
+  {$ELSE}
+  QConsts,
+  {$ENDIF}
   JvStringsForm, JvConsts, JvDsgnConsts, JvJVCLUtils, JvBoxProcs;
 
 const
+{$IFDEF VCL}
   cFontMSSansSerif = 'MS Sans Serif';
-
+{$ELSE}
+  cFontMSSansSerif = 'Helvetica';
+{$ENDIF}
 //=== TJvCheckItemsProperty ==================================================
 
 function TJvCheckItemsProperty.GetAttributes: TPropertyAttributes;

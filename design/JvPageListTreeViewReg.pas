@@ -25,16 +25,24 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
-{$I windowsonly.inc}
 
 unit JvPageListTreeViewReg;
 
 interface
 
 uses
-  Windows, Classes, ImgList, Graphics,
+  Classes,
+  {$IFDEF VCL}
+  Windows, ImgList, Graphics,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QImgList, QGraphics,
+  {$ENDIF}
   {$IFDEF COMPILER6_UP}
-  DesignEditors, DesignIntf, DesignMenus, VCLEditors,
+  DesignEditors, DesignIntf, DesignMenus,
+  {$IFDEF VCL}
+  VCLEditors,
+  {$ENDIF}
   {$ELSE}
   DsgnIntf, Menus,
   {$ENDIF COMPILER6_UP}
@@ -108,12 +116,23 @@ type
 
 procedure Register;
 
-{$R ..\resources\JvPageListTreeViewReg.dcr}
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvPageListTreeViewReg.dcr}
+{$ENDIF}
+{$IFDEF LINUX}
+{$R ../Resources/JvPageListTreeViewReg.dcr}
+{$ENDIF}
 
 implementation
 
 uses
-  Forms, ComCtrls, Controls, SysUtils, TypInfo, Consts,
+  SysUtils, TypInfo,
+  {$IFDEF VCL}
+  Forms, ComCtrls, Controls,  Consts,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QForms, QComCtrls, QControls,  QConsts, Types,
+  {$ENDIF}
   JvDsgnConsts, JvPageLinkEditorForm, JvTreeItemsEditorForm;
 
 type

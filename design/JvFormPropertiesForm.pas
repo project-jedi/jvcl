@@ -30,9 +30,20 @@ unit JvFormPropertiesForm;
 interface
 
 uses
-  SysUtils, Classes, Controls, Forms, StdCtrls, Buttons, ExtCtrls, Consts,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Controls, Forms, StdCtrls, Buttons, ExtCtrls, Consts,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QControls, QForms, QStdCtrls, QButtons, QExtCtrls, QConsts, Types,
+  {$ENDIF}
   {$IFDEF COMPILER6_UP}
-  RTLConsts, DesignIntf, VCLEditors, DesignEditors,
+  RTLConsts, DesignIntf, DesignEditors,
+  {$IFDEF VCL}
+  VCLEditors,
+  {$ELSE}
+  CLXEditors,
+  {$ENDIF}
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
@@ -112,7 +123,12 @@ uses
   TypInfo,
   JvDsgnConsts;
 
+{$IFDEF VCL}
 {$R *.dfm}
+{$ENDIF}
+{$IFDEF VisualCLX}
+{$R *.xfm}
+{$ENDIF}
 
 //=== TJvFormStorageEditor ===================================================
 

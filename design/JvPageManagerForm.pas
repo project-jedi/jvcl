@@ -30,10 +30,21 @@ unit JvPageManagerForm;
 interface
 
 uses
-  Windows, SysUtils, Classes, Graphics, Controls, Forms, Grids,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Graphics, Controls, Forms, Grids,
   StdCtrls, ExtCtrls,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QGrids, QStdCtrls, QControls, QExtCtrls, QGraphics, Types,
+  {$ENDIF}
   {$IFDEF COMPILER6_UP}
-  RTLConsts, DesignIntf, DesignEditors, VCLEditors, DesignWindows,
+  RTLConsts, DesignIntf, DesignEditors, DesignWindows,
+  {$IFDEF VCL}
+  VCLEditors,
+  {$ELSE}
+  CLXEditors,
+  {$ENDIF}
   {$ELSE}
   LibIntf, DsgnIntf, DsgnWnds,
   {$ENDIF COMPILER6_UP}
@@ -109,10 +120,19 @@ type
 implementation
 
 uses
+  {$IFDEF VCL}
   Consts, Buttons,
+  {$ELSE}
+  QConsts, QButtons,
+  {$ENDIF}
   JvDsgnConsts, JvDsgnTypes;
 
+{$IFDEF VCL}
 {$R *.dfm}
+{$ENDIF}
+{$IFDEF VisualCLX}
+{$R *.xfm}
+{$ENDIF}
 
 {$D-}
 

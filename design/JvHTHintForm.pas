@@ -33,7 +33,13 @@ unit JvHTHintForm;
 interface
 
 uses
-  Windows, SysUtils, Classes, Controls, Forms, StdCtrls,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Controls, Forms, StdCtrls,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QControls, QForms, QStdCtrls, Types,
+  {$ENDIF}
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors,
   {$ELSE}
@@ -63,7 +69,12 @@ type
 
 implementation
 
+{$IFDEF VCL}
 {$R *.dfm}
+{$ENDIF}
+{$IFDEF VisualCLX}
+{$R *.xfm}
+{$ENDIF}
 
 //=== TJvHintProperty ========================================================
 
