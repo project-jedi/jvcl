@@ -44,5 +44,8 @@
     <File Name="..\..\run\JvDBSpinEdit.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBTreeView.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBUtils.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBGrid.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBGridExport.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBGridSelectColumnForm.pas" Targets="all" Formname="frmSelectColumn" Condition=""/>
   </Contains>
 </Package>
