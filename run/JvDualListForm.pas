@@ -266,7 +266,6 @@ begin
   {$IFDEF VisualCLX}
   Application.ContextHelp(HelpContext);
   {$ENDIF VisualCLX}
-
 end;
 
 procedure TJvDualListForm.FormCreate(Sender: TObject);
