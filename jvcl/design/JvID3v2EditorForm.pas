@@ -32,19 +32,9 @@ interface
 { Most code is copied from DSDesign.pas }
 
 uses
-  Classes,
-  {$IFDEF VCL}
-  Windows, Messages, Forms, StdCtrls, ExtCtrls, Menus, Controls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QForms, QStdCtrls, QExtCtrls, QMenus, QControls, QWindows,
-  ClxDesignWindows,
-  {$ENDIF VisualCLX}
+  Classes, Windows, Messages, Forms, StdCtrls, ExtCtrls, Menus, Controls,
   {$IFDEF COMPILER6_UP}
-  DesignEditors, DesignIntf, DesignMenus,
-  {$IFDEF VCL}
-  DesignWindows,
-  {$ENDIF VCL}
+  DesignEditors, DesignIntf, DesignMenus, DesignWindows,
   {$ELSE}
   DsgnIntf, DsgnWnds,
   {$ENDIF COMPILER6_UP}

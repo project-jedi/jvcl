@@ -31,14 +31,8 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ActnList, Menus, ImgList, ComCtrls, ToolWin, ExtCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QDialogs, Types, QStdCtrls, QActnList,
-  QMenus, QImgList, QComCtrls, QToolWin, QExtCtrls,
-  {$ENDIF VisualCLX}
   JvStdToolbarDsgnFrame;
 
 type

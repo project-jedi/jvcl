@@ -31,13 +31,7 @@ unit JvAppletEditor;
 interface
 
 uses
-  Windows, Classes,
-  {$IFDEF VCL}
-  Controls, Forms, Dialogs,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QControls, QForms, QDialogs,
-  {$ENDIF VisualCLX}
+  Windows, Classes, Controls, Forms, Dialogs,
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors,
   {$ELSE}

@@ -29,18 +29,9 @@ unit JvPictureEditForm;
 interface
 
 uses
-  Classes,
-  {$IFDEF VCL}
-  Windows, Messages, Graphics, Forms, Controls, Dialogs, Menus,
+  Classes, Windows, Messages, Graphics, Forms, Controls, Dialogs, Menus,
   StdCtrls, ExtCtrls, ExtDlgs, Buttons,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types,
-  QGraphics, QForms, QControls, QDialogs, QMenus,
-  QStdCtrls, QExtCtrls, QExtDlgs, QButtons, QTypes,
-  {$ENDIF VisualCLX}
-  JvMRUManager, JvFormPlacement, JvClipboardMonitor, JvComponent,
-  JvAppStorage,
+  JvMRUManager, JvFormPlacement, JvClipboardMonitor, JvComponent, JvAppStorage,
   {$IFDEF MSWINDOWS}
   JvAppRegistryStorage,
   {$ENDIF MSWINDOWS}

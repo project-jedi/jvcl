@@ -32,12 +32,7 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Dialogs, ComCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Qt, QGraphics, QControls, QForms, QDialogs, QComCtrls, Types, QWindows,
-  {$ENDIF VisualCLX}
   JvDataProvider, JvDataProviderIntf;
 
 type
@@ -116,12 +111,7 @@ uses
   {$ENDIF VCL}
   JvDsgnConsts, JvConsts;
 
-{$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-{$R *.xfm}
-{$ENDIF VisualCLX}
 
 function GetItemIndexAt(LV: TListView; X, Y: Integer): Integer;
 var

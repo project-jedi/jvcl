@@ -36,14 +36,7 @@ uses
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
-  SysUtils,
-  {$IFDEF VCL}
-  Controls, Forms, StdCtrls, ComCtrls, Menus,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QControls, QForms, QStdCtrls, QComCtrls, QMenus,
-  {$ENDIF VisualCLX}
-  Classes,
+  SysUtils, Controls, Forms, StdCtrls, ComCtrls, Menus,  Classes,
   JvComponent;
 
 type
