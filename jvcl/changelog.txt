@@ -1,5 +1,10 @@
 Changelog for JVCL 3.0
 ======================
+2004-04-09
+- Added OnCustomDraw event to TJvOutlookBar. Also added demo to show it off // peter3
+- Added TJvNavPaneToolPanel to the Nav Pane components // peter3
+- Added demo for JvDBImage
+- Added JvDBImage to JvDB. JvDBImage can handle *any* graphic file format in DB tables // peter3
 2004-04-08
 - Moved "HMI Controls" and "HMI Non-Visual" and "HMI Indicators" to "HIM Components" palettte // ahuser
 - Compatible to newest JCL // ahuser

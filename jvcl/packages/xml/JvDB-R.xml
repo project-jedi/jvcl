@@ -53,5 +53,6 @@
     <File Name="..\..\run\JvDBSearchComboBox.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvAppDBStorage.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBFindEdit.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBImage.pas" Targets="allbutclx" Formname="" Condition=""/>
   </Contains>
 </Package>
