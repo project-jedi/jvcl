@@ -1,8 +1,9 @@
 2003-06-16:
-- Renamed TJVAnalogClock.ClockEnabled to TJVAnalogClock.Active
+- Renamed TJVAnalogClock.ClockEnabled to TJVAnalogClock.Active // peter3
+- Renamed TJVAnalogClock.TimeSet to TJVAnalogClock.Time // peter3
 - Renamed TJVAnalogClock.Alarm.Show to TJVAnalogClock.Alarm.Visible // peter3
 - Renamed TJvOnAlarm to TJvAlarmEvent in JvAlarms.pas // peter3
-- Renamed a lot of cryptic, internal variables in JvAnalogClock. Don't even know if I've understood them all correctly... // peter3
+- Renamed a lot of cryptic, internal variables in JvAnalogClock.pas. Don't even know if I've understood them all correctly... // peter3
 - Added updates and modifications from Gustavo Bianconi to JvAnalogClock, JvAlarms and JvTypes:
   * New property Alarm that shows the alarm time on clock surface.
       Subproperties:
