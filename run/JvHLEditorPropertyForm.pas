@@ -376,7 +376,7 @@ end;
 
 procedure TJvHLEdPropDlg.LoadHighlighterColors(AJvHLEditor: TJvHLEditor; AHighlighter: THighlighter);
 var
-  Section: string;
+  Section, S: string;
 
   procedure LoadColor(AColor: TJvSymbolColor; DefaultForeColor,
     DefaultBackColor: TColor; DefaultStyle: TFontStyles; const Prefix: string);
@@ -417,11 +417,21 @@ begin
   LoadColor(AJvHLEditor.Colors.Declaration, clWindowText, clWindow, [], 'Declaration');
   LoadColor(AJvHLEditor.Colors.Statement, clWindowText, clWindow, [], 'Statement');
   LoadColor(AJvHLEditor.Colors.PlainText, clWindowText, clWindow, [], 'PlainText');
-  AJvHLEditor.Color := StringToColor(FRegAuto.ReadString(Section + 'BackColor', 'clWindow'));
+  try
+    AJvHLEditor.Color := StringToColor(FRegAuto.ReadString(Section + 'BackColor', 'clWindow'));
+  except
+    on E: EConvertError do
+      AJvHLEditor.RightMarginColor := clWindow;
+  end;
   AJvHLEditor.Font.Name := FRegAuto.ReadString(Section + 'FontName', 'Courier New');
   AJvHLEditor.Font.Charset := FRegAuto.ReadInteger(Section + 'Charset', DEFAULT_CHARSET);
   AJvHLEditor.Font.Size := FRegAuto.ReadInteger(Section + 'FontSize', 10);
-  AJvHLEditor.RightMarginColor := StringToColor(FRegAuto.ReadString(Section + 'RightMarginColor', 'clSilver'));
+  try
+    AJvHLEditor.RightMarginColor := StringToColor(FRegAuto.ReadString(Section + 'RightMarginColor', 'clSilver'));
+  except
+    on E: EConvertError do
+      AJvHLEditor.RightMarginColor := clSilver;
+  end;
 end;
 
 function TJvHLEdPropDlg.Execute: Boolean;
@@ -977,6 +987,17 @@ begin
       '}'#10 +
       '[]'#10 +
       ''#10 +
+      '[VB]'#10 +
+      'Rem Syntax highlighting'#10 +
+      'Sub Main()'#10 +
+      '  Dim S as String'#10 +
+      '  If S = "" Then'#10 +
+      '   '#39' Do something'#10 +
+      '   MsgBox "Hallo World"'#10 +
+      '  End If'#10 +
+      'End Sub'#10 +
+      '[]'#10 +
+      ''#10 +
       '[Sql]'#10 +
       '/* Syntax highlighting */'#10 +
       'declare external function Copy'#10 +
@@ -1145,6 +1166,17 @@ end;
       '  }'
       '  crc_table_empty = 0;'
       '}'
+      '[]'
+      ''
+      '[VB]'
+      'Rem Syntax highlighting'
+      'Sub Main()'
+      '  Dim S as String'
+      '  If S = "" Then'
+      '   '#39' Do something'
+      '   MsgBox "Hallo"'
+      '  End If'
+      'End Sub'
       '[]'
       ''
       '[Sql]'
