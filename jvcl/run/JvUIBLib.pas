@@ -341,7 +341,7 @@ type
     function New : Pointer;
     function PageCount : Integer;
     function PageUsageCount(const PageIndex : Integer) : Integer;
-    procedure Dispose(var P);
+    procedure Dispose(var P: Pointer);
     function RemoveUnusedPages : Integer;
 
     property PageSize : Integer read FPageSize;
@@ -559,13 +559,16 @@ type
 
   TOnConnectionLost = procedure(Lib: TUIBLibrary) of object;
   TOnGetDBExceptionClass = function(Number: Integer): EUIBExceptionClass of object;
-
+  
   TUIBLibrary = class(TUIBaseLibrary)
   private
     FStatusVector: TStatusVector;
     FOnConnectionLost: TOnConnectionLost;
     FOnGetDBExceptionClass: TOnGetDBExceptionClass;
     FRaiseErrors: boolean;
+    FSegmentSize: Word;
+    function GetSegmentSize: Word;
+    procedure SetSegmentSize(Value: Word);
     procedure GetDSQLInfoData(var StmtHandle: IscStmtHandle;
       var DSQLInfoData: TDSQLInfoData; InfoCode: Byte);
     procedure CheckUIBApiCall(const Status: ISCStatus);
@@ -594,8 +597,8 @@ type
       const Statement: string; Dialect: Word; Sqlda: TSQLDA = nil); overload;
     procedure DSQLExecuteImmediate(const Statement: string; Dialect: Word; Sqlda: TSQLDA = nil); overload;
     procedure DSQLAllocateStatement(var DBHandle: IscDbHandle; var StmtHandle: IscStmtHandle);
-    procedure DSQLPrepare(var TraHandle: IscTrHandle; var StmtHandle: IscStmtHandle;
-      Statement: string; Dialect: Word; Sqlda: TSQLResult = nil);
+    function DSQLPrepare(var TraHandle: IscTrHandle; var StmtHandle: IscStmtHandle;
+      Statement: string; Dialect: Word; Sqlda: TSQLResult = nil): TUIBStatementType;
     procedure DSQLExecute(var TraHandle: IscTrHandle; var StmtHandle: IscStmtHandle;
       Dialect: Word; Sqlda: TSQLParams = nil);
     procedure DSQLExecute2(var TraHandle: IscTrHandle; var StmtHandle: IscStmtHandle;
@@ -660,6 +663,7 @@ type
     procedure SavepointStart(var TrHandle: IscTrHandle; const Name: string);
 {$ENDIF}
 
+    property SegMentSize: Word read GetSegmentSize write SetSegmentSize;
   end;
 
 //******************************************************************************
@@ -854,9 +858,6 @@ function TryStrToInt(const S: string; out Value: Integer): Boolean;
 implementation
 uses JvUIBConst;
 
-const                  
-   BLOBSEGMENT: Word = 16*1024; // best performances
-
 { EUIBParser }
 
 constructor EUIBParser.Create(Line, Character: Integer; dummyForBCB : Integer);
@@ -982,6 +983,7 @@ const
   begin
     inherited;
     FRaiseErrors := True;
+    FSegmentSize := 16*1024;
   end;
 
   function GetClientLibrary: string;
@@ -1255,7 +1257,7 @@ const
 
   function GetSQLDAData(SQLDA: TSQLDA): Pointer;
   begin
-    if SQLDA <> nil then
+    if (SQLDA <> nil) then
       Result := SQLDA.FXSQLDA else
       Result := nil;
   end;
@@ -1299,16 +1301,27 @@ const
     end;
   end;
 
-  procedure TUIBLibrary.DSQLPrepare(var TraHandle: IscTrHandle; var StmtHandle: IscStmtHandle;
-    Statement: string; Dialect: Word; Sqlda: TSQLResult = nil);
+  function TUIBLibrary.DSQLPrepare(var TraHandle: IscTrHandle; var StmtHandle: IscStmtHandle;
+    Statement: string; Dialect: Word; Sqlda: TSQLResult = nil): TUIBStatementType;
+  var STInfo: packed record
+    InfoCode: byte;
+    InfoLen : Word; // isc_portable_integer convert a SmallInt to Word ??? so just say it is a word
+    InfoType: TUIBStatementType;
+    InfoIn: byte;
+  end;
   begin
     Lock;
     try
       CheckUIBApiCall(isc_dsql_prepare(@FStatusVector, @TraHandle, @StmtHandle, Length(Statement),
         PChar(Statement), Dialect, GetSQLDAData(Sqlda)));
+      STInfo.InfoIn := isc_info_sql_stmt_type;
+      isc_dsql_sql_info(@FStatusVector, @StmtHandle, 1, @STInfo.InfoIn, SizeOf(STInfo), @STInfo);
+      dec(STInfo.InfoType);
+      Result := STInfo.InfoType;
     finally
       UnLock;
     end;
+
     if (Sqlda <> nil) then
     begin
       Sqlda.ClearRecords;
@@ -1319,6 +1332,8 @@ const
       end else
         Sqlda.AllocateDataBuffer;
     end;
+
+
   end;
 
   procedure TUIBLibrary.DSQLExecute(var TraHandle: IscTrHandle; var StmtHandle: IscStmtHandle;
@@ -1720,8 +1735,8 @@ const
     BufferLength: Cardinal; Buffer: PChar): boolean;
   var AStatus: ISCStatus;
   begin
-    if BufferLength > BLOBSEGMENT then
-      BufferLength := BLOBSEGMENT;
+    if BufferLength > High(Word) then
+      BufferLength := High(Word);
     Lock;
     try
       AStatus := isc_get_segment(@FStatusVector, @BlobHandle, @length, BufferLength, Buffer);
@@ -1946,8 +1961,8 @@ type
     try
       while BufferLength > 0 do
       begin
-        if BufferLength > BLOBSEGMENT then
-          size := BLOBSEGMENT else
+        if BufferLength > FSegmentSize then
+          size := FSegmentSize else
           size := BufferLength;
         CheckUIBApiCall(isc_put_segment(@FStatusVector, @BlobHandle, Size, Buffer));
         dec(BufferLength, size);
@@ -2040,6 +2055,29 @@ type
     end;
   end;
 {$ENDIF}
+
+  function TUIBLibrary.GetSegmentSize: Word;
+  begin
+    Lock;
+    try
+      Result := FSegMentSize;
+    finally
+      UnLock;
+    end;
+  end;
+
+  procedure TUIBLibrary.SetSegmentSize(Value: Word);
+  begin
+    Lock;
+    try
+      Assert(Value > 0); 
+      FSegmentSize := Value;
+    finally
+      UnLock;
+    end;
+  end;
+
+
 
 //******************************************************************************
 // Conversion
@@ -3786,20 +3824,19 @@ begin
   end;
 end;
 
-procedure TMemoryPool.Dispose(var P);
+procedure TMemoryPool.Dispose(var P: Pointer);
 var
-  Page : PPageInfo;
-  Pt : Pointer absolute P;
-  Temp : PAnsiChar;
+  Page: PPageInfo;
+  Temp: PAnsiChar;
 begin
-  PPointer(Pt)^ := FFreeList;
-  FFreeList := Pt;
+  PPointer(P)^ := FFreeList;
+  FFreeList := P;
   Temp := FFreeList;
   dec(Temp, sizeOf(Word));
   dec(Temp, PWord(Temp)^);
   Page := PPageInfo(Temp);
   dec(Page^.UsageCounter);
-  Pt := nil;
+  P := nil;
 end;
 
 procedure TMemoryPool.CleanFreeList(const PageStart: Pointer);

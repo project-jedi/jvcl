@@ -161,6 +161,8 @@ TJvUIBComponent = class(TComponent)
     procedure SetLibraryName(const Lib: TFileName);
     function GetTransactions(const Index: Cardinal): TJvUIBTransaction;
     function GetTransactionsCount: Cardinal;
+    function GetSegmentSize: Word;
+    procedure SetSegmentSize(const Value: Word);
   protected
     procedure DoOnConnectionLost(Lib: TUIBLibrary); virtual;
     function DoOnGetDBExceptionClass(Number: Integer): EUIBExceptionClass; virtual;
@@ -209,6 +211,8 @@ TJvUIBComponent = class(TComponent)
     { When connection lost, Database, Transactions and Queries are automatically closed.
       Only one exception is raised to terminate the current stack and this event occur. }
     property OnConnectionLost: TNotifyEvent read FOnConnectionLost write FOnConnectionLost;
+    { The blob segment size used to write in database, this parametter depend on hard drive. }
+    property SegmentSize: Word read GetSegmentSize write SetSegmentSize default 16*1024;
   end;
 
   { Describe how a transaction is closed. }
@@ -367,7 +371,9 @@ TJvUIBComponent = class(TComponent)
     {If True, transaction automatically started when needed.
      if False you must explicitely call "starttransaction".}
     property AutoStart: boolean read FAutoStart write FAutoStart default True;
+    {default = false, if True you need to close transaction explicitly.}
     property AutoStop: boolean read FAutoStop write FAutoStop default True;
+    {Transaction default action if closed automaticaly, commit or rollback only.}
     property DefaultAction: TEndTransMode read FDefaultAction write SetDefaultAction default etmCommit;
   end;
 
@@ -389,6 +395,7 @@ TJvUIBComponent = class(TComponent)
     FParameter: TSQLParams;
     FParseParams: boolean;
     FOnClose: TNotifyEvent;
+    FStatementType: TUIBStatementType;
     function GetPlan: string;
     function GetStatementType: TUIBStatementType;
     procedure SetSQL(const Value: TStrings);
@@ -458,6 +465,7 @@ TJvUIBComponent = class(TComponent)
     procedure ParamsSetBlob(const Name: string; var str: string); overload;
     procedure ParamsSetBlob(const Name: string; Buffer: Pointer; Size: Word); overload;
 
+    property Handle: IscStmtHandle read FStatement;
     property Fields: TSQLResult read GetFields;
     property Params: TSQLParams read FParameter;
     property CursorName: string read FCursorName;
@@ -1014,6 +1022,16 @@ begin
   Result := FMetadata;
 end;
 
+function TJvUIBDataBase.GetSegmentSize: Word;
+begin
+  Result := FLibrary.SegMentSize;
+end;
+
+procedure TJvUIBDataBase.SetSegmentSize(const Value: Word);
+begin
+  FLibrary.SegMentSize := Value;
+end;
+
 { TJvUIBStatement }
 
 procedure TJvUIBStatement.SetTransaction(const Transaction: TJvUIBTransaction);
@@ -1030,6 +1048,7 @@ begin
     FTransaction := Transaction;
     if (Transaction <> nil) then
       Transaction.AddSQLComponent(Self);
+    FCurrentState := qsDataBase;
   end;
 end;
 
@@ -1231,11 +1250,11 @@ begin
     with FindDataBase.FLibrary do
     try
     if (FQuickScript or (not FParseParams)) then
-      DSQLPrepare(FTransaction.FTransaction, FStatement, FSQL.Text,
-        FTransaction.FSQLDialect, FSQLResult) else
-      DSQLPrepare(FTransaction.FTransaction, FStatement, FParsedSQL,
-        FTransaction.FSQLDialect, FSQLResult);
-      FCursorName := 'C'+inttostr(Integer(FStatement));
+      FStatementType := DSQLPrepare(FTransaction.FTransaction, FStatement,
+        FSQL.Text, FTransaction.FSQLDialect, FSQLResult) else
+      FStatementType := DSQLPrepare(FTransaction.FTransaction, FStatement,
+        FParsedSQL, FTransaction.FSQLDialect, FSQLResult);
+      FCursorName := 'C' + inttostr(Integer(FStatement));
       DSQLSetCursorName(FStatement, FCursorName);
     except
       FSQLResult.free;
@@ -1264,8 +1283,11 @@ begin
   try
     with FindDataBase.FLibrary do
     try
-      DSQLExecute(FTransaction.FTransaction, FStatement,
-        FTransaction.FSQLDialect, FParameter);
+      if (FStatementType = stExecProcedure) then
+        DSQLExecute2(FTransaction.FTransaction, FStatement,
+          FTransaction.FSQLDialect, FParameter, FSQLResult) else
+        DSQLExecute(FTransaction.FTransaction, FStatement,
+          FTransaction.FSQLDialect, FParameter);
     except
       if (FOnError <> etmStayIn) then
         EndPrepare(FOnError, False);
@@ -1365,15 +1387,9 @@ end;
 
 function TJvUIBStatement.GetStatementType: TUIBStatementType;
 begin
-  Result := TUIBStatementType(-1); // invalid
-  Lock;
-  try
-    if (FCurrentState < qsPrepare) then
-      Raise Exception.Create(EUIB_MUSTBEPREPARED)else
-      Result := FindDataBase.FLibrary.DSQLInfoStatementType(FStatement);
-  finally
-    UnLock
-  end;
+  if (FCurrentState < qsPrepare) then
+    Raise Exception.Create(EUIB_MUSTBEPREPARED)else
+    Result := FStatementType;
 end;
 
 procedure TJvUIBStatement.DoSQLChange(Sender: TObject);
