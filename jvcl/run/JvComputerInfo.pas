@@ -45,6 +45,17 @@ Known Issues:
       JvComputerInfo1.SetCompany('New company');
 
     instead.
+  2003-09-23:
+    - Converted from TComponent -> TObject. If you are using this class in your projects, you will need
+     to instantiate it dyanimcally since you can no longer drop it on a form.
+
+    - If you open a(n old) form containing a TJvComputerinfo component, you will get an error message from Delphi
+     ('TJvComputerInfo not found' or similar). Please click "Ignore All" to remove the component from the form permanently.
+      You now need to create the class in code and get/set properties manually.
+
+      This change has been done to promote safety snce the TComponent based version could
+      modify importnant registry values on end-user computers, creating a lot of problems.
+
 
 -----------------------------------------------------------------------------}
 
@@ -59,7 +70,7 @@ uses
   JvComponent;
 
 type
-  TJvComputerInfo = class(TJvComponent)
+  TJvComputerInfo = class(TObject)
   private
     FDummyStr:string;
     FDummyInt:integer;
