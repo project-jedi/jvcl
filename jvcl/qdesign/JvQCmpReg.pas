@@ -89,7 +89,7 @@ begin
 //  RegisterPropertyEditor(TypeInfo(TStream), TJvDataEmbedded,
 //    'Data', TJvDataEmbeddedEditor);
   RegisterPropertyEditor(TypeInfo(TStrings), TJvPatchFile,
-    'Differences', TJvPatcherEditor);
+    'Differences', TJvPatcherProperty);
   RegisterPropertyEditor(TypeInfo(TList), TJvPageManager,
     'PageProxies', TJvProxyListProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvPageProxy,
@@ -103,7 +103,7 @@ begin
 
   RegisterComponentEditor(TJvPageManager, TJvPageManagerEditor);
   RegisterComponentEditor(TJvStrHolder, TJvStringsEditor);
-  RegisterComponentEditor(TJvDataEmbedded,TJvDataEmbeddedComponentEditor);
+  RegisterComponentEditor(TJvDataEmbedded, TJvDataEmbeddedEditor);
 
   RegisterNoIcon([TJvPageProxy]);
 end;

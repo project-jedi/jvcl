@@ -74,13 +74,13 @@ begin
     TJvStrToHTML, TJvStringListToHTML, TJvFormToHTML, TJvRGBToHTML]);
   {$IFDEF MSWINDOWS}
   RegisterPropertyEditor(TypeInfo(TStrings),
-    TJvHTMLParser, 'Parser', TJvHTMLParserEditor);
+    TJvHTMLParser, 'Parser', TJvHTMLParserProperty);
   RegisterPropertyEditor(TypeInfo(TJvUrlGrabberIndex),
     TJvUrlListGrabber, '', TJvUrlGrabberIndexProperty);
   RegisterPropertyEditor(TypeInfo(TJvUrlGrabberDefaultPropertiesList),
-    TJvUrlListGrabber, '', TJvUrlGrabberDefaultPropertiesListEditor);
+    TJvUrlListGrabber, '', TJvUrlGrabberDefaultPropertiesListProperty);
   RegisterPropertyEditor(TypeInfo(TJvCustomUrlGrabberDefaultProperties),
-    TJvUrlGrabberDefPropEdTrick, '', TJvUrlGrabberDefaultPropertiesEditor);
+    TJvUrlGrabberDefPropEdTrick, '', TJvUrlGrabberDefaultPropertiesProperty);
   {$IFDEF VCL}
   RegisterComponentEditor(TJvMail, TJvMailEditor);
   {$ENDIF VCL}

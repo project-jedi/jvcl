@@ -40,18 +40,18 @@ uses
   Classes;
 
 type
-  TJvUrlGrabberDefaultPropertiesListEditor = class(TClassProperty)
+  TJvUrlGrabberDefaultPropertiesListProperty = class(TClassProperty)
   public
     function GetAttributes: TPropertyAttributes; override; 
     procedure GetProperties(Proc: TGetPropProc); override; 
   end;
 
-  TJvUrlGrabberDefaultPropertiesEditor = class (TClassProperty)
+  TJvUrlGrabberDefaultPropertiesProperty = class(TClassProperty)
   public
     function GetName: string; override;
   end;
 
-  TJvUrlGrabberIndexProperty = class (TIntegerProperty)
+  TJvUrlGrabberIndexProperty = class(TIntegerProperty)
   public
     function GetAttributes: TPropertyAttributes; override;
     procedure GetValues(Proc: TGetStrProc); override;
@@ -65,15 +65,15 @@ uses
   TypInfo, SysUtils,
   JvQUrlListGrabber, JvQDsgnConsts;
 
-//=== { TJvUrlGrabberDefaultPropertiesListEditor } ===========================
+//=== { TJvUrlGrabberDefaultPropertiesListProperty } =========================
 
-function TJvUrlGrabberDefaultPropertiesListEditor.GetAttributes: TPropertyAttributes;
+function TJvUrlGrabberDefaultPropertiesListProperty.GetAttributes: TPropertyAttributes;
 begin
   Result := [paSubProperties, paReadOnly];
 end;
 
 
-procedure TJvUrlGrabberDefaultPropertiesListEditor.GetProperties(Proc: TGetPropProc);
+procedure TJvUrlGrabberDefaultPropertiesListProperty.GetProperties(Proc: TGetPropProc);
 var
   UrlListGrabber: TJvUrlListGrabber;
   I: Integer;
@@ -91,9 +91,9 @@ begin
 end;
 
 
-//=== { TJvUrlGrabberDefaultPropertiesEditor } ===============================
+//=== { TJvUrlGrabberDefaultPropertiesProperty } =============================
 
-function TJvUrlGrabberDefaultPropertiesEditor.GetName: string;
+function TJvUrlGrabberDefaultPropertiesProperty.GetName: string;
 var
   EditorTrick: TJvUrlGrabberDefPropEdTrick;
 begin

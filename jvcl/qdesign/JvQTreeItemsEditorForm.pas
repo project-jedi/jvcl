@@ -43,7 +43,8 @@ uses
   SysUtils, Classes, 
   DesignEditors, DesignIntf, 
   QWindows, QMessages, QGraphics, QControls, QForms,
-  QDialogs, QStdCtrls, QExtCtrls, QActnList, QComCtrls, QMenus, QStdActns;
+  QDialogs, QStdCtrls, QExtCtrls, QActnList, QComCtrls, QMenus, QStdActns,
+  QTypes;
 
 type
   TJvTreeItemsProperty = class(TClassProperty)
@@ -52,14 +53,14 @@ type
     procedure Edit; override;
   end;
 
-  TJvTreeViewComponentEditor = class(TComponentEditor)
+  TJvTreeViewEditor = class(TComponentEditor)
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
     procedure ExecuteVerb(Index: Integer); override;
     procedure Edit; override;
   end;
 
-  TJvPageTreeViewComponentEditor = class(TJvTreeViewComponentEditor)
+  TJvPageTreeViewEditor = class(TJvTreeViewEditor)
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
     procedure ExecuteVerb(Index: Integer); override;
@@ -412,14 +413,14 @@ begin
   Result := [paDialog];
 end;
 
-//=== { TJvTreeViewComponentEditor } =========================================
+//=== { TJvTreeViewEditor } ==================================================
 
-procedure TJvTreeViewComponentEditor.Edit;
+procedure TJvTreeViewEditor.Edit;
 begin
   ExecuteVerb(0);
 end;
 
-procedure TJvTreeViewComponentEditor.ExecuteVerb(Index: Integer);
+procedure TJvTreeViewEditor.ExecuteVerb(Index: Integer);
 begin
   if Index = 0 then
     ShowTreeNodeEditor(TCustomTreeView(Component))
@@ -427,7 +428,7 @@ begin
     inherited ExecuteVerb(Index);
 end;
 
-function TJvTreeViewComponentEditor.GetVerb(Index: Integer): string;
+function TJvTreeViewEditor.GetVerb(Index: Integer): string;
 begin
   if Index = 0 then
     Result := RsItemsEditorEllipsis
@@ -435,7 +436,7 @@ begin
     Result := '';
 end;
 
-function TJvTreeViewComponentEditor.GetVerbCount: Integer;
+function TJvTreeViewEditor.GetVerbCount: Integer;
 begin
   Result := 1;
 end;
@@ -537,9 +538,9 @@ begin
     tvItems.SaveToFile(SaveDialog1.Filename);
 end;
 
-//=== { TJvPageTreeViewComponentEditor } =====================================
+//=== { TJvPageTreeViewEditor } ==============================================
 
-procedure TJvPageTreeViewComponentEditor.ExecuteVerb(Index: Integer);
+procedure TJvPageTreeViewEditor.ExecuteVerb(Index: Integer);
 begin
   if Index = 1 then
     ShowPageLinkEditor(TJvCustomPageListTreeView(Component))
@@ -547,7 +548,7 @@ begin
     inherited ExecuteVerb(Index);
 end;
 
-function TJvPageTreeViewComponentEditor.GetVerb(Index: Integer): string;
+function TJvPageTreeViewEditor.GetVerb(Index: Integer): string;
 begin
   if Index = 1 then
     Result := RsLinksEditorEllipsis
@@ -555,7 +556,7 @@ begin
     Result := inherited GetVerb(Index);
 end;
 
-function TJvPageTreeViewComponentEditor.GetVerbCount: Integer;
+function TJvPageTreeViewEditor.GetVerbCount: Integer;
 begin
   Result := 2;
 end;

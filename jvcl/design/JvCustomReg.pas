@@ -93,11 +93,11 @@ begin
   {$ENDIF VCL}
 
   RegisterPropertyEditor(TypeInfo(Integer), TJvCustomOutlookBar,
-    cActivePageIndex, TJvOutlookBarActivePageEditor);
+    cActivePageIndex, TJvOutlookBarActivePageProperty);
   RegisterPropertyEditor(TypeInfo(TJvOutlookBarPages), TJvCustomOutlookBar,
-    '', TJvOutlookBarPagesPropertyEditor);
+    '', TJvOutlookBarPagesProperty);
   RegisterPropertyEditor(TypeInfo(TJvOutlookBarButtons), TJvOutlookBarPage,
-    '', TJvOutlookBarPagesPropertyEditor);
+    '', TJvOutlookBarPagesProperty);
   RegisterPropertyEditor(TypeInfo(TImageIndex), TJvOutlookBarButton,
     cImageIndex, TJvOutlookBarButtonImageIndexProperty);
   RegisterPropertyEditor(TypeInfo(TImageIndex), TJvOutlookBarPage,
@@ -116,11 +116,11 @@ begin
     cFilter, TFilterProperty);
   RegisterComponentEditor(TJvHLEdPropDlg, TJvHLEdPropDlgEditor);
   RegisterPropertyEditor(TypeInfo(IJclSchedule), TJvEventCollectionItem,
-    cSchedule, TJvSchedulePropertyEditor); // depends on TDateTimePicker
-  RegisterComponentEditor(TJvCustomScheduledEvents, TJvSchedEventComponentEditor);
+    cSchedule, TJvScheduleProperty); // depends on TDateTimePicker
+  RegisterComponentEditor(TJvCustomScheduledEvents, TJvSchedEventEditor);
   {$ENDIF VCL}
 
-  RegisterComponentEditor(TJvCustomOutlookBar, TJvOutlookBarComponentEditor);
+  RegisterComponentEditor(TJvCustomOutlookBar, TJvOutlookBarEditor);
   RegisterComponentEditor(TJvCustomTimeLine, TJvTimeLineEditor);
   RegisterComponentEditor(TJvLookOut, TJvLookOutEditor);
   RegisterComponentEditor(TJvLookOutPage, TJvLookOutPageEditor);

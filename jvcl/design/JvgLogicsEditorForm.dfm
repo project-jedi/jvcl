@@ -18,7 +18,7 @@ object JvgLogicsEditor: TJvgLogicsEditor
   TextHeight = 13
   object Splitter1: TSplitter
     Left = 0
-    Top = 401
+    Top = 404
     Width = 782
     Height = 3
     Cursor = crVSplit
@@ -28,7 +28,7 @@ object JvgLogicsEditor: TJvgLogicsEditor
     Left = 0
     Top = 75
     Width = 782
-    Height = 326
+    Height = 329
     HorzScrollBar.Smooth = True
     HorzScrollBar.Style = ssFlat
     HorzScrollBar.Tracking = True
@@ -46,6 +46,9 @@ object JvgLogicsEditor: TJvgLogicsEditor
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 1
+    DesignSize = (
+      782
+      48)
     object iPKey: TImage
       Left = 5
       Top = 5
@@ -234,7 +237,7 @@ object JvgLogicsEditor: TJvgLogicsEditor
   end
   object SBar: TStatusBar
     Left = 0
-    Top = 501
+    Top = 504
     Width = 782
     Height = 19
     Panels = <>
@@ -327,7 +330,7 @@ object JvgLogicsEditor: TJvgLogicsEditor
   end
   object pLeft: TPanel
     Left = 0
-    Top = 404
+    Top = 407
     Width = 782
     Height = 97
     Align = alBottom

@@ -39,7 +39,7 @@ uses
   TypInfo;
 
 type
-  TJvDBGridControlsEditor = class(TPropertyEditor)
+  TJvDBGridControlsProperty = class(TPropertyEditor)
   public
     procedure Edit; override;
     function GetAttributes: TPropertyAttributes; override;
@@ -52,7 +52,7 @@ uses
   JvDBGrid, JvDBGridControlsEditorForm,
   JvDsgnConsts, JvTypes;
 
-procedure TJvDBGridControlsEditor.Edit;
+procedure TJvDBGridControlsProperty.Edit;
 var
   Dlg: TfrmJvDBGridControlsEditor;
   CloseDataset: Boolean;
@@ -86,12 +86,12 @@ begin
   end;
 end;
 
-function TJvDBGridControlsEditor.GetAttributes: TPropertyAttributes;
+function TJvDBGridControlsProperty.GetAttributes: TPropertyAttributes;
 begin
   Result := [paDialog, paReadOnly];
 end;
 
-function TJvDBGridControlsEditor.GetValue: string;
+function TJvDBGridControlsProperty.GetValue: string;
 begin
   Result := '(' + GetPropType^.Name + ')';
 end;

@@ -78,10 +78,10 @@ begin
     TJvWizardRouteMapNodes, TJvWizardRouteMapList]);
   RegisterClasses([TJvWizardCustomPage, TJvWizardWelcomePage,
     TJvWizardInteriorPage]);
-  RegisterComponentEditor(TJvWizard, TJvWizardComponentEditor);
-  RegisterComponentEditor(TJvWizardCustomPage, TJvWizardComponentEditor);
-  RegisterComponentEditor(TJvWizardWelcomePage, TJvWizardComponentEditor);
-  RegisterComponentEditor(TJvWizardInteriorPage, TJvWizardComponentEditor);
+  RegisterComponentEditor(TJvWizard, TJvWizardEditor);
+  RegisterComponentEditor(TJvWizardCustomPage, TJvWizardEditor);
+  RegisterComponentEditor(TJvWizardWelcomePage, TJvWizardEditor);
+  RegisterComponentEditor(TJvWizardInteriorPage, TJvWizardEditor);
   RegisterPropertyEditor(TypeInfo(TJvWizardCustomPage), TJvWizard, cActivePage,
     TJvWizardActivePageProperty);
   RegisterPropertyEditor(TypeInfo(TJvWizardWelcomePage), TJvWizard, cActivePage,
