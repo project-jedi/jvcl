@@ -45,6 +45,7 @@ uses
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
   JvDsgnConsts,
+
   {$IFDEF VCL}
    {$IFNDEF BCB5}  // removed because BCB5 cannot compile/link JvDialogActns
   JvDialogActns,
@@ -52,11 +53,17 @@ uses
   JvDialogActnResForm, JvDialogs, JvPageSetupTitled, JvPageSetup,
   JvAppletEditor,
   {$ENDIF VCL}
+
+  {$IFDEF VisualCLX}
+	QExtDlgs,
+  {$ENDIF VisualCLX}
+
   {$IFDEF USEWINDOWS}
   JvWinDialogs, JvAddPrinter, JvCommonDialogD, JvConnectNetwork, JvCopyError,
   JvDeleteError, JvRenameError, JvDiskPrompt, JvFindFiles,
   JvObjectPickerDialog, JvCommonDialogDEditor,
   {$ENDIF USEWINDOWS}
+
   JvBaseDlg, JvFindReplace, JvDSADialogs, JvTipOfDay, JvCommonExecDlg,
   JvDesktopAlert, JvProgressComponent, JvSelectDirectory, JvImageDlg,
   JvLoginForm, JvDualList, JvProgressDialog, JvBaseDlgEditor,
@@ -77,25 +84,33 @@ begin
   {$IFDEF VCL}
   RegisterComponents(RsPaletteDialog, [TJvOpenDialog, TJvSaveDialog]);
   {$ENDIF VCL}
-  RegisterComponents(RsPaletteDialog, [TJvSelectDirectory,  TJvTipOfDay,
+  {$IFDEF VisualCLX}
+  RegisterComponents(RsPaletteDialog, [TOpenPictureDialog, TSavePictureDialog, TPrinterSetupDialog]);
+  {$ENDIF VisualCLX}
+  RegisterComponents(RsPaletteDialog, [TJvSelectDirectory, TJvTipOfDay,
     TJvFindReplace, TJvDSADialog]);
   {$IFDEF VCL}
   RegisterComponents(RsPaletteDialog, [TJvPageSetupDialog, TJvPageSetupTitledDialog,
     TJvColorDialog, TJvAppletDialog]);
   {$ENDIF VCL}
   {$IFDEF USEWINDOWS}
-  RegisterComponents(RsPaletteDialog, [TJvConnectNetwork,
-    TJvDisconnectNetwork, TJvAddPrinterDialog, TJvFindFilesDialog,
-    TJvFormatDriveDialog, TJvOrganizeFavoritesDialog,
-    TJvComputerNameDialog, TJvChangeIconDialog,
-    TJvShellAboutDialog, TJvRunDialog, TJvObjectPropertiesDialog,
-    TJvNewLinkDialog, TJvAddHardwareDialog, TJvOpenWithDialog,
-    TJvDiskFullDialog, TJvExitWindowsDialog, TJvOutOfMemoryDialog,
-    TJvObjectPickerDialog, TJvDualListDialog, TJvImageDialog, TJvLoginDialog,
-    TJvProgressDialog, TJvProgressComponent, TJvDiskPrompt, TJvCopyError,
-    TJvDeleteError, TJvRenameError, TJvDesktopAlert, TJvDesktopAlertStack]);
+  RegisterComponents(RsPaletteDialog, [
+    TJvConnectNetwork, TJvDisconnectNetwork, TJvAddPrinterDialog,
+    TJvFindFilesDialog, TJvFormatDriveDialog, TJvOrganizeFavoritesDialog,
+    TJvComputerNameDialog, TJvChangeIconDialog, TJvShellAboutDialog,
+    TJvRunDialog, TJvObjectPropertiesDialog, TJvNewLinkDialog,
+    TJvAddHardwareDialog, TJvOpenWithDialog, TJvDiskFullDialog,
+    TJvExitWindowsDialog, TJvOutOfMemoryDialog, TJvObjectPickerDialog,
+    TJvImageDialog]);
   {$ENDIF USEWINDOWS}
-
+  RegisterComponents(RsPaletteDialog, [
+    TJvLoginDialog, TJvProgressDialog, TJvProgressComponent]);
+  {$IFDEF USEWINDOWS}
+  RegisterComponents(RsPaletteDialog, [
+    TJvDiskPrompt, TJvCopyError, TJvDeleteError, TJvRenameError]);
+  {$ENDIF USEWINDOWS}
+  RegisterComponents(RsPaletteDialog, [
+    TJvDesktopAlert, TJvDesktopAlertStack]);
   {$IFDEF VCL}
   RegisterPropertyEditor(TypeInfo(string), TJvAppletDialog, cAppletName, TJvAppletNameProperty);
   RegisterPropertyEditor(TypeInfo(Integer), TJvAppletDialog, cAppletIndex, TJvAppletIndexProperty);
@@ -109,6 +124,11 @@ begin
   RegisterComponentEditor(TJvOpenDialog, TJvBaseDlgEditor);
   RegisterComponentEditor(TJvSaveDialog, TJvBaseDlgEditor);
   {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  RegisterComponentEditor(TOpenPictureDialog, TJvBaseDlgEditor);
+  RegisterComponentEditor(TSavePictureDialog, TJvBaseDlgEditor);
+  {$ENDIF VisualCLX}
+
   RegisterComponentEditor(TJvCommonDialogP, TJvBaseDlgEditor);
   RegisterComponentEditor(TJvCommonDialogF, TJvBaseDlgEditor);
   {$IFDEF USEWINDOWS}
