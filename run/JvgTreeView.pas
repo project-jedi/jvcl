@@ -286,7 +286,7 @@ uses
   Math,
   JvgUtils;
 
-{$R ..\Resources\JvgTreeView.res}
+{$R ../Resources/JvgTreeView.res}
 
 constructor TJvgCustomTreeView.Create(AOwner: TComponent);
 begin

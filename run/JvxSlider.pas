@@ -277,13 +277,13 @@ uses
   Consts, Math,
   JvJVCLUtils, JvJCLUtils, JvConsts, JvTypes, JvThemes;
 
-{$R ..\Resources\JvxSlider.res}
+{$R ../Resources/JvxSlider.res}
 
 //=== TJvCustomSlider ========================================================
 
 const
   ImagesResNames: array [TSliderImage] of PChar =
-  ('JV_W95_HTB', 'JV_W95_HRL', 'JV_W95_VTB', 'JV_W95_VRL');
+    ('JV_W95_HTB', 'JV_W95_HRL', 'JV_W95_VTB', 'JV_W95_VRL');
   Indent = 6;
   JumpInterval = 400;
 

@@ -300,7 +300,7 @@ uses
   Math,
   JvConsts, JvResources, JvTypes;
 
-{$R ..\Resources\JvColorCombo.res}
+{$R ../Resources/JvColorCombo.res}
 
 function LoadInternalBitmap(ResName: string): TBitmap;
 begin

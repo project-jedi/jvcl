@@ -421,7 +421,7 @@ uses
   JvThemes;
 {$ENDIF JVCLThemesEnabled}
 
-{$R ..\Resources\JvXPBar.res}
+{$R ../Resources/JvXPBar.res}
 
 const
   FC_HEADER_HEIGHT = 34;

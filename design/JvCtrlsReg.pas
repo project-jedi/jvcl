@@ -56,7 +56,7 @@ uses
   JvGroupHeaderEditor, JvFooterEditor, JvSpeedbarForm, JvDsgnEditors,
   JvTransparentButtonEditors, JvRollOutEditor;
 
-{$R ..\Resources\JvCtrlsReg.dcr}
+{$R ../Resources/JvCtrlsReg.dcr}
 
 procedure Register;
 begin

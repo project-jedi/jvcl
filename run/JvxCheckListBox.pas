@@ -37,11 +37,10 @@ unit JvxCheckListBox;
 
 interface
 uses
-  Windows,
+  Windows, Messages, Classes, Controls, Graphics, StdCtrls, Forms,
   {$IFDEF COMPILER6_UP}
   RTLConsts,
   {$ENDIF COMPILER6_UP}
-  Messages, Classes, Controls, Graphics, StdCtrls, Forms,
   JvAppStorage, JvFormPlacement, JvComponent, JvFinalize;
 
 type
@@ -305,7 +304,8 @@ const
 function CheckBitmap: TBitmap;
 
 implementation
-{$R ..\Resources\JvxCheckListBox.res}
+
+{$R ../Resources/JvxCheckListBox.res}
 
 uses
   SysUtils, Consts, Math,
@@ -313,7 +313,6 @@ uses
 
 const
   sUnitName = 'JvxCheckListBox';
-
 
 //=== TJvListBoxStrings ======================================================
 

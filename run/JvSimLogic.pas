@@ -331,12 +331,7 @@ type
 
 implementation
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvSimImages.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
 {$R ../Resources/JvSimImages.res}
-{$ENDIF LINUX}
 
 // general bin procedure
 

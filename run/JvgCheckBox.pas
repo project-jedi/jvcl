@@ -160,7 +160,7 @@ uses
   Math,
   JvThemes, JvJVCLUtils;
 
-{$R ..\Resources\JvgCheckBox.res}
+{$R ../Resources/JvgCheckBox.res}
 
 //________________________________________________________ Methods _
 

@@ -38,7 +38,7 @@ procedure Register;
 
 implementation
 
-{$R ..\Resources\JvGlobusReg.dcr}
+{$R ../Resources/JvGlobusReg.dcr}
 
 uses Classes,
   {$IFDEF COMPILER6_UP}

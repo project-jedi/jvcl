@@ -34,8 +34,8 @@ unit JvTipOfDay;
 interface
 
 uses
-  Classes, Graphics, Controls, Messages, Forms, JvAppStorage,
-  JvBaseDlg, JvButtonPersistent, JvSpeedButton, JvTypes, StdCtrls;
+  Classes, Graphics, Controls, Messages, Forms, StdCtrls,
+  JvAppStorage, JvBaseDlg, JvButtonPersistent, JvSpeedButton, JvTypes;
 
 type
   TJvCanShowEvent = procedure(Sender: TObject; var CanShow: Boolean) of object;
@@ -154,10 +154,10 @@ type
 implementation
 
 uses
-  Windows, ExtCtrls, JvButton, Dialogs, SysUtils,
-  JvWndProcHook, JvResources;
+  Windows, ExtCtrls, Dialogs, SysUtils,
+  JvButton, JvWndProcHook, JvResources;
 
-{$R ..\Resources\JvTipOfDay.res}
+{$R ../Resources/JvTipOfDay.res}
 
 type
   TControlAccess = class(TControl);

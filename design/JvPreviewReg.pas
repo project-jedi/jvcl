@@ -55,12 +55,7 @@ uses
   JvDsgnConsts,
   JvPrvwDoc, JvPrvwRender;
 
-{$IFDEF MSWINDOWS}
-{$R ..\resources\JvPreviewReg.dcr}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
 {$R ../Resources/JvPreviewReg.dcr}
-{$ENDIF LINUX}
 
 type
   TJvHackCustomPreviewer = class(TJvCustomPreviewRenderer);

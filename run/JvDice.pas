@@ -144,22 +144,15 @@ type
 
 implementation
 
-{$IFDEF VCL}
 uses
+  {$IFDEF VCL}
   ImgList;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-uses
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   QImgList;
-{$ENDIF VisualCLX}
+  {$ENDIF VisualCLX}
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvDice.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
 {$R ../Resources/JvDice.res}
-{$ENDIF LINUX}
-
 
 constructor TJvDice.Create(AOwner: TComponent);
 var

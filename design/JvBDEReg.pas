@@ -46,7 +46,7 @@ uses
   JvBDEProgress, JvBDEQBE, JvBDESecurity, JvBDEMemTable, JvBDEQuery,
   JvBDESQLScript, JvBDEMemTableEditor, JvBDESecurityEditor;
 
-{$R ..\resources\JvBDEReg.dcr}
+{$R ../Resources/JvBDEReg.dcr}
 
 procedure Register;
 const

@@ -31,7 +31,7 @@ unit JvDotNetCtrlsReg;
 
 interface
 
-{$R ..\Resources\JvDotNetCtrlsReg.dcr}
+{$R ../Resources/JvDotNetCtrlsReg.dcr}
 
 procedure Register;
 

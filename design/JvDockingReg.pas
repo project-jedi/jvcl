@@ -30,7 +30,7 @@ unit JvDockingReg;
 
 interface
 
-{$R ..\Resources\JvDockingReg.dcr}
+{$R ../Resources/JvDockingReg.dcr}
 
 procedure Register;
 

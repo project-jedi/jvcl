@@ -164,12 +164,7 @@ uses
   Math,
   JvThemes, JvConsts, JvResources, JvToolEdit, JvJVCLUtils;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvPickDate.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
 {$R ../Resources/JvPickDate.res}
-{$ENDIF LINUX}
 
 const
   SBtnGlyphs: array [0..3] of PChar =

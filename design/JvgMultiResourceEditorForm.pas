@@ -43,7 +43,6 @@ uses
   JvgMultiResources, JvComponent;
 
 type
-
   TJvgResourcesProperty = class(TPropertyEditor)
     function GetAttributes: TPropertyAttributes; override;
     function GetValue: string; override;

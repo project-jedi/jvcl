@@ -55,7 +55,7 @@ uses
   JvInterpreter_SysUtils, JvInterpreter_Types, JvInterpreter_Windows,
   JvInterpreterConst, JvInterpreterFm, JvDsgnEditors;
 
-{$R ..\resources\JvInterpreterReg.dcr}
+{$R ../Resources/JvInterpreterReg.dcr}
 
 procedure Register;
 begin

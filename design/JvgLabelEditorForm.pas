@@ -40,7 +40,7 @@ uses
   {$ENDIF COMPILER6_UP}
   JvCompEditorTemplateForm, JvgSpeedButton, JvgPage, JvgTypes,
   JvgSplit, JvgWizardHeader, JvgShadow,
-  JvgGroupBox, JvgLabel, JvgCheckBox, JvgImage;
+  JvgGroupBox, JvgLabel, JvgCheckBox, JvgImage, JvExControls, JvComponent;
 
 type
   TJvgLabelEditorDlg = class(TJvgCompEditorTemplate)
@@ -193,7 +193,7 @@ uses
   JvDsgnConsts;
 
 {$R *.dfm}
-{$R ..\Resources\JvgLabelEditorForm.res}
+{$R ../Resources/JvgLabelEditorForm.res}
 
 function IntToTextStyle(Tag: Integer): TglTextStyle;
 begin

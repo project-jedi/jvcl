@@ -48,7 +48,7 @@ uses
   JvMouseGesture, JvLogFile, JvDataEmbeddedEditor, JvPatcherEditor,
   JvProfilerForm, JvPageManagerForm, JvDsgnEditors;
 
-{$R ..\resources\JvCmpReg.dcr}
+{$R ../Resources/JvCmpReg.dcr}
 
 procedure Register;
 begin
