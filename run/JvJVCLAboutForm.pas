@@ -134,12 +134,7 @@ var
   VersionInfo: TOSVersionInfoEx;
 {$ENDIF MSWINDOWS}
 begin
-  {$IFDEF VCL}
   lblVersion.Caption := 'Version: ' + JVCL_VERSIONSTRING;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  lblVersion.Caption := 'Version: ' + JVCLX_VERSIONSTRING;
-  {$ENDIF VisualCLX}
   {$IFDEF MSWINDOWS}
   FillChar(VersionInfo, SizeOf(TOSVersionInfoEx), #0);
   VersionInfo.dwOSVersionInfoSize := SizeOf(TOSVersionInfoEx);
