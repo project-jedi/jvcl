@@ -1,6 +1,20 @@
+2002-07-20
+- moved standard compiler directives from units into JVCL.INC
+- replaced JEDI.INC with JVCL.INC in units/packages
+- added DJCL??.DPK to JVCL200_R??.DPKs requires section
+- moved {$ObjExportAll ON} from units to JVCL.INC
+
+2002-07-19
+- Converted DELPHIXX defines to COMPILERXX with Michael Becks Convert utility 
+- fixed Directory setter bug in JvBrowseFolder
+- moved all BMP's and PNG's to \glyphs because of re-casing problem in CVS (cannot change case on existing files)
+2002-07-18
+- Changed generic Exception classes to EJVCLException and added JvTypes where necessary
+- Remko Bonte fixed design-time bugs in JvSpecialProgress 
+
 2002-07-16
 - Added JvRadioControl donated by Rudy Velthius
-- Readded all BMP's and PNG's with upper case names to facilitate auto generation
+- removed JvStrxLEdit (duplicate of JvStrLEdit)
 
 2002-07-15
 - Moved several forms that wasn't used to \archive\installer. These were part of the already archived installer package
