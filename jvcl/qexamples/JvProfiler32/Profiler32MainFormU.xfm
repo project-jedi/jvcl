@@ -1,0 +1,164 @@
+object Profiler32MainForm: TProfiler32MainForm
+  Left = 343
+  Top = 157
+  Width = 463
+  Height = 350
+  VertScrollBar.Range = 57
+  ActiveControl = ListBox1
+  Caption = 'Profiler 32 test program'
+  Color = clButton
+  Constraints.MinHeight = 200
+  Constraints.MinWidth = 380
+  Font.Color = clText
+  Font.Height = 11
+  Font.Name = 'MS Sans Serif'
+  Font.Pitch = fpVariable
+  Font.Style = []
+  Font.Weight = 40
+  KeyPreview = True
+  ParentFont = False
+  Position = poDesktopCenter
+  Scaled = False
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
+  PixelsPerInch = 96
+  object Progress: TProgressBar
+    Left = 0
+    Top = 334
+    Width = 463
+    Height = 16
+    Align = alBottom
+  end
+  object ListBox1: TListBox
+    Left = 0
+    Top = 41
+    Width = 463
+    Height = 293
+    Align = alClient
+    ItemHeight = 13
+    Items.Strings = (
+      'ASSOC'
+      'AT'
+      'ATTRIB'
+      'BREAK'
+      'CACLS'
+      'CALL'
+      'CD'
+      'CHCP'
+      'CHDIR'
+      'CHKDSK'
+      'CLS'
+      'CMD'
+      'COLOR'
+      'COMP'
+      'COMPACT'
+      'CONVERT'
+      'COPY'
+      'DATE'
+      'DEL'
+      'DIR'
+      'DISKCOMP'
+      'DISKCOPY'
+      'DOSKEY'
+      'ECHO'
+      'ENDLOCAL'
+      'ERASE'
+      'EXIT'
+      'FC'
+      'FIND'
+      'FINDSTR'
+      'FOR'
+      'FORMAT'
+      'FTYPE'
+      'GOTO'
+      'GRAFTABL'
+      'HELP'
+      'IF'
+      'KEYB'
+      'LABEL'
+      'MD'
+      'MKDIR'
+      'MODE'
+      'MORE'
+      'MOVE'
+      'PATH'
+      'PAUSE'
+      'POPD'
+      'PRINT'
+      'PROMPT'
+      'PUSHD'
+      'RD'
+      'RECOVER'
+      'REM'
+      'REN'
+      'RENAME'
+      'REPLACE'
+      'RESTORE'
+      'RMDIR'
+      'SET'
+      'SETLOCAL'
+      'SHIFT'
+      'SORT'
+      'START'
+      'SUBST'
+      'TIME'
+      'TITLE'
+      'TREE'
+      'TYPE'
+      'VER'
+      'VERIFY'
+      'VOL'
+      'XCOPY')
+    Rows = 72
+    TabOrder = 0
+  end
+  object Panel1: TPanel
+    Left = 0
+    Top = 0
+    Width = 463
+    Height = 41
+    Align = alTop
+    BevelOuter = bvNone
+    TabOrder = 1
+    object Label1: TLabel
+      Left = 10
+      Top = 10
+      Width = 64
+      Height = 13
+      Caption = 'Create report:'
+    end
+    object UseIdBtn: TButton
+      Left = 104
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = 'Use &ID'
+      TabOrder = 0
+      OnClick = UseIdBtnClick
+    end
+    object UseNameBtn: TButton
+      Left = 192
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = 'Use &name'
+      TabOrder = 1
+      OnClick = UseNameBtnClick
+    end
+    object ResultBtn: TButton
+      Left = 373
+      Top = 8
+      Width = 75
+      Height = 25
+      Anchors = [akTop, akRight]
+      Caption = '&Result'
+      TabOrder = 2
+      OnClick = ResultBtnClick
+    end
+  end
+  object P: TJvProfiler
+    Left = 376
+    Top = 56
+  end
+end
