@@ -235,11 +235,11 @@ JvDockingC6D.bpl: bcb6\JvDockingC6D.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvDotNetCtrlsC6R.bpl: bcb6\JvDotNetCtrlsC6R.bpk
+JvDotNetCtrlsC6R.bpl: bcb6per\JvDotNetCtrlsC6R.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvDotNetCtrlsC6D.bpl: bcb6\JvDotNetCtrlsC6D.bpk
+JvDotNetCtrlsC6D.bpl: bcb6per\JvDotNetCtrlsC6D.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
