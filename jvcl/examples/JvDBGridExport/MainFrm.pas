@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   Menus, Db, Grids, DBGrids, ComCtrls, 
   JvComponent, JvDBGridExport, JvCsvData, JvXPBar,
-  JvBaseDlg, JvProgressDialog, JvDBGrid;
+  JvBaseDlg, JvProgressDialog, JvDBGrid, JvExDBGrids;
 
 type
   TfrmMain = class(TForm)

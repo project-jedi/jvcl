@@ -38,7 +38,7 @@ object frmMain: TfrmMain
     OnTitleChange = WebBrowser1TitleChange
     OnNavigateComplete2 = WebBrowser1NavigateComplete2
     ControlData = {
-      4C000000021F0000810F00000000000000000000000000000000000000000000
+      4C000000FC360000E71E00000000000000000000000000000000000000000000
       000000004C000000000000000000000001000000E0D057007335CF11AE690800
       2B2E126208000000000000004C0000000114020000000000C000000000000046
       8000000000000000000000000000000000000000000000000000000000000000
@@ -53,9 +53,6 @@ object frmMain: TfrmMain
     BevelInner = bvRaised
     BevelOuter = bvLowered
     TabOrder = 2
-    DesignSize = (
-      532
-      73)
     object Label2: TLabel
       Left = 9
       Top = 11
@@ -73,7 +70,7 @@ object frmMain: TfrmMain
       Text = 'http://www.borland.com'
     end
     object JvDomainUpDown1: TJvDomainUpDown
-      Left = 413
+      Left = 409
       Top = 28
       Width = 15
       Height = 21

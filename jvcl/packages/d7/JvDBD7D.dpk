@@ -50,7 +50,8 @@ contains
   JvCsvDataForm in '..\..\design\JvCsvDataForm.pas' {JvCsvDefStrDialog},
   JvDBMemDatasetEditor in '..\..\design\JvDBMemDatasetEditor.pas' ,
   JvDBReg in '..\..\design\JvDBReg.pas' ,
-  JvDBEditors in '..\..\design\JvDBEditors.pas' 
+  JvDBEditors in '..\..\design\JvDBEditors.pas',
+  JvDBGridExportEditors in '..\..\design\JvDBGridExportEditors.pas'
   ;
 
 end.
