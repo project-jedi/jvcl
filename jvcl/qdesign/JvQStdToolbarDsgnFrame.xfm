@@ -1,0 +1,84 @@
+inherited fmeJvStdToolbarDesign: TfmeJvStdToolbarDesign
+  inherited spToolbar: TSplitter
+    Top = 47
+  end
+  inherited tbrToolbar: TToolBar
+    Height = 47
+    ButtonHeight = 39
+    ButtonWidth = 86
+    object tbAddItem: TToolButton
+      Left = 2
+      Top = 5
+      Height = 39
+      Action = aiAddItem
+      Caption = '&Add item'
+    end
+    object tbDeleteItem: TToolButton
+      Left = 88
+      Top = 5
+      Height = 39
+      Action = aiDeleteItem
+      Caption = '&Delete item'
+    end
+    object tbDeleteSubItems: TToolButton
+      Left = 174
+      Top = 5
+      Height = 39
+      Action = aiDeleteSubItems
+      Caption = 'Delete &Subitems'
+    end
+    object tbDivider1: TToolButton
+      Left = 260
+      Top = 5
+      Width = 8
+      Height = 39
+      Style = tbsSeparator
+      Caption = 'tbDivider1'
+      ImageIndex = 3
+    end
+    object tbMoveUp: TToolButton
+      Left = 268
+      Top = 5
+      Height = 39
+      Action = aiMoveUp
+      Caption = 'Move &Up'
+    end
+    object tbMoveDown: TToolButton
+      Left = 354
+      Top = 5
+      Height = 39
+      Action = aiMoveDown
+      Caption = 'Move &Down'
+    end
+  end
+  inherited ilToolbar: TImageList
+    Left = 300
+  end
+  inherited pmToolbar: TPopupMenu
+    Left = 165
+  end
+  inherited aiToolbar: TActionList
+    Images = ilToolbar
+    Left = 72
+    object aiAddItem: TAction
+      Caption = '&Add item'
+      ImageIndex = 0
+    end
+    object aiDeleteItem: TAction
+      Caption = '&Delete item'
+      ImageIndex = 1
+    end
+    object aiDeleteSubItems: TAction
+      Caption = 'Delete &Subitems'
+      ImageIndex = 2
+    end
+    object aiMoveUp: TAction
+      Caption = 'Move &Up'
+      ImageIndex = 3
+    end
+    object aiMoveDown: TAction
+      Caption = 'Move &Down'
+      ImageIndex = 4
+    end
+  end
+end
