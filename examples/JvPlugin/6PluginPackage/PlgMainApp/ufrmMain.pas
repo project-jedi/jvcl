@@ -30,10 +30,10 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, JvPluginManager, ExtCtrls, JvComponent;
+  StdCtrls, JvPluginManager, ExtCtrls, JvComponent, JvPlgIntf;
 
 type
-  TfrmMain = class(TForm)
+  TfrmMain = class(TForm, IUnknown, IMyMainAppInterface)
     JvPluginManager1: TJvPluginManager;
     Memo1: TMemo;
     Panel1: TPanel;
@@ -44,13 +44,18 @@ type
     Splitter1: TSplitter;
     procedure butLoadPluginsClick(Sender: TObject);
     procedure butShowPlugClick(Sender: TObject);
-    procedure JvPluginManager1ErrorLoading(Sender: TObject; s: String);
+    procedure JvPluginManager1ErrorLoading(Sender: TObject; s: string);
     procedure butUnloadClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     { Private-Deklarationen }
+
   public
     { Public-Deklarationen }
+    //
+    function GetPosition : TPoint;
+    procedure SetPosition(const NewPos : TPoint);
+    procedure DoSomethingSpecial(Name: String; OnClick: TNotifyEvent);
   end;
 
 var
@@ -58,74 +63,95 @@ var
 
 implementation
 
-uses JvPlugin, JvPlgIntf;
+uses JvPlugin;
 
 {$R *.DFM}
 
 procedure TfrmMain.butLoadPluginsClick(Sender: TObject);
-var counter : integer;
-    Plug : TJvPlugin;
-    MyPlug : IMyPlugInInterface;
+var
+  counter: integer;
+  Plug: TJvPlugin;
+  MyPlug: IMyPlugInInterface;
 begin
-     butLoadPlugins.Enabled:=False;
+  butLoadPlugins.Enabled := False;
 
-     // Loading Plugins
-     Memo1.LInes.Add('Looking in '+ExtractFilePath(Application.Exename)+' for Plugins');
-     JvPluginManager1.LoadPlugins;
-     Memo1.Lines.Add(IntToStr(JvPluginManager1.PluginCount)+' plugins loaded.');
+  // Loading Plugins
+  Memo1.Lines.Add('Looking in ' + ExtractFilePath(Application.Exename) + ' for Plugins');
+  JvPluginManager1.LoadPlugins;
+  Memo1.Lines.Add(IntToStr(JvPluginManager1.PluginCount) + ' plugins loaded.');
 
-     // Check if plugins have correct interface
-     counter:=0;
-     while counter < JvPluginManager1.PluginCount do
-     begin
-          Plug:=JvPluginManager1.Plugins[counter];
-          if Plug.GetInterface(IMyPlugInInterface, MyPlug) then
-          begin
-               Memo1.LInes.Add(IntToStr(counter)+' : '+Plug.Description+' V '+Plug.PluginVersion);
-               lstPlugins.Items.Add(Plug.Description+' V '+Plug.PluginVersion);
+  // Check if plugins have correct interface
+  counter := 0;
+  while counter < JvPluginManager1.PluginCount do
+  begin
+    Plug := JvPluginManager1.Plugins[counter];
+    if Plug.GetInterface(IMyPlugInInterface, MyPlug) then
+    begin
+      Memo1.Lines.Add(IntToStr(counter) + ' : ' + Plug.Description + ' V ' + Plug.PluginVersion);
+      lstPlugins.Items.Add(Plug.Description + ' V ' + Plug.PluginVersion);
 
-               Plug.Configure;
-               Inc(counter);
-          end
-          else
-          begin
-               Memo1.Lines.Add('Warning : Plugin '+Plug.Description+' has unknown interface - unloaded!');
-               JvPluginManager1.UnloadPlugin(counter);
-          end;
-     end;
+      Plug.Configure;
+      MyPlug.Init(Self); // make the plugin aware of the main app
+      Inc(counter);
+    end
+    else
+    begin
+      Memo1.Lines.Add('Warning : Plugin ' + Plug.Description + ' has unknown interface - unloaded!');
+      JvPluginManager1.UnloadPlugin(counter);
+    end;
+  end;
+  if (lstPlugins.ItemIndex < 0) then
+    lstPlugins.ItemIndex := 0;
 end;
 
 procedure TfrmMain.butShowPlugClick(Sender: TObject);
-var MyPlug : IMyPlugInInterface;
+var
+  MyPlug: IMyPlugInInterface;
 begin
-     if (lstPlugins.ItemIndex<0) or
-        (lstPlugins.ItemIndex>lstPlugins.Items.Count)
-     then
-         Exit;
+  if (lstPlugins.ItemIndex < 0) or
+    (lstPlugins.ItemIndex > lstPlugins.Items.Count) then
+    Exit;
 
-     JvPluginManager1.Plugins[lstPlugins.ItemIndex].GetInterface(IMyPlugInInterface, MyPlug);
-     MyPlug.ShowPlug(self);
+  JvPluginManager1.Plugins[lstPlugins.ItemIndex].GetInterface(IMyPlugInInterface, MyPlug);
+  MyPlug.ShowPlug(self);
 end;
 
 procedure TfrmMain.JvPluginManager1ErrorLoading(Sender: TObject;
-  s: String);
+  s: string);
 begin
-     Memo1.Lines.Add(s);
+  Memo1.Lines.Add(s);
 end;
 
 procedure TfrmMain.butUnloadClick(Sender: TObject);
 begin
-      while JvPluginManager1.PluginCount<>0 do
-            JvPluginManager1.UnloadPlugin(0);
+  while JvPluginManager1.PluginCount <> 0 do
+    JvPluginManager1.UnloadPlugin(0);
 
-      lstPlugins.Clear;
+  lstPlugins.Clear;
 
-      butLoadPlugins.Enabled:=True;
+  butLoadPlugins.Enabled := True;
 end;
 
 procedure TfrmMain.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-     butUnloadClick(nil);
+  butUnloadClick(nil);
+end;
+
+procedure TfrmMain.DoSomethingSpecial(Name: String; OnClick: TNotifyEvent);
+begin
+  ShowMessageFmt('DoSomethingSpecial was called with "%s" as the Name parameter',[Name]);
+end;
+
+function TfrmMain.GetPosition: TPoint;
+begin
+  Result := ClientOrigin;
+end;
+
+procedure TfrmMain.SetPosition(const NewPos: TPoint);
+begin
+  Top := NewPos.Y;
+  Left := NewPos.X;
 end;
 
 end.
+

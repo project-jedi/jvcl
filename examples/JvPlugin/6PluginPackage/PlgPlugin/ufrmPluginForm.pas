@@ -30,15 +30,18 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls;
+  StdCtrls, JvPlgIntf;
 
 type
   TfrmPluginForm = class(TForm)
     Memo1: TMemo;
+    Button1: TButton;
+    procedure Button1Click(Sender: TObject);
   private
     { Private-Deklarationen }
   public
     { Public-Deklarationen }
+    MainApp:IMyMainAppInterface;
   end;
 
 var
@@ -47,5 +50,11 @@ var
 implementation
 
 {$R *.DFM}
+
+procedure TfrmPluginForm.Button1Click(Sender: TObject);
+begin
+  if MainApp <> nil then
+    MainApp.DoSomethingSpecial(ClassName, nil);
+end;
 
 end.
