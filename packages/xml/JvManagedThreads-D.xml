@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvManagedThreads" Design="-1">
   <Description>JVCL Managed Threads</Description>
+  <ClxDescription>JVCLX Managed Threads</ClxDescription>
   <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUCJcl50(USEJVCL)</C5PFlags>
   <C6PFlags>-LUDesignIde -LUCJcl(USEJVCL)</C6PFlags>
   <C5Libs/>
