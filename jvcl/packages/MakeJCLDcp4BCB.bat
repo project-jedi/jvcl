@@ -57,7 +57,9 @@ copy /D /Y .\jcldcpdpk%VERSION%.tpl "%JCLDIR%\packages\bcb%VERSION%\template.dpk
 xcopy /Y "%JCLDIR%\packages\c%VERSION%\*.res" "%JCLDIR%\packages\bcb%VERSION%\"
 
 : generate the packages from the xml files
-..\devtools\bin\pg -p="%JCLDIR%\Packages" -t=c%VERSION% -r=Jcl -f=%%e%%p%%n,%%e%%p%%n%%v0
+cd ..\devtools\bin
+pg -p="%JCLDIR%\Packages" -t=c%VERSION% -r=Jcl -f=%%e%%p%%n,%%e%%p%%n%%v0
+cd ..\..\packages
 
 : compile the generated packages
 for %%f in ("%JCLDIR%\packages\bcb%VERSION%\C*.dpk") do %ROOT%\bin\dcc32 -I"%JCLDIR%\source\common" -U"%JCLDIR%\source\common" -U"%JCLDIR%\source\windows" -U"%JCLDIR%\source\vcl" -U"%JCLDIR%\source\visclx" "%%f"
@@ -78,7 +80,7 @@ goto end
 
 :error
 echo.
-echo !!!!! ERROR WHILE BUILDING THE JCL DPC FOR THE JVCL !!!!
+echo !!!!! ERROR WHILE BUILDING THE JCL DCP FOR THE JVCL !!!!
 echo Please refer to last output for details
 echo.
 goto end
