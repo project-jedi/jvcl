@@ -2404,6 +2404,8 @@ begin
     try
       if FDockStyle <> nil then
       begin
+        FDockStyle.RemoveFreeNotification(Self);
+
         { Remove Self from the internal list of the dock style component }
         FDockStyle.RemoveDockBaseControl(Self);
 
