@@ -23,6 +23,7 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
 
 unit JvShapedButton;
@@ -30,8 +31,9 @@ unit JvShapedButton;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, JvButtonUtils, JvThemes; 
+  Windows, Messages, SysUtils, Classes, Graphics, Controls,
+  Forms, Dialogs, StdCtrls,
+  JvThemes;
 
 type
   TJvButtonShapes = (jvSLeftArrow, jvRightArrow, jvSRound, jvSHex, jvSOctagon, jvSPar,
@@ -51,13 +53,12 @@ type
     xp, yp: integer;
     FFlatArrow: boolean;
     FAntiAlias: boolean;
-    procedure CMMouseLeave(var Message: TMessage); message CM_MouseLeave;
-    procedure CMMouseEnter(var Message: TMessage); message CM_MouseEnter;
+    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
+    procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
     procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
     procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
     procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
-    procedure WMLButtonDblClk(var Message: TWMLButtonDblClk);
-      message WM_LBUTTONDBLCLK;
+    procedure WMLButtonDblClk(var Message: TWMLButtonDblClk); message WM_LBUTTONDBLCLK;
     procedure SetHotColor(const Value: TColor);
     procedure SetFlat(const Value: boolean);
     procedure SetFlatBorderColor(const Value: TColor);
@@ -127,6 +128,55 @@ type
 
 implementation
 
+uses
+  Math;
+
+procedure AntiAliasRect(Clip: TBitmap; XOrigin, YOrigin,
+  XFinal, YFinal: Integer);
+var
+  Memo, X, Y: Integer; (* Composantes primaires des points environnants *)
+  P0, P1, P2: PByteArray;
+
+begin
+  if XFinal < XOrigin then
+  begin
+    // swap values
+    Memo := XOrigin;
+    XOrigin := XFinal;
+    XFinal := Memo;
+  end;
+  if YFinal < YOrigin then
+  begin
+    Memo := YOrigin;
+    YOrigin := YFinal;
+    YFinal := Memo;
+  end; (* si diff‚rence n‚gative *)
+  XOrigin := Max(1, XOrigin);
+  YOrigin := Max(1, YOrigin);
+  XFinal := Min(Clip.Width - 2, XFinal);
+  YFinal := Min(Clip.Height - 2, YFinal);
+  Clip.PixelFormat := pf24bit;
+  for Y := YOrigin to YFinal do
+  begin
+    P0 := Clip.ScanLine[Y - 1];
+    P1 := Clip.ScanLine[Y];
+    P2 := Clip.ScanLine[Y + 1];
+    for X := XOrigin to XFinal do
+    begin
+      P1[X * 3] := (P0[X * 3] + P2[X * 3] + P1[(X - 1) * 3] + P1[(X + 1) * 3]) div 4;
+      P1[X * 3 + 1] := (P0[X * 3 + 1] + P2[X * 3 + 1] + P1[(X - 1) * 3 + 1] + P1[(X + 1) * 3 + 1]) div 4;
+      P1[X * 3 + 2] := (P0[X * 3 + 2] + P2[X * 3 + 2] + P1[(X - 1) * 3 + 2] + P1[(X + 1) * 3 + 2]) div 4;
+    end;
+  end;
+end;
+
+procedure AntiAlias(Clip: TBitmap);
+begin
+  AntiAliasRect(Clip, 0, 0, Clip.Width, Clip.Height);
+end;
+
+//=== TJvShapedButton ========================================================
+
 constructor TJvShapedButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -134,8 +184,8 @@ begin
   bm := Tbitmap.create;
   SetBounds(Left, Top, 65, 65);
   FCanvas := TCanvas.Create;
-  FHotcolor := clblue;
-  FFlatborderColor := clwhite;
+  FHotcolor := clBlue;
+  FFlatborderColor := clWhite;
   FButtonShape := jvSTriangleUp; //TODO: Change to Left Arrow
 end;
 
@@ -2612,8 +2662,8 @@ end;
 
 procedure TJvShapedButton.DoAntiAlias(Bmp: TBitmap);
 begin
-  if Antialias then
-    JvButtonUtils.AntiAlias(Bmp);
+  if AntiAlias then
+    JvShapedButton.AntiAlias(Bmp);
 end;
 
 procedure TJvShapedButton.SetAntiAlias(const Value: boolean);

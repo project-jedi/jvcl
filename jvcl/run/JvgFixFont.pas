@@ -81,7 +81,8 @@ begin
     for I := 0 to ComponentCount - 1 do
       if Components[I] is TWinControl then
         FixFont(TWinControl(Components[I]))
-      else if Components[I] is TControl then
+      else
+      if Components[I] is TControl then
         THackControl(Components[I]).Font.Assign(FFont);
   end;
 end;

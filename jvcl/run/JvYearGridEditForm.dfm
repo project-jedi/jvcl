@@ -1,4 +1,4 @@
-object YearGridEditF: TYearGridEditF
+object YearGridEditForm: TYearGridEditForm
   Left = 303
   Top = 154
   BorderStyle = bsDialog
@@ -39,23 +39,23 @@ object YearGridEditF: TYearGridEditF
       TabOrder = 1
       Kind = bkCancel
     end
-    object btnload: TButton
+    object BtnLoad: TButton
       Left = 13
       Top = 7
       Width = 61
       Height = 20
       Caption = '&Load...'
       TabOrder = 2
-      OnClick = btnloadClick
+      OnClick = BtnLoadClick
     end
-    object btnsave: TButton
+    object BtnSave: TButton
       Left = 78
       Top = 7
       Width = 61
       Height = 20
       Caption = '&Save...'
       TabOrder = 3
-      OnClick = btnsaveClick
+      OnClick = BtnSaveClick
     end
   end
   object Memo1: TMemo

@@ -1,7 +1,7 @@
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
-with the License. You may obtain a copy of the License at
+with the License. You may obtain a Copy of the License at
 http://www.mozilla.org/MPL/MPL-1.1.html
 
 Software distributed under the License is distributed on an "AS IS" basis,
@@ -23,6 +23,7 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
 
 unit JvPainterQBForm;
@@ -30,11 +31,12 @@ unit JvPainterQBForm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, Menus, ComCtrls, JvDrawImage, JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls,
+  Forms, Dialogs, StdCtrls, ExtCtrls, Menus, ComCtrls,
+  JvDrawImage, JvComponent;
 
 type
-  TPainterQBF = class(TJvForm)
+  TPainterQBForm = class(TJvForm)
     Bevel1: TBevel;
     qbpresets: TComboBox;
     presetspop: TPopupMenu;
@@ -58,7 +60,7 @@ type
     procedure qbpresetsDrawItem(Control: TWinControl; Index: Integer;
       Rect: TRect; State: TOwnerDrawState);
     procedure qbpresetsClick(Sender: TObject);
-    procedure setlabels;
+    procedure SetLabels;
     procedure AddBackdrop1Click(Sender: TObject);
     procedure DeleteBackdrop1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -72,25 +74,15 @@ type
     procedure blueradioClick(Sender: TObject);
     procedure QuickBack;
   private
-    { Private declarations }
-    PainterF: TJvDrawImage;
+    FPainterForm: TJvDrawImage;
   public
-    { Public declarations }
-    function strtoquickback(s: string): boolean;
-    procedure setDrawImage(aDrawImage: TJvDrawImage);
+    function StrToQuickBack(S: string): Boolean;
+    procedure SetDrawImage(ADrawImage: TJvDrawImage);
   end;
 
 var
-  PainterQBF: TPainterQBF;
   QBFile: string;
-  QBDRed, QBDBlue, QBDGreen: byte;
-
-
-resourcestring
-  sPainterQuickBackdrops = 'Painter Quick Backdrops';
-  sEnterName = 'Enter Name:';
-  sNoItemSelected = 'No item selected!';
-  sErrorInPresets = 'Error in Presets';
+  QBDRed, QBDBlue, QBDGreen: Byte;
 
 implementation
 
@@ -99,225 +91,229 @@ uses
 
 {$R *.DFM}
 
+resourcestring
+  sPainterQuickBackdrops = 'Painter Quick Backdrops';
+  sEnterName = 'Enter Name:';
+  sNoItemSelected = 'No item selected!';
+  sErrorInPresets = 'Error in Presets';
+
 type
-  TColorProc = function(outloop, inloop: integer): integer;
+  TColorProc = function(OutLoop, InLoop: Integer): Integer;
 
 var
-  RedBack, GreenBack, BlueBack: TcolorProc;
-  QBFuncs: array[0..50] of TcolorProc;
-  ImgDrawFactor: byte;
-  QBRedfn, QBGreenfn, QBBluefn: integer;
-  appldir: string;
+  RedBack, GreenBack, BlueBack: TColorProc;
+  QBFuncs: array [0..50] of TColorProc;
+  ImgDrawFactor: Byte;
+  QBRedFn, QBGreenFn, QBBlueFn: Integer;
+  ApplDir: string;
 
-  // start of functions used in Quick Background
-
-function BGProd(inner, outer: Integer): integer;
+function BGProd(Inner, Outer: Integer): Integer;
 begin
-  result := outer * inner mod ImgDrawFactor;
+  Result := Outer * Inner mod ImgDrawFactor;
 end;
 
-function BGSum(inner, outer: Integer): integer;
+function BGSum(Inner, Outer: Integer): Integer;
 begin
-  result := (outer + inner) mod ImgDrawFactor;
+  Result := (Outer + Inner) mod ImgDrawFactor;
 end;
 
-function BGSub(inner, outer: Integer): integer;
+function BGSub(Inner, Outer: Integer): Integer;
 begin
-  result := (outer - inner) mod ImgDrawFactor;
+  Result := (Outer - Inner) mod ImgDrawFactor;
 end;
 
-function BGXor(inner, outer: Integer): integer;
+function BGXor(Inner, Outer: Integer): Integer;
 begin
-  result := (outer xor inner) mod ImgDrawFactor;
+  Result := (Outer xor Inner) mod ImgDrawFactor;
 end;
 
-function BGAnd(inner, outer: Integer): integer;
+function BGAnd(Inner, Outer: Integer): Integer;
 begin
-  result := (outer and inner) mod ImgDrawFactor;
+  Result := (Outer and Inner) mod ImgDrawFactor;
 end;
 
-function BGOutXor(inner, outer: Integer): integer;
+function BGOutXor(Inner, Outer: Integer): Integer;
 begin
-  result := outer xor ImgDrawFactor;
+  Result := Outer xor ImgDrawFactor;
 end;
 
-function BGInXor(inner, outer: Integer): integer;
+function BGInXor(Inner, Outer: Integer): Integer;
 begin
-  result := inner xor ImgDrawFactor;
+  Result := Inner xor ImgDrawFactor;
 end;
 
-function BGOutAnd(inner, outer: Integer): integer;
+function BGOutAnd(Inner, Outer: Integer): Integer;
 begin
-  result := outer and ImgDrawFactor;
+  Result := Outer and ImgDrawFactor;
 end;
 
-function BGInAnd(inner, outer: Integer): integer;
+function BGInAnd(Inner, Outer: Integer): Integer;
 begin
-  result := inner and ImgDrawFactor;
+  Result := Inner and ImgDrawFactor;
 end;
 
-function BGOutMod(inner, outer: Integer): integer;
+function BGOutMod(Inner, Outer: Integer): Integer;
 begin
-  result := outer mod ImgDrawFactor;
+  Result := Outer mod ImgDrawFactor;
 end;
 
-function BGInMod(inner, outer: Integer): integer;
+function BGInMod(Inner, Outer: Integer): Integer;
 begin
-  result := inner mod ImgDrawFactor;
+  Result := Inner mod ImgDrawFactor;
 end;
 
-function BGProdXor(inner, outer: Integer): integer;
+function BGProdXor(Inner, Outer: Integer): Integer;
 begin
-  result := (outer * inner) xor ImgDrawFactor;
+  Result := (Outer * Inner) xor ImgDrawFactor;
 end;
 
-function BGSumXor(inner, outer: Integer): integer;
+function BGSumXor(Inner, Outer: Integer): Integer;
 begin
-  result := (outer + inner) xor ImgDrawFactor;
+  Result := (Outer + Inner) xor ImgDrawFactor;
 end;
 
-function BGSubXor(inner, outer: Integer): integer;
+function BGSubXor(Inner, Outer: Integer): Integer;
 begin
-  result := (outer - inner) xor ImgDrawFactor;
+  Result := (Outer - Inner) xor ImgDrawFactor;
 end;
 
-function BGProdAnd(inner, outer: Integer): integer;
+function BGProdAnd(Inner, Outer: Integer): Integer;
 begin
-  result := (outer * inner) and ImgDrawFactor;
+  Result := (Outer * Inner) and ImgDrawFactor;
 end;
 
-function BGSumAnd(inner, outer: Integer): integer;
+function BGSumAnd(Inner, Outer: Integer): Integer;
 begin
-  result := (outer + inner) and ImgDrawFactor;
+  Result := (Outer + Inner) and ImgDrawFactor;
 end;
 
-function BGSubAnd(inner, outer: Integer): integer;
+function BGSubAnd(Inner, Outer: Integer): Integer;
 begin
-  result := (outer - inner) and ImgDrawFactor;
+  Result := (Outer - Inner) and ImgDrawFactor;
 end;
 
-function BGInner(inner, outer: Integer): integer;
+function BGInner(Inner, Outer: Integer): Integer;
 begin
-  result := inner;
+  Result := Inner;
 end;
 
-function BGOuter(inner, outer: Integer): integer;
+function BGOuter(Inner, Outer: Integer): Integer;
 begin
-  result := outer;
+  Result := Outer;
 end;
 
-function BGOutRed(inner, outer: Integer): integer;
+function BGOutRed(Inner, Outer: Integer): Integer;
 begin
-  result := QBDRed * outer;
+  Result := QBDRed * Outer;
 end;
 
-function BGInRed(inner, outer: Integer): integer;
+function BGInRed(Inner, Outer: Integer): Integer;
 begin
-  result := QBDRed * inner;
+  Result := QBDRed * Inner;
 end;
 
-function BGOutGreen(inner, outer: Integer): integer;
+function BGOutGreen(Inner, Outer: Integer): Integer;
 begin
-  result := QBDGreen * outer;
+  Result := QBDGreen * Outer;
 end;
 
-function BGInGreen(inner, outer: Integer): integer;
+function BGInGreen(Inner, Outer: Integer): Integer;
 begin
-  result := QBDGreen * inner;
+  Result := QBDGreen * Inner;
 end;
 
-function BGOutBlue(inner, outer: Integer): integer;
+function BGOutBlue(Inner, Outer: Integer): Integer;
 begin
-  result := QBDBlue * outer;
+  Result := QBDBlue * Outer;
 end;
 
-function BGInBlue(inner, outer: Integer): integer;
+function BGInBlue(Inner, Outer: Integer): Integer;
 begin
-  result := QBDBlue * inner;
+  Result := QBDBlue * Inner;
 end;
 
-function BGInModOut(inner, outer: Integer): integer;
+function BGInModOut(Inner, Outer: Integer): Integer;
 begin
-  if outer < ImgDrawFactor then
-    outer := ImgDrawFactor;
-  result := inner mod outer;
+  if Outer < ImgDrawFactor then
+    Outer := ImgDrawFactor;
+  Result := Inner mod Outer;
 end;
 
-function BGOutModIn(inner, outer: Integer): integer;
+function BGOutModIn(Inner, Outer: Integer): Integer;
 begin
-  if inner < ImgDrawFactor then
-    inner := ImgDrawFactor;
-  result := outer mod inner;
+  if Inner < ImgDrawFactor then
+    Inner := ImgDrawFactor;
+  Result := Outer mod Inner;
 end;
 
-function BGOutModIn2(inner, outer: Integer): integer;
+function BGOutModIn2(Inner, Outer: Integer): Integer;
 begin
-  result := outer mod (2 + inner) mod (2 + outer + inner);
+  Result := Outer mod (2 + Inner) mod (2 + Outer + Inner);
 end;
 
-function BGModMod(inner, outer: Integer): integer;
+function BGModMod(Inner, Outer: Integer): Integer;
 begin
-  result := (outer mod ImgDrawFactor) * (inner mod ImgDrawFactor);
+  Result := (Outer mod ImgDrawFactor) * (Inner mod ImgDrawFactor);
 end;
 
-function BGModModXor(inner, outer: Integer): integer;
+function BGModModXor(Inner, Outer: Integer): Integer;
 begin
-  result := (outer mod ImgDrawFactor) xor (inner mod ImgDrawFactor);
+  Result := (Outer mod ImgDrawFactor) xor (Inner mod ImgDrawFactor);
 end;
 
-function BGMod3(inner, outer: Integer): integer;
+function BGMod3(Inner, Outer: Integer): Integer;
 begin
-  result := (outer mod ImgDrawFactor) mod ((inner mod ImgDrawFactor) + 1);
+  Result := (Outer mod ImgDrawFactor) mod ((Inner mod ImgDrawFactor) + 1);
 end;
 
-function BGModModSub(inner, outer: Integer): integer;
+function BGModModSub(Inner, Outer: Integer): Integer;
 begin
-  result := (outer mod ImgDrawFactor) - (inner mod ImgDrawFactor);
+  Result := (Outer mod ImgDrawFactor) - (Inner mod ImgDrawFactor);
 end;
 
-function BGModModAdd(inner, outer: Integer): integer;
+function BGModModAdd(Inner, Outer: Integer): Integer;
 begin
-  result := (outer mod ImgDrawFactor) + (inner mod ImgDrawFactor);
+  Result := (Outer mod ImgDrawFactor) + (Inner mod ImgDrawFactor);
 end;
 
-function BGModModAnd(inner, outer: Integer): integer;
+function BGModModAnd(Inner, Outer: Integer): Integer;
 begin
-  result := (outer mod ImgDrawFactor) and (inner mod ImgDrawFactor);
+  Result := (Outer mod ImgDrawFactor) and (Inner mod ImgDrawFactor);
 end;
 
-function BGModModOr(inner, outer: Integer): integer;
+function BGModModOr(Inner, Outer: Integer): Integer;
 begin
-  result := (outer mod ImgDrawFactor) or (inner mod ImgDrawFactor);
+  Result := (Outer mod ImgDrawFactor) or (Inner mod ImgDrawFactor);
 end;
 
-function BGXOr3(inner, outer: Integer): integer;
+function BGXOr3(Inner, Outer: Integer): Integer;
 begin
-  result := outer xor ImgDrawFactor xor inner;
+  Result := Outer xor ImgDrawFactor xor Inner;
 end;
 
-function BGXOr3Mod(inner, outer: Integer): integer;
+function BGXOr3Mod(Inner, Outer: Integer): Integer;
 begin
-  result := (outer xor inner mod ImgDrawFactor) xor (inner mod ImgDrawFactor);
+  Result := (Outer xor Inner mod ImgDrawFactor) xor (Inner mod ImgDrawFactor);
 end;
 
-function BGSubXorSum(inner, outer: integer): integer;
+function BGSubXorSum(Inner, Outer: Integer): Integer;
 begin
-  result := (outer - inner) xor (outer + inner);
+  Result := (Outer - Inner) xor (Outer + Inner);
 end;
 
-function BGSubProdSum(inner, outer: integer): integer;
+function BGSubProdSum(Inner, Outer: Integer): Integer;
 begin
-  result := (outer - inner) * (outer + inner);
+  Result := (Outer - Inner) * (Outer + Inner);
 end;
 
-function BGProdProdSum(inner, outer: integer): integer;
+function BGProdProdSum(Inner, Outer: Integer): Integer;
 begin
-  result := (outer * inner) * (outer + inner);
+  Result := (Outer * Inner) * (Outer + Inner);
 end;
 
-function BGDrawXor(inner, outer: integer): integer;
+function BGDrawXor(Inner, Outer: Integer): Integer;
 begin
-  result := (outer - imgDrawFactor) xor (ImgDrawFactor + inner);
+  Result := (Outer - imgDrawFactor) xor (ImgDrawFactor + Inner);
 end;
 
 // end of functions used in Quick Background
@@ -367,220 +363,231 @@ begin
   QBfuncs[40] := BGDrawXor;
 end;
 
-procedure TPainterQBF.QuickBack;
+procedure TPainterQBForm.QuickBack;
 var
-  bmp: tbitmap;
-  i, j: integer;
-  line: Pbytearray;
+  Bmp: TBitmap;
+  I, J: Integer;
+  Line: PByteArray;
 begin
-  RedBack := QBFuncs[QBRedfn];
-  GreenBack := QBFuncs[QBGreenfn];
-  BlueBack := QBFuncs[QBBluefn];
-  Bmp := TBitMap.create;
-  bmp.Assign(PainterF.picture.bitmap);
-  bmp.pixelformat := pf24bit;
-  for i := 0 to bmp.height - 1 do
-  begin
-    line := pbytearray(bmp.scanline[i]);
-    for j := 0 to bmp.width - 1 do
+  RedBack := QBFuncs[QBRedFn];
+  GreenBack := QBFuncs[QBGreenFn];
+  BlueBack := QBFuncs[QBBlueFn];
+  Bmp := TBitMap.Create;
+  try
+    Bmp.Assign(FPainterForm.Picture.Bitmap);
+    Bmp.PixelFormat := pf24bit;
+    for I := 0 to Bmp.Height - 1 do
     begin
-      line[j * 3] := QBDRed + RedBack(i, j);
-      line[j * 3 + 1] := QBDGreen + GreenBack(i, j);
-      line[j * 3 + 2] := QBDBlue + BlueBack(i, j);
+      Line := PByteArray(Bmp.ScanLine[I]);
+      for J := 0 to Bmp.Width - 1 do
+      begin
+        Line[J * 3] := QBDRed + RedBack(I, J);
+        Line[J * 3 + 1] := QBDGreen + GreenBack(I, J);
+        Line[J * 3 + 2] := QBDBlue + BlueBack(I, J);
+      end;
     end;
+    FPainterForm.Preview(Bmp);
+  finally
+    Bmp.Free;
   end;
-  PainterF.Preview(bmp);
-  Bmp.free;
 end;
 
-procedure TPainterQBF.QBListClick(Sender: TObject);
+procedure TPainterQBForm.QBListClick(Sender: TObject);
 var
-  index: integer;
+  Index: Integer;
 begin
-  index := QBList.ItemIndex;
-  if redradio.checked then
-    QBRedfn := index;
-  if greenradio.checked then
-    QBGreenfn := index;
-  if blueradio.checked then
-    QBBluefn := index;
-  setlabels;
+  Index := QBList.ItemIndex;
+  if redradio.Checked then
+    QBRedFn := Index;
+  if greenradio.Checked then
+    QBGreenFn := Index;
+  if blueradio.Checked then
+    QBBlueFn := Index;
+  SetLabels;
   QuickBack;
 end;
 
-procedure TPainterQBF.FormShow(Sender: TObject);
+procedure TPainterQBForm.FormShow(Sender: TObject);
 begin
-  setlabels;
+  SetLabels;
 end;
 
-procedure TPainterQBF.qbpresetsDrawItem(Control: TWinControl;
+procedure TPainterQBForm.qbpresetsDrawItem(Control: TWinControl;
   Index: Integer; Rect: TRect; State: TOwnerDrawState);
 var
-  s: string;
-  p: integer;
+  S: string;
+  P: Integer;
 begin
-  s := qbpresets.Items[index];
-  p := pos('=', s);
-  s := copy(s, 1, p - 1);
-  qbpresets.Canvas.TextRect(rect, rect.left, rect.top, s);
+  S := qbpresets.Items[Index];
+  P := Pos('=', S);
+  S := Copy(S, 1, P - 1);
+  qbpresets.Canvas.TextRect(Rect, Rect.Left, Rect.Top, S);
 end;
 
-procedure TPainterQBF.qbpresetsClick(Sender: TObject);
+procedure TPainterQBForm.qbpresetsClick(Sender: TObject);
 begin
-  if qbpresets.itemindex >= 0 then
-    strtoQuickBack(qbpresets.items[qbpresets.itemindex]);
+  if qbpresets.ItemIndex >= 0 then
+    StrToQuickBack(qbpresets.Items[qbpresets.ItemIndex]);
 end;
 
-procedure TPainterQBF.setlabels;
+procedure TPainterQBForm.SetLabels;
 begin
-  redradio.caption := qblist.items[QBRedfn];
-  greenradio.caption := qblist.items[QBGreenfn];
-  blueradio.caption := qblist.items[QBbluefn];
+  redradio.Caption := qblist.Items[QBRedFn];
+  greenradio.Caption := qblist.Items[QBGreenFn];
+  blueradio.Caption := qblist.Items[QBBlueFn];
 end;
 
-procedure TPainterQBF.AddBackdrop1Click(Sender: TObject);
+procedure TPainterQBForm.AddBackdrop1Click(Sender: TObject);
 var
-  s: string;
+  S: string;
 begin
-  s := inputbox(sPainterQuickBackdrops, sEnterName, '');
-  if s = '' then exit;
-  s := s + '=' + inttostr(QBRedfn) + ','
-    + inttostr(QBGreenfn) + ','
-    + inttostr(QBBluefn) + ','
-    + inttostr(QBDRed) + ','
-    + inttostr(QBDGreen) + ','
-    + inttostr(QBDBlue) + ','
-    + inttostr(ImgDrawFactor);
-  qbpresets.Items.Append(s);
+  S := InputBox(sPainterQuickBackdrops, sEnterName, '');
+  if S = '' then
+    Exit;
+  S := S + '=' +
+    IntToStr(QBRedFn) + ',' +
+    IntToStr(QBGreenFn) + ',' +
+    IntToStr(QBBlueFn) + ',' +
+    IntToStr(QBDRed) + ',' +
+    IntToStr(QBDGreen) + ',' +
+    IntToStr(QBDBlue) + ',' +
+    IntToStr(ImgDrawFactor);
+  qbpresets.Items.Append(S);
   qbpresets.Items.SaveToFile(QBFile);
 end;
 
-procedure TPainterQBF.DeleteBackdrop1Click(Sender: TObject);
+procedure TPainterQBForm.DeleteBackdrop1Click(Sender: TObject);
 begin
-  if qbpresets.itemindex >= 0 then
+  if qbpresets.ItemIndex >= 0 then
   begin
-    qbpresets.Items.Delete(qbpresets.itemindex);
+    qbpresets.Items.Delete(qbpresets.ItemIndex);
     qbpresets.Items.SaveToFile(QBFile);
   end;
 
 end;
 
-procedure TPainterQBF.FormCreate(Sender: TObject);
+procedure TPainterQBForm.FormCreate(Sender: TObject);
 begin
   ImgDrawFactor := 255;
   QBDRed := 0;
   QBDBlue := 0;
   QBDGreen := 0;
-  QBRedfn := 0;
-  QBGreenfn := 0;
-  QBBluefn := 0;
+  QBRedFn := 0;
+  QBGreenFn := 0;
+  QBBlueFn := 0;
   SetQBFuncs;
-  QBFile := appldir + 'PainterQB.txt';
-  if fileexists(QBFile) then
-    qbpresets.Items.LoadFromFile(QBfile);
+  QBFile := ApplDir + 'PainterQB.txt';
+  if FileExists(QBFile) then
+    qbpresets.Items.LoadFromFile(QBFile);
 end;
 
-procedure TPainterQBF.trkRedChange(Sender: TObject);
+procedure TPainterQBForm.trkRedChange(Sender: TObject);
 begin
-  QBDRed := trkRed.position;
+  QBDRed := trkRed.Position;
   QuickBack;
 end;
 
-procedure TPainterQBF.trkGreenChange(Sender: TObject);
+procedure TPainterQBForm.trkGreenChange(Sender: TObject);
 begin
-  QBDGreen := trkGreen.position;
+  QBDGreen := trkGreen.Position;
   QuickBack;
 end;
 
-procedure TPainterQBF.trkBlueChange(Sender: TObject);
+procedure TPainterQBForm.trkBlueChange(Sender: TObject);
 begin
-  QBDBlue := trkBlue.position;
+  QBDBlue := trkBlue.Position;
   QuickBack;
 end;
 
-procedure TPainterQBF.trkFactorChange(Sender: TObject);
+procedure TPainterQBForm.trkFactorChange(Sender: TObject);
 begin
-  ImgDrawFactor := trkFactor.position;
+  ImgDrawFactor := trkFactor.Position;
   QuickBack;
 end;
 
-procedure TPainterQBF.UpdateBackdrop1Click(Sender: TObject);
+procedure TPainterQBForm.UpdateBackdrop1Click(Sender: TObject);
 var
-  s: string;
-  p: integer;
+  S: string;
+  P: Integer;
 begin
-  if not (qbpresets.ItemIndex >= 0) then
+  if qbpresets.ItemIndex < 0 then
   begin
-    showmessage(sNoItemSelected);
-    exit;
+    ShowMessage(sNoItemSelected);
+    Exit;
   end;
-  s := qbpresets.items[qbpresets.itemindex];
-  p := pos('=', s);
-  s := copy(s, 1, p - 1);
-  s := inputbox(sPainterQuickBackdrops, sEnterName, s);
-  if s = '' then exit;
-  s := s + '=' + inttostr(QBRedfn) + ','
-    + inttostr(QBGreenfn) + ','
-    + inttostr(QBBluefn) + ','
-    + inttostr(QBDRed) + ','
-    + inttostr(QBDGreen) + ','
-    + inttostr(QBDBlue) + ','
-    + inttostr(ImgDrawFactor);
-  qbpresets.Items[qbpresets.itemindex] := s;
+  S := qbpresets.Items[qbpresets.ItemIndex];
+  P := Pos('=', S);
+  S := Copy(S, 1, P - 1);
+  S := InputBox(sPainterQuickBackdrops, sEnterName, S);
+  if S = '' then
+    Exit;
+  S := S + '=' +
+    IntToStr(QBRedFn) + ',' +
+    IntToStr(QBGreenFn) + ',' +
+    IntToStr(QBBlueFn) + ',' +
+    IntToStr(QBDRed) + ',' +
+    IntToStr(QBDGreen) + ',' +
+    IntToStr(QBDBlue) + ',' +
+    IntToStr(ImgDrawFactor);
+  qbpresets.Items[qbpresets.ItemIndex] := S;
   qbpresets.Items.SaveToFile(QBFile);
 end;
 
-function TPainterQBF.strtoquickback(s: string): boolean;
+function TPainterQBForm.StrToQuickBack(S: string): Boolean;
 var
-  p: integer;
-  Alist: tstringlist;
+  P: Integer;
+  List: TStringList;
 begin
-  result := false;
-  p := pos('=', s);
-  if p = 0 then exit;
-  s := copy(s, p + 1, length(s));
-  Alist := tstringlist.create;
+  Result := False;
+  P := Pos('=', S);
+  if P = 0 then
+    Exit;
+  S := Copy(S, P + 1, Length(S));
+  List := TStringList.Create;
   try
-    Alist.commatext := s;
-    QBRedfn := strtoint(Alist[0]);
-    QBGreenfn := strtoint(Alist[1]);
-    QBBluefn := strtoint(Alist[2]);
-    QBDRed := strtoint(Alist[3]);
-    trkRed.position := QBDRed;
-    QBDGreen := strtoint(Alist[4]);
-    trkGreen.position := QBDGreen;
-    QBDBlue := strtoint(Alist[5]);
-    trkBlue.position := QBDBlue;
-    ImgDrawFactor := strtoint(Alist[6]);
-    trkFactor.Position := ImgDrawFactor;
-    setlabels;
-    QuickBack;
-    result := true;
-  except
-    showmessage(sErrorInPresets);
-    result := false;
+    try
+      List.CommaText := S;
+      QBRedFn := StrToInt(List[0]);
+      QBGreenFn := StrToInt(List[1]);
+      QBBlueFn := StrToInt(List[2]);
+      QBDRed := StrToInt(List[3]);
+      trkRed.Position := QBDRed;
+      QBDGreen := StrToInt(List[4]);
+      trkGreen.Position := QBDGreen;
+      QBDBlue := StrToInt(List[5]);
+      trkBlue.Position := QBDBlue;
+      ImgDrawFactor := StrToInt(List[6]);
+      trkFactor.Position := ImgDrawFactor;
+      SetLabels;
+      QuickBack;
+      Result := True;
+    except
+      ShowMessage(sErrorInPresets);
+      Result := False;
+    end;
+  finally
+    List.Free;
   end;
-  Alist.free;
 end;
 
-procedure TPainterQBF.redradioClick(Sender: TObject);
+procedure TPainterQBForm.redradioClick(Sender: TObject);
 begin
-  QBList.ItemIndex := QBRedfn;
+  QBList.ItemIndex := QBRedFn;
 end;
 
-procedure TPainterQBF.greenradioClick(Sender: TObject);
+procedure TPainterQBForm.greenradioClick(Sender: TObject);
 begin
-  QBList.ItemIndex := QBGreenfn;
+  QBList.ItemIndex := QBGreenFn;
 end;
 
-procedure TPainterQBF.blueradioClick(Sender: TObject);
+procedure TPainterQBForm.blueradioClick(Sender: TObject);
 begin
-  QBList.ItemIndex := QBBluefn;
+  QBList.ItemIndex := QBBlueFn;
 end;
 
-procedure TPainterQBF.setDrawImage(aDrawImage: TJvDrawImage);
+procedure TPainterQBForm.SetDrawImage(ADrawImage: TJvDrawImage);
 begin
-  PainterF := aDrawImage;
+  FPainterForm := ADrawImage;
 end;
 
 end.

@@ -23,186 +23,288 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
+
 unit JvPainterEffectsForm;
 
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, ComCtrls, JvDrawImage, JvComponent;
+  StdCtrls, ExtCtrls, ComCtrls,
+  JvDrawImage, JvComponent;
 
 type
-  TPainterEffectsF = class(TJvForm)
-    effectspanel: TPanel;
+  TPainterEffectsForm = class(TJvForm)
+    EffectsPanel: TPanel;
     EBar: TScrollBar;
-    extrabar: TScrollBar;
+    ExtraBar: TScrollBar;
     ETree: TTreeView;
-    cxbar: TScrollBar;
-    cybar: TScrollBar;
+    CXBar: TScrollBar;
+    CYBar: TScrollBar;
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
-    procedure EListClick(Sender: TObject);
+    procedure ETreeClick(Sender: TObject);
     procedure EBarChange(Sender: TObject);
   private
-    PainterF: TJvDrawImage;
-    procedure bar(max, min, pos: integer);
-    { Private declarations }
+    FPainterForm: TJvDrawImage;
+    procedure Bar(AMax, AMin, APos: Integer);
   public
-    { Public declarations }
-    procedure setDrawImage(aDrawImage: TJvdrawImage);
+    procedure SetDrawImage(ADrawImage: TJvDrawImage);
   end;
-
-var
-  PainterEffectsF: TPainterEffectsF;
 
 implementation
 
 {$R *.DFM}
 
-procedure TPainterEffectsF.bar(max, min, pos: integer);
+procedure TPainterEffectsForm.Bar(AMax, AMin, APos: Integer);
 begin
-  Ebar.Max := max;
-  Ebar.Min := min;
-  Ebar.Position := pos;
+  EBar.Max := AMax;
+  EBar.Min := AMin;
+  EBar.Position := APos;
 end;
 
-procedure TPainterEffectsF.EListClick(Sender: TObject);
-var
-  index: integer;
+procedure TPainterEffectsForm.ETreeClick(Sender: TObject);
 begin
-  if ETree.Selected = nil then exit;
-  index := ETree.Selected.ImageIndex;
-  if index < 0 then exit;
-  case index of
-    0: bar(100, 0, 0); //contrast
-    1: bar(255, 0, 0); //saturation
-    2: bar(100, 0, 0); //brightness
-    3: bar(20, 0, 0); //gaussian blur
-    4: bar(30, 0, 0); //split blur
-    5: bar(200, 0, 0); //color noise
-    6: bar(200, 0, 0); //mono noise
-    7: bar(20, 0, 0); //smooth
-    8: bar(15, 3, 5); //seamless
-    9: bar(30, 2, 15); //mosaic
-    10: bar(50, 1, 10); //twist
-    11: bar(100, 55, 60); //fisheye
-    12: bar(200, 1, 15); //wave
-    13: bar(200, 1, 15); //wave extra
-    14: bar(10, 1, 1); //wave inference
-    15: bar(360, 0, 0); //smooth rotate
-    16: bar(10, 1, 1); //split light
-    17: bar(400, 1, 1); //wings
-    18: bar(400, 1, 1); //wings down
-    19: bar(400, 1, 1); //wings up
-    20: bar(400, 1, 1); //wings fold
-    21: bar(400, 1, 1); //wings touche
-    22: bar(400, 1, 1); //wings flyer
-    23: bar(400, 1, 1); //wings flipover
-    24: bar(400, 1, 1); //wings wavy
-    25: bar(100, 0, 0); //emboss
-    26: bar(255, 0, 128); //filter red
-    27: bar(255, 0, 128); //filter green
-    28: bar(255, 0, 128); //filter blue
-    29: bar(255, 0, 128); //filter Xred
-    30: bar(255, 0, 128); //filter Xgreen
-    31: bar(255, 0, 128); //filter xblue
-    32: bar(255, 0, 0); //squeezehor
-    33: bar(255, 0, 0); //squeezetop
-    34: bar(255, 0, 0); //squeezebottom
-    35: bar(255, 0, 0); //squeezediamond
-    36: bar(255, 0, 0); //squeezewaste
-    37: bar(255, 0, 0); //squeezeround
-    38: bar(255, 0, 0); //squeezeround2
-    39: bar(255, 0, 0); //splitround
-    40: bar(255, 0, 0); //splitwaste
-    41: bar(100, 0, 0); //shear
-    42: bar(100, 1, 1); //plasma
-    43: bar(100, 0, 0); //mandelbrot
-    44: bar(100, 0, 0); //julia
-    45: bar(127, 5, 19); //triangles
-    46: bar(100, 3, 3); //ripple tooth
-    47: bar(100, 3, 3); //ripple triangle
-    48: bar(100, 3, 3); //ripple random
-    49: bar(100, 3, 3); //texturize tile
-    50: bar(100, 3, 3); //texturize overlap
-    51: bar(100, 1, 1); //map
-    52: bar(100, 0, 0); //blend;
-    53: bar(255, 0, 1); //solarize
-    54: bar(255, 1, 1); //posterize
-  end;
+  // (rom) better change to a const array to index
+  if ETree.Selected <> nil then
+    case ETree.Selected.ImageIndex of
+      0:
+        Bar(100, 0, 0); // contrast
+      1:
+        Bar(255, 0, 0); // saturation
+      2:
+        Bar(100, 0, 0); // brightness
+      3:
+        Bar(20, 0, 0); // gaussian blur
+      4:
+        Bar(30, 0, 0); // split blur
+      5:
+        Bar(200, 0, 0); // color noise
+      6:
+        Bar(200, 0, 0); // mono noise
+      7:
+        Bar(20, 0, 0); // smooth
+      8:
+        Bar(15, 3, 5); // seamless
+      9:
+        Bar(30, 2, 15); // mosaic
+      10:
+        Bar(50, 1, 10); // twist
+      11:
+        Bar(100, 55, 60); //f isheye
+      12:
+        Bar(200, 1, 15); // wave
+      13:
+        Bar(200, 1, 15); // wave extra
+      14:
+        Bar(10, 1, 1); // wave inference
+      15:
+        Bar(360, 0, 0); // smooth rotate
+      16:
+        Bar(10, 1, 1); // split light
+      17:
+        Bar(400, 1, 1); // wings
+      18:
+        Bar(400, 1, 1); // wings down
+      19:
+        Bar(400, 1, 1); // wings up
+      20:
+        Bar(400, 1, 1); // wings fold
+      21:
+        Bar(400, 1, 1); // wings touche
+      22:
+        Bar(400, 1, 1); // wings flyer
+      23:
+        Bar(400, 1, 1); // wings flipover
+      24:
+        Bar(400, 1, 1); // wings wavy
+      25:
+        Bar(100, 0, 0); // emboss
+      26:
+        Bar(255, 0, 128); // filter red
+      27:
+        Bar(255, 0, 128); // filter green
+      28:
+        Bar(255, 0, 128); // filter blue
+      29:
+        Bar(255, 0, 128); // filter Xred
+      30:
+        Bar(255, 0, 128); // filter Xgreen
+      31:
+        Bar(255, 0, 128); // filter xblue
+      32:
+        Bar(255, 0, 0); // squeezehor
+      33:
+        Bar(255, 0, 0); // squeezetop
+      34:
+        Bar(255, 0, 0); // squeezebottom
+      35:
+        Bar(255, 0, 0); // squeezediamond
+      36:
+        Bar(255, 0, 0); // squeezewaste
+      37:
+        Bar(255, 0, 0); // squeezeround
+      38:
+        Bar(255, 0, 0); // squeezeround2
+      39:
+        Bar(255, 0, 0); // splitround
+      40:
+        Bar(255, 0, 0); // splitwaste
+      41:
+        Bar(100, 0, 0); // shear
+      42:
+        Bar(100, 1, 1); // plasma
+      43:
+        Bar(100, 0, 0); // mandelbrot
+      44:
+        Bar(100, 0, 0); // julia
+      45:
+        Bar(127, 5, 19); // triangles
+      46:
+        Bar(100, 3, 3); // ripple tooth
+      47:
+        Bar(100, 3, 3); // ripple triangle
+      48:
+        Bar(100, 3, 3); // ripple random
+      49:
+        Bar(100, 3, 3); // texturize tile
+      50:
+        Bar(100, 3, 3); // texturize overlap
+      51:
+        Bar(100, 1, 1); // map
+      52:
+        Bar(100, 0, 0); // blend;
+      53:
+        Bar(255, 0, 1); // solarize
+      54:
+        Bar(255, 1, 1); // posterize
+    end;
 end;
 
-procedure TPainterEffectsF.EBarChange(Sender: TObject);
-var
-  index: integer;
+procedure TPainterEffectsForm.EBarChange(Sender: TObject);
 begin
-  if ETree.selected = nil then exit;
-  index := ETree.selected.ImageIndex;
-  if index < 0 then exit;
-  case index of
-    0: PainterF.contrastbarChange(sender);
-    1: PainterF.saturationbarChange(sender);
-    2: PainterF.lightnessbarChange(sender);
-    3: PainterF.blurbarChange(sender);
-    4: PainterF.splitblurbarChange(sender);
-    5: PainterF.colornoisebarChange(sender);
-    6: PainterF.mononoisebarChange(sender);
-    7: PainterF.smoothbarChange(sender);
-    8: PainterF.seambarChange;
-    9: PainterF.MosaicbarChange;
-    10: PainterF.TwistbarChange;
-    11: PainterF.FisheyebarChange;
-    12: PainterF.wavebarChange;
-    13: PainterF.waveextraChange;
-    14: PainterF.waveinfChange;
-    15: PainterF.rotatebar;
-    16: PainterF.xformAbarchange;
-    17: PainterF.marblebarchange;
-    18: PainterF.marble2barchange;
-    19: PainterF.marble3barchange;
-    20: PainterF.marble4barchange;
-    21: PainterF.marble5barchange;
-    22: PainterF.marble6barchange;
-    23: PainterF.marble7barchange;
-    24: PainterF.marble8barchange;
-    25: PainterF.embossbarchange;
-    26: PainterF.filterredbarchange;
-    27: PainterF.filtergreenbarchange;
-    28: PainterF.filterbluebarchange;
-    29: PainterF.filterxredbarchange;
-    30: PainterF.filterxgreenbarchange;
-    31: PainterF.filterxbluebarchange;
-    32: PainterF.squeezehorbarchange;
-    33: PainterF.squeezetopbarchange;
-    34: PainterF.squeezebotbarchange;
-    35: PainterF.squeezediamondbarchange;
-    36: PainterF.squeezewastebarchange;
-    37: PainterF.squeezeroundbarchange;
-    38: PainterF.squeezeround2barchange;
-    39: PainterF.splitroundbarchange;
-    40: PainterF.splitwastebarchange;
-    41: PainterF.shearbarchange;
-    42: PainterF.plasmabarchange;
-    43: PainterF.DrawMandelJulia(true);
-    44: PainterF.DrawMandelJulia(false);
-    45: PainterF.drawTriangles;
-    46: PainterF.rippleTooth;
-    47: painterF.rippleTriangle;
-    48: painterF.rippleRandom;
-    49: PainterF.texturizeTile;
-    50: painterF.texturizeOverlap;
-    51: PainterF.drawmap;
-    52: PainterF.drawblend;
-    53: PainterF.drawsolarize;
-    54: painterF.posterize;
-  end;
+  if ETree.Selected <> nil then
+    with FPainterForm do
+      case ETree.Selected.ImageIndex of
+        0:
+          ContrastBarChange(Sender);
+        1:
+          SaturationBarChange(Sender);
+        2:
+          lightnessBarChange(Sender);
+        3:
+          BlurBarChange(Sender);
+        4:
+          SplitBlurBarChange(Sender);
+        5:
+          ColorNoiseBarChange(Sender);
+        6:
+          MonoNoiseBarChange(Sender);
+        7:
+          SmoothBarChange(Sender);
+        8:
+          SeamBarChange;
+        9:
+          MosaicBarChange;
+        10:
+          TwistBarChange;
+        11:
+          FisheyeBarChange;
+        12:
+          WaveBarChange;
+        13:
+          WaveExtraChange;
+        14:
+          WaveInfChange;
+        15:
+          RotateBar;
+        16:
+          XFormABarChange;
+        17:
+          MarbleBarChange;
+        18:
+          Marble2BarChange;
+        19:
+          Marble3BarChange;
+        20:
+          Marble4BarChange;
+        21:
+          Marble5BarChange;
+        22:
+          Marble6BarChange;
+        23:
+          Marble7BarChange;
+        24:
+          Marble8BarChange;
+        25:
+          EmbossBarChange;
+        26:
+          FilterRedBarChange;
+        27:
+          FilterGreenBarChange;
+        28:
+          FilterBlueBarChange;
+        29:
+          FilterXRedBarChange;
+        30:
+          FilterXGreenBarChange;
+        31:
+          FilterXBlueBarChange;
+        32:
+          SqueezeHorBarChange;
+        33:
+          SqueezeTopBarChange;
+        34:
+          SqueezeBotBarChange;
+        35:
+          SqueezeDiamondBarChange;
+        36:
+          SqueezeWasteBarChange;
+        37:
+          SqueezeRoundBarChange;
+        38:
+          SqueezeRound2BarChange;
+        39:
+          SplitRoundBarChange;
+        40:
+          SplitWasteBarChange;
+        41:
+          ShearBarChange;
+        42:
+          PlasmaBarChange;
+        43:
+          DrawMandelJulia(True);
+        44:
+          DrawMandelJulia(False);
+        45:
+          DrawTriangles;
+        46:
+          RippleTooth;
+        47:
+          RippleTriangle;
+        48:
+          RippleRandom;
+        49:
+          TexturizeTile;
+        50:
+          TexturizeOverlap;
+        51:
+          DrawMap;
+        52:
+          DrawBlend;
+        53:
+          DrawSolarize;
+        54:
+          Posterize;
+      end;
 end;
 
-procedure TPainterEffectsF.setDrawImage(aDrawImage: TJvDrawImage);
+procedure TPainterEffectsForm.SetDrawImage(ADrawImage: TJvDrawImage);
 begin
-  PainterF := aDrawImage;
+  FPainterForm := ADrawImage;
 end;
 
 end.

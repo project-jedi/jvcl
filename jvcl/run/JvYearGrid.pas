@@ -688,7 +688,7 @@ procedure TJvYearGrid.Edit1Click(Sender: TObject);
 var
   ds: string;
   acol, arow: integer;
-  f: TYearGridEditF;
+  f: TYearGridEditForm;
   CanChange: boolean;
   InfoText: string;
 begin
@@ -697,7 +697,7 @@ begin
   if ((acol < 1) or (arow < 1)) then exit;
   ds := YearData[col, row].displaytext;
   if (ds = '') then exit;
-  f := TYearGridEditF.Create(application);
+  f := TYearGridEditForm.Create(application);
   InfoText := YearData[acol, arow].infotext;
   f.Memo1.Text := Infotext;
   if f.ShowModal = mrOK then

@@ -1,4 +1,4 @@
-object PainterQBF: TPainterQBF
+object PainterQBForm: TPainterQBForm
   Left = 443
   Top = 124
   BorderStyle = bsToolWindow

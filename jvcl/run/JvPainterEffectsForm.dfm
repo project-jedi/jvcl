@@ -1,4 +1,4 @@
-object PainterEffectsF: TPainterEffectsF
+object PainterEffectsForm: TPainterEffectsForm
   Left = 480
   Top = 153
   BorderStyle = bsToolWindow
@@ -15,7 +15,7 @@ object PainterEffectsF: TPainterEffectsF
   OldCreateOrder = False
   PixelsPerInch = 96
   TextHeight = 13
-  object effectspanel: TPanel
+  object EffectsPanel: TPanel
     Left = 0
     Top = 0
     Width = 180
@@ -53,7 +53,7 @@ object PainterEffectsF: TPainterEffectsF
       TabOrder = 0
       OnChange = EBarChange
     end
-    object extrabar: TScrollBar
+    object ExtraBar: TScrollBar
       Left = 13
       Top = 247
       Width = 118
@@ -81,7 +81,7 @@ object PainterEffectsF: TPainterEffectsF
       Indent = 19
       ParentFont = False
       TabOrder = 2
-      OnClick = EListClick
+      OnClick = ETreeClick
       Items.Data = {
         1D000000210000000000000000000000FFFFFFFFFFFFFFFF0000000000000000
         08436F6E7472617374230000000100000000000000FFFFFFFFFFFFFFFF000000
@@ -155,7 +155,7 @@ object PainterEffectsF: TPainterEffectsF
         00000008536F6C6172697A65220000003600000000000000FFFFFFFFFFFFFFFF
         000000000000000009506F73746572697A65}
     end
-    object cxbar: TScrollBar
+    object CXBar: TScrollBar
       Left = 13
       Top = 267
       Width = 118
@@ -164,7 +164,7 @@ object PainterEffectsF: TPainterEffectsF
       TabOrder = 3
       OnChange = EBarChange
     end
-    object cybar: TScrollBar
+    object CYBar: TScrollBar
       Left = 13
       Top = 284
       Width = 118

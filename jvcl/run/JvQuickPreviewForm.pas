@@ -30,44 +30,38 @@ unit JvQuickPreviewForm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  Buttons, ExtCtrls, StdCtrls, JvDrawImage, JvComponent;
+  Windows, SysUtils, Classes, Controls,
+  Forms, Dialogs, Buttons, ExtCtrls, StdCtrls,
+  JvDrawImage, JvComponent;
 
 type
-  TQuickPreviewF = class(TJvForm)
+  TQuickPreviewForm = class(TJvForm)
     ScrollBox1: TScrollBox;
-    Image1: TImage;
+    PreviewImage: TImage;
     Panel1: TPanel;
     btnUse: TSpeedButton;
     procedure btnUseClick(Sender: TObject);
   private
-    { Private declarations }
-    PainterF: TJvDrawImage;
+    FDrawImage: TJvDrawImage;
   public
-    { Public declarations }
-    procedure setDrawImage(ADrawImage: TJvDrawImage);
+    procedure SetDrawImage(ADrawImage: TJvDrawImage);
   end;
-
-var
-  QuickPreviewF: TQuickPreviewF;
-  anifile: string;
-  aniframe: integer;
 
 implementation
 
 {$R *.DFM}
 
-procedure TQuickPreviewF.btnUseClick(Sender: TObject);
+procedure TQuickPreviewForm.btnUseClick(Sender: TObject);
 
 begin
-  PainterF.canvas.draw(0, 0, image1.picture.bitmap);
-  //PainterF.mypaint.Update ;
-  close;
+  if Assigned(FDrawImage) then
+    FDrawImage.Canvas.Draw(0, 0, PreviewImage.Picture.Bitmap);
+  Close;
 end;
 
-procedure TQuickPreviewF.setDrawImage(ADrawImage: TJvDrawImage);
+procedure TQuickPreviewForm.SetDrawImage(ADrawImage: TJvDrawImage);
 begin
-  PainterF := aDrawImage;
+  FDrawImage := ADrawImage;
 end;
 
 end.

@@ -23,59 +23,56 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
+
 unit JvYearGridEditForm;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, Buttons, ExtCtrls,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls,
+  Forms, Dialogs, StdCtrls, Buttons, ExtCtrls,
   JvComponent;
 
 type
-  TYearGridEditF = class(TJvForm)
+  TYearGridEditForm = class(TJvForm)
     Panel1: TPanel;
     BitBtn1: TBitBtn;
     BitBtn2: TBitBtn;
     Memo1: TMemo;
-    btnload: TButton;
-    btnsave: TButton;
+    BtnLoad: TButton;
+    BtnSave: TButton;
     OpenDialog1: TOpenDialog;
     SaveDialog1: TSaveDialog;
-    procedure btnloadClick(Sender: TObject);
-    procedure btnsaveClick(Sender: TObject);
+    procedure BtnLoadClick(Sender: TObject);
+    procedure BtnSaveClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
   private
-    { Private declarations }
   public
-    { Public declarations }
   end;
-
-var
-  YearGridEditF: TYearGridEditF;
 
 implementation
 
 {$R *.DFM}
 
-procedure TYearGridEditF.btnloadClick(Sender: TObject);
+procedure TYearGridEditForm.BtnLoadClick(Sender: TObject);
 begin
-  if opendialog1.execute then
-    memo1.Lines.LoadFromFile(opendialog1.filename);
-  memo1.setfocus;
+  if OpenDialog1.Execute then
+    Memo1.Lines.LoadFromFile(OpenDialog1.FileName);
+  Memo1.SetFocus;
 end;
 
-procedure TYearGridEditF.btnsaveClick(Sender: TObject);
+procedure TYearGridEditForm.BtnSaveClick(Sender: TObject);
 begin
-  if savedialog1.execute then
-    memo1.lines.SaveToFile(savedialog1.filename);
-  memo1.setfocus;
+  if SaveDialog1.Execute then
+    Memo1.Lines.SaveToFile(SaveDialog1.FileName);
+  Memo1.SetFocus;
 end;
 
-procedure TYearGridEditF.FormShow(Sender: TObject);
+procedure TYearGridEditForm.FormShow(Sender: TObject);
 begin
-  memo1.setfocus;
+  Memo1.SetFocus;
 end;
 
 end.

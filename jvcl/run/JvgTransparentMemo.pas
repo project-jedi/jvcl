@@ -60,7 +60,7 @@ var
   DC: HDC;
 begin
   DC := GetDC(Handle);
-  SetBkMode(DC, TRANSPARENT);
+  SetBkMode(DC, Windows.TRANSPARENT);
   ReleaseDC(Handle, DC);
   inherited;
 end;

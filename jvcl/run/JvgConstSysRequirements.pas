@@ -34,19 +34,18 @@ interface
 { Constant messages for TJvgSysRequirements }
 
 resourcestring
-(*  {$IFDEF RUSSIAN}
+(* RUSSIAN
   ERR_VideoVRefreshRate = 'Частота обновления экрана должна быть %d герц или выше. Измените частоту обновления в свойствах экрана.';
   ERR_GraphicResolution = 'Разрешение экрана должно быть %s точек или выше. Измените разрешение в свойствах экрана.';
   ERR_ColorDepth = 'Количество цветов экрана должно быть %s цветов или выше. Измените число цветов в свойствах экрана.';
   ERR_SystemFont = 'В системе должен быть установлен %s шрифт. Измените вид шрифта в свойствах экрана.';
   ERR_OSPlatform = 'Для работы программы необходима операционная система %s.';
-  {$ELSE}*)
-  ERR_VideoVRefreshRate = 'The monitor refresh rate should be %d hertz or higher. Change monitor refresh rate in Monitor Control Panel.';
+*)
+  ERR_VideoVRefreshRate = 'The monitor refresh rate should be %d Hertz or higher. Change monitor refresh rate in Monitor Control Panel.';
   ERR_GraphicResolution = 'The screen resolution should be equal %s pixels or higher. Change screen resolution in Monitor Control Panel.';
   ERR_ColorDepth = 'The number of colors of the screen should be equal to %s colors or higher. Change screen colors in Monitor Control Panel.';
   ERR_SystemFont = 'In system the small font should be established. Change to small fonts in Monitor Control Panel.';
   ERR_OSPlatform = 'The program requires %s or better.';
-(*  {$ENDIF}*)
 
 implementation
 

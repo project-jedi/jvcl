@@ -52,7 +52,6 @@
     <File Name="..\..\run\JvAirBrush.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvArrayButton.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvBitmapButton.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvButtonUtils.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvCSVBaseControls.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDrawImage.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvForth.pas" Targets="all" Formname="" Condition=""/>
