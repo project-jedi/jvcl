@@ -1,31 +1,41 @@
-================================================================
+@@$TJvSafeMode
+<TITLE TJvSafeMode overview>
+<GROUP JVCL.Miscel>
+----------------------------------------------------------------------------------------------------
 @@JvSafeMode.pas
-Note:
-<B>Delphi Versions:</B> <COLOR Brown>5, 6</COLOR> <B> 
-
-C++ Builder Versions:</B> <COLOR Brown>none</COLOR>
-
-Conditions:
-The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.mozilla.org/MPL/MPL-1.1.html
-
-Author:
-Sebastien Buysse
-
-Version:
-1.20 Beta
-
-================================================================
+<GROUP JVCL.FileRef>
+Summary
+  Contains the TJvSafeMode component.
+<INCLUDE JVCL.UnitText.dtx>
+Author
+  Sébastien Buysse
+----------------------------------------------------------------------------------------------------
 @@TJvSafeMode
-Description:
-This component is for turning on/off the monitor
-
-================================================================
+<GROUP TJvSafeMode>
+Summary
+  Can turn the monitor on and off.
+Description
+  TJvSafeMode is a wrapper for two lower level function calls, to shut off or turn on the
+  display. 
+----------------------------------------------------------------------------------------------------
 @@TJvSafeMode.MonitorOff
-Description:
-This procedure will turn off the monitor
-
-================================================================
+Summary
+  Turns the monitor off.
+Description
+  Use this procedure to shut down the display.
+Parameters
+  None.
+See Also
+  MonitorOn
+----------------------------------------------------------------------------------------------------
 @@TJvSafeMode.MonitorOn
-Description:
-This procedure will turn on the monitor
-
+Summary
+  Turns the monitor on.
+Description
+  Use this procedure to turn on the display.
+Parameters
+  None.
+See Also
+  MonitorOff
+----------------------------------------------------------------------------------------------------
+  
