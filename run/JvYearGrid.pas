@@ -610,15 +610,15 @@ begin
   m.Caption := cMenuBreakCaption;
   g.Items.Add(m);
   m := tmenuitem.Create(g);
-  m.Caption := RsCopy;
+  m.Caption := RsCopyItem;
   m.OnClick := copy1click;
   g.Items.Add(m);
   m := tmenuitem.Create(g);
-  m.Caption := RsCut;
+  m.Caption := RsCutItem;
   m.OnClick := cut1click;
   g.Items.Add(m);
   m := tmenuitem.Create(g);
-  m.Caption := RsPaste;
+  m.Caption := RsPasteItem;
   m.OnClick := paste1click;
   g.Items.Add(m);
   m := tmenuitem.Create(g);

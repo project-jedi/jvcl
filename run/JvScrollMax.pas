@@ -339,6 +339,7 @@ end;
 { function DefineCursor was typed from
   book "Secrets of Delphi 2" by Ray Lischner }
 
+{ (rom) deactivated  see end of file
 function DefineCursor(Identifier: PChar): TCursor;
 var
   Handle: HCURSOR;
@@ -354,6 +355,7 @@ begin
     end;
   raise EOutOfResources.Create(RsETooManyUserdefinedCursors);
 end;
+}
 
 //=== TJvScroller ============================================================
 
@@ -1483,8 +1485,11 @@ begin
   end;
 end;
 
+{ (rom) deactivated  can cause problems
 initialization
   crRAHand := DefineCursor('RAHAND');
   crRAHandMove := DefineCursor('RAHANDMOVE');
+}
+
 end.
 

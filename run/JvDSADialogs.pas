@@ -1292,8 +1292,9 @@ const
   DSAInt = 4;
   DSAString = 5;
 
-  DSAKindTexts: array [DSABool..DSAString] of string = (
-    RsDSAAccessBool, RsDSAAccessFloat, RsDSAAccessInt64, RsDSAAccessInt, RsDSAAccessString);
+  DSAKindTexts: array [DSABool..DSAString] of string =
+   (RsEDSAAccessBool, RsEDSAAccessFloat, RsEDSAAccessInt64,
+    RsEDSAAccessInt, RsEDSAAccessString);
 
 type
   TDSAValues = class(TStringList)

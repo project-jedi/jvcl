@@ -302,6 +302,7 @@ type
     FOnStart: TNotifyEvent;
     FOnStop: TNotifyEvent;
     function GetOptions: TJvLabelBehavior;
+    function BehaviorStored: Boolean;
     procedure UpdateDesigner;
     procedure SetBehavior(const Value: TJvLabelBehaviorName);
     procedure SetOptions(const Value: TJvLabelBehavior);
@@ -324,7 +325,7 @@ type
     constructor Create(AComponent: TComponent); override;
     destructor Destroy; override;
   protected
-    property Behavior: TJvLabelBehaviorName read FBehavior write SetBehavior;
+    property Behavior: TJvLabelBehaviorName read FBehavior write SetBehavior stored BehaviorStored;
     property Caption;
     property BehaviorOptions: TJvLabelBehavior read GetOptions write SetOptions;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
@@ -558,6 +559,11 @@ procedure TJvCustomBehaviorLabel.DoStop;
 begin
   if Assigned(FOnStop) then
     FOnStop(self);
+end;
+
+function TJvCustomBehaviorLabel.BehaviorStored: Boolean;
+begin
+  Result := FBehavior <> RsNoneCaption;
 end;
 
 function TJvCustomBehaviorLabel.GetOptions: TJvLabelBehavior;

@@ -171,7 +171,7 @@ begin
     begin
       DetailsPanel.Height := FDetailsHeight;
       ClientHeight := DetailsPanel.Height + BasicPanel.Height;
-      DetailsBtn.Caption := RsDetailsLeft;
+      DetailsBtn.Caption := RsDetailsLeftCaption;
       FCurItem := 0;
       ShowError;
     end
@@ -179,7 +179,7 @@ begin
     begin
       ClientHeight := BasicPanel.Height;
       DetailsPanel.Height := 0;
-      DetailsBtn.Caption := RsDetailsRight;
+      DetailsBtn.Caption := RsDetailsRightCaption;
     end;
     DetailsPanel.Enabled := Value;
     FDetails := Value;
