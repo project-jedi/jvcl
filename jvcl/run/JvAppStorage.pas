@@ -2058,7 +2058,7 @@ begin
     else
     begin
       try
-        if TypeInfo.Kind = tkInteger then
+        if TypeInfo.Kind in [tkInteger, tkChar] then
         begin
           { Could be stored as a normal int or as an identifier.
             Try identifier first as that will not raise an exception }
@@ -2105,6 +2105,7 @@ procedure TJvCustomAppStorage.WriteEnumerationInt(const Path: string;
 var
   Conv: TIntToIdent;
   S: string;
+  B: Byte;
 begin
   if TypeInfo = System.TypeInfo(Boolean) then
     WriteBooleanInt(Path, Boolean(Value))
@@ -2112,6 +2113,9 @@ begin
   if (TypeInfo.Kind = tkEnumeration) and
     (GetTypeData(GetTypeData(TypeInfo).BaseType^).MinValue < 0) then
     WriteBooleanInt(Path, OrdOfEnum(Value, GetTypeData(TypeInfo).OrdType) <> 0)
+  else
+  if TypeInfo.Kind = tkChar then
+    WriteIntegerInt(Path, OrdOfEnum(Value, GetTypeData(TypeInfo).OrdType))
   else
   if TypeInfo.Kind = tkInteger then
   begin
