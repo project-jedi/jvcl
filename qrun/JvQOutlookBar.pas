@@ -1943,8 +1943,8 @@ begin
   begin
     case Pages[PageIndex].ButtonSize of
       olbsLarge:
-        if LargeImages <> nil then
-          Result := Max(Result, LargeImages.Height - Pages[PageIndex].Font.Height + cLargeOffset)
+        if LargeImages <> nil then  
+          Result := Result + LargeImages.Height - Pages[PageIndex].Font.Height + cLargeOffset 
         else
           Result := Abs(Pages[PageIndex].Font.Height) + cLargeOffset;
       olbsSmall:
