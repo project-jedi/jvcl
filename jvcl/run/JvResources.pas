@@ -2133,8 +2133,6 @@ resourcestring
 
 //=== JvWinampLabel.pas ======================================================
 resourcestring
-  RsWinampRC = 'WINAMP1';
-
   RsEInvalidSkin = 'Invalid skin';
 
 //=== JvWinDialogs.pas =======================================================
