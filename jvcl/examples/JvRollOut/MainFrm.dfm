@@ -1,9 +1,8 @@
 object Form1: TForm1
-  Left = 241
-  Top = 108
+  Left = 265
+  Top = 125
   Width = 816
   Height = 562
-  ActiveControl = RO1
   Caption = 'JvRollOut Demo'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -11,15 +10,17 @@ object Form1: TForm1
   Font.Height = -11
   Font.Name = 'MS Shell Dlg 2'
   Font.Style = []
+  Menu = MainMenu1
   OldCreateOrder = False
   Scaled = False
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object Splitter1: TSplitter
     Left = 280
     Top = 0
     Width = 5
-    Height = 447
+    Height = 428
     Cursor = crSizeWE
     AutoSnap = False
     Color = clMaroon
@@ -28,7 +29,7 @@ object Form1: TForm1
   end
   object Panel4: TPanel
     Left = 0
-    Top = 447
+    Top = 428
     Width = 808
     Height = 88
     Align = alBottom
@@ -111,7 +112,7 @@ object Form1: TForm1
     Left = 285
     Top = 0
     Width = 523
-    Height = 447
+    Height = 428
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
@@ -131,7 +132,7 @@ object Form1: TForm1
       Left = 0
       Top = 270
       Width = 523
-      Height = 177
+      Height = 158
       Align = alClient
       BevelOuter = bvNone
       Color = clGray
@@ -140,7 +141,7 @@ object Form1: TForm1
         Left = 433
         Top = 0
         Width = 90
-        Height = 177
+        Height = 158
         Align = alRight
         Alignment = taCenter
         AutoSize = False
@@ -156,13 +157,12 @@ object Form1: TForm1
         Layout = tlCenter
       end
       object RO40: TJvRollOut
-        Left = 411
+        Left = 288
         Top = 0
-        Width = 22
-        Height = 177
+        Width = 145
+        Height = 158
         Align = alRight
         Caption = 'T'
-        Collapsed = True
         GroupIndex = 1
         ImageOptions.IndexCollapsed = 3
         ImageOptions.IndexExpanded = 2
@@ -177,10 +177,10 @@ object Form1: TForm1
         FCHeight = 152
       end
       object RO39: TJvRollOut
-        Left = 389
+        Left = 266
         Top = 0
         Width = 22
-        Height = 177
+        Height = 158
         Align = alRight
         Caption = 'S'
         Collapsed = True
@@ -198,10 +198,10 @@ object Form1: TForm1
         FCHeight = 152
       end
       object RO38: TJvRollOut
-        Left = 367
+        Left = 244
         Top = 0
         Width = 22
-        Height = 177
+        Height = 158
         Align = alRight
         Caption = 'R'
         Collapsed = True
@@ -221,10 +221,11 @@ object Form1: TForm1
       object RO37: TJvRollOut
         Left = 222
         Top = 0
-        Width = 145
-        Height = 177
+        Width = 22
+        Height = 158
         Align = alRight
         Caption = 'Q'
+        Collapsed = True
         GroupIndex = 1
         ImageOptions.IndexCollapsed = 3
         ImageOptions.IndexExpanded = 2
@@ -242,7 +243,7 @@ object Form1: TForm1
         Left = 200
         Top = 0
         Width = 22
-        Height = 177
+        Height = 158
         Align = alRight
         Caption = 'P && &Z'
         Collapsed = True
@@ -263,7 +264,7 @@ object Form1: TForm1
         Left = 178
         Top = 0
         Width = 22
-        Height = 177
+        Height = 158
         Align = alRight
         Caption = 'O && &Y'
         Collapsed = True
@@ -284,7 +285,7 @@ object Form1: TForm1
         Left = 156
         Top = 0
         Width = 22
-        Height = 177
+        Height = 158
         Align = alRight
         Caption = 'N && &X'
         Collapsed = True
@@ -305,7 +306,7 @@ object Form1: TForm1
         Left = 134
         Top = 0
         Width = 22
-        Height = 177
+        Height = 158
         Align = alRight
         Caption = 'M && &W'
         Collapsed = True
@@ -326,7 +327,7 @@ object Form1: TForm1
         Left = 112
         Top = 0
         Width = 22
-        Height = 177
+        Height = 158
         Align = alRight
         Caption = 'L && &V'
         Collapsed = True
@@ -347,7 +348,7 @@ object Form1: TForm1
         Left = 90
         Top = 0
         Width = 22
-        Height = 177
+        Height = 158
         Align = alRight
         Caption = 'K && &U'
         Collapsed = True
@@ -541,12 +542,13 @@ object Form1: TForm1
         FCHeight = 129
       end
       object RO23: TJvRollOut
-        Left = 134
+        Left = 257
         Top = 0
-        Width = 145
+        Width = 22
         Height = 265
         Align = alLeft
         Caption = 'C && &M'
+        Collapsed = True
         GroupIndex = 1
         ImageOptions.IndexCollapsed = 7
         ImageOptions.IndexExpanded = 6
@@ -561,7 +563,7 @@ object Form1: TForm1
         FCHeight = 129
       end
       object RO22: TJvRollOut
-        Left = 112
+        Left = 235
         Top = 0
         Width = 22
         Height = 265
@@ -584,11 +586,10 @@ object Form1: TForm1
       object RO21: TJvRollOut
         Left = 90
         Top = 0
-        Width = 22
+        Width = 145
         Height = 265
         Align = alLeft
         Caption = 'A && &K'
-        Collapsed = True
         GroupIndex = 1
         ImageOptions.IndexCollapsed = 7
         ImageOptions.IndexExpanded = 6
@@ -608,7 +609,7 @@ object Form1: TForm1
     Left = 0
     Top = 0
     Width = 280
-    Height = 447
+    Height = 428
     Align = alLeft
     BevelOuter = bvNone
     TabOrder = 2
@@ -616,7 +617,7 @@ object Form1: TForm1
       Left = 144
       Top = 0
       Width = 5
-      Height = 447
+      Height = 428
       Cursor = crSizeWE
       AutoSnap = False
       Color = clMaroon
@@ -627,7 +628,7 @@ object Form1: TForm1
       Left = 0
       Top = 0
       Width = 144
-      Height = 447
+      Height = 428
       Align = alLeft
       BevelOuter = bvNone
       Color = clGray
@@ -656,14 +657,13 @@ object Form1: TForm1
         Top = 40
         Width = 144
         Height = 22
+        Action = JvRollOutAction1
         Align = alTop
-        Caption = '&1'
         Collapsed = True
         GroupIndex = 1
         ImageOptions.Images = ImageList1
         TabOrder = 0
         TabStop = True
-        ToggleAnywhere = False
         FAWidth = 145
         FAHeight = 170
         FCWidth = 22
@@ -705,9 +705,10 @@ object Form1: TForm1
         Left = 0
         Top = 62
         Width = 144
-        Height = 170
+        Height = 22
+        Action = JvRollOutAction2
         Align = alTop
-        Caption = '&2'
+        Collapsed = True
         GroupIndex = 1
         ImageOptions.Images = ImageList1
         TabOrder = 1
@@ -756,7 +757,7 @@ object Form1: TForm1
       end
       object RO3: TJvRollOut
         Left = 0
-        Top = 232
+        Top = 84
         Width = 144
         Height = 22
         Align = alTop
@@ -810,7 +811,7 @@ object Form1: TForm1
       end
       object RO4: TJvRollOut
         Left = 0
-        Top = 254
+        Top = 106
         Width = 144
         Height = 22
         Align = alTop
@@ -828,7 +829,7 @@ object Form1: TForm1
       end
       object RO5: TJvRollOut
         Left = 0
-        Top = 276
+        Top = 128
         Width = 144
         Height = 22
         Align = alTop
@@ -846,7 +847,7 @@ object Form1: TForm1
       end
       object RO6: TJvRollOut
         Left = 0
-        Top = 298
+        Top = 150
         Width = 144
         Height = 22
         Align = alTop
@@ -864,7 +865,7 @@ object Form1: TForm1
       end
       object RO7: TJvRollOut
         Left = 0
-        Top = 320
+        Top = 172
         Width = 144
         Height = 22
         Align = alTop
@@ -882,7 +883,7 @@ object Form1: TForm1
       end
       object RO8: TJvRollOut
         Left = 0
-        Top = 342
+        Top = 194
         Width = 144
         Height = 22
         Align = alTop
@@ -900,7 +901,7 @@ object Form1: TForm1
       end
       object RO9: TJvRollOut
         Left = 0
-        Top = 364
+        Top = 216
         Width = 144
         Height = 22
         Align = alTop
@@ -918,7 +919,7 @@ object Form1: TForm1
       end
       object RO10: TJvRollOut
         Left = 0
-        Top = 386
+        Top = 238
         Width = 144
         Height = 22
         Align = alTop
@@ -939,14 +940,14 @@ object Form1: TForm1
       Left = 149
       Top = 0
       Width = 131
-      Height = 447
+      Height = 428
       Align = alClient
       BevelOuter = bvNone
       Color = clGray
       TabOrder = 1
       object Label2: TLabel
         Left = 0
-        Top = 407
+        Top = 388
         Width = 131
         Height = 40
         Align = alBottom
@@ -965,12 +966,11 @@ object Form1: TForm1
       end
       object RO20: TJvRollOut
         Left = 0
-        Top = 385
+        Top = 218
         Width = 131
-        Height = 22
+        Height = 170
         Align = alBottom
         Caption = '&J'
-        Collapsed = True
         GroupIndex = 1
         ImageOptions.IndexCollapsed = 5
         ImageOptions.IndexExpanded = 4
@@ -985,7 +985,7 @@ object Form1: TForm1
       end
       object RO19: TJvRollOut
         Left = 0
-        Top = 363
+        Top = 196
         Width = 131
         Height = 22
         Align = alBottom
@@ -1005,7 +1005,7 @@ object Form1: TForm1
       end
       object RO18: TJvRollOut
         Left = 0
-        Top = 341
+        Top = 174
         Width = 131
         Height = 22
         Align = alBottom
@@ -1025,7 +1025,7 @@ object Form1: TForm1
       end
       object RO17: TJvRollOut
         Left = 0
-        Top = 319
+        Top = 152
         Width = 131
         Height = 22
         Align = alBottom
@@ -1045,7 +1045,7 @@ object Form1: TForm1
       end
       object RO16: TJvRollOut
         Left = 0
-        Top = 297
+        Top = 130
         Width = 131
         Height = 22
         Align = alBottom
@@ -1065,7 +1065,7 @@ object Form1: TForm1
       end
       object RO15: TJvRollOut
         Left = 0
-        Top = 275
+        Top = 108
         Width = 131
         Height = 22
         Align = alBottom
@@ -1085,7 +1085,7 @@ object Form1: TForm1
       end
       object RO14: TJvRollOut
         Left = 0
-        Top = 253
+        Top = 86
         Width = 131
         Height = 22
         Align = alBottom
@@ -1105,7 +1105,7 @@ object Form1: TForm1
       end
       object RO13: TJvRollOut
         Left = 0
-        Top = 231
+        Top = 64
         Width = 131
         Height = 22
         Align = alBottom
@@ -1125,11 +1125,12 @@ object Form1: TForm1
       end
       object RO12: TJvRollOut
         Left = 0
-        Top = 61
+        Top = 42
         Width = 131
-        Height = 170
+        Height = 22
         Align = alBottom
         Caption = '&B'
+        Collapsed = True
         GroupIndex = 1
         ImageOptions.IndexCollapsed = 5
         ImageOptions.IndexExpanded = 4
@@ -1144,7 +1145,7 @@ object Form1: TForm1
       end
       object RO11: TJvRollOut
         Left = 0
-        Top = 39
+        Top = 20
         Width = 131
         Height = 22
         Align = alBottom
@@ -1168,8 +1169,8 @@ object Form1: TForm1
     Left = 157
     Top = 10
     Bitmap = {
-      494C010108000900040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
-      0000000000003600000028000000400000003000000001001000000000000018
+      494C010109000E00040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      0000000000003600000028000000400000004000000001001000000000000020
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -1200,6 +1201,70 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000010001000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000100000000000
+      1000000000001000100000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000100000000000
+      1000000010000000000010000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000100000000000
+      1000000010000000000010000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000010001000
+      1000000010000000000010000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      1000000010001000100000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      1000000010000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -1363,12 +1428,16 @@ object Form1: TForm1
       000000000000000000000000000000000000000000000000007C0000007C007C
       000000000000000000000000000000000000000000000000007C0000007C007C
       000000000000000000000000000000000000424D3E000000000000003E000000
-      2800000040000000300000000100010000000000800100000000000000000000
+      2800000040000000400000000100010000000000000200000000000000000000
       000000000000000000000000FFFFFF0000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      00000000000000000000000000000000FFFFFFFFFFFFFFFFE000C000FFFFFFFF
+      00000000000000000000000000000000FFFF000000000000F9FF000000000000
+      F6CF000000000000F6B7000000000000F6B7000000000000F8B7000000000000
+      FE8F000000000000FE3F000000000000FF7F000000000000FE3F000000000000
+      FEBF000000000000FC9F000000000000FDDF000000000000FDDF000000000000
+      FDDF000000000000FFFF000000000000FFFFFFFFFFFFFFFFE000C000FFFFFFFF
       C0008000FFFFFFFFC0008000E003E00380008000EFFBEFFB80008000EEFBEFFB
       00008000EC7BEFFB00008000E83BEFFB00008000E91BEFFB80008000EB8BEFFB
       80008000EFCBEFFB80018001EFEBEFFBC07FC07FEFFBEFFBE0FFE0FFE003E003
@@ -1378,5 +1447,37 @@ object Form1: TForm1
       800000038000000380010007000100078307800F8107800F83C7E01F8047801F
       C7FFF83F03FF203FEFFFFE7FE9FFE87F00000000000000000000000000000000
       000000000000}
+  end
+  object ActionList1: TActionList
+    Images = ImageList1
+    Left = 205
+    Top = 8
+    object JvRollOutAction1: TJvRollOutAction
+      Caption = 'Action &1 (Ctrl+1)'
+      ShortCut = 16433
+      OnExecute = JvRollOutAction1Execute
+      RollOut = RO1
+      LinkCheckedToCollapsed = False
+    end
+    object JvRollOutAction2: TJvRollOutAction
+      Caption = 'Action &2 (Ctrl+2)'
+      ShortCut = 16434
+      OnExecute = JvRollOutAction2Execute
+      RollOut = RO2
+      LinkCheckedToCollapsed = True
+    end
+  end
+  object MainMenu1: TMainMenu
+    Left = 317
+    Top = 80
+    object Actions1: TMenuItem
+      Caption = 'Actions'
+      object Action1Ctrl11: TMenuItem
+        Action = JvRollOutAction1
+      end
+      object Action2Ctrl21: TMenuItem
+        Action = JvRollOutAction2
+      end
+    end
   end
 end
