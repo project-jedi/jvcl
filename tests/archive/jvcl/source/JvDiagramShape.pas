@@ -76,6 +76,7 @@ type
     property Caption: TJvTextShape read FCaption write SetCaption;
 
     // Make these properties available
+    property PopupMenu;
     property OnClick;
     property OnDblClick;
   end;
