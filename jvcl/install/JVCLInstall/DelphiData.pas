@@ -166,6 +166,7 @@ type
   public
     function IndexOfFilename(const Filename: string): Integer;
     procedure Add(const Filename, Description: string);
+    procedure Remove(const Filename: string);
 
     property Items[Index: Integer]: TDelphiPackage read GetItems; default;
   end;
@@ -816,8 +817,23 @@ procedure TDelphiPackageList.Add(const Filename, Description: string);
 var
   Item: TDelphiPackage;
 begin
-  Item := TDelphiPackage.Create(Filename, Description);
+  if Description = '' then
+    Item := TDelphiPackage.Create(Filename, ChangeFileExt(ExtractFileName(Filename), ''))
+  else
+    Item := TDelphiPackage.Create(Filename, Description);
   inherited Add(Item);
+end;
+
+procedure TDelphiPackageList.Remove(const Filename: string);
+var
+  i: Integer;
+begin
+  for i := 0 to Count - 1 do
+    if CompareText(Items[i].Filename, Filename) = 0 then
+    begin
+      Delete(i);
+      Exit;
+    end;
 end;
 
 function TDelphiPackageList.GetItems(Index: Integer): TDelphiPackage;
