@@ -1,4 +1,4 @@
-## Locked by Peter Thörnqvist
+## Needs review (p3)
 ----------------------------------------------------------------------------------------------------
 @@JvBehaviorLabel.pas
 <GROUP JVCL.FileRef>
@@ -10,39 +10,46 @@ Author
 ----------------------------------------------------------------------------------------------------
 @@GetLabelBehaviorName
 Summary
-  Returns the registered name of BehaviorOptionsClass or an empty string if BehaviorOptionsClass is not registered
+  Retrieves the name of a registered behavior class.
 Description
+  Call GetLabelBehaviorName to get the name of a registered behavior.
 Parameters
-  BehaviorOptionsClass - 
+  BehaviorOptionsClass - The class type to get the name for. If the class hasn't been registered, this function returns an empty string.
 See Also
+  GetLabelBehaviorOptionsClass, GetRegisteredLabelBehaviorOptions, RegisterLabelBehaviorOptions
 ----------------------------------------------------------------------------------------------------
 @@GetLabelBehaviorOptionsClass
 Summary
-  Returns the class of the behaviour named Name or TJvLabelBehavior if Name not registered
+  Retrieves the class type of a behaviour.
 Description
+  Call GetLabelBehaviorOptionsClass to get the class type of a behavior based on it's registered name.
 Parameters
-  Name - 
+  Name - The name used when the class was registered. If \Name is empty or cannot be found, returns TJvBaseValidator.
 See Also
+  GetLabelBehaviorName, GetRegisteredLabelBehaviorOptions, RegisterLabelBehaviorOptions
 ----------------------------------------------------------------------------------------------------
 @@GetRegisteredLabelBehaviorOptions
 Summary
+  Retrieves the names of all registered behaviors.
 Description
   Copies the internal TStrings list to Strings where each Strings[] is the name of a
   registered class and each Objects[] is a pointer to the corresponding class
 Parameters
-  Strings - 
+  Strings - A TStrings instance that is filled with the returned names. This instance must be created and maintianed by the caller.
 See Also
+  GetLabelBehaviorName, GetLabelBehaviorOptionsClass, RegisterLabelBehaviorOptions
 ----------------------------------------------------------------------------------------------------
 @@RegisterLabelBehaviorOptions
 Summary
   Registers a new behaviour.
-  Registers a new TJvLabelBehaviorOptionsClass class for use in LoadFromFile.
 Description
-  Use RegisterFileFormat to register a graphic file format with TPicture so that it can be used with a Open or Save dialog box.
+  Use RegisterLabelBehaviorOptions to register a new behavior class for use
+  with the TJvBehaiorLabel component.
 Parameters
-  Name                 - Specifies the description of the graphic to appear in the drop down list of the dialog box
-  BehaviorOptionsClass - Registers the new graphic class to associate with the file format.
+  Name                 - The name to use for this behavior.
+  BehaviorOptionsClass - The class to register.
 See Also
+  GetLabelBehaviorName, GetLabelBehaviorOptionsClass, GetRegisteredLabelBehaviorOptions
 ----------------------------------------------------------------------------------------------------
 @@TJvAppearDirection
 <TITLE TJvAppearDirection type>
@@ -75,8 +82,11 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomBehaviorLabel
 Summary
-  Base class for the TJvBehaviorLabel component.
+  Base class for a label that can exhibit different behaviors.
 Description
+  TJvCustomBehaviorLabel is the base class for labels that can be assigned different behaviors (through their
+  Behavior property). Don't create instances of TJvCustomBehaviorLabel. To put a behavior label on a form,
+  create instances of a descendant class, like TJvBehaviorLabel.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomBehaviorLabel.AboutJVCL
   <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -113,13 +123,13 @@ See Also
 Summary
   Occurs when the Ctl3D property of the label changes.
 Description
-  Write an OnCtl3DChanged event handler to take specific action when the Ctl3D property changes.
+  \Write an OnCtl3DChanged event handler to take specific action when the Ctl3D property changes.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomBehaviorLabel.OnMouseEnter
 Summary
   Occurs when the mouse pointer moves over the label.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  \Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
   label.
 See Also
   OnMouseLeave
@@ -128,7 +138,7 @@ See Also
 Summary
   Occurs when the mouse pointer moves off the label.
 Description
-  Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
+  \Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
   label. For example, you can use this event to undo changes that were made in an OnMouseEnter
   event handler.
 See Also
@@ -203,8 +213,10 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvLabelBehavior
 Summary
-  Base class.
+  A label component that can exhibit different behaviors.
 Description
+  Use TJvLabelBehavior when you need a label that should be able to exhibit different behaviors,
+  like blinking, scrolling or moving in different directions.
 ----------------------------------------------------------------------------------------------------
 @@TJvLabelBehavior.Active
 Summary
@@ -214,8 +226,9 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvLabelBehavior.OwnerLabel
 Summary
+  Specifies the label the behavior is acting upon.
 Description
-See Also
+  Use OwnerLabel to get access to the label a specific behavior instance is acting upon.
 ----------------------------------------------------------------------------------------------------
 @@TJvLabelBehaviorName
 <TITLE TJvLabelBehaviorName type>
@@ -226,7 +239,15 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvLabelBehaviorOptionsClass
 Summary
+  The class type for TJvLabelBehaviorOptions
 Description
+  TJvLabelBehaviorOptionsClass defines a class type for calling code that needs a class type reference
+  as a parameter or return a class type. TJvLabelBehaviorOptionsClass is defined as
+  <AUTOLINK OFF>
+  <CODE>
+    TJvLabelBehaviorOptionsClass = clas of TJvLabelBehaviorOptions;
+  </CODE>
+  <AUTOLINK ON>
 ----------------------------------------------------------------------------------------------------
 @@TJvLabelBlink
 Summary
@@ -262,7 +283,7 @@ Description
   Interval determines how frequently the scroll event occurs. Each time the specified interval passes,
   the label text scrolls.
 
-  Use Interval to specify any cardinal value as the interval between scroll events. The default value 
+  Use Interval to specify any cardinal value as the interval between scroll events. The default value
   is 50 (1/20 second).
 
   A 0 value is valid, however the label text will not scroll for a value of 0.
@@ -287,13 +308,21 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvLabelBounce.Interval
 Summary
+  Specifies how often the label is moved.
 Description
+  Use Interval to set the number of milliseconds between moves of the label. Interval works in conjuction
+  with Pixels to define how fast and smoothly the label moves.
 See Also
+  Pixels
 ----------------------------------------------------------------------------------------------------
 @@TJvLabelBounce.Pixels
 Summary
+  Specifies the number of pixels the label moves at each update.
 Description
+  Use Pixels to set how far the label moves at each update. The time between updates is controlled by the Interval property.
+  Setting Pixels to a high value will make the label move in larger steps.
 See Also
+  Interval
 ----------------------------------------------------------------------------------------------------
 @@TJvLabelScroll
 Summary
@@ -370,15 +399,16 @@ Description
   SleepTime determines how frequently the animation event occurs. Each time the specified interval 
   passes, the last letter of the visible text is changed in the caption.
 
-  Use SleepTime to specify any cardinal value as the interval between animation events. The default 
+  Use SleepTime to specify any cardinal value as the interval between animation events. The default
   value is 20 (1/50 second).
 ----------------------------------------------------------------------------------------------------
 @@TJvLabelTyping
 Summary
-  Enables the label to ...
+  Behavior that types the characters in the label letter by letter.
 Description
-  TJvLabelTyping enables a TJvBehaviorLabel to ...
-  
+  TJvLabelTyping types the characters in the label letter by letter, simulating
+  the typing of a human being.
+
   To use TJvLabelTyping capabilities with a TJvBehaviorLabel label, do the following:
   * Drop a TJvBehaviorLabel on a form.
   * Set <LINK TJvCustomBehaviorLabel.Behavior,Behavior> to 'Typing'.
@@ -395,7 +425,7 @@ Description
   Interval determines how frequently the scroll event occurs. Each time the specified interval passes,
   the label text scrolls.
 
-  Use Interval to specify any cardinal value as the interval between scroll events. The default value 
+  Use Interval to specify any cardinal value as the interval between scroll events. The default value
   is 50 (1/20 second).
 
   A 0 value is valid, however the label text will not scroll for a value of 0.
@@ -403,5 +433,45 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvLabelTyping.MakeErrors
 Summary
+  Specifies if the beahior should make random errors.
 Description
+  Use MakeErrors to specify whether the behavior shuld make occasional errors while typing or not.
+  Setting MakeErrors to true makes the behavior more "human-like".
+----------------------------------------------------------------------------------------------------
+@@TJvLabelCodeBreaker
+Summary
+  A behavior that simulates breaking a code.
+Description
+  Use the TJvLabelCodeBreaker behavior when you want to simulate breaking a code in the label. To enable
+  this behavior, do the follwing:
+  * Drop a TJvBehaviorLabel on a form.
+  * Set <LINK TJvCustomBehaviorLabel.Behavior,Behavior> to 'CodeBreaker'.
+  * Set the label's Caption to the initial, coded, value.
+
+  Do the following with the properties of property <LINK TJvCustomBehaviorLabel.BehaviorOptions,BehaviorOptions>:
+  * Specify the decoded text by seetting DecodedText to a suitable string.
+  * Use Interval to specify the amount of time in milliseconds between character changes.
 See Also
+  DecodedText, Interval
+----------------------------------------------------------------------------------------------------
+@@TJvLabelCodeBreaker.DecodedText
+Summary
+  Specifies the text that is the decoded text of the decoding.
+Description
+  Use DecodedText to specify the text that the label should contain when the decoding is finished. The behavior
+  will examine each character in the labels \Caption one by one and simulate an attempt to find the decoded value.
+  When the character "found" by the behavior matches the character at the corresponding position in decodedText, the
+  character in the label's \Caption is replaced with the decoded character and the behavior moves on to the next character.
+
+  The speed of the decoding is controlled by the Interval property.
+See Also
+  Interval
+----------------------------------------------------------------------------------------------------
+@@TJvLabelCodeBreaker.Interval
+Summary
+  Specifies how fast the behavior checks the characters in the label.
+Description
+  Use Interval to set the time between character "decoding" attempts. Interval is expressed in milliseconds.
+  The lower the value of Interval, the faster the decoding will be performed.
+See Also
+  DecodedText

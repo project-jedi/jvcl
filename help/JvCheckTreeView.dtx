@@ -1,4 +1,4 @@
-## Locked by Peter Thörnqvist
+## Needs review (p3)
 ----------------------------------------------------------------------------------------------------
 @@JvCheckTreeView.pas
 <GROUP JVCL.FileRef>
@@ -10,7 +10,7 @@ Author
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckTreeView
 Summary
-  A treeView that can display checkboxes and radiobuttons.
+  A treeview control that can display checkboxes and radiobuttons.
 Description
   Use TJvCheckTreeView when you need to display checkboxes and/or radiobuttons in a treeview. TJvCheckTreeView 
   can display and automatically handle the check/uncheck logic for radiobuttons as well as checkboxes. In addition,
@@ -44,7 +44,7 @@ See Also
 Summary
   Occurs when a node has been toggled on or off.
 Description
-  Write a handler for OnToggled to take specific action when a node is toggled on or off. The Node
+  \Write a handler for OnToggled to take specific action when a node is toggled on or off. The Node
   parameter specifies the node that was toggled.
 See Also
   OnToggling
@@ -53,7 +53,7 @@ See Also
 Summary
   Occurs just before a node is going to be toggled on or off.
 Description
-  Write an OnChanging event handler to selectively prevent the user to toggle specific nodes.
+  \Write an OnChanging event handler to selectively prevent the user to toggle specific nodes.
 
   The OnToggling event is called when a node is about to be toggled on or off. Set AllowChange to False, to prevent
   the node to be toggled. The Node parameter specifies the node that is about to be toggled.
@@ -80,7 +80,7 @@ Description
 Summary
   Specifies the number of levels a toggle propagates.
 Description
-  Read CascadeLevels to determine how many levels a toggle of a node propagates. If this property is 0, no
+  \Read CascadeLevels to determine how many levels a toggle of a node propagates. If this property is 0, no
   propagation takes place, if it is 1, toggling a node also toggles all checkbox node on the next sublevel.
   To toggle all subnodes regardless of depth, set CascadeLevels to -1.
 See Also
