@@ -42,17 +42,17 @@ uses
   QControls, QGraphics, QImgList, QExtCtrls, QPrinters, Types, QWindows,
   {$ENDIF VisualCLX}
   {$IFDEF USEJVCL}
-  JvComponent,
+  JvComponent, JvTypes,
   {$ENDIF USEJVCL}
-  JvTFUtils, JvTypes;
+  JvTFUtils;
 
 const
   CN_REQUESTREFRESH = $BD01;
 
-{$HPPEMIT '#define TDate Controls::TDate'}
-{$HPPEMIT '#define TTime Controls::TTime'}
-
 type
+  {$IFNDEF USEJVCL}
+  THintString = string;
+  {$ENDIF !USEJVCL}
   // Redeclaration of this type.  It is used in JvTFMonths.TJvTFDrawDWTitleEvent.
   // If not redeclared here, Delphi complains of 'unknown type' because it
   // will not automatically bring in 'JvTFUtils' into the uses clause when
@@ -1053,23 +1053,19 @@ type
 //      write FAfterNavigate;
 //  end;
 
-{$HPPEMIT '#undef TDate'}
-{$HPPEMIT '#undef TTime'}
-
 implementation
 
 uses
-  {$IFDEF VisualCLX}
-  QDialogs, QForms,
-  {$ENDIF VisualCLX}
   {$IFDEF USEJVCL}
-  {$IFDEF VCL}
-  Dialogs, Forms,
-  {$ENDIF VCL}
-  JvConsts, JvResources;
-  {$ELSE}
-  Dialogs, Forms;
+  JvConsts, JvResources,
   {$ENDIF USEJVCL}
+  {$IFDEF VisualCLX}
+  QDialogs, QForms
+  {$ENDIF VisualCLX}
+  {$IFDEF VCL}
+  Dialogs, Forms
+  {$ENDIF VCL}
+  ;
 
 {$IFNDEF USEJVCL}
 resourcestring

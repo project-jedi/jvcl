@@ -39,6 +39,9 @@ uses
   {$IFDEF VisualCLX}
   Types, QControls, QButtons, QGraphics, QExtCtrls, QForms, QImgList, QWindows,
   {$ENDIF VisualCLX}
+  {$IFDEF BCB}
+  JvTypes, // TDate / TTime macros
+  {$ENDIF BCB}
   JvComponent, JvExControls;
 
 {$IFDEF VisualCLX}
@@ -47,7 +50,6 @@ resourcestring
 {$ENDIF VisualCLX}
 
 type
-  TDate = TDateTime;
   TJvTLSelFrame = class(TPersistent)
   private
     FVisible: Boolean;

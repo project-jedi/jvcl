@@ -43,22 +43,18 @@ interface
 uses
   Windows, Messages, CommCtrl,
   SysUtils, Classes, Graphics, Controls, Forms, ComCtrls,
-  JvExComCtrls;
+  JvExComCtrls, JvTypes;
 
 type
-  {$IFDEF BCB}
-  TDate = TDateTime;
-  {$ENDIF BCB}
-
   TJvDateTimePicker = class(TJvExDateTimePicker)
   private
     FNullText: string;
     FNullDate: TDateTime;
     FDropDownDate: TDate;
-{$IFNDEF COMPILER6_UP}
+    {$IFDEF COMPILER5}
     FFormat: string;
     procedure SetFormat(const Value: string);
-{$ENDIF}
+    {$ENDIF COMPILER5}
     procedure CNNotify(var Msg: TWMNotify); message CN_NOTIFY;
     procedure SetNullDate(const Value: TDateTime);
     procedure SetNullText(const Value: string);
@@ -71,9 +67,9 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   published
-{$IFNDEF COMPILER6_UP}
+    {$IFDEF COMPILER5}
     property Format: string read FFormat write SetFormat;
-{$ENDIF}
+    {$ENDIF COMPILER5}
     // The initial date to display when the drop-down calendar is shown and NullDate = Date/Time
     property DropDownDate: TDate read FDropDownDate write FDropDownDate;
     // The Date/Time (depending on the Kind property) that represents an empty "null" value, default is 1899-12-31
@@ -135,7 +131,7 @@ begin
   end;
 end;
 
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 procedure TJvDateTimePicker.SetFormat(const Value: string);
 begin
   if FFormat <> Value then
@@ -144,8 +140,7 @@ begin
     CheckNullValue;
   end;
 end;
-{$ENDIF}
-
+{$ENDIF COMPILER5}
 
 function TJvDateTimePicker.MsgSetDateTime(Value: TSystemTime): Boolean;
 begin

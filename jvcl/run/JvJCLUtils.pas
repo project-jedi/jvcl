@@ -813,9 +813,9 @@ function StrDelete(const psSub, psMain: string): string;
 
 type
   TTime = TDateTime;
-{$EXTERNALSYM TTime}
+  {$EXTERNALSYM TTime}
   TDate = TDateTime;
-{$EXTERNALSYM TDate}
+  {$EXTERNALSYM TDate}
 
   { returns the fractional value of pcValue}
 function TimeOnly(pcValue: TDateTime): TTime;

@@ -32,13 +32,24 @@ interface
 
 uses
   {$IFDEF VCL}
-  Windows, Graphics,
+  Windows, Graphics, Controls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGraphics, Types, QWindows,
   {$ENDIF VisualCLX}
   Classes, SysUtils;
 
+{$HPPEMIT '#ifndef TDate'}
+{$IFDEF VCL}
+{$HPPEMIT '#define TDate Controls::TDate'}
+{$HPPEMIT '#define TTime Controls::TTime'}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+{$HPPEMIT '#define TDate TDateTime'}
+{$HPPEMIT '#define TTime TDateTime'}
+{$ENDIF VisualCLX}
+{$HPPEMIT '#endif'}
+  
 type
   TJvTFVisibleScrollBars = set of (vsbHorz, vsbVert);
   EJvTFDateError = class(Exception);
@@ -119,7 +130,7 @@ resourcestring
   RsEResultDoesNotFallInMonth = 'Result does not fall in given month';
   RsEInvalidMonthValue = 'Invalid Month Value (%d)';
   RsEInvalidDayOfWeekValue = 'Invalid value for day of week (%d)';
-  {$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 function ExtractYear(aDate: TDateTime): Word;
 var

@@ -37,9 +37,7 @@ uses
   {$IFDEF VisualCLX}
   QControls, QDialogs, QForms, QWindows,
   {$ENDIF VisualCLX}
-  JvComponent;
-
-{$HPPEMIT '#define TDate Controls::TDate'}
+  JvComponent, JvTypes;
 
 type
   TJvTimeLimit = class(TJvComponent)
@@ -52,8 +50,6 @@ type
     property EndDate: TDate read FDate write FDate;
     property OnExpire: TNotifyEvent read FOnExpire write FOnExpire;
   end;
-
-{$HPPEMIT '#undef TDate'}
 
 implementation
 

@@ -43,8 +43,6 @@ uses
   {$ENDIF USEJVCL}
   JvTFGlance, JvTFUtils, JvTFManager;
 
-{$HPPEMIT '#define TDate Controls::TDate'}
-
 type
   TJvTFMonthsScrollSize = (mssMonth, mssWeek);
 
@@ -114,8 +112,6 @@ type
 //    property Navigator;
 //    property OnNavigate;
   end;
-
-{$HPPEMIT '#undef TDate'}
 
 implementation
 

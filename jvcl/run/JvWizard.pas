@@ -815,9 +815,8 @@ type
     procedure SetButtonBarHeight(Value: Integer);
     procedure SetActivePage(Page: TJvWizardCustomPage);
     procedure SetHeaderImages(Value: TCustomImageList);
-    function GetButtonClick(const Index: TJvWizardButtonKind): TNotifyEvent;
-    procedure SetButtonClick(const Index: TJvWizardButtonKind;
-      const Value: TNotifyEvent);
+    function GetButtonClick(Index: Integer): TNotifyEvent;
+    procedure SetButtonClick(Index: Integer; const Value: TNotifyEvent);
     procedure ImageListChange(Sender: TObject);
     procedure CreateNavigateButtons;
     procedure ChangeActivePage(Page: TJvWizardCustomPage);
@@ -846,7 +845,7 @@ type
     procedure RemovePage(Page: TJvWizardCustomPage);
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     function GetButtonControlClass(AKind: TJvWizardButtonKind): TJvWizardButtonControlClass; virtual;
-    procedure DoActivePageChanging(var ToPage: TJvWizardCustomPage); dynamic; 
+    procedure DoActivePageChanging(var ToPage: TJvWizardCustomPage); dynamic;
     procedure DoActivePageChanged; dynamic;
   public
     constructor Create(AOwner: TComponent); override;
@@ -888,13 +887,16 @@ type
     property OnSelectLastPage: TJvWizardSelectPageEvent read FOnSelectLastPage write FOnSelectLastPage;
     property OnSelectNextPage: TJvWizardSelectPageEvent read FOnSelectNextPage write FOnSelectNextPage;
     property OnSelectPriorPage: TJvWizardSelectPageEvent read FOnSelectPriorPage write FOnSelectPriorPage;
-    property OnStartButtonClick: TNotifyEvent index bkStart read GetButtonClick write SetButtonClick;
-    property OnLastButtonClick: TNotifyEvent index bkLast read GetButtonClick write SetButtonClick;
-    property OnBackButtonClick: TNotifyEvent index bkBack read GetButtonClick write SetButtonClick;
-    property OnNextButtonClick: TNotifyEvent index bkNext read GetButtonClick write SetButtonClick;
-    property OnFinishButtonClick: TNotifyEvent index bkFinish read GetButtonClick write SetButtonClick;
-    property OnCancelButtonClick: TNotifyEvent index bkCancel read GetButtonClick write SetButtonClick;
-    property OnHelpButtonClick: TNotifyEvent index bkHelp read GetButtonClick write SetButtonClick;
+
+    // (ahuser) BCB cannot handle enum types as index.
+    property OnStartButtonClick: TNotifyEvent index Integer(bkStart) read GetButtonClick write SetButtonClick;
+    property OnLastButtonClick: TNotifyEvent index Integer(bkLast) read GetButtonClick write SetButtonClick;
+    property OnBackButtonClick: TNotifyEvent index Integer(bkBack) read GetButtonClick write SetButtonClick;
+    property OnNextButtonClick: TNotifyEvent index Integer(bkNext) read GetButtonClick write SetButtonClick;
+    property OnFinishButtonClick: TNotifyEvent index Integer(bkFinish) read GetButtonClick write SetButtonClick;
+    property OnCancelButtonClick: TNotifyEvent index Integer(bkCancel) read GetButtonClick write SetButtonClick;
+    property OnHelpButtonClick: TNotifyEvent index Integer(bkHelp) read GetButtonClick write SetButtonClick;
+
     property OnActivePageChanged: TNotifyEvent read FOnActivePageChanged write FOnActivePageChanged;
     property OnActivePageChanging: TJvWizardChangingPageEvent read FOnActivePageChanging write FOnActivePageChanging;
 
@@ -2965,19 +2967,18 @@ begin
     FActivePage.Invalidate;
 end;
 
-function TJvWizard.GetButtonClick(const Index: TJvWizardButtonKind): TNotifyEvent;
+function TJvWizard.GetButtonClick(Index: Integer): TNotifyEvent;
 begin
-  if Assigned(FNavigateButtons[Index].Control) then
-    Result := FNavigateButtons[Index].Control.OnClick
+  if Assigned(FNavigateButtons[TJvWizardButtonKind(Index)].Control) then
+    Result := FNavigateButtons[TJvWizardButtonKind(Index)].Control.OnClick
   else
     Result := nil;
 end;
 
-procedure TJvWizard.SetButtonClick(const Index: TJvWizardButtonKind;
-  const Value: TNotifyEvent);
+procedure TJvWizard.SetButtonClick(Index: Integer; const Value: TNotifyEvent);
 begin
-  if Assigned(FNavigateButtons[Index].Control) then
-    FNavigateButtons[Index].Control.OnClick := Value;
+  if Assigned(FNavigateButtons[TJvWizardButtonKind(Index)].Control) then
+    FNavigateButtons[TJvWizardButtonKind(Index)].Control.OnClick := Value;
 end;
 
 function TJvWizard.GetPageCount: Integer;

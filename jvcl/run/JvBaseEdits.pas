@@ -960,6 +960,7 @@ end;
 constructor TJvCustomCalcEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  ControlStyle := ControlStyle - [csAcceptsControls];
   ControlState := ControlState + [csCreating];
   try
     FPopup := TJvPopupWindow(CreatePopupCalculator(Self {$IFDEF VCL}, BiDiMode {$ENDIF VCL}));

@@ -221,10 +221,21 @@ end;
 function TJvTFGantt.CalcHeaderHeight: Integer;
 begin
   Result := 0;
+
   Canvas.Font.Assign(FMajorScale.Font);
+  {$IFDEF USEJVCL}
   Result := Result + CanvasMaxTextHeight(Canvas);
+  {$ELSE}
+  Result := Result + Canvas.TextHeight('Ay');
+  {$ENDIF USEJVCL}
+
   Canvas.Font.Assign(FMinorScale.Font);
+  {$IFDEF USEJVCL}
   Result := Result + CanvasMaxTextHeight(Canvas);
+  {$ELSE}
+  Result := Result + Canvas.TextHeight('Ay');
+  {$ENDIF USEJVCL}
+
   Result := Result + 4;
 end;
 

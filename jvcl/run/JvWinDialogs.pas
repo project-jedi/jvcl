@@ -35,6 +35,8 @@ uses
   Controls, ShlObj, ComObj, ActiveX, CommDlg,
   JvBaseDlg, JvTypes, JvComponent, JvJCLUtils; // For OSCheck
 
+{$HPPEMIT '#include "dbt.h"'}  
+
 type
   EShellOleError = class(Exception);
   EWinDialogError = class(Exception);
@@ -419,9 +421,13 @@ type
 
 const
   SOFTDIST_FLAG_USAGE_EMAIL = $0001;
+  {$EXTERNALSYM SOFTDIST_FLAG_USAGE_EMAIL}
   SOFTDIST_FLAG_USAGE_PRECACHE = $0002;
+  {$EXTERNALSYM SOFTDIST_FLAG_USAGE_PRECACHE}
   SOFTDIST_FLAG_USAGE_AUTOINSTALL = $0003;
+  {$EXTERNALSYM SOFTDIST_FLAG_USAGE_AUTOINSTALL}
   SOFTDIST_FLAG_DELETE_SUBSCRIPTION = $0004;
+  {$EXTERNALSYM SOFTDIST_FLAG_DELETE_SUBSCRIPTION}
 
 type
   _tagSOFTDISTINFO = packed record
