@@ -1,7 +1,7 @@
 object Form1: TForm1
   Left = 185
   Top = 156
-  Width = 410
+  Width = 391
   Height = 456
   Caption = 'Form1'
   Color = clBtnFace
@@ -12,8 +12,8 @@ object Form1: TForm1
   Font.Style = []
   OldCreateOrder = False
   DesignSize = (
-    402
-    422)
+    383
+    429)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -32,14 +32,14 @@ object Form1: TForm1
     WordWrap = True
   end
   object DBCtrlGrid1: TDBCtrlGrid
-    Left = 32
+    Left = 24
     Top = 64
-    Width = 373
-    Height = 257
-    Anchors = [akLeft, akTop, akRight, akBottom]
+    Width = 337
+    Height = 255
+    Anchors = [akLeft, akTop, akBottom]
     DataSource = DataSource1
     PanelHeight = 85
-    PanelWidth = 356
+    PanelWidth = 321
     TabOrder = 0
     object Label3: TLabel
       Left = 16
@@ -58,14 +58,12 @@ object Form1: TForm1
     object EditNAME: TJvDBMaskEdit
       Left = 63
       Top = 16
-      Width = 258
+      Width = 223
       Height = 21
       Anchors = [akLeft, akTop, akRight]
       DataField = 'NAME'
       DataSource = DataSource1
-      PasswordChar = #0
       TabOrder = 0
-      OnClick = EditNAMEClick
       OnExit = EditNAMEExit
       OnKeyDown = EditNAMEKeyDown
       OnAcceptNewValue = EditNAMEAcceptNewValue
@@ -73,17 +71,16 @@ object Form1: TForm1
     object EditPHONE: TJvDBMaskEdit
       Left = 63
       Top = 48
-      Width = 256
+      Width = 221
       Height = 21
       Anchors = [akLeft, akTop, akRight]
       DataField = 'PHONE'
       DataSource = DataSource1
-      PasswordChar = #0
       TabOrder = 1
     end
   end
   object DBNavigator1: TDBNavigator
-    Left = 80
+    Left = 72
     Top = 24
     Width = 240
     Height = 25
