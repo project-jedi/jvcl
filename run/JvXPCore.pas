@@ -216,6 +216,7 @@ type
     procedure MouseLeave(AControl: TControl); override;
     function WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean; override;
     function WidgetFlags: integer; override;
+    procedure Loaded; override;
     {$ENDIF VisualCLX}
     procedure MouseDown(Button:TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button:TMouseButton; Shift:TShiftState; X, Y: Integer); override;
@@ -568,6 +569,12 @@ end;
 function TJvXPCustomControl.WidgetFlags: integer;
 begin
   Result := Inherited WidgetFlags or Integer(WidgetFlags_WRepaintNoErase);
+end;
+
+procedure TJvXPCustomControl.Loaded;
+begin
+  inherited;
+  AdjustSize;
 end;
 
 procedure TJvXPCustomControl.BorderChanged;
