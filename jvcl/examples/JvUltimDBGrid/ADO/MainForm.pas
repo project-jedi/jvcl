@@ -5,7 +5,8 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, DB, ADODB, StdCtrls, ExtCtrls, DBCtrls, JvExStdCtrls,
-  JvDBCombobox, Grids, DBGrids, JvExDBGrids, JvDBGrid, JvDBUltimGrid;
+  JvDBCombobox, Grids, DBGrids, JvExDBGrids, JvDBGrid, JvDBUltimGrid, 
+  JvDBGridFooter, ComCtrls;
 
 type
   TfrmMain = class(TForm)
@@ -17,7 +18,7 @@ type
     B_Connect: TButton;
     B_TitleIndic: TButton;
     B_WordWrap: TButton;
-    B_RowHeight: TButton;
+    B_ModFooter: TButton;
     B_ShowEdit: TButton;
     B_Search: TButton;
     ADOConnection1: TADOConnection;
@@ -33,10 +34,12 @@ type
     DataSource1: TDataSource;
     DataSource2: TDataSource;
     LookupTable: TADOTable;
+    JvDBGridFooter1: TJvDBGridFooter;
+    CountQuery: TADOQuery;
     procedure FormShow(Sender: TObject);
     procedure MainTableCategoryGetText(Sender: TField; var Text: String;
       DisplayText: Boolean);
-    procedure B_RowHeightClick(Sender: TObject);
+    procedure B_ModFooterClick(Sender: TObject);
     procedure B_ConnectClick(Sender: TObject);
     procedure B_TitleIndicClick(Sender: TObject);
     procedure B_WordWrapClick(Sender: TObject);
@@ -47,6 +50,8 @@ type
     procedure JvDBGrid1RestoreGridPosition(Sender: TJvDBUltimGrid;
       SavedBookmark: Pointer; SavedRowPos: Integer);
     procedure B_SearchClick(Sender: TObject);
+    procedure JvDBGridFooter1Calculate(Sender: TJvDBGridFooter;
+      const FieldName: String; var CalcValue: Variant);
   private
     { Private declarations }
     OldRowsHeight, Compteur : Integer;
@@ -120,13 +125,16 @@ begin
   Text := DisplayList.Values[Sender.AsString];
 end;
 
-procedure TfrmMain.B_RowHeightClick(Sender: TObject);
+procedure TfrmMain.B_ModFooterClick(Sender: TObject);
 begin
-  if (OldRowsHeight = JvDBGrid1.RowsHeight) then
-    JvDBGrid1.RowsHeight := Round(OldRowsHeight * 1.5)
-  else
-    JvDBGrid1.RowsHeight := OldRowsHeight;
-  JvDBGrid1.RowResize := not JvDBGrid1.RowResize;
+  JvDBGridFooter1.Columns.Items[0].Alignment := taCenter;
+  JvDBGridFooter1.Columns.Items[0].Bevel := pbRaised;
+  JvDBGridFooter1.Columns.Items[1].FieldName := 'Category';
+  JvDBGridFooter1.Columns.Items[1].DisplayMask := '';
+  JvDBGridFooter1.IgnoreHorzScrolling := True;
+  JvDBGridFooter1.IgnoreResizing := True;
+  JvDBGrid1.FixedCols := 1;
+  B_ModFooter.Enabled := False;
 end;
 
 procedure TfrmMain.B_ConnectClick(Sender: TObject);
@@ -233,6 +241,45 @@ begin
     JvDBGrid1.RestoreGridPosition();
     ShowMessage('Not found');
   end;
+end;
+
+procedure TfrmMain.JvDBGridFooter1Calculate(Sender: TJvDBGridFooter;
+  const FieldName: String; var CalcValue: Variant);
+var
+  C: Integer;
+begin
+  if (MainTable.Active) then
+  begin
+    if (AnsiSameText(FieldName, 'Licenses')) then
+    begin
+      CountQuery.Open();
+      if (CountQuery.Eof) then
+        CalcValue := 'ERROR'
+      else
+        CalcValue := CountQuery.FieldByName('Total').AsInteger;
+      CountQuery.Close();
+    end
+    else
+    if (AnsiSameText(FieldName, 'Category')) then
+    begin
+      CalcValue := string('');
+      for C := 0 to JvDBGrid1.Columns.Count-1 do
+      begin
+        if (JvDBGrid1.Columns.Items[C].Visible) then
+        begin
+          if (CalcValue <> string('')) then
+            CalcValue := CalcValue + string(',');
+          CalcValue := CalcValue +
+            IntToStr(JvDBGrid1.Columns.Items[C].Width);
+        end;
+      end;
+      CalcValue := 'Widths = ' + CalcValue;
+    end
+    else
+      CalcValue := MainTable.RecordCount;
+  end
+  else
+    CalcValue := FieldName;
 end;
 
 end.

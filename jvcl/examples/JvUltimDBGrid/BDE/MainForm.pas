@@ -154,7 +154,7 @@ end;
 procedure TfrmMain.B_ResizeColsClick(Sender: TObject);
 begin
   MyUltimGrid.RowsHeight := 129;
-  MyUltimGrid.InitializeColumnsWidth(70, False, [36, 76]);
+  MyUltimGrid.InitializeColumnsWidth(-1, 0, False, [36, 76]);
   MyUltimGrid.AutoSizeColumnIndex := JvGridResizeLastVisibleCol;
   MyUltimGrid.AutoSizeColumns := True;
 end;
