@@ -75,10 +75,12 @@ DCC = "$(ROOT)\bin\dcc32.exe" $(DCCOPT)
 
 #-------------------------------------------------------------------------------
 
-JCLSOURCEDIRS=$(JCLROOT)\source\common;$(JCLROOT)\source\windows;$(JCLROOT)\source\vcl;$(JCLROOT)\source\visclx
+JCLSOURCEDIRS1=$(JCLROOT)\source\common;$(JCLROOT)\source\windows
+JCLSOURCEDIRS2=$(JCLROOT)\source\vcl;$(JCLROOT)\source\visclx
 JCLINCLUDEDIRS=$(JCLROOT)\source;$(JCLROOT)\source\common
 
-JVCLSOURCEDIRS=$(JVCLROOT)\common;$(JVCLROOT)\run;$(JVCLROOT)\design;
+JVCLSOURCEDIRS1=$(JVCLROOT)\common;$(JVCLROOT)\run
+JVCLSOURCEDIRS2=$(JVCLROOT)\design
 JVCLINCLUDEDIRS=$(JVCLROOT)\common
 JVCLRESDIRS=$(JVCLROOT)\Resources
 
@@ -148,10 +150,13 @@ configfile:
 	@echo -U"$(DCPDIR);$(LIBDIR);$(BPLDIR)">>"$(CFG)"
 	#
 	@echo -I"$(JCLINCLUDEDIRS)">>"$(CFG)"
-	@echo -U"$(JCLSOURCEDIRS)">>"$(CFG)"
+	@echo -U"$(JCLSOURCEDIRS1)">>"$(CFG)"
+	@echo -U"$(JCLSOURCEDIRS2)">>"$(CFG)"
 	#
 	@echo -I"$(JVCLINCLUDEDIRS)">>"$(CFG)"
-	@echo -U"$(UNITOUTDIR);$(JVCLSOURCEDIRS);$(LIBDIR)">>"$(CFG)"
+	@echo -U"$(UNITOUTDIR);$(LIBDIR)">>"$(CFG)"
+	@echo -U"$(JVCLSOURCEDIRS1)">>"$(CFG)"
+	@echo -U"$(JVCLSOURCEDIRS2)">>"$(CFG)"
 	@echo -R"$(JVCLRESDIRS)">>"$(CFG)"
 	#
 	@echo -U"$(EXTRAUNITDIRS)">>"$(CFG)"
@@ -206,6 +211,7 @@ Clean:
 	@cd ..
 	-del /f /q "$(PKGDIR) Packages.mak" 2>NUL
 	-del /f /q "$(PKGDIR)\*.cfg" "$(PKGDIR)\*.mak" 2>NUL
+	-del /f /q tmp.bat 2>NUL
 	-@IF NOT "$(PKGDIR_MASTEREDITION)!" == "!" del /f /q "$(PKGDIR_MASTEREDITION)\*.mak" 2>NUL
 	@cd bin
 
