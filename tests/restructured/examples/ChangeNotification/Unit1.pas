@@ -102,13 +102,13 @@ begin
   if CN1.Notifications.Count = 0 then
   begin
     ShowMessage('No notifications to monitor!');
-    SpeedButton1.Down := false;
+    btnStart.Down := false;
     Exit;
   end;
 
-  b := SpeedButton1.Down;
-  Button1.Enabled := not b;
-  Button2.Enabled := not b;
+  b := btnStart.Down;
+  btnAdd.Enabled := not b;
+  btnAdd.Enabled := not b;
   ResetCaptions(true);
   { do this *after* setting buttons }
   CN1.Active := b;
