@@ -379,7 +379,11 @@ begin
   FCurColor := TimeLine1.Color;
   cbDragging.ItemIndex := 0;
   TimelineNotesForm := TTimelineNotesForm.Create(nil);
+  cbDraggingChange(nil);
+  TimeLine1.ShowSelection := false;
+  TimeLine1.DoubleBuffered := false;
 end;
+
 
 procedure TTimelineMainForm.TimeLine1SaveItem(Sender: TObject; Item: TJvTimeItem;
   Stream: TStream);
@@ -632,8 +636,9 @@ end;
 
 procedure TTimelineMainForm.cbDraggingChange(Sender: TObject);
 begin
+  TimeLine1.DragLine := false;
   case cbDragging.ItemIndex of
-    0, 1:
+    0,1:
       TimeLine1.DragMode := dmManual;
     2:
       TimeLine1.DragMode := dmAutomatic;
