@@ -236,8 +236,11 @@ var
   SubKey: string;
   ValueName: string;
 begin
-  SplitKeyPath(Path, SubKey, ValueName);
-  RegDeleteEntry(FRegHKEY, SubKey, ValueName);
+  if ValueStored(Path) then
+  begin
+    SplitKeyPath(Path, SubKey, ValueName);
+    RegDeleteEntry(FRegHKEY, SubKey, ValueName);
+  end;
 end;
 
 procedure TJvAppRegistryStore.DeleteSubTree(const Path: string);
@@ -245,7 +248,8 @@ var
   KeyRoot: string;
 begin
   KeyRoot := GetAbsPath(Path);
-  RegDeleteKeyTree(FRegHKEY, KeyRoot);
+  if RegKeyExists(FRegHKEY, KeyRoot) then
+    RegDeleteKeyTree(FRegHKEY, KeyRoot);
 end;
 
 function TJvAppRegistryStore.ReadInteger(const Path: string; Default: Integer = 0): Integer;

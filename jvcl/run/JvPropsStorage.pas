@@ -50,9 +50,9 @@ type
     property Items[Index: Integer]: PPropInfo read Get; default;
   end;
 
-  TReadStrEvent = function(const ASection, Item, Default: string): string of object;
-  TWriteStrEvent = procedure(const ASection, Item, Value: string) of object;
-  TEraseSectEvent = procedure(const ASection: string) of object;
+  TReadStrEvent = function(const APath, Default: string): string of object;
+  TWriteStrEvent = procedure(const APath, Value: string) of object;
+  TEraseSectEvent = procedure(const APath: string) of object;
 
   TJvPropsStorage = class(TObject)
   private
@@ -124,7 +124,7 @@ const
 implementation
 
 uses
-  JvJCLUtils;
+  JvAppStore, JvJCLUtils;
 
 const
   sCount = 'Count';
@@ -955,7 +955,7 @@ end;
 function TJvPropsStorage.ReadString(const ASection, Item, Default: string): string;
 begin
   if Assigned(FOnReadString) then
-    Result := FOnReadString(ASection, Item, Default)
+    Result := FOnReadString(TJvCustomAppStore.ConcatPaths([ASection, Item]), Default)
   else
     Result := '';
 end;
@@ -963,7 +963,7 @@ end;
 procedure TJvPropsStorage.WriteString(const ASection, Item, Value: string);
 begin
   if Assigned(FOnWriteString) then
-    FOnWriteString(ASection, Item, Value);
+    FOnWriteString(TJvCustomAppStore.ConcatPaths([ASection, Item]), Value);
 end;
 
 procedure TJvPropsStorage.EraseSection(const ASection: string);

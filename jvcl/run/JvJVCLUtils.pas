@@ -11,7 +11,7 @@ uses
   ExtCtrls, Menus, Dialogs, Registry, ComCtrls, SysUtils, ShellApi,
   ImgList, Grids, IniFiles,
   JclBase, JclSysUtils, JclStrings,
-  JvTypes;
+  JvAppStore, JvTypes;
 
 {$IFNDEF COMPILER6_UP}
 type
@@ -554,6 +554,9 @@ function FindShowForm(FormClass: TFormClass; const Caption: string): TForm;
 function ShowDialog(FormClass: TFormClass): Boolean;
 function InstantiateForm(FormClass: TFormClass; var Reference): TForm;
 
+(*
+old stuff:
+
 procedure SaveFormPlacement(Form: TForm; const IniFileName: string;
   UseRegistry: Boolean);
 procedure RestoreFormPlacement(Form: TForm; const IniFileName: string;
@@ -562,15 +565,20 @@ procedure WriteFormPlacementReg(Form: TForm; IniFile: TRegIniFile;
   const Section: string);
 procedure ReadFormPlacementReg(Form: TForm; IniFile: TRegIniFile;
   const Section: string; LoadState, LoadPosition: Boolean);
+*)
+
+procedure SaveFormPlacement(Form: TForm; const AppStore: TJvCustomAppStore; const StorePath: string);
+procedure RestoreFormPlacement(Form: TForm; const AppStore: TJvCustomAppStore; const StorePath: string; LoadState: Boolean = True; LoadPosition: Boolean = True);
+
 procedure SaveMDIChildrenReg(MainForm: TForm; IniFile: TRegIniFile);
 procedure RestoreMDIChildrenReg(MainForm: TForm; IniFile: TRegIniFile);
 procedure RestoreGridLayoutReg(Grid: TCustomGrid; IniFile: TRegIniFile);
 procedure SaveGridLayoutReg(Grid: TCustomGrid; IniFile: TRegIniFile);
 
-procedure WriteFormPlacement(Form: TForm; IniFile: TCustomIniFile;
+(*procedure WriteFormPlacement(Form: TForm; IniFile: TCustomIniFile;
   const Section: string);
 procedure ReadFormPlacement(Form: TForm; IniFile: TCustomIniFile;
-  const Section: string; LoadState, LoadPosition: Boolean);
+  const Section: string; LoadState, LoadPosition: Boolean);*)
 procedure SaveMDIChildren(MainForm: TForm; IniFile: TCustomIniFile);
 procedure RestoreMDIChildren(MainForm: TForm; IniFile: TCustomIniFile);
 procedure RestoreGridLayout(Grid: TCustomGrid; IniFile: TCustomIniFile);
@@ -729,7 +737,6 @@ function JvMessageBox(const Text: string; Flags: DWORD): Integer; overload;
 { end JvCtrlUtils }
 
 procedure UpdateTrackFont(TrackFont,Font:TFont;TrackOptions:TJvTrackFontOptions);
-
 
 implementation
 
@@ -5104,6 +5111,7 @@ begin
     GetSystemMetrics(SM_CYSCREEN)]);
 end;
 
+(*
 function ReadPosStr(IniFile: TObject; const Section, Ident: string): string;
 begin
   Result := IniReadString(IniFile, Section, Ident + CrtResString, '');
@@ -5152,8 +5160,9 @@ procedure WriteFormPlacement(Form: TForm; IniFile: TCustomIniFile;
 begin
   InternalWriteFormPlacement(Form, IniFile, Section);
 end;
+*)
 
-procedure SaveFormPlacement(Form: TForm; const IniFileName: string;
+(*procedure SaveFormPlacement(Form: TForm; const IniFileName: string;
   UseRegistry: Boolean);
 var
   IniFile: TObject;
@@ -5167,7 +5176,7 @@ begin
   finally
     IniFile.Free;
   end;
-end;
+end;*)
 
 {$HINTS OFF}
 type
@@ -5197,6 +5206,140 @@ type
   TJvHackComponent = class(TComponent);
   {$HINTS ON}
 
+function ReadPosStr(AppStore: TJvCustomAppStore; const Path: string): string;
+begin
+  if AppStore.ValueStored(Path + CrtResString) then
+    Result := AppStore.ReadString(Path + CrtResString)
+  else
+    Result := AppStore.ReadString(Path);
+end;
+
+procedure WritePosStr(AppStore: TJvCustomAppStore; const Path, Value: string);
+begin
+  AppStore.WriteString(Path + CrtResString, Value);
+  AppStore.WriteString(Path, Value);
+end;
+
+procedure SaveFormPlacement(Form: TForm; const AppStore: TJvCustomAppStore; const StorePath: string);
+var
+  Placement: TWindowPlacement;
+begin
+  Placement.Length := SizeOf(TWindowPlacement);
+  GetWindowPlacement(Form.Handle, @Placement);
+  with Placement, TForm(Form) do
+  begin
+    if (Form = Application.MainForm) and IsIconic(Application.Handle) then
+      ShowCmd := SW_SHOWMINIMIZED;
+    if (FormStyle = fsMDIChild) and (WindowState = wsMinimized) then
+      Flags := Flags or WPF_SETMINPOSITION;
+    AppStore.WriteInteger(StorePath + '\' + siFlags, Flags);
+    AppStore.WriteInteger(StorePath + '\' + siShowCmd, ShowCmd);
+    AppStore.WriteInteger(StorePath + '\' + siPixels, Screen.PixelsPerInch);
+    WritePosStr(AppStore, StorePath + '\' + siMinMaxPos, Format('%d,%d,%d,%d',
+      [ptMinPosition.X, ptMinPosition.Y, ptMaxPosition.X, ptMaxPosition.Y]));
+    WritePosStr(AppStore, StorePath + '\' + siNormPos, Format('%d,%d,%d,%d',
+      [rcNormalPosition.Left, rcNormalPosition.Top, rcNormalPosition.Right,
+      rcNormalPosition.Bottom]));
+  end;
+end;
+
+procedure RestoreFormPlacement(Form: TForm; const AppStore: TJvCustomAppStore;
+  const StorePath: string; LoadState, LoadPosition: Boolean);
+const
+  Delims = [',', ' '];
+var
+  PosStr: string;
+  Placement: TWindowPlacement;
+  WinState: TWindowState;
+  DataFound: Boolean;
+begin
+  if not (LoadState or LoadPosition) then
+    Exit;
+  Placement.Length := SizeOf(TWindowPlacement);
+  GetWindowPlacement(Form.Handle, @Placement);
+  with Placement, TForm(Form) do
+  begin
+    if not IsWindowVisible(Form.Handle) then
+      ShowCmd := SW_HIDE;
+    if LoadPosition then
+    begin
+      DataFound := False;
+      AppStore.ReadInteger(StorePath + '\' + siFlags, Flags);
+      PosStr := ReadPosStr(AppStore, StorePath + '\' + siMinMaxPos);
+      if PosStr <> '' then
+      begin
+        DataFound := True;
+        ptMinPosition.X := StrToIntDef(ExtractWord(1, PosStr, Delims), 0);
+        ptMinPosition.Y := StrToIntDef(ExtractWord(2, PosStr, Delims), 0);
+        ptMaxPosition.X := StrToIntDef(ExtractWord(3, PosStr, Delims), 0);
+        ptMaxPosition.Y := StrToIntDef(ExtractWord(4, PosStr, Delims), 0);
+      end;
+      PosStr := ReadPosStr(AppStore, StorePath + '\' + siNormPos);
+      if PosStr <> '' then
+      begin
+        DataFound := True;
+        rcNormalPosition.Left := StrToIntDef(ExtractWord(1, PosStr, Delims), Left);
+        rcNormalPosition.Top := StrToIntDef(ExtractWord(2, PosStr, Delims), Top);
+        rcNormalPosition.Right := StrToIntDef(ExtractWord(3, PosStr, Delims), Left + Width);
+        rcNormalPosition.Bottom := StrToIntDef(ExtractWord(4, PosStr, Delims), Top + Height);
+      end;
+      DataFound := DataFound and (Screen.PixelsPerInch = AppStore.ReadInteger(
+        StorePath + '\' + siPixels, Screen.PixelsPerInch));
+      if DataFound then
+      begin
+        if not (BorderStyle in [bsSizeable, bsSizeToolWin]) then
+          rcNormalPosition := Rect(rcNormalPosition.Left, rcNormalPosition.Top,
+            rcNormalPosition.Left + Width, rcNormalPosition.Top + Height);
+        if rcNormalPosition.Right > rcNormalPosition.Left then
+        begin
+          if (Position in [poScreenCenter, poDesktopCenter]) and
+            not (csDesigning in ComponentState) then
+          begin
+            TJvHackComponent(Form).SetDesigning(True);
+            try
+              Position := poDesigned;
+            finally
+              TJvHackComponent(Form).SetDesigning(False);
+            end;
+          end;
+          SetWindowPlacement(Handle, @Placement);
+        end;
+      end;
+    end;
+    if LoadState then
+    begin
+      WinState := wsNormal;
+      { default maximize MDI main form }
+      if ((Application.MainForm = Form) or
+        (Application.MainForm = nil)) and ((FormStyle = fsMDIForm) or
+        ((FormStyle = fsNormal) and (Position = poDefault))) then
+        WinState := wsMaximized;
+      ShowCmd := AppStore.ReadInteger(StorePath + '\' + siShowCmd, SW_HIDE);
+      case ShowCmd of
+        SW_SHOWNORMAL, SW_RESTORE, SW_SHOW:
+          WinState := wsNormal;
+        SW_MINIMIZE, SW_SHOWMINIMIZED, SW_SHOWMINNOACTIVE:
+          WinState := wsMinimized;
+        SW_MAXIMIZE:
+          WinState := wsMaximized;
+      end;
+      if (WinState = wsMinimized) and ((Form = Application.MainForm)
+        or (Application.MainForm = nil)) then
+      begin
+        TJvNastyForm(Form).FWindowState := wsNormal;
+        PostMessage(Application.Handle, WM_SYSCOMMAND, SC_MINIMIZE, 0);
+        Exit;
+      end;
+      if FormStyle in [fsMDIChild, fsMDIForm] then
+        TJvNastyForm(Form).FWindowState := WinState
+      else
+        WindowState := WinState;
+    end;
+    Update;
+  end;
+end;
+
+(*
 procedure InternalReadFormPlacement(Form: TForm; IniFile: TObject;
   const Section: string; LoadState, LoadPosition: Boolean);
 const
@@ -5306,6 +5449,7 @@ begin
   InternalReadFormPlacement(Form, IniFile, Section, LoadState, LoadPosition);
 end;
 
+
 procedure RestoreFormPlacement(Form: TForm; const IniFileName: string;
   UseRegistry: Boolean);
 var
@@ -5324,6 +5468,7 @@ begin
     IniFile.Free;
   end;
 end;
+*)
 
 function GetUniqueFileNameInDir(const Path, FileNameMask: string): string;
 var
