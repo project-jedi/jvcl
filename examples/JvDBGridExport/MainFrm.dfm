@@ -39,11 +39,12 @@ object frmMain: TfrmMain
     TitleButtons = True
     AlternateRowColor = 16768667
     TitleArrow = True
+    MinColumnWidth = 100
     AutoSizeColumns = True
     AutoSizeColumnIndex = -2
-    SelectColumnsDialogStrings.Caption = 'V'#228'lj kolumner'
+    SelectColumnsDialogStrings.Caption = 'Select columns'
     SelectColumnsDialogStrings.OK = '&OK'
-    SelectColumnsDialogStrings.NoSelectionWarning = #197'tminstone en kolumn m'#229'ste vara synlig'
+    SelectColumnsDialogStrings.NoSelectionWarning = 'At least one column must be visible!'
     Columns = <
       item
         Expanded = False
@@ -114,7 +115,7 @@ object frmMain: TfrmMain
         Title.Font.Height = -19
         Title.Font.Name = 'Comic Sans MS'
         Title.Font.Style = [fsUnderline]
-        Width = 152
+        Width = 50
         Visible = True
       end>
   end

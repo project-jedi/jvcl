@@ -124,13 +124,13 @@ begin
   {$ENDIF VCL}
   FElementStack := TJvHTMLElementStack.Create;
   FTagStack := TJvHTMLElementStack.Create;
-  Color := clWhite;
   FAlignment := taLeftJustify;
   Width := 200;
   Height := 100;
   FMarginLeft := 5;
   FMarginRight := 5;
   FMarginTop := 5;
+  Color := clBtnFace;
   ParentColor := true;
 end;
 
