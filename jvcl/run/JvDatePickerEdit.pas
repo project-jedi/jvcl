@@ -103,7 +103,8 @@ type
   TJvCustomDatePickerEdit = class(TJvCustomCheckedMaskEdit)
   private
     FAllowNoDate: Boolean;
-    FBut: TSpeedButton;
+    FDropButton: TSpeedButton;
+    FButtonHolder:TWinControl;
     FCalAppearance: TJvMonthCalAppearance;
     FDate: TDateTime;
     FDateError: Boolean;
@@ -139,6 +140,7 @@ type
     function GetDropped: Boolean;
     procedure SetNoDateText(const AValue: string);
   protected
+    
     function IsDateFormatStored: Boolean;
     function IsNoDateShortcutStored: Boolean;
     function IsNoDateTextStored: Boolean;
@@ -174,11 +176,14 @@ type
     property NoDateText: string read FNoDateText write SetNoDateText stored IsNoDateTextStored;
     property StoreDate: Boolean read FStoreDate write FStoreDate default False;
     procedure CreateWnd; override;
+    procedure CreateParams(var AParams: TCreateParams); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Clear; override;
     function IsEmpty: Boolean; virtual;
+    procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
+      AHeight: Integer); override;
   end;
 
   TJvDatePickerEdit = class(TJvCustomDatePickerEdit)
@@ -276,14 +281,21 @@ begin
   FNoDateText := '';
   FStoreDate := False;
 
-  FBut := TSpeedButton.Create(Self);
-  with FBut do
+  FButtonHolder := TWinControl.Create(Self);
+  with FButtonHolder do
   begin
-    Parent := Self;
+    Parent := self;
     Align := alRight;
+    Width := GetSystemMetrics(SM_CXVSCROLL) + 1;
+  end;
+  FDropButton := TSpeedButton.Create(Self);
+  with FDropButton do
+  begin
+    Parent := FButtonHolder;
+    Align := alClient;
     Cursor := crArrow;
     Flat := True;
-    Width := GetSystemMetrics(SM_CXVSCROLL) + 1;
+//    Width := GetSystemMetrics(SM_CXVSCROLL) + 1;
     Glyph.Handle := LoadBitmap(0, PChar(OBM_COMBO));
     OnClick := ButClick;
     Visible := True;
@@ -295,7 +307,7 @@ end;
 destructor TJvCustomDatePickerEdit.Destroy;
 begin
   CloseUp;
-  FBut.OnClick := nil;
+  FDropButton.OnClick := nil;
   FreeAndNil(FCalAppearance);
   inherited Destroy;
 end;
@@ -339,6 +351,7 @@ begin
   end;
   if not (Leaving or (csDestroying in ComponentState)) then
     SetFocus;
+//  FDropButton.Repaint;
 end;
 
 procedure TJvCustomDatePickerEdit.SetCalAppearance(
@@ -385,7 +398,7 @@ end;
 procedure TJvCustomDatePickerEdit.GetInternalMargins(var ALeft, ARight: Integer);
 begin
   inherited GetInternalMargins(ALeft, ARight);
-  ARight := ARight + FBut.Width;
+  ARight := ARight + FDropButton.Width;
 end;
 
 function TJvCustomDatePickerEdit.IsEmpty: Boolean;
@@ -422,18 +435,19 @@ end;
 
 function TJvCustomDatePickerEdit.ValidateDate(const ADate: TDateTime): Boolean;
 begin
-  if (not AllowNoDate) and (ADate = 0) then
-    RaiseNoDate;
-  result := True;
+  if ((not AllowNoDate) and (ADate = 0)) or
+      // 1752-09-14 - 1752-09-19 are the only valid days in october 1752.
+    (ADate < EncodeDate(1752, 09, 14)) or ((ADate > EncodeDate(1752, 09, 19)) and (ADate < EncodeDate(1752, 10, 1))) then
+      Result := False
+  else
+    Result := True;
 end;
 
 procedure TJvCustomDatePickerEdit.SetDate(const AValue: TDateTime);
 begin
   if ValidateDate(AValue) then
-  begin
     FDate := AValue;
-    UpdateDisplay;
-  end;
+  UpdateDisplay;
 end;
 
 procedure TJvCustomDatePickerEdit.SetNoDateText(const AValue: string);
@@ -791,7 +805,7 @@ end;
 procedure TJvCustomDatePickerEdit.DoCtl3DChanged;
 begin
   inherited DoCtl3DChanged;
-  FBut.Flat := not Self.Ctl3D;
+  FDropButton.Flat := not Self.Ctl3D;
 end;
 
 procedure TJvCustomDatePickerEdit.EnabledChanged;
@@ -799,7 +813,7 @@ begin
   inherited;
   if not (Self.Enabled) and Dropped then
     CloseUp;
-  FBut.Enabled := Self.Enabled;
+  FDropButton.Enabled := Self.Enabled;
 end;
 
 //=== TJvDropCalendar ========================================================
@@ -927,6 +941,25 @@ end;
 function TJvCustomDatePickerEdit.IsEmptyMaskText(const AText: string): Boolean;
 begin
   Result := AnsiSameStr(AText, FEmptyMaskText);
+end;
+
+procedure TJvCustomDatePickerEdit.SetBounds(ALeft, ATop, AWidth,
+  AHeight: Integer);
+var R: TRect;
+begin
+  inherited;
+  if HandleAllocated then
+  begin
+    SetRect(R, 0, 0, ClientWidth - FDropButton.Width, ClientHeight - 1);
+    SendMessage(Handle, EM_SETRECTNP, 0, Longint(@R));
+  end;
+end;
+
+procedure TJvCustomDatePickerEdit.CreateParams(var AParams: TCreateParams);
+begin
+  inherited;
+  // make sure we can call EM_SETRECTNP succesfully 
+  AParams.Style := AParams.Style or ES_MULTILINE or WS_CLIPCHILDREN and not ES_WANTRETURN;
 end;
 
 end.

@@ -275,11 +275,21 @@ procedure TJvCustomMaskEdit.SetHotTrack(Value: Boolean);
 begin
   FHotTrack := Value;
   if Value then
+  begin
     {$IFDEF VCL}
     Ctl3D := False;
     {$ELSE}
     BorderStyle := bsSingle; // maybe bsNone
     {$ENDIF VCL}
+  end
+  else
+  begin
+    {$IFDEF VCL}
+    Ctl3D := True;
+    {$ELSE}
+    BorderStyle := bsSingle; 
+    {$ENDIF VCL}
+  end;
 end;
 
 procedure TJvCustomMaskEdit.CaretChanged(Sender: TObject);
