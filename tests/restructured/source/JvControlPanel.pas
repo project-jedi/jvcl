@@ -68,27 +68,19 @@ var
   h: THandle;
   CplApplet: TCplApplet;
   NewCplInfo: TNewCplInfo;
-  tmp: string;
 begin
   // (rom) simplified/fixed
   Result := '';
   h := LoadLibrary(PChar(Path));
-  try
-    if h <> 0 then
+  if h <> 0 then
+  begin
+    @CplApplet := GetProcAddress(h, PChar(RC_CplAddress));
+    if @CplApplet <> nil then
     begin
-      @CplApplet := GetProcAddress(h, PChar(RC_CplAddress));
-      if @CplApplet <> nil then
-      begin
-        NewCplInfo.szName[0] := #0;
-        CplApplet(0, CPL_NEWINQUIRE, 0, Longint(@NewCplInfo));
-        if Win32Platform = VER_PLATFORM_WIN32_NT then
-          tmp := WideCharToString(PWideChar(NewCplInfo.szName[0]))
-        else
-          tmp := string(NewCplInfo.szName);
-        Result := tmp;
-      end;
+      NewCplInfo.szName[0] := #0;
+      CplApplet(0, CPL_NEWINQUIRE, 0, Longint(@NewCplInfo));
+      Result := NewCplInfo.szName;
     end;
-  finally
     FreeLibrary(h);
   end;
 end;
@@ -105,46 +97,41 @@ var
   w: Word;
 begin
   ts := TStringList.Create;
-  try
-    res := FindFirst(Path + '*.cpl', faAnyFile, t);
-    try
-      while res = 0 do
-      begin
-        if (t.Name <> '.') and (t.Name <> '..') then
-        begin
-          st := GetNameCpl(Path + t.Name);
-          if st = '' then
-          begin
-            st := t.Name;
-            i := Length(st);
-            while (i > 0) and (st[i] <> '.') do
-              Dec(i);
-            st := Copy(st, 1, i - 1);
-          end;
-          ts.Add(st + '%' + t.Name);
-        end;
-        res := FindNext(t);
-      end;
-    finally
-      FindClose(t);
-    end;
-    ts.Sort;
-
-    for res := 0 to ts.Count - 1 do
+  res := FindFirst(Path + '*.cpl', faAnyFile, t);
+  while res = 0 do
+  begin
+    if (t.Name <> '.') and (t.Name <> '..') then
     begin
-      it := TMenuItem.Create(item);
-      it.Caption := Copy(ts[res], 1, Pos('%', ts[res]) - 1);
-      it.OnClick := UrlClick;
-      it.Hint := Path + Copy(ts[res], Pos('%', ts[res]) + 1, Length(ts[res]));
-      w := 0;
-      it.Bitmap.Assign(IconToBitmap(ExtractAssociatedIcon(Application.Handle, PChar(it.Hint), w)));
-      it.Bitmap.TransparentMode := tmAuto;
-      item.Add(it);
-      Application.ProcessMessages;
+      st := GetNameCpl(Path + t.Name);
+      if st = '' then
+      begin
+        st := t.Name;
+        i := Length(st);
+        while (i > 0) and (st[i] <> '.') do
+          Dec(i);
+        st := Copy(st, 1, i - 1);
+      end;
+      ts.Add(st + '%' + t.Name);
     end;
-  finally
-    ts.Free;
+    res := FindNext(t);
   end;
+  FindClose(t);
+  ts.Sort;
+
+  for res := 0 to ts.Count - 1 do
+  begin
+    it := TMenuItem.Create(Self);
+    it.Caption := Copy(ts[res], 1, Pos('%', ts[res]) - 1);
+    it.OnClick := UrlClick;
+    it.Hint := Path + Copy(ts[res], Pos('%', ts[res]) + 1, Length(ts[res]));
+    ;
+    w := 0;
+    it.Bitmap.Assign(IconToBitmap(ExtractAssociatedIcon(Application.Handle, PChar(it.Hint), w)));
+    it.Bitmap.TransparentMode := tmAuto;
+    item.Add(it);
+    Application.ProcessMessages;
+  end;
+  ts.Free;
 end;
 
 {*******************************************************}
@@ -180,7 +167,7 @@ begin
     st := FDirs.SystemDirectory;
     if st[Length(st)] <> '\' then
       st := st + '\';
-    AddToPopup(FPopup.Items, st);
+    AddToPopup(TMenuItem(FPopup.Items), st);
     FTop := (Owner as TForm).Top;
     FLeft := (Owner as TForm).Left;
     PopupMenu := FPopup;
@@ -193,9 +180,9 @@ destructor TJvControlPanel.Destroy;
 var
   i: Integer;
 begin
+  FDirs.Free;
   for i := 0 to FPopup.Items.Count - 1 do
     Fpopup.Items[i].Bitmap.FreeImage;
-  FDirs.Free;
   FPopup.Free;
   inherited;
 end;
@@ -209,4 +196,3 @@ begin
 end;
 
 end.
-
