@@ -31,12 +31,12 @@ interface
 
 uses
   SysUtils,
-{$IFDEF VCL}
+  {$IFDEF VCL}
   Controls, Graphics, Windows;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-QControls, QGraphics;
-{$ENDIF VisualCLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QControls, QGraphics;
+  {$ENDIF VisualCLX}
 
 {$IFDEF VisualCLX}
 const
@@ -132,6 +132,7 @@ const
   //CM_DESTROYHOOK     = CM_JVBASE + 3;
   { Notify message for TJvxTrayIcon }
   //CM_TRAYICON        = CM_JVBASE + 4;
+  CM_FORCESIZE = CM_JVBASE + 5;  // used in JvButton
 
   { Values for WParam for CM_SPEEDBARCHANGED message }
   SBR_CHANGED = 0; { change buttons properties  }
