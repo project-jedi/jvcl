@@ -12,7 +12,8 @@ The Original Code is: JvDotNetCtrls.PAS, released on 2004-01-01.
 
 The Initial Developer of the Original Code is Marc Hoffman.
 Portions created by Marc Hoffman are Copyright (C) 2002 APRIORI business solutions AG.
-Portions created by APRIORI business solutions AG are Copyright (C) 2002 APRIORI business solutions AG
+Portions created by APRIORI business solutions AG are
+Copyright (C) 2002 APRIORI business solutions AG
 All Rights Reserved.
 
 Contributor(s):
@@ -24,6 +25,7 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
 {$I jvcl.inc}
 
 unit JvDotNetControls;
@@ -31,154 +33,185 @@ unit JvDotNetControls;
 interface
 
 uses
-  Forms, Classes, Windows, Messages, Graphics, Controls, StdCtrls,
-  ComCtrls, Mask, CheckLst;
+  Forms, Classes, Windows, Messages, Graphics, Controls,
+  StdCtrls, ComCtrls, Mask,
+  {$IFDEF USEJVCL}
+  CheckLst,
+  JVCLVer;
+  {$ELSE}
+  CheckLst;
+  {$ENDIF USEJVCL}
 
 type
-{ TJvDotNetCheckListBox }
-
   TJvDotNetCheckListBox = class(TCheckListBox)
   private
-    { Private declarations }
+    {$IFDEF USEJVCL}
+    FAboutJVCL: TJVCLAboutInfo;
+    {$ENDIF USEJVCL}
     FHighlighted: Boolean;
     FOldWindowProc: TWndMethod;
-    procedure InternalWindowProc(var Message: TMessage);
+    procedure InternalWindowProc(var Msg: TMessage);
   public
-    { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+  {$IFDEF USEJVCL}
+  published
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  {$ENDIF USEJVCL}
   end;
-
-{ TJvDotNetEdit }
 
   TJvDotNetEdit = class(TEdit)
   private
-    { Private declarations }
+    {$IFDEF USEJVCL}
+    FAboutJVCL: TJVCLAboutInfo;
+    {$ENDIF USEJVCL}
     FHighlighted: Boolean;
     FOldWindowProc: TWndMethod;
-    procedure InternalWindowProc(var Message: TMessage);
+    procedure InternalWindowProc(var Msg: TMessage);
   public
-    { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+  {$IFDEF USEJVCL}
+  published
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  {$ENDIF USEJVCL}
   end;
-
-
-{ TJvDotNetHotKey }
 
   TJvDotNetHotKey = class(THotKey)
   private
-    { Private declarations }
+    {$IFDEF USEJVCL}
+    FAboutJVCL: TJVCLAboutInfo;
+    {$ENDIF USEJVCL}
     FHighlighted: Boolean;
     FOldWindowProc: TWndMethod;
-    procedure InternalWindowProc(var Message: TMessage);
+    procedure InternalWindowProc(var Msg: TMessage);
   public
-    { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+  {$IFDEF USEJVCL}
+  published
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  {$ENDIF USEJVCL}
   end;
-
-{ TJvDotNetListBox }
 
   TJvDotNetListBox = class(TListBox)
   private
-    { Private declarations }
+    {$IFDEF USEJVCL}
+    FAboutJVCL: TJVCLAboutInfo;
+    {$ENDIF USEJVCL}
     FHighlighted: Boolean;
     FOldWindowProc: TWndMethod;
-    procedure InternalWindowProc(var Message: TMessage);
+    procedure InternalWindowProc(var Msg: TMessage);
   public
-    { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+  {$IFDEF USEJVCL}
+  published
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  {$ENDIF USEJVCL}
   end;
-
-
-{ TJvDotNetListView }
 
   TJvDotNetListView = class(TListView)
   private
-    { Private declarations }
+    {$IFDEF USEJVCL}
+    FAboutJVCL: TJVCLAboutInfo;
+    {$ENDIF USEJVCL}
     FHighlighted: Boolean;
     FOldWindowProc: TWndMethod;
-    procedure InternalWindowProc(var Message: TMessage);
+    procedure InternalWindowProc(var Msg: TMessage);
   public
-    { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+  {$IFDEF USEJVCL}
+  published
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  {$ENDIF USEJVCL}
   end;
-
-{ TJvDotNetMaskEdit }
 
   TJvDotNetMaskEdit = class(TMaskEdit)
   private
-    { Private declarations }
+    {$IFDEF USEJVCL}
+    FAboutJVCL: TJVCLAboutInfo;
+    {$ENDIF USEJVCL}
     FHighlighted: Boolean;
     FOldWindowProc: TWndMethod;
-    procedure InternalWindowProc(var Message: TMessage);
+    procedure InternalWindowProc(var Msg: TMessage);
   public
-    { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+  {$IFDEF USEJVCL}
+  published
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  {$ENDIF USEJVCL}
   end;
-
-{ TJvDotNetMemo }
 
   TJvDotNetMemo = class(TMemo)
   private
-    { Private declarations }
+    {$IFDEF USEJVCL}
+    FAboutJVCL: TJVCLAboutInfo;
+    {$ENDIF USEJVCL}
     FHighlighted: Boolean;
     FOldWindowProc: TWndMethod;
-    procedure InternalWindowProc(var Message: TMessage);
+    procedure InternalWindowProc(var Msg: TMessage);
   public
-    { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+  {$IFDEF USEJVCL}
+  published
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  {$ENDIF USEJVCL}
   end;
-
-{ TJvDotNetRichEdit }
 
   TJvDotNetRichEdit = class(TRichEdit)
   private
-    { Private declarations }
+    {$IFDEF USEJVCL}
+    FAboutJVCL: TJVCLAboutInfo;
+    {$ENDIF USEJVCL}
     FHighlighted: Boolean;
     FOldWindowProc: TWndMethod;
-    procedure InternalWindowProc(var Message: TMessage);
+    procedure InternalWindowProc(var Msg: TMessage);
   public
-    { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+  {$IFDEF USEJVCL}
+  published
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  {$ENDIF USEJVCL}
   end;
-
-
-{ TJvDotNetScrollBox }
 
   TJvDotNetScrollBox = class(TScrollBox)
   private
-    { Private declarations }
+    {$IFDEF USEJVCL}
+    FAboutJVCL: TJVCLAboutInfo;
+    {$ENDIF USEJVCL}
     FHighlighted: Boolean;
     FOldWindowProc: TWndMethod;
-    procedure InternalWindowProc(var Message: TMessage);
+    procedure InternalWindowProc(var Msg: TMessage);
   public
-    { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+  {$IFDEF USEJVCL}
+  published
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  {$ENDIF USEJVCL}
   end;
-
-{ TJvDotNetTreeView }
 
   TJvDotNetTreeView = class(TTreeView)
   private
-    { Private declarations }
+    {$IFDEF USEJVCL}
+    FAboutJVCL: TJVCLAboutInfo;
+    {$ENDIF USEJVCL}
     FHighlighted: Boolean;
     FOldWindowProc: TWndMethod;
-    procedure InternalWindowProc(var Message: TMessage);
+    procedure InternalWindowProc(var Msg: TMessage);
   public
-    { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+  {$IFDEF USEJVCL}
+  published
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  {$ENDIF USEJVCL}
   end;
-
-{ TJvDotNetCustomControl }
 
 (* TJvDotNetCustomControl = class(TWinControl)
   published
@@ -186,13 +219,13 @@ type
     property Color;
   end;
 *)
+
 implementation
+
 uses
   JvDotNetUtils;
 
-
-
-{ TJvDotNetCheckListBox }
+//=== TJvDotNetCheckListBox ==================================================
 
 {-----------------------------------------------------------------------------
   Procedure: TJvDotNetCheckListBox.Create
@@ -227,17 +260,17 @@ end;
   Procedure: TJvDotNetCheckListBox.InternalWindowProc
   Author:    mh
   Date:      25-Jun-2002
-  Arguments: var Message: TMessage
+  Arguments: var Msg: TMessage
   Result:    None
 -----------------------------------------------------------------------------}
 
-procedure TJvDotNetCheckListBox.InternalWindowProc(var Message: TMessage);
+procedure TJvDotNetCheckListBox.InternalWindowProc(var Msg: TMessage);
 begin
-  FOldWindowProc(Message);
-  DotNetMessageHandler(Message, Self, Color, FHighlighted);
+  FOldWindowProc(Msg);
+  DotNetMessageHandler(Msg, Self, Color, FHighlighted);
 end;
 
-{ TJvDotNetEdit }
+//=== TJvDotNetEdit ==========================================================
 
 {-----------------------------------------------------------------------------
   Procedure: TJvDotNetEdit.Create
@@ -272,18 +305,17 @@ end;
   Procedure: TJvDotNetEdit.InternalWindowProc
   Author:    mh
   Date:      25-Jun-2002
-  Arguments: var Message: TMessage
+  Arguments: var Msg: TMessage
   Result:    None
 -----------------------------------------------------------------------------}
 
-procedure TJvDotNetEdit.InternalWindowProc(var Message: TMessage);
+procedure TJvDotNetEdit.InternalWindowProc(var Msg: TMessage);
 begin
-  FOldWindowProc(Message);
-  DotNetMessageHandler(Message, Self, Color, FHighlighted);
+  FOldWindowProc(Msg);
+  DotNetMessageHandler(Msg, Self, Color, FHighlighted);
 end;
 
-
-{ TJvDotNetHotKey }
+//=== TJvDotNetHotKey ========================================================
 
 {-----------------------------------------------------------------------------
   Procedure: TJvDotNetHotKey.Create
@@ -318,17 +350,17 @@ end;
   Procedure: TJvDotNetHotKey.InternalWindowProc
   Author:    mh
   Date:      25-Jun-2002
-  Arguments: var Message: TMessage
+  Arguments: var Msg: TMessage
   Result:    None
 -----------------------------------------------------------------------------}
 
-procedure TJvDotNetHotKey.InternalWindowProc(var Message: TMessage);
+procedure TJvDotNetHotKey.InternalWindowProc(var Msg: TMessage);
 begin
-  FOldWindowProc(Message);
-  DotNetMessageHandler(Message, Self, Color, FHighlighted);
+  FOldWindowProc(Msg);
+  DotNetMessageHandler(Msg, Self, Color, FHighlighted);
 end;
 
-{ TJvDotNetListBox }
+//=== TJvDotNetListBox =======================================================
 
 {-----------------------------------------------------------------------------
   Procedure: TJvDotNetListBox.Create
@@ -363,18 +395,17 @@ end;
   Procedure: TJvDotNetListBox.InternalWindowProc
   Author:    mh
   Date:      25-Jun-2002
-  Arguments: var Message: TMessage
+  Arguments: var Msg: TMessage
   Result:    None
 -----------------------------------------------------------------------------}
 
-procedure TJvDotNetListBox.InternalWindowProc(var Message: TMessage);
+procedure TJvDotNetListBox.InternalWindowProc(var Msg: TMessage);
 begin
-  FOldWindowProc(Message);
-  DotNetMessageHandler(Message, Self, Color, FHighlighted);
+  FOldWindowProc(Msg);
+  DotNetMessageHandler(Msg, Self, Color, FHighlighted);
 end;
 
-
-{ TJvDotNetListView }
+//=== TJvDotNetListView ======================================================
 
 {-----------------------------------------------------------------------------
   Procedure: TJvDotNetListView.Create
@@ -409,17 +440,17 @@ end;
   Procedure: TJvDotNetListView.InternalWindowProc
   Author:    mh
   Date:      25-Jun-2002
-  Arguments: var Message: TMessage
+  Arguments: var Msg: TMessage
   Result:    None
 -----------------------------------------------------------------------------}
 
-procedure TJvDotNetListView.InternalWindowProc(var Message: TMessage);
+procedure TJvDotNetListView.InternalWindowProc(var Msg: TMessage);
 begin
-  FOldWindowProc(Message);
-  DotNetMessageHandler(Message, Self, Color, FHighlighted);
+  FOldWindowProc(Msg);
+  DotNetMessageHandler(Msg, Self, Color, FHighlighted);
 end;
 
-{ TJvDotNetMaskEdit }
+//=== TJvDotNetMaskEdit ======================================================
 
 {-----------------------------------------------------------------------------
   Procedure: TJvDotNetMaskEdit.Create
@@ -454,17 +485,17 @@ end;
   Procedure: TJvDotNetMaskEdit.InternalWindowProc
   Author:    mh
   Date:      25-Jun-2002
-  Arguments: var Message: TMessage
+  Arguments: var Msg: TMessage
   Result:    None
 -----------------------------------------------------------------------------}
 
-procedure TJvDotNetMaskEdit.InternalWindowProc(var Message: TMessage);
+procedure TJvDotNetMaskEdit.InternalWindowProc(var Msg: TMessage);
 begin
-  FOldWindowProc(Message);
-  DotNetMessageHandler(Message, Self, Color, FHighlighted);
+  FOldWindowProc(Msg);
+  DotNetMessageHandler(Msg, Self, Color, FHighlighted);
 end;
 
-{ TJvDotNetMemo }
+//=== TJvDotNetMemo ==========================================================
 
 {-----------------------------------------------------------------------------
   Procedure: TJvDotNetMemo.Create
@@ -499,18 +530,17 @@ end;
   Procedure: TJvDotNetMemo.InternalWindowProc
   Author:    mh
   Date:      25-Jun-2002
-  Arguments: var Message: TMessage
+  Arguments: var Msg: TMessage
   Result:    None
 -----------------------------------------------------------------------------}
 
-procedure TJvDotNetMemo.InternalWindowProc(var Message: TMessage);
+procedure TJvDotNetMemo.InternalWindowProc(var Msg: TMessage);
 begin
-  FOldWindowProc(Message);
-  DotNetMessageHandler(Message, Self, Color, FHighlighted);
+  FOldWindowProc(Msg);
+  DotNetMessageHandler(Msg, Self, Color, FHighlighted);
 end;
 
-
-{ TJvDotNetRichEdit }
+//=== TJvDotNetRichEdit ======================================================
 
 {-----------------------------------------------------------------------------
   Procedure: TJvDotNetRichEdit.Create
@@ -545,18 +575,17 @@ end;
   Procedure: TJvDotNetRichEdit.InternalWindowProc
   Author:    mh
   Date:      25-Jun-2002
-  Arguments: var Message: TMessage
+  Arguments: var Msg: TMessage
   Result:    None
 -----------------------------------------------------------------------------}
 
-procedure TJvDotNetRichEdit.InternalWindowProc(var Message: TMessage);
+procedure TJvDotNetRichEdit.InternalWindowProc(var Msg: TMessage);
 begin
-  FOldWindowProc(Message);
-  DotNetMessageHandler(Message, Self, Color, FHighlighted);
+  FOldWindowProc(Msg);
+  DotNetMessageHandler(Msg, Self, Color, FHighlighted);
 end;
 
-
-{ TJvDotNetScrollBox }
+//=== TJvDotNetScrollBox =====================================================
 
 {-----------------------------------------------------------------------------
   Procedure: TJvDotNetScrollBox.Create
@@ -591,17 +620,17 @@ end;
   Procedure: TJvDotNetScrollBox.InternalWindowProc
   Author:    mh
   Date:      25-Jun-2002
-  Arguments: var Message: TMessage
+  Arguments: var Msg: TMessage
   Result:    None
 -----------------------------------------------------------------------------}
 
-procedure TJvDotNetScrollBox.InternalWindowProc(var Message: TMessage);
+procedure TJvDotNetScrollBox.InternalWindowProc(var Msg: TMessage);
 begin
-  FOldWindowProc(Message);
-  DotNetMessageHandler(Message, Self, Color, FHighlighted);
+  FOldWindowProc(Msg);
+  DotNetMessageHandler(Msg, Self, Color, FHighlighted);
 end;
 
-{ TJvDotNetTreeView }
+//=== TJvDotNetTreeView ======================================================
 
 {-----------------------------------------------------------------------------
   Procedure: TJvDotNetTreeView.Create
@@ -636,14 +665,14 @@ end;
   Procedure: TJvDotNetTreeView.InternalWindowProc
   Author:    mh
   Date:      25-Jun-2002
-  Arguments: var Message: TMessage
+  Arguments: var Msg: TMessage
   Result:    None
 -----------------------------------------------------------------------------}
 
-procedure TJvDotNetTreeView.InternalWindowProc(var Message: TMessage);
+procedure TJvDotNetTreeView.InternalWindowProc(var Msg: TMessage);
 begin
-  FOldWindowProc(Message);
-  DotNetMessageHandler(Message, Self, Color, FHighlighted);
+  FOldWindowProc(Msg);
+  DotNetMessageHandler(Msg, Self, Color, FHighlighted);
 end;
 
 end.

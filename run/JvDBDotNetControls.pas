@@ -24,91 +24,123 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
 {$I jvcl.inc}
+
 unit JvDBDotNetControls;
+
 {$IFDEF DelphiPersonalEdition}
+
 interface
+
 implementation
+
 {$ELSE}
+
 interface
+
 uses
   Forms, Classes, Windows, Messages, Graphics, Controls, StdCtrls,
-  ComCtrls, Mask, CheckLst, DBCtrls;
+  ComCtrls, Mask, DBCtrls,
+  {$IFDEF USEJVCL}
+  CheckLst,
+  JVCLVer;
+  {$ELSE}
+  CheckLst;
+  {$ENDIF USEJVCL}
 
 type
-{ TJvDotNetDBEdit }
-
-  TJvDotNetDBEdit = class(TDbEdit)
+  TJvDotNetDBEdit = class(TDBEdit)
   private
-    { Private declarations }
+    {$IFDEF USEJVCL}
+    FAboutJVCL: TJVCLAboutInfo;
+    {$ENDIF USEJVCL}
     FHighlighted: Boolean;
     FOldWindowProc: TWndMethod;
-    procedure InternalWindowProc(var Message: TMessage);
+    procedure InternalWindowProc(var Msg: TMessage);
   public
-    { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+  {$IFDEF USEJVCL}
+  published
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  {$ENDIF USEJVCL}
   end;
 
-{ TJvDotNetDBListBox }
-
-  TJvDotNetDBListBox = class(TDbListBox)
+  TJvDotNetDBListBox = class(TDBListBox)
   private
-    { Private declarations }
+    {$IFDEF USEJVCL}
+    FAboutJVCL: TJVCLAboutInfo;
+    {$ENDIF USEJVCL}
     FHighlighted: Boolean;
     FOldWindowProc: TWndMethod;
-    procedure InternalWindowProc(var Message: TMessage);
+    procedure InternalWindowProc(var Msg: TMessage);
   public
-    { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+  {$IFDEF USEJVCL}
+  published
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  {$ENDIF USEJVCL}
   end;
 
-{ TJvDotNetDBLookupListBox }
-
-  TJvDotNetDBLookupListBox = class(TDbLookupListBox)
+  TJvDotNetDBLookupListBox = class(TDBLookupListBox)
   private
-    { Private declarations }
+    {$IFDEF USEJVCL}
+    FAboutJVCL: TJVCLAboutInfo;
+    {$ENDIF USEJVCL}
     FHighlighted: Boolean;
     FOldWindowProc: TWndMethod;
-    procedure InternalWindowProc(var Message: TMessage);
+    procedure InternalWindowProc(var Msg: TMessage);
   public
-    { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+  {$IFDEF USEJVCL}
+  published
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  {$ENDIF USEJVCL}
   end;
-{ TJvDotNetDBMemo }
 
-  TJvDotNetDBMemo = class(TDbMemo)
+  TJvDotNetDBMemo = class(TDBMemo)
   private
-    { Private declarations }
+    {$IFDEF USEJVCL}
+    FAboutJVCL: TJVCLAboutInfo;
+    {$ENDIF USEJVCL}
     FHighlighted: Boolean;
     FOldWindowProc: TWndMethod;
-    procedure InternalWindowProc(var Message: TMessage);
+    procedure InternalWindowProc(var Msg: TMessage);
   public
-    { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+  {$IFDEF USEJVCL}
+  published
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  {$ENDIF USEJVCL}
   end;
-{ TJvDotNetDBRichEdit }
 
-  TJvDotNetDBRichEdit = class(TDbRichEdit)
+  TJvDotNetDBRichEdit = class(TDBRichEdit)
   private
-    { Private declarations }
+    {$IFDEF USEJVCL}
+    FAboutJVCL: TJVCLAboutInfo;
+    {$ENDIF USEJVCL}
     FHighlighted: Boolean;
     FOldWindowProc: TWndMethod;
-    procedure InternalWindowProc(var Message: TMessage);
+    procedure InternalWindowProc(var Msg: TMessage);
   public
-    { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+  {$IFDEF USEJVCL}
+  published
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  {$ENDIF USEJVCL}
   end;
 
 implementation
-uses
-  JvDotNetControls, JvDotNetUtils;
 
-{ TJvDotNetDBEdit }
+uses
+  JvDotNetUtils;
+
+//=== TJvDotNetDBEdit ========================================================
 
 {-----------------------------------------------------------------------------
   Procedure: TJvDotNetDBEdit.Create
@@ -143,17 +175,17 @@ end;
   Procedure: TJvDotNetDBEdit.InternalWindowProc
   Author:    mh
   Date:      25-Jun-2002
-  Arguments: var Message: TMessage
+  Arguments: var Msg: TMessage
   Result:    None
 -----------------------------------------------------------------------------}
 
-procedure TJvDotNetDBEdit.InternalWindowProc(var Message: TMessage);
+procedure TJvDotNetDBEdit.InternalWindowProc(var Msg: TMessage);
 begin
-  FOldWindowProc(Message);
-  DotNetMessageHandler(Message, Self, Color, FHighlighted);
+  FOldWindowProc(Msg);
+  DotNetMessageHandler(Msg, Self, Color, FHighlighted);
 end;
 
-{ TJvDotNetDBListBox }
+//=== TJvDotNetDBListBox =====================================================
 
 {-----------------------------------------------------------------------------
   Procedure: TJvDotNetDBListBox.Create
@@ -188,17 +220,17 @@ end;
   Procedure: TJvDotNetDBListBox.InternalWindowProc
   Author:    mh
   Date:      25-Jun-2002
-  Arguments: var Message: TMessage
+  Arguments: var Msg: TMessage
   Result:    None
 -----------------------------------------------------------------------------}
 
-procedure TJvDotNetDBListBox.InternalWindowProc(var Message: TMessage);
+procedure TJvDotNetDBListBox.InternalWindowProc(var Msg: TMessage);
 begin
-  FOldWindowProc(Message);
-  DotNetMessageHandler(Message, Self, Color, FHighlighted);
+  FOldWindowProc(Msg);
+  DotNetMessageHandler(Msg, Self, Color, FHighlighted);
 end;
 
-{ TJvDotNetDBLookupListBox }
+//=== TJvDotNetDBLookupListBox ===============================================
 
 {-----------------------------------------------------------------------------
   Procedure: TJvDotNetDBLookupListBox.Create
@@ -233,17 +265,17 @@ end;
   Procedure: TJvDotNetDBLookupListBox.InternalWindowProc
   Author:    mh
   Date:      25-Jun-2002
-  Arguments: var Message: TMessage
+  Arguments: var Msg: TMessage
   Result:    None
 -----------------------------------------------------------------------------}
 
-procedure TJvDotNetDBLookupListBox.InternalWindowProc(var Message: TMessage);
+procedure TJvDotNetDBLookupListBox.InternalWindowProc(var Msg: TMessage);
 begin
-  FOldWindowProc(Message);
-  DotNetMessageHandler(Message, Self, Color, FHighlighted);
+  FOldWindowProc(Msg);
+  DotNetMessageHandler(Msg, Self, Color, FHighlighted);
 end;
 
-{ TJvDotNetDBMemo }
+//=== TJvDotNetDBMemo ========================================================
 
 {-----------------------------------------------------------------------------
   Procedure: TJvDotNetDBMemo.Create
@@ -278,17 +310,17 @@ end;
   Procedure: TJvDotNetDBMemo.InternalWindowProc
   Author:    mh
   Date:      25-Jun-2002
-  Arguments: var Message: TMessage
+  Arguments: var Msg: TMessage
   Result:    None
 -----------------------------------------------------------------------------}
 
-procedure TJvDotNetDBMemo.InternalWindowProc(var Message: TMessage);
+procedure TJvDotNetDBMemo.InternalWindowProc(var Msg: TMessage);
 begin
-  FOldWindowProc(Message);
-  DotNetMessageHandler(Message, Self, Color, FHighlighted);
+  FOldWindowProc(Msg);
+  DotNetMessageHandler(Msg, Self, Color, FHighlighted);
 end;
 
-{ TJvDotNetDBRichEdit }
+//=== TJvDotNetDBRichEdit ====================================================
 
 {-----------------------------------------------------------------------------
   Procedure: TJvDotNetDBRichEdit.Create
@@ -323,14 +355,16 @@ end;
   Procedure: TJvDotNetDBRichEdit.InternalWindowProc
   Author:    mh
   Date:      25-Jun-2002
-  Arguments: var Message: TMessage
+  Arguments: var Msg: TMessage
   Result:    None
 -----------------------------------------------------------------------------}
 
-procedure TJvDotNetDBRichEdit.InternalWindowProc(var Message: TMessage);
+procedure TJvDotNetDBRichEdit.InternalWindowProc(var Msg: TMessage);
 begin
-  FOldWindowProc(Message);
-  DotNetMessageHandler(Message, Self, Color, FHighlighted);
+  FOldWindowProc(Msg);
+  DotNetMessageHandler(Msg, Self, Color, FHighlighted);
 end;
+
 {$ENDIF DelphiPersonalEdition}
+
 end.

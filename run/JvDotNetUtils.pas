@@ -24,26 +24,29 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
 {$I jvcl.inc}
 
 unit JvDotNetUtils;
 
 interface
+
 uses
   Windows, Messages, Classes, SysUtils, Graphics, Controls;
 
-procedure DotNetMessageHandler(var Message:TMessage; AControl: TWinControl; AColor:TColor; var InControl: Boolean);
-procedure DrawDotNetControl(Control: TWinControl; AColor:TColor; InControl: Boolean);
+procedure DotNetMessageHandler(var Msg: TMessage; AControl: TWinControl;
+  AColor: TColor; var InControl: Boolean);
+procedure DrawDotNetControl(Control: TWinControl; AColor: TColor; InControl: Boolean);
 
 implementation
 
-procedure DotNetMessageHandler(var Message:TMessage; AControl: TWinControl; AColor:TColor; var InControl: Boolean);
+procedure DotNetMessageHandler(var Msg: TMessage; AControl: TWinControl; AColor: TColor; var InControl: Boolean);
 begin
-  if Message.Msg = CM_MOUSEENTER then
+  if Msg.Msg = CM_MOUSEENTER then
     InControl := True;
-  if Message.Msg = CM_MOUSELEAVE then
+  if Msg.Msg = CM_MOUSELEAVE then
     InControl := False;
-  case Message.Msg of
+  case Msg.Msg of
     CM_MOUSEENTER, CM_MOUSELEAVE, WM_SETFOCUS, WM_KILLFOCUS, WM_NCPAINT:
       DrawDotNetControl(AControl, AColor, InControl);
   end;
@@ -53,11 +56,11 @@ end;
   Procedure: DrawDotNetControl
   Author:    mh
   Date:      25-Jun-2002
-  Arguments: Control: TJvNetControl; AColor:TColor; InControl: Boolean
+  Arguments: Control: TJvNetControl; AColor: TColor; InControl: Boolean
   Result:    None
 -----------------------------------------------------------------------------}
 
-procedure DrawDotNetControl(Control: TWinControl; AColor:TColor; InControl: Boolean);
+procedure DrawDotNetControl(Control: TWinControl; AColor: TColor; InControl: Boolean);
 var
   DC: HDC;
   R: TRect;
@@ -79,12 +82,13 @@ begin
       if not (Control.Focused or InControl) then
         Brush.Color := AColor;
       FrameRect(R);
-    finally // wrap up
+    finally
       Free;
-    end; // try/finally
-  finally // wrap up
+    end;
+  finally
     ReleaseDC(Control.Handle, DC);
-  end; // try/finally
+  end;
 end;
 
 end.
+
