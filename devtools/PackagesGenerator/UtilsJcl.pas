@@ -25,10 +25,10 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
+unit UtilsJcl;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit UtilsJcl;
 
 interface
 

@@ -1,6 +1,6 @@
-{$I jvcl.inc}
-
 unit GenerateUtils;
+
+{$I jvcl.inc}
 
 interface
 
@@ -174,6 +174,7 @@ type
 var
   GCallBack          : TGenerateCallBack;
   GPackagesLocation  : string;
+  GIncDefFileName    : string;
   GIncFileName       : string;
   GPrefix            : string;
   GNoLibSuffixPrefix : string;
@@ -508,6 +509,7 @@ begin
       AliasList  := TAliasList.Create(Node.Items.ItemNamed['aliases']);
       ClxReplacementList  := TClxReplacementList.Create(Node.Items.ItemNamed['ClxReplacements']);
 
+      GIncDefFileName   := Node.Properties.ItemNamed['incdeffile'].Value;
       GIncFileName      := Node.Properties.ItemNamed['IncFile'].Value;
       GPackagesLocation := Node.Properties.ItemNamed['packages'].Value;
       GFormat           := Node.Properties.ItemNamed['format'].Value;
@@ -1493,6 +1495,36 @@ begin
   IsBinaryCache.AddObject(FileName, TObject(Result));
 end;
 
+// loads the .inc file into Defines and returns True if the Filename contains
+// a "%t"
+function LoadDefines(const Target: string; Filename: string): Boolean;
+var
+  incfile : TStringList;
+  ps: Integer;
+begin
+  Result := False;
+  FreeAndNil(DefinesList);
+
+  // read the include file for this target or the default file if jvclxx.inc does not exist
+  incfile := TStringList.Create;
+  try
+    ps := Pos('%t', Filename);
+    if ps > 0 then
+    begin
+      Delete(Filename, ps, 2);
+      Insert(LowerCase(Target), Filename, ps);
+      if not FileExists(Filename) then
+        Filename := GIncDefFileName;
+      Result := True;
+    end;
+    if FileExists(Filename) then
+      incfile.LoadFromFile(Filename);
+    DefinesList := TDefinesList.Create(incfile);
+  finally
+    incfile.free;
+  end;
+end;
+
 function Generate(packages : TStrings;
                    targets : TStrings;
                    callback : TGenerateCallback;
@@ -1514,7 +1546,7 @@ var
   template, templatePers : TStringList;
   persoTarget : string;
   target : string;
-  incfile : TStringList;
+  GenericIncFile: Boolean;
 
 begin
   Result := True;
@@ -1535,18 +1567,9 @@ begin
   // Empty the binary file cache
   IsBinaryCache.Clear;
 
-  FreeAndNil(DefinesList);
   if incFileName = '' then
     incFileName := GIncFileName;
-  // read the include file
-  incfile := TStringList.Create;
-  try
-    if FileExists(IncFileName) then
-      incfile.LoadFromFile(IncFileName);
-    DefinesList := TDefinesList.Create(incfile);
-  finally
-    incfile.free;
-  end;
+  GenericIncFile := LoadDefines('', incFileName);
 
   GCallBack := CallBack;
 
@@ -1569,6 +1592,9 @@ begin
   for i := 0 to targets.Count - 1 do
   begin
     target := targets[i];
+    if GenericIncFile then
+      LoadDefines(target, incFileName);
+
     SendMsg(SysUtils.Format('Generating packages for %s', [target]));
     // find all template files for that target
     if FindFirst(path+TargetToDir(target)+PathSeparator+'template.*', 0, rec) = 0 then
