@@ -1,9 +1,11 @@
 ##Package: StdCtrls
-##Status: Locked by Remko Bonte
+##Status: Completed
+##Skip: TJvCalcState
+##Skip: TJvCalculatorForm
 ----------------------------------------------------------------------------------------------------
 @@JvCalc.pas
 Summary
-  Contains the TJvCalc component.
+  Contains the TJvCalculator component.
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Fedor Koshevnikov, Igor Pavluk and Serge Korolev
@@ -13,204 +15,161 @@ Author
 Summary
   Creates a calculator dialog.
 Description
-  Write here a description
+  Call CreateCalculatorForm to create a calculator dialog that will be used several times in an
+  application.
+Note
+  CreateCalculatorForm does not display the dialog form. The application must display this form when it
+  is needed by calling its ShowModal method.
 Parameters
-  AOwner       - Description for this parameter
-  AHelpContext - Description for this parameter
+  AOwner       - The owner of the dialog.
+  AHelpContext - Context number for online Help.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  CreatePopupCalculator, TJvCalculator
 ----------------------------------------------------------------------------------------------------
 @@CreatePopupCalculator
 <TITLE CreatePopupCalculator function>
 Summary
-  Create a calculator dialog to be used as a popup (RX lib as a specialized Edit with a popup calculator).
+  Create a calculator dialog to be used as a popup.
 Description
-  Write here a description
+  Call CreatePopupCalculator to create a calculator popup window that will be used several times in an
+  application.
+Note
+  CreatePopupCalculator does not display the dialog form. The application must display this window when it
+  is needed by calling its Show method.
 Parameters
-  AOwner    - Description for this parameter
-  ABiDiMode - Description for this parameter
+  AOwner    - The owner of the dialog.
+  ABiDiMode - The bi-directional mode for the window.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  CreateCalculatorForm, SetupPopupCalculator, TJvCalculator
 ----------------------------------------------------------------------------------------------------
 @@SetupPopupCalculator
 <TITLE SetupPopupCalculator procedure>
 Summary
-  Once a popup calculator is created, this procedure allows to set some properties (precision and beep on error).
+  Initializes a popup calculator.
 Description
-  Write here a description
+  Call SetupPopupCalculator to initialize a popup calculator.
 Parameters
-  PopupCalc    - Description for this parameter
-  APrecision   - Description for this parameter
-  ABeepOnError - Description for this parameter
+  PopupCalc    - The popup calculator to initizize.
+  APrecision   - The precision used in formatting the value in the calculator's display.
+  ABeepOnError - Specifies whether the calculator beeps when the user tries to enter an invalid character.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvCalcState
-<TITLE TJvCalcState type>
-Summary
-  Write here a summary (1 line)
-Description
-  Internal use.
-@@TJvCalcState.csFirst
-  Description for csFirst
-@@TJvCalcState.csValid
-  Description for csValid
-@@TJvCalcState.csError
-  Description for csError
+  CreatePopupCalculator, TJvCalculator.BeepOnError, TJvCalculator.Precision
 ----------------------------------------------------------------------------------------------------
 @@TJvCalculator
 <TITLEIMG TJvCalculator>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.Dialogs.Custom
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  Displays a simple calculator.
 Description
-  Rx Calculator is a floating point calculator designed to do simple operations. It is an invisible
-  component, or one that pops-up upon operation.
+  TJvCalculator displays a modal Windows dialog box for calculating values. The dialog does
+  not appear at runtime until it is activated by a call to the Execute method. When the user clicks
+  OK, the dialog closes and the calculated result is stored in the Value property.
 
-  Use the Execute method to popup the Calculator. If any errors occur on calculators, use the 
-  BeepsOnError to control beeping on errors If you prefer the classical white calculator, set the 
-  Ctl3D to false.
+  You can preview this dialog at design-time, by right-clicking the component and clicking 'Preview...'.
 ----------------------------------------------------------------------------------------------------
 @@TJvCalculator.BeepOnError
 Summary
-  Determines whether a beep is sounded when an invalid character is entered. 
+  Specifies whether the calculator beeps when the user tries to enter an invalid character.
 Description
-  If True, calculator beeps on entry errors
-  If BeepOnError is True, MessageBeep is called when an invalid character is entered or when a character
-  is entered and the field is full.
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  If BeepOnError is true (the default), the application beeps when an invalid character is entered
+  or when a character is entered and the field is full.
 ----------------------------------------------------------------------------------------------------
 @@TJvCalculator.CalcDisplay
 Summary
-  Write here a summary (1 line)
+  Represents the value that is displayed in the calculator's edit box.
 Description
-  Returns the value currently displayed as a double
+  Use the CalcDisplay property to retrieve the value that is displayed in the calculator's edit box as
+  a double.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnDisplayChange, Value
 ----------------------------------------------------------------------------------------------------
 @@TJvCalculator.Ctl3D
 Summary
-  Write here a summary (1 line)
+  Determines whether the dialog has a three-dimensional look.
 Description
-  As in the VCL (if set to false, you will get a flat style calculator).
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use Ctl3D to specify whether controls in the dialog should have a flat or beveled look.
 ----------------------------------------------------------------------------------------------------
 @@TJvCalculator.Execute
 Summary
-  Execute the calculator.
+  Displays the calculator dialog.
 Description
-  Execute the calculator. 
+  Calling Execute opens the calculator dialog. The calculation result is stored
+  in the Value property.
 Return value
-  Returns True if user click on OK button, else False.
+  Returns true if user click on the OK button, else false.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Ctl3D
 ----------------------------------------------------------------------------------------------------
 @@TJvCalculator.HelpContext
 Summary
-  Write here a summary (1 line)
+  Specifies the context number for online Help.
 Description
-  Help context if you want to add the calculator in your application help file
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The HelpContext property is an integer value that determines which Help screen appears when the
+  user requests context-sensitive online Help. If HelpContext is set to the default value of 0, the
+  dialog inherits the Help context of its parent.
 ----------------------------------------------------------------------------------------------------
 @@TJvCalculator.Memory
 Summary
-  Write here a summary (1 line)
+  Indicates the last value of the calculator memory.
 Description
-  To read the last value of the calculator memory.
-  
-  Run-time and read-only.
+  Use property Memory to read the last value of the calculator memory.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Value
 ----------------------------------------------------------------------------------------------------
 @@TJvCalculator.OnCalcKey
 Summary
   Occurs when a key is pressed.
 Description
-  Fired when a key is pressed (special key are not "seen" by this event. i.e. F1, ALT-xx ...).
-  OnCalcKey event is activated when the user presses any key.
+  Use the OnKeyPress event handler to make something happen as a result of a single character key press.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnDisplayChange
 ----------------------------------------------------------------------------------------------------
 @@TJvCalculator.OnChange
 Summary
-  Occurs each time the final value of the calculator changes.
+  Occurs when the dialog closes and the calculator's result changed.
 Description
-  Fired each time the final value of the calculator changes.
-  OnChange event is triggered when any value of the calculator is changed.
+  Write an OnClose event handler to perform special processing upon closing of the dialog and the
+  calculator's result changed.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnDisplayChange
 ----------------------------------------------------------------------------------------------------
 @@TJvCalculator.OnDisplayChange
 Summary
-  The TRxCalculator component makes a simple Calculator dialog box available for your plus a few extras
-  like memory, square root, percent, invert, and sign change.
+  Occurs when the display value in the calculator dialog may have changed.
 Description
-  Fired each time the display changes.
-  Display the Calculator dialog box by calling the Execute method. The calculation result is stored
-  in the Value property.
+  Write an OnDisplayChange event handler to respond to a change in the CalcDisplay property.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  CalcDisplay, OnChange, Value
 ----------------------------------------------------------------------------------------------------
 @@TJvCalculator.Precision
 Summary
-  Determines the precision used in formatting the value in the Calculator display.
+  Determines the precision used in formatting the value in the calculator's display.
 Description
-  Number of digit after the decimal point.
-
-Use Precision set the number of digits beyond the decimal point the value should be formatted to before rounding begins.
-The default value of Precision is 15 decimal places.
-NOTE. Precision must be greater than or equal to 2. Trying to set Precision to a value less than 2 changes the value of Precision to 2.
-
-Use Precision set the number of digits beyond the decimal point the value should be formatted to before rounding begins.
-
-The default value of Precision is 15 decimal places.
-
-NOTE. Precision must be greater than or equal to 2. Trying to set Precision to a value less than 2 changes the value of Precision to 2.
-
+  Use Precision to set the number of digits beyond the decimal point the value should be formatted to
+  before rounding begins. The default value of Precision is 15 decimal places. Precision <i>does</i>
+  affect the actual floating-point value that the calculator uses.
+Note
+  Precision must be greater than or equal to 2. Trying to set Precision to a value less than 2
+  changes the value of Precision to 2.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DisplayValue
 ----------------------------------------------------------------------------------------------------
 @@TJvCalculator.Title
 Summary
-  Determines the text that appears in the calculator dialog box's title bar.
+  Specifies the text that appears in the calculator dialog box's title bar.
 Description
-  Calculator title
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use Title to specify the text that appears in the calculator dialog box's title bar.
 ----------------------------------------------------------------------------------------------------
 @@TJvCalculator.Value
 Summary
-  Write here a summary (1 line)
+  Indicates the result of the last calculation.
 Description
-  To Set/Get the calculator value
-  
-  The Value property is used to retreive calculation results from the Calculator dialog box and to set
-  current value in the calculator's display.
+  The Value property returns the result of the last calculation done in the calculator dialog.
+
+  To make a value appear by default in the calculator dialog’s edit box, assign a value to Value in the Object
+  Inspector or in program code. Programmatic changes to Value have no effect while the dialog is active,
+  use CalcDisplay for this purpose.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvCalculatorForm
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  CalcDisplay, Memory, Precision
