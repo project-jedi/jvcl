@@ -769,6 +769,7 @@ begin
       if CanChange then
       begin
         ActivePage := tab;
+        Msg.Result := 1;
         Change;
       end;
       Exit;
@@ -924,7 +925,8 @@ begin
     for I := 0 to PageCount - 1 do
       Pages[I].TabVisible := not FHideAllTabs;
     ActivePage := SaveActivePage;
-    TabStop := not FHideAllTabs;
+    if FHideAllTabs then
+      TabStop := false;
   end;
 end;
 
