@@ -100,7 +100,7 @@ type
     property MouseStates: TJvButtonMouseStates read FStates write FStates default [];
     property ForceSameSize: Boolean read FForceSameSize write SetForceSameSize default False;
     property Pattern: TBitmap read GetPattern;
-    property Flat: Boolean read FFlat write SetFlat default True;
+    property Flat: Boolean read FFlat write SetFlat default False;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
     property HotTrackFont: TFont read FHotFont write SetHotFont;
     property HotTrackFontOptions: TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions default
@@ -229,7 +229,7 @@ begin
   FStates := [];
   SetBounds(0, 0, 40, 40);
   FBuffer := TBitmap.Create;
-  FFlat := True;
+  FFlat := False;
   FDropArrow := False;
   FForceSameSize := False;
   FHotFont := TFont.Create;
