@@ -55,7 +55,7 @@ uses
   JvQZoom, JvQBehaviorLabel, JvQArrowButton, JvQaScrollText, JvQClock,
   JvQContentScroller, JvQColorBox, JvQColorButton, JvQDice, JvQFooter,
   JvQGroupHeader, JvQHint, JvQHtControls, JvQInstallLabel, JvQItemsPanel,
-  JvQRollOut, JvQScrollPanel, JvQScrollText, JvQSpacer, JvQSpeedBar,
+  JvQRollOut, JvQScrollPanel, {JvQScrollText,} JvQSpacer, JvQSpeedBar,
   JvQSpeedbarSetupForm, JvQSwitch, JvQSplit, JvQSplitter, JvQSyncSplitter,
   JvQTransparentButton, JvQColorForm, JvQImageDrawThread, JvQWinampLabel,
   JvQComponentPanel, JvQButtons, JvQCaptionPanel, JvQScrollMax, JvQMovableBevel,
@@ -76,7 +76,7 @@ begin
   GroupDescendentsWith(TJvHint, TControl); 
 
   RegisterComponents(RsPaletteButton, [TJvTransparentButton,
-    TJvTransparentButton2, TJvArrowButton, 
+    TJvTransparentButton2, TJvArrowButton,
     TJvColorButton,  TJvOfficeColorButton, TJvOfficeColorPanel,
     TJvHTButton, TJvSpacer, TJvSwitch]);
   RegisterComponents(RsPaletteBarPanel, [TJvSpeedBar, TJvCaptionPanel,
@@ -88,11 +88,11 @@ begin
     TJvComboListBox, TJvHTListBox, TJvHTComboBox]);
   {$IFDEF USEWINDOWS}
   RegisterComponents(RsPaletteListComboTree, [TJvUninstallComboBox, TJvUninstallListBox]);
-  {$ENDIF USEWINDOWS} 
+  {$ENDIF USEWINDOWS}
 
   RegisterComponents(RsPaletteScrollerTracker, [TJvScrollMax, TJvaScrollText,
     TJvContentScroller, 
-    TJvScrollingWindow, TJvScrollText]);
+    TJvScrollingWindow{, TJvScrollText}]);
   RegisterComponents(RsPaletteSliderSplitter, [TJvSplitter, TJvxSplitter,
     TJvSyncSplitter, TJvNetscapeSplitter]);
   RegisterComponents(RsPaletteVisual, [TJvClock,
