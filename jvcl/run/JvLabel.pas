@@ -293,12 +293,11 @@ implementation
 
 uses
   SysUtils, Math, Forms,
-  JvDataProviderIntf,
-  JvConsts, JvThemes, JvJCLUtils, JvJVCLUtils;
+  JvDataProviderIntf, JvConsts, JvThemes, JvJCLUtils, JvJVCLUtils;
 
 const
-  Alignments: array[TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
-  WordWraps: array[Boolean] of Word = (0, DT_WORDBREAK);
+  Alignments: array [TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
+  WordWraps: array [Boolean] of Word = (0, DT_WORDBREAK);
 
 //=== { TJvCustomLabel } =====================================================
 
@@ -448,8 +447,8 @@ end;
 
 procedure TJvCustomLabel.DoDrawCaption(var Rect: TRect; Flags: Integer);
 const
-  EllipsisFlags: array[TJvTextEllipsis] of Integer =
-  (0, DT_WORD_ELLIPSIS, DT_PATH_ELLIPSIS, DT_END_ELLIPSIS);
+  EllipsisFlags: array [TJvTextEllipsis] of Integer =
+    (0, DT_WORD_ELLIPSIS, DT_PATH_ELLIPSIS, DT_END_ELLIPSIS);
 var
   Text: string;
   PosShadow: TShadowPosition;
@@ -491,13 +490,13 @@ begin
   Canvas.Start;
   RequiredState(Canvas, [csHandleValid, csFontValid]);
   try
-    {$ENDIF VisualCLX}
+  {$ENDIF VisualCLX}
     if Angle <> 0 then
       DrawAngleText(Rect, Flags, IsValidImage, SizeShadow, ColorToRGB(ColorShadow), PosShadow)
     else
       DrawShadowText(Canvas, PChar(Text), Length(Text), Rect, Flags,
         SizeShadow, ColorToRGB(ColorShadow), PosShadow);
-    {$IFDEF VisualCLX}
+  {$IFDEF VisualCLX}
   finally
     Canvas.Stop;
   end;
@@ -529,11 +528,10 @@ begin
 end;
 
 {$IFDEF VCL}
-
 procedure TJvCustomLabel.DrawAngleText(var Rect: TRect; Flags: Word; HasImage: Boolean;
   ShadowSize: Byte; ShadowColor: TColorRef; ShadowPos: TShadowPosition);
 var
-  Text: array[0..4096] of Char;
+  Text: array [0..4096] of Char;
   LogFont, NewLogFont: TLogFont;
   NewFont: HFont;
   TextX, TextY, ShadowX, ShadowY: Integer;
@@ -570,10 +568,10 @@ begin
   begin
     w := Rect.Right - Rect.Left;
     h := Rect.Bottom - Rect.Top;
-    TextX := Trunc(0.5 * w - 0.5 * Canvas.TextWidth(Text) * Cos(Phi) - 0.5 * Canvas.TextHeight(Text) *
-      Sin(Phi));
-    TextY := Trunc(0.5 * h - 0.5 * Canvas.TextHeight(Text) * Cos(Phi) + 0.5 * Canvas.TextWidth(Text) *
-      Sin(Phi));
+    TextX := Trunc(0.5 * w - 0.5 * Canvas.TextWidth(Text) * Cos(Phi) -
+      0.5 * Canvas.TextHeight(Text) * Sin(Phi));
+    TextY := Trunc(0.5 * h - 0.5 * Canvas.TextHeight(Text) * Cos(Phi) +
+      0.5 * Canvas.TextWidth(Text) * Sin(Phi));
   end
   else
   begin
@@ -657,7 +655,7 @@ const // (ahuser) no function known for these
   XOffsetFrame = 0;
   YOffsetFrame = 0;
 var
-  Text: array[0..4096] of Char;
+  Text: array [0..4096] of Char;
   TextX, TextY: Integer;
   Phi: Real;
   w, h: Integer;
@@ -676,10 +674,10 @@ begin
     begin
       w := Rect.Right - Rect.Left;
       h := Rect.Bottom - Rect.Top;
-      TextX := Trunc(0.5 * w - 0.5 * Canvas.TextWidth(Text) * Cos(Phi) - 0.5 * Canvas.TextHeight(Text) *
-        Sin(Phi));
-      TextY := Trunc(0.5 * h - 0.5 * Canvas.TextHeight(Text) * Cos(Phi) + 0.5 * Canvas.TextWidth(Text) *
-        Sin(Phi));
+      TextX := Trunc(0.5 * w - 0.5 * Canvas.TextWidth(Text) * Cos(Phi) -
+        0.5 * Canvas.TextHeight(Text) * Sin(Phi));
+      TextY := Trunc(0.5 * h - 0.5 * Canvas.TextHeight(Text) * Cos(Phi) +
+        0.5 * Canvas.TextWidth(Text) * Sin(Phi));
     end
     else
     begin
@@ -831,7 +829,7 @@ begin
     {$IFDEF VisualCLX}
     Canvas.Start(False);
     try
-      {$ENDIF VisualCLX}
+    {$ENDIF VisualCLX}
       if Angle = 0 then
       begin
         R := Rect;
@@ -853,7 +851,7 @@ begin
       end
       else
         DrawAngleText(Rect, DT_CALCRECT or DT_EXPANDTABS or DT_WORDBREAK or Alignments[Alignment], IsValidImage, 0, 0, spLeftTop);
-      {$IFDEF VisualCLX}
+    {$IFDEF VisualCLX}
     finally
       Canvas.Stop;
     end;
@@ -990,7 +988,7 @@ begin
   begin
     {$IFDEF JVCLThemesEnabled}
     if ThemeServices.ThemesEnabled then
-      Value := True; // themes aware Label are always transparent transparent
+      Value := True; // themes aware Labels are always transparent
     {$ENDIF JVCLThemesEnabled}
     if Value then
       ControlStyle := ControlStyle - [csOpaque]
@@ -1315,7 +1313,6 @@ procedure TJvCustomLabel.SetRoundedFrame(const Value: Integer);
 begin
   if FRoundedFrame <> Value then
   begin
-    // no negative and too hight value
     if (Value < Height div 2) and (Value >= 0) then
     begin
       FRoundedFrame := Value;
