@@ -69,7 +69,7 @@ type
     function GetStyle: TComboBoxStyle;
 {$ENDIF}
   protected
-{$IFNDEF RX_D6}
+{$IFNDEF DELPHI6_UP}
     procedure SetItems(const Value: TStrings);
 {$ELSE}
     procedure SetItems(const Value: TStrings); override;
@@ -501,7 +501,7 @@ end;
 
 procedure TJvCustomDBComboBox.SetItems(const Value: TStrings);
 begin
-{$IFDEF RX_D6}
+{$IFDEF DELPHI6_UP}
   inherited SetItems(Value);
 {$ENDIF}  
   //Items.Assign(Value);

@@ -51,7 +51,7 @@ implementation
  {$D-}
 {$ENDIF}
 
-uses SysUtils, Classes, {$IFDEF Delphi3_Up} JvxStrLEdit, {$ELSE} JvStrEdit, {$ENDIF}
+uses SysUtils, Classes, {$IFDEF Delphi3_Up} JvStrLEdit, {$ELSE} StrEdit, {$ENDIF}
   TypInfo, Forms, Controls, JvStrUtils;
 
 function THintProperty.GetAttributes: TPropertyAttributes;

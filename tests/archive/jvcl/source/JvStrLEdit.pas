@@ -36,7 +36,7 @@ uses Windows, Classes, Graphics, Forms, Controls, Buttons, Dialogs,
   {$ELSE}DsgnIntf{$ENDIF};
 
 type
-  TStrEditDlg = class(TForm)
+  TJvStrEditDlg = class(TForm)
     Memo:TMemo;
     LineCount:TLabel;
     OpenDialog:TOpenDialog;
@@ -70,7 +70,7 @@ resourcestring
 
   { TStrListEditDlg }
 
-procedure TStrEditDlg.FileOpen(Sender:TObject);
+procedure TJvStrEditDlg.FileOpen(Sender:TObject);
 begin
   with OpenDialog do
   begin
@@ -84,7 +84,7 @@ begin
   end;
 end;
 
-procedure TStrEditDlg.FileSave(Sender:TObject);
+procedure TJvStrEditDlg.FileSave(Sender:TObject);
 begin
   if SaveDialog.FileName = '' then
     SaveDialog.FileName := FFilename;
@@ -99,7 +99,7 @@ begin
   end;
 end;
 
-procedure TStrEditDlg.UpdateStatus(Sender:TObject);
+procedure TJvStrEditDlg.UpdateStatus(Sender:TObject);
 var
   Count:Integer;
 begin
@@ -110,7 +110,7 @@ begin
     LineCount.Caption := Format('%d %s', [Count, MultipleLines]);
 end;
 
-procedure TStrEditDlg.FormCreate(Sender:TObject);
+procedure TJvStrEditDlg.FormCreate(Sender:TObject);
 begin
   HelpContext := hcDStringListEditor;
   OpenDialog.HelpContext := hcDStringListLoad;
@@ -119,13 +119,13 @@ begin
   MultipleLines := 'Lines';
 end;
 
-procedure TStrEditDlg.MemoKeyDown(Sender:TObject; var Key:Word;
+procedure TJvStrEditDlg.MemoKeyDown(Sender:TObject; var Key:Word;
   Shift:TShiftState);
 begin
   if Key = VK_ESCAPE then CancelBtn.Click;
 end;
 
-procedure TStrEditDlg.HelpBtnClick(Sender:TObject);
+procedure TJvStrEditDlg.HelpBtnClick(Sender:TObject);
 begin
   Application.HelpContext(HelpContext);
 end;

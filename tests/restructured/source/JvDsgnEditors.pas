@@ -157,7 +157,7 @@ var
   Comp: TPersistent;
 //  I, Cnt: Integer;
 begin
-  with TStrEditDlg.Create(Application) do
+  with TJvStrEditDlg.Create(Application) do
   try
     Comp := GetComponent(0);
     if Comp is TComponent then
@@ -185,7 +185,7 @@ var
   Comp: TPersistent;
 //  I, Cnt: Integer;
 begin
-  with TStrEditDlg.Create(Application) do
+  with TJvStrEditDlg.Create(Application) do
   try
     Comp := GetComponent(0);
     if Comp is TComponent then

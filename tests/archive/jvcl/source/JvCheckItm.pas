@@ -114,7 +114,7 @@ implementation
  {$D-}
 {$ENDIF}
 
-uses {$IFDEF Delphi3_Up} JvxStrLEdit, {$ELSE} StrEdit, {$ENDIF} Consts, JvConst,
+uses {$IFDEF Delphi3_Up} JvStrLEdit, {$ELSE} StrEdit, {$ENDIF} Consts, JvConst,
   JvVCLUtils, JvBoxProcs;
 
 { TJvCheckItemsProperty }

@@ -99,7 +99,7 @@ implementation
 
 uses {$IFDEF WIN32} {$IFDEF Delphi3_Up} ActiveX, ComObj, ShlObj, {$ELSE} Ole2,
   OleAuto, {$ENDIF} {$ENDIF} JvDateUtil, ShellAPI, FileCtrl, Forms, JvVCLUtils,
-  JvPrgrss;
+  JvPrgrss, JvFunctions;
 
 {$IFDEF WIN32}
 
@@ -385,7 +385,7 @@ begin
     if Result then
     try
       if FBrowseKind = bfFolders then begin
-        Win32Check(SHGetPathFromIDList(ItemIDList, Temp));
+        OSCheck(SHGetPathFromIDList(ItemIDList, Temp));
         FFolderName := RemoveBackSlash(StrPas(Temp));
       end
       else begin

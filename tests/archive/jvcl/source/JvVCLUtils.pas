@@ -364,7 +364,7 @@ type
 implementation
 
 Uses SysUtils, Messages, JvMaxMin, Consts, JvConst, {$IFDEF COMPILER35_UP} SysConst, {$ENDIF}
-  {$IFDEF WIN32} CommCtrl, {$ELSE} JvStr16, {$ENDIF} JvCConst;
+  {$IFDEF WIN32} CommCtrl, {$ELSE} JvStr16, {$ENDIF} JvCConst, JvFunctions;
 
 { Exceptions }
 
@@ -961,7 +961,7 @@ begin
   SetErrorMode(ErrMode);
   if Result < HINSTANCE_ERROR then
 {$IFDEF WIN32}
-    Win32Check(False);
+    OSCheck(False);
 {$ELSE}
     raise EOutOfResources.CreateResFmt(SLoadLibError, [LibName]);
 {$ENDIF}
@@ -2121,8 +2121,8 @@ begin
   Result := 0;
   Rsrc := FindResource(Instance, ResID, RT_ANICURSOR);
   if Rsrc <> 0 then begin
-    Win32Check(GetTempPath(MAX_PATH, Path) <> 0);
-    Win32Check(GetTempFileName(Path, 'ANI', 0, FileName) <> 0);
+    OSCheck(GetTempPath(MAX_PATH, Path) <> 0);
+    OSCheck(GetTempFileName(Path, 'ANI', 0, FileName) <> 0);
     try
       Res := LoadResource(Instance, Rsrc);
       try
@@ -2660,7 +2660,7 @@ end;
 
 function CheckWin32(OK: Boolean): Boolean;
 begin
-  Result := Win32Check(Ok);
+  Result := OSCheck(Ok);
 end;
 
 {$ENDIF WIN32}
