@@ -25,6 +25,9 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Known Issues:
+  (rb) Compare property names with those of TJvSpinEdit, JvValidateEdit, for
+       example DecimalPlaces/Decimal, CheckMinValue (name indicates action?
+       maybe better: TJvValidateEdit's HasMinValue) etc.
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
@@ -588,6 +591,10 @@ begin
   if FDecimalPlaceRound then
   begin //Polaris
     DP := FDecimalPlaces;
+    { (rb) Probably: Round to the nearest, and if two are equally near, away from zero
+           Ln, Exp are slow; make more generic (why only this one?), see
+           http://www.merlyn.demon.co.uk/pas-chop.htm
+    }
     NewValue := Int(NewValue * Exp(DP * Ln(10)) + Sign(NewValue) * 0.50000001) * Exp(-DP * Ln(10));
   end;
   Result := NewValue;
