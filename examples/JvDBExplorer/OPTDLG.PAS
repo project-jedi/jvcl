@@ -49,7 +49,6 @@ type
     OKBtn: TButton;
     CancelBtn: TButton;
     ApplyBtn: TButton;
-    FormStorage: TJvFormStorage ;
     Notebook: TTabbedNotebook;
     GroupBox1: TGroupBox;
     KeepConnectBtn: TCheckBox;
@@ -60,18 +59,10 @@ type
     DateFormatEdit: TEdit;
     Label1: TLabel;
     Label2: TLabel;
-    DataSource1: TDataSource;
     Label4: TLabel;
     TimeFormatEdit: TEdit;
     Label5: TLabel;
     DateTimeFormatEdit: TEdit;
-    GroupBox4: TGroupBox;
-    FixedBtn: TRadioButton;
-    DelimitedBtn: TRadioButton;
-    Image1: TImage;
-    Label6: TLabel;
-    CharsetEdit: TJvDBLookupCombo ;
-    Label3: TLabel;
     Image2: TImage;
     Image3: TImage;
     GroupBox3: TGroupBox;
@@ -79,9 +70,6 @@ type
     Label7: TLabel;
     Label8: TLabel;
     MaxHistoryEdit: TJvValidateEdit ;
-    SQLFontBtn: TButton;
-    SQLMemo: TMemo;
-    FontDialog: TFontDialog;
     GroupBox5: TGroupBox;
     LiveQueryBtn: TCheckBox;
     AbortQueryBtn: TCheckBox;
@@ -99,11 +87,12 @@ type
     CBVendor: TCheckBox;
     Label9: TLabel;
     BufferSizeEdit: TJvValidateEdit ;
-    GroupBox6: TGroupBox;
-    ShowWarnBox: TCheckBox;
     QueryInThreadBtn: TCheckBox;
     SQLCountBtn: TCheckBox;
     UpDown: TUpDown;
+    SQLMemo: TMemo;
+    FontDialog: TFontDialog;
+    SQLFontBtn: TButton;
     procedure ApplyBtnClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure OptionsChanged(Sender: TObject);
@@ -134,10 +123,11 @@ procedure TOptionsDialog.ApplyOptions;
 begin
   AutoActivate := AutoActivateBtn.Checked;
   SystemTables := ShowSystemBtn.Checked;
-  ASCIIDelimited := DelimitedBtn.Checked;
-  ShowRestWarnings := ShowWarnBox.Checked;
+
+//  ASCIIDelimited := DelimitedBtn.Checked;
+//  ShowRestWarnings := ShowWarnBox.Checked;
   SetKeepConnections(KeepConnectBtn.Checked);
-  ASCIICharSet := CharsetEdit.Value;
+//  ASCIICharSet := CharsetEdit.Value;
   if ASCIICharSet = '' then ASCIICharSet := 'ascii';
   defFloatFormat := FloatFormatEdit.Text;
   defDateFormat := DateFormatEdit.Text;
@@ -168,16 +158,16 @@ procedure TOptionsDialog.SetOptions;
 begin
   AutoActivateBtn.Checked := AutoActivate;
   ShowSystemBtn.Checked := SystemTables;
-  DelimitedBtn.Checked := ASCIIDelimited;
-  FixedBtn.Checked := not ASCIIDelimited;
-  ShowWarnBox.Checked := ShowRestWarnings;
+//  DelimitedBtn.Checked := ASCIIDelimited;
+//  FixedBtn.Checked := not ASCIIDelimited;
+//  ShowWarnBox.Checked := ShowRestWarnings;
   KeepConnectBtn.Checked := Session.KeepConnections;
   LiveQueryBtn.Checked := LiveQueries;
   ShowTimeBtn.Checked := ShowExecTime;
   SQLCountBtn.Checked := SQLCalcCount;
   AbortQueryBtn.Checked := EnableQueryAbort;
   QueryInThreadBtn.Checked := QueryInThreads;
-  CharsetEdit.Value := ASCIICharSet;
+//  CharsetEdit.Value := ASCIICharSet;
   FloatFormatEdit.Text := defFloatFormat;
   DateFormatEdit.Text := defDateFormat;
   TimeFormatEdit.Text := defTimeFormat;
@@ -205,21 +195,23 @@ begin
     Params.WndParent := Application.MainForm.Handle;
 end;
 
+{ TODO : Fix save and restore with new TJvAppStorage implementation }
 procedure TOptionsDialog.ApplyBtnClick(Sender: TObject);
-var
-  Ini: TIniFile;
+//!!! var
+//!!!  Ini: TIniFile;
 begin
   if ApplyBtn.Enabled then begin
     ApplyOptions;
     if (Application.MainForm <> nil) then begin
       TDBExplorerMainForm(Application.MainForm).ApplyOptions;
-//!!!      Ini := TIniFile.Create(
-//!!!        TDBExplorerMainForm(Application.MainForm).FormPlacement.IniFileName);
+{!!!    Ini := TIniFile.Create(
+        TDBExplorerMainForm(Application.MainForm).FormPlacement.AppStorage.Path);
       try
         SaveOptions(Ini);
       finally
         Ini.Free;
       end;
+      }
     end;
     ApplyBtn.Enabled := False;
   end;

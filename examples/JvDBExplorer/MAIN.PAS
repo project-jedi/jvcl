@@ -481,11 +481,13 @@ begin
   ShowAbout;
 end;
 
+{ TODO : Fix save and restore with new TJvAppStorage implementation }
 procedure TDBExplorerMainForm.FormPlacementSavePlacement(Sender: TObject);
 begin
 //  SaveOptions(FormPlacement.IniFile);
 end;
 
+{ TODO : Fix save and restore with new TJvAppStorage implementation }
 procedure TDBExplorerMainForm.FormPlacementRestorePlacement(Sender: TObject);
 begin
 //  LoadOptions(FormPlacement.IniFile);

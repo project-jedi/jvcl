@@ -18,7 +18,9 @@ object frmMain: TfrmMain
   object Splitter1: TSplitter
     Left = 409
     Top = 0
+    Width = 3
     Height = 457
+    Cursor = crHSplit
     AutoSnap = False
     MinSize = 100
   end
@@ -1719,6 +1721,7 @@ object frmMain: TfrmMain
       Max = 32767
       Position = 48
       TabOrder = 2
+      Wrap = False
       OnClick = udItemHeightClick
     end
     object cbDrawStyle: TComboBox
@@ -1749,9 +1752,11 @@ object frmMain: TfrmMain
       Width = 15
       Height = 21
       Associate = edButtonWidth
+      Min = 0
       Max = 32767
       Position = 26
       TabOrder = 4
+      Wrap = False
       OnClick = udButtonWidthClick
     end
     object btnLoadText: TButton
@@ -1786,9 +1791,11 @@ object frmMain: TfrmMain
       Width = 15
       Height = 21
       Associate = edColumns
+      Min = 0
       Max = 32767
       Position = 26
       TabOrder = 12
+      Wrap = False
       OnClick = udColumnsClick
     end
     object chkInsert: TCheckBox
