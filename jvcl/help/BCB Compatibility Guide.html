@@ -31,6 +31,13 @@ this error is still not found but in the meantime, use LongWord instead.</li>
 instead.</li>
   <li><b>Do not declare class methods as abstract.</b> Use virtual
 instead and provide an empty implementation</li>
+  <li><span style="font-weight: bold;">Do not declare a property of
+array type.</span> This is not supported, find another way to achieve
+the same functionnality. This is different from an indexed property, a
+property of array type is something like that: <span
+ style="font-style: italic;">property MyProp: TMyArray</span> with <span
+ style="font-style: italic;">TMyArray = array [0..n] of char</span>.<br>
+  </li>
   <li><b>Do not use WEAKPACKAGEUNIT if you can avoid it</b>. This will
 in some cases cause a linker error, especially if the unit contains
 constants, resourcestrings and/or global variables.</li>
