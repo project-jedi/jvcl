@@ -32,7 +32,7 @@ unit JvDSADialogs;
 interface
 
 uses
-  Classes, Contnrs, Controls, Dialogs, Forms, Graphics, SysUtils, Windows,
+  Classes, Contnrs, Controls, Dialogs, ExtCtrls, Forms, Graphics, SysUtils, Windows,
   JclBase, JvComponent, JvTypes;
 
 type
@@ -220,73 +220,80 @@ const
   mbNone = TMsgDlgBtn(-1);
   mbDefault = TMsgDlgBtn(-2);
 
-procedure ShowMessage(const Msg: string; const Center: TDlgCenterKind = dckScreen);
+procedure ShowMessage(const Msg: string; const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0);
 procedure ShowMessageFmt(const Msg: string; const Params: array of const;
-  const Center: TDlgCenterKind = dckScreen);
+  const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0);
 
 function MessageDlg(const Msg: string; const DlgType: TMsgDlgType;
   const Buttons: TMsgDlgButtons; const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen;
-  const DefaultButton: TMsgDlgBtn = mbDefault; const CancelButton: TMsgDlgBtn = mbDefault;
+  const Timeout: Integer = 0; const DefaultButton: TMsgDlgBtn = mbDefault;
+  const CancelButton: TMsgDlgBtn = mbDefault;
   const HelpButton: TMsgDlgBtn = mbHelp): TModalResult; overload;
 function MessageDlg(const Caption, Msg: string; const DlgType: TMsgDlgType;
   const Buttons: TMsgDlgButtons; const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen;
-  const DefaultButton: TMsgDlgBtn = mbDefault; const CancelButton: TMsgDlgBtn = mbDefault;
+  const Timeout: Integer = 0; const DefaultButton: TMsgDlgBtn = mbDefault;
+  const CancelButton: TMsgDlgBtn = mbDefault;
   const HelpButton: TMsgDlgBtn = mbHelp): TModalResult; overload;
 function MessageDlg(const Caption, Msg: string; const Picture: TGraphic;
   const Buttons: TMsgDlgButtons; const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen;
-  const DefaultButton: TMsgDlgBtn = mbDefault;
+  const Timeout: Integer = 0; const DefaultButton: TMsgDlgBtn = mbDefault;
   const CancelButton: TMsgDlgBtn = mbDefault;
   const HelpButton: TMsgDlgBtn = mbHelp): TModalResult; overload;
 
 function MessageDlgEx(const Msg: string; const DlgType: TMsgDlgType;
   const Buttons: array of string; const Results: array of Integer; const HelpCtx: Longint;
-  const Center: TDlgCenterKind = dckScreen; const DefaultButton: Integer = 0;
-  const CancelButton: Integer = 1; const HelpButton: Integer = -1): TModalResult; overload;
+  const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0;
+  const DefaultButton: Integer = 0; const CancelButton: Integer = 1;
+  const HelpButton: Integer = -1): TModalResult; overload;
 function MessageDlgEx(const Caption, Msg: string; const DlgType: TMsgDlgType;
   const Buttons: array of string; const Results: array of Integer; const HelpCtx: Longint;
-  const Center: TDlgCenterKind = dckScreen; const DefaultButton: Integer = 0;
-  const CancelButton: Integer = 1; const HelpButton: Integer = -1): TModalResult; overload;
+  const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0;
+  const DefaultButton: Integer = 0; const CancelButton: Integer = 1;
+  const HelpButton: Integer = -1): TModalResult; overload;
 function MessageDlgEx(const Caption, Msg: string; const Picture: TGraphic;
   const Buttons: array of string; const Results: array of Integer; const HelpCtx: Longint;
-  const Center: TDlgCenterKind = dckScreen; const DefaultButton: Integer = 0;
-  const CancelButton: Integer = 1; const HelpButton: Integer = -1): TModalResult; overload;
+  const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0;
+  const DefaultButton: Integer = 0; const CancelButton: Integer = 1;
+  const HelpButton: Integer = -1): TModalResult; overload;
 
 //--------------------------------------------------------------------------------------------------
 // "Don't Show Again" (DSA) dialogs
 //--------------------------------------------------------------------------------------------------
 
 procedure DSAShowMessage(const DlgID: Integer; const Msg: string;
-  const Center: TDlgCenterKind = dckScreen);
+  const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0);
 procedure DSAShowMessageFmt(const DlgID: Integer; const Msg: string; const Params: array of const;
-  const Center: TDlgCenterKind = dckScreen);
+  const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0);
 
 function DSAMessageDlg(const DlgID: Integer; const Msg: string; const DlgType: TMsgDlgType;
   const Buttons: TMsgDlgButtons; const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen;
-  const DefaultButton: TMsgDlgBtn = mbDefault; const CancelButton: TMsgDlgBtn = mbDefault;
+  const Timeout: Integer = 0; const DefaultButton: TMsgDlgBtn = mbDefault;
+  const CancelButton: TMsgDlgBtn = mbDefault;
   const HelpButton: TMsgDlgBtn = mbHelp): TModalResult; overload;
 function DSAMessageDlg(const DlgID: Integer; const Caption, Msg: string;
   const DlgType: TMsgDlgType; const Buttons: TMsgDlgButtons;
-  const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen;
+  const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0;
   const DefaultButton: TMsgDlgBtn = mbDefault; const CancelButton: TMsgDlgBtn = mbDefault;
   const HelpButton: TMsgDlgBtn = mbHelp): TModalResult; overload;
 function DSAMessageDlg(const DlgID: Integer; const Caption, Msg: string; const Picture: TGraphic;
   const Buttons: TMsgDlgButtons; const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen;
-  const DefaultButton: TMsgDlgBtn = mbDefault; const CancelButton: TMsgDlgBtn = mbDefault;
+  const Timeout: Integer = 0; const DefaultButton: TMsgDlgBtn = mbDefault;
+  const CancelButton: TMsgDlgBtn = mbDefault;
   const HelpButton: TMsgDlgBtn = mbHelp): TModalResult; overload;
 
 function DSAMessageDlgEx(const DlgID: Integer; const Msg: string; const DlgType: TMsgDlgType;
   const Buttons: array of string; const Results: array of Integer;
-  const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen;
+  const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0;
   const DefaultButton: Integer = 0; const CancelButton: Integer = 1;
   const HelpButton: Integer = -1): Integer; overload;
 function DSAMessageDlgEx(const DlgID: Integer; const Caption, Msg: string;
   const DlgType: TMsgDlgType; const Buttons: array of string;
   const Results: array of Integer; const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen;
-  const DefaultButton: Integer = 0; const CancelButton: Integer = 1;
+  const Timeout: Integer = 0; const DefaultButton: Integer = 0; const CancelButton: Integer = 1;
   const HelpButton: Integer = -1): TModalResult; overload;
 function DSAMessageDlgEx(const DlgID: Integer; const Caption, Msg: string; const Picture: TGraphic;
   const Buttons: array of string; const Results: array of Integer;
-  const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen;
+  const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0;
   const DefaultButton: Integer = 0; const CancelButton: Integer = 1;
   const HelpButton: Integer = -1): Integer; overload;
 
@@ -339,6 +346,7 @@ type
   EJvDSADialog = class(EJVCLException);
 
   TJvDSADataEvent = procedure(Sender: TObject; const DSAInfo: TDSARegItem; const Storage: TDSAStorage) of object;
+  TJvDSAAutoCloseEvent = procedure(Sender: TObject; var Handled: Boolean) of object;
 
   TJvDSADialog = class(TJvComponent)
   private
@@ -349,9 +357,19 @@ type
     FOnApplyKeys: TJvDSADataEvent;
     FOrgOwner: TComponent;
     FOrgShowModalPtr: Pointer;
+    FTimeout: Integer;
+    FTimer: TTimer;
+    FTimerCount: Integer;
+    FOnCountdown: TNotifyEvent;
+    FOnAutoClose: TJvDSAAutoCloseEvent;
   protected
+    procedure AutoClose;
+    procedure AfterShow; virtual;
     procedure ApplySavedState; virtual;
+    procedure BeforeShow; virtual;
     procedure DoApplyKeys(const Storage: TDSAStorage; const DSAInfo: TDSARegItem); virtual;
+    function DoAutoClose: Boolean;
+    procedure DoCountDown;
     procedure DoUpdateKeys(const Storage: TDSAStorage; const DSAInfo: TDSARegItem); virtual;
     function GetDSAStateInternal(out ModalResult: Integer): Boolean;
     function GetOrgOwner: TComponent;
@@ -364,6 +382,7 @@ type
     procedure SetDialogID(Value: Integer); virtual;
     procedure SetOrgOwner(Value: TComponent);
     procedure SetOrgShowModalPtr(Value: Pointer);
+    procedure TimerEvent(Sender: TObject);
     procedure UpdateDSAState; virtual;
 
     property OrgOwner: TComponent read GetOrgOwner write SetOrgOwner;
@@ -375,18 +394,23 @@ type
     function GetModalResult: Integer; virtual;
     function IsDSAChecked: Boolean; virtual;
     procedure Loaded; override;
+    procedure CancelCountdown; virtual;
+    function SecondsLeft: Integer;
   published
+    property Timeout: Integer read FTimeout write FTimeout;
     property CheckControl: TWinControl read FCheckControl write SetCheckControl;
     property DialogID: Integer read FDialogID write SetDialogID;
     property IgnoreDSAChkMrkTxt: Boolean read FIgnoreDSAChkMrkTxt write FIgnoreDSAChkMrkTxt;
     property OnApplyKeys: TJvDSADataEvent read FOnApplyKeys write FOnApplyKeys;
     property OnUpdateKeys: TJvDSADataEvent read FOnUpdateKeys write FOnUpdateKeys;
+    property OnCountdown: TNotifyEvent read FOnCountdown write FOnCountdown;
+    property OnAutoClose: TJvDSAAutoCloseEvent read FOnAutoClose write FOnAutoClose;
   end;
 
 implementation
 
 uses
-  Consts, ExtCtrls, StdCtrls, Math, TypInfo,
+  Consts, StdCtrls, Math, TypInfo,
   JclRegistry, JclSysUtils;
 
 {$IFNDEF DELPHI6_UP}
@@ -422,6 +446,9 @@ resourcestring
   sDialogIDChangeOnlyInDesign = 'The dialog ID can only be changed at design time.';
   sOnlyAllowedOnForms = 'TJvDSADialog is only allowed on forms.';
   sAlreadyDSADialog = 'The form already has a TJvDSADialog component.';
+  sCntdwnText = 'This dialog is closing in %d %s.';
+  sCntdwnSecText = 'second';
+  sCntdwnSecsText = 'seconds';
 
 //--------------------------------------------------------------------------------------------------
 //  CheckMarkTexts
@@ -453,15 +480,24 @@ end;
 type
   TDSAMessageForm = class(TForm)
   private
+    FTimeout: Integer;
+    FTimer: TTimer;
+    FCountdown: TLabel;
   protected
     procedure CustomKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure CustomMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X,
+      Y: Integer);
     procedure CustomShow(Sender: TObject);  
     procedure HelpButtonClick(Sender: TObject);
+    procedure TimerEvent(Sender: TObject);
     procedure WriteToClipBoard(Text: String);
     function GetFormText: String;
+    function TimeoutUnit(Secs: Integer): string;
+    procedure CancelAutoClose;
   public
     constructor CreateNew(AOwner: TComponent); reintroduce;
     function IsDSAChecked: Boolean;
+    property Timeout: Integer read FTimeout write FTimeout;
   end;
 
 constructor TDSAMessageForm.CreateNew(AOwner: TComponent);
@@ -472,10 +508,15 @@ begin
   NonClientMetrics.cbSize := sizeof(NonClientMetrics);
   if SystemParametersInfo(SPI_GETNONCLIENTMETRICS, 0, @NonClientMetrics, 0) then
     Font.Handle := CreateFontIndirect(NonClientMetrics.lfMessageFont);
+  FTimer := TTimer.Create(Self);
+  FTimer.Enabled := False;
+  FTimer.Interval := 1000;
+  FTimer.OnTimer := TimerEvent;
 end;
 
 procedure TDSAMessageForm.CustomKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
+  CancelAutoClose;
   if (Shift = [ssCtrl]) and (Key = Word('C')) then
   begin
     SysUtils.Beep;
@@ -483,10 +524,18 @@ begin
   end;
 end;
 
+procedure TDSAMessageForm.CustomMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
+begin
+  CancelAutoClose;
+end;
+
 procedure TDSAMessageForm.CustomShow(Sender: TObject);
 var
   I: Integer;
 begin
+  if Timeout <> 0 then
+    FTimer.Enabled := True;
   for I := 0 to ComponentCount - 1 do
   begin
     if (Components[I] is TButton) and (Components[I] as TButton).Default then
@@ -495,11 +544,40 @@ begin
       Break;
     end;
   end;
+  FCountdown := TLabel(FindComponent('Countdown'));
 end;
 
 procedure TDSAMessageForm.HelpButtonClick(Sender: TObject);
 begin
+  CancelAutoClose;
   Application.HelpContext(HelpContext);
+end;
+
+procedure TDSAMessageForm.TimerEvent(Sender: TObject);
+var
+  I: Integer;
+begin
+  if FTimer.Enabled then
+  begin
+    Dec(FTimeout);
+    if FTimeout = 0 then
+    begin
+      FTimer.Enabled := False;
+      for I := 0 to ComponentCount - 1 do
+      begin
+        if (Components[I] is TButton) and (Components[I] as TButton).Default then
+        begin
+          (Components[I] as TButton).Click;
+          Exit;
+        end;
+      end;
+      // No default button found; just close the form
+      Close;
+    end
+    else
+    if FCountdown <> nil then
+      FCountdown.Caption := Format(sCntdwnText, [Timeout, TimeoutUnit(Timeout)]);
+  end;
 end;
 
 procedure TDSAMessageForm.WriteToClipBoard(Text: String);
@@ -551,6 +629,20 @@ begin
     CrLf, DividerLine]);
 end;
 
+function TDSAMessageForm.TimeoutUnit(Secs: Integer): string;
+begin
+  if Secs <> 1 then
+    Result := sCntdwnSecsText
+  else
+    Result := sCntdwnSecText;
+end;
+
+procedure TDSAMessageForm.CancelAutoClose;
+begin
+  FTimer.Enabled := False;
+  FreeAndNil(FCountdown);
+end;
+
 function TDSAMessageForm.IsDSAChecked: Boolean;
 var
   I: Integer;
@@ -579,7 +671,7 @@ end;
 
 function CreateDSAMessageForm(const ACaption, Msg: string; const APicture: TGraphic;
   const Buttons: array of string; const Results: array of Integer; const HelpCtx: Integer;
-  const CheckCaption: string; const Center: TDlgCenterKind = dckScreen;
+  const CheckCaption: string; const Center: TDlgCenterKind = dckScreen; const ATimeout: Integer = 0;
   const DefaultButton: Integer = 0; const CancelButton: Integer = 1;
   HelpButton: Integer = -1): TDSAMessageForm;
 const
@@ -596,6 +688,7 @@ var
   ButtonHeight, ButtonSpacing, ButtonCount, ButtonGroupWidth,
   IconTextWidth, IconTextHeight, X, ALeft: Integer;
   ChkTextWidth: Integer;
+  TimeoutTextWidth: Integer;
   IconID: PChar;
   TempRect, TextRect: TRect;
   I: Integer;
@@ -643,12 +736,14 @@ begin
       KeyPreview := True;
       OnKeyDown := CustomKeyDown;
       OnShow := CustomShow;
+      OnMouseDown := CustomMouseDown;
       DialogUnits := GetAveCharSize(Canvas);
       HorzMargin := MulDiv(mcHorzMargin, DialogUnits.X, 4);
       VertMargin := MulDiv(mcVertMargin, DialogUnits.Y, 8);
       HorzSpacing := MulDiv(mcHorzSpacing, DialogUnits.X, 4);
       VertSpacing := MulDiv(mcVertSpacing, DialogUnits.Y, 8);
       ButtonWidth := MulDiv(mcButtonWidth, DialogUnits.X, 4);
+      Timeout := Abs(ATimeout);
       for I := Low(Buttons) to High(Buttons) do
       begin
         TextRect := Rect(0,0,0,0);
@@ -679,6 +774,17 @@ begin
       end
       else
         ChkTextWidth := 0;
+      if ATimeout > 0 then
+      begin
+        SetRect(TempRect, 0, 0, Screen.Width div 2, 0);
+        DrawText(Canvas.Handle, PChar(Format(sCntdwnText, [Timeout, TimeoutUnit(Timeout)])),
+          Length(Format(sCntdwnText, [Timeout, TimeoutUnit(Timeout)])) + 1, TempRect,
+          DT_EXPANDTABS or DT_CALCRECT or DT_WORDBREAK or
+          DrawTextBiDiModeFlagsReadingOnly);
+        TimeoutTextWidth := TempRect.Right;
+      end
+      else
+        TimeoutTextWidth := 0;
       if APicture <> nil then
       begin
         Inc(IconTextWidth, APicture.Width + HorzSpacing);
@@ -689,10 +795,12 @@ begin
       if ButtonCount <> 0 then
         ButtonGroupWidth := ButtonWidth * ButtonCount +
           ButtonSpacing * (ButtonCount - 1);
-      ClientWidth := Max(17 + ChkTextWidth, Max(IconTextWidth, ButtonGroupWidth)) + HorzMargin * 2;
+      ClientWidth := MAx(TimeoutTextWidth, Max(17 + ChkTextWidth, Max(IconTextWidth, ButtonGroupWidth))) + HorzMargin * 2;
       ClientHeight := IconTextHeight + ButtonHeight + VertSpacing * 2 + VertMargin;
       if CheckCaption <> '' then
         Result.ClientHeight := Result.ClientHeight + VertMargin + 17;
+      if ATimeout > 0 then
+        Result.ClientHeight := Result.CLientHeight + VertMargin + 13;
       Left := (CenterParWidth div 2) - (Width div 2) + CenterParLeft;
       Top := (CenterParHeight div 2) - (Height div 2) + CenterParTop;
       if ACaption <> '' then
@@ -747,6 +855,20 @@ begin
           Caption := CheckCaption;
           SetBounds(HorzMargin, IconTextHeight + VertMargin + VertSpacing * 2 + ButtonHeight,
             Result.ClientWidth - 2 * HorzMargin, Height);
+        end;
+      if ATimeout > 0 then
+        with TLabel.Create(Result) do
+        begin
+          Name := 'Countdown';
+          Parent := Result;
+          BiDiMode := Result.BiDiMode;
+          Caption := Format(sCntdwnText, [Timeout, TimeoutUnit(Timeout)]);
+          if CheckCaption = '' then
+            SetBounds(HorzMargin, IconTextHeight + VertMargin + VertSpacing * 2 + ButtonHeight,
+              Result.ClientWidth - 2 * HorzMargin, Height)
+          else
+            SetBounds(HorzMargin, IconTextHeight + 2 * VertMargin + VertSpacing * 2 + ButtonHeight +
+              17, Result.ClientWidth - 2 * HorzMargin, Height);
         end;
     end;
   except
@@ -1492,43 +1614,43 @@ end;
 // MessageDlg replacements and extensions
 //--------------------------------------------------------------------------------------------------
 
-procedure ShowMessage(const Msg: string; const Center: TDlgCenterKind = dckScreen);
+procedure ShowMessage(const Msg: string; const Center: TDlgCenterKind; const Timeout: Integer);
 begin
-  MessageDlg(Msg, mtCustom, [mbOk], 0, Center);
+  MessageDlg(Msg, mtCustom, [mbOk], 0, Center, Timeout);
 end;
 
 procedure ShowMessageFmt(const Msg: string; const Params: array of const;
-  const Center: TDlgCenterKind = dckScreen);
+  const Center: TDlgCenterKind; const Timeout: Integer);
 begin
-  MessageDlg(Format(Msg, Params), mtCustom, [mbOk], 0, Center);
+  MessageDlg(Format(Msg, Params), mtCustom, [mbOk], 0, Center, Timeout);
 end;
 
 function MessageDlg(const Msg: string; const DlgType: TMsgDlgType; const Buttons: TMsgDlgButtons;
-  const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen;
-  const DefaultButton: TMsgDlgBtn = mbDefault; const CancelButton: TMsgDlgBtn = mbDefault;
-  const HelpButton: TMsgDlgBtn = mbHelp): TModalResult;
+  const HelpCtx: Longint; const Center: TDlgCenterKind; const Timeout: Integer;
+  const DefaultButton: TMsgDlgBtn; const CancelButton: TMsgDlgBtn;
+  const HelpButton: TMsgDlgBtn): TModalResult;
 var
   TmpPic: TGraphic;
 begin
   TmpPic := DlgPic(DlgType);
   try
-    Result := MessageDlg(DlgCaption(DlgType), Msg, TmpPic, Buttons, HelpCtx, Center, DefaultButton,
-      CancelButton, HelpButton);
+    Result := MessageDlg(DlgCaption(DlgType), Msg, TmpPic, Buttons, HelpCtx, Center, Timeout,
+      DefaultButton, CancelButton, HelpButton);
   finally
     TmpPic.Free;
   end;
 end;
 
 function MessageDlg(const Caption, Msg: string; const DlgType: TMsgDlgType;
-  const Buttons: TMsgDlgButtons; const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen;
-  const DefaultButton: TMsgDlgBtn = mbDefault;
-  const CancelButton: TMsgDlgBtn = mbDefault; const HelpButton: TMsgDlgBtn = mbHelp): TModalResult;
+  const Buttons: TMsgDlgButtons; const HelpCtx: Longint; const Center: TDlgCenterKind;
+  const Timeout: Integer; const DefaultButton: TMsgDlgBtn; const CancelButton: TMsgDlgBtn;
+  const HelpButton: TMsgDlgBtn): TModalResult;
 var
   TmpPic: TGraphic;
 begin
   TmpPic := DlgPic(DlgType);
   try
-    Result := MessageDlg(Caption, Msg, TmpPic, Buttons, HelpCtx, Center, DefaultButton,
+    Result := MessageDlg(Caption, Msg, TmpPic, Buttons, HelpCtx, Center, Timeout, DefaultButton,
       CancelButton, HelpButton);
   finally
     TmpPic.Free;
@@ -1536,9 +1658,9 @@ begin
 end;
 
 function MessageDlg(const Caption, Msg: string; const Picture: TGraphic;
-  const Buttons: TMsgDlgButtons; const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen;
-  const DefaultButton: TMsgDlgBtn = mbDefault; const CancelButton: TMsgDlgBtn = mbDefault;
-  const HelpButton: TMsgDlgBtn = mbHelp): TModalResult;
+  const Buttons: TMsgDlgButtons; const HelpCtx: Longint; const Center: TDlgCenterKind;
+  const Timeout: Integer; const DefaultButton: TMsgDlgBtn; const CancelButton: TMsgDlgBtn;
+  const HelpButton: TMsgDlgBtn): TModalResult;
 var
   DefBtn: TMsgDlgBtn;
   CanBtn: TMsgDlgBtn;
@@ -1570,21 +1692,21 @@ begin
     CanBtn := CancelButton;
   BtnResults := DlgButtonResults(Buttons);
   Result := MessageDlgEx(Caption, Msg, Picture, DlgButtonCaptions(Buttons),
-    BtnResults, HelpCtx, Center, ButtonIndex(BtnResults, DefBtn), ButtonIndex(BtnResults, CanBtn),
-    ButtonIndex(BtnResults, HelpButton));
+    BtnResults, HelpCtx, Center, Timeout, ButtonIndex(BtnResults, DefBtn),
+    ButtonIndex(BtnResults, CanBtn), ButtonIndex(BtnResults, HelpButton));
 end;
 
 function MessageDlgEx(const Msg: string; const DlgType: TMsgDlgType;
   const Buttons: array of string; const Results: array of Integer; const HelpCtx: Longint;
-  const Center: TDlgCenterKind = dckScreen; const DefaultButton: Integer = 0;
-  const CancelButton: Integer = 1; const HelpButton: Integer = -1): TModalResult;
+  const Center: TDlgCenterKind; const Timeout: Integer; const DefaultButton: Integer;
+  const CancelButton: Integer; const HelpButton: Integer): TModalResult;
 var
   TmpPic: TGraphic;
 begin
   TmpPic := DlgPic(DlgType);
   try
     Result := MessageDlgEx(DlgCaption(DlgType), Msg, TmpPic, Buttons, Results, HelpCtx, Center,
-      DefaultButton, CancelButton, HelpButton);
+      Timeout, DefaultButton, CancelButton, HelpButton);
   finally
     TmpPic.Free;
   end;
@@ -1592,15 +1714,15 @@ end;
 
 function MessageDlgEx(const Caption, Msg: string; const DlgType: TMsgDlgType;
   const Buttons: array of string; const Results: array of Integer; const HelpCtx: Longint;
-  const Center: TDlgCenterKind = dckScreen; const DefaultButton: Integer = 0;
-  const CancelButton: Integer = 1; const HelpButton: Integer = -1): TModalResult;
+  const Center: TDlgCenterKind; const Timeout: Integer; const DefaultButton: Integer;
+  const CancelButton: Integer; const HelpButton: Integer): TModalResult;
 var
   TmpPic: TGraphic;
 begin
   TmpPic := DlgPic(DlgType);
   try
-    Result := MessageDlgEx(Caption, Msg, TmpPic, Buttons, Results, HelpCtx, Center, DefaultButton,
-      CancelButton, HelpButton);
+    Result := MessageDlgEx(Caption, Msg, TmpPic, Buttons, Results, HelpCtx, Center, Timeout,
+      DefaultButton, CancelButton, HelpButton);
   finally
     TmpPic.Free;
   end;
@@ -1608,11 +1730,11 @@ end;
 
 function MessageDlgEx(const Caption, Msg: string; const Picture: TGraphic;
   const Buttons: array of string; const Results: array of Integer; const HelpCtx: Longint;
-  const Center: TDlgCenterKind = dckScreen; const DefaultButton: Integer = 0;
-  const CancelButton: Integer = 1; const HelpButton: Integer = -1): TModalResult;
+  const Center: TDlgCenterKind; const Timeout: Integer; const DefaultButton: Integer;
+  const CancelButton: Integer; const HelpButton: Integer): TModalResult;
 begin
   with CreateDSAMessageForm(Caption, Msg, Picture, Buttons, Results, HelpCtx, '', Center,
-    DefaultButton, CancelButton, HelpButton) do
+    Timeout, DefaultButton, CancelButton, HelpButton) do
   try
     Result := ShowModal;
   finally
@@ -1625,53 +1747,53 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure DSAShowMessage(const DlgID: Integer; const Msg: string;
-  const Center: TDlgCenterKind = dckScreen);
+  const Center: TDlgCenterKind; const Timeout: Integer);
 begin
-  DSAMessageDlg(DlgID, Msg, mtCustom, [mbOk], 0, Center);
+  DSAMessageDlg(DlgID, Msg, mtCustom, [mbOk], 0, Center, Timeout);
 end;
 
 procedure DSAShowMessageFmt(const DlgID: Integer; const Msg: string; const Params: array of const;
-  const Center: TDlgCenterKind = dckScreen);
+  const Center: TDlgCenterKind; const Timeout: Integer);
 begin
-  DSAMessageDlg(DlgID, Format(Msg, Params), mtCustom, [mbOk], 0, Center);
+  DSAMessageDlg(DlgID, Format(Msg, Params), mtCustom, [mbOk], 0, Center, Timeout);
 end;
 
 function DSAMessageDlg(const DlgID: Integer; const Msg: string; const DlgType: TMsgDlgType;
-  const Buttons: TMsgDlgButtons; const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen;
-  const DefaultButton: TMsgDlgBtn = mbDefault; const CancelButton: TMsgDlgBtn = mbDefault;
-  const HelpButton: TMsgDlgBtn = mbHelp): TModalResult;
+  const Buttons: TMsgDlgButtons; const HelpCtx: Longint; const Center: TDlgCenterKind;
+  const Timeout: Integer; const DefaultButton: TMsgDlgBtn; const CancelButton: TMsgDlgBtn;
+  const HelpButton: TMsgDlgBtn): TModalResult;
 var
   TmpPic: TGraphic;
 begin
   TmpPic := DlgPic(DlgType);
   try
     Result := DSAMessageDlg(DlgID, DlgCaption(DlgType), Msg, TmpPic, Buttons, HelpCtx, Center,
-      DefaultButton, CancelButton, HelpButton);
+      Timeout, DefaultButton, CancelButton, HelpButton);
   finally
     TmpPic.Free;
   end;
 end;
 
 function DSAMessageDlg(const DlgID: Integer; const Caption, Msg: string; const DlgType: TMsgDlgType;
-  const Buttons: TMsgDlgButtons; const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen;
-  const DefaultButton: TMsgDlgBtn = mbDefault; const CancelButton: TMsgDlgBtn = mbDefault;
-  const HelpButton: TMsgDlgBtn = mbHelp): TModalResult;
+  const Buttons: TMsgDlgButtons; const HelpCtx: Longint; const Center: TDlgCenterKind;
+  const Timeout: Integer; const DefaultButton: TMsgDlgBtn; const CancelButton: TMsgDlgBtn;
+  const HelpButton: TMsgDlgBtn): TModalResult;
 var
   TmpPic: TGraphic;
 begin
   TmpPic := DlgPic(DlgType);
   try
-    Result := DSAMessageDlg(DlgID, Caption, Msg, TmpPic, Buttons, HelpCtx, Center, DefaultButton,
-      CancelButton, HelpButton);
+    Result := DSAMessageDlg(DlgID, Caption, Msg, TmpPic, Buttons, HelpCtx, Center, Timeout,
+      DefaultButton, CancelButton, HelpButton);
   finally
     TmpPic.Free;
   end;
 end;
 
 function DSAMessageDlg(const DlgID: Integer; const Caption, Msg: string; const Picture: TGraphic;
-  const Buttons: TMsgDlgButtons; const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen;
-  const DefaultButton: TMsgDlgBtn = mbDefault; const CancelButton: TMsgDlgBtn = mbDefault;
-  const HelpButton: TMsgDlgBtn = mbHelp): TModalResult;
+  const Buttons: TMsgDlgButtons; const HelpCtx: Longint; const Center: TDlgCenterKind;
+  const Timeout: Integer; const DefaultButton: TMsgDlgBtn; const CancelButton: TMsgDlgBtn;
+  const HelpButton: TMsgDlgBtn): TModalResult;
 var
   DefBtn: TMsgDlgBtn;
   CanBtn: TMsgDlgBtn;
@@ -1703,21 +1825,21 @@ begin
     CanBtn := CancelButton;
   BtnResults := DlgButtonResults(Buttons);
   Result := DSAMessageDlgEx(DlgID, Caption, Msg, Picture, DlgButtonCaptions(Buttons),
-    BtnResults, HelpCtx, Center, ButtonIndex(BtnResults, DefBtn), ButtonIndex(BtnResults, CanBtn),
-    ButtonIndex(BtnResults, HelpButton));
+    BtnResults, HelpCtx, Center, Timeout, ButtonIndex(BtnResults, DefBtn),
+    ButtonIndex(BtnResults, CanBtn), ButtonIndex(BtnResults, HelpButton));
 end;
 
 function DSAMessageDlgEx(const DlgID: Integer; const Msg: string; const DlgType: TMsgDlgType;
   const Buttons: array of string; const Results: array of Integer; const HelpCtx: Longint;
-  const Center: TDlgCenterKind = dckScreen; const DefaultButton: Integer = 0;
-  const CancelButton: Integer = 1; const HelpButton: Integer = -1): Integer;
+  const Center: TDlgCenterKind; const Timeout: Integer; const DefaultButton: Integer;
+  const CancelButton: Integer; const HelpButton: Integer): Integer;
 var
   TmpPic: TGraphic;
 begin
   TmpPic := DlgPic(DlgType);
   try
     Result := DSAMessageDlgEx(DlgID, DlgCaption(DlgType), Msg, TmpPic, Buttons, Results, HelpCtx,
-      Center, DefaultButton, CancelButton, HelpButton);
+      Center, Timeout, DefaultButton, CancelButton, HelpButton);
   finally
     TmpPic.Free;
   end;
@@ -1725,16 +1847,15 @@ end;
 
 function DSAMessageDlgEx(const DlgID: Integer; const Caption, Msg: string;
   const DlgType: TMsgDlgType; const Buttons: array of string; const Results: array of Integer;
-  const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen;
-  const DefaultButton: Integer = 0; const CancelButton: Integer = 1;
-  const HelpButton: Integer = -1): TModalResult;
+  const HelpCtx: Longint; const Center: TDlgCenterKind; const Timeout, DefaultButton, CancelButton,
+  HelpButton: Integer): TModalResult;
 var
   TmpPic: TGraphic;
 begin
   TmpPic := DlgPic(DlgType);
   try
     Result := DSAMessageDlgEx(DlgID, Caption, Msg, TmpPic, Buttons, Results, HelpCtx, Center,
-      DefaultButton, CancelButton, HelpButton);
+      Timeout, DefaultButton, CancelButton, HelpButton);
   finally
     TmpPic.Free;
   end;
@@ -1742,8 +1863,8 @@ end;
 
 function DSAMessageDlgEx(const DlgID: Integer; const Caption, Msg: string; const Picture: TGraphic;
   const Buttons: array of string; const Results: array of Integer; const HelpCtx: Longint;
-  const Center: TDlgCenterKind = dckScreen; const DefaultButton: Integer = 0;
-  const CancelButton: Integer = 1; const HelpButton: Integer = -1): Integer;
+  const Center: TDlgCenterKind; const Timeout, DefaultButton, CancelButton,
+  HelpButton: Integer): Integer;
 var
   DSAItem: TDSARegItem;
   CheckCaption: string;
@@ -1763,7 +1884,7 @@ begin
       CheckCaption := CheckCaption + '.';
     // Create and show dialog
     with CreateDSAMessageForm(Caption, Msg, Picture, Buttons, Results, HelpCtx,
-      CheckCaption, Center, DefaultButton, CancelButton, HelpButton) do
+      CheckCaption, Center, Timeout, DefaultButton, CancelButton, HelpButton) do
     try
       Result := ShowModal;
       if IsDSAChecked then
@@ -1980,11 +2101,17 @@ begin
       SetStrProp(JvDSADialog.CheckControl, 'Caption', CheckCaption);
     end;
 
+    { Notify the JvDSADialog component that we are about to show the form (may initialize the
+      auto-close timer) }
+    JvDSADialog.BeforeShow;
     // Show the dialog by calling the original ShowModal method: setting up the method pointers.
     TMethod(ShowModalMethod).Data := Self;
     TMethod(ShowModalMethod).Code := JvDSADialog.GetOrgShowModalPtr;
     // Show the dialog by calling the original ShowModal method: make the actual call.
     Result := ShowModalMethod;
+    { Notify the JvDSADialog component that we the form has closed (may clean up the
+      auto-close timer) }
+    JvDSADialog.AfterShow;
     // Update the DSA state in storage.
     JvDSADialog.UpdateDSAState;
   end
@@ -2018,6 +2145,19 @@ begin
   inherited Destroy;
 end;
 
+procedure TJvDSADialog.AutoClose;
+begin
+  CancelCountdown;
+  if not DoAutoClose then
+    (Owner as TCustomForm).Close;
+end;
+
+procedure TJvDSADialog.AfterShow;
+begin
+  if FTimer <> nil then
+    FreeAndNil(FTimer);
+end;
+
 procedure TJvDSADialog.ApplySavedState;
 var
   ResCode: Integer;
@@ -2026,10 +2166,35 @@ begin
   TCustomForm(Owner).ModalResult := ResCode;
 end;
 
+procedure TJvDSADialog.BeforeShow;
+begin
+  if FTimeout > 0 then
+  begin
+    FTimer := TTimer.Create(Self);
+    FTimer.Enabled := False;
+    FTimer.Interval := 1000;
+    FTimer.OnTimer := TimerEvent;
+    FTimerCount := FTimeout;
+  end;
+end;
+
 procedure TJvDSADialog.DoApplyKeys(const Storage: TDSAStorage; const DSAInfo: TDSARegItem);
 begin
   if Assigned(FOnApplyKeys) then
     OnApplyKeys(Self, DSAInfo, Storage);
+end;
+
+function TJvDSADialog.DoAutoClose: Boolean;
+begin
+  Result := False;
+  if Assigned(FOnAutoClose) then
+    FOnAutoClose(Self, Result);
+end;
+
+procedure TJvDSADialog.DoCountDown;
+begin
+  if Assigned(FOnCountdown) then
+    OnCountdown(Self);
 end;
 
 procedure TJvDSADialog.DoUpdateKeys;
@@ -2122,6 +2287,15 @@ begin
   FOrgShowModalPtr := Value;
 end;
 
+procedure TJvDSADialog.TimerEvent(Sender: TObject);
+begin
+  Dec(FTimerCount);
+  if FTimerCount = 0 then
+    AutoClose
+  else
+    DoCountdown;
+end;
+
 procedure TJvDSADialog.UpdateDSAState;
 begin
   SetDSAState(DialogID, IsDSAChecked, TCustomForm(Owner).ModalResult, DoUpdateKeys);
@@ -2145,6 +2319,23 @@ begin
   inherited Loaded;
   if not (csDesigning in ComponentState) then
     FormPatch;
+end;
+
+procedure TJvDSADialog.CancelCountdown;
+begin
+  if FTimer <> nil then
+  begin
+    FTimer.Enabled := False;
+    FreeAndNil(FTimer);
+  end;
+end;
+
+function TJvDSADialog.SecondsLeft: Integer;
+begin
+  if Timeout <> 0 then
+    Result := FTimerCount
+  else
+    Result := 0;
 end;
 
 initialization
