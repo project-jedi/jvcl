@@ -1199,7 +1199,10 @@ begin
         WM_ENDSESSION:
           // (rb) Is it really necessairy to respond to WM_ENDSESSION?
           if TWMEndSession(Mesg).EndSession then
-            HideTrayIcon;
+            HideTrayIcon
+          else
+          if Active then
+            ShowTrayIcon;
         WM_TIMER:
           case TWMTimer(Mesg).TimerID of
             AnimationTimer:
@@ -1212,21 +1215,20 @@ begin
       else
         if Msg = FTaskbarRestartMsg then
         begin
-          if tisTrayIconVisible in FState then
-          begin
-            { You can test this on XP:
-                - Click Start, then click Turn Off Computer
-                - Press CTRL + Shift + Alt + Click Cancel          (all at once)
-                    this will dump explorer.exe
-                - Press CTRL + Alt + Delete
-                - Click New Task...
-                - Enter 'explorer.exe' and click OK.
-                    this will restart explorer.exe
-            }
-            // Ensure tisTrayIconVisible is not in FState:
-            HideTrayIcon;
+          { You can test this on XP:
+              - Click Start, then click Turn Off Computer
+              - Press CTRL + Shift + Alt + Click Cancel          (all at once)
+                  this will dump explorer.exe
+              - Press CTRL + Alt + Delete
+              - Click New Task...
+              - Enter 'explorer.exe' and click OK.
+                  this will restart explorer.exe
+          }
+
+          // Ensure tisTrayIconVisible is not in FState:
+          HideTrayIcon;
+          if Active then
             ShowTrayIcon;
-          end;
         end
         else
           Result := DefWindowProc(FHandle, Msg, WParam, LParam);
