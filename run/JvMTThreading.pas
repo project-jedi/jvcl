@@ -40,13 +40,15 @@ type
   TMTEvent = procedure (Thread: TMTThread) of object;
 
 {$IFDEF COMPILER5}
-  TThread = class(Classes.TThread)
+  TIntThread = class(Classes.TThread)
   public
     procedure Synchronize(Method: TThreadMethod);
   end;
+{$ELSE}
+  TIntThread = TThread;  
 {$ENDIF}
 
-  TMTInternalThread = class (TThread)
+  TMTInternalThread = class (TIntThread)
   private
     FName: string;
     FOnExecute: TNotifyEvent;
@@ -174,7 +176,7 @@ begin
         except
           SyncRequest^.ExceptionObject := ExceptObject;
         end;
-       // inform TThread.Synchronize
+       // inform TIntThread.Synchronize
         SetEvent(SyncRequest.Signal);
         SyncRequestAvailable := False;
         Result := True;
@@ -185,7 +187,7 @@ begin
   end;
 end;
 
-procedure TThread.Synchronize(Method: TThreadMethod);
+procedure TIntThread.Synchronize(Method: TThreadMethod);
 var
   SyncRequest: TSyncRequest;
 begin
