@@ -103,26 +103,24 @@ EMPTYLINE
   { QControl }
   private
     FAboutJVCL: TJVCLAboutInfo;
+    FDoubleBuffered: Boolean;
     FDragCursor: TCursor;
     FDragKind: TDragKind;
     FHintColor: TColor;
-    FSavedHintColor: TColor;
     FOnParentColorChanged: TNotifyEvent;
   protected
     procedure WndProc(var Msg: TMessage); virtual;
-    procedure MouseEnter(Control: TControl); override;
-    procedure MouseLeave(Control: TControl); override;
     procedure ColorChanged; override;
-    procedure FocusChanged(Control: TWinControl); virtual;
-    procedure FontChanged; override;
+    procedure FocusChanged; virtual;
     procedure ParentColorChanged; override;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-    property DragCursor: TCursor read FDragCursor write FDragCursor default crDefault;
+    property DragCursor: TCursor read FDragCursor write FDragCursor default crDefault; { not implemented }
     property DragKind: TDragKind read FDragKind write FDragKind  default dkDrag; { not implemented }
   public
     procedure Dispatch(var Message); override;
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
     function IsRightToLeft: Boolean;
+    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
   published
     property AboutJVCLX: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HintColor: TColor read FHintColor write FHintColor default clDefault;
@@ -135,6 +133,11 @@ EMPTYLINE
 *)
 
 (*$DEFINE JV_CONTROL_END(ClassName)
+  private
+    FSavedHintColor: TColor;
+  protected
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -156,18 +159,23 @@ EMPTYLINE
 (*$DEFINE JV_DECL_WINCUSTOMCONTROL
   { QWinCustomControl }
   private
+    FNativeKeys: TInputKeys;
     procedure OnFontChanged(Sender: TObject);
+    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
+    procedure CMFocusChanged(var Message: TMessage); message CM_FOCUSCHANGED;
+    procedure WMEraseBkGnd(var Message: TMessage); message WM_ERASEBKGND;
   protected
     procedure CreateWidget; override;
-    procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
-    function WidgetFlags: Integer; override;
     procedure CreateWnd; virtual;
-    procedure RecreateWnd;
+    procedure DoKillFocus(Wnd: HWND); dynamic;
+    procedure DoSetFocus(Wnd: HWND); dynamic;
+    procedure GotFocus; dynamic;
+    procedure LostFocus; dynamic;
+    function EraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
-    procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
-    procedure DoSetFocus(FocusedWnd: QWidgetH); dynamic;
-    procedure DoKillFocus(FocusedWnd: QWidgetH); dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    procedure RecreateWnd;
+    function WidgetFlags: Integer; override;
   public
     procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
     function ColorToRGB(Value: TColor): TColor;
@@ -281,18 +289,12 @@ EMPTYLINE
     procedure EMSetRect(var Msg: TMessage); message EM_SETRECT;
   protected
     procedure SetClipboardCommands(const Value: TJvClipboardCommands); virtual;
-    function GetReadOnly: Boolean; virtual;
-    {$IFDEF HAS_SETREADONLY}
-    procedure SetReadOnly(const Value: Boolean); override;
-    {$ELSE}
-    procedure SetReadOnly(Value: Boolean); virtual;
-    {$ENDIF HAS_SETREADONLY}
   public
-    procedure PasteFromClipboard; reintroduce; virtual;
-    procedure CopyToClipboard; reintroduce; virtual;
-    procedure Clear; reintroduce; virtual;
-    procedure CutToClipboard; reintroduce; virtual;
-    procedure Undo; reintroduce; virtual;
+    procedure PasteFromClipboard; override;
+    procedure CopyToClipboard; override;
+    procedure Clear; override;
+    procedure CutToClipboard; override;
+    procedure Undo; override;
   published
     property ClipboardCommands: TJvClipboardCommands read FClipboardCommands
       write SetClipboardCommands default [caCopy..caUndo];
@@ -367,30 +369,6 @@ EMPTYLINE
 
 (*$DEFINE JV_IMPL_CONTROL(ClassName)
 { QControl }
-procedure TJvEx##ClassName.MouseEnter(Control: TControl);
-begin
-  if FHintColor <> clDefault then
-  begin
-    FSavedHintColor := Application.HintColor;
-    Application.HintColor := FHintColor;
-  end;
-  inherited MouseEnter(Control);
-end;
-
-procedure TJvEx##ClassName.MouseLeave(Control: TControl);
-begin
-  if FHintColor <> clDefault then
-  begin
-    Application.HintColor := FSavedHintColor;
-  end;
-  inherited MouseLeave(Control);
-end;
-
-procedure TJvEx##ClassName.FocusChanged(Control: TWinControl);
-begin
-  { notification }
-end;
-
 procedure TJvEx##ClassName.FontChanged;
 begin
   Canvas.Font.Assign := Font;
@@ -455,11 +433,18 @@ end;
 
 (*$DEFINE JV_CONTROL_IMPL(ClassName)
 JV_IMPL_CONTROL_CREATE(ClassName)
+
 procedure TJvEx##ClassName.ColorChanged;
 begin
   inherited ColorChanged;
   Canvas.Brush.Color := Color;
 end;
+
+procedure TJvEx##ClassName.FocusChanged;
+begin
+  { notification }
+end;
+
 
 JV_IMPL_CONTROL(ClassName)
 JV_IMPL_CONTROL_COMMON(ClassName)
@@ -471,17 +456,33 @@ JV_IMPL_CONTROL_COMMON(ClassName)
 
 (*$DEFINE JV_IMPL_WINCUSTOMCONTROL(ClassName)
 { QWinCustomControl }
-procedure TJvEx##ClassName.DoSetFocus(FocusedWnd: QWidgetH);
+procedure TJvEx##ClassName.WMEraseBkGnd(var Message: TJvMessage);
+begin
+  Canvas.Start;
+  try
+    with Message do
+      Handled := PaintBackGround(Canvas, LParam);
+  finally
+    Canvas.Stop;
+  end;
+end;
+
+procedure TJvEx##ClassName.FocusChanged;
+begin
+  NotifyControls(CM_FOCUSCHANGED);
+end;
+
+procedure TJvEx##ClassName.GotFocus(FocusedWnd: QWidgetH);
 begin
   { notification }
 end;
 
-procedure TJvEx##ClassName.DoKillFocus(FocusedWnd: QWidgetH);
+procedure TJvEx##ClassName.LostFocus(FocusedWnd: QWidgetH);
 begin
   { notification }
 end;
 
-function TJvEx##ClassName.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvEx##ClassName.EraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -494,7 +495,7 @@ begin
     Include(ScalingFlags, sfFont);
     FFontHeight := Font.Height;
   end;
-  PostMessage(Self.Handle, CM_FONTCHANGED, 0, 0);
+  PostMessage(Self, CM_FONTCHANGED, 0, 0);
 end;
 
 procedure TJvEx##ClassName.ColorChanged;
@@ -555,11 +556,6 @@ end;
 function TJvEx##ClassName.ColorToRGB(Value: TColor): TColor;
 begin
   Result := QWindows.ColorToRGB(Value, self);
-end;
-
-procedure TJvEx##ClassName.DoGetDlgCode(var Code: TDlgCodes);
-begin
-  Result := InputKeys;
 end;
   EMPTYLINE
 *) // MACRO END WINCUSTOMCONTROL
@@ -644,31 +640,10 @@ end;
 
 (*$DEFINE JV_IMPL_EDITCONTROL(ClassName)
 { QEditControl }
-function TJvEx##ClassName.GetReadOnly: Boolean;
-begin
-  Result := inherited ReadOnly;
-end;
-
-{$IFDEF HAS_SETREADONLY}
-procedure TJvEx##ClassName.SetReadOnly(const Value: Boolean);
-begin
-  inherited SetReadOnly(Value);
-  SetClipboardCommands(FClipboardCommands);
-end;
-{$ELSE}
-procedure TJvEx##ClassName.SetReadOnly(Value: Boolean);
-begin
-  inherited ReadOnly := Value;
-  SetClipboardCommands(FClipboardCommands);
-end;
-{$ENDIF HAS_SETREADONLY}
 
 procedure TJvEx##ClassName.SetClipboardCommands(const Value: TJvClipboardCommands);
 begin
-  if ReadOnly then
-    FClipboardCommands := Value - [caCut, caPaste]
-  else
-    FClipboardCommands := Value;
+  FClipboardCommands := Value;
 end;
 
 procedure TJvEx##ClassName.Undo;
@@ -691,7 +666,8 @@ end;
 
 procedure TJvEx##ClassName.Clear;
 begin
-  inherited Clear;
+  if caClear in ClipboardCommands then
+    inherited Clear;
 end;
 
 procedure TJvEx##ClassName.PasteFromClipboard;
@@ -700,23 +676,22 @@ begin
     inherited PasteFromClipboard;
 end;
 
-procedure TJvEx##ClassName.EMGetRect(var Msg: TMessage);
+procedure TJvEx##ClassName.EMGetRect(var Msg: TJvMessage);
 begin
-  if Msg.LParam <> 0 then
-    if IsRectEmpty(FEditRect) then
-    begin
-      PRect(Msg.LParam)^ := ClientRect;
-      if Self.BorderStyle = bsSingle then
-        InflateRect(PRect(Msg.LParam)^, -2, -2);
-    end
-    else
-      PRect(Msg.LParam)^ := FEditRect;
+  if IsRectEmpty(FEditRect) then
+  begin
+    Msg.Rect := @ClientRect;
+    if Self.BorderStyle = bsSingle then
+      InflateRect(Msg.Rect , -2, -2);
+  end
+  else
+    Msg.Rect := @FEditRect;
 end;
 
-procedure TJvEx##ClassName.EMSetRect(var Msg: TMessage);
+procedure TJvEx##ClassName.EMSetRect(var Msg: TJvMessage);
 begin
-  if Msg.LParam <> 0 then
-    FEditRect := PRect(Msg.LParam)^
+  if Msg.Rect <> 0 then
+    FEditRect := Msg.Rect^;
   else
     FEditRect := ClientRect;
   Invalidate;
