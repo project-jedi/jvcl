@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-10-07
+Last Modified: 2003-10-09
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -51,10 +51,13 @@ type
     FOnDrawImage: TJvComboListDrawImageEvent;
     FOnDrawText: TJvComboListDrawTextEvent;
     FButtonWidth: integer;
+    FHotTrackCombo: boolean;
+    FLastHotTrack: integer;
     procedure SetDrawStyle(const Value: TJvComboListBoxDrawStyle);
-    function DestRect(Picture: TPicture): TRect;
+    function DestRect(Picture: TPicture; ARect: TRect): TRect;
     function GetOffset(OrigRect, ImageRect: TRect): TRect;
     procedure SetButtonWidth(const Value: integer);
+    procedure SetHotTrackCombo(const Value: boolean);
   protected
     procedure InvalidateItem(Index: integer);
     procedure DrawItem(Index: Integer; Rect: TRect;
@@ -80,6 +83,7 @@ type
     procedure Delete(Index: integer);
   published
     property ButtonWidth: integer read FButtonWidth write SetButtonWidth default 26;
+    property HotTrackCombo: boolean read FHotTrackCombo write SetHotTrackCombo default false;
     property DropdownMenu: TPopUpMenu read FDropdownMenu write FDropdownMenu;
     property DrawStyle: TJvComboListBoxDrawStyle read FDrawStyle write SetDrawStyle default dsOriginal;
     property OnDrawText: TJvComboListDrawTextEvent read FOnDrawText write FOnDrawText;
@@ -170,8 +174,15 @@ procedure TJvComboListBox.CMMouseLeave(var Msg: TMessage);
 begin
   inherited;
   if FMouseOver then
+  begin
     InvalidateItem(ItemIndex);
-  FMouseOver := false;
+    FMouseOver := false;
+  end;
+  if HotTrackCombo and (FLastHotTrack > -1) then
+  begin
+    InvalidateItem(FLastHotTrack);
+    FLastHotTrack := -1;
+  end;
 end;
 
 constructor TJvComboListBox.Create(AOwner: TComponent);
@@ -181,6 +192,7 @@ begin
   ScrollBars := ssVertical;
   FDrawStyle := dsOriginal;
   FButtonWidth := 26;
+  FLastHotTrack := -1;
 end;
 
 procedure TJvComboListBox.Delete(Index: integer);
@@ -192,15 +204,16 @@ begin
   P.Free;
 end;
 
-function TJvComboListBox.DestRect(Picture: TPicture): TRect;
+function TJvComboListBox.DestRect(Picture: TPicture; ARect: TRect): TRect;
 var
   w, h, cw, ch: Integer;
   xyaspect: Double;
+
 begin
   w := Picture.Width;
   h := Picture.Height;
-  cw := ClientWidth;
-  ch := ItemHeight;
+  cw := ARect.Right - ARect.Left;
+  ch := ARect.Bottom - ARect.Top;
   if (DrawStyle = dsStretch) or ((DrawStyle = dsProportional) and ((w > cw) or (h > ch))) then
   begin
     if (DrawStyle = dsProportional) and (w > 0) and (h > 0) then
@@ -265,95 +278,111 @@ var
   aPoints: array[0..4] of TPoint;
   TmpRect: TRect;
   S: string;
+  Pt: TPoint;
+  i: integer;
 begin
   if (Index < 0) or (Index >= Items.Count) then Exit;
-  Canvas.Brush.Color := self.Color;
-  Canvas.FillRect(Rect);
-  P := TPicture(Items.Objects[Index]);
-  if (P <> nil) and (P.Graphic <> nil) then
-  begin
-    TmpRect := Classes.Rect(0, 0, P.Graphic.Width, P.Graphic.Height);
-    if DoDrawImage(Index, P, Rect) then
+  Canvas.Lock;
+  try
+    Canvas.Brush.Color := self.Color;
+    Canvas.FillRect(Rect);
+    P := TPicture(Items.Objects[Index]);
+    if (P <> nil) and (P.Graphic <> nil) then
     begin
-      case DrawStyle of
-        dsOriginal:
-          begin
-            B := TBitmap.Create;
-            try
-              B.Assign(P.Bitmap);
-              TmpRect := GetOffset(Rect, Classes.Rect(0, 0, B.Width, B.Height));
-              B.Width := Rect.Right - Rect.Left;
-              B.Height := Rect.Bottom - Rect.Top;
-              Canvas.Draw(TmpRect.Left, TmpRect.Top, B);
-            finally
-              B.Free;
+      TmpRect := Classes.Rect(0, 0, P.Graphic.Width, P.Graphic.Height);
+      if DoDrawImage(Index, P, Rect) then
+      begin
+        case DrawStyle of
+          dsOriginal:
+            begin
+              B := TBitmap.Create;
+              try
+                B.Assign(P.Bitmap);
+                TmpRect := GetOffset(Rect, Classes.Rect(0, 0, B.Width, B.Height));
+                B.Width := Rect.Right - Rect.Left;
+                B.Height := Rect.Bottom - Rect.Top;
+                Canvas.Draw(TmpRect.Left, TmpRect.Top, B);
+              finally
+                B.Free;
+              end;
             end;
-          end;
-        dsStretch, dsProportional:
-          begin
-            TmpRect := DestRect(P);
-            OffsetRect(TmpRect, Rect.Left, Rect.Top);
-            Canvas.StretchDraw(TmpRect, P.Graphic);
-          end;
+          dsStretch, dsProportional:
+            begin
+              TmpRect := DestRect(P, Rect);
+              OffsetRect(TmpRect, Rect.Left, Rect.Top);
+              Canvas.StretchDraw(TmpRect, P.Graphic);
+            end;
+        end;
       end;
+    end
+    else
+    begin
+      Canvas.Font.Color := clWindowText;
+      TmpRect := Rect;
+      InflateRect(TmpRect, -4, -4);
+      if DoDrawText(Index, Items[Index], TmpRect) then
+        DrawText(Canvas.Handle, PChar(Items[Index]), Length(Items[Index]),
+          TmpRect, DT_WORDBREAK or DT_LEFT or DT_TOP or DT_EDITCONTROL or DT_NOPREFIX or DT_END_ELLIPSIS);
     end;
-  end
-  else
-  begin
-    Canvas.Font.Color := clWindowText;
-    TmpRect := Rect;
-    InflateRect(TmpRect, -4, -4);
-    if DoDrawText(Index, Items[Index], TmpRect) then
-      DrawText(Canvas.Handle, PChar(Items[Index]), Length(Items[Index]),
-        TmpRect, DT_WORDBREAK or DT_LEFT or DT_TOP or DT_EDITCONTROL or DT_NOPREFIX or DT_END_ELLIPSIS);
-  end;
-  Canvas.Brush.Color := clBtnShadow;
-  Canvas.Pen.Color := clBtnShadow;
-  Canvas.FrameRect(Rect);
 
   // draw the combo button
-  if State * [odSelected, odFocused] <> [] then
-  begin
-      // draw frame
-    Canvas.Brush.Style := bsClear;
-    Canvas.Pen.Color := clHighlight;
-    Canvas.Pen.Width := 2;
-
-    aPoints[0] := Point(Rect.Left, Rect.Top);
-    aPoints[1] := Point(Rect.Right - 1, Rect.Top);
-    aPoints[2] := Point(Rect.Right - 1, Rect.Bottom - 1);
-    aPoints[3] := Point(Rect.Left, Rect.Bottom - 1);
-    aPoints[4] := Point(Rect.Left, Rect.Top);
-    Canvas.Polygon(aPoints);
-
-    // draw button body
-    if ButtonWidth > 2 then // 2 because Pen.Width is 2
+    GetCursorPos(Pt);
+    Pt := ScreenToClient(Pt);
+    i := ItemAtPos(Pt, true);
+    if (not HotTrackCombo and (State * [odSelected, odFocused] <> [])) or (HotTrackCombo and (i = Index)) then
     begin
-      Canvas.Brush.Style := bsSolid;
-      TmpRect := Classes.Rect(Rect.Right - ButtonWidth, Rect.Top + 1, Rect.Right - 2, Rect.Bottom - 2);
-      Canvas.Brush.Color := clBtnFace;
-      Canvas.FillRect(TmpRect);
-      if FMouseOver then // highlight
-      begin
-        Frame3D(Canvas, TmpRect, clBtnHighlight, clBtnShadow, 1);
-        InflateRect(TmpRect, 1, 1);
-      end
-      else // normal
-      begin
-        Canvas.Brush.Color := clBtnShadow;
-        Canvas.FrameRect(TmpRect);
-      end;
-    // draw arrow in button, use font to do it
-      Canvas.Font.Name := 'Marlett';
-      if ButtonWidth > Font.Size + 5 then
-        Canvas.Font.Size := Font.Size + 3
+    // draw frame
+      Canvas.Brush.Style := bsClear;
+      Canvas.Pen.Width := 2;
+      if HotTrackCombo then
+        Canvas.Pen.Color := clBtnFace
       else
-        Canvas.Font.Size := ButtonWidth;
-      Canvas.Font.Color := clWindowText;
-      S := 'u';
-      SetBkMode(Canvas.Handle, TRANSPARENT);
-      DrawText(Canvas.Handle, PChar(S), Length(S), TmpRect, DT_VCENTER or DT_CENTER or DT_SINGLELINE);
+        Canvas.Pen.Color := clHighlight;
+
+{      aPoints[0] := Point(Rect.Left, Rect.Top);
+      aPoints[1] := Point(Rect.Right - 1, Rect.Top);
+      aPoints[2] := Point(Rect.Right - 1, Rect.Bottom - 1);
+      aPoints[3] := Point(Rect.Left, Rect.Bottom - 1);
+      aPoints[4] := Point(Rect.Left, Rect.Top);
+      Canvas.Polygon(aPoints);
+}
+    // draw button body
+      if ButtonWidth > 2 then // 2 because Pen.Width is 2
+      begin
+        Canvas.Brush.Style := bsSolid;
+        TmpRect := Classes.Rect(Rect.Right - ButtonWidth, Rect.Top + 1, Rect.Right - 2, Rect.Bottom - 2);
+        Canvas.Brush.Color := clBtnFace;
+        Canvas.FillRect(TmpRect);
+        if FMouseOver then // highlight
+        begin
+          Frame3D(Canvas, TmpRect, clBtnHighlight, clBtnShadow, 1);
+          InflateRect(TmpRect, 1, 1);
+        end
+        else // normal
+        begin
+          Canvas.Brush.Color := clBtnShadow;
+          Canvas.FrameRect(TmpRect);
+        end;
+        // draw arrow in button, use font to do it
+        Canvas.Font.Name := 'Marlett';
+        if ButtonWidth > Font.Size + 5 then
+          Canvas.Font.Size := Font.Size + 3
+        else
+          Canvas.Font.Size := ButtonWidth;
+        Canvas.Font.Color := clWindowText;
+        S := 'u';
+        SetBkMode(Canvas.Handle, TRANSPARENT);
+        DrawText(Canvas.Handle, PChar(S), Length(S), TmpRect, DT_VCENTER or DT_CENTER or DT_SINGLELINE);
+      end;
     end;
+    Canvas.Pen.Color := clBtnShadow;
+    Canvas.Pen.Width := 1;
+    Canvas.MoveTo(Rect.Left, Rect.Bottom - 1);
+    Canvas.LineTo(Rect.Right, Rect.Bottom - 1);
+    Canvas.MoveTo(Rect.Right - 1, Rect.Top);
+    Canvas.LineTo(Rect.Right - 1, Rect.Bottom - 1);
+  finally
+    Canvas.Unlock;
   end;
 end;
 
@@ -388,21 +417,27 @@ end;
 
 procedure TJvComboListBox.InvalidateItem(Index: integer);
 var
-  R: TRect;
+  R, R2: TRect;
 begin
   if Index < 0 then
     Index := ItemIndex;
   R := ItemRect(Index);
-  // we only want to redraw the button
+  R2 := R;
+  // we only want to redraw the combo button
   if not IsRectEmpty(R) then
-    R.Left := R.Right - ButtonWidth;
-  InvalidateRect(Handle, @R, false);
+  begin
+    R.Right := R.Right - ButtonWidth;
+    // don't redraw content, just button
+    ExcludeClipRect(Canvas.Handle, R.Left, R.Top, R.Right, R.Bottom);
+    InvalidateRect(Handle, @R2, false);
+  end;
 end;
 
 procedure TJvComboListBox.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
   i: integer;
+  R: TRect;
   P: TPoint;
   Msg: TMsg;
   OldAlign: TPopupAlignment;
@@ -412,15 +447,16 @@ begin
   begin
     P := Point(X, Y);
     i := ItemAtPos(P, true);
-    if (i = ItemIndex) and (X >= ClientWidth - ButtonWidth)
-      and (X <= ClientWidth) then
+    R := ItemRect(i);
+    if (i = ItemIndex) and (X >= R.Right - ButtonWidth)
+      and (X <= R.Right) then
     begin
-      P.X := ClientWidth;
+      P.X := R.Right;
       OldAlign := DropdownMenu.Alignment;
       try
-        // always right.align (getting the actual width of a popup menu seems problematic...)
+        // always right align (getting the actual width of a popup menu seems problematic...)
         DropdownMenu.Alignment := paRight;
-        P.Y := (i + 1) * ItemHeight - TopIndex * ItemHeight;
+        P.Y := R.Top + ItemHeight;
         P := ClientToScreen(P);
         DropdownMenu.PopupComponent := self;
         DropdownMenu.Popup(P.X, P.Y);
@@ -439,11 +475,23 @@ procedure TJvComboListBox.MouseMove(Shift: TShiftState; X,
   Y: Integer);
 var
   P: TPoint;
+  i: integer;
+  R: TRect;
 begin
-  if DropdownMenu <> nil then
+  if (DropdownMenu <> nil) or HotTrackCombo then
   begin
     P := Point(X, Y);
-    if (ItemAtPos(P, true) = ItemIndex) and (X >= ClientWidth - ButtonWidth) and (X <= ClientWidth) then
+    i := ItemAtPos(P, true);
+    R := ItemRect(i);
+    if HotTrackCombo and (i <> FLastHotTrack) then
+    begin
+      if FLastHotTrack > -1 then
+        InvalidateItem(FLastHotTrack);
+      FLastHotTrack := i;
+      if FLastHotTrack > -1 then
+        InvalidateItem(FLastHotTrack);
+    end;
+    if ((i = ItemIndex) or HotTrackCombo) and (X >= R.Right - ButtonWidth) and (X <= R.Right) then
     begin
       if not FMouseOver then
       begin
@@ -482,6 +530,15 @@ begin
   if FDrawStyle <> Value then
   begin
     FDrawStyle := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvComboListBox.SetHotTrackCombo(const Value: boolean);
+begin
+  if FHotTrackCombo <> Value then
+  begin
+    FHotTrackCombo := Value;
     Invalidate;
   end;
 end;
