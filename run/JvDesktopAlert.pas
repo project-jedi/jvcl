@@ -32,12 +32,7 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
   Windows, Controls, Graphics, Forms, Menus, ImgList,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QControls, QGraphics, QForms, QMenus, QImgList, Types, QWindows,
-  {$ENDIF VisualCLX}
   JvComponent, JvBaseDlg, JvDesktopAlertForm, JvTypes;
 
 type
