@@ -41,16 +41,25 @@ type
     FForcedSize: Boolean;
     procedure SetPartner(const Value: TJvSyncSplitter);
   protected
+    function GetResizeStyle: TResizeStyle;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure SetResizeStyle(Value: TResizeStyle);
+    procedure VerifyPartner;
     procedure WndProc(var Msg: TMessage); override;
   published
     property Partner: TJvSyncSplitter read FPartner write SetPartner;
+    property ResizeStyle: TResizeStyle read GetResizeStyle write SetResizeStyle;
   end;
 
 implementation
 
 uses
-  JvTypes, JvResources;
+  JvTypes, JvResources, Dialogs;
+
+function TJvSyncSplitter.GetResizeStyle: TResizeStyle;
+begin
+  Result:=inherited ResizeStyle
+end;
 
 procedure TJvSyncSplitter.Notification(AComponent: TComponent; Operation: TOperation);
 begin
@@ -62,14 +71,41 @@ end;
 procedure TJvSyncSplitter.SetPartner(const Value: TJvSyncSplitter);
 begin
   if Value <> Self then
-    FPartner := Value
+  begin
+    FPartner := Value;
+    VerifyPartner;
+  end
   else
     raise EJVCLException.Create(RsEInvalidPartner);
 end;
 
+procedure TJvSyncSplitter.SetResizeStyle(Value: TResizeStyle);
+begin
+  inherited ResizeStyle:=Value;
+  VerifyPartner;
+end;
+
+procedure TJvSyncSplitter.VerifyPartner;
+begin
+  if csDesigning in ComponentState then
+    if Assigned(Partner) then
+      if ((Partner.ResizeStyle=rsUpdate) and (ResizeStyle<>rsUpdate))
+        or ((Partner.ResizeStyle<>rsUpdate) and (ResizeStyle=rsUpdate)) then
+        if MessageDlg(Format('Current ResizeStyle settings for %s and %s will'
+          + ' cause problems at runtime. Change both to rsUpdate?',
+          [Name, Partner.Name]), mtWarning, [mbYes,mbNo], 0) = mrYes then
+        begin
+          if Partner.ResizeStyle=rsUpdate then
+            ResizeStyle:=rsUpdate
+          else
+            Partner.ResizeStyle:=rsUpdate;
+        end;
+end;
+
 procedure TJvSyncSplitter.WndProc(var Msg: TMessage);
 begin
-  if Assigned(FPartner) and not FForcedSize then
+  if Assigned(FPartner) and not FForcedSize
+    and not (csDesigning in ComponentState) then
     case Msg.Msg of
       WM_MOUSEFIRST..WM_MOUSELAST:
         begin
