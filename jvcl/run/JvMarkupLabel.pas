@@ -62,7 +62,7 @@ type
     procedure SetAlignment(const Value: TAlignment);
     procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
   protected
-    { Protected declarations }
+    procedure SetAutoSize(Value: Boolean); override; 
   public
     { Public declarations }
     constructor Create(AOwner: TComponent); override;
@@ -77,6 +77,7 @@ type
     property MarginTop: integer read FMarginTop write SetMarginTop default 5;
     property Text: string read FText write SetText;
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
+    property AutoSize;
     property Align;
     property Font;
 
@@ -419,10 +420,10 @@ procedure TJvMarkupLabel.RenderHTML;
 var
   R: TRect;
   I, C, X, Y,
-  XAV, CLW, TXW,
+  ATotalWidth, AClientWidth, ATextWidth,
   BaseLine,
   iSol, iEol,
-  MaxHeight, MaxAscent : integer;
+  MaxHeight, MaxWidth, MaxAscent : integer;
   El: TJvHTMLElement;
   Eol: boolean;
   PendingBreak: boolean;
@@ -462,15 +463,16 @@ begin
   C := ElementStack.Count;
   if C = 0 then Exit;
   HTMLClearBreaks;
-  CLW := ClientWidth - MarginLeft - MarginRight;
+  AClientWidth := ClientWidth - MarginLeft - MarginRight;
   Canvas.Brush.Style := bsClear;
   Y := MarginTop;
   iSol := 0;
   PendingBreak := False;
+  MaxWidth := 0;
   repeat
     I := iSol;
-    XAV := CLW;
-    TXW := 0;
+    ATotalWidth := AClientWidth;
+    ATextWidth := 0;
     MaxHeight := 0;
     MaxAscent := 0;
     Eol := False;
@@ -489,11 +491,11 @@ begin
       end;
       if El.Height > MaxHeight then MaxHeight := El.Height;
       if El.Ascent > MaxAscent then MaxAscent := El.Ascent;
-      El.Breakup(Canvas, XAV);
+      El.Breakup(Canvas, ATotalWidth);
       if El.SolText <> '' then
       begin
-        XAV := XAV - Canvas.TextWidth(El.SolText);
-        TXW := TXW + Canvas.TextWidth(El.SolText);
+        ATotalWidth := ATotalWidth - Canvas.TextWidth(El.SolText);
+        ATextWidth := ATextWidth + Canvas.TextWidth(El.SolText);
         if El.EolText = '' then
         begin
           if I >= C - 1 then
@@ -522,10 +524,17 @@ begin
     // render line
     BaseLine := MaxAscent;
 
+    if AutoSize then
+    begin
+      X := MarginLeft;
+      if (ATextWidth + MarginLeft + MarginRight) > MaxWidth then
+        MaxWidth := (ATextWidth + MarginLeft + MarginRight);
+    end
+    else
     case FAlignment of
       taLeftJustify  : X := MarginLeft;
-      taRightJustify : X := Width - MarginRight - TXW;
-      taCenter       : X := MarginLeft + (Width - MarginLeft - MarginRight - TXW) div 2;
+      taRightJustify : X := Width - MarginRight - ATextWidth;
+      taCenter       : X := MarginLeft + (Width - MarginLeft - MarginRight - ATextWidth) div 2;
     end;
 
     for I := iSol to iEol do
@@ -537,6 +546,11 @@ begin
     Y := Y + MaxHeight;
     iSol := iEol;
   until (iEol >= C - 1) and (El.EolText = '');
+  if AutoSize then
+  begin
+    Width := MaxWidth;
+    Height := y + 5;
+  end;
 end;
 
 procedure TJvMarkupLabel.SetAlignment(const Value: TAlignment);
@@ -555,6 +569,12 @@ begin
     FBackColor := Value;
     Invalidate;
   end;
+end;
+
+procedure TJvMarkupLabel.SetAutoSize(Value: Boolean);
+begin
+  inherited;
+  Invalidate;
 end;
 
 procedure TJvMarkupLabel.SetMarginLeft(const Value: integer);
