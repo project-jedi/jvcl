@@ -207,9 +207,9 @@ begin
   inherited;
 
   jaxStore.FileName := StrEnsureSuffix(PathSeparator, ExtractFilePath(Application.exename)) + 'pgEdit.xml';
-  if cmbModel.ItemIndex >-1 then
-    ConfigLoadedOk := LoadConfig(jaxStore.FileName, cmbModel.Items[cmbModel.ItemIndex], ErrMsg)
-  else
+//  if cmbModel.ItemIndex >-1 then
+//    ConfigLoadedOk := LoadConfig(jaxStore.FileName, cmbModel.Items[cmbModel.ItemIndex], ErrMsg)
+//  else
     ConfigLoadedOk := LoadConfig(jaxStore.FileName, '', ErrMsg);
 
   if not ConfigLoadedOk then
@@ -765,18 +765,36 @@ begin
 end;
 
 procedure TfrmMain.FormShow(Sender: TObject);
+var
+  ErrMsg : string;
 begin
   if not Application.Terminated then
   begin
-    // Load the list of packages
-    LoadPackagesList;
-
     // force the models to be loaded in appropriate form and
     // load the names in the combo box
     frmModels.LoadModels(jaxStore.FileName, ConfigLoadedOk);
     cmbModel.Items.Assign(frmModels.cmbModels.Items);
 
     jfsStore.RestoreFormPlacement;
+
+    if cmbModel.ItemIndex >-1 then
+      ConfigLoadedOk := LoadConfig(jaxStore.FileName, cmbModel.Items[cmbModel.ItemIndex], ErrMsg)
+    else
+      ConfigLoadedOk := LoadConfig(jaxStore.FileName, '', ErrMsg);
+      
+    if not ConfigLoadedOk then
+    begin
+      Application.MessageBox(PChar('Error loading configuration:'#13#10+
+                                   #13#10+
+                                   ErrMsg),
+                             'Error loading configuration',
+                             MB_ICONERROR);
+      Application.Terminate;
+      Exit;
+    end;
+
+    // Load the list of packages
+    LoadPackagesList;
   end;
 end;
 
@@ -912,6 +930,7 @@ begin
   if frmModels.ShowModal = mrOk then
   begin
     cmbModel.ItemIndex := frmModels.cmbModels.ItemIndex;
+    LoadPackagesList;
     jaxStore.Reload;
   end;
 end;
@@ -921,7 +940,9 @@ var
   ErrMsg : string;
 begin
   if not LoadConfig(jaxStore.FileName, cmbModel.Items[cmbModel.ItemIndex], ErrMsg) then
-    Application.MessageBox(PChar(ErrMsg), 'Error loading configuration', MB_ICONERROR);
+    Application.MessageBox(PChar(ErrMsg), 'Error loading configuration', MB_ICONERROR)
+  else
+    LoadPackagesList;
 end;
 
 end.
