@@ -285,6 +285,27 @@ begin
   end;
 end;
 
+//=== TJvDockBaseTree ========================================================
+
+constructor TJvDockBaseTree.Create(TreeZone: TJvDockTreeZoneClass);
+begin
+  // (rom) added inherited Create
+  inherited Create;
+  FTreeZoneClass := TreeZone;
+  FTopTreeZone := FTreeZoneClass.Create(Self);
+  FCurrTreeZone := FTopTreeZone;
+  FScanZoneProc := nil;
+  FScanAction := snNone;
+end;
+
+destructor TJvDockBaseTree.Destroy;
+begin
+  FScanAction := snDeleted;
+  BackwardScanTree(TopTreeZone);
+  FScanAction := snNone;
+  inherited Destroy;
+end;
+
 function TJvDockBaseTree.AddChildZone(TreeZone, NewZone: TJvDockBaseZone): TJvDockBaseZone;
 begin
   if TreeZone.ChildZone <> nil then
@@ -353,27 +374,6 @@ begin
     Result.NextSibling := TreeZone;
     TreeZone.PrevSibling := Result;
   end;
-end;
-
-//=== TJvDockBaseTree ========================================================
-
-constructor TJvDockBaseTree.Create(TreeZone: TJvDockTreeZoneClass);
-begin
-  // (rom) added inherited Create
-  inherited Create;
-  FTreeZoneClass := TreeZone;
-  FTopTreeZone := FTreeZoneClass.Create(Self);
-  FCurrTreeZone := FTopTreeZone;
-  FScanZoneProc := nil;
-  FScanAction := snNone;
-end;
-
-destructor TJvDockBaseTree.Destroy;
-begin
-  FScanAction := snDeleted;
-  BackwardScanTree(TopTreeZone);
-  FScanAction := snNone;
-  inherited Destroy;
 end;
 
 procedure TJvDockBaseTree.ForwardScanTree(TreeZone: TJvDockBaseZone);
