@@ -544,6 +544,7 @@ begin
       begin
         Delete(S, 1, 11);
         SetEnvironmentVariable('HPPDIR', Pointer(S));
+        HppPathSet := True;
       end
       else if SameText(S, '--build') then
       begin
@@ -580,7 +581,7 @@ begin
     Inc(i);
   end;
   if not HppPathSet then
-    SetEnvironmentVariable('HPDIR', '$(ROOT)\Include\Vcl');
+    SetEnvironmentVariable('HPPDIR', '$(ROOT)\Include\Vcl');
 end;
 
 var
