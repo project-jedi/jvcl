@@ -80,13 +80,11 @@ uses StdCtrls,
 type
   TDesigner = DesignIntf.IDesigner;
   TFormDesigner = DesignIntf.IDesigner;
-  {$ELSE}
-{$IFDEF COMPILER4_UP}
+{$ELSE}
 type
   TDesigner = IDesigner;
   TFormDesigner = IFormDesigner;
-  {$ENDIF}
-  {$ENDIF}
+{$ENDIF}
 
 constructor TJvgMultipleResources.Create(AOwner: TComponent);
 var
