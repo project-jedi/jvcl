@@ -1648,8 +1648,7 @@ begin
   AGraphic := FPicture.Graphic;
   FTransparent := Value;
   if Assigned(AGraphic) and not
-     (
-     (AGraphic is TIcon)) then
+     ( (AGraphic is TIcon)) then
   begin
     AGraphic.Transparent := Value;
   end;
@@ -1777,11 +1776,8 @@ begin
     with ACanvas do
     begin
       Brush.Style := bsClear;
-      
-      
-      DrawText(ACanvas, FText, -1, ATextRect,
+      DrawText(ACanvas.Handle, PChar(FText), -1, ATextRect,
         DT_WORDBREAK + Alignments[FAlignment]);
-      
       { YW - Draw outline at design time. }
       if csDesigning in FWizardPageHeader.WizardPage.ComponentState then
       begin
@@ -2380,7 +2376,7 @@ begin
       Canvas.Font.Assign(Font);
       
       
-      DrawText(Canvas, Caption, -1, ARect,
+      DrawTextW(Canvas.Handle, PWideChar(Caption), -1, ARect,
         DT_SINGLELINE + DT_CENTER + DT_VCENTER);
       
     end;
@@ -2890,7 +2886,6 @@ procedure TJvWizard.Paint;
 var
   R: TRect;
 begin
-  if csCreating in ControlState then exit;
   R := ClientRect;
   if Color <> clNone then
   begin
@@ -3093,8 +3088,9 @@ begin
   begin
     for AButtonKind := Low(TJvWizardButtonKind) to High(TJvWizardButtonKind) do
     begin
+      if csCreating in ControlState then exit;
       with FNavigateButtons[AButtonKind] do
-        FControl.SetBounds(0, 0, FControl.Width, 0); // YW - Must keep the width
+          FControl.SetBounds(0, 0, FControl.Width, 0); // YW - Must keep the width
     end;
   end;
 end;
@@ -3143,8 +3139,7 @@ end;
 
 procedure TJvWizard.Resize;
 begin
-  if not (csCreating in ControlState) then
-    RepositionButtons;
+  RepositionButtons;
   inherited Resize;
 end;
 
