@@ -31,9 +31,18 @@ unit JvProgressEditor;
 interface
 
 uses
-  Windows, Classes, SysUtils, Controls, Forms,
+  Classes, SysUtils,
+  {$IFDEF VCL}
+  Windows, Controls, Forms,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QWindows, QControls, QForms,
+  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
-  RTLConsts, DesignIntf, VCLEditors, DesignEditors;
+  {$IFDEF VCL}
+  VCLEditors,
+  {$ENDIF VCL}
+  RTLConsts, DesignIntf, DesignEditors;
   {$ELSE}
   DsgnIntf;
   {$ENDIF COMPILER6_UP}
@@ -50,7 +59,12 @@ type
 implementation
 
 uses
+  {$IFDEF VCL}
   Consts, Dialogs,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QConsts, QDialogs,
+  {$ENDIF VisualCLX}
   JvConsts, JvProgressUtils;
 
 procedure TJvProgressControlProperty.CheckComponent(const AName: string);

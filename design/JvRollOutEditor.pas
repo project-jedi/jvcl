@@ -33,7 +33,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  ImgList,
+  QImgList,
   JvDsgnEditors;
 
 type
