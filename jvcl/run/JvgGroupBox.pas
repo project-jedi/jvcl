@@ -112,7 +112,7 @@ type
     {$ENDIF USEJVCL}
     property Anchors;
     property Align;
-    property Caption : string read GetCaption write SetCaption;
+    property Caption: string read GetCaption write SetCaption;
     property Color;
     property DragCursor;
     property DragMode;
@@ -710,7 +710,7 @@ end;
 
 procedure TJvgGroupBox.ComputeCaptionRect;
 var
-  R : TRect;
+  R: TRect;
   I, RW, GlyphWidth: Integer;
   Interspace: Integer;
 begin
@@ -779,7 +779,7 @@ begin
     if fgoDelineatedText in Options then
       Inc(R.Bottom, FIllumination.ShadowDepth - 2)
     else
-      Inc(R.Bottom, FIllumination.ShadowDepth)
+      Inc(R.Bottom, FIllumination.ShadowDepth);
   end
   else
   if CaptionTextStyle <> fstNone then

@@ -629,6 +629,7 @@ resourcestring
   RsEIntfCastError = 'SIntfCastError';
   RsEUnsupportedControlClass = 'TJvDynControlEngine.RegisterControl: Unsupported ControlClass';
   RsENoRegisteredControlClass = 'TJvDynControlEngine.CreateControl: No Registered ControlClass';
+  RsENoFocusControl = 'TJvDynControlEngine.CreateLabelControlPanel: AFocusControl must be assigned';
 
 //=== JvDynControlEngineDB.pas ===============================================
 resourcestring
@@ -715,6 +716,17 @@ resourcestring
   RsEIncrementIndexExpectedIntegerBetwee = 'Increment Index: expected integer between "[..]" in %s';
   RsEDSOIndexOutOfRanged = 'DSO index out of range %d';
   RsEDSOUnknownKeys = 'DSO unknown key %s';
+
+//=== JvFullColorCtrls.pas ===================================================
+resourcestring
+  RsColorHintFmt1 = 'FullColor: %.8x' + sLineBreak +
+    'ColorSpace: %s (%d)' + sLineBreak +
+    'Name: %s' + sLineBreak +
+    'Pretty name: %s';
+  RsColorHintFmt2 = 'FullColor: %.8x, ColorSpace: %s (%d)' + sLineBreak +
+    'Axis %s = %d' + sLineBreak +
+    'Axis %s = %d' + sLineBreak +
+    'Axis %s = %d';
 
 //=== Jvg3DColors.pas ========================================================
 {$IFDEF USEJVCL}

@@ -95,7 +95,7 @@ type
     destructor Destroy; override;
     property Handle: HWND read FWnd;
     property Events: TJvEventCollection read GetEvents write SetEvents;
-    procedure LoadEventStates (const ClearBefore : Boolean = True);
+    procedure LoadEventStates(const ClearBefore: Boolean = True);
     procedure SaveEventStates;
     procedure StartAll;
     procedure StopAll;
@@ -538,7 +538,7 @@ begin
   end;
 end;
 
-procedure TJvCustomScheduledEvents.LoadEventStates (const ClearBefore : Boolean = True);
+procedure TJvCustomScheduledEvents.LoadEventStates(const ClearBefore: Boolean = True);
 begin
   if ClearBefore then
     FEvents.Clear;
@@ -559,7 +559,6 @@ var
   SnoozeInterval: TSystemTime;
   SnoozeDate: Integer;
   SnoozeTime: Integer;
-
 begin
   TJvEventCollection(List)[Index].SaveState(Stamp, TriggerCount, DayCount, SnoozeStamp, SnoozeInterval);
   StampDate := Stamp.Date;

@@ -1588,8 +1588,8 @@ procedure TJvDBGrid.GetCellProps(Field: TField; AFont: TFont;
 begin
   if IsAfterFixedCols and (FCurrentDrawRow >= FixedRows) then
   begin
-    if Odd(FCurrentDrawRow + FixedRows) and (FAlternateRowColor <> clNone)
-      and (FAlternateRowColor <> Color) then
+    if Odd(FCurrentDrawRow + FixedRows) and (FAlternateRowColor <> clNone) and
+      (FAlternateRowColor <> Color) then
       Background := AlternateRowColor;
   end
   else

@@ -222,8 +222,8 @@ var
           Dec(ColorValue[I], Range);
       end;
     end;
-    Color := DeltaColorSpace.ConvertToColor(ColorValue[axIndex0] or (ColorValue[axIndex1] shl 8)
-                                            or (ColorValue[axIndex2] shl 16));
+    Color := DeltaColorSpace.ConvertToColor(ColorValue[axIndex0] or
+      (ColorValue[axIndex1] shl 8) or (ColorValue[axIndex2] shl 16));
     DestColor[axIndex0] := Color and $FF;
     DestColor[axIndex1] := (Color shr 8) and $FF;
     DestColor[axIndex2] := (Color shr 16) and $FF;

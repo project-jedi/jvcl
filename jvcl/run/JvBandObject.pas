@@ -969,33 +969,33 @@ function TzContextMenuBandObject.QueryContextMenu(AMenu: HMENU; IndexMenu,
 //var
 //  idCmd: UINT;
 
-   procedure SetItemParams(var ItemInfo: TMenuItemInfo; var MenuItem: TMenuItem);
-   begin
-     ItemInfo.fState := 0;
-     if MenuItem.Checked then
-       ItemInfo.fState := ItemInfo.fState or MFS_CHECKED
-     else
-       ItemInfo.fState := ItemInfo.fState or MFS_UNCHECKED;
+  procedure SetItemParams(var ItemInfo: TMenuItemInfo; var MenuItem: TMenuItem);
+  begin
+    ItemInfo.fState := 0;
+    if MenuItem.Checked then
+      ItemInfo.fState := ItemInfo.fState or MFS_CHECKED
+    else
+      ItemInfo.fState := ItemInfo.fState or MFS_UNCHECKED;
 
-     if MenuItem.Default then
-       ItemInfo.fState := ItemInfo.fState or MFS_DEFAULT;
-     if MenuItem.Enabled then
-       ItemInfo.fState := ItemInfo.fState or MFS_ENABLED
-     else
-       ItemInfo.fState := ItemInfo.fState or MFS_DISABLED;
+    if MenuItem.Default then
+      ItemInfo.fState := ItemInfo.fState or MFS_DEFAULT;
+    if MenuItem.Enabled then
+      ItemInfo.fState := ItemInfo.fState or MFS_ENABLED
+    else
+      ItemInfo.fState := ItemInfo.fState or MFS_DISABLED;
 
-     ItemInfo.fType := 0;
-     if MenuItem.Caption = '-' then
-       ItemInfo.fType := ItemInfo.fType or MFT_SEPARATOR
-     else
-     begin
-       ItemInfo.fType := ItemInfo.fType or MFT_STRING;
-       ItemInfo.dwTypeData := PChar(MenuItem.Caption);
-       ItemInfo.cch := Length(MenuItem.Caption);
-     end;
-     if MenuItem.RadioItem then
-       ItemInfo.fType := ItemInfo.fType or MFT_RADIOCHECK;
-   end;
+    ItemInfo.fType := 0;
+    if MenuItem.Caption = '-' then
+      ItemInfo.fType := ItemInfo.fType or MFT_SEPARATOR
+    else
+    begin
+      ItemInfo.fType := ItemInfo.fType or MFT_STRING;
+      ItemInfo.dwTypeData := PChar(MenuItem.Caption);
+      ItemInfo.cch := Length(MenuItem.Caption);
+    end;
+    if MenuItem.RadioItem then
+      ItemInfo.fType := ItemInfo.fType or MFT_RADIOCHECK;
+  end;
 
   procedure InsertContextMenuItems(ThisMenu: HMENU; Items: PMenuItem; InsertIndex: Integer);
   var
@@ -1003,7 +1003,7 @@ function TzContextMenuBandObject.QueryContextMenu(AMenu: HMENU; IndexMenu,
     ItemInfo: TMenuItemInfo;
     TempItem: TMenuItem;
   begin
-    for I := 0 to Items.Count-1 do
+    for I := 0 to Items.Count - 1 do
     begin
       TempItem := Items^[I];
       if not TempItem.Visible then
@@ -1055,8 +1055,7 @@ begin
   Result := MakeResult(SEVERITY_SUCCESS, FACILITY_NULL, FMenuItemLink.Count);
 end;
 
-procedure FindItem(Item: TMenuItem; SeekIndex: Integer;
-  var CurrentIndex: Integer);
+procedure FindItem(Item: TMenuItem; SeekIndex: Integer; var CurrentIndex: Integer);
 var
   Count: Integer;
 begin

@@ -25,38 +25,33 @@ unit JvDynControlEngineTools;
 
 interface
 
-Uses Classes, Controls, StdCtrls, Forms, ExtCtrls,
-     JvDynControlEngine;
+uses
+  Classes, Controls, StdCtrls, Forms, ExtCtrls,
+  JvDynControlEngine;
 
-function CreateDynControlDialog  (const AFormCaption,
-                                        AButton1Caption,
-                                        AButton2Caption: string;
-                                  const AButton1Click,
-                                        AButton2Click : TNotifyEvent;
-                                  var aMainPanel: TWinControl;
-                                  aDynControlEngine : TJvDynControlEngine = NIL): TCustomForm;
+function CreateDynControlDialog(const AFormCaption, AButton1Caption, AButton2Caption: string;
+  const AButton1Click, AButton2Click: TNotifyEvent;
+  var AMainPanel: TWinControl;
+  ADynControlEngine: TJvDynControlEngine = nil): TCustomForm;
 
 implementation
 
-function CreateDynControlDialog  (const AFormCaption,
-                                        AButton1Caption,
-                                        AButton2Caption: string;
-                                  const AButton1Click,
-                                        AButton2Click : TNotifyEvent;
-                                  var aMainPanel: TWinControl;
-                                  aDynControlEngine : TJvDynControlEngine = NIL): TCustomForm;
-var DynControlEngine : TJvDynControlEngine;
-    ButtonPanel      : TWinControl;
-    Form             : TCustomForm;
-    Button1,
-    Button2: tButtonControl;
+function CreateDynControlDialog(const AFormCaption, AButton1Caption, AButton2Caption: string;
+  const AButton1Click, AButton2Click: TNotifyEvent;
+  var AMainPanel: TWinControl;
+  ADynControlEngine: TJvDynControlEngine = nil): TCustomForm;
+var
+  DynControlEngine: TJvDynControlEngine;
+  ButtonPanel: TWinControl;
+  Form: TCustomForm;
+  Button1, Button2: TButtonControl;
 begin
-  if Assigned(aDynControlEngine) then
-    DynControlEngine := aDynControlEngine
+  if Assigned(ADynControlEngine) then
+    DynControlEngine := ADynControlEngine
   else
     DynControlEngine := DefaultDynControlEngine;
-  Form := DynControlEngine.CreateForm (aFormCaption, '');
-  With TForm(Form) DO
+  Form := DynControlEngine.CreateForm(AFormCaption, '');
+  with TForm(Form) do
   begin
     FormStyle := fsNormal;
     Position := poScreenCenter;
@@ -64,27 +59,28 @@ begin
     BorderStyle := bsDialog;
   end;
 
-  ButtonPanel := DynControlEngine.CreatePanelControl (Form, Form, '','', alBottom);
-  aMainPanel := DynControlEngine.CreatePanelControl (Form, Form, '','', alClient);
-  if aButton1Caption <> '' then
+  ButtonPanel := DynControlEngine.CreatePanelControl(Form, Form, '', '', alBottom);
+  AMainPanel := DynControlEngine.CreatePanelControl(Form, Form, '', '', alClient);
+  if AButton1Caption <> '' then
   begin
-    Button1 := DynControlEngine.CreateButton(Form, ButtonPanel,'', aButton1Caption, '', aButton1Click, True, False);
+    Button1 := DynControlEngine.CreateButton(Form, ButtonPanel, '', AButton1Caption, '', AButton1Click, True, False);
     ButtonPanel.Height := Button1.Height + 6;
     Button1.Top := 3;
-    Button1.Anchors := [akTop,akRight];
+    Button1.Anchors := [akTop, akRight];
   end;
-  if aButton2Caption <> '' then
+  if AButton2Caption <> '' then
   begin
-    Button2 := DynControlEngine.CreateButton(Form, ButtonPanel,'', aButton2Caption, '', aButton2Click, True, False);
+    Button2 := DynControlEngine.CreateButton(Form, ButtonPanel, '', AButton2Caption, '', AButton2Click, True, False);
     ButtonPanel.Height := Button2.Height + 6;
     Button2.Top := 3;
-    Button2.Anchors := [akTop,akRight];
-    Button2.Left := ButtonPanel.Width-Button2.Width-5;
-    Button1.Left := Button2.Left-Button1.Width-5;
+    Button2.Anchors := [akTop, akRight];
+    Button2.Left := ButtonPanel.Width - Button2.Width - 5;
+    Button1.Left := Button2.Left - Button1.Width - 5;
   end
   else
-    Button1.Left := ButtonPanel.Width-Button1.Width-5;
+    Button1.Left := ButtonPanel.Width - Button1.Width - 5;
   Result := Form;
 end;
 
 end.
+

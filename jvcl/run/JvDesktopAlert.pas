@@ -1492,10 +1492,10 @@ var
   RegionRect: TRect;
   Region: HRGN;
   RegionHeight: Integer;
-  RegionWidth : Integer;
+  RegionWidth: Integer;
 begin
-  RegionHeight := Round(Percentage*OwnerForm.Height/100);
-  RegionWidth := Round(Percentage*OwnerForm.Width/100);
+  RegionHeight := Round(Percentage * OwnerForm.Height / 100.0);
+  RegionWidth := Round(Percentage * OwnerForm.Width / 100.0);
 
   RegionRect.Left := (OwnerForm.Width - RegionWidth) div 2;
   RegionRect.Right := RegionRect.Left + RegionWidth;

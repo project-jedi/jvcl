@@ -147,7 +147,7 @@ begin
   FSelectPath := Value;
 end;
 
-function  TJvAppStorageSelectList.GetStoragePath : string;
+function  TJvAppStorageSelectList.GetStoragePath: string;
 begin
   Result := SelectPath;
 end;

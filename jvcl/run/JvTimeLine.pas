@@ -1650,8 +1650,7 @@ begin
       else
         K := I + 1;
       for J := K to Count do
-        if RectInRect(TJvTimeItem(FList[I]).FRect, TJvTimeItem(FList[J]).FRect)
-          and
+        if RectInRect(TJvTimeItem(FList[I]).FRect, TJvTimeItem(FList[J]).FRect) and
           (FList[I] <> FList[J]) then
         begin
           TJvTimeItem(FList[J]).Level := TJvTimeItem(FList[J]).Level + 1;

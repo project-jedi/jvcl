@@ -1517,15 +1517,16 @@ begin
 end;
 
 procedure TJvParameterList.DialogShow(Sender: TObject);
-var i : Integer;
+var
+  I: Integer;
 begin
-  for i := 0 to Count-1 do
-    if Parameters[i].Visible then
-      if Assigned(Parameters[i].WinControl) then
-        if Parameters[i].WinControl.CanFocus then
+  for I := 0 to Count - 1 do
+    if Parameters[I].Visible then
+      if Assigned(Parameters[I].WinControl) then
+        if Parameters[I].WinControl.CanFocus then
         begin
-          Parameters[i].WinControl.SetFocus;
-          break;
+          Parameters[I].WinControl.SetFocus;
+          Break;
         end;
 end;
 
@@ -1879,7 +1880,7 @@ begin
             end;
 end;
 
-//=== { TJvParameterListPropertyStore } ======================================
+//=== { TJvParameterListSelectList } =========================================
 
 function TJvParameterListSelectList.GetDynControlEngine: TJvDynControlEngine;
 begin

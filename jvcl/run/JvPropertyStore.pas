@@ -68,24 +68,22 @@ type
     procedure LoadData; virtual;
     procedure StoreData; virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    function  GetCombinedIgnoreProperties: TStrings;
-    property  AboutJVCL;
+    function GetCombinedIgnoreProperties: TStrings;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    property AppStorage: TJvCustomAppStorage read FAppStorage write SetAppStorage;
     procedure StoreProperties; virtual;
     procedure LoadProperties; virtual;
     procedure Assign(Source: TPersistent); override;
     procedure Clear; virtual;
     function TranslatePropertyName(AName: string): string; virtual;
+    property AppStorage: TJvCustomAppStorage read FAppStorage write SetAppStorage;
     property CombinedIgnoreProperties: TStrings read GetCombinedIgnoreProperties;
     property IgnoreProperties: TStrings read GetIgnoreProperties write SetIgnoreProperties;
     property AutoLoad: Boolean read FAutoLoad write SetAutoLoad;
     property AppStoragePath: string read FAppStoragePath write SetPath;
     property Enabled: Boolean read FEnabled write FEnabled default True;
-    property DeleteBeforeStore: Boolean read FDeleteBeforeStore write FDeleteBeforeStore
-      default False;
+    property DeleteBeforeStore: Boolean read FDeleteBeforeStore write FDeleteBeforeStore default False;
     property ClearBeforeLoad: Boolean read FClearBeforeLoad write FClearBeforeLoad default False;
     property IgnoreLastLoadTime: Boolean read FIgnoreLastLoadTime write FIgnoreLastLoadTime default False;
     property OnBeforeLoadProperties: TNotifyEvent read FOnBeforeLoadProperties write FOnBeforeLoadProperties;
@@ -93,7 +91,6 @@ type
     property OnBeforeStoreProperties: TNotifyEvent read FOnBeforeStoreProperties write FOnBeforeStoreProperties;
     property OnAfterStoreProperties: TNotifyEvent read FOnAfterStoreProperties write FOnAfterStoreProperties;
     property Tag;
-  published
   end;
 
   TJvCustomPropertyListStore = class(TJvCustomPropertyStore)
@@ -136,7 +133,6 @@ type
     property CreateListEntries: Boolean read FCreateListEntries write FCreateListEntries default True;
     property ItemName: string read FItemName write FItemName;
     property Sorted: Boolean read GetSorted write SetSorted;
-  published
   end;
 
 implementation

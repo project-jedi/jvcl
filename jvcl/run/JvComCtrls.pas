@@ -1914,8 +1914,9 @@ begin
   if (FHintSource = hsForceMain) or ((FHintSource = hsPreferMain) and (GetShortHint(Hint) <> '')) then
     HintInfo.HintStr := GetShortHint(Self.Hint)
   else
-  if (Tab <> nil) and ((FHintSource = hsForceChildren) or ((FHintSource = hsPreferChildren) and (GetShortHint(Tab.Hint) <> ''))
-    or ((FHintSource = hsPreferMain) and (GetShortHint(Hint) = ''))) then
+  if (Tab <> nil) and
+    ((FHintSource = hsForceChildren) or ((FHintSource = hsPreferChildren) and (GetShortHint(Tab.Hint) <> '')) or
+    ((FHintSource = hsPreferMain) and (GetShortHint(Hint) = ''))) then
   begin
     HintInfo.HintStr := GetShortHint(Tab.Hint);
     HintInfo.CursorRect := TabRect(TabNo);

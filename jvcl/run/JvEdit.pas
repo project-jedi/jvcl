@@ -139,7 +139,7 @@ type
     procedure Paint; override;
 //    procedure TextChanged; override;
 //    procedure KeyPress(var Key: Char); override;
-    function HintShow(var HintInfo : THintInfo): Boolean; override;
+    function HintShow(var HintInfo: THintInfo): Boolean; override;
     {$ENDIF VisualCLX}
     procedure DoSetFocus(FocusedWnd: HWND); override;
     procedure DoKillFocus(FocusedWnd: HWND); override;
@@ -390,7 +390,7 @@ end;
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}
-function TJvCustomEdit.HintShow(var HintInfo : THintInfo): Boolean;
+function TJvCustomEdit.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   if AutoHint and not TextFitsInCtrl(Self, Self.Text) then
   begin

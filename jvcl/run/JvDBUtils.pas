@@ -433,7 +433,7 @@ function DataSetLocateThrough(DataSet: TDataSet; const KeyFields: string;
 var
   FieldCount: Integer;
   Fields: TList;
-  Fld : TField;                    {BG}   //else BAD mem leak on 'Field.asString'
+  Fld: TField;                    {BG}   //else BAD mem leak on 'Field.asString'
   Bookmark: TBookmarkStr;
 
   function CompareField(var Field: TField; Value: Variant): Boolean; {BG}

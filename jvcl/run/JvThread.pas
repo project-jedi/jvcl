@@ -57,8 +57,7 @@ type
   protected
     procedure InternalMessageDlg;
   public
-    constructor Create(Sender: TObject; Event: TJvNotifyParamsEvent;
-      Params: Pointer); virtual;
+    constructor Create(Sender: TObject; Event: TJvNotifyParamsEvent; Params: Pointer); virtual;
     function SynchMessageDlg(const Msg: string; AType: TMsgDlgType; AButtons: TMsgDlgButtons; HelpCtx: Longint): Word;
     procedure Execute; override;
   end;
@@ -368,13 +367,14 @@ begin
     fThreadDialogForm := ThreadDialog.CreateThreadDialogForm (self);
 end;
 
-function TJvThread.GetLastThread : TJvBaseThread;
+function TJvThread.GetLastThread: TJvBaseThread;
 begin
-  if (Count > 0) then
-    Result := Threads[Count-1]
+  if Count > 0 then
+    Result := Threads[Count - 1]
   else
     Result := nil;
 end;
+
 //=== { TJvBaseThread } ======================================================
 
 constructor TJvBaseThread.Create(Sender: TObject; Event: TJvNotifyParamsEvent;

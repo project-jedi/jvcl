@@ -25,66 +25,64 @@ unit JvDynControlEngineDBTools;
 
 interface
 
-Uses Controls, DB, Forms,
-     JvPanel,
-     JvDynControlEngineTools, JvDynControlEngineDB;
+uses
+  Controls, DB, Forms,
+  JvPanel, JvDynControlEngineTools, JvDynControlEngineDB;
 
 type
-  tJvDynControlDatasourceEditDialog = class(tObject)
+  TJvDynControlDataSourceEditDialog = class(TObject)
   private
-    fForm : TCustomForm;
-    fDynControlEngineDB: TJvDynControlEngineDB;
-    fDatasource : tDatasource;
-    fDialogCaption : string;
-    fPostCaption   : string;
-    fCancelCaption : string;
-    fIncludeNavigator : Boolean;
+    FForm: TCustomForm;
+    FDynControlEngineDB: TJvDynControlEngineDB;
+    FDataSource: TDataSource;
+    FDialogCaption: string;
+    FPostCaption: string;
+    FCancelCaption: string;
+    FIncludeNavigator: Boolean;
   protected
-    procedure OnPostButtonClick (Sender : TObject);
-    procedure OnCancelButtonClick (Sender : TObject);
+    procedure OnPostButtonClick(Sender: TObject);
+    procedure OnCancelButtonClick(Sender: TObject);
     function IntDynControlEngineDB: TJvDynControlEngineDB;
   public
-    function ShowDialog : tModalResult;
+    function ShowDialog: TModalResult;
   published
-    property Datasource : tDatasource read fDatasource write fDatasource;
-    property PostCaption   : string read fPostCaption write fPostCaption;
-    property CancelCaption : string read fCancelCaption write fCancelCaption;
-    property DialogCaption : string read fDialogCaption write fDialogCaption;
-    property DynControlEngineDB: TJvDynControlEngineDB read fDynControlEngineDB write fDynControlEngineDB;
-    property IncludeNavigator : Boolean read fIncludeNavigator write fIncludeNavigator;
+    property DataSource: TDataSource read FDataSource write FDataSource;
+    property PostCaption: string read FPostCaption write FPostCaption;
+    property CancelCaption: string read FCancelCaption write FCancelCaption;
+    property DialogCaption: string read FDialogCaption write FDialogCaption;
+    property DynControlEngineDB: TJvDynControlEngineDB read FDynControlEngineDB write FDynControlEngineDB;
+    property IncludeNavigator: Boolean read FIncludeNavigator write FIncludeNavigator;
   end;
 
-
-function ShowDatasourceEditDialog (aDatasource : tDatasource;
-                                   const aDialogCaption, aPostCaption, aCancelCaption : string;
-                                   aIncludeNavigator : Boolean;
-                                   aDynControlEngineDB: TJvDynControlEngineDB = NIL) : tModalResult;
+function ShowDatasourceEditDialog(ADataSource: TDataSource;
+  const ADialogCaption, APostCaption, ACancelCaption: string;
+  AIncludeNavigator: Boolean;
+  ADynControlEngineDB: TJvDynControlEngineDB = nil): TModalResult;
 
 implementation
 
-Uses SysUtils;
+uses
+  SysUtils;
 
-
-procedure tJvDynControlDatasourceEditDialog.OnPostButtonClick (Sender : TObject);
+procedure TJvDynControlDataSourceEditDialog.OnPostButtonClick(Sender: TObject);
 begin
-  if Datasource.Dataset.State IN [dsInsert, dsEdit] then
-  try
-    Datasource.Dataset.Post;
-    fForm.ModalResult := mrOk;
-  except
-    on e:exception do
-      fForm.ModalResult := mrNone;
-  end;
+  if DataSource.Dataset.State in [dsInsert, dsEdit] then
+    try
+      DataSource.Dataset.Post;
+      FForm.ModalResult := mrOk;
+    except
+      FForm.ModalResult := mrNone;
+    end;
 end;
 
-procedure tJvDynControlDatasourceEditDialog.OnCancelButtonClick (Sender : TObject);
+procedure TJvDynControlDataSourceEditDialog.OnCancelButtonClick(Sender: TObject);
 begin
-  if Datasource.Dataset.State IN [dsInsert, dsEdit] then
-    Datasource.Dataset.Cancel;
-  fForm.ModalResult := mrCancel;
+  if DataSource.Dataset.State in [dsInsert, dsEdit] then
+    DataSource.Dataset.Cancel;
+  FForm.ModalResult := mrCancel;
 end;
 
-function tJvDynControlDatasourceEditDialog.IntDynControlEngineDB: TJvDynControlEngineDB;
+function TJvDynControlDataSourceEditDialog.IntDynControlEngineDB: TJvDynControlEngineDB;
 begin
   if Assigned(DynControlEngineDB) then
     Result := DynControlEngineDB
@@ -92,32 +90,29 @@ begin
     Result := DefaultDynControlEngineDB;
 end;
 
-function tJvDynControlDatasourceEditDialog.ShowDialog : tModalResult;
-Var
-  MainPanel : TWinControl;
-  NavigatorPanel : TJvPanel;
-  ArrangePanel : TJvPanel;
-  Scrollbox    : TScrollbox;
-  Navigator    : TControl;
+function TJvDynControlDataSourceEditDialog.ShowDialog: TModalResult;
+var
+  MainPanel: TWinControl;
+  NavigatorPanel: TJvPanel;
+  ArrangePanel: TJvPanel;
+  ScrollBox: TScrollbox;
+  Navigator: TControl;
 begin
-  fForm := CreateDynControlDialog (DialogCaption,
-                                   PostCaption, CancelCaption,
-                                   OnPostButtonClick, OnCancelButtonClick,
-                                   MainPanel,
-                                   IntDynControlEngineDB.DynControlEngine);
+  FForm := CreateDynControlDialog(DialogCaption, PostCaption, CancelCaption,
+    OnPostButtonClick, OnCancelButtonClick, MainPanel, IntDynControlEngineDB.DynControlEngine);
   try
-    ScrollBox := TScrollbox.Create(fForm);
-    Scrollbox.Parent := MainPanel;
-    Scrollbox.Align := alClient;
-    Scrollbox.BorderStyle := bsNone;
-    Scrollbox.AutoScroll := True;
-    ArrangePanel := TJvPanel.Create (fForm);
-    with ArrangePanel,ArrangePanel.ArrangeSettings do
+    ScrollBox := TScrollBox.Create(FForm);
+    ScrollBox.Parent := MainPanel;
+    ScrollBox.Align := alClient;
+    ScrollBox.BorderStyle := bsNone;
+    ScrollBox.AutoScroll := True;
+    ArrangePanel := TJvPanel.Create(FForm);
+    with ArrangePanel, ArrangePanel.ArrangeSettings do
     begin
       Align := alClient;
       BevelInner := bvNone;
       BevelOuter := bvNone;
-      Parent := Scrollbox;
+      Parent := ScrollBox;
       AutoArrange := True;
       AutoSize := asHeight;
       BorderLeft := 3;
@@ -126,8 +121,8 @@ begin
     end;
     if IncludeNavigator then
     begin
-      NavigatorPanel := TJvPanel.Create (fForm);
-      Navigator := IntDynControlEngineDB.CreateDBNavigatorControl(fForm, NavigatorPanel, '', Datasource);
+      NavigatorPanel := TJvPanel.Create(FForm);
+      Navigator := IntDynControlEngineDB.CreateDBNavigatorControl(FForm, NavigatorPanel, '', DataSource);
       Navigator.Left := 3;
       Navigator.Top := 3;
       with NavigatorPanel do
@@ -136,36 +131,35 @@ begin
         BevelInner := bvNone;
         BevelOuter := bvNone;
         Parent := MainPanel;
-        Height := Navigator.Height+6;
+        Height := Navigator.Height + 6;
       end;
     end;
-    IntDynControlEngineDB.CreateControlsFromDatasourceOnControl(
-        DataSource, ArrangePanel);
-    fForm.ClientWidth := 450;
-    fForm.ClientHeight := ArrangePanel.Height + 35;
+    IntDynControlEngineDB.CreateControlsFromDatasourceOnControl(DataSource, ArrangePanel);
+    FForm.ClientWidth := 450;
+    FForm.ClientHeight := ArrangePanel.Height + 35;
     if Assigned(NavigatorPanel) then
-      fForm.ClientHeight := fForm.ClientHeight+NavigatorPanel.Height;
-    Result := fForm.ShowModal;
+      FForm.ClientHeight := FForm.ClientHeight + NavigatorPanel.Height;
+    Result := FForm.ShowModal;
   finally
-    fForm.Free;
+    FForm.Free;
   end;
 end;
 
-function ShowDatasourceEditDialog (aDatasource : tDatasource;
-                                   const aDialogCaption, aPostCaption, aCancelCaption : string;
-                                   aIncludeNavigator : Boolean;
-                                   aDynControlEngineDB: TJvDynControlEngineDB = NIL) : tModalResult;
+function ShowDatasourceEditDialog(ADataSource: TDataSource;
+  const ADialogCaption, APostCaption, ACancelCaption: string;
+  AIncludeNavigator: Boolean;
+  ADynControlEngineDB: TJvDynControlEngineDB = nil): TModalResult;
 var
-  Dialog : tJvDynControlDatasourceEditDialog;
+  Dialog: TJvDynControlDataSourceEditDialog;
 begin
-  Dialog := tJvDynControlDatasourceEditDialog.Create;
+  Dialog := TJvDynControlDataSourceEditDialog.Create;
   try
-    Dialog.Datasource:= aDatasource;
-    Dialog.DialogCaption := aDialogCaption;
-    Dialog.PostCaption := aPostCaption;
-    Dialog.CancelCaption := aCancelCaption;
-    Dialog.IncludeNavigator :=aIncludeNavigator;
-    Dialog.DynControlEngineDB := aDynControlEngineDB;
+    Dialog.DataSource := ADataSource;
+    Dialog.DialogCaption := ADialogCaption;
+    Dialog.PostCaption := APostCaption;
+    Dialog.CancelCaption := ACancelCaption;
+    Dialog.IncludeNavigator := AIncludeNavigator;
+    Dialog.DynControlEngineDB := ADynControlEngineDB;
     Result := Dialog.ShowDialog;
   finally
     Dialog.Free;
@@ -173,3 +167,4 @@ begin
 end;
 
 end.
+

@@ -19,7 +19,8 @@ Contributor(s):
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
-description : adapter unit - converts JvInterpreter calls to delphi calls
+Description:
+  adapter unit - converts JvInterpreter calls to delphi calls
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -2396,7 +2397,6 @@ initialization
 
   JvInterpreterRunReportPreviewProc := JvInterpreterRunReportPreview;
   JvInterpreterRunReportPreview2Proc := JvInterpreterRunReportPreview2;
-
 
 {$IFDEF UNITVERSIONING}
 finalization

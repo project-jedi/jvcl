@@ -66,7 +66,7 @@ type
   {$ENDIF USEJVCL}
 
   TYearData = record
-    DisplayText : string;
+    DisplayText: string;
     InfoText: string;
     DayInMonth: Integer;
     DefaultColor: TColor;
@@ -83,7 +83,6 @@ type
   TOnYearChanged = procedure(Sender: TObject; AYear: Integer) of object;
   TOnSelectDate = procedure(Sender: TObject; ADate: TDate; InfoText: string; InfoColor: TColor) of object;
   TOnInfoChanging = procedure(Sender: TObject; var InfoText: string; var CanChange: Boolean) of object;
-
 
   {$IFDEF USECUSTOMGRID}
   TJvYearGrid = class(TCustomDrawGrid)
@@ -243,7 +242,6 @@ type
     procedure DayMonthToColRow(ADay, AMonth: Integer; var ACol, ARow: Integer);
 
     procedure Find;
-
   published
     property HTMLBorder: Boolean read FHTMLBorder write SetHTMLBorder;
     property HTMLFontName: string read FHTMLFontName write SetHTMLFontName;
