@@ -1,27 +1,29 @@
-Install notes for JEDI-VCL (JVCL) Version 2.00 ALPHA for Delphi 6
-=================================================================
+Install notes for JEDI-VCL (JVCL) Version 2.00 ALPHA for Delphi 5 / Delphi 6
+============================================================================
 
-(NOTE: this release does NOT support Delphi 5 or Delphi 6 Personal. Any help to make it D5 and D6Personal-compatible will be appreciated)
+1) IMPORTANT - in order to use JVCL, you need to have JCL (JEDI Code Library) INSTALLED on your computer. JCL is available from http://sourceforge.net/projects/jcl/
 
+Please follow their instructions for installation (you should not have installed the DJCL package in the Delphi IDE)
 
-1) IMPORTANT - in order to use JVCL, you need to have the latest JCL (JEDI Code Library) INSTALLED on your computer. JCL is available from http://sourceforge.net/projects/jcl/
+2) Unzip the JVCL files to a subdirectory of your choice (IMPORTANT: it should be a sibling to the JCL subdirectory, i.e. it is on the same level as JCL:
 
-2) Unzip the JVCL files to a subdirectory of your choice (IMPORTANT: it should be a sibling to the JCL subdirectory)
+- JCL
+- JVCL
 
 3) In Delphi open the appropriate design package that is in the "Packages" subdirectory. 
-    a) for Delphi 6 it's "JVCL200_D6.dpk" 
-    b) for Delphi 6 Personal it's "JVCL200_D60Personal.dpk" - NOTE: Delphi 6 Personal is not supported in this release
-    c) for Delphi 5 it's "JVCL200_R50.dpk - NOTE: Delphi 5 is not supported in this release
+    a) for Delphi 6 it's "JVCL200_D60.dpk" 
+    b) for Delphi 6 Personal it's "JVCL200_D60Personal.dpk"
+    c) for Delphi 5 it's "JVCL200_D50.dpk" 
 
 
-4) Click on the "Install" button
+4) Click on the "Compile" button, and then on the "Install" button
 
- If you get compile error stating that zlib.pas, or some *.obj files are missing, please make sure that in your packages following paths:
+If you get compile error stating that zlib.pas, or some *.obj files are missing, please make sure that in your packages the following paths:
 
 $(DELPHI)\source\extras\zlib\
 $(DELPHI)\source\extras\zlib\obj
 
-are in your Search path ( click on package Options, and then on "Directories" tab)
+are in your Search path ( click on package "Options", and then on "Directories" tab)
 
 Of course, you need to install those files from Delphi first. If these files doesn't exist, please install them from your Delphi CD.
 
