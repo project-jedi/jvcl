@@ -30,7 +30,8 @@ requires
   JvQSystemD7R,
   JvQStdCtrlsD7R,
   rtl,
-  visualclx;
+  visualclx,
+  DJcl;
 
 contains
   JvQPatchFile in '..\..\qrun\JvQPatchFile.pas',
