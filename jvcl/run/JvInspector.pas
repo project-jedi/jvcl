@@ -25,6 +25,13 @@
  page, located at http://www.delphi-jedi.org
 
  RECENT CHANGES:
+    Apr 15, 2004, Marcel Bestebroer:
+      - Type mapper also mapped all types of the same class to the first
+        mapping of that class (as in all enums mapped to the first added
+        enum type mapping, all sets mapped to the first added set type
+        mapping, etc). Will be changed to allow mapping of descendants of
+        the specified class instead (or ranges of the integer types?) at a
+        later date.
     Apr 11, 2004, Marcel Bestebroer:
       - Index out of range errors and/or AV could show up when closing an
         application. This happened mostly in cases where you had a number
@@ -11952,9 +11959,9 @@ begin
   begin
     if PropertyType = ADataObj.TypeInfo then
       Inc(RetVal, 2)
-    else
+{    else
     if PropertyType.Kind = ADataObj.TypeInfo.Kind then
-      Inc(RetVal, 1)
+      Inc(RetVal, 1)}
     else
       Exit;
   end;
