@@ -2,6 +2,7 @@
 <Package Name="JvDB" Design="0">
   <Description>JVCL Database Components Runtime Package</Description>
   <ClxDescription>JVCLX Database Components Runtime Package</ClxDescription>
+  <GUID>{E63D1285-7625-4EFA-9DD7-632D72CF633C}</GUID>
   <C5PFlags>-LUvcl50 -LUvcldb50 -LUCJcl50</C5PFlags>
   <C6PFlags>-LUCJcl -LUCJclVcl</C6PFlags>
   <C5Libs/>
