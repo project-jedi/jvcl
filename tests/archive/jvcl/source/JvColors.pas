@@ -35,12 +35,12 @@ interface
 
 uses Classes, Controls, Graphics, Forms, JvVCLUtils;
 
-function RxIdentToColor(const Ident: string; var Color: Longint): Boolean;
-function RxColorToString(Color: TColor): string;
-function RxStringToColor(S: string): TColor;
-procedure RxGetColorValues(Proc: TGetStrProc);
+function JvIdentToColor(const Ident: string; var Color: Longint): Boolean;
+function JvColorToString(Color: TColor): string;
+function JvStringToColor(S: string): TColor;
+procedure JvGetColorValues(Proc: TGetStrProc);
 
-procedure RegisterRxColors;
+procedure RegisterJvColors;
 
 implementation
 
@@ -72,7 +72,7 @@ const
     (Value: clMoneyGreen;  Name: 'clMoneyGreen'),
     (Value: clSkyBlue;     Name: 'clSkyBlue'));
 
-function RxColorToString(Color: TColor): string;
+function JvColorToString(Color: TColor): string;
 var
   I: Integer;
 begin
@@ -87,7 +87,7 @@ begin
   end;
 end;
 
-function RxIdentToColor(const Ident: string; var Color: Longint): Boolean;
+function JvIdentToColor(const Ident: string; var Color: Longint): Boolean;
 var
   I: Integer;
   Text: array[0..63] of Char;
@@ -102,13 +102,13 @@ begin
   Result := IdentToColor(Ident, Color);
 end;
 
-function RxStringToColor(S: string): TColor;
+function JvStringToColor(S: string): TColor;
 begin
-  if not RxIdentToColor(S, Longint(Result)) then
+  if not JvIdentToColor(S, Longint(Result)) then
     Result := StringToColor(S);
 end;
 
-procedure RxGetColorValues(Proc: TGetStrProc);
+procedure JvGetColorValues(Proc: TGetStrProc);
 var
   I: Integer;
 begin
@@ -137,17 +137,17 @@ begin
   if Color = clNone16 then Color := clNone
   else if Color = clInfoBk16 then Color := clInfoBk;
 {$ENDIF}
-  Result := RxColorToString(Color);
+  Result := JvColorToString(Color);
 end;
 
 procedure TJvColorProperty.GetValues(Proc: TGetStrProc);
 begin
-  RxGetColorValues(Proc);
+  JvGetColorValues(Proc);
 end;
 
 procedure TJvColorProperty.SetValue(const Value: string);
 begin
-  SetOrdValue(RxStringToColor(Value));
+  SetOrdValue(JvStringToColor(Value));
 end;
 
 procedure TJvColorProperty.ListDrawValue(const Value: string; ACanvas: TCanvas;
@@ -179,7 +179,7 @@ begin
     vOldBrushColor := Brush.Color;
     Pen.Color := Brush.Color;
     Rectangle(ARect.Left, ARect.Top, vRight, ARect.Bottom);
-    Brush.Color := RxStringToColor(Value);
+    Brush.Color := JvStringToColor(Value);
     Pen.Color := ColorToBorderColor(ColorToRGB(Brush.Color));
     Rectangle(ARect.Left + 1, ARect.Top + 1, vRight - 1, ARect.Bottom - 1);
     Brush.Color := vOldBrushColor;
@@ -191,7 +191,7 @@ begin
 end;
 
 
-procedure RegisterRxColors;
+procedure RegisterJvColors;
 begin
   RegisterPropertyEditor(TypeInfo(TColor), TPersistent, '', TJvColorProperty);
 end;
