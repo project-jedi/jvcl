@@ -120,8 +120,8 @@ uses
 
 type
   THyperLinkClick = procedure (Sender: TObject; LinkName: string) of object;
-
-  TJvCustomHTListBox = class(TJvExCustomListBox)
+  
+  TJvCustomHTListBox = class(TCustomListBox) // asn: VisualCLX TJvEx is defective 
   private
     FHyperLinkClick: THyperLinkClick;
     FHideSel: Boolean;
