@@ -1,10 +1,11 @@
 object frmMain: TfrmMain
   Left = 198
   Top = 148
+  BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'JvMenus Example'
   ClientHeight = 273
-  ClientWidth = 446
+  ClientWidth = 453
   Color = clBtnFace
   Constraints.MinHeight = 300
   Constraints.MinWidth = 400
@@ -33,7 +34,7 @@ object frmMain: TfrmMain
   object jtbMenus: TJvToolBar
     Left = 0
     Top = 0
-    Width = 446
+    Width = 453
     Height = 29
     ButtonHeight = 21
     ButtonWidth = 39
