@@ -26,7 +26,7 @@
 
 {$IFNDEF BCB}
 {$I JVCL.INC}
-{$ENDIF}
+{$ENDIF BCB}
 {$I JvUIB.inc}
 
 unit JvUIBReg;
@@ -35,7 +35,7 @@ interface
 
 {$IFNDEF UIBNOCOMPONENT}
 procedure Register;
-{$ENDIF}
+{$ENDIF UIBNOCOMPONENT}
 
 implementation
 
@@ -45,8 +45,9 @@ uses
   Classes,
   {$IFNDEF DelphiPersonalEdition}
   JvUIBDataSet,
-  {$ENDIF}
+  {$ENDIF DelphiPersonalEdition}
   JvUIB, JvConsts;
+
 {$R ..\Resources\JvUIBReg.dcr}
 
 procedure Register;
@@ -56,6 +57,6 @@ begin
     TJvUIBScript, TJvUIBBackup, TJvUIBRestore]);
 end;
 
-{$ENDIF}
+{$ENDIF UIBNOCOMPONENT}
 
 end.

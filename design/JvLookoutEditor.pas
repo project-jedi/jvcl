@@ -38,7 +38,7 @@ uses
   DesignIntf, DesignEditors,
   {$ELSE}
   DsgnIntf,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   JvTypes, JvLookOut, JvDsgnEditors, JvDsgnTypes;
 
 type

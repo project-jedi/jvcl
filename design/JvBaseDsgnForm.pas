@@ -77,7 +77,7 @@ uses
   Registry,
   JvBaseDsgnFrame, JvConsts;
 
-{$R *.DFM}
+{$R *.dfm}
 
 const
   cHeight = 'Height';
@@ -93,7 +93,7 @@ var
   I: Integer;
 begin
   Result := nil;
-  if (DsgnFrmList <> nil) and (@CompareFunc <> nil) then
+  if (DsgnFrmList <> nil) and Assigned(CompareFunc) then
   begin
     I := DsgnFrmList.Count - 1;
     while (I >= 0) and not CompareFunc(TJvBaseDesign(DsgnFrmList[I]), Args) do

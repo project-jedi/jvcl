@@ -44,7 +44,7 @@ uses
   FiltEdit,
   {$IFNDEF COMPILER7_UP}
   ExptIntf,
-  {$ENDIF}
+  {$ENDIF COMPILER7_UP}
   ToolsAPI,
   JclSchedule,
   JvConsts, JvTrayIcon, JvGammaPanel, JvInspector, JvLinkLabel,

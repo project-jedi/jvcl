@@ -70,7 +70,7 @@ begin
   RegisterPropertyEditor(TypeInfo(Word), TObject, '', TJvIntegerProperty);
   RegisterPropertyEditor(TypeInfo(Byte), TObject, '', TJvIntegerProperty);
   {$ENDIF JvInterpreter_INTEGERPROPERTY}
-  {$ENDIF}
+  {$ENDIF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
 end;
 
 end.

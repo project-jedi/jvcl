@@ -409,7 +409,7 @@ procedure TJvID3FramesEditor.EditAction(Action: TEditAction);
 begin
   {$IFDEF COMPILER6_UP}
   Result := True;
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   case Action of
     {eaCut: Cut;
     eaCopy: Copy;

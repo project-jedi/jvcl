@@ -603,7 +603,7 @@ begin
   {$ELSE}
   // (rom) simplified and bugfixed
   Result := SDelphiKey + cRegKey;
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
 end;
 
 procedure TFrmOLBEditor.SwitchItems(Node1, Node2: TTreeNode);

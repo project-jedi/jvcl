@@ -74,8 +74,7 @@ var
 function LocateReg(IID: TGUID): Integer;
 begin
   Result := High(GIntfPropReg);
-  // (rom) maybe use IsEqualGUID() from SysUtils
-  while (Result >= 0) and not CompareMem(@GIntfPropReg[Result].GUID, @IID, SizeOf(TGUID)) do
+  while (Result >= 0) and not IsEqualGUID(GIntfPropReg[Result].GUID, IID) do
     Dec(Result);
 end;
 
@@ -148,7 +147,7 @@ begin
       Inc(Result);
     tkClass:
       begin
-        Inc(Result, SizeOf(TClass) + SizeOf(PPTypeInfo) + SizeOf(SmallInt) + StringBaseLen(1, @TypeData.UnitName));
+        Inc(Result, SizeOf(TClass) + SizeOf(PPTypeInfo) + SizeOf(Smallint) + StringBaseLen(1, @TypeData.UnitName));
         Inc(Result, PropListSize(Pointer(Integer(@TypeData.UnitName) + StringBaseLen(1, @TypeData.UnitName))));
       end;
   end;

@@ -113,10 +113,8 @@ uses
   SysUtils, Clipbrd, Consts, Math,
   JvJVCLUtils, JvJCLUtils, JvConsts, JvAniFile;
 
-{$R *.DFM}
+{$R *.dfm}
 
-// (rom) needs explanation
-{$B-}
 {$D-}
 
 const

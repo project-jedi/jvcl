@@ -467,7 +467,7 @@ const
 
     'implementation' + CrLf2 +
 
-    '{$R *.DFM}' + CrLf2 +
+    '{$R *.dfm}' + CrLf2 +
 
     'uses' + CrLf +
     '  ComObj, ComServ;' + CrLf2 +

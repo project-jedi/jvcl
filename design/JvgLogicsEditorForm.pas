@@ -175,7 +175,7 @@ uses
   ClipBrd,
   JvgTypes, JvgUtils, JvgLogicItemEditorForm, JvDsgnConsts;
 
-{$R *.DFM}
+{$R *.dfm}
 
 var
   JvgLogicItemEditor: TJvgLogicItemEditor;

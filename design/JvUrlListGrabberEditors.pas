@@ -30,28 +30,29 @@ unit JvUrlListGrabberEditors;
 
 interface
 
-uses Windows,
+uses
+  Windows,
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, DesignMenus, VCLEditors,
   {$ELSE}
   DsgnIntf,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   Classes;
 
 type
-  TJvUrlGrabberDefaultPropertiesListEditor = class (TClassProperty)
+  TJvUrlGrabberDefaultPropertiesListEditor = class(TClassProperty)
   public
-    function GetAttributes : TPropertyAttributes; override;
+    function GetAttributes: TPropertyAttributes; override;
     {$IFDEF COMPILER6_UP}
     procedure GetProperties(Proc: TGetPropProc); override;
     {$ELSE}
     procedure GetProperties(Proc: TGetPropEditProc); override;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
   end;
 
   TJvUrlGrabberDefaultPropertiesEditor = class (TClassProperty)
   public
-    function GetName : string; override;
+    function GetName: string; override;
   end;
 
 implementation
@@ -60,7 +61,7 @@ uses
   TypInfo,
   JvUrlListGrabber, JvUrlGrabbers;
 
-{ TJvUrlGrabberDefaultPropertiesListEditor }
+//=== TJvUrlGrabberDefaultPropertiesListEditor ===============================
 
 function TJvUrlGrabberDefaultPropertiesListEditor.GetAttributes: TPropertyAttributes;
 begin
@@ -71,38 +72,37 @@ end;
 procedure TJvUrlGrabberDefaultPropertiesListEditor.GetProperties(Proc: TGetPropProc);
 {$ELSE}
 procedure TJvUrlGrabberDefaultPropertiesListEditor.GetProperties(Proc: TGetPropEditProc);
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 var
-  UrlListGrabber : TJvUrlListGrabber;
-  i : Integer;
+  UrlListGrabber: TJvUrlListGrabber;
+  I: Integer;
   {$IFDEF COMPILER6_UP}
   Components: IDesignerSelections;
   {$ELSE}
   Components: TDesignerSelectionList;
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
 begin
-  inherited;
+  inherited GetProperties(Proc);
 
   UrlListGrabber := TJvUrlListGrabber(GetComponent(0));
-  for i := 0 to UrlListGrabber.DefaultGrabbersProperties.Count - 1 do
+  for I := 0 to UrlListGrabber.DefaultGrabbersProperties.Count - 1 do
   begin
     {$IFDEF COMPILER6_UP}
     Components := CreateSelectionList;
     {$ELSE}
     Components := TDesignerSelectionList.Create;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
 
-    Components.Add(UrlListGrabber.DefaultGrabbersProperties.Items[i].EditorTrick);
+    Components.Add(UrlListGrabber.DefaultGrabbersProperties.Items[I].EditorTrick);
     GetComponentProperties(Components, tkAny, Designer, Proc);
   end;
 end;
 
-
-{ TJvUrlGrabberDefaultPropertiesEditor }
+//=== TJvUrlGrabberDefaultPropertiesEditor ===================================
 
 function TJvUrlGrabberDefaultPropertiesEditor.GetName: string;
 var
-  EditorTrick : TJvUrlGrabberDefPropEdTrick;
+  EditorTrick: TJvUrlGrabberDefPropEdTrick;
 begin
   // get classname of real default properties
   EditorTrick := TJvUrlGrabberDefPropEdTrick(GetComponent(0));

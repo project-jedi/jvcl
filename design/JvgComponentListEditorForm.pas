@@ -91,7 +91,7 @@ implementation
 uses
   JvDsgnConsts, JvDsgnTypes;
 
-{$R *.DFM}
+{$R *.dfm}
 
 //=== common proc ============================================================
 

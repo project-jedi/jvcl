@@ -112,7 +112,7 @@ uses
   TypInfo,
   JvConsts;
 
-{$R *.DFM}
+{$R *.dfm}
 
 // (rom) needs explanation
 {$D-}

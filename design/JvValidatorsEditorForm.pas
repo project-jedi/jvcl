@@ -103,7 +103,7 @@ type
     function UniqueName(Component: TComponent): string; override;
     procedure FormClosed(AForm: TCustomForm); override;
     procedure FormModified; override;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     function GetEditState: TEditState; override;
     property Validator: TJvValidators read FValidator write SetValidator;
   end;
@@ -122,6 +122,7 @@ type
   end;
 
   {$IFNDEF COMPILER6_UP}
+
   // since D5 doesn't support interface style published properties,
   // these editors are supplied to make it easier to select a specific interface
   // implementor at design-time
@@ -132,6 +133,7 @@ type
   TJvErrorIndicatorProperty = class(TComponentProperty)
     procedure GetValues(Proc: TGetStrProc); override;
   end;
+
   {$ENDIF COMPILER6_UP}
 
 implementation

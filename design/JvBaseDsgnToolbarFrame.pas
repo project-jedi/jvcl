@@ -66,7 +66,7 @@ implementation
 uses
   Registry;
 
-{$R *.DFM}
+{$R *.dfm}
 
 const
   cLargeButton = 'LargeButton';

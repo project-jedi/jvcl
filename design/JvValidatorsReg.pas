@@ -23,43 +23,49 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
 {$I WINDOWSONLY.INC}
+
 unit JvValidatorsReg;
 
 interface
+
 {$R ..\resources\JvValidatorsReg.dcr}
+
 procedure Register;
 
 implementation
-uses
-  Classes, JvErrorIndicator, JvValidators, JvValidatorsEditorForm, JvDsgnEditors,
-  {$IFDEF COMPILER6_UP}
-  DesignEditors, DesignIntf
-  {$ELSE}
-  DsgnIntf
-  {$ENDIF};
 
+uses
+  Classes,
+  {$IFDEF COMPILER6_UP}
+  DesignEditors, DesignIntf,
+  {$ELSE}
+  DsgnIntf,
+  {$ENDIF COMPILER6_UP}
+  JvConsts,
+  JvErrorIndicator, JvValidators, JvValidatorsEditorForm, JvDsgnEditors;
 
 procedure Register;
 begin
-  RegisterComponents('Jv Validators',
-    [TJvValidators, TJvValidationSummary,TJvErrorIndicator]);
-  RegisterNoIcon([
-    TJvRequiredFieldValidator,
-      TJvCompareValidator,
-      TJvRangeValidator,
-      TJvRegularExpressionValidator,
-      TJvCustomValidator]);
+  RegisterComponents(SPaletteValidators, [TJvValidators,
+    TJvValidationSummary, TJvErrorIndicator]);
+  RegisterNoIcon([TJvRequiredFieldValidator, TJvCompareValidator,
+    TJvRangeValidator, TJvRegularExpressionValidator, TJvCustomValidator]);
 
   RegisterComponentEditor(TJvValidators, TJvValidatorComponent);
-  RegisterPropertyEditor(typeinfo(integer),TJvErrorIndicator,'ImageIndex',TJvDefaultImageIndexProperty);
-//  RegisterPropertyEditor(typeinfo(string),TJvCustomFormatEdit,'Characters',TJvCharStringProperty);
-  RegisterPropertyEditor(typeinfo(string), TJvBaseValidator, 'PropertyToValidate', TJvPropertyValidateProperty);
+  RegisterPropertyEditor(TypeInfo(Integer), TJvErrorIndicator,
+    'ImageIndex', TJvDefaultImageIndexProperty);
+//  RegisterPropertyEditor(TypeInfo(string), TJvCustomFormatEdit, 'Characters', TJvCharStringProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvBaseValidator,
+    'PropertyToValidate', TJvPropertyValidateProperty);
   {$IFNDEF COMPILER6_UP}
-  RegisterPropertyEditor(typeinfo(TComponent),TComponent,'ValidationSummary',TJvValidationSummaryProperty);
-  RegisterPropertyEditor(typeinfo(TComponent),TComponent,'ErrorIndicator',TJvErrorIndicatorProperty);
-  {$ENDIF}
+  RegisterPropertyEditor(TypeInfo(TComponent), TComponent,
+    'ValidationSummary', TJvValidationSummaryProperty);
+  RegisterPropertyEditor(TypeInfo(TComponent), TComponent,
+    'ErrorIndicator', TJvErrorIndicatorProperty);
+  {$ENDIF COMPILER6_UP}
 end;
 
 end.

@@ -110,7 +110,7 @@ uses
   CommCtrl,
   JvDsgnConsts, JvConsts;
 
-{$R *.DFM}
+{$R *.dfm}
 
 function GetItemIndexAt(LV: TListView; X, Y: Integer): Integer;
 var
@@ -336,7 +336,8 @@ begin
   try
     if UsingVirtualRoot and (Index = 0) then
       Result := FVirtualRoot
-    else if (Index >= Ord(UsingVirtualRoot)) and ((Index - Ord(UsingVirtualRoot)) < GetViewList.Count) then
+    else
+    if (Index >= Ord(UsingVirtualRoot)) and ((Index - Ord(UsingVirtualRoot)) < GetViewList.Count) then
       Result := GetViewList.Item(Index - Ord(UsingVirtualRoot));
   finally
     Provider.Leave;

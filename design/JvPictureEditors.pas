@@ -1,3 +1,29 @@
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+The Original Code is: JvPictureEditors.PAS, released on 2002-05-26.
+
+The Initial Developer of the Original Code is John Doe.
+Portions created by John Doe are Copyright (C) 2003 John Doe.
+All Rights Reserved.
+
+Contributor(s):
+
+Last Modified: 2003-11-09
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
 
 unit JvPictureEditors;
@@ -10,12 +36,12 @@ uses
   RTLConsts, DesignIntf, DesignEditors, VCLEditors,
   {$ELSE}
   DsgnIntf,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   JvPictureEditForm;
 
 type
   { Property editor the TPicture properties (e.g. the Picture property). Brings
-    up a file open dialog allowing loading a picture file. }
+    up a file open dialog allowing to load a picture file. }
   TJvPictProperty = class(TPropertyEditor)
   public
     procedure Edit; override;
@@ -38,7 +64,7 @@ type
     procedure EditProperty(const Prop: IProperty; var Continue: Boolean); override;
     {$ELSE}
     procedure EditProperty(Prop: TPropertyEditor; var Continue, FreeEditor: Boolean); override;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
   end;
 
   TJvPictEditor = class(TComponent)
@@ -62,11 +88,12 @@ function EditGraphic(Graphic: TGraphic; AClass: TGraphicClass;
   const DialogCaption: string): Boolean;
 
 implementation
+
 uses
   SysUtils, TypInfo, LibHelp, Consts,
   JvTypes, JvJVCLUtils;
 
-{ Utility routines }
+//=== Utility routines =======================================================
 
 function EditGraphic(Graphic: TGraphic; AClass: TGraphicClass;
   const DialogCaption: string): Boolean;
@@ -156,7 +183,7 @@ begin
     if PictureEditor.Execute then
       if (PictureEditor.Picture.Graphic = nil) or
         (PictureEditor.Picture.Graphic is PictureEditor.GraphicClass) then
-        SetOrdValue(LongInt(PictureEditor.Picture.Graphic))
+        SetOrdValue(Longint(PictureEditor.Picture.Graphic))
       else
         raise EJVCLException.Create(SInvalidPropertyValue);
   finally
@@ -192,7 +219,7 @@ end;
 procedure TJvGraphicsEditor.EditProperty(const Prop: IProperty; var Continue: Boolean);
 {$ELSE}
 procedure TJvGraphicsEditor.EditProperty(Prop: TPropertyEditor; var Continue, FreeEditor: Boolean);
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 var
   PropName: string;
 begin

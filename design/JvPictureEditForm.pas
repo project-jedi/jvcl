@@ -103,10 +103,8 @@ uses
   TypInfo, SysUtils, Clipbrd, Consts, ShellApi, LibHelp,
   JvJVCLUtils, JvJCLUtils, JvConsts, JvDsgnConsts, JvDirectoryListForm, JvTypes;
 
-{$R *.DFM}
+{$R *.dfm}
 
-// (rom) needs explanation
-{$B-}
 {$D-}
 
 procedure CopyPicture(Pict: TPicture; BackColor: TColor);
@@ -296,7 +294,7 @@ end;
 procedure TPictureEditDialog.ImagePaintBoxPaint(Sender: TObject);
 var
   DrawRect: TRect;
-  SNone: string;
+  None: string;
   Ico: HICON;
   W, H: Integer;
 begin
@@ -339,9 +337,9 @@ begin
     else
       with DrawRect, Canvas do
       begin
-        SNone := srNone;
-        TextOut(Left + (Right - Left - TextWidth(SNone)) div 2, Top + (Bottom -
-          Top - TextHeight(SNone)) div 2, SNone);
+        None := srNone;
+        TextOut(Left + (Right - Left - TextWidth(None)) div 2, Top + (Bottom -
+          Top - TextHeight(None)) div 2, None);
       end;
   end;
 end;

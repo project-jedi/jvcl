@@ -35,51 +35,58 @@ Known Issues:
   01/25/2002       TJvWizardAboutDialogProperty, Added by <Steve Forbes>
 ******************************************************************************}
 
+{$I JVCL.INC}
+
 unit JvWizardReg;
 
 interface
-
-{$I JVCL.INC}
-
 
 procedure Register;
 
 implementation
 
-{$R ..\resources\JvWizardReg.dcr}
-
 uses
-  Classes, {$IFDEF COMPILER6_UP}DesignIntf, DesignEditors{$ELSE}DsgnIntf{$ENDIF},
-  JvWizard, JvWizardRouteMapNodes, JvWizardRouteMapSteps,
+  Classes,
+  {$IFDEF COMPILER6_UP}
+  DesignIntf, DesignEditors,
+  {$ELSE}
+  DsgnIntf,
+  {$ENDIF COMPILER6_UP}
   {$IFNDEF USEJVCL}
   JvWizardAboutInfoForm,
   {$ENDIF USEJVCL}
-  JvWizardEditorForm;
+  JvConsts,
+  JvWizard, JvWizardRouteMapNodes, JvWizardRouteMapSteps, JvWizardEditorForm;
+
+{$R ..\resources\JvWizardReg.dcr}
 
 procedure Register;
+const
+  cActivePage = 'ActivePage';
+  cPages = 'Pages';
 begin
-  RegisterComponents('Jv Wizard', [
-    TJvWizard,TJvWizardRouteMapSteps,TJvWizardRouteMapNodes
-    ]);
-  RegisterClasses([TJvWizardCustomPage, TJvWizardWelcomePage, TJvWizardInteriorPage]);
+  RegisterComponents(SPaletteWizard, [TJvWizard, TJvWizardRouteMapSteps,
+    TJvWizardRouteMapNodes]);
+  RegisterClasses([TJvWizardCustomPage, TJvWizardWelcomePage,
+    TJvWizardInteriorPage]);
   RegisterComponentEditor(TJvWizard, TJvWizardComponentEditor);
   RegisterComponentEditor(TJvWizardCustomPage, TJvWizardComponentEditor);
   RegisterComponentEditor(TJvWizardWelcomePage, TJvWizardComponentEditor);
   RegisterComponentEditor(TJvWizardInteriorPage, TJvWizardComponentEditor);
-  RegisterPropertyEditor(TypeInfo(TJvWizardCustomPage), TJvWizard, 'ActivePage',
+  RegisterPropertyEditor(TypeInfo(TJvWizardCustomPage), TJvWizard, cActivePage,
     TJvWizardActivePageProperty);
-  RegisterPropertyEditor(TypeInfo(TJvWizardWelcomePage), TJvWizard, 'ActivePage',
+  RegisterPropertyEditor(TypeInfo(TJvWizardWelcomePage), TJvWizard, cActivePage,
     TJvWizardActivePageProperty);
-  RegisterPropertyEditor(TypeInfo(TJvWizardInteriorPage), TJvWizard, 'ActivePage',
+  RegisterPropertyEditor(TypeInfo(TJvWizardInteriorPage), TJvWizard, cActivePage,
     TJvWizardActivePageProperty);
   // Added By Steve Forbes
   {$IFNDEF USEJVCL}
   RegisterPropertyEditor(TypeInfo(TJvWizardAboutInfoForm), nil, 'About',
     TJvWizardAboutDialogProperty);
-  {$ENDIF}
+  {$ENDIF USEJVCL}
   // JvWizard Page List Editor
-  RegisterPropertyEditor(TypeInfo(TJvWizardPageList), TJvWizard, 'Pages',
+  RegisterPropertyEditor(TypeInfo(TJvWizardPageList), TJvWizard, cPages,
     TJvWizardPageListProperty);
-end; {Register}
+end;
 
 end.

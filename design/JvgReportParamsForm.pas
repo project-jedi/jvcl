@@ -59,15 +59,12 @@ type
   public
   end;
 
-var
-  ReportParamsForm: TJvgReportParamsForm;
-
 implementation
 
 uses
   JvgReportParamsEditor, JvDsgnConsts;
 
-{$R *.DFM}
+{$R *.dfm}
 
 procedure TJvgRepParamsEditor.ExecuteVerb(Index: Integer);
 begin

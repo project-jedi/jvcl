@@ -41,11 +41,8 @@ type
   public
   end;
 
-//var
-//  JvgRTFPreview: TJvgRTFPreview;
-
 implementation
 
-{$R *.DFM}
+{$R *.dfm}
 
 end.

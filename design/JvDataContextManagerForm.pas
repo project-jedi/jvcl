@@ -63,7 +63,7 @@ implementation
 uses
   JvContextProvider, JvBaseDsgnForm, JvDataProviderImpl, JvDsgnConsts;
 
-{$R *.DFM}
+{$R *.dfm}
 
 function IsContextDesignForm(Form: TJvBaseDesign; const Args: array of const): Boolean;
 begin
@@ -129,10 +129,10 @@ begin
   if Supports(InternalProvider, IInterfaceComponentReference, ICR) then
   begin
     CtxProv := TJvContextProvider(ICR.GetComponent);
-    {$IFNDEF COMPILER6_UP}
-    Supports(CtxProv.Provider, IJvDataProvider, Result);
-    {$ELSE}
+    {$IFDEF COMPILER6_UP}
     Result := CtxProv.Provider;
+    {$ELSE}
+    Supports(CtxProv.Provider, IJvDataProvider, Result);
     {$ENDIF COMPILER6_UP}
   end;
 end;
@@ -154,14 +154,14 @@ begin
       if Value <> nil then
         FRootItem := TJvContextRootItem.Create(InternalProvider as IJvDataItems);
       CtxProv := TJvContextProvider(ICR.GetComponent);
-      {$IFNDEF COMPILER6_UP}
+      {$IFDEF COMPILER6_UP}
+      CtxProv.Provider := Value;
+      {$ELSE}
       if Value = nil then
         CtxProv.Provider := nil
       else
       if Supports(Value, IInterfaceComponentReference, ICR) then
         CtxProv.Provider := ICR.GetComponent;
-      {$ELSE}
-      CtxProv.Provider := Value;
       {$ENDIF COMPILER6_UP}
     end;
     if Supports(fmeTreeList.Provider as IJvDataConsumer, IJvDataConsumerViewList, ViewList) then

@@ -91,7 +91,7 @@ procedure DesignProvider(AProvider: IJvDataProvider;
 
 implementation
 
-{$R *.DFM}
+{$R *.dfm}
 
 uses
   CommCtrl,

@@ -155,13 +155,11 @@ type
     property Schedule: IJclSchedule read FSchedule write SetSchedule;
   end;
 
-var
-  FrmScheduleEditor: TFrmScheduleEditor;
-
 implementation
 
 uses
-  JclDateTime, JvDsgnConsts;
+  JclDateTime,
+  JvDsgnConsts;
 
 {$R *.dfm}
 
@@ -598,10 +596,7 @@ end;
 procedure TFrmScheduleEditor.FormCreate(Sender: TObject);
 begin
   FTestSchedule := CreateSchedule;
-  {$IFNDEF COMPILER6_UP}
-  dtpStartDate.DateFormat := dfShort;
-  dtpEndDate.DateFormat := dfShort;
-  {$ELSE}
+  {$IFDEF COMPILER6_UP}
   dtpStartDate.Format := 'dd-MM-yyyy';
   dtpStartTime.Format := 'HH:mm:ss';
   dtpEndDate.Format := 'dd-MM-yyyy';
@@ -609,6 +604,9 @@ begin
   dtpDayFreqOneshot.Format := 'HH:mm:ss';
   dtpFreqFrom.Format := 'HH:mm:ss';
   dtpFreqTo.Format := 'HH:mm:ss';
+  {$ELSE}
+  dtpStartDate.DateFormat := dfShort;
+  dtpEndDate.DateFormat := dfShort;
   {$ENDIF COMPILER6_UP}
   dtpStartDate.DateTime := Now;
   dtpEndDate.DateTime := Now;

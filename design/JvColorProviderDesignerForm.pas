@@ -86,7 +86,7 @@ implementation
 uses
   JvConsts, JvDsgnConsts;
 
-{$R *.DFM}
+{$R *.dfm}
 
 function IsColorProviderDesingForm(Form: TJvBaseDesign; const Args: array of const): Boolean;
 begin

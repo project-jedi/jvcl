@@ -71,7 +71,7 @@ begin
     TJvDeleteError, TJvRenameError]);
 
   RegisterPropertyEditor(TypeInfo(string), TJvAppletDialog, 'AppletName', TJvAppletNameProperty);
-  RegisterPropertyEditor(TypeInfo(integer), TJvAppletDialog, 'AppletIndex', TJvAppletIndexProperty);
+  RegisterPropertyEditor(TypeInfo(Integer), TJvAppletDialog, 'AppletIndex', TJvAppletIndexProperty);
 
   {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
   RegisterComponentEditor(TCommonDialog, TJvBaseDlgEditor);

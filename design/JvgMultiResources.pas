@@ -156,7 +156,7 @@ begin
 
       if C.Name = '' then
         Continue;
-      SLNames.Clear; //SLNames.Sorted := true;
+      SLNames.Clear; //SLNames.Sorted := True;
       GetComponentData(C, SLNames);
       for J := 0 to SLNames.Count - 1 do
       begin

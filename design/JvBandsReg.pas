@@ -35,7 +35,7 @@ procedure Register;
 implementation
 
 uses
-  Classes, ImgList,
+  Classes, ImgList, ToolsAPI,
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
   {$ELSE}
@@ -44,8 +44,8 @@ uses
   {$IFNDEF COMPILER7_UP}
   ExptIntf,
   {$ENDIF COMPILER7_UP}
-  ToolsAPI,
-  JclSchedule, JvBandForms, JvBandObject, JvBandObjectDLLWizard,
+  JclSchedule,
+  JvBandForms, JvBandObject, JvBandObjectDLLWizard,
   JvBandObjectDLLWizardForm;
 
 procedure Register;

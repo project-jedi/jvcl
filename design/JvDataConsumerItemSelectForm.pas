@@ -34,10 +34,10 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls,
-  {$IFNDEF COMPILER6_UP}
-  DsgnIntf,
-  {$ELSE}
+  {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors,
+  {$ELSE}
+  DsgnIntf,
   {$ENDIF COMPILER6_UP}
   JvBaseDsgnForm, JvProviderTreeListFrame, JvDataProvider, JvDataProviderImpl,
   JvDsgnTypes;
@@ -79,7 +79,7 @@ implementation
 uses
   JvDsgnConsts;
 
-{$R *.DFM}
+{$R *.dfm}
 
 function IsConsumerItemSelectForm(Form: TJvBaseDesign; const Args: array of const): Boolean;
 begin

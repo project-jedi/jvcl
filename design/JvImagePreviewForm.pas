@@ -84,7 +84,7 @@ uses
   Math,
   JvConsts, JvJVCLUtils, JvDsgnConsts;
 
-{$R *.DFM}
+{$R *.dfm}
 
 // (rom) this needs explanation
 {$I+}

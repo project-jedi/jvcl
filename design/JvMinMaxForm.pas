@@ -36,7 +36,7 @@ uses
   RTLConsts, DesignIntf, VCLEditors, DesignEditors,
   {$ELSE}
   DsgnIntf,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   JvJVCLUtils, JvFormPlacement, JvComponent;
 
 type
@@ -90,13 +90,12 @@ type
     procedure Edit; override;
   end;
 
-function EditMinMaxInfo(AComponent: TJvFormPlacement): boolean;
+function EditMinMaxInfo(AComponent: TJvFormPlacement): Boolean;
 
 implementation
 
-{$R *.DFM}
+{$R *.dfm}
 
-// (rom) needs explanation
 {$D-}
 
 procedure MakeIntEdit(Edit: TCustomEdit);
@@ -104,9 +103,9 @@ begin
   SetWindowLong(Edit.Handle, GWL_STYLE, GetWindowLong(Edit.Handle, GWL_STYLE) or ES_NUMBER);
 end;
 
-function EditMinMaxInfo(AComponent: TJvFormPlacement): boolean;
+function EditMinMaxInfo(AComponent: TJvFormPlacement): Boolean;
 begin
-  Result := false;
+  Result := False;
   if AComponent = nil then
     Exit;
   with TMinMaxInfoEditDialog.Create(Application) do

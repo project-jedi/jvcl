@@ -82,7 +82,7 @@ begin
     Cont := False;
   end;
 end;
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 
 procedure TJvTimerListDefaultEditor.ExecuteVerb(Index: Integer);
 begin
