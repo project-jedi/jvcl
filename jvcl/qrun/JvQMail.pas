@@ -323,7 +323,7 @@ begin
   FSimpleMapi.LoadClientLib;
   if not FSimpleMapi.ClientLibLoaded then
 {$TYPEDADDRESS OFF}
-    raise EJclMapiError.CreateResRec(@RsNoClientInstalled);
+    raise EJclMapiError.CreateRes(@RsNoClientInstalled);
 {$TYPEDADDRESS ON}
 end;
 
@@ -331,7 +331,7 @@ procedure TJvMail.CheckUserLogged;
 begin
   if not UserLogged then
 {$TYPEDADDRESS OFF}
-    raise EJclMapiError.CreateResRec(@RsNoUserLogged);
+    raise EJclMapiError.CreateRes(@RsNoUserLogged);
 {$TYPEDADDRESS ON}
 end;
 
@@ -378,7 +378,7 @@ procedure TJvMail.CreateMapiMessage;
       begin
         if not FileExists(Attachment[I]) then
 {$TYPEDADDRESS OFF}
-          raise EJclMapiError.CreateResRecFmt(@RsAttachmentNotFound, [Attachment[I]]);
+          raise EJclMapiError.CreateResFmt(@RsAttachmentNotFound, [Attachment[I]]);
 {$TYPEDADDRESS ON}
         FillChar(FAttachArray[I], SizeOf(TMapiFileDesc), #0);
         FAttachArray[I].nPosition := $FFFFFFFF;
@@ -420,7 +420,7 @@ var
     begin
       if not RecipList[I].Valid then
 {$TYPEDADDRESS OFF}
-        raise EJclMapiError.CreateResRecFmt(@RsRecipNotValid, [RecipList[I].GetNamePath]);
+        raise EJclMapiError.CreateResFmt(@RsRecipNotValid, [RecipList[I].GetNamePath]);
 {$TYPEDADDRESS ON}
       FillChar(FRecipArray[RecipIndex], SizeOf(TMapiRecipDesc), #0);
       with FRecipArray[RecipIndex], RecipList[I] do
