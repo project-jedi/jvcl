@@ -22,25 +22,30 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
 
 unit JvThemes;
 
 interface
 uses
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   Windows, Messages,
-{$ENDIF}
-{$IFDEF JVCLThemesEnabled}
+  {$ENDIF MSWINDOWS}
+  {$IFDEF JVCLThemesEnabled}
   Contnrs,
- {$IFDEF COMPILER7_UP}Themes,{$ELSE}ThemeSrv,{$ENDIF}
-{$ENDIF}
-{$IFDEF VCL}
+  {$IFDEF COMPILER7_UP}
+  Themes,
+  {$ELSE}
+  ThemeSrv,
+  {$ENDIF COMPILER7_UP}
+  {$ENDIF JVCLThemesEnabled}
+  {$IFDEF VCL}
   Controls, StdCtrls, Graphics, Buttons,
-{$ENDIF}
-{$IFDEF VisualCLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   QControls, QForms, QGraphics, QButtons,
-{$ENDIF}
+  {$ENDIF VisualCLX}
   SysUtils, Classes;
 
 const
@@ -90,7 +95,6 @@ type
   PThemedElementDetails = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.PThemedElementDetails;
   TThemedElementDetails = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.TThemedElementDetails;
   TThemeServices = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.TThemeServices;
-
 
 // enumerations as constants
 
@@ -504,7 +508,8 @@ const
   ttbSplitButtonDropDownPressed = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.ttbSplitButtonDropDownPressed;
   ttbSplitButtonDropDownDisabled = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.ttbSplitButtonDropDownDisabled;
   ttbSplitButtonDropDownChecked = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.ttbSplitButtonDropDownChecked;
-  ttbSplitButtonDropDownCheckedHot = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.ttbSplitButtonDropDownCheckedHot;
+  ttbSplitButtonDropDownCheckedHot =
+    {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.ttbSplitButtonDropDownCheckedHot;
   ttbSeparatorNormal = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.ttbSeparatorNormal;
   ttbSeparatorHot = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.ttbSeparatorHot;
   ttbSeparatorPressed = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.ttbSeparatorPressed;
@@ -699,17 +704,18 @@ const
   twFrameRightSizingTemplate = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.twFrameRightSizingTemplate;
   twSmallFrameRightSizingTemplate = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.twSmallFrameRightSizingTemplate;
   twFrameBottomSizingTemplate = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.twFrameBottomSizingTemplate;
-  twSmallFrameBottomSizingTemplate = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.twSmallFrameBottomSizingTemplate;
+  twSmallFrameBottomSizingTemplate =
+    {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.twSmallFrameBottomSizingTemplate;
 
 type
-{$IFDEF COMPILER7_UP}
+  {$IFDEF COMPILER7_UP}
   TThemeServicesEx = TThemeServices;
-{$ELSE}
+  {$ELSE}
   TThemeServicesEx = class(TThemeServices)
   public
     procedure ApplyThemeChange;
   end;
-{$ENDIF}
+  {$ENDIF COMPILER7_UP}
 
 function ThemeServices: TThemeServicesEx;
 
@@ -724,13 +730,11 @@ procedure DrawThemedBorder(Control: TControl);
 {$ENDIF JVCLThemesEnabled}
 
 type
-{$IFDEF COMPILER7_UP}
+  {$IFDEF COMPILER7_UP}
   TThemeStyle = TControlStyle;
-{$ELSE}
-  TThemeStyle = Set of (
-    csNeedsBorderPaint, csParentBackground
-  );
-{$ENDIF}
+  {$ELSE}
+  TThemeStyle = set of (csNeedsBorderPaint, csParentBackground);
+  {$ENDIF COMPILER7_UP}
 
 {
   Instead of the ControlStyle property you should use the following functions:
@@ -743,7 +747,6 @@ type
 procedure IncludeThemeStyle(Control: TControl; Style: TThemeStyle);
 procedure ExcludeThemeStyle(Control: TControl; Style: TThemeStyle);
 function GetThemeStyle(Control: TControl): TThemeStyle;
-
 
 { DrawThemedBackground fills R with Canvas.Brush.Color/Color. If the control uses
   csParentBackground and the color is that of it's parent the Rect is not filled
@@ -769,7 +772,7 @@ procedure PerformEraseBackground(Control: TControl; DC: HDC; R: PRect = nil); ov
 {$IFDEF VisualCLX}
 type
   TButtonStyle = (bsAutoDetect, bsWin31, bsNew);
-{$ENDIF}
+{$ENDIF VisualCLX}
 
 { DrawThemedButtonFace draws a themed button when theming is enabled. }
 function DrawThemedButtonFace(Control: TControl; Canvas: TCanvas; const Client: TRect;
@@ -799,14 +802,14 @@ procedure DrawThemedBackground(Control: TControl; Canvas: TCanvas;
 var
   cl: TColor;
 begin
-{$IFDEF JVCLThemesEnabled}
+  {$IFDEF JVCLThemesEnabled}
   if (not (csDesigning in Control.ComponentState)) and
-     (Control.Parent <> nil) and
-     ((Color = TWinControlThemeInfo(Control.Parent).Color) or
-     (ColorToRGB(Color) = ColorToRGB(TWinControlThemeInfo(Control.Parent).Color))) and
-     (ThemeServices.ThemesEnabled) and
-     ((not NeedsParentBackground) or
-     (csParentBackground in GetThemeStyle(Control))) then
+    (Control.Parent <> nil) and
+    ((Color = TWinControlThemeInfo(Control.Parent).Color) or
+    (ColorToRGB(Color) = ColorToRGB(TWinControlThemeInfo(Control.Parent).Color))) and
+    (ThemeServices.ThemesEnabled) and
+    ((not NeedsParentBackground) or
+    (csParentBackground in GetThemeStyle(Control))) then
   begin
     if Control is TWinControl then
     begin
@@ -819,7 +822,7 @@ begin
       PerformEraseBackground(Control, Canvas.Handle, @R)
   end
   else
-{$ENDIF}
+  {$ENDIF JVCLThemesEnabled}
   begin
     cl := Canvas.Brush.Color;
     if cl <> Color then
@@ -884,16 +887,16 @@ procedure DrawThemedBackground(Control: TControl; DC: HDC; const R: TRect;
 {$IFDEF JVCLThemesEnabled}
 var
   LogBrush: TLogBrush;
-{$ENDIF}
+{$ENDIF JVCLThemesEnabled}
 begin
-{$IFDEF JVCLThemesEnabled}
+  {$IFDEF JVCLThemesEnabled}
   GetObject(Brush, SizeOf(LogBrush), @LogBrush);
   if (not (csDesigning in Control.ComponentState)) and
-     (Control.Parent <> nil) and
-     (LogBrush.lbColor = Cardinal(ColorToRGB(TWinControlThemeInfo(Control.Parent).Color))) and
-     (ThemeServices.ThemesEnabled) and
-     ((not NeedsParentBackground) or
-     (csParentBackground in GetThemeStyle(Control))) then
+    (Control.Parent <> nil) and
+    (LogBrush.lbColor = Cardinal(ColorToRGB(TWinControlThemeInfo(Control.Parent).Color))) and
+    (ThemeServices.ThemesEnabled) and
+    ((not NeedsParentBackground) or
+    (csParentBackground in GetThemeStyle(Control))) then
   begin
     if Control is TWinControl then
     begin
@@ -906,8 +909,8 @@ begin
       PerformEraseBackground(Control, DC, @R)
   end
   else
-{$ENDIF}
-  FillRect(DC, R, Brush);
+  {$ENDIF JVCLThemesEnabled}
+    FillRect(DC, R, Brush);
 end;
 
 function DrawThemedFrameControl(Control: TControl; DC: HDC; const Rect: TRect; uType, uState: UINT): BOOL;
@@ -920,84 +923,102 @@ var
   ScrollBar: TThemedScrollBar;
   R: TRect;
   Details: TThemedElementDetails;
-{$ENDIF}
+{$ENDIF JVCLThemesEnabled}
 begin
   Result := False;
-{$IFDEF JVCLThemesEnabled}
+  {$IFDEF JVCLThemesEnabled}
   if (not (csDesigning in Control.ComponentState)) and
-     (ThemeServices.ThemesEnabled) then
+    ThemeServices.ThemesEnabled then
   begin
     R := Rect;
     case uType of
       DFC_BUTTON:
-        begin
-          case (uState and Mask) of
-            DFCS_BUTTONPUSH:
+        case uState and Mask of
+          DFCS_BUTTONPUSH:
+            begin
+              if uState and (DFCS_TRANSPARENT or DFCS_FLAT) = 0 then
               begin
-                if uState and (DFCS_TRANSPARENT or DFCS_FLAT) = 0 then
-                begin
-                  if uState and DFCS_INACTIVE <> 0 then Btn := tbPushButtonDisabled
-                  else if uState and DFCS_PUSHED <> 0 then Btn := tbPushButtonPressed
-                  else if uState and DFCS_HOT <> 0 then Btn := tbPushButtonHot
-                  else if uState and DFCS_MONO <> 0 then Btn := tbPushButtonDefaulted
-                  else Btn := tbPushButtonNormal;
+                if uState and DFCS_INACTIVE <> 0 then
+                  Btn := tbPushButtonDisabled
+                else
+                if uState and DFCS_PUSHED <> 0 then
+                  Btn := tbPushButtonPressed
+                else
+                if uState and DFCS_HOT <> 0 then
+                  Btn := tbPushButtonHot
+                else
+                if uState and DFCS_MONO <> 0 then
+                  Btn := tbPushButtonDefaulted
+                else
+                  Btn := tbPushButtonNormal;
 
-                  Details := ThemeServices.GetElementDetails(Btn);
-                  ThemeServices.DrawElement(DC, Details, R);
-                  Result := True;
-                end;
+                Details := ThemeServices.GetElementDetails(Btn);
+                ThemeServices.DrawElement(DC, Details, R);
+                Result := True;
               end;
-          end; // case
+            end;
         end;
-
       DFC_SCROLL:
         begin
-          case (uState and Mask) of
+          case uState and Mask of
             DFCS_SCROLLCOMBOBOX:
               begin
-                if uState and DFCS_INACTIVE <> 0 then ComboBox := tcDropDownButtonDisabled
-                else if uState and DFCS_PUSHED <> 0 then ComboBox := tcDropDownButtonPressed
-                else if uState and DFCS_HOT <> 0 then ComboBox := tcDropDownButtonHot
-                else ComboBox := tcDropDownButtonNormal;
+                if uState and DFCS_INACTIVE <> 0 then
+                  ComboBox := tcDropDownButtonDisabled
+                else
+                if uState and DFCS_PUSHED <> 0 then
+                  ComboBox := tcDropDownButtonPressed
+                else
+                if uState and DFCS_HOT <> 0 then
+                  ComboBox := tcDropDownButtonHot
+                else
+                  ComboBox := tcDropDownButtonNormal;
 
                 Details := ThemeServices.GetElementDetails(ComboBox);
                 ThemeServices.DrawElement(DC, Details, R);
                 Result := True;
               end;
             DFCS_SCROLLUP:
+              if uState and (DFCS_TRANSPARENT {or DFCS_FLAT}) = 0 then
               begin
-                if uState and (DFCS_TRANSPARENT {or DFCS_FLAT}) = 0 then
-                begin
-                  if uState and DFCS_INACTIVE <> 0 then ScrollBar := tsArrowBtnUpDisabled
-                  else if uState and DFCS_PUSHED <> 0 then ScrollBar := tsArrowBtnUpPressed
-                  else if uState and DFCS_HOT <> 0 then ScrollBar := tsArrowBtnUpHot
-                  else ScrollBar := tsArrowBtnUpNormal;
+                if uState and DFCS_INACTIVE <> 0 then
+                  ScrollBar := tsArrowBtnUpDisabled
+                else
+                if uState and DFCS_PUSHED <> 0 then
+                  ScrollBar := tsArrowBtnUpPressed
+                else
+                if uState and DFCS_HOT <> 0 then
+                  ScrollBar := tsArrowBtnUpHot
+                else
+                  ScrollBar := tsArrowBtnUpNormal;
 
-                  Details := ThemeServices.GetElementDetails(ScrollBar);
-                  ThemeServices.DrawElement(DC, Details, R);
-                  Result := True;
-                end;
+                Details := ThemeServices.GetElementDetails(ScrollBar);
+                ThemeServices.DrawElement(DC, Details, R);
+                Result := True;
               end;
             DFCS_SCROLLDOWN:
+              if uState and (DFCS_TRANSPARENT {or DFCS_FLAT}) = 0 then
               begin
-                if uState and (DFCS_TRANSPARENT {or DFCS_FLAT}) = 0 then
-                begin
-                  if uState and DFCS_INACTIVE <> 0 then ScrollBar := tsArrowBtnDownDisabled
-                  else if uState and DFCS_PUSHED <> 0 then ScrollBar := tsArrowBtnDownPressed
-                  else if uState and DFCS_HOT <> 0 then ScrollBar := tsArrowBtnDownHot
-                  else ScrollBar := tsArrowBtnDownNormal;
+                if uState and DFCS_INACTIVE <> 0 then
+                  ScrollBar := tsArrowBtnDownDisabled
+                else
+                if uState and DFCS_PUSHED <> 0 then
+                  ScrollBar := tsArrowBtnDownPressed
+                else
+                if uState and DFCS_HOT <> 0 then
+                  ScrollBar := tsArrowBtnDownHot
+                else
+                  ScrollBar := tsArrowBtnDownNormal;
 
-                  Details := ThemeServices.GetElementDetails(ScrollBar);
-                  ThemeServices.DrawElement(DC, Details, R);
-                  Result := True;
-                end;
+                Details := ThemeServices.GetElementDetails(ScrollBar);
+                ThemeServices.DrawElement(DC, Details, R);
+                Result := True;
               end;
-          end; // clase
+          end;
         end;
-
-    end; // case
+    end;
   end;
-{$ENDIF}
+  {$ENDIF JVCLThemesEnabled}
 
   if not Result then
     Result := DrawFrameControl(DC, Rect, uType, uState);
@@ -1012,23 +1033,29 @@ function DrawThemedButtonFace(Control: TControl; Canvas: TCanvas; const Client: 
 var
   Btn: TThemedButton;
   Details: TThemedElementDetails;
-{$ENDIF}
+{$ENDIF JVCLThemesEnabled}
 begin
-{$IFDEF JVCLThemesEnabled}
+  {$IFDEF JVCLThemesEnabled}
   if (Style <> bsWin31) and
-     (not (csDesigning in Control.ComponentState)) and
-     (ThemeServices.ThemesEnabled) then
+    (not (csDesigning in Control.ComponentState)) and
+    ThemeServices.ThemesEnabled then
   begin
     Result := Client;
 
-    if IsDown then Btn := tbPushButtonPressed
-    else if IsFocused then Btn := tbPushButtonDefaulted
-    else if IsHot then Btn := tbPushButtonHot
-    else Btn := tbPushButtonNormal;
+    if IsDown then
+      Btn := tbPushButtonPressed
+    else
+    if IsFocused then
+      Btn := tbPushButtonDefaulted
+    else
+    if IsHot then
+      Btn := tbPushButtonHot
+    else
+      Btn := tbPushButtonNormal;
 
     Details := ThemeServices.GetElementDetails(Btn);
     ThemeServices.DrawElement(Canvas.Handle, Details, Result);
-    Result :=  ThemeServices.ContentRect(Canvas.Handle, Details, Client);
+    Result := ThemeServices.ContentRect(Canvas.Handle, Details, Client);
 
     if IsFocused then
       DrawFocusRect(Canvas.Handle, Result);
@@ -1036,20 +1063,21 @@ begin
     InflateRect(Result, -BevelWidth, -BevelWidth);
   end
   else
-{$ENDIF}
-{$IFDEF VCL}
-  Result := DrawButtonFace(Canvas, Client, BevelWidth, Style, IsRounded, IsDown, IsFocused);
-{$ENDIF}
-{$IFDEF VisualCLX}
+  {$ENDIF JVCLThemesEnabled}
+  {$IFDEF VCL}
+    Result := DrawButtonFace(Canvas, Client, BevelWidth, Style, IsRounded, IsDown, IsFocused);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   Result := DrawButtonFace(Canvas, Client, BevelWidth, IsDown, IsFocused);
-{$ENDIF}
+  {$ENDIF VisualCLX}
 end;
 
 function IsMouseOver(Control: TControl): Boolean;
-var pt: TPoint;
+var
+  Pt: TPoint;
 begin
-  pt := Control.ScreenToClient(Mouse.CursorPos);
-  Result := PtInRect(Control.ClientRect, pt);
+  Pt := Control.ScreenToClient(Mouse.CursorPos);
+  Result := PtInRect(Control.ClientRect, Pt);
 end;
 
 function GetParentBackground(Control: TWinControl): Boolean;
@@ -1079,13 +1107,12 @@ begin
   ThemeServices.DoOnThemeChange;
 end;
 
-{$ENDIF}
+{$ENDIF COMPILER7_UP}
 
 function ThemeServices: TThemeServicesEx;
 begin
   Result := TThemeServicesEx(
-    {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.ThemeServices
-  );
+    {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.ThemeServices);
 end;
 
 procedure PaintControlBorder(Control: TWinControl);
@@ -1212,7 +1239,6 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   end;
 
-
 // global ThemeHook list
 var
   ThemeHooks: TThemeHookList;
@@ -1222,7 +1248,7 @@ var
 procedure InstallWinControlHook; forward;
 procedure UninstallWinControlHook; forward;
 
-{ TThemeHookList }
+//=== TThemeHookList =========================================================
 
 constructor TThemeHookList.Create;
 begin
@@ -1251,11 +1277,12 @@ begin
 end;
 
 function TThemeHookList.FindControl(Control: TControl): TThemeHook;
-var i: Integer;
+var
+  I: Integer;
 begin
-  for i := 0 to Count - 1 do
+  for I := 0 to Count - 1 do
   begin
-    Result := TThemeHook(Items[i]);
+    Result := TThemeHook(Items[I]);
     if Result.FControl = Control then
       Exit;
   end;
@@ -1263,14 +1290,15 @@ begin
 end;
 
 function TThemeHookList.GetControl(Control: TControl): TThemeHook;
-var i: Integer;
+var
+  I: Integer;
 begin
   Result := FindControl(Control);
   if Result = nil then
   begin
-    for i := 0 to FDeadList.Count - 1 do
+    for I := 0 to FDeadList.Count - 1 do
     begin
-      Result := TThemeHook(FDeadList[i]);
+      Result := TThemeHook(FDeadList[I]);
       if Result.Control = Control then
       begin
         Result.FDead := False;
@@ -1287,7 +1315,7 @@ begin
   end;
 end;
 
-{ TThemeHook }
+//=== TThemeHook =============================================================
 
 constructor TThemeHook.Create(AControl: TControl);
 begin
@@ -1316,7 +1344,8 @@ begin
   begin
     if TMethod(FControl.WindowProc).Code = @TThemeHook.WndProc then
       FControl.WindowProc := FOrgWndProc
-    else if not (TMethod(FControl.WindowProc).Code = TMethod(FOrgWndProc).Code) then
+    else
+    if not (TMethod(FControl.WindowProc).Code = TMethod(FOrgWndProc).Code) then
       FDead := True; // keep WndProc
     FControl.RemoveFreeNotification(ThemeHookComponent);
     FControl := nil;
@@ -1357,8 +1386,9 @@ procedure TThemeHook.WndProc(var Msg: TMessage);
 var
   Handled: Boolean;
 begin
- // Should not happen but it can if the WindowProc is hooked by another component
-  if (ThemeHooks = nil) then Exit;
+  // Should not happen but it can if the WindowProc is hooked by another component
+  if ThemeHooks = nil then
+    Exit;
   if FDead then
   begin
     FOrgWndProc(Msg);
@@ -1370,21 +1400,17 @@ begin
     CM_RECREATEWND:
       if ThemeHooks.RecreationList.IndexOf(Control) = -1 then
         ThemeHooks.RecreationList.Add(Control);
-
     WM_PAINT:
       if ThemeServices.ThemesEnabled then
         ThemedPaint(TWMPaint(Msg), Handled);
-
     WM_ERASEBKGND:
       if ThemeServices.ThemesEnabled then
         ThemedEraseBkGnd(TWMEraseBkGnd(Msg), Handled);
-
     CN_CTLCOLORSTATIC,
-    CN_CTLCOLORBTN:
+      CN_CTLCOLORBTN:
       if ThemeServices.ThemesEnabled then
         ThemedCtlColorStatic(TWMCtlColorStatic(Msg), Handled);
   end;
-
 
   Inc(FWndProcCount);
   try
@@ -1406,10 +1432,9 @@ begin
     WM_NCPAINT:
       if ThemeServices.ThemesEnabled then
         ThemedNCPaint(TWMNCPaint(Msg));
-
     WM_DESTROY:
-       if (csDestroying in Control.ComponentState) and (ThemeHooks.RecreationList.IndexOf(Control) = -1) then
-         DeleteHook;
+      if (csDestroying in Control.ComponentState) and (ThemeHooks.RecreationList.IndexOf(Control) = -1) then
+        DeleteHook;
   end;
 
   while ThemeHooks.RecreationList.Count > 0 do
@@ -1461,7 +1486,7 @@ procedure TThemeHook.ThemedCtlColorStatic(var Msg: TWMCtlColorStatic; var Handle
 begin
   if csParentBackground in ThemeStyle then
   begin
-    if (Control is TWinControl)then
+    if (Control is TWinControl) then
     begin
       ThemedEraseBkGnd(TWMEraseBkGnd(Msg), Handled);
       Msg.Result := GetStockObject(NULL_BRUSH);
@@ -1469,10 +1494,11 @@ begin
   end;
 end;
 
-{ TThemeHookComponent }
+//=== TThemeHookComponent ====================================================
 
 procedure TThemeHookComponent.Notification(AComponent: TComponent; Operation: TOperation);
-var ThemeHook: TThemeHook;
+var
+  ThemeHook: TThemeHook;
 begin
   if Operation = opRemove then
   begin
@@ -1487,8 +1513,7 @@ begin
   end;
 end;
 
-
-{ functions }
+//=== functions ==============================================================
 
 procedure IncludeThemeStyle(Control: TControl; Style: TThemeStyle);
 begin
@@ -1517,7 +1542,8 @@ begin
 end;
 
 function GetThemeStyle(Control: TControl): TThemeStyle;
-var ThemeHook: TThemeHook;
+var
+  ThemeHook: TThemeHook;
 begin
   ThemeHooks.Enter;
   try
@@ -1533,7 +1559,7 @@ end;
 
 function GetDynamicMethod(AClass: TClass; Index: Integer): Pointer; assembler;
 asm
-  call System.@FindDynaClass
+        call System.@FindDynaClass
 end;
 
 procedure WMEraseBkgndHook(Self: TWinControl; var Msg: TWMEraseBkgnd);
@@ -1555,8 +1581,8 @@ end;
 
 type
   TJumpCode = packed record
-    Pop: Byte;  // pop xxx
-    Jmp: Byte;  // jmp Offset
+    Pop: Byte; // pop xxx
+    Jmp: Byte; // jmp Offset
     Offset: Integer;
   end;
 
@@ -1576,15 +1602,16 @@ begin
   if Assigned(P) then
   begin
     if PByte(@P)^ = $53 then // push ebx
-      Code.Pop := $5b // pop ebx
-    else if PByte(@P)^ = $55 then // push ebp
-      Code.Pop := $5d // pop ebp
+      Code.Pop := $5B // pop ebx
+    else
+    if PByte(@P)^ = $55 then // push ebp
+      Code.Pop := $5D // pop ebp
     else
       Exit;
-    Code.Jmp := $e9;
+    Code.Jmp := $E9;
     Code.Offset := Integer(@WMEraseBkgndHook) -
-                   (Integer(@P) + 1) -
-                   SizeOf(Code);
+      (Integer(@P) + 1) -
+      SizeOf(Code);
 
     if ReadProcessMemory(GetCurrentProcess, Pointer(Cardinal(@P) + 1),
       @SavedWinControlCode, SizeOf(SavedWinControlCode), n) then
@@ -1622,7 +1649,6 @@ begin
   end;
 end;
 
-
 initialization
   ThemeHooks := TThemeHookList.Create;
   ThemeHookComponent := TThemeHookComponent.Create(nil);
@@ -1634,7 +1660,7 @@ finalization
   FreeAndNil(ThemeHooks);
   ThemeHookComponent.Free;
 
-{$ENDIF} // COMPILER7_UP
+{$ENDIF COMPILER7_UP}
 
 {$ELSE} // JVCLThemesEnabled
 
@@ -1650,7 +1676,7 @@ function GetThemeStyle(Control: TControl): TThemeStyle;
 begin
 end;
 
-{$ENDIF} // JVCLThemesEnabled
+{$ENDIF JVCLThemesEnabled}
 
 end.
 
