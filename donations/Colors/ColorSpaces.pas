@@ -44,7 +44,8 @@ const
   csCMY = TJvColorSpaceID(3 shl 2);
   csYUV = TJvColorSpaceID(4 shl 2);
   csHSV = TJvColorSpaceID(5 shl 2);
-  csDEF = TJvColorSpaceID(6 shl 2);
+  csYIQ = TJvColorSpaceID(6 shl 2);
+  csDEF = TJvColorSpaceID(7 shl 2);
 
   RGB_MIN = 0;
   RGB_MAX = 255;
@@ -56,6 +57,8 @@ const
   YUV_MAX = 235;
   HSV_MIN = 0;
   HSV_MAX = 240;
+  YIQ_MIN = 0;
+  YIQ_MAX = 255;
   DEF_MIN = 0;
   DEF_MAX = 255;
 
@@ -197,6 +200,19 @@ type
     property Count: Integer read GetCount;
   end;
 
+  TJvYIQColorSpace = class(TJvColorSpace)
+  protected
+    function GetAxisName(Index: TJvAxisIndex): string; override;
+    function GetAxisMin(Index: TJvAxisIndex): Byte; override;
+    function GetAxisMax(Index: TJvAxisIndex): Byte; override;
+    function GetName: string; override;
+    function GetShortName: string; override;
+    function GetAxisDefault(Index: TJvAxisIndex): Byte; override;
+  public
+    function ConvertFromColor(AColor: TColor): TJvFullColor; override;
+    function ConvertToColor(AColor: TJvFullColor): TColor; override;
+  end;
+
   EJvColorSpaceError = class(EJVCLException);
 
 function ColorSpaceManager: TJvColorSpaceManager;
@@ -204,6 +220,9 @@ function GetAxisValue(AColor: TJvFullColor; AAxis: TJvAxisIndex): Byte;
 function SetAxisValue(AColor: TJvFullColor; AAxis: TJvAxisIndex; NewValue: Byte): TJvFullColor;
 
 //function RGBToColor(const Color: TJvFullColor): TColor;
+
+procedure SplitColorParts(AColor: TJvFullColor; var Part1, Part2, Part3: Cardinal);
+function JoinColorParts(Part1, Part2, Part3: Cardinal): TJvFullColor;
 
 implementation
 
@@ -235,15 +254,20 @@ resourcestring
   RsYellow = 'Yellow';
   RsSubstractiveVision = 'Substractive Vision';
   RsCMY = 'CMY';
-  RsYValue = 'Y Value';
-  RsUValue = 'U Value';
-  RsVValue = 'V Value';
+  RsYUVValueY = 'Y Value';
+  RsYUVValueU = 'U Value';
+  RsYUVValueV = 'V Value';
   RsPCVideo = 'PC Video';
   RsYUV = 'YUV';
   RsValue = 'Value';
   RsRotationVision = 'Rotation Vision';
   RsHSV = 'HSV';
   RsNoName= 'No Name';
+  RsYIQValueY = 'Y';
+  RsYIQValueI = 'I';
+  RsYIQValueQ = 'Q';
+  RsUSScreen = 'NTSC US television standard';
+  RsYIQ = 'YIQ';
   RsPredefinedColors = 'Predefined Colors';
   RsDEF = 'DEF';
   RsEColorSpaceNotFound = 'Color Space not found: %d';
@@ -713,11 +737,11 @@ function TJvYUVColorSpace.GetAxisName(Index: TJvAxisIndex): string;
 begin
   case Index of
     axIndex0:
-      Result := RsYValue;
+      Result := RsYUVValueY;
     axIndex1:
-      Result := RsUValue;
+      Result := RsYUVValueU;
     axIndex2:
-      Result := RsVValue;
+      Result := RsYUVValueV;
   else
     Result := inherited GetAxisName(Index);
   end;
@@ -907,6 +931,91 @@ begin
   Result := RsHSV;
 end;
 
+//=== { TJvYIQColorSpace } ===================================================
+
+function TJvYIQColorSpace.ConvertFromColor(AColor: TColor): TJvFullColor;
+var
+  Y, I, Q: Integer;
+  Red, Green, Blue: Integer;
+begin
+  Red := AColor and $000000FF;
+  Green := (AColor shr 8) and $000000FF;
+  Blue := (AColor shr 16) and $000000FF;
+
+  Y := Round(0.299*Red + 0.587*Green + 0.114*Blue);
+  I := Round(0.596*Red - 0.275*Green - 0.321*Blue) + 128;
+  Q := Round(0.212*Red - 0.523*Green + 0.311*Blue) + 128;
+
+  Y := EnsureRange(Y, YIQ_MIN, YIQ_MAX);
+  I := EnsureRange(I, YIQ_MIN, YIQ_MAX);
+  Q := EnsureRange(Q, YIQ_MIN, YIQ_MAX);
+
+  Result := inherited ConvertFromColor(JoinColorParts(Y, I, Q));
+end;
+
+function TJvYIQColorSpace.ConvertToColor(AColor: TJvFullColor): TColor;
+var
+  Red, Green, Blue: Integer;
+  Y, I, Q: Integer;
+begin
+  Y := (AColor)        and $000000FF;
+  I := (AColor shr 8)  and $000000FF;
+  Q := (AColor shr 16) and $000000FF;
+
+  //Y := Y;
+  I := I - 128;
+  Q := Q - 128;
+
+  Red := Round(Y + 0.956*I + 0.621*Q);
+  Green := Round(Y - 0.272*I - 0.647*Q);
+  Blue := Round(Y - 1.105*I + 1.702*Q);
+
+  Red := EnsureRange(Red , 0, RGB_MAX);
+  Green := EnsureRange(Green, 0, RGB_MAX);
+  Blue := EnsureRange(Blue, 0, RGB_MAX);
+
+  Result := inherited ConvertToColor(JoinColorParts(Red, Green, Blue));
+end;
+
+function TJvYIQColorSpace.GetAxisDefault(Index: TJvAxisIndex): Byte;
+begin
+  Result := 128;
+end;
+
+function TJvYIQColorSpace.GetAxisMax(Index: TJvAxisIndex): Byte;
+begin
+  Result := YIQ_MAX;
+end;
+
+function TJvYIQColorSpace.GetAxisMin(Index: TJvAxisIndex): Byte;
+begin
+  Result := YIQ_MIN;
+end;
+
+function TJvYIQColorSpace.GetAxisName(Index: TJvAxisIndex): string;
+begin
+  case Index of
+    axIndex0:
+      Result := RsYIQValueY;
+    axIndex1:
+      Result := RsYIQValueI;
+    axIndex2:
+      Result := RsYIQValueQ;
+  else
+    Result := inherited GetAxisName(Index);
+  end;
+end;
+
+function TJvYIQColorSpace.GetName: string;
+begin
+  Result := RsUSScreen;
+end;
+
+function TJvYIQColorSpace.GetShortName: string;
+begin
+  Result := RsYIQ;
+end;
+
 //=== { TJvDEFColorSpace } ===================================================
 
 constructor TJvDEFColorSpace.Create(ColorID: TJvColorSpaceID);
@@ -1049,7 +1158,7 @@ begin
     case ID of
       $00:
         Result := ColorSpace[csRGB].ConvertFromColor(AColor);
-      $80:
+      clSystemColor shr 24:
         Result := ColorSpace[csDEF].ConvertFromColor(AColor);
     else
       raise EJvColorSpaceError.CreateResFmt(@RsEInconvertibleColor, [Cardinal(AColor)]);
@@ -1060,7 +1169,7 @@ function TJvColorSpaceManager.GetColorSpaceID(AColor: TJvFullColor): TJvColorSpa
 var
   I: Integer;
 begin
-  Result := TJvColorSpaceID(AColor shr 24) and $FC;
+  Result := TJvColorSpaceID(AColor shr 24);
   for I := 0 to Count - 1 do
     if ColorSpaceByIndex[I].ID = Result then
       Exit;
@@ -1126,6 +1235,7 @@ initialization
   ColorSpaceManager.RegisterColorSpace(TJvCMYColorSpace.Create(csCMY));
   ColorSpaceManager.RegisterColorSpace(TJvYUVColorSpace.Create(csYUV));
   ColorSpaceManager.RegisterColorSpace(TJvHSVColorSpace.Create(csHSV));
+  ColorSpaceManager.RegisterColorSpace(TJvYIQColorSpace.Create(csYIQ));
   ColorSpaceManager.RegisterColorSpace(TJvDEFColorSpace.Create(csDEF));
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);

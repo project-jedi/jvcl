@@ -724,12 +724,23 @@ end;
 
 procedure TJvColorComponent.SetFullColor(const Value: TJvFullColor);
 var
-  CurrentColorID: TJvColorSpaceID;
+  OldColorID: TJvColorSpaceID;
+  OldColor: TJvFullColor;
+  AxisX, AxisY: TJvAxisIndex;
 begin
-  CurrentColorID := ColorSpaceManager.GetColorSpaceID(FFullColor);
+  OldColor:=FFullColor;
+  OldColorID := ColorSpaceManager.GetColorSpaceID(OldColor);
   FFullColor := Value;
-  if CurrentColorID <> ColorSpaceManager.GetColorSpaceID(FFullColor) then
-    ColorSpaceChange;
+  if OldColorID <> ColorSpaceManager.GetColorSpaceID(FFullColor)
+    then ColorSpaceChange
+    else
+    begin
+      AxisX := GetIndexAxisX(AxisConfig);
+      AxisY := GetIndexAxisY(AxisConfig);
+      if   (GetAxisValue(OldColor,AxisX)<>(GetAxisValue(FullColor,AxisX)))
+        or (GetAxisValue(OldColor,AxisY)<>(GetAxisValue(FullColor,AxisY)))
+        then Repaint;
+    end;
 
   if Assigned(FOnColorChange) then
     FOnColorChange(Self);
@@ -1188,24 +1199,27 @@ var
   AxisX, AxisY: TJvAxisIndex;
   OldColor: TJvFullColor;
 begin
-  OldColor := FullColor;
-  inherited SetFullColor(Value);
-
-  if Assigned(FColorTrackBar) and (not FColorChanging) then
+  if (Value<>FullColor) then
   begin
-    FColorChanging := True;
-    FColorTrackBar.FullColor := Value;
-    FColorChanging := False;
+    OldColor := FullColor;
+    inherited SetFullColor(Value);
+
+    if Assigned(FColorTrackBar) and (not FColorChanging) then
+    begin
+      FColorChanging := True;
+      FColorTrackBar.FullColor := Value;
+      FColorChanging := False;
+    end;
+
+    AxisX := GetIndexAxisX(AxisConfig);
+    AxisY := GetIndexAxisY(AxisConfig);
+
+    if (GetAxisValue(OldColor, AxisX) <> GetAxisValue(FullColor, AxisX)) or
+       (GetAxisValue(OldColor, AxisY) <> GetAxisValue(FullColor, AxisY)) then
+      Update;
+    if (ColorSpaceManager.GetColorSpaceID(OldColor) <> ColorSpaceManager.GetColorSpaceID(FullColor)) then
+      CalcSize;
   end;
-
-  AxisX := GetIndexAxisX(AxisConfig);
-  AxisY := GetIndexAxisY(AxisConfig);
-
-  if (GetAxisValue(OldColor, AxisX) <> GetAxisValue(FullColor, AxisX)) or
-    (GetAxisValue(OldColor, AxisY) <> GetAxisValue(FullColor, AxisY)) then
-    Update;
-  if (ColorSpaceManager.GetColorSpaceID(OldColor) <> ColorSpaceManager.GetColorSpaceID(FullColor)) then
-    CalcSize;
 end;
 
 procedure TJvColorPanel.MouseColor(Shift: TShiftState; X, Y: Integer);
