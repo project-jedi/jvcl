@@ -1890,6 +1890,7 @@ begin
               'a'..'z', 'A'..'Z', '0'..'9', '-', '_':
                 begin
                   lName := lBuf[I];
+                  lPointer := '';
                   lPos := ptReadingName;
                 end;
               '/', '>', '?':
