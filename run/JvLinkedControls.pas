@@ -44,7 +44,7 @@ type
 
   TJvLinkedControl = class(TCollectionItem)
   private
-    FOwnerControl, FControl:TControl;
+    FOwnerControl, FControl: TControl;
     FOptions: TJvLinkedControlsOptions;
     FOriginalEnabled: Boolean;
     procedure SetControl(const Value: TControl);
@@ -54,7 +54,7 @@ type
   public
     constructor Create(Collection: TCollection); override;
     destructor Destroy; override;
-    procedure Assign(Source: TPersistent);override;
+    procedure Assign(Source: TPersistent); override;
   published
     property Control: TControl read FControl write SetControl;
     property Options: TJvLinkedControlsOptions read FOptions write SetOptions default [loLinkChecked, loLinkEnabled];
@@ -62,7 +62,7 @@ type
 
   TJvLinkedControls = class(TOwnedCollection)
   private
-    FControl:TControl;
+    FControl: TControl;
     FOnChange: TNotifyEvent;
     FRestoreEnabled: Boolean;
     function GetItems(Index: Integer): TJvLinkedControl;
@@ -71,11 +71,11 @@ type
     procedure Update(Item: TCollectionItem); override;
   public
     // You must call Notification in the Owning controls overridden Notification
-    // or hell will break loose when linked controls are removed!!! 
+    // or hell will break loose when linked controls are removed!!!
     procedure Notification(AComponent: TComponent; Operation: TOperation); virtual;
     constructor Create(AControl: TControl);
     function Add: TJvLinkedControl;
-    procedure Assign(Source: TPersistent);override;
+    procedure Assign(Source: TPersistent); override;
     // If RestoreEnabled is True, TJvLinkedControls will try to restore the Enabled state
     // of linked controls when an item is changed or removed
     property Items[Index: Integer]: TJvLinkedControl read GetItems write SetItems; default;
@@ -84,17 +84,34 @@ type
     property RestoreEnabled: Boolean read FRestoreEnabled write FRestoreEnabled default True;
   end;
 
-function CheckLinkControlEnabled(Enabled, Checked:Boolean; Options:TJvLinkedControlsOptions):boolean;
+function CheckLinkControlEnabled(Enabled, Checked: Boolean; Options: TJvLinkedControlsOptions): boolean;
 
 implementation
 
 uses
   JvResources;
 
-function CheckLinkControlEnabled(Enabled, Checked:Boolean; Options:TJvLinkedControlsOptions):boolean;
+function CheckLinkControlEnabled(Enabled, Checked: Boolean; Options: TJvLinkedControlsOptions): boolean;
+var
+  IsChecked, IsEnabled: Boolean;
 begin
-  Result := ((loLinkChecked in Options) and ((not Checked and (loInvertChecked in Options) or (Checked and not (loInvertChecked in Options))))) or
-            ((loLinkEnabled in Options) and (not Enabled and (loInvertEnabled in Options)) or (Enabled and not (loInvertEnabled in Options)));
+  if (loInvertChecked in Options) then
+    IsChecked := not Checked
+  else
+    IsChecked := Checked;
+
+  if (loInvertEnabled in Options) then
+    IsEnabled := not Enabled
+  else
+    IsEnabled := Enabled;
+
+  if (loLinkChecked in Options) and (loLinkEnabled in Options) then
+    Result := IsChecked and IsEnabled
+  else
+    Result := ((loLinkChecked in Options) and IsChecked) or ((loLinkEnabled in Options) and IsEnabled);
+
+  //  Result := ((loLinkChecked in Options) and ((not Checked and (loInvertChecked in Options) or (Checked and not (loInvertChecked in Options))))) or
+  //            ((loLinkEnabled in Options) and (not Enabled and (loInvertEnabled in Options)) or (Enabled and not (loInvertEnabled in Options)));
 end;
 
 //=== TJvLinkedControl =======================================================
@@ -111,7 +128,7 @@ destructor TJvLinkedControl.Destroy;
 begin
   if (FControl <> nil) and not (csDestroying in FControl.ComponentState) and
     (Collection is TJvLinkedControls) and TJvLinkedControls(Collection).RestoreEnabled then
-       FControl.Enabled := FOriginalEnabled;
+    FControl.Enabled := FOriginalEnabled;
   inherited Destroy;
 end;
 

@@ -1351,15 +1351,15 @@ procedure TJvCustomListBox.UpdateItemCount;
 var
   VL: IJvDataConsumerViewList;
   Cnt: Integer;
-  Empty: array [0..0] of Char;
+  EmptyChr: Char;
 begin
   if HandleAllocated and IsProviderSelected and Supports(Provider as IJvDataConsumer, IJvDataConsumerViewList, VL) then
   begin
     Cnt := VL.Count - SendMessage(Handle, LB_GETCOUNT, 0, 0);
-    Empty[0] := #0;
+    EmptyChr := #0;
     while Cnt > 0 do
     begin
-      SendMessage(Handle, LB_ADDSTRING, 0, Integer(@Empty[0]));
+      SendMessage(Handle, LB_ADDSTRING, 0, LParam(@EmptyChr));
       Dec(Cnt);
     end;
     while Cnt < 0 do
