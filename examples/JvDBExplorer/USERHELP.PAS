@@ -39,7 +39,7 @@ interface
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, StdCtrls, Grids, Mask, JvComponent, JvFormPlacement,
-  JvGrids, JvToolEdit;
+  JvGrids, JvToolEdit, JvExGrids, JvExMask;
 
 type
   TCustomizeHelpDlg = class(TForm)
@@ -189,7 +189,7 @@ begin
     if (Value <> '') then
       FHelpList.Add(Value + '|' + FileName.FileName)
     else begin
-      Beep;
+      SysUtils.Beep;
       Abort;
     end;
   end
