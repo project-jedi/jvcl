@@ -32,7 +32,6 @@ interface
 
 uses
   Windows, SysUtils, Classes,
-  SetupApi,
   JvCommonDialogD, JvTypes;
 
 type
@@ -57,6 +56,27 @@ implementation
 uses
   JclSysUtils;
 
+const
+  IDF_NOBROWSE     = $00000001;
+  IDF_NOSKIP       = $00000002;
+  IDF_NODETAILS    = $00000004;
+  IDF_NOCOMPRESSED = $00000008;
+  IDF_CHECKFIRST   = $00000100;
+  IDF_NOBEEP       = $00000200;
+  IDF_NOFOREGROUND = $00000400;
+  IDF_WARNIFSKIP   = $00000800;
+  IDF_OEMDISK      = DWORD($80000000);
+
+  DPROMPT_SUCCESS        = 0;
+  DPROMPT_CANCEL         = 1;
+  DPROMPT_SKIPFILE       = 2;
+  DPROMPT_BUFFERTOOSMALL = 3;
+  DPROMPT_OUTOFMEMORY    = 4;
+
+type
+  TSetupRenameError = function(hwndParent: HWND; const DialogTitle, SourceFile,
+    TargetFile: PAnsiChar; Win32ErrorCode: UINT; Style: DWORD): UINT; stdcall;
+
 constructor TJvRenameError.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -69,6 +89,7 @@ end;
 function TJvRenameError.Execute: TDiskRes;
 var
   Sty: DWORD;
+  SetupRenameError: TSetupRenameError;
 begin
   Sty := 0;
   if idNoBeep in Style then
@@ -76,6 +97,7 @@ begin
   if idNoForeground in Style then
     Sty := Sty or IDF_NOFOREGROUND;
 
+  SetupRenameError := GetProcAddress(SetupApiDllHandle, 'SetupRenameErrorA');
   case SetupRenameError(OwnerWindow, PCharOrNil(Title), PChar(FSourceFile),
     PChar(FDestFile), FWin32ErrorCode, Sty) of
     DPROMPT_SUCCESS:

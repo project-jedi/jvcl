@@ -32,7 +32,6 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  SetupApi,
   JvTypes, JvComponent;
 
 type
@@ -40,6 +39,8 @@ type
   private
     FTitle: string;
     FOwnerWindow: HWND;
+  protected
+    SetupApiDllHandle: HMODULE;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -62,15 +63,15 @@ begin
     FOwnerWindow := (AOwner as TWinControl).Handle
   else
     FOwnerWindow := 0;
-
-  LoadSetupApi;
-  if not IsSetupApiLoaded then
+  SetupApiDllHandle := LoadLibrary('SETUPAPI.DLL');
+  if SetupApiDllHandle = 0 then
     raise EJVCLException.Create(RC_ErrorSetupDll);
 end;
 
 destructor TJvCommonDialogD.Destroy;
 begin
-  UnloadSetupApi;
+  if SetupApiDllHandle <> 0 then
+    FreeLibrary(SetupApiDllHandle);
   inherited Destroy;
 end;
 

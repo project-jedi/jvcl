@@ -32,7 +32,6 @@ interface
 
 uses
   Windows, SysUtils, Classes,
-  SetupApi,
   JvCommonDialogD, JvTypes;
 
 type
@@ -62,6 +61,28 @@ implementation
 uses
   JclSysUtils;
 
+const
+  IDF_NOBROWSE     = $00000001;
+  IDF_NOSKIP       = $00000002;
+  IDF_NODETAILS    = $00000004;
+  IDF_NOCOMPRESSED = $00000008;
+  IDF_CHECKFIRST   = $00000100;
+  IDF_NOBEEP       = $00000200;
+  IDF_NOFOREGROUND = $00000400;
+  IDF_WARNIFSKIP   = $00000800;
+  IDF_OEMDISK      = DWORD($80000000);
+
+  DPROMPT_SUCCESS        = 0;
+  DPROMPT_CANCEL         = 1;
+  DPROMPT_SKIPFILE       = 2;
+  DPROMPT_BUFFERTOOSMALL = 3;
+  DPROMPT_OUTOFMEMORY    = 4;
+
+type
+  TSetupPromptForDisk = function(hwndParent: HWND; const DialogTitle, DiskName,
+    PathToSource, FileSought, TagFile: PAnsiChar; DiskPromptStyle: DWORD;
+    PathBuffer: PAnsiChar; PathBufferSize: DWORD; var PathRequiredSize: DWORD): UINT; stdcall;
+
 constructor TJvDiskPrompt.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -78,6 +99,7 @@ var
   Sty: DWORD;
   Required: DWORD;
   Res: array [0..255] of Char;
+  SetupPromptForDisk: TSetupPromptForDisk;
 begin
   Sty := 0;
   if idfCheckFirst in FStyle then
@@ -99,6 +121,7 @@ begin
   if idfWarnIfSkip in FStyle then
     Sty := Sty or IDF_WARNIFSKIP;
 
+  SetupPromptForDisk := GetProcAddress(SetupApiDllHandle, 'SetupPromptForDiskA');
   case SetupPromptForDisk(OwnerWindow, PCharOrNil(Title), PCharOrNil(DiskName),
       PCharOrNil(PathToSource), PChar(FileSought), PCharOrNil(TagFile), Sty,
       Res, SizeOf(Res), Required) of

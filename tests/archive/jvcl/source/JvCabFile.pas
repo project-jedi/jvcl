@@ -32,7 +32,6 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls,
-  SetupApi,
   JvTypes, JvComponent;
 
 type
@@ -43,11 +42,13 @@ type
     Id: Shortint;
     CabinetNumber: Shortint;
   end;
+
   TOnCabInfo = procedure(Sender: TObject; CabInfo: TCabInfo) of object;
-  TOnExtracted = procedure(Sender: TObject; Successed: Boolean; var Cont: Boolean; Source, Dest: string) of object;
+  TOnExtracted = procedure(Sender: TObject; Successed: Boolean; var Cont: Boolean;
+    Source, Dest: string) of object;
   TOnExtractFile = procedure(Sender: TObject; FileName: string; DestPath: string) of object;
-  TOnNeedNewCabinet = procedure(Sender: TObject; var Cont: Boolean; CabInfo: TCabInfo; var NewPath: string) of
-    object;
+  TOnNeedNewCabinet = procedure(Sender: TObject; var Cont: Boolean; CabInfo: TCabInfo;
+    var NewPath: string) of object;
 
   TJvCabFile = class(TJvComponent)
   private
@@ -60,6 +61,7 @@ type
     FOnExtractFile: TOnExtractFile;
     FOnNeed: TOnNeedNewCabinet;
     FTmpString: string;
+    FDll: HMODULE;
     procedure SetFileName(const Value: TFileName);
     procedure SetFiles(const Value: TStringList);
     procedure RefreshFiles;
@@ -81,22 +83,74 @@ type
 implementation
 
 resourcestring
-  RC_SetupApiDll = 'Unable to find setupapi.dll';
+  RC_ErrorSetupDll = 'Unable to find SetupApi.dll';
+
+const
+  SPFILENOTIFY_CABINETINFO    = $00000010;
+  SPFILENOTIFY_FILEINCABINET  = $00000011;
+  SPFILENOTIFY_NEEDNEWCABINET = $00000012;
+  SPFILENOTIFY_FILEEXTRACTED  = $00000013;
+  SPFILENOTIFY_FILEOPDELAYED  = $00000014;
+  FILEOP_ABORT   = 0;
+  FILEOP_DOIT    = 1;
+  FILEOP_SKIP    = 2;
+  FILEOP_RETRY   = FILEOP_DOIT;
+  FILEOP_NEWPATH = 4;
+
+type
+  UINT_PTR = DWORD;
+
+  TSPFileCallback = function(Context: Pointer; Notification: UINT;
+    Param1, Param2: UINT_PTR): UINT; stdcall;
+  TSetupIterateCabinet = function(const CabinetFile: PAnsiChar; Reserved: DWORD;
+    MsgHandler: TSPFileCallback; Context: Pointer): LongBool; stdcall;
+
+  PFileInCabinetInfo = ^TFileInCabinetInfo;
+  FILE_IN_CABINET_INFO = packed record
+    NameInCabinet: PAnsiChar;
+    FileSize: DWORD;
+    Win32Error: DWORD;
+    DosDate: Word;
+    DosTime: Word;
+    DosAttribs: Word;
+    FullTargetName: array [0..MAX_PATH - 1] of AnsiChar;
+  end;
+  TFileInCabinetInfo = FILE_IN_CABINET_INFO;
+
+  PCabinetInfo = ^TCabinetInfo;
+  CABINET_INFO = packed record
+    CabinetPath: PAnsiChar;
+    CabinetFile: PAnsiChar;
+    DiskName: PAnsiChar;
+    SetId: Word;
+    CabinetNumber: Word;
+  end;
+  TCabinetInfo = CABINET_INFO;
+
+  PFilePaths = ^TFilePaths;
+  FILEPATHS = packed record
+    Target: PAnsiChar;
+    Source: PAnsiChar; // not used for delete operations
+    Win32Error: UINT;
+    Flags: DWORD; // such as SP_COPY_NOSKIP for copy errors
+  end;
+  TFilePaths = FILEPATHS;
 
 constructor TJvCabFile.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FFiles := TStringList.Create;
   FFileName := '';
-  LoadSetupApi;
-  if not IsSetupApiLoaded then
-    raise EJVCLException.Create(RC_SetupApiDll);
+  FDll := LoadLibrary('SETUPAPI.DLL');
+  if FDll = 0 then
+    raise EJVCLException.Create(RC_ErrorSetupDll);
 end;
 
 destructor TJvCabFile.Destroy;
 begin
   FFiles.Free;
-  UnloadSetupApi;
+  if FDll <> 0 then
+    FreeLibrary(FDll);
   inherited Destroy;
 end;
 
@@ -245,7 +299,10 @@ begin
 end;
 
 procedure TJvCabFile.RefreshFiles;
+var
+  SetupIterateCabinet: TSetupIterateCabinet;
 begin
+  SetupIterateCabinet := GetProcAddress(FDll, 'SetupIterateCabinetA');
   FFiles.Clear;
   if SetupIterateCabinet(PChar(FFileName), 0, CBack, @Self) then
     if Assigned(FOnFiles) then
@@ -253,7 +310,10 @@ begin
 end;
 
 function TJvCabFile.ExtractAll(DestPath: string): Boolean;
+var
+  SetupIterateCabinet: TSetupIterateCabinet;
 begin
+  SetupIterateCabinet := GetProcAddress(FDll, 'SetupIterateCabinetA');
   if DestPath[Length(DestPath)] <> '\' then
     DestPath := DestPath + '\';
   FDestPath := DestPath;
@@ -261,7 +321,10 @@ begin
 end;
 
 function TJvCabFile.ExtractFile(FileName, DestPath: string): Boolean;
+var
+  SetupIterateCabinet: TSetupIterateCabinet;
 begin
+  SetupIterateCabinet := GetProcAddress(FDll, 'SetupIterateCabinetA');
   if DestPath[Length(DestPath)] <> '\' then
     DestPath := DestPath + '\';
   FDestPath := DestPath + FileName;
