@@ -623,7 +623,7 @@ uses
   {$IFNDEF COMPILER6_UP}
   JvJVCLUtils, JvJCLUtils,
   {$ENDIF COMPILER6_UP}
-  JvCsvParse, JvResources;
+  JvCsvParse, JvConsts, JvResources;
 
 var
   CallCount: integer;
@@ -3636,7 +3636,7 @@ begin
         break;
       end;
       ch := AsciiDateStr[Index];
-      if (ch < '0') or (ch > '9') then
+      if not (ch in DigitSymbols) then
       begin
         // (rom) no OutputDebugString in production code
         {$IFDEF DEBUGINFO_ON}

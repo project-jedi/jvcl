@@ -214,7 +214,7 @@ type
 implementation
 
 uses
-  JvResources;
+  JvConsts, JvResources;
 
 constructor TJvJanTreeView.Create(AOwner: Tcomponent);
 begin
@@ -581,10 +581,6 @@ begin
   end;
 end;
 
-const
-  Letters: set of Char = ['A'..'Z', 'a'..'z'];
-//  Numbers: set of Char = ['0'..'9'];
-
 constructor TJvMathParser.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -655,8 +651,7 @@ var
 begin
   P := Position;
   FuncName := '';
-  while (P <= Length(FInput)) and (FInput[P] in ['A'..'Z', 'a'..'z', '0'..'9',
-    '_']) do
+  while (P <= Length(FInput)) and (FInput[P] in IdentifierSymbols) do
   begin
     FuncName := FuncName + FInput[P];
     Inc(P);
@@ -679,8 +674,7 @@ var
 begin
   VarFound := False;
   VarName := '';
-  while (Position <= Length(FInput)) and (FInput[Position] in ['A'..'Z',
-    'a'..'z', '0'..'9', '_']) do
+  while (Position <= Length(FInput)) and (FInput[Position] in IdentifierSymbols) do
   begin
     VarName := VarName + FInput[Position];
     Inc(Position);
@@ -721,7 +715,7 @@ begin
     TLen := Position;
     Decimal := False;
     while (TLen <= Length(FInput)) and
-      ((FInput[TLen] in ['0'..'9']) or
+      ((FInput[TLen] in DigitSymbols) or
       ((FInput[TLen] = '.') and (not Decimal))) do
     begin
       NumString := NumString + FInput[TLen];
@@ -745,7 +739,7 @@ begin
         Inc(TLen);
       end; { if }
       NumLen := 1;
-      while (TLen <= Length(FInput)) and (FInput[TLen] in ['0'..'9']) and
+      while (TLen <= Length(FInput)) and (FInput[TLen] in DigitSymbols) and
         (NumLen <= MaxExpLen) do
       begin
         NumString := NumString + FInput[TLen];
@@ -770,7 +764,7 @@ begin
     end; { else }
     Exit;
   end { if }
-  else if Ch in Letters then
+  else if Ch in IdentifierLetters then
   begin
     if IsFunc('ABS') or
       IsFunc('ATAN') or

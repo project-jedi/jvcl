@@ -301,10 +301,6 @@ const
   CenturyOffset: Byte = 60;
   NullDate: TDateTime = 0; {-693594}
 
-const
-  DigitChars = ['0'..'9'];
-  Brackets = ['(', ')', '[', ']', '{', '}'];
-  StdWordDelims = [#0..' ', ',', '.', ';', '/', '\', ':', '''', '"', '`'] + Brackets;
 type
   // JvDriveCtrls / JvLookOut
   TJvImageSize = (isSmall, isLarge);

@@ -256,7 +256,7 @@ implementation
 
 uses
   Math, SysUtils,
-  JvTypes, JvResources;
+  JvConsts, JvResources;
 
 type
   TJvListType =

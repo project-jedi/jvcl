@@ -544,7 +544,7 @@ begin
     if AnsiSameStr(Prefix, Copy(Mappings[MapIdx].Name, 1, PrefixLen)) then
       with Mappings[MapIdx] do
       begin
-        if StrIsSubset(Copy(Name, PrefixLen + 1, Length(Name) - PrefixLen), ['0' .. '9']) then
+        if StrIsSubset(Copy(Name, PrefixLen + 1, Length(Name) - PrefixLen), DigitSymbols) then
         begin
           TmpNum := StrToInt64(Copy(Name, PrefixLen + 1, Length(Name) - PrefixLen));
           if TmpNum >= SuffixNum then

@@ -317,28 +317,28 @@ begin
   F := P;
   if FStyle <> psHtml then
   begin
-    if P[0] in StIdFirstSymbols then
+    if P[0] in IdentifierFirstSymbols then
     { token }
     begin
-      while P[0] in StIdSymbols do
+      while P[0] in IdentifierSymbols do
         Inc(P);
       SetString(Result, F, P - F);
     end
     else
-    if P[0] in StConstSymbols10 then
+    if P[0] in DigitSymbols then
     { number }
     begin
-      while (P[0] in StConstSymbols10) or (P[0] = '.') do
+      while (P[0] in DigitSymbols) or (P[0] = '.') do
         Inc(P);
       SetString(Result, F, P - F);
     end
     else
     if (Style = psPascal) and (P[0] = '$') and
-      (P[1] in StConstSymbols) then
+      (P[1] in HexadecimalSymbols) then
     { pascal hex number }
     begin
       Inc(P);
-      while (P[0] in StConstSymbols) do
+      while (P[0] in HexadecimalSymbols) do
         Inc(P);
       SetString(Result, F, P - F);
     end
@@ -347,7 +347,7 @@ begin
     { perl identifier }
     begin
       Inc(P);
-      while (P[0] in StIdSymbols) do
+      while (P[0] in IdentifierSymbols) do
         Inc(P);
       SetString(Result, F, P - F);
     end
@@ -676,28 +676,28 @@ begin
   F := P;
   if FStyle <> psHtml then
   begin
-    if CharInSetW(P[0], StIdFirstSymbols) then
+    if CharInSetW(P[0], IdentifierFirstSymbols) then
     { token }
     begin
-      while CharInSetW(P[0], StIdSymbols) do
+      while CharInSetW(P[0], IdentifierSymbols) do
         Inc(P);
       SetString(Result, F, P - F);
     end
     else
-    if CharInSetW(P[0], StConstSymbols10) then
+    if CharInSetW(P[0], DigitSymbols) then
     { number }
     begin
-      while CharInSetW(P[0], StConstSymbols10) or (P[0] = '.') do
+      while CharInSetW(P[0], DigitSymbols) or (P[0] = '.') do
         Inc(P);
       SetString(Result, F, P - F);
     end
     else
     if (Style = psPascal) and (P[0] = '$') and
-      CharInSetW(P[1], StConstSymbols) then
+      CharInSetW(P[1], HexadecimalSymbols) then
     { pascal hex number }
     begin
       Inc(P);
-      while CharInSetW(P[0], StConstSymbols) do
+      while CharInSetW(P[0], HexadecimalSymbols) do
         Inc(P);
       SetString(Result, F, P - F);
     end
@@ -706,7 +706,7 @@ begin
     { perl identifier }
     begin
       Inc(P);
-      while CharInSetW(P[0], StIdSymbols) do
+      while CharInSetW(P[0], IdentifierSymbols) do
         Inc(P);
       SetString(Result, F, P - F);
     end
@@ -962,7 +962,7 @@ begin
       else
         Point := True
     else
-    if (St[i] < '0') or (St[i] > '9') then
+    if not (St[i] in DigitSymbols) then
       Exit;
   Result := True;
 end;
@@ -990,7 +990,7 @@ begin
       else
         Point := True
     else
-    if (St[i] < '0') or (St[i] > '9') then
+    if (St[i] < WideChar('0')) or (St[i] > WideChar('9')) then
       Exit;
   Result := True;
 end;
@@ -1003,7 +1003,7 @@ begin
   Result := False;
   if (Length(St) = 0) or ((Length(St) = 1) and (St[1] = '$')) then
     Exit;
-  Sym := StConstSymbols10;
+  Sym := DigitSymbols;
   if (St[1] = '-') or (St[1] = '$') then
   begin
     if Length(St) = 1 then
@@ -1011,7 +1011,7 @@ begin
     else
       j := 2;
     if St[1] = '$' then
-      Sym := StConstSymbols;
+      Sym := HexadecimalSymbols;
   end
   else
     j := 1;
@@ -1029,7 +1029,7 @@ begin
   Result := False;
   if (Length(St) = 0) or ((Length(St) = 1) and (St[1] = '$')) then
     Exit;
-  Sym := StConstSymbols10;
+  Sym := DigitSymbols;
   if (St[1] = '-') or (St[1] = '$') then
   begin
     if Length(St) = 1 then
@@ -1037,7 +1037,7 @@ begin
     else
       j := 2;
     if St[1] = '$' then
-      Sym := StConstSymbols;
+      Sym := HexadecimalSymbols;
   end
   else
     j := 1;
@@ -1055,11 +1055,11 @@ begin
   L := Length(ID);
   if L = 0 then
     Exit;
-  if not (ID[1] in StIdFirstSymbols) then
+  if not (ID[1] in IdentifierFirstSymbols) then
     Exit;
   for i := 1 to L do
   begin
-    if not (ID[1] in StIdSymbols) then
+    if not (ID[1] in IdentifierSymbols) then
       Exit;
   end;
   Result := True;
@@ -1073,11 +1073,11 @@ begin
   L := Length(ID);
   if L = 0 then
     Exit;
-  if not CharInSetW(ID[1], StIdFirstSymbols) then
+  if not CharInSetW(ID[1], IdentifierFirstSymbols) then
     Exit;
   for i := 1 to L do
   begin
-    if not CharInSetW(ID[1], StIdSymbols) then
+    if not CharInSetW(ID[1], IdentifierSymbols) then
       Exit;
   end;
   Result := True;

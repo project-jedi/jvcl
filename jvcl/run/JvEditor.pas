@@ -5276,10 +5276,10 @@ var
           FTabPos[Length(S)] := True;
         while i <= Length(S) do { Iterate }
         begin
-          if (S[i] in StIdSymbols) then
+          if (S[i] in IdentifierSymbols) then
           begin
             FTabPos[i - 1] := True;
-            while (i <= Length(S)) and (S[i] in StIdSymbols) do
+            while (i <= Length(S)) and (S[i] in IdentifierSymbols) do
               Inc(i);
           end;
           Inc(i);

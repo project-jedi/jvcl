@@ -871,7 +871,7 @@ implementation
 
 uses
   SysUtils, Dialogs, DbConsts, Math,
-  JvDBUtils, JvTypes, JvJVCLUtils, JvCalc, JvResources;
+  JvDBUtils, JvJVCLUtils, JvCalc, JvConsts, JvResources, JvTypes;
 
 {$R ..\resources\JvDBCtrl.res}
 
@@ -3165,7 +3165,8 @@ begin
     Key := #0;
   end;
   case Key of
-    ^H, ^V, ^X, '0'..'9': FDataLink.Edit;
+    ^H, ^V, ^X, '0'..'9':
+      FDataLink.Edit;
     #27:
       begin
         Reset;

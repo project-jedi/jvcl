@@ -43,11 +43,15 @@ const
   JvEditorCompletionChars = #8+'0123456789QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm';
 
   { various units }
-  StIdSymbols      = ['_', '0'..'9', 'A'..'Z', 'a'..'z'];
-  StIdFirstSymbols = ['_', 'A'..'Z', 'a'..'z'];
-  StConstSymbols   = ['0'..'9', 'A'..'F', 'a'..'f'];
-  StConstSymbols10 = ['0'..'9'];
-  StSeparators     = ['(', ')', ',', '.', ';'];
+  DigitSymbols = ['0'..'9'];
+  IdentifierUppercaseLetters = ['A'..'Z'];
+  IdentifierLowercaseLetters = ['a'..'z'];
+  HexadecimalUppercaseLetters = ['A'..'F'];
+  HexadecimalLowercaseLetters = ['a'..'f'];
+  IdentifierLetters = IdentifierUppercaseLetters + IdentifierLowercaseLetters;
+  IdentifierFirstSymbols = ['_'] + IdentifierLetters;
+  IdentifierSymbols = IdentifierFirstSymbols + DigitSymbols;
+  HexadecimalSymbols = DigitSymbols + HexadecimalUppercaseLetters + HexadecimalLowercaseLetters;
 
   {$IFDEF RAINTER}
   {RAInter}
@@ -190,6 +194,21 @@ const
  {const Separators is used in GetWordOnPos, JvUtils.ReplaceStrings and SubWord}
   Separators: TSysCharSet = [#00, ' ', '-', #13, #10, '.', ',', '/', '\', '#', '"', '''',
     ':', '+', '%', '*', '(', ')', ';', '=', '{', '}', '[', ']', '{', '}', '<', '>'];
+
+  DigitChars = ['0'..'9'];
+  // (rom) disabled unused
+  //Brackets = ['(', ')', '[', ']', '{', '}'];
+  //StdWordDelims = [#0..' ', ',', '.', ';', '/', '\', ':', '''', '"', '`'] + Brackets;
+ 
+const
+  crJVCLFirst = TCursor(100);
+  crMultiDragLink = TCursor(100);
+  crDragAlt = TCursor(101);
+  crMultiDragAlt = TCursor(102);
+  crMultiDragLinkAlt = TCursor(103);
+
+const
+  ROP_DSPDxax = $00E20746;
 
 implementation
 

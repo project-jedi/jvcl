@@ -400,10 +400,8 @@ function GetDefaultIniName: string;
 type
   TOnGetDefaultIniName = function: string;
 
-const
-  OnGetDefaultIniName: TOnGetDefaultIniName = nil;
-
 var
+  OnGetDefaultIniName: TOnGetDefaultIniName = nil;
   DefCompanyName: string = '';
   RegUseAppTitle: Boolean = False;
 
@@ -541,8 +539,8 @@ type
 // ToolBarMenu
 //------------------------------------------------------------------------------
 
-procedure JvCreateToolBarMenu(AForm: TForm; AToolBar: TToolBar; AMenu: TMainMenu
-  = nil);
+procedure JvCreateToolBarMenu(AForm: TForm; AToolBar: TToolBar;
+  AMenu: TMainMenu = nil);
 
 //------------------------------------------------------------------------------
 // ListView functions
@@ -573,9 +571,8 @@ procedure JvListViewToStrings(ListView: TListView; Strings: TStrings;
 function JvListViewSafeSubItemString(Item: TListItem; SubItemIndex: Integer):
   string;
 
-procedure JvListViewSortClick(Column: TListColumn; AscendingSortImage: Integer =
-  -1;
-  DescendingSortImage: Integer = -1);
+procedure JvListViewSortClick(Column: TListColumn;
+  AscendingSortImage: Integer = -1; DescendingSortImage: Integer = -1);
 
 procedure JvListViewCompare(ListView: TListView; Item1, Item2: TListItem;
   var Compare: Integer);
@@ -589,7 +586,6 @@ function JvListViewRestoreState(ListView: TListView; Data: TJvLVItemStateData;
 
 {$IFDEF VCL}
 function JvListViewGetOrderedColumnIndex(Column: TListColumn): Integer;
-
 procedure JvListViewSetSystemImageList(ListView: TListView);
 {$ENDIF VCL}
 
@@ -597,25 +593,16 @@ procedure JvListViewSetSystemImageList(ListView: TListView);
 // MessageBox
 //------------------------------------------------------------------------------
 
-function JvMessageBox(const Text, Caption: string; Flags: DWORD): Integer;
-  overload;
+function JvMessageBox(const Text, Caption: string; Flags: DWORD): Integer; overload;
 function JvMessageBox(const Text: string; Flags: DWORD): Integer; overload;
 
 { end JvCtrlUtils }
 
-procedure UpdateTrackFont(TrackFont, Font: TFont; TrackOptions:
-  TJvTrackFontOptions);
+procedure UpdateTrackFont(TrackFont, Font: TFont; TrackOptions: TJvTrackFontOptions);
 // Returns the size of the image
 // used for checkboxes and radiobuttons.
 // Originally from Mike Lischke
 function GetDefaultCheckBoxSize: TSize;
-
-const
-  crJVCLFirst = TCursor(100);
-  crMultiDragLink = TCursor(100);
-  crDragAlt = TCursor(101);
-  crMultiDragAlt = TCursor(102);
-  crMultiDragLinkAlt = TCursor(103);
 
 implementation
 
@@ -1694,9 +1681,6 @@ end;
 
 { CreateDisabledBitmap. Creating TBitmap object with disable button glyph
   image. You must destroy it outside by calling TBitmap.Free method. }
-
-const
-  ROP_DSPDxax = $00E20746;
 
 function CreateDisabledBitmap_NewStyle(FOriginal: TBitmap; BackColor: TColor):
   TBitmap;

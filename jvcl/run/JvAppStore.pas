@@ -566,7 +566,7 @@ implementation
 uses
   SysUtils,
   JclStrings, JclRTTI,
-  JvPropertyStore, JvResources;
+  JvPropertyStore, JvConsts, JvResources;
 
 const
   // (rom) this name is shared in several units and should be made global
@@ -1176,7 +1176,7 @@ begin
   NameStart := AnsiStrRScan(pchar(Name), '\');
   if NameStart = nil then
     NameStart := PChar(Name);
-  Result := (AnsiStrLIComp(NameStart, cItem, 4) = 0) and (NameStart[4] in ['0' .. '9']);
+  Result := (AnsiStrLIComp(NameStart, cItem, 4) = 0) and (NameStart[4] in DigitSymbols);
 end;
 
 class function TJvCustomAppStore.ConcatPaths(const Paths: array of string): string;

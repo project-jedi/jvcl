@@ -1676,8 +1676,6 @@ begin
 end;
 
 procedure TJvCustomMenuItemPainter.DrawDisabledBitmap(X, Y: Integer; Bitmap: TBitmap);
-const
-  ROP_DSPDxax = $00E20746;
 var
   Bmp: TBitmap;
   GrayColor, SaveColor: TColor;

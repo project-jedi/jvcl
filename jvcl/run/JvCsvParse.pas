@@ -94,7 +94,7 @@ implementation
 
 uses
   SysUtils,
-  JvTypes, JvResources;
+  JvConsts, JvResources, JvTypes;
 
 var
   TokenCount : integer;
@@ -128,7 +128,8 @@ begin
          DecimalFlag := TRUE;
      end
      else
-     if (s1[x] < '0') OR (s1[x] > '9') then begin
+     if not (s1[x] in DigitSymbols) then
+     begin
          result := FALSE;
          exit;
      end;
@@ -155,7 +156,8 @@ begin
 
   { Detect a decimal number or integer number }
   for x := x1 to l-1 do begin
-     if (s1[x] < '0') OR (s1[x] > '9') then begin
+     if not (s1[x] in DigitSymbols) then
+     begin
          result := FALSE;
          exit;
      end;
@@ -180,10 +182,8 @@ begin
 
   { Detect hex digits }
   for x := 1 to l-2 do begin
-     if ((s1[x] < '0') OR (s1[x] > '9'))
-       AND ((s1[x] < 'a') OR (s1[x] > 'f'))
-       AND ((s1[x] < 'A') OR (s1[x] > 'F'))
-        then begin
+     if not (s1[x] in HexadecimalSymbols) then
+     begin
          result := FALSE;
          exit;
      end;
@@ -199,17 +199,20 @@ begin
  l := strlen(s1);
  if (l < 2) OR (l > 9) then
      raise EJVCLException.Create(RsEInvalidHexLiteral);
- if (s1[0] <> '$') then
+ if s1[0] <> '$' then
      raise EJVCLException.Create(RsEInvalidHexLiteral);
  val := 0;
- for x := 1 to l-2 do begin
+ for x := 1 to l-2 do
+ begin
    val := val * 16; { shift right four bits at a time }
-   if (s1[x] >= '0') AND (s1[x] <= '9') then
-       digit := ord(s1[x])-ord('0')
-   else if (s1[x] >= 'a') AND (s1[x] <= 'f') then
-       digit := ( ord(s1[x])-ord('a') ) + 10
-   else if (s1[x] >= 'A') AND (s1[x] <= 'F') then
-       digit := ( ord(s1[x])-ord('A') ) + 10
+   if s1[x] in DigitSymbols then
+       digit := ord(s1[x]) - ord('0')
+   else
+   if s1[x] in HexadecimalLowercaseLetters then
+       digit := ord(s1[x]) - ord('a') + 10
+   else
+   if s1[x] in HexadecimalUppercaseLetters then
+       digit := ord(s1[x]) - ord('A') + 10
    else
       raise EJVCLException.Create(RsEInvalidHexLiteral);
    val := val + digit;
@@ -328,20 +331,13 @@ begin
        exit;
  end;
  
- if NOT ( ( (s1[0] >= 'a') AND (s1[0] <= 'z') ) OR
-      ( (s1[0] >= 'A') AND (s1[0] <= 'Z') ) ) OR
-      ( (s1[0] = '_' ) )
-
- then
-        Pass := FALSE;
+ if NOT (s1[0] in IdentifierFirstSymbols) then
+   Pass := FALSE;
 
  if Pass AND (x > 1) then
     for y := 1 to x-1 do begin
-      if NOT (( ( (s1[y] >= 'a') AND (s1[y] <= 'z') ) OR
-           ( (s1[y] >= 'A') AND (s1[y] <= 'Z') ) OR
-           ( (s1[y] >= '0') AND (s1[y] <= '9') ) ) OR
-           ( (s1[y] = '_' ) ))
-      then begin
+      if NOT (s1[y] in IdentifierSymbols) then
+      begin
           Pass := FALSE;
           result := Pass;
           exit;
@@ -649,12 +645,14 @@ end;
 
 function HexDigitVal(c:char):integer;
 begin
- if (c >= '0') AND (c <= '9') then
+ if c in DigitSymbols then
     result := Ord(c)-Ord('0')
- else if (c >= 'a') AND (c <= 'f') then
-    result := 10+Ord(c)-Ord('a')
- else if (c >= 'A') AND (c <= 'F') then
-    result := 10+Ord(c)-Ord('A')
+ else
+ if c in HexadecimalLowercaseLetters then
+    result := Ord(c) - Ord('a') + 10
+ else
+  if c in HexadecimalUppercaseLetters then
+    result := Ord(c) - Ord('A') + 10
  else
     result := 0;
 end;

@@ -129,7 +129,7 @@ type
 implementation
 
 uses
-  JvTypes, JvResources;
+  JvConsts, JvResources, JvTypes;
 
 type
   TFoundText = record
@@ -147,10 +147,8 @@ end;
 { utility }
 
 function IsValidWholeWord(S: string): Boolean;
-const
-  AlphaNum = ['a'..'z', 'A'..'Z', '0'..'9', '_'];
 begin
-  Result := not ((S[1] in AlphaNum) or (S[Length(S)] in AlphaNum));
+  Result := not ((S[1] in IdentifierSymbols) or (S[Length(S)] in IdentifierSymbols));
 end;
 
 { invert string }

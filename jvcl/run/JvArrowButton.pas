@@ -135,7 +135,7 @@ type
 implementation
 
 uses
-  Consts, JvThemes;
+  Consts, JvConsts, JvThemes;
 
 type
   TGlyphList = class(TImageList)
@@ -417,8 +417,6 @@ begin
 end;
 
 function TButtonGlyph.CreateButtonGlyph(State: TButtonState): Integer;
-const
-  ROP_DSPDxax = $00E20746;
 var
   TmpImage, DDB, MonoBmp: TBitmap;
   IWidth, IHeight: Integer;

@@ -438,8 +438,9 @@ end;
 procedure TAnimatorForm.FormCreate(Sender: TObject);
 begin
   { Registry settings }
-  RegUseAppTitle := True;
-  DefCompanyName := 'RX';
+  // (rom) deactivated not part of JVCL anymore
+  //RegUseAppTitle := True;
+  //DefCompanyName := 'RX';
   { Initialization }
   ToolbarImages.ResourceLoad(rtBitmap, 'TOOLBAR_IMAGES', clFuchsia);
   SetHintStyle(hsRectangle, 3, False, taCenter);
