@@ -72,10 +72,9 @@ type
   TFileEvent = procedure(Sender: TObject; const FileName: string) of object;
   TProgressEvent = procedure(Sender: TObject; Position, Total: Integer) of object;
 
-
   TJvZlibMultiple = class(TJvComponent)
   private
-    FStorePaths : Boolean;
+    FStorePaths: Boolean;
     FOnProgress: TProgressEvent;
     FOnCompressingFile: TFileEvent;
     FOnCompressedFile: TFileEvent;
@@ -143,6 +142,12 @@ uses
 {    x bytes   the compressed chunk                     }
 {*******************************************************}
 
+constructor TJvZlibMultiple.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FStorePaths := True;
+end;
+
 function TJvZlibMultiple.CompressDirectory(Directory: string; Recursive: Boolean): TStream;
 
   procedure SearchDirectory(SDirectory: string);
@@ -186,14 +191,14 @@ var
   Stream: TStream;
   FileStream: TFileStream;
   ZStream: TJclZLibCompressStream;
-  Buffer: array[0..1023] of Byte;
+  Buffer: array [0..1023] of Byte;
   Count: Integer;
 
   procedure WriteFileRecord(Directory, FileName: string; FileSize: Integer;
     CompressedSize: Integer);
   var
     B: Byte;
-    Tab: array[1..256] of Char;
+    Tab: array [1..256] of Char;
   begin
     { (RB) Can be improved }
     for B := 1 to Length(Directory) do
@@ -235,10 +240,10 @@ begin
     if Assigned(FOnCompressedFile) then
       FOnCompressedFile(Self, FilePath);
 
-      if FStorePaths then
-          WriteFileRecord(Directory, FileName, FileStream.Size, Stream.Size)
+      if StorePaths then
+        WriteFileRecord(Directory, FileName, FileStream.Size, Stream.Size)
       else
-          WriteFileRecord('', FileName, FileStream.Size, Stream.Size);
+        WriteFileRecord('', FileName, FileStream.Size, Stream.Size);
 
     DestStream.CopyFrom(Stream, 0);
   finally
@@ -261,12 +266,6 @@ begin
   finally
     TmpStream.Free;
   end;
-end;
-
-constructor TJvZlibMultiple.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FStorePaths := True;
 end;
 
 function TJvZlibMultiple.CompressFiles(Files: TStrings): TStream;

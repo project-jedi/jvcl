@@ -100,6 +100,12 @@ uses
 
 //=== { TJvCustomCipher } ====================================================
 
+constructor TJvCustomCipher.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FIsStored := True;
+end;
+
 procedure TJvCustomCipher.DecodeList(const Key: string; List: TStrings);
 var
   I: Integer;
@@ -210,9 +216,9 @@ end;
 
 function TJvCustomCipher.DecodeString(const Key, Value: string): string;
 var
-  Tmp : PChar;
+  Tmp: PChar;
 begin
-  GetMem(Tmp, Length(Value)+1);
+  GetMem(Tmp, Length(Value) + 1);
   try
     StrPCopy(Tmp, Value);
     Decode(Key, Tmp, Length(Value));
@@ -224,9 +230,9 @@ end;
 
 function TJvCustomCipher.EncodeString(const Key, Value: string): string;
 var
-  Tmp : PChar;
+  Tmp: PChar;
 begin
-  GetMem(Tmp, Length(Value)+1);
+  GetMem(Tmp, Length(Value) + 1);
   try
     StrPCopy(Tmp, Value);
     Encode(Key, Tmp, Length(Value));
@@ -239,12 +245,6 @@ end;
 function TJvCustomCipher.GetIsStored: Boolean;
 begin
   Result := FIsStored;
-end;
-
-constructor TJvCustomCipher.Create(AOwner: TComponent);
-begin
-  inherited;
-  FIsStored := True;
 end;
 
 //=== { TJvCaesarCipher } ====================================================

@@ -782,7 +782,7 @@ begin
   Result := inherited SelectCell(ACol, ARow);
   if Result then
   begin
-//    Col := ACol;    // triggers SelectCell !!
+//    Col := ACol;
 //    Row := ARow;
     EditorMode := True;
     InplaceEditor.SelectAll;
@@ -792,10 +792,7 @@ end;
 
 procedure TJvStringGrid.GMActivateCell(var Msg: TGMActivateCell);
 begin
-  Col := Msg.Column;
-  Row := Msg.Row;
-  EditorMode := True;
-  InplaceEditor.SelectAll;
+  SelectCell(Msg.Column, Msg.Row);
 end;
 
 procedure TJvStringGrid.InvalidateCell(AColumn, ARow: Integer);

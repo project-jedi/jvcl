@@ -207,11 +207,14 @@ begin
 end;
 
 function TJvTimeSpin.GetTimeField : TTimeField;
+var
+  CrsrPos : integer;
 begin
-  if CursorPos > 5
+  CrsrPos := QClxLineEdit_cursorPosition(Handle);
+  if CrsrPos > 5
   then
     Result := teSeconds    // 1 second
-  else if CursorPos > 2
+  else if CrsrPos > 2
   then
     Result := teMinutes   // 1 minute
   else

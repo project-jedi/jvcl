@@ -613,7 +613,7 @@ var
   hSession, hHostConnection, hDownload: HINTERNET;
   HostName, FileName, strUserName, strPassword: string;
   UserName, Password: PChar;
-  Port : Cardinal;
+  Port: Cardinal;
   Buffer: PChar;
   dwBufLen, dwIndex, dwBytesRead, dwTotalBytes: DWORD;
   HasSize: Boolean;

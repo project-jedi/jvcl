@@ -132,6 +132,7 @@ type
     FJvDynControl: IJvDynControl;
     FJvDynControlData: IJvDynControlData;
     FHint: string;
+    FTag: Integer;
     FColor: TColor;
     FEnabled: Boolean;
     FHelpContext: THelpContext;
@@ -220,6 +221,7 @@ type
     property Width: Integer read GetWidth write SetWidth;
     property Height: Integer read GetHeight write SetHeight;
     property Hint: string read FHint write FHint;
+    property Tag: Integer read FTag write FTag;
     property HelpContext: THelpContext read FHelpContext write FHelpContext;
     property TabOrder: Integer read FTabOrder write SetTabOrder;
     property DisableReasons: TJvParameterListEnableDisableReasonList read FDisableReasons;
@@ -890,6 +892,7 @@ begin
     if FHeight > 0 then
       SetHeight(FHeight);
     WinControl.Hint := Hint;
+    WinControl.Tag := Tag;
     WinControl.HelpContext := HelpContext;
     JvDynControl.ControlSetOnEnter(ParameterList.OnExitParameterControl);
     JvDynControl.ControlSetOnExit(ParameterList.OnExitParameterControl);
@@ -1511,15 +1514,16 @@ begin
 end;
 
 procedure TJvParameterList.DialogShow(Sender: TObject);
-var i : Integer;
+var
+  I: Integer;
 begin
-  for i := 0 to Count-1 do
-    if Parameters[i].Visible then
-      if Assigned(Parameters[i].WinControl) then
-        if Parameters[i].WinControl.CanFocus then
+  for I := 0 to Count - 1 do
+    if Parameters[I].Visible then
+      if Assigned(Parameters[I].WinControl) then
+        if Parameters[I].WinControl.CanFocus then
         begin
-          Parameters[i].WinControl.SetFocus;
-          break;
+          Parameters[I].WinControl.SetFocus;
+          Break;
         end;
 end;
 
@@ -1867,7 +1871,7 @@ begin
             end;
 end;
 
-//=== { TJvParameterListPropertyStore } ======================================
+//=== { TJvParameterListSelectList } =========================================
 
 function TJvParameterListSelectList.GetDynControlEngine: TJvDynControlEngine;
 begin

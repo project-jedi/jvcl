@@ -27,6 +27,7 @@ Known Issues:
 
 //********************** Added by Claudio F. Zwitkovits (CFZ) **************************
  Property Dataset <== Attach any bi-directional Dataset (TTable,TQuery,etc)
+ Property DatasetClosed <== True/False If After Load Structure and/or Records, Close the attached Dataset
  Property KeyFieldNames <== String with the names of the fields from the primary key / Index key
  Property ApplyMode <== The mode do Apply the changes in original Dataset
           amNone = Not Apply
@@ -113,6 +114,7 @@ type
     FSrcAutoIncField: TField;
     //-------------- Added by CFZ ----------------------------
     FDataSet: TDataSet;
+    FDatasetClosed: Boolean;
     FLoadStructure: Boolean;
     FLoadRecords: Boolean;
     FKeyFieldNames: string;
@@ -146,6 +148,7 @@ type
     procedure FixReadOnlyFields(MakeReadOnly: Boolean);
     //----------------- Added by CFZ -----------------------------
     procedure SetDataSet(ADataSet: TDataSet);
+    procedure SetDatasetClosed(Value: Boolean);
     procedure SetLoadStructure(Value: Boolean);
     procedure SetLoadRecords(Value: Boolean);
     procedure SetApplyMode(Value: TApplyMode);
@@ -252,6 +255,7 @@ type
     property ObjectView default False;
     //------------------- Added by CFZ ---------- ----------------------
     property DataSet: TDataSet read FDataSet write SetDataSet;
+    property DatasetClosed: Boolean read FDatasetClosed write SetDatasetClosed default True;
     property KeyFieldNames: string read FKeyFieldNames write FKeyFieldNames;
     property LoadStructure: Boolean read FLoadStructure write SetLoadStructure default False;
     property LoadRecords: Boolean read FLoadRecords write SetLoadRecords default False;
@@ -534,6 +538,7 @@ begin
   FRowsChanged := 0;
   FRowsAffected := 0;
   FSaveLoadState := slsNone;
+  FDatasetClosed := True;
   //---------------------------------------
 end;
 
@@ -1376,11 +1381,10 @@ begin
   //------------------------ Added by CFZ -----------------------------------
   if NewChange then
     Inc(FRowsChanged)
-      //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 end;
 
 //----------------- Added by CFZ -------------------------------
-
 procedure TJvMemoryData.Open;
 begin
   try
@@ -1417,7 +1421,7 @@ begin
       else
         First;
     end;
-    if FDataset.Active then
+    if FDataset.Active And FDatasetClosed Then
       FDataset.Close;
   end;
 end;
@@ -1574,6 +1578,14 @@ end;
 procedure TJvMemoryData.SetDataSet(ADataSet: TDataSet);
 begin
   FDataSet := ADataSet;
+end;
+
+procedure TJvMemoryData.SetDatasetClosed(Value: Boolean);
+begin
+  if (csDesigning in ComponentState) and (FDataSet = nil) then
+    FDatasetClosed := True
+  else
+    FDatasetClosed := Value;
 end;
 
 procedure TJvMemoryData.SetLoadStructure(Value: Boolean);
@@ -2038,7 +2050,7 @@ begin
   end;
   if FDataSet.IsEmpty then
   begin
-    if not bOpen then
+    if not bOpen And FDatasetClosed then
       FDataSet.Close;
     Exit;
   end;
@@ -2073,7 +2085,7 @@ begin
     FSaveLoadState := slsNone;
     EnableControls;
     FDataSet.EnableControls;
-    if not bOpen then
+    if not bOpen And FDatasetClosed then
       FDataSet.Close;
   end;
 end;
@@ -2225,7 +2237,8 @@ var
     Row := RecNo;
     FSaveLoadState := slsSaving;
     try
-      First;
+      if not IsEmpty Then
+        First;
       while not EOF do
       begin
         Status := TRecordStatus(FieldByName(FStatusName).AsInteger);
@@ -2298,9 +2311,9 @@ var
               end
               else
               begin
+                SysUtils.Abort;
                 if (FDataset.State in dsEditModes) then
                   FDataset.Cancel;
-                SysUtils.Abort;
               end;
             end
             else
@@ -2319,9 +2332,9 @@ var
               end
               else
               begin
+                SysUtils.Abort;
                 if FDataset.State in dsEditModes then
                   FDataset.Cancel;
-                SysUtils.Abort;
               end;
             end;
           end;
@@ -2637,7 +2650,7 @@ const
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
-    );
+  );
 
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);

@@ -349,6 +349,13 @@ resourcestring
 //=== JvComputerInfoEx.pas ===================================================
 resourcestring
   RsEReadOnlyProperty = 'This value is read-only and cannot be changed.';
+  RsFileTypeString = '%s file';
+  RsAttrArchiveShortString = 'A';
+  RsAttrCompressedShortString = 'C';
+  RsAttrDirectoryShortString = 'D';
+  RsAttrReadOnlyShortString = 'R';
+  RsAttrHiddenShortString = 'H';
+  RsAttrSystemShortString = 'S';
 
 //=== JvContextProvider.pas ==================================================
 resourcestring
@@ -385,7 +392,6 @@ resourcestring
   RsRefreshHint = 'Refresh';
   RsENoFieldsDefined = 'No fields defined';
 
-  
 //=== JvCsvData.pas ==========================================================
 resourcestring
   RsErrorRowItem = '<ERROR>';
@@ -628,6 +634,7 @@ resourcestring
   RsEIntfCastError = 'SIntfCastError';
   RsEUnsupportedControlClass = 'TJvDynControlEngine.RegisterControl: Unsupported ControlClass';
   RsENoRegisteredControlClass = 'TJvDynControlEngine.CreateControl: No Registered ControlClass';
+  RsENoFocusControl = 'TJvDynControlEngine.CreateLabelControlPanel: AFocusControl must be assigned';
 
 //=== JvDynControlEngineDB.pas ===============================================
 resourcestring
@@ -714,6 +721,17 @@ resourcestring
   RsEIncrementIndexExpectedIntegerBetwee = 'Increment Index: expected integer between "[..]" in %s';
   RsEDSOIndexOutOfRanged = 'DSO index out of range %d';
   RsEDSOUnknownKeys = 'DSO unknown key %s';
+
+//=== JvFullColorCtrls.pas ===================================================
+resourcestring
+  RsColorHintFmt1 = 'FullColor: %.8x' + sLineBreak +
+    'ColorSpace: %s (%d)' + sLineBreak +
+    'Name: %s' + sLineBreak +
+    'Pretty name: %s';
+  RsColorHintFmt2 = 'FullColor: %.8x, ColorSpace: %s (%d)' + sLineBreak +
+    'Axis %s = %d' + sLineBreak +
+    'Axis %s = %d' + sLineBreak +
+    'Axis %s = %d';
 
 //=== Jvg3DColors.pas ========================================================
 
@@ -1303,7 +1321,6 @@ resourcestring
 //=== JvMemoryDataset.pas ====================================================
 resourcestring
   RsEMemNoRecords = 'No data found';
-  //----------------- Added by CFZ ------------------
   // 'Registro ya existente.';
   RsERecordDuplicate = 'Record already exists.';
   // 'Registro no encontrado.';
@@ -1314,7 +1331,6 @@ resourcestring
   RsEUpdateError = 'Unable to modify the record.';
   // 'No se pudo eliminar el registro.';
   RsEDeleteError = 'Unable to erase the record.';
-  //-------------------------------------------------
 
 //=== JvMouseGesture.pas =====================================================
 resourcestring
@@ -2080,7 +2096,87 @@ resourcestring
   RsFounds = 'Found %s';
   RsToday = 'Today ';
 
-  
+
+//=== JvFullColorCtrls.pas =========================================================
+resourcestring
+  Rs_EDuplicateTrackBar     = 'TrackBar already used by component "%s"';
+  Rs_EUnsupportedColorSpace = 'Unsupported color space "%d"';
+
+//=== JvFullColorDialogs.pas =========================================================
+resourcestring
+  RsExpandedCaption = '<< &Hide';
+  RsCollapsedCaption = '&Panels >>';
+
+//=== JvFullColorSpaces.pas =========================================================
+resourcestring
+  RsENoTypeInfo         = 'The class %s contains no run time type info' + sLineBreak +
+    '"Class in module" test cannot be executed';
+  RsEUnnamedAxis        = 'Unnamed Color Axis';
+  RsEUnnamedSpace       = 'Unnamed Color Space';
+  RsEUCS                = 'UCS';
+  RsENoName             = 'No Name';
+  RsECSNotFound         = 'Color Space not found: %d';
+  RsEIllegalID          = 'Color Space ID %d is illegal';
+  RsECSAlreadyExists    = 'Color Space Already exists [ID: %d, Name: %s]';
+  RsEInconvertibleColor = 'TColor value $%.8X cannot be converted to TJvFullColor';
+
+  RsRGB_Red       = 'Red';
+  RsRGB_Green     = 'Green';
+  RsRGB_Blue      = 'Blue';
+  RsRGB_FullName  = 'True Color';
+  RsRGB_ShortName = 'RGB';
+
+  RsHLS_Hue        = 'Hue';
+  RsHLS_Lightness  = 'Lightness';
+  RsHLS_Saturation = 'Saturation';
+  RsHLS_FullName   = 'Chromatic Vision';
+  RsHLS_ShortName  = 'HLS';
+
+  RsCMY_Cyan      = 'Cyan';
+  RsCMY_Magenta   = 'Magenta';
+  RsCMY_Yellow    = 'Yellow';
+  RsCMY_FullName  = 'Substractive Vision';
+  RsCMY_ShortName = 'CMY';
+
+  RsYUV_Y         = 'Y Value';
+  RsYUV_U         = 'U Value';
+  RsYUV_V         = 'V Value';
+  RsYUV_FullName  = 'PC Video';
+  RsYUV_ShortName = 'YUV';
+
+  RsHSV_Hue        = 'Hue';
+  RsHSV_Saturation = 'Saturation';
+  RsHSV_Value      = 'Value';
+  RsHSV_FullName   = 'Rotation Vision';
+  RsHSV_ShortName  = 'HSV';
+
+  RsYIQ_Y         = 'Y';
+  RsYIQ_I         = 'I';
+  RsYIQ_Q         = 'Q';
+  RsYIQ_FullName  = 'NTSC US television standard';
+  RsYIQ_ShortName = 'YIQ';
+
+  RsYCC_Y         = 'Y';
+  RsYCC_Cr        = 'Cr';
+  RsYCC_Cb        = 'Cb';
+  RsYCC_FullName  = 'YCrCb';
+  RsYCC_ShortName = 'YCC';
+
+  RsXYZ_X         = 'Y';
+  RsXYZ_Y         = 'Y';
+  RsXYZ_Z         = 'Z';
+  RsXYZ_FullName  = 'CIE XYZ';
+  RsXYZ_ShortName = 'XYZ';
+
+  RsLAB_L         = 'L';
+  RsLAB_A         = 'A';
+  RsLAB_B         = 'B';
+  RsLAB_FullName  = 'CIE LAB';
+  RsLAB_ShortName = 'LAB';
+
+  RsDEF_FullName  = 'Delphi predefined colors';
+  RsDEF_ShortName = 'DEF';
+
 //=== not taken into JVCL ====================================================
 {
 resourcestring
@@ -2106,9 +2202,9 @@ resourcestring
   SExprBadCompare = 'Relational operators require a field and a constant';
 }
 
-
-
 implementation
+
+
 
 {$IFDEF UNITVERSIONING}
 uses

@@ -2479,7 +2479,7 @@ const
   MaxY = 1.25;
   MinY = -1.25;
 var
-  W, H, X, Y : Integer;
+  W, H, X, Y: Integer;
   DX, DY: Extended;
   Line: PByteArray;
   Color: Integer;

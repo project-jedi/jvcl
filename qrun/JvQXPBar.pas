@@ -819,11 +819,15 @@ begin
         FillRect(Rect);
     end;
     if HasImages then
+    begin
       Draw(Rect.Left + 1, Rect.Top + (LBar.FItemHeight - Bitmap.Height) div 2, Bitmap);
+      Inc(Rect.Left, Self.Images.Width + 4);
+    end
+    else
+      Inc(Rect.Left, 4);
     ItemCaption := Self.Caption;
     if (ItemCaption = '') and ((csDesigning in LBar.ComponentState) or (LBar.ControlCount = 0)) then
       ItemCaption := Format(RsUntitledFmt, [RsUntitled, Index]);
-    Inc(Rect.Left, 20);
     SetBkMode(ACanvas.Handle, QWindows.TRANSPARENT); 
     DrawText(ACanvas, ItemCaption, -1, Rect,
       DT_SINGLELINE or DT_VCENTER or DT_END_ELLIPSIS); 
@@ -2061,14 +2065,18 @@ end;
 
 procedure TJvXPCustomWinXPBar.GroupMessage;
 var
-  Msg: TMessage;
+  Msg: TMessage; 
+//  I: Integer; 
 begin
   if Parent <> nil then
   begin
     Msg.Msg := WM_XPBARAFTEREXPAND;
     Msg.WParam := WPARAM(Self);
-    Msg.Result := 0;
-    Parent.Broadcast(Msg);
+    Msg.Result := 0;  
+    BroadcastMsg(Parent, Msg);
+//    for I := 0 to Parent.ControlCount - 1 do
+//      if Parent.Controls[I] is TJvCustomGraphicButton then
+//        TJvCustomGraphicButton(Parent.Controls[I]).ButtonPressed(Self, GroupIndex); 
   end;
 end;
 

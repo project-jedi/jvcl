@@ -97,7 +97,7 @@ type
     procedure WriteValue(const Section, Key, Value: string); virtual;
     procedure StoreDataset;
     procedure RestoreDataset;
-    function GetPhysicalReadOnly : Boolean; override;
+    function GetPhysicalReadOnly: Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -346,12 +346,12 @@ begin
   FBookmark := '';
 end;
 
-function TJvCustomAppDBStorage.GetPhysicalReadOnly : Boolean;
+function TJvCustomAppDBStorage.GetPhysicalReadOnly: Boolean;
 begin
   if FieldsAssigned then
     Result := False
   else
-    Result := Not DataSource.DataSet.CanModify;
+    Result := not DataSource.DataSet.CanModify;
 end;
 
 function TJvCustomAppDBStorage.SectionExists(const Path: string; RestorePosition: Boolean): Boolean;

@@ -106,6 +106,7 @@ type
     property Caption;
     property Color;
     property DropDownMenu;
+    property DropArrow;
     property Down;
     property Enabled;
     property Font;
@@ -130,6 +131,7 @@ type
     property WordWrap: Boolean read FWordWrap write SetWordWrap default False;
     property OnClick;
     property OnDragDrop;
+    property OnDropDownMenu;
     property OnDragOver;
     property OnEndDrag;
     property OnMouseDown;
@@ -205,6 +207,8 @@ type
     property Caption;
     property Color;
     property DropDownMenu;
+    property DropArrow;
+
     property Down;
     property Enabled;
     property Font;
@@ -235,6 +239,7 @@ type
     property OnClick;
     property OnDragOver;
     property OnDragDrop;
+    property OnDropDownMenu;
     property OnEndDrag;
     property OnMouseDown;
     property OnMouseMove;

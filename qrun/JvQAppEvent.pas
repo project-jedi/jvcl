@@ -47,8 +47,8 @@ interface
 
 uses
   QWindows, QMessages, 
-  Qt, 
-  SysUtils, Classes, QControls, QGraphics, QForms, QActnList, QStyle,
+  Qt, QStyle,
+  SysUtils, Classes, QControls, QGraphics, QForms, QActnList,
   JvQTypes, JvQComponent;
 
 const
@@ -90,14 +90,14 @@ type
     FOnIdle: TIdleEvent;
     FOnHelp: THelpEvent;
     FOnHint: TNotifyEvent; 
-    FOnEvent : TEventEvent;
+    FOnEvent: TEventEvent;
     FSavedHintFont: TFont;
+    FSavedStyle: TApplicationStyle; 
     FOnMinimize: TNotifyEvent;
     FOnRestore: TNotifyEvent;
     FOnShowHint: TShowHintEvent;
     FOnActiveControlChange: TNotifyEvent;
     FOnActiveFormChange: TNotifyEvent;
-    FSavedStyle: TApplicationStyle;
     procedure UpdateAppProps;
     function GetCanvas: TCanvas;
     function GetHintColor: TColor;
@@ -119,15 +119,15 @@ type
     function GetMouseDragImmediate: Boolean;
     function GetMouseDragThreshold: Integer;
     procedure SetMouseDragImmediate(Value: Boolean);
-    procedure SetMouseDragThreshold(Value: Integer);
+    procedure SetMouseDragThreshold(Value: Integer);  
     function GetEffects: TUIEffects;
     function GetHintFont: TFont;
     function GetStyle: TApplicationStyle;
     procedure SetEffects(Value: TUIEffects);
     procedure SetHintFont(Value: TFont);
-    procedure SetStyle(Value: TApplicationStyle);
+    procedure SetStyle(Value: TApplicationStyle); 
   protected
-    procedure Loaded; override;
+    procedure Loaded; override; 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -190,8 +190,8 @@ type
     FOnException: TExceptionEvent;
     FOnIdle: TIdleEvent;
     FOnHelp: THelpEvent;
-    FOnHint: TNotifyEvent;
-    FOnEvent: TEventEvent;
+    FOnHint: TNotifyEvent;  
+    FOnEvent: TEventEvent; 
     FOnMinimize: TNotifyEvent;
     FOnRestore: TNotifyEvent;
     FOnShowHint: TShowHintEvent;
@@ -210,12 +210,12 @@ type
     procedure DoIdle(Sender: TObject; var Done: Boolean);
     procedure DoHint(Sender: TObject);
     procedure DoMinimize(Sender: TObject);
-    procedure DoRestore(Sender: TObject);
+    procedure DoRestore(Sender: TObject);  
     function DoHelp(HelpType: THelpType; HelpContext: THelpContext;
       const HelpKeyword: string; const HelpFile: string;
       var Handled: Boolean): Boolean;
     procedure DoShortCut(Key: Integer; Shift: TShiftState; var Handled: Boolean);
-    procedure DoEvent(Sender: QObjectH; Event: QEventH; var Handled: Boolean);
+    procedure DoEvent(Sender: QObjectH; Event: QEventH; var Handled: Boolean); 
     procedure DoShowHint(var HintStr: THintString; var CanShow: Boolean;
       var HintInfo: THintInfo);
     procedure DoActiveControlChange(Sender: TObject);
@@ -248,8 +248,8 @@ begin
   begin
     Application.OnActivate := nil;
     Application.OnDeactivate := nil;
-    Application.OnException := nil;
-    Application.OnEvent := nil;
+    Application.OnException := nil; 
+    Application.OnEvent := nil; 
     Application.OnIdle := nil;
     Application.OnHelp := nil;
     Application.OnHint := nil;
@@ -633,6 +633,7 @@ begin
   FSavedHintFont := TFont.Create;
   FSavedHintFont.assign(Screen.HintFont);
   FSavedStyle := Application.Style;
+
   AppList.AddEvents(Self);
 end;
 

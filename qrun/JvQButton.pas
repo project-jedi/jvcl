@@ -57,6 +57,7 @@ type
     FHotFont: TFont;
     FHotTrackFontOptions: TJvTrackFontOptions;
     FOnDropDownMenu: TContextPopupEvent;
+    FDropArrow: boolean;
     function GetPattern: TBitmap;
     procedure SetFlat(const Value: Boolean);
     procedure SetDown(Value: Boolean);
@@ -69,8 +70,10 @@ type
     procedure SetGroupIndex(const Value: Integer);
     procedure SetHotFont(const Value: TFont);
     procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
+    procedure SetDropArrow(const Value: boolean);
+    procedure SetDropDownMenu(const Value: TPopupMenu);
   protected
-    procedure ButtonPressed(Sender: TJvCustomGraphicButton; AGroupIndex: Integer);virtual;
+    procedure ButtonPressed(Sender: TJvCustomGraphicButton; AGroupIndex: Integer); virtual;
     procedure ForceSize(Sender: TControl; AWidth, AHeight: Integer);
     function DoDropDownMenu(Button: TMouseButton; Shift: TShiftState; X, Y: Integer): Boolean; virtual;
     procedure UpdateExclusive;
@@ -98,13 +101,14 @@ type
     property MouseStates: TJvButtonMouseStates read FStates write FStates default [];
     property ForceSameSize: Boolean read FForceSameSize write SetForceSameSize default False;
     property Pattern: TBitmap read GetPattern;
-    property Flat: Boolean read FFlat write SetFlat default True;
+    property Flat: Boolean read FFlat write SetFlat default False;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
     property HotTrackFont: TFont read FHotFont write SetHotFont;
     property HotTrackFontOptions: TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions default
       DefaultTrackFontOptions;
     property Down: Boolean read FDown write SetDown default False;
-    property DropDownMenu: TPopupMenu read FDropDownMenu write FDropDownMenu;
+    property DropDownMenu: TPopupMenu read FDropDownMenu write SetDropDownMenu;
+    property DropArrow: boolean read FDropArrow write SetDropArrow default False;
     procedure Click; override;
     property OnDropDownMenu: TContextPopupEvent read FOnDropDownMenu write FOnDropDownMenu;
   public
@@ -112,6 +116,7 @@ type
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure DrawDropArrow(Canvas: TCanvas; ArrowRect: TRect); virtual;
   end;
 
   TJvCustomButton = class(TJvExButton)
@@ -124,12 +129,16 @@ type
     FForceSameSize: Boolean;
     FHotTrackFontOptions: TJvTrackFontOptions;
     FOnDropDownMenu: TContextPopupEvent;
+    FDropArrow: boolean;
     procedure SetHotFont(const Value: TFont);
     procedure SetWordWrap(const Value: Boolean);
     procedure SetForceSameSize(const Value: Boolean);
     procedure CMForceSize(var Msg: TCMForceSize); message CM_FORCESIZE;
     procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
+    procedure SetDropArrow(const Value: boolean);
+    procedure SetDropDownMenu(const Value: TPopupMenu);
   protected
+    function DoDropDownMenu(X, Y: Integer): Boolean; virtual;
     procedure ForceSize(Sender: TControl; AWidth, AHeight: Integer);
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
@@ -138,7 +147,9 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     property WordWrap: Boolean read FWordWrap write SetWordWrap default True;
     property ForceSameSize: Boolean read FForceSameSize write SetForceSameSize default False;
-    property DropDownMenu: TPopupMenu read FDropDownMenu write FDropDownMenu;
+    property DropArrow: boolean read FDropArrow write SetDropArrow default False;
+    property DropDownMenu: TPopupMenu read FDropDownMenu write SetDropDownMenu;
+
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
     property HotTrackFont: TFont read FHotFont write SetHotFont;
     property HotTrackFontOptions: TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions default
@@ -149,9 +160,10 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
-      AHeight: Integer); override;
-    procedure Click; override;
+    procedure Click;override;
+    procedure DrawDropArrow(Canvas: TCanvas; ArrowRect: TRect); virtual;
+    procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer; AHeight: Integer); override;
+
   end;
 
   // TJvDropDownButton draws a DropDown button with the DropDown glyph
@@ -170,7 +182,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, QForms,
-  JvQJVCLUtils, JvQThemes;
+  JvQJVCLUtils, JvQThemes, Math;
 
 const
   JvBtnLineSeparator = '|';
@@ -215,7 +227,8 @@ begin
   FStates := [];
   SetBounds(0, 0, 40, 40);
   FBuffer := TBitmap.Create;
-  FFlat := True;
+  FFlat := False;
+  FDropArrow := False;
   FForceSameSize := False;
   FHotFont := TFont.Create;
   FHotTrackFontOptions := DefaultTrackFontOptions;
@@ -226,6 +239,23 @@ begin
   FBuffer.Free;
   FHotFont.Free;
   inherited Destroy;
+end;
+
+procedure TJvCustomGraphicButton.DrawDropArrow(Canvas: TCanvas; ArrowRect: TRect);
+var i: integer;
+begin
+  if not Enabled then
+    Canvas.Pen.Color := clInactiveCaption
+  else
+    Canvas.Pen.Color := clWindowText;
+  for i := 0 to 3 do
+  begin
+    if ArrowRect.Left + i <= ArrowRect.Right - i then
+    begin
+      Canvas.MoveTo(ArrowRect.Left + i, ArrowRect.Top + i);
+      Canvas.LineTo(ArrowRect.Right - i, ArrowRect.Top + i);
+    end;
+  end;
 end;
 
 { Handle speedkeys (Alt + key) }
@@ -277,11 +307,18 @@ begin
 end;
 
 procedure TJvCustomGraphicButton.Paint;
+var ArrowRect: TRect;
 begin
 //  FBuffer.Width := Width;
 //  FBuffer.Height := Height;
   PaintFrame(Canvas);
   PaintButton(Canvas);
+  if DropArrow and Assigned(DropDownMenu) then
+  begin
+    ArrowRect := Rect(Width - 16, Height div 2, Width - 9, Height div 2 + 9);
+    if bsMouseDown in FStates then OffsetRect(ArrowRect, 1, 1); 
+    DrawDropArrow(Canvas, ArrowRect);
+  end;
 //  BitBlt(Canvas.Handle,0,0,Width,Height,FBuffer.Canvas.Handle,0,0,SRCCOPY);
 end;
 
@@ -480,6 +517,7 @@ end;
 procedure TJvCustomGraphicButton.UpdateExclusive;
 var
   Msg: TCMButtonPressed; 
+//  I: Integer; 
 begin
   if (GroupIndex <> 0) and (Parent <> nil) then
   begin
@@ -512,6 +550,25 @@ begin
     UpdateTrackFont(HotTrackFont, Font, HotTrackFontOptions);
   end;
 end;
+
+procedure TJvCustomGraphicButton.SetDropArrow(const Value: boolean);
+begin
+  if FDropArrow <> Value then
+  begin
+    FDropArrow := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvCustomGraphicButton.SetDropDownMenu(const Value: TPopupMenu);
+begin
+  if FDropDownMenu <> Value then
+  begin
+    FDropDownMenu := Value;
+    if DropArrow then Invalidate;
+  end;
+end;
+
 
 procedure TJvCustomGraphicButton.CMSysColorChange(var Msg: TMessage);
 begin
@@ -570,6 +627,7 @@ end;
 constructor TJvCustomButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FDropArrow := False;
   FHotTrack := False;
   FHotFont := TFont.Create;
   FFontSave := TFont.Create;
@@ -588,25 +646,30 @@ end;
 
 procedure TJvCustomButton.Click;
 var
-  Handled: Boolean;
-  MousePos: TPoint;
+  Tmp: TPoint;
 begin
   inherited Click;
-  MousePos := Point(GetClientOrigin.X, GetClientOrigin.Y + Height);
-  if FDropDownMenu <> nil then
+  Tmp := ClientToScreen(Point(0, Height));
+  DoDropDownMenu(Tmp.X, Tmp.Y);
+end;
+
+procedure TJvCustomButton.DrawDropArrow(Canvas: TCanvas; ArrowRect: TRect);
+var i: integer;
+begin
+  if not Enabled then
+    Canvas.Pen.Color := clInactiveCaption
+  else
+    Canvas.Pen.Color := clWindowText;
+  for i := 0 to (ArrowRect.Bottom - ArrowRect.Top) do
   begin
-    FDropDownMenu.PopupComponent := Self;
-    if Assigned(FOnDropDownMenu) then
-      FOnDropDownMenu(Self, MousePos, Handled)
-    else
-      Handled := False;
-    if not Handled then
+    if ArrowRect.Left + i <= ArrowRect.Right - i then
     begin
-      FDropDownMenu.Popup(MousePos.X, MousePos.Y);  
-      MouseLeave(Self); 
+      Canvas.MoveTo(ArrowRect.Left + i, ArrowRect.Top + i);
+      Canvas.LineTo(ArrowRect.Right - i, ArrowRect.Top + i);
     end;
   end;
 end;
+
 
 
 
@@ -619,9 +682,28 @@ begin
   end;
 end;
 
+procedure TJvCustomButton.SetDropArrow(const Value: boolean);
+begin
+  if FDropArrow <> Value then
+  begin
+    FDropArrow := Value;
+    Invalidate;
+  end;
+end;
+
 procedure TJvCustomButton.SetHotFont(const Value: TFont);
 begin
   FHotFont.Assign(Value);
+end;
+
+procedure TJvCustomButton.SetDropDownMenu(const Value: TPopupMenu);
+begin
+  if FDropDownMenu <> Value then
+  begin
+    FDropDownMenu := Value;
+    if DropArrow then
+      Invalidate;
+  end;
 end;
 
 procedure TJvCustomButton.MouseEnter(Control: TControl);
@@ -734,6 +816,37 @@ procedure TJvCustomButton.ForceSize(Sender: TControl; AWidth, AHeight: Integer);
 begin
   if Sender <> Self then
     inherited SetBounds(Left, Top, AWidth, AHeight);
+end;
+
+function TJvCustomButton.DoDropDownMenu(X, Y: Integer): Boolean;
+var
+
+  Handled: Boolean;
+begin
+  Result := (DropDownMenu <> nil);
+  if Result then
+  begin
+    DropDownMenu.PopupComponent := Self;
+    case DropDownMenu.Alignment of
+      paRight:
+        Inc(X, Width);
+      paCenter:
+        Inc(X, Width div 2);
+    end;
+    Handled := False;
+    if Assigned(FOnDropDownMenu) then
+      FOnDropDownMenu(Self, Point(X, Y), Handled);
+    if not Handled then
+      DropDownMenu.Popup(X, Y)
+    else
+      Exit;
+
+
+    repeat
+      Application.ProcessMessages;
+    until not QWidget_isVisible(DropDownMenu.Handle);
+
+  end;
 end;
 
 //=== { TJvDropDownButton } ==================================================

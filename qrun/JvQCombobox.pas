@@ -48,12 +48,12 @@ type
     procedure MaxPixelChanged(Sender: TObject);
   protected
     procedure Change; override;
+    procedure Loaded; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure ParentColorChanged; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Loaded; override;
     function SearchExactString(Value: string; CaseSensitive: Boolean = True): Integer;
     function SearchPrefix(Value: string; CaseSensitive: Boolean = True): Integer;
     function SearchSubString(Value: string; CaseSensitive: Boolean = True): Integer;
@@ -236,6 +236,7 @@ end;
 procedure TJvCustomCombobox.Loaded;
 begin
   inherited;
+  FontChanged;
 end;
 
 procedure TJvCustomCombobox.Change;
