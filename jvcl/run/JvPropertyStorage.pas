@@ -108,7 +108,7 @@ type
     property AObject: TObject read FObject write FObject;
     property Prefix: string read FPrefix write FPrefix;
     property AppStorage: TJvCustomAppStorage read FAppStorage write FAppStorage;
-    property AppStoragePath: string read FAppStoragePath write fAppStoragePath;
+    property AppStoragePath: string read FAppStoragePath write FAppStoragePath;
   end;
 
 { Utility routines }
@@ -693,7 +693,7 @@ var
 begin
   if Trim(S) = '' then
     Exit;
-  if CompareText(SNull, Trim(S)) = 0 then
+  if CompareText(sNull, Trim(S)) = 0 then
   begin
     SetOrdProp(FObject, PropInfo, Longint(nil));
     Exit;

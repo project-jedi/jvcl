@@ -119,7 +119,7 @@ begin
   DynBuild(FPopup.Items, FDirs.Recent);
 end;
 
-function GetAssociatedIcon(const Filename: string; SmallIcon: Boolean): HICON;
+function GetAssociatedIcon(const FileName: string; SmallIcon: Boolean): HICON;
 const
   cSmall: array [Boolean] of Cardinal = (SHGFI_LARGEICON, SHGFI_SMALLICON);
 var
@@ -128,7 +128,7 @@ var
   w: Word;
 begin
   FillChar(pfsi, SizeOf(pfsi), 0);
-  ShGetFileInfo(PChar(Filename), 0, pfsi, SizeOf(pfsi),
+  ShGetFileInfo(PChar(FileName), 0, pfsi, SizeOf(pfsi),
     SHGFI_ICONLOCATION or SHGFI_ATTRIBUTES or SHGFI_ICON or cSmall[SmallIcon] or SHGFI_USEFILEATTRIBUTES);
   Result := pfsi.hIcon;
   if Result = 0 then
@@ -136,7 +136,7 @@ begin
   if not SmallIcon then
     Result := hLarge;
   if Result = 0 then
-    ExtractAssociatedIcon(GetForegroundWindow, PChar(Filename), w);
+    ExtractAssociatedIcon(GetForegroundWindow, PChar(FileName), w);
 end;
 
 (* make Delphi 5 compiler happy // andreas

@@ -245,12 +245,12 @@ begin
           if FSingleGlyph then
             GlyphID := 0
           else
-          if wParam < FGlyphs.Count then
-            GlyphID := wParam;
+          if WParam < FGlyphs.Count then
+            GlyphID := WParam;
           if GlyphID = -1 then
             Exit;
           TTCItem(Pointer(Mesg.LParam)^).iImage := GlyphID;
-          TTCItem(Pointer(Mesg.LParam)^).Mask := TCIF_IMAGE;
+          TTCItem(Pointer(Mesg.LParam)^).mask := TCIF_IMAGE;
           SendMessage(Handle, TCM_SETITEM, WParam, LParam);
         end;
       TCM_DELETEITEM:
@@ -473,7 +473,7 @@ begin
   end;
 end;
 
-procedure TJvgTabControl.SetFontDirection(Value: TgllabelDir);
+procedure TJvgTabControl.SetFontDirection(Value: TglLabelDir);
 begin
   if FFontDirection <> Value then
   begin

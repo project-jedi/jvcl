@@ -726,7 +726,7 @@ var
   W: Word;
 begin
   W := BinStreamVer;
-  FStream.writeBuffer(W, SizeOf(W));
+  FStream.WriteBuffer(W, SizeOf(W));
 end;
 
 procedure TBinStore.StoreScheduleStart;
@@ -1496,7 +1496,7 @@ begin
     H := StrToInt(Copy(Value, 1, 2));
     Min := StrToInt(Copy(Value, 4, 2));
     MSecs := StrToInt(Copy(Value, 7, 2)) * 1000 + StrToInt(Copy(Value, 10, 3));
-    Result := H * 3600000 + MIn * 60000 + MSecs;
+    Result := H * 3600000 + Min * 60000 + MSecs;
   end;
 end;
 

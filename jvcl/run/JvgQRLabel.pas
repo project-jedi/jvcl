@@ -231,7 +231,7 @@ end;
 
 procedure TJvgQRLabel.SetDirection(Value: TglLabelDir);
 const
-  RadianEscapments: array [TgllabelDir] of Integer =
+  RadianEscapments: array [TglLabelDir] of Integer =
     (0, -1800, -900, 900);
 begin
   if FDirection <> Value then

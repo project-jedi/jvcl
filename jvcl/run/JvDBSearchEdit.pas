@@ -48,13 +48,13 @@ type
     FSearchOptions: TLocateOptions;
     FClearOnEnter: Boolean;
     FDataResult: string;
-    procedure DataChange(Sender: Tobject);
+    procedure DataChange(Sender: TObject);
     function GetDataSource: TDataSource;
     function GetDataField: string;
     procedure SetDataSource(Value: TDataSource);
     procedure SetDataField(const Value: string);
     procedure SetSearchOptions(const Value: TLocateOptions);
-    procedure CMChanged(var Message: TMessage); message CM_CHANGED;
+    procedure CMChanged(var Msg: TMessage); message CM_CHANGED;
   protected
     procedure DoEnter; override;
     procedure DoExit; override;
@@ -71,7 +71,7 @@ type
     property DataResult: string read FDataResult write FDataResult;
     property DataField: string read GetDataField write SetDataField;
     property TabStop default True;
-    property ClearOnEnter: Boolean read FClearOnEnter write FClearOnEnter default true;
+    property ClearOnEnter: Boolean read FClearOnEnter write FClearOnEnter default True;
   end;
 
   TJvDBSearchEdit = class(TJvDBCustomSearchEdit)
@@ -193,9 +193,9 @@ begin
   end;
 end;
 
-procedure TJvDBCustomSearchEdit.CMChanged;
+procedure TJvDBCustomSearchEdit.CMChanged(var Msg: TMessage);
 var
-  lText: string;
+  LText: string;
 begin
   if (not ((csDesigning in ComponentState) and
     (csLoading in ComponentState))) and
@@ -205,9 +205,9 @@ begin
       if (Screen.ActiveControl = Self) and Active then
         if DataSet.Locate(FieldName, Text, FSearchOptions) then
         begin
-          lText := Text;
+          LText := Text;
           Text := DataSet.FieldByName(DataField).AsString;
-          SelStart := Length(lText);
+          SelStart := Length(LText);
           SelLength := Length(Text) - SelStart;
         end;
     end;
@@ -215,13 +215,13 @@ end;
 
 procedure TJvDBCustomSearchEdit.KeyPress(var Key: Char);
 var
-  lLength: Integer;
+  LLength: Integer;
 begin
   if Key = Backspace then
   begin
-    lLength := SelLength;
+    LLength := SelLength;
     SelStart := SelStart - 1;
-    SelLength := lLength + 1;
+    SelLength := LLength + 1;
   end;
   inherited KeyPress(Key);
 end;

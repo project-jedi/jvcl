@@ -444,7 +444,7 @@ begin
 end;
 
 
-procedure TJvCustomDBComboBox.CMGetDatalink(var Msg: TMessage);
+procedure TJvCustomDBComboBox.CMGetDataLink(var Msg: TMessage);
 begin
   Msg.Result := Longint(FDataLink);
 end;
@@ -510,7 +510,7 @@ end;
 
 procedure TJvCustomDBComboBox.SetStyle(Value: TComboBoxStyle);
 begin
-  if (Value = csSimple) and Assigned(FDatalink) and FDatalink.DatasourceFixed then
+  if (Value = csSimple) and Assigned(FDataLink) and FDataLink.DataSourceFixed then
     _DBError(SNotReplicatable);
   inherited SetStyle(Value);
 end;

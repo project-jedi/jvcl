@@ -68,7 +68,7 @@ type
     // that keyboard focus enters the control:
     FOriginalValue: string;
     // Validation/event.
-    FOnAcceptNewValue: TJvDbAcceptValueEvent;
+    FOnAcceptNewValue: TJvDBAcceptValueEvent;
     procedure ActiveChange(Sender: TObject);
     procedure DataChange(Sender: TObject);
     procedure EditingChange(Sender: TObject);
@@ -176,7 +176,7 @@ type
     // for whether to accept the entry, or not, and if so, the end
     // user may also want to automatically set a flag to cause an automatic Post
     // after the db control does a write to the fieldlink.
-    property OnAcceptNewValue: TJvDbAcceptValueEvent read FOnAcceptNewValue write FOnAcceptNewValue;
+    property OnAcceptNewValue: TJvDBAcceptValueEvent read FOnAcceptNewValue write FOnAcceptNewValue;
   end;
 
   TJvDBComboEdit = class(TJvCustomComboEdit)
@@ -610,7 +610,7 @@ type
     property DatasetState: TDataSetState read GetDatasetState;
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
   published
-    property DatasetName: string read GetDataSetName write SetDataSetName;
+    property DataSetName: string read GetDataSetName write SetDataSetName;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property EditColor: TColor read FEditColor write SetEditColor default clRed;
     property Captions: TStrings read GetCaptions write SetCaptions;
@@ -923,7 +923,7 @@ var
 begin
   Accept := True;
   Post := False;
-  newValue := Text;
+  NewValue := Text;
   // When we hit enter, check if there was a change, and if so,
   // we can fire the confirmation event.
   if FOriginalValue <> NewValue then

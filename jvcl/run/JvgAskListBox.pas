@@ -87,7 +87,7 @@ type
     procedure SetAutoTransparentColor(Value: TglAutoTransparentColor);
     procedure SetWallpaper(Value: TBitmap);
     function GetWallpaper: TBitmap;
-    procedure SetWallpaperImage(Value: Timage);
+    procedure SetWallpaperImage(Value: TImage);
     procedure SetWallpaperOption(Value: TglWallpaperOption);
     procedure SetNumGlyphs(Value: Word);
     procedure SetGlyphs(Value: TImageList);
@@ -634,7 +634,7 @@ begin
   Result := FWallpaper;
 end;
 
-procedure TJvgAskListBox.SetWallpaperImage(Value: Timage);
+procedure TJvgAskListBox.SetWallpaperImage(Value: TImage);
 begin
   FWallpaperImage := Value;
   if (not IsItAFilledBitmap(FWallpaper)) and Assigned(Value) then
@@ -876,7 +876,7 @@ begin
     Exit;
   MouseClickPoint.X := Msg.XPos;
   MouseClickPoint.Y := Msg.YPos;
-  if Msg.XPos > integer(FSegment1Width) then
+  if Msg.XPos > Integer(FSegment1Width) then
   begin
     ItemN := ItemAtPos(SmallPointToPoint(Msg.Pos), True);
     SendMessage(Handle, LB_GETITEMRECT, ItemN, LPARAM(@R));

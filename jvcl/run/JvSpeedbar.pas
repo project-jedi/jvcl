@@ -78,7 +78,7 @@ type
     FButtonStyle: TButtonStyle;
     FGridSize: TPoint;
     FOffset: TPoint;
-    FEditWin: HWnd;
+    FEditWin: HWND;
     FRowCount: Integer;
     FPrevRect: TRect;
     FPrevAlign: TAlign;
@@ -505,8 +505,8 @@ type
 function FindSpeedBar(const Pos: TPoint): TJvSpeedBar;
 procedure DrawCellButton(Grid: TDrawGrid; R: TRect; Item: TJvSpeedItem;
   Image: TJvButtonImage; ARightToLeft: Boolean = False);
-function NewSpeedSection(ASpeedbar: TJvSpeedBar; const ACaption: string): Integer;
-function NewSpeedItem(AOwner: TComponent; ASpeedbar: TJvSpeedBar; Section: Integer;
+function NewSpeedSection(ASpeedBar: TJvSpeedBar; const ACaption: string): Integer;
+function NewSpeedItem(AOwner: TComponent; ASpeedBar: TJvSpeedBar; Section: Integer;
   const AName: string): TJvSpeedItem;
 
 implementation
@@ -3181,12 +3181,12 @@ end;
 
 { Utility routines }
 
-function NewSpeedSection(ASpeedbar: TJvSpeedBar; const ACaption: string): Integer;
+function NewSpeedSection(ASpeedBar: TJvSpeedBar; const ACaption: string): Integer;
 begin
-  Result := ASpeedbar.AddSection(ACaption);
+  Result := ASpeedBar.AddSection(ACaption);
 end;
 
-function NewSpeedItem(AOwner: TComponent; ASpeedbar: TJvSpeedBar; Section: Integer;
+function NewSpeedItem(AOwner: TComponent; ASpeedBar: TJvSpeedBar; Section: Integer;
   const AName: string): TJvSpeedItem;
 begin
   Result := ASpeedBar.NewItem(AOwner, Section, AName);
@@ -3195,7 +3195,7 @@ end;
 function FindSpeedBar(const Pos: TPoint): TJvSpeedBar;
 var
   Window: TWinControl;
-  Handle: HWnd;
+  Handle: HWND;
 begin
   Result := nil;
   Handle := WindowFromPoint(Pos);

@@ -97,7 +97,7 @@ type
     procedure SetButtonStyle(const Value: TJvButtonStyle);
     procedure SetTextureColor1(const Value: TColor);
     procedure SetTextureColor2(const Value: TColor);
-    procedure SetAutoHighLightColor(const Value: Boolean);
+    procedure SetAutoHighlightColor(const Value: Boolean);
     procedure SetAllowDrag(const Value: Boolean);
     procedure SetWindowsButtons(const Value: TJvWindowsButtons);
     procedure SetButtonCursor(const Value: TCursor);
@@ -236,7 +236,7 @@ begin
   FButtonColor := clBtnFace;
   FArrowColor := clNavy;
   FButtonHighlightColor := JvDefaultButtonHighlightColor;
-  FAutoHighLightColor := False;
+  FAutoHighlightColor := False;
   FTextureColor1 := clWhite;
   FTextureColor2 := clNavy;
 end;
@@ -686,7 +686,7 @@ begin
   if (not FShowButton) or (not Enabled) or (GetParentForm(Self) = nil) then
     Exit;
 
-  if FAutoHighLightColor then
+  if FAutoHighlightColor then
     FButtonHighlightColor := GrabBarColor;
 
   BtnRect := ButtonRect; // So we don't repeatedly call GetButtonRect
@@ -898,15 +898,15 @@ begin
   end;
 end;
 
-procedure TJvCustomNetscapeSplitter.SetAutoHighLightColor(const Value: Boolean);
+procedure TJvCustomNetscapeSplitter.SetAutoHighlightColor(const Value: Boolean);
 begin
-  if FAutoHighLightColor <> Value then
+  if FAutoHighlightColor <> Value then
   begin
-    FAutoHighLightColor := Value;
-    if FAutoHighLightColor then
-      FButtonHighLightColor := GrabBarColor
+    FAutoHighlightColor := Value;
+    if FAutoHighlightColor then
+      FButtonHighlightColor := GrabBarColor
     else
-      FButtonHighLightColor := JvDefaultButtonHighlightColor;
+      FButtonHighlightColor := JvDefaultButtonHighlightColor;
     if (ButtonStyle = bsNetscape) and ShowButton then
       Invalidate;
   end;

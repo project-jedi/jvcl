@@ -105,7 +105,7 @@ begin
   inherited Destroy;
 end;
 
-function TJvPlayList.GetPath(Value: string; Position: Integer): string;
+function TJvPlaylist.GetPath(Value: string; Position: Integer): string;
 var
   I: Integer;
 begin
@@ -155,7 +155,7 @@ begin
   begin
     C := A;
     for B := A to Items.Count - 1 do
-      if ExtractFileName(Items[b]) < ExtractFileName(Items[C]) then
+      if ExtractFileName(Items[B]) < ExtractFileName(Items[C]) then
         C := B;
     Items.Exchange(A, C);
   end;

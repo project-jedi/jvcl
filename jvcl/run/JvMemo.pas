@@ -188,7 +188,7 @@ uses
 constructor TJvCustomMemo.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FOrigLines := TStringlist.Create;
+  FOrigLines := TStringList.Create;
   FHotTrack := False;
   // ControlStyle := ControlStyle + [csAcceptsControls];
   FCaret := TJvCaret.Create(Self);

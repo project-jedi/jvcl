@@ -74,10 +74,10 @@ type
     property FileName: TFileName read FFileName write SetFileName;
     property Files: TStrings read GetFiles write SetFiles;
     property OnCABInfo: TOnCABInfo read FOnCABInfo write FOnCABInfo;
-    property OnFilesListed: TNotifyEvent read FOnFiles write FonFiles;
+    property OnFilesListed: TNotifyEvent read FOnFiles write FOnFiles;
     property OnFileExtracted: TOnExtracted read FOnExtracted write FOnExtracted;
-    property OnStartFileExtraction: TOnExtractFile read FOnExtractFile write FonExtractFile;
-    property OnNeedNewCabinet: TOnNeedNewCabinet read FonNeed write FOnNeed;
+    property OnStartFileExtraction: TOnExtractFile read FOnExtractFile write FOnExtractFile;
+    property OnNeedNewCabinet: TOnNeedNewCabinet read FOnNeed write FOnNeed;
   end;
 
 implementation

@@ -528,7 +528,7 @@ begin
   if roUnreadOnly in FReadOptions then
     Inc(Flags, MAPI_UNREAD_ONLY);
   Res := FSimpleMapi.MapiFindNext(SessionHandle, Application.Handle, nil,
-    PChar(FSeedMessageID), Flags, 0, MsgId);
+    PChar(FSeedMessageID), Flags, 0, MsgID);
   Result := (Res = SUCCESS_SUCCESS);
   if Result then
   begin
@@ -661,7 +661,7 @@ begin
   Result := '';
   CheckLoadLib;
   SaveTaskWindowsState;
-  Res := FSimpleMAPI.MapiResolveName(SessionHandle, Application.Handle,
+  Res := FSimpleMapi.MapiResolveName(SessionHandle, Application.Handle,
     PChar(Name), LogonFlags or MAPI_AB_NOMODIFY or MAPI_DIALOG, 0, RecipDesc);
   RestoreTaskWindowsState;
   if (Res <> MAPI_E_AMBIGUOUS_RECIPIENT) and (Res <> MAPI_E_UNKNOWN_RECIPIENT) then

@@ -35,6 +35,7 @@ Known Issues:
 unit JvSpeedButton;
 
 interface
+
 uses
   SysUtils, Classes,
   {$IFDEF VCL}
@@ -433,7 +434,7 @@ type
   end;
 
   { (rb) Similar class in JvButtons.pas }
-  TJvxButtonGlyph = class
+  TJvxButtonGlyph = class(TObject)
   private
     FAlignment: TAlignment;
     FGlyphList: TImageList;
@@ -548,31 +549,31 @@ const
 {$ENDIF VisualCLX}
 var
   NewStyle: Boolean;
-  FShadowColor, FHighlightColor: TColor;
+  ShadowColor, HighlightColor: TColor;
+
   // Honeymic
   function GetHighlightColor(BaseColor: TColor): TColor;
   begin
    Result := RGB(
       Min(GetRValue(ColorToRGB(BaseColor)) + 64, 255),
       Min(GetGValue(ColorToRGB(BaseColor)) + 64, 255),
-      Min(GetBValue(ColorToRGB(BaseColor)) + 64, 255)
-     );
+      Min(GetBValue(ColorToRGB(BaseColor)) + 64, 255));
   end;
+
   // Honeymic
   function GetShadowColor(BaseColor: TColor): TColor;
   begin
    Result := RGB(
       Max(GetRValue(ColorToRGB(BaseColor)) - 64, 0),
       Max(GetGValue(ColorToRGB(BaseColor)) - 64, 0),
-      Max(GetBValue(ColorToRGB(BaseColor)) - 64, 0)
-     );
+      Max(GetBValue(ColorToRGB(BaseColor)) - 64, 0));
   end;
   
 begin
   Result := Client;
   NewStyle := (Style = bsNew) or (NewStyleControls and (Style = bsAutoDetect));
-  FShadowColor    := GetShadowColor(AColor);     // Honeymic
-  FHighlightColor := GetHighlightColor(AColor);  // Honeymic
+  ShadowColor := GetShadowColor(AColor);     // Honeymic
+  HighlightColor := GetHighlightColor(AColor);  // Honeymic
 
   if IsDown then
   begin
@@ -584,33 +585,24 @@ begin
       //  Frame3D(Canvas, Result, clBtnShadow, clBtnFace, 1);
       if not IsFlat then
       begin
-//was        Frame3D(Canvas, Result, clWindowFrame, clBtnHighlight, 1);
-//was        Frame3D(Canvas, Result, clBtnShadow, clBtnFace, 1);
         // Honeymic
-        Frame3D(Canvas, Result, clWindowFrame, FHighLightColor, 1);
-        Frame3D(Canvas, Result, FShadowColor, AColor, 1);
-
+        Frame3D(Canvas, Result, clWindowFrame, HighlightColor, 1);
+        Frame3D(Canvas, Result, ShadowColor, AColor, 1);
       end
       else
-        begin
-//was          Frame3D(Canvas, Result, clBtnShadow, clBtnHighlight, 1);
-          // Honeymic
-          Frame3D(Canvas, Result, FShadowColor, FHighLightColor, 1);
-        end;
+        // Honeymic
+        Frame3D(Canvas, Result, ShadowColor, HighlightColor, 1);
     end
     else
     begin
       if IsFlat then
-        begin
-          // Frame3D(Canvas, Result, clBtnShadow, clBtnHighlight, 1)
-//was          Frame3D(Canvas, Result, clWindowFrame, clBtnHighlight, 1);
-          // Honeymic
-          Frame3D(Canvas, Result, clWindowFrame, FHighLightColor, 1);
-        end
+      begin
+        // Honeymic
+        Frame3D(Canvas, Result, clWindowFrame, HighlightColor, 1);
+      end
       else
       begin
         Frame3D(Canvas, Result, clWindowFrame, clWindowFrame, 1);
-//was        Canvas.Pen.Color := FShadowColor;
         // Honeymic
         Canvas.Pen.Color := clBtnShadow;
         Canvas.PolyLine([Point(Result.Left, Result.Bottom - 1),
@@ -623,34 +615,25 @@ begin
     if NewStyle then
     begin
       if IsFlat then
-        begin
-//was          Frame3D(Canvas, Result, clBtnHighlight, clBtnShadow, 1);
-          // Honeymic
-          Frame3D(Canvas, Result, FHighLightColor, FShadowColor, 1);
-        end
+        // Honeymic
+        Frame3D(Canvas, Result, HighlightColor, ShadowColor, 1)
       else
       begin
-//was        Frame3D(Canvas, Result, clBtnHighlight, clWindowFrame, 1);
-//was        Frame3D(Canvas, Result, clBtnFace, clBtnShadow, 1);
         // Honeymic
-        Frame3D(Canvas, Result, FHighLightColor, clWindowFrame, 1);
-        Frame3D(Canvas, Result, AColor, FShadowColor, 1);
+        Frame3D(Canvas, Result, HighlightColor, clWindowFrame, 1);
+        Frame3D(Canvas, Result, AColor, ShadowColor, 1);
       end;
     end
     else
     begin
       if IsFlat then
-        begin
-//          Frame3D(Canvas, Result, clBtnHighlight, clWindowFrame, 1);
-          // Honeymic
-          Frame3D(Canvas, Result, FHighLightColor, clWindowFrame, 1);
-        end
+        // Honeymic
+        Frame3D(Canvas, Result, HighlightColor, clWindowFrame, 1)
       else
       begin
         Frame3D(Canvas, Result, clWindowFrame, clWindowFrame, 1);
-//was         Frame3D(Canvas, Result, clBtnHighlight, clBtnShadow, 1);
         // Honeymic
-        Frame3D(Canvas, Result, FHighlightColor, FShadowColor, 1);
+        Frame3D(Canvas, Result, HighlightColor, ShadowColor, 1);
       end;
     end;
   end;
@@ -783,10 +766,10 @@ end;
 
 function TJvCustomSpeedButton.CheckBtnMenuDropDown: Boolean;
 begin
-  Result := CheckMenuDropdown(PointToSmallPoint(GetDropDownMenuPos), True);
+  Result := CheckMenuDropDown(PointToSmallPoint(GetDropDownMenuPos), True);
 end;
 
-function TJvCustomSpeedButton.CheckMenuDropdown(const Pos: TSmallPoint;
+function TJvCustomSpeedButton.CheckMenuDropDown(const Pos: TSmallPoint;
   Manual: Boolean): Boolean;
 {$IFDEF VCL}
 var
@@ -1122,7 +1105,7 @@ begin
       FMenuTracking := True;
       try
         P := GetDropDownMenuPos;
-        if CheckMenuDropdown(PointToSmallPoint(P), False) then
+        if CheckMenuDropDown(PointToSmallPoint(P), False) then
           DoMouseUp(Button, Shift, X, Y);
         {$IFDEF VCL}
         if PeekMessage(Msg, 0, 0, 0, PM_NOREMOVE) then

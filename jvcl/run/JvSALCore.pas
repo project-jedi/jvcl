@@ -75,8 +75,8 @@ type
     procedure xTrue;
     procedure xFalse;
     procedure xAnd;
-    procedure X_Or;
-    procedure xXOr;
+    procedure x_Or;
+    procedure xXor;
     procedure xNot;
     procedure xEq;
     procedure xNe;
@@ -164,7 +164,7 @@ begin
   end;
 end;
 
-procedure TJvSALCore.X_Or;
+procedure TJvSALCore.x_Or;
 begin
   FSal.BoolPush(FSal.BoolPop or FSal.BoolPop);
 end;
@@ -461,7 +461,7 @@ begin
   FSal.Variable.Value := FSal.Variable.Value - FSal.Pop;
 end;
 
-procedure TJvSALCore.xXOr;
+procedure TJvSALCore.xXor;
 begin
   FSal.BoolPush(FSal.BoolPop xor FSal.BoolPop);
 end;

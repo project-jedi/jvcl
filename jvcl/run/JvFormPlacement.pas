@@ -141,8 +141,8 @@ type
     procedure WriteFloat(const Ident: string; Value: Double);
     function ReadInteger(const Ident: string; Default: Longint = 0): Longint;
     procedure WriteInteger(const Ident: string; Value: Longint);
-    function ReadDateTime(const Ident: string; Default: TDateTime = 0): tDateTime;
-    procedure WriteDateTime(const Ident: string; Value: tDateTime);
+    function ReadDateTime(const Ident: string; Default: TDateTime = 0): TDateTime;
+    procedure WriteDateTime(const Ident: string; Value: TDateTime);
     procedure EraseSections;
   published
     property Active: Boolean read FActive write FActive default True;
@@ -152,10 +152,8 @@ type
     property Options: TPlacementOptions read FOptions write FOptions default [fpState, fpSize, fpLocation];
     property PreventResize: Boolean read FPreventResize write SetPreventResize default False;
     property Version: Integer read FVersion write FVersion default 0;
-    property OnSavePlacement: TNotifyEvent read FOnSavePlacement
-      write FOnSavePlacement;
-    property OnRestorePlacement: TNotifyEvent read FOnRestorePlacement
-      write FOnRestorePlacement;
+    property OnSavePlacement: TNotifyEvent read FOnSavePlacement write FOnSavePlacement;
+    property OnRestorePlacement: TNotifyEvent read FOnRestorePlacement write FOnRestorePlacement;
   end;
 
   TJvStoredValues = class;
@@ -402,6 +400,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TJvFormPlacement.SetHook;
 begin
   if not (csDesigning in ComponentState) and (Owner <> nil) and
@@ -421,6 +420,7 @@ begin
   else
     ReleaseHook;
 end;
+
 {$ENDIF VCL}
 
 function TJvFormPlacement.CheckMinMaxInfo: Boolean;
@@ -591,10 +591,10 @@ end;
 procedure TJvFormPlacement.UpdatePlacement;
 const
   {$IFDEF VCL}
-  Metrics: array[bsSingle..bsSizeToolWin] of Word =
+  Metrics: array [bsSingle..bsSizeToolWin] of Word =
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Metrics: array[fbsSingle..fbsSizeToolWin] of TSysMetrics =
+  Metrics: array [fbsSingle..fbsSizeToolWin] of TSysMetrics =
   {$ENDIF VisualCLX}
     (SM_CXBORDER, SM_CXFRAME, SM_CXDLGFRAME, SM_CXBORDER, SM_CXFRAME);
 var
@@ -694,9 +694,7 @@ end;
 procedure TJvFormPlacement.RestorePlacement;
 begin
   if Owner is TCustomForm then
-  begin
     InternalRestoreFormPlacement(Form, AppStorage, AppStoragePath, Options);
-  end;
   NotifyLinks(poRestore);
 end;
 
@@ -765,7 +763,7 @@ begin
       WriteInteger(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, False)]), Value);
 end;
 
-function TJvFormPlacement.ReadDateTime(const Ident: string; Default: tDateTime = 0): tDateTime;
+function TJvFormPlacement.ReadDateTime(const Ident: string; Default: TDateTime = 0): TDateTime;
 begin
   if Assigned(AppStorage) then
     with AppStorage do
@@ -774,7 +772,7 @@ begin
     Result := Default;
 end;
 
-procedure TJvFormPlacement.WriteDateTime(const Ident: string; Value: tDateTime);
+procedure TJvFormPlacement.WriteDateTime(const Ident: string; Value: TDateTime);
 begin
   if Assigned(AppStorage) then
     with AppStorage do
@@ -807,7 +805,7 @@ end;
 
 procedure TJvFormPlacement.RestoreFormPlacement;
 var
-  cActive: TComponent;
+  ActiveCtl: TComponent;
 begin
   FSaved := False;
   if Assigned(AppStorage) and (ReadInteger(siVersion, 0) >= FVersion) then
@@ -817,10 +815,10 @@ begin
     Restore;
     if (fpActiveControl in Options) and (Owner is TCustomForm) then
     begin
-      cActive := Form.FindComponent(AppStorage.ReadString(AppStorage.ConcatPaths([AppStoragePath, siActiveCtrl]), ''));
-      if (cActive <> nil) and (cActive is TWinControl) and
-        TWinControl(cActive).CanFocus then
-        Form.ActiveControl := TWinControl(cActive);
+      ActiveCtl := Form.FindComponent(AppStorage.ReadString(AppStorage.ConcatPaths([AppStoragePath, siActiveCtrl]), ''));
+      if (ActiveCtl <> nil) and (ActiveCtl is TWinControl) and
+        TWinControl(ActiveCtl).CanFocus then
+        Form.ActiveControl := TWinControl(ActiveCtl);
     end;
   end;
   FRestored := True;
@@ -830,7 +828,7 @@ end;
 procedure TJvFormPlacement.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
-  inherited;
+  inherited Notification(AComponent, Operation);
   if (Operation = opRemove) and (AComponent = AppStorage) then
     AppStorage := nil;
 end;
@@ -1154,11 +1152,14 @@ begin
   else
     if VarIsInt (Value) then
       StoredValues.Storage.WriteInteger(Name, Value)
-    else if VarType (Value) in [varSingle, varDouble, varCurrency] then
+    else
+    if VarType (Value) in [varSingle, varDouble, varCurrency] then
       StoredValues.Storage.WriteFloat(Name, Value)
-    else if VarType (Value) in [varDate] then
+    else
+    if VarType (Value) in [varDate] then
       StoredValues.Storage.WriteDateTime(Name, Value)
-    else if VarType (Value) in [varBoolean] then
+    else
+    if VarType (Value) in [varBoolean] then
       StoredValues.Storage.WriteBoolean(Name, Value)
     else
       StoredValues.Storage.WriteString(Name, Value);
@@ -1178,13 +1179,16 @@ begin
     RestoreValue := RestoreStrValue;
   end
   else
-    if VarIsInt (Value) then
+    if VarIsInt(Value) then
       RestoreValue := StoredValues.Storage.ReadInteger(Name, Value)
-    else if VarType (Value) in [varSingle, varDouble, varCurrency] then
+    else
+    if VarType(Value) in [varSingle, varDouble, varCurrency] then
       RestoreValue := StoredValues.Storage.ReadFloat(Name, Value)
-    else if VarType (Value) in [varDate] then
+    else
+    if VarType(Value) in [varDate] then
       RestoreValue := StoredValues.Storage.ReadDateTime(Name, Value)
-    else if VarType (Value) in [varBoolean] then
+    else
+    if VarType(Value) in [varBoolean] then
       RestoreValue := StoredValues.Storage.ReadBoolean(Name, Value)
     else
       RestoreValue := StoredValues.Storage.ReadString(Name, Value);
