@@ -39,13 +39,14 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
+  {$WARN UNIT_PLATFORM OFF}
   Messages, Graphics, Controls, Forms, Dialogs, StdCtrls, Menus, Buttons,
   FileCtrl, Mask, ImgList, ActnList, ExtDlgs,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   Qt, QGraphics, QControls, QForms, QDialogs, QStdCtrls, QMenus, QButtons,
-  QFileCtrls, QMask, QImgList, QActnList,
-  QExtDlgs, QComboEdits, Types, QWindows,
+  QMask, QImgList, QActnList,
+  QExtDlgs, QComboEdits, QWindows, Types,
   JvExComboEdits,
   {$ENDIF VisualCLX}
   SysUtils, Classes,
@@ -706,7 +707,7 @@ type
     function FourDigitYear: Boolean;
     //    function FormatSettingsChange(var Msg: TMessage): Boolean;
     {$IFDEF VCL}
-    procedure WMContextMenu(var Message: TWMContextMenu); message WM_CONTEXTMENU;
+    procedure WMContextMenu(var Msg: TWMContextMenu); message WM_CONTEXTMENU;
     {$ENDIF VCL}
   protected
     // Polaris
@@ -904,7 +905,12 @@ uses
   {$ENDIF VCL}
   JvConsts;
 
-{$R ..\resources\JvToolEdit.res}
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvToolEdit.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+{$R ../Resources/JvToolEdit.res}
+{$ENDIF LINUX}
 
 type
   TWinControlHack = class(TWinControl);
@@ -921,7 +927,7 @@ type
   }
 
   {$IFDEF VCL}
-  TDateHook = class
+  TDateHook = class(TObject)
   private
     FCount: Integer;
     FHooked: Boolean;
@@ -987,11 +993,11 @@ end;
 
 function IsInWordArray(Value: Word; const A: array of Word): Boolean;
 var
-  i: Integer;
+  I: Integer;
 begin
   Result := False;
-  for i := 0 to High(A) do
-    if A[i] = Value then
+  for I := 0 to High(A) do
+    if A[I] = Value then
       Exit;
   Result := True;
 end;
@@ -1063,6 +1069,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 function EditorTextMargins(Editor: TCustomEdit): TPoint;
 var
   DC: HDC;
@@ -1126,6 +1133,10 @@ function PaintEdit(Editor: TCustomEdit; const AText: string;
   AAlignment: TAlignment; PopupVisible: Boolean; {ButtonWidth: Integer;}
   DisabledTextColor: TColor; StandardPaint: Boolean;
   var ACanvas: TControlCanvas; var Msg: TWMPaint): Boolean;
+const
+  AlignStyle: array [Boolean, TAlignment] of DWORD =
+    ((WS_EX_LEFT, WS_EX_RIGHT, WS_EX_LEFT),
+    (WS_EX_RIGHT, WS_EX_LEFT, WS_EX_LEFT));
 var
   LTextWidth, X: Integer;
   EditRect: TRect;
@@ -1134,10 +1145,6 @@ var
   S: string;
   ExStyle: DWORD;
   ed: TCustomEditHack;
-const
-  AlignStyle: array [Boolean, TAlignment] of DWORD =
-    ((WS_EX_LEFT, WS_EX_RIGHT, WS_EX_LEFT),
-    (WS_EX_RIGHT, WS_EX_LEFT, WS_EX_LEFT));
 begin
   Result := True;
   if csDestroying in Editor.ComponentState then
@@ -1229,6 +1236,7 @@ begin
       EndPaint(ed.Handle, PS);
   end;
 end;
+
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}
@@ -1270,7 +1278,6 @@ begin
   else
     Result := True;
 end;
-
 
 procedure DrawSelectedText(Canvas: TCanvas; const R: TRect; X, Y: Integer;
   const Text: WideString; SelStart, SelLength: Integer;
@@ -1426,10 +1433,12 @@ begin
     SavedBrush.Free;
   end;
 end;
+
 {$ENDIF VisualCLX}
 
-{$IFDEF VCL}
 //=== TDateHook ==============================================================
+
+{$IFDEF VCL}
 
 procedure TDateHook.Add;
 begin
@@ -1481,6 +1490,7 @@ begin
   Application.UnhookMainWindow(FormatSettingsChange);
   FHooked := False;
 end;
+
 {$ENDIF VCL}
 
 //=== TJvCustomComboEdit =====================================================
@@ -1509,7 +1519,7 @@ begin
     begin
       if not CheckDefaults or not Assigned(Self.Images) then
         Self.Images := ActionList.Images;
-      if not CheckDefaults or (Self.Enabled = True) then
+      if not CheckDefaults or Self.Enabled then
         Self.Enabled := Enabled;
       if not CheckDefaults or (Self.HelpContext = 0) then
         Self.HelpContext := HelpContext;
@@ -1519,7 +1529,7 @@ begin
         Self.ImageIndex := ImageIndex;
       if not CheckDefaults or (Self.ClickKey = scNone) then
         Self.ClickKey := ShortCut;
-      if not CheckDefaults or (Self.Visible = True) then
+      if not CheckDefaults or Self.Visible then
         Self.Visible := Visible;
       if not CheckDefaults or not Assigned(Self.OnButtonClick) then
         Self.OnButtonClick := OnExecute;
@@ -1596,6 +1606,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TJvCustomComboEdit.CMBiDiModeChanged(var Msg: TMessage);
 begin
   inherited;
@@ -1630,6 +1641,7 @@ begin
   inherited;
   UpdateBtnBounds;
 end;
+
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}
@@ -1679,6 +1691,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TJvCustomComboEdit.CreateParams(var Params: TCreateParams);
 const
   Alignments: array [TAlignment] of LongWord = (ES_LEFT, ES_RIGHT, ES_CENTER);
@@ -1693,7 +1706,9 @@ begin
   inherited CreateWnd;
   SetEditRect;
 end;
+
 {$ENDIF VCL}
+
 {$IFDEF VisualCLX}
 procedure TJvCustomComboEdit.CreateWidget;
 begin
@@ -2960,7 +2975,7 @@ end;
 function TJvCustomDateEdit.FourDigitYear: Boolean;
 begin
   Result := (FYearDigits = dyFour) or ((FYearDigits = dyDefault) and
-    (JvJCLUtils.FourDigitYear));
+    JvJCLUtils.FourDigitYear);
 end;
 
 function TJvCustomDateEdit.GetCalendarStyle: TCalendarStyle;
@@ -3304,7 +3319,7 @@ begin
 end;
 
 {$IFDEF VCL}
-procedure TJvCustomDateEdit.WMContextMenu(var Message: TWMContextMenu);
+procedure TJvCustomDateEdit.WMContextMenu(var Msg: TWMContextMenu);
 begin
   if not PopupVisible then
     inherited;
@@ -3657,6 +3672,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TJvFileDirEdit.SetAcceptFiles(Value: Boolean);
 begin
   if FAcceptFiles <> Value then
@@ -3697,6 +3713,7 @@ begin
     DragFinish(Msg.Drop);
   end;
 end;
+
 {$ENDIF VCL}
 
 //=== TJvFilenameEdit ========================================================
@@ -3764,9 +3781,11 @@ begin
   case FDialogKind of
     dkOpen:
       NewDialog := TOpenDialog.Create(Self);
-    dkOpenPicture: NewDialog := TOpenPictureDialog.Create(Self);
-    dkSavePicture: NewDialog := TSavePictureDialog.Create(Self);
-  else {dkSave}
+    dkOpenPicture:
+      NewDialog := TOpenPictureDialog.Create(Self);
+    dkSavePicture:
+      NewDialog := TSavePictureDialog.Create(Self);
+  else { dkSave }
     NewDialog := TSaveDialog.Create(Self);
   end;
   try
@@ -3991,6 +4010,7 @@ end;
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}
+
 procedure TJvPopupWindow.SetParent(const Value: TWidgetControl);
 var
   Pt: TPoint;
@@ -4009,9 +4029,10 @@ end;
 function TJvPopupWindow.WidgetFlags: Integer;
 begin
   Result := Integer(WidgetFlags_WType_Popup) or // WS_POPUP
-            Integer(WidgetFlags_WStyle_NormalBorder) or // WS_BORDER
-            Integer(WidgetFlags_WStyle_Tool);  // WS_EX_TOOLWINDOW
+    Integer(WidgetFlags_WStyle_NormalBorder) or // WS_BORDER
+    Integer(WidgetFlags_WStyle_Tool);  // WS_EX_TOOLWINDOW
 end;
+
 {$ENDIF VisualCLX}
 
 function TJvPopupWindow.GetPopupText: string;
