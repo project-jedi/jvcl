@@ -592,21 +592,24 @@ begin
   Result := TJvImageItem(inherited Items[Index])
 end;
 
-procedure TJvImageItems.SetItems(Index: Integer;
-  const Value: TJvImageItem);
+procedure TJvImageItems.SetItems(Index: Integer; const Value: TJvImageItem);
 begin
   inherited Items[Index] := Value;
 end;
 
 procedure TJvImageItems.Update(Item: TCollectionItem);
-var W:TPersistent; obj:IJvResetItemHeight;
+var
+  W: TPersistent;
+  Obj: IJvResetItemHeight;
 begin
-  if UpdateCount <> 0 then Exit;
+  if UpdateCount <> 0 then
+    Exit;
   inherited Update(Item);
   W := GetOwner;
-  if Supports(W, IJvResetItemHeight, obj) then
-    obj.ResetItemHeight
-  else if (W is TWinControl) then
+  if Supports(W, IJvResetItemHeight, Obj) then
+    Obj.ResetItemHeight
+  else
+  if W is TWinControl then
     TWinControl(W).Invalidate;
 end;
 

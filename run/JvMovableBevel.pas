@@ -49,10 +49,10 @@ type
     FSizing: Boolean; // if True then we are sizing the object;
     FDirection: TJvBevelScrollTextDirection;
     FBorderSize: Byte;
-    FOnMoving:TNotifyEvent;
-    FOnMoved:TNotifyEvent;
-    FOnSizing:TNotifyEvent;
-    FOnSized:TNotifyEvent;
+    FOnMoving: TNotifyEvent;
+    FOnMoved: TNotifyEvent;
+    FOnSizing: TNotifyEvent;
+    FOnSized: TNotifyEvent;
   protected
     procedure DoMove(Shift: TShiftState; DeltaX, DeltaY: Integer);
     procedure DoSize(Shift: TShiftState; DeltaX, DeltaY: Integer);
@@ -68,10 +68,10 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property BorderSize: Byte read FBorderSize write FBorderSize default 4;
-    property OnMoving:TNotifyEvent read FOnMoving write FOnMoving;
-    property OnSizing:TNotifyEvent read FOnSizing write FOnSizing;
-    property OnMoved:TNotifyEvent read FOnMoved write FOnMoved;
-    property OnSized:TNotifyEvent read FOnSized write FOnSized;
+    property OnMoving: TNotifyEvent read FOnMoving write FOnMoving;
+    property OnSizing: TNotifyEvent read FOnSizing write FOnSizing;
+    property OnMoved: TNotifyEvent read FOnMoved write FOnMoved;
+    property OnSized: TNotifyEvent read FOnSized write FOnSized;
   end;
 
 implementation
@@ -237,18 +237,20 @@ begin
   inherited MouseMove(Shift, X, Y);
 end;
 
-procedure TJvMovableBevel.MouseDown(Button: TMouseButton; Shift:
-TShiftState; X, Y: Integer);
+procedure TJvMovableBevel.MouseDown(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
 begin
   if FDirection > tdNone then
   begin
     FSizing := True;
-    if Assigned(FOnSizing) then FOnSizing(Self);
+    if Assigned(FOnSizing) then
+      FOnSizing(Self);
   end
   else
   begin
     FMoving := True;
-    if Assigned(FOnMoving) then FOnMoving(Self);
+    if Assigned(FOnMoving) then
+      FOnMoving(Self);
   end;
   FStartPoint := Point(Left, Top);
   FStartX := X;

@@ -116,7 +116,7 @@ type
     function DoCommand(ACommand: TEditCommand; var X, Y: Integer;
       var CaretUndo: Boolean): Boolean; override;
     { triggers when Lines changes }
-    procedure DoLinesChange(Sender:TObject);virtual;
+    procedure DoLinesChange(Sender: TObject); virtual;
     { TextModified is called when the editor content has changed. }
     procedure TextModified(ACaretX, ACaretY: Integer; Action: TModifiedAction;
       const Text: string); dynamic;
@@ -1397,7 +1397,7 @@ end;
 
 procedure TJvCustomEditor.DoLinesChange(Sender: TObject);
 begin
-  Modified := true;
+  Modified := True;
 //  TextModified(-1, -1, maAll, '');
 end;
 

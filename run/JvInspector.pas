@@ -297,10 +297,8 @@ type
     var Allow: Boolean) of object;
   TInspectorValueErrorEvent = procedure(Sender: TObject; Item: TJvCustomInspectorItem;
     ExceptObject: Exception) of object;
-
-    // new event types (sept 2004) -wp
- TInspectorBeforeEditEvent = procedure (Sender :TObject; Item:TJvCustomInspectorItem; Edit:TCustomEdit ) of object;  // BeforeEdit
-
+  // new event types (sept 2004) -wp
+  TInspectorBeforeEditEvent = procedure(Sender: TObject; Item: TJvCustomInspectorItem; Edit: TCustomEdit) of object;
 
   EJvInspector = class(EJVCLException);
   EJvInspectorItem = class(EJvInspector);
@@ -372,7 +370,6 @@ type
     FOnItemEdit: TOnJvInspectorItemEdit; // User clicks Ellipsis button.
     FOnItemValueError: TInspectorValueErrorEvent;
     FInspectObject: TObject;
-
     // BeforeEdit NOTE: - WAP
     //
     // This event fired is when creating TEdit or TMemo objects, and
@@ -389,8 +386,7 @@ type
     //   OnEditorContextPopup.etc.
     // Also, If you want the event that occurs when the user clicks the ellipsis
     // button, you want OnItemEdit, not BeforeEdit.
-    FBeforeEdit :TInspectorBeforeEditEvent;
-
+    FBeforeEdit: TInspectorBeforeEditEvent;
     procedure SetInspectObject(const Value: TObject);
     //    FOnMouseDown: TInspectorMouseDownEvent;
     {$IFDEF VisualCLX}
@@ -543,6 +539,7 @@ type
     property VisibleCount: Integer read GetVisibleCount;
     property VisibleItems[const I: Integer]: TJvCustomInspectorItem read GetVisibleItems;
     property WantTabs: Boolean read GetWantTabs write SetWantTabs;
+    property BeforeEdit: TInspectorBeforeEditEvent read FBeforeEdit write FBeforeEdit;
     { Standard TCustomControl events - these are really events fired by
       the TEdit control used when editing in a cell!}
     property OnEditorContextPopup: TContextPopupEvent read FOnEditorContextPopup write FOnEditorContextPopup;
@@ -552,9 +549,6 @@ type
     property OnEditorMouseDown: TOnJvInspectorMouseDown read FOnEditorMouseDown write FOnEditorMouseDown;
     property OnItemEdit: TOnJvInspectorItemEdit read FOnItemEdit write FOnItemEdit; // User clicks Ellipsis button.
     property OnItemValueError: TInspectorValueErrorEvent read FOnItemValueError write FOnItemValueError;
-
-    property BeforeEdit :TInspectorBeforeEditEvent read FBeforeEdit write FBeforeEdit; // {TJvInspector as TObject}Inspector, {TJvCustomInspectorItem}Item, {TMemor or TEdit as TCustomEdit}Edit);
-
   public
     constructor Create(AOwner: TComponent); override;
     procedure BeforeDestruction; override;
@@ -3517,7 +3511,8 @@ begin
   if (Item <> nil) and (PtInRect(Item.Rects[iprNameArea], Point(X, Y)) or
     PtInRect(Item.Rects[iprValueArea], Point(X, Y))) then
     Item.MouseUp(Button, Shift, X, Y)
-  else if (Selected <> nil) and Selected.Tracking and (not PtInRect(ClientRect, Point(X, Y))) then
+  else
+  if (Selected <> nil) and Selected.Tracking and not PtInRect(ClientRect, Point(X, Y)) then
     Selected.StopTracking;
 end;
 
@@ -7267,11 +7262,8 @@ begin
       SetEditCtrl(TOpenEdit(Memo));
       {$ENDIF VisualCLX}
 
-     if Assigned(Inspector.BeforeEdit) then begin
-          Inspector.BeforeEdit({TObject}Inspector as TObject, {TJvCustomInspectorItem}Self, {TMemo downcast}Memo as TCustomEdit);
-      end;
-
-
+     if Assigned(Inspector.BeforeEdit) then
+       Inspector.BeforeEdit(Inspector as TObject, Self, Memo as TCustomEdit);
     end
     else
     begin
@@ -7299,13 +7291,8 @@ begin
       SetEditCtrl(TOpenEdit(Edit));
       {$ENDIF VisualCLX}
 
-
-      if Assigned(Inspector.BeforeEdit) then begin
-          Inspector.BeforeEdit({TObject}Inspector as TObject, {TJvCustomInspectorItem}Self, {TEdit}Edit as TCustomEdit);
-      end;
-
-
-
+      if Assigned(Inspector.BeforeEdit) then
+        Inspector.BeforeEdit(Inspector as TObject, Self, Edit as TCustomEdit);
     end;
     if iifEditFixed in Flags then
     begin

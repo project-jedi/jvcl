@@ -242,7 +242,7 @@ end;
 
 procedure TJvImageViewerOptions.SetImagePadding(const Value: Integer);
 begin
-  if (FImagePadding <> Value) then
+  if FImagePadding <> Value then
   begin
     FImagePadding := Value;
     Change;
@@ -328,7 +328,8 @@ begin
   begin
     if Value <> nil then
       GetPicture.Assign(Value)
-    else if Assigned(FPicture) then
+    else
+    if Assigned(FPicture) then
     begin
       FreeAndNil(FPicture);
       Changed;
@@ -453,7 +454,7 @@ begin
     Dec(ImageRect.Bottom, 2);
     Inc(TextRect.Top, 2);
     S := AItem.Caption;
-    if (S = '') then
+    if S = '' then
       S := ExtractFileName(AItem.FileName);
   end;
 

@@ -358,7 +358,8 @@ function CalcFieldLen(FieldType: TFieldType; Size: Word): Word;
 begin
   if not (FieldType in ftSupported) then
     Result := 0
-  else if FieldType in ftBlobTypes then
+  else
+  if FieldType in ftBlobTypes then
     Result := SizeOf(Longint)
   else
   begin
@@ -367,7 +368,7 @@ begin
       ftString:
         Inc(Result);
       ftSmallint:
-        Result := SizeOf(SmallInt);
+        Result := SizeOf(Smallint);
       ftInteger:
         Result := SizeOf(Longint);
       ftWord:
@@ -566,34 +567,40 @@ begin
       else
         Result := AnsiCompareStr(PChar(Data1), PChar(Data2));
     ftSmallint:
-      if SmallInt(Data1^) > SmallInt(Data2^) then
+      if Smallint(Data1^) > Smallint(Data2^) then
         Result := 1
-      else if SmallInt(Data1^) < SmallInt(Data2^) then
+      else
+      if Smallint(Data1^) < Smallint(Data2^) then
         Result := -1;
     ftInteger, ftDate, ftTime, ftAutoInc:
       if Longint(Data1^) > Longint(Data2^) then
         Result := 1
-      else if Longint(Data1^) < Longint(Data2^) then
+      else
+      if Longint(Data1^) < Longint(Data2^) then
         Result := -1;
     ftWord:
       if Word(Data1^) > Word(Data2^) then
         Result := 1
-      else if Word(Data1^) < Word(Data2^) then
+      else
+      if Word(Data1^) < Word(Data2^) then
         Result := -1;
     ftBoolean:
       if WordBool(Data1^) and not WordBool(Data2^) then
         Result := 1
-      else if not WordBool(Data1^) and WordBool(Data2^) then
+      else
+      if not WordBool(Data1^) and WordBool(Data2^) then
         Result := -1;
     ftFloat, ftCurrency:
       if Double(Data1^) > Double(Data2^) then
         Result := 1
-      else if Double(Data1^) < Double(Data2^) then
+      else
+      if Double(Data1^) < Double(Data2^) then
         Result := -1;
     ftDateTime:
       if TDateTime(Data1^) > TDateTime(Data2^) then
         Result := 1
-      else if TDateTime(Data1^) < TDateTime(Data2^) then
+      else
+      if TDateTime(Data1^) < TDateTime(Data2^) then
         Result := -1;
     ftFixedChar:
       if CaseInsensitive then
@@ -610,7 +617,8 @@ begin
     ftLargeint:
       if Int64(Data1^) > Int64(Data2^) then
         Result := 1
-      else if Int64(Data1^) < Int64(Data2^) then
+      else
+      if Int64(Data1^) < Int64(Data2^) then
         Result := -1;
     ftVariant:
       Result := 0;
@@ -834,7 +842,8 @@ begin
     gmCurrent:
       if (FRecordPos < 0) or (FRecordPos >= RecordCount) then
         Result := grError
-      else if Filtered then
+      else
+      if Filtered then
         if not RecordFilter then
           Result := grError;
     gmNext:
@@ -856,7 +865,8 @@ begin
   end;
   if Result = grOk then
     RecordToBuffer(Records[FRecordPos], Buffer)
-  else if (Result = grError) and DoCheck then
+  else
+  if (Result = grError) and DoCheck then
     Error(RsEMemNoRecords);
 end;
 
@@ -915,7 +925,8 @@ begin
           Move(Data^, Buffer^, CalcFieldLen(Field.DataType, Field.Size));
     end;
   end
-  else if State in [dsBrowse, dsEdit, dsInsert, dsCalcFields] then
+  else
+  if State in [dsBrowse, dsEdit, dsInsert, dsCalcFields] then
   begin
     Inc(RecBuf, FRecordSize + Field.Offset);
     Result := RecBuf[0] <> #0;
@@ -1075,13 +1086,17 @@ function TJvMemoryData.CompareBookmarks(Bookmark1, Bookmark2: TBookmark): Intege
 begin
   if (Bookmark1 = nil) and (Bookmark2 = nil) then
     Result := 0
-  else if (Bookmark1 <> nil) and (Bookmark2 = nil) then
+  else
+  if (Bookmark1 <> nil) and (Bookmark2 = nil) then
     Result := 1
-  else if (Bookmark1 = nil) and (Bookmark2 <> nil) then
+  else
+  if (Bookmark1 = nil) and (Bookmark2 <> nil) then
     Result := -1
-  else if TBookmarkData(Bookmark1^) > TBookmarkData(Bookmark2^) then
+  else
+  if TBookmarkData(Bookmark1^) > TBookmarkData(Bookmark2^) then
     Result := 1
-  else if TBookmarkData(Bookmark1^) < TBookmarkData(Bookmark2^) then
+  else
+  if TBookmarkData(Bookmark1^) < TBookmarkData(Bookmark2^) then
     Result := -1
   else
     Result := 0;
@@ -1368,7 +1383,8 @@ begin
     begin
       if FLoadStructure then
         CopyStructure(FDataSet, FAutoIncAsInteger)
-      else if FApplyMode <> amNone then // Added 2004/10/25 (CFZ)
+      else
+      if FApplyMode <> amNone then // Added 2004/10/25 (CFZ)
       begin
         AddStatusField;
         // Removed (2004/10/19) becuase all fields are included in Design Time (CFZ)
@@ -1883,9 +1899,11 @@ begin
             Result := CompareFields(Data1, Data2, F.DataType,
               FCaseInsensitiveSort);
           end
-          else if Data1[0] <> #0 then
+          else
+          if Data1[0] <> #0 then
             Result := 1
-          else if Data2[0] <> #0 then
+          else
+          if Data2[0] <> #0 then
             Result := -1;
           if FDescendingSort then
             Result := -Result;
@@ -1899,7 +1917,8 @@ begin
   begin
     if Item1.ID > Item2.ID then
       Result := 1
-    else if Item1.ID < Item2.ID then
+    else
+    if Item1.ID < Item2.ID then
       Result := -1;
     if FDescendingSort then
       Result := -Result;
@@ -2221,7 +2240,8 @@ var
                 Inc(Result);
                 bApply := True;
               end
-              else if FExactApply then
+              else
+              if FExactApply then
               begin
                 Error(RsEInsertError);
                 Break;
@@ -2233,12 +2253,14 @@ var
                 SysUtils.Abort;
               end;
             end
-            else if FExactApply then // Exists in Original
+            else
+            if FExactApply then // Exists in Original
             begin
               Error(RsERecordDuplicate);
               Break;
             end
-            else if (FApplyMode = amMerge) then
+            else
+            if FApplyMode = amMerge then
             begin
               if UpdateRec then
               begin
@@ -2247,7 +2269,7 @@ var
               end
               else
               begin
-                if (FDataset.State in dsEditModes) then
+                if FDataset.State in dsEditModes then
                   FDataset.Cancel;
                 SysUtils.Abort;
               end;
@@ -2263,7 +2285,8 @@ var
                 Inc(Result);
                 bApply := True;
               end
-              else if FExactApply then
+              else
+              if FExactApply then
               begin
                 Error(RsEUpdateError);
                 Break;
@@ -2275,12 +2298,14 @@ var
                 SysUtils.Abort;
               end;
             end
-            else if FExactApply then // Not exists in Original
+            else
+            if FExactApply then // Not exists in Original
             begin
               Error(RsERecordInexistent);
               Break;
             end
-            else if (FApplyMode = amMerge) then
+            else
+            if FApplyMode = amMerge then
             begin
               if InsertRec then
               begin
@@ -2289,7 +2314,7 @@ var
               end
               else
               begin
-                if (FDataset.State in dsEditModes) then
+                if FDataset.State in dsEditModes then
                   FDataset.Cancel;
                 SysUtils.Abort;
               end;
@@ -2317,7 +2342,8 @@ var
               Inc(Result);
               bApply := True;
             end
-            else if FExactApply then
+            else
+            if FExactApply then
             begin
               Error(RsEDeleteError);
               Break;
@@ -2325,7 +2351,8 @@ var
             else
               SysUtils.Abort;
           end
-          else if FExactApply then // Not exists in Original
+          else
+          if FExactApply then // Not exists in Original
           begin
             Error(RsERecordInexistent);
             Break;
@@ -2414,9 +2441,9 @@ begin
         ValDel := xKey[J];
         {$IFDEF COMPILER6_UP}
         if VarCompareValue(ValRow, ValDel) = vrEqual then
-          {$ELSE}
+        {$ELSE}
         if ValRow = ValDel then
-          {$ENDIF COMPILER6_UP}
+        {$ENDIF COMPILER6_UP}
         begin
           Inc(Equals);
           if Equals = (Len - 1) then
@@ -2515,7 +2542,8 @@ begin
   Pos := FDataSet.FRecordPos;
   if (Pos < 0) and (FDataSet.RecordCount > 0) then
     Pos := 0
-  else if Pos >= FDataSet.RecordCount then
+  else
+  if Pos >= FDataSet.RecordCount then
     Pos := FDataSet.RecordCount - 1;
   if (Pos >= 0) and (Pos < FDataSet.RecordCount) then
   begin
@@ -2615,7 +2643,7 @@ initialization
 
 finalization
   UnregisterUnitVersion(HInstance);
-  {$ENDIF UNITVERSIONING}
+{$ENDIF UNITVERSIONING}
 
 end.
 

@@ -3161,54 +3161,50 @@ begin
 
   if Options.MouseEdit then
   begin
-    if X < Options.XStartOffset then begin
+    if X < Options.XStartOffset then
+    begin
       EditYScale;
-      exit;
-    end else
+      Exit;
+    end
+    else
     // New: Don't let end user mess with title, if we
     // provide our own way to set the title or title options,
     // however, if Options.MouseEdit is on, they can still set the
     // scale via mouse clicking.
-    if (Y < Options.YStartOffset) and (not Assigned(FOnTitleClick)) then begin
+    if (Y < Options.YStartOffset) and not Assigned(FOnTitleClick) then
+    begin
       EditHeader;
-      exit;
+      Exit;
     end;
 
-
-    if (Y > Options.YStartOffset + Options.YEnd) and  (not Assigned(FOnXAxisClick)) then begin
+    if (Y > Options.YStartOffset + Options.YEnd) and not Assigned(FOnXAxisClick) then
+    begin
       EditXHeader;
-      exit;
+      Exit;
     end;
-
   end;
 
+  if X < Options.XStartOffset then
   begin
-    if X < Options.XStartOffset then
+    // Just fire the Y axis clicked event, don't popup the editor
+    if Assigned(FOnYAxisClick) then
     begin
-      // Just fire the Y axis clicked event, don't popup the editor
-      if Assigned(FOnYAxisClick) then
-      begin
-        FOnYAxisClick(Self);
-        Exit;
-      end;
-    end
-    else
-    if Y < Options.YStartOffset then
-    begin
-      if Assigned(FOnTitleClick) then
-        FOnTitleClick(Self);
+      FOnYAxisClick(Self);
+      Exit;
     end;
-  end;
+  end
+  else
+  if Y < Options.YStartOffset then
+    if Assigned(FOnTitleClick) then
+      FOnTitleClick(Self);
   // New: Click on bottom area of chart (X Axis) can be defined by
   // user of the component to do something.
   if Assigned(FOnXAxisClick) then
-  begin
     if (Y > Options.YEnd) and (X > Options.XStartOffset) then
     begin
       FOnXAxisClick(Self);
       Exit;
     end;
-  end;
   if Assigned(FOnAltYAxisClick) then
     if (Y < Options.YEnd) and (X > Options.XEnd) then
       FOnAltYAxisClick(Self);

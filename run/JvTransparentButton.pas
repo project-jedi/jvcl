@@ -1499,7 +1499,7 @@ end;
 procedure TJvTransparentButton2.DrawTheBitmap(ARect: TRect; Canvas: TCanvas);
 var
   Index: Integer;
-  HelpRect:TRect;
+  HelpRect: TRect;
 begin
   if FImList.Count = 0 then
     Exit;

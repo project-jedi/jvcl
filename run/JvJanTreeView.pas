@@ -172,7 +172,7 @@ type
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     procedure DoCustomDrawItem(Sender: TCustomViewControl; Node: TCustomViewItem;
-       Canvas: TCanvas; const Rect:TRect; State: TCustomDrawState;
+       Canvas: TCanvas; const Rect: TRect; State: TCustomDrawState;
        Stage: TCustomDrawStage; var DefaultDraw: Boolean);
     {$ENDIF VisualCLX}
     procedure SetColorFormulas(const Value: Boolean);
@@ -642,8 +642,8 @@ type
   TCustomViewItemAccessProtected = class(TCustomViewItem);
 
 procedure TJvJanTreeView.DoCustomDrawItem(Sender: TCustomViewControl; Node: TCustomViewItem;
-       Canvas: TCanvas; const Rect:TRect; State: TCustomDrawState;
-       Stage: TCustomDrawStage; var DefaultDraw: Boolean);
+  Canvas: TCanvas; const Rect: TRect; State: TCustomDrawState;
+  Stage: TCustomDrawStage; var DefaultDraw: Boolean);
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
 procedure TJvJanTreeView.DoCustomDrawItem(Sender: TCustomTreeView;

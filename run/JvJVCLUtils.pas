@@ -694,13 +694,13 @@ type
 procedure HTMLDrawTextEx(Canvas: TCanvas; Rect: TRect;
   const State: TOwnerDrawState; const Text: string; var Width: Integer;
   CalcType: TJvHTMLCalcType;  MouseX, MouseY: Integer; var MouseOnLink: Boolean;
-  var LinkName: string; scale: integer = 100);
+  var LinkName: string; Scale: Integer = 100);
 function HTMLDrawText(Canvas: TCanvas; Rect: TRect;
-  const State: TOwnerDrawState; const Text: string; Scale: integer = 100): string;
+  const State: TOwnerDrawState; const Text: string; Scale: Integer = 100): string;
 function HTMLTextWidth(Canvas: TCanvas; Rect: TRect;
-  const State: TOwnerDrawState; const Text: string; Scale: integer = 100): Integer;
+  const State: TOwnerDrawState; const Text: string; Scale: Integer = 100): Integer;
 function HTMLPlainText(const Text: string): string;
-function HTMLTextHeight(Canvas: TCanvas; const Text: string; Scale: integer = 100): Integer;
+function HTMLTextHeight(Canvas: TCanvas; const Text: string; Scale: Integer = 100): Integer;
 function HTMLPrepareText(const Text: string): string;
 
 implementation
@@ -7078,7 +7078,7 @@ end;
 procedure HTMLDrawTextEx(Canvas: TCanvas; Rect: TRect;
   const State: TOwnerDrawState; const Text: string; var Width: Integer;
   CalcType: TJvHTMLCalcType;  MouseX, MouseY: Integer; var MouseOnLink: Boolean;
-  var LinkName: string; Scale: integer = 100);
+  var LinkName: string; Scale: Integer = 100);
 const
   DefaultLeft = 0; // (ahuser) was 2
 var
@@ -7103,27 +7103,33 @@ var
 
   function ExtractPropertyValue(const Tag: string; PropName: string): string;
   var
-    I : integer;
+    I : Integer;
   begin
     Result := '';
     PropName := UpperCase(PropName);
     if Pos(PropName, UpperCase(Tag)) > 0 then
     begin
       Result := Copy(Tag, Pos(PropName, UpperCase(Tag)) + Length(PropName), Length(Tag));
-     If Pos('"', result) <> 0 then begin
-       result := Copy(result, Pos('"', result)+1, Length(result));
-       result := Copy(result, 1, Pos('"', result)-1);
-     end else
-     If Pos('''', result) <> 0 then begin
-       result := Copy(result, Pos('''', result)+1, Length(result));
-       result := Copy(result, 1, Pos('''', result)-1);
-     end else begin
-       result := Trim(result);
-       delete(result,1,1);
-       result := Trim(result);
+     if Pos('"', Result) <> 0 then
+     begin
+       Result := Copy(Result, Pos('"', Result) + 1, Length(Result));
+       Result := Copy(Result, 1, Pos('"', Result) - 1);
+     end
+     else
+     if Pos('''', Result) <> 0 then
+     begin
+       Result := Copy(Result, Pos('''', Result) + 1, Length(Result));
+       Result := Copy(Result, 1, Pos('''', Result) - 1);
+     end
+     else
+     begin
+       Result := Trim(Result);
+       Delete(Result, 1, 1);
+       Result := Trim(Result);
        I := 1;
-       while (i < length(result)) and (result[i+1] <> ' ') Do inc(i);
-       result := Copy(result, 1, I);
+       while (I < Length(Result)) and (Result[I+1] <> ' ') do
+         Inc(I);
+       Result := Copy(Result, 1, I);
      end;
     end;
   end;
@@ -7270,7 +7276,7 @@ begin
                   begin
                     Canvas.Font.Color  := RemFontColor;
                     Canvas.Brush.Color := RemBrushColor;
-                    Canvas.font.Size   := RemFontSize;
+                    Canvas.Font.Size   := RemFontSize;
                     Trans := True;
                   end;
                 end;
@@ -7315,9 +7321,8 @@ begin
                 begin
                   TagPrp := Copy(vText, 2, Pos(cTagEnd, vText)-2);
                   CurLeft := StrToInt(ExtractPropertyValue(TagPrp, cIND)); // ex IND="10"
-                  if odReserved1 in state then begin
-                    CurLeft := Round((CurLeft * scale) div 100);
-                  end;
+                  if odReserved1 in State then
+                    CurLeft := Round((CurLeft * Scale) div 100);
                 end
                 else
                   Style(fsItalic, True); // ITALIC
@@ -7333,16 +7338,16 @@ begin
                   OldWidth := Canvas.Pen.Width;
                   TagPrp := UpperCase(Copy(vText, 2, Pos(cTagEnd, vText)-2));
                   Canvas.Pen.Width := StrToIntDef(ExtractPropertyValue(TagPrp, 'SIZE'),1); // ex HR="10"
-                  if odReserved1 in state then begin
-                    Canvas.Pen.Width := Round((Canvas.Pen.Width * scale) div 100);
-                  end;
-                  If (CalcType = htmlShow) then begin
+                  if odReserved1 in State then
+                    Canvas.Pen.Width := Round((Canvas.Pen.Width * Scale) div 100);
+                  if CalcType = htmlShow then
+                  begin
                     Canvas.MoveTo(Rect.Left ,Rect.Top + CanvasMaxTextHeight(Canvas));
                     Canvas.LineTo(Rect.Right,Rect.Top + CanvasMaxTextHeight(Canvas));
                   end;
-                  rect.top := rect.top + 1 + Canvas.Pen.Width;
+                  Rect.Top := Rect.Top + 1 + Canvas.Pen.Width;
                   Canvas.Pen.Width := OldWidth;
-                  newLine(HTMLDeleteTag(vText)<>'');
+                  NewLine(HTMLDeleteTag(vText) <> '');
                 end;
               'F':
                 if (Pos(cTagEnd, vText) > 0) and (not Selected) and Assigned(Canvas) {and (CalcType = htmlShow)} then // F from FONT
@@ -7359,10 +7364,10 @@ begin
                   if Pos(cBGCOLOR, TagPrp) > 0 then
                   begin
                     Prp := ExtractPropertyValue(TagPrp, cBGCOLOR);
-                    If uppercase(prp) = 'CLNONE' then
+                    if UpperCase(Prp) = 'CLNONE' then
+                      Trans := True
+                    else
                     begin
-                      Trans := True;
-                    end else begin
                       Canvas.Brush.Color := StringToColor(Prp);
                       Trans := False;
                     end;
@@ -7370,7 +7375,7 @@ begin
                   if Pos('SIZE', TagPrp) > 0 then
                   begin
                     Prp := ExtractPropertyValue(TagPrp, 'SIZE');
-                    Canvas.font.Size := StrToIntDef(Prp,Canvas.font.Size);
+                    Canvas.Font.Size := StrToIntDef(Prp,Canvas.Font.Size);
                   end;
                 end;
             end;
@@ -7396,7 +7401,7 @@ begin
     FreeAndNil(vStr);
     FreeAndNil(OldFont);
   end;
-  If CalcType = htmlCalcHeight then
+  if CalcType = htmlCalcHeight then
     Width := Rect.Top + CanvasMaxTextHeight(Canvas)
   else
     Width := Max(Width, CurLeft - DefaultLeft);
@@ -7404,7 +7409,7 @@ end;
 
 
 function HTMLDrawText(Canvas: TCanvas; Rect: TRect;
-  const State: TOwnerDrawState; const Text: string; Scale: integer = 100): string;
+  const State: TOwnerDrawState; const Text: string; Scale: Integer = 100): string;
 var
   W: Integer;
   S: Boolean;
@@ -7431,7 +7436,7 @@ begin
 end;
 
 function HTMLTextWidth(Canvas: TCanvas; Rect: TRect;
-  const State: TOwnerDrawState; const Text: string; Scale: integer = 100): Integer;
+  const State: TOwnerDrawState; const Text: string; Scale: Integer = 100): Integer;
 var
   S: Boolean;
   St: string;
@@ -7440,7 +7445,7 @@ begin
 end;
 
 
-function HTMLTextHeight(Canvas: TCanvas; const Text: string; Scale: integer = 100): Integer;
+function HTMLTextHeight(Canvas: TCanvas; const Text: string; Scale: Integer = 100): Integer;
 var S: Boolean;
     St: String;
     R : TRECT;

@@ -1429,7 +1429,7 @@ var
   Value: Variant;
   MatchCount: Integer;
   StrValueA, StrValueB: string;
-  compareResult:Boolean;
+  CompareResult: Boolean;
 begin
   Result := False;
   Lo := -1;
@@ -1443,13 +1443,14 @@ begin
     Count := StrSplit(KeyFields, ';', Chr(0), KeyFieldArray, 20);
 
   (* Single value need not be an array type! *)
-  if ((VarType(KeyValues) and VarArray) > 0) then begin
+  if (VarType(KeyValues) and VarArray) > 0 then
+  begin
     Lo := VarArrayLowBound(KeyValues, 1);
     Hi := VarArrayHighBound(KeyValues, 1);
     VarCount := (Hi - Lo) + 1;
-  end else begin
-      VarCount := 1;
-  end;
+  end
+  else
+    VarCount := 1;
   if VarCount <> Count then
     Exit;
   if Count = 0 then
@@ -1481,12 +1482,12 @@ begin
     for I := 0 to Count - 1 do
     begin
       Value := GetFieldValueAsVariant(CsvColumnData[I], FieldLookup[I], RecIndex);
-      if (Lo<0) then // non-vararray!
-          compareResult := (Value = KeyValues)
+      if Lo < 0 then // non-vararray!
+        CompareResult := (Value = KeyValues)
       else // vararray!
-          compareResult := Value = KeyValues[I + Lo];
+        CompareResult := Value = KeyValues[I + Lo];
 
-      if compareResult then
+      if CompareResult then
         Inc(MatchCount)
       else
       if Options <> [] then
@@ -1720,9 +1721,11 @@ begin
     else
     if Ch = '"' then // always escape quotes by doubling them, since this is standard CSV behaviour
       S := S + '""'
-    else if Ord(Ch)=9 then
-        S := S + Ch // keep tabs! NEW Sept 2004! WP.
-    else if Ord(Ch) >= 32 then // strip any other low-ascii-unprintables!
+    else
+    if Ch = Tab then
+      S := S + Ch // keep tabs! NEW Sept 2004! WP.
+    else
+    if Ch >= ' ' then // strip any other low-ascii-unprintables!
       S := S + Ch;
   end;
   S := S + '"'; // end quote.
@@ -3039,7 +3042,7 @@ begin
     Result := InternalFieldCompare(SortColumns[I], Left, Right);
     if Result <> 0 then
     begin
-      if (not SortAscending[I]) then // inverts comparison result when Descending!
+      if not SortAscending[I] then // inverts comparison result when Descending!
         Result := -Result;
            // XXX REPEAT Result := InternalFieldCompare( SortColumns[I],Left,Right);
       Exit; // found greater or less than condition
@@ -3120,9 +3123,10 @@ begin
     SortAscending[I] := Ascending; 
     if SortFieldNames[I] = '' then
       JvCsvDatabaseError(FTableName, RsESortFailedFieldNames);
-    if SortFieldNames[I][1] = '!' then begin
-        SortAscending[I] := not SortAscending[I];
-        SortFieldNames[I] := Copy(SortFieldNames[I],2,Length(SortFieldNames[I]));
+    if SortFieldNames[I][1] = '!' then
+    begin
+      SortAscending[I] := not SortAscending[I];
+      SortFieldNames[I] := Copy(SortFieldNames[I],2,Length(SortFieldNames[I]));
     end;
     SortColumns[I] := FCsvColumns.FindByName(SortFieldNames[I]);
     if not Assigned(SortColumns[I]) then
@@ -4292,7 +4296,7 @@ end;
 function TJvCustomCsvDataSet.CopyFromDataset(DataSet: TDataSet): Integer;
 var
   I, MatchFieldCount: Integer;
-  strValue, FieldName: string;
+  StrValue, FieldName: string;
   MatchSourceField: array of TField;
   MatchDestField: array of TField;
 begin
@@ -4330,16 +4334,16 @@ begin
   begin
     Append;
     for I := 0 to MatchFieldCount-1 do
-      if MatchSourceField[I].DataType=ftString then begin
-           if MatchSourceField[I].IsNull then
-             strValue :=  ''
-           else
-             strValue :=  MatchSourceField[I].Value;
-
-            MatchDestField[I].Value := strValue;
-      end else begin
-      MatchDestField[I].Value := MatchSourceField[I].Value;
-      end;
+      if MatchSourceField[I].DataType=ftString then
+      begin
+        if MatchSourceField[I].IsNull then
+          StrValue :=  ''
+        else
+          StrValue :=  MatchSourceField[I].Value;
+        MatchDestField[I].Value := StrValue;
+      end
+      else
+        MatchDestField[I].Value := MatchSourceField[I].Value;
     Post;
     DataSet.Next;
     Inc(Result);

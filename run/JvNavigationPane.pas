@@ -854,7 +854,6 @@ type
     property OnButtonClick: TJvNavPaneToolButtonClick read FOnButtonClick write FOnButtonClick;
     property OnClose: TNotifyEvent read FOnClose write FOnClose;
     property OnDropDownMenu: TContextPopupEvent read FOnDropDownMenu write FOnDropDownMenu;
-
   end;
 
   TJvNavPaneToolPanel = class(TJvCustomNavPaneToolPanel)
@@ -1045,20 +1044,20 @@ type
     property SmallImages: TCustomImageList read GetSmallImages write SetSmallImages;
     property SplitterHeight: Integer read GetSplitterHeight write SetSplitterHeight default 7;
     property WordWrap: Boolean read FWordWrap write SetWordWrap default False;
-    property Splitter:TJvOutlookSplitter read FSplitter;
-    property IconPanel:TJvIconPanel read FIconPanel;
+    property Splitter: TJvOutlookSplitter read FSplitter;
+    property IconPanel: TJvIconPanel read FIconPanel;
     property OnDropDownMenu: TContextPopupEvent read FOnDropDownMenu write FOnDropDownMenu;
 
     property OnSplitterCanResize: TCanResizeEvent read GetSplitterCanResize write SetSplitterCanResize;
     property OnSplitterMoved: TNotifyEvent read GetSplitterMoved write SetSplitterMoved;
     property OnSplitterPaint: TNotifyEvent read GetSplitterPaint write SetSplitterPaint;
-    property OnSplitterClick:TNotifyEvent read GetSplitterClick write SetSplitterClick;
-    property OnSplitterMouseEnter:TNotifyEvent read GetSplitterMouseEnter write SetSplitterMouseEnter;
-    property OnSplitterMouseLeave:TNotifyEvent read GetSplitterMouseLeave write SetSplitterMouseLeave;
-    property OnSplitterDblClick:TNotifyEvent read GetSplitterDblClick write SetSplitterDblClick;
-    property OnSplitterMouseDown:TMouseEvent read GetSplitterMouseDown write SetSplitterMouseDown;
-    property OnSplitterMouseMove:TMouseMoveEvent read GetSplitterMouseMove write SetSplitterMouseMove;
-    property OnSplitterMouseUp:TMouseEvent read GetSplitterMouseUp write SetSplitterMouseUp;
+    property OnSplitterClick: TNotifyEvent read GetSplitterClick write SetSplitterClick;
+    property OnSplitterMouseEnter: TNotifyEvent read GetSplitterMouseEnter write SetSplitterMouseEnter;
+    property OnSplitterMouseLeave: TNotifyEvent read GetSplitterMouseLeave write SetSplitterMouseLeave;
+    property OnSplitterDblClick: TNotifyEvent read GetSplitterDblClick write SetSplitterDblClick;
+    property OnSplitterMouseDown: TMouseEvent read GetSplitterMouseDown write SetSplitterMouseDown;
+    property OnSplitterMouseMove: TMouseMoveEvent read GetSplitterMouseMove write SetSplitterMouseMove;
+    property OnSplitterMouseUp: TMouseEvent read GetSplitterMouseUp write SetSplitterMouseUp;
   end;
 
   TJvNavigationPane = class(TJvCustomNavigationPane)
