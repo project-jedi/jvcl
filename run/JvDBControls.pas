@@ -128,6 +128,9 @@ type
     property DragKind;
     property DragMode;
     property Enabled;
+    {$IFDEF VCL}
+    property Flat;
+    {$ENDIF VCL}
     property Font;
     property ImeMode;
     property ImeName;
@@ -234,6 +237,9 @@ type
     property DragCursor;
     property DragMode;
     property Enabled;
+    {$IFDEF VCL}
+    property Flat;
+    {$ENDIF VCL}
     property Font;
     property ImageIndex;
     property Images;
@@ -343,6 +349,9 @@ type
     property AutoSelect;
     property BlanksChar;
     property BorderStyle;
+    {$IFDEF VCL}
+    property Flat;
+    {$ENDIF VCL}
     property ButtonHint;
     property CheckOnExit;
     property ClickKey;

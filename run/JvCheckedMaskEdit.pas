@@ -123,6 +123,7 @@ type
     property Caret;
     property DragCursor;
     property DragKind;
+    property Flat;
     property HotTrack;
     property ImeMode;
     property ImeName;

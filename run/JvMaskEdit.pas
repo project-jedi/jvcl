@@ -125,6 +125,7 @@ type
     property EditMask;
     property Font;
     {$IFDEF VCL}
+    property Flat;
     property GroupIndex;
     property ImeMode;
     property ImeName;

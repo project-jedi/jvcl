@@ -570,6 +570,9 @@ type
     property EditMask;
     property Enabled;
     property Font;
+    {$IFDEF VCL}
+    property Flat;
+    {$ENDIF}
     property HideSelection;
     property Anchors;
     property BiDiMode;

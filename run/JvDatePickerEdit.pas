@@ -230,13 +230,13 @@ type
     property ClipboardCommands;
     property Color;
     property Constraints;
-    property Ctl3D;
     property Date;
     property DateFormat;
     property DateSeparator;
     {$IFDEF VCL}
     {property BiDiMode;}
     {property ParentBiDiMode;}
+    property Flat;
     property ImeMode;
     property ImeName;
     property OEMConvert;
