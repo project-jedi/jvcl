@@ -1,5 +1,6 @@
 ##Package: Core
-##Status: Partially documented
+##Status: Completed
+##Skip: TJvExPubAnimate
 ##Skip: TJvExPubComboBoxEx
 ##Skip: TJvExPubCommonCalendar
 ##Skip: TJvExPubCoolBar
@@ -35,11 +36,45 @@ Summary
 Author
   Andreas Hausladen
 ----------------------------------------------------------------------------------------------------
+@@TJvExAnimate
+Summary
+  Base class for extended animation controls.
+Description
+  TJvExAnimate is a base class for classes in the JVCL library that descend from TAnimate.
+
+  Do not create instances of TJvExAnimate. Use a descendant of TJvExAnimate or create your
+  own descendant class.
+----------------------------------------------------------------------------------------------------
+@@TJvExAnimate.AboutJVCL
+  <INCLUDE JVCL.Main.AboutJVCL.dtx>
+----------------------------------------------------------------------------------------------------
+@@TJvExAnimate.OnMouseEnter
+Summary
+  Occurs when the mouse pointer moves over the control.
+Description
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
+  control.
+See Also
+  OnMouseLeave
+----------------------------------------------------------------------------------------------------
+@@TJvExAnimate.OnMouseLeave
+Summary
+  Occurs when the mouse pointer moves off the control.
+Description
+  Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
+  control. For example, you can use this event to undo changes that were made in an OnMouseEnter
+  event handler.
+See Also
+  OnMouseEnter
+----------------------------------------------------------------------------------------------------
 @@TJvExComboBoxEx
 Summary
   Base class for extended combo boxes.
 Description
-  Write here a description
+  TJvExComboBoxEx is a base class for classes in the JVCL library that descend from TComboBoxEx.
+
+  Do not create instances of TJvExComboBoxEx. Use a descendant of TJvExComboBoxEx or create your
+  own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExComboBoxEx.AboutJVCL
   <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -48,7 +83,7 @@ Description
 Summary
   Occurs when the mouse pointer moves over the combo box.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   combo box.
 See Also
   OnMouseLeave
@@ -67,7 +102,10 @@ See Also
 Summary
   Base class for extended calendar controls.
 Description
-  Write here a description
+  TJvExCommonCalendar is a base class for classes in the JVCL library that descend from TCommonCalendar.
+
+  Do not create instances of TJvExCommonCalendar. Use a descendant of TJvExCommonCalendar or create your
+  own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExCommonCalendar.AboutJVCL
   <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -76,7 +114,7 @@ Description
 Summary
   Occurs when the mouse pointer moves over the control.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   control.
 See Also
   OnMouseLeave
@@ -95,7 +133,10 @@ See Also
 Summary
   Base class for extended coolbars.
 Description
-  Write here a description
+  TJvExCoolBar is a base class for classes in the JVCL library that descend from TCoolBar.
+
+  Do not create instances of TJvExCoolBar. The TJvCoolBar class provides a generic implementation
+  of TJvExCoolBar. You can also create your own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExCoolBar.AboutJVCL
   <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -104,7 +145,7 @@ Description
 Summary
   Occurs when the mouse pointer moves over the coolbar.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   coolbar.
 See Also
   OnMouseLeave
@@ -123,7 +164,10 @@ See Also
 Summary
   Base class for extended combo boxes.
 Description
-  Write here a description
+  TJvExCustomComboBoxEx is a base class for classes in the JVCL library that descend from TCustomComboBoxEx.
+
+  Do not create instances of TJvExCustomComboBoxEx. Use a descendant of TJvExCustomComboBoxEx or create your
+  own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomComboBoxEx.AboutJVCL
   <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -132,7 +176,7 @@ Description
 Summary
   Occurs when the mouse pointer moves over the combo box.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   combo box.
 See Also
   OnMouseLeave
@@ -151,7 +195,10 @@ See Also
 Summary
   Base class for extended header controls.
 Description
-  Write here a description
+  TJvExCustomHeaderControl is a base class for classes in the JVCL library that descend from TCustomHeaderControl.
+
+  Do not create instances of TJvExCustomHeaderControl. Use a descendant of TJvExCustomHeaderControl
+  or create your own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomHeaderControl.AboutJVCL
   <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -160,7 +207,7 @@ Description
 Summary
   Occurs when the mouse pointer moves over the header control.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   header control.
 See Also
   OnMouseLeave
@@ -179,7 +226,10 @@ See Also
 Summary
   Base class for extended hot key common controls.
 Description
-  Write here a description
+  TJvExCustomHotKey is a base class for classes in the JVCL library that descend from TCustomHotKey.
+
+  Do not create instances of TJvExCustomHotKey. Use a descendant of TJvExCustomHotKey or create your
+  own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomHotKey.AboutJVCL
   <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -188,7 +238,7 @@ Description
 Summary
   Occurs when the mouse pointer moves over the hot key.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   hot key.
 See Also
   OnMouseLeave
@@ -207,7 +257,10 @@ See Also
 Summary
   Base class for extended list view common control.
 Description
-  Write here a description
+  TJvExCustomListView is a base class for classes in the JVCL library that descend from TCustomListView.
+
+  Do not create instances of TJvExCustomListView. Use a descendant of TJvExCustomListView or create your
+  own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomListView.AboutJVCL
   <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -216,7 +269,7 @@ Description
 Summary
   Occurs when the mouse pointer moves over the list view control.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   list view control.
 See Also
   OnMouseLeave
@@ -235,7 +288,10 @@ See Also
 Summary
   Base class for extended status bar common controls.
 Description
-  Write here a description
+  TJvExCustomStatusBar is a base class for classes in the JVCL library that descend from TCustomStatusBar.
+
+  Do not create instances of TJvExCustomStatusBar. Use a descendant of TJvExCustomStatusBar or create your
+  own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomStatusBar.AboutJVCL
   <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -244,7 +300,7 @@ Description
 Summary
   Occurs when the mouse pointer moves over the status bar.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   status bar.
 See Also
   OnMouseLeave
@@ -263,7 +319,10 @@ See Also
 Summary
   Base class for extended tab controls.
 Description
-  Write here a description
+  TJvExCustomTabControl is a base class for classes in the JVCL library that descend from TCustomTabControl.
+
+  Do not create instances of TJvExCustomTabControl. Use a descendant of TJvExCustomTabControl or create your
+  own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomTabControl.AboutJVCL
   <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -272,7 +331,7 @@ Description
 Summary
   Occurs when the mouse pointer moves over the tab control.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   tab control.
 See Also
   OnMouseLeave
@@ -291,7 +350,10 @@ See Also
 Summary
   Base class for extended tree view common controls.
 Description
-  Write here a description
+  TJvExCustomTreeView is a base class for classes in the JVCL library that descend from TCustomTreeView.
+
+  Do not create instances of TJvExCustomTreeView. Use a descendant of TJvExCustomTreeView or create your
+  own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomTreeView.AboutJVCL
   <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -300,7 +362,7 @@ Description
 Summary
   Occurs when the mouse pointer moves over the tree view controls.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   tree view controls.
 See Also
   OnMouseLeave
@@ -319,7 +381,10 @@ See Also
 Summary
   Base class for extended up-down common controls.
 Description
-  Write here a description
+  TJvExCustomUpDown is a base class for classes in the JVCL library that descend from TCustomUpDown.
+
+  Do not create instances of TJvExCustomUpDown. The TJvUpDown class provides a generic implementation
+  of TJvExCustomUpDown. You can also create your own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomUpDown.AboutJVCL
   <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -328,7 +393,7 @@ Description
 Summary
   Occurs when the mouse pointer moves over the up-down control.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   up-down control.
 See Also
   OnMouseLeave
@@ -347,7 +412,10 @@ See Also
 Summary
   Base class for extended drop-down calendar common control.
 Description
-  Write here a description
+  TJvExDateTimePicker is a base class for classes in the JVCL library that descend from TDateTimePicker.
+
+  Do not create instances of TJvExDateTimePicker. The TJvDateTimePicker class provides a generic implementation
+  of TJvExDateTimePicker. You can also create your own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExDateTimePicker.AboutJVCL
   <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -356,7 +424,7 @@ Description
 Summary
   Occurs when the mouse pointer moves over the drop-down calendar.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   drop-down calendar.
 See Also
   OnMouseLeave
@@ -375,7 +443,10 @@ See Also
 Summary
   Base class for extended header controls.
 Description
-  Write here a description
+  TJvExHeaderControl is a base class for classes in the JVCL library that descend from THeaderControl.
+
+  Do not create instances of TJvExHeaderControl. The TJvHeaderControl class provides a generic implementation
+  of TJvExHeaderControl. You can also create your own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExHeaderControl.AboutJVCL
   <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -384,7 +455,7 @@ Description
 Summary
   Occurs when the mouse pointer moves over the header controls.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   header controls.
 See Also
   OnMouseLeave
@@ -403,7 +474,10 @@ See Also
 Summary
   Base class for extended hot key common controls.
 Description
-  Write here a description
+  TJvExHotKey is a base class for classes in the JVCL library that descend from THotKey.
+
+  Do not create instances of TJvExHotKey. The TJvHotKey class provides a generic implementation
+  of TJvExHotKey. You can also create your own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExHotKey.AboutJVCL
   <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -412,7 +486,7 @@ Description
 Summary
   Occurs when the mouse pointer moves over the hot key.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   hot key.
 See Also
   OnMouseLeave
@@ -431,7 +505,10 @@ See Also
 Summary
   Base class for extended list view common control.
 Description
-  Write here a description
+  TJvExListView is a base class for classes in the JVCL library that descend from TListView.
+
+  Do not create instances of TJvExListView. The TJvListView class provides a generic implementation
+  of TJvExListView. You can also create your own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExListView.AboutJVCL
   <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -440,7 +517,7 @@ Description
 Summary
   Occurs when the mouse pointer moves over the list view control.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   list view control.
 See Also
   OnMouseLeave
@@ -459,7 +536,10 @@ See Also
 Summary
   Base class for extended calendar common controls.
 Description
-  Write here a description
+  TJvExMonthCalendar is a base class for classes in the JVCL library that descend from TMonthCalendar.
+
+  Do not create instances of TJvExMonthCalendar. The TJvMonthCalendar class provides a generic implementation
+  of TJvExMonthCalendar. You can also create your own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExMonthCalendar.AboutJVCL
   <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -468,7 +548,7 @@ Description
 Summary
   Occurs when the mouse pointer moves over the calendar.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   calendar.
 See Also
   OnMouseLeave
@@ -487,7 +567,10 @@ See Also
 Summary
   Base class for extended page common controls.
 Description
-  Write here a description
+  TJvExPageControl is a base class for classes in the JVCL library that descend from TPageControl.
+
+  Do not create instances of TJvExPageControl. The TJvPageControl class provides a generic implementation
+  of TJvExPageControl. You can also create your own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExPageControl.AboutJVCL
   <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -496,7 +579,7 @@ Description
 Summary
   Occurs when the mouse pointer moves over the page control.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   page control.
 See Also
   OnMouseLeave
@@ -515,7 +598,10 @@ See Also
 Summary
   Base class for extended common control page scroller's.
 Description
-  Write here a description
+  TJvExPageScroller is a base class for classes in the JVCL library that descend from TPageScroller.
+
+  Do not create instances of TJvExPageScroller. The TJvPageScroller class provides a generic implementation
+  of TJvExPageScroller. You can also create your own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExPageScroller.AboutJVCL
   <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -524,7 +610,7 @@ Description
 Summary
   Occurs when the mouse pointer moves over the page scroller.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   page scroller.
 See Also
   OnMouseLeave
@@ -543,7 +629,10 @@ See Also
 Summary
   Base class for extended common control progress bar's.
 Description
-  Write here a description
+  TJvExProgressBar is a base class for classes in the JVCL library that descend from TProgressBar.
+
+  Do not create instances of TJvExProgressBar. The TJvProgressBar class provides a generic implementation
+  of TJvExProgressBar. You can also create your own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExProgressBar.AboutJVCL
   <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -552,7 +641,7 @@ Description
 Summary
   Occurs when the mouse pointer moves over the progress bar.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   progress bar.
 See Also
   OnMouseLeave
@@ -571,7 +660,10 @@ See Also
 Summary
   Base class for extended common control status bar's.
 Description
-  Write here a description
+  TJvExStatusBar is a base class for classes in the JVCL library that descend from TStatusBar.
+
+  Do not create instances of TJvExStatusBar. The TJvStatusBar class provides a generic implementation
+  of TJvExStatusBar. You can also create your own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExStatusBar.AboutJVCL
   <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -580,7 +672,7 @@ Description
 Summary
   Occurs when the mouse pointer moves over the status bar.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   status bar.
 See Also
   OnMouseLeave
@@ -599,7 +691,10 @@ See Also
 Summary
   Base class for extended tab controls.
 Description
-  Write here a description
+  TJvExTabControl is a base class for classes in the JVCL library that descend from TTabControl.
+
+  Do not create instances of TJvExTabControl. The TJvTabControl class provides a generic implementation
+  of TJvExTabControl. You can also create your own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExTabControl.AboutJVCL
   <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -608,7 +703,7 @@ Description
 Summary
   Occurs when the mouse pointer moves over the tab control.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   tab control.
 See Also
   OnMouseLeave
@@ -627,7 +722,10 @@ See Also
 Summary
   Base class for extended common control tab sheet's.
 Description
-  Write here a description
+  TJvExTabSheet is a base class for classes in the JVCL library that descend from TTabSheet.
+
+  Do not create instances of TJvExTabSheet. Use a descendant of TJvExTabSheet or create your
+  own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExTabSheet.AboutJVCL
   <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -636,7 +734,7 @@ Description
 Summary
   Occurs when the mouse pointer moves over the tab sheet.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   tab sheet.
 See Also
   OnMouseLeave
@@ -655,7 +753,10 @@ See Also
 Summary
   Base class for extended common control toolbar's.
 Description
-  Write here a description
+  TJvExToolBar is a base class for classes in the JVCL library that descend from TToolBar.
+
+  Do not create instances of TJvExToolBar. The TJvToolBar class provides a generic implementation
+  of TJvExToolBar. You can also create your own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExToolBar.AboutJVCL
   <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -664,7 +765,7 @@ Description
 Summary
   Occurs when the mouse pointer moves over the toolbar.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   toolbar.
 See Also
   OnMouseLeave
@@ -683,7 +784,10 @@ See Also
 Summary
   Base class for extended common control tool button's.
 Description
-  Write here a description
+  TJvExToolButton is a base class for classes in the JVCL library that descend from TToolButton.
+
+  Do not create instances of TJvExToolButton. Use a descendant of TJvExToolButton or create your
+  own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExToolButton.AboutJVCL
   <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -692,7 +796,7 @@ Description
 Summary
   Occurs when the mouse pointer moves over the tool button.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   tool button.
 See Also
   OnMouseLeave
@@ -711,7 +815,10 @@ See Also
 Summary
   Base class for extended common control track bar's.
 Description
-  Write here a description
+  TJvExTrackBar is a base class for classes in the JVCL library that descend from TTrackBar.
+
+  Do not create instances of TJvExTrackBar. The TJvTrackBar class provides a generic implementation
+  of TJvExTrackBar. You can also create your own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExTrackBar.AboutJVCL
   <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -720,7 +827,7 @@ Description
 Summary
   Occurs when the mouse pointer moves over the track bar.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   track bar.
 See Also
   OnMouseLeave
@@ -739,7 +846,10 @@ See Also
 Summary
   Base class for extended tree view common controls.
 Description
-  Write here a description
+  TJvExTreeView is a base class for classes in the JVCL library that descend from TTreeView.
+
+  Do not create instances of TJvExTreeView. The TJvTreeView class provides a generic implementation
+  of TJvExTreeView. You can also create your own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExTreeView.AboutJVCL
   <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -748,7 +858,7 @@ Description
 Summary
   Occurs when the mouse pointer moves over the tree view control.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   tree view control.
 See Also
   OnMouseLeave
@@ -767,7 +877,10 @@ See Also
 Summary
   Base class for extended up-down common controls.
 Description
-  Write here a description
+  TJvExUpDown is a base class for classes in the JVCL library that descend from TUpDown.
+
+  Do not create instances of TJvExUpDown. Use a descendant of TJvExUpDown or create your
+  own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExUpDown.AboutJVCL
   <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -776,7 +889,7 @@ Description
 Summary
   Occurs when the mouse pointer moves over the up-down control.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   up-down control.
 See Also
   OnMouseLeave
