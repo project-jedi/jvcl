@@ -1,11 +1,11 @@
 object frmMain: TfrmMain
-  Left = 225
-  Top = 254
+  Left = 269
+  Top = 170
   HorzScrollBar.Visible = False
   VertScrollBar.Visible = False
   BorderStyle = bsNone
   Caption = 'Welcome to TJvLinkLabel!'
-  ClientHeight = 433
+  ClientHeight = 434
   ClientWidth = 531
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
@@ -983,19 +983,21 @@ object frmMain: TfrmMain
     ParentFont = False
   end
   object lblClose: TLabel
-    Left = 478
+    Left = 502
     Top = 8
-    Width = 44
-    Height = 19
+    Width = 17
+    Height = 16
     Cursor = crHandPoint
-    Caption = 'Close'
+    Anchors = [akTop, akRight]
+    Caption = 'r'
+    Color = clGray
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWhite
     Font.Height = -16
-    Font.Name = 'Arial'
+    Font.Name = 'Marlett'
     Font.Style = [fsBold, fsUnderline]
+    ParentColor = False
     ParentFont = False
-    Transparent = True
     OnClick = lblCloseClick
   end
 end

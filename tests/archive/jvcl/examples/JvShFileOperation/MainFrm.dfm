@@ -15,9 +15,6 @@ object frmMain: TfrmMain
   OldCreateOrder = False
   ShowHint = True
   OnCreate = FormCreate
-  DesignSize = (
-    607
-    600)
   PixelsPerInch = 96
   TextHeight = 13
   object JvLabel1: TLabel

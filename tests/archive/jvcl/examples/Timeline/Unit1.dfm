@@ -248,9 +248,6 @@ object Form1: TForm1
     OnSaveItem = TimeLine1SaveItem
     OnLoadItem = TimeLine1LoadItem
     OnItemMoved = TimeLine1ItemMoved
-    DesignSize = (
-      688
-      196)
   end
   object Panel2: TPanel
     Left = 0

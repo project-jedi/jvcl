@@ -37,7 +37,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  CategCh, StdCtrls, ExtCtrls, JvLinkLabel;
+  JvCategoryChooser, StdCtrls, ExtCtrls, JvLinkLabel;
 
 type
   TfrmMain = class(TForm)
@@ -51,7 +51,7 @@ type
     procedure LinkLabelLinkClick(Sender: TObject; LinkNumber: Integer;
       LinkText: String);
   private
-    FChooser: TCategoryChooser;
+    FChooser: TJvCategoryChooser;
     procedure ChooserCatChange(Sender: TObject);
     function IsWithinBounds(Category: Integer): Boolean;
     procedure WMNCHitTest(var Message: TWMNCHitTest); message WM_NCHITTEST;
@@ -101,7 +101,7 @@ begin
 
   { We create the TCategoryChooser dynamically, so that the user doesn't need
     to install it. }
-  FChooser := TCategoryChooser.Create(Self);
+  FChooser := TJvCategoryChooser.Create(Self);
   FChooser.SetBounds(0, 109, 145, 324);
   FChooser.OnCatChange := ChooserCatChange;
   for I := Low(Headings) to High(Headings) do
@@ -145,7 +145,7 @@ var
 
   procedure GoToNextCategory(Number: Integer); overload;
   begin
-    // This really belongs in the TCategoryChooser itself
+    // This really belongs in the TJvCategoryChooser itself
     FChooser.SelectedCat := FChooser.SelectedCat + Number;
   end;
 

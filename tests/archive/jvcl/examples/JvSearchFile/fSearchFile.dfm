@@ -13,9 +13,6 @@ object Form1: TForm1
   OldCreateOrder = False
   Position = poScreenCenter
   OnCloseQuery = FormCloseQuery
-  DesignSize = (
-    320
-    349)
   PixelsPerInch = 96
   TextHeight = 13
   object GroupBox1: TGroupBox

@@ -44,7 +44,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs;
 
 type
-  TCategoryChooser = class(TGraphicControl)
+  TJvCategoryChooser = class(TGraphicControl)
   private
     FCatList: TStringList;
     FBackgroundColor: TColor;
@@ -90,24 +90,25 @@ type
     property OnCatChange: TNotifyEvent read FCatChange write FCatChange;
   end;
 
-procedure Register;
+// procedure Register;
 
 implementation
 
+{
 procedure Register;
 begin
-  RegisterComponents('David Polberger', [TCategoryChooser]);
+  RegisterComponents('David Polberger', [TJvCategoryChooser]);
 end;
+}
+{ TJvCategoryChooser }
 
-{ TCategoryChooser }
-
-procedure TCategoryChooser.CMMouseLeave(var Message: TMessage);
+procedure TJvCategoryChooser.CMMouseLeave(var Message: TMessage);
 begin
   inherited;
   MouseLeave;
 end;
 
-constructor TCategoryChooser.Create(AOwner: TComponent);
+constructor TJvCategoryChooser.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FCatList := TStringList.Create;
@@ -128,7 +129,7 @@ begin
   Height := 200;
 end;
 
-function TCategoryChooser.IsCursorWithinBounds: Boolean;
+function TJvCategoryChooser.IsCursorWithinBounds: Boolean;
 var
   P: TPoint;
 begin
@@ -138,19 +139,19 @@ begin
     (P.Y >= 0) and (P.Y <= FCatList.Count * FCatHeight - 1);
 end;
 
-destructor TCategoryChooser.Destroy;
+destructor TJvCategoryChooser.Destroy;
 begin
   inherited Destroy;
   FCatList.Free;
 end;
 
-procedure TCategoryChooser.DoCatChange;
+procedure TJvCategoryChooser.DoCatChange;
 begin
   if Assigned(FCatChange) then
     FCatChange(Self);
 end;
 
-procedure TCategoryChooser.DrawCat(Index: Integer; Color: TColor);
+procedure TJvCategoryChooser.DrawCat(Index: Integer; Color: TColor);
 
   function ValueToAddToTop: Integer;
   begin
@@ -178,31 +179,31 @@ begin
   end;
 end;
 
-function TCategoryChooser.GetCatAtPos(Y: Integer): Integer;
+function TJvCategoryChooser.GetCatAtPos(Y: Integer): Integer;
 begin
   Result := Y div FCatHeight;
   if Result >= FCatList.Count then
     Result := -1;
 end;
 
-function TCategoryChooser.GetFont: TFont;
+function TJvCategoryChooser.GetFont: TFont;
 begin
   Result := Canvas.Font;
 end;
 
-function TCategoryChooser.GetLineColor: TColor;
+function TJvCategoryChooser.GetLineColor: TColor;
 begin
   Result := Canvas.Pen.Color;
 end;
 
-procedure TCategoryChooser.MouseLeave;
+procedure TJvCategoryChooser.MouseLeave;
 begin
   DrawCat(FActiveCat, FBackgroundColor);
   FActiveCat := FSelectedCat;
   DrawCat(FActiveCat, FActiveColor);
 end;
 
-procedure TCategoryChooser.MouseMove(Shift: TShiftState; X, Y: Integer);
+procedure TJvCategoryChooser.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
   CatIndex: Integer;
 begin
@@ -229,7 +230,7 @@ begin
   FLastOutOfBounds := not IsCursorWithinBounds;
 end;
 
-procedure TCategoryChooser.MouseUp(Button: TMouseButton;
+procedure TJvCategoryChooser.MouseUp(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
   OldSelectedCat: Integer;
@@ -246,7 +247,7 @@ begin
   end;
 end;
 
-procedure TCategoryChooser.Paint;
+procedure TJvCategoryChooser.Paint;
 var
   I: Integer;
 
@@ -271,41 +272,41 @@ begin
   end;
 end;
 
-procedure TCategoryChooser.SetActiveColor(const Value: TColor);
+procedure TJvCategoryChooser.SetActiveColor(const Value: TColor);
 begin
   FActiveColor := Value;
   Paint;
 end;
 
-procedure TCategoryChooser.SetBackgroundColor(const Value: TColor);
+procedure TJvCategoryChooser.SetBackgroundColor(const Value: TColor);
 begin
   FBackgroundColor := Value;
   Paint;
 end;
 
-procedure TCategoryChooser.SetCatHeight(const Value: Integer);
+procedure TJvCategoryChooser.SetCatHeight(const Value: Integer);
 begin
   FCatHeight := Value;
   Paint;
 end;
 
-procedure TCategoryChooser.SetCatList(const Value: TStringList);
+procedure TJvCategoryChooser.SetCatList(const Value: TStringList);
 begin
   FCatList.Assign(Value);
   Paint;
 end;
 
-procedure TCategoryChooser.SetFont(const Value: TFont);
+procedure TJvCategoryChooser.SetFont(const Value: TFont);
 begin
   Canvas.Font.Assign(Value);
 end;
 
-procedure TCategoryChooser.SetLineColor(const Value: TColor);
+procedure TJvCategoryChooser.SetLineColor(const Value: TColor);
 begin
   Canvas.Pen.Color := Value;
 end;
 
-procedure TCategoryChooser.SetSelectedCat(const Value: Integer);
+procedure TJvCategoryChooser.SetSelectedCat(const Value: Integer);
 begin
   FSelectedCat := Value;
   FActiveCat   := Value;
