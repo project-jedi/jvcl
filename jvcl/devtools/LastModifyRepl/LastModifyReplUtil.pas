@@ -155,11 +155,11 @@ begin
       else if AnsiStartsText('You may retrieve', TS) then
         LastModifyInsertLineNum := i - 1
       else if AnsiEndsStr('----------}', TS) then
-      begin
-        IDInsertLineNum := i + 1;
-        Break;
-      end;
+        IDInsertLineNum := i + 1
       ;
+
+      if (IDInsertLineNum <> -1) and (i > IDInsertLineNum + 10) then
+        Break;
 
       Inc(i);
     end;
