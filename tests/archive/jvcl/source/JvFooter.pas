@@ -32,13 +32,13 @@ interface
 
 uses
   Messages, SysUtils, Classes, Graphics, Controls, StdCtrls, ExtCtrls,
-  JvComponent, JvButton, JvTypes;
+  JvComponent, JvBitBtn, JvTypes;
 
 type
   EJvFooterError = class(EJVCLException);
   TJvFooter = class;
 
-  TJvFooterBtn = class(TJvButton)
+  TJvFooterBtn = class(TJvBitBtn)
   private
     FCanvas: TCanvas;
     FAlignment: TAlignment;
@@ -296,7 +296,7 @@ begin
   for Idx := 0 to ControlCount - 1 do
     if Controls[Idx] is TJvFooterBtn then
     begin
-      FBtnTop := Self.Height - TJvFooterBtn(Controls[Idx]).Height - 5;
+      FBtnTop := (Self.Height - TJvFooterBtn(Controls[Idx]).Height) div 2;
       FBtnWidth := TJvFooterBtn(Controls[Idx]).Width;
       FBtnHeight := TJvFooterBtn(Controls[Idx]).Height;
 
