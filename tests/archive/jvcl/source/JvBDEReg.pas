@@ -302,20 +302,22 @@ begin
 {$ENDIF}
 
   { Data aware components and controls }
-  RegisterComponents('Jv Data Controls', [TJvQuery, TJvSQLScript,
-    TJvMemoryTable, TJvQBEQuery, TJvDBFilter, TJvDBIndexCombo, TJvDBProgress,
+  RegisterComponents('Jv Data Access', [TJvQuery, TJvSQLScript,
+    TJvMemoryTable, TJvQBEQuery, TJvDBFilter, 
       TJvDBSecurity]);
+      
+   RegisterComponents('Jv Data Controls', [TJvDBIndexCombo, TJvDBProgress]);
 {$IFDEF RX_MIDAS}
   { MIDAS components }
-  RegisterComponents('Jv Data Controls', [TJvRemoteLogin]);
+  RegisterComponents('Jv Data Access', [TJvRemoteLogin]);
   RegisterNonActiveX([TJvRemoteLogin], axrComponentOnly);
 {$ENDIF}
   { Database lists }
-  RegisterComponents('Jv Data Controls', [TJvBDEItems, TJvDatabaseItems,
+  RegisterComponents('Jv Data Access', [TJvBDEItems, TJvDatabaseItems,
     TJvTableItems]);
 {$IFNDEF CBUILDER}
 {$IFDEF USE_OLD_DBLISTS}
-  RegisterComponents('Jv Data Controls', [TJvDatabaseList, TJvLangDrivList,
+  RegisterComponents('Jv Data Access', [TJvDatabaseList, TJvLangDrivList,
     TJvTableList, TJvStoredProcList, TJvFieldList, TJvIndexList]);
 {$ENDIF USE_OLD_DBLISTS}
 {$ENDIF CBUILDER}
