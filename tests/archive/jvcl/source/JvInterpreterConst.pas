@@ -62,7 +62,7 @@ type
   end;
 
 const
-  JvInterpreterErrors: array [0..47] of TJvInterpreterErrorsDescr =
+  JvInterpreterErrors: array [0..48] of TJvInterpreterErrorsDescr =
     ((ID: 0; Description: 'Ok'),
      (ID: 1; Description: 'Unknown error'),
      (ID: 2; Description: 'Internal interpreter error: %s'),
@@ -71,6 +71,7 @@ const
      (ID: 5; Description: 'Error in unit ''%s'' on line %d : %s'),
      (ID: 6; Description: 'External error in unit ''%s'' on line %d : %s'),
      (ID: 7; Description: 'Access denied to ''%s'''),
+     (ID: 8; Description: 'Expression is too complex - overflow'),
      (ID: 31; Description: 'Record ''%s'' not defined'),
 
      (ID: 52; Description: 'Stack overflow'),

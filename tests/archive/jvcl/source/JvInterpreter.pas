@@ -173,7 +173,7 @@ uses
 {$IFDEF COMPILER6_UP}
   Variants,
 {$ENDIF COMPILER6_UP}
-  JvInterpreterParser, JvComponent, JvInterpreterVariants;
+  JvInterpreterParser, JvComponent;
 
 const
   // (rom) renamed to longer names
@@ -184,7 +184,7 @@ const
   cJvInterpreterMaxRecFields = 32;
 
   // (rom) added
-  cJvInterpreterStackMax = 99;
+  cJvInterpreterStackMax = 199;
 
 type
   { argument definition }
@@ -196,6 +196,7 @@ type
   TNameArray = array[0..cJvInterpreterMaxArgs] of string;
 
   TJvInterpreterArgs = class;
+  IJvInterpreterDataType = interface;
 
   TJvInterpreterGetValue = procedure(Sender: TObject; Identifier: string; var Value: Variant;
     Args: TJvInterpreterArgs; var Done: Boolean) of object;
@@ -260,6 +261,7 @@ type
     FParamTypes: TTypeArray;
     FParamNames: TNameArray;
     FResTyp: Word;
+    FResDataType: IJvInterpreterDataType;
     FPosBeg: Integer; { position in source }
     FPosEnd: Integer;
     function GetParamName(Index: Integer): string;
@@ -272,6 +274,7 @@ type
     property ParamTypes[Index: Integer]: Word read GetParamType;
     property ParamNames[Index: Integer]: string read GetParamName;
     property ResTyp: Word read FResTyp;
+    property ResDataType: IJvInterpreterDataType read FResDataType;
     property PosBeg: Integer read FPosBeg;
     property PosEnd: Integer read FPosEnd;
   end;
@@ -319,7 +322,7 @@ type
 {$IFDEF COMPILER35_UP} override;
 {$ENDIF}
     procedure AddVar(UnitName, Identifier, Typ: string; VTyp: Word;
-      const Value: Variant);
+      const Value: Variant; DataType: IJvInterpreterDataType);
     function FindVar(const UnitName, Identifier: string): TJvInterpreterVar;
     procedure DeleteVar(const UnitName, Identifier: string);
     function GetValue(Identifier: string; var Value: Variant; Args: TJvInterpreterArgs)
@@ -354,10 +357,18 @@ type
     procedure Sort(Compare: TListSortCompare = nil); override;
   end;
 
+  IJvInterpreterDataType = interface
+    ['{8C5E4071-65AB-11D7-B235-00A0D2043DC7}']
+    procedure Init(var V: Variant);
+    function GetTyp: Word;
+  end;
+
+
   TJvInterpreterRecField = record
     Identifier: string;
     Offset: Integer;
     Typ: Word;
+    DataType: IJvInterpreterDataType;
   end;
 
   TCallConvention = set of (ccFastCall, ccStdCall, ccCDecl, ccDynamic,
@@ -530,10 +541,14 @@ type
       AParamTypes: array of Word; AResTyp: Word; AData: Pointer); dynamic;
     procedure AddSrcFun(UnitName: string; Identifier: string;
       PosBeg, PosEnd: Integer; ParamCount: Integer; ParamTypes: array of Word;
-      ParamNames: array of string; ResTyp: Word; Data: Pointer); dynamic;
+      ParamNames: array of string; ResTyp: Word;
+      AResDataType: IJvInterpreterDataType;
+      Data: Pointer); dynamic;
     procedure AddSrcFunEx(AUnitName: string; AIdentifier: string;
       APosBeg, APosEnd: Integer; AParamCount: Integer; AParamTypes: array of Word;
-      AParamNames: array of string; AResTyp: Word; AData: Pointer); dynamic;
+      AParamNames: array of string; AResTyp: Word;
+      AResDataType: IJvInterpreterDataType;
+      AData: Pointer); dynamic;
     procedure AddHandler(UnitName: string; Identifier: string;
       EventClass: TJvInterpreterEventClass; Code: Pointer); dynamic;
     procedure AddHandlerEx(AUnitName: string; AIdentifier: string;
@@ -543,7 +558,7 @@ type
     procedure AddEventEx(AUnitName: string; AClassType: TClass;
       AIdentifier: string; AData: Pointer); dynamic;
     procedure AddSrcVar(UnitName: string; Identifier, Typ: string; VTyp: Word;
-      const Value: Variant); dynamic;
+      const Value: Variant; DataType: IJvInterpreterDataType); dynamic;
     procedure AddOnGet(Method: TJvInterpreterGetValue); dynamic;
     procedure AddOnSet(Method: TJvInterpreterSetValue); dynamic;
   end;
@@ -643,8 +658,9 @@ type
     AllowAssignment: Boolean;
   end;
 
+
   TJvInterpreterAddVarFunc = procedure(UnitName: string;
-    Identifier, Typ: string; VTyp: Word; const Value: Variant) of object;
+    Identifier, Typ: string; VTyp: Word; const Value: Variant; ADataType: IJvInterpreterDataType) of object;
 
   { Function executor }
   TJvInterpreterFunction = class(TJvInterpreterExpression)
@@ -685,6 +701,7 @@ type
     procedure Try1;
     procedure Raise1;
 
+    function ParseDataType: IJvInterpreterDataType;
     function NewEvent(const UnitName: string; const FunName, EventType: string;
       Instance: TObject): TSimpleEvent;
     procedure InternalSetValue(const Identifier: string);
@@ -766,7 +783,24 @@ type
     property OnStatement: TNotifyEvent read FOnStatement write FOnStatement;
   end;
 
+{$IFDEF COMPILER6_UP}
+  TJvSimpleVariantType = class(TCustomVariantType)
+  public
+    procedure Clear(var V: TVarData); override;
+    procedure Copy(var Dest: TVarData; const Source: TVarData;
+      const Indirect: Boolean); override;
+  end;
+
+  TJvRecordVariantType = class(TJvSimpleVariantType);
+  TJvObjectVariantType = class(TJvSimpleVariantType);
+  TJvClassVariantType = class(TJvSimpleVariantType);
+  TJvPointerVariantType = class(TJvSimpleVariantType);
+  TJvSetVariantType = class(TJvSimpleVariantType);
+  TJvArrayVariantType = class(TJvSimpleVariantType);
+{$ENDIF COMPILER6_UP}
+
   EJvInterpreterError = class(Exception)
+
   private
     FExceptionPos: Boolean;
     FErrCode: Integer;
@@ -813,14 +847,14 @@ procedure ClearList(List: TList);
 
 { additional variant types - TVarData.VType }
 
- {$IFDEF COMPILER6_UP}
+{$IFDEF COMPILER6_UP}
   function varRecord: TVarType;
   function varObject: TVarType;
   function varClass: TVarType;
   function varPointer: TVarType;
   function varSet: TVarType;
   function varArray: TVarType;
- {$ELSE}
+{$ELSE}
 const
   varRecord = $0015;
   varObject = $0010;
@@ -828,7 +862,7 @@ const
   varPointer = $0012;
   varSet = $0013;
   varArray = $0014;
- {$ENDIF COMPILER6_UP}
+{$ENDIF COMPILER6_UP}
 
 { V2O - converts variant to object }
 function V2O(const V: Variant): TObject;
@@ -871,6 +905,9 @@ function TypeName2VarTyp(TypeName: string): Word;
 { copy variant variable with all JvInterpreter variant extension }
 procedure JvInterpreterVarCopy(var Dest: Variant; const Source: Variant);
 
+{ copy variant variable for assignment }
+procedure JvInterpreterVarAssignment(var Dest: Variant; const Source: Variant);
+
 function JvInterpreterVarAsType(const V: Variant; const VarType: Integer): Variant;
 
 { properly free var variable and set it content to empty }
@@ -896,6 +933,7 @@ const
   ieErrorPos = 5;
   ieExternal = 6; { non-interpreter error }
   ieAccessDenied = 7;
+  ieExpressionStackOverflow = 8;
 
   { register-time errors }
   ieRegisterBase = 30;
@@ -1033,6 +1071,10 @@ type
     CreateFunc: TJvInterpreterAdapterNewRecord;
     DestroyFunc: TJvInterpreterAdapterDisposeRecord;
     CopyFunc: TJvInterpreterAdapterCopyRecord;
+
+    procedure AddField(UnitName, Identifier, Typ: string; VTyp: Word;
+      const Value: Variant; DataType: IJvInterpreterDataType);
+    procedure NewRecord(var Value: Variant);
   end;
 
   TJvInterpreterRecMethod = class(TJvInterpreterIdentifier)
@@ -1046,12 +1088,63 @@ type
 
   TJvInterpreterRecHolder = class(TJvInterpreterIdentifier)
   private
-    RecordType: string;
+    FRecordType: string;
     JvInterpreterRecord: TJvInterpreterRecord;
     Rec: Pointer; { data }
   public
     constructor Create(ARecordType: string; ARec: Pointer);
     destructor Destroy; override;
+
+    property RecordType: string read FRecordType;
+  end;
+
+const
+  {Max avalaible dimension for arrays}
+  JvInterpreter_MAX_ARRAY_DIMENSION = 10;
+
+type
+  TJvInterpreterArrayValues = array[0..JvInterpreter_MAX_ARRAY_DIMENSION - 1] of Integer;
+
+  PJvInterpreterArrayRec = ^TJvInterpreterArrayRec;
+  TJvInterpreterArrayRec = packed record
+    Dimension: Integer; {number of dimensions}
+    BeginPos: TJvInterpreterArrayValues; {starting range for all dimensions}
+    EndPos: TJvInterpreterArrayValues; {ending range for all dimensions}
+    ItemType: Integer; {array type}
+    ElementSize: Integer; {size of element in bytes}
+    Size: Integer; {number of elements in array}
+    Memory: Pointer; {pointer to memory representation of array}
+  end;
+
+
+  TJvInterpreterRecordDataType = class(TInterfacedObject, IJvInterpreterDataType)
+  private
+    FRecordDesc: TJvInterpreterRecord;
+  public
+    constructor Create(ARecordDesc: TJvInterpreterRecord);
+    procedure Init(var V: Variant);
+    function GetTyp: Word;
+  end;
+
+  TJvInterpreterArrayDataType = class(TInterfacedObject, IJvInterpreterDataType)
+  private
+    FArrayBegin, FArrayEnd: TJvInterpreterArrayValues;
+    FDimension: Integer;
+    FArrayType: Integer;
+  public
+    constructor Create(AArrayBegin, AArrayEnd: TJvInterpreterArrayValues;
+      ADimension: Integer; AArrayType: Integer);
+    procedure Init(var V: Variant);
+    function GetTyp: Word;
+  end;
+
+  TJvInterpreterSimpleDataType = class(TInterfacedObject, IJvInterpreterDataType)
+  private
+    FTyp: TVarType;
+  public
+    constructor Create(ATyp: TVarType);
+    procedure Init(var V: Variant);
+    function GetTyp: Word;
   end;
 
   PMethod = ^TMethod;
@@ -1123,6 +1216,27 @@ var
 {$ENDIF}
 
 {$IFDEF COMPILER6_UP}
+var
+  VariantRecordInstance: TJvRecordVariantType;
+  VariantObjectInstance: TJvObjectVariantType;
+  VariantClassInstance: TJvClassVariantType;
+  VariantPointerInstance: TJvPointerVariantType;
+  VariantSetInstance: TJvSetVariantType;
+  VariantArrayInstance: TJvArrayVariantType;
+
+{ TJvSimpleVariantType }
+
+procedure TJvSimpleVariantType.Clear(var V: TVarData);
+begin
+  SimplisticClear(V);
+end;
+
+procedure TJvSimpleVariantType.Copy(var Dest: TVarData;
+  const Source: TVarData; const Indirect: Boolean);
+begin
+  SimplisticCopy(Dest, Source, Indirect);
+end;
+
 function varRecord: TVarType;
 begin
   Result := VariantRecordInstance.VarType
@@ -1627,7 +1741,7 @@ begin
 {$IFDEF COMPILER3_UP}
   DispatchInvoke(IDispatch(Dispatch), CallDesc, PDispIDList(@DispIDs[0]), ParamTypes, Result);
 {$ELSE}
-  DispInvoke(Dispatch, CallDesc, PDispIDList(@DispIDs[0]), @ParamTypes, Result);
+  DispInvoke(Dispatch, CallDesc, PDispIDList(@DispIDs[0]), ParamTypes, Result);
 {$ENDIF COMPILER3_UP}
 end;
 
@@ -1770,24 +1884,6 @@ begin
 end;
 
 { ************************* Array support ************************* }
-
-const
-  {Max avalaible dimension for arrays}
-  JvInterpreter_MAX_ARRAY_DIMENSION = 10;
-
-type
-  TJvInterpreterArrayValues = array[0..JvInterpreter_MAX_ARRAY_DIMENSION - 1] of Integer;
-
-  PJvInterpreterArrayRec = ^TJvInterpreterArrayRec;
-  TJvInterpreterArrayRec = packed record
-    Dimension: Integer; {number of dimensions}
-    BeginPos: TJvInterpreterArrayValues; {starting range for all dimensions}
-    EndPos: TJvInterpreterArrayValues; {ending range for all dimensions}
-    ItemType: Integer; {array type}
-    ElementSize: Integer; {size of element in bytes}
-    Size: Integer; {number of elements in array}
-    Memory: Pointer; {pointer to memory representation of array}
-  end;
 
 function GetArraySize(Dimension: Integer; BeginPos, EndPos: TJvInterpreterArrayValues): Integer;
 var
@@ -2026,6 +2122,16 @@ begin
   end;
 end;
 
+procedure JvInterpreterVarAssignment(var Dest: Variant; const Source: Variant);
+begin
+  if (TVarData(Source).VType = varArray) then
+    TVarData(Dest) := TVarData(Source)
+  else if (TVarData(Source).VType = varRecord) then
+    Move(TJvInterpreterRecHolder(TVarData(Source).VPointer).Rec^, TJvInterpreterRecHolder(TVarData(Dest).VPointer).Rec^, TJvInterpreterRecHolder(TVarData(Source).VPointer).JvInterpreterRecord.RecordSize)
+  else
+    Dest := Source;
+end;
+
 procedure JvInterpreterVarCopy(var Dest: Variant; const Source: Variant);
 begin
   if (TVarData(Source).VType = varArray)
@@ -2117,7 +2223,7 @@ begin
 end;
 
 procedure TJvInterpreterVarList.AddVar(UnitName, Identifier, Typ: string; VTyp: Word;
-  const Value: Variant);
+  const Value: Variant; DataType: IJvInterpreterDataType);
 var
   VarRec: TJvInterpreterVar;
 begin
@@ -2191,7 +2297,7 @@ begin
   V := FindVar('', Identifier);
   Result := (V <> nil) and (Args.Obj = nil);
   if Result then
-    JvInterpreterVarCopy(V.Value, Value);
+    JvInterpreterVarAssignment(V.Value, Value);
 end; { SetValue }
 *)
 
@@ -2213,14 +2319,14 @@ begin
       { Is it a passed-by-reference variable? }
       if V.VTyp and VarByRef > 0 then
       begin
-        JvInterpreterVarCopy(V.Value, JvInterpreterVarAsType(Value, V.VTyp and not VarByRef));
+        JvInterpreterVarAssignment(V.Value, JvInterpreterVarAsType(Value, V.VTyp and not VarByRef));
         V.VTyp := V.VTyp or VarByRef;
       end
       else
-        JvInterpreterVarCopy(V.Value, JvInterpreterVarAsType(Value, V.VTyp))
+        JvInterpreterVarAssignment(V.Value, JvInterpreterVarAsType(Value, V.VTyp))
     end
     else
-      JvInterpreterVarCopy(V.Value, Value);
+      JvInterpreterVarAssignment(V.Value, Value);
 end;
 
 //=== TJvInterpreterFunDesc ==================================================
@@ -2241,7 +2347,8 @@ constructor TJvInterpreterRecHolder.Create(ARecordType: string; ARec: Pointer);
 begin
   // (rom) added inherited Create
   inherited Create;
-  RecordType := ARecordType;
+  Assert(ARecordType <> '');
+  FRecordType := ARecordType;
   Rec := ARec;
 {$IFDEF JvInterpreter_DEBUG}
   Inc(ObjCount);
@@ -2913,7 +3020,10 @@ begin
   JvInterpreterRecord.CopyFunc := CopyFunc;
   JvInterpreterRecord.Data := Data;
   for i := Low(Fields) to High(Fields) do
+  begin
     JvInterpreterRecord.Fields[i] := Fields[i];
+    JvInterpreterRecord.Fields[i].DataType := nil;
+  end;
   JvInterpreterRecord.FieldCount := High(Fields) - Low(Fields) + 1;
   FRecList.Add(JvInterpreterRecord);
 end;
@@ -3019,15 +3129,19 @@ end;
 
 procedure TJvInterpreterAdapter.AddSrcFun(UnitName: string; Identifier: string;
   PosBeg, PosEnd: Integer; ParamCount: Integer; ParamTypes: array of Word;
-  ParamNames: array of string; ResTyp: Word; Data: Pointer);
+  ParamNames: array of string; ResTyp: Word;
+  AResDataType: IJvInterpreterDataType;
+  Data: Pointer);
 begin
   AddSrcFunEx(UnitName, Identifier, PosBeg, PosEnd, ParamCount, ParamTypes,
-    ParamNames, ResTyp, nil);
+    ParamNames, ResTyp, AResDataType, nil);
 end;
 
 procedure TJvInterpreterAdapter.AddSrcFunEx(AUnitName: string; AIdentifier: string;
   APosBeg, APosEnd: Integer; AParamCount: Integer; AParamTypes: array of Word;
-  AParamNames: array of string; AResTyp: Word; AData: Pointer);
+  AParamNames: array of string; AResTyp: Word;
+  AResDataType: IJvInterpreterDataType;
+  AData: Pointer);
 var
   JvInterpreterSrcFun: TJvInterpreterSrcFun;
 begin
@@ -3040,6 +3154,7 @@ begin
     FunDesc.FPosEnd := APosEnd;
     FunDesc.FParamCount := AParamCount;
     FunDesc.FResTyp := AResTyp;
+    FunDesc.FResDataType := AResDataType;
     Identifier := AIdentifier;
     Data := AData;
     ConvertParamTypes(AParamTypes, FunDesc.FParamTypes);
@@ -3095,9 +3210,9 @@ begin
 end;
 
 procedure TJvInterpreterAdapter.AddSrcVar(UnitName: string; Identifier, Typ: string;
-  VTyp: Word; const Value: Variant);
+  VTyp: Word; const Value: Variant; DataType: IJvInterpreterDataType);
 begin
-  FSrcVarList.AddVar(UnitName, Identifier, Typ, VTyp, Value);
+  FSrcVarList.AddVar(UnitName, Identifier, Typ, VTyp, Value, DataType);
 end;
 
 procedure TJvInterpreterAdapter.AddSrcClass(JvInterpreterSrcClass: TJvInterpreterIdentifier);
@@ -3138,7 +3253,7 @@ begin
     if Cmp(TJvInterpreterRecord(Result).Identifier, RecordType) then
       Exit;
   end;
-  //JvInterpreterErrorN(ieRecordNotDefined, -1, RecordType);
+
   Result := nil;
 end;
 
@@ -3771,7 +3886,7 @@ var
             varBoolean:
               PBool(Rec + Offset)^ := Value;
             varEmpty:
-              JvInterpreterVarCopy(Variant(PVarData(Rec + Offset)^), Value);
+              JvInterpreterVarAssignment(Variant(PVarData(Rec + Offset)^), Value);
           end;
         Result := True;
         Exit;
@@ -3945,36 +4060,16 @@ end;
 function TJvInterpreterAdapter.NewRecord(const RecordType: string;
   var Value: Variant): Boolean;
 var
-  i, j: Integer;
   JvInterpreterRecord: TJvInterpreterRecord;
-  Rec: PChar;
 begin
-  for i := 0 to FRecList.Count - 1 do
+  JvInterpreterRecord := TJvInterpreterRecord(GetRec(RecordType));
+  if JvInterpreterRecord = nil then
+    Result := False
+  else
   begin
-    JvInterpreterRecord := TJvInterpreterRecord(FRecList[i]);
-    if Cmp(JvInterpreterRecord.Identifier, RecordType) then
-    begin
-      if Assigned(JvInterpreterRecord.CreateFunc) then
-        JvInterpreterRecord.CreateFunc(Pointer(Rec))
-      else
-      begin
-        GetMem(Rec, JvInterpreterRecord.RecordSize);
-        for j := 0 to JvInterpreterRecord.FieldCount - 1 do
-        begin
-          if JvInterpreterRecord.Fields[j].Typ = varString then
-            PString(PString(Rec + JvInterpreterRecord.Fields[j].Offset)^) := @EmptyStr
-          else if JvInterpreterRecord.Fields[j].Typ = varEmpty then
-          begin
-            PVarData(Rec + JvInterpreterRecord.Fields[j].Offset)^.VType := varNull;
-          end;
-        end;
-      end;
-      JvInterpreterVarCopy(Value, R2V(RecordType, Rec));
-      Result := SetRecord(Value);
-      Exit;
-    end;
+    JvInterpreterRecord.NewRecord(Value);
+    Result := True;
   end;
-  Result := False;
 end;
 
 {$IFDEF JvInterpreter_OLEAUTO}
@@ -4566,7 +4661,7 @@ var
   begin
     Inc(ExpStackPtr);
     if ExpStackPtr > High(ExpStack) then
-      JvInterpreterError(ieInternal, -1);
+      JvInterpreterError(ieExpressionStackOverflow, -1);
     JvInterpreterVarCopy(ExpStack[ExpStackPtr], Value);
   end;
 
@@ -5261,6 +5356,7 @@ var
   var
     FC: PFunContext;
     i: Integer;
+    v: variant;
   begin
     New(PFunContext(FC));
     FillChar(FC^, SizeOf(FC^), 0);
@@ -5276,19 +5372,28 @@ var
       Args.Types := FunDesc.FParamTypes;
       for i := 0 to Args.Count - 1 do
       begin
+        if (FunDesc.FParamTypes[i] and varByRef) <> 0 then
+          JvInterpreterVarCopy(v, Args.Values[i])
+        else
+          JvInterpreterVarAssignment(v, Args.Values[i]);
+
         PFunContext(FunContext).LocalVars.AddVar('', FunDesc.FParamNames[i], '',
-          FunDesc.FParamTypes[i], Args.Values[i]);
+          FunDesc.FParamTypes[i], v,
+          TJvInterpreterSimpleDataType.Create(FunDesc.FParamTypes[i]));
         VarNames^ := FunDesc.FParamNames;
         Args.HasVars := Args.HasVars or ((FunDesc.FParamTypes[i] and varByRef)
           <> 0);
       end;
       if FunDesc.ResTyp > 0 then
+      begin
+        FunDesc.ResDataType.Init(v);
         PFunContext(FunContext).LocalVars.AddVar('', 'Result', '',
-          FunDesc.ResTyp, Var2Type(Null, FunDesc.ResTyp));
+          FunDesc.ResTyp, v, FunDesc.ResDataType);
+      end
     end
     else
       PFunContext(FunContext).LocalVars.AddVar('', 'Result', '', varVariant,
-        Null);
+        Null, TJvInterpreterSimpleDataType.Create(varVariant));
     FunArgs := Args;
     Args := TJvInterpreterArgs.Create;
   end;
@@ -5325,7 +5430,12 @@ var
       UpdateVarParams;
       Args.Count := 0;
       if (FunDesc = nil) or (FunDesc.ResTyp > 0) then
+      begin
         PFunContext(FunContext).LocalVars.GetValue('Result', FVResult, Args);
+        TVarData(PFunContext(FunContext).LocalVars.FindVar('', 'Result').Value).VType := varEmpty;
+        TVarData(PFunContext(FunContext).LocalVars.FindVar('', 'Result').Value).VPointer := nil;
+      end;
+
       Args.Count := C;
     end;
     FC := PFunContext(FunContext).PrevFunContext;
@@ -6014,6 +6124,7 @@ var
   Value: Variant;
   TypName: string;
   Typ: Word;
+  DT: IJvInterpreterDataType;
   {----olej----}
   {Temporary for array type}
   ArrayBegin, ArrayEnd: TJvInterpreterArrayValues;
@@ -6039,87 +6150,11 @@ begin
       ErrorExpected(''':''');
     NextToken;
     TypName := Token;
-    if TTyp = ttIdentifier then
-      Typ := TypeName2VarTyp(TypName)
-    else if TTyp = ttArray then
-      Typ := varArray
-    else
-      ErrorExpected(LoadStr2(irIdentifier));
-
-    {***** olej *****}
-    {Get Array variables params}
-    {This is code is not very clear}
-    if Typ = varArray then
+    DT := ParseDataType;
+    for i := 0 to SS.Count - 1 do
     begin
-      NextToken;
-      if TTyp <> ttLs then
-        ErrorExpected('''[''');
-      {Parse Array Range}
-      Dimension := 0;
-      repeat
-        NextToken;
-        Minus := False;
-        if (Trim(TokenStr1) = '-') then
-        begin
-          Minus := True;
-          NextToken;
-        end;
-        if Pos('..', TokenStr1) < 1 then
-          ErrorExpected('''..''');
-        try
-          ArrayBegin[Dimension] :=
-            StrToInt(Copy(TokenStr1, 1, Pos('..', TokenStr1) - 1));
-          ArrayEnd[Dimension] :=
-            StrToInt(Copy(TokenStr1, Pos('..', TokenStr1) + 2, Length(TokenStr1)));
-          if Minus then
-            ArrayBegin[Dimension] := ArrayBegin[Dimension] * (-1);
-        except
-          ErrorExpected('''Integer Value''');
-        end;
-        if (Dimension < 0) or (Dimension > cJvInterpreterMaxArgs) then
-          JvInterpreterError(ieArrayBadDimension, CurPos);
-        if not (ArrayBegin[Dimension] <= ArrayEnd[Dimension]) then
-          JvInterpreterError(ieArrayBadRange, CurPos);
-      {End Array Range}
-        NextToken;
-        Inc(Dimension);
-      until TTyp <> ttCol; { , }
-
-      if TTyp <> ttRs then
-        ErrorExpected(''']''');
-      NextToken;
-      if TTyp <> ttOf then
-        ErrorExpected('''' + kwOF + '''');
-      NextToken;
-      ArrayType := TypeName2VarTyp(Token);
-      if ArrayType = varEmpty then
-        ErrorNotImplemented(Token + ' array type');
-    end;
-    {end: var A:array [1..200] of Integer, parsing}
-    {##### olej #####}
-    for i := 0 to SS.Count - 1 do { Iterate }
-    begin
-      Value := Null;
-      TVarData(Value).VType := varEmpty;
-     { may be record }
-      if not FAdapter.NewRecord(TypName, Value) then
-        GlobalJvInterpreterAdapter.NewRecord(TypName, Value);
-      {***** olej *****}
-      {Create array with arrayType}
-      if Typ = varArray then
-      begin
-        V := Integer(JvInterpreterArrayInit(Dimension, ArrayBegin, ArrayEnd, ArrayType));
-        TVarData(V).VType := varArray;
-        AddVarFunc(FCurUnitName, SS[i], TypName, varArray, V);
-      end
-      else
-      begin
-        if (TVarData(Value).VType = varEmpty) and (Typ <> 0) then
-          Value := Var2Type(Value, Typ);
-        AddVarFunc(FCurUnitName, SS[i], TypName, Typ, Value);
-      end;
-     {end - array is allocated}
-     {##### olej #####}
+      DT.Init(Value);
+      AddVarFunc(FCurUnitName, SS[i], TypName, DT.GetTyp, Value, DT);
     end;
     SS.Clear;
     NextToken;
@@ -6146,7 +6181,8 @@ begin
     NextToken;
     Value := Expression1;
 
-    AddVarFunc(FCurUnitName, Identifier, '', varEmpty, Value);
+    AddVarFunc(FCurUnitName, Identifier, '', varEmpty, Value,
+      TJvInterpreterSimpleDataType.Create(VarType(Value)));
     if TTyp <> ttSemicolon then
       ErrorExpected(''';''');
     NextToken;
@@ -6211,7 +6247,8 @@ var
       begin
         NextToken;
         PFunContext(FunContext).LocalVars.AddVar('', ExceptionVarName,
-          ExceptionClassName, varObject, O2V(E));
+          ExceptionClassName, varObject, O2V(E),
+          TJvInterpreterSimpleDataType.Create(varObject));
         try
           Statement1;
         finally
@@ -6388,6 +6425,86 @@ begin
   InFunction1(nil);
 end;
 
+function TJvInterpreterFunction.ParseDataType: IJvInterpreterDataType;
+var
+  TypName: string;
+  Typ: Word;
+  ArrayBegin, ArrayEnd: TJvInterpreterArrayValues;
+  ArrayType: Integer;
+  Dimension: Integer;
+  Minus: Boolean;
+  //
+  JvInterpreterRecord: TJvInterpreterRecord;
+begin
+  //NextToken;
+  TypName := Token;
+  if TTyp = ttIdentifier then
+  begin
+    Typ := TypeName2VarTyp(TypName);
+    JvInterpreterRecord := TJvInterpreterRecord(FAdapter.GetRec(TypName));
+    if JvInterpreterRecord = nil then
+      JvInterpreterRecord := TJvInterpreterRecord(GlobalJvInterpreterAdapter.GetRec(TypName));
+    if JvInterpreterRecord <> nil then
+      Result := TJvInterpreterRecordDataType.Create(JvInterpreterRecord)
+    else
+      Result := TJvInterpreterSimpleDataType.Create(Typ);
+  end
+  else if TTyp = ttArray then
+  begin
+    {Get Array variables params}
+    {This is code is not very clear}
+    Typ := varArray;
+    NextToken;
+    if TTyp <> ttLs then
+      ErrorExpected('''[''');
+    {Parse Array Range}
+    Dimension := 0;
+    repeat
+      NextToken;
+      Minus := False;
+      if (Trim(TokenStr1) = '-') then
+      begin
+        Minus := True;
+        NextToken;
+      end;
+      if Pos('..', TokenStr1) < 1 then
+        ErrorExpected('''..''');
+      try
+        ArrayBegin[Dimension] :=
+          StrToInt(Copy(TokenStr1, 1, Pos('..', TokenStr1) - 1));
+        ArrayEnd[Dimension] :=
+          StrToInt(Copy(TokenStr1, Pos('..', TokenStr1) + 2, Length(TokenStr1)));
+        if Minus then
+          ArrayBegin[Dimension] := ArrayBegin[Dimension] * (-1);
+      except
+        ErrorExpected('''Integer Value''');
+      end;
+      if (Dimension < 0) or (Dimension > cJvInterpreterMaxArgs) then
+        JvInterpreterError(ieArrayBadDimension, CurPos);
+      if not (ArrayBegin[Dimension] <= ArrayEnd[Dimension]) then
+        JvInterpreterError(ieArrayBadRange, CurPos);
+    {End Array Range}
+      NextToken;
+      Inc(Dimension);
+    until TTyp <> ttCol; { , }
+
+    if TTyp <> ttRs then
+      ErrorExpected(''']''');
+    NextToken;
+    if TTyp <> ttOf then
+      ErrorExpected('''' + kwOF + '''');
+    NextToken;
+    ArrayType := TypeName2VarTyp(Token);
+    if ArrayType = varEmpty then
+      ErrorNotImplemented(Token + ' array type');
+
+    Result := TJvInterpreterArrayDataType.Create(ArrayBegin, ArrayEnd, Dimension, ArrayType);
+    {end: var A:array [1..200] of Integer, parsing}
+  end
+  else
+    ErrorExpected(LoadStr2(irIdentifier));
+end;
+
 //=== TJvInterpreterUnit =====================================================
 
 constructor TJvInterpreterUnit.Create(AOwner: TComponent);
@@ -6512,7 +6629,8 @@ begin
       if TTyp <> ttIdentifier then
         ErrorExpected(LoadStr2(irIdentifier));
       TypName := Token;
-      FunDesc.FResTyp := TypeName2VarTyp(TypName);
+      FunDesc.FResDataType := ParseDataType;
+      FunDesc.FResTyp := FunDesc.FResDataType.GetTyp;
       if FunDesc.FResTyp = 0 then
         FunDesc.FResTyp := varVariant;
       NextToken;
@@ -6592,7 +6710,7 @@ begin
       SkipToEnd1;
       with FunDesc do
         FAdapter.AddSrcFun(FCurUnitName {??!!}, FIdentifier, FPosBeg, CurPos,
-          FParamCount, FParamTypes, FParamNames, FResTyp, nil);
+          FParamCount, FParamTypes, FParamNames, FResTyp, FResDataType, nil);
     end;
   finally
     FunDesc.Free;
@@ -6764,57 +6882,25 @@ procedure TJvInterpreterUnit.Record1(const Identifier: string);
 var
   JvInterpreterSrcRecord: TJvInterpreterIdentifier;
   Fields: array of TJvInterpreterRecField;
-  TempField : TJvInterpreterRecField;
-  TempCount, i : integer;
-  TempTyp : Word;
+  TempField: TJvInterpreterRecField;
+  TempCount, i: integer;
+  TempTyp: Word;
+  JvInterpreterRecord: TJvInterpreterRecord;
 begin
+  JvInterpreterRecord := TJvInterpreterRecord.Create;
+  JvInterpreterRecord.RecordSize := 0;
+  JvInterpreterRecord.Identifier := Identifier;
+  JvInterpreterRecord.FieldCount := 0;
+  Var1(JvInterpreterRecord.AddField);
   NextToken;
-  SetLength(Fields, 0);
-  // начало разбора
-  repeat
-    TempCount := 0;
-    // начало разбора полей одного типа field1, ...,fieldn : type;
-    while True do
-    begin
-      if TTyp <> ttIdentifier then
-        ErrorExpected(LoadStr2(irIdentifier));
-      TempField.Identifier := Token;
-      TempField.Typ := varEmpty;
-      TempField.Offset := Length(Fields)*SizeOf(TVarData);
-      SetLength(Fields, Length(Fields)+1);
-      Fields[High(Fields)] := TempField;
-      TempCount := TempCount + 1;
-      NextToken;
-      if TTyp <> ttCol then
-        Break;
-      NextToken;
-    end;
-    // конец разбора полей одного типа field1, ...,fieldn : type;
-    // считывание и определение типа разобраного(ых) поля(ей)
-    if TTyp <> ttColon then
-      ErrorExpected(''':''');
-    NextToken;
-    if TTyp = ttIdentifier then
-      TempTyp := TypeName2VarTyp(Token);
-    // else ругнуться надо?
-    {for i := TempCount-1 downto 0 do
-    begin
-      // выставить тип из TempTyp
-      Fields[High(Fields)-i].Typ := TempTyp;
-    end;}
-    NextToken;
-    if TTyp <> ttSemicolon then
-      ErrorExpected(''';''');
-    if TTyp = ttEmpty then
-      ErrorExpected('''' + kwEND + '''');
-    NextToken;
-  until TTyp = ttEnd;
+  if TTyp <> ttEnd then
+    ErrorExpected('''' + kwEND + '''');
   NextToken;
   if TTyp <> ttSemicolon then
     ErrorExpected(''';''');
   // конец разбора
-  FAdapter.AddRec(FCurUnitName, Identifier, SizeOf(TVarData)*Length(Fields),
-    Fields, nil, nil, nil);
+
+  FAdapter.FRecList.Add(JvInterpreterRecord);
 end;
 
 procedure TJvInterpreterUnit.Run;
@@ -7183,8 +7269,121 @@ begin
   inherited Sort(@SortIdentifier);
 end;
 
+{ TJvInterpreterRecord }
+
+procedure TJvInterpreterRecord.AddField(UnitName, Identifier, Typ: string;
+  VTyp: Word; const Value: Variant; DataType: IJvInterpreterDataType);
+begin
+  Fields[FieldCount].Identifier := Identifier;
+  Fields[FieldCount].Typ := varEmpty;
+  Fields[FieldCount].Offset := RecordSize;
+  Fields[FieldCount].DataType := DataType;
+
+  Inc(RecordSize, SizeOf(TVarData));
+  Inc(FieldCount);
+end;
+
+procedure TJvInterpreterRecord.NewRecord(var Value: Variant);
+var
+  i: integer;
+  Rec: PChar;
+begin
+  if Assigned(CreateFunc) then
+    CreateFunc(Pointer(Rec))
+  else
+  begin
+    GetMem(Rec, RecordSize);
+    for i := 0 to FieldCount - 1 do
+    begin
+      if Fields[i].Typ = varString then
+        PString(PString(Rec + Fields[i].Offset)^) := @EmptyStr
+      else if Fields[i].Typ = varEmpty then
+      begin
+        PVarData(Rec + Fields[i].Offset)^.VType := varNull;
+        Fields[i].DataType.Init(Variant(PVarData(Rec + Fields[i].Offset)^));
+      end;
+    end;
+  end;
+  JvInterpreterVarCopy(Value, R2V(Identifier, Rec));
+  GlobalJvInterpreterAdapter.SetRecord(Value);
+end;
+
+{ TJvInterpreterRecordDataType }
+
+constructor TJvInterpreterRecordDataType.Create(
+  ARecordDesc: TJvInterpreterRecord);
+begin
+  inherited Create;
+  FRecordDesc := ARecordDesc;
+
+end;
+
+function TJvInterpreterRecordDataType.GetTyp: Word;
+begin
+  Result := varEmpty;
+end;
+
+procedure TJvInterpreterRecordDataType.Init(var V: Variant);
+var
+  i: integer;
+begin
+  FRecordDesc.NewRecord(V);
+end;
+
+{ TJvInterpreterArrayDataType }
+
+constructor TJvInterpreterArrayDataType.Create(AArrayBegin,
+  AArrayEnd: TJvInterpreterArrayValues; ADimension: Integer; AArrayType: Integer);
+begin
+  inherited Create;
+  FArrayBegin := AArrayBegin;
+  FArrayEnd := AArrayEnd;
+  FDimension := ADimension;
+  FArrayType := AArrayType;
+end;
+
+function TJvInterpreterArrayDataType.GetTyp: Word;
+begin
+  Result := varArray;
+end;
+
+procedure TJvInterpreterArrayDataType.Init(var V: Variant);
+begin
+  V := Integer(JvInterpreterArrayInit(FDimension, FArrayBegin, FArrayEnd, FArrayType));
+  TVarData(V).VType := varArray;
+end;
+
+{ TJvInterpreterSimpleDataType }
+
+constructor TJvInterpreterSimpleDataType.Create(ATyp: TVarType);
+begin
+  inherited Create;
+  FTyp := ATyp;
+end;
+
+function TJvInterpreterSimpleDataType.GetTyp: Word;
+begin
+  Result := FTyp;
+end;
+
+procedure TJvInterpreterSimpleDataType.Init(var V: Variant);
+begin
+  V := Null;
+  TVarData(V).VType := varEmpty;
+  if FTyp <> 0 then
+    V := Var2Type(V, FTyp);
+end;
 
 initialization
+{$IFDEF COMPILER6_UP}
+  VariantRecordInstance := TJvRecordVariantType.Create;
+  VariantObjectInstance := TJvObjectVariantType.Create;
+  VariantClassInstance := TJvClassVariantType.Create;
+  VariantPointerInstance := TJvPointerVariantType.Create;
+  VariantSetInstance := TJvSetVariantType.Create;
+  VariantArrayInstance := TJvArrayVariantType.Create;
+{$ENDIF COMPILER6_UP}
+
   GlobalJvInterpreterAdapter := TJvInterpreterAdapter.Create(nil);
 {$IFDEF JvInterpreter_OLEAUTO}
   OleInitialized := OleInitialize(nil) = S_OK;
@@ -7202,6 +7401,15 @@ finalization
       'JvInterpreter Internal Error', MB_ICONERROR);
 {$ENDIF}
   GlobalJvInterpreterAdapter.Free;
+
+{$IFDEF COMPILER6_UP}
+  FreeAndNil(VariantRecordInstance);
+  FreeAndNil(VariantObjectInstance);
+  FreeAndNil(VariantClassInstance);
+  FreeAndNil(VariantPointerInstance);
+  FreeAndNil(VariantSetInstance);
+  FreeAndNil(VariantArrayInstance);
+{$ENDIF COMPILER6_UP}
 
 end.
 
