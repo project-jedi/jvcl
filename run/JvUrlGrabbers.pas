@@ -375,6 +375,10 @@ type
 
 function JvUrlGrabberClassList: TJvUrlGrabberClassList;
 
+resourcestring
+// TODO: move to JvResources
+  SFileNotFoundFmt = 'File "%s" not found';
+
 implementation
 
 uses
@@ -384,7 +388,6 @@ const
   sUnitName = 'JvUrlGrabbers';
 
 {$IFNDEF COMPILER6_UP}
-
 function FtpGetFileSize(hFile: HINTERNET; lpdwFileSizeHigh: LPDWORD): DWORD; stdcall;
   external 'wininet.dll' name 'FtpGetFileSize';
 {$ENDIF COMPILER6_UP}
@@ -1031,9 +1034,6 @@ begin
 end;
 
 { TJvLocalFileUrlGrabberThread }
-resourcestring
-// TODO: move to JvResources
-  SFileNotFoundFmt = 'File "%s" not found';
 
 procedure TJvLocalFileUrlGrabberThread.Execute;
 var

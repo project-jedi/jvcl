@@ -141,6 +141,9 @@ type
     property OnStateChange: TNotifyEvent read FOnStateChange write FOnStateChange;
   end;
 
+resourcestring
+  SURLIsEmpty = 'URL is empty';
+  
 implementation
 
 uses
@@ -212,7 +215,7 @@ end;
 procedure TJvHTTPGrabber.Execute;
 begin
   //Download it
-  if FThread = nil then
+  if (FThread = nil) then
   begin
     FThread := TJvHttpThread.Create(Url, Referer, Username, FileName, Password,
       OutPutMode, Error, DoneFile, DoneStream, Progress, Agent, Status);
@@ -384,6 +387,13 @@ var
   end;
 
 begin
+  if FUrl = '' then
+  begin
+    FErrorText := SURLIsEmpty;
+    Error;
+    Exit;
+  end;
+
   // (rom) secure thread against exceptions
   Buffer := nil;
 
