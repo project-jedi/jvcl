@@ -75,6 +75,7 @@ type
     procedure AssignFont(Font: TFont);
     procedure GetAttributes(var Format: TCharFormat2);
     procedure SetAttributes(var Format: RichEdit.TCharFormat2);
+    function GetAttribute(const Flag: Integer): Boolean;
     function GetBackColor: TColor;
     function GetCharset: TFontCharset;
     function GetColor: TColor;
@@ -93,6 +94,7 @@ type
     function GetSubscriptStyle: TSubscriptStyle;
     function GetUnderlineColor: TUnderlineColor;
     function GetUnderlineType: TUnderlineType;
+    procedure SetAttribute(const Flag: Integer; const Value: Boolean);
     procedure SetBackColor(Value: TColor);
     procedure SetCharset(Value: TFontCharset);
     procedure SetColor(Value: TColor);
@@ -134,6 +136,10 @@ type
     property SubscriptStyle: TSubscriptStyle read GetSubscriptStyle write SetSubscriptStyle;
     property UnderlineColor: TUnderlineColor read GetUnderlineColor write SetUnderlineColor;
     property UnderlineType: TUnderlineType read GetUnderlineType write SetUnderlineType;
+    property Bold: Boolean index CFE_BOLD read GetAttribute write SetAttribute;
+    property Italic: Boolean index CFE_ITALIC read GetAttribute write SetAttribute;
+    property Underline: Boolean index CFE_UNDERLINE read GetAttribute write SetAttribute;
+    property StrikeOut: Boolean index CFE_STRIKEOUT read GetAttribute write SetAttribute;
   end;
 
   TJvNumbering = (nsNone, nsBullet, nsArabicNumbers, nsLoCaseLetter,
@@ -6109,6 +6115,14 @@ begin
     inherited AssignTo(Dest);
 end;
 
+function TJvTextAttributes.GetAttribute(const Flag: Integer): Boolean;
+var
+  Format: TCharFormat2;
+begin
+  GetAttributes(Format);
+  Result := Format.dwEffects and Flag <> 0;
+end;
+
 procedure TJvTextAttributes.GetAttributes(var Format: TCharFormat2);
 begin
   InitFormat(Format);
@@ -6379,6 +6393,19 @@ begin
     Format.cbSize := SizeOf(Format)
   else
     Format.cbSize := SizeOf(TCharFormat);
+end;
+
+procedure TJvTextAttributes.SetAttribute(const Flag: Integer; const Value: Boolean);
+var
+  Format: TCharFormat2;
+begin
+  InitFormat(Format);
+  { Assume Mask value is same as Flag, this is correct for CFE_BOLD, CFE_ITALIC,
+    CFE_UNDERLINE and CFE_STRIKEOUT }
+  Format.dwMask := Flag;
+  if Value then
+    Format.dwEffects := Flag;
+  SetAttributes(Format);
 end;
 
 procedure TJvTextAttributes.SetAttributes(var Format: TCharFormat2);
