@@ -130,14 +130,13 @@ type
     property Items[Index: Integer]: TJvEDIFieldDef read GetItem write SetItem; default;
   end;
 
-  // (rom) bad names. No "On".
-  TJvOnTableExistsEvent = procedure(TableName: string; var TableExists: Boolean) of object;
-  TJvOnTableProfileEvent = procedure(FieldDefs: TJvEDIFieldDefs; TableName: string) of object;
-  TJvOnCreateTableEvent = TJvOnTableProfileEvent;
-  TJvOnCheckForFieldChangesEvent = TJvOnTableProfileEvent;
-  TJvOnAlterTableEvent = TJvOnTableProfileEvent;
-  TJvOnResolveFieldDefTypeEvent = procedure(FieldDef: TJvEDIFieldDef) of object;
-  TJvOnBeforeApplyElementFilterEvent = procedure(DataSet: TDataSet; TableName: string;
+  TJvTableExistsEvent = procedure(TableName: string; var TableExists: Boolean) of object;
+  TJvTableProfileEvent = procedure(FieldDefs: TJvEDIFieldDefs; TableName: string) of object;
+  TJvCreateTableEvent = TJvTableProfileEvent;
+  TJvCheckForFieldChangesEvent = TJvTableProfileEvent;
+  TJvAlterTableEvent = TJvTableProfileEvent;
+  TJvResolveFieldDefTypeEvent = procedure(FieldDef: TJvEDIFieldDef) of object;
+  TJvBeforeApplyElementFilterEvent = procedure(DataSet: TDataSet; TableName: string;
     var ApplyFilter: Boolean) of object;
 
   TJvEDIDBBuffer = class(TJvComponent)
@@ -153,12 +152,12 @@ type
     FOnAfterOpenDataSets: TNotifyEvent;
     FOnBeforeCloseDataSets: TNotifyEvent;
     FOnAfterCloseDataSets: TNotifyEvent;
-    FOnTableExists: TJvOnTableExistsEvent;
-    FOnCreateTable: TJvOnCreateTableEvent;
-    FOnCheckForFieldChanges: TJvOnCheckForFieldChangesEvent;
-    FOnAlterTable: TJvOnAlterTableEvent;
-    FOnResolveFieldDefDataType: TJvOnResolveFieldDefTypeEvent;
-    FOnBeforeApplyElementFilter: TJvOnBeforeApplyElementFilterEvent;
+    FOnTableExists: TJvTableExistsEvent;
+    FOnCreateTable: TJvCreateTableEvent;
+    FOnCheckForFieldChanges: TJvCheckForFieldChangesEvent;
+    FOnAlterTable: TJvAlterTableEvent;
+    FOnResolveFieldDefDataType: TJvResolveFieldDefTypeEvent;
+    FOnBeforeApplyElementFilter: TJvBeforeApplyElementFilterEvent;
     procedure CreateFieldDefs(FieldDefs: TJvEDIFieldDefs;
       TableName, OwnerLoopId, ParentLoopId: string; DefaultUpdateStatus: TUpdateStatus);
     procedure CreateLoopFieldDefs(FieldDefs: TJvEDIFieldDefs; TableName, ParentLoopId: string;
@@ -201,14 +200,14 @@ type
       write FOnBeforeCloseDataSets;
     property OnAfterCloseDataSets: TNotifyEvent read FOnAfterCloseDataSets
       write FOnAfterCloseDataSets;
-    property OnTableExists: TJvOnTableExistsEvent read FOnTableExists write FOnTableExists;
-    property OnCreateTable: TJvOnCreateTableEvent read FOnCreateTable write FOnCreateTable;
-    property OnCheckForFieldChanges: TJvOnCheckForFieldChangesEvent read FOnCheckForFieldChanges
+    property OnTableExists: TJvTableExistsEvent read FOnTableExists write FOnTableExists;
+    property OnCreateTable: TJvCreateTableEvent read FOnCreateTable write FOnCreateTable;
+    property OnCheckForFieldChanges: TJvCheckForFieldChangesEvent read FOnCheckForFieldChanges
       write FOnCheckForFieldChanges;
-    property OnAlterTable: TJvOnAlterTableEvent read FOnAlterTable write FOnAlterTable;
-    property OnResolveFieldDefType: TJvOnResolveFieldDefTypeEvent read FOnResolveFieldDefDataType
+    property OnAlterTable: TJvAlterTableEvent read FOnAlterTable write FOnAlterTable;
+    property OnResolveFieldDefType: TJvResolveFieldDefTypeEvent read FOnResolveFieldDefDataType
       write FOnResolveFieldDefDataType;
-    property OnBeforeApplyElementFilter: TJvOnBeforeApplyElementFilterEvent
+    property OnBeforeApplyElementFilter: TJvBeforeApplyElementFilterEvent
       read FOnBeforeApplyElementFilter write FOnBeforeApplyElementFilter;
   end;
 
