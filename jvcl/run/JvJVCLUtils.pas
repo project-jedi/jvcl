@@ -48,8 +48,10 @@ uses
   QDialogs, QComCtrls, QImgList, QGrids, QWinCursors, QWindows,
   {$ENDIF VisualCLX}
   IniFiles,
-  JclBase, JclSysUtils, JclStrings, JvJCLUtils,
-  JvAppStorage, JvTypes, JvFinalize;
+  {$IFNDEF NO_JCL}
+  JclBase,
+  {$ENDIF !NO_JCL}
+  JvJCLUtils, JvAppStorage, JvTypes, JvFinalize;
 
 
 {$IFDEF VisualCLX}
@@ -5955,7 +5957,11 @@ var
   Button: TToolButton;
 begin
   if AForm.FormStyle = fsMDIForm then
+    {$IFNDEF NO_JCL}
     raise EJclError.CreateResRec(@RsNotForMdi);
+    {$ELSE}
+    raise Exception.CreateRes(@RsNotForMdi);
+    {$ENDIF !NO_JCL}
   if AMenu = nil then
     AMenu := AForm.Menu;
   if AMenu = nil then
