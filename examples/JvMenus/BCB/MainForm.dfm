@@ -128,6 +128,7 @@ object frmMain: TfrmMain
     end
     object Other1: TMenuItem
       Caption = '&Other'
+      ImageIndex = 1
       object Sub11: TMenuItem
         Caption = 'Sub1'
         object Hello1: TMenuItem
