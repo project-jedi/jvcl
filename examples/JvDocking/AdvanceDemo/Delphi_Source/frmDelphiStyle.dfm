@@ -26,7 +26,6 @@ object Form1: TForm1
     Width = 178
     Height = 161
     Align = alClient
-    ImeName = #215#207#185#226#198#180#210#244#202#228#200#235#183#168
     TabOrder = 0
   end
   object lbDockClient1: TJvDockClient
@@ -34,10 +33,12 @@ object Form1: TForm1
     OnFormHide = lbDockClient1FormHide
     LRDockWidth = 100
     TBDockHeight = 100
+    NCPopupMenu = MainForm.PopupMenu2
     DirectDrag = True
     ShowHint = True
     EnableCloseButton = True
     EachOtherDock = False
+    DockStyle = MainForm.JvDockDelphiStyle1
     Left = 48
     Top = 24
   end

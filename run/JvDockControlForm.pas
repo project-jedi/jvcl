@@ -1391,7 +1391,10 @@ begin
         JvDockInfoTree.CreateZoneAndAddInfoFromApp(Screen.CustomForms[I]);
 
     JvDockInfoTree.AppStorage := AppStorage;
-    JvDockInfoTree.AppStoragePath := AppStoragePath;
+    if AppStoragePath <> '' then
+      JvDockInfoTree.AppStoragePath := AppStoragePath
+    else
+      JvDockInfoTree.AppStoragePath := AppStorage.Path;
     JvDockInfoTree.WriteInfoToAppStorage;
   finally
     JvDockInfoTree.Free;
@@ -1416,7 +1419,10 @@ begin
   JvDockLockWindow(nil);
   try
     JvDockInfoTree.AppStorage := AppStorage;
-    JvDockInfoTree.AppStoragePath := AppStoragePath;
+    if AppStoragePath <> '' then
+      JvDockInfoTree.AppStoragePath := AppStoragePath
+    else
+      JvDockInfoTree.AppStoragePath := AppStorage.Path;
     try
       JvGlobalDockIsLoading := True;
       JvDockInfoTree.ReadInfoFromAppStorage;

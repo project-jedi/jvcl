@@ -26,7 +26,7 @@ uses
   JvDockVCStyle, JvDockDelphiStyle, JvDockVIDStyle, JvDockVSNetStyle,
   JvDockSupportClass
   {$IFDEF USEJVCL}
-  ,JvComponent, JvAppRegistryStorage, JvAppIniStorage, JvAppXmlStorage
+  , JvComponent, JvAppRegistryStorage, JvAppIniStorage, JvAppXmlStorage
   {$ENDIF}
   {$IFDEF VER150}, XPMan{$ENDIF};
 
@@ -78,6 +78,7 @@ type
     N1: TMenuItem;
     SaveToXmlFile: TMenuItem;
     LoadFromXmlFile: TMenuItem;
+    ToolButton1: TToolButton;
     procedure DelphiStyleClick(Sender: TObject);
     procedure VCStyleClick(Sender: TObject);
     procedure VIDStyleClick(Sender: TObject);
@@ -110,6 +111,7 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure SaveToXmlFileClick(Sender: TObject);
     procedure LoadFromXmlFileClick(Sender: TObject);
+    procedure CloseAllClick(Sender: TObject);
   private
     { Private declarations }
     {$IFDEF USEJVCL}
@@ -118,19 +120,19 @@ type
     FJvAppXmlStorage: TJvAppXmlFileStorage;
     {$ENDIF}
     FForm1Count,
-    FForm2Count,
-    FForm3Count,
-    FForm4Count: Integer;
+      FForm2Count,
+      FForm3Count,
+      FForm4Count: Integer;
     procedure AddItemToShowDockMenu(AForm: TForm);
     procedure ShowDockWindowMenuClick(Sender: TObject);
-    procedure ShowDockStatus(Sender:TObject);
+    procedure ShowDockStatus(Sender: TObject);
   public
     { Public declarations }
   end;
 
 const
   BoolStr: array[Boolean] of string =
-    ('FALSE', 'TRUE');
+  ('FALSE', 'TRUE');
 
 var
   MainForm: TMainForm;
@@ -143,7 +145,8 @@ uses
 {$R *.DFM}
 
 procedure TMainForm.DelphiStyleClick(Sender: TObject);
-var Form: TForm1;
+var
+  Form: TForm1;
 begin
   Form := TForm1.Create(Application);
   Form.Caption := Form.Caption + ' _ ' + IntToStr(FForm1Count);
@@ -153,7 +156,8 @@ begin
 end;
 
 procedure TMainForm.VCStyleClick(Sender: TObject);
-var Form: TForm2;
+var
+  Form: TForm2;
 begin
   Form := TForm2.Create(Application);
   Form.Caption := Form.Caption + ' _ ' + IntToStr(FForm2Count);
@@ -163,7 +167,8 @@ begin
 end;
 
 procedure TMainForm.VIDStyleClick(Sender: TObject);
-var Form: TForm3;
+var
+  Form: TForm3;
 begin
   Form := TForm3.Create(Self);
   Form.Caption := Form.Caption + ' _ ' + IntToStr(FForm3Count);
@@ -173,7 +178,8 @@ begin
 end;
 
 procedure TMainForm.DockForm4Click(Sender: TObject);
-var Form: TForm4;
+var
+  Form: TForm4;
 begin
   Form := TForm4.Create(Self);
   Form.Caption := Form.Caption + ' _ ' + IntToStr(FForm4Count);
@@ -196,11 +202,11 @@ begin
   Memo1.WordWrap := True;
   Caption := Caption + ' (docking is set to ' + lbDockServer1.DockStyle.ClassName + ')';
   {$IFDEF USEJVCL}
-  FJvAppRegistryStorage:= TJvAppRegistryStorage.Create(self);
+  FJvAppRegistryStorage := TJvAppRegistryStorage.Create(self);
   FJvAppRegistryStorage.Path := '\Software\JVCL\Examples\JvDocking\AdvancePro';
-  FJvAppIniFileStorage:= TJvAppIniFileStorage.Create(self);
+  FJvAppIniFileStorage := TJvAppIniFileStorage.Create(self);
   FJvAppIniFileStorage.FileName := ExtractFilePath(Application.ExeName) + 'DockInfo.ini';
-  FJvAppXmlStorage:= TJvAppXmlFileStorage.Create(self);
+  FJvAppXmlStorage := TJvAppXmlFileStorage.Create(self);
   FJvAppXMLStorage.FileName := ExtractFilePath(Application.ExeName) + 'DockInfo.xml';
   {$ENDIF}
 end;
@@ -226,7 +232,8 @@ begin
 end;
 
 procedure TMainForm.ShowDockWindowMenuClick(Sender: TObject);
-var MenuItem: TMenuItem;
+var
+  MenuItem: TMenuItem;
   Form: TForm;
 begin
   MenuItem := TMenuItem(Sender);
@@ -237,9 +244,11 @@ begin
     begin
       HideDockForm(Form);
       MenuItem.Checked := False;
-    end else
+    end
+    else
       ShowDockForm(Form);
-  end else
+  end
+  else
   begin
     ShowDockForm(Form);
     MenuItem.Checked := True;
@@ -374,9 +383,9 @@ begin
   lbDockServer1.DockStyle := JvDockVIDStyle1;
 end;
 
-
 procedure TMainForm.PopupMenu2Popup(Sender: TObject);
-var DockClient: TJvDockClient;
+var
+  DockClient: TJvDockClient;
 begin
   if PopupMenu2.PopupComponent is TForm then
   begin
@@ -391,13 +400,15 @@ begin
       ClientAllDocked.Checked := DockClient.EnableDock;
       if DockClient.DockState = JvDockState_Floating then
         ClientDockorFloat.Caption := 'Dock'
-      else ClientDockorFloat.Caption := 'Float';
+      else
+        ClientDockorFloat.Caption := 'Float';
     end;
   end;
 end;
 
 procedure TMainForm.ClientTopDockedClick(Sender: TObject);
-var DockClient: TJvDockClient;
+var
+  DockClient: TJvDockClient;
 begin
   if PopupMenu2.PopupComponent is TForm then
   begin
@@ -411,7 +422,8 @@ begin
 end;
 
 procedure TMainForm.ClientBottomDockedClick(Sender: TObject);
-var DockClient: TJvDockClient;
+var
+  DockClient: TJvDockClient;
 begin
   if PopupMenu2.PopupComponent is TForm then
   begin
@@ -425,7 +437,8 @@ begin
 end;
 
 procedure TMainForm.ClientLeftDockedClick(Sender: TObject);
-var DockClient: TJvDockClient;
+var
+  DockClient: TJvDockClient;
 begin
   if PopupMenu2.PopupComponent is TForm then
   begin
@@ -439,7 +452,8 @@ begin
 end;
 
 procedure TMainForm.ClientRightDockedClick(Sender: TObject);
-var DockClient: TJvDockClient;
+var
+  DockClient: TJvDockClient;
 begin
   if PopupMenu2.PopupComponent is TForm then
   begin
@@ -453,7 +467,8 @@ begin
 end;
 
 procedure TMainForm.ClientEachOtherDockedClick(Sender: TObject);
-var DockClient: TJvDockClient;
+var
+  DockClient: TJvDockClient;
 begin
   if PopupMenu2.PopupComponent is TForm then
   begin
@@ -467,7 +482,8 @@ begin
 end;
 
 procedure TMainForm.ClientAllDockedClick(Sender: TObject);
-var DockClient: TJvDockClient;
+var
+  DockClient: TJvDockClient;
 begin
   if PopupMenu2.PopupComponent is TForm then
   begin
@@ -481,7 +497,8 @@ begin
 end;
 
 procedure TMainForm.ClientDockorFloatClick(Sender: TObject);
-var DockClient: TJvDockClient;
+var
+  DockClient: TJvDockClient;
 begin
   if PopupMenu2.PopupComponent is TForm then
   begin
@@ -492,7 +509,8 @@ begin
 end;
 
 procedure TMainForm.ClientHideClick(Sender: TObject);
-var DockClient: TJvDockClient;
+var
+  DockClient: TJvDockClient;
 begin
   if PopupMenu2.PopupComponent is TForm then
   begin
@@ -508,6 +526,21 @@ begin
     ShowMessage('This form type will not be able to dock');
 end;
 
-
+procedure TMainForm.CloseAllClick(Sender: TObject);
+var
+  aMenuItem: TMenuItem;
+  DockClient: TJvDockClient;
+begin
+  while ShowWindow_Menu.Count > 0 do
+  begin
+    aMenuItem := ShowWindow_Menu.Items[0];
+    DockClient := FindDockClient(TForm(aMenuItem.Tag));
+    if DockClient <> nil then
+      DoFloatForm(TForm(aMenuItem.Tag));
+    TForm(aMenuItem.Tag).Free;
+    ShowWindow_Menu.Delete(0);
+  end;
+end;
 
 end.
+
