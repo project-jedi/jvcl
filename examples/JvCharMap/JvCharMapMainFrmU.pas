@@ -22,7 +22,7 @@
 
 ******************************************************************}
 
-unit MainFrm;
+unit JvCharMapMainFrmU;
 
 interface
 
@@ -37,7 +37,7 @@ uses
   {$IFDEF USETNT}, TntStdCtrls, JvExStdCtrls{$ENDIF};
 
 type
-  TForm1 = class(TForm)
+  TJvCharMapMainFrm = class(TForm)
     FontDialog1: TFontDialog;
     Panel1: TPanel;
     btnFont: TButton;
@@ -90,8 +90,7 @@ type
     procedure FillLocales;
     procedure DoJMSelectChar(Sender:TObject; AChar:WideChar);
     procedure DoJMResize(Sender:TObject);
-    procedure DoJMValidateChar(Sender: TObject; AChar: WideChar; var
-    Valid: Boolean);
+    procedure DoJMValidateChar(Sender: TObject; AChar: WideChar; var Valid: Boolean);
     procedure DisplayInfo(AChar:WideChar);
   public
     JM: TJvCharMap;
@@ -99,7 +98,7 @@ type
   end;
 
 var
-  Form1: TForm1;
+  JvCharMapMainFrm: TJvCharMapMainFrm;
 
 implementation
 
@@ -109,7 +108,7 @@ uses
 
 {$R *.dfm}
 
-procedure TForm1.FormCreate(Sender: TObject);
+procedure TJvCharMapMainFrm.FormCreate(Sender: TObject);
 begin
   JM := TJvCharMap.Create(self);
 //  JM.Align := alClient;
@@ -156,7 +155,7 @@ begin
   ActiveControl := JM;
 end;
 
-procedure TForm1.btnFontClick(Sender: TObject);
+procedure TJvCharMapMainFrm.btnFontClick(Sender: TObject);
 begin
   FontDialog1.Font := JM.Font;
   if FontDialog1.Execute then
@@ -166,7 +165,7 @@ begin
   end;
 end;
 
-procedure TForm1.chkZoomPanelClick(Sender: TObject);
+procedure TJvCharMapMainFrm.chkZoomPanelClick(Sender: TObject);
 begin
   JM.ShowZoomPanel := chkZoomPanel.Checked;
 end;
@@ -272,7 +271,7 @@ begin
     Result := Copy(Result, 2, MaxInt);
 end;
 
-procedure TForm1.DisplayInfo(AChar:WideChar);
+procedure TJvCharMapMainFrm.DisplayInfo(AChar:WideChar);
 begin
   reInfo.Clear;
   reInfo.Lines.Add('Character Type: ' + GetTypeString1(AChar));
@@ -282,7 +281,7 @@ begin
   reInfo.Hint := trim(reInfo.Lines.Text);
 end;
 
-procedure TForm1.chkUnicodeClick(Sender: TObject);
+procedure TJvCharMapMainFrm.chkUnicodeClick(Sender: TObject);
 begin
   cbFilter.Enabled := chkUnicode.Checked;
   if chkUnicode.Checked then
@@ -294,29 +293,29 @@ begin
   end;
 end;
 
-procedure TForm1.Copy1Click(Sender: TObject);
+procedure TJvCharMapMainFrm.Copy1Click(Sender: TObject);
 begin
   JvClipboard.AsWideText := JM.Character;
 end;
 
-procedure TForm1.btnSelectClick(Sender: TObject);
+procedure TJvCharMapMainFrm.btnSelectClick(Sender: TObject);
 begin
   edCharacter.Text := edCharacter.Text + JM.Character;
 end;
 
-procedure TForm1.cbColorChange(Sender: TObject);
+procedure TJvCharMapMainFrm.cbColorChange(Sender: TObject);
 begin
   if JM <> nil then
     JM.Color := cbColor.ColorValue;
 end;
 
-procedure TForm1.cbFontChange(Sender: TObject);
+procedure TJvCharMapMainFrm.cbFontChange(Sender: TObject);
 begin
   if JM <> nil then
     JM.Font.Name := cbFont.FontName;
 end;
 
-procedure TForm1.FillFilter;
+procedure TJvCharMapMainFrm.FillFilter;
 var
   I: TJvCharMapUnicodeFilter;
 begin
@@ -331,14 +330,14 @@ begin
   cbFilter.ItemIndex := Ord(JM.CharRange.Filter);
 end;
 
-procedure TForm1.cbFilterClick(Sender: TObject);
+procedure TJvCharMapMainFrm.cbFilterClick(Sender: TObject);
 begin
   if chkUnicode.Checked and (cbFilter.ItemIndex > -1) then
     JM.CharRange.Filter := TJvCharMapUnicodeFilter(cbFilter.ItemIndex);
   DisplayInfo(JM.Character);
 end;
 
-procedure TForm1.FillLocales;
+procedure TJvCharMapMainFrm.FillLocales;
 var
   I: Integer;
 begin
@@ -356,14 +355,14 @@ begin
   cbLocales.Enabled := Win32Platform <> VER_PLATFORM_WIN32_NT;
 end;
 
-procedure TForm1.cbLocalesClick(Sender: TObject);
+procedure TJvCharMapMainFrm.cbLocalesClick(Sender: TObject);
 begin
   with cbLocales do
     if ItemIndex > -1 then
       JM.Locale := LCID(Items.Objects[ItemIndex]);
 end;
 
-procedure TForm1.DoJMResize(Sender: TObject);
+procedure TJvCharMapMainFrm.DoJMResize(Sender: TObject);
 begin
   JM.Left := (ClientWidth - JM.Width) div 2;
   lblChars.Left := JM.Left;
@@ -371,29 +370,29 @@ begin
     lblChars.Left := 8;
 end;
 
-procedure TForm1.chkShadowClick(Sender: TObject);
+procedure TJvCharMapMainFrm.chkShadowClick(Sender: TObject);
 begin
   JM.ShowShadow := chkShadow.Checked;
   JM.ShadowSize := Random(4) + 2;
 end;
 
-procedure TForm1.DoJMSelectChar(Sender: TObject; AChar: WideChar);
+procedure TJvCharMapMainFrm.DoJMSelectChar(Sender: TObject; AChar: WideChar);
 begin
   DisplayInfo(AChar);
 end;
 
-procedure TForm1.DoJMValidateChar(Sender: TObject; AChar: WideChar;
+procedure TJvCharMapMainFrm.DoJMValidateChar(Sender: TObject; AChar: WideChar;
   var Valid: Boolean);
 begin
   Valid := Valid or chkDisplayAll.Checked;
 end;
 
-procedure TForm1.chkDisplayAllClick(Sender: TObject);
+procedure TJvCharMapMainFrm.chkDisplayAllClick(Sender: TObject);
 begin
   JM.Invalidate;
 end;
 
-procedure TForm1.edColsChange(Sender: TObject);
+procedure TJvCharMapMainFrm.edColsChange(Sender: TObject);
 begin
   if not Changing then
   begin
@@ -409,7 +408,7 @@ begin
   end;
 end;
 
-procedure TForm1.edEndChange(Sender: TObject);
+procedure TJvCharMapMainFrm.edEndChange(Sender: TObject);
 begin
   if not Changing then
   begin
@@ -425,7 +424,7 @@ begin
   end;
 end;
 
-procedure TForm1.edStartChange(Sender: TObject);
+procedure TJvCharMapMainFrm.edStartChange(Sender: TObject);
 begin
   if not Changing then
   begin
