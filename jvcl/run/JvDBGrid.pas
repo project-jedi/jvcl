@@ -75,6 +75,18 @@ type
   TTitleHintEvent = procedure(Sender: TObject; Field: TField;
     var aHint: string) of object;
   // End Lionel
+  TJvSelectDialogColumnStrings = class(TPersistent)
+  private
+    FNoSelectionWarning: string;
+    FCaption: string;
+    FOK: string;
+  public
+    constructor Create;
+  published
+    property Caption:string read FCaption write FCaption;
+    property OK:string read FOK write FOK;
+    property NoSelectionWarning:string read FNoSelectionWarning write FNoSelectionWarning;
+  end;
 
   TJvDBGrid = class(TJvExDBGrid)
   private
@@ -126,6 +138,7 @@ type
     FMinColumnWidth: integer;
     FMaxColumnWidth: integer;
     FInAutoSize: boolean;
+    FSelectColumnsDialogStrings: TJvSelectDialogColumnStrings;
     function GetImageIndex(Field: TField): Integer; // Modified by Lionel
     procedure SetShowGlyphs(Value: Boolean);
     procedure SetRowsHeight(Value: Integer);
@@ -167,6 +180,8 @@ type
     procedure SetAutoSizeColumns(const Value: boolean);
     procedure SetMaxColumnWidth(const Value: integer);
     procedure SetMinColumnWidth(const Value: integer);
+    procedure SetSelectColumnsDialogStrings(
+      const Value: TJvSelectDialogColumnStrings);
   protected
     
     procedure MouseLeave(Control: TControl); override;
@@ -313,7 +328,7 @@ type
     property MinColumnWidth: integer read FMinColumnWidth write SetMinColumnWidth default 0;
     property AutoSizeColumns: boolean read FAutoSizeColumns write SetAutoSizeColumns default false;
     property AutoSizeColumnIndex: integer read FAutoSizeColumnIndex write SetAutoSizeColumnIndex default -1;
-
+    property SelectColumnsDialogStrings:TJvSelectDialogColumnStrings read FSelectColumnsDialogStrings write SetSelectColumnsDialogStrings;
   end;
 
 implementation
@@ -324,6 +339,11 @@ uses
   JvDBGridSelectColumnForm;
 
 {$R ..\Resources\JvDBGrid.res}
+
+resourcestring
+  RES_JvDBGridSelectTitle = 'Select columns';
+  RES_JvDBGridSelectOK      = '&OK';
+  RES_JvDBGridSelectWarning = 'At least one column must be visible!';
 
 type
   TBookmarks = class(TBookmarkList);
@@ -436,6 +456,8 @@ begin
   FTitleArrow := false;
   FPostOnEnter := false;
   FAutoSizeColumnIndex := -1;
+  FSelectColumnsDialogStrings := TJvSelectDialogColumnStrings.Create;
+
   // End Lionel
 end;
 
@@ -447,6 +469,7 @@ begin
   // End Lionel
   FIniLink.Free;
   FMsIndicators.Free;
+  FSelectColumnsDialogStrings.Free;
   inherited Destroy;
 end;
 
@@ -2322,6 +2345,9 @@ begin
     frm.Grid := TJvDBGrid(Self);
     frm.DataSource := DataLink.DataSource;
     frm.SelectColumn := FSelectColumn;
+    frm.Caption := SelectColumnsDialogStrings.Caption;
+    frm.ButtonOK.Caption := SelectColumnsDialogStrings.OK;
+    frm.NoSelectionWarning := SelectColumnsDialogStrings.NoSelectionWarning;
     frm.ShowModal;
   finally
     frm.Free;
@@ -2723,6 +2749,22 @@ end;
 procedure TJvDBGrid.ShowColumnsDialog;
 begin
   ShowSelectColumnClick;
+end;
+
+procedure TJvDBGrid.SetSelectColumnsDialogStrings(
+  const Value: TJvSelectDialogColumnStrings);
+begin
+//
+end;
+
+{ TJvSelectDialogColumnStrings }
+
+constructor TJvSelectDialogColumnStrings.Create;
+begin
+  inherited Create;
+  Caption := RES_JvDBGridSelectTitle;
+  OK := RES_JvDBGridSelectOK;
+  NoSelectionWarning := RES_JvDBGridSelectWarning;
 end;
 
 initialization
