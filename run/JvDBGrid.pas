@@ -69,7 +69,8 @@ const
   {$NODEFINE DefJvGridOptions}
   {$ENDIF BCB}
 
-  JvDefaultAlternateRowColor = TColor($00DDDDDD);
+  JvDefaultAlternateRowColor = TColor($00CCCCCC); // Light gray
+  JvDefaultAlternateRowFontColor = TColor($00000000); // Black
 
   // Consts for AutoSizeColumnIndex
   JvGridResizeProportionally = -1;
@@ -211,6 +212,7 @@ type
     FOnShowTitleHint: TJvTitleHintEvent;
     FOnTitleArrowMenuEvent: TNotifyEvent;
     FAlternateRowColor: TColor;
+    FAlternateRowFontColor: TColor;
     FAutoSizeColumns: Boolean;
     FAutoSizeColumnIndex: Integer;
     FMinColumnWidth: Integer;
@@ -271,6 +273,8 @@ type
     procedure ShowSelectColumnClick;
     procedure SetAlternateRowColor(const Value: TColor);
     procedure ReadAlternateRowColor(Reader: TReader);
+    procedure SetAlternateRowFontColor(const Value: TColor);
+    procedure ReadAlternateRowFontColor(Reader: TReader);
     procedure SetAutoSizeColumnIndex(const Value: Integer);
     procedure SetAutoSizeColumns(const Value: Boolean);
     procedure SetMaxColumnWidth(const Value: Integer);
@@ -427,6 +431,7 @@ type
     property OnMouseWheelUp;
     property BeepOnError: Boolean read FBeepOnError write FBeepOnError default True; // WAP.
     property AlternateRowColor: TColor read FAlternateRowColor write SetAlternateRowColor default clNone;
+    property AlternateRowFontColor: TColor read FAlternateRowFontColor write SetAlternateRowFontColor default clNone;
     property PostOnEnter: Boolean read FPostOnEnter write FPostOnEnter default False;
     property SelectColumn: TSelectColumn read FSelectColumn write FSelectColumn default scDataBase;
     property SortedField: string read FSortedField write SetSortedField;
@@ -853,6 +858,7 @@ begin
   FShowTitleHint := False;
   FShowCellHint := False;
   FAlternateRowColor := clNone;
+  FAlternateRowFontColor := clNone;
   FSelectColumn := scDataBase;
   FTitleArrow := False;
   FPostOnEnter := False;
@@ -1596,9 +1602,13 @@ procedure TJvDBGrid.GetCellProps(Field: TField; AFont: TFont;
 begin
   if IsAfterFixedCols and (FCurrentDrawRow >= FixedRows) then
   begin
-    if Odd(FCurrentDrawRow + FixedRows) and (FAlternateRowColor <> clNone) and
-      (FAlternateRowColor <> Color) then
-      Background := AlternateRowColor;
+    if Odd(FCurrentDrawRow + FixedRows) then
+    begin
+      if (FAlternateRowColor <> clNone) and (FAlternateRowColor <> Color) then
+        Background := AlternateRowColor;
+      if FAlternateRowFontColor <> clNone then
+        AFont.Color := AlternateRowFontColor;
+    end;
   end
   else
     Background := FixedColor;
@@ -1747,7 +1757,8 @@ begin
   if FDisableCount = 0 then
   begin
     inherited Scroll(Distance);
-    if (AlternateRowColor <> clNone) and (AlternateRowColor <> Color) then
+    if ((AlternateRowColor <> clNone) and (AlternateRowColor <> Color)) or
+       ((AlternateRowFontColor <> clNone) and (AlternateRowFontColor <> Font.Color)) then
       Invalidate;
   end;
 end;
@@ -2985,6 +2996,7 @@ procedure TJvDBGrid.DefineProperties(Filer: TFiler);
 begin
   inherited DefineProperties(Filer);
   Filer.DefineProperty('AlternRowColor', ReadAlternateRowColor, nil, False);
+  Filer.DefineProperty('AlternRowFontColor', ReadAlternateRowFontColor, nil, False);
 end;
 
 procedure TJvDBGrid.ReadAlternateRowColor(Reader: TReader);
@@ -3000,6 +3012,23 @@ begin
   if FAlternateRowColor <> Value then
   begin
     FAlternateRowColor := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvDBGrid.ReadAlternateRowFontColor(Reader: TReader);
+begin
+  if Reader.ReadBoolean then
+    AlternateRowFontColor := JvDefaultAlternateRowFontColor
+  else
+    AlternateRowFontColor := clNone;
+end;
+
+procedure TJvDBGrid.SetAlternateRowFontColor(const Value: TColor);
+begin
+  if FAlternateRowFontColor <> Value then
+  begin
+    FAlternateRowFontColor := Value;
     Invalidate;
   end;
 end;
