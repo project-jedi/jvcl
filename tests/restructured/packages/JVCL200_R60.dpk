@@ -18,8 +18,7 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
-{$I JEDI.INC}
+{$I JVCL.INC}
 
 package JVCL200_R60;
 
@@ -58,6 +57,7 @@ requires
   dbrtl,
   vcldb,
   bdertl,
+  djcl60,
   dsnap;
 
 contains
@@ -303,7 +303,6 @@ contains
   JvFileInfo in '..\source\JvFileInfo.pas',
   JvFindFiles in '..\source\JvFindFiles.pas',
   JvAppHotKey in '..\source\JvAppHotKey.pas',
-  JvShDlg in '..\source\JvShDlg.pas',
   JvSHFmt in '..\source\JvSHFmt.pas',
   JvUCB in '..\source\JvUCB.pas',
   JvFindReplace in '..\source\JvFindReplace.pas',
@@ -357,7 +356,6 @@ contains
   JvAniFile in '..\source\JvAniFile.pas',
   JvIcoList in '..\source\JvIcoList.pas',
   JvObjStr in '..\source\JvObjStr.pas',
-  JvCombos in '..\source\JvCombos.pas',
   JvPickDate in '..\source\JvPickDate.pas',
   JvMaxMin in '..\source\JvMaxMin.pas',
   JvConst in '..\source\JvConst.pas',
@@ -394,7 +392,6 @@ contains
   JvTimerLst in '..\source\JvTimerLst.pas',
   JvMRUList in '..\source\JvMRUList.pas',
   JvIni in '..\source\JvIni.pas',
-  JvShell in '..\source\JvShell.pas',
   JvMenus in '..\source\JvMenus.pas',
   JvNotify in '..\source\JvNotify.pas',
   JvGrdCpt in '..\source\JvGrdCpt.pas',
