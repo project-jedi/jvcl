@@ -440,14 +440,11 @@ type
   end;
 
 implementation
-
-//PRY 2002.06.04
-{$IFDEF COMPILER6_UP}
 uses
+{$IFDEF COMPILER6_UP}
   DateUtils,
 {$ENDIF COMPILER6_UP}
   JvMaxMin;
-// PRY END
 
 {$R JvTIMELINEBITMAPS.RES}
 
