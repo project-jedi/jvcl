@@ -15,7 +15,7 @@ object frmMain: TfrmMain
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
-  object Panel1: TPanel
+  object pnlBottom: TPanel
     Left = 0
     Top = 410
     Width = 775
@@ -79,7 +79,7 @@ object frmMain: TfrmMain
       Height = 13
       Caption = 'Horz:'
     end
-    object Edit1: TEdit
+    object edCols: TEdit
       Left = 16
       Top = 24
       Width = 49
@@ -92,14 +92,14 @@ object frmMain: TfrmMain
       Top = 24
       Width = 15
       Height = 21
-      Associate = Edit1
+      Associate = edCols
       Min = 1
       Position = 1
       TabOrder = 1
       Wrap = False
       OnClick = udColsClick
     end
-    object Edit2: TEdit
+    object edRows: TEdit
       Left = 88
       Top = 24
       Width = 41
@@ -112,14 +112,14 @@ object frmMain: TfrmMain
       Top = 24
       Width = 15
       Height = 21
-      Associate = Edit2
+      Associate = edRows
       Min = 1
       Position = 1
       TabOrder = 3
       Wrap = False
       OnClick = udRowsClick
     end
-    object Edit3: TEdit
+    object edShadow: TEdit
       Left = 152
       Top = 24
       Width = 41
@@ -132,14 +132,14 @@ object frmMain: TfrmMain
       Top = 24
       Width = 15
       Height = 21
-      Associate = Edit3
+      Associate = edShadow
       Min = -100
       Position = 4
       TabOrder = 5
       Wrap = False
       OnClick = udShadowWidthClick
     end
-    object Edit4: TEdit
+    object edScale: TEdit
       Left = 216
       Top = 24
       Width = 41
@@ -152,7 +152,7 @@ object frmMain: TfrmMain
       Top = 24
       Width = 16
       Height = 21
-      Associate = Edit4
+      Associate = edScale
       Min = 1
       Max = 500
       Position = 100
@@ -190,7 +190,7 @@ object frmMain: TfrmMain
         'Use Auto Scale'
         'Use Cols and Rows')
     end
-    object Edit5: TEdit
+    object edVert: TEdit
       Left = 280
       Top = 24
       Width = 41
@@ -203,7 +203,7 @@ object frmMain: TfrmMain
       Top = 24
       Width = 15
       Height = 21
-      Associate = Edit5
+      Associate = edVert
       Min = 0
       Max = 500
       Position = 8
@@ -212,7 +212,7 @@ object frmMain: TfrmMain
       Wrap = False
       OnClick = udVertSpacingClick
     end
-    object Edit6: TEdit
+    object edHorz: TEdit
       Left = 344
       Top = 24
       Width = 41
@@ -225,7 +225,7 @@ object frmMain: TfrmMain
       Top = 24
       Width = 15
       Height = 21
-      Associate = Edit6
+      Associate = edHorz
       Min = 0
       Max = 500
       Position = 8
@@ -387,7 +387,7 @@ object frmMain: TfrmMain
     Options = [poPageNums]
     PrintRange = prPageNums
     ToPage = 33
-    Left = 88
+    Left = 94
     Top = 160
   end
 end

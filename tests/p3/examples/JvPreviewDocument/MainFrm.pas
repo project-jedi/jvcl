@@ -5,22 +5,22 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, JvPrvwDoc, ComCtrls, StdCtrls, ExtCtrls, Menus, jpeg,
-  JvRichEdit, JvPrvwRender;
+  JvRichEdit, JvPrvwRender, GIFImage;
 
 type
   TfrmMain = class(TForm)
-    Panel1: TPanel;
+    pnlBottom: TPanel;
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
-    Edit1: TEdit;
+    edCols: TEdit;
     udCols: TUpDown;
-    Edit2: TEdit;
+    edRows: TEdit;
     udRows: TUpDown;
-    Edit3: TEdit;
+    edShadow: TEdit;
     udShadowWidth: TUpDown;
     Label4: TLabel;
-    Edit4: TEdit;
+    edScale: TEdit;
     udZoom: TUpDown;
     PrinterSetupDialog1: TPrinterSetupDialog;
     cbPreview: TComboBox;
@@ -56,10 +56,10 @@ type
     Control1: TMenuItem;
     Clear1: TMenuItem;
     Label7: TLabel;
-    Edit5: TEdit;
+    edVert: TEdit;
     udVertSpacing: TUpDown;
     Label8: TLabel;
-    Edit6: TEdit;
+    edHorz: TEdit;
     udHorzSpacing: TUpDown;
     procedure FormCreate(Sender: TObject);
     procedure udColsClick(Sender: TObject; Button: TUDBtnType);
@@ -313,6 +313,7 @@ end;
 procedure TfrmMain.Printer1Click(Sender: TObject);
 begin
   PrinterSetupDialog1.Execute;
+  // update preview
   cbPreviewChange(Sender);
 end;
 
@@ -406,12 +407,20 @@ procedure TfrmMain.BuildControlMenu;
 var m:TMenuItem;i:integer;
 begin
   mnuPreview.Clear;
-  for i := 0 to ComponentCount-1 do
-    if Components[i] is TControl then
+  for i := -1 to ComponentCount-1 do
+    if (i < 0) or (Components[i] is TControl) then
     begin
       m := TMenuItem.Create(self);
-      m.Tag := integer(Components[i]);
-      m.Caption := Components[i].Name;
+      if i < 0 then
+      begin
+        m.Tag := integer(self);
+        m.Caption := self.Name;
+      end
+      else
+      begin
+        m.Tag := integer(Components[i]);
+        m.Caption := Components[i].Name;
+      end;
       m.OnClick := Control1Click;
       mnuPreview.Add(m);
     end;
