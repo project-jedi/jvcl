@@ -45,7 +45,7 @@ uses
   {$IFDEF MSWINDOWS}
   JvAppRegistryStorage,
   {$ENDIF MSWINDOWS}
-  JvMRUList, JvPlacemnt;
+  JvMRUList;
 
 type
   TPictureEditDialog = class(TJvForm)

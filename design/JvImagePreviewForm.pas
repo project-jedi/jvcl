@@ -26,7 +26,7 @@ Known Issues:
 {$I jvcl.inc}
 
 {$IFDEF COMPILER6_UP}
- {$WARN UNIT_PLATFORM OFF}
+{$WARN UNIT_PLATFORM OFF}
 {$ENDIF COMPILER6_UP}
 
 unit JvImagePreviewForm;
@@ -42,8 +42,7 @@ uses
   {$IFDEF VisualCLX}
   QStdCtrls, QFileCtrls, QExtCtrls, QControls, QButtons,
   {$ENDIF VisualCLX}
-  JvPicClip, JvFormPlacement, JvAppStorage, JvAppRegistryStorage, JvComponent,
-  JvPlacemnt;
+  JvPicClip, JvFormPlacement, JvAppStorage, JvAppRegistryStorage, JvComponent;
 
 type
   TImageForm = class(TJvForm)
