@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): -
 
-Last Modified: 2004-02-28
+Last Modified: 2004-03-20
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -40,11 +40,10 @@ type
   // A grabber for FTP URLs
   TJvFtpDownloadMode = (hmBinary, hmAscii);
 
-  TJvFtpUrlGrabberDefaultProperties = class(TJvUrlGrabberDefaultProperties)
+  TJvFtpUrlGrabberDefaultProperties = class(TJvCustomUrlGrabberDefaultProperties)
   protected
     FPassive: Boolean;
     FMode: TJvFtpDownloadMode;
-
     function GetSupportedURLName: string; override;
   published
     property Agent;
@@ -54,55 +53,47 @@ type
     property Mode: TJvFtpDownloadMode read FMode write FMode;
   end;
 
-  TJvFtpUrlGrabber = class(TJvUrlGrabber)
+  TJvFtpUrlGrabber = class(TJvCustomUrlGrabber)
   protected
     FPassiveFTP: Boolean;
     FMode: TJvFtpDownloadMode;
     FSize: Int64;
-    function GetGrabberThreadClass: TJvUrlGrabberThreadClass; override;
+    function GetGrabberThreadClass: TJvCustomUrlGrabberThreadClass; override;
   public
-    constructor Create(AUrl: string; DefaultProperties: TJvUrlGrabberDefaultProperties); override;
+    constructor Create(AOwner: TComponent; AUrl: string; DefaultProperties: TJvCustomUrlGrabberDefaultProperties); override;
     class function CanGrab(const Url: string): Boolean; override;
-    class function GetDefaultPropertiesClass: TJvUrlGrabberDefaultPropertiesClass; override;
+    class function GetDefaultPropertiesClass: TJvCustomUrlGrabberDefaultPropertiesClass; override;
+    class function GetSupportedURLName: string; override;
     property Size: Int64 read FSize;
   published
     property Passive: Boolean read FPassiveFTP write FPassiveFTP;
     property Mode: TJvFtpDownloadMode read FMode write FMode;
-  end;
 
-  // A grabber for HTTP URLs
-  TJvHttpUrlGrabberDefaultProperties = class(TJvUrlGrabberDefaultProperties)
-  protected
-    function GetSupportedURLName: string; override;
-  published
-    property Agent;
     property UserName;
     property Password;
+    property FileName;
+    property OutputMode;
+    property Agent;
+    property OnDoneFile;
+    property OnDoneStream;
+    property OnError;
+    property OnProgress;
+    property OnResolvingName;
+    property OnNameResolved;
+    property OnConnectingToServer;
+    property OnConnectedToServer;
+    property OnSendingRequest;
+    property OnRequestSent;
+    property OnRequestComplete;
+    property OnReceivingResponse;
+    property OnResponseReceived;
+    property OnClosingConnection;
+    property OnConnectionClosed;
+    property OnRedirect;
+    property OnStateChange;
   end;
 
-  TJvHttpUrlGrabber = class(TJvUrlGrabber)
-  protected
-    function GetGrabberThreadClass: TJvUrlGrabberThreadClass; override;
-  public
-    constructor Create(AUrl: string; DefaultProperties: TJvUrlGrabberDefaultProperties); override;
-    class function CanGrab(const Url: string): Boolean; override;
-    class function GetDefaultPropertiesClass: TJvUrlGrabberDefaultPropertiesClass; override;
-  end;
-
-  // a grabbing thread for HTTP URLs
-  TJvHttpUrlGrabberThread = class(TJvUrlGrabberThread)
-  protected
-    FReferer: string;
-    FContinue: Boolean;
-    function GetGrabber: TJvHttpUrlGrabber;
-    procedure Execute; override;
-  public
-    constructor Create(Grabber: TJvUrlGrabber); override;
-    property Grabber: TJvHttpUrlGrabber read GetGrabber;
-  end;
-
-  // a grabbing thread for FTP URLs
-  TJvFtpUrlGrabberThread = class(TJvUrlGrabberThread)
+  TJvFtpUrlGrabberThread = class(TJvCustomUrlGrabberThread)
   protected
     function GetGrabber: TJvFtpUrlGrabber;
     procedure Closed;
@@ -111,21 +102,99 @@ type
     property Grabber: TJvFtpUrlGrabber read GetGrabber;
   end;
 
+  // A grabber for HTTP URLs
+  TJvHttpUrlGrabber = class(TJvCustomUrlGrabber)
+  protected
+    function GetGrabberThreadClass: TJvCustomUrlGrabberThreadClass; override;
+  public
+    constructor Create(AOwner: TComponent; AUrl: string; DefaultProperties: TJvCustomUrlGrabberDefaultProperties); override;
+    class function CanGrab(const Url: string): Boolean; override;
+    class function GetDefaultPropertiesClass: TJvCustomUrlGrabberDefaultPropertiesClass; override;
+    class function GetSupportedURLName: string; override;
+  published
+    property UserName;
+    property Password;
+    property FileName;
+    property OutputMode;
+    property Agent;
+    property OnDoneFile;
+    property OnDoneStream;
+    property OnError;
+    property OnProgress;
+    property OnResolvingName;
+    property OnNameResolved;
+    property OnConnectingToServer;
+    property OnConnectedToServer;
+    property OnSendingRequest;
+    property OnRequestSent;
+    property OnRequestComplete;
+    property OnReceivingResponse;
+    property OnResponseReceived;
+    property OnClosingConnection;
+    property OnConnectionClosed;
+    property OnRedirect;
+    property OnStateChange;
+  end;
+
+  TJvHttpUrlGrabberDefaultProperties = class(TJvCustomUrlGrabberDefaultProperties)
+  protected
+    function GetSupportedURLName: string; override;
+  published
+    property Agent;
+    property UserName;
+    property Password;
+  end;
+
+  TJvHttpUrlGrabberThread = class(TJvCustomUrlGrabberThread)
+  protected
+    FReferer: string;
+    FContinue: Boolean;
+    function GetGrabber: TJvHttpUrlGrabber;
+    procedure Execute; override;
+  public
+    constructor Create(Grabber: TJvCustomUrlGrabber); override;
+    property Grabber: TJvHttpUrlGrabber read GetGrabber;
+  end;
+
   // A grabber for local and UNC files
-  TJvLocalFileUrlGrabber = class(TJvURLGrabber)
+  TJvLocalFileUrlGrabber = class(TJvCustomUrlGrabber)
   private
     FPreserveAttributes: boolean;
   protected
-    function GetGrabberThreadClass: TJvUrlGrabberThreadClass; override;
+    function GetGrabberThreadClass: TJvCustomUrlGrabberThreadClass; override;
   public
-    constructor Create(AUrl: string; DefaultProperties: TJvUrlGrabberDefaultProperties); override;
+    constructor Create(AOwner: TComponent; AUrl: string; DefaultProperties: TJvCustomUrlGrabberDefaultProperties); override;
     class function CanGrab(const Url: string): Boolean; override;
-    class function GetDefaultPropertiesClass: TJvUrlGrabberDefaultPropertiesClass; override;
+    class function GetDefaultPropertiesClass: TJvCustomUrlGrabberDefaultPropertiesClass; override;
+    class function GetSupportedURLName: string; override;
   published
     property PreserveAttributes:boolean read FPreserveAttributes write FPreserveAttributes default True;
+
+    property UserName;
+    property Password;
+    property FileName;
+    property OutputMode;
+    property Agent;
+    property OnDoneFile;
+    property OnDoneStream;
+    property OnError;
+    property OnProgress;
+    property OnResolvingName;
+    property OnNameResolved;
+    property OnConnectingToServer;
+    property OnConnectedToServer;
+    property OnSendingRequest;
+    property OnRequestSent;
+    property OnRequestComplete;
+    property OnReceivingResponse;
+    property OnResponseReceived;
+    property OnClosingConnection;
+    property OnConnectionClosed;
+    property OnRedirect;
+    property OnStateChange;
   end;
 
-  TJvLocalFileUrlGrabberThread = class(TJvUrlGrabberThread)
+  TJvLocalFileUrlGrabberThread = class(TJvCustomUrlGrabberThread)
   protected
     function GetGrabber: TJvLocalFileUrlGrabber;
     procedure ParseUrl(const Url: string; var Filename: string);
@@ -134,7 +203,7 @@ type
     property Grabber: TJvLocalFileUrlGrabber read GetGrabber;
   end;
 
-  TJvLocalFileUrlGrabberProperties = class(TJvUrlGrabberDefaultProperties)
+  TJvLocalFileUrlGrabberProperties = class(TJvCustomUrlGrabberDefaultProperties)
   private
     FPreserveAttributes: boolean;
   protected
@@ -175,7 +244,7 @@ end;
 procedure DownloadCallBack(Handle: HInternet; Context: DWord;
   AStatus: DWord; Info: Pointer; StatLen: DWord); stdcall;
 begin
-  with TJvUrlGrabberThread(Context) do
+  with TJvCustomUrlGrabberThread(Context) do
   begin
     Status := AStatus;
     DoProgress;
@@ -184,10 +253,9 @@ end;
 
 //=== TJvHttpUrlGrabber ======================================================
 
-constructor TJvHttpUrlGrabber.Create(AUrl: string;
-  DefaultProperties: TJvUrlGrabberDefaultProperties);
+constructor TJvHttpUrlGrabber.Create(AOwner: TComponent; AUrl: string; DefaultProperties: TJvCustomUrlGrabberDefaultProperties);
 begin
-  inherited Create(AUrl, DefaultProperties);
+  inherited Create(AOwner, AUrl, DefaultProperties);
 end;
 
 class function TJvHttpUrlGrabber.CanGrab(const Url: string): Boolean;
@@ -195,22 +263,26 @@ begin
   Result := LowerCase(Copy(Url, 1, 7)) = 'http://';
 end;
 
-class function TJvHttpUrlGrabber.GetDefaultPropertiesClass: TJvUrlGrabberDefaultPropertiesClass;
+class function TJvHttpUrlGrabber.GetDefaultPropertiesClass: TJvCustomUrlGrabberDefaultPropertiesClass;
 begin
   Result := TJvHttpUrlGrabberDefaultProperties;
 end;
 
-function TJvHttpUrlGrabber.GetGrabberThreadClass: TJvUrlGrabberThreadClass;
+function TJvHttpUrlGrabber.GetGrabberThreadClass: TJvCustomUrlGrabberThreadClass;
 begin
   Result := TJvHttpUrlGrabberThread;
 end;
 
+class function TJvHttpUrlGrabber.GetSupportedURLName: string;
+begin
+  Result := 'HTTP';
+end;
+
 //=== TJvFtpUrlGrabber =======================================================
 
-constructor TJvFtpUrlGrabber.Create(AUrl: string;
-  DefaultProperties: TJvUrlGrabberDefaultProperties);
+constructor TJvFtpUrlGrabber.Create(AOwner: TComponent; AUrl: string; DefaultProperties: TJvCustomUrlGrabberDefaultProperties);
 begin
-  inherited Create(AUrl, DefaultProperties);
+  inherited Create(AOwner, AUrl, DefaultProperties);
   Passive := TJvFtpUrlGrabberDefaultProperties(DefaultProperties).Passive;
   Mode := TJvFtpUrlGrabberDefaultProperties(DefaultProperties).Mode;
 end;
@@ -220,14 +292,26 @@ begin
   Result := LowerCase(Copy(Url, 1, 6)) = 'ftp://';
 end;
 
-class function TJvFtpUrlGrabber.GetDefaultPropertiesClass: TJvUrlGrabberDefaultPropertiesClass;
+class function TJvFtpUrlGrabber.GetDefaultPropertiesClass: TJvCustomUrlGrabberDefaultPropertiesClass;
 begin
   Result := TJvFtpUrlGrabberDefaultProperties;
 end;
 
-function TJvFtpUrlGrabber.GetGrabberThreadClass: TJvUrlGrabberThreadClass;
+function TJvFtpUrlGrabber.GetGrabberThreadClass: TJvCustomUrlGrabberThreadClass;
 begin
   Result := TJvFtpUrlGrabberThread;
+end;
+
+class function TJvFtpUrlGrabber.GetSupportedURLName: string;
+begin
+  Result := 'FTP';
+end;
+
+{ TJvFtpUrlGrabberDefaultProperties }
+
+function TJvFtpUrlGrabberDefaultProperties.GetSupportedURLName: string;
+begin
+  Result := TJvFtpUrlGrabber.GetSupportedURLName;
 end;
 
 //=== TJvFtpUrlGrabberThread =================================================
@@ -363,7 +447,7 @@ end;
 
 //=== TJvHttpUrlGrabberThread ================================================
 
-constructor TJvHttpUrlGrabberThread.Create(Grabber: TJvUrlGrabber);
+constructor TJvHttpUrlGrabberThread.Create(Grabber: TJvCustomUrlGrabber);
 begin
   inherited Create(Grabber);
   FContinue := True;
@@ -512,6 +596,13 @@ begin
   Result := TJvHttpUrlGrabber(FGrabber);
 end;
 
+{ TJvHttpUrlGrabberDefaultProperties }
+
+function TJvHttpUrlGrabberDefaultProperties.GetSupportedURLName: string;
+begin
+  Result := TJvHttpUrlGrabber.GetSupportedURLName;
+end;
+
 { TJvLocalFileUrlGrabber }
 
 class function TJvLocalFileUrlGrabber.CanGrab(const Url: string): Boolean;
@@ -521,20 +612,25 @@ begin
     (Copy(Url, 2,2) = ':\') or FileExists(Url);
 end;
 
-constructor TJvLocalFileUrlGrabber.Create(AUrl: string; DefaultProperties: TJvUrlGrabberDefaultProperties);
+constructor TJvLocalFileUrlGrabber.Create(AOwner: TComponent; AUrl: string; DefaultProperties: TJvCustomUrlGrabberDefaultProperties);
 begin
-  inherited Create(AURL, DefaultProperties);
+  inherited Create(AOwner, AURL, DefaultProperties);
   PreserveAttributes := TJvLocalFileUrlGrabberProperties(DefaultProperties).PreserveAttributes;
 end;
 
-class function TJvLocalFileUrlGrabber.GetDefaultPropertiesClass: TJvUrlGrabberDefaultPropertiesClass;
+class function TJvLocalFileUrlGrabber.GetDefaultPropertiesClass: TJvCustomUrlGrabberDefaultPropertiesClass;
 begin
   Result := TJvLocalFileUrlGrabberProperties;
 end;
 
-function TJvLocalFileUrlGrabber.GetGrabberThreadClass: TJvUrlGrabberThreadClass;
+function TJvLocalFileUrlGrabber.GetGrabberThreadClass: TJvCustomUrlGrabberThreadClass;
 begin
   Result := TJvLocalFileUrlGrabberThread;
+end;
+
+class function TJvLocalFileUrlGrabber.GetSupportedURLName: string;
+begin
+  Result := 'LocalFile';
 end;
 
 { TJvLocalFileUrlGrabberThread }
@@ -609,6 +705,8 @@ begin
     Filename := Copy(Filename, 8, MaxInt)
   else
     FileName := ExpandUNCFilename(Filename);
+
+
 end;
 
 { TJvLocalFileUrlGrabberProperties }
@@ -621,21 +719,7 @@ end;
 
 function TJvLocalFileUrlGrabberProperties.GetSupportedURLName: string;
 begin
-  Result := 'LocalFile';
-end;
-
-{ TJvFtpUrlGrabberDefaultProperties }
-
-function TJvFtpUrlGrabberDefaultProperties.GetSupportedURLName: string;
-begin
-  Result := 'FTP';
-end;
-
-{ TJvHttpUrlGrabberDefaultProperties }
-
-function TJvHttpUrlGrabberDefaultProperties.GetSupportedURLName: string;
-begin
-  Result := 'HTTP';
+  Result := TJvLocalFileUrlGrabber.GetSupportedURLName;
 end;
 
 initialization
