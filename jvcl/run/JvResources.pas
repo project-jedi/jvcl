@@ -141,6 +141,8 @@ resourcestring
 //=== JvAppXMLStorage.pas ======================================================
 resourcestring
   RsENodeCannotBeEmpty = 'The node must be given a name';
+  RsEPathDoesntExists = 'Path ''%s'' does not exists';
+  RsENotABooleanValue = '''%s'' is not a valid boolean value'; 
 
 //=== JvAVICapture.pas =======================================================
 resourcestring
