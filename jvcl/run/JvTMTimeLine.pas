@@ -33,8 +33,13 @@ unit JvTMTimeLine;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Controls, Buttons, Graphics,
-  ExtCtrls, Forms, ImgList,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Controls, Buttons, Graphics, ExtCtrls, Forms, ImgList,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  Types, QControls, QButtons, QGraphics, QExtCtrls, QForms, QImgList, QWindows,
+  {$ENDIF VisualCLX}
   JvComponent, JvExControls;
 
 type
@@ -150,8 +155,8 @@ type
     procedure CursorChanged; override;
     procedure EnabledChanged; override;
     procedure Paint; override;
-    function DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; override;
-    function DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; override;
+    function DoMouseWheelDown(Shift: TShiftState; {$IFDEF VisualCLX}const{$ENDIF} MousePos: TPoint): Boolean; override;
+    function DoMouseWheelUp(Shift: TShiftState;{$IFDEF VisualCLX}const{$ENDIF} MousePos: TPoint): Boolean; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -297,7 +302,6 @@ type
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
-    property OnEndDock;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
@@ -311,8 +315,11 @@ type
     property OnReadObject;
     // triggered for each object when writing to a file
     property OnWriteObject;
-    property OnStartDock;
     property OnStartDrag;
+    {$IFDEF VCL}
+    property OnStartDock;
+    property OnEndDock;
+    {$ENDIF VCL}
   end;
 
 
@@ -385,9 +392,15 @@ end;
 constructor TJvCustomTMTimeline.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  {$IFDEF VCL}
   DoubleBuffered := True;
+  {$ENDIF VCL}
   ControlStyle := ControlStyle - [csSetCaption, csAcceptsControls];
   IncludeThemeStyle(Self, [csNeedsBorderPaint]);
+  {$IFDEF VisualCLX}
+  ControlStyle := ControlStyle - [csNoFocus];
+  InputKeys := InputKeys + [ikArrows] ;
+  {$ENDIF VisualCLX}
 
   FSelection := TJvTLSelFrame.Create;
   FSelection.Pen.Width := 2;
@@ -403,8 +416,14 @@ begin
 
   FMonthFont := TFont.Create;
   FMonthFont.Style := [fsItalic, fsBold];
+  {$IFDEF MSWINDOWS}
   FMonthFont.Name := 'Times New Roman';
   FMonthFont.Size := 18;
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  FMonthFont.Name := 'Helvetica';
+  FMonthFont.Height  := 24;
+  {$ENDIF LINUX}
 
   FObjectsFontStyle := [fsUnderline];
   FButtonWidth := 12;
@@ -419,9 +438,15 @@ begin
   FShowToday := True;
   FShowWeeks := True;
   FShowMonths := True;
-
+  {$IFDEF MSWINDOWS}
   Font.Size := 7;
   Font.Name := 'Times New Roman';
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  Font.Name := 'Helvetica';
+  Font.Height := 11;
+  {$ENDIF LINUX}
+
 
   FLeftBtn := TSpeedButton.Create(Self);
   with FLeftBtn do
@@ -601,7 +626,13 @@ begin
       ARect.Top + CanvasMaxTextHeight(ACanvas) + 2,
       ARect.Left + ((ARect.Right - ARect.Left) - Bmp.Width) div 2 + Bmp.Width,
       ARect.Top + Bmp.Height +CanvasMaxTextHeight(ACanvas) + 2);
+    {$IFDEF VCL}
     ACanvas.BrushCopy(R, Bmp, Rect(0, 0, Bmp.Width, Bmp.Height), clFuchsia);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    Bmp.transparent := true ;
+    ACanvas.Draw( R.Left, R.Top, bmp);
+    {$ENDIF VisualCLX}
   finally
     ACanvas.Brush.Color := Tmp;
     Bmp.Free;
@@ -781,10 +812,22 @@ begin
   Tmp := ACanvas.Brush.Color;
   try
     ACanvas.Brush.Color := AColor;
+    {$IFDEF VCL}
     ACanvas.FrameRect(ARect);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    FrameRect(ACanvas, ARect);
+    {$ENDIF VisualCLX}
     InflateRect(ARect, -Abs(ALineWidth) + 1, -Abs(ALineWidth) + 1);
+    {$IFDEF VCL}
     ACanvas.FrameRect(ARect);
     ACanvas.FloodFill(ARect.Left - 1, ARect.Top - 1, AColor, fsBorder);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    FrameRect(ACanvas, ARect);
+    InflateRect(ARect, -1, -1);
+    ACanvas.FillRect(ARect);
+    {$ENDIF VisualCLX}
   finally
     ACanvas.Brush.Color := Tmp;
   end;
@@ -832,14 +875,14 @@ begin
     // erase old selection
     R := GetRectForDate(FSelDate);
     InflateRect(R, Selection.Pen.Width + 1, Selection.Pen.Width + 1);
-    InvalidateRect(Handle, @R, True);
+    {$IFDEF VisualCLX}QWindows.{$ENDIF}InvalidateRect(Handle, @R, True);
     FSelDate := Value;
     if Enabled then
     begin
       // draw new selection
       R := GetRectForDate(FSelDate);
       InflateRect(R, Selection.Pen.Width + 1, Selection.Pen.Width + 1);
-      InvalidateRect(Handle, @R, True);
+      {$IFDEF VisualCLX}QWindows.{$ENDIF}InvalidateRect(Handle, @R, True);
     end;
   end;
 end;
@@ -1242,7 +1285,7 @@ begin
 end;
 
 function TJvCustomTMTimeline.DoMouseWheelDown(Shift: TShiftState;
-  MousePos: TPoint): Boolean;
+  {$IFDEF VisualCLX}const{$ENDIF} MousePos: TPoint): Boolean;
 begin
   Result := inherited DoMouseWheelDown(Shift, MousePos);
   if not Result then
@@ -1250,7 +1293,7 @@ begin
 end;
 
 function TJvCustomTMTimeline.DoMouseWheelUp(Shift: TShiftState;
-  MousePos: TPoint): Boolean;
+  {$IFDEF VisualCLX}const{$ENDIF} MousePos: TPoint): Boolean;
 begin
   Result := inherited DoMouseWheelUp(Shift, MousePos);
   if not Result then
