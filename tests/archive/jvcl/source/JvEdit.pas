@@ -71,7 +71,6 @@ type
     FClipBoardCommands: TJvClipboardCommands;
     FOldCommands: TJvClipboardCommands;
     FGroupIndex: Integer;
-    FOnKeyDown: TKeyEvent;
     FProtectPassword: Boolean;
     FStreamedSelLength: Integer;
     FStreamedSelStart: Integer;
@@ -98,8 +97,7 @@ type
     procedure SetReadOnly(const Value: Boolean);
     procedure SetGroupIndex(const Value: Integer);
     procedure UpdateEdit;
-    procedure LocalKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
+
     procedure SetClipBoardCommands(const Value: TJvClipboardCommands);
     function GetText: string;
     procedure SetText(const Value: string);
@@ -110,6 +108,7 @@ type
     procedure MaxPixelChanged(Sender: TObject);
     procedure SetSelLength(Value: Integer); override;
     procedure SetSelStart(Value: Integer); override;
+    procedure KeyDown(var Key:Word;Shift:TSHiftState);override;
   public
     procedure DefaultHandler(var Msg); override;
     function IsEmpty: Boolean;
@@ -141,7 +140,6 @@ type
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property OnRestored: TNotifyEvent read FOnRestored write FOnRestored;
-    property OnKeyDown: TKeyEvent read FOnKeyDown write FOnKeyDown;
   end;
 
   TJvEdit = class(TJvCustomEdit)
@@ -252,7 +250,6 @@ begin
   FGroupIndex := -1;
   FStreamedSelLength := 0;
   FStreamedSelStart := 0;
-  inherited OnKeyDown := LocalKeyDown;
 end;
 
 destructor TJvCustomEdit.Destroy;
@@ -261,14 +258,6 @@ begin
   FMaxPixel.Free;
   FCaret.Free;
   inherited Destroy;
-end;
-
-procedure TJvCustomEdit.LocalKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-begin
-  UpdateEdit;
-  if Assigned(FOnKeyDown) then
-    FOnKeyDown(Sender, Key, Shift);
 end;
 
 procedure TJvCustomEdit.Loaded;
@@ -673,6 +662,12 @@ begin
     FStreamedSelStart := Value
   else
     inherited;
+end;
+
+procedure TJvCustomEdit.KeyDown(var Key: Word; Shift: TSHiftState);
+begin
+  UpdateEdit;
+  inherited;
 end;
 
 end.

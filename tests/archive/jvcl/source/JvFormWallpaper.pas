@@ -48,7 +48,7 @@ type
     destructor Destroy; override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property Align;
+    property Align default alClient;
     property Image: TPicture read FImage write SetImage;
   end;
 
