@@ -31,11 +31,7 @@ unit JvImagePreviewForm;
 interface
 
 uses
-  {$IFDEF WIN32}
   Windows,
-  {$ELSE}
-  WinTypes, WinProcs,
-  {$ENDIF}
   SysUtils, Classes, Graphics, Forms, Controls, StdCtrls, ExtCtrls, FileCtrl,
   JvxCtrls, JvPicClip, JvFormPlacement, JvComponent;
 
@@ -90,9 +86,7 @@ uses
 {$R *.DFM}
 
 {$I+}
-{$IFDEF WIN32}
 {$D-}
-{$ENDIF}
 
 const
   SAllFiles = 'All files';
@@ -206,13 +200,11 @@ begin
   FBmpImage.Assign(FilePics.GraphicCell[5]);
   if not NewStyleControls then
     Font.Style := [fsBold];
-  {$IFDEF WIN32}
   with FormStorage do
   begin
     UseRegistry := True;
     IniFileName := SDelphiKey;
   end;
-  {$ENDIF}
   with TDirList(DirectoryList) do
   begin
     ClosedBmp.Assign(FilePics.GraphicCell[0]);
@@ -291,11 +283,7 @@ begin
   with PreviewForm do
   try
     Caption := SPreview;
-    {$IFDEF WIN32}
     BorderStyle := bsSizeToolWin;
-    {$ELSE}
-    BorderIcons := [biSystemMenu];
-    {$ENDIF}
     Icon := Self.Icon;
     KeyPreview := True;
     Position := poScreenCenter;

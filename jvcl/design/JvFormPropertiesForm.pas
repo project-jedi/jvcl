@@ -42,10 +42,6 @@ uses
 Add support for "Box" style procedures again but remove dependency on 
 JvxCtrls and JvBoxProcs units }
 type
-  {$IFNDEF COMPILER4_UP}
-  IDesigner = TDesigner;
-  {$ENDIF}
-
   TJvFormPropsDlg = class(TForm)
     Bevel1: TBevel;
     Label30: TLabel;
@@ -117,9 +113,7 @@ uses
 
 {$R *.DFM}
 
-{$IFDEF WIN32}
 {$D-}
-{$ENDIF}
 
 //=== TJvFormStorageEditor ===================================================
 
@@ -136,9 +130,7 @@ begin
       Storage.StoredProps, Opt) then
     begin
       Storage.Options := Opt;
-      {$IFDEF WIN32}
       Storage.SetNotification;
-      {$ENDIF}
     end;
   end;
 end;
@@ -170,7 +162,7 @@ begin
   if TStrings(GetOrdValue).Count > 0 then
     Result := inherited GetValue
   else
-    Result := ResStr(srNone);
+    Result := srNone;
 end;
 
 procedure TJvStoredPropsProperty.Edit;
@@ -184,9 +176,7 @@ begin
     Storage.StoredProps, Opt) then
   begin
     Storage.Options := Opt;
-    {$IFDEF WIN32}
     Storage.SetNotification;
-    {$ENDIF}
   end;
 end;
 

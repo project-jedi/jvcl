@@ -86,11 +86,7 @@ type
     FIcons: TJvIconList;
     FTopIndex: Integer;
     FSelected: Integer;
-    {$IFDEF COMPILER3_UP}
     FileDialog: TOpenPictureDialog;
-    {$ELSE}
-    FileDialog: TOpenDialog;
-    {$ENDIF}
     procedure SetSelectedIndex(Index: Integer; Force: Boolean);
     procedure ListChanged(Sender: TObject);
     function GetSelectedIcon: TIcon;
@@ -120,9 +116,7 @@ uses
   JvJVCLUtils, JvJCLUtils, JvConsts, JvAniFile;
 
 {$B-}
-{$IFDEF WIN32}
 {$D-}
-{$ENDIF}
 
 {$R *.DFM}
 
@@ -186,7 +180,7 @@ var
 begin
   List := TJvIconList(Pointer(GetOrdValue));
   if (List = nil) or (List.Count = 0) then
-    Result := ResStr(srNone)
+    Result := srNone
   else
     Result := '(' + List.ClassName + ')';
 end;
@@ -291,9 +285,7 @@ begin
           Assign(FIcons[FTopIndex + I])
         else
           Assign(nil);
-        {$IFDEF COMPILER3_UP}
         TImage(Image).Transparent := True;
-        {$ENDIF}
       end;
     if Slot <> nil then
       TPanel(Slot).ParentColor := True;
@@ -312,13 +304,10 @@ begin
 end;
 
 procedure TIconListDialog.FormCreate(Sender: TObject);
-{$IFDEF COMPILER3_UP}
 var
   I: Integer;
   Image: TComponent;
-{$ENDIF}
 begin
-  {$IFDEF COMPILER3_UP}
   FileDialog := TOpenPictureDialog.Create(Self);
   for I := 0 to 4 do
   begin
@@ -326,9 +315,6 @@ begin
     if Image <> nil then
       TImage(Image).Transparent := True;
   end;
-  {$ELSE}
-  FileDialog := TOpenDialog.Create(Self);
-  {$ENDIF}
   with FileDialog do
   begin
     Title := srLoadIcon;
@@ -361,19 +347,9 @@ procedure TIconListDialog.LoadClick(Sender: TObject);
 var
   Ico: TIcon;
   I: Integer;
-  {$IFNDEF COMPILER3_UP}
-  FileName: string;
-  {$ENDIF}
 begin
-  {$IFNDEF COMPILER3_UP}
-  FileName := '';
-  if SelectImage(FileName, GraphicExtension(TIcon), GraphicFilter(TIcon)) then
-  begin
-    FileDialog.Filename := FileName;
-  {$ELSE}
   if FileDialog.Execute then
   begin
-  {$ENDIF}
     Ico := TIcon.Create;
     try
       Ico.LoadFromFile(FileDialog.Filename);

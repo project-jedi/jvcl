@@ -32,11 +32,10 @@ interface
 
 uses
   SysUtils, Classes, Dialogs,
-  {$IFDEF COMPILER5}
-  DsgnIntf,
-  {$ENDIF}
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
+  {$ELSE}
+  DsgnIntf,
   {$ENDIF}
   JvDataEmbedded;
 

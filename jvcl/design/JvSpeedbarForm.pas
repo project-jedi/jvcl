@@ -146,11 +146,7 @@ type
     procedure DesignerClosed(const ADesigner: IDesigner; AGoingDormant: Boolean); override;
     {$ELSE}
     procedure FormModified; override;
-    {$IFDEF COMPILER3_UP}
     procedure FormClosed(Form: TCustomForm); override;
-    {$ELSE}
-    procedure FormClosed(Form: TForm); override;
-    {$ENDIF}
     {$ENDIF}
     function GetEditState: TEditState; override;
     {$IFDEF COMPILER6_UP}
@@ -176,20 +172,16 @@ uses
 
 {$R *.DFM}
 
-{$IFDEF WIN32}
 {$D-}
-{$ENDIF}
 
 {$IFDEF COMPILER6_UP}
 type
   TDesigner = DesignIntf.IDesigner;
   TFormDesigner = DesignIntf.IDesigner;
 {$ELSE}
-{$IFDEF COMPILER4_UP}
 type
   TDesigner = IDesigner;
   TFormDesigner = IFormDesigner;
-{$ENDIF}
 {$ENDIF}
 
 { Utility routines }
@@ -351,11 +343,7 @@ end;
 {$IFDEF COMPILER6_UP}
 procedure TJvSpeedbarEditor.DesignerClosed(const ADesigner: IDesigner; AGoingDormant: Boolean);
 {$ELSE}
-{$IFDEF COMPILER3_UP}
 procedure TJvSpeedbarEditor.FormClosed(Form: TCustomForm);
-{$ELSE}
-procedure TJvSpeedbarEditor.FormClosed(Form: TForm);
-{$ENDIF}
 {$ENDIF}
 begin
   {$IFDEF COMPILER6_UP}
@@ -862,8 +850,7 @@ begin
     if (Row < FBar.SectionCount) and (Row >= 0) then
     begin
       DrawCellText(Sender as TDrawGrid, Col, Row,
-        FBar.Sections[Row].Caption, Rect, taLeftJustify, vaCenter
-        {$IFDEF COMPILER4_UP}, TDrawGrid(Sender).IsRightToLeft {$ENDIF});
+        FBar.Sections[Row].Caption, Rect, taLeftJustify, vaCenter, TDrawGrid(Sender).IsRightToLeft);
     end;
   end;
 end;
@@ -1128,8 +1115,7 @@ var
 begin
   I := CurrentSection;
   if (I >= 0) and (Row < FBar.ItemsCount(I)) then
-    DrawCellButton(Sender as TDrawGrid, Rect, ItemByRow(Row), FImage
-      {$IFDEF COMPILER4_UP}, TDrawGrid(Sender).IsRightToLeft {$ENDIF});
+    DrawCellButton(Sender as TDrawGrid, Rect, ItemByRow(Row), FImage, TDrawGrid(Sender).IsRightToLeft);
 end;
 
 procedure TJvSpeedbarEditor.SectionListMouseDown(Sender: TObject;

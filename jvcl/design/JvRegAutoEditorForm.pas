@@ -301,11 +301,7 @@ var
     I: Integer;
     MyNode: TTreeNode;
   begin
-    {$IFDEF COMPILER3_UP}
     ATypeInfo := APropInfo^.PropType^;
-    {$ELSE}
-    ATypeInfo := APropInfo^.PropType;
-    {$ENDIF}
     TypeData := GetTypeData(ATypeInfo);
     MyNode := nil;
     with ATypeInfo^ do
@@ -609,7 +605,6 @@ end;
 procedure TJvRegEditor.FormCreate(Sender: TObject);
 begin
   //  if Tree.Images = nil then List.Style := lbStandard;
-  {$IFDEF COMPILER3_UP}
   with TSplitter.Create(Self) do
   begin
     Parent := Self;
@@ -618,7 +613,6 @@ begin
     Beveled := False;
     Visible := True;
   end;
-  {$ENDIF COMPILER3_UP}
   with TJvRegAuto.Create(Self) do
   begin
     {$IFDEF DELPHI}

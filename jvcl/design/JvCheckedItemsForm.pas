@@ -103,9 +103,7 @@ implementation
 
 {$R *.DFM}
 
-{$IFDEF WIN32}
 {$D-}
-{$ENDIF}
 
 uses
   Consts,
@@ -186,7 +184,7 @@ begin
     Top := 60;
     Width := 75;
     Height := 25;
-    Caption := ResStr(SOKButton);
+    Caption := SOKButton;
     Default := True;
     ModalResult := mrOk;
     TabOrder := 1;
@@ -201,7 +199,7 @@ begin
     Width := 75;
     Height := 25;
     Cancel := True;
-    Caption := ResStr(SCancelButton);
+    Caption := SCancelButton;
     ModalResult := mrCancel;
     TabOrder := 2;
   end;
@@ -236,13 +234,11 @@ end;
 
 procedure TJvCheckItemsEditor.FormCreate(Sender: TObject);
 begin
-  {$IFDEF WIN32}
   with FormPlacement do
   begin
     UseRegistry := True;
     IniFileName := SDelphiKey;
   end;
-  {$ENDIF}
 end;
 
 procedure TJvCheckItemsEditor.CheckButtons;
@@ -360,11 +356,6 @@ var
 begin
   with TJvStrEditDlg.Create(Application) do
   try
-    {$IFDEF WIN32}
-    {$IFNDEF COMPILER3_UP}
-    CodeWndBtn.Visible := False;
-    {$ENDIF}
-    {$ENDIF}
     if ShowModal = mrOk then
     begin
       for I := 0 to Memo.Lines.Count - 1 do

@@ -40,11 +40,6 @@ uses
   JvxCtrls, JvFormPlacement, JvToolEdit, JvGradientCaption, JvListBox, JvCtrls,
   JvComponent;
 
-{$IFNDEF COMPILER4_UP}
-type
-  IDesigner = TDesigner;
-{$ENDIF}
-
 type
   TGradCaptionsEditor = class(TForm)
     ApplyButton: TButton;
@@ -107,13 +102,6 @@ type
     function GetVerbCount: Integer; override;
   end;
 
-  {$IFNDEF COMPILER3_UP}
-  TGradientCaptionsProperty = class(TClassProperty)
-    function GetAttributes: TPropertyAttributes; override;
-    procedure Edit; override;
-  end;
-  {$ENDIF}
-
 function EditGradientCaption(Component: TJvGradientCaption;
   ADesigner: IDesigner): Boolean;
 
@@ -160,23 +148,6 @@ function TGradientCaptionEditor.GetVerbCount: Integer;
 begin
   Result := 1;
 end;
-
-//=== TGradientCaptionsProperty ==============================================
-
-{$IFNDEF COMPILER3_UP}
-
-function TGradientCaptionsProperty.GetAttributes: TPropertyAttributes;
-begin
-  Result := [paDialog, paReadOnly];
-end;
-
-procedure TGradientCaptionsProperty.Edit;
-begin
-  if EditGradientCaption(TJvGradientCaption(GetComponent(0)), Designer) then
-    Modified;
-end;
-
-{$ENDIF COMPILER3_UP}
 
 //=== TGradCaptionsEditor ====================================================
 

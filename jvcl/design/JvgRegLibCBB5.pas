@@ -60,9 +60,12 @@ uses Classes,
   JvgComponentListEditor,
   geGHC,
   JvgLogics, JvgLogicsEditor,
-  JvgInspectorGrid
+  JvgInspectorGrid,
   {$ENDIF}
-  {$IFDEF COMPILER6_UP}, DesignIntf, DesignWindows, DesignEditors{$ELSE}{$IFDEF COMPILER5_UP}, dsgnintf{$ENDIF}{$ENDIF};
+  {$IFDEF COMPILER6_UP}
+  DesignIntf, DesignWindows, DesignEditors
+  {$ELSE}
+  DsgnIntf{$ENDIF};
 
 procedure Register;
 begin
