@@ -3,9 +3,9 @@ unit MainFrm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, ImgList, JvExControls, JvComponent, JvOutlookBar,
-  JvNavigationPane, StdCtrls;
+  QWindows, QMessages, SysUtils, Classes, Types, QGraphics, QControls, QForms,
+  QDialogs, QImgList, JvQExControls, JvQComponent, JvQOutlookBar,
+  JvQNavigationPane, QStdCtrls;
 
 type
   TForm1 = class(TForm)
@@ -33,9 +33,9 @@ var
 
 implementation
 uses
-  JvJVCLUtils;
+  JvQJVCLUtils;
 
-{$R *.dfm}
+{$R *.xfm}
 
 procedure TForm1.DoCustomDraw(Sender: TObject; ACanvas: TCanvas; ARect: TRect; AStage: TJvOutlookBarCustomDrawStage; AIndex: integer; ADown,  AInside: boolean; var DefaultDraw:boolean);
 begin
@@ -54,7 +54,7 @@ begin
      if ADown then
        OffsetRect(ARect,1,1);
      ACanvas.Font.Color := clWhite;
-     DrawText(ACanvas.Handle, PChar(JvOutlookBar1.Pages[AIndex].Caption),
+     DrawText(ACanvas, JvOutlookBar1.Pages[AIndex].Caption,
        Length(JvOutlookBar1.Pages[AIndex].Caption), ARect, DT_SINGLELINE or DT_VCENTER or DT_CENTER);
   end;
   odsButtonFrame:
@@ -63,11 +63,11 @@ begin
       ACanvas.Brush.Color := clNavy
     else
       ACanvas.Brush.Color := clBlack;
-    ACanvas.FrameRect(ARect);
+    QWindows.FrameRect(ACanvas, ARect);
     InflateRect(ARect,-1,-1);
     if not ADown then
       ACanvas.Brush.Color := clWhite;
-    ACanvas.FrameRect(ARect);
+    QWindows.FrameRect(ACanvas, ARect);
   end;
   odsButton:
     DefaultDraw := True;
