@@ -1118,7 +1118,7 @@ begin
   // the actual data-sorting must be implemented by the user in
   // event OnTitleBtnClick.
   //--------------------------------------------------------------------------
-  if not IndexFound then
+  if AutoSort and not IndexFound then
   begin
     if SortedField = AField.FieldName then
     begin
