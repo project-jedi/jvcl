@@ -1,5 +1,5 @@
 ##Package: MM
-##Status: Needs review; Fill GROUP tag.
+##Status: Completed
 ----------------------------------------------------------------------------------------------------
 @@JvID3v1.pas
 Summary
@@ -26,8 +26,8 @@ Summary
   Reads an ID3v1 tag from a file.
 Description
   Call ReadID3v1Tag to retrieve an ID3v1 tag from a file specified by parameter AFileName. ReadID3v1Tag
-  \returns when the tag data has been succesful read from the file, and returns False if the file has <I>no</I>
-  tag or an error occured.
+  \returns true when the tag data has been succesful read from the file, and returns false 
+  if the file has <I>no</I> tag or an error occured.
 Parameters
   AFileName - Specifies the name of the file.
   ATag      - Contains the tag data after a succesful call.
@@ -72,7 +72,7 @@ Description
 @@TJvId3v1
 <TITLEIMG TJvId3v1>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.Multimedia.Audio
   FLAG=Component
 Summary
   Gives access to a file's ID3v1 tag.
@@ -97,7 +97,7 @@ Description
 
   When Active is set to True, the component reads the tag from the file specified by FileName.
 See Also
-  Close, FileName, Open, Refresh
+  Close, FileName, Open, <LINK ReadID3v1Tag>, Refresh
 ----------------------------------------------------------------------------------------------------
 @@TJvId3v1.Album
 Summary
@@ -171,7 +171,7 @@ Description
 Return value
   Returns True if the commit was succesful, otherwise returns False.
 See Also
-  Active, Erase, HasTag
+  Active, Erase, HasTag, <LINK WriteID3v1Tag>
 ----------------------------------------------------------------------------------------------------
 @@TJvId3v1.Erase
 Summary
@@ -180,7 +180,7 @@ Description
   Call Erase to remove the ID3v1 tag from the file specified by FileName. You don't have to set
   Active to True before you call Erase.
 See Also
-  Active, Commit, HasTag
+  Active, Commit, HasTag, <LINK RemoveID3v1Tag>
 ----------------------------------------------------------------------------------------------------
 @@TJvId3v1.FileName
 Summary
@@ -222,7 +222,7 @@ Summary
 Description
   \Read HasTag to determine whether the MP3 file specified by FileName has an ID3v1 tag.
 See Also
-  Active, Commit, Erase, Open
+  Active, Commit, Erase, HasID3v1Tag, Open
 ----------------------------------------------------------------------------------------------------
 @@TJvId3v1.Open
 Summary
@@ -271,12 +271,12 @@ See Also
 Summary
   Writes an ID3v1 tag to a file.
 Description
-  Write here a description
+  Call WriteID3v1Tag to write an ID3v1 tag to a file specified by parameter AFileName. WriteID3v1Tag
+  \returns true when the tag data has been succesful written to the file, and returns false 
+  if an error occured.
 Parameters
   AFileName - Specifies the name of the file.
   ATag      - Specifies the new tag data for the file.
-Returns
-  Describe here what the function returns
 See Also
   <LINK HasID3v1Tag>, <LINK ReadID3v1Tag>, <LINK RemoveID3v1Tag>, TJvId3v1.Commit
 ----------------------------------------------------------------------------------------------------

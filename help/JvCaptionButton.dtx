@@ -1,5 +1,5 @@
 ##Package: Ctrls
-##Status: Needs review
+##Status: Completed
 ----------------------------------------------------------------------------------------------------
 @@JvCaptionButton.pas
 Summary
@@ -139,7 +139,7 @@ Summary
 Description
   Use Enabled to enable or disable a caption button. If Enabled is true, the Click method is called
   when the user clicks the button with the mouse. If Enabled is false, the caption button appears dimmed
-  and the user cannot click it.
+  and the user cannot \click it.
 See Also
   OnClick, Visible
 ----------------------------------------------------------------------------------------------------
@@ -157,10 +157,10 @@ See Also
 Summary
   Contains the text string that can appear when the user moves the mouse over the caption button.
 Description
-  Use the Hint property to provide a string of help text either as a Help Hint, or as help text on a
+  Use the Hint property to provide a string of help text either as a Help \Hint, or as help text on a
   particular location such as a status bar.
 Note
-  If the application's \ShowHint property is false, the Help Hint does not appear.
+  If the application's \ShowHint property is false, the Help \Hint does not appear.
 See Also
   ParentShowHint, ShowHint
 ----------------------------------------------------------------------------------------------------
@@ -264,20 +264,13 @@ Summary
   Indicates whether the mouse is over the caption button.
 Description
   Read MouseInControl to determine whether the mouse is over the caption button.
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptionButton.OnClick
 Summary
   Occurs when the user clicks a caption button.
 Description
   Write an OnClick event handler to take specific action when the user clicks the caption button.
-  
-  The Button parameter specifies how the value of Position is about to change. When Button is btNext,
-  the Up or Right arrow was clicked, and the value of Position is about to increase by Increment.
-  When Button is btPrev, the Down or Left arrow was clicked, and the value of Position is about to
-  decrease by Increment.
+ 
 See Also
   Click, OnMouseDown, OnMouseUp
 ----------------------------------------------------------------------------------------------------
@@ -380,12 +373,12 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptionButton.ShowHint
 Summary
-  Determines whether the control displays a Help Hint when the mouse pointer rests momentarily on the control.
+  Determines whether the control displays a Help \Hint when the mouse pointer rests momentarily on the control.
 Description
-  The Help Hint is the value of the Hint property, which is displayed in a box just beneath the control.
-  Use ShowHint to determine whether a Help Hint appears for the control.
+  The Help \Hint is the value of the Hint property, which is displayed in a box just beneath the control.
+  Use ShowHint to determine whether a Help \Hint appears for the control.
 
-  To enable Help Hint for a particular control, the application ShowHint property must be true and either
+  To enable Help \Hint for a particular control, the application ShowHint property must be true and either
 
   * the control’s own ShowHint property must be true, or
   * the control’s ParentShowHint property must be true and its parent's ShowHint property must be true.

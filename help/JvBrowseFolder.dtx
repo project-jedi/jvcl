@@ -1,9 +1,9 @@
 ##Package: StdCtrls
-##Status: Needs review
+##Status: Completed
 ----------------------------------------------------------------------------------------------------
 @@JvBrowseFolder.pas
 Summary
-  Contains the TJvBrowseFolder component.
+  Contains the TJvBrowseForFolderDialog component.
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Sébastien Buysse
@@ -11,41 +11,39 @@ Author
 @@BrowseComputer
 <TITLE BrowseComputer function>
 JVCLInfo
-  GROUP=JVCL.Dialogs
+  GROUP=JVCL.Dialogs.Common
   FLAG=Routine,NotInParentList
 Summary
-  Write here a summary (1 line)
+  Brings up a dialog to allow the user to enter a computer name.
 Description
-  Write here a description
+  Call BrowseComputer to let the user enter a computer name.
 Parameters
-  AComputerName - Description for this parameter
-  DlgText       - Description for this parameter
-  AHelpContext  - Description for this parameter
+  AComputerName - Returns the selected computer.
+  DlgText       - Specifies a caption for the dialog.
+  AHelpContext  - Specifies the help context ID number.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvBrowseForFolderDialog
 ----------------------------------------------------------------------------------------------------
 @@BrowseDirectory
 <TITLE BrowseDirectory function>
 JVCLInfo
-  GROUP=JVCL.Dialogs
+  GROUP=JVCL.Dialogs.Common
   FLAG=Routine,NotInParentList
 Summary
-  Write here a summary (1 line)
+  Brings up a dialog to allow the user to enter a directory name.
 Description
-  Write here a description
+  Call BrowseDirectory to let the user enter a directory name.
 Parameters
-  AFolderName  - Description for this parameter
-  DlgText      - Description for this parameter
-  AHelpContext - Description for this parameter
+  AFolderName  - Returns the selected directory.
+  DlgText      - Specifies a caption for the dialog.
+  AHelpContext - Specifies the help context ID number.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvBrowseForFolderDialog
 ----------------------------------------------------------------------------------------------------
 @@BrowseForComputer
 <TITLE BrowseForComputer function>
 JVCLInfo
-  GROUP=JVCL.Dialogs
+  GROUP=JVCL.Dialogs.Common
   FLAG=Routine,NotInParentList
 Summary
   Brings up a dialog to allow the user to enter a computer name.
@@ -62,7 +60,7 @@ See Also
 @@BrowseForFolder
 <TITLE BrowseForFolder function>
 JVCLInfo
-  GROUP=JVCL.Dialogs
+  GROUP=JVCL.Dialogs.Common
   FLAG=Routine,NotInParentList
 Summary
   Brings up a dialog to allow the user to enter a directory name.
@@ -283,8 +281,8 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvBrowseForFolderDialog
 <TITLEIMG TJvBrowseForFolderDialog>
-JVCLInfo 
-  GROUP=JVCL.Dialogs 
+JVCLInfo
+  GROUP=JVCL.Dialogs.Common
   FLAG=Component
 Summary
   Displays a dialog box enabling the user to select a Shell folder.
@@ -300,7 +298,7 @@ It supports:
       subfolders that are beneath it in the namespace hierarchy will appear in the dialog box. Use property
       Directory to make an item selected by default in the dialog’s box
     * Setting your own instructions text: Use the properties Title and StatusText for this task. You
-      can also change the text while the dialog is displayed by calling 
+      can also change the text while the dialog is displayed by calling
       <LINK TJvBrowseForFolderDialog.SetStatusText, SetStatusText>.
     * Changing the OK button text: You can change text OK button text while the dialog is displayed
       by calling <LINK TJvBrowseForFolderDialog.SetOKText, SetOKText>.

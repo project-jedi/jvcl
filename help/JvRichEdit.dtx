@@ -1,5 +1,5 @@
 ##Package: StdCtrls
-##Status: Needs some updating.
+##Status: Completed
 ----------------------------------------------------------------------------------------------------
 @@JvRichEdit.pas
 Summary
@@ -11,28 +11,43 @@ Author
 @@BitmapToRTF
 <TITLE BitmapToRTF procedure>
 Summary
-  Write here a summary (1 line)
+  Converts a bitmap to rich text format.
 Description
-  Write here a description
+  Use the BitmapToRTF or BitmapToRTF2 procedures to insert bitmaps in a rich edit control.
+  BitmapToRTF2 returns true if the bitmap is written to stream as RTF, or false if an error
+  occured.
+
+  For example, to replace the selected text with a bitmap, do the following:
+  <AUTOLINK OFF>
+  <CODE>
+      Stream := TMemoryStream.Create;
+      try
+        BitmapToRTF(SomeBitmap, Stream);
+        Stream.Position := 0;
+
+        JvRichEdit1.StreamFormat := sfRichText;
+        JvRichEdit1.StreamMode := [smSelection, smPlainRtf];
+        JvRichEdit1.Lines.LoadFromStream(Stream);
+      finally
+        Stream.Free;
+      end;
+  </CODE>
+  </AUTOLINK ON>
+
+  * if you stream out the RTF content of the rich edit control, the bitmaps
+      are <i>not</i> included. Use <LINK TJvCustomRichEdit.InsertBitmap,InsertBitmap> if
+      you want the bitmaps to be included in the streamed out RTF data.
+  * <LINK TJvRichEdit.AllowObjects> must be set to true.
+  * BitmapToRTF is the fastest, <LINK TJvCustomRichEdit.InsertBitmap,InsertBitmap> the slowest.
 Parameters
-  ABitmap - Description for this parameter
-  AStream - Description for this parameter
+  ABitmap - The bitmap to convert.
+  AStream - Stream where to save the RTF data to.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <LINK TJvRichEdit>, <LINK TJvCustomRichEdit.InsertBitmap,InsertBitmap>
 ----------------------------------------------------------------------------------------------------
 @@BitmapToRTF2
 <TITLE BitmapToRTF2 function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  ABitmap - Description for this parameter
-  AStream - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<COMBINE BitmapToRTF>
 ----------------------------------------------------------------------------------------------------
 @@RichEditVersion
 <TITLE RichEditVersion variable>
@@ -115,15 +130,18 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.AddFormatText
 Summary
-  Write here a summary (1 line)
+  Appends formatted text.
 Description
-  Write here a description
+  Call AddFormatText to append formatted text to the content of the rich edit control.
+Note
+  This procedure does not reset the attributes after the call, i.e if you change the text color
+  it will remain that color until you change it again.
 Parameters
-  S     - Description for this parameter
-  AFont - Description for this parameter
+  S     - Specifies the string to insert.
+  AFont - Specifies the font to use. If AFont = nil, then the current attributes at the insertion
+           point are used.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <LINK InsertBitmap>, <LINK InsertFormatText>
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.AllowInPlace
 Summary
@@ -440,28 +458,34 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.InsertBitmap
 Summary
-  Write here a summary (1 line)
+  Inserts a bitmap at the current cursor position.
 Description
-  Write here a description
+  Call InsertBitmap to insert a bitmap at the current cursor position.
+Note
+  InsertBitmap is slower than <LINK BitmapToRTF> and <LINK BitmapToRTF2>, but only with InsertBitmap
+  you can stream out RTF content that includes the inserted bitmaps.
 Parameters
-  ABitmap  - Description for this parameter
-  Sizeable - Description for this parameter
+  ABitmap  - Specifies the bitmap to insert.
+  Sizeable - Specifies whether the bitmap can be resized by the user.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <LINK BitmapToRTF>, <LINK BitmapToRTF2>, <LINK InsertFormatText>
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.InsertFormatText
 Summary
-  Write here a summary (1 line)
+  Inserts formatted text at a specific position.
 Description
-  Write here a description
+  Call InsertFormatText to insert formatted text at the cursor position given by parameter Index.
+Note
+  This procedure does not reset the attributes after the call, i.e if you change the text color
+  it will remain that color until you change it again.
 Parameters
-  Index - Description for this parameter
-  S     - Description for this parameter
-  AFont - Description for this parameter
+  Index - The cursor position where the text will be inserted. If Index < 0, the text is inserted
+           at the current SelStart position.
+  S     - Specifies the string to insert
+  AFont - Specifies the font to use. If AFont = nil, then the current attributes at the insertion
+           point are used.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <LINK AddFormatText>, <link InsertBitmap>
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.InsertObjectDialog
 Summary
@@ -830,12 +854,12 @@ See Also
 @@TJvCustomRichEdit.RegisterConversionFormat
 Summary
   Registers an association between a file extension and a TConversion object that can convert between
-  the native file format and rich text format (RTF).
+  the native file format and rich text format (RTF) or plain text.
 Description
   \Write here a description
 Parameters
   AExtension       - Specifies a specific file extension.
-  APlainText       - Description for this parameter
+  APlainText       - Indicates whether conversion is between RTF or plain text.
   AConversionClass - Specifies the TConversion class that can convert files with extensions as specified
                       by the AExtension parameter.
 See Also
@@ -1281,7 +1305,7 @@ Summary
   Specifies the starting number for numbered paragraphs.
 Description
   Use NumberingStart to specify the starting number used for numbered paragraphs. Use NumberingStart
-  in conjunction with property Numbering. 
+  in conjunction with property Numbering.
 See Also
   Numbering
 ----------------------------------------------------------------------------------------------------
@@ -1356,7 +1380,7 @@ Summary
 @@TJvRichEdit
 <TITLEIMG TJvRichEdit>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.CommCtrl,JVCL.EditsMemosAndCombos.Other
   FLAG=Component
 Summary
   Wrapper for the v2.0 or v3.0 Windows rich text edit control.
@@ -1692,21 +1716,6 @@ Description
 @@TParaAlignment.paJustify
   Paragraphs are justified. Rich edit controls earlier than Rich Edit 3.0 display the text aligned
   with the left margin.
-----------------------------------------------------------------------------------------------------
-@@TParaTableStyle
-<TITLE TParaTableStyle type>
-Summary
-  \Write here a summary (1 line)
-Description
-  \Write here a description
-@@TParaTableStyle.tsNone
-  Description for tsNone
-@@TParaTableStyle.tsTableRow
-  Description for tsTableRow
-@@TParaTableStyle.tsTableCellEnd
-  Description for tsTableCellEnd
-@@TParaTableStyle.tsTableCell
-  Description for tsTableCell
 ----------------------------------------------------------------------------------------------------
 @@TRichEditFindCloseEvent
 <TITLE TRichEditFindCloseEvent type>
