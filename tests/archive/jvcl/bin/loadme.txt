@@ -1,0 +1,12 @@
+...that this is a component that will make you jump with happiness ?
+...that it took me 4 days to complete it ?
+...that you can load and save tips to a textfile with the LoadFromFile and SaveToFile methods ?
+...that you can set the font for the tips and the title ( the field above this text) ?
+...that this unit is absolutely free for use by anyone ?
+...that these stupid tips are here to demonstrate the fact that you can assign tips on the fly ?
+...that when the modal box returns, it's return value is true if the user wants to see tips the next time they start the program ?
+...that I can't find anything more to write ?
+...that the first tip will come back when (and if) you click Next now ?
+...that I just lied ? This is NOT the first tip!
+...that the previous tip was the first tip that ended with an exclamation - all the others ends with a question mark (so do this one) ?
+...that to create linebreaks inside the tip, you have to insert a lot of spaces.                                                       And it is very hard to determine where to start the next line...
