@@ -34,23 +34,18 @@ unit JvDsgnEditors;
 interface
 
 uses
+  Windows, Forms, Controls, Graphics, ExtCtrls, Dialogs,
+  ExtDlgs, Menus, StdCtrls, ImgList,
   {$IFDEF VCL}
-  Windows, Forms, Controls, Graphics, ExtCtrls, Tabs, Dialogs,
-  ExtDlgs, Menus, StdCtrls, ImgEdit, ImgList, 
+  Tabs,
   {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QWindows, QForms, QControls, QGraphics, QExtCtrls, Tabs, QDialogs,
-  QExtDlgs, QMenus, QStdCtrls, QImgList, Types,
-  {$ENDIF VisualCLX}
-  DsnConst,
+  ImgEdit, DsnConst,
   {$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, DesignEditors, DesignMenus,
+  VCLEditors,
   {$IFDEF VCL}
-  FiltEdit, VCLEditors,
+  FiltEdit,
   {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  ClxEditors, ClxImgEdit,
-  {$ENDIF VisualCLX}
   {$ELSE}
   LibIntf, DsgnIntf,
   {$ENDIF COMPILER6_UP}
@@ -94,7 +89,7 @@ type
       const ARect: TRect; ASelected: Boolean);
   end;
 
-  TJvQColorProperty = class(TIntegerProperty, ICustomPropertyDrawing,
+  TColorPropertyEx = class(TIntegerProperty, ICustomPropertyDrawing,
     ICustomPropertyListDrawing)
   public
     procedure Edit; override;
@@ -117,7 +112,6 @@ type
     procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
       ASelected: Boolean);
   end;
-
 {$ENDIF VisualCLX}
 
 type
@@ -305,15 +299,17 @@ implementation
 {$ENDIF COMPILER6_UP}
 
 uses
-  TypInfo, Math,
+  TypInfo, Math, FileCtrl, Consts,
+  {$IFDEF MSWINDOWS}
+  Registry,
+  {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
-  FileCtrl, Dlgs, Consts, Registry,
-  JvDateTimeForm,
+  Dlgs, JvDateTimeForm,
   {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QFileCtrls, QConsts, JvQRegistryIniFile,
-  {$ENDIF VisualCLX}
-  JvTypes, JvStringsForm, JvDsgnConsts;
+  {$IFDEF LINUX}
+  JvQRegistryIniFile,
+  {$ENDIF LINUX}
+  JvTypes, JvStringsForm, JvDsgnConsts, JvConsts;
 
 function ValueName(E: Extended): string;
 begin
@@ -1127,7 +1123,7 @@ end;
 
 {$ENDIF COMPILER6_UP}
 
-//=== TJvQColorProperty ======================================================
+//=== TColorPropertyEx ======================================================
 
 {$IFDEF VisualCLX}
 
@@ -1135,23 +1131,39 @@ const
   { context ids for the Color Editor, from VCLEditors }
   hcDColorEditor      = 25010;
 
-procedure TJvQColorProperty.Edit;
+procedure TColorPropertyEx.Edit;
 var
   ColorDialog: TColorDialog;
-//  IniFile: TRegIniFile;
-//  BaseRegistryKey: string;
+  {$IFDEF MSWINDOWS}
+  IniFile: TRegIniFile;
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  IniFile: TJvRegistryIniFile;
+  {$ENDIF LINUX}
 
-(*  procedure GetCustomColors;
+  procedure GetCustomColors;
   begin
-    if BaseRegistryKey = '' then
-      Exit;
-    IniFile := TRegIniFile.Create(BaseRegistryKey);
+    {$IFDEF MSWINDOWS}
+    IniFile := TRegIniFile.Create(sDelphiKey);
     try
       IniFile.ReadSectionValues(SCustomColors, ColorDialog.CustomColors);
     except
       { Ignore errors reading values }
     end;
-  end;
+    {$ENDIF MSWINDOWS}
+    {$IFDEF LINUX}
+    IniFile := TJvRegistryIniFile.Create(sDelphiKey);
+    try
+      if IniFile.OpenKey(SCustomColors, false) then
+      begin
+        IniFile.ReadSectionValues(ColorDialog.CustomColors);
+        IniFile.CloseKey;
+      end;
+    except
+      { Ignore errors reading values }
+    end;
+    {$ENDIF LINUX}
+	end;
 
   procedure SaveCustomColors;
   var
@@ -1159,7 +1171,10 @@ var
     S: string;
   begin
     if IniFile <> nil then
-      with ColorDialog do
+      {$IFDEF LINUX}
+      if IniFile.OpenKey(SCustomColors, true) then
+      begin
+      {$ENDIF LINUX}
         for I := 0 to CustomColors.Count - 1 do
         begin
           S := CustomColors.Strings[I];
@@ -1167,47 +1182,54 @@ var
           if P <> 0 then
           begin
             S := Copy(S, 1, P - 1);
+            {$IFDEF MSWINDOWS}
             IniFile.WriteString(SCustomColors, S,
               CustomColors.Values[S]);
+            {$ENDIF MSWINDOWS}
+            {$IFDEF LINUX}
+            IniFile.WriteString( S,
+              CustomColors.Values[S]);
+            {$ENDIF LINUX}
           end;
         end;
+      {$IFDEF LINUX}
+        IniFile.CloseKey;
+      end;
+      {$ENDIF LINUX}
   end;
-*)
 
 begin
-//  BaseRegistryKey := HKEY_CURRENT_USER + '/.borland/jvcl.ini';
-//  IniFile := nil;
+  IniFile := nil;
   ColorDialog := TColorDialog.Create(Application);
   try
-//    GetCustomColors;
+    GetCustomColors;
     ColorDialog.Color := GetOrdValue;
     ColorDialog.HelpContext := hcDColorEditor;
-//    ColorDialog.Options := [cdShowHelp];
     if ColorDialog.Execute then
       SetOrdValue(ColorDialog.Color);
-//    SaveCustomColors;
+    SaveCustomColors;
   finally
-//    IniFile.Free;
+    IniFile.Free;
     ColorDialog.Free;
   end;
 end;
 
-function TJvQColorProperty.GetAttributes: TPropertyAttributes;
+function TColorPropertyEx.GetAttributes: TPropertyAttributes;
 begin
   Result := [paMultiSelect, paDialog, paValueList, paRevertable];
 end;
 
-function TJvQColorProperty.GetValue: string;
+function TColorPropertyEx.GetValue: string;
 begin
   Result := ColorToString(TColor(GetOrdValue));
 end;
 
-procedure TJvQColorProperty.GetValues(Proc: TGetStrProc);
+procedure TColorPropertyEx.GetValues(Proc: TGetStrProc);
 begin
   GetColorValues(Proc);
 end;
 
-procedure TJvQColorProperty.PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
+procedure TColorPropertyEx.PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
   ASelected: Boolean);
 begin
   if GetVisualValue <> '' then
@@ -1216,7 +1238,7 @@ begin
     DefaultPropertyDrawValue(Self, ACanvas, ARect);
 end;
 
-procedure TJvQColorProperty.ListDrawValue(const Value: string; ACanvas: TCanvas;
+procedure TColorPropertyEx.ListDrawValue(const Value: string; ACanvas: TCanvas;
   const ARect: TRect; ASelected: Boolean);
 
   function ColorToBorderColor(AColor: TColor): TColor;
@@ -1243,8 +1265,10 @@ var
   OldPenColor, OldBrushColor: TColor;
 begin
   Right := (ARect.Bottom - ARect.Top) {* 2} + ARect.Left;
+  if ACanvas = nil then exit;
   with ACanvas do
   begin
+    Start;
     // save off things
     OldPenColor := Pen.Color;
     OldBrushColor := Brush.Color;
@@ -1263,16 +1287,18 @@ begin
     Pen.Color := OldPenColor;
     DefaultPropertyListDrawValue(Value, ACanvas, Rect(Right, ARect.Top, ARect.Right,
       ARect.Bottom), ASelected);
+    Stop;
   end;
 end;
 
-procedure TJvQColorProperty.ListMeasureWidth(const Value: string;
+procedure TColorPropertyEx.ListMeasureWidth(const Value: string;
   ACanvas: TCanvas; var AWidth: Integer);
 begin
-  AWidth := AWidth + ACanvas.TextHeight('M') {* 2};
+  if ACanvas <> nil then
+    AWidth := AWidth + ACanvas.TextHeight('M') {* 2};
 end;
 
-procedure TJvQColorProperty.SetValue(const Value: string);
+procedure TColorPropertyEx.SetValue(const Value: string);
 var
   NewValue: Longint;
 begin
@@ -1282,13 +1308,13 @@ begin
     inherited SetValue(Value);
 end;
 
-procedure TJvQColorProperty.ListMeasureHeight(const Value: string;
+procedure TColorPropertyEx.ListMeasureHeight(const Value: string;
   ACanvas: TCanvas; var AHeight: Integer);
 begin
   // No implemenation necessary
 end;
 
-procedure TJvQColorProperty.PropDrawName(ACanvas: TCanvas; const ARect: TRect;
+procedure TColorPropertyEx.PropDrawName(ACanvas: TCanvas; const ARect: TRect;
   ASelected: Boolean);
 begin
   DefaultPropertyDrawName(Self, ACanvas, ARect);
@@ -1311,7 +1337,6 @@ procedure DefaultPropertyListDrawValue(const Value: string; Canvas: TCanvas;
 begin
   Canvas.TextRect(Rect, Rect.Left + 1, Rect.Top + 1, Value);
 end;
-
 {$ENDIF VisualCLX}
 
 end.

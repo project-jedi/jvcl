@@ -35,12 +35,7 @@ interface
 
 uses
   SysUtils, Classes, Db,
-  {$IFDEF VCL}
   Windows, Messages, Forms, Dialogs, Graphics,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QForms, QDialogs, QGraphics, Types,
-  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
   {$ELSE}
@@ -91,7 +86,9 @@ var
   dlgResult: Integer;
   WindowList: Pointer;
 begin
+  {$IFDEF MSWINDOWS}
   WindowList := DisableTaskWindows(0);
+  {$ENDIF MSWINDOWS}
   Dialog := TJvCsvDefStrDialog.Create(nil); // no owner!
 //  dlgResult := idCancel;
   try
@@ -103,7 +100,9 @@ begin
       Result := OldValue;
   finally
     Dialog.Free;
+    {$IFDEF MSWINDOWS}
     EnableTaskWindows(WindowList);
+    {$ENDIF MSWINDOWS}
   end;
 end;
 
