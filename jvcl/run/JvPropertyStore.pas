@@ -265,7 +265,7 @@ end;
 
 constructor TJvCustomPropertyStore.Create(AOwner: TComponent);
 const
-  IgnorePropertyList: array [1..14] of PChar =
+  IgnorePropertyList: array [1..15] of PChar =
    (
     'AboutJVCL',
     'AppStorage',
