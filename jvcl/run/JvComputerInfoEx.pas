@@ -52,7 +52,7 @@ uses
   {$ENDIF VisualCLX}
   Windows, Messages, ShlObj,
   JclWin32, JclSysInfo,
-  JvJCLUtils, JvDataProvider, JvTypes, JvComponent;
+  JvJCLUtils, JvJVCLUtils, JvDataProvider, JvComponent, JvTypes;
 
 {$HPPEMIT '#include <dbt.h>'}
 // these are defined here to avoid including DBT.pas
@@ -1387,9 +1387,9 @@ type
 implementation
 
 uses
-  WinInet, Registry, ShellAPI, ActiveX,
+  WinInet, Registry, ShellAPI, ActiveX, Math,
   JclShell, JclRegistry, JclFileUtils,
-  JvJVCLUtils, JvResources, Math;
+  JvResources;
 
 var
   IsDesigning: Boolean = False;

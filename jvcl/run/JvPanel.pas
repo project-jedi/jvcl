@@ -257,7 +257,7 @@ begin
   Result := ThemeServices.ThemesEnabled;
   {$ELSE}
   Result := False;
-  {$ENDIF}
+  {$ENDIF JVCLThemesEnabled}
 end;
 
 //=== TJvArrangeSettings =====================================================
@@ -748,7 +748,7 @@ begin
     Y1 := R.Bottom - R.Top + Y - FLastPos.Y;
     if (X1 > 1) and (Y1 > 1) then
     begin
-      if (X1 >= 0) then
+      if X1 >= 0 then
         FLastPos.X := X;
       if Y1 >= 0 then
         FLastPos.Y := Y;
@@ -870,7 +870,7 @@ begin
           TJvPanel(Controls[I]).ArrangeSettings.Rearrange;
         if Controls[I].Width + 2 * FArrangeSettings.BorderLeft > Width then
           Width := Controls[I].Width + 2 * FArrangeSettings.BorderLeft;
-      end;    {*** if Controls[I] is TWinControl then ***}
+      end;
 
     while CurrControlCount < ControlCount do
     begin
@@ -897,7 +897,7 @@ begin
                 MaxY := -1;
                 NewX := AktX;
                 NewY := AktY;
-              end;   {*** if ... ***}
+              end;
               AktX := AktX + CurrControl.Width;
               if AktX > ControlMaxX then
                 ControlMaxX := AktX;

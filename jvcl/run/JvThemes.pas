@@ -30,9 +30,9 @@ Known Issues:
 unit JvThemes;
 
 interface
+
 uses
   SysUtils, Classes,
-
   {$IFDEF VCL}
   Windows, Messages,
   {$IFDEF JVCLThemesEnabled}
@@ -45,11 +45,9 @@ uses
   {$ENDIF JVCLThemesEnabled}
   Controls, StdCtrls, Graphics, Buttons,
   {$ENDIF VCL}
-
   {$IFDEF VisualCLX}
   QControls, QForms, QGraphics, QButtons, Types, QWindows,
   {$ENDIF VisualCLX}
-
   JvFinalize;
 
 const
@@ -812,10 +810,10 @@ procedure SetParentBackground(Control: TWinControl; Value: Boolean);
 implementation
 
 {$IFDEF JVCLThemesEnabled}
- {$IFNDEF COMPILER7_UP}
+{$IFNDEF COMPILER7_UP}
 const
   sUnitName = 'JvThemes';
- {$ENDIF !COMPILER7_UP}
+{$ENDIF !COMPILER7_UP}
 {$ENDIF JVCLThemesEnabled}
 
 procedure DrawThemedBackground(Control: TControl; Canvas: TCanvas;
@@ -828,7 +826,7 @@ end;
 procedure DrawThemedBackground(Control: TControl; Canvas: TCanvas;
   const R: TRect; Color: TColor; NeedsParentBackground: Boolean = True);
 var
-  cl: TColor;
+  Cl: TColor;
 begin
   {$IFDEF JVCLThemesEnabled}
   if (not (csDesigning in Control.ComponentState)) and
@@ -852,12 +850,12 @@ begin
   else
   {$ENDIF JVCLThemesEnabled}
   begin
-    cl := Canvas.Brush.Color;
-    if cl <> Color then
+    Cl := Canvas.Brush.Color;
+    if Cl <> Color then
       Canvas.Brush.Color := Color;
     Canvas.FillRect(R);
-    if cl <> Canvas.Brush.Color then
-      Canvas.Brush.Color := cl;
+    if Cl <> Canvas.Brush.Color then
+      Canvas.Brush.Color := Cl;
   end;
 end;
 
@@ -1132,9 +1130,9 @@ end;
 
 {$ENDIF VCL}
 
-function DrawThemedButtonFace(Control: TControl; Canvas: TCanvas; const Client: TRect;
-  BevelWidth: Integer; Style: TButtonStyle; IsRounded, IsDown,
-  IsFocused, IsHot: Boolean): TRect;
+function DrawThemedButtonFace(Control: TControl; Canvas: TCanvas;
+  const Client: TRect; BevelWidth: Integer; Style: TButtonStyle;
+  IsRounded, IsDown, IsFocused, IsHot: Boolean): TRect;
 {$IFDEF JVCLThemesEnabled}
 var
   Btn: TThemedButton;
@@ -1532,8 +1530,7 @@ begin
     WM_ERASEBKGND:
       if ThemeServices.ThemesEnabled then
         ThemedEraseBkGnd(TWMEraseBkGnd(Msg), Handled);
-    CN_CTLCOLORSTATIC,
-    CN_CTLCOLORBTN:
+    CN_CTLCOLORSTATIC, CN_CTLCOLORBTN:
       if ThemeServices.ThemesEnabled then
         ThemedCtlColorStatic(TWMCtlColorStatic(Msg), Handled);
   end;
@@ -1580,13 +1577,11 @@ end;
 procedure TThemeHook.ThemedNCPaint(var Msg: TWMNCPaint);
 begin
   if csNeedsBorderPaint in ThemeStyle then
-  begin
     if Control is TWinControl then
     begin
       ThemeServices.PaintBorder(TWinControl(Control), False);
       Msg.Result := 0;
     end;
-  end;
 end;
 
 procedure TThemeHook.ThemedEraseBkGnd(var Msg: TWMEraseBkGnd; var Handled: Boolean);
@@ -1595,7 +1590,6 @@ begin
     Exit;
 
   if csParentBackground in ThemeStyle then
-  begin
     if Control is TWinControl then
     begin
       if TWinControl(Control).DoubleBuffered then
@@ -1605,14 +1599,13 @@ begin
       Msg.Result := 1;
       Handled := True;
     end;
-  end;
 end;
 
 procedure TThemeHook.ThemedCtlColorStatic(var Msg: TWMCtlColorStatic; var Handled: Boolean);
 begin
   if csParentBackground in ThemeStyle then
   begin
-    if (Control is TWinControl) then
+    if Control is TWinControl then
     begin
       ThemedEraseBkGnd(TWMEraseBkGnd(Msg), Handled);
       Msg.Result := GetStockObject(NULL_BRUSH);
@@ -1719,7 +1712,7 @@ procedure InstallWinControlHook;
 var
   Code: TJumpCode;
   P: procedure;
-  n: Cardinal;
+  N: Cardinal;
 begin
   if WinControlHookInstalled then
     Exit;
@@ -1736,16 +1729,15 @@ begin
       Exit;
     Code.Jmp := $E9;
     Code.Offset := Integer(@WMEraseBkgndHook) -
-      (Integer(@P) + 1) -
-      SizeOf(Code);
+      (Integer(@P) + 1) - SizeOf(Code);
 
     if ReadProcessMemory(GetCurrentProcess, Pointer(Cardinal(@P) + 1),
-      @SavedWinControlCode, SizeOf(SavedWinControlCode), n) then
+      @SavedWinControlCode, SizeOf(SavedWinControlCode), N) then
     begin
      { The strange thing is that WriteProcessMemory does not want @P or something
        overrides the $e9 with a "PUSH xxx"}
       if WriteProcessMemory(GetCurrentProcess, Pointer(Cardinal(@P) + 1), @Code,
-        SizeOf(Code), n) then
+        SizeOf(Code), N) then
       begin
         WinControlHookInstalled := True;
         ThemeHooks.FEraseBkgndHooked := True;
@@ -1759,7 +1751,7 @@ end;
 procedure UninstallWinControlHook;
 var
   P: procedure;
-  n: Cardinal;
+  N: Cardinal;
 begin
   if not WinControlHookInstalled then
     Exit;
@@ -1768,7 +1760,7 @@ begin
   if Assigned(P) then
   begin
     if WriteProcessMemory(GetCurrentProcess, Pointer(Cardinal(@P) + 1),
-      @SavedWinControlCode, SizeOf(SavedWinControlCode), n) then
+      @SavedWinControlCode, SizeOf(SavedWinControlCode), N) then
     begin
       WinControlHookInstalled := False;
       FlushInstructionCache(GetCurrentProcess, @P, SizeOf(SavedWinControlCode));
@@ -1834,15 +1826,15 @@ var
 
 procedure FixedWMPaintClient(Instance: TObject; var Msg: TMessage);
 var
-  idSave: Integer;
+  IdSave: Integer;
 begin
   if Msg.Msg = WM_PRINTCLIENT then
   begin
-    idSave := SaveDC(HDC(Msg.WParam));
+    IdSave := SaveDC(HDC(Msg.WParam));
     try
       OrgWinControlWMPaintClient(Instance, Msg);
     finally
-      RestoreDC(HDC(Msg.WParam), idSave);
+      RestoreDC(HDC(Msg.WParam), IdSave);
     end;
   end
   else
@@ -1852,13 +1844,13 @@ end;
 function FindWMPrintClient: PPointer;
 var
   IdxList: PDynamicIndexList;
-  i: Integer;
+  I: Integer;
 begin
   IdxList := GetDynamicIndexList(TWinControl);
-  for i := 0 to GetDynamicMethodCount(TWinControl) - 1 do
-    if IdxList[i] = WM_PRINTCLIENT then
+  for I := 0 to GetDynamicMethodCount(TWinControl) - 1 do
+    if IdxList[I] = WM_PRINTCLIENT then
     begin
-      Result := @(GetDynamicAddressList(TWinControl)[i]);
+      Result := @(GetDynamicAddressList(TWinControl)[I]);
       Exit;
     end;
   Result := nil;
@@ -1868,14 +1860,14 @@ procedure InitializeWMPrintClientFix;
 var
   NewProc: Pointer;
   Proc: PPointer;
-  n: Cardinal;
+  N: Cardinal;
 begin
   Proc := FindWMPrintClient();
   if Proc <> nil then
   begin
     OrgWinControlWMPaintClient := Proc^;
     NewProc := @FixedWMPaintClient;
-    WriteProcessMemory(GetCurrentProcess, Proc, @NewProc, SizeOf(NewProc), n);
+    WriteProcessMemory(GetCurrentProcess, Proc, @NewProc, SizeOf(NewProc), N);
   end;
 end;
 
@@ -1883,13 +1875,13 @@ procedure FinalizeWMPrintClientFix;
 var
   NewProc: Pointer;
   Proc: PPointer;
-  n: Cardinal;
+  N: Cardinal;
 begin
-  Proc := FindWMPrintClient();
+  Proc := FindWMPrintClient;
   if Proc <> nil then
   begin
     NewProc := @OrgWinControlWMPaintClient;
-    WriteProcessMemory(GetCurrentProcess, Proc, @NewProc, SizeOf(NewProc), n);
+    WriteProcessMemory(GetCurrentProcess, Proc, @NewProc, SizeOf(NewProc), N);
   end;
 end;
 
@@ -1898,12 +1890,11 @@ initialization
 
 finalization
   FinalizeWMPrintClientFix;
-{$IFNDEF COMPILER7_UP}
+  {$IFNDEF COMPILER7_UP}
   FinalizeUnit(sUnitName);
-{$ENDIF !COMPILER7UP}
+  {$ENDIF !COMPILER7UP}
 
 {$ENDIF JVCLThemesEnabled}
-
 
 end.
 

@@ -127,8 +127,14 @@ type
     ClickableMessage: Boolean;
     MouseInControl: Boolean;
     MaxAlphaBlendValue: Byte;
-    FadeInTime, FadeOutTime, WaitTime: Integer;
-    WindowColorFrom, WindowColorTo, CaptionColorFrom, CaptionColorTo, FrameColor: TColor;
+    FadeInTime: Integer;
+    FadeOutTime: Integer;
+    WaitTime: Integer;
+    WindowColorFrom: TColor;
+    WindowColorTo: TColor;
+    CaptionColorFrom: TColor;
+    CaptionColorTo: TColor;
+    FrameColor: TColor;
     procedure FadeClose;
     {$IFNDEF COMPILER6_UP}
     property AlphaBlendValue: Byte read FAlphaBlendValue write SetAlphaBlendValue;
@@ -352,7 +358,7 @@ end;
 procedure TJvFormDesktopAlert.FadeInTimer(Sender: TObject);
 begin
   FadeTimer.Enabled := False;
-{$IFDEF VCL}
+  {$IFDEF VCL}
   if AlphaBlendValue <= MaxAlphaBlendValue - cAlphaIncrement then
     AlphaBlendValue := AlphaBlendValue + cAlphaIncrement;
   if AlphaBlendValue >= MaxAlphaBlendValue - cAlphaIncrement then
@@ -362,13 +368,13 @@ begin
   end
   else
     FadeTimer.Enabled := True;
-{$ENDIF VCL}
+  {$ENDIF VCL}
 end;
 
 procedure TJvFormDesktopAlert.FadeOutTimer(Sender: TObject);
 begin
   FadeTimer.Enabled := False;
-{$IFDEF VCL}
+  {$IFDEF VCL}
   if AlphaBlendValue > cAlphaIncrement then
   begin
     AlphaBlendValue := AlphaBlendValue - cAlphaIncrement;
@@ -378,7 +384,7 @@ begin
       FadeTimer.Enabled := True;
   end
   else
-{$ENDIF VCL}
+  {$ENDIF VCL}
     Close;
 end;
 
@@ -578,7 +584,7 @@ end;
 {$IFDEF VCL}
 procedure TJvFormDesktopAlert.CreateWindowHandle(const Params: TCreateParams);
 begin
-  inherited;
+  inherited CreateWindowHandle(Params);
   {$IFNDEF COMPILER6_UP}
   DoAlphaBlend(0);
   {$ENDIF !COMPILER6_UP}
@@ -744,9 +750,9 @@ begin
             (Height - Images.Height) div 2 + Ord(bsMouseDown in MouseStates),
             ImageIndex,
             {$IFDEF COMPILER6_UP}
-             {$IFDEF VCL}
+            {$IFDEF VCL}
             dsTransparent,
-             {$ENDIF VCL}
+            {$ENDIF VCL}
             itImage,
             {$ENDIF COMPILER6_UP}
             Enabled);

@@ -68,13 +68,14 @@ type
     procedure OkBtnClick(Sender: TObject);
     procedure CancelBtnClick(Sender: TObject);
   public
-    procedure LoadFromStr(Value: TstringList);
-    function SetFromStr: TstringList;
+    procedure LoadFromStr(Value: TStringList);
+    function SetFromStr: TStringList;
   end;
 
 implementation
+
 uses
-  JvHTMLParser;
+  JvHTMLParser, JvResources;
 
 {$IFDEF VCL}
 {$R *.dfm}
@@ -98,7 +99,7 @@ begin
   Ob.EndTag := '';
   Ob.MustBe := -1;
   Ob.TakeText := 0;
-  ListBox1.ItemIndex := ListBox1.Items.AddObject('New', TObject(Ob));
+  ListBox1.ItemIndex := ListBox1.Items.AddObject(RsNewObject, TObject(Ob));
   ListBox1Click(Sender);
 end;
 

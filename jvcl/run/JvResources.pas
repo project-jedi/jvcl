@@ -114,22 +114,22 @@ resourcestring
 
   RsEInvalidAnimatedIconImage = 'Invalid animated icon image';
 
-//=== JvAppDBStorage.pas =======================================================
+//=== JvAppDBStorage.pas =====================================================
 resourcestring
   RsENotSupported = 'Method not supported';
   RsEBufTooSmallFmt = 'Buffer too small (%d bytes required)';
 
-//=== JvAppIniStorage.pas ======================================================
+//=== JvAppIniStorage.pas ====================================================
 resourcestring
   RsEReadValueFailed = 'TJvAppIniFileStorage.ReadValue: Section undefined';
   RsEWriteValueFailed = 'TJvAppIniFileStorage.WriteValue: Section undefined';
 
-//=== JvAppRegistryStorage.pas =================================================
+//=== JvAppRegistryStorage.pas ===============================================
 resourcestring
   RsEUnableToCreateKey = 'Unable to create key ''%s''';
   RsEEnumeratingRegistry = 'Error enumerating registry';
 
-//=== JvAppStorage.pas =========================================================
+//=== JvAppStorage.pas =======================================================
 resourcestring
   RsEInvalidType = 'Invalid type';
   RsEUnknownBaseType = 'Unknown base type for given set';
@@ -137,7 +137,7 @@ resourcestring
   RsENotAUniqueRootPath = '''%s'' is not a unique root path';
   RsECircularReferenceOfStorages = 'Circular reference of storages';
 
-//=== JvAppStorageSelectList.pas ===============================================
+//=== JvAppStorageSelectList.pas =============================================
 resourcestring
   RsLoadSettings = 'Load Settings';
   RsSaveSettings = 'Save Settings';
@@ -147,9 +147,9 @@ resourcestring
   RsDeleteCaption = '&Delete';
 
   RsEDynControlEngineNotDefined = 'TJvAppStorageSelectList.CreateDialog: DynControlEngine not defined!';
-  RsEDynAppStorageNotDefined    = 'TJvAppStorageSelectList.GetSelectListPath: No AppStorage assigned';
+  RsEDynAppStorageNotDefined = 'TJvAppStorageSelectList.GetSelectListPath: No AppStorage assigned';
 
-//=== JvAppXMLStorage.pas ======================================================
+//=== JvAppXMLStorage.pas ====================================================
 resourcestring
   RsENodeCannotBeEmpty = 'The node must be given a name';
   RsEPathDoesntExists = 'Path ''%s'' does not exists';
@@ -1392,14 +1392,18 @@ resourcestring
   RsEAddObjectSearchNameNotDefined = 'TJvParameterList.AddObject: SearchName not defined';
   RsEAddObjectDuplicateSearchNamesNotAllowed = 'TJvParameterList.AddObject: Duplicate SearchNames ("%s") not allowed';
 
-//=== JvParameterListParameter.pas ====================================================
+//=== JvParameterListParameter.pas ===========================================
 resourcestring
-//  RsErrParameterMustBeEntered = 'Parameter %s must be entered!';
+  // RsErrParameterMustBeEntered = 'Parameter %s must be entered!';
   RsErrParameterIsNotAValidNumber = 'Parameter %s: %s is not a valid number value!';
   RsErrParameterMustBeBetween = 'Parameter %s: %s must be between %s and %s!';
   RsErrParameterFileDoesNotExist = 'Parameter %s: The file "%s" does not exist!';
   RsErrParameterFileExistOverwrite = 'Parameter %s: The file "%s" exists! Overwrite?';
   RsErrParameterDirectoryNotExist = 'Parameter %s: The directory "%s" does not exist!';
+
+//=== JvParserForm.pas =======================================================
+resourcestring
+  RsNewObject = 'New';
 
 //=== JvPatchForm.pas ========================================================
 resourcestring
