@@ -269,7 +269,7 @@ void TfrmMain::NewValues()
     //ChartKind = ckChartLine;
   }
 //  Chart->AutoFormatGraph(); // WPostma. Removed.
- Chart->PlotGraph;
+ Chart->PlotGraph();
  
    //Chart->ResizeChartCanvas;
 }
