@@ -33,7 +33,13 @@ requires
   rtl,
   vclactnband,
   vclx,
-  JvCustomD7D;
+  JvCoreD7R,
+  DJCL70,
+  vcljpg,
+  JvStdCtrlsD7R,
+  JvSystemD7R,
+  JvCtrlsD7R,
+  JvCmpD7R;
 
 contains
   JvMMReg in '..\..\design\JvMMReg.pas',
@@ -43,6 +49,7 @@ contains
   JvImagePreviewForm in '..\..\design\JvImagePreviewForm.pas',
   JvID3v2EditorForm in '..\..\design\JvID3v2EditorForm.pas' {JvID3FramesEditor},
   JvID3v2DefineForm in '..\..\design\JvID3v2DefineForm.pas' {JvID3DefineDlg},
-  JvIconListForm in '..\..\design\JvIconListForm.pas';
+  JvIconListForm in '..\..\design\JvIconListForm.pas',
+  JvGradientCaptionForm in '..\..\design\JvGradientCaptionForm.pas' {GradCaptionsEditor};
 
 end.

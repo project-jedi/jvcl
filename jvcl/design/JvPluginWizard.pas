@@ -478,7 +478,7 @@ begin
 end;
 
 initialization
-  RegisterContainerModule;
+  // RegisterContainerModule;
 
 end.
 

@@ -1,0 +1,39 @@
+package JvBandsD7D;
+
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION OFF}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES ON}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'JVCL Band Objects Designtime Package'}
+{$DESIGNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  JvCoreD7R,
+  designide,
+  JvBandsD7R;
+
+contains
+  JvBandObjectDLLWizardForm in '..\..\design\JvBandObjectDLLWizardForm.pas',
+  JvBandObjectDLLWizard in '..\..\design\JvBandObjectDLLWizard.pas',
+  JvBandsReg in '..\..\design\JvBandsReg.pas';
+
+end.

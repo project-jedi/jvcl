@@ -1,1 +1,5 @@
-JvBDED7D.dcu
+*.dcu
+*.drc
+*.cfg
+*.dsk
+*.dof
