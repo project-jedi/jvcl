@@ -1119,7 +1119,10 @@ end;
 
 function TJvCalculator.Execute: Boolean;
 begin
-  FCalc := CreateCalculatorForm(Self, HelpContext);
+  if csDesigning in ComponentState then
+    FCalc := CreateCalculatorForm(Application, HelpContext)
+  else
+    FCalc := CreateCalculatorForm(Self, HelpContext);
   with FCalc do
   try
     Ctl3D := FCtl3D;
@@ -1134,11 +1137,11 @@ begin
       TJvCalculatorPanel(FCalcPanel).FStatus := csFirst;
       TJvCalculatorPanel(FCalcPanel).FOperator := '=';
     end;
-    Result := (ShowModal = mrOk);
+    Result := ShowModal = mrOk;
     if Result then
     begin
       Self.FMemory := TJvCalculatorPanel(FCalcPanel).FMemory;
-      if (TJvCalculatorPanel(FCalcPanel).DisplayValue <> Self.FValue) then
+      if TJvCalculatorPanel(FCalcPanel).DisplayValue <> Self.FValue then
       begin
         Self.FValue := TJvCalculatorPanel(FCalcPanel).DisplayValue;
         Change;
