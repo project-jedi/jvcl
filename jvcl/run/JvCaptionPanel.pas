@@ -10,8 +10,8 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvCaptionPanel.PAS, released on 2002-05-26.
 
-The Initial Developer of the Original Code is Peter Thörnqvist [peter3 at sourceforge dot net]
-Portions created by Peter Thörnqvist are Copyright © 1997-2002 Peter Thörnqvist.
+The Initial Developer of the Original Code is Peter Thrnqvist [peter3 at sourceforge dot net]
+Portions created by Peter Thrnqvist are Copyright  1997-2002 Peter Thrnqvist.
 All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck att bigfoot dott com]
@@ -436,6 +436,7 @@ end;
 
 destructor TJvCaptionPanel.Destroy;
 begin
+  FIcon.Free;
   FCaptionFont.Free;
   inherited Destroy;
 end;
