@@ -41,10 +41,7 @@ uses
   Windows, Messages,
   {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
-  {$IFDEF COMPILER7_UP}
-  // Autocompletion only for VCL
   ShlObj,
-  {$ENDIF COMPILER7_UP}
   {$ENDIF VCL}
   SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, Menus,
   Buttons, FileCtrl, Mask, ImgList, ActnList, ExtDlgs,
@@ -61,6 +58,46 @@ const
   DefEditBtnWidth = 21;
 
   CM_POPUPCLOSEUP = CM_BASE + $0300; // arbitrary value
+
+{$IFNDEF COMPILER7_UP}
+// Autocomplete stuff for Delphi 5 and 6. (missing in ShlObj)
+type
+  IAutoComplete = interface(IUnknown)
+    ['{00bb2762-6a77-11d0-a535-00c04fd7d062}']
+    function Init(hwndEdit: HWND; punkACL: IUnknown;
+      pwszRegKeyPath: LPCWSTR; pwszQuickComplete: LPCWSTR): HRESULT; stdcall;
+    function Enable(fEnable: BOOL): HRESULT; stdcall;
+  end;
+  {$EXTERNALSYM IAutoComplete}
+
+const
+  { IAutoComplete2 options }
+  ACO_NONE = 0;
+  {$EXTERNALSYM ACO_NONE}
+  ACO_AUTOSUGGEST = $1;
+  {$EXTERNALSYM ACO_AUTOSUGGEST}
+  ACO_AUTOAPPEND = $2;
+  {$EXTERNALSYM ACO_AUTOAPPEND}
+  ACO_SEARCH = $4;
+  {$EXTERNALSYM ACO_SEARCH}
+  ACO_FILTERPREFIXES = $8;
+  {$EXTERNALSYM ACO_FILTERPREFIXES}
+  ACO_USETAB = $10;
+  {$EXTERNALSYM ACO_USETAB}
+  ACO_UPDOWNKEYDROPSLIST = $20;
+  {$EXTERNALSYM ACO_UPDOWNKEYDROPSLIST}
+  ACO_RTLREADING = $40;
+  {$EXTERNALSYM ACO_RTLREADING}
+
+type
+  IAutoComplete2 = interface(IAutoComplete)
+    ['{EAC04BC0-3791-11d2-BB95-0060977B464C}']
+    function SetOptions(dwFlag: DWORD): HRESULT; stdcall;
+    function GetOptions(var dwFlag: DWORD): HRESULT; stdcall;
+  end;
+  {$EXTERNALSYM IAutoComplete2}
+
+{$ENDIF ~COMPILER7_UP}
 
 type
   TFileExt = type string;
@@ -166,13 +203,11 @@ type
   TJvCustomComboEditActionLinkClass = class of TJvCustomComboEditActionLink;
 
   {$IFDEF VCL}
-  {$IFDEF COMPILER7_UP}
   TJvAutoCompleteOption = (acoAutoSuggest, acoAutoAppend, acoSearch,
     acoFilterPrefixes, acoUseTab, acoUpDownKeyDropsList, acoRTLReading);
   TJvAutoCompleteOptions = set of TJvAutoCompleteOption;
   TJvAutoCompleteFileOption = (acfFileSystem, acfFileSysDirs, acfURLHistory, acfURLMRU);
   TJvAutoCompleteFileOptions = set of TJvAutoCompleteFileOption;
-  {$ENDIF COMPILER7_UP}
   {$ENDIF VCL}
 
   {$IFDEF VCL}
@@ -205,14 +240,12 @@ type
     FSavedButtonWidth: Integer;
     {$IFDEF VCL}
     FAlignment: TAlignment;
-    {$IFDEF COMPILER7_UP}
     FAutoCompleteIntf: IAutoComplete;
     FAutoCompleteItems: TStrings;
     FAutoCompleteOptions: TJvAutoCompleteOptions;
     FAutoCompleteSource: IUnknown;
     procedure SetAutoCompleteItems(Strings: TStrings);
     procedure SetAutoCompleteOptions(const Value: TJvAutoCompleteOptions);
-    {$ENDIF COMPILER7_UP}
     procedure SetAlignment(Value: TAlignment);
     function GetFlat: Boolean;
     procedure ReadCtl3D(Reader: TReader);
@@ -322,11 +355,9 @@ type
     procedure CreateWnd; override;
     {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
-    {$IFDEF COMPILER7_UP}
     procedure CreateAutoComplete; virtual;
     procedure UpdateAutoComplete; virtual;
     function GetAutoCompleteSource: IUnknown; virtual;
-    {$ENDIF COMPILER7_UP}
     {$ENDIF VCL}
     procedure DefineProperties(Filer: TFiler); override;
     procedure DoChange; virtual; //virtual Polaris
@@ -358,10 +389,8 @@ type
     property AlwaysEnableButton: Boolean read FAlwaysEnableButton write FAlwaysEnableButton default False;
     property AlwaysShowPopup: Boolean read FAlwaysShowPopup write FAlwaysShowPopup default False;
     {$IFDEF VCL}
-    {$IFDEF COMPILER7_UP}
     property AutoCompleteItems: TStrings read FAutoCompleteItems write SetAutoCompleteItems;
     property AutoCompleteOptions: TJvAutoCompleteOptions read FAutoCompleteOptions write SetAutoCompleteOptions default [];
-    {$ENDIF COMPILER7_UP}
     {$ENDIF VCL}
     property Button: TJvEditButton read FButton;
     property ButtonFlat: Boolean read GetButtonFlat write SetButtonFlat default False;
@@ -419,10 +448,8 @@ type
     property AutoSelect;
     property AutoSize;
     {$IFDEF VCL}
-    {$IFDEF COMPILER7_UP}
     property AutoCompleteItems;
     property AutoCompleteOptions;
-    {$ENDIF COMPILER7_UP}
     property BiDiMode;
     property DragCursor;
     property DragKind;
@@ -506,14 +533,12 @@ type
     FOnAfterDialog: TExecOpenDialogEvent;
     {$IFDEF VCL}
     FAcceptFiles: Boolean;
-    {$IFDEF COMPILER7_UP}
     FMRUList: IUnknown;
     FHistoryList: IUnknown;
     FFileSystemList: IUnknown;
     FAutoCompleteFileOptions: TJvAutoCompleteFileOptions;
     FAutoCompleteSourceIntf: IUnknown;
     procedure SetAutoCompleteFileOptions(const Value: TJvAutoCompleteFileOptions);
-    {$ENDIF COMPILER7_UP}
     procedure SetDragAccept(Value: Boolean);
     procedure SetAcceptFiles(Value: Boolean);
     procedure WMDropFiles(var Msg: TWMDropFiles); message WM_DROPFILES;
@@ -525,10 +550,8 @@ type
     {$IFDEF VCL}
     procedure CreateHandle; override;
     procedure DestroyWindowHandle; override;
-    {$IFDEF COMPILER7_UP}
     procedure UpdateAutoComplete; override;
     function GetAutoCompleteSource: IUnknown; override;
-    {$ENDIF COMPILER7_UP}
     {$ENDIF VCL}
     function GetLongName: string; virtual; abstract;
     function GetShortName: string; virtual; abstract;
@@ -540,11 +563,9 @@ type
     procedure DisableSysErrors;
     procedure EnableSysErrors;
     {$IFDEF VCL}
-    {$IFDEF COMPILER7_UP}
     property AutoCompleteFileOptions: TJvAutoCompleteFileOptions read FAutoCompleteFileOptions write
       SetAutoCompleteFileOptions;
     property AutoCompleteOptions default [acoAutoSuggest];
-    {$ENDIF COMPILER7_UP}
     {$ENDIF VCL}
     property ImageKind default ikDefault;
     property MaxLength;
@@ -622,10 +643,8 @@ type
       default dkOpen;
     property DefaultExt: TFileExt read GetDefaultExt write SetDefaultExt;
     {$IFDEF VCL}
-    {$IFDEF COMPILER7_UP}
     property AutoCompleteOptions;
     property AutoCompleteFileOptions default [acfFileSystem];
-    {$ENDIF COMPILER7_UP}
     property Flat;
     { (rb) Obsolete; added 'stored False', eventually remove }
     property FileEditStyle: TFileEditStyle read GetFileEditStyle write SetFileEditStyle stored False;
@@ -730,10 +749,8 @@ type
     property DialogKind: TDirDialogKind read FDialogKind write FDialogKind default dkVCL;
     property DialogText: string read FDialogText write FDialogText;
     {$IFDEF VCL}
-    {$IFDEF COMPILER7_UP}
     property AutoCompleteOptions;
     property AutoCompleteFileOptions default [acfFileSystem, acfFileSysDirs];
-    {$ENDIF COMPILER7_UP}
     property Flat;
     property DialogOptions: TSelectDirOpts read FOptions write FOptions default [];
     {$ENDIF VCL}
@@ -1082,10 +1099,10 @@ uses
   MaskUtils,
   {$ENDIF COMPILER6_UP}
   {$IFDEF MSWINDOWS}
-  ShellAPI,
+  ShellAPI, ActiveX,
   {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
-  JvBrowseFolder, ActiveX,
+  JvBrowseFolder,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   JvExControls,
@@ -1141,22 +1158,20 @@ const
 
 {$IFDEF VCL}
 
-{$IFDEF COMPILER7_UP}
-
 const
-  ACLO_NONE            = 0;  // don't enumerate anything
-  ACLO_CURRENTDIR      = 1;  // enumerate current directory
-  ACLO_MYCOMPUTER      = 2;  // enumerate MyComputer
-  ACLO_DESKTOP         = 4;  // enumerate Desktop Folder
-  ACLO_FAVORITES       = 8;  // enumerate Favorites Folder
+  ACLO_NONE            = 0;   // don't enumerate anything
+  ACLO_CURRENTDIR      = 1;   // enumerate current directory
+  ACLO_MYCOMPUTER      = 2;   // enumerate MyComputer
+  ACLO_DESKTOP         = 4;   // enumerate Desktop Folder
+  ACLO_FAVORITES       = 8;   // enumerate Favorites Folder
   ACLO_FILESYSONLY     = 16;  // enumerate only the file system
   ACLO_FILESYSDIRS     = 32;  // enumerate only the file system dirs, UNC shares, and UNC servers.
 
-  IID_IAutoCompList: TGUID = (D1:$00BB2760; D2:$6A77; D3:$11D0; D4:($A5, $35, $00, $C0, $4F, $D7, $D0, $62));
-  IID_IObjMgr: TGUID = (D1:$00BB2761; D2:$6A77; D3:$11D0; D4:($A5, $35, $00, $C0, $4F, $D7, $D0, $62));
-  IID_IACList: TGUID = (D1:$77A130B0; D2:$94FD; D3:$11D0; D4:($A5, $44, $00, $C0, $4F, $D7, $d0, $62));
-  IID_IACList2: TGUID = (D1:$470141a0; D2:$5186; D3:$11d2; D4:($bb, $b6, $00, $60, $97, $7b, $46, $4c));
-  IID_ICurrentWorkingDirectory: TGUID = (D1:$91956d21; D2:$9276; D3:$11d1; D4:($92, $1a, $00, $60, $97, $df, $5b, $d4));  // {91956D21-9276-11d1-921A-006097DF5BD));
+  //IID_IAutoCompList: TGUID = (D1:$00BB2760; D2:$6A77; D3:$11D0; D4:($A5, $35, $00, $C0, $4F, $D7, $D0, $62));
+  //IID_IObjMgr: TGUID = (D1:$00BB2761; D2:$6A77; D3:$11D0; D4:($A5, $35, $00, $C0, $4F, $D7, $D0, $62));
+  //IID_IACList: TGUID = (D1:$77A130B0; D2:$94FD; D3:$11D0; D4:($A5, $44, $00, $C0, $4F, $D7, $d0, $62));
+  //IID_IACList2: TGUID = (D1:$470141a0; D2:$5186; D3:$11d2; D4:($bb, $b6, $00, $60, $97, $7b, $46, $4c));
+  //IID_ICurrentWorkingDirectory: TGUID = (D1:$91956d21; D2:$9276; D3:$11d1; D4:($92, $1a, $00, $60, $97, $df, $5b, $d4));  // {91956D21-9276-11d1-921A-006097DF5BD));
 
   CLSID_AutoComplete: TGUID = (D1:$00BB2763; D2:$6A77; D3:$11D0; D4:($A5, $35, $00, $C0, $4F, $D7, $D0, $62));
   CLSID_ACLHistory: TGUID = (D1:$00BB2764; D2:$6A77; D3:$11D0; D4:($A5, $35, $00, $C0, $4F, $D7, $D0, $62));
@@ -1165,7 +1180,7 @@ const
   CLSID_ACLMulti: TGUID = (D1:$00BB2765; D2:$6A77; D3:$11D0; D4:($A5, $35, $00, $C0, $4F, $D7, $D0, $62));
 
   //#if (_WIN32_IE >= 0x0600)
-  CLSID_ACLCustomMRU: TGUID = (D1:$6935db93; D2:$21e8; D3:$4ccc; D4:($be, $b9, $9f, $e3, $c7, $7a, $29, $7a));
+  //CLSID_ACLCustomMRU: TGUID = (D1:$6935db93; D2:$21e8; D3:$4ccc; D4:($be, $b9, $9f, $e3, $c7, $7a, $29, $7a));
   //#endif
 
 type
@@ -1200,8 +1215,6 @@ type
   public
     constructor Create(AComboEdit: TJvCustomComboEdit; const StartIndex: Integer); virtual;
   end;
-
-{$ENDIF COMPILER7_UP}
 
 type
   { TDateHook is used to only have 1 hook per application for monitoring
@@ -1755,8 +1768,6 @@ end;
 
 //=== { TAutoCompleteSource } ================================================
 
-{$IFDEF COMPILER7_UP}
-
 constructor TAutoCompleteSource.Create(AComboEdit: TJvCustomComboEdit; const StartIndex: Integer);
 begin
   inherited Create;
@@ -1837,8 +1848,6 @@ begin
     FCurrentIndex := FComboEdit.AutoCompleteItems.Count;
   end;
 end;
-
-{$ENDIF COMPILER7_UP}
 
 //=== { TDateHook } ==========================================================
 
@@ -1941,11 +1950,9 @@ begin
   FImageIndex := -1;
   FNumGlyphs := 1;
   {$IFDEF VCL}
-  {$IFDEF COMPILER7_UP}
   FAutoCompleteItems := TStringList.Create;
   FAutoCompleteOptions := [];
   CoInitialize(nil);
-  {$ENDIF COMPILER7_UP}
   {$ENDIF VCL}
   inherited OnKeyDown := LocalKeyDown;
   (* -- RDB -- *)
@@ -1956,18 +1963,14 @@ begin
   PopupCloseUp(Self, False);
   FButton.OnClick := nil;
   {$IFDEF VCL}
-  {$IFDEF COMPILER7_UP}
   FAutoCompleteSource := nil;
   FAutoCompleteItems.Free;
   FAutoCompleteIntf := nil;
-  {$ENDIF COMPILER7_UP}
   {$ENDIF VCL}
   inherited Destroy;
   {$IFDEF VCL}
-  {$IFDEF COMPILER7_UP}
   // call after WM_DESTROY
   CoUninitialize;
-  {$ENDIF COMPILER7_UP}
   {$ENDIF VCL}
 end;
 
@@ -2158,7 +2161,6 @@ begin
   end;
 end;
 
-{$IFDEF COMPILER7_UP}
 procedure TJvCustomComboEdit.CreateAutoComplete;
 begin
   if HandleAllocated and not (csDesigning in ComponentState) and
@@ -2175,7 +2177,6 @@ begin
       FAutoCompleteIntf := nil;
   end;
 end;
-{$ENDIF COMPILER7_UP}
 
 procedure TJvCustomComboEdit.CreateParams(var Params: TCreateParams);
 const
@@ -2199,13 +2200,11 @@ begin
   UpdateControls;
   UpdateMargins;
   {$IFDEF VCL}
-  {$IFDEF COMPILER7_UP}
   if AutoCompleteOptions <> [] then
   begin
     CreateAutoComplete;
     UpdateAutoComplete;
   end;
-  {$ENDIF COMPILER7_UP}
   {$ENDIF VCL}
 end;
 
@@ -2374,12 +2373,10 @@ begin
 end;
 
 {$IFDEF VCL}
-{$IFDEF COMPILER7_UP}
 function TJvCustomComboEdit.GetAutoCompleteSource: IUnknown;
 begin
   Result := TAutoCompleteSource.Create(Self, 0);
 end;
-{$ENDIF COMPILER7_UP}
 {$ENDIF VCL}
 
 function TJvCustomComboEdit.GetButtonFlat: Boolean;
@@ -2879,8 +2876,6 @@ begin
   end;
 end;
 
-{$IFDEF COMPILER7_UP}
-
 procedure TJvCustomComboEdit.SetAutoCompleteItems(Strings: TStrings);
 begin
   FAutoCompleteItems.Assign(Strings);
@@ -2897,8 +2892,6 @@ begin
     UpdateAutoComplete;
   end;
 end;
-
-{$ENDIF COMPILER7_UP}
 
 {$ENDIF VCL}
 
@@ -3172,7 +3165,6 @@ begin
 end;
 
 {$IFDEF VCL}
-{$IFDEF COMPILER7_UP}
 procedure TJvCustomComboEdit.UpdateAutoComplete;
 const
   cAutoCompleteOptionValues: array [TJvAutoCompleteOption] of DWORD =
@@ -3198,7 +3190,6 @@ begin
     end;
   end;
 end;
-{$ENDIF COMPILER7_UP}
 {$ENDIF VCL}
 
 {$IFDEF COMPILER6_UP}
@@ -4103,9 +4094,7 @@ begin
   inherited Create(AOwner);
   {$IFDEF VCL}
   FOptions := [];
-  {$IFDEF COMPILER7_UP}
   FAutoCompleteFileOptions := [acfFileSystem, acfFileSysDirs];
-  {$ENDIF COMPILER7_UP}
   {$ENDIF VCL}
 end;
 
@@ -4404,9 +4393,7 @@ begin
   {$IFDEF VCL}
   OEMConvert := True;
   FAcceptFiles := True;
-  {$IFDEF COMPILER7_UP}
   FAutoCompleteOptions := [acoAutoSuggest];
-  {$ENDIF COMPILER7_UP}
   {$ENDIF VCL}
   ControlState := ControlState + [csCreating];
   try
@@ -4496,14 +4483,12 @@ end;
 
 {$IFDEF VCL}
 
-{$IFDEF COMPILER7_UP}
 function TJvFileDirEdit.GetAutoCompleteSource: IUnknown;
 begin
   if Failed(CoCreateInstance(CLSID_ACLMulti, nil, CLSCTX_INPROC_SERVER, IUnknown, FAutoCompleteSourceIntf)) then
     FAutoCompleteSourceIntf := nil;
   Result := FAutoCompleteSourceIntf;
 end;
-{$ENDIF COMPILER7_UP}
 
 procedure TJvFileDirEdit.SetAcceptFiles(Value: Boolean);
 begin
@@ -4514,7 +4499,6 @@ begin
   end;
 end;
 
-{$IFDEF COMPILER7_UP}
 procedure TJvFileDirEdit.SetAutoCompleteFileOptions(const Value: TJvAutoCompleteFileOptions);
 begin
   if FAutoCompleteFileOptions <> Value then
@@ -4525,7 +4509,6 @@ begin
       UpdateAutoComplete;
   end;
 end;
-{$ENDIF COMPILER7_UP}
 
 procedure TJvFileDirEdit.SetDragAccept(Value: Boolean);
 begin
@@ -4533,7 +4516,6 @@ begin
     DragAcceptFiles(Handle, Value);
 end;
 
-{$IFDEF COMPILER7_UP}
 procedure TJvFileDirEdit.UpdateAutoComplete;
 var
   ObjMgr: IObjMgr;
@@ -4597,7 +4579,6 @@ begin
 
   inherited UpdateAutoComplete;
 end;
-{$ENDIF COMPILER7_UP}
 
 procedure TJvFileDirEdit.WMDropFiles(var Msg: TWMDropFiles);
 var
@@ -4634,9 +4615,7 @@ begin
   inherited Create(AOwner);
   FAddQuotes := True;
   {$IFDEF VCL}
-  {$IFDEF COMPILER7_UP}
   FAutoCompleteFileOptions := [acfFileSystem];
-  {$ENDIF COMPILER7_UP}
   {$ENDIF VCL}
   CreateEditDialog;
 end;
