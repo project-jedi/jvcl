@@ -25,6 +25,8 @@ Contributor(s):dierk schmid
   //dierk 2004-4-23
   --add property RoundedItemFrame in TJvXPCustomWinXPBar (Integer>0 is the edge radius)
   --add property ItemFrameColor in TJvXPBarColors
+  //dejoy 2004-4-25
+  -- splitt ItemFrameColor to CheckedFrameColor , FocusedFrameColor  in TJvXPBarColors.
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -89,6 +91,10 @@ const
   {$IFDEF VisualCLX}
   clHotLight = clActiveHighLight;
   {$ENDIF VisualCLX}
+
+  dxColor_FocusedFrameColorXP = clHotLight;
+  dxColor_CheckedFrameColorXP = clHighlight;
+
 type
   TJvXPBarItem = class;
   TJvXPBarItems = class;
@@ -275,7 +281,8 @@ type
 
   TJvXPBarColors = class(TPersistent)
   private
-    FItemFrameColor: TColor;
+    FCheckedFrameColor: TColor;
+    FFocusedFrameColor: TColor;
     FCheckedColor: TColor;
     FFocusedColor: TColor;
     FBodyColor: TColor;
@@ -289,15 +296,17 @@ type
     procedure SetSeperatorColor(const Value: TColor);
     procedure SetCheckedColor(const Value: TColor);
     procedure SetFocusedColor(const Value: TColor);
-    procedure SetItemFrameColor(const Value: TColor);
+    procedure SetCheckedFrameColor(const Value: TColor);
+    procedure SetFocusedFrameColor(const Value: TColor);
   public
     constructor Create;
     procedure Assign(Source: TPersistent); override;
     procedure Change;
   published
-    property ItemFrameColor: TColor read FItemFrameColor write SetItemFrameColor default clHighlight;
     property CheckedColor: TColor read FCheckedColor write SetCheckedColor default dxColor_CheckedColorXP;
     property FocusedColor: TColor read FFocusedColor write SetFocusedColor default dxColor_FocusedColorXP;
+    property CheckedFrameColor: TColor read FCheckedFrameColor write SetCheckedFrameColor default dxColor_CheckedFrameColorXP;
+    property FocusedFrameColor: TColor read FFocusedFrameColor write SetFocusedFrameColor default dxColor_FocusedFrameColorXP;
     property BodyColor: TColor read FBodyColor write SetBodyColor default $00F7DFD6;
     property GradientFrom: TColor read FGradientFrom write SetGradientFrom default clWhite;
     property GradientTo: TColor read FGradientTo write SetGradientTo default $00F7D7C6;
@@ -836,11 +845,11 @@ begin
         begin
           Brush.Color := lBar.Colors.FocusedColor;
           if lBar.RoundedItemFrame>0 then
-            RoundedFrame(ACanvas, Rect, lBar.Colors.ItemFrameColor, lBar.RoundedItemFrame)
+            RoundedFrame(ACanvas, Rect, lBar.Colors.FocusedFrameColor, lBar.RoundedItemFrame)
           else
           begin
             FillRect(Rect);
-            JvXPFrame3D(ACanvas, Rect, lBar.Colors.ItemFrameColor, lBar.Colors.ItemFrameColor);
+            JvXPFrame3D(ACanvas, Rect, lBar.Colors.FocusedFrameColor, lBar.Colors.FocusedFrameColor);
           end;
         end;
       end
@@ -850,11 +859,11 @@ begin
         begin
           Brush.Color := lBar.Colors.CheckedColor;
           if lBar.RoundedItemFrame>0 then
-            RoundedFrame(ACanvas, Rect, clHighlight, lBar.RoundedItemFrame)
+            RoundedFrame(ACanvas, Rect, lBar.Colors.CheckedFrameColor, lBar.RoundedItemFrame)
           else
           begin
             FillRect(Rect);
-            JvXPFrame3D(ACanvas, Rect, clHotLight, clHotLight);
+            JvXPFrame3D(ACanvas, Rect, lBar.Colors.CheckedFrameColor, lBar.Colors.CheckedFrameColor);
           end;
         end;
       end
@@ -1320,6 +1329,8 @@ begin
   FSeparatorColor := $00F7D7C6;
   FCheckedColor := dxColor_CheckedColorXP;
   FFocusedColor := dxColor_FocusedColorXP;
+  FCheckedFrameColor := dxColor_CheckedFrameColorXP;
+  FFocusedFrameColor := dxColor_FocusedFrameColorXP;
 {$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled then
   begin
@@ -1350,6 +1361,8 @@ begin
     begin
       Self.CheckedColor := CheckedColor;
       Self.FocusedColor := FocusedColor;
+      Self.CheckedFrameColor := CheckedFrameColor;
+      Self.FocusedFrameColor := FocusedFrameColor;
       Self.BodyColor := BodyColor;
       Self.GradientTo := GradientTo;
       Self.GradientFrom := GradientFrom;
@@ -1417,15 +1430,23 @@ begin
   end;
 end;
 
-procedure TJvXPBarColors.SetItemFrameColor(const Value: TColor);
+procedure TJvXPBarColors.SetCheckedFrameColor(const Value: TColor);
 begin
-  if FItemFrameColor <> Value then
+  if FCheckedFrameColor <> Value then
   begin
-    FItemFrameColor := Value;
+    FCheckedFrameColor := Value;
     Change;
   end;
 end;
 
+procedure TJvXPBarColors.SetFocusedFrameColor(const Value: TColor);
+begin
+  if FFocusedFrameColor <> Value then
+  begin
+    FFocusedFrameColor := Value;
+    Change;
+  end;
+end;
 
 //=== TJvXPCustomWinXPBar ====================================================
 
