@@ -55,9 +55,8 @@ unit JvLabel;
 interface
 
 uses
-  Windows, Messages, Graphics, Controls, Forms, StdCtrls, ImgList,
-  SysUtils, Classes,
-  JvTypes, JvComponent, JvConsts, JvExControls, JvDataProvider, JvDataProviderIntf;
+  Windows, Messages, Graphics, Controls, StdCtrls, ImgList, Classes,
+  JvTypes, JvComponent, JvDataProvider;
 
 type
   TShadowPosition = (spLeftTop, spLeftBottom, spRightBottom, spRightTop);
@@ -270,8 +269,10 @@ procedure FrameRounded(Canvas: TCanvas; ARect: TRect; AColor: TColor; R: Integer
 implementation
 
 uses
+  SysUtils, Forms,
   Math,
-  JvThemes, JvJCLUtils, JvJVCLUtils;
+  JvDataProviderIntf,
+  JvConsts, JvThemes, JvJCLUtils, JvJVCLUtils;
 
 const
   Alignments: array[TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);

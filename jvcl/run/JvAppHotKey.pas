@@ -37,7 +37,7 @@ unit JvAppHotKey;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Controls, Menus,
+  Windows, Messages, Classes,
   JvComponent;
 
 type
@@ -73,6 +73,7 @@ type
 implementation
 
 uses
+  Controls, Menus,
   JvWndProcHook;
 
 var

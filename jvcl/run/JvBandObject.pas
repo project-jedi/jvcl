@@ -34,8 +34,7 @@ unit JvBandObject;
 interface
 
 uses
-  Windows, Messages, ComObj, ShlObj, ActiveX, Registry, SysUtils, Classes,
-  Controls, Forms, Menus,
+  Windows, Messages, ComObj, ShlObj, ActiveX, Classes, Controls, 
   JvBandForms;
 
 const
@@ -166,7 +165,7 @@ uses
   {$IFDEF DEBUGINFO_ON}
   //zTrace,
   {$ENDIF DEBUGINFO_ON}
-  Math,
+  SysUtils, Registry, Math, Forms, Menus,
   JvConsts, JvJVCLUtils;
 
 const

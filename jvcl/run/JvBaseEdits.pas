@@ -36,10 +36,9 @@ unit JvBaseEdits;
 interface
 
 uses
-  SysUtils, Classes,
-  Windows, Messages, Graphics, Controls, ImgList,
+  Windows, Messages, Classes, Controls, ImgList,
   {$IFDEF VisualCLX}
-  QTypes, 
+  QTypes,
   {$ENDIF VisualCLX}
   JvToolEdit;
 
@@ -298,8 +297,8 @@ type
 implementation
 
 uses
-  Consts,
-  Math, JvJCLUtils, JvCalc, JvConsts, JvResources;
+  SysUtils, Consts, Math, Graphics,
+  JvJCLUtils, JvCalc, JvConsts, JvResources;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvBaseEdits.Res}

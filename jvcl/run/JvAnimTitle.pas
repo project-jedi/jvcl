@@ -30,13 +30,7 @@ unit JvAnimTitle;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Controls, ExtCtrls, Forms,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QControls, QExtCtrls, QForms,
-  {$ENDIF VisualCLX}
+  Classes, Controls, ExtCtrls, Forms,
   JvComponent;
 
 type

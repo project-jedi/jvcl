@@ -37,7 +37,7 @@ uses
   {$IFDEF LINUX}
   Libc,
   {$ENDIF LINUX}
-  SysUtils, Classes, IniFiles,
+  Classes,
   JvAppStorage, JvSimpleXml;
 
 type
@@ -111,7 +111,7 @@ type
 implementation
 
 uses
-  TypInfo,
+  SysUtils, TypInfo,
   JclStrings,
   JvTypes, JvConsts, JvResources;
 

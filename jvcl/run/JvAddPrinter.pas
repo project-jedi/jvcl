@@ -32,7 +32,6 @@ unit JvAddPrinter;
 interface
 
 uses
-  Windows, ActiveX, ShlObj, ShellAPI, SysUtils, Classes,
   JvBaseDlg;
 
 type
@@ -42,6 +41,9 @@ type
   end;
 
 implementation
+
+uses
+  Windows, ActiveX, ShlObj, ShellAPI, SysUtils, Classes;
 
 // (rom) move to JCL
 

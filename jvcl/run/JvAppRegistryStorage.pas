@@ -33,7 +33,7 @@ unit JvAppRegistryStorage;
 interface
 
 uses
-  Classes, Windows,
+  Windows, Classes,
   JvAppStorage, JvTypes;
 
 type
@@ -81,7 +81,7 @@ implementation
 
 uses
   SysUtils,
-  JclRegistry, JclResources, JclStrings,
+  JclRegistry, JclResources,
   JvConsts, JvResources;
 
 const

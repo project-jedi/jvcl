@@ -37,15 +37,16 @@ unit JvAni;
 interface
 
 uses
-  SysUtils, Classes,
+  Classes,
   {$IFDEF COMPILER6_UP}
   RTLConsts,
   {$ENDIF COMPILER6_UP}
   {$IFDEF VCL}
-  Windows, Graphics, Controls, ExtCtrls, Dialogs,
+  Windows,
   {$ENDIF VCL}
+  Graphics, Controls, ExtCtrls, Dialogs,
   {$IFDEF VisualCLX}
-  QGraphics, QControls, QExtCtrls, QDialogs, Types, QTypes, QWindows,
+  Types, QTypes, QWindows,
   {$ENDIF VisualCLX}
   JvTypes;
 
@@ -143,13 +144,8 @@ function LoadJvAniDialog: TJvAni;
 implementation
 
 uses
-  {$IFDEF VCL}
-  Consts,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QConsts,
-  {$ENDIF VisualCLX}
-  Math,
+  SysUtils,
+  Consts, Math,
   JvJVCLUtils, JvJCLUtils, JvIconList, JvConsts, JvResources;
 
 //=== { TJvAnimatedCursorImage helper } ======================================

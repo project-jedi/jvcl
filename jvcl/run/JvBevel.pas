@@ -30,13 +30,11 @@ unit JvBevel;
 interface
 
 uses
-  SysUtils, Classes,
+  Classes,
   {$IFDEF VCL}
-  Windows, Messages, Graphics, ExtCtrls, Controls, Forms,
+  Windows, Messages,
   {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QExtCtrls, QControls, QForms,
-  {$ENDIF VisualCLX}
+  Controls,
   JvThemes, JvExExtCtrls;
 
 type

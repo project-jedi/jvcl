@@ -33,13 +33,7 @@ unit JvAnimate;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Graphics, Controls, Forms, ComCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QComCtrls,
-  {$ENDIF VisualCLX}
+  Classes, Controls,
   JvThemes, JvExComCtrls;
 
 {$IFDEF VisualCLX}

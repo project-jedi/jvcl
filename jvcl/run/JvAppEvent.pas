@@ -26,20 +26,17 @@ Known Issues:
 
 unit JvAppEvent;
 
-// (rom) this definitely needs an explanation
-{$C PRELOAD}
-
 interface
 
 uses
   {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Forms, ActnList,
+  Windows, Messages,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Qt, QTypes, Types, QGraphics, QControls, QForms, QActnList,
+  Qt, QTypes, Types,
   {$ENDIF VisualCLX}
-  SysUtils, Classes,
-  JvTypes, JvComponent, JvFinalize;
+  SysUtils, Classes, Graphics, Forms, ActnList,
+  JvTypes, JvComponent;
 
 const
   DefHintColor = clInfoBk;
@@ -187,6 +184,10 @@ type
   end;
 
 implementation
+
+uses
+  Controls,
+  JvFinalize;
 
 const
   sUnitName = 'JvAppEvent';

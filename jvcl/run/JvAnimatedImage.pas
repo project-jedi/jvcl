@@ -35,11 +35,11 @@ uses
   {$IFDEF LINUX}
   Libc,
   {$ENDIF LINUX}
-  Graphics, Controls, Forms,
+  Graphics, Controls,
   {$IFDEF VisualCLX}
   Qt, QWindows,
   {$ENDIF VisualCLX}
-  SysUtils, Classes,
+  Classes,
   JvTimer, JvComponent;
 
 type
@@ -193,6 +193,7 @@ type
 implementation
 
 uses
+  Forms,
   //JclSysUtils,
   JvConsts, JvJVCLUtils;
 

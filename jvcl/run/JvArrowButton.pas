@@ -37,14 +37,14 @@ unit JvArrowButton;
 interface
 
 uses
-  SysUtils, Classes,
+  Classes,
   {$IFDEF VCL}
-  Windows, Messages, Controls, Forms, Graphics, Buttons, CommCtrl, Menus,
+  Windows, Messages, CommCtrl,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QTypes, QControls, QForms, QGraphics, QButtons, QImgList, QMenus, Types,
-  QWindows,
+  QTypes, QImgList, Types, QWindows,
   {$ENDIF VisualCLX}
+  Controls, Graphics, Buttons, Menus,
   JvComponent, JvTypes;
 
 type
@@ -144,12 +144,7 @@ type
 implementation
 
 uses
-  {$IFDEF VCL}
-  Consts,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QConsts,
-  {$ENDIF VisualCLX}
+  SysUtils, Consts, Forms,
   JvConsts, JvThemes, JvJCLUtils;
 
 type
