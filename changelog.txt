@@ -1,5 +1,7 @@
 Changelog for JVCL 3.0
 ======================
+2003-12-27:
+- Renamed all OnMouseExit events to OnMouseLeave // (ahuser)
 2003-12-14:
 - New component TJvDropTarget (implements IDropTarget) in JvDragDrop.pas // (ahuser)
 2003-12-09:
