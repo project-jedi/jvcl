@@ -49,7 +49,6 @@ contains
   JvProgressUtils in '..\..\run\JvProgressUtils.pas',
   JvAutoSave in '..\..\run\JvAutoSave.pas',
   JvIconClipboardUtils in '..\..\run\JvIconClipboardUtils.pas',
-  JvDirectories in '..\..\run\JvDirectories.pas',
   JvBaseDlg in '..\..\run\JvBaseDlg.pas',
   JvJVCLAbout in '..\..\run\JvJVCLAbout.pas' {JvJVCLAboutForm},
   JvActions in '..\..\run\JvActions.pas',

@@ -312,7 +312,7 @@ uses
   {$ENDIF}
   MMSystem,
   ShlObj, CommCtrl,
-  JvDirectories,
+  JclSysInfo,
   JclStrings, JclGraphics;
 
 resourcestring
@@ -1213,27 +1213,21 @@ var
   Path: string;
   t: TSearchRec;
   Res: Integer;
-  Dirs: TJvDirectories;
 begin
   Result := TStringList.Create;
   Result.Clear;
-  Dirs := TJvDirectories.Create(nil);
+  Path := INcludeTrailingPathDelimiter(GetRecentFolder);
+  //search for all files
+  Res := FindFirst(Path + '*.*', faAnyFile, t);
   try
-    Path := Dirs.Recent + '\';
-    //search for all files
-    Res := FindFirst(Path + '*.*', faAnyFile, t);
-    try
-      while Res = 0 do
-      begin
-        if (t.Name <> '.') and (t.Name <> '..') then
-          Result.Add(Path + T.Name);
-        Res := FindNext(t);
-      end;
-    finally
-      FindClose(t);
+    while Res = 0 do
+    begin
+      if (t.Name <> '.') and (t.Name <> '..') then
+        Result.Add(Path + T.Name);
+      Res := FindNext(t);
     end;
   finally
-    Dirs.Free;
+    FindClose(t);
   end;
 end;
 

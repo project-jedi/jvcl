@@ -208,7 +208,7 @@ type
 implementation
 uses
   FileCtrl, TypInfo, Math, Dlgs, Consts, 
-  JvTypes, JvStrLEdit, JvDateTimeDlg, JvxDConst;
+  JvTypes, JvStringsForm, JvDateTimeForm, JvxDConst;
 
 resourcestring
   SItems = 'Items';

@@ -27,10 +27,19 @@ package JvDlgsD7D;
 {$IMPLICITBUILD ON}
 
 requires
+  rtl,
+  JvCoreD7R,
+  JvCoreD7D,
   JvDlgsD7R,
-  rtl;
+  designide,
+  vclactnband,
+  vclx,
+  vcl;
 
 contains
-  JvDlgsReg in '..\..\design\JvDlgsReg.pas';
+  JvDlgsReg in '..\..\design\JvDlgsReg.pas',
+  JvTipOfDayEditor in '..\..\design\JvTipOfDayEditor.pas',
+  JvCommonDialogDEditor in '..\..\design\JvCommonDialogDEditor.pas',
+  JvBaseDlgEditor in '..\..\design\JvBaseDlgEditor.pas';
 
 end.

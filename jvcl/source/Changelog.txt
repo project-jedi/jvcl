@@ -63,6 +63,12 @@ Changelog for JVCL 3.0
   JvxLoginDlg -> JvDBLoginDialog
   JvProps -> JvPropsStorage
   JvxAnimate -> JvAnimatedImage
+  JvMRUList -> JvMRUManager
+  JvMRU -> JvMRUList
+  JvObjPickerComp -> JvObjectPickerDialog
+  TJvControlPanel -> TJvControlPanelButton
+  TJvStartMenuBtn -> TJvStartMenuButton
+  TJvRecentMenuBtn -> TJvRecentMenuButton
 
   JvAppletProperty -> JvAppletEditor
   JvBehaviorLabelProperty -> JvBehaviorLabelEditor

@@ -39,7 +39,7 @@ type
   TJvStartMenuOption = (smCurrentUser, smCommon, smAllUsers);
   TJvStartMenuOptions = set of TJvStartMenuOption;
 
-  TJvStartMenuBtn = class(TJvCustomButton)
+  TJvStartMenuButton = class(TJvCustomButton)
   private
     FPopup: TPopupMenu;
     FDirs: TJvDirectories;
@@ -72,7 +72,7 @@ uses
 resourcestring
   RC_EmptyItem = '<Empty>';
 
-constructor TJvStartMenuBtn.Create(AOwner: TComponent);
+constructor TJvStartMenuButton.Create(AOwner: TComponent);
 var
   It: TMenuItem;
 begin
@@ -100,7 +100,7 @@ begin
   AddIconFrom(FDirs.WindowsDirectory);
 end;
 
-destructor TJvStartMenuBtn.Destroy;
+destructor TJvStartMenuButton.Destroy;
 begin
   FDirs.Free;
   DeleteItem(FPopup.Items);
@@ -108,7 +108,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvStartMenuBtn.Click;
+procedure TJvStartMenuButton.Click;
 var
   P: TPoint;
 begin
@@ -121,13 +121,13 @@ begin
     FOnPopup(Self);
 end;
 
-procedure TJvStartMenuBtn.UrlClick(Sender: TObject);
+procedure TJvStartMenuButton.UrlClick(Sender: TObject);
 begin
   if Assigned(FOnLinkClick) then
     FOnLinkClick(Self, (Sender as TMenuItem).Hint);
 end;
 
-procedure TJvStartMenuBtn.DeleteItem(Item: TMenuItem; LookTag: Boolean);
+procedure TJvStartMenuButton.DeleteItem(Item: TMenuItem; LookTag: Boolean);
 var
   I: Integer;
 begin
@@ -139,7 +139,7 @@ begin
     end;
 end;
 
-procedure TJvStartMenuBtn.AddIconFrom(Path: string);
+procedure TJvStartMenuButton.AddIconFrom(Path: string);
 var
   FileInfo: SHFILEINFO;
   Bmp: TBitmap;
@@ -153,12 +153,12 @@ begin
   end;
 end;
 
-procedure TJvStartMenuBtn.DirectoryClick(Sender: TObject);
+procedure TJvStartMenuButton.DirectoryClick(Sender: TObject);
 begin
   DynBuild((Sender as TMenuItem), (Sender as TMenuItem).Hint);
 end;
 
-procedure TJvStartMenuBtn.PopupCreate(Sender: TObject);
+procedure TJvStartMenuButton.PopupCreate(Sender: TObject);
 begin
   if smCurrentUser in Options then
     DynBuild(FPopup.Items, FDirs.StartMenu);
@@ -168,7 +168,7 @@ begin
     DynBuild(FPopup.Items, FDirs.AllUsersStartMenu);
 end;
 
-procedure TJvStartMenuBtn.DynBuild(Item: TMenuItem; Directory: string);
+procedure TJvStartMenuButton.DynBuild(Item: TMenuItem; Directory: string);
 var
   Res, FolderIndex: Integer;
   SearchRec: TSearchRec;

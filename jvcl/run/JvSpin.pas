@@ -41,11 +41,7 @@ unit JvSpin;
 interface
 
 uses
-  {$IFDEF WIN32}
   Windows, ComCtrls,
-  {$ELSE}
-  WinTypes, WinProcs,
-  {$ENDIF}
   Controls, ExtCtrls, Classes, Graphics, Messages, Forms, StdCtrls, Menus,
   SysUtils,
   JvEdit, JvMaskEdit;
