@@ -1,0 +1,167 @@
+object JvZLibMultipleMainForm: TJvZLibMultipleMainForm
+  Left = 306
+  Top = 160
+  Width = 368
+  Height = 231
+  VertScrollBar.Range = 165
+  HorzScrollBar.Range = 114
+  ActiveControl = edSrcFolder
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = fbsSingle
+  Caption = 'JvZlibMultiple  Demo'
+  Color = clButton
+  Font.Color = clText
+  Font.Height = 11
+  Font.Name = 'MS Shell Dlg 2'
+  Font.Pitch = fpVariable
+  Font.Style = []
+  Font.Weight = 40
+  Icon.Data = {
+    0000010001002020100001001000E80200001600000028000000200000004000
+    0000010004000000000080020000000000000000000000000000000000000000
+    0000000080000080000000808000800000008000800080800000C0C0C0008080
+    80000000FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF000000
+    000000000000000000000000000000000000CCCCCCCCCCCCCCCC000000000000
+    00CCCCBBBBBBCCCCCCCCCC00000000000CCCBBBCCCCBBBCCCCCCCCC000000000
+    0CCBBCCCCCCCCBBBCCCCCCC000000000CCCBBCCCCCCCCBBBCCCCCCCC00000000
+    CCBBBBCCCCCCCBBBBCCCCCCC00000000CCBBBBCCCCCCCCBBBBCCCCCC00000000
+    CCBBBBBCCCCCCCBBBBCCCCCC00000000CCBBBBBCCCCCCCBBBBCCCCCC00000000
+    CCBBBBBCCCCCCCBBBBCCCCCC00000000CCCBBBCCCCCCCCBBBBCCCCCC00000000
+    CCCCCCCCCCCCCCBBBBCCCCCC00000000CCCCCCCCCCCCCCBBBBCCCCCC00000000
+    CCCCCCCCCCCCCCBBBBCCCCCC00000000CCCCCCCCCCCCCCBBBBCCCCCC00000000
+    CCCCCCCCCCCCCCBBBBCCCCCC00000000CCCCCCCCCCCCCCBBBBCCCCCC00000000
+    CCCCCCCCCCCCCCBBBBCCCCCC00000000CCCCCCCCCCCCCCBBBBCCCCCC00000000
+    CCCCCCCCCCCCCCBBBBCCCCCC00000000CCCCCCCCCCCCCCBBBBCCCCCC00000000
+    CCCCCCCCCCCCCCBBBBCCCCCC00000000CCCCCCCCCCCCCCBBBBCCCCCC00000000
+    CCCCCCCCCCCCCCBBBBCCCCCC00000000CCCCCCCCCCCCCCBBBBCCCCCC00000000
+    CCCCCCCCCCCCCCBBBBCCCCCC00000000CCCCCCCCCCCCCCBBBBCCCCCC00000000
+    CCCCCCCCCCCCBBBBBBBCCCCC00000000CCCCCCCCCCBBBBBBBBBBBBCC00000000
+    CCCCCCCCCCCCCCCCCCCCCCCC000000000000000000000000000000000000FF00
+    00FFFC00003FF800001FF000000FF000000FE0000007E0000007E0000007E000
+    0007E0000007E0000007E0000007E0000007E0000007E0000007E0000007E000
+    0007E0000007E0000007E0000007E0000007E0000007E0000007E0000007E000
+    0007E0000007E0000007E0000007E0000007E0000007E0000007E0000007}
+  ParentFont = False
+  Position = poDesktopCenter
+  Scaled = False
+  OnShow = FormShow
+  PixelsPerInch = 96
+  object pbProgress: TProgressBar
+    Left = 0
+    Top = 215
+    Width = 368
+    Height = 16
+    Align = alBottom
+  end
+  object Label1: TLabel
+    Left = 8
+    Top = 8
+    Width = 68
+    Height = 13
+    Caption = 'Source folder:'
+  end
+  object Label2: TLabel
+    Left = 8
+    Top = 112
+    Width = 106
+    Height = 13
+    Caption = 'Decompress to folder:'
+  end
+  object Label3: TLabel
+    Left = 8
+    Top = 56
+    Width = 75
+    Height = 13
+    Caption = 'Destination file:'
+  end
+  object lblFilename: TLabel
+    Left = 8
+    Top = 196
+    Width = 31
+    Height = 13
+    Anchors = [akLeft, akBottom]
+    Caption = 'Ready'
+  end
+  object btnCompress: TButton
+    Left = 191
+    Top = 182
+    Width = 75
+    Height = 25
+    Anchors = [akRight, akBottom]
+    Caption = '&Compress'
+    Enabled = False
+    TabOrder = 6
+    OnClick = btnCompressClick
+  end
+  object btnUnCompress: TButton
+    Left = 281
+    Top = 182
+    Width = 75
+    Height = 25
+    Anchors = [akRight, akBottom]
+    Caption = '&Decompress'
+    Enabled = False
+    TabOrder = 7
+    OnClick = btnUnCompressClick
+  end
+  object edSrcFolder: TEdit
+    Left = 8
+    Top = 24
+    Width = 320
+    Height = 21
+    Anchors = [akLeft, akTop, akRight]
+    TabOrder = 0
+    Text = 'C:\temp'
+    OnChange = edSrcFolderChange
+  end
+  object edDestFolder: TEdit
+    Left = 8
+    Top = 128
+    Width = 320
+    Height = 21
+    Anchors = [akLeft, akTop, akRight]
+    TabOrder = 4
+    Text = 'C:\temp\dc'
+    OnChange = edDestFolderChange
+  end
+  object edFilename: TEdit
+    Left = 8
+    Top = 72
+    Width = 320
+    Height = 21
+    Anchors = [akLeft, akTop, akRight]
+    TabOrder = 2
+    Text = 'C:\temp\temp.z'
+    OnChange = edSrcFolderChange
+  end
+  object btnSrc: TButton
+    Left = 333
+    Top = 24
+    Width = 21
+    Height = 21
+    Anchors = [akTop, akRight]
+    Caption = '...'
+    TabOrder = 1
+    OnClick = btnSrcClick
+  end
+  object btnDestFile: TButton
+    Left = 333
+    Top = 72
+    Width = 21
+    Height = 21
+    Anchors = [akTop, akRight]
+    Caption = '...'
+    TabOrder = 3
+    OnClick = btnDestFileClick
+  end
+  object btnDestFolder: TButton
+    Left = 333
+    Top = 128
+    Width = 21
+    Height = 21
+    Anchors = [akTop, akRight]
+    Caption = '...'
+    TabOrder = 5
+    OnClick = btnDestFolderClick
+  end
+end
