@@ -20,7 +20,9 @@ PROJECTS = JvCoreD6R.bpl JvCoreD6D.bpl JvSystemD6R.bpl \
   JvPrintPreviewD6R.bpl JvPrintPreviewD6D.bpl JvPageCompsD6R.bpl \
   JvPageCompsD6D.bpl JvValidatorsD6R.bpl JvValidatorsD6D.bpl JvUIBD6R.bpl \
   JvUIBD6D.bpl JvWizardD6R.bpl JvWizardD6D.bpl JvTimeFrameworkD6R.bpl \
-  JvTimeFrameworkD6D.bpl JvHMID6R.bpl JvHMID6D.bpl
+  JvTimeFrameworkD6D.bpl JvHMID6R.bpl JvHMID6D.bpl JvManagedThreadsD6R.bpl \
+  JvManagedThreadsD6D.bpl JvXPCtrlsD6R.bpl JvXPCtrlsD6D.bpl \
+  JvDockingD6R.bpl JvDockingD6D.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -161,4 +163,22 @@ JvHMID6R.bpl: D6\JvHMID6R.dpk
   $(DCC)
 
 JvHMID6D.bpl: D6\JvHMID6D.dpk
+  $(DCC)
+
+JvManagedThreadsD6R.bpl: d6\JvManagedThreadsD6R.dpk
+  $(DCC)
+
+JvManagedThreadsD6D.bpl: d6\JvManagedThreadsD6D.dpk
+  $(DCC)
+
+JvXPCtrlsD6R.bpl: d6\JvXPCtrlsD6R.dpk
+  $(DCC)
+
+JvXPCtrlsD6D.bpl: d6\JvXPCtrlsD6D.dpk
+  $(DCC)
+
+JvDockingD6R.bpl: d6\JvDockingD6R.dpk
+  $(DCC)
+
+JvDockingD6D.bpl: d6\JvDockingD6D.dpk
   $(DCC)
