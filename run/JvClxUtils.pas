@@ -17,14 +17,14 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-10-25
+Last Modified: 2003-10-31
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvClxUtils;
 interface
@@ -436,6 +436,9 @@ end;
 
 {$ENDIF COMPLIB_CLX}
 
+type
+  TOpenCanvas = class(TCanvas);
+
 function ClxDrawText(Canvas: TCanvas; var Caption: string; var R: TRect;
   Flags: Integer): Integer;
 {$IFNDEF COMPLIB_VCL}
@@ -443,7 +446,9 @@ var W: WideString;
 {$ENDIF}
 begin
 {$IFDEF COMPLIB_VCL}
+  TOpenCanvas(Canvas).Changing;
   Result := DrawText(Canvas.Handle, PChar(Caption), Length(Caption), R, Flags);
+  TOpenCanvas(Canvas).Changed;
 {$ELSE}
   W := Caption;
   Result := ClxDrawTextW(Canvas, W, R, Flags);
@@ -461,7 +466,9 @@ var
 {$ENDIF}
 begin
 {$IFDEF COMPLIB_VCL}
+  TOpenCanvas(Canvas).Changing;
   Result := DrawTextW(Canvas.Handle, PWideChar(Caption), Length(Caption), R, Flags);
+  TOpenCanvas(Canvas).Changed;
 {$ENDIF}
 {$IFDEF COMPLIB_CLX}
   Text := Caption;
@@ -512,8 +519,10 @@ function ClxExtTextOut(Canvas: TCanvas; X, Y: Integer; Flags: Integer; Rect: PRe
   const Text: String; lpDx: Pointer): Boolean;
 begin
 {$IFDEF COMPLIB_VCL}
+  TOpenCanvas(Canvas).Changing;
   Result := ExtTextOut(Canvas.Handle, X, Y, Flags, Rect, PChar(Text),
     Length(Text), lpDx);
+  TOpenCanvas(Canvas).Changed;
 {$ELSE}
   Result := ClxExtTextOutW(Canvas, X, Y, Flags, Rect, WideString(Text), lpDx);
 {$ENDIF}
@@ -534,8 +543,10 @@ var
 {$ENDIF}
 begin
 {$IFDEF COMPLIB_VCL}
+  TOpenCanvas(Canvas).Changing;
   Result := ExtTextOutW(Canvas.Handle, X, Y, Flags, Rect, PWideChar(Text),
     Length(Text), lpDx);
+  TOpenCanvas(Canvas).Changed;
 {$ENDIF COMPLIB_VCL}
 {$IFDEF COMPLIB_CLX}
   with Canvas do
