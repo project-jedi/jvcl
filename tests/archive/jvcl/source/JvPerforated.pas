@@ -118,6 +118,7 @@ function TJvPerforated.FormPosSizeChange(var Msg: TMessage): Boolean;
 begin
   if (Msg.Msg = WM_MOVE) or (Msg.Msg = WM_SIZE) then
     SetTransparent(FTransparent);
+  Result := false;
 end;
 
 {*******************************************************}
