@@ -228,7 +228,7 @@ begin
   // This is slower than GetTextExtentPoint but it does consider hotkeys
   if Caption <> '' then
   begin
-    DrawText(FCanvas.Handle, PChar(Caption), Length(Caption), R,
+    DrawTextW(FCanvas.Handle, PWideChar(Caption), Length(Caption), R,
       Flags[WordWrap] or DT_LEFT or DT_NOCLIP or DT_CALCRECT);
     AWidth := (R.Right - R.Left) + ASize.cx + 8;
     AHeight := R.Bottom - R.Top;

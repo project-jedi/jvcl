@@ -30,7 +30,10 @@ requires
   JvQCoreD7D,
   JvQStdCtrlsD7R,
   designide,
-  visualclx;
+  visualclx,
+  rtl,
+  JvQCoreD7R,
+  DJcl;
 
 contains
   JvQCheckedItemsForm in '..\..\qdesign\JvQCheckedItemsForm.pas' {JvCheckItemsEditor},

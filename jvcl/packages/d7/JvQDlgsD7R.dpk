@@ -29,7 +29,10 @@ package JvQDlgsD7R;
 requires
   JvQCoreD7R,
   JvQStdCtrlsD7R,
-  JvQSystemD7R;
+  JvQSystemD7R,
+  rtl,
+  visualclx,
+  DJcl;
 
 contains
   JvQDualListForm in '..\..\qrun\JvQDualListForm.pas' {JvDualListForm},
@@ -37,6 +40,7 @@ contains
   JvQProgressComponent in '..\..\qrun\JvQProgressComponent.pas',
   JvQProgressDialog in '..\..\qrun\JvQProgressDialog.pas',
   JvQProgressForm in '..\..\qrun\JvQProgressForm.pas' {frmProgress},
-  JvQDualList in '..\..\qrun\JvQDualList.pas';
+  JvQDualList in '..\..\qrun\JvQDualList.pas',
+  JvQCommonExecDlg in '..\..\qrun\JvQCommonExecDlg.pas';
 
 end.
