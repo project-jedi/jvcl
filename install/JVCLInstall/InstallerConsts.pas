@@ -170,16 +170,16 @@ resourcestring
   RsErrorInstallingJCL = 'Cannot start the JCL Installer.';
   RsDelphiBCBUpdateRequired = 'Delphi/C++Builder update required';
   RsDownloadUpdatesFrom = 'Download from';
-  RsJCLVersionRequired = 'JCL 1.9 or higher required';
+  RsJCLVersionRequired = 'JCL %s or higher required';
   RsDownloadOrSelectJclDir = 'Download or select a JCL directory.|' +
     'http://homepages.borland.com/jedi/jcl/'; // http://jcl.sourceforge.net
   RsInstalledJVCLVersion = 'installed JVCL version: %d';
   RsInstallJCL = 'Install JCL';
-  RsNoJclVersionFound = 'No JCL 1.9 found.';
+  RsNoJclVersionFound = 'No JCL %s found.';
 
   RsJCLDirectoryCaption = '&JCL directory:';
   RsDeleteJVCLFilesCaption = '&Delete JVCL files (dcu,bpl,dcp, obj,bpi,lib,tds)';
-  RsJCLDirectorySelectionBtnHint = 'Select JCL 1.90 installation directory...';
+  RsJCLDirectorySelectionBtnHint = 'Select JCL %s installation directory...';
 
  // Main.pas
 resourcestring

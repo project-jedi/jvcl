@@ -229,8 +229,8 @@ begin
   if TCheckBox(Sender).State = cbGrayed then
     TCheckBox(Sender).State := cbChecked;
 
-  CheckBoxDeveloperInstall.Enabled := not CheckBoxCompileOnly.Checked;
-  CheckBoxCleanPalettes.Enabled := not CheckBoxCompileOnly.Checked;
+  CheckBoxDeveloperInstall.Enabled := CheckBoxCompileOnly.Checked;
+  CheckBoxCleanPalettes.Enabled := CheckBoxCompileOnly.Checked;
 
   if ComboBoxTargetIDE.ItemIndex <= 0 then
   begin
@@ -241,7 +241,7 @@ begin
     else if Sender = CheckBoxBuild then
       Installer.Data.Build := Integer(CheckBoxBuild.Checked)
     else if Sender = CheckBoxCompileOnly then
-      Installer.Data.CompileOnly := Integer(CheckBoxCompileOnly.Checked)
+      Installer.Data.CompileOnly := Integer(not CheckBoxCompileOnly.Checked)
     else if Sender = CheckBoxGenerateMapFiles then
       Installer.Data.GenerateMapFiles := Integer(CheckBoxGenerateMapFiles.Checked)
     ;
@@ -256,7 +256,7 @@ begin
     else if Sender = CheckBoxBuild then
       TargetConfig.Build := CheckBoxBuild.Checked
     else if Sender = CheckBoxCompileOnly then
-      TargetConfig.CompileOnly := CheckBoxCompileOnly.Checked
+      TargetConfig.CompileOnly := not CheckBoxCompileOnly.Checked
     else if Sender = CheckBoxGenerateMapFiles then
       TargetConfig.GenerateMapFiles := CheckBoxGenerateMapFiles.Checked
     ;
@@ -344,7 +344,12 @@ begin
       CheckBoxDeveloperInstall.State := TCheckBoxState(Installer.Data.DeveloperInstall);
       CheckBoxCleanPalettes.State := TCheckBoxState(Installer.Data.CleanPalettes);
       CheckBoxBuild.State := TCheckBoxState(Installer.Data.Build);
-      CheckBoxCompileOnly.State := TCheckBoxState(Installer.Data.CompileOnly);
+      case TCheckBoxState(Installer.Data.CompileOnly) of
+        cbUnchecked: CheckBoxCompileOnly.State := cbChecked; // invert
+        cbChecked:  CheckBoxCompileOnly.State := cbUnchecked; // invert
+      else
+        CheckBoxCompileOnly.State := cbGrayed;
+      end;
       CheckBoxGenerateMapFiles.State := TCheckBoxState(Installer.Data.GenerateMapFiles);
     end
     else
@@ -354,7 +359,7 @@ begin
       CheckBoxDeveloperInstall.Checked := TargetConfig.DeveloperInstall;
       CheckBoxCleanPalettes.Checked := TargetConfig.CleanPalettes;
       CheckBoxBuild.Checked := TargetConfig.Build;
-      CheckBoxCompileOnly.Checked := TargetConfig.CompileOnly;
+      CheckBoxCompileOnly.Checked := not TargetConfig.CompileOnly;
       CheckBoxGenerateMapFiles.Checked := TargetConfig.GenerateMapFiles;
 
       FrameDirEditBrowseBPL.EditDirectory.Text := TargetConfig.BplDir;

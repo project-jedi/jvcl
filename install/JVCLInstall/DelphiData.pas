@@ -83,6 +83,7 @@ type
     destructor Destroy; override;
 
     function IsBCB: Boolean;
+    function IsBDS: Boolean;
     function IsPersonal: Boolean;
     function DisplayName: string;
 
@@ -150,6 +151,11 @@ type
 
 procedure ConvertPathList(const Paths: string; List: TStrings); overload;
 function ConvertPathList(List: TStrings): string; overload;
+
+{$IFDEF COMPILER5}
+function AnsiStartsText(const SubStr, Text: string): Boolean;
+function ExcludeTrailingPathDelimiter(const Path: string): string;
+{$ENDIF COMPIELR5}
 
 implementation
 
@@ -227,6 +233,8 @@ begin
     LoadTargets('Delphi'); // do not localize
   if not CmdOptions.IgnoreBCB then
     LoadTargets('C++Builder'); // do not localize
+  if not CmdOptions.IgnoreDelphi then
+    LoadTargets('BDS'); // do not localize
 end;
 
 function TCompileTargetList.GetItems(Index: Integer): TCompileTarget;
@@ -249,7 +257,8 @@ begin
       try
         Reg.GetKeyNames(List);
         for i := 0 to List.Count - 1 do
-          Add(TCompileTarget.Create(SubKey, List[i]));
+          if List[i][1] in ['1'..'9'] then // only version numbers (not "BDS\DBExpress")
+            Add(TCompileTarget.Create(SubKey, List[i]));
       finally
         List.Free;
       end;
@@ -316,7 +325,7 @@ begin
       NewS := S;
 
      // available macros
-      if (S = 'delphi') or (S = 'bcb') then // do not localize
+      if (S = 'delphi') or (S = 'bcb') or (S = 'bds') then // do not localize
         NewS := FRootDir;
 
       if NewS <> S then
@@ -334,12 +343,14 @@ end;
 function TCompileTarget.InsertDirMacros(const Dir: string): string;
 begin
   Result := Dir;
-  if AnsiStartsText(RootDir + '\', Dir) then
+  if AnsiStartsText(RootDir + PathDelim, Dir) then
   begin
     if IsBCB then
       Result := '$(BCB)' // do not localize
+    else if not IsBDS then
+      Result := '$(DELPHI)' // do not localize
     else
-      Result := '$(DELPHI)'; // do not localize
+      Result := '$(BDS)'; // do not localize
     Result := Result + Copy(Dir, Length(RootDir) + 1, MaxInt);
   end;
 end;
@@ -392,6 +403,11 @@ begin
   Result := CompareText(Name, 'Delphi') <> 0;
 end;
 
+function TCompileTarget.IsBDS: Boolean;
+begin
+  Result := CompareText(Name, 'BDS') <> 0;
+end;
+
 function TCompileTarget.IsPersonal: Boolean;
 begin
   Result := (CompareText(Edition, 'PER') = 0) or // do not localize
@@ -411,9 +427,18 @@ begin
 
     if Reg.OpenKeyReadOnly(RegistryKey) then
     begin
+      if Reg.ValueExists('Edition') then
+        FEdition := Reg.ReadString('Edition')
+      else
+      if Reg.ValueExists('Version') then
+        FEdition := Reg.ReadString('Version') // do not localize
+      else
+        FEdition := 'Pers';
+      if Reg.ValueExists('ProductVersion') then
+        FVersionStr := Reg.ReadString('ProductVersion');
+
       FExecutable := Reg.ReadString('App'); // do not localize
-      FEdition := Reg.ReadString('Version'); // do not localize
-      FRootDir := Reg.ReadString('RootDir'); // do not localize
+      FRootDir := ExcludeTrailingPathDelimiter(Reg.ReadString('RootDir')); // do not localize
 
      // obtain updates state
       List := TStringList.Create;
