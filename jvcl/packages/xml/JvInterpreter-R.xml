@@ -12,18 +12,18 @@
     <Package Name="vcl50" Targets="C5" Condition=""/>
     <Package Name="vclx50" Targets="C5" Condition=""/>
     <Package Name="vclbde50" Targets="C5" Condition=""/>
-    <Package Name="qrpt50" Targets="C5,D5,D5s" Condition=""/>
+    <Package Name="qrpt50" Targets="C5,D5" Condition=""/>
     <Package Name="CJCL50" Targets="C5" Condition=""/>
-    <Package Name="inet50" Targets="C5,D5,D5s" Condition=""/>
-    <Package Name="vcldb50" Targets="C5,D5,D5s" Condition=""/>
+    <Package Name="inet50" Targets="C5,D5" Condition=""/>
+    <Package Name="vcldb50" Targets="C5,D5" Condition=""/>
     <Package Name="rtl" Targets="C6,C6p,D7,D7p" Condition=""/>
     <Package Name="vcl" Targets="C6,C6p,D7,D7p" Condition=""/>
-    <Package Name="dbrtl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
-    <Package Name="bdertl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
-    <Package Name="qrpt" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
+    <Package Name="dbrtl" Targets="C6,D6,D7" Condition=""/>
+    <Package Name="bdertl" Targets="C6,D6,D7" Condition=""/>
+    <Package Name="qrpt" Targets="C6,D6,D7" Condition=""/>
     <Package Name="CJCL60" Targets="C6,C6p" Condition=""/>
-    <Package Name="inet" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
-    <Package Name="vcldb" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
+    <Package Name="inet" Targets="C6,D6,D7" Condition=""/>
+    <Package Name="vcldb" Targets="C6,D6,D7" Condition=""/>
     <Package Name="vclx" Targets="C6,C6p,D7,D7p" Condition=""/>
     <Package Name="vcljpg" Targets="D7,D7p" Condition=""/>
     <Package Name="DJCL70" Targets="D7,D7p" Condition=""/>
@@ -36,21 +36,21 @@
     <File Name="..\..\run\JvInterpreter_ComCtrls.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvInterpreter_Contnrs.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvInterpreter_Controls.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvInterpreter_Db.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvInterpreter_DbCtrls.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvInterpreter_DbGrids.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvInterpreter_DBTables.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_Db.pas" Targets="C5,C6,D6,D7" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_DbCtrls.pas" Targets="C5,C6,D6,D7" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_DbGrids.pas" Targets="C5,C6,D6,D7" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_DBTables.pas" Targets="C5,C6,D6,D7" Formname="" Condition=""/>
     <File Name="..\..\run\JvInterpreter_Dialogs.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvInterpreter_ExtCtrls.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvInterpreter_Forms.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvInterpreter_Graphics.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvInterpreter_Grids.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvInterpreter_httpapp.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_httpapp.pas" Targets="C5,C6,D6,D7" Formname="" Condition=""/>
     <File Name="..\..\run\JvInterpreter_JvEditor.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvInterpreter_JvInterpreter.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvInterpreter_JvUtils.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvInterpreter_Menus.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvInterpreter_Quickrpt.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_Quickrpt.pas" Targets="C5,C6,D6,D7" Formname="" Condition=""/>
     <File Name="..\..\run\JvInterpreter_StdCtrls.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvInterpreter_System.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvInterpreter_SysUtils.pas" Targets="all" Formname="" Condition=""/>
