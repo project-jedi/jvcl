@@ -60,7 +60,7 @@ unit JvXPBar;
 //  bug in Windows XP and 2003 and once all machines
 //  "OUT THERE" have been updated, this should be removed
 //  from the code.
-{$define XP_TRANSPARENCY_FIX}
+{.$define XP_TRANSPARENCY_FIX}
 
 interface
 
