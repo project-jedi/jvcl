@@ -44,13 +44,16 @@ type
     FPersonalDir: string;
     FPathDelimiter: string;
     FIsClx: Boolean;
+    FDefines: TStringList;
   public
     constructor Create(AOwner: TPackageModel; XmlNode: TJvSimpleXMLElem);
+    destructor Destroy; override;
 
     property Name: string read FName;
     property PersonalName: string read FPersonalName;
     property PersonalDir: string read FPersonalDir;
     property PathDelimiter: string read FPathDelimiter;
+    property Defines: TStringList read FDefines;
     property IsClx: Boolean read FIsClx;
 
     property Owner: TPackageModel read FOwner;
@@ -425,8 +428,18 @@ begin
   FPersonalDir := XmlNode.Properties.Value('pdir');
   FPathDelimiter := XmlNode.Properties.Value('pathsep', '\');
   FIsClx := XmlNode.Properties.BoolValue('IsClx', False);
+
+  FDefines := TStringList.Create;
+  FDefines.Sorted := True;
+  FDefines.Duplicates := dupIgnore;
+  FDefines.CommaText := XmlNode.Properties.Value('defines');
 end;
 
+destructor TModelTarget.Destroy;
+begin
+  FDefines.Free;
+  inherited Destroy;
+end;
 
 { TModelAlias }
 
