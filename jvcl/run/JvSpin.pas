@@ -615,23 +615,6 @@ begin
     Result := AValue;
 end;
 
-function TextToValText(const AValue: string): string;
-begin
-  Result := DelRSpace(AValue);
-  if DecimalSeparator <> ThousandSeparator then
-    Result := DelChars(Result, ThousandSeparator);
-
-  if (DecimalSeparator <> '.') and (ThousandSeparator <> '.') then
-    Result := ReplaceStr(Result, '.', DecimalSeparator);
-  if (DecimalSeparator <> ',') and (ThousandSeparator <> ',') then
-    Result := ReplaceStr(Result, ',', DecimalSeparator);
-
-  if Result = '' then
-    Result := '0'
-  else
-  if Result = '-' then
-    Result := '-0';
-end;
 
 //=== TJvCustomSpinEdit ======================================================
 
