@@ -76,7 +76,7 @@ type
     FOnMouseMove: TMouseMoveEvent;
     FOnMouseDown: TMouseEvent;
     FOnMouseUp: TMouseEvent;
-    FApplicationVisible: Boolean;
+    FApplicationVisible: Boolean; { Used??}
     FAnimated: Boolean;
     FDelay: Cardinal;
     FImgList: TImageList;
@@ -96,6 +96,7 @@ type
     FVisibility: TTrayVisibilities;
     FOldHint: string;
     FSnap: Boolean;
+    FHooked: Boolean;
     procedure OnAnimateTimer(Sender: TObject);
     procedure IconChanged(Sender: TObject);
     procedure SetActive(Value: Boolean);
@@ -109,6 +110,8 @@ type
     procedure SetNumber(const Value: Integer);
     procedure SetVisibility(const Value: TTrayVisibilities);
   protected
+    procedure Hook;
+    procedure UnHook;
     procedure WndProc(var Mesg: TMessage);
     procedure DoMouseMove(Shift: TShiftState; X, Y: Integer);
     procedure DoMouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -127,6 +130,8 @@ type
       TBalloonType = btNone; Delay: Integer = 5000);
     function AcceptBalloons: Boolean;
   published
+    { (rb) Active should be set in Loaded; Icon isn't set when Active is now
+      set to True etc. }
     property Active: Boolean read FActive write SetActive default False;
     property Animated: Boolean read FAnimated write SetAnimated default False;
     property Icon: TIcon read FIcon write SetIcon;
@@ -151,6 +156,9 @@ type
   end;
 
 implementation
+
+uses
+  JvFunctions;
 
 const
   WM_CALLBACKMESSAGE = WM_USER + 1;
@@ -218,21 +226,16 @@ begin
       @FRegisterServiceProcess := GetProcAddress(FDllHandle, 'RegisterServiceProcess')
     else
       @FRegisterServiceProcess := nil;
-
-    if not (csDesigning in ComponentState) then
-      Application.HookMainWindow(ApplicationHook);
   end;
 end;
 
 destructor TJvTrayIcon.Destroy;
 begin
+  UnHook;
   if not (csDestroying in Application.ComponentState) then
-  begin
     SetTask(False);
-    Application.UnHookMainWindow(ApplicationHook);
-  end;
-  if FTimer <> nil then
-    FTimer.Free;
+
+  FTimer.Free;
   SetActive(False);
   FIcon.Free;
   {$IFDEF COMPILER6_UP}
@@ -248,31 +251,9 @@ begin
 end;
 
 function TJvTrayIcon.AcceptBalloons: Boolean;
-var
-  Info: Pointer;
-  InfoSize: DWORD;
-  FileInfo: PVSFixedFileInfo;
-  FileInfoSize: DWORD;
-  Tmp: DWORD;
-  Major: Integer;
 begin
   //Balloons are only accepted with shell32.dll 5.0+
-  Result := False;
-  try
-    InfoSize := GetFileVersionInfoSize('shell32.dll', Tmp);
-    if InfoSize = 0 then
-      Exit;
-    GetMem(Info, InfoSize);
-    try
-      GetFileVersionInfo('shell32.dll', 0, InfoSize, Info);
-      VerQueryValue(Info, '\', Pointer(FileInfo), FileInfoSize);
-      Major := FileInfo.dwFileVersionMS shr 16;
-      Result := Major >= 5;
-    finally
-      FreeMem(Info, FileInfoSize);
-    end;
-  except
-  end;
+  Result := GetShellVersion >= $00050000;
 end;
 
 procedure TJvTrayIcon.SetTask(const Value: Boolean);
@@ -402,10 +383,19 @@ end;
 procedure TJvTrayIcon.SetActive(Value: Boolean);
 //http://msdn.microsoft.com/library/default.asp?url=/library/en-us/shellcc/platform/Shell/Structures/NOTIFYICONDATA.asp
 begin
-  FActive := Value;
+  if Value then
+    Hook
+  else
+    UnHook;
+
   if Value and ((not (csDesigning in ComponentState)) or (tvVisibleDesign in Visibility)) then
   begin
-    if (FIcon = nil) or (FIcon.Empty) then
+    FOldTray := FindWindow('Shell_TrayWnd', nil);
+
+    if (FIcon = nil) or FIcon.Empty then
+      { (rb) This triggers the IconChanged event, note that Active is loaded
+        before Icon from the stream, thus FIcon is always empty at this
+        point when loaded from the dfm stream }
       FIcon.Assign(Application.Icon);
     with FIc do
     begin
@@ -429,11 +419,11 @@ begin
     Shell_NotifyIcon(NIM_ADD, PNotifyIconData(@FIc));
     if AcceptBalloons then
       Shell_NotifyIcon(NIM_SETVERSION, PNotifyIconData(@FIc));
-
-    FOldTray := FindWindow('Shell_TrayWnd', nil);
   end
   else
     Shell_NotifyIcon(NIM_DELETE, PNotifyIconData(@FIc));
+
+  FActive := Value;
 end;
 
 procedure TJvTrayIcon.SetApplicationVisible(Value: Boolean);
@@ -453,7 +443,10 @@ begin
   if (Application.MainForm <> nil) and (Application.MainForm.WindowState <> wsMinimized) then
   begin
     if Snap then
+    begin
       Application.MainForm.Visible := False;
+      Application.ShowMainForm := False;
+    end;
     Application.Minimize;
   end;
   ShowWindow(Application.Handle, SW_HIDE);
@@ -683,9 +676,29 @@ end;
 function TJvTrayIcon.ApplicationHook(var Msg: TMessage): Boolean;
 begin
   if (Msg.Msg = WM_SYSCOMMAND) and (Msg.WParam = SC_MINIMIZE) and
-    (tvAutoHide in Visibility) and (Active) then
+    (tvAutoHide in Visibility) and Active then
     ApplicationVisible := False;
   Result := False;
+end;
+
+procedure TJvTrayIcon.Hook;
+begin
+  if FHooked or (csDesigning in ComponentState) then
+    Exit;
+
+  FHooked := True;
+
+  Application.HookMainWindow(ApplicationHook);
+end;
+
+procedure TJvTrayIcon.UnHook;
+begin
+  if not FHooked then
+    Exit;
+
+  FHooked := False;
+
+  Application.UnHookMainWindow(ApplicationHook);
 end;
 
 end.
