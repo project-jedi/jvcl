@@ -1130,7 +1130,8 @@ var
 
   procedure GetCustomColors;
   begin
-    if BaseRegistryKey = '' then Exit;
+    if BaseRegistryKey = '' then
+      Exit;
     IniFile := TRegIniFile.Create(BaseRegistryKey);
     try
       IniFile.ReadSectionValues(SCustomColors, ColorDialog.CustomColors);

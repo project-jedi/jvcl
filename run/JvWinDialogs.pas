@@ -1575,7 +1575,8 @@ begin
     if Result then
       FileName := BufW;
   end
-  else if Assigned(SHChangeIcon) then
+  else
+  if Assigned(SHChangeIcon) then
   begin
     StrPCopy(Buf, FileName);
     Result := SHChangeIcon(GetForegroundWindow, Buf, SizeOf(Buf), FIconIndex) = 1;

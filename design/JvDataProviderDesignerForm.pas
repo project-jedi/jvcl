@@ -313,7 +313,8 @@ var
   ProviderImpl: TComponent;
 begin
   fmeTreeList.Provider.SetProviderIntf(Value);
-  if csDestroying in ComponentState then Exit;
+  if csDestroying in ComponentState then
+    Exit;
   if Provider <> nil then
   begin
     FRootItem := TJvProviderRootItem.Create(Provider as IJvDataItems);
