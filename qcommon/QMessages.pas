@@ -43,9 +43,12 @@ interface
 
 uses
   SysUtils, Classes, Types, SyncObjs,
-
+  {$IFDEF MSWINDOWS}
   Windows,
-
+  {$ENDIF}
+  {$IFDEF LINUX}
+  Libc,
+  {$ENDIF}
   Qt, QTypes, QForms, QControls, QWindows;
 
 const
