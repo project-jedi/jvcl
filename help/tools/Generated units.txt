@@ -61,6 +61,7 @@ JvDBCombobox
 JvDBControls
 JvDBDatePickerEdit
 JvDBDateTimePicker
+JvDBDotNetControls
 JvDBLookupComboEdit
 JvDBLookupTreeView
 JvDBProgressBar
@@ -75,6 +76,15 @@ JvDiagramShape
 JvDialogs
 JvDice
 JvDirectories
+JvDockControlForm
+JvDockHashTable
+JvDockInfo
+JvDockSupportClass
+JvDockSupportControl
+JvDockSupportProc
+JvDockTree
+JvDotNetControls
+JvDotNetUtils
 JvDrawImage
 JvDsgnIntf
 JvDualList
@@ -342,6 +352,12 @@ JvxClock
 JvxCtrls
 JvXmlTree
 JvXorCipher
+JvXPBar
+JvXPButtons
+JvXPCheckCtrls
+JvXPContainer
+JvXPCore
+JvXPCoreUtils
 JvxSlider
 JvYearGrid
 JvZlibMultiple
