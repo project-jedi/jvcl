@@ -85,6 +85,7 @@ implementation
 procedure TForm1.FormCreate(Sender: TObject);
 begin
    uilPluginManager.LoadPlugins;
+   uilPluginManager.GetLoadedPlugins(clbPlugins.Items);
 end;
 
 procedure TForm1.uilPluginManagerBeforeLoad(Sender: TObject;
