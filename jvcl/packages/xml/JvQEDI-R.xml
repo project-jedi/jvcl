@@ -13,6 +13,6 @@
     <Package Name="dataclx" Targets="K3" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\qrun\JvQEDIDBBuffering.pas" Targets="77clx, K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQEDIDBBuffering.pas" Targets="d7clx, K3" Formname="" Condition=""/>
   </Contains>
 </Package>
