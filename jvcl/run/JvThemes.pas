@@ -776,7 +776,9 @@ procedure DrawThemedBackground(Control: TControl; Canvas: TCanvas;
 procedure DrawThemedBackground(Control: TControl; DC: HDC; const R: TRect;
   Brush: HBRUSH; NeedsParentBackground: Boolean = True); overload;
 
-{ DrawThemesFrameControl draws a themed frame control when theming is enabled. }
+{ DrawThemesFrameControl draws a themed frame control when theming is enabled.
+  Control = nil: the frame control will be painted themed only if the control
+                 is not in csDesigning mode. }
 function DrawThemedFrameControl(Control: TControl; DC: HDC; const Rect: TRect;
   uType, uState: UINT): BOOL;
 
@@ -902,7 +904,7 @@ var
 begin
   Result := False;
   {$IFDEF JVCLThemesEnabled}
-  if (not (csDesigning in Control.ComponentState)) and
+  if (Control <> nil) and (not (csDesigning in Control.ComponentState)) and
     ThemeServices.ThemesEnabled then
   begin
     R := Rect;
