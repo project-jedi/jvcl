@@ -3,6 +3,7 @@ program MakeDOF;
 
 uses
   MakeDOFUtils in 'MakeDOFUtils.pas',
+  JFileSearch in '..\Common\JFileSearch.pas',
   JTools in '..\Common\JTools.pas';
 
 begin
