@@ -234,7 +234,7 @@ begin
     not FDataLink.Field.IsValidChar(Key) then
   begin
     if BeepOnError then
-      Beep;
+      SysUtils.Beep;
     Key := #0;
   end;
   case Key of
