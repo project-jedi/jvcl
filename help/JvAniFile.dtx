@@ -1,71 +1,56 @@
-##Package: StdCtrls
+##Package: ??
 ##Status: Generated
 ----------------------------------------------------------------------------------------------------
-@@JvUpDown.pas
+@@JvAniFile.pas
 Summary
-  Contains the TJvUpDown component.
+  Contains the TJvAniFile component.
 <INCLUDE JVCL.UnitText.dtx>
 Author
-  Peter Below
+  Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 ----------------------------------------------------------------------------------------------------
-@@TJvAlignButton
-<TITLE TJvAlignButton type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-@@TJvAlignButton.abLeft
-  Description for abLeft
-@@TJvAlignButton.abRight
-  Description for abRight
-@@TJvAlignButton.abNone
-  Description for abNone
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDomainUpDown
+@@TJvAnimatedCursorImage
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomDomainUpDown.Items
+@@TJvAnimatedCursorImage.Assign
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+Parameters
+  Source - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomDomainUpDown.Text
+@@TJvAnimatedCursorImage.AssignTo
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+Parameters
+  Dest - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomUpDown
+@@TJvAnimatedCursorImage.AssignToBitmap
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvCustomUpDown.AcceptInteger
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
+Parameters
+  Bitmap         - Description for this parameter
+  BackColor      - Description for this parameter
+  DecreaseColors - Description for this parameter
+  Vertical       - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomUpDown.AlignButton
+@@TJvAnimatedCursorImage.Clear
 Summary
   Write here a summary (1 line)
 Description
@@ -74,7 +59,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomUpDown.Associate
+@@TJvAnimatedCursorImage.Creator
 Summary
   Write here a summary (1 line)
 Description
@@ -83,7 +68,19 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomUpDown.Format
+@@TJvAnimatedCursorImage.Draw
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ACanvas - Description for this parameter
+  ARect   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvAnimatedCursorImage.FrameCount
 Summary
   Write here a summary (1 line)
 Description
@@ -92,27 +89,18 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomUpDown.HintColor
+@@TJvAnimatedCursorImage.Frames
 Summary
-  Determines the color of the hint boxes for the Help Hints for the <xxx>.
+  Write here a summary (1 line)
 Description
-  Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
-  HintColor property in the constructor when the application is created. To change the HintColor
-  assign it a new TColor value.
+  Write here a description
+Parameters
+  Index - Description for this parameter
 See Also
-  HotTrack
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomUpDown.HotTrack
-Summary
-  Specifies whether the <xxx> is highlighted when the mouse passes over it.
-Description
-  Set HotTrack to True to provide visual feedback about which item is under the mouse; the font 
-  specified by HotTrackFont is used for the <xxx> text. When HotTrack is False, there is no visual 
-  feedback when the mouse passes over the <xxx>.
-See Also 
-  HotGlyph, HotTrackFont, OnMouseEnter, OnMouseLeave
-----------------------------------------------------------------------------------------------------
-@@TJvCustomUpDown.Increment
+@@TJvAnimatedCursorImage.Header
 Summary
   Write here a summary (1 line)
 Description
@@ -121,7 +109,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomUpDown.Max
+@@TJvAnimatedCursorImage.IconCount
 Summary
   Write here a summary (1 line)
 Description
@@ -130,7 +118,18 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomUpDown.Min
+@@TJvAnimatedCursorImage.Icons
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvAnimatedCursorImage.Index
 Summary
   Write here a summary (1 line)
 Description
@@ -139,13 +138,29 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomUpDown.OnParentColorChange
+@@TJvAnimatedCursorImage.LoadFromFile
 Summary
-  Occurs when the color property for the parent of the control changes.
+  Write here a summary (1 line)
 Description
-  \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+  Write here a description
+Parameters
+  FileName - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomUpDown.Position
+@@TJvAnimatedCursorImage.LoadFromStream
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Stream - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvAnimatedCursorImage.OriginalColors
 Summary
   Write here a summary (1 line)
 Description
@@ -154,28 +169,29 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDomainUpDown
-<TITLEIMG TJvDomainUpDown>
-JVCLInfo
-  GROUP=JVCL.??
-  FLAG=Component
+@@TJvAnimatedCursorImage.Rates
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Index - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvUpDown
-<TITLEIMG TJvUpDown>
-JVCLInfo
-  GROUP=JVCL.??
-  FLAG=Component
+@@TJvAnimatedCursorImage.SaveToStream
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Stream - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvUpDownFormat
-<TITLE TJvUpDownFormat type>
+@@TJvAnimatedCursorImage.Title
 Summary
   Write here a summary (1 line)
 Description
@@ -183,7 +199,38 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-@@TJvUpDownFormat.ufInt
-  Description for ufInt
-@@TJvUpDownFormat.ufHex
-  Description for ufHex
+----------------------------------------------------------------------------------------------------
+@@TJvIconFrame
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvIconFrame.Assign
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+Parameters
+  Source - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvIconFrame.HotSpot
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvIconFrame.Icon
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
