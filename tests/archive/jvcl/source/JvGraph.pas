@@ -1366,6 +1366,7 @@ begin
   if (GetBitmapPixelFormat(Bitmap) = PixelFormat) and
     (Method <> mmGrayscale) then
   begin
+
     Result := TMemoryStream.Create;
     try
       Bitmap.SaveToStream(Result);
@@ -1456,7 +1457,7 @@ begin
       Result := TMemoryStream.Create;
       try
         Result.Write(P^, Length);
-        Result.Write(Bits^, ImageSize);
+        Result.Write(Bits^, ImageSize div 3);
         Result.Position := 0;
       except
         Result.Free;
