@@ -158,15 +158,18 @@ type
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, QForms, QDialogs,
   JvQThemes, JvQResources;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvCSVBase.res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvCSVBase.res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 //=== { TJvCSVBase } =========================================================
 
@@ -814,5 +817,21 @@ begin
       CSVDataBase.Display;
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

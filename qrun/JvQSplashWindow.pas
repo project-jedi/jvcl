@@ -63,6 +63,9 @@ var
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Math;
 
 const
@@ -211,6 +214,22 @@ begin
   NewTop := DstRect.Top + ((DstRect.Bottom - DstRect.Top) div 2) - (Height div 2);
   SetBounds(NewLeft, NewTop, Width, Height);
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

@@ -42,6 +42,7 @@ uses
   {$ENDIF USE_DXGETTEXT}
   QWindows, QMessages, QControls, 
   Qt, QGraphics, QStdCtrls, // TOwnerDrawState  
+  JvQConsts,
   JVCLXVer, JvQExControls, JvQExExtCtrls, JvQExComCtrls, JvQExForms, JvQExStdCtrls;
 
 
@@ -115,6 +116,11 @@ type
 
 implementation
 
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
+
 {$IFDEF USE_DXGETTEXT}
 const
   cDomainName = 'jvcl';
@@ -172,10 +178,10 @@ procedure TJvPopupListBox.KeyPress(var Key: Char);
 var
   TickCount: Int64;
 begin
-  case Word(Key) of
-    VK_BACK, VK_ESCAPE:
+  case Key of
+    BackSpace, Esc:
       FSearchText := '';
-    32..255:
+    #32..#255:
       begin
         TickCount := GetTickCount;
         if TickCount < FSearchTickCount then
@@ -191,9 +197,29 @@ begin
   inherited KeyPress(Key);
 end;
 
-{$IFDEF USE_DXGETTEXT}
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 initialization
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
+
+  {$IFDEF USE_DXGETTEXT}
   AddDomainForResourceString(cDomainName);
-{$ENDIF USE_DXGETTEXT}
+  {$ENDIF USE_DXGETTEXT}
+
+
+{$IFDEF UNITVERSIONING}
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

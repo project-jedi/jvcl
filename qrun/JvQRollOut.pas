@@ -290,8 +290,10 @@ type
 
 implementation
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   QForms; // for IsAccel()
-
 // (p3) not used
 // const
 //  cIncrement = 24;
@@ -849,7 +851,6 @@ var
   R: TRect;
   TopC, BottomC: TColor;
   FIndex: Integer;
-  Text: TCaption;
 begin
   if FPlacement = plTop then
     FButtonRect := Rect(BevelWidth, BevelWidth, Width - BevelWidth, FButtonHeight + BevelWidth)
@@ -921,15 +922,14 @@ begin
 
   if Length(Caption) > 0 then
   begin
-    Text := Caption;
     SetBkMode(Canvas.Handle, Transparent);
     if FMouseDown and FInsideButton then
-      OffsetRect(R, 1, 1);
+      OffsetRect(R, 1, 1);  
     SetPenColor(Canvas.Handle, Font.Color);
     if Placement = plLeft then
-      DrawText(Canvas.Handle, Text, -1, R, DT_VCENTER, 270)
+      DrawText(Canvas.Handle, PWideChar(Caption), -1, R, DT_VCENTER, 270)
     else
-      DrawText(Canvas.Handle, Text, -1, R, DT_VCENTER, 0)
+      DrawText(Canvas.Handle, PWideChar(Caption), -1, R, DT_VCENTER, 0) 
   end;
   if ShowFocus and Focused then
   begin
@@ -1233,6 +1233,22 @@ begin
   if LinkCheckedToCollapsed then
     Checked := not (Target as TJvCustomRollOut).Collapsed;
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

@@ -185,7 +185,6 @@ type
   TJvXPToolType =
     (ttArrowLeft, ttArrowRight, ttClose, ttMaximize, ttMinimize, ttPopup, ttRestore, ttImage);
 
-
   TJvXPCustomToolButton = class(TJvXPCustomStyleControl)
   private
     FToolType: TJvXPToolType;
@@ -209,11 +208,9 @@ type
     property DropDownMenu: TPopupMenu read FDropDownMenu write SetDropDownMenu;
     property Images: TCustomImageList read FImages write SetImages;
     property ImageIndex: TImageIndex read FImageIndex write SetImageIndex;
-
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
   end;
 
   TJvXPToolButton = class(TJvXPCustomToolButton)
@@ -281,6 +278,11 @@ type
   end;
 
 implementation
+
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
 
 //=== { TJvXPCustomButtonActionLink } ========================================
 
@@ -883,6 +885,22 @@ procedure TJvXPCustomToolButton.DoImagesChange(Sender: TObject);
 begin
   LockedInvalidate;
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

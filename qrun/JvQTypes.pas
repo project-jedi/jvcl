@@ -94,7 +94,7 @@ type
   TJvFTPProgressEvent = procedure(Sender: TObject; Position: Integer; Url: string) of object;
 
   // from JvComponent.pas
-  TJvClipboardCommand = (caCopy, caCut, caPaste, caUndo);
+  TJvClipboardCommand = (caCopy, caCut, caPaste, caUndo, caClear);
   TJvClipboardCommands = set of TJvClipboardCommand;
 
   // used in JvSpeedButton, JvArrowButton, JvButton

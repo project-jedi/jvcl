@@ -493,6 +493,9 @@ function NewSpeedItem(AOwner: TComponent; ASpeedBar: TJvSpeedBar; Section: Integ
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Math, QConsts,
   JvQJVCLUtils, JvQJCLUtils, JvQSpeedbarSetupForm, JvQResources;
 
@@ -1621,22 +1624,8 @@ begin
 end;
 
 procedure TJvSpeedBar.SetFontDefault;
-{$IFDEF MSWINDOWS}
 
-begin
-  ParentFont := False;
-  with Font do
-  begin 
-    begin
-      Name := 'MS Sans Serif';
-      Size := 8;
-      Style := [];
-      Color := clBtnText;
-    end;
-  end;
-end;
-{$ENDIF MSWINDOWS }
-{$IFDEF LINUX}
+
 begin
   ParentFont := False;
   with Font do
@@ -1647,7 +1636,7 @@ begin
     Color := clBtnText;
   end;
 end;
-{$ENDIF LINUX}
+
 
 procedure TJvSpeedBar.VisibleChanged;
 begin
@@ -3145,6 +3134,22 @@ begin
     DrawCellText(Grid, 0, 0, Item.Caption, R, taLeftJustify, vaCenterJustify, ARightToLeft);
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

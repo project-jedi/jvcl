@@ -41,7 +41,7 @@ uses
   {$ENDIF MSWINDOWS}
   QControls, QForms, QToolWin, QMenus, QActnList, QComCtrls, QImgList, 
   DesignEditors, DesignIntf, DesignMenus, QDesignWindows, 
-  JvQOutlookBar;
+  JvQOutlookBar, QTypes, QExtCtrls;
 
 type
   TFrmOLBEditor = class(TDesignWindow)
@@ -122,9 +122,9 @@ uses
   {$IFDEF MSWINDOWS}
   Registry,
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   JvQRegistryIniFile,
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
   QDialogs,
   JvQConsts, JvQDsgnConsts;
 
@@ -469,7 +469,7 @@ end;
 
 procedure TFrmOLBEditor.tvItemsChange(Sender: TObject; Node: TTreeNode);
 begin
-  SelectItem(Node);
+  SelectItem(Node);    
 end;
 
 procedure TFrmOLBEditor.tvItemsCollapsing(Sender: TObject; Node: TTreeNode;
@@ -525,83 +525,79 @@ end;
 
 procedure TFrmOLBEditor.StoreSettings;
 {$IFDEF MSWINDOWS}
-var
-  R: TRegIniFile;
 begin
-  R := TRegIniFile.Create;
-  try
-    R.RootKey := HKEY_CURRENT_USER;
-    R.OpenKey(GetRegPath, True);
-    // Width, Height, TextLabels
-    R.WriteInteger(cJvOutlookBar, cWidth, Width);
-    R.WriteInteger(cJvOutlookBar, cHeight, Height);
-    R.WriteBool(cJvOutlookBar, cTextLabels, acShowTextLabels.Checked);
-    R.WriteBool(cJvOutlookBar, cToolBar, acToolBar.Checked);
-  finally
-    R.Free;
-  end;
+  with TRegIniFile.Create do
+    try
+      RootKey := HKEY_CURRENT_USER;
+      OpenKey(GetRegPath, True);
+      // Width, Height, TextLabels
+      WriteInteger(cJvOutlookBar, cWidth, Width);
+      WriteInteger(cJvOutlookBar, cHeight, Height);
+      WriteBool(cJvOutlookBar, cTextLabels, acShowTextLabels.Checked);
+      WriteBool(cJvOutlookBar, cToolBar, acToolBar.Checked);
+    finally
+      Free;
+    end;
 end;
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 begin
   with TJvRegistryIniFile.Create do
-  try
-    if OpenKey(GetRegPath, True) then
     try
-      // Width, Height, TextLabels
-      WriteInteger(cWidth, Width);
-      WriteInteger(cHeight, Height);
-      WriteBool(cTextLabels, acShowTextLabels.Checked);
-      WriteBool(cToolBar, acToolBar.Checked);
+      if OpenKey(GetRegPath, True) then
+        try
+          // Width, Height, TextLabels
+          WriteInteger(cWidth, Width);
+          WriteInteger(cHeight, Height);
+          WriteBool(cTextLabels, acShowTextLabels.Checked);
+          WriteBool(cToolBar, acToolBar.Checked);
+        finally
+          CloseKey;
+        end;
     finally
-      CloseKey;
+      Free;
     end;
-  finally
-    Free;
-  end;
 end;
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 procedure TFrmOLBEditor.LoadSettings;
 {$IFDEF MSWINDOWS}
-var
-  R: TRegIniFile;
 begin
-  R := TRegIniFile.Create;
-  try
-    R.RootKey := HKEY_CURRENT_USER;
-    R.OpenKey(GetRegPath, True);
-    // Width, Height, TextLabels
-    Width := R.ReadInteger(cJvOutlookBar, cWidth, Width);
-    Height := R.ReadInteger(cJvOutlookBar, cHeight, Height);
-    acToolBar.Checked := not R.ReadBool(cJvOutlookBar, cToolBar, True);
-    acToolBar.Execute;
-    acShowTextLabels.Checked := not R.ReadBool(cJvOutlookBar, cTextLabels, False);
-    acShowTextLabels.Execute; // toggles
-  finally
-    R.Free;
-  end;
+  with TRegIniFile.Create do
+    try
+      RootKey := HKEY_CURRENT_USER;
+      OpenKey(GetRegPath, True);
+      // Width, Height, TextLabels
+      Width := ReadInteger(cJvOutlookBar, cWidth, Width);
+      Height := ReadInteger(cJvOutlookBar, cHeight, Height);
+      acToolBar.Checked := not ReadBool(cJvOutlookBar, cToolBar, True);
+      acToolBar.Execute;
+      acShowTextLabels.Checked := not ReadBool(cJvOutlookBar, cTextLabels, False);
+      acShowTextLabels.Execute; // toggles
+    finally
+      Free;
+    end;
 end;
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 begin
   with TJvRegistryIniFile.Create do
-  try
-    if OpenKey(GetRegPath, True) then
     try
-    // Width, Height, TextLabels
-      WriteInteger(cWidth, Width);
-      WriteInteger(cHeight, Height);
-      WriteBool(cTextLabels, acShowTextLabels.Checked);
-      WriteBool(cToolBar, acToolBar.Checked);
+      if OpenKey(GetRegPath, True) then
+        try
+        // Width, Height, TextLabels
+          WriteInteger(cWidth, Width);
+          WriteInteger(cHeight, Height);
+          WriteBool(cTextLabels, acShowTextLabels.Checked);
+          WriteBool(cToolBar, acToolBar.Checked);
+        finally
+          CloseKey;
+        end;
     finally
-      CloseKey;  
+      Free;
     end;
-  finally
-    Free;
-  end;
 end;
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 function TFrmOLBEditor.GetRegPath: string;
 {$IFDEF MSWINDOWS}
@@ -611,14 +607,13 @@ begin
   Result := Designer.GetBaseRegKey + cRegKey; 
 end;
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 const
   cRegKey = 'OutlookBar Editor';
 begin
-  Result := SDelphiKey + RsPropertyEditors + cRegKey
-              + PathDelim + cJvOutlookBar;
+  Result := SDelphiKey + RsPropertyEditors + cRegKey + PathDelim + cJvOutlookBar;
 end;
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 procedure TFrmOLBEditor.SwitchItems(Node1, Node2: TTreeNode);
 var

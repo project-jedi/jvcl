@@ -48,9 +48,9 @@ resourcestring
   {$IFDEF MSWINDOWS}
   RsAllFilesFilter = 'All Files (*.*)|*.*';
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   RsAllFilesFilter = 'All Files (*)|*';
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
   RsNextPage = 'Next Page';
   RsPreviousPage = 'Previous Page';
   RsJVCLActionsCategory = 'JVCL';
@@ -265,9 +265,9 @@ resourcestring
   {$IFDEF MSWINDOWS}
   RsExecutableFilesExeExeAllFiles = 'Executable files (*.exe)|*.exe|All files (*.*)|*.*';
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   RsExecutableFilesExeExeAllFiles = 'Executable files (*)|*';
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
   RsItems = 'Items';
   RsStrings = 'Strings';
   RsFmtEditEllipsis = '%s Editor...';
@@ -287,35 +287,47 @@ resourcestring
   RsStorageDesigner = 'Form Storage Designer...';
 
 //=== JvgComponentListEditorForm.pas =========================================
+
 resourcestring
   RsEditComponentListEllipsis = 'Edit component list...';
 
+
 //=== JvgHelpPanelEditor.pas =================================================
+
 resourcestring
   RsRTFAndTextFilesrtftxtrtftxt = 'RTF and Text files (*.rtf,*.txt)|*.rtf;*.txt';
   RsLoadRTFFile = 'Load RTF file';
   RsPreviewRTFText = 'Preview RTF text';
 
+
 //=== JvgLabelEditorForm.pas =================================================
+
 resourcestring
   RsEditLabel = 'Edit &Label...';
 
+
 //=== JvgLogicItemEditorForm.pas =============================================
+
 resourcestring
   RsLogicElements = 'Logic Element: %s';
   RsResult = '[RESULT]';
   RsNotDefined = '[ not defined ]';
 
+
 //=== JvgLogicsEditorForm.pas ================================================
+
 resourcestring
   RsCaption = 'Caption';
   RsComments = 'Comments';
   RsEditComponentEllipsis = 'Edit component...';
 
+
 //=== JvgMultiResourceEditorForm.pas =========================================
+
 resourcestring
   RsCellControlCaption = 'Control';
   RsCellDefaultCaption = 'Default';
+
 
 //=== JvGradientCaptionForm.pas ==============================================
 resourcestring
@@ -323,15 +335,19 @@ resourcestring
   RsGradientCaptions = 'Captions';
 
 //=== JvgReportEditorForm.pas ================================================
+
 resourcestring
   RsEditReport = 'Edit report...';
   RsPreviewReportEllipsis = 'Preview report...';
   RsDeleteObject = 'Delete object?';
   RsPagePreview = 'Page Preview';
 
+
 //=== JvgReportParamsForm.pas ================================================
+
 resourcestring
   RsEditParamsEllipsis = 'Edit params...';
+
 
 //=== JvGroupHeaderEditor.pas ================================================
 resourcestring
@@ -339,8 +355,10 @@ resourcestring
   RsWeb = 'Web';
 
 //=== JvgShadowEditor.pas ====================================================
+
 resourcestring
   RsUpdateAllEditControl = 'Update all edit control';
+
 
 //=== JVHLEditEditor.pas =====================================================
 resourcestring
@@ -628,10 +646,10 @@ resourcestring
     'Text files (*.TXT)|*.TXT|Config files (*.SYS;*.INI)|*.SYS;*.INI|Batch files (*.BAT)|*.BAT|All files (*.*)|*.*';
   //  RsTextFilter = 'Text files (*.txt)|*.txt|Config files (*.sys;*.ini)|*.sys;*.ini|Batch files (*.bat)|*.bat|All files (*.*)|*.*';
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   RsTextFilter =
     'Text files (*.txt)|*.txt|All files (*)|*';
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
   RsSingleLine = 'Line';
   RsMultipleLines = 'Lines';
 

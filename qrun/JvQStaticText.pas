@@ -245,8 +245,6 @@ begin
   end;
 end;
 
-
-
 procedure TJvCustomStaticText.DrawItem(const DrawItemStruct: TDrawItemStruct);
 const
   cBorders: array [TStaticBorderStyle] of DWORD = (0, BF_MONO, BF_SOFT);

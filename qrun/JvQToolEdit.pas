@@ -56,6 +56,8 @@ const
 
   CM_POPUPCLOSEUP = CM_BASE + $0300; // arbitrary value
 
+
+
 type
   TFileExt = type string;
 
@@ -820,6 +822,7 @@ function PaintEdit(Editor: TCustomEdit; const AText: WideString;
 const
   OBM_COMBO = 1;
 
+
 function LoadDefaultBitmap(Bmp: TBitmap; Item: Integer): Boolean;
 
 function IsInWordArray(Value: Word; const A: array of Word): Boolean;
@@ -827,15 +830,19 @@ function IsInWordArray(Value: Word; const A: array of Word): Boolean;
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
-  Math, QConsts, MaskUtils,
+  Math, QConsts, 
+  MaskUtils, 
   {$IFDEF MSWINDOWS}
-  ShellAPI,
+  ShellAPI, ActiveX,
   {$ENDIF MSWINDOWS} 
   JvQPickDate, JvQJCLUtils, JvQJVCLUtils,
   JvQThemes, JvQResources, JvQConsts, JvQFinalize;
@@ -846,9 +853,9 @@ const
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvToolEdit.res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvToolEdit.res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 type
   TCustomEditAccessProtected = class(TCustomEdit);
@@ -858,8 +865,8 @@ type
   {$HINTS OFF}
   TCustomMaskEditAccessPrivate = class(TCustomEdit)
   private
-    // Do not remove these fields, although they are not used.
-    FEditMask: TEditMask;
+    // Do not remove these fields, although they are not used. 
+    FEditMask: TEditMask; 
     FMaskBlank: Char;
     FMaxChars: Integer;
     FMaskSave: Boolean;
@@ -1092,7 +1099,7 @@ end;
 
 
 { PaintEdit (CLX) needs an implemented EM_GETRECT message handler. If no
-  EM_GETTEXT handler exists or the edit control does not implements
+  EM_GETTEXT handler exists or the edit control does not implement
   IComboEditHelper, it uses the ClientRect of the edit control. }
 
 function PaintEdit(Editor: TCustomEdit; const AText: WideString;
@@ -1387,14 +1394,6 @@ begin
   else
     PopupChange;
 end;
-
-
-
-
-
-
-
-
 
 
 
@@ -1818,7 +1817,6 @@ begin
 end;
 
 
-
 procedure TJvCustomComboEdit.Paint;
 begin
   if Enabled then
@@ -1830,7 +1828,6 @@ begin
       inherited Paint;
   end;
 end;
-
 
 
 procedure TJvCustomComboEdit.PopupChange;
@@ -1924,7 +1921,7 @@ end;
 
 procedure TJvCustomComboEdit.ReadGlyphKind(Reader: TReader);
 const
-  sEnumValues: array [TGlyphKind] of string =
+  sEnumValues: array [TGlyphKind] of PChar =
     ('gkCustom', 'gkDefault', 'gkDropDown', 'gkEllipsis');
 var
   S: string;
@@ -2332,8 +2329,7 @@ begin
   LTop := 0;
   LLeft := 0;
   LRight := 0; 
-  if (BorderStyle = bsSingle) and  
-    not Flat then 
+  if (BorderStyle = bsSingle) and  not Flat  then
     LTop := 2;
 
   GetInternalMargins(LLeft, LRight);
@@ -2439,8 +2435,7 @@ begin
   try
     UpdateFormat;
     {$IFDEF DEFAULT_POPUP_CALENDAR}
-    FPopup := TJvPopupWindow(CreatePopupCalendar(Self,  
-      bdLeftToRight, 
+    FPopup := TJvPopupWindow(CreatePopupCalendar(Self,  bdLeftToRight, 
       // Polaris
       FMinDate, FMaxDate));
     TJvPopupWindow(FPopup).OnCloseUp := PopupCloseUp;
@@ -2557,6 +2552,7 @@ begin
   if HandleAllocated then
     UpdateMask;
 end;
+
 
 
 
@@ -2753,24 +2749,19 @@ end;
 procedure TJvCustomDateEdit.SetCalendarStyle(Value: TCalendarStyle);
 begin
   if Value <> CalendarStyle then
-  begin
     case Value of
       csPopup:
         begin
           if FPopup = nil then
-            FPopup := TJvPopupWindow(CreatePopupCalendar(Self,  
-              bdLeftToRight, 
+            FPopup := TJvPopupWindow(CreatePopupCalendar(Self,  bdLeftToRight, 
               FMinDate, FMaxDate)); // Polaris
           TJvPopupWindow(FPopup).OnCloseUp := PopupCloseUp;
           TJvPopupWindow(FPopup).Color := FPopupColor;
           UpdatePopup;
         end;
       csDialog:
-        begin
-          FreeAndNil(FPopup);
-        end;
+        FreeAndNil(FPopup);
     end;
-  end;
 end;
 
 // Polaris
@@ -3007,6 +2998,7 @@ end;
 constructor TJvDirectoryEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner); 
+  FDialogKind := dkWin32;
 end;
 
 class function TJvDirectoryEdit.DefaultImageIndex: TImageIndex;
@@ -3652,9 +3644,26 @@ end;
 
 
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 initialization
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
+
 
 finalization
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
   FinalizeUnit(sUnitName);
 
 end.

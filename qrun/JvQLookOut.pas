@@ -473,6 +473,9 @@ type
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   QActnList;
 
 const
@@ -2628,7 +2631,7 @@ begin
     ExcludeClipRect(DC, RC.Left, RC.Top, RC.Right, RC.Bottom);
     OffsetRect(RW, -RW.Left, -RW.Top);
     if FBorderStyle = bsSingle then
-    begin 
+    begin
       QWindows.DrawEdge(DC, RW, EDGE_SUNKEN, BF_RECT)
     end
     else
@@ -2856,6 +2859,22 @@ begin
     ReleaseDC(Handle, DC);
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

@@ -36,13 +36,12 @@ interface
 
 uses
   {$IFDEF MSWINDOWS}
-  JclMapi,
-  Windows, ShellAPI,
-  {$ENDIF MSWINDOWS}  
-  QActnList, 
-  {$IFDEF LINUX}
+  Windows, JclMapi, ShellAPI,
+  {$ENDIF MSWINDOWS}
+  QActnList,
+  {$IFDEF UNIX}
   QWindows,
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
   Classes;
 
 type
@@ -112,6 +111,11 @@ type
 
 
 implementation
+
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
 
 {$IFDEF MSWINDOWS}
 
@@ -257,6 +261,22 @@ procedure TJvWebAction.UpdateTarget(Target: TObject);
 begin
   Enabled := URL <> '';
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

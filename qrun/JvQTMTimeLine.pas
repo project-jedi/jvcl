@@ -101,6 +101,7 @@ type
     FShowToday: Boolean;
     FLineColor: TColor;
     FShift: TShiftState;
+    FShowTodayIcon: Boolean;
     function GetRectForDate(ADate: TDate): TRect;
     function DateFromPos(APos: Integer): TDate;
     procedure DoTimer(Sender: TObject);
@@ -148,14 +149,15 @@ type
     function ReadMagic(Stream: TStream): Boolean;
     procedure StartTimer;
     procedure StopTimer;
-
+    function DateHasImage(ADate: TDateTime): Boolean;
+    procedure SetShowTodayIcon(const Value: Boolean);
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); override;
     procedure CursorChanged; override;
     procedure EnabledChanged; override;
     procedure Paint; override;
-    function DoMouseWheelDown(Shift: TShiftState;  const  MousePos: TPoint): Boolean; override;
-    function DoMouseWheelUp(Shift: TShiftState; const  MousePos: TPoint): Boolean; override;
+    function DoMouseWheelDown(Shift: TShiftState; const MousePos: TPoint): Boolean; override;
+    function DoMouseWheelUp(Shift: TShiftState; const MousePos: TPoint): Boolean; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -188,6 +190,7 @@ type
     property TodayColor: TColor read FTodayColor write SetTodayColor default clAqua;
     property LineColor: TColor read FLineColor write SetLineColor default clBlack;
     property ShowToday: Boolean read FShowToday write SetShowToday default True;
+    property ShowTodayIcon: Boolean read FShowTodayIcon write SetShowTodayIcon default True;
     property ShowWeeks: Boolean read FShowWeeks write SetShowWeeks default True;
     property ShowMonths: Boolean read FShowMonths write SetShowMonths default True;
     property LastVisibleDate: TDate read GetLastVisibleDate;
@@ -259,8 +262,10 @@ type
     property SmallChange;
     // gets / sets the properties for the selection frame
     property Selection;
-    // shows / hides todays date (in another color and with a double-diamond icon)
+    // displays todays date in a different color
     property ShowToday;
+    // displays todays date with a double-diamond icon
+    property ShowTodayIcon;
     // shows / hides the dotted week separator
     property ShowWeeks;
     // shows the month separator line
@@ -317,25 +322,27 @@ type
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   QConsts,
   JvQJVCLUtils, JvQThemes;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvTMTimeLine.res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvTMTimeLine.res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 
 resourcestring
-  SInvalidImage = 'Invalid Image';
-
+  SInvalidImage = 'Invalid Image'; 
 
 const
   cMagic = 'Jv.TMTIMELINE1';
 
-//=== { TJvTLSelFrame } ======================================================
+  //=== { TJvTLSelFrame } ======================================================
 
 constructor TJvTLSelFrame.Create;
 begin
@@ -397,7 +404,7 @@ begin
   ControlStyle := ControlStyle - [csSetCaption, csAcceptsControls];
   IncludeThemeStyle(Self, [csNeedsBorderPaint]); 
   ControlStyle := ControlStyle - [csNoFocus];
-  InputKeys := InputKeys + [ikArrows] ; 
+  InputKeys := InputKeys + [ikArrows]; 
 
   FSelection := TJvTLSelFrame.Create;
   FSelection.Pen.Width := 2;
@@ -417,10 +424,10 @@ begin
   FMonthFont.Name := 'Times New Roman';
   FMonthFont.Size := 18;
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   FMonthFont.Name := 'Helvetica';
   FMonthFont.Height  := 24;
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
 
   FObjectsFontStyle := [fsUnderline];
   FButtonWidth := 12;
@@ -433,16 +440,17 @@ begin
   FTodayColor := clAqua;
   FLineColor := clBlack;
   FShowToday := True;
+  FShowTodayIcon := True;
   FShowWeeks := True;
   FShowMonths := True;
   {$IFDEF MSWINDOWS}
   Font.Size := 7;
   Font.Name := 'Times New Roman';
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   Font.Name := 'Helvetica';
   Font.Height := 11;
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
 
   FLeftBtn := TSpeedButton.Create(Self);
   with FLeftBtn do
@@ -456,7 +464,7 @@ begin
 
     OnMouseDown := DoLMouseDown;
     OnMouseUp := DoMouseUp;
-//    OnClick := LeftClick;
+    //    OnClick := LeftClick;
   end;
 
   FRightBtn := TSpeedButton.Create(Self);
@@ -611,19 +619,34 @@ var
   Bmp: TBitmap;
   R: TRect;
 begin
-  Bmp := TBitmap.Create;
+  if ShowTodayIcon then
+    Bmp := TBitmap.Create
+  else
+    Bmp := nil;
   Tmp := ACanvas.Brush.Color;
   try
-    Bmp.LoadFromResourceName(HInstance, 'MILESTONE_LARGE');
-    ACanvas.Brush.Color := FTodayColor;
-
-    ACanvas.FillRect(ARect);
-    R := Rect(ARect.Left + ((ARect.Right - ARect.Left) - Bmp.Width) div 2,
-      ARect.Top + CanvasMaxTextHeight(ACanvas) + 2,
-      ARect.Left + ((ARect.Right - ARect.Left) - Bmp.Width) div 2 + Bmp.Width,
-      ARect.Top + Bmp.Height + CanvasMaxTextHeight(ACanvas) + 2);  
-    Bmp.Transparent := True;
-    ACanvas.Draw(R.Left, R.Top, Bmp); 
+    if ShowTodayIcon then
+      Bmp.LoadFromResourceName(HInstance, 'MILESTONE_LARGE');
+    if ShowToday then
+    begin
+      ACanvas.Brush.Color := FTodayColor;
+      ACanvas.FillRect(ARect);
+    end;
+    if ShowTodayIcon then
+    begin
+      R := Rect(ARect.Left + ((ARect.Right - ARect.Left) - Bmp.Width) div 2,
+        ARect.Top + CanvasMaxTextHeight(ACanvas) + 2,
+        ARect.Left + ((ARect.Right - ARect.Left) - Bmp.Width) div 2 + Bmp.Width,
+        ARect.Top + Bmp.Height + CanvasMaxTextHeight(ACanvas) + 2);
+(*      {$IFDEF VCL}
+      ACanvas.BrushCopy(R, Bmp, Rect(0, 0, Bmp.Width, Bmp.Height), clFuchsia);
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      *)
+      Bmp.Transparent := True;
+      ACanvas.Draw(R.Left, R.Top, Bmp);
+//      {$ENDIF VisualCLX}
+    end;
   finally
     ACanvas.Brush.Color := Tmp;
     Bmp.Free;
@@ -653,7 +676,7 @@ begin
   for I := 0 to Width div FDayWidth do
   begin
     R := GetRectForDate(Self.Date + I);
-    if (Self.Date + I = SysUtils.Date) and ShowToday then
+    if (Self.Date + I = SysUtils.Date) then
       DrawToday(ACanvas, R);
 
     DecodeDate(Self.Date + I, Y, M, D);
@@ -685,7 +708,7 @@ begin
       R := GetRectForDate(Self.Date + I);
       DecodeDate(FDate + I, Y, M, D);
       if ShowWeeks and (DayOfWeek(Self.Date + I) = 1) then
-      with ACanvas do
+        with ACanvas do
         begin
           // draw the dotted week separator between sunday and monday
           Brush.Color := Color;
@@ -713,8 +736,7 @@ begin
           DrawText(ACanvas.Handle, PChar(S), Length(S), R, DT_LEFT or DT_VCENTER or DT_SINGLELINE or DT_NOPREFIX or
             DT_NOCLIP);
         end
-        else
-        if D = 1 then
+        else if D = 1 then
         begin
           // draw text for start of this month and the year:
           S := Format('%s %d', [ShortMonthNames[M], Y]);
@@ -775,11 +797,11 @@ procedure TJvCustomTMTimeline.DrawImage(ACanvas: TCanvas; ADate: TDate; const AR
 var
   I, X, Y: Integer;
 begin
-  I := ImageIndex[ADate];
-  if Assigned(Images) and (I > -1) and (I < Images.Count) then
+  if DateHasImage(ADate) then
   begin
+    I := ImageIndex[ADate];
     X := ARect.Left + (FDayWidth - Images.Width) div 2;
-//    Y := Max((Height  - Images.Height) div 4, CanvasMaxTextHeight(ACanvas) + 2);
+    //    Y := Max((Height  - Images.Height) div 4, CanvasMaxTextHeight(ACanvas) + 2);
     Y := CanvasMaxTextHeight(ACanvas) + 2;
     Images.Draw(ACanvas, X, Y, I);
   end;
@@ -819,8 +841,7 @@ begin
   begin
     if (FMinDate > 0) and (Trunc(FMinDate) > Trunc(FDate)) then
       FDate := FMinDate
-    else
-    if (FMaxDate > 0) and (Trunc(FMaxDate) < Trunc(FDate)) then
+    else if (FMaxDate > 0) and (Trunc(FMaxDate) < Trunc(FDate)) then
       FDate := Trunc(FMaxDate)
     else
       FDate := Trunc(Value);
@@ -983,7 +1004,7 @@ var
 begin
   inherited MouseMove(Shift, X, Y);
   ADate := DateFromPos(X);
-  if (ImageIndex[ADate] > -1) and Assigned(Images) then
+  if DateHasImage(ADate) then
     inherited Cursor := FImageCursor
   else
     Cursor := FRealCursor;
@@ -1032,8 +1053,7 @@ begin
     VK_LEFT:
       if ssCtrl in Shift then
         ScrollDate(nil, -LargeChange)
-      else
-      if ssShift in Shift then
+      else if ssShift in Shift then
       begin
         SelDate := SelDate - 1;
         // make sure the selection is visible:
@@ -1048,8 +1068,7 @@ begin
     VK_RIGHT:
       if ssCtrl in Shift then
         ScrollDate(nil, LargeChange)
-      else
-      if ssShift in Shift then
+      else if ssShift in Shift then
       begin
         SelDate := SelDate + 1;
         // make sure the selection is visible:
@@ -1198,7 +1217,7 @@ end;
 
 function TJvCustomTMTimeline.ReadMagic(Stream: TStream): Boolean;
 begin
-  Result := AnsiSameStr(ReadStr(Stream),cMagic);
+  Result := AnsiSameStr(ReadStr(Stream), cMagic);
 end;
 
 procedure TJvCustomTMTimeline.LoadFromStream(Stream: TStream);
@@ -1268,14 +1287,14 @@ begin
   end;
 end;
 
-function TJvCustomTMTimeline.DoMouseWheelDown(Shift: TShiftState;  const  MousePos: TPoint): Boolean;
+function TJvCustomTMTimeline.DoMouseWheelDown(Shift: TShiftState; const MousePos: TPoint): Boolean;
 begin
   Result := inherited DoMouseWheelDown(Shift, MousePos);
   if not Result then
     ScrollDate(Self, -1);
 end;
 
-function TJvCustomTMTimeline.DoMouseWheelUp(Shift: TShiftState;  const  MousePos: TPoint): Boolean;
+function TJvCustomTMTimeline.DoMouseWheelUp(Shift: TShiftState; const MousePos: TPoint): Boolean;
 begin
   Result := inherited DoMouseWheelUp(Shift, MousePos);
   if not Result then
@@ -1328,6 +1347,42 @@ begin
   inherited CursorChanged;
   FRealCursor := Cursor;
 end;
+
+function TJvCustomTMTimeline.DateHasImage(ADate: TDateTime): Boolean;
+var i:Integer;
+begin
+  Result := False;
+  if Assigned(Images) then
+  begin
+    i := ImageIndex[ADate];
+    Result := (i >= 0) and (i < Images.Count);
+  end;
+end;
+
+procedure TJvCustomTMTimeline.SetShowTodayIcon(const Value: Boolean);
+begin
+  if FShowTodayIcon <> Value then
+  begin
+    FShowTodayIcon := Value;
+    Invalidate;
+  end;
+end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

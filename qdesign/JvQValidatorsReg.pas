@@ -47,9 +47,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvValidatorsReg.dcr}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvValidatorsReg.dcr}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 procedure Register;
 begin

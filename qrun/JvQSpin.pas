@@ -325,9 +325,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvSpin.Res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvSpin.Res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 const
   sSpinUpBtn = 'JVSPINUP';
@@ -1078,7 +1078,7 @@ begin
     FButton.OnTopClick := UpClick;
     FButton.OnBottomClick := DownClick;
     //Polaris
-    FButton.SetBounds(1, 1, FBtnWindow.Width - 1, FBtnWindow.Height - 1);
+//    FButton.SetBounds(1, 1, FBtnWindow.Width - 1, FBtnWindow.Height - 1);
   end;
   end;
 end;
@@ -1938,8 +1938,10 @@ var
       if not CustomGlyphs then
       begin
         UpArrow.LoadFromResourceName(HInstance, sSpinUpBtnPole);
+        UpArrow.TransparentColor := clWhite;
         UpArrow.Transparent := True;
         DownArrow.LoadFromResourceName(HInstance, sSpinDownBtnPole);
+        DownArrow.TransparentColor := clWhite;
         DownArrow.Transparent := True;
         PoleDrawArrows(ABitmap.Canvas, ADownState, Enabled, UpArrow, DownArrow);
       end; 
@@ -2081,7 +2083,7 @@ begin
         DisabledBitmap.Free;
       end;
     end;
-    SelectClipRgn(Handle, 0);
+    SelectClipRgn(Handle, NullHandle);
 
     X := (Width - ADownArrow.Width) div 2;
     Y := R1.Top + (I - ADownArrow.Height) div 2;

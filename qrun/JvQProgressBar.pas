@@ -119,7 +119,7 @@ type
 
   TJvCustomGradientProgressBar = class(TJvBaseGradientProgressBar)
   protected
-    procedure DrawBar(ACanvas: TCanvas; BarSize: integer); override;
+    procedure DrawBar(ACanvas: TCanvas; BarSize: Integer); override;
   public
     constructor Create(AOwner: TComponent); override;
   end;
@@ -137,9 +137,7 @@ type
     property Align;
     property Anchors;
     property Color default clWindow;
-    property Constraints;
-    property DragKind;
-    property DragCursor;
+    property Constraints; 
     property DragMode;
     property Hint;
     property ParentColor default False;
@@ -147,14 +145,12 @@ type
     property ParentShowHint;
     property ShowHint;
 
-    property OnCanResize;
     property OnClick;
     property OnConstrainedResize;
     property OnContextPopup;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
-    property OnEndDock;
     property OnEndDrag;
     property OnMouseDown;
     property OnMouseMove;
@@ -162,7 +158,6 @@ type
     property OnMouseWheel;
     property OnMouseWheelDown;
     property OnMouseWheelUp; 
-    property OnStartDock;
     property OnStartDrag;
   end;
 
@@ -271,8 +266,8 @@ var
 begin
   R := ClientRect;
   ACanvas.Brush.Color := Color;
-  ACanvas.FillRect(R);  
-  DrawEdge(ACanvas, R, esNone, esLowered, ebRect); 
+  ACanvas.FillRect(R);
+  QWindows.DrawEdge(ACanvas.Handle, R, BDR_SUNKENOUTER, BF_ADJUST or BF_RECT);
   if BarSize = 0 then
     Exit;
   ACanvas.Brush.Color := BarColor;
@@ -430,16 +425,16 @@ begin
   BlockSize := 6;
 end;
 
-procedure TJvCustomGradientProgressBar.DrawBar(ACanvas: TCanvas; BarSize: integer);
+procedure TJvCustomGradientProgressBar.DrawBar(ACanvas: TCanvas; BarSize: Integer);
 var
   R: TRect;
-  ABlockSize:double;
-  i:integer;
+  LBlockSize: Double;
+  I: Integer;
 begin
   R := ClientRect;
   ACanvas.Brush.Color := Color;
   ACanvas.FillRect(R);
-  DrawEdge(ACanvas.Handle, R, BDR_SUNKENOUTER, BF_ADJUST or BF_RECT);
+  QWindows.DrawEdge(ACanvas.Handle, R, BDR_SUNKENOUTER, BF_ADJUST or BF_RECT);
   InflateRect(R, -1, -1);
   if Orientation = pbHorizontal then
   begin
@@ -459,40 +454,40 @@ begin
   begin
     ACanvas.Pen.Color := Color;
     if Position > 0 then
-      ABlockSize := (GetMaxBarSize * BlockSize - 4) / 100
+      LBlockSize := (GetMaxBarSize * BlockSize - 4.0) / 100.0
     else
-      ABlockSize := 0;
-    i := 0;
+      LBlockSize := 0;
+    I := 0;
     if Orientation = pbHorizontal then
     begin
       R := ClientRect;
       InflateRect(R, -2, -2);
-      R.Right := R.Left + round(ABlockSize);
+      R.Right := R.Left + Round(LBlockSize);
       while R.Left <= BarSize do
       begin
         ACanvas.MoveTo(R.Left, R.Top);
         ACanvas.LineTo(R.Left, R.Bottom);
-        Inc(i);
+        Inc(I);
         R := ClientRect;
         InflateRect(R, -2, -2);
-        R.Right := R.Left + round(ABlockSize);
-        OffsetRect(R, round(i * ABlockSize), 0);
+        R.Right := R.Left + Round(LBlockSize);
+        OffsetRect(R, Round(I * LBlockSize), 0);
       end;
     end
     else
     begin
       R := ClientRect;
       InflateRect(R, -2, -2);
-      R.Top := R.Bottom - round(ABlockSize);
+      R.Top := R.Bottom - Round(LBlockSize);
       while R.Bottom >= GetMaxBarSize - BarSize do
       begin
         ACanvas.MoveTo(R.Left, R.Bottom);
         ACanvas.LineTo(R.Right, R.Bottom);
-        Inc(i);
+        Inc(I);
         R := ClientRect;
         InflateRect(R, -2, -2);
-        R.Top := R.Bottom - round(ABlockSize);
-        OffsetRect(R, 0, -round(i * ABlockSize));
+        R.Top := R.Bottom - Round(LBlockSize);
+        OffsetRect(R, 0, -Round(I * LBlockSize));
       end;
     end;
   end;

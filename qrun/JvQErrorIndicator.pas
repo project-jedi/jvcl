@@ -204,16 +204,19 @@ type
 
 implementation
 
-uses 
+uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING} 
   SysUtils, 
   JvQTypes, JvQResources;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvErrorIndicator.res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvErrorIndicator.res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 const
   cDefBlinkCount = 5;
@@ -778,6 +781,22 @@ begin
     FErase := not FErase;
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

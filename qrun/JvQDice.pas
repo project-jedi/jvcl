@@ -122,15 +122,18 @@ type
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, QImgList,
   JvQThemes;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvDice.Res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvDice.Res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 constructor TJvDice.Create(AOwner: TComponent);
 var
@@ -369,6 +372,22 @@ begin
       Invalidate;
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

@@ -95,6 +95,8 @@ type
     function GetBoolValue: Boolean;
     procedure SetBoolValue(const Value: Boolean);
     procedure SetName(const Value: string);
+    function GetFloatValue: Extended;
+    procedure SetFloatValue(const Value: Extended);
   protected
     function GetIntValue: Int64;
     procedure SetIntValue(const Value: Int64);
@@ -106,6 +108,7 @@ type
     property Value: string read FValue write FValue;
     property IntValue: Int64 read GetIntValue write SetIntValue;
     property BoolValue: Boolean read GetBoolValue write SetBoolValue;
+    property FloatValue: Extended read GetFloatValue write SetFloatValue;
     property Pointer: string read FPointer write FPointer;
 
     property Data: Pointer read FData write FData;
@@ -234,6 +237,8 @@ type
     FData: Pointer;
     FSimpleXML: TJvSimpleXML;
     FContainer: TJvSimpleXMLElems;
+    function GetFloatValue: Extended;
+    procedure SetFloatValue(const Value: Extended);
   protected
     function GetSimpleXML: TJvSimpleXML;
     function GetIntValue: Int64;
@@ -271,6 +276,7 @@ type
     property Properties: TJvSimpleXMLProps read GetProps;
     property IntValue: Int64 read GetIntValue write SetIntValue;
     property BoolValue: Boolean read GetBoolValue write SetBoolValue;
+    property FloatValue: Extended read GetFloatValue write SetFloatValue;
     property Value: string read FValue write FValue;
   end;
 
@@ -438,6 +444,9 @@ function EntityDecode(const S: string): string;
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING} 
   JvQConsts, JvQResources;
 
 const
@@ -1108,6 +1117,11 @@ begin
       Result := Result + FItems[I].ChildsCount;
 end;
 
+function TJvSimpleXMLElem.GetFloatValue: Extended;
+begin
+  Result := StrToFloatDef(Value, 0.0);
+end;
+
 function TJvSimpleXMLElem.GetIntValue: Int64;
 begin
   Result := StrToInt64Def(Value, -1);
@@ -1163,6 +1177,11 @@ end;
 procedure TJvSimpleXMLElem.SetBoolValue(const Value: Boolean);
 begin
   FValue := BoolToStr(Value);
+end;
+
+procedure TJvSimpleXMLElem.SetFloatValue(const Value: Extended);
+begin
+  FValue := FloatToStr(Value);
 end;
 
 procedure TJvSimpleXMLElem.SetIntValue(const Value: Int64);
@@ -1930,6 +1949,11 @@ begin
   Result := StrToBoolDef(Value, False);
 end;
 
+function TJvSimpleXMLProp.GetFloatValue: Extended;
+begin
+  Result := StrToFloatDef(Value, 0.0);
+end;
+
 function TJvSimpleXMLProp.GetIntValue: Int64;
 begin
   Result := StrToInt64Def(Value, -1);
@@ -1965,6 +1989,11 @@ end;
 procedure TJvSimpleXMLProp.SetBoolValue(const Value: Boolean);
 begin
   FValue := BoolToStr(Value);
+end;
+
+procedure TJvSimpleXMLProp.SetFloatValue(const Value: Extended);
+begin
+  FValue := FloatToStr(Value);
 end;
 
 procedure TJvSimpleXMLProp.SetIntValue(const Value: Int64);
@@ -3124,9 +3153,26 @@ begin
   end;
 end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 initialization
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
+
 
 finalization
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
   FinalizeUnit(sUnitName);
 
 end.

@@ -132,6 +132,9 @@ type
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Registry, 
   JvQResources;
 
@@ -574,6 +577,22 @@ begin
 //  Result := IncSecond(StartPoint, PEventLogRecord(FCurrentRecord)^.TimeWritten);
   Result := ((StartPoint * 86400.0) + PEventLogRecord(FCurrentRecord)^.TimeWritten) / 86400.0;
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

@@ -295,15 +295,18 @@ var
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JvQDsgnIntf, JvQJVCLUtils, JvQConsts, JvQThemes, JvQResources;
 
 { Cursors resources }
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvScrollMax.res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvScrollMax.res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 function PanelBorder(Panel: TCustomPanel): Integer;
 begin
@@ -1438,6 +1441,22 @@ initialization
   crRAHand := DefineCursor('RAHAND');
   crRAHandMove := DefineCursor('RAHANDMOVE');
 }
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

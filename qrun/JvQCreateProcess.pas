@@ -39,9 +39,10 @@ unit JvQCreateProcess;
 interface
 
 uses
-  JvQComponent,
-  Windows, Messages, SysUtils, Classes, 
+  Windows, SysUtils, Classes, 
   ShellAPI, SyncObjs,
+  JvQComponent, 
+  Messages, // (asn) Messges after Jv(Q)Component for VisualCLX
   JvQTypes;
 
 const
@@ -230,6 +231,9 @@ type
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Math,
   JclStrings,
   JvQJCLUtils, JvQJVCLUtils, JvQConsts, JvQResources;
@@ -1463,5 +1467,21 @@ function TJvCreateProcess.WriteLn(const S: string): Boolean;
 begin
   Result := Write(S + sLineBreak);
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

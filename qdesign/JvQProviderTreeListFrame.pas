@@ -38,7 +38,7 @@ interface
 uses
   SysUtils, Classes,
   QWindows, QMessages, QGraphics, QControls, QForms, QDialogs, QComCtrls,
-  JvQDataProvider, JvQDataProviderIntf;
+  JvQJCLUtils, JvQDataProvider, JvQDataProviderIntf;
 
 type
   TGetVirtualRootEvent = procedure(Sender: TObject; var AVirtualRoot: IJvDataItem) of object;
@@ -421,7 +421,6 @@ var
 begin  
   ARect := Item.DisplayRect;
   ARect.Right := Sender.ClientRect.Right;
-
   ACanvas := TControlCanvas.Create;
   TControlCanvas(ACanvas).Control := Sender;
   try
@@ -470,9 +469,9 @@ begin
       end;
     end;
   end;
-  ARect.Left := ARect.Left + BtnWdth;  
-    DrawTextW(ACanvas.Handle, PWideChar(Item.Caption), Length(Item.Caption), ARect,
-      DT_SINGLELINE + DT_LEFT + DT_END_ELLIPSIS);
+  ARect.Left := ARect.Left + BtnWdth;
+  DrawText(ACanvas.Handle, TCaption(Item.Caption), Length(Item.Caption), ARect,
+    DT_SINGLELINE + DT_LEFT + DT_END_ELLIPSIS); 
     ACanvas.Stop;
   finally
     ACanvas.Free;

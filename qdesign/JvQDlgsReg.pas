@@ -64,9 +64,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvDlgsReg.dcr}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvDlgsReg.dcr}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 procedure Register;
 const

@@ -72,8 +72,8 @@ type
     procedure DoWriteFloat(const Path: string; Value: Extended); override;
     function DoReadString(const Path: string; const Default: string): string; override;
     procedure DoWriteString(const Path: string; const Value: string); override;
-    function DoReadBinary(const Path: string; var Buf; BufSize: Integer): Integer; override;
-    procedure DoWriteBinary(const Path: string; const Buf; BufSize: Integer); override;
+    function DoReadBinary(const Path: string; Buf: Pointer; BufSize: Integer): Integer; override;
+    procedure DoWriteBinary(const Path: string; Buf: Pointer; BufSize: Integer); override;
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -85,6 +85,9 @@ type
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils,
   JclRegistry, JclResources,
   JvQConsts, JvQResources;
@@ -397,7 +400,7 @@ begin
   RegWriteString(FRegHKEY, SubKey, ValueName, Value);
 end;
 
-function TJvAppRegistryStorage.DoReadBinary(const Path: string; var Buf; BufSize: Integer): Integer;
+function TJvAppRegistryStorage.DoReadBinary(const Path: string; Buf: Pointer; BufSize: Integer): Integer;
 var
   SubKey: string;
   ValueName: string;
@@ -406,7 +409,7 @@ begin
   Result := RegReadBinary(FRegHKEY, SubKey, ValueName, Buf, BufSize);
 end;
 
-procedure TJvAppRegistryStorage.DoWriteBinary(const Path: string; const Buf; BufSize: Integer);
+procedure TJvAppRegistryStorage.DoWriteBinary(const Path: string; Buf: Pointer; BufSize: Integer);
 var
   SubKey: string;
   ValueName: string;
@@ -417,6 +420,22 @@ begin
   CreateKey(SubKey);
   RegWriteBinary(FRegHKEY, SubKey, ValueName, TmpBuf, BufSize);
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

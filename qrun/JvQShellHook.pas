@@ -41,9 +41,9 @@ unit JvQShellHook;
 interface
 
 uses
-  SysUtils, Classes,
+  Windows, SysUtils, Classes,
   JvQComponent,
-  Windows, Messages, 
+  Messages,
   JvQFinalize;
 
 const
@@ -256,7 +256,10 @@ procedure UnInitJvShellHooks;
 
 implementation
 
-uses 
+uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING} 
   JvQJVCLUtils;
 
 const
@@ -375,9 +378,26 @@ begin
     inherited;
 end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 initialization
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
+
 
 finalization
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
   FinalizeUnit(sUnitName);
   
 end.

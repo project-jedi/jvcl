@@ -42,7 +42,7 @@ uses
   QWindows, QMessages,
   SysUtils, Classes, QGraphics, QControls, QForms, QExtCtrls, 
   Qt,  
-  JvQThemes, JvQComponent, JvQExControls;
+  JvQThemes, JvQComponent, JvQExControls, JvQJCLUtils;
 
 type
   TJvPanelResizeParentEvent = procedure(Sender: TObject; nLeft, nTop, nWidth, nHeight: Integer) of object;
@@ -113,8 +113,8 @@ type
     FMoving: Boolean;
     FGripBmp: TBitmap;
     procedure CreateSizeGrip;
-    function GetBorderWidth: integer;
-    function IsInsideGrip(X, Y: integer): boolean; 
+    function GetFrameWidth: Integer;
+    function IsInsideGrip(X, Y: Integer): Boolean; 
     function GetHeight: Integer;
     procedure SetHeight(Value: Integer);
     function GetWidth: Integer;
@@ -124,7 +124,7 @@ type
     procedure SetFlatBorder(const Value: Boolean);
     procedure SetFlatBorderColor(const Value: TColor);
     procedure DrawCaption;
-    procedure DrawCaptionTo(ACanvas: TCanvas ; DrawingMask: Boolean = false);
+    procedure DrawCaptionTo(ACanvas: TCanvas ; DrawingMask: Boolean = False );
     procedure DrawBorders;
     procedure SetMultiLine(const Value: Boolean);
     procedure SetHotColor(const Value: TColor);
@@ -218,7 +218,10 @@ type
 
 implementation
 
-uses 
+uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING} 
   Types, 
   JvQMouseTimer;
 
@@ -388,7 +391,8 @@ end;
 
 
 
-function TJvPanel.GetBorderWidth: integer;
+
+function TJvPanel.GetFrameWidth: Integer;
 begin
   if FFlatBorder then
     Result := 1
@@ -402,13 +406,13 @@ begin
   end;
 end;
 
-function TJvPanel.IsInsideGrip(X, Y: integer): boolean;
+function TJvPanel.IsInsideGrip(X, Y: Integer): Boolean;
 var
   R: TRect;
-  I: integer;
+  I: Integer;
 begin
-  I := GetBorderWidth;
-  R := Bounds( Width - 12 - I, Height - 12 - I, 12, 12);
+  I := GetFrameWidth;
+  R := Bounds(Width - 12 - I, Height - 12 - I, 12, 12);
   Result := QWindows.PtInRect(R, X, Y);
 end;
 
@@ -421,27 +425,26 @@ begin
   ACanvas.Brush.Style := bsClear;
   ACanvas.Pen.Color := clDontMask;
   R := Bounds(0, 0, Width, Height);
-  I := GetBorderWidth;
+  I := GetFrameWidth;
   for J := 0 to I do
   begin
     ACanvas.Rectangle(R);
     InflateRect(R, -1, -1)
   end;
-  DrawCaptionTo(ACanvas, true);
+  DrawCaptionTo(ACanvas, True);
   if Sizeable then
   begin
     X := ClientWidth - FGripBmp.Width - I;
     Y := ClientHeight - FGripBmp.Height - I;
     for I := 0 to 2 do
-    begin
       for J := 0 to 2 do
       begin
         ACanvas.MoveTo(X + 4 * I + J, Y + FGripBmp.Height);
         ACanvas.LineTo(X + FGripBmp.Width, Y + 4 * I + J);
       end
-    end;
   end;
 end;
+
 
 
 procedure TJvPanel.Paint;
@@ -471,7 +474,7 @@ begin
   if Sizeable then 
       with Canvas do
       begin 
-        I := GetBorderWidth;
+        I := GetFrameWidth;
         X := ClientWidth - FGripBmp.Width - I;
         Y := ClientHeight - FGripBmp.Height - I;
         Draw(X, Y, FGripBmp);  
@@ -515,7 +518,7 @@ begin
   DrawCaptionTo(self.Canvas);
 end;
 
-procedure TJvPanel.DrawCaptionTo(ACanvas: TCanvas ; DrawingMask: Boolean = false);
+procedure TJvPanel.DrawCaptionTo(ACanvas: TCanvas ; DrawingMask: Boolean = False );
 const
   Alignments: array [TAlignment] of Longint = (DT_LEFT, DT_RIGHT, DT_CENTER);
   WordWrap: array [Boolean] of Longint = (DT_SINGLELINE, DT_WORDBREAK);
@@ -540,8 +543,8 @@ begin
       InflateRect(ATextRect, -BevelSize, -BevelSize);
       Flags := DT_EXPANDTABS or WordWrap[MultiLine] or Alignments[Alignment];
       Flags := DrawTextBiDiModeFlags(Flags);
-      //calculate required rectangle size  
-      DrawText(ACanvas, Caption, -1, ATextRect, Flags or DT_CALCRECT); 
+      //calculate required rectangle size
+      DrawText(ACanvas.Handle, Caption, -1, ATextRect, Flags or DT_CALCRECT);
       // adjust the rectangle placement
       OffsetRect(ATextRect, 0, -ATextRect.Top + (Height - (ATextRect.Bottom - ATextRect.Top)) div 2);
       case Alignment of
@@ -558,8 +561,8 @@ begin
           Font.Color := clGrayText;
       //draw text
       if Transparent and not IsThemed then
-        SetBkMode(ACanvas.Handle, BkModeTransparent);  
-      DrawText(ACanvas, Caption, -1, ATextRect, Flags); 
+        SetBkMode(ACanvas.Handle, BkModeTransparent);
+      DrawText(ACanvas.Handle, Caption, -1, ATextRect, Flags);
     end;
   end;
 end;
@@ -705,7 +708,7 @@ begin
       FMoving := True;
       FLastPos := Point(X, Y);
       MouseCapture := True;
-//      Screen.Cursor := crDrag;
+      Screen.Cursor := crDrag;
     end
     else
       inherited MouseDown(Button, Shift, X, Y); 
@@ -736,7 +739,7 @@ begin
     if Movable and FMoving then
     begin
       SetBounds(Left + X - FLastPos.X, Top + Y - FLastPos.Y, Width, Height);
-      FWasMoved := true;
+      FWasMoved := True;
     end
     else
     begin
@@ -782,8 +785,8 @@ begin
 end;
 
 procedure TJvPanel.Resize;
-begin 
-  if Assigned(FArrangeSettings) then 
+begin
+  if Assigned(FArrangeSettings) then // (asn) 
     if FArrangeSettings.AutoArrange then
       ArrangeControls;
   inherited Resize;
@@ -1021,6 +1024,22 @@ begin
   FGripBmp.Transparent := True;
 end;
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

@@ -59,26 +59,26 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvCmpReg.dcr}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvCmpReg.dcr}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 procedure Register;
 begin 
   GroupDescendentsWith(TJvDataEmbedded, TControl);
   GroupDescendentsWith(TJvComponentEmbedded, TControl);
   GroupDescendentsWith(TJvStrHolder, TControl);
+  GroupDescendentsWith(TJvMultiStringHolder, TControl);
   GroupDescendentsWith(TJvPageManager, TControl); 
 
   RegisterComponents(RsPaletteNonVisual, [TJvAlarms, TJvConverter,
     TJvDataEmbedded,
     TJvEnterAsTab, TJvMergeManager, TJvPageManager, TJvPatchFile, TJvProfiler,
-    TJvStrHolder, TJvTimeLimit, TJvTranslator, TJvTranslatorStrings,
+    TJvStrHolder, TJvMultiStringHolder, TJvTimeLimit, TJvTranslator, TJvTranslatorStrings,
     TJvPrint, TJvEasterEgg, TJvMouseGesture, TJvMouseGestureHook, TJvLogFile]);
   {$IFDEF USEWINDOWS}
   RegisterComponents(RsPaletteNonVisual, [TJvCreateProcess, TJvWinHelp]);
   {$ENDIF USEWINDOWS}
-
 
   {$IFDEF USEWINDOWS}
   RegisterPropertyEditor(TypeInfo(string), TJvCreateProcess,

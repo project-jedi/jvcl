@@ -97,14 +97,17 @@ type
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   QControls;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvComponentPanel.res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvComponentPanel.res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 constructor TJvComponentPanel.Create(AOwner: TComponent);
 begin
@@ -345,6 +348,22 @@ begin
     EnableAlign;
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

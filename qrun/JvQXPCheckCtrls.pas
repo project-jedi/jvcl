@@ -36,7 +36,8 @@ unit JvQXPCheckCtrls;
 interface
 
 uses
-  Classes, QWindows, QGraphics, QControls,
+  Classes, QWindows, QGraphics, QControls, 
+  JvQComponent, 
   JvQXPCore, JvQXPCoreUtils;
 
 type
@@ -130,7 +131,33 @@ type
     property OnStartDrag;
   end;
 
+{$IFDEF _VisualCLX}
+  TJvXPCheckBoxPainter = class(TJvComponent)
+  private
+    FCheckSize: Byte;
+
+    FCkGradient: TBitmap;
+    FHlGradient: TBitmap;
+    FBgGradient: TBitmap;
+    procedure DrawCheck(Sender: TObject; Canvas: TCanvas;
+      const Rect: TRect; Checked, Grayed, Down, Enabled: Boolean;
+      var DefaultDraw: Boolean);
+    procedure DrawCheckMask(Sender: TObject; Canvas: TCanvas;
+      const Rect: TRect; Checked, Grayed: Boolean);
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  end;
+{$ENDIF VisualCLX}
+
+
+
 implementation
+
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
 
 //=== { TJvXPCustomCheckControl } ============================================
 
@@ -354,6 +381,22 @@ begin
     end;
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

@@ -35,7 +35,7 @@ unit JvQSegmentedLEDDisplayMappingForm;
 interface
 
 uses
-  QWindows, QMessages, SysUtils, Classes, QGraphics, QControls, QForms, QDialogs, QStdCtrls,  
+  QWindows, QMessages, SysUtils, Classes, QGraphics, QControls, QForms, QDialogs, QStdCtrls, 
   DesignIntf, DesignEditors, 
   JvQBaseDsgnForm, JvQSegmentedLEDDisplayMapperFrame, JvQSegmentedLEDDisplay,
   JvQBaseDsgnFrame, JvQDsgnTypes;
@@ -235,6 +235,11 @@ end;
 procedure TfrmJvSLDMappingEditor.Loaded;
 begin
   inherited Loaded;
+  
+  Constraints.MinHeight := Height;
+  Constraints.MaxHeight := Height;
+  Constraints.MinWidth := Width;
+  
   if fmeMapper <> nil then
   begin
     fmeMapper.OnMappingChanged := MappingChanged;

@@ -57,9 +57,9 @@ uses
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   Xlib, QStdCtrls, StrUtils,
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
   SysUtils, Classes, QGraphics, QClipbrd, QControls, 
   Qt, QWindows, 
   {$IFDEF HAS_UNIT_VARIANTS}
@@ -74,17 +74,17 @@ const
   PathSep = ';';
   AllFilesMask = '*.*';
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   PathDelim = '/';
   AllFilesMask = '*';
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
   
   NullHandle = nil; 
 
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 type
   TFileTime = Integer;
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 // (p3) duplicated from JvTypes since this unit should not rely on JVCL at all
 type
@@ -204,9 +204,9 @@ const
   {$IFDEF MSWINDOWS}
   DefaultCaseSensitivity = False;
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   DefaultCaseSensitivity = True;
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
 
 { GetTempDir returns Windows temporary folder name }
 function GetTempDir: string;
@@ -226,7 +226,7 @@ function FileEquMask(FileName, Mask: TFileName;
   CaseSensitive: Boolean = DefaultCaseSensitivity): Boolean;
 { FileEquMasks returns True if file, FileName,
   is compatible with given Masks.
-  Masks must be separated with SepPath (MSW: ';' / LINUX: ':') }
+  Masks must be separated with SepPath (MSW: ';' / UNIX: ':') }
 function FileEquMasks(FileName, Masks: TFileName;
   CaseSensitive: Boolean = DefaultCaseSensitivity): Boolean;
 function DeleteFiles(const Folder: TFileName; const Masks: string): Boolean;
@@ -471,14 +471,14 @@ function FormatLongDateTime(Value: TDateTime): string;
 
   { ** Common string handling routines ** }
 
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 function iconversion(InP: PChar; OutP: Pointer; InBytes, OutBytes: Cardinal;
   const ToCode, FromCode: string): Boolean;
 function iconvString(const S, ToCode, FromCode: string): string;
 function iconvWideString(const S: WideString; const ToCode, FromCode: string): WideString;
 function OemStrToAnsi(const S: string): string;
 function AnsiStrToOem(const S: string): string;
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 function StrToOem(const AnsiStr: string): string;
 { StrToOem translates a string from the Windows character set into the
@@ -618,14 +618,17 @@ function FindNotBlankCharPos(const S: string): Integer;
 function FindNotBlankCharPosW(const S: WideString): Integer;
 function AnsiChangeCase(const S: string): string;
 function WideChangeCase(const S: string): string;
-function StringStartsWith(const Str, SubStr: string): Boolean;
-function StringEndsWith(const Str, SubStr: string): Boolean;
+function StringStartsWith(const Str, SubStr: string): Boolean; // case insensitive
+function StringEndsWith(const Str, SubStr: string): Boolean; // case insensitive
 function ExtractFilePath2(const FileName: string): string;
+
+
+
 {end JvStrUtils}
 
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 function GetTempFileName(const Prefix: string): string;
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 { begin JvFileUtil }
 function FileDateTime(const FileName: string): TDateTime;
@@ -904,13 +907,19 @@ function TextToValText(const AValue: string): string;
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
   SysConst,
   {$IFDEF MSWINDOWS}
   ComObj, ShellAPI, MMSystem, Registry,
-  {$ENDIF MSWINDOWS}  
+  {$ENDIF MSWINDOWS}
+  {$IFDEF HAS_UNIT_STRUTILS}
+  StrUtils,
+  {$ENDIF HAS_UNIT_STRUTILS}  
   QConsts, 
   {$IFNDEF NO_JCL}
   JclStrings, JclSysInfo,
@@ -1519,9 +1528,9 @@ begin
   {$IFDEF MSWINDOWS}
   FileName := AnsiUpperCase(ExtractFileName(FileName));
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   FileName := ExtractFileName(FileName);
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
   DosError := FindFirst(Path, faAnyFile, SearchRec);
   while DosError = 0 do
   begin
@@ -1529,9 +1538,9 @@ begin
     if SameFileName(SearchRec.FindData.cFileName, FileName) or
       SameFileName(SearchRec.FindData.cAlternateFileName, FileName) then
     {$ENDIF MSWINDOWS}
-    {$IFDEF LINUX}
+    {$IFDEF UNIX}
     if AnsiSameStr(SearchRec.Name, FileName) then
-    {$ENDIF LINUX}
+    {$ENDIF UNIX}
     begin
       Result := True;
       Break;
@@ -1899,11 +1908,11 @@ begin
     Result := 'None';
 end;
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 begin
   Result := 'None';
 end;
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 function CurrencyToStr(const Cur: Currency): string;
 begin
@@ -1974,9 +1983,9 @@ begin
   {$IFDEF MSWINDOWS}
   FileSetAttr(FileName, 0); {clear Read Only Flag}
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   FileSetReadOnly(FileName, False);
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
   Result := DeleteFile(FileName);
 end;
 
@@ -2077,8 +2086,10 @@ begin
   { if linker error occured with message "unresolved external 'System::RaiseList'" try
     comment this function implementation, compile,
     then uncomment and compile again. }
-  {$IFDEF MSWINDOWS} 
-  {$WARN SYMBOL_DEPRECATED OFF} 
+  {$IFDEF MSWINDOWS}
+  {$IFDEF SUPPORTS_DEPRECATED}
+  {$WARN SYMBOL_DEPRECATED OFF}
+  {$ENDIF SUPPORTS_DEPRECATED}
   if RaiseList <> nil then
   begin
     Result := PRaiseFrame(RaiseList)^.ExceptObject;
@@ -2086,12 +2097,15 @@ begin
   end
   else
     Result := nil;
+  {$IFDEF SUPPORTS_DEPRECATED}
+  {$WARN SYMBOL_DEPRECATED ON}
+  {$ENDIF SUPPORTS_DEPRECATED}
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   // XXX: changing exception in stack frame is not supported on Kylix
   Writeln(ErrOutput, 'ChangeTopException');
   Result := E;
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
 end;
 
 
@@ -2175,11 +2189,11 @@ begin
   Result := FileDateToDateTime(FileDate);
 end;
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 begin
   Result := FileDateToDateTime(FT);
 end;
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 function MakeValidFileName(const FileName: TFileName;
   ReplaceBadChar: Char): TFileName;
@@ -2297,9 +2311,9 @@ begin
   {$IFDEF MSWINDOWS}
   if Windows.GetComputerName(PChar(Result), nSize) then
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   if QWindows.GetComputerName(PChar(Result), nSize) then
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
     SetLength(Result, nSize)
   else
     Result := '';
@@ -4256,11 +4270,11 @@ begin
   Result := TrimRight(Result);
 end;
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 begin
   Result := TrimRight(FormatDateTime(LongDateFormat, Value));
 end;
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 function FormatLongDateTime(Value: TDateTime): string;
 begin
@@ -4282,7 +4296,7 @@ end;
 { end JvDateUtil }
 
 { begin JvStrUtils }
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 
 function iconversion(InP: PChar; OutP: Pointer; InBytes, OutBytes: Cardinal;
   const ToCode, FromCode: string): Boolean;
@@ -4330,7 +4344,7 @@ begin
   Result := iconvString(S, 'CP850', 'WINDOWS-1250');
 end;
 
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 function StrToOem(const AnsiStr: string): string;
 begin
@@ -4339,9 +4353,9 @@ begin
   if Length(Result) > 0 then
     CharToOemBuff(PChar(AnsiStr), PChar(Result), Length(Result));
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   Result := AnsiStrToOem(AnsiStr);
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
 end;
 
 function OemToAnsiStr(const OemStr: string): string;
@@ -4351,9 +4365,9 @@ begin
   if Length(Result) > 0 then
     OemToCharBuff(PChar(OemStr), PChar(Result), Length(Result));
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   Result := OemStrToAnsi(OemStr);
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
 end;
 
 function IsEmptyStr(const S: string; const EmptyChars: TSysCharSet): Boolean;
@@ -4559,7 +4573,7 @@ end;
 
 {$ENDIF MSWINDOWS}
 
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 
 function CompStr(const S1, S2: string): Integer;
 begin
@@ -4571,7 +4585,7 @@ begin
   Result := AnsiCompareText(S1, S2);
 end;
 
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 function Copy2Symb(const S: string; Symb: Char): string;
 var
@@ -5297,28 +5311,13 @@ begin
 end;
 
 function StringStartsWith(const Str, SubStr: string): Boolean;
-var
-  P: PChar;
-  L, L2: Integer;
 begin
-  P := PChar(Str);
-  L := Length(SubStr);
-  L2 := Length(Str);
-  if L > L2 then
-    Result := False
-  else
-    {$IFDEF MSWINDOWS}
-    Result := CompareString(LOCALE_USER_DEFAULT, NORM_IGNORECASE,
-      P, L, PChar(SubStr), L) = 2;
-    {$ENDIF MSWINDOWS}
-    {$IFDEF LINUX}
-    Result := AnsiStartsText(SubStr, Str);
-    {$ENDIF LINUX}
+  Result := AnsiStartsText(SubStr, Str);
 end;
 
 function StringEndsWith(const Str, SubStr: string): Boolean;
 begin
-  Result := Copy(Str, Length(Str) - Length(SubStr) + 1, Length(SubStr)) = SubStr;
+  Result := AnsiEndsText(SubStr, Str);
 end;
 
 function ExtractFilePath2(const FileName: string): string;
@@ -5361,6 +5360,8 @@ begin
       Result := Result + '\';
   {$ENDIF MSWINDOWS}
 end;
+
+
 
 function RemoveBackSlash(const DirName: string): string;
 begin
@@ -5421,7 +5422,7 @@ end;
 
 {$ENDIF MSWINDOWS}
 
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 function GetTempFileName(const Prefix: string): string;
 var
   P: PChar;
@@ -5431,7 +5432,7 @@ begin
   if P <> nil then
     Libc.free(P);
 end;
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 function GenTempFileName(FileName: string): string;
 var
@@ -5439,9 +5440,9 @@ var
   {$IFDEF MSWINDOWS}
   TempFile: array [0..MAX_PATH] of Char;
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   TempFile: string;
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
   STempDir: TFileName;
   Res: Integer;
 begin
@@ -5465,10 +5466,10 @@ begin
     0, { number used to create temporary filename}
     TempFile); { address of buffer that receives the new filename}
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   TempFile := GetTempFileName('~JV');
   Res := 1;
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
   if Res <> 0 then
     Result := TempFile
   else
@@ -5490,13 +5491,13 @@ begin
   Result := TempDir;
 end;
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 begin
   Result := ExtractFileDir(GetTempFileName(''));
   if Result = '' then
     Result := '/tmp'; // hard coded
 end;
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 function ClearDir(const Dir: string): Boolean;
 var
@@ -5596,9 +5597,9 @@ begin
   else
     Result := FileName;
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   Result := ExpandFileName(FileName);
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
 end;
 
 function FileEquMask(FileName, Mask: TFileName; CaseSensitive: Boolean): Boolean;
@@ -5694,9 +5695,9 @@ begin
   {$IFDEF MSWINDOWS}
   (not HasAny(FileName, '/<>"?*|'));
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   (not HasAny(FileName, '<>"?*|'));
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
   if Result then
     Result := Pos(PathDelim, ExtractFileName(FileName)) = 0;
 end;
@@ -5757,14 +5758,14 @@ begin
   Windows.FindClose(SearchHandle);
 end;
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 begin
   if FileExists(ShortName) then
     Result := ShortName
   else
     Result := '';
 end;
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 function LongToShortFileName(const LongName: string): string;
 {$IFDEF MSWINDOWS}
@@ -5784,14 +5785,14 @@ begin
   Windows.FindClose(SearchHandle);
 end;
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 begin
   if FileExists(LongName) then
     Result := LongName
   else
     Result := '';
 end;
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 function ShortToLongPath(const ShortName: string): string;
 var
@@ -6034,17 +6035,17 @@ begin
   ShellExecute(Windows.GetForegroundWindow, PChar(Operation), PChar(FileName), PChar(Parameters), PChar(Directory),
     SW_SHOWNORMAL);
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   ShellExecute(GetForegroundWindow, PChar(Operation), PChar(FileName), PChar(Parameters), PChar(Directory),
     SW_SHOWNORMAL);
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
 end;
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 // begin
 //  if Directory = '' then Directory := GetCurrentDir;
 //  Libc.system(PChar(Format('cd "%s" ; "%s" %s &', [Directory, FileName, Parameters])));
 // end;
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 { (rb) Duplicate of JclMiscel.WinExec32AndWait }
 
@@ -6069,12 +6070,12 @@ begin
     WaitForSingleObject(ProcessInfo.hProcess, INFINITE);
 end;
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 begin
   // ignores Visibility
   Libc.system(PChar(Format('kfmclient exec "%s"', [FileName])));
 end;
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 
 
@@ -6855,12 +6856,12 @@ begin
     Result := '';
 end;
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 function GetEnvVar(const VarName: string): string;
 begin
   Result := getenv(PChar(VarName));
 end;
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 { Memory routines }
 
@@ -7462,6 +7463,22 @@ end;
 
 
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

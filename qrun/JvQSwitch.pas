@@ -132,14 +132,17 @@ type
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JvQJVCLUtils, JvQThemes;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvSwitch.Res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvSwitch.Res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 const
   ResName: array [Boolean] of PChar = ('JV_SWITCH_OFF', 'JV_SWITCH_ON'); 
@@ -463,6 +466,22 @@ begin
       Invalidate;
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

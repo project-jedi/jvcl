@@ -529,8 +529,6 @@ function JvMakeObjectInstance(Method: TWndMethod): Pointer;
 procedure JvFreeObjectInstance(ObjectInstance: Pointer);
 {$ENDIF  MSWINDOWS}
 
-
-
 function GetAppHandle: HWND;
 // DrawArrow draws a standard arrow in any of four directions and with the specifed color.
 // Rect is the area to draw the arrow in and also defines the size of the arrow
@@ -553,6 +551,9 @@ function SelectColorByLuminance(AColor, DarkColor, BrightColor: TColor): TColor;
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysConst, 
   {$IFDEF MSWINDOWS}
   CommCtrl, MMSystem, ShlObj, ActiveX,
@@ -565,9 +566,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvConsts.res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvConsts.res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 const
   sUnitName = 'JvJVCLUtils';
@@ -927,7 +928,7 @@ begin
     Result := GetLastError;
 end;
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 begin
   if WorkingDirectory = '' then
     Result := Libc.system(PChar(Format('cd "%s" ; %s',
@@ -936,7 +937,7 @@ begin
     Result := Libc.system(PChar(Format('cd "%s" ; %s',
       [WorkingDirectory, CommandLine])));
 end;
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 
 
@@ -1588,7 +1589,7 @@ type
 procedure DrawInvertFrame(ScreenRect: TRect; Width: Integer);
 var
   Canvas: TJvDeskTopCanvas;
-  I: integer;
+  I: Integer;
 begin
   Canvas := TJvDeskTopCanvas.Create;
   with Canvas do
@@ -1737,8 +1738,6 @@ begin
     AControl.EnableAlign;
   end;
 end;
-
-
 
 
 
@@ -2410,12 +2409,12 @@ end;
 
 {$ENDIF MSWINDOWS}
 
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 function IsForegroundTask: Boolean;
 begin
   Result := Application.Active;
 end;
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 
 
@@ -2684,10 +2683,10 @@ begin
   if Assigned(OnGetDefaultIniName) then
     Result := OnGetDefaultIniName
   else
-    {$IFDEF LINUX}
+    {$IFDEF UNIX}
     Result := GetEnvironmentVariable('HOME') + PathDelim +
       '.' + ExtractFileName(Application.ExeName);
-    {$ENDIF LINUX}
+    {$ENDIF UNIX}
     {$IFDEF MSWINDOWS}
     Result := ExtractFileName(ChangeFileExt(Application.ExeName, '.ini'));
     {$ENDIF MSWINDOWS}
@@ -4804,8 +4803,6 @@ end;
 
 {$ENDIF MSWINDOWS}
 
-
-
 procedure InitScreenCursors;
 begin
   try
@@ -5153,10 +5150,27 @@ begin
     Result := BrightColor;
 end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 initialization
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
+
   InitScreenCursors;
 
 finalization
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
   FinalizeUnit(sUnitName);
 
 end.

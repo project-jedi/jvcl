@@ -114,14 +114,17 @@ type
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvLED.res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvLED.res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 const
   cMaskLEDName = 'JVTR_MASK_LED';
@@ -269,6 +272,22 @@ begin
         FImgPict.Canvas.Pixels[X, Y] := Color;
   Repaint;
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

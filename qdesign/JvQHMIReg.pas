@@ -41,9 +41,9 @@ implementation
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvHMIReg.dcr}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvHMIReg.dcr}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 uses
   Classes, 

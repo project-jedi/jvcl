@@ -64,8 +64,7 @@ type
     procedure DoReadBackColor(Reader: TReader);
   protected
     procedure FontChanged; override;
-    procedure SetText(const Value: TCaption);  override;
-
+    procedure SetText(const Value: TCaption);  override; 
     procedure SetAutoSize(Value: Boolean); 
     procedure DefineProperties(Filer: TFiler); override;
   public
@@ -80,7 +79,7 @@ type
     property MarginTop: Integer read FMarginTop write SetMarginTop default 5;
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property Text: TCaption read FText write SetText;  
-    property AutoSize: boolean read FAutoSize write SetAutoSize default false; 
+    property AutoSize: Boolean read FAutoSize write SetAutoSize default False; 
     property Align;
     property Font;
     property Anchors;
@@ -110,6 +109,9 @@ type
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JvQConsts, JvQThemes;
 
 constructor TJvMarkupLabel.Create(AOwner: TComponent);
@@ -216,10 +218,10 @@ var
     Result := False;
     if Length(V) < 2 then
       Exit;
-    if not (V[1] in ['#','$']) then
+    if not (V[1] in ['#', '$']) then
     begin
       // allow the use of both "clBlack" and "Black" 
-      if Pos('cl',AnsiLowerCase(V)) = 1 then
+      if Pos('cl', AnsiLowerCase(V)) = 1 then
         VV := V
       else
         VV := 'cl' + V;
@@ -442,7 +444,7 @@ var
     SetFont(EE);
     if EE.SolText <> '' then
     begin
-      SS := trimLeft(EE.SolText);
+      SS := TrimLeft(EE.SolText);
       WW := Canvas.TextWidth(SS);
       if not Test then
         Canvas.TextOut(X, Y + BaseLine - EE.Ascent, SS);
@@ -637,6 +639,22 @@ begin
   inherited DefineProperties(Filer);
   Filer.DefineProperty('BackColor', DoReadBackColor, nil, False);
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

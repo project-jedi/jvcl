@@ -185,6 +185,9 @@ type
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, QExtCtrls;
 
 //=== { TJvCapBtn } ==========================================================
@@ -376,16 +379,9 @@ var
 begin
   inherited Create(AOwner); 
   FCaptionFont := TFont.Create;
-  FIcon := TIcon.Create;
-  {$IFDEF MSWINDOWS}
-  // (rom) Warning! This seems no standard Windows font
-//  FCaptionFont.Name := 'MS Shell Dlg 2';
-  FCaptionFont.Size := 10;
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  FIcon := TIcon.Create;  
   FCaptionFont.Name := 'Helvetica';
-  FCaptionFont.Height := 13;
-  {$ENDIF LINUX}
+  FCaptionFont.Height := 13; 
   FCaptionFont.Style := [fsBold];
   FCaptionFont.Color := clWhite;
   FCaptionFont.OnChange := DoCaptionFontChange;
@@ -828,6 +824,22 @@ procedure TJvCaptionPanel.DoCaptionFontChange(Sender: TObject);
 begin
   Invalidate;
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

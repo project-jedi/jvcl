@@ -46,7 +46,7 @@ uses
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
-  QTypes, QWindows, QGraphics, QControls, QExtCtrls, QDialogs,
+  QWindows, QGraphics, QControls, QExtCtrls, QDialogs,
   JvQTypes;
 
 type
@@ -114,7 +114,7 @@ type
     procedure LoadFromFile(const FileName: string); override;
     procedure SaveToFile(const FileName: string); override;  
     procedure LoadFromMimeSource(MimeSource: TMimeSource); override;
-    procedure SaveToMimeSource(MimeSource: TClxMimeSource); override;
+    procedure SaveToMimeSource(MimeSource: TClxMimeSource); override; 
     procedure AssignToBitmap(Bitmap: TBitmap; BackColor: TColor;
       DecreaseColors, Vertical: Boolean);
     procedure AssignIconsToBitmap(Bitmap: TBitmap; BackColor: TColor;
@@ -137,6 +137,9 @@ function LoadJvAniDialog: TJvAni;
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils,
   QConsts, Math,
   JvQJVCLUtils, JvQJCLUtils, JvQIconList, JvQConsts, JvQResources;
@@ -1056,10 +1059,27 @@ end;
 
 
 
-initialization 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
+initialization
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
+ 
   TPicture.RegisterFileFormat(RsAniExtension, RsAniFilterName, TJvAni);
 
 finalization
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
   TPicture.UnregisterGraphicClass(TJvAni);
 
 end.

@@ -82,9 +82,9 @@ uses
   {$IFDEF MSWINDOWS}
   Registry,
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   JvQRegistryIniFile,
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
   JvQBaseDsgnFrame, JvQConsts, JvQDsgnConsts;
 
 {$R *.xfm}
@@ -116,15 +116,18 @@ end;
 
 
 procedure TJvBaseDesign.ShowingChanged;
-begin
-  inherited ShowingChanged;
 
-  if not (csDesigning in ComponentState) and AutoStoreSettings then
+begin
+  if not (csDesigning in ComponentState) and AutoStoreSettings and Showing then
   try
-    if Showing then
-      RestoreSettings
-    else
-      StoreSettings;
+    RestoreSettings
+  except
+    Application.HandleException(Self);
+  end; 
+  inherited ShowingChanged;  
+  if not (csDesigning in ComponentState) and AutoStoreSettings and not Showing then
+  try
+    StoreSettings;
   except
     Application.HandleException(Self);
   end;
@@ -150,9 +153,9 @@ procedure TJvBaseDesign.StoreSettings;
 var
   I: Integer;
 begin
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   with TJvRegistryIniFile.Create do
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
   {$IFDEF MSWINDOWS}
   with TRegistry.Create do
   {$ENDIF MSWINDOWS}
@@ -179,9 +182,9 @@ procedure TJvBaseDesign.RestoreSettings;
 var
   I: Integer;
 begin
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   with TJvRegistryIniFile.Create do
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
   {$IFDEF MSWINDOWS}
   with TRegistry.Create do
   {$ENDIF MSWINDOWS}

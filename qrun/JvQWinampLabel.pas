@@ -129,14 +129,17 @@ type
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JvQTypes, JvQResources;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvWinampLabel.res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvWinampLabel.res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 const
   // (p3) fixed as suggested by Remko Bonte
@@ -484,6 +487,22 @@ begin
   FText := '';
   inherited ColorChanged;
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

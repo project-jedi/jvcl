@@ -273,6 +273,9 @@ procedure FrameRounded(Canvas: TCanvas; ARect: TRect; AColor: TColor; R: Integer
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, Math, QForms,
   JvQDataProviderIntf,
   JvQConsts, JvQThemes, JvQJCLUtils, JvQJVCLUtils;
@@ -1188,6 +1191,22 @@ function TJvCustomLabel.IsValidImage: Boolean;
 begin
   Result := (Images <> nil) and (ImageIndex >= 0);
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

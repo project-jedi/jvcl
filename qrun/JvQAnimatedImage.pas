@@ -135,7 +135,7 @@ type
     property NumGlyphs: Integer read FNumGlyphs write SetNumGlyphs default 1;
     property InactiveGlyph: Integer read FInactiveGlyph write SetInactiveGlyph default -1;
     property TransparentColor: TColor read FTransparentColor write SetTransparentColor
-      stored TransparentStored; 
+      stored TransparentStored;
     property Color;
     property Cursor; 
     property DragMode;
@@ -153,7 +153,7 @@ type
     property OnDragOver;
     property OnDragDrop;
     property OnEndDrag;
-    property OnStartDrag; 
+    property OnStartDrag;
     property OnContextPopup;
     property OnFrameChanged: TNotifyEvent read FOnFrameChanged write FOnFrameChanged;
     property OnStart: TNotifyEvent read FOnStart write FOnStart;
@@ -171,6 +171,9 @@ type
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   QForms,
   //JclSysUtils,
   JvQConsts, JvQJVCLUtils;
@@ -306,7 +309,7 @@ end;
 
 
 type
-  TWidgetControlAccessProtected = class(TWidgetControl);
+  THackedWidgetControl = class(TWidgetControl);
 
 
 procedure TJvImageControl.DoPaintControl;
@@ -321,7 +324,7 @@ begin
   end;  
   DC := QPainter_create;
   try
-    QPainter_begin(DC, TWidgetControlAccessProtected(Parent).GetPaintDevice);
+    QPainter_begin(DC, THackedWidgetControl(Parent).GetPaintDevice);
     try
       QPainter_setClipRect(DC, Left, Top, Width, Height);
       QPainter_translate(DC, Left, Top);
@@ -758,6 +761,22 @@ begin
 end;
 
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

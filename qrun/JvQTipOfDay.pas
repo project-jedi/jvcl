@@ -154,6 +154,9 @@ type
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils,  
   QExtCtrls, QDialogs, 
   JvQButton, JvQResources;
@@ -161,9 +164,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvTipOfDay.res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvTipOfDay.res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 
 const
@@ -729,6 +732,22 @@ begin
   if Assigned(AppStorage) then
     AppStorage.WriteBoolean(AppStorage.ConcatPaths([AppStoragePath,RsStoreShowOnStartUp]), DoShowOnStartUp);
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

@@ -176,6 +176,9 @@ type
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Registry,
   JvQResources;
 
@@ -230,9 +233,9 @@ type
 
   TEnumMruList = function(hList: THandle; nItemPos: Integer; lpBuffer: Pointer; nBufferSize: DWORD): Integer; stdcall;
 
-  TFindMruString = function(hList: THandle; lpszString: PChar; lpRegNum: Pinteger): Integer; stdcall;
-  TFindMruStringW = function(hList: THandle; lpszString: PWideChar; lpRegNum: Pinteger): Integer; stdcall;
-  TFindMruData = function(hList: THandle; lpData: Pointer; cbData: DWORD; lpRegNum: Pinteger): Integer; stdcall;
+  TFindMruString = function(hList: THandle; lpszString: PChar; lpRegNum: PInteger): Integer; stdcall;
+  TFindMruStringW = function(hList: THandle; lpszString: PWideChar; lpRegNum: PInteger): Integer; stdcall;
+  TFindMruData = function(hList: THandle; lpData: Pointer; cbData: DWORD; lpRegNum: PInteger): Integer; stdcall;
 
 var
   CreateMruList: TCreateMruList;
@@ -755,9 +758,25 @@ begin
   end;
 end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 initialization
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
 
 finalization
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
   FinalizeUnit(sUnitName);
 
 end.

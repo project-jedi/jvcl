@@ -36,7 +36,7 @@ unit JvQPageList;
 interface
 
 uses
-  SysUtils, Classes, QWindows, QMessages, QGraphics, QControls,
+  SysUtils, Classes, QWindows, QMessages, QGraphics, QControls, 
   Qt,
   JvQComponent, JvQThemes;
 
@@ -250,7 +250,10 @@ type
 
 implementation
 
-uses 
+uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING} 
   QForms;
 
 //=== { TJvCustomPage } ======================================================
@@ -826,5 +829,21 @@ function TJvPageList.InternalGetPageClass: TJvCustomPageClass;
 begin
   Result := TJvStandardPage;
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

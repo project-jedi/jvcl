@@ -39,9 +39,9 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   QWindows,
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
   JvQTypes, JvQComponent;
 
 type
@@ -72,10 +72,10 @@ type
     function OneThreadIsRunning: Boolean;
     function GetPriority(Thread: THandle): TThreadPriority;
     procedure SetPriority(Thread: THandle; Priority: TThreadPriority);
-    {$IFDEF LINUX}
+    {$IFDEF UNIX}
     function GetPolicy(Thread: THandle): Integer;
     procedure SetPolicy(Thread: THandle; Policy: Integer);
-    {$ENDIF LINUX}
+    {$ENDIF UNIX}
     procedure QuitThread(Thread: THandle);
     procedure Suspend(Thread: THandle); // should not be used
     procedure Resume(Thread: THandle);
@@ -95,6 +95,11 @@ procedure Synchronize(Method: TNotifyEvent);
 procedure SynchronizeParams(Method: TJvNotifyParamsEvent; P: Pointer);
 
 implementation
+
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
 
 var
   SyncMtx: THandle = 0;
@@ -192,9 +197,9 @@ begin
   {$IFDEF MSWINDOWS}
   Result := tpIdle;
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   Result := 0;
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
   if Thread <> 0 then
     Result := TThreadPriority(GetThreadPriority(Thread));
 end;
@@ -204,7 +209,7 @@ begin
   SetThreadPriority(Thread, Integer(Priority));
 end;
 
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 
 function TJvThread.GetPolicy(Thread: THandle): Integer;
 begin
@@ -219,7 +224,7 @@ begin
     SetThreadPriority(Thread, Policy);
 end;
 
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 procedure TJvThread.QuitThread(Thread: THandle);
 begin
@@ -352,10 +357,27 @@ begin
   end;
 end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 initialization
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
+
   SyncMtx := CreateMutex(nil, False, 'VCLJvThreadMutex');
 
 finalization
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
   CloseHandle(SyncMtx);
 
 end.
