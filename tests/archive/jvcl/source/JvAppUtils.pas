@@ -80,14 +80,14 @@ procedure SaveFormPlacement(Form: TForm; const IniFileName: string);
 procedure RestoreFormPlacement(Form: TForm; const IniFileName: string);
 {$ENDIF WIN32}
 
-procedure WriteFormPlacement(Form: TForm; IniFile: TIniFile;
+procedure WriteFormPlacement(Form: TForm; IniFile: TCustomIniFile;
   const Section: string);
-procedure ReadFormPlacement(Form: TForm; IniFile: TIniFile;
+procedure ReadFormPlacement(Form: TForm; IniFile: TCustomIniFile;
   const Section: string; LoadState, LoadPosition: Boolean);
-procedure SaveMDIChildren(MainForm: TForm; IniFile: TIniFile);
-procedure RestoreMDIChildren(MainForm: TForm; IniFile: TIniFile);
-procedure RestoreGridLayout(Grid: TCustomGrid; IniFile: TIniFile);
-procedure SaveGridLayout(Grid: TCustomGrid; IniFile: TIniFile);
+procedure SaveMDIChildren(MainForm: TForm; IniFile: TCustomIniFile);
+procedure RestoreMDIChildren(MainForm: TForm; IniFile: TCustomIniFile);
+procedure RestoreGridLayout(Grid: TCustomGrid; IniFile: TCustomIniFile);
+procedure SaveGridLayout(Grid: TCustomGrid; IniFile: TCustomIniFile);
 
 function GetUniqueFileNameInDir(const Path, FileNameMask: string): string;
 
@@ -366,8 +366,8 @@ begin
     Result := TRegIniFile(IniFile).ReadString(Section, Ident, Default)
   else
 {$ENDIF}
-  if IniFile is TIniFile then
-    Result := TIniFile(IniFile).ReadString(Section, Ident, Default)
+  if IniFile is TCustomIniFile then
+    Result := TCustomIniFile(IniFile).ReadString(Section, Ident, Default)
   else Result := Default;
 end;
 
@@ -387,8 +387,8 @@ begin
         ((S[1] = '''') and (S[Length(S)] = '''')) then
         S := '"' + S + '"';
     end;
-    if IniFile is TIniFile then
-      TIniFile(IniFile).WriteString(Section, Ident, S);
+    if IniFile is TCustomIniFile then
+      TCustomIniFile(IniFile).WriteString(Section, Ident, S);
 {$IFDEF WIN32}
   end;
 {$ENDIF}
@@ -402,8 +402,8 @@ begin
     Result := TRegIniFile(IniFile).ReadInteger(Section, Ident, Default)
   else
 {$ENDIF}
-  if IniFile is TIniFile then
-    Result := TIniFile(IniFile).ReadInteger(Section, Ident, Default)
+  if IniFile is TCustomIniFile then
+    Result := TCustomIniFile(IniFile).ReadInteger(Section, Ident, Default)
   else Result := Default;
 end;
 
@@ -415,8 +415,8 @@ begin
     TRegIniFile(IniFile).WriteInteger(Section, Ident, Value)
   else
 {$ENDIF}
-  if IniFile is TIniFile then
-    TIniFile(IniFile).WriteInteger(Section, Ident, Value);
+  if IniFile is TCustomIniFile then
+    TCustomIniFile(IniFile).WriteInteger(Section, Ident, Value);
 end;
 
 function IniReadBool(IniFile: TObject; const Section, Ident: string;
@@ -427,8 +427,8 @@ begin
     Result := TRegIniFile(IniFile).ReadBool(Section, Ident, Default)
   else
 {$ENDIF}
-  if IniFile is TIniFile then
-    Result := TIniFile(IniFile).ReadBool(Section, Ident, Default)
+  if IniFile is TCustomIniFile then
+    Result := TCustomIniFile(IniFile).ReadBool(Section, Ident, Default)
   else Result := Default;
 end;
 
@@ -440,8 +440,8 @@ begin
     TRegIniFile(IniFile).WriteBool(Section, Ident, Value)
   else
 {$ENDIF}
-  if IniFile is TIniFile then
-    TIniFile(IniFile).WriteBool(Section, Ident, Value);
+  if IniFile is TCustomIniFile then
+    TCustomIniFile(IniFile).WriteBool(Section, Ident, Value);
 end;
 
 procedure IniEraseSection(IniFile: TObject; const Section: string);
@@ -451,8 +451,8 @@ begin
     TRegIniFile(IniFile).EraseSection(Section)
   else
 {$ENDIF}
-  if IniFile is TIniFile then
-    TIniFile(IniFile).EraseSection(Section);
+  if IniFile is TCustomIniFile then
+    TCustomIniFile(IniFile).EraseSection(Section);
 end;
 
 procedure IniDeleteKey(IniFile: TObject; const Section, Ident: string);
@@ -466,19 +466,19 @@ begin
 {$IFDEF WIN32}
   if IniFile is TRegIniFile then
     TRegIniFile(IniFile).DeleteKey(Section, Ident)
-  else if IniFile is TIniFile then
-    TIniFile(IniFile).DeleteKey(Section, Ident);
+  else if IniFile is TCustomIniFile then
+    TCustomIniFile(IniFile).DeleteKey(Section, Ident);
 {$ELSE}
-  if IniFile is TIniFile then begin
+  if IniFile is TCustomIniFile then begin
     WritePrivateProfileString(StrPLCopy(CSection, Section, SizeOf(CSection) - 1),
       StrPLCopy(CIdent, Ident, SizeOf(CIdent) - 1), nil,
-      StrPLCopy(CFileName, TIniFile(IniFile).FileName, SizeOf(CFileName) - 1));
+      StrPLCopy(CFileName, TCustomIniFile(IniFile).FileName, SizeOf(CFileName) - 1));
   end;
 {$ENDIF}
 end;
 
 {$IFNDEF WIN32}
-procedure IniFileReadSections(IniFile: TIniFile; Strings: TStrings);
+procedure IniFileReadSections(IniFile: TCustomIniFile; Strings: TStrings);
 const
   BufSize = 8192;
 var
@@ -511,13 +511,13 @@ end;
 procedure IniReadSections(IniFile: TObject; Strings: TStrings);
 begin
 {$IFDEF WIN32}
-  if IniFile is TIniFile then
-    TIniFile(IniFile).ReadSections(Strings)
+  if IniFile is TCustomIniFile then
+    TCustomIniFile(IniFile).ReadSections(Strings)
   else if IniFile is TRegIniFile then
     TRegIniFile(IniFile).ReadSections(Strings);
 {$ELSE}
-  if IniFile is TIniFile then
-    IniFileReadSections(TIniFile(IniFile), Strings);
+  if IniFile is TCustomIniFile then
+    IniFileReadSections(TCustomIniFile(IniFile), Strings);
 {$ENDIF}
 end;
 
@@ -573,12 +573,12 @@ begin
 end;
 {$ENDIF WIN32}
 
-procedure SaveMDIChildren(MainForm: TForm; IniFile: TIniFile);
+procedure SaveMDIChildren(MainForm: TForm; IniFile: TCustomIniFile);
 begin
   InternalSaveMDIChildren(MainForm, IniFile);
 end;
 
-procedure RestoreMDIChildren(MainForm: TForm; IniFile: TIniFile);
+procedure RestoreMDIChildren(MainForm: TForm; IniFile: TCustomIniFile);
 begin
   InternalRestoreMDIChildren(MainForm, IniFile);
 end;
@@ -615,12 +615,12 @@ begin
 end;
 {$ENDIF WIN32}
 
-procedure RestoreGridLayout(Grid: TCustomGrid; IniFile: TIniFile);
+procedure RestoreGridLayout(Grid: TCustomGrid; IniFile: TCustomIniFile);
 begin
   InternalRestoreGridLayout(Grid, IniFile, GetDefaultSection(Grid));
 end;
 
-procedure SaveGridLayout(Grid: TCustomGrid; IniFile: TIniFile);
+procedure SaveGridLayout(Grid: TCustomGrid; IniFile: TCustomIniFile);
 begin
   InternalSaveGridLayout(Grid, IniFile, GetDefaultSection(Grid));
 end;
@@ -674,7 +674,7 @@ begin
 end;
 {$ENDIF WIN32}
 
-procedure WriteFormPlacement(Form: TForm; IniFile: TIniFile;
+procedure WriteFormPlacement(Form: TForm; IniFile: TCustomIniFile;
   const Section: string);
 begin
   InternalWriteFormPlacement(Form, IniFile, Section);
@@ -833,7 +833,7 @@ begin
 end;
 {$ENDIF WIN32}
 
-procedure ReadFormPlacement(Form: TForm; IniFile: TIniFile;
+procedure ReadFormPlacement(Form: TForm; IniFile: TCustomIniFile;
   const Section: string; LoadState, LoadPosition: Boolean);
 begin
   InternalReadFormPlacement(Form, IniFile, Section, LoadState, LoadPosition);
