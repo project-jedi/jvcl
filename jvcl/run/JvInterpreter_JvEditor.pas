@@ -41,7 +41,7 @@ implementation
 
 uses
   Classes,
-  JvEditor, JvHLEditor, JvInterpreter_Windows;
+  JvEditor, JvEditorCommon, JvHLEditor, JvInterpreter_Windows;
 
 { TJvKeyboard }
 
@@ -259,16 +259,6 @@ end;
 procedure TRACustomEditor_EndCompound(var Value: Variant; Args: TJvInterpreterArgs);
 begin                                               
   TJvCustomEditor(Args.Obj).EndCompound;
-end;
-
-{ function GetText(Position: Longint; Buffer: PChar; Count: Longint): Longint; }
-
-procedure TRACustomEditor_GetText(var Value: Variant; Args: TJvInterpreterArgs);
-begin
-  // (p3) NB! The TJvEditor.GetText method has changed to WideString!
-//  Value := TJvCustomEditor(Args.Obj).GetText(Args.Values[0], PWideChar(WideString(Args.Values[1])), Args.Values[2] div 2);
-  // (ahuser) Returned to ANSI TJvEditor
-  Value := TJvCustomEditor(Args.Obj).GetText(Args.Values[0], PChar(string(Args.Values[1])), Args.Values[2]);
 end;
 
 { property Read LeftCol: integer }
@@ -540,7 +530,6 @@ begin
     AddGet(TJvCustomEditor, 'ReplaceWord2', TRACustomEditor_ReplaceWord2, 1, [varEmpty], varEmpty);
     AddGet(TJvCustomEditor, 'BeginCompound', TRACustomEditor_BeginCompound, 0, [varEmpty], varEmpty);
     AddGet(TJvCustomEditor, 'EndCompound', TRACustomEditor_EndCompound, 0, [varEmpty], varEmpty);
-    AddGet(TJvCustomEditor, 'GetText', TRACustomEditor_GetText, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
     AddGet(TJvCustomEditor, 'LeftCol', TRACustomEditor_Read_LeftCol, 0, [varEmpty], varEmpty);
     AddGet(TJvCustomEditor, 'TopRow', TRACustomEditor_Read_TopRow, 0, [varEmpty], varEmpty);
     AddGet(TJvCustomEditor, 'VisibleColCount', TRACustomEditor_Read_VisibleColCount, 0, [varEmpty], varEmpty);
