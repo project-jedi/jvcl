@@ -50,9 +50,9 @@ object frmMain: TfrmMain
       Height = 48
       Cursor = crHandPoint
       Hint = 'Go to the JVCL home page (http://jvcl.sourceforge.net)'
-      HiColor = clWindow
       BorderStyle = bsNone
-      ImageList = il48
+      HiColor = clWindow
+      Images = il48
       Anchors = [akTop, akRight]
       Text = 'JediLogo'
       ParentShowHint = False
