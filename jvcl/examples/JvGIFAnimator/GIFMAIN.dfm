@@ -132,16 +132,16 @@ object AnimatorForm: TAnimatorForm
     TabOrder = 4
     OnDblClick = SpeedBarDblClick
     InternalVer = 1
-    object SpeedbarSection1: TJvSpeedbarSection
+    object SpeedbarSection1: TJvSpeedBarSection
       Caption = 'File'
     end
-    object SpeedbarSection2: TJvSpeedbarSection
+    object SpeedbarSection2: TJvSpeedBarSection
       Caption = 'Edit'
     end
-    object SpeedbarSection3: TJvSpeedbarSection
+    object SpeedbarSection3: TJvSpeedBarSection
       Caption = 'Image'
     end
-    object SpeedbarSection4: TJvSpeedbarSection
+    object SpeedbarSection4: TJvSpeedBarSection
       Caption = 'Help'
     end
     object NewBtn: TJvSpeedItem
@@ -312,6 +312,7 @@ object AnimatorForm: TAnimatorForm
     Width = 191
     Height = 357
     ActivePage = OptionsTab
+    TabIndex = 0
     TabOrder = 6
     object OptionsTab: TTabSheet
       Caption = 'Options'
@@ -330,9 +331,15 @@ object AnimatorForm: TAnimatorForm
         Height = 26
         Caption = 'Thumbnails Reflect Image'#13#10'Position'
         FocusControl = ThumbnailsBox
-        ShadowSize = 0
         ShowFocus = True
         OnMouseDown = CheckLabelMouseDown
+        AutoOpenURL = False
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'MS Sans Serif'
+        HotTrackFont.Style = []
+        ImageIndex = 0
       end
       object AlwaysOnTopLabel: TJvLabel
         Left = 30
@@ -341,9 +348,15 @@ object AnimatorForm: TAnimatorForm
         Height = 26
         Caption = 'Main Dialog Window'#13#10'Always On Top'
         FocusControl = AlwaysOnTop
-        ShadowSize = 0
         ShowFocus = True
         OnMouseDown = CheckLabelMouseDown
+        AutoOpenURL = False
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'MS Sans Serif'
+        HotTrackFont.Style = []
+        ImageIndex = 0
       end
       object ColorDepthCombo: TComboBox
         Left = 16
@@ -496,12 +509,18 @@ object AnimatorForm: TAnimatorForm
       object LoopLbl: TJvLabel
         Left = 27
         Top = 167
-        Width = 75
-        Height = 14
+        Width = 74
+        Height = 13
         Caption = '&Repeat Count: '
         Enabled = False
         FocusControl = RepeatCnt
-        ShadowSize = 0
+        AutoOpenURL = False
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'MS Sans Serif'
+        HotTrackFont.Style = []
+        ImageIndex = 0
       end
       object TrailingComment: TMemo
         Left = 4
@@ -658,12 +677,18 @@ object AnimatorForm: TAnimatorForm
       object TransColorLabel: TJvLabel
         Left = 6
         Top = 216
-        Width = 96
-        Height = 14
+        Width = 95
+        Height = 13
         Caption = 'Transparent Color:  '
         Enabled = False
         FocusControl = TransColor
-        ShadowSize = 0
+        AutoOpenURL = False
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'MS Sans Serif'
+        HotTrackFont.Style = []
+        ImageIndex = 0
       end
       object FrameComment: TMemo
         Left = 1
@@ -885,7 +910,6 @@ object AnimatorForm: TAnimatorForm
   end
   object Storage: TJvFormStorage
     PreventResize = True
-    UseRegistry = True
     StoredProps.Strings = (
       'ThumbnailsBox.Checked'
       'FlatBtns.Checked'
