@@ -94,7 +94,7 @@ begin
     FNumber := (FNumber + 1) mod FIcons.Count;
     
     
-    TmpBmp := THackBitmap.Create;
+    TmpBmp := TBitmap.Create;
     try
       FIcons.GetBitmap(FNumber, TmpBmp);
       Application.Icon.Assign(TmpBmp);

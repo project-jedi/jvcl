@@ -70,8 +70,10 @@ type
   published
     function Execute(P: Pointer): THandle;
     function OneThreadIsRunning: Boolean;
+    {$IFDEF MSWINDOWS}
     function GetPriority(Thread: THandle): TThreadPriority;
     procedure SetPriority(Thread: THandle; Priority: TThreadPriority);
+    {$ENDIF MSWINDOWS}
     procedure QuitThread(Thread: THandle);
     procedure Suspend(Thread: THandle); // should not be used
     procedure Resume(Thread: THandle);
@@ -185,6 +187,7 @@ begin
   end;
 end;
 
+{$IFDEF MSWINDOWS}
 function TJvThread.GetPriority(Thread: THandle): TThreadPriority;
 begin
   Result := tpIdle;
@@ -196,6 +199,7 @@ procedure TJvThread.SetPriority(Thread: THandle; Priority: TThreadPriority);
 begin
   SetThreadPriority(Thread, Integer(Priority));
 end;
+{$ENDIF MSWINDOWS}
 
 procedure TJvThread.QuitThread(Thread: THandle);
 begin

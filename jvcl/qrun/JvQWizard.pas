@@ -400,8 +400,7 @@ type
     function GetButtonWidth: Integer;
     procedure SetButtonWidth(const Value: Integer);
   protected
-    property Control: TJvWizardButtonControl
-      read FControl write FControl;
+    property Control: TJvWizardButtonControl read FControl write FControl;
   published
     property Glyph: TBitmap read GetGlyph write SetGlyph;
     property Caption: string read GetCaption write SetCaption;
@@ -640,7 +639,9 @@ type
   TJvWizardPaintPageEvent = procedure(Sender: TObject; ACanvas: TCanvas;
     var ARect: TRect) of object;
   TJvWizardChangePageEvent = procedure(Sender: TObject;
-    const Page: TJvWizardCustomPage) of object;
+    const FromPage: TJvWizardCustomPage) of object;
+  TJvWizardChangingPageEvent = procedure(Sender: TObject;
+    var ToPage: TJvWizardCustomPage) of object;
 
   { YW - Wizard Custom Page }
   TJvWizardCustomPage = class(TCustomControl)
@@ -700,8 +701,7 @@ type
     destructor Destroy; override;
     procedure EnableButton(AButton: TJvWizardButtonKind; AEnabled: boolean); virtual;
     property Wizard: TJvWizard read FWizard write SetWizard;
-    property PageIndex: Integer
-      read GetPageIndex write SetPageIndex stored False;
+    property PageIndex: Integer read GetPageIndex write SetPageIndex stored False;
   published
     property Header: TJvWizardPageHeader read FHeader write FHeader;
     property Subtitle: TJvWizardPageTitle read GetSubtitle write SetSubtitle stored false;
@@ -762,11 +762,13 @@ type
   TJvWizardPageList = class(TList)
   private
     FWizard: TJvWizard;
+    function GetItems(Index: Integer): TJvWizardCustomPage;
   protected
     procedure Notify(Ptr: Pointer; Action: TListNotification); override;
     property Wizard: TJvWizard read FWizard write FWizard;
   public
     destructor Destroy; override;
+    property Items[Index: Integer]: TJvWizardCustomPage read GetItems; default;
   end;
 
   { YW - JvWizard Control }
@@ -786,6 +788,8 @@ type
     FOnSelectPriorPage: TJvWizardSelectPageEvent;
     FOnSelectFirstPage: TJvWizardSelectPageEvent;
     FOnSelectLastPage: TJvWizardSelectPageEvent;
+    FOnActivePageChanged: TNotifyEvent;
+    FOnActivePageChanging: TJvWizardChangingPageEvent;
     FHeaderImages: TCustomImageList;
     FImageChangeLink: TChangeLink;
     FAutoHideButtonBar: boolean;
@@ -813,7 +817,7 @@ type
     function FindNextEnabledPage(PageIndex: Integer; const Step: Integer = 1;
       CheckDisable: Boolean = True): TJvWizardCustomPage;
     procedure SetAutoHideButtonBar(const Value: boolean);
-    function GetWizardPages(Index: integer): TJvWizardCustomPage;  // Nonn
+    function GetWizardPages(Index: integer): TJvWizardCustomPage;
   protected
     procedure Loaded; override;
     procedure AdjustClientRect(var Rect: TRect); override;
@@ -825,6 +829,8 @@ type
     procedure RemovePage(Page: TJvWizardCustomPage);
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     function GetButtonControlClass(AKind: TJvWizardButtonKind): TJvWizardButtonControlClass; virtual;
+    procedure DoActivePageChanging(var ToPage: TJvWizardCustomPage); dynamic; 
+    procedure DoActivePageChanged; dynamic;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -839,10 +845,9 @@ type
     function FindNextPage(PageIndex: Integer; const Step: Integer = 1;
       CheckDisable: Boolean = True): TJvWizardCustomPage;
     function IsForward(const FromPage, ToPage: TJvWizardCustomPage): Boolean;
-    property ActivePageIndex: Integer
-      read GetActivePageIndex write SetActivePageIndex;
+    property ActivePageIndex: Integer read GetActivePageIndex write SetActivePageIndex;
     property PageCount: Integer read GetPageCount;
-    property WizardPages[Index:integer]:TJvWizardCustomPage read GetWizardPages;
+    property WizardPages[Index:integer]: TJvWizardCustomPage read GetWizardPages;
   published
     property Pages: TJvWizardPageList read FPages;
     {$IFNDEF USEJVCL}
@@ -872,7 +877,10 @@ type
     property OnNextButtonClick: TNotifyEvent index bkNext read GetButtonClick write SetButtonClick;
     property OnFinishButtonClick: TNotifyEvent index bkFinish read GetButtonClick write SetButtonClick;
     property OnCancelButtonClick: TNotifyEvent index bkCancel read GetButtonClick write SetButtonClick;
-    property OnHelpButtonClick: TNotifyEvent index bkHelp  read GetButtonClick write SetButtonClick;
+    property OnHelpButtonClick: TNotifyEvent index bkHelp read GetButtonClick write SetButtonClick;
+    property OnActivePageChanged: TNotifyEvent read FOnActivePageChanged write FOnActivePageChanged;
+    property OnActivePageChanging: TJvWizardChangingPageEvent read FOnActivePageChanging write FOnActivePageChanging;
+
     property Color;
     property Font;
     property Enabled;
@@ -1973,7 +1981,7 @@ begin
         begin
           ImageRect := GetImageRect(AImages, R);
           { YW - R is the area where the title and subtitle paint to. }
-          AImages.Draw(ACanvas, ImageRect.Left, ImageRect.Top, FImageIndex);
+          AImages.Draw(ACanvas, ImageRect.Left, ImageRect.Top, FImageIndex );
         end;
       end;
       { YW - Draw Title }
@@ -2468,17 +2476,18 @@ begin
   inherited Destroy;
 end;
 
+function TJvWizardPageList.GetItems(Index: Integer): TJvWizardCustomPage;
+begin
+  Result := TJvWizardCustomPage(inherited Items[Index]);
+end;
+
 procedure TJvWizardPageList.Notify(Ptr: Pointer; Action: TListNotification);
 begin
   case Action of
     lnAdded:
-      begin
-        TJvWizardCustomPage(Ptr).FWizard := FWizard;
-      end;
+      TJvWizardCustomPage(Ptr).FWizard := FWizard;
     lnDeleted:
-      begin
-        TJvWizardCustomPage(Ptr).FWizard := nil;
-      end;
+      TJvWizardCustomPage(Ptr).FWizard := nil;
   end;
 end;
 
@@ -2701,6 +2710,10 @@ var
 begin
   if FActivePage <> Page then
   begin
+    DoActivePageChanging(Page);
+    if Page = FActivePage then
+      Exit;
+
     ParentForm := GetParentForm(Self);
     if Assigned(ParentForm) and Assigned(FActivePage) and
       FActivePage.ContainsControl(ParentForm.ActiveControl) and FActivePage.CanFocus then
@@ -2717,8 +2730,7 @@ begin
 
     { YW - Just in case the new page is changed to be disabled again after
       the above OnExitPage event is called. }
-    if Assigned(Page) and not (Page.Enabled
-      or (csDesigning in ComponentState)) then
+    if Assigned(Page) and not (Page.Enabled or (csDesigning in ComponentState)) then
     begin
       if IsForward(FActivePage, Page) then
         Page := FindNextPage(GetActivePageIndex) // try go forward
@@ -2756,9 +2768,11 @@ begin
     if Assigned(ParentForm) and Assigned(FActivePage) and
       (ParentForm.ActiveControl = FActivePage) then
     begin
-      FActivePage.Done;
       FActivePage.SelectFirst;
+      FActivePage.Done;
     end;
+
+    DoActivePageChanged;
   end;
 end;
 
@@ -2773,7 +2787,11 @@ procedure TJvWizard.RemovePage(Page: TJvWizardCustomPage);
 var
   NextPage: TJvWizardCustomPage;
 begin
-  NextPage := FindNextPage(Page.PageIndex, 1, not (csDesigning in ComponentState));
+  if ActivePage = Page then
+    NextPage := FindNextPage(Page.PageIndex, 1, not (csDesigning in ComponentState))
+  else
+    NextPage := ActivePage;
+    
   if NextPage = Page then
     NextPage := nil;
   if Assigned(FRouteMap) then
@@ -3086,6 +3104,18 @@ end;
 function TJvWizard.GetWizardPages(Index: integer): TJvWizardCustomPage;
 begin
   Result := TJvWizardCustomPage(Pages[Index]);
+end;
+
+procedure TJvWizard.DoActivePageChanged;
+begin
+  if Assigned(FOnActivePageChanged) then
+    FOnActivePageChanged(Self);
+end;
+
+procedure TJvWizard.DoActivePageChanging(var ToPage: TJvWizardCustomPage);
+begin
+  if Assigned(FOnActivePageChanging) then
+    FOnActivePageChanging(Self, ToPage);
 end;
 
 end.

@@ -41,11 +41,12 @@ unit JvQOfficeColorButton;
 interface
 
 uses
-
-
+  SysUtils, Classes,
+  
+  
   Types, QGraphics, QWindows, QControls, QForms, QStdCtrls, QDialogs, QExtCtrls,
-
-  JvQComponent, JvQSpeedButton, JvQOfficeColorForm, JvQOfficeColorPanel, QSysUtils, QClasses;
+  
+  JvQComponent, JvQSpeedButton, JvQOfficeColorForm, JvQOfficeColorPanel;
 
 const
   MinArrowWidth = 9 + 4;
@@ -57,111 +58,87 @@ type
     FShowDragBar: Boolean;
     FDragCaption: string;
     FEdgeWidth: Integer;
-    FArrowWidth: integer;
-    FDragBarHeight: integer;
-    FDragBarSpace: integer;
+    FArrowWidth: Integer;
+    FDragBarHeight: Integer;
+    FDragBarSpace: Integer;
     procedure SetShowDragBar(const Value: Boolean);
     procedure SetDragCaption(const Value: string);
-    procedure SetArrowWidth(const Value: integer);
+    procedure SetArrowWidth(const Value: Integer);
     procedure SetEdgeWidth(const Value: Integer);
-    procedure SetDragBarHeight(const Value: integer);
-    procedure SetDragBarSpace(const Value: integer);
+    procedure SetDragBarHeight(const Value: Integer);
+    procedure SetDragBarSpace(const Value: Integer);
   public
-    constructor Create(); override;
+    constructor Create; override;
     procedure Assign(Source: TPersistent); override;
   published
     property EdgeWidth: Integer read FEdgeWidth write SetEdgeWidth default 4;
-    property ArrowWidth: integer read FArrowWidth write SetArrowWidth default MinArrowWidth;
+    property ArrowWidth: Integer read FArrowWidth write SetArrowWidth default MinArrowWidth;
     property ShowDragBar: Boolean read FShowDragBar write SetShowDragBar default True;
     property DragCaption: string read FDragCaption write SetDragCaption;
-    property DragBarHeight: integer read FDragBarHeight write SetDragBarHeight default MinDragBarHeight;
-    property DragBarSpace: integer read FDragBarSpace write SetDragBarSpace default MinDragBarSpace;
+    property DragBarHeight: Integer read FDragBarHeight write SetDragBarHeight default MinDragBarHeight;
+    property DragBarSpace: Integer read FDragBarSpace write SetDragBarSpace default MinDragBarSpace;
   end;
 
   TJvCustomOfficeColorButton = class(TJvCustomPanel)
   private
-
     FMainButton: TJvSubColorButton;
     FArrowButton: TJvColorSpeedButton;
-
     FColorsForm: TJvOfficeColorForm;
-
     FProperties: TJvOfficeColorButtonProperties;
-
-    FFlat: boolean;
+    FFlat: Boolean;
     FCurrentColor: TColor;
-
-    FColorFormDropDown: boolean;
-
+    FColorFormDropDown: Boolean;
+    FInited: Boolean;
     FOnColorChange: TNotifyEvent;
-    FInited: boolean;
-
     FOnDropDown: TNotifyEvent;
-    procedure SetFlat(const Value: boolean);
+    procedure SetFlat(const Value: Boolean);
     procedure SetColor(const Value: TColor);
     function GetCustomColors: TStrings;
     procedure SetCustomColors(const Value: TStrings);
     function GetColor: TColor;
-
     function GetGlyph: TBitmap;
     procedure SetGlyph(const Value: TBitmap);
     function GetProperties: TJvOfficeColorButtonProperties;
     procedure SetProperties(const Value: TJvOfficeColorButtonProperties);
-
-
+    
     procedure ReadArrowWidth(Reader: TReader);
     procedure ReadEdgeWidth(Reader: TReader);
     procedure ReadOtherCaption(Reader: TReader);
-
-    procedure DoOnColorChange(sender: Tobject);
-
+    procedure DoOnColorChange(Sender: Tobject);
     procedure OnFormShowingChanged(Sender: TObject);
     procedure OnFormKillFocus(Sender: TObject);
     procedure OnFormClose(Sender: TObject; var Action: TCloseAction);
     procedure OnFormWindowStyleChanged(Sender: TObject);
-
     procedure OnButtonMouseEnter(Sender: TObject);
     procedure OnButtonMouseLeave(Sender: TObject);
-
     procedure ColorButtonClick(Sender: TObject);
-
   protected
     procedure AdjustColorForm(X: Integer = 0; Y: Integer = 0); //Screen postion
     procedure ShowColorForm(X: Integer = 0; Y: Integer = 0); virtual; //Screen postion
-
-
+    
     procedure InitWidget; override;
-
-    procedure SetEnabled(constValue: Boolean); override;
-
+    
+    procedure SetEnabled( const  Value: Boolean); override;
     procedure FontChanged; override;
     procedure DefineProperties(Filer: TFiler); override;
-
     procedure PropertiesChanged(Sender: TObject; PropName: string); virtual;
-
   public
-    procedure AdjustSize; override;
-
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
-    property Flat: boolean read FFlat write SetFlat default True;
+    procedure AdjustSize; override;
+    property Flat: Boolean read FFlat write SetFlat default True;
     property Color: TColor read GetColor write SetColor default clBlack;
     property CustomColors: TStrings read GetCustomColors write SetCustomColors;
     property Properties: TJvOfficeColorButtonProperties read GetProperties write SetProperties;
-
-
+    
     property Glyph: TBitmap read GetGlyph write SetGlyph;
-
     property OnDropDown: TNotifyEvent read FOnDropDown write FOnDropDown;
     property OnColorChange: TNotifyEvent read FOnColorChange write FOnColorChange;
-
   end;
 
   TJvOfficeColorButton = class(TJvCustomOfficeColorButton)
   published
-
-
+    
     property Align;
     property Anchors;
     property Constraints;
@@ -175,6 +152,12 @@ type
     property TabOrder;
     property TabStop;
     property Visible;
+    property Flat;
+    property Color;
+    property CustomColors;
+    
+    property Glyph;
+    property Properties;
     property OnConstrainedResize;
     property OnContextPopup;
     property OnDragDrop;
@@ -187,68 +170,108 @@ type
     property OnMouseUp;
     property OnResize;
     property OnStartDrag;
-
-    property Flat;
-    property Color;
-    property CustomColors;
-
-
-    property Glyph;
-
-    property Properties;
     property OnDropDown;
     property OnColorChange;
-
   end;
 
 implementation
 
-uses TypInfo, JvQJCLUtils, JvQExExtCtrls, JvQThemes;
+uses
+  TypInfo,
+  JvQJCLUtils, JvQExExtCtrls, JvQThemes;
 
 type
-
   THackColorSpeedButton = class(TJvColorSpeedButton);
+  THackJvColorForm = class(TJvOfficeColorForm);
+  THackColorPanel = class(TJvOfficeColorPanel);
 
-  TJvColorMainButton = class(TJvSubColorButton)
-  protected
-    function GetEdgeWidth: integer; override;
-  end;
+//=== TJvColorArrowButton ====================================================
 
+type
   TJvColorArrowButton = class(TJvColorSpeedButton)
   protected
     procedure Paint; override;
   end;
 
-{ TJvColorMainButton }
+procedure DrawTriangle(Canvas: TCanvas; Top, Left, Width: Integer);
+begin
+  if Odd(Width) then
+    Inc(Width);
+  Canvas.Polygon([Point(Left, Top), Point(Left + Width, Top),
+    Point(Left + Width div 2, Top + Width div 2)]);
+end;
 
-function TJvColorMainButton.GetEdgeWidth: integer;
+procedure TJvColorArrowButton.Paint;
+const
+  DownStyles: array [Boolean] of Integer = (BDR_RAISEDINNER, BDR_SUNKENOUTER);
+  FillStyles: array [Boolean] of Integer = (BF_MIDDLE, 0);
+  FArrowWidth = 6;
+var
+  PaintRect: TRect;
+  DrawFlags: Integer;
+  Offset: TPoint;
+  Push: Boolean;
+begin
+  inherited Paint;
+
+  { calculate were to put arrow part }
+  PaintRect := Rect(0, 0, Width, Height);
+  
+
+  Push := Down or (FState in [rbsDown, rbsExclusive]);
+  if Push then
+  begin
+    Offset.X := 1;
+    Offset.Y := 1;
+  end
+  else
+  begin
+    Offset.X := 0;
+    Offset.Y := 0;
+  end;
+
+  if not Flat then
+  begin
+    DrawFlags := DFCS_BUTTONPUSH; // or DFCS_ADJUSTRECT;
+    if Push then
+      DrawFlags := DrawFlags or DFCS_PUSHED;
+    if IsMouseOver(Self) then
+      DrawFlags := DrawFlags or DFCS_HOT;
+    DrawThemedFrameControl(Self, Canvas.Handle, PaintRect, DFC_BUTTON, DrawFlags);
+  end
+  else
+  if MouseOver and Enabled or (csDesigning in ComponentState) then
+    DrawEdge(Canvas.Handle, PaintRect, DownStyles[Push],
+      FillStyles[Flat] or BF_RECT);
+
+  { Draw arrow }
+  if Enabled then
+  begin
+    Canvas.Pen.Color := clBlack;
+    Canvas.Brush.Color := clBlack;
+  end
+  else
+  begin
+    Canvas.Pen.Color := clBtnShadow;
+  end;
+  Canvas.Brush.Style := bsSolid;
+  DrawTriangle(Canvas, (Height div 2) - 2, (Width - FArrowWidth) div 2, FArrowWidth);
+end;
+
+//=== TJvColorMainButton =====================================================
+
+type
+  TJvColorMainButton = class(TJvSubColorButton)
+  protected
+    function GetEdgeWidth: Integer; override;
+  end;
+
+function TJvColorMainButton.GetEdgeWidth: Integer;
 begin
   Result := FEdgeWidth;
 end;
 
-{ TJvCustomOfficeColorButton }
-
-procedure TJvCustomOfficeColorButton.AdjustSize;
-begin
-  if FInited then
-    with Properties do
-    begin
-      if ArrowWidth < MinArrowWidth then
-        ArrowWidth := MinArrowWidth;
-      if (Width - ArrowWidth) < MinButtonWidth then
-        Width := MinButtonWidth + ArrowWidth;
-      if Height < MinButtonHeight then
-        Height := MinButtonHeight;
-
-      FMainButton.SetBounds(0, 0, Width - FArrowWidth, Height);
-
-      FArrowButton.SetBounds(FMainButton.Width, 0, ArrowWidth, Height);
-    end;
-  inherited AdjustSize;
-end;
-
-type
-  THackJvColorForm = class(TJvOfficeColorForm);
+//=== TJvCustomOfficeColorButton =============================================
 
 constructor TJvCustomOfficeColorButton.Create(AOwner: TComponent);
 begin
@@ -257,7 +280,7 @@ begin
 
   ControlStyle := ControlStyle - [csAcceptsControls, csSetCaption] + [csOpaque];
   BevelOuter := bvNone;
-
+  
   Width := MinButtonWidth + MinArrowWidth;
   Height := MinButtonHeight;
 
@@ -277,7 +300,7 @@ begin
   begin
     Parent := Self;
     GroupIndex := 2;
-    AllowAllUp := true;
+    AllowAllUp := True;
     Tag := MaxColorButtonNumber + 4;
     OnClick := ColorButtonClick;
   end;
@@ -302,38 +325,58 @@ begin
 
   Font.Name := 'MS Shell Dlg 2';
   Flat := True;
-
-  //in CLX and a bug not fix when drag the colors form
+  
+  // in CLX and a bug not fix when drag the colors form
   Properties.ShowDragBar := False;
 
-
+  
   FMainButton.OnMouseEnter := OnButtonMouseEnter;
   FArrowButton.OnMouseEnter := OnButtonMouseEnter;
   FMainButton.OnMouseLeave := OnButtonMouseLeave;
   FArrowButton.OnMouseLeave := OnButtonMouseLeave;
 
   FInited := True;
-
 end;
-
-
-
-procedure TJvCustomOfficeColorButton.InitWidget;
-begin
-  inherited;
-  AdjustSize;
-end;
-
 
 destructor TJvCustomOfficeColorButton.Destroy;
 begin
-  if FColorsForm.Visible then FColorsForm.Hide; //because we replaced message handler, we have to hide the form at here.
+  if FColorsForm.Visible then
+    FColorsForm.Hide; //because we replaced message handler, we have to hide the form at here.
   Action.Free;
   FProperties.Free;
   inherited Destroy;
 end;
 
-procedure TJvCustomOfficeColorButton.SetEnabled(constValue: Boolean);
+procedure TJvCustomOfficeColorButton.AdjustSize;
+begin
+  if FInited then
+    with Properties do
+    begin
+      if ArrowWidth < MinArrowWidth then
+        ArrowWidth := MinArrowWidth;
+      if (Width - ArrowWidth) < MinButtonWidth then
+        Width := MinButtonWidth + ArrowWidth;
+      if Height < MinButtonHeight then
+        Height := MinButtonHeight;
+
+      FMainButton.SetBounds(0, 0, Width - FArrowWidth, Height);
+
+      FArrowButton.SetBounds(FMainButton.Width, 0, ArrowWidth, Height);
+    end;
+  inherited AdjustSize;
+end;
+
+
+
+
+procedure TJvCustomOfficeColorButton.InitWidget;
+begin
+  inherited InitWidget;
+  AdjustSize;
+end;
+
+
+procedure TJvCustomOfficeColorButton.SetEnabled( const  Value: Boolean);
 begin
   inherited SetEnabled(Value);
   FMainButton.Enabled := Value;
@@ -343,7 +386,7 @@ end;
 
 procedure TJvCustomOfficeColorButton.FontChanged;
 begin
-  inherited;
+  inherited FontChanged;
   FColorsForm.Font.Assign(Font);
 end;
 
@@ -367,7 +410,7 @@ begin
   end
   else
   begin
-    TJvSubColorButton(Sender).Down := true;
+    TJvSubColorButton(Sender).Down := True;
     SetColor(TJvSubColorButton(Sender).Color);
   end;
 end;
@@ -382,13 +425,13 @@ begin
   Result := FColorsForm.ColorPanel.Color;
 end;
 
-procedure TJvCustomOfficeColorButton.DoOnColorChange(sender: Tobject);
+procedure TJvCustomOfficeColorButton.DoOnColorChange(Sender: Tobject);
 begin
   FMainButton.Color := FColorsForm.ColorPanel.SelectedColor;
   if not THackJvColorForm(FColorsForm).DropDownMoved then
     FColorsForm.Hide;
   if Assigned(FOnColorChange) then
-    FOnColorChange(sender);
+    FOnColorChange(Sender);
 end;
 
 procedure TJvCustomOfficeColorButton.SetCustomColors(const Value: TStrings);
@@ -396,7 +439,7 @@ begin
   FColorsForm.ColorPanel.CustomColors.Assign(Value);
 end;
 
-procedure TJvCustomOfficeColorButton.SetFlat(const Value: boolean);
+procedure TJvCustomOfficeColorButton.SetFlat(const Value: Boolean);
 begin
   if FFlat <> Value then
   begin
@@ -418,44 +461,33 @@ end;
 
 procedure TJvCustomOfficeColorButton.AdjustColorForm(X: Integer = 0; Y: Integer = 0);
 var
-  pt: TPoint;
+  Pt: TPoint;
 begin
-  if (x = 0) and (y = 0) then
-    pt := ClientToScreen(Point(FMainButton.Left, FMainButton.Top))
+  if (X = 0) and (Y = 0) then
+    Pt := ClientToScreen(Point(FMainButton.Left, FMainButton.Top))
   else
-    pt := Point(X, Y);
+    Pt := Point(X, Y);
 
-  FColorsForm.Left := pt.X;
+  FColorsForm.Left := Pt.X;
   if (FColorsForm.Left + FColorsForm.Width) > Screen.Width then
     FColorsForm.Left := Screen.Width - FColorsForm.Width;
-  FColorsForm.Top := pt.Y + Height;
+  FColorsForm.Top := Pt.Y + Height;
   if (FColorsForm.Top + FColorsForm.Height) > Screen.Height then
-    FColorsForm.Top := pt.Y - FColorsForm.Height;
-
+    FColorsForm.Top := Pt.Y - FColorsForm.Height;
 end;
 
 procedure TJvCustomOfficeColorButton.ShowColorForm(X: Integer = 0; Y: Integer = 0);
 begin
   AdjustColorForm(X, Y);
-
   FColorsForm.Show;
   FColorFormDropDown := True;
-end;
-
-procedure DrawTriangle(Canvas: TCanvas; Top, Left, Width: Integer);
-
-begin
-  if Odd(Width) then Inc(Width);
-  Canvas.Polygon([Point(Left, Top),
-    Point(Left + Width, Top),
-      Point(Left + Width div 2, Top + Width div 2)]);
 end;
 
 procedure TJvCustomOfficeColorButton.OnFormShowingChanged(Sender: TObject);
 begin
   if not FColorsForm.Visible then
   begin
-    FArrowButton.Down := false;
+    FArrowButton.Down := False;
     THackColorSpeedButton(FArrowButton).MouseLeave(FArrowButton);
     THackColorSpeedButton(FMainButton).MouseLeave(FMainButton);
   end
@@ -463,14 +495,13 @@ end;
 
 procedure TJvCustomOfficeColorButton.OnFormKillFocus(Sender: TObject);
 var
-  rec: TRect;
-  p: TPoint;
+  R: TRect;
+  P: TPoint;
 begin
-  Rec := FArrowButton.ClientRect;
+  R := FArrowButton.ClientRect;
   GetCursorPos(P);
-  P := FArrowButton.ScreenToClient(p);
-  if (not FColorsForm.ToolWindowStyle) and
-    (not PtInRect(rec, p)) then //mouse in ArrowButton
+  P := FArrowButton.ScreenToClient(P);
+  if (not FColorsForm.ToolWindowStyle) and (not PtInRect(R, P)) then //mouse in ArrowButton
   begin
     FColorsForm.Hide;
     FColorsForm.ToolWindowStyle := False;
@@ -478,7 +509,6 @@ begin
       FArrowButton.Down := False;
     FColorFormDropDown := False;
   end;
-
 end;
 
 procedure TJvCustomOfficeColorButton.OnFormClose(Sender: TObject; var Action: TCloseAction);
@@ -495,7 +525,6 @@ begin
     FArrowButton.Down := False;
     THackColorSpeedButton(FArrowButton).MouseLeave(FArrowButton);
     THackColorSpeedButton(FMainButton).MouseLeave(FMainButton);
-
   end;
 end;
 
@@ -512,23 +541,22 @@ procedure TJvCustomOfficeColorButton.OnButtonMouseLeave(Sender: TObject);
 begin
   if FFlat and Enabled then
   begin
-    if (Sender = FMainButton) then
+    if Sender = FMainButton then
     begin
       if FColorsForm.Visible then
         THackColorSpeedButton(FMainButton).MouseEnter(FMainButton)
       else
         THackColorSpeedButton(FArrowButton).MouseLeave(FArrowButton);
     end
-    else if (Sender = FArrowButton) then
+    else
+    if Sender = FArrowButton then
     begin
       if not FColorsForm.Visible then
         THackColorSpeedButton(FMainButton).MouseLeave(FMainButton)
       else
         THackColorSpeedButton(FArrowButton).MouseEnter(FArrowButton);
     end;
-
   end;
-
 end;
 
 function TJvCustomOfficeColorButton.GetGlyph: TBitmap;
@@ -557,13 +585,10 @@ begin
   end;
 end;
 
-type
-  THackColorPanel = class(TJvOfficeColorPanel);
-
 procedure TJvCustomOfficeColorButton.PropertiesChanged(Sender: TObject;
   PropName: string);
 begin
-  if cmp(PropName, 'ShowDragBar') then
+  if Cmp(PropName, 'ShowDragBar') then
   begin
     if FColorsForm.ShowDragBar <> Properties.ShowDragBar then
       FColorsForm.ShowDragBar := Properties.ShowDragBar;
@@ -571,28 +596,29 @@ begin
       THackJvColorForm(FColorsForm).DropDownMoved then
       AdjustColorForm;
   end
-  else if cmp(PropName, 'DragCaption') then
+  else
+  if Cmp(PropName, 'DragCaption') then
   begin
     FColorsForm.Caption := Properties.DragCaption;
   end
-  else if cmp(PropName, 'DragBarHeight') then
+  else
+  if Cmp(PropName, 'DragBarHeight') then
   begin
     FColorsForm.DragBarHeight := Properties.DragBarHeight;
     AdjustColorForm;
   end
-  else if cmp(PropName, 'DragBarSpace') then
+  else
+  if Cmp(PropName, 'DragBarSpace') then
   begin
     FColorsForm.DragBarSpace := Properties.DragBarSpace;
     AdjustColorForm;
   end
-  else if cmp(PropName, 'ArrowWidth') then
-  begin
-    AdjustSize;
-  end
-  else if cmp(PropName, 'EdgeWidth') then
-  begin
-    FMainButton.EdgeWidth := Properties.EdgeWidth;
-  end
+  else
+  if Cmp(PropName, 'ArrowWidth') then
+    AdjustSize
+  else
+  if Cmp(PropName, 'EdgeWidth') then
+    FMainButton.EdgeWidth := Properties.EdgeWidth
   else
   begin
     FColorsForm.ColorPanel.Properties.Assign(Properties);
@@ -603,12 +629,11 @@ end;
 
 procedure TJvCustomOfficeColorButton.DefineProperties(Filer: TFiler);
 begin
-  inherited;
- //Hint:next 3  for compatible old version
+  inherited DefineProperties(Filer);
+  //Hint: next 3 for compatible old version
   Filer.DefineProperty('ArrowWidth', ReadArrowWidth, nil, True);
   Filer.DefineProperty('EdgeWidth', ReadEdgeWidth, nil, True);
   Filer.DefineProperty('OtherCaption', ReadOtherCaption, nil, True);
-
 end;
 
 procedure TJvCustomOfficeColorButton.ReadArrowWidth(Reader: TReader);
@@ -626,85 +651,11 @@ begin
   Properties.OtherCaption := Reader.ReadString;
 end;
 
-{ TJvColorArrowButton }
-
-procedure TJvColorArrowButton.Paint;
-const
-  DownStyles: array[Boolean] of Integer = (BDR_RAISEDINNER, BDR_SUNKENOUTER);
-  FillStyles: array[Boolean] of Integer = (BF_MIDDLE, 0);
-  FArrowWidth = 6;
-var
-  PaintRect: TRect;
-  DrawFlags: Integer;
-  Offset: TPoint;
-  Push: Boolean;
-begin
-  inherited;
-
-  { calculate were to put arrow part }
-  PaintRect := Rect(0, 0,
-    Width, Height);
-
-
-  Push := Down or (FState in [rbsDown, rbsExclusive]);
-  if Push then
-  begin
-    Offset.X := 1;
-    Offset.Y := 1;
-  end
-  else
-  begin
-    Offset.X := 0;
-    Offset.Y := 0;
-  end;
-
-  if not Flat then
-  begin
-    DrawFlags := DFCS_BUTTONPUSH; // or DFCS_ADJUSTRECT;
-    if Push then
-      DrawFlags := DrawFlags or DFCS_PUSHED;
-    if IsMouseOver(self) then
-      DrawFlags := DrawFlags or DFCS_HOT;
-    DrawThemedFrameControl(self, Canvas.Handle, PaintRect, DFC_BUTTON, DrawFlags);
-  end
-  else if MouseOver and Enabled or (csDesigning in ComponentState) then
-    DrawEdge(Canvas.Handle, PaintRect, DownStyles[Push],
-      FillStyles[Flat] or BF_RECT);
-
-  { Draw arrow }
-  if Enabled then
-  begin
-    Canvas.Pen.Color := clBlack;
-    Canvas.Brush.Color := clBlack;
-  end
-  else
-  begin
-    Canvas.Pen.Color := clBtnShadow;
-  end;
-  Canvas.Brush.Style := bsSolid;
-  DrawTriangle(Canvas, (Height div 2) - 2, (Width - FArrowWidth) div 2, FArrowWidth);
-end;
-
-{ TJvOfficeColorButtonProperties }
-
-procedure TJvOfficeColorButtonProperties.Assign(Source: TPersistent);
-begin
-  inherited Assign(Source);
-  if Source is TJvOfficeColorButtonProperties then
-    with TJvOfficeColorButtonProperties(Source) do
-    begin
-      self.ShowDragBar := ShowDragBar;
-      self.DragCaption := DragCaption;
-      self.EdgeWidth := EdgeWidth;
-      self.ArrowWidth := ArrowWidth;
-      self.DragBarHeight := DragBarHeight;
-      self.DragBarSpace := DragBarSpace;
-    end;
-end;
+//=== TJvOfficeColorButtonProperties =========================================
 
 constructor TJvOfficeColorButtonProperties.Create;
 begin
-  inherited;
+  inherited Create;
   FShowDragBar := True;
   FEdgeWidth := 4;
   FArrowWidth := MinArrowWidth;
@@ -712,7 +663,22 @@ begin
   FDragBarSpace := MinDragBarSpace;
 end;
 
-procedure TJvOfficeColorButtonProperties.SetArrowWidth(const Value: integer);
+procedure TJvOfficeColorButtonProperties.Assign(Source: TPersistent);
+begin
+  inherited Assign(Source);
+  if Source is TJvOfficeColorButtonProperties then
+    with TJvOfficeColorButtonProperties(Source) do
+    begin
+      Self.ShowDragBar := ShowDragBar;
+      Self.DragCaption := DragCaption;
+      Self.EdgeWidth := EdgeWidth;
+      Self.ArrowWidth := ArrowWidth;
+      Self.DragBarHeight := DragBarHeight;
+      Self.DragBarSpace := DragBarSpace;
+    end;
+end;
+
+procedure TJvOfficeColorButtonProperties.SetArrowWidth(const Value: Integer);
 begin
   if FArrowWidth <> Value then
   begin
@@ -721,7 +687,7 @@ begin
   end;
 end;
 
-procedure TJvOfficeColorButtonProperties.SetDragBarHeight(const Value: integer);
+procedure TJvOfficeColorButtonProperties.SetDragBarHeight(const Value: Integer);
 begin
   if FDragBarHeight <> Value then
   begin
@@ -730,7 +696,7 @@ begin
   end;
 end;
 
-procedure TJvOfficeColorButtonProperties.SetDragBarSpace(const Value: integer);
+procedure TJvOfficeColorButtonProperties.SetDragBarSpace(const Value: Integer);
 begin
   if FDragBarSpace <> Value then
   begin

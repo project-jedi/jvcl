@@ -64,14 +64,13 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure ActivateHint(Rect: TRect;
-      const AHint: widestring); override;
+      const AHint:  WideString ); override;
     procedure ActivateHintData(Rect: TRect;
-      const AHint: widestring;
+      const AHint:  WideString ;
       AData: Pointer); override;
     function CalcHintRect(MaxWidth: Integer;
-      const AHint: widestring;
+      const AHint:  WideString ;
       AData: Pointer): TRect;override;
-
   end;
 
 procedure SetHintStyle(Style: THintStyle; ShadowSize: THintShadowSize;
@@ -299,7 +298,7 @@ begin
 end;
 
 procedure TJvHintWindow.ActivateHint(Rect: TRect;
-  const AHint: widestring);
+  const AHint:  WideString );
 var
   R: TRect;
   ScreenDC: HDC;
@@ -403,7 +402,7 @@ begin
 end;
 
 function TJvHintWindow.CalcHintRect(MaxWidth: Integer;
-  const AHint: widestring;
+  const AHint:  WideString ;
   AData: Pointer): TRect;
 const
   Flag: array [TAlignment] of Longint = (DT_LEFT, DT_RIGHT, DT_CENTER);
@@ -458,7 +457,7 @@ begin
 end;
 
 procedure TJvHintWindow.ActivateHintData(Rect: TRect;
-  const AHint: widestring;
+  const AHint:  WideString ;
   AData: Pointer);
 begin
   ActivateHint(Rect, AHint);

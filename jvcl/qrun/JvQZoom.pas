@@ -37,10 +37,7 @@ interface
 
 uses
   SysUtils, Classes,
-  
-  
-  QWindows, Types, QGraphics, QControls, QForms, QExtCtrls,  
-  
+  Types, QGraphics, QControls, QForms, QExtCtrls,
   JvQComponent;
 
 type
@@ -174,7 +171,8 @@ begin
     control's device context
     Calling PaintWindow will lock the canvas and call Paint
   }
-  // PaintWindow(Canvas.Handle);
+//  PaintWindow(Canvas.Handle);
+  Repaint;
 end;
 
 procedure TJvZoom.PaintZoom;

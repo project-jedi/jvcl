@@ -32,7 +32,7 @@ Known Issues:
 -----------------------------------------------------------------------------}
 {$I jvcl.inc}
 
-unit JvQXMLDatabase;
+unit JvQXmlDatabase;
 
 interface
 

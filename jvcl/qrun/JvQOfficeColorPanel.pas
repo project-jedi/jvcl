@@ -215,7 +215,7 @@ type
     procedure MakeColorButtons;
     procedure AdjustColorButtons();
 
-    procedure SetEnabled(const Value: Boolean); override;
+    procedure SetEnabled( const  Value: Boolean); override;
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -815,7 +815,7 @@ begin
 
 end;
 
-procedure TJvCustomOfficeColorPanel.SetEnabled(const Value: Boolean);
+procedure TJvCustomOfficeColorPanel.SetEnabled( const  Value: Boolean);
 var
   i: integer;
 begin

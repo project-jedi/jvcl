@@ -70,7 +70,7 @@ type
     procedure SetLeftText(const Value: Boolean);
     function GetLinkedControls: TJvLinkedControls;
     procedure SetLinkedControls(const Value: TJvLinkedControls);
-    procedure BMSetCheck(var Msg:TMessage); message BM_SETCHECK;
+//    procedure BMSetCheck(var Msg:TMessage); message BM_SETCHECK;
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation);override;
     procedure MouseEnter(AControl: TControl); override;
@@ -78,7 +78,7 @@ type
     procedure TextChanged; override;
     procedure FontChanged; override;
     procedure EnabledChanged;override;
-    procedure SetAutoSize(Value: Boolean); override;
+    procedure SetAutoSize(Value: Boolean); //override;
     
     procedure CalcAutoSize; virtual;
     procedure Loaded; override;
@@ -208,7 +208,7 @@ begin
   // This is slower than GetTextExtentPoint but it does consider hotkeys
   if Caption <> '' then
   begin
-    DrawText(FCanvas.Handle, PChar(Caption), Length(Caption), R,
+    DrawTextW(FCanvas.Handle, PWideChar(Caption), Length(Caption), R,
       Flags[WordWrap] or DT_LEFT or DT_NOCLIP or DT_CALCRECT);
     AWidth := (R.Right - R.Left) + ASize.cx + 8;
     AHeight := R.Bottom - R.Top;
@@ -264,7 +264,7 @@ begin
     FWordWrap := Value;
     if Value then
       AutoSize := False;
-    RecreateWnd;
+    RecreateWidget;
   end;
 end;
 
@@ -273,7 +273,7 @@ begin
   if FAlignment <> Value then
   begin
     FAlignment := Value;
-    RecreateWnd;
+    RecreateWidget;
   end;
 end;
 
@@ -282,7 +282,7 @@ begin
   if FLayout <> Value then
   begin
     FLayout := Value;
-    RecreateWnd;
+    RecreateWidget;
   end;
 end;
 
@@ -296,7 +296,7 @@ begin
   if FLeftText <> Value then
   begin
     FLeftText := Value;
-    RecreateWnd;
+    RecreateWidget;
   end;
 end;
 
@@ -334,11 +334,13 @@ begin
   FLinkedControls.Assign(Value);
 end;
 
+(*)
 procedure TJvRadioButton.BMSetCheck(var Msg: TMessage);
 begin
   inherited;
   CheckLinkedControls;
 end;
+(*)
 
 procedure TJvRadioButton.EnabledChanged;
 begin

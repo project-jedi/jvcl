@@ -64,14 +64,16 @@ type
     FInterval: Cardinal;
     FKeepAlive: Boolean;
     FOnTimer: TNotifyEvent;
-    FPriority: TThreadPriority;
     FStreamedEnabled: Boolean;
     FThread: TThread;
+    {$IFDEF MSWINDOWS}
+    FPriority: TThreadPriority;
+    procedure SetPriority(const Value: TThreadPriority);
+    {$ENDIF MSWINDOWS}
     function GetThread: TThread;
     procedure SetEnabled(const Value: Boolean);
     procedure SetInterval(const Value: Cardinal);
     procedure SetOnTimer(const Value: TNotifyEvent);
-    procedure SetPriority(const Value: TThreadPriority);
     procedure SetKeepAlive(const Value: Boolean);
   protected
     procedure DoOnTimer;
@@ -88,14 +90,18 @@ type
     property Interval: Cardinal read FInterval write SetInterval default 1000;
     property KeepAlive: Boolean read FKeepAlive write SetKeepAlive default False;
     property OnTimer: TNotifyEvent read FOnTimer write SetOnTimer;
+    {$IFDEF MSWINDOWS}
     property Priority: TThreadPriority read FPriority write SetPriority default tpNormal;
+    {$ENDIF MSWINDOWS}
   end;
 
 implementation
 
+
+{$IFDEF MSWINDOWS}
 uses
-  
   Messages;
+{$ENDIF MSWINDOWS}
 
 type
   TJvTimerThread = class(TThread)
@@ -139,7 +145,9 @@ begin
     
   FInterval := ATimer.FInterval;
   FTimer := ATimer;
+  {$IFDEF MSWINDOWS}
   Priority := ATimer.Priority;
+  {$ENDIF MSWINDOWS}
   Resume;
 end;
 
@@ -208,7 +216,9 @@ constructor TJvThreadTimer.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FInterval := 1000;
+  {$IFDEF MSWINDOWS}
   FPriority := tpNormal;
+  {$ENDIF MSWINDOWS}
 end;
 
 destructor TJvThreadTimer.Destroy;
@@ -284,6 +294,7 @@ begin
   end;
 end;
 
+{$IFDEF MSWINDOWS}
 procedure TJvThreadTimer.SetPriority(const Value: TThreadPriority);
 begin
   if FPriority <> Value then
@@ -293,6 +304,7 @@ begin
       FThread.Priority := FPriority;
   end;
 end;
+{$ENDIF MSWINDOWS}
 
 procedure TJvThreadTimer.StopTimer;
 begin

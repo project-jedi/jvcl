@@ -2883,7 +2883,9 @@ procedure TJvBaseDataItem.InitID;
 var
   G: TGUID;
 begin
+  {$IFDEF MSWINDOWS}
   CoCreateGuid(G);
+  {$ENDIF MSWINDOWS}
   FID := HexBytes(G, SizeOf(G));
 end;
 

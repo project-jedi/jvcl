@@ -49,10 +49,7 @@ uses
 
 type
   IMouseTimer = interface
-    
-    
-    ['{EFB31305-C560-4E89-A2B6-D7F45CA9D1EA}']
-    
+    ['{94757B20-A74B-11D4-8CF8-CABD69ABF116}']
     procedure Attach(AControl: TControl);
     procedure Detach(AControl: TControl);
   end;

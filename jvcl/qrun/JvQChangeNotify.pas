@@ -20,7 +20,7 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2004-02-20
+Last Modified: 2002-05-26
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -39,11 +39,7 @@ unit JvQChangeNotify;
 interface
 
 uses
-  SysUtils, Classes, Windows,
-  
-  
-  QGraphics, QControls, QForms, QDialogs, Types,
-  
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   JvQComponent;
 
 type
