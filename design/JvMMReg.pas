@@ -53,7 +53,12 @@ uses
   JvPictureEditors, JvAnimatedEditor, JvID3v2EditorForm, JvPictureEditForm,
   JvIconListForm, JvAVICaptureEditors;
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvMMReg.dcr}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvMMReg.dcr}
+{$ENDIF LINUX}
 
 procedure Register;
 begin

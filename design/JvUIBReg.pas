@@ -51,7 +51,12 @@ uses
   {$ENDIF DelphiPersonalEdition}
   JvUIB;
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvUIBReg.dcr}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvUIBReg.dcr}
+{$ENDIF LINUX}
 
 {$IFNDEF USEJVCL}
 resourcestring

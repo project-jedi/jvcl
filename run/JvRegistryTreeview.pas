@@ -146,7 +146,12 @@ implementation
 uses
   JvResources;
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvRegistryTreeView.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvRegistryTreeView.res}
+{$ENDIF LINUX}
 
 const
   imMyPC = 0;

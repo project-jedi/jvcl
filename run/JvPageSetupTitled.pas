@@ -56,8 +56,14 @@ type
 
 implementation
 
+{$IFDEF MSWINDOWS}
+{.$R ..\Resources\JvPageSetupTitledRus.res}
+{$R ..\Resources\JvPageSetupTitledEng.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {.$R ../Resources/JvPageSetupTitledRus.res}
 {$R ../Resources/JvPageSetupTitledEng.res}
+{$ENDIF LINUX}
 
 uses
   Windows, Forms, SysUtils, CommDlg;

@@ -489,7 +489,12 @@ uses
   {$ENDIF COMPILER6_UP}
   JvJVCLUtils, JvThemes;
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvTimeLine.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvTimeLine.res}
+{$ENDIF LINUX}
 
 const
   FDayLineLength = 4;

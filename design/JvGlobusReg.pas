@@ -38,7 +38,12 @@ procedure Register;
 
 implementation
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvGlobusReg.dcr}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvGlobusReg.dcr}
+{$ENDIF LINUX}
 
 uses Classes,
   {$IFDEF COMPILER6_UP}

@@ -381,7 +381,12 @@ uses
   Controls, SysUtils,
   JclGraphUtils, JvThemes, JvConsts, JvResources;
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvSegmentedLEDDisplay.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvSegmentedLEDDisplay.res}
+{$ENDIF LINUX}
 
 var
   GDigitClassList: TThreadList = nil;

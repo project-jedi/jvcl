@@ -56,7 +56,12 @@ uses
   JvGroupHeaderEditor, JvFooterEditor, JvSpeedbarForm, JvDsgnEditors,
   JvTransparentButtonEditors, JvRollOutEditor;
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvCtrlsReg.dcr}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvCtrlsReg.dcr}
+{$ENDIF LINUX}
 
 procedure Register;
 begin

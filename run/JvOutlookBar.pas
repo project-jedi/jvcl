@@ -354,7 +354,12 @@ implementation
 uses
   Math;
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvOutlookBar.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvOutlookBar.res}
+{$ENDIF LINUX}
 
 const
   cButtonLeftOffset = 4;

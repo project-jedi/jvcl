@@ -347,7 +347,12 @@ uses
   JvConsts, JvResources, JvTypes,
   JvDBUtils, JvJVCLUtils, JvDBGridSelectColumnForm;
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvDBGrid.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvDBGrid.res}
+{$ENDIF LINUX}
 
 const
   sUnitName = 'JvDBGrid';

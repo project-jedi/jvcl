@@ -212,7 +212,12 @@ uses
   {$ENDIF VCL}
   JvTypes, JvResources;
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvErrorIndicator.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvErrorIndicator.res}
+{$ENDIF LINUX}
 
 const
   cDefBlinkCount = 5;

@@ -153,7 +153,12 @@ uses
   JclFileUtils,
   JvPlugin, JvPluginParamsForm, JvConsts, JvDsgnConsts;
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvPluginWiz.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvPluginWiz.res}
+{$ENDIF LINUX}
 
 const
   CrLf = sLineBreak;

@@ -34,7 +34,12 @@ procedure Register;
 
 implementation
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvHMIReg.dcr}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvHMIReg.dcr}
+{$ENDIF LINUX}
 
 uses
   Classes,

@@ -421,7 +421,12 @@ uses
   JvThemes;
 {$ENDIF JVCLThemesEnabled}
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvXPBar.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvXPBar.res}
+{$ENDIF LINUX}
 
 const
   FC_HEADER_HEIGHT = 34;

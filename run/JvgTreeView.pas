@@ -286,7 +286,12 @@ uses
   Math,
   JvgUtils;
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvgTreeView.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvgTreeView.res}
+{$ENDIF LINUX}
 
 constructor TJvgCustomTreeView.Create(AOwner: TComponent);
 begin

@@ -321,7 +321,12 @@ uses
   JvDsgnIntf, JvJVCLUtils, JvConsts, JvThemes, JvResources;
 
 { Cursors resources }
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvScrollMax.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvScrollMax.res}
+{$ENDIF LINUX}
 
 function PanelBorder(Panel: TCustomPanel): Integer;
 begin

@@ -53,7 +53,12 @@ uses
   JvFormMagnet, JvAnimTitle, JvFormAutoSize, JvGradientCaption,
   JvGradientCaptionForm, JvFormWallpaperEditor;
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvAppFrmReg.dcr}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvAppFrmReg.dcr}
+{$ENDIF LINUX}
 
 procedure Register;
 begin

@@ -305,7 +305,12 @@ function CheckBitmap: TBitmap;
 
 implementation
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvxCheckListBox.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvxCheckListBox.res}
+{$ENDIF LINUX}
 
 uses
   SysUtils, Consts, Math,

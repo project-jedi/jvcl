@@ -85,7 +85,12 @@ uses
   JvConsts,
   JvgTypes, JvgUtils;
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvgHint.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvgHint.res}
+{$ENDIF LINUX}
 
 {$IFNDEF USEJVCL}
 resourcestring
