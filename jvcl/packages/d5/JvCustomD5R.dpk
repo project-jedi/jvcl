@@ -1,7 +1,8 @@
 package JvCustomD5R;
 
-{$R *.res}
-
+{$R *.RES}
+{$R '..\..\Resources\JvChart.dcr'}
+{$ALIGN ON}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
 {$DEBUGINFO OFF}
@@ -61,6 +62,7 @@ contains
   JvHLParser in '..\..\run\JvHLParser.pas',
   JvValidateEdit in '..\..\run\JvValidateEdit.pas',
   JvHLEditorPropertyForm in '..\..\run\JvHLEditorPropertyForm.pas' {JvHLEditorParamsForm},
-  JvUnicodeCanvas in '..\..\run\JvUnicodeCanvas.pas';
+  JvUnicodeCanvas in '..\..\run\JvUnicodeCanvas.pas',
+  JvChart in '..\..\run\JvChart.pas';
 
 end.
