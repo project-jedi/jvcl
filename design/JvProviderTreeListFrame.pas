@@ -132,7 +132,7 @@ function IsEqualGUID(const IID1, IID2: TGUID): Boolean;
 begin
   Result := CompareMem(@IID1, @IID2, SizeOf(IID1));
 end;
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 
 //=== TMasterConsumer ========================================================
 

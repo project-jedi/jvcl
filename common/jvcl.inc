@@ -71,7 +71,7 @@ Known Issues:
 
 { This define enables GIF image support. Deactivate this define
   if you are using another GIF image support library. }
-{$DEFINE USE_Jv_GIF}
+{$DEFINE USE_JV_GIF}
 
 { Activate this define if you do not want to use TGauge Borland sample
   component in TDBProgress component and FileUtil routines. In this case

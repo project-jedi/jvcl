@@ -50,11 +50,11 @@ type
   {$IFDEF VCL}
   private
     procedure CMShowingChanged(var Msg: TMessage); message CM_SHOWINGCHANGED;
-  {$ENDIF}
+  {$ENDIF VCL}
   protected
   {$IFDEF VisualCLX}
     procedure ShowingChanged; override;
-  {$ENDIF VisuaLCLX}
+  {$ENDIF VisualCLX}
     { Determines the key to write the settings to or read from. Generally you don't need to override
       this method.
       Default will return (DELPHIRootKey)\Property Editors\(DesignerFormName)\(ClassName), where
