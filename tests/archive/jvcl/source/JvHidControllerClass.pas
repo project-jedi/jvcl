@@ -1,4 +1,4 @@
-{
+{******************************************************************************
 
  Project JEDI VCL
  HID component for complete HID access
@@ -19,7 +19,7 @@
  Portions created by Robert Marquardt are
  Copyright (c) 1999-2003 Robert Marquardt.
 
- Last modified: December 7, 2002
+ Last modified: December 15, 2002
 
 ******************************************************************************}
 
@@ -35,7 +35,7 @@ uses
 
 const
   // a version string for the component
-  cHidControllerClassVersion = '1.0.5';
+  cHidControllerClassVersion = '1.0.6';
 
   // strings from the registry for CheckOutByClass
   cHidKeyboardClass = 'Keyboard';
@@ -360,6 +360,7 @@ type
 function HidCheck(const RetVal: NTSTATUS): NTSTATUS; overload;
 function HidCheck(const RetVal: LongBool): LongBool; overload;
 function HidError(const RetVal: NTSTATUS): NTSTATUS;
+function HidErrorString(const RetVal: NTSTATUS): string;
 
 {$IFDEF STANDALONE}
 
@@ -731,7 +732,7 @@ end;
 
 function TJvHidDevice.GetDeviceStringUnicode(Idx: Byte): WideString;
 var
-  Buffer: array [0..256] of WideChar;
+  Buffer: array [0..253] of WideChar;
 begin
   Result := '';
   if Idx <> 0 then
@@ -1899,7 +1900,7 @@ end;
 function HidCheck(const RetVal: LongBool): LongBool;
 begin
   if not RetVal then
-    raise EHidClientError.Create('HidClient Error: a boolean function failed');
+    raise EHidClientError.Create('HID Error: a boolean function failed');
   Result := RetVal;
 end;
 
@@ -1909,35 +1910,46 @@ function HidError(const RetVal: NTSTATUS): NTSTATUS;
 var
   ErrBuf: string;
 begin
+  ErrBuf := HidErrorString(RetVal);
+  // only react to HID errors
+  if ErrBuf <> '' then
+    raise EHidClientError.Create(ErrBuf);
+  Result := RetVal;
+end;
+
+//------------------------------------------------------------------------------
+
+function HidErrorString(const RetVal: NTSTATUS): string;
+begin
+  Result := '';
   // only check HID errors
   if ((RetVal and NTSTATUS($00FF0000)) = HIDP_STATUS_SUCCESS) and
      ((RetVal and NTSTATUS($C0000000)) <> 0) then
   begin
     case RetVal of
-      HIDP_STATUS_NULL:                    ErrBuf := 'device not plugged in';
-      HIDP_STATUS_INVALID_PREPARSED_DATA:  ErrBuf := 'invalid preparsed data';
-      HIDP_STATUS_INVALID_REPORT_TYPE:     ErrBuf := 'invalid report type';
-      HIDP_STATUS_INVALID_REPORT_LENGTH:   ErrBuf := 'invalid report length';
-      HIDP_STATUS_USAGE_NOT_FOUND:         ErrBuf := 'usage not found';
-      HIDP_STATUS_VALUE_OUT_OF_RANGE:      ErrBuf := 'value out of range';
-      HIDP_STATUS_BAD_LOG_PHY_VALUES:      ErrBuf := 'bad logical or physical values';
-      HIDP_STATUS_BUFFER_TOO_SMALL:        ErrBuf := 'buffer too small';
-      HIDP_STATUS_INTERNAL_ERROR:          ErrBuf := 'internal error';
-      HIDP_STATUS_I8042_TRANS_UNKNOWN:     ErrBuf := '8042 key translation impossible';
-      HIDP_STATUS_INCOMPATIBLE_REPORT_ID:  ErrBuf := 'incompatible report ID';
-      HIDP_STATUS_NOT_VALUE_ARRAY:         ErrBuf := 'not a value array';
-      HIDP_STATUS_IS_VALUE_ARRAY:          ErrBuf := 'is a value array';
-      HIDP_STATUS_DATA_INDEX_NOT_FOUND:    ErrBuf := 'data index not found';
-      HIDP_STATUS_DATA_INDEX_OUT_OF_RANGE: ErrBuf := 'data index out of range';
-      HIDP_STATUS_BUTTON_NOT_PRESSED:      ErrBuf := 'button not pressed';
-      HIDP_STATUS_REPORT_DOES_NOT_EXIST:   ErrBuf := 'report does not exist';
-      HIDP_STATUS_NOT_IMPLEMENTED:         ErrBuf := 'not implemented';
+      HIDP_STATUS_NULL:                    Result := 'device not plugged in';
+      HIDP_STATUS_INVALID_PREPARSED_DATA:  Result := 'invalid preparsed data';
+      HIDP_STATUS_INVALID_REPORT_TYPE:     Result := 'invalid report type';
+      HIDP_STATUS_INVALID_REPORT_LENGTH:   Result := 'invalid report length';
+      HIDP_STATUS_USAGE_NOT_FOUND:         Result := 'usage not found';
+      HIDP_STATUS_VALUE_OUT_OF_RANGE:      Result := 'value out of range';
+      HIDP_STATUS_BAD_LOG_PHY_VALUES:      Result := 'bad logical or physical values';
+      HIDP_STATUS_BUFFER_TOO_SMALL:        Result := 'buffer too small';
+      HIDP_STATUS_INTERNAL_ERROR:          Result := 'internal error';
+      HIDP_STATUS_I8042_TRANS_UNKNOWN:     Result := '8042 key translation impossible';
+      HIDP_STATUS_INCOMPATIBLE_REPORT_ID:  Result := 'incompatible report ID';
+      HIDP_STATUS_NOT_VALUE_ARRAY:         Result := 'not a value array';
+      HIDP_STATUS_IS_VALUE_ARRAY:          Result := 'is a value array';
+      HIDP_STATUS_DATA_INDEX_NOT_FOUND:    Result := 'data index not found';
+      HIDP_STATUS_DATA_INDEX_OUT_OF_RANGE: Result := 'data index out of range';
+      HIDP_STATUS_BUTTON_NOT_PRESSED:      Result := 'button not pressed';
+      HIDP_STATUS_REPORT_DOES_NOT_EXIST:   Result := 'report does not exist';
+      HIDP_STATUS_NOT_IMPLEMENTED:         Result := 'not implemented';
     else
-      ErrBuf := Format('unknown HID error %x', [RetVal]);
+      Result := Format('unknown HID error %x', [RetVal]);
     end;
-    raise EHidClientError.Create('HidClient Error: ' + ErrBuf);
+    Result := 'HID Error: ' + Result;
   end;
-  Result := RetVal;
 end;
 
 //------------------------------------------------------------------------------
