@@ -35,11 +35,12 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
-  Messages, Graphics, Controls, Forms, StdCtrls,
+  Messages,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, Qt, QWindows, QGraphics, QControls, QForms, QStdCtrls,
+  Types, Qt, QWindows,
   {$ENDIF VisualCLX}
+  Graphics, Controls, Forms, StdCtrls,
   JvThemes, JvExControls, JvExStdCtrls;
 
 type

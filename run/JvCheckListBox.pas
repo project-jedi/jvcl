@@ -40,8 +40,8 @@ uses
 
 type
   TJvCheckListBox = class(TJvExCheckListBox)
+  {$IFDEF VCL}
   private
-    {$IFDEF VCL}
     FHotTrack: Boolean;
     FOnSelectCancel: TNotifyEvent;
     FMaxWidth: Integer;
@@ -54,14 +54,12 @@ type
     procedure LBNSelCancel(var Msg: TMessage); message LBN_SELCANCEL;
     procedure RefreshH;
     procedure SetHotTrack(const Value: Boolean);
-    {$ENDIF VCL}
   protected
-    {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
     procedure WndProc(var Msg: TMessage); override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
-    {$ENDIF VCL}
+  {$ENDIF VCL}
   public
     constructor Create(AOwner: TComponent); override;
     function SearchExactString(Value: string; CaseSensitive: Boolean = True): Integer;

@@ -55,7 +55,7 @@ unit JvLabel;
 interface
 
 uses
-  Windows, Messages, Graphics, Controls, StdCtrls, ImgList, Classes,
+  Windows, Messages, Classes, Graphics, Controls, StdCtrls, ImgList, 
   JvTypes, JvComponent, JvDataProvider;
 
 type
@@ -269,8 +269,7 @@ procedure FrameRounded(Canvas: TCanvas; ARect: TRect; AColor: TColor; R: Integer
 implementation
 
 uses
-  SysUtils, Forms,
-  Math,
+  SysUtils, Math, Forms,
   JvDataProviderIntf,
   JvConsts, JvThemes, JvJCLUtils, JvJVCLUtils;
 

@@ -30,11 +30,7 @@ unit JvBevel;
 interface
 
 uses
-  Classes,
-  {$IFDEF VCL}
-  Windows, Messages,
-  {$ENDIF VCL}
-  Controls,
+  Windows, Messages, Classes, Controls,
   JvThemes, JvExExtCtrls;
 
 type

@@ -24,16 +24,14 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
+{$I vclonly.inc}
 
 unit JvCombobox;
 
 interface
 
 uses
-  {$IFDEF VCL}
-  Windows, Messages,
-  {$ENDIF VCL}
-  Classes, Graphics, Controls, StdCtrls,
+  Windows, Messages, Classes, Graphics, Controls, StdCtrls,
   JvDataProvider, JvMaxPixel, JvExStdCtrls;
 
 type

@@ -33,6 +33,7 @@ Modifications:
 // $Id$
 
 {$I jvcl.inc}
+{$I vclonly.inc}
 
 unit JvSystemPopup;
 

@@ -45,7 +45,7 @@ Notes (2003-05-21) // Remko Bonte
 // $Id$
 
 {$I jvcl.inc}
-{$I windowsonly.inc}
+{$I vclonly.inc}
 
 unit JvListBox;
 

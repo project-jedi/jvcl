@@ -38,15 +38,12 @@ interface
 
 uses
   {$IFDEF MSWINDOWS}
-  Windows,
+  Windows, Messages,
   {$ENDIF MSWINDOWS}
-  {$IFDEF VCL}
-  Messages,
-  {$ENDIF VCL}
-  SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, Menus, Buttons,
-  FileCtrl, Mask, ImgList, ActnList, ExtDlgs,
+  SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, Menus,
+  Buttons, FileCtrl, Mask, ImgList, ActnList, ExtDlgs,
   {$IFDEF VisualCLX}
-  Qt, Types, QWindows, QComboEdits, JvQExComboEdits,
+  Qt, QComboEdits, JvQExComboEdits, Types, QWindows,
   {$ENDIF VisualCLX}
   JvSpeedButton, JvTypes, JvExMask, JvExForms;
 
@@ -233,12 +230,16 @@ type
     FPopupVisible: Boolean; // Polaris
     FFocused: Boolean; // Polaris
     FPopup: TWinControl;
-    {$IFDEF VCL}
     {$IFDEF COMPILER6_UP}
+    {$IFDEF VCL}
     procedure CustomAlignPosition(Control: TControl; var NewLeft, NewTop, NewWidth,
       NewHeight: Integer; var AlignRect: TRect; AlignInfo: TAlignInfo); override;
-    {$ENDIF COMPILER6_UP}
     {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    procedure CustomAlignPosition(Control: TControl; var NewLeft,
+      NewTop, NewWidth, NewHeight: Integer; var AlignRect: TRect); override;
+    {$ENDIF VisualCLX}
+    {$ENDIF COMPILER6_UP}
     procedure DoClearText; override;
     procedure DoClipboardCut; override;
     procedure DoClipboardPaste; override;
@@ -997,8 +998,8 @@ uses
   {$IFDEF VCL}
   JvBrowseFolder, ActiveX,
   {$ENDIF VCL}
-  JvFinalize, JvThemes, JvResources, JvConsts, JvJCLUtils, JvExControls,
-  JvPickDate, JvJVCLUtils;
+  JvExControls, JvPickDate, JvJCLUtils, JvJVCLUtils,
+  JvThemes, JvResources, JvConsts, JvFinalize;
 
 const
   sUnitName = 'JvToolEdit';
@@ -1935,17 +1936,20 @@ begin
   UpdateControls;
   UpdateMargins;
 end;
+{$ENDIF VCL}
 
 {$IFDEF COMPILER6_UP}
 procedure TJvCustomComboEdit.CustomAlignPosition(Control: TControl;
-  var NewLeft, NewTop, NewWidth, NewHeight: Integer; var AlignRect: TRect;
-  AlignInfo: TAlignInfo);
+  var NewLeft, NewTop, NewWidth, NewHeight: Integer; var AlignRect: TRect
+  {$IFDEF VCL}
+  ; AlignInfo: TAlignInfo
+  {$ENDIF VCL}
+  );
 begin
   if Control = FBtnControl then
     UpdateBtnBounds(NewLeft, NewTop, NewWidth, NewHeight);
 end;
 {$ENDIF COMPILER6_UP}
-{$ENDIF VCL}
 
 class function TJvCustomComboEdit.DefaultImageIndex: TImageIndex;
 begin

@@ -30,8 +30,8 @@ unit JvRadioGroup;
 interface
 
 uses
-  SysUtils, Classes,
-  Windows, Messages, Graphics, Controls, Forms, StdCtrls, ExtCtrls, ToolWin,
+  Windows, Messages,
+  SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls, ToolWin,
   {$IFDEF VisualCLX}
   QTypes,
   {$ENDIF VisualCLX}

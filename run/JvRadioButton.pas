@@ -33,13 +33,8 @@ unit JvRadioButton;
 interface
 
 uses
-  {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Forms, StdCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QStdCtrls, Types, QWindows,
-  {$ENDIF VisualCLX}
-  SysUtils, Classes,
+  Windows, Messages,
+  SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
   JvTypes, JvExStdCtrls, JvLinkedControls;
 
 type

@@ -37,13 +37,7 @@ unit JvSecretPanel;
 interface
 
 uses
-  Classes,
-  {$IFDEF VCL}
-  Windows, Messages, Controls, Graphics, ExtCtrls, Forms,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QWindows, QMessages, QControls, QGraphics, QExtCtrls, QForms,
-  {$ENDIF VisualCLX}
+  Windows, Messages, Classes, Graphics, Controls, ExtCtrls, Forms,
   JvTimer, JvComponent, JvTypes;
 
 type
@@ -123,17 +117,21 @@ type
       default sdVertical;
     property TextStyle: TPanelBevel read FTextStyle write SetTextStyle default bvNone;
     property Anchors;
+    {$IFDEF VCL}
     property BiDiMode;
-    property Constraints;
     property DragKind;
     property ParentBiDiMode;
+    property DragCursor;
+    property OnEndDock;
+    property OnStartDock;
+    {$ENDIF VCL}
+    property Constraints;
     property Align;
     property BevelInner;
     property BevelOuter default bvLowered;
     property BevelWidth;
     property BorderWidth;
     property BorderStyle;
-    property DragCursor;
     property DragMode;
     property Color;
     property Font;
@@ -160,16 +158,17 @@ type
     property OnMouseUp;
     property OnStartDrag;
     property OnContextPopup;
-    property OnEndDock;
-    property OnStartDock;
     property OnResize;
   end;
 
 implementation
 
 uses
-  SysUtils, Consts, Math, ActnList, CommCtrl,
-  JvConsts, JvThemes, JvJCLUtils, JvJVCLUtils;
+  {$IFDEF VCL}
+  CommCtrl,
+  {$ENDIF VCL}
+  Consts, SysUtils, Math, ActnList,
+  JvJCLUtils, JvJVCLUtils, JvThemes, JvConsts;
 
 const
   Alignments: array [TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
@@ -651,8 +650,13 @@ begin
       FMemoryImage := nil;
       StopPlay;
       if (csDesigning in ComponentState) and
-        not (csDestroying in ComponentState) then
+          not (csDestroying in ComponentState) then
+        {$IFDEF VCL}
         ValidParentForm(Self).Designer.Modified;
+        {$ENDIF VCL}
+        {$IFDEF VisualCLX}
+        ValidParentForm(Self).DesignerHook.Modified;
+        {$ENDIF VisualCLX}
     end;
     if not (csDestroying in ComponentState) then
       for I := 0 to Pred(ControlCount) do

@@ -30,11 +30,7 @@ unit JvBitBtn;
 interface
 
 uses
-  Classes,
-  {$IFDEF VCL}
-  Windows, Messages,
-  {$ENDIF VCL}
-  Graphics, Controls, Menus,
+  Windows, Messages, Classes, Graphics, Controls, Menus,
   JvTypes, JvExButtons;
 
 type

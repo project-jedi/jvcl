@@ -30,8 +30,10 @@ unit JvStringGrid;
 interface
 
 uses
-  SysUtils, Classes,
-  Windows, Messages, Graphics, Controls, Forms, Grids,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Grids,
+  {$IFDEF VisualCLX}
+  QStdCtrls,
+  {$ENDIF VisualCLX}
   JvTypes, JvJCLUtils, JvExGrids;
 
 const
@@ -69,8 +71,8 @@ type
     FOnVerticalScroll: TNotifyEvent;
     FFixedFont: TFont;
     procedure SetAlignment(const Value: TAlignment);
-    {$IFDEF VCL}
     procedure GMActivateCell(var Msg: TGMActivateCell); message GM_ACTIVATECELL;
+    {$IFDEF VCL}
     procedure WMCommand(var Msg: TWMCommand); message WM_COMMAND;
     {$ENDIF VCL}
     procedure SetFixedFont(const Value: TFont);
@@ -87,9 +89,13 @@ type
     procedure DrawCell(AColumn, ARow: Longint;
       Rect: TRect; State: TGridDrawState); override;
     procedure CaptionClick(AColumn, ARow: Longint); dynamic;
+    {$IFDEF VCL}
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
+    {$ENDIF VCL}
     {$IFDEF VisualCLX}
+    procedure ModifyScrollBar(ScrollBar: TScrollBarKind; ScrollCode: TScrollCode;
+      Pos: Cardinal; UseRightToLeft: Boolean); override;
     function SelectCell(ACol, ARow: Longint): Boolean; override;
     {$ENDIF VisualCLX}
     procedure DoLoadProgress(Position, Count: integer);
@@ -627,6 +633,7 @@ begin
   DoLoadProgress(Stream.Size, Stream.Size);
 end;
 
+{$IFDEF VCL}
 procedure TJvStringGrid.WMHScroll(var Msg: TWMHScroll);
 begin
   inherited;
@@ -640,13 +647,27 @@ begin
   if Assigned(FOnVerticalScroll) then
     FOnVerticalScroll(Self);
 end;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+procedure TJvStringGrid.ModifyScrollBar(ScrollBar: TScrollBarKind; ScrollCode: TScrollCode;
+  Pos: Cardinal; UseRightToLeft: Boolean);
+begin
+  case ScrollBar of
+    sbHorizontal:
+      if Assigned(FOnHorizontalScroll) then
+        FOnHorizontalScroll(Self);
+    sbVertical:
+      if Assigned(FOnVerticalScroll) then
+        FOnVerticalScroll(Self);
+  end;
+end;
+{$ENDIF VisualCLX}
 
 procedure TJvStringGrid.SaveToFile(FileName: string);
 var
   Stream: TFileStream;
 begin
   Stream := TFileStream.Create(FileName, fmCreate or fmShareDenyWrite);
-  // (rom) secured
   try
     SaveToStream(Stream);
   finally
@@ -798,7 +819,6 @@ begin
 end;
 {$ENDIF VisualCLX}
 
-{$IFDEF VCL}
 procedure TJvStringGrid.GMActivateCell(var Msg: TGMActivateCell);
 begin
   Col := Msg.Column;
@@ -806,7 +826,6 @@ begin
   EditorMode := True;
   InplaceEditor.SelectAll;
 end;
-{$ENDIF VCL}
 
 procedure TJvStringGrid.InvalidateCell(AColumn, ARow: Integer);
 begin

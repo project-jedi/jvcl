@@ -29,15 +29,10 @@ unit JvGrids;
 interface
 
 uses
-  {$IFDEF MSWINDOWS}
-  Windows, Messages,
-  {$ENDIF MSWINDOWS}
-  Classes,
-  {$IFDEF VCL}
-  Controls, Graphics, StdCtrls, Forms, Grids,
-  {$ENDIF VCL}
+  Classes, Controls, Graphics, StdCtrls, Forms, Grids,
+  Windows, Messages, // Windows after Controls (VisualCLX)
   {$IFDEF VisualCLX}
-  Qt, QTypes, QControls, QGraphics, QStdCtrls, QForms, QGrids, Types, QWindows,
+  Qt, QTypes,
   {$ENDIF VisualCLX}
   JvConsts, JvAppStorage, JvFormPlacement, JvComponent, JvExGrids;
 

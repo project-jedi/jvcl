@@ -30,14 +30,10 @@ unit JvButton;
 interface
 
 uses
-  Classes,
-  {$IFDEF VCL}
-  Windows, Messages,
-  {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Qt, QWindows,
+  Qt,
   {$ENDIF VisualCLX}
-  Graphics, Controls, Menus, Buttons,
+  Windows, Messages, Classes, Graphics, Controls, Menus, Buttons,
   JvComponent, JvConsts, JvTypes, JvExStdCtrls;
 
 type
@@ -397,8 +393,8 @@ begin
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     repeat
-      Application.ProcessMessages; // (ahuser) does this really do the job?
-    until not QWidget_isVisible(DropDownMenu.handle); // (asn) it did not, now it does
+      Application.ProcessMessages;
+    until not QWidget_isVisible(DropDownMenu.handle);
     {$ENDIF VisualCLX}
     { release button }
     MouseUp(Button, Shift, X, Y);
