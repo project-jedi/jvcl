@@ -43,7 +43,6 @@ type
     Button1: TButton;
     Button2: TButton;
     Button3: TButton;
-    Button4: TButton;
     Button5: TButton;
     Button6: TButton;
     Button7: TButton;
@@ -70,9 +69,12 @@ type
     JvPageSetupTitledDialog1: TJvPageSetupTitledDialog;
     JvFormatDrive1: TJvFormatDrive;
     JvObjectPickerDialog1: TJvObjectPickerDialog;
+    JvSerialDlg1: TJvSerialDlg;
+    Button4: TButton;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
+    procedure Button4Click(Sender: TObject);
     procedure Button5Click(Sender: TObject);
     procedure Button6Click(Sender: TObject);
     procedure Button7Click(Sender: TObject);
@@ -85,11 +87,7 @@ type
     procedure Button14Click(Sender: TObject);
     procedure Button16Click(Sender: TObject);
     procedure Button17Click(Sender: TObject);
-  private
-    { Private-Deklarationen }
-
-  public
-    { Public-Deklarationen }
+    procedure Button15Click(Sender: TObject);
   end;
 
 implementation
@@ -108,30 +106,37 @@ end;
 
 procedure TJvDialogs.Button3Click(Sender: TObject);
 begin
-  JvLoginDlg1.execute;
+  JvLoginDlg1.Execute;
+end;
+
+procedure TJvDialogs.Button4Click(Sender: TObject);
+begin
+  JvSerialDlg1.Execute;
 end;
 
 procedure TJvDialogs.Button5Click(Sender: TObject);
-var
-  nag : TJvNagScreen;
 begin
- Nag := TJvNagScreen.Create(NIL);
- nag.Picture.LoadFromResourceName(HINSTANCE,'NAGPIC');
- nag.Execute;
- nag.free;
+  with TJvNagScreen.Create(Application) do
+  try
+    Picture.LoadFromResourceName(HInstance, 'NAGPIC');
+    Execute;
+  finally
+    Free;
+  end;
 end;
 
 procedure TJvDialogs.Button6Click(Sender: TObject);
-var
-  TOD : TJvTipOfDay;
 begin
-  TOD := TJvTipOfDay.Create(NIL);
-  TOD.Tips.Append('Hintline 1');
-  TOD.Tips.Append('Hintline 2');
-  TOD.Tips.Append('Hintline 3');
-  TOD.Tips.Append('Hintline 4');
-  TOD.Execute;
-  tod.free;
+  with TJvTipOfDay.Create(Application) do
+  try
+    Tips.Append('Hintline 1');
+    Tips.Append('Hintline 2');
+    Tips.Append('Hintline 3');
+    Tips.Append('Hintline 4');
+    Execute;
+  finally
+    Free;
+  end;
 end;
 
 procedure TJvDialogs.Button7Click(Sender: TObject);
@@ -146,17 +151,20 @@ end;
 
 procedure TJvDialogs.Button9Click(Sender: TObject);
 var
-  i : integer;
+  I: Integer;
 begin
-  jvProgressdlg1.Text := 'Progressing....';
-  JvProgressDlg1.Show;
-  JvProgressDlg1.StartProgression;
-  for I := 0 to 100 do
+  with JvProgressDlg1 do
   begin
-    jvProgressDlg1.Value := I;
-    sleep(100);
+    Text := 'Progressing....';
+    Show;
+    StartProgression;
+    for I := 0 to 100 do
+    begin
+      Value := I;
+      Sleep(100);
+    end;
+    Close;
   end;
-  jvProgressdlg1.Close;
 end;
 
 procedure TJvDialogs.Button10Click(Sender: TObject);
@@ -181,7 +189,7 @@ end;
 
 procedure TJvDialogs.Button14Click(Sender: TObject);
 begin
-  JvPageSetupTitledDialog1.execute;
+  JvPageSetupTitledDialog1.Execute;
 end;
 
 procedure TJvDialogs.Button16Click(Sender: TObject);
@@ -191,7 +199,12 @@ end;
 
 procedure TJvDialogs.Button17Click(Sender: TObject);
 begin
- JvObjectPickerDialog1.Execute;
+  JvObjectPickerDialog1.Execute;
+end;
+
+procedure TJvDialogs.Button15Click(Sender: TObject);
+begin
+  { TODO }
 end;
 
 end.

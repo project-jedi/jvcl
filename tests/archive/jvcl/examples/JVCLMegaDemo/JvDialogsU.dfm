@@ -32,15 +32,6 @@ object JvDialogs: TJvDialogs
     TabOrder = 2
     OnClick = Button3Click
   end
-  object Button4: TButton
-    Left = 8
-    Top = 40
-    Width = 105
-    Height = 25
-    Caption = 'Serial Number'
-    TabOrder = 3
-    Visible = False
-  end
   object Button5: TButton
     Left = 136
     Top = 40
@@ -138,6 +129,7 @@ object JvDialogs: TJvDialogs
     Height = 25
     Caption = 'Find Files'
     TabOrder = 14
+    OnClick = Button15Click
   end
   object Button16: TButton
     Left = 8
@@ -156,6 +148,15 @@ object JvDialogs: TJvDialogs
     Caption = 'Objectpicker'
     TabOrder = 16
     OnClick = Button17Click
+  end
+  object Button4: TButton
+    Left = 8
+    Top = 40
+    Width = 105
+    Height = 25
+    Caption = 'Serial Number'
+    TabOrder = 3
+    OnClick = Button4Click
   end
   object JvPasswordForm1: TJvPasswordForm
     Title = 'Enter password'
@@ -192,7 +193,7 @@ object JvDialogs: TJvDialogs
     Left = 72
     Top = 208
   end
-  object jvSerial: TJvSerialDlg
+  object JvSerialDlg1: TJvSerialDlg
     FirstLabel = '&Name:'
     SecondLabel = '&Serial:'
     Title = 'Enter Serial'
@@ -7938,7 +7939,7 @@ object JvDialogs: TJvDialogs
     Top = 208
   end
   object JvDiskPrompt1: TJvDiskPrompt
-    DialogTitle = 'Insert Disk...'
+    Title = 'Insert Disk...'
     DiskName = 'A:\'
     PathToSource = 'A:\'
     FileSought = 'test.dat'
@@ -7948,19 +7949,19 @@ object JvDialogs: TJvDialogs
     Top = 208
   end
   object JvCopyError1: TJvCopyError
-    DialogTitle = 'Error on copying....'
+    Title = 'Error on copying....'
     DiskName = 'TESTDISK'
     PathToSource = 'A:\'
     NewPath = 'A:\'
     SourceFile = 'Source.dat'
     TargetFile = 'Dest.dat'
-    W32ErrorCode = 234
+    Win32ErrorCode = 234
     Style = []
     Left = 296
     Top = 208
   end
   object JvDeleteError1: TJvDeleteError
-    DialogTitle = 'Error on deleting....'
+    Title = 'Error on deleting....'
     Style = []
     Left = 336
     Top = 208

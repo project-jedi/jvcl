@@ -16,11 +16,11 @@ object JvPanelsFrm: TJvPanelsFrm
       Width = 88
       Height = 49
       Caption = 'JvOutlookButton'
-      HiLiteFont.Charset = DEFAULT_CHARSET
-      HiLiteFont.Color = clWindowText
-      HiLiteFont.Height = -11
-      HiLiteFont.Name = 'MS Sans Serif'
-      HiLiteFont.Style = []
+      HighlightFont.Charset = DEFAULT_CHARSET
+      HighlightFont.Color = clWindowText
+      HighlightFont.Height = -11
+      HighlightFont.Name = 'MS Sans Serif'
+      HighlightFont.Style = []
       ImageIndex = 0
       LargeImages = ImageList1
     end
@@ -43,11 +43,11 @@ object JvPanelsFrm: TJvPanelsFrm
       Top = 8
       Width = 92
       Height = 153
-      HiLiteFont.Charset = DEFAULT_CHARSET
-      HiLiteFont.Color = clWindowText
-      HiLiteFont.Height = -11
-      HiLiteFont.Name = 'MS Sans Serif'
-      HiLiteFont.Style = []
+      HighlightFont.Charset = DEFAULT_CHARSET
+      HighlightFont.Color = clWindowText
+      HighlightFont.Height = -11
+      HighlightFont.Name = 'MS Sans Serif'
+      HighlightFont.Style = []
       ParentImageSize = False
       Caption = 'JvExpress'
       Color = clBtnShadow
@@ -63,11 +63,11 @@ object JvPanelsFrm: TJvPanelsFrm
         ParentFont = False
         FillColor = clBackground
         Caption = 'JvExpressButton'
-        HiLiteFont.Charset = DEFAULT_CHARSET
-        HiLiteFont.Color = clBlack
-        HiLiteFont.Height = -11
-        HiLiteFont.Name = 'MS Sans Serif'
-        HiLiteFont.Style = []
+        HighlightFont.Charset = DEFAULT_CHARSET
+        HighlightFont.Color = clBlack
+        HighlightFont.Height = -11
+        HighlightFont.Name = 'MS Sans Serif'
+        HighlightFont.Style = []
         ImageIndex = 0
         SmallImages = ImageList1
       end

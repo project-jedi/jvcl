@@ -121,15 +121,10 @@ object JvDateTimeFrm: TJvDateTimeFrm
     Top = 16
     Width = 105
     Height = 21
-    CalAlignment = dtaLeft
-    Date = 37421.4927452662
-    Time = 37421.4927452662
-    DateFormat = dfShort
-    DateMode = dmComboBox
-    Kind = dtkDate
-    ParseInput = False
+    Date = 37421.492745266200000000
+    Time = 37421.492745266200000000
     TabOrder = 0
-    DropDownDate = 37494
+    DropDownDate = 37494.000000000000000000
     NullText = '(none)'
   end
   object JvMonthCalendar1: TJvMonthCalendar
@@ -137,17 +132,19 @@ object JvDateTimeFrm: TJvDateTimeFrm
     Top = 24
     Width = 191
     Height = 154
-    Date = 37421.2483432292
+    Date = 37421.017227280090000000
     TabOrder = 1
   end
   object JvMonthCalendar21: TJvMonthCalendar2
     Left = 344
     Top = 224
+    Width = 191
+    Height = 154
     ParentColor = False
     TabStop = True
     TabOrder = 2
-    DateFirst = 37421
-    Today = 37421.5161278472
+    DateFirst = 37421.000000000000000000
+    Today = 37421.516127847200000000
   end
   object JvYearEdit1: TJvYearEdit
     Left = 152
@@ -169,6 +166,7 @@ object JvDateTimeFrm: TJvDateTimeFrm
     Top = 80
     Width = 105
     Height = 21
+    ButtonFlat = False
     NumGlyphs = 2
     TabOrder = 4
   end
@@ -176,21 +174,17 @@ object JvDateTimeFrm: TJvDateTimeFrm
     Left = 136
     Top = 352
     Width = 145
-    Height = 50
+    ClockStyle = csDateTime
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
     Font.Style = []
-    ClockStyle = csDateTime
   end
   object JvAnalogClock1: TJvAnalogClock
     Left = 136
     Top = 128
-    AboutJVCL = JVCLAbout
     SpiderClock = True
-    CenterSize = 5
-    CenterCol = clBlack
     TabOrder = 6
   end
   object JvxClock1: TJvxClock

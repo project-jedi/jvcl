@@ -10,10 +10,13 @@ object JvControls: TJvControls
     Top = 437
     Width = 660
     Height = 24
-    Hint = 'noting to say '
-    GradientWidth = 70
-    EndColor = clNavy
+    Hint = 'Nothing to say'
     Align = alBottom
+    Color = clBtnFace
+    EndColor = clNavy
+    Enabled = True
+    GradientWidth = 70
+    ParentColor = False
   end
   object Label3: TLabel
     Left = 0
@@ -48,19 +51,15 @@ object JvControls: TJvControls
     Top = 0
     Width = 660
     Height = 25
-    GradientCursor = crDefault
     GradientEndColor = clBlue
     GradientSteps = 30
-    LabelLeft = 10
-    LabelCursor = crDefault
+    GradientStyle = grHorizontal
     LabelCaption = 'I think this JvGradientCaption has a nice gradient ...'
-    LabelColor = clBlue
     LabelFont.Charset = DEFAULT_CHARSET
     LabelFont.Color = clWhite
     LabelFont.Height = -11
     LabelFont.Name = 'MS Sans Serif'
     LabelFont.Style = []
-    Gradientstyle = grHorizontal
     LabelAlignment = taLeftJustify
     Align = alTop
     DoubleBuffered = False
@@ -106,7 +105,7 @@ object JvControls: TJvControls
     ItemHeight = 20
     TabOrder = 3
   end
-  object JvMultilineListbox1: TJvMultilineListbox
+  object JvMultilineListbox1: TJvMultilineListBox
     Left = 40
     Top = 288
     Width = 169
@@ -132,7 +131,7 @@ object JvControls: TJvControls
     YearFont.Name = 'MS Sans Serif'
     YearFont.Style = [fsBold]
     ShowMonthNames = False
-    FirstVisibleDate = 37408
+    FirstVisibleDate = 37408.000000000000000000
     Images = ImageList1
     Items = <
       item
@@ -140,7 +139,7 @@ object JvControls: TJvControls
         Top = 105
         Caption = 'Birthday from Mr.X!!!'
         Color = clMenuText
-        Date = 37865
+        Date = 37865.000000000000000000
         Hint = 'Very importend I guess'
         ImageIndex = 1
         ImageOffset = 50
@@ -151,7 +150,7 @@ object JvControls: TJvControls
         Top = 117
         Caption = 'Birthday of Mrs. Y'
         Color = clBlack
-        Date = 37421
+        Date = 37421.000000000000000000
         ImageIndex = 1
         Level = 1
         TextColor = clWhite
@@ -161,7 +160,7 @@ object JvControls: TJvControls
         Top = 129
         Caption = 'is over'
         Color = clRed
-        Date = 37434
+        Date = 37434.000000000000000000
         ImageIndex = 2
         Level = 2
       end
@@ -170,7 +169,7 @@ object JvControls: TJvControls
         Top = 141
         Caption = 'I guess'
         Color = clYellow
-        Date = 37495
+        Date = 37495.000000000000000000
         ImageIndex = 3
         Level = 3
       end>

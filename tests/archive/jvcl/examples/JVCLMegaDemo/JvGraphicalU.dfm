@@ -14,7 +14,6 @@ object JvGraphicalFrm: TJvGraphicalFrm
       item
         Width = 50
       end>
-    SimplePanel = False
   end
   object JvCaptionPanel1: TJvCaptionPanel
     Left = 24
@@ -28,6 +27,7 @@ object JvGraphicalFrm: TJvGraphicalFrm
     CaptionFont.Height = -13
     CaptionFont.Name = 'Arial'
     CaptionFont.Style = [fsBold]
+    OutlookLook = False
     TabOrder = 1
     object chkMulti: TCheckBox
       Left = 275
@@ -80,11 +80,11 @@ object JvGraphicalFrm: TJvGraphicalFrm
       TabStop = True
       TabOrder = 4
       AutoSize = True
-      DateFirst = 37400
-      DateLast = 37400
+      DateFirst = 37400.000000000000000000
+      DateLast = 37400.000000000000000000
       MaxSelCount = 30
       MultiSelect = True
-      Today = 37400.6206314468
+      Today = 37400.620631446800000000
       OnSelect = mcSelect
       OnSelChange = mcSelChange
     end
