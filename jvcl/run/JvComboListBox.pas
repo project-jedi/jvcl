@@ -50,9 +50,11 @@ type
     FDrawStyle: TJvComboListBoxDrawStyle;
     FOnDrawImage: TJvComboListDrawImageEvent;
     FOnDrawText: TJvComboListDrawTextEvent;
+    FButtonWidth: integer;
     procedure SetDrawStyle(const Value: TJvComboListBoxDrawStyle);
     function DestRect(Picture: TPicture): TRect;
     function GetOffset(OrigRect, ImageRect: TRect): TRect;
+    procedure SetButtonWidth(const Value: integer);
   protected
     procedure InvalidateItem(Index: integer);
     procedure DrawItem(Index: Integer; Rect: TRect;
@@ -73,6 +75,7 @@ type
     function AddImage(P: TPicture): integer;
     procedure Delete(Index: integer);
   published
+    property ButtonWidth: integer read FButtonWidth write SetButtonWidth default 26;
     property DropdownMenu: TPopUpMenu read FDropdownMenu write FDropdownMenu;
     property DrawStyle: TJvComboListBoxDrawStyle read FDrawStyle write SetDrawStyle default dsOriginal;
     property OnDrawText: TJvComboListDrawTextEvent read FOnDrawText write FOnDrawText;
@@ -145,8 +148,6 @@ type
   end;
 
 implementation
-const
-  cButtonWidth = 26; // (p3) make this a property?
 
 { TJvComboListBox }
 
@@ -174,6 +175,7 @@ begin
   Style := lbOwnerDrawFixed;
   ScrollBars := ssVertical;
   FDrawStyle := dsOriginal;
+  FButtonWidth := 26;
 end;
 
 procedure TJvComboListBox.Delete(Index: integer);
@@ -325,28 +327,34 @@ begin
     aPoints[4] := Point(Rect.Left, Rect.Top);
     Canvas.Polygon(aPoints);
 
-      // draw button body
-    Canvas.Brush.Style := bsSolid;
-    TmpRect := Classes.Rect(Rect.Right - cButtonWidth, Rect.Top + 1, Rect.Right - 2, Rect.Bottom - 2);
-    Canvas.Brush.Color := clBtnFace;
-    Canvas.FillRect(TmpRect);
-    if FMouseOver then // highlight
+    // draw button body
+    if ButtonWidth > 2 then // 2 because Pen.Width is 2
     begin
-      Frame3D(Canvas, TmpRect, clBtnHighlight, clBtnShadow, 1);
-      InflateRect(TmpRect, 1, 1);
-    end
-    else // normal
-    begin
-      Canvas.Brush.Color := clBtnShadow;
-      Canvas.FrameRect(TmpRect);
+      Canvas.Brush.Style := bsSolid;
+      TmpRect := Classes.Rect(Rect.Right - ButtonWidth, Rect.Top + 1, Rect.Right - 2, Rect.Bottom - 2);
+      Canvas.Brush.Color := clBtnFace;
+      Canvas.FillRect(TmpRect);
+      if FMouseOver then // highlight
+      begin
+        Frame3D(Canvas, TmpRect, clBtnHighlight, clBtnShadow, 1);
+        InflateRect(TmpRect, 1, 1);
+      end
+      else // normal
+      begin
+        Canvas.Brush.Color := clBtnShadow;
+        Canvas.FrameRect(TmpRect);
+      end;
+    // draw arrow in button, use font to do it
+      Canvas.Font.Name := 'Marlett';
+      if ButtonWidth > Font.Size + 5 then
+        Canvas.Font.Size := Font.Size + 3
+      else
+        Canvas.Font.Size := ButtonWidth;
+      Canvas.Font.Color := clWindowText;
+      S := 'u';
+      SetBkMode(Canvas.Handle, TRANSPARENT);
+      DrawText(Canvas.Handle, PChar(S), Length(S), TmpRect, DT_VCENTER or DT_CENTER or DT_SINGLELINE);
     end;
-      // draw arrow in button, use font to do it
-    Canvas.Font.Name := 'Marlett';
-    Canvas.Font.Size := Font.Size + 3;
-    Canvas.Font.Color := clWindowText;
-    S := 'u';
-    SetBkMode(Canvas.Handle, TRANSPARENT);
-    DrawText(Canvas.Handle, PChar(S), Length(S), TmpRect, DT_VCENTER or DT_CENTER or DT_SINGLELINE);
   end;
 end;
 
@@ -374,7 +382,7 @@ begin
   R := ItemRect(Index);
   // we only want to redraw the button
   if not IsRectEmpty(R) then
-    R.Left := R.Right - cButtonWidth;
+    R.Left := R.Right - ButtonWidth;
   InvalidateRect(Handle, @R, false);
 end;
 
@@ -391,7 +399,7 @@ begin
   begin
     P := Point(X, Y);
     i := ItemAtPos(P, true);
-    if (i = ItemIndex) and (X >= ClientWidth - cButtonWidth)
+    if (i = ItemIndex) and (X >= ClientWidth - ButtonWidth)
       and (X <= ClientWidth) then
     begin
       P.X := ClientWidth;
@@ -422,7 +430,7 @@ begin
   if DropdownMenu <> nil then
   begin
     P := Point(X, Y);
-    if (ItemAtPos(P, true) = ItemIndex) and (X >= ClientWidth - cButtonWidth) and (X <= ClientWidth) then
+    if (ItemAtPos(P, true) = ItemIndex) and (X >= ClientWidth - ButtonWidth) and (X <= ClientWidth) then
     begin
       if not FMouseOver then
       begin
@@ -445,6 +453,15 @@ begin
   inherited;
   if (Operation = opRemove) and (AComponent = DropdownMenu) then
     DropdownMenu := nil;
+end;
+
+procedure TJvComboListBox.SetButtonWidth(const Value: integer);
+begin
+  if FButtonWidth <> Value then
+  begin
+    FButtonWidth := Value;
+    Invalidate;
+  end;
 end;
 
 procedure TJvComboListBox.SetDrawStyle(const Value: TJvComboListBoxDrawStyle);

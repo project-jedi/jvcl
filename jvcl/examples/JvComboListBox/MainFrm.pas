@@ -13,15 +13,15 @@ type
     JvClipboardViewer1: TJvClipboardViewer;
     Label1: TLabel;
     Memo1: TMemo;
-    Panel1: TPanel;
+    pnlImage: TPanel;
     Image1: TImage;
-    Button1: TButton;
-    Button2: TButton;
-    Button3: TButton;
+    btnLoadImage: TButton;
+    btnCopyImage: TButton;
+    btnCopyText: TButton;
     OpenPictureDialog1: TOpenPictureDialog;
     Label2: TLabel;
-    Edit1: TEdit;
-    UpDown1: TUpDown;
+    edItemHeight: TEdit;
+    udItemHeight: TUpDown;
     cbDrawStyle: TComboBox;
     PopupMenu1: TPopupMenu;
     Paste1: TMenuItem;
@@ -30,18 +30,26 @@ type
     Original1: TMenuItem;
     Stretch1: TMenuItem;
     Proportional1: TMenuItem;
+    Label3: TLabel;
+    Label4: TLabel;
+    edButtonWidth: TEdit;
+    udButtonWidth: TUpDown;
+    OpenDialog1: TOpenDialog;
+    btnLoadText: TButton;
     procedure JvClipboardViewer1Image(Sender: TObject; Image: TBitmap);
     procedure JvClipboardViewer1Text(Sender: TObject; Text: string);
-    procedure Button3Click(Sender: TObject);
-    procedure Button2Click(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
-    procedure UpDown1Click(Sender: TObject; Button: TUDBtnType);
+    procedure btnCopyTextClick(Sender: TObject);
+    procedure btnCopyImageClick(Sender: TObject);
+    procedure btnLoadImageClick(Sender: TObject);
+    procedure udItemHeightClick(Sender: TObject; Button: TUDBtnType);
     procedure FormCreate(Sender: TObject);
     procedure Paste1Click(Sender: TObject);
     procedure Delete1Click(Sender: TObject);
     procedure cbDrawStyleChange(Sender: TObject);
     procedure Proportional1Click(Sender: TObject);
     procedure PopupMenu1Popup(Sender: TObject);
+    procedure udButtonWidthClick(Sender: TObject; Button: TUDBtnType);
+    procedure btnLoadTextClick(Sender: TObject);
   private
     { Private declarations }
     LB: TJvComboListBox;
@@ -77,7 +85,7 @@ begin
   P.Bitmap.Assign(Image);
   LB.AddImage(P);
 //  LB.ItemHeight := Max(LB.ItemHeight, B.Height + 8);
-  UpDown1.Position := LB.ItemHeight;
+  udItemHeight.Position := LB.ItemHeight;
   Caption := Format('Count: %d', [LB.Items.Count]);
 end;
 
@@ -87,14 +95,14 @@ begin
   Caption := Format('Clipboard count: %d', [LB.Items.Count]);
 end;
 
-procedure TForm1.Button3Click(Sender: TObject);
+procedure TForm1.btnCopyTextClick(Sender: TObject);
 begin
   if Memo1.SelLength = 0 then
     Memo1.SelectAll;
   Memo1.CopyToClipboard;
 end;
 
-procedure TForm1.Button2Click(Sender: TObject);
+procedure TForm1.btnCopyImageClick(Sender: TObject);
 var
   AFormat: Word;
   AData: Cardinal;
@@ -104,15 +112,15 @@ begin
   Clipboard.SetAsHandle(AFormat, AData);
 end;
 
-procedure TForm1.Button1Click(Sender: TObject);
+procedure TForm1.btnLoadImageClick(Sender: TObject);
 begin
   if OpenPictureDialog1.Execute then
     Image1.Picture.LoadFromFile(OpenPictureDialog1.Filename);
 end;
 
-procedure TForm1.UpDown1Click(Sender: TObject; Button: TUDBtnType);
+procedure TForm1.udItemHeightClick(Sender: TObject; Button: TUDBtnType);
 begin
-  LB.ItemHeight := UpDown1.Position;
+  LB.ItemHeight := udItemHeight.Position;
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
@@ -123,7 +131,8 @@ begin
   LB.Parent := self;
   LB.DropDownMenu := PopupMenu1;
   cbDrawStyle.ItemIndex := Ord(LB.DrawStyle);
-  UpDown1Click(UpDown1, btNext);
+  LB.ItemHeight := udItemHeight.Position;
+  udButtonWidth.Position := LB.ButtonWidth;
 end;
 
 
@@ -163,6 +172,17 @@ begin
   for i := 0 to PopupMenu1.Items.Count - 1 do
     if PopupMenu1.Items[i].GroupIndex = 1 then
       PopupMenu1.Items[i].Checked := PopupMenu1.Items[i].Tag = cbDrawStyle.ItemIndex;
+end;
+
+procedure TForm1.udButtonWidthClick(Sender: TObject; Button: TUDBtnType);
+begin
+  LB.ButtonWidth := udButtonWidth.Position;
+end;
+
+procedure TForm1.btnLoadTextClick(Sender: TObject);
+begin
+  if OpenDialog1.Execute then
+    Memo1.Lines.LoadFromFile(OpenDialog1.Filename);
 end;
 
 end.
