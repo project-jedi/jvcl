@@ -151,7 +151,7 @@ type
     function GetGridView(ADataComponent: TComponent): TcxCustomGridTableView;
     function GetDataSource(ADataComponent: TComponent): TDataSource; override;
   public
-    function Bof(ADataComponent: TComponent): Boolean; virtual;
+    function Bof(ADataComponent: TComponent): Boolean; override;
     function RecNo(ADataComponent: TComponent): Integer; override;
     function RecordCount(ADataComponent: TComponent): Integer; override;
     function CanInsert(ADataComponent: TComponent): Boolean; override;
