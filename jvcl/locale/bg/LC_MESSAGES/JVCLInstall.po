@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: JVCL3\n"
-"POT-Creation-Date: 2004-12-18 17:36\n"
+"POT-Creation-Date: 2004-12-18 17:51\n"
 "PO-Revision-Date: 2004-12-17 22:10+0100\n"
 "Last-Translator: Andreas Hausladen <Andreas.Hausladen@gmx,de>\n"
 "Language-Team: \n"
@@ -438,33 +438,10 @@ msgstr ""
 msgid "D&o not stop on errors"
 msgstr ""
 
-#. FrameDirEditBrowse..LblCaption..Caption
-#: Frames/FrmDirEditBrowse.dfm:12
-msgid "LblCaption"
-msgstr "LblCaption"
-
 #. FrameDirEditBrowse..BtnDirBrowse..Hint
 #: Frames/FrmDirEditBrowse.dfm:44
 msgid "Browse..."
 msgstr "Посочи..."
-
-#. FrameInstall..LblTarget..Caption
-#. FramePackageSelection..LblTarget..Caption
-#. FrameUninstall..LblTarget..Caption
-#: Frames/FrmInstall.dfm:12 Frames/FrmPackageSelection.dfm:12
-#: Frames/FrmUninstall.dfm:12
-msgid "LblTarget"
-msgstr "LblTarget"
-
-#. FrameInstall..LblInfo..Caption
-#: Frames/FrmInstall.dfm:25
-msgid "LblInfo"
-msgstr "LblInfo"
-
-#. FrameInstall..LblOpenFile..Caption
-#: Frames/FrmInstall.dfm:34
-msgid "LblOpenFile"
-msgstr "LblOpenFile"
 
 #. FrameInstall..BtnDetails..Caption
 #: Frames/FrmInstall.dfm:82
@@ -549,11 +526,6 @@ msgstr "&\"Нулирай\" всички пакети"
 #: Frames/FrmPackageSelection.dfm:306
 msgid "Reset the package selection to IDE default."
 msgstr "Установи наново на избраните по подразбиране"
-
-#. FrameUninstall..LblFilename..Caption
-#: Frames/FrmUninstall.dfm:25
-msgid "LblFilename"
-msgstr "LblFilename"
 
 #. FormCompile..Caption
 #. Programmer's name for it: RsCompiling
@@ -684,16 +656,6 @@ msgstr "JVCL Конфигурация"
 #: Helpers/MainConfig.dfm:36
 msgid "jvcl.inc changes are global to all installed Delphi/BCB versions."
 msgstr "Промените в jvcl.inc са глобални за всички инсталирани Delphi/BCB версии."
-
-#. FormJvclIncConfig..ScrollBox..LblComment..Caption
-#: Helpers/MainConfig.dfm:69
-msgid "LblComment"
-msgstr "LblComment"
-
-#. FormJvclIncConfig..TitlePanel..imgProjectJEDI..Hint
-#: Helpers/MainConfig.dfm:95
-msgid "http://projectjedi.sourceforge.net"
-msgstr "http://projectjedi.sourceforge.net"
 
 #. FormJvclIncConfig..TitlePanel..Label4..Caption
 #: Helpers/MainConfig.dfm:104
@@ -1163,11 +1125,6 @@ msgstr "Програмна грешка. Няма създадени пакет�
 msgid "Do you really want to cancel the installation?"
 msgstr "Наистина ли желаете да прекратите инсталацията?"
 
-#. Programmer's name for it: RsComponentPalettePrefix
-#: JVCLData.pas:289
-msgid "TJv"
-msgstr "TJv"
-
 #. Programmer's name for it: RsNoJVCLFound
 #: JVCLData.pas:290
 msgid "No JVCL directory found. Application terminated."
@@ -1239,8 +1196,32 @@ msgstr "<c:blue>http://jvcl.sourceforge.net"
 msgid "Jedi Visual Component Library Homepage"
 msgstr "Jedi Visual Component Library Homepage"
 
+#~ msgid "..."
+#~ msgstr "..."
+
 #~ msgid "-"
 #~ msgstr "-"
 
-#~ msgid "..."
-#~ msgstr "..."
+#~ msgid "LblCaption"
+#~ msgstr "LblCaption"
+
+#~ msgid "LblComment"
+#~ msgstr "LblComment"
+
+#~ msgid "LblFilename"
+#~ msgstr "LblFilename"
+
+#~ msgid "LblInfo"
+#~ msgstr "LblInfo"
+
+#~ msgid "LblOpenFile"
+#~ msgstr "LblOpenFile"
+
+#~ msgid "LblTarget"
+#~ msgstr "LblTarget"
+
+#~ msgid "TJv"
+#~ msgstr "TJv"
+
+#~ msgid "http://projectjedi.sourceforge.net"
+#~ msgstr "http://projectjedi.sourceforge.net"
