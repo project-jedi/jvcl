@@ -34,6 +34,8 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   ComCtrls, CommCtrl, Menus, ImgList, Clipbrd,
   JvTypes, JvExComCtrls;
+const
+  WM_AUTOSELECT = WM_USER + 1;
 
 type
   EJvListViewError = EJVCLException;
@@ -66,8 +68,10 @@ type
     FOnVerticalScroll: TNotifyEvent;
     FImageChangeLink: TChangeLink;
     FHeaderImages: TCustomImageList;
+    FAutoSelect: boolean;
     procedure SetHeaderImages(const Value: TCustomImageList);
     procedure UpdateHeaderImages(HeaderHandle: Integer);
+    procedure WmAutoSelect(var Message:TMessage); message WM_AUTOSELECT;
   protected
     function CreateListItem: TListItem; override;
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
@@ -82,6 +86,8 @@ type
     procedure DoHeaderImagesChange(Sender: TObject);
     procedure Loaded; override;
     procedure WMNCCalcSize(var Msg: TWMNCCalcSize); message WM_NCCALCSIZE;
+    procedure DoEnter; override;
+    procedure InsertItem(Item: TListItem); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -99,10 +105,17 @@ type
     {$ENDIF COMPILER6_UP}
     procedure UnselectAll;
     procedure InvertSelection;
+    function MoveUp(Index:integer;Focus:boolean=true):integer;
+    function MoveDown(Index:integer;Focus:boolean=true):integer;
+    function SelectNextItem(Focus:boolean = true):integer;
+    function SelectPrevItem(Focus:boolean = true):integer;
+
     property ItemPopup[Item: TListItem]: TPopupMenu read GetItemPopup write SetItemPopup;
     procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
       AHeight: Integer); override;
+      
   published
+    property AutoSelect:boolean read FAutoSelect write FAutoSelect default True;
     property ColumnsOrder: string read GetColumnsOrder write SetColumnsOrder;
     property HintColor;
     property HeaderImages: TCustomImageList read FHeaderImages write SetHeaderImages;
@@ -165,33 +178,6 @@ begin
   FImageChangeLink.Free;
   inherited Destroy;
 end;
-
-(*
-// (p3) this code isn't needed since it was only used to show the popup menu
-procedure TJvListView.WMNotify(var Msg: TWMNotify);
-var
-  Node: TListItem;
-  Point: TPoint;
-begin
-  inherited;
-  if (Msg.NMHdr^.hwndFrom <> Handle) or not GetCursorPos(Point) then Exit;
-  Point := ScreenToClient(Point);
-  with Msg, Point do
-  begin
-    case NMHDR^.code of
-      NM_CLICK, NM_RCLICK:
-        begin
-          Node := GetItemAt(x, y);
-          if Assigned(Node) then
-            Selected := Node
-          // (Salvatore) JvListview does it for us! We don't need the following lines anymore
-          // if (Selected <> nil) and (NMHDR^.code = NM_RCLICK) then
-          //   TJvListItem(Selected).PopupMenu.Popup(Mouse.CursorPos.X, Mouse.CursorPos.Y);
-        end;
-    end;
-  end;
-end;
-*)
 
 procedure TJvListView.WMHScroll(var Msg: TWMHScroll);
 begin
@@ -1070,6 +1056,120 @@ begin
   inherited SetBounds(ALeft, ATop, AWidth, AHeight);
   if HandleAllocated then
     UpdateHeaderImages(ListView_GetHeader(Handle));
+end;
+
+procedure TJvListView.DoEnter;
+begin
+  if AutoSelect and (Selected = nil) and (Items.Count > 0) then
+    PostMessage(Handle, WM_AUTOSELECT, integer(Items[0]), 1);
+  inherited;
+end;
+
+procedure TJvListView.InsertItem(Item: TListItem);
+begin
+  inherited;
+  if AutoSelect and (Selected = nil) and (Items.Count < 2) then
+    PostMessage(Handle, WM_AUTOSELECT, integer(Item), 1);
+end;
+
+procedure TJvListView.WmAutoSelect(var Message: TMessage);
+var lv:TListItem;
+begin
+  with Message do
+  begin
+    lv := TListItem(WParam);
+    if (lv <> nil) and (LParam = 1) then
+    begin
+      lv.Selected := true;
+      lv.Focused := true;
+    end;
+  end;
+end;
+
+function TJvListView.MoveDown(Index: integer;Focus:boolean=true): integer;
+var
+  lv, lv2:TListItem;
+  FOnInsert, FOnDeletion:TLVDeletedEvent;
+begin
+  Result := Index;
+  if (Index >= 0) and (Index < Items.Count) then
+  begin
+    lv2 := Items[Index];
+    FOnInsert := OnInsert;
+    FOnDeletion := OnDeletion;
+    try
+      OnInsert := nil;
+      OnDeletion := nil;
+      lv := Items.Insert(Index + 2);
+      lv.Assign(lv2);
+      lv2.Delete;
+    finally
+      OnInsert := nil;
+      OnDeletion := nil;
+    end;
+    if Focus then
+    begin
+      lv.Selected := true;
+      lv.Focused := true;
+    end;
+    Result := lv.Index;
+  end;
+end;
+
+function TJvListView.MoveUp(Index: integer; Focus:boolean=true): integer;
+var
+  lv, lv2:TListItem;
+  FOnInsert, FOnDeletion:TLVDeletedEvent;
+begin
+  Result := Index;
+  if (Index > 0) and (Index < Items.Count) then
+  begin
+    lv2 := Items[Index];
+    FOnInsert := OnInsert;
+    FOnDeletion := OnDeletion;
+    try
+      OnInsert := nil;
+      OnDeletion := nil;
+      lv := Items.Insert(Index - 1);
+      lv.Assign(lv2);
+      lv2.Delete;
+    finally
+      OnInsert := nil;
+      OnDeletion := nil;
+    end;
+    if Focus then
+    begin
+      lv.Selected := true;
+      lv.Focused := true;
+    end;
+    Result := lv.Index;
+  end;
+end;
+
+function TJvListView.SelectNextItem(Focus:boolean=true): integer;
+begin
+  Result := ItemIndex + 1;
+  if Result < Items.Count then
+    ItemIndex := Result;
+  Result := ItemIndex;
+  if Focus and (Result >= 0) and (Result < Items.Count) then
+  begin
+    Items[Result].Selected := True;
+    Items[Result].Focused := True;
+  end;
+end;
+
+function TJvListView.SelectPrevItem(Focus:boolean=true): integer;
+begin
+  Result := ItemIndex - 1;
+  if Result >= 0 then
+    ItemIndex := Result;
+  Result := ItemIndex;
+  if Focus and (Result >= 0) and (Result < Items.Count) then
+  begin
+    Items[Result].Selected := True;
+    Items[Result].Focused := True;
+  end;
 end;
 
 end.
