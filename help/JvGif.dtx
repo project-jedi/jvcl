@@ -1,9 +1,9 @@
 ##Package: MM
-##Status: Generated
+##Status: Partially finished
 ----------------------------------------------------------------------------------------------------
 @@JvGIF.pas
 Summary
-  Contains the TJvGIF component.
+  Contains the TJvGIFImage graphic class that encapsulates a GIF graphic.
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Fedor Koshevnikov, Igor Pavluk and Serge Korolev
@@ -11,120 +11,67 @@ Author
 @@CF_GIF
 <TITLE CF_GIF variable>
 Summary
-  Write here a summary (1 line)
+  Clipboard format for GIF images.
 Description
-  Write here a description
+  The CF_GIF clipboard format is registered by calling the RegisterClipboardFormat procedure
+  passing in 'GIF Image' as the identifier for the format.
 ----------------------------------------------------------------------------------------------------
 @@GIFLoadCorrupted
 <TITLE GIFLoadCorrupted variable>
 Summary
-  Write here a summary (1 line)
+  Determines if errors are reported when a GIF image is loaded.
 Description
-  Write here a description
+  GIFLoadCorrupted is a global variable that controls whether errors and exceptions are reported when an
+  invalid image is loaded into a TJvGIFImage graphic. By default, this value is true.
 ----------------------------------------------------------------------------------------------------
 @@GIFVersionName
 <TITLE GIFVersionName function>
 Summary
-  Write here a summary (1 line)
+  Returns the version string for a specific GIF version.
 Description
-  Write here a description
+  Call GIFVersionName to retrieve the string name of a specific GIF version. Currently, this function
+  returns either '87a' or '89a'. If the requested version is gvUnknown, the string #0#0#0 is returned instead.
 Parameters
-  Version - Description for this parameter
+  Version - The version to get a string for.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@JvGif_Dummy
-<TITLE JvGif_Dummy procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TDisposalMethod
 <TITLE TDisposalMethod type>
 Summary
-  Write here a summary (1 line)
+  Specifies how the graphic is to be treated after a frame has been been displayed.
 Description
-  Write here a description
+  TDisposalMethod is the type of the DisposalMethod property of a TJvGIFFrame and defines how the GIF image
+  is to be updated after a frame has been displayed.
 @@TDisposalMethod.dmUndefined
-  Description for dmUndefined
+  The disposal method is not defined. This value indicates a GIF87a image.
 @@TDisposalMethod.dmLeave
-  Description for dmLeave
+  Leave frame on-screen.
 @@TDisposalMethod.dmRestoreBackground
-  Description for dmRestoreBackground
+  Restore the background.
 @@TDisposalMethod.dmRestorePrevious
-  Description for dmRestorePrevious
+  Restore the previous frame.
 @@TDisposalMethod.dmReserved4
-  Description for dmReserved4
+  Reserved. Do not use.
 @@TDisposalMethod.dmReserved5
-  Description for dmReserved5
+  Reserved. Do not use.
 @@TDisposalMethod.dmReserved6
-  Description for dmReserved6
+  Reserved. Do not use.
 @@TDisposalMethod.dmReserved7
-  Description for dmReserved7
+  Reserved. Do not use.
 ----------------------------------------------------------------------------------------------------
-@@TGIFBits
-<TITLE TGIFBits type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-(Value = 1..8 ; - for reference)
----------------------------------------------------------------------------------------------------
-@@TGIFColorItem
-<TITLE TGIFColorItem type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-@@TGIFColorItem.Red
-  Description for Red
-@@TGIFColorItem.Green
-  Description for Green
-@@TGIFColorItem.Blue
-  Description for Blue
----------------------------------------------------------------------------------------------------
-@@TGIFColorTable
-<TITLE TGIFColorTable type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-@@TGIFColorTable.Count
-  Description for Count
-@@TGIFColorTable.Colors
-  Description for Colors
-----------------------------------------------------------------------------------------------------
-@@TGIFData
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TGIFItem
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
 ----------------------------------------------------------------------------------------------------
 @@TGIFVersion
 <TITLE TGIFVersion type>
 Summary
-  Write here a summary (1 line)
+  Defines the available GIF versions as an enumeration.
 Description
-  Write here a description
+  TGIFVersion
 @@TGIFVersion.gvUnknown
-  Description for gvUnknown
+  The version is unknown.
 @@TGIFVersion.gv87a
-  Description for gv87a
+  The GIF87a version
 @@TGIFVersion.gv89a
-  Description for gv89a
+  The GIF89a version
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFFrame
 Summary
