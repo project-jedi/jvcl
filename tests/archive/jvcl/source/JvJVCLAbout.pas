@@ -31,11 +31,20 @@ unit JvJVCLAbout;
 interface
 
 uses
-  Windows, Messages, SysUtils, {$IFDEF COMPILER6_UP}Variants, {$ENDIF}
-  Classes, Graphics, Controls, Forms,
-  Dialogs, JvHotLink, StdCtrls, ExtCtrls, jpeg, JvLabel,
-{$IFDEF COMPILER5}DsgnIntf, {$ENDIF}{$IFDEF COMPILER6_UP}DesignEditors, DesignIntf, {$ENDIF}
-  JVCLVer, JvComponent, Buttons, IniFiles;
+  Windows, Messages, SysUtils,
+  {$IFDEF COMPILER6_UP}
+  Variants,
+  {$ENDIF}
+  Classes, Graphics, Controls, Forms, Buttons, IniFiles,
+  Dialogs, StdCtrls, ExtCtrls, jpeg,
+  {$IFDEF COMPILER5}
+  DsgnIntf,
+  {$ENDIF}
+  {$IFDEF COMPILER6_UP}
+  DesignEditors, DesignIntf,
+  {$ENDIF}
+  JclSysInfo, JclWin32,
+  JVCLVer, JvComponent, JvLabel, JvHotLink;
 
 type
   TJVCLAboutDialogProperty = class(TPropertyEditor)
@@ -50,7 +59,7 @@ type
     Bevel1: TBevel;
     lblVersion: TLabel;
     pnlImage: TPanel;
-    Image1: TImage;
+    imgStarfield: TImage;
     btnOK: TButton;
     JvHotLink1: TJvHotLink;
     JvHotLink4: TJvHotLink;
@@ -59,7 +68,7 @@ type
     Label2: TLabel;
     lblCopyRight: TLabel;
     lblRights: TLabel;
-    Image3: TImage;
+    imgProjectJEDI: TImage;
     MainPanel: TPanel;
     Bevel2: TBevel;
     lblVisitJedi: TLabel;
@@ -71,33 +80,29 @@ type
     btnHelp: TSpeedButton;
     btnOptions: TSpeedButton;
     OpenDialog1: TOpenDialog;
+    Bevel3: TBevel;
+    lblWindowsVersion: TLabel;
+    Label4: TLabel;
+    lblMemory: TLabel;
     procedure btnOKClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure Panel1MouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure btnHelpClick(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
     procedure btnOptionsClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-  protected
-    procedure CreateParams(var Params: TCreateParams); override;
-
   private
-    { Private declarations }
     FHelpFile: string;
     FHelpDirectory: string;
     procedure LoadOptions;
     procedure SaveOptions;
-  public
-    { Public declarations }
   end;
 
-var
-  JvJVCLAboutForm: TJvJVCLAboutForm;
-
 implementation
+
 uses
   JvFunctions;
+
 {$R *.dfm}
 
 { TJVCLAboutDialogProperty }
@@ -125,26 +130,29 @@ begin
   Result := 'Version ' + JVCL_VERSIONSTRING;
 end;
 
-{ TJvJVCLAboutForm }
-
 procedure TJvJVCLAboutForm.btnOKClick(Sender: TObject);
 begin
   Close;
 end;
 
-procedure TJvJVCLAboutForm.CreateParams(var Params: TCreateParams);
-begin
-  inherited CreateParams(Params);
-  with Params do
-  begin
-    Style := (Style or WS_POPUP) and (not WS_DLGFRAME);
-  end;
-end;
-
 procedure TJvJVCLAboutForm.FormShow(Sender: TObject);
+var
+  VersionInfo: TOSVersionInfoEx;
 begin
+  FillChar(VersionInfo, SizeOf(TOSVersionInfoEx), #0);
+  VersionInfo.dwOSVersionInfoSize := SizeOf(TOSVersionInfoEx);
+  JclWin32.GetVersionEx(@VersionInfo);
   lblVersion.Caption := 'Version: ' + JVCL_VERSIONSTRING;
-  lblCopyRight.Caption := 'Copyright© Project JEDI, 1999 - ' + FormatDateTime('yyyy', Now);
+  if VersionInfo.wServicePackMajor = 0 then
+    lblWindowsVersion.Caption := Format('%s (Build %u)',
+      [GetWindowsVersionString, VersionInfo.dwBuildNumber])
+  else
+    lblWindowsVersion.Caption := Format('%s (Build %u: %s)',
+      [GetWindowsVersionString, VersionInfo.dwBuildNumber, GetWindowsServicePackVersionString]);
+  lblMemory.Caption := Format('%u KB', [GetTotalPhysicalMemory div 1024]);
+  lblCopyRight.Caption := 'Copyright © Project JEDI, 1999 - ' + FormatDateTime('yyyy', Now);
+  LoadOptions;
+  btnHelp.Enabled := FHelpFile <> '';
 end;
 
 procedure TJvJVCLAboutForm.Panel1MouseDown(Sender: TObject;
@@ -160,15 +168,6 @@ begin
   Close;
 end;
 
-procedure TJvJVCLAboutForm.FormCreate(Sender: TObject);
-begin
-  LoadOptions;
-  if FHelpFile = '' then
-    btnHelp.Enabled := False
-  else
-    btnHelp.Enabled := True;
-end;
-
 procedure TJvJVCLAboutForm.btnOptionsClick(Sender: TObject);
 begin
   if OpenDialog1.Execute then
@@ -176,54 +175,48 @@ begin
     FHelpFile := ExtractFileName(OpenDialog1.FileName);
     FHelpDirectory := ExtractFileDir(OpenDialog1.FileName);
     SaveOptions;
-    if FHelpFile = '' then
-      btnHelp.Enabled := False
-    else
-      btnHelp.Enabled := True;
+    btnHelp.Enabled := FHelpFile <> '';
   end;
 end;
 
 procedure TJvJVCLAboutForm.LoadOptions;
 var
-  l, t, w, h: integer;
+  l, t: Integer;
 begin
-  with TIniFile.create(ExtractFileDir(Application.exename) + '\JVCL.ini') do
+  with TIniFile.Create(ExtractFileDir(Application.ExeName) + '\JVCL.ini') do
   try
-    l := ReadInteger('Options', 'Bounds.Left', 0);
-    t := ReadInteger('Options', 'Bounds.Top', 0);
-    w := ReadInteger('Options', 'Bounds.Width', -1);
-    h := ReadInteger('Options', 'Bounds.Height', -1);
+    l := ReadInteger('Options', 'Bounds.Left', -1);
+    t := ReadInteger('Options', 'Bounds.Top', -1);
 
     FHelpFile := ReadString('Options', 'Help.File', '');
     FHelpDirectory := ReadString('Options', 'Help.Directory', '');
   finally
-    free;
+    Free;
   end;
 
   //make sure the form is positioned on screen ...
   //(ie make sure nobody's fiddled with the INI file!)
-  if (w > 0) and (h > 0) and
-    (l < screen.Width) and (t < screen.Height) and
-    (l + w > 0) and (t + h > 0) then
-    setbounds(l, t, w, h);
+  if (l >= 0) and (t >= 0) and (l < Screen.Width) and (t < Screen.Height) then
+  begin
+    Left := l;
+    Top := t;
+  end;
 end;
 
 procedure TJvJVCLAboutForm.SaveOptions;
 begin
-  with TIniFile.create(ExtractFileDir(Application.exename) + '\JVCL.ini') do
+  with TIniFile.Create(ExtractFileDir(Application.ExeName) + '\JVCL.ini') do
   try
-    if windowState = wsNormal then
+    if WindowState = wsNormal then
     begin
-      WriteInteger('Options', 'Bounds.Left', self.Left);
-      WriteInteger('Options', 'Bounds.Top', self.Top);
-      WriteInteger('Options', 'Bounds.Width', self.Width);
-      WriteInteger('Options', 'Bounds.Height', self.Height);
+      WriteInteger('Options', 'Bounds.Left', Left);
+      WriteInteger('Options', 'Bounds.Top', Top);
     end;
 
     WriteString('Options', 'Help.File', FHelpFile);
     WriteString('Options', 'Help.Directory', FHelpDirectory);
   finally
-    free;
+    Free;
   end;
 end;
 

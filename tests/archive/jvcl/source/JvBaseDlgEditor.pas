@@ -34,7 +34,12 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   EditIntf, ToolIntf, TypInfo,
-{$IFDEF COMPILER5}DsgnIntf, {$ENDIF}{$IFDEF COMPILER6_UP}DesignEditors, DesignIntf, {$ENDIF}
+  {$IFDEF COMPILER5}
+  DsgnIntf,
+  {$ENDIF}
+  {$IFDEF COMPILER6_UP}
+  DesignEditors, DesignIntf,
+  {$ENDIF}
   ExptIntf,
   JvBaseDlg;
 
@@ -57,7 +62,7 @@ begin
 end;
 
 type
-// (p3) TCommonDialog.Execute is protected in D5...
+  // (p3) TCommonDialog.Execute is protected in D5...
   THackCommonDialog = class(TCommonDialog);
 
 procedure TJvBaseDlgEditor.ExecuteVerb(Index: Integer);
@@ -66,7 +71,8 @@ begin
     Exit;
   if Component is TCommonDialog then // (p3) a TJvCommonDialog is also a TCommonDialog (nowadays)
     THackCommonDialog(Component).Execute
-  else if Component is TJvCommonDialogP then
+  else
+  if Component is TJvCommonDialogP then
     TJvCommonDialogP(Component).Execute;
 end;
 

@@ -31,7 +31,8 @@ unit JvBaseDlg;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, JVCLVer, JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  JVCLVer, JvComponent;
 
 type
   TJvCommonDialog = class(TCommonDialog)
