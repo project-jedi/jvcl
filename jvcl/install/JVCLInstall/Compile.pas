@@ -100,6 +100,8 @@ type
     function CompileProjectGroup(ProjectGroup: TProjectGroup; DebugUnits: Boolean): Boolean;
     procedure CreateProjectGroupMakefile(ProjectGroup: TProjectGroup; AutoDepend: Boolean);
     function GenerateResources(TargetConfig: ITargetConfig): Boolean;
+
+    function IsCondition(const Condition: string): Boolean;
   public
     constructor Create(AData: TJVCLData);
     destructor Destroy; override;
@@ -884,15 +886,19 @@ begin
         Dependencies := Dependencies + '\' + sLineBreak + #9#9 +
            Pkg.JclDependencies[depI] + '.dcp';
 
-        
+
       if AutoDepend then
       begin
        // Add all contained files even if the condition and target is not
        // correct. This does not make any difference because the Compiler has
        // the last decission.
         for depI := 0 to Pkg.Info.ContainCount - 1 do
+        begin
+          if not IsCondition(Pkg.Info.Contains[depI].Condition) then
+            COntinue;
           Dependencies := Dependencies + '\' + sLineBreak + #9#9 +
             ExtractFileName(Pkg.Info.Contains[depI].Name);
+        end;
         Dependencies := Dependencies + '\' + sLineBreak + #9#9'$(CommonDependencies)';
       end;
 
@@ -956,6 +962,18 @@ begin
     Lines.SaveToFile(ChangeFileExt(ProjectGroup.Filename, '.mak'));
   finally
     Lines.Free;
+  end;
+end;
+
+function TJVCLCompiler.IsCondition(const Condition: string): Boolean;
+begin
+  Result := True;
+  if Condition <> '' then
+  begin
+    if Condition[1] = '!' then
+      Result := not Data.JVCLConfig.Enabled[Copy(Condition, 2, MaxInt)]
+    else
+      Result := Data.JVCLConfig.Enabled[Condition];
   end;
 end;
 
