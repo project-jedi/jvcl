@@ -33,7 +33,7 @@ unit JvID3v2Types;
 interface
 
 uses
-  Classes;
+  Classes, JvFinalize;
 
 type
   TJvID3TagSizeRestriction = (tsrMax128Frames_1MB, tsrMax64Frames_128KB, tsrMax32Frames_40KB,
@@ -257,6 +257,9 @@ implementation
 uses
   Math, SysUtils,
   JvConsts, JvResources, JvTypes;
+
+const
+  sUnitName = 'JvId3v2Types';
 
 type
   TJvListType =
@@ -1538,7 +1541,10 @@ end;
 class function TJvID3TermFinder.Instance: TJvID3TermFinder;
 begin
   if not Assigned(GInstance) then
+  begin
     GInstance := TJvID3TermFinder.Create;
+    AddFinalizeObjectNil(sUnitName, TObject(GInstance));
+  end;
   Result := GInstance;
 end;
 
@@ -1586,6 +1592,6 @@ end;
 initialization
 
 finalization
-  FreeAndNil(GInstance);
+  FinalizeUnit(sUnitName);
 
 end.

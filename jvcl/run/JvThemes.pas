@@ -49,7 +49,8 @@ uses
   {$IFDEF VisualCLX}
   QControls, QForms, QGraphics, QButtons, Types, QWindows,
   {$ENDIF VisualCLX}
-  SysUtils, Classes;
+  SysUtils, Classes,
+  JvFinalize;
 
 const
  // Add a message handler to a component that is themed by the ThemeManager but
@@ -807,6 +808,13 @@ procedure SetParentBackground(Control: TWinControl; Value: Boolean);
 
 implementation
 
+{$IFDEF JVCLThemesEnabled}
+ {$IFNDEF COMPILER7_UP}
+const
+  sUnitName = 'JvThemes';
+ {$ENDIF !COMPILER7_UP}
+{$ENDIF JVCLThemesEnabled}
+
 procedure DrawThemedBackground(Control: TControl; Canvas: TCanvas;
   const R: TRect; NeedsParentBackground: Boolean = True);
 begin
@@ -1262,12 +1270,22 @@ type
 
 // global ThemeHook list
 var
-  ThemeHooks: TThemeHookList = nil;
+  GlobalThemeHooks: TThemeHookList = nil;
   ThemeHookComponent: TThemeHookComponent = nil;
   WinControlHookInstalled: Boolean = False;
 
 procedure InstallWinControlHook; forward;
 procedure UninstallWinControlHook; forward;
+
+function ThemeHooks: TThemeHookList;
+begin
+  if not Assigned(GlobalThemeHooks) then
+  begin
+    GlobalThemeHooks := TThemeHookList.Create;
+    AddFinalizeObjectNil(sUnitName, TObject(GlobalThemeHooks));
+  end;
+  Result := GlobalThemeHooks;
+end;
 
 //=== TThemeHookList =========================================================
 
@@ -1277,6 +1295,8 @@ begin
   FRecreationList := TList.Create;
   FDeadList := TObjectList.Create;
   InitializeCriticalSection(FLock);
+
+  ThemeHookComponent := TThemeHookComponent.Create(nil); // global variable
 end;
 
 destructor TThemeHookList.Destroy;
@@ -1284,6 +1304,9 @@ begin
   FRecreationList.Free;
   FDeadList.Free;
   DeleteCriticalSection(FLock);
+
+  ThemeHookComponent.Free; // global variable
+  ThemeHookComponent := nil;
   inherited Destroy;
 end;
 
@@ -1580,7 +1603,7 @@ end;
 
 function GetDynamicMethod(AClass: TClass; Index: Integer): Pointer; assembler;
 asm
-        call System.@FindDynaClass
+        CALL System.@FindDynaClass
 end;
 
 procedure WMEraseBkgndHook(Self: TWinControl; var Msg: TWMEraseBkgnd);
@@ -1645,6 +1668,7 @@ begin
         WinControlHookInstalled := True;
         ThemeHooks.FEraseBkgndHooked := True;
         FlushInstructionCache(GetCurrentProcess, @P, SizeOf(Code));
+        AddFinalizeProc(sUnitName, UninstallWinControlHook);
       end;
     end;
   end;
@@ -1671,15 +1695,9 @@ begin
 end;
 
 initialization
-  ThemeHooks := TThemeHookList.Create;
-  ThemeHookComponent := TThemeHookComponent.Create(nil);
 
 finalization
-  if WinControlHookInstalled then
-    UninstallWinControlHook;
-  FreeAndNil(ThemeHooks);
-  ThemeHookComponent.Free;
-  ThemeHookComponent := nil;
+  FinalizeUnit(sUnitName);
 
 {$ENDIF COMPILER7_UP}
 

@@ -42,7 +42,7 @@ uses
   Qt, QGraphics, QControls, QForms, QStdCtrls, QMenus, QButtons, Types,
   QWindows,
   {$ENDIF VisualCLX}
-  JvComponent, JvConsts, JvTypes, JvExStdCtrls, JvThemes;
+  JvComponent, JvConsts, JvTypes, JvExStdCtrls, JvThemes, JvFinalize;
 
 type
   TJvButtonMouseState = (bsMouseInside, bsMouseDown);
@@ -179,6 +179,9 @@ uses
   JvJVCLUtils;
 
 const
+  sUnitName = 'JvButton';
+
+const
   JvBtnLineSeparator = '|';
 
 var
@@ -204,6 +207,8 @@ begin
             if (Y mod 2) = (X mod 2) then { toggles between even/odd pixels }
               Pixels[X, Y] := clWhite; { on even/odd rows }
       end;
+      
+      AddFinalizeObjectNil(sUnitName, TObject(GlobalPattern)); // finalize code
     except
       FreeAndNil(GlobalPattern);
     end;
@@ -793,7 +798,7 @@ end;
 initialization
 
 finalization
-  FreeAndNil(GlobalPattern);
+  FinalizeUnit(sUnitName);
 
 end.
 

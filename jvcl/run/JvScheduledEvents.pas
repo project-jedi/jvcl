@@ -34,7 +34,7 @@ interface
 
 uses
   SysUtils, Windows, Classes, SyncObjs, Messages,
-  JclSchedule, JvAppStorage;
+  JclSchedule, JvAppStorage, JvFinalize;
 
 const
   CM_EXECEVENT = WM_USER + $1000;
@@ -216,6 +216,8 @@ uses
   JclDateTime, JclRTTI,
   JvJVCLUtils, JvResources, JvTypes;
 
+const
+  sUnitName = 'JvScheduledEvents';
 
 //=== TScheduleThread ========================================================
 
@@ -358,10 +360,27 @@ end;
 var
   GScheduleThread: TScheduleThread = nil;
 
+procedure FinalizeScheduleThread;
+begin
+  if GScheduleThread <> nil then
+  begin
+    if GScheduleThread.Suspended then
+      GScheduleThread.Resume;
+    GScheduleThread.FreeOnTerminate := False;
+    GScheduleThread.Terminate;
+    while not GScheduleThread.Ended do
+      Application.ProcessMessages;
+    FreeAndNil(GScheduleThread);
+  end;
+end;
+
 function ScheduleThread: TScheduleThread;
 begin
   if GScheduleThread = nil then
+  begin
     GScheduleThread := TScheduleThread.Create;
+    AddFinalizeProc(sUnitName, FinalizeScheduleThread);
+  end;
   Result := GScheduleThread;
 end;
 
@@ -1160,16 +1179,7 @@ end;
 initialization
 
 finalization
-  if GScheduleThread <> nil then
-  begin
-    if ScheduleThread.Suspended then
-      ScheduleThread.Resume;
-    ScheduleThread.FreeOnTerminate := False;
-    ScheduleThread.Terminate;
-    while not ScheduleThread.Ended do
-      Application.ProcessMessages;
-    FreeAndNil(GScheduleThread);
-  end;
+  FinalizeUnit(sUnitName);
 
 end.
 

@@ -596,6 +596,9 @@ uses
   Math,
   JclSysInfo, JvConsts, JvProgressUtils, JvResources;
 
+const
+  sUnitName = 'JvJVCLUtils';
+
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvConsts.res}
 {$ENDIF MSWINDOWS}
@@ -641,7 +644,7 @@ end;
 destructor TWaitCursor.Destroy;
 begin
   Screen.Cursor := FCUrsor;
-  inherited;
+  inherited Destroy;
 end;
 
 {$IFDEF VCL}
@@ -2804,7 +2807,7 @@ begin
   if DrawBitmap = nil then
   begin
     DrawBitmap := TBitmap.Create;
-    AddFinalizeObjectNil(TObject(DrawBitmap));
+    AddFinalizeObjectNil(SUnitName, TObject(DrawBitmap));
   end;
 end;
 
@@ -6156,6 +6159,9 @@ end;
 
 initialization
   InitScreenCursors;
+
+finalization
+  FinalizeUnit(sUnitName);
 
 end.
 

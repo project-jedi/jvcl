@@ -35,7 +35,8 @@ uses
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF COMPILER6_UP}
-  IniFiles;
+  IniFiles,
+  JvFinalize;
 
 type
   {$IFNDEF COMPILER6_UP}
@@ -404,19 +405,48 @@ uses
   JvConsts, JvResources;
 
 const
+  sUnitName = 'JvSimpleXml';
+
+const
   cBufferSize = 8192;
   DefaultTrueBoolStr = 'True'; // DO NOT LOCALIZE
   DefaultFalseBoolStr = 'False'; // DO NOT LOCALIZE
 
 var
+  GlobalSorts: TList = nil;
+
   {$IFDEF COMPILER6_UP}
-  XmlVariant: TXmlVariant = nil;
+  GlobalXmlVariant: TXmlVariant = nil;
   {$ENDIF COMPILER6_UP}
-  GSorts: TList = nil;
+
   {$IFNDEF COMPILER6_UP}
   TrueBoolStrs: array of string;
   FalseBoolStrs: array of string;
   {$ENDIF !COMPILER6_UP}
+
+function GSorts: TList;
+begin
+  if not Assigned(GlobalSorts) then
+  begin
+    GlobalSorts := TList.Create;
+    AddFinalizeObjectNil(sUnitName, TObject(GlobalSorts));
+  end;
+  Result := GlobalSorts;
+end;
+
+{$IFDEF COMPILER6_UP}
+
+function XmlVariant: TXmlVariant;
+begin
+  if not Assigned(GlobalXmlVariant) then
+  begin
+    GlobalXmlVariant := TXmlVariant.Create;
+    AddFinalizeObjectNil(sUnitName, TObject(GlobalXmlVariant));
+  end;
+  Result := GlobalXmlVariant;
+end;
+
+{$ENDIF COMPILER6_UP}
 
 {$IFNDEF COMPILER6_UP}
 
@@ -3029,16 +3059,9 @@ begin
 end;
 
 initialization
-  {$IFDEF COMPILER6_UP}
-  XmlVariant := TXmlVariant.Create;
-  {$ENDIF COMPILER6_UP}
-  GSorts := TList.Create;
 
 finalization
-  {$IFDEF COMPILER6_UP}
-  FreeAndNil(XmlVariant);
-  {$ENDIF COMPILER6_UP}
-  FreeAndNil(GSorts);
+  FinalizeUnit(sUnitName);
 
 end.
 

@@ -32,9 +32,9 @@ unit JvMenus;
 interface
 
 uses
-  Windows, SysUtils,
-  Classes, Controls, Messages, Graphics, ImgList,
-  Menus, JvWndProcHook, JVCLVer, Contnrs;
+  Windows, Messages, SysUtils, Classes, Contnrs, Graphics, Controls, Forms,
+  ExtCtrls, ImgList, Menus,
+  JvWndProcHook, JVCLVer, JvFinalize;
 
 const
   // custom painter constants
@@ -654,11 +654,14 @@ procedure SetDefaultMenuFont(AFont: TFont);
 implementation
 
 uses
-  CommCtrl, Forms, ExtCtrls, Consts, Math,
+  CommCtrl, Consts, Math,
   {$IFDEF COMPILER6_UP}
   Types,
   {$ENDIF COMPILER6_UP}
   JvConsts, JvTypes, JvJVCLUtils, JvJCLUtils;
+
+const
+  sUnitName = 'JvMenus';
 
 const
   // (ahuser) deactivated because the code that uses DefMarginColor is deactivated
@@ -1263,7 +1266,10 @@ constructor TJvPopupMenu.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   if PopupList = nil then
+  begin
     PopupList := TJvPopupList.Create;
+    AddFinalizeObjectNil(sUnitName, TObject(PopupList));
+  end;
   FCanvas := TControlCanvas.Create;
   FCursor := crDefault;
   FImageMargin := TJvImageMargin.Create;
@@ -2982,6 +2988,6 @@ end;
 initialization
 
 finalization
-  FreeAndNil(PopupList);
+  FinalizeUnit(sUnitName);
 
 end.

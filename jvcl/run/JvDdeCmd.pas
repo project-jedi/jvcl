@@ -17,8 +17,7 @@ All Rights Reserved.
 
 Contributor(s): ______________________________________.
 
-Last Modified: Jun 8, 2000
-Current Version: 0.50
+Last Modified: 2004-02-27
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -35,7 +34,7 @@ interface
 
 uses
   DdeMan, Messages, SysUtils, Classes, JclBase, Forms,
-  JvComponent;
+  JvComponent, JvFinalize;
 
 type
   EJvADCParserError = class(EJclError);
@@ -84,8 +83,10 @@ type
 implementation
 
 uses
-  JclSysUtils,
   JvResources;
+
+const
+  sUnitName = 'JvDdeCmd';
 
 const
   DdeTopicStr = 'System';
@@ -174,6 +175,11 @@ begin
   FCommands := TStringList.Create;
   if not (csDesigning in ComponentState) then
   begin
+    if not Assigned(AppDdeMgr) then
+    begin
+      AppDdeMgr := TAppDdeMgr.Create;
+      AddFinalizeObjectNil(sUnitName, TObject(AppDdeMgr));
+    end;
     AppDdeMgr.AddComponent(Self);
     Application.HookMainWindow(HookWndProc);
   end;
@@ -372,9 +378,8 @@ begin
 end;
 
 initialization
-  AppDdeMgr := TAppDdeMgr.Create;
 
 finalization
-  FreeAndNil(AppDdeMgr);
+  FinalizeUnit(sUnitName);
 
 end.

@@ -68,12 +68,11 @@ interface
 
 uses
   {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Forms, ExtCtrls, CommCtrl, StdCtrls,
-  Menus, Buttons, JvWndProcHook,
+  Windows, Messages, Graphics, Controls, Forms, CommCtrl,
+  Buttons, JvWndProcHook,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, QGraphics, QControls, QForms, QExtCtrls, QStdCtrls, QMenus, QButtons,
-  QImgList, QWindows,
+  Types, QGraphics, QControls, QForms, QButtons, QImgList, QWindows,
   {$ENDIF VisualCLX}
   SysUtils, Classes,
   JvComponent, JvExButtons;

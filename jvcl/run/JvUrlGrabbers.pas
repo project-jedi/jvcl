@@ -34,7 +34,7 @@ interface
 
 uses
   Windows, Contnrs, Classes, SysUtils,
-  JvTypes;
+  JvTypes, JvFinalize;
 
 type
   // forward declarations
@@ -338,6 +338,9 @@ implementation
 uses
   WinInet;
 
+const
+  sUnitName = 'JvUrlGrabbers';
+
 {$IFNDEF COMPILER6_UP}
 function FtpGetFileSize(hFile: HINTERNET; lpdwFileSizeHigh: LPDWORD): DWORD; stdcall;
   external 'wininet.dll' name 'FtpGetFileSize';
@@ -350,6 +353,16 @@ var
 
 function JvUrlGrabberClassList: TJvUrlGrabberClassList;
 begin
+  if not Assigned(GJvUrlGrabberClassList) then
+  begin
+    // create the object
+    GJvUrlGrabberClassList := TJvUrlGrabberClassList.Create;
+    AddFinalizeObjectNil(sUnitName, TObject(GJvUrlGrabberClassList));
+
+    // register the classes
+    GJvUrlGrabberClassList.Add(TJvFtpUrlGrabber);
+    GJvUrlGrabberClassList.Add(TJvHttpUrlGrabber);
+  end;
   Result := GJvUrlGrabberClassList;
 end;
 
@@ -951,15 +964,9 @@ begin
 end;
 
 initialization
-  // create the object
-  GJvUrlGrabberClassList := TJvUrlGrabberClassList.Create;
-  // register the classes
-  GJvUrlGrabberClassList.Add(TJvFtpUrlGrabber);
-  GJvUrlGrabberClassList.Add(TJvHttpUrlGrabber);
 
 finalization
-  GJvUrlGrabberClassList.Free;
-  GJvUrlGrabberClassList := nil;
+  FinalizeUnit(sUnitName);
 
 end.
 

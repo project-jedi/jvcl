@@ -35,7 +35,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JVCLVer;
+  JVCLVer, JvFinalize;
 
 type
   TJvOpenDialogAC = (acEdit, acListView);
@@ -137,6 +137,9 @@ uses
   JvJVCLUtils;
 
 const
+  sUnitName = 'JvDialogs';
+
+const
   btnOk = 1;
   btnCancel = 2;
 
@@ -160,18 +163,22 @@ begin
   Result := (Win32Platform = VER_PLATFORM_WIN32_NT) and  (Win32MajorVersion >= 5);
 end;
 
-procedure InstallW2kFix;
-begin
-  if JvDialogsUseFixW2k and IsWin2K and (W2kFixMsAcmLibrary = 0) then
-    W2kFixMsAcmLibrary := LoadLibrary('msacm32.dll');
-end;
-
 procedure UninstallW2kFix;
 begin
   if W2kFixMsAcmLibrary > 0 then
   begin
     FreeLibrary(W2kFixMsAcmLibrary);
     W2kFixMsAcmLibrary := 0;
+  end;
+end;
+
+procedure InstallW2kFix;
+begin
+  if JvDialogsUseFixW2k and IsWin2K and (W2kFixMsAcmLibrary = 0) then
+  begin
+    W2kFixMsAcmLibrary := LoadLibrary('msacm32.dll');
+    if W2kFixMsAcmLibrary > 0 then
+      AddFinalizeProc(sUnitName, UninstallW2kFix);
   end;
 end;
 
@@ -649,6 +656,6 @@ end;
 initialization
 
 finalization
-  UninstallW2kFix;
+  FinalizeUnit(sUnitName);
 
 end.

@@ -37,7 +37,7 @@ uses
   {$IFDEF VisualCLX}
   QControls, QForms,
   {$ENDIF VisualCLX}
-  JvComponent, JvErrorIndicator;
+  JvComponent, JvErrorIndicator, JvFinalize;
 
 type
   EValidatorError = class(Exception);
@@ -242,8 +242,25 @@ uses
   JclUnicode, // for reg exp support
   JvTypes, JvResources;
 
+const
+  sUnitName = 'JvValidators';
+
 var
   GlobalValidatorsList: TStringList = nil;
+
+procedure RegisterBaseValidators; forward;
+
+function ValidatorsList: TStringList;
+begin
+  if not Assigned(GlobalValidatorsList) then
+  begin
+    GlobalValidatorsList := TStringList.Create;
+    AddFinalizeObjectNil(sUnitname, TObject(GlobalValidatorsList));
+   // register
+    RegisterBaseValidators;
+  end;
+  Result := GlobalValidatorsList;
+end;
 
 procedure Debug(const Msg: string); overload;
 begin
@@ -306,29 +323,24 @@ end;
 
 class procedure TJvBaseValidator.RegisterBaseValidator(const DisplayName:string; AValidatorClass:TJvBaseValidatorClass);
 begin
-  if GlobalValidatorsList = nil then
-    GlobalValidatorsList := TStringList.Create;
-  if GlobalValidatorsList.IndexOfObject(Pointer(AValidatorClass)) < 0 then
+  if ValidatorsList.IndexOfObject(Pointer(AValidatorClass)) < 0 then
   begin
     Classes.RegisterClass(TPersistentClass(AValidatorClass));
-    GlobalValidatorsList.AddObject(DisplayName,Pointer(AValidatorClass));
+    ValidatorsList.AddObject(DisplayName,Pointer(AValidatorClass));
   end;
 end;
 
 class function TJvBaseValidator.BaseValidatorsCount:integer;
 begin
-  if GlobalValidatorsList = nil then
-    Result := 0
-  else
-    Result := GlobalValidatorsList.Count;
+  Result := ValidatorsList.Count;
 end;
 
 class procedure TJvBaseValidator.GetBaseValidatorInfo(Index:integer;var DisplayName:string;var ABaseValidatorClass:TJvBaseValidatorClass);
 begin
-  if (GlobalValidatorsList = nil) or (Index < 0) or (Index >= GlobalValidatorsList.Count) then
+  if  (Index < 0) or (Index >= ValidatorsList.Count) then
     raise EJVCLException.CreateFmt(RsEInvalidIndexd, [Index]);
-  DisplayName := GlobalValidatorsList[Index];
-  ABaseValidatorClass := TJvBaseValidatorClass(GlobalValidatorsList.Objects[Index]);
+  DisplayName := ValidatorsList[Index];
+  ABaseValidatorClass := TJvBaseValidatorClass(ValidatorsList.Objects[Index]);
 end;
 
 constructor TJvBaseValidator.Create(AOwner: TComponent);
@@ -755,7 +767,7 @@ begin
 end;
 
 procedure TJvValidationSummary.RemoveError(const ErrorMessage: string);
-var i: integer;
+var i: Integer;
 begin
   i := Summaries.IndexOf(ErrorMessage);
   if i > -1 then
@@ -808,16 +820,20 @@ begin
   end;
 end;
 
-initialization
-//  RegisterClasses([TJvValidators, TJvValidationSummary]);
+procedure RegisterBaseValidators;
+begin
   TJvBaseValidator.RegisterBaseValidator('Required Field Validator', TJvRequiredFieldValidator);
   TJvBaseValidator.RegisterBaseValidator('Compare Validator', TJvCompareValidator);
   TJvBaseValidator.RegisterBaseValidator('Range Validator', TJvRangeValidator);
   TJvBaseValidator.RegisterBaseValidator('Regular Expression Validator', TJvRegularExpressionValidator);
   TJvBaseValidator.RegisterBaseValidator('Custom Validator', TJvCustomValidator);
+end;
+
+initialization
+//  RegisterClasses([TJvValidators, TJvValidationSummary]);
 
 finalization
-  FreeAndNil(GlobalValidatorsList);
+  FinalizeUnit(sUnitName);
 
 end.
 

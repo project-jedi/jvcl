@@ -189,6 +189,9 @@ type
 
 implementation
 
+const
+  sUnitName = 'JvAppEvent';
+
 type
   TJvAppEventList = class(TObject)
   private
@@ -681,7 +684,7 @@ begin
   if AppList = nil then
   begin
     AppList := TJvAppEventList.Create;
-    AddFinalizeObjectNil(TObject(AppList));
+    AddFinalizeObjectNil(sUnitName, TObject(AppList));
   end;
 
   FChained := True;
@@ -1038,7 +1041,7 @@ end;
 initialization
 
 finalization
-  // FreeAndNil(AppList); // (ahuser) JvFinalize
+  FinalizeUnit(sUnitName);
 
 end.
 

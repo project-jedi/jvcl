@@ -40,7 +40,7 @@ uses
   {$IFDEF VisualCLX}
   QGraphics, QControls, QImgList,
   {$ENDIF VisualCLX}
-  SysUtils, Classes; 
+  SysUtils, Classes, JvFinalize; 
 
 type
   TJvImageListMode = (imClassic, imPicture, imResourceIds);
@@ -167,6 +167,9 @@ uses
   {$ENDIF VisualCLX}
   JvJVCLUtils;
 
+const
+  sUnitName = 'JvImageList';
+
 {$IFDEF LINUX}
 const
   RT_RCDATA = PChar(1);
@@ -219,6 +222,23 @@ begin
   end;
 end;
 
+procedure UninstallHandleNeededHook;
+var
+  OrgProc: Pointer;
+  n: Cardinal;
+begin
+  if HandleNeededHookInstalled then
+  begin
+    OrgProc := @TCustomImageListHack.HandleNeeded;
+
+    if WriteProcessMemory(GetCurrentProcess, OrgProc, @SavedNeededHookCode, SizeOf(SavedNeededHookCode), n) then
+    begin
+      HandleNeededHookInstalled := False;
+      FlushInstructionCache(GetCurrentProcess, OrgProc, SizeOf(SavedNeededHookCode));
+    end;
+  end;
+end;
+
 procedure InstallHandleNeededHook;
 var
   OrgProc: Pointer;
@@ -239,24 +259,8 @@ begin
       begin
         HandleNeededHookInstalled := True;
         FlushInstructionCache(GetCurrentProcess, OrgProc, SizeOf(Code));
+        AddFinalizeProc(sUnitName, UninstallHandleNeededHook);
       end;
-  end;
-end;
-
-procedure UninstallHandleNeededHook;
-var
-  OrgProc: Pointer;
-  n: Cardinal;
-begin
-  if HandleNeededHookInstalled then
-  begin
-    OrgProc := @TCustomImageListHack.HandleNeeded;
-
-    if WriteProcessMemory(GetCurrentProcess, OrgProc, @SavedNeededHookCode, SizeOf(SavedNeededHookCode), n) then
-    begin
-      HandleNeededHookInstalled := False;
-      FlushInstructionCache(GetCurrentProcess, OrgProc, SizeOf(SavedNeededHookCode));
-    end;
   end;
 end;
 
@@ -874,8 +878,7 @@ end;
 initialization
 
 finalization
-  if HandleNeededHookInstalled then
-    UninstallHandleNeededHook;
+  FinalizeUnit(sUnitName);
 
 {$ENDIF VCL}
 

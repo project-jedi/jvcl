@@ -61,7 +61,7 @@ uses
   Qt, QTypes, Types, QGraphics, QControls, QStdCtrls, QExtCtrls, QWindows,
   JvExExtCtrls,
   {$ENDIF VisualCLX}
-  JvComponent, JvTypes, JvExControls;
+  JvComponent, JvTypes, JvExControls, JvFinalize;
 
 const
   { Inspector Row Size constants }
@@ -1847,10 +1847,26 @@ uses
   JclRTTI, JclLogic,
   JvJCLUtils, JvJVCLUtils, JvThemes, JvResources, JclStrings;
 
+const
+  sUnitName = 'JvInspector';
+    
 // BCB Type Info support
 var
-  TypeInfoHelpersList : TClassList;
-    
+  GlobalTypeInfoHelpersList: TClassList;
+
+function TypeInfoHelpersList: TClassList;
+begin
+  if not Assigned(GlobalTypeInfoHelpersList) then
+  begin
+    GlobalTypeInfoHelpersList := TClassList.Create;
+    AddFinalizeObjectNil(sUnitName, TObject(GlobalTypeInfoHelpersList));
+
+   // register
+    RegisterTypeInfoHelper(TJvTypeInfoHelper);
+  end;
+  Result := GlobalTypeInfoHelpersList;
+end;
+
 function TypeInfoFromName(TypeName : string): PTypeInfo;
 var
   I : Integer;
@@ -1862,12 +1878,12 @@ begin
   I := 0;
   PropInfo := nil;
 
-  while (I<TypeInfoHelpersList.Count) and (PropInfo=Nil) do
+  while (I < TypeInfoHelpersList.Count) and (PropInfo = nil) do
   begin
     PropInfo := GetPropInfo(TypeInfoHelpersList[I], TypeName+'Prop');
     Inc(I);
   end;
-  
+
   if PropInfo <> nil then
     Result := PropInfo.PropType^
   else
@@ -1889,6 +1905,9 @@ var
   GlobalGenItemReg: TJvInspectorRegister = nil;
   GlobalVarItemReg: TJvInspectorRegister = nil;
   GlobalPropItemReg: TJvInspectorRegister = nil;
+
+procedure RegisterDataTypeKinds; forward;
+procedure RegisterPropDataTypeKinds; forward;
 
 //=== TCanvasStack ===========================================================
 
@@ -2015,7 +2034,10 @@ end;
 function CanvasStack: TCanvasStack;
 begin
   if GlobalCanvasStack = nil then
+  begin
     GlobalCanvasStack := TCanvasStack.Create(512);
+    AddFinalizeObjectNil(sUnitName, TObject(GlobalCanvasStack));
+  end;
   Result := GlobalCanvasStack;
 end;
 
@@ -2066,7 +2088,17 @@ type
   end;
 
 var
-  GlobalInspReg: TInspReg = nil;
+  FieldGlobalInspReg: TInspReg = nil;
+
+function GlobalInspReg: TInspReg;
+begin
+  if not Assigned(FieldGlobalInspReg) then
+  begin
+    FieldGlobalInspReg := TInspReg.Create;
+    AddFinalizeObjectNil(sUnitName, TObject(FieldGlobalInspReg));
+  end;
+  Result := FieldGlobalInspReg;
+end;
 
 function TInspReg.ApplicationDeactivate(var Msg: TMessage): Boolean;
 var
@@ -2256,7 +2288,17 @@ end;
 //=== TJvCustomInspector =====================================================
 
 var
-  DataRegister: TJvInspDataReg = nil;
+  GlobalDataRegister: TJvInspDataReg = nil;
+
+function DataRegister: TJvInspDataReg;
+begin
+  if not Assigned(GlobalDataRegister) then
+  begin
+    GlobalDataRegister := TJvInspDataReg.Create;
+    AddFinalizeObjectNil(sUnitName, TObject(GlobalDataRegister));
+  end;
+  Result := GlobalDataRegister;
+end;
 
 {$IFDEF VisualCLX}
 
@@ -9467,7 +9509,12 @@ end;
 class function TJvCustomInspectorData.ItemRegister: TJvInspectorRegister;
 begin
   if GlobalGenItemReg = nil then
+  begin
     GlobalGenItemReg := TJvInspectorRegister.Create(TJvCustomInspectorData);
+    AddFinalizeObjectNil(sUnitName, TObject(GlobalGenItemReg));
+   // register
+    RegisterDataTypeKinds;
+  end;
   Result := GlobalGenItemReg;
 end;
 
@@ -9799,7 +9846,10 @@ end;
 class function TJvInspectorVarData.ItemRegister: TJvInspectorRegister;
 begin
   if GlobalVarItemReg = nil then
+  begin
     GlobalVarItemReg := TJvInspectorRegister.Create(TJvInspectorVarData);
+    AddFinalizeObjectNil(sUnitName, TObject(GlobalVarItemReg));
+  end;
   Result := GlobalVarItemReg;
 end;
 
@@ -10042,7 +10092,13 @@ end;
 class function TJvInspectorPropData.ItemRegister: TJvInspectorRegister;
 begin
   if GlobalPropItemReg = nil then
+  begin
     GlobalPropItemReg := TJvInspectorRegister.Create(TJvInspectorPropData);
+    AddFinalizeObjectNil(sUnitName, TObject(GlobalPropItemReg));
+
+   // register
+    RegisterPropDataTypeKinds;
+  end;
   Result := GlobalPropItemReg;
 end;
 
@@ -11371,7 +11427,7 @@ begin
   end;
 end;
 
-procedure RegisterTypeKinds;
+procedure RegisterDataTypeKinds;
 begin
   if TJvCustomInspectorData.ItemRegister = nil then
     raise EJvInspectorReg.Create(RsEJvInspNoGenReg);
@@ -11401,6 +11457,12 @@ begin
     Add(TJvInspectorTypeInfoRegItem.Create(TJvInspectorTimeItem, TypeInfo(TTime)));
     Add(TJvInspectorTypeInfoRegItem.Create(TJvInspectorDateTimeItem, TypeInfo(TDateTime)));
   end;
+end;
+
+procedure RegisterPropDataTypeKinds;
+begin
+  if TJvCustomInspectorData.ItemRegister = nil then
+    raise EJvInspectorReg.Create(RsEJvInspNoGenReg);
   with TJvInspectorPropData.ItemRegister do
     Add(TJvInspectorPropRegItem.Create(TJvInspectorFontNameItem, TFont, 'Name', nil));
 end;
@@ -11503,26 +11565,10 @@ end;
 {$ENDIF VisualCLX}
 
 initialization
-  GlobalInspReg := TInspReg.Create;
-  RegisterTypeKinds;
   RegisterConsts;
-  DataRegister := TJvInspDataReg.Create;
-  TypeInfoHelpersList := TClassList.Create;
-  RegisterTypeInfoHelper(TJvTypeInfoHelper);
 
 finalization
-  DataRegister.Free; // Can't use FreeAndNil as it will set DataRegister to nil before it's destroyed.
-  DataRegister := nil;
-  GlobalGenItemReg.Free;
-  GlobalGenItemReg := nil;
-  GlobalPropItemReg.Free;
-  GlobalPropItemReg := nil;
-  GlobalVarItemReg.Free;
-  GlobalVarItemReg := nil;
-  GlobalInspReg.Free;
-  GlobalInspReg := nil;
-  FreeAndNil(GlobalCanvasStack);
-  TypeInfoHelpersList.Free;
+  FinalizeUnit(sUnitName);
 
 end.
 
