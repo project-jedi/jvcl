@@ -616,16 +616,16 @@ begin
     AddSet(TPopupMenu, 'AutoPopup', TPopupMenu_Write_AutoPopup, 0, [0]);
     AddGet(TPopupMenu, 'HelpContext', TPopupMenu_Read_HelpContext, 0, [0], varEmpty);
     AddSet(TPopupMenu, 'HelpContext', TPopupMenu_Write_HelpContext, 0, [0]);
-    AddFun(cMenus, 'ShortCut', JvInterpreter_ShortCut, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cMenus, 'ShortCutToKey', JvInterpreter_ShortCutToKey, 3, [varEmpty, varByRef, varByRef], varEmpty);
-    AddFun(cMenus, 'ShortCutToText', JvInterpreter_ShortCutToText, 1, [varEmpty], varEmpty);
-    AddFun(cMenus, 'TextToShortCut', JvInterpreter_TextToShortCut, 1, [varEmpty], varEmpty);
-    { AddFun(cMenus, 'NewMenu', JvInterpreter_NewMenu, 3, [varEmpty, varEmpty, varEmpty], nil);
-    AddFun(cMenus, 'NewPopupMenu', JvInterpreter_NewPopupMenu, 5, [varEmpty, varEmpty, varEmpty, varEmpty, varEmpty], varEmpty);
-    AddFun(cMenus, 'NewSubMenu', JvInterpreter_NewSubMenu, 4, [varEmpty, varEmpty, varEmpty, varEmpty], varEmpty); }
-    AddFun(cMenus, 'NewItem', JvInterpreter_NewItem, 7, [varEmpty, varEmpty, varEmpty, varEmpty, varEmpty, varEmpty,
+    AddFunction(cMenus, 'ShortCut', JvInterpreter_ShortCut, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cMenus, 'ShortCutToKey', JvInterpreter_ShortCutToKey, 3, [varEmpty, varByRef, varByRef], varEmpty);
+    AddFunction(cMenus, 'ShortCutToText', JvInterpreter_ShortCutToText, 1, [varEmpty], varEmpty);
+    AddFunction(cMenus, 'TextToShortCut', JvInterpreter_TextToShortCut, 1, [varEmpty], varEmpty);
+    { AddFunction(cMenus, 'NewMenu', JvInterpreter_NewMenu, 3, [varEmpty, varEmpty, varEmpty], nil);
+    AddFunction(cMenus, 'NewPopupMenu', JvInterpreter_NewPopupMenu, 5, [varEmpty, varEmpty, varEmpty, varEmpty, varEmpty], varEmpty);
+    AddFunction(cMenus, 'NewSubMenu', JvInterpreter_NewSubMenu, 4, [varEmpty, varEmpty, varEmpty, varEmpty], varEmpty); }
+    AddFunction(cMenus, 'NewItem', JvInterpreter_NewItem, 7, [varEmpty, varEmpty, varEmpty, varEmpty, varEmpty, varEmpty,
       varEmpty], varEmpty);
-    AddFun(cMenus, 'NewLine', JvInterpreter_NewLine, 0, [0], varEmpty);
+    AddFunction(cMenus, 'NewLine', JvInterpreter_NewLine, 0, [0], varEmpty);
   end;
   RegisterClasses([TMainMenu, TPopupMenu, TMenuItem]);
 end;

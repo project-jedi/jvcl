@@ -110,9 +110,9 @@ end;
 
 { property Read Message1: string }
 
-procedure EJvInterpreterError_Read_Message1(var Value: Variant; Args: TJvInterpreterArgs);
+procedure EJvInterpreterError_Read_ErrMessage(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := EJvInterpreterError(Args.Obj).Message1;
+  Value := EJvInterpreterError(Args.Obj).ErrMessage;
 end;
 
 procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
@@ -133,7 +133,7 @@ begin
     AddGet(EJvInterpreterError, 'ErrName2', EJvInterpreterError_Read_ErrName2, 0, [0], varEmpty);
     AddGet(EJvInterpreterError, 'ErrUnitName', EJvInterpreterError_Read_ErrUnitName, 0, [0], varEmpty);
     AddGet(EJvInterpreterError, 'ErrLine', EJvInterpreterError_Read_ErrLine, 0, [0], varEmpty);
-    AddGet(EJvInterpreterError, 'Message1', EJvInterpreterError_Read_Message1, 0, [0], varEmpty);
+    AddGet(EJvInterpreterError, 'ErrMessage', EJvInterpreterError_Read_ErrMessage, 0, [0], varEmpty);
   end;
 end;
 

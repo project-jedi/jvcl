@@ -1060,21 +1060,21 @@ begin
     AddConst(cDialogs, 'mrNoToAll', Ord(mrNoToAll));
     AddConst(cDialogs, 'mrYesToAll', Ord(mrYesToAll));
     {$IFDEF VCL}
-    AddFun(cDialogs, 'CreateMessageDialog', JvInterpreter_CreateMessageDialog, 3, [varEmpty, varEmpty, varEmpty],
+    AddFunction(cDialogs, 'CreateMessageDialog', JvInterpreter_CreateMessageDialog, 3, [varEmpty, varEmpty, varEmpty],
       varEmpty);
     {$ENDIF VCL}
-    AddFun(cDialogs, 'MessageDlg', JvInterpreter_MessageDlg, 4, [varEmpty, varEmpty, varEmpty, varEmpty], varEmpty);
-    AddFun(cDialogs, 'MessageDlgPos', JvInterpreter_MessageDlgPos, 6, [varEmpty, varEmpty, varEmpty, varEmpty,
+    AddFunction(cDialogs, 'MessageDlg', JvInterpreter_MessageDlg, 4, [varEmpty, varEmpty, varEmpty, varEmpty], varEmpty);
+    AddFunction(cDialogs, 'MessageDlgPos', JvInterpreter_MessageDlgPos, 6, [varEmpty, varEmpty, varEmpty, varEmpty,
       varEmpty, varEmpty], varEmpty);
     {$IFDEF VCL}
-    AddFun(cDialogs, 'MessageDlgPosHelp', JvInterpreter_MessageDlgPosHelp, 7, [varEmpty, varEmpty, varEmpty, varEmpty,
+    AddFunction(cDialogs, 'MessageDlgPosHelp', JvInterpreter_MessageDlgPosHelp, 7, [varEmpty, varEmpty, varEmpty, varEmpty,
       varEmpty, varEmpty, varEmpty], varEmpty);
     {$ENDIF VCL}
-    AddFun(cDialogs, 'ShowMessage', JvInterpreter_ShowMessage, 1, [varEmpty], varEmpty);
-    AddFun(cDialogs, 'ShowMessageFmt', JvInterpreter_ShowMessageFmt, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cDialogs, 'ShowMessagePos', JvInterpreter_ShowMessagePos, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
-    AddFun(cDialogs, 'InputBox', JvInterpreter_InputBox, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
-    AddFun(cDialogs, 'InputQuery', JvInterpreter_InputQuery, 3, [varEmpty, varEmpty, varByRef], varEmpty);
+    AddFunction(cDialogs, 'ShowMessage', JvInterpreter_ShowMessage, 1, [varEmpty], varEmpty);
+    AddFunction(cDialogs, 'ShowMessageFmt', JvInterpreter_ShowMessageFmt, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cDialogs, 'ShowMessagePos', JvInterpreter_ShowMessagePos, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
+    AddFunction(cDialogs, 'InputBox', JvInterpreter_InputBox, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
+    AddFunction(cDialogs, 'InputQuery', JvInterpreter_InputQuery, 3, [varEmpty, varEmpty, varByRef], varEmpty);
   end;
   RegisterClasses([TOpenDialog, TSaveDialog, TFontDialog, TColorDialog,
     {$IFDEF VCL} TPrintDialog, TPrinterSetupDialog, {$ENDIF VCL}

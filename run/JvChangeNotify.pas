@@ -361,7 +361,7 @@ begin
       if (Length(S) = 0) or not DirectoryExists(S) then
         raise EJVCLException.CreateFmt(SFmtInvalidPathAtIndex, [S, I]);
       FNotifyArray[I] := FindFirstChangeNotification(PChar(S),
-        longbool(FCollection[I].IncludeSubTrees), Flags);
+        BOOL(FCollection[I].IncludeSubTrees), Flags);
       if FNotifyArray[I] = INVALID_HANDLE_VALUE then
         NotifyError(FCollection[I].Directory);
     end;

@@ -2600,30 +2600,30 @@ begin
     { ENoResultSet }
     AddClass(cDbTables, ENoResultSet, 'ENoResultSet');
     { TConfigModes }
-    AddConst(cDbTables, 'cfmVirtual', cfmVirtual);
-    AddConst(cDbTables, 'cfmPersistent', cfmPersistent);
-    AddConst(cDbTables, 'cfmSession', cfmSession);
+    AddConst(cDbTables, 'cfmVirtual', Ord(cfmVirtual));
+    AddConst(cDbTables, 'cfmPersistent', Ord(cfmPersistent));
+    AddConst(cDbTables, 'cfmSession', Ord(cfmSession));
     { TDatabaseEvent }
-    AddConst(cDbTables, 'dbOpen', dbOpen);
-    AddConst(cDbTables, 'dbClose', dbClose);
-    AddConst(cDbTables, 'dbAdd', dbAdd);
-    AddConst(cDbTables, 'dbRemove', dbRemove);
-    AddConst(cDbTables, 'dbAddAlias', dbAddAlias);
-    AddConst(cDbTables, 'dbDeleteAlias', dbDeleteAlias);
-    AddConst(cDbTables, 'dbAddDriver', dbAddDriver);
-    AddConst(cDbTables, 'dbDeleteDriver', dbDeleteDriver);
+    AddConst(cDbTables, 'dbOpen', Ord(dbOpen));
+    AddConst(cDbTables, 'dbClose', Ord(dbClose));
+    AddConst(cDbTables, 'dbAdd', Ord(dbAdd));
+    AddConst(cDbTables, 'dbRemove', Ord(dbRemove));
+    AddConst(cDbTables, 'dbAddAlias', Ord(dbAddAlias));
+    AddConst(cDbTables, 'dbDeleteAlias', Ord(dbDeleteAlias));
+    AddConst(cDbTables, 'dbAddDriver', Ord(dbAddDriver));
+    AddConst(cDbTables, 'dbDeleteDriver', Ord(dbDeleteDriver));
     { TTraceFlag }
-    AddConst(cDbTables, 'tfQPrepare', tfQPrepare);
-    AddConst(cDbTables, 'tfQExecute', tfQExecute);
-    AddConst(cDbTables, 'tfError', tfError);
-    AddConst(cDbTables, 'tfStmt', tfStmt);
-    AddConst(cDbTables, 'tfConnect', tfConnect);
-    AddConst(cDbTables, 'tfTransact', tfTransact);
-    AddConst(cDbTables, 'tfBlob', tfBlob);
-    AddConst(cDbTables, 'tfMisc', tfMisc);
-    AddConst(cDbTables, 'tfVendor', tfVendor);
-    AddConst(cDbTables, 'tfDataIn', tfDataIn);
-    AddConst(cDbTables, 'tfDataOut', tfDataOut);
+    AddConst(cDbTables, 'tfQPrepare', Ord(tfQPrepare));
+    AddConst(cDbTables, 'tfQExecute', Ord(tfQExecute));
+    AddConst(cDbTables, 'tfError', Ord(tfError));
+    AddConst(cDbTables, 'tfStmt', Ord(tfStmt));
+    AddConst(cDbTables, 'tfConnect', Ord(tfConnect));
+    AddConst(cDbTables, 'tfTransact', Ord(tfTransact));
+    AddConst(cDbTables, 'tfBlob', Ord(tfBlob));
+    AddConst(cDbTables, 'tfMisc', Ord(tfMisc));
+    AddConst(cDbTables, 'tfVendor', Ord(tfVendor));
+    AddConst(cDbTables, 'tfDataIn', Ord(tfDataIn));
+    AddConst(cDbTables, 'tfDataOut', Ord(tfDataOut));
     { TSession }
     AddClass(cDbTables, TSession, 'TSession');
     AddGet(TSession, 'Create', TSession_Create, 1, [varEmpty], varEmpty);
@@ -2679,9 +2679,9 @@ begin
     AddGet(TSession, 'SQLHourGlass', TSession_Read_SQLHourGlass, 0, [0], varEmpty);
     AddSet(TSession, 'SQLHourGlass', TSession_Write_SQLHourGlass, 0, [0]);
     { TTransIsolation }
-    AddConst(cDbTables, 'tiDirtyRead', tiDirtyRead);
-    AddConst(cDbTables, 'tiReadCommitted', tiReadCommitted);
-    AddConst(cDbTables, 'tiRepeatableRead', tiRepeatableRead);
+    AddConst(cDbTables, 'tiDirtyRead', Ord(tiDirtyRead));
+    AddConst(cDbTables, 'tiReadCommitted', Ord(tiReadCommitted));
+    AddConst(cDbTables, 'tiRepeatableRead', Ord(tiRepeatableRead));
     { TDatabase }
     AddClass(cDbTables, TDatabase, 'TDatabase');
     AddGet(TDatabase, 'Create', TDatabase_Create, 1, [varEmpty], varEmpty);
@@ -2730,29 +2730,29 @@ begin
     AddGet(TDatabase, 'TransIsolation', TDatabase_Read_TransIsolation, 0, [0], varEmpty);
     AddSet(TDatabase, 'TransIsolation', TDatabase_Write_TransIsolation, 0, [0]);
     { TRecNoStatus }
-    AddConst(cDbTables, 'rnDbase', rnDbase);
-    AddConst(cDbTables, 'rnParadox', rnParadox);
-    AddConst(cDbTables, 'rnNotSupported', rnNotSupported);
+    AddConst(cDbTables, 'rnDbase', Ord(rnDbase));
+    AddConst(cDbTables, 'rnParadox', Ord(rnParadox));
+    AddConst(cDbTables, 'rnNotSupported', Ord(rnNotSupported));
     { TUpdateAction }
-    AddConst(cDbTables, 'uaFail', uaFail);
-    AddConst(cDbTables, 'uaAbort', uaAbort);
-    AddConst(cDbTables, 'uaSkip', uaSkip);
-    AddConst(cDbTables, 'uaRetry', uaRetry);
-    AddConst(cDbTables, 'uaApplied', uaApplied);
+    AddConst(cDbTables, 'uaFail', Ord(uaFail));
+    AddConst(cDbTables, 'uaAbort', Ord(uaAbort));
+    AddConst(cDbTables, 'uaSkip', Ord(uaSkip));
+    AddConst(cDbTables, 'uaRetry', Ord(uaRetry));
+    AddConst(cDbTables, 'uaApplied', Ord(uaApplied));
     { TUpdateRecordTypes }
-    AddConst(cDbTables, 'rtModified', rtModified);
-    AddConst(cDbTables, 'rtInserted', rtInserted);
-    AddConst(cDbTables, 'rtDeleted', rtDeleted);
-    AddConst(cDbTables, 'rtUnmodified', rtUnmodified);
+    AddConst(cDbTables, 'rtModified', Ord(rtModified));
+    AddConst(cDbTables, 'rtInserted', Ord(rtInserted));
+    AddConst(cDbTables, 'rtDeleted', Ord(rtDeleted));
+    AddConst(cDbTables, 'rtUnmodified', Ord(rtUnmodified));
     { TDataSetUpdateObject }
     AddClass(cDbTables, TDataSetUpdateObject, 'TDataSetUpdateObject');
     { TKeyIndex }
-    AddConst(cDbTables, 'kiLookup', kiLookup);
-    AddConst(cDbTables, 'kiRangeStart', kiRangeStart);
-    AddConst(cDbTables, 'kiRangeEnd', kiRangeEnd);
-    AddConst(cDbTables, 'kiCurRangeStart', kiCurRangeStart);
-    AddConst(cDbTables, 'kiCurRangeEnd', kiCurRangeEnd);
-    AddConst(cDbTables, 'kiSave', kiSave);
+    AddConst(cDbTables, 'kiLookup', Ord(kiLookup));
+    AddConst(cDbTables, 'kiRangeStart', Ord(kiRangeStart));
+    AddConst(cDbTables, 'kiRangeEnd', Ord(kiRangeEnd));
+    AddConst(cDbTables, 'kiCurRangeStart', Ord(kiCurRangeStart));
+    AddConst(cDbTables, 'kiCurRangeEnd', Ord(kiCurRangeEnd));
+    AddConst(cDbTables, 'kiSave', Ord(kiSave));
     { TBDEDataSet }
     AddClass(cDbTables, TBDEDataSet, 'TBDEDataSet');
     AddGet(TBDEDataSet, 'Create', TBDEDataSet_Create, 1, [varEmpty], varEmpty);
@@ -2792,9 +2792,9 @@ begin
     AddGet(TBDEDataSet, 'CachedUpdates', TBDEDataSet_Read_CachedUpdates, 0, [0], varEmpty);
     AddSet(TBDEDataSet, 'CachedUpdates', TBDEDataSet_Write_CachedUpdates, 0, [0]);
     { TUpdateMode }
-    AddConst(cDbTables, 'upWhereAll', upWhereAll);
-    AddConst(cDbTables, 'upWhereChanged', upWhereChanged);
-    AddConst(cDbTables, 'upWhereKeyOnly', upWhereKeyOnly);
+    AddConst(cDbTables, 'upWhereAll', Ord(upWhereAll));
+    AddConst(cDbTables, 'upWhereChanged', Ord(upWhereChanged));
+    AddConst(cDbTables, 'upWhereKeyOnly', Ord(upWhereKeyOnly));
     { TDBDataSet }
     AddClass(cDbTables, TDBDataSet, 'TDBDataSet');
     AddGet(TDBDataSet, 'CheckOpen', TDBDataSet_CheckOpen, 1, [varEmpty], varEmpty);
@@ -2809,19 +2809,19 @@ begin
     AddGet(TDBDataSet, 'SessionName', TDBDataSet_Read_SessionName, 0, [0], varEmpty);
     AddSet(TDBDataSet, 'SessionName', TDBDataSet_Write_SessionName, 0, [0]);
     { TBatchMode }
-    AddConst(cDbTables, 'batAppend', batAppend);
-    AddConst(cDbTables, 'batUpdate', batUpdate);
-    AddConst(cDbTables, 'batAppendUpdate', batAppendUpdate);
-    AddConst(cDbTables, 'batDelete', batDelete);
-    AddConst(cDbTables, 'batCopy', batCopy);
+    AddConst(cDbTables, 'batAppend', Ord(batAppend));
+    AddConst(cDbTables, 'batUpdate', Ord(batUpdate));
+    AddConst(cDbTables, 'batAppendUpdate', Ord(batAppendUpdate));
+    AddConst(cDbTables, 'batDelete', Ord(batDelete));
+    AddConst(cDbTables, 'batCopy', Ord(batCopy));
     { TTableType }
-    AddConst(cDbTables, 'ttDefault', ttDefault);
-    AddConst(cDbTables, 'ttParadox', ttParadox);
-    AddConst(cDbTables, 'ttDBase', ttDBase);
-    AddConst(cDbTables, 'ttASCII', ttASCII);
+    AddConst(cDbTables, 'ttDefault', Ord(ttDefault));
+    AddConst(cDbTables, 'ttParadox', Ord(ttParadox));
+    AddConst(cDbTables, 'ttDBase', Ord(ttDBase));
+    AddConst(cDbTables, 'ttASCII', Ord(ttASCII));
     { TLockType }
-    AddConst(cDbTables, 'ltReadLock', ltReadLock);
-    AddConst(cDbTables, 'ltWriteLock', ltWriteLock);
+    AddConst(cDbTables, 'ltReadLock', Ord(ltReadLock));
+    AddConst(cDbTables, 'ltWriteLock', Ord(ltWriteLock));
     { TTable }
     AddClass(cDbTables, TTable, 'TTable');
     AddGet(TTable, 'Create', TTable_Create, 1, [varEmpty], varEmpty);
@@ -2912,11 +2912,11 @@ begin
     AddGet(TBatchMove, 'Transliterate', TBatchMove_Read_Transliterate, 0, [0], varEmpty);
     AddSet(TBatchMove, 'Transliterate', TBatchMove_Write_Transliterate, 0, [0]);
     { TParamType }
-    AddConst(cDbTables, 'ptUnknown', ptUnknown);
-    AddConst(cDbTables, 'ptInput', ptInput);
-    AddConst(cDbTables, 'ptOutput', ptOutput);
-    AddConst(cDbTables, 'ptInputOutput', ptInputOutput);
-    AddConst(cDbTables, 'ptResult', ptResult);
+    AddConst(cDbTables, 'ptUnknown', Ord(ptUnknown));
+    AddConst(cDbTables, 'ptInput', Ord(ptInput));
+    AddConst(cDbTables, 'ptOutput', Ord(ptOutput));
+    AddConst(cDbTables, 'ptInputOutput', Ord(ptInputOutput));
+    AddConst(cDbTables, 'ptResult', Ord(ptResult));
     { TParam }
     AddClass(cDbTables, TParam, 'TParam');
     AddGet(TParam, 'Create', TParam_Create, 2, [varEmpty, varEmpty], varEmpty);
@@ -2984,8 +2984,8 @@ begin
     AddGet(TParams, 'ParamByName', TParams_ParamByName, 1, [varEmpty], varEmpty);
     AddGet(TParams, 'Items', TParams_Read_Items, 1, [0], varEmpty);
     { TParamBindMode }
-    AddConst(cDbTables, 'pbByName', pbByName);
-    AddConst(cDbTables, 'pbByNumber', pbByNumber);
+    AddConst(cDbTables, 'pbByName', Ord(pbByName));
+    AddConst(cDbTables, 'pbByNumber', Ord(pbByNumber));
     { TStoredProc }
     AddClass(cDbTables, TStoredProc, 'TStoredProc');
     AddGet(TStoredProc, 'Create', TStoredProc_Create, 1, [varEmpty], varEmpty);

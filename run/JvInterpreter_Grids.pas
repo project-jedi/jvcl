@@ -189,12 +189,12 @@ begin
     { EInvalidGridOperation }
     AddClass(cGrids, EInvalidGridOperation, 'EInvalidGridOperation');
     { TGridState }
-    AddConst(cGrids, 'gsNormal', gsNormal);
-    AddConst(cGrids, 'gsSelecting', gsSelecting);
-    AddConst(cGrids, 'gsRowSizing', gsRowSizing);
-    AddConst(cGrids, 'gsColSizing', gsColSizing);
-    AddConst(cGrids, 'gsRowMoving', gsRowMoving);
-    AddConst(cGrids, 'gsColMoving', gsColMoving);
+    AddConst(cGrids, 'gsNormal', Ord(gsNormal));
+    AddConst(cGrids, 'gsSelecting', Ord(gsSelecting));
+    AddConst(cGrids, 'gsRowSizing', Ord(gsRowSizing));
+    AddConst(cGrids, 'gsColSizing', Ord(gsColSizing));
+    AddConst(cGrids, 'gsRowMoving', Ord(gsRowMoving));
+    AddConst(cGrids, 'gsColMoving', Ord(gsColMoving));
     { TInplaceEdit }
     AddClass(cGrids, TInplaceEdit, 'TInplaceEdit');
     AddGet(TInplaceEdit, 'Create', TInplaceEdit_Create, 1, [varEmpty], varEmpty);
@@ -207,30 +207,30 @@ begin
     AddGet(TInplaceEdit, 'UpdateLoc', TInplaceEdit_UpdateLoc, 1, [varEmpty], varEmpty);
     AddGet(TInplaceEdit, 'Visible', TInplaceEdit_Visible, 0, [0], varEmpty);
     { TGridOption }
-    AddConst(cGrids, 'goFixedVertLine', goFixedVertLine);
-    AddConst(cGrids, 'goFixedHorzLine', goFixedHorzLine);
-    AddConst(cGrids, 'goVertLine', goVertLine);
-    AddConst(cGrids, 'goHorzLine', goHorzLine);
-    AddConst(cGrids, 'goRangeSelect', goRangeSelect);
-    AddConst(cGrids, 'goDrawFocusSelected', goDrawFocusSelected);
-    AddConst(cGrids, 'goRowSizing', goRowSizing);
-    AddConst(cGrids, 'goColSizing', goColSizing);
-    AddConst(cGrids, 'goRowMoving', goRowMoving);
-    AddConst(cGrids, 'goColMoving', goColMoving);
-    AddConst(cGrids, 'goEditing', goEditing);
-    AddConst(cGrids, 'goTabs', goTabs);
-    AddConst(cGrids, 'goRowSelect', goRowSelect);
-    AddConst(cGrids, 'goAlwaysShowEditor', goAlwaysShowEditor);
-    AddConst(cGrids, 'goThumbTracking', goThumbTracking);
+    AddConst(cGrids, 'goFixedVertLine', Ord(goFixedVertLine));
+    AddConst(cGrids, 'goFixedHorzLine', Ord(goFixedHorzLine));
+    AddConst(cGrids, 'goVertLine', Ord(goVertLine));
+    AddConst(cGrids, 'goHorzLine', Ord(goHorzLine));
+    AddConst(cGrids, 'goRangeSelect', Ord(goRangeSelect));
+    AddConst(cGrids, 'goDrawFocusSelected', Ord(goDrawFocusSelected));
+    AddConst(cGrids, 'goRowSizing', Ord(goRowSizing));
+    AddConst(cGrids, 'goColSizing', Ord(goColSizing));
+    AddConst(cGrids, 'goRowMoving', Ord(goRowMoving));
+    AddConst(cGrids, 'goColMoving', Ord(goColMoving));
+    AddConst(cGrids, 'goEditing', Ord(goEditing));
+    AddConst(cGrids, 'goTabs', Ord(goTabs));
+    AddConst(cGrids, 'goRowSelect', Ord(goRowSelect));
+    AddConst(cGrids, 'goAlwaysShowEditor', Ord(goAlwaysShowEditor));
+    AddConst(cGrids, 'goThumbTracking', Ord(goThumbTracking));
     { TGridDrawState }
-    AddConst(cGrids, 'gdSelected', gdSelected);
-    AddConst(cGrids, 'gdFocused', gdFocused);
-    AddConst(cGrids, 'gdFixed', gdFixed);
+    AddConst(cGrids, 'gdSelected', Ord(gdSelected));
+    AddConst(cGrids, 'gdFocused', Ord(gdFocused));
+    AddConst(cGrids, 'gdFixed', Ord(gdFixed));
     { TGridScrollDirection }
-    AddConst(cGrids, 'sdLeft', sdLeft);
-    AddConst(cGrids, 'sdRight', sdRight);
-    AddConst(cGrids, 'sdUp', sdUp);
-    AddConst(cGrids, 'sdDown', sdDown);
+    AddConst(cGrids, 'sdLeft', Ord(sdLeft));
+    AddConst(cGrids, 'sdRight', Ord(sdRight));
+    AddConst(cGrids, 'sdUp', Ord(sdUp));
+    AddConst(cGrids, 'sdDown', Ord(sdDown));
     { TCustomGrid }
     AddClass(cGrids, TCustomGrid, 'TCustomGrid');
     AddGet(TCustomGrid, 'MouseCoord', TCustomGrid_MouseCoord, 2, [varEmpty, varEmpty], varEmpty);

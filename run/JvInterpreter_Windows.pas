@@ -131,12 +131,12 @@ begin
     AddExtUnit(cWindows);
     { TPoint }
     AddRec(cWindows, 'TPoint', sizeof(TPoint), [RFD('X', 0, varInteger), RFD('Y', 4, varInteger)], nil, nil, nil);
-    AddFun(cWindows, 'Point', JvInterpreter_Point, 2, [varInteger, varInteger], varRecord);
+    AddFunction(cWindows, 'Point', JvInterpreter_Point, 2, [varInteger, varInteger], varRecord);
     { TRect }
     AddRec(cWindows, 'TRect', sizeof(TRect), [RFD('Left', 0, varInteger), RFD('Top', 4, varInteger), RFD('Right', 8,
       varInteger), RFD('Bottom', 12, varInteger)], nil, nil, nil);
-    AddFun(cWindows, 'Rect', JvInterpreter_Rect, 4, [varInteger, varInteger, varInteger, varInteger], varRecord);
-    AddFun(cWindows, 'Bounds', JvInterpreter_Bounds, 4, [varInteger, varInteger, varInteger, varInteger], varRecord);
+    AddFunction(cWindows, 'Rect', JvInterpreter_Rect, 4, [varInteger, varInteger, varInteger, varInteger], varRecord);
+    AddFunction(cWindows, 'Bounds', JvInterpreter_Bounds, 4, [varInteger, varInteger, varInteger, varInteger], varRecord);
     AddRecGet(cWindows, 'TRect', 'TopLeft', TRect_Read_TopLeft, 0, [0], varRecord);
     AddRecSet(cWindows, 'TRect', 'TopLeft', TRect_Write_TopLeft, 0, [0]);
     AddRecGet(cWindows, 'TRect', 'BottomRight', TRect_Read_BottomRight, 0, [0], varRecord);
@@ -145,42 +145,42 @@ begin
     AddExtFun(cWindows, 'MessageBox', 0, user32, 'MessageBoxA', -1, 4, [varInteger, varString, varString, varInteger],
       varInteger);
     { MessageBox(, nil) Flags }
-    AddConst(cWindows, 'MB_OK', $00000000);
-    AddConst(cWindows, 'MB_OKCANCEL', $00000001);
-    AddConst(cWindows, 'MB_ABORTRETRYIGNORE', $00000002);
-    AddConst(cWindows, 'MB_YESNOCANCEL', $00000003);
-    AddConst(cWindows, 'MB_YESNO', $00000004);
-    AddConst(cWindows, 'MB_RETRYCANCEL', $00000005);
-    AddConst(cWindows, 'MB_ICONHAND', $00000010);
-    AddConst(cWindows, 'MB_ICONQUESTION', $00000020);
-    AddConst(cWindows, 'MB_ICONEXCLAMATION', $00000030);
-    AddConst(cWindows, 'MB_ICONASTERISK', $00000040);
-    AddConst(cWindows, 'MB_USERICON', $00000080);
-    AddConst(cWindows, 'MB_ICONWARNING', MB_ICONEXCLAMATION);
-    AddConst(cWindows, 'MB_ICONERROR', MB_ICONHAND);
-    AddConst(cWindows, 'MB_ICONINFORMATION', MB_ICONASTERISK);
-    AddConst(cWindows, 'MB_ICONSTOP', MB_ICONHAND);
-    AddConst(cWindows, 'MB_DEFBUTTON1', $00000000);
-    AddConst(cWindows, 'MB_DEFBUTTON2', $00000100);
-    AddConst(cWindows, 'MB_DEFBUTTON3', $00000200);
-    AddConst(cWindows, 'MB_DEFBUTTON4', $00000300);
-    AddConst(cWindows, 'MB_APPLMODAL', $00000000);
-    AddConst(cWindows, 'MB_SYSTEMMODAL', $00001000);
-    AddConst(cWindows, 'MB_TASKMODAL', $00002000);
-    AddConst(cWindows, 'MB_HELP', $00004000);
-    AddConst(cWindows, 'MB_NOFOCUS', $00008000);
-    AddConst(cWindows, 'MB_SETFOREGROUND', $00010000);
-    AddConst(cWindows, 'MB_DEFAULT_DESKTOP_ONLY', $00020000);
-    AddConst(cWindows, 'MB_TOPMOST', $00040000);
-    AddConst(cWindows, 'MB_RIGHT', $00080000);
-    AddConst(cWindows, 'MB_RTLREADING', $00100000);
-    AddConst(cWindows, 'MB_SERVICE_NOTIFICATION', $00200000);
-    AddConst(cWindows, 'MB_SERVICE_NOTIFICATION_NT3X', $00040000);
-    AddConst(cWindows, 'MB_TYPEMASK', $0000000F);
-    AddConst(cWindows, 'MB_ICONMASK', $000000F0);
-    AddConst(cWindows, 'MB_DEFMASK', $00000F00);
-    AddConst(cWindows, 'MB_MODEMASK', $00003000);
-    AddConst(cWindows, 'MB_MISCMASK', $0000C000);
+    AddConst(cWindows, 'MB_OK', MB_OK);
+    AddConst(cWindows, 'MB_OKCANCEL', MB_OKCANCEL);
+    AddConst(cWindows, 'MB_ABORTRETRYIGNORE', MB_ABORTRETRYIGNORE);
+    AddConst(cWindows, 'MB_YESNOCANCEL', MB_YESNOCANCEL);
+    AddConst(cWindows, 'MB_YESNO', MB_YESNO);
+    AddConst(cWindows, 'MB_RETRYCANCEL', MB_RETRYCANCEL);
+    AddConst(cWindows, 'MB_ICONHAND', MB_ICONHAND);
+    AddConst(cWindows, 'MB_ICONQUESTION', MB_ICONQUESTION);
+    AddConst(cWindows, 'MB_ICONEXCLAMATION', MB_ICONEXCLAMATION);
+    AddConst(cWindows, 'MB_ICONASTERISK', MB_ICONASTERISK);
+    AddConst(cWindows, 'MB_USERICON', MB_USERICON);
+    AddConst(cWindows, 'MB_ICONWARNING', MB_ICONWARNING);
+    AddConst(cWindows, 'MB_ICONERROR', MB_ICONERROR);
+    AddConst(cWindows, 'MB_ICONINFORMATION', MB_ICONINFORMATION);
+    AddConst(cWindows, 'MB_ICONSTOP', MB_ICONSTOP);
+    AddConst(cWindows, 'MB_DEFBUTTON1', MB_DEFBUTTON1);
+    AddConst(cWindows, 'MB_DEFBUTTON2', MB_DEFBUTTON2);
+    AddConst(cWindows, 'MB_DEFBUTTON3', MB_DEFBUTTON3);
+    AddConst(cWindows, 'MB_DEFBUTTON4', MB_DEFBUTTON4);
+    AddConst(cWindows, 'MB_APPLMODAL', MB_APPLMODAL);
+    AddConst(cWindows, 'MB_SYSTEMMODAL', MB_SYSTEMMODAL);
+    AddConst(cWindows, 'MB_TASKMODAL', MB_TASKMODAL);
+    AddConst(cWindows, 'MB_HELP', MB_HELP);
+    AddConst(cWindows, 'MB_NOFOCUS', MB_NOFOCUS);
+    AddConst(cWindows, 'MB_SETFOREGROUND', MB_SETFOREGROUND);
+    AddConst(cWindows, 'MB_DEFAULT_DESKTOP_ONLY', MB_DEFAULT_DESKTOP_ONLY);
+    AddConst(cWindows, 'MB_TOPMOST', MB_TOPMOST);
+    AddConst(cWindows, 'MB_RIGHT', MB_RIGHT);
+    AddConst(cWindows, 'MB_RTLREADING', MB_RTLREADING);
+    AddConst(cWindows, 'MB_SERVICE_NOTIFICATION', MB_SERVICE_NOTIFICATION);
+    AddConst(cWindows, 'MB_SERVICE_NOTIFICATION_NT3X', MB_SERVICE_NOTIFICATION_NT3X);
+    AddConst(cWindows, 'MB_TYPEMASK', MB_TYPEMASK);
+    AddConst(cWindows, 'MB_ICONMASK', MB_ICONMASK);
+    AddConst(cWindows, 'MB_DEFMASK', MB_DEFMASK);
+    AddConst(cWindows, 'MB_MODEMASK', MB_MODEMASK);
+    AddConst(cWindows, 'MB_MISCMASK', MB_MISCMASK);
 
     { Virtual Keys, Standard Set }
     AddConst(cWindows, 'VK_LBUTTON', VK_LBUTTON);

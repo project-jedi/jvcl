@@ -64,10 +64,10 @@ type
 
 { tokenizer }
 
-function TokenTyp(const Token: string): TTokenTyp;
+function TokenTyp(const Token: string): TTokenKind;
 { return operation priority }
-function Prior(const TTyp: TTokenTyp): TPriorLevel;
-function TypToken(const TTyp: TTokenTyp): string;
+function Prior(const TTyp: TTokenKind): TPriorLevel;
+function TypToken(const TTyp: TTokenKind): string;
 
 { Token types }
 const
@@ -244,7 +244,7 @@ type
   TTokenTag = record
     // (rom) changed to PChar to get rid of hidden initialization section
     Token: PChar;
-    TTyp: TTokenTyp;
+    TTyp: TTokenKind;
   end;
 
 const
@@ -348,7 +348,7 @@ const
 
 { convert string into token number using hash tables }
 
-function PaTokenizeTag(const TokenStr: string): TTokenTyp;
+function PaTokenizeTag(const TokenStr: string): TTokenKind;
 var
   Len: Integer;
   HVal: Integer;
@@ -395,7 +395,7 @@ const
 
 {######################## tokenizer ########################}
 
-function TokenTyp(const Token: string): TTokenTyp;
+function TokenTyp(const Token: string): TTokenKind;
 var
   I: Integer;
   L1: Integer;
@@ -514,12 +514,12 @@ begin
     end;
 end;
 
-function TypToken(const TTyp: TTokenTyp): string;
+function TypToken(const TTyp: TTokenKind): string;
 begin
   Result := '?? not implemented !!'; { DEBUG !! }
 end;
 
-function Prior(const TTyp: TTokenTyp): TPriorLevel;
+function Prior(const TTyp: TTokenKind): TPriorLevel;
 const
   Priors: array [ttNot..ttEquLess] of TPriorLevel =
     (priorNot, priorMul, priorDiv, priorIntDiv, priorMod, priorAnd, priorPlus,

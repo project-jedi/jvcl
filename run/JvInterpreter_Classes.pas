@@ -1117,23 +1117,25 @@ begin
 end;
 
 procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
+const
+  cClasses = 'Classes';
 begin
   with JvInterpreterAdapter do
   begin
     { TAlignment }
-    AddConst('Classes', 'taLeftJustify', Ord(taLeftJustify));
-    AddConst('Classes', 'taRightJustify', Ord(taRightJustify));
-    AddConst('Classes', 'taCenter', Ord(taCenter));
+    AddConst(cClasses, 'taLeftJustify', Ord(taLeftJustify));
+    AddConst(cClasses, 'taRightJustify', Ord(taRightJustify));
+    AddConst(cClasses, 'taCenter', Ord(taCenter));
     { TShiftState }
-    AddConst('Classes', 'ssShift', Ord(ssShift));
-    AddConst('Classes', 'ssAlt', Ord(ssAlt));
-    AddConst('Classes', 'ssCtrl', Ord(ssCtrl));
-    AddConst('Classes', 'ssLeft', Ord(ssLeft));
-    AddConst('Classes', 'ssRight', Ord(ssRight));
-    AddConst('Classes', 'ssMiddle', Ord(ssMiddle));
-    AddConst('Classes', 'ssDouble', Ord(ssDouble));
+    AddConst(cClasses, 'ssShift', Ord(ssShift));
+    AddConst(cClasses, 'ssAlt', Ord(ssAlt));
+    AddConst(cClasses, 'ssCtrl', Ord(ssCtrl));
+    AddConst(cClasses, 'ssLeft', Ord(ssLeft));
+    AddConst(cClasses, 'ssRight', Ord(ssRight));
+    AddConst(cClasses, 'ssMiddle', Ord(ssMiddle));
+    AddConst(cClasses, 'ssDouble', Ord(ssDouble));
     { TList }
-    AddClass('Classes', TList, 'TList');
+    AddClass(cClasses, TList, 'TList');
     AddGet(TList, 'Create', TList_Create, 0, [varEmpty], varEmpty);
     AddGet(TList, 'Add', TList_Add, 1, [varEmpty], varEmpty);
     AddGet(TList, 'Clear', TList_Clear, 0, [0], varEmpty);
@@ -1158,11 +1160,11 @@ begin
     AddIDSet(TList, TList_Write_Items, 1, [1]);
     AddGet(TList, 'List', TList_Read_List, 0, [0], varEmpty);
     { TPersistent }
-    AddClass('Classes', TPersistent, 'TPersistent');
+    AddClass(cClasses, TPersistent, 'TPersistent');
     AddGet(TPersistent, 'Assign', TPersistent_Assign, 1, [varEmpty], varEmpty);
     AddGet(TPersistent, 'GetNamePath', TPersistent_GetNamePath, 0, [0], varEmpty);
     { TCollectionItem }
-    AddClass('Classes', TCollectionItem, 'TCollectionItem');
+    AddClass(cClasses, TCollectionItem, 'TCollectionItem');
     AddGet(TCollectionItem, 'Create', TCollectionItem_Create, 1, [varEmpty], varEmpty);
     AddGet(TCollectionItem, 'Collection', TCollectionItem_Read_Collection, 0, [0], varEmpty);
     AddSet(TCollectionItem, 'Collection', TCollectionItem_Write_Collection, 0, [0]);
@@ -1172,7 +1174,7 @@ begin
     AddGet(TCollectionItem, 'DisplayName', TCollectionItem_Read_DisplayName, 0, [0], varEmpty);
     AddSet(TCollectionItem, 'DisplayName', TCollectionItem_Write_DisplayName, 0, [0]);
     { TCollection }
-    AddClass('Classes', TCollection, 'TCollection');
+    AddClass(cClasses, TCollection, 'TCollection');
     AddGet(TCollection, 'Create', TCollection_Create, 1, [varEmpty], varEmpty);
     AddGet(TCollection, 'Add', TCollection_Add, 0, [0], varEmpty);
     AddGet(TCollection, 'Assign', TCollection_Assign, 1, [varEmpty], varEmpty);
@@ -1187,7 +1189,7 @@ begin
     AddISet(TCollection, 'Items', TCollection_Write_Items, 1, [1]);
     AddIDSet(TCollection, TCollection_Write_Items, 1, [1]);
     { TStrings }
-    AddClass('Classes', TStrings, 'TStrings');
+    AddClass(cClasses, TStrings, 'TStrings');
     AddGet(TStrings, 'Add', TStrings_Add, 1, [varEmpty], varEmpty);
     AddGet(TStrings, 'AddObject', TStrings_AddObject, 2, [varEmpty, varEmpty], varEmpty);
     AddGet(TStrings, 'Append', TStrings_Append, 1, [varEmpty], varEmpty);
@@ -1228,11 +1230,11 @@ begin
     AddGet(TStrings, 'StringsAdapter', TStrings_Read_StringsAdapter, 0, [0], varEmpty);
     AddSet(TStrings, 'StringsAdapter', TStrings_Write_StringsAdapter, 0, [0]);
     { TDuplicates }
-    AddConst('Classes', 'dupIgnore', Ord(dupIgnore));
-    AddConst('Classes', 'dupAccept', Ord(dupAccept));
-    AddConst('Classes', 'dupError', Ord(dupError));
+    AddConst(cClasses, 'dupIgnore', Ord(dupIgnore));
+    AddConst(cClasses, 'dupAccept', Ord(dupAccept));
+    AddConst(cClasses, 'dupError', Ord(dupError));
     { TStringList }
-    AddClass('Classes', TStringList, 'TStringList');
+    AddClass(cClasses, TStringList, 'TStringList');
     AddGet(TStringList, 'Create', TStringList_Create, 0, [varEmpty], varEmpty);
     AddGet(TStringList, 'Add', TStringList_Add, 1, [varEmpty], varEmpty);
     AddGet(TStringList, 'Clear', TStringList_Clear, 0, [0], varEmpty);
@@ -1247,7 +1249,7 @@ begin
     AddGet(TStringList, 'Sorted', TStringList_Read_Sorted, 0, [0], varEmpty);
     AddSet(TStringList, 'Sorted', TStringList_Write_Sorted, 0, [0]);
     { TStream }
-    AddClass('Classes', TStream, 'TStream');
+    AddClass(cClasses, TStream, 'TStream');
     AddGet(TStream, 'Read', TStream_Read, 2, [varByRef, varEmpty], varEmpty);
     AddGet(TStream, 'Write', TStream_Write, 2, [varEmpty, varEmpty], varEmpty);
     AddGet(TStream, 'Seek', TStream_Seek, 2, [varEmpty, varEmpty], varEmpty);
@@ -1266,13 +1268,13 @@ begin
     AddGet(TStream, 'Size', TStream_Read_Size, 0, [0], varEmpty);
     AddSet(TStream, 'Size', TStream_Write_Size, 0, [0]);
     { TFileStream }
-    AddClass('Classes', TFileStream, 'TFileStream');
+    AddClass(cClasses, TFileStream, 'TFileStream');
     AddGet(TFileStream, 'Create', TFileStream_Create, 2, [varEmpty, varEmpty], varEmpty);
     { TMemoryStream }
-    AddClass('Classes', TMemoryStream, 'TMemoryStream');
+    AddClass(cClasses, TMemoryStream, 'TMemoryStream');
     AddGet(TMemoryStream, 'Create', TMemoryStream_Create, 0, [0], varEmpty);
     { TJvStringStream  }
-    AddClass('Classes', TStringStream, 'TStringStream ');
+    AddClass(cClasses, TStringStream, 'TStringStream ');
     AddGet(TStringStream, 'Create', TStringStream_Create, 1, [varEmpty], varEmpty);
     AddGet(TStringStream, 'Read', TStringStream_Read, 2, [varByRef, varEmpty], varEmpty);
     AddGet(TStringStream, 'ReadString', TStringStream_ReadString, 1, [varEmpty], varEmpty);
@@ -1281,19 +1283,19 @@ begin
     AddGet(TStringStream, 'WriteString', TStringStream_WriteString, 1, [varEmpty], varEmpty);
     AddGet(TStringStream, 'DataString', TStringStream_Read_DataString, 0, [0], varEmpty);
     { TComponentState }
-    AddConst('Classes', 'csLoading', Ord(csLoading));
-    AddConst('Classes', 'csReading', Ord(csReading));
-    AddConst('Classes', 'csWriting', Ord(csWriting));
-    AddConst('Classes', 'csDestroying', Ord(csDestroying));
-    AddConst('Classes', 'csDesigning', Ord(csDesigning));
-    AddConst('Classes', 'csAncestor', Ord(csAncestor));
-    AddConst('Classes', 'csUpdating', Ord(csUpdating));
-    AddConst('Classes', 'csFixups', Ord(csFixups));
+    AddConst(cClasses, 'csLoading', Ord(csLoading));
+    AddConst(cClasses, 'csReading', Ord(csReading));
+    AddConst(cClasses, 'csWriting', Ord(csWriting));
+    AddConst(cClasses, 'csDestroying', Ord(csDestroying));
+    AddConst(cClasses, 'csDesigning', Ord(csDesigning));
+    AddConst(cClasses, 'csAncestor', Ord(csAncestor));
+    AddConst(cClasses, 'csUpdating', Ord(csUpdating));
+    AddConst(cClasses, 'csFixups', Ord(csFixups));
     { TComponentStyle }
-    AddConst('Classes', 'csInheritable', Ord(csInheritable));
-    AddConst('Classes', 'csCheckPropAvail', Ord(csCheckPropAvail));
+    AddConst(cClasses, 'csInheritable', Ord(csInheritable));
+    AddConst(cClasses, 'csCheckPropAvail', Ord(csCheckPropAvail));
     { TComponent }
-    AddClass('Classes', TComponent, 'TComponent');
+    AddClass(cClasses, TComponent, 'TComponent');
     AddGet(TComponent, 'Create', TComponent_Create, 1, [varEmpty], varEmpty);
     AddGet(TComponent, 'DestroyComponents', TComponent_DestroyComponents, 0, [0], varEmpty);
     AddGet(TComponent, 'Destroying', TComponent_Destroying, 0, [0], varEmpty);
@@ -1322,8 +1324,8 @@ begin
     AddGet(TComponent, 'Tag', TComponent_Read_Tag, 0, [0], varEmpty);
     AddSet(TComponent, 'Tag', TComponent_Write_Tag, 0, [0]);
 
-    AddHandler('Classes', 'TNotifyEvent', TJvInterpreterClassesEvent, @TJvInterpreterClassesEvent.NotifyEvent);
-    AddHandler('Classes', 'THelpEvent', TJvInterpreterClassesEvent, @TJvInterpreterClassesEvent.HelpEvent);
+    AddHandler(cClasses, 'TNotifyEvent', TJvInterpreterClassesEvent, @TJvInterpreterClassesEvent.NotifyEvent);
+    AddHandler(cClasses, 'THelpEvent', TJvInterpreterClassesEvent, @TJvInterpreterClassesEvent.HelpEvent);
   end;
   RegisterClasses([TPersistent, TCollection, TCollectionItem, TStrings,
     TStringList, TComponent]);

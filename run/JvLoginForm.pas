@@ -436,20 +436,13 @@ begin
   begin
     case Msg of
       WM_QUERYOPEN:
-        begin
-          UnlockHook := not DoUnlock;
-        end;
+        UnlockHook := not DoUnlock;
       WM_SHOWWINDOW:
-        if Bool(WParam) then
-        begin
+        if WParam <> 0 then
           UnlockHook := not DoUnlock;
-        end;
       WM_SYSCOMMAND:
-        if (WParam and $FFF0 = SC_RESTORE) or
-          (WParam and $FFF0 = SC_ZOOM) then
-        begin
+        if (WParam and $FFF0 = SC_RESTORE) or (WParam and $FFF0 = SC_ZOOM) then
           UnlockHook := not DoUnlock;
-        end;
     end;
   end;
 end;

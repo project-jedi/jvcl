@@ -277,12 +277,10 @@ end;
 
 { function CompareMem(P1, P2: Pointer; Length: Integer): Boolean; }
 
-
 procedure JvInterpreter_CompareMem(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := CompareMem(V2P(Args.Values[0]), V2P(Args.Values[1]), Args.Values[2]);
 end;
-
 
 { function CompareText(const S1, S2: string): Integer; }
 
@@ -323,8 +321,6 @@ procedure JvInterpreter_AnsiCompareText(var Value: Variant; Args: TJvInterpreter
 begin
   Value := AnsiCompareText(Args.Values[0], Args.Values[1]);
 end;
-
-
 
 { function AnsiStrComp(S1, S2: PChar): Integer; }
 
@@ -382,8 +378,6 @@ begin
   Value := string(AnsiStrLastChar(PChar(string(Args.Values[0]))));
 end;
 
-
-
 { function Trim(const S: string): string; }
 
 procedure JvInterpreter_Trim(var Value: Variant; Args: TJvInterpreterArgs);
@@ -412,8 +406,6 @@ begin
   Value := QuotedStr(Args.Values[0]);
 end;
 
-
-
 { function AnsiQuotedStr(const S: string; Quote: Char): string; }
 
 procedure JvInterpreter_AnsiQuotedStr(var Value: Variant; Args: TJvInterpreterArgs);
@@ -427,8 +419,6 @@ procedure JvInterpreter_AnsiExtractQuotedStr(var Value: Variant; Args: TJvInterp
 begin
   Value := AnsiExtractQuotedStr(PChar(TVarData(Args.Values[0]).vPointer), string(Args.Values[1])[1]);
 end;
-
-
 
 { function AdjustLineBreaks(const S: string): string; }
 
@@ -684,7 +674,6 @@ begin
   Value := ExtractRelativePath(Args.Values[0], Args.Values[1]);
 end;
 
-
 { function FileSearch(const Name, DirList: string): string; }
 
 procedure JvInterpreter_FileSearch(var Value: Variant; Args: TJvInterpreterArgs);
@@ -924,10 +913,11 @@ end;
 
 procedure JvInterpreter_Format(var Value: Variant; Args: TJvInterpreterArgs);
 
-function FormatWorkaround(const MyFormat: string; const Args: array of const): string;
+  function FormatWorkaround(const MyFormat: string; const Args: array of const): string;
   begin
-    result := Format(MyFormat, Args);
+    Result := Format(MyFormat, Args);
   end;
+
 begin
   Args.OpenArray(1);
   Value := FormatWorkaround(Args.Values[0], Slice(Args.OA^, Args.OAS));
@@ -937,10 +927,11 @@ end;
 
 procedure JvInterpreter_FmtStr(var Value: Variant; Args: TJvInterpreterArgs);
 
-procedure FmtStrWorkaround(var Result: string; const Format: string; const Args: array of const);
+  procedure FmtStrWorkaround(var Result: string; const Format: string; const Args: array of const);
   begin
     FmtStr(Result, Format, Args);
   end;
+
 begin
   Args.OpenArray(2);
   FmtStrWorkaround(string(TVarData(Args.Values[0]).vString), Args.Values[1], Slice(Args.OA^, Args.OAS));
@@ -950,10 +941,11 @@ end;
 
 procedure JvInterpreter_StrFmt(var Value: Variant; Args: TJvInterpreterArgs);
 
-function StrFmtWorkaround(Buffer, Format: PChar; const Args: array of const): PChar;
+  function StrFmtWorkaround(Buffer, Format: PChar; const Args: array of const): PChar;
   begin
-    result := StrFmt(Buffer, Format, Args);
+    Result := StrFmt(Buffer, Format, Args);
   end;
+
 begin
   Args.OpenArray(2);
   Value := string(StrFmtWorkaround(PChar(string(Args.Values[0])), PChar(string(Args.Values[1])), Slice(Args.OA^,
@@ -964,9 +956,9 @@ end;
 
 procedure JvInterpreter_StrLFmt(var Value: Variant; Args: TJvInterpreterArgs);
 
-function StrLFmtWorkaround(Buffer: PChar; MaxLen: Cardinal; Format: PChar; const Args: array of const): PChar;
+  function StrLFmtWorkaround(Buffer: PChar; MaxLen: Cardinal; Format: PChar; const Args: array of const): PChar;
   begin
-    result := StrLFmt(Buffer, MaxLen, Format, Args);
+    Result := StrLFmt(Buffer, MaxLen, Format, Args);
   end;
 
 begin
@@ -979,11 +971,12 @@ end;
 
 procedure JvInterpreter_FormatBuf(var Value: Variant; Args: TJvInterpreterArgs);
 
-function FormatBufWorkaround(var Buffer; BufLen: Cardinal; const Format; FmtLen: Cardinal; const Args: array of const):
-  Cardinal;
+  function FormatBufWorkaround(var Buffer; BufLen: Cardinal; const Format; FmtLen: Cardinal;
+    const Args: array of const): Cardinal;
   begin
-    result := FormatBuf(Buffer, BufLen, Format, FmtLen, Args);
+    Result := FormatBuf(Buffer, BufLen, Format, FmtLen, Args);
   end;
+
 begin
   Args.OpenArray(4);
   Value := Integer(FormatBufWorkaround(Args.Values[0], Args.Values[1], Args.Values[2], Args.Values[3], Slice(Args.OA^,
@@ -1175,8 +1168,6 @@ begin
   Value := Now;
 end;
 
-
-
 { function IncMonth(const Date: TDateTime; NumberOfMonths: Integer): TDateTime; }
 
 procedure JvInterpreter_IncMonth(var Value: Variant; Args: TJvInterpreterArgs);
@@ -1190,8 +1181,6 @@ procedure JvInterpreter_IsLeapYear(var Value: Variant; Args: TJvInterpreterArgs)
 begin
   Value := IsLeapYear(Args.Values[0]);
 end;
-
-
 
 { function DateToStr(Date: TDateTime): string; }
 
@@ -1300,7 +1289,6 @@ begin
     Args.Values[3]);
 end;
 
-
 { procedure ShowException(ExceptObject: TObject; ExceptAddr: Pointer); }
 
 procedure JvInterpreter_ShowException(var Value: Variant; Args: TJvInterpreterArgs);
@@ -1328,8 +1316,6 @@ procedure JvInterpreter_Beep(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Beep;
 end;
-
-
 
 { function ByteType(const S: string; Index: Integer): TMbcsByteType; }
 
@@ -1478,7 +1464,6 @@ begin
 end;
 
 {$ENDIF MSWINDOWS}
-
 
 { regional options }
 
@@ -1856,197 +1841,197 @@ begin
     {$ENDIF COMPILER6_UP}
     
 
-    AddFun(cSysUtils, 'AllocMem', JvInterpreter_AllocMem, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'AllocMem', JvInterpreter_AllocMem, 1, [varEmpty], varEmpty);
     {$IFNDEF COMPILER6_UP}
-    AddFun(cSysUtils, 'NewStr', JvInterpreter_NewStr, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'DisposeStr', JvInterpreter_DisposeStr, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'AssignStr', JvInterpreter_AssignStr, 2, [varByRef, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'AppendStr', JvInterpreter_AppendStr, 2, [varByRef, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'NewStr', JvInterpreter_NewStr, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'DisposeStr', JvInterpreter_DisposeStr, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'AssignStr', JvInterpreter_AssignStr, 2, [varByRef, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'AppendStr', JvInterpreter_AppendStr, 2, [varByRef, varEmpty], varEmpty);
     {$ENDIF COMPILER6_UP}
-    AddFun(cSysUtils, 'UpperCase', JvInterpreter_UpperCase, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'LowerCase', JvInterpreter_LowerCase, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'CompareStr', JvInterpreter_CompareStr, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'UpperCase', JvInterpreter_UpperCase, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'LowerCase', JvInterpreter_LowerCase, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'CompareStr', JvInterpreter_CompareStr, 2, [varEmpty, varEmpty], varEmpty);
     
-    AddFun(cSysUtils, 'CompareMem', JvInterpreter_CompareMem, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'CompareMem', JvInterpreter_CompareMem, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
     
-    AddFun(cSysUtils, 'CompareText', JvInterpreter_CompareText, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'AnsiUpperCase', JvInterpreter_AnsiUpperCase, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'AnsiLowerCase', JvInterpreter_AnsiLowerCase, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'AnsiCompareStr', JvInterpreter_AnsiCompareStr, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'AnsiCompareText', JvInterpreter_AnsiCompareText, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'CompareText', JvInterpreter_CompareText, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'AnsiUpperCase', JvInterpreter_AnsiUpperCase, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'AnsiLowerCase', JvInterpreter_AnsiLowerCase, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'AnsiCompareStr', JvInterpreter_AnsiCompareStr, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'AnsiCompareText', JvInterpreter_AnsiCompareText, 2, [varEmpty, varEmpty], varEmpty);
     
-    AddFun(cSysUtils, 'AnsiStrComp', JvInterpreter_AnsiStrComp, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'AnsiStrIComp', JvInterpreter_AnsiStrIComp, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'AnsiStrLComp', JvInterpreter_AnsiStrLComp, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'AnsiStrLIComp', JvInterpreter_AnsiStrLIComp, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'AnsiStrLower', JvInterpreter_AnsiStrLower, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'AnsiStrUpper', JvInterpreter_AnsiStrUpper, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'AnsiLastChar', JvInterpreter_AnsiLastChar, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'AnsiStrLastChar', JvInterpreter_AnsiStrLastChar, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'AnsiStrComp', JvInterpreter_AnsiStrComp, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'AnsiStrIComp', JvInterpreter_AnsiStrIComp, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'AnsiStrLComp', JvInterpreter_AnsiStrLComp, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'AnsiStrLIComp', JvInterpreter_AnsiStrLIComp, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'AnsiStrLower', JvInterpreter_AnsiStrLower, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'AnsiStrUpper', JvInterpreter_AnsiStrUpper, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'AnsiLastChar', JvInterpreter_AnsiLastChar, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'AnsiStrLastChar', JvInterpreter_AnsiStrLastChar, 1, [varEmpty], varEmpty);
     
-    AddFun(cSysUtils, 'Trim', JvInterpreter_Trim, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'TrimLeft', JvInterpreter_TrimLeft, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'TrimRight', JvInterpreter_TrimRight, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'QuotedStr', JvInterpreter_QuotedStr, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'Trim', JvInterpreter_Trim, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'TrimLeft', JvInterpreter_TrimLeft, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'TrimRight', JvInterpreter_TrimRight, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'QuotedStr', JvInterpreter_QuotedStr, 1, [varEmpty], varEmpty);
     
-    AddFun(cSysUtils, 'AnsiQuotedStr', JvInterpreter_AnsiQuotedStr, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'AnsiExtractQuotedStr', JvInterpreter_AnsiExtractQuotedStr, 2, [varByRef, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'ExtractQuotedString', JvInterpreter_ExtractQuotedString, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'AnsiQuotedStr', JvInterpreter_AnsiQuotedStr, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'AnsiExtractQuotedStr', JvInterpreter_AnsiExtractQuotedStr, 2, [varByRef, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'ExtractQuotedString', JvInterpreter_ExtractQuotedString, 2, [varEmpty, varEmpty], varEmpty);
     
-    AddFun(cSysUtils, 'AdjustLineBreaks', JvInterpreter_AdjustLineBreaks, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'IsValidIdent', JvInterpreter_IsValidIdent, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'IntToStr', JvInterpreter_IntToStr, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'IntToHex', JvInterpreter_IntToHex, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'StrToInt', JvInterpreter_StrToInt, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'StrToIntDef', JvInterpreter_StrToIntDef, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'LoadStr', JvInterpreter_LoadStr, 1, [varEmpty], varEmpty);
-    // AddFun(cSysUtils, 'FmtLoadStr', JvInterpreter_FmtLoadStr, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'FileOpen', JvInterpreter_FileOpen, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'FileCreate', JvInterpreter_FileCreate, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'FileRead', JvInterpreter_FileRead, 3, [varEmpty, varByRef, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'FileWrite', JvInterpreter_FileWrite, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'FileSeek', JvInterpreter_FileSeek, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'FileClose', JvInterpreter_FileClose, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'FileAge', JvInterpreter_FileAge, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'FileExists', JvInterpreter_FileExists, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'FindFirst', JvInterpreter_FindFirst, 3, [varEmpty, varEmpty, varByRef], varEmpty);
-    AddFun(cSysUtils, 'FindNext', JvInterpreter_FindNext, 1, [varByRef], varEmpty);
-    AddFun(cSysUtils, 'FindClose', JvInterpreter_FindClose, 1, [varByRef], varEmpty);
-    AddFun(cSysUtils, 'FileGetDate', JvInterpreter_FileGetDate, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'FileSetDate', JvInterpreter_FileSetDate, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'AdjustLineBreaks', JvInterpreter_AdjustLineBreaks, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'IsValidIdent', JvInterpreter_IsValidIdent, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'IntToStr', JvInterpreter_IntToStr, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'IntToHex', JvInterpreter_IntToHex, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'StrToInt', JvInterpreter_StrToInt, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'StrToIntDef', JvInterpreter_StrToIntDef, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'LoadStr', JvInterpreter_LoadStr, 1, [varEmpty], varEmpty);
+    // AddFunction(cSysUtils, 'FmtLoadStr', JvInterpreter_FmtLoadStr, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'FileOpen', JvInterpreter_FileOpen, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'FileCreate', JvInterpreter_FileCreate, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'FileRead', JvInterpreter_FileRead, 3, [varEmpty, varByRef, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'FileWrite', JvInterpreter_FileWrite, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'FileSeek', JvInterpreter_FileSeek, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'FileClose', JvInterpreter_FileClose, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'FileAge', JvInterpreter_FileAge, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'FileExists', JvInterpreter_FileExists, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'FindFirst', JvInterpreter_FindFirst, 3, [varEmpty, varEmpty, varByRef], varEmpty);
+    AddFunction(cSysUtils, 'FindNext', JvInterpreter_FindNext, 1, [varByRef], varEmpty);
+    AddFunction(cSysUtils, 'FindClose', JvInterpreter_FindClose, 1, [varByRef], varEmpty);
+    AddFunction(cSysUtils, 'FileGetDate', JvInterpreter_FileGetDate, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'FileSetDate', JvInterpreter_FileSetDate, 2, [varEmpty, varEmpty], varEmpty);
     {$IFDEF MSWINDOWS}
-    AddFun(cSysUtils, 'FileGetAttr', JvInterpreter_FileGetAttr, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'FileSetAttr', JvInterpreter_FileSetAttr, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'FileGetAttr', JvInterpreter_FileGetAttr, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'FileSetAttr', JvInterpreter_FileSetAttr, 2, [varEmpty, varEmpty], varEmpty);
     {$ENDIF MSWINDOWS}
-    AddFun(cSysUtils, 'DeleteFile', JvInterpreter_DeleteFile, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'RenameFile', JvInterpreter_RenameFile, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'ChangeFileExt', JvInterpreter_ChangeFileExt, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'ExtractFilePath', JvInterpreter_ExtractFilePath, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'ExtractFileDir', JvInterpreter_ExtractFileDir, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'ExtractFileDrive', JvInterpreter_ExtractFileDrive, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'ExtractFileName', JvInterpreter_ExtractFileName, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'ExtractFileExt', JvInterpreter_ExtractFileExt, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'ExpandFileName', JvInterpreter_ExpandFileName, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'ExpandUNCFileName', JvInterpreter_ExpandUNCFileName, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'DeleteFile', JvInterpreter_DeleteFile, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'RenameFile', JvInterpreter_RenameFile, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'ChangeFileExt', JvInterpreter_ChangeFileExt, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'ExtractFilePath', JvInterpreter_ExtractFilePath, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'ExtractFileDir', JvInterpreter_ExtractFileDir, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'ExtractFileDrive', JvInterpreter_ExtractFileDrive, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'ExtractFileName', JvInterpreter_ExtractFileName, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'ExtractFileExt', JvInterpreter_ExtractFileExt, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'ExpandFileName', JvInterpreter_ExpandFileName, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'ExpandUNCFileName', JvInterpreter_ExpandUNCFileName, 1, [varEmpty], varEmpty);
     
-    AddFun(cSysUtils, 'ExtractRelativePath', JvInterpreter_ExtractRelativePath, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'ExtractRelativePath', JvInterpreter_ExtractRelativePath, 2, [varEmpty, varEmpty], varEmpty);
     
-    AddFun(cSysUtils, 'FileSearch', JvInterpreter_FileSearch, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'FileSearch', JvInterpreter_FileSearch, 2, [varEmpty, varEmpty], varEmpty);
     {$IFDEF MSWINDOWS}
-    AddFun(cSysUtils, 'DiskFree', JvInterpreter_DiskFree, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'DiskSize', JvInterpreter_DiskSize, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'DiskFree', JvInterpreter_DiskFree, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'DiskSize', JvInterpreter_DiskSize, 1, [varEmpty], varEmpty);
     {$ENDIF MSWINDOWS}
-    AddFun(cSysUtils, 'FileDateToDateTime', JvInterpreter_FileDateToDateTime, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'DateTimeToFileDate', JvInterpreter_DateTimeToFileDate, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'GetCurrentDir', JvInterpreter_GetCurrentDir, 0, [0], varEmpty);
-    AddFun(cSysUtils, 'SetCurrentDir', JvInterpreter_SetCurrentDir, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'CreateDir', JvInterpreter_CreateDir, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'RemoveDir', JvInterpreter_RemoveDir, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'StrLen', JvInterpreter_StrLen, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'StrEnd', JvInterpreter_StrEnd, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'StrMove', JvInterpreter_StrMove, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'StrCopy', JvInterpreter_StrCopy, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'StrECopy', JvInterpreter_StrECopy, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'StrLCopy', JvInterpreter_StrLCopy, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'StrPCopy', JvInterpreter_StrPCopy, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'StrPLCopy', JvInterpreter_StrPLCopy, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'StrCat', JvInterpreter_StrCat, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'StrLCat', JvInterpreter_StrLCat, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'StrComp', JvInterpreter_StrComp, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'StrIComp', JvInterpreter_StrIComp, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'StrLComp', JvInterpreter_StrLComp, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'StrLIComp', JvInterpreter_StrLIComp, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'StrScan', JvInterpreter_StrScan, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'StrRScan', JvInterpreter_StrRScan, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'StrPos', JvInterpreter_StrPos, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'StrUpper', JvInterpreter_StrUpper, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'StrLower', JvInterpreter_StrLower, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'StrPas', JvInterpreter_StrPas, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'StrAlloc', JvInterpreter_StrAlloc, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'StrBufSize', JvInterpreter_StrBufSize, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'StrNew', JvInterpreter_StrNew, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'StrDispose', JvInterpreter_StrDispose, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'Format', JvInterpreter_Format, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'FmtStr', JvInterpreter_FmtStr, 3, [varByRef, varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'StrFmt', JvInterpreter_StrFmt, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'StrLFmt', JvInterpreter_StrLFmt, 4, [varEmpty, varEmpty, varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'FormatBuf', JvInterpreter_FormatBuf, 5, [varByRef, varEmpty, varEmpty, varEmpty, varEmpty],
+    AddFunction(cSysUtils, 'FileDateToDateTime', JvInterpreter_FileDateToDateTime, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'DateTimeToFileDate', JvInterpreter_DateTimeToFileDate, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'GetCurrentDir', JvInterpreter_GetCurrentDir, 0, [0], varEmpty);
+    AddFunction(cSysUtils, 'SetCurrentDir', JvInterpreter_SetCurrentDir, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'CreateDir', JvInterpreter_CreateDir, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'RemoveDir', JvInterpreter_RemoveDir, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'StrLen', JvInterpreter_StrLen, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'StrEnd', JvInterpreter_StrEnd, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'StrMove', JvInterpreter_StrMove, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'StrCopy', JvInterpreter_StrCopy, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'StrECopy', JvInterpreter_StrECopy, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'StrLCopy', JvInterpreter_StrLCopy, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'StrPCopy', JvInterpreter_StrPCopy, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'StrPLCopy', JvInterpreter_StrPLCopy, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'StrCat', JvInterpreter_StrCat, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'StrLCat', JvInterpreter_StrLCat, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'StrComp', JvInterpreter_StrComp, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'StrIComp', JvInterpreter_StrIComp, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'StrLComp', JvInterpreter_StrLComp, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'StrLIComp', JvInterpreter_StrLIComp, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'StrScan', JvInterpreter_StrScan, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'StrRScan', JvInterpreter_StrRScan, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'StrPos', JvInterpreter_StrPos, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'StrUpper', JvInterpreter_StrUpper, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'StrLower', JvInterpreter_StrLower, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'StrPas', JvInterpreter_StrPas, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'StrAlloc', JvInterpreter_StrAlloc, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'StrBufSize', JvInterpreter_StrBufSize, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'StrNew', JvInterpreter_StrNew, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'StrDispose', JvInterpreter_StrDispose, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'Format', JvInterpreter_Format, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'FmtStr', JvInterpreter_FmtStr, 3, [varByRef, varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'StrFmt', JvInterpreter_StrFmt, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'StrLFmt', JvInterpreter_StrLFmt, 4, [varEmpty, varEmpty, varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'FormatBuf', JvInterpreter_FormatBuf, 5, [varByRef, varEmpty, varEmpty, varEmpty, varEmpty],
       varEmpty);
-    AddFun(cSysUtils, 'FloatToStr', JvInterpreter_FloatToStr, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'CurrToStr', JvInterpreter_CurrToStr, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'FloatToStrF', JvInterpreter_FloatToStrF, 4, [varEmpty, varEmpty, varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'CurrToStrF', JvInterpreter_CurrToStrF, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
-    // AddFun(cSysUtils, 'FloatToText', JvInterpreter_FloatToText, 6, [varEmpty, varEmpty, varEmpty, varEmpty, varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'FormatFloat', JvInterpreter_FormatFloat, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'FormatCurr', JvInterpreter_FormatCurr, 2, [varEmpty, varEmpty], varEmpty);
-    // AddFun(cSysUtils, 'FloatToTextFmt', JvInterpreter_FloatToTextFmt, 4, [varEmpty, varEmpty, varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'StrToFloat', JvInterpreter_StrToFloat, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'StrToCurr', JvInterpreter_StrToCurr, 1, [varEmpty], varEmpty);
-    // AddFun(cSysUtils, 'TextToFloat', JvInterpreter_TextToFloat, 3, [varEmpty, varByRef, varEmpty], varEmpty);
-    // AddFun(cSysUtils, 'FloatToDecimal', JvInterpreter_FloatToDecimal, 5, [varByRef, varEmpty, varEmpty, varEmpty, varEmpty], varEmpty);
-   { AddFun(cSysUtils, 'DateTimeToTimeStamp', JvInterpreter_DateTimeToTimeStamp, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'TimeStampToDateTime', JvInterpreter_TimeStampToDateTime, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'MSecsToTimeStamp', JvInterpreter_MSecsToTimeStamp, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'TimeStampToMSecs', JvInterpreter_TimeStampToMSecs, 1, [varEmpty], varEmpty); }
-    AddFun(cSysUtils, 'EncodeDate', JvInterpreter_EncodeDate, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'EncodeTime', JvInterpreter_EncodeTime, 4, [varEmpty, varEmpty, varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'DecodeDate', JvInterpreter_DecodeDate, 4, [varEmpty, varByRef, varByRef, varByRef], varEmpty);
-    AddFun(cSysUtils, 'DecodeTime', JvInterpreter_DecodeTime, 5, [varEmpty, varByRef, varByRef, varByRef, varByRef],
+    AddFunction(cSysUtils, 'FloatToStr', JvInterpreter_FloatToStr, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'CurrToStr', JvInterpreter_CurrToStr, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'FloatToStrF', JvInterpreter_FloatToStrF, 4, [varEmpty, varEmpty, varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'CurrToStrF', JvInterpreter_CurrToStrF, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
+    // AddFunction(cSysUtils, 'FloatToText', JvInterpreter_FloatToText, 6, [varEmpty, varEmpty, varEmpty, varEmpty, varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'FormatFloat', JvInterpreter_FormatFloat, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'FormatCurr', JvInterpreter_FormatCurr, 2, [varEmpty, varEmpty], varEmpty);
+    // AddFunction(cSysUtils, 'FloatToTextFmt', JvInterpreter_FloatToTextFmt, 4, [varEmpty, varEmpty, varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'StrToFloat', JvInterpreter_StrToFloat, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'StrToCurr', JvInterpreter_StrToCurr, 1, [varEmpty], varEmpty);
+    // AddFunction(cSysUtils, 'TextToFloat', JvInterpreter_TextToFloat, 3, [varEmpty, varByRef, varEmpty], varEmpty);
+    // AddFunction(cSysUtils, 'FloatToDecimal', JvInterpreter_FloatToDecimal, 5, [varByRef, varEmpty, varEmpty, varEmpty, varEmpty], varEmpty);
+   { AddFunction(cSysUtils, 'DateTimeToTimeStamp', JvInterpreter_DateTimeToTimeStamp, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'TimeStampToDateTime', JvInterpreter_TimeStampToDateTime, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'MSecsToTimeStamp', JvInterpreter_MSecsToTimeStamp, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'TimeStampToMSecs', JvInterpreter_TimeStampToMSecs, 1, [varEmpty], varEmpty); }
+    AddFunction(cSysUtils, 'EncodeDate', JvInterpreter_EncodeDate, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'EncodeTime', JvInterpreter_EncodeTime, 4, [varEmpty, varEmpty, varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'DecodeDate', JvInterpreter_DecodeDate, 4, [varEmpty, varByRef, varByRef, varByRef], varEmpty);
+    AddFunction(cSysUtils, 'DecodeTime', JvInterpreter_DecodeTime, 5, [varEmpty, varByRef, varByRef, varByRef, varByRef],
       varEmpty);
-    { AddFun(cSysUtils, 'DateTimeToSystemTime', JvInterpreter_DateTimeToSystemTime, 2, [varEmpty, varByRef], varEmpty);
-    AddFun(cSysUtils, 'SystemTimeToDateTime', JvInterpreter_SystemTimeToDateTime, 1, [varEmpty], varEmpty); }
-    AddFun(cSysUtils, 'DayOfWeek', JvInterpreter_DayOfWeek, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'Date', JvInterpreter_Date, 0, [0], varEmpty);
-    AddFun(cSysUtils, 'Time', JvInterpreter_Time, 0, [0], varEmpty);
-    AddFun(cSysUtils, 'Now', JvInterpreter_Now, 0, [0], varEmpty);
+    { AddFunction(cSysUtils, 'DateTimeToSystemTime', JvInterpreter_DateTimeToSystemTime, 2, [varEmpty, varByRef], varEmpty);
+    AddFunction(cSysUtils, 'SystemTimeToDateTime', JvInterpreter_SystemTimeToDateTime, 1, [varEmpty], varEmpty); }
+    AddFunction(cSysUtils, 'DayOfWeek', JvInterpreter_DayOfWeek, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'Date', JvInterpreter_Date, 0, [0], varEmpty);
+    AddFunction(cSysUtils, 'Time', JvInterpreter_Time, 0, [0], varEmpty);
+    AddFunction(cSysUtils, 'Now', JvInterpreter_Now, 0, [0], varEmpty);
     
-    AddFun(cSysUtils, 'IncMonth', JvInterpreter_IncMonth, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'IsLeapYear', JvInterpreter_IsLeapYear, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'IncMonth', JvInterpreter_IncMonth, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'IsLeapYear', JvInterpreter_IsLeapYear, 1, [varEmpty], varEmpty);
     
-    AddFun(cSysUtils, 'DateToStr', JvInterpreter_DateToStr, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'TimeToStr', JvInterpreter_TimeToStr, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'DateTimeToStr', JvInterpreter_DateTimeToStr, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'StrToDate', JvInterpreter_StrToDate, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'StrToTime', JvInterpreter_StrToTime, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'StrToDateTime', JvInterpreter_StrToDateTime, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'FormatDateTime', JvInterpreter_FormatDateTime, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'DateTimeToString', JvInterpreter_DateTimeToString, 3, [varByRef, varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'SysErrorMessage', JvInterpreter_SysErrorMessage, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'GetLocaleStr', JvInterpreter_GetLocaleStr, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'GetLocaleChar', JvInterpreter_GetLocaleChar, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'GetFormatSettings', JvInterpreter_GetFormatSettings, 0, [0], varEmpty);
-    AddFun(cSysUtils, 'ExceptObject', JvInterpreter_ExceptObject, 0, [0], varEmpty);
-    AddFun(cSysUtils, 'ExceptAddr', JvInterpreter_ExceptAddr, 0, [0], varEmpty);
+    AddFunction(cSysUtils, 'DateToStr', JvInterpreter_DateToStr, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'TimeToStr', JvInterpreter_TimeToStr, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'DateTimeToStr', JvInterpreter_DateTimeToStr, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'StrToDate', JvInterpreter_StrToDate, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'StrToTime', JvInterpreter_StrToTime, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'StrToDateTime', JvInterpreter_StrToDateTime, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'FormatDateTime', JvInterpreter_FormatDateTime, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'DateTimeToString', JvInterpreter_DateTimeToString, 3, [varByRef, varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'SysErrorMessage', JvInterpreter_SysErrorMessage, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'GetLocaleStr', JvInterpreter_GetLocaleStr, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'GetLocaleChar', JvInterpreter_GetLocaleChar, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'GetFormatSettings', JvInterpreter_GetFormatSettings, 0, [0], varEmpty);
+    AddFunction(cSysUtils, 'ExceptObject', JvInterpreter_ExceptObject, 0, [0], varEmpty);
+    AddFunction(cSysUtils, 'ExceptAddr', JvInterpreter_ExceptAddr, 0, [0], varEmpty);
     
-    AddFun(cSysUtils, 'ExceptionErrorMessage', JvInterpreter_ExceptionErrorMessage, 4, [varEmpty, varEmpty, varEmpty,
+    AddFunction(cSysUtils, 'ExceptionErrorMessage', JvInterpreter_ExceptionErrorMessage, 4, [varEmpty, varEmpty, varEmpty,
       varEmpty], varEmpty);
     
-    AddFun(cSysUtils, 'ShowException', JvInterpreter_ShowException, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'Abort', JvInterpreter_Abort, 0, [0], varEmpty);
-    AddFun(cSysUtils, 'OutOfMemoryError', JvInterpreter_OutOfMemoryError, 0, [0], varEmpty);
-    AddFun(cSysUtils, 'Beep', JvInterpreter_Beep, 0, [0], varEmpty);
+    AddFunction(cSysUtils, 'ShowException', JvInterpreter_ShowException, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'Abort', JvInterpreter_Abort, 0, [0], varEmpty);
+    AddFunction(cSysUtils, 'OutOfMemoryError', JvInterpreter_OutOfMemoryError, 0, [0], varEmpty);
+    AddFunction(cSysUtils, 'Beep', JvInterpreter_Beep, 0, [0], varEmpty);
 
-    AddFun(cSysUtils, 'ByteType', JvInterpreter_ByteType, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'StrByteType', JvInterpreter_StrByteType, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'ByteToCharLen', JvInterpreter_ByteToCharLen, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'CharToByteLen', JvInterpreter_CharToByteLen, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'ByteToCharIndex', JvInterpreter_ByteToCharIndex, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'CharToByteIndex', JvInterpreter_CharToByteIndex, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'IsPathDelimiter', JvInterpreter_IsPathDelimiter, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'IsDelimiter', JvInterpreter_IsDelimiter, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'LastDelimiter', JvInterpreter_LastDelimiter, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'AnsiCompareFileName', JvInterpreter_AnsiCompareFileName, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'AnsiLowerCaseFileName', JvInterpreter_AnsiLowerCaseFileName, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'AnsiUpperCaseFileName', JvInterpreter_AnsiUpperCaseFileName, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'AnsiPos', JvInterpreter_AnsiPos, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'AnsiStrPos', JvInterpreter_AnsiStrPos, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'AnsiStrRScan', JvInterpreter_AnsiStrRScan, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'AnsiStrScan', JvInterpreter_AnsiStrScan, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cSysUtils, 'LoadPackage', JvInterpreter_LoadPackage, 1, [varEmpty], varEmpty);
-    AddFun(cSysUtils, 'UnloadPackage', JvInterpreter_UnloadPackage, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'ByteType', JvInterpreter_ByteType, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'StrByteType', JvInterpreter_StrByteType, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'ByteToCharLen', JvInterpreter_ByteToCharLen, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'CharToByteLen', JvInterpreter_CharToByteLen, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'ByteToCharIndex', JvInterpreter_ByteToCharIndex, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'CharToByteIndex', JvInterpreter_CharToByteIndex, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'IsPathDelimiter', JvInterpreter_IsPathDelimiter, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'IsDelimiter', JvInterpreter_IsDelimiter, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'LastDelimiter', JvInterpreter_LastDelimiter, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'AnsiCompareFileName', JvInterpreter_AnsiCompareFileName, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'AnsiLowerCaseFileName', JvInterpreter_AnsiLowerCaseFileName, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'AnsiUpperCaseFileName', JvInterpreter_AnsiUpperCaseFileName, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'AnsiPos', JvInterpreter_AnsiPos, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'AnsiStrPos', JvInterpreter_AnsiStrPos, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'AnsiStrRScan', JvInterpreter_AnsiStrRScan, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'AnsiStrScan', JvInterpreter_AnsiStrScan, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'LoadPackage', JvInterpreter_LoadPackage, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'UnloadPackage', JvInterpreter_UnloadPackage, 1, [varEmpty], varEmpty);
     {$IFDEF MSWINDOWS}
-    AddFun(cSysUtils, 'RaiseLastWin32Error', JvInterpreter_RaiseLastWin32Error, 0, [0], varEmpty);
-    AddFun(cSysUtils, 'Win32Check', JvInterpreter_Win32Check, 1, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'RaiseLastWin32Error', JvInterpreter_RaiseLastWin32Error, 0, [0], varEmpty);
+    AddFunction(cSysUtils, 'Win32Check', JvInterpreter_Win32Check, 1, [varEmpty], varEmpty);
     {$ENDIF MSWINDOWS}
     
     { File open modes }
@@ -2071,7 +2056,7 @@ begin
     AddConst(cSysUtils, 'faArchive', Ord(faArchive));
     AddConst(cSysUtils, 'faAnyFile', Ord(faAnyFile));
 
-    AddRec(cSysUtils, 'TSearchRec', sizeof(TSearchRec), [
+    AddRec(cSysUtils, 'TSearchRec', SizeOf(TSearchRec), [
       RFD('Time', 0, varInteger),
       RFD('Size', 4, varInteger),
       RFD('Attr', 8, varInteger),

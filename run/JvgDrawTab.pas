@@ -58,7 +58,7 @@ begin
   if not Assigned(DrawTabStr.lpDrawItemStr) then exit;
   with DrawTabStr, DrawTabStr.lpDrawItemStr^, DrawTabStr.BoxStyle do
   begin
-    fSelected := bool(itemState and ODS_SELECTED);
+    fSelected := (itemState and ODS_SELECTED) <> 0;
     //_________________________________________WALLPAPER WORKS_
     WallpaperOption := fwoNone;
     fWallpaper := IsItAFilledBitmap(Wallpaper.Bmp);

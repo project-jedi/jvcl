@@ -40,11 +40,12 @@ procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapt
 implementation
 
 uses
+  Classes,
   {$IFDEF VCL}
-  Windows, Classes, Graphics, JvInterpreter_Windows;
+  Windows, Graphics, JvInterpreter_Windows;
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, Classes, QGraphics, JvInterpreter_Types;
+  Types, QGraphics, JvInterpreter_Types;
   {$ENDIF VisualCLX}
 
 { TFont }

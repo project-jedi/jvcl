@@ -40,15 +40,15 @@ procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapt
 implementation
 
 uses
+  Classes,
   {$IFDEF VCL}
-  Graphics, Controls, Menus,
-  ImgList,
-  JvInterpreter_Windows,
+  Graphics, Controls, Menus, ImgList,
+  JvInterpreter_Windows;
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Qt, QGraphics, QControls, QMenus, QImgList, JvInterpreter_Types,
+  Qt, QGraphics, QControls, QMenus, QImgList,
+  JvInterpreter_Types;
   {$ENDIF VisualCLX}
-  Classes;
 
 { TControl }
 
@@ -1999,28 +1999,28 @@ begin
     { TImageList }
     AddClass(cControls, TImageList, 'TImageList');
     {$IFDEF VCL}
-    AddFun(cControls, 'IsDragObject', JvInterpreter_IsDragObject, 1, [varEmpty], varEmpty);
+    AddFunction(cControls, 'IsDragObject', JvInterpreter_IsDragObject, 1, [varEmpty], varEmpty);
     {$ENDIF VCL}
-    AddFun(cControls, 'FindControl', JvInterpreter_FindControl, 1, [varEmpty], varEmpty);
+    AddFunction(cControls, 'FindControl', JvInterpreter_FindControl, 1, [varEmpty], varEmpty);
     {$IFDEF VCL}
-    AddFun(cControls, 'FindVCLWindow', JvInterpreter_FindVCLWindow, 1, [varEmpty], varEmpty);
+    AddFunction(cControls, 'FindVCLWindow', JvInterpreter_FindVCLWindow, 1, [varEmpty], varEmpty);
     {$ENDIF VCL}
-    AddFun(cControls, 'FindDragTarget', JvInterpreter_FindDragTarget, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun(cControls, 'GetCaptureControl', JvInterpreter_GetCaptureControl, 0, [0], varEmpty);
-    AddFun(cControls, 'SetCaptureControl', JvInterpreter_SetCaptureControl, 1, [varEmpty], varEmpty);
+    AddFunction(cControls, 'FindDragTarget', JvInterpreter_FindDragTarget, 2, [varEmpty, varEmpty], varEmpty);
+    AddFunction(cControls, 'GetCaptureControl', JvInterpreter_GetCaptureControl, 0, [0], varEmpty);
+    AddFunction(cControls, 'SetCaptureControl', JvInterpreter_SetCaptureControl, 1, [varEmpty], varEmpty);
     {$IFDEF VCL}
-    AddFun(cControls, 'CancelDrag', JvInterpreter_CancelDrag, 0, [0], varEmpty);
+    AddFunction(cControls, 'CancelDrag', JvInterpreter_CancelDrag, 0, [0], varEmpty);
     {$ENDIF VCL}
-    AddFun(cControls, 'CursorToString', JvInterpreter_CursorToString, 1, [varEmpty], varEmpty);
-    AddFun(cControls, 'StringToCursor', JvInterpreter_StringToCursor, 1, [varEmpty], varEmpty);
-    AddFun(cControls, 'CursorToIdent', JvInterpreter_CursorToIdent, 2, [varEmpty, varByRef], varEmpty);
-    AddFun(cControls, 'IdentToCursor', JvInterpreter_IdentToCursor, 2, [varEmpty, varByRef], varEmpty);
-    AddFun(cControls, 'GetShortHint', JvInterpreter_GetShortHint, 1, [varEmpty], varEmpty);
-    AddFun(cControls, 'GetLongHint', JvInterpreter_GetLongHint, 1, [varEmpty], varEmpty);
+    AddFunction(cControls, 'CursorToString', JvInterpreter_CursorToString, 1, [varEmpty], varEmpty);
+    AddFunction(cControls, 'StringToCursor', JvInterpreter_StringToCursor, 1, [varEmpty], varEmpty);
+    AddFunction(cControls, 'CursorToIdent', JvInterpreter_CursorToIdent, 2, [varEmpty, varByRef], varEmpty);
+    AddFunction(cControls, 'IdentToCursor', JvInterpreter_IdentToCursor, 2, [varEmpty, varByRef], varEmpty);
+    AddFunction(cControls, 'GetShortHint', JvInterpreter_GetShortHint, 1, [varEmpty], varEmpty);
+    AddFunction(cControls, 'GetLongHint', JvInterpreter_GetLongHint, 1, [varEmpty], varEmpty);
     {$IFDEF VCL}
-    AddFun(cControls, 'InitWndProc', JvInterpreter_InitWndProc, 4, [varEmpty, varEmpty, varEmpty, varEmpty], varEmpty);
-    AddFun(cControls, 'SendAppMessage', JvInterpreter_SendAppMessage, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
-    AddFun(cControls, 'MoveWindowOrg', JvInterpreter_MoveWindowOrg, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
+    AddFunction(cControls, 'InitWndProc', JvInterpreter_InitWndProc, 4, [varEmpty, varEmpty, varEmpty, varEmpty], varEmpty);
+    AddFunction(cControls, 'SendAppMessage', JvInterpreter_SendAppMessage, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
+    AddFunction(cControls, 'MoveWindowOrg', JvInterpreter_MoveWindowOrg, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
     {$ENDIF VCL}
     AddHandler(cControls, 'TMouseEvent', TJvInterpreterControlsEvent, @TJvInterpreterControlsEvent.MouseEvent);
     AddHandler(cControls, 'TMouseMoveEvent', TJvInterpreterControlsEvent, @TJvInterpreterControlsEvent.MouseMoveEvent);

@@ -680,17 +680,17 @@ begin
   with JvInterpreterAdapter do
   begin
     { TColumnValue }
-    AddConst(cDbGrids, 'cvColor', cvColor);
-    AddConst(cDbGrids, 'cvWidth', cvWidth);
-    AddConst(cDbGrids, 'cvFont', cvFont);
-    AddConst(cDbGrids, 'cvAlignment', cvAlignment);
-    AddConst(cDbGrids, 'cvReadOnly', cvReadOnly);
-    AddConst(cDbGrids, 'cvTitleColor', cvTitleColor);
-    AddConst(cDbGrids, 'cvTitleCaption', cvTitleCaption);
-    AddConst(cDbGrids, 'cvTitleAlignment', cvTitleAlignment);
-    AddConst(cDbGrids, 'cvTitleFont', cvTitleFont);
-    AddConst(cDbGrids, 'cvImeMode', cvImeMode);
-    AddConst(cDbGrids, 'cvImeName', cvImeName);
+    AddConst(cDbGrids, 'cvColor', Ord(cvColor));
+    AddConst(cDbGrids, 'cvWidth', Ord(cvWidth));
+    AddConst(cDbGrids, 'cvFont', Ord(cvFont));
+    AddConst(cDbGrids, 'cvAlignment', Ord(cvAlignment));
+    AddConst(cDbGrids, 'cvReadOnly', Ord(cvReadOnly));
+    AddConst(cDbGrids, 'cvTitleColor', Ord(cvTitleColor));
+    AddConst(cDbGrids, 'cvTitleCaption', Ord(cvTitleCaption));
+    AddConst(cDbGrids, 'cvTitleAlignment', Ord(cvTitleAlignment));
+    AddConst(cDbGrids, 'cvTitleFont', Ord(cvTitleFont));
+    AddConst(cDbGrids, 'cvImeMode', Ord(cvImeMode));
+    AddConst(cDbGrids, 'cvImeName', Ord(cvImeName));
     { TColumnTitle }
     AddClass(cDbGrids, TColumnTitle, 'TColumnTitle');
     AddGet(TColumnTitle, 'Create', TColumnTitle_Create, 1, [varEmpty], varEmpty);
@@ -709,9 +709,9 @@ begin
     AddGet(TColumnTitle, 'Font', TColumnTitle_Read_Font, 0, [0], varEmpty);
     AddSet(TColumnTitle, 'Font', TColumnTitle_Write_Font, 0, [0]);
     { TColumnButtonStyle }
-    AddConst(cDbGrids, 'cbsAuto', cbsAuto);
-    AddConst(cDbGrids, 'cbsEllipsis', cbsEllipsis);
-    AddConst(cDbGrids, 'cbsNone', cbsNone);
+    AddConst(cDbGrids, 'cbsAuto', Ord(cbsAuto));
+    AddConst(cDbGrids, 'cbsEllipsis', Ord(cbsEllipsis));
+    AddConst(cDbGrids, 'cbsNone', Ord(cbsNone));
     { TColumn }
     AddClass(cDbGrids, TColumn, 'TColumn');
     AddGet(TColumn, 'Create', TColumn_Create, 1, [varEmpty], varEmpty);
@@ -755,8 +755,8 @@ begin
     AddGet(TColumn, 'Width', TColumn_Read_Width, 0, [0], varEmpty);
     AddSet(TColumn, 'Width', TColumn_Write_Width, 0, [0]);
     { TDBGridColumnsState }
-    AddConst(cDbGrids, 'csDefault', csDefault);
-    AddConst(cDbGrids, 'csCustomized', csCustomized);
+    AddConst(cDbGrids, 'csDefault', Ord(csDefault));
+    AddConst(cDbGrids, 'csCustomized', Ord(csCustomized));
     { TDBGridColumns }
     AddClass(cDbGrids, TDBGridColumns, 'TDBGridColumns');
     AddGet(TDBGridColumns, 'Create', TDBGridColumns_Create, 2, [varEmpty, varEmpty], varEmpty);
@@ -788,19 +788,19 @@ begin
     AddIGet(TBookmarkList, 'Items', TBookmarkList_Read_Items, 1, [0], varEmpty);
     AddIDGet(TBookmarkList, TBookmarkList_Read_Items, 1, [0], varEmpty);
     { TDBGridOption }
-    AddConst(cDbGrids, 'dgEditing', dgEditing);
-    AddConst(cDbGrids, 'dgAlwaysShowEditor', dgAlwaysShowEditor);
-    AddConst(cDbGrids, 'dgTitles', dgTitles);
-    AddConst(cDbGrids, 'dgIndicator', dgIndicator);
-    AddConst(cDbGrids, 'dgColumnResize', dgColumnResize);
-    AddConst(cDbGrids, 'dgColLines', dgColLines);
-    AddConst(cDbGrids, 'dgRowLines', dgRowLines);
-    AddConst(cDbGrids, 'dgTabs', dgTabs);
-    AddConst(cDbGrids, 'dgRowSelect', dgRowSelect);
-    AddConst(cDbGrids, 'dgAlwaysShowSelection', dgAlwaysShowSelection);
-    AddConst(cDbGrids, 'dgConfirmDelete', dgConfirmDelete);
-    AddConst(cDbGrids, 'dgCancelOnExit', dgCancelOnExit);
-    AddConst(cDbGrids, 'dgMultiSelect', dgMultiSelect);
+    AddConst(cDbGrids, 'dgEditing', Ord(dgEditing));
+    AddConst(cDbGrids, 'dgAlwaysShowEditor', Ord(dgAlwaysShowEditor));
+    AddConst(cDbGrids, 'dgTitles', Ord(dgTitles));
+    AddConst(cDbGrids, 'dgIndicator', Ord(dgIndicator));
+    AddConst(cDbGrids, 'dgColumnResize', Ord(dgColumnResize));
+    AddConst(cDbGrids, 'dgColLines', Ord(dgColLines));
+    AddConst(cDbGrids, 'dgRowLines', Ord(dgRowLines));
+    AddConst(cDbGrids, 'dgTabs', Ord(dgTabs));
+    AddConst(cDbGrids, 'dgRowSelect', Ord(dgRowSelect));
+    AddConst(cDbGrids, 'dgAlwaysShowSelection', Ord(dgAlwaysShowSelection));
+    AddConst(cDbGrids, 'dgConfirmDelete', Ord(dgConfirmDelete));
+    AddConst(cDbGrids, 'dgCancelOnExit', Ord(dgCancelOnExit));
+    AddConst(cDbGrids, 'dgMultiSelect', Ord(dgMultiSelect));
     { TCustomDBGrid }
     AddClass(cDbGrids, TCustomDBGrid, 'TCustomDBGrid');
     AddGet(TCustomDBGrid, 'DefaultDrawDataCell', TCustomDBGrid_DefaultDrawDataCell, 3, [varEmpty, varEmpty, varEmpty],

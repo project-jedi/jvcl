@@ -574,7 +574,7 @@ begin
   MemoUpdateTimer.Enabled := false;
   Cells[MemoCell.X, MemoCell.Y] := Memo.Text;
 
-  if (fsgCellHeightAutoSize in ExtOptions) and bool(MemoCell.Y) then
+  if (fsgCellHeightAutoSize in ExtOptions) and (MemoCell.Y <> 0) then
   begin
     Canvas.Font.Assign(Font);
     maxHeight := DefaultRowHeight;

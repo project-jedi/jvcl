@@ -1101,14 +1101,14 @@ begin
     AddSet(TWebActionItem, 'Producer', TWebActionItem_Write_Producer, 0, [0]);
     { TWebDispatcher }
     AddClass(cHTTPApp, TWebDispatcher, 'TWebDispatcher');
-    AddFun(cHTTPApp, 'DosPathToUnixPath', JvInterpreter_DosPathToUnixPath, 1, [varString], varEmpty);
-    AddFun(cHTTPApp, 'HTTPDecode', JvInterpreter_HTTPDecode, 1, [varString], varEmpty);
-    AddFun(cHTTPApp, 'HTTPEncode', JvInterpreter_HTTPEncode, 1, [varString], varEmpty);
-    AddFun(cHTTPApp, 'ParseDate', JvInterpreter_ParseDate, 1, [varString], varEmpty);
-    AddFun(cHTTPApp, 'StatusString', JvInterpreter_StatusString, 1, [varInteger], varEmpty);
-    AddFun(cHTTPApp, 'UnixPathToDosPath', JvInterpreter_UnixPathToDosPath, 1, [varString], varEmpty);
-    AddFun(cHTTPApp, 'MonthStr', JvInterpreter_MonthStr, 1, [varEmpty], varEmpty);
-    AddFun(cHTTPApp, 'DayOfWeekStr', JvInterpreter_DayOfWeekStr, 1, [varEmpty], varEmpty);
+    AddFunction(cHTTPApp, 'DosPathToUnixPath', JvInterpreter_DosPathToUnixPath, 1, [varString], varEmpty);
+    AddFunction(cHTTPApp, 'HTTPDecode', JvInterpreter_HTTPDecode, 1, [varString], varEmpty);
+    AddFunction(cHTTPApp, 'HTTPEncode', JvInterpreter_HTTPEncode, 1, [varString], varEmpty);
+    AddFunction(cHTTPApp, 'ParseDate', JvInterpreter_ParseDate, 1, [varString], varEmpty);
+    AddFunction(cHTTPApp, 'StatusString', JvInterpreter_StatusString, 1, [varInteger], varEmpty);
+    AddFunction(cHTTPApp, 'UnixPathToDosPath', JvInterpreter_UnixPathToDosPath, 1, [varString], varEmpty);
+    AddFunction(cHTTPApp, 'MonthStr', JvInterpreter_MonthStr, 1, [varEmpty], varEmpty);
+    AddFunction(cHTTPApp, 'DayOfWeekStr', JvInterpreter_DayOfWeekStr, 1, [varEmpty], varEmpty);
   end;
 end;
 
