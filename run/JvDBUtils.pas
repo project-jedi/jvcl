@@ -42,7 +42,10 @@ type
 
   EJvScriptError = class(Exception)
     ErrPos: Integer;
-    constructor Create(AMessage: string; AErrPos: Integer);overload;
+    // The dummy parameter is only there fore BCB compatibility so that
+    // when the hpp file gets generated, this constructor generates
+    // a C++ constructor that doesn't already exists
+    constructor Create(AMessage: string; AErrPos: Integer; dummyForBCB : Integer = 0); overload;
   end;
 
   TJvLocateObject = class(TObject)
@@ -173,7 +176,7 @@ begin
   DatabaseError(Msg);
 end;
 
-constructor EJvScriptError.Create(AMessage: string; AErrPos: Integer);
+constructor EJvScriptError.Create(AMessage: string; AErrPos: Integer; dummyForBCB : Integer);
 begin
   inherited Create(AMessage);
   ErrPos := AErrPos;
