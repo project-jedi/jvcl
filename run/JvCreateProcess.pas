@@ -142,7 +142,7 @@ type
     FCommandLine: string;
     FCreationFlags: TJvCPSFlags;
     FCurrentDirectory: string;
-    FEnvironment: TStrings;
+    FEnvironment: TStringList;
     FState: TJvCPSState;
     FStartupInfo: TJvCPSStartupInfo;
     FPriority: TJvProcessPriority;
@@ -157,9 +157,11 @@ type
     FHandle: THandle;
     FCurrentLine: string; // Last output of the console with no #10 char.
     FCursorPosition: Integer; // Position of the cursor on FCurrentLine
-    FConsoleOutput: TStrings;
+    FConsoleOutput: TStringList;
     FParseBuffer: TJvCPSBuffer;
     FExitCode: Cardinal;
+    function GetConsoleOutput: TStrings;
+    function GetEnvironment: TStrings;
     procedure SetWaitForTerminate(const Value: Boolean);
     procedure WaitThreadOnTerminate(Sender: TObject);
     procedure ReadThreadOnTerminate(Sender: TObject);
@@ -191,7 +193,7 @@ type
     function WriteLn(const S: string): Boolean;
     property ProcessInfo: TProcessInformation read FProcessInfo;
     property State: TJvCPSState read FState;
-    property ConsoleOutput: TStrings read FConsoleOutput;
+    property ConsoleOutput: TStrings read GetConsoleOutput;
   published
     property ApplicationName: string read FApplicationName write
       FApplicationName;
@@ -200,7 +202,7 @@ type
       default [];
     property CurrentDirectory: string read FCurrentDirectory write
       FCurrentDirectory;
-    property Environment: TStrings read FEnvironment write SetEnvironment;
+    property Environment: TStrings read GetEnvironment write SetEnvironment;
     property Priority: TJvProcessPriority read FPriority write FPriority default
       ppNormal;
     property StartupInfo: TJvCPSStartupInfo read FStartupInfo write
@@ -1001,7 +1003,7 @@ procedure TJvCreateProcess.DoReadEvent;
 begin
   { Notify user and update current line & cursor }
   if not (coOwnerData in ConsoleOptions) then
-    FConsoleOutput.Add(FCurrentLine);
+    ConsoleOutput.Add(FCurrentLine);
   if Assigned(FOnRead) then
     FOnRead(Self, FCurrentLine);
   FCurrentLine := '';
@@ -1021,6 +1023,11 @@ begin
   if FHandle = 0 then
     FHandle := AllocateHWndEx(WndProc);
   Result := FHandle;
+end;
+
+function TJvCreateProcess.GetConsoleOutput: TStrings;
+begin
+  Result := FConsoleOutput;
 end;
 
 procedure TJvCreateProcess.HandleReadEvent;
@@ -1184,10 +1191,10 @@ begin
       Inc(Flags, CreationFlagsValues[F]);
   AppName := PCharOrNil(Trim(FApplicationName));
   CurrDir := PCharOrNil(Trim(FCurrentDirectory));
-  if FEnvironment.Count = 0 then
+  if Environment.Count = 0 then
     EnvironmentData := nil
   else
-    StringsToMultiSz(EnvironmentData, FEnvironment);
+    StringsToMultiSz(EnvironmentData, Environment);
 
   try
     LStartupInfo := FStartupInfo.GetStartupInfo;
@@ -1252,6 +1259,11 @@ begin
     SafeCloseHandle(LConsoleHandles.Error);
     FreeMultiSz(EnvironmentData);
   end;
+end;
+
+function TJvCreateProcess.GetEnvironment: TStrings;
+begin
+  Result := FEnvironment;
 end;
 
 procedure TJvCreateProcess.SetEnvironment(const Value: TStrings);

@@ -54,6 +54,7 @@ type
     FUseInternal: Boolean;
     FUpdating: Boolean;
     FDestroyCnt: Integer;
+    function GetInternalList: TStrings;
   protected
     function Get(Index: Integer): string; override;
     function GetCount: Integer; override;
@@ -64,7 +65,7 @@ type
     function GetComboBox: TJvCustomComboBox;
     procedure SetComboBox(Value: TJvCustomComboBox);
     property ComboBox: TJvCustomComboBox read GetComboBox write SetComboBox;
-    property InternalList: TStrings read FInternalList;
+    property InternalList: TStrings read GetInternalList;
     property UseInternal: Boolean read FUseInternal write FUseInternal;
     property Updating: Boolean read FUpdating;
     property DestroyCount: Integer read FDestroyCnt;
@@ -260,13 +261,30 @@ uses
 
 //=== TJvComboBoxStrings =====================================================
 
+constructor TJvComboBoxStrings.Create;
+begin
+  inherited Create;
+  FInternalList := TStringList.Create;
+end;
+
+destructor TJvComboBoxStrings.Destroy;
+begin
+  FreeAndNil(FInternalList);
+  inherited Destroy;
+end;
+
+function TJvComboBoxStrings.GetInternalList: TStrings;
+begin
+  Result := FInternalList;
+end;
+
 function TJvComboBoxStrings.Get(Index: Integer): string;
 var
   Text: array [0..4095] of Char;
   Len: Integer;
 begin
   if UseInternal then
-    Result := FInternalList[Index]
+    Result := InternalList[Index]
   else
   begin
     Len := SendMessage(ComboBox.Handle, CB_GETLBTEXT, Index, Longint(@Text));
@@ -287,7 +305,7 @@ begin
       {$IFNDEF COMPILER6_UP}
       if not ComboBox.IsDropping then
       {$ENDIF COMPILER6_UP}
-        Result := FInternalList.Count
+        Result := InternalList.Count
       {$IFNDEF COMPILER6_UP}
       else
         Result := SendMessage(ComboBox.Handle, CB_GETCOUNT, 0, 0)
@@ -301,7 +319,7 @@ end;
 function TJvComboBoxStrings.GetObject(Index: Integer): TObject;
 begin
   if UseInternal then
-    Result := FInternalList.Objects[Index]
+    Result := InternalList.Objects[Index]
   else
   begin
     Result := TObject(SendMessage(ComboBox.Handle, CB_GETITEMDATA, Index, 0));
@@ -313,7 +331,7 @@ end;
 procedure TJvComboBoxStrings.PutObject(Index: Integer; AObject: TObject);
 begin
   if UseInternal then
-    FInternalList.Objects[Index] := AObject
+    InternalList.Objects[Index] := AObject
   else
     SendMessage(ComboBox.Handle, CB_SETITEMDATA, Index, Longint(AObject));
 end;
@@ -352,22 +370,10 @@ begin
   {$ENDIF COMPILER6_UP}
 end;
 
-constructor TJvComboBoxStrings.Create;
-begin
-  inherited Create;
-  FInternalList := TStringList.Create;
-end;
-
-destructor TJvComboBoxStrings.Destroy;
-begin
-  FreeAndNil(FInternalList);
-  inherited Destroy;
-end;
-
 function TJvComboBoxStrings.Add(const S: string): Integer;
 begin
   if (csLoading in ComboBox.ComponentState) and UseInternal then
-    Result := FInternalList.Add(S)
+    Result := InternalList.Add(S)
   else
   begin
     ComboBox.DeselectProvider;
@@ -384,7 +390,7 @@ begin
   if (FDestroyCnt <> 0) and UseInternal then
     Exit;
   if (csLoading in ComboBox.ComponentState) and UseInternal then
-    FInternalList.Clear
+    InternalList.Clear
   else
   begin
     S := ComboBox.Text;
@@ -398,7 +404,7 @@ end;
 procedure TJvComboBoxStrings.Delete(Index: Integer);
 begin
   if (csLoading in ComboBox.ComponentState) and UseInternal then
-    FInternalList.Delete(Index)
+    InternalList.Delete(Index)
   else
   begin
     ComboBox.DeselectProvider;
@@ -409,7 +415,7 @@ end;
 function TJvComboBoxStrings.IndexOf(const S: string): Integer;
 begin
   if UseInternal then
-    Result := FInternalList.IndexOf(S)
+    Result := InternalList.IndexOf(S)
   else
     Result := SendMessage(ComboBox.Handle, CB_FINDSTRINGEXACT, -1, LongInt(PChar(S)));
 end;
@@ -417,7 +423,7 @@ end;
 procedure TJvComboBoxStrings.Insert(Index: Integer; const S: string);
 begin
   if (csLoading in ComboBox.ComponentState) and UseInternal then
-    FInternalList.Insert(Index, S)
+    InternalList.Insert(Index, S)
   else
   begin
     ComboBox.DeselectProvider;
@@ -426,7 +432,7 @@ begin
   end;
 end;
 
-{ Copies the strings at the combo box to the FInternalList. To minimize the memory usage when a
+{ Copies the strings at the combo box to the InternalList. To minimize the memory usage when a
   large list is used, each item copied is immediately removed from the combo box list. }
 
 procedure TJvComboBoxStrings.MakeListInternal;
@@ -439,7 +445,7 @@ var
 begin
   SendMessage(ComboBox.Handle, WM_SETREDRAW, Ord(False), 0);
   try
-    FInternalList.Clear;
+    InternalList.Clear;
     Cnt := SendMessage(ComboBox.Handle, CB_GETCOUNT, 0, 0);
     while Cnt > 0 do
     begin
@@ -447,7 +453,7 @@ begin
       SetString(S, Text, Len);
       Obj := TObject(SendMessage(ComboBox.Handle, CB_GETITEMDATA, 0, 0));
       SendMessage(ComboBox.Handle, CB_DELETESTRING, 0, 0);
-      FInternalList.AddObject(S, Obj);
+      InternalList.AddObject(S, Obj);
       Dec(Cnt);
     end;
   finally
@@ -465,21 +471,21 @@ var
 begin
   SendMessage(ComboBox.Handle, WM_SETREDRAW, Ord(False), 0);
   try
-    FInternalList.BeginUpdate;
+    InternalList.BeginUpdate;
     try
       SendMessage(ComboBox.Handle, CB_RESETCONTENT, 0, 0);
-      while FInternalList.Count > 0 do
+      while InternalList.Count > 0 do
       begin
-        S := FInternalList[0];
-        Obj := FInternalList.Objects[0];
+        S := InternalList[0];
+        Obj := InternalList.Objects[0];
         Index := SendMessage(ComboBox.Handle, CB_ADDSTRING, 0, Longint(PChar(S)));
         if Index < 0 then
           raise EOutOfResources.Create(SInsertLineError);
         SendMessage(ComboBox.Handle, CB_SETITEMDATA, Index, Longint(Obj));
-        FInternalList.Delete(0);
+        InternalList.Delete(0);
       end;
     finally
-      FInternalList.EndUpdate;
+      InternalList.EndUpdate;
     end;
   finally
     if not Updating then

@@ -146,8 +146,9 @@ type
 
   TJvFormStorage = class(TJvFormPlacement)
   private
-    FStoredProps: TStrings;
+    FStoredProps: TStringList;
     FStoredValues: TJvStoredValues;
+    function GetStoredProps: TStrings;
     procedure SetStoredProps(Value: TStrings);
     procedure SetStoredValues(Value: TJvStoredValues);
     function GetStoredValue(const Name: string): Variant;
@@ -171,7 +172,7 @@ type
     property StoredValue[const Name: string]: Variant read GetStoredValue write SetStoredValue;
     property DefaultValue[const Name: string;Default:Variant]: Variant read GetDefaultStoredValue write SetDefaultStoredValue;
   published
-    property StoredProps: TStrings read FStoredProps write SetStoredProps;
+    property StoredProps: TStrings read GetStoredProps write SetStoredProps;
     property StoredValues: TJvStoredValues read FStoredValues write SetStoredValues;
   end;
 
@@ -801,12 +802,17 @@ var
   I: Integer;
   Component: TComponent;
 begin
-  for I := FStoredProps.Count - 1 downto 0 do
+  for I := StoredProps.Count - 1 downto 0 do
   begin
-    Component := TComponent(FStoredProps.Objects[I]);
+    Component := TComponent(StoredProps.Objects[I]);
     if Component <> nil then
       Component.FreeNotification(Self);
   end;
+end;
+
+function TJvFormStorage.GetStoredProps: TStrings;
+begin
+  Result := FStoredProps;
 end;
 
 procedure TJvFormStorage.SetStoredProps(Value: TStrings);

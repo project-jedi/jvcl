@@ -91,19 +91,22 @@ type
 
   TJvgExportExcel = class(TJvgCommonExport)
   private
-    FHeader: TStrings;
-    FFooter: TStrings;
+    FHeader: TStringList;
+    FFooter: TStringList;
     FBackgroundPicture: TFileName;
     FAutoColumnFit: boolean;
     FExcelVisible: boolean;
     FCloseExcel: boolean;
     FOnGetFooterLineFont: TGetLineFontEvent;
     FOnGetHeaderLineFont: TGetLineFontEvent;
-    FSubHeader: TStrings;
+    FSubHeader: TStringList;
     FSubHeaderFont: TFont;
     FHeaderFont: TFont;
     FFooterFont: TFont;
     FOnGetSubHeaderLineFont: TGetLineFontEvent;
+    function GetHeader: TStrings;
+    function GetFooter: TStrings;
+    function GetSubHeader: TStrings;
     procedure SetHeader(const Value: TStrings);
     procedure SetFooter(const Value: TStrings);
     procedure SetBackgroundPicture(const Value: TFileName);
@@ -117,13 +120,9 @@ type
     procedure SetHeaderFont(const Value: TFont);
     procedure SetSubHeaderFont(const Value: TFont);
     procedure SetOnGetSubHeaderLineFont(const Value: TGetLineFontEvent);
-    { Private declarations }
-  protected
-    { Protected declarations }
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
     procedure Execute; override;
   published
     property DataSet;
@@ -131,13 +130,9 @@ type
     property SaveToFileName;
     property TransliterateRusToEng;
     property MaxFieldSize;
-    property OnGetCaption;
-    property OnExportRecord;
-    property OnExportField;
-
-    property Header: TStrings read FHeader write SetHeader;
-    property SubHeader: TStrings read FSubHeader write SetSubHeader;
-    property Footer: TStrings read FFooter write SetFooter;
+    property Header: TStrings read GetHeader write SetHeader;
+    property SubHeader: TStrings read GetSubHeader write SetSubHeader;
+    property Footer: TStrings read GetFooter write SetFooter;
     property HeaderFont: TFont read FHeaderFont write SetHeaderFont;
     property SubHeaderFont: TFont read FSubHeaderFont write SetSubHeaderFont;
     property FooterFont: TFont read FFooterFont write SetFooterFont;
@@ -154,19 +149,18 @@ type
       FOnGetSubHeaderLineFont write SetOnGetSubHeaderLineFont;
     property OnGetFooterLineFont: TGetLineFontEvent read FOnGetFooterLineFont
       write SetOnGetFooterLineFont;
+    property OnGetCaption;
+    property OnExportRecord;
+    property OnExportField;
   end;
 
   TJvgExportDBETable = class(TJvgCommonExport)
   private
     FTableType: TTableType;
     procedure SetTableType(const Value: TTableType);
-    { Private declarations }
-  protected
-    { Protected declarations }
   public
     constructor Create(AOwner: TComponent); override;
     //    destructor Destroy; override;
-
     procedure Execute; override;
   published
     property DataSet;
@@ -184,19 +178,18 @@ type
 
   TJvgExportHTML = class(TJvgCommonExport)
   private
-    FFooter: TStrings;
-    FHeader: TStrings;
-    FStyles: TStrings;
+    FFooter: TStringList;
+    FHeader: TStringList;
+    FStyles: TStringList;
+    function GetFooter: TStrings;
+    function GetHeader: TStrings;
+    function GetStyles: TStrings;
     procedure SetFooter(const Value: TStrings);
     procedure SetHeader(const Value: TStrings);
     procedure SetStyles(const Value: TStrings);
-    { Private declarations }
-  protected
-    { Protected declarations }
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
     //    procedure Execute; override;
   published
     property DataSet;
@@ -207,17 +200,12 @@ type
     property OnGetCaption;
     property OnExportRecord;
     property OnExportField;
-
-    property Header: TStrings read FHeader write SetHeader;
-    property Footer: TStrings read FFooter write SetFooter;
-    property Styles: TStrings read FStyles write SetStyles;
+    property Header: TStrings read GetHeader write SetHeader;
+    property Footer: TStrings read GetFooter write SetFooter;
+    property Styles: TStrings read GetStyles write SetStyles;
   end;
 
   TJvgExportXML = class(TJvgCommonExport)
-  private
-    { Private declarations }
-  protected
-    { Protected declarations }
   public
     //    constructor Create(AOwner: TComponent); override;
     //    destructor Destroy; override;
@@ -486,6 +474,11 @@ begin
   FExcelVisible := Value;
 end;
 
+function TJvgExportExcel.GetFooter: TStrings;
+begin
+  Result := FFooter;
+end;
+
 procedure TJvgExportExcel.SetFooter(const Value: TStrings);
 begin
   FFooter.Assign(Value);
@@ -494,6 +487,11 @@ end;
 procedure TJvgExportExcel.SetFooterFont(const Value: TFont);
 begin
   FFooterFont.Assign(Value);
+end;
+
+function TJvgExportExcel.GetHeader: TStrings;
+begin
+  Result := FHeader;
 end;
 
 procedure TJvgExportExcel.SetHeader(const Value: TStrings);
@@ -524,6 +522,11 @@ begin
   FOnGetSubHeaderLineFont := Value;
 end;
 
+function TJvgExportExcel.GetSubHeader: TStrings;
+begin
+  Result := FSubHeader;
+end;
+
 procedure TJvgExportExcel.SetSubHeader(const Value: TStrings);
 begin
   FSubHeader.Assign(Value);
@@ -550,6 +553,21 @@ begin
   FHeader.Free;
   FStyles.Free;
   inherited Destroy;
+end;
+
+function TJvgExportHTML.GetFooter: TStrings;
+begin
+  Result := FFooter;
+end;
+
+function TJvgExportHTML.GetHeader: TStrings;
+begin
+  Result := FHeader;
+end;
+
+function TJvgExportHTML.GetStyles: TStrings;
+begin
+  Result := FStyles;
 end;
 
 procedure TJvgExportHTML.SetFooter(const Value: TStrings);

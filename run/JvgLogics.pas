@@ -167,7 +167,7 @@ type
   TJvgLogics = class(TOwnedCollection)
   private
     FResult: string;
-    FDictionary: TStrings;
+    FDictionary: TStringList;
     FIgnoreSpaces: boolean;
     FOnTraceMessage: TOnTraceMessage;
 
@@ -175,6 +175,7 @@ type
     procedure SetItem(Index: Integer; Value: TJvgLogicElement);
     function GetItemResult(Item: TJvgLogicElement; var LogicVariant:
       TJvgLogicVariant): boolean;
+    function GetDictionary: TStrings;
     procedure SetDictionary(const Value: TStrings);
     function ParseExpression(const Value: string): string;
 
@@ -195,7 +196,7 @@ type
     SetItem; default;
     property Result: string read FResult write FResult;
   published
-    property Dictionary: TStrings read FDictionary write SetDictionary;
+    property Dictionary: TStrings read GetDictionary write SetDictionary;
     property IgnoreSpaces: boolean read FIgnoreSpaces write FIgnoreSpaces;
     property OnTraceMessage: TOnTraceMessage read FOnTraceMessage write
       FOnTraceMessage;
@@ -552,6 +553,11 @@ begin
     inc(i);
   end;
   Result := StringReplace(Result, '[', '', [rfReplaceAll]);
+end;
+
+function TJvgLogics.GetDictionary: TStrings;
+begin
+  Result := FDictionary;
 end;
 
 procedure TJvgLogics.SetDictionary(const Value: TStrings);

@@ -106,7 +106,7 @@ type
     SC: TJvSymbolColor;
     InChanging: boolean;
     Params: TJvHLEdPropDlg;
-    FColorSamples: TStrings;
+    FColorSamples: TStringList;
     procedure LoadLocale;
     function ColorToIndex(const AColor: TColor): integer;
     function GetColorIndex(const ColorName: string): integer;
@@ -120,13 +120,14 @@ type
     function GetForegroundColor: TColor;
     function GetBackgroundColor: TColor;
     function GetCell(const Index: integer): TPanel;
+    function GetColorSamples: TStrings;
     procedure SetColorSamples(Value: TStrings);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure ParamsToControls;
     procedure ControlsToParams;
-    property ColorSamples: TStrings read FColorSamples write SetColorSamples;
+    property ColorSamples: TStrings read GetColorSamples write SetColorSamples;
   end;
 
   TJvHLEdActivePage = 0..1;
@@ -147,12 +148,11 @@ type
     FStorageSection: string; { ini section for FStorage }
     FOnDialogPopup: TOnDialogPopup;
     FOnDialogClosed: TOnDialogClosed;
+    function GetColorSamples: TStrings;
     procedure SetColorSamples(Value: TStrings);
     function IsPagesStored: boolean;
   protected
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
-      override;
-
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -166,7 +166,7 @@ type
   published
     property JvHLEditor: TJvHLEditor read FJvHLEditor write FJvHLEditor;
     property Storage: TJvFormStorage read FStorage write FStorage;
-    property ColorSamples: TStrings read FColorSamples write SetColorSamples;
+    property ColorSamples: TStrings read GetColorSamples write SetColorSamples;
     property HighlighterCombo: boolean read FHighlighterCombo write FHighlighterCombo default true;
     property ActivePage: TJvHLEdActivePage read FActivePage write FActivePage default 0;
     property ReadFrom: TJvHLEdReadFrom read FReadFrom write FReadFrom default rfStorage;
@@ -452,7 +452,7 @@ begin
   if FJvHLEditor = nil then
     raise EJVCLException.Create(RsEHLEdPropDlg_RAHLEditorNotAssigned);
   Form := TJvHLEditorParamsForm.Create(Application);
-  Form.ColorSamples.Assign(FColorSamples);
+  Form.ColorSamples.Assign(ColorSamples);
   with Form do
   try
     FHighLighter := FJvHLEditor.HighLighter;
@@ -505,6 +505,11 @@ begin
   SaveHighlighterColors(FJvHLEditor, FJvHLEditor.HighLighter);
 end;
 
+function TJvHLEdPropDlg.GetColorSamples: TStrings;
+begin
+  Result := FColorSamples;
+end;
+
 procedure TJvHLEdPropDlg.SetColorSamples(Value: TStrings);
 begin
   FColorSamples.Assign(Value);
@@ -520,13 +525,18 @@ end;
 constructor TJvHLEditorParamsForm.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FColorSamples := TStringlist.Create;
+  FColorSamples := TStringList.Create;
 end;
 
 destructor TJvHLEditorParamsForm.Destroy;
 begin
   FColorSamples.Free;
   inherited Destroy;
+end;
+
+function TJvHLEditorParamsForm.GetColorSamples: TStrings;
+begin
+  Result := FColorSamples;
 end;
 
 procedure TJvHLEditorParamsForm.SetColorSamples(Value: TStrings);
@@ -892,7 +902,7 @@ begin
   if (Sender <> nil) and (Params.Storage <> nil) then
     Params.SaveHighlighterColors(JvHLEditorPreview, JvHLEditorPreview.HighLighter);
 
-  ReadColorSampleSection(FColorSamples, cbColorSettings.Text, JvHLEditorPreview.Lines);
+  ReadColorSampleSection(ColorSamples, cbColorSettings.Text, JvHLEditorPreview.Lines);
 
   JvHLEditorPreview.HighLighter := THighLighter(cbColorSettings.ItemIndex);
   if JvHLEditorPreview.HighLighter = hlIni then

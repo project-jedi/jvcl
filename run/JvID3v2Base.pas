@@ -432,12 +432,14 @@ type
 
   TJvID3DoubleListFrame = class(TJvID3Frame)
   private
-    FList: TStrings;
-    FListW: TWideStrings;
+    FList: TStringList;
+    FListW: TWideStringList;
     function GetNameA(Index: Integer): string;
     function GetNameW(Index: Integer): string;
     function GetValueA(Index: Integer): string;
     function GetValueW(Index: Integer): string;
+    function GetList: TStrings;
+    function GetListW: TWideStrings;
     procedure SetList(const Value: TStrings);
     procedure SetListW(const Value: TWideStrings);
     procedure ListChanged(Sender: TObject);
@@ -469,8 +471,8 @@ type
     property Values[Index: Integer]: string read GetValueA;
     property ValuesW[Index: Integer]: string read GetValueW;
   published
-    property List: TStrings read FList write SetList;
-    property ListW: TWideStrings read FListW write SetListW;
+    property List: TStrings read GetList write SetList;
+    property ListW: TWideStrings read GetListW write SetListW;
   end;
 
   { COMM - fiComment - Comments
@@ -818,8 +820,10 @@ type
 
   TJvID3SimpleListFrame = class(TJvID3CustomTextFrame)
   private
-    FList: TStrings;
-    FListW: TWideStrings;
+    FList: TStringList;
+    FListW: TWideStringList;
+    function GetList: TStrings;
+    function GetListW: TWideStrings;
     procedure SetList(const Value: TStrings);
     procedure SetListW(const Value: TWideStrings);
     function GetSeparator: Char;
@@ -843,8 +847,8 @@ type
     property Separator: Char read GetSeparator;
     property SeparatorW: WideChar read GetSeparatorW;
   published
-    property List: TStrings read FList write SetList;
-    property ListW: TWideStrings read FListW write SetListW;
+    property List: TStrings read GetList write SetList;
+    property ListW: TWideStrings read GetListW write SetListW;
   end;
 
   TJvID3NumberFrame = class(TJvID3CustomTextFrame)
@@ -4502,16 +4506,16 @@ begin
   FList := TStringList.Create;
   FListW := TWideStringList.Create;
 
-  TStringList(FList).OnChange := ListChanged;
-  TWideStringList(FListW).OnChange := ListChanged;
+  FList.OnChange := ListChanged;
+  FListW.OnChange := ListChanged;
 end;
 
 procedure TJvID3DoubleListFrame.Assign(Source: TPersistent);
 begin
   if Source is TJvID3DoubleListFrame then
   begin
-    FList.Assign(TJvID3DoubleListFrame(Source).FList);
-    FListW.Assign(TJvID3DoubleListFrame(Source).FListW);
+    FList.Assign(TJvID3DoubleListFrame(Source).List);
+    FListW.Assign(TJvID3DoubleListFrame(Source).ListW);
   end;
 
   inherited Assign(Source);
@@ -4548,14 +4552,14 @@ begin
       begin
         { Change fiInvolvedPeople2, fiMusicianCreditList to fiInvolvedPeople }
         Frame := TJvID3DoubleListFrame.FindOrCreate(FController, fiInvolvedPeople);
-        CopyLists(FList, FListW, Encoding, Frame.FList, Frame.FListW, Frame.Encoding);
+        CopyLists(List, ListW, Encoding, Frame.List, Frame.ListW, Frame.Encoding);
       end;
     ive2_4:
       if FrameID = fiInvolvedPeople then
       begin
         { Change fiInvolvedPeople to fiInvolvedPeople2 }
         Frame := TJvID3DoubleListFrame.FindOrCreate(FController, fiInvolvedPeople2);
-        CopyLists(FList, FListW, Encoding, Frame.FList, Frame.FListW, Frame.Encoding);
+        CopyLists(List, ListW, Encoding, Frame.List, Frame.ListW, Frame.Encoding);
       end;
   end;
 end;
@@ -4567,8 +4571,8 @@ end;
 
 procedure TJvID3DoubleListFrame.Clear;
 begin
-  FList.Clear;
-  FListW.Clear;
+  List.Clear;
+  ListW.Clear;
   inherited Clear;
 end;
 
@@ -4615,7 +4619,7 @@ begin
 
   case Encoding of
     ienISO_8859_1:
-      for I := 0 to FList.Count - 1 do
+      for I := 0 to List.Count - 1 do
       begin
         Item.SA := Names[I];
         Inc(Result, LengthEnc(Item, Encoding, ToEncoding));
@@ -4625,9 +4629,9 @@ begin
         Inc(Result, LengthTerminatorEnc(ToEncoding));
       end;
     ienUTF_16, ienUTF_16BE, ienUTF_8:
-      for I := 0 to FListW.Count - 1 do
+      for I := 0 to ListW.Count - 1 do
       begin
-        SW := FListW[I];
+        SW := ListW[I];
         P := Pos('=', SW);
         if P > 0 then
         begin
@@ -4662,9 +4666,9 @@ begin
 
   case Encoding of
     ienISO_8859_1:
-      Result := (FList.Count = 0) or ((FList.Count = 1) and (FList[0] = ''));
+      Result := (List.Count = 0) or ((List.Count = 1) and (List[0] = ''));
     ienUTF_16, ienUTF_16BE, ienUTF_8:
-      Result := (FListW.Count = 0) or ((FListW.Count = 1) and (FListW[0] = ''));
+      Result := (ListW.Count = 0) or ((ListW.Count = 1) and (ListW[0] = ''));
   else
     Error(RsEID3UnknownEncoding);
   end;
@@ -4672,18 +4676,18 @@ end;
 
 function TJvID3DoubleListFrame.GetNameA(Index: Integer): string;
 begin
-  Result := FList.Names[Index];
+  Result := List.Names[Index];
 end;
 
 function TJvID3DoubleListFrame.GetNameW(Index: Integer): string;
 begin
-  Result := FListW.Names[Index];
+  Result := ListW.Names[Index];
 end;
 
 function TJvID3DoubleListFrame.GetValueA(Index: Integer): string;
 begin
   if Index >= 0 then
-    Result := Copy(FList[Index], Length(Names[Index]) + 2, MaxInt)
+    Result := Copy(List[Index], Length(Names[Index]) + 2, MaxInt)
   else
     Result := '';
 end;
@@ -4691,7 +4695,7 @@ end;
 function TJvID3DoubleListFrame.GetValueW(Index: Integer): string;
 begin
   if Index >= 0 then
-    Result := Copy(FListW[Index], Length(NamesW[Index]) + 2, MaxInt)
+    Result := Copy(ListW[Index], Length(NamesW[Index]) + 2, MaxInt)
   else
     Result := '';
 end;
@@ -4718,9 +4722,9 @@ begin
 
       case Encoding of
         ienISO_8859_1:
-          FList.Add(S1.SA + '=' + S2.SA);
+          List.Add(S1.SA + '=' + S2.SA);
         ienUTF_16, ienUTF_16BE, ienUTF_8:
-          FListW.Add(S1.SW + '=' + S2.SW);
+          ListW.Add(S1.SW + '=' + S2.SW);
       else
         Error(RsEID3UnknownEncoding);
       end;
@@ -4733,10 +4737,20 @@ begin
   Result := (Assigned(Frame) and (Frame.FrameID = FrameID)) or inherited SameUniqueIDAs(Frame);
 end;
 
+function TJvID3DoubleListFrame.GetList: TStrings;
+begin
+  Result := FList;
+end;
+
 procedure TJvID3DoubleListFrame.SetList(const Value: TStrings);
 begin
   FList.Assign(Value);
   Changed;
+end;
+
+function TJvID3DoubleListFrame.GetListW: TWideStrings;
+begin
+  Result := FListW;
 end;
 
 procedure TJvID3DoubleListFrame.SetListW(const Value: TWideStrings);
@@ -4782,7 +4796,7 @@ begin
     WriteEncoding;
     case Encoding of
       ienISO_8859_1:
-        for I := 0 to FList.Count - 1 do
+        for I := 0 to List.Count - 1 do
         begin
           Item.SA := Names[I];
           WriteStringEnc(Item);
@@ -4792,9 +4806,9 @@ begin
           WriteTerminatorEnc;
         end;
       ienUTF_16, ienUTF_16BE, ienUTF_8:
-        for I := 0 to FListW.Count - 1 do
+        for I := 0 to ListW.Count - 1 do
         begin
-          SW := FListW[I];
+          SW := ListW[I];
           P := Pos('=', SW);
           if P > 0 then
           begin
@@ -7679,13 +7693,13 @@ begin
   FListW := TWideStringList.Create;
 
   TStringList(FList).OnChange := ListChanged;
-  TWideStringList(FList).OnChange := ListChanged;
+  // (rom) changed FList to FListW
+  FListW.OnChange := ListChanged;
 end;
 
 procedure TJvID3SimpleListFrame.BeforeDestruction;
 begin
   inherited BeforeDestruction;
-
   FList.Free;
   FListW.Free;
 end;
@@ -7697,18 +7711,18 @@ begin
     fiLanguage:
       case Encoding of
         ienISO_8859_1:
-          Result := CheckIsLanguageListA(Self, FList, HandleError);
+          Result := CheckIsLanguageListA(Self, List, HandleError);
         ienUTF_16, ienUTF_16BE, ienUTF_8:
-          Result := CheckIsLanguageListW(Self, FListW, HandleError);
+          Result := CheckIsLanguageListW(Self, ListW, HandleError);
       else
         Error(RsEID3UnknownEncoding);
       end;
   else
     case Encoding of
       ienISO_8859_1:
-        Result := CheckListA(Self, FList, Separator, HandleError);
+        Result := CheckListA(Self, List, Separator, HandleError);
       ienUTF_16, ienUTF_16BE, ienUTF_8:
-        Result := CheckListW(Self, FListW, SeparatorW, HandleError);
+        Result := CheckListW(Self, ListW, SeparatorW, HandleError);
     else
       Error(RsEID3UnknownEncoding);
     end;
@@ -7778,11 +7792,11 @@ begin
     ienISO_8859_1:
       begin
         if FixedStringLength > 0 then
-          Inc(Result, FList.Count * FixedStringLength)
+          Inc(Result, List.Count * FixedStringLength)
         else
         begin
-          for I := 0 to FList.Count - 1 do
-            Inc(Result, Length(FList[I]) + 1);
+          for I := 0 to List.Count - 1 do
+            Inc(Result, Length(List[I]) + 1);
           { Set one separator less, the last line does not have a trailing
             separator }
           Dec(Result);
@@ -7792,7 +7806,7 @@ begin
             { Nothing };
           ienUTF_16:
             { x2, + BOM's }
-            Result := Result * 2 + 2 * Cardinal(FList.Count);
+            Result := Result * 2 + 2 * Cardinal(List.Count);
           ienUTF_16BE:
             { x2 }
             Result := Result * 2;
@@ -7803,11 +7817,11 @@ begin
     ienUTF_16, ienUTF_16BE, ienUTF_8:
       begin
         if FixedStringLength > 0 then
-          Inc(Result, FListW.Count * FixedStringLength * 2)
+          Inc(Result, ListW.Count * FixedStringLength * 2)
         else
         begin
-          for I := 0 to FListW.Count - 1 do
-            Inc(Result, Length(FListW[I]) + 2);
+          for I := 0 to ListW.Count - 1 do
+            Inc(Result, Length(ListW[I]) + 2);
 
           { Set one separator less, the last line does not have a trailing
             separator }
@@ -7819,7 +7833,7 @@ begin
             Result := Result div 2;
           ienUTF_16:
             { Add the BOM's }
-            Inc(Result, FListW.Count * 2);
+            Inc(Result, ListW.Count * 2);
           ienUTF_16BE:
             { Nothing };
         else
@@ -7867,9 +7881,9 @@ begin
         AText.SA := TJvID3StringList(FList).GetSeparatedText('');
     ienUTF_16, ienUTF_16BE, ienUTF_8:
       if SeparatorW <> WideNull then
-        AText.SW := FListW.GetSeparatedText(SeparatorW)
+        AText.SW := ListW.GetSeparatedText(SeparatorW)
       else
-        AText.SW := FListW.GetSeparatedText('');
+        AText.SW := ListW.GetSeparatedText('');
   else
     Error(RsEID3UnknownEncoding);
   end;
@@ -7886,17 +7900,27 @@ begin
   case Encoding of
     ienISO_8859_1:
       if FixedStringLength >= 0 then
-        ExtractFixedStringsA(PChar(ANewText.SA), FixedStringLength, FList)
+        ExtractFixedStringsA(PChar(ANewText.SA), FixedStringLength, List)
       else
-        ExtractStringsA(Separator, PChar(ANewText.SA), FList);
+        ExtractStringsA(Separator, PChar(ANewText.SA), List);
     ienUTF_16, ienUTF_16BE, ienUTF_8:
       if FixedStringLength >= 0 then
-        ExtractFixedStringsW(PWideChar(ANewText.SW), FixedStringLength, FListW)
+        ExtractFixedStringsW(PWideChar(ANewText.SW), FixedStringLength, ListW)
       else
-        ExtractStringsW(SeparatorW, PWideChar(ANewText.SW), FListW);
+        ExtractStringsW(SeparatorW, PWideChar(ANewText.SW), ListW);
   else
     Error(RsEID3UnknownEncoding);
   end;
+end;
+
+function TJvID3SimpleListFrame.GetList: TStrings;
+begin
+  Result := FList;
+end;
+
+function TJvID3SimpleListFrame.GetListW: TWideStrings;
+begin
+  Result := FListW;
 end;
 
 procedure TJvID3SimpleListFrame.SetList(const Value: TStrings);

@@ -54,13 +54,14 @@ type
     FIsDown: Boolean;
     FOtherCaption: string;
     FOnChange: TNotifyEvent;
-    FCustomColors: TStrings;
+    FCustomColors: TStringList;
     FEdgeWidth: Integer;
     FColor: TColor;
     {$IFDEF VCL}
     FOptions: TColorDialogOptions;
     procedure SetOptions(Value: TColorDialogOptions);
     {$ENDIF VCL}
+    function GetCustomColors: TStrings;
     procedure SetEdgeWidth(Value: Integer);
     procedure SetCustomColors(Value: TStrings);
     procedure SetOtherCaption(Value: string);
@@ -83,7 +84,7 @@ type
     {$IFDEF VCL}
     property Options: TColorDialogOptions read FOptions write SetOptions;
     {$ENDIF VCL}
-    property CustomColors: TStrings read FCustomColors write SetCustomColors;
+    property CustomColors: TStrings read GetCustomColors write SetCustomColors;
     property Color: TColor read FColor write SetColor default clBlack;
     property Enabled;
     property Hint;
@@ -209,6 +210,11 @@ begin
     FOptions := Value;
 end;
 {$ENDIF VCL}
+
+function TJvColorButton.GetCustomColors: TStrings;
+begin
+  Result := FCustomColors;
+end;
 
 procedure TJvColorButton.SetCustomColors(Value: TStrings);
 begin
