@@ -297,7 +297,7 @@ type
     property WantTabs: Boolean read GetWantTabs write SetWantTabs;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
+    procedure BeforeDestruction; override;
     function BeginUpdate: Integer; virtual;
     function EndUpdate: Integer; virtual;
     function Focused: Boolean; override;
@@ -655,6 +655,7 @@ type
     destructor Destroy; override;
     function Add(const Item: TJvCustomInspectorItem): Integer; 
     procedure AfterConstruction; override;
+    procedure BeforeDestruction; override;
     procedure Clear;
     procedure Delete(const Index: Integer); overload; virtual;
     procedure Delete(const Item: TJvCustomInspectorItem); overload; virtual;
@@ -2982,16 +2983,15 @@ begin
   BandWidth := 150;
 end;
 
-destructor TJvCustomInspector.Destroy;
+procedure TJvCustomInspector.BeforeDestruction;
 begin
-  inherited Destroy;
   FRoot.Free;
   FBandStartsSB.Free;
   FBandStartsNoSB.Free;
   FSortNotificationList.Free;
   Painter := nil;
 end;
-
+ 
 function TJvCustomInspector.BeginUpdate: Integer;
 begin
   Inc(FLockCount);
@@ -5068,10 +5068,18 @@ end;
 destructor TJvCustomInspectorItem.Destroy;
 begin
   if Inspector <> nil then
+  begin
     Inspector.RemoveNotifySort(Self);
+    if Inspector.RowSizingItem = Self then
+    begin
+      Inspector.RowSizing := False;
+      Inspector.RowSizingItem := nil;
+    end;
+  end;
   FItems.Free;
   if Data <> nil then
     FData.RemoveItem(Self);
+  FRowSizing.Free;
   inherited Destroy;
 end;
 
@@ -5086,6 +5094,13 @@ begin
   inherited AfterConstruction;
   InvalidateMetaData;
   DoAfterItemCreate;
+end;
+
+procedure TJvCustomInspectorItem.BeforeDestruction;
+begin
+  inherited BeforeDestruction;
+  if (Inspector <> nil) and (Inspector.Root <> Self) then
+    DoneEdit(True);
 end;
 
 procedure TJvCustomInspectorItem.Clear;
@@ -5104,6 +5119,12 @@ var
   Disp: TJvCustomInspectorItem;
 begin
   Disp := Items[Index].GetDisplayParent;
+  if Inspector.Selected = Items[Index] then
+  begin
+    Inspector.SetSelected(Disp);
+    if Inspector.Selected = Items[Index] then
+      Inspector.SelectedIndex := -1;
+  end;
   FItems.Delete(Index);
   if Disp <> nil then
     Disp.InvalidateSort
@@ -6470,11 +6491,16 @@ var
 begin
   if Data.IsInitialized then
   begin
-    for I := Pred(Count) downto 0 do
-      if (Items[I].Data is TJvInspectorPropData) and (Items[I].Data.IsInitialized) and
-          (TJvInspectorPropData(Items[I].Data).Instance = FLastMemberInstance) then
-        Delete(I);
-    FLastMemberInstance := nil;
+    Inspector.BeginUpdate;
+    try
+      for I := Pred(Count) downto 0 do
+        if (Items[I].Data is TJvInspectorPropData) and (Items[I].Data.IsInitialized) and
+            (TJvInspectorPropData(Items[I].Data).Instance = FLastMemberInstance) then
+          Delete(I);
+      FLastMemberInstance := nil;
+    finally
+      Inspector.EndUpdate;
+    end;
   end;
 end;
 
@@ -6539,7 +6565,9 @@ end;
 procedure TJvInspectorClassItem.InvalidateMetaData;
 begin
   if icfCreateMemberItems in ItemClassFlags then
-    CreateMembers;
+    CreateMembers
+  else
+    DeleteMembers;
 end;
 
 procedure TJvInspectorClassItem.SetCreateMemberItems(const Value: Boolean);
@@ -6607,10 +6635,7 @@ begin
     Flags := Flags + [iifValueList];
   end
   else if GetTypeData(Data.TypeInfo).ClassType.InheritsFrom(TPersistent) then
-  begin
-    ItemClassFlags := [icfCreateMemberItems];
-    ItemClassFlags := [icfShowClassName];
-  end
+    ItemClassFlags := [icfCreateMemberItems, icfShowClassName]
   else
     ItemClassFlags := [icfShowClassName];
 end;
