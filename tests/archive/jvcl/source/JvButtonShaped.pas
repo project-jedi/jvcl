@@ -41,7 +41,7 @@ type
     FShape: TBitmap;
     procedure SetShape(const Value: TBitmap);
   protected
-    procedure CreateWnd; override;
+    procedure Loaded;override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -67,13 +67,11 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvButtonShaped.CreateWnd;
+procedure TJvButtonShaped.Loaded;
 begin
+  inherited;
   if not FShape.Empty then
-  begin
-    inherited CreateWnd;
     SetShape(Shape);
-  end;
 end;
 
 procedure TJvButtonShaped.SetShape(const Value: TBitmap);
