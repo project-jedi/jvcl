@@ -19,7 +19,7 @@ Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
 Contributor(s):
-  dejoy(dejoy@ynl.gov.cn)
+dejoy(dejoy@ynl.gov.cn)
 
 Last Modified: 2004-02-26
 
@@ -42,10 +42,10 @@ interface
 
 uses
   SysUtils, Classes,
-  
-  
+
+
   Types, QGraphics, QWindows, QControls, QForms, QStdCtrls, QDialogs, QExtCtrls,
-  
+
   JvQComponent, JvQSpeedButton, JvQOfficeColorForm, JvQOfficeColorPanel;
 
 const
@@ -61,12 +61,14 @@ type
     FArrowWidth: Integer;
     FDragBarHeight: Integer;
     FDragBarSpace: Integer;
+    FDragBarHint: string;
     procedure SetShowDragBar(const Value: Boolean);
     procedure SetDragCaption(const Value: string);
     procedure SetArrowWidth(const Value: Integer);
     procedure SetEdgeWidth(const Value: Integer);
     procedure SetDragBarHeight(const Value: Integer);
     procedure SetDragBarSpace(const Value: Integer);
+    procedure SetDragBarHint(const Value: string);
   public
     constructor Create; override;
     procedure Assign(Source: TPersistent); override;
@@ -75,6 +77,7 @@ type
     property ArrowWidth: Integer read FArrowWidth write SetArrowWidth default MinArrowWidth;
     property ShowDragBar: Boolean read FShowDragBar write SetShowDragBar default True;
     property DragCaption: string read FDragCaption write SetDragCaption;
+    property DragBarHint: string read FDragBarHint write SetDragBarHint;
     property DragBarHeight: Integer read FDragBarHeight write SetDragBarHeight default MinDragBarHeight;
     property DragBarSpace: Integer read FDragBarSpace write SetDragBarSpace default MinDragBarSpace;
   end;
@@ -91,6 +94,7 @@ type
     FInited: Boolean;
     FOnColorChange: TNotifyEvent;
     FOnDropDown: TNotifyEvent;
+    FOnColorButtonClick: TNotifyEvent;
     procedure SetFlat(const Value: Boolean);
     procedure SetColor(const Value: TColor);
     function GetCustomColors: TStrings;
@@ -111,30 +115,36 @@ type
     procedure OnFormWindowStyleChanged(Sender: TObject);
     procedure OnButtonMouseEnter(Sender: TObject);
     procedure OnButtonMouseLeave(Sender: TObject);
-    procedure ColorButtonClick(Sender: TObject);
+    procedure OnButtonClick(Sender: TObject);
+    procedure OnColorButtonsClick(Sender: TObject);
   protected
     procedure AdjustColorForm(X: Integer = 0; Y: Integer = 0); //Screen postion
     procedure ShowColorForm(X: Integer = 0; Y: Integer = 0); virtual; //Screen postion
-    
-    
+
+
     procedure InitWidget; override;
-    
+
     procedure SetEnabled( const  Value: Boolean); override;
     procedure FontChanged; override;
     procedure DefineProperties(Filer: TFiler); override;
     procedure PropertiesChanged(Sender: TObject; PropName: string); virtual;
+
+    property ColorsForm :TJvOfficeColorForm read FColorsForm;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure AdjustSize; override;
     property Flat: Boolean read FFlat write SetFlat default True;
     property Color: TColor read GetColor write SetColor default clBlack;
+    property SelectedColor: TColor read GetColor write SetColor default clBlack;
+
     property CustomColors: TStrings read GetCustomColors write SetCustomColors;
     property Properties: TJvOfficeColorButtonProperties read GetProperties write SetProperties;
     
     property Glyph: TBitmap read GetGlyph write SetGlyph;
     property OnDropDown: TNotifyEvent read FOnDropDown write FOnDropDown;
     property OnColorChange: TNotifyEvent read FOnColorChange write FOnColorChange;
+    property OnColorButtonClick: TNotifyEvent read FOnColorButtonClick write FOnColorButtonClick;
   end;
 
   TJvOfficeColorButton = class(TJvCustomOfficeColorButton)
@@ -303,7 +313,7 @@ begin
     GroupIndex := 2;
     AllowAllUp := True;
     Tag := MaxColorButtonNumber + 4;
-    OnClick := ColorButtonClick;
+    OnClick := OnButtonClick;
   end;
 
   FColorsForm := TJvOfficeColorForm.CreateNew(Self);
@@ -317,6 +327,7 @@ begin
     OnWindowStyleChanged := OnFormWindowStyleChanged;
 
     ColorPanel.OnColorChange := DoOnColorChange;
+    ColorPanel.OnColorButtonClick := OnColorButtonsClick;
   end;
 
   FProperties := TJvOfficeColorButtonProperties.Create;
@@ -342,7 +353,19 @@ end;
 destructor TJvCustomOfficeColorButton.Destroy;
 begin
   if FColorsForm.Visible then
-    FColorsForm.Hide; //because we replaced message handler, we have to hide the form at here.
+  begin
+    with THackJvColorForm(FColorsForm) do
+    begin
+      OnShowingChanged := nil;
+      OnKillFocus := nil;
+      OnClose := nil;
+      OnWindowStyleChanged := nil;
+
+      ColorPanel.OnColorChange := nil;
+      ColorPanel.OnColorButtonClick := nil;
+      Hide;
+    end;
+  end;
   Action.Free;
   FProperties.Free;
   inherited Destroy;
@@ -391,7 +414,7 @@ begin
   FColorsForm.Font.Assign(Font);
 end;
 
-procedure TJvCustomOfficeColorButton.ColorButtonClick(Sender: TObject);
+procedure TJvCustomOfficeColorButton.OnButtonClick(Sender: TObject);
 begin
   if TJvColorSpeedButton(Sender).Tag = FArrowButton.Tag then
   begin
@@ -404,7 +427,7 @@ begin
     else
     begin
       if Assigned(FOnDropDown) then
-        FOnDropDown(FArrowButton);
+        FOnDropDown(self);
       ShowColorForm;
       FColorFormDropDown := True;
     end
@@ -414,6 +437,26 @@ begin
     TJvSubColorButton(Sender).Down := True;
     SetColor(TJvSubColorButton(Sender).Color);
   end;
+end;
+
+procedure TJvCustomOfficeColorButton.OnColorButtonsClick(Sender: TObject);
+begin
+  if  not FColorsForm.ToolWindowStyle then
+  begin
+    FColorsForm.Hide;
+    FColorsForm.ToolWindowStyle := False;
+    if FArrowButton.Down then
+      FArrowButton.Down := False;
+    FColorFormDropDown := False;
+  end else
+  begin
+    if FColorsForm.ColorPanel.ClickColorButton = cbctOtherButton then
+      FColorsForm.FormStyle := fsNormal;
+  end;
+
+  if Assigned(FOnColorButtonClick) then
+    FOnColorButtonClick(Sender);
+
 end;
 
 function TJvCustomOfficeColorButton.GetCustomColors: TStrings;
@@ -429,10 +472,12 @@ end;
 procedure TJvCustomOfficeColorButton.DoOnColorChange(Sender: Tobject);
 begin
   FMainButton.Color := FColorsForm.ColorPanel.SelectedColor;
-  if not THackJvColorForm(FColorsForm).DropDownMoved then
-    FColorsForm.Hide;
+  if FColorsForm.ToolWindowStyle and (FColorsForm.FormStyle<>fsStayOnTop) then
+  begin
+    FColorsForm.FormStyle := fsStayOnTop;
+  end;
   if Assigned(FOnColorChange) then
-    FOnColorChange(Sender);
+    FOnColorChange(self);
 end;
 
 procedure TJvCustomOfficeColorButton.SetCustomColors(const Value: TStrings);
@@ -516,7 +561,10 @@ procedure TJvCustomOfficeColorButton.OnFormClose(Sender: TObject; var Action: TC
 begin
   if FColorsForm.ToolWindowStyle then
     FColorFormDropDown := False;
-  Action := caHide;
+  if csDestroying	in ComponentState then
+    Action := caFree
+  else
+    Action := caHide;
 end;
 
 procedure TJvCustomOfficeColorButton.OnFormWindowStyleChanged(Sender: TObject);
@@ -609,6 +657,11 @@ begin
     AdjustColorForm;
   end
   else
+  if Cmp(PropName, 'DragBarHint') then
+  begin
+    FColorsForm.DragBarHint := Properties.DragBarHint;
+  end
+  else
   if Cmp(PropName, 'DragBarSpace') then
   begin
     FColorsForm.DragBarSpace := Properties.DragBarSpace;
@@ -662,6 +715,7 @@ begin
   FArrowWidth := MinArrowWidth;
   FDragBarHeight := MinDragBarHeight;
   FDragBarSpace := MinDragBarSpace;
+  FDragBarHint := 'Drag to floating';
 end;
 
 procedure TJvOfficeColorButtonProperties.Assign(Source: TPersistent);
@@ -670,12 +724,13 @@ begin
   if Source is TJvOfficeColorButtonProperties then
     with TJvOfficeColorButtonProperties(Source) do
     begin
-      Self.ShowDragBar := ShowDragBar;
-      Self.DragCaption := DragCaption;
-      Self.EdgeWidth := EdgeWidth;
-      Self.ArrowWidth := ArrowWidth;
-      Self.DragBarHeight := DragBarHeight;
-      Self.DragBarSpace := DragBarSpace;
+      Self.FShowDragBar := ShowDragBar;
+      Self.FDragCaption := DragCaption;
+      Self.FEdgeWidth := EdgeWidth;
+      Self.FArrowWidth := ArrowWidth;
+      Self.FDragBarHeight := DragBarHeight;
+      self.FDragBarHint := DragBarHint;
+      Self.FDragBarSpace := DragBarSpace;
     end;
 end;
 
@@ -703,6 +758,16 @@ begin
   begin
     FDragBarSpace := Value;
     Changed('DragBarSpace');
+  end;
+end;
+
+procedure TJvOfficeColorButtonProperties.SetDragBarHint(
+  const Value: string);
+begin
+  if FDragBarHint<>Value then
+  begin
+    FDragBarHint := Value;
+    Changed('DragBarHint');
   end;
 end;
 

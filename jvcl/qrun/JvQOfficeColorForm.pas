@@ -94,6 +94,7 @@ type
     FOnKillFocus: TNotifyEvent;
     FOnWindowStyleChanged: TNotifyEvent;
     FShowDragBar: Boolean;
+    FDragBarHint: string;
 
     procedure FormDeactivate(Sender: TObject);
     procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -105,6 +106,7 @@ type
     procedure SetToolWindowStyle(const Value: Boolean);
 
     procedure SetShowDragBar(const Value: Boolean);
+    procedure SetDragBarHint(const Value: string);
   protected
 
     DropDownMoved: Boolean; //ÒÆ¶¯¹ý
@@ -118,11 +120,11 @@ type
 
     procedure AdjustColorForm();
 
-    
-    
+
+
     function WidgetFlags: Integer; override;
     procedure Paint; override;
-    
+
 
     procedure DoKillFocus(FocusedWnd: HWND); override;
     procedure ShowingChanged; override;
@@ -137,6 +139,7 @@ type
     property ColorPanel: TJvOfficeColorPanel read FColorPanel;
     property ShowDragBar: Boolean read FShowDragBar write SetShowDragBar default True;
     property DragBarHeight: Integer index Tag_DragBarHeight read FDragBarHeight write SetMeasure;
+    property DragBarHint: string read FDragBarHint write SetDragBarHint;
     property DragBarSpace: Integer index Tag_DragBarSpace read FDragBarSpace write SetMeasure;
     property ToolWindowStyle: Boolean read FToolWindowStyle write SetToolWindowStyle default False;
 
@@ -154,9 +157,10 @@ begin
   inherited CreateNew(AOwner, Dummy);
   FInited := False;
   FShowDragBar := True;
+  FDragBarHint := 'Drag to floating';
 
   AutoScroll := False;
-  
+
   
   BorderIcons := [];
   BorderStyle := fbsDialog;
@@ -183,6 +187,8 @@ begin
     Color := $999999;
     
     Height := MinDragBarHeight;
+    Hint := FDragBarHint;
+    ShowHint := True;
   end;
 
   FColorPanel := TJvOfficeColorPanel.Create(self);
@@ -385,6 +391,15 @@ begin
     DropDownMoving := False;
     MoveStart := False;
     DropDownMoved := False;
+  end;
+end;
+
+procedure TJvOfficeColorForm.SetDragBarHint(const Value: string);
+begin
+  if FDragBarHint<>Value then
+  begin
+    FDragBarHint := Value;
+    FDragBar.Hint := Value;
   end;
 end;
 
