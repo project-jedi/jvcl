@@ -33,8 +33,7 @@ unit JvProgressBar;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ComCtrls, JVCLVer
-  {$IFNDEF D6PersonalEdition}, DB, DBCtrls{$ENDIF};
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ComCtrls, JVCLVer;
 
 type
   TJvProgressBar = class(TProgressBar)
@@ -63,26 +62,6 @@ type
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property Color;
   end;
-
-  {$IFNDEF D6PersonalEdition}
-  TJvDBProgressBar = class(TJvProgressBar)
-  private
-    FDataLink: TFieldDataLink;
-    function GetDataField: string;
-    procedure SetDataField(Value: string);
-    function GetDataSource: TDataSource;
-    procedure SetDataSource(Value: TDataSource);
-    function GetField: TField;
-  public
-    procedure DataChange(Sender: TObject);
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    property Field: TField read GetField;
-  published
-    property DataField: string read GetDataField write SetDataField;
-    property DataSource: TDataSource read GetDataSource write SetDataSource;
-  end;
-  {$ENDIF}
 
 implementation
 const
@@ -141,56 +120,4 @@ begin
   SendMessage(Handle, PBM_SETBARCOLOR, 0, ColorToRGB(FBarColor));
 end;
 
-{$IFNDEF D6PersonalEdition}
-{ TJvDBProgressBar }
-
-constructor TJvDBProgressBar.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FDataLink := TFieldDataLink.Create;
-  FDataLink.Control := self;
-  FDataLink.OnDataChange := DataChange;
-end;
-
-destructor TJvDBProgressBar.Destroy;
-begin
-  FDataLink.Free;
-  FDataLink := nil;
-  inherited Destroy;
-end;
-
-function TJvDBProgressBar.GetDataField: string;
-begin
-  Result := FDataLink.FieldName;
-end;
-
-procedure TJvDBProgressBar.SetDataField(Value: string);
-begin
-  FDataLink.FieldName := Value;
-end;
-
-function TJvDBProgressBar.GetDataSource: TDataSource;
-begin
-  Result := FDataLink.DataSource;
-end;
-
-procedure TJvDBProgressBar.SetDataSource(Value: TDataSource);
-begin
-  FDataLink.DataSource := Value;
-end;
-
-function TJvDBProgressBar.GetField: TField;
-begin
-  Result := FDataLink.Field;
-end;
-
-procedure TJvDBProgressBar.DataChange(Sender: TObject);
-begin
-  if (FDataLink.Field <> nil) and (FDataLink.Field is TNumericField) then
-    Position := FDataLink.Field.AsInteger
-  else
-    Position := Min;
-end;
-
-{$ENDIF}
 end.
