@@ -260,6 +260,9 @@ begin
       @FRegisterServiceProcess := GetProcAddress(FDllHandle, 'RegisterServiceProcess')
     else
       @FRegisterServiceProcess := nil;
+
+    if not (csDesigning in ComponentState) then
+      Application.HookMainWindow(ApplicationHook)
   end;
 end;
 
@@ -284,7 +287,10 @@ end;
 destructor TJvTrayIcon.Destroy;
 begin
   if not (csDestroying in Application.ComponentState) then
+  begin
     SetTask(False);
+    Application.UnHookMainWindow(ApplicationHook);
+  end;
   if FTimer<>nil then
     FTimer.Free;
   SetActive(False);
@@ -696,12 +702,6 @@ begin
   ApplicationVisible := tvVisibleTaskBar in Value;
   SetActive(FActive);
   SetAnimated(FAnimated);
-  if not (csDesigning in ComponentState) then
-    if tvAutoHide in Visibility then
-      Application.HookMainWindow(ApplicationHook)
-    else
-      Application.UnHookMainWindow(ApplicationHook);
-
 end;
 
 {**************************************************}
@@ -710,12 +710,8 @@ function TJvTrayIcon.ApplicationHook(var Message: TMessage): Boolean;
 begin
   if (Message.Msg = WM_SYSCOMMAND) and (Message.WParam = SC_MINIMIZE) and
     (tvAutoHide in Visibility) then
-  begin
     HideApplication;
-    Result := True;
-  end
-  else
-    Result := False;
+  Result := False;
 end;
 
 
