@@ -220,10 +220,12 @@ procedure TJvCustomPageEditor.PrepareItem(Index: Integer; const AItem: TMenuItem
 begin
   inherited;
   case Index of
+   {$IFNDEF COMPILER6_UP}
     0:
       AItem.Default := GetPageControl.PageCount > 1;
     2:
       AItem.Default := GetPageControl.PageCount = 0;
+    {$ENDIF}
     3:
       AItem.Enabled := GetPageControl.ActivePage <> nil;
   end;
