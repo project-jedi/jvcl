@@ -327,7 +327,7 @@ begin
   CaptureExecute('"' + FTarget.RootDir + '\Bin\make.exe"',
     '-f makefile.mak', JVCLDir + '\images', CaptureLine);
 
-  if (not IsJCL) or (FTarget.InstallJcl and FTarget.IsBCB) then
+  if (not IsJCL) or (FTarget.InstallJcl {or FTarget.IsBCB}) then
   begin
    // create make file
     PrepareBpgData := PrepareBpg(BpgFilename, FTarget, IsJCL);
@@ -414,7 +414,7 @@ end;
 
 function TMakeThread.MakeTarget: Boolean;
 var
-  JclBpgFilename, Prefix: string;
+  JclBpgFilename, Prefix, ObjDirIfNecessary: string;
 begin
   Result := False;
   if Aborted then Exit;
@@ -422,7 +422,16 @@ begin
 
   if (FTarget.InstallJcl) or (FTarget.JCLNeedsDcp) then
   begin
-    if FTarget.IsDelphi then Prefix := '' else Prefix := 'C';
+    if FTarget.IsDelphi then
+    begin
+      Prefix := 'D';
+      ObjDirIfNecessary := '';
+    end
+    else
+    begin
+      Prefix := 'C';
+      ObjDirIfNecessary := '\obj';
+    end;
     JclBpgFilename := 'JclPackages' + Prefix + IntToStr(FTarget.MajorVersion) + '0.bpg';
 
     Result := CompilePackageGroup(
@@ -430,7 +439,7 @@ begin
       JclIncludePaths,
       JclLibDir + '\' + FTarget.JclDirName + ';' + FTarget.DcpDir,
       JclSourcePaths,
-      JclLibDir + '\' + FTarget.JclDirName + '\obj',
+      JclLibDir + '\' + FTarget.JclDirName + ObjDirIfNecessary,
       FTarget.JCLPackageDir + '\' + FTarget.JclDirName,
       True);
     if Result then
