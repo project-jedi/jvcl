@@ -22,16 +22,14 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvIconList;
+
+{$I jvcl.inc}
 
 interface
 
 uses
-  Windows, SysUtils,
-  Graphics,
-  Classes;
+  Windows, SysUtils, Graphics, Classes;
 
 type
   TJvIconList = class(TPersistent)

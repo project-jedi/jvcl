@@ -25,14 +25,14 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvID3v2Types;
+
+{$I jvcl.inc}
 
 interface
 
 uses
-  Classes, JvFinalize;
+  Classes;
 
 type
   TJvID3TagSizeRestriction = (tsrMax128Frames_1MB, tsrMax64Frames_128KB, tsrMax32Frames_40KB,
@@ -255,7 +255,7 @@ implementation
 
 uses
   Math, SysUtils,
-  JvConsts, JvResources, JvTypes;
+  JvFinalize, JvConsts, JvResources, JvTypes;
 
 const
   sUnitName = 'JvId3v2Types';

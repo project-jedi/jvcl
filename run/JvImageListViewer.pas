@@ -22,9 +22,9 @@ Known Issues:
 
 unit JvImageListViewer;
 
-{$I jvcl.inc}
-
 interface
+
+{$I jvcl.inc}
 
 uses
   SysUtils, Classes,

@@ -23,10 +23,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvListView;
+
 {$I jvcl.inc}
 {$I vclonly.inc}
-
-unit JvListView;
 
 interface
 

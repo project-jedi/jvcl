@@ -44,10 +44,10 @@ Notes (2003-05-21) // Remko Bonte
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvListBox;
+
 {$I jvcl.inc}
 {$I vclonly.inc}
-
-unit JvListBox;
 
 interface
 

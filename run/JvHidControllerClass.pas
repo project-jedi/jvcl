@@ -24,10 +24,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvHidControllerClass;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvHidControllerClass;
 
 interface
 

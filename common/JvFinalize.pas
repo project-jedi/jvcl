@@ -80,7 +80,6 @@ function AddFinalizeMemory(const UnitName: string; Ptr: Pointer): Pointer;
 /// </limitation>
 function AddFinalizeMemoryNil(const UnitName: string; var Ptr{: Pointer}): Pointer;
 
-
 /// <summary>
 /// FinalizeUnit finalizes all items from the unit UnitName. The UnitName is
 /// case sensitive. If you add any finalization item you must call this function
@@ -271,7 +270,6 @@ begin
   inherited Destroy;
 end;
 
-
 //=== { TFinalizeObjectItem } ================================================
 
 constructor TFinalizeObjectItem.Create(const AUnitName: string;
@@ -286,7 +284,6 @@ begin
   FInstance.Free;
   inherited Destroy;
 end;
-
 
 //=== { TFinalizeObjectNilItem } =============================================
 
@@ -303,7 +300,6 @@ begin
   FReference^ := nil;
   inherited Destroy;
 end;
-
 
 //=== { TFinalizeFreeAndNilItem } ============================================
 
@@ -324,7 +320,6 @@ begin
   inherited Destroy;
 end;
 
-
 //=== { TFinalizeMemoryItem } ================================================
 
 constructor TFinalizeMemoryItem.Create(const AUnitName: string; APtr: Pointer);
@@ -339,7 +334,6 @@ begin
     FreeMem(FPtr);
   inherited Destroy;
 end;
-
 
 //=== { TFinalizeMemoryNilItem } =============================================
 

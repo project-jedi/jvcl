@@ -30,8 +30,6 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 { history
  (JVCL Library versions) :
   1.03:
@@ -87,6 +85,8 @@ Known Issues:
 }
 
 unit JvHLEditor;
+
+{$I jvcl.inc}
 
 interface
 

@@ -26,8 +26,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
 unit JvHLEditorPropertyForm;
+
+{$I jvcl.inc}
 
 interface
 

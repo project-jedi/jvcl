@@ -24,7 +24,6 @@ Known Issues:
 
 -----------------------------------------------------------------------------}
 // $Id$
-{$I jvcl.inc}
 
 // (ahuser) No dependency on JCL units. Required functions are emulated.
 //          With NO_JCL defined the executable file size shrinks because
@@ -34,7 +33,10 @@ Known Issues:
 
 unit JvJCLUtils;
 
+{$I jvcl.inc}
+
 interface
+
 // (p3) note: this unit should only contain JCL compatible routines (no Forms etc)
 // and no JVCL units!
 // (ahuser) Unfortunately the QGraphics unit imports the QForms unit. Because

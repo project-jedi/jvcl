@@ -23,11 +23,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvLookOut;
 
-{ Outlook style control }
+{$I jvcl.inc}
 
 interface
 
