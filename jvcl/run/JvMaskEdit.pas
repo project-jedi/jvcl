@@ -78,8 +78,8 @@ type
   protected
     procedure CaretChanged(Sender: TObject); dynamic;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
-    procedure DoKillFocus(ANextControl: TWinControl); override;
-    procedure DoSetFocus(APreviousControl: TWinControl); override;
+    procedure DoKillFocus(FocusedWnd: HWND); override;
+    procedure DoSetFocus(FocusedWnd: HWND); override;
     procedure DoKillFocusEvent(const ANextControl: TWinControl); virtual;
     procedure DoSetFocusEvent(const APreviousControl: TWinControl); virtual;
     {$IFDEF VCL}
@@ -564,25 +564,25 @@ end;
 
 {$ENDIF VCL}
 
-procedure TJvCustomMaskEdit.DoKillFocus(ANextControl: TWinControl);
+procedure TJvCustomMaskEdit.DoKillFocus(FocusedWnd: HWND);
 begin
   FLeaving := True;
   try
     FCaret.DestroyCaret;
-    inherited DoKillFocus(ANextControl);
-    DoKillFocusEvent(ANextControl);
+    inherited DoKillFocus(FocusedWnd);
+    DoKillFocusEvent(FindControl(FocusedWnd));
   finally
     FLeaving := False;
   end;
 end;
 
-procedure TJvCustomMaskEdit.DoSetFocus(APreviousControl: TWinControl);
+procedure TJvCustomMaskEdit.DoSetFocus(FocusedWnd: HWND);
 begin
   FEntering := True;
   try
-    inherited DoSetFocus(APreviousControl);
+    inherited DoSetFocus(FocusedWnd);
     FCaret.CreateCaret;
-    DoSetFocusEvent(APreviousControl);
+    DoSetFocusEvent(FindControl(FocusedWnd));
   finally
     FEntering := False;
   end;
@@ -612,7 +612,8 @@ procedure TJvCustomMaskEdit.NotifyIfChanged;
 begin
   if FLastNotifiedText <> Text then
   begin
-    {FLastNotifiedText := Text;
+    { (ahuser) same code as in Change()
+    FLastNotifiedText := Text;
     inherited Change;}
     Change;
   end;

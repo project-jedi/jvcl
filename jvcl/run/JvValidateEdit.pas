@@ -147,8 +147,8 @@ type
     function GetText: TCaption;
     {$ENDIF VCL}
   protected
-    procedure DoKillFocus(FocusedControl: TWinControl); override;
-    procedure DoSetFocus(FocusedControl: TWinControl); override;
+    procedure DoKillFocus(FocusedWnd: HWND); override;
+    procedure DoSetFocus(FocusedWnd: HWND); override;
     {$IFDEF VisualCLX}
     procedure SetText(const NewValue: TCaption); override;
     procedure TextChanged; override; // -> CMChanged
@@ -747,17 +747,17 @@ begin
 end;
 
 
-procedure TJvCustomValidateEdit.DoSetFocus(FocusedControl: TWinControl);
+procedure TJvCustomValidateEdit.DoSetFocus(FocusedWnd: HWND);
 begin
   EnterText := FEditText;
   DisplayText;
-  inherited DoSetFocus(FocusedControl);
+  inherited DoSetFocus(FocusedWnd);
 end;
 
-procedure TJvCustomValidateEdit.DoKillFocus(FocusedControl: TWinControl);
+procedure TJvCustomValidateEdit.DoKillFocus(FocusedWnd: HWND);
 begin
   EditText := inherited Text;
-  inherited DoKillFocus(FocusedControl);
+  inherited DoKillFocus(FocusedWnd);
 end;
 
 procedure TJvCustomValidateEdit.ChangeText(const NewValue: string);

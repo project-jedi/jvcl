@@ -329,7 +329,7 @@ type
     procedure WMHScroll(var Msg: TWMScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMScroll); message WM_VSCROLL;
     procedure DoGetDlgCode(var Code: TDlgCodes); override;
-    procedure DoSetFocus(FocusedControl: TWinControl); override;
+    procedure DoSetFocus(Focuseded: HWND); override;
     {$IFDEF VisualCLX}
     procedure Scrolled(Sender: TObject; ScrollCode: TScrollCode;
       var ScrollPos: Integer); dynamic;
@@ -3419,9 +3419,9 @@ begin
     Include(Code, dcWantTab);
 end;
 
-procedure TJvCustomInspector.DoSetFocus(FocusedControl: TWinControl);
+procedure TJvCustomInspector.DoSetFocus(Focuseded: HWND);
 begin
-  inherited DoSetFocus(FocusedControl);
+  inherited DoSetFocus(Focuseded);
   if Selected <> nil then
     Selected.SetFocus;
 end;

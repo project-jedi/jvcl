@@ -1585,7 +1585,7 @@ begin
             MarginRect := Canvas.ClipRect;
             MarginRect.Left := 0;
             MarginRect.Right := FLeftMargin;
-            DrawMargin(MarginRect);
+            //DrawMargin(MarginRect); // (ahuser) obones has out commented the DrawMargin method
           end;
         SetDefaultMenuFont(Canvas.Font);
         Canvas.Font.Color := clMenuText;

@@ -55,10 +55,6 @@ uses
   CommCtrl, ComCtrls, Db,
   JvDBTreeView, JvToolEdit, JvComponent, JvExControls;
 
-// (rom) obviously not used
-//const
-  //WM_INCLOSE = WM_USER + 1;
-
 {********************** Borland **********************}
 
 type
@@ -126,10 +122,10 @@ type
     procedure SetListSource(Value: TDataSource);
     procedure SetLookupMode(Value: Boolean);
     procedure SetReadOnly(Value: Boolean);
-    procedure WMKillFocus(var Message: TMessage); message WM_KILLFOCUS;
-    procedure WMSetFocus(var Message: TMessage); message WM_SETFOCUS;
     procedure CMGetDataLink(var Message: TMessage); message CM_GETDATALINK;
   protected
+    procedure DoKillFocus(FocusedWnd: HWND); override;
+    procedure DoSetFocus(FocusedWnd: HWND); override;
     procedure DoGetDlgCode(var Code: TDlgCodes); override;
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
@@ -181,11 +177,9 @@ type
     procedure StopTracking;
     procedure TrackButton(X, Y: Integer);
     procedure CMCtl3DChanged(var Message: TMessage); message CM_CTL3DCHANGED;
-    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
     procedure CMGetDataLink(var Message: TMessage); message CM_GETDATALINK;
     procedure WMCancelMode(var Message: TMessage); message WM_CANCELMODE;
-    procedure CMCancelMode(var Message: TCMCancelMode);
-      message CM_CANCELMODE;
+    procedure CMCancelMode(var Message: TCMCancelMode); message CM_CANCELMODE;
     procedure PopupCloseUp(Sender: TObject; Accept: Boolean); virtual;
   private
     FAutoExpand: Boolean;
@@ -197,6 +191,8 @@ type
     FOnCustomDrawItem: TTVCustomDrawItemEvent;
     FOnGetImageIndex: TTVExpandedEvent;
   protected
+    procedure FontChanged; override;
+    procedure DoKillFocus(FocusedWnd: HWND); override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure Paint; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
@@ -206,8 +202,6 @@ type
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
-    procedure WMKillFocus(var Message: TWMKillFocus); message WM_KILLFOCUS;
-
   public
     constructor Create(AOwner: TComponent); override;
     procedure CloseUp(Accept: Boolean);
@@ -290,8 +284,8 @@ type
   TJvPopupTree = class(TJvDBTreeView)
   private
     procedure CNNotify(var Message: TWMNotify); message CN_NOTIFY;
-    procedure WMSetFocus(var Message: TMessage); message WM_SETFOCUS;
   protected
+    procedure DoSetFocus(FocusedWnd: HWND); override;
     procedure DblClick; override;
   end;
 
@@ -323,7 +317,6 @@ type
     function GetIconField: string;
     procedure SetIconField(const Value: string);
     procedure KeyValueChanged; override;
-    procedure WMSetFocus(var Message: TMessage); message WM_SETFOCUS;
    {Tree}
     function GetShowButtons: Boolean;
     function GetShowLines: Boolean;
@@ -356,6 +349,7 @@ type
     procedure SetOnCustomDraw(const Value: TTVCustomDrawEvent);
     procedure SetOnCustomDrawItem(const Value: TTVCustomDrawItemEvent);
   protected
+    procedure DoSetFocus(FocusedWnd: HWND); override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure ListLinkActiveChanged; override;
   public
@@ -807,17 +801,17 @@ begin
   Code := [dcWantArrows, dcWantChars];
 end;
 
-procedure TJvDBLookupControl.WMKillFocus(var Message: TMessage);
+procedure TJvDBLookupControl.DoKillFocus(FocusedWnd: HWND);
 begin
   FFocused := False;
-  inherited;
+  inherited DoKillFocus(FocusedWnd);
   Invalidate;
 end;
 
-procedure TJvDBLookupControl.WMSetFocus(var Message: TMessage);
+procedure TJvDBLookupControl.DoSetFocus(FocusedWnd: HWND);
 begin
   FFocused := True;
-  inherited;
+  inherited DoSetFocus(FocusedWnd);
   Invalidate;
 end;
 
@@ -1175,9 +1169,9 @@ begin
   inherited;
 end;
 
-procedure TJvDBLookupTreeViewCombo.CMFontChanged(var Message: TMessage);
+procedure TJvDBLookupTreeViewCombo.FontChanged;
 begin
-  inherited;
+  inherited FontChanged;
   Height := 0;
 end;
 
@@ -1192,8 +1186,7 @@ begin
   inherited;
 end;
 
-procedure TJvDBLookupTreeViewCombo.CMCancelMode(
-  var Message: TCMCancelMode);
+procedure TJvDBLookupTreeViewCombo.CMCancelMode(var Message: TCMCancelMode);
 begin
   if (Message.Sender <> Self) and (Message.Sender <> FDataList) and
      ((FDataList <> nil) and
@@ -1324,10 +1317,9 @@ begin
     end;
 end;
 
-procedure TJvPopupTree.WMSetFocus(var Message: TMessage);
+procedure TJvPopupTree.DoSetFocus(FocusedWnd: HWND);
 begin
-  inherited;
-  Message.Result := 1;
+  inherited DoSetFocus(FocusedWnd);
   (Owner.Owner as TJvDBLookupTreeViewCombo).SetFocus;
 end;
 
@@ -1445,7 +1437,7 @@ begin
   end;
 end;
 
-procedure TJvDBLookupTreeView.WMSetFocus(var Message: TMessage);
+procedure TJvDBLookupTreeView.DoSetFocus(FocusedWnd: HWND);
 begin
   FTree.SetFocus;
 end;
@@ -1640,10 +1632,10 @@ begin
     end;
 end;
 
-procedure TJvDBLookupTreeViewCombo.WMKillFocus(var Message: TWMKillFocus);
+procedure TJvDBLookupTreeViewCombo.DoKillFocus(FocusedWnd: HWND);
 begin
-  if (Handle <> Message.FocusedWnd) and (FDataList.Handle <> Message.FocusedWnd) and
-    (FDataList.FTree.Handle <> Message.FocusedWnd) then
+  if (Handle <> FocusedWnd) and (FDataList.Handle <> FocusedWnd) and
+     (FDataList.FTree.Handle <> FocusedWnd) then
     CloseUp(false);
 end;
 

@@ -187,8 +187,8 @@ type
     FPopupVisible: Boolean; // Polaris
     FFocused: Boolean; // Polaris
     FPopup: TCustomControl;
-    procedure DoKillFocus(FocusedControl: TWinControl); override;
-    procedure DoSetFocus(FocusedControl: TWinControl); override;
+    procedure DoKillFocus(FocusedWnd: HWND); override;
+    procedure DoSetFocus(FocusedWnd: HWND); override;
     procedure EnabledChanged; override;
     procedure FontChanged; override;
     procedure DoEnter; override;
@@ -2146,9 +2146,9 @@ begin
   end;
 end;
 
-procedure TJvCustomComboEdit.DoKillFocus(FocusedControl: TWinControl);
+procedure TJvCustomComboEdit.DoKillFocus(FocusedWnd: HWND);
 begin
-  inherited DoKillFocus(FocusedControl);
+  inherited DoKillFocus(FocusedWnd);
   FFocused := False;
   PopupCloseUp(FPopup, False);
 end;
@@ -2229,9 +2229,9 @@ begin
   inherited;
 end;
 
-procedure TJvCustomComboEdit.DoSetFocus(FocusedControl: TWinControl);
+procedure TJvCustomComboEdit.DoSetFocus(FocusedWnd: HWND);
 begin
-  inherited DoSetFocus(FocusedControl);
+  inherited DoSetFocus(FocusedWnd);
   FFocused := True;
   SetShowCaret;
 end;

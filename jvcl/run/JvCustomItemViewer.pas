@@ -228,7 +228,7 @@ type
     procedure MouseLeave(Control: TControl); override;
     procedure DoGetDlgCode(var Code: TDlgCodes); override;
     procedure Resize; override;
-    procedure DoSetFocus(APreviousControl: TWinControl); override;
+    procedure DoSetFocus(Focuseded: HWND); override;
 
     procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean); override;
     procedure DoEndDrag(Sender: TObject; X, Y: Integer); override;
@@ -1685,10 +1685,10 @@ begin
   inherited;
 end;
 
-procedure TJvCustomItemViewer.DoSetFocus(APreviousControl: TWinControl);
+procedure TJvCustomItemViewer.DoSetFocus(Focuseded: HWND);
 begin
-  inherited DoSetFocus(APreviousControl);
-  if APreviousControl = Self then
+  inherited DoSetFocus(Focuseded);
+  if Focuseded = Handle then
   begin
     if SelectedIndex >= 0 then
       Invalidate;

@@ -131,8 +131,8 @@ type
     procedure WMSysColorChange(var Msg: TMessage); message WM_SYSCOLORCHANGE;
     procedure WndProc(var Msg: TMessage); override;
     {$ENDIF VCL}
-    procedure DoSetFocus(PreviousControl: TWinControl); override;
-    procedure DoKillFocus(NextControl: TWinControl); override;
+    procedure DoSetFocus(FocusedWnd: HWND); override;
+    procedure DoKillFocus(FocusedWnd: HWND); override;
     procedure ColorChanged; override;
     procedure ParentColorChanged; override;
     procedure DrawBorder; dynamic;
@@ -1042,16 +1042,16 @@ begin
   end;
 end;
 
-procedure TJvCustomDialButton.DoKillFocus(NextControl: TWinControl);
+procedure TJvCustomDialButton.DoKillFocus(FocusedWnd: HWND);
 begin
-  inherited DoKillFocus(NextControl);
+  inherited DoKillFocus(FocusedWnd);
   if HandleAllocated then
     DrawBorder;
 end;
 
-procedure TJvCustomDialButton.DoSetFocus(PreviousControl: TWinControl);
+procedure TJvCustomDialButton.DoSetFocus(FocusedWnd: HWND);
 begin
-  inherited DoSetFocus(PreviousControl);
+  inherited DoSetFocus(FocusedWnd);
   if HandleAllocated then
     DrawBorder;
 end;

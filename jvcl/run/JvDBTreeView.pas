@@ -50,7 +50,7 @@ uses
   Variants,
   {$ENDIF COMPILER6_UP}
   Windows, Messages, SysUtils, Classes, Controls, Dialogs, Graphics,
-  CommCtrl, ComCtrls, ExtCtrls, DB;
+  CommCtrl, ComCtrls, ExtCtrls, DB, JvComponent;
 
 type
   TJvDBTreeNode = class;
@@ -58,7 +58,7 @@ type
   TFieldTypes = set of TFieldType;
   TGetDetailValue = function(const AMasterValue: Variant; var DetailValue: Variant): Boolean;
 
-  TCustomJvDBTreeView = class(TCustomTreeView)
+  TJvCustomDBTreeView = class(TJvCustomTreeView)
   private
     FDataLink: TJvDBTreeViewDataLink;
     FMasterField: string;
@@ -159,14 +159,14 @@ type
 
   TJvDBTreeViewDataLink = class(TDataLink)
   private
-    FTreeView: TCustomJvDBTreeView;
+    FTreeView: TJvCustomDBTreeView;
   protected
     procedure ActiveChanged; override;
     procedure RecordChanged(Field: TField); override;
     procedure DataSetChanged; override;
     procedure DataSetScrolled(Distance: Integer); override;
   public
-    constructor Create(ATreeView: TCustomJvDBTreeView);
+    constructor Create(ATreeView: TJvCustomDBTreeView);
     destructor Destroy; override;
   end;
 
@@ -179,7 +179,7 @@ type
     property MasterValue: Variant read FMasterValue;
   end;
 
-  TJvDBTreeView = class(TCustomJvDBTreeView)
+  TJvDBTreeView = class(TJvCustomDBTreeView)
   published
     property DataSource;
     property MasterField;
@@ -315,7 +315,7 @@ end;
 
 //=== TJvDBTreeViewDataLink ==================================================
 
-constructor TJvDBTreeViewDataLink.Create(ATreeView: TCustomJvDBTreeView);
+constructor TJvDBTreeViewDataLink.Create(ATreeView: TJvCustomDBTreeView);
 begin
   inherited Create;
   FTreeView := ATreeView;
@@ -369,9 +369,9 @@ begin
   FMasterValue := AValue;
 end;
 
-//=== TCustomJvDBTreeView ====================================================
+//=== TJvCustomDBTreeView ====================================================
 
-constructor TCustomJvDBTreeView.Create(AOwner: TComponent);
+constructor TJvCustomDBTreeView.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FDataLink := TJvDBTreeViewDataLink.Create(Self);
@@ -383,25 +383,25 @@ begin
   FSelectedIndex := 1;
 end;
 
-destructor TCustomJvDBTreeView.Destroy;
+destructor TJvCustomDBTreeView.Destroy;
 begin
   FDataLink.Free;
   TimerDnD.Free;
   inherited Destroy;
 end;
 
-procedure TCustomJvDBTreeView.CheckDataSet;
+procedure TJvCustomDBTreeView.CheckDataSet;
 begin
   if not ValidDataSet then
     raise EJvDBTreeViewError.Create(RsEDataSetNotActive);
 end;
 
-procedure TCustomJvDBTreeView.Warning(Msg: string);
+procedure TJvCustomDBTreeView.Warning(Msg: string);
 begin
   MessageDlg(Name + ': ' + Msg, mtWarning, [mbOk], 0);
 end;
 
-function TCustomJvDBTreeView.ValidField(FieldName: string; AllowFieldTypes: TFieldTypes): Boolean;
+function TJvCustomDBTreeView.ValidField(FieldName: string; AllowFieldTypes: TFieldTypes): Boolean;
 var
   AField: TField;
 begin
@@ -414,7 +414,7 @@ begin
   end;
 end;
 
-procedure TCustomJvDBTreeView.SetMasterField(Value: string);
+procedure TJvCustomDBTreeView.SetMasterField(Value: string);
 begin
   if ValidField(Value, DefaultValidMasterFields) then
   begin
@@ -425,7 +425,7 @@ begin
     Warning(RsMasterFieldError);
 end;
 
-procedure TCustomJvDBTreeView.SetDetailField(Value: string);
+procedure TJvCustomDBTreeView.SetDetailField(Value: string);
 begin
   if ValidField(Value, DefaultValidDetailFields) then
   begin
@@ -436,7 +436,7 @@ begin
     Warning(RsDetailFieldError);
 end;
 
-procedure TCustomJvDBTreeView.SetItemField(Value: string);
+procedure TJvCustomDBTreeView.SetItemField(Value: string);
 begin
   if ValidField(Value, DefaultValidItemFields) then
   begin
@@ -447,7 +447,7 @@ begin
     Warning(RsItemFieldError);
 end;
 
-procedure TCustomJvDBTreeView.SetIconField(Value: string);
+procedure TJvCustomDBTreeView.SetIconField(Value: string);
 begin
   if ValidField(Value, DefaultValidIconFields) then
   begin
@@ -458,7 +458,7 @@ begin
     Warning(RsIconFieldError);
 end;
 
-function TCustomJvDBTreeView.GetStartMasterValue: string;
+function TJvCustomDBTreeView.GetStartMasterValue: string;
 begin
   if FStartMasterValue = Null then
     Result := ''
@@ -466,7 +466,7 @@ begin
     Result := FStartMasterValue;
 end;
 
-procedure TCustomJvDBTreeView.SetStartMasterValue(Value: string);
+procedure TJvCustomDBTreeView.SetStartMasterValue(Value: string);
 begin
   if Length(Value) > 0 then
     FStartMasterValue := Value
@@ -474,12 +474,12 @@ begin
     FStartMasterValue := Null;
 end;
 
-function TCustomJvDBTreeView.GetDataSource: TDataSource;
+function TJvCustomDBTreeView.GetDataSource: TDataSource;
 begin
   Result := FDataLink.DataSource;
 end;
 
-procedure TCustomJvDBTreeView.SetDataSource(Value: TDataSource);
+procedure TJvCustomDBTreeView.SetDataSource(Value: TDataSource);
 begin
   if Value = FDatalink.Datasource then
     Exit;
@@ -489,35 +489,35 @@ begin
     Value.FreeNotification(Self);
 end;
 
-procedure TCustomJvDBTreeView.CMGetDataLink(var Msg: TMessage);
+procedure TJvCustomDBTreeView.CMGetDataLink(var Msg: TMessage);
 begin
   Msg.Result := Integer(FDataLink);
 end;
 
-procedure TCustomJvDBTreeView.Notification(Component: TComponent; Operation: TOperation);
+procedure TJvCustomDBTreeView.Notification(Component: TComponent; Operation: TOperation);
 begin
   inherited Notification(Component, Operation);
   if (FDataLink <> nil) and (Component = DataSource) and (Operation = opRemove) then
     DataSource := nil;
 end;
 
-function TCustomJvDBTreeView.CreateNode: TTreeNode;
+function TJvCustomDBTreeView.CreateNode: TTreeNode;
 begin
   Result := TJvDBTreeNode.Create(Items);
 end;
 
-procedure TCustomJvDBTreeView.HideEditor;
+procedure TJvCustomDBTreeView.HideEditor;
 begin
   if Selected <> nil then
     Selected.EndEdit(True);
 end;
 
-function TCustomJvDBTreeView.ValidDataSet: Boolean;
+function TJvCustomDBTreeView.ValidDataSet: Boolean;
 begin
   Result := FDataLink.Active and Assigned(FDataLink.DataSet) and FDataLink.DataSet.Active;
 end;
 
-procedure TCustomJvDBTreeView.LinkActive(Value: Boolean);
+procedure TJvCustomDBTreeView.LinkActive(Value: Boolean);
 
   function AllFieldsValid: Boolean;
   begin
@@ -574,12 +574,12 @@ begin
       Items.Clear;
 end;
 
-procedure TCustomJvDBTreeView.UpdateLock;
+procedure TJvCustomDBTreeView.UpdateLock;
 begin
   Inc(FUpdateLock);
 end;
 
-procedure TCustomJvDBTreeView.UpdateUnLock(const AUpdateTree: Boolean);
+procedure TJvCustomDBTreeView.UpdateUnLock(const AUpdateTree: Boolean);
 begin
   if FUpdateLock > 0 then
     Dec(FUpdateLock);
@@ -590,12 +590,12 @@ begin
       OldRecCount := FDataLink.DataSet.RecordCount;
 end;
 
-function TCustomJvDBTreeView.UpdateLocked: Boolean;
+function TJvCustomDBTreeView.UpdateLocked: Boolean;
 begin
   Result := FUpdateLock > 0;
 end;
 
-procedure TCustomJvDBTreeView.RefreshChild(ANode: TJvDBTreeNode);
+procedure TJvCustomDBTreeView.RefreshChild(ANode: TJvDBTreeNode);
 var
   ParentValue: Variant;
   BK: TBookmark;
@@ -716,14 +716,14 @@ begin
   end;
 end;
 
-function TCustomJvDBTreeView.CanExpand(Node: TTreeNode): Boolean;
+function TJvCustomDBTreeView.CanExpand(Node: TTreeNode): Boolean;
 begin
   Result := inherited CanExpand(Node);
   if Result and (Node.Count = 0) then
     RefreshChild(Node as TJvDBTreeNode);
 end;
 
-procedure TCustomJvDBTreeView.Collapse(Node: TTreeNode);
+procedure TJvCustomDBTreeView.Collapse(Node: TTreeNode);
 var
   HasChildren: Boolean;
 begin
@@ -736,7 +736,7 @@ begin
   end;
 end;
 
-function TCustomJvDBTreeView.FindNode(AMasterValue: Variant): TJvDBTreeNode;
+function TJvCustomDBTreeView.FindNode(AMasterValue: Variant): TJvDBTreeNode;
 var
   I: Integer;
 begin
@@ -749,7 +749,7 @@ begin
   Result := nil;
 end;
 
-function TCustomJvDBTreeView.SelectNode(AMasterValue: Variant): TTreeNode;
+function TJvCustomDBTreeView.SelectNode(AMasterValue: Variant): TTreeNode;
 var
   V: Variant;
   Node: TJvDBTreeNode;
@@ -818,7 +818,7 @@ begin
     Result.Selected := True;
 end;
 
-procedure TCustomJvDBTreeView.UpdateTree;
+procedure TJvCustomDBTreeView.UpdateTree;
 var
   I: Integer;
   BK: TBookmark;
@@ -906,7 +906,7 @@ begin
   end;
 end;
 
-procedure TCustomJvDBTreeView.InternalDataChanged;
+procedure TJvCustomDBTreeView.InternalDataChanged;
 begin
   if not HandleAllocated or UpdateLocked or InDataScrolled then
     Exit;
@@ -918,7 +918,7 @@ begin
   end;
 end;
 
-procedure TCustomJvDBTreeView.DataChanged;
+procedure TJvCustomDBTreeView.DataChanged;
 var
   RecCount: Integer;
 begin
@@ -936,7 +936,7 @@ begin
   Selected := FindNode(FDataLink.DataSet[FMasterField]);
 end;
 
-procedure TCustomJvDBTreeView.InternalDataScrolled;
+procedure TJvCustomDBTreeView.InternalDataScrolled;
 begin
   if not HandleAllocated or UpdateLocked then
     Exit;
@@ -948,12 +948,12 @@ begin
   end;
 end;
 
-procedure TCustomJvDBTreeView.DataScrolled;
+procedure TJvCustomDBTreeView.DataScrolled;
 begin
   Selected := FindNode(FDataLink.DataSet[FMasterField]);
 end;
 
-procedure TCustomJvDBTreeView.Change(Node: TTreeNode);
+procedure TJvCustomDBTreeView.Change(Node: TTreeNode);
 var OldState:TDataSetState;
 begin
   if ValidDataSet and Assigned(Node) and not InDataScrolled and
@@ -977,12 +977,12 @@ begin
   inherited Change(Node);
 end;
 
-procedure TCustomJvDBTreeView.Change2(Node: TTreeNode);
+procedure TJvCustomDBTreeView.Change2(Node: TTreeNode);
 begin
   FDataLink.DataSet.Locate(FMasterField, (Node as TJvDBTreeNode).FMasterValue, []);
 end;
 
-procedure TCustomJvDBTreeView.InternalRecordChanged(Field: TField);
+procedure TJvCustomDBTreeView.InternalRecordChanged(Field: TField);
 begin
   if not (HandleAllocated and ValidDataSet) then
     Exit;
@@ -998,7 +998,7 @@ begin
   end;
 end;
 
-procedure TCustomJvDBTreeView.RecordChanged(Field: TField);
+procedure TJvCustomDBTreeView.RecordChanged(Field: TField);
 var
   Node: TJvDBTreeNode;
 begin
@@ -1040,14 +1040,14 @@ begin
   {###}
 end;
 
-function TCustomJvDBTreeView.CanEdit(Node: TTreeNode): Boolean;
+function TJvCustomDBTreeView.CanEdit(Node: TTreeNode): Boolean;
 begin
   Result := inherited CanEdit(Node);
   if FDataLink.DataSet <> nil then
     Result := Result and not FDataLink.ReadOnly;
 end;
 
-procedure TCustomJvDBTreeView.Edit(const Item: TTVItem);
+procedure TJvCustomDBTreeView.Edit(const Item: TTVItem);
 begin
   CheckDataSet;
   inherited Edit(Item);
@@ -1078,7 +1078,7 @@ begin
   end;
 end;
 
-function TCustomJvDBTreeView.AddChildNode(const Node: TTreeNode; const Select: Boolean): TJvDBTreeNode;
+function TJvCustomDBTreeView.AddChildNode(const Node: TTreeNode; const Select: Boolean): TJvDBTreeNode;
 var
   MV: Variant;
   M: string;
@@ -1118,7 +1118,7 @@ begin
   end;
 end;
 
-procedure TCustomJvDBTreeView.DeleteNode(Node: TTreeNode);
+procedure TJvCustomDBTreeView.DeleteNode(Node: TTreeNode);
 var
   NewSel: TTreeNode;
 begin
@@ -1137,7 +1137,7 @@ begin
   end;
 end;
 
-function TCustomJvDBTreeView.FindNextNode(const Node: TTreeNode): TTreeNode;
+function TJvCustomDBTreeView.FindNextNode(const Node: TTreeNode): TTreeNode;
 begin
   if (Node <> nil) and (Node.Parent <> nil) then
     if Node.Parent.Count > 1 then
@@ -1156,7 +1156,7 @@ begin
     Result := nil;
 end;
 
-procedure TCustomJvDBTreeView.MoveTo(Source, Destination: TJvDBTreeNode; Mode: TNodeAttachMode);
+procedure TJvCustomDBTreeView.MoveTo(Source, Destination: TJvDBTreeNode; Mode: TNodeAttachMode);
 var
   MV, V: Variant;
 begin
@@ -1189,7 +1189,7 @@ end;
 
 {******************* Drag'n'Drop ********************}
 
-procedure TCustomJvDBTreeView.TimerDnDTimer(Sender: TObject);
+procedure TJvCustomDBTreeView.TimerDnDTimer(Sender: TObject);
 begin
   if YDragPos < DnDScrollArea then
     Perform(WM_VSCROLL, SB_LINEUP, 0)
@@ -1198,7 +1198,7 @@ begin
       Perform(WM_VSCROLL, SB_LINEDOWN, 0);
 end;
 
-procedure TCustomJvDBTreeView.DragOver(Source: TObject; X, Y: Integer;
+procedure TJvCustomDBTreeView.DragOver(Source: TObject; X, Y: Integer;
   State: TDragState; var Accept: Boolean);
 var
   Node: TTreeNode;
@@ -1219,7 +1219,7 @@ begin
   end;
 end;
 
-procedure TCustomJvDBTreeView.DragDrop(Source: TObject; X, Y: Integer);
+procedure TJvCustomDBTreeView.DragDrop(Source: TObject; X, Y: Integer);
 var
   AnItem: TTreeNode;
   AttachMode: TNodeAttachMode;
@@ -1263,7 +1263,7 @@ end;
 
 {################### Drag'n'Drop ####################}
 
-procedure TCustomJvDBTreeView.KeyDown(var Key: Word; Shift: TShiftState);
+procedure TJvCustomDBTreeView.KeyDown(var Key: Word; Shift: TShiftState);
 
   procedure DeleteSelected;
   var
@@ -1301,7 +1301,7 @@ begin
   end;
 end;
 
-procedure TCustomJvDBTreeView.SetMirror(Value: Boolean);
+procedure TJvCustomDBTreeView.SetMirror(Value: Boolean);
 begin
   if Value and SysLocale.MiddleEast and not (csDesigning in ComponentState) then
     MirrorControl(Self, Value);

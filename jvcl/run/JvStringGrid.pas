@@ -197,8 +197,8 @@ type
     FLastCol: integer;
     FLastRow: integer;
   protected
-    procedure DoKillFocus(FocusedControl: TWinControl); override;
-    procedure DoSetFocus(FocusedControl: TWinControl); override;
+    procedure DoKillFocus(FocusedWnd: HWND); override;
+    procedure DoSetFocus(FocusedWnd: HWND); override;
   public
     procedure CreateParams(var Params: TCreateParams); override;
   end;
@@ -211,17 +211,17 @@ begin
   Params.Style := Params.Style or Flags[TJvStringGrid(Grid).Alignment];
 end;
 
-procedure TExInplaceEdit.DoKillFocus(FocusedControl: TWinControl);
+procedure TExInplaceEdit.DoKillFocus(FocusedWnd: HWND);
 begin
   TJvStringGrid(Grid).ExitCell(Text, FLastCol, FLastRow);
-  inherited DoKillFocus(FocusedControl);
+  inherited DoKillFocus(FocusedWnd);
 end;
 
-procedure TExInplaceEdit.DoSetFocus(FocusedControl: TWinControl);
+procedure TExInplaceEdit.DoSetFocus(FocusedWnd: HWND);
 begin
   FLastCol := TJvStringGrid(Grid).Col;
   FLastRow := TJvStringGrid(Grid).Row;
-  inherited DoSetFocus(FocusedControl);
+  inherited DoSetFocus(FocusedWnd);
 end;
 
 //=== TJvStringGrid ==========================================================

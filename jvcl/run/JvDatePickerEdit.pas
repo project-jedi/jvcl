@@ -898,11 +898,12 @@ end;
 
 procedure TJvDropCalendar.CalKillFocus(const ASender: TObject;
   const ANextControl: TWinControl);
-var P:TPoint;
+var
+  P:TPoint;
 begin
   GetCursorPos(P);
   if PtInRect(BoundsRect,P) then Exit;
-  Self.DoKillFocus(ANextControl);
+  Self.DoKillFocus(ANextControl.Handle);
 end;
 
 procedure TJvDropCalendar.SetFocus;

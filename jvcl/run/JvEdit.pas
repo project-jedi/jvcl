@@ -124,8 +124,8 @@ type
     procedure EMSetRect(var Msg: TMessage); message EM_SETRECT;
     procedure Paint; override;
     {$ENDIF VisualCLX}
-    procedure DoSetFocus(APreviousControl: TWinControl); override;
-    procedure DoKillFocus(ANextControl: TWinControl); override;
+    procedure DoSetFocus(FocusedWnd: HWND); override;
+    procedure DoKillFocus(FocusedWnd: HWND); override;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure EnabledChanged; override;
     procedure ParentColorChanged; override;
@@ -613,16 +613,16 @@ begin
   FCaret.Assign(Value);
 end;
 
-procedure TJvCustomEdit.DoSetFocus(APreviousControl: TWinControl);
+procedure TJvCustomEdit.DoSetFocus(FocusedWnd: HWND);
 begin
-  inherited DoSetFocus(APreviousControl);
+  inherited DoSetFocus(FocusedWnd);
   FCaret.CreateCaret;
 end;
 
-procedure TJvCustomEdit.DoKillFocus(ANextControl: TWinControl);
+procedure TJvCustomEdit.DoKillFocus(FocusedWnd: HWND);
 begin
   FCaret.DestroyCaret;
-  inherited DoKillFocus(ANextControl);
+  inherited DoKillFocus(FocusedWnd);
 end;
 
 procedure TJvCustomEdit.EnabledChanged;
