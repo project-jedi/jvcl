@@ -107,7 +107,7 @@ type
   published
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     // link the enabled state of other controls to the checked and/or enabled state of this control
-    property LinkedControls:TJvLinkedControls read GetLinkedControls write SetLinkedControls;
+    property LinkedControls: TJvLinkedControls read GetLinkedControls write SetLinkedControls;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
@@ -153,7 +153,7 @@ destructor TJvCheckBox.Destroy;
 begin
   FHotTrackFont.Free;
   FFontSave.Free;
-  FLinkedControls.Free;
+  FreeAndNil(FLinkedControls);
   inherited Destroy;
   // (rom) destroy Canvas AFTER inherited Destroy
   FCanvas.Free;
@@ -407,20 +407,18 @@ end;
 
 procedure TJvCheckBox.CheckLinkedControls;
 var
-  i:integer;
-  F:TCustomForm;
+  I: Integer;
+  F: TCustomForm;
 begin
-  F := GetParentForm(self);
-  if F = nil then Exit;
-  for i := 0 to LinkedControls.Count - 1 do
-  begin
-    if LinkedControls[i].Control = nil then Continue;
-    with LinkedControls[i] do
-      Control.Enabled :=
-        ((Options = [loLinkChecked, loLinkEnabled]) and self.Checked and self.Enabled)
-        or ((Options = [loLinkChecked]) and self.Checked)
-        or ((Options = [loLinkEnabled]) and self.Enabled);
-  end;
+  F := GetParentForm(Self);
+  if (F <> nil) and (LinkedControls <> nil) then
+    for I := 0 to LinkedControls.Count - 1 do
+      if LinkedControls[I].Control <> nil then
+        with LinkedControls[I] do
+          Control.Enabled :=
+            ((Options = [loLinkChecked, loLinkEnabled]) and Self.Checked and Self.Enabled) or
+            ((Options = [loLinkChecked]) and Self.Checked) or
+            ((Options = [loLinkEnabled]) and Self.Enabled);
 end;
 
 procedure TJvCheckBox.LinkedControlsChange(Sender: TObject);
@@ -428,10 +426,11 @@ begin
   CheckLinkedControls;
 end;
 
-procedure TJvCheckBox.ReadAssociated(Reader:TReader);
-var C:TComponent;
+procedure TJvCheckBox.ReadAssociated(Reader: TReader);
+var
+  C: TComponent;
 begin
-  if (Owner <> nil) then
+  if Owner <> nil then
     C := Owner.FindComponent(Reader.ReadIdent)
   else
     C := nil;
@@ -441,8 +440,8 @@ end;
 
 procedure TJvCheckBox.DefineProperties(Filer: TFiler);
 begin
-  inherited;
-  Filer.DefineProperty('Associated',ReadAssociated, nil, false);
+  inherited DefineProperties(Filer);
+  Filer.DefineProperty('Associated', ReadAssociated, nil, False);
 end;
 
 {$IFDEF VCL}
@@ -471,7 +470,7 @@ procedure TJvCheckBox.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if Assigned(FLinkedControls) then
+  if Assigned(FLinkedControls) and not (csDestroying in ComponentState) then
     LinkedControls.Notification(AComponent, Operation);
 end;
 

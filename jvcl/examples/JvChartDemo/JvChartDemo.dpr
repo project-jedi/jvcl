@@ -1,10 +1,10 @@
 program JvChartDemo;
-{ JEDI Demo App }
+
 uses
   Forms,
-  JvChartDemoFm in 'JvChartDemoFm.pas' {JvGraphDemoForm};
+  JvChartDemoFm in 'JvChartDemoFm.pas' {JvChartDemoForm};
 
-{$R *.RES}
+{$R *.res}
 
 
 begin

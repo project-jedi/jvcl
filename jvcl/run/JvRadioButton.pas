@@ -60,7 +60,7 @@ type
     FAlignment: TAlignment;
     FLayout: TTextLayout;
     FLeftText: Boolean;
-    FLinkedControls:TJvLinkedControls;
+    FLinkedControls: TJvLinkedControls;
     function GetCanvas: TCanvas;
     function GetReadOnly: Boolean;
     procedure SetHotTrackFont(const Value: TFont);
@@ -86,8 +86,8 @@ type
     procedure CalcAutoSize; virtual;
     procedure Loaded; override;
 
-    procedure LinkedControlsChange(Sender:TObject);
-    procedure CheckLinkedControls;virtual;
+    procedure LinkedControlsChange(Sender: TObject);
+    procedure CheckLinkedControls; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -104,7 +104,7 @@ type
     // show text to the left of the radio bullet
     property LeftText: Boolean read FLeftText write SetLeftText default False;
     // link the enabled state of other controls to the checked and/or enabled state of this control
-    property LinkedControls:TJvLinkedControls read GetLinkedControls write SetLinkedControls;
+    property LinkedControls: TJvLinkedControls read GetLinkedControls write SetLinkedControls;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
     property WordWrap: Boolean read FWordWrap write SetWordWrap default False;
     property OnMouseEnter;
@@ -133,7 +133,7 @@ begin
   FAlignment := taLeftJustify;
   FLeftText := False;
   FLayout := tlCenter;
-  FLinkedControls := TJvLinkedControls.Create(self);
+  FLinkedControls := TJvLinkedControls.Create(Self);
   FLinkedControls.OnChange := LinkedControlsChange;
 end;
 
@@ -141,7 +141,7 @@ destructor TJvRadioButton.Destroy;
 begin
   FHotTrackFont.Free;
   FFontSave.Free;
-  FLinkedControls.Free;
+  FreeAndNil(FLinkedControls);
   inherited Destroy;
   // (rom) destroy Canvas AFTER inherited Destroy
   FCanvas.Free;
@@ -337,20 +337,18 @@ end;
 
 procedure TJvRadioButton.CheckLinkedControls;
 var
-  i:integer;
-  F:TCustomForm;
+  I: Integer;
+  F: TCustomForm;
 begin
-  F := GetParentForm(self);
-  if F = nil then Exit;
-  for i := 0 to LinkedControls.Count - 1 do
-  begin
-    if LinkedControls[i].Control = nil then Continue;
-    with LinkedControls[i] do
-      Control.Enabled :=
-        ((Options = [loLinkChecked, loLinkEnabled]) and self.Checked and self.Enabled)
-        or ((Options = [loLinkChecked]) and self.Checked)
-        or ((Options = [loLinkEnabled]) and self.Enabled);
-  end;
+  F := GetParentForm(Self);
+  if (F <> nil) and (LinkedControls <> nil) then
+    for I := 0 to LinkedControls.Count - 1 do
+      if LinkedControls[I].Control <> nil then
+        with LinkedControls[I] do
+          Control.Enabled :=
+            ((Options = [loLinkChecked, loLinkEnabled]) and Self.Checked and Self.Enabled) or
+            ((Options = [loLinkChecked]) and Self.Checked) or
+            ((Options = [loLinkEnabled]) and Self.Enabled);
 end;
 
 function TJvRadioButton.GetLinkedControls: TJvLinkedControls;
@@ -376,7 +374,7 @@ end;
 
 procedure TJvRadioButton.EnabledChanged;
 begin
-  inherited;
+  inherited EnabledChanged;
   CheckLinkedControls;
 end;
 
