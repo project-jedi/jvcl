@@ -269,6 +269,10 @@ function StrToBool(const S: string): Boolean;
 function Var2Type(V: Variant; const VarType: Integer): Variant;
 function VarToInt(V: Variant): Integer;
 function VarToFloat(V: Variant): Double;
+{$ifndef COMPILER6_UP}
+function VarIsStr(const V: Variant): Boolean;
+{$endif}
+
 { following functions are not documented
   because they are don't work properly sometimes, so don't use them }
 function ReplaceStrings1(S: string; const Word, Frase: string): string;
@@ -2165,6 +2169,21 @@ function VarToFloat(V: Variant): Double;
 begin
   Result := Var2Type(V, varDouble);
 end;
+
+{$ifndef COMPILER6_UP}
+function VarIsStr(const V: Variant): Boolean;
+var
+  VarType: TVarType;
+  VarData: PVarData;
+begin
+  VarData := @TVarData(V);
+  while VarData.VType = varByRef or varVariant do
+    VarData := PVarData(VarData.VPointer);
+
+  VarType := VarData^.VType;
+  Result :=  (VarType = varOleStr) or (VarType = varString);
+end;
+{$endif}
 
 function CopyDir(const SourceDir, DestDir: TFileName): Boolean;
 var

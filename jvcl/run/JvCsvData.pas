@@ -62,7 +62,7 @@ Known Issues and Updates:
 	NEW IMPORT AND APPEND NEW FIELDS:
 	New Handy Dandy Import-and-Upgrade feature: If you add fields to your
 	dataset definition, you can still load your old file (that is missing
-	those columns) and it will add them the next time you save the file. 
+	those columns) and it will add them the next time you save the file.
 	New columns are always appended to the physical last position (end of
 	 existing lines) in the data file.
 
@@ -137,18 +137,16 @@ Known Issues and Updates:
 // All Copyrights and Ownership donated to the Delphi Jedi Project.
 //------------------------------------------------------------------------
 
-//  { $ R  JVCSVDATA.DCR }
+{$I JVCL.INC}
 
 interface
 
 uses
-  Windows,
-  Messages,
-  DB,
-  SysUtils,
-  Classes,
+  Windows, Messages, SysUtils, Classes,
+{$ifdef COMPILER6_UP}
   Variants,
-  Graphics;
+{$endif}
+  Graphics, DB;
 
 const
   JvCsvSep = ',';
@@ -931,12 +929,12 @@ var
   fieldRec: PCsvColumn;
   FieldIndex: integer;
   fieldValue: string;
-  stillVisible : Integer;
+  //stillVisible : Integer;
   //m:TBookmark;
 begin
 //  m := GetBookmark;
   fieldRec := FCsvColumns.FindByName(FieldName);
-  stillVisible := 0;
+//  stillVisible := 0;
   if not Assigned(fieldRec) then Exit;
   FieldIndex := fieldRec^.FPhysical;
   valueLen := Length(pattern); // if valuelen is zero then we are searching for blank or nulls
@@ -960,7 +958,9 @@ begin
       begin
         fieldValue := UpperCase(fieldValue);
         if JvCsvWildcardMatch(fieldValue, pattern) then // hide row if not same prefix
-          Inc(stillVisible)   // count the number that are still visible.
+        begin
+          // Inc(stillVisible)   // count the number that are still visible.
+        end
         else
           pRow^.filtered := true
       end;
@@ -3088,7 +3088,6 @@ end;
 
 function TJvCsvCustomInMemoryDataSet.GetAsString(const Row,Column:integer):string; //virtual;
 var
-  ResultString: string;
   GetIndex:Integer;
 begin
   if (Row<0) then   {lastrow}
@@ -3102,7 +3101,6 @@ end;
 
 function TJvCsvCustomInMemoryDataSet.GetRowAsString(const Index: integer): string;
 var
-  ResultString: string;
   GetIndex:Integer;
 begin
   if (Index<0) then   {lastrow}
@@ -3111,29 +3109,27 @@ begin
       GetIndex := Index; { actual index specified }
 
       { return string}
-  CsvRowToString(FData.GetRowPtr(GetIndex), ResultString);
-  Result := ResultString;
+  CsvRowToString(FData.GetRowPtr(GetIndex), Result);
+  Result := Result;
 end;
 
 // Get names of all the columns as a comma-separated string:
 
 function TJvCsvCustomInMemoryDataSet.GetColumnsAsString: string;
 var
-  ResultString: string;
   t: integer;
 begin
  // ColCount:
   if FCsvColumns.Count = 0 then
   begin
-    ResultString := '';
-    Result := ResultString;
+    Result := '';
     Exit;
   end;
  // Build a list of column names: <item>, <item>,....,<item>
-  ResultString := FieldDefs[0].Name;
+  Result := FieldDefs[0].Name;
   for t := 1 to FCsvColumns.Count - 1 do
-    ResultString := ResultString + JvCsvSep + FieldDefs[t].Name;
-  Result := ResultString;
+    Result := Result + JvCsvSep + FieldDefs[t].Name;
+  Result := Result;
 end;
 
 
