@@ -45,7 +45,7 @@ uses
 
 const
   // a version string for the component
-  cHidControllerClassVersion = '1.0.9';
+  cHidControllerClassVersion = '1.0.10';
 
   // strings from the registry for CheckOutByClass
   cHidKeyboardClass = 'Keyboard';
