@@ -19,7 +19,7 @@ Contributor(s):
   Remko Bonte
   Peter Thörnqvist
 
-Last Modified: 2004-02-04
+Last Modified: 2004-02-05
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -4843,6 +4843,7 @@ end;
 
 procedure TJvDataConsumerViewList.AddItems(var Index: Integer; Items: IJvDataItems; ExpandToLevel: Integer);
 var
+  SkipCount: Integer;
   I: Integer;
   J: Integer;
   SubItems: IJvDataItems;
@@ -4860,6 +4861,7 @@ begin
     J := 1 + FViewItems[Index - 1].Flags and $00FFFFFF;
     FViewItems[Index - 1].Flags := FViewItems[Index - 1].Flags or vifExpanded;
   end;
+  SkipCount := 0;
   for I  := 0 to Items.Count - 1 do
   begin
     if GetItemVisibleState(Items.Items[I]) <> disFalse then
@@ -4884,7 +4886,16 @@ begin
         end;
       end;
       Inc(Index);
-    end;
+    end
+    else
+      Inc(SkipCount);
+  end;
+  if SkipCount > 0 then
+  begin
+    if Index < High(FViewItems) then
+      Move(FViewItems[Index + 1], FViewItems[Index], SkipCount * SizeOf(FViewItems[0]));
+    FillChar(FViewItems[Length(FViewItems) - SkipCount], SkipCount * SizeOf(FViewItems[0]), 0);
+    SetLength(FViewItems, Length(FViewItems) - SkipCount);
   end;
 end;
 
