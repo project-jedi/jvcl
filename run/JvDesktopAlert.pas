@@ -193,6 +193,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function Showing: boolean;
+    procedure Close(Immediate:boolean);
     procedure Execute;override;
     property Data: TObject read FData write FData;
   published
@@ -447,6 +448,17 @@ begin
 end;
 
 { TJvDesktopAlert }
+
+procedure TJvDesktopAlert.Close(Immediate:boolean);
+begin
+  if Showing then
+  begin
+    if Immediate then
+      FDesktopForm.Close
+    else
+      FDesktopForm.FadeClose;
+  end;
+end;
 
 constructor TJvDesktopAlert.Create(AOwner: TComponent);
 begin

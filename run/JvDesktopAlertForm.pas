@@ -111,6 +111,7 @@ type
     MaxAlphaBlendValue: byte;
     FadeInTime, FadeOutTime, WaitTime: integer;
     WindowColorFrom, WindowColorTo, CaptionColorFrom, CaptionColorTo, FrameColor:TColor;
+    procedure FadeClose;
     {$IFNDEF COMPILER6_UP}
     property AlphaBlendValue:byte read FAlphaBlendValue write SetAlphaBlendValue;
     {$ENDIF !COMPILER6_UP}
@@ -712,6 +713,11 @@ begin
   {$IFNDEF COMPILER6_UP}
   DoAlphaBlend(0);
   {$ENDIF !COMPILER6_UP}
+end;
+
+procedure TJvFormDesktopAlert.FadeClose;
+begin
+  FadeOut;
 end;
 
 initialization
