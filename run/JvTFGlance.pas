@@ -1319,7 +1319,9 @@ begin
   StartDate := Date;
 
   FTitleAttr := TJvTFGlanceMainTitle.Create(Self);
-  FTitleAttr.Visible := False; // not visible by default. (Tim)
+
+// obones: Commented out, it goes against the default value in TJvTFGlanceMainTitle
+//  FTitleAttr.Visible := False; // not visible by default. (Tim)
   FTitleAttr.OnChange := GlanceTitleChange;
 
   FCellAttr := TJvTFGlanceCellAttr.Create(Self);
