@@ -25,15 +25,19 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
+{$I JVCL.INC}
+
 unit JvXPCore;
 
 interface
 
 uses
-  Windows, Messages, Classes, Controls, Graphics, Forms
   {$IFDEF USEJVCL}
-  , JvComponent
-  {$ENDIF};
+  Windows, Messages, Classes, Controls, Graphics, Forms,
+  JvComponent;
+  {$ELSE}
+  Windows, Messages, Classes, Controls, Graphics, Forms;
+  {$ENDIF USEJVCL};
 
 const
   { color constants.
@@ -70,22 +74,18 @@ const
   dxColor_BgCkOXP              = $00CC9999;
 
 type
-{ forward declarations }
-
   TJvXPCustomStyleControl = class;
 
-{ TJvXPBoundLines }
-
-  TJvXPBoundLines = set of (
+  TJvXPBoundLines = set of
+   (
     blLeft,                             // left line
     blTop,                              // top line
     blRight,                            // right line
     blBottom                            // bottom line
-  );
+   );
 
-{ TJvXPControlStyle }
-
-  TJvXPControlStyle = set of (
+  TJvXPControlStyle = set of
+   (
     csRedrawCaptionChanged,             // (default)
     csRedrawBorderChanged,              //
     csRedrawEnabledChanged,             // (default)
@@ -99,77 +99,61 @@ type
     csRedrawParentFontChanged,          //
     csRedrawPosChanged,                 //
     csRedrawResized                     //
-  );
+   );
 
-{ TJvXPDrawState }
-
-  TJvXPDrawState = set of (
+  TJvXPDrawState = set of
+   (
     dsDefault,                          // default
     dsHighlight,                        // highlighted
     dsClicked,                          // clicked
     dsFocused                           // focused
-  );
+   );
 
-{ TJvXPGlyphLayout }
-
-  TJvXPGlyphLayout = (
+  TJvXPGlyphLayout =
+   (
     glBottom,                           // bottom glyph
     glCenter,                           // centered glyph
     glTop                               // top glyph
-  );
+   );
 
-{ TJvXPTheme }
-
-  TJvXPTheme = (
+  TJvXPTheme =
+   (
     WindowsXP,                          // WindowsXP theme
     OfficeXP                            // OfficeXP theme
-  );
+   );
 
-{ TJvXPCustomComponent
-
-  baseclass for non-focusable component descendants. }
-  {$IFNDEF USEJVCL}
-  TJvXPCustomComponent = class(TComponent)
-  {$ELSE}
+  { baseclass for non-focusable component descendants. }
+  {$IFDEF USEJVCL}
   TJvXPCustomComponent = class(TJvComponent)
-  {$ENDIF}
+  public
+    constructor Create(AOwner: TComponent); override;
+  end;
+  {$ELSE}
+  TJvXPCustomComponent = class(TComponent)
   private
-    { Private desclarations }
-    {$IFNDEF USEJVCL}
     FVersion: string;
     procedure SetVersion(Value: string);
-    {$ENDIF}
-  protected
-    { Protected desclarations }
   public
-    { Public desclarations }
     constructor Create(AOwner: TComponent); override;
   published
-    { Published desclarations }
-    {$IFNDEF USEJVCL}
     property Version: string read FVersion write SetVersion stored False;
-    {$ENDIF}
   end;
+  {$ENDIF USEJVCL}
 
-{ TJvXPWinControl }
 
   TJvXPWinControl = class(TWinControl)
   published
-    { Published declarations }
     property Color;
   end;
 
-{ TJvXPCustomControl
+  { baseclass for focusable control descendants. }
 
-  baseclass for focusable control descendants. }
-
-  {$IFNDEF USEJVCL}
-  TJvXPCustomControl = class(TCustomControl)
-  {$ELSE}
+  {$IFDEF USEJVCL}
   TJvXPCustomControl = class(TJvCustomControl)
-  {$ENDIF}
+  {$ELSE}
+  TJvXPCustomControl = class(TCustomControl)
+  {$ENDIF USEJVCL}
   private
-    { Private desclarations }
     FClicking: Boolean;
     FDrawState: TJvXPDrawState;
     FIsLocked: Boolean;
@@ -180,21 +164,20 @@ type
     {$IFNDEF USEJVCL}
     FVersion: string;
     procedure SetVersion(Value: string);
-    {$ENDIF}
-    procedure CMDialogChar(var Message: TCMDialogChar); message CM_DIALOGCHAR;
-    procedure CMBorderChanged(var Message: TMessage); message CM_BORDERCHANGED;
-    procedure CMEnabledChanged(var Message: TMessage); message CM_ENABLEDCHANGED;
-    procedure CMFocusChanged(var Message: TMessage); message CM_FOCUSCHANGED;
-    procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
-    procedure CMParentColorChanged(var Message: TMessage); message CM_PARENTCOLORCHANGED;
-    procedure CMParentFontChanged(var Message: TMessage); message CM_PARENTFONTCHANGED;
-    procedure CMTextChanged(var Message: TMessage); message CM_TEXTCHANGED;
-    procedure WMMouseMove(var Message: TWMMouse); message WM_MOUSEMOVE;
-    procedure WMSize(var Message: TWMSize); message WM_SIZE;
-    procedure WMWindowPosChanged(var Message: TWMWindowPosChanged); message WM_WINDOWPOSCHANGED;
+    {$ENDIF USEJVCL}
+    procedure CMDialogChar(var Msg: TCMDialogChar); message CM_DIALOGCHAR;
+    procedure CMBorderChanged(var Msg: TMessage); message CM_BORDERCHANGED;
+    procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
+    procedure CMFocusChanged(var Msg: TMessage); message CM_FOCUSCHANGED;
+    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
+    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
+    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
+    procedure CMParentFontChanged(var Msg: TMessage); message CM_PARENTFONTCHANGED;
+    procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
+    procedure WMMouseMove(var Msg: TWMMouse); message WM_MOUSEMOVE;
+    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
+    procedure WMWindowPosChanged(var Msg: TWMWindowPosChanged); message WM_WINDOWPOSCHANGED;
   protected
-    { Protected desclarations }
     ExControlStyle: TJvXPControlStyle;
     procedure InternalRedraw; dynamic;
     procedure HookBorderChanged; dynamic;
@@ -214,7 +197,6 @@ type
     procedure MouseUp(Button:TMouseButton; Shift:TShiftState; X, Y: Integer); override;
     property ModalResult: TModalResult read FModalResult write FModalResult default 0;
   public
-    { Public desclarations }
     constructor Create(AOwner: TComponent); override;
     procedure Click; override;
     procedure BeginUpdate; dynamic;
@@ -224,7 +206,6 @@ type
     property IsLocked: Boolean read FIsLocked write FIsLocked;
     property IsSibling: Boolean read FIsSibling write FIsSibling;
   published
-    { Published declarations }
     //property BevelInner;
     //property BevelOuter;
     //property BevelWidth;
@@ -251,7 +232,7 @@ type
     property ShowHint;
     {$IFNDEF USEJVCL}
     property Version: string read FVersion write SetVersion stored False;
-    {$ENDIF}
+    {$ENDIF USEJVCL}
     property Visible;
     //property OnDockDrop;
     //property OnDockOver;
@@ -262,9 +243,9 @@ type
     property OnCanResize;
     property OnClick;
     property OnConstrainedResize;
-  {$IFDEF VER140} // Borland Delphi 6.0
+    {$IFDEF COMPILER6_UP}
     property OnContextPopup;
-  {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     property OnDragDrop;
     property OnDragOver;
     property OnEndDrag;
@@ -281,78 +262,56 @@ type
     property OnStartDrag;
   end;
 
-{ TJvXPUnlimitedControl }
-
   TJvXPUnlimitedControl = class(TJvXPCustomControl);
-
-{ TJvXPStyle }
 
   TJvXPStyle = class(TPersistent)
   private
-    { Private declarations }
     FTheme: TJvXPTheme;
     FUseStyleManager: Boolean;
   protected
-    { Protected declarations }
     Parent: TJvXPCustomStyleControl;
     procedure SetTheme(Value: TJvXPTheme); virtual;
     procedure SetUseStyleManager(Value: Boolean); virtual;
   public
-    { Public declarations }
     constructor Create(AOwner: TComponent);
     function GetTheme: TJvXPTheme;
   published
-    { Published declarations }
     property Theme: TJvXPTheme read FTheme write SetTheme default WindowsXP;
     property UseStyleManager: Boolean read FUseStyleManager write SetUseStyleManager default True;
   end;
 
-{ TJvXPStyleManager }
-
   TJvXPStyleManager = class(TJvXPCustomComponent)
   private
-    { Private desclarations }
     FControls: TList;
     FTheme: TJvXPTheme;
     FOnThemeChanged: TNotifyEvent;
     procedure InvalidateControls;
   protected
-    { Protected desclarations }
     procedure SetTheme(Value: TJvXPTheme); virtual;
   public
-    { Public desclarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure RegisterControls(const AControls: array of TJvXPCustomControl);
     procedure UnregisterControls(const AControls: array of TJvXPCustomControl);
   published
-    { Published desclarations }
     property Theme: TJvXPTheme read FTheme write SetTheme default WindowsXP;
     property OnThemeChanged: TNotifyEvent read FOnThemeChanged write FOnThemeChanged;
   end;
 
-{ TJvXPCustomStyleControl }
-
   TJvXPCustomStyleControl = class(TJvXPCustomControl)
   private
-    { Private desclarations }
     FStyle: TJvXPStyle;
     FStyleManager: TJvXPStyleManager;
   public
-    { Public desclarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   protected
-    { Protected desclarations }
     procedure SetStyleManager(Value: TJvXPStyleManager); virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   published
-    { Published desclarations }
     property Style: TJvXPStyle read FStyle write FStyle;
     property StyleManager: TJvXPStyleManager read FStyleManager write SetStyleManager;
   end;
-
-{ TJvXPGradient }
 
   TJvXPGradientColors = 2..255;
 
@@ -360,7 +319,6 @@ type
 
   TJvXPGradient = class(TPersistent)
   private
-    { Private-Deklarationen }
     FColors: TJvXPGradientColors;
     FDithered: Boolean;
     FEnabled: Boolean;
@@ -368,7 +326,6 @@ type
     FStartColor: TColor;
     FGradientStyle: TJvXPGradientStyle;
   protected
-    { Protected declarations }
     Parent: TJvXPCustomControl;
     procedure SetDithered(Value: Boolean); virtual;
     procedure SetColors(Value: TJvXPGradientColors); virtual;
@@ -377,13 +334,11 @@ type
     procedure SetGradientStyle(Value: TJvXPGradientStyle); virtual;
     procedure SetStartColor(Value: TColor); virtual;
   public
-    { Public declarations }
     Bitmap: TBitmap;
     constructor Create(AOwner: TControl);
     destructor Destroy; override;
     procedure RecreateBands; virtual;
   published
-    { Published-Deklarationen }
     property Dithered: Boolean read FDithered write SetDithered default True;
     property Colors: TJvXPGradientColors read FColors write SetColors default 16;
     property Enabled: Boolean read FEnabled write SetEnabled default False;
@@ -392,26 +347,21 @@ type
     property Style: TJvXPGradientStyle read FGradientStyle write SetGradientStyle default gsLeft;
   end;
 
-{$R ..\Resources\JvXPCore.res}
-
 implementation
 
 uses
   JvXPCoreUtils;
+
+{$R ..\Resources\JvXPCore.res}
+
 {$IFNDEF USEJVCL}
 resourcestring
+  SCopyright = 'Design eXperience. © 2002 M. Hoffmann Version ';
+  SCopyright2 = 'Design eXperience II - © 2002 M. Hoffmann Version ';
   SVersion = '2.0.1'; // always increase version number on new releases!
-{$ENDIF}
+{$ENDIF USEJVCL}
 
-{-----------------------------------------------------------------------------
-  Procedure: Register
-  Author:    mh
-  Date:      24-Jun-2002
-  Arguments: None
-  Result:    None
------------------------------------------------------------------------------}
-
-{ TJvXPCustomComponent }
+//=== TJvXPCustomComponent ===================================================
 
 {-----------------------------------------------------------------------------
   Procedure: TJvXPCustomComponent.Create
@@ -423,10 +373,10 @@ resourcestring
 
 constructor TJvXPCustomComponent.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   {$IFNDEF USEJVCL}
-  FVersion := 'Design eXperience. © 2002 M. Hoffmann Version ' + SVersion;
-  {$ENDIF}
+  FVersion := SCopyright + SVersion;
+  {$ENDIF USEJVCL}
 end;
 
 {-----------------------------------------------------------------------------
@@ -439,10 +389,10 @@ end;
 
 procedure TJvXPCustomComponent.SetVersion(Value: string);
 begin
-  ; // don't enable overwriting this constant.
+  // do not enable overwriting this constant.
 end;
 
-{ TJvXPCustomControl }
+//=== TJvXPCustomControl =====================================================
 
 {-----------------------------------------------------------------------------
   Procedure: TJvXPCustomControl.Create
@@ -454,7 +404,7 @@ end;
 
 constructor TJvXPCustomControl.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   ControlStyle := ControlStyle + [csOpaque, csReplicatable];
   DoubleBuffered := True;
   ExControlStyle := [csRedrawEnabledChanged, csRedrawFocusedChanged,
@@ -466,8 +416,8 @@ begin
   FIsSibling := False;
   FModalResult := 0;
   {$IFNDEF USEJVCL}
-  FVersion := 'Design eXperience II - © 2002 M. Hoffmann Version ' + SVersion;
-  {$ENDIF}
+  FVersion := SCopyright2 + SVersion;
+  {$ENDIF USEJVCL}
 end;
 
 {-----------------------------------------------------------------------------
@@ -480,7 +430,7 @@ end;
 
 procedure TJvXPCustomControl.SetVersion(Value: string);
 begin
-  ; // disallow changing this property.
+  // disallow changing this property.
 end;
 
 {-----------------------------------------------------------------------------
@@ -528,15 +478,15 @@ end;
   Procedure: TJvXPCustomControl.CMDialogChar
   Author:    mh
   Date:      22-Feb-2002
-  Arguments: var Message: TCMDialogChar
+  Arguments: var Msg: TCMDialogChar
   Result:    None
 -----------------------------------------------------------------------------}
 
-procedure TJvXPCustomControl.CMDialogChar(var Message: TCMDialogChar);
+procedure TJvXPCustomControl.CMDialogChar(var Msg: TCMDialogChar);
 begin
-  with Message do
-  if IsAccel(CharCode, Caption) and CanFocus and (Focused or
-    ((GetKeyState(VK_MENU) and $8000) <> 0)) then
+  with Msg do
+  if IsAccel(CharCode, Caption) and CanFocus and
+    (Focused or ((GetKeyState(VK_MENU) and $8000) <> 0)) then
   begin
     Click;
     Result := 1;
@@ -549,13 +499,13 @@ end;
   Procedure: TJvXPCustomControl.CMBorderChanged
   Author:    mh
   Date:      13-Aug-2002
-  Arguments: var Message: TMessage
+  Arguments: var Msg: TMessage
   Result:    None
 -----------------------------------------------------------------------------}
 
-procedure TJvXPCustomControl.CMBorderChanged(var Message: TMessage);
+procedure TJvXPCustomControl.CMBorderChanged(var Msg: TMessage);
 begin
-  // deligate message "BorderChanged" to hook.
+  // delegate message "BorderChanged" to hook.
   inherited;
   HookBorderChanged;
 end;
@@ -564,13 +514,13 @@ end;
   Procedure: TJvXPCustomControl.CMEnabledChanged
   Author:    mh
   Date:      21-Feb-2002
-  Arguments: var Message: TMessage
+  Arguments: var Msg: TMessage
   Result:    None
 -----------------------------------------------------------------------------}
 
-procedure TJvXPCustomControl.CMEnabledChanged(var Message: TMessage);
+procedure TJvXPCustomControl.CMEnabledChanged(var Msg: TMessage);
 begin
-  // deligate message "EnabledChanged" to hook.
+  // delegate message "EnabledChanged" to hook.
   inherited;
   HookEnabledChanged;
 end;
@@ -579,13 +529,13 @@ end;
   Procedure: TJvXPCustomControl.CMFocusChanged
   Author:    mh
   Date:      22-Feb-2002
-  Arguments: var Message: TMessage
+  Arguments: var Msg: TMessage
   Result:    None
 -----------------------------------------------------------------------------}
 
-procedure TJvXPCustomControl.CMFocusChanged(var Message: TMessage);
+procedure TJvXPCustomControl.CMFocusChanged(var Msg: TMessage);
 begin
-  // deligate message "FocusChanged" to hook.
+  // delegate message "FocusChanged" to hook.
   inherited;
   HookFocusedChanged;
 end;
@@ -594,13 +544,13 @@ end;
   Procedure: TJvXPCustomControl.CMMouseEnter
   Author:    mh
   Date:      21-Feb-2002
-  Arguments: var Message: TMessage
+  Arguments: var Msg: TMessage
   Result:    None
 -----------------------------------------------------------------------------}
 
-procedure TJvXPCustomControl.CMMouseEnter(var Message: TMessage);
+procedure TJvXPCustomControl.CMMouseEnter(var Msg: TMessage);
 begin
-  // deligate message "MouseEnter" to hook.
+  // delegate message "MouseEnter" to hook.
   inherited;
   HookMouseEnter;
 end;
@@ -609,13 +559,13 @@ end;
   Procedure: TJvXPCustomControl.CMMouseLeave
   Author:    mh
   Date:      21-Feb-2002
-  Arguments: var Message: TMessage
+  Arguments: var Msg: TMessage
   Result:    None
 -----------------------------------------------------------------------------}
 
-procedure TJvXPCustomControl.CMMouseLeave(var Message: TMessage);
+procedure TJvXPCustomControl.CMMouseLeave(var Msg: TMessage);
 begin
-  // deligate message "MouseLeave" to hook.
+  // delegate message "MouseLeave" to hook.
   inherited;
   HookMouseLeave;
 end;
@@ -624,13 +574,13 @@ end;
   Procedure: TJvXPCustomControl.CMParentColorChanged
   Author:    mh
   Date:      22-Feb-2002
-  Arguments: var Message: TMessage
+  Arguments: var Msg: TMessage
   Result:    None
 -----------------------------------------------------------------------------}
 
-procedure TJvXPCustomControl.CMParentColorChanged(var Message: TMessage);
+procedure TJvXPCustomControl.CMParentColorChanged(var Msg: TMessage);
 begin
-  // deligate message "ParentColorChanged" to hook.
+  // delegate message "ParentColorChanged" to hook.
   inherited;
   HookParentColorChanged;
 end;
@@ -639,13 +589,13 @@ end;
   Procedure: TJvXPCustomControl.CMParentFontChanged
   Author:    mh
   Date:      30-Okt-2002
-  Arguments: var Message: TMessage
+  Arguments: var Msg: TMessage
   Result:    None
 -----------------------------------------------------------------------------}
 
-procedure TJvXPCustomControl.CMParentFontChanged(var Message: TMessage);
+procedure TJvXPCustomControl.CMParentFontChanged(var Msg: TMessage);
 begin
-  // deligate message "ParentFontChanged" to hook.
+  // delegate message "ParentFontChanged" to hook.
   inherited;
   HookParentFontChanged;
 end;
@@ -658,9 +608,9 @@ end;
   Result:    None
 -----------------------------------------------------------------------------}
 
-procedure TJvXPCustomControl.CMTextChanged(var Message: TMessage);
+procedure TJvXPCustomControl.CMTextChanged(var Msg: TMessage);
 begin
-  // deligate message "TextChanged" to hook.
+  // delegate message "TextChanged" to hook.
   inherited;
   HookTextChanged;
 end;
@@ -668,29 +618,29 @@ end;
 {-----------------------------------------------------------------------------
   Procedure: TJvXPCustomControl.WMMouseMove
   Author:    mh
-  Date:      10-Mai-2002
-  Arguments: var Message: TWMMouse
+  Date:      10-May-2002
+  Arguments: var Msg: TWMMouse
   Result:    None
 -----------------------------------------------------------------------------}
 
-procedure TJvXPCustomControl.WMMouseMove(var Message: TWMMouse);
+procedure TJvXPCustomControl.WMMouseMove(var Msg: TWMMouse);
 begin
-  // deligate message "MouseMove" to hook.
+  // delegate message "MouseMove" to hook.
   inherited;
-  HookMouseMove(Message.XPos, Message.YPos);
+  HookMouseMove(Msg.XPos, Msg.YPos);
 end;
 
 {-----------------------------------------------------------------------------
   Procedure: TJvXPCustomControl.WMSize
   Author:    mh
   Date:      22-Feb-2002
-  Arguments: var Message: TWMSize
+  Arguments: var Msg: TWMSize
   Result:    None
 -----------------------------------------------------------------------------}
 
-procedure TJvXPCustomControl.WMSize(var Message: TWMSize);
+procedure TJvXPCustomControl.WMSize(var Msg: TWMSize);
 begin
-  // deligate message "Size" to hook.
+  // delegate message "Size" to hook.
   inherited;
   HookResized;
 end;
@@ -699,13 +649,13 @@ end;
   Procedure: TJvXPCustomControl.WMWindowPosChanged
   Author:    mh
   Date:      16-Aug-2002
-  Arguments: var Message: TWMWindowPosChanged
+  Arguments: var Msg: TWMWindowPosChanged
   Result:    None
 -----------------------------------------------------------------------------}
 
-procedure TJvXPCustomControl.WMWindowPosChanged(var Message: TWMWindowPosChanged);
+procedure TJvXPCustomControl.WMWindowPosChanged(var Msg: TWMWindowPosChanged);
 begin
-  // deligate message "WindowPosChanged" to hook.
+  // delegate message "WindowPosChanged" to hook.
   inherited;
   HookPosChanged;
 end;
@@ -713,7 +663,7 @@ end;
 {-----------------------------------------------------------------------------
   Procedure: TJvXPCustomControl.MouseDown
   Author:    mh
-  Date:      10-Mai-2002
+  Date:      10-May-2002
   Arguments: Button: TMouseButton; Shift: TShiftState; X, Y: Integer
   Result:    None
 -----------------------------------------------------------------------------}
@@ -721,8 +671,8 @@ end;
 procedure TJvXPCustomControl.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  // deligate message "MouseDown" to hook.
-  inherited;
+  // delegate message "MouseDown" to hook.
+  inherited MouseDown(Button, Shift, X, Y);
   if Button = mbLeft then
   begin
     FClicking := True;
@@ -741,8 +691,8 @@ end;
 procedure TJvXPCustomControl.MouseUp(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  // deligate message "MouseUp" to hook.
-  inherited;
+  // delegate message "MouseUp" to hook.
+  inherited  MouseUp(Button, Shift, X, Y);
   if FClicking then
   begin
     FClicking := False;
@@ -770,7 +720,7 @@ end;
 
 //
 // hooks are used to interrupt default windows messages in an easier
-// way - it's possible to override them in descedant classes.
+// way - it's possible to override them in descendant classes.
 // Beware of multiple redraw calls - if you know that the calling
 // hooks always redraws the component, use the lock i.e. unlock methods.
 //
@@ -911,7 +861,7 @@ end;
 
 procedure TJvXPCustomControl.HookMouseUp;
 var
-  cPos: TPoint;
+  CurrentPos: TPoint;
   NewControl: TWinControl;
 begin
   // this hook is called, if the user releases the left mouse button.
@@ -921,8 +871,8 @@ begin
       InternalRedraw;
 
     // does the cursor is over another supported control?
-    GetCursorPos(cPos);
-    NewControl := FindVCLWindow(cPos);
+    GetCursorPos(CurrentPos);
+    NewControl := FindVCLWindow(CurrentPos);
     if (NewControl <> nil) and (NewControl <> Self) and
       (NewControl.InheritsFrom(TJvXPCustomControl)) then
       TJvXPCustomControl(NewControl).HookMouseEnter;
@@ -1004,7 +954,7 @@ begin
     InternalRedraw;
 end;
 
-{ TJvXPStyle }
+//=== TJvXPStyle =============================================================
 
 {-----------------------------------------------------------------------------
   Procedure: TJvXPStyle.Create
@@ -1071,7 +1021,7 @@ begin
   end;
 end;
 
-{ TJvXPStyleManager }
+//=== TJvXPStyleManager ======================================================
 
 {-----------------------------------------------------------------------------
   Procedure: TJvXPStyleManager.Create
@@ -1100,7 +1050,7 @@ destructor TJvXPStyleManager.Destroy;
 begin
   InvalidateControls;
   FControls.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 {-----------------------------------------------------------------------------
@@ -1113,10 +1063,10 @@ end;
 
 procedure TJvXPStyleManager.InvalidateControls;
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := 0 to FControls.Count - 1 do
-  with TJvXPCustomControl(FControls[i]) do
+  for I := 0 to FControls.Count - 1 do
+  with TJvXPCustomControl(FControls[I]) do
     InternalRedraw;
 end;
 
@@ -1149,11 +1099,11 @@ end;
 
 procedure TJvXPStyleManager.RegisterControls(const AControls: array of TJvXPCustomControl);
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := Low(AControls) to High(AControls) do
-  if FControls.IndexOf(AControls[i]) = -1 then
-    FControls.Add(AControls[i]);
+  for I := Low(AControls) to High(AControls) do
+  if FControls.IndexOf(AControls[I]) = -1 then
+    FControls.Add(AControls[I]);
 end;
 
 {-----------------------------------------------------------------------------
@@ -1166,14 +1116,14 @@ end;
 
 procedure TJvXPStyleManager.UnregisterControls(const AControls: array of TJvXPCustomControl);
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := Low(AControls) to High(AControls) do
-  if FControls.IndexOf(AControls[i]) <> -1 then
-    FControls.Delete(FControls.IndexOf(AControls[i]));
+  for I := Low(AControls) to High(AControls) do
+  if FControls.IndexOf(AControls[I]) <> -1 then
+    FControls.Delete(FControls.IndexOf(AControls[I]));
 end;
 
-{ TJvXPCustomStyleControl }
+//=== TJvXPCustomStyleControl ================================================
 
 {-----------------------------------------------------------------------------
   Procedure: TJvXPCustomStyleControl.Create
@@ -1203,7 +1153,7 @@ begin
   if FStyleManager <> nil then
     FStyleManager.UnregisterControls([Self]);
   FStyle.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 {-----------------------------------------------------------------------------
@@ -1243,7 +1193,7 @@ begin
   end;
 end;
 
-{ TJvXPGradient }
+//=== TJvXPGradient ==========================================================
 
 {-----------------------------------------------------------------------------
   Procedure: TJvXPGradient.Create

@@ -25,34 +25,24 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
+{$I JVCL.INC}
+
 unit JvXPCoreUtils;
 
 interface
 
 uses
-  Windows, Graphics, SysUtils, Classes, Controls, TypInfo, JvXPCore;
-
-{ JvXPMethodsEqual }
+  Windows, Graphics, SysUtils, Classes, Controls, TypInfo,
+  JvXPCore;
 
 function JvXPMethodsEqual(const Method1, Method2: TMethod): Boolean;
-
-{ JvXPDrawLine }
-
-procedure JvXPDrawLine(const ACanvas: TCanvas; const x1, y1, x2, y2: Integer);
-
-{ JvXPCreateGradientRect }
-
+procedure JvXPDrawLine(const ACanvas: TCanvas; const X1, Y1, X2, Y2: Integer);
 procedure JvXPCreateGradientRect(const AWidth, AHeight: Integer; const StartColor,
   EndColor: TColor; const Colors: TJvXPGradientColors; const Style: TJvXPGradientStyle;
   const Dithered: Boolean; var Bitmap: TBitmap);
-
-{ JvXPAdjustBoundRect }
-
 procedure JvXPAdjustBoundRect(const BorderWidth: Byte;
   const ShowBoundLines: Boolean; const BoundLines: TJvXPBoundLines;
   var Rect: TRect);
-
-{ JvXPDrawBoundLines }
 procedure JvXPDrawBoundLines(const ACanvas: TCanvas; const BoundLines: TJvXPBoundLines;
   const AColor: TColor; const Rect: TRect);
 
@@ -64,7 +54,7 @@ procedure JvXPConvertToGray2(Bitmap: TBitmap);
 procedure JvXPRenderText(const AParent: TControl; const ACanvas: TCanvas;
   AText: string; const AFont: TFont; const AEnabled, AShowAccelChar: Boolean;
   var Rect: TRect; Flags: Integer);
-procedure JvXPFrame3d(const ACanvas: TCanvas; const Rect: TRect;
+procedure JvXPFrame3D(const ACanvas: TCanvas; const Rect: TRect;
   const TopColor, BottomColor: TColor; const Swapped: Boolean = False);
 procedure JvXPColorizeBitmap(Bitmap: TBitmap; const AColor: TColor);
 procedure JvXPSetDrawFlags(const AAlignment: TAlignment; const AWordWrap: Boolean;
@@ -85,8 +75,7 @@ implementation
 
 function JvXPMethodsEqual (const Method1, Method2: TMethod): Boolean;
 begin
-  Result :=
-    (Method1.Code = Method2.Code) and (Method1.Data = Method2.Data);
+  Result := (Method1.Code = Method2.Code) and (Method1.Data = Method2.Data);
 end;
 
 {-----------------------------------------------------------------------------
@@ -103,14 +92,16 @@ procedure JvXPCreateGradientRect(const AWidth, AHeight: Integer; const StartColo
 const
   PixelCountMax = 32768;
 type
-  TGradientBand = array[0..255] of TColor;
+  TGradientBand = array [0..255] of TColor;
   TRGBMap = packed record
-    case boolean of
-      True: (RGBVal: DWord);
-      False: (R, G, B, D: Byte);
+    case Boolean of
+      True:
+        (RGBVal: DWord);
+      False:
+        (R, G, B, D: Byte);
   end;
   PRGBTripleArray = ^TRGBTripleArray;
-  TRGBTripleArray = array[0..PixelCountMax-1] of TRGBTriple;
+  TRGBTripleArray = array [0..PixelCountMax-1] of TRGBTriple;
 const
   DitherDepth = 16;
 var
@@ -118,6 +109,7 @@ var
   iBndS, iBndE: Integer;
   GBand: TGradientBand;
   Row:  pRGBTripleArray;
+
   procedure CalculateGradientBand;
   var
     rR, rG, rB: Real;
@@ -141,15 +133,14 @@ var
       GBand[iStp] := RGB(
         lCol.R + Round(rR * iStp),
         lCol.G + Round(rG * iStp),
-        lCol.B + Round(rB * iStp)
-        );
+        lCol.B + Round(rB * iStp));
   end;
+
 begin
   Bitmap.Height := AHeight;
   Bitmap.Width := AWidth;
 
-  if Bitmap.PixelFormat <> pf24bit then
-    Bitmap.PixelFormat := pf24bit;
+  Bitmap.PixelFormat := pf24bit;
 
   CalculateGradientBand;
 
@@ -165,21 +156,22 @@ begin
         iBndE := MulDiv(iLoop + 1, AWidth, Colors);
         Brush.Color := GBand[iLoop];
         PatBlt(Handle, iBndS, 0, iBndE, AHeight, PATCOPY);
-        if (iLoop > 0) and (Dithered) then
-          for yLoop := 0 to DitherDepth - 1 do if (yLoop < AHeight)  then
+        if (iLoop > 0) and Dithered then
+          for yLoop := 0 to DitherDepth - 1 do
+            if yLoop < AHeight  then
             begin
-            Row := Bitmap.Scanline[yLoop];
-            for xLoop := 0 to AWidth div (Colors - 1) do
-              begin
-              XX:= iBndS + Random(xLoop);
-              if (XX < AWidth) and (XX > -1) then
-               with Row[XX] do
+              Row := Bitmap.ScanLine[yLoop];
+              for xLoop := 0 to AWidth div (Colors - 1) do
                 begin
-                rgbtRed := GetRValue(GBand[iLoop - 1]);
-                rgbtGreen := GetGValue(GBand[iLoop - 1]);
-                rgbtBlue := GetBValue(GBand[iLoop - 1]);
+                  XX := iBndS + Random(xLoop);
+                  if (XX < AWidth) and (XX > -1) then
+                    with Row[XX] do
+                    begin
+                      rgbtRed := GetRValue(GBand[iLoop - 1]);
+                      rgbtGreen := GetGValue(GBand[iLoop - 1]);
+                      rgbtBlue := GetBValue(GBand[iLoop - 1]);
+                    end;
                 end;
-              end;
             end;
       end;
       for yLoop := 1 to AHeight div DitherDepth do
@@ -194,21 +186,23 @@ begin
         iBndE := MulDiv(iLoop + 1, AHeight, Colors);
         Brush.Color := GBand[iLoop];
         PatBlt(Handle, 0, iBndS, AWidth, iBndE, PATCOPY);
-        if (iLoop > 0) and (Dithered) then
+        if (iLoop > 0) and Dithered then
           for yLoop := 0 to AHeight div (Colors - 1) do
-            begin
-            YY:=iBndS + Random(yLoop);
+          begin
+            YY := iBndS + Random(yLoop);
             if (YY < AHeight) and (YY > -1) then
-             begin
-             Row := Bitmap.Scanline[YY];
-             for xLoop := 0 to DitherDepth - 1 do if (xLoop < AWidth)  then with Row[xLoop] do
-               begin
-               rgbtRed := GetRValue(GBand[iLoop - 1]);
-               rgbtGreen := GetGValue(GBand[iLoop - 1]);
-               rgbtBlue := GetBValue(GBand[iLoop - 1]);
-               end;
-             end;
-            end;
+            begin
+              Row := Bitmap.ScanLine[YY];
+              for xLoop := 0 to DitherDepth - 1 do
+              if xLoop < AWidth  then
+                with Row[xLoop] do
+                begin
+                  rgbtRed := GetRValue(GBand[iLoop - 1]);
+                  rgbtGreen := GetGValue(GBand[iLoop - 1]);
+                  rgbtBlue := GetBValue(GBand[iLoop - 1]);
+                end;
+              end;
+          end;
       end;
       for xLoop := 0 to AWidth div DitherDepth do
         CopyRect(Bounds(xLoop * DitherDepth, 0, DitherDepth, AHeight),
@@ -221,11 +215,11 @@ end;
   Procedure: JvXPDrawLine
   Author:    mh
   Date:      25-Okt-2002
-  Arguments: const ACanvas: TCanvas; const x1, y1, x2, y2: Integer; const AutoCorrect: Boolean = False
+  Arguments: const ACanvas: TCanvas; const X1, Y1, X2, Y2: Integer; const AutoCorrect: Boolean = False
   Result:    None
 -----------------------------------------------------------------------------}
 
-procedure JvXPDrawLine(const ACanvas: TCanvas; const x1, y1, x2, y2: Integer);
+procedure JvXPDrawLine(const ACanvas: TCanvas; const X1, Y1, X2, Y2: Integer);
 begin
   with ACanvas do
   begin
@@ -300,7 +294,8 @@ begin
     begin
       PxlColor := ColorToRGB(Bitmap.Canvas.Pixels[x, y]);
       c := (PxlColor shr 16 + ((PxlColor shr 8) and $00FF) + PxlColor and $0000FF) div 3 + 100;
-      if c > 255 then c := 255;
+      if c > 255 then
+        c := 255;
       Bitmap.Canvas.Pixels[x, y] := RGB(c, c, c);
     end;
 end;
@@ -308,13 +303,15 @@ end;
 procedure JvXPRenderText(const AParent: TControl; const ACanvas: TCanvas;
   AText: string; const AFont: TFont; const AEnabled, AShowAccelChar: Boolean;
   var Rect: TRect; Flags: Integer); overload;
+
   procedure DoDrawText;
   begin
     DrawText(ACanvas.Handle, PChar(AText), -1, Rect, Flags);
   end;
+
 begin
-  if (Flags and DT_CALCRECT <> 0) and ((AText = '') or AShowAccelChar
-    and (AText[1] = '&') and (AText[2] = #0)) then
+  if (Flags and DT_CALCRECT <> 0) and ((AText = '') or AShowAccelChar and
+    (AText[1] = '&') and (AText[2] = #0)) then
     AText := AText + ' ';
   if not AShowAccelChar then
     Flags := Flags or DT_NOPREFIX;
@@ -338,7 +335,7 @@ begin
   end;
 end;
 
-procedure JvXPFrame3d(const ACanvas: TCanvas; const Rect: TRect;
+procedure JvXPFrame3D(const ACanvas: TCanvas; const Rect: TRect;
   const TopColor, BottomColor: TColor; const Swapped: Boolean = False);
 var
   ATopColor, ABottomColor: TColor;
@@ -353,15 +350,11 @@ begin
   with ACanvas do
   begin
     Pen.Color := ATopColor;
-    Polyline([
-      Point(Rect.Left, Rect.Bottom - 1),
-      Point(Rect.Left, Rect.Top),
-      Point(Rect.Right - 1, Rect.Top)]);
+    Polyline([Point(Rect.Left, Rect.Bottom - 1),
+      Point(Rect.Left, Rect.Top), Point(Rect.Right - 1, Rect.Top)]);
     Pen.Color := ABottomColor;
-    Polyline([
-      Point(Rect.Right - 1, Rect.Top + 1),
-      Point(Rect.Right - 1 , Rect.Bottom - 1),
-      Point(Rect.Left, Rect.Bottom - 1)]);
+    Polyline([Point(Rect.Right - 1, Rect.Top + 1),
+      Point(Rect.Right - 1 , Rect.Bottom - 1), Point(Rect.Left, Rect.Bottom - 1)]);
   end;
 end;
 
@@ -410,7 +403,7 @@ procedure JvXPPlaceText(const AParent: TControl; const ACanvas: TCanvas; const A
   const AFont: TFont; const AEnabled, AShowAccelChar: Boolean; const AAlignment: TAlignment;
   const AWordWrap: Boolean; var Rect: TRect);
 var
-  Flags, dx, OH, OW: Integer;
+  Flags, DX, OH, OW: Integer;
 begin
   OH := Rect.Bottom - Rect.Top;
   OW := Rect.Right - Rect.Left;
@@ -418,12 +411,12 @@ begin
   JvXPRenderText(AParent, ACanvas, AText, AFont, AEnabled, AShowAccelChar, Rect,
     Flags or DT_CALCRECT);
   if AAlignment = taRightJustify then
-    dx := OW - (Rect.Right + Rect.Left)
+    DX := OW - (Rect.Right + Rect.Left)
   else if AAlignment = taCenter then
-    dx := (OW - Rect.Right) div 2
+    DX := (OW - Rect.Right) div 2
   else
-    dx := 0;
-  OffsetRect(Rect, dx, (OH - Rect.Bottom) div 2);
+    DX := 0;
+  OffsetRect(Rect, DX, (OH - Rect.Bottom) div 2);
   JvXPRenderText(AParent, ACanvas, AText, AFont, AEnabled, AShowAccelChar, Rect, Flags);
 end;
 

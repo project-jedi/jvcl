@@ -78,7 +78,7 @@ type
     FForm: TCustomForm;
     FDummyMsgSend: Boolean;
     procedure FontChanged(Sender: TObject);
-    function GetRegKey: string;
+    // function GetRegKey: string;
     function IsFontStored: Boolean;
     procedure SetButtonClose(const Value: TJvButtonPersistent);
     procedure SetButtonNext(const Value: TJvButtonPersistent);
@@ -306,10 +306,12 @@ begin
   FDefaultFonts := False;
 end;
 
+{
 function TJvTipOfDay.GetRegKey: string;
 begin
   Result := Application.Title + '_' + Name;
 end;
+}
 
 procedure TJvTipOfDay.HandleNextClick(Sender: TObject);
 begin
@@ -615,8 +617,10 @@ end;
 
 function TJvTipOfDay.ReadFromAppStore: Boolean;
 begin
-  if Assigned (AppStore) then
+  if Assigned(AppStore) then
     Result := AppStore.ReadBoolean(AppStore.ConcatPaths([AppStorePath,RsStoreShowOnStartUp]), toShowOnStartUp in Options)
+  else
+    Result := False;
 end;
 
 procedure TJvTipOfDay.SaveToFile(const AFileName: string);
