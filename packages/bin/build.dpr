@@ -504,8 +504,16 @@ begin
   Result := 'd5';
   for i := High(Targets) downto 0 do
     if (Length(Targets[i].Name) >= 2) and (Result[2] <= Targets[i].Name[2]) then
-      if GetRootDirOf(Copy(Targets[i].Name, 1, 2)) <> '' then
-        Result := Targets[i].Name;
+      { prefere Delphi version instead of C++Builder version }
+      if (Result[2] < Targets[i].Name[2]) or
+         ((Result[1] = 'd') and (Targets[i].Name[1] = 'c')) then
+      begin
+        if SameText('clx', Copy(Targets[i].Name, 3, MaxInt)) then
+          Continue; // this is not a valid version
+
+        if GetRootDirOf(Copy(Targets[i].Name, 1, 2)) <> '' then
+          Result := Targets[i].Name;
+      end;
 end;
 
 procedure AddNewestEdition;
