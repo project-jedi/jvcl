@@ -63,7 +63,7 @@ uses
   SysUtils, TypInfo,
   QWindows, QImgList, 
   {$IFDEF MSWINDOWS}
-  //Windows,
+  Windows,
   {$ENDIF MSWINDOWS} 
   JvQDsgnConsts;
 

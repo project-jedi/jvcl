@@ -38,7 +38,7 @@ interface
 uses
   Classes,  
   QImgList,  
-  DesignEditors, DesignIntf, DesignMenus,  
+  DesignEditors, DesignIntf, DesignMenus
   ;
 
 procedure Register;
@@ -51,11 +51,11 @@ procedure Register;
 {$ENDIF LINUX}
 
 implementation
-uses  
-  QComCtrls, 
-  JvQNavigationPane, JvQPageList, JvQPageListTreeView, 
+uses
+  QComCtrls,
+  JvQNavigationPane, JvQPageList, JvQPageListTreeView,
   JvQDsgnConsts, JvQPageListEditors, JvQNavPaneEditors,
-  JvQTreeItemsEditorForm, JvQPageLinkEditorForm, JvQPageListEditorForm;
+  {JvQTreeItemsEditorForm,} JvQPageLinkEditorForm, JvQPageListEditorForm;
 
 
 procedure Register;
@@ -71,20 +71,20 @@ begin
   RegisterComponents(RsPaletteListComboTree, [TJvSettingsTreeView,
     TJvPageListTreeView, TJvPageList]);
 
-  RegisterPropertyEditor(TypeInfo(TTreeNodes), TCustomTreeView, cItems, TJvTreeItemsProperty);
+//  RegisterPropertyEditor(TypeInfo(TTreeNodes), TCustomTreeView, cItems, TJvTreeItemsProperty);
   RegisterPropertyEditor(TypeInfo(TJvShowDesignCaption), nil, '', TJvShowDesignCaptionProperty);
   RegisterClasses([TJvSettingsTreeView, TJvPageListTreeView, TJvPageList, TJvStandardPage]);
   RegisterComponentEditor(TJvCustomPageList, TJvCustomPageEditor);
-  RegisterComponentEditor(TJvCustomPage, TJvCustomPageEditor); 
-  RegisterComponentEditor(TCustomTreeView, TJvTreeViewComponentEditor);
-  RegisterComponentEditor(TJvCustomPageListTreeView, TJvPageTreeViewComponentEditor);
+  RegisterComponentEditor(TJvCustomPage, TJvCustomPageEditor);
+//  RegisterComponentEditor(TCustomTreeView, TJvTreeViewComponentEditor);
+//  RegisterComponentEditor(TJvCustomPageListTreeView, TJvPageTreeViewComponentEditor);
   // register for the standard TTreeView as well
   //  RegisterComponentEditor(TTreeView, TJvTreeViewComponentEditor);
-  RegisterPropertyEditor(TypeInfo(TJvPageLinks),
-    TJvCustomPageListTreeView, '', TJvPageLinksProperty);
+//  RegisterPropertyEditor(TypeInfo(TJvPageLinks),
+//    TJvCustomPageListTreeView, '', TJvPageLinksProperty);
   RegisterPropertyEditor(TypeInfo(TJvCustomPage),
     TJvCustomPageList, cActivePage, TJvActivePageProperty);
-  RegisterPropertyEditor(TypeInfo(TImageIndex), TJvSettingsTreeImages, '', TJvSettingsTreeImagesProperty);
+//  RegisterPropertyEditor(TypeInfo(TImageIndex), TJvSettingsTreeImages, '', TJvSettingsTreeImagesProperty);
   RegisterPropertyEditor(TypeInfo(TImageIndex), TJvNavPanelPage, 'ImageIndex', TJvNavPanePageImageIndexProperty);
   RegisterPropertyEditor(TypeInfo(TImageIndex), TJvNavPanelHeader, 'ImageIndex', TJvNavPanelHeaderImageIndexProperty);
   RegisterPropertyEditor(TypeInfo(TImageIndex), TJvNavPanelButton, 'ImageIndex', TJvNavPanelButtonImageIndexProperty);

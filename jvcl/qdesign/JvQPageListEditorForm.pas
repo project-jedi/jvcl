@@ -39,7 +39,7 @@ uses
   QActnList, QImgList, QComCtrls, QStdCtrls, QToolWin, QMenus,  
   DesignIntf, DesignEditors,  
   ClxDesignWindows,  
-  JvQPageList;
+  JvQPageList, QExtCtrls;
 
 type 
   TfrmPageListEditor = class(TClxDesignWindow)  

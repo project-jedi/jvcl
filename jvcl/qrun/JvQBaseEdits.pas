@@ -282,7 +282,7 @@ uses
 {$R ..\Resources\JvBaseEdits.res}
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
-{$R ../Resources/JvBaseEdits.res}
+{$R ../Resources/JvBaseEdits.Res}
 {$ENDIF LINUX}
 
 const

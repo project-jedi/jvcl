@@ -68,7 +68,6 @@ type
     procedure FormShow(Sender: TObject);
     procedure DetailsBtnClick(Sender: TObject);
     procedure ErrorInfo(var LogicalAddress: Pointer; var ModuleName: string);
-    procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     FDetails: Boolean;
     FDetailsHeight: Integer;
@@ -127,7 +126,7 @@ begin
       if NewStyleControls then
         Application.ShowException(E)
       else
-        MessageDlg(E.Message + '.', mtError, [mbOk], 0);
+        Application.MessageBox(E.Message + '.', Application.MainForm.Caption, [smbOk], smsCritical);
     end;
   except
     { ignore any exceptions }
@@ -278,13 +277,6 @@ end;
 procedure TJvErrorDialog.DetailsBtnClick(Sender: TObject);
 begin
   SetShowDetails(not FDetails);
-end;
-
-procedure TJvErrorDialog.FormKeyUp(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-
-begin
-
 end;
 
 end.

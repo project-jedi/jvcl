@@ -37,7 +37,10 @@ interface
 
 uses
   SysUtils, Classes,  
-  QGraphics, QControls, QForms, QDialogs, 
+  QGraphics, QControls, QForms, QDialogs,
+  {$IFDEF LINUX}
+  JvQRegistryIniFile,
+  {$ENDIF}
   JvQComponent;
 
 type
@@ -154,15 +157,13 @@ var
   I: Integer;
 begin
   {$IFDEF LINUX}
-  with TIniFile.Create(GetEnvironmentVariable('HOME') + PathDelim + SDelphiKey) do
+  with TJvRegistryFile.Create(GetEnvironmentVariable('HOME') + PathDelim + SDelphiKey) do
   {$ENDIF LINUX}
   {$IFDEF MSWINDOWS}
   with TRegistry.Create do
   {$ENDIF MSWINDOWS}
     try
-      {$IFDEF MSWINDOWS}
       LazyWrite := False;
-      {$ENDIF MSWINDOWS}
       if OpenKey(GetRegKey, True) then
         try
           WriteInteger(cLeft, Left);
@@ -185,7 +186,7 @@ var
   I: Integer;
 begin
   {$IFDEF LINUX}
-  with TIniFile.Create(GetEnvironmentVariable('HOME') + PathDelim + SDelphiKey) do
+  with TJvRegistryFile.Create(GetEnvironmentVariable('HOME') + PathDelim + SDelphiKey) do
   {$ENDIF LINUX}
   {$IFDEF MSWINDOWS}
   with TRegistry.Create do

@@ -27,5 +27,5 @@ object JvBaseDesign: TJvBaseDesign
   ParentFont = False
   Scaled = False
   OnClose = FormClose
-  PixelsPerInch = 113
+  PixelsPerInch = 96
 end

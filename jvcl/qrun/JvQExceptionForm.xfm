@@ -1,27 +1,28 @@
 object JvErrorDialog: TJvErrorDialog
   Left = 202
   Top = 100
+  Width = 380
+  Height = 252
+  VertScrollBar.Range = 144
+  HorzScrollBar.Range = 92
   ActiveControl = OKBtn
   BorderIcons = [biSystemMenu]
   BorderStyle = fbsDialog
-  ClientHeight = 252
-  ClientWidth = 380
-  Color = clBtnFace
-  Font.Charset = DEFAULT_CHARSET
-  Font.Color = clWindowText
-  Font.Height = -11
+  Color = clButton
+  Font.Color = clText
+  Font.Height = 11
   Font.Name = 'MS Sans Serif'
+  Font.Pitch = fpVariable
   Font.Style = []
+  Font.Weight = 40
   FormStyle = fsStayOnTop
-  OldCreateOrder = True
+  ParentFont = False
   Position = poScreenCenter
   Scaled = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  OnKeyUp = FormKeyUp
   OnShow = FormShow
   PixelsPerInch = 96
-  TextHeight = 13
   object BasicPanel: TPanel
     Left = 0
     Top = 0
@@ -90,45 +91,15 @@ object JvErrorDialog: TJvErrorDialog
     BevelInner = bvLowered
     BevelOuter = bvLowered
     TabOrder = 2
-    object AddrLabel: TJvLabel
-      Left = 53
-      Top = 11
-      Width = 121
-      Height = 13
-      Alignment = taRightJustify
-      AutoSize = False
-      Caption = 'Error address: '
-      AutoOpenURL = False
-      HotTrackFont.Charset = DEFAULT_CHARSET
-      HotTrackFont.Color = clWindowText
-      HotTrackFont.Height = -11
-      HotTrackFont.Name = 'MS Sans Serif'
-      HotTrackFont.Style = []
-    end
-    object TypeLabel: TJvLabel
-      Left = 53
-      Top = 30
-      Width = 121
-      Height = 13
-      Alignment = taRightJustify
-      AutoSize = False
-      Caption = 'Error Type: '
-      AutoOpenURL = False
-      HotTrackFont.Charset = DEFAULT_CHARSET
-      HotTrackFont.Color = clWindowText
-      HotTrackFont.Height = -11
-      HotTrackFont.Name = 'MS Sans Serif'
-      HotTrackFont.Style = []
-    end
     object MessageText: TMemo
       Left = 7
       Top = 53
       Width = 366
       Height = 84
-      TabStop = False
-      Color = clBtnFace
+      Color = clButton
       ReadOnly = True
       TabOrder = 0
+      TabStop = False
       WantReturns = False
     end
     object ErrorAddress: TEdit

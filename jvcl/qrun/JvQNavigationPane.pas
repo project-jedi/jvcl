@@ -35,9 +35,9 @@ unit JvQNavigationPane;
 interface
 
 uses
-  SysUtils, Classes,  
-  QControls, QGraphics, QMenus, QExtCtrls, QImgList, Types, Qt,
-  QTypes, QWindows, 
+  SysUtils, Classes, 
+  QControls, Types, QGraphics, QMenus, QExtCtrls, QImgList, 
+  Qt, QTypes, QWindows, QMessages, 
   JvQTypes, JvQButton, JvQPageList, JvQComponent, JvQExExtCtrls;
 
 const
@@ -78,13 +78,13 @@ type
     procedure SetAlignment(const Value: TAlignment);
     procedure SetWordWrap(const Value: Boolean);
     procedure ParentStyleManagerChanged(var Msg: TMsgStyleManagerChange); message CM_PARENTSTYLEMANAGERCHANGED;
-    procedure ParentStyleManagerChange(var Msg: TMessage); message CM_PARENTSTYLEMANAGERCHANGE;
-    procedure CMControlChange(var Msg: TMessage); message CM_CONTROLCHANGE;
+    procedure ParentStyleManagerChange(var Msg: TMessage); message CM_PARENTSTYLEMANAGERCHANGE; 
     procedure SetParentStyleManager(const Value: Boolean);
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure TextChanged; override;
     procedure Paint; override; 
+    procedure ControlsListChanged(Control: TControl; Inserting: Boolean); override;
     function WidgetFlags: Integer; override; 
   public
     constructor Create(AOwner: TComponent); override;
@@ -324,14 +324,14 @@ type
     procedure SetStyleManager(const Value: TJvNavPaneStyleManager);
     procedure DoStyleChange(Sender: TObject);
     procedure ParentStyleManagerChanged(var Msg: TMsgStyleManagerChange); message CM_PARENTSTYLEMANAGERCHANGED;
-    procedure ParentStyleManagerChange(var Msg: TMessage); message CM_PARENTSTYLEMANAGERCHANGE;
-    procedure CMControlChange(var Msg: TMessage); message CM_CONTROLCHANGE;
+    procedure ParentStyleManagerChange(var Msg: TMessage); message CM_PARENTSTYLEMANAGERCHANGE; 
     procedure SetParentStyleManager(const Value: Boolean);
   protected
     procedure DoDropDownMenu(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
     procedure DoColorsChange(Sender: TObject);
     procedure Paint; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override; 
+    procedure ControlsListChanged(Control: TControl; Inserting: Boolean); override;
     function WidgetFlags: Integer; override; 
   public
     constructor Create(AOwner: TComponent); override;
@@ -586,16 +586,16 @@ type
     procedure SetAlignment(const Value: TAlignment);
     procedure SetWordWrap(const Value: Boolean);
     procedure ParentStyleManagerChanged(var Msg: TMsgStyleManagerChange); message CM_PARENTSTYLEMANAGERCHANGED;
-    procedure ParentStyleManagerChange(var Msg: TMessage); message CM_PARENTSTYLEMANAGERCHANGE;
-    procedure CMControlChange(var Msg: TMessage); message CM_CONTROLCHANGE;
+    procedure ParentStyleManagerChange(var Msg: TMessage); message CM_PARENTSTYLEMANAGERCHANGE; 
     procedure SetParentStyleManager(const Value: Boolean);
     procedure SetAction(const Value: TBasicAction);
     procedure SetBackground(const Value: TJvNavPaneBackgroundImage);
     procedure DoBackgroundChange(Sender: TObject);
   protected
     procedure UpdatePageList;
-    function GetAction: TBasicAction;  override; 
-    procedure SetParent(constAParent: TWinControl); override;
+    function GetAction: TBasicAction;  
+    procedure ControlsListChanged(Control: TControl; Inserting: Boolean); override; 
+    procedure SetParent(const AParent: TWinControl); override;
     procedure SetPageIndex(Value: Integer); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     property NavPanel: TJvNavPanelButton read FNavPanel;
@@ -729,8 +729,7 @@ type
     procedure DoCloseClick(Sender: TObject);
     procedure SetShowGrabber(const Value: Boolean);
     procedure ParentStyleManagerChanged(var Msg: TMsgStyleManagerChange); message CM_PARENTSTYLEMANAGERCHANGED;
-    procedure ParentStyleManagerChange(var Msg: TMessage); message CM_PARENTSTYLEMANAGERCHANGE;
-    procedure CMControlChange(var Msg: TMessage); message CM_CONTROLCHANGE;
+    procedure ParentStyleManagerChange(var Msg: TMessage); message CM_PARENTSTYLEMANAGERCHANGE; 
     procedure SetParentStyleManager(const Value: Boolean);
     function GetDrawPartialMenuFrame: Boolean;
     procedure SetDrawPartialMenuFrame(const Value: Boolean);
@@ -744,6 +743,7 @@ type
     procedure TextChanged; override;
     procedure FontChanged; override;
     procedure DoDropDownMenu(Sender: TObject; MousePos: TPoint; var Handled: Boolean);  
+    procedure ControlsListChanged(Control: TControl; Inserting: Boolean); override;
     function WidgetFlags: Integer; override; 
     property EdgeRounding: Integer read FEdgeRounding write SetEdgeRounding default 9;
   public
@@ -849,8 +849,7 @@ type
     procedure SetAlignment(const Value: TAlignment);
     procedure SetWordWrap(const Value: Boolean);
     procedure ParentStyleManagerChanged(var Msg: TMsgStyleManagerChange); message CM_PARENTSTYLEMANAGERCHANGED;
-    procedure ParentStyleManagerChange(var Msg: TMessage); message CM_PARENTSTYLEMANAGERCHANGE;
-    procedure CMControlChange(var Msg: TMessage); message CM_CONTROLCHANGE;
+    procedure ParentStyleManagerChange(var Msg: TMessage); message CM_PARENTSTYLEMANAGERCHANGE; 
     procedure SetParentStyleManager(const Value: Boolean);
     procedure SetBackground(const Value: TJvNavPaneBackgroundImage);
   protected
@@ -859,6 +858,7 @@ type
     function IsNavPanelFontHotTrackStored: Boolean;
     function IsNavPanelHotTrackFontOptionsStored: Boolean;
     procedure UpdatePages; virtual; 
+    procedure ControlsListChanged(Control: TControl; Inserting: Boolean); override;
     function WidgetFlags: Integer; override;
     procedure Paint; override; 
     procedure SetActivePage(Page: TJvCustomPage); override;
@@ -1010,8 +1010,8 @@ type
 implementation
 
 uses
-  Math,   
-  QForms, QActnList, 
+  Math, 
+  QForms, QActnList,
   JvQJVCLUtils, JvQJCLUtils, JvQResources;
 
 const
@@ -1032,7 +1032,7 @@ begin
   AControl.Broadcast(Msg); 
   with Msg do
     for I := 0 to AControl.ControlCount - 1 do
-      if AControl.Controls[I].Perform(Msg, Integer(Sender), Integer(StyleManager)) <> 0 then
+      if QMessages.Perform(AControl.Controls[I], Msg, Integer(Sender), Integer(StyleManager)) <> 0 then
         Exit; 
 end;
 
@@ -1199,15 +1199,20 @@ begin
   if FParentStyleManager <> Value then
   begin
     FParentStyleManager := Value;
-    if FParentStyleManager and (Parent <> nil) then
-      Parent.Perform(CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
+    if FParentStyleManager and (Parent <> nil) then  
+      QMessages.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0); 
   end;
 end;
 
-procedure TJvIconPanel.CMControlChange(var Msg: TMessage);
+
+
+
+procedure TJvIconPanel.ControlsListChanged(Control: TControl; Inserting: Boolean);
 begin
+  inherited;
   InternalStyleManagerChanged(Self, StyleManager);
 end;
+
 
 procedure TJvIconPanel.ParentStyleManagerChange(var Msg: TMessage);
 begin
@@ -1696,15 +1701,20 @@ begin
   if FParentStyleManager <> Value then
   begin
     FParentStyleManager := Value;
-    if FParentStyleManager and (Parent <> nil) then
-      Parent.Perform(CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
+    if FParentStyleManager and (Parent <> nil) then  
+      QMessages.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0); 
   end;
 end;
 
-procedure TJvCustomNavigationPane.CMControlChange(var Msg: TMessage);
+
+
+
+procedure TJvCustomNavigationPane.ControlsListChanged(Control: TControl; Inserting: Boolean);
 begin
+  inherited;
   InternalStyleManagerChanged(Self, StyleManager);
 end;
+
 
 procedure TJvCustomNavigationPane.ParentStyleManagerChange(var Msg: TMessage);
 begin
@@ -1952,8 +1962,8 @@ begin
   if FParentStyleManager <> Value then
   begin
     FParentStyleManager := Value;
-    if FParentStyleManager and (Parent <> nil) then
-      Parent.Perform(CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
+    if FParentStyleManager and (Parent <> nil) then  
+      QMessages.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0); 
   end;
 end;
 
@@ -2199,8 +2209,8 @@ begin
   if FParentStyleManager <> Value then
   begin
     FParentStyleManager := Value;
-    if FParentStyleManager and (Parent <> nil) then
-      Parent.Perform(CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
+    if FParentStyleManager and (Parent <> nil) then  
+      QMessages.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0); 
   end;
 end;
 
@@ -2719,7 +2729,7 @@ begin
   UpdatePageList;
 end;
 
-procedure TJvNavPanelPage.SetParent(constAParent: TWinControl);
+procedure TJvNavPanelPage.SetParent(const AParent: TWinControl);
 begin
   inherited SetParent(AParent);
   if (FNavPanel = nil) or (FIconButton = nil) or (csDestroying in ComponentState) then
@@ -2827,15 +2837,21 @@ begin
   if FParentStyleManager <> Value then
   begin
     FParentStyleManager := Value;
-    if FParentStyleManager and (Parent <> nil) then
-      Parent.Perform(CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
+    if FParentStyleManager and (Parent <> nil) then  
+      QMessages.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0); 
   end;
 end;
 
-procedure TJvNavPanelPage.CMControlChange(var Msg: TMessage);
+
+
+
+procedure TJvNavPanelPage.ControlsListChanged(Control: TControl; Inserting: Boolean);
 begin
+  inherited;
   InternalStyleManagerChanged(Self, StyleManager);
 end;
+
+
 
 procedure TJvNavPanelPage.ParentStyleManagerChange(var Msg: TMessage);
 begin
@@ -3042,8 +3058,8 @@ begin
   if FParentStyleManager <> Value then
   begin
     FParentStyleManager := Value;
-    if FParentStyleManager and (Parent <> nil) then
-      Parent.Perform(CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
+    if FParentStyleManager and (Parent <> nil) then  
+      QMessages.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0); 
   end;
 end;
 
@@ -3278,16 +3294,21 @@ begin
   if FParentStyleManager <> Value then
   begin
     FParentStyleManager := Value;
-    if FParentStyleManager and (Parent <> nil) then
-      Parent.Perform(CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
+    if FParentStyleManager and (Parent <> nil) then  
+      QMessages.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0); 
   end;
 end;
 
-procedure TJvNavPanelHeader.CMControlChange(var Msg: TMessage);
+
+
+
+procedure TJvNavPanelHeader.ControlsListChanged(Control: TControl; Inserting: Boolean);
 begin
-  // a control was inserted or removed
+  inherited;
   InternalStyleManagerChanged(Self, StyleManager);
 end;
+
+
 
 //=== TJvNavPanelDivider =====================================================
 
@@ -3441,8 +3462,8 @@ begin
   if FParentStyleManager <> Value then
   begin
     FParentStyleManager := Value;
-    if FParentStyleManager and (Parent <> nil) then
-      Parent.Perform(CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
+    if FParentStyleManager and (Parent <> nil) then  
+      QMessages.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0); 
   end;
 end;
 
@@ -4209,15 +4230,21 @@ begin
   if FParentStyleManager <> Value then
   begin
     FParentStyleManager := Value;
-    if FParentStyleManager and (Parent <> nil) then
-      Parent.Perform(CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
+    if FParentStyleManager and (Parent <> nil) then  
+      QMessages.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0); 
   end;
 end;
 
-procedure TJvNavPaneToolPanel.CMControlChange(var Msg: TMessage);
+
+
+
+procedure TJvNavPaneToolPanel.ControlsListChanged(Control: TControl; Inserting: Boolean);
 begin
+  inherited;
   InternalStyleManagerChanged(Self, StyleManager);
 end;
+
+
 
 procedure TJvNavPaneToolPanel.ParentStyleManagerChange(var Msg: TMessage);
 begin
@@ -4651,7 +4678,7 @@ var
 begin
   G := Picture.Graphic;
   if G <> nil then
-    if not ((G is TMetaFile) or (G is TIcon)) then
+    if not ((G is TIcon)) then
       G.Transparent := FTransparent;
   if not FDrawing then Change;
 end;

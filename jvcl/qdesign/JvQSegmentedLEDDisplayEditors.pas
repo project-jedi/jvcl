@@ -65,7 +65,7 @@ type
     procedure PrepareItem(Index: Integer; const AItem: IMenuItem); override; 
   end;
 
-  TUnlitColorProperty = class(TColorProperty , ICustomPropertyDrawing, ICustomPropertyListDrawing ) 
+  TUnlitColorProperty = class(TColorProperty , ICustomPropertyDrawing, ICustomPropertyListDrawing )
     procedure ICustomPropertyListDrawing.ListDrawValue = ListDrawValue;
     procedure ICustomPropertyDrawing.PropDrawValue = PropDrawValue; 
   public
@@ -75,6 +75,12 @@ type
     procedure ListDrawValue(const Value: string; ACanvas: TCanvas;
       const ARect: TRect; ASelected: Boolean);  
     procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean); 
+    procedure PropDrawName(ACanvas: TCanvas; const ARect: TRect;
+      ASelected: Boolean);
+    procedure ListMeasureHeight(const Value: string; ACanvas: TCanvas;
+      var AHeight: Integer);
+    procedure ListMeasureWidth(const Value: string; ACanvas: TCanvas;
+      var AWidth: Integer);
   end;
 
 implementation
@@ -253,5 +259,22 @@ begin
     DefaultPropertyDrawValue(Self, ACanvas, ARect);
 end;
 
+procedure TUnlitColorProperty.PropDrawName(ACanvas: TCanvas; const ARect: TRect;
+      ASelected: Boolean);
+begin
+  DefaultPropertyDrawName(self, ACanvas, ARect);
+end;
+
+procedure TUnlitColorProperty.ListMeasureHeight(const Value: string; ACanvas: TCanvas;
+      var AHeight: Integer);
+begin
+
+end;
+
+procedure TUnlitColorProperty.ListMeasureWidth(const Value: string; ACanvas: TCanvas;
+      var AWidth: Integer);
+begin
+  AWidth := ACanvas.TextWidth(Value);
+end;
 
 end.

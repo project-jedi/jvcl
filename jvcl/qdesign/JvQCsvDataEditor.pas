@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -20,8 +21,6 @@ All Rights Reserved.
 
 Contributor(s):  Warren Postma (warrenpstma@hotmail.com)
 
-Last Modified: 2003-04-26
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -31,6 +30,7 @@ Description:
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -39,14 +39,9 @@ unit JvQCsvDataEditor;
 interface
 
 uses
-  SysUtils, Classes, Db,
-  
-  
-  QForms, QDialogs, QGraphics, Types,
-  
-  
-  DesignEditors, DesignIntf,
-  
+  SysUtils, Classes, Db,  
+  QForms, QDialogs, QGraphics, Types,  
+  DesignEditors, DesignIntf, 
   JvQCsvData;
 
 type
@@ -92,19 +87,19 @@ var
   dlgResult: Integer;
   WindowList: Pointer;
 begin
-  WindowList := DisableTaskWindows(0);
+//  WindowList := DisableTaskWindows(0);
   Dialog := TJvCsvDefStrDialog.Create(nil); // no owner!
 //  dlgResult := idCancel;
   try
     Dialog.SetCsvStr(OldValue);
     dlgResult := Dialog.ShowModal;
-    if dlgResult = idOk then
+    if dlgResult = 1 then
       Result := Dialog.GetCsvStr
     else
       Result := OldValue;
   finally
     Dialog.Free;
-    EnableTaskWindows(WindowList);
+   // EnableTaskWindows(WindowList);
   end;
 end;
 

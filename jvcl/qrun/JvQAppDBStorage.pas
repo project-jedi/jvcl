@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -34,14 +35,9 @@ unit JvQAppDBStorage;
 interface
 
 uses
-  SysUtils, Classes, DB,
-  
-  Variants,
-  
-  
-  
-  QDBCtrls,
-  
+  SysUtils, Classes, DB, 
+  Variants,   
+  QDBCtrls, 
   JvQAppStorage;
 
 // DB table must contain 3 fields for the storage
@@ -183,12 +179,12 @@ function TJvCustomAppDBStorage.DoReadBinary(const Path: string; var Buf;
 var
   Value: string;
 begin
-  raise EJvAppDBStorageError.Create(RsENotSupported);
+  raise EJvAppDBStorageError.CreateRes(@RsENotSupported);
   // TODO -cTESTING -oJVCL: NOT TESTED!!!
   Value := JclMime.MimeDecodeString(DoReadString(Path, ''));
   Result := Length(Value);
   if Result > BufSize then
-    raise EJvAppDBStorageError.CreateFmt(RsEBufTooSmallFmt, [Result]);
+    raise EJvAppDBStorageError.CreateResFmt(@RsEBufTooSmallFmt, [Result]);
   if Length(Value) > 0 then
     Move(Value[1], Buf, Result);
 end;
@@ -222,7 +218,7 @@ procedure TJvCustomAppDBStorage.DoWriteBinary(const Path: string;
 var
   Value, Buf1: string;
 begin
-  raise EJvAppDBStorageError.Create(RsENotSupported);
+  raise EJvAppDBStorageError.CreateRes(@RsENotSupported);
   // TODO -cTESTING -oJVCL: NOT TESTED!!!
   SetLength(Value, BufSize);
   if BufSize > 0 then
@@ -259,13 +255,13 @@ end;
 procedure TJvCustomAppDBStorage.EnumFolders(const Path: string;
   const Strings: TStrings; const ReportListAsValue: Boolean);
 begin
-  raise EJvAppDBStorageError.Create(RsENotSupported);
+  raise EJvAppDBStorageError.CreateRes(@RsENotSupported);
 end;
 
 procedure TJvCustomAppDBStorage.EnumValues(const Path: string;
   const Strings: TStrings; const ReportListAsValue: Boolean);
 begin
-  raise EJvAppDBStorageError.Create(RsENotSupported);
+  raise EJvAppDBStorageError.CreateRes(@RsENotSupported);
 end;
 
 function TJvCustomAppDBStorage.FieldsAssigned: Boolean;

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -159,10 +160,8 @@ uses
   {$IFDEF LINUX}
   QWindows,
   {$ENDIF LINUX}
-  SysUtils, Classes,
-  
-  Variants,
-  
+  SysUtils, Classes, 
+  Variants, 
   DB;
 
 const
@@ -183,8 +182,7 @@ const
 type
   PInteger = ^Integer;
   PDouble = ^Double;
-  PBoolean = ^Boolean;
-  
+  PBoolean = ^Boolean; 
   EJvCsvDataSetError = class(EDatabaseError);
     // Subclass DB.EDatabaseError so we can work nicely with existing Delphi apps.
 
@@ -708,12 +706,8 @@ function JvCsvWildcardMatch(data, pattern: string): Boolean;
 
 implementation
 
-uses
-  
-  
-  QForms, QControls,
-  
-  
+uses  
+  QForms, QControls,  
   JvQJCLUtils, JvQCsvParse, JvQConsts, JvQResources;
 
 var
@@ -726,7 +720,8 @@ const
   // These characters cannot be used for separator for various reasons:
   // Either they are used as field type specifiers, break lines or are used to
   // delimit field content
-  cInvalidSeparators = [#0,#8,#10,#12,#13,#39,'"','\', '$','%','&','@','#','^','!','-'];
+  cInvalidSeparators = [#0, Backspace, Lf, #12, Cr, #39, '"', '\',
+    '$', '%', '&', '@', '#', '^', '!', '-'];
 
 procedure JvCsvDatabaseError(const TableName, Msg: string);
 begin
@@ -1919,13 +1914,13 @@ begin
         begin
           case ch of
           'r':
-            ch := #13;
+            ch := Cr;
           's':
             ch := #32;
           't':
-            ch := #9;
+            ch := Tab;
           'n':
-            ch := #10;
+            ch := Lf;
           end;
         end;
         skipFlag := False;
