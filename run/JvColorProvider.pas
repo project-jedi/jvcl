@@ -853,7 +853,7 @@ type
     function AttributeApplies(Attr: Integer): Boolean;
   end;
 
-//===TJvColorProviderNameMapping====================================================================
+//=== TJvColorProviderNameMapping ============================================
 
 constructor TJvColorProviderNameMapping.Create(AOwner: TJvColorProviderNameMappings; AName: string);
 begin
@@ -862,7 +862,13 @@ begin
   FName := AName;
 end;
 
-//===TJvColorProviderSubSettings====================================================================
+//=== TJvColorProviderSubSettings ============================================
+
+constructor TJvColorProviderSubSettings.Create(AConsumerService: TJvDataConsumerAggregatedObject);
+begin
+  inherited Create;
+  FConsumerServiceExt := AConsumerService;
+end;
 
 procedure TJvColorProviderSubSettings.Changed;
 begin
@@ -883,13 +889,19 @@ begin
   end;
 end;
 
-constructor TJvColorProviderSubSettings.Create(AConsumerService: TJvDataConsumerAggregatedObject);
-begin
-  inherited Create;
-  FConsumerServiceExt := AConsumerService;
-end;
+//=== TJvColorProviderColorBoxSettings =======================================
 
-//===TJvColorProviderColorBoxSettings===============================================================
+constructor TJvColorProviderColorBoxSettings.Create(AConsumerService: TJvDataConsumerAggregatedObject);
+begin
+  inherited Create(AConsumerService);
+  FActive := True;
+  FHeight := 13;
+  FMargin := 2;
+  FShadowed := True;
+  FShadowSize := 2;
+  FSpacing := 4;
+  FWidth := 21;
+end;
 
 procedure TJvColorProviderColorBoxSettings.SetHeight(Value: Integer);
 begin
@@ -945,20 +957,14 @@ begin
   end;
 end;
 
-constructor TJvColorProviderColorBoxSettings.Create(
-  AConsumerService: TJvDataConsumerAggregatedObject);
+//=== TJvColorProviderTextSettings ===========================================
+
+constructor TJvColorProviderTextSettings.Create(AConsumerService: TJvDataConsumerAggregatedObject);
 begin
   inherited Create(AConsumerService);
   FActive := True;
-  FHeight := 13;
-  FMargin := 2;
-  FShadowed := True;
-  FShadowSize := 2;
-  FSpacing := 4;
-  FWidth := 21;
+  FShowName := True;
 end;
-
-//===TJvColorProviderTextSettings===================================================================
 
 procedure TJvColorProviderTextSettings.SetShowHex(Value: Boolean);
 begin
@@ -987,14 +993,16 @@ begin
   end;
 end;
 
-constructor TJvColorProviderTextSettings.Create(AConsumerService: TJvDataConsumerAggregatedObject);
+//=== TJvColorProviderGroupingSettings =======================================
+
+constructor TJvColorProviderGroupingSettings.Create(AConsumerService: TJvDataConsumerAggregatedObject);
 begin
   inherited Create(AConsumerService);
   FActive := True;
-  FShowName := True;
+  FFlatList := True;
+  FHeaderAlign := ghaLeft;
+  FHeaderStyle := [ghsBoldFont, ghsSingleCenterLine];
 end;
-
-//===TJvColorProviderGroupingSettings===============================================================
 
 procedure TJvColorProviderGroupingSettings.SetActive(Value: Boolean);
 begin
@@ -1046,17 +1054,15 @@ begin
   end;
 end;
 
-constructor TJvColorProviderGroupingSettings.Create(
-  AConsumerService: TJvDataConsumerAggregatedObject);
+//=== TJvColorProviderColorGroupSettings =====================================
+
+constructor TJvColorProviderColorGroupSettings.Create(AConsumerService: TJvDataConsumerAggregatedObject;
+  ACaption: string);
 begin
   inherited Create(AConsumerService);
   FActive := True;
-  FFlatList := True;
-  FHeaderAlign := ghaLeft;
-  FHeaderStyle := [ghsBoldFont, ghsSingleCenterLine];
+  FCaption := ACaption;
 end;
-
-//===TJvColorProviderColorGroupSettings=============================================================
 
 procedure TJvColorProviderColorGroupSettings.SetActive(Value: Boolean);
 begin
@@ -1094,15 +1100,21 @@ begin
   end;
 end;
 
-constructor TJvColorProviderColorGroupSettings.Create(
-  AConsumerService: TJvDataConsumerAggregatedObject; ACaption: string);
+//=== TJvColorProviderAddColorSettings =======================================
+
+constructor TJvColorProviderAddColorSettings.Create(AConsumerService: TJvDataConsumerAggregatedObject);
 begin
   inherited Create(AConsumerService);
-  FActive := True;
-  FCaption := ACaption;
+  FLocation := ailBottom;
+  FStyle := ColorProviderColorAdderRegister.DefaultAdder;
+  ColorProviderColorAdderRegister.RegisterNotify(Self);
 end;
 
-//===TJvColorProviderAddColorSettings===============================================================
+destructor TJvColorProviderAddColorSettings.Destroy;
+begin
+  ColorProviderColorAdderRegister.UnregisterNotify(Self);
+  inherited Destroy;
+end;
 
 procedure TJvColorProviderAddColorSettings.SetLocation(Value: TJvColorProviderAddItemLocation);
 begin
@@ -1137,30 +1149,10 @@ begin
   end;
 end;
 
-constructor TJvColorProviderAddColorSettings.Create(
-  AConsumerService: TJvDataConsumerAggregatedObject);
-begin
-  inherited Create(AConsumerService);
-  FLocation := ailBottom;
-  FStyle := ColorProviderColorAdderRegister.DefaultAdder;
-  ColorProviderColorAdderRegister.RegisterNotify(Self);
-end;
+//=== TJvColorProviderCustomColorGroupSettings ===============================
 
-destructor TJvColorProviderAddColorSettings.Destroy;
-begin
-  ColorProviderColorAdderRegister.UnregisterNotify(Self);
-  inherited Destroy;
-end;
-
-//===TJvColorProviderCustomColorGroupSettings=======================================================
-
-procedure TJvColorProviderCustomColorGroupSettings.SetAddColorSettings(
-  Value: TJvColorProviderAddColorSettings);
-begin
-end;
-
-constructor TJvColorProviderCustomColorGroupSettings.Create(
-  AConsumerService: TJvDataConsumerAggregatedObject; ACaption: string);
+constructor TJvColorProviderCustomColorGroupSettings.Create(AConsumerService: TJvDataConsumerAggregatedObject;
+  ACaption: string);
 begin
   inherited Create(AConsumerService, ACaption);
   FAddColorSettings := TJvColorProviderAddColorSettings.Create(AConsumerService);
@@ -1172,7 +1164,12 @@ begin
   inherited Destroy;
 end;
 
-//===TJvColorMappingProvider========================================================================
+procedure TJvColorProviderCustomColorGroupSettings.SetAddColorSettings(
+  Value: TJvColorProviderAddColorSettings);
+begin
+end;
+
+//=== TJvColorMappingProvider ================================================
 
 function TJvColorMappingProvider.GetColorProviderIntf: IJvColorProvider;
 begin
@@ -1225,7 +1222,7 @@ begin
   AddToArray(Result, TJvColorProviderServerNotify);
 end;
 
-//===TJvColorProviderServerNotify===================================================================
+//=== TJvColorProviderServerNotify ===========================================
 
 procedure TJvColorProviderServerNotify.ItemSelected(Value: IJvDataItem);
 var
@@ -1257,7 +1254,7 @@ begin
     (ConsumerProv.GetProvider = ClientProv);
 end;
 
-//===TJvColorProviderColorAdderRegister=============================================================
+//=== TJvColorProviderColorAdderRegister =====================================
 
 constructor TJvColorProviderColorAdderRegister.Create;
 begin
@@ -1375,7 +1372,7 @@ begin
   Result := TJvColorProviderColorAdder(FList.Objects[Index]);
 end;
 
-//===TJvColorItems==================================================================================
+//=== TJvColorItems ==========================================================
 
 function TJvColorItems.GetColorSettings: IJvColorProviderSettings;
 begin
@@ -1514,7 +1511,7 @@ begin
   Supports(GetProvider, IJvColorProvider, FColorProvider);
 end;
 
-//===TJvColorItemsList==============================================================================
+//=== TJvColorItemsList ======================================================
 
 function TJvColorItemsList.GetCount: Integer;
 begin
@@ -1567,7 +1564,14 @@ begin
   ListNum := TJvColorHeaderItem(GetParent.GetImplementer).ListNumber;
 end;
 
-//===TJvColorItem===================================================================================
+//=== TJvColorItem ===========================================================
+
+constructor TJvColorItem.Create(AOwner: IJvDataItems; AListNumber, AListIndex: Integer);
+begin
+  inherited Create(AOwner);
+  FListNumber := AListNumber;
+  FListIndex := AListIndex;
+end;
 
 function TJvColorItem.GetCaption: string;
 var
@@ -1639,14 +1643,13 @@ begin
     SetID('Item' + IntToStr(ListNumber) + '.' + IntToStr(ListIndex));
 end;
 
-constructor TJvColorItem.Create(AOwner: IJvDataItems; AListNumber, AListIndex: Integer);
+//=== TJvColorHeaderItem =====================================================
+
+constructor TJvColorHeaderItem.Create(AOwner: IJvDataItems; AListNumber: Integer);
 begin
   inherited Create(AOwner);
   FListNumber := AListNumber;
-  FListIndex := AListIndex;
 end;
-
-//===TJvColorHeaderItem=============================================================================
 
 function TJvColorHeaderItem.GetCaption: string;
 var
@@ -1708,13 +1711,7 @@ begin
   Result := False;
 end;
 
-constructor TJvColorHeaderItem.Create(AOwner: IJvDataItems; AListNumber: Integer);
-begin
-  inherited Create(AOwner);
-  FListNumber := AListNumber;
-end;
-
-//===TJvColorAddItem================================================================================
+//=== TJvColorAddItem ========================================================
 
 function TJvColorAddItem.GetCaption: string;
 var
@@ -1747,7 +1744,7 @@ begin
   TJvColorItemAddExecute.Create(Self);
 end;
 
-//===TJvColorItemAddExecute=========================================================================
+//=== TJvColorItemAddExecute =================================================
 
 function TJvColorItemAddExecute.Execute(Sender: TObject): Boolean;
 var
@@ -1771,7 +1768,24 @@ begin
   end;
 end;
 
-//===TJvColorProvider===============================================================================
+//=== TJvColorProvider =======================================================
+
+constructor TJvColorProvider.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FMappings := TJvColorProviderNameMappings.Create(Self);
+  GenDelphiConstantMapping;
+  GenEnglishMapping;
+  (DataContextsImpl as IJvDataContextsManager).Add(TJvColorContext.Create(DataContextsImpl, 'Default'));
+  InitColors;
+  FColorListChanged := False;
+end;
+
+destructor TJvColorProvider.Destroy;
+begin
+  FreeAndNil(FMappings);
+  inherited Destroy;
+end;
 
 procedure TJvColorProvider.NotifyChanging(Reason: TDataProviderChangeReason; ContextIndex: Integer;
   GroupedItem, RootItem: IUnknown);
@@ -2525,23 +2539,6 @@ begin
     Result := nil;
 end;
 
-constructor TJvColorProvider.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FMappings := TJvColorProviderNameMappings.Create(Self);
-  GenDelphiConstantMapping;
-  GenEnglishMapping;
-  (DataContextsImpl as IJvDataContextsManager).Add(TJvColorContext.Create(DataContextsImpl, 'Default'));
-  InitColors;
-  FColorListChanged := False;
-end;
-
-destructor TJvColorProvider.Destroy;
-begin
-  FreeAndNil(FMappings);
-  inherited Destroy;
-end;
-
 function TJvColorProvider.AddColor(ColorType: TColorType; Color: TColor): Boolean;
 begin
   case ColorType of
@@ -2816,7 +2813,13 @@ begin
   end;
 end;
 
-//===TJvColorProviderNameMappings===================================================================
+//=== TJvColorProviderNameMappings ===========================================
+
+constructor TJvColorProviderNameMappings.Create(AProvider: TJvColorProvider);
+begin
+  inherited Create(True);
+  FProvider := AProvider;
+end;
 
 function TJvColorProviderNameMappings.GetItem(Index: Integer): TJvColorProviderNameMapping;
 begin
@@ -2827,12 +2830,6 @@ procedure TJvColorProviderNameMappings.SetItem(Index: Integer;
   AObject: TJvColorProviderNameMapping);
 begin
   inherited SetItem(Index, AObject);
-end;
-
-constructor TJvColorProviderNameMappings.Create(AProvider: TJvColorProvider);
-begin
-  inherited Create(True);
-  FProvider := AProvider;
 end;
 
 function TJvColorProviderNameMappings.Add(Item: TJvColorProviderNameMapping): Integer;
@@ -2864,7 +2861,7 @@ begin
   end;
 end;
 
-//===TJvColorItemsRenderer==========================================================================
+//=== TJvColorItemsRenderer ==================================================
 
 function TJvColorItemsRenderer.GetRenderText: string;
 var
@@ -3258,7 +3255,32 @@ begin
   Supports(Items.GetProvider.SelectedConsumer, IJvColorProviderSettings, Result);
 end;
 
-//===TJvColorProviderSettings=======================================================================
+//=== TJvColorProviderSettings ===============================================
+
+constructor TJvColorProviderSettings.Create(AOwner: TExtensibleInterfacedPersistent);
+begin
+  inherited Create(AOwner);
+  Changing(ccrViewChange);
+  FColorBoxSettings := TJvColorProviderColorBoxSettings.Create(Self);
+  FCustomColorSettings := TJvColorProviderCustomColorGroupSettings.Create(Self, RsCustomColors);
+  FGroupingSettings := TJvColorProviderGroupingSettings.Create(Self);
+  FTextSettings := TJvColorProviderTextSettings.Create(Self);
+  FStandardColorSettings := TJvColorProviderColorGroupSettings.Create(Self, RsStandardColors);
+  FSystemColorSettings := TJvColorProviderColorGroupSettings.Create(Self, RsSystemColors);
+  FMapping := -1;
+  Changed(ccrViewChange);
+end;
+
+destructor TJvColorProviderSettings.Destroy;
+begin
+  FreeAndNil(FColorBoxSettings);
+  FreeAndNil(FCustomColorSettings);
+  FreeAndNil(FGroupingSettings);
+  FreeAndNil(FTextSettings);
+  FreeAndNil(FStandardColorSettings);
+  FreeAndNil(FSystemColorSettings);
+  inherited Destroy;
+end;
 
 function TJvColorProviderSettings.Get_ColorBoxSettings: TJvColorProviderColorBoxSettings;
 begin
@@ -3416,39 +3438,14 @@ begin
   Set_NameMappingIndex(Value);
 end;
 
-constructor TJvColorProviderSettings.Create(AOwner: TExtensibleInterfacedPersistent);
-begin
-  inherited Create(AOwner);
-  Changing(ccrViewChange);
-  FColorBoxSettings := TJvColorProviderColorBoxSettings.Create(Self);
-  FCustomColorSettings := TJvColorProviderCustomColorGroupSettings.Create(Self, RsCustomColors);
-  FGroupingSettings := TJvColorProviderGroupingSettings.Create(Self);
-  FTextSettings := TJvColorProviderTextSettings.Create(Self);
-  FStandardColorSettings := TJvColorProviderColorGroupSettings.Create(Self, RsStandardColors);
-  FSystemColorSettings := TJvColorProviderColorGroupSettings.Create(Self, RsSystemColors);
-  FMapping := -1;
-  Changed(ccrViewChange);
-end;
-
-destructor TJvColorProviderSettings.Destroy;
-begin
-  FreeAndNil(FColorBoxSettings);
-  FreeAndNil(FCustomColorSettings);
-  FreeAndNil(FGroupingSettings);
-  FreeAndNil(FTextSettings);
-  FreeAndNil(FStandardColorSettings);
-  FreeAndNil(FSystemColorSettings);
-  inherited Destroy;
-end;
-
-//===TJvColorContextsManager========================================================================
+//=== TJvColorContextsManager ================================================
 
 function TJvColorContextsManager.New: IJvDataContext;
 begin
   Result := Add(TJvColorContext.Create(ContextsImpl, GetUniqueCtxName(ContextsImpl, 'Context')));
 end;
 
-//===TJvColorContext================================================================================
+//=== TJvColorContext ========================================================
 
 function TJvColorContext.IsDeletable: Boolean;
 begin
@@ -3545,7 +3542,20 @@ begin
   Writer.WriteListEnd;
 end;
 
-//===TJvColorMapItems===============================================================================
+//=== TJvColorMapItems =======================================================
+
+constructor TJvColorMapItems.Create;
+begin
+  inherited Create;
+  FItemInstances := TList.Create;
+end;
+
+destructor TJvColorMapItems.Destroy;
+begin
+  FreeAndNil(FConsumer);
+  FreeAndNil(FItemInstances);
+  inherited Destroy;
+end;
 
 function TJvColorMapItems.GetClientProvider: IJvDataProvider;
 begin
@@ -3622,7 +3632,8 @@ begin
   for I := 0 to FItemInstances.Count - 1 do
     if TJvColorMapItem(FItemInstances[I]).FIndex = Index then
       TJvColorMapItem(FItemInstances[I]).FIndex := -1
-    else if TJvColorMapItem(FItemInstances[I]).FIndex > Index then
+    else
+    if TJvColorMapItem(FItemInstances[I]).FIndex > Index then
       Dec(TJvColorMapItem(FItemInstances[I]).FIndex);
 end;
 
@@ -3663,19 +3674,6 @@ begin
   TJvColorMapItemsManager.Create(Self);
 end;
 
-constructor TJvColorMapItems.Create;
-begin
-  inherited Create;
-  FItemInstances := TList.Create;
-end;
-
-destructor TJvColorMapItems.Destroy;
-begin
-  FreeAndNil(FConsumer);
-  FreeAndNil(FItemInstances);
-  inherited Destroy;
-end;
-
 procedure TJvColorMapItems.AfterConstruction;
 var
   ICR: IInterfaceComponentReference;
@@ -3691,7 +3689,19 @@ begin
   FConsumer.OnChanged := ConsumerChanged;
 end;
 
-//===TJvColorMapItem================================================================================
+//=== TJvColorMapItem ========================================================
+
+constructor TJvColorMapItem.Create(AOwner: IJvDataItems; AIndex: Integer);
+begin
+  inherited Create(AOwner);
+  FIndex := AIndex;
+end;
+
+destructor TJvColorMapItem.Destroy;
+begin
+  TJvColorMapItems(GetItems.GetImplementer).FItemInstances.Remove(Self);
+  inherited Destroy;
+end;
 
 function TJvColorMapItem.GetCaption: string;
 begin
@@ -3719,19 +3729,7 @@ begin
   SetID(cColorProviderColorMapItemID + IntToStr(Index));
 end;
 
-constructor TJvColorMapItem.Create(AOwner: IJvDataItems; AIndex: Integer);
-begin
-  inherited Create(AOwner);
-  FIndex := AIndex;
-end;
-
-destructor TJvColorMapItem.Destroy;
-begin
-  TJvColorMapItems(GetItems.GetImplementer).FItemInstances.Remove(Self);
-  inherited Destroy;
-end;
-
-//===TJvColorMapItemsManager========================================================================
+//=== TJvColorMapItemsManager ================================================
 
 function TJvColorMapItemsManager.Add(Item: IJvDataItem): IJvDataItem;
 begin
@@ -3757,10 +3755,8 @@ var
   ColProv: IJvColorProvider;
 begin
   if Supports(TJvColorMapItems(ItemsImpl).ClientProvider, IJvColorProvider, ColProv) then
-  begin
     while ColProv.MappingCount > 0 do
       ColProv.DeleteMapping(0);
-  end;
 end;
 
 procedure TJvColorMapItemsManager.Delete(Index: Integer);
@@ -3798,7 +3794,7 @@ begin
     raise EJVCLDataItems.Create(RsEItemNotForList);
 end;
 
-//=== TJvColorConsumer ========================================================
+//=== TJvColorConsumer =======================================================
 
 function TJvColorConsumer.VCLComponent: TComponent;
 begin

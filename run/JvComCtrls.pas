@@ -54,10 +54,10 @@ const
   JvDefPageControlBorder = 4;
   TVM_SETLINECOLOR = TV_FIRST + 40;
   TVM_GETLINECOLOR = TV_FIRST + 41;
-{$IFDEF BCB6}
-{$EXTERNALSYM TVM_SETLINECOLOR}
-{$EXTERNALSYM TVM_GETLINECOLOR}
-{$ENDIF BCB6}
+  {$IFDEF BCB6}
+  {$EXTERNALSYM TVM_SETLINECOLOR}
+  {$EXTERNALSYM TVM_GETLINECOLOR}
+  {$ENDIF BCB6}
 
 type
   TJvIPAddress = class;
@@ -87,7 +87,7 @@ type
   TJvIPAddressRange = class(TPersistent)
   private
     FControl: TWinControl;
-    FRange: array[0..3] of TJvIPAddressMinMax;
+    FRange: array [0..3] of TJvIPAddressMinMax;
     function GetMaxRange(Index: Integer): Byte;
     function GetMinRange(Index: Integer): Byte;
     procedure SetMaxRange(const Index: Integer; const Value: Byte);
@@ -114,7 +114,7 @@ type
 
   TJvIPAddressValues = class(TPersistent)
   private
-    FValues: array[0..3] of Byte;
+    FValues: array [0..3] of Byte;
     FOnChange: TNotifyEvent;
     FOnChanging: TJvIPAddressChanging;
     function GetValue: Cardinal;
@@ -137,7 +137,7 @@ type
 
   TJvIPAddress = class(TJvWinControl)
   private
-    FEditControls: array[0..3] of TJvIPEditControlHelper;
+    FEditControls: array [0..3] of TJvIPEditControlHelper;
     FEditControlCount: Integer;
     FAddress: LongWord;
     FChanging: Boolean;
@@ -553,9 +553,9 @@ type
 
 
     property AutoDragScroll: Boolean read FAutoDragScroll write FAutoDragScroll default False;
-{$IFNDEF COMPILER6_UP}
+    {$IFNDEF COMPILER6_UP}
     property MultiSelect: Boolean read FMultiSelect write SetMultiSelect default False;
-{$ENDIF COMPILER6_UP}
+    {$ENDIF COMPILER6_UP}
     property OnComparePage: TJvTreeViewComparePageEvent read FOnComparePage write FOnComparePage;
     property OnMouseEnter;
     property OnMouseLeave;
@@ -568,12 +568,14 @@ type
 implementation
 
 uses
-  Math, JclSysUtils, JclStrings, JvJCLUtils, JvTypes;
+  Math,
+  JclSysUtils, JclStrings,
+  JvJCLUtils, JvTypes;
 
 const
   TVIS_CHECKED = $2000;
 
-  // === TJvIPAddressRange =====================================================
+//=== TJvIPAddressRange ======================================================
 
 constructor TJvIPAddressRange.Create(Control: TWinControl);
 var
@@ -642,7 +644,7 @@ begin
   Change(Index);
 end;
 
-// === TJvIPEditControlHelper ==================================================
+//=== TJvIPEditControlHelper =================================================
 
 constructor TJvIPEditControlHelper.Create(AIPAddress: TJvIPAddress);
 begin
@@ -652,18 +654,18 @@ begin
   FInstance := MakeObjectInstance(WndProc);
 end;
 
-procedure TJvIPEditControlHelper.DefaultHandler(var Msg);
-begin
-  with TMessage(Msg) do
-    Result := CallWindowProc(FOrgWndProc, FHandle, Msg, WParam, LParam);
-end;
-
 destructor TJvIPEditControlHelper.Destroy;
 begin
   Handle := 0;
   if Assigned(FInstance) then
     FreeObjectInstance(FInstance);
   inherited Destroy;
+end;
+
+procedure TJvIPEditControlHelper.DefaultHandler(var Msg);
+begin
+  with TMessage(Msg) do
+    Result := CallWindowProc(FOrgWndProc, FHandle, Msg, WParam, LParam);
 end;
 
 procedure TJvIPEditControlHelper.SetHandle(const Value: THandle);
@@ -701,7 +703,7 @@ begin
   Dispatch(Msg);
 end;
 
-// === TJvIPAddress ==========================================================
+//=== TJvIPAddress ===========================================================
 
 constructor TJvIPAddress.Create(AOwner: TComponent);
 var
@@ -872,7 +874,7 @@ var
   I: Integer;
 begin
   inherited EnabledChanged;
-  for i := 0 to High(FEditControls) do
+  for I := 0 to High(FEditControls) do
     if (FEditControls[I] <> nil) and (FEditControls[I].Handle <> 0) then
       EnableWindow(FEditControls[I].Handle, Enabled and not (csDesigning in ComponentState));
 end;
@@ -1053,16 +1055,7 @@ begin
   end;
 end;
 
-// === TJvTabControlPainter ====================================================
-
-procedure TJvTabControlPainter.Change;
-var
-  I: integer;
-begin
-  if FClients <> nil then
-    for I := 0 to FClients.Count - 1 do
-      TCustomTabControl(FClients[i]).Invalidate;
-end;
+//=== TJvTabControlPainter ===================================================
 
 destructor TJvTabControlPainter.Destroy;
 begin
@@ -1070,7 +1063,16 @@ begin
     while FClients.Count > 0 do
       UnRegisterChange(TCustomTabControl(FClients.Last));
   FreeAndNil(FClients);
-  inherited;
+  inherited Destroy;
+end;
+
+procedure TJvTabControlPainter.Change;
+var
+  I: Integer;
+begin
+  if FClients <> nil then
+    for I := 0 to FClients.Count - 1 do
+      TCustomTabControl(FClients[I]).Invalidate;
 end;
 
 procedure TJvTabControlPainter.Notification(AComponent: TComponent;
@@ -1103,7 +1105,7 @@ begin
   end;
 end;
 
-// === TJvTabDefaultPainter ====================================================
+//=== TJvTabDefaultPainter ===================================================
 
 constructor TJvTabDefaultPainter.Create(AOwner: TComponent);
 begin
@@ -1147,21 +1149,24 @@ begin
   FActiveFont.Free;
   FDisabledFont.Free;
   FInactiveFont.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvTabDefaultPainter.DoFontChange(Sender: TObject);
 begin
   Change;
 end;
+
 type
   TWinControlAccess = class(TWinControl);
 
-procedure TJvTabDefaultPainter.DrawTab(AControl: TCustomTabControl; Canvas: TCanvas; Images: TCustomImageList; ImageIndex: Integer; const Caption: string; const Rect: TRect; Active, Enabled: Boolean);
+procedure TJvTabDefaultPainter.DrawTab(AControl: TCustomTabControl;
+  Canvas: TCanvas; Images: TCustomImageList; ImageIndex: Integer;
+  const Caption: string; const Rect: TRect; Active, Enabled: Boolean);
 var
   TextRect, ImageRect: TRect;
-  SaveState: integer;
-  procedure DrawDivider(X, Y, X1, Y1: integer);
+  SaveState: Integer;
+  procedure DrawDivider(X, Y, X1, Y1: Integer);
   begin
     Canvas.Pen.Color := clBtnShadow;
     Canvas.MoveTo(X, Y);
@@ -1178,7 +1183,8 @@ begin
     GradientFillRect(Canvas, TextRect, DisabledColorFrom, DisabledColorTo, DisabledGradientDirection, 255);
     Canvas.Font := DisabledFont;
   end
-  else if Active then
+  else
+  if Active then
   begin
     GradientFillRect(Canvas, TextRect, ActiveColorFrom, ActiveColorTo, ActiveGradientDirection, 255);
     Canvas.Font := ActiveFont;
@@ -1353,18 +1359,17 @@ begin
   Result := true;
 end;
 
-// === TJvTabControl ========================================================
+//=== TJvTabControl ==========================================================
 
 constructor TJvTabControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-{$IFDEF VisualCLX}
+  {$IFDEF VisualCLX}
   InputKeys := [ikTabs];
-{$ENDIF VisualCLX}
+  {$ENDIF VisualCLX}
 end;
 
 {$IFDEF VCL}
-
 procedure TJvTabControl.CMDialogKey(var Msg: TWMKey);
 begin
   if (Msg.CharCode = VK_TAB) and (GetKeyState(VK_CONTROL) < 0) and
@@ -1387,7 +1392,6 @@ end;
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}
-
 procedure TJvTabControl.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   if (Key = VK_TAB) and (ssCtrl in Shift) then
@@ -1413,7 +1417,7 @@ begin
   if Assigned(TabPainter) then
     TabPainter.DrawTab(Self, Canvas, Images, TabIndex, Tabs[TabIndex], Rect, TabIndex = Self.TabIndex, Enabled)
   else
-    inherited;
+    inherited DrawTab(TabIndex, Rect, Active);
 end;
 
 procedure TJvTabControl.Notification(AComponent: TComponent;
@@ -1441,7 +1445,7 @@ begin
   end;
 end;
 
-// === TJvPageControl ========================================================
+//=== TJvPageControl =========================================================
 
 constructor TJvPageControl.Create(AOwner: TComponent);
 begin
@@ -1493,23 +1497,23 @@ end;
 procedure TJvPageControl.DrawTab(TabIndex: Integer; const Rect: TRect;
   Active: Boolean);
 var
-  i, RealIndex: Integer;
+  I, RealIndex: Integer;
 begin
   if TabPainter <> nil then
   begin
     RealIndex := 0;
-    i := 0;
-    while i <= TabIndex + RealIndex do
+    I := 0;
+    while I <= TabIndex + RealIndex do
     begin
-      if not Pages[i].TabVisible then Inc(RealIndex);
-      Inc(i);
+      if not Pages[I].TabVisible then Inc(RealIndex);
+      Inc(I);
     end;
     RealIndex := RealIndex + TabIndex;
     if RealIndex < PageCount then
       TabPainter.DrawTab(Self, Canvas, Images, Pages[RealIndex].ImageIndex, Pages[RealIndex].Caption, Rect, Active, Pages[RealIndex].Enabled);
   end
   else
-    inherited;
+    inherited DrawTab(TabIndex, Rect, Active);
 end;
 
 procedure TJvPageControl.Loaded;
@@ -1566,7 +1570,7 @@ end;
 procedure TJvPageControl.WMLButtonDown(var Msg: TWMLButtonDown);
 var
   hi: TTCHitTestInfo;
-  i, TabIndex, RealIndex: Integer;
+  I, TabIndex, RealIndex: Integer;
 begin
   if csDesigning in ComponentState then
   begin
@@ -1577,12 +1581,12 @@ begin
   hi.pt.y := Msg.YPos;
   hi.flags := 0;
   TabIndex := Perform(TCM_HITTEST, 0, Longint(@hi));
-  i := 0;
+  I := 0;
   RealIndex := 0;
-  while i <= TabIndex + RealIndex do
+  while I <= TabIndex + RealIndex do
   begin
-    if not Pages[i].TabVisible then Inc(RealIndex);
-    Inc(i);
+    if not Pages[I].TabVisible then Inc(RealIndex);
+    Inc(I);
   end;
   RealIndex := RealIndex + TabIndex;
   if (RealIndex < PageCount) and (RealIndex >= 0) and ((hi.flags and TCHT_ONITEM) <> 0) then
@@ -1626,7 +1630,8 @@ begin
     Tab := nil;
   if (FHintSource = hsForceMain) or ((FHintSource = hsPreferMain) and (GetShortHint(Hint) <> '')) then
     HintInfo.HintStr := GetShortHint(Hint)
-  else if (Tab <> nil) and ((FHintSource = hsForceChildren) or ((FHintSource = hsPreferChildren) and
+  else
+  if (Tab <> nil) and ((FHintSource = hsForceChildren) or ((FHintSource = hsPreferChildren) and
     (GetShortHint(Tab.Hint) <> ''))) then
     HintInfo.HintStr := GetShortHint(Tab.Hint)
 end;
@@ -1670,7 +1675,7 @@ begin
     TabPainter := nil;
 end;
 
-// === TJvTrackBar ===========================================================
+//=== TJvTrackBar ============================================================
 
 constructor TJvTrackBar.Create(AOwner: TComponent);
 begin
@@ -1713,8 +1718,8 @@ end;
 
 procedure TJvTrackBar.InternalSetToolTipSide;
 const
-  ToolTipSides: array[TJvTrackToolTipSide] of DWORD =
-  (TBTS_LEFT, TBTS_TOP, TBTS_RIGHT, TBTS_BOTTOM);
+  ToolTipSides: array [TJvTrackToolTipSide] of DWORD =
+    (TBTS_LEFT, TBTS_TOP, TBTS_RIGHT, TBTS_BOTTOM);
 begin
   if HandleAllocated and (GetComCtlVersion >= ComCtlVersionIE3) then
     SendMessage(Handle, TBM_SETTIPSIDE, ToolTipSides[FToolTipSide], 0);
@@ -1856,7 +1861,7 @@ begin
   end;
 end;
 
-// === TJvTreeView ===========================================================
+//=== TJvTreeView ============================================================
 
 const
   AutoScrollMargin = 20;
@@ -1971,7 +1976,8 @@ begin
     Exit;
   if Y < AutoScrollMargin then
     ScrollDirection := -1
-  else if Y > ClientHeight - AutoScrollMargin then
+  else
+  if Y > ClientHeight - AutoScrollMargin then
     ScrollDirection := 1
   else
     ScrollDirection := 0;
@@ -2047,7 +2053,8 @@ begin
         Canvas.Font.Color := clHighlightText;
         Canvas.Brush.Color := clHighlight;
       end
-      else if not HideSelection then
+      else
+      if not HideSelection then
       begin
         Canvas.Font.Color := Font.Color;
         Canvas.Brush.Color := clInactiveBorder;
@@ -2149,7 +2156,8 @@ procedure TJvTreeView.SelectItem(Node: TTreeNode; Unselect: Boolean);
 begin
   if Unselect then
     FSelectedList.Remove(Node)
-  else if not IsNodeSelected(Node) then
+  else
+  if not IsNodeSelected(Node) then
     FSelectedList.Add(Node);
   if HandleAllocated then
     InvalidateNode(Node);
@@ -2196,7 +2204,8 @@ begin
   begin
     if Value = 0 then
       KillTimer(Handle, AutoScrollTimerID)
-    else if (Value <> 0) and (FScrollDirection = 0) then
+    else
+    if (Value <> 0) and (FScrollDirection = 0) then
       SetTimer(Handle, AutoScrollTimerID, 200, nil);
     FScrollDirection := Value;
   end;
@@ -2449,10 +2458,11 @@ end;
 
 procedure TJvTreeView.RebuildFromMenu;
 var
-  i: integer;
+  I: Integer;
+
   procedure MakeSubMenu(AParent: TTreeNode; AMenuItem: TMenuItem);
   var
-    i: integer;
+    I: Integer;
     ANode: TTreeNode;
   begin
     if (AMenuItem.Caption <> '-') and (AMenuItem.Caption <> '') then
@@ -2460,18 +2470,19 @@ var
       ANode := Items.AddChildObject(AParent, StripHotKey(AMenuItem.Caption), TObject(AMenuItem));
       ANode.ImageIndex := AMenuItem.ImageIndex;
       ANode.SelectedIndex := AMenuItem.ImageIndex;
-      for i := 0 to AMenuItem.Count - 1 do
-        MakeSubMenu(ANode, AMenuItem.Items[i]);
+      for I := 0 to AMenuItem.Count - 1 do
+        MakeSubMenu(ANode, AMenuItem.Items[I]);
     end;
   end;
+
 begin
   Items.BeginUpdate;
   try
     Items.Clear;
     if Menu <> nil then
     begin
-      for i := 0 to Menu.Items.Count - 1 do
-        MakeSubMenu(nil, Menu.Items[i]);
+      for I := 0 to Menu.Items.Count - 1 do
+        MakeSubMenu(nil, Menu.Items[I]);
     end;
   finally
     Items.EndUpdate;
@@ -2482,26 +2493,27 @@ procedure TJvTreeView.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if (Operation = opRemove) then
+  if Operation = opRemove then
   begin
-    if (AComponent = FMenu) then
+    if AComponent = FMenu then
       Menu := nil
-    else if (AComponent = FPageControl) then
+    else
+    if AComponent = FPageControl then
       PageControl := nil;
   end;
 end;
 
 procedure TJvTreeView.DblClick;
 begin
-  inherited;
+  inherited DblClick;
   if MenuDblClick and IsMenuItemClick(Selected) then
     TMenuItem(Selected.Data).OnClick(TMenuItem(Selected.Data));
 end;
 
 function TJvTreeView.IsMenuItemClick(Node: TTreeNode): boolean;
 begin
- Result := Assigned(Menu) and Assigned(Node) and Assigned(Node.Data)
-    and (TObject(Node.Data) is TMenuItem) and Assigned(TMenuItem(Node.Data).OnClick);
+ Result := Assigned(Menu) and Assigned(Node) and Assigned(Node.Data) and
+    (TObject(Node.Data) is TMenuItem) and Assigned(TMenuItem(Node.Data).OnClick);
 end;
 
 procedure TJvTreeView.SetPageControl(const Value: TPageControl);

@@ -85,10 +85,8 @@ type
     FCurrentPosition: TJvBalloonPosition;
     FDeltaY: Integer;
     FSwitchHeight: Integer;
-
     FShowIcon: Boolean;
     FShowHeader: Boolean;
-
     FMsg: string;
     FHeader: string;
     FMessageTop: Integer;
@@ -136,7 +134,6 @@ type
     FIconKind: TJvIconKind;
     FAnimationTime: Cardinal;
     FAnimationStyle: TJvAnimationStyle;
-
     FShowCloseBtn: Boolean;
     FIsAnchored: Boolean;
   protected
@@ -1615,7 +1612,8 @@ procedure TGlobalCtrl.SetUseBalloonAsApplicationHint(const Value: Boolean);
 begin
   if FDesigning then
     FUseBalloonAsApplicationHint := Value
-  else if Value <> FUseBalloonAsApplicationHint then
+  else
+  if Value <> FUseBalloonAsApplicationHint then
   begin
     FUseBalloonAsApplicationHint := Value;
 

@@ -1214,7 +1214,8 @@ begin
     if Overlaying then
       StopOverlay;
   end
-  else if not Overlaying then
+  else
+  if not Overlaying then
     StartOverlay;
 end;
 

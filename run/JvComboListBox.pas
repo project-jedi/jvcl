@@ -420,7 +420,8 @@ begin
       end;
       Canvas.Brush.Style := bsSolid;
     end
-    else if odFocused in State then
+    else
+    if odFocused in State then
       Canvas.DrawFocusRect(Rect);
 
     Canvas.Pen.Color := clBtnShadow;
@@ -552,7 +553,8 @@ begin
         InvalidateItem(I);
       end;
     end
-    else if FMouseOver then
+    else
+    if FMouseOver then
     begin
       FMouseOver := False;
       InvalidateItem(I);

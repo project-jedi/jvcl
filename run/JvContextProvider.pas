@@ -178,7 +178,8 @@ begin
   begin
     if Context.Contexts = GetContexts then
       Result := TContextItem.CreateCtx(Self, Context)
-    else if Recursive then
+    else
+    if Recursive then
     begin
       SetLength(CtxStack, 128); // reserve some space; should be enough for most situations
       CtxIdx := 0;
