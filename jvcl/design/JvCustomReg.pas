@@ -32,7 +32,7 @@ begin
   RegisterComponents('Jv Custom',[
     TJvTrayIcon, TJvGammaPanel, TJvLinkLabel,
     TJvInspector, TJvInspectorBorlandPainter, TJvInspectorDotNETPainter,
-    TJvLookout, TJvLookOutPage, TJvLookOutButton,
+    TJvLookout, {TJvLookOutPage, } TJvLookOutButton,
     TJvExpress, TJvExpressButton, TJvValidateEdit,
     TJvOutlookBar, TJvRadioControl, TJvScheduledEvents,
     TJvThumbImage, TJvTimeLine, TJvTMTimeLine, TJvBalloonHint,

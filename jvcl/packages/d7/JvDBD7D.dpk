@@ -29,17 +29,8 @@ package JvDBD7D;
 requires
   JvDBD7R,
   designide,
-  dcldb,
-  rtl,
-  dbrtl,
-  vclactnband,
-  vclx,
-  vcl,
-  vcldesigner,
-  designdgm,
   dclstd,
-  vcldb,
-  bdertl;
+  dcldb;
 
 contains
   JvCsvDataForm in '..\..\design\JvCsvDataForm.pas' {JvCsvDefStrDialog},

@@ -27,9 +27,7 @@ package JvNetD7R;
 {$IMPLICITBUILD ON}
 
 requires
-  JvCoreD7R,
-  vcl,
-  rtl;
+  JvCoreD7R;
 
 contains
   JvStringListToHtml in '..\..\run\JvStringListToHtml.pas',

@@ -28,11 +28,8 @@ package JvPluginD7D;
 
 requires
   JvCoreD7R,
-  DJCL70,
   designide,
-  JvPluginD7R,
-  vcl,
-  rtl;
+  JvPluginD7R;
 
 contains
   JvPluginParamsForm in '..\..\design\JvPluginParamsForm.pas',

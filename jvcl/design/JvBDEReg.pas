@@ -21,9 +21,10 @@ uses
 procedure Register;
 begin
   RegisterComponents('Jv BDE Controls',[
-    TJvDBFilter, TJvDBIndexCombo, TJvDBListDataSet, TJvDatabaseItems,
-    TJvTableItems, TJvDatabaseList, TJvLangDrivList, TJvTableList, TJvStoredProcList, TJvFieldList,
-    TJvIndexList, TJvDBMove, TJvDBProgress, TJvQBEQuery, TJvDBSecurity,
+    TJvDBFilter, TJvDBIndexCombo, TJvDatabaseItems, TJvTableItems,
+//    TJvDBListDataSet, TJvDatabaseList, TJvLangDrivList, TJvTableList,
+//    TJvStoredProcList, TJvFieldList,  TJvIndexList,
+    TJvDBMove, TJvDBProgress, TJvQBEQuery, TJvDBSecurity,
     TJvBDEMemoryTable, TJvQuery, TJvBDESQLScript  
     ]);
 

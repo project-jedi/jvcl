@@ -27,9 +27,7 @@ package JvPluginD7R;
 {$IMPLICITBUILD ON}
 
 requires
-  JvCoreD7R,
-  vcl,
-  rtl;
+  JvCoreD7R;
 
 contains
   JvPluginManager in '..\..\run\JvPluginManager.pas',

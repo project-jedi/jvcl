@@ -29,17 +29,7 @@ package JvBDED7D;
 requires
   JvBDED7R,
   designide,
-  rtl,
-  dbrtl,
-  bdertl,
-  vclactnband,
-  vclx,
-  vcl,
-  dcldb,
-  vcldesigner,
-  designdgm,
   dclstd,
-  vcldb,
   JvDBD7D;
 
 contains

@@ -29,10 +29,6 @@ package JvNetD7D;
 requires
   JvNetD7R,
   designide,
-  vcl,
-  rtl,
-  vclactnband,
-  vclx,
   JvStdCtrlsD7D;
 
 contains

@@ -29,12 +29,8 @@ package JvCtrlsD7D;
 requires
   JvCtrlsD7R,
   designide,
-  vcl,
-  rtl,
-  vclx,
   dclstd,
-  JvCoreD7D,
-  vclactnband;
+  JvCoreD7D;
 
 contains
   JvCtrlsReg in '..\..\design\JvCtrlsReg.pas',
