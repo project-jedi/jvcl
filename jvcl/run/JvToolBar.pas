@@ -15,8 +15,9 @@ Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
 All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
+                Olivier Sannier [obones@meloo.com].
 
-Last Modified: 2000-02-28
+Last Modified: 2003-07-20
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -37,18 +38,8 @@ uses
 type
   TJvToolBar = class;
 
-  TJvToolButton = class (TToolButton)
-  private
-    function getMenuItem: TJvMenuItem;
-    procedure setMenuItem(const Value: TJvMenuItem);
-  public
-    constructor Create(AOwner : TComponent); override; 
-  published
-    property MenuItem : TJvMenuItem read getMenuItem write setMenuItem;
-  end;
-   
   TJvToolBar = class(TToolBar)
-  private
+  protected
     FAboutJVCL: TJVCLAboutInfo;
     FChangeLink : TJvMenuChangeLink;
     FHintColor: TColor;
@@ -58,25 +49,22 @@ type
     FOnParentColorChanged: TNotifyEvent;
     FOnCtl3DChanged: TNotifyEvent;
     FOver: Boolean;
-    FMenu : TMainMenu;
     FTempMenu : TJvPopupMenu;
-    FButtonMenu : TJvMenuItem;
-    FMenuButton : TJvToolButton;
+    FButtonMenu : TMenuItem;
+    FMenuShowingCount : Integer;
+    procedure ClearTempMenu;
     procedure MouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure MouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
-//    function getButton(index: integer): TJvToolButton;
-    procedure OnMenuChange(Sender: TJvMainMenu; Source: TJvMenuItem; Rebuild: Boolean);
+    procedure OnMenuChange(Sender: TJvMainMenu; Source: TMenuItem; Rebuild: Boolean);
     function GetMenu: TMainMenu;
     procedure SetMenu(const nMenu: TMainMenu);
     procedure CNNotify(var Message: TWMNotify); message CN_NOTIFY;
-    procedure ClearTempMenu;
-  protected
+    procedure CNDropDownClosed(var Message: TMessage); message CN_DROPDOWNCLOSED;
     procedure AdjustSize; override;
   public
     constructor Create(AOwner: TComponent); override;
-//    property Buttons[index : integer] : TJvToolButton read getButton stored false;
     destructor Destroy; override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
@@ -85,7 +73,7 @@ type
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
-    property Menu : TMainMenu read GetMenu write SetMenu; 
+    property Menu : TMainMenu read GetMenu write SetMenu;
   end;
 
 implementation
@@ -102,6 +90,7 @@ begin
   FChangeLink := TJvMenuChangeLink.Create;
   FChangeLink.OnChange := OnMenuChange;
   ControlStyle := ControlStyle + [csAcceptsControls];
+  FMenuShowingCount := 0;
 end;
 
 procedure TJvToolBar.MouseEnter(var Msg: TMessage);
@@ -140,85 +129,49 @@ end;
 
 function TJvToolBar.GetMenu: TMainMenu;
 begin
-  Result := FMenu; //TToolbar(Self).Menu;
+  Result := inherited Menu;
 end;
 
 procedure TJvToolBar.SetMenu(const nMenu: TMainMenu);
-var
-  I: Integer;
 begin
-  if FMenu = nMenu then exit;
-  if csAcceptsControls in ControlStyle then
-  begin
-    ControlStyle := [csCaptureMouse, csClickEvents,
-      csDoubleClicks, csMenuEvents, csSetCaption];
-    RecreateWnd;
-  end;
-  ShowCaptions := True;
-  if Assigned(FMenu) then
-    for I := ButtonCount - 1 downto 0 do
-      Buttons[I].Free;
+  // if trying to set the same menu, do nothing
+  if Menu = nMenu then exit;
 
-  if Assigned(FMenu) then
-    FMenu.RemoveFreeNotification(Self);
-  FMenu := nMenu;
-  if not Assigned(FMenu) then exit;
-  FMenu.FreeNotification(Self);
-
-  for I := ButtonCount to FMenu.Items.Count - 1 do
+  if assigned(Menu) and (Menu is TJvMainMenu) then
   begin
-    with TJvToolButton.Create(Self) do
-    try
-      AutoSize := True;
-      Grouped := True;
-      Parent := Self;
-      if FMenu is TJvMainMenu then
-      begin
-        Buttons[I].MenuItem := TJvMainMenu(FMenu).Items[I];
-      end
-      else
-      begin
-        TToolbar(Self).Buttons[I].MenuItem := FMenu.Items[I];
-      end;
-    except
-      Free;
-      raise;
-    end;
-  end;
-  { Copy attributes from each menu item }
-  for I := 0 to FMenu.Items.Count - 1 do
-  begin
-    if FMenu is TJvMainMenu then
-    begin
-      Buttons[I].MenuItem := TJvMainMenu(FMenu).Items[I];
-    end
-    else
-    begin
-      TToolbar(Self).Buttons[I].MenuItem := FMenu.Items[I];
-    end;
+    // if the current menu is a TJvMainMenu, we must
+    // unregister us from being told the changes
+    TJvMainMenu(Menu).UnregisterChanges(FChangeLink);
   end;
 
   if nMenu is TJvMainMenu then
   begin
-    // register a link with the menu to get informed when the
-    // menu has changed
+    // if the new menu is a TJvMainMenu then we register a link
+    // with the menu to get informed when it has changed
     TJvMainMenu(nMenu).RegisterChanges(FChangeLink);
   end;
+
+  // and we set the inherited value, so that the inherited
+  // methods can deal with the menu too, the most obvious
+  // one being the creation of the required TToolButton
+  inherited Menu := nMenu;
 end;
 
-{function TJvToolBar.getButton(index: integer): TJvToolButton;
-begin
-  Result := TJvToolButton(TToolBar(Self).Buttons[index]);
-end;}
-
-procedure TJvToolBar.OnMenuChange(Sender: TJvMainMenu; Source: TJvMenuItem; Rebuild: Boolean);
+procedure TJvToolBar.OnMenuChange(Sender: TJvMainMenu; Source: TMenuItem; Rebuild: Boolean);
 begin
   if Sender = Menu then
   begin
+    // Compute our own value for rebuild, as the value passed
+    // to us is not correct (see TJvMenuChangeLink for details)
+    Rebuild := Menu.Items.Count <> ButtonCount;
+
     // if rebuild is necessary then
     if Rebuild then
     begin
       // force reloading menu by changing value twice
+      // this is the only way of doing it as the creation of
+      // the TToolButton is done in the original SetMenu in
+      // TToolbar and this procedure is private
       Menu := nil;
       Menu := Sender;
     end;
@@ -259,8 +212,7 @@ var
   I: Integer;
   Item: TMenuItem;
 begin
-  if (FButtonMenu <> nil) and (FMenuButton <> nil) and
-    (FMenuButton.MenuItem <> nil) and (FTempMenu <> nil) then
+  if (FButtonMenu <> nil) and (FTempMenu <> nil) then
   begin
     for I := FTempMenu.Items.Count - 1 downto 0 do
     begin
@@ -270,18 +222,26 @@ begin
     end;
     FTempMenu.Free;
     FTempMenu := nil;
-    FMenuButton := nil;
     FButtonMenu := nil;
   end;
 end;
 
 procedure TJvToolBar.CNNotify(var Message: TWMNotify);
 var Button : TToolButton;
-    ParentMenu: TJvMainMenu;
+    JvParentMenu: TJvMainMenu;
+    Menu : TMenu;
     I : integer;
-    Item: TJvMenuItem;
+    Item: TMenuItem;
 begin
-  if Menu is TJvMainMenu then
+  // we process the WM_NOTIFY message ourselves to be able to
+  // display a dropdown JvMenu instead of a regular one.
+  // However, we do that only if the menu is a TJvMainMenu and
+  // if the code in WM_NOTIFY is TBN_DROPDOW. Anything else
+  // is given back to the inherited method.
+  // The code is mostly inspired from the Delphi 6 VCL source code,
+  // the major change being the creation of a TJvPopupMenu
+  // instead of a TPopupMenu.
+  if Self.Menu is TJvMainMenu then
   begin
     with Message do
     begin
@@ -298,33 +258,33 @@ begin
                 Button.MenuItem.Click;
                 ClearTempMenu;
                 FTempMenu := TJvPopupMenu.Create(nil);
-                FTempMenu.ShowCheckMarks := false;
-                ParentMenu := TJvMainMenu(Button.MenuItem.GetParentMenu);
-                if ParentMenu <> nil then
-                begin
-                  FTempMenu.BiDiMode := ParentMenu.BiDiMode;
-                end;
-
+                JvParentMenu := TJvMainMenu(Button.MenuItem.GetParentMenu);
+                if JvParentMenu <> nil then
+                  FTempMenu.BiDiMode := JvParentMenu.BiDiMode;
                 FTempMenu.HelpContext := Button.MenuItem.HelpContext;
                 FTempMenu.TrackButton := tbLeftButton;
-                Menu := TJvMainMenu(TJvToolButton(Button).MenuItem.GetParentMenu);
+                Menu := Button.MenuItem.GetParentMenu;
                 if Menu <> nil then
-                begin
-                  FTempMenu.DisabledImages := TJvMainMenu(Menu).DisabledImages;
-                  FTempMenu.Images := TJvMainMenu(Menu).Images;
-                  FTempMenu.HotImages := TJvMainMenu(Menu).HotImages;
-                end;
-                FButtonMenu := TJvToolButton(Button).MenuItem;
+                  FTempMenu.Assign(JvParentMenu);
+                FButtonMenu := Button.MenuItem;
                 for I := FButtonMenu.Count - 1 downto 0 do
                 begin
-                  Item := TJvToolButton(Button).MenuItem.Items[I];
+                  Item := FButtonMenu.Items[I];
                   FButtonMenu.Delete(I);
                   FTempMenu.Items.Insert(0, Item);
                 end;
-                FMenuButton := TJvToolButton(Button);
-                
+
                 Button.DropdownMenu := FTempMenu;
+                // for some reason, while the menu is showing,
+                // it is possible that a second message comes
+                // up and asks for the menu to show up.
+                // so we keep track of that fact, and only when
+                // the count comes back to 0, we hide the menu
+                // in the CN_DROPDOWNCLOSED handler
+                Inc(FMenuShowingCount);
+                // show the temporary popup menu
                 Button.CheckMenuDropdown;
+
               end;
             end;
         else inherited;
@@ -332,28 +292,16 @@ begin
     end;
   end
   else
-  begin
     inherited;
-  end;
 end;
 
-{ TJvToolButton }
-
-constructor TJvToolButton.Create(AOwner: TComponent);
+procedure TJvToolBar.CNDropDownClosed(var Message: TMessage);
 begin
-  inherited Create(AOwner);
+  if FMenuShowingCount = 1 then
+    ClearTempMenu;
+  Dec(FMenuShowingCount);
+  inherited;
 end;
-
-function TJvToolButton.getMenuItem: TJvMenuItem;
-begin
-  Result := TJvMenuItem(TToolButton(Self).MenuItem);
-end;
-
-procedure TJvToolButton.setMenuItem(const Value: TJvMenuItem);
-begin
-  TToolButton(Self).MenuItem := Value;
-end;
-
 
 end.
 
