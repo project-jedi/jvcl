@@ -1,0 +1,10 @@
+NAME,ADDRESS,ADDRESS2,TELEPHONE,AGE,LASTPHONECALL,PRIVATENUMBER
+Warren Postma,"118 Lyall Ave, Toronto Ontario Canada",M4E 1W5,416-693-5545,335,,1
+Mr Filename,"c:\Program Files\Microsoft Office",,,,2001-05-09 00:00:01,
+John Smith,"1 Park Lawn Avenue, Upper West Side","New York, NY",555-111-110102,999,2003/05/05 00:00:00,1
+David Jones,"5 Main Street, Apt #703","Smalltown, NY, USA",555-123-4567,44,2004/05/05 00:00:00,1
+NASTY_1,"123 "" "" "" 45, 66 "" \\ "" ,,,,",NASTY TEST #1,,,1998/09/05 03:45:00,1
+COMMAS_1,"1,2,3,4,5,6,7,8,9, 10,11,12",COMMA TEST #1,,,,,1
+NEXT_ROW_BLANK,The next row should be all NULLs,,,,,1
+,,,,,,
+LAST_ROW,"This is the last row, my friend",,,,,0
