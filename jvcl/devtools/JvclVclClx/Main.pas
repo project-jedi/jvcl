@@ -76,37 +76,38 @@ var
   JVCLConverter: TJVCLConverter;
   Sr: TSearchRec;
 begin
-  if RBtnSingleFile.Checked then
-  begin
-    JVCLConverter := TJVCLConverter.Create(ExtractFilePath(ParamStr(0)) + 'VclClxData');
-    try
-      JVCLConverter.OutDirectory := EditOutDir.Text;
-      JVCLConverter.ReduceConditions := CheckBoxReduceConditions.Checked;
-      JVCLConverter.KeepLines := CheckBoxKeepLines.Checked;
-      JVCLConverter.UnixLineBreak := CheckBoxUnixLineBreaks.Checked;
-      JVCLConverter.ForceOverwrite := CheckBoxForceOverwrite.Checked;
+  Converter := TConverter.Create(EditJVCLDir.Text);
+  try
+    if RBtnSingleFile.Checked then
+    begin
+      JVCLConverter := TJVCLConverter.Create(ExtractFilePath(ParamStr(0)) + 'VclClxData',
+        Converter.Model);
+      try
+        JVCLConverter.OutDirectory := EditOutDir.Text;
+        JVCLConverter.ReduceConditions := CheckBoxReduceConditions.Checked;
+        JVCLConverter.KeepLines := CheckBoxKeepLines.Checked;
+        JVCLConverter.UnixLineBreak := CheckBoxUnixLineBreaks.Checked;
+        JVCLConverter.ForceOverwrite := CheckBoxForceOverwrite.Checked;
 
-      if DirectoryExists(EditSingleFile.Text) then
-      begin
-        if FindFirst(EditSingleFile.Text + PathDelim + '*.pas', faAnyFile and not faDirectory, Sr) = 0 then
+        if DirectoryExists(EditSingleFile.Text) then
         begin
-          repeat
-            JVCLConverter.ParsePasFile(EditSingleFile.Text + PathDelim + Sr.Name);
-          until FindNext(sr) <> 0;
-          FindClose(sr);
-        end;
-      end
-      else
-        JVCLConverter.ParsePasFile(EditSingleFile.Text);
-      ShowMessage('Finished.');
-    finally
-      JVCLConverter.Free;
-    end;
-  end
-  else
-  begin
-    Converter := TConverter.Create(EditJVCLDir.Text);
-    try
+          if FindFirst(EditSingleFile.Text + PathDelim + '*.pas', faAnyFile and not faDirectory, Sr) = 0 then
+          begin
+            repeat
+              JVCLConverter.ParsePasFile(EditSingleFile.Text + PathDelim + Sr.Name);
+            until FindNext(sr) <> 0;
+            FindClose(sr);
+          end;
+        end
+        else
+          JVCLConverter.ParsePasFile(EditSingleFile.Text);
+        ShowMessage('Finished.');
+      finally
+        JVCLConverter.Free;
+      end;
+    end
+    else
+    begin
       Converter.OnProgress := DoProgress;
       Converter.Cvt.ReduceConditions := CheckBoxReduceConditions.Checked;
       Converter.Cvt.KeepLines := CheckBoxKeepLines.Checked;
@@ -114,9 +115,9 @@ begin
       Converter.Cvt.ForceOverwrite := CheckBoxForceOverwrite.Checked;
 
       Converter.CreateClxFiles;
-    finally
-      Converter.Free;
     end;
+  finally
+    Converter.Free;
   end;
 end;
 
