@@ -18,7 +18,7 @@ All Rights Reserved.
 Contributor(s):
   Polaris Software
 
-Last Modified: 2002-07-04
+Last Modified: 2004-02-01
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -150,8 +150,10 @@ type
   TCalcPanelLayout = (clDialog, clPopup);
 
 procedure SetDefaultFont(AFont: TFont; Layout: TCalcPanelLayout);
+{$IFDEF VCL}
 var
   NonClientMetrics: TNonClientMetrics;
+{$ENDIF VCL}
 begin
   {$IFDEF VCL}
   NonClientMetrics.cbSize := SizeOf(NonClientMetrics);
@@ -166,9 +168,12 @@ begin
     end;
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Color := clWindowText;
-  Name := 'Helvetica';
-  Height := 8;
+  with AFont do
+  begin
+    Color := clWindowText;
+    Name := 'Helvetica';
+    Height := 11;
+  end;
   {$ENDIF  VisualCLX}
   AFont.Style := [fsBold];
   {
@@ -339,7 +344,9 @@ begin
       Width := 21;
       Height := 21;
     end;
+    {$IFDEF VCL}
     Style := bsNew;
+    {$ENDIF VCL}
     OnClick := AOnClick;
     ParentFont := True;
     Parent := AParent;
@@ -427,15 +434,14 @@ begin
   end
   else
   begin
-    {$IFDEF VisualCLX}
-    Height := 118;
-//    Width := 97;
-    {$ENDIF VisualCLX}
-    {$IFDEF VCL}
     Height := 124;
+    {$IFDEF VCL}
     //    Width := 98;
-    {$ENDIF VCL}
     Width := 131; // Polaris
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    Width := 135;
+    {$ENDIF VisualCLX}
   end;
   SetDefaultFont(Font, ALayout);
   ParentFont := False;
@@ -890,7 +896,9 @@ type
   TJvLocCalculator = class(TJvCalculatorPanel)
   protected
     procedure EnabledChanged; override;
+    {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
+    {$ENDIF VCL}
   public
     constructor Create(AOwner: TComponent); override;
   end;
