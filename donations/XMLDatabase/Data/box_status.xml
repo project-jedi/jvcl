@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-<BoxStatus>
- <Status StatId="1" StatName="Available"/>
- <Status StatId="2" StatName="Sterile"/>
- <Status StatId="3" StatName="Empruntée"/>
- <Status StatId="4" StatName="Supprimée"/>
-</BoxStatus>

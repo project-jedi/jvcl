@@ -1,1 +1,0 @@
-Use MakeDCR in ..\Images to build the dcr file

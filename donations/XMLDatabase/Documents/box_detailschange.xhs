@@ -1,4 +1,0 @@
-<%
-  Request("UPDATE boxes.xml SET BoxPeremption = '$peremption', BoxStatus = $status, BoxName = '$name' WHERE (BoxId = $id)");
-  Redirect("box.xhs?id=$id");
-%>

@@ -1,1 +1,0 @@
-NOTE: before running the program, copy the files Skiplist.txt and DependencyWalker.css to the output folder (defaults to ..\bin)
