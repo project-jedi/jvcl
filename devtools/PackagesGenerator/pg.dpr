@@ -4,7 +4,9 @@ program pg;
 
 uses
   SysUtils,
-  CmdLineUtils in 'CmdLineUtils.pas';
+  CmdLineUtils in 'CmdLineUtils.pas',
+  GenerateUtils in 'GenerateUtils.pas',
+  FileUtils in 'FileUtils.pas';
 
 begin
   CmdLineRun;
