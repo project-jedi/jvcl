@@ -11,9 +11,6 @@ object Form1: TForm1
   Font.Name = 'MS Shell Dlg 2'
   Font.Style = []
   OldCreateOrder = False
-  DesignSize = (
-    456
-    330)
   PixelsPerInch = 96
   TextHeight = 13
   object reXML: TRichEdit
@@ -60,9 +57,6 @@ object Form1: TForm1
     BevelOuter = bvLowered
     Color = clWindow
     TabOrder = 0
-    DesignSize = (
-      456
-      65)
     object Label1: TLabel
       Left = 18
       Top = 22
