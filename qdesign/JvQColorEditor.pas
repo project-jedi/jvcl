@@ -51,8 +51,12 @@ uses
 
 
 const
-  SCustomColors = 'JVCLX Custom Colors';
-
+  {$IFDEF MSWINDOWS}
+  SCustomColors = 'JVCLX\Custom Colors';
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  SCustomColors = '.JVCLX/Custom Colors';
+  {$ENDIF LINUX}
 
 type
   TJvColorProperty = class(TColorProperty) 

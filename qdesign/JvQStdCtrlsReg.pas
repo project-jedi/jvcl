@@ -75,9 +75,11 @@ const
   cOwnerDraw = 'OwnerDraw';
 begin
   RegisterComponents(RsPaletteVisual, [TJvShape]);
-  RegisterComponents(RsPaletteNonVisual, [ 
+  RegisterComponents(RsPaletteNonVisual, [
     TJvCalculator]);
+  {$IFDEF USEWINDOWS}
   RegisterComponents(RsPaletteDialog, [TJvBrowseForFolderDialog]);
+  {$ENDIF MSWINDOWS}
   RegisterComponents(RsPaletteButton, [TJvBitBtn, TJvImgBtn, TJvSpeedButton,
     TJvCheckBox, TJvRadioButton, TJvRadioGroup,  
     TUpDown, 
