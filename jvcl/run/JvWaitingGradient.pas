@@ -282,11 +282,13 @@ begin
 //  if csLoading in ComponentState then
 //    Exit;
   if FScroll = nil then Exit;
-  if FScroll.Suspended then
-    FScroll.Resume
-  else
+  if Value and FScroll.Suspended then
+  begin
+    FScroll.Resume;
+    if AlwaysRestart then Restart;
+  end
+  else if not Value and not FScroll.Suspended then
     FScroll.Suspend;
-  if AlwaysRestart then Restart;
 end;
 
 procedure TJvWaitingGradient.SetEndColor(const Value: TColor);
