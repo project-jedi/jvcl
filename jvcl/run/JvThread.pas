@@ -287,8 +287,12 @@ begin
       FOnFinish(nil);
   finally
     if FThreadCount = 0 then
+    begin
+      if Assigned(ThreadDialog) then
+        ThreadDialog.CloseThreadDialogForm;
       if Assigned(FOnFinishAll) then
         FOnFinishAll(nil);
+    end;
   end;
 end;
 
