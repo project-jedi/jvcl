@@ -41,14 +41,16 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvDsgnConsts, 
+  JvDsgnConsts,
   JvMemoryDataset, JvDBDatePickerEdit, JvDBDateTimePicker, JvDBLookupTreeView,
   JvDBProgressBar, JvDBRichEdit, JvDBSpinEdit, JvDBTreeView, JvDBLookup,
-  JvCsvData, JvDBCombobox, JvDBControls, JvDBRadioPanel, JvDBEditors,
+  JvCsvData, JvDBCombobox, JvDBControls, JvDBGrid, JvDBRadioPanel, JvDBGridExport,
+  JvDBLookupComboEdit,
+
   {$IFDEF JV_MIDAS}
   JvDBRemoteLogin,
   {$ENDIF JV_MIDAS}
-  JvDBMemDatasetEditor, JvDBLookupComboEdit;
+  JvDBEditors, JvDBMemDatasetEditor;
 
 {$R ..\resources\JvDBReg.dcr}
 
@@ -65,7 +67,9 @@ const
   //cStartMasterValue = 'StartMasterValue';
 begin
   RegisterComponents(RsPaletteDBNonVisual, [TJvMemoryData,
-    TJvCSVDataSet {$IFDEF JV_MIDAS}, TJvDBRemoteLogin {$ENDIF}]);
+    TJvCSVDataSet {$IFDEF JV_MIDAS}, TJvDBRemoteLogin {$ENDIF},
+    TJvDBGridWordExport, TJvDBGridExcelExport, TJvDBGridHTMLExport, TJvDBGridCSVExport]);
+
   RegisterComponents(RsPaletteDBVisual, [TJvDBDatePickerEdit,
     TJvDBDateTimePicker, TJvDBProgressBar, TJvDBRichEdit, TJvDBSpinEdit,
     TJvDBLookupList, TJvDBLookupCombo, TJvDBLookupEdit, TJvDBRadioPanel,

@@ -1,5 +1,13 @@
 Changelog for JVCL 3.0
 ======================
+2004-01-15:
+- Extracted TJvDBGrid from JvDBControls into its own unit, JvDBGrid // peter3
+- Added JvDBGrid additions from Lionel Reynaud // peter3
+- Added JvDBGridExport (and demo) from Lionel Reynaud // peter3
+- Renamed JvDBCtrls.Res to JvDBControls.res and moved JvDBGrid resources to JvDBGrid.res // peter3
+- Fixed identifier issue in JvXPBar and JvThemeseEnabled error // peter3
+2004-01-14:
+- Added Colors subproperty to JvXPBar for previously unpublished colors // peter3
 2004-01-12:
 - Changed combo edits from using Glyph -> Images;ImageIndex,
     Old properties can still be read from the stream  // remkobonte
