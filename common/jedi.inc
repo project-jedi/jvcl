@@ -875,6 +875,7 @@
     {$DEFINE HAS_UNIT_TYPES}
     {$DEFINE HAS_UNIT_VARIANTS}
     {$DEFINE HAS_UNIT_STRUTILS}
+    {$DEFINE HAS_UNIT_RTLCONST}
 
     {$DEFINE XPLATFORM_RTL}
 
@@ -1014,11 +1015,13 @@
 
 // for Delphi/BCB trial versions remove the point from the line below
 {.$UNDEF SUPPORTS_WEAKPACKAGEUNIT}
-{$ENDIF ~JEDI_INC}
 
 // History:
 
 // $Log$
+// Revision 1.11  2005/01/06 18:54:49  marquardt
+// updated to match JCL version of file
+//
 // Revision 1.10  2004/08/09 06:40:54  marquardt
 // add JvWStrUtils.pas as JclWideStrings.pas to JCL
 //
@@ -1066,30 +1069,32 @@
 // Local is Delphi 6 - removed todo comment
 // Replaced CLX with VisualCLX to be consistent with Borlands current definition of what "CLX" is.
 //
-// Revision 1.7  2004/04/06 05:06:12  peterjhaas
+// Revision 1.7  2004/04/06 05:06:12
 // add support for Kylix, FPC, RTL, versions, some speaking directives
 //
-// 2004-03-22, Peter J. Haas
+// 2004-03-22,
 //  - add SUPPORTS_WEAKPACKAGEUNIT
 //
-// 2004-03-20, Peter J. Haas
+// 2004-03-20,
 //  - add SUPPORTS_LOCAL
 //
-// 2004-03-18, Peter J. Haas
+// 2004-03-18,
 //  - add SUPPORTS_LONGWORD
 //
-// 2004-03-16, Peter J. Haas
+// 2004-03-16,
 //  - add HAS_UNIT_STRUTILS
 //  - add XPLATFORM_RTL
 //
-// 2003-12-03, Peter J. Haas
+// 2003-12-03,
 //  - add SUPPORTS_ENUMVALUE
 //
-// 2003-11-14, Peter J. Haas
+// 2003-11-14,
 //  - add SUPPORTS_VARARGS
 //
-// 2003-10-30, Peter J. Haas
+// 2003-10-30,
 //  - correct and complete comments
 //  - add Kylix definitions
 //  - add RTL definitions
 //  - add FPC definitions
+
+{$ENDIF ~JEDI_INC}
