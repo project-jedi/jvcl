@@ -107,7 +107,7 @@ type
     FArrangeWidth: Integer;
     FArrangeHeight: Integer;
     FOnResizeParent: TJvPanelResizeParentEvent;
-    FMoveable: boolean;
+    FMovable: boolean;
 
     function GetHeight: Integer;
     procedure SetHeight(Value: Integer);
@@ -142,9 +142,6 @@ type
     procedure Resize; override;
     procedure AlignControls(AControl: TControl; var Rect: TRect); override;
     procedure WMNCHitTest(var Message: TWMNCHitTest); message WM_NCHITTEST;
-  protected
-    // publish this after JVCL3
-    property Moveable:boolean read FMoveable write FMoveable default false;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -167,6 +164,7 @@ type
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property HotColor: TColor read FHotColor write SetHotColor default clBtnFace;
     property Transparent: Boolean read FTransparent write SetTransparent default False;
+    property Movable:boolean read FMovable write FMovable default false;
     property MultiLine: Boolean read FMultiLine write SetMultiLine;
     property FlatBorder: Boolean read FFlatBorder write SetFlatBorder default False;
     property FlatBorderColor: TColor read FFlatBorderColor write SetFlatBorderColor default clBtnShadow;
@@ -926,7 +924,7 @@ end;
 procedure TJvPanel.WMNCHitTest(var Message: TWMNCHitTest);
 begin
   inherited;
-  if Moveable then
+  if Movable then
     with ScreenToClient(SmallPointToPoint(Message.Pos)) do
       if (X > 5) and (Y > 5) and (X < Width - 5) and (Y < Height - 5) then
          Message.Result := HTCAPTION;
