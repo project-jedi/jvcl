@@ -16,8 +16,8 @@ All Rights Reserved.
 
 Contributor(s): none to date
 
-Last Modified: 2003-06-28;
-Current Version: 0.3
+Last Modified: 2004-02-03;
+Current Version: 0.4
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -76,15 +76,15 @@ type
   // The audio format used by the device
   TJvAudioFormat = class(TPersistent)
   protected
-    FHWnd: HWND; // the AVICap window using this format
-    FFormatTag: Cardinal; // the format tag (PCM or others...)
-    FChannels: Cardinal; // number of channels (usually 1 or 2)
-    FSamplesPerSec: Cardinal; // number of samples per second in the stream
+    FHWnd: HWND;               // the AVICap window using this format
+    FFormatTag: Cardinal;      // the format tag (PCM or others...)
+    FChannels: Cardinal;       // number of channels (usually 1 or 2)
+    FSamplesPerSec: Cardinal;  // number of samples per second in the stream
     FAvgBytesPerSec: Cardinal; // the average number of bytes per second
-    FBlockAlign: Cardinal; // size of the block to align on
-    FBitsPerSample: Cardinal; // number of bits per sample
-    FExtraSize: Cardinal; // size of the extra data
-    FExtra: Pointer; // extra data for formats other than PCM
+    FBlockAlign: Cardinal;     // size of the block to align on
+    FBitsPerSample: Cardinal;  // number of bits per sample
+    FExtraSize: Cardinal;      // size of the extra data
+    FExtra: Pointer;           // extra data for formats other than PCM
   public
     // creates the audio format object and initializes it
     constructor Create;
@@ -257,7 +257,7 @@ type
     constructor Create(Index: TJvDriverIndex; MaxIndex: TJvDriverIndex);
   end;
 
-  // what a driver can do on the system (rom) or was it "to the system" ;-)
+  // what a driver can do on the system
   TJvDriverCaps = set of
    (dcOverlay,            // overlay rendering
     dcDlgVideoSource,     // display a dialog to choose video source
@@ -328,7 +328,6 @@ type
   // the main component. Just drop it on a form or a frame, set the driver property, set previewing to
   // True and you should see the video coming through (even in design mode !)
   TJvAVICapture = class(TWinControl)
-    // (rom) too many protected elements make some private
   protected
     FCaptureSettings: TJvCaptureSettings; // the capture settings
     FCapturing: Boolean;                  // True if capture is happening
@@ -680,7 +679,7 @@ end;
 
 // this is the callback when an audio buffer is ready to be written to disk
 // and only when using streaming capture
-// will only be called if user chose so withe ueWaveStream
+// will only be called if user chose so with ueWaveStream
 
 function WaveStreamCallback(hWnd: HWND; waveHdr: PWAVEHDR): LRESULT; stdcall;
 var
@@ -1123,7 +1122,6 @@ end;
 
 procedure TJvAVICapture.SetPreviewing(nPreviewing: Boolean);
 begin
-  // (rom) fixed expression bugs
   if (not nPreviewing) and Previewing then
     StopPreview;
   if nPreviewing and (not Previewing) then
@@ -1207,14 +1205,12 @@ end;
 
 procedure TJvAVICapture.SetOverlaying(nOverlaying: Boolean);
 begin
-  // (rom) strange expressions please fix
-  if not nOverlaying = False then
+  if not nOverlaying then
   begin
     if Overlaying then
       StopOverlay;
   end
-  else
-  if not Overlaying then
+  else if not Overlaying then
     StartOverlay;
 end;
 
