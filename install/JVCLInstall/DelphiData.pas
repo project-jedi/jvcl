@@ -110,7 +110,7 @@ type
     function IsPersonal: Boolean;
     function DisplayName: string;
 
-    function VersionedDCPs(const Filename: string): string;
+    function VersionedDCP(const Filename: string): string;
       { returns the filename + version + extension for Delphi 5 and BCB 5
         else it returns the Filename. }
 
@@ -791,7 +791,7 @@ begin
     Result := '';
 end;
 
-function TCompileTarget.VersionedDCPs(const Filename: string): string;
+function TCompileTarget.VersionedDCP(const Filename: string): string;
 begin
   if Version > 5 then
     Result := Filename
