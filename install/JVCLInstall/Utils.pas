@@ -61,29 +61,7 @@ type
 function Supports(const Intf: IInterface; const IID: TGUID): Boolean; overload;
 {$ENDIF COMPILER5}
 
-function GetDefaultCheckBoxSize: TSize;
-
 implementation
-
-uses Graphics;
-
-function GetDefaultCheckBoxSize: TSize;
-begin
-{$IFDEF VCL}
-  with TBitmap.Create do
-  try
-    Handle := LoadBitmap(0, PChar(OBM_CHECKBOXES));
-    Result.cx := Width div 4;
-    Result.cy := Height div 3;
-  finally
-    Free;
-  end;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-  Result.cx := 12;
-  Result.cy := 12;
-{$ENDIF VisualCLX}
-end;
 
 function CompareFileAge(const Filename1Fmt: string; const Args1: array of const;
   const Filename2Fmt: string; const Args2: array of const): Integer;
