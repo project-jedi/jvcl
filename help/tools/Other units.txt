@@ -1,7 +1,6 @@
 JvAlarms
 JvAnalogClock
-JvAppStore
-JvAVICapture
+JvAppStorage
 JvCabFile
 JvCalc
 JvCaptionPanel

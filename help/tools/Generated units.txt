@@ -5,7 +5,8 @@ JvAniFile
 JvAnimatedImage
 JvAppEvent
 JvAppInst
-JvAppStoreSelectList
+JvAppStorageSelectList
+JvAppXMLStorage
 JvAppXmlStore
 JvArrayButton
 JvaScrollText
@@ -61,7 +62,6 @@ JvDBCombobox
 JvDBControls
 JvDBDatePickerEdit
 JvDBDateTimePicker
-JvDBDotNetControls
 JvDBLookupComboEdit
 JvDBLookupTreeView
 JvDBProgressBar
@@ -83,8 +83,6 @@ JvDockSupportClass
 JvDockSupportControl
 JvDockSupportProc
 JvDockTree
-JvDotNetControls
-JvDotNetUtils
 JvDrawImage
 JvDsgnIntf
 JvDualList
@@ -94,6 +92,15 @@ JvDynControlEngineJVCL
 JvDynControlEngineVCL
 JvEasterEgg
 JvEditor
+JvExButtons
+JvExCheckLst
+JvExComCtrls
+JvExControls
+JvExExtCtrls
+JvExForms
+JvExGrids
+JvExMask
+JvExStdCtrls
 JvFavoritesButton
 JvFooter
 JvFormAnimatedIcon
@@ -269,6 +276,7 @@ JvPlaylist
 JvPrint
 JvProgressBar
 JvProgressUtils
+JvPropertyStorage
 JvPropertyStore
 JvPropsStorage
 JvRadioButton
@@ -295,7 +303,6 @@ JvSimPIDLinker
 JvSimpleXml
 JvSimScope
 JvSpeedbar
-JvSpeedButton
 JvSpellChecker
 JvSpellIntf
 JvSpin

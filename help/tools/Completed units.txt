@@ -4,9 +4,10 @@ JvAnimTitle
 JvAppAnimatedIcon
 JvAppHotKey
 JvAppInfo
-JvAppIniStore
-JvAppRegistryStore
+JvAppIniStorage
+JvAppRegistryStorage
 JvArrowButton
+JvAVICapture
 JvBalloonHint
 JvBaseDlg
 JvBehaviorLabel
@@ -30,11 +31,14 @@ JvCustomItemViewer
 JvDataEmbedded
 JvDataProviderIntf
 JvDateTimePicker
+JvDBDotNetControls
 JvDeleteError
 JvDialogActns
 JvDiskPrompt
 JvDockDelphiStyle
 JvDockGlobals
+JvDotNetControls
+JvDotNetUtils
 JvDragDrop
 JvDriveCtrls
 JvEdit
@@ -83,6 +87,7 @@ JvSlider
 JvSoundControl
 JvSpacer
 JvSpecialProgress
+JvSpeedButton
 JvSplitter
 JvStarfield
 JvStaticText
