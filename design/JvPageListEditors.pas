@@ -170,7 +170,7 @@ end;
 
 function TJvCustomPageEditor.GetVerbCount: Integer;
 begin
-  Result := 1; // list, div, new, next, previous, delete,
+  Result := 6; // list, div, new, next, previous, delete,
 end;
 
 procedure TJvCustomPageEditor.InsertPage;
