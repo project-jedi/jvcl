@@ -103,6 +103,9 @@ type
 
   TJvChart = class;
 
+  TJvChartEvent = procedure(Sender:TJvChart) of Object; {NEW}
+
+
   TJvChartOptions = class(TPersistent)
   private
     FOwner: TJvChart;
@@ -175,6 +178,7 @@ type
     procedure SetHeaderFont(AFont: TFont);
     procedure SetLegendFont(AFont: TFont);
     procedure SetAxisFont(AFont: TFont);
+    procedure SetYGap(newYgap: Double); //NEW
     procedure SetYMax(newYmax: Double);
   public
     constructor Create(Owner: TJvChart);
@@ -201,7 +205,7 @@ type
     property PenLegends: TStrings read GetPenLegends write SetPenLegends;
     property PenUnit: TStrings read GetPenUnit write SetPenUnit;
     property XGap: Double read FXGap write FXGap;
-    property YGap: Double read FYGap write FYGap;
+    property YGap: Double read FYGap write SetYGap;
     property XOrigin: Integer read FXOrigin write FXOrigin;
     property YOrigin: Integer read FYOrigin write FYOrigin;
     property XStartOffset: Longint read FXStartOffset write SetXStartOffset default 45;
@@ -240,6 +244,7 @@ type
 
   TJvChart = class(TJvGraphicControl) // formerly was a child of TImage
   private
+    FUpdating :Boolean; // PREVENT ENDLES EVENT LOOPING.
     { TImage stuff}
     FPicture: TPicture; // An image drawn via GDI primitives, saveable as
                         // bitmap or WMF, or displayable to screen
@@ -262,6 +267,7 @@ type
     nMousePen: Integer;
     nOldYValueCount: Integer;
     FYFont: TFont; // Delphi Font object wrapper.
+    FOnOptionsChangeEvent : TJvChartEvent; {NEW:Component fires this event for when options change.}
     {$IFDEF VCL}
     // Y Axis Vertical Font
     FYFontHandle: HFont; // Y AXIS VERTICAL TEXT: Vertical Font Handle (remember to DeleteObject)
@@ -269,6 +275,11 @@ type
     procedure MakeVerticalFont; // Call GDI calls to get the Y Axis Vertical Font handle
     procedure MyGraphVertFont; // vertical font handle
     {$ENDIF VCL}
+
+
+
+
+
     { Right Side Legend showing Pen Names, and/or Data Descriptors }
     procedure MyShowLegend;
     procedure MyHeader(strText: string);
@@ -327,6 +338,10 @@ type
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     property ChartCanvas: TCanvas read GetCanvas;
+
+    procedure NotifyOptionsChange; {NEW}
+
+
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -660,10 +675,27 @@ begin
   FAxisFont.Assign(AFont);
 end;
 
+procedure TJvChartOptions.SetYGap(newYgap: Double);
+begin
+   FYGap := newYGap;
+  // TODO: Fire event, and cause a refresh, recalculate other
+  // dependant fields that are calculated from the YGap.
+
+  if Assigned(FOwner) then
+      FOwner.NotifyOptionsChange; // Fire event before we auto-format graph. Allows some customization to occur here.
+
+
+end;
+
 procedure TJvChartOptions.SetYMax(newYmax: Double);
+var
+ wasUpdating:Boolean;
 begin
   if newYMax = Self.FYMax then
     Exit;
+  //wasUpdating := FOwner.FUpdating;
+  //FOwner.FUpdating := true;
+  //try
 
   // shuffle around:
 
@@ -688,6 +720,13 @@ begin
       YValueCount := 20;
     YGap := YMax / YValueCount;
   end;
+
+
+  //finally
+  //    FUpdating := wasUpdating; //restore.
+  //end;
+  //FOwner.NotifyOptionsChange;
+
 end;
 
 procedure TJvChartOptions.SetXStartOffset(Offset: Integer);
@@ -900,7 +939,8 @@ begin
   Options.XOrigin := 0;
   Options.YOrigin := 0;
   Options.XGap := 1;
-  Options.YGap := 1;
+  if Options.YGap = 0 then // Set an initially valid value because Zero is not valid. NEW
+     Options.YGap := 1; // This should eventually call SetYGap, and recalculate other things that depend on YGap. -WP.
 
   Options.PenLegends.Clear;
 
@@ -1108,7 +1148,7 @@ begin
   if not (Enabled and Visible) then
     exit;
 
-  xOrigin := Options.XOrigin;
+  xOrigin := Options.XOrigin; // XXX xOrigin is overwritten below. This does nothing.
   yOrigin := Options.YOrigin;
 
   // safety before we paint.
@@ -1144,6 +1184,7 @@ begin
 
    {Draw header and other stuff...}
 
+   // TODO: Make this a little nicer. Maybe no data should be a property set by user instead of a fixed resource string?
   if Options.XValueCount = 0 then
   begin
     MyRightTextOut(Round(xOrigin), Round(yOrigin), RsNoData);
@@ -1660,6 +1701,21 @@ begin
   Options.LegendWidth := nLegendWidth;
 end;
 
+
+{NEW}
+{ when the user clicks the chart and changes the axis, we need a notification
+  so we can save the new settings. }
+procedure TJvChart.NotifyOptionsChange;
+begin
+  if FUpdating then exit;
+  if (csDesigning in ComponentState) then exit;
+  if Assigned(FOnOptionsChangeEvent) then begin
+    FOnOptionsChangeEvent(Self);
+  end;
+end;
+
+
+
 { Warren implemented TImage related code directly into TJvChart, to remove TImage as base class.}
 // (rom) simplified by returning the Printer Canvas when printing
 
@@ -1769,6 +1825,7 @@ begin
   else
     exit;
 
+  NotifyOptionsChange; // Fire event before we auto-format graph. Allows some customization to occur here.
   AutoFormatGraph;
   PlotGraph;
   Invalidate;
@@ -1995,6 +2052,8 @@ begin
       { make strings }
       for I := 0 to nLineCount - 1 do
       begin
+        if Options.PenLegends.Count <= I then break; // Exception fixed. WP
+
         strMessage3 := Options.PenLegends[I];
         if Length(strMessage3) = 0 then
           strMessage3 := IntToStr(I + 1);
