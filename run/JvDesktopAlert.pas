@@ -133,6 +133,7 @@ type
     FOnShow: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
     FData: TObject;
+    FAutoFocus: boolean;
     function GetStacker: TJvDesktopAlertStack;
     procedure SetButtons(const Value: TJvDesktopAlertButtons);
     procedure SetColors(const Value: TJvDesktopAlertColors);
@@ -188,6 +189,7 @@ type
     property Data: TObject read FData write FData;
   published
     property AlertStack: TJvDesktopAlertStack read GetAlertStack write SetAlertStack;
+    property AutoFocus:boolean read FAutoFocus write FAutoFocus default False; 
     property HeaderText: string read GetHeaderText write SetHeaderText;
     property MessageText: string read GetMessageText write SetMessageText;
 
@@ -449,6 +451,7 @@ procedure TJvDesktopAlert.Execute;
 var
   ARect: TRect;
   i, X, Y: integer;
+  FActiveWindow:HWND;
 begin
   Assert(FDesktopForm <> nil);
   if FDesktopForm.Visible then FDesktopForm.Close;
@@ -539,7 +542,13 @@ begin
     end;
   end;
   Location.Position := GetStacker.Position;
+  if not AutoFocus then
+    FActiveWindow := GetActiveWindow
+  else
+    FActiveWindow := 0;
   FDesktopForm.Show;
+  if not AutoFocus and (FActiveWindow <> 0) then
+    SetActiveWindow(FActiveWindow);
   GetStacker.Add(FDesktopForm);
 end;
 
