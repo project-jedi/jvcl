@@ -60,7 +60,7 @@ type
   {:Base class for band forms.
   @cat jvBandFormComponents
   }
-  TjvBandForm = class(TCustomForm)
+  TjvBandForm = class(TForm)
   private
     FBandObject: TComObject;
     FBandModeFlags: TjvBandModeFlags;
@@ -82,6 +82,10 @@ type
     property _BandObject: TComObject read FBandObject;
     {$ENDIF}
   public
+    {$IFNDEF T2H}
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    {$ENDIF}
     {:Band form constructor.
     Use this constructor to create a band form.<br>
     The band object wizard generates code which calls this constructor
@@ -299,6 +303,27 @@ uses
 
 { TjvBandForm }
 
+
+constructor TjvBandForm.Create(AOwner: TComponent);
+begin
+  inherited;
+  FBandModeFlags := [bmfVariableHeight];
+  FBandIntegralX := 1;
+  FBandIntegralY := 1;
+  BorderIcons := [];
+  BorderStyle := bsNone;
+  BorderWidth := 0;
+  FormStyle := fsNormal;
+  Position := poDesigned;
+  Visible := False;
+end;
+
+destructor TjvBandForm.Destroy;
+begin
+  ControlStyle := ControlStyle + [csNoStdEvents];
+  inherited;
+end;
+
 constructor TjvBandForm.CreateBandForm(const ParentWindow: HWnd; const BandObject: TComObject);
 var
   Rect: TRect;
@@ -375,43 +400,6 @@ begin
       end;
   end;
 end;
-
-// Below are from TForm
-// Since FormStyle is always fsNormal, all codes are commented.
-
-{
-procedure TjvBandForm.ArrangeIcons;
-begin
-  if (FormStyle = fsMDIForm) and (ClientHandle <> 0) then
-    SendMessage(ClientHandle, WM_MDIICONARRANGE, 0, 0);
-end;
-
-procedure TjvBandForm.Cascade;
-begin
-  if (FormStyle = fsMDIForm) and (ClientHandle <> 0) then
-    SendMessage(ClientHandle, WM_MDICASCADE, 0, 0);
-end;
-
-procedure TjvBandForm.Next;
-begin
-  if (FormStyle = fsMDIForm) and (ClientHandle <> 0) then
-    SendMessage(ClientHandle, WM_MDINEXT, 0, 0);
-end;
-
-procedure TjvBandForm.Previous;
-begin
-  if (FormStyle = fsMDIForm) and (ClientHandle <> 0) then
-    SendMessage(ClientHandle, WM_MDINEXT, 0, 1);
-end;
-
-procedure TjvBandForm.Tile;
-const
-  TileParams: array[TTileMode] of Word = (MDITILE_HORIZONTAL, MDITILE_VERTICAL);
-begin
-  if (FormStyle = fsMDIForm) and (ClientHandle <> 0) then
-    SendMessage(ClientHandle, WM_MDITILE, TileParams[TileMode], 0);
-end;
-}
 
 end.
 

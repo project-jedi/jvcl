@@ -28,481 +28,142 @@ Known Issues:
 
 {$I JVCL.INC}
 
+{.$DEFINE DEBUG}
+
 unit jvBandObject;
 
 interface
 
 uses
-  Windows, ComObj, ShlObj, ActiveX, Classes, Menus,
+  Windows, Forms, Messages, ComObj, ShlObj, ActiveX, Classes, Menus, Dialogs,
   jvBandForms;
 
 const
-  {:Desk band category ID.
-  Used to register the 'Implemented Categories' of the band object.
-  @seeAlso <see const="CATID_INFOBAND">
-  @seeAlso <see const="CATID_COMMBAND">
-  }
   CATID_DESKBAND = '{00021492-0000-0000-C000-000000000046}';
-
-  {:Info band category ID.
-  Used to register the 'Implemented Categories' of the band object.
-  @seeAlso <see const="CATID_DESKBAND">
-  @seeAlso <see const="CATID_COMMBAND">
-  }
   CATID_INFOBAND = '{00021493-0000-0000-C000-000000000046}';
-
-  {:Comm band category ID.
-  Used to register the 'Implemented Categories' of the band object.
-  @seeAlso <see const="CATID_DESKBAND">
-  @seeAlso <see const="CATID_INFOBAND">
-  }
   CATID_COMMBAND = '{00021494-0000-0000-C000-000000000046}';
 
 type
   // Band Object Factory Classes
-
-  {:Utimate base class for band object factories.
-  This is the 'mother' of all band object factory classes.
-  @cat jvBandObjectFactoryComponents
-  @seeAlso <see class="TzToolBandObjectFactory">
-  @seeAlso <see class="TzCatBandObjectFactory">
-  @seeAlso <see class="TzDeskBandObjectFactory">
-  @seeAlso <see class="TzExplorerBarObjectFactory">
-  @seeAlso <see class="TzInfoBandObjectFactory">
-  @seeAlso <see class="TzCommBandObjectFactory">
-  }
   TzCustomBandObjectFactory = class(TComObjectFactory)
   private
     function GetClassIDString: string;
   public
-    //: The band object's class ID as a string.
     property ClassIDString: string read GetClassIDString;
   end;
 
-  {:Base class for IE tool band object factories.
-  Concrete tool band object factories inherit from this class.
-  @cat jvBandObjectFactoryComponents
-  @seeAlso <see class="TzCustomBandObjectFactory">
-  @seeAlso <see class="TzCatBandObjectFactory">
-  @seeAlso <see class="TzDeskBandObjectFactory">
-  @seeAlso <see class="TzExplorerBarObjectFactory">
-  @seeAlso <see class="TzInfoBandObjectFactory">
-  @seeAlso <see class="TzCommBandObjectFactory">
-  }
   TzToolBandObjectFactory = class(TzCustomBandObjectFactory)
   public
-    //: Register or unregister the tool band object.
     procedure UpdateRegistry(Register: Boolean); override;
   end;
 
-  {:Base class for band object factories with 'implemented categories'.
-  Band objects with 'implemented categories' (i.e. info, comm and desk bands) will
-  have their factories inherited from this class.
-  @cat jvBandObjectFactoryComponents
-  @seeAlso <see class="TzCustomBandObjectFactory">
-  @seeAlso <see class="TzToolBandObjectFactory">
-  @seeAlso <see class="TzDeskBandObjectFactory">
-  @seeAlso <see class="TzExplorerBarObjectFactory">
-  @seeAlso <see class="TzInfoBandObjectFactory">
-  @seeAlso <see class="TzCommBandObjectFactory">
-  }
   TzCatBandObjectFactory = class(TzCustomBandObjectFactory)
   protected
-    {:Get the 'implemented categories' ID.
-    Subclassed factory classes has to supply the CatID by implementing
-    this function.
-    }
     function GetImplCatID: TGUID; virtual; abstract;
   public
-    //: Register or unregister the band object.
     procedure UpdateRegistry(Register: Boolean); override;
   end;
 
-  {:Base class for desk band object factories.
-  Concrete desk band object factories inherit from this class.
-  @cat jvBandObjectFactoryComponents
-  @seeAlso <see class="TzCustomBandObjectFactory">
-  @seeAlso <see class="TzToolBandObjectFactory">
-  @seeAlso <see class="TzCatBandObjectFactory">
-  @seeAlso <see class="TzExplorerBarObjectFactory">
-  @seeAlso <see class="TzInfoBandObjectFactory">
-  @seeAlso <see class="TzCommBandObjectFactory">
-  }
   TzDeskBandObjectFactory = class(TzCatBandObjectFactory)
   protected
-    //: Returns <see const="CATID_DESKBAND">
     function GetImplCatID: TGUID; override;
   end;
 
-  {:Base class for IE explorer bar object factories.
-  IE Explorer bars (i.e. info and comm bands) will have
-  their factories inherited from this class.
-  @cat jvBandObjectFactoryComponents
-  @seeAlso <see class="TzCustomBandObjectFactory">
-  @seeAlso <see class="TzToolBandObjectFactory">
-  @seeAlso <see class="TzCatBandObjectFactory">
-  @seeAlso <see class="TzDeskBandObjectFactory">
-  @seeAlso <see class="TzInfoBandObjectFactory">
-  @seeAlso <see class="TzCommBandObjectFactory">
-  }
   TzExplorerBarObjectFactory = class(TzCatBandObjectFactory)
   private
     function BarSize: string;
   protected
-    {:Get the location of the HTML file for the explorer bar.
-    If the explorer bar is to display HTML, subclassed factory
-    classes will need to override this method and return a value.
-    }
     function GetURL: string; virtual;
-    {:Get the default width of the explorer bar.
-    Not useful ?
-    @seeAlso <see method="GetBarHeight">
-    }
     function GetBarWidth: Word; virtual;
-    {:Get the default height of the explorer bar.
-    Not useful ?
-    @seeAlso <see method="GetBarWidth">
-    }
     function GetBarHeight: Word; virtual;
   public
-    //: Register or unregister the explorer bar object.
     procedure UpdateRegistry(Register: Boolean); override;
   end;
 
-  {:Base class for info band object factories.
-  Concrete info band object factories inherit from this class.
-  @cat jvBandObjectFactoryComponents
-  @seeAlso <see class="TzCustomBandObjectFactory">
-  @seeAlso <see class="TzToolBandObjectFactory">
-  @seeAlso <see class="TzCatBandObjectFactory">
-  @seeAlso <see class="TzDeskBandObjectFactory">
-  @seeAlso <see class="TzExplorerBarObjectFactory">
-  @seeAlso <see class="TzCommBandObjectFactory">
-  }
   TzInfoBandObjectFactory = class(TzExplorerBarObjectFactory)
   protected
-    //: Returns <see const="CATID_INFOBAND">
     function GetImplCatID: TGUID; override;
   end;
 
-  {:Base class for comm band object factories.
-  Concrete comm band object factories inherit from this class.
-  @cat jvBandObjectFactoryComponents
-  @seeAlso <see class="TzCustomBandObjectFactory">
-  @seeAlso <see class="TzToolBandObjectFactory">
-  @seeAlso <see class="TzCatBandObjectFactory">
-  @seeAlso <see class="TzDeskBandObjectFactory">
-  @seeAlso <see class="TzExplorerBarObjectFactory">
-  @seeAlso <see class="TzInfoBandObjectFactory">
-  }
   TzCommBandObjectFactory = class(TzExplorerBarObjectFactory)
   protected
-    //: Returns <see const="CATID_COMMBAND">
     function GetImplCatID: TGUID; override;
   end;
 
-  // Band Object Classes
-
-  {:Utimate base class for band objects.
-  This is the 'mother' of all band object classes.
-  @cat jvBandObjectComponents
-  @seeAlso <see class="TzToolBandObject">
-  @seeAlso <see class="TzContextMenuBandObject">
-  @seeAlso <see class="TzDeskBandObject">
-  @seeAlso <see class="TzInfoBandObject">
-  @seeAlso <see class="TzCommBandObject">
-  }
-  TzCustomBandObject = class(TComObject, IDeskBand, IObjectWithSite, IPersistStream, IInputObject)
+  TzCustomBandObject = class(TComObject, IDeskBand, IObjectWithSite, IPersist, IPersistStream, IInputObject)
   private
     FBandForm: TjvBandForm;
     FBandID: DWORD;
     FViewMode: DWORD;
     FSite: IInputObjectSite;
     FOleCommandTarget: IOleCommandTarget;
+    SavedWndProc: twndmethod;
+    HasFocus: Boolean;
   protected
-    {:Creates the band form.
-    Concrete band object classes must override this and
-    return a band form.
-    }
     function CreateBandForm(const ParentWnd: HWnd): TjvBandForm; virtual; abstract;
+    procedure BandWndProc(var Message: TMessage);
+    procedure FocusChange(bHasFocus: Boolean);
   public
     {$IFNDEF T2H}
     procedure AfterConstruction; override;
     procedure BeforeDestruction; override;
     {$ENDIF}
-    {:Notify Windows that band info has changed.
-    Call this function after band info field(s) has been updated.
-    @seeAlso <see property="OleCommandTarget">
-    }
     function BandInfoChanged: HRESULT;
-    {:Maximize the band object.
-    @seeAlso <see property="OleCommandTarget">
-    }
     function Maximize: HRESULT;
-    {:Show all band objects.
-    @seeAlso <see method="ShowMeOnly">
-    @seeAlso <see method="HideAllBands">
-    @seeAlso <see property="OleCommandTarget">
-    }
     function ShowAllBands: HRESULT;
-    {:Hide all band objects.
-    @seeAlso <see method="ShowMeOnly">
-    @seeAlso <see method="ShowAllBands">
-    @seeAlso <see property="OleCommandTarget">
-    }
     function HideAllBands: HRESULT;
-    {:Hide all band objects except self.
-    @seeAlso <see method="ShowAllBands">
-    @seeAlso <see method="HideAllBands">
-    @seeAlso <see property="OleCommandTarget">
-    }
     function ShowMeOnly: HRESULT;
-    {: Contains the band ID supplied by IDeskBand::GetBandInfo.
-    @seeAlso <see method="GetBandInfo">
-    @seeAlso <see property="ViewMode">
-    }
     property BandID: DWORD read FBandID;
-    {: Contains the view mode supplied by IDeskBand::GetBandInfo.
-    Possible values:
-    <ul>
-    <li>DBIF_VIEWMODE_NORMAL
-    <li>DBIF_VIEWMODE_VERTICAL
-    <li>DBIF_VIEWMODE_FLOATING
-    <li>DBIF_VIEWMODE_TRANSPARENT
-    </ul>
-    @seeAlso <see method="GetBandInfo">
-    @seeAlso <see property="BandID">
-    }
     property ViewMode: DWORD read FViewMode;
-    {: Contains the band object's site supplied by IObjectWithSite::SetSite.
-    @seeAlso <see property="OleCommandTarget">
-    @seeAlso <see method="SetSite">
-    @seeAlso <see method="GetSite">
-    }
     property Site: IInputObjectSite read FSite;
-    {: Contains the band object's site as IOleCommandTarget.
-    @seeAlso <see property="Site">
-    @seeAlso <see method="BandInfoChanged">
-    @seeAlso <see method="Maximize">
-    @seeAlso <see method="ShowMeOnly">
-    @seeAlso <see method="ShowAllBands">
-    @seeAlso <see method="HideAllBands">
-    }
     property OleCommandTarget: IOleCommandTarget read FOleCommandTarget;
-    // IDeskBand
-    {:Implements IDeskBand::GetBandInfo.
-    See <a href="http://msdn.microsoft.com/library/psdk/shellcc/shell/IFaces/IDeskBand/GetBandInfo.htm#IDeskBand__GetBandIn">MSDN<a> for details.
-    @seeAlso <see property="BandID">
-    @seeAlso <see property="ViewMode">
-    @seeAlso <see class="TjvBandForm" property="Caption">
-    @seeAlso <see class="TjvBandForm" property="BandMinSize">
-    @seeAlso <see class="TjvBandForm" property="BandMaxSize">
-    @seeAlso <see class="TjvBandForm" property="BandIntegral">
-    @seeAlso <see class="TjvBandForm" property="BandActualSize">
-    @seeAlso <see class="TjvBandForm" property="BandModeFlags">
-    @seeAlso <see class="TjvBandForm" property="Color">
-    }
     function GetBandInfo(dwBandID, dwViewMode: DWORD;
       var pdbi: TDeskBandInfo): HResult; virtual; stdcall;
-    // IDockingWindow
-    {:Implements IDockingWindow:ShowDW.
-    Shows or hides the band form.<br><br>
-    See <a href="http://msdn.microsoft.com/library/psdk/shellcc/shell/IFaces/IDockingWindow/ShowDW.htm#IDockingWindow_ShowDW">MSDN<a> for details.
-    @seeAlso <see method="CloseDW">
-    @seeAlso <see method="ResizeBorderDW">
-    }
     function ShowDW(fShow: BOOL): HResult; virtual; stdcall;
-    {:Implements IDockingWindow:CloseDW.
-    Closes the band form.<br><br>
-    See <a href="http://msdn.microsoft.com/library/psdk/shellcc/shell/IFaces/IDockingWindow/CloseDW.htm#IDockingWindow_CloseDW">MSDN<a> for details.
-    @seeAlso <see method="ShowDW">
-    @seeAlso <see method="ResizeBorderDW">
-    }
     function CloseDW(dwReserved: DWORD): HResult; virtual; stdcall;
-    {:Implements IDockingWindow:ResizeBorderDW.
-    This method is never called for band objects.
-    @seeAlso <see method="ShowDW">
-    @seeAlso <see method="CloseDW">
-    }
     function ResizeBorderDW(var prcBorder: TRect;
       punkToolbarSite: IUnknown; fReserved: BOOL): HResult; virtual; stdcall;
-    // IOleWindow
-    {:Implements IOleWindow:GetWindow.
-    Returns the band form's handle.<br><br>
-    See <a href="http://msdn.microsoft.com/library/psdk/com/oin_ou2z_33cn.htm">MSDN<a> for details.
-    @seeAlso <see method="ContextSensitiveHelp">
-    }
     function GetWindow(out wnd: HWnd): HResult; virtual; stdcall;
-    {:Implements IOleWindow:ContextSensitiveHelp.
-    See <a href="http://msdn.microsoft.com/library/psdk/com/oin_ou2z_12i8.htm">MSDN<a> for details.
-    @seeAlso <see method="GetWindow">
-    }
     function ContextSensitiveHelp(fEnterMode: BOOL): HResult; virtual; stdcall;
-    // IObjectWithSite
-    {:Implements IObjectWidthSite:SetSite.
-    See <a href="http://msdn.microsoft.com/library/psdk/com/oin_e2o_9ckl.htm">MSDN<a> for details.
-    @seeAlso <see method="GetSite">
-    @seeAlso <see property="Site">
-    }
     function SetSite(const pUnkSite: IUnknown): HResult; virtual; stdcall;
-    {:Implements IObjectWidthSite:GetSite.
-    See <a href="http://msdn.microsoft.com/library/psdk/com/oin_e2o_6tb9.htm">MSDN<a> for details.
-    @seeAlso <see method="SetSite">
-    @seeAlso <see property="Site">
-    }
     function GetSite(const riid: TIID; out site: IUnknown): HResult; virtual; stdcall;
-    // IPersistStream
-    {:Implements IPersistStream::IsDirty.
-    Always returns False, unless subclass overrides.<br><br>
-    See <a href="http://msdn.microsoft.com/library/psdk/com/cmi_n2p_8lmh.htm">MSDN<a> for details.
-    @seeAlso <see method="Load">
-    @seeAlso <see method="Save">
-    @seeAlso <see method="GetSizeMax">
-    }
     function IsDirty: HResult; virtual; stdcall;
-    {:Implements IPersistStream::Load.
-    Does nothing, unless subclass overrides.<br><br>
-    See <a href="http://msdn.microsoft.com/library/psdk/com/cmi_n2p_54f8.htm">MSDN<a> for details.
-    @seeAlso <see method="IsDirty">
-    @seeAlso <see method="Save">
-    @seeAlso <see method="GetSizeMax">
-    }
     function Load(const stm: IStream): HResult; virtual; stdcall;
-    {:Implements IPersistStream::Save.
-    Does nothing, unless subclass overrides.<br><br>
-    See <a href="http://msdn.microsoft.com/library/psdk/com/cmi_n2p_3945.htm">MSDN<a> for details.
-    @seeAlso <see method="IsDirty">
-    @seeAlso <see method="Load">
-    @seeAlso <see method="GetSizeMax">
-    }
     function Save(const stm: IStream; fClearDirty: BOOL): HResult; virtual; stdcall;
-    {:Implements IPersistStream::GetSizeMax.
-    Always returns 0, unless subclass overrides.<br><br>
-    See <a href="http://msdn.microsoft.com/library/psdk/com/cmi_n2p_9xko.htm">MSDN<a> for details.
-    @seeAlso <see method="IsDirty">
-    @seeAlso <see method="Load">
-    @seeAlso <see method="Save">
-    }
     function GetSizeMax(out cbSize: Largeint): HResult; virtual; stdcall;
-    // IPersist
-    {:Implements IPersist::GetClassID.
-    Returns the band object's class ID.<br><br>
-    See <a href="http://msdn.microsoft.com/library/psdk/com/cmi_n2p_1yn8.htm">MSDN<a> for details.
-    }
     function GetClassID(out classID: TCLSID): HResult; virtual; stdcall;
-    // IInputObject
-    {:Implements IInputObject::UIActivateIO.
-    Call band form's SetFocus if necessary.<br><br>
-    See <a href="http://msdn.microsoft.com/library/psdk/shellcc/shell/IFaces/IInputObject/UIActivateIO.htm#IInputObject__UIActi">MSDN<a> for details.
-    @seeAlso <see method="HasFocusIO">
-    @seeAlso <see method="TranslateAcceleratorIO">
-    }
     function UIActivateIO(fActivate: BOOL; var lpMsg: TMsg): HResult; virtual; stdcall;
-    {:Implements IInputObject::HasFocusIO.
-    Returns band form's Focused.<br><br>
-    See <a href="http://msdn.microsoft.com/library/psdk/shellcc/shell/IFaces/IInputObject/HasFocusIO.htm#IInputObject__HasFoc">MSDN<a> for details.
-    @seeAlso <see method="UIActivateIO">
-    @seeAlso <see method="TranslateAcceleratorIO">
-    }
     function HasFocusIO: HResult; virtual; stdcall;
-    {:Implements IInputObject::TranslateAcceleratorIO.
-    Does nothing, unless subclass overrides.<br><br>
-    See <a href="http://msdn.microsoft.com/library/psdk/shellcc/shell/IFaces/IInputObject/TranslateAcceleratorIO.htm#IInputObject__Transl">MSDN<a> for details.
-    @seeAlso <see method="UIActivateIO">
-    @seeAlso <see method="HasFocusIO">
-    }
     function TranslateAcceleratorIO(var lpMsg: TMsg): HResult; virtual; stdcall;
+  published
+    function MsgHookProc(nCode, wParam, lParam: Integer): Integer;stdcall;
   end;
 
-  {:Base class for IE tool band objects.
-  Concrete tool band objects inherit from this class.
-  @cat jvBandObjectComponents
-  @seeAlso <see class="TzCustomBandObject">
-  @seeAlso <see class="TzContextMenuBandObject">
-  @seeAlso <see class="TzDeskBandObject">
-  @seeAlso <see class="TzInfoBandObject">
-  @seeAlso <see class="TzCommBandObject">
-  }
   TzToolBandObject = class(TzCustomBandObject)
   end;
 
-  {:Base class for band objects which support context menu.
-  Band objects which support context menu (i.e. info, comm and
-  desk bands) will inherit from this class.
-  @cat jvBandObjectComponents
-  @seeAlso <see class="TzCustomBandObject">
-  @seeAlso <see class="TzToolBandObject">
-  @seeAlso <see class="TzDeskBandObject">
-  @seeAlso <see class="TzInfoBandObject">
-  @seeAlso <see class="TzCommBandObject">
-  }
-  { TzContextMenuBandObject
-    For explorer bars (info bands & comm bands) and desk bands
-    which supports the IContextMenu interface.
-  }
   TzContextMenuBandObject = class(TzCustomBandObject, IContextMenu)
   public
-    // IContextMenu
-    {:Implements IContextMenu::QueryContextMenu.
-    See <a href="http://msdn.microsoft.com/library/psdk/shellcc/shell/IFaces/IContextMenu/QueryContextMenu.htm">MSDN<a> for details.
-    @seeAlso <see method="InvokeCommand">
-    @seeAlso <see method="GetCommandString">
-    @seeAlso <see class="TjvBandForm" property="BandContextMenu">
-    }
-    function QueryContextMenu(hMenu: HMENU;
+    FMenuItemLink:TList;
+    function QueryContextMenu(thMenu: HMENU;
       indexMenu, idCmdFirst, idCmdLast, uFlags: UINT): HResult; virtual; stdcall;
-    {:Implements IContextMenu::InvokeCommand.
-    See <a href="http://msdn.microsoft.com/library/psdk/shellcc/shell/IFaces/IContextMenu/InvokeCommand.htm">MSDN<a> for details.
-    @seeAlso <see method="QueryContextMenu">
-    @seeAlso <see method="GetCommandString">
-    @seeAlso <see class="TjvBandForm" property="BandContextMenu">
-    }
     function InvokeCommand(var lpici: TCMInvokeCommandInfo): HResult; virtual; stdcall;
-    {:Implements IContextMenu::GetCommandString.
-    See <a href="http://msdn.microsoft.com/library/psdk/shellcc/shell/IFaces/IContextMenu/GetCommandString.htm">MSDN<a> for details.
-    @seeAlso <see method="QueryContextMenu">
-    @seeAlso <see method="InvokeCommand">
-    @seeAlso <see class="TjvBandForm" property="BandContextMenu">
-    }
     function GetCommandString(idCmd, uType: UINT; pwReserved: PUINT;
       pszName: LPSTR; cchMax: UINT): HResult; virtual; stdcall;
   end;
 
-  {:Base class for desk band objects.
-  Concrete desk band objects inherit from this class.
-  @cat jvBandObjectComponents
-  @seeAlso <see class="TzCustomBandObject">
-  @seeAlso <see class="TzToolBandObject">
-  @seeAlso <see class="TzContextMenuBandObject">
-  @seeAlso <see class="TzInfoBandObject">
-  @seeAlso <see class="TzCommBandObject">
-  }
   TzDeskBandObject = class(TzContextMenuBandObject)
   end;
 
-  {:Base class for info band objects.
-  Concrete info band objects inherit from this class.
-  @cat jvBandObjectComponents
-  @seeAlso <see class="TzCustomBandObject">
-  @seeAlso <see class="TzToolBandObject">
-  @seeAlso <see class="TzContextMenuBandObject">
-  @seeAlso <see class="TzDeskBandObject">
-  @seeAlso <see class="TzCommBandObject">
-  }
   TzInfoBandObject = class(TzContextMenuBandObject)
   end;
 
-  {:Base class for comm band objects.
-  Concrete comm band objects inherit from this class.
-  @cat jvBandObjectComponents
-  @seeAlso <see class="TzCustomBandObject">
-  @seeAlso <see class="TzToolBandObject">
-  @seeAlso <see class="TzContextMenuBandObject">
-  @seeAlso <see class="TzDeskBandObject">
-  @seeAlso <see class="TzInfoBandObject">
-  }
   TzCommBandObject = class(TzContextMenuBandObject)
   end;
+
+var
+ lForms: TList;
+ FHook: HHook;
 
 implementation
 
@@ -510,8 +171,7 @@ uses
   {$IFDEF Debug}
   zTrace,
   {$ENDIF}
-  Registry, SysUtils, Messages, Math,
-  jvBandUtils;
+  Registry, SysUtils, Math, jvBandUtils;
 
 function MakeHResult(sev, fac, code: LongWord): HRESULT;
 begin
@@ -525,6 +185,39 @@ end;
 function TzCustomBandObjectFactory.GetClassIDString: string;
 begin
   Result := GUIDToString(ClassID);
+end;
+
+function MethodToProcedure(self: TObject; methodAddr: pointer) : pointer;
+type
+ TMethodToProc = packed record
+   popEax   : byte;                  // $58      pop EAX
+   pushSelf : record                 //          push self
+                opcode  : byte;      // $B8
+                self    : pointer;   // self
+              end;
+   pushEax  : byte;                  // $50      push EAX
+   jump     : record                 //          jmp [target]
+                opcode  : byte;      // $FF
+                modRm   : byte;      // $25
+                pTarget : ^pointer;  // @target
+                target  : pointer;   //          @MethodAddr
+              end;
+ end;
+var
+  mtp : ^TMethodToProc absolute result;
+begin
+  New(mtp);
+  with mtp^ do
+  begin
+    popEax          := $58;
+    pushSelf.opcode := $68;
+    pushSelf.self   := self;
+    pushEax         := $50;
+    jump.opcode     := $FF;
+    jump.modRm      := $25;
+    jump.pTarget    := @jump.target;
+    jump.target     := methodAddr;
+  end;
 end;
 
 { TzToolBandObjectFactory }
@@ -702,6 +395,9 @@ begin
     FOleCommandTarget := nil; // implicit Release
   if Assigned(FBandForm) then
     FreeAndNil(FBandForm);
+  {$IFDEF Debug}
+  zTraceLog(ClassName + '.BeforeDestruction End()');
+  {$ENDIF}
   inherited;
 end;
 
@@ -886,9 +582,13 @@ begin
   Result := NOERROR;
   if not Assigned(FBandForm) then
     Exit;
+  Hasfocus := fShow;
   with FBandForm do
     if fShow then
-      Show
+    begin
+      Show;
+      FocusChange(fShow);
+    end
     else
       Hide;
 end;
@@ -903,6 +603,8 @@ begin
     Exit;
   ShowDW(False);
   FBandForm.Close;
+  lForms.Extract(FBandForm);
+  FBandForm := nil;
 end;
 
 function TzCustomBandObject.ResizeBorderDW(var prcBorder: TRect;
@@ -979,6 +681,12 @@ begin
         Exit;
       end;
       FBandForm := CreateBandForm(ParentWnd);
+
+      lForms.Add(FBandForm);
+      SavedWndProc := FBandform.WindowProc;
+      FBandform.WindowProc := BandWndProc;
+
+      SetWindowsHookEx(WH_GETMESSAGE, MethodToProcedure(self,self.MethodAddress('MsgHookProc')),HInstance,GetCurrentThreadID);
     end;
     if pUnkSite.QueryInterface(IInputObjectSite, FSite) <> S_OK then // implicit FSite.AddRef;
     begin
@@ -1073,6 +781,7 @@ begin
   zTraceLog('  fActivate=' + BooleanAsString(fActivate));
   {$ENDIF}
   Result := S_OK;
+  Hasfocus := fActivate;
   if not Assigned(FBandForm) then
     Exit;
   if fActivate then
@@ -1084,8 +793,9 @@ begin
   {$IFDEF Debug}
   zTraceLog(ClassName + '.HasFocusIO()');
   {$ENDIF}
-  Result := iif(Assigned(FBandForm) and FBandForm.Focused,
-    S_OK, S_FALSE);
+  Result := Integer(not HasFocus);
+//  Result := iif(Assigned(FBandForm) and FBandForm.Focused,
+//    S_OK, S_FALSE);
   {$IFDEF Debug}
   zTraceLog('  Result=' + IntToStr(Result));
   {$ENDIF}
@@ -1115,7 +825,7 @@ begin
 end;
 
 function AddContextMenuItem(const MenuItem: TMenuItem; const hMenu: HMENU;
-  const idCmdFirst: UINT; ARightToLeft: Boolean): Boolean;
+  const idCmdFirst: UINT; ARightToLeft: Boolean; out idCMD : uInt): Boolean;
 const
   RightToLeftMenuFlag = MFT_RIGHTORDER or MFT_RIGHTJUSTIFY;
   IBreaks: array[TMenuBreak] of DWORD = (MFT_STRING, MFT_MENUBREAK, MFT_MENUBARBREAK);
@@ -1130,6 +840,7 @@ var
   MenuItemInfo: TMenuItemInfo;
   IsOwnerDraw: Boolean;
   ParentMenu: TMenu;
+  count : Integer;
 begin
   Result := False;
   if not MenuItem.Visible then
@@ -1156,7 +867,13 @@ begin
   if MenuItem.Count > 0 then
     MenuItemInfo.hSubMenu := MenuItem.Handle
   else
-    MenuItemInfo.hSubMenu := 0;
+  begin
+    MenuItemInfo.fMask := MenuItemInfo.fMask or MIIM_SUBMENU;
+    MenuItemInfo.hSubMenu := CreateMenu;
+    for Count:=0 to MenuItem.Count do
+      if AddContextMenuItem(MenuItem[count], MenuItemInfo.hSubMenu, idCmdFirst, ARightToLeft,idCMD) then
+        idCmd := Max(idCmd, MenuItem[count].Command);
+  end;
   Result := InsertMenuItem(hMenu, DWORD(-1), True, MenuItemInfo);
   {$IFDEF Debug}
   if not Result then
@@ -1167,11 +884,66 @@ begin
   {$ENDIF}
 end;
 
-function TzContextMenuBandObject.QueryContextMenu(hMenu: HMENU; indexMenu,
+function TzContextMenuBandObject.QueryContextMenu(thMenu: HMENU; indexMenu,
   idCmdFirst, idCmdLast, uFlags: UINT): HResult;
-var
-  i: Integer;
-  idCmd: UINT;
+//var
+//  idCmd: UINT;
+
+   procedure SetItemParams(var ItemInfo: TMenuItemInfo; var MenuItem: TMenuItem);
+   begin
+     ItemInfo.fState:=0;
+     if MenuItem.Checked then
+       ItemInfo.fState:=ItemInfo.fState or MFS_CHECKED
+     else
+       ItemInfo.fState:=ItemInfo.fState or MFS_UNCHECKED;
+
+     if MenuItem.Default then
+       ItemInfo.fState:=ItemInfo.fState or MFS_DEFAULT;
+     if MenuItem.Enabled then
+       ItemInfo.fState:=ItemInfo.fState or MFS_ENABLED
+     else
+       ItemInfo.fState:=ItemInfo.fState or MFS_DISABLED;
+
+     ItemInfo.fType:=0;
+     if MenuItem.Caption='-' then
+       ItemInfo.fType:=ItemInfo.fType or MFT_SEPARATOR
+     else
+     begin
+       ItemInfo.fType:=ItemInfo.fType or MFT_STRING;
+       ItemInfo.dwTypeData:=PChar(MenuItem.Caption);
+       ItemInfo.cch:=Length(MenuItem.Caption);
+     end;
+     if MenuItem.RadioItem then
+       ItemInfo.fType := ItemInfo.fType or MFT_RADIOCHECK;
+   end;
+
+  procedure InsertContextMenuItems(ThisMenu: hmenu;Items:PMenuItem;InsertIndex:Integer);
+  var
+    i:Integer;
+    ItemInfo:TMenuItemInfo;
+    TempItem:TMenuItem;
+  begin
+    for i:=0 to Items.Count-1 do
+    begin
+      TempItem:=Items^[i];
+      if not TempItem.Visible then
+        Continue;
+      ItemInfo.cbSize:=SizeOf(ItemInfo);
+      ItemInfo.fMask:=MIIM_DATA or MIIM_ID or MIIM_STATE or MIIM_TYPE;
+      SetItemParams(ItemInfo,TempItem);
+      ItemInfo.wID:=idCmdFirst+Cardinal(FMenuItemLink.Count);
+      if Items^[i].Count>0 then
+      begin
+        ItemInfo.fMask:=ItemInfo.fMask or MIIM_SUBMENU;
+        ItemInfo.hSubMenu:=CreateMenu;
+        InsertContextMenuItems(ItemInfo.hSubMenu,@TempItem,0);
+      end;
+      InsertMenuItem(ThisMenu,InsertIndex,True,ItemInfo);
+      FMenuItemLink.Add(Pointer(Items^[i].ComponentIndex));
+      InsertIndex:=InsertIndex+1;
+    end;
+  end;
+    
 begin
   {$IFDEF Debug}
   zTraceLog(ClassName + '.QueryContextMenu()');
@@ -1180,36 +952,50 @@ begin
   zTraceLog('  idCmdLast: ' + IntToStr(idCmdLast));
   zTraceLog('  uFlags: ' + Format('0x%x', [uFlags]));
   {$ENDIF}
+
+  if not assigned(FMenuItemLink) then
+    FMenuItemLink := TList.Create;
+  FMenuItemLink.Clear;
   if (CMF_DEFAULTONLY and uFlags) <> 0 then
   begin
     Result := MakeHResult(SEVERITY_SUCCESS, 0, 0);
     Exit;
   end;
   Result := MakeHResult(SEVERITY_SUCCESS, 0, 1);
-  if not Assigned(FBandForm) then
-    Exit;
+  if not Assigned(FBandForm) then Exit;
   with FBandForm do
   begin
     if not Assigned(BandContextMenu) then
       Exit;
-    idCmd := idCmdFirst;
+    //idCmd := idCmdFirst;
     with BandContextMenu do
-    begin
-      for i := 0 to Items.Count - 1 do
-      begin
-        if AddContextMenuItem(Items[i], hMenu, idCmdFirst,
-          SysLocale.MiddleEast and (BiDiMode <> bdLeftToRight)) then
-          idCmd := Max(idCmd, Items[i].Command);
-      end;
-    end;
+      InsertContextMenuItems(thMenu,@BandContextMenu.Items, indexMenu);
   end;
-  Result := MakeHResult(SEVERITY_SUCCESS, 0, idCmd + 1);
+  Result := MakeResult(SEVERITY_SUCCESS, FACILITY_NULL, FMenuItemLink.Count);
+end;
+
+procedure FindItem(Item : TMenuItem; SeekIndex : Integer;
+  var CurrentIndex : Integer);
+var
+  count : integer;
+begin
+  if Item.Count>0 then
+    for Count:=0 to Item.Count-1 do
+    begin
+      if item[count].Count>0 then
+        FindItem(item[count],SeekIndex,CurrentIndex);
+
+      if CurrentIndex=SeekIndex then
+       Item[count].Click;
+      Inc(CurrentIndex)
+    end;
 end;
 
 function TzContextMenuBandObject.InvokeCommand(
   var lpici: TCMInvokeCommandInfo): HResult;
 var
   idCmd: UINT;
+  ci : integer;
 begin
   {$IFDEF Debug}
   zTraceLog(ClassName + '.InvokeCommand()');
@@ -1225,8 +1011,9 @@ begin
   begin
     if not Assigned(BandContextMenu) then
       Exit;
-    if BandContextMenu.DispatchCommand(idCmd) then
-      Result := NOERROR;
+    FindItem(BandContextMenu.Items,idCmd,ci);
+    //if BandContextMenu.DispatchCommand(idCmd) then
+    //   Result := NOERROR; 
   end;
 end;
 
@@ -1268,5 +1055,51 @@ begin
   end;
 end;
 
+procedure TzCustomBandObject.BandWndProc(var Message: TMessage);
+begin
+  if (Message.Msg = WM_PARENTNOTIFY) then
+  begin
+    Hasfocus := True;
+    FocusChange(True);
+  end;
+  //if (Message.Msg >= WM_KEYFIRST) and (Message.Msg <= WM_KEYLAST) then
+  //  SendMessage(FBandForm.Handle, Message.Msg, Message.wParam, Message.lParam);
+  SavedWndProc(Message);
+end;
+
+procedure TzCustomBandObject.FocusChange(bHasFocus: Boolean);
+begin
+  if (Site <> nil) then
+    Site.OnFocusChangeIS(FBandForm, bHasFocus);
+end;
+
+function TzCustomBandObject.MsgHookProc(nCode, wParam,
+  lParam: Integer): Integer;
+var
+ lOk: Boolean;
+begin
+  try
+    if FBandForm<>nil then
+    begin
+      lOk := false;
+      with PMsg(Pointer(lParam))^ do
+        if (((message = WM_KEYDOWN) or (message = WM_KEYUP)) and
+          ((wParam = VK_BACK) )) then
+          lOk := true;
+      if lOk then
+        if IsDialogMessage(FBandForm.Handle,PMsg(Pointer(lParam))^) then
+          PMsg(lParam)^.message := WM_NULL;
+    end;
+  except
+  end;
+  result := CallNextHookEx(FHook, nCode, wParam, lParam);
+end;
+
+initialization
+//  FHook := SetWindowsHookEx(WH_GETMESSAGE, GetMsgHookProc,HInstance, GetCurrentThreadId);
+  lForms := TList.Create;
+finalization
+//  UnhookWindowsHookEx(FHook);
+  lForms.Free;
 end.
 
