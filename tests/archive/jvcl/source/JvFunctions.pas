@@ -129,17 +129,17 @@ procedure LaunchCpl(FileName: string);
      '<displayname>=<path>'
    You can access the DisplayName by using the Strings.Names array and the Path by accessing the Strings.Values array
    Strings.Objects can contain either of two values depending on if Images is nil or not:
-     * If Images is nil then Strings.Objects contains the image for the applet as a TBitmap. Note that the caller /you)
+     * If Images is nil then Strings.Objects contains the image for the applet as a TBitmap. Note that the caller (you)
      is responsible for freeing the bitmaps in this case
      * If Images <> nil, then the Strings.Objects array contains the index of the image in the Images array for the selected item.
-       To access and use the Image, typecast Strings.Objects to an int:
+       To access and use the ImageIndex, typecast Strings.Objects to an int:
          tmp.Name := Strings.Name[i];
          tmp.ImageIndex := integer(Strings.Objects[i]);
   The function returns true if any Control Panel Applets were found (i.e Strings.Count is > 0 when returning)
 }
 
 function GetControlPanelApplets(const APath, AMask: string; Strings: TStrings; Images: TImageList = nil): Boolean;
-{ GetControlPanelApplet works like GetControlPanelApplet, with the difference that it only loads and searches one cpl file (according to AFilename).
+{ GetControlPanelApplet works like GetControlPanelApplets, with the difference that it only loads and searches one cpl file (according to AFilename).
   Note though, that some CPL's contains multiple applets, so the Strings and Images lists can contain multiple return values.
   The function returns true if any Control Panel Applets were found in AFilename (i.e if items were added to Strings)
 }
@@ -805,11 +805,14 @@ begin
           S := Format('%s=%s,@%d', [S, AFilename, i]);
           if Images <> nil then
           begin
-            ImageList_AddIcon(Images.Handle, CopyIcon(hIco));
+            hIco := CopyIcon(hIco);
+            ImageList_AddIcon(Images.Handle, hIco);
             Strings.AddObject(S, TObject(Images.Count - 1));
           end
           else
             Strings.AddObject(S, IconToBitmap2(hIco, 16, clMenu));
+          // (p3) not sure this is really needed...
+          // DestroyIcon(hIco);
         end;
       end;
       Result := tmpCount < Strings.Count;
