@@ -1,4 +1,4 @@
-object Form1: TForm1
+object MainForm: TMainForm
   Left = 192
   Top = 116
   AutoScroll = False
@@ -17,9 +17,12 @@ object Form1: TForm1
   Position = poScreenCenter
   OnActivate = FormActivate
   OnDestroy = DevListBoxClick
+  DesignSize = (
+    444
+    484)
   PixelsPerInch = 96
   TextHeight = 16
-  object Read: TSpeedButton
+  object ReadBtn: TSpeedButton
     Left = 72
     Top = 451
     Width = 81
@@ -28,9 +31,9 @@ object Form1: TForm1
     Anchors = [akLeft, akBottom]
     GroupIndex = 1
     Caption = 'Read'
-    OnClick = ReadClick
+    OnClick = ReadBtnClick
   end
-  object Write: TSpeedButton
+  object WriteBtn: TSpeedButton
     Left = 160
     Top = 451
     Width = 81
@@ -38,9 +41,9 @@ object Form1: TForm1
     AllowAllUp = True
     Anchors = [akLeft, akBottom]
     Caption = 'Write'
-    OnClick = WriteClick
+    OnClick = WriteBtnClick
   end
-  object Save: TSpeedButton
+  object SaveBtn: TSpeedButton
     Left = 248
     Top = 451
     Width = 81
@@ -48,7 +51,7 @@ object Form1: TForm1
     AllowAllUp = True
     Anchors = [akLeft, akBottom]
     Caption = 'Save'
-    OnClick = SaveClick
+    OnClick = SaveBtnClick
   end
   object Label1: TLabel
     Left = 41
@@ -59,14 +62,13 @@ object Form1: TForm1
     AutoSize = False
     Caption = 'ReportID'
   end
-  object Info: TSpeedButton
+  object InfoBtn: TSpeedButton
     Left = 8
     Top = 451
-    Width = 49
+    Width = 57
     Height = 22
-    Anchors = [akLeft, akBottom]
     Caption = 'Info'
-    OnClick = InfoClick
+    OnClick = InfoBtnClick
   end
   object DevListBox: TListBox
     Left = -1
@@ -103,7 +105,7 @@ object Form1: TForm1
     Anchors = [akLeft, akBottom]
     TabOrder = 3
   end
-  object SaveDialog1: TSaveDialog
+  object SaveDialog: TSaveDialog
     DefaultExt = 'txt'
     Filter = 'Text Files *.txt|*.txt|All Files *.*|*.*'
     Options = [ofOverwritePrompt, ofHideReadOnly, ofEnableSizing, ofDontAddToRecent]
@@ -113,6 +115,8 @@ object Form1: TForm1
   object HidCtl: TJvHidDeviceController
     OnEnumerate = HidCtlEnumerate
     OnDeviceChange = HidCtlDeviceChange
+    OnDeviceData = ShowRead
+    OnDeviceDataError = HidCtlDeviceDataError
     Left = 368
   end
 end

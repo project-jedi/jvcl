@@ -13,12 +13,15 @@ object InfoForm: TInfoForm
   Font.Style = []
   OldCreateOrder = False
   Position = poOwnerFormCenter
-  OnCreate = FormCreate
+  OnShow = FormShow
+  DesignSize = (
+    565
+    379)
   PixelsPerInch = 96
   TextHeight = 16
   object Label1: TLabel
     Left = 232
-    Top = 8
+    Top = 56
     Width = 41
     Height = 16
     Caption = 'Strings'
@@ -158,25 +161,25 @@ object InfoForm: TInfoForm
   end
   object Label12: TLabel
     Left = 400
-    Top = 8
+    Top = 56
     Width = 68
     Height = 16
     Caption = 'Languages'
   end
   object DevStrings: TListBox
     Left = 232
-    Top = 24
+    Top = 72
     Width = 161
-    Height = 345
+    Height = 297
     Anchors = [akLeft, akTop, akRight, akBottom]
     ItemHeight = 16
     TabOrder = 0
   end
   object LangStrings: TListBox
     Left = 400
-    Top = 24
+    Top = 72
     Width = 161
-    Height = 345
+    Height = 297
     Anchors = [akTop, akRight, akBottom]
     ItemHeight = 16
     TabOrder = 1

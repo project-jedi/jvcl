@@ -2,13 +2,13 @@ program SimpleHIDWrite;
 
 uses
   Forms,
-  DevReader in 'DevReader.pas' {Form1},
+  DevReader in 'DevReader.pas' {MainForm},
   Info in 'Info.pas' {InfoForm};
 
 {$R *.RES}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TMainForm, MainForm);
   Application.Run;
 end.
