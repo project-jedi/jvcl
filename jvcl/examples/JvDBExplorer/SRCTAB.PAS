@@ -42,7 +42,8 @@ uses
   Forms, Dialogs, ExtCtrls, Grids, StdCtrls, Mask, JvToolEdit, DB,
   DBTables, DBGrids, JvValidateEdit,
   JvBDEMemTable, JvComponent, JvFormPlacement, 
-  JvEdit, JvBDELists, JvDBControls, JvDBGrid;
+  JvEdit, JvBDELists, JvDBControls, JvDBGrid, JvExDBGrids, JvExMask,
+  JvExStdCtrls;
 
 type
   TSrcTableDlg = class(TForm)

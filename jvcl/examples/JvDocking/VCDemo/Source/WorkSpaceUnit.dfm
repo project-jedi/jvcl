@@ -33,7 +33,6 @@ object WorkSpaceForm: TWorkSpaceForm
     Font.Style = [fsBold]
     Images = WorkSpace_ImageList
     ParentFont = False
-    TabIndex = 0
     TabOrder = 0
     TabPosition = tpBottom
     OnResize = PageControl1Resize
@@ -50,7 +49,7 @@ object WorkSpaceForm: TWorkSpaceForm
         Left = 0
         Top = 0
         Width = 311
-        Height = 213
+        Height = 211
         Align = alClient
         Images = WorkSpace_ImageList
         Indent = 19
@@ -121,7 +120,7 @@ object WorkSpaceForm: TWorkSpaceForm
         Left = 0
         Top = 0
         Width = 311
-        Height = 213
+        Height = 211
         Align = alClient
         Images = WorkSpace_ImageList
         Indent = 19
@@ -158,7 +157,7 @@ object WorkSpaceForm: TWorkSpaceForm
         Left = 0
         Top = 0
         Width = 311
-        Height = 213
+        Height = 211
         Align = alClient
         Images = WorkSpace_ImageList
         Indent = 19

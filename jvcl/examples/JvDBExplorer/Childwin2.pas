@@ -63,7 +63,8 @@ uses WinTypes, WinProcs, Messages, Classes, Graphics, Forms, Controls, DB,
   QuickRpt, QRPrntr, QRExtra, QRPrev, Printers, QRCtrls,
   {$ENDIF USE_QR2}
   JvBDEProgress, JvPicClip, JvBDELists, JvAnimatedImage, JvSpeedButton,
-  JvBDEIndex, JvDBControls, JvDBGrid;
+  JvBDEIndex, JvDBControls, JvDBGrid, JvExControls, JvExStdCtrls,
+  JvExExtCtrls, JvExDBGrids;
 
 type
   TTransOperation = (teStart, teCommit, teRollback);
