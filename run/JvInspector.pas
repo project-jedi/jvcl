@@ -194,8 +194,10 @@ type
   TJvInspAsSet = procedure(Sender: TJvInspectorEventData; var Value; var BufSize: Integer) of object;
   TJvInspSupportsMethodPointers = procedure(Sender: TJvInspectorEventData; var SupportsTMethod: Boolean) of object;
   TJvInspConfSectionEvent = procedure(var SectionName: string; var Parse: Boolean) of object;
+//  TJvInspConfKeyEvent = procedure(const SectionName: string; var ItemName: string; var ATypeInfo: PTypeInfo; var Allow:
+//    Boolean) of object;
   TJvInspConfKeyEvent = procedure(const SectionName: string; var ItemName: string; var ATypeInfo: PTypeInfo; var Allow:
-    Boolean) of object;
+    Boolean; var Flags:TInspectorItemFlags) of object;
 
   EJvInspector = class(EJVCLException);
   EJvInspectorItem = class(EJvInspector);
@@ -206,6 +208,9 @@ type
 
   TOnJvInspectorMouseDown = procedure(Sender: TJvCustomInspector; Item: TJvCustomInspectorItem; Button: TMouseButton;
     Shift: TShiftState; X, Y: Integer) of object;
+
+  TOnJvInspectorItemEdit = procedure (Sender:TJvCustomINspector; Item: TJvCustomInspectorItem;
+     var DisplayStr:String ) of object; // NEW! -WP.
 
   {$IFDEF VCL}
   TJvCustomInspector = class(TJvCustomControl)
@@ -260,6 +265,8 @@ type
     FOnKeyPress: TKeyPressEvent;
     FOnKeyUp: TKeyEvent;
     FOnMouseDown: TOnJvInspectorMouseDown;
+    FOnItemEdit : TOnJvInspectorItemEdit;//NEW!
+    
     FInspectObject: TObject;
     procedure SetInspectObject(const Value: TObject);
     //    FOnMouseDown: TInspectorMouseDownEvent;
@@ -416,6 +423,9 @@ type
     property OnKeyPress: TKeyPressEvent read FOnKeyPress write FOnKeyPress;
     property OnKeyUp: TKeyEvent read FOnKeyUp write FOnKeyUp;
     property OnMouseDown: TOnJvInspectorMouseDown read FOnMouseDown write FOnMouseDown;
+    property OnItemEdit : TOnJvInspectorItemEdit read FOnItemEdit write FOnItemEdit; //NEW!
+
+
   public
     constructor Create(AOwner: TComponent); override;
     procedure BeforeDestruction; override;
@@ -469,6 +479,7 @@ type
     property OnDataValueChanged;
     property OnItemSelected;
     property OnItemValueChanged;
+    property OnItemEdit; // NEW!       
 
     property OnEnter;
     property OnContextPopup;
@@ -646,6 +657,7 @@ type
     FDroppedDown: Boolean;
     FEditCtrl: TCustomEdit;
     {$IFDEF VCL}
+    FEditChanged :Boolean;
     FEditWndPrc: TWndMethod;
     {$ENDIF VCL}
     FEditing: Boolean;
@@ -678,7 +690,11 @@ type
     procedure Deactivate; dynamic;
     procedure DoAfterItemCreate; virtual;
     function DoCompare(const Item: TJvCustomInspectorItem): Integer; virtual;
+
+
     {$IFDEF VCL}
+    procedure OnInternalEditControlExiting(Sender:TObject); //NEW. WP.
+
     procedure DoDrawListItem(Control: TWinControl; Index: Integer; Rect: TRect;
       State: TOwnerDrawState); virtual;
     {$ENDIF VCL}
@@ -694,6 +710,7 @@ type
       var Width: Integer); virtual;
     procedure DoValueChanged; virtual;
     procedure DropDown; dynamic;
+    // Defines what to do when the property editor of this inspector item is invoked.  Ie, '...' button is clicked on items with iifEdit in their flags.
     procedure Edit; virtual;
     procedure EditChange(Sender: TObject); virtual;
     procedure EditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -794,7 +811,7 @@ type
     property IsCompoundColumn: Boolean read GetIsCompoundColumn;
     property LastPaintGeneration: Integer read FLastPaintGen;
     property ListBox: TCustomListBox read GetListBox;
-    property OnGetValueList: TInspectorItemGetValueListEvent read FOnGetValueList write FOnGetValueList;
+    //promoted:property OnGetValueList: TInspectorItemGetValueListEvent read FOnGetValueList write FOnGetValueList;
     property Pressed: Boolean read FPressed write FPressed;
     property Tracking: Boolean read FTracking write FTracking;
   public
@@ -847,6 +864,8 @@ type
     property Visible: Boolean read GetVisible write SetVisible;
     property OnCompare: TInspectorItemSortCompare read FOnCompare write SetOnCompare;
     property OnValueChanged: TNotifyEvent read FOnValueChanged write FOnValueChanged;
+    //WP made public so we can add drop downs (without declaring an ENUM type)
+    property OnGetValueList: TInspectorItemGetValueListEvent read FOnGetValueList write FOnGetValueList;
   end;
 
   TJvInspectorCustomCategoryItem = class(TJvCustomInspectorItem)
@@ -4406,12 +4425,12 @@ var
   TmpRect: TRect;
 begin
   if [iifValueList, iifEditButton] * Item.Flags = [] then
-  begin
+  begin // Value takes up entire edit value rect, there is no edit button:
     Rects[iprEditValue] := Rects[iprValue];
     Rects[iprEditButton] := Rect(0, 0, 0, 0);
   end
   else
-  begin
+  begin // The edit button is on the right of the edit value area:
     TmpRect := Rects[iprValue];
     Dec(TmpRect.Right, Inspector.ItemHeight);
     Rects[iprEditValue] := TmpRect;
@@ -5145,8 +5164,35 @@ begin
   end;
 end;
 
+
 procedure TJvCustomInspectorItem.Edit;
+var
+  displayStr:String;
 begin
+  //
+  // Overload this virtual method to define what happens when item is
+  // Edited. If you don't, then this is the default handler.
+  // To use it, set iifEdit in one of your item's Flags fields,
+  // and then catch the JvInspector.OnItemEdit event.
+  //
+  if Assigned(FInspector) then
+      if Assigned(FInspector.FOnItemEdit) then begin
+             {$IFDEF VCL}
+              if FEditCtrl.Text <> FData.AsString then begin 
+                 FEditChanged := true;
+                 //NEW: make sure latest changes in the EditControl are updated before we invoke the edit button.
+                 // This is VCL-only because right now it looks like a post message is the primary way the Edit button
+                 // notifies the inspector of a new edit value being accepted.
+                 OnInternalEditControlExiting(FInspector);
+                 Application.ProcessMessages; // Ugly, but necessary.
+              end;
+             {$ENDIF}
+            displayStr := FData.AsString;
+            FInspector.FOnItemEdit(FInspector,Self,displayStr);
+            if displayStr <> Self.FData.AsString then begin
+                FData.SetAsString(displayStr); // modified!
+            end;
+      end;
 end;
 
 procedure TJvCustomInspectorItem.EditChange(Sender: TObject);
@@ -5290,8 +5336,13 @@ begin
         end;
       end;
   end;
-  if (Message.Msg = WM_CHAR) and (Message.WParam = 13) then
+  if (Message.Msg = WM_CHAR) and (Message.WParam = 13) then begin
     ExecInherited := False;
+{$ifdef VCL}
+    GetEditCtrl.SelectAll;
+    FEditChanged := true; // sets a flag that a change should be accepted whenever focus shifts away!
+{$endif}
+  end;
   if ExecInherited and (@EditWndPrc <> nil) then
     EditWndPrc(Message);
   case Message.Msg of
@@ -6359,6 +6410,29 @@ begin
     Dec(Result);
 end;
 
+
+// PROTECTED
+//NEW: prevent lost data entry if focus shifts away, and that change of focus causes a refresh of the inspector!
+{$ifdef VCL}
+procedure TJvCustomInspectorItem.OnInternalEditControlExiting(Sender:TObject);
+var
+ Edit:TCustomEdit;
+ Message: TMessage;
+begin
+ Edit := GetEditCtrl;
+ if not Assigned(Edit) then exit;
+ // Write change, if any. This is a first stab:
+ if FEditChanged then begin
+    FEditChanged := false;
+    Message.Msg    := WM_KEYDOWN;
+    Message.LParam := 0;
+    Message.WParam := VK_DOWN;
+    PostMessage(Inspector.Handle, Message.Msg, Message.WParam, Message.LParam);
+    Message.Result := 1;
+ end;
+end;
+{$endif}
+
 procedure TJvCustomInspectorItem.InitEdit;
 var
   Edit: TEdit;
@@ -6381,9 +6455,13 @@ begin
       Memo.WordWrap := True;
       Memo.WantReturns := False;
       Memo.ScrollBars := ssVertical;
+
+      //NEW: prevent lost data entry if focus shifts away, and that change of focus causes a refresh of the inspector!
       {$IFDEF VCL}
-      SetEditCtrl(Memo);
+      Memo.OnExit := OnInternalEditControlExiting; // NEW. VCL only.
+      FEditChanged :=false;
       {$ENDIF VCL}
+      SetEditCtrl(Memo);
     end
     else
     begin
@@ -6396,6 +6474,12 @@ begin
         Edit.OnKeyUp := Inspector.FOnKeyUp;
       if Assigned(Inspector.FOnKeyPress) then
         Edit.OnKeyPress := Inspector.FOnKeyPress;
+{$ifdef VCL}
+      //NEW: prevent lost data entry if focus shifts away, and that change of focus causes a refresh of the inspector!
+      // VCL only, requires PostMessage
+      Edit.OnExit := OnInternalEditControlExiting;
+      FEditChanged :=false;      
+{$endif}
       SetEditCtrl(Edit);
 
     end;
@@ -6470,7 +6554,9 @@ begin
     if not CancelEdits and EditCtrl.Modified and (not Data.IsAssigned or (DisplayValue <> EditCtrl.Text)) then
       DisplayValue := EditCtrl.Text;
     FreeAndNil(FListBox);
+
     SetEditCtrl(nil);
+    FEditChanged := false;
     {$IFDEF VCL}
     FEditWndPrc := nil;
     {$ENDIF VCL}
@@ -10950,14 +11036,16 @@ var
   KeyName: string;
   KeyTypeInfo: PTypeInfo;
   TmpItem: TJvCustomInspectorItem;
+  NewFlags : TInspectorItemFlags;
 
   function AllowAddKey: Boolean;
   begin
     KeyName := SL[I];
     KeyTypeInfo := System.TypeInfo(string);
     Result := True;
+    NewFlags := [iifVisible];    
     if Assigned(AOnAddKey) then
-      AOnAddKey(ASection, KeyName, KeyTypeInfo, Result);
+      AOnAddKey(ASection, KeyName, KeyTypeInfo, Result, NewFlags);
   end;
 
 begin
@@ -10973,6 +11061,7 @@ begin
       begin
         TmpItem := TJvInspectorINIFileData.New(AParent, KeyName, ASection, SL[I], KeyTypeInfo,
           AINIFile);
+        TmpItem.FFlags := NewFlags;
         // XXX Warren's first attempt to make inspector items know their data's names:
         //if (TmpItem.Parent.Name <> ASection) then
         //  TmpItem.Parent.Name := ASection;
