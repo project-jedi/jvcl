@@ -1568,7 +1568,7 @@ begin
     varByte:
       Result := SizeOf(Byte);
     varSmallint:
-      Result := SizeOf(varSmallint);
+      Result := SizeOf(Smallint);
     varDate:
       Result := SizeOf(Double);
     varEmpty:
