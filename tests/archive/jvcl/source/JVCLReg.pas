@@ -93,7 +93,7 @@ uses
   // Forms
   JvFormWallpaper, JvAnimTitle, JvPerforated,
   JvTransparentForm, JvTrayIcon, JvFormAnimatedIcon,
-  JvAppAnimatedIcon, JvFormPlace, JvFormAnimation,
+  JvAppAnimatedIcon, JvFormAnimation,
   JvAutoSizeCompo, JvMagnet, JvGradient,
 
   // Convert
@@ -375,7 +375,7 @@ begin
   // Jv Forms
   RegisterComponents(srJvFormsPalette,
     [TJvFormMagnet, TJvAppAnimatedIcon, TJvFormAnimatedIcon, TJvAnimTitle,
-     TJvTransparentForm, TJvPerforated, TJvFormPlace,
+     TJvTransparentForm, TJvPerforated,
      TJvFormAnimation, TJvAutoSizeCompo]);
 
   // Jv Utils
