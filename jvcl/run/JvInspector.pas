@@ -8848,6 +8848,8 @@ begin
       Move(FItems[I + 1], FITems[I], (Length(FItems) - I) * SizeOf(TJvCustomInspectorItem));
     SetLength(FItems, High(FItems));
   end;
+  if Length(FItems) = 0 then
+    Destroy;
 end;
 
 procedure TJvCustomInspectorData.SetName(const Value: string);
