@@ -1,4 +1,4 @@
-## Locked by Peter Thörnqvist
+## Needs review (peter3)
 ----------------------------------------------------------------------------------------------------
 @@JvErrProvider.pas
 <GROUP JVCL.FileRef>
@@ -11,125 +11,134 @@ Author
 @@TJvErrorBlinkStyle
 <TITLE TJvErrorBlinkStyle type>
 Summary
-  Write here a summary (1 line)
+  The type used for the BlinkStyle property in an error provider component.
 Description
-  Write here a description
+  TJvErrorBlinkStyle defines the allowable values for the BlinkStyle property in TJvErrorProvider. TJvErrorBlinkStyle
+  can have one of the follwing values:
 @@TJvErrorBlinkStyle.ebsAlwaysBlink
-  Description for ebsAlwaysBlink
+  The error icon is always blinked on and off.
 @@TJvErrorBlinkStyle.ebsBlinkIfDifferentError
-  Description for ebsBlinkIfDifferentError
+  The error icon is only blinked if the error message has changed since the previous blink.
 @@TJvErrorBlinkStyle.ebsNeverBlink
-  Description for ebsNeverBlink
+  The error icon is never blinked.
 ----------------------------------------------------------------------------------------------------
 @@TJvErrorControl
 Summary
-  Write here a summary (1 line)
+  A control that can display and optionally blink an image.
 Description
-  Write here a description
+  TJvErrorControl is the class used for the error icons created by an error provider. Do not create instances of
+  TJvErrorControl yourself. TJvErrorControl instances are created and maintained by TJvErrorProvider as needed.
 ----------------------------------------------------------------------------------------------------
 @@TJvErrorControl.BlinkCount
 Summary
-  Write here a summary (1 line)
+  Specifies the number of times the icon should blink.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Read BlinkCount to determine how many times the image is blinked by the control. Change BlinkCount to
+  set the number of times the icon should be blinked. While a blink is in progress, this value is automatically
+  decremented.
+
+  The BlinkCount property is handled by the owning TJVErrorProvider and should not normally be altered unless
+  you are writing your own error provider.
 ----------------------------------------------------------------------------------------------------
 @@TJvErrorControl.CalcBoundsRect
 Summary
-  Write here a summary (1 line)
+  Calculates the size and location of the control.
 Description
-  Write here a description
+  CalcBoundsRect calculates the suggested size and location of the control.
+  The calculation is based on the size and location of the associated <LINK Control, Control>,
+  the size of the image used for the error icon as well as the value of the ImageAligment property.
 Return value
-  Describe here what the function returns
+  A TRect that defines the size and location where the control should be located. Note that this does not imply
+  that the returned location is where the control is actually located. The returned values are in client rect and is directly
+  assignment compatible with the <LINK TControl.BoundsRect, BoundsRect> property.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <LINK TControl.BoundsRect, BoundsRect>, Control, ImageIndex, ImageAlignment, Imagelist
 ----------------------------------------------------------------------------------------------------
 @@TJvErrorControl.Control
 Summary
-  Write here a summary (1 line)
+  Specifies the control this error icon is acting on.
 Description
-  Write here a description
+  Read Control to determine what control this error icon is acting upon. Change Control to make
+  the error icon act on another control. The size and location of the error icon is automatically
+  adjusted depending on the location of Control, the value of ImageAlignment as well as the size
+  of the image(s) in the Imagelist.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Control, ImageAlignment, Imagelist
 ----------------------------------------------------------------------------------------------------
 @@TJvErrorControl.DrawImage
 Summary
-  Write here a summary (1 line)
+  Method that draws the error icon.
 Description
-  Write here a description
+  DrawImage is called by the error rpovider to draw the error icon as appropriate. Override this method
+  in descendant classes to draw the icon differently.
+  the error
 Parameters
-  Erase - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Erase - set to false if the icon should be visible, false otherwise
 ----------------------------------------------------------------------------------------------------
 @@TJvErrorControl.Error
 Summary
-  Write here a summary (1 line)
+  Specifies the error message to display.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use Error to set the message to display in the control. The error is displayed in a hint window
+  when the user moves the mouse over the icon. Normally, Error is set by the error provider that
+  created the control.
 ----------------------------------------------------------------------------------------------------
 @@TJvErrorControl.ImageAlignment
 Summary
-  Write here a summary (1 line)
+  Specifies where the error icon should be located.
 Description
-  Write here a description
+  Read ImageAlignment to determine where the error icon is located on the form. The value of
+  ImageAlignment is relative to the Control it is assoicated with. Change ImageAlignment to
+  move the error icon to another location.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Control
 ----------------------------------------------------------------------------------------------------
 @@TJvErrorControl.ImageIndex
 Summary
-  Write here a summary (1 line)
+  Specifies the image to display in the control.
 Description
-  Write here a description
+  ImageIndex is the index of the image in Imagelist to display on the control. Set ImageIndex to -1 to
+  not show any icon. Normally, this property is maintained by the error provider that created the control.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Imagelist
 ----------------------------------------------------------------------------------------------------
 @@TJvErrorControl.Imagelist
 Summary
-  Write here a summary (1 line)
+  Specifies the image list used to display images in the control.
 Description
-  Write here a description
+  Use Imagelist to specify where the control retrieves it's icons. In combination with ImageIndex
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ImageIndex
 ----------------------------------------------------------------------------------------------------
 @@TJvErrorControl.ImagePadding
 Summary
-  Write here a summary (1 line)
+  Specifies the padding around the images.
 Description
-  Write here a description
+  Use ImagePadding to make minor adjustments to the location of the image within the control. If ImagePadding
+  is 0 or less, the image is centered within the control. The ImagePadding value is expressed in pixels.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ImageAlignment
 ----------------------------------------------------------------------------------------------------
 @@TJvErrorImageAlignment
 <TITLE TJvErrorImageAlignment type>
 Summary
-  Write here a summary (1 line)
+  Controls where an error icon is displayed.
 Description
-  Write here a description
+  TJvErrorImageAlignment is the type used by the ImageAlignment porperty of error providers and
+  indicates where an error image should be placed in relation to the control it is assoicated with.
+  Possible values for this type are:
 @@TJvErrorImageAlignment.eiaBottomLeft
-  Description for eiaBottomLeft
+  display the error image on the controls left side aligned to the bottom edge of the control
 @@TJvErrorImageAlignment.eiaBottomRight
-  Description for eiaBottomRight
+  display the error image on the controls right side aligned to the bottom edge of the control
 @@TJvErrorImageAlignment.eiaMiddleLeft
-  Description for eiaMiddleLeft
+  display the error image on the controls left side aligned to the middle of the control
 @@TJvErrorImageAlignment.eiaMiddleRight
-  Description for eiaMiddleRight
+  display the error image on the controls right side aligned to the middle of the control
 @@TJvErrorImageAlignment.eiaTopLeft
-  Description for eiaTopLeft
+  display the error image on the controlsleft side aligned to the top edge of the control
 @@TJvErrorImageAlignment.eiaTopRight
-  Description for eiaTopRight
+  display the error image on the controls right side aligned to the top edge of the control
 ----------------------------------------------------------------------------------------------------
 @@TJvErrorProvider
 <TITLEIMG TJvErrorProvider>
@@ -137,114 +146,128 @@ JVCLInfo
   GROUP=JVCL.??
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  Provides a user interface for indicating that a control on a form has an error associated with it.
 Description
-  Write here a description
+  Use an error provider when you need to notify the user about an erroneous input value in a non-intrusive
+  way. The error provider uses the real estate of the form or dialog to display icons next to each control that
+  has been determined to have an error. The icons Hint is also assigned the specific error message so when the user
+  moves the mouse over the icon, the reasn for the error is displayed.
+
+  Although mainly used to display erroneous user input, this component can be used whenever you want to draw
+  the users attention to a specific control or set of controls without having to show a dialog or similar.
 ----------------------------------------------------------------------------------------------------
 @@TJvErrorProvider.BeginUpdate
 Summary
-  Write here a summary (1 line)
+  Suspends screen repainting.
 Description
-  Write here a description
+  The BeginUpdate method suspends screen repainting until the EndUpdate method is called. Use BeginUpdate to speed processing and avoid flicker while
+  errors are added to or deleted from the component.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  EndUpdate
 ----------------------------------------------------------------------------------------------------
 @@TJvErrorProvider.BlinkRate
 Summary
-  Write here a summary (1 line)
+  The rate at which the error image should flash.
 Description
-  Write here a description
+  Use BlinkRate to specify at what rate the error icons blink. The rate is expressed in milliseconds and the
+  default is 250 milliseconds. A value of zero sets BlinkStyle to ebsNeverBlink. If BlinkStyle is ebsNeverBlink,
+  this property have no effect.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  BlinkStyle
 ----------------------------------------------------------------------------------------------------
 @@TJvErrorProvider.BlinkStyle
 Summary
-  Write here a summary (1 line)
+  Specifies how blinking is performed.
 Description
-  Write here a description
+  Use BlinkStyle to specify how the error icons are blinked. For more information on the possible values of BlinkStyle,
+  see the help topic on <LINK TJvErrorBlinkStyle, TJvErrorBlinkStyle>.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvErrorBlinkStyle
 ----------------------------------------------------------------------------------------------------
 @@TJvErrorProvider.ClearErrors
 Summary
-  Write here a summary (1 line)
+  Removes all error icons.
 Description
-  Write here a description
+  Call ClearErrors to remove all error icons handled by this component with one call. After a call to ClearErrors,
+  the internal error image list is emptied.  Calling ClearErrors is the same as setting Error[nil] := '' but
+  is slightly faster.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Error
 ----------------------------------------------------------------------------------------------------
 @@TJvErrorProvider.Controls
 Summary
-  Write here a summary (1 line)
+Provides indexed access to the internal, protected list of TJvErrorControl instances.
 Description
-  Write here a description
+  Use Controls to get direct access to the TJvErrorControls that are maintained by the component.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Count, TJvErrorControl
 ----------------------------------------------------------------------------------------------------
 @@TJvErrorProvider.Count
 Summary
-  Write here a summary (1 line)
+  Returns the number of controls in Controls.
 Description
-  Write here a description
+  Read Count to determine the number of TJvErrorControl objects in the Controls array.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Controls
 ----------------------------------------------------------------------------------------------------
 @@TJvErrorProvider.EndUpdate
 Summary
-  Write here a summary (1 line)
+  Re-enables screen repainting
 Description
-  Write here a description
+  Use EndUpdate to re-enable screen repainting that was turned off with the BeginUpdate method.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  BeginUpdate
 ----------------------------------------------------------------------------------------------------
 @@TJvErrorProvider.Error
 Summary
-  Write here a summary (1 line)
+  Provides indexed access to each controls error messages.
 Description
-  Write here a description
+ Use Error along with the AControl parameter to access the error message associated with a control. Setting the error message to an empty string removes the error image
+ (this is the only way to remove an error image for a single control).
+ <AUTOLINK OFF>
+ Use <CODE>Error[nil] := 'SomeValue';</CODE>to assign the error message 'SomeValue' to all controls. Using
+ <CODE>Error[nil] := '';</CODE> is equivalent to calling ClearErrors but ClearErrors is faster. <AUTOLINK ON>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Controls
 ----------------------------------------------------------------------------------------------------
 @@TJvErrorProvider.ImageAlignment
 Summary
-  Write here a summary (1 line)
+  Specifies where the error icon should be located.
 Description
-  Write here a description
+  Use ImageAlignment along with ACotnrol parameter to specify where the error icon should be located relative to AControl.
+  If AControl is nil, ImageAlignment is set for all controls.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ImageIndex, Error
 ----------------------------------------------------------------------------------------------------
 @@TJvErrorProvider.ImageIndex
 Summary
-  Write here a summary (1 line)
+  Soecifies the image to display.
 Description
-  Write here a description
+  Use ImageIndex along with the AControl parameter to set the image to display for ACotnrol. If AControl is nil,
+  the ImageIndex is set for all controls.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Error, ImageAlignment
 ----------------------------------------------------------------------------------------------------
-@@TJvErrorProvider.ImageList
+@@TJvErrorProvider.Imagelist
 Summary
-  Write here a summary (1 line)
+  Lists the images that can appear on the error icons.
 Description
-  Write here a description
+  Images contains a list of images that can appear on the error controls. Each error controls's
+  ImageIndex property determines the specific image displayed on it.
+  If Images is unassigned, no images are displayed on the error controls.
+
+  Images in the list can be of any size, the error control will automatically adjust it's size
+  and position. To accommodate every system on which your application runs, it is recommended
+  that you do not use 256 colors or higher.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ImageIndex, TJvErrorControl.ImageIndex, TJvErrorControl.Imagelist
 ----------------------------------------------------------------------------------------------------
 @@TJvErrorProvider.ImagePadding
 Summary
-  Write here a summary (1 line)
+  Specifies the padding around the images.
 Description
-  Write here a description
+  Use ImagePadding along with AControl to make minor adjustments to the location of the image within the
+  control. If AControl is nil, ImagePadding affects all controls. If ImagePadding
+  is 0 or less, the image is centered within the control. 
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ImageAlignment

@@ -1,16 +1,16 @@
-## Locked by Peter Thörnqvist
+## Needs review (peter3)
 ----------------------------------------------------------------------------------------------------
 @@JvPageListTreeView.pas
 <GROUP JVCL.FileRef>
 Summary
-  Contains the IPageList interface and the TJvPageListTreeView, TJvPageList and TJvSettingsTreeView components.
+  Contains the IPageList interface as well as the TJvPageListTreeView, TJvPageList and TJvSettingsTreeView components.
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Peter Thörnqvist
 ----------------------------------------------------------------------------------------------------
 @@EPageListError
 Summary
-  EPageListError is the exception class used by the components in JvPageListTreeView.
+  EPageListError is the exception class used by page list components.
 Description
   EPageListError is raised by the components TJvPageListTreeView, TJvPageList and the TJvSettingsTreeView 
   when an error occurs, f ex when you try to assign a component to the PageList property of the TJvPageListTreeview
@@ -26,7 +26,7 @@ Description
   with the TJvSettingsTreeview and TJvPageListTreeView controls.
 
   The methods of IPageList is called by the IPageList consumer (any component that have an writeable
-  IPageList property). F ex, TJvPageListTreeView calls the methods of the IPageList assigned to its
+  IPageList property). F ex, TJvPageListTreeView calls the methods of the IPageList assigned to it's
   PageList property when the selected node is changed.
 ----------------------------------------------------------------------------------------------------
 @@IPageList.CanChange@integer
@@ -94,7 +94,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPage.Left
 Summary
-  Specifies the horizontal coordinate of the left edge of the page relative to its parent.
+  Specifies the horizontal coordinate of the left edge of the page relative to it's parent.
 Description
   Use the Left property to determine where the left side of the page begins or to reposition the left side of the page.
   Pages are ordinarily client aligned to the parent page list control and changing the Left property has no effect. In page
@@ -198,10 +198,10 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPage.Top
 Summary
-  Specifies the Y coordinate of the top left corner of a page, relative to its parent or containing control in pixels.
+  Specifies the Y coordinate of the top left corner of a page, relative to it's parent or containing control in pixels.
 Description
   Use Top to locate the top of the control or reposition the page to a different Y coordinate.
-  The Top property, like the Left property, is the position of the page relative to its container.
+  The Top property, like the Left property, is the position of the page relative to it's container.
   Thus, if a control is contained in a TPanel, the Left and Top properties are relative to the panel.
 Note
   If the page is client aligned (the default), changing the Top property will have no effect.
@@ -214,7 +214,7 @@ Summary
 Description
   Use the Width property to read or change the width of the control.
 Note
-  If the page is client aligned (the default), changing its width will have no effect.
+  If the page is client aligned (the default), changing it's width will have no effect.
 See Also
   Top, Left, Height
 ----------------------------------------------------------------------------------------------------
@@ -231,7 +231,7 @@ Summary
 Description
   Use TJvCustomPageList as a base class when defining a control that should contain a series of pages where
   only one page is visible at a time. A page list is very similar to a <LINK TPageControl,TPageControl>
-  but its pages does not have any tabs.
+  but it's pages does not have any tabs.
 
   Do not create instances of TJvCustomPageList. To put a page list on a form,
   use a descendant of TJvCustomPageList, such as <LINK TJvPageList,TJvPageList>.
@@ -270,7 +270,7 @@ See Also
 Summary
   Returns the page in the page list control before or after a specified page.
 Description
-  Call FindNextPage to locate a page in the page list control by its position relative to the
+  Call FindNextPage to locate a page in the page list control by it's position relative to the
   page specified by the CurPage parameter. If the GoForward parameter is true, FindNextPage returns
   the next page in the page list control after CurPage. If GoForward is false, FindNextPage returns the previous page.
 
@@ -403,10 +403,10 @@ Description
   where an Index of 0 specifies the first page, an Index of 1 specifies the second page, and so on.
   Each page is a TJvCustomPage or descendant object.
 
-  To locate a page in the page list by its position relative to another page, use the FindNextPage method.
+  To locate a page in the page list by it's position relative to another page, use the FindNextPage method.
 Note
   Pages is a read-only property. To add a page to a page control at design time, right click and select "New Page".
-  To add a page to a page list control at runtime, create the page and set its PageList property to the page list control.
+  To add a page to a page list control at runtime, create the page and set it's PageList property to the page list control.
   To delete a page at design time, right click and selected "Delete". To delete a page at runtime, set it's PageList
   property to nil and then destroy it by calling it's Free method.
 See Also
@@ -640,9 +640,9 @@ Description
 Summary
   Copies the properties of another node.
 Description
-  It the Source parameter is a TJvPageIndexNode object, Assign copies its
+  It the Source parameter is a TJvPageIndexNode object, Assign copies it's
   properties to this node. Otherwise, Assign calls the inherited method so
-  that any object that copies properties to a TJvPageIndexNode in its AssignTo method can do so.
+  that any object that copies properties to a TJvPageIndexNode in it's AssignTo method can do so.
 Parameters
   Source - The object to copy
 See Also
@@ -719,36 +719,36 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvSettingsTreeImages.CollapsedIndex
 Summary
-  Specifies which image is displayed when a node with children is in its collapsed state.
+  Specifies which image is displayed when a node with children is in it's collapsed state.
 Description
-  Use the CollapsedIndex property with the Images property of the tree view to specify the image for the node in its collapsed state.
+  Use the CollapsedIndex property with the Images property of the tree view to specify the image for the node in it's collapsed state.
   If the node doesn't have any children, use the ImageIndex and SelectedIndex properties instead.
 See Also
   ExpandedIndex, ImageIndex, SelectedIndex
 ----------------------------------------------------------------------------------------------------
 @@TJvSettingsTreeImages.ExpandedIndex
 Summary
-  Specifies which image is displayed when a node with children is in its expanded state.
+  Specifies which image is displayed when a node with children is in it's expanded state.
 Description
-  Use the ExpandedIndex property with the Images property of the tree view to specify the image for the node in its expanded state.
-  If the node doesn't have any children, use the ImageIndex and SelectedIndex properties instead.
+  Use the ExpandedIndex property with the Images property of the tree view to specify the image for the node in it's
+  expanded state. If the node doesn't have any children, use the ImageIndex and SelectedIndex properties instead.
 See Also
   CollapsedIndex, ImageIndex, SelectedIndex
 ----------------------------------------------------------------------------------------------------
 @@TJvSettingsTreeImages.ImageIndex
 Summary
-  Specifies which image is displayed when a node is in its normal state and is not currently selected.
+  Specifies which image is displayed when a node is in it's normal state and is not currently selected.
 Description
-  Use the ImageIndex property with the Images property of the tree view to specify the image for the node in its normal state.
+  Use the ImageIndex property with the Images property of the tree view to specify the image for the node in it's normal state.
   If the node has childrens, use the ExpandedIndex and CollapsedIndex properties instead.
 See Also
   CollapsedIndex, ExpandedIndex, SelectedIndex
 ----------------------------------------------------------------------------------------------------
 @@TJvSettingsTreeImages.SelectedIndex
 Summary
-  Specifies which image is displayed when a node is selected.
+  Specifies which image is displayed when a node is in it's selected state.
 Description
-  Use the SelectedIndex property with the Images property of the tree view to specify the image for the node in its selected state.
+  Use the SelectedIndex property with the Images property of the tree view to specify the image for the node in it's selected state.
   If the node has childrens, use the ExpandedIndex and CollapsedIndex properties instead.
 See Also
   CollapsedIndex, ExpandedIndex, ImageIndex
@@ -800,7 +800,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvStandardPage
 Summary
-  TJvStandardPage is the class for pages in a TJvPageList component.
+  Class that represents a page in a page list control.
 Description
   TJvStandardPage derives from TJvCustomPage and publishes it's properties but does not
   add any new functionality.
