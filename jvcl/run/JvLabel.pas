@@ -85,7 +85,6 @@ type
     FChangeLink: TChangeLink;
     FHotTrack: Boolean;
     FHotTrackFont: TFont;
-    FFontSave: TFont;
     FAutoOpenURL: Boolean;
     FURL: string;
     FAngle: TJvLabelRotateAngle;
@@ -126,6 +125,7 @@ type
     procedure SetFrameColor(const Value: TColor);
     procedure SetRoundedFrame(const Value: Integer);
     function GetMargin: Integer;
+    procedure HotFontChanged(Sender: TObject);
   protected
     procedure DoDrawCaption(var Rect: TRect; Flags: Integer);virtual;
     procedure DoProviderDraw(var Rect: TRect; Flags: Integer);virtual;
@@ -172,7 +172,7 @@ type
     procedure ConsumerServiceChanged(Sender: TJvDataConsumer; Reason: TJvDataConsumerChangeReason);
     procedure NonProviderChange;
     property Angle: TJvLabelRotateAngle read FAngle write SetAngle default 0;
-    property AutoOpenURL: Boolean read FAutoOpenURL write FAutoOpenURL;
+    property AutoOpenURL: Boolean read FAutoOpenURL write FAutoOpenURL default True;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
     property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont;
     property HotTrackFontOptions: TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions default DefaultTrackFontOptions;
@@ -353,7 +353,7 @@ begin
   FHotTrack := False;
   // (rom) needs better font handling
   FHotTrackFont := TFont.Create;
-  FFontSave := TFont.Create;
+  FHotTrackFont.OnChange := HotFontChanged;
   Width := 65;
   Height := 17;
   FAutoSize := True;
@@ -363,13 +363,13 @@ begin
   FShadowSize := 0;
   FShadowPos := spRightBottom;
   FHotTrackFontOptions := DefaultTrackFontOptions;
+  FAutoOpenURL := True;
 end;
 
 destructor TJvCustomLabel.Destroy;
 begin
   FChangeLink.Free;
   FHotTrackFont.Free;
-  FFontSave.Free;
   FreeAndNil(FConsumerSvc);
   inherited Destroy;
 end;
@@ -418,7 +418,10 @@ begin
       Supports(TmpItem, IJvDataItemRenderer, ItemRenderer)) then
     begin
       Canvas.Brush.Color := Color;
-      Canvas.Font := Font;
+      if MouseOver then
+        Canvas.Font := HotTrackFont
+      else
+        Canvas.Font := Font;
       if (Flags and DT_CALCRECT <> 0) then
       begin
         if ItemsRenderer <> nil then
@@ -462,8 +465,13 @@ begin
     Flags := Flags or DT_NOPREFIX;
   Flags := Flags or EllipsisFlags[TextEllipsis];
   Flags := DrawTextBiDiModeFlags(Flags);
-  Canvas.Font := Font;
-  Canvas.Font.Color := GetDefaultFontColor;
+  if MouseOver then
+    Canvas.Font := HotTrackFont
+  else
+  begin
+    Canvas.Font := Font;
+    Canvas.Font.Color := GetDefaultFontColor;
+  end;
   PosShadow := FShadowPos;
   SizeShadow := FShadowSize;
   ColorShadow := FShadowColor;
@@ -540,7 +548,10 @@ begin
   if CalcRect and ((Text[0] = #0) or ShowAccelChar and
     (Text[0] = '&') and (Text[1] = #0)) then
     StrCopy(Text, ' ');
-  Canvas.Font := Font;
+  if MouseOver then
+    Canvas.Font := HotTrackFont
+  else
+    Canvas.Font := Font;
   if GetObject(Font.Handle, SizeOf(TLogFont), @LogFont) = 0 then
     RaiseLastOSError;
   NewLogFont := LogFont;
@@ -866,6 +877,12 @@ begin
   FNeedsResize := False;
 end;
 
+procedure TJvCustomLabel.HotFontChanged(Sender: TObject);
+begin
+  if MouseOver then
+    Invalidate;
+end;
+
 procedure TJvCustomLabel.SetAlignment(Value: TAlignment);
 begin
   if FAlignment <> Value then
@@ -1106,27 +1123,16 @@ end;
 
 procedure TJvCustomLabel.MouseEnter(Control: TControl);
 begin
-  if csDesigning in ComponentState then
-    Exit;
-  if not MouseOver and Enabled and IsForegroundTask then
-  begin
-    if HotTrack then
-    begin
-      FFontSave.Assign(Font);
-      Font.Assign(FHotTrackFont);
-    end;
-    inherited MouseEnter(Control);
-  end;
+  inherited MouseEnter(Control);
+  if MouseOver and Enabled and IsForegroundTask and HotTrack then
+    FontChanged;
 end;
 
 procedure TJvCustomLabel.MouseLeave(Control: TControl);
 begin
-  if MouseOver then
-  begin
-    if HotTrack then
-      Font.Assign(FFontSave);
-    inherited MouseLeave(Control);
-  end;
+  if MouseOver and HotTrack then
+    FontChanged;
+  inherited MouseLeave(Control);
 end;
 
 procedure TJvCustomLabel.SetImageIndex(Value: TImageIndex);
