@@ -314,12 +314,7 @@ end;
 procedure TJvCustomMaskEdit.NotifyIfChanged;
 begin
   if FLastNotifiedText <> Text then
-  begin
-    { (ahuser) same code as in Change()
-    FLastNotifiedText := Text;
-    inherited Change;}
     Change;
-  end;
 end;
 
 procedure TJvCustomMaskEdit.SetCaret(const Value: TJvCaret);

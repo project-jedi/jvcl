@@ -14,7 +14,8 @@ The Initial Developer of the Original Code is Oliver Giesen [giesen att lucatec 
 Portions created by Oliver Giesen are Copyright (C) 2002 Lucatec GmbH.
 All Rights Reserved.
 
-Contributor(s): ______________________________________.
+Contributor(s):
+  Andreas Hausladen
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -93,7 +94,6 @@ var
 begin
   {determines whether a window is the child (or grand^x-child) of another}
   LParent := AChild;
-  // (rom) changed to while loop
   if LParent = AParent then
     Result := False // (ahuser) a parent is no child of itself
   else
@@ -163,13 +163,26 @@ var
 begin
   inherited DoShow;
   {$IFDEF VCL}
-  if not SystemParametersInfo(SPI_GETWORKAREA, 0, @LScreenRect, 0) then
-  {$ENDIF VCL}
-    LScreenRect := Rect(0, 0, Screen.Width, Screen.Height);
-  if (Left + Width > LScreenRect.Right) then
-    Left := LScreenRect.Right - Width;
-  if (Top + Height > LScreenRect.Bottom) then
-    Top := Self.Edit.ClientOrigin.Y - Height;
+  if Screen.MonitorCount > 0 then
+  begin
+    LScreenRect := Monitor.WorkareaRect;
+    if (Left + Width > LScreenRect.Right) then
+      Left := LScreenRect.Right - Width;
+    if (Top + Height > LScreenRect.Bottom) then
+      Top := Self.Edit.ClientOrigin.Y - Height;
+  end
+  else
+  {$ENDIF}
+  begin
+    {$IFDEF VCL}
+    if not SystemParametersInfo(SPI_GETWORKAREA, 0, @LScreenRect, 0) then
+    {$ENDIF VCL}
+      LScreenRect := Rect(0, 0, Screen.Width, Screen.Height);
+    if (Left + Width > LScreenRect.Right) then
+      Left := LScreenRect.Right - Width;
+    if (Top + Height > LScreenRect.Bottom) then
+      Top := Self.Edit.ClientOrigin.Y - Height;
+  end;
 end;
 
 function TJvCustomDropDownForm.GetEdit: TCustomEdit;
