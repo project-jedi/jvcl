@@ -32,8 +32,8 @@ implementation
 
 const
   clOrange = $0000A0FF;
-  clOrangeOff = $00004264;
-  clLimeOff = $00006400;
+  clOrangeOff = $0000415A;
+  clLimeOff = $00004F00;
   clRedOff = $00000064;
 
 procedure TForm4.FormCreate(Sender: TObject);
@@ -78,7 +78,7 @@ begin
     Color := clBlack;
     ColorOn := clLime;
     ColorOff := clLimeOff;
-    Top := FLEDDisplay16.Top + FLEDDisplay16.Height;// + 16;
+    Top := FLEDDisplay16.Top + FLEDDisplay16.Height;
     Parent := Self;
     DisplayString('ABCDEFGHIJKLMNOP', True);
   end;
@@ -93,7 +93,7 @@ begin
     Color := clBlack;
     ColorOn := clLime;
     ColorOff := clLimeOff;
-    Top := FLEDDisplay16_2.Top + FLEDDisplay16_2.Height;// + 16;
+    Top := FLEDDisplay16_2.Top + FLEDDisplay16_2.Height;
     Parent := Self;
     DisplayString('QRSTUVWXYZ +-()*', True);
   end;
@@ -111,6 +111,7 @@ begin
     Top := FLEDDisplay16_3.Top + FLEDDisplay16_3.Height + 8;
     Parent := Self;
     DisplayString(' JEDI-VCL ', True);
+    SlantAngle := 10;
     JVCLOn := True;
   end;
 end;
