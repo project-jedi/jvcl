@@ -617,7 +617,7 @@ begin
   begin
     SendCancelMode(FListBox);
     PopupMenu.PopupComponent := FListBox;
-    if InvalidPoint(MousePos) then
+    if (MousePos.X = -1) and (MousePos.Y = -1) then // ahuser: InvalidPoint is not supported by Delphi 5
     begin
       with FListBox do
         if ItemIndex >= 0 then
