@@ -108,6 +108,7 @@ type
     property Height default 28;
     property OnClick;
     property OnMouseDown;
+    property OnMouseUp;
     property OnMouseMove;
   end;
 
@@ -373,24 +374,24 @@ begin
   IWidth := 0;
   for I := 1 to Length(Str) do
     if Str[I] <> ',' then
-      Inc(IWidth, FDSize.X + InterSpace)
+      Inc(IWidth, FDSize.X + Interspace)
     else
-      Inc(IWidth, InterSpace);
-  Inc(IWidth, InterSpace);
+      Inc(IWidth, Interspace);
+  Inc(IWidth, Interspace);
 
   if (FInsertSpecialSymbolAt > 0) and (FInsertSpecialSymbolAt <= Length(Str)) then
     if FSpecialSymbol = ssyColon then
-      Inc(IWidth, InterSpace * 3)
+      Inc(IWidth, Interspace * 3)
     else
-      Inc(IWidth, FDSize.X + InterSpace);
+      Inc(IWidth, FDSize.X + Interspace);
   //else Inc( IWidth ,6 );
   case Alignment of
     taLeftJustify:
-      XPos := InterSpace;
+      XPos := Interspace;
     taCenter:
-      XPos := (ClientR.Right - ClientR.Left - IWidth) div 2 + InterSpace;
+      XPos := (ClientR.Right - ClientR.Left - IWidth) div 2 + Interspace;
   else //taRightJustify
-    XPos := ClientR.Right - ClientR.Left - IWidth + InterSpace;
+    XPos := ClientR.Right - ClientR.Left - IWidth + Interspace;
   end;
   YPos := (Height - FDSize.Y) div 2;
   I := Pos(',', Str);

@@ -47,7 +47,7 @@ const
   DEF_BUTTON_HIGHLIGHT_COLOR = $00FFCFCF; // RGB(207,207,255)
 
 type
-  TJvButtonWidthType = (btwPixels, btwPercentage);
+  TJvButtonWidthKind = (btwPixels, btwPercentage);
   TJvButtonStyle = (bsNetscape, bsWindows);
   TJvWindowsButton = (wbMin, wbMax, wbClose);
   TJvWindowsButtons = set of TJvWindowsButton;
@@ -56,7 +56,7 @@ type
   private
     FBusy: Boolean;
     FShowButton: Boolean;
-    FButtonWidthType: TJvButtonWidthType;
+    FButtonWidthKind: TJvButtonWidthKind;
     FButtonWidth: Integer;
     FOnMaximize: TNotifyEvent;
     FOnMinimize: TNotifyEvent;
@@ -83,7 +83,7 @@ type
     FOnClose: TNotifyEvent;
     FButtonCursor: TCursor;
     procedure SetShowButton(const Value: Boolean);
-    procedure SetButtonWidthType(const Value: TJvButtonWidthType);
+    procedure SetButtonWidthKind(const Value: TJvButtonWidthKind);
     procedure SetButtonWidth(const Value: Integer);
     function GetButtonRect: TRect;
     procedure SetMaximized(const Value: Boolean);
@@ -145,7 +145,7 @@ type
     property ButtonStyle: TJvButtonStyle read FButtonStyle write SetButtonStyle default bsNetscape;
     property WindowsButtons: TJvWindowsButtons read FWindowsButtons write SetWindowsButtons
       default [wbMin, wbMax, wbClose];
-    property ButtonWidthType: TJvButtonWidthType read FButtonWidthType write SetButtonWidthType
+    property ButtonWidthKind: TJvButtonWidthKind read FButtonWidthKind write SetButtonWidthKind
       default btwPixels;
     property ButtonWidth: Integer read FButtonWidth write SetButtonWidth default 100;
     property ShowButton: Boolean read FShowButton write SetShowButton default True;
@@ -177,7 +177,7 @@ type
     property ButtonCursor;
     property ButtonStyle;
     property WindowsButtons;
-    property ButtonWidthType;
+    property ButtonWidthKind;
     property ButtonWidth;
     property ShowButton;
     property ButtonColor;
@@ -220,7 +220,7 @@ begin
   FAllowDrag := True;
   FButtonStyle := bsNetscape;
   FWindowsButtons := [wbMin, wbMax, wbClose];
-  FButtonWidthType := btwPixels;
+  FButtonWidthKind := btwPixels;
   FButtonWidth := 100;
   FShowButton := True;
   SetRectEmpty(FLastKnownButtonRect);
@@ -568,7 +568,7 @@ begin
   else
   begin
     // Calc the rectangle the button goes in
-    if ButtonWidthType = btwPercentage then
+    if ButtonWidthKind = btwPercentage then
     begin
       if Align in [alLeft, alRight] then
         BW := ClientRect.Bottom - ClientRect.Top
@@ -947,7 +947,7 @@ begin
   if Value <> FButtonWidth then
   begin
     FButtonWidth := Value;
-    if (FButtonWidthType = btwPercentage) and (FButtonWidth > 100) then
+    if (ButtonWidthKind = btwPercentage) and (FButtonWidth > 100) then
       FButtonWidth := 100;
     if FButtonWidth < 0 then
       FButtonWidth := 0;
@@ -956,12 +956,12 @@ begin
   end;
 end;
 
-procedure TJvCustomNetscapeSplitter.SetButtonWidthType(const Value: TJvButtonWidthType);
+procedure TJvCustomNetscapeSplitter.SetButtonWidthKind(const Value: TJvButtonWidthKind);
 begin
-  if Value <> FButtonWidthType then
+  if Value <> FButtonWidthKind then
   begin
-    FButtonWidthType := Value;
-    if (FButtonWidthType = btwPercentage) and (FButtonWidth > 100) then
+    FButtonWidthKind := Value;
+    if (FButtonWidthKind = btwPercentage) and (ButtonWidth > 100) then
       FButtonWidth := 100;
     if (ButtonStyle = bsNetscape) and ShowButton then
       Invalidate;

@@ -6017,6 +6017,7 @@ var
   {$ENDIF VisualCLX}
 begin
   // (p3) has this even been tested? Returns the exact same thing as Canvas.TextHeight(' ')
+  // (rom) to centralize various different calls to be on the safe side 
   {$IFDEF VCL}
   SetLength(S, 255);
   for I := 1 to 255 do

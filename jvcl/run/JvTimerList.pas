@@ -39,6 +39,7 @@ Contributor(s):
     in Notepad (assuming you have saved it as text, which you should), load the
     project into Delphi, ignore all warnings and then copy and paste from notepad
     to the Collection Editor for the Events property.
+
 Known Issues:
 
 -----------------------------------------------------------------------------}
@@ -50,8 +51,7 @@ unit JvTimerList;
 interface
 
 uses
-  Windows,
-  Messages, Classes;
+  Windows, Messages, Classes;
 
 const
   DefaultInterval = 1000;
@@ -72,6 +72,7 @@ type
     FStartInterval: Longint;
     FSequence: Longint;
     FParent: TJvTimerList;
+    function GetEnabledCount: Integer;
     function GetItem(Index: Integer): TJvTimerEvent;
     procedure SetItem(Index: Integer; const Value: TJvTimerEvent);
   protected
@@ -83,15 +84,13 @@ type
   public
     constructor Create(AOwner: TPersistent);
     procedure Activate;
+    function Add: TJvTimerEvent;
     procedure Deactivate;
     procedure DeleteByHandle(AHandle: THandle); virtual;
     function ItemByHandle(AHandle: THandle): TJvTimerEvent;
     function ItemIndexByHandle(AHandle: THandle): Integer;
     function NextHandle: THandle;
-    function GetEnabledCount: Integer;
     procedure Sort;
-
-    function Add: TJvTimerEvent;
     procedure Assign(Source: TPersistent); override;
     property Items[Index: Integer]: TJvTimerEvent read GetItem write SetItem; default;
     property EnabledCount: Integer read GetEnabledCount;
@@ -99,6 +98,7 @@ type
 
   TJvTimerEvent = class(TCollectionItem)
   private
+    FOwner: TComponent;
     FCycled: Boolean;
     FEnabled: Boolean;
     FExecCount: Integer;
@@ -114,12 +114,12 @@ type
     procedure SetEnabled(Value: Boolean);
     procedure SetInterval(Value: Longint);
   public
+    constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
     property AsSeconds: Cardinal read GetAsSeconds write SetAsSeconds;
     property Handle: THandle read FHandle;
     property ExecCount: Integer read FExecCount;
     property TimerList: TJvTimerList read FParentList;
-    constructor Create(ACollection: TCollection); override;
   published
     property Cycled: Boolean read FCycled write FCycled default True;
     property RepeatCount: Integer read FRepeatCount write SetRepeatCount default 0;
@@ -162,9 +162,6 @@ uses
 const
   MinInterval = 100; { 0.1 sec }
   MaxTimerInterval: Longint = High(Longint);
-
-var
-  IsDesigning: Boolean = False;
 
 //=== TJvTimerEvent ==========================================================
 
@@ -225,7 +222,7 @@ begin
   if FRepeatCount <> Value then
   begin
     Value := Max(Value, Integer(not FCycled));
-    if not IsDesigning then
+    if not (csDesigning in FOwner.ComponentState) then
       if FEnabled and (Value <= FExecCount) then
         Enabled := False;
     FRepeatCount := Value;
@@ -247,7 +244,6 @@ end;
 constructor TJvTimerList.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  IsDesigning := csDesigning in ComponentState;
   FEvents := TJvTimerEvents.Create(Self);
   FWndHandle := INVALID_HANDLE_VALUE;
   Events.Deactivate;
@@ -271,6 +267,7 @@ var
   T: TJvTimerEvent;
 begin
   T := Events.Add;
+  T.FOwner := Self;
   with T do
   begin
     OnTimer := AOnTimer;
@@ -362,7 +359,7 @@ var
 begin
   if FActive <> Value then
   begin
-    if not IsDesigning then
+    if not (csDesigning in ComponentState) then
     begin
       if Value then
       begin
@@ -439,7 +436,7 @@ var
   I: Integer;
   ExitLoop: Boolean;
 begin
-  if not IsDesigning then
+  if not (csDesigning in (Owner as TJvTimerList).ComponentState) then
   begin
     if Count = 0 then
       FInterval := 0
@@ -564,7 +561,7 @@ var
   StartTicks: Longint;
 begin
   Result := False;
-  if not IsDesigning then
+  if not (csDesigning in (Owner as TJvTimerList).ComponentState) then
   begin
     StartTicks := GetTickCount;
     for I := Count - 1 downto 0 do
@@ -595,7 +592,7 @@ var
   I: Integer;
   ExitLoop: Boolean;
 begin
-  if not IsDesigning then
+  if not (csDesigning in (Owner as TJvTimerList).ComponentState) then
     repeat
       ExitLoop := True;
       for I := 0 to Count - 2 do

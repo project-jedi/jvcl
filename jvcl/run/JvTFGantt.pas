@@ -38,17 +38,19 @@ interface
 uses
   SysUtils, Classes,
   {$IFDEF VCL}
-  Windows,  Messages, Graphics, Controls, Forms, Dialogs,
+  Windows, Messages, Graphics, Controls, Forms, Dialogs,
   Menus, StdCtrls, ExtCtrls,
-  {$ELSE}
-  QGraphics, QControls, QForms, QDialogs, QMenus, QStdCtrls, QExtCtrls, Types,
   {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms, QDialogs, QMenus, QStdCtrls, QExtCtrls, Types,
+  {$ENDIF VisualCLX}
   JvTFUtils, JvTFManager;
 
 type
   TJvTFGanttScrollBar = class(TScrollBar)
-  protected
+  private
     procedure CMDesignHitTest(var Msg: TCMDesignHitTest); message CM_DESIGNHITTEST;
+  protected
     procedure CreateWnd; override;
     function GetLargeChange: Integer; virtual;
     procedure SetLargeChange(Value: Integer); virtual;
@@ -60,13 +62,13 @@ type
   end;
 
   TJvTFGanttScale = (ugsYear, ugsQuarter, ugsMonth, ugsWeek, ugsDay, ugsHour, ugsHalfHour, ugsQuarterHour, ugsMinute);
+
   TJvTFGanttScaleFormat = class(TPersistent)
   private
     FScale: TJvTFGanttScale;
     FFont: TFont;
     FFormat: string;
     FWidth: Integer;
-  protected
     function GetFont: TFont;
     procedure SetFont(const Value: TFont);
   public
@@ -84,11 +86,9 @@ type
     // property fields
     FMajorScale: TJvTFGanttScaleFormat;
     FMinorScale: TJvTFGanttScaleFormat;
-
     FHScrollBar: TJvTFGanttScrollBar;
     FVScrollBar: TJvTFGanttScrollBar;
     FVisibleScrollBars: TJvTFVisibleScrollBars;
-
     FCustomGlyphs: TBitmap;
     // Other class variables
     FPaintBuffer: TBitmap;
@@ -123,11 +123,11 @@ type
   published
     property MajorScale: TJvTFGanttScaleFormat read GetMajorScale write SetMajorScale;
     property MinorScale: TJvTFGanttScaleFormat read GetMinorScale write SetMinorScale;
-    property VisibleScrollBars: TJvTFVisibleScrollBars read FVisibleScrollBars write SetVisibleScrollBars;
+    property VisibleScrollBars: TJvTFVisibleScrollBars read FVisibleScrollBars write SetVisibleScrollBars
+      default [vsbHorz, vsbVert];
     property Align;
     property Anchors;
   end;
-
 
 implementation
 
@@ -173,7 +173,6 @@ begin
     // OnScroll := ScrollBarScroll;
   end;
 
-
   FMajorScale := TJvTFGanttScaleFormat.Create;
   FMajorScale.Scale := ugsMonth;
   FMajorScale.Format := 'mmmm';
@@ -191,9 +190,14 @@ begin
   FMinorScale.Free;
   FVScrollBar.Free;
   FHScrollBar.Free;
-
   FCustomGlyphs.Free;
   inherited Destroy;
+end;
+
+procedure TJvTFGantt.Loaded;
+begin
+  inherited Loaded;
+  AlignScrollBars;
 end;
 
 procedure TJvTFGantt.DrawMajor(ACanvas: TCanvas);
@@ -219,9 +223,9 @@ function TJvTFGantt.CalcHeaderHeight: Integer;
 begin
   Result := 0;
   Canvas.Font.Assign(FMajorScale.Font);
-  Result := Result + Canvas.TextHeight('Wq');
+  Result := Result + CanvasMaxTextHeight(Canvas);
   Canvas.Font.Assign(FMinorScale.Font);
-  Result := Result + Canvas.TextHeight('Wq');
+  Result := Result + CanvasMaxTextHeight(Canvas);
   Result := Result + 4;
 end;
 
@@ -317,7 +321,8 @@ begin
   if Enabled then
     Windows.BitBlt(Canvas.Handle, 0, 0, ClientWidth, ClientHeight, FPaintBuffer.Canvas.Handle, 0, 0, SRCCOPY)
   else
-    Windows.DrawState(Canvas.Handle, 0, nil, FPaintBuffer.Handle, 0, 0, 0, 0, 0, DST_BITMAP or DSS_UNION or DSS_DISABLED);
+    Windows.DrawState(Canvas.Handle, 0, nil, FPaintBuffer.Handle, 0, 0, 0, 0, 0, DST_BITMAP or DSS_UNION or
+      DSS_DISABLED);
 
 end;
 
@@ -339,7 +344,8 @@ end;
       DrawCustomGlyph(FCustomGlyphs, 0, 0, 3, 4);
 }
 
-procedure TJvTFGantt.DrawCustomGlyph(SomeBitmap: TBitmap; TargetLeft, TargetTop, ImageIndex, NumGlyphsPerBitmap: Integer);
+procedure TJvTFGantt.DrawCustomGlyph(SomeBitmap: TBitmap;
+  TargetLeft, TargetTop, ImageIndex, NumGlyphsPerBitmap: Integer);
 var
   LocalImageWidth: Integer;
   SourceRect, DestRect: TRect;
@@ -449,10 +455,8 @@ end;
 
 procedure TJvTFGantt.CMDesignHitTest(var Msg: TCMDesignHitTest);
 begin
-  if ValidMouseAtDesignTime then
-    Msg.Result := 1 // Allow design-time mouse hits to get through if Alt key is down.
-  else
-    Msg.Result := 0;
+  // True = Allow design-time mouse hits to get through if Alt key is down.
+  Msg.Result := Ord(ValidMouseAtDesignTime);
 end;
 
 procedure TJvTFGantt.CMFontChanged(var Msg: TMessage);
@@ -475,12 +479,6 @@ begin
   Button1.Height := Height;
   LockHeight := True;
 }
-end;
-
-procedure TJvTFGantt.Loaded;
-begin
-  inherited Loaded;
-  AlignScrollBars;
 end;
 
 //=== TJvTFGanttScaleFormat ==================================================
@@ -508,7 +506,6 @@ begin
   FFont.Assign(Value);
 end;
 
-
 //=== TJvTFGanttScrollBar ====================================================
 
 constructor TJvTFGanttScrollBar.Create(AOwner: TComponent);
@@ -528,7 +525,7 @@ end;
 
 procedure TJvTFGanttScrollBar.CreateWnd;
 begin
-  inherited;
+  inherited CreateWnd;
   UpdateRange;
 end;
 

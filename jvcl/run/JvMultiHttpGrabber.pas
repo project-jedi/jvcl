@@ -37,12 +37,10 @@ uses
   JvTypes, JvComponent;
 
 type
-  TUrlEvent = procedure(Sender: TObject; UserData: Integer;
-    Url: string) of object;
+  TUrlEvent = procedure(Sender: TObject; UserData: Integer; Url: string) of object;
   TUrlEventError = procedure(Sender: TObject; UserData: Integer;
     Url: string; Error: string) of object;
-  TUrlResolved = procedure(Sender: TObject; UserData: Integer;
-    Url: string; Name: string) of object;
+  TUrlResolved = procedure(Sender: TObject; UserData: Integer; Url: string; Name: string) of object;
   TUrlRedirect = procedure(Sender: TObject; UserData: Integer;
     Url: string; NewUrl: string) of object;
   TUrlSent = procedure(Sender: TObject; UserData: Integer;
@@ -103,7 +101,6 @@ type
     property Url: string read FUrl write FUrl;
     property UserName: string read FUserName write FUserName;
     property Working: Boolean read GetWorking;
-
     property OnClosingConnection: TUrlEvent read FOnClosing write FOnClosing;
     property OnClosedConnection: TUrlEvent read FOnClosed write FOnClosed;
     property OnConnectingToServer: TUrlEvent read FOnConnecting write FOnConnecting;
@@ -121,33 +118,6 @@ type
     property OnResolvedName: TUrlResolved read FOnResolved write FOnResolved;
     property OnSendingRequest: TUrlEvent read FOnSendingRequest write FOnSendingRequest;
     property OnDateRetrieved: TDateEvent read FOnDateRetrieved write FOnDateRetrieved;
-  end;
-
-  TJvMultiHttpThread = class(TThread)
-  private
-    FInfos: Pointer;
-    FPosition: Integer;
-    FContinue: Boolean;
-    FStream: TMemoryStream;
-  protected
-    procedure Execute; override;
-    procedure Progress;
-    procedure Error;
-  public
-    constructor Create(Value: Pointer);
-    destructor Destroy; override;
-
-  end;
-
-  TJvMultiDateHttpThread = class(TThread)
-  private
-    FInfos: Pointer;
-    FValue: TDateTime;
-  protected
-    procedure Execute; override;
-    procedure Error;
-  public
-    constructor Create(Value: Pointer);
   end;
 
 implementation
@@ -168,6 +138,32 @@ type
     IgnoreMsg: Boolean;
     Grabber: TJvMultiHTTPGrabber;
     UserData: Integer;
+  end;
+
+  TJvMultiHttpThread = class(TThread)
+  private
+    FInfos: Pointer;
+    FPosition: Integer;
+    FContinue: Boolean;
+    FStream: TMemoryStream;
+  protected
+    procedure Execute; override;
+    procedure Progress;
+    procedure Error;
+  public
+    constructor Create(Value: Pointer);
+    destructor Destroy; override;
+  end;
+
+  TJvMultiDateHttpThread = class(TThread)
+  private
+    FInfos: Pointer;
+    FValue: TDateTime;
+  protected
+    procedure Execute; override;
+    procedure Error;
+  public
+    constructor Create(Value: Pointer);
   end;
 
 //=== TJvMultiHTTPGrabber ====================================================
@@ -312,12 +308,13 @@ var
     else // If not, use the standard one
       HostPort := INTERNET_DEFAULT_HTTP_PORT;
   end;
+
 begin
   Result := nil;
 
   Infos := New(PRequestInfos);
   Infos^.Url := Url;
-  Infos^.Filename := Filename;
+  Infos^.Filename := FileName;
   Infos^.OutputMode := OutputMode;
   Infos^.UserData := UserData;
   Infos^.Grabber := Self;
@@ -456,9 +453,7 @@ begin
     dReserved := 0;
     if HttpQueryInfo(Infos^.hRequest, HTTP_QUERY_CONTENT_LENGTH or HTTP_QUERY_FLAG_NUMBER,
       @dSize, dLength, dReserved) then
-    begin
-      Infos^.FileSize := dSize;
-    end
+      Infos^.FileSize := dSize
     else
       Infos^.FileSize := -1;
 
@@ -492,6 +487,8 @@ begin
     if Assigned(Grabber.OnProgress) then
       Grabber.OnProgress(Grabber, UserData, FPosition, FileSize, Url, FContinue);
 end;
+
+//=== TJvMultiDateHttpThread =================================================
 
 constructor TJvMultiDateHttpThread.Create(Value: Pointer);
 begin
