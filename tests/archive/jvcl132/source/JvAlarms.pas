@@ -123,12 +123,12 @@ end;
 procedure TJvAlarms.Delete(const Idx: Cardinal);
 begin
   if Idx < Count then
-  begin
-    Move(FAlarms[Idx + 1], FAlarms[Idx], (Count - Idx - 1) * SizeOf(TJvAlarm));
-    SetLength(FAlarms, Count - 1);
-    FRunning := (Count > 0);
-    FTimer.Enabled := Running;
-  end;
+    begin
+      Move(FAlarms[Idx + 1], FAlarms[Idx], (Count - Idx - 1) * SizeOf(TJvAlarm));
+      SetLength(FAlarms, Count - 1);
+      FRunning := (Count > 0);
+      FTimer.Enabled := Running;
+    end;
 end;
 
 {*****************************************************}
@@ -143,11 +143,11 @@ end;
 function TJvAlarms.GetAlarm(Idx: Cardinal): TJvAlarm;
 begin
   if Idx < Count then
-  begin
-    Result.Name := FAlarms[Idx].Name;
-    Result.Time := FAlarms[Idx].Time;
-    Result.Kind := FAlarms[Idx].Kind;
-  end
+    begin
+      Result.Name := FAlarms[Idx].Name;
+      Result.Time := FAlarms[Idx].Time;
+      Result.Kind := FAlarms[Idx].Kind;
+    end
   else
     raise Exception.CreateFmt(RC_Alarm, [Idx]);
 end;
@@ -176,45 +176,47 @@ begin
   Stamp := DateTimeToTimeStamp(Now);
   // sort out delayed Timer events which may arrive in bunches
   if (Stamp.Time - FLast.Time) >= 1000 then
-  begin
-    FLast := Stamp;
-    for I := Count - 1 downto 0 do
     begin
-      Alarm := Alarms[I];
-      if Current >= Alarm.Time then
-        DoAlarm(Alarm, Current);
-      Stamp := DateTimeToTimeStamp(Alarm.Time);
-      case Alarm.Kind of
-        tkOneShot:
-          Delete(I);
-        tkEachSecond:
-          Inc(Stamp.Time, 1000);
-        tkEachMinute:
-          Inc(Stamp.Time, 60 * 1000);
-        tkEachHour:
-          Inc(Stamp.Time, 60 * 60 * 1000);
-        tkEachDay:
-          Inc(Stamp.Date);
-        tkEachMonth:
-          Stamp := DateTimeToTimeStamp(IncMonth(Alarm.Time, 1));
-        tkEachYear:
-          begin
-            DecodeDate(Current, Year, Month, Day);
-            if IsLeapYear(Year) then
-              Inc(Stamp.Date, 366)
-            else
-              Inc(Stamp.Date, 365);
-          end;
-      end;
-      if Stamp.Time > 24 * 60 * 60 * 1000 then
-      begin
-        Inc(Stamp.Date);
-        Dec(Stamp.Time, 24 * 60 * 60 * 1000);
-      end;
-      if Alarm.Kind <> tkOneShot then
-        FAlarms[I].Time := TimeStampToDateTime(Stamp);
+      FLast := Stamp;
+      for I := Count - 1 downto 0 do
+        begin
+          Alarm := Alarms[I];
+          if Current >= Alarm.Time then
+            begin
+              DoAlarm(Alarm, Current);
+              Stamp := DateTimeToTimeStamp(Alarm.Time);
+              case Alarm.Kind of
+                tkOneShot:
+                  Delete(I);
+                tkEachSecond:
+                  Inc(Stamp.Time, 1000);
+                tkEachMinute:
+                  Inc(Stamp.Time, 60 * 1000);
+                tkEachHour:
+                  Inc(Stamp.Time, 60 * 60 * 1000);
+                tkEachDay:
+                  Inc(Stamp.Date);
+                tkEachMonth:
+                  Stamp := DateTimeToTimeStamp(IncMonth(Alarm.Time, 1));
+                tkEachYear:
+                  begin
+                    DecodeDate(Current, Year, Month, Day);
+                    if IsLeapYear(Year) then
+                      Inc(Stamp.Date, 366)
+                    else
+                      Inc(Stamp.Date, 365);
+                  end;
+              end;
+            end;
+          if Stamp.Time > 24 * 60 * 60 * 1000 then
+            begin
+              Inc(Stamp.Date);
+              Dec(Stamp.Time, 24 * 60 * 60 * 1000);
+            end;
+          if Alarm.Kind <> tkOneShot then
+            FAlarms[I].Time := TimeStampToDateTime(Stamp);
+        end;
     end;
-  end;
 end;
 
 {*****************************************************}
@@ -227,3 +229,4 @@ begin
 end;
 
 end.
+
