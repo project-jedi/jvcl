@@ -140,7 +140,7 @@ type
     function GetDropped: Boolean;
     procedure SetNoDateText(const AValue: string);
   protected
-    
+
     function IsDateFormatStored: Boolean;
     function IsNoDateShortcutStored: Boolean;
     function IsNoDateTextStored: Boolean;
@@ -176,14 +176,11 @@ type
     property NoDateText: string read FNoDateText write SetNoDateText stored IsNoDateTextStored;
     property StoreDate: Boolean read FStoreDate write FStoreDate default False;
     procedure CreateWnd; override;
-    procedure CreateParams(var AParams: TCreateParams); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Clear; override;
     function IsEmpty: Boolean; virtual;
-    procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
-      AHeight: Integer); override;
   end;
 
   TJvDatePickerEdit = class(TJvCustomDatePickerEdit)
@@ -435,10 +432,11 @@ end;
 
 function TJvCustomDatePickerEdit.ValidateDate(const ADate: TDateTime): Boolean;
 begin
-  if ((not AllowNoDate) and (ADate = 0)) or
-      // 1752-09-14 - 1752-09-19 are the only valid days in october 1752.
-    (ADate < EncodeDate(1752, 09, 14)) or ((ADate > EncodeDate(1752, 09, 19)) and (ADate < EncodeDate(1752, 10, 1))) then
-      Result := False
+  if (not AllowNoDate) and (ADate = 0) then
+    RaiseNoDate;
+  // 1752-09-14 - 1752-09-19 are the only valid days in october 1752.
+  if (ADate < EncodeDate(1752, 09, 14)) or ((ADate > EncodeDate(1752, 09, 19)) and (ADate < EncodeDate(1752, 10, 1))) then
+    Result := False
   else
     Result := True;
 end;
@@ -941,25 +939,6 @@ end;
 function TJvCustomDatePickerEdit.IsEmptyMaskText(const AText: string): Boolean;
 begin
   Result := AnsiSameStr(AText, FEmptyMaskText);
-end;
-
-procedure TJvCustomDatePickerEdit.SetBounds(ALeft, ATop, AWidth,
-  AHeight: Integer);
-var R: TRect;
-begin
-  inherited;
-  if HandleAllocated then
-  begin
-    SetRect(R, 0, 0, ClientWidth - FDropButton.Width, ClientHeight - 1);
-    SendMessage(Handle, EM_SETRECTNP, 0, Longint(@R));
-  end;
-end;
-
-procedure TJvCustomDatePickerEdit.CreateParams(var AParams: TCreateParams);
-begin
-  inherited;
-  // make sure we can call EM_SETRECTNP succesfully 
-  AParams.Style := AParams.Style or ES_MULTILINE or WS_CLIPCHILDREN and not ES_WANTRETURN;
 end;
 
 end.
