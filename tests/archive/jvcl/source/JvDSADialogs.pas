@@ -14,9 +14,10 @@ The Initial Developer of the Original Code is Marcel Bestebroer [marcelb@zeeland
 Portions created by Marcel Bestebroer are Copyright (C) 2002 Marcel Bestebroer.
 All Rights Reserved.
 
-Contributor(s): 
+Contributor(s):
+  Steve Magruder
 
-Last Modified: 2002-08-27
+Last Modified: 2003-01-31
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -460,6 +461,7 @@ type
   private
   protected
     procedure CustomKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure CustomShow(Sender: TObject);  
     procedure HelpButtonClick(Sender: TObject);
     procedure WriteToClipBoard(Text: String);
     function GetFormText: String;
@@ -484,6 +486,20 @@ begin
   begin
     SysUtils.Beep;
     WriteToClipBoard(GetFormText);
+  end;
+end;
+
+procedure TDSAMessageForm.CustomShow(Sender: TObject);
+var
+  i: Integer;
+begin
+  for i := 0 to ComponentCount - 1 do
+  begin
+    if (Components[i] is TButton) and (Components[i] as TButton).Default then
+    begin
+      (Components[i] as TButton).SetFocus;
+      Break;
+    end;
   end;
 end;
 
@@ -632,6 +648,7 @@ begin
       Canvas.Font := Font;
       KeyPreview := True;
       OnKeyDown := CustomKeyDown;
+      OnShow := CustomShow;
       DialogUnits := GetAveCharSize(Canvas);
       HorzMargin := MulDiv(mcHorzMargin, DialogUnits.X, 4);
       VertMargin := MulDiv(mcVertMargin, DialogUnits.Y, 8);
