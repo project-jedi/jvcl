@@ -172,7 +172,7 @@ interface
 uses
   SysUtils, Classes, Contnrs, TypInfo, IniFiles,
   QWindows, QGraphics, QControls, QStdCtrls, QExtCtrls,
-  Qt, QMessages, JvQExExtCtrls, JvQFinalize,
+  Qt, QMessages, JvQExExtCtrls,
   JvQComponent, JvQTypes, JvQExControls;
 
 const
@@ -2104,8 +2104,6 @@ begin
   if not Assigned(GlobalTypeInfoHelpersList) then
   begin
     GlobalTypeInfoHelpersList := TClassList.Create;
-    AddFinalizeObjectNil(sUnitName, TObject(GlobalTypeInfoHelpersList));
-
     // register
     RegisterTypeInfoHelper(TJvTypeInfoHelper);
   end;
@@ -2277,7 +2275,6 @@ begin
   if GlobalCanvasStack = nil then
   begin
     GlobalCanvasStack := TCanvasStack.Create(512);
-    AddFinalizeObjectNil(sUnitName, TObject(GlobalCanvasStack));
   end;
   Result := GlobalCanvasStack;
 end;
@@ -2334,10 +2331,7 @@ var
 function GlobalInspReg: TInspReg;
 begin
   if not Assigned(FieldGlobalInspReg) then
-  begin
     FieldGlobalInspReg := TInspReg.Create;
-    AddFinalizeObjectNil(sUnitName, TObject(FieldGlobalInspReg));
-  end;
   Result := FieldGlobalInspReg;
 end;
 
@@ -2524,7 +2518,6 @@ begin
   if not Assigned(GlobalDataRegister) then
   begin
     GlobalDataRegister := TJvInspDataReg.Create;
-    AddFinalizeObjectNil(sUnitName, TObject(GlobalDataRegister));
   end;
   Result := GlobalDataRegister;
 end;
@@ -9968,7 +9961,6 @@ begin
   if GlobalGenItemReg = nil then
   begin
     GlobalGenItemReg := TJvInspectorRegister.Create(TJvCustomInspectorData);
-    AddFinalizeObjectNil(sUnitName, TObject(GlobalGenItemReg));
    // register
     RegisterDataTypeKinds;
   end;
@@ -10302,12 +10294,13 @@ end;
 
 class function TJvInspectorVarData.ItemRegister: TJvInspectorRegister;
 begin
-  if GlobalVarItemReg = nil then
+  if GlobalGenItemReg = nil then
   begin
-    GlobalVarItemReg := TJvInspectorRegister.Create(TJvInspectorVarData);
-    AddFinalizeObjectNil(sUnitName, TObject(GlobalVarItemReg));
+    GlobalGenItemReg := TJvInspectorRegister.Create(TJvCustomInspectorData);
+   // register
+    RegisterDataTypeKinds;
   end;
-  Result := GlobalVarItemReg;
+  Result := GlobalGenItemReg;
 end;
 
 class function TJvInspectorVarData.New(const AParent: TJvCustomInspectorItem;
