@@ -221,6 +221,8 @@ function Sign(const AValue: Integer): TValueSign; overload;
 function Sign(const AValue: Int64): TValueSign; overload;
 function Sign(const AValue: Double): TValueSign; overload;
 
+function TryStrToInt(const S: string; out Value: Integer): Boolean;
+
 {$ENDIF COMPILER5}
 
 const
@@ -2668,6 +2670,14 @@ begin
     Result := NegativeValue
   else
     Result := PositiveValue;
+end;
+
+function TryStrToInt(const S: string; out Value: Integer): Boolean;
+var
+  E: Integer;
+begin
+  Val(S, Value, E);
+  Result := E = 0;
 end;
 
 {$ENDIF COMPILER5}
