@@ -269,6 +269,7 @@ type
     FParameterListSelectList: TJvParameterListSelectList;
     FOkButtonDisableReasons: TJvParameterListEnableDisableReasonList;
     FOkButtonEnableReasons: TJvParameterListEnableDisableReasonList;
+    function GetIntParameterList: TStrings;
     function AddObject(const S: string; AObject: TObject): Integer;
     procedure OnOkButtonClick(Sender: TObject);
     procedure OnCancelButtonClick(Sender: TObject);
@@ -305,7 +306,7 @@ type
 
     procedure DialogShow(Sender: TObject);
 
-    property IntParameterList: TStringList read FIntParameterList;
+    property IntParameterList: TStrings read GetIntParameterList;
 
     property ParameterDialog: TCustomForm read FParameterDialog;
     property ParameterListSelectList: TJvParameterListSelectList read FParameterListSelectList;
@@ -1006,6 +1007,11 @@ begin
   inherited Destroy;
 end;
 
+function TJvParameterList.GetIntParameterList: TStrings;
+begin
+  Result := FIntParameterList;
+end;
+
 procedure TJvParameterList.AddParameter(AParameter: TJvBaseParameter);
 begin
   AddObject(AParameter.SearchName, AParameter);
@@ -1047,7 +1053,7 @@ begin
     MaxHeight := TJvParameterList(Source).MaxHeight;
     OkButtonVisible := TJvParameterList(Source).OkButtonVisible;
     CancelButtonVisible := TJvParameterList(Source).CancelButtonVisible;
-    FIntParameterList.Assign(TJvParameterList(Source).FIntParameterList);
+    FIntParameterList.Assign(TJvParameterList(Source).IntParameterList);
     HistoryEnabled := TJvParameterList(Source).HistoryEnabled;
     AppStoragePath := TJvParameterList(Source).AppStoragePath;
   end
@@ -1624,7 +1630,7 @@ end;
 
 function TJvParameterList.GetCount: Integer;
 begin
-  Result := FIntParameterList.Count;
+  Result := IntParameterList.Count;
 end;
 
 function TJvParameterList.AddObject(const S: string; AObject: TObject): Integer;
@@ -1636,7 +1642,7 @@ begin
   if IntParameterList.IndexOf(S) >= 0 then
     raise Exception.CreateResFmt(@RsEAddObjectDuplicateSearchNamesNotAllowed, [S]);
   TJvBaseParameter(AObject).ParameterList := Self;
-  Result := FIntParameterList.AddObject(S, AObject);
+  Result := IntParameterList.AddObject(S, AObject);
 end;
 
 procedure TJvParameterList.SetArrangeSettings(Value: TJvArrangeSettings);
@@ -1648,14 +1654,14 @@ end;
 
 procedure TJvParameterList.SetParameters(Index: Integer; Value: TJvBaseParameter);
 begin
-  if (Index >= 0) and (Index < FIntParameterList.Count) then
-    FIntParameterList.Objects[Index] := Value;
+  if (Index >= 0) and (Index < IntParameterList.Count) then
+    IntParameterList.Objects[Index] := Value;
 end;
 
 function TJvParameterList.GetParameters(Index: Integer): TJvBaseParameter;
 begin
-  if (Index >= 0) and (Index < FIntParameterList.Count) then
-    Result := TJvBaseParameter(FIntParameterList.Objects[Index])
+  if (Index >= 0) and (Index < IntParameterList.Count) then
+    Result := TJvBaseParameter(IntParameterList.Objects[Index])
   else
     Result := nil;
 end;
@@ -1694,7 +1700,7 @@ end;
 
 procedure TJvParameterList.Clear;
 begin
-  FIntParameterList.Clear;
+  IntParameterList.Clear;
 end;
 
 //=== TJvParameterListPropertyStore ==========================================
