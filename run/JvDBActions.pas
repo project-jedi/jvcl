@@ -1568,7 +1568,7 @@ var
 begin
   inherited Create;
   FFormats := [];
-  for Format := Low(Fmt) to High(Fmt) do
+  for Fmt := Low(Fmt) to High(Fmt) do
     FFormats := FFormats + [Fmt];
   FOptions := [];
   for Option := Low(Option) to High(Option) do
@@ -1748,7 +1748,7 @@ var
 begin
   inherited Create;
   FFormats := [];
-  for Format := Low(Fmt) to High(Fmt) do
+  for Fmt := Low(Fmt) to High(Fmt) do
     FFormats := FFormats + [Fmt];
   FOptions := [];
   for Option := Low(Option) to High(Option) do
