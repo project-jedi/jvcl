@@ -29,7 +29,7 @@ Known Issues:
   (rom) commnts should be ripped by the help writer
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvDBDateTimePicker;
 

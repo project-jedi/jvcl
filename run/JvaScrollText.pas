@@ -26,7 +26,7 @@ Known Issues:
   with [translated]
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvaScrollText;
 

@@ -26,7 +26,7 @@ Known Issues:
   only shows the first subrange
 
 -----------------------------------------------------------------------------}
-{$I JVCL.INC}
+{$I jvcl.inc}
 unit JvCharMap;
 
 interface

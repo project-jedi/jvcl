@@ -60,7 +60,7 @@ Maciej Kaczkowski:
   [*] function ItemHtPlain - optimized
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvButtons;
 

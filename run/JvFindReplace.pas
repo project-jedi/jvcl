@@ -24,7 +24,7 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 { Wrapper for the TFind / TReplace dialogs and a stand-alone full
      text search engine with support for all available dialog options:

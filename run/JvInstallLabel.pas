@@ -24,7 +24,7 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 { A component that makes it dead easy to have those nifty installation screens
   with a list of tasks to perform and some formatting and icons to make sure the

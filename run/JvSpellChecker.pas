@@ -28,7 +28,7 @@ Known Issues:
   them added make sure UserDictionary is filled before setting the Dictionary property.
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvSpellChecker;
 

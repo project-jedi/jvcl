@@ -29,7 +29,7 @@ Known Issues:
  - BiDi support (checkbox should probably be on the right for RTL)
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvCheckedMaskEdit;
 

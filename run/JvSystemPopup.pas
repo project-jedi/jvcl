@@ -33,7 +33,7 @@ Modifications:
       inside a WM_INITMENU handler.
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvSystemPopup;
 

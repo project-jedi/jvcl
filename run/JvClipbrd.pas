@@ -25,7 +25,7 @@ home page, located at http://cnxmanager.sourceforge.net
 Known Issues: none to date.
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvClipbrd;
 

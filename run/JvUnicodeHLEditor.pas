@@ -31,7 +31,7 @@ Known Issues:
   (rom) GetAttr should be broken up further
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvUnicodeHLEditor;
 

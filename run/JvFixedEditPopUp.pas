@@ -81,6 +81,8 @@ Description:
 
 }
 
+{$I jvcl.inc}
+
 unit JvFixedEditPopUp;
 
 interface

@@ -28,7 +28,7 @@ Known Issues:
     * FirstVisibleDate always start at day 1 of month
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvTimeLine;
 

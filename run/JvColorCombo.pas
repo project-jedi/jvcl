@@ -32,7 +32,7 @@ Known Issues:
   set to default to False. (p3)
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvColorCombo;
 

@@ -80,7 +80,7 @@ NB!
  properties are reset to their original ("start") values.
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvProgressDialog;
 

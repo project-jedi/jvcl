@@ -23,7 +23,7 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvThemes;
 
@@ -61,7 +61,7 @@ type
 
 {$IFDEF JVCLThemesEnabled}
 
-{$I WINDOWSONLY.INC}
+{$I windowsonly.inc}
 
 // type name redirection
 type

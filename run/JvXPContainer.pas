@@ -27,7 +27,7 @@ Known Issues:
 
 unit JvXPContainer;
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 interface
 

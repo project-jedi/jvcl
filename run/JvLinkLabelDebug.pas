@@ -28,7 +28,7 @@ Description:
   LinkDebug.pas provides utility routines designed to aid debugging.
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvLinkLabelDebug;
 

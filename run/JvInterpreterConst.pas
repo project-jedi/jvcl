@@ -26,7 +26,7 @@ Description : Language specific constant for English
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvInterpreterConst;
 

@@ -26,8 +26,8 @@
 
 unit JvUIBMetaData;
 
-{$I JVCL.INC}
-{$I JvUIB.inc}
+{$I jvcl.inc}
+{$I jvuib.inc}
 
 interface
 uses Classes, SysUtils, JvUIBase, JvUIBLib, JvUIB, JvUIBConst;

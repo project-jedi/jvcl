@@ -27,7 +27,7 @@ description : Properties dialog for TJvHLEditor component
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 unit JvHLEditorPropertyForm;
 
 interface

@@ -29,6 +29,7 @@ Description: This unit defines a frame that you can use to select a key code.
 Known Issues: none known
 -----------------------------------------------------------------------------}
 
+{$I jvcl.inc}
 unit JvVirtualKeySelectionFrame;
 
 interface

@@ -23,8 +23,8 @@
 { Last modified: Mar 16, 2003                                                  }
 {                                                                              }
 {******************************************************************************}
-{$I JVCL.INC}
-{$I JvUIB.inc}
+{$I jvcl.inc}
+{$I jvuib.inc}
 unit JvUIBObj;
 
 interface

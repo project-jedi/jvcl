@@ -29,7 +29,7 @@ Known Issues:
   * String literals need to be converted into resourcestrings
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvSegmentedLEDDisplay;
 

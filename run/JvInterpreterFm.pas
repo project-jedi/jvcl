@@ -27,7 +27,7 @@ Component   : form runner for JvInterpreter
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 { history (JVCL Library versions):
   1.10:

@@ -33,7 +33,7 @@ Known Issues:
 
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvDateTimePicker;
 

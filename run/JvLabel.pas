@@ -44,7 +44,7 @@ Known Issues:
 * Images are only displayed in TJvCustomLabel if Angle = 0.
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvLabel;
 

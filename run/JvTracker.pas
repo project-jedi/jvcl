@@ -26,7 +26,7 @@ Known Issues:
   When Position 100 you can not click on the far Right of the button to move.
 
 -----------------------------------------------------------------------------}
-{$I JVCL.INC}
+{$I jvcl.inc}
 unit JvTracker;
 
 interface

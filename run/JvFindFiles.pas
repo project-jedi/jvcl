@@ -24,7 +24,7 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 {A function and a component to wrap access to the FindFiles Dialog
 (accessible from the Explorer by hitting F3) }

@@ -27,7 +27,7 @@ description : Custom activated hint
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvHint;
 

@@ -26,8 +26,8 @@ Description : adapter unit - converts JvInterpreter calls to delphi calls
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
-{$I WINDOWSONLY.INC}
+{$I jvcl.inc}
+{$I windowsonly.inc}
 
 unit JvInterpreter_SysUtils;
 

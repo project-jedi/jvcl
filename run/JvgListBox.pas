@@ -25,7 +25,7 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 {  Enhanced ListBox component that  can  display    its  items in  three
  dimensional  styles.   Items  captions align in one of 9 positions.

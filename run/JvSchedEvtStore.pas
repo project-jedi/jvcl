@@ -23,7 +23,7 @@
  page, located at http://www.delphi-jedi.org
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvSchedEvtStore;
 

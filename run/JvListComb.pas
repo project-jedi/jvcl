@@ -30,7 +30,7 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 {A unit to allow display of bitmaps in TComboboxes and TListboxes }
 

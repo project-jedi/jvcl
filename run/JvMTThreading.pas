@@ -24,7 +24,7 @@ located at http://www.delphi-jedi.org
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvMTThreading;
 

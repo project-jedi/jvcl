@@ -33,8 +33,8 @@ Known Issues:
   with [translated]
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
-{$I WINDOWSONLY.INC}
+{$I jvcl.inc}
+{$I windowsonly.inc}
 
 { history
  (JVCL Library versions) :

@@ -36,6 +36,8 @@ Known Issues:
   WARNING: UNSTABLE VERSION - STILL IN DEVELOPMENT.
 -----------------------------------------------------------------------------}
 
+{$I jvcl.inc}
+
 unit JvChart;
 
 interface

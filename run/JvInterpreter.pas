@@ -32,7 +32,7 @@ Known Issues:
    String fields in records binded from Delphi don't work
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 { history (JVCL Library versions):
   1.10:

@@ -28,8 +28,8 @@
 
 unit JvUIB;   
 
-{$I JVCL.INC}
-{$I JvUIB.inc}
+{$I jvcl.inc}
+{$I jvuib.inc}
 
 (*------------------------------------------------------------------------------
   This is a cascading programming style.

@@ -26,7 +26,7 @@ Description : Parser for JVCL Interpreter version 2
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvInterpreterParser;
 

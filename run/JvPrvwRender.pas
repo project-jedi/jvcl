@@ -26,8 +26,8 @@ Known Issues:
 * the TStrings previewer has a *very* simple word-wrap feature - use the RTF variant if possible
 
 -----------------------------------------------------------------------------}
-{$I JVCL.INC}
-{$I WINDOWSONLY.INC}
+{$I jvcl.inc}
+{$I windowsonly.inc}
 unit JvPrvwRender;
 
 interface
