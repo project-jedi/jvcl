@@ -18,9 +18,10 @@ PROJECTS = JvCoreD5R.bpl JvCoreD5D.bpl JvSystemD5R.bpl \
   JvInterpreterD5D.bpl JvBandsD5R.bpl JvBandsD5D.bpl JvPluginD5R.bpl \
   JvPluginD5D.bpl JvJansD5R.bpl JvJansD5D.bpl JvGlobusD5R.bpl JvGlobusD5D.bpl \
   JvPrintPreviewD5R.bpl JvPrintPreviewD5D.bpl JvPageCompsD5R.bpl \
-  JvPageCompsD5D.bpl JvValidatorsD5R.bpl JvValidatorsD5D.bpl JvUIBD5R.bpl \
-  JvUIBD5D.bpl JvTimeFrameworkD5R.bpl JvTimeFrameworkD5D.bpl JvHMID5R.bpl \
-  JvHMID5D.bpl JvManagedThreadsD5R.bpl JvManagedThreadsD5D.bpl
+  JvPageCompsD5D.bpl JvWizardD5R.bpl JvWizardD5D.bpl JvValidatorsD5R.bpl \
+  JvValidatorsD5D.bpl JvUIBD5R.bpl JvUIBD5D.bpl JvTimeFrameworkD5R.bpl \
+  JvTimeFrameworkD5D.bpl JvHMID5R.bpl JvHMID5D.bpl JvManagedThreadsD5R.bpl \
+  JvManagedThreadsD5D.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -143,6 +144,12 @@ JvUIBD5D.bpl: d5\JvUIBD5D.dpk
   $(DCC)
 
 JvUIBD5R.bpl: d5std\JvUIBD5R.dpk
+  $(DCC)
+
+JvWizardD5R.bpl: d5\JvWizardD5R.dpk
+  $(DCC)
+
+JvWizardD5D.bpl: d5\JvWizardD5D.dpk
   $(DCC)
 
 JvTimeFrameworkD5R.bpl: d5\JvTimeFrameworkD5R.dpk
