@@ -1685,6 +1685,9 @@ var
   Settings: IJvColorProviderSettings;
 begin
   inherited InitImplementers;
+  // (rom) suppress warnings about abstract methods
+  // (rom) TJvBaseDataItems.InternalAdd, InternalDelete and InternalMove
+  // (rom) can this be fixed by empty methods?
   {$WARNINGS OFF}
   if GetItems.GetProvider.SelectedConsumer = MasterColorConsumer then
     TJvColorItemsList.Create(Self)

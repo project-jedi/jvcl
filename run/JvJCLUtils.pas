@@ -1581,28 +1581,28 @@ var
 begin
   Result := False;
   Path := ExtractFilePath(ExpandFileName(FileName)) + AllFilesMask;
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   FileName := AnsiUpperCase(ExtractFileName(FileName));
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
   FileName := ExtractFileName(FileName);
-{$ENDIF LINUX}
+  {$ENDIF LINUX}
   DosError := FindFirst(Path, faAnyFile, SearchRec);
   while DosError = 0 do
   begin
-{$IFDEF MSWINDOWS}
-{$WARNINGS OFF}
+    {$IFDEF MSWINDOWS}
+    {$WARN SYMBOL_PLATFORM OFF}
     if (AnsiCompareText(SearchRec.FindData.cFileName, FileName) = 0) or
       (AnsiCompareText(SearchRec.FindData.cAlternateFileName, FileName) = 0) then
-{$WARNINGS ON}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
-      if AnsiCompareStr(SearchRec.Name, FileName) = 0 then
-{$ENDIF LINUX}
-      begin
-        Result := True;
-        Break;
-      end;
+    {$WARN SYMBOL_PLATFORM ON}
+    {$ENDIF MSWINDOWS}
+    {$IFDEF LINUX}
+    if AnsiCompareStr(SearchRec.Name, FileName) = 0 then
+    {$ENDIF LINUX}
+    begin
+      Result := True;
+      Break;
+    end;
     DosError := FindNext(SearchRec);
   end;
   FindClose(SearchRec);
@@ -2058,14 +2058,14 @@ end;
 
 function DeleteReadOnlyFile(const FileName: TFileName): Boolean;
 begin
-{$IFDEF MSWINDOWS}
-{$WARNINGS OFF}
+  {$IFDEF MSWINDOWS}
+  {$WARN SYMBOL_PLATFORM OFF}
   FileSetAttr(FileName, 0); {clear Read Only Flag}
-{$WARNINGS ON}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+  {$WARN SYMBOL_PLATFORM ON}
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
   FileSetReadOnly(FileName, False);
-{$ENDIF LINUX}
+  {$ENDIF LINUX}
   Result := DeleteFile(FileName);
 end;
 
@@ -3582,9 +3582,9 @@ begin
           SetClipboardData(Format, Data);
           if Palette <> 0 then
             SetClipboardData(CF_PALETTE, Palette);
-{$WARNINGS OFF}
+          {$WARN SYMBOL_PLATFORM OFF}
           Data := GlobalAlloc(HeapAllocFlags, Stream.Size);
-{$WARNINGS ON}
+          {$WARN SYMBOL_PLATFORM ON}
           try
             if Data <> 0 then
             begin
@@ -5879,9 +5879,9 @@ function HasAttr(const FileName: string; Attr: Integer): Boolean;
 var
   FileAttr: Integer;
 begin
-{$WARNINGS OFF}
+  {$WARN SYMBOL_PLATFORM OFF}
   FileAttr := FileGetAttr(FileName);
-{$WARNINGS ON}
+  {$WARN SYMBOL_PLATFORM ON}
   Result := (FileAttr >= 0) and (FileAttr and Attr = Attr);
 end;
 
@@ -6048,9 +6048,9 @@ begin
     Result := '';
     Exit
   end;
-{$WARNINGS OFF}
+  {$WARN SYMBOL_PLATFORM OFF}
   FN := CmdLine;
-{$WARNINGS ON}
+  {$WARN SYMBOL_PLATFORM ON}
   if FN[0] = '"' then
   begin
     FN := StrScan(FN + 1, '"');
@@ -6070,9 +6070,9 @@ begin
     end;
   end
   else
-{$WARNINGS OFF}
+    {$WARN SYMBOL_PLATFORM OFF}
     Result := Copy(CmdLine, Length(ParamStr(0)) + 1, 260);
-{$WARNINGS ON}
+    {$WARN SYMBOL_PLATFORM ON}
   while (Length(Result) > 0) and (Result[1] = ' ') do
     Delete(Result, 1, 1);
   Result := ReplaceString(Result, '"', '');
@@ -6086,17 +6086,17 @@ var
   SearchRec: TSearchRec;
 {$ENDIF MSWINDOWS}
 begin
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   if FileGetInfo(FileName, SearchRec) then
-{$WARNINGS OFF}
+    {$WARN SYMBOL_PLATFORM OFF}
     Result := ExtractFilePath(ExpandFileName(FileName)) + SearchRec.FindData.cFileName
-{$WARNINGS ON}
+    {$WARN SYMBOL_PLATFORM ON}
   else
     Result := FileName;
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
   Result := ExpandFileName(FileName);
-{$ENDIF LINUX}
+  {$ENDIF LINUX}
 end;
 
 function FileEquMask(FileName, Mask: TFileName; CaseSensitive: Boolean): Boolean;
@@ -7588,18 +7588,18 @@ end;
 function AllocMemo(Size: Longint): Pointer;
 begin
   if Size > 0 then
-{$WARNINGS OFF} // HeapAllocFlags is platform
+    {$WARN SYMBOL_PLATFORM OFF} // for HeapAllocFlags
     Result := GlobalAllocPtr(HeapAllocFlags or GMEM_ZEROINIT, Size)
-{$WARNINGS ON}
+    {$WARN SYMBOL_PLATFORM ON}
   else
     Result := nil;
 end;
 
 function ReallocMemo(fpBlock: Pointer; Size: Longint): Pointer;
 begin
-{$WARNINGS OFF} // HeapAllocFlags is platform
+  {$WARN SYMBOL_PLATFORM OFF} // for HeapAllocFlags
   Result := GlobalReallocPtr(fpBlock, Size, HeapAllocFlags or GMEM_ZEROINIT);
-{$WARNINGS ON}
+  {$WARN SYMBOL_PLATFORM ON}
 end;
 
 procedure FreeMemo(var fpBlock: Pointer);
