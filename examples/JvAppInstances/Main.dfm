@@ -67,7 +67,6 @@ object FormMain: TFormMain
     OnClick = BtnInstanceCountClick
   end
   object JvAppInstances: TJvAppInstances
-    MaxInstances = 2
     OnInstanceCreated = EvInstanceCreated
     OnInstanceDestroyed = EvInstanceDestroyed
     OnUserNotify = JvAppInstancesUserNotify
