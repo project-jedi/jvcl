@@ -13,15 +13,16 @@ The Original Code is: JvImageList.pas, released on 2003-10-09
 The Initial Developers of the Original Code are: Andreas Hausladen <Andreas dott Hausladen att gmx dott de>
 Copyright (c) 2003 Andreas Hausladen
 All Rights Reserved.
-Portions created by Uwe Schuster are Copyright (C) 2003 Uwe Schuster.
+Portions created by Uwe Schuster are Copyright (C) 2003, 2004 Uwe Schuster.
 
 Contributor(s):
-Uwe Schuster [jedivcs@bitcommander.de]
+Uwe Schuster [jedivcs att bitcommander dott de]
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
+  ImageKind ikMappedResourceBitmap is not support so far
 -----------------------------------------------------------------------------}
 // $Id$
 
@@ -41,7 +42,7 @@ uses
   {$IFDEF VisualCLX}
   QGraphics, QControls, QImgList,
   {$ENDIF VisualCLX}
-  SysUtils, Classes, Contnrs, JvFinalize;
+  SysUtils, Classes, JvFinalize;
 
 type
   TJvImageListMode = (imClassic, imPicture, imResourceIds, imItemList);
@@ -49,12 +50,58 @@ type
 
   EJvImageListError = class(Exception);
 
+  TJvImageListItemKind = (ikResourceBitmap, ikMappedResourceBitmap, ikInlineBitmap);
+
+  TJvImageListItem = class(TCollectionItem)
+  private
+    FBitmap: TBitmap;
+    FKind: TJvImageListItemKind;
+    FResourceName: string;
+    FTransparentColor: TColor;
+    procedure AddToImageList(AImageList: TImageList);
+    procedure BitmapChanged(Sender: TObject);
+    function GetImageList: TImageList;
+    procedure SetBitmap(ABitmap: TBitmap);
+    procedure SetKind(AKind: TJvImageListItemKind);
+    procedure SetResourceName(AResourceName: string);
+    procedure SetTransparentColor(AColor: TColor);
+    procedure UpdateImageListItem(AImageList: TImageList; AIndex: Integer);
+  protected
+    function GetDisplayName: string; override;  
+    procedure SetIndex(Value: Integer); override;
+  public
+    constructor Create(Collection: TCollection); override;
+    destructor Destroy; override;
+    procedure UpdateImageList;
+  published
+    property Kind: TJvImageListItemKind read FKind write SetKind;
+    property TransparentColor: TColor read FTransparentColor write
+      SetTransparentColor;
+    property Bitmap: TBitmap read FBitmap write SetBitmap;
+    property ResourceName: string read FResourceName write SetResourceName;
+  end;
+
+  TJvImageListItems = class(TOwnedCollection)
+  private
+    function GetItem(AIndex: Integer): TJvImageListItem;
+    procedure SetItem(AIndex: Integer; Value: TJvImageListItem);
+  protected
+    {$IFDEF COMPILER5}
+    function Owner: TPersistent;
+    {$ENDIF COMPILER5}
+    procedure Update(Item: TCollectionItem); override;
+  public
+    constructor Create(AOwner: TComponent);
+    function Add: TJvImageListItem;
+    property Items[AIndex: Integer]: TJvImageListItem read GetItem write SetItem; default;
+  end;
+
   TJvImageList = class(TImageList)
   private
     FUpdateLock: Integer;
     FModified: Boolean;
 
-    FItemList: TObjectList;
+    FItems: TJvImageListItems;
     FTransparentMode: TJvImageListTransparentMode;
     FTransparentColor: TColor;
     FPicture: TPicture;
@@ -66,6 +113,7 @@ type
     FMode: TJvImageListMode;
 
     procedure SetFileName(const Value: TFileName);
+    procedure SetItems(AItems: TJvImageListItems);
     procedure SetPicture(Value: TPicture);
     procedure SetTransparentMode(Value: TJvImageListTransparentMode);
     procedure SetTransparentColor(Value: TColor);
@@ -81,8 +129,6 @@ type
     procedure DoLoadFromFile;
   protected
     procedure ItemListError;
-    procedure ReadItemData(Stream: TStream); virtual;
-    procedure WriteItemData(Stream: TStream); virtual;
     procedure DefineProperties(Filer: TFiler); override;
     procedure InitializeImageList; virtual; // called by Initialize (VCL and VCLX)
     {$IFDEF VCL}
@@ -118,6 +164,8 @@ type
     procedure LoadFromStream(Stream: TStream); virtual;
 
     { imItemList }
+    // (usc) DeleteItem, ClearItem and GetItemInfoStr are obsolete because the are
+    //       directly mapped to Items
     procedure AddItem(ABitmap: TBitmap; ATransparentColor: TColor); overload;
       // AddItem adds a bitmap to the ItemList with ATransparentColor as
       // transparent color. If the image list mode is not imItemList the image
@@ -177,6 +225,7 @@ type
       // ResourceIds contains the resource ids of the bitmaps to load. Allowed
       // are RCDATA (a bitmap file) and BITMAP. ResourceIds property is only
       // loaded into the image list if Mode is imResourceIds.
+    property Items: TJvImageListItems read FItems write SetItems;
   end;
 
 {$IFDEF VCL}
@@ -205,9 +254,13 @@ const
 
 resourcestring
   RsResource = 'Resource %s';
+  RsMappedResource = 'Mapped Resource %s';
   RsBitmap = 'Bitmap %s';
   RsWrongImageListMode = 'Wrong image list mode. For this function the mode' +
     'must be %s';
+  // (usc) there is no real need to move this string to JvResource.pas because
+  //       hopefully ikMappedResourceBitmap will be supported soon
+  RsNotSupportedItemKind = 'The item kind %s is not supported so far.';
 
 {$IFDEF LINUX}
 const
@@ -335,160 +388,193 @@ end;
 
 {$ENDIF VCL}
 
-type
-  TImgListItemTyp = (itResourceBitmap, itInlineBitmap);
-
-  TImgListItem = class(TObject)
-  protected
-    FImgListItemTyp: TImgListItemTyp;
-    FTransparentColor: TColor;
-  public
-    procedure ReadFromStream(AStream: TStream); virtual;
-    procedure WriteToStream(AStream: TStream); virtual;
-    procedure AddToImageList(AImageList: TImageList); virtual;
-
-    property ItemTyp: TImgListItemTyp read FImgListItemTyp;
-    property TransparentColor: TColor read FTransparentColor write FTransparentColor;
-  end;
-
-  TResourceImgListItem = class(TImgListItem)
-  private
-    FResourceName: string;
-  public
-    constructor Create;
-
-    procedure ReadFromStream(AStream: TStream); override;
-    procedure WriteToStream(AStream: TStream); override;
-    procedure AddToImageList(AImageList: TImageList); override;
-
-    property ResourceName: string read FResourceName write FResourceName;
-  end;
-
-  TBitmapImgListItem = class(TImgListItem)
-  private
-    FBitmap: TBitmap;
-    procedure SetBitmap(ABitmap: TBitmap);
-  public
-    constructor Create;
-    destructor Destroy; override;
-
-    procedure ReadFromStream(AStream: TStream); override;
-    procedure WriteToStream(AStream: TStream); override;
-    procedure AddToImageList(AImageList: TImageList); override;
-
-    property Bitmap: TBitmap read FBitmap write SetBitmap;
-  end;
-
-
-function ReadStringFromStream(Stream: TStream): string;
-var
-  Count: Word;
+constructor TJvImageListItem.Create(Collection: TCollection);
 begin
-  Stream.Read(Count, SizeOf(Count));
-  SetLength(Result, Count);
-  if Count > 0 then
-    Stream.Read(Result[1], Count);
-end;
+  inherited Create(Collection);
 
-procedure WriteStringToStream(Stream: TStream; const AString: string);
-var
-  Count: Word;
-begin
-  Count := Length(AString);
-  Stream.Write(Count, SizeOf(Count));
-  if Count > 0 then
-    Stream.Write(AString[1], Count);
-end;
-
-procedure TImgListItem.ReadFromStream(AStream: TStream);
-begin
-  AStream.Read(FTransparentColor, SizeOf(FTransparentColor));
-end;
-
-procedure TImgListItem.WriteToStream(AStream: TStream);
-begin
-  AStream.Write(FImgListItemTyp, SizeOf(FImgListItemTyp));
-  AStream.Write(FTransparentColor, SizeOf(FTransparentColor));
-end;
-
-procedure TImgListItem.AddToImageList(AImageList: TImageList);
-begin
-//
-end;
-
-constructor TResourceImgListItem.Create;
-begin
-  inherited Create;
-
-  FImgListItemTyp := itResourceBitmap;
+  FBitmap := TBitmap.Create;
+  FBitmap.OnChange := BitmapChanged;
+  FKind := ikResourceBitmap;
   FResourceName := '';
+  FTransparentColor := clFuchsia;
+  if GetImageList <> nil then
+    AddToImageList(GetImageList);
 end;
 
-procedure TResourceImgListItem.ReadFromStream(AStream: TStream);
+destructor TJvImageListItem.Destroy;
+var
+  ImageList: TImageList;
 begin
-  inherited ReadFromStream(AStream);
-  FResourceName := ReadStringFromStream(AStream);
+  ImageList := GetImageList;
+  if Assigned(ImageList) and (Index >= 0) and (ImageList.Count > Index) then
+    ImageList.Delete(Index);
+  FBitmap.Free;
+  inherited Destroy;
 end;
 
-procedure TResourceImgListItem.WriteToStream(AStream: TStream);
-begin
-  inherited WriteToStream(AStream);
-  WriteStringToStream(AStream, FResourceName);
-end;
-
-procedure TResourceImgListItem.AddToImageList(AImageList: TImageList);
+procedure TJvImageListItem.AddToImageList(AImageList: TImageList);
 var
   Bitmap: TBitmap;
 begin
   Bitmap := TBitmap.Create;
   try
-    try
-      Bitmap.LoadFromResourceName(hInstance, FResourceName);
-      AImageList.AddMasked(Bitmap, FTransparentColor);
-    except
-    end;
+    Bitmap.Width := AImageList.Width;
+    Bitmap.Height := AImageList.Height;
+    AImageList.AddMasked(Bitmap, FTransparentColor);
   finally
     Bitmap.Free;
   end;
+  UpdateImageListItem(AImageList, Pred(AImageList.Count));
 end;
 
-procedure TBitmapImgListItem.SetBitmap(ABitmap: TBitmap);
+procedure TJvImageListItem.BitmapChanged(Sender: TObject);
 begin
-  FBitmap.Assign(ABitmap);
+  UpdateImageList;
 end;
 
-constructor TBitmapImgListItem.Create;
+function TJvImageListItem.GetDisplayName: string;
 begin
-  inherited Create;
-
-  FImgListItemTyp := itInlineBitmap;
-  FBitmap := TBitmap.Create;
+  case FKind of
+    ikResourceBitmap:
+      Result := Format(RsResource, [FResourceName]);
+    ikMappedResourceBitmap:
+      Result := Format(RsMappedResource, [FResourceName]);
+    ikInlineBitmap:
+      Result := Format(RsBitmap,
+        [GetEnumName(TypeInfo(TPixelFormat), Ord(FBitmap.PixelFormat))]);
+    else
+      inherited GetDisplayName;
+  end;
 end;
 
-destructor TBitmapImgListItem.Destroy;
+function TJvImageListItem.GetImageList: TImageList;
 begin
-  FBitmap.Free;
-
-  inherited Destroy;
+  Result := TImageList(TJvImageListItems(Collection).Owner);
 end;
 
-procedure TBitmapImgListItem.ReadFromStream(AStream: TStream);
+procedure TJvImageListItem.SetBitmap(ABitmap: TBitmap);
 begin
-  inherited ReadFromStream(AStream);
-  FBitmap.Free;
-  FBitmap := TBitmap.Create;
-  FBitmap.LoadFromStream(AStream);
+  if FKind = ikInlineBitmap then
+  begin
+    FBitmap.Assign(ABitmap);
+    UpdateImageList;
+  end;
 end;
 
-procedure TBitmapImgListItem.WriteToStream(AStream: TStream);
+procedure TJvImageListItem.SetIndex(Value: Integer);
+var
+  ImageList: TImageList;
+  OldIndex: Integer;
 begin
-  inherited WriteToStream(AStream);
-  FBitmap.SaveToStream(AStream);
+  OldIndex := Index;
+  inherited SetIndex(Value);
+  ImageList := GetImageList;
+  if Assigned(ImageList) and (OldIndex >= 0) and (ImageList.Count > OldIndex) and
+    (Index >= 0) and (ImageList.Count > Index) then
+    ImageList.Move(OldIndex, Index);
 end;
 
-procedure TBitmapImgListItem.AddToImageList(AImageList: TImageList);
+procedure TJvImageListItem.SetKind(AKind: TJvImageListItemKind);
 begin
-  AImageList.AddMasked(FBitmap, FTransparentColor);
+  // (usc) remove when MappedResourceBitmap support is finished
+  if AKind = ikMappedResourceBitmap then
+    raise EJvImageListError.CreateFmt(RsNotSupportedItemKind, ['ikMappedResourceBitmap']);
+
+  if FKind <> AKind then
+  begin
+    FKind := AKind;
+    if FKind in [ikResourceBitmap, ikMappedResourceBitmap] then
+      FBitmap.Assign(nil)
+    else
+    if FKind = ikInlineBitmap then
+      FResourceName := '';
+  end;
+end;
+
+procedure TJvImageListItem.SetResourceName(AResourceName: string);
+begin
+  if (FKind in [ikResourceBitmap, ikMappedResourceBitmap]) and
+    (FResourceName <> AResourceName) then
+  begin
+    FResourceName := AResourceName;
+    UpdateImageList;
+  end;
+end;
+
+procedure TJvImageListItem.SetTransparentColor(AColor: TColor);
+begin
+  if FTransparentColor <> AColor then
+  begin
+    FTransparentColor := AColor;
+    UpdateImageList;
+  end;
+end;
+
+procedure TJvImageListItem.UpdateImageList;
+begin
+  UpdateImageListItem(GetImageList, Index);
+end;
+
+procedure TJvImageListItem.UpdateImageListItem(AImageList: TImageList; AIndex: Integer);
+var
+  Bitmap: TBitmap;
+begin
+  if (FKind in [ikResourceBitmap, ikMappedResourceBitmap]) and (FResourceName <> '') then
+  begin
+    Bitmap := TBitmap.Create;
+    try
+      try
+        if FKind = ikResourceBitmap then
+          Bitmap.LoadFromResourceName(hInstance, FResourceName);
+{// (usc) include when MappedResourceBitmap support is finished
+        else
+        if FKind = ikMappedResourceBitmap then
+          GetMappedResourceBitmap(FResourceName, Bitmap);
+}
+        AImageList.ReplaceMasked(AIndex, Bitmap, FTransparentColor);
+      except
+      end;
+    finally
+      Bitmap.Free;
+    end;
+  end
+  else
+  if (FKind = ikInlineBitmap) and Assigned(FBitmap) and
+    (FBitmap.Width = AImageList.Width) and (FBitmap.Height = AImageList.Height) then
+    AImageList.ReplaceMasked(AIndex, FBitmap, FTransparentColor);
+end;
+
+constructor TJvImageListItems.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner, TJvImageListItem);
+end;
+
+function TJvImageListItems.Add: TJvImageListItem;
+begin
+  Result := TJvImageListItem(inherited Add);
+end;
+
+function TJvImageListItems.GetItem(AIndex: Integer): TJvImageListItem;
+begin
+  Result := TJvImageListItem(inherited GetItem(AIndex));
+end;
+
+{$IFDEF COMPILER5}
+function TJvImageListItems.Owner: TPersistent;
+begin
+  Result := GetOwner;
+end;
+{$ENDIF COMPILER5}
+
+procedure TJvImageListItems.SetItem(AIndex: Integer; Value: TJvImageListItem);
+begin
+  inherited SetItem(AIndex, Value);
+end;
+
+procedure TJvImageListItems.Update(Item: TCollectionItem);
+begin
+  if Assigned(Item) then
+    TJvImageListItem(Item).UpdateImageList;
 end;
 
 { Loads the bitmaps for the ImageList from the bitmap Bitmap.
@@ -642,12 +728,12 @@ begin
   FResourceIds := TStringList.Create;
   TStringList(FResourceIds).OnChange := DataChanged;
 
-  FItemList := TObjectList.Create;
+  FItems := TJvImageListItems.Create(Self);
 end;
 
 destructor TJvImageList.Destroy;
 begin
-  FItemList.Free;
+  FItems.Free;
   FPicture.Free;
   FResourceIds.Free;
   inherited Destroy;
@@ -848,9 +934,12 @@ begin
           if not Bmp.Empty and (Bmp.Width > 0) and (Bmp.Height > 0) then
           begin
             case TransparentMode of
-              tmNone: MaskColor := clNone;
-              tmColor: MaskColor := TransparentColor;
-              tmAuto: MaskColor := Bmp.Canvas.Pixels[0, Bmp.Height - 1];
+              tmNone:
+                MaskColor := clNone;
+              tmColor:
+                MaskColor := TransparentColor;
+              tmAuto:
+                MaskColor := Bmp.Canvas.Pixels[0, Bmp.Height - 1];
             else
               MaskColor := clNone; // make the compiler happy
             end;
@@ -868,61 +957,21 @@ begin
   end;
 end;
 
-procedure TJvImageList.ReadItemData(Stream: TStream);
-var
-  Count, i: Integer;
-  Item: TImgListItem;
-  CType: TImgListItemTyp;
-begin
-  Clear;
-
-  FItemList.Clear;
-  Stream.Read(Count, SizeOf(Count));
-  for i := 0 to Count - 1 do
-  begin
-    Stream.Read(CType, SizeOf(CType));
-    Item := nil;
-    case CType of
-      itResourceBitmap:
-        Item := TResourceImgListItem.Create;
-      itInlineBitmap:
-        Item := TBitmapImgListItem.Create;
-    end;
-    Item.ReadFromStream(Stream);
-    FItemList.Add(Item);
-    Item.AddToImageList(Self);
-  end;
-end;
-
-procedure TJvImageList.WriteItemData(Stream: TStream);
-var
-  Cnt, i: Integer;
-begin
-  Cnt := FItemList.Count;
-  Stream.Write(Cnt, SizeOf(Cnt));
-  if Cnt > 0 then
-    for i := 0 to Pred(FItemList.Count) do
-      TImgListItem(FItemList[i]).WriteToStream(Stream);
-end;
 type
   TOpenComponent = class(TComponent);
   TDefineProperties = procedure(Self: TComponent; Filer: TFiler);
 
 procedure TJvImageList.DefineProperties(Filer: TFiler);
 begin
-  if FMode = imItemList then
-  begin
-    Filer.DefineBinaryProperty('ItemData', ReadItemData, WriteItemData, Count > 0);
-    Exit;
-  end;
-
   Inc(FUpdateLock); // no BeginUpdate/EndUpdate here
   try
     if (Filer is TWriter) then
       DoLoadFromFile; // update Picture.Graphic if a filename is specified
 
-    if (Filer is TWriter) and (FPicture.Graphic <> nil) and
-       (not FPicture.Graphic.Empty) and (FMode <> imClassic) then
+    if (Filer is TWriter) and
+      (((FMode = imPicture) and (FPicture.Graphic <> nil) and (not FPicture.Graphic.Empty)) or
+      ((FMode = imResourceIds) and (FResourceIds.Count > 0)) or
+      ((FMode = imItemList) and (FItems.Count > 0))) then
       TDefineProperties(@TOpenComponent.DefineProperties)(Self, Filer)
     else
       inherited DefineProperties(Filer);
@@ -961,41 +1010,42 @@ begin
 end;
 {$ENDIF VCL}
 
+procedure TJvImageList.SetItems(AItems: TJvImageListItems);
+begin
+  Clear;
+  FItems.Assign(AItems);
+end;
+
 procedure TJvImageList.AddItem(ABitmap: TBitmap; ATransparentColor: TColor);
 var
-  BitmapItem: TBitmapImgListItem;
+  BitmapItem: TJvImageListItem;
 begin
   if Mode <> imItemList then
     Clear;
   Mode := imItemList;
-  BitmapItem := TBitmapImgListItem.Create;
-  BitmapItem.Bitmap := ABitmap;
+  BitmapItem := FItems.Add;
+  BitmapItem.Kind := ikInlineBitmap;
+  BitmapItem.Bitmap.Assign(ABitmap);
   BitmapItem.TransparentColor := ATransparentColor;
-  BitmapItem.AddToImageList(Self);
-  FItemList.Add(BitmapItem);
 end;
 
 procedure TJvImageList.AddItem(const AResourceName: string; ATransparentColor: TColor);
 var
-  ResourceItem: TResourceImgListItem;
+  ResourceItem: TJvImageListItem;
 begin
   if Mode <> imItemList then
     Clear;
   Mode := imItemList;
-  ResourceItem := TResourceImgListItem.Create;
+  ResourceItem := FItems.Add;
+  ResourceItem.Kind := ikResourceBitmap;
   ResourceItem.ResourceName := AResourceName;
   ResourceItem.TransparentColor := ATransparentColor;
-  ResourceItem.AddToImageList(Self);
-  FItemList.Add(ResourceItem);
 end;
 
 procedure TJvImageList.DeleteItem(AIndex: Integer);
 begin
   if Mode = imItemList then
-  begin
-    Delete(AIndex);
-    FItemList.Delete(AIndex);
-  end
+    FItems.Delete(AIndex)
   else
     ItemListError;
 end;
@@ -1005,7 +1055,7 @@ begin
   if Mode = imItemList then
   begin
     Clear;
-    FItemList.Clear;
+    FItems.Clear;
   end
   else
     ItemListError;
@@ -1015,16 +1065,7 @@ function TJvImageList.GetItemInfoStr(AIndex: Integer): string;
 begin
   Result := '';
   if Mode = imItemList then
-  begin
-    case TImgListItem(FItemList[AIndex]).ItemTyp of
-      itResourceBitmap:
-        Result := Format(RsResource,
-          [TResourceImgListItem(FItemList[AIndex]).ResourceName]);
-      itInlineBitmap:
-        Result := Format(RsBitmap,
-          [GetEnumName(TypeInfo(TPixelFormat), Ord(TBitmapImgListItem(FItemList[AIndex]).Bitmap.PixelFormat))]);
-    end;
-  end
+    Result := FItems[AIndex].DisplayName
   else
     ItemListError;
 end;
@@ -1195,12 +1236,12 @@ end;
 
 {$ENDIF VisualCLX}
 
-{$IFDEF VCL}
-
 procedure TJvImageList.ItemListError;
 begin
   raise EJvImageListError.CreateFmt(RsWrongImageListMode, ['imItemList']);
 end;
+
+{$IFDEF VCL}
 
 initialization
 
