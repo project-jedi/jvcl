@@ -425,7 +425,7 @@ begin
         Minor := FileInfo^.dwFileVersionMS and $FFFF;
         Result := (Major > 5) or ((Major = 5) and (Minor > 80));
       finally
-        FreeMem(Info, FileInfoSize);
+        FreeMem(Info);
       end;
     except
     end;
