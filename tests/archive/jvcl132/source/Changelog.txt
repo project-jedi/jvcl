@@ -1,3 +1,6 @@
+2002-06-28
+- TJvAlarms - fixed "OnAlarm never fires" bug
+
 2002-06-23
 - TJvSimpleXml: Using hashed string list to retrieve items by name faster (2*) //Sebastien Buysse
 - TJvSimpleXml: Added encoding type in output file (Internet Explorer will load the file now) //Sebastien Buysse
