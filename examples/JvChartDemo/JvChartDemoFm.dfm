@@ -30,14 +30,10 @@ object JvChartDemoForm: TJvChartDemoForm
     Options.PenCount = 3
     Options.XOrigin = 0
     Options.YOrigin = 0
-    Options.YStartOffset = 21
+    Options.YStartOffset = 42
     Options.PrimaryYAxis.YMax = 20.000000000000000000
-    Options.PrimaryYAxis.YValueCount = 20
     Options.PrimaryYAxis.YLegendDecimalPlaces = 1
-    Options.PrimaryYAxis.YLegends.Strings = (
-      '0')
     Options.SecondaryYAxis.YMax = 140.000000000000000000
-    Options.SecondaryYAxis.YValueCount = 20
     Options.SecondaryYAxis.YLegendDecimalPlaces = 0
     Options.SecondaryYAxis.DefaultYLegends = 60
     Options.Legend = clChartLegendBelow
@@ -456,10 +452,10 @@ object JvChartDemoForm: TJvChartDemoForm
   end
   object PrinterSetupDialog1: TPrinterSetupDialog
     Left = 168
-    Top = 36
+    Top = 42
   end
   object PrintDialog1: TPrintDialog
-    Left = 200
-    Top = 36
+    Left = 204
+    Top = 40
   end
 end
