@@ -25,6 +25,11 @@
  page, located at http://www.delphi-jedi.org
 
  RECENT CHANGES:
+    Apr 28, 2004, Markus Spoettl:
+      - Added rectangle around check mark boolean items (Mantis #1645).
+      - Exposed DropDownCount to specify the number of rows in a drop down
+        list (Mantis #1646).
+      - Fixed minor issue regarding item heights (Mantis #1647).
     Apr 23, 2004, Marcel Bestebroer:
       - Added OnItemValueError event, which is fired when an exception occurs
         during the Item's Apply method. If no handler is assigned, the
@@ -782,6 +787,7 @@ type
     FSortKind: TInspectorItemSortKind;
     FTracking: Boolean;
     FUserData: Pointer;
+    FDropDownCount: Integer;
   protected
     function GetName: string; virtual; // NEW: Warren added.
     procedure AlphaSort;
@@ -974,6 +980,7 @@ type
     property OnCompare: TInspectorItemSortCompare read FOnCompare write SetOnCompare;
     property OnValueChanged: TNotifyEvent read FOnValueChanged write FOnValueChanged;
     property OnGetValueList: TInspectorItemGetValueListEvent read FOnGetValueList write FOnGetValueList;
+    property DropDownCount: Integer read FDropDownCount write FDropDownCount;
   end;
 
   TJvInspectorCustomCategoryItem = class(TJvCustomInspectorItem)
@@ -5393,14 +5400,13 @@ begin
 end;
 
 procedure TJvCustomInspectorItem.DropDown;
-const
-  MaxListCount = 8;
 var
   ListCount: Integer;
   P: TPoint;
   Y: Integer;
   J: Integer;
   I: Integer;
+  _h: Integer;
 begin
   if not DroppedDown then
   begin
@@ -5410,15 +5416,18 @@ begin
     if TListBox(ListBox).IntegralHeight then
     begin
       ListBox.Canvas.Font := TListBox(ListBox).Font;
-      TListBox(ListBox).ItemHeight := CanvasMaxTextHeight(ListBox.Canvas);
+//      TListBox(ListBox).ItemHeight := CanvasMaxTextHeight(ListBox.Canvas);
+      _h := CanvasMaxTextHeight(ListBox.Canvas);
+      DoMeasureListItem(ListBox, -1, _h);
+      TListBox(ListBox).ItemHeight := _h; //CanvasMaxTextHeight(ListBox.Canvas);
     end;
     {$ENDIF VCL}
     ListBox.Items.Clear;
     GetValueList(ListBox.Items);
-    if ListBox.Items.Count < MaxListCount then
+    if ListBox.Items.Count < DropDownCount then
       ListCount := ListBox.Items.Count
     else
-      ListCount := MaxListCount;
+      ListCount := DropDownCount;
     if ListCount = 0 then
       ListCount := 1;
     TListBox(ListBox).Height := ListCount * TListBox(ListBox).ItemHeight + 4;
@@ -6465,6 +6474,7 @@ begin
     AParent.Add(Self)
   end;
   FData := AData;
+  FDropDownCount := 8;
 end;
 
 destructor TJvCustomInspectorItem.Destroy;
@@ -6866,7 +6876,6 @@ begin
     if not CancelEdits and (not Data.IsAssigned or (DisplayValue <> EditCtrl.Text)) then
     begin
       Apply;
-//      DisplayValue := EditCtrl.Text;
       InvalidateItem;
     end;
     FreeAndNil(FListBox);
@@ -8716,9 +8725,15 @@ begin
 {      Frame3D(ACanvas, ARect, clBlack, clWhite, 1);
       Frame3D(ACanvas, ARect, clBlack, cl3DLight, 1);}
 
+        ACanvas.Pen.Color := clActiveBorder;
+        ACanvas.Pen.Width := 1;
+        ACanvas.Rectangle(ARect);
+        InflateRect(ARect, -1, -1);
+
       if Bool then
         with ACanvas do
         begin
+          InflateRect(ARect, -1, -1);
           { Paint the 3d checkbox: Draw the checkmark }
           Pen.Color := clWindowText;
           Pen.Width := 1;
