@@ -37,7 +37,6 @@ requires
   JVCL200_R50;
 
 contains
-
   JvaDBReg in '..\Source\JvaDBReg.pas',
   JvaCtlReg in '..\Source\JvaCtlReg.pas',
   JvIDEZoom in '..\Source\JvIDEZoom.pas',
@@ -45,7 +44,6 @@ contains
   JvRegAutoEditor in '..\Source\JvRegAutoEditor.pas' {RegEditor},
   JvHTHintEditor in '..\Source\JvHTHintEditor.pas' {HintEditor},
   JvIReg in '..\Source\JvIReg.pas',
-//-------------------------------------
   JVCLReg in '..\Source\JVCLReg.pas',
   JvAlarmsEditor in '..\Source\JvAlarmsEditor.pas',
   JvBaseDlgEditor in '..\Source\JvBaseDlgEditor.pas',
@@ -96,8 +94,9 @@ contains
   JvTimLstEd in '..\source\JvTimLstEd.pas' {JvTimerItemsEditor},
   jvBandObjectDLLWizard in '..\source\JvBandObjectDLLWizard.pas',
   jvBandObjectDLLWizardForm in '..\source\JvBandObjectDLLWizardForm.pas' {zWizardForm},
-
   JvPluginWizard in '..\source\JvPluginWizard.pas',
-  JvPluginParams in '..\source\JvPluginParams.pas' {frmPluginParams};
+  JvPluginParams in '..\source\JvPluginParams.pas' {frmPluginParams},
+  JvActions in '..\source\JvActions.pas',
+  JvActnRes in '..\source\JvActnRes.pas' {JvStandardActions: TDataModule};
 
 end.
