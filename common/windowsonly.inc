@@ -17,19 +17,25 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+// This inc file depends on jedi.inc which has to
+// be included first (usually indirectly through
+// the inclusion of jvcl.inc).
+
+// Suppress platform warnings which are irrelevant
+// because the including unit can only be compiled
+// for the Windows platform anyway.
+
 {$IFDEF COMPILER6_UP}
 {$WARN UNIT_PLATFORM OFF}
 {$WARN SYMBOL_PLATFORM OFF}
 {$ENDIF COMPILER6_UP}
 
+// Cause a compilation error for any platform except Windows.
+
 {$IFNDEF MSWINDOWS}
 {$IFDEF COMPILER6_UP}
 {$MESSAGE FATAL 'This unit is only supported on Windows!'}
 {$ELSE}
-{$IFNDEF BCB5}
-{$IFNDEF DELPHI5}
 This unit is only supported on Windows!
-{$ENDIF !DELPHI5}
-{$ENDIF !BCB5}
 {$ENDIF COMPILER6_UP}
 {$ENDIF !MSWINDOWS}

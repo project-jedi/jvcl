@@ -18,8 +18,22 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
+// This inc file depends on jedi.inc which has to
+// be included first (usually indirectly through
+// the inclusion of jvcl.inc).
+
+// Suppress platform warnings which are irrelevant
+// because the including unit can only be compiled
+// for the Linux platform anyway.
+// No need for COMPILER6_UP IFDEFs because all Kylix
+// versions are implicitly COMPILER6_UP already.
+
+{$IFDEF COMPILER6_UP}
 {$WARN UNIT_PLATFORM OFF}
 {$WARN SYMBOL_PLATFORM OFF}
+{$ENDIF COMPILER6_UP}
+
+// Cause a compilation error for any platform except Linux.
 
 {$IFNDEF LINUX}
 {$IFDEF COMPILER6_UP}

@@ -17,6 +17,18 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+// This inc file depends on jedi.inc which has to
+// be included first (usually indirectly through
+// the inclusion of jvcl.inc).
+
+// Do not suppress platform warnings to avoid problems
+// with an including unit which is not cross platform.
+// To suppress these warnings one of the inc files
+// windowsonly.inc, linuxonly.inc or crossplatform.inc
+// has to be included also.
+
+// Cause a compilation error for any component library except Visual CLX.
+
 {$IFNDEF VisualCLX}
 {$IFDEF COMPILER6_UP}
 {$MESSAGE FATAL 'This unit is only supported for Visual CLX!'}
