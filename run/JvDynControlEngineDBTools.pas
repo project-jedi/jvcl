@@ -168,6 +168,11 @@ begin
     WrapControls := true;
   end;
   FArrangeConstraints := TSizeConstraints.Create(nil);
+  with FArrangeConstraints do
+  begin
+    MaxHeight := 480;
+    MaxWidth := 640;
+  end;
   FFieldCreateOptions := TJvCreateDBFieldsOnControlOptions.Create;
 end;
 
@@ -198,12 +203,13 @@ procedure TJvDynControlDataSourceEditDialog.ArrangePanelChangedWidth (Sender: TO
 begin
   FForm.ClientWidth := ChangedSize;
 end;
+    
 procedure TJvDynControlDataSourceEditDialog.ArrangePanelChangedHeight (Sender: TObject; ChangedSize : Integer);
 begin
   if Assigned(FNavigatorPanel) then
-    FForm.ClientHeight := ChangedSize + FButtonPanel.Height + FNavigatorPanel.Height
+    FForm.ClientHeight := ChangedSize + FButtonPanel.Height + FNavigatorPanel.Height + 35
   else
-    FForm.ClientHeight := ChangedSize + FButtonPanel.Height;
+    FForm.ClientHeight := ChangedSize + FButtonPanel.Height + 35;
 end;
 
 function TJvDynControlDataSourceEditDialog.CreateDynControlDialog(var AMainPanel: TWinControl): TCustomForm;
@@ -295,6 +301,8 @@ begin
     ArrangePanel.ArrangeSettings := ArrangeSettings;
     if ArrangeSettings.MaxWidth = 0 then
       ArrangePanel.ArrangeSettings.MaxWidth := ArrangeConstraints.MaxWidth;
+    if ArrangeSettings.MaxWidth = 0 then
+      ArrangeSettings.MaxWidth := Screen.Width;
     if IncludeNavigator then
     begin
       FNavigatorPanel := TJvPanel.Create(FForm);
@@ -317,10 +325,6 @@ begin
     else
       IntDynControlEngineDB.CreateControlsFromDatasourceOnControl(DataSource, ArrangePanel, FieldCreateOptions);
     ArrangePanel.ArrangeControls;
-    if Assigned(FNavigatorPanel) then
-      FForm.ClientHeight := FScrollBox.Height + 35 + FScrollBox.Height
-    else
-      FForm.ClientHeight := FScrollBox.Height + 35;
     ArrangePanel.ArrangeSettings.AutoArrange := True;
     Result := FForm.ShowModal;
   finally
