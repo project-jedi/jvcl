@@ -75,7 +75,9 @@ begin
   RegisterComponents(RsPaletteNonVisual, [TJvJVCLAboutComponent]);
   RegisterComponents(RsPaletteNonVisual, [TJvContextProvider,
     TJvColorProvider, TJvColorMappingProvider]);
+  {$IFDEF MSWINDOWS}
   RegisterComponents(RsPalettePersistence, [TJvAppRegistryStorage]);
+  {$ENDIF MSWINDOWS}
   RegisterComponents(RsPalettePersistence, [TJvAppStorage,
     TJvAppIniFileStorage, TJvAppStorageSelectList]);
 

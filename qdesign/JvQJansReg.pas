@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 // No licence info because this should be merged with other Registration Unit
@@ -13,13 +13,18 @@ interface
 uses
   Classes,
   
-  DesignIntf, DesignEditors, VCLEditors,
+  DesignIntf, DesignEditors,
   
-  JvQMarkupLabel, JvQMarkupViewer, JvQSAL, JvQSALCore, JvQSALMath,
+  
+  CLXEditors,
+  
+  
+  
+  JvQMarkupLabel, JvQMarkupViewer, JvQSAL, {JvQSticker,} JvQSALCore, JvQSALMath,
   JvQYearGrid, JvQTracker, JvQAirBrush, JvQGridFilter, JvQGridPrinter,
   JvQArrayButton, JvQForth, JvQTurtle, JvQPaintFX, JvQDrawImage,
   JvQBitmapButton, JvQSimScope, JvQSimIndicator, JvQSimPID, JvQSIMPIDLinker,
-  JvQSimLogic, JvQSpellerForm, JvQCSVBaseControls, JvQCsvBaseEditor;
+  JvQSimLogic, JvQSpellerForm, JvQCsvBaseControls, JvQCsvBaseEditor;
 
 procedure Register;
 
@@ -39,9 +44,12 @@ const
 begin
   //TODO: Register a TShortCut Property Editor on TTreeKeyMappings class in TJvJanTreeView
   RegisterComponents('Jv Jans', [TJvMarkupLabel, TJvMarkupViewer, TJvSAL,
-    TJvSALCore, TJvSALMath, TJvYearGrid, TJvAirBrush, TJvTracker,
-    TJvGridFilter, TJvGridPrinter, TJvPaintFX, TJvDrawImage,
-    TJvArrayButton, TJvForthScript, TJvTurtle, TJvBitmapButton, TJvSpeller]);
+    {TJvSticker,} TJvSALCore, TJvSALMath, TJvYearGrid, TJvAirBrush, TJvTracker,
+    TJvGridFilter, TJvGridPrinter,
+
+    TJvPaintFX, TJvDrawImage,
+    TJvArrayButton, TJvForthScript, TJvTurtle, TJvBitmapButton, TJvSpeller
+    ]);
   // Simulator Components
   RegisterComponents('Jv Jans SIM', [TJvSimScope, TJvSimIndicator, TJvSimPID,
     TJvSimPIDLinker, TJvSimConnector, TJvLogic, TJvSimButton, TJvSimLight,
