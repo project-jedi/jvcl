@@ -32,8 +32,8 @@
 {******************************************************************************}
 
 unit JvUIBSQLParser;
-{$I jvcl.inc}
-{$I jvuib.inc}
+{$I JVCL.INC}
+{$I JvUIB.inc}
 
 interface
 uses
@@ -806,7 +806,7 @@ const
     (tok_ident: KW_AND;               tok_string: 'AND';                    tok_version: 1),
     (tok_ident: ANY;                  tok_string: 'ANY';                    tok_version: 1),
     (tok_ident: KW_AS;                tok_string: 'AS';                     tok_version: 1),
-    (tok_ident: ASC;                  tok_string: 'ASC';                    tok_version: 1), (* Alias of ASCENDING *)
+    (tok_ident: ASC;                  tok_string: 'ASC';                    tok_version: 1),	(* Alias of ASCENDING *)
     (tok_ident: ASC;                  tok_string: 'ASCENDING';              tok_version: 1),
     (tok_ident: AT;                   tok_string: 'AT';                     tok_version: 1),
     (tok_ident: AUTO;                 tok_string: 'AUTO';                   tok_version: 1),
@@ -859,7 +859,7 @@ const
     (tok_ident: DEFAULT;              tok_string: 'DEFAULT';                tok_version: 1),
     (tok_ident: KW_DELETE;            tok_string: 'DELETE';                 tok_version: 1),
     (tok_ident: DELETING;             tok_string: 'DELETING';               tok_version: 2),
-    (tok_ident: DESC;                 tok_string: 'DESC';                   tok_version: 1), (* Alias of DESCENDING *)
+    (tok_ident: DESC;                 tok_string: 'DESC';                   tok_version: 1),	(* Alias of DESCENDING *)
     (tok_ident: DESC;                 tok_string: 'DESCENDING';             tok_version: 1),
     (tok_ident: KW_DESCRIPTOR;        tok_string: 'DESCRIPTOR';             tok_version: 2),
     (tok_ident: KW_DIFFERENCE;        tok_string: 'DIFFERENCE';             tok_version: 2),
@@ -971,7 +971,7 @@ const
     (tok_ident: RECREATE;             tok_string: 'RECREATE';               tok_version: 2),
     (tok_ident: REFERENCES;           tok_string: 'REFERENCES';             tok_version: 1),
     (tok_ident: RELEASE;              tok_string: 'RELEASE';                tok_version: 2),
-    (tok_ident: RESERVING;            tok_string: 'RESERV';                 tok_version: 1), (* Alias of RESERVING *)
+    (tok_ident: RESERVING;            tok_string: 'RESERV';                 tok_version: 1),	(* Alias of RESERVING *)
     (tok_ident: RESERVING;            tok_string: 'RESERVING';              tok_version: 1),
     (tok_ident: RESTRICT;             tok_string: 'RESTRICT';               tok_version: 1),
     (tok_ident: RETAIN;               tok_string: 'RETAIN';                 tok_version: 1),
@@ -983,7 +983,7 @@ const
     (tok_ident: ROLLBACK;             tok_string: 'ROLLBACK';               tok_version: 1),
     (tok_ident: ROW_COUNT;            tok_string: 'ROW_COUNT';              tok_version: 2),
     (tok_ident: SAVEPOINT;            tok_string: 'SAVEPOINT';              tok_version: 2),
-    (tok_ident: DATABASE;             tok_string: 'SCHEMA';                 tok_version: 1), (* Alias of DATABASE *)
+    (tok_ident: DATABASE;             tok_string: 'SCHEMA';                 tok_version: 1),	(* Alias of DATABASE *)
     (tok_ident: SECOND;               tok_string: 'SECOND';                 tok_version: 2),
     (tok_ident: SEGMENT;              tok_string: 'SEGMENT';                tok_version: 1),
     (tok_ident: SELECT;               tok_string: 'SELECT';                 tok_version: 1),
@@ -1000,7 +1000,7 @@ const
     (tok_ident: SQLCODE;              tok_string: 'SQLCODE';                tok_version: 1),
     (tok_ident: STABILITY;            tok_string: 'STABILITY';              tok_version: 1),
     (tok_ident: STARTING;             tok_string: 'STARTING';               tok_version: 1),
-    (tok_ident: STARTING;             tok_string: 'STARTS';                 tok_version: 1), (* Alias of STARTING *)
+    (tok_ident: STARTING;             tok_string: 'STARTS';                 tok_version: 1),	(* Alias of STARTING *)
     (tok_ident: STATEMENT;            tok_string: 'STATEMENT';              tok_version: 2),
     (tok_ident: STATISTICS;           tok_string: 'STATISTICS';             tok_version: 1),
     (tok_ident: SUBSTRING;            tok_string: 'SUBSTRING';              tok_version: 2),

@@ -24,8 +24,8 @@
 {                                                                              }
 {******************************************************************************}
 
-{$I jvcl.inc}
-{$I jvuib.inc}
+{$I JVCL.INC}
+{$I JvUIB.inc}
 
 unit JvUIBConst;
 
@@ -43,6 +43,39 @@ const
 type
   // JvUIB Server Commands
   TServerCommand = (scGetClassObject, scInvokeMethod);
+
+  // Metadata Object Identifiers
+  TOIDDatabase = (OIDDomain, OIDTable, OIDView, OIDProcedure, OIDGenerator,
+    OIDException, OIDUDF, OIDRole);
+  TOIDDatabases = set of TOIDDatabase;
+
+  TOIDTable = (OIDTableField, OIDPrimary, OIDForeign, OIDTableTrigger,
+    OIDUnique,OIDIndex, OIDCheck);
+  TOIDTables = set of TOIDTable;
+
+  TOIDView = (OIDViewFields, OIDViewTrigers);
+  TOIDViews = set of TOIDView;
+
+  TOIDProcedure = (OIDProcFieldIn, OIDProcFieldOut);
+  TOIDProcedures = set of TOIDProcedure;
+
+  TOIDUDF = (OIDUDFField);
+  TOIDUDFs = set of TOIDUDF;
+
+const
+  ALLOBjects = [OIDDomain, OIDTable, OIDView, OIDProcedure, OIDGenerator,
+    OIDException, OIDUDF, OIDRole];
+  ALLTables = [OIDTableField, OIDPrimary, OIDForeign, OIDTableTrigger,
+    OIDUnique,OIDIndex, OIDCheck];
+  ALLViews = [OIDViewFields, OIDViewTrigers];
+  ALLProcedures = [OIDProcFieldIn, OIDProcFieldOut];
+  ALLUDFs = [OIDUDFField];
+  {$IFDEF LINUX}
+    BreakLine = #10;
+  {$ELSE}
+    BreakLine = #13;
+  {$ENDIF}
+  NewLine = BreakLine + BreakLine;
 
 resourcestring
   {$IFDEF UIBLANG_EN}
