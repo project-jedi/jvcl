@@ -138,8 +138,6 @@ type
 
     FHintColor: TColor;
     FSaved: TColor;
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FOver: Boolean;
     procedure SetGlyph(Value: TBitmap);
@@ -174,8 +172,8 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -204,8 +202,8 @@ type
     property BlinkTimer: TTimer read GetBlinkTimer write SetBlinkTimer;
     property TestMode: Boolean read FTestMode write SetTestMode default False;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
   end;
 
@@ -642,11 +640,11 @@ begin
     if fMouseInControl_ <> FMouseInControl then
     begin
       if FMouseInControl then
-        if Assigned(FOnMouseEnter) then
-          FOnMouseEnter(Self)
+        if Assigned(OnMouseEnter) then
+          OnMouseEnter(Self)
         else
-        if Assigned(FOnMouseLeave) then
-          FOnMouseLeave(Self);
+        if Assigned(OnMouseLeave) then
+          OnMouseLeave(Self);
       FMouseInControl := FMouseInControl_;
       Paint_;
     end;
@@ -660,30 +658,25 @@ begin
     FOnParentColorChanged(Self);
 end;
 
-procedure TJvgButton.CMMouseEnter(var Msg: TMessage);
+procedure TJvgButton.MouseEnter(Control: TControl);
 begin
   if not FOver then
   begin
     FSaved := Application.HintColor;
-    // for D7...
-    if csDesigning in ComponentState then
-      Exit;
     Application.HintColor := FHintColor;
     FOver := True;
   end;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
+  inherited;
 end;
 
-procedure TJvgButton.CMMouseLeave(var Msg: TMessage);
+procedure TJvgButton.MouseLeave(Control: TControl);
 begin
   if FOver then
   begin
     Application.HintColor := FSaved;
     FOver := False;
   end;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
+  inherited;
   FMouseInControl := False;
   Paint_;
 end;

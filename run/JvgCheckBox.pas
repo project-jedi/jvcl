@@ -56,8 +56,6 @@ type
     FInterspace: integer;
     FFocusControl: TWinControl;
     FFocusControlMethod: TFocusControlMethod;
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
     FAfterPaint: TNotifyEvent;
 
     FGlyphKind: TglGlyphKind;
@@ -95,13 +93,11 @@ type
     procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
     procedure OnLButtonUp(var Message: TMessage); message WM_LBUTTONUP;
     procedure OnLButtonDown(var Message: TMessage); message WM_LBUTTONDOWN;
-    procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
     procedure CMTextChanged(var Message: TMessage); message CM_TEXTCHANGED;
-    procedure CallMouseEnter; virtual;
-    procedure CallMouseLeave; virtual;
     procedure SetAlignment(const Value: TLeftRight);
   protected
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
     procedure Paint; override;
     procedure HookFocusControlWndProc;
     procedure UnhookFocusControlWndProc;
@@ -171,10 +167,8 @@ type
       write FFocusControlMethod
       default fcmOnMouseDown;
 
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write
-      FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write
-      FOnMouseLeave;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property AfterPaint: TNotifyEvent read FAfterPaint write FAfterPaint;
 
   end;
@@ -263,7 +257,7 @@ begin
 end;
 //______________________________________________________________
 
-procedure TJvgCheckBox.CMMouseEnter(var Message: TMessage);
+procedure TJvgCheckBox.MouseEnter(Control: TControl);
 begin
   if not Enabled or (fcoIgnoreMouse in Options) or
     fShowAsActiveWhileControlFocused then
@@ -285,12 +279,11 @@ begin
       fNeedUpdateOnlyMainText := true;
       Paint;
     end;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(self);
+  inherited;
 end;
 //______________________________________________________________
 
-procedure TJvgCheckBox.CMMouseLeave(var Message: TMessage);
+procedure TJvgCheckBox.MouseLeave(Control: TControl);
 begin
   if not Enabled or (fcoIgnoreMouse in Options) or
     fShowAsActiveWhileControlFocused then
@@ -310,8 +303,7 @@ begin
       fNeedUpdateOnlyMainText := true;
       Paint;
     end;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(self);
+  inherited;
 end;
 //______________________________________________________________
 
@@ -557,22 +549,7 @@ begin
     FFocusControl := nil;
   end;
 end;
-//______
 
-procedure TJvgCheckBox.CallMouseEnter;
-var
-  EmptyMsg: TMessage;
-begin
-  CMMouseEnter(EmptyMsg);
-end;
-//______
-
-procedure TJvgCheckBox.CallMouseLeave;
-var
-  EmptyMsg: TMessage;
-begin
-  CMMouseLeave(EmptyMsg);
-end;
 //______________________________________________________________
 
 procedure TJvgCheckBox.HookFocusControlWndProc;
@@ -609,13 +586,13 @@ begin
   case Msg_.Msg of
     WM_SETFOCUS:
       begin
-        CallMouseEnter;
+        MouseEnter(Self);
         fShowAsActiveWhileControlFocused := true;
       end;
     WM_KILLFOCUS:
       begin
         fShowAsActiveWhileControlFocused := false;
-        CallMouseLeave;
+        MouseLeave(Self);
       end;
     WM_DESTROY: {fNeedRehookFocusControl := true};
   end;

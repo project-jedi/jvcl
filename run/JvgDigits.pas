@@ -72,8 +72,6 @@ type
     ColorsPair: TColorsPair;
 
     procedure WMSize(var Message: TWMSize); message WM_SIZE;
-    procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
     procedure SetValue(NewValue: Double);
     procedure SetActiveColor(Value: TColor);
     procedure SetPassiveColor(Value: TColor);
@@ -437,16 +435,6 @@ end;
 procedure TJvgDigits.WMSize(var Message: TWMSize);
 begin
   fNeedRepaint := true;
-end;
-
-procedure TJvgDigits.CMMouseEnter(var Message: TMessage);
-begin
-  inherited;
-end;
-
-procedure TJvgDigits.CMMouseLeave(var Message: TMessage);
-begin
-  inherited;
 end;
 
 procedure TJvgDigits.SmthChanged(Sender: TObject);
