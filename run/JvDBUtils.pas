@@ -41,11 +41,14 @@ type
   TJvDBProgressEvent = procedure(UserData: Integer; var Cancel: Boolean; Line: Integer) of object;
 
   EJvScriptError = class(Exception)
-    ErrPos: Integer;
+  private
+    FErrPos: Intzeger;
+  public
     // The dummy parameter is only there fore BCB compatibility so that
     // when the hpp file gets generated, this constructor generates
     // a C++ constructor that doesn't already exists
-    constructor Create(AMessage: string; AErrPos: Integer; dummyForBCB : Integer = 0); overload;
+    constructor Create(AMessage: string; AErrPos: Integer; DummyForBCB: Integer = 0); overload;
+    property ErrPos: Integer read FErrPos;
   end;
 
   TJvLocateObject = class(TObject)
@@ -184,7 +187,7 @@ begin
   DatabaseError(Msg);
 end;
 
-constructor EJvScriptError.Create(AMessage: string; AErrPos: Integer; dummyForBCB : Integer);
+constructor EJvScriptError.Create(AMessage: string; AErrPos: Integer; DummyForBCB: Integer);
 begin
   inherited Create(AMessage);
   ErrPos := AErrPos;

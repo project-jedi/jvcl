@@ -83,6 +83,10 @@ resourcestring
   RsPaletteGlobusComponents2 = 'JVCL Globus Components 2';
   RsPaletteValidators = 'Jv Validators';
   RsPaletteWizard = 'Jv Wizard';
+  RsPaletteXPControls = 'JVCL XP Controls';
+  RsPaletteDocking = 'Jv Docking';
+  RsPaletteDotNet = 'Jv DotNet';
+  RsPaletteDotNetDB = 'Jv DotNet DB';
 
 //=== JvAnimatedEditor.pas ===================================================
 resourcestring
@@ -212,6 +216,13 @@ resourcestring
 //=== JvDBMemDatasetEditor.pas ===============================================
 resourcestring
   RsBorrowStructure = 'Borrow structure...';
+
+//=== JvDockPropertyEditors.pas ==============================================
+resourcestring
+  RsDockNewPage = 'Ne&w Page';
+  RsDockNextPage = 'Ne&xt Page';
+  RsDockPreviousPage = '&Previous Page';
+  RsDockDeletePage = '&Delete Page';
 
 //=== JvDsgnEditors.pas ======================================================
 resourcestring
@@ -601,6 +612,12 @@ resourcestring
   RsNewWelcomePage = 'New Welcome Page';
   RsNewInteriorPage = 'New Interior Page';
   RsDeletePage = 'Delete Page';
+
+//=== JvXPPropertyEditors.pas ================================================
+resourcestring
+  RsItemEditorEllipsis = 'Item Editor...';
+  RsDefaultColorItem = 'Restore Default Colors';
+  RsDefaultFontsItem = 'Restore Default Fonts';
 
 //=== DataProvider design time constants =====================================
 resourcestring

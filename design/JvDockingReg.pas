@@ -22,8 +22,10 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Known Issues:
-}
+-----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
+
 unit JvDockingReg;
 
 interface
@@ -33,24 +35,25 @@ interface
 procedure Register;
 
 implementation
+
 uses
   Classes,
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf, VCLEditors,
   {$ELSE}
-  Dsgnintf,
-  {$ENDIF}
-  JvDockControlForm, JvDockGlobals, JvDockPropertyEditors,
+  DsgnIntf,
+  {$ENDIF COMPILER6_UP}
+  JvDsgnConsts, JvDockGlobals, JvDockControlForm, JvDockPropertyEditors,
   JvDockVIDStyle, JvDockDelphiStyle,
   JvDockVCStyle, JvDockVSNetStyle;
 
 procedure Register;
 begin
-  RegisterComponents(RsDockProductName, [TJvDockServer, TJvDockClient]);
+  RegisterComponents(RsPaletteDocking, [TJvDockServer, TJvDockClient]);
   {$IFNDEF USEJVCL}
   RegisterComponentEditor(TJvDockBaseControl, TJvDockControlEditor);
   RegisterComponentEditor(TJvDockBasicStyle, TJvDockStyleEditor);
-  {$ENDIF}
+  {$ENDIF USEJVCL}
   RegisterComponentEditor(TJvDockVIDTabPageControl, TJvDockVIDTabPageControlEditor);
   RegisterComponentEditor(TJvDockVIDTabSheet, TJvDockVIDTabPageControlEditor);
 

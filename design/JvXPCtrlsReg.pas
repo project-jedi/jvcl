@@ -24,44 +24,35 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
+
 unit JvXPCtrlsReg;
 
 interface
 
-uses
-  Classes;
 {$R ..\Resources\JvXPCtrlsReg.dcr}
+
 procedure Register;
 
 implementation
 
 uses
-  ImgList,
-{$IFDEF COMPILER6_UP}
-  DesignIntf,
-  DesignEditors,
-  VCLEditors,
-{$ELSE}
-  Contnrs,
-  DsgnIntf,
-{$ENDIF}
-  JvXPCore, JvXPPropertyEditors, JvXPBar, JvXPContainer, JvXPButtons, JvXPCheckCtrls;
-
-{-----------------------------------------------------------------------------
-  Procedure: Register
-  Author:    mh
-  Date:      28-Okt-2002
-  Arguments: None
-  Result:    None
------------------------------------------------------------------------------}
+  Classes, ImgList,
+  {$IFDEF COMPILER6_UP}
+  DesignIntf, DesignEditors, VCLEditors,
+  {$ELSE}
+  Contnrs, DsgnIntf,
+  {$ENDIF COMPILER6_UP}
+  JvDsgnConsts, JvXPCore, JvXPPropertyEditors, JvXPBar, JvXPContainer,
+  JvXPButtons, JvXPCheckCtrls;
 
 procedure Register;
 begin
+  RegisterComponents(RsPaletteXPControls, [TJvXPStyleManager, TJvXPBar, TJvXPContainer,
+    TJvXPButton, TJvXPToolButton, TJvXPCheckBox]);
   RegisterPropertyEditor(TypeInfo(TImageIndex), TJvXPBarItem, 'ImageIndex',
     TJvXPItemImageIndexPropertyEditor);
-  RegisterComponents('JVCL XP Controls', [TJvXPStyleManager, TJvXPBar, TJvXPContainer,
-    TJvXPButton, TJvXPToolButton, TJvXPCheckbox]);
   RegisterComponentEditor(TJvXPBar, TJvXPBarItemEditor);
 end;
 

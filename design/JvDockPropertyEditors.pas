@@ -22,18 +22,26 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Known Issues:
-}
+-----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
+
 unit JvDockPropertyEditors;
 
 interface
 
-uses {$IFDEF COMPILER6_UP} DesignIntf, DesignEditors, VCLEditors, {$ELSE}
-     Dsgnintf, {$ENDIF} JvDockControlForm, JvDockVIDStyle;
+uses
+  {$IFDEF COMPILER6_UP}
+  DesignIntf, DesignEditors, VCLEditors,
+  {$ELSE}
+  DsgnIntf,
+  {$ENDIF COMPILER6_UP}
+  JvDockControlForm, JvDockVIDStyle;
 
 
 type
   {$IFNDEF USEJVCL}
+
   TJvDockControlEditor = class(TComponentEditor)
   public
     function GetVerbCount: Integer; override;
@@ -47,7 +55,8 @@ type
     function GetVerb(Index: Integer): string; override;
     procedure ExecuteVerb(Index: Integer); override;
   end;
-  {$ENDIF}
+
+  {$ENDIF USEJVCL}
 
   TJvDockVIDTabPageControlEditor = class(TComponentEditor)
   public
@@ -58,34 +67,34 @@ type
 
 
 implementation
-uses
-  Classes, Sysutils, Dialogs, JvDockGlobals;
 
+uses
+  Classes, SysUtils, Dialogs,
+  JvDockGlobals;
 
 {$IFNDEF USEJVCL}
+
+//=== TJvDockControlEditor ===================================================
+
 procedure TJvDockControlEditor.ExecuteVerb(Index: Integer);
-var ABoutStr: string;
+var
   ProductStr: string;
 begin
-  inherited;
+  inherited ExecuteVerb(Index);
   case Index of
     0:
     begin
       if Component is TJvDockServer then
         ProductStr := RsDockServerName
-      else if Component is TJvDockClient then
+      else
+      if Component is TJvDockClient then
         ProductStr := RsDockClientName
-      else Exit;
-      ABoutStr := Format(RsDockManagerAbout,
-        [ProductStr,
-        RsDockManagerVersion,
-        RsDockManagerCopyRightBegin,
-        RsDockManagerCopyRightEnd,
-        RsDockAuthorName,
-        RsDockCompanyName,
-        RsDockHomePage,
-        RsDockEmail]);
-      ShowMessage(ABoutStr);
+      else
+        Exit;
+      ShowMessageFmt(RsDockManagerAbout,
+        [ProductStr, RsDockManagerVersion, RsDockManagerCopyRightBegin,
+         RsDockManagerCopyRightEnd, RsDockAuthorName, RsDockCompanyName,
+         RsDockHomePage, RsDockEmail]);
     end;
   end;
 end;
@@ -94,13 +103,11 @@ function TJvDockControlEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-    begin
       if Component is TJvDockServer then
         Result := Format('%s %s', [RsDockAbout, RsDockServerName])
-      else if Component is TJvDockClient then
+      else
+      if Component is TJvDockClient then
         Result := Format('%s %s', [RsDockAbout, RsDockClientName])
-      else Exit;
-    end;
   end;
 end;
 
@@ -109,26 +116,18 @@ begin
   Result := 1;
 end;
 
-
+//=== TJvDockStyleEditor =====================================================
 
 procedure TJvDockStyleEditor.ExecuteVerb(Index: Integer);
-var ABoutStr: string;
 begin
-  inherited;
+  inherited ExecuteVerb(Index);
   case Index of
     0:
-    begin
-      ABoutStr := Format(RsDockManagerAbout,
+      ShowMessageFmt(RsDockManagerAbout,
         [TJvDockBasicStyle(Component).GetControlName,
-        RsDockStyleVersion,
-        RsDockStyleCopyRightBegin,
-        RsDockStyleCopyRightEnd,
-        RsDockAuthorName,
-        RsDockCompanyName,
-        RsDockHomePage,
-        RsDockEmail]);
-      ShowMessage(ABoutStr);
-    end;
+        RsDockStyleVersion, RsDockStyleCopyRightBegin,
+        RsDockStyleCopyRightEnd, RsDockAuthorName, RsDockCompanyName,
+        RsDockHomePage, RsDockEmail]);
   end;
 end;
 
@@ -141,67 +140,69 @@ function TJvDockStyleEditor.GetVerbCount: Integer;
 begin
   Result := 1;
 end;
-{$ENDIF}
 
+{$ENDIF USEJVCL}
+
+//=== TJvDockVIDTabPageControlEditor =========================================
 
 procedure TJvDockVIDTabPageControlEditor.ExecuteVerb(Index: Integer);
-var Sheet: TJvDockVIDTabSheet;
+var
+  Sheet: TJvDockVIDTabSheet;
   Page: TJvDockVIDTabPageControl;
 begin
   inherited ExecuteVerb(Index);
   if Component is TJvDockVIDTabPageControl then
     Page := Component as TJvDockVIDTabPageControl
-  else Page := TJvDockVIDTabSheet(Component).Parent as TJvDockVIDTabPageControl;
+  else
+    Page := TJvDockVIDTabSheet(Component).Parent as TJvDockVIDTabPageControl;
   case Index of
     0:
-    begin
+      begin
+        {$IFDEF COMPILER6_UP}
+        Sheet := TJvDockVIDTabSheet.Create(Designer.Root);
+        {$ELSE}
+        Sheet := TJvDockVIDTabSheet.Create(Designer.Form);
+        {$ENDIF COMPILER6_UP}
 
-{$IFDEF COMPILER6_UP}
-      Sheet := TJvDockVIDTabSheet.Create(Designer.Root);
-{$ELSE}
-
-      Sheet := TJvDockVIDTabSheet.Create(Designer.Form);
-{$ENDIF}
-
-      Sheet.PageControl := Page;
-      Sheet.Name := Designer.UniqueName(TJvDockVIDTabSheet.ClassName);
-      Sheet.Caption := Sheet.Name;
-      Page.ActivePage := Sheet;
-      Page.Panel.Invalidate;
-    end;
+        Sheet.PageControl := Page;
+        Sheet.Name := Designer.UniqueName(TJvDockVIDTabSheet.ClassName);
+        Sheet.Caption := Sheet.Name;
+        Page.ActivePage := Sheet;
+        Page.Panel.Invalidate;
+      end;
     1:
-    begin
       if Page.PageCount >= 0 then
       begin
         if Page.ActivePageIndex = Page.PageCount - 1 then
           Page.ActivePageIndex := 0
-        else Page.ActivePageIndex := Page.ActivePageIndex + 1;
+        else
+          Page.ActivePageIndex := Page.ActivePageIndex + 1;
       end;
-    end;
     2:
-    begin
       if Page.PageCount >= 0 then
       begin
         if Page.ActivePageIndex = 0 then
           Page.ActivePageIndex := Page.PageCount - 1
-        else Page.ActivePageIndex := Page.ActivePageIndex - 1;
+        else
+          Page.ActivePageIndex := Page.ActivePageIndex - 1;
       end;
-    end;
     3:
-    begin
       if Page.PageCount >= 0 then
         Page.ActivePage.Free;
-    end;
   end;
 end;
 
 function TJvDockVIDTabPageControlEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
-    0: Result := 'Ne&w Page';
-    1: Result := 'Ne&xt Page';
-    2: Result := '&Previous Page';
-    3: Result := '&Delete Page';
+    0:
+      Result := RsDockNewPage;
+    1:
+      Result := RsDockNextPage;
+    2:
+      Result := RsDockPreviousPage;
+    3:
+      Result := RsDockDeletePage;
   end;
 end;
 

@@ -25,34 +25,29 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-unit JvXPPropertyEditors;
-
 {$I JVCL.INC}
+
+unit JvXPPropertyEditors;
 
 interface
 
 uses
-{$IFDEF COMPILER6_UP}
-  DesignIntf,
-  DesignEditors,
-  VCLEditors,
-{$ELSE}
-  Contnrs,
-  DsgnIntf,
-{$ENDIF}
+  {$IFDEF COMPILER6_UP}
+  DesignIntf, DesignEditors, VCLEditors,
+  {$ELSE}
+  Contnrs, DsgnIntf,
+  {$ENDIF COMPILER6_UP}
   Classes, Windows, TypInfo, SysUtils, Forms, ImgList, ActnList, Graphics;
 
 type
-{$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   TDesignerSelectionList = IDesignerSelections;
-{$ELSE}
+  {$ELSE}
   //TDesignerSelectionList = TComponentList;
-{$ENDIF}
-
-{ TJvXPCustomImageIndexPropertyEditor }
+  {$ENDIF COMPILER6_UP}
 
   TJvXPCustomImageIndexPropertyEditor = class(TIntegerProperty
-    {$IFDEF COMPILER6_UP}, ICustomPropertyListDrawing{$ENDIF})
+    {$IFDEF COMPILER6_UP}, ICustomPropertyListDrawing {$ENDIF})
   public
     function GetAttributes: TPropertyAttributes; override;
     procedure GetValues(Proc: TGetStrProc); override;
@@ -67,22 +62,18 @@ type
       const ARect: TRect; ASelected: Boolean); {$IFNDEF COMPILER6_UP} override; {$ENDIF}
   end;
 
-{ TJvXPItemImageIndexPropertyEditor }
-
   TJvXPItemImageIndexPropertyEditor = class(TJvXPCustomImageIndexPropertyEditor)
   public
     function GetImageListAt(Index: Integer): TCustomImageList; override;
   end;
 
-{ TJvXPBarItemEditor }
-
   TJvXPBarItemEditor = class(TDefaultEditor)
   protected
-  {$IFDEF COMPILER6_UP}
+    {$IFDEF COMPILER6_UP}
     procedure RunPropertyEditor(const Prop: IProperty);
-  {$ELSE}
+    {$ELSE}
     procedure RunPropertyEditor(Prop: TPropertyEditor);
-  {$ENDIF}
+    {$ENDIF COMPILER6_UP}
   public
     function GetVerbCount: Integer; override;
     function GetVerb(Index: Integer): string; override;
@@ -93,25 +84,15 @@ type
 implementation
 
 uses
-  JvXPBar;
+  JvDsgnConsts, JvXPBar;
 
 type
-{ TCustomWinXPBar }
-
   TCustomWinXPBar = class(TJvXPCustomWinXPBar)
   public
     property HotTrackColor;
   end;
 
-{-----------------------------------------------------------------------------
-  Procedure: Register
-  Author:    mh
-  Date:      28-Okt-2002
-  Arguments: None
-  Result:    None
------------------------------------------------------------------------------}
-
-{ TJvXPCustomImageIndexPropertyEditor }
+//=== TJvXPCustomImageIndexPropertyEditor ====================================
 
 {-----------------------------------------------------------------------------
   Procedure: TJvXPCustomImageIndexPropertyEditor.GetAttributes
@@ -134,8 +115,7 @@ end;
   Result:    TCustomImageList
 -----------------------------------------------------------------------------}
 
-function TJvXPCustomImageIndexPropertyEditor.GetImageListAt(Index: Integer):
-  TCustomImageList;
+function TJvXPCustomImageIndexPropertyEditor.GetImageListAt(Index: Integer): TCustomImageList;
 begin
   Result := nil;
 end;
@@ -151,12 +131,12 @@ end;
 procedure TJvXPCustomImageIndexPropertyEditor.GetValues(Proc: TGetStrProc);
 var
   ImgList: TCustomImageList;
-  i: Integer;
+  I: Integer;
 begin
   ImgList := GetImageListAt(0);
   if Assigned(ImgList) then
-  for i := 0 to ImgList.Count -1 do
-    Proc(IntToStr(I));
+    for I := 0 to ImgList.Count -1 do
+      Proc(IntToStr(I));
 end;
 
 {-----------------------------------------------------------------------------
@@ -172,17 +152,17 @@ procedure TJvXPCustomImageIndexPropertyEditor.ListDrawValue(const Value: string;
   ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean);
 var
   ImgList: TCustomImageList;
-  x: Integer;
+  X: Integer;
 begin
   ImgList := GetImageListAt(0);
   ACanvas.FillRect(ARect);
-  x := ARect.Left + 2;
+  X := ARect.Left + 2;
   if Assigned(ImgList) then
   begin
-    ImgList.Draw(ACanvas, x, ARect.Top + 2, StrToInt(Value));
-    Inc(x, ImgList.Width);
+    ImgList.Draw(ACanvas, X, ARect.Top + 2, StrToInt(Value));
+    Inc(X, ImgList.Width);
   end;
-  ACanvas.TextOut(x + 3, ARect.Top + 1, Value);
+  ACanvas.TextOut(X + 3, ARect.Top + 1, Value);
 end;
 
 {-----------------------------------------------------------------------------
@@ -223,7 +203,7 @@ begin
     Inc(AWidth, ImgList.Width);
 end;
 
-{ TJvXPItemImageIndexPropertyEditor }
+//=== TJvXPItemImageIndexPropertyEditor ======================================
 
 {-----------------------------------------------------------------------------
   Procedure: TJvXPItemImageIndexPropertyEditor.GetImageListAt
@@ -240,12 +220,11 @@ var
 begin
   Result := nil;
   Item := GetComponent(Index);
-  if not(Item is TJvXPBarItem) then
-    Exit;
-  Result := TJvXPBarItem(Item).Images;
+  if Item is TJvXPBarItem then
+    Result := TJvXPBarItem(Item).Images;
 end;
 
-{ TJvXPBarItemEditor }
+//=== TJvXPBarItemEditor =====================================================
 
 {-----------------------------------------------------------------------------
   Procedure: TJvXPBarItemEditor.Edit
@@ -259,11 +238,11 @@ procedure TJvXPBarItemEditor.Edit;
 var
   Components: TDesignerSelectionList;
 begin
-{$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   Components := CreateSelectionList;
-{$ELSE}
+  {$ELSE}
   Components := TDesignerSelectionList.Create;
-{$ENDIF}
+  {$ENDIF COMPILER6_UP}
   Components.Add(Component);
   GetComponentProperties(Components, [tkClass], Designer, RunPropertyEditor);
 end;
@@ -277,21 +256,22 @@ end;
 -----------------------------------------------------------------------------}
 
 procedure TJvXPBarItemEditor.ExecuteVerb(Index: Integer);
+const
+ cFontColor = $00E75100;
+ cHotTrackColor = $00FF7C35;
 begin
   case Index of
     0: // 'Item Editor...'
       Edit;
-
     1: // 'Restore Default Colors'
       with TCustomWinXPBar(Component) do
       begin
-        Font.Color := $00E75100;
-        HeaderFont.Color := $00E75100;
-        HotTrackColor := $00FF7C35;
+        Font.Color := cFontColor;
+        HeaderFont.Color := cFontColor;
+        HotTrackColor := cHotTrackColor;
         if csDesigning in ComponentState then
           TCustomForm(Owner).Designer.Modified;
       end;
-
     2: // 'Restore Default Fonts'
       with TCustomWinXPBar(Component) do
       begin
@@ -313,9 +293,12 @@ end;
 function TJvXPBarItemEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
-    0: Result := 'Item Editor...';
-    1: Result := 'Restore Default Colors';
-    2: Result := 'Restore Default Fonts';
+    0:
+      Result := RsItemEditorEllipsis;
+    1:
+      Result := RsDefaultColorItem;
+    2:
+      Result := RsDefaultFontsItem;
   end;
 end;
 
@@ -344,7 +327,7 @@ end;
 procedure TJvXPBarItemEditor.RunPropertyEditor(const Prop: IProperty);
 {$ELSE}
 procedure TJvXPBarItemEditor.RunPropertyEditor(Prop: TPropertyEditor);
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 begin
   if UpperCase(Prop.GetName) = 'ITEMS' then
     Prop.Edit;
