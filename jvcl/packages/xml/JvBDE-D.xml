@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvBDE" Design="-1">
   <Description>JVCL BDE Components</Description>
-  <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUdcldb50  -LUCJcl50</C5PFlags>
+  <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUdcldb50 -LUCJcl50</C5PFlags>
   <C6PFlags>-LUDesignIde -LUdcldb -LUCJcl</C6PFlags>
   <C5Libs/>
   <C6Libs/>
@@ -15,7 +15,9 @@
     <Package Name="JvCore-R" Targets="C5,C6,C6p" Condition=""/>
     <Package Name="CJCL50" Targets="C5" Condition=""/>
     <Package Name="dcldb50" Targets="C5" Condition=""/>
+    <Package Name="dsnide50" Targets="C5" Condition=""/>
     <Package Name="vcl50" Targets="C5" Condition=""/>
+    <Package Name="vclx50" Targets="C5" Condition=""/>
     <Package Name="vcldb50" Targets="C5" Condition=""/>
     <Package Name="vclbde50" Targets="C5" Condition=""/>
     <Package Name="bcbsmp50" Targets="C5" Condition=""/>
@@ -29,7 +31,7 @@
     <Package Name="vcldb" Targets="C6,C6p" Condition=""/>
     <Package Name="bdertl" Targets="C6,C6p" Condition=""/>
     <Package Name="bcbsmp" Targets="C6,C6p" Condition=""/>
-    <Package Name="dclstd50" Targets="D5,D5s" Condition=""/>
+    <Package Name="dclstd50" Targets="C5,D5,D5s" Condition=""/>
     <Package Name="dclstd" Targets="D6,D6p,D7,D7p" Condition=""/>
   </Requires>
   <Contains>
