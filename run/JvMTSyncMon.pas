@@ -261,9 +261,9 @@ begin
 
   if OtherWaiting then
     try
-      FMonitor.WaitNext;   // Can raise EMTTerminate
+      FMonitor.WaitNext;   // Can raise EMTTerminateError
     except
-      on EMTTerminate do
+      on EMTTerminateError do
       begin
         FMonitor.CriticalEnter;
         try
@@ -301,9 +301,9 @@ begin
   end;
 
   try
-    FXSem.Wait;  // Can raise EMTTerminate
+    FXSem.Wait;  // Can raise EMTTerminateError
   except
-    on EMTTerminate do
+    on EMTTerminateError do
     begin
       FMonitor.CriticalEnter;
       try

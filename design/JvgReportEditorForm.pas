@@ -264,7 +264,7 @@ type
 implementation
 
 uses
-  JvgTypes, JvgUtils, JvgAlignFunction, JvgAlignForm, JvDsgnConsts;
+  JvgTypes, JvgUtils, JvgAlignFunction, JvDsgnConsts, JvgAlignForm;
 
 {$R *.dfm}
 
@@ -1103,11 +1103,14 @@ end;
 
 procedure TJvgReportEditorForm.N4Click(Sender: TObject);
 begin
-  if not Assigned(AlignForm) then
-    AlignForm := TAlignForm.Create(nil);
-  if AlignForm.ShowModal = mrOk then
-    AlignControlsInWindow(Component.ParentWnd, CanAlignControl,
-      AlignForm.Horz, AlignForm.Vert);
+  with TAlignForm.Create(Self) do
+    try
+      if ShowModal = mrOk then
+        AlignControlsInWindow(Component.ParentWnd, CanAlignControl,
+          Horz, Vert);
+    finally
+      Free;
+    end;
 end;
 
 procedure TJvgReportEditorForm.sb_BevelBoldClick(Sender: TObject);
@@ -1172,7 +1175,6 @@ end;
 procedure TJvgReportEditorForm.FormClose(Sender: TObject; var Action:
   TCloseAction);
 begin
-  AlignForm.Free;
   FReportParamEditor.Free;
   FScrollBox.HorzScrollBar.Position := 0;
   FScrollBox.VertScrollBar.Position := 0;

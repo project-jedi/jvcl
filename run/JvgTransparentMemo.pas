@@ -40,6 +40,7 @@ type
   private
     FAboutJVCL: TJVCLAboutInfo;
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
+    procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
   public
     procedure CreateParams(var Params: TCreateParams); override;
   published
@@ -62,6 +63,10 @@ begin
   SetBkMode(DC, TRANSPARENT);
   ReleaseDC(Handle, DC);
   inherited;
+end;
+
+procedure TJvgTransparentMemo.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
+begin
 end;
 
 end.

@@ -286,10 +286,10 @@ end;
 procedure TMTThread.CheckTerminate;
 begin
   if CurrentMTThread <> Self then
-    raise EMTThread.Create(sCheckTerminateCalledByWrongThread);
+    raise EMTThreadError.Create(sCheckTerminateCalledByWrongThread);
 
   if GetStatus = tsTerminating then
-    raise EMTTerminate.Create('');
+    raise EMTTerminateError.Create('');
 end;
 
 procedure TMTThread.CreateAndRun;
@@ -346,7 +346,7 @@ begin
   try
     if Assigned(FOnExecute) then FOnExecute(Self);
   except
-    on E: EMTTerminate do {nothing};
+    on E: EMTTerminateError do {nothing};
     on E: Exception do Log('OnExecute Exception: "' + E.Message+'"'); // do not localize
   end;
 
@@ -398,7 +398,7 @@ begin
     else if GetStatus = tsWaiting then
       FIntThread.Resume
     else
-      raise EMTThread.Create(sThreadNotInitializedOrWaiting);
+      raise EMTThreadError.Create(sThreadNotInitializedOrWaiting);
   finally
     FStatusChange.Release;
   end;
@@ -414,7 +414,7 @@ begin
     else
     begin
       if CurrentMTThread <> Self then
-        raise EMTThread.Create(sCannotChangeNameOfOtherActiveThread);
+        raise EMTThreadError.Create(sCannotChangeNameOfOtherActiveThread);
   
       FName := Value;
       if FIntThread <> nil then
@@ -627,7 +627,7 @@ begin
     if FindThread(Ticket, Thread) then
       Thread.DecRef
     else
-      raise EMTThread.Create(sReleaseOfUnusedTicket);
+      raise EMTThreadError.Create(sReleaseOfUnusedTicket);
 
     // if this was the last reference then the thread must be removed
     TryRemoveThread(Thread);
@@ -680,7 +680,7 @@ begin
       case InternalActiveThreads(GetCurrentThreadID) of
         0: Break;
         1: ;
-       -1: raise EMTThread.Create(sCurThreadIsPartOfManager);
+       -1: raise EMTThreadError.Create(sCurThreadIsPartOfManager);
       end;
       Sleep(0);
     end;

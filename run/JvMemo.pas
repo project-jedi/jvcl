@@ -72,6 +72,7 @@ type
     FHideCaret: Boolean;
     FOrigLines: TStrings;
     FClipboardCommands: TJvClipboardCommands;
+    FTransparent: Boolean;
     procedure SetHotTrack(const Value: Boolean);
     procedure CaretChanged(Sender: TObject); dynamic;
     procedure SetCaret(const Value: TJvCaret);
@@ -87,6 +88,8 @@ type
     procedure WMCopy(var Msg: TWMCopy); message WM_COPY;
     procedure WMCut(var Msg: TWMCut); message WM_CUT;
     procedure WMUndo(var Msg: TWMUndo); message WM_UNDO;
+    procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
+    procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
     procedure SetMaxLines(const Value: Integer);
     function GetLines: TStrings;
     procedure SetLines(const Value: TStrings);
@@ -98,8 +101,10 @@ type
     procedure WndProc(var Msg: TMessage); override;
     procedure KeyPress(var Key: Char); override;
     procedure Change; override;
+    procedure CreateParams(var Params: TCreateParams); override;
     function GetCurrentLine: Integer;
     procedure SetCurrentLine(iNewLine: Integer);
+    procedure SetTransparent(Value: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -118,6 +123,7 @@ type
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property Lines: TStrings read GetLines write SetLines;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly;
+    property Transparent: Boolean read FTransparent write SetTransparent default False;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
@@ -170,6 +176,7 @@ type
     property ParentShowHint;
     property PopupMenu;
     property ReadOnly;
+    property Transparent;
     property ScrollBars;
     property ShowHint;
     property TabOrder;
@@ -215,6 +222,7 @@ begin
   FCaret := TJvCaret.Create(self);
   FCaret.OnChanged := CaretChanged;
   FClipboardCommands := [caCopy..caUndo];
+  FTransparent := False;
 end;
 
 destructor TJvCustomMemo.Destroy;
@@ -306,6 +314,15 @@ begin
   inherited Change;
 end;
 
+procedure TJvCustomMemo.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+  if Transparent then
+    Params.ExStyle := Params.ExStyle or WS_EX_TRANSPARENT
+  else
+    Params.ExStyle := Params.ExStyle and not WS_EX_TRANSPARENT;
+end;
+
 function TJvCustomMemo.CharOfLine(iLine: Integer): Integer;
 begin
   Result := Perform(EM_LINEINDEX, iLine, 0);
@@ -362,6 +379,16 @@ begin
     LineScroll(0, iDelta);
     { move caret }
     SelStart := CharOfLine(iNewLine);
+  end;
+end;
+
+procedure TJvCustomMemo.SetTransparent(Value: Boolean);
+begin
+  if Value <> FTransparent then
+  begin
+    FTransparent := Value;
+    RecreateWnd;
+    Invalidate;
   end;
 end;
 
@@ -496,6 +523,25 @@ procedure TJvCustomMemo.WMUndo(var Msg: TWMUndo);
 begin
   if caUndo in ClipboardCommands then
     inherited;
+end;
+
+procedure TJvCustomMemo.WMPaint(var Msg: TWMPaint);
+var
+  DC: HDC;
+begin
+  DC := GetDC(Handle);
+  if Transparent then
+    SetBkMode(DC, Windows.TRANSPARENT)
+  else
+    SetBkMode(DC, Windows.OPAQUE);
+  ReleaseDC(Handle, DC);
+  inherited;
+end;
+
+procedure TJvCustomMemo.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
+begin
+  if not Transparent then
+    DefaultHandler(Msg);
 end;
 
 function TJvCustomMemo.GetReadOnly: Boolean;

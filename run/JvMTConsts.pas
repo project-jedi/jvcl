@@ -22,9 +22,12 @@ Last Modified: 2002-09-25
 Known Issues:
 -----------------------------------------------------------------------------}
 
+{$I JVCL.INC}
+
 unit JvMTConsts;
 
 interface
+
 uses
   SysUtils, Classes;
 
@@ -32,25 +35,24 @@ type
   TMTTicket = Integer;
 
 type
-  EMTThread = class(EThread);
-  EMTTerminate = class(EAbort);
+  EMTThreadError = class(EThread);
+  EMTTerminateError = class(EAbort);
 
 type
-  TMTThreadStatus = (tsInitializing, tsWaiting, tsRunning, tsTerminating,
-    tsFinished);
+  TMTThreadStatus =
+    (tsInitializing, tsWaiting, tsRunning, tsTerminating, tsFinished);
 
 type
   TThreadNameInfo = record
-    FType: LongWord;     // must be 0x1000
+    FType: Longword;     // must be 0x1000
     FName: PChar;        // pointer to name (in user address space)
-    FThreadID: LongWord; // thread ID (-1 indicates caller thread)
-    FFlags: LongWord;    // reserved for future use, must be zero
+    FThreadID: Longword; // thread ID (-1 indicates caller thread)
+    FFlags: Longword;    // reserved for future use, must be zero
   end;
 
 const
   MTDefaultBufferSize = 32;
 
 implementation
-
 
 end.
