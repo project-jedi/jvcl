@@ -82,6 +82,7 @@ type
     procedure Click; override;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
+    procedure CMHitTest(var Msg: TCMHitTest); message CM_HITTEST;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
@@ -217,6 +218,18 @@ begin
   end;
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
+end;
+
+// (rom) improvement. now only non-transparent pixels are considered
+// (rom) part of the clickable area
+
+procedure TJvImage.CMHitTest(var Msg: TCMHitTest);
+begin
+  inherited;
+  if Assigned(Picture) and Assigned(Picture.Bitmap) and Transparent and
+    (Msg.XPos < Picture.Bitmap.Width) and (Msg.YPos < Picture.Bitmap.Height) and
+    (Picture.Bitmap.Canvas.Pixels[Msg.XPos, Msg.YPos] = (Picture.Bitmap.TransparentColor and $FFFFFF)) then
+    Msg.Result := 0;
 end;
 
 procedure TJvImage.PicturesChanged(Sender: TObject);
