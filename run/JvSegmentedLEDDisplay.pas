@@ -380,9 +380,9 @@ implementation
 
 uses
   Controls, SysUtils,
-  JclGraphUtils;
+  JclGraphUtils, JvThemes;
 
-{$R *.RES}
+{$R ..\resources\JvSegmentedLEDDisplay.res}
 
 var
   GDigitClassList: TThreadList;
@@ -476,7 +476,7 @@ begin
   Canvas.Brush.Color := Color;
   Canvas.Brush.Style := bsSolid;
   Canvas.Pen.Style := psSolid;
-  Canvas.FillRect(ClientRect);
+  DrawThemedBackground(Self, Canvas, ClientRect);
   for I := 0 to FDigits.Count - 1 do
     Digits[I].Paint;
 end;
@@ -803,6 +803,7 @@ end;
 constructor TJvCustomSegmentedLEDDisplay.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  IncludeThemeStyle(Self, [csParentBackground]);
   AutoSize := True;
   FDigitClass := TJv7SegmentedLEDDigit;
   FCharacterMapper := TJvSegmentedLEDCharacterMapper.Create(Self);

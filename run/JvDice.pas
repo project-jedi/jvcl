@@ -265,7 +265,6 @@ var
     ImgList := TImageList.CreateSize(IWidth, IHeight);
     try
       ImgList.AddMasked(FBitmap, FBitmap.TransparentColor);
-      ImgList.AddMasked(FBitmap, 0);
       TmpImage.Width := IWidth;
       TmpImage.Height := IHeight;
       TmpImage.Canvas.Brush.Color := Self.Brush.Color;
