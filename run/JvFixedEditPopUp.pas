@@ -240,7 +240,7 @@ begin
       -
       Select All
     }
-    // start of with resourcestrings (in case GetDefaultMenuCaptions fails)
+    // start off with resourcestrings (in case GetDefaultMenuCaptions fails)
     m := TMenuItem.Create(self);
     m.Caption := SDefaultPopUpUndo;
     m.OnClick := DoUndo;
