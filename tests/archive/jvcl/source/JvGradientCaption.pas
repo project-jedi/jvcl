@@ -93,6 +93,8 @@ type
     property LabelCursor: TCursor read GetLabel1Cursor write SetLabel1Cursor default crDefault;
     property LabelHint: string read GetLabel1Hint write SetLabel1Hint;
     property LabelCaption: string read GetLabel1Caption write SetLabel1Caption;
+    // LabelColor sets the background Color of the label (used for text in the control).
+    // To get a transparent text background, set LabelColor to clNone
     property LabelColor: TColor read GetLabel1Color write SetLabel1Color default clNone;
     property LabelFont: TFont read GetFont write SetFont;
     property ShowHint: Boolean read FHint write SetHints default False;
