@@ -554,10 +554,6 @@ type
   SoftwareUpdateMessageBoxProc = function(hWnd: HWND; szDistUnit: LPCWSTR; dwFlags: DWORD; var psdi: TSoftDistInfo):
     DWORD; stdcall;
 
-implementation
-uses
-  urlmon;
-
 var
   FreePIDL: FreePIDLProc = nil;
   GetOpenFileNameEx: GetOpenFileNameExProc = nil;
@@ -577,10 +573,15 @@ var
   SHChangeIcon: SHChangeIconProc = nil;
   SHChangeIconW: SHChangeIconProcW = nil;
   URLAssociationDialogA: URLAssociationDialogProcA = nil;
-  URLAssociationDialogW: URLAssociationDialogProcW = nil;
   MIMEAssociationDialogA: MIMEAssociationDialogProcA = nil;
-  MIMEAssociationDialogW: MIMEAssociationDialogProcW = nil;
+//  URLAssociationDialogW: URLAssociationDialogProcW = nil;
+//  MIMEAssociationDialogW: MIMEAssociationDialogProcW = nil;
   SoftwareUpdateMessageBox: SoftwareUpdateMessageBoxProc = nil;
+
+implementation
+uses
+  urlmon;
+
 
 resourcestring
   //SDiskFullError =
