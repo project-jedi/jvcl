@@ -17,17 +17,15 @@ All Rights Reserved.
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
                 André Snepvangers [asn@xs4all.nl]
 
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
 
-
 {$I jvcl.inc}
 
-unit JvQComboBox;
+unit JvQCombobox;
 
 interface
 
@@ -42,8 +40,6 @@ type
   private
     FKey: Word;
     FSearching: Boolean;
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FOnRestored: TNotifyEvent;
     FOver: Boolean;
@@ -53,8 +49,6 @@ type
   protected
     procedure Change; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
-    procedure MouseEnter(AControl : TControl); override ;
-    procedure MouseLeave(AControl : TControl); override;
     procedure ParentColorChanged; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -74,8 +68,6 @@ type
     property DragMode;
     property MaxPixel: TJvMaxPixel read FMaxPixel write FMaxPixel;
     property OnRestored: TNotifyEvent read FOnRestored write FOnRestored;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   end;
 
@@ -84,11 +76,9 @@ type
     property SelStart;
     property SelText;
     property SelLength;
-//    property HintColor;
     property InsertMode;
     property MaxPixel;
     property AutoComplete default True;
-//    property AutoSave;
     property Style; {Must be published before Items}
     property Anchors;
     property CharCase;
@@ -225,8 +215,6 @@ type
 
 implementation
 
-{**************************************************}
-
 constructor TJvCustomCombobox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -238,8 +226,6 @@ begin
   FItemSearchs := TJvItemsSearchs.Create;
 end;
 
-{**************************************************}
-
 destructor TJvCustomCombobox.Destroy;
 begin
   FMaxPixel.Free;
@@ -247,21 +233,15 @@ begin
   inherited;
 end;
 
-{**************************************************}
-
 procedure TJvCustomCombobox.Loaded;
 begin
   inherited;
 end;
 
-{**************************************************}
-
 procedure TJvCustomCombobox.Change;
 begin
   inherited;
 end;
-
-{**************************************************}
 
 function TJvCustomCombobox.SearchExactString(Value: string;
   CaseSensitive: Boolean): Integer;
@@ -269,24 +249,17 @@ begin
   Result := FItemSearchs.SearchExactString(Items, Value, CaseSensitive);
 end;
 
-{**************************************************}
-
 function TJvCustomCombobox.SearchPrefix(Value: string;
   CaseSensitive: Boolean): Integer;
 begin
   Result := FItemSearchs.SearchPrefix(Items, Value, CaseSensitive);
 end;
 
-{**************************************************}
-
 procedure TJvCustomCombobox.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyDown(Key, Shift);
   FKey := Key;
 end;
-
-{**************************************************}
-
 
 procedure TJvCustomCombobox.ParentColorChanged;
 begin
@@ -295,57 +268,17 @@ begin
     FOnParentColorChanged(Self);
 end;
 
-{**************************************************}
-
-procedure TJvCustomCombobox.MouseEnter(AControl : TControl);
-begin
-  (*
-  if not FOver then
-  begin
-    FSaved := Application.HintColor;
-    Application.HintColor := FColor;
-    FOver := True;
-  end;
-  *)
-  inherited;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
-end;
-
-{**************************************************}
-
-procedure TJvCustomCombobox.MouseLeave(AControl : TControl);
-begin
-  (*
-  if FOver then
-  begin
-    Application.HintColor := FSaved;
-    FOver := False;
-  end;
-  *)
-  inherited;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
-
-end;
-
-{**************************************************}
-
 function TJvCustomCombobox.SearchSubString(Value: string;
   CaseSensitive: Boolean): Integer;
 begin
   Result := FItemSearchs.SearchSubString(Items, Value, CaseSensitive);
 end;
 
-{**************************************************}
-
 function TJvCustomCombobox.DeleteExactString(Value: string; All: Boolean;
   CaseSensitive: Boolean): Integer;
 begin
   Result := FItemSearchs.DeleteExactString(Items, Value, CaseSensitive);
 end;
-
-{**************************************************}
 
 procedure TJvCustomCombobox.MaxPixelChanged(Sender: TObject);
 var
@@ -427,7 +360,6 @@ begin
   FListBox := TJvCheckListBox.Create(FPrivForm);
   FListBox.Parent := FPrivForm;
   FListBox.BorderStyle := bsNone;
-//  FListBox.Ctl3D := False;
   FListBox.Columns := FColumns;
   FListBox.Align := alClient;
   FListBox.OnClickCheck := ToggleOnOff;
