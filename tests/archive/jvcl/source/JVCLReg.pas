@@ -117,9 +117,9 @@ uses
   jvAddPrinter, jvWinDialogs,
 
   //Win32
-  JvStatusBar,
+  JvStatusBar, JvProgressBar,
   JvTabControl, JvRichEdit,
-  JvProgressBar, JvUpDown, JvHotKey, JvAnimate, JvDateTimePicker,
+  JvUpDown, JvHotKey, JvAnimate, JvDateTimePicker,
   JvMonthCalendar, JvListView, JvHeaderControl, JvToolBar,
   JvCoolBar, JvPageScroller,
   JvHotKeyEx,
@@ -143,7 +143,8 @@ uses
 
 {$IFNDEF D6PersonalEdition}
   //DB-Aware components
-  JvDBDateTimePicker,  // TODO: JvDBStatusBar, 
+  JvDBDateTimePicker,
+  JvDBProgressBar,
 {$ENDIF}
 
   //Editors
@@ -306,7 +307,9 @@ begin
       TJvPageControl,
       TJvRichEdit,
       TJvTrackBar,
+      {$IFNDEF D6PersonalEdition}
       TJvProgressBar,
+      {$ENDIF}
       TJvUpDown,
       TJvHotKey,
       TJvHotKeyEx,
@@ -361,10 +364,7 @@ begin
 {$IFNDEF D6PersonalEdition}
   // Jv Data Controls
   // ================
-  RegisterComponents('Jv Data Controls', [
-    TJvDBDateTimePicker,
-      TJvDBProgressBar
-      ]);
+  RegisterComponents('Jv Data Controls', [TJvDBDateTimePicker,TJvDBProgressBar]);
 {$ENDIF}
 
   // Jv Dialogs
@@ -580,10 +580,6 @@ begin
       TJvCalculatorBox
       ]);
 
-{$IFNDEF D6PersonalEdition}
-  //DB-Aware components
-  RegisterComponents('Jv Data Controls', [TJvDBDateTimePicker, TJvDBProgressBar]);
-{$ENDIF}
 end;
 
 procedure Register;
