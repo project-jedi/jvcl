@@ -42,6 +42,7 @@ type
 type
   EJvExportDBGridException = class(EJVCLException);
   TWordGridFormat = $10..$17;
+  TOleServerClose = (scNever, scNewInstance, scAlways);
 
 { avoid Office TLB imports }
 const
@@ -99,7 +100,7 @@ type
     FVisible: boolean;
     FOrientation: TWordOrientation;
     FWordFormat: TWordGridFormat;
-    FClose: boolean;
+    FClose: TOleServerClose;
     FRunningInstance:boolean;
   protected
     procedure DoSave; override;
@@ -114,7 +115,7 @@ type
     property Grid;
     property OnProgress;
 
-    property Close: boolean read FClose write FClose default true;
+    property Close: TOleServerClose read FClose write FClose default scNewInstance;
     property WordFormat: TWordGridFormat read FWordFormat write FWordFormat default wdTableFormatGrid3;
     property Visible: boolean read FVisible write FVisible default false;
     property Orientation: TWordOrientation read FOrientation write FOrientation default woPortrait;
@@ -125,7 +126,7 @@ type
     FExcel: OleVariant;
     FVisible: boolean;
     FOrientation: TWordOrientation;
-    FClose: boolean;
+    FClose: TOleServerClose;
     FRunningInstance:boolean;
     function IndexFieldToExcel(index: integer): string;
   protected
@@ -141,7 +142,7 @@ type
     property Grid;
     property OnProgress;
 
-    property Close: boolean read FClose write FClose default true;
+    property Close: TOleServerClose read FClose write FClose default scNewInstance;
     property Visible: boolean read FVisible write FVisible default false;
     property Orientation: TWordOrientation read FOrientation write FOrientation default woPortrait;
   end;
@@ -303,7 +304,7 @@ begin
   FVisible := false;
   FOrientation := woPortrait;
   FWordFormat := wdTableFormatGrid3;
-  FClose := true;
+  FClose := scNewInstance;
 end;
 
 destructor TJvDBGridWordExport.Destroy;
@@ -431,11 +432,13 @@ end;
 
 procedure TJvDBGridWordExport.DoClose;
 begin
-  if not VarIsEmpty(FWord) and FClose then
+  if not VarIsEmpty(FWord) and (FClose <> scNever) then
   try
-    FWord.ActiveDocument.Close(wdDoNotSaveChanges, EmptyParam, EmptyParam);
-    if not FRunningInstance then
-      FWord.Quit; // only quit if we created the instance ourselves
+    if (FClose = scAlways) or not FRunningInstance then
+    begin
+      FWord.ActiveDocument.Close(wdDoNotSaveChanges, EmptyParam, EmptyParam);
+      FWord.Quit;
+    end;
     FWord := Unassigned;
   except
     HandleException;
@@ -453,7 +456,7 @@ begin
   FExcel := Unassigned;
   FVisible := false;
   FOrientation := woPortrait;
-  FClose := true;
+  FClose := scNewInstance;
 end;
 
 destructor TJvDBGridExcelExport.Destroy;
@@ -579,12 +582,14 @@ end;
 
 procedure TJvDBGridExcelExport.DoClose;
 begin
-  if not VarIsEmpty(FExcel) and FClose then
+  if not VarIsEmpty(FExcel) and (FClose <> scNever) then
   try
     FExcel.ActiveWorkbook.Saved := true; // Avoid Excel's save prompt
-    FExcel.ActiveWorkbook.Close;
-    if not FRunningInstance then
-      FExcel.Quit; // only quit if we created the instance ourselves
+    if (Close = scAlways) or not FRunningInstance then
+    begin
+      FExcel.ActiveWorkbook.Close;
+      FExcel.Quit;
+    end;
     FExcel := Unassigned;
   except
     HandleException;
