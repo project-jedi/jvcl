@@ -79,10 +79,10 @@ type
     FCurvature: Integer;
     FHotTrackBorder: Integer;
     FBorderColor: TColor;
+    FTextOnly: Boolean;
     {$IFDEF USEJVCL}
     FHotTrackFontOptions: TJvTrackFontOptions;
     FActiveFontOptions: TJvTrackFontOptions;
-    FTextOnly: Boolean;
     {$ENDIF USEJVCL}
     procedure SetItemHeight(const Value: Integer);
     procedure SetHorzOffset(const Value: Integer);
@@ -98,11 +98,11 @@ type
     procedure SetRounded(const Value: Boolean);
     procedure SetItemText(const Value: TRouteMapListItemText);
     procedure SetCurvature(const Value: Integer);
+    procedure SetTextOnly(const Value: Boolean);
+    procedure SetBorderColor(Value: TColor);
     {$IFDEF USEJVCL}
     procedure SetActiveFontOptions(const Value: TJvTrackFontOptions);
     procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
-    procedure SetBorderColor(Value: TColor);
-    procedure SetTextOnly(const Value: Boolean);
     {$ENDIF USEJVCL}
   protected
     procedure DrawPageItem(ACanvas: TCanvas; ARect: TRect; MousePos: TPoint; PageIndex: Integer); virtual;
