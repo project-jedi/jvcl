@@ -20,16 +20,19 @@ object JvChartDemoForm: TJvChartDemoForm
     Left = 0
     Top = 36
     Width = 886
-    Height = 358
+    Height = 361
     Align = alClient
-    Options.YGap = 1
+    Options.PenCount = 3
+    Options.YGap = 1.000000000000000000
     Options.XOrigin = 0
     Options.YOrigin = 0
     Options.YStartOffset = 21
     Options.PointSize = 3
     Options.XLegendSkipBy = 3
-    Options.YLegendDecimalPlaces = 0
+    Options.YLegendDecimalPlaces = 1
+    Options.Legend = clChartLegendBelow
     Options.LegendRowCount = 0
+    Options.AxisLineWidth = 3
     Options.XValueCount = 3
     Options.YValueCount = 3
     Options.HeaderFont.Charset = DEFAULT_CHARSET
@@ -413,7 +416,7 @@ object JvChartDemoForm: TJvChartDemoForm
   end
   object Panel2: TPanel
     Left = 0
-    Top = 394
+    Top = 397
     Width = 886
     Height = 20
     Align = alBottom
@@ -430,7 +433,6 @@ object JvChartDemoForm: TJvChartDemoForm
     end
   end
   object ColorDialog1: TColorDialog
-    Ctl3D = True
     Options = [cdFullOpen]
     Left = 455
     Top = 78
@@ -441,8 +443,6 @@ object JvChartDemoForm: TJvChartDemoForm
     Font.Height = -13
     Font.Name = 'System'
     Font.Style = []
-    MinFontSize = 0
-    MaxFontSize = 0
     Options = []
     Left = 548
     Top = 59

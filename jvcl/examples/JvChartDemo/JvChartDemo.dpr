@@ -2,7 +2,9 @@ program JvChartDemo;
 
 uses
   Forms,
-  JvChartDemoFm in 'JvChartDemoFm.pas' {JvChartDemoForm};
+  JvChartDemoFm in 'JvChartDemoFm.pas' {JvChartDemoForm},
+  StatsClasses in 'StatsClasses.pas',
+  JvChart in '..\..\run\JvChart.pas';
 
 {$R *.res}
 

@@ -35,7 +35,7 @@ interface
 uses
   Windows, SysUtils, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, ExtCtrls, StdCtrls, Buttons, Spin,
-  JvChart, JvComponent, JvExControls;
+  JvChart, JvComponent, JvExControls, StatsClasses;
 
 type
   TJvChartDemoForm = class(TForm)
@@ -92,35 +92,59 @@ procedure TJvChartDemoForm.ButtonNewValuesClick(Sender: TObject);
 var
   I: Integer;
   nValueCount: Integer;
-  hgt, hg0: Double;
+  hgt, hg0, hg2p: Double;
+  StatHgt,StatHg0:TStatArray;
+  dt,ds:Double;
+  foo,foo1,foo2:Integer;
 begin
-  Randomize;
-  nValueCount := 20;
-  Chart.ResetGraphModule;
+  StatHgt := TStatArray.Create(10); // Initialize for rolling average of last 10 samples.
+  StatHg0 := TStatArray.Create(10);
+  try
 
+  Randomize;
+
+  if Chart.Options.ChartKind = ckChartLine then begin
+     nValueCount := 576;  // 2.5 minute sample period, 576 samples = 1 day.
+     foo := 20; // The allmighty foo factor.
+  end else begin
+     nValueCount := 20; // Other chart types don't deal well with 576 samples.
+     foo := 1;  // A non foo factor (aka 'bar')
+  end;
+  Chart.Data.Clear;
+  Chart.ResetGraphModule;
+  dt := Trunc(now- 1.0); // yesterday, midnight.
+  foo1 := Random(5)+2;
+  foo2 := Random(3)+5;
   for I := 0 to nValueCount - 1 do
   begin
     if i > 0 then
     begin
-      hgt := (Random((I mod 5) * 250) * 5 + 7500);
-      hg0 := Random((I mod 3) * 650) + 1003;
+      hgt := Abs(Random(80)+(Random(((I div foo) mod foo1) * 250) * 5 + 9500));
+      hg0 := Abs(Random(280)+Random(((I div foo) mod foo2) * 650)*5 + 1003);
     end
     else
     begin
       hgt := 7000; // first element must be fixed for debug 0/1 offset purposes
       hg0 := 1000;
     end;
+    StatHgt.AddValue(hgt);
+    StatHg0.AddValue(hg0);
     // Set Data.Value[Pen, Series] := dataValue ...
-    Chart.Data.Value[0, I] := hgt;
-    Chart.Data.Value[1, I] := hg0;
-    Chart.Data.Value[2, I] := hgt - hg0;
-    Chart.Options.XLegends.Add(FormatDateTime('yyyy-mm-dd', (now - 3.0) + (i / 16)));
+    Chart.Data.Value[0, I] := StatHgt.Average /1000;
+    Chart.Data.Value[1, I] := StatHg0.Average/1000;
+    hg2p := (StatHgt.Average - StatHg0.Average)/1000;
+    if hg2p < 0.0 then
+        hg2p := 0.0;
+    Chart.Data.Value[2, I] := hg2p;
+    ds := dt + (i / 576);
+    Chart.Options.XLegends.Add(FormatDateTime('yyyy-mm-dd', dt) );
+    Chart.Data.Timestamp[I] := dt;
   end;
   with Chart.Options do
   begin
     Title := 'Chart Title';
     XAxisHeader := 'Date/Time';
-    YAxisHeader := 'Readings (ug/m3)';
+    YAxisHeader := 'Readings (ng/m3)';
     PenCount := 3;
 
     PenLegends.Clear;
@@ -133,11 +157,18 @@ begin
     PenUnit.Add('ug/m3');
     PenUnit.Add('ug/m3');
 
-    ShowLegend := TRUE;
-    ChartKind := ckChartLine;
+    //ShowLegend := TRUE;
+    Legend := clChartLegendBelow;
+    
+    //ChartKind := ckChartLine;
   end;
-  Chart.AutoFormatGraph;
+    Chart.AutoFormatGraph;
+    //Chart.PlotGraph;
    //Chart.ResizeChartCanvas;
+  finally
+      FreeAndNil(StatHgt);
+      FreeAndNil(StatHg0);
+  end;
 end;
 
 procedure TJvChartDemoForm.SpeedButton1Click(Sender: TObject);
@@ -159,28 +190,32 @@ end;
 procedure TJvChartDemoForm.SpeedButton3Click(Sender: TObject);
 begin
   Chart.Options.ChartKind := ckChartBar;
-   // ShowAsBar;
+  ButtonNewValuesClick(Sender);  
+  //Chart.PlotGraph;
 end;
 
 procedure TJvChartDemoForm.SpeedButton4Click(Sender: TObject);
 begin
 {   Chart.ShowAsLine; this show it without marks}
   Chart.Options.ChartKind := ckChartLineWithMarkers;
+  ButtonNewValuesClick(Sender);
 end;
 
 procedure TJvChartDemoForm.SpeedButton5Click(Sender: TObject);
 begin
   Chart.Options.ChartKind := ckChartStackedBarAverage;
+  ButtonNewValuesClick(Sender);
 end;
 
 procedure TJvChartDemoForm.SpeedButton6Click(Sender: TObject);
 begin
   Chart.Options.ChartKind := ckChartStackedBar;
+  ButtonNewValuesClick(Sender);
 end;
 
 procedure TJvChartDemoForm.SpeedButton7Click(Sender: TObject);
 begin
-  Chart.PivotData; // TODO: CRASH.
+//  Chart.PivotData; // TODO: This causes exceptions. not sure why we want this.
 end;
 
 procedure TJvChartDemoForm.SpeedButton8Click(Sender: TObject);
