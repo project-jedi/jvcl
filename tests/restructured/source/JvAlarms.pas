@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
-Peter Thörnqvist [peter3@peter3.com] 
+Peter Thörnqvist [peter3@peter3.com]
 
 Last Modified:
   2002-06-15 - (p3) changed TJvAlarm record to TCollection so you can easily manipulate it at design-time
@@ -48,11 +48,11 @@ type
     FTime: TDateTime;
     FKind: TJvTriggerKind;
   public
-    procedure Assign(Source:TPersistent);override;
+    procedure Assign(Source: TPersistent); override;
   published
-    property Name:string read FName write FName;
-    property Time:TDateTime read FTime write FTime;
-    property Kind:TJvTriggerKind read FKind write FKind;
+    property Name: string read FName write FName;
+    property Time: TDateTime read FTime write FTime;
+    property Kind: TJvTriggerKind read FKind write FKind;
   end;
 
   TJvOnAlarm = procedure(Sender: TObject;
@@ -63,10 +63,10 @@ type
     function GetItems(Index: integer): TJVAlarmItem;
     procedure SetItems(Index: integer; const Value: TJVAlarmItem);
   public
-    constructor Create(AOwner:TPersistent);
-    function Add:TJvAlarmItem;
-    procedure Assign(Source:TPersistent);override;
-    property Items[Index:integer]:TJVAlarmItem read GetItems write SetItems;default;
+    constructor Create(AOwner: TPersistent);
+    function Add: TJvAlarmItem;
+    procedure Assign(Source: TPersistent); override;
+    property Items[Index: integer]: TJVAlarmItem read GetItems write SetItems; default;
   end;
 
   TJvAlarms = class(TJvComponent)
@@ -88,10 +88,10 @@ type
     procedure Add(const AName: string; const ATime: TDateTime; const AKind: TJvTriggerKind = tkOneShot);
     procedure Delete(const Idx: Cardinal);
 
-//    property Alarms[Idx: Cardinal]: TJvAlarm read GetAlarm;
+    //    property Alarms[Idx: Cardinal]: TJvAlarm read GetAlarm;
     property Running: Boolean read FRunning;
   published
-    property Alarms:TJvAlarmItems read FAlarms write SetAlarms;
+    property Alarms: TJvAlarmItems read FAlarms write SetAlarms;
     property Active: Boolean read FActive write SetActive default False;
     property OnAlarm: TJvOnAlarm read FOnAlarm write FOnAlarm;
   end;
@@ -151,7 +151,6 @@ begin
   FTimer.Enabled := Running;
 end;
 
-
 {*****************************************************}
 
 procedure TJvAlarms.DoAlarm(const Alarm: TJvAlarmItem; const TriggerTime: TDateTime);
@@ -168,9 +167,10 @@ var
   Current: TDateTime;
   Stamp: TTimeStamp;
   Year, Month, Day: Word;
-  Alarm:TJvAlarmItem;
+  Alarm: TJvAlarmItem;
 begin
-  if FAlarms.Count < 1 then Exit;
+  if FAlarms.Count < 1 then
+    Exit;
   Current := Now;
   Stamp := DateTimeToTimeStamp(Now);
   // sort out delayed Timer events which may arrive in bunches
@@ -181,29 +181,31 @@ begin
     begin
       Alarm := Alarms[I];
       if Current >= Alarm.Time then
+      begin
         DoAlarm(Alarm, Current);
-      Stamp := DateTimeToTimeStamp(Alarm.Time);
-      case Alarm.Kind of
-        tkOneShot:
-          Delete(I);
-        tkEachSecond:
-          Inc(Stamp.Time, 1000);
-        tkEachMinute:
-          Inc(Stamp.Time, 60 * 1000);
-        tkEachHour:
-          Inc(Stamp.Time, 60 * 60 * 1000);
-        tkEachDay:
-          Inc(Stamp.Date);
-        tkEachMonth:
-          Stamp := DateTimeToTimeStamp(IncMonth(Alarm.Time, 1));
-        tkEachYear:
-          begin
-            DecodeDate(Current, Year, Month, Day);
-            if IsLeapYear(Year) then
-              Inc(Stamp.Date, 366)
-            else
-              Inc(Stamp.Date, 365);
-          end;
+        Stamp := DateTimeToTimeStamp(Alarm.Time);
+        case Alarm.Kind of
+          tkOneShot:
+            Delete(I);
+          tkEachSecond:
+            Inc(Stamp.Time, 1000);
+          tkEachMinute:
+            Inc(Stamp.Time, 60 * 1000);
+          tkEachHour:
+            Inc(Stamp.Time, 60 * 60 * 1000);
+          tkEachDay:
+            Inc(Stamp.Date);
+          tkEachMonth:
+            Stamp := DateTimeToTimeStamp(IncMonth(Alarm.Time, 1));
+          tkEachYear:
+            begin
+              DecodeDate(Current, Year, Month, Day);
+              if IsLeapYear(Year) then
+                Inc(Stamp.Date, 366)
+              else
+                Inc(Stamp.Date, 365);
+            end;
+        end;
       end;
       if Stamp.Time > 24 * 60 * 60 * 1000 then
       begin
@@ -233,7 +235,7 @@ begin
 end;
 
 procedure TJvAlarmItems.Assign(Source: TPersistent);
-var i:integer;
+var i: integer;
 begin
   if Source is TJvAlarmItems then
   begin
@@ -247,12 +249,12 @@ end;
 
 constructor TJvAlarmItems.Create(AOwner: TPersistent);
 begin
-  inherited Create(AOwner,TJvAlarmItem);
+  inherited Create(AOwner, TJvAlarmItem);
 end;
 
 function TJvAlarmItems.GetItems(Index: integer): TJVAlarmItem;
 begin
-  Result := TJVAlarmItem(inherited Items[Index]) ;
+  Result := TJVAlarmItem(inherited Items[Index]);
 end;
 
 procedure TJvAlarmItems.SetItems(Index: integer;
@@ -280,3 +282,4 @@ begin
 end;
 
 end.
+
