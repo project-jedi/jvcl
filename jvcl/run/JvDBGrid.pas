@@ -116,6 +116,7 @@ type
     FOnEditChange: TNotifyEvent;
     FOnKeyPress: TKeyPressEvent;
     FOnTitleBtnClick: TTitleClickEvent;
+    FOnTitleBtnDblClick:TTitleClickEvent;
     FOnShowEditor: TJvDBEditShowEvent;
     FOnTopLeftChanged: TNotifyEvent;
     FSelectionAnchor: TBookmarkStr;
@@ -140,6 +141,7 @@ type
     FMaxColumnWidth: Integer;
     FInAutoSize: Boolean;
     FSelectColumnsDialogStrings: TJvSelectDialogColumnStrings;
+    FTitleColumn:TColumn;
     function GetImageIndex(Field: TField): Integer; // Modified by Lionel
     procedure SetShowGlyphs(Value: Boolean);
     procedure SetRowsHeight(Value: Integer);
@@ -190,6 +192,9 @@ type
     function AcquireFocus: Boolean;
     function CanEditShow: Boolean; override;
     function CreateEditor: TInplaceEdit; override; // Modified by Lionel
+    procedure DblClick; override;
+    function DoTitleBtnDblClick:boolean;dynamic;
+
     procedure DoTitleClick(ACol: Longint; AField: TField); dynamic; // Modified by Lionel
     procedure CheckTitleButton(ACol, ARow: Longint; var Enabled: Boolean); dynamic;
     procedure DrawCell(ACol, ARow: Longint; ARect: TRect; AState: TGridDrawState); override; // Modified by Lionel
@@ -226,6 +231,7 @@ type
       var DefaultDrawText, DefaultDrawSortMarker: Boolean); virtual;
     // Lionel
     procedure ColEnter; override;
+
     procedure DoExit; override;
     function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
       MousePos: TPoint): Boolean; override;
@@ -245,6 +251,7 @@ type
     function GetMaxColWidth(Default: Integer): Integer;
     function LastVisibleColumn: Integer;
     function FirstVisibleColumn: Integer;
+    procedure TitleClick(Column: TColumn); override;
   public
     constructor Create(AOwner: TComponent); override; // Modified by Lionel
     destructor Destroy; override; // Modified by Lionel
@@ -304,6 +311,8 @@ type
     property OnEditChange: TNotifyEvent read FOnEditChange write FOnEditChange;
     property OnShowEditor: TJvDBEditShowEvent read FOnShowEditor write FOnShowEditor;
     property OnTitleBtnClick: TTitleClickEvent read FOnTitleBtnClick write FOnTitleBtnClick;
+    { TODO -oJVCL -cJVCL3_POSTBETA : make visible after JVCL3 beta release }
+//    property OnTitleBtnDblClick: TTitleClickEvent read FOnTitleBtnDblClick write FOnTitleBtnDblClick;
     property OnKeyPress: TKeyPressEvent read FOnKeyPress write FOnKeyPress;
     property OnTopLeftChanged: TNotifyEvent read FOnTopLeftChanged write FOnTopLeftChanged;
     property OnDrawColumnTitle: TDrawColumnTitleEvent read FOnDrawColumnTitle write FOnDrawColumnTitle;
@@ -1071,24 +1080,43 @@ begin
 end;
 
 procedure TJvDBGrid.DoTitleClick(ACol: Longint; AField: TField);
-const
-  cIndexDefs = 'IndexDefs';
-  cIndexName = 'IndexName';
-  cIXPrefix = 'IX';
 var
   IndexDefs: TIndexDefs;
+  lIndexName: string;
+
+function GetIndexOf(aFieldName: string; var aIndexName: string): boolean;
+var
+  i: integer;
 begin
-  // Lionel
-  if IsPublishedProp(DataSource.DataSet, cIndexDefs) and IsPublishedProp(DataSource.DataSet, cIndexName) then
-    IndexDefs := TIndexDefs(GetOrdProp(DataSource.DataSet, cIndexDefs))
+  result := false;
+  for i:=0 to IndexDefs.Count - 1 do
+  begin
+    if Pos(aFieldName,IndexDefs[i].Fields) = 1 then
+    begin
+      aIndexName := IndexDefs[i].Name;
+      result := true;
+      Exit;
+    end;
+  end;
+end;
+
+begin
+  // Lionel, Peter
+  if IsPublishedProp(DataSource.DataSet, 'IndexDefs') and IsPublishedProp(DataSource.DataSet, 'IndexName') then
+    IndexDefs := TIndexDefs(GetOrdProp(DataSource.DataSet, 'IndexDefs'))
   else
     IndexDefs := nil;
   if Assigned(IndexDefs) then
-    if IndexDefs.IndexOf(cIXPrefix + AField.FieldName) <> -1 then
+    if GetIndexOf(AField.FieldName,lIndexName) then
     begin
       FSortedField := AField.FieldName;
-      SetStrProp(DataSource.DataSet, cIndexName, cIXPrefix + AField.FieldName);
+      try
+        SetStrProp(DataSource.DataSet,'IndexName',lIndexName);
+      except
+      end;
     end;
+  // End Lionel
+
   if Assigned(FOnTitleBtnClick) then
     FOnTitleBtnClick(Self, ACol, AField);
 end;
@@ -2166,6 +2194,7 @@ const
 
 procedure TJvDBGrid.CellClick(Column: TColumn);
 begin
+  FTitleColumn := nil;
   inherited CellClick(Column);
 
   if not (csDesigning in ComponentState) and not ReadOnly and
@@ -2280,10 +2309,12 @@ end;
 procedure TJvDBGrid.GetBtnParams(Sender: TObject; Field: TField;
   AFont: TFont; var Background: TColor; var SortMarker: TSortMarker;
   IsDown: Boolean);
+const
+  Direction:array [boolean] of TSortMarker = (smUp, smDown);
 begin
   // Be careful not to stop this event
   if Field.FieldName = FSortedField then
-    SortMarker := smDown;
+    SortMarker := Direction[IsDown];
 end;
 
 procedure TJvDBGrid.ColEnter;
@@ -2735,7 +2766,7 @@ end;
 
 function TJvDBGrid.GetMaxColWidth(Default: Integer): Integer;
 begin
-  if (MaxColumnWidth > 0) and (MaxColumnWidth < Default) then
+  if (MaxColumnWidth > 0) and (Default > MaxColumnWidth) then
     Result := MaxColumnWidth
   else
     Result := Default;
@@ -2743,7 +2774,7 @@ end;
 
 function TJvDBGrid.GetMinColWidth(Default: Integer): Integer;
 begin
-  if (MinColumnWidth > 0) and (Default > MinColumnWidth) then
+  if (MinColumnWidth > 0) and (Default < MinColumnWidth) then
     Result := MinColumnWidth
   else
     Result := Default;
@@ -2773,7 +2804,27 @@ end;
 procedure TJvDBGrid.SetSelectColumnsDialogStrings(
   const Value: TJvSelectDialogColumnStrings);
 begin
-//
+  // do nothing
+end;
+
+procedure TJvDBGrid.DblClick;
+begin
+  if not DoTitleBtnDblClick then
+    inherited;
+  FTitleColumn := nil;
+end;
+
+function TJvDBGrid.DoTitleBtnDblClick:boolean;
+begin
+  Result := Assigned(FOnTitleBtnDblClick) and Assigned(FTitleColumn);
+  if Result then
+    FOnTitleBtnDblClick(self, FTitleColumn.Index, FTitleColumn.Field);
+end;
+
+procedure TJvDBGrid.TitleClick(Column: TColumn);
+begin
+  FTitleColumn := Column;
+  inherited;
 end;
 
 { TJvSelectDialogColumnStrings }
