@@ -2992,7 +2992,7 @@ begin
   inherited Create(ADockStyle);
   FActivePaneSize := 100;
   FShowImage := True;
-  FMouseleaveHide := False;
+  FMouseleaveHide := True;
   FHideHoldTime := 1000;
   FTabColor := clBtnFace;
 end;
