@@ -53,8 +53,8 @@ uses
   JvStringGrid, JvSystemPopup, JvTabControl, JvToolBar, JvUpDown, JvBitBtn,
   JvPanel, JvMonthCalendar, JvControlPanelButton, JvStartMenuButton,
   JvRecentMenuButton, JvFavoritesButton, JvImageList, JvListBox, JvBrowseFolder,
-  JvTransparentPanel, JvCheckedItemsForm, JvColorCombo, JvProgressEditor,
-  JvDsgnEditors;
+  JvTransparentPanel, JvCheckedItemsForm, JvColorCombo, 
+  JvProgressEditor, JvDsgnEditors;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvStdCtrlsReg.dcr}
@@ -76,7 +76,7 @@ begin
   RegisterComponents(RsPaletteButton, [TJvBitBtn, TJvImgBtn, TJvSpeedButton,
     TJvCheckBox, TJvRadioButton, TJvRadioGroup, TJvUpDown, TJvDomainUpDown,
     TJvControlPanelButton, TJvStartMenuButton, TJvRecentMenuButton,
-    TJvFavoritesButton]);
+    TJvFavoritesButton, TJvSpinButton]);
   RegisterComponents(RsPaletteEdit, [TJvEdit, TJvMemo, TJvRichEdit,
     TJvCheckedMaskEdit, TJvMaskEdit, TJvHotKey, TJvCalcEdit, TJvComboEdit,
     TJvFilenameEdit, TJvDirectoryEdit, TJvDateEdit, TJvDatePickerEdit,
