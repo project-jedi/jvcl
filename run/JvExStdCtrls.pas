@@ -4325,7 +4325,7 @@ begin
   inherited Create(AOwner);
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
-  
+  FClipboardCommands := [caCopy..caUndo];
 end;
 
 destructor TJvExCustomMemo.Destroy;
