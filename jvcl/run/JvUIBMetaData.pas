@@ -1359,7 +1359,8 @@ begin
     QNames.Open;
     while not QNames.Eof do
     begin
-      TMetaProcedure.Create(Self, OIDProcedure).LoadFromQuery(QNames, QFields, QCharset);
+      with TMetaProcedure.Create(Self, OIDProcedure) do
+        LoadFromQuery(QNames, QFields, QCharset);
       QNames.Next;
     end;
 

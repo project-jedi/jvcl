@@ -1795,7 +1795,7 @@ type
     SetLength(Str, BlobInfos[1].CardType);
     Buffer := PChar(Str);
     len := 0;
-    while BlobGetSegment(BlobHandle, CurrentLength, BlobInfos[0].CardType, Buffer) do
+    while BlobGetSegment(BlobHandle, CurrentLength, BlobInfos[1].CardType - len, Buffer) do
     begin
       inc(Integer(Buffer), CurrentLength);
       inc(len, CurrentLength);
@@ -1823,7 +1823,7 @@ type
     GetMem(Buffer, Size);
     TMP := Buffer;
     Len := 0;
-    while BlobGetSegment(BlobHandle, CurrentLength, BlobInfos[0].CardType, TMP) do
+    while BlobGetSegment(BlobHandle, CurrentLength, BlobInfos[1].CardType - len, TMP) do
     begin
       inc(Integer(TMP), CurrentLength);
       inc(Len, CurrentLength);
@@ -1851,7 +1851,7 @@ type
     Len := 0;
     Buffer := VarArrayLock(Value);
     try
-      while BlobGetSegment(BlobHandle, CurrentLength, BlobInfos[0].CardType, Buffer) do
+      while BlobGetSegment(BlobHandle, CurrentLength, BlobInfos[1].CardType - len, Buffer) do
       begin
         inc(Integer(Buffer), CurrentLength);
         inc(Len, CurrentLength);
