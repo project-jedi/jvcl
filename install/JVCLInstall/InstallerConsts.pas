@@ -75,7 +75,7 @@ resourcestring
 
  // FrmDirEditBrowse.pas
 resourcestring
-  RsSelectJCLDir = 'Select the directory where the JCL 1.9 source is.';
+  RsSelectDir = 'Please select the directory below:';
   RsNoDirectoryButton = 'No directory';
 
  // FrmInstall.pas
