@@ -56,6 +56,16 @@ CFGFILE=..\$(PKGDIR)\$(CONFIGFILENAME)
 PERSONALEDITION_OPTION = -DDUMMYDUMMY
 !endif
 
+!ifndef EXTRAUNITDIRS
+EXTRAUNITDIRS=.
+!endif
+!ifndef EXTRAINCLUDEDIRS
+EXTRAINCLUDEDIRS=.
+!endif
+!ifndef EXTRARESDIRS
+EXTRARESDIRS=.
+!endif
+
 !ifndef DCCOPT
 DCCOPT=-Q -M
 !endif
@@ -143,6 +153,10 @@ configfile:
 	@echo -I"$(JVCLINCLUDEDIRS)">>"$(CFG)"
 	@echo -U"$(UNITOUTDIR);$(JVCLSOURCEDIRS);$(LIBDIR)">>"$(CFG)"
 	@echo -R"$(JVCLRESDIRS)">>"$(CFG)"
+	#
+	@echo -U"$(EXTRAUNITDIRS)">>"$(CFG)"
+	@echo -I"$(EXTRAINCLUDEDIRS)">>"$(CFG)"
+	@echo -R"$(EXTRARESDIRS)">>"$(CFG)"
 
 
 ################################################################################

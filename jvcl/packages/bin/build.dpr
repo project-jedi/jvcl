@@ -584,6 +584,41 @@ begin
     SetEnvironmentVariable('HPPDIR', '$(ROOT)\Include\Vcl');
 end;
 
+procedure FindDxgettext(const Version: string);
+var
+  reg: HKEY;
+  len: Longint;
+  RegTyp: LongWord;
+  i: Integer;
+  S: string;
+begin
+  SetEnvironmentVariable('EXTRAUNITDIRS', nil);
+ // dxgettext detection
+  if RegOpenKeyEx(HKEY_CLASSES_ROOT, 'bplfile\Shell\Extract strings\Command', 0, KEY_QUERY_VALUE or KEY_READ, reg) <> ERROR_SUCCESS then
+    Exit;
+  SetLength(S, MAX_PATH);
+  len := MAX_PATH;
+  RegQueryValueEx(reg, '', nil, @RegTyp, PByte(S), @len);
+  SetLength(S, StrLen(PChar(S)));
+  RegCloseKey(reg);
+
+  if S <> '' then
+  begin
+    if S[1] = '"' then
+    begin
+      Delete(S, 1, 1);
+      i := 1;
+      while (i <= Length(S)) and (S[i] <> '"') do
+        Inc(i);
+      SetLength(S, i - 1);
+    end;
+    S := ExtractFileDir(S);
+    if Version = '5' then
+      S := S + '\delphi5';
+    SetEnvironmentVariable('EXTRAUNITDIRS', Pointer(S));
+  end;
+end;
+
 var
   i: Integer;
 begin
@@ -623,6 +658,8 @@ begin
         PkgDir := Copy(PkgDir, 1, 2) + 'per';
 
     UnitOutDir := JVCLRoot + '\lib\' + Copy(Edition, 1, 2);
+
+    FindDxgettext(Version);
 
    // setup environment and execute build.bat
     SetEnvironmentVariable('PERSONALEDITION_OPTION', nil);
