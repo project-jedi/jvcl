@@ -364,6 +364,14 @@ begin
   PageControl1.ActivePage := tshWinampTags;
 end;
 
+function ChangeYear(const ADateTime: TDateTime; const NewYear: Word): TDateTime;
+var
+  OldYear, Month, Day: Word;
+begin
+  DecodeDate(ADateTime, OldYear, Month, Day);
+  Result := EncodeDate(NewYear, Month, Day);
+end;
+
 procedure TJvID3v2EditForm.CtrlsToTag;
 
   function SetFirstOfList(Strings: TStrings; const S: string): string;
@@ -376,12 +384,16 @@ procedure TJvID3v2EditForm.CtrlsToTag;
 begin
   { WinAmp tags }
 
-  { WinAmp threats some tags as single line tags; mimic this behaviour by
+  { WinAmp treats some tags as single line tags; mimic this behaviour by
     using function SetFirstOfList }
   JvID3v21.Texts.Title := edtTitle.Text;
   SetFirstOfList(JvID3v21.Texts.LeadArtist, edtArtist.Text);
   JvID3v21.Texts.Album := edtAlbum.Text;
-  JvID3v21.Texts.Year := StrToIntDef(edtYear.Text, 0);
+  { The 'year' tag is replaced by the 'recordingtime' tag in v2.4 }
+  if JvID3v21.WriteVersion = ive2_4 then
+    JvID3v21.Texts.RecordingTime := ChangeYear(JvID3v21.Texts.RecordingTime, StrToIntDef(edtYear.Text, 0))
+  else
+    JvID3v21.Texts.Year := StrToIntDef(edtYear.Text, 0);
   JvID3v21.Texts.ContentType := NiceGenreToGenre(cmbGenre.Text);
   { Note that WinAmp doesn't care about other properties than Text of TJvID3ContentFrame }
   TJvID3ContentFrame.FindOrCreate(JvID3v21, fiComment).Text := memComment.Lines.Text;
@@ -400,6 +412,13 @@ begin
     Description := edtDescription.Text;
   end;
   SetFirstOfList(JvID3v21.Texts.Lyricist, edtWriter.Text);
+end;
+
+function YearOf(const ADateTime: TDateTime): Word;
+var
+  D1, D2: Word;
+begin
+  DecodeDate(ADateTime, Result, D1, D2);
 end;
 
 procedure TJvID3v2EditForm.TagToCtrls;
@@ -421,13 +440,17 @@ begin
 
   { WinAmp tags }
 
-  { WinAmp threats some tags as single line tags; mimic this behaviour by
+  { WinAmp treats some tags as single line tags; mimic this behaviour by
     using function GetFirstOfList }
   edtTitle.Text := JvID3v21.Texts.Title;
   edtArtist.Text := GetFirstOfList(JvID3v21.Texts.LeadArtist);
   edtAlbum.Text := JvID3v21.Texts.Album;
-  edtYear.Text := IntToStr(JvID3v21.Texts.Year);
-  cmbGenre.Text := GenreToNiceGenre(JvID3v21.Texts.ContentType);
+  { The 'year' tag is replaced by the 'recordingtime' tag in v2.4 }
+  if JvID3v21.Version = ive2_4 then
+    edtYear.Text := IntToStr(YearOf(JvID3v21.Texts.RecordingTime))
+  else
+    edtYear.Text := IntToStr(JvID3v21.Texts.Year);
+  cmbGenre.Text := GenreToNiceGenre('(17) Rock' {JvID3v21.Texts.ContentType});
   { Note that WinAmp doesn't care about other properties than Text of TJvID3ContentFrame }
   memComment.Lines.Text := TJvID3ContentFrame.FindOrCreate(JvID3v21, fiComment).Text;
   edtComposer.Text := GetFirstOfList(JvID3v21.Texts.Composer);
