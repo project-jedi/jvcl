@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>BCB Compatibility Guide</title>
-  <link href="styles/default.css" type="text/css" rel="STYLESHEET">
+  <link rel="STYLESHEET" type="text/css" href="styles/default.css">
 </head>
 <body>
 <h2>BCB Compatibility Guide</h2>
@@ -122,8 +122,9 @@ before the closing quote, add the recommended flag (preceded by a
 space)
 as indicated in the table below:<br>
 </p>
-<table cellpadding="1" cellspacing="1" border="1"
- style="width: 50%; text-align: left; margin-left: auto; margin-right: auto;">
+<table
+ style="width: 50%; text-align: left; margin-left: auto; margin-right: auto;"
+ border="1" cellspacing="1" cellpadding="1">
   <tbody>
     <tr>
       <td
@@ -190,8 +191,9 @@ supported by BCB.<br>
 This is because a bpi file is missing from the requires node of the
 package your are trying to build. The table below indicates the name of
 the bpi files you need to add for different missing obj files<br>
-<table cellpadding="1" cellspacing="1" border="1"
- style="width: 50%; text-align: left; margin-left: auto; margin-right: auto;">
+<table
+ style="width: 50%; text-align: left; margin-left: auto; margin-right: auto;"
+ border="1" cellspacing="1" cellpadding="1">
   <tbody>
     <tr>
       <td
@@ -342,7 +344,11 @@ avoid using indexed property setters, so please don't use them.<br>
 <p>This is because the type SOMETYPE is a global type (in windows.h,
 generally) and is also defined in the SomeDomain file. To lift this
 ambiguity, you must add a line at the beginning of the pas file that
-does that: "{$HPPEMIT '#define SOMETYPE SomeDomain::SOMETYPE'}"</p>
+does that: "{$HPPEMIT '#define SOMETYPE SomeDomain::SOMETYPE'}". But if
+SOMETYPE is a JVCL type (starts with TJv) then this is because
+SomeDomain.pas contains a bogus declaration and should be fixed. Please
+notify us if that problem occurs.<br>
+</p>
 <p>ATTENTION: If the second type is a function like in
 "JclWin32::WORD(const unsigned int)" you MUST not add this HPPEMIT
 directive. The problem in this case comes from the fact that a function
