@@ -235,7 +235,6 @@ begin
   HotTrackingItemIndex := -1;
   FHotTrackColor := clBlue;
   FLeftIndent := 0;
-  FWallpaper := TBitmap.Create;
   //...defaults
   if csDesigning in ComponentState then
   begin

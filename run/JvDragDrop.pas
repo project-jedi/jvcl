@@ -685,8 +685,9 @@ begin
               Len := DragQueryFile(DragH, I, nil, 0);
               if Len > 0 then
               begin
+                SetLength(Name, Len + 1);
+                DragQueryFile(DragH, I, PChar(Name), Len + 1);
                 SetLength(Name, Len);
-                DragQueryFile(DragH, I, PChar(Name), Len);
                 List.Add(Name);
               end;
             end;

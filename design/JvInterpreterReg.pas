@@ -41,7 +41,8 @@ uses
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
   JvDsgnConsts,
-  JvInterpreterParser, JvInterpreter, JvInterpreter_all, JvInterpreter_Classes,
+  JvInterpreterParser, JvInterpreter, JvInterpreter_all,
+  JvInterpreter_Buttons, JvInterpreter_Classes,
   JvInterpreter_ComCtrls, JvInterpreter_Contnrs, JvInterpreter_Controls,
   {$IFNDEF DelphiPersonalEdition}
   JvInterpreter_Db, JvInterpreter_DbCtrls, JvInterpreter_DbGrids,
