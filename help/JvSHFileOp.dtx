@@ -96,7 +96,7 @@ Description
   * Alter or disable the appearance of the progress dialog.
   * Specify whether files must be renamed or deleted on name collisions.
 
-  By default, all options except fofAllowUndo and fofFilesOnly are off.
+  By default, all flags except fofAllowUndo and fofFilesOnly are off.
 ----------------------------------------------------------------------------------------------------
 @@TJvSHFileOperation.SourceFiles
 Summary
@@ -180,7 +180,7 @@ Note
   Displays a progress dialog box but does not show the file names. 
 @@TJvSHFileOption.fofWantMappingHandle
   Enables the triggering of <LINK TJvSHFileOperation.OnFileMapping,OnFileMapping> events, 
-  if fofRenameOnCollision is included in options and any files were renamed.
+  if fofRenameOnCollision is included in <LINK TJvSHFileOperation.Options,Options> and any files were renamed.
 @@TJvSHFileOption.fofNoErrorUI
   Does not display a user interface if an error occurs. 
 @@TJvSHFileOption.fofWantNukeWarning

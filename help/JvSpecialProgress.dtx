@@ -17,7 +17,7 @@ Description
   of the progress bar turns from left to right gradually from StartColor into EndColor.
   
   Set TextVisible to True, to display the current progress percentage of the process tracked by the 
-  progress bar. Read PercentDone to get this value. Use TextCentered and TextFont to alter the 
+  progress bar. \Read PercentDone to get this value. Use TextCentered and TextFont to alter the 
   appearance of the percentage text. 
   
   Use Color to change the background color of the control, or set Transparant to True to set the 
@@ -27,13 +27,13 @@ Description
 Summary
   Creates and initializes an instance of TJvSpecialProgress.
 Description
-  Call Create to create an instance of TJvSpecialProgress at runtime. A TJvSpecialProgress placed on a 
+  Call \Create to create an instance of TJvSpecialProgress at runtime. A TJvSpecialProgress placed on a 
   form at design time is created automatically.
 
   Pass a single Component as a parameter to provide the progress bar with an Owner that is responsible
   for freeing it.
 
-  Create calls the inherited Create method, creates a timer, and then sets the initial values for the 
+  \Create calls the inherited \Create method, creates a timer, and then sets the initial values for the 
   progress bar as follows: 
   
   * Minimum is set to 0.
@@ -84,7 +84,7 @@ Description
   Set GradientBlocks to False to let TJvSpecialProgress fill each progress block using a one color fill.
   From left to right, the fill color turns gradually from StartColor into EndColor. Set GradientBlocks 
   to True to let TJvSpecialProgress fill each progress blocks using a two-color gradient fill. From left
-  to right, the begin color and end color of each block turns gradually from BeginColor to EndColor.
+  to right, the begin color and end color of each block turns gradually from StartColor to EndColor.
 Note
   Property Solid must be set to False, otherwise property GradientBlocks is ignored.
 See Also
@@ -130,7 +130,7 @@ See Also
 Summary
   Occurs when the mouse pointer moves over the scroll box.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
+  \Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   progress bar. For example, you can use this event to change the font color when the mouse is over the
   progress bar, and then use the OnMouseLeave event to change it back when the mouse moves off the 
   scroll box.
@@ -141,7 +141,7 @@ See Also
 Summary
   Occurs when the mouse pointer moves off the scroll box.
 Description
-  Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
+  \Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
   progress bar. For example, you can use this event to undo changes that were made in an OnMouseEnter
   event handler.
 See Also
@@ -151,7 +151,7 @@ See Also
 Summary
   Occurs when the color property for the parent of the scroll box changes.
 Description
-  Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+  \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
 ----------------------------------------------------------------------------------------------------
 @@TJvSpecialProgress.Paint
 Summary
@@ -164,7 +164,7 @@ Description
 Summary
   Indicates the current progress percentage of the process tracked by the progress bar.
 Description
-  Read PercentDone to get the current progress percentage of the process tracked by the progress bar.
+  \Read PercentDone to get the current progress percentage of the process tracked by the progress bar.
   The value equals (Position - Minimum) as a percentage of (Maximum - Minimum).
 See Also
   Maximum, Minimum, Position
@@ -189,7 +189,7 @@ Summary
   Specifies whether the progress bar is solid or segmented.
 Description
   Use Solid to specify whether the progress bar is solid or segmented. If Solid is set to True, the
-  progres bar is solid and the GradientBlocks property is ignored. If Solid set to False, the progress
+  progres bar is solid and the GradientBlocks property is ignored. If Solid is set to False, the progress
   bar is segmented; GradientBlocks then indicates whether the progress blocks are filled using a 
   two-color gradient fill or using one color.
 See Also
@@ -240,13 +240,13 @@ Description
   filled part of the progress bar. If property Position changes, then the progress bar size will 
   change and thus, so will the position of the text. 
   
-  TextCentered must be set to True to display the text on the progress bar.
+  TextVisible must be set to True to display the text on the progress bar.
 See Also
    TextFont, TextVisible
 ----------------------------------------------------------------------------------------------------
 @@TJvSpecialProgress.TextFont
 Summary
-  Controls the attributes of text written on the progress bar.
+  \Controls the attributes of text written on the progress bar.
 Description
   To change to a new font, specify a new TFont object. To modify a font, change the value of the 
   Charset, Color, Height, Name, Pitch, Size, or Style of the TFont object.
