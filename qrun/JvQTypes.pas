@@ -1,0 +1,389 @@
+{**************************************************************************************************}
+{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{**************************************************************************************************}
+
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+The Original Code is: JvTypes.PAS, released on 2001-02-28.
+
+The Initial Developer of the Original Code is Sébastien Buysse [sbuysse@buypin.com]
+Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
+All Rights Reserved.
+
+Contributor(s):
+Michael Beck [mbeck@bigfoot.com].
+Peter Thornqvist
+Oliver Giesen
+Gustavo Bianconi
+
+Last Modified: 2003-10-10
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------}
+
+{$I jvcl.inc}
+
+unit JvQTypes;
+
+interface
+
+uses
+  
+  
+  Qt, QTypes, Types, QControls, QForms, QGraphics, QWindows,
+  
+  SysUtils, Classes,
+  JvQConsts, JvQResources;
+
+const
+  MaxPixelCount = 32767;
+
+type
+  
+
+  TJvRegKey = (hkClassesRoot, hkCurrentUser, hkLocalMachine, hkUsers,
+    hkPerformanceData, hkCurrentConfig, hkDynData);
+  TJvRegKeys = set of TJvRegKey;
+
+  // base JVCL Exception class to derive from
+  EJVCLException = class(Exception);
+
+  TJvLinkClickEvent = procedure(Sender: TObject; Link: string) of object;
+  //  TOnRegistryChangeKey = procedure(Sender: TObject; RootKey: HKEY; Path: string) of object;
+  //  TAngle = 0..360;
+  TJvOutputMode = (omFile, omStream);
+  //  TLabelDirection = (sdLeftToRight, sdRightToLeft); // JvScrollingLabel
+  TJvLabelRotateAngle = 0..360;
+
+  TJvDoneFileEvent = procedure(Sender: TObject; FileName: string; FileSize: Integer; Url: string) of object;
+  TJvDoneStreamEvent = procedure(Sender: TObject; Stream: TStream; StreamSize: Integer; Url: string) of object;
+  TJvHTTPProgressEvent = procedure(Sender: TObject; UserData, Position: Integer; TotalSize: Integer; Url: string; var Continue: Boolean) of object;
+  TJvFTPProgressEvent = procedure(Sender: TObject; Position: Integer; Url: string) of object;
+
+  // from JvComponent.pas
+  TJvClipboardCommand = (caCopy, caCut, caPaste, caUndo);
+  TJvClipboardCommands = set of TJvClipboardCommand;
+
+  // used in JvSpeedButton, JvArrowButton, JvButton
+  TJvCMButtonPressed = packed record
+    Msg: Cardinal;
+    Index: Integer;
+    Control: TControl;
+    Result: Longint;
+  end;
+
+  // used in JvButton
+  TCMForceSize = record
+    Msg: Cardinal;
+    Sender: TControl;
+    NewSize: TSmallPoint;
+    Result: Longint;
+  end;
+
+  
+  
+  TJvRGBTriple = TRGBQuad; // VisualCLX does not support pf24bit
+  
+
+  PJvRGBArray = ^TJvRGBArray;
+  TJvRGBArray = array [0..MaxPixelCount - 1] of TJvRGBTriple;
+  PRGBQuadArray = ^TRGBQuadArray;
+  TRGBQuadArray = array [0..MaxPixelCount - 1] of TRGBQuad;
+  PRGBPalette = ^TRGBPalette;
+  TRGBPalette = array [Byte] of TRGBQuad;
+
+  TBalance = 0..100;
+
+  TJvVolumeRec = record
+  case Byte of
+    0:
+      (LongVolume: Longint);
+    1:
+      (LeftVolume: Word;
+       RightVolume: Word);
+  end;
+
+  { (rom) unused
+  TJvPoint = class(TPersistent)
+  protected
+    FX: Integer;
+    FY: Integer;
+  published
+    property X: Integer read FX write FX;
+    property Y: Integer read FY write FY;
+  end;
+  }
+
+  TJvErrorEvent = procedure(Sender: TObject; ErrorMsg: string) of object;
+  TJvWaveLocation = (frFile, frResource, frRAM);
+
+  TJvPopupPosition = (ppNone, ppForm, ppApplication);
+  //  TJvDirMask = (dmFileNameChange, dmDirnameChange, dmAttributesChange, dmSizeChange, dmLastWriteChange, dmSecurityChange); //JvDirectorySpy
+  //  TJvDirMasks = set of TJvDirMask;
+  //  EJvDirectoryError = class(EJVCLException); // JvDirectorySpy
+  //  TListEvent = procedure(Sender: TObject; Title: string; Handle: THandle) of object; // JvWindowsTitle
+
+  TJvProgressEvent = procedure(Sender: TObject; Current, Total: Integer) of object;
+  TJvNextPageEvent = procedure(Sender: TObject; PageNumber: Integer) of object;
+  TJvBitmapStyle = (bsNormal, bsCentered, bsStretched);
+
+  //  TOnOpened = procedure(Sender: TObject; Value: string) of object; // archive
+  //  TOnOpenCanceled = procedure(Sender: TObject) of object; // archive
+
+  TJvKeyFoundEvent = procedure(Sender: TObject; Key, Results, OriginalLine: string) of object;
+  TJvParserInfoList = TStringList;
+  // (rom) definitely needs improvement
+  TJvParserInfo = class(TObject)
+  public
+    StartTag: string;
+    EndTag: string;
+    MustBe: Integer;
+    TakeText: Integer;
+  end;
+
+  
+
+  TJvGradStyle = (grFilled, grEllipse, grHorizontal, grVertical, grPyramid, grMount);
+  //  TOnDelete = procedure(Sender: TObject; Path: string) of object;
+  TJvParentEvent = procedure(Sender: TObject; ParentWindow: THandle) of object;
+  //  TOnImage = procedure(Sender: TObject; Image: TBitmap) of object; // JvClipboardViewer
+  //  TOnText = procedure(Sender: TObject; Text: string) of object;
+  //  TJvRestart = (rsLogoff, rsShutdown, rsReboot, rsRestart, rsRebootSystem, rsExitAndExecApp);
+  //  TJvRunOption = (roNoBrowse, roNoDefault, roCalcDirectory, roNoLabel, roNoSeparateMem); // JvRunDlg
+  //  TJvRunOptions = set of TJvRunOption; // JvRunDlg
+  //  TJvFileKind = (ftFile, ftPrinter); // JvObjectPropertiesDlg
+
+  //  TSHFormatDrive = function(Handle: HWND; Drive, ID, Options: Word): LongInt; stdcall; // JvFormatDrive
+  //  TFormatOption = (shQuickFormat, shFull, shSystemFilesOnly); // JvFormatDrive
+  //  TButtonStyle = (bsAbortRetryIgnore, bsOk, bsOkCancel, bsRetryCancel, bsYesNo, bsYesNoCancel); // JvMessageBox
+  //  TButtonDisplay = (bdIconExclamation, bdIconWarning, bdIconInformation, bdIconAsterisk, bdIconQuestion, bdIconStop, bdIconError, bdIconHand); // JvMessageBox
+
+  //  TDefault = (dbButton1, dbButton2, dbButton3, dbButton4); // JvMessageBox
+  //  TModality = (bmApplModal, bmSystemModal, bmTaskModal); // JvMessageBox
+  //  TButtonOption = (boDefaultDesktopOnly, boHelp, boRight, boRtlReading, boSetForeground, boTopMost); // JvMessageBox
+  //  TButtonOptions = set of TButtonOption; // JvMessageBox
+  //  TButtonResult = (brAbort, brCancel, brIgnore, brNo, brOk, brRetry, brYes); // JvMessageBox
+  //  TMsgStyle = (msBeep, msIconAsterisk, msIconExclamation, msIconHand, msIconQuestion, msOk); // JvMessageBeep
+  TJvDiskRes = (dsSuccess, dsCancel, dsSkipfile, dsError);
+  TJvDiskStyle = (idfCheckFirst, idfNoBeep, idfNoBrowse, idfNoCompressed, idfNoDetails,
+    idfNoForeground, idfNoSkip, idfOemDisk, idfWarnIfSkip);
+  TJvDiskStyles = set of TJvDiskStyle;
+  TJvDeleteStyle = (idNoBeep, idNoForeground);
+  TJvDeleteStyles = set of TJvDeleteStyle;
+  //   TOnOk = procedure(Sender: TObject; Password: string; var Accept: Boolean) of object; // JvPasswordForm
+
+  //  TCoordChanged = procedure(Sender: TObject; Coord: string) of object;
+  TJvNotifyParamsEvent = procedure(Sender: TObject; Params: Pointer) of object;
+
+  
+
+  TJvAnimation = (anLeftRight, anRightLeft, anRightAndLeft, anLeftVumeter, anRightVumeter);
+  TJvAnimations = set of TJvAnimation;
+  TJvDropEvent = procedure(Sender: TObject; Pos: TPoint; Value: TStringList) of object;
+  //   TOnFound = procedure(Sender: TObject; Path: string) of object; // JvSearchFile
+  //  TOnChangedDir = procedure(Sender: TObject; Directory: string) of object; // JvSearchFile
+  //  TOnAlarm = procedure(Sender: TObject; Keyword: string) of object; // JvAlarm
+  {  TAlarm = record
+      Keyword: string;
+      DateTime: TDateTime;
+    end;
+  } // JvAlarm
+
+  // Bianconi - Moved from JvAlarms.pas
+  TJvTriggerKind = (tkOneShot, tkEachSecond, tkEachMinute, tkEachHour, tkEachDay, tkEachMonth, tkEachYear);
+  // End of Bianconi
+
+  TJvFourCC = array [0..3] of Char;
+  PJvAniTag = ^TJvAniTag;
+  TJvAniTag = packed record
+    ckID: TJvFourCC;
+    ckSize: Longint;
+  end;
+
+  TJvAniHeader = packed record
+    dwSizeof: Longint;
+    dwFrames: Longint;
+    dwSteps: Longint;
+    dwCX: Longint;
+    dwCY: Longint;
+    dwBitCount: Longint;
+    dwPlanes: Longint;
+    dwJIFRate: Longint;
+    dwFlags: Longint;
+  end;
+
+  TJvChangeColorEvent = procedure(Sender: TObject; Foreground, Background: TColor) of object;
+
+  TJvLayout = (lTop, lCenter, lBottom);
+  TJvBevelStyle = (bsShape, bsLowered, bsRaised);
+
+  {for OnLoseFocus the AFocusControl argument will point at the control that
+   receives focus while for OnGetFocus it is the control that lost the focus}
+  TJvFocusChangeEvent = procedure(const ASender: TObject;
+    const AFocusControl: TWinControl) of object;
+
+  // JvJCLUtils
+  TTickCount = Cardinal;
+
+  {**** string handling routines}
+  TSetOfChar = TSysCharSet;
+  TCharSet = TSysCharSet;
+
+  TDateOrder = (doMDY, doDMY, doYMD);
+  TDayOfWeekName = (Sun, Mon, Tue, Wed, Thu, Fri, Sat);
+  TDaysOfWeek = set of TDayOfWeekName;
+
+const
+  DefaultDateOrder = doDMY;
+
+  CenturyOffset: Byte = 60;
+  NullDate: TDateTime = 0; {-693594}
+
+type
+  // JvDriveCtrls / JvLookOut
+  TJvImageSize = (isSmall, isLarge);
+  TJvImageAlign = (iaLeft, iaCentered);
+
+  TJvDriveType = (dtUnknown, dtRemovable, dtFixed, dtRemote, dtCDROM, dtRamDisk);
+  TJvDriveTypes = set of TJvDriveType;
+
+  // Defines how a property (like a HotTrackFont) follows changes in the component's normal Font
+  TJvTrackFontOption = (
+    hoFollowFont,  // makes HotTrackFont follow changes to the normal Font
+    hoPreserveCharSet,  // don't change HotTrackFont.Charset
+    hoPreserveColor,    // don't change HotTrackFont.Color
+    hoPreserveHeight,   // don't change HotTrackFont.Height (affects Size as well)
+    hoPreserveName,     // don't change HotTrackFont.Name
+    hoPreservePitch,    // don't change HotTrackFont.Pitch
+    hoPreserveStyle);   // don't change HotTrackFont.Style
+  TJvTrackFontOptions = set of TJvTrackFontOption;
+
+const
+  DefaultTrackFontOptions = [hoFollowFont, hoPreserveColor, hoPreserveStyle];
+
+type
+  // from JvListView.pas
+  TJvSortMethod = (smAutomatic, smAlphabetic, smNonCaseSensitive, smNumeric, smDate, smTime, smDateTime, smCurrency);
+  TJvListViewColumnSortEvent = procedure(Sender: TObject; Column: Integer; var AMethod:TJvSortMethod) of object;
+
+  // from JvColorProvider.pas
+  TColorType = (ctStandard, ctSystem, ctCustom);
+
+  TDefColorItem = record
+    Value: TColor;
+    Constant: string;
+    Description: string;
+  end;
+
+const
+  ColCount = 20;
+  
+  
+  SysColCount = 58;
+  
+  ColorValues: array [0 .. ColCount - 1] of TDefColorItem = (
+    (Value: clBlack;      Constant: 'clBlack';      Description: RsClBlack),
+    (Value: clMaroon;     Constant: 'clMaroon';     Description: RsClMaroon),
+    (Value: clGreen;      Constant: 'clGreen';      Description: RsClGreen),
+    (Value: clOlive;      Constant: 'clOlive';      Description: RsClOlive),
+    (Value: clNavy;       Constant: 'clNavy';       Description: RsClNavy),
+    (Value: clPurple;     Constant: 'clPurple';     Description: RsClPurple),
+    (Value: clTeal;       Constant: 'clTeal';       Description: RsClTeal),
+    (Value: clGray;       Constant: 'clGray';       Description: RsClGray),
+    (Value: clSilver;     Constant: 'clSilver';     Description: RsClSilver),
+    (Value: clRed;        Constant: 'clRed';        Description: RsClRed),
+    (Value: clLime;       Constant: 'clLime';       Description: RsClLime),
+    (Value: clYellow;     Constant: 'clYellow';     Description: RsClYellow),
+    (Value: clBlue;       Constant: 'clBlue';       Description: RsClBlue),
+    (Value: clFuchsia;    Constant: 'clFuchsia';    Description: RsClFuchsia),
+    (Value: clAqua;       Constant: 'clAqua';       Description: RsClAqua),
+    (Value: clWhite;      Constant: 'clWhite';      Description: RsClWhite),
+    (Value: clMoneyGreen; Constant: 'clMoneyGreen'; Description: RsClMoneyGreen),
+    (Value: clSkyBlue;    Constant: 'clSkyBlue';    Description: RsClSkyBlue),
+    (Value: clCream;      Constant: 'clCream';      Description: RsClCream),
+    (Value: clMedGray;    Constant: 'clMedGray';    Description: RsClMedGray)
+  );
+
+  SysColorValues: array [0 .. SysColCount - 1] of TDefColorItem = (
+    
+    
+    (Value: clForeground;              Constant: 'clForeground';              Description: RsClForeground),
+    (Value: clButton;                  Constant: 'clButton';                  Description: RsClButton),
+    (Value: clLight;                   Constant: 'clLight';                   Description: RsClLight),
+    (Value: clMidlight;                Constant: 'clMidlight';                Description: RsClMidlight),
+    (Value: clDark;                    Constant: 'clDark';                    Description: RsClDark),
+    (Value: clMid;                     Constant: 'clMid';                     Description: RsClMid),
+    (Value: clText;                    Constant: 'clText';                    Description: RsClText),
+    (Value: clBrightText;              Constant: 'clBrightText';              Description: RsClBrightText),
+    (Value: clButtonText;              Constant: 'clButtonText';              Description: RsClButtonText),
+    (Value: clBase;                    Constant: 'clBase';                    Description: RsClBase),
+    (Value: clBackground;              Constant: 'clBackground';              Description: RsClBackground),
+    (Value: clShadow;                  Constant: 'clShadow';                  Description: RsClShadow),
+    (Value: clHighlight;               Constant: 'clHighlight';               Description: RsClHighlight),
+    (Value: clHighlightedText;         Constant: 'clHighlightedText';         Description: RsClHighlightedText),
+
+    (Value: clNormalForeground;        Constant: 'clNormalForeground';        Description: RsClNormalForeground),
+    (Value: clNormalButton;            Constant: 'clNormalButton';            Description: RsClNormalButton),
+    (Value: clNormalLight;             Constant: 'clNormalLight';             Description: RsClNormalLight),
+    (Value: clNormalMidlight;          Constant: 'clNormalMidlight';          Description: RsClNormalMidlight),
+    (Value: clNormalDark;              Constant: 'clNormalDark';              Description: RsClNormalDark),
+    (Value: clNormalMid;               Constant: 'clNormalMid';               Description: RsClNormalMid),
+    (Value: clNormalText;              Constant: 'clNormalText';              Description: RsClNormalText),
+    (Value: clNormalBrightText;        Constant: 'clNormalBrightText';        Description: RsClNormalBrightText),
+    (Value: clNormalButtonText;        Constant: 'clNormalButtonText';        Description: RsClNormalButtonText),
+    (Value: clNormalBase;              Constant: 'clNormalBase';              Description: RsClNormalBase),
+    (Value: clNormalBackground;        Constant: 'clNormalBackground';        Description: RsClNormalBackground),
+    (Value: clNormalShadow;            Constant: 'clNormalShadow';            Description: RsClNormalShadow),
+    (Value: clNormalHighlight;         Constant: 'clNormalHighlight';         Description: RsClNormalHighlight),
+    (Value: clNormalHighlightedText;   Constant: 'clNormalHighlightedText';   Description: RsClNormalHighlightedText),
+
+    (Value: clActiveForeground;        Constant: 'clActiveForeground';        Description: RsClActiveForeground),
+    (Value: clActiveButton;            Constant: 'clActiveButton';            Description: RsClActiveButton),
+    (Value: clActiveLight;             Constant: 'clActiveLight';             Description: RsClActiveLight),
+    (Value: clActiveMidlight;          Constant: 'clActiveMidlight';          Description: RsClActiveMidlight),
+    (Value: clActiveDark;              Constant: 'clActiveDark';              Description: RsClActiveDark),
+    (Value: clActiveMid;               Constant: 'clActiveMid';               Description: RsClActiveMid),
+    (Value: clActiveText;              Constant: 'clActiveText';              Description: RsClActiveText),
+    (Value: clActiveBrightText;        Constant: 'clActiveBrightText';        Description: RsClActiveBrightText),
+    (Value: clActiveButtonText;        Constant: 'clActiveButtonText';        Description: RsClActiveButtonText),
+    (Value: clActiveBase;              Constant: 'clActiveBase';              Description: RsClActiveBase),
+    (Value: clActiveBackground;        Constant: 'clActiveBackground';        Description: RsClActiveBackground),
+    (Value: clActiveShadow;            Constant: 'clActiveShadow';            Description: RsClActiveShadow),
+    (Value: clActiveHighlight;         Constant: 'clActiveHighlight';         Description: RsClActiveHighlight),
+    (Value: clActiveHighlightedText;   Constant: 'clActiveHighlightedText';   Description: RsClActiveHighlightedText),
+
+    (Value: clDisabledForeground;      Constant: 'clDisabledForeground';      Description: RsClDisabledForeground),
+    (Value: clDisabledButton;          Constant: 'clDisabledButton';          Description: RsClDisabledButton),
+    (Value: clDisabledLight;           Constant: 'clDisabledLight';           Description: RsClDisabledLight),
+    (Value: clDisabledMidlight;        Constant: 'clDisabledMidlight';        Description: RsClDisabledMidlight),
+    (Value: clDisabledDark;            Constant: 'clDisabledDark';            Description: RsClDisabledDark),
+    (Value: clDisabledMid;             Constant: 'clDisabledMid';             Description: RsClDisabledMid),
+    (Value: clDisabledText;            Constant: 'clDisabledText';            Description: RsClDisabledText),
+    (Value: clDisabledBrightText;      Constant: 'clDisabledBrightText';      Description: RsClDisabledBrightText),
+    (Value: clDisabledButtonText;      Constant: 'clDisabledButtonText';      Description: RsClDisabledButtonText),
+    (Value: clDisabledBase;            Constant: 'clDisabledBase';            Description: RsClDisabledBase),
+    (Value: clDisabledBackground;      Constant: 'clDisabledBackground';      Description: RsClDisabledBackground),
+    (Value: clDisabledShadow;          Constant: 'clDisabledShadow';          Description: RsClDisabledShadow),
+    (Value: clDisabledHighlight;       Constant: 'clDisabledHighlight';       Description: RsClDisabledHighlight),
+    (Value: clDisabledHighlightedText; Constant: 'clDisabledHighlightedText'; Description: RsClDisabledHighlightedText),
+
+    (Value: clDesktop;                 Constant: 'clDesktop';                 Description: RsClDesktop),
+    (Value: clInfoBk;                  Constant: 'clInfoBk';                  Description: RsClInfoBk)
+    
+  );
+
+implementation
+
+end.
+
