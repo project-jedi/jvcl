@@ -430,11 +430,12 @@ end;
 
 destructor TJvxCustomListBox.Destroy;
 begin
+  // (rom) inherited moved to end
+  // (ahuser) moved inherited to the top otherwise it will raise an AV in csDesigning
+  inherited Destroy;
   FCanvas.Free;
   FItems.Free;
   FSaveItems.Free;
-  // (rom) inherited moved to end
-  inherited Destroy;
 end;
 
 function TJvxCustomListBox.CreateItemList: TStrings;
