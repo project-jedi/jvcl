@@ -145,7 +145,6 @@ type
   end;
 {$ENDIF VisualCLX}
 
-
 type
   JV_CONTROL_EVENTS(Control)
   JV_WINCONTROL_EVENTS(WinControl)
@@ -162,12 +161,12 @@ type
   JV_CUSTOMCONTROL_EVENTS(CustomControl)
   JV_CUSTOMCONTROL_EVENTS(HintWindow)
 
-
 {$IFDEF VCL}
 function ShiftStateToKeyData(Shift: TShiftState): Longint;
 
 function InheritMsg(Instance: TControl; Msg: Integer; WParam, LParam: Integer): Integer; overload;
 function InheritMsg(Instance: TControl; Msg: Integer): Integer; overload;
+procedure InheritMsg(Instance: TControl; var Msg: TMessage); overload;
 procedure DispatchMsg(Instance: TControl; var Msg);
 
 procedure Control_ControlsListChanging(Instance: TControl; Control: TControl;
@@ -257,26 +256,31 @@ begin
 end;
 
 
-type
-  TDisptachMethod = procedure(Self: TObject; var Msg: TMessage);
-
 function InheritMsg(Instance: TControl; Msg: Integer; WParam, LParam: Integer): Integer;
 var
-  Proc: TDisptachMethod;
   Mesg: TMessage;
 begin
   Mesg.Msg := Msg;
   Mesg.WParam := WParam;
   Mesg.LParam := LParam;
   Mesg.Result := 0;
-  Proc := @TObject.Dispatch;
-  Proc(Instance, Mesg);
+  InheritMsg(Instance, Mesg);
   Result := Mesg.Result;
 end;
 
 function InheritMsg(Instance: TControl; Msg: Integer): Integer;
 begin
   Result := InheritMsg(Instance, Msg, 0, 0);
+end;
+
+procedure InheritMsg(Instance: TControl; var Msg: TMessage);
+type
+  TDispatchMethod = procedure(Self: TObject; var Msg: TMessage);
+var
+  Proc: TDispatchMethod;
+begin
+  Proc := @TObject.Dispatch;
+  Proc(Instance, Msg);
 end;
 
 procedure DispatchMsg(Instance: TControl; var Msg);
@@ -375,7 +379,7 @@ begin
               begin
                 Helper := TFreeNotificationHelper.Create(Instance, @IntfWinControl);
                 try
-                  PMsg^.Result := InheritMsg(Instance, PMsg^.Msg, PMsg^.WParam, PMsg^.LParam);
+                  InheritMsg(Instance, PMsg^);
 
                   DlgCodes := [dcNative];
                   if PMsg^.Result and DLGC_WANTARROWS <> 0 then
@@ -416,8 +420,7 @@ begin
               begin
                 Helper := TFreeNotificationHelper.Create(Instance, @IntfWinControl);
                 try
-                  with PMsg^ do
-                    Result := InheritMsg(Instance, Msg, WParam, LParam);
+                  InheritMsg(Instance, PMsg^);
                   if Helper.IsValid then
                     DoSetFocus(HWND(PMsg^.WParam));
                 finally
@@ -428,8 +431,7 @@ begin
               begin
                 Helper := TFreeNotificationHelper.Create(Instance, @IntfWinControl);
                 try
-                  with PMsg^ do
-                    Result := InheritMsg(Instance, Msg, WParam, LParam);
+                  InheritMsg(Instance, PMsg^);
                   if Helper.IsValid then
                     DoKillFocus(HWND(PMsg^.WParam));
                 finally
@@ -440,8 +442,7 @@ begin
               begin
                 DoBoundsChanged;
                 IntfWinControl := nil;
-                with PMsg^ do
-                  Result := InheritMsg(Instance, Msg, WParam, LParam);
+                InheritMsg(Instance, PMsg^);
               end;
           WM_ERASEBKGND:
             begin
@@ -456,9 +457,9 @@ begin
                 RestoreDC(HDC(PMsg^.WParam), IdSaveDC);
               end;
             end;
-          else
-            CallInherited := True;
-          end;
+        else
+          CallInherited := True;
+        end;
       finally
         IntfWinControl := nil;
       end;
@@ -493,8 +494,7 @@ begin
   end;
 
   if CallInherited then
-    with PMsg^ do
-      Result := InheritMsg(Instance, Msg, WParam, LParam);
+    InheritMsg(Instance, PMsg^);
 end;
 
 { VCL sends CM_CONTROLLISTCHANGE and CM_CONTROLCHANGE in an other order than
