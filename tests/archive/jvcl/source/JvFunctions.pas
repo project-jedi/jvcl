@@ -18,8 +18,9 @@ Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 Anthony Steele [asteele@iafrica.com]
 Peter Thörnqvist [peter3@peter3.com]
+cginzel [cginzel@hotmail.com]
 
-Last Modified: 2000-02-28
+Last Modified: 2002-11-18
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -154,6 +155,9 @@ procedure ExecuteAndWait(FileName: string; Visibility: Integer);
 function DiskInDrive(Drive: Char): Boolean;
 // returns true if this is the first instance of the program that is running
 function FirstInstance(const ATitle: string): boolean;
+// restores a window based on it's classname and Caption. Either can be left empty
+// to widen the search
+procedure RestoreOtherInstance(MainFormClassName, MainFormCaption: string);
 
 // manipulate the traybar and start button
 procedure HideTraybar;
@@ -301,9 +305,9 @@ function ExcludeTrailingPathDelimiter(const APath: string): string;
 implementation
 uses
   Forms, Registry, ExtCtrls,
-{$IFNDEF DelphiPersonalEdition}Cpl,{$ENDIF}  
+{$IFNDEF DelphiPersonalEdition}Cpl, {$ENDIF}
 {$IFDEF COMPILER6_UP}Types, {$ENDIF}MMSystem,
-  ShlObj, CommCtrl, 
+  ShlObj, CommCtrl,
   { jvcl} JvDirectories,
   { jcl } JCLStrings;
 
@@ -343,7 +347,7 @@ function ExcludeTrailingPathDelimiter(const APath: string): string;
 begin
   Result := APath;
   while (Length(Result) > 0) and (Result[Length(Result)] = '\') do
-    SetLength(Result,Length(Result)-1);
+    SetLength(Result, Length(Result) - 1);
 end;
 
 {$ENDIF}
@@ -576,7 +580,7 @@ var
   R: TRect;
   C: TCanvas;
   LP: PLogPalette;
-  tmpPalette:HPalette;
+  tmpPalette: HPalette;
   Size: Integer;
   img: TImage; // (p3) change to bmp?
 begin
@@ -972,6 +976,29 @@ begin
   end;
 end;
 
+{***************************************************}
+
+procedure RestoreOtherInstance(MainFormClassName, MainFormCaption: string);
+var
+  OtherWnd, OwnerWnd: HWnd;
+begin
+  OtherWnd := FindWindow(PChar(MainFormClassName), PChar(MainFormCaption));
+  ShowWindow(OtherWnd, SW_SHOW); //in case the window was not visible before
+
+  OwnerWnd := 0;
+  if OtherWnd <> 0 then
+    OwnerWnd := GetWindow(OtherWnd, GW_OWNER);
+
+  if OwnerWnd <> 0 then OtherWnd := OwnerWnd;
+
+  if OtherWnd <> 0 then
+  begin
+    if IsIconic(OtherWnd) then
+      ShowWindow(OtherWnd, SW_RESTORE);
+
+    SetForegroundWindow(OtherWnd);
+  end;
+end;
 {***************************************************}
 
 procedure HideTraybar;
@@ -1669,7 +1696,7 @@ end;
 procedure CenterHeight(const pc, pcParent: TControl);
 begin
   pc.Top := //pcParent.Top +
-  ((pcParent.Height - pc.Height) div 2);
+    ((pcParent.Height - pc.Height) div 2);
 end;
 
 function ToRightOf(const pc: TControl; piSpace: integer): integer;
