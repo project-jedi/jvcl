@@ -106,7 +106,7 @@ type
     FPageWidth: Cardinal;
     FLogPixelsX: Cardinal;
     FOnChange: TNotifyEvent;
-    FScreenDC, FReferenceHandle: LongWord;
+    FScreenDC, FReferenceHandle: Longword;
     FPhysicalHeight: Cardinal;
     FPhysicalWidth: Cardinal;
     procedure SetLogPixelsY(const Value: Cardinal);
@@ -116,13 +116,13 @@ type
     procedure SetPageHeight(const Value: Cardinal);
     procedure SetPageWidth(const Value: Cardinal);
     procedure DefaultDeviceInfo;
-    procedure SetReferenceHandle(const Value: LongWord);
+    procedure SetReferenceHandle(const Value: Longword);
     procedure SetPhysicalHeight(const Value: Cardinal);
     procedure SetPhysicalWidth(const Value: Cardinal);
     procedure SetOffsetBottom(const Value: Cardinal);
     procedure SetOffsetRight(const Value: Cardinal);
   protected
-    function GetScreenDC: LongWord;
+    function GetScreenDC: Longword;
     procedure Change;
   public
     constructor Create;
@@ -138,7 +138,7 @@ type
 
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   published
-    property ReferenceHandle: LongWord read FReferenceHandle write SetReferenceHandle;
+    property ReferenceHandle: Longword read FReferenceHandle write SetReferenceHandle;
     property LogPixelsX: Cardinal read FLogPixelsX write SetLogPixesX;
     property LogPixelsY: Cardinal read FLogPixelsY write SetLogPixelsY;
     property PhysicalWidth: Cardinal read FPhysicalWidth write SetPhysicalWidth;
@@ -505,7 +505,7 @@ end;
 destructor TJvPreviewPageOptions.Destroy;
 begin
   FShadow.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvPreviewPageOptions.DoShadowChange(Sender: TObject);
@@ -672,10 +672,10 @@ destructor TJvDeviceInfo.Destroy;
 begin
   if FScreenDC <> 0 then
     ReleaseDC(0, FScreenDC);
-  inherited;
+  inherited Destroy;
 end;
 
-function TJvDeviceInfo.GetScreenDC: LongWord;
+function TJvDeviceInfo.GetScreenDC: Longword;
 begin
   if FScreenDC <> 0 then
     ReleaseDC(0, FScreenDC);
@@ -685,12 +685,12 @@ end;
 
 function TJvDeviceInfo.InchToXPx(Inch: single): Integer;
 begin
-  Result := round(Inch * LogPixelsY);
+  Result := Round(Inch * LogPixelsY);
 end;
 
 function TJvDeviceInfo.InchToYPx(Inch: single): Integer;
 begin
-  Result := round(Inch * LogPixelsX);
+  Result := Round(Inch * LogPixelsX);
 end;
 
 function TJvDeviceInfo.MMToXPx(MM: single): Integer;
@@ -793,7 +793,7 @@ begin
   end;
 end;
 
-procedure TJvDeviceInfo.SetReferenceHandle(const Value: LongWord);
+procedure TJvDeviceInfo.SetReferenceHandle(const Value: Longword);
 begin
   FReferenceHandle := Value;
   if FReferenceHandle = 0 then
@@ -1666,7 +1666,7 @@ end;
 procedure TJvCustomPreviewControl.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  inherited;
+  inherited MouseDown(Button, Shift, X, Y);
   if CanFocus then
     SetFocus;
 end;
