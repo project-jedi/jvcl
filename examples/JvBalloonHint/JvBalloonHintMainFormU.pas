@@ -4,7 +4,7 @@
 
  Copyright (C) 2002 Project JEDI
 
- Original author:
+ Original author: Remko Bonte
 
  You may retrieve the latest version of this file at the JEDI-JVCL
  home page, located at http://jvcl.sourceforge.net
@@ -68,6 +68,9 @@ type
     chbPlaySound: TCheckBox;
     JvBalloonHint1: TJvBalloonHint;
     chbUseBalloonAsApplicationHint: TCheckBox;
+    sttDefaultValues: TStaticText;
+    sttApplicationHint: TStaticText;
+    sttBalloon: TStaticText;
     procedure edtDefaultHeaderChange(Sender: TObject);
     procedure chbShowHeaderInHintClick(Sender: TObject);
     procedure chbShowIconInHintClick(Sender: TObject);
@@ -86,6 +89,7 @@ type
     procedure chbCustomAnimationClick(Sender: TObject);
     procedure chbO_PlaySoundClick(Sender: TObject);
     procedure chbUseBalloonAsApplicationHintClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   public
     procedure InitValues;
     procedure FillAnchors(Strings: TStrings);
@@ -175,7 +179,7 @@ begin
 
   FillAnchors(cmbAnchorCtrl.Items);
   with cmbAnchorCtrl do
-    ItemIndex := Items.IndexOf(btnLaunch.Name);
+    ItemIndex := Random(Items.Count);
 end;
 
 procedure TJvBalloonHintMainForm.rgrDefaultBalloonPositionClick(Sender: TObject);
@@ -320,6 +324,18 @@ procedure TJvBalloonHintMainForm.chbUseBalloonAsApplicationHintClick(
   Sender: TObject);
 begin
   JvBalloonHint1.UseBalloonAsApplicationHint := chbUseBalloonAsApplicationHint.Checked;
+end;
+
+procedure TJvBalloonHintMainForm.FormCreate(Sender: TObject);
+begin
+  { xp problem, with sizable forms;
+    This form is sizable so you can test what happens if you
+    size the window and a balloon is showing
+  }
+  ClientHeight := 505;
+  ClientWidth := 665;
+
+  Randomize;
 end;
 
 end.
