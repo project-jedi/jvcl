@@ -27,7 +27,9 @@ Known Issues:
 {$I JVCL.INC}
 
 unit MainConfig;
+
 interface
+
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, JVCLConfiguration, CheckLst, Buttons, ExtCtrls;
@@ -49,20 +51,17 @@ type
     procedure BtnSaveClick(Sender: TObject);
     procedure CheckListBoxClickCheck(Sender: TObject);
   private
-    { Private-Deklarationen }
     FConfig: TJVCLConfig;
-    FFilename: string;
+    FFileName: string;
   public
-    { Public-Deklarationen }
     procedure UpdateCheckStates;
-
-    property Filename: string read FFilename write FFilename;
+    property FileName: string read FFileName write FFileName;
     property Config: TJVCLConfig read FConfig;
   end;
 
 var
   FormMainConfig: TFormMainConfig;
-  Embeded: Boolean;
+  Embedded: Boolean;
 
 implementation
 
@@ -71,13 +70,14 @@ implementation
 procedure TFormMainConfig.FormCreate(Sender: TObject);
 var S: string;
 begin
-  if not Embeded then
+  if not Embedded then
   begin
-    FFilename := ParamStr(1);
+    FFileName := ParamStr(1);
     if ParamCount <> 1 then
       S := ' '
-    else if not FileExists(FFilename) then
-      S := Format('File "%s" does not exist.'#10#10, [FFilename]);
+    else
+    if not FileExists(FFileName) then
+      S := Format('File "%s" does not exist.'#10#10, [FFileName]);
     if S <> '' then
     begin
       MessageDlg(S + 'Syntax:  JVCLConfig.exe <FILE.INC>', mtError, [mbOK], 0);
@@ -89,7 +89,7 @@ begin
 
   FConfig := TJVCLConfig.Create;
 
-  if not Embeded then
+  if not Embedded then
     BtnReload.Click;
 end;
 
@@ -107,9 +107,9 @@ end;
 procedure TFormMainConfig.BtnReloadClick(Sender: TObject);
 begin
   LblComment.Caption := 'Select a compiler option.';
-  LblComment.Font.Color := clRed;
+  LblComment.Font.Color := clGreen;
 
-  FConfig.LoadFromFile(FFilename);
+  FConfig.LoadFromFile(FFileName);
 
   UpdateCheckStates;
 end;
@@ -122,7 +122,7 @@ end;
 procedure TFormMainConfig.BtnSaveClick(Sender: TObject);
 begin
   if FConfig.Modified then
-    FConfig.SaveToFile(FFilename);
+    FConfig.SaveToFile(FFileName);
 end;
 
 procedure TFormMainConfig.CheckListBoxClickCheck(Sender: TObject);
@@ -132,17 +132,18 @@ begin
 end;
 
 procedure TFormMainConfig.UpdateCheckStates;
-var i: Integer;
+var
+  I: Integer;
 begin
   CheckListBox.Clear;
-  for i := 0 to FConfig.ItemCount - 1 do
+  for I := 0 to FConfig.ItemCount - 1 do
   begin
-    CheckListBox.Items.Add(FConfig.Items[i].Name);
-    CheckListBox.Checked[i] := FConfig.Items[i].Enabled;
+    CheckListBox.Items.Add(FConfig.Items[I].Name);
+    CheckListBox.Checked[I] := FConfig.Items[I].Enabled;
   end;
 end;
 
 initialization
-  Embeded := False;
+  Embedded := False;
 
 end.
