@@ -77,6 +77,7 @@ type
     VOnLoad: TNotifyEvent;
     VFileName: string;
     VClass: TGraphicClass;
+    FOnInvalidImage: TInvalidImageEvent;
     procedure Rotate90;
     procedure Rotate180;
     procedure Rotate270;
@@ -117,6 +118,7 @@ type
     property Zoom: Word read VZoom write VZoom;
     property OnRotate: TRotateNotify read P_OnRotate write P_OnRotate;
     property OnLoaded: TNotifyEvent read VOnLoad write VOnLoad;
+    property OnInvalidImage:TInvalidImageEvent read FOnInvalidImage write FOnInvalidImage; 
   end;
 
 
@@ -313,7 +315,17 @@ begin
     end
     else
     begin
-      picture.loadfromfile(afile);
+      try
+        Picture.LoadFromFile(AFile);
+      except
+        if Assigned(FOnInvalidImage) then
+        begin
+          FOnInvalidImage(self,AFile);
+          Exit;
+        end
+        else
+          raise;
+      end;
       Self.VClass := TGraphicClass(Picture.Graphic.ClassType);
     end;
     vFileName := aFile;

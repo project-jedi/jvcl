@@ -93,6 +93,7 @@ type
     FShowShadow: Boolean;
     FShadowColor: TColor;
     FThumbList: TJvThumbList;
+    FOnInvalidImage: TInvalidImageEvent;
     procedure WMPaint(var Message: TWMPaint); message WM_PAINT;
     procedure GetFiles(ADirectory: string);
     procedure SetSorted(const Value: boolean);
@@ -115,6 +116,7 @@ type
     function GetBufferName(AName: string): string;
     function GetMaxThumbHeight: longint;
     function GetMaxThumbWidth: longint;
+    procedure DoInvalidImage(Sender: TObject; const Filename: String);
     //    Procedure WMLoadWhenReady(var Message:TMessage); Message WM_LoadWhenReady;
   protected
     { Protected declarations }
@@ -173,6 +175,7 @@ type
     property OnStopScanning: TNotifyEvent read FOnStopScanning write FOnStopScanning;
     property OnScanProgress: TProgressNotify read FProgressNotify write FProgressNotify;
     property OnGetTitle: TTitleNotify read FOnGetTitle write FOnGetTitle;
+    property OnInvalidImage:TInvalidImageEvent read FOnInvalidImage write FOnInvalidImage;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property Onkeyup: TKeyEvent read FOnKeyUp write FOnKeyUp;
     property OnKeyDown: TKeyEvent read FOnKeyDown write FOnKeyDown;
@@ -205,6 +208,11 @@ implementation
 const
   CRLF = #13 + #10;
 
+procedure TJvThumbview.DoInvalidImage(Sender:TObject;const Filename:String);
+begin
+  if Assigned(FOnInvalidImage) then FOnInvalidImage(Sender,Filename);
+end;
+
 procedure TJvThumbview.addThumb(atitle: string; Redraw: boolean);
 var
   Thb: TJvThumbNail;
@@ -220,6 +228,7 @@ begin
   thb.ShowShadow := FShowShadow;
   Thb.onclick := onclick;
   Thb.photo.onclick := onclick;
+  Thb.Photo.OnInvalidImage := DoInvalidImage;
   Thb.ondblclick := ondblclick;
   Thb.photo.ondblclick := ondblclick;
   Thb.minimizememory := MinMemory;
@@ -446,9 +455,10 @@ end;
 
 procedure TJvThumbview.Setdirectory(Value: string);
 var
-  Counter1: longint;
+  Counter1,FStartTime: longint;
   Cancel: boolean;
   ReadFileList: TStringList;
+  OldCursor: TCursor;
 //  Pic: TPicture;
 begin
   FSelected := -1;
@@ -457,39 +467,46 @@ begin
   //    Exit;
   //  end;
   DiskSize := 0;
-  if FFilling then exit;
+  if FFilling then Exit;
   if Value <> '' then
-  try
-    FFilling := True;
-    //    if assigned(ReadFileList) then FreeAndNil(ReadFileList);
+  begin
     ReadFileList := TStringList.Create;
-    GetFiles(Value);
-    if FSorted then
-      ReadFileList.Assign(FFileListSorted)
-    else
-      ReadFileList.Assign(FFileList);
-    EmptyList;
-    FDirectory := Value;
-    if ReadFileList.Count > 0 then
-    begin
-      if Assigned(FOnStartScanning) then // raise the event if it has been requested
-        FOnStartScanning(Self, ReadFileList.Count - 1);
-      Cancel := false;
-      for Counter1 := 0 to ReadFileList.Count - 1 do
+    OldCursor := Cursor;
+    try
+      FFilling := True;
+    //    if assigned(ReadFileList) then FreeAndNil(ReadFileList);
+      FStartTime := GetTickCount;
+      GetFiles(Value);
+      if FSorted then
+        ReadFileList.Assign(FFileListSorted)
+      else
+        ReadFileList.Assign(FFileList);
+      EmptyList;
+      FDirectory := Value;
+      if ReadFileList.Count > 0 then
       begin
-        if Assigned(FProgressNotify) then
-          FProgressNotify(Self, Counter1 + 1, Cancel);
-        if Cancel then Break;
-        AddThumb(ExtractFilename(ReadFileList.Strings[Counter1]),true);
-        TJvThumbNail(FThumbList.objects[Counter1]).filename := ReadFileList.Strings[Counter1];
-        Inc(DiskSize,TJvThumbNail(FThumbList.objects[Counter1]).FileSize);
+        if Assigned(FOnStartScanning) then // raise the event if it has been requested
+          FOnStartScanning(Self, ReadFileList.Count - 1);
+        Cancel := false;
+        for Counter1 := 0 to ReadFileList.Count - 1 do
+        begin
+          if Assigned(FProgressNotify) then
+            FProgressNotify(Self, Counter1 + 1, Cancel);
+          if Cancel then Break;
+          AddThumb(ExtractFilename(ReadFileList.Strings[Counter1]), true);
+          TJvThumbNail(FThumbList.objects[Counter1]).filename := ReadFileList.Strings[Counter1];
+          Inc(DiskSize, TJvThumbNail(FThumbList.objects[Counter1]).FileSize);
+          if (Cursor <> crHourGlass) and (GetTickCount - FStartTime > 1000) then
+            Cursor := crHourGlass;
+        end;
+        if Assigned(FOnStopScanning) then
+          FOnStopScanning(Self);
       end;
-      if Assigned(FOnStopScanning) then
-        FOnStopScanning(Self);
-    end;
-  finally
-    FreeandNil(ReadFileList);
-    FFilling := False;
+    finally
+      FreeandNil(ReadFileList);
+      FFilling := False;
+      Cursor := OldCursor;
+    end
   end
   else
   begin
@@ -1003,7 +1020,7 @@ begin
     if not FPainted then
       Exit;
     FThumbList.Sorted := FSorted;
-    SetDirectory(FDirectory);  // force reread
+    SetDirectory(FDirectory); // force reread
     Invalidate;
   end;
 end;
