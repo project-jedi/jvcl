@@ -236,7 +236,7 @@ begin
             currpara.Numbering := para.Numbering;
             st := st + ParaToHtml(para);
           end;
-          st := st + FCharToH.CharToHtml(Value.Lines[i][j]);
+          st := st + CharToHtml(Value.Lines[i][j]);
         end;
       end;
       k := k + Length(Value.Lines[i]) + 2;

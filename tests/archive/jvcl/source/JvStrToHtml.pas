@@ -193,7 +193,7 @@ function StringToHtml(Value: string): string;
 var
   i: Integer;
 begin
-  Result := Text;
+  Result := Value;
   for i := Low(Conversions) to High(Conversions) do
     Result := StringReplace(Result, Conversions[i].Html, Conversions[i].Ch,
       [rfReplaceAll, rfIgnoreCase]);
@@ -206,8 +206,8 @@ var
   I: Integer;
 begin
   Result := '';
-  for I := 1 to Length(Text) do
-    Result := Result + CharToHtml(Text[I]);
+  for I := 1 to Length(Value) do
+    Result := Result + CharToHtml(Value[I]);
 end;
 
 function CharToHtml(Ch: Char): string;
