@@ -479,12 +479,13 @@ begin
             MonoBmp := TBitmap.Create;
             DDB := TBitmap.Create;
             DDB.Assign(FOriginal);
-            
+
             if NumGlyphs > 1 then
               with TmpImage.Canvas do
               begin { Change white & gray to clBtnHighlight and clBtnShadow }
+                start;
                 CopyRect(IRect, DDB.Canvas, ORect);
-                MonoBmp.Monochrome := True;
+                // MonoBmp.Monochrome := True;
                 MonoBmp.Width := IWidth;
                 MonoBmp.Height := IHeight;
 
@@ -517,6 +518,7 @@ begin
                 SetBkColor(DestDC, clWhite);
                 BitBlt(DestDC, 0, 0, IWidth, IHeight,
                   MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
+                Stop;
               end
             else
             begin
@@ -524,7 +526,7 @@ begin
               with MonoBmp do
               begin
                 Assign(FOriginal);
-                
+
                 Canvas.Brush.Color := clBlack;
                 Width := IWidth;
                 if Monochrome then
@@ -533,10 +535,11 @@ begin
                   Monochrome := False;
                   Canvas.Brush.Color := clWhite;
                 end;
-                Monochrome := True;
+                //Monochrome := True;
               end;
               with TmpImage.Canvas do
               begin
+                Start;
                 Brush.Color := Color {clBtnFace};
                 FillRect(IRect);
                 Brush.Color := clBtnHighlight;
@@ -549,6 +552,7 @@ begin
                 SetBkColor(Handle, clWhite);
                 BitBlt(Handle, 0, 0, IWidth, IHeight,
                   MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
+                Stop;  
               end;
             end;
           finally

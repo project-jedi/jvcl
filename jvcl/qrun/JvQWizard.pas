@@ -2541,9 +2541,9 @@ begin
     { YW - Don't need to set width property }
     AButton := GetButtonControlClass(AKind).Create(Self);
     try
-      AButton.Parent := Self;
       AButton.Height := ciButtonHeight;
       AButton.Wizard := Self;
+      AButton.Parent := Self;
     finally
       FNavigateButtons[AKind] := TJvWizardNavigateButton.Create;
       FNavigateButtons[AKind].Control := AButton;
@@ -2965,6 +2965,7 @@ var
   end;
 
 begin
+  try
   if FButtonBarHeight > ciButtonHeight then
   begin
     AButtonSet := [bkBack, bkNext, bkCancel];
@@ -3006,6 +3007,8 @@ begin
       with FNavigateButtons[AButtonKind] do
         FControl.SetBounds(0, 0, FControl.Width, 0); // YW - Must keep the width
     end;
+  end;
+  except
   end;
 end;
 

@@ -52,6 +52,7 @@
       - System Sound (Beep) on enter key removed.
 
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -234,6 +235,7 @@ type
     FCollapseButton: TBitmap;
     FDivider: Integer;
     FDraggingDivider: Boolean;
+    FDividerDragBandX: Integer;
     FExpandButton: TBitmap;
     FImageHeight: Integer;
     FItemHeight: Integer;
@@ -385,6 +387,7 @@ type
     property Divider: Integer read GetDivider write SetDivider;
     property DividerAbs: Integer read GetDividerAbs write SetDividerAbs;
     property DraggingDivider: Boolean read FDraggingDivider write FDraggingDivider;
+    property DividerDragBandX: Integer read FDividerDragBandX write FDividerDragBandX;
     property ItemHeight: Integer read GetItemHeight write SetItemHeight;
     property ImageHeight: Integer read GetImageHeight;
     property LockCount: Integer read GetLockCount;
@@ -438,6 +441,7 @@ type
     function FocusedItem: TJvCustomInspectorItem; virtual;
     function VisibleIndex(const AItem: TJvCustomInspectorItem): Integer; virtual;
     procedure RefreshValues;
+    procedure SaveValues;
     { some easier to use methods added by WAP }
     procedure AddComponent(const AComponent: TComponent; DisplayName: string; Expanded: Boolean);
     procedure Clear;
@@ -481,7 +485,8 @@ type
     property OnItemValueChanged;
     property OnItemEdit; // NEW!       
 
-    //property OnEnter;
+    property OnEnter;
+    property OnExit;
     property OnContextPopup;
     property OnKeyDown;
     property OnKeyPress;
@@ -655,7 +660,7 @@ type
     FDisplayIndex: Integer;
     FDisplayName: string;
     FDroppedDown: Boolean;
-    FEditCtrl: TCustomEdit;
+    FEditCtrl: TWinControl;
     
     FEditing: Boolean;
     FFlags: TInspectorItemFlags;
@@ -725,7 +730,7 @@ type
     function GetDisplayParent: TJvCustomInspectorItem; virtual;
     function GetDisplayValue: string; virtual;
     function GetDroppedDown: Boolean; virtual;
-    function GetEditCtrl: TCustomEdit; virtual;
+    function GetEditCtrl: TWinControl; virtual;
     function GetEditing: Boolean; virtual;
     function GetExpanded: Boolean; virtual;
     function GetFlags: TInspectorItemFlags; virtual;
@@ -768,7 +773,8 @@ type
     procedure SetDisplayIndexValue(const Value: Integer); virtual;
     procedure SetDisplayName(Value: string); virtual;
     procedure SetDisplayValue(const Value: string); virtual;
-    procedure SetEditCtrl(const Value: TCustomEdit); virtual;
+//    procedure SetEditCtrl(const Value: TCustomEdit); virtual;
+    procedure SetEditCtrl(const Value: TWinControl); virtual;
     procedure SetEditing(const Value: Boolean); virtual;
     procedure SetExpanded(Value: Boolean); virtual;
     procedure SetFlags(const Value: TInspectorItemFlags); virtual;
@@ -794,7 +800,7 @@ type
     property BaseCategory: TJvInspectorCustomCategoryItem read GetBaseCategory;
     property Category: TJvInspectorCustomCategoryItem read GetCategory;
     property DroppedDown: Boolean read GetDroppedDown;
-    property EditCtrl: TCustomEdit read GetEditCtrl;
+    property EditCtrl: TWinControl read GetEditCtrl;
     
     property IsCompoundColumn: Boolean read GetIsCompoundColumn;
     property LastPaintGeneration: Integer read FLastPaintGen;
@@ -1845,8 +1851,8 @@ uses
   
   QDialogs, QForms, QButtons, QConsts,
   
-  JclRTTI, JclLogic,
-  JvQJCLUtils, JvQJVCLUtils, JvQThemes, JvQResources, JclStrings;
+  JclRTTI, JclLogic, JclStrings,
+  JvQJCLUtils, JvQJVCLUtils, JvQThemes, JvQResources;
 
 const
   sUnitName = 'JvInspector';
@@ -2888,7 +2894,10 @@ begin
   begin
     // Check divider dragging
     if (XB >= Pred(DividerAbs)) and (XB <= Succ(DividerAbs)) then
-      DraggingDivider := True
+    begin
+      DraggingDivider := True;
+      DividerDragBandX := BandIdx * BWidth;
+    end
         // Check row sizing
     else
     if (ItemIndex < VisibleCount) and (Y >= Pred(ItemRect.Bottom)) and
@@ -2955,7 +2964,13 @@ begin
     BWidth := ClientWidth;
     BandIdx := -1;
   end;
-  XB := X mod BWidth;
+  if UseBands and not DraggingDivider then
+    XB := X mod BWidth
+  else
+  if UseBands and DraggingDivider then
+    XB := X - DividerDragBandX
+  else
+    XB := X;
   if DraggingDivider then
     DividerAbs := XB
   else
@@ -3825,6 +3840,16 @@ begin
   Invalidate;
 end;
 
+procedure TJvCustomInspector.SaveValues;
+begin
+  if (Selected <> nil) and Selected.Editing then
+  begin
+    Selected.DoneEdit(False);
+    Selected.InitEdit;
+  end;
+  Invalidate;
+end;
+
 //=== TJvInspectorPainter ====================================================
 
 destructor TJvInspectorPainter.Destroy;
@@ -4372,6 +4397,8 @@ begin
     ApplyNameFont;
     RowHeight := CanvasMaxTextHeight(Canvas);
     TmpRect := Rects[iprNameArea];
+    if Item.Level = 0 then
+      Inc(TmpRect.Left, 2);
     if RectHeight(TmpRect) div RowHeight < 2 then
       OffsetRect(TmpRect, 0, (RectHeight(TmpRect) - RowHeight) div 2)
     else
@@ -4799,20 +4826,37 @@ begin
   end;
 end;
 
+function GetEditCtrlText(ctrl: TWinControl): string;
+begin
+  Result := '';
+  if ctrl is TMemo then Result := TMemo(ctrl).Text;
+  if ctrl is TEdit then Result := TEdit(ctrl).Text;
+end;
+
+procedure SetEditCtrlText( ctrl: TWidgetControl; value: string );
+begin
+  if ctrl is TMemo then TMemo(ctrl).Text := value;
+  if ctrl is TEdit then TEdit(ctrl).Text := value;
+end;
+
+
 procedure TJvCustomInspectorItem.Apply;
 var
   TmpOnChange: TNotifyEvent;
+  EditText: string;
 begin
-  if Editing and (EditCtrl <> nil) and (not Data.IsAssigned or (DisplayValue <> EditCtrl.Text)) then
+
+  if Editing and (EditCtrl <> nil) and
+  (not Data.IsAssigned or (DisplayValue <> GetEditCtrlText(EditCtrl))) then
   begin
-    DisplayValue := EditCtrl.Text;
+    DisplayValue := GetEditCtrlText(EditCtrl);
     InvalidateItem;
     if EditCtrl <> nil then
     begin
       TmpOnChange := TOpenEdit(EditCtrl).OnChange;
       TOpenEdit(EditCtrl).OnChange := nil;
       try
-        EditCtrl.Text := DisplayValue;
+        SetEditCtrlText(EditCtrl, DisplayValue);
       finally
         TOpenEdit(EditCtrl).OnChange := TmpOnChange;
       end;
@@ -4820,9 +4864,19 @@ begin
   end;
   if Editing and (EditCtrl <> nil) then
   begin
-    EditCtrl.SelectAll;
-    EditCtrl.Modified := False;
-    
+    if EditCtrl is TEdit then
+      with EditCtrl as TEdit do
+      begin
+        SelectAll;
+        Modified := False;
+      end
+    else
+    if EditCtrl is TMemo then
+      with EditCtrl as TMemo do
+      begin
+        SelectAll;
+        Modified := False;
+      end
   end;
 end;
 
@@ -4898,7 +4952,7 @@ begin
     InvalidateItem;
     if Accept then
     begin
-      EditCtrl.Text := ListValue;
+      SetEditCtrlText(EditCtrl, ListValue);
       Apply;
     end;
   end;
@@ -5016,7 +5070,7 @@ begin
     if ListCount = 0 then
       ListCount := 1;
     TListBox(ListBox).Height := ListCount * TListBox(ListBox).ItemHeight + 4;
-    ListBox.ItemIndex := ListBox.Items.IndexOf(EditCtrl.Text);
+    ListBox.ItemIndex := ListBox.Items.IndexOf(GetEditCtrlText(EditCtrl));
     J := ListBox.ClientWidth;
     if ListBox.Items.Count > ListCount then
       Dec(J, GetSystemMetrics(SM_CXVSCROLL));
@@ -5083,7 +5137,7 @@ procedure TJvCustomInspectorItem.EditChange(Sender: TObject);
 begin
   if AutoUpdate then
   begin
-    DisplayValue := EditCtrl.Text;
+    DisplayValue := GetEditCtrlText(EditCtrl);
     InvalidateItem;
   end;
 end;
@@ -5253,7 +5307,7 @@ begin
   Result := FDroppedDown;
 end;
 
-function TJvCustomInspectorItem.GetEditCtrl: TCustomEdit;
+function TJvCustomInspectorItem.GetEditCtrl: TWinControl;
 begin
   Result := FEditCtrl;
 end;
@@ -5261,7 +5315,11 @@ end;
 function TJvCustomInspectorItem.GetEditorText: string; {NEW:WAP}
 begin
   if Assigned(FEditCtrl) then
-    Result := FEditCtrl.Text;
+    if FEditCtrl is TEdit then
+      Result := TEdit(FEditCtrl).Text
+    else if FEditCtrl is TMemo then
+      Result := TMemo(FEditCtrl).Text
+    ;
 end;
 
 function TJvCustomInspectorItem.GetEditing: Boolean;
@@ -5578,7 +5636,7 @@ begin
         I := I + SL.Count;
       while I >= SL.Count do
         I := I - SL.Count;
-      EditCtrl.Text := SL[I];
+      SetEditCtrlText(EditCtrl, SL[I]);
       Apply;
     end;
   finally
@@ -5634,24 +5692,25 @@ procedure TJvCustomInspectorItem.SetDisplayValue(const Value: string);
 begin
 end;
 
-procedure TJvCustomInspectorItem.SetEditCtrl(const Value: TCustomEdit);
+procedure TJvCustomInspectorItem.SetEditCtrl(const Value: TWinControl);
 begin
   if EditCtrl <> Value then
   begin
     if EditCtrl <> nil then
     begin
-      
+
       EditCtrl.Free;
     end;
     FEditCtrl := Value;
 
     if EditCtrl <> nil then
-      with TOpenEdit(EditCtrl) do
-      begin
-        
-        BorderStyle := bsNone;
-        Parent := TWinControl(Owner);
-      end;
+    begin
+      if EditCtrl is TEdit then
+        TEdit(EditCtrl).BorderStyle := bsNone
+      else if EditCtrl is TMemo then
+        TMemo(EditCtrl).BorderStyle := bsNone;
+  //    EditCtrl.Parent := FParent;
+    end;
   end;
 end;
 
@@ -5875,19 +5934,24 @@ begin
   if Pressed <> NewState then
   begin
     Pressed := NewState;
-    
-    
+
+
     Inspector.InvalidateRect(R, False);
-    
+
   end;
 end;
+
 
 procedure TJvCustomInspectorItem.Undo;
 begin
   if Editing then
   begin
-    EditCtrl.Undo;
-    EditCtrl.SelectAll;
+    if Data.IsAssigned then
+      SetEditCtrlText(EditCtrl, DisplayValue)
+    else
+      SetEditCtrlText(EditCtrl, '');
+//    EditCtrl.Modified := False;
+//    EditCtrl.SelectAll;
   end;
 end;
 
@@ -6217,8 +6281,8 @@ begin
       Memo.ScrollBars := ssVertical;
 
       //NEW: prevent lost data entry if focus shifts away, and that change of focus causes a refresh of the inspector!
-
-      //SetEditCtrl(Memo);
+      
+      SetEditCtrl(Memo);
     end
     else
     begin
@@ -6276,11 +6340,11 @@ begin
     TOpenEdit(EditCtrl).OnChange := EditChange;
     EditCtrl.Visible := True;
     if Data.IsAssigned then
-      EditCtrl.Text := DisplayValue
+      SetEditCtrlText(EditCtrl, DisplayValue)
     else
-      EditCtrl.Text := '';
-    EditCtrl.Modified := False;
-    EditCtrl.SelectAll;
+      SetEditCtrlText(EditCtrl, '');
+//    EditCtrl.Modified := False;
+//    EditCtrl.SelectAll;
     if EditCtrl.CanFocus and Inspector.Focused then
       EditCtrl.SetFocus;
   end;
@@ -6295,12 +6359,15 @@ begin
     HadFocus := EditFocused;
     if DroppedDown then
       CloseUp(False);
-    if not CancelEdits and EditCtrl.Modified and (not Data.IsAssigned or (DisplayValue <> EditCtrl.Text)) then
-      DisplayValue := EditCtrl.Text;
+    if not CancelEdits and (not Data.IsAssigned or (DisplayValue <> GetEditCtrlText(EditCtrl))) then
+    begin
+      DisplayValue := GetEditCtrlText(EditCtrl);
+      InvalidateItem;
+    end;
     FreeAndNil(FListBox);
 
     SetEditCtrl(nil);
-    //FEditChanged := false;
+//    FEditChanged := false;
     
     if HadFocus then
       SetFocus;

@@ -35,8 +35,8 @@ interface
 
 uses
   SysUtils, Classes,
-
-
+  
+  
   Types, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QTypes, QWindows,
   
   JvQThemes, JvQExControls, JvQExExtCtrls;
@@ -155,7 +155,7 @@ begin
   begin
     Font := Self.Font;
     H := TextHeight('0');
-    R := Rect(0, H div 2 - 1, Width, Height);
+    R := Rect(0, H div 2 - 1, Width, Height);  
     DrawEdge(Handle, R, InnerStyles[FEdgeInner] or OuterStyles[FEdgeOuter],
       Byte(FEdgeBorders) or BF_ADJUST);
     if (Text <> '') and CaptionVisible then
@@ -165,9 +165,13 @@ begin
       else
         R := Rect(R.Right - Canvas.TextWidth(Text) - 8, 0, 0, H);
       Flags := DrawTextBiDiModeFlags(DT_SINGLELINE);
+      
+      
       DrawTextW(Handle, PWideChar(Text), Length(Text), R, Flags or DT_CALCRECT);
       Brush.Color := Color;
+      SetBkMode(Handle, OPAQUE);
       DrawTextW(Handle, PWideChar(Text), Length(Text), R, Flags);
+      
     end;
   end;
 end;

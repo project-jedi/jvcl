@@ -31,35 +31,19 @@ Known Issues:
 
 {$I jvcl.inc}
 
+// (ahuser) No dependency on JCL units. Required functions are emulated.
+//          With NO_JCL defined the executable file size shrinks because
+//          the JCL has no JvFinalize support and executes all in the
+//          initialization sections.
+
+
 unit JvQJCLUtils;
-
-{ history:
-3.0:
-  2003-09-19: (changes by Andreas Hausladen)
-    - GetXYByPos tests for #13. This does not work under Linux. Now it uses #10.
-    - faster Spaces and AddSpaces
-    - added FillWideChar, MoveWideChar, WideChangeCase, TrimW, TrimLeftW,
-      TrimRightW
-    - add unicode function for: GetWordOnPos, HasChar, CharInSet,
-      Spaces, AddSpaces, GetXYByPos, MakeStr, FindNotBlankCharPos,
-      GetWordOnPosEx, SubStr, ReplaceString
-
-  2003-09-25: (andreas)
-    - Added Linux version of the Windows related functions. (testing needed)
-      The following functions are Windows only:
-        LZFileExpand()
-        IsTTFontSelected()
-        KeyPressed()  [ maybe we can use XQueryKeymap ]
-        ResSaveToFile(), ResSaveToFileEx(), ResSaveToString()
-        CopyIconToClipboard(), AssignClipboardIcon(), CreateIconFromClipboard(),
-          GetIconSize(), CreateRealSizeIcon(), DrawRealSizeIcon()
-         FileLock(), FileUnlock(), FileUnlock(), GetWindowsDir(),
-          GetSystemDir(), CreateFileLink(), DeleteFileLink()
-}
 
 interface
 // (p3) note: this unit should only contain JCL compatible routines ( no Forms etc)
 // and no JVCL units!
+// (ahuser) Unfortunately the QGraphics unit imports the QForms unit. Because
+//          the JCL has the same problem with CLX it should not make any difference. 
 
 uses
   {$IFDEF MSWINDOWS}
@@ -894,7 +878,6 @@ procedure AntiAliasRect(Clip: TBitmap; XOrigin, YOrigin,
 implementation
 
 uses
-  Math,
   
   RTLConsts,
   
@@ -906,7 +889,8 @@ uses
   
   QConsts,
   
-  JclStrings, JclSysInfo;
+  
+  Math;
 
 const
   Separators: TSysCharSet = [#00, ' ', '-', #13, #10, '.', ',', '/', '\', '#', '"', '''',
@@ -923,6 +907,62 @@ resourcestring
   RsPropertyNotExists = 'Property "%s" does not exist';
   RsInvalidPropertyType = 'Property "%s" has invalid type';
   RsPivotLessThanZero = 'JvJCLUtils.MakeYear4Digit: Pivot < 0';
+
+
+
+// These are the replacement functions for the JCL.
+
+const
+  AnsiSpace = AnsiChar(#32);
+  AnsiForwardSlash = AnsiChar('/');
+
+function StrIPos(const SubStr, S: string): Integer;
+begin
+  Result := Pos(AnsiLowerCase(SubStr), AnsiLowerCase(S));
+end;
+  
+function CharIsDigit(Ch: AnsiChar): Boolean;
+begin
+  Result := Ch in ['0'..'9'];
+end;
+
+function CharIsNumber(Ch: AnsiChar): Boolean;
+begin
+  Result := Ch in ['0'..'9'];
+end;
+
+function CharIsAlpha(Ch: AnsiChar): Boolean;
+begin
+  Result := QWindows.IsCharAlpha(Ch);
+end;
+
+function StrStripNonNumberChars(const S: string): string;
+var
+  I: Integer;
+  Ch: Char;
+begin
+  Result := '';
+  for I := 1 to Length(S) do
+  begin
+    Ch := S[I];
+    if CharIsNumber(Ch) then
+      Result := Result + Ch;
+  end;
+end;
+
+{$IFDEF MSWINDOWS}
+function GetRecentFolder: string;
+begin
+  SetLength(Result, MAX_PATH);
+  if SHGetSpecialFolderPath(0, PChar(Result), CSIDL_RECENT, False) then // requires IE 4 on Win95
+    SetLength(Result, StrLen(PChar(Result)))
+  else
+    Result := '';
+end;
+{$ENDIF MSWINDOWS}
+
+
+
 
 // StrToFloatUS uses US '.' as decimal separator and ',' as thousand separator
 
@@ -6102,7 +6142,7 @@ end;
 
 function StrRestOf(const Ps: string; const n: Integer): string;
 begin
-  Result := Copy(Ps, n, (Length(Ps) - n + 1));
+  Result := Copy(Ps, n, {(Length(Ps) - n + 1)}MaxInt);
 end;
 
 {!!!!!!!! use these because the JCL one is badly broken }
@@ -6125,7 +6165,7 @@ begin
   if psSearch = '' then
     Exit;
 
-  Result := StrLeft(psSource, piUpdatePos - 1);
+  Result := Copy(psSource, 1, piUpdatePos - 1);
   lsCopy := StrRestOf(psSource, piUpdatePos);
 
   if pbCaseSens then
@@ -6139,7 +6179,7 @@ begin
     Exit;
   end;
 
-  Result := Result + StrLeft(lsCopy, liIndex - 1);
+  Result := Result + Copy(lsCopy, 1, liIndex - 1);
   Result := Result + psReplace;
   piUpdatePos := Length(Result) + 1;
   Result := Result + StrRestOf(lsCopy, liIndex + Length(psSearch));
@@ -6192,12 +6232,12 @@ begin
   else
     try
       { the string '-' fails StrToFloat, but it can be interpreted as 0  }
-      if StrRight(lStr, 1) = '-' then
+      if lStr[Length(lStr)] = '-' then
         lStr := lStr + '0';
 
       { a string that ends in a '.' such as '12.' fails StrToFloat,
        but as far as I am concerned, it may as well be interpreted as 12.0 }
-      if StrRight(lStr, 1) = '.' then
+      if lStr[Length(lStr)] = '.' then
         lStr := lStr + '0';
       if not TextToFloat(PChar(lStr), Result, fvExtended) then
         Result := Def;
@@ -6480,7 +6520,7 @@ end;
 
 function StrDeleteChars(const Ps: string; const piPos: Integer; const piCount: Integer): string;
 begin
-  Result := StrLeft(Ps, piPos - 1) + StrRestOf(Ps, piPos + piCount);
+  Result := Copy(Ps, 1, piPos - 1) + StrRestOf(Ps, piPos + piCount);
 end;
 
 function StrDelete(const psSub, psMain: string): string;

@@ -29,7 +29,7 @@ Known Issues:
 
 {$I jvcl.inc}
 
-unit JvQRGBToHTML;
+unit JvQRgbToHtml;
 
 interface
 

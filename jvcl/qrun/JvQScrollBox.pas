@@ -34,7 +34,8 @@ unit JvQScrollBox;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  SysUtils, Classes,
+  QGraphics, QControls, QForms,
   JvQExControls, JvQExForms;
 
 type
