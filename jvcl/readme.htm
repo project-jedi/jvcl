@@ -42,6 +42,30 @@ files used at either run or design time</P>
 <p>Depending on which distribution of JVCL you download, 
 there might be additional folders and files.</P>
 <p>&nbsp;</p>
+<h4>Theming</h4>
+<p>Several visual JVCL controls supports XP theming (more will likely be added 
+subsequently). Theming is automatically activated for users of Delphi 7 (and 
+above) and you don't need to do anything special in this case. For earlier 
+versions of Delphi (5 and 6), you need to download Mike Lischke's ThemeManager 
+package and configure the JVCL theming support manually. To activate JVCL 
+theming, proceed as follows:</p>
+<ul>
+  <li>Download ThemeManager from
+  <a href="http://www.delphi-gems.com/ThemeManager.php">
+  http://www.delphi-gems.com/ThemeManager.php</a>.</li>
+  <li>Open ThemeManager?.dpk (where &quot;?&quot; is the Delphi version) and change the 
+  compile options to &quot;Explicit rebuild&quot;.</li>
+  <li>(Re)build and install the ThemeManager package.</li>
+  <li>Open JVCL.INC with a text editor and remove the dot in {.$DEFINE 
+  JVCLThemesEnabled}. </li>
+  <li>Open JvCoreD?R.dpk in Delphi (where &quot;?&quot; is the Delphi version) and add 
+  ThemeManager?.dcp to the requires node. (Re)build the package.</li>
+</ul>
+<p>&nbsp;</p>
+<p>Theming should now be activated for those JVCL controls that supports it. 
+Note that you still need to be running on Windows XP with a manifest file for 
+your project to see any theming.</p>
+<p>&nbsp;</p>
 <h4>Available distributions</H4>
 <p>The JVCL is&nbsp;available in three different 
 distributions. These are:</P>
