@@ -64,6 +64,8 @@ type
     procedure SetTransparent(Value: Boolean);
     procedure ImageChanged(Sender: TObject);
     procedure TimerExpired(Sender: TObject);
+    { Backwards compatibility; eventually remove }
+    procedure ReadJvxAnimate(Reader: TReader);
   protected
     function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean; override;
     function GetPalette: HPALETTE; override;
@@ -74,13 +76,14 @@ type
     procedure FrameChanged; dynamic;
     procedure Start; dynamic;
     procedure Stop; dynamic;
+    { Backwards compatibility; eventually remove }
+    procedure DefineProperties(Filer: TFiler); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
     property AsyncDrawing: Boolean read FAsyncDrawing write SetAsyncDrawing default False;
-    // (rom) why Jvx ?
-    property JvxAnimate: Boolean read FAnimate write SetAnimate default False;
+    property Animate: Boolean read FAnimate write SetAnimate default False;
     property AutoSize default True;
     property Center: Boolean read FCenter write SetCenter default False;
     property FrameIndex: Integer read FFrameIndex write SetFrameIndex default 0;
@@ -130,34 +133,6 @@ const
   MaxDelayTime = 10000;
   MinDelayTime = 50;
 
-constructor TJvGIFAnimator.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FTimer := TJvTimer.Create(Self);
-  AutoSize := True;
-  FImage := TJvGIFImage.Create;
-  FGraphic := FImage;
-  FImage.OnChange := ImageChanged;
-  FCacheIndex := -1;
-  FTransColor := clNone;
-  FLoop := True;
-  FTransparent := True;
-end;
-
-destructor TJvGIFAnimator.Destroy;
-begin
-  Destroying;
-  FOnStart := nil;
-  FOnStop := nil;
-  FOnChange := nil;
-  FOnFrameChanged := nil;
-  JvxAnimate := False;
-  FCache.Free;
-  FImage.OnChange := nil;
-  FImage.Free;
-  inherited Destroy;
-end;
-
 procedure TJvGIFAnimator.AdjustSize;
 begin
   if not (csReading in ComponentState) then
@@ -176,6 +151,90 @@ begin
     if Align in [alNone, alTop, alBottom] then
       NewHeight := FImage.ScreenHeight;
   end;
+end;
+
+procedure TJvGIFAnimator.Change;
+begin
+  if Assigned(FOnChange) then
+    FOnChange(Self);
+end;
+
+constructor TJvGIFAnimator.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FTimer := TJvTimer.Create(Self);
+  AutoSize := True;
+  FImage := TJvGIFImage.Create;
+  FGraphic := FImage;
+  FImage.OnChange := ImageChanged;
+  FCacheIndex := -1;
+  FTransColor := clNone;
+  FLoop := True;
+  FTransparent := True;
+end;
+
+procedure TJvGIFAnimator.DefineProperties(Filer: TFiler);
+begin
+  inherited DefineProperties(Filer);
+  Filer.DefineProperty('JvxAnimate', ReadJvxAnimate, nil, False);
+end;
+
+destructor TJvGIFAnimator.Destroy;
+begin
+  Destroying;
+  FOnStart := nil;
+  FOnStop := nil;
+  FOnChange := nil;
+  FOnFrameChanged := nil;
+  Animate := False;
+  FCache.Free;
+  FImage.OnChange := nil;
+  FImage.Free;
+  inherited Destroy;
+end;
+
+procedure TJvGIFAnimator.DoPaintImage;
+var
+  Frame: TBitmap;
+  Dest: TRect;
+  TransColor: TColor;
+begin
+  { copy image from parent and back-level controls }
+  if FImage.Transparent or FImage.Empty then
+    CopyParentImage(Self, Canvas);
+  if (not FImage.Empty) and (FImage.ScreenWidth > 0) and
+    (FImage.ScreenHeight > 0) then
+  begin
+    TransColor := clNone;
+    Frame := GetFrameBitmap(FrameIndex, TransColor);
+    Frame.Canvas.Lock;
+    try
+      if Stretch then
+        Dest := ClientRect
+      else
+      if Center then
+        Dest := Bounds((ClientWidth - Frame.Width) div 2,
+          (ClientHeight - Frame.Height) div 2, Frame.Width, Frame.Height)
+      else
+        Dest := Rect(0, 0, Frame.Width, Frame.Height);
+      if (TransColor = clNone) or not FTransparent then
+        Canvas.StretchDraw(Dest, Frame)
+      else
+      begin
+        StretchBitmapRectTransparent(Canvas, Dest.Left, Dest.Top,
+          RectWidth(Dest), RectHeight(Dest), Bounds(0, 0, Frame.Width,
+          Frame.Height), Frame, TransColor);
+      end;
+    finally
+      Frame.Canvas.Unlock;
+    end;
+  end;
+end;
+
+procedure TJvGIFAnimator.FrameChanged;
+begin
+  if Assigned(FOnFrameChanged) then
+    FOnFrameChanged(Self);
 end;
 
 function TJvGIFAnimator.GetDelayTime(Index: Integer): Cardinal;
@@ -326,13 +385,52 @@ begin
   Change;
 end;
 
-procedure TJvGIFAnimator.SetImage(Value: TJvGIFImage);
+procedure TJvGIFAnimator.Paint;
 begin
-  Lock;
-  try
-    FImage.Assign(Value);
-  finally
-    Unlock;
+  PaintImage;
+  if FImage.Transparent or FImage.Empty then
+    PaintDesignRect;
+end;
+
+procedure TJvGIFAnimator.ReadJvxAnimate(Reader: TReader);
+begin
+  Animate := Reader.ReadBoolean;
+end;
+
+procedure TJvGIFAnimator.SetAnimate(Value: Boolean);
+begin
+  if FAnimate <> Value then
+  begin
+    if Value then
+    begin
+      FTimer.OnTimer := TimerExpired;
+      FTimer.Enabled := True;
+      FAnimate := FTimer.Enabled;
+      Start;
+    end
+    else
+    begin
+      FTimer.Enabled := False;
+      FTimer.OnTimer := nil;
+      FAnimate := False;
+      Stop;
+      PictureChanged;
+    end;
+  end;
+end;
+
+procedure TJvGIFAnimator.SetAsyncDrawing(Value: Boolean);
+begin
+  if FAsyncDrawing <> Value then
+  begin
+    Lock;
+    try
+      if Assigned(FTimer) then
+        FTimer.SyncEvent := not Value;
+      FAsyncDrawing := Value;
+    finally
+      Unlock;
+    end;
   end;
 end;
 
@@ -347,39 +445,7 @@ begin
       Unlock;
     end;
     PictureChanged;
-    if JvxAnimate then
-      Repaint;
-  end;
-end;
-
-procedure TJvGIFAnimator.SetStretch(Value: Boolean);
-begin
-  if Value <> FStretch then
-  begin
-    Lock;
-    try
-      FStretch := Value;
-    finally
-      Unlock;
-    end;
-    PictureChanged;
-    if JvxAnimate then
-      Repaint;
-  end;
-end;
-
-procedure TJvGIFAnimator.SetTransparent(Value: Boolean);
-begin
-  if Value <> FTransparent then
-  begin
-    Lock;
-    try
-      FTransparent := Value;
-    finally
-      Unlock;
-    end;
-    PictureChanged;
-    if JvxAnimate then
+    if Animate then
       Repaint;
   end;
 end;
@@ -404,49 +470,58 @@ begin
   end;
 end;
 
-procedure TJvGIFAnimator.DoPaintImage;
-var
-  Frame: TBitmap;
-  Dest: TRect;
-  TransColor: TColor;
+procedure TJvGIFAnimator.SetImage(Value: TJvGIFImage);
 begin
-  { copy image from parent and back-level controls }
-  if FImage.Transparent or FImage.Empty then
-    CopyParentImage(Self, Canvas);
-  if (not FImage.Empty) and (FImage.ScreenWidth > 0) and
-    (FImage.ScreenHeight > 0) then
-  begin
-    TransColor := clNone;
-    Frame := GetFrameBitmap(FrameIndex, TransColor);
-    Frame.Canvas.Lock;
-    try
-      if Stretch then
-        Dest := ClientRect
-      else
-      if Center then
-        Dest := Bounds((ClientWidth - Frame.Width) div 2,
-          (ClientHeight - Frame.Height) div 2, Frame.Width, Frame.Height)
-      else
-        Dest := Rect(0, 0, Frame.Width, Frame.Height);
-      if (TransColor = clNone) or not FTransparent then
-        Canvas.StretchDraw(Dest, Frame)
-      else
-      begin
-        StretchBitmapRectTransparent(Canvas, Dest.Left, Dest.Top,
-          RectWidth(Dest), RectHeight(Dest), Bounds(0, 0, Frame.Width,
-          Frame.Height), Frame, TransColor);
-      end;
-    finally
-      Frame.Canvas.Unlock;
-    end;
+  Lock;
+  try
+    FImage.Assign(Value);
+  finally
+    Unlock;
   end;
 end;
 
-procedure TJvGIFAnimator.Paint;
+procedure TJvGIFAnimator.SetStretch(Value: Boolean);
 begin
-  PaintImage;
-  if FImage.Transparent or FImage.Empty then
-    PaintDesignRect;
+  if Value <> FStretch then
+  begin
+    Lock;
+    try
+      FStretch := Value;
+    finally
+      Unlock;
+    end;
+    PictureChanged;
+    if Animate then
+      Repaint;
+  end;
+end;
+
+procedure TJvGIFAnimator.SetTransparent(Value: Boolean);
+begin
+  if Value <> FTransparent then
+  begin
+    Lock;
+    try
+      FTransparent := Value;
+    finally
+      Unlock;
+    end;
+    PictureChanged;
+    if Animate then
+      Repaint;
+  end;
+end;
+
+procedure TJvGIFAnimator.Start;
+begin
+  if Assigned(FOnStart) then
+    FOnStart(Self);
+end;
+
+procedure TJvGIFAnimator.Stop;
+begin
+  if Assigned(FOnStop) then
+    FOnStop(Self);
 end;
 
 procedure TJvGIFAnimator.TimerDeactivate;
@@ -496,67 +571,6 @@ begin
           TimerDeactivate;
     finally
       Unlock;
-    end;
-  end;
-end;
-
-procedure TJvGIFAnimator.Change;
-begin
-  if Assigned(FOnChange) then
-    FOnChange(Self);
-end;
-
-procedure TJvGIFAnimator.FrameChanged;
-begin
-  if Assigned(FOnFrameChanged) then
-    FOnFrameChanged(Self);
-end;
-
-procedure TJvGIFAnimator.Stop;
-begin
-  if Assigned(FOnStop) then
-    FOnStop(Self);
-end;
-
-procedure TJvGIFAnimator.Start;
-begin
-  if Assigned(FOnStart) then
-    FOnStart(Self);
-end;
-
-procedure TJvGIFAnimator.SetAsyncDrawing(Value: Boolean);
-begin
-  if FAsyncDrawing <> Value then
-  begin
-    Lock;
-    try
-      if Assigned(FTimer) then
-        FTimer.SyncEvent := not Value;
-      FAsyncDrawing := Value;
-    finally
-      Unlock;
-    end;
-  end;
-end;
-
-procedure TJvGIFAnimator.SetAnimate(Value: Boolean);
-begin
-  if FAnimate <> Value then
-  begin
-    if Value then
-    begin
-      FTimer.OnTimer := TimerExpired;
-      FTimer.Enabled := True;
-      FAnimate := FTimer.Enabled;
-      Start;
-    end
-    else
-    begin
-      FTimer.Enabled := False;
-      FTimer.OnTimer := nil;
-      FAnimate := False;
-      Stop;
-      PictureChanged;
     end;
   end;
 end;
