@@ -706,7 +706,10 @@ var
   Pkg: TPackageTarget;
   Dependencies, S, PasFile: string;
   DeleteFiles: Boolean;
+  BplFilename: string;
 begin
+  BplFilename := ProjectGroup.TargetConfig.BplDir + '\' + ProjectGroup.BpgName;
+
   Lines := TStringList.Create;
   try
     Lines.Add('!ifndef ROOT');
@@ -796,7 +799,11 @@ begin
               S := ProjectGroup.TargetConfig.UnitOutDir + '\obj\' + ChangeFileExt(S, '.obj');
               if FileExists(S) then
                 if not FileExists(PasFile) or // unknown directory for the .pas file
-                   (CompareFileAge(S, [], PasFile, []) < 0) then
+                   (CompareFileAge(S, [], PasFile, []) < 0) or
+                   (FileExists(BplFilename) and (
+                    (CompareFileAge(S, [], BplFilename, []) < 0) or
+                    (CompareFileAge(PasFile, [], BplFilename, []) < 0))
+                   ) then
                 begin
                   DeleteFiles := True;
                   Break;
