@@ -196,10 +196,7 @@ begin
     // identifier
     Inc(P);
     while (P[0] in IdentChars) do
-    begin
-      if P[0] = #10 then Inc(FLineNum);
       Inc(P);
-    end;
     Result.Kind := tkIdent;
   end
   else if (P[0] in NumberChars) then
@@ -207,10 +204,7 @@ begin
     // number
     Inc(P);
     while (P[0] in NumberChars) do
-    begin
-      if P[0] = #10 then Inc(FLineNum);
       Inc(P);
-    end;
     Result.Kind := tkNumber;
   end
   else if P[0] in OneSymbolChars then

@@ -19,14 +19,9 @@
 { http://www.sourceforge.net/projects/dpp32                                                        }
 {                                                                                                  }
 {**************************************************************************************************}
-
 unit dpp_PascalParser;
-
 interface
-
-uses
-  SysUtils, Classes;
-
+uses SysUtils, Classes;
 const
   WhiteChars = [#1..#32];
   OneSymbolChars = ['(', ')', '[', ']', ';', '@', '+', '-', '"', '/', '^', '.', ',', '*', '/'];
@@ -41,7 +36,6 @@ type
   TPascalParser = class;
 
   TTokenKind = (tkNone, tkIdent, tkSymbol, tkComment, tkString, tkNumber);
-
   PTokenInfo = ^TTokenInfo;
   TTokenInfo = record
     Kind: TTokenKind;
@@ -60,18 +54,21 @@ type
     FTextLen: Integer;
     FLineNum: Integer;
     FModified: Boolean;
+
     FTokenIndex: Integer;
-    FTokens: array [0..MaxCachedTokens - 1] of PTokenInfo; // collects all parsed tokens in a ring buffer
+    FTokens: array[0..MaxCachedTokens - 1] of PTokenInfo; // collects all parsed tokens in a ring buffer
+
     procedure SetText(const Value: string);
     procedure SetIndex(const Value: Integer);
     function GetCurToken: PTokenInfo;
     function GetPreToken: PTokenInfo;
   public
-    constructor Create(const AFileName, AText: string; StartLineNum: Integer = 1);
+    constructor Create(const AFileName, AText: string;
+      StartLineNum: Integer = 1);
     destructor Destroy; override;
 
     function GetToken: PTokenInfo; overload;
-    function GetToken(out P: PTokenInfo): Boolean; overload;
+    function GetToken(out p: PTokenInfo): Boolean; overload;
 
     procedure Delete(StartIndex, Count: Integer);
     procedure Insert(Index: Integer; const S: string);
@@ -88,7 +85,7 @@ type
     property IndexNoClear: Integer read FIndex write FIndex;
     property Text: string read FText write SetText;
     property LineNum: Integer read FLineNum write FLineNum;
-    property FileName: string read FFileName;
+    property Filename: string read FFilename;
     property Modified: Boolean read FModified;
 
     property PreToken: PTokenInfo read GetPreToken;
@@ -97,35 +94,7 @@ type
 
 implementation
 
-constructor TPascalParser.Create(const AFileName, AText: string; StartLineNum: Integer);
-var
-  I: Integer;
-begin
-  inherited Create;
-  FFileName := AFileName;
-
-  // alloc all cacheable Tokens
-  for i := 0 to MaxCachedTokens - 1 do
-  begin
-    New(FTokens[I]);
-    FillChar(FTokens[I]^, SizeOf(TTokenInfo), 0);
-    FTokens[I].pFilename := @FFileName;
-    FTokens[I].Parser := Self;
-  end;
-  FTokenIndex := -1;
-
-  SetText(AText);
-  FLineNum := StartLineNum;
-end;
-
-destructor TPascalParser.Destroy;
-var
-  I: Integer;
-begin
-  for I := 0 to MaxCachedTokens - 1 do
-    Dispose(FTokens[I]);
-  inherited Destroy;
-end;
+{ TPascalParser }
 
 function TPascalParser.GetToken: PTokenInfo;
 var
@@ -133,25 +102,21 @@ var
   IndexAdd: Integer;
 begin
   Result := nil;
-  if FIndex > FTextLen then
-    Exit;
+  if FIndex > FTextLen then Exit;
 
   PText := Pointer(FText);
   P := PText + FIndex - 1;
  // go to next token and skip white chars
   while P[0] in WhiteChars do
   begin
-    if P[0] = #10 then
-      Inc(FLineNum);
+    if P[0] = #10 then Inc(FLineNum);
     Inc(P);
   end;
 
-  if P[0] = #0 then
-    Exit;
+  if P[0] = #0 then Exit;
 
   Inc(FTokenIndex);
-  if FTokenIndex >= MaxCachedTokens then
-    FTokenIndex := 0; // ring buffer
+  if FTokenIndex >= MaxCachedTokens then FTokenIndex := 0; // ring buffer
 
   Result := FTokens[FTokenIndex];
 //  Result.Kind := tkNone;
@@ -168,24 +133,20 @@ begin
     while True do
     begin
       case P[0] of
-        #0:
-          Break;
+        #0: Break;
         '''':
-          if P[1] = '''' then
+          if (P[1] = '''') then
             Inc(P)
           else
             Break;
-        #10:
-          Inc(FLineNum);
+        #10: Inc(FLineNum);
       end;
       Inc(P);
     end;
-    if P[0] <> #0 then
-      Inc(P); // include P[0] which is now P[-1]
+    if P[0] <> #0 then Inc(P); // include P[0] which is now P[-1]
     Result.Kind := tkString;
   end
-  else
-  if P[0] = '{' then
+  else if (P[0] = '{') then
   begin
     // comment { ... } -> find comment end
     Inc(P);
@@ -197,86 +158,65 @@ begin
     while True do
     begin
       case P[0] of
-        #0, '}':
-          Break;
-        #10:
-          Inc(FLineNum);
+        #0, '}': Break;
+        #10: Inc(FLineNum);
       end;
       Inc(P);
     end;
     Result.Kind := tkComment;
-    if P[0] <> #0 then
-      Inc(P); // include P[0] which is now P[-1]
+    if P[0] <> #0 then Inc(P); // include P[0] which is now P[-1]
   end
-  else
-  if (P[0] = '(') and (P[1] = '*') then
+  else if (P[0] = '(') and (P[1] = '*') then
   begin
     // comment (* ... *) -> find comment end
     Inc(P, 2);
     while (P[0] <> #0) and not ((P[0] = '*') and (P[1] = ')')) do
     begin
-      if P[0] = #10 then
-        Inc(FLineNum);
+      if P[0] = #10 then Inc(FLineNum);
       Inc(P);
     end;
     Result.Kind := tkComment;
-    if P[0] <> #0 then
-      Inc(P, 2); // include P[0],P[1] which is now P[-2],P[-1]
+    if P[0] <> #0 then Inc(P, 2); // include P[0],P[1] which is now P[-2],P[-1]
   end
-  else
-  if (P[0] = '/') and (P[1] = '/') then
+  else if (P[0] = '/') and (P[1] = '/') then
   begin
     // comment "// ..." -> find comment end
     Inc(P, 2);
-    while not (P[0] in [#0, #10, #13]) do
-      Inc(P);
+    while not (P[0] in [#0, #10, #13]) do Inc(P);
     Result.Kind := tkComment;
     if P[0] <> #0 then
     begin
-      if P[0] = #13 then
-        IndexAdd := 1; {do not parse the #13 again}
+      if P[0] = #13 then IndexAdd := 1; {do not parse the #13 again}
       Inc(FLineNum);
       Inc(IndexAdd); {do not parse the #10 again}
     end;
   end
-  else
-  if P[0] in IdentFirstChars then
+  else if (P[0] in IdentFirstChars) then
   begin
     // identifier
     Inc(P);
     while (P[0] in IdentChars) do
-    begin
-      if P[0] = #10 then
-        Inc(FLineNum);
       Inc(P);
-    end;
     Result.Kind := tkIdent;
   end
-  else
-  if P[0] in NumberChars then
+  else if (P[0] in NumberChars) then
   begin
     // number
     Inc(P);
-    while P[0] in NumberChars do
-    begin
-      if P[0] = #10 then
-        Inc(FLineNum);
+    while (P[0] in NumberChars) do
       Inc(P);
-    end;
     Result.Kind := tkNumber;
   end
-  else
-  if P[0] in OneSymbolChars then
+  else if P[0] in OneSymbolChars then
   begin
     Inc(P);
     Result.Kind := tkSymbol;
   end
   else
   begin
-    while P[0] in SymbolChars do
+    while (P[0] in SymbolChars) do
     begin
-      if P[0] = #10 then
-        Inc(FLineNum);
+      if P[0] = #10 then Inc(FLineNum);
       Inc(P);
     end;
     Result.Kind := tkSymbol;
@@ -288,6 +228,34 @@ begin
   SetString(Result.Value, F, P - F);
 
   Inc(FIndex, IndexAdd); // skip some chars if necessary
+end;
+
+constructor TPascalParser.Create(const AFilename, AText: string;
+  StartLineNum: Integer);
+var i: Integer;
+begin
+  inherited Create;
+  FFilename := AFilename;
+
+ // alloc all cacheable Tokens
+  for i := 0 to MaxCachedTokens - 1 do
+  begin
+    New(FTokens[i]);
+    FillChar(FTokens[i]^, SizeOf(TTokenInfo), 0);
+    FTokens[i].pFilename := @FFilename;
+    FTokens[i].Parser := Self;
+  end;
+  FTokenIndex := -1;
+
+  SetText(AText);
+  FLineNum := StartLineNum;
+end;
+
+destructor TPascalParser.Destroy;
+var i: Integer;
+begin
+  for i := 0 to MaxCachedTokens - 1 do Dispose(FTokens[i]);
+  inherited Destroy;
 end;
 
 procedure TPascalParser.SetText(const Value: string);
@@ -320,41 +288,43 @@ begin
   end;
 end;
 
-procedure TPascalParser.Replace(StartIndex, Count: Integer; const S: string);
+procedure TPascalParser.Replace(StartIndex, Count: Integer;
+  const S: string);
 begin
   Delete(StartIndex, Count);
   Insert(StartIndex, S);
 end;
 
 procedure TPascalParser.ClearCache;
-var
-  I: Integer;
+var i: Integer;
 begin
-  for I := 0 to MaxCachedTokens - 1 do
-    FTokens[i].Kind := tkNone;
+  for i := 0 to MaxCachedTokens - 1 do FTokens[i].Kind := tkNone;
   FTokenIndex := -1;
 end;
 
-function TPascalParser.GetToken(out P: PTokenInfo): Boolean;
+function TPascalParser.GetToken(out p: PTokenInfo): Boolean;
 begin
-  P := GetToken;
-  Result := P <> nil;
+  p := GetToken;
+  Result := p <> nil;
 end;
 
-procedure TPascalParser.Replace(StartToken, EndToken: PTokenInfo; const S: string);
+procedure TPascalParser.Replace(StartToken, EndToken: PTokenInfo;
+  const S: string);
 begin
   FIndex := StartToken.StartIndex;
   FLineNum := StartToken.StartLine;
   Replace(StartToken.StartIndex, EndToken.EndIndex - StartToken.StartIndex + 1, S);
 end;
 
-procedure TPascalParser.ReplaceParseNext(StartToken, EndToken: PTokenInfo; const S: string);
+procedure TPascalParser.ReplaceParseNext(StartToken, EndToken: PTokenInfo;
+  const S: string);
 begin
   Replace(StartToken, EndToken, S);
   FIndex := StartToken.StartIndex + Length(S);
 end;
 
-procedure TPascalParser.ReplaceParseNext(StartIndex, Count: Integer; const S: string);
+procedure TPascalParser.ReplaceParseNext(StartIndex, Count: Integer;
+  const S: string);
 begin
   Replace(StartIndex, Count, S);
   FIndex := StartIndex + Length(S);
@@ -379,26 +349,20 @@ end;
 function TPascalParser.GetCurToken: PTokenInfo;
 begin
   Result := nil;
-  if FTokenIndex = -1 then
-    Exit;
+  if FTokenIndex = -1 then Exit;
   Result := FTokens[FTokenIndex];
-  if Result.Kind = tkNone then
-    Result := nil;
+  if Result.Kind = tkNone then Result := nil;
 end;
 
 function TPascalParser.GetPreToken: PTokenInfo;
-var
-  Index: Integer;
+var Index: Integer;
 begin
   Result := nil;
-  if FTokenIndex = -1 then
-    Exit;
+  if FTokenIndex = -1 then Exit;
   Index := FTokenIndex - 1;
-  if Index < 0 then
-    Index := MaxCachedTokens - 1;
+  if Index < 0 then Index := MaxCachedTokens - 1;
   Result := FTokens[Index];
-  if Result.Kind = tkNone then
-    Result := nil;
+  if Result.Kind = tkNone then Result := nil;
 end;
 
 end.
