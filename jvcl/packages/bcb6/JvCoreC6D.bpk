@@ -4,20 +4,20 @@
   <MACROS>
     <VERSION value="BCB.06.00"/>
     <PROJECT value="JvCoreC6D.bpl"/>
-    <OBJFILES value="JvCoreC6D.obj ..\..\design\JvStringsForm.obj 
-      ..\..\design\JvBaseDlgEditor.obj ..\..\design\JvColorEditor.obj 
-      ..\..\design\JvCoreReg.obj ..\..\design\JvDataContextManagerForm.obj 
-      ..\..\design\JvDataProviderEditors.obj 
-      ..\..\design\JvDataProviderItemDesign.obj ..\..\design\JvDesignerUtils.obj 
-      ..\..\design\JvDsgnConsts.obj ..\..\design\JvDsgnEditors.obj 
-      ..\..\design\JvIDEZoom.obj ..\..\design\JvJVCLAboutEditor.obj 
-      ..\..\design\JvPaintBoxEditor.obj ..\..\design\JvProviderToolbarFrame.obj 
-      ..\..\design\JvProviderTreeListFrame.obj ..\..\design\JvBaseDsgnForm.obj 
-      ..\..\design\JvBaseDsgnFrame.obj ..\..\design\JvBaseDsgnToolbarFrame.obj 
-      ..\..\design\JvDataConsumerContextSelectForm.obj 
-      ..\..\design\JvDataConsumerItemSelectForm.obj 
-      ..\..\design\JvDataProviderDesignerForm.obj 
-      ..\..\design\JvDateTimeForm.obj ..\..\design\JvStdToolbarDsgnFrame.obj"/>
+    <OBJFILES value="..\..\dcu\JvCoreC6D.obj ..\..\dcu\JvStringsForm.obj 
+      ..\..\dcu\JvBaseDlgEditor.obj ..\..\dcu\JvColorEditor.obj 
+      ..\..\dcu\JvCoreReg.obj ..\..\dcu\JvDataContextManagerForm.obj 
+      ..\..\dcu\JvDataProviderEditors.obj ..\..\dcu\JvDataProviderItemDesign.obj 
+      ..\..\dcu\JvDesignerUtils.obj ..\..\dcu\JvDsgnConsts.obj 
+      ..\..\dcu\JvDsgnEditors.obj ..\..\dcu\JvIDEZoom.obj 
+      ..\..\dcu\JvJVCLAboutEditor.obj ..\..\dcu\JvPaintBoxEditor.obj 
+      ..\..\dcu\JvProviderToolbarFrame.obj ..\..\dcu\JvProviderTreeListFrame.obj 
+      ..\..\dcu\JvBaseDsgnForm.obj ..\..\dcu\JvBaseDsgnFrame.obj 
+      ..\..\dcu\JvBaseDsgnToolbarFrame.obj 
+      ..\..\dcu\JvDataConsumerContextSelectForm.obj 
+      ..\..\dcu\JvDataConsumerItemSelectForm.obj 
+      ..\..\dcu\JvDataProviderDesignerForm.obj ..\..\dcu\JvDateTimeForm.obj 
+      ..\..\dcu\JvStdToolbarDsgnFrame.obj"/>
     <RESFILES value="JvCoreC6D.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -40,7 +40,7 @@
       dsnapcrba.lib dsnapcon.lib bcbsmp.lib inetdbbde.lib inetdbxpress.lib 
       dbexpress.lib nmfast.lib bcbie.lib soaprtl.lib dclocx.lib dbxcds.lib 
       indy.lib bcb2kaxserver.lib rtl.lib"/>
-    <PACKAGES value="rtl.bpi designide.bpi vcl.bpi JvCoreC6R.bpi dclstd.bpi"/>
+    <PACKAGES value="rtl.bpi designide.bpi vcl.bpi JvCoreC6R.bpi dclstd.bpi vclx.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;..\..\design"/>
     <PATHRC value=".;"/>
@@ -51,20 +51,21 @@
     <USERDEFINES value="_DEBUG"/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JvCoreC6D.cpp"/>
-    <INCLUDEPATH value="..\..\design;..\..\run;..\..\common;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Projects\lib"/>
-    <LIBPATH value="..\..\design;..\..\dcu;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\lib\debug;$(BCB)\Projects\lib"/>
+    <INCLUDEPATH value="$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Projects\lib;..\..\design;..\..\run;..\..\common"/>
+    <LIBPATH value="$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\lib\debug;$(BCB)\Projects\lib;..\..\dcu;..\..\resources"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-I..\..\design -I..\..\run -I..\..\common -I$(BCB)\include 
-      -I$(BCB)\include\vcl -I$(BCB)\Projects\lib -src_suffix cpp -D_DEBUG -boa"/>
+    <IDLCFLAGS value="-I$(BCB)\include -I$(BCB)\include\vcl -I$(BCB)\Projects\lib -I..\..\design 
+      -I..\..\run -I..\..\common -src_suffix cpp -D_DEBUG -boa"/>
     <CFLAG1 value="-Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
       -tWM"/>
-    <PFLAGS value="-$YD -$W -$O- -$A8 -v -JPHNE -M -LUDesignIde -LUdclstd"/>
+    <PFLAGS value="-N2..\..\dcu -N0..\..\dcu -$YD -$W -$O- -$A8 -v -JPHNE -M -LUDesignIde 
+      -LUdclstd.dcp"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-D&quot;JVCL Core Components&quot; -aa -Tpp -Gpd -x -Gn -Gl -Gi -v"/>
+    <LFLAGS value="-I..\..\dcu -D&quot;JVCL Core Components&quot; -aa -Tpp -Gpd -x -Gn -Gl -Gi -v"/>
     <OTHERFILES value=""/>
   </OPTIONS>
   <LINKER>
@@ -76,7 +77,7 @@
   <FILELIST>
       <FILE FILENAME="JvCoreC6D.res" FORMNAME="" UNITNAME="JvCoreC6D.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="JvCoreC6D.cpp" FORMNAME="" UNITNAME="JvCoreC6D" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\design\rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvStringsForm.pas" FORMNAME="JvStrEditDlg" UNITNAME="JvStringsForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvBaseDlgEditor.pas" FORMNAME="" UNITNAME="JvBaseDlgEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvColorEditor.pas" FORMNAME="" UNITNAME="JvColorEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -93,8 +94,9 @@
       <FILE FILENAME="..\..\design\JvProviderToolbarFrame.pas" FORMNAME="" UNITNAME="JvProviderToolbarFrame" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvProviderTreeListFrame.pas" FORMNAME="fmeJvProviderTreeList" UNITNAME="JvProviderTreeListFrame" CONTAINERID="PascalCompiler" DESIGNCLASS="TFrame" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\designide.bpi" FORMNAME="" UNITNAME="designide" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\design\vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="c:\prog\cbuilder6\Projects\Lib\JvCoreC6R.bpi" FORMNAME="" UNITNAME="JvCoreC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="CJCL60.bpi" FORMNAME="" UNITNAME="CJCL60" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="JvCoreC6R.bpi" FORMNAME="" UNITNAME="JvCoreC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvBaseDsgnForm.pas" FORMNAME="JvBaseDesign" UNITNAME="JvBaseDsgnForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvBaseDsgnFrame.pas" FORMNAME="fmeJvBaseDesign" UNITNAME="JvBaseDsgnFrame" CONTAINERID="PascalCompiler" DESIGNCLASS="TFrame" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvBaseDsgnToolbarFrame.pas" FORMNAME="fmeJvBaseToolbarDesign" UNITNAME="JvBaseDsgnToolbarFrame" CONTAINERID="PascalCompiler" DESIGNCLASS="TFrame" LOCALCOMMAND=""/>
@@ -103,7 +105,8 @@
       <FILE FILENAME="..\..\design\JvDataProviderDesignerForm.pas" FORMNAME="frmDataProviderDesigner" UNITNAME="JvDataProviderDesignerForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvDateTimeForm.pas" FORMNAME="frmSelectDateTimeDlg" UNITNAME="JvDateTimeForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvStdToolbarDsgnFrame.pas" FORMNAME="fmeJvStdToolbarDesign" UNITNAME="JvStdToolbarDsgnFrame" CONTAINERID="PascalCompiler" DESIGNCLASS="TFrame" LOCALCOMMAND=""/>
-      <FILE FILENAME="c:\prog\cbuilder6\Lib\dclstd.bpi" FORMNAME="" UNITNAME="dclstd" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="dclstd.bpi" FORMNAME="" UNITNAME="dclstd" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="vclx.bpi" FORMNAME="" UNITNAME="vclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>
@@ -137,16 +140,24 @@ ProductVersion=1.0.0.0
 Comments=
 
 [HistoryLists\hlIncludePath]
-Count=3
-Item0=..\..\design;..\..\run;..\..\common;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Projects\lib
-Item1=..\..\design;..\..\run;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Projects\lib
-Item2=..\..\design;C:\Prog\CBuilder6\Projects;$(BCB)\include;$(BCB)\include\vcl
+Count=8
+Item0=$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Projects\lib;..\..\design;..\..\run;..\..\common
+Item1=$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Projects\lib;..\..\design;..\..\run;..\..\common;..\..\resources
+Item2=..\..\design;..\..\run;..\..\common;..\..\resources;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Projects\lib
+Item3=..\..\design;..\..\run;..\..\common;..\..\resources;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Projects\lib;C:\Prog\delphi6\Lib\JCL\dcu
+Item4=..\..\design;..\..\run;..\..\common;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Projects\lib;C:\Prog\delphi6\Lib\JCL\dcu
+Item5=..\..\design;..\..\run;..\..\common;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Projects\lib
+Item6=..\..\design;..\..\run;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Projects\lib
+Item7=..\..\design;C:\Prog\CBuilder6\Projects;$(BCB)\include;$(BCB)\include\vcl
 
 [HistoryLists\hlLibraryPath]
-Count=3
-Item0=..\..\design;..\..\dcu;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\lib\debug;$(BCB)\Projects\lib
-Item1=..\..\dcu;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\lib\debug;$(BCB)\Projects\lib
-Item2=c:\prog\cbuilder6\lib\debug;..\..\design;C:\Prog\CBuilder6\Projects;$(BCB)\lib\obj;$(BCB)\lib
+Count=6
+Item0=$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\lib\debug;$(BCB)\Projects\lib;..\..\design;..\..\dcu;..\..\resources
+Item1=C:\Prog\delphi6\Lib\JCL\dcu;..\..\design;..\..\dcu;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\lib\debug;$(BCB)\Projects\lib;..\..\resources
+Item2=C:\Prog\delphi6\Lib\JCL\dcu;..\..\design;..\..\dcu;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\lib\debug;$(BCB)\Projects\lib
+Item3=..\..\design;..\..\dcu;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\lib\debug;$(BCB)\Projects\lib
+Item4=..\..\dcu;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\lib\debug;$(BCB)\Projects\lib
+Item5=c:\prog\cbuilder6\lib\debug;..\..\design;C:\Prog\CBuilder6\Projects;$(BCB)\lib\obj;$(BCB)\lib
 
 [HistoryLists\hlDebugSourcePath]
 Count=1
@@ -155,6 +166,15 @@ Item0=$(BCB)\source\vcl
 [HistoryLists\hlConditionals]
 Count=1
 Item0=_DEBUG
+
+[HistoryLists\hlIntOutputDir]
+Count=1
+Item0=..\..\dcu
+
+[HistoryLists\hlFinalOutputDir]
+Count=2
+Item0=..\..\lib6\
+Item1=..\..\lib6
 
 [Debugging]
 DebugSourceDirs=$(BCB)\source\vcl
