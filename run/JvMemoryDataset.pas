@@ -647,13 +647,19 @@ end;
 function TJvMemoryData.FindFieldData(Buffer: Pointer; Field: TField): Pointer;
 var
   Index: Integer;
+  DataType: TFieldType;
 begin
+  Result := nil;
   Index := FieldDefList.IndexOf(Field.FullName);
-  if (Index >= 0) and (Buffer <> nil) and
-    (FieldDefList[Index].DataType in ftSupported - ftBlobTypes) then
-    Result := (PChar(Buffer) + FOffsets[Index])
-  else
-    Result := nil;
+  if (Index >= 0) and (Buffer <> nil) then
+  begin
+    DataType := FieldDefList[Index].DataType;
+    if DataType in ftSupported then
+      if DataType in ftBlobTypes then
+        Result := Pointer(GetBlobData(Field, Buffer))
+      else
+        Result := (PChar(Buffer) + FOffsets[Index]);
+  end;
 end;
 
 function TJvMemoryData.CalcRecordSize: Integer;
@@ -846,7 +852,10 @@ begin
     Data := FindFieldData(RecBuf, Field);
     if Data <> nil then
     begin
-      Result := Data[0] <> #0;
+      if Field is TBlobField then
+        Result := Data <> nil
+      else
+        Result := Data[0] <> #0;
       Inc(Data);
       if Field.DataType in [ftString, ftFixedChar, ftWideString, ftGuid] then
         Result := Result and (StrLen(Data) > 0);
