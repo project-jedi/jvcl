@@ -35,9 +35,9 @@ interface
 
 uses
   Windows,
-  {$IFDEF COMPILER6_UP}
+{$IFDEF COMPILER6_UP}
   Variants,
-  {$ENDIF COMPILER6_UP}
+{$ENDIF COMPILER6_UP}
   Messages, Classes, Controls, Forms, Grids, Graphics, Buttons, Menus,
   StdCtrls, ExtCtrls, Mask, IniFiles, DB, DBGrids, DBCtrls,
   JvAppStorage, JvSecretPanel, JvLabel, JvToolEdit, JvFormPlacement,
@@ -119,8 +119,13 @@ type
     FTitlePopUp: TPopUpMenu;
     FOnTitleHintEvent: TTitleHintEvent;
     FOnTitleArrowMenuEvent: TNotifyEvent;
-    FAlternateRowColor: TColor;
     // End Lionel
+    FAlternateRowColor: TColor;
+    FAutoSizeColumns: boolean;
+    FAutoSizeColumnIndex: integer;
+    FMinColumnWidth: integer;
+    FMaxColumnWidth: integer;
+    FInAutoSize: boolean;
     function GetImageIndex(Field: TField): Integer; // Modified by Lionel
     procedure SetShowGlyphs(Value: Boolean);
     procedure SetRowsHeight(Value: Integer);
@@ -158,6 +163,10 @@ type
     procedure SetAlternateRowColor(const Value: TColor);
     procedure ReadAlternRowColor(Reader: TReader);
     // End Lionel
+    procedure SetAutoSizeColumnIndex(const Value: integer);
+    procedure SetAutoSizeColumns(const Value: boolean);
+    procedure SetMaxColumnWidth(const Value: integer);
+    procedure SetMinColumnWidth(const Value: integer);
   protected
     
     procedure MouseLeave(Control: TControl); override;
@@ -206,10 +215,19 @@ type
     procedure EditButtonClick; override;
     procedure CellClick(Column: TColumn); override;
     // End Lionel
-    {$IFNDEF COMPILER6_UP}
+{$IFNDEF COMPILER6_UP}
     procedure FocusCell(ACol, ARow: Longint; MoveAnchor: Boolean);
     {$ENDIF !COMPILER6_UP}
     procedure DefineProperties(Filer: TFiler); override;
+    procedure DoMinColWidth; virtual;
+    procedure DoMaxColWidth; virtual;
+    procedure DoAutoSizeColumns; virtual;
+    procedure Resize; override;
+    procedure Loaded; override;
+    function GetMinColWidth(Default:integer):integer;
+    function GetMaxColWidth(Default:integer):integer;
+    function LastVisibleColumn:integer;
+    function FirstVisibleColumn:integer;
   public
     constructor Create(AOwner: TComponent); override; // Modified by Lionel
     destructor Destroy; override; // Modified by Lionel
@@ -289,23 +307,26 @@ type
     property OnTitleHintEvent: TTitleHintEvent read FOnTitleHintEvent write FOnTitleHintEvent;
     property OnTitleArrowMenuEvent: TNotifyEvent read FOnTitleArrowMenuEvent write FOnTitleArrowMenuEvent;
     // End Lionel
+    property MaxColumnWidth: integer read FMaxColumnWidth write SetMaxColumnWidth default 0;
+    property MinColumnWidth: integer read FMinColumnWidth write SetMinColumnWidth default 0;
+    property AutoSizeColumns: boolean read FAutoSizeColumns write SetAutoSizeColumns default false;
+    property AutoSizeColumnIndex: integer read FAutoSizeColumnIndex write SetAutoSizeColumnIndex default -1;
+
   end;
 
 implementation
 
 uses
-  SysUtils, Dialogs, DbConsts, Math, TypInfo, 
+  SysUtils, Dialogs, DbConsts, Math, TypInfo,
   JvDBUtils, JvJVCLUtils, JvConsts, JvResources, JvTypes,
   JvDBGridSelectColumnForm;
 
 {$R ..\Resources\JvDBGrid.res}
 
-
 type
   TBookmarks = class(TBookmarkList);
   TGridPicture = (gpBlob, gpMemo, gpPicture, gpOle, gpObject, gpData,
     gpNotEmpty, gpMarkDown, gpMarkUp, gpChecked, gpUnChecked, gpPopup);
-
 
 const
   GridBmpNames: array[TGridPicture] of PChar =
@@ -316,14 +337,14 @@ const
   bmMultiDot = 'JV_DBG_MSDOT';
   bmMultiArrow = 'JV_DBG_MSARROW';
 
-// (rom) changed to var
+  // (rom) changed to var
 var
-  GridBitmaps: array [TGridPicture] of TBitmap =
-    (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
+  GridBitmaps: array[TGridPicture] of TBitmap =
+  (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
 
-// ***********************************************************************
-// Fonction diverses
-// ***********************************************************************
+  // ***********************************************************************
+  // Fonction diverses
+  // ***********************************************************************
 
 function GetGridBitmap(BmpType: TGridPicture): TBitmap;
 begin
@@ -372,8 +393,7 @@ type
   end;
 {$ENDIF COMPILER6_UP}
 
-
-//=== TJvDBGrid ==============================================================
+  //=== TJvDBGrid ==============================================================
 
 constructor TJvDBGrid.Create(AOwner: TComponent);
 var
@@ -413,6 +433,7 @@ begin
   FSelectColumn := scDataBase;
   FTitleArrow := false;
   FPostOnEnter := false;
+  FAutoSizeColumnIndex := -1;
   // End Lionel
 end;
 
@@ -558,6 +579,9 @@ begin
   inherited LayoutChanged;
   if Datalink.Active and (FixedCols > 0) then
     Col := Min(Max(CalcLeftColumn, ACol), ColCount - 1);
+  DoMinColWidth;
+  DoMaxColWidth;
+  DoAutoSizeColumns;
 end;
 
 procedure TJvDBGrid.ColWidthsChanged;
@@ -568,19 +592,22 @@ begin
   inherited ColWidthsChanged;
   if Datalink.Active and (FixedCols > 0) then
     Col := Min(Max(CalcLeftColumn, ACol), ColCount - 1);
+  DoMinColWidth;
+  DoMaxColWidth;
+  DoAutoSizeColumns;
 end;
 
 function TJvDBGrid.CreateEditor: TInplaceEdit;
 begin
   // Lionel
-  {$IFDEF COMPILER6_UP}
+{$IFDEF COMPILER6_UP}
   Result := TMyInplaceEdit.Create(Self);
   // replace the call to default constructor :
   //  Result := inherited CreateEditor;
   TEdit(Result).OnChange := EditChanged;
-  {$ELSE}
+{$ELSE}
   Result := inherited CreateEditor;
-  {$ENDIF COMPILER6_UP}
+{$ENDIF COMPILER6_UP}
 end;
 
 function TJvDBGrid.GetTitleOffset: Byte;
@@ -1007,7 +1034,7 @@ begin
   end;
   // End Lionel
 end;
-             
+
 procedure TJvDBGrid.DoTitleClick(ACol: Longint; AField: TField);
 var
   IndexDefs: TIndexDefs;
@@ -1018,11 +1045,11 @@ begin
   else
     IndexDefs := nil;
   if Assigned(IndexDefs) then
-  if IndexDefs.IndexOf('IX' + AField.FieldName) <> -1 then
-  begin
-    FSortedField := AField.FieldName;
-    SetStrProp(DataSource.DataSet,'IndexName','IX' + AField.FieldName);
-  end;
+    if IndexDefs.IndexOf('IX' + AField.FieldName) <> -1 then
+    begin
+      FSortedField := AField.FieldName;
+      SetStrProp(DataSource.DataSet, 'IndexName', 'IX' + AField.FieldName);
+    end;
   if Assigned(FOnTitleBtnClick) then
     FOnTitleBtnClick(Self, ACol, AField);
 end;
@@ -1143,7 +1170,7 @@ var
 begin
   Cell := MouseCoord(X, Y);
   Offset := TitleOffset;
-  NewPressed := Windows.PtInRect(Rect(0, 0, ClientWidth, ClientHeight), {Types.}Point(X, Y)) and
+  NewPressed := Windows.PtInRect(Rect(0, 0, ClientWidth, ClientHeight), {Types.} Point(X, Y)) and
     (FPressedCol = GetMasterColumn(Cell.X, Cell.Y)) and (Cell.Y < Offset);
   if FPressed <> NewPressed then
   begin
@@ -1160,6 +1187,8 @@ var
   MouseDownEvent: TMouseEvent;
   EnableClick: Boolean;
   CursorPos: TPoint;
+  lLastSelected, lNewSelected: TBookmarkStr;
+  lCompare: integer;
 begin
   if not AcquireFocus then
     Exit;
@@ -1249,9 +1278,53 @@ begin
             CurrentRowSelected := not CurrentRowSelected
           else
           begin
-            Clear;
-            if FClearSelection then
-              CurrentRowSelected := True;
+            // Lionel
+            if (ssShift in Shift) and (Count>0) then
+            begin
+              lLastSelected := Items[Count-1];
+              CurrentRowSelected := not CurrentRowSelected;
+              if CurrentRowSelected then
+              begin
+                with Datalink.Dataset do
+                begin
+                  DisableControls;
+                  try
+                    lNewSelected := Bookmark;
+                    lCompare := CompareBookmarks(pointer(lNewSelected),pointer(lLastSelected));
+                    if lCompare > 0 then
+                    begin
+                      GotoBookmark(pointer(lLastSelected));
+                      Next;
+                      while not (CurrentRowSelected and (Bookmark = lNewSelected)) do
+                      begin
+                        CurrentRowSelected := true;
+                        Next;
+                      end;
+                    end
+                    else
+                    if lCompare < 0 then
+                    begin
+                      GotoBookmark(pointer(lLastSelected));
+                      Prior;
+                      while not (CurrentRowSelected and (Bookmark = lNewSelected)) do
+                      begin
+                        CurrentRowSelected := true;
+                        Prior;
+                      end;
+                    end;
+                   finally
+                     EnableControls;
+                   end;
+                end;
+              end;
+            end
+            // End Lionel
+            else
+            begin
+              Clear;
+              if FClearSelection then
+                CurrentRowSelected := True;
+            end;
           end;
         end;
     end;
@@ -1268,6 +1341,7 @@ begin
   inherited MouseMove(Shift, X, Y);
 end;
 
+
 procedure TJvDBGrid.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
@@ -1278,7 +1352,7 @@ begin
   Cell := MouseCoord(X, Y);
   if FTracking and (FPressedCol <> nil) then
   begin
-    DoClick := PtInRect(Rect(0, 0, ClientWidth, ClientHeight), {Types.}Point(X, Y)) and
+    DoClick := PtInRect(Rect(0, 0, ClientWidth, ClientHeight), {Types.} Point(X, Y)) and
       (Cell.Y < TitleOffset) and
       (FPressedCol = GetMasterColumn(Cell.X, Cell.Y));
     StopTracking;
@@ -1303,11 +1377,13 @@ begin
   end;
   // Polaris
   if (Button = mbLeft) and (FGridState = gsColSizing) and
-    (FSizingIndex + Byte(not (dgIndicator in Options)) <= FixedCols) then
+    (FSizingIndex + Byte(not (dgIndicator in Options)) <= FixedCols)
+//    and not AutoSizeColumns
+      then
   begin
-    ColWidths[FSizingIndex] := X - FSizingOfs - CellRect(FSizingIndex, 0).Left;
+    ColWidths[FSizingIndex] := GetMinColWidth(X - FSizingOfs - CellRect(FSizingIndex, 0).Left);
     FGridState := gsNormal;
-    Exit
+//    Exit;
   end;
   // Polaris
 
@@ -1321,6 +1397,7 @@ begin
   // End Lionel
 
   inherited MouseUp(Button, Shift, X, Y);
+  DoAutoSizeColumns;
 end;
 
 procedure TJvDBGrid.WMRButtonUp(var Msg: TWMMouse);
@@ -1865,7 +1942,7 @@ begin
     SectionName := Section
   else
     SectionName := GetDefaultSection(Self);
-  if Assigned (AppStorage) then
+  if Assigned(AppStorage) then
   begin
     AppStorage.DeleteSubTree(SectionName);
     with Columns do
@@ -1917,7 +1994,7 @@ begin
               Items[I].Width);
             // Lionel
             S := ExtractWord(2, S, Delims);
-            Items[I].Width := StrToIntDef(S,Items[I].Width);
+            Items[I].Width := StrToIntDef(S, Items[I].Width);
             Items[I].Visible := (S <> '-1');
             // End Lionel
 
@@ -2071,11 +2148,11 @@ procedure TJvDBGrid.CellClick(Column: TColumn);
 begin
   inherited CellClick(Column);
 
-  if not (csDesigning in ComponentState) and  not ReadOnly and
+  if not (csDesigning in ComponentState) and not ReadOnly and
     (not (dgRowSelect in Options)) and (dgEditing in Options) and
-     Assigned(Column.Field) and (Column.Field is TBooleanField) and
-     Assigned(DataLink) and DataLink.Active and not DataLink.Readonly and
-     (DataLink.DataSet.State in [dsInsert, dsEdit]) then
+    Assigned(Column.Field) and (Column.Field is TBooleanField) and
+    Assigned(DataLink) and DataLink.Active and not DataLink.Readonly and
+    (DataLink.DataSet.State in [dsInsert, dsEdit]) then
   begin
     Column.Field.AsBoolean := not Column.Field.AsBoolean;
     FocusCell(Col, Row, True);
@@ -2083,6 +2160,7 @@ begin
 end;
 
 {$IFNDEF COMPILER6_UP}
+
 procedure TJvDBGrid.FocusCell(ACol, ARow: Longint; MoveAnchor: Boolean);
 begin
   MoveColRow(ACol, ARow, MoveAnchor, True);
@@ -2093,7 +2171,7 @@ end;
 
 procedure TJvDBGrid.EditButtonClick;
 begin
-// Just to have it here for the call in TJvDBInplaceEdit
+  // Just to have it here for the call in TJvDBInplaceEdit
   inherited EditButtonClick;
 end;
 
@@ -2229,9 +2307,11 @@ begin
 end;
 
 procedure TJvDBGrid.ShowSelectColumnClick;
-var R:TRect;frm:TfrmSelectColumn;
+var
+  R: TRect;
+  frm: TfrmSelectColumn;
 begin
-  R := CellRect(0,0);
+  R := CellRect(0, 0);
   frm := TfrmSelectColumn.Create(Application);
   try
     if not IsRectEmpty(R) then
@@ -2277,6 +2357,7 @@ end;
 // ***********************************************************************
 
 {$IFDEF COMPILER6_UP}
+
 constructor TMyInplaceEdit.Create(Owner: TComponent);
 begin
   inherited Create(Owner);
@@ -2460,6 +2541,184 @@ end;
 // End Lionel
 // ***********************************************************************
 
+procedure TJvDBGrid.DoAutoSizeColumns;
+var
+  TotalWidth, OrigWidth: integer;
+  i: integer;
+  ScaleFactor: double;
+  AWidth, AUsedWidth: integer;
+begin
+  if not AutoSizeColumns or FInAutoSize or (Columns.Count = 0) or (FGridState = gsColSizing) then Exit;
+  FInAutoSize := true;
+  try
+    // get useable width
+    TotalWidth := ClientWidth - (Ord(dgIndicator in Options) * IndicatorWidth) - (Ord(dgColLines in Options) * Columns.Count * GridLineWidth);
+    OrigWidth := 0;
+    // get width currently occupied by columns
+    BeginLayout;
+    try
+      // autosize all columns proportionally
+      if AutoSizeColumnIndex = -1 then
+      begin
+        for i := 0 to Columns.Count - 1 do
+          if Columns[i].Visible then Inc(OrigWidth, Columns[i].Width);
+        if OrigWidth = 0 then OrigWidth := 1;
+        // calculate the realtionship between what's available and what's in use
+        ScaleFactor := TotalWidth / OrigWidth;
+        if ScaleFactor = 1.0 then Exit; // no need to continue - resizing won't change anything
+        AUsedWidth := 0;
+        for i := 0 to Columns.Count - 1 do
+          if Columns[i].Visible then
+          begin
+            if i = LastVisibleColumn then
+              Columns[i].Width := TotalWidth - AUsedWidth
+            else
+            begin
+              AWidth := GetMaxColWidth(GetMinColWidth(round(ScaleFactor * Columns[i].Width)));
+              if AWidth < 1 then AWidth := 1;
+              Columns[i].Width := AWidth;
+              Inc(AUsedWidth, AWidth);
+           end;
+          end
+      end
+      // a index of -2 indicates that we want to autosize the last visible column
+      else if AutoSizeColumnIndex = -2 then // auto size last visible
+      begin
+        // reuse AUsedWidth as the actual resize column index
+        AUsedWidth := LastVisibleColumn;
+        if AUsedWidth < 0 then Exit;
+        OrigWidth := 0;
+        for i := 0 to Columns.Count - 1 do
+          if Columns[i].Visible and (i <> AUsedWidth) then Inc(OrigWidth, Columns[i].Width);
+        AWidth := GetMaxColWidth(GetMinColWidth(TotalWidth - OrigWidth));
+        if AWidth > 0 then
+          Columns[AUsedWidth].Width := AWidth;
+      end
+      // only auto size one column
+      else if (AutoSizeColumnIndex <= LastVisibleColumn) then
+      begin
+        OrigWidth := 0;
+        for i := 0 to Columns.Count - 1 do
+          if Columns[i].Visible and (i <> AutoSizeColumnIndex) then Inc(OrigWidth, Columns[i].Width);
+        AWidth := GetMaxColWidth(GetMinColWidth(TotalWidth - OrigWidth));
+        if AWidth > 0 then
+          Columns[AutoSizeColumnIndex].Width := AWidth;
+      end;
+    finally
+      EndLayout;
+    end;
+  finally
+    FInAutoSize := false;
+  end;
+end;
+
+procedure TJvDBGrid.DoMaxColWidth;
+var
+  i: integer;
+begin
+  if AutoSizeColumns or (MaxColumnWidth <= 0) then Exit;
+  BeginLayout;
+  try
+    for i := 0 to Columns.Count - 1 do
+      if Columns[i].Visible and (Columns[i].Width > MaxColumnWidth) then
+        Columns[i].Width := MaxColumnWidth;
+  finally
+    EndLayout;
+  end;
+end;
+
+procedure TJvDBGrid.DoMinColWidth;
+var
+  i: integer;
+begin
+  if AutoSizeColumns or (MinColumnWidth <= 0) then Exit;
+  BeginLayout;
+  try
+    for i := 0 to Columns.Count - 1 do
+      if Columns[i].Visible and (Columns[i].Width < MinColumnWidth) then
+        Columns[i].Width := MinColumnWidth;
+  finally
+    EndLayout;
+  end;
+end;
+
+procedure TJvDBGrid.SetAutoSizeColumnIndex(const Value: integer);
+begin
+  if FAutoSizeColumnIndex <> Value then
+  begin
+    FAutoSizeColumnIndex := Value;
+    DoAutoSizeColumns;
+  end;
+end;
+
+procedure TJvDBGrid.SetAutoSizeColumns(const Value: boolean);
+begin
+  if FAutoSizeColumns <> Value then
+  begin
+    FAutoSizeColumns := Value;
+    DoAutoSizeColumns;
+  end;
+end;
+
+procedure TJvDBGrid.SetMaxColumnWidth(const Value: integer);
+begin
+  if FMaxColumnWidth <> Value then
+  begin
+    FMaxColumnWidth := Value;
+    DoMaxColWidth;
+  end;
+end;
+
+procedure TJvDBGrid.SetMinColumnWidth(const Value: integer);
+begin
+  if FMinColumnWidth <> Value then
+  begin
+    FMinColumnWidth := Value;
+    DoMinColWidth;
+  end;
+end;
+
+procedure TJvDBGrid.Resize;
+begin
+  inherited;
+  DoAutoSizeColumns;
+end;
+
+procedure TJvDBGrid.Loaded;
+begin
+  inherited;
+  DoAutoSizeColumns;
+end;
+
+function TJvDBGrid.GetMaxColWidth(Default: integer): integer;
+begin
+  if (MaxColumnWidth > 0) and (MaxColumnWidth < Default) then
+    Result := MaxColumnWidth
+  else
+    Result := Default;
+end;
+
+function TJvDBGrid.GetMinColWidth(Default: integer): integer;
+begin
+  if (MinColumnWidth > 0) and (Default > MinColumnWidth) then
+    Result := MinColumnWidth
+  else
+    Result := Default
+end;
+
+function TJvDBGrid.FirstVisibleColumn: integer;
+begin
+  for Result := 0 to Columns.Count - 1 do
+    if Columns[Result].Visible then Exit;
+  Result := -1;
+end;
+
+function TJvDBGrid.LastVisibleColumn: integer;
+begin
+  for Result := Columns.Count - 1 downto 0 do
+    if Columns[Result].Visible then Exit;
+  Result := -1;
+end;
 
 initialization
 
