@@ -1028,7 +1028,7 @@ object frmMain: TfrmMain
     Width = 121
     Height = 21
     TabOrder = 15
-    Text = '1 400'
+    Text = '1'#160'400'
   end
   object udWait: TUpDown
     Left = 305
@@ -1075,7 +1075,11 @@ object frmMain: TfrmMain
       'dapTopRight'
       'dapBottomLeft'
       'dapBottomRight'
-      'dapCustom')
+      'dapCustom'
+      'dapDesktopCenter'
+      'dapMainFormCenter'
+      'dapOwnerFormCenter'
+      'dapActiveFormCenter')
   end
   object PopupMenu1: TPopupMenu
     Left = 152
