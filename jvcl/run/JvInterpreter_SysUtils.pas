@@ -1651,6 +1651,30 @@ begin
   LongTimeFormat := Value;
 end;
 
+{ read TwoDigitYearCenturyWindow }
+procedure JvInterpreter_Read_TwoDigitYearCenturyWindow(var Value: Variant; Args: TJvInterpreterArgs);
+begin
+  Value := TwoDigitYearCenturyWindow;
+end;
+
+{ write TwoDigitYearCenturyWindow }
+procedure JvInterpreter_Write_TwoDigitYearCenturyWindow(var Value: Variant; Args: TJvInterpreterArgs);
+begin
+  TwoDigitYearCenturyWindow := Value;
+end;
+
+{ read ListSeparator }
+procedure JvInterpreter_Read_ListSeparator(var Value: Variant; Args: TJvInterpreterArgs);
+begin
+  Value := ListSeparator;
+end;
+
+{ write ListSeparator }
+procedure JvInterpreter_Write_ListSeparator(var Value: Variant; Args: TJvInterpreterArgs);
+begin
+  ListSeparator := string(Args.Values[0])[1];
+end;
+
 { read ShortMonthNames }
 procedure JvInterpreter_Read_ShortMonthNames(var Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -1697,6 +1721,30 @@ end;
 procedure JvInterpreter_Write_LongDayNames(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   LongDayNames[Integer(Args.Values[0])] := Value;
+end;
+
+{ read EraNames }
+procedure JvInterpreter_Read_EraNames(var Value: Variant; Args: TJvInterpreterArgs);
+begin
+  Value := EraNames[Integer(Args.Values[0])];
+end;
+
+{ write EraNames }
+procedure JvInterpreter_Write_EraNames(var Value: Variant; Args: TJvInterpreterArgs);
+begin
+  EraNames[Integer(Args.Values[0])] := Value;
+end;
+
+{ read EraYearOffsets }
+procedure JvInterpreter_Read_EraYearOffsets(var Value: Variant; Args: TJvInterpreterArgs);
+begin
+  Value := EraYearOffsets[Integer(Args.Values[0])];
+end;
+
+{ write EraYearOffsets }
+procedure JvInterpreter_Write_EraYearOffsets(var Value: Variant; Args: TJvInterpreterArgs);
+begin
+  EraYearOffsets[Integer(Args.Values[0])] := Value;
 end;
 *)
 
