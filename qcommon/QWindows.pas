@@ -51,11 +51,8 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  {$IFDEF HAS_UNIT_LIBC}
-  Libc,
-  {$ENDIF HAS_UNIT_LIBC}
   {$IFDEF LINUX}
-  DateUtils,
+  Libc, DateUtils,
   {$ENDIF LINUX}
   Types, StrUtils, SysUtils, Classes, Math, Contnrs, SyncObjs, QDialogs,
   QTypes, Qt, QConsts, QGraphics, QControls, QForms, QExtCtrls, QButtons;
@@ -195,8 +192,10 @@ const
 
   INFINITE = Longword($FFFFFFFF); // Infinite timeout
   INVALID_HANDLE_VALUE = DWORD(-1);
-
   MaxWord = High(Cardinal);
+  
+  RT_RCDATA = Types.RT_RCDATA;
+  RT_BITMAP = PChar(2);
 
   WM_HSCROLL = 101;
   WM_VSCROLL = 102;
@@ -236,7 +235,9 @@ type
     X: Longint;
     Y: Longint;
   end;
-  PSize = ^TSize;
+
+  TCaption = QTypes.TCaption;
+  {$NODEFINE TCaption}
   PPoint = Types.PPoint;
   {$NODEFINE PPoint}
   TPoint = Types.TPoint;
@@ -245,8 +246,14 @@ type
   {$NODEFINE PRect}
   TRect = Types.TRect;
   {$NODEFINE TRect}
-  TCaption = QTypes.TCaption;
-  {$NODEFINE TCaption}
+  TSize = Types.TSize;
+  {$NODEFINE TSize}
+  PSize = Types.PSize;
+  {$NODEFINE PSize}
+  PSmallPoint = Types.PSmallPoint;
+  {$NODEFINE PSmallPoint}
+  TSmallPoint = Types.TSmallPoint;
+  {$NODEFINE TSmallPoint}
 
   TTime = TDateTime;
   TDate = TDateTime;
@@ -392,7 +399,7 @@ function CopyRect(var Dst: TRect; const Src: TRect): LongBool; overload;
 function SubtractRect(var dR: TRect; const R1, R2: TRect): LongBool;
 function CenterRect(InnerRect, OuterRect: TRect): TRect;
 function PtInRect(const R: TRect; pt: TPoint): LongBool;
-
+function IntersectRect(var R: TRect; const R1, R2: TRect): LongBool;
 
 type
   TRGBQuad = packed record
@@ -808,13 +815,6 @@ const
 
 function FillRect(Handle: QPainterH; const R: TRect; Brush: QBrushH): LongBool;
 
-type
-  TGradientDirection = (gdVertical, gdHorizontal);
-
-function FillGradient(DC: HDC; ARect: TRect; ColorCount: Integer;
-  StartColor, EndColor: TColor; ADirection: TGradientDirection): Boolean;
-
-
 function GetCurrentPositionEx(Handle: QPainterH; pos: PPoint): LongBool;
 function GetTextExtentPoint32(Handle: QPainterH; const Text: WideString; Len: Integer;
   var Size: TSize): LongBool; overload;
@@ -1107,9 +1107,9 @@ function IsIconic(Handle: QWidgetH): LongBool;
 
 function HWND_DESKTOP: QWidgetH;
 function GetDesktopWindow: QWidgetH;
-function GetActiveWindow: HWND;
-function GetForegroundWindow: HWND;
-procedure SetActiveWindow(Handle: HWND);
+function GetActiveWindow: QWidgetH;
+function GetForegroundWindow: QWidgetH;
+procedure SetActiveWindow(Handle: QWidgetH);
 function InvalidateRect(Handle: QWidgetH; R: PRect; EraseBackground: Boolean): LongBool;
 function ValidateRect(hWnd: QWidgetH; R: PRect): LongBool;
 function UpdateWindow(Handle: QWidgetH): LongBool;
@@ -2827,12 +2827,14 @@ var
   d,s :TPoint;
 begin
   DestCanvas.Start;
-  SrcCanvas.Start;
+  if DestCanvas <> SrcCanvas then
+    SrcCanvas.Start;
   d := PainterOffset(DestCanvas);
   s := PainterOffset(SrcCanvas);
   Result := BitBlt(DestCanvas.Handle, X + d.x, Y + d.y, Width, Height, SrcCanvas.Handle,
     XSrc + s.x, YSrc + s.y, WinRop, IgnoreMask);
-  SrcCanvas.Stop;
+  if DestCanvas <> SrcCanvas then
+    SrcCanvas.Stop;
   DestCanvas.Stop;
 end;
 
@@ -2878,7 +2880,6 @@ begin
   Canvas.Stop;
 end;
 
-
 function StretchBlt(DestDC: QPainterH; dx, dy, dw, dh: Integer;
   SrcDC: QPainterH; sx, sy, sw, sh: Integer; WinRop: Cardinal;
   IgnoreMask: Boolean): LongBool;
@@ -2888,7 +2889,6 @@ var
   d_sx, d_sy, d_sw, d_sh: Integer;
   d_dx, d_dy, d_dw, d_dh: Integer;
 begin
-  // supports incompatible destination and source
   Result := False;
   if (DestDC = nil) and (QPainter_isActive(DestDC)) then
     Exit;
@@ -3516,6 +3516,8 @@ begin
   end;
 end;
 
+
+
 function CreateEllipticRgn(Left, Top, Right, Bottom: Integer): QRegionH;
 begin
   Result := QRegion_create(Left, Top, Right - Left, Bottom - Top, QRegionRegionType_Ellipse);
@@ -3812,23 +3814,12 @@ begin
 end;
 
 function RectInRegion(Rgn: QRegionH; const Rect: TRect): LongBool;
-{var
-  tmpRgn: QRegionH;
-  retval: Integer;}
 begin
   try
     Result := QRegion_contains(Rgn, PRect(@Rect));
   except
     Result := False;
   end;
-{  tmpRgn := CreateRectRgnIndirect(Rect);
-  try
-    Retval := CombineRgn(tmpRgn, Rgn, TmpRgn, RGN_And);
-    Result := (RetVal = SIMPLEREGION) or (RetVal = COMPLEXREGION);
-  except
-    Result := False;
-  end;
-  DeleteObject(tmpRgn);}
 end;
 
 function SetWindowRgn(Handle: QWidgetH; Region: QRegionH; Redraw: LongBool): Integer;
@@ -4346,6 +4337,11 @@ begin
   except
     Result := False;
   end;
+end;
+
+function IntersectRect(var R: TRect; const R1, R2: TRect): LongBool; 
+begin
+  Result := Types.IntersectRect(R, R1, R2);
 end;
 
 function PtInRect(const R: TRect; pt: TPoint): LongBool;
@@ -5021,54 +5017,6 @@ begin
   end;
 end;
 
-function FillGradient(DC: HDC; ARect: TRect; ColorCount: Integer;
-  StartColor, EndColor: TColor; ADirection: TGradientDirection): Boolean;
-var
-  StartRGB: array [0..2] of Byte;
-  RGBKoef: array [0..2] of Double;
-  Brush: HBRUSH;
-  AreaWidth, AreaHeight, I: Integer;
-  ColorRect: TRect;
-  RectOffset: Double;
-begin
-  RectOffset := 0;
-  Result := False;
-  if ColorCount < 1 then
-    Exit;
-  StartColor := ColorToRGB(StartColor);
-  EndColor := ColorToRGB(EndColor);
-  StartRGB[0] := GetRValue(StartColor);
-  StartRGB[1] := GetGValue(StartColor);
-  StartRGB[2] := GetBValue(StartColor);
-  RGBKoef[0] := (GetRValue(EndColor) - StartRGB[0]) / ColorCount;
-  RGBKoef[1] := (GetGValue(EndColor) - StartRGB[1]) / ColorCount;
-  RGBKoef[2] := (GetBValue(EndColor) - StartRGB[2]) / ColorCount;
-  AreaWidth := ARect.Right - ARect.Left;
-  AreaHeight :=  ARect.Bottom - ARect.Top;
-  case ADirection of
-    gdHorizontal:
-      RectOffset := AreaWidth / ColorCount;
-    gdVertical:
-      RectOffset := AreaHeight / ColorCount;
-  end;
-  for I := 0 to ColorCount - 1 do
-  begin
-    Brush := CreateSolidBrush(RGB(
-      StartRGB[0] + Round((I + 1) * RGBKoef[0]),
-      StartRGB[1] + Round((I + 1) * RGBKoef[1]),
-      StartRGB[2] + Round((I + 1) * RGBKoef[2])));
-    case ADirection of
-      gdHorizontal:
-        SetRect(ColorRect, Round(RectOffset * I), 0, Round(RectOffset * (I + 1)), AreaHeight);
-      gdVertical:
-        SetRect(ColorRect, 0, Round(RectOffset * I), AreaWidth, Round(RectOffset * (I + 1)));
-    end;
-    OffsetRect(ColorRect, ARect.Left, ARect.Top);
-    FillRect(DC, ColorRect, Brush);
-    DeleteObject(Brush);
-  end;
-  Result := True;
-end;
 
 
 function DrawIcon(Handle: QPainterH; X, Y: Integer; hIcon: QPixmapH): LongBool;
@@ -5940,6 +5888,14 @@ begin
       except
         Result := nil;
       end;
+    end
+    else
+    begin
+      try
+        Result := QPixmap_create(Width, Height, -1, QPixmapOptimization_DefaultOptim);
+      except
+        Result := nil;
+      end;
     end;
   finally
     if DesktopPainter then
@@ -6299,18 +6255,18 @@ begin
   Result := HWND_DESKTOP;
 end;
 
-function GetActiveWindow: HWND;
+function GetActiveWindow: QWidgetH;
 begin
   Result := QApplication_activeWindow(Application.Handle);
 end;
 
-function GetForegroundWindow: HWND;
+function GetForegroundWindow: QWidgetH;
 begin
   // is this correct ?
   Result := QApplication_focusWidget(Application.Handle);
 end;
 
-procedure SetActiveWindow(Handle: HWND);
+procedure SetActiveWindow(Handle: QWidgetH);
 begin
   QWidget_setActiveWindow(Handle);
 end;
