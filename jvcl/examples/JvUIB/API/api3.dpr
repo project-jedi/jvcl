@@ -43,44 +43,51 @@ uses
 
 
 var
-  stmt       : IscStmtHandle = nil;        // statement handle
-  DB         : IscDbHandle = nil;          // database handle
-  trans      : IscTrHandle = nil;          // transaction handle
-  sqlda      : TSQLResult;
-  empdb      : String;
-  sel_str    : string =
-      'SELECT last_name, first_name, phone_ext FROM phone_list WHERE location = "Monterey" ORDER BY last_name, first_name;';
+  stmt: IscStmtHandle = nil; // statement handle
+  DB: IscDbHandle = nil; // database handle
+  trans: IscTrHandle = nil; // transaction handle
+  sqlda: TSQLResult;
+  empdb: string;
+  sel_str: string =
+  'SELECT last_name, first_name, phone_ext FROM phone_list WHERE location = "Monterey" ORDER BY last_name, first_name;';
+  FLibrary: TUIBLibrary;
 begin
+  FLibrary := TUIBLibrary.Create;
+  try
     if (ParamCount > 1) then
       empdb := paramstr(1) else
       empdb := 'D:\Unified Interbase\demo\Database\employee.db';
 
-    AttachDatabase(empdb, DB, 'user_name=SYSDBA;password=masterkey');
+    FLibrary.AttachDatabase(empdb, DB, 'user_name=SYSDBA;password=masterkey');
 
-    TransactionStart(trans,DB);
+    FLibrary.TransactionStart(trans, DB);
 
     (* Allocate an output SQLDA. *)
     sqlda := TSQLResult.Create(3);
 
     (* Allocate a statement. *)
-    DSQLAllocateStatement(DB, stmt);
+    FLibrary.DSQLAllocateStatement(DB, stmt);
 
     (* Prepare the statement. *)
-    DSQLPrepare(trans, stmt, sel_str, 1, sqlda);
+    FLibrary.DSQLPrepare(trans, stmt, sel_str, 1, sqlda);
 
     (* Execute the statement. *)
-    DSQLExecute(trans, stmt, 1, nil);
+    FLibrary.DSQLExecute(trans, stmt, 1, nil);
 
     (*
      *    Fetch and print the records.
      *)
-    while DSQLFetch(stmt, 1, sqlda) do
+    while FLibrary.DSQLFetch(stmt, 1, sqlda) do
       Writeln(format('%s %s %s', [sqlda.AsString[0], sqlda.AsString[1], sqlda.AsString[2]]));
 
     (* Free statement handle. *)
-    DSQLFreeStatement(stmt, DSQL_close);
-    TransactionCommit(trans);
-    DetachDatabase(DB);
+    FLibrary.DSQLFreeStatement(stmt, DSQL_close);
+    FLibrary.TransactionCommit(trans);
+    FLibrary.DetachDatabase(DB);
     sqlda.Free;
     Readln;
+  finally
+    FLibrary.Free;
+  end;
 end.
+

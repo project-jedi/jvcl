@@ -36,23 +36,25 @@ uses
   JvUIBLib;
 
 var
-  DB      : IscDbHandle = nil; // database handle
-  trans   : IscTrHandle = nil; // transaction handle
-  Db_name : String;
+  DB: IscDbHandle = nil; // database handle
+  trans: IscTrHandle = nil; // transaction handle
+  Db_name: string;
 
-  n : Integer = 0;
+  n: Integer = 0;
   exec_str: string;
   prep_str: string;
-  double_budget: IscStmtHandle = nil;    // statement handle
+  double_budget: IscStmtHandle = nil; // statement handle
+  FLibrary: TUIBLibrary;
 
 (*
  *  Delete old data.
  *)
+
 procedure Cleanup;
 begin
-  TransactionStart(trans, DB);
-  DSQLExecuteImmediate(DB, trans, 'DELETE FROM department WHERE dept_no IN ("117", "118", "119")', 1, nil);
-  TransactionCommit(trans);
+  FLibrary.TransactionStart(trans, DB);
+  FLibrary.DSQLExecuteImmediate(DB, trans, 'DELETE FROM department WHERE dept_no IN ("117", "118", "119")', 1, nil);
+  FLibrary.TransactionCommit(trans);
 end;
 
 (*
@@ -63,13 +65,13 @@ function getline(out line: string; Number: Integer): boolean;
 type
   TDept = record
     Num: byte;
-    Dep: String;
+    Dep: string;
     Head: Byte;
   end;
 const
   Data: array[0..2] of TDept =
-   ((Num: 117; Dep: 'Field Office: Hong Kong'  ; Head: 110),
-    (Num: 118; Dep: 'Field Office: Australia'  ; Head: 110),
+  ((Num: 117; Dep: 'Field Office: Hong Kong'; Head: 110),
+    (Num: 118; Dep: 'Field Office: Australia'; Head: 110),
     (Num: 119; Dep: 'Field Office: New Zealand'; Head: 110));
 begin
   result := false;
@@ -82,27 +84,29 @@ end;
 
 
 begin
-  if (ParamCount > 1) then
+  FLibrary := TUIBLibrary.Create;
+  try
+    if (ParamCount > 1) then
       Db_name := ParamStr(1) else
       Db_name := 'D:\Unified Interbase\demo\Database\employee.db';
 
-  AttachDatabase(Db_name, DB, 'user_name=SYSDBA;password=masterkey');
+    FLibrary.AttachDatabase(Db_name, DB, 'user_name=SYSDBA;password=masterkey');
 
-  Cleanup;
+    Cleanup;
 
   (*
    *  Prepare a statement, which may be executed more than once.
    *)
 
-  prep_str := 'UPDATE DEPARTMENT SET budget = budget * 2 WHERE budget < 100000';
+    prep_str := 'UPDATE DEPARTMENT SET budget = budget * 2 WHERE budget < 100000';
 
   (* Allocate a statement. *)
-  DSQLAllocateStatement(DB, double_budget);
+    FLibrary.DSQLAllocateStatement(DB, double_budget);
 
-  TransactionStart(trans, DB);
+    FLibrary.TransactionStart(trans, DB);
 
   (* Prepare the statement. *)
-  DSQLPrepare(trans, double_budget, prep_str, 1, nil);
+    FLibrary.DSQLPrepare(trans, double_budget, prep_str, 1, nil);
 
   (*
    *  Add new departments, using 'execute immediate'.
@@ -111,22 +115,26 @@ begin
    *  use 'execute immediate'.
    *)
 
-  while (getline(exec_str, n)) do
-  begin
-    Writeln(format('Executing statement:'#13'%d: %s;',[n, exec_str]));
-    DSQLExecuteImmediate(DB, trans, exec_str, 1, nil);
-    inc(n);
-  end;
+    while (getline(exec_str, n)) do
+    begin
+      Writeln(format('Executing statement:'#13'%d: %s;', [n, exec_str]));
+      FLibrary.DSQLExecuteImmediate(DB, trans, exec_str, 1, nil);
+      inc(n);
+    end;
 
   (*
    *    Execute a previously prepared statement.
    *)
 
-  Writeln('Executing a prepared statement:'#13 + prep_str);
+    Writeln('Executing a prepared statement:'#13 + prep_str);
 
-  DSQLExecute(trans, double_budget, 1);
-  DSQLFreeStatement(double_budget, DSQL_drop);
-  TransactionCommit(trans);
-  DetachDatabase(DB);
-  ReadLn;
+    FLibrary.DSQLExecute(trans, double_budget, 1);
+    FLibrary.DSQLFreeStatement(double_budget, DSQL_drop);
+    FLibrary.TransactionCommit(trans);
+    FLibrary.DetachDatabase(DB);
+    ReadLn;
+  finally
+    FLibrary.Free;
+  end;
 end.
+

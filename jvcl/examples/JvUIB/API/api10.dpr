@@ -37,54 +37,58 @@ uses
 
 const
   sel_str =
-    'SELECT dept_no, quart_head_cnt FROM proj_dept_budget p '+
-    'WHERE fiscal_year = 1994 AND proj_id = ''VBASE'' '+
+    'SELECT dept_no, quart_head_cnt FROM proj_dept_budget p ' +
+    'WHERE fiscal_year = 1994 AND proj_id = ''VBASE'' ' +
     'FOR UPDATE of quart_head_cnt';
 
   upd_str =
     'UPDATE proj_dept_budget SET quart_head_cnt = ? WHERE CURRENT OF S';
 
 var
-  hcnt     : array[0..3] of Integer;
-  desc     : TArrayDesc;
-  len      : Integer;
-  DB       : IscDbHandle   = nil;
-  trans    : IscTrHandle   = nil;
-  stmt     : IscStmtHandle = nil;
-  ustmt    : IscStmtHandle = nil;
-  cursor   : string = 'S';
-  osqlda   : TSQLResult;
-  isqlda   : TSQLParams;
-  i        : Smallint;
-  empdb    : string;
+  hcnt: array[0..3] of Integer;
+  desc: TArrayDesc;
+  len: Integer;
+  DB: IscDbHandle = nil;
+  trans: IscTrHandle = nil;
+  stmt: IscStmtHandle = nil;
+  ustmt: IscStmtHandle = nil;
+  cursor: string = 'S';
+  osqlda: TSQLResult;
+  isqlda: TSQLParams;
+  i: Smallint;
+  empdb: string;
+  FLibrary: TUIBLibrary;
+  AQuad: GDS_QUAD;
 
 begin
-  if (ParamCount > 1) then
-    empdb := ParamStr(1) else
+  FLibrary := TUIBLibrary.Create;
+  try
+    if (ParamCount > 1) then
+      empdb := ParamStr(1) else
    // empdb := 'D:\Unified Interbase\demo\Database\employee.db';
-    empdb := 'D:\employee.db';
+      empdb := 'D:\employee.db';
 
-    AttachDatabase(empdb, DB, 'user_name=SYSDBA;password=masterkey');
+    FLibrary.AttachDatabase(empdb, DB, 'user_name=SYSDBA;password=masterkey');
 
-    TransactionStart(trans, DB);
+    FLibrary.TransactionStart(trans, DB);
 
     // Set up the array description structure
 
-    desc := ArrayLookupBounds(DB, trans, 'PROJ_DEPT_BUDGET', 'QUART_HEAD_CNT');
+    desc := FLibrary.ArrayLookupBounds(DB, trans, 'PROJ_DEPT_BUDGET', 'QUART_HEAD_CNT');
 
     // Set-up the select statement.
 
     osqlda := TSQLResult.Create(2);
 
-    DSQLAllocateStatement(DB, stmt);
-    DSQLAllocateStatement(DB, ustmt);
+    FLibrary.DSQLAllocateStatement(DB, stmt);
+    FLibrary.DSQLAllocateStatement(DB, ustmt);
 
     (* Prepare and execute query *)
-    DSQLPrepare(trans, stmt, sel_str, 1, osqlda);
-    DSQLExecute(trans, stmt, 1);
+    FLibrary.DSQLPrepare(trans, stmt, sel_str, 1, osqlda);
+    FLibrary.DSQLExecute(trans, stmt, 1);
 
     (* Needed for update current *)
-    DSQLSetCursorName(stmt, cursor);
+    FLibrary.DSQLSetCursorName(stmt, cursor);
 
     // Set-up the update statement.
 
@@ -92,10 +96,12 @@ begin
 
     (* Use describe_bind to set up input sqlda *)
 
-    DSQLPrepare(trans, ustmt, upd_str, 1);
+    FLibrary.DSQLPrepare(trans, ustmt, upd_str, 1);
 
-    isqlda.AddArray;
-    DSQLDescribeBind(ustmt, 1, isqlda);
+//!!!    isqlda.AddArray;
+    isqlda.AddFieldType('0', uftQuad);
+
+    FLibrary.DSQLDescribeBind(ustmt, 1, isqlda);
 
     (*
      *    Fetch the head count for each department's 4 quarters;
@@ -103,50 +109,56 @@ begin
      *    and save the new head count.
      *)
 
-    while DSQLFetch(stmt, 1, osqlda) do
+    while FLibrary.DSQLFetch(stmt, 1, osqlda) do
     begin
         (* Get the current array values. *)
-        if not osqlda.IsNull[1] then
-        begin
+      if not osqlda.IsNull[1] then
+      begin
 
-            len := sizeof(hcnt);
-            ArrayGetSlice(DB, trans, osqlda.AsQuad[1], desc, @hcnt, len);
+        len := sizeof(hcnt);
+        FLibrary.ArrayGetSlice(DB, trans, osqlda.AsQuad[1], desc, @hcnt, len);
             //dept_no [osqlda->sqlvar[0].sqllen] = '\0';
-            writeln(format('Department #:  %s', [osqlda.AsString[0]]));
+        writeln(format('Department #:  %s', [osqlda.AsString[0]]));
 
-            writeln(format('Current counts: %d %d %d %d', [hcnt[0], hcnt[1], hcnt[2], hcnt[3]]));
+        writeln(format('Current counts: %d %d %d %d', [hcnt[0], hcnt[1], hcnt[2], hcnt[3]]));
 
             (* Add 1 to each count. *)
-            for i := 0 to 3 do
-                hcnt[i] := hcnt[i] + 1;
+        for i := 0 to 3 do
+          hcnt[i] := hcnt[i] + 1;
 
-            isqlda.AsQuad[0] := osqlda.AsQuad[1];
+        isqlda.AsQuad[0] := osqlda.AsQuad[1];
 
-            (* Save new array values. *)
+       (* Save new array values. *)
+        //!!!
+        AQuad := isqlda.AsQuad[0];
+        FLibrary.ArrayPutSlice(DB, trans, AQuad, desc, @hcnt, len);
 
-            ArrayPutSlice(DB, trans, isqlda.AsQuad[0], desc, @hcnt, len);
 
 
             (* Update the array handle. *)
-            DSQLExecute(trans, ustmt, 1, isqlda);
+        FLibrary.DSQLExecute(trans, ustmt, 1, isqlda);
 
-            writeln(format('New counts    : %d %d %d %d', [hcnt[0], hcnt[1], hcnt[2], hcnt[3]]));
-        end;
+        writeln(format('New counts    : %d %d %d %d', [hcnt[0], hcnt[1], hcnt[2], hcnt[3]]));
+      end;
     end;
 
-    DSQLFreeStatement(stmt, DSQL_close);
-    DSQLFreeStatement(ustmt, 0);
+    FLibrary.DSQLFreeStatement(stmt, DSQL_close);
+    FLibrary.DSQLFreeStatement(ustmt, 0);
 
     (* Do a rollback to keep from updating the sample db *)
 
-    TransactionRollback(trans);
+    FLibrary.TransactionRollback(trans);
     //TransactionCommit(trans);
 
-    DetachDatabase(DB);
+    FLibrary.DetachDatabase(DB);
 
     osqlda.Free;
     isqlda.Free;
 
     Readln;
+  finally
+    FLibrary.Free;
+  end;
 
 end.
+

@@ -43,17 +43,18 @@ const Dialect = 3;
 (*
  *    Determine a percent increase for the department's budget.
  *)
+
 function increase_factor(budget: Double): single;
 begin
   if (budget < 100000) then result := 0.15 else
-  if (budget < 500000) then result := 0.10 else
-    result := 0.5;
+    if (budget < 500000) then result := 0.10 else
+      result := 0.5;
 end;
 
 const
-  DEPTLEN     =  3;
-  PROJLEN     =  5;
-  BUFLEN      =  256;
+  DEPTLEN = 3;
+  PROJLEN = 5;
+  BUFLEN = 256;
 
 //float increase_factor (double budget);
 
@@ -61,117 +62,125 @@ const
  *  A cursor is declared on this select statement, allowing for
  *  the update of projected_budget field.
  *)
-  sel_str = 'SELECT proj_id, dept_no, projected_budget '+
-     'FROM proj_dept_budget WHERE fiscal_year = 1994 '+
-     'FOR UPDATE OF projected_budget;';
+  sel_str = 'SELECT proj_id, dept_no, projected_budget ' +
+    'FROM proj_dept_budget WHERE fiscal_year = 1994 ' +
+    'FOR UPDATE OF projected_budget;';
 
 (* This query is executed prior to the positioned update. *)
   tot_str =
     'SELECT SUM(projected_budget) FROM proj_dept_budget WHERE fiscal_year = 1994';
 
 var
-  upd_str    : string;
-  budget     : double;
-  DB         : IscDbHandle = nil;   // Database handle
-  trans      : IscTrHandle = nil;   // transaction handle
-  cursor     : string = 'budget';   // dynamic cursor name
-  stmt       : IscStmtHandle = nil; // statement handle
-  isqlda     : TSQLParams;
-  osqlda     : TSQLResult;
-  empdb      : String;
+  upd_str: string;
+  budget: double;
+  DB: IscDbHandle = nil; // Database handle
+  trans: IscTrHandle = nil; // transaction handle
+  cursor: string = 'budget'; // dynamic cursor name
+  stmt: IscStmtHandle = nil; // statement handle
+  isqlda: TSQLParams;
+  osqlda: TSQLResult;
+  empdb: string;
+  FLibrary: TUIBLibrary;
 begin
-  if (ParamCount > 1) then
-    empdb := ParamStr(1) else
-    empdb := 'D:\Unified Interbase\demo\Database\employee.db';
+  FLibrary := TUIBLibrary.Create;
+  try
+    if (ParamCount > 1) then
+      empdb := ParamStr(1) else
+      empdb := 'D:\Unified Interbase\demo\Database\employee.db';
 
-  AttachDatabase(empdb, DB, 'user_name=SYSDBA;password=masterkey');
+    FLibrary.AttachDatabase(empdb, DB, 'user_name=SYSDBA;password=masterkey');
 
   (*
    *    Prepare and execute the first select statement.
    *    Free the statement handle, when done.
    *)
 
-  DSQLAllocateStatement(DB, stmt);
-  osqlda := TSQLResult.Create;
-  try
-    TransactionStart(trans, db);
+    FLibrary.DSQLAllocateStatement(DB, stmt);
+    osqlda := TSQLResult.Create;
+    try
+      FLibrary.TransactionStart(trans, db);
 
-    DSQLPrepare(trans, stmt, tot_str, Dialect, osqlda);
+      FLibrary.DSQLPrepare(trans, stmt, tot_str, Dialect, osqlda);
 
-    DSQLExecute(trans, stmt, Dialect);
+      FLibrary.DSQLExecute(trans, stmt, Dialect);
 
-    DSQLFetch(stmt, Dialect, osqlda);
+      FLibrary.DSQLFetch(stmt, Dialect, osqlda);
 
-    Writeln(format('Total budget:  %16.2f', [osqlda.AsDouble[0]]));
+      Writeln(format('Total budget:  %16.2f', [osqlda.AsDouble[0]]));
 
-    DSQLFreeStatement(stmt, DSQL_close);
+      FLibrary.DSQLFreeStatement(stmt, DSQL_close);
 
-    TransactionCommit(trans);
+      FLibrary.TransactionCommit(trans);
 
     (*
      *    Prepare and execute the positioned update.
      *    Re-use the statement handle as the select cursor.
      *)
 
-    upd_str := format('UPDATE proj_dept_budget SET projected_budget = ? WHERE CURRENT OF %s',[cursor]);
+      upd_str := format('UPDATE proj_dept_budget SET projected_budget = ? WHERE CURRENT OF %s', [cursor]);
 
     (* Allocate an input SQLDA for the update statement. *)
-    isqlda := TSQLParams.Create;
-    try
-      isqlda.AddDouble;
+      isqlda := TSQLParams.Create;
+      try
+        isqlda.AddFieldType('0', uftFloat);
+//!!!        isqlda.AddDouble;
 
-      TransactionStart(trans, DB);
+        FLibrary.TransactionStart(trans, DB);
       (* Zero the statement handle. *)
-      stmt := nil;
+        stmt := nil;
 
-      DSQLAllocateStatement(DB, stmt);
-      DSQLPrepare(trans, stmt, sel_str, Dialect, osqlda);
+        FLibrary.DSQLAllocateStatement(DB, stmt);
+        FLibrary.DSQLPrepare(trans, stmt, sel_str, Dialect, osqlda);
 
       (* Declare the cursor. *)
 
-      DSQLSetCursorName(stmt, cursor);
+        FLibrary.DSQLSetCursorName(stmt, cursor);
 
-      DSQLExecute(trans, stmt, Dialect);
+        FLibrary.DSQLExecute(trans, stmt, Dialect);
 
-      writeln(format('%-15s%-10s%-18s%-18s',['PROJ', 'DEPT', ' CURRENT BUDGET',  '  CHANGED TO']));
+        writeln(format('%-15s%-10s%-18s%-18s', ['PROJ', 'DEPT', ' CURRENT BUDGET', '  CHANGED TO']));
 
       (*
        *    Fetch and update department budgets.
        *)
 
-      while DSQLFetch(stmt, Dialect, osqlda) do
-      begin
+        while FLibrary.DSQLFetch(stmt, Dialect, osqlda) do
+        begin
           (* Determine the increase percentage. *)
-        budget := osqlda.AsDouble[2];
+          budget := osqlda.AsDouble[2];
 
-        write(format('%-15s%-10s%15.2f',[osqlda.AsString[0], osqlda.AsString[1], budget]));
-        budget := budget + budget * increase_factor(budget);
-        isqlda.AsDouble[0] := budget;
-        writeLN(format('%15.2f'#13, [budget]));
+          write(format('%-15s%-10s%15.2f', [osqlda.AsString[0], osqlda.AsString[1], budget]));
+          budget := budget + budget * increase_factor(budget);
+          isqlda.AsDouble[0] := budget;
+          writeLN(format('%15.2f'#13, [budget]));
 
         (* Increase the budget. *)
-        try
-          DSQLExecImmed2(DB, trans, upd_str, Dialect, isqlda, nil);
-        except
-          on E: EUIBError do
-          begin
-            if (E.SQLCode = -625) then
+          try
+            FLibrary.DSQLExecImmed2(DB, trans, upd_str, Dialect, isqlda, nil);
+          except
+            on E: EUIBError do
             begin
-              writeln('Exceeded budget limit -- not updated.');
-              continue;
-            end else
-              raise;
+              if (E.SQLCode = -625) then
+              begin
+                writeln('Exceeded budget limit -- not updated.');
+                continue;
+              end else
+                raise;
+            end;
           end;
         end;
+        FLibrary.DSQLFreeStatement(stmt, DSQL_close);
+        FLibrary.TransactionRollback(trans);
+        FLibrary.DetachDatabase(DB);
+      finally
+        isqlda.Free;
       end;
-      DSQLFreeStatement(stmt, DSQL_close);
-      TransactionRollback(trans);
-      DetachDatabase(DB);
     finally
-      isqlda.Free;
+      osqlda.Free;
     end;
+    readln;
   finally
-    osqlda.Free;
+    FLibrary.Free;
   end;
-  readln;
 end.
+
