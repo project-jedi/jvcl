@@ -543,7 +543,9 @@ end;
 procedure TJvTimerEvents.Notify(Item: TCollectionItem;
   Action: TCollectionNotification);
 begin
+  {$IFDEF COMPILER6_UP}
   inherited Notify(Item, Action);
+  {$ENDIF COMPILER6_UP}
   if Action = cnAdded then
     with TJvTimerEvent(Item) do
     begin

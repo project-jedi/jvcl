@@ -25,6 +25,10 @@ Known Issues:
 
 {$I jvcl.inc}
 
+{$IFDEF COMPILER6_UP}
+ {$WARN UNIT_PLATFORM OFF}
+{$ENDIF COMPILER6_UP}
+
 unit JvImagePreviewForm;
 
 interface
@@ -32,13 +36,12 @@ interface
 uses
   SysUtils, Classes,
   {$IFDEF VCL}
-  {$WARN UNIT_PLATFORM OFF}
   Windows, Graphics, Forms, Controls, StdCtrls, ExtCtrls,
   FileCtrl, Buttons,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QStdCtrls, QFileCtrls, QExtCtrls, QControls, QButtons,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvPicClip, JvFormPlacement, JvAppStorage, JvAppRegistryStorage, JvComponent;
 
 type
@@ -92,10 +95,10 @@ uses
 
 {$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF}
+{$ENDIF VCL}
 {$IFDEF VisualCLX}
 {$R *.xfm}
-{$ENDIF}
+{$ENDIF VisualCLX}
 
 function SelectImage(var AFileName: string; const Extensions, Filter: string): Boolean;
 var
