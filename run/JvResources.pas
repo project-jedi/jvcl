@@ -188,6 +188,9 @@ resourcestring
 //=== JvBDELoginDialog.pas ===================================================
 resourcestring
   RsEInvalidUserName = 'Invalid user name or password';
+  RsLastLoginUserName = 'Last Login User';  // Also used by JvLoginForm
+  RsSelectDatabase = 'SelectDatabase'; { dialog never writes this value }
+  RsLastAliasName = 'LastAlias'; { used if SelectDatabase = True  }
 
 //=== JvBDEMove.pas ==========================================================
 resourcestring

@@ -32,7 +32,7 @@ interface
 uses
   Windows,
   SysUtils, Messages, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
-  JvComponent, JvBaseDlg;
+  JvComponent, JvBaseDlg, JvAppStore;
 
 type
   TUpdateCaption = (ucNoChange, ucAppTitle, ucFormCaption);
@@ -52,8 +52,8 @@ type
     FMaxPasswordLen: Integer;
     FAllowEmptyPassword: Boolean;
     FUpdateCaption: TUpdateCaption;
-    FIniFileName: string;
-    FUseRegistry: Boolean;
+    FAppStore: TJvCustomAppStore;
+    FAppStorePath : String;
     FLocked: Boolean;
     FUnlockDlgShowing: Boolean;
     FSaveOnRestore: TNotifyEvent;
@@ -64,9 +64,8 @@ type
     FOnIconDblClick: TNotifyEvent;
     FPasswordChar: char;
     function GetLoggedUser: string;
-    function GetIniFileName: string;
-    procedure SetIniFileName(const Value: string);
     function UnlockHook(var Msg: TMessage): Boolean;
+    procedure SetAppStore(Value : TJvCustomAppStore);
   protected
     function CheckUnlock(const UserName, Password: string): Boolean; dynamic;
     function CreateLoginForm(UnlockMode: Boolean): TJvLoginForm; virtual;
@@ -81,16 +80,16 @@ type
     property Active: Boolean read FActive write FActive default True;
     property AllowEmptyPassword: Boolean read FAllowEmptyPassword write FAllowEmptyPassword default True;
     property AttemptNumber: Integer read FAttemptNumber write FAttemptNumber default 3;
-    property IniFileName: string read GetIniFileName write SetIniFileName;
     property MaxPasswordLen: Integer read FMaxPasswordLen write FMaxPasswordLen default 0;
     property UpdateCaption: TUpdateCaption read FUpdateCaption write FUpdateCaption default ucNoChange;
-    property UseRegistry: Boolean read FUseRegistry write FUseRegistry default False;
-    property PasswordChar:char read FPasswordChar write FPasswordChar default '*'; 
+    property PasswordChar:char read FPasswordChar write FPasswordChar default '*';
     property AfterLogin: TNotifyEvent read FAfterLogin write FAfterLogin;
     property BeforeLogin: TNotifyEvent read FBeforeLogin write FBeforeLogin;
     property OnUnlock: TCheckUnlockEvent read FOnUnlock write FOnUnlock; { obsolete }
     property OnUnlockApp: TUnlockAppEvent read FOnUnlockApp write FOnUnlockApp;
     property OnIconDblClick: TNotifyEvent read FOnIconDblClick write FOnIconDblClick;
+    property AppStore: TJvCustomAppStore read FAppStore write SetAppStore;
+    property AppStorePath : String read FAppStorePath write FAppStorePath;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -113,11 +112,11 @@ type
     procedure Loaded; override;
   published
     property Active;
+    property AppStore;
+    property AppStorePath;
     property AttemptNumber;
-    property IniFileName;
     property MaxPasswordLen;
     property UpdateCaption;
-    property UseRegistry;
     property PasswordChar;
     property OnCheckUser: TJvLoginEvent read FOnCheckUser write FOnCheckUser;
     property AfterLogin;
@@ -167,10 +166,6 @@ uses
 
 {$R *.dfm}
 
-const
-  keyLoginSection = 'Login Dialog'; // do not localize
-  keyLastLoginUserName = 'Last Logged User'; // do not localize
-
 function CreateLoginDialog(UnlockMode, ASelectDatabase: Boolean;
   FormShowEvent, OkClickEvent: TNotifyEvent): TJvLoginForm;
 begin
@@ -196,13 +191,11 @@ end;
 constructor TJvCustomLogin.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FIniFileName := EmptyStr;
   FLoggedUser := EmptyStr;
   FActive := True;
   FAttemptNumber := 3;
   FPasswordChar := '*';
   FAllowEmptyPassword := True;
-  FUseRegistry := False;
 end;
 
 destructor TJvCustomLogin.Destroy;
@@ -212,26 +205,12 @@ begin
     Application.UnhookMainWindow(UnlockHook);
     FLocked := False;
   end;
-  //DisposeStr(FLoggedUser);
-  //DisposeStr(FIniFileName);
   inherited Destroy;
 end;
 
-function TJvCustomLogin.GetIniFileName: string;
+procedure TJvCustomLogin.SetAppStore(Value : TJvCustomAppStore);
 begin
-  Result := FIniFileName;
-  if (Result = '') and not (csDesigning in ComponentState) then
-  begin
-    if UseRegistry then
-      Result := GetDefaultIniRegKey
-    else
-      Result := GetDefaultIniName;
-  end;
-end;
-
-procedure TJvCustomLogin.SetIniFileName(const Value: string);
-begin
-  FIniFileName := Value;
+  FAppStore := Value;
 end;
 
 function TJvCustomLogin.GetLoggedUser: string;
@@ -495,44 +474,17 @@ begin
 end;
 
 procedure TJvLoginDialog.WriteUserName(const UserName: string);
-var
-  Ini: TObject;
 begin
-  try
-    if UseRegistry then
-      Ini := TRegIniFile.Create(IniFileName)
-    else
-      Ini := TIniFile.Create(IniFileName);
-    try
-      IniWriteString(Ini, keyLoginSection, keyLastLoginUserName, UserName);
-    finally
-      Ini.Free;
-    end;
-  except
-  end;
+  if Assigned(AppStore) then
+    AppStore.WriteString (AppStore.ConcatPaths([AppStorePath, RsLastLoginUserName]), UserName);
 end;
 
 function TJvLoginDialog.ReadUserName(const UserName: string): string;
-var
-  Ini: TObject;
 begin
-  try
-    if UseRegistry then
-    begin
-      Ini := TRegIniFile.Create(IniFileName);
-      TRegIniFile(Ini).Access := KEY_READ;
-    end
-    else
-      Ini := TIniFile.Create(IniFileName);
-    try
-      Result := IniReadString(Ini, keyLoginSection, keyLastLoginUserName,
-        UserName);
-    finally
-      Ini.Free;
-    end;
-  except
+  if Assigned(AppStore) then
+    Result := AppStore.ReadString (AppStore.ConcatPaths([AppStorePath, RsLastLoginUserName]), UserName)
+  else
     Result := UserName;
-  end;
 end;
 
 function TJvLoginDialog.DoLogin(var UserName: string): Boolean;
