@@ -176,6 +176,9 @@ function ReplaceAllStr(const Str, SearchFor, ReplaceWith: string;
 
 implementation
 
+uses
+  JvThemes;
+
 const
   {$IFDEF COMPILER5_UP}
   PathEnd = '\';
@@ -344,6 +347,7 @@ begin
     ControlStyle := ControlStyle - [csSetCaption, csCaptureMouse, csClickEvents, csDoubleClicks]
   else
     ControlStyle := ControlStyle - [csSetCaption];
+  IncludeThemeStyle(Self, [csNeedsBorderPaint]);
 end;
 
 procedure TJvThumbTitle.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
@@ -627,6 +631,7 @@ begin
   inherited Create(AOwner);
   ControlState := ControlState + [csFocusing];
   ControlStyle := ControlStyle + [csOpaque] - [csSetCaption];
+  IncludeThemeStyle(Self, [csNeedsBorderPaint]);
 end;
 {
 procedure TJvBaseThumbview.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
