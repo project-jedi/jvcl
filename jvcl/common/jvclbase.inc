@@ -49,6 +49,9 @@ translation tool installed and want to use it with the JVCL. }
 of qrpt. NB! JVCL_UseQuickReport must also be defined}
 {.$DEFINE QREPORT4}
 
+{ Enable this define if you have installed the Internet Components with the Delphi installer }
+{$DEFINE INTERNET_COMPONENTS}
+
 { Activate this define if you have Mike Lischke's Theme Manager
 (http://www.lischke-online.de) installed and available and
 you are using D6/BCB6 or below. The ThemeManager package must
