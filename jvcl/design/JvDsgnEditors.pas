@@ -208,6 +208,10 @@ type
 
 implementation
 
+{$IFDEF COMPILER6_UP}
+{$WARN UNIT_PLATFORM OFF}
+{$ENDIF COMPILER6_UP}
+
 uses
   TypInfo, Math,
   {$IFDEF VCL}
@@ -818,7 +822,6 @@ end;
 
 procedure TJvFilenameProperty.OnDialogShow(Sender: TObject);
 begin
-  // (rom) Where does chx1 come from?
   SetDlgItemText(GetParent(TOpenDialog(Sender).Handle), chx1, PChar(RsStripFilePath));
 end;
 

@@ -32,10 +32,6 @@ Known Issues:
 
 {$I jvcl.inc}
 
-//>Polaris
-{$DEFINE POLESPIN} {Classic style in JvSpinButton and JvSpinEdit}
-//<Polaris
-
 unit JvSpin;
 
 interface
@@ -491,9 +487,7 @@ end;
 constructor TJvSpinButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  {$IFDEF POLESPIN}
   FButtonStyle := sbsDefault;
-  {$ENDIF POLESPIN}
   FUpBitmap := TBitmap.Create;
   FDownBitmap := TBitmap.Create;
   //FUpBitmap.Handle := LoadBitmap(HInstance, sSpinUpBtn); // Polaris
@@ -533,11 +527,9 @@ begin
   {$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled then
   begin
-    {$IFDEF POLESPIN}
     if FButtonStyle = sbsClassic then
       DrawAllBitmapClassicThemed
     else
-    {$ENDIF POLESPIN}
       DrawAllBitmapDiagonalThemed;
     Exit;
   end;
@@ -934,7 +926,6 @@ var
     end;
   end;
 
-  {$IFDEF POLESPIN}
   procedure PoleDraw;
   var
     X, Y, I, J, H: Integer;
@@ -991,7 +982,7 @@ var
       SelectClipRgn(Handle, 0);
     end;
   end;
-  {$ENDIF POLESPIN}
+
 begin
   LGlyph[0] := FUpBitmap.Handle = 0;
   LGlyph[1] := FDownBitmap.Handle = 0;
@@ -1007,11 +998,9 @@ begin
       Brush.Style := bsSolid;
       FillRect(R);
     end;
-    {$IFDEF POLESPIN}
     if FButtonStyle = sbsClassic then
       PoleDraw
     else
-    {$ENDIF POLESPIN}
       JvDraw;
   finally
     if LGlyph[0] then
@@ -1050,14 +1039,9 @@ begin
     begin
       FLastDown := FDown;
       //>Polaris
-      {$IFNDEF POLESPIN}
-      if Y > (-(Height / Width) * X + Height) then
-      begin
-      {$ELSE}
       if ((FButtonStyle = sbsDefault) and (Y > (-(Height / Width) * X + Height))) or
         ((FButtonStyle = sbsClassic) and (Y > (Height div 2))) then
       begin
-      {$ENDIF POLESPIN}
         FDown := sbBottomDown;
         BottomClick;
       end
@@ -1084,13 +1068,9 @@ end;
 function TJvSpinButton.MouseInBottomBtn(const P: TPoint): Boolean;
 begin
   with P do
-    {$IFNDEF POLESPIN}
-    Result := Y > (-(Width / Height) * X + Height) then
-    {$ELSE}
     Result :=
       ((FButtonStyle = sbsDefault)) and (Y > (-(Width / Height) * X + Height)) or
       ((FButtonStyle = sbsClassic) and (Y > (Height div 2)));
-    {$ENDIF POLESPIN}
 end;
 
 procedure TJvSpinButton.MouseMove(Shift: TShiftState; X, Y: Integer);
@@ -1159,7 +1139,7 @@ begin
       end;
     end;
   end;
-  {$ENDIF POLESPIN}
+  {$ENDIF JVCLThemesEnabled}
 end;
 
 procedure TJvSpinButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
@@ -1679,11 +1659,7 @@ function TJvCustomSpinEdit.GetButtonKind: TSpinButtonKind;
 begin
   if NewStyleControls then
     Result := FButtonKind
-  {$IFNDEF POLESPIN}
-  else
-    Result := bkDiagonal;
-  {$ELSE}
-    //>Polaris
+  //>Polaris
   else
   begin
     Result := bkDiagonal;
@@ -1691,7 +1667,6 @@ begin
       Result := bkClassic;
   end;
   //<Polaris
-  {$ENDIF POLESPIN}
 end;
 
 function TJvCustomSpinEdit.GetButtonWidth: Integer;
@@ -1878,19 +1853,15 @@ begin
     FBtnWindow := TWinControl.Create(Self);
     FBtnWindow.Visible := True;
     FBtnWindow.Parent := Self;
-    {$IFDEF POLESPIN}
     if FButtonKind <> bkClassic then
       FBtnWindow.SetBounds(0, 0, DefBtnWidth, Height)
     else
-    {$ENDIF POLESPIN}
       FBtnWindow.SetBounds(0, 0, Height, Height);
 
     FButton := TJvSpinButton.Create(Self);
     FButton.Visible := True;
-    {$IFDEF POLESPIN}
     if FButtonKind = bkClassic then
       FButton.FButtonStyle := sbsClassic;
-    {$ENDIF POLESPIN}
     FButton.Parent := FBtnWindow;
     FButton.FocusControl := Self;
     FButton.OnTopClick := UpClick;
@@ -1916,18 +1887,14 @@ begin
     if FButton <> nil then
     begin { bkDiagonal }
       if NewStyleControls and Ctl3D and (BorderStyle = bsSingle) then
-        {$IFDEF POLESPIN}
         if FButtonKind = bkClassic then
           R := Bounds(Width - DefBtnWidth - 4, -1, DefBtnWidth, Height - 3)
         else
-        {$ENDIF POLESPIN}
           R := Bounds(Width - Height - 1, -1, Height - 3, Height - 3)
       else
-        {$IFDEF POLESPIN}
         if FButtonKind = bkClassic then
           R := Bounds(Width - DefBtnWidth, 0, DefBtnWidth, Height)
         else
-        {$ENDIF POLESPIN}
           R := Bounds(Width - Height, 0, Height, Height);
       if BiDiMode = bdRightToLeft then
       begin

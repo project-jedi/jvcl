@@ -36,8 +36,6 @@ Known Issues:
 
 unit JvRichEdit;
 
-{.$DEFINE RICHEDIT_VER_10}
-
 {$R-}
 
 interface
@@ -155,7 +153,6 @@ type
   // isRichEdit: first line starts at 2 and following lines at 3
   // isOffice: first line starts at 3 and following lines at 1
 
-{$DEFINE TABINFO}
   //  From Msdn PARAFORMAT info:
 {
    Rich Edit 2.0: For compatibility with TOM interfaces, you can use the eight
@@ -180,13 +177,12 @@ type
    4    Thick line leader
    5    Double line leader
 }
-{$IFDEF TABINFO}
+
   TJvTabAlignment = (taOrdinary, taCenter, taRight, taDecimal,
     taVertical); // added by J.G. Boerema
   // Note: if taVertical then tableader should be disabled according to Word
   TJvTabLeader = (tlNone, tlDotted, tlDashed, tlUnderlined, tlThick,
     tlDouble); // added by J.G. Boerema
-{$ENDIF TABINFO}
 
   TJvParaAttributes = class(TPersistent)
   private
@@ -209,10 +205,8 @@ type
     function GetTab(Index: Byte): Longint;
     function GetTabCount: Integer;
     function GetTableStyle: TParaTableStyle;
-{$IFDEF TABINFO}
     function GetTabAlignment(Index: Byte): TJvTabAlignment;
     function GetTabLeader(Index: Byte): TJvTabLeader;
-{$ENDIF TABINFO}
     procedure SetAlignment(Value: TParaAlignment);
     procedure SetAttributes(var Paragraph: TParaFormat2);
     procedure SetFirstIndent(Value: Longint);
@@ -230,10 +224,8 @@ type
     procedure SetTab(Index: Byte; Value: Longint);
     procedure SetTabCount(Value: Integer);
     procedure SetTableStyle(Value: TParaTableStyle);
-{$IFDEF TABINFO}
     procedure SetTabAlignment(Index: Byte; Value: TJvTabAlignment);
     procedure SetTabLeader(Index: Byte; Value: TJvTabLeader);
-{$ENDIF TABINFO}
   protected
     procedure InitPara(var Paragraph: TParaFormat2);
     procedure AssignTo(Dest: TPersistent); override;
@@ -258,10 +250,8 @@ type
     property Tab[Index: Byte]: Longint read GetTab write SetTab;
     property TabCount: Integer read GetTabCount write SetTabCount;
     property TableStyle: TParaTableStyle read GetTableStyle write SetTableStyle;
-{$IFDEF TABINFO}
     property TabAlignment[Index: Byte]: TJvTabAlignment read GetTabAlignment write SetTabAlignment;
     property TabLeader[Index: Byte]: TJvTabLeader read GetTabLeader write SetTabLeader;
-{$ENDIF TABINFO}
   end;
 
   TJvConversionKind = (ckImport, ckExport);
@@ -1245,7 +1235,6 @@ const
   EM_GETZOOM = (WM_USER + 224);
   EM_SETZOOM = (WM_USER + 225);
 
-{$IFDEF TABINFO}
   // Some masks for tab alignment and leader handling
   // Note: not the official names which I don't know
 
@@ -1255,9 +1244,8 @@ const
   TA_TAB = $00FFFFFF; // Tab: bits 0-23
   TA_TAB_LEADER = (TA_TAB or TA_LEADER);
   TA_TAB_ALIGNMENT = (TA_TAB or TA_ALIGNMENT);
-{$ENDIF TABINFO}
-  { Flags to specify which interfaces should be returned in the structure above }
 
+  { Flags to specify which interfaces should be returned in the structure above }
   REO_GETOBJ_NO_INTERFACES = $00000000;
   REO_GETOBJ_POLEOBJ = $00000001;
   REO_GETOBJ_PSTG = $00000002;
@@ -4951,11 +4939,7 @@ var
   Paragraph: TParaFormat2;
 begin
   GetAttributes(Paragraph);
-{$IFDEF TABINFO}
   Result := (Paragraph.rgxTabs[Index] and TA_TAB) div CTwipsPerPoint;
-{$ELSE}
-  Result := Paragraph.rgxTabs[Index] div CTwipsPerPoint;
-{$ENDIF TABINFO}
 end;
 
 function TJvParaAttributes.GetTabCount: Integer;
@@ -4984,8 +4968,6 @@ begin
       Result := tsTableCell;
   end;
 end;
-
-{$IFDEF TABINFO}
 
 function TJvParaAttributes.GetTabAlignment(Index: Byte): TJvTabAlignment;
 var
@@ -5075,7 +5057,6 @@ begin
     SetAttributes(Paragraph);
   end;
 end;
-{$ENDIF TABINFO}
 
 procedure TJvParaAttributes.InitPara(var Paragraph: TParaFormat2);
 begin
@@ -5325,7 +5306,6 @@ begin
   GetAttributes(Paragraph);
   with Paragraph do
   begin
-{$IFDEF TABINFO}
     // Note: the first part is a bugfix
     if cTabCount <= Index then
     begin
@@ -5337,12 +5317,6 @@ begin
     rgxTabs[Index] := (rgxTabs[Index] and Longint(TA_ALIGNMENT or TA_LEADER))
       or (Value * CTwipsPerPoint);
     dwMask := PFM_TABSTOPS;
-{$ELSE}
-    rgxTabs[Index] := Value * CTwipsPerPoint;
-    dwMask := PFM_TABSTOPS;
-    if cTabCount < Index then
-      cTabCount := Index;
-{$ENDIF TABINFO}
     SetAttributes(Paragraph);
   end;
 end;
@@ -7022,13 +6996,9 @@ begin
   RichEditVersion := 1;
   OldError := SetErrorMode(SEM_NOOPENFILEERRORBOX);
   try
-{$IFNDEF RICHEDIT_VER_10}
     GLibHandle := LoadLibrary(RichEdit20ModuleName);
     if (GLibHandle > 0) and (GLibHandle < HINSTANCE_ERROR) then
       GLibHandle := 0;
-{$ELSE}
-    GLibHandle := 0;
-{$ENDIF RICHEDIT_VER_10}
     if GLibHandle = 0 then
     begin
       GLibHandle := LoadLibrary(RichEdit10ModuleName);

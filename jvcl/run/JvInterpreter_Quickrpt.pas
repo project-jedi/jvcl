@@ -28,8 +28,6 @@ Known Issues:
 
 {$I jvcl.inc}
 
-{$DEFINE RA_QR3H}
-
 unit JvInterpreter_Quickrpt;
 
 interface
@@ -1237,9 +1235,7 @@ end;
 
 procedure TQuickRep_CreateNew(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  {$IFNDEF RA_QR2}
   Value := O2V(TQuickRep.CreateNew(V2O(Args.Values[0]) as TComponent));
-  {$ENDIF RA_QR2}
 end;
 
 { function CreateBand(BandType: TQRBandType): TQRBand; }
@@ -1955,11 +1951,7 @@ end;
 
 procedure TQRCompositeReport_Write_PrinterSettings(const Value: Variant; Args: TJvInterpreterArgs);
 begin
-  {$IFDEF RA_QR3H}
   TQRCompositeReport(Args.Obj).PrinterSettings := V2O(Value) as TQRCompositePrinterSettings;
-  {$ELSE}
-  TQRCompositeReport(Args.Obj).PrinterSettings := V2O(Value) as TQuickRepPrinterSettings;
-  {$ENDIF RA_QR3H}
 end;
 
 { property Read ReportTitle: string }
