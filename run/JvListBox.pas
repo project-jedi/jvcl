@@ -215,7 +215,7 @@ type
     procedure DoStartDrag(var DragObject: TDragObject); override;
     procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState;
       var Accept: Boolean); override;
-    function PaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure SelectCancel(var Msg: TMessage); message LBN_SELCANCEL;
@@ -1976,10 +1976,10 @@ begin
   end;
 end;
 
-function TJvCustomListBox.PaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvCustomListBox.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   if not Background.DoDraw then
-    Result := inherited PaintBackground(Canvas, Param)
+    Result := inherited DoEraseBackground(Canvas, Param)
   else
   begin
     Result := True;

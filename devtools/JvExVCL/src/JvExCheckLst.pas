@@ -33,20 +33,18 @@ WARNINGHEADER
 interface
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
-  Windows, Messages, Graphics, Controls, Forms, CheckLst,
+  Windows, Messages,
   {$IFDEF COMPILER6_UP}
   Types,
   {$ENDIF COMPILER6_UP}
-  Classes, SysUtils,
+  SysUtils, Classes, Graphics, Controls, Forms, CheckLst,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JvTypes, JvThemes, JVCLVer, JvExControls;
 
- {$DEFINE NeedMouseEnterLeave}
-
 type
-  JV_WINCONTROL_EVENTS(CheckListBox)
+  WINCONTROL_DECL_DEFAULT(CheckListBox)
 
 {$IFDEF UNITVERSIONING}
 const
@@ -60,10 +58,10 @@ const
 
 implementation
 
-JV_WINCONTROL_EVENTS_IMPL(CheckListBox)
+WINCONTROL_IMPL_DEFAULT(CheckListBox)
 
-{$IFDEF UNITVERSIONING}
 initialization
+{$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
 
 finalization

@@ -43,7 +43,7 @@ uses
   Qt, QGraphics, QStdCtrls, // TOwnerDrawState 
   {$ENDIF VisualCLX}
   JvConsts,
-  JVCLVer, JvExControls, JvExExtCtrls, JvExComCtrls, JvExForms, JvExStdCtrls;
+  JVCLVer, JvExControls, JvExExtCtrls, JvExForms, JvExStdCtrls, JvExComCtrls;
 
 {$IFDEF VCL}
 const
@@ -63,8 +63,8 @@ type
   {$NODEFINE TMsg}
   TOwnerDrawState = QStdCtrls.TOwnerDrawState;
   {$NODEFINE TOwnerDrawState}
-  TBevelKind = JvQExControls.TBevelKind;
-  {$NODEFINE TBevelKind}
+  //TBevelKind = JvQExControls.TBevelKind;
+  //{$NODEFINE TBevelKind}
   function ColorToRGB(Color: TColor; Instance: TWidgetControl = nil): TColor;
   function DrawEdge(Handle: QPainterH; var Rect: TRect; Edge: Cardinal;
     Flags: Cardinal): LongBool;
@@ -85,18 +85,11 @@ type
 
   TJvGraphicControl = class(TJvExGraphicControl);
   TJvPubGraphicControl = class(TJvExPubGraphicControl);
-
-  TJvCustomTreeView = class(TJvExCustomTreeView);
-  TJvPubCustomTreeView = class(TJvExPubCustomTreeView);
-
   TJvCustomPanel = class(TJvExCustomPanel);
-  TJvPubCustomPanel = class(TJvExPubCustomPanel);
-
   TJvCustomControl = class(TJvExCustomControl);
-  TJvPubCustomControl = class(TJvExPubCustomControl);
-
-  TJvWinControl = class(TJvExPubWinControl);
-  TJvPubWinControl = class(TJvExPubWinControl);
+  TJvWinControl = class(TJvExWinControl);
+  TJvPubCustomPanel = class(TJvExPubCustomPanel);
+  TJvCustomTreeView = class(TJvExCustomTreeView);
 
   TJvForm = class(TJvExForm)
   {$IFDEF USE_DXGETTEXT}

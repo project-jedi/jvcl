@@ -112,8 +112,8 @@ type
     procedure SetDrawButtons(const Value: Boolean);
   protected
     function SelectCell(ACol, ARow: Longint): Boolean; override;
-    procedure DoKillFocus(FocusedWnd: HWND); override;
-    procedure DoSetFocus(FocusedWnd: HWND); override;
+    procedure FocusKilled(NextWnd: HWND); override;
+    procedure FocusSet(PrevWnd: HWND); override;
 
     function CanEditAcceptKey(Key: Char): Boolean; override;
     function CanEditShow: Boolean; override;
@@ -256,7 +256,7 @@ type
     procedure WMSetCursor(var Msg: TWMSetCursor); message WM_SETCURSOR;
     {$ENDIF VCL}
   protected
-    procedure DoKillFocus(FocusedWnd: HWND); override;
+    procedure FocusKilled(NextWnd: HWND); override;
     {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
     {$ENDIF VCL}
@@ -671,19 +671,19 @@ end;
 
 {$ENDIF VCL}
 
-procedure TJvInplaceEdit.DoKillFocus(FocusedWnd: HWND);
+procedure TJvInplaceEdit.FocusKilled(NextWnd: HWND);
 begin
   if not SysLocale.FarEast then
-    inherited DoKillFocus(FocusedWnd)
+    inherited FocusKilled(NextWnd)
   else
   begin
     {$IFDEF VCL}
     ImeName := Screen.DefaultIme;
     ImeMode := imDontCare;
     {$ENDIF VCL}
-    inherited DoKillFocus(FocusedWnd);
+    inherited FocusKilled(NextWnd);
     {$IFDEF VCL}
-    if FocusedWnd <> TJvDrawGrid(Grid).Handle then
+    if NextWnd <> TJvDrawGrid(Grid).Handle then
       ActivateKeyboardLayout(Screen.DefaultKbLayout, KLF_ACTIVATE);
     {$ENDIF VCL}
   end;
@@ -1391,16 +1391,16 @@ end;
 
 {$ENDIF VCL}
 
-procedure TJvDrawGrid.DoKillFocus(FocusedWnd: HWND);
+procedure TJvDrawGrid.FocusKilled(NextWnd: HWND);
 begin
-  inherited DoKillFocus(FocusedWnd);
+  inherited FocusKilled(NextWnd);
   if Assigned(FOnChangeFocus) then
     FOnChangeFocus(Self);
 end;
 
-procedure TJvDrawGrid.DoSetFocus(FocusedWnd: HWND);
+procedure TJvDrawGrid.FocusSet(PrevWnd: HWND);
 begin
-  inherited DoSetFocus(FocusedWnd);
+  inherited FocusSet(PrevWnd);
   if Assigned(FOnChangeFocus) then
     FOnChangeFocus(Self);
 end;

@@ -61,10 +61,10 @@ type
     {$ENDIF VCL}
   protected
     procedure CaretChanged(Sender: TObject); dynamic;
-    procedure DoKillFocus(FocusedWnd: HWND); override;
-    procedure DoSetFocus(FocusedWnd: HWND); override;
-    procedure DoKillFocusEvent(const ANextControl: TWinControl); virtual;
-    procedure DoSetFocusEvent(const APreviousControl: TWinControl); virtual;
+    procedure FocusKilled(NextWnd: HWND); override;
+    procedure FocusSet(PrevWnd: HWND); override;
+    procedure DoKillFocus(const ANextControl: TWinControl); virtual;
+    procedure DoSetFocus(const APreviousControl: TWinControl); virtual;
     {$IFDEF VisualCLX}
     function GetText: TCaption; override;
     procedure SetText(const Value: TCaption); override;
@@ -228,38 +228,38 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvCustomMaskEdit.DoKillFocus(FocusedWnd: HWND);
+procedure TJvCustomMaskEdit.FocusKilled(NextWnd: HWND);
 begin
   FLeaving := True;
   try
     FCaret.DestroyCaret;
-    inherited DoKillFocus(FocusedWnd);
-    DoKillFocusEvent(FindControl(FocusedWnd));
+    inherited FocusKilled(NextWnd);
+    DoKillFocus(FindControl(NextWnd));
   finally
     FLeaving := False;
   end;
 end;
 
-procedure TJvCustomMaskEdit.DoKillFocusEvent(const ANextControl: TWinControl);
+procedure TJvCustomMaskEdit.DoKillFocus(const ANextControl: TWinControl);
 begin
   NotifyIfChanged;
   if Assigned(FOnKillFocus) then
     FOnKillFocus(Self, ANextControl);
 end;
 
-procedure TJvCustomMaskEdit.DoSetFocus(FocusedWnd: HWND);
+procedure TJvCustomMaskEdit.FocusSet(PrevWnd: HWND);
 begin
   FEntering := True;
   try
-    inherited DoSetFocus(FocusedWnd);
+    inherited FocusSet(PrevWnd);
     FCaret.CreateCaret;
-    DoSetFocusEvent(FindControl(FocusedWnd));
+    DoSetFocus(FindControl(PrevWnd));
   finally
     FEntering := False;
   end;
 end;
 
-procedure TJvCustomMaskEdit.DoSetFocusEvent(const APreviousControl: TWinControl);
+procedure TJvCustomMaskEdit.DoSetFocus(const APreviousControl: TWinControl);
 begin
   if Assigned(FOnSetFocus) then
     FOnSetFocus(Self, APreviousControl);

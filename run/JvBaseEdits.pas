@@ -87,7 +87,7 @@ type
     {$IFDEF VisualCLX}
     procedure Paint; override;
     {$ENDIF VisualCLX}
-    procedure DoClipboardPaste; override;
+    procedure WMPaste(var Msg: TMessage); message WM_PASTE;
     procedure SetBeepOnError(Value: Boolean); override;
 
     procedure SetText(const AValue: string); {$IFDEF VisualCLX} reintroduce; {$ENDIF} virtual; 
@@ -878,7 +878,7 @@ begin
   Self.Value := CheckValue(Value, False); //Polaris
 end;
 
-procedure TJvCustomNumEdit.DoClipboardPaste;
+procedure TJvCustomNumEdit.WMPaste(var Msg: TMessage);
 var
   S: string;
   WasModified: Boolean;
@@ -886,7 +886,7 @@ begin
   WasModified := Modified;
   S := EditText;
   try
-    inherited DoClipboardPaste;
+    inherited;
     UpdateData;
   except
     { Changing EditText sets Modified to false }

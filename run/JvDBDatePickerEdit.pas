@@ -62,14 +62,14 @@ type
     procedure SetEnforceRequired(const AValue: Boolean);
     procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
   protected
-    procedure DoClipboardCut; override;
-    procedure DoClipboardPaste; override;
-    procedure DoUndo; override;
+    procedure WMCut(var Msg: TMessage); message WM_CUT;
+    procedure WMPaste(var Msg: TMessage); message WM_PASTE;
+    procedure WMUndo(var Msg: TMessage); message WM_UNDO;
     procedure DataChange(Sender: TObject);
     procedure UpdateData(Sender: TObject);
     function IsLinked: Boolean;
     procedure Change; override;
-    procedure DoKillFocusEvent(const ANextControl: TWinControl); override;
+    procedure DoKillFocus(const ANextControl: TWinControl); override;
     procedure PopupDropDown(DisableEdit: Boolean); override;
     function EditCanModify: Boolean; override;
     procedure SetChecked(const AValue: Boolean); override;
@@ -244,19 +244,19 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvCustomDBDatePickerEdit.DoClipboardCut;
+procedure TJvCustomDBDatePickerEdit.WMCut(var Msg: TMessage);
 begin
   if EditCanModify then
-    inherited DoClipboardCut;
+    inherited;
 end;
 
-procedure TJvCustomDBDatePickerEdit.DoClipboardPaste;
+procedure TJvCustomDBDatePickerEdit.WMPaste(var Msg: TMessage);
 begin
   if EditCanModify then
-    inherited DoClipboardPaste;
+    inherited;
 end;
 
-procedure TJvCustomDBDatePickerEdit.DoKillFocusEvent(const ANextControl: TWinControl);
+procedure TJvCustomDBDatePickerEdit.DoKillFocus(const ANextControl: TWinControl);
 begin
   if IsLinked and FDataLink.Editing then
     try
@@ -265,13 +265,13 @@ begin
       SetFocus;
       raise;
     end;
-  inherited DoKillFocusEvent(ANextControl);
+  inherited DoKillFocus(ANextControl);
 end;
 
-procedure TJvCustomDBDatePickerEdit.DoUndo;
+procedure TJvCustomDBDatePickerEdit.WMUndo(var Msg: TMessage);
 begin
   if EditCanModify then
-    inherited DoUndo;
+    inherited;
 end;
 
 function TJvCustomDBDatePickerEdit.EditCanModify: Boolean;

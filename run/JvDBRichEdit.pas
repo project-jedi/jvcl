@@ -63,8 +63,8 @@ type
     procedure EMSetCharFormat(var Msg: TMessage); message EM_SETCHARFORMAT;
     procedure EMSetParaFormat(var Msg: TMessage); message EM_SETPARAFORMAT;
   protected
-    procedure DoClipboardPaste; override;
-    procedure DoClipboardCut; override;
+    procedure WMPaste(var Msg: TMessage); message WM_PASTE;
+    procedure WMCut(var Msg: TMessage); message WM_CUT;
     procedure DoEnter; override;
     procedure DoExit; override;
     procedure Change; override;
@@ -472,16 +472,16 @@ begin
     inherited;
 end;
 
-procedure TJvDBRichEdit.DoClipboardCut;
+procedure TJvDBRichEdit.WMCut(var Msg: TMessage);
 begin
   EditCanModify;
-  inherited DoClipboardCut;
+  inherited;
 end;
 
-procedure TJvDBRichEdit.DoClipboardPaste;
+procedure TJvDBRichEdit.WMPaste(var Msg: TMessage);
 begin
   EditCanModify;
-  inherited DoClipboardPaste;
+  inherited;
 end;
 
 procedure TJvDBRichEdit.CMGetDataLink(var Msg: TMessage);

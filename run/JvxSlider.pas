@@ -122,7 +122,7 @@ type
     {$ENDIF VisualCLX}
   protected
     procedure BoundsChanged; override;
-    procedure FocusChanged(Control: TWinControl); override;
+    procedure FocusChanged(AControl: TWinControl); override;
     procedure GetDlgCode(var Code: TDlgCodes); override;
     procedure EnabledChanged; override;
     procedure AlignControls(AControl: TControl; var Rect: TRect); override;
@@ -1112,18 +1112,18 @@ begin
   InvalidateThumb;
 end;
 
-procedure TJvCustomSlider.FocusChanged(Control: TWinControl);
+procedure TJvCustomSlider.FocusChanged(AControl: TWinControl);
 var
   Active: Boolean;
 begin
-  Active := (Control = Self);
+  Active := AControl = Self;
   if Active <> FFocused then
   begin
     FFocused := Active;
     if soShowFocus in Options then
       Invalidate;
   end;
-  inherited FocusChanged(Control);
+  inherited FocusChanged(AControl);
 end;
 
 procedure TJvCustomSlider.GetDlgCode(var Code: TDlgCodes);

@@ -492,8 +492,8 @@ type
     {$IFDEF VCL}
     procedure GetDlgCode(var Code: TDlgCodes); override;
     {$ENDIF VCL}
-    procedure DoSetFocus(Focused: HWND); override;
-    procedure DoKillFocus(Focused: HWND); override;
+    procedure FocusSet(Focused: HWND); override;
+    procedure FocusKilled(Focused: HWND); override;
     {$IFDEF VisualCLX}
     procedure Scrolled(Sender: TObject; ScrollCode: TScrollCode;
       var ScrollPos: Integer); dynamic;
@@ -4104,17 +4104,17 @@ begin
 end;
 {$ENDIF VCL}
 
-procedure TJvCustomInspector.DoSetFocus(Focused: HWND);
+procedure TJvCustomInspector.FocusSet(Focused: HWND);
 begin
-  inherited DoSetFocus(Focused);
+  inherited FocusSet(Focused);
   if (Selected <> nil) and not Selected.EditCtrlDestroying then
     Selected.SetFocus;
   Invalidate;
 end;
 
-procedure TJvCustomInspector.DoKillFocus(Focused: HWND);
+procedure TJvCustomInspector.FocusKilled(Focused: HWND);
 begin
-  inherited DoKillFocus(Focused);
+  inherited FocusKilled(Focused);
 {  if (Selected <> nil) and Selected.Editing and (Selected.EditCtrl.Handle <> Focuseded) then
     Selected.EditCtrl.Invalidate;}
   Invalidate;
@@ -4320,7 +4320,7 @@ end;
 
 procedure TJvCustomInspector.RefreshValues;
 begin
-  if (Selected <> nil) and Selected.Editing and (Selected.FUpdateEditCtrl = 0) then
+  if (Selected <> nil) and Selected.Editing then
   begin
     Selected.DoneEdit(True);
     Selected.InitEdit;
@@ -4330,7 +4330,7 @@ end;
 
 procedure TJvCustomInspector.SaveValues;
 begin
-  if (Selected <> nil) and Selected.Editing and (Selected.FUpdateEditCtrl = 0) then
+  if (Selected <> nil) and Selected.Editing then
   begin
     Selected.DoneEdit(False);
     Selected.InitEdit;
@@ -7456,7 +7456,7 @@ var
   Memo: TMemo;
 begin
   SetEditing(CanEdit);
-  if Editing then
+  if Editing and (FUpdateEditCtrl = 0) then
   begin
     if Multiline then
     begin
@@ -7581,7 +7581,7 @@ end;
 
 procedure TJvCustomInspectorItem.DoneEdit(const CancelEdits: Boolean);
 begin
-  if Editing then
+  if Editing and (FUpdateEditCtrl = 0) then
   begin
     if DroppedDown then
       CloseUp(False);

@@ -33,51 +33,49 @@ WARNINGHEADER
 interface
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
-  Windows, Messages, Graphics, Controls, Forms, Grids,
+  Windows, Messages,
   {$IFDEF COMPILER6_UP}
   Types,
   {$ENDIF COMPILER6_UP}
-  Classes, SysUtils,
+  SysUtils, Classes, Graphics, Controls, Forms, Grids,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JvTypes, JvThemes, JVCLVer, JvExControls;
 
- {$DEFINE NeedMouseEnterLeave}
-
 type
-{$IFDEF COMPILER6_UP}
-  {$DEFINE HAS_GRID_EDITSTYLE}
-{$ENDIF COMPILER6_UP}
-
-  {$IFNDEF HAS_GRID_EDITSTYLE}
+  {$IFDEF COMPILER5}
   // Compiler 5 and VisualCLX do not have TEditStyle
   TEditStyle = (esSimple, esEllipsis, esPickList);
-  {$ENDIF HAS_GRID_EDITSTYLE}
+  {$ENDIF COMPILER5}
 
-
-  JV_WINCONTROL_EVENTS(InplaceEdit)
-  JV_WINCONTROL_EVENTS(CustomGrid)
+  WINCONTROL_DECL_DEFAULT(InplaceEdit)
+  WINCONTROL_DECL_DEFAULT(CustomGrid)
   {$IFDEF COMPILER6_UP}
-  JV_WINCONTROL_EVENTS(CustomDrawGrid)
-  JV_WINCONTROL_EVENTS(InplaceEditList)
+  WINCONTROL_DECL_DEFAULT(CustomDrawGrid)
+  WINCONTROL_DECL_DEFAULT(InplaceEditList)
+
+  TJvExPubInplaceEditList = class(TJvExInplaceEditList)
+  COMMON_PUBLISHED
+  end;
   {$ENDIF COMPILER6_UP}
 
-  JV_WINCONTROL_EVENTS_BEGIN(DrawGrid)
-  JV_CONSTRUCTOR
-  {$IFNDEF HAS_GRID_EDITSTYLE}
+  TJvExDrawGrid = class(TDrawGrid, IJvExControl)
+  WINCONTROL_DECL
+  {$IFDEF COMPILER5}
   protected
     function GetEditStyle(ACol, ARow: Longint): TEditStyle; dynamic;
-  {$ENDIF !HAS_GRID_EDITSTYLE}
-  JV_WINCONTROL_EVENTS_END(DrawGrid)
+  {$ENDIF COMPILER5}
+  end;
 
-  JV_WINCONTROL_EVENTS_BEGIN(StringGrid)
-  JV_CONSTRUCTOR
-  {$IFNDEF HAS_GRID_EDITSTYLE}
+  TJvExStringGrid = class(TStringGrid, IJvExControl)
+  WINCONTROL_DECL
+  {$IFDEF COMPILER5}
   protected
     function GetEditStyle(ACol, ARow: Longint): TEditStyle; dynamic;
-  {$ENDIF !HAS_GRID_EDITSTYLE}
-  JV_CUSTOMCONTROL_EVENTS_END(StringGrid)
+  {$ENDIF COMPILER5}
+  end;
+
 
 {$IFDEF UNITVERSIONING}
 const
@@ -91,33 +89,31 @@ const
 
 implementation
 
-JV_WINCONTROL_EVENTS_IMPL(InplaceEdit)
-JV_WINCONTROL_EVENTS_IMPL(CustomGrid)
+WINCONTROL_IMPL_DEFAULT(InplaceEdit)
+WINCONTROL_IMPL_DEFAULT(CustomGrid)
 {$IFDEF COMPILER6_UP}
-JV_WINCONTROL_EVENTS_IMPL(CustomDrawGrid)
-JV_WINCONTROL_EVENTS_IMPL(InplaceEditList)
+WINCONTROL_IMPL_DEFAULT(CustomDrawGrid)
+WINCONTROL_IMPL_DEFAULT(InplaceEditList)
 {$ENDIF COMPILER6_UP}
 
-JV_CUSTOMCONTROL_EVENTS_IMPL_BEGIN(DrawGrid)
-{$IFNDEF HAS_GRID_EDITSTYLE}
+WINCONTROL_IMPL_DEFAULT(DrawGrid)
+{$IFDEF COMPILER5}
 function TJvExDrawGrid.GetEditStyle(ACol, ARow: Longint): TEditStyle;
 begin
   Result := esSimple;
 end;
-{$ENDIF !HAS_GRID_EDITSTYLE}
-JV_CUSTOMCONTROL_EVENTS_IMPL_END(DrawGrid)
+{$ENDIF COMPILER5}
 
-JV_CUSTOMCONTROL_EVENTS_IMPL_BEGIN(StringGrid)
-{$IFNDEF HAS_GRID_EDITSTYLE}
+WINCONTROL_IMPL_DEFAULT(StringGrid)
+{$IFDEF COMPILER5}
 function TJvExStringGrid.GetEditStyle(ACol, ARow: Longint): TEditStyle;
 begin
   Result := esSimple;
 end;
-{$ENDIF !HAS_GRID_EDITSTYLE}
-JV_CUSTOMCONTROL_EVENTS_IMPL_END(StringGrid)
+{$ENDIF COMPILER5}
 
-{$IFDEF UNITVERSIONING}
 initialization
+{$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
 
 finalization

@@ -181,7 +181,7 @@ type
     procedure EnabledChanged; override;
     procedure ColorChanged; override;
     procedure FontChanged; override;
-    function PaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure AdjustHeight;
     procedure AdjustSize; override;
     procedure CreateParams(var Params: TCreateParams); override;
@@ -981,7 +981,7 @@ begin
     inherited;
 end;
 
-function TJvIPAddress.PaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvIPAddress.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Canvas.Brush.Color := Color;
   Canvas.FillRect(ClientRect);
@@ -996,7 +996,7 @@ var
   Pt: TPoint;
 begin
   { We paint the '.' ourself so we can also paint the control's background in
-    PaintBackground what would be impossible without self-painting because
+    DoEraseBackground what would be impossible without self-painting because
     the IP-Control always paints a clWindow background in WM_PAINT. } 
   for I := 0 to (FEditControlCount - 1) - 1 do
   begin

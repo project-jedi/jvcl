@@ -78,14 +78,14 @@ type
     procedure SetHideCaret(const Value: Boolean);
   protected
     procedure SetClipboardCommands(const Value: TJvClipboardCommands); override;
-    procedure DoClipboardCut; override;
-    procedure DoClipboardPaste; override;
-    procedure DoClearText; override;
-    procedure DoUndo; override;
+    procedure WMCut(var Msg: TMessage); message WM_CUT;
+    procedure WMPaste(var Msg: TMessage); message WM_PASTE;
+    procedure WMClear(var Msg: TMessage); message WM_CLEAR;
+    procedure WMUndo(var Msg: TMessage); message WM_UNDO;
     procedure CaretChange(Sender: TObject); dynamic;
-    procedure DoKillFocus(FocusedWnd: HWND); override;
-    procedure DoSetFocus(FocusedWnd: HWND); override;
-    function PaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    procedure FocusKilled(NextWnd: HWND); override;
+    procedure FocusSet(PrevWnd: HWND); override;
+    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure WndProc(var Msg: TMessage); override;
@@ -357,9 +357,9 @@ begin
   FCaret.Assign(Value);
 end;
 
-procedure TJvCustomMemo.DoSetFocus(FocusedWnd: HWND);
+procedure TJvCustomMemo.FocusSet(PrevWnd: HWND);
 begin
-  inherited DoSetFocus(FocusedWnd);
+  inherited FocusSet(PrevWnd);
   FCaret.CreateCaret;
   if FHideCaret then
     Windows.HideCaret(Handle);
@@ -400,12 +400,12 @@ begin
     FHideCaret := Value;
 end;
 
-procedure TJvCustomMemo.DoKillFocus(FocusedWnd: HWND);
+procedure TJvCustomMemo.FocusKilled(NextWnd: HWND);
 begin
   if FHideCaret then
     ShowCaret(Handle);
   FCaret.DestroyCaret;
-  inherited DoKillFocus(FocusedWnd);
+  inherited FocusKilled(NextWnd);
 end;
 
 procedure TJvCustomMemo.WndProc(var Msg: TMessage);
@@ -470,10 +470,10 @@ begin
   inherited;
 end;
 
-function TJvCustomMemo.PaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvCustomMemo.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   if not Transparent then
-    Result := inherited PaintBackground(Canvas, Param)
+    Result := inherited DoEraseBackground(Canvas, Param)
   else
     Result := False;
 end;
@@ -487,28 +487,28 @@ begin
   end;
 end;
 
-procedure TJvCustomMemo.DoClearText;
+procedure TJvCustomMemo.WMClear(var Msg: TMessage);
 begin
   if not ReadOnly then
-    inherited DoClearText;
+    inherited;
 end;
 
-procedure TJvCustomMemo.DoUndo;
+procedure TJvCustomMemo.WMUndo(var Msg: TMessage);
 begin
   if not ReadOnly then
-    inherited DoUndo;
+    inherited;
 end;
 
-procedure TJvCustomMemo.DoClipboardCut;
+procedure TJvCustomMemo.WMCut(var Msg: TMessage);
 begin
   if not ReadOnly then
-    inherited DoClipboardCut;
+    inherited;
 end;
 
-procedure TJvCustomMemo.DoClipboardPaste;
+procedure TJvCustomMemo.WMPaste(var Msg: TMessage);
 begin
   if not ReadOnly then
-    inherited DoClipboardPaste;
+    inherited;
 end;
 
 {$IFDEF UNITVERSIONING}

@@ -33,48 +33,36 @@ WARNINGHEADER
 interface
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
-  {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Forms, Mask,
-  {$ENDIF VCL}
+  Windows, Messages,
   {$IFDEF COMPILER6_UP}
   Types,
   {$ENDIF COMPILER6_UP}
-  {$IFDEF VisualCLX}
-  Qt, QGraphics, QControls, QForms, QMask, Types, QWindows,
-  {$ENDIF VisualCLX}
-  Classes, SysUtils,
+  SysUtils, Classes, Graphics, Controls, Forms, Mask,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JvTypes, JvThemes, JVCLVer, JvExControls;
 
-{$IFDEF VCL}
- {$DEFINE NeedMouseEnterLeave}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
- {$IF not declared(PatchedVCLX)}
-  {$DEFINE NeedMouseEnterLeave}
- {$IFEND}
-{$ENDIF VisualCLX}
-
 type
-  JV_EDITCONTROL_EVENTS_BEGIN(CustomMaskEdit)
+  TJvExCustomMaskEdit = class(TCustomMaskEdit, IJvExControl)
+  EDITCONTROL_DECL
   private
     FBeepOnError: Boolean;
   protected
     procedure DoBeepOnError; dynamic;
     procedure SetBeepOnError(Value: Boolean); virtual;
     property BeepOnError: Boolean read FBeepOnError write SetBeepOnError default True;
-  JV_EDITCONTROL_EVENTS_END(CustomMaskEdit)
+  end;
 
-  JV_EDITCONTROL_EVENTS_BEGIN(MaskEdit)
+  TJvExMaskEdit = class(TMaskEdit, IJvExControl)
+  EDITCONTROL_DECL
   private
     FBeepOnError: Boolean;
   protected
     procedure DoBeepOnError; dynamic;
     procedure SetBeepOnError(Value: Boolean); virtual;
     property BeepOnError: Boolean read FBeepOnError write SetBeepOnError default True;
-  JV_EDITCONTROL_EVENTS_END(MaskEdit)
+  end;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -88,14 +76,13 @@ const
 
 implementation
 
-{ The CONSTRUCTOR_CODE macro is used to extend the constructor by the macro
-  content. }
-{$UNDEF CONSTRUCTOR_CODE}
-{$DEFINE CONSTRUCTOR_CODE
+BEGIN_EDITCONTROL_CONSTRUCTOR(CustomMaskEdit)
   FBeepOnError := True;
-  FClipboardCommands := [caCopy..caUndo];
-}
-JV_EDITCONTROL_EVENTS_IMPL_BEGIN(CustomMaskEdit)
+END_CONSTRUCTOR
+
+EDITCONTROL_IMPL(CustomMaskEdit)
+EDITCONTROL_WNDPROC(CustomMaskEdit)
+
 procedure TJvExCustomMaskEdit.DoBeepOnError;
 begin
   if FBeepOnError then
@@ -106,10 +93,14 @@ procedure TJvExCustomMaskEdit.SetBeepOnError(Value: Boolean);
 begin
   FBeepOnError := Value;
 end;
-JV_EDITCONTROL_EVENTS_IMPL_END(CustomMaskEdit)
 
+BEGIN_EDITCONTROL_CONSTRUCTOR(MaskEdit)
+  FBeepOnError := True;
+END_CONSTRUCTOR
 
-JV_EDITCONTROL_EVENTS_IMPL_BEGIN(MaskEdit)
+EDITCONTROL_IMPL(MaskEdit)
+EDITCONTROL_WNDPROC(MaskEdit)
+
 procedure TJvExMaskEdit.DoBeepOnError;
 begin
   if FBeepOnError then
@@ -120,10 +111,9 @@ procedure TJvExMaskEdit.SetBeepOnError(Value: Boolean);
 begin
   FBeepOnError := Value;
 end;
-JV_EDITCONTROL_EVENTS_IMPL_END(MaskEdit)
 
-{$IFDEF UNITVERSIONING}
 initialization
+{$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
 
 finalization

@@ -57,9 +57,7 @@ uses
 
 {$IFDEF VisualCLX}
 const
-//  clGrayText = clDark; // (ahuser) This is wrong in QGraphics.
-                         //          Since when is clGrayText = clLight = clWhite?
-  clGrayText = clDisabledText;
+  clGrayText = clDisabledText; // Since when is clGrayText = clLight = clWhite?
 {$ENDIF VisualCLX}
 
 type
@@ -112,10 +110,10 @@ type
     function GetThemedFontHandle: HFONT;
     {$ENDIF JVCLThemesEnabled}
   protected
-    procedure DoClipboardCut; override;
-    procedure DoClipboardPaste; override;
-    procedure DoClearText; override;
-    procedure DoUndo; override;
+    procedure WMCut(var Msg: TMessage); message WM_CUT;
+    procedure WMPaste(var Msg: TMessage); message WM_PASTE;
+    procedure WMClear(var Msg: TMessage); message WM_CLEAR;
+    procedure WMUndo(var Msg: TMessage); message WM_UNDO;
 
     { (rb) renamed from UpdateEdit }
     procedure UpdateGroup; virtual;
@@ -148,9 +146,9 @@ type
 //    procedure KeyPress(var Key: Char); override;
     function HintShow(var HintInfo: THintInfo): Boolean; override;
     {$ENDIF VisualCLX}
-    procedure DoSetFocus(FocusedWnd: HWND); override;
-    procedure DoKillFocus(FocusedWnd: HWND); override;
-    function PaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    procedure FocusSet(PrevWnd: HWND); override;
+    procedure FocusKilled(NextWnd: HWND); override;
+    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure EnabledChanged; override;
     procedure SetFlat(Value: Boolean); virtual;
     procedure MouseEnter(AControl: TControl); override;
@@ -492,23 +490,23 @@ end;
 
 {$ENDIF VCL}
 
-procedure TJvCustomEdit.DoClearText;
+procedure TJvCustomEdit.WMClear(var Msg: TMessage);
 begin
   if not ReadOnly then
-    inherited DoClearText;
+    inherited;
 end;
 
-procedure TJvCustomEdit.DoClipboardCut;
+procedure TJvCustomEdit.WMCut(var Msg: TMessage);
 begin
   if not ReadOnly then
-    inherited DoClipboardCut;
+    inherited;
 end;
 
-procedure TJvCustomEdit.DoClipboardPaste;
+procedure TJvCustomEdit.WMPaste(var Msg: TMessage);
 begin
   if not ReadOnly then
   begin
-    inherited DoClipboardPaste;
+    inherited;
     UpdateGroup;
   end;
 end;
@@ -566,18 +564,18 @@ begin
   DoEmptyValueExit;
 end;
 
-procedure TJvCustomEdit.DoKillFocus(FocusedWnd: HWND);
+procedure TJvCustomEdit.FocusKilled(NextWnd: HWND);
 begin
   FCaret.DestroyCaret;
-  inherited DoKillFocus(FocusedWnd);
+  inherited FocusKilled(NextWnd);
 end;
 
-function TJvCustomEdit.PaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvCustomEdit.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 var
   R: TRect;
 begin
   if Enabled then
-    Result := inherited PaintBackground(Canvas, Param)
+    Result := inherited DoEraseBackground(Canvas, Param)
   else
   begin
     Canvas.Brush.Color := FDisabledColor;
@@ -593,16 +591,16 @@ begin
   end;
 end;
 
-procedure TJvCustomEdit.DoSetFocus(FocusedWnd: HWND);
+procedure TJvCustomEdit.FocusSet(PrevWnd: HWND);
 begin
-  inherited DoSetFocus(FocusedWnd);
+  inherited FocusSet(PrevWnd);
   FCaret.CreateCaret;
 end;
 
-procedure TJvCustomEdit.DoUndo;
+procedure TJvCustomEdit.WMUndo(var Msg: TMessage);
 begin
   if not ReadOnly then
-    inherited DoUndo;
+    inherited;
 end;
 
 procedure TJvCustomEdit.EnabledChanged;

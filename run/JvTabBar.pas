@@ -487,7 +487,7 @@ end;
 
 destructor TJvCustomTabBar.Destroy;
 begin
-  // these events are too dangerous while object destruction
+  // these events are too dangerous during object destruction
   FOnTabSelected := nil;
   FOnTabSelecting := nil;
   FOnChange := nil;

@@ -32,94 +32,39 @@ WARNINGHEADER
 interface
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
-  {$IFDEF MSWINDOWS}
-  Windows,
-  {$ENDIF MSWINDOWS}
+  Windows, Messages,
   {$IFDEF COMPILER6_UP}
   Types,
   {$ENDIF COMPILER6_UP}
-  {$IFDEF HAS_UNIT_LIBC}
-  Libc,
-  {$ENDIF HAS_UNIT_LIBC}
-  Messages, Graphics, Controls, Forms,
-  Classes, SysUtils,
+  SysUtils, Classes, Graphics, Controls, Forms,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JvTypes, JvThemes, JVCLVer;
-
- {$DEFINE NeedMouseEnterLeave}
 
 type
   TDlgCode = (
-    dcWantAllKeys, dcWantArrows, dcWantTab, dcWantChars,
-    dcButton,
-    dcNative // if dcNative is in the set the native functions are used and GetDlgCode is ignored
+    dcWantAllKeys, dcWantArrows, dcWantChars, dcButton, dcHasSetSel, dcWantTab,
+    dcNative // if dcNative is in the set the native allowed keys are used and GetDlgCode is ignored
   );
   TDlgCodes = set of TDlgCode;
 
 const
   dcWantMessage = dcWantAllKeys;
 
-type
-  IPerformControl = interface
-    ['{B11AA73D-D7C2-43E5-BED8-8F82DE6152AB}']
-    function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
-  end;
-
-  IJvControlEvents = interface(IPerformControl)
-    ['{61FC57FF-D4DA-4840-B871-63DE804E9921}']
-    procedure VisibleChanged;
-    procedure EnabledChanged;
-    procedure TextChanged;
-    procedure FontChanged;
-    procedure ColorChanged;
-    procedure ParentFontChanged;
-    procedure ParentColorChanged;
-    procedure ParentShowHintChanged;
-    function WantKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; // CM_DIALOGCHAR
-    function HintShow(var HintInfo: THintInfo): Boolean;
-    function HitTest(X, Y: Integer): Boolean; // CM_HITTEST
-    procedure MouseEnter(AControl: TControl);
-    procedure MouseLeave(AControl: TControl);
-    procedure FocusChanged(Control: TWinControl);
-    procedure SetAutoSize(Value: Boolean);
-  end;
-
-  IJvWinControlEvents = interface(
-    {$IFDEF BCB}
-    IPerformControl
-    {$ELSE}
-    IJvControlEvents
-    {$ENDIF BCB}
-    )
-    ['{B5F7FB62-78F0-481D-AFF4-7A24ED6776A0}']
-    procedure BoundsChanged;
-    procedure CursorChanged;
-    procedure ShowingChanged;
-    procedure ShowHintChanged;
-    procedure ControlsListChanging(Control: TControl; Inserting: Boolean);
-    procedure ControlsListChanged(Control: TControl; Inserting: Boolean);
-    procedure GetDlgCode(var Code: TDlgCodes); // WM_GETDLGCODE
-    procedure DoSetFocus(FocusedWnd: HWND);  // WM_SETFOCUS
-    procedure DoKillFocus(FocusedWnd: HWND); // WM_KILLFOCUS
-    function PaintBackground(Canvas: TCanvas; Param: Integer): Boolean; // WM_ERASEBKGND
-  end;
-
-  IJvEditControlEvents = interface(IPerformControl)
-    ['{C1AE5EF8-F6C4-4BD4-879E-17946FD0FBAB}']
-    procedure DoClipboardPaste;
-    procedure DoClipboardCopy;
-    procedure DoClipboardCut;
-    procedure DoUndo;
-    procedure DoClearText;
-  end;
-
 const
   CM_DENYSUBCLASSING = JvThemes.CM_DENYSUBCLASSING;
+  {$IFDEF VisualCLX}
+  CM_PERFORM = CM_BASE + $500 + 0; // LParam: "Msg: ^TMessage"
+  {$ENDIF VisualCLX}
+  CM_SETAUTOSIZE = CM_BASE + $500 + 1; // WParam: "Value: Boolean"
 
 type
+  { IJvExControl is used for the identification of an JvExXxx control. }
+  IJvExControl = interface
+    ['{8E6579C3-D683-4562-AFAB-D23C8526E386}']
+  end;
+
   { Add IJvDenySubClassing to the base class list if the control should not
     be themed by the ThemeManager (www.delphi-gems.de).
     This only works with JvExVCL derived classes. }
@@ -127,465 +72,161 @@ type
     ['{76942BC0-2A6E-4DC4-BFC9-8E110DB7F601}']
   end;
 
-type
-  JV_CONTROL_EVENTS(Control)
-  JV_WINCONTROL_EVENTS(WinControl)
-  JV_CONTROL_EVENTS(GraphicControl)
-  JV_WINCONTROL_EVENTS(CustomControl)
-  JV_WINCONTROL_EVENTS(HintWindow)
-
 function ShiftStateToKeyData(Shift: TShiftState): Longint;
-
-function InheritMsgEx(Instance: TControl; Msg: Integer; WParam, LParam: Integer): Integer; overload;
-function InheritMsg(Instance: TControl; Msg: Integer): Integer; overload;
-procedure InheritMessage(Instance: TControl; var Msg: TMessage); overload;
-procedure DispatchMsg(Instance: TControl; var Msg);
-
-// jump targets:
-
-procedure Control_ControlsListChanging(Instance: TControl; Control: TControl;
-  Inserting: Boolean);
-procedure Control_ControlsListChanged(Instance: TControl; Control: TControl;
-  Inserting: Boolean);
-
+function GetFocusedControl(AControl: TControl): TWinControl;
+function DlgcToDlgCodes(Value: Longint): TDlgCodes;
+function DlgCodesToDlgc(Value: TDlgCodes): Longint;
+procedure GetHintColor(var HintInfo: THintInfo; AControl: TControl; HintColor: TColor);
 {$IFDEF COMPILER5}
-procedure TOpenControl_SetAutoSize(Instance: TControl; Value: Boolean);
+procedure TOpenControl_SetAutoSize(AControl: TControl; Value: Boolean);
 {$ENDIF COMPILER5}
 
-procedure Control_MouseEnter(Instance, Control: TControl; var FMouseOver: Boolean; var Event: TNotifyEvent);
+{$IFDEF VisualCLX}
+function Perform(AControl: TControl; Msg: Integer; WParam, LParam: Integer): Integer;
+{$ENDIF VisualCLX}
 
-procedure Control_MouseLeave(Instance, Control: TControl; var FMouseOver: Boolean; var Event: TNotifyEvent);
+{******************************************************************************}
 
-function DefaultPaintBackground(Instance: TWinControl; Canvas: TCanvas; Param: Integer): Boolean;
+type
+  CONTROL_DECL_DEFAULT(Control)
+  WINCONTROL_DECL_DEFAULT(WinControl)
+  WINCONTROL_DECL_DEFAULT(CustomControl)
+  CONTROL_DECL_DEFAULT(GraphicControl)
+  WINCONTROL_DECL_DEFAULT(HintWindow)
 
-procedure TCustomEdit_Undo(Instance: TWinControl);
-procedure TCustomEdit_Copy(Instance: TWinControl);
-procedure TCustomEdit_Paste(Instance: TWinControl);
-procedure TCustomEdit_Cut(Instance: TWinControl);
+  TJvExPubGraphicControl = class(TJvExGraphicControl)
+  COMMON_PUBLISHED
+  end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
 function ShiftStateToKeyData(Shift: TShiftState): Longint;
 const
   AltMask = $20000000;
+  CtrlMask = $10000000;
+  ShiftMask = $08000000;
 begin
   Result := 0;
   if ssAlt in Shift then
     Result := Result or AltMask;
+  if ssCtrl in Shift then
+    Result := Result or CtrlMask;
+  if ssShift in Shift then
+    Result := Result or ShiftMask;
 end;
 
-type
-  PInterface = ^IInterface;
-
-  TFreeNotificationHelper = class(TComponent)
-  private
-    FInstance: TComponent;
-    FIntfPtr: PInterface;
-  protected
-    procedure Notification(Component: TComponent; Operation: TOperation); override;
-  public
-    constructor Create(AInstance: TComponent; AIntfPtr: PInterface); reintroduce;
-    destructor Destroy; override;
-    function IsValid: Boolean;
-  end;
-
-constructor TFreeNotificationHelper.Create(AInstance: TComponent; AIntfPtr: PInterface);
-begin
-  inherited Create(nil);
-  FIntfPtr := AIntfPtr;
-  if csDestroying in AInstance.ComponentState then
-    FInstance := nil
-  else
-  begin
-    FInstance := AInstance;
-    FInstance.FreeNotification(Self);
-  end;
-end;
-
-destructor TFreeNotificationHelper.Destroy;
-begin
-  if Assigned(FInstance) then
-    FInstance.RemoveFreeNotification(Self);
-  inherited Destroy;
-end;
-
-function TFreeNotificationHelper.IsValid: Boolean;
-begin
-  Result := FIntfPtr <> nil;
-end;
-
-procedure TFreeNotificationHelper.Notification(Component: TComponent; Operation: TOperation);
-begin
-  if (Operation = opRemove) and (Component = FInstance) then
-  begin
-   // (ahuser) The component destroys the whole list so the following line could
-   //          be removed (but who knowns what the Delphi IDE will do without
-   //          this line.
-    FInstance.RemoveFreeNotification(Self);
-    FInstance := nil;
-    FIntfPtr^ := nil;
-    FIntfPtr := nil;
-  end;
-end;
-
-function InheritMsgEx(Instance: TControl; Msg: Integer; WParam, LParam: Integer): Integer;
+function GetFocusedControl(AControl: TControl): TWinControl;
 var
-  Mesg: TMessage;
+  Form: TCustomForm;
 begin
-  Mesg.Msg := Msg;
-  Mesg.WParam := WParam;
-  Mesg.LParam := LParam;
-  Mesg.Result := 0;
-  InheritMessage(Instance, Mesg);
-  Result := Mesg.Result;
+  Result := nil;
+  Form := GetParentForm(AControl);
+  if Assigned(Form) then
+    {$IFDEF VCL}
+    Result := Form.ActiveControl;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    Result := Form.FocusedControl;
+    {$ENDIF VisualCLX}
 end;
 
-function InheritMsg(Instance: TControl; Msg: Integer): Integer;
+function DlgcToDlgCodes(Value: Longint): TDlgCodes;
 begin
-  Result := InheritMsgEx(Instance, Msg, 0, 0);
+  Result := [];
+  if Value and DLGC_WANTARROWS <> 0 then
+    Include(Result, dcWantArrows);
+  if Value and DLGC_WANTTAB <> 0 then
+    Include(Result, dcWantTab);
+  if Value and DLGC_WANTALLKEYS <> 0 then
+    Include(Result, dcWantAllKeys);
+  if Value and DLGC_WANTCHARS <> 0 then
+    Include(Result, dcWantChars);
+  if Value and DLGC_BUTTON <> 0 then
+    Include(Result, dcButton);
+  if Value and DLGC_HASSETSEL <> 0 then
+    Include(Result, dcHasSetSel);
 end;
 
-procedure InheritMessage(Instance: TControl; var Msg: TMessage);
-type
-  TDispatchMethod = procedure(Self: TObject; var Msg: TMessage);
+function DlgCodesToDlgc(Value: TDlgCodes): Longint;
+begin
+  Result := 0;
+  if dcWantAllKeys in Value then
+    Result := Result or DLGC_WANTALLKEYS;
+  if dcWantArrows in Value then
+    Result := Result or DLGC_WANTARROWS;
+  if dcWantTab in Value then
+    Result := Result or DLGC_WANTTAB;
+  if dcWantChars in Value then
+    Result := Result or DLGC_WANTCHARS;
+  if dcButton in Value then
+    Result := Result or DLGC_BUTTON;
+  if dcHasSetSel in Value then
+    Result := Result or DLGC_HASSETSEL;
+end;
+
+procedure GetHintColor(var HintInfo: THintInfo; AControl: TControl; HintColor: TColor);
 var
-  Proc: TDispatchMethod;
+  AHintInfo: THintInfo;
 begin
-  Proc := @TObject.Dispatch;
-  Proc(Instance, Msg);
-end;
-
-procedure DispatchMsg(Instance: TControl; var Msg);
-var
-  Temp: IJvDenySubClassing;
-  IntfControl: IJvControlEvents;
-  IntfWinControl: IJvWinControlEvents;
-  IntfEditControl: IJvEditControlEvents;
-  PMsg: PMessage;
-  CallInherited: Boolean;
-  Canvas: TCanvas;
-  DlgCodes: TDlgCodes;
-  IdSaveDC: Integer;
-  Helper: TFreeNotificationHelper;
-begin
-  CallInherited := True;
-  PMsg := @Msg;
-
-  if PMsg^.Msg = CM_DENYSUBCLASSING then
-  begin
-    PMsg^.Result := Ord(Instance.GetInterface(IJvDenySubClassing, Temp));
-    Temp := nil; // does not destroy the control because it is derived from TComponent
-   // Let the control handle CM_DENYSUBCLASSING the old way, too.
-  end;
-
-  { GetInterface is no problem because Instance is a TComponent derived class that
-    is not released by an interface "Release". }
-  if Instance.GetInterface(IJvControlEvents, IntfControl) then
-  begin
-    CallInherited := False;
-    try
-      with IntfControl do
-        case PMsg^.Msg of
-          CM_VISIBLECHANGED:
-            VisibleChanged;
-          CM_ENABLEDCHANGED:
-            EnabledChanged;
-          CM_FONTCHANGED:
-            FontChanged;
-          CM_COLORCHANGED:
-            ColorChanged;
-          CM_PARENTFONTCHANGED:
-            ParentFontChanged;
-          CM_PARENTCOLORCHANGED:
-            ParentColorChanged;
-          CM_PARENTSHOWHINTCHANGED:
-            ParentShowHintChanged;
-          CM_TEXTCHANGED:
-            TextChanged;
-          CM_HINTSHOW:
-            PMsg^.Result := Integer(HintShow(TCMHintShow(PMsg^).HintInfo^));
-          CM_HITTEST:
-            with TCMHitTest(PMsg^) do
-              Result := Integer(HitTest(XPos, YPos));
-          CM_MOUSEENTER:
-              MouseEnter(TControl(PMsg^.LParam));
-          CM_MOUSELEAVE:
-              MouseLeave(TControl(PMsg^.LParam));
-          CM_DIALOGCHAR:
-            with TCMDialogChar(PMsg^) do
-              Result := Ord(WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode)));
-          // CM_FOCUSCHANGED: handled by a message handler in the JvExVCL classes
-        else
-          CallInherited := True;
+  case HintColor of
+    clNone:
+      HintInfo.HintColor := Application.HintColor;
+    clDefault:
+      begin
+        if Assigned(AControl) and Assigned(AControl.Parent) then
+        begin
+          AHintInfo := HintInfo;
+          {$IFDEF VCL}
+          AControl.Parent.Perform(CM_HINTSHOW, 0, Integer(@AHintInfo));
+          {$ENDIF VCL}
+          {$IFDEF VisualCLX}
+          Perform(AControl.Parent, CM_HINTSHOW, 0, Integer(@AHintInfo));
+          {$ENDIF VisualCLX}
+          HintInfo.HintColor := AHintInfo.HintColor;
         end;
-    finally
-      IntfControl := nil;
-    end;
-  end;
-
-  if CallInherited then
-  begin
-    if Instance.GetInterface(IJvWinControlEvents, IntfWinControl) then
-    begin
-      CallInherited := False;
-      try
-        with IntfWinControl do
-          case PMsg^.Msg of
-            CM_CURSORCHANGED:
-              CursorChanged;
-            CM_SHOWINGCHANGED:
-              ShowingChanged;
-            CM_SHOWHINTCHANGED:
-              ShowHintChanged;
-            CM_CONTROLLISTCHANGE:
-              if PMsg^.LParam <> 0 then
-                ControlsListChanging(TControl(PMsg^.WParam), True)
-              else
-                ControlsListChanged(TControl(PMsg^.WParam), False);
-            CM_CONTROLCHANGE:
-              if PMsg^.LParam = 0 then
-                ControlsListChanging(TControl(PMsg^.WParam), False)
-              else
-                ControlsListChanged(TControl(PMsg^.WParam), True);
-            WM_GETDLGCODE:
-              begin
-                Helper := TFreeNotificationHelper.Create(Instance, @IntfWinControl);
-                try
-                  InheritMessage(Instance, PMsg^);
-
-                  DlgCodes := [dcNative];
-                  if PMsg^.Result and DLGC_WANTARROWS <> 0 then
-                    Include(DlgCodes, dcWantArrows);
-                  if PMsg^.Result and DLGC_WANTTAB <> 0 then
-                    Include(DlgCodes, dcWantTab);
-                  if PMsg^.Result and DLGC_WANTALLKEYS <> 0 then
-                    Include(DlgCodes, dcWantAllKeys);
-                  if PMsg^.Result and DLGC_WANTCHARS <> 0 then
-                    Include(DlgCodes, dcWantChars);
-                  if PMsg^.Result and DLGC_BUTTON <> 0 then
-                    Include(DlgCodes, dcButton);
-
-                  if Helper.IsValid then
-                  begin
-                    GetDlgCode(DlgCodes);
-
-                    if not (dcNative in DlgCodes) then
-                    begin
-                      PMsg^.Result := 0;
-                      if dcWantAllKeys in DlgCodes then
-                        PMsg^.Result := PMsg^.Result or DLGC_WANTALLKEYS;
-                      if dcWantArrows in DlgCodes then
-                        PMsg^.Result := PMsg^.Result or DLGC_WANTARROWS;
-                      if dcWantTab in DlgCodes then
-                        PMsg^.Result := PMsg^.Result or DLGC_WANTTAB;
-                      if dcWantChars in DlgCodes then
-                        PMsg^.Result := PMsg^.Result or DLGC_WANTCHARS;
-                      if dcButton in DlgCodes then
-                        PMsg^.Result := PMsg^.Result or DLGC_BUTTON;
-                    end;
-                  end;
-                finally
-                  Helper.Free;
-                end;
-              end;
-            WM_SETFOCUS:
-              begin
-                Helper := TFreeNotificationHelper.Create(Instance, @IntfWinControl);
-                try
-                  InheritMessage(Instance, PMsg^);
-                  if Helper.IsValid then
-                    DoSetFocus(HWND(PMsg^.WParam));
-                finally
-                  Helper.Free;
-                end;
-              end;
-            WM_KILLFOCUS:
-              begin
-                Helper := TFreeNotificationHelper.Create(Instance, @IntfWinControl);
-                try
-                  InheritMessage(Instance, PMsg^);
-                  if Helper.IsValid then
-                    DoKillFocus(HWND(PMsg^.WParam));
-                finally
-                  Helper.Free;
-                end;
-              end;
-            WM_SIZE:
-              begin
-                BoundsChanged;
-                IntfWinControl := nil;
-                InheritMessage(Instance, PMsg^);
-              end;
-            WM_ERASEBKGND:
-              begin
-                IdSaveDC := SaveDC(HDC(PMsg^.WParam)); // protect DC against Stock-Objects from Canvas
-                Canvas := TCanvas.Create;
-                try
-                  Canvas.Handle := HDC(PMsg^.WParam);
-                  PMsg^.Result := Ord(PaintBackground(Canvas, PMsg^.LParam));
-                finally
-                  Canvas.Handle := 0;
-                  Canvas.Free;
-                  RestoreDC(HDC(PMsg^.WParam), IdSaveDC);
-                end;
-              end;
-            WM_PRINTCLIENT,
-            WM_PRINT:
-              begin
-                IdSaveDC := SaveDC(HDC(PMsg^.WParam)); // protect DC against changes
-                try
-                  InheritMessage(Instance, PMsg^);
-                finally
-                  RestoreDC(HDC(PMsg^.WParam), IdSaveDC);
-                end;
-              end;
-          else
-            CallInherited := True;
-        end;
-      finally
-        IntfWinControl := nil;
       end;
-    end;
-  end;
-
-  if CallInherited then
-  begin
-    if Instance.GetInterface(IJvEditControlEvents, IntfEditControl) then
-    begin
-      CallInherited := False;
-      try
-        with IntfEditControl do
-          case PMsg^.Msg of
-            WM_PASTE:
-              begin
-                DoClipboardPaste;
-                PMsg^.Result := 1;
-              end;
-            WM_COPY:
-              begin
-                // The PSDK documentation says that WM_COPY does not has a result
-                // value. This is wrong. WM_COPY returns the number of chars that
-                // were copied to the clipboard. Unfortunatelly does the CLX methods
-                // have no return value and so return 1. If we do not do this
-                // WM_CUT will not work.
-                DoClipboardCopy;
-                PMsg^.Result := 1;
-              end;
-            WM_CUT:
-              begin
-                DoClipboardCut;
-                PMsg^.Result := 1;
-              end;
-            WM_UNDO, EM_UNDO:
-              begin
-                DoUndo;
-                PMsg^.Result := 1;
-              end;
-            WM_CLEAR:
-              begin
-                DoClearText;
-                PMsg^.Result := 1;
-              end;
-          else
-            CallInherited := True;
-          end;
-      finally
-        IntfEditControl := nil;
-      end;
-    end;
-  end;
-
-  if CallInherited then
-    InheritMessage(Instance, PMsg^);
-end;
-
-{ VCL sends CM_CONTROLLISTCHANGE and CM_CONTROLCHANGE in an other order than
-  the CLX methods are used. So we must correct it by evaluating "Inserting". }
-procedure Control_ControlsListChanging(Instance: TControl; Control: TControl;
-  Inserting: Boolean);
-begin
-  if Inserting then
-    InheritMsgEx(Instance, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
   else
-    InheritMsgEx(Instance, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
-end;
-
-procedure Control_ControlsListChanged(Instance: TControl; Control: TControl;
-  Inserting: Boolean);
-begin
-  if not Inserting then
-    InheritMsgEx(Instance, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
-  else
-    InheritMsgEx(Instance, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
-end;
-
-procedure Control_MouseEnter(Instance, Control: TControl; var FMouseOver: Boolean; var Event: TNotifyEvent);
-begin
-  // (HEG) VCL: Control is nil iff Instance is the control that the mouse has left.
-  // Otherwise this is just a notification that the mouse entered
-  // one of its child controls
-  if (Control = nil) and not FMouseOver and not (csDesigning in Instance.ComponentState) then
-  begin
-    FMouseOver := True;
-    if Assigned(Event) then
-      Event(Instance);
+    HintInfo.HintColor := HintColor;
   end;
-  InheritMsgEx(Instance, CM_MOUSEENTER, 0, Integer(Control));
 end;
 
-procedure Control_MouseLeave(Instance, Control: TControl; var FMouseOver: Boolean; var Event: TNotifyEvent);
+{$IFDEF VisualCLX}
+function Perform(AControl: TControl; Msg: Integer; WParam, LParam: Integer): Integer;
+var
+  PerformMsg, Mesg: TMessage;
 begin
-  // (HEG) Control is nil if Instance is the control that the mouse has left.
-  // Otherwise this is just a notification that the mouse left
-  // one of its child controls
-  if (Control = nil) and FMouseOver and not (csDesigning in Instance.ComponentState) then
+  if AControl.GetInterfaceEntry(IJvExControl) <> nil then
   begin
-    FMouseOver := False;
-    if Assigned(Event) then
-      Event(Instance);
+    Mesg.Msg := Msg;
+    Mesg.WParam := WParam;
+    Mesg.LParam := LParam;
+    Mesg.Result := 0;
+
+    PerformMsg.Msg := CM_PERFORM;
+    PerformMsg.WParam := 0;
+    PerformMsg.LParam := @Mesg;
+    PerformMsg.Result := 0;
+    AControl.Dispatch(PerformMsg);
   end;
-  InheritMsgEx(Instance, CM_MOUSELEAVE, 0, Integer(Control));
 end;
-
-function DefaultPaintBackground(Instance: TWinControl; Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  Result := InheritMsgEx(Instance, WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
-end;
-
-type
-  TControlAccessProtected = class(TControl);
-
-procedure TCustomEdit_Undo(Instance: TWinControl);
-begin
-  InheritMsg(Instance, WM_UNDO);
-end;
-
-procedure TCustomEdit_Copy(Instance: TWinControl);
-begin
-  InheritMsg(Instance, WM_COPY);
-end;
-
-procedure TCustomEdit_Cut(Instance: TWinControl);
-begin
-  InheritMsg(Instance, WM_CUT);
-end;
-
-procedure TCustomEdit_Paste(Instance: TWinControl);
-begin
-  InheritMsg(Instance, WM_PASTE);
-end;
+{$ENDIF VisualCLX}
 
 // *****************************************************************************
 
-JV_CONTROL_EVENTS_IMPL(Control)
-JV_WINCONTROL_EVENTS_IMPL(WinControl)
-JV_CONTROL_EVENTS_IMPL(GraphicControl)
-JV_WINCONTROL_EVENTS_IMPL(CustomControl)
-JV_WINCONTROL_EVENTS_IMPL(HintWindow)
+{$IFDEF COMPILER5}
 
-
-// *****************************************************************************
-
+{ Delphi 5's SetAutoSize is private and not virtual. This code installs a
+  JUMP-Hook into SetAutoSize that jumps to our function. }
 type
   PBoolean = ^Boolean;
   PPointer = ^Pointer;
@@ -705,56 +346,62 @@ begin
   end;
 end;
 
-{$IFDEF COMPILER5}
 var
   AutoSizeOffset: Cardinal;
   TControl_SetAutoSize: Pointer;
 
-procedure OrgSetAutoSize(Instance: TControl; Value: Boolean);
+type
+  TControlAccessProtected = class(TControl);
+
+procedure OrgSetAutoSize(AControl: TControl; Value: Boolean);
 asm
         DD    0, 0, 0, 0  // 16 Bytes
 end;
 
-procedure TOpenControl_SetAutoSize(Instance: TControl; Value: Boolean);
+procedure TOpenControl_SetAutoSize(AControl: TControl; Value: Boolean);
 begin
-  with TControlAccessProtected(Instance) do
+  // same as OrgSetAutoSize(AControl, Value); but secure
+  with TControlAccessProtected(AControl) do
   begin
     if AutoSize <> Value then
     begin
-      PBoolean(Cardinal(Instance) + AutoSizeOffset)^ := Value;
+      PBoolean(Cardinal(AControl) + AutoSizeOffset)^ := Value;
       if Value then
         AdjustSize;
     end;
   end;
-  // same as OrgSetAutoSize(Instance, Value); but secure
 end;
 
-procedure SetAutoSizeHook(Instance: TControl; Value: Boolean);
+procedure SetAutoSizeHook(AControl: TControl; Value: Boolean);
 var
-  IntfControl: IJvControlEvents;
+  Msg: TMessage;
 begin
-  if Instance.GetInterface(IJvControlEvents, IntfControl) then
-    IntfControl.SetAutoSize(Value)
+  if AControl.GetInterfaceEntry(IJvExControl) <> nil then
+  begin
+    Msg.Msg := CM_SETAUTOSIZE;
+    Msg.WParam := Ord(Value);
+    AControl.Dispatch(Msg);
+  end
   else
-    TOpenControl_SetAutoSize(Instance, Value);
+    TOpenControl_SetAutoSize(AControl, Value);
 end;
 
 {$OPTIMIZATION ON} // be sure to have optimization activated
-function GetCode(Instance: TControlAccessProtected): Boolean; register;
+function GetCode(AControl: TControlAccessProtected): Boolean; register;
 begin
   { generated code:
       8A40xx       mov al,[eax+Byte(Offset)]
   }
-  Result := Instance.AutoSize;
+  Result := AControl.AutoSize;
 end;
 
-procedure SetCode(Instance: TControlAccessProtected); register;
+procedure SetCode(AControl: TControlAccessProtected); register;
 begin
   { generated code:
       B201         mov dl,$01
       E8xxxxxxxx   call TControl.SetAutoSize
   }
-  Instance.AutoSize := True;
+  AControl.AutoSize := True;
 end;
 
 type
@@ -800,15 +447,14 @@ end;
 
 {$ENDIF COMPILER5}
 
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
+// *****************************************************************************
+
+CONTROL_IMPL_DEFAULT(Control)
+WINCONTROL_IMPL_DEFAULT(WinControl)
+CONTROL_IMPL_DEFAULT(GraphicControl)
+WINCONTROL_IMPL_DEFAULT(CustomControl)
+WINCONTROL_IMPL_DEFAULT(HintWindow)
+
 
 initialization
   {$IFDEF UNITVERSIONING}

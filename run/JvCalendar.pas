@@ -176,11 +176,11 @@ type
     procedure DoDateSelect(StartDate, EndDate: TDateTime); virtual;
     procedure DoDateSelChange(StartDate, EndDate: TDateTime); virtual;
     procedure DoGetDayState(var DayState: TNMDayState; var StateArray: TMonthDayStateArray); virtual;
-    procedure DoKillFocus(FocusedWnd: HWND); override;
-    procedure DoSetFocus(FocusedWnd: HWND); override;
+    procedure FocusKilled(NextWnd: HWND); override;
+    procedure FocusSet(PrevWnd: HWND); override;
 
-    procedure DoSetFocusEvent(const APreviousControl: TWinControl); virtual;
-    procedure DoKillFocusEvent(const ANextControl: TWinControl); virtual;
+    procedure DoFocusSet(const APreviousControl: TWinControl); virtual;
+    procedure DoFocusKilled(const ANextControl: TWinControl); virtual;
 
     property MinSize: TRect read GetMinSize;
     property Bold[Year, Month, Day: Word]: Boolean read IsBold write SetBold;
@@ -1270,35 +1270,35 @@ begin
   Result := FAppearance.FirstDayOfWeek;
 end;
 
-procedure TJvCustomMonthCalendar.DoKillFocus(FocusedWnd: HWND);
+procedure TJvCustomMonthCalendar.FocusKilled(NextWnd: HWND);
 begin
   FLeaving := True;
   try
-    inherited DoKillFocus(FocusedWnd);
-    DoKillFocusEvent(FindControl(FocusedWnd));
+    inherited FocusKilled(NextWnd);
+    DoFocusKilled(FindControl(NextWnd));
   finally
     FLeaving := False;
   end;
 end;
 
-procedure TJvCustomMonthCalendar.DoSetFocus(FocusedWnd: HWND);
+procedure TJvCustomMonthCalendar.FocusSet(PrevWnd: HWND);
 begin
   FEntering := True;
   try
-    inherited DoSetFocus(FocusedWnd);
-    DoSetFocusEvent(FindControl(FocusedWnd));
+    inherited FocusSet(PrevWnd);
+    DoFocusSet(FindControl(PrevWnd));
   finally
     FEntering := False;
   end;
 end;
 
-procedure TJvCustomMonthCalendar.DoSetFocusEvent(const APreviousControl: TWinControl);
+procedure TJvCustomMonthCalendar.DoFocusSet(const APreviousControl: TWinControl);
 begin
   if Assigned(OnSetFocus) then
     OnSetFocus(Self, APreviousControl);
 end;
 
-procedure TJvCustomMonthCalendar.DoKillFocusEvent(const ANextControl: TWinControl);
+procedure TJvCustomMonthCalendar.DoFocusKilled(const ANextControl: TWinControl);
 begin
   if Assigned(OnKillFocus) then
     OnKillFocus(Self, ANextControl);

@@ -33,21 +33,19 @@ WARNINGHEADER
 interface
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
-  Windows, Messages, Graphics, Controls, Forms, DBGrids,
+  Windows, Messages,
   {$IFDEF COMPILER6_UP}
   Types,
   {$ENDIF COMPILER6_UP}
-  Classes, SysUtils,
+  SysUtils, Classes, Graphics, Controls, Forms, DBGrids,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JvTypes, JvThemes, JVCLVer, JvExControls;
 
- {$DEFINE NeedMouseEnterLeave}
-
 type
-  JV_WINCONTROL_EVENTS(CustomDBGrid)
-  JV_WINCONTROL_EVENTS(DBGrid)
+  WINCONTROL_DECL_DEFAULT(CustomDBGrid)
+  WINCONTROL_DECL_DEFAULT(DBGrid)
 
 {$IFDEF UNITVERSIONING}
 const
@@ -61,11 +59,12 @@ const
 
 implementation
 
-JV_WINCONTROL_EVENTS_IMPL(CustomDBGrid)
-JV_WINCONTROL_EVENTS_IMPL(DBGrid)
+WINCONTROL_IMPL_DEFAULT(CustomDBGrid)
+WINCONTROL_IMPL_DEFAULT(DBGrid)
 
-{$IFDEF UNITVERSIONING}
+
 initialization
+{$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
 
 finalization

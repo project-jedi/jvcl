@@ -184,9 +184,9 @@ type
     // Normally, you don't need to call this method.
     procedure ClearChildTabStops;
 
-    procedure DoKillFocus(FocusedWnd: HWND); override;
-    procedure DoSetFocus(FocusedWnd: HWND); override;
-    function PaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    procedure FocusKilled(NextWnd: HWND); override;
+    procedure FocusSet(PrevWnd: HWND); override;
+    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     function WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean; override;
@@ -876,9 +876,9 @@ begin
   RedrawControl(False);
 end;
 
-function TJvCustomRollOut.PaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvCustomRollOut.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
-  //  inherited PaintBackground(Canvas, Param);
+  //  inherited DoEraseBackground(Canvas, Param);
   Result := False;
 end;
 
@@ -1114,17 +1114,17 @@ begin
   Result := PtInRect(R, P);
 end;
 
-procedure TJvCustomRollOut.DoKillFocus(FocusedWnd: HWND);
+procedure TJvCustomRollOut.FocusKilled(NextWnd: HWND);
 begin
   CheckChildTabStops;
-  inherited DoKillFocus(FocusedWnd);
+  inherited FocusKilled(NextWnd);
   Invalidate;
 end;
 
-procedure TJvCustomRollOut.DoSetFocus(FocusedWnd: HWND);
+procedure TJvCustomRollOut.FocusSet(PrevWnd: HWND);
 begin
   CheckChildTabStops;
-  inherited DoSetFocus(FocusedWnd);
+  inherited FocusSet(PrevWnd);
   Invalidate;
 end;
 

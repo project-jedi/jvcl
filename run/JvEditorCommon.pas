@@ -752,14 +752,14 @@ type
     procedure DblClick; override;
 
     procedure GetDlgCode(var Code: TDlgCodes); override;
-    procedure DoSetFocus(FocusedWnd: HWND); override;
-    procedure DoKillFocus(FocusedWnd: HWND); override;
+    procedure FocusSet(PrevWnd: HWND); override;
+    procedure FocusKilled(NextWnd: HWND); override;
     procedure DoPaste; dynamic;
     procedure DoCopy; dynamic;
     procedure DoCut; dynamic;
     procedure CursorChanged; override;
     procedure FontChanged; override;
-    function PaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
 
     { IFixedPopupIntf method assignment }
     procedure IFixedPopupIntf.Cut = ClipboardCut;
@@ -3251,16 +3251,16 @@ begin
   Code := [dcWantArrows, dcWantTab, dcWantChars, dcWantMessage];
 end;
 
-procedure TJvCustomEditorBase.DoSetFocus(FocusedWnd: HWND);
+procedure TJvCustomEditorBase.FocusSet(PrevWnd: HWND);
 begin
-  inherited DoSetFocus(FocusedWnd);
+  inherited FocusSet(PrevWnd);
   CreateCaret(Handle, 0, 2, CellRect.Height - 2);
   PaintCaret(True);
 end;
 
-procedure TJvCustomEditorBase.DoKillFocus(FocusedWnd: HWND);
+procedure TJvCustomEditorBase.FocusKilled(NextWnd: HWND);
 begin
-  inherited DoKillFocus(FocusedWnd);
+  inherited FocusKilled(NextWnd);
   Completion.CloseUp(False);
   DestroyCaret;
 end;
@@ -3303,7 +3303,7 @@ begin
     UpdateEditorSize;
 end;
 
-function TJvCustomEditorBase.PaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvCustomEditorBase.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := False; // no background erase
 end;

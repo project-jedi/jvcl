@@ -163,7 +163,7 @@ type
     procedure Change; override;
     procedure Loaded; override;
     procedure CreateWnd; override;
-    procedure DoKillFocusEvent(const ANextControl: TWinControl); override;
+    procedure DoKillFocus(const ANextControl: TWinControl); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
     procedure CreatePopup; override;
@@ -623,7 +623,7 @@ begin
   Button.Flat := not Self.Ctl3D;
 end;
 
-procedure TJvCustomDatePickerEdit.DoKillFocusEvent(const ANextControl: TWinControl);
+procedure TJvCustomDatePickerEdit.DoKillFocus(const ANextControl: TWinControl);
 var
   lDate: TDateTime;
 begin
@@ -632,7 +632,7 @@ begin
     if not FDateError then
     begin
       PopupCloseUp(Self, False);
-      inherited DoKillFocusEvent(ANextControl);
+      inherited DoKillFocus(ANextControl);
       if EnableValidation then
       try
         lDate := Self.Date;
@@ -651,7 +651,7 @@ begin
       end;
     end
     else
-      inherited DoKillFocusEvent(ANextControl);
+      inherited DoKillFocus(ANextControl);
 end;
 
 //procedure TJvCustomDatePickerEdit.DropButtonClick(Sender: TObject);
@@ -1107,9 +1107,9 @@ begin
   if PtInRect(BoundsRect, P) then
     Exit;
   if Assigned(ANextControl) then
-    Self.DoKillFocus(ANextControl.Handle)
+    FocusKilled(ANextControl.Handle)
   else
-    Self.DoKillFocus(0);
+    FocusKilled(0);
 end;
 
 procedure TJvDropCalendar.CalSelChange(Sender: TObject;

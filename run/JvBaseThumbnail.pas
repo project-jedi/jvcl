@@ -102,7 +102,7 @@ type
   }
   TJvThumbTitle = class(TJvExPanel)
   protected
-    function PaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure Click; override;
     procedure DblClick; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -143,7 +143,7 @@ type
 
   TJvBaseThumbnail = class(TJvExPanel)
   protected
-    function PaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -166,7 +166,7 @@ type
 
   TJvBaseThumbView = class(TJvExScrollBox)
   protected
-    // function PaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    // function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
   end;
@@ -326,9 +326,9 @@ begin
   IncludeThemeStyle(Self, [csNeedsBorderPaint]);
 end;
 
-function TJvThumbTitle.PaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvThumbTitle.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
-  inherited PaintBackground(Canvas, Param);
+  inherited DoEraseBackground(Canvas, Param);
   Result := True;
 end;
 
@@ -514,9 +514,9 @@ begin
     inherited MouseDown(Button, Shift, X, Y);
 end;
 
-function TJvBaseThumbnail.PaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvBaseThumbnail.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
-  inherited PaintBackground(Canvas, Param);
+  inherited DoEraseBackground(Canvas, Param);
   Result := True;
 end;
 
@@ -614,10 +614,10 @@ begin
   IncludeThemeStyle(Self, [csNeedsBorderPaint]);
 end;
 {
-function TJvBaseThumbView.PaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvBaseThumbView.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   //Result :=
-    inherited PaintBackground(Canvas, Param);
+    inherited DoEraseBackground(Canvas, Param);
   Result := False;
 end;
 }

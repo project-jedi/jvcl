@@ -91,9 +91,9 @@ type
   protected
     procedure DoEnter; override;
     procedure DoExit; override;
-    procedure DoClipboardCut; override;
-    procedure DoClipboardPaste; override;
-    procedure DoUndo; override;
+    procedure WMCut(var Msg: TMessage); message WM_CUT;
+    procedure WMPaste(var Msg: TMessage); message WM_PASTE;
+    procedure WMUndo(var Msg: TMessage); message WM_UNDO;
     procedure Change; override;
     function EditCanModify: Boolean; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
@@ -201,8 +201,8 @@ type
   protected
     procedure DoEnter; override;
     procedure DoExit; override;
-    procedure DoClipboardCut; override;
-    procedure DoClipboardPaste; override;
+    procedure WMCut(var Msg: TMessage); message WM_CUT;
+    procedure WMPaste(var Msg: TMessage); message WM_PASTE;
     procedure Change; override;
     function EditCanModify: Boolean; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
@@ -314,8 +314,8 @@ type
     procedure SetReadOnly(Value: Boolean); reintroduce;
   protected
     procedure DoExit; override;
-    procedure DoClipboardCut; override;
-    procedure DoClipboardPaste; override;
+    procedure WMCut(var Msg: TMessage); message WM_CUT;
+    procedure WMPaste(var Msg: TMessage); message WM_PASTE;
     procedure AcceptValue(const Value: Variant); override;
     procedure ApplyDate(Value: TDateTime); override;
     procedure Change; override;
@@ -452,8 +452,8 @@ type
     procedure SetReadOnly(Value: Boolean); reintroduce;
   protected
     procedure DoExit; override;
-    procedure DoClipboardCut; override;
-    procedure DoClipboardPaste; override;
+    procedure WMCut(var Msg: TMessage); message WM_CUT;
+    procedure WMPaste(var Msg: TMessage); message WM_PASTE;
     procedure AcceptValue(const Value: Variant); override;
     function GetDisplayText: string; override;
     procedure Change; override;
@@ -907,22 +907,22 @@ begin
   FDataLink.Field.Text := Text;
 end;
 
-procedure TJvDBMaskEdit.DoUndo;
+procedure TJvDBMaskEdit.WMUndo(var Msg: TMessage);
 begin
   FDataLink.Edit;
-  inherited DoUndo;
+  inherited;
 end;
 
-procedure TJvDBMaskEdit.DoClipboardPaste;
+procedure TJvDBMaskEdit.WMPaste(var Msg: TMessage);
 begin
   FDataLink.Edit;
-  inherited DoClipboardPaste;
+  inherited;
 end;
 
-procedure TJvDBMaskEdit.DoClipboardCut;
+procedure TJvDBMaskEdit.WMCut(var Msg: TMessage);
 begin
   FDataLink.Edit;
-  inherited DoClipboardCut;
+  inherited;
 end;
 
 procedure TJvDBMaskEdit.DoEnter;
@@ -1342,16 +1342,16 @@ begin
   FDataLink.Field.Text := Text;
 end;
 
-procedure TJvDBComboEdit.DoClipboardPaste;
+procedure TJvDBComboEdit.WMPaste(var Msg: TMessage);
 begin
   FDataLink.Edit;
-  inherited DoClipboardPaste;
+  inherited;
 end;
 
-procedure TJvDBComboEdit.DoClipboardCut;
+procedure TJvDBComboEdit.WMCut(var Msg: TMessage);
 begin
   FDataLink.Edit;
-  inherited DoClipboardCut;
+  inherited;
 end;
 
 procedure TJvDBComboEdit.DoEnter;
@@ -1712,16 +1712,16 @@ begin
   inherited ApplyDate(Value);
 end;
 
-procedure TJvDBDateEdit.DoClipboardPaste;
+procedure TJvDBDateEdit.WMPaste(var Msg: TMessage);
 begin
   FDataLink.Edit;
-  inherited DoClipboardPaste;
+  inherited;
 end;
 
-procedure TJvDBDateEdit.DoClipboardCut;
+procedure TJvDBDateEdit.WMCut(var Msg: TMessage);
 begin
   FDataLink.Edit;
-  inherited DoClipboardCut;
+  inherited;
 end;
 
 procedure TJvDBDateEdit.DoExit;
@@ -2148,16 +2148,16 @@ begin
   DoChange;
 end;
 
-procedure TJvDBCalcEdit.DoClipboardPaste;
+procedure TJvDBCalcEdit.WMPaste(var Msg: TMessage);
 begin
   FDataLink.Edit;
-  inherited DoClipboardPaste;
+  inherited;
 end;
 
-procedure TJvDBCalcEdit.DoClipboardCut;
+procedure TJvDBCalcEdit.WMCut(var Msg: TMessage);
 begin
   FDataLink.Edit;
-  inherited DoClipboardCut;
+  inherited;
 end;
 
 // Polaris
