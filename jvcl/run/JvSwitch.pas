@@ -61,8 +61,8 @@ type
     procedure CreateDisabled(Index: Boolean);
     procedure ReadBinaryData(Stream: TStream);
     procedure WriteBinaryData(Stream: TStream);
-    procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
   protected
+    procedure DoFocusChanged(Control: TWinControl); override;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
@@ -267,19 +267,18 @@ begin
   end;
 end;
 
-procedure TJvSwitch.CMFocusChanged(var Msg: TCMFocusChanged);
+procedure TJvSwitch.DoFocusChanged(Control: TWinControl);
 var
   Active: Boolean;
 begin
-  with Msg do
-    Active := (Sender = Self);
+  Active := (Control = Self);
   if Active <> FActive then
   begin
     FActive := Active;
     if FShowFocus then
       Invalidate;
   end;
-  inherited;
+  inherited DoFocusChanged(Control);
 end;
 
 procedure TJvSwitch.EnabledChanged;

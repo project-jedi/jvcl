@@ -53,7 +53,6 @@ type
     FValue: TJvDiceValue;
     FOnStart: TNotifyEvent;
     FOnStop: TNotifyEvent;
-    procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure SetInterval(Value: Cardinal);
     procedure SetRotate(Value: Boolean);
     procedure SetShowFocus(Value: Boolean);
@@ -61,6 +60,7 @@ type
     procedure TimerFires(Sender: TObject);
     procedure NewRandomValue;
   protected
+    procedure DoFocusChanged(Control: TWinControl); override;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure SetAutoSize(Value: Boolean); override;
     function GetPalette: HPALETTE; override;
@@ -192,19 +192,18 @@ begin
     FOnStop(Self);
 end;
 
-procedure TJvDice.CMFocusChanged(var Msg: TCMFocusChanged);
+procedure TJvDice.DoFocusChanged(Control: TWinControl);
 var
   Active: Boolean;
 begin
-  with Msg do
-    Active := (Sender = Self);
+  Active := (Control = Self);
   if Active <> FActive then
   begin
     FActive := Active;
     if FShowFocus then
       Invalidate;
   end;
-  inherited;
+  inherited DoFocusChanged(Control);
 end;
 
 function TJvDice.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;

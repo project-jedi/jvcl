@@ -57,6 +57,7 @@ uses
 
 type
   TShadowPosition = (spLeftTop, spLeftBottom, spRightBottom, spRightTop);
+
   TJvCustomLabel = class(TJvGraphicControl)
   private
     FFocusControl: TWinControl;
@@ -104,7 +105,6 @@ type
     procedure SetTransparent(Value: Boolean);
     procedure SetWordWrap(Value: Boolean);
     procedure SetShowFocus(Value: Boolean);
-    procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure WMRButtonDown(var Msg: TWMRButtonDown); message WM_RBUTTONDOWN;
     procedure WMRButtonUp(var Msg: TWMRButtonUp); message WM_RBUTTONUP;
     procedure SetImageIndex(const Value: TImageIndex);
@@ -116,6 +116,7 @@ type
     procedure SetSpacing(const Value: integer);
     procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
   protected
+    procedure DoFocusChanged(Control: TWinControl); override;
     procedure TextChanged; override;
     procedure FontChanged; override;
     function WantKey(Key: Integer; Shift: TShiftState;
@@ -768,18 +769,18 @@ begin
       MouseLeave(Self);
 end;
 
-procedure TJvCustomLabel.CMFocusChanged(var Msg: TCMFocusChanged);
+procedure TJvCustomLabel.DoFocusChanged(Control: TWinControl);
 var
   Active: Boolean;
 begin
-  Active := Assigned(FFocusControl) and (Msg.Sender = FFocusControl);
+  Active := Assigned(FFocusControl) and (Control = FFocusControl);
   if FFocused <> Active then
   begin
     FFocused := Active;
     if FShowFocus then
       Invalidate;
   end;
-  inherited;
+  inherited DoFocusChanged(Control);
 end;
 
 procedure TJvCustomLabel.TextChanged;
