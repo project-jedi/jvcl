@@ -26,11 +26,21 @@ unit QDesignWindows;
 interface
 
 uses
-  ClxDesignWindows;
+  Classes, ClxDesignWindows;
 
 type
-  TDesignWindow = TClxDesignWindow;
+  TDesignWindow = class(TClxDesignWindow)
+  protected
+    function UniqueName(Component: TComponent): string; override;
+  end;
 
 implementation
+
+{ TDesignWindow }
+
+function TDesignWindow.UniqueName(Component: TComponent): string;
+begin
+  Result := Designer.UniqueName(Component.ClassName);
+end;
 
 end.
