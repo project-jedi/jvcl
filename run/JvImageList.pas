@@ -144,7 +144,7 @@ type
       //   imClassic: be a normal TImageList
       //   imPicture: split the image in Picture
       //   imResourceIds: load the images by ResourceIds
-      //   imItemList: uses
+      //   imItemList: the AddItem, DeleteItem, ClearItems and GetItemInfoStr methods are available
 
     {$IFDEF VCL}
     property PixelFormat: TPixelFormat read FPixelFormat write SetPixelFormat default pfDevice;
