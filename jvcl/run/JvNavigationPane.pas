@@ -1510,6 +1510,7 @@ begin
   FStyleLink.Free;
   FColors.Free;
   FNavPanelFont.Free;
+  FNavPanelHotTrackFont.Free;
   FBackground.Free;
   inherited Destroy;
 end;
