@@ -113,6 +113,8 @@ type
     function CreateFilter: string;
     procedure SetFilters;
     function GetBufferName(AName: string): string;
+    function GetMaxThumbHeight: longint;
+    function GetMaxThumbWidth: longint;
     //    Procedure WMLoadWhenReady(var Message:TMessage); Message WM_LoadWhenReady;
   protected
     { Protected declarations }
@@ -160,8 +162,8 @@ type
     property AutoHandleKeyb: boolean read Pautohandle write Pautohandle;
     property MinMemory: Boolean read FMinMemory write FMinMemory;
     property Count: word read getcount default 0;
-    property MaxWidth: longint read FMaxsize.X write SetThumbWidth;
-    property MaxHeight: longint read FMaxsize.y write SetThumbheight;
+    property MaxWidth: longint read GetMaxThumbWidth write SetThumbWidth;
+    property MaxHeight: longint read GetMaxThumbHeight write SetThumbheight;
     property Size: TPercent read FPercent write SetPercent;
     property ScrollMode: TScrollMode read FScrollMode write SetScrollMode;
     property Directory: string read FDirectory write Setdirectory;
@@ -1135,6 +1137,16 @@ end;
 function TJvThumbList.GetThumb(Apos: longint): TJvThumbNail;
 begin
   Result := TJvThumbNail(objects[apos]);
+end;
+
+function TJvThumbView.GetMaxThumbHeight: longint;
+begin
+  Result := FMaxsize.Y;
+end;
+
+function TJvThumbView.GetMaxThumbWidth: longint;
+begin
+  Result := FMaxsize.X;
 end;
 
 end.
