@@ -41,7 +41,7 @@ uses
 
 const
   // a version string for the component
-  cHidControllerClassVersion = '1.0.21';
+  cHidControllerClassVersion = '1.0.22';
 
   // strings from the registry for CheckOutByClass
   cHidKeyboardClass = 'Keyboard';
@@ -56,7 +56,8 @@ type
   // the Event function declarations
   TJvHidEnumerateEvent  = function (HidDev: TJvHidDevice;
                                     const Idx: Integer): Boolean of object;
-  TJvHidUnplugEvent     = procedure(HidDev: TJvHidDevice) of object;
+  TJvHidPlugEvent       = procedure(HidDev: TJvHidDevice) of object;
+  TJvHidUnplugEvent     = TJvHidPlugEvent;
   TJvHidDataEvent       = procedure(HidDev: TJvHidDevice; ReportID: Byte;
                                     const Data: Pointer; Size: Word) of object;
   TJvHidDataErrorEvent  = procedure(HidDev: TJvHidDevice; Error: DWORD) of object;
@@ -90,13 +91,13 @@ type
     FBusNumber: DWORD;
     FBusType: string;
     FCharacteristics: string;
-    FDevType: string;
+    FDevType: DWORD;
     FEnumeratorName: string;
     FExclusive: DWORD;
-    FLegacyBusType: string;
+    FLegacyBusType: DWORD;
     FLocationInfo: string;
     FPhysDevObjName: string;
-    FSecurity: string;
+    FSecuritySDS: string;
     FService: string;
     FUINumber: DWORD;
     FUINumberFormat: string;
@@ -123,13 +124,13 @@ type
     property BusNumber:       DWORD       read FBusNumber;
     property BusType:         string      read FBusType;
     property Characteristics: string      read FCharacteristics;
-    property DevType:         string      read FDevType;
+    property DevType:         DWORD       read FDevType;
     property EnumeratorName:  string      read FEnumeratorName;
     property Exclusive:       DWORD       read FExclusive;
-    property LegacyBusType:   string      read FLegacyBusType;
+    property LegacyBusType:   DWORD       read FLegacyBusType;
     property LocationInfo:    string      read FLocationInfo;
     property PhysDevObjName:  string      read FPhysDevObjName;
-    property Security:        string      read FSecurity;
+    property SecuritySDS:     string      read FSecuritySDS;
     property Service:         string      read FService;
     property UINumber:        DWORD       read FUINumber;
     property UINumberFormat:  string      read FUINumberFormat;
@@ -341,11 +342,13 @@ type
   private
     // internal properties part
     FHidGuid:              TGUID;
+    FArrivalEvent:         TJvHidPlugEvent;
     FDeviceChangeEvent:    TNotifyEvent;
     FEnumerateEvent:       TJvHidEnumerateEvent;
     FDevDataEvent:         TJvHidDataEvent;
     FDevDataErrorEvent:    TJvHidDataErrorEvent;
     FDevUnplugEvent:       TJvHidUnplugEvent;
+    FRemovalEvent:         TJvHidUnplugEvent;
     FDeviceChangeFired:    Boolean;
     FDevThreadSleepTime:   Integer;
     FVersion:              string;
@@ -362,6 +365,8 @@ type
     function  EventPipe   (var Msg: TMessage): Boolean;
 
   protected
+    procedure DoArrival(HidDev: TJvHidDevice);
+    procedure DoRemoval(HidDev: TJvHidDevice);
     procedure DoDeviceChange;
     // internal event implementors
     function  DoEnumerate          (HidDev: TJvHidDevice; Idx: Integer): Boolean;
@@ -406,6 +411,7 @@ type
   published
     property DevThreadSleepTime: Integer              read FDevThreadSleepTime write SetDevThreadSleepTime default 100;
     property Version:            string               read FVersion            write FDummy stored False;
+    property  OnArrival:         TJvHidPlugEvent      read FArrivalEvent       write FArrivalEvent;
     // the iterator event
     property  OnEnumerate:       TJvHidEnumerateEvent read FEnumerateEvent     write SetEnumerate;
     // the central event for HID device changes
@@ -414,6 +420,7 @@ type
     property  OnDeviceData:      TJvHidDataEvent      read FDevDataEvent       write SetDevData;
     property  OnDeviceDataError: TJvHidDataErrorEvent read FDevDataErrorEvent  write SetDevDataError;
     property  OnDeviceUnplug:    TJvHidUnplugEvent    read FDevUnplugEvent     write SetDevUnplug;
+    property  OnRemoval:         TJvHidUnplugEvent    read FRemovalEvent       write FRemovalEvent;
     // to be callable at design time
     procedure DeviceChange;
   end;
@@ -578,6 +585,7 @@ begin
   FDeviceID   := ADevData.DevInst;
   FDevicePath := ADevicePath;
 
+  // primary information
   FCapabilities    := GetRegistryPropertyDWord     (APnPHandle, ADevData, SPDRP_CAPABILITIES);
   FClassDescr      := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_CLASS);
   FClassGUID       := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_CLASSGUID);
@@ -590,19 +598,20 @@ begin
   FLowerFilters    := GetRegistryPropertyStringList(APnPHandle, ADevData, SPDRP_LOWERFILTERS);
   FMfg             := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_MFG);
   FUpperFilters    := GetRegistryPropertyStringList(APnPHandle, ADevData, SPDRP_UPPERFILTERS);
+  FService         := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_SERVICE);
 
+  // secondary information not all likely to exist for a HID device
   FAddress         := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_ADDRESS);
   FBusNumber       := GetRegistryPropertyDWord     (APnPHandle, ADevData, SPDRP_BUSNUMBER);
   FBusType         := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_BUSTYPEGUID);
   FCharacteristics := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_CHARACTERISTICS);
-  FDevType         := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_DEVTYPE);
+  FDevType         := GetRegistryPropertyDWord     (APnPHandle, ADevData, SPDRP_DEVTYPE);
   FEnumeratorName  := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_ENUMERATOR_NAME);
   FExclusive       := GetRegistryPropertyDWord     (APnPHandle, ADevData, SPDRP_EXCLUSIVE);
-  FLegacyBusType   := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_LEGACYBUSTYPE);
+  FLegacyBusType   := GetRegistryPropertyDWord     (APnPHandle, ADevData, SPDRP_LEGACYBUSTYPE);
   FLocationInfo    := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_LOCATION_INFORMATION);
   FPhysDevObjName  := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_PHYSICAL_DEVICE_OBJECT_NAME);
-  FSecurity        := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_SECURITY);
-  FService         := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_SERVICE);
+  FSecuritySDS     := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_SECURITY_SDS);
   FUINumber        := GetRegistryPropertyDWord     (APnPHandle, ADevData, SPDRP_UI_NUMBER);
   FUINumberFormat  := GetRegistryPropertyString    (APnPHandle, ADevData, SPDRP_UI_NUMBER_DESC_FORMAT);
 end;
@@ -1687,6 +1696,26 @@ begin
     Application.HookMainWindow(EventPipe);
 end;
 
+procedure TJvHidDeviceController.DoArrival(HidDev: TJvHidDevice);
+begin
+  if Assigned(FArrivalEvent) then
+  begin
+    HidDev.FIsEnumerated := True;
+    FArrivalEvent(HidDev);
+    HidDev.FIsEnumerated := False;
+  end;
+end;
+
+procedure TJvHidDeviceController.DoRemoval(HidDev: TJvHidDevice);
+begin
+  if Assigned(FRemovalEvent) then
+  begin
+    HidDev.FIsEnumerated := True;
+    FRemovalEvent(HidDev);
+    HidDev.FIsEnumerated := False;
+  end;
+end;
+
 //------------------------------------------------------------------------------
 
 // implement OnDeviceChange event
@@ -1779,6 +1808,7 @@ begin
     if HidDev <> nil then
     begin
       HidDev.DoUnplug;
+      DoRemoval(HidDev);
       // delete from list
       if not HidDev.IsCheckedOut then
         FList.Delete(I);
@@ -1803,6 +1833,7 @@ begin
     begin
       FList.Add(NewList[I]);
       Changed := True;
+      DoArrival(TJvHidDevice(NewList[I]));
     end;
 
   // throw away helper list
