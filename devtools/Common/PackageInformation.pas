@@ -103,6 +103,7 @@ type
     FContains: TObjectList;
     FRequiresDB: Boolean;
     FIsDesign: Boolean;
+    FIsXPlatform: Boolean;
     FC5PFlags: string;
     FC6PFlags: string;
     FC5Libs: string;
@@ -122,6 +123,7 @@ type
     property Contains[Index: Integer]: TContainedFile read GetContains;
     property RequiresDB: Boolean read FRequiresDB;
     property IsDesign: Boolean read FIsDesign;
+    property IsXPlaform: Boolean read FIsXPlatform;
 
     property C5PFlags: string read FC5PFlags;
     property C6PFlags: string read FC6PFlags;
@@ -281,7 +283,7 @@ const
 {$ENDIF COMPILER5}
 
 var
-  XmlFileCache: TObjectList; // cache for .xml files ( TPackageXmlInfo )
+  XmlFileCache: TStringList; // cache for .xml files ( TPackageXmlInfo )
 
 function BplNameToGenericName(const BplName: string): string;
 begin
@@ -315,16 +317,14 @@ var
 begin
   Name := BplNameToGenericName(BplName);
  // already in the cache
-  for i := 0 to XmlFileCache.Count - 1 do
-    if CompareText(TPackageXmlInfo(XmlFileCache[i]).Name, Name) = 0 then
-    begin
-      Result := TPackageXmlInfo(XmlFileCache[i]);
-      Exit;
-    end;
-
- // create a new one and add it to the cache
-  Result := TPackageXmlInfo.Create(XmlDir + PathDelim + Name + '.xml'); // do not localize
-  XmlFileCache.Add(Result);
+  if XmlFileCache.Find(Name, i) then
+    Result := TPackageXmlInfo(XmlFileCache.Objects[i])
+  else
+  begin
+   // create a new one and add it to the cache
+    Result := TPackageXmlInfo.Create(XmlDir + PathDelim + Name + '.xml'); // do not localize
+    XmlFileCache.AddObject(Name, Result);
+  end;
 end;
 
 function StartsWith(const Text, StartText: string; CaseInsensitive: Boolean = False): Boolean;
@@ -539,6 +539,7 @@ begin
 
     FDisplayName := RootNode.Properties.Value('Name');                  // do not localize
     FIsDesign := RootNode.Properties.BoolValue('Design', IsDesign);     // do not localize
+    FIsXPlatform := RootNode.Properties.BoolValue('XPlatform', False);  // do not localize
     FDescription := RootNode.Items.Value('Description');                // do not localize
 
    // requires
@@ -897,10 +898,20 @@ begin
   Result := FXmlInfo.RequiresDB;
 end;
 
+procedure FinalizeXmlFileCache;
+var
+  i: Integer;
+begin
+  for i := 0 to XmlFileCache.Count - 1 do
+    XmlFileCache.Objects[i].Free;
+  XmlFileCache.Free;
+end;
+
 initialization
-  XmlFileCache := TObjectList.Create;
+  XmlFileCache := TStringList.Create;
+  XmlFileCache.Sorted := True;
 
 finalization
-  XmlFileCache.Free;
+  FinalizeXmlFileCache;
 
 end.
