@@ -2084,7 +2084,7 @@ begin
       begin
         Brush.Color := NewColor;
         FillRect(R);
-        BrushCopy({$IFDEF VisualCLX}Canvas,{$ENDIF} R, Bitmap, R, Color);
+        BrushCopy({$IFDEF VisualCLX} Canvas, {$ENDIF} R, Bitmap, R, Color);
       end;
     end;
   except

@@ -51,7 +51,7 @@ uses
   JvQPerfMon95, JvQComputerInfoEx,
   JvQChangeNotifyEditor, JvQPerfStatEditor, JvQTimerList, JvQTimerListEditor,
   {$ENDIF USEWINDOWS}
-  JvQSystemColors,	
+  JvQSystemColors,
   JvQThread, JvQThreadTimer, JvQTimer, JvQSimpleXml, JvQXMLDatabase,
   JvQFormPlacement, JvQAppXMLStorage, JvQFormPlacementSelectList,
   JvQMinMaxForm, JvQFormPropertiesForm, JvQDsgnEditors;
@@ -93,7 +93,7 @@ begin
     {$IFDEF USEWINDOWS}, TJvTimerList {$ENDIF}
     ]);
   {$IFDEF LINUX}
-  RegisterComponents(RsPaletteVisual,[TJvSystemColors]);	
+  RegisterComponents(RsPaletteVisual, [TJvSystemColors]);
   {$ENDIF LINUX}
   RegisterPropertyEditor(TypeInfo(TJvWinMinMaxInfo), TJvFormPlacement,
     'MinMaxInfo', TMinMaxProperty);

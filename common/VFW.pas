@@ -64,17 +64,6 @@ interface
 (*                                                                            *)
 (******************************************************************************)
 
-(******************************************************************************)
-(*                                                                            *)
-(*  Modyfied: 2000-12-07                                                      *)
-(*                                                                            *)
-(*  E-Mail:                                                                   *)
-(*  Peter Haas: PeterJHaas@t-online.de                                        *)
-(*                                                                            *)
-(*  Only modified line 1380  ( TAVIPALCHANGE.peNew )                          *)
-(*                                                                            *)
-(******************************************************************************)
-
 uses
   Windows, MMSystem, Messages, CommDlg, ActiveX, Dialogs;
 
@@ -1386,7 +1375,7 @@ type
         bFirstEntry             : BYTE;         // first entry to change
         bNumEntries             : BYTE;         // # entries to change (0 if 256)
         wFlags                  : WORD;         // Mostly to preserve alignment...
-        peNew                   : array[0..0] of TPALETTEENTRY; // New color specifications
+        peNew                   : array [0..0] of TPaletteEntry; // New color specifications
     end;
 
 (****************************************************************************
@@ -1476,11 +1465,11 @@ type
     end;
 
   PAVIStreamInfo = ^TAVIStreamInfo;
-{$IFDEF UNICODE}
+  {$IFDEF UNICODE}
   TAVIStreamInfo = TAVIStreamInfoW;
-{$ELSE}
+  {$ELSE}
   TAVIStreamInfo = TAVIStreamInfoA;
-{$ENDIF}
+  {$ENDIF UNICODE}
 
 const
     AVISTREAMINFO_DISABLED      = $00000001;
@@ -1532,11 +1521,11 @@ type
     end;
 
   PAVIFileInfo = ^TAVIFileInfo;
-{$IFDEF UNICODE}
+  {$IFDEF UNICODE}
   TAVIFileInfo = TAVIFileInfoW;
-{$ELSE}
+  {$ELSE}
   TAVIFileInfo = TAVIFileInfoA;
-{$ENDIF}
+  {$ENDIF UNICODE}
 
 {-- Flags for dwFlags --------------------------------------------------------}
 
@@ -1590,10 +1579,7 @@ const
     AVICOMPRESSF_KEYFRAMES          = $00000004;    // use keyframes
     AVICOMPRESSF_VALID              = $00000008;    // has valid data?
 
-(*	-	-	-	-	-	-	-	-	*/
-
-
-/****** AVI Stream Interface *******************************************)
+(****** AVI Stream Interface *******************************************)
 
 type
     IAVIStream = interface(IUnknown)
@@ -1679,7 +1665,7 @@ function    AVIFileOpenW(var ppfile: IAVIFile; szFile: LPCWSTR; uMode: UINT; lpH
 function    AVIFileOpen(var ppfile: IAVIFile; szFile: LPCWSTR; uMode: UINT; lpHandler: PCLSID): HResult; stdcall;
 {$ELSE}
 function    AVIFileOpen(var ppfile: IAVIFile; szFile: LPCSTR; uMode: UINT; lpHandler: PCLSID): HResult; stdcall;
-{$ENDIF}
+{$ENDIF UNICODE}
 
 function    AVIFileInfoW(pfile: IAVIFile; var pfi: TAVIFILEINFOW; lSize: LONG): HResult; stdcall;
 function    AVIFileInfoA(pfile: IAVIFile; var pfi: TAVIFILEINFOA; lSize: LONG): HResult; stdcall;
@@ -1763,12 +1749,12 @@ function    AVIStreamOpenFromFileW(var ppavi: IAVISTREAM; szFile: LPCWSTR; fccTy
                                    lParam: LONG; mode: UINT; pclsidHandler: PCLSID): HResult; stdcall;
 
 {$IFDEF UNICODE}
-   function AVIStreamOpenFromFile(var ppavi: IAVISTREAM; szFile: LPCWSTR; fccType: DWORD;
-     lParam: LONG; mode: UINT; pclsidHandler: PCLSID): HResult; stdcall;
+function AVIStreamOpenFromFile(var ppavi: IAVISTREAM; szFile: LPCWSTR; fccType: DWORD;
+  lParam: LONG; mode: UINT; pclsidHandler: PCLSID): HResult; stdcall;
 {$ELSE}
-   function AVIStreamOpenFromFile(var ppavi: IAVISTREAM; szFile: LPCSTR; fccType: DWORD;
-     lParam: LONG; mode: UINT; pclsidHandler: PCLSID): HResult; stdcall;
-{$ENDIF}
+function AVIStreamOpenFromFile(var ppavi: IAVISTREAM; szFile: LPCSTR; fccType: DWORD;
+  lParam: LONG; mode: UINT; pclsidHandler: PCLSID): HResult; stdcall;
+{$ENDIF UNICODE}
 
 {-- Use to create disembodied streams ----------------------------------------}
 
@@ -4373,7 +4359,7 @@ function    AVIFileOpenW(var ppfile: IAVIFILE; szFile: LPCWSTR; uMode: UINT; lpH
 function    AVIFileOpen(var ppfile: IAVIFILE; szFile: LPCWSTR; uMode: UINT; lpHandler: PCLSID): HResult; stdcall;  external AVIFILDLL name 'AVIFileOpenW';
 {$ELSE}
 function    AVIFileOpen(var ppfile: IAVIFILE; szFile: LPCSTR; uMode: UINT; lpHandler: PCLSID): HResult; stdcall;  external AVIFILDLL name 'AVIFileOpenA';
-{$ENDIF}
+{$ENDIF UNICODE}
 
 function    AVIFileInfoW(pfile: IAVIFILE; var pfi: TAVIFILEINFOW; lSize: LONG): HResult; stdcall; external AVIFILDLL;
 function    AVIFileInfoA(pfile: IAVIFILE; var pfi: TAVIFILEINFOA; lSize: LONG): HResult; stdcall; external AVIFILDLL;
@@ -4382,7 +4368,7 @@ function    AVIFileInfoA(pfile: IAVIFILE; var pfi: TAVIFILEINFOA; lSize: LONG): 
 function    AVIFileInfo(pfile: IAVIFILE; var pfi: TAVIFILEINFO; lSize: LONG): HResult; stdcall;  external AVIFILDLL name 'AVIFileInfoW';
 {$ELSE}
 function    AVIFileInfo(pfile: IAVIFILE; var pfi: TAVIFILEINFO; lSize: LONG): HResult; stdcall;  external AVIFILDLL name 'AVIFileInfoA';
-{$ENDIF}
+{$ENDIF UNICODE}
 
 function    AVIFileGetStream(pfile: IAVIFILE; var ppavi: IAVISTREAM; fccType: DWORD; lParam: LONG): HResult; stdcall; external AVIFILDLL;
 
@@ -4393,7 +4379,7 @@ function    AVIFileCreateStreamA(pfile: IAVIFILE; var ppavi: IAVISTREAM; var psi
 function    AVIFileCreateStream(pfile: IAVIFILE; var ppavi: IAVISTREAM; var psi: TAVISTREAMINFO): HResult; stdcall; external AVIFILDLL name 'AVIFileCreateStreamW';
 {$ELSE}
 function    AVIFileCreateStream(pfile: IAVIFILE; var ppavi: IAVISTREAM; var psi: TAVISTREAMINFO): HResult; stdcall; external AVIFILDLL name 'AVIFileCreateStreamA';
-{$ENDIF}
+{$ENDIF UNICODE}
 
 function    AVIFileWriteData(pfile: IAVIFILE; ckid: DWORD; lpData: PVOID; cbData: LONG): HResult; stdcall; external AVIFILDLL;
 function    AVIFileReadData(pfile: IAVIFILE; ckid: DWORD; lpData: PVOID; var lpcbData: LONG): HResult; stdcall; external AVIFILDLL;
@@ -4409,8 +4395,7 @@ function    AVIStreamInfoA (pavi: IAVISTREAM; var psi: TAVISTREAMINFOA; lSize: L
 function    AVIStreamInfo(pavi: IAVISTREAM; var psi: TAVISTREAMINFO; lSize: LONG): HResult; stdcall; external AVIFILDLL name 'AVIStreamInfoW';
 {$ELSE}
 function    AVIStreamInfo(pavi: IAVISTREAM; var psi: TAVISTREAMINFO; lSize: LONG): HResult; stdcall; external AVIFILDLL name 'AVIStreamInfoA';
-{$ENDIF}
-
+{$ENDIF UNICODE}
 
 function    AVIStreamFindSample(pavi: IAVISTREAM; lPos: LONG; lFlags: LONG): LONG; stdcall; external AVIFILDLL;
 function    AVIStreamReadFormat(pavi: IAVISTREAM; lPos: LONG; lpFormat: PVOID; lpcbFormat: PLONG): HResult; stdcall; external AVIFILDLL;
@@ -4477,7 +4462,7 @@ function AVIStreamOpenFromFile(var ppavi: IAVISTREAM; szFile: LPCWSTR; fccType: 
 {$ELSE}
 function AVIStreamOpenFromFile(var ppavi: IAVISTREAM; szFile: LPCSTR; fccType: DWORD;
   lParam: LONG; mode: UINT; pclsidHandler: PCLSID): HResult; stdcall; external AVIFILDLL name 'AVIStreamOpenFromFileA';
-{$ENDIF}
+{$ENDIF UNICODE}
 
 {-- Use to create disembodied streams ----------------------------------------}
 

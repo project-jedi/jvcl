@@ -42,9 +42,10 @@ const
 {$IFDEF VCL}
   { (asn) added to simplify VCL code sharing = less IFDEF's }
 const
+  { clx destinguishes between TFormBorderStyle & TBorderStyle }
   fbsDialog = bsDialog;
   fbsSingle = bsSingle;
-  fbsNone	= bsNone;
+  fbsNone = bsNone;
   fbsSizeable = bsSizeable;
   fbsToolWindow = bsToolWindow;
   fbsSizeToolWin = bsSizeToolWin;

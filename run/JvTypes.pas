@@ -91,13 +91,7 @@ type
 
 const
   NullHandle = 0;
-  { clx destinguishes between TFormBorderStyle & TBorderStyle }
-  fbsDialog      = bsDialog;
-  fbsSingle      = bsSingle;
-  fbsNone	       = bsNone;
-  fbsSizeable    = bsSizeable;
-  fbsToolWindow  = bsToolWindow;
-  fbsSizeToolWin = bsSizeToolWin;
+  // (rom) deleted fbs constants. They are already in JvConsts.pas.
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}

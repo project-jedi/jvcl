@@ -2578,12 +2578,12 @@ begin
     Source := Bounds(0, 0, AUpArrow.Width, AUpArrow.Height);
 
     if Enabled then
-      BrushCopy({$IFDEF VisualCLX}ACanvas,{$ENDIF} Dest, AUpArrow, Source, AUpArrow.TransparentColor)
+      BrushCopy({$IFDEF VisualCLX} ACanvas, {$ENDIF} Dest, AUpArrow, Source, AUpArrow.TransparentColor)
     else
     begin
       DisabledBitmap := CreateDisabledBitmap(AUpArrow, clBlack);
       try
-        BrushCopy({$IFDEF VisualCLX}ACanvas,{$ENDIF} Dest, DisabledBitmap, Source, DisabledBitmap.TransparentColor);
+        BrushCopy({$IFDEF VisualCLX} ACanvas, {$ENDIF} Dest, DisabledBitmap, Source, DisabledBitmap.TransparentColor);
       finally
         DisabledBitmap.Free;
       end;
@@ -2596,12 +2596,12 @@ begin
     Source := Bounds(0, 0, ADownArrow.Width, ADownArrow.Height);
 
     if Enabled then
-      BrushCopy({$IFDEF VisualCLX}ACanvas,{$ENDIF}Dest, ADownArrow, Source, ADownArrow.TransparentColor)
+      BrushCopy({$IFDEF VisualCLX} ACanvas, {$ENDIF} Dest, ADownArrow, Source, ADownArrow.TransparentColor)
     else
     begin
       DisabledBitmap := CreateDisabledBitmap(ADownArrow, clBlack);
       try
-        BrushCopy({$IFDEF VisualCLX}ACanvas,{$ENDIF} Dest, DisabledBitmap, Source, DisabledBitmap.TransparentColor);
+        BrushCopy({$IFDEF VisualCLX} ACanvas, {$ENDIF} Dest, DisabledBitmap, Source, DisabledBitmap.TransparentColor);
       finally
         DisabledBitmap.Free;
       end;

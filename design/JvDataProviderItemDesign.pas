@@ -60,7 +60,7 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   {$IFDEF VisualCLX}
-  QWindows, 	
+  QWindows,
   {$ENDIF VisualCLX}
   ImgList,
   JvDsgnConsts;

@@ -34,7 +34,7 @@ uses
   Windows, Messages,  
   Graphics, Controls, Forms, StdCtrls, ExtCtrls, Buttons, Menus, ImgList,
   {$IFDEF VisualCLX}
-  Qt,	
+  Qt,
   {$ENDIF VisualCLX}
   JvJCLUtils, JvTypes, JvConsts, JvComponent, JvThemes, JvExControls, JvExButtons;
 
@@ -1316,7 +1316,7 @@ begin
   begin
     Canvas.Brush.Color := clBlack;
     with Canvas do
-      FrameRect({$IFDEF VisualCLX}Canvas,{$ENDIF} R);
+      FrameRect({$IFDEF VisualCLX} Canvas, {$ENDIF} R);
     Canvas.Brush.Color := Color;
   end;
 

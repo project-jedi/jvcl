@@ -119,9 +119,9 @@ const
   CM_HINTSHOWPAUSE          = CM_BASE + 65;
   CM_MOUSEWHEEL             = CM_BASE + 67;
   CM_ISSHORTCUT             = CM_BASE + 68;
-{$IFDEF LINUX}
+  {$IFDEF LINUX}
   CM_RAWX11EVENT            = CM_BASE + 69;
-{$ENDIF}
+  {$ENDIF LINUX}
 
   CM_ACTIVATE               = CM_BASE + 70;
   CM_DEACTIVATE             = CM_BASE + 71;

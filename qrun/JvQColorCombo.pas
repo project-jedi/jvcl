@@ -257,7 +257,7 @@ begin
   FHexPrefix := '$';
   FOther := SOtherCaption;
   FOptions := [coText];
-  Duplicates := dupAccept;	
+  Duplicates := dupAccept;
   FHiLiteColor := clHighLight;
   FHiLiteText := clHighLightText;
   AutoComplete := False;

@@ -240,7 +240,7 @@ type
     {$IFDEF NT_EXTNS}
     szPhonebook: array [0..MAX_PATH - 1] of Char;
     dwSubEntry: Longint;
-    {$ENDIF}
+    {$ENDIF NT_EXTNS}
   end;
 
   PRASConnStatus = ^TRASConnStatus;

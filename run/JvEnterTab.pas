@@ -153,7 +153,7 @@ begin
   with Canvas do
   begin
     Brush.Color := clBtnFace;
-    BrushCopy({$IFDEF VisualCLX}Canvas,{$ENDIF} ClientRect, FBmp, ClientRect, clFuchsia);
+    BrushCopy({$IFDEF VisualCLX} Canvas, {$ENDIF} ClientRect, FBmp, ClientRect, clFuchsia);
   end;
 end;
 

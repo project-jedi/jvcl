@@ -38,7 +38,7 @@ uses
   SysUtils, Classes,
   QWindows, QMessages,  
   QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QButtons, QMenus, QImgList, 
-  Qt,	 
+  Qt,
   JvQJCLUtils, JvQTypes, JvQConsts, JvQComponent, JvQThemes, JvQExControls, JvQExButtons;
 
 const

@@ -64,7 +64,7 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS} 
-  QWindows, 	 
+  QWindows,
   QImgList,
   JvQDsgnConsts;
 
