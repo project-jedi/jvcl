@@ -20,13 +20,12 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-11-09
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -37,10 +36,11 @@ interface
 procedure Register;
 
 implementation
+
 uses
   Classes,
-
-
+  
+  
   QControls, QStdCtrls, QExtCtrls, QGraphics, QActnList, QImgList, QDialogs,
   QTypes,
 
@@ -49,33 +49,38 @@ uses
 
   JvQTypes, JvQDsgnConsts, JvQJCLUtils, JVQCLVer, JvQComponent,
   JvQActions, JvQActnResForm, JvQJVCLAboutForm, JvQDsgnEditors, JvQIDEZoom,
-  JvQJVCLAboutEditor, JvQBaseDlgEditor, {JvQColorEditor,} JvQPaintBoxEditor,
+  JvQJVCLAboutEditor, JvQBaseDlgEditor, JvQPaintBoxEditor,
   JvQAppIniStorage,
   {$IFDEF MSWINDOWS}
   JvQAppRegistryStorage,
   {$ENDIF MSWINDOWS}
+  JvQContextProvider,
   JvQColorProviderEditors, JvQDataProviderEditors, JvQDataProvider,
-  JvQDataProviderIntf, JvQColorProvider,  JvQContextProvider,
+  JvQDataProviderIntf,
 
+  JvQColorProvider, 
   JvQAppStorage, JvQAppStorageSelectList;
 
-
-
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvCoreReg.dcr}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvCoreReg.dcr}
-
+{$ENDIF LINUX}
 
 procedure Register;
 const
   BaseClass: TClass = TComponent;
 begin
-  RegisterComponents(RsPaletteNonVisual, [TJvJVCLAboutComponent
-    , TJvContextProvider, TJvColorProvider, TJvColorMappingProvider
-    ]);
+  RegisterComponents(RsPaletteNonVisual, [TJvJVCLAboutComponent]);
+  RegisterComponents(RsPaletteNonVisual, [TJvContextProvider,
+    TJvColorProvider, TJvColorMappingProvider]);
+  RegisterComponents(RsPalettePersistence, [TJvAppRegistryStorage]);
   RegisterComponents(RsPalettePersistence, [TJvAppStorage,
-     {$IFDEF MSWINDOWS}TJvAppRegistryStorage,{$ENDIF}
-     TJvAppIniFileStorage, TJvAppStorageSelectList]);
+    TJvAppIniFileStorage, TJvAppStorageSelectList]);
 
-  RegisterPropertyEditor(TypeInfo(TJVCLAboutInfo), nil, 'AboutJVCL' + 'X', TJVCLAboutDialogProperty);
+  RegisterPropertyEditor(TypeInfo(TJVCLAboutInfo), nil,
+  'AboutJVCL' + 'X' , TJVCLAboutDialogProperty);
 
   // The TJvPersistent class needs an editor for D5 and BCB5, but for
   // all other compilers, it doesn't need anything as it is declared as
@@ -87,7 +92,7 @@ begin
 
 
   {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
-//  RegisterPropertyEditor(TypeInfo(TColor), TPersistent, '', TJvColorProperty);
+
 
 
   RegisterPropertyEditor(TypeInfo(string), BaseClass, 'InitialDir', TJvDirectoryProperty);
@@ -110,7 +115,7 @@ begin
   RegisterPropertyEditor(TypeInfo(Currency), BaseClass, '', TJvFloatProperty);
 
   RegisterComponentEditor(TPaintBox, TJvPaintBoxEditor);
-//  RegisterComponentEditor(TCommonDialog, TJvBaseDlgEditor);
+  RegisterComponentEditor(TCommonDialog, TJvBaseDlgEditor);
 
 
 
@@ -128,8 +133,11 @@ begin
   RegisterPropertyEditor(TypeInfo(TJvColorProviderAddColorStyle), nil, '', TJvColorProviderAddColorStyleEditor);
   RegisterComponentEditor(TJvCustomDataProvider, TJvProviderEditor);
   RegisterComponentEditor(TJvColorProvider, TJvColorProviderEditor);
-  RegisterActions(RsJVCLActionsCategory, [
-  {$IFDEF MSWINDOWS}TJvSendMailAction,{$ENDIF}TJvWebAction], TJvStandardActions);
+
+//  RegisterPropertyEditor(TypeInfo(TJvBackgroundClients), TJvBackground,
+//    'Clients', TJvClientsProperty);
+
+  RegisterActions(RsJVCLActionsCategory, [TJvWebAction], TJvStandardActions);
   RegisterZoom;
 end;
 

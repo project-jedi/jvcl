@@ -46,7 +46,7 @@ uses
   JvQBevel, JvQCheckBox, JvQSpeedButton,
   JvQGroupBox, JvQHeaderControl,
   JvQImage, JvQRadioButton, JvQRadioGroup,
-  JvQLabel,
+  JvQLabel, JvQStatusBar,
   JvQGauges, JvQTimeEdit, JvQStdDsgnEditors, JvQJCLUtils,
   JvQScrollBar, JvQShape, JvQControlBar, JvQGrids,
   JvQTabControl, JvQBitBtn, JvQPickDate, JvQStringGrid,
@@ -69,7 +69,7 @@ begin
     TJvFilenameEdit, TJvDirectoryEdit, TJvDateEdit, TJvTimeSpin]);
   RegisterComponents(RsPaletteImageAnimator, [TJvImage, TJvImageList]);
   RegisterComponents(RsPaletteBarPanel, [TJvGauge, TJvTabControl, TJvControlBar,
-    TJvGroupBox, TJvHeaderControl, TJvPanel, TJvBevel,
+    TJvGroupBox, TJvHeaderControl, TJvPanel, TJvBevel, TJvStatusBar,
     TJvTransparentPanel]);
   RegisterComponents(RsPaletteLabel, [TJvLabel]);
 //  RegisterPropertyEditor(TypeInfo(TImageIndex), TJvCustomLabel, 'ImageIndex',TJvDefaultImageIndexProperty);

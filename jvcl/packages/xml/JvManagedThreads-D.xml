@@ -7,7 +7,7 @@
   <C5Libs/>
   <C6Libs/>
   <Requires>
-    <Package Name="JvCore-D" Targets="allbutclx" Condition="USEJVCL"/>
+    <Package Name="JvCore-D" Targets="all" Condition="USEJVCL"/>
     <Package Name="CJCL50" Targets="C5" Condition="USEJVCL"/>
     <Package Name="CJCL" Targets="C6,C6p" Condition="USEJVCL"/>
     <Package Name="JvManagedThreads-R" Targets="all" Condition=""/>

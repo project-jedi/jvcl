@@ -21,7 +21,7 @@
     <Package Name="vcl" Targets="C6,C6p" Condition=""/>
     <Package Name="vclx" Targets="C6,C6p" Condition=""/>
     <Package Name="DJclVClx" Targets="allclx" Condition=""/>
-    <Package Name="clxdesigner" Targets="allclx" Condition=""/>
+    <Package Name="clxdesigner" Targets="d7clx" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\design\JvProviderTreeListDsgnFrame.pas" Targets="all" Formname="fmeJvProviderTreeListDsgn: TFrame" Condition=""/>

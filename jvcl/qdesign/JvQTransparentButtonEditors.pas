@@ -36,9 +36,9 @@ interface
 
 uses
   
-  DesignIntf, DesignEditors, DesignMenus, VCLEditors,
-  
-  ImgList,
+  DesignIntf, DesignEditors, DesignMenus, CLXEditors,
+
+  QImgList,
   JvQDsgnEditors;
 
 

@@ -436,8 +436,10 @@ uses
   
   
   QConsts,
-  
-  JclRegistry, JclSysUtils,
+  {$IFDEF MSWINDOWS}
+  JclRegistry,
+  {$ENDIF}
+  JclSysUtils,
   JvQResources, JvQDynControlEngineIntf;
 
 const

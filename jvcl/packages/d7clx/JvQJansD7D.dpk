@@ -27,7 +27,8 @@ package JvQJansD7D;
 
 requires
   JvQJansD7R,
-  designide;
+  designide,
+  JvQCoreD7D;
 
 contains
   JvQJansReg in '..\..\qdesign\JvQJansReg.pas',
