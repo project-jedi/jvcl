@@ -31,9 +31,11 @@
        ver      A character to identify the version of the environment. Defaults
                 to the second character of name
        defines  A comma separated string to indicate which Conditional
-                Compilation symbols are defined as the result of using this 
+                Compilation symbols are defined as the result of using this
                 target so that your include file can enclose some $DEFINE in
                 $IFDEF that relate to the compiler being used
+       PathSep  Indicates which character is to be used as a path separator for 
+                the target. If not specified, this value defaults to "\"
 
     Then aliases:
 
@@ -60,15 +62,18 @@
         <target name="d6" pname="d6p" pdir="d6per"/>
         <target name="d7" pname="d7p" pdir="d7per"/>
         <target name="d7clx"/>
-        <target name="k3"/>
+        <target name="k3" pathsep="/"/>
       </targets>
       <aliases>
         <alias name="Delphi" value="d5,d5s,d6,d6p,d7,d7p,d7clx"/>
+        <alias name="DelphiNoClx" value="d5,d5s,d6,d6p,d7,d7p"/>
         <alias name="Bcb" value="c5,c6,c6p"/>
         <alias name="Kylix" value="k3"/>
         <alias name="Windows" value="c5,c6,c6p,d5,d5s,d6,d6p,d7,d7p,d7clx"/>
         <alias name="Linux" value="k3"/>
-        <alias name="allclx" value="d7clx,k3,k3p"/>
+        <alias name="allclx" value="d7clx,k3"/>
+        <alias name="allbutclx" value="c5,c6,c6p,d5,d5s,d6,d6p,d7,d7p"/>
+        <alias name="allbutperso" value="c5,c6,d5,d6,d7"/>
       </aliases>
     </model>
     <Model Name="JCL" format="%e%p%n,%e%p%n%v0" prefix="Jcl" packages="" incfile="">
@@ -81,8 +86,8 @@
         <target name="d6.dev"/>
         <target name="d7"/>
         <target name="d7.dev"/>
-        <target name="k3"/>
-        <target name="k3.dev"/>
+        <target name="k3" pathsep="/"/>
+        <target name="k3.dev" pathsep="/"/>
       </targets>
       <aliases>
         <alias name="Delphi" value="d5,d6,d7"/>
