@@ -1886,7 +1886,7 @@ var
   XLegendGap         : Integer;
   BoxWidth,BoxHeight : Integer;
   nTextHeight        : Integer;
-  yTempOrigin        : Integer;
+  //yTempOrigin        : Integer; // (ahuser) conflict with YTempOrigin property?
   myLabel            : string;
   XLegendHoriz       : Integer;
 begin
@@ -1989,7 +1989,7 @@ begin
          {10 % extra space for line height}
         nTextHeight := Round(CanvasMaxTextHeight(ChartCanvas) * 1.1);
         BoxWidth := ChartCanvas.TextWidth('X')*2 -2;
-        BoxHeight := nTextHeight - 2;
+        //BoxHeight := nTextHeight - 2;
 
         XLegendHoriz       := Options.XStartOffset;
         for I := 0 to Options.PenCount - 1 do
