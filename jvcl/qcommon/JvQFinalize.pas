@@ -347,10 +347,12 @@ begin
   Result := Ptr;
 end;
 
+{$IFDEF MSWINDOWS}
 initialization
 
 finalization
   FinalizeUnits;
+{$ENDIF MSWINDOWS}
 
 end.
 

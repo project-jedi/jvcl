@@ -15,13 +15,12 @@ Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
-Last Modified: 2002-07-04
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -31,7 +30,12 @@ interface
 
 uses
   SysUtils,
+  {$IFDEF VCL}
+  Controls, Graphics, Windows;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   QControls, QGraphics;
+  {$ENDIF VisualCLX}
 
 {$IFDEF VisualCLX}
 const
@@ -111,9 +115,8 @@ const
   {$ENDIF DELPHI8}
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
-  SDelphiKey = '.borland\.Jvcl';
-  {$ENDIF LINUX}
-
+  SDelphiKey = '.borland/.Jvcl3';
+  {$ENDIF}
   { JvDataProvider constants }
   { Consumer attributes }
   DPA_RenderDisabledAsGrayed = 1;
@@ -241,10 +244,8 @@ const
 const
   JediAgent = 'JEDI-VCL';
   DefaultOutputFileName = 'output.txt';
-  
 
 implementation
 
 end.
-
 
