@@ -170,6 +170,7 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
+    property OnResize;
   end;
 
 implementation
