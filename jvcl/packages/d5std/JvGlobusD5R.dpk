@@ -25,6 +25,7 @@ package JvGlobusD5R;
 {$DESCRIPTION 'JVCL Globus Components'}
 {$RUNONLY}
 {$IMPLICITBUILD OFF}
+{$DEFINE D5Standard}
 
 requires
   JvCoreD5R,

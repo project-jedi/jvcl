@@ -25,6 +25,7 @@ package JvUIBD5R;
 {$DESCRIPTION 'UIB - Unified Interbase Components'}
 {$RUNONLY}
 {$IMPLICITBUILD OFF}
+{$DEFINE D5Standard}
 
 requires
   JvCoreD5R,

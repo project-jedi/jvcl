@@ -41,7 +41,7 @@ contains
   JvCtrlsReg in '..\..\design\JvCtrlsReg.pas' ,
   JvFooterEditor in '..\..\design\JvFooterEditor.pas' ,
   JvGroupHeaderEditor in '..\..\design\JvGroupHeaderEditor.pas' ,
-  JvTransparentButtonEditors in '..\..\design\JvTransparentButtonEditors' 
+  JvTransparentButtonEditors in '..\..\design\JvTransparentButtonEditors.pas' 
   ;
 
 end.

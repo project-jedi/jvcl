@@ -39,6 +39,7 @@ contains
   JvUIB in '..\..\run\JvUIB.pas' ,
   JvUIBase in '..\..\run\JvUIBase.pas' ,
   JvUIBConst in '..\..\run\JvUIBConst.pas' ,
+  JvUIBDataSet in '..\..\run\JvUIBDataSet.pas' ,
   JvUIBError in '..\..\run\JvUIBError.pas' ,
   JvUIBLib in '..\..\run\JvUIBLib.pas' 
   ;
