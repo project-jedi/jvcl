@@ -22,8 +22,8 @@ Known Issues:
 
 package JVCL200_D70;
 
-{$R *.RES}
-{$ALIGN ON}
+{$R *.res}
+{$ALIGN 8}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
 {$DEBUGINFO OFF}
@@ -57,7 +57,15 @@ requires
   dbrtl,
   vcldb,
   designide,
-  JVCL200_R70;
+  JVCL200_R70,
+  rtl,
+  DJCL70,
+  vcljpg,
+  inet,
+  qrpt,
+  vclx,
+  bdertl,
+  VclSmp;
 
 contains
   JvaDBReg in '..\Source\JvaDBReg.pas',
@@ -120,6 +128,9 @@ contains
   JvPluginWizard in '..\source\JvPluginWizard.pas',
   JvPluginParams in '..\source\JvPluginParams.pas' {frmPluginParams},
   JvSchedEvntReg in '..\source\JvSchedEvntReg.pas',
-  ScheduleEditor in '..\source\ScheduleEditor.pas' {frmScheduleEditor};
+  ScheduleEditor in '..\source\ScheduleEditor.pas' {frmScheduleEditor},
+  JvActions in '..\source\JvActions.pas',
+  JvActnRes in '..\source\JvActnRes.pas' {JvStandardActions: TDataModule},
+  JvDialogActns in '..\source\JvDialogActns.pas';
 
 end.
