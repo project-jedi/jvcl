@@ -787,7 +787,7 @@ end;
 destructor TJvCustomPageListTreeView.Destroy;
 begin
   FLinks.Free;
-  {$IFNDEF COMPILER_UP}
+  {$IFNDEF COMPILER6_UP}
   // TreeNodes are destroyed by TCustomTreeview in D6 and above!!!
   FreeAndNil(FItems);
   {$ENDIF}
