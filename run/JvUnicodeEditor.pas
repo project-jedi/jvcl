@@ -43,7 +43,7 @@ uses
   Windows, Messages, SysUtils, Classes, Contnrs, Graphics, Controls, Forms,
   Menus, ExtCtrls, StdCtrls, Clipbrd, JvJCLUtils, JvFixedEditPopup,
   JvUnicodeCanvas, JvComponent, JvExControls, JvEditorCommon,
-  WStrUtils;
+  JvWStrUtils;
 
 type
   TJvCustomWideEditor = class;
