@@ -24,10 +24,10 @@
 {                                                                              }
 {******************************************************************************}
 
+unit JvUIBSrv;
+
 {$I jvcl.inc}
 {$I jvuib.inc}
-
-unit JvUIBSrv;
 
 interface
 
@@ -91,6 +91,11 @@ var
 implementation
 
 uses
+  {$IFDEF USEJVCL}
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  {$ENDIF USEJVCL}
   IdThread, IdException, IdStackConsts, IdTCPConnection;
 
 //=== { TJvUIBServer } =======================================================
@@ -328,11 +333,33 @@ begin
     Stop;
 end;
 
+{$IFDEF USEJVCL}
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
+
 initialization
+  {$IFDEF USEJVCL}
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
+  {$ENDIF USEJVCL}
   JvUIBServer := TJvUIBServer.Create;
 
 finalization
   JvUIBServer.Free;
   JvUIBServer := nil;
+  {$IFDEF USEJVCL}
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
+  {$ENDIF USEJVCL}
 
 end.

@@ -53,6 +53,11 @@ type
 
 implementation
 
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
+
 const
   UISF_HIDEFOCUS = 1;
   UISF_HIDEACCEL = 2;
@@ -67,5 +72,21 @@ JV_WINCONTROL_EVENTS_IMPL(Frame)
 JV_CUSTOMFORM_EVENTS_IMPL(CustomForm)
 JV_CUSTOMFORM_EVENTS_IMPL(Form)
 JV_WINCONTROL_EVENTS_IMPL(ToolWindow)
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

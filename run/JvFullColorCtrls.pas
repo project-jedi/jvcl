@@ -35,8 +35,7 @@ uses
   {$IFDEF HAS_UNIT_TYPES}
   Types,
   {$ENDIF HAS_UNIT_TYPES}
-  JvTypes,
-  JvFullColorSpaces, JvFullColorRotate;
+  JvTypes, JvFullColorSpaces, JvFullColorRotate;
 
 type
   TJvFullColorAxisConfig = (acXYZ, acXZY, acYXZ, acYZX, acZXY, acZYX);
@@ -269,7 +268,7 @@ type
     property OnColorSpaceChange: TNotifyEvent read FOnColorSpaceChange write FOnColorSpaceChange;
   end;
 
-  TJvCursorPoints = array[0..2] of TPoint;
+  TJvCursorPoints = array [0..2] of TPoint;
 
   TJvFullColorTrackBar = class(TJvFullColorComponent)
   private
@@ -319,8 +318,8 @@ type
     property ArrowColor: TColor read FArrowColor write SetArrowColor default clBlack;
     property ArrowWidth: Integer read FArrowWidth write SetArrowWidth default 9;
     property ArrowPosition: TJvArrowPosition read FArrowPosition write SetArrowPosition default apNormal;
-    property ColorOrientation: TJvFullColorOrientation read FColorOrientation write SetColorOrientation default
-      coNormal;
+    property ColorOrientation: TJvFullColorOrientation read FColorOrientation write SetColorOrientation
+      default coNormal;
     property Orientation: TTrackBarOrientation read FOrientation write SetOrientation default trHorizontal;
     property ValueX: Byte read FValueX write SetValueX stored IsValueXStored;
     property ValueXAuto: Boolean read FValueXAuto write SetValueXAuto stored False;
@@ -361,8 +360,7 @@ type
     procedure Paint; override;
     procedure CalcSize;
     procedure SetAutoSize(Value: Boolean);
-    {$IFDEF COMPILER6_UP} override;
-    {$ENDIF COMPILER6_UP}
+      {$IFDEF COMPILER6_UP} override; {$ENDIF}
     procedure GraphicChange(Sender: TObject);
     procedure SetName(const Value: TComponentName); override;
   public
@@ -585,7 +583,7 @@ type
     property OnStartDrag;
   end;
 
-  TJvFullColorArray = array[0..MaxListSize - 1] of TJvFullColor;
+  TJvFullColorArray = array [0..MaxListSize - 1] of TJvFullColor;
   PJvFullColorArray = ^TJvFullColorArray;
 
   TJvFullColorListOperation = (foAllChanged, foDeleted, foAdded, foChanged);
@@ -731,19 +729,18 @@ uses
   {$ELSE}
   Consts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
+  Math, TypInfo, Forms,
   {$IFNDEF COMPILER6_UP}
   JclMath, // For EnsureRange
   {$ENDIF !COMPILER6_UP}
-  JvResources, JvConsts,
-  Math, TypInfo,
-  Forms;
+  JvResources, JvConsts;
 
 type
-  TJvFullColorAxisConfigs = array[TJvAxisIndex] of TJvAxisIndex;
+  TJvFullColorAxisConfigs = array [TJvAxisIndex] of TJvAxisIndex;
 
 const
-  TabAxisConfigs: array[TJvFullColorAxisConfig] of TJvFullColorAxisConfigs =
-  ((axIndex0, axIndex1, axIndex2),
+  TabAxisConfigs: array [TJvFullColorAxisConfig] of TJvFullColorAxisConfigs =
+   ((axIndex0, axIndex1, axIndex2),
     (axIndex0, axIndex2, axIndex1),
     (axIndex1, axIndex0, axIndex2),
     (axIndex2, axIndex0, axIndex1),

@@ -31,9 +31,9 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  ExtCtrls, StdCtrls, 
+  ExtCtrls, StdCtrls, Mask, 
   JvFullColorDialogs, JvFullColorCtrls, JvFullColorSpaces, JvFullColorRotate,
-  Mask, JvExMask, JvSpin;
+  JvExMask, JvSpin;
 
 type
   TJvFullColorCircleFrm = class(TForm)

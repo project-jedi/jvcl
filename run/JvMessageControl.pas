@@ -28,6 +28,8 @@ Known Issues:
 
 unit JvMessageControl;
 
+{$I jvcl.inc}
+
 interface
 
 uses
@@ -35,14 +37,14 @@ uses
   JvControlComponent;
 
 type
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   { from Classes }
   TWndMethod = procedure(var Message: TMessage) of object;
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
 
   TJvMessageControl = class(TJvCustomControlComponent)
   private
-    SavedWinProc: TWndMethod;
+    FSavedWinProc: TWndMethod;
     FOnMessage: TWndMethod;
   protected
     procedure SetParent(const Value: TWinControl); override;
@@ -61,6 +63,13 @@ procedure Register;
 
 implementation
 
+{$IFDEF USEJVCL}
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
+
 {$IFNDEF USEJVCL}
 procedure Register;
 begin
@@ -71,38 +80,54 @@ end;
 procedure TJvMessageControl.ControlWinProc(var Message: TMessage);
 begin
   if Active and Assigned(FOnMessage) then { user message/event handler installed ? }
-  begin
     FOnMessage(Message);
-  end;
   if Message.Result = 0 then
-    SavedWinProc(Message); { do the original stuff }
+    FSavedWinProc(Message); { do the original stuff }
 end;
 
 procedure TJvMessageControl.SetParent(const Value: TWinControl);
 var
-  wasActive: Boolean;
+  WasActive: Boolean;
 begin
   if Value <> Parent then
   begin
-    wasActive := Active;
+    WasActive := Active;
     Active := false;
     if Assigned(Parent) then
-      Parent.WindowProc := SavedWinProc;
+      Parent.WindowProc := FSavedWinProc;
     inherited  SetParent(Value);
     if Assigned(Parent) then
     begin
-      SavedWinProc := Parent.WindowProc;
+      FSavedWinProc := Parent.WindowProc;
       Parent.WindowProc := ControlWinProc; { intercept messages }
     end;
-    Active := wasActive;
+    Active := WasActive;
   end;
 end;
 
 destructor TJvMessageControl.Destroy;
 begin
   if Assigned(Parent) and not (csDestroying in Parent.ComponentState) then
-    Parent.WindowProc := SavedWinProc;
+    Parent.WindowProc := FSavedWinProc;
   inherited Destroy;
 end;
+
+{$IFDEF USEJVCL}
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
 end.

@@ -183,6 +183,11 @@ type
 
 implementation
 
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
+
 {$IFDEF VCL}
 procedure TJvExCheckListBox.Dispatch(var Msg);
 asm
@@ -498,5 +503,21 @@ begin
   inherited Destroy;
 end;
   
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

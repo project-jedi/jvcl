@@ -41,19 +41,12 @@ type
   TJvFullColor = type Cardinal;
 
 const
-  JvSystemColorMask =
-{$IFDEF COMPILER7_UP}
-    clSystemColor;
-{$ELSE COMPILER7_UP}
-    $80000000;
-{$ENDIF COMPILER7_UP}
+  JvSystemColorMask = {$IFDEF COMPILER7_UP} clSystemColor; {$ELSE} $80000000; {$ENDIF}
 
   JvSubFullColorMask     = $03000000;
 
   JvSystemFullColorMask  = $01000000;
   JvSpecialFullColorMask = $03000000;
-
-  
 
 const
   csRGB = TJvFullColorSpaceID(1 shl 2);
@@ -1657,7 +1650,7 @@ begin
   // maybe more than one instance of one class
   while FColorSpaceList.Remove(AColorSpace) >= 0 do
     ;
-  end;
+end;
 
 {$IFDEF UNITVERSIONING}
 const

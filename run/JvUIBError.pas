@@ -1614,4 +1614,25 @@ const
 
 implementation
 
+{$IFDEF USEJVCL}
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
+
 end.

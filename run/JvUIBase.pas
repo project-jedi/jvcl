@@ -40,6 +40,7 @@
 unit JvUIBase;
 
 interface
+
 uses
   {$IFDEF MSWINDOWS}
   Windows,
@@ -4088,6 +4089,11 @@ type
 implementation
 
 uses
+  {$IFDEF USEJVCL}
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  {$ENDIF USEJVCL}
   JvUIBConst;
 
 (*******************************************************************************
@@ -4721,6 +4727,24 @@ begin
   FLIBCritSec.Leave;
   {$ENDIF UIBTHREADSAFE}
 end;
+
+{$IFDEF USEJVCL}
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
 end.
 

@@ -61,6 +61,11 @@ type
 
 implementation
 
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
+
 JV_WINCONTROL_EVENTS_IMPL(DBEdit)
 JV_CONTROL_EVENTS_IMPL(DBText)
 JV_WINCONTROL_EVENTS_IMPL(DBCheckBox)
@@ -76,5 +81,21 @@ JV_WINCONTROL_EVENTS_IMPL(PopupDataList)
 JV_WINCONTROL_EVENTS_IMPL(DBLookupComboBox)
 JV_WINCONTROL_EVENTS_IMPL(DBRichEdit)
 JV_CONTROL_EVENTS_IMPL(NavButton)
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
