@@ -37,7 +37,7 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
-  Libc,
+  Libc, QWindows,
   {$ENDIF LINUX}
   SysUtils, Classes, IniFiles,
   JvAppStorage;
@@ -152,18 +152,6 @@ const
   cSectionHeaderStart = '[';
   cSectionHeaderEnd = ']';
   cKeyValueSeparator = '=';
-
-{$IFDEF LINUX}
-function GetTickCount: Cardinal;
-var
-  Info: TSysInfo;
-  TimeVal: TTimeVal;
-begin
-  sysinfo(Info);
-  gettimeofday(TimeVal, nil);
-  Result := Cardinal((Int64(Info.uptime) * 1000) + Round(TimeVal.tv_usec / 1000));
-end;
-{$ENDIF LINUX}
 
 function AnsiSameTextShortest(S1, S2: string): Boolean;
 begin

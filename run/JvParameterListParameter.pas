@@ -174,7 +174,7 @@ type
     FPicture: TPicture;
   protected
     procedure SetPicture(Value: TPicture);
-    procedure SetAutosize(Value: Boolean);
+    procedure SetAutoSize(Value: Boolean); virtual;
     function GetParameterNameExt: string; override;
     procedure CreateWinControl(AParameterParent: TWinControl); override;
   public
@@ -791,9 +791,12 @@ begin
   FPicture.Assign(Value);
 end;
 
-procedure TJvImageParameter.SetAutosize(Value: Boolean);
+procedure TJvImageParameter.SetAutoSize(Value: Boolean);
 begin
-  FAutosize := Value;
+  if Value <> FAutoSize then
+  begin
+    FAutoSize := Value;
+  end;
 end;
 
 procedure TJvImageParameter.Assign(Source: TPersistent);

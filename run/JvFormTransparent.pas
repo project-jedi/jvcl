@@ -41,10 +41,10 @@ type
     FComponentOwner: TCustomForm;
     FAutoSize: Boolean;
     FActive: Boolean;
-    procedure SetAutoSize(Value: Boolean);
     procedure SetActive(Value: Boolean);
     procedure SetMask(Value: TBitmap);
   protected
+    procedure SetAutoSize(Value: Boolean); virtual;
     procedure UpdateRegion;
     procedure Loaded; override;
   public
@@ -52,9 +52,9 @@ type
     destructor Destroy; override;
   published
     // (rom) renamed to Active as (RB) asked for here
-    property Active: Boolean read FActive write SetActive;
+    property Active: Boolean read FActive write SetActive default False;
     property Mask: TBitmap read FMask write SetMask;
-    property AutoSize: Boolean read FAutoSize write SetAutoSize;
+    property AutoSize: Boolean read FAutoSize write SetAutoSize default False;
   end;
 
 implementation

@@ -31,7 +31,14 @@ unit JvMaxPixel;
 interface
 
 uses
-  SysUtils, Classes, Graphics, Controls, Forms;
+  SysUtils,
+  {$IFDEF VCL}
+  Graphics, Controls, 
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, 
+  {$ENDIF VisualCLX}
+  Classes;
 
 type
   TJvMaxPixel = class(TPersistent)
@@ -89,14 +96,20 @@ end;
 
 procedure TJvMaxPixel.SetFont(const Value: TFont);
 begin
-  FFont.Assign(Value);
-  Changed;
+  if Value <> FFont then
+  begin
+    FFont.Assign(Value);
+    Changed;
+  end;
 end;
 
 procedure TJvMaxPixel.SetLength(const Value: Integer);
 begin
-  FLength := Value;
-  Changed;
+  if Value <> FLength then
+  begin
+    FLength := Value;
+    Changed;
+  end;
 end;
 
 procedure TJvMaxPixel.SetUseControlFont(const Value: Boolean);
@@ -111,7 +124,7 @@ end;
 function TJvMaxPixel.Test(var Value: string; ParentFont: TFont): Boolean;
 begin
   Result := True;
-  if FLength = 0 then
+  if Length = 0 then
     Exit;
 
   with TControlCanvas.Create do
@@ -123,8 +136,8 @@ begin
       else
         Font.Assign(FFont);
 
-      Result := TextWidth(Value) > FLength;
-      while (TextWidth(Value) > FLength) and (Value <> '') do
+      Result := TextWidth(Value) > Length;
+      while (TextWidth(Value) > Length) and (Value <> '') do
         Value := Copy(Value, 1, System.Length(Value) - 1);
     finally
       Free;

@@ -50,9 +50,7 @@ type
   private
     FItems: TStrings;
     FItemHeight: Integer;
-    {$IFDEF COMPILER6_UP}
     FAutoSize: Boolean;
-    {$ENDIF COMPILER6_UP}
     FAutoGrow: Boolean;
     FDown: Boolean;
     FClickable: Boolean;
@@ -73,9 +71,7 @@ type
     procedure SetClickable(const Value: Boolean);
     procedure SetOrientation(const Value: TJvPanelOrientation);
   protected
-    {$IFDEF COMPILER6_UP}
     procedure SetAutoSize(Value: Boolean); {$IFDEF VCL} override; {$ENDIF}
-    {$ENDIF COMPILER6_UP}
     {$IFDEF VisualCLX}
     procedure AdjustSize; override;
     {$ENDIF VisualCLX}
@@ -101,9 +97,7 @@ type
     property Canvas;
   published
     property AutoGrow: Boolean read FAutoGrow write SetAutoGrow;
-    {$IFDEF COMPILER6_UP}
     property AutoSize: Boolean read FAutoSize write SetAutoSize;
-    {$ENDIF COMPILER6_UP}
     property Items: TStrings read FItems write SetItems;
     property ItemHeight: Integer read FItemHeight write SetItemHeight default 16;
     property HotTrack: Boolean read FHotTrack write SetHotTrack;
@@ -280,7 +274,6 @@ begin
   end;
 end;
 
-{$IFDEF COMPILER6_UP}
 procedure TJvItemsPanel.SetAutoSize(Value: Boolean);
 begin
   if FAutoSize <> Value then
@@ -296,7 +289,6 @@ begin
     Grow;
   end;
 end;
-{$ENDIF COMPILER6_UP}
 
 procedure TJvItemsPanel.SetItemHeight(const Value: Integer);
 begin

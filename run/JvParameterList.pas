@@ -110,7 +110,7 @@ type
     procedure AddValue(AName: string; AValue: Variant);
   end;
 
-  TJvBaseParameter = class(TComponent)
+  TJvBaseParameter = class(TJvComponent)
   private
     FCaption: string;
     FValue: Variant;

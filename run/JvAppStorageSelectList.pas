@@ -26,7 +26,13 @@ unit JvAppStorageSelectList;
 interface
 
 uses
-  Classes, Controls, Forms,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Controls, Forms,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QControls, QForms,
+  {$ENDIF VisualCLX}
   JvComponent, JvTypes, JvAppStorage, JvDynControlEngine,
   JvDynControlEngineIntf;
 
@@ -90,7 +96,6 @@ type
 implementation
 
 uses
-  SysUtils,
   JvConsts, JvResources;
 
 constructor TJvAppStorageSelectList.Create(AOwner: TComponent);
@@ -211,9 +216,13 @@ begin
   with SelectDialog do
   begin
     BorderIcons := [];
+    {$IFDEF VCL}
     DefaultMonitor := dmActiveForm;
-    FormStyle := fsNormal;
     BorderStyle := bsDialog;
+    {$ELSE}
+    BorderStyle := fbsDialog;
+    {$ENDIF VCL}
+    FormStyle := fsNormal;
     Position := poScreenCenter;
     OnDestroy := SelectFormDestroying;
   end;

@@ -37,12 +37,13 @@ uses
   {$IFDEF VisualCLX}
   Types, QGraphics, QControls, QExtCtrls, QImgList,
   {$ENDIF VisualCLX}
-  SysUtils, Classes;
+  SysUtils, Classes,
+  JvComponent;
 
 type
   TJvTextShape = class;
 
-  TJvCustomDiagramShape = class(TGraphicControl)
+  TJvCustomDiagramShape = class(TJvGraphicControl)
     // All controls descend from this, to help with streaming and unique naming
   private
     FCanProcessMouseMsg: Boolean;
@@ -148,9 +149,9 @@ type
     FFont: TFont;
     procedure SetText(Value: string);
     procedure SetFont(Value: TFont);
-    procedure FontChanged(Sender: TObject);
+    procedure FontChange(Sender: TObject);
   protected
-    procedure SetAutoSize(Value: Boolean); {$IFDEF COMPILER6_UP} override; {$ENDIF}
+    procedure SetAutoSize(Value: Boolean); override;
     procedure RefreshText;
     procedure SetParent(AParent: TWinControl); override;
     procedure Paint; override;
@@ -160,7 +161,7 @@ type
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
   published
     property Text: string read FText write SetText;
-    property AutoSize: Boolean read FAutoSize write SetAutoSize;
+    property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
     property Font: TFont read FFont write SetFont;
   end;
 
@@ -1089,7 +1090,7 @@ begin
   FAutoSize := True;
   FText := '';
   FFont := TFont.Create;
-  FFont.OnChange := FontChanged;
+  FFont.OnChange := FontChange;
 end;
 
 destructor TJvTextShape.Destroy;
@@ -1107,7 +1108,7 @@ begin
   FMinWidth := FSizeRectWidth;
   TempStr := '';
   Count := 1;
-  if FAutoSize and Assigned(Parent) then
+  if AutoSize and Assigned(Parent) then
   begin
     Canvas.Font := Font;
     for I := 1 to Length(FText) do
@@ -1155,7 +1156,7 @@ begin
   FFont.Assign(Value);
 end;
 
-procedure TJvTextShape.FontChanged(Sender: TObject);
+procedure TJvTextShape.FontChange(Sender: TObject);
 begin
   RefreshText;
 end;

@@ -46,47 +46,47 @@ Type
   TJvTFDirection = (dirUp, dirDown, dirLeft, dirRight);
 
 const
-  DOW_WEEK : TTFDaysOfWeek = [dowSunday..dowSaturday];
-  DOW_WEEKEND : TTFDaysOfWeek = [dowSunday, dowSaturday];
-  DOW_WORKWEEK : TTFDaysOfWeek = [dowMonday..dowFriday];
+  DOW_WEEK: TTFDaysOfWeek = [dowSunday..dowSaturday];
+  DOW_WEEKEND: TTFDaysOfWeek = [dowSunday, dowSaturday];
+  DOW_WORKWEEK: TTFDaysOfWeek = [dowMonday..dowFriday];
 
   ONE_HOUR = 1 / 24;
   ONE_MINUTE = ONE_HOUR / 60;
   ONE_SECOND = ONE_MINUTE / 60;
   ONE_MILLISECOND = ONE_SECOND / 1000;
 
-function ExtractYear(aDate : TDateTime) : Word;
-function ExtractMonth(aDate : TDateTime) : Word;
-function ExtractDay(aDate : TDateTime) : Word;
-function ExtractHours(aTime : TDateTime) : Word;
-function ExtractMins(aTime : TDateTime) : Word;
-function ExtractSecs(aTime : TDateTime) : Word;
-function ExtractMSecs(aTime : TDateTime) : Word;
-function FirstOfMonth(aDate : TDateTime) : TDateTime;
+function ExtractYear(aDate: TDateTime): Word;
+function ExtractMonth(aDate: TDateTime): Word;
+function ExtractDay(aDate: TDateTime): Word;
+function ExtractHours(aTime: TDateTime): Word;
+function ExtractMins(aTime: TDateTime): Word;
+function ExtractSecs(aTime: TDateTime): Word;
+function ExtractMSecs(aTime: TDateTime): Word;
+function FirstOfMonth(aDate: TDateTime): TDateTime;
 function GetDayOfNthDOW(Year, Month, DOW, N: Word): Word;
 function GetWeeksInMonth(Year, Month: Word; StartOfWeek: Integer): Word;
 
 procedure IncBorlDOW(var BorlDOW: Integer; N: Integer = 1);
 procedure IncDOW(var DOW: TTFDayOfWeek; N: Integer = 1);
-procedure IncDays(var aDate : TDateTime; N: Integer = 1);
+procedure IncDays(var aDate: TDateTime; N: Integer = 1);
 procedure IncWeeks(var aDate: TDateTime; N: Integer = 1);
 procedure IncMonths(var aDate: TDateTime; N: Integer = 1);
 procedure IncYears(var aDate: TDateTime; N: Integer = 1);
 
-function EndOfMonth(aDate: TDateTime) : TDateTime;
-function IsFirstOfMonth(aDate : TDateTime) : Boolean;
-function IsEndOfMonth(aDate : TDateTime) : Boolean;
+function EndOfMonth(aDate: TDateTime): TDateTime;
+function IsFirstOfMonth(aDate: TDateTime): Boolean;
+function IsEndOfMonth(aDate: TDateTime): Boolean;
 procedure EnsureMonth(Month: Word);
 procedure EnsureDOW(DOW: Word);
-function EqualDates(D1, D2 : TDateTime) : Boolean;
-function Lesser(N1, N2 : Integer) : Integer;
-function Greater(N1, N2 : Integer) : Integer;
-function GetDivLength(TotalLength, DivCount, DivNum : Integer) : Integer;
-function GetDivNum(TotalLength, DivCount, X : Integer) : Integer;
-function GetDivStart(TotalLength, DivCount, DivNum : Integer) : Integer;
-function DOWToBorl(aDOW : TTFDayOfWeek) : Integer;
-function BorlToDOW(BorlDOW : Integer) : TTFDayOfWeek;
-function DateToDOW(aDate : TDateTime) : TTFDayOfWeek;
+function EqualDates(D1, D2: TDateTime): Boolean;
+function Lesser(N1, N2: Integer): Integer;
+function Greater(N1, N2: Integer): Integer;
+function GetDivLength(TotalLength, DivCount, DivNum: Integer): Integer;
+function GetDivNum(TotalLength, DivCount, X: Integer): Integer;
+function GetDivStart(TotalLength, DivCount, DivNum: Integer): Integer;
+function DOWToBorl(aDOW: TTFDayOfWeek): Integer;
+function BorlToDOW(BorlDOW: Integer): TTFDayOfWeek;
+function DateToDOW(aDate: TDateTime): TTFDayOfWeek;
 
 procedure CalcTextPos(HostRect: TRect; var TextLeft, TextTop: Integer;
   var TextBounds: TRect; aFont: TFont; aAngle: Integer;
@@ -96,9 +96,9 @@ procedure DrawAngleText(aCanvas: TCanvas; HostRect: TRect;
   var TextBounds: TRect; aAngle: Integer; HAlign: TAlignment;
   VAlign: TJvTFVAlignment; aTxt: String);
 
-Function RectWidth(aRect : TRect) : Integer;
-Function RectHeight(aRect : TRect) : Integer;
-function EmptyRect : TRect;
+Function RectWidth(aRect: TRect): Integer;
+Function RectHeight(aRect: TRect): Integer;
+function EmptyRect: TRect;
 function IsClassByName(Obj: TObject; ClassName: ShortString): Boolean;
 
 
@@ -106,39 +106,39 @@ implementation
 {$IFDEF USEJVCL}
 uses
   JvResources;
-{$ENDIF}  
+{$ENDIF USEJVCL}
 
 {$IFNDEF USEJVCL}
 resourcestring
   RsEResultDoesNotFallInMonth = 'Result does not fall in given month';
   RsEInvalidMonthValue = 'Invalid Month Value (%d)';
   RsEInvalidDayOfWeekValue = 'Invalid value for day of week (%d)';
-{$ENDIF}
+{$ENDIF USEJVCL}
 
-function ExtractYear(aDate : TDateTime) : Word;
+function ExtractYear(aDate: TDateTime): Word;
 var
-  M, D : Word;
+  M, D: Word;
 begin
   DecodeDate(aDate, Result, M, D);
 end;
 
-function ExtractMonth(aDate : TDateTime) : Word;
+function ExtractMonth(aDate: TDateTime): Word;
 var
-  Y, D : Word;
+  Y, D: Word;
 begin
   DecodeDate(aDate, Y, Result, D);
 end;
 
-function ExtractDay(aDate : TDateTime) : Word;
+function ExtractDay(aDate: TDateTime): Word;
 var
-  Y, M : Word;
+  Y, M: Word;
 begin
   DecodeDate(aDate, Y, M, Result);
 end;
 
-function FirstOfMonth(aDate : TDateTime) : TDateTime;
+function FirstOfMonth(aDate: TDateTime): TDateTime;
 var
-  Y, M, D : Word;
+  Y, M, D: Word;
 begin
   DecodeDate(aDate, Y, M, D);
   Result := EncodeDate(Y, M, 1);
@@ -146,8 +146,8 @@ end;
 
 function GetDayOfNthDOW(Year, Month, DOW, N: Word): Word;
 var
-  FirstDayDOW : Word;
-  WorkDate : TDateTime;
+  FirstDayDOW: Word;
+  WorkDate: TDateTime;
 begin
   WorkDate := EncodeDate(Year, Month, 1);
   FirstDayDOW := DayOfWeek(WorkDate);
@@ -165,12 +165,12 @@ begin
     Raise EJvTFDateError.Create(RsEResultDoesNotFallInMonth);
 end;
 
-function GetWeeksInMonth(Year, Month : Word; StartOfWeek: Integer): Word;
+function GetWeeksInMonth(Year, Month: Word; StartOfWeek: Integer): Word;
 var
   DOW,
-  EndOfWeek : Integer;
+  EndOfWeek: Integer;
   EOM,
-  WorkDate : TDateTime;
+  WorkDate: TDateTime;
 begin
   // Get the end of the week
   EndOfWeek := StartOfWeek;
@@ -213,14 +213,14 @@ end;
 procedure IncDOW(var DOW: TTFDayOfWeek; N: Integer);
                                   // N defaults to 1
 var
-  BorlDOW : Integer;
+  BorlDOW: Integer;
 begin
   BorlDOW := DOWToBorl(DOW);
   IncBorlDOW(BorlDOW, N);
   DOW := BorlToDOW(BorlDOW);
 end;
 
-procedure IncDays(var aDate : TDateTime; N: Integer);
+procedure IncDays(var aDate: TDateTime; N: Integer);
                                      // N defaults to 1
 begin
   aDate := aDate + N;
@@ -237,7 +237,7 @@ end;
 procedure IncMonths(var aDate: TDateTime; N: Integer);
                                       // N defaults to 1
 var
-  Y, M, D, EOMD : Word;
+  Y, M, D, EOMD: Word;
 begin
   DecodeDate(aDate, Y, M, D);
   Inc(Y, N div 12);
@@ -257,7 +257,7 @@ end;
 procedure IncYears(var aDate: TDateTime; N: Integer);
                                      // N defaults to 1
 var
-  Y, M, D, EOMD : Word;
+  Y, M, D, EOMD: Word;
 begin
   DecodeDate(aDate, Y, M, D);
   Inc(Y, N);
@@ -273,9 +273,9 @@ begin
   aDate := EncodeDate(Y, M, D);
 end;
 
-function EndOfMonth(aDate: TDateTime) : TDateTime;
+function EndOfMonth(aDate: TDateTime): TDateTime;
 var
-  Y, M, D : Word;
+  Y, M, D: Word;
 begin
   DecodeDate(aDate, Y, M, D);
   Inc(M);
@@ -287,15 +287,15 @@ begin
   Result := EncodeDate(Y, M, 1) - 1;
 end;
 
-function IsFirstOfMonth(aDate : TDateTime) : Boolean;
+function IsFirstOfMonth(aDate: TDateTime): Boolean;
 var
-  Y, M, D : Word;
+  Y, M, D: Word;
 begin
   DecodeDate(aDate, Y, M, D);
   Result := D = 1;
 end;
 
-function IsEndOfMonth(aDate : TDateTime) : Boolean;
+function IsEndOfMonth(aDate: TDateTime): Boolean;
 begin
   Result := EqualDates(aDate, EndOfMonth(aDate));
 end;
@@ -312,40 +312,40 @@ begin
     Raise EJvTFDateError.CreateFmt(RsEInvalidDayOfWeekValue, [DOW]);
 end;
 
-function EqualDates(D1, D2 : TDateTime) : Boolean;
+function EqualDates(D1, D2: TDateTime): Boolean;
 begin
   Result := Trunc(D1) = Trunc(D2);
 end;
 
-function ExtractHours(aTime : TDateTime) : Word;
+function ExtractHours(aTime: TDateTime): Word;
 var
-  M, S, MS : Word;
+  M, S, MS: Word;
 begin
   DecodeTime(aTime, Result, M, S, MS);
 end;
 
-function ExtractMins(aTime : TDateTime) : Word;
+function ExtractMins(aTime: TDateTime): Word;
 var
-  H, S, MS : Word;
+  H, S, MS: Word;
 begin
   DecodeTime(aTime, H, Result, S, MS);
 end;
 
-function ExtractSecs(aTime : TDateTime) : Word;
+function ExtractSecs(aTime: TDateTime): Word;
 var
-  H, M, MS : Word;
+  H, M, MS: Word;
 begin
   DecodeTime(aTime, H, M, Result, MS);
 end;
 
-function ExtractMSecs(aTime : TDateTime) : Word;
+function ExtractMSecs(aTime: TDateTime): Word;
 var
-  H, M, S : Word;
+  H, M, S: Word;
 begin
   DecodeTime(aTime, H, M, S, Result);
 end;
 
-function Lesser(N1, N2 : Integer) : Integer;
+function Lesser(N1, N2: Integer): Integer;
 begin
   If N1 < N2 Then
     Result := N1
@@ -353,7 +353,7 @@ begin
     Result := N2;
 end;
 
-function Greater(N1, N2 : Integer) : Integer;
+function Greater(N1, N2: Integer): Integer;
 begin
   If N1 > N2 Then
     Result := N1
@@ -361,7 +361,7 @@ begin
     Result := N2;
 end;
 
-function GetDivLength(TotalLength, DivCount, DivNum : Integer) : Integer;
+function GetDivLength(TotalLength, DivCount, DivNum: Integer): Integer;
 begin
   If (DivNum < 0) or (DivNum >= DivCount) Then
     Result := -1
@@ -373,11 +373,11 @@ begin
     End;
 end;
 
-function GetDivNum(TotalLength, DivCount, X : Integer) : Integer;
+function GetDivNum(TotalLength, DivCount, X: Integer): Integer;
 var
   Base,
   MakeUp,
-  MakeUpWidth : Integer;
+  MakeUpWidth: Integer;
 begin
   If (X < 0) or (X >= TotalLength) Then
     Result := -1
@@ -394,11 +394,11 @@ begin
     End;
 end;
 
-function GetDivStart(TotalLength, DivCount, DivNum : Integer) : Integer;
+function GetDivStart(TotalLength, DivCount, DivNum: Integer): Integer;
 var
   Base,
   MakeUp,
-  MakeUpWidth : Integer;
+  MakeUpWidth: Integer;
 begin
   If (DivNum < 0) or (DivNum >= DivCount) Then
     Result := -1
@@ -415,19 +415,19 @@ begin
     End;
 end;
 
-function DOWToBorl(aDOW : TTFDayOfWeek) : Integer;
+function DOWToBorl(aDOW: TTFDayOfWeek): Integer;
 begin
   Result := Ord(aDOW) + 1;
 end;
 
-function BorlToDOW(BorlDOW : Integer) : TTFDayOfWeek;
+function BorlToDOW(BorlDOW: Integer): TTFDayOfWeek;
 begin
   Result := TTFDayOfWeek(BorlDOW - 1);
 end;
 
-function DateToDOW(aDate : TDateTime) : TTFDayOfWeek;
+function DateToDOW(aDate: TDateTime): TTFDayOfWeek;
 var
-  BorlDOW : Integer;
+  BorlDOW: Integer;
 begin
   BorlDOW := DayOfWeek(aDate);
   Result := BorlToDOW(BorlDOW);
@@ -445,14 +445,14 @@ procedure CalcTextPos(HostRect: TRect; var TextLeft, TextTop: Integer;
 {==========================================================================}
 { Calculate text pos. depend. on: Font, Escapement, Alignment and length   }
 {--------------------------------------------------------------------------}
-var DC      : HDC;
+var DC     : HDC;
     hSavFont: HFont;
-    Size    : TSize;
-    x,y     : Integer;
-    //cStr    : array[0..255] of Char;
-    PTxt : PChar;
-    a, b, c, d : Integer;
-    lb, lt, rb, rt : TPoint;
+    Size   : TSize;
+    x,y    : Integer;
+    //cStr   : array[0..255] of Char;
+    PTxt: PChar;
+    a, b, c, d: Integer;
+    lb, lt, rb, rt: TPoint;
 begin
   aAngle := aAngle div 10;
 
@@ -545,13 +545,13 @@ procedure DrawAngleText(aCanvas: TCanvas; HostRect: TRect;
   var TextBounds: TRect; aAngle: Integer; HAlign: TAlignment;
   VAlign: TJvTFVAlignment; aTxt: String);
 var
-  LogFont : TLogFont;
-  TxtRect : TRect;
-  Flags : UINT;
-  PTxt : PChar;
-  ClipRgn : HRgn;
+  LogFont: TLogFont;
+  TxtRect: TRect;
+  Flags: UINT;
+  PTxt: PChar;
+  ClipRgn: HRgn;
   TextLeft,
-  TextTop : Integer;
+  TextTop: Integer;
 begin
   //TxtRect := aRect;
   //CalcTextPos(TxtRect, aCanvas.Font, aAngle, HAlign, VAlign, aTxt);
@@ -587,24 +587,24 @@ begin
   //aRect := TxtRect;
 end;
 
-Function RectWidth(aRect : TRect) : Integer;
+Function RectWidth(aRect: TRect): Integer;
 Begin
   Result := aRect.Right - aRect.Left;
 End;
 
-Function RectHeight(aRect : TRect) : Integer;
+Function RectHeight(aRect: TRect): Integer;
 Begin
   Result := aRect.Bottom - aRect.Top;
 End;
 
-function EmptyRect : TRect;
+function EmptyRect: TRect;
 begin
   Result := Rect(0, 0, 0, 0);
 end;
 
 function IsClassByName(Obj: TObject; ClassName: ShortString): Boolean;
 var
-  ClassRef : TClass;
+  ClassRef: TClass;
 begin
   Result := False;
   ClassRef := Obj.ClassType;
