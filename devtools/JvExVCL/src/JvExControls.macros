@@ -73,6 +73,11 @@
 *)
 
 (*$DEFINE JV_FORMCONSTRUCTOR
+  {$IFDEF VCL}
+  private
+    procedure CMShowingChanged(var Msg: TMessage); message CM_ShowingChanged;
+    procedure CMDialogKey(var Msg: TCMDialogKey); message CM_DialogKey;
+  {$ENDIF VCL}
   public
     constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;
     destructor Destroy; override;
@@ -132,15 +137,19 @@
 (*$DEFINE JV_WINCONTROL_EVENTS_DECL_VISUALCLX
   private
     FDoubleBuffered: Boolean;
+    function GetColor: TColor;
+    procedure SetColor(Value: TColor);
+    function GetDoubleBuffered: Boolean;
+    procedure SetDoubleBuffered(Value: Boolean);
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
-    function GetDoubleBuffered: Boolean;
     procedure ColorChanged; override;
-  public
-    property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
+    property Color: TColor read GetColor write SetColor;
+  published // asn: change to public in final
+    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
 *)
 
 (*$DEFINE JV_WINCONTROL_EVENTS_DECL_COMMON
@@ -542,16 +551,7 @@ end;
 (*$DEFINE JV_WINCONTROL_EVENTS_IMPL_VISUALCLX(ClassName)
 procedure TJvEx##ClassName.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
-  if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
-  begin
-    WidgetControl_PaintBackground(Self, Canvas);
-    IFISNOTCUSTOMFORM Paint;
-  end;
-end;
-
-function TJvEx##ClassName.GetDoubleBuffered: Boolean;
-begin
-  Result := FDoubleBuffered;
+  WidgetControl_Painting(Self, Canvas, EventRegion);
 end;
 
 function TJvEx##ClassName.NeedKey(Key: Integer; Shift: TShiftState;
@@ -572,6 +572,38 @@ begin
   TWidgetControl_ColorChanged(Self);
 end;
 
+function TJvEx##ClassName.GetColor: TColor;
+begin
+  Result := Brush.Color;
+end;
+
+procedure TJvEx##ClassName.SetColor(Value: TColor);
+begin
+  if Brush.Color <> Value then
+  begin
+    inherited Color := Value;
+    Brush.Color := Value;
+  end;
+end;
+
+function TJvEx##ClassName.GetDoubleBuffered: Boolean;
+begin
+  Result := FDoubleBuffered;
+end;
+
+procedure TJvEx##ClassName.SetDoubleBuffered(Value: Boolean);
+begin
+  if Value <> FDoubleBuffered then
+  begin
+    if Value then
+      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground)
+    else
+      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_PaletteBackground);
+    FDoubleBuffered := Value;
+    if not (csCreating in ControlState) then
+      Invalidate;
+  end;
+end;
 *) // MACRO END WINCONTROL_VISUALCLX
 
 
@@ -656,7 +688,27 @@ end;
 *)
 
 (*$DEFINE JV_DIFF_EVENTS_IMPL_CUSTOMCONTROL(ClassName)
+{$IFDEF VCL}
 JV_DIFF_EVENTS_IMPL_CONTROL(ClassName)
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+constructor TJvEx##ClassName.Create(AOwner: TComponent);
+begin
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
+  inherited Create(AOwner);
+  CONSTRUCTOR_CODE
+  DoubleBuffered := True;
+end;
+
+destructor TJvEx##ClassName.Destroy;
+begin
+  DESTRUCTOR_CODE
+  inherited Destroy;
+end;
+{$ENDIF VisualCLX}
 *)
 
 (*$DEFINE JV_DIFF_EVENTS_IMPL_CUSTOMFORM(ClassName)
@@ -678,6 +730,26 @@ begin
   DESTRUCTOR_CODE
   inherited Destroy;
 end;
+
+{$IFDEF VCL}
+procedure TJvEx##ClassName.CMShowingChanged(var Msg: TMessage);
+begin
+  if Showing then
+    SendMessage(Handle, WM_CHANGEUISTATE, UIS_INITIALIZE, 0);
+  inherited;
+end;
+
+procedure TJvEx##ClassName.CMDialogKey(var Msg: TCMDialogKey);
+begin
+  case Msg.CharCode of
+    VK_LEFT..VK_DOWN, VK_TAB:
+      SendMessage(Handle, WM_CHANGEUISTATE, MakeLong(UIS_CLEAR, UISF_HIDEFOCUS), 0);
+    VK_MENU:
+      SendMessage(Handle, WM_CHANGEUISTATE, MakeLong(UIS_CLEAR, UISF_HIDEFOCUS or UISF_HIDEACCEL), 0);
+  end;
+  inherited;
+end;
+{$ENDIF VCL}
 *)
 
 // ************************************************
