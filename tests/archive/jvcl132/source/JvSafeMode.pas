@@ -40,10 +40,10 @@ uses
 
 type
   TJvSafeMode = class(TJvComponent)
-  private
   published
     procedure MonitorOn;
     procedure MonitorOff;
+    procedure LowPower;
   end;
 
 implementation
@@ -59,7 +59,12 @@ end;
 
 procedure TJvSafeMode.MonitorOff;
 begin
-  SendMessage(Application.Handle, WM_SYSCOMMAND, SC_MONITORPOWER, 0);
+  SendMessage(Application.Handle, WM_SYSCOMMAND, SC_MONITORPOWER, 2);
+end;
+
+procedure TJvSafeMode.LowPower;
+begin
+  SendMessage(Application.Handle, WM_SYSCOMMAND, SC_MONITORPOWER, 1);
 end;
 
 end.
