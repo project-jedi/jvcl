@@ -11,6 +11,8 @@ if %BCBDIR%!==! SET BCBDIR=C:\Program Files\CBuilder6
 
 MakeBCB "BCB6 Packages" Bcb6 "%BCBDIR%"
 
+SET BCBDIR=
+
 goto end
 
 :help
