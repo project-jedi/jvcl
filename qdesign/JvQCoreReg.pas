@@ -43,7 +43,8 @@ uses
 
   QControls, QStdCtrls, QExtCtrls, QGraphics, QActnList, QImgList, QDialogs,
   Types,  QTypes, QExtDlgs,
-
+  JvQExStdCtrls, JvQExExtCtrls, JvQExControls, JvQExCheckLst, JvQExComCtrls,
+  JvQExButtons, JvQExGrids, JvQExMask,
 
   DesignEditors, DesignIntf,
 
@@ -74,6 +75,16 @@ procedure Register;
 const
   BaseClass: TClass = TComponent;
 begin
+  RegisterComponents('Extended Standard', [TJvExLabel, TJvExPanel, TJvExBevel,
+    TJvExControlBar, TJvExPubRadioGroup, TJvExEdit, TJvExButton, TJvExCheckBox,
+    TJvExComboBox, TJvExGroupBox, TJvExListBox, TJvExMemo, TJvExRadioButton,
+    TJvExScrollBar]);
+  RegisterComponents('Extended Additional', [TJvExBitBtn, TJvExSpeedButton,
+    TJvExCheckListBox, TJvExImage, TJvExPaintBox, TJvExShape, TJvExSplitter,
+    TJvExStringGrid, TJvExDrawGrid, TJvExMaskEdit]);
+  RegisterComponents('Extended Common', [TJvExTabControl, TJvExPageControl,
+    TJvExPubProgressBar, TJvExPubTreeView, TJvExPubListView, TJvExHeaderControl,
+    TJvExAnimate, TJvExStatusBar, TJvExToolBar]);
   RegisterComponents(RsPaletteNonVisual, [TJvJVCLAboutComponent
    {$IFDEF MSWINDOWS},
  TJvContextProvider, TJvColorProvider, TJvColorMappingProvider
@@ -92,8 +103,8 @@ begin
   RegisterPropertyEditor(TypeInfo(string), BaseClass, 'DirectoryName', TJvDirectoryProperty);
   RegisterPropertyEditor(TypeInfo(string), BaseClass, 'InitialDir', TJvDirectoryProperty);
   RegisterPropertyEditor(TypeInfo(widestring), BaseClass, '', TJvHintProperty);
-//  RegisterPropertyEditor(TypeInfo(widestring), BaseClass, 'Hint', TJvHintProperty);
-//  RegisterPropertyEditor(TypeInfo(TCaption), BaseClass, '', TJvHintProperty);
+//  RegisterPropertyEditor(TypeInfo(string), BaseClass, 'Hint', TJvHintProperty);
+  RegisterPropertyEditor(TypeInfo(TCaption), BaseClass, '', TJvHintProperty);
   RegisterPropertyEditor(TypeInfo(string), BaseClass, 'Text', TJvHintProperty);
 
   RegisterPropertyEditor(TypeInfo(Integer), BaseClass, '', TJvIntegerProperty);

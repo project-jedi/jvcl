@@ -40,7 +40,7 @@ uses
   
   
   QForms, QControls, QGraphics, QExtCtrls, Tabs, QDialogs,
-  QExtDlgs, QMenus, QStdCtrls, QImgList, QWindows, 
+  QExtDlgs, QMenus, QStdCtrls, QImgList, QWindows, Types,
   
   DsnConst,
   
@@ -121,6 +121,27 @@ type
     procedure GetValues(Proc: TGetStrProc); override;
     function GetValue: string; override;
     procedure SetValue(const Value: string); override;
+  end;
+
+  TJvDefaultImageIndexProperty = class(TIntegerProperty)
+  protected
+    function ImageList: TCustomImageList; virtual;
+  public
+    function GetValue: string; override;
+    procedure SetValue(const Value: string); override;
+    function GetAttributes: TPropertyAttributes; override;
+    procedure GetValues(Proc: TGetStrProc); override;
+    (*
+    procedure ListMeasureWidth(const Value: string; ACanvas: TCanvas;
+      var AWidth: Integer); override;
+    procedure ListMeasureHeight(const Value: string; ACanvas: TCanvas;
+      var AHeight: Integer); override;
+    procedure ListDrawValue(const Value: string; ACanvas: TCanvas;
+      const ARect: TRect; ASelected: Boolean); override;
+
+    procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
+      ASelected: Boolean); override;
+      (*)
   end;
 
   
@@ -469,6 +490,102 @@ function TJvTimeExProperty.GetAttributes: TPropertyAttributes;
 begin
   Result := inherited GetAttributes + [paDialog];
 end;
+
+function TJvDefaultImageIndexProperty.ImageList: TCustomImageList;
+const
+  cImageList = 'ImageList';
+  cImages = 'Images';
+begin
+  if TypInfo.GetPropInfo(GetComponent(0), cImageList) <> nil then
+    Result := TCustomImageList(TypInfo.GetObjectProp(GetComponent(0), cImageList))
+  else
+  if TypInfo.GetPropInfo(GetComponent(0), cImages) <> nil then
+    Result := TCustomImageList(TypInfo.GetObjectProp(GetComponent(0), cImages))
+  else
+    Result := nil;
+end;
+
+function TJvDefaultImageIndexProperty.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paValueList, paSortList, paMultiselect];
+end;
+
+function TJvDefaultImageIndexProperty.GetValue: string;
+begin
+  Result := IntToStr(GetOrdValue);
+end;
+
+procedure TJvDefaultImageIndexProperty.SetValue(const Value: string);
+var
+  XValue: Integer;
+begin
+  try
+    XValue := StrToInt(Value);
+    SetOrdValue(XValue);
+  except
+    inherited SetValue(Value);
+  end;
+end;
+
+procedure TJvDefaultImageIndexProperty.GetValues(Proc: TGetStrProc);
+var
+  Tmp: TCustomImageList;
+  I: Integer;
+begin
+  Tmp := ImageList;
+  if Assigned(Tmp) then
+    for I := 0 to Tmp.Count - 1 do
+      Proc(IntToStr(I));
+end;
+
+(*)
+
+procedure TJvDefaultImageIndexProperty.ListDrawValue(const Value: string;
+  ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean);
+var
+  Tmp: TCustomImageList;
+  R: TRect;
+begin
+  inherited ListDrawValue(Value, ACanvas, ARect, ASelected);
+  Tmp := ImageList;
+  if Tmp <> nil then
+  begin
+    R := ARect;
+    ACanvas.FillRect(ARect);
+    Tmp.Draw(ACanvas, ARect.Left, ARect.Top, StrToInt(Value));
+    OffsetRect(R, Tmp.Width + 2, 0);
+    DrawText(ACanvas.Handle, PChar(Value), -1, R, 0);
+  end;
+end;
+
+procedure TJvDefaultImageIndexProperty.ListMeasureHeight(const Value: string;
+  ACanvas: TCanvas; var AHeight: Integer);
+var
+  Tmp: TCustomImageList;
+begin
+  Tmp := ImageList;
+  if Assigned(Tmp) then
+    AHeight := Max(Tmp.Height + 2, ACanvas.TextHeight(Value) + 2);
+end;
+
+procedure TJvDefaultImageIndexProperty.ListMeasureWidth(const Value: string;
+  ACanvas: TCanvas; var AWidth: Integer);
+var
+  Tmp: TCustomImageList;
+begin
+  Tmp := ImageList;
+  if Assigned(Tmp) then
+    AWidth := Tmp.Width + ACanvas.TextHeight(Value) + 4;
+end;
+procedure TJvDefaultImageIndexProperty.PropDrawValue(ACanvas: TCanvas;
+  const ARect: TRect; ASelected: Boolean);
+begin
+//  if GetVisualValue <> '' then
+//    ListDrawValue(GetVisualValue, ACanvas, ARect, True)
+//  else
+  inherited PropDrawValue(ACanvas, ARect, ASelected);
+end;
+(*)
 
 
 

@@ -40,18 +40,18 @@ implementation
 
 uses
   Classes,
-  
-  
+
+
   QDialogs, QActnList,
-  
-  
+
+
   DesignEditors, DesignIntf,
-  
+
   JvQDsgnConsts,
-  JvQBaseDlg, JvQCommonExecDlg,
+  JvQBaseDlg, JvQCommonExecDlg, JvQTipOfDay,
   JvQActnResForm, JvQProgressComponent,
   JvQImageDlg, JvQDualList,
-  JvQProgressDialog, JvQBaseDlgEditor;
+  JvQProgressDialog, JvQBaseDlgEditor, JvQTipOfDayEditor;
 
 {$R ../Resources/JvDlgsReg.dcr}
 
@@ -59,7 +59,9 @@ procedure Register;
 begin
   RegisterComponents(RsPaletteDialog, [
     TJvDualListDialog, TJvImageDialog,
-    TJvProgressDialog, TJvProgressComponent]);
+    TJvProgressDialog, TJvProgressComponent, TJvTipOfDay]);
+  RegisterComponentEditor(TJvTipOfDay, TJvTipOfDayEditor);
+
   {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
   RegisterComponentEditor(TCommonDialog, TJvBaseDlgEditor);
   {$ENDIF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
