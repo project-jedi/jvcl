@@ -52,7 +52,7 @@ type
     FFlat: Boolean;
     FOver: Boolean;
     procedure SetFlat(Value: Boolean);
-    procedure CmDesignHitTest(var Msg: TCmDesignHitTest); message Cm_DesignHitTest;
+    procedure CMDesignHitTest(var Msg: TCMDesignHitTest); message CM_DESIGNHITTEST;
     procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
   protected
     procedure OnTime(Sender: TObject); virtual;
@@ -290,12 +290,13 @@ type
     function GetButtonCount: Integer;
     procedure SetAutoCenter(Value: Boolean);
     function IsVisible(Control: TControl): Boolean;
-    procedure CMDialogChar(var Msg: TCMDialogChar); message CM_DIALOGCHAR;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
     procedure CMParentImageSizeChanged(var Msg: TMessage); message CM_IMAGESIZECHANGED;
     procedure TileBitmap;
   protected
+    function WantKey(Key: Integer; Shift: TShiftState;
+      const KeyText: WideString): Boolean; override;
+    procedure MouseLeave(Control: TControl); override;
+    procedure EnabledChanged; override;
     procedure DoOnEdited(var Caption: string); virtual;
     procedure UpArrowClick(Sender: TObject); virtual;
     procedure DownArrowClick(Sender: TObject); virtual;
@@ -390,13 +391,7 @@ type
     procedure WMNCCalcSize(var Msg: TWMNCCalcSize); message WM_NCCALCSIZE;
     procedure WMNCPaint(var Msg: TMessage); message WM_NCPAINT;
   protected
-    //PRY 2002.06.04
-    {$IFDEF COMPILER6_UP}
-    procedure SetAutoSize(Value: Boolean); override;
-    {$ELSE}
-    procedure SetAutoSize(Value: Boolean);
-    {$ENDIF COMPILER6_UP}
-    // PRY END
+    procedure SetAutoSize(Value: Boolean); {$IFDEF COMPILER6_UP} override; {$ENDIF}
     procedure SmoothScroll(AControl: TControl; NewTop, AInterval: Integer; Smooth: Boolean); virtual;
     procedure Paint; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -448,7 +443,7 @@ type
     procedure CreateWnd; override;
     procedure WMNCPaint(var Msg: TMessage); message WM_NCPAINT;
     procedure WMNCCalcSize(var Msg: TWMNCCalcSize); message WM_NCCALCSIZE;
-    procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
+    procedure CMDenySubClassing(var Msg: TCMDenySubClassing); message CM_DENYSUBCLASSING;
   public
     constructor Create(AOwner: TComponent); override;
     function AddButton: TJvExpressButton;
@@ -626,7 +621,7 @@ begin
   Msg.Result := 1;
 end;
 
-procedure TJvUpArrowBtn.CmDesignHitTest(var Msg: TCmDesignHitTest);
+procedure TJvUpArrowBtn.CmDesignHitTest(var Msg: TCMDesignHitTest);
 begin
   Msg.Result := 1;
 end;
@@ -1728,16 +1723,14 @@ begin
     FCaption := ACaption;
 end;
 
-procedure TJvLookOutPage.CMDialogChar(var Msg: TCMDialogChar);
+function TJvLookOutPage.WantKey(Key: Integer; Shift: TShiftState;
+  const KeyText: WideString): Boolean;
 begin
-  with Msg do
-    if IsAccel(CharCode, FCaption) and Enabled then
-    begin
-      Click;
-      Result := 1;
-    end
-    else
-      inherited;
+  Result := IsAccel(Key, FCaption) and Enabled and (ssAlt in Shift);
+  if Result then
+    Click
+  else
+    Result := inherited WantKey(Key, Shift, KeyText);
 end;
 
 procedure TJvLookOutPage.SetActiveButton(Value: TJvCustomLookOutButton);
@@ -1942,7 +1935,7 @@ begin
   inherited Click;
 end;
 
-procedure TJvLookOutPage.CMEnabledChanged(var Msg: TMessage);
+procedure TJvLookOutPage.EnabledChanged;
 begin
   if not (Assigned(FUpArrow) or Assigned(FDownArrow)) then
     Exit;
@@ -1956,7 +1949,7 @@ begin
     FUpArrow.Enabled := True;
     FDownArrow.Enabled := True;
   end;
-  inherited;
+  inherited EnabledChanged;
   Refresh;
 end;
 
@@ -2345,13 +2338,13 @@ begin
   DrawTopButton;
 end;
 
-procedure TJvLookOutPage.CMMouseLeave(var Msg: TMessage);
+procedure TJvLookOutPage.MouseLeave(Control: TControl);
 begin
-  inherited;
+  inherited MouseLeave(Control);
   if FOver then
   begin
     FOver := False;
-    //    FDown := False;
+    // FDown := False;
     DrawTopButton;
   end;
 end;
@@ -2626,11 +2619,11 @@ begin
     OffsetRect(RW, -RW.Left, -RW.Top);
     if FBorderStyle = bsSingle then
     begin
-{$IFDEF JVCLThemesEnabled}
+      {$IFDEF JVCLThemesEnabled}
       if ThemeServices.ThemesEnabled then
         DrawThemedBorder(Self)
       else
-{$ENDIF}
+      {$ENDIF JVCLThemesEnabled}
       DrawEdge(DC, RW, EDGE_SUNKEN, BF_RECT)
     end
     else
@@ -2703,17 +2696,17 @@ begin
 end;
 
 {
-procedure TJvExpress.SetButton(Index:Integer;Value:TJvExpressButton);
+procedure TJvExpress.SetButton(Index: Integer; Value: TJvExpressButton);
 begin
   inherited SetButton(Index,Value);
 end;
 
-function TJvExpress.GetButton(Index:Integer):TJvExpressButton;
+function TJvExpress.GetButton(Index: Integer): TJvExpressButton;
 begin
   Result := TJvExpressButton(inherited GetButton(Index));
 end;
 
-function TJvExpress.GetButtonCount:Integer;
+function TJvExpress.GetButtonCount: Integer;
 begin
   inherited GetButtonCount;
 end;
@@ -2729,7 +2722,7 @@ begin
   begin
     if Height < 65 then
     begin
-      //      FDownArrow.Top := FUpArrow.Top + 16;
+      // FDownArrow.Top := FUpArrow.Top + 16;
       Exit;
     end;
 
@@ -2798,7 +2791,7 @@ begin
   inherited;
 end;
 
-procedure TJvExpress.CMDenySubClassing(var Msg: TMessage);
+procedure TJvExpress.CMDenySubClassing(var Msg: TCMDenySubClassing);
 begin
   Msg.Result := 1;
 end;
@@ -2845,12 +2838,12 @@ begin
     OffsetRect(RW, -RW.Left, -RW.Top);
     if FBorderStyle = bsSingle then
     begin
-{$IFDEF JVCLThemesEnabled}
+      {$IFDEF JVCLThemesEnabled}
       if ThemeServices.ThemesEnabled then
         DrawThemedBorder(Self)
       else
-{$ENDIF}
-      DrawEdge(DC, RW, EDGE_SUNKEN, BF_RECT)
+      {$ENDIF JVCLThemesEnabled}
+      DrawEdge(DC, RW, EDGE_SUNKEN, BF_RECT);
     end
     else
     begin
@@ -2858,11 +2851,11 @@ begin
         Canvas.Brush.Color := clBlack
       else
         Canvas.Brush.Color := Color;
-      Windows.FrameRect(DC, RW, Canvas.Brush.Handle);
+      FrameRect(DC, RW, Canvas.Brush.Handle);
       InflateRect(RW, -1, -1);
       if csDesigning in ComponentState then
         Canvas.Brush.Color := Color;
-      Windows.FrameRect(DC, RW, Canvas.Brush.Handle);
+      FrameRect(DC, RW, Canvas.Brush.Handle);
       InflateRect(RW, 1, 1);
     end;
     { Erase parts not drawn }

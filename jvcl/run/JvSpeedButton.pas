@@ -1076,7 +1076,9 @@ procedure TJvCustomSpeedButton.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
   P: TPoint;
+  {$IFDEF VCL}
   Msg: TMsg;
+  {$ENDIF VCL}
 begin
   try
     if FMenuTracking then

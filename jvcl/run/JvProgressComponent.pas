@@ -36,8 +36,12 @@ unit JvProgressComponent;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes,
-  Controls, Forms, StdCtrls, ComCtrls,
+  {$IFDEF VCL}
+  Windows, Messages, Controls, Forms, StdCtrls, ComCtrls,
+  {$ELSE}
+  Types, QWindows, QTypes, QControls, QForms, QStdCtrls, QComCtrls,
+  {$ENDIF VCL}
+  SysUtils, Classes,
   JvComponent;
 
 type
@@ -79,12 +83,22 @@ type
 implementation
 
 uses
-  JvResources;
+  JvConsts, JvResources;
+
+const
+  CM_SHOWEVENT = CM_JVBASE + 1;
 
 type
+  TCMShowEvent = packed record
+    Msg: Integer;
+    Unused: Integer;
+    Instance: TJvProgressComponent;
+    Result: Integer;
+  end;
+
   TJvProgressForm = class(TForm)
   private
-    procedure WMUser1(var Msg: TMessage); message WM_USER + 1;
+    procedure CMShowEvent(var Msg: TCMShowEvent); message CM_SHOWEVENT;
   end;
 
 function ChangeTopException(E: TObject): TObject;
@@ -101,7 +115,7 @@ begin
   { if linker error occured with message "unresolved external 'System::RaiseList'" try
     comment this function implementation, compile,
     then uncomment and compile again. }
-  {$IFDEF VCL}
+  {$IFDEF MSWINDOWS}
   {$IFDEF COMPILER6_UP}
   {$WARN SYMBOL_DEPRECATED OFF}
   {$ENDIF}
@@ -112,7 +126,7 @@ begin
   end
   else
     Result := nil;
-  {$ENDIF VCL}
+  {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   // XXX: changing exception in stack frame is not supported on Kylix
   Writeln('ChangeTopException');
@@ -152,7 +166,11 @@ begin
     begin
       ClientWidth := 307;
       ClientHeight := 98;
+      {$IFDEF VCL}
       BorderStyle := bsDialog;
+      {$ELSE}
+      BorderStyle := fbsDialog;
+      {$ENDIF VCL}
       Position := poScreenCenter;
       FProgressBar := TProgressBar.Create(FForm);
     end;
@@ -209,7 +227,12 @@ end;
 
 procedure TJvProgressComponent.FormOnShow(Sender: TObject);
 begin
-  PostMessage(FForm.Handle, WM_USER + 1, Integer(Self), 0);
+  {$IFDEF VCL}
+  PostMessage(FForm.Handle, CM_SHOWEVENT, 0, Integer(Self));
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  PostMsg(FForm.Handle, CM_SHOWEVENT, 0, Integer(Self));
+  {$ENDIF VisualCLX}
 end;
 
 procedure TJvProgressComponent.FormOnCancel(Sender: TObject);
@@ -217,12 +240,12 @@ begin
   FCancel := True;
 end;
 
-procedure TJvProgressForm.WMUser1(var Msg: TMessage);
+procedure TJvProgressForm.CMShowEvent(var Msg: TCMShowEvent);
 begin
   Application.ProcessMessages;
   try
     try
-      (TJvProgressComponent(Msg.WParam)).FOnShow(Self);
+      Msg.Instance.FOnShow(Self);
 //      (Owner as TJvProgressComponent).FOnShow(Self);
     except
       on E: Exception do

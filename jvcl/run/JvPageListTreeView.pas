@@ -37,17 +37,17 @@ Changes:
 interface
 uses
   Windows, SysUtils, Messages, Classes, Graphics, Controls,
-  ImgList, ComCtrls, JVCLVer, JvComponent, JvThemes;
+  ImgList, ComCtrls, JVCLVer, JvComponent, JvThemes, JvExComCtrls;
 
 type
   EPageListError = class(Exception);
 
   IPageList = interface
     ['{6BB90183-CFB1-4431-9CFD-E9A032E0C94C}']
-    function CanChange(AIndex: integer): boolean;
-    procedure SetActivePageIndex(AIndex: integer);
-    function getPageCount: integer;
-    function getPageCaption(AIndex: integer): string;
+    function CanChange(AIndex: Integer): Boolean;
+    procedure SetActivePageIndex(AIndex: Integer);
+    function GetPageCount: Integer;
+    function GetPageCaption(AIndex: Integer): string;
   end;
 
   TJvCustomPageList = class;
@@ -55,11 +55,11 @@ type
 
   TJvPageIndexNode = class(TTreeNode)
   private
-    FPageIndex: integer;
-    procedure SetPageIndex(const Value: integer);
+    FPageIndex: Integer;
+    procedure SetPageIndex(const Value: Integer);
   published
     procedure Assign(Source: TPersistent); override;
-    property PageIndex: integer read FPageIndex write SetPageIndex;
+    property PageIndex: Integer read FPageIndex write SetPageIndex;
   end;
 
   TJvPageIndexNodes = class(TTreeNodes)
@@ -71,7 +71,7 @@ type
   end;
 
   TJvPagePaintEvent = procedure(Sender: TObject; ACanvas: TCanvas; ARect: TRect) of object;
-  TJvPageCanPaintEvent = procedure(Sender: TObject; ACanvas: TCanvas; ARect: TRect; var DefaultDraw: boolean) of object;
+  TJvPageCanPaintEvent = procedure(Sender: TObject; ACanvas: TCanvas; ARect: TRect; var DefaultDraw: Boolean) of object;
   { TJvCustomPage is the base class for pages in a TJvPageList and implements the basic behaviour of such
     a control. It has support for accepting components, propagating it's Enabled state, changing it's order in the
     page list and custom painting }
@@ -84,18 +84,18 @@ type
     FOnHide: TNotifyEvent;
     FOnShow: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
-    procedure WMEraseBkgnd(var Message: TWmEraseBkgnd); message WM_ERASEBKGND;
-    procedure CMTextchanged(var Message: TMessage); message CM_TEXTCHANGED;
-    procedure CMShowingChanged(var Message: TMessage); message CM_SHOWINGCHANGED;
-    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
+    procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
     function GetPageIndex: Integer;
     procedure SetPageIndex(const Value: Integer);
     procedure SetPageList(const Value: TJvCustomPageList);
   protected
+    procedure TextChanged; override;
+    procedure ShowingChanged; override;
+    procedure ParentColorChanged; override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure Paint; override;
     procedure ReadState(Reader: TReader); override;
-    function DoBeforePaint(ACanvas: TCanvas; ARect: TRect): boolean; dynamic;
+    function DoBeforePaint(ACanvas: TCanvas; ARect: TRect): Boolean; dynamic;
     procedure DoAfterPaint(ACanvas: TCanvas; ARect: TRect); dynamic;
     procedure DoPaint(ACanvas: TCanvas; ARect: TRect); virtual;
     procedure DoShow; virtual;
@@ -105,7 +105,7 @@ type
     destructor Destroy; override;
     property PageList: TJvCustomPageList read FPageList write SetPageList;
   protected
-    property PageIndex: integer read GetPageIndex write SetPageIndex stored False;
+    property PageIndex: Integer read GetPageIndex write SetPageIndex stored False;
     property Left stored False;
     property Top stored False;
     property Width stored False;
@@ -119,7 +119,7 @@ type
   end;
 
   TJvCustomPageClass = class of TJvCustomPage;
-  TJvPageChangingEvent = procedure(Sender: TObject; PageIndex: integer; var AllowChange: boolean) of object;
+  TJvPageChangingEvent = procedure(Sender: TObject; PageIndex: Integer; var AllowChange: Boolean) of object;
 
   {
    TJvCustomPageList is a base class for components that implements the IPageList interface.
@@ -130,27 +130,27 @@ type
   private
     FPages: TList;
     FActivePage: TJvCustomPage;
-    FPropagateEnable: boolean;
+    FPropagateEnable: Boolean;
     FOnChange: TNotifyEvent;
     FOnChanging: TJvPageChangingEvent;
     FShowDesignCaption: TJvShowDesignCaption;
     FOnParentColorChanged: TNotifyEvent;
     procedure CMDesignHitTest(var Message: TCMDesignHitTest); message CM_DESIGNHITTEST;
-    procedure CMEnabledChanged(var Message: TMessage); message CM_ENABLEDCHANGED;
-    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure UpdateEnabled;
     procedure SetActivePage(Page: TJvCustomPage);
-    procedure SetPropagateEnable(const Value: boolean);
+    procedure SetPropagateEnable(const Value: Boolean);
     procedure SetShowDesignCaption(const Value: TJvShowDesignCaption);
-    function GetPage(Index: integer): TJvCustomPage;
+    function GetPage(Index: Integer): TJvCustomPage;
   protected
+    procedure EnabledChanged; override;
+    procedure ParentColorChanged; override;
     { IPageList }
-    function CanChange(AIndex: integer): boolean;
-    function GetActivePageIndex: integer;
-    procedure SetActivePageIndex(AIndex: integer);
-    function GetPageFromIndex(AIndex: integer): TJvCustomPage;
-    function getPageCount: integer;
-    function getPageCaption(AIndex: integer): string;
+    function CanChange(AIndex: Integer): Boolean;
+    function GetActivePageIndex: Integer;
+    procedure SetActivePageIndex(AIndex: Integer);
+    function GetPageFromIndex(AIndex: Integer): TJvCustomPage;
+    function getPageCount: Integer;
+    function getPageCaption(AIndex: Integer): string;
     procedure Paint; override;
 
     procedure Change; dynamic;
@@ -162,7 +162,7 @@ type
     procedure InsertPage(APage: TJvCustomPage);
     procedure RemovePage(APage: TJvCustomPage);
     property PageList: TList read FPages;
-    property PropagateEnable: boolean read FPropagateEnable write SetPropagateEnable;
+    property PropagateEnable: Boolean read FPropagateEnable write SetPropagateEnable;
     property ShowDesignCaption: TJvShowDesignCaption read FShowDesignCaption write SetShowDesignCaption default sdcCenter;
 
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -171,17 +171,17 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function FindNextPage(CurPage: TJvCustomPage; GoForward: boolean; IncludeDisabled: boolean): TJvCustomPage;
+    function FindNextPage(CurPage: TJvCustomPage; GoForward: Boolean; IncludeDisabled: Boolean): TJvCustomPage;
     procedure PrevPage;
     procedure NextPage;
     function GetPageClass: TJvCustomPageClass;
     property Height default 200;
     property Width default 300;
 
-    property ActivePageIndex: integer read GetActivePageIndex write SetActivePageIndex;
+    property ActivePageIndex: Integer read GetActivePageIndex write SetActivePageIndex;
     property ActivePage: TJvCustomPage read FActivePage write SetActivePage;
-    property Pages[Index:integer]:TJvCustomPage read GetPage;
-    property PageCount: integer read getPageCount;
+    property Pages[Index:Integer]:TJvCustomPage read GetPage;
+    property PageCount: Integer read getPageCount;
   end;
 
   TJvStandardPage = class(TJvCustomPage)
@@ -219,9 +219,9 @@ type
     property OnMouseEnter;
     property OnMouseLeave;
     property OnParentColorChange;
-  {$IFDEF JVCLThemesEnabled}
+    {$IFDEF JVCLThemesEnabled}
     property ParentBackground;
-  {$ENDIF}
+    {$ENDIF JVCLThemesEnabled}
   end;
 
   // this is  a "fake" class so we have something to anchor the design-time editor with
@@ -245,30 +245,27 @@ type
     * IPageList.getPageCaption is only used by the design-time editor for the PageLinks property
     }
 
-  TJvCustomPageListTreeView = class(TCustomTreeView)
+  TJvCustomPageListTreeView = class(TJvExCustomTreeView)
   private
     FItems:TJvPageIndexNodes;
     FPageList: IPageList;
-    FPageDefault: integer;
+    FPageDefault: Integer;
     FLinks: TJvPageLinks;
     FAboutJVCL: TJVCLAboutInfo;
-    FOnMouseLeave: TNotifyEvent;
-    FOnMouseEnter: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     {$IFNDEF COMPILER6_UP}
     FPageListComponent: TComponent;
     procedure SetPageListComponent(const Value: TComponent);
-    {$ENDIF}
-    procedure SetPageDefault(const Value: integer);
+    {$ENDIF COMPILER6_UP}
+    procedure SetPageDefault(const Value: Integer);
     procedure SetLinks(const Value: TJvPageLinks);
     procedure SetPageList(const Value: IPageList);
 
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     function GetItems: TJvPageIndexNodes;
     procedure SetItems(const Value: TJvPageIndexNodes);
   protected
+    procedure ParentColorChanged; override;
+
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     function CreateNode: TTreeNode; override;
     function CreateNodes: TTreeNodes; {$IFDEF COMPILER6_UP} override; {$ENDIF}
@@ -278,25 +275,22 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    property PageDefault: integer read FPageDefault write SetPageDefault;
+    property PageDefault: Integer read FPageDefault write SetPageDefault;
     property PageLinks: TJvPageLinks read FLinks write SetLinks;
     {$IFDEF COMPILER6_UP}
     property PageList: IPageList read FPageList write SetPageList;
     {$ELSE}
     property PageListIntf: IPageList read FPageList write SetPageList;
     property PageList: TComponent read FPageListComponent write SetPageListComponent;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
   protected
-    property AutoExpand default true;
-    property ShowButtons default false;
-    property ShowLines default false;
-    property ReadOnly default true;
+    property AutoExpand default True;
+    property ShowButtons default False;
+    property ShowLines default False;
+    property ReadOnly default True;
     property Items:TJvPageIndexNodes read GetItems write SetItems;
 
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
@@ -326,7 +320,7 @@ type
     treeview in the Settings Dialog in Visual Studio: When a node in the treeview
     is selected, a new page of settings is shown on a panel to the right.
 
-    Specifically, the following is true:
+    Specifically, the following is True:
 
     * The normal ImageIndex/SelectedIndex is ignored for nodes - use PageNodeImages instead. You still
       need to assign a TImageList to the Images property
@@ -334,10 +328,10 @@ type
       whether it's selected or not
     * When a parent folder is selected, the first non-folder child has it's
       normal image set as the selected image
-    * By default, AutoExpand and ReadOnly is true, ShowButtons and ShowLines are false
+    * By default, AutoExpand and ReadOnly is True, ShowButtons and ShowLines are False
 
-    Other than that, it should work like a normal TreeView. Note that the treeview was designed with AutoExpand = true
-    in mind but should work with AutoExpand = false
+    Other than that, it should work like a normal TreeView. Note that the treeview was designed with AutoExpand = True
+    in mind but should work with AutoExpand = False
 
     To get the VS look , Images should contain:
       Image 0: Closed Folder
@@ -420,7 +414,7 @@ type
     {$IFDEF COMPILER6_UP}
     property MultiSelect;
     property MultiSelectStyle;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     property ParentBiDiMode;
     property ParentColor default False;
     property ParentFont;
@@ -436,9 +430,6 @@ type
     property TabStop default True;
     property ToolTips;
     property Visible;
-    {$IFDEF COMPILER6_UP}
-    property OnAddition;
-    {$ENDIF}
     property OnAdvancedCustomDraw;
     property OnAdvancedCustomDrawItem;
     property OnChange;
@@ -449,8 +440,9 @@ type
     property OnCompare;
     property OnContextPopup;
     {$IFDEF COMPILER6_UP}
+    property OnAddition;
     property OnCreateNodeClass;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     property OnCustomDraw;
     property OnCustomDrawItem;
     property OnDblClick;
@@ -480,10 +472,10 @@ type
 
   TJvSettingsTreeView = class(TJvCustomSettingsTreeView)
   published
-    property AutoExpand default true;
-    property ShowButtons default false;
-    property ShowLines default false;
-    property ReadOnly default true;
+    property AutoExpand default True;
+    property ShowButtons default False;
+    property ShowLines default False;
+    property ReadOnly default True;
     property PageDefault;
     property PageNodeImages;
     property PageLinks;
@@ -533,9 +525,6 @@ type
     property TabStop default True;
     property ToolTips;
     property Visible;
-    {$IFDEF COMPILER6_UP}
-    property OnAddition;
-    {$ENDIF}
     property OnAdvancedCustomDraw;
     property OnAdvancedCustomDrawItem;
     property OnChange;
@@ -546,8 +535,9 @@ type
     property OnCompare;
     property OnContextPopup;
     {$IFDEF COMPILER6_UP}
+    property OnAddition;
     property OnCreateNodeClass;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     property OnCustomDraw;
     property OnCustomDrawItem;
     property OnDblClick;
@@ -628,9 +618,9 @@ type
     property OnStartDock;
     property OnStartDrag;
     property OnUnDock;
-  {$IFDEF JVCLThemesEnabled}
+    {$IFDEF JVCLThemesEnabled}
     property ParentBackground;
-  {$ENDIF}
+    {$ENDIF JVCLThemesEnabled}
   end;
 
 implementation
@@ -644,8 +634,8 @@ uses
 type
   THackTab = class(TCustomTabControl);
 
-(* make Delphi 5 compiler happy // andreas
-procedure ResetAllNonParentNodes(Items: TTreeNodes; ImageIndex, SelectedIndex: integer);
+(* (ahuser) make Delphi 5 compiler happy
+procedure ResetAllNonParentNodes(Items: TTreeNodes; ImageIndex, SelectedIndex: Integer);
 var N: TTreeNode;
 begin
   N := Items.GetFirstNode;
@@ -660,7 +650,7 @@ begin
   end;
 end;
 
-procedure ResetSiblings(Node: TTreeNode; ImageIndex, SelectedIndex: integer; Recurse: boolean = false);
+procedure ResetSiblings(Node: TTreeNode; ImageIndex, SelectedIndex: Integer; Recurse: Boolean = False);
 var N: TTreeNode;
 begin
   N := Node.getPrevSibling;
@@ -690,7 +680,7 @@ begin
 end;
 *)
 
-procedure ResetSiblingFolders(Node: TTreeNode; ImageIndex, SelectedIndex: integer; Recurse: boolean = false);
+procedure ResetSiblingFolders(Node: TTreeNode; ImageIndex, SelectedIndex: Integer; Recurse: Boolean = False);
 var N: TTreeNode;
 begin
   N := Node.getPrevSibling;
@@ -729,9 +719,9 @@ begin
 end;
 
 procedure TJvCustomPageListTreeView.Change(Node: TTreeNode);
-var i: integer;
+var i: Integer;
 begin
-  inherited;
+  inherited Change(Node);
   if Assigned(FPageList) and Assigned(Node) then
   begin
     i := TJvPageIndexNode(Node).PageIndex;
@@ -746,7 +736,7 @@ end;
 
 constructor TJvCustomPageListTreeView.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FLinks := TJvPageLinks.Create;
   FLinks.FTreeView := self;
 end;
@@ -763,8 +753,8 @@ begin
   {$IFNDEF COMPILER6_UP}
   // TreeNodes are destroyed by TCustomTreeview in D6 and above!!!
   FreeAndNil(FItems);
-  {$ENDIF}
-  inherited;
+  {$ENDIF COMPILER6_UP}
+  inherited Destroy;
 end;
 
 function TJvCustomPageListTreeView.CreateNodes: TTreeNodes;
@@ -777,20 +767,20 @@ end;
 procedure TJvCustomPageListTreeView.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
-  inherited;
+  inherited Notification(AComponent, Operation);
   if (Operation = opRemove) then
   begin
-  {$IFDEF COMPILER6_UP}
+    {$IFDEF COMPILER6_UP}
     if AComponent.IsImplementorOf(PageList) then
       PageList := nil;
-  {$ELSE}
+    {$ELSE}
     if (AComponent = FPageListComponent) then
       PageList := nil;
-  {$ENDIF}
+    {$ENDIF COMPILER6_UP}
   end;
 end;
 
-procedure TJvCustomPageListTreeView.SetPageDefault(const Value: integer);
+procedure TJvCustomPageListTreeView.SetPageDefault(const Value: Integer);
 var N: TTreeNode;
 begin
   if FPageDefault <> Value then
@@ -818,33 +808,19 @@ begin
   begin
     {$IFDEF COMPILER6_UP}
     ReferenceInterface(FPageList, opRemove);
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     FPageList := Value;
     {$IFDEF COMPILER6_UP}
     ReferenceInterface(FPageList, opInsert);
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
   end;
 end;
 
-procedure TJvCustomPageListTreeView.CMMouseEnter(var Msg: TMessage);
+procedure TJvCustomPageListTreeView.ParentColorChanged;
 begin
-  inherited;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
-end;
-
-procedure TJvCustomPageListTreeView.CMMouseLeave(var Msg: TMessage);
-begin
-  inherited;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
-end;
-
-procedure TJvCustomPageListTreeView.CMParentColorChanged(var Msg: TMessage);
-begin
-  inherited;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
+  inherited ParentColorChanged;
+  if Assigned(FOnParentColorChanged) then
+    FOnParentColorChanged(Self);
 end;
 
 {$IFNDEF COMPILER6_UP}
@@ -868,7 +844,7 @@ begin
     FPageListComponent.FreeNotification(self);
   end;
 end;
-{$ENDIF}
+{$ENDIF !COMPILER6_UP}
 
 function TJvCustomPageListTreeView.GetItems: TJvPageIndexNodes;
 begin
@@ -885,12 +861,12 @@ end;
 
 procedure TJvPageIndexNode.Assign(Source: TPersistent);
 begin
-  inherited;
+  inherited Assign(Source);
   if (Source is TJvPageIndexNode) then
     PageIndex := TJvPageIndexNode(Source).PageIndex;
 end;
 
-procedure TJvPageIndexNode.SetPageIndex(const Value: integer);
+procedure TJvPageIndexNode.SetPageIndex(const Value: Integer);
 begin
   if FPageIndex <> Value then
   begin
@@ -905,7 +881,7 @@ end;
 procedure TJvPageIndexNodes.DefineProperties(Filer: TFiler);
 begin
   inherited DefineProperties(Filer);
-  Filer.DefineBinaryProperty('Links', ReadData, WriteData, true);
+  Filer.DefineBinaryProperty('Links', ReadData, WriteData, True);
 end;
 
 procedure TJvPageIndexNodes.ReadData(Stream: TStream);
@@ -945,8 +921,8 @@ end;
 procedure TJvPageIndexNodes.WriteData(Stream: TStream);
 var
   Node: TTreeNode;
-  APageIndex: integer;
-  ACount: integer;
+  APageIndex: Integer;
+  ACount: Integer;
 begin
   ACount := Count;
   Stream.Write(ACount, SizeOf(Count));
@@ -966,7 +942,7 @@ end;
 
 constructor TJvCustomPage.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   Align := alClient;
   ControlStyle := ControlStyle + [csAcceptsControls, csNoDesignVisible];
   IncludeThemeStyle(Self, [csParentBackground]);
@@ -977,7 +953,7 @@ end;
 
 procedure TJvCustomPage.CreateParams(var Params: TCreateParams);
 begin
-  inherited;
+  inherited CreateParams(Params);
   with Params.WindowClass do
     Style := Style and not (CS_HREDRAW or CS_VREDRAW);
 end;
@@ -986,7 +962,7 @@ destructor TJvCustomPage.Destroy;
 begin
   if Assigned(PageList) then
     PageList := nil;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvCustomPage.DoAfterPaint(ACanvas: TCanvas; ARect: TRect);
@@ -995,9 +971,9 @@ begin
     FOnAfterPaint(self, ACanvas, ARect);
 end;
 
-function TJvCustomPage.DoBeforePaint(ACanvas: TCanvas; ARect: TRect): boolean;
+function TJvCustomPage.DoBeforePaint(ACanvas: TCanvas; ARect: TRect): Boolean;
 begin
-  Result := true;
+  Result := True;
   if Assigned(FonBeforePaint) then
     FOnBeforePaint(self, ACanvas, ARect, Result);
 end;
@@ -1081,7 +1057,7 @@ procedure TJvCustomPage.ReadState(Reader: TReader);
 begin
   if Reader.Parent is TJvCustomPageList then
     PageList := TJvCustomPageList(Reader.Parent);
-  inherited;
+  inherited ReadState(Reader);
 end;
 
 procedure TJvCustomPage.SetPageList(
@@ -1107,18 +1083,18 @@ begin
     FPageList.PageList.Move(OldIndex, Value);
 end;
 
-procedure TJvCustomPage.WMEraseBkgnd(var Message: TWmEraseBkgnd);
+procedure TJvCustomPage.WMEraseBkgnd(var Message: TWMEraseBkgnd);
 begin
-{$IFDEF JVCLThemesEnabled}
+  {$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled and ParentBackground then
     DrawThemedBackground(Self, Message.DC, ClientRect, Parent.Brush.Handle);
-{$ENDIF}
+  {$ENDIF JVCLThemesEnabled}
   Message.Result := 1;
 end;
 
-procedure TJvCustomPage.CMTextchanged(var Message: TMessage);
+procedure TJvCustomPage.TextChanged;
 begin
-  inherited;
+  inherited TextChanged;
   if csDesigning in ComponentState then
     Invalidate;
 end;
@@ -1135,9 +1111,9 @@ begin
     FOnShow(Self);
 end;
 
-procedure TJvCustomPage.CMShowingChanged(var Message: TMessage);
+procedure TJvCustomPage.ShowingChanged;
 begin
-  inherited;
+  inherited ShowingChanged;
   if Showing then
   begin
     try
@@ -1156,16 +1132,16 @@ begin
   end;
 end;
 
-procedure TJvCustomPage.CMParentColorChanged(var Msg: TMessage);
+procedure TJvCustomPage.ParentColorChanged;
 begin
-  inherited;
+  inherited ParentColorChanged;
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
 
 { TJvCustomPageList }
 
-function TJvCustomPageList.CanChange(AIndex: integer): boolean;
+function TJvCustomPageList.CanChange(AIndex: Integer): Boolean;
 begin
   Result := (AIndex >= 0) and (AIndex < getPageCount);
   if Result and Assigned(FOnChanging) then
@@ -1178,16 +1154,13 @@ begin
     FOnChange(self);
 end;
 
-procedure TJvCustomPageList.CMDesignHitTest(
-  var Message: TCMDesignHitTest);
+procedure TJvCustomPageList.CMDesignHitTest(var Message: TCMDesignHitTest);
 var
   Pt: TPoint;
 begin
   Pt := SmallPointToPoint(Message.Pos);
   if Assigned(ActivePage) and PtInRect(ActivePage.BoundsRect, Pt) then
-  begin
     Message.Result := 1;
-  end;
 end;
 
 constructor TJvCustomPageList.Create(AOwner: TComponent);
@@ -1203,12 +1176,12 @@ begin
 end;
 
 destructor TJvCustomPageList.Destroy;
-var i: integer;
+var i: Integer;
 begin
   for i := FPages.Count - 1 downto 0 do
     TJvCustomPage(FPages[i]).FPageList := nil;
   FPages.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvCustomPageList.GetChildren(Proc: TGetChildProc;
@@ -1231,7 +1204,7 @@ begin
   end;
 end;
 
-function TJvCustomPageList.getPageCaption(AIndex: integer): string;
+function TJvCustomPageList.getPageCaption(AIndex: Integer): string;
 begin
   if (AIndex >= 0) and (AIndex < getPageCOunt) then
     Result := TJvCustomPage(FPages[AIndex]).Caption
@@ -1244,7 +1217,7 @@ begin
   Result := TJvCustomPage;
 end;
 
-function TJvCustomPageList.getPageCount: integer;
+function TJvCustomPageList.getPageCount: Integer;
 begin
   if FPages = nil then
     Result := 0
@@ -1260,7 +1233,7 @@ end;
 
 procedure TJvCustomPageList.Loaded;
 begin
-  inherited;
+  inherited Loaded;
   if getPageCount > 0 then
     ActivePage := Pages[0];
 end;
@@ -1284,13 +1257,13 @@ begin
   NextPage := FindNextPage(APage, True, not (csDesigning in ComponentState));
   if NextPage = APage then
     NextPage := nil;
-  APage.Visible := false;
+  APage.Visible := False;
   APage.FPageList := nil;
   FPages.Remove(APage);
   SetActivePage(NextPage);
 end;
 
-function TJvCustomPageList.GetPageFromIndex(AIndex: integer): TJvCustomPage;
+function TJvCustomPageList.GetPageFromIndex(AIndex: Integer): TJvCustomPage;
 begin
   if (AIndex >= 0) and (AIndex < getPageCount) then
     Result := TJvCustomPage(Pages[AIndex])
@@ -1298,7 +1271,7 @@ begin
     Result := nil;
 end;
 
-procedure TJvCustomPageList.SetActivePageIndex(AIndex: integer);
+procedure TJvCustomPageList.SetActivePageIndex(AIndex: Integer);
 begin
   if (AIndex > -1) and (AIndex < PageCount) then
     ActivePage := Pages[AIndex]
@@ -1361,7 +1334,7 @@ begin
   end;
 end;
 
-function TJvCustomPageList.GetActivePageIndex: integer;
+function TJvCustomPageList.GetActivePageIndex: Integer;
 begin
   if ACtivePage <> nil then
     Result := ActivePage.PageIndex
@@ -1387,7 +1360,7 @@ begin
     ActivePageIndex := PageCount - 1;
 end;
 
-procedure TJvCustomPageList.SetPropagateEnable(const Value: boolean);
+procedure TJvCustomPageList.SetPropagateEnable(const Value: Boolean);
 begin
   if FPropagateEnable <> Value then
   begin
@@ -1396,15 +1369,15 @@ begin
   end;
 end;
 
-procedure TJvCustomPageList.CMEnabledChanged(var Message: TMessage);
+procedure TJvCustomPageList.EnabledChanged;
 begin
-  inherited;
+  inherited EnabledChanged;
   UpdateEnabled;
 end;
 
 function TJvCustomPageList.FindNextPage(CurPage: TJvCustomPage;
-  GoForward, IncludeDisabled: boolean): TJvCustomPage;
-var i, StartIndex: integer;
+  GoForward, IncludeDisabled: Boolean): TJvCustomPage;
+var i, StartIndex: Integer;
 begin
   if PageCount <> 0 then
   begin
@@ -1446,16 +1419,16 @@ begin
   end;
 end;
 
-procedure TJvCustomPageList.CMParentColorChanged(var Msg: TMessage);
+procedure TJvCustomPageList.ParentColorChanged;
 begin
-  inherited;
+  inherited ParentColorChanged;
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
 
 procedure TJvCustomPageList.UpdateEnabled;
   procedure InternalSetEnabled(AControl: TWinControl);
-  var i: integer;
+  var i: Integer;
   begin
     for i := 0 to AControl.ControlCount - 1 do
     begin
@@ -1469,7 +1442,7 @@ begin
     InternalSetEnabled(self);
 end;
 
-function TJvCustomPageList.GetPage(Index: integer): TJvCustomPage;
+function TJvCustomPageList.GetPage(Index: Integer): TJvCustomPage;
 begin
   if (Index >= 0) and (Index < FPages.Count) then
     Result := FPages[Index]
@@ -1509,14 +1482,14 @@ end;
 
 procedure TJvCustomSettingsTreeView.Change(Node: TTreeNode);
 begin
-  inherited;
+  inherited Change(Node);
   if not AutoExpand and Node.Expanded then
-    Node.Expand(false); // refresh node and children
+    Node.Expand(False); // refresh node and children
 end;
 
 procedure TJvCustomSettingsTreeView.Collapse(Node: TTreeNode);
 begin
-  inherited;
+  inherited Collapse(Node);
   if Node.HasChildren then
   begin
     Node.ImageIndex := FNodeImages.CollapsedIndex;
@@ -1526,13 +1499,13 @@ end;
 
 constructor TJvCustomSettingsTreeView.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FNodeImages := TJvSettingsTreeImages.Create;
   FNodeImages.TreeView := self;
-  AutoExpand := true;
-  ShowButtons := false;
-  ShowLines := false;
-  ReadOnly := true;
+  AutoExpand := True;
+  ShowButtons := False;
+  ShowLines := False;
+  ReadOnly := True;
   // we need to assign to these since the TTreeView checks if they are assigned
   // and won't call GetImageIndex without them
   inherited OnGetImageIndex := DoGetImageIndex;
@@ -1541,7 +1514,7 @@ end;
 
 procedure TJvCustomSettingsTreeView.Delete(Node: TTreeNode);
 begin
-  inherited;
+  inherited Delete(Node);
   if Node = FLastSelected then
     FLastSelected := nil;
 end;
@@ -1550,7 +1523,7 @@ destructor TJvCustomSettingsTreeView.Destroy;
 begin
   FNodeImages.TreeView := nil;
   FNodeImages.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvCustomSettingsTreeView.DoGetImageIndex(Sender: TObject;
@@ -1579,7 +1552,7 @@ begin
   if Node.HasChildren then
   begin
     if AutoExpand then
-      ResetSiblingFolders(Node, FNodeImages.CollapsedIndex, FNodeImages.CollapsedIndex, true);
+      ResetSiblingFolders(Node, FNodeImages.CollapsedIndex, FNodeImages.CollapsedIndex, True);
     Node.ImageIndex := FNodeImages.ExpandedIndex;
     Node.SelectedIndex := FNodeImages.ExpandedIndex;
     N := Node.getFirstChild;
@@ -1588,12 +1561,12 @@ begin
       ResetPreviousNode(N);
       N.ImageIndex := FNodeImages.SelectedIndex;
       N.SelectedIndex := FNodeImages.SelectedIndex;
-      R := N.DisplayRect(false);
-      InvalidateRect(Handle, @R, true);
+      R := N.DisplayRect(False);
+      InvalidateRect(Handle, @R, True);
       SetPreviousNode(N);
     end;
   end;
-  inherited;
+  inherited Expand(Node);
 end;
 
 procedure TJvCustomSettingsTreeView.GetImageIndex(Node: TTreeNode);
@@ -1624,23 +1597,25 @@ end;
 
 procedure TJvCustomSettingsTreeView.Loaded;
 begin
-  inherited;
+  inherited Loaded;
   if Items.Count > 0 then
   begin
-    ResetSiblingFolders(Items[0], FNodeImages.CollapsedIndex, FNodeImages.CollapsedIndex, true);
+    ResetSiblingFolders(Items[0], FNodeImages.CollapsedIndex, FNodeImages.CollapsedIndex, True);
     Items[0].MakeVisible;
   end;
 end;
 
 procedure TJvCustomSettingsTreeView.ResetPreviousNode(NewNode: TTreeNode);
-var R: TRect;
+var
+  R: TRect;
 begin
-  if (FLastSelected <> nil) and (FLastSelected <> NewNode) and (NewNode <> nil) and not NewNode.HasChildren then
+  if (FLastSelected <> nil) and (FLastSelected <> NewNode) and (NewNode <> nil)
+     and not NewNode.HasChildren then
   begin
     FLastSelected.ImageIndex := FNodeImages.ImageIndex;
     FLastSelected.SelectedIndex := FNodeImages.ImageIndex;
-    R := FLastSelected.DisplayRect(false);
-    InvalidateRect(Handle, @R, true);
+    R := FLastSelected.DisplayRect(False);
+    InvalidateRect(Handle, @R, True);
   end;
 end;
 
