@@ -50,7 +50,7 @@ implementation
 
 procedure TJvAniMainForm.FileListBox1Click(Sender: TObject);
 begin
-  Self.Image1.Picture.LoadFromFile(Self.FileListBox1.FileName);
+  Image1.Picture.LoadFromFile(FileListBox1.FileName);
 
   with TJvAni(Image1.Picture.Graphic) do
   begin

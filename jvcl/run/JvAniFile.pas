@@ -444,7 +444,7 @@ begin
   Result := nil;
   Mem := TMemoryStream.Create;
   try
-    Mem.SetSize(ASize);
+    Mem.Size := ASize;
     Mem.CopyFrom(Stream, Mem.Size);
     HotSpot := Point(0, 0);
     IsIcon := PCursorOrIcon(Mem.Memory)^.wType = RC3_ICON;
@@ -468,7 +468,7 @@ begin
               FOriginalColors := Max(GetDInColors(BI^.biBitCount), FOriginalColors);
               HotSpot := Point(xHotspot, yHotspot);
             finally
-              FreeMem(BI, DIBSize)
+              FreeMem(BI, DIBSize);
             end;
           end;
       finally

@@ -190,7 +190,7 @@ end;
 procedure TJvAni.Draw(ACanvas: TCanvas; const Rect: TRect);
 begin
   {$IFDEF VCL}
-  if Icon.Handle <> 0 then
+  if not Icon.Empty then
     DrawIcon(ACanvas.Handle, Rect.Left, Rect.Top, Icon.Handle);
   {$ELSE}
   if not Icon.Empty then
@@ -251,7 +251,7 @@ end;
 procedure TJvAni.CalcDelay;
 begin
   if Index = -1 then
-    SetAnimated(False)
+    Animated := False
   else
   begin
     FTimer.Interval := Cardinal(FIconData.Frames[Index].JiffRate) * (1000 div 60);
