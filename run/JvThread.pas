@@ -207,7 +207,7 @@ function TJvThread.GetPolicy(Thread: THandle): integer;
 begin
   Result := 0;
   if Thread <> 0 then
-    Result := GetThreadPolicy(Handle);
+    Result := GetThreadPolicy(Thread);
 end;
 
 procedure TJvThread.SetPolicy(Thread: THandle; Policy: integer);

@@ -32,11 +32,12 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, Messages,
   {$ENDIF MSWINDOWS}
-  {$IFDEF VCL}
+  {$IFDEF LINUX}
+  Libc,
+  {$ENDIF LINUX}
   Graphics, Controls, Forms,
-  {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Qt, Types, QGraphics, QControls, QForms, QWindows,
+  Qt, QWindows,
   {$ENDIF VisualCLX}
   SysUtils, Classes,
   JvTimer, JvComponent;
@@ -285,12 +286,7 @@ end;
 procedure TJvImageControl.Paint;
 var
   Bmp: TBitmap;
-  {$IFDEF VCL}
   DC: HDC;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  DC: QPainterH;
-  {$ENDIF VisualCLX}
 begin
   Bmp := TJvLockedBitmap.Create;
   try
@@ -336,11 +332,8 @@ type
 
 procedure TJvImageControl.DoPaintControl;
 var
-  {$IFDEF VCL}
   DC: HDC;
-  {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  DC: QPainterH;
   OrgDC: QPainterH;
   {$ENDIF VisualCLX}
 begin
