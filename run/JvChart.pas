@@ -62,13 +62,7 @@ unit JvChart;
 interface
 
 uses
-  {$IFDEF MSWINDOWS}
-  Windows, Messages,
-  {$ENDIF MSWINDOWS}
-  {$IFDEF VisualCLX}
-  Types, QWindows,
-  {$ENDIF VisualCLX}
-  Classes, Graphics, Controls,
+  Windows, Messages, Classes, Graphics, Controls,
   JvComponent;
 
 const

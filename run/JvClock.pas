@@ -701,12 +701,7 @@ begin
       PaintTimeStr(Rect, False);
     end;
   finally
-    {$IFDEF VCL}
-    Canvas.Handle := 0;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    Canvas.Handle := nil;
-    {$ENDIF VisualCLX}
+    Canvas.Handle := NullHandle;
     ReleaseDC(Handle, DC);
   end;
   CheckAlarm;
