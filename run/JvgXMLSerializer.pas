@@ -138,15 +138,15 @@ uses
   Dialogs, ComCtrls, JvComponent, TypInfo;
 
 resourcestring
-  {$IFDEF RUSSIAN}
+(*  {$IFDEF RUSSIAN}
   ERR_OpenXMLTagNotFound = 'Открывающий тег не найден: <%s>';
   ERR_CloseXMLTagNotFound = 'Закрывающий тег не найден: </%s>';
   ERR_UncknownProperty = 'Uncknown property: %s'
-  {$ELSE}
+  {$ELSE}*)
   ERR_OpenXMLTagNotFound = 'Open tag not found: <%s>';
   ERR_CloseXMLTagNotFound = 'Close tag not found: </%s>';
   ERR_UncknownProperty = 'Uncknown property: %s';
-  {$ENDIF}
+(*  {$ENDIF}*)
 
 type
   TOnGetXMLHeader = procedure(Sender: TObject; var Value: string) of object;
