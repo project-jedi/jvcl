@@ -67,7 +67,8 @@ type
     procedure SetArrangeSettings (Value : TJvArrangeSettings);
     procedure SetArrangeConstraints (Value : TSizeConstraints);
     procedure SetFieldCreateOptions(Value : TJvCreateDBFieldsOnControlOptions);
-    procedure ResizeArrangePanelParent(Sender: TObject; nLeft, nTop, nWidth, nHeight: Integer);
+    procedure ArrangePanelChangedWidth (Sender: TObject; ChangedSize : Integer);
+    procedure ArrangePanelChangedHeight (Sender: TObject; ChangedSize : Integer);
   public
     constructor Create;
     destructor Destroy; override;
@@ -193,13 +194,16 @@ begin
   FFieldCreateOptions.Assign(Value);
 end;
 
-procedure TJvDynControlDataSourceEditDialog.ResizeArrangePanelParent(Sender: TObject; nLeft, nTop, nWidth, nHeight: Integer);
+procedure TJvDynControlDataSourceEditDialog.ArrangePanelChangedWidth (Sender: TObject; ChangedSize : Integer);
+begin
+  FForm.ClientWidth := ChangedSize;
+end;
+procedure TJvDynControlDataSourceEditDialog.ArrangePanelChangedHeight (Sender: TObject; ChangedSize : Integer);
 begin
   if Assigned(FNavigatorPanel) then
-    FForm.ClientHeight := nHeight + FButtonPanel.Height + FNavigatorPanel.Height
+    FForm.ClientHeight := ChangedSize + FButtonPanel.Height + FNavigatorPanel.Height
   else
-    FForm.ClientHeight := nHeight + FButtonPanel.Height;
-  FForm.ClientWidth := nWidth;
+    FForm.ClientHeight := ChangedSize + FButtonPanel.Height;
 end;
 
 function TJvDynControlDataSourceEditDialog.CreateDynControlDialog(var AMainPanel: TWinControl): TCustomForm;
@@ -285,7 +289,8 @@ begin
       BevelInner := bvNone;
       BevelOuter := bvNone;
       Parent := FScrollBox;
-      OnResizeParent := ResizeArrangePanelParent;
+      OnChangedWidth := ArrangePanelChangedWidth;
+      OnChangedHeight := ArrangePanelChangedHeight;
     end;
     ArrangePanel.ArrangeSettings := ArrangeSettings;
     if ArrangeSettings.MaxWidth = 0 then

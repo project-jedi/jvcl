@@ -93,7 +93,7 @@ type
     property DataComponent: TComponent read FDataComponent write SetDataComponent;
   end;
 
-  TJvDatabaseActionBaseEngine = class(TComponent)
+  TJvDatabaseActionBaseEngine = class(TObject)
   protected
     function GetDataSource(ADataComponent: TComponent): TDataSource; virtual;
     function GetDataSet(ADataComponent: TComponent): TDataSet; virtual;
@@ -1365,7 +1365,7 @@ end;
 
 procedure TJvDatabaseActionEngineList.RegisterEngine(AEngineClass: TJvDatabaseActionBaseEngineClass);
 begin
-  Add(AEngineClass.Create(nil));
+  Add(AEngineClass.Create);
 end;
 
 function TJvDatabaseActionEngineList.GetEngine(AComponent: TComponent): TJvDatabaseActionBaseEngine;
