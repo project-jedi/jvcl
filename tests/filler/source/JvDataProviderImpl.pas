@@ -388,6 +388,10 @@ type
     function GetInterface(const IID: TGUID; out Obj): Boolean; virtual;
   end;
 
+// Helper routines
+function DP_FindItemsRenderer(AItem: IJvDataItem): IJvDataItemsRenderer;
+procedure DP_GenItemsList(RootList: IJvDataItems; ItemList: TStrings);
+
 // Rename and move to JvFunctions? Converts a buffer into a string of hex digits.
 function HexBytes(const Buf; Length: Integer): string;
 
@@ -409,6 +413,33 @@ begin
     Inc(P);
     Dec(Length);
   end;
+end;
+
+function DP_FindItemsRenderer(AItem: IJvDataItem): IJvDataItemsRenderer;
+begin
+  while (AItem <> nil) and not Supports(AItem.Items, IJvDataItemsRenderer, Result) do
+    AItem := AItem.Items.Parent;
+end;
+
+procedure AddItems(AItems: IJvDataItems; ItemList: TStrings; Level: Integer);
+var
+  I: Integer;
+  ThisItem: IJvDataItem;
+  SubItems: IJvDataItems;
+begin
+  for I := 0 to AItems.Count - 1 do
+  begin
+    ThisItem := AItems.Items[I];
+    ItemList.AddObject(ThisItem.GetID, TObject(Level));
+    if Supports(ThisItem, IJvDataItems, SubItems) then
+      AddItems(SubItems, ItemList, Level + 1);
+  end;
+end;
+
+procedure DP_GenItemsList(RootList: IJvDataItems; ItemList: TStrings);
+begin
+  ItemList.Clear;
+  AddItems(RootList, ItemList, 0);
 end;
 
 type

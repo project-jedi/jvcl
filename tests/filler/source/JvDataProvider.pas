@@ -37,42 +37,11 @@ uses
 type
   TDataProviderChangeReason = (pcrAdd, pcrDelete, pcrUpdate, pcrDestroy);
 
-(*
-  TJvFillerSupport = (fsText,       // supports IFillerItemText
-                      fsImages,     // supports IFillerItemImages
-                      fsImageIndex, // supports IFillerItemImage
-                      fsReadOnly,   // does *not* support IFillerItemManagment
-                      fsCanRender,  // can render it's content to a DC
-                      fsCanMeasure, // can measure the size of it's content
-                      fsSubItems    // supports IFillerSubItems
-                      );
-  TJvFillerSupports = set of TJvFillerSupport;
-  Removed; use Supports(xxx, <interface>, <ref>) to check if an item, or item list supports certain
-  features:
-    fsText        -> IJvDataItemText
-    fsImages      -> IJvDataItemsImages
-    fsImageIndex  -> IJvDataItemImage
-    fsReadOnly    -> IJvDataItemsManagement
-    fsCanRender   -> IJvDataItemsRenderer or IJvDataItemRenderer
-    fsCanMeasure  -> IJvDataItemsRenderer or IJvDataItemRenderer
-    fsSubItems    -> IJvDataItems (if IJvDataItem supports IJvDataItems it has sub items)
-*)
-
-(*  TJvFillerItemsAttribute = (fiaDynamicItems);
-  TJvFillerItemsAttributes = set of TJvFillerItemsAttribute;
-  Use IJvDataItems.IsDynamic method instead.
-*)
-
   // forward
   IJvDataProvider = interface;
   IJvDataItems = interface;
   IJvDataItem = interface;
   IJvDataProviderNotify = interface;
-
-(*  TJvFillerOptions = class;
-  TJvFillerOptionsClass = class of TJvFillerOptions;
-  Will be done in another way
-*)
 
   { base interface for components that supports storing lists of data (0..M items) }
   IJvDataProvider = interface
@@ -154,7 +123,9 @@ type
     procedure DrawItem(ACanvas: TCanvas; var ARect: TRect; Item: IJvDataItem; State: TOwnerDrawState);
     { Measure the specified item. If the item is not part of the IJvDataItems list or nil is specified, an exception will be raised. }
     function MeasureItem(ACanvas: TCanvas; Item: IJvDataItem): TSize;
-    { Retrieve the average size of the items in the list. }
+    { Retrieve the average size of the items in the list. This depends on the implementation on how
+      this value is determined (either by iterating over the items and calculate the real average
+      or by assuming data depending on current font, etc). }
     function AvgItemSize(ACanvas: TCanvas): TSize;
   end;
 

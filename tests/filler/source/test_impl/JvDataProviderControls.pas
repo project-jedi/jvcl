@@ -14,6 +14,7 @@ type
   TJvProvidedListBox = class(TJvCustomListBox, IJvDataProviderNotify)
   private
     FProvider: IJvDataProvider;
+    FItemList: TStrings;
     procedure DataProviderChanging(const ADataProvider: IJvDataProvider; AReason: TDataProviderChangeReason; Source: IUnknown);
     procedure DataProviderChanged(const ADataProvider: IJvDataProvider; AReason: TDataProviderChangeReason; Source: IUnknown);
     procedure SetProvider(const Value: IJvDataProvider);
@@ -30,7 +31,8 @@ type
       IFDEF's in the code; always refer to ProviderIntf and it's working in all Delphi versions). }
     function ProviderIntf: IJvDataprovider;
     procedure DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState); override;
-    procedure MeasureItem(Index: Integer; var Height: Integer);override;
+    procedure MeasureItem(Index: Integer; var Height: Integer); override;
+    procedure CalcViewList; 
     property Count: Integer read GetCount write SetCount;
   public
     constructor Create(AOwner: TComponent); override;
@@ -189,19 +191,21 @@ implementation
 uses
   Math, SysUtils,
   JclStrings,
-  JvTypes;
+  JvDataProviderConsts, JvTypes;
 
 { TJvFillListBox }
 
 constructor TJvProvidedListBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FItemList := TStringList.Create;
 //  OwnerData := False;
 end;
 
 destructor TJvProvidedListBox.Destroy;
 begin
   Provider := nil;
+  FreeAndNil(FItemList);
   inherited Destroy;
 end;
 
@@ -222,28 +226,17 @@ end;
 
 procedure TJvProvidedListBox.DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState);
 var
-  ItemsRenderer: IJvDataItemsRenderer;
   Item: IJvDataItem;
+  ItemsRenderer: IJvDataItemsRenderer;
   ItemRenderer: IJvDataItemRenderer;
   ItemText: IJvDataItemText;
 begin
-  if (ProviderIntf <> nil) and Supports(ProviderIntf, IJvDataItemsRenderer, ItemsRenderer) then
+  if (ProviderIntf <> nil) then
   begin
-    Canvas.Font := Font;
-    if odSelected in State then
+    Item := (ProviderIntf as IJvDataIDSearch).FindByID(FItemList[Index], True);
+    if Item <> nil then
     begin
-      Canvas.Brush.Color := clHighlight;
-      Canvas.Font.Color  := clHighlightText;
-    end
-    else
-      Canvas.Brush.Color := Color;
-    ItemsRenderer.DrawItemByIndex(Canvas, Rect, Index, State);
-  end
-  else if ProviderIntf <> nil then
-  begin
-    Item := (ProviderIntf as IJvDataItems).GetItem(Index);
-    if Supports(Item, IJvDataItemRenderer, ItemRenderer) then
-    begin
+      Inc(Rect.Left, Integer(FItemList.Objects[Index]) * 16);
       Canvas.Font := Font;
       if odSelected in State then
       begin
@@ -252,19 +245,19 @@ begin
       end
       else
         Canvas.Brush.Color := Color;
-      ItemRenderer.Draw(Canvas, Rect, State);
-    end
-    else if Supports(Item, IJvDataItemText, ItemText) then
-    begin
-      Canvas.Font := Font;
-      if odSelected in State then
-      begin
-        Canvas.Brush.Color := clHighlight;
-        Canvas.Font.Color  := clHighlightText;
-      end
+
+      if Supports(Item, IJvDataItemRenderer, ItemRenderer) then
+        ItemRenderer.Draw(Canvas, Rect, State)
       else
-        Canvas.Brush.Color := Color;
-      Canvas.TextRect(Rect, Rect.Left, Rect.Top, ItemText.Caption);
+      begin
+        ItemsRenderer := DP_FindItemsRenderer(Item);
+        if ItemsRenderer <> nil then
+          ItemsRenderer.DrawItem(Canvas, Rect, Item, State)
+        else if Supports(Item, IJvDataItemText, ItemText) then
+          Canvas.TextRect(Rect, Rect.Left, Rect.Top, ItemText.Caption)
+        else
+          Canvas.TextRect(Rect, Rect.Left, Rect.Top, SDataItemRenderHasNoText);
+      end;
     end
     else
       inherited DrawItem(Index, Rect, State);
@@ -278,14 +271,15 @@ begin
   case AReason of
     pcrDestroy: // Should never occur in this method.
       begin
-        if HasParent then
-          Count := 0;
+{        if HasParent then
+          Count := 0;}
         FProvider := nil;
       end;
     else
       begin
         if HasParent then
-          Count := (ProviderIntf as IJvDataItems).Count;
+          CalcViewList;
+//          Count := (ProviderIntf as IJvDataItems).Count;
       end;
   end;
   Invalidate;
@@ -296,10 +290,10 @@ begin
   case AReason of
     pcrDestroy:
       begin
-        if HasParent then
-          Count := 0;
+{        if HasParent then
+          Count := 0;}
         FProvider := nil;
-        Invalidate;
+//        Invalidate;
       end;
   end;
 end;
@@ -307,17 +301,45 @@ end;
 procedure TJvProvidedListBox.MeasureItem(Index: Integer; var Height: Integer);
 var
   aSize: TSize;
+  AItem: IJvDataItem;
+  ItemRenderer: IJvDataItemRenderer;
   ItemsRenderer: IJvDataItemsRenderer;
+  ItemText: IJvDataItemText;
 begin
-  if (ProviderIntf <> nil) and Supports(ProviderIntf, IJvDataItemsRenderer, ItemsRenderer) then
+  if (ProviderIntf <> nil) then
   begin
-    aSize.cy := ItemHeight;
-    aSize := ItemsRenderer.MeasureItemByIndex(Canvas, Index);
-    if aSize.cy <> 0 then
-      Height := aSize.cy;
+    if Height <> 0 then
+      aSize.cy := Height
+    else
+      aSize.cy := ItemHeight;
+    AItem := (ProviderIntf as IJvDataIDSearch).FindByID(FItemList[Index], True);
+    if (AItem <> nil) then
+    begin
+      ItemsRenderer := DP_FindItemsRenderer(AItem);
+      if ItemsRenderer <> nil then
+        aSize := ItemsRenderer.MeasureItem(Canvas, AItem)
+      else if Supports(AItem, IJvDataItemRenderer, ItemRenderer) then
+        aSize := ItemRenderer.Measure(Canvas)
+      else if Supports(AItem, IJvdataItemText, ItemText) then
+        aSize.cy := Canvas.TextHeight(ItemText.Caption)
+      else
+        aSize.cy := Canvas.TextHeight(SDataItemRenderHasNoText);
+      if aSize.cy <> 0 then
+        Height := aSize.cy;
+    end
+    else
+      inherited MeasureItem(Index, Height);
   end
   else
     inherited MeasureItem(Index, Height);
+end;
+
+procedure TJvProvidedListBox.CalcViewList;
+begin
+  { Iterate item tree and add item IDs to a string list. Objects value for each item holds the
+    indent level }
+  DP_GenItemsList(ProviderIntf as IJvDataItems, FItemList);
+  Count := FItemList.Count;
 end;
 
 procedure TJvProvidedListBox.CreateParams(var Params: TCreateParams);
@@ -338,18 +360,13 @@ begin
   if FProvider <> Value then
   begin
     if FProvider <> nil then
-    begin
       FProvider.UnregisterChangeNotify(Self);
-      if HasParent then
-        Count := 0;
-    end;
     FProvider := Value;
     if FProvider <> nil then
-    begin
       FProvider.RegisterChangeNotify(Self);
-      if HasParent then
-        Count := (ProviderIntf as IJvDataItems).Count;
-    end;
+    if HasParent then
+      CalcViewList;
+//      Count := (ProviderIntf as IJvDataItems).Count;
     Invalidate;
   end;
 end;

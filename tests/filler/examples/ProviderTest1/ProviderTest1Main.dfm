@@ -41,18 +41,19 @@ object frmTestProviders: TfrmTestProviders
   object JvProvidedListBox2: TJvProvidedListBox
     Left = 180
     Top = 20
-    Width = 121
-    Height = 96
+    Width = 176
+    Height = 117
     Provider = JvTreeDataProvider1
     ItemHeight = 24
+    Style = lbOwnerDrawVariable
     TabOrder = 1
   end
   object JvFontDataProvider1: TJvFontDataProvider
-    Left = 345
-    Top = 40
+    Left = 465
+    Top = 35
   end
   object JvTreeDataProvider1: TJvTreeDataProvider
-    Left = 375
+    Left = 490
     Top = 105
     Root = <
       item
@@ -165,8 +166,8 @@ object frmTestProviders: TfrmTestProviders
   object ilTest: TImageList
     Height = 24
     Width = 24
-    Left = 370
-    Top = 155
+    Left = 535
+    Top = 105
     Bitmap = {
       494C010105000900040018001800FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       000000000000360000002800000060000000480000000100200000000000006C
