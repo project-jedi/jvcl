@@ -220,9 +220,9 @@ begin
   inherited KeyPress(Key);
 end;
 
-{$IFDEF USE_DXGETTEXT}
 initialization
+  {$IFDEF USE_DXGETTEXT}
   AddDomainForResourceString(cDomainName);
-{$ENDIF USE_DXGETTEXT}
+  {$ENDIF USE_DXGETTEXT}
 
 end.
