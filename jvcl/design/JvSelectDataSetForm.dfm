@@ -24,9 +24,6 @@ object JvSelectDataSetForm: TJvSelectDataSetForm
     0000FF9F0000FF9F0000FF9F0000FF9F0000FF0F0000FE070000FFFF0000}
   OldCreateOrder = True
   Position = poScreenCenter
-  DesignSize = (
-    254
-    191)
   PixelsPerInch = 96
   TextHeight = 13
   object GroupBox: TGroupBox
@@ -37,9 +34,6 @@ object JvSelectDataSetForm: TJvSelectDataSetForm
     Anchors = [akLeft, akTop, akRight, akBottom]
     Caption = ' Borrow Structure From '
     TabOrder = 0
-    DesignSize = (
-      235
-      143)
     object DataSetList: TListBox
       Left = 8
       Top = 19

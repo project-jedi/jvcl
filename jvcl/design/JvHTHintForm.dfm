@@ -29,9 +29,6 @@ object JvHintEditor: TJvHintEditor
   OldCreateOrder = True
   Position = poScreenCenter
   ShowHint = True
-  DesignSize = (
-    417
-    268)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel

@@ -28,9 +28,6 @@ object JvDirectoryListDialog: TJvDirectoryListDialog
   OldCreateOrder = True
   Position = poScreenCenter
   OnShow = FormShow
-  DesignSize = (
-    350
-    191)
   PixelsPerInch = 96
   TextHeight = 13
   object AddBtn: TButton

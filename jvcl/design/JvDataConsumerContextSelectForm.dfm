@@ -12,9 +12,6 @@ inherited frmDataConsumerContextSelect: TfrmDataConsumerContextSelect
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
-    DesignSize = (
-      600
-      35)
     object btnOk: TButton
       Left = 440
       Top = 5

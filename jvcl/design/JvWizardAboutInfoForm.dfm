@@ -25,9 +25,6 @@ object JvWizardAboutDialog: TJvWizardAboutDialog
     BevelOuter = bvNone
     BorderWidth = 3
     TabOrder = 0
-    DesignSize = (
-      311
-      171)
     object Label1: TLabel
       Left = 90
       Top = 16

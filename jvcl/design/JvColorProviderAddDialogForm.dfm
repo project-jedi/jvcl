@@ -19,9 +19,6 @@ object frmAddColor: TfrmAddColor
   Position = poDesktopCenter
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  DesignSize = (
-    275
-    95)
   PixelsPerInch = 96
   TextHeight = 13
   object btnColor: TSpeedButton
