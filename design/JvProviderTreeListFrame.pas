@@ -55,6 +55,7 @@ type
     FOnGetVirtualRoot: TGetVirtualRootEvent;
     FOnItemSelect: TNotifyEvent;
     FUseVirtualRoot: Boolean;
+    FLastSelectIdx: Integer;
   protected
     { Protected declarations }
     FVirtualRoot: IJvDataItem;
@@ -66,8 +67,8 @@ type
     procedure UpdateColumnSize;
     procedure UpdateSelectedItem; virtual;
     procedure ConsumerChanged(Sender: TObject); virtual;
-
     procedure GenerateVirtualRoot; dynamic;
+    property LastSelectIdx: Integer read FLastSelectIdx write FLastSelectIdx;
   public
     { Public declarations }
     constructor Create(AOwner: TComponent); override;
@@ -75,6 +76,7 @@ type
     function GetDataItem(Index: Integer): IJvDataItem; virtual;
     function LocateID(ID: string): Integer; virtual;
     procedure SelectItemID(ID: string);
+    function GetSelectedIndex: Integer;
     property OnGetVirtualRoot: TGetVirtualRootEvent read FOnGetVirtualRoot write FOnGetVirtualRoot;
     property OnItemSelect: TNotifyEvent read FOnItemSelect write FOnItemSelect;
     property Provider: TJvDataConsumer read FConsumerSvc;
@@ -207,6 +209,11 @@ begin
       LVIS_SELECTED or LVIS_FOCUSED);
 end;
 
+function TfmeJvProviderTreeList.GetSelectedIndex: Integer;
+begin
+  Result := LastSelectIdx;
+end;
+
 procedure TfmeJvProviderTreeList.lvProviderCustomDrawItem(
   Sender: TCustomListView; Item: TListItem; State: TCustomDrawState;
   var DefaultDraw: Boolean);
@@ -337,6 +344,10 @@ procedure TfmeJvProviderTreeList.lvProviderSelectItem(Sender: TObject;
   Item: TListItem; Selected: Boolean);
 begin
   UpdateSelectedItem;
+  if Selected then
+    FLastSelectIdx := Item.Index
+  else
+    FLastSelectIdx := -1;
 end;
 
 end.
