@@ -87,7 +87,6 @@ type
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     procedure FormHide(Sender : TObject);
-    procedure ButtonClick(Sender : TObject);
     {$ENDIF VisualCLX}
     procedure FontChanged(Sender: TObject);
     // function GetRegKey: string;
@@ -129,11 +128,11 @@ type
     procedure UpdateTip;
     { Handles button clicks on the 'Next' button: }
     procedure HandleNextClick(Sender: TObject);
-    {$IFDEF VCL}
     { Hooks/Unhooks the parent form, this is done if
       toShowWhenFormShown is in Options }
     procedure HookForm;
     procedure UnHookForm;
+    {$IFDEF VCL}
     { The hook; responds when the parent form activates }
     function HookProc(var Msg: TMessage): Boolean;
     {$ENDIF VCL}
@@ -182,6 +181,10 @@ uses
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
 {$R ../Resources/JvTipOfDay.res}
+
+const
+  psInsideFrame: TPenStyle = psSolid;
+  
 {$ENDIF VisualCLX}
 
 
@@ -345,12 +348,7 @@ begin
     Release ;   // destroy it
     FRunning := False;
   end;
-end;
-
-procedure TJvTipOfDay.ButtonClick(Sender : TObject);
-begin
-  with sender as TControl do
-    FormHide(Parent)
+  inherited
 end;
 {$ENDIF VisualCLX}
 
@@ -380,20 +378,21 @@ begin
   UpdateTip;
 end;
 
-{$IFDEF VCL}
 procedure TJvTipOfDay.HookForm;
 begin
+  {$IFDEF VCL}
   if Owner is TControl then
     FForm := GetParentForm(TControl(Owner))
   else
     FForm := nil;
   if not Assigned(FForm) then
     Exit;
-
   FDummyMsgSend := False;
   JvWndProcHook.RegisterWndProcHook(FForm, HookProc, hoAfterMsg);
+  {$ENDIF VCL}
 end;
 
+{$IFDEF VCL}
 function TJvTipOfDay.HookProc(var Msg: TMessage): Boolean;
 begin
   Result := False;
@@ -761,7 +760,9 @@ end;
 
 procedure TJvTipOfDay.UnHookForm;
 begin
+  {$IFDEF VCL}
   JvWndProcHook.UnRegisterWndProcHook(FForm, HookProc, hoAfterMsg);
+  {$ENDIF VCL}
 end;
 
 procedure TJvTipOfDay.UpdateFonts;
