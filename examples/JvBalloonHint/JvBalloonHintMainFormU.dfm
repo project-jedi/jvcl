@@ -375,6 +375,18 @@ object JvBalloonHintMainForm: TJvBalloonHintMainForm
       TabOrder = 2
       OnClick = chbPlaySoundClick
     end
+    object chbUseBalloonAsApplicationHint: TCheckBox
+      Left = 16
+      Top = 144
+      Width = 217
+      Height = 17
+      Hint = 'Shows an balloon hint as application hint'
+      Caption = 'Use Balloon as Application Hint'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 3
+      OnClick = chbUseBalloonAsApplicationHintClick
+    end
   end
   object ImageList2: TImageList
     Left = 600
