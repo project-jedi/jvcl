@@ -9,7 +9,7 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS = GenDonators.exe GenGroupOverviews.exe
+PROJECTS = GenDonators.exe GenGroups.exe
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -17,7 +17,7 @@ default: $(PROJECTS)
 GenDonators.exe: GenDonators\GenDonators.dpr
   $(DCC)
 
-GenGroupOverviews.exe: GenGroupOverviews\GenGroupOverviews.dpr
+GenGroups.exe: GenGroups\GenGroups.dpr
   $(DCC)
 
 
