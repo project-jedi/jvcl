@@ -274,6 +274,7 @@ type
                                 TClassIdentifier.Identifier}
     FParamCount: Integer; { - 1..cJvInterpreterMaxArgs }
     FParamTypes: TTypeArray;
+    FParamTypeNames:TNameArray;//dejoy added
     FParamNames: TNameArray;
     FResTyp: Word;
     FResDataType: IJvInterpreterDataType;
@@ -281,6 +282,7 @@ type
     FPosEnd: Integer;
     function GetParamName(Index: Integer): string;
     function GetParamType(Index: Integer): Word;
+    function GetParamTypeNames(Index: Integer): string;
   public
     property UnitName: string read FUnitName;
     property Identifier: string read FIdentifier;
@@ -288,6 +290,7 @@ type
     property ParamCount: Integer read FParamCount;
     property ParamTypes[Index: Integer]: Word read GetParamType;
     property ParamNames[Index: Integer]: string read GetParamName;
+    property ParamTypeNames[Index: Integer]: string read GetParamTypeNames; //dejoy added
     property ResTyp: Word read FResTyp;
     property ResDataType: IJvInterpreterDataType read FResDataType;
     property PosBeg: Integer read FPosBeg;
@@ -375,6 +378,30 @@ type
     procedure Init(var V: Variant);
     function GetTyp: Word;
   end;
+
+//dejoy change begin
+//move from implementation section to  interface section
+  { interpreter function }
+  TJvInterpreterSrcFunction = class(TJvInterpreterIdentifier)
+  private
+  public
+    FunctionDesc: TJvInterpreterFunctionDesc; //Move From Private section
+    constructor Create;
+    destructor Destroy; override;
+  end;
+
+  { external function }
+  TJvInterpreterExtFunction = class(TJvInterpreterSrcFunction)
+  private
+    DllInstance: HINST;
+    DllName: string;
+    FunctionName: string;
+    {or}
+    FunctionIndex: Integer;
+    function CallDll(Args: TJvInterpreterArgs): Variant;
+  end;
+
+//dejoy change end
 
   TCallConvention = set of (ccFastCall, ccStdCall, ccCDecl, ccDynamic,
     ccVirtual, ccClass);
@@ -547,11 +574,13 @@ type
       AParamTypes: array of Word; AResTyp: Word; AData: Pointer); dynamic;
     procedure AddSrcFun(UnitName: string; Identifier: string;
       PosBeg, PosEnd: Integer; ParamCount: Integer; ParamTypes: array of Word;
-      ParamNames: array of string; ResTyp: Word;
+      ParamTypeNames: array of string;//dejoy added
+      ParamNames: array of string;ResTyp: Word;
       AResDataType: IJvInterpreterDataType;
       Data: Pointer); dynamic;
     procedure AddSrcFunEx(AUnitName: string; AIdentifier: string;
       APosBeg, APosEnd: Integer; AParamCount: Integer; AParamTypes: array of Word;
+      AParamTypeNames: array of string;{//dejoy added}
       AParamNames: array of string; AResTyp: Word;
       AResDataType: IJvInterpreterDataType;
       AData: Pointer); dynamic;
@@ -567,6 +596,22 @@ type
       const Value: Variant; DataType: IJvInterpreterDataType); dynamic;
     procedure AddOnGet(Method: TJvInterpreterGetValue); dynamic;
     procedure AddOnSet(Method: TJvInterpreterSetValue); dynamic;
+//dejoy added begin
+  public
+    property GetList: TJvInterpreterIdentifierList read FGetList ;
+    property SetList: TJvInterpreterIdentifierList read FSetList ;
+    property SrcFunctionList: TJvInterpreterIdentifierList read FSrcFunctionList ;
+    property SrcUnitList: TJvInterpreterIdentifierList read FSrcUnitList ;
+    property ExtUnitList: TJvInterpreterIdentifierList read FExtUnitList ;
+    property ClassList: TJvInterpreterIdentifierList read FClassList ;
+    property ConstList: TJvInterpreterIdentifierList read FConstList ;
+    property FunctionList: TJvInterpreterIdentifierList read FFunctionList;
+    property EventHandlerList: TJvInterpreterIdentifierList read FEventHandlerList;
+    property EventList: TJvInterpreterIdentifierList read FEventList;
+    property SrcVarList: TJvInterpreterVarList read FSrcVarList ;
+    property SrcClassList: TJvInterpreterIdentifierList read FSrcClassList;
+
+//dejoy added end
   end;
 
   TStackPtr = -1..cJvInterpreterStackMax;
@@ -781,11 +826,9 @@ type
   { main JvInterpreter component }
   TJvInterpreterProgram = class(TJvInterpreterUnit)
   private
-    FPas: TStringList;
+    FPas: TStrings;
     FOnStatement: TNotifyEvent;
-    function GetPas: TStrings;
     procedure SetPas(Value: TStrings);
-    procedure PasChanged(Sender: TObject);
   protected
     procedure DoOnStatement; override;
   public
@@ -793,7 +836,7 @@ type
     destructor Destroy; override;
     procedure Run; override;
   published
-    property Pas: TStrings read GetPas write SetPas;
+    property Pas: TStrings read FPas write SetPas;
     property OnGetValue;
     property OnSetValue;
     property OnGetUnitSource;
@@ -1168,26 +1211,6 @@ type
   end;
 
   PMethod = ^TMethod;
-
-  { interpreter function }
-  TJvInterpreterSrcFunction = class(TJvInterpreterIdentifier)
-  private
-    FunctionDesc: TJvInterpreterFunctionDesc;
-  public
-    constructor Create;
-    destructor Destroy; override;
-  end;
-
-  { external function }
-  TJvInterpreterExtFunction = class(TJvInterpreterSrcFunction)
-  private
-    DllInstance: HINST;
-    DllName: string;
-    FunctionName: string;
-    {or}
-    FunctionIndex: Integer;
-    function CallDll(Args: TJvInterpreterArgs): Variant;
-  end;
 
   { function context - stack }
   PFunctionContext = ^TFunctionContext;
@@ -2488,6 +2511,14 @@ begin
   Result := FParamTypes[Index];
 end;
 
+//dejoy added begin
+function TJvInterpreterFunctionDesc.GetParamTypeNames(
+  Index: Integer): string;
+begin
+   Result := FParamTypeNames[Index];
+end;
+//dejoy added end
+
 function TJvInterpreterFunctionDesc.GetParamName(Index: Integer): string;
 begin
   Result := FParamNames[Index];
@@ -3281,16 +3312,19 @@ end;
 
 procedure TJvInterpreterAdapter.AddSrcFun(UnitName: string; Identifier: string;
   PosBeg, PosEnd: Integer; ParamCount: Integer; ParamTypes: array of Word;
+  ParamTypeNames: array of string;//dejoy added
   ParamNames: array of string; ResTyp: Word;
   AResDataType: IJvInterpreterDataType;
   Data: Pointer);
 begin
   AddSrcFunEx(UnitName, Identifier, PosBeg, PosEnd, ParamCount, ParamTypes,
-    ParamNames, ResTyp, AResDataType, nil);
+    ParamTypeNames,{dejoy added}
+    ParamNames,ResTyp, AResDataType, nil);
 end;
 
 procedure TJvInterpreterAdapter.AddSrcFunEx(AUnitName: string; AIdentifier: string;
   APosBeg, APosEnd: Integer; AParamCount: Integer; AParamTypes: array of Word;
+  AParamTypeNames: array of string;{//dejoy added}
   AParamNames: array of string; AResTyp: Word;
   AResDataType: IJvInterpreterDataType;
   AData: Pointer);
@@ -3311,6 +3345,7 @@ begin
     Data := AData;
     ConvertParamTypes(AParamTypes, FunctionDesc.FParamTypes);
     ConvertParamNames(AParamNames, FunctionDesc.FParamNames);
+    ConvertParamNames(AParamTypeNames, FunctionDesc.FParamTypeNames);//dejoy added  for ParamTypeNames
     FunctionDesc.FResTyp := AResTyp;
   end;
   FSrcFunctionList.Add(JvInterpreterSrcFun);
@@ -6954,9 +6989,11 @@ var
                   Break;
                 NextToken;
               end;
+              FunctionDesc.FParamTypeNames[FunctionDesc.FParamCount]:=ParamType;//dejoy added for ParamTypeNames
               Inc(FunctionDesc.FParamCount);
               while iBeg < FunctionDesc.FParamCount do
               begin
+                FunctionDesc.FParamTypeNames[iBeg]:=ParamType;//dejoy added  for ParamTypeNames
                 FunctionDesc.FParamTypes[iBeg] := TypeName2VarTyp(ParamType);
                 if VarParam then
                   FunctionDesc.FParamTypes[iBeg] := FunctionDesc.FParamTypes[iBeg] or
@@ -7088,7 +7125,7 @@ begin
       SkipToEnd;
       with FunctionDesc do
         FAdapter.AddSrcFun(FCurUnitName {??!!}, FIdentifier, FPosBeg, CurPos,
-          FParamCount, FParamTypes, FParamNames, FResTyp, FResDataType, nil);
+          FParamCount, FParamTypes,FParamTypeNames{dejoy added}, FParamNames, FResTyp, FResDataType, nil);
     end;
   finally
     FunctionDesc.Free;
@@ -7497,10 +7534,25 @@ begin
   end;
 end;
 
-function TJvInterpreterUnit.FunctionExists(const UnitName: string;
-  const FunctionName: string): Boolean;
+function TJvInterpreterUnit.FunctionExists(const UnitName: string; const FunctionName: string)
+  : Boolean;
 begin
   Result := FAdapter.FindFunDesc(UnitName, FunctionName) <> nil;
+end;
+
+//=== TJvInterpreterProgramStrings ===========================================
+
+type
+  TJvInterpreterProgramStrings = class(TStringList)
+  private
+    FJvInterpreterProgram: TJvInterpreterProgram;
+  protected
+    procedure Changed; override;
+  end;
+
+procedure TJvInterpreterProgramStrings.Changed;
+begin
+  FJvInterpreterProgram.Source := Text;
 end;
 
 //=== TJvInterpreterProgram ==================================================
@@ -7508,24 +7560,14 @@ end;
 constructor TJvInterpreterProgram.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FPas := TStringList.Create;
-  FPas.OnChange := PasChanged;
+  FPas := TJvInterpreterProgramStrings.Create;
+  (FPas as TJvInterpreterProgramStrings).FJvInterpreterProgram := Self;
 end;
 
 destructor TJvInterpreterProgram.Destroy;
 begin
   FPas.Free;
   inherited Destroy;
-end;
-
-procedure TJvInterpreterProgram.PasChanged(Sender: TObject);
-begin
-  Source := Pas.Text;
-end;
-
-function TJvInterpreterProgram.GetPas: TStrings;
-begin
-  Result := FPas;
 end;
 
 procedure TJvInterpreterProgram.SetPas(Value: TStrings);

@@ -1,7 +1,8 @@
 program FindReplaceDemo;
 
 uses
-  Forms, FindReplaceMainFormU;
+  Forms,
+  FindReplaceMainFormU in 'FindReplaceMainFormU.pas' {FindReplaceMainForm};
 
 {$R *.RES}
 
