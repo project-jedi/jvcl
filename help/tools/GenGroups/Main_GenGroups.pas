@@ -954,7 +954,7 @@ var
   Grp: TGroupInfo;
 begin
   GroupString := Trim(GroupString);
-  Delete(GroupString, Length(GroupString), 1);
+//  Delete(GroupString, Length(GroupString), 1);
   while GroupString <> '' do
   begin
     I := Pos(',', GroupString);
@@ -1088,8 +1088,8 @@ begin
   comp.Image := 'NO_ICON';
   while (I < MaxI) do
   begin
-    if AnsiSameText(Copy(Trim(FileSL[I]), 1, 7), '<GROUP ') then
-      ParseGroupString(Comp, Copy(Trim(FileSL[I]), 8, Length(Trim(FileSL[I])) - 7));
+    if AnsiSameText(Copy(Trim(FileSL[I]), 1, 6), 'GROUP=') then
+      ParseGroupString(Comp, Copy(Trim(FileSL[I]), 7, Length(Trim(FileSL[I])) - 6));
     Inc(I);
   end;
   I := Index + 1;
@@ -1099,8 +1099,8 @@ begin
       RetrieveSummary
     else if AnsiSameText(Copy(Trim(FileSL[I]), 1, 10), '<TITLEIMG ') then
       Comp.Image := Trim(Copy(Trim(FileSL[I]), 11, Length(Trim(FileSL[I])) - 11))
-    else if AnsiSameText(Copy(Trim(FileSL[I]), 1, 7), '##JVCL:') then
-      ParseCompSettings(Comp, Trim(Copy(Trim(FileSL[I]), 8, Length(Trim(FileSL[I])) - 7)));
+    else if AnsiSameText(Copy(Trim(FileSL[I]), 1, 5), 'FLAG=') then
+      ParseCompSettings(Comp, Trim(Copy(Trim(FileSL[I]), 6, Length(Trim(FileSL[I])) - 5)));
     Inc(I);
   end;
   if (cifIgnore in Comp.Flags) or (Comp.Flags = []) then
@@ -1126,9 +1126,9 @@ begin
     if Copy(Trim(FileSL[I]), 1, 2) = '@@' then
     begin
       S := Trim(Copy(Trim(FileSL[I]), 3, Length(Trim(FileSL[I])) - 2));
-      if AnsiSameText(Copy(S, Length(S) - 3, 4), '.pas') then
+{      if AnsiSameText(Copy(S, Length(S) - 3, 4), '.pas') then
         CheckPASTopic(I)
-      else
+      else}
         AddComponent(I);
     end;
     Inc(I);
@@ -1173,7 +1173,7 @@ var
     end;
     WriteLn('  done.');
   end;
-  
+
 begin
   FList := TStringList.Create;
   try
