@@ -36,7 +36,7 @@ unit JvQZLibMultipleMainFormU;
 interface
 
 uses
-  QWindows, QMessages, SysUtils, Classes, Types, QGraphics, QControls, QForms,
+  QWindows, QMessages, SysUtils, Classes, QGraphics, QControls, QForms,
   QDialogs, JvQZLibMultiple, QStdCtrls, QComCtrls;
 
 type
@@ -66,6 +66,10 @@ type
     { Private declarations }
     procedure DoProgress(Sender: TObject; Position, Total: Integer);
     procedure DoCompressFile(Sender: TObject; const Filename: string);
+
+    procedure DoDecompressFile(Sender:TObject;const Filename:string;var WriteFile:Boolean); // NEW!
+
+
   end;
 
 var
@@ -82,6 +86,22 @@ begin
   lblFilename.Caption := Filename;
   Update;
 end;
+
+// Event handler for before the WRITING of each file. 
+procedure TJvZLibMultipleMainForm.DoDecompressFile(Sender:TObject;const Filename:string;var WriteFile:Boolean);
+begin
+
+// NEW EVENT PARAMETER: var WriteFile:Boolean
+//
+// If you want to skip the writing of all or some files during decompression,
+// such as when you might want to generate a listing of archive contents without
+// writing to disk, just set WriteFile := false in this event!
+
+  lblFilename.Caption := Filename;
+  Update;
+end;
+
+
 
 procedure TJvZLibMultipleMainForm.btnCompressClick(Sender: TObject);
 var
@@ -113,7 +133,7 @@ begin
     lblFilename.Caption := '';
     pbProgress.Position := 0;
     z.OnProgress := DoProgress;
-    z.OnDecompressingFile := DoCompressFile;
+    z.OnDecompressingFile := DoDecompressFile;
     z.DecompressFile(edFilename.Text,edDestFolder.Text,true);
   finally
     z.Free;
