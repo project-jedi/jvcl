@@ -1,4 +1,4 @@
-object MainFormDlg: TMainFormDlg
+object JvAppStorageSubStorageMainForm: TJvAppStorageSubStorageMainForm
   Left = 321
   Top = 227
   BorderStyle = bsDialog
@@ -20,7 +20,6 @@ object MainFormDlg: TMainFormDlg
     Width = 394
     Height = 19
     Panels = <>
-    SimplePanel = False
   end
   object Panel1: TPanel
     Left = 0
@@ -52,6 +51,7 @@ object MainFormDlg: TMainFormDlg
         Width = 390
         Height = 151
         Align = alClient
+        Color = clInfoBk
         Lines.Strings = (
           
             'In addition to storing just component properties for the user, a' +
@@ -230,12 +230,12 @@ object MainFormDlg: TMainFormDlg
     FileName = 'AppStorageExample3.xml'
     DefaultSection = 'General'
     SubStorages = <>
-    Left = 304
-    Top = 190
+    Left = 328
+    Top = 30
   end
   object JvFormStorage1: TJvFormStorage
     AppStorage = JvAppStorage1
-    AppStoragePath = '%FORM_NAME%'
+    AppStoragePath = '%FORM_NAME%\'
     OnRestorePlacement = JvFormStorage1RestorePlacement
     StoredProps.Strings = (
       'Option1.Checked'
@@ -273,12 +273,15 @@ object MainFormDlg: TMainFormDlg
     AppStorage = JvAppStorage1
     SelectPath = 'something'
     FormStorage = JvFormStorage1
-    Left = 110
-    Top = 101
+    Left = 102
+    Top = 77
   end
   object JvAppXMLFileStorage1: TJvAppXMLFileStorage
     StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
     StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
+    StorageOptions.AutoEncodeValue = False
+    StorageOptions.AutoEncodeEntity = False
+    StorageOptions.AutoIndent = True
     FileName = 'AppStorageExample3.xml'
     RootNodeName = 'Configuration'
     SubStorages = <>
@@ -309,7 +312,7 @@ object MainFormDlg: TMainFormDlg
         RootPath = 'INI'
         AppStorage = JvAppIniFileStorage1
       end>
-    Left = 200
+    Left = 112
     Top = 136
   end
 end
