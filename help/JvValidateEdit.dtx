@@ -1,5 +1,5 @@
 ##Package: Custom
-##Status: Locked by peter3
+##Status: Completed (peter3), Review
 ----------------------------------------------------------------------------------------------------
 @@JvValidateEdit.pas
 Summary
@@ -44,7 +44,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomValidateEdit.AsInteger
 Summary
-  Represents the field’s value as a 32-bit integer.
+  Represents the text property as a 32-bit integer.
 Description
   Use AsInteger to read the value of the Text property into an object or variable of type integer or
   to assign a 32-bit integer value to the Text property.
@@ -69,7 +69,7 @@ Parameters
 Summary
   Specifies if alignment is changed automatically.
 Description
-  Use AutoAlignment to specify if the alignmnt of the text is automatically changed when the
+  Use AutoAlignment to specify if the alignment of the text is automatically changed when the
   DisplayFormat is changed. If AutoAlignment is True, DisplayFormat's that are numeric in
   nature are right-justified and all others are left-justified. Set AutoAlignment to False to
   control the Alignment manually.
@@ -80,106 +80,109 @@ See Also
 Summary
   Specifies the character to check.
 Description
-  Write here a description
+  Use CheckChars to specify the characters to check in the control. When the value of DisplayFormat changes,
+  CheckChars also changes.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DisplayFormat, text, Value
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomValidateEdit.CriticalPoints
 Summary
   Specifies the points to compare input values against.
 Description
-  Write here a description
+  Use CriticalPoints to set up how invalid values in the control are displayed. When an invalid value
+  is found the text in the control will be displayed using the colors of ColorAbove and ColorBelow in
+  CriticalPoints.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvValidateEditCriticalPoints
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomValidateEdit.DecimalPlaces
 Summary
   Specifies the number of decimals to display.
 Description
-  Write here a description
+  Use DecimalPlaces to specify the number of decimals to display in the control. DecimalPlaces only have
+  effect when using floating type DisplayFormats.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DisplayFormat
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomValidateEdit.DisplayFormat
 Summary
   Specifies the format to use for display.
 Description
-  Write here a description
+  Use DisplayFormat to spcfy what characters are allowed in the control. Setting DisplayFormat may also
+  alter Alignment, DecimalPlaces, DisplaySuffix and DisplayPrefix.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Alignment, DisplaySuffix, DisplayPrefix
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomValidateEdit.DisplayPrefix
 Summary
   Specifies a prefix to display when the edit doesn't have focus.
 Description
-  Write here a description
+  Use DisplayPrefix to set a set of characters to display to the right of the text in the control. Note
+  that some of the DisplayFormats sets this property automatically.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DisplaySuffix
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomValidateEdit.DisplaySuffix
 Summary
   Specifies a suffix to display when the edit doesn't have focus.
 Description
-  Write here a description
+  Use DisplaySuffix to set a set of characters to display to the left of the text in the control. Note
+  that some of the DisplayFormats sets this property automatically.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DisplayPrefix
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomValidateEdit.EditText
 Summary
   The current value of Text.
 Description
-  Write here a description
+  Use EditText as an equivalent to the Text property that also checks the new value against
+  DisplayFormat, MinValue and MaxValue.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DisplayFormat, MinValue, MaxValue, Text
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomValidateEdit.HasMaxValue
 Summary
   Specifies if the MaxValue property is used.
 Description
-  Write here a description
+  Set HasMaxValue to true to check the entered values in the control against the MaxValue property.
+  If the entered value is more than MaxValue, it will be forced to be no larger than MaxValue.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  MaxValue, Value, Text
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomValidateEdit.HasMinValue
 Summary
   Specifies if the MinValue property is used.
 Description
-  Write here a description
+  Set HasMinValue to true to check the entered values in the control against the MinValue property.
+  If the entered value is less than MinValue, it will be forced to be at least MinValue.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  MinValue, Value, Text
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomValidateEdit.MaxValue
 Summary
   Specifies the maximum allowed value.
 Description
-  Write here a description
+  Use MaxValue to set a maximum allowed value in the control. To disable MaxValue checking, set
+  HasMaxValue to false.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  MinValue, HasMaxValue, Value
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomValidateEdit.MinValue
 Summary
   Specifies the minimum allowed value.
 Description
-  Write here a description
+  Use MinValue to set a minimum allowed value in the control. To disable MinValue checking, set
+  HasMinValue to false.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  MaxValue, HasMinValue, Value
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomValidateEdit.OnCustomValidate
 Summary
   Occurs when the control needs to validate input and DisplayFormat is dfCustom.
 Description
-  Write here a description
+  Write a handler for this event when DisplayFormat is set to dfCustom. To allow a character to be entered
+  into the control, set IsValid to true. To prevent a character from being entered, set IsValid to false.
+
 Parameters
   Sender  - The TJvCustomValidateEdit that called the event.
   Key     - The key that was pressed last.
@@ -191,37 +194,25 @@ Parameters
 Summary
   Occurs when the value (text) in the edit control changes.
 Description
-  Write here a description
+  Write a handler for this event to take specific action when the Text and Value of the control has changed.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvCustomValidateEdit.Text
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  InChange
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomValidateEdit.Value
 Summary
   The value of Text expressed as a variant.
 Description
-  Write here a description
+  Use Value to set and get the Text property as a variant.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Text
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomValidateEdit.ZeroEmpty
 Summary
   Specifies if an empty Text property should be interpreted as the value 0.
 Description
-  Write here a description
+  Use ZeroEmpty to indicate whether an empty Text or null Value should be interpreted as 0 or as an empty string.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Text, Value
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEdit
 <TITLEIMG TJvValidateEdit>
@@ -244,110 +235,102 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditCriticalPoints
 Summary
-  Write here a summary (1 line)
+  Used to check a value in TJvValidateEdit against a mimimum and maximum value and mark invalid values accordingly.
 Description
-  Write here a description
+  TJvValidateEditCriticalPoints is the type of the CriticalPoints property in a TJvValidateEdit control
+  and defines the properties used to check the value of the edit against a minimum value and a maximum value.
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditCriticalPoints.CheckPoints
 Summary
-  Write here a summary (1 line)
+  Indicates if values are checked against MinValue, MaxValue or both.
 Description
-  Write here a description
+  Use CheckPoints to specify whether Minvalue, MaxValue or both are used when checking
+  the value in a TJvValidateEdit.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  MinValue, MaxValue, TJvValidateEit
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditCriticalPoints.ColorAbove
 Summary
-  Write here a summary (1 line)
+  Indicates the color to use for values that are above the maximum allowed value.
 Description
-  Write here a description
+  Set ColorAbove to the color to use when the checked value is more than MaxValue.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ColorBelow, MaxValue, MinValue
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditCriticalPoints.ColorBelow
 Summary
-  Write here a summary (1 line)
+  Indicates the color to use for values that are below the minimum allowed value.
 Description
-  Write here a description
+  Set ColorBelow to the color to use when the checked value is less than MinValue.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ColorAbove, MaxValue, MinValue
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditCriticalPoints.MaxValue
 Summary
-  Write here a summary (1 line)
+  Indicates the maximum allowed value in Text.
 Description
-  Write here a description
+  Set MaxValue to indicate the maximum value allowed. To disable, set MaxValue to 0.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  MinValue
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditCriticalPoints.MinValue
 Summary
-  Write here a summary (1 line)
+  Indicates the minimum allowed value.
 Description
-  Write here a description
+  Set MinValue to indicate the mimimum value allowed. To disable, set MinValue to 0.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvValidateEditCriticalPoints.OnChange
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  MaxValue
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditCriticalPointsCheck
 <TITLE TJvValidateEditCriticalPointsCheck type>
 Summary
-  Write here a summary (1 line)
+  Defines the critical point checks to perform.
 Description
-  Write here a description
+  TJvValidateEditCriticalPointsCheck is used for the CheckPoints property in TJvValidateEditCriticalPoints.
+See Also
+  TJvValidateEditCriticalPoints
 @@TJvValidateEditCriticalPointsCheck.cpNone
-  Description for cpNone
+  Don't use critical points.
 @@TJvValidateEditCriticalPointsCheck.cpMaxValue
-  Description for cpMaxValue
+  Check only the maximum value.
 @@TJvValidateEditCriticalPointsCheck.cpBoth
-  Description for cpBoth
+  Check both minimum and maximum value.
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditDisplayFormat
 <TITLE TJvValidateEditDisplayFormat type>
 Summary
   Defines available display formats.
 Description
-  Write here a description
+  TJvValidateEditDisplayFormat is used as the type for the DisplayFormat property in TJvValidateEdit.
+  Changing DisplayFormat might change the Alignment of the text if AutoAlignment is true and the prefix
+  or suffix used when the control doesn't have focus.
 @@TJvValidateEditDisplayFormat.dfAlphabetic
-  Description for dfAlphabetic
+  Only displays characters A-Z, a-z.
 @@TJvValidateEditDisplayFormat.dfAlphaNumeric
-  Description for dfAlphaNumeric
+  Only displays characters A-Z, a-z, 0-9.
 @@TJvValidateEditDisplayFormat.dfBinary
-  Description for dfBinary
+  Only displays binary characters (0,1).
 @@TJvValidateEditDisplayFormat.dfCheckChars
-  Description for dfCheckChars
+  Only displays characters in CheckCars.
 @@TJvValidateEditDisplayFormat.dfCurrency
-  Description for dfCurrency
+  Only displays currency characters (0-9, decimal).
 @@TJvValidateEditDisplayFormat.dfCustom
-  Description for dfCustom
+  Only displays characters where OnCustomValidate sets IsValid to true.
 @@TJvValidateEditDisplayFormat.dfFloat
-  Description for dfFloat
+  Only displays float characters (0-9, decimal).
 @@TJvValidateEditDisplayFormat.dfHex
-  Description for dfHex
+  Only displays hexadecimal characters (0-9,A-F,a-f).
 @@TJvValidateEditDisplayFormat.dfInteger
-  Description for dfInteger
+  Only displays integer characters (0-9).
 @@TJvValidateEditDisplayFormat.dfNonCheckChars
-  Description for dfNonCheckChars
+  Only displays chacraters not in CheckCars.
 @@TJvValidateEditDisplayFormat.dfNone
-  Description for dfNone
+  Displays any character.
 @@TJvValidateEditDisplayFormat.dfOctal
-  Description for dfOctal
+  Only displays octal characters (0-7).
 @@TJvValidateEditDisplayFormat.dfPercent
-  Description for dfPercent
+  Only displays percentage characters (0-9).
 @@TJvValidateEditDisplayFormat.dfScientific
-  Description for dfScientific
+  Only displays integer characters (0-9, e, E).
 @@TJvValidateEditDisplayFormat.dfYear
-  Description for dfYear
+  Only displays integer characters (0-9) and also sets max length to 4.

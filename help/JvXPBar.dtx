@@ -1,6 +1,9 @@
 ##Package: XPCtrls
-##Status: Locked by peter3
+##Status: Completed (peter3), Review
 ##Skip: TJvXPFadeThread
+##Skip: TJvXPBarItems
+##Skip: TJvXPBarRollDirection
+##Skip: TJvXPBarOptions
 ----------------------------------------------------------------------------------------------------
 @@JvXPBar.pas
 Summary
@@ -15,410 +18,186 @@ JVCLInfo
   GROUP=JVCL.XPControls
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  Control that can display an icon, a header and zero or more clickable items in its client area.
 Description
-  Write here a description
+  Use a TJvXPBar control on a form to display an XP style group box with items that can be clicked.
+  To create a navigation style control, drop several TJvXPBars on a TJvXPContainer and align them
+  to the top of the container.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPBarColors
 Summary
-  Write here a summary (1 line)
+  Manages the colors used by TJvXPCustomWinXPBar.
 Description
-  Write here a description
+  TJvXPBarColors is the type of the Colors property of a TJvXPCustomWinXPBar and manages the colors
+  used by the control.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPBarColors.BodyColor
 Summary
-  Write here a summary (1 line)
+  Indicates the color of the body portion of the control.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvXPBarColors.Change
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use BodyColor to specify the background color of the owning control.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPBarColors.GradientFrom
 Summary
-  Write here a summary (1 line)
+  Indicates the starting color for a gradient.
 Description
-  Write here a description
+  Use GradientFrom to specify the starting color of a gradient area on the owning control.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  GradientTo
 ----------------------------------------------------------------------------------------------------
 @@TJvXPBarColors.GradientTo
 Summary
-  Write here a summary (1 line)
+  Indicates the ending color for a gradient.
 Description
-  Write here a description
+  Use GradientTo to specify the ending color of a gradient area on the owning control.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvXPBarColors.OnChange
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  GradientFrom
 ----------------------------------------------------------------------------------------------------
 @@TJvXPBarColors.SeparatorColor
 Summary
-  Write here a summary (1 line)
+  Indicates the color of the separator in the control.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use SeparatorColor to specify the color for a separator line on the owning control.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPBarHitTest
 <TITLE TJvXPBarHitTest type>
 Summary
-  Write here a summary (1 line)
+  Specifies the return values possible from the GetHitTestAt function of TJvXPCustomWinXPBar.
 Description
-  Write here a description
+  TJvXPBarHitTest is the type of the return value from TJvXPBar.GetHitTestAt.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvXPCustomWinXPBar, TJvXPBar
 @@TJvXPBarHitTest.htNone
-  USer clicked nowhere.
+  Position is neither on header, nor on roll button.
 @@TJvXPBarHitTest.htHeader
-  User clicked on the header
+  Position is on the header.
 @@TJvXPBarHitTest.htRollButton
-  USer clicked on the roll button.
+  Position is on the roll button.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPBarItem
 Summary
-  Write here a summary (1 line)
+  Class that manages an item in a TJvXPCustomWinXPBar.
 Description
-  Write here a description
+  TJvXPBarItem is the type of an individual item the Items property of TJvXPCustomWinXPBar. It has
+  properties to control the look and behavior of the item.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPBarItem.Action
 Summary
-  Write here a summary (1 line)
+  Designates the action associated with the item.
 Description
-  Write here a description
+  Action is the action object that is associated with the item. Actions allow an application to
+  centralize the response to user commands. When an item is associated with an action, the action
+  determines the appropriate properties and events of the item (such as whether the item is
+  enabled or how it responds to an OnClick event).
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvXPBarItem.ActionLink
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnClick
 ----------------------------------------------------------------------------------------------------
 @@TJvXPBarItem.Caption
 Summary
-  Write here a summary (1 line)
+  The text to display for the item.
 Description
-  Write here a description
+  Use Caption to specify the text string that labels the item.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Name, Text
 ----------------------------------------------------------------------------------------------------
 @@TJvXPBarItem.Data
 Summary
-  Write here a summary (1 line)
+  Stores a pointer value as part of the item.
 Description
-  Write here a description
+  Data has no predefined meaning. The Data property is provided for the convenience of developers.
+  It can be used for storing an additional pointer value or it can be typecast to any 32-bit
+  value such as a component reference or an integer.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DataObject, Tag
 ----------------------------------------------------------------------------------------------------
 @@TJvXPBarItem.DataObject
 Summary
-  Write here a summary (1 line)
+  Stores an object value as part of the item.
 Description
-  Write here a description
+  DataObject has no predefined meaning. The DataObject property is provided for the convenience of developers.
+  It can be used for storing an additional TObject value or it can be typecast to any 32-bit
+  value such as a pointer or an integer.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Data, Tag
 ----------------------------------------------------------------------------------------------------
 @@TJvXPBarItem.Enabled
 Summary
-  Write here a summary (1 line)
+  Indicates whether the control responds to mouse events.
 Description
-  Write here a description
+  Use Enabled to change the availability of the item to the user. To disable an item, set Enabled
+  to false. Disabled items appear dimmed. If Enabled is false, the item ignores mouse events.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Visible
 ----------------------------------------------------------------------------------------------------
 @@TJvXPBarItem.Hint
 Summary
-  Write here a summary (1 line)
+  Contains the text string that can appear when the user moves the mouse over the item.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use the Hint property to provide a string of help text either as a Help Hint, or as help text on a
+  particular location such as a status bar.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPBarItem.ImageIndex
 Summary
-  Write here a summary (1 line)
+  Indicates the image to display for the item.
 Description
-  Write here a description
+  ImageIndex is an index into the image list of the item or of the TJvXPCustomWinXPBar owning the item or
+  of the Action associated with the item. It identifies an image that is shown next to the item.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ImageList, Images, TJvXPCustomWinXPBar, TJvXPBar
 ----------------------------------------------------------------------------------------------------
 @@TJvXPBarItem.ImageList
 Summary
-  Write here a summary (1 line)
+  Indicates the image list to use for this item.
 Description
-  Write here a description
+  Use ImageList to specify an image list to use for this item. If not set, the item uses either the
+  images of the assoicated Action or the images of the owning control.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Images, ImageIndex
 ----------------------------------------------------------------------------------------------------
 @@TJvXPBarItem.Images
 Summary
-  Write here a summary (1 line)
+  Returns one of three possible image lists.
 Description
-  Write here a description
+  Images is used internally to return the image list that is to be used by the item. An item can get
+  it's image list from three different sources: from it's own ImageList property, from the Images property
+  of the associated Actin or from the Images property of the owning TJvXPCustomWinXPBar.
+
+  The different image lists are checked in this order:
+
+    ImageList, Action.ActionList.Images and TJvXPBar.Images
+
+  The first non-nil image list found is returned.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvXPBarItem.Name
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ImageList, Action, TJvXPCustomWinXPBar.Images, TJvXPBar
 ----------------------------------------------------------------------------------------------------
 @@TJvXPBarItem.OnClick
 Summary
-  Write here a summary (1 line)
+  Occurs when the item is clicked.
 Description
-  Write here a description
+  Use the OnClick event handler to respond when the user clicks the item. If the item has an
+  associated action, and that action has an OnExecute method, the action’s OnExecute method
+  responds to click events unless it is superseded by an OnClick event handler.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Action
 ----------------------------------------------------------------------------------------------------
 @@TJvXPBarItem.Tag
 Summary
-  Write here a summary (1 line)
+  Stores an integer value as part of the item.
 Description
-  Write here a description
+  Tag has no predefined meaning. The Tag property is provided for the convenience of developers.
+  It can be used for storing an additional integer value or it can be typecast to any 32-bit
+  value such as a component reference or a pointer.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Data, DataObject
 ----------------------------------------------------------------------------------------------------
 @@TJvXPBarItem.Visible
 Summary
-  Write here a summary (1 line)
+  Determines whether the item appears onscreen.
 Description
-  Write here a description
+  Use the Visible property to control the visibility of the item at runtime. If Visible is true,
+  the item appears. If Visible is false, the item is not visible.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvXPBarItem.WinXPBar
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvXPBarItemActionLink
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvXPBarItemActionLink.Client
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvXPBarItemActionLinkClass
-<TITLE TJvXPBarItemActionLinkClass type>
-Summary
-  Defines the metaclass for TJvXPBarItemActionLink.
-Description
-  TJvXPBarItemActionLinkClass is the metaclass for TJvXPBarItemActionLink. Its value is the class reference for
-  TJvXPBarItemActionLink or for one of its descendants.
-----------------------------------------------------------------------------------------------------
-@@TJvXPBarItems
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvXPBarItems.Add
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description
-  of all these functions into 1 general description. If you do so, combine all "Parameter" 
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
-  other overloaded functions with the same name.
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvXPBarItems.Add@TBasicAction
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description
-  of all these functions into 1 general description. If you do so, combine all "Parameter" 
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
-  other overloaded functions with the same name.
-Parameters
-  Action - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvXPBarItems.Add@TObject
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description
-  of all these functions into 1 general description. If you do so, combine all "Parameter" 
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
-  other overloaded functions with the same name.
-Parameters
-  DataObject - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvXPBarItems.Find@string
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description
-  of all these functions into 1 general description. If you do so, combine all "Parameter" 
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
-  other overloaded functions with the same name.
-Parameters
-  AName - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvXPBarItems.Find@TBasicAction
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description
-  of all these functions into 1 general description. If you do so, combine all "Parameter" 
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
-  other overloaded functions with the same name.
-Parameters
-  Action - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvXPBarItems.Find@TObject
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description
-  of all these functions into 1 general description. If you do so, combine all "Parameter" 
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
-  other overloaded functions with the same name.
-Parameters
-  DataObject - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvXPBarItems.Insert@Integer
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description
-  of all these functions into 1 general description. If you do so, combine all "Parameter" 
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
-  other overloaded functions with the same name.
-Parameters
-  Index - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvXPBarItems.Insert@Integer@TBasicAction
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description
-  of all these functions into 1 general description. If you do so, combine all "Parameter" 
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
-  other overloaded functions with the same name.
-Parameters
-  Index  - Description for this parameter
-  Action - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvXPBarItems.Insert@Integer@TObject
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description
-  of all these functions into 1 general description. If you do so, combine all "Parameter" 
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
-  other overloaded functions with the same name.
-Parameters
-  Index      - Description for this parameter
-  DataObject - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvXPBarItems.Items
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Index - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Enabled
 ----------------------------------------------------------------------------------------------------
 @@TJvXPBarOnCanChangeEvent
 <TITLE TJvXPBarOnCanChangeEvent type>
@@ -427,18 +206,13 @@ See Also
 @@TJvXPBarOnCollapsedChangeEvent
 <TITLE TJvXPBarOnCollapsedChangeEvent type>
 Summary
-  Write here a summary (1 line)
+  The event type for the collapse change events of a TJvXPCustomWinXPBar.
 Description
-  This type is used by (for reference):
-    TJvXPCustomWinXPBar.AfterCollapsedChange
-    TJvXPCustomWinXPBar.BeforeCollapsedChange
-    TJvXPCustomWinXPBar.OnCollapsedChange
+  TJvXPBarOnCollapsedChangeEvent is the event type used for the AfterCollapsedChange, BeforeCollapsedChange
+  and OnCollapsedChange events in a TJvXPCustomWinXPBar.
 Parameters
-  Sender     - Description for this parameter
-  Collapsing - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Sender     - The control that triggered the event.
+  Collapsing - True if the control is collapsing, False otherwise.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPBarOnDrawItemEvent
 <TITLE TJvXPBarOnDrawItemEvent type>
@@ -450,28 +224,23 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvXPBarOptions
 Summary
-  Write here a summary (1 line)
+  Base class for options in a TJvXPCustomWinXPBar or descendant.
 Description
-  Write here a description
+  This class is not used.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPBarRollDelay
 <TITLE TJvXPBarRollDelay type>
 Summary
-  Write here a summary (1 line)
+  Indicates the delay between roll events.
 Description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-(Value = 1..200; - for reference)
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvXPBarRollDelay is the type of the RollDelay property of a TJvXPCustomWinXPBar.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPBarRollDirection
 <TITLE TJvXPBarRollDirection type>
 Summary
-  Write here a summary (1 line)
+  Indicates the direction of a roll event.
 Description
-  Write here a description
+  TJvXPBarRollDirection
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -483,322 +252,268 @@ See Also
 @@TJvXPBarRollMode
 <TITLE TJvXPBarRollMode type>
 Summary
-  Write here a summary (1 line)
+  Indicates how a roll transition is performed.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvXPBarRollMode is used as the type of the RollMode property of TJvXPCustomWinXPBar.
 @@TJvXPBarRollMode.rmFixed
-  Description for rmFixed
+  The control is resized using a fixed value.
 @@TJvXPBarRollMode.rmShrink
-  Description for rmShrink
+  The control is resized proportional to it's current size.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPBarRollStep
 <TITLE TJvXPBarRollStep type>
 Summary
-  Write here a summary (1 line)
+  Indicates the number of steps in a roll event.
 Description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-(Value = 1..50; - for reference)
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvXPBarRollStep is used as the type of the RollStep property of TJvXPCustomWinXPBar.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPBarVisibleItems
 Summary
-  Write here a summary (1 line)
+  Collection class that manages a list of TJvXPBarItem items. TJvXPBarItems are displayed in
+  a TJvXPCustomWinXPBar control.
 Description
-  Write here a description
+  TJvXPBarVisibleItems is the type of the VisibleItems property of TJvXPCustomWinXPBar.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPBarVisibleItems.Count
 Summary
-  Write here a summary (1 line)
+  Indicates the number of items in the list.
 Description
-  Write here a description
-Return value
-  Describe here what the function returns
+  Read Count to determine how many items are in the collection.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Items
 ----------------------------------------------------------------------------------------------------
 @@TJvXPBarVisibleItems.Items
 Summary
-  Write here a summary (1 line)
+  Provides indexed access to the items in the list.
 Description
-  Write here a description
+  Use Items to access the items in the collection by index. Valid indices are between 0 and Count - 1.
+  Items is the default property of TJvXPBarVisibleItems, which means you can call it either using
+  JvXPBar1.Items.Items[Index] or JvXPBar1.Items[Index].
 Parameters
-  Index - Description for this parameter
+  Index - The 0-based index of the item.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Count
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomWinXPBar
 Summary
-  Write here a summary (1 line)
+  Base class for XP style group boxes with fixed items.
 Description
-  Write here a description
+  Use TJvXPCustomWinXPBar as a base class when creating controls that should mimick the look and feel
+  of the navigation bar used in Windows XP. TJvXPCustomWinXPBar handles the basic tasks of creating and
+  managing the items that are displayed on it's client area as well as the expanding and collapsing of
+  the control.
+
+  Do not create instances of TJvXPCustomWinXPBar. Instead, use a derived control, like TJvXPBar.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomWinXPBar.AfterCollapsedChange
 Summary
-  Write here a summary (1 line)
+  Occurs after the Collapsed state of the control has changed.
 Description
-  Write here a description
+  Write a handler for this event to be notified after the control's Collapsed state has changed.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  BeforeCollapsedChange, Collapsed
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomWinXPBar.BeforeCollapsedChange
 Summary
-  Write here a summary (1 line)
+  Occurs before the Collapsed state of the control has changed.
 Description
-  Write here a description
+  Write a handler for this event to be notified before the control's Collapsed state changes.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvXPCustomWinXPBar.Click
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AfterCollapsedChange, Collapsed
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomWinXPBar.Collapsed
 Summary
-  Write here a summary (1 line)
+  Indicates whether the control is collapsed or expanded.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use Collapsed to determine the current state of the control. Change the value of Collapsed to make
+  the control expand or collapse.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomWinXPBar.Colors
 Summary
-  Write here a summary (1 line)
+  Specifies the colors used in the control.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvXPCustomWinXPBar.EndUpdate
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvXPCustomWinXPBar.Font
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use Colors and itäs subproperties to set the various colors used by the control
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomWinXPBar.GetHitTestAt
 Summary
-  Write here a summary (1 line)
+  Returns hit test info for a specific point in the control.
 Description
-  Write here a description
+  Call GetHitTestAt to obtian information about where a specific point lies in the control.
 Parameters
-  X - Description for this parameter
-  Y - Description for this parameter
+  X - The horizontal location in client coordinates.
+  Y - The vertical location in client coordinates.
 Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Returns htHeader, htRollButton or htNone depending on the points location.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomWinXPBar.HeaderFont
 Summary
-  Write here a summary (1 line)
+  Indicates the font to use for the header of the control.
 Description
-  Write here a description
+  Use HeaderFont to specify the font attributes to use for the header portio of the control.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Font
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomWinXPBar.HotTrack
 Summary
-  Specifies whether the <xxx> is highlighted when the mouse passes over it.
+  Specifies whether the items in the control are highlighted when the mouse passes over them.
 Description
-  Set HotTrack to True to provide visual feedback about which item is under the mouse; the font 
-  specified by HotTrackFont is used for the <xxx> text. When HotTrack is False, there is no visual 
-  feedback when the mouse passes over the <xxx>.
-See Also 
-  HotGlyph, HotTrackFont, OnMouseEnter, OnMouseLeave
+  Set HotTrack to True to provide visual feedback about which item is under the mouse. When
+  HotTrack is False, there is no visual feedback when the mouse passes over the items.
+See Also
+  HotTrackColor, Items
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomWinXPBar.HotTrackColor
 Summary
-  Write here a summary (1 line)
+  Indicates the color to use when an item is highlighted.
 Description
-  Write here a description
+  Use HotrackColor to set the text color to use for items when the mouse hovers over them. HotTrackColor
+  is not used unless HotTrack is true.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  HotTrack
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomWinXPBar.Icon
 Summary
-  Write here a summary (1 line)
+  Specifies the icon to display on the control.
 Description
-  Write here a description
+   Point Icon to a TIcon object to display an icon at the top of the control.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ImageList   
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomWinXPBar.ImageList
 Summary
-  Write here a summary (1 line)
+  Spcifies the image list to use for the items in the control.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Set ImageList to an exisitng TImageList on your form to display an image next to each item in the
+  control. The items must also have their ItemIndex set to a value between 0 and ImageList.Count - 1.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomWinXPBar.ItemHeight
 Summary
-  Write here a summary (1 line)
+  Indicates the height of an item in the control.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use ItemHeight to specify the height an item can occupy in the control.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomWinXPBar.Items
 Summary
-  Write here a summary (1 line)
+  Provides indexed access to the items in the control.
 Description
-  Write here a description
+  Use Items to access the items in the control using an index. Valid indices are between 0 and
+  Count - 1. Items contans all the items in the list. To iterate only the visible onces, use VisibleItems
+  instead.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  VisibleItems, Count
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomWinXPBar.OnCanChange
 Summary
-  Write here a summary (1 line)
+  Occurs before an item is about to be changed.
 Description
-  Write here a description
+  Write a handler for this event to conditionally allow or disallow changing to another item in the control.
 Parameters
-  Sender      - Description for this parameter
-  Item        - Description for this parameter
-  AllowChange - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Sender      - The control that triggered the event.
+  Item        - The item that is about to be selected or clicked.
+  AllowChange - Set to true to allow the change, False otherwise.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomWinXPBar.OnCollapsedChange
 Summary
-  Write here a summary (1 line)
+  Occurs when the control is collapsed or expanded.
 Description
-  Write here a description
+  Write a handler for this event to be notified when the Collapsed state of the control changes.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Collapsed
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomWinXPBar.OnDrawItem
 Summary
-  Write here a summary (1 line)
+  Occurs when an item needs to be drawn.
 Description
-  Write here a description
+  Write a handler for this event to mdofiy the way items are drawn in the control.
 Parameters
-  Sender  - Description for this parameter
-  ACanvas - Description for this parameter
-  Rect    - Description for this parameter
-  State   - Description for this parameter
-  Item    - Description for this parameter
-  Bitmap  - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Sender  - The control that triggered the event.
+  ACanvas - The canvas to draw on.
+  Rect    - The rect area to draw in.
+  State   - The current state of the control.
+  Item    - The item being drawn.
+  Bitmap  - The item's image as a bitmap.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomWinXPBar.OnItemClick
 Summary
-  Write here a summary (1 line)
+  Occurs when the user clicks an item in the control.
 Description
-  Write here a description
+  Write a handler for this event to be notified when an item has been clicked in the control.
 Parameters
-  Sender - Description for this parameter
-  Item   - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Sender - The control that triggered the event.
+  Item   - The item that was clicked.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomWinXPBar.RollDelay
 Summary
-  Write here a summary (1 line)
+  Indicates the delay between each roll step when collapsing or expanding.
 Description
-  Write here a description
+  Use RollDelay to specify the amount of time that elapses between each RollStep when the Colapsed state
+  of the control changes, i.e it is being expanded or collapsed.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Colapsed, Rolling, RollStep, RollMode, RollOffset
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomWinXPBar.Rolling
 Summary
-  Write here a summary (1 line)
+  Indicates whether the control is currently in the process of collapsing or expanding.
 Description
-  Write here a description
+  Read Rolling to determine if the control is currently in the transition from expanded to collapsed state
+  or the other way around. Rolling is used mainly to avoid re-entrancy problems and infinite loops in code.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Collapsed  
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomWinXPBar.RollMode
 Summary
-  Write here a summary (1 line)
+  Spcifies how expanding and collapsing the control is performed.
 Description
-  Write here a description
+  Use RollMode to control how the control is expanded and collapsed when the Collapsed property changes
+  or the user clicks the RollButton. If RollMode is rmFixed, the control is expanded and collapsed
+  a fixed amount of pixels (using RollOffset) at each step. If RollMode is rmShrink, the control is
+  expanded and collapsed proportionally to the current size of the control.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  RollOffset, RollStep
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomWinXPBar.RollOffset
 Summary
-  Write here a summary (1 line)
+  Indicates how much the control is expanded at each step.
 Description
-  Write here a description
+  Use RollOffset to specify how many pixels the control is expanded or collapsed at each step when
+  transitioning from expanded to collapsed (or back). A higher value of RollOffset will make the control
+  expand and collapse faster but will also make the transition jerkier.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  RollStep, RollMode
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomWinXPBar.RollStep
 Summary
-  Write here a summary (1 line)
+  Indicates the number of discreet steps used to collapse and expand the control.
 Description
-  Write here a description
+  Set RollStep to specify how smooth the transition from the expanded to the collapsed state is. A higher value
+  of RollSteps makes the transition appear smooth but will also take longer. 
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  RollOffset, RollMode
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomWinXPBar.ShowLinkCursor
 Summary
-  Write here a summary (1 line)
+  Indicates whether the cursor turns into a hand cursor when hovering over items.
 Description
-  Write here a description
+  Use ShowLinkCursor to specify the cursor to use when the mouse hovers over an item. If ShowLinkCursor
+  is false, the item displays the same cursor as the control.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Cursor, HotTrack, HotTrackColor
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomWinXPBar.ShowRollButton
 Summary
-  Write here a summary (1 line)
+  Indicates if the collapse/expand button is shown.
 Description
-  Write here a description
+  Use ShowRollButton to specify whether the control shows an expand/collapse button or not. Even if the
+  button is hidden, you can still exapnd and collapse the control from code, using Collapsed.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Collapsed
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomWinXPBar.VisibleItems
 Summary
-  Write here a summary (1 line)
+  Provides indexed access to the visible items in the control.
 Description
-  Write here a description
+  Use VisibleItems to access the visible items in the control by index. Valid indices are from
+  0 to VisibleItems.Count - 1.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Items, VisibleItems.Count
+
