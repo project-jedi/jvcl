@@ -35,16 +35,27 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls,
   Forms, Dialogs, jpeg,
-  JvTypes, JvComponent, JvgMailSlots, JvgSysInf;
+  {$IFDEF USEJVCL}
+  JvTypes, JvComponent,
+  {$ENDIF USEJVCL}
+  JvgMailSlots, JvgSysInf;
 
 type
   TExceptionHandlerOption = (fehActiveDesignTime, fehActiveRunTime,
     fehFileLogging, fehSupressExceptions, feScreenShots);
   TExceptionHandlerOptions = set of TExceptionHandlerOption;
 
+  {$IFDEF USEJVCL}
   EJvgHandlerException = class(EJVCLException);
+  {$ELSE}
+  EJvgHandlerException = class(Exception);
+  {$ENDIF USEJVCL}
 
+  {$IFDEF USEJVCL}
   TJvgExceptionHandler = class(TJvComponent)
+  {$ELSE}
+  TJvgExceptionHandler = class(TComponent)
+  {$ENDIF USEJVCL}
   private
     FActive: Boolean;
     FLogFileName: string;
@@ -85,7 +96,10 @@ implementation
 
 uses
   FileCtrl,
-  JvConsts, JvgUtils, JvgFileUtils;
+  {$IFDEF USEJVCL}
+  JvConsts,
+  {$ENDIF USEJVCL}
+  JvgUtils, JvgFileUtils;
 
 var
   ExceptionHandler: TJvgExceptionHandler = nil;

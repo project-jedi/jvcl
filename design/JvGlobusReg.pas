@@ -111,8 +111,14 @@ begin
     TJvg3DColors, TJvgHint, TJvginspectorGrid, TJvgReport,
     TJvgReportParamsEditor, TJvgLogicProducer, TJvgSmallFontsDefense,
     {$IFNDEF DelphiPersonalEdition}
-    TJvgExportExcel, TJvgExportHTML, TJvgExportXML, TJvgExportDataset,
-    {$IFDEF JVCL_UseQuickReport}TJvgQRLabel, TJvgQRDBText, TJvgMyQRPreview,{$ENDIF}
+    TJvgExportExcel, TJvgExportHTML,
+    {$IFDEF USEJVCL}
+    TJvgExportXML,
+    {$ENDIF USEJVCL}
+    TJvgExportDataset,
+    {$IFDEF JVCL_UseQuickReport}
+    TJvgQRLabel, TJvgQRDBText, TJvgMyQRPreview,
+    {$ENDIF JVCL_UseQuickReport}
     {$ENDIF DelphiPersonalEdition}
     {TJvgMultipleResources,} {TJvgComponentDescription,} TJvgSingleInstance,
     TJvgFixFont]);
