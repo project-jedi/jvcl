@@ -113,6 +113,8 @@ type
   protected
     function GetItem(const Index: Integer): TJvSimpleXmlProp;
     procedure DoItemRename(var Value: TJvSimpleXmlProp; const Name: string);
+    procedure Error(const S:string);
+    procedure FmtError(const S:string;const Args:array of const);
   public
     destructor Destroy; override;
     function Add(const Name, Value: string): TJvSimpleXmlProp; overload;
@@ -136,6 +138,9 @@ type
     FElems: THashedStringList;
     function GetCount: Integer;
     function GetItem(const Index: Integer): TJvSimpleXmlElem;
+  protected
+    procedure Error(const S:string);
+    procedure FmtError(const S:string;const Args:array of const);
   public
     constructor Create;
     destructor Destroy; override;
@@ -209,6 +214,8 @@ type
     procedure SetName(const Value: string);
     procedure SetIntValue(const Value: Int64);
     function GetItems: TJvSimpleXmlElems;
+    procedure Error(const S:string);
+    procedure FmtError(const S:string;const Args:array of const);
   public
     constructor Create(const AOwner: TJvSimpleXmlElem);
     destructor Destroy; override;
@@ -904,6 +911,17 @@ begin
   inherited Destroy;
 end;
 
+procedure TJvSimpleXmlElem.Error(const S: string);
+begin
+  raise TJvSimpleXmlInvalid.Create(S);
+end;
+
+procedure TJvSimpleXmlElem.FmtError(const S: string;
+  const Args: array of const);
+begin
+  Error(Format(S,Args));
+end;
+
 procedure TJvSimpleXmlElem.GetBinaryValue(const Stream: TStream);
 var
   I, J: Integer;
@@ -1481,6 +1499,17 @@ begin
     FProperties[I] := Name;
 end;
 
+procedure TJvSimpleXmlProps.Error(const S: string);
+begin
+  raise TJvSimpleXmlInvalid.Create(S);
+end;
+
+procedure TJvSimpleXmlProps.FmtError(const S: string;
+  const Args: array of const);
+begin
+  Error(Format(S,Args));
+end;
+
 function TJvSimpleXmlProps.GetCount: Integer;
 begin
   if FProperties = nil then
@@ -1524,9 +1553,18 @@ end;
 procedure TJvSimpleXmlProps.LoadFromStream(const Stream: TStream);
 //<element Prop="foo" Prop='bar' foo:bar="beuh"/>
 //Stop on / or ? or >
+type
+  TPosType = (
+    ptWaiting,
+    ptReadingName,
+    ptStartingContent,
+    ptReadingValue,
+    ptSpaceBeforeEqual
+    );
 var
-  I, lStreamPos, Count, lPos: Integer;
-  lBuf: array[0..cBufferSize - 1] of Char;
+  lPos: TPosType;
+  I, lStreamPos, Count: Integer;
+  lBuf: array [0..cBufferSize-1] of Char;
   lName, lValue, lPointer: string;
   lPropStart: Char;
 begin
@@ -1535,7 +1573,7 @@ begin
   lPointer := '';
   lName := '';
   lPropStart := ' ';
-  lPos := 0;
+  lPos := ptWaiting;
 
   repeat
     Count := Stream.Read(lBuf, SizeOf(lBuf));
@@ -1545,7 +1583,7 @@ begin
       Inc(lStreamPos);
 
       case lPos of
-        0: //We are waiting for a property
+        ptWaiting: //We are waiting for a property
           begin
             case lBuf[I] of
               ' ', #9, #10, #13:
@@ -1554,7 +1592,7 @@ begin
               'a'..'z', 'A'..'Z', '0'..'9', '-', '_':
                 begin
                   lName := lBuf[I];
-                  lPos := 1;
+                  lPos := ptReadingName;
                 end;
               '/', '>', '?':
                 begin
@@ -1563,12 +1601,11 @@ begin
                   Break;
                 end;
             else
-              raise TJvSimpleXmlInvalid.Create('Invalid XML Element: Unexpected character in properties declaration (' +
-                lBuf[I] + ' found).');
+              FmtError('Invalid XML Element: Unexpected character in properties declaration ("%s" found).',[lBuf[I]]);
             end;
           end;
 
-        1: //We are reading a property name
+        ptReadingName: //We are reading a property name
           case lBuf[I] of
             'a'..'z', 'A'..'Z', '0'..'9', '-', '_':
               lName := lName + lBuf[I];
@@ -1578,33 +1615,47 @@ begin
                 lName := '';
               end;
             '=':
-              lPos := 2;
+              lPos := ptStartingContent;
+            ' ', #9, #10, #13:
+              lPos := ptSpaceBeforeEqual;
           else
-            raise TJvSimpleXmlInvalid.Create('Invalid XML Element: Unexpected character in properties declaration (' +
-              lBuf[I] + ' found).');
+            FmtError('Invalid XML Element: Unexpected character in properties declaration ("%s" found).',[lBuf[I]]);
           end;
 
-        2: //We are going to start a property content
-          if lBuf[I] in ['''', '"'] then
-          begin
-            lPropStart := lBuf[I];
-            lValue := '';
-            lPos := 3;
-          end
+        ptStartingContent: //We are going to start a property content
+          case lBuf[I] of
+            ' ', #9, #10, #13:
+              ; // ignore white space
+            '''', '"':
+              begin
+                lPropStart := lBuf[I];
+                lValue := '';
+                lPos := ptReadingValue;
+              end;
           else
-            raise
-              TJvSimpleXmlInvalid.Create('Invalid XML Element: Unexpected character in property declaration. Expecting " or '' but ' + lBuf[I] + ' found.');
-
-        3: //We are reading a property
+            FmtError('Invalid XML Element: Unexpected character in property declaration. Expecting " or '' but "%s"  found.',[lBuf[I]]);
+          end;
+        ptReadingValue: //We are reading a property
           if lBuf[I] = lPropStart then
           begin
             SimpleXmlDecode(lValue, False);
             with Add(lName, lValue) do
               Pointer := lPointer;
-            lPos := 0;
+            lPos := ptWaiting;
           end
           else
             lValue := lValue + lBuf[I];
+        ptSpaceBeforeEqual: // We are reading the white space between a property name and the = sign
+          case lBuf[I] of
+            ' ', #9, #10, #13:
+              ; // more white space, stay in this state and ignore
+            '=':
+              lPos := ptStartingContent;
+          else
+            FmtError('Invalid XML Element: Unexpected character in properties declaration ("%s" found).',[lBuf[I]]);
+          end;
+      else
+        Assert(False, 'Unexpected value for lPos');
       end;
     end;
   until Count = 0;
@@ -1707,8 +1758,7 @@ begin
           if lBuf[I] = '<' then
             lPos := 2
           else
-            raise TJvSimpleXmlInvalid.Create('Invalid XML Element: Expected beginning of tag but ' + lBuf[I] +
-              ' found.');
+            FmtError('Invalid XML Element: Expected beginning of tag but "%s" found.', [lBuf[I]]);
         -1:
           if lBuf[I] = '>' then
           begin
@@ -1716,13 +1766,13 @@ begin
             Break;
           end
           else
-            raise TJvSimpleXmlInvalid.Create('Invalid XML Element: Expected end of tag but ' + lBuf[I] + ' found.');
+            FmtError('Invalid XML Element: Expected end of tag but "%s" found.',[lBuf[I]]);
       else
         begin
-          if lBuf[I] in [' ', #9, #10, #13] then
+          if lBuf[I] in [#9, #10, #13, ' ', '.'] then
           begin
             if lPos = 2 then
-              raise TJvSimpleXmlInvalid.Create('Invalid XML Element: Malformed tag found (no valid name)');
+              Error('Invalid XML Element: malformed tag found (no valid name)');
             Stream.Seek(lStreamPos, soFromBeginning);
             Properties.LoadFromStream(Stream);
             lStreamPos := Stream.Position;
@@ -1738,8 +1788,7 @@ begin
                   Stream.Seek(lStreamPos, soFromBeginning);
                   St := Items.LoadFromStream(Stream, Parent);
                   if lName <> St then
-                    raise TJvSimpleXmlInvalid.Create('Invalid XML Element: Erroneous end of tag, expecting </' + lName +
-                      '> but </' + St + '> found.');
+                    FmtError('Invalid XML Element: Erroneous end of tag, expecting </%s> but </%s> found.',[lName,St]);
                   lStreamPos := Stream.Position;
 
                   //Set value if only one sub element
@@ -1849,8 +1898,7 @@ begin
           if lBuf[I] = CS_START_COMMENT[lPos] then
             Inc(lPos)
           else
-            raise TJvSimpleXmlInvalid.Create('Invalid Comment: Expected ' + CS_START_COMMENT[lPos] +
-              ' Found ' + lBuf[I]);
+            FmtError('Invalid Comment: expected "%s" but found "%s"',[CS_START_COMMENT[lPos],lBuf[I]]);
         5:
           if lBuf[I] = CS_STOP_COMMENT[lPos] then
             Inc(lPos)
@@ -1873,6 +1921,8 @@ begin
           end
           else
           begin
+            if lBuf[i+1] <> '>' then  
+              Error('Invalid Comment: "--" not allowed inside comments');
             St := St + '--' + lBuf[I];
             Dec(lPos, 2);
           end;
@@ -1881,7 +1931,7 @@ begin
   until Count = 0;
 
   if not lOk then
-    raise TJvSimpleXmlInvalid.Create('Invalid Comment: Unexpected end of data');
+    Error('Invalid Comment: Unexpected end of data');
 
   Value := St;
   Name := '';
@@ -1938,8 +1988,7 @@ begin
           if lBuf[I] = CS_START_CDATA[lPos] then
             Inc(lPos)
           else
-            raise TJvSimpleXmlInvalid.Create('Invalid CDATA: Expected ' + CS_START_CDATA[lPos] +
-              ' Found ' + lBuf[I]);
+            FmtError('Invalid CDATA: expected "%s" but found "%s"',[CS_START_CDATA[lPos],lBuf[I]]);
         10:
           if lBuf[I] = CS_STOP_CDATA[lPos] then
             Inc(lPos)
@@ -1970,7 +2019,7 @@ begin
   until Count = 0;
 
   if not lOk then
-    raise TJvSimpleXmlInvalid.Create('Invalid CDATA: Unexpected end of data');
+    Error('Invalid CDATA: Unexpected end of data');
 
   Value := St;
   Name := '';
@@ -2099,8 +2148,7 @@ begin
           if lBuf[I] = CS_START_HEADER[lPos] then
             Inc(lPos)
           else
-            raise TJvSimpleXmlInvalid.Create('Invalid Header: Expected ' + CS_START_HEADER[lPos] +
-              ' Found ' + lBuf[I]);
+            FmtError('Invalid Header: expected "%s" but found "%s"',[CS_START_HEADER[lPos],lBuf[I]]);
         5: //L
           if lBuf[I] = CS_START_HEADER[lPos] then
           begin
@@ -2118,14 +2166,12 @@ begin
             Break; //Re read buffer
           end
           else
-            raise TJvSimpleXmlInvalid.Create('Invalid Header: Expected ' + CS_START_HEADER[lPos] +
-              ' Found ' + lBuf[I]);
+            FmtError('Invalid Header: expected "%s" but found "%s"',[CS_START_HEADER[lPos],lBuf[I]]);
         6: //?
           if lBuf[I] = CS_STOP_HEADER[lPos] then
             Inc(lPos)
           else
-            raise TJvSimpleXmlInvalid.Create('Invalid Header: Expected ' + CS_STOP_HEADER[lPos] +
-              ' Found ' + lBuf[I]);
+            FmtError('Invalid Header: expected "%s" but found "%s"',[CS_STOP_HEADER[lPos],lBuf[I]]);
         7: //>
           if lBuf[I] = CS_STOP_HEADER[lPos] then
           begin
@@ -2134,14 +2180,13 @@ begin
             Break; //End if
           end
           else
-            raise TJvSimpleXmlInvalid.Create('Invalid Header: Expected ' + CS_STOP_HEADER[lPos] +
-              ' Found ' + lBuf[I]);
+            FmtError('Invalid Header: expected "%s" but found "%s"',[CS_STOP_HEADER[lPos],lBuf[I]]);
       end;
     end;
   until Count = 0;
 
   if not lOk then
-    raise TJvSimpleXmlInvalid.Create('Invalid Comment: Unexpected end of data');
+    Error('Invalid Comment: Unexpected end of data');
 
   Name := '';
 
@@ -2206,8 +2251,7 @@ begin
           if lBuf[I] = CS_START_DOCTYPE[lPos] then
             Inc(lPos)
           else
-            raise TJvSimpleXmlInvalid.Create('Invalid Header: Expected ' + CS_START_DOCTYPE[lPos] +
-              ' Found ' + lBuf[I]);
+            FmtError('Invalid Header: expected "%s" but found "%s"',[CS_START_DOCTYPE[lPos],lBuf[I]]);
         10: //]> or >
           if lChar = lBuf[I] then
           begin
@@ -2234,7 +2278,7 @@ begin
   until Count = 0;
 
   if not lOk then
-    raise TJvSimpleXmlInvalid.Create('Invalid Comment: Unexpected end of data');
+    Error('Invalid Comment: Unexpected end of data');
 
   Name := '';
   Value := Trim(St);
@@ -2287,8 +2331,7 @@ begin
           if lBuf[I] = CS_START_PI[lPos] then
             Inc(lPos)
           else
-            raise TJvSimpleXmlInvalid.Create('Invalid Stylesheet: Expected ' + CS_START_PI[lPos] +
-              ' Found ' + lBuf[I]);
+            FmtError('Invalid Stylesheet: expected "%s" but found "%s"',[CS_START_PI[lPos],lBuf[I]]);
         16: //L
           if lBuf[I] = CS_START_PI[lPos] then
           begin
@@ -2299,14 +2342,12 @@ begin
             Break; //Re read buffer
           end
           else
-            raise TJvSimpleXmlInvalid.Create('Invalid Stylesheet: Expected ' + CS_START_PI[lPos] +
-              ' Found ' + lBuf[I]);
+            FmtError('Invalid Stylesheet: expected "%s" but found "%s"',[CS_START_PI[lPos],lBuf[I]]);
         17: //?
           if lBuf[I] = CS_STOP_PI[lPos] then
             Inc(lPos)
           else
-            raise TJvSimpleXmlInvalid.Create('Invalid Stylesheet: Expected ' + CS_STOP_PI[lPos] +
-              ' Found ' + lBuf[I]);
+            FmtError('Invalid Stylesheet: expected "%s" but found "%s"',[CS_STOP_PI[lPos],lBuf[I]]);
         18: //>
           if lBuf[I] = CS_STOP_PI[lPos] then
           begin
@@ -2315,14 +2356,13 @@ begin
             Break; //End if
           end
           else
-            raise TJvSimpleXmlInvalid.Create('Invalid Stylesheet: Expected ' + CS_STOP_PI[lPos] +
-              ' Found ' + lBuf[I]);
+            FmtError('Invalid Stylesheet: expected "%s" but found "%s"',[CS_STOP_PI[lPos],lBuf[I]]);
       end;
     end;
   until Count = 0;
 
   if not lOk then
-    raise TJvSimpleXmlInvalid.Create('Invalid Stylesheet: Unexpected end of data');
+    Error('Invalid Stylesheet: Unexpected end of data');
 
   Name := '';
 
@@ -2422,7 +2462,7 @@ begin
                   St := lBuf[I];
                 end;
             else
-              raise TJvSimpleXmlInvalid.Create('Invalid Document: Unexpected text in file prolog.');
+              Error('Invalid Document: Unexpected text in file prolog.');
             end;
           end;
         1: //We are trying to determine the kind of the tag
@@ -2685,6 +2725,17 @@ begin
   end;
 end;
 {$ENDIF}
+
+procedure TJvSimpleXmlElemsProlog.Error(const S: string);
+begin
+  raise TJvSimpleXmlInvalid.Create(S);
+end;
+
+procedure TJvSimpleXmlElemsProlog.FmtError(const S: string;
+  const Args: array of const);
+begin
+  Error(Format(S,Args));
+end;
 
 initialization
 {$IFDEF COMPILER6_UP}
