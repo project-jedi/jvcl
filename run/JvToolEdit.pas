@@ -2621,6 +2621,8 @@ begin
   inherited Notification(AComponent, Operation);
   if (Operation = opRemove) and (AComponent = FImages) then
     Images := nil;
+  if (Operation = opRemove) and (AComponent = FPopup) then
+    FPopup := nil;
 end;
 
 {$IFDEF VisualCLX}
