@@ -115,7 +115,10 @@ type
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override;	
+      const KeyText: WideString): Boolean; override;
+    procedure RecreateWnd;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override;	
   private
     FDoubleBuffered: Boolean;
     function GetDoubleBuffered: Boolean;
@@ -174,7 +177,10 @@ type
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override;	
+      const KeyText: WideString): Boolean; override;
+    procedure RecreateWnd;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override;	
   private
     FDoubleBuffered: Boolean;
     function GetDoubleBuffered: Boolean;
@@ -233,7 +239,10 @@ type
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override;	
+      const KeyText: WideString): Boolean; override;
+    procedure RecreateWnd;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override;	
   private
     FDoubleBuffered: Boolean;
     function GetDoubleBuffered: Boolean;
@@ -292,7 +301,10 @@ type
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override;	
+      const KeyText: WideString): Boolean; override;
+    procedure RecreateWnd;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override;	
   private
     FDoubleBuffered: Boolean;
     function GetDoubleBuffered: Boolean;
@@ -351,7 +363,10 @@ type
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override;	
+      const KeyText: WideString): Boolean; override;
+    procedure RecreateWnd;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override;	
   private
     FDoubleBuffered: Boolean;
     function GetDoubleBuffered: Boolean;
@@ -410,7 +425,10 @@ type
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override; 
+      const KeyText: WideString): Boolean; override;
+    procedure RecreateWnd;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override; 
   private
     FHintColor: TColor;
     FSavedHintColor: TColor;
@@ -460,7 +478,10 @@ type
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override;	
+      const KeyText: WideString): Boolean; override;
+    procedure RecreateWnd;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override;	
   private
     FDoubleBuffered: Boolean;
     function GetDoubleBuffered: Boolean;
@@ -519,7 +540,10 @@ type
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override;	
+      const KeyText: WideString): Boolean; override;
+    procedure RecreateWnd;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override;	
   private
     FDoubleBuffered: Boolean;
     function GetDoubleBuffered: Boolean;
@@ -578,7 +602,10 @@ type
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override;	
+      const KeyText: WideString): Boolean; override;
+    procedure RecreateWnd;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override;	
   private
     FDoubleBuffered: Boolean;
     function GetDoubleBuffered: Boolean;
@@ -641,7 +668,10 @@ type
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override;	
+      const KeyText: WideString): Boolean; override;
+    procedure RecreateWnd;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override;	
   private
     FDoubleBuffered: Boolean;
     function GetDoubleBuffered: Boolean;
@@ -704,7 +734,10 @@ type
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override; 
+      const KeyText: WideString): Boolean; override;
+    procedure RecreateWnd;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override; 
   private
     FHintColor: TColor;
     FSavedHintColor: TColor;
@@ -754,7 +787,10 @@ type
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override; 
+      const KeyText: WideString): Boolean; override;
+    procedure RecreateWnd;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override; 
   private
     FHintColor: TColor;
     FSavedHintColor: TColor;
@@ -804,7 +840,10 @@ type
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override; 
+      const KeyText: WideString): Boolean; override;
+    procedure RecreateWnd;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override; 
   private
     FHintColor: TColor;
     FSavedHintColor: TColor;
@@ -854,7 +893,10 @@ type
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override; 
+      const KeyText: WideString): Boolean; override;
+    procedure RecreateWnd;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override; 
   private
     FHintColor: TColor;
     FSavedHintColor: TColor;
@@ -905,7 +947,10 @@ type
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override;	
+      const KeyText: WideString): Boolean; override;
+    procedure RecreateWnd;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override;	
   private
     FDoubleBuffered: Boolean;
     function GetDoubleBuffered: Boolean;
@@ -1102,6 +1147,21 @@ begin
   inherited BoundsChanged;
   DoBoundsChanged;
 end;
+
+procedure TJvExCustomTabControl.RecreateWnd;
+begin
+  RecreateWidget;
+end;
+
+procedure TJvExCustomTabControl.CreateWidget;
+begin
+  CreateWnd;
+end;
+
+procedure TJvExCustomTabControl.CreateWnd;
+begin
+  inherited CreateWidget;
+end;
 procedure TJvExCustomTabControl.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
   WidgetControl_Painting(Self, Canvas, EventRegion);
@@ -1243,6 +1303,21 @@ procedure TJvExTabControl.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExTabControl.RecreateWnd;
+begin
+  RecreateWidget;
+end;
+
+procedure TJvExTabControl.CreateWidget;
+begin
+  CreateWnd;
+end;
+
+procedure TJvExTabControl.CreateWnd;
+begin
+  inherited CreateWidget;
 end;
 procedure TJvExTabControl.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
@@ -1386,6 +1461,21 @@ begin
   inherited BoundsChanged;
   DoBoundsChanged;
 end;
+
+procedure TJvExTabSheet.RecreateWnd;
+begin
+  RecreateWidget;
+end;
+
+procedure TJvExTabSheet.CreateWidget;
+begin
+  CreateWnd;
+end;
+
+procedure TJvExTabSheet.CreateWnd;
+begin
+  inherited CreateWidget;
+end;
 procedure TJvExTabSheet.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
   WidgetControl_Painting(Self, Canvas, EventRegion);
@@ -1528,6 +1618,21 @@ begin
   inherited BoundsChanged;
   DoBoundsChanged;
 end;
+
+procedure TJvExPageControl.RecreateWnd;
+begin
+  RecreateWidget;
+end;
+
+procedure TJvExPageControl.CreateWidget;
+begin
+  CreateWnd;
+end;
+
+procedure TJvExPageControl.CreateWnd;
+begin
+  inherited CreateWidget;
+end;
 procedure TJvExPageControl.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
   WidgetControl_Painting(Self, Canvas, EventRegion);
@@ -1669,6 +1774,21 @@ procedure TJvExStatusBar.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExStatusBar.RecreateWnd;
+begin
+  RecreateWidget;
+end;
+
+procedure TJvExStatusBar.CreateWidget;
+begin
+  CreateWnd;
+end;
+
+procedure TJvExStatusBar.CreateWnd;
+begin
+  inherited CreateWidget;
 end;
 procedure TJvExStatusBar.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
@@ -1813,6 +1933,21 @@ begin
   DoBoundsChanged;
 end;
 
+procedure TJvExCustomViewControl.RecreateWnd;
+begin
+  RecreateWidget;
+end;
+
+procedure TJvExCustomViewControl.CreateWidget;
+begin
+  CreateWnd;
+end;
+
+procedure TJvExCustomViewControl.CreateWnd;
+begin
+  inherited CreateWidget;
+end;
+
 procedure TJvExCustomViewControl.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
   inherited;
@@ -1920,6 +2055,21 @@ procedure TJvExToolBar.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExToolBar.RecreateWnd;
+begin
+  RecreateWidget;
+end;
+
+procedure TJvExToolBar.CreateWidget;
+begin
+  CreateWnd;
+end;
+
+procedure TJvExToolBar.CreateWnd;
+begin
+  inherited CreateWidget;
 end;
 procedure TJvExToolBar.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
@@ -2062,6 +2212,21 @@ procedure TJvExToolButton.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExToolButton.RecreateWnd;
+begin
+  RecreateWidget;
+end;
+
+procedure TJvExToolButton.CreateWidget;
+begin
+  CreateWnd;
+end;
+
+procedure TJvExToolButton.CreateWnd;
+begin
+  inherited CreateWidget;
 end;
 procedure TJvExToolButton.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
@@ -2206,6 +2371,21 @@ procedure TJvExCustomHeaderControl.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExCustomHeaderControl.RecreateWnd;
+begin
+  RecreateWidget;
+end;
+
+procedure TJvExCustomHeaderControl.CreateWidget;
+begin
+  CreateWnd;
+end;
+
+procedure TJvExCustomHeaderControl.CreateWnd;
+begin
+  inherited CreateWidget;
 end;
 procedure TJvExCustomHeaderControl.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
@@ -2359,6 +2539,21 @@ begin
   inherited BoundsChanged;
   DoBoundsChanged;
 end;
+
+procedure TJvExHeaderControl.RecreateWnd;
+begin
+  RecreateWidget;
+end;
+
+procedure TJvExHeaderControl.CreateWidget;
+begin
+  CreateWnd;
+end;
+
+procedure TJvExHeaderControl.CreateWnd;
+begin
+  inherited CreateWidget;
+end;
 procedure TJvExHeaderControl.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
   WidgetControl_Painting(Self, Canvas, EventRegion);
@@ -2510,6 +2705,21 @@ begin
   DoBoundsChanged;
 end;
 
+procedure TJvExCustomTreeView.RecreateWnd;
+begin
+  RecreateWidget;
+end;
+
+procedure TJvExCustomTreeView.CreateWidget;
+begin
+  CreateWnd;
+end;
+
+procedure TJvExCustomTreeView.CreateWnd;
+begin
+  inherited CreateWidget;
+end;
+
 procedure TJvExCustomTreeView.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
   inherited;
@@ -2617,6 +2827,21 @@ procedure TJvExTreeView.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExTreeView.RecreateWnd;
+begin
+  RecreateWidget;
+end;
+
+procedure TJvExTreeView.CreateWidget;
+begin
+  CreateWnd;
+end;
+
+procedure TJvExTreeView.CreateWnd;
+begin
+  inherited CreateWidget;
 end;
 
 procedure TJvExTreeView.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -2728,6 +2953,21 @@ begin
   DoBoundsChanged;
 end;
 
+procedure TJvExCustomListView.RecreateWnd;
+begin
+  RecreateWidget;
+end;
+
+procedure TJvExCustomListView.CreateWidget;
+begin
+  CreateWnd;
+end;
+
+procedure TJvExCustomListView.CreateWnd;
+begin
+  inherited CreateWidget;
+end;
+
 procedure TJvExCustomListView.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
   inherited;
@@ -2835,6 +3075,21 @@ procedure TJvExListView.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExListView.RecreateWnd;
+begin
+  RecreateWidget;
+end;
+
+procedure TJvExListView.CreateWidget;
+begin
+  CreateWnd;
+end;
+
+procedure TJvExListView.CreateWnd;
+begin
+  inherited CreateWidget;
 end;
 
 procedure TJvExListView.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -2947,6 +3202,21 @@ procedure TJvExAnimate.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExAnimate.RecreateWnd;
+begin
+  RecreateWidget;
+end;
+
+procedure TJvExAnimate.CreateWidget;
+begin
+  CreateWnd;
+end;
+
+procedure TJvExAnimate.CreateWnd;
+begin
+  inherited CreateWidget;
 end;
 procedure TJvExAnimate.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin

@@ -77,7 +77,10 @@ type
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override;	
+      const KeyText: WideString): Boolean; override;
+    procedure RecreateWnd;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override;	
   private
     FDoubleBuffered: Boolean;
     function GetDoubleBuffered: Boolean;
@@ -140,7 +143,10 @@ type
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override;	
+      const KeyText: WideString): Boolean; override;
+    procedure RecreateWnd;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override;	
   private
     FDoubleBuffered: Boolean;
     function GetDoubleBuffered: Boolean;
@@ -200,7 +206,10 @@ type
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override;	
+      const KeyText: WideString): Boolean; override;
+    procedure RecreateWnd;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override;	
   private
     FDoubleBuffered: Boolean;
     function GetDoubleBuffered: Boolean;
@@ -264,7 +273,10 @@ type
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override;	
+      const KeyText: WideString): Boolean; override;
+    procedure RecreateWnd;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override;	
   private
     FDoubleBuffered: Boolean;
     function GetDoubleBuffered: Boolean;
@@ -381,6 +393,21 @@ procedure TJvExInplaceEdit.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExInplaceEdit.RecreateWnd;
+begin
+  RecreateWidget;
+end;
+
+procedure TJvExInplaceEdit.CreateWidget;
+begin
+  CreateWnd;
+end;
+
+procedure TJvExInplaceEdit.CreateWnd;
+begin
+  inherited CreateWidget;
 end;
 procedure TJvExInplaceEdit.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
@@ -532,6 +559,21 @@ begin
   inherited BoundsChanged;
   DoBoundsChanged;
 end;
+
+procedure TJvExCustomGrid.RecreateWnd;
+begin
+  RecreateWidget;
+end;
+
+procedure TJvExCustomGrid.CreateWidget;
+begin
+  CreateWnd;
+end;
+
+procedure TJvExCustomGrid.CreateWnd;
+begin
+  inherited CreateWidget;
+end;
 procedure TJvExCustomGrid.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
   WidgetControl_Painting(Self, Canvas, EventRegion);
@@ -675,6 +717,21 @@ procedure TJvExDrawGrid.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExDrawGrid.RecreateWnd;
+begin
+  RecreateWidget;
+end;
+
+procedure TJvExDrawGrid.CreateWidget;
+begin
+  CreateWnd;
+end;
+
+procedure TJvExDrawGrid.CreateWnd;
+begin
+  inherited CreateWidget;
 end;
 procedure TJvExDrawGrid.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
@@ -825,6 +882,21 @@ procedure TJvExStringGrid.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExStringGrid.RecreateWnd;
+begin
+  RecreateWidget;
+end;
+
+procedure TJvExStringGrid.CreateWidget;
+begin
+  CreateWnd;
+end;
+
+procedure TJvExStringGrid.CreateWnd;
+begin
+  inherited CreateWidget;
 end;
 procedure TJvExStringGrid.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin

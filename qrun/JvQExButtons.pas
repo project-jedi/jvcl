@@ -108,7 +108,10 @@ type
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override;	
+      const KeyText: WideString): Boolean; override;
+    procedure RecreateWnd;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override;	
   private
     FDoubleBuffered: Boolean;
     function GetDoubleBuffered: Boolean;
@@ -305,6 +308,21 @@ procedure TJvExBitBtn.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExBitBtn.RecreateWnd;
+begin
+  RecreateWidget;
+end;
+
+procedure TJvExBitBtn.CreateWidget;
+begin
+  CreateWnd;
+end;
+
+procedure TJvExBitBtn.CreateWnd;
+begin
+  inherited CreateWidget;
 end;
 procedure TJvExBitBtn.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin

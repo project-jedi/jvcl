@@ -213,7 +213,10 @@ type
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override;	
+      const KeyText: WideString): Boolean; override;
+    procedure RecreateWnd;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override;	
   private
     FDoubleBuffered: Boolean;
     function GetDoubleBuffered: Boolean;
@@ -326,7 +329,10 @@ type
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override;	
+      const KeyText: WideString): Boolean; override;
+    procedure RecreateWnd;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override;	
   private
     FDoubleBuffered: Boolean;
     function GetDoubleBuffered: Boolean;
@@ -388,7 +394,10 @@ type
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override;	
+      const KeyText: WideString): Boolean; override;
+    procedure RecreateWnd;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override;	
   private
     FDoubleBuffered: Boolean;
     function GetDoubleBuffered: Boolean;
@@ -948,6 +957,21 @@ begin
   inherited BoundsChanged;
   DoBoundsChanged;
 end;
+
+procedure TJvExWinControl.RecreateWnd;
+begin
+  RecreateWidget;
+end;
+
+procedure TJvExWinControl.CreateWidget;
+begin
+  CreateWnd;
+end;
+
+procedure TJvExWinControl.CreateWnd;
+begin
+  inherited CreateWidget;
+end;
 procedure TJvExWinControl.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
   WidgetControl_Painting(Self, Canvas, EventRegion);
@@ -1210,6 +1234,21 @@ begin
   inherited BoundsChanged;
   DoBoundsChanged;
 end;
+
+procedure TJvExCustomControl.RecreateWnd;
+begin
+  RecreateWidget;
+end;
+
+procedure TJvExCustomControl.CreateWidget;
+begin
+  CreateWnd;
+end;
+
+procedure TJvExCustomControl.CreateWnd;
+begin
+  inherited CreateWidget;
+end;
 procedure TJvExCustomControl.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
   WidgetControl_Painting(Self, Canvas, EventRegion);
@@ -1351,6 +1390,21 @@ procedure TJvExHintWindow.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExHintWindow.RecreateWnd;
+begin
+  RecreateWidget;
+end;
+
+procedure TJvExHintWindow.CreateWidget;
+begin
+  CreateWnd;
+end;
+
+procedure TJvExHintWindow.CreateWnd;
+begin
+  inherited CreateWidget;
 end;
 procedure TJvExHintWindow.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
