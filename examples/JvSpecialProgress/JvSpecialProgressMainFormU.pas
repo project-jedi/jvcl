@@ -63,6 +63,7 @@ type
     btnApply: TButton;
     btnStepIt: TButton;
     chbPanelDoubleBuffered: TCheckBox;
+    btnRandom: TButton;
     procedure TrackBar1Change(Sender: TObject);
     procedure chbTextVisibleClick(Sender: TObject);
     procedure chbSolidClick(Sender: TObject);
@@ -76,6 +77,10 @@ type
     procedure rgrFontClick(Sender: TObject);
     procedure btnStepItClick(Sender: TObject);
     procedure chbPanelDoubleBufferedClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure btnRandomClick(Sender: TObject);
+  public
+    procedure RandomizeControls;
   end;
 
 var
@@ -95,7 +100,7 @@ end;
 procedure TJvSpecialProgressMainForm.chbTextVisibleClick(Sender: TObject);
 begin
   if chbTextVisible.Checked then
-    JvSpecialProgress1.TextOption := toCaption
+    JvSpecialProgress1.TextOption := toPercent
   else
     JvSpecialProgress1.TextOption := toNoText
 end;
@@ -217,6 +222,45 @@ end;
 procedure TJvSpecialProgressMainForm.chbPanelDoubleBufferedClick(Sender: TObject);
 begin
   Panel2.DoubleBuffered := chbPanelDoubleBuffered.Checked;
+end;
+
+procedure TJvSpecialProgressMainForm.RandomizeControls;
+begin
+  { Changing RadioGroups ItemIndex will implicitly trigger the OnClick event }
+  rgrStartColor.ItemIndex := Random(rgrStartColor.Items.Count);
+  rgrEndColor.ItemIndex := Random(rgrEndColor.Items.Count);
+  rgrBackground.ItemIndex := Random(rgrBackground.Items.Count);
+  rgrPanel.ItemIndex := Random(rgrPanel.Items.Count);
+  rgrFont.ItemIndex := Random(rgrFont.Items.Count);
+
+  { Changing Checkboxs ItemIndex will implicitly trigger the OnClick event }
+  chbSolid.Checked := Random > 0.5;
+  chbTextVisible.Checked := Random > 0.5;
+  chbTextCentered.Checked := Random > 0.5;
+  chbTransparent.Checked := Random > 0.5;
+  chbGradientBlocks.Checked := Random > 0.5;
+  chbPanelDoubleBuffered.Checked := Random > 0.5;
+
+  TrackBar1.Position := Random(101);
+end;
+
+procedure TJvSpecialProgressMainForm.FormShow(Sender: TObject);
+begin
+  Randomize;
+
+  JvSpecialProgress1.Minimum := 0;
+  JvSpecialProgress1.Maximum := 100;
+  JvSpecialProgress1.Step := 10;
+  edtMinimum.Text := IntToStr(JvSpecialProgress1.Minimum);
+  edtMaximum.Text := IntToStr(JvSpecialProgress1.Maximum);
+  edtStep.Text := IntToStr(JvSpecialProgress1.Step);
+
+  RandomizeControls;
+end;
+
+procedure TJvSpecialProgressMainForm.btnRandomClick(Sender: TObject);
+begin
+  RandomizeControls;
 end;
 
 end.
