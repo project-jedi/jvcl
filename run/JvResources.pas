@@ -443,6 +443,11 @@ resourcestring
   RsSetKeyData = 'Search';
   RsCalcFieldsData = 'Calculate';
 
+//=== JvDBGrid.pas ============================================================
+  RsJvDBGridSelectTitle = 'Select columns';
+  RsJvDBGridSelectOK = '&OK';
+  RsJvDBGridSelectWarning = 'At least one column must be visible!';
+
 //=== JvDBLookup.pas =========================================================
 resourcestring
   RsEInvalidFormatNotAllowed = 'Invalid format: % not allowed';
@@ -1907,11 +1912,6 @@ resourcestring
   RsFounds = 'Found %s';
   RsToday = 'Today ';
   
-//=== JvDBGrid.pas ============================================================
-  RsJvDBGridSelectTitle = 'Select columns';
-  RsJvDBGridSelectOK = '&OK';
-  RsJvDBGridSelectWarning = 'At least one column must be visible!';
-
 //=== not taken into JVCL ====================================================
 {
 resourcestring

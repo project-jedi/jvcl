@@ -70,17 +70,17 @@ implementation
 
 constructor TJvSimPIDLinker.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   InitPids;
 end;
 
 procedure TJvSimPIDLinker.Execute;
 var
-  i: integer;
+  I: Integer;
 begin
-  for i := 0 to Length(FPIDS) - 2 do
-    if (FPIDS[i] <> nil) and (FPIDS[i + 1] <> nil) then
-      FPIDS[i].MV := FPIDS[i + 1].CV;
+  for I := 0 to Length(FPIDS) - 2 do
+    if (FPIDS[I] <> nil) and (FPIDS[I + 1] <> nil) then
+      FPIDS[I].MV := FPIDS[I + 1].CV;
 end;
 
 function TJvSimPIDLinker.GetPID(const Index: Integer): TJvSimPID;
@@ -92,23 +92,23 @@ procedure TJvSimPIDLinker.InitPids;
 const
   cCount = 16;
 var
-  i: integer;
+  I: Integer;
 begin
   SetLength(FPIDS, cCount);
-  for i := 0 to cCount - 1 do
-    FPIDS[i] := nil;
+  for I := 0 to cCount - 1 do
+    FPIDS[I] := nil;
 end;
 
 procedure TJvSimPIDLinker.Notification(AComponent: TComponent;
   Operation: TOperation);
 var
-  i: integer;
+  I: Integer;
 begin
   inherited Notification(AComponent, Operation);
   if Operation = opRemove then
-    for i := 0 to Length(FPIDS) - 1 do
-      if FPIDS[i] = AComponent then
-        FPIDS[i] := nil;
+    for I := 0 to Length(FPIDS) - 1 do
+      if FPIDS[I] = AComponent then
+        FPIDS[I] := nil;
 end;
 
 procedure TJvSimPIDLinker.SetPID(const Index: Integer;

@@ -37,6 +37,7 @@ uses
 resourcestring
   {$IFNDEF USEJVCL}
   RsPaletteDocking = 'Jv Docking';
+  {$ENDIF USEJVCL}
   RsDockServerName = 'JVCL Dock Server Component';
   RsDockClientName = 'JVCL Dock Client Component';
   RsDockStyleName = 'JVCL Dock Style Component';
@@ -63,7 +64,6 @@ resourcestring
     'Copyright: %s-%s, Author: %s %s,' + #13#10 +
     'Home Page: %s,' + #13#10 +
     'Email: %s';
-  {$ENDIF USEJVCL}
 
   RsDockStringSplitter = ' ';
   RsDockJvDockInfoSplitter = '@';
