@@ -22,9 +22,6 @@ object Form1: TForm1
     Height = 95
     Anchors = [akLeft, akTop, akRight]
     TabOrder = 0
-    DesignSize = (
-      305
-      95)
     object Label1: TLabel
       Left = 10
       Top = 16

@@ -129,9 +129,6 @@ object frmMain: TfrmMain
     Anchors = [akLeft, akTop, akRight]
     Caption = ' Options: '
     TabOrder = 6
-    DesignSize = (
-      356
-      257)
     object Label1: TLabel
       Left = 16
       Top = 200
