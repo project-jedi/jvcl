@@ -39,15 +39,15 @@ type
   private
     FWin32ErrorCode: Integer;
     FFileName: string;
-    FStyle: TDeleteStyles;
+    FStyle: TJvDeleteStyles;
   protected
   public
     constructor Create(AOwner: TComponent); override;
   published
     property FileName: string read FFileName write FFileName;
     property Win32ErrorCode: Integer read FWin32ErrorCode write FWin32ErrorCode default 0;
-    property Style: TDeleteStyles read FStyle write FStyle;
-    function Execute: TDiskRes; override;
+    property Style: TJvDeleteStyles read FStyle write FStyle;
+    function Execute: TJvDiskRes; override;
   end;
 
 implementation
@@ -84,7 +84,7 @@ begin
   FWin32ErrorCode := 0;
 end;
 
-function TJvDeleteError.Execute: TDiskRes;
+function TJvDeleteError.Execute: TJvDiskRes;
 var
   Sty: DWORD;
   SetupDeleteError: TSetupDeleteError;

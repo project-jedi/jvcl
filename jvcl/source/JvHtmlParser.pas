@@ -55,12 +55,12 @@ type
 
   TJvHtmlParser = class(TJvComponent)
   private
-    FOnKeyFound: TOnKeyFound;
-    FParser: TParserInfos;
+    FOnKeyFound: TJvKeyFoundEvent;
+    FParser: TJvParserInfoList;
     FKeys: TStringList;
     FFile: TFileName;
     FTagList: TTagInfoList;
-    procedure SetParser(Value: TParserInfos);
+    procedure SetParser(Value: TJvParserInfoList);
     procedure SetFile(Value: TFileName);
     procedure SetTagList(const Value: TTagInfoList);
     function GetConditionsCount: Integer;
@@ -80,9 +80,9 @@ type
     procedure GetCondition(Index: Integer; var Keyword, StartTag, EndTag: string); overload;
     procedure GetCondition(Index: Integer; var Keyword, StartTag, EndTag: string; var TextSelection: Integer); overload;
   published
-    property OnKeyFound: TOnKeyFound read FOnKeyFound write FOnKeyFound;
+    property OnKeyFound: TJvKeyFoundEvent read FOnKeyFound write FOnKeyFound;
     property FileName: TFileName read Ffile write SetFile;
-    property Parser: TParserInfos read FParser write SetParser;
+    property Parser: TJvParserInfoList read FParser write SetParser;
   end;
 
 {Comparison function. Used internally  for  observance of the sequences tags}
@@ -124,10 +124,10 @@ begin
   end;
 end;
 
-procedure TJvHtmlParser.SetParser(Value: TParserInfos);
+procedure TJvHtmlParser.SetParser(Value: TJvParserInfoList);
 var
   I: Integer;
-  ob: TParserInf;
+  ob: TJvParserInfo;
   cap: string;
 begin
   FParser := Value;
@@ -135,7 +135,7 @@ begin
   I := 0;
   while I < FParser.Count do
   begin
-    ob := TParserInf.Create;
+    ob := TJvParserInfo.Create;
     try
       cap := FParser[I];
       Inc(I);
@@ -189,18 +189,18 @@ begin
       J := 1;
       while J <> 0 do
       begin
-        J := StrSearch(TParserInf(FKeys.Objects[I]).StartTag, Str, J);
+        J := StrSearch(TJvParserInfo(FKeys.Objects[I]).StartTag, Str, J);
         if J > 0 then
         begin
-          K := StrSearch(TParserInf(FKeys.Objects[I]).EndTag, Str, J);
+          K := StrSearch(TJvParserInfo(FKeys.Objects[I]).EndTag, Str, J);
           TagInfo.BeginPos := J;
-          TagInfo.EndPos := K + length(TParserInf(FKeys.Objects[I]).EndTag);
+          TagInfo.EndPos := K + length(TJvParserInfo(FKeys.Objects[I]).EndTag);
           TagInfo.Key := I;
-          case TParserInf(FKeys.Objects[I]).TakeText of
+          case TJvParserInfo(FKeys.Objects[I]).TakeText of
             0: //Between limits
               begin
                 TagInfo.BeginContext := J +
-                  Length(TParserInf(FKeys.Objects[I]).StartTag);
+                  Length(TJvParserInfo(FKeys.Objects[I]).StartTag);
                 TagInfo.EndContext := K;
               end;
             1: //All before start tag
@@ -211,7 +211,7 @@ begin
             2: //All after start tag
               begin
                 TagInfo.BeginContext := J +
-                  Length(TParserInf(FKeys.Objects[I]).StartTag);
+                  Length(TJvParserInfo(FKeys.Objects[I]).StartTag);
                 TagInfo.EndContext := Length(Str);
               end;
             3: //The whole line if containing start tag
@@ -221,7 +221,7 @@ begin
               end;
           end;
           FTagList.AddValue(TagInfo);
-          J := J + Length(TParserInf(FKeys.Objects[I]).StartTag);
+          J := J + Length(TJvParserInfo(FKeys.Objects[I]).StartTag);
         end;
       end;
     end;
@@ -243,9 +243,9 @@ end;
 procedure TJvHtmlParser.AddCondition(Keyword, StartTag, EndTag: string;
   TextSelection: Integer = 0);
 var
-  ob: TParserInf;
+  ob: TJvParserInfo;
 begin
-  ob := TParserInf.Create;
+  ob := TJvParserInfo.Create;
   ob.StartTag := StartTag;
   ob.EndTag := EndTag;
   ob.TakeText := TextSelection;
@@ -266,15 +266,15 @@ end;
 procedure TJvHtmlParser.GetCondition(Index: Integer; var Keyword, StartTag, EndTag: string);
 begin
   Keyword := FKeys[Index];
-  StartTag := TParserInf(FKeys.Objects[Index]).StartTag;
-  EndTag := TParserInf(FKeys.Objects[Index]).EndTag;
+  StartTag := TJvParserInfo(FKeys.Objects[Index]).StartTag;
+  EndTag := TJvParserInfo(FKeys.Objects[Index]).EndTag;
 end;
 
 procedure TJvHtmlParser.GetCondition(Index: Integer; var Keyword, StartTag, EndTag: string;
   var TextSelection: Integer);
 begin
   GetCondition(Index, Keyword, StartTag, EndTag);
-  TextSelection := TParserInf(FKeys.Objects[Index]).TakeText;
+  TextSelection := TJvParserInfo(FKeys.Objects[Index]).TakeText;
 end;
 
 function TJvHtmlParser.GetConditionsCount: Integer;

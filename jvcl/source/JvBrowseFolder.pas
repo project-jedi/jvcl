@@ -270,6 +270,12 @@ function BrowseForFolder(const ATitle: string; AllowCreate: Boolean;
   var ADirectory: string; AHelpContext: THelpContext = 0): Boolean;
 function BrowseForComputer(const ATitle: string; AllowCreate: Boolean;
   var ADirectory: string; AHelpContext: THelpContext = 0): Boolean;
+// (p3) moved from JvFileUtil, deprecated removed
+function BrowseDirectory(var AFolderName: string; const DlgText: string;
+  AHelpContext: THelpContext): Boolean; {$IFDEF COMPILER6_UP} deprecated; {$ENDIF}
+// JvBrowseFolder.BrowseForComputer should be used instead
+function BrowseComputer(var AComputerName: string; const DlgText: string;
+  AHelpContext: THelpContext): Boolean; {$IFDEF COMPILER6_UP} deprecated; {$ENDIF}  
 
 implementation
 
@@ -401,6 +407,18 @@ begin
   finally
     Free;
   end;
+end;
+
+function BrowseDirectory(var AFolderName: string; const DlgText: string;
+  AHelpContext: THelpContext): Boolean;
+begin
+  Result := BrowseForFolder(DlgText, True, AFolderName, AHelpContext);
+end;
+
+function BrowseComputer(var AComputerName: string; const DlgText: string;
+  AHelpContext: THelpContext): Boolean;
+begin
+  Result := BrowseForComputer(DlgText, True, AComputerName, AHelpContext);
 end;
 
 { From QDialogs.pas }

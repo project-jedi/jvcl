@@ -38,7 +38,7 @@ type
   TJvKeyboardStates = class(TJvComponent)
   private
     FTimer: TTimer;
-    FAnimation: TJvAnimations;
+    FAnimation: TJvAnimation;
     F1: Boolean;
     F2: Boolean;
     F3: Boolean;
@@ -63,7 +63,7 @@ type
   published
     property Enabled: Boolean read GetEnabled write SetEnabled default False;
     property Interval: Cardinal read GetInterval write SetInterval default 100;
-    property Animation: TJvAnimations read FAnimation write FAnimation;
+    property Animation: TJvAnimation read FAnimation write FAnimation;
     property NumLock: Boolean read GetNumLock write SetNumLock;
     property ScrollLock: Boolean read GetScroll write SetScroll;
     property CapsLock: Boolean read GetCapsLock write SetCapsLock;

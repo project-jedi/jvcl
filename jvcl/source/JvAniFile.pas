@@ -42,7 +42,7 @@ type
   private
     FIcon: TIcon;
     FIsIcon: Boolean;
-    FTag: TAniTag;
+    FTag: TJvAniTag;
     FHotSpot: TPoint;
     FJiffRate: Longint;
     FSeq: Integer;
@@ -58,7 +58,7 @@ type
 
   TJvAnimatedCursorImage = class(TPersistent)
   private
-    FHeader: TAniHeader;
+    FHeader: TJvAniHeader;
     FTitle: TAniName;
     FCreator: TAniName;
     FIcons: TList;
@@ -155,21 +155,21 @@ end;
 
 { ReadTag, ReadChunk, SkipChunk. Some handy functions for reading RIFF files. }
 
-function ReadTag(S: TStream; pTag: PAniTag): Boolean;
+function ReadTag(S: TStream; pTag: PJvAniTag): Boolean;
 begin
   pTag^.ckID := #0#0#0#0;
   pTag^.ckSize := 0;
-  Result := S.Read(pTag^, SizeOf(TAniTag)) = SizeOf(TAniTag);
+  Result := S.Read(pTag^, SizeOf(TJvAniTag)) = SizeOf(TJvAniTag);
 end;
 
-function ReadChunk(S: TStream; pTag: PAniTag; Data: Pointer): Boolean;
+function ReadChunk(S: TStream; pTag: PJvAniTag; Data: Pointer): Boolean;
 begin
   Result := S.Read(Data^, pTag^.ckSize) = pTag^.ckSize;
   if Result then
     Result := S.Seek(pTag^.ckSize mod 2, soFromCurrent) <> -1;
 end;
 
-function ReadChunkN(S: TStream; pTag: PAniTag; Data: Pointer;
+function ReadChunkN(S: TStream; pTag: PJvAniTag; Data: Pointer;
   cbMax: Longint): Boolean;
 var
   cbRead: Longint;
@@ -185,7 +185,7 @@ begin
   end;
 end;
 
-function SkipChunk(S: TStream; pTag: PAniTag): Boolean;
+function SkipChunk(S: TStream; pTag: PJvAniTag): Boolean;
 begin
   // Round pTag^.ckSize up to nearest word boundary to maintain alignment
   Result := S.Seek(PadUp(pTag^.ckSize), soFromCurrent) <> -1;
@@ -243,7 +243,7 @@ begin
         Self.FIcon := TIcon.Create;
       Self.FIcon.Assign(FIcon);
       Self.FIsIcon := FIsIcon;
-      Move(FTag, Self.FTag, SizeOf(TAniTag));
+      Move(FTag, Self.FTag, SizeOf(TJvAniTag));
       Self.FHotSpot.X := FHotSpot.X;
       Self.FHotSpot.Y := FHotSpot.Y;
       Self.FJiffRate := FJiffRate;
@@ -473,7 +473,7 @@ end;
 procedure TJvAnimatedCursorImage.ReadAniStream(Stream: TStream);
 var
   iFrame, iRate, iSeq, I: Integer;
-  Tag: TAniTag;
+  Tag: TJvAniTag;
   Frame: TJvIconFrame;
   cbChunk, cbRead, Temp: Longint;
   Icon: TIcon;

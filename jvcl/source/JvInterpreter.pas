@@ -1456,6 +1456,7 @@ end;
 
 function Typ2Size(ATyp: Word): integer;
 begin
+  Result := 0;
   case ATyp of
     varInteger:
       begin
@@ -6505,21 +6506,15 @@ var
   i: Integer;
   Value: Variant;
   TypName: string;
-  Typ: Word;
+//  Typ: Word;
   DT: IJvInterpreterDataType;
   {----olej----}
   {Temporary for array type}
-  ArrayBegin, ArrayEnd: TJvInterpreterArrayValues;
-  ArrayType: Integer;
-  V: Variant;
-  Dimension: Integer;
-  Minus: Boolean;
+//  ArrayType: Integer;
+//  Dimension: Integer;
   {----olej----}
 begin
   repeat
-    Typ := varEmpty;
-    ArrayType := varEmpty;
-    Dimension := 0;
     SS.Clear;
     repeat
       NextToken;
@@ -6827,6 +6822,7 @@ var
 begin
   //NextToken;
   TypName := Token;
+  Dimension := 0;
   if TTyp = ttIdentifier then
   begin
     Typ := TypeName2VarTyp(TypName);
@@ -6842,7 +6838,7 @@ begin
   begin
     {Get Array variables params}
     {This is code is not very clear}
-    Typ := varArray;
+//    Typ := varArray;
     NextToken;
     if (TTyp <> ttLs) and (TTyp <> ttOf) then
       ErrorExpected('''[''' +  ' or ' + '''Of''');
@@ -7295,11 +7291,11 @@ end;
 
 procedure TJvInterpreterUnit.Record1(const Identifier: string);
 var
-  JvInterpreterSrcRecord: TJvInterpreterIdentifier;
-  Fields: array of TJvInterpreterRecField;
-  TempField: TJvInterpreterRecField;
-  TempCount, i: integer;
-  TempTyp: Word;
+//  JvInterpreterSrcRecord: TJvInterpreterIdentifier;
+//  Fields: array of TJvInterpreterRecField;
+//  TempField: TJvInterpreterRecField;
+//  TempCount: integer;
+//  TempTyp: Word;
   JvInterpreterRecord: TJvInterpreterRecord;
 begin
   JvInterpreterRecord := TJvInterpreterRecord.Create;
@@ -7713,7 +7709,7 @@ procedure TJvInterpreterRecord.NewRecord(var Value: Variant);
 var
   i: integer;
   Rec: PChar;
-  Res: Boolean;
+//  Res: Boolean;
   RecHolder: TJvInterpreterRecHolder;
 begin
   if Assigned(CreateFunc) then
@@ -7754,8 +7750,8 @@ begin
 end;
 
 procedure TJvInterpreterRecordDataType.Init(var V: Variant);
-var
-  i: integer;
+//var
+//  i: integer;
 begin
   FRecordDesc.NewRecord(V);
 end;

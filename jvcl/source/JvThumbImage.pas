@@ -49,13 +49,10 @@ unit JvThumbImage;
 interface
 uses
   Windows, Classes, Controls, ExtCtrls, SysUtils, Messages, Graphics, Forms,
-  jpeg, Dialogs,
-  JvBaseThumbnail;
+  jpeg, Dialogs, JvTypes, JvBaseThumbnail;
 
 type
   TAngle = (AT0, AT90, AT180, AT270);
-  TRGBArray = array [0..32767] of TRGBTriple;
-  PRGBArray = ^TRGBArray;
 
   // (rom) renamed elements
   TMirror = (mtHorizontal, mtVertical, mtBoth);

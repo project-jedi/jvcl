@@ -43,7 +43,7 @@ type
   private
     FPopup: TPopupMenu;
     FDirs: TJvDirectories;
-    FOnLinkClick: TOnLinkClick;
+    FOnLinkClick: TJvLinkClickEvent;
     FIMages: TImageList;
     procedure AddToPopup(Item: TMenuItem; Path: string);
     procedure SetImages(const Value: TImageList);
@@ -58,7 +58,7 @@ type
     procedure Refresh;
   published
     property Images: TImageList read FImages write SetImages;
-    property OnLinkClick: TOnLinkClick read FOnLinkClick write FOnLinkClick;
+    property OnLinkClick: TJvLinkClickEvent read FOnLinkClick write FOnLinkClick;
   end;
 
 implementation

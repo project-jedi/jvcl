@@ -35,7 +35,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Mask, Forms,
-  JvCaret, JvComponent, JvTypes, JVCLVer;
+  JvCaret, JvComponent, JvTypes, JVCLVer, JvToolEdit;
 
 type
   TJvCustomMaskEdit = class(TCustomMaskEdit)
@@ -409,47 +409,47 @@ begin
 end;
 
 procedure TJvCustomMaskEdit.WMPaint(var Msg: TWMPaint);
+const
+  AlignmentValues: array[False..True, TAlignment] of TAlignment = (
+    (taLeftJustify, taRightJustify, taCenter),
+    (taRightJustify, taLeftJustify, taCenter)
+  );
+{$IFNDEF COMPILER4UP}
+  UseRightToLeftAlignment = False;
+{$ENDIF}
 var
-  Canvas: TCanvas;
-  Ps: TPaintStruct;
-  CallEndPaint: Boolean;
+  Canvas: TControlCanvas;
+  Style: Integer;
+  AAlignment: TAlignment;
+  R: TRect;
+  ButtonWidth: Integer;
 begin
   if Enabled then
     inherited
   else
   begin
-    CallEndPaint := False;
-    Canvas := TCanvas.Create;
-    try
-      if Msg.DC <> 0 then
-      begin
-        Canvas.Handle := Msg.DC;
-        Ps.fErase := True;
-      end
-      else
-      begin
-        BeginPaint(Handle, Ps);
-        CallEndPaint := True;
-        Canvas.Handle := Ps.hdc;
-      end;
+    Style := GetWindowLong(Handle, GWL_STYLE);
+    if (Style and ES_RIGHT) <> 0 then
+      AAlignment := AlignmentValues[UseRightToLeftAlignment, taRightJustify]
+    else if (Style and ES_CENTER) <> 0 then
+      AAlignment := taCenter
+    else
+      AAlignment := AlignmentValues[UseRightToLeftAlignment, taLeftJustify];
 
-      if Ps.fErase then
-        Perform(WM_ERASEBKGND, Canvas.Handle, 0);
+    SendMessage(Handle, EM_GETRECT, 0, Integer(@R));
+    {$IFDEF COMPILER4_UP}
+    if BiDiMode = bdRightToLeft then
+      ButtonWidth := R.Left - 1
+    else
+    {$ENDIF COMPILER4_UP}
+      ButtonWidth := ClientWidth - R.Right - 2;
+    if ButtonWidth < 0 then ButtonWidth := 0;
 
-      SaveDC(Canvas.Handle);
-      try
-        Canvas.Brush.Style := bsClear;
-        Canvas.Font := Font;
-        Canvas.Font.Color := FDisabledTextColor;
-        Canvas.TextOut(1, 1, Text);
-      finally
-        RestoreDC(Canvas.Handle, -1);
-      end;
-    finally
-      if CallEndPaint then
-        EndPaint(Handle, Ps);
-      Canvas.Free;
-    end;
+    Canvas := nil;
+    if not PaintEdit(Self, Text, AAlignment, False, ButtonWidth, FDisabledTextColor,
+       Focused, Canvas, Msg) then
+      inherited;
+    Canvas.Free;
   end;
 end;
 

@@ -105,7 +105,6 @@ type
   TJvHookInfos = class(TObject)
   private
     FFirst: array [TJvHookOrder] of PJvHookInfo;
-    FNext: array [TJvHookOrder] of PJvHookInfo;
     FLast: array [TJvHookOrder] of PJvHookInfo;
     FHandle: HWND;
     FControl: TControl;
@@ -113,8 +112,6 @@ type
     FOldWndProc: TWndMethod;
     FHooked: Boolean;
     FController: TJvWndProcHook;
-    function GetFirst(const Order: TJvHookOrder): PJvHookInfo;
-    function GetNext(const Order: TJvHookOrder): PJvHookInfo;
     procedure SetController(const Value: TJvWndProcHook);
   protected
     procedure WindowProc(var Msg: TMessage);
@@ -132,8 +129,6 @@ type
       TJvHookInfos may live longer than WndProcHook }
     property Controller: TJvWndProcHook read FController write SetController;
     property Handle: HWND read FHandle;
-    property First[const Order: TJvHookOrder]: PJvHookInfo read GetFirst;
-    property Next[const Order: TJvHookOrder]: PJvHookInfo read GetNext;
   end;
 
   TJvWndProcHook = class(TComponent)
@@ -430,9 +425,6 @@ begin
   if FLast[Order] <> nil then
     FLast[Order].Next := HookInfo;
 
-  if FNext[Order] = nil then
-    FNext[Order] := HookInfo;
-
   FLast[Order] := HookInfo;
 
   HookControl;
@@ -467,7 +459,6 @@ begin
   inherited Create;
   FControl := AControl;
   FillChar(FFirst, SizeOf(FFirst), 0);
-  FillChar(FNext, SizeOf(FNext), 0);
   FillChar(FLast, SizeOf(FLast), 0);
 end;
 
@@ -476,7 +467,6 @@ begin
   inherited Create;
   FHandle := AHandle;
   FillChar(FFirst, SizeOf(FFirst), 0);
-  FillChar(FNext, SizeOf(FNext), 0);
   FillChar(FLast, SizeOf(FLast), 0);
 end;
 
@@ -509,8 +499,6 @@ begin
     FLast[Order] := PrevHookInfo;
   if FFirst[Order] = HookInfo then
     FFirst[Order] := HookInfo.Next;
-  if FNext[Order] = HookInfo then
-    FNext[Order] := HookInfo.Next;
 
   Dispose(HookInfo);
 
@@ -543,33 +531,6 @@ begin
   inherited Destroy;
 end;
 
-function TJvHookInfos.GetFirst(const Order: TJvHookOrder): PJvHookInfo;
-begin
-  if FControlDestroyed then
-    Result := nil
-  else
-  begin
-    Result := FFirst[Order];
-    if Assigned(Result) then
-      FNext[Order] := Result.Next
-    else
-      FNext[Order] := nil;
-  end;
-end;
-
-function TJvHookInfos.GetNext(const Order: TJvHookOrder): PJvHookInfo;
-begin
-  if FControlDestroyed then
-    Result := nil
-  else
-  begin
-    Result := FNext[Order];
-    if Assigned(Result) then
-      FNext[Order] := Result.Next
-    else
-      FNext[Order] := nil;
-  end;
-end;
 
 procedure TJvHookInfos.HookControl;
 begin
@@ -644,12 +605,12 @@ begin
 
   Msg.Result := 0;
 
-  HookInfo := First[hoBeforeMsg];
+  HookInfo := FFirst[hoBeforeMsg];
   while Assigned(HookInfo) do
   begin
-    if HookInfo.Hook(Msg) then
+    if HookInfo.Hook(Msg) or FControlDestroyed then
       Exit;
-    HookInfo := Next[hoBeforeMsg];
+    HookInfo := HookInfo.Next;
   end;
 
   { Maybe only exit here (before the original control handles the message),
@@ -664,12 +625,15 @@ begin
     Msg.Result := CallWindowProc(TMethod(FOldWndProc).Code, Handle, Msg.Msg,
       Msg.WParam, Msg.LParam);
 
-  HookInfo := First[hoAfterMsg];
+  if FControlDestroyed then
+    Exit;
+
+  HookInfo := FFirst[hoAfterMsg];
   while Assigned(HookInfo) do
   begin
-    if HookInfo.Hook(Msg) then
+    if HookInfo.Hook(Msg) or FControlDestroyed then
       Exit;
-    HookInfo := Next[hoAfterMsg];
+    HookInfo := HookInfo.Next;
   end;
 
   if (Control = nil) and (Msg.Msg = WM_DESTROY) then

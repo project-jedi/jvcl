@@ -41,7 +41,7 @@ type
   private
     FPopup: TPopupMenu;
     FDirs: TJvDirectories;
-    FOnLinkClick: TOnLinkClick;
+    FOnLinkClick: TJvLinkClickEvent;
     FOnPopup: TNotifyEvent;
     procedure UrlClick(Sender: TObject);
     procedure InternalFileFind(const Path, FileMask: string; Strings: TStringList);
@@ -54,7 +54,7 @@ type
     destructor Destroy; override;
     procedure Click; override;
   published
-    property OnLinkClick: TOnLinkClick read FOnLinkClick write FOnLinkClick;
+    property OnLinkClick: TJvLinkClickEvent read FOnLinkClick write FOnLinkClick;
     property OnPopup: TNotifyEvent read FOnPopup write FOnPopup;
   end;
 

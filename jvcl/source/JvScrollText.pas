@@ -36,6 +36,7 @@ uses
   JvTypes, JvImageDrawThread, JVCLVer;
 
 type
+  TJvScrollTextDirection = (drFromLeft, drFromRight, drFromTop, drFromBottom); // also in JvMoveableBevel, JvAppearingLabel
   TJvScrollText = class(TCustomControl)
   private
     FAboutJVCL: TJVCLAboutInfo;
@@ -46,7 +47,7 @@ type
     FPixel: Integer;
     FCurrPos: Integer;
     FSelectable: Boolean;
-    FScrollDirection: TDirection;
+    FScrollDirection: TJvScrollTextDirection;
     FScrollSaved: Integer;
     FStrings: TStringList;
     FDeja: Cardinal;
@@ -59,7 +60,7 @@ type
     procedure SetActive(const Value: Boolean);
     procedure SetDelay(const Value: Cardinal);
     procedure SetPixel(const Value: Integer);
-    procedure SetScrollDirection(const Value: TDirection);
+    procedure SetScrollDirection(const Value: TJvScrollTextDirection);
     procedure CalculateMemo(Sender: TObject);
     function GetAlignment: TAlignment;
     procedure SetAlignment(const Value: TAlignment);
@@ -84,7 +85,7 @@ type
     property Active: Boolean read FActive write SetActive default False;
     property Delay: Cardinal read FDelay write SetDelay default 50;
     property ScrollPixels: Integer read FPixel write SetPixel default 1;
-    property ScrollDirection: TDirection read FScrollDirection write SetScrollDirection default drFromBottom;
+    property ScrollDirection: TJvScrollTextDirection read FScrollDirection write SetScrollDirection default drFromBottom;
     property BackgroundColor: TColor read GetColor write SetColor;
     property Font: TFont read GetFont write SetFont;
     procedure Pause;
@@ -349,7 +350,7 @@ begin
   FScroll.Delay := Value;
 end;
 
-procedure TJvScrollText.SetScrollDirection(const Value: TDirection);
+procedure TJvScrollText.SetScrollDirection(const Value: TJvScrollTextDirection);
 begin
   FScrollDirection := Value;
   FMemo.Left := 0;

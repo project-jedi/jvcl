@@ -50,8 +50,8 @@ type
     property OnRefresh: TNotifyEvent read FOnRefresh write FOnRefresh;
     property OnUpdate: TNotifyEvent read FOnUpdate write FOnUpdate;
     property Handle: Integer read FHandle write FHandle;
-    procedure SetValue(Vol: TVolumeRec);
-    function GetValue: TVolumeRec;
+    procedure SetValue(Vol: TJvVolumeRec);
+    function GetValue: TJvVolumeRec;
   public
     constructor Create;
   published
@@ -148,7 +148,7 @@ end;
 
 procedure TJvSoundControl.OnCdRefresh(Sender: TObject);
 var
-  Vol: TVolumeRec;
+  Vol: TJvVolumeRec;
 begin
   with Sender as TJvSoundValue do
   begin
@@ -160,7 +160,7 @@ end;
 
 procedure TJvSoundControl.OnCdUpdate(Sender: TObject);
 var
-  Vol: TVolumeRec;
+  Vol: TJvVolumeRec;
 begin
   with Sender as TJvSoundValue do
   begin
@@ -171,7 +171,7 @@ end;
 
 procedure TJvSoundControl.OnMidiRefresh(Sender: TObject);
 var
-  Vol: TVolumeRec;
+  Vol: TJvVolumeRec;
 begin
   with Sender as TJvSoundValue do
   begin
@@ -183,7 +183,7 @@ end;
 
 procedure TJvSoundControl.OnMidiUpdate(Sender: TObject);
 var
-  Vol: TVolumeRec;
+  Vol: TJvVolumeRec;
 begin
   with Sender as TJvSoundValue do
   begin
@@ -194,7 +194,7 @@ end;
 
 procedure TJvSoundControl.OnWaveRefresh(Sender: TObject);
 var
-  Vol: TVolumeRec;
+  Vol: TJvVolumeRec;
 begin
   with Sender as TJvSoundValue do
   begin
@@ -206,7 +206,7 @@ end;
 
 procedure TJvSoundControl.OnWaveUpdate(Sender: TObject);
 var
-  Vol: TVolumeRec;
+  Vol: TJvVolumeRec;
 begin
   with Sender as TJvSoundValue do
   begin
@@ -235,7 +235,7 @@ begin
   end;
 end;
 
-function TJvSoundValue.GetValue: TVolumeRec;
+function TJvSoundValue.GetValue: TJvVolumeRec;
 begin
   Result.LeftVolume := ((FVolume * FBalance) div 100) shl 9;
   Result.RightVolume := ((FVolume * (100 - FBalance)) div 100) shl 9;
@@ -263,7 +263,7 @@ begin
   end;
 end;
 
-procedure TJvSoundValue.SetValue(Vol: TVolumeRec);
+procedure TJvSoundValue.SetValue(Vol: TJvVolumeRec);
 var
   Total: Double;
 begin

@@ -49,11 +49,11 @@ type
   end;
 
   TCommit = (ctNone, ctStep, ctAll);
-  TOnProgress = procedure(UserData: Integer; var Cancel: Boolean; Line: Integer) of object;
+  TJvProgressEvent = procedure(UserData: Integer; var Cancel: Boolean; Line: Integer) of object;
 
 { ExecuteSQLScript executes SQL script }
 
-procedure ExecuteSQLScript(Base: TDataBase; const Script: string; const Commit: TCommit; OnProgress: TOnProgress; const
+procedure ExecuteSQLScript(Base: TDataBase; const Script: string; const Commit: TCommit; OnProgress: TJvProgressEvent; const
   UserData: Integer);
 
 { GetQueryResult executes SQL Query and returns Result as Variant }
@@ -143,7 +143,7 @@ begin
 end;
 
 procedure ExecuteSQLScript(Base: TDataBase; const Script: string; const Commit: TCommit;
-  OnProgress: TOnProgress; const UserData: Integer);
+  OnProgress: TJvProgressEvent; const UserData: Integer);
 var
   N: Integer;
   Term: Char;

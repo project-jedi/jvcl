@@ -61,7 +61,7 @@ begin
   Result := TPoint(V2R(Point)^);
 end;
 
-procedure JvInterpreter_Point(var Value: Variant; Args: TArgs);
+procedure JvInterpreter_Point(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := Point2Var(Point(Args.Values[0], Args.Values[1]));
 end;
@@ -82,40 +82,40 @@ begin
   Result := TRect(V2R(Rect)^);
 end;
 
-procedure JvInterpreter_Rect(var Value: Variant; Args: TArgs);
+procedure JvInterpreter_Rect(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := Rect2Var(Rect(Args.Values[0], Args.Values[1], Args.Values[2], Args.Values[3]));
 end;
 
-procedure JvInterpreter_Bounds(var Value: Variant; Args: TArgs);
+procedure JvInterpreter_Bounds(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := Rect2Var(Bounds(Args.Values[0], Args.Values[1], Args.Values[2], Args.Values[3]));
 end;
 
 { Read Field TopLeft: Integer; }
 
-procedure TRect_Read_TopLeft(var Value: Variant; Args: TArgs);
+procedure TRect_Read_TopLeft(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := Point2Var(TRect(P2R(Args.Obj)^).TopLeft);
 end;
 
 { Write Field TopLeft: Integer; }
 
-procedure TRect_Write_TopLeft(const Value: Variant; Args: TArgs);
+procedure TRect_Write_TopLeft(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TRect(P2R(Args.Obj)^).TopLeft := Var2Point(Value);
 end;
 
 { Read Field BottomRight: Integer; }
 
-procedure TRect_Read_BottomRight(var Value: Variant; Args: TArgs);
+procedure TRect_Read_BottomRight(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := Point2Var(TRect(P2R(Args.Obj)^).BottomRight);
 end;
 
 { Write Field Right: Integer; }
 
-procedure TRect_Write_BottomRight(const Value: Variant; Args: TArgs);
+procedure TRect_Write_BottomRight(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TRect(P2R(Args.Obj)^).BottomRight := Var2Point(Value);
 end;

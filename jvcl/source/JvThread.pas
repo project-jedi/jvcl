@@ -41,7 +41,7 @@ type
     FExclusive: Boolean;
     FRunOnCreate: Boolean;
     FOnBegin: TNotifyEvent;
-    FOnExecute: TNotifyEventParams;
+    FOnExecute: TJvNotifyParamsEvent;
     FOnFinish: TNotifyEvent;
     FOnFinishAll: TNotifyEvent;
     FFreeOnTerminate: Boolean;
@@ -63,22 +63,22 @@ type
     property RunOnCreate: Boolean read FRunOnCreate write FRunOnCreate;
     property FreeOnTerminate: Boolean read FFreeOnTerminate write FFreeOnTerminate;
     property OnBegin: TNotifyEvent read FOnBegin write FOnBegin;
-    property OnExecute: TNotifyEventParams read FOnExecute write FOnExecute;
+    property OnExecute: TJvNotifyParamsEvent read FOnExecute write FOnExecute;
     property OnFinish: TNotifyEvent read FOnFinish write FOnFinish;
     property OnFinishAll: TNotifyEvent read FOnFinishAll write FOnFinishAll;
   end;
 
   TJvHideThread = class(TThread)
   private
-    FExecuteEvent: TNotifyEventParams;
+    FExecuteEvent: TJvNotifyParamsEvent;
     FParams: Pointer;
   public
-    constructor Create(Event: TNotifyEventParams; Params: Pointer); virtual;
+    constructor Create(Event: TJvNotifyParamsEvent; Params: Pointer); virtual;
     procedure Execute; override;
   end;
 
 procedure Synchronize(Method: TNotifyEvent);
-procedure SynchronizeParams(Method: TNotifyEventParams; P: Pointer);
+procedure SynchronizeParams(Method: TJvNotifyParamsEvent; P: Pointer);
 
 implementation
 
@@ -92,7 +92,7 @@ begin
   ReleaseMutex(Mtx);
 end;
 
-procedure SynchronizeParams(Method: TNotifyEventParams; P: Pointer);
+procedure SynchronizeParams(Method: TJvNotifyParamsEvent; P: Pointer);
 begin
   WaitForSingleObject(Mtx, INFINITE);
   Method(nil, P);
@@ -186,7 +186,7 @@ end;
 
 //=== TJvHideThread ==========================================================
 
-constructor TJvHideThread.Create(Event: TNotifyEventParams; Params: Pointer);
+constructor TJvHideThread.Create(Event: TJvNotifyParamsEvent; Params: Pointer);
 begin
   inherited Create(True);
   FExecuteEvent := Event;
