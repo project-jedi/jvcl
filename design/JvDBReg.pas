@@ -77,7 +77,7 @@ begin
   RegisterComponents(RsPaletteDBNonVisual, [TJvMemoryData,
     TJvCSVDataSet {$IFDEF JV_MIDAS}, TJvDBRemoteLogin {$ENDIF},
     TJvDBGridWordExport, TJvDBGridExcelExport, TJvDBGridHTMLExport,
-    TJvDBGridCSVExport, TJvDBGridXMLExport, TJvCsvDataSet]);
+    TJvDBGridCSVExport, TJvDBGridXMLExport]);
   RegisterComponents(RsPaletteDBVisual, [TJvDBDatePickerEdit,
     TJvDBDateTimePicker, TJvDBProgressBar, TJvDBRichEdit, TJvDBSpinEdit,
     TJvDBLookupList, TJvDBLookupCombo, TJvDBLookupEdit, TJvDBRadioPanel,
