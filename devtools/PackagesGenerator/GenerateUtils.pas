@@ -1584,12 +1584,20 @@ var
     Result := TJvSimpleXML.Create(nil);
     XmlFileCache.Add(Result);
 
-    Result.Options := [sxoAutoCreate];
+    Result.Options := [];
     Result.Filename := xmlName; // load file
   end;
 
 begin
   Result := True;
+  
+  if packages.count = 0 then
+  begin
+    ErrMsg := '[Error] No package to generate, no xml file found';
+    Result := False;
+    Exit;
+  end;
+
   if not LoadConfig(XmlFileName, ModelName, ErrMsg) then
   begin
     Result := False;
