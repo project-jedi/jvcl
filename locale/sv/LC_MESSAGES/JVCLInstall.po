@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: JVCL\n"
 "POT-Creation-Date: 2004-04-19 20:17\n"
-"PO-Revision-Date: 2004-04-20 09:24+0100\n"
+"PO-Revision-Date: 2004-04-21 10:09+0100\n"
 "Last-Translator: Peter Thornqvist <peter3@peter3.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -29,12 +29,12 @@ msgstr "Hemsida för Jedi Visual Component Library"
 #  FrameConfigPage..LblBCBGuide..Caption
 #: Frames/FrmConfigPage.dfm:13
 msgid "BCB installation guide"
-msgstr "Installationsguide för BCB"
+msgstr "Installationsguiden för BCB"
 
 #  FrameConfigPage..GroupBoxJvclInc..Caption
 #: Frames/FrmConfigPage.dfm:28
 msgid " Global options for all IDEs "
-msgstr "Globala inställningar för IDE:n"
+msgstr "Globala inställningar för alla IDE:er"
 
 #  FrameConfigPage..GroupBoxJvclInc..LblDxgettextHomepage....Cursor
 #: Frames/FrmConfigPage.dfm:40
@@ -46,7 +46,7 @@ msgid ""
 msgstr ""
 "http://dxgettext.sourceforge.net|Ladda ner från <c:blue>http://dxgettext.sourceforge.net<c:black>\n"
 "<c:red>gnugettext.pas kommer att läggas till i\n"
-"JvCore-R paketet. Detta betyder att du inte kan ha det i ett annat\n"
+"paketet JvCore-R. Detta betyder att du inte kan ha det i ett annat\n"
 "paket också."
 
 #  FrameConfigPage..GroupBoxJvclInc..CheckBoxXPTheming....Height
@@ -64,10 +64,10 @@ msgid ""
 msgstr ""
 "Aktivera om du har Mike Lischkes Theme Manager\n"
 "(<c:blue>http://www.lischke-online.de<c:black>) installerad och\n"
-"om du använder <b>Delphi/BCB 6</b> eller tidigare. ThemeManager\n"
+"om du använder <b>Delphi/BCB 6</b> eller tidigare. ThemeManager-\n"
 "paketet måste kompileras som \"<b>never-build package</b>\".\n"
-"ThemeManager paketet måste placeras i din BPL mapp.\n"
-"För mer information, läs <b>readme.htm</b>\n"
+"ThemeManager-paketet måste placeras i din BPL-mapp.\n"
+"För mer information läs <b>readme.htm</b>\n"
 "\n"
 "<b>För Delphi 7 är detta alternativ alltid aktiverat oavsett\n"
 "inställningen du gör här.</b>"
@@ -75,14 +75,14 @@ msgstr ""
 #  FrameConfigPage..GroupBoxJvclInc..CheckBoxXPTheming..Caption
 #: Frames/FrmConfigPage.dfm:64
 msgid "&XP Theming (not for Delphi 7)"
-msgstr "&XP Teman (gäller inte Delphi 7)"
+msgstr "&XP-Teman (gäller inte Delphi 7)"
 
 #  FrameConfigPage..GroupBoxJvclInc..CheckBoxRegisterGlobalDesignEditors....Height
 #: Frames/FrmConfigPage.dfm:77
 msgid ""
 "Enable this if you want to register property and component\n"
 "editors included in JVCL (for non-JVCL components as well)."
-msgstr "Aktivera om du vill registra designeditorerna i JVCL för andra, icke JVCL, komponenter också."
+msgstr "Aktivera om du vill registra designeditorerna i JVCL för andra, icke JVCL-komponenter också."
 
 #  FrameConfigPage..GroupBoxJvclInc..CheckBoxRegisterGlobalDesignEditors..Caption
 #: Frames/FrmConfigPage.dfm:78
@@ -103,7 +103,7 @@ msgstr ""
 "(<c:blue>http://dxgettext.sourceforge.net<c:black>) för översättning.\n"
 "\n"
 "<c:red>gnugettext.pas kommer att läggas till i\n"
-"JvCore-R paketet. Detta betyder att du inte kan ha den i ett\n"
+"paketet JvCore-R. Detta betyder att du inte kan ha den i ett\n"
 "annat paket också."
 
 #  FrameConfigPage..GroupBoxJvclInc..CheckBoxDxgettextSupport..Caption
@@ -116,7 +116,7 @@ msgstr "&Stöd för dxgettext"
 msgid ""
 "Enable this option if you want to register the GIF image\n"
 "Graphic Extensions for Open/Save dialogs."
-msgstr "Aktivera om du vill registrera GIF formatet i Öppna/Spara dialoger."
+msgstr "Aktivera om du vill registrera GIF-formatet i Öppna- och Sparadialoger."
 
 #  FrameConfigPage..GroupBoxJvclInc..CheckBoxRegisterJvGif..Caption
 #: Frames/FrmConfigPage.dfm:109
@@ -158,7 +158,7 @@ msgid ""
 "Activate this option if you are a JVCL developer.\n"
 "This adds the \\run, \\common and \\design directory to the library paths."
 msgstr ""
-"Aktivera om du är JVCL utvecklare.\n"
+"Aktivera om du är JVCL-utvecklare.\n"
 "Detta lägger till \\run, \\common och \\design till sökvägarna."
 
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxDeveloperInstall..Caption
@@ -172,13 +172,13 @@ msgid ""
 "Remove all JVCL components from the component palettes in\n"
 "order to reinstall in a proper order."
 msgstr ""
-"Ta bort alla JVCL komponenter från paletten för att\n"
+"Ta bort alla JVCL-komponenter från paletten för att\n"
 "göra en nyinstallation med rätt ordning."
 
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxCleanPalettes..Caption
 #: Frames/FrmConfigPage.dfm:177
 msgid "Clean JVCL component &palettes"
-msgstr "Rensa JVCLs komponentpalett"
+msgstr "Återställ JVCL:s komponentpalett"
 
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxBuild....Height
 #: Frames/FrmConfigPage.dfm:202
@@ -190,7 +190,7 @@ msgid ""
 "This could take up to 10 minutes."
 msgstr ""
 "Aktivera om du vill kompilera alla paket och filer istället för\n"
-"att endast kompilera det som ändrats.\n"
+"att endast kompilera de som ändrats.\n"
 "\n"
 "<c:red><b>VARNING för BCB användare:</b>\n"
 "Detta kan ta upp till 10 minuter."
@@ -205,7 +205,7 @@ msgstr "Re&generera paket"
 msgid ""
 "Check this option if you do not want to register\n"
 "the designtime package into the IDE."
-msgstr "Aktivera om du inte vill installera paketen i IDEn."
+msgstr "Aktivera om du inte vill installera paketen i IDE:n."
 
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxCompileOnly..Caption
 #: Frames/FrmConfigPage.dfm:219
@@ -215,17 +215,17 @@ msgstr "Endast &kompilering"
 #  FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseBPL..LblCaption..Caption
 #: Frames/FrmConfigPage.dfm:235
 msgid "BP&L Directory:"
-msgstr "BP&L mapp:"
+msgstr "BP&L-mapp:"
 
 #  FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseDCP..LblCaption..Caption
 #: Frames/FrmConfigPage.dfm:259
 msgid "&DCP Directory:"
-msgstr "&DCP mapp:"
+msgstr "&DCP-mapp:"
 
 #  FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseHPP..LblCaption..Caption
 #: Frames/FrmConfigPage.dfm:283
 msgid "&HPP Directory:"
-msgstr "&HPP mapp:"
+msgstr "&HPP-mapp:"
 
 #  FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseHPP..EditDirectory....Width
 #: Frames/FrmConfigPage.dfm:296
@@ -234,9 +234,9 @@ msgid ""
 "should go. If this field is empty the generated .hpp files are\n"
 "written to the directory where the pascal source file is."
 msgstr ""
-"HPP mappen anger var de genererade .hpp filerna ska\n"
-"placeras. Om detta fält lämnas tomt, sparas hpp filerna i\n"
-"samma mapp som pascal filerna."
+"HPP-mappen anger var de genererade .hpp-filerna ska\n"
+"placeras. Om detta fält lämnas tomt sparas hpp-filerna i\n"
+"samma mapp som pascal-filerna."
 
 #  FrameConfigPage..CheckBoxCompileJclDcp..Caption
 #: Frames/FrmConfigPage.dfm:310
@@ -246,7 +246,7 @@ msgstr "Ko&mpilera JCL .dcp om nödvändigt"
 #  FrameConfigPage..CheckBoxVerbose..Caption
 #: Frames/FrmConfigPage.dfm:319
 msgid "&Verbose compiler output"
-msgstr "&Visa mer kompilatorinformation"
+msgstr "&Visa utförlig kompileringsinformation"
 
 #  FrameDirEditBrowse..BtnJCLDirBrowse..Hint
 #: Frames/FrmDirEditBrowse.dfm:43
@@ -261,7 +261,7 @@ msgstr "&Detaljer >"
 #  FramePackageSelection..LblIDEs..Caption
 #: Frames/FrmPackageSelection.dfm:26
 msgid "&Available IDEs"
-msgstr "&Installerade IDE:n"
+msgstr "&Installerade IDE:er"
 
 #  FramePackageSelection..LblFrameworks..Caption
 #: Frames/FrmPackageSelection.dfm:35
@@ -291,12 +291,12 @@ msgid ""
 "     are checked/unchecked if necessary."
 msgstr ""
 "<b>Design:</b>\n"
-"     Visa endast designpaket. (Av)markering av ett designpaket,\n"
-"     (av)markerar även runpaketet\n"
+"     Visa endast designpaket. (Av)markering av ett designpaket\n"
+"     (av)markerar även run-paketet\n"
 "     (Paketen är länkade)\n"
 "\n"
 "<b>Runtime:</b>\n"
-"     Visa endast runpaket. (Av)markering av ett runpaket,\n"
+"     Visa endast run-paket. (Av)markering av ett run-paket\n"
 "     (av)markerar även designpaketet\n"
 "     (Paketen är länkade)\n"
 "\n"
@@ -337,12 +337,12 @@ msgstr "Åte&rställ alla paket"
 #  FramePackageSelection..ActionList..ActionResetPackages..Hint
 #: Frames/FrmPackageSelection.dfm:306
 msgid "Reset the package selection to IDE default."
-msgstr "Återställ paketvaelt till standard för IDEn."
+msgstr "Återställ paketurvalet till standard för IDE:n."
 
 #  FormJvclIncConfig..Caption
 #: Helpers/MainConfig.dfm:5
 msgid "JVCL Configuration"
-msgstr "JVCL konfiguration"
+msgstr "JVCL-konfiguration"
 
 #  FormJvclIncConfig..Label1....Height
 #: Helpers/MainConfig.dfm:33
@@ -357,7 +357,7 @@ msgstr "St&äng"
 #  FormJvclIncConfig..TitlePanel..Label4..Caption
 #: Helpers/MainConfig.dfm:113
 msgid "Project JEDI   JVCL 3 Installer - jvcl.inc Editor"
-msgstr "Project JEDI   JVCL 3 Installerare - jvcl.inc Editor"
+msgstr "Project JEDI   JVCL 3-installerare - jvcl.inc editor"
 
 #  FormJvclIncConfig..TitlePanel..LabelTmp1..Caption
 #: Helpers/MainConfig.dfm:134
@@ -367,7 +367,7 @@ msgstr "Tilldelad i runtime"
 #  Programmer's name for it: RsPackagesAreUpToDate
 #: Compile.pas:133
 msgid "Packages are up to date"
-msgstr "Paket är aktuella"
+msgstr "Paketen är aktuella"
 
 #  Programmer's name for it: RsGeneratingTemplates
 #: Compile.pas:141
@@ -397,7 +397,7 @@ msgstr "Klar."
 #  Programmer's name for it: RsCompilingJCL
 #: Compile.pas:146
 msgid "Compiling JCL dcp files..."
-msgstr "Kompilerar JCL dcp filer..."
+msgstr "Kompilerar JCL dcp-filer..."
 
 #  Programmer's name for it: RsAbortedByUser
 #: Compile.pas:149
@@ -422,7 +422,7 @@ msgstr "Fel uppstod när mallar genererades."
 #  Programmer's name for it: RsErrorCompilingJclDcpFiles
 #: Compile.pas:153
 msgid "Error while compiling .dcp files for JCL."
-msgstr "Fel uppstod när .dcp filer för JCL kompilerades."
+msgstr "Fel uppstod när dcp-filer för JCL kompilerades."
 
 #  Programmer's name for it: RsErrorCompilingResources
 #: Compile.pas:154
@@ -461,25 +461,25 @@ msgid ""
 "header, are subject to the MPL license."
 msgstr ""
 "JEDI Visual Component Library (JVCL) består av en stor samling (för närvarande ca. 500)\n"
-"visuella och icke-visuella komponenter som kan återanvändas i Delphi, Kylix och\n"
-"C++ Builder projekt.\n"
+"visuella och icke-visuella komponenter som kan återanvändas i Delphi-, Kylix- och\n"
+"C++ Builder-projekt.\n"
 "\n"
-"Samlingen består av komponenter och kod donerad från JEDI användare från hela världen\n"
-" Koden har omformatterats för att få ett gemensam utseende, den har testats, dokumenterats\n"
+"Samlingen består av komponenter och kod donerade av JEDI-användare från hela världen\n"
+" Koden har omformatterats för att få ett gemensamt utseende, den har testats, dokumenterats\n"
 "och satts ihop till en enhet.\n"
-" Samlingen är indelad i flera olika kategorier som t ex Enhanced Standard, Visual, Non-Visual,\n"
-" Data Aware och många många fler,\n"
+" Samlingen är indelad i flera olika kategorier, som t ex Enhanced Standard, Visual, Non-Visual,\n"
+" Data Aware och många många fler.\n"
 "Samlingen släpps till allmänheten enligt licenskraven i Mozilla Public License\n"
 "(MPL) och kan användas fritt i såväl gratisprogram, shareware eller kommersiella\n"
 " applikationer.\n"
 "\n"
 "Källkoden i JVCL har en kommentar högst upp som klart och tydligt anger licensen som gäller\n"
-" Såvida inget annat anges, gäller MPL licensen för alla filer, även de utan en egen licenstext.."
+" Såvida inget annat anges, gäller MPL-licensen för alla filer, även de utan en egen licenstext.."
 
 #  Programmer's name for it: RsInstallerTitle
 #: InstallerConsts.pas:52
 msgid "JVCL 3 Installation"
-msgstr "JVCL 3 Installation"
+msgstr "JVCL 3-installation"
 
 #  Programmer's name for it: RsWelcomePageSubTitle
 #: InstallerConsts.pas:53
@@ -494,17 +494,17 @@ msgstr "Kan inte hitta Delphi eller BCB. Installationen avbryts."
 #  Programmer's name for it: RsDelphiBcbRunning
 #: InstallerConsts.pas:55
 msgid "Delphi or BCB is running. Terminate the IDE and restart the installer."
-msgstr "Delphi eller BCB är igång. Stäng IDEn och starta om installationsprogrammet."
+msgstr "Delphi eller BCB är igång. Stäng IDE:n och starta om installationsprogrammet."
 
 #  Programmer's name for it: RsInstallMode
 #: InstallerConsts.pas:57
 msgid "New installation / Upgrade from an older version|Change package selection."
-msgstr "Ny installation / uppgradering från tidigare version|Ändra paketval"
+msgstr "Nyinstallation / uppgradering från tidigare version|Ändra paketval"
 
 #  Programmer's name for it: RsUpdateMode
 #: InstallerConsts.pas:58
 msgid "Compile already installed packages / Update IDE|"
-msgstr "Uppdatera existerande installation /Uppdatera IDE|"
+msgstr "Uppdatera existerande installation / Uppdatera IDE|"
 
 #  Programmer's name for it: RsUninstallMode
 #: InstallerConsts.pas:59
@@ -520,7 +520,7 @@ msgstr "Avinstallera JVCL 3"
 #  Programmer's name for it: RsUninstallPageSubTitle
 #: InstallerConsts.pas:71
 msgid "Uninstalling the JVCL 3 from the selected Delphi and BCB versions."
-msgstr "Avinstallerar JVCL fråmn markerade Delphi/BCB versioner."
+msgstr "Avinstallerar JVCL från markerade Delphi- och BCB-versioner."
 
 #  FrmDirEditBrowse.pas
 #  Programmer's name for it: RsSelectJCLDir
@@ -592,7 +592,7 @@ msgstr "Kompilerar paket"
 #  Programmer's name for it: RsInstallPageSubTitle
 #: InstallerConsts.pas:99
 msgid "The selected packages are compiling for the selected Delphi and BCB versions."
-msgstr "De markerade paketen kompileras för de valda Delphi/BCB versionerna."
+msgstr "De markerade paketen kompileras för de valda Delphi- och BCB-versionerna."
 
 #  PgPackageSelection.pas
 #  Programmer's name for it: RsPackageSelectionPageTitle
@@ -603,7 +603,7 @@ msgstr "Välj paket"
 #  Programmer's name for it: RsPackageSelectionPageSubTitle
 #: InstallerConsts.pas:104
 msgid "Select all packages for the target IDEs which should be installed."
-msgstr "Markera alla paket som du vill installera för den valda IDEn."
+msgstr "Välj en IDE från listan och markera de paket du vill installera för den versionen."
 
 #  PgSummary.pas
 #  Programmer's name for it: RsSummaryPageTitle
@@ -639,22 +639,22 @@ msgstr "Installera för ramverk:"
 #  Programmer's name for it: RsBplOutputDirectory
 #: InstallerConsts.pas:115
 msgid "BPL output directory:"
-msgstr "BPL mapp:"
+msgstr "BPL-mapp:"
 
 #  Programmer's name for it: RsDcpOutputDirectory
 #: InstallerConsts.pas:116
 msgid "DCP output directory:"
-msgstr "DCP mapp:"
+msgstr "DCP-mapp:"
 
 #  Programmer's name for it: RsLibOutputDirectory
 #: InstallerConsts.pas:117
 msgid "LIB output directory:"
-msgstr "LIB mapp:"
+msgstr "LIB-mapp:"
 
 #  Programmer's name for it: RsHppOutputDirectory
 #: InstallerConsts.pas:118
 msgid "HPP output directory:"
-msgstr "HPP mapp:"
+msgstr "HPP-mapp:"
 
 #  Programmer's name for it: RsBuildPackages
 #: InstallerConsts.pas:119
@@ -674,22 +674,22 @@ msgstr "Rensa komponentpaletten"
 #  Programmer's name for it: RsAddToBrowsePath
 #: InstallerConsts.pas:122
 msgid "Add to browse path:"
-msgstr "Lägg till i \"browse\" sökväg:"
+msgstr "Lägg till i browse-sökväg:"
 
 #  Programmer's name for it: RsAddToSearchPath
 #: InstallerConsts.pas:123
 msgid "Add to search path:"
-msgstr "Lägg till i sökväg:"
+msgstr "Lägg till i search-sökväg:"
 
 #  Programmer's name for it: RsAddToLibraryPath
 #: InstallerConsts.pas:124
 msgid "Add to library path:"
-msgstr "Lägg till i \"library\" sökväg:"
+msgstr "Lägg till i library-sökväg:"
 
 #  Programmer's name for it: RsAddToIncludePath
 #: InstallerConsts.pas:125
 msgid "Add to include path:"
-msgstr "Lägg till i \"include\" sökväg:"
+msgstr "Lägg till i include-sökväg:"
 
 #  Programmer's name for it: RsUninstallFromTarget
 #: InstallerConsts.pas:127
@@ -709,22 +709,22 @@ msgstr "Avregistrera"
 #  Programmer's name for it: RsJVCLPalettes
 #: InstallerConsts.pas:130
 msgid "JVCL palettes"
-msgstr "JVCL paletter"
+msgstr "JVCL-paletter"
 
 #  Programmer's name for it: RsJVCLDirsFromPathLists
 #: InstallerConsts.pas:131
 msgid "JVCL directories from path lists"
-msgstr "JVCL mappar från mapplista"
+msgstr "JVCL-mappar från mapplista"
 
 #  Programmer's name for it: RsJVCLPackages
 #: InstallerConsts.pas:132
 msgid "JVCL 3 packages"
-msgstr "JVCL 3 paket"
+msgstr "JVCL 3-paket"
 
 #  Programmer's name for it: RsJVCLFiles
 #: InstallerConsts.pas:133
 msgid "JVCL 3 files"
-msgstr "JVCL 3 filer"
+msgstr "JVCL 3-filer"
 
 #  PgConfig.pas
 #  Programmer's name for it: RsConfigPageTitle
@@ -735,7 +735,7 @@ msgstr "Konfiguration"
 #  Programmer's name for it: RsConfigPageSubTitle
 #: InstallerConsts.pas:145
 msgid "Choose the compilation options and global options for all targets"
-msgstr "Välj kompileringsalternativ och globala inställningar för alla Delphi/BCB versioner"
+msgstr "Välj kompileringsalternativ och globala inställningar för alla Delphi- och BCB-versioner"
 
 #  FrmConfigPage.pas
 #  Programmer's name for it: RsAllTargets
@@ -772,7 +772,7 @@ msgstr "Markera alla IDE:er där JVCL ska avinstalleras."
 #  Programmer's name for it: RsErrorInstallingJCL
 #: InstallerConsts.pas:163
 msgid "Cannot start the JCL Installer."
-msgstr "Kan inte starta JCL installeraren"
+msgstr "Kan inte starta JCL-installeraren"
 
 #  Programmer's name for it: RsDelphiBCBUpdateRequired
 #: InstallerConsts.pas:164
@@ -793,12 +793,12 @@ msgstr "JCL 1.9 eller senare krävs"
 #  Programmer's name for it: RsDownloadOrSelectJclDir
 #: InstallerConsts.pas:168
 msgid "Download or select a JCL directory.|http://homepages.borland.com/jedi/jcl/"
-msgstr "Ladda ner eller välj en JCL mapp|http://homepages.borland.com/jedi/jcl/"
+msgstr "Ladda ner eller välj en JCL-mapp|http://homepages.borland.com/jedi/jcl/"
 
 #  Programmer's name for it: RsInstalledJVCLVersion
 #: InstallerConsts.pas:169
 msgid "installed JVCL version: %d"
-msgstr "Installerad JCL version: %d"
+msgstr "Installerad JCL-version: %d"
 
 #  Programmer's name for it: RsInstallJCL
 #: InstallerConsts.pas:170
@@ -813,12 +813,12 @@ msgstr "Kan inte hitta JCL 1.9"
 #  Programmer's name for it: RsJCLDirectoryCaption
 #: InstallerConsts.pas:173
 msgid "&JCL directory:"
-msgstr "&JCL mapp:"
+msgstr "&JCL-mapp:"
 
 #  Programmer's name for it: RsDeleteJVCLFilesCaption
 #: InstallerConsts.pas:174
 msgid "&Delete JVCL files (dcu,bpl,dcp, obj,bpi,lib,tds)"
-msgstr "Ta &bort JVCL filer  (dcu,bpl,dcp, obj,bpi,lib,tds)"
+msgstr "Ta &bort JVCL-filer  (dcu,bpl,dcp, obj,bpi,lib,tds)"
 
 #  Main.pas
 #  Programmer's name for it: RsBtnInstall
@@ -834,7 +834,7 @@ msgstr "&Avinstallera"
 #  Programmer's name for it: RsNoPackageInstaller
 #: InstallerConsts.pas:180
 msgid "Application error. No PackageInstaller created."
-msgstr "Programfel- PackageInstaller skapas inte."
+msgstr "Programfel: PackageInstaller skapades inte."
 
 #  Programmer's name for it: RsCancelInstallation
 #: InstallerConsts.pas:181
@@ -844,12 +844,12 @@ msgstr "Vill du verkligen avbryta installationen?"
 #  Programmer's name for it: RsNoJVCLFound
 #: JVCLData.pas:268
 msgid "No JVCL directory found. Application terminated."
-msgstr "Kan inte hitta JVCL mappen. Programmet avslutas."
+msgstr "Kan inte hitta JVCL-mappen. Programmet avslutas."
 
 #  Programmer's name for it: RsJVCLInstaller
 #: JVCLData.pas:269
 msgid "JVCL Installer"
-msgstr "JVCL Installeraren"
+msgstr "JVCL-installeraren"
 
 #  Programmer's name for it: RsCleaningPalette
 #: JVCLData.pas:271
