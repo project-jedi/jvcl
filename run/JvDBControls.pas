@@ -75,6 +75,8 @@ type
     function GetDataField: string;
     function GetDataSource: TDataSource;
     function GetField: TField;
+    function GetReadOnly: Boolean; reintroduce;
+    procedure SetReadOnly(Value: Boolean); reintroduce;
     function GetTextMargins: TPoint;
     procedure ResetMaxLength;
     procedure SetDataField(const Value: string);
@@ -84,8 +86,6 @@ type
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
   protected
-    function GetReadOnly: Boolean; override;
-    procedure SetReadOnly(Value: Boolean); override;
     procedure DoEnter; override;
     procedure DoExit; override;
     procedure DoClipboardCut; override;
@@ -98,8 +98,6 @@ type
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Reset; override;
-
-    
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -2591,7 +2589,6 @@ begin
       UpdateData;
   end;
 end;
-
 
 procedure TJvDBStatusLabel.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
 begin
