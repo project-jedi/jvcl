@@ -28,8 +28,15 @@ unit JvNavigationPane;
 
 interface
 uses
-  Windows, Messages, SysUtils, Classes, Controls, Graphics, Menus, ExtCtrls, ImgList,
-  JvButton, JvPageList, JvComponent;
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Controls, Graphics, Menus, ExtCtrls, ImgList,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QControls, QGraphics, QMenus, QExtCtrls, QImgList, Types, Qt,
+  QTypes, QWindows,
+  {$ENDIF VisualCLX}
+  JvButton, JvPageList, JvComponent, JvExExtCtrls;
 
 type
   TJvCustomNavigationPane = class;
@@ -48,7 +55,9 @@ type
     FStyleLink: TJvNavStyleLink;
     procedure SetColorFrom(const Value: TColor);
     procedure SetColorTo(const Value: TColor);
+    {$IFDEF VCL}
     procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
+    {$ENDIF VCL}
     procedure SetImageIndex(const Value: TImageIndex);
     procedure SetImages(const Value: TCustomImageList);
     procedure DoImagesChange(Sender: TObject);
@@ -58,7 +67,9 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure TextChanged; override;
     procedure Paint; override;
-
+    {$IFDEF VisualCLX}
+    function WidgetFlags: integer; override;
+    {$ENDIF VisualCLX}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -67,9 +78,14 @@ type
     property Anchors;
     property Caption;
     property Constraints;
+    {$IFDEF VCL}
     property DragCursor;
     property DragKind;
     property DragMode;
+    property OnStartDock;
+    property OnEndDock;
+    property OnUnDock;
+    {$ENDIF VCL}
     property Enabled;
     property Font;
     property ParentFont;
@@ -90,17 +106,14 @@ type
     property OnContextPopup;
     property OnDragDrop;
     property OnDragOver;
-    property OnEndDock;
     property OnEndDrag;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    property OnStartDock;
     property OnStartDrag;
-    property OnUnDock;
   end;
 
-  TJvNavPanelDivider = class(TSplitter)
+  TJvNavPanelDivider = class(TJvExSplitter)
   private
     FColorFrom: TColor;
     FColorTo: TColor;
@@ -114,7 +127,9 @@ type
     procedure DoStyleChange(Sender: TObject);
   protected
     procedure Paint; override;
+    {$IFDEF VCL}
     procedure CMTextchanged(var Message: TMessage); message CM_TEXTCHANGED;
+    {$ENDIF VCL}
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 
   public
@@ -140,7 +155,7 @@ type
     property Width default 125;
   end;
 
-  TJvOutlookSplitter = class(TSplitter)
+  TJvOutlookSplitter = class(TJvExSplitter)
   private
     FColorTo: TColor;
     FColorFrom: TColor;
@@ -152,7 +167,7 @@ type
     procedure DoStyleChange(Sender: TObject);
   protected
     procedure Paint; override;
-    procedure CMEnabledchanged(var Message: TMessage); message CM_ENABLEDCHANGED;
+    procedure Enabledchanged; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 
   public
@@ -230,8 +245,9 @@ type
     FStyleManager: TJvNavPaneStyleManager;
     FStyleLink: TJvNavStyleLink;
     procedure SetDropDownMenu(const Value: TPopupMenu);
-
+    {$IFDEF VCL}
     procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
+    {$ENDIF VCL}
     function GetDropDownMenu: TPopupMenu;
     procedure SetColors(const Value: TJvNavPanelColors);
     procedure SetStyleManager(const Value: TJvNavPaneStyleManager);
@@ -240,6 +256,9 @@ type
     procedure DoColorsChange(Sender: TObject);
     procedure Paint; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    {$IFDEF VisualCLX}
+    function WidgetFlags: integer; override;
+    {$ENDIF VisualCLX}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -281,8 +300,12 @@ type
     //    property Caption;
     property Constraints;
     property Down;
+    {$IFDEF VCL}
     property DragCursor;
     property DragKind;
+    property OnEndDock;
+    property OnStartDock;
+    {$ENDIF VCL}
     property DragMode;
     property DropDownMenu;
     property GroupIndex;
@@ -306,12 +329,10 @@ type
     property OnContextPopup;
     property OnDragDrop;
     property OnDragOver;
-    property OnEndDock;
     property OnEndDrag;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    property OnStartDock;
     property OnStartDrag;
   end;
 
@@ -328,13 +349,18 @@ type
     procedure DoColorsChange(Sender: TObject);
     procedure SetStyleManager(const Value: TJvNavPaneStyleManager);
     procedure DoStyleChange(Sender: TObject);
+    {$IFDEF VCL}
     procedure CMDialogChar(var Message: TCMDialogChar); message CM_DIALOGCHAR;
+    {$ENDIF VCL}
   protected
     procedure Paint; override;
     procedure TextChanged; override;
     procedure FontChanged; override;
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    {$IFDEF VisualCLX}
+    function WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean; override;
+    {$ENDIF VisualCLX}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -346,8 +372,12 @@ type
     property Caption;
     property Constraints;
     property Down;
+    {$IFDEF VCL}
     property DragCursor;
     property DragKind;
+    property OnEndDock;
+    property OnStartDock;
+    {$ENDIF VCL}
     property DragMode;
     property Enabled;
     property Font;
@@ -373,12 +403,10 @@ type
     property OnContextPopup;
     property OnDragDrop;
     property OnDragOver;
-    property OnEndDock;
     property OnEndDrag;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    property OnStartDock;
     property OnStartDrag;
   end;
 
@@ -407,7 +435,7 @@ type
     procedure DoStyleChange(Sender: TObject);
   protected
     procedure UpdatePageList;
-    procedure SetParent(AParent: TWinControl); override;
+    procedure SetParent({$IFDEF VisualCLX}const{$ENDIF} AParent: TWinControl); override;
     procedure SetPageIndex(Value: Integer); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     property NavPanel: TJvNavPanelButton read FNavPanel;
@@ -505,8 +533,13 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure TextChanged; override;
     procedure FontChanged; override;
+    {$IFDEF VCL}
     procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
     procedure WMNCPaint(var Message: TWMNCPaint); message WM_NCPAINT;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    function WidgetFlags: integer; override;
+    {$ENDIF VisualCLX}
     property EdgeRounding: integer read FEdgeRounding write SetEdgeRounding default 9;
   public
     constructor Create(AOwner: TComponent); override;
@@ -517,8 +550,13 @@ type
     property Anchors;
     property Caption;
     property Constraints;
+    {$IFDEF VCL}
     property DragCursor;
     property DragKind;
+    property OnEndDock;
+    property OnStartDock;
+    property OnUnDock;
+    {$ENDIF VCL}
     property DragMode;
 
     property Enabled;
@@ -552,14 +590,11 @@ type
     property OnContextPopup;
     property OnDragDrop;
     property OnDragOver;
-    property OnEndDock;
     property OnEndDrag;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    property OnStartDock;
     property OnStartDrag;
-    property OnUnDock;
   end;
 
   TJvCustomNavigationPane = class(TJvCustomPageList)
@@ -587,9 +622,10 @@ type
     procedure SetColors(const Value: TJvNavPanelColors);
     procedure SetResizable(const Value: boolean);
     function GetNavPage(Index: integer): TJvNavPanelPage;
+    {$IFDEF VCL}
     procedure WMNCPaint(var Message: TWMNCPaint); message WM_NCPAINT;
     procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
-
+    {$ENDIF VCL}
     procedure DoSplitterCanResize(Sender: TObject; var NewSize: Integer; var Accept: Boolean);
     procedure DoColorsChange(Sender: TObject);
     procedure SetNavPanelFont(const Value: TFont);
@@ -602,6 +638,9 @@ type
     procedure SetStyleManager(const Value: TJvNavPaneStyleManager);
     procedure DoStyleChange(Sender: TObject);
   protected
+    {$IFDEF VisualCLX}
+    function WidgetFlags: integer; override;
+    {$ENDIF VisualCLX}
     procedure SetActivePage(Page: TJvCustomPage); override;
     procedure InsertPage(APage: TJvCustomPage); override;
     procedure RemovePage(APage: TJvCustomPage); override;
@@ -615,7 +654,9 @@ type
     destructor Destroy; override;
     procedure UpdatePositions;
   protected
+    {$IFDEF VCL}
     property BorderWidth default 1;
+    {$ENDIF VCL}
     property ButtonHeight: integer read FButtonHeight write SetButtonHeight default 28;
     property ButtonWidth: integer read FButtonWidth write SetButtonWidth default 22;
     property NavPanelFont: TFont read FNavPanelFont write SetNavPanelFont stored IsNavPanelFontStored;
@@ -638,7 +679,11 @@ type
     property ActivePage;
     property Align;
     property Anchors;
+    {$IFDEF VCL}
     property BorderWidth;
+    property DragCursor;
+    property DragKind;
+    {$ENDIF VCL}
     property ButtonHeight;
     property ButtonWidth;
     property Caption;
@@ -646,8 +691,7 @@ type
     property Colors;
     property StyleManager;
     property Constraints;
-    property DragCursor;
-    property DragKind;
+
     property DragMode;
     property DropDownMenu;
     property Enabled;
@@ -702,7 +746,13 @@ type
 
 implementation
 uses
-  Forms, ActnList, JvJVCLUtils, JvJCLUtils;
+  {$IFDEF VCL}
+  Forms, ActnList,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QForms, QActnList,
+  {$ENDIF VisualCLX}
+  JvJVCLUtils, JvJCLUtils;
 
 type
   TObjectList = class(TList)
@@ -822,10 +872,20 @@ begin
   FDropButton.Visible := Value <> nil;
 end;
 
+{$IFDEF VCL}
 procedure TJvIconPanel.WMEraseBkgnd(var Message: TWMEraseBkgnd);
 begin
   Message.Result := 1;
 end;
+{$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+function TJvIconPanel.WidgetFlags: integer;
+begin
+  Result := Inherited WidgetFlags or Integer(WidgetFlags_WRepaintNoErase);
+end;
+{$ENDIF VisualCLX}
+
 
 { TJvCustomNavigationPane }
 
@@ -837,7 +897,9 @@ begin
   FStyleLink.OnChange := DoStyleChange;
   FButtonHeight := 28;
   FButtonWidth := 22;
+  {$IFDEF VCL}
   BorderWidth := 1;
+  {$ENDIF VCL}
   ParentColor := False;
   Color := clWindow;
   ControlStyle := ControlStyle + [csOpaque];
@@ -848,7 +910,12 @@ begin
   FIconPanel.Parent := Self;
   FIconPanel.Align := alBottom;
   FNavPanelFont := TFont.Create;
+  {$IFDEF VCL}
   FNavPanelFont.Assign(Screen.IconFont);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  FNavPanelFont.Assign(Application.Font);
+  {$ENDIF VisualCLX}
   FNavPanelFont.Style := [fsBold];
   FNavPanelFont.OnChange := DoNavPanelFontChange;
 
@@ -983,6 +1050,7 @@ begin
   UpdatePositions;
 end;
 
+{$IFDEF VCL}
 procedure TJvCustomNavigationPane.WMNCPaint(var Message: TWMNCPaint);
 var
   AColor: TColor;
@@ -995,6 +1063,7 @@ begin
     Color := AColor;
   end;
 end;
+{$ENDIF VCL}
 
 procedure TJvCustomNavigationPane.UpdatePositions;
 var
@@ -1102,6 +1171,7 @@ begin
   end;
 end;
 
+{$IFDEF VCL}
 procedure TJvCustomNavigationPane.WMEraseBkgnd(var Message: TWMEraseBkgnd);
 begin
   if ActivePage = nil then
@@ -1111,6 +1181,15 @@ begin
   end;
   Message.Result := 1;
 end;
+{$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+function TJvCustomNavigationPane.WidgetFlags: integer;
+begin
+  Result := Inherited WidgetFlags or Integer(WidgetFlags_WRepaintNoErase);
+end;
+{$ENDIF VisualCLX}
+
 
 procedure TJvCustomNavigationPane.SetNavPanelFont(const Value: TFont);
 begin
@@ -1121,7 +1200,12 @@ function TJvCustomNavigationPane.IsNavPanelFontStored: Boolean;
 var
   F: TFont;
 begin
+  {$IFDEF VCL}
   F := Screen.IconFont;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  F := Application.Font;
+  {$ENDIF VisualCLX}
   with FNavPanelFont do
     Result := (Name <> F.Name) or (Size <> F.Size) or (Style <> [fsBold])
       or (Color <> F.Color) or (Pitch <> F.Pitch) or (Charset <> F.CharSet);
@@ -1217,7 +1301,12 @@ begin
   FChangeLink.OnChange := DoImagesChange;
   Width := 22;
   Height := 22;
+  {$IFDEF VCL}
   Font := Screen.IconFont;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Font := Application.Font;
+  {$ENDIF VisualCLX}
   Font.Style := [fsBold];
 end;
 
@@ -1318,7 +1407,8 @@ begin
             // draw image only
             Images.Draw(Canvas,
               (Width - Images.Width) div 2 + Ord(bsMouseDown in MouseStates),
-              (Height - Images.Height) div 2 + Ord(bsMouseDown in MouseStates), ImageIndex, Enabled);
+              (Height - Images.Height) div 2 + Ord(bsMouseDown in MouseStates),
+              ImageIndex, {$IFDEF VisualCLX}itImage,{$ENDIF} Enabled);
         end;
       nibDropArrow:
         begin
@@ -1462,7 +1552,12 @@ begin
   Height := 28;
   FColors := TJvNavPanelColors.Create;
   FColors.OnChange := DoColorsChange;
+  {$IFDEF VCL}
   Font := Screen.IconFont;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Font := Application.Font;
+  {$ENDIF VisualCLX}
   Font.Style := [fsBold];
   Width := 125;
   Height := 28;
@@ -1530,8 +1625,13 @@ begin
   if Caption <> '' then
   begin
     Canvas.Font := Font;
+    {$IFDEF VCL}
     SetBkMode(Canvas.Handle, Windows.TRANSPARENT);
     DrawText(Canvas.Handle, PChar(Caption), Length(Caption), R, DT_SINGLELINE or DT_VCENTER or DT_EDITCONTROL);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    Canvas.TextRect(R, R.Left, R.Top, Caption, AlignVCenter + SingleLine);
+    {$ENDIF VisualCLX}
   end;
   Canvas.Pen.Color := clGray;
   if Align = alBottom then
@@ -1591,6 +1691,7 @@ begin
   Invalidate;
 end;
 
+{$IFDEF VCL}
 procedure TJvNavPanelButton.CMDialogChar(var Message: TCMDialogChar);
 begin
   if IsAccel(Message.CharCode, Caption) then
@@ -1601,6 +1702,19 @@ begin
   else
     inherited;
 end;
+{$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+function TJvNavPanelButton.WantKey(Key: Integer; Shift: TShiftState;
+  const KeyText: WideString): Boolean;
+begin
+  Result := IsAccel(Key, Caption) and Enabled and not (ssCtrl in Shift);
+  if Result then
+    Click
+  else
+    Result := inherited WantKey(Key, Shift, KeyText);
+end;
+{$ENDIF VisualCLX}
 
 { TJvNavPanelColors }
 
@@ -1941,7 +2055,7 @@ begin
   UpdatePageList;
 end;
 
-procedure TJvNavPanelPage.SetParent(AParent: TWinControl);
+procedure TJvNavPanelPage.SetParent({$IFDEF VisualCLX}const{$ENDIF} AParent: TWinControl);
 begin
   inherited;
   if (FNavPanel = nil) or (FIconButton = nil) or (csDestroying in ComponentState) then
@@ -1974,7 +2088,7 @@ end;
 
 { TJvOutlookSplitter }
 
-procedure TJvOutlookSplitter.CMEnabledchanged(var Message: TMessage);
+procedure TJvOutlookSplitter.Enabledchanged;
 begin
   inherited;
   Invalidate;
@@ -2170,14 +2284,22 @@ begin
   begin
     Canvas.Font := Font;
     OffsetRect(R, 4, 0);
+    {$IFDEF VCL}
     SetBkMode(Canvas.Handle, Windows.TRANSPARENT);
-    DrawText(Canvas.Handle, PChar(Caption), Length(Caption), R, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX or
-      DT_EDITCONTROL);
+    DrawText(Canvas.Handle, PChar(Caption), Length(Caption), R,
+      DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX or DT_EDITCONTROL);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    DrawTextW(Canvas.Handle, PWideChar(Caption), Length(Caption), R,
+      DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
+    {$ENDIF VisualCLX}
   end;
   if (Images <> nil) and (ImageIndex >= 0) and (ImageIndex < Images.Count) then
   begin
     Images.Draw(Canvas,
-      ClientWidth - Images.Width - (Height - Images.Height) div 2, (Height - Images.Height) div 2, ImageIndex, True);
+      ClientWidth - Images.Width - (Height - Images.Height) div 2,
+      (Height - Images.Height) div 2, ImageIndex,
+      {$IFDEF VisualCLX}itImage,{$ENDIF} True);
   end;
 end;
 
@@ -2248,18 +2370,29 @@ begin
   Invalidate;
 end;
 
+{$IFDEF VCL}
 procedure TJvNavPanelHeader.WMEraseBkgnd(var Message: TWMEraseBkgnd);
 begin
   Message.Result := 1;
 end;
+{$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+function TJvNavPanelHeader.WidgetFlags: integer;
+begin
+  Result := Inherited WidgetFlags or Integer(WidgetFlags_WRepaintNoErase);
+end;
+{$ENDIF VisualCLX}
 
 { TJvNavPanelDivider }
 
+{$IFDEF VCL}
 procedure TJvNavPanelDivider.CMTextchanged(var Message: TMessage);
 begin
   inherited;
   Invalidate;
 end;
+{$ENDIF VCL}
 
 constructor TJvNavPanelDivider.Create(AOwner: TComponent);
 begin
@@ -2274,7 +2407,12 @@ begin
   FColorTo := $E7A67B;
   FFrameColor := $943000;
   Cursor := crSizeNS;
+  {$IFDEF VCL}
   Font := Screen.IconFont;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Font := Application.Font;
+  {$ENDIF VisualCLX}
   Height := 19;
   Width := 125;
 end;
@@ -2317,9 +2455,15 @@ begin
   begin
     Canvas.Font := Font;
     OffsetRect(R, 7, 0);
+    {$IFDEF VCL}
     SetBkMode(Canvas.Handle, Windows.TRANSPARENT);
-    DrawText(Canvas.Handle, PChar(Caption), Length(Caption), R, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX or
-      DT_EDITCONTROL);
+    DrawText(Canvas.Handle, PChar(Caption), Length(Caption), R,
+      DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX or DT_EDITCONTROL);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    DrawTextW(Canvas.Handle, PWideChar(Caption), Length(Caption), R,
+      DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
+    {$ENDIF VisualCLX}
   end;
   Canvas.Pen.Color := FrameColor;
   Canvas.MoveTo(0, ClientHeight - 1);
@@ -2629,7 +2773,12 @@ begin
   FHeaderHeight := 29;
   FEdgeRounding := 9;
   FShowGrabber := True;
+  {$IFDEF VCL}
   Font := Screen.IconFont;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Font := Application.Font;
+  {$ENDIF VisualCLX}
   Font.Style := [fsBold];
 
   FCloseButton := TJvNavIconButton.Create(Self);
@@ -2760,9 +2909,13 @@ begin
       Inc(R.Left, 12);
     Canvas.Font := Self.Font;
 
+    {$IFDEF VCL}
     SetBkMode(Canvas.Handle, Windows.TRANSPARENT);
     DrawText(Canvas.Handle, PChar(Caption), Length(Caption), R, DT_SINGLELINE or DT_VCENTER or DT_LEFT);
-
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    DrawTextW(Canvas.Handle, PWideChar(Caption), Length(Caption), R, DT_SINGLELINE or DT_VCENTER or DT_LEFT);
+    {$ENDIF VisualCLX}
     // draw the client areas top rounding
     R := ClientRect;
     Inc(R.Top, HeaderHeight);
@@ -2971,6 +3124,14 @@ begin
   Invalidate;
 end;
 
+{$IFDEF VisualCLX}
+function TJvNavPaneToolPanel.WidgetFlags: integer;
+begin
+  Result := Inherited WidgetFlags or Integer(WidgetFlags_WRepaintNoErase);
+end;
+{$ENDIF VisualCLX}
+
+{$IFDEF VCL}
 procedure TJvNavPaneToolPanel.WMEraseBkgnd(var Message: TWMEraseBkgnd);
 begin
   Message.Result := 1;
@@ -2985,6 +3146,9 @@ begin
   inherited;
   Color := AColor;
 end;
+{$ENDIF VCL}
+
+
 
 { TJvNavPaneToolButton }
 

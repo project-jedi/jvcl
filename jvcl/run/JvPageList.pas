@@ -25,12 +25,18 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
-{$I windowsonly.inc}
+
 unit JvPageList;
 
 interface
 uses
-  Windows, SysUtils, Messages, Classes, Graphics, Controls,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, Types, Qt, QWindows,
+  {$ENDIF VisualCLX}
   JvComponent, JvThemes;
 
 type
@@ -60,14 +66,19 @@ type
     FOnHide: TNotifyEvent;
     FOnShow: TNotifyEvent;
   protected
+    {$IFDEF VCL}
     procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
+    procedure CreateParams(var Params: TCreateParams); override;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    function WidgetFlags: integer; override;
+    {$ENDIF VisualCLX}
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure SetPageIndex(Value: Integer);virtual;
     function GetPageIndex: Integer;virtual;
     procedure SetPageList(Value: TJvCustomPageList);virtual;
     procedure TextChanged; override;
     procedure ShowingChanged; override;
-    procedure CreateParams(var Params: TCreateParams); override;
     procedure Paint; override;
     procedure ReadState(Reader: TReader); override;
     function DoBeforePaint(ACanvas: TCanvas; ARect: TRect): Boolean; dynamic;
@@ -108,7 +119,9 @@ type
     FOnChange: TNotifyEvent;
     FOnChanging: TJvPageChangingEvent;
     FShowDesignCaption: TJvShowDesignCaption;
+    {$IFDEF VCL}
     procedure CMDesignHitTest(var Message: TCMDesignHitTest); message CM_DESIGNHITTEST;
+    {$ENDIF VCL}
     procedure UpdateEnabled;
     procedure SetPropagateEnable(const Value: Boolean);
     procedure SetShowDesignCaption(const Value: TJvShowDesignCaption);
@@ -157,7 +170,9 @@ type
 
   TJvStandardPage = class(TJvCustomPage)
   published
+    {$IFDEF VCL}
     property BorderWidth;
+    {$ENDIF VCL}
     property Caption;
     property Color;
     property DragMode;
@@ -208,11 +223,20 @@ type
     property Action;
     property Align;
     property Anchors;
+    {$IFDEF VCL}
     property BiDiMode;
     property BorderWidth;
-    property Constraints;
     property DragCursor;
     property DragKind;
+    property OnStartDock;
+    property OnUnDock;
+    property OnEndDock;
+    property OnCanResize;
+    property OnDockDrop;
+    property OnDockOver;
+    property OnGetSiteInfo;
+    {$ENDIF VCL}
+    property Constraints;
     property DragMode;
     property Enabled;
     property PopupMenu;
@@ -223,21 +247,16 @@ type
     property OnMouseLeave;
     property OnParentColorChange;
 
-    property OnCanResize;
     property OnChange;
     property OnChanging;
     property OnConstrainedResize;
     property OnContextPopup;
     property OnDblClick;
-    property OnDockDrop;
-    property OnDockOver;
     property OnDragDrop;
     property OnDragOver;
-    property OnEndDock;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
-    property OnGetSiteInfo;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
@@ -245,20 +264,24 @@ type
     property OnMouseWheelDown;
     property OnMouseWheelUp;
     property OnResize;
-    property OnStartDock;
     property OnStartDrag;
-    property OnUnDock;
     {$IFDEF JVCLThemesEnabled}
     property ParentBackground default True;
     {$ENDIF JVCLThemesEnabled}
   end;
 
 implementation
+{$IFDEF VCL}
 uses
   {$IFNDEF COMPILER6_UP}
   JvResources,
   {$ENDIF COMPLER6_UP}
   Forms;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+uses
+  QForms;
+{$ENDIF VisualCLX}
 
 { TJvCustomPage }
 
@@ -269,15 +292,19 @@ begin
   ControlStyle := ControlStyle + [csOpaque, csAcceptsControls, csNoDesignVisible];
   IncludeThemeStyle(Self, [csParentBackground]);
   Visible := False;
+  {$IFDEF VCL}
   DoubleBuffered := True;
+  {$ENDIF VCL}
 end;
 
+{$IFDEF VCL}
 procedure TJvCustomPage.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
   with Params.WindowClass do
     Style := Style and not (CS_HREDRAW or CS_VREDRAW);
 end;
+{$ENDIF VCL}
 
 destructor TJvCustomPage.Destroy;
 begin
@@ -341,7 +368,12 @@ begin
         InflateRect(ARect, -4, -4);
         if not Enabled then
         begin
+          {$IFDEF VCL}
           SetBkMode(Handle, Windows.TRANSPARENT);
+          {$ENDIF VCL}
+          {$IFDEF VisualCLX}
+          SetBkMode(Handle, QWindows.TRANSPARENT);
+          {$ENDIF VisualCLX}
           Canvas.Font.Color := clHighlightText;
           DrawText(Handle, PChar(S), Length(S), ARect, GetDesignCaptionFlags(PageList.ShowDesignCaption) or DT_SINGLELINE);
           OffsetRect(ARect, -1, -1);
@@ -452,10 +484,20 @@ begin
   end;
 end;
 
+{$IFDEF VCL}
 procedure TJvCustomPage.WMEraseBkgnd(var Message: TWMEraseBkgnd);
 begin
   Message.Result := 1;
 end;
+{$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+function TJvCustomPage.WidgetFlags: integer;
+begin
+  Result := Inherited WidgetFlags or Integer(WidgetFlags_WRepaintNoErase);
+end;
+{$ENDIF VisualCLX}
+
 
 { TJvCustomPageList }
 
@@ -472,6 +514,7 @@ begin
     FOnChange(Self);
 end;
 
+{$IFDEF VCL}
 procedure TJvCustomPageList.CMDesignHitTest(var Message: TCMDesignHitTest);
 var
   Pt: TPoint;
@@ -481,6 +524,7 @@ begin
   if Assigned(ActivePage) and PtInRect(ActivePage.BoundsRect, Pt) then
     Message.Result := 1;
 end;
+{$ENDIF VCL}
 
 constructor TJvCustomPageList.Create(AOwner: TComponent);
 begin
@@ -750,7 +794,12 @@ begin
   begin
     FShowDesignCaption := Value;
     if HandleAllocated and (csDesigning in ComponentState) then
+    {$IFDEF VCL}
       RedrawWindow(Handle, nil, 0, RDW_UPDATENOW or RDW_INVALIDATE or RDW_ALLCHILDREN);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+      Invalidate;
+    {$ENDIF VisualCLX}
   end;
 end;
 
