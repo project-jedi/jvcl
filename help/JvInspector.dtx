@@ -1807,6 +1807,15 @@ Description
   DataSort is called by Sort when SortKind = iskCustom.
 See Also
   SortKind, OnCompare
+----------------------------------------------------------------------------------------------------
+@@TJvCustomInspectorItem.Deactivate
+Summary
+  Called whenever the application is deactivated.
+Description
+  Deactivate is called when the user switches to another application. This gives you the oppertunity
+  to remove any additional windows that might be open.
+  
+  The implementation of TJvCustomInspectorItem will close the drop down box if it's still open.
 --------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.Delete
 Summary
@@ -2388,6 +2397,16 @@ Parameters
   Shift - Indicates the shift state at the time the mouse was moved.
   X - X-position of the mouse in the client area of the sender.
   Y - Y-position of the mouse in the client area of the sender.
+----------------------------------------------------------------------------------------------------
+@@TJvCustomInspectorItem.ListExit
+Summary
+  OnExit handler for the list control.
+Description
+  ListExit is the OnExit handler for the list box control.
+  
+  The base implementation closes the list, canceling the user selection.
+Parameters
+  Sender - Reference to the list control.
 --------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.Level
 Summary
@@ -3521,7 +3540,25 @@ Description
   Set ShowSeconds to True to allow the editor to display the seconds.
   
   Set ShowSeconds to False to hide the seconds from the editor.
---------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorTStringsItem
+----------------------------------------------------------------------------------------------------
+Summary
+  TStrings inspector item.
+Description
+  TJvInspectorTStringsItem is an inspector item that allows any TStrings descendant to be edited
+  either inline or using a string list editor, much like the one Borland provides.
+  
+  The distinction between inline editable and stringlist editable is determine by the Flags
+  property.
+  
+  If iifEditButton is set, the string list editor is used and the item can not be edited inline
+  (in addition, the iifMultiline flag will be removed).
+  
+  If iifMultiLine is set, you can edit the item inline and it can not be edited through the
+  string list editor (in addition, the iifEditButton flag will be removed).
+  
+  TJvInspectorCustomData registers this item for TStrings class types.
 --------------------------------------------------------------------------------
 ## Item registration
 --------------------------------------------------------------------------------
@@ -4164,12 +4201,21 @@ Description
 --------------------------------------------------------------------------------
 @@TJvCustomInspectorData.Invalidate
 Summary
-  Invalidates the data value.
+  Invalidates the item.
 Description
-  Invalidate tells the item that the data value it last displayed/edited has
-  been changed. Call Invalidate whenever the data is changed (this is done
-  automatically when the data is changed through one of it's access properties
-  but you might need to call it when the data has changed through other means).
+  Invalidate tells the item that something in the data instance has changed
+  since it was last displayed/edited. Call Invalidate whenever something in the
+  data instance is changed (this is done automatically when the data is changed
+  through one of it's access properties but you might need to call it when the
+  data has changed through other means).
+----------------------------------------------------------------------------------------------------
+@@TJvCustomInspectorData.InvalidateData
+Summary
+  Invalidates the data.
+Description
+  InvalidateData will notify all attached inspectors and items the value has changed. In addition it
+  will trigger the OnValueChanged events of the data instance, all attached items and all attached
+  Inspectors.
 --------------------------------------------------------------------------------
 @@TJvCustomInspectorData.HasValue
 Summary
@@ -4206,6 +4252,20 @@ Description
   can not be used and the inspector will show <B>(uninitialized)</B>
 See Also
   HasValue, IsAssigned
+----------------------------------------------------------------------------------------------------
+@@TJvCustomInspectorData.IsEqualReference
+Summary
+  Determines if the specified data instance references the same data.
+Description
+  IsEqualReference determines if the specified data instance references the same physical data as
+  Self does.
+  
+  If the specified instance references the same data True will be returned, otherwise False is
+  returned.
+Parameters
+  Ref - The data instance to check.
+See Also
+  NotifyRemoveData, RegisterInstance
 --------------------------------------------------------------------------------
 @@TJvCustomInspectorData.ItemRegister
 Summary
@@ -4222,6 +4282,102 @@ Description
   be searched until a perfect match is found or until the root database has been
   searched. Whichever item has scored highest, automatically wins and will
   determine the actual item class.
+----------------------------------------------------------------------------------------------------
+@@TJvCustomInspectorData.NotifyRemoveData
+Summary
+  Called whenever a data instance is about to be removed.
+Description
+  NotifyRemoveData gets called whenever a data instance is about to be removed. This allows for
+  other data instances that depend on the instance to be removed as well or to block the removal
+  entirely.
+Parameters
+  Instance - The data instance about to be removed.
+See Also
+  IsEqualReference, RegisterInstance
+----------------------------------------------------------------------------------------------------
+@@TJvCustomInspectorData.RegisterInstance
+Summary
+  Registers data instance globally to the application.
+Description
+  RegisterInstance registers the specified data instance in a application global list of known data
+  instances. This assures that multiple references to the same data are only created once. Instead
+  of duplicating the data instance, a new inspector item is created.
+  
+  The big advantage is that if data is changed in one item, it will immediately change in the other
+  item as well, even if it's in another inspector.
+  
+  The return value will either hold the specified instance if no other instance references the same
+  physical data or a previously registered instance that references the same physical data.
+Parameters
+  Instance  - The data instance to register.
+See Also
+  IsEqualReference, NotifyRemoveData
+----------------------------------------------------------------------------------------------------
+@@TJvCustomInspectorData.SupportsMethodPointers
+Summary
+  Determines if the data instance supports method pointers.
+Description
+  SupportsMethodPointers determines if the data instance supports method pointers. Items have to
+  check this value before attempting to access the data instance with the AsMethod property.
+  
+  If the function returns False the data instance does not support AsMethod directly and the item
+  should access the data instance using the AsString property and convert strings from/to method
+  pointers.
+  
+  If the function returns True the data instance supports AsMethod directly.
+----------------------------------------------------------------------------------------------------
+@@TJvCustomInspectorData.DoDataChanged
+Summary
+  Generates an OnValueChanged event.
+Description
+  DoDataChanged generates an OnValueChanged event if a handler is assigned.
+See Also
+  OnValueChanged
+----------------------------------------------------------------------------------------------------
+@@TJvCustomInspectorData.OnValueChanged
+Summary
+  Notifies you whenever the value has changed.
+Description
+  Write an OnValueChanged event handler to react to changes in the value. Changes done through an
+  inspector control are always detected and reported. For some data layers (like the
+  TJvInspectorDBData data layer) you will also recieve notifications for changes done outside an
+  inspector control.
+----------------------------------------------------------------------------------------------------
+@@TJvCustomInspectorData.DoneEdits
+Summary
+  Sets all attached inspector items in browse mode.
+Description
+  DoneEdits will iterate over all inspector items and call their
+  <LINK TJvCustomInspectorItem.DoneEdit, DoneEdit> method.
+See Also
+  InitEdits
+----------------------------------------------------------------------------------------------------
+@@TJvCustomInspectorData.InitEdits
+Summary
+  Sets all attached inspector items in edit mode.
+Description
+  InitEdits will iterate over all inspector items and call their
+  <LINK TJvCustomInspectorItem.InitEdit, InitEdit> method, but only if the item is the currently
+  selected item of it's inspector.
+See Also
+  DoneEdits
+----------------------------------------------------------------------------------------------------
+@@TJvCustomInspectorData.RefreshEdits
+Summary
+  Cancels and reactivates all attached inspector items.
+Description
+  RefreshEdits will iterate over all inspector items and if the item is in edit mode will call it's
+  <LINK TJvCustomInspectorItem.DoneEdit, DoneEdit> method, cancelling the edit, and
+  <LINK TJvCustomInspectorItem.InitEdit, InitEdit> method, to set the item back in edit mode.
+  
+  This will effectively refresh all items to any changes in the value, regardless where the change
+  occured and wether ot not an item is being edited.
+----------------------------------------------------------------------------------------------------
+@@TJvCustomInspectorData.RemoveItem
+Summary
+  Detaches an item from the data instance.
+Description
+  RemoveItem will remove the specified item from the list of attached items for this data layer.
 --------------------------------------------------------------------------------
 ## Data layers: Set member data layer
 --------------------------------------------------------------------------------
