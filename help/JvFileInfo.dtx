@@ -1,15 +1,3 @@
-@@$TJvFileInfo
-<TITLE TJvFileInfo overview>
-<GROUP JVCL.System.FilesAndFolders>
-  Provides an interface to most of what is returned by the SHGetFileInfo function
-  to allow easier access to information about a files type, attributes, icon
-  image and icon handle.  
-  
-  To get information on the a file you should:
-
-  * drop a TJvFileInfo on a form or data module.
-  * set the property FileName to an existing file on your computer.
-----------------------------------------------------------------------------------------------------
 @@JvFileInfo.pas
 <GROUP JVCL.FileRef>
 Summary
@@ -19,7 +7,8 @@ Author
   Peter Thörnqvist
 ----------------------------------------------------------------------------------------------------
 @@TJvFileInfo
-<GROUP TJvFileInfo>
+##JVCL:Component
+<GROUP JVCL.System.FilesAndFolders>
 <TITLEIMG TJvFileInfo>
 Summary
   Retrieve info on a file, such as type, attribute, modifier and icon.
@@ -27,6 +16,11 @@ Description
   TJvFileInfo is a non-visible component that provides you with information on a particular file. 
   File information such as type, attribute, modifier, icon can be retrieved with the published 
   properties.
+
+  To get information on the a file you should:
+
+  * drop a TJvFileInfo on a form or data module.
+  * set the property FileName to an existing file on your computer.
 -----------------------------------------------------------------------------------------------------
 @@TJvFileInfo.Filename
 Summary

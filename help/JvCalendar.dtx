@@ -1,23 +1,5 @@
-----------------------------------------------------------------------------------------------------
-@@$TJvMonthCalendar2
-<TITLE TJvMonthCalendar2 overview>
-<GROUP JVCL.CommCtrl, JVCL.DateTime.Other>
-  TJvMonthCalendar2 is a wrapper component for the MicroSoft Month Calendar control that is
-  available in <B>ComCtl32.dll, version 4.70 and above</B>. The control is the same as Delphi's
-  TMonthCalendar control, but has an easier interface for setting/retrieving the bold states.
-
-  The control displays a maximum of 12 months at a time, but you can't set the number of visible
-  months as this is automatically calculated from the controls size. If the window is larger than
-  the displayed months, they are centered in the window.
-
-  Sizing the window programatically for best fit is problematic: the control needs one size for
-  dispaying one month but a different (and smaller value) for each subsequent one. This value
-  varies depending on the currently used font.
-
-  <LINK TJvCustomMonthCalendar.MinSize, MinSize> returns a TRect that contains the minimum size for
-  a one month calendar.
-----------------------------------------------------------------------------------------------------
 @@JvCalendar.pas
+<GROUP JVCL.FileRef>
 Summary
   Contains all code for the MS Month Calendar control wrapper.
 <INCLUDE JVCL.UnitText.dtx>
@@ -25,7 +7,8 @@ Author
   Peter Thörnqvist
 ----------------------------------------------------------------------------------------------------
 @@TJvMonthCalendar2
-<GROUP TJvMonthCalendar2>
+##JVCL:Component
+<GROUP JVCL.CommCtrl, JVCL.DateTime.Other>
 <TITLEIMG TJvMonthCalendar2>
 Summary
   A wrapper component for the MS MonthCal control available in ComCtl32.dll versions 4.70 and above.
@@ -45,7 +28,6 @@ Description
   MinSize returns a TRect that contains the minimum size for a one month calendar.
 ----------------------------------------------------------------------------------------------------
 @@DayStatesToString
-<GROUP TJvMonthCalendar2>
 Summary
   Converts a TMonthDayState value into a comma separated list.
 Description
@@ -59,14 +41,12 @@ See Also
   StringToDayStates
 ----------------------------------------------------------------------------------------------------
 @@EMonthCalError
-<GROUP TJvMonthCalendar2>
 Summary
   Exception class used for errors using the month calendar control or support functions.
 Description
   Exception class used for errors using the month calendar control or support functions.
 ----------------------------------------------------------------------------------------------------
 @@StringToDayStates
-<GROUP TJvMonthCalendar2>
 Summary
   Converts a comma separated list of day numbers into a TMonthDayState value.
 Description
@@ -78,7 +58,6 @@ See Also
   DayStatesToString
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMonthCalendar
-<GROUP TJvMonthCalendar2>
 Summary
   Base component that serves as a wrapper around the MicroSoft MonthCalendar control.
 Description
@@ -436,7 +415,6 @@ Description
   True week numbers will be visible.
 ----------------------------------------------------------------------------------------------------
 @@TJvMonthCalColors
-<GROUP TJvMonthCalendar2>
 Summary
   Auxiliary class to set the calendar colors.
 Description
@@ -499,7 +477,6 @@ See Also
   TextColor, TitleTextColor
 ----------------------------------------------------------------------------------------------------
 @@TJvMonthCalSelEvent
-<GROUP TJvMonthCalendar2>
 Summary
 Description
 Parameters
@@ -510,7 +487,6 @@ Parameters
 See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvMonthCalStateEvent
-<GROUP TJvMonthCalendar2>
 Parameters
   Sender        - Reference to the object generating the event. Usually this will be a
                   TJvCustomMonthCalendar descendant.
@@ -519,7 +495,6 @@ Parameters
   DayStateArray - An array to retieve the day states in.
 ----------------------------------------------------------------------------------------------------
 @@TJvMonthCalWeekDay
-<GROUP TJvMonthCalendar2>
 Summary
   Type used to determine which week day is shown as the first day of a week.
 Description

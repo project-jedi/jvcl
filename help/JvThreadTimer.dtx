@@ -1,11 +1,3 @@
-----------------------------------------------------------------------------------------------------
-@@$TJvThreadTimer
-<TITLE TJvThreadTimer overview>
-<GROUP JVCL.System.AlarmsAndTimers.Timers>
-  The TJvThreadTimer component is a replacement for the TTimer component, with a better accuracy 
-  (1 millisecond). TJvThreadTimer uses a TJvThreadTimerclass thread instead of the Windows API timer 
-  functions, and can have an accuracy of a millisecond, but it will consume more CPU than a TTimer.
-----------------------------------------------------------------------------------------------------
 @@JvThreadTimer.pas
 <GROUP JVCL.FileRef>
 Summary
@@ -15,8 +7,9 @@ Author
   Sébastien Buysse
 ----------------------------------------------------------------------------------------------------
 @@TJvThreadTimer
+##JVCL:Component
 <TITLEIMG TJvThreadTimer>
-<GROUP TJvThreadTimer>
+<GROUP JVCL.System.AlarmsAndTimers.Timers>
 Summary
   TTimer replacement that utilizes a thread and has a higher accuracy. 
 Description
@@ -80,7 +73,6 @@ Description
   specified interval passes, the OnTimer event occurs.
 ----------------------------------------------------------------------------------------------------
 @@TJvThreadTimerclass
-<GROUP TJvThreadTimerclass>
 Summary
   Background thread for the TJvThreadTimer control.
 Description

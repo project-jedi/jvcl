@@ -1,16 +1,5 @@
-----------------------------------------------------------------------------------------------------
-@@$TJvCaptionButton
-<TITLE TJvCaptionButton overview>
-<GROUP JVCL.Buttons.Push, JVCL.FormsAndApp.Forms.DecoratingAndEffects>
-  TJvCaptionButton encapsulates a button that is placed in the form's caption, muck like the
-  standard minimize, maximize and close buttons.
-
-  To use a caption button
-  * drop a TJvCaptionButton on a form.
-  * Specify if it is shown as a standard button.
-  * If it's not a standard button, specify a caption and/or bitmap.
-----------------------------------------------------------------------------------------------------
 @@JvCaptionButton.pas
+<GROUP JVCL.FileRef>
 Summary
   Contains all code for TJvCaptionButton.
 <INCLUDE JVCL.UnitText.dtx>
@@ -18,13 +7,19 @@ Author
   Peter Thörnqvist
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptionButton
-<GROUP TJvCaptionButton>
+##JVCL:Component
+<GROUP JVCL.Buttons.Push, JVCL.FormsAndApp.Forms.DecoratingAndEffects>
 <TITLEIMG TJvCaptionButton>
 Summary
   Button that is added to the form caption.
 Description
   TJvCaptionButton encapsulates a button that is placed in the form's caption, muck like the
   standard minimize, maximize and close buttons.
+
+  To use a caption button
+  * drop a TJvCaptionButton on a form.
+  * Specify if it is shown as a standard button.
+  * If it's not a standard button, specify a caption and/or bitmap.
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptionButton.Alignment
 Summary
@@ -188,7 +183,6 @@ See Also
   Down
 ----------------------------------------------------------------------------------------------------
 @@TJvStandardButton
-<GROUP TJvCaptionButton>
 Summary
   Used to specify the kind of caption button.
 Description
@@ -209,7 +203,6 @@ See also
   The caption button is a restore button.
 ----------------------------------------------------------------------------------------------------
 @@htCaptionButton
-<GROUP TJvCaptionButton>
 Summary
   WMNCHITTEST constant.
 Description

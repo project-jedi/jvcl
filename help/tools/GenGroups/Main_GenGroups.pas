@@ -93,7 +93,8 @@ type
   TGroupInfos = class;
   TGroupInfo = class;
 
-  TComponentInfoFlag = (cifHasGroup, cifHasComp, cifNotComponent);
+  TComponentInfoFlag = (cifComponent, cifClass, cifRoutine, cifNotInParentList, cifIgnore,
+    cifAssignedToGroup);
   TComponentInfoFlags = set of TComponentInfoFlag;
 
   TComponentInfos = class(TObject)
@@ -107,7 +108,9 @@ type
     constructor Create;
     destructor Destroy; override;
     function Add(const AName: string): TComponentInfo;
+    procedure Delete(Index: Integer);
     function IndexOf(const AName: string): Integer;
+    procedure Remove(Comp: TComponentInfo);
     procedure RemoveInvalid;
 
     property Count: Integer read GetCount;
@@ -166,13 +169,15 @@ type
     FSubGroups: TGroupInfos;
   protected
     function CountComp: Integer;
-    function CountNonComp: Integer;
+    function CountClass: Integer;
+    function CountRoutines: Integer;
   public
     constructor Create(const AParent: TGroupInfo; const AInfoString: string);
     destructor Destroy; override;
 
     procedure AddComponentList;
-    procedure AddNonComponentList;
+    procedure AddClassList;
+    procedure AddRoutineList;
     procedure AddDescription;
     procedure AppendToFile(const TopicOrder: Integer);
     function ParentGroupID(const WantFuncRef: Boolean = False): string;
@@ -197,10 +202,13 @@ var
   FileSL: TStrings;               // Temporary string list containing the definition file and output files.
   CurList: TStack;
   GroupInfo: TGroupInfos;         // Group tree, complete with group info
-  ComponentList: TComponentInfos; // List of components
+  ComponentList: TComponentInfos; // List of components, classes and routines
   Hints: Integer;                 // Number of hints
   Warnings: Integer;              // Number of warnings
-  InvComps: string;               // List of eliminated components
+  InvComps: string;               // List of eliminated components, classes and routines
+
+const
+  cifSymbolType = [cifComponent, cifClass, cifRoutine];
 
 //--------------------------------------------------------------------------------------------------
 // TComponentInfos
@@ -258,11 +266,26 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+procedure TComponentInfos.Delete(Index: Integer);
+begin
+  FList.Delete(Index);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function TComponentInfos.IndexOf(const AName: string): Integer;
 begin
   Result := Count - 1;
   while (Result >= 0) and not AnsiSameText(Items[Result].Name, AName) do
     Dec(Result);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TComponentInfos.Remove(Comp: TComponentInfo);
+begin
+  if FList.IndexOfObject(Comp) > -1 then
+    Delete(FList.IndexOfObject(Comp));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -281,7 +304,7 @@ begin
     begin
       InvComps := InvComps + Prefix + Items[I].Name;
       Prefix := ', ';
-      FList.Delete(I);
+      Delete(I);
     end;
     Dec(I);
   end;
@@ -294,9 +317,13 @@ end;
 function TComponentInfo.GetValid: Boolean;
 begin
   Result :=
-    (cifHasGroup in Flags) and (cifHasComp in Flags) and (
-      (cifNotComponent in Flags) or (Trim(FImage) <> '')
-    ) and (Trim(FSummary) <> '');
+    (cifAssignedToGroup in Flags) and (Trim(FSummary) <> '') and (
+      (
+        ((cifComponent in Flags) and (Trim(FImage) <> '')) or
+        (cifClass in Flags) or
+        (cifRoutine in Flags)
+      )
+    );
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -429,19 +456,31 @@ var
 begin
   Result := 0;
   for I := Components.Count - 1 downto 0 do
-    if not (cifNotComponent in ComponentList.ItemByName[Components[I]].Flags) then
+    if cifComponent in ComponentList.ItemByName[Components[I]].Flags then
       Inc(Result);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TGroupInfo.CountNonComp: Integer;
+function TGroupInfo.CountClass: Integer;
 var
   I: Integer;
 begin
   Result := 0;
   for I := Components.Count - 1 downto 0 do
-    if cifNotComponent in ComponentList.ItemByName[Components[I]].Flags then
+    if cifClass in ComponentList.ItemByName[Components[I]].Flags then
+      Inc(Result);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TGroupInfo.CountRoutines: Integer;
+var
+  I: Integer;
+begin
+  Result := 0;
+  for I := Components.Count - 1 downto 0 do
+    if cifRoutine in ComponentList.ItemByName[Components[I]].Flags then
       Inc(Result);
 end;
 
@@ -481,7 +520,7 @@ begin
   for I := Components.Count - 1 downto 0 do
   begin
     Comp := ComponentList[ComponentList.IndexOf(Components[I])];
-    if not (cifNotComponent in Comp.Flags) and
+    if (cifComponent in Comp.Flags) and
         ((Length(Comp.Name) + Length(Comp.Image) + 8) > Col1Length) then
       Col1Length := Length(Comp.Name) + Length(Comp.Image) + 8
   end;
@@ -490,7 +529,7 @@ begin
   for I := 0 to Components.Count - 1 do
   begin
     Comp := ComponentList[ComponentList.IndexOf(Components[I])];
-    if not (cifNotComponent in Comp.Flags) then
+    if cifComponent in Comp.Flags then
     begin
       S := Comp.Summary;
       Wrap(S, 100, 6 + Col1Length, 2);
@@ -504,14 +543,14 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TGroupInfo.AddNonComponentList;
+procedure TGroupInfo.AddClassList;
 var
   S: string;
   Col1Length: Integer;
   I: Integer;
   Comp: TComponentInfo;
 begin
-  if CountNonComp = 0 then
+  if CountClass = 0 then
     Exit;
   if CountComp > 0 then
     S := #13#10#13#10 + 'In addition to these components, the following classes belong to this group:' + #13#10
@@ -524,7 +563,7 @@ begin
   for I := Components.Count - 1 downto 0 do
   begin
     Comp := ComponentList[ComponentList.IndexOf(Components[I])];
-    if (cifNotComponent in Comp.Flags) and (Length(Comp.Name) > Col1Length) then
+    if (cifClass in Comp.Flags) and (Length(Comp.Name) > Col1Length) then
       Col1Length := Length(Comp.Name);
   end;
   FileSL.Add('    ' + Pad('Class', Col1Length + 2, ' ') + 'Description');
@@ -532,7 +571,55 @@ begin
   for I := 0 to Components.Count - 1 do
   begin
     Comp := ComponentList[ComponentList.IndexOf(Components[I])];
-    if (cifNotComponent in Comp.Flags) then
+    if cifClass in Comp.Flags then
+    begin
+      S := Comp.Summary;
+      Wrap(S, 100, 6 + Col1Length, 2);
+      S := '    ' + Pad(Comp.Name, Col1Length + 2, ' ') + Copy(S, Col1Length + 7, Length(S));
+      FileSL.Add(S);
+    end;
+  end;
+  FileSL.Add('  </TABLE>');
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TGroupInfo.AddRoutineList;
+var
+  S: string;
+  Col1Length: Integer;
+  I: Integer;
+  Comp: TComponentInfo;
+begin
+  if CountRoutines = 0 then
+    Exit;
+  if CountComp > 0 then
+  begin
+    if CountClass > 0 then
+      S := #13#10#13#10 + 'In addition to these components and classes, the following routines belong to this group:' + #13#10
+    else
+      S := #13#10#13#10 + 'In addition to these components, the following routines belong to this group:' + #13#10;
+  end
+  else if CountClass > 0 then
+    S := #13#10#13#10 + 'In addition to these classes, the following routines belong to this group:' + #13#10
+  else
+    S := 'This group contains the following classes:';
+  Wrap(S, 100, 2, 0);
+  FileSL.Add(S);
+  FileSL.Add('  <TABLE>');
+  Col1Length := 7;
+  for I := Components.Count - 1 downto 0 do
+  begin
+    Comp := ComponentList[ComponentList.IndexOf(Components[I])];
+    if (cifRoutine in Comp.Flags) and (Length(Comp.Name) > Col1Length) then
+      Col1Length := Length(Comp.Name);
+  end;
+  FileSL.Add('    ' + Pad('Routine', Col1Length + 2, ' ') + 'Description');
+  FileSL.Add('    ' + StringOfChar('-', Col1Length) + '  ' + StringOfChar('-', 94 - Col1Length));
+  for I := 0 to Components.Count - 1 do
+  begin
+    Comp := ComponentList[ComponentList.IndexOf(Components[I])];
+    if cifRoutine in Comp.Flags then
     begin
       S := Comp.Summary;
       Wrap(S, 100, 6 + Col1Length, 2);
@@ -572,7 +659,8 @@ begin
   FileSL.Add('<TITLE ' + GroupTitle + '>');
   AddDescription;
   AddComponentList;
-  AddNonComponentList;
+  AddClassList;
+  AddRoutineList;
   FileSL.Add(StringOfChar('-', 100));
   SubGroups.AppendGroupsToFile;
 end;
@@ -595,13 +683,27 @@ end;
 
 procedure TGroupInfo.MergeChildLists;
 var
+  SL: TStrings;
   I: Integer;
+  J: Integer;
 begin
   // Merge sub groups first
   SubGroups.MergeComps;
   // Add components from sub groups
-  for I := 0 to SubGroups.Count -1 do
-    Components.AddStrings(SubGroups[I].Components);
+  SL := TStringList.Create;
+  try
+    for I := 0 to SubGroups.Count -1 do
+    begin
+      SL.Assign(SubGroups[I].Components);
+      // Remove items we don't want in the parent list
+      for J := SL.Count - 1 downto 0 do
+        if cifNotInParentList in ComponentList.ItemByName[SL[J]].Flags then
+          SL.Delete(J);
+      Components.AddStrings(SL);
+    end
+  finally
+    SL.Free;
+  end;
   // Sort the component list
   TStringList(Components).Sort;
 end;
@@ -613,7 +715,7 @@ end;
 function IndexOfText(Str: string; Strings: array of string): Integer;
 begin
   Result := High(Strings);
-  while (Result >= 0) and AnsiSameText(Str, Strings[Result]) do
+  while (Result >= 0) and not AnsiSameText(Str, Strings[Result]) do
     Dec(Result);
 end;
 
@@ -868,7 +970,10 @@ begin
     if Grp <> nil then
     begin
       if Grp.Components.IndexOf(Comp.Name) < 0 then
-        Grp.Components.Add(Comp.Name)
+      begin
+        Comp.Flags := Comp.Flags + [cifAssignedToGroup];
+        Grp.Components.Add(Comp.Name);
+      end
       else
       begin
         WriteLn('    ## hint: @@$', Comp.Name, ' already added to group', #13#10, '      "',
@@ -900,9 +1005,15 @@ begin
     I := 1;
     while (I <= Length(SettingsStr)) and not (SettingsStr[I] in [',', ';']) do
       Inc(I);
-    case IndexOfText(Trim(Copy(SettingsStr, 1, I - 1)), ['NoComponent']) of
+    case IndexOfText(Trim(Copy(SettingsStr, 1, I - 1)), ['Component', 'Class', 'Routine', 'NotInParentList']) of
       0:
-        AComp.Flags := AComp.Flags + [cifNotComponent];
+        AComp.Flags := AComp.Flags + [cifComponent] - [cifClass, cifRoutine];
+      1:
+        AComp.Flags := AComp.Flags + [cifClass] - [cifComponent, cifRoutine];
+      2:
+        AComp.Flags := AComp.Flags + [cifRoutine] - [cifComponent, cifClass];
+      3:
+        AComp.Flags := AComp.Flags + [cifNotInParentList];
     else
       begin
         WriteLn('    ## warn: Unknown setting "', Trim(Copy(SettingsStr, 1, I - 1)), '" found.' +
@@ -917,34 +1028,24 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure AddComponentGroup(const Index: Integer);
+procedure CheckPASTopic(const Index: Integer);
 var
-  CompName: string;
   MaxI: Integer;
   I: Integer;
-  Comp: TComponentInfo;
 begin
-  CompName := Trim(Copy(Trim(FileSL[Index]), 4, Length(Trim(FileSL[Index])) - 3));
-  if (CompName = '') or (Pos('.', CompName) > 0) then
-    Exit;
   MaxI := Index + 1;
   while (MaxI < FileSL.Count) and (Copy(Trim(FileSL[MaxI]), 1, 2) <> '@@') do
     Inc(MaxI);
-  I := Index;
-  Comp := nil;
+  I := Index + 1;
   while I < MaxI do
   begin
-    while (I < MaxI) and not AnsiSameText(Copy(Trim(FileSL[I]), 1, 7), '<GROUP ') do
-      Inc(I);
-    if I < MaxI then
-    begin
-      if Comp = nil then
-        Comp := ComponentList.Add(CompName);
-      Comp.Flags := Comp.Flags + [cifHasGroup];
-      ParseGroupString(Comp, Copy(Trim(FileSL[I]), 8, Length(Trim(FileSL[I])) - 7));
-      Inc(I);
-    end;
+    if AnsiSameText(Trim(FileSL[I]), '<GROUP JVCL.FileRef>') then
+      Exit;
+    Inc(I);
   end;
+  WriteLn('    ## warn: File topic not added to File Reference' +
+    #13#10 +'      (', Trim(FileSL[Index]), ')');
+  Inc(Warnings);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -978,30 +1079,35 @@ begin
   MaxI := Index + 1;
   while (MaxI < FileSL.Count) and (Copy(Trim(FileSL[MaxI]), 1, 2) <> '@@') do
     Inc(MaxI);
-  I := Index;
-  Comp := nil;
-  while (I < MaxI) and not AnsiSameText(Copy(Trim(FileSL[I]), 1, 8 + Length(CompName)),
-      '<GROUP ' + CompName + '>') do
-    Inc(I);
-  if I < MaxI then
+  I := Index + 1;
+  Comp := ComponentList.Add(CompName);
+  Comp.Flags := [];
+  Comp.Summary := '(no summary)';
+  comp.Image := 'NO_ICON';
+  while (I < MaxI) do
   begin
-    if Comp = nil then
-      Comp := ComponentList.Add(CompName);
-    Comp.Flags := Comp.Flags + [cifHasComp];
-    Comp.Summary := '(no summary)';
-    comp.Image := 'NO_ICON';
-    I := Index + 1;
-    while I < MaxI do
-    begin
-      if AnsiSameText(Trim(FileSL[I]), 'Summary') then
-        RetrieveSummary
-      else if AnsiSameText(Copy(Trim(FileSL[I]), 1, 10), '<TITLEIMG ') then
-        Comp.Image := Trim(Copy(Trim(FileSL[I]), 11, Length(Trim(FileSL[I])) - 11))
-      else if AnsiSameText(Copy(Trim(FileSL[I]), 1, 7), '##JVCL:') then
-        ParseCompSettings(Comp, Trim(Copy(Trim(FileSL[I]), 8, Length(Trim(FileSL[I])) - 8)));
-      Inc(I);
-    end;
+    if AnsiSameText(Copy(Trim(FileSL[I]), 1, 7), '<GROUP ') then
+      ParseGroupString(Comp, Copy(Trim(FileSL[I]), 8, Length(Trim(FileSL[I])) - 7));
+    Inc(I);
   end;
+  I := Index + 1;
+  while I < MaxI do
+  begin
+    if AnsiSameText(Trim(FileSL[I]), 'Summary') then
+      RetrieveSummary
+    else if AnsiSameText(Copy(Trim(FileSL[I]), 1, 10), '<TITLEIMG ') then
+      Comp.Image := Trim(Copy(Trim(FileSL[I]), 11, Length(Trim(FileSL[I])) - 11))
+    else if AnsiSameText(Copy(Trim(FileSL[I]), 1, 7), '##JVCL:') then
+      ParseCompSettings(Comp, Trim(Copy(Trim(FileSL[I]), 8, Length(Trim(FileSL[I])) - 7)));
+    Inc(I);
+  end;
+  if (cifIgnore in Comp.Flags) or (Comp.Flags = []) then
+  begin
+    ComponentList.Remove(Comp);
+    Exit;
+  end;
+  if (cifSymbolType * Comp.Flags = []) and (cifAssignedToGroup in Comp.Flags) then
+    Comp.Flags := Comp.Flags + [cifComponent];
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1009,15 +1115,20 @@ end;
 procedure ScanFile(const FileName: string);
 var
   I: Integer;
+  S: string;
 begin
   FileSL.LoadFromFile(FileName);
   I := 0;
   while I < FileSL.Count do
   begin
-    if Copy(Trim(FileSL[I]), 1, 3) = '@@$' then
-      AddComponentGroup(I)
-    else if Copy(Trim(FileSL[I]), 1, 2) = '@@' then
-      AddComponent(I);
+    if Copy(Trim(FileSL[I]), 1, 2) = '@@' then
+    begin
+      S := Trim(Copy(Trim(FileSL[I]), 3, Length(Trim(FileSL[I])) - 2));
+      if AnsiSameText(Copy(S, Length(S) - 3, 4), '.pas') then
+        CheckPASTopic(I)
+      else
+        AddComponent(I);
+    end;
     Inc(I);
   end;
 end;

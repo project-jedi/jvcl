@@ -1,9 +1,7 @@
-----------------------------------------------------------------------------------------------------
-@@$TJvSearchFiles
-<TITLE TJvSearchFiles overview>
-<GROUP JVCL.System.FilesAndFolders>
-  Use TJvSearchFiles to perform a search operation for files and directories.
-  
+@@TJvSearchFiles_Example
+<GROUP TJvSearchFiles>
+<TITLE TJvSearchFiles Examples>
+Description
   To search for files whose names starts with 'Jv' in the directory 'C:\\Source\\' and it's sub-directories,
   do the following:
   
@@ -52,6 +50,7 @@
   * Call <LINK TJvSearchFiles.Search,Search>.   
 ----------------------------------------------------------------------------------------------------
 @@JvSearchFiles.pas
+<GROUP JVCL.FileRef>
 Summary
   Contains the TJvSearchFiles component.
 <INCLUDE JVCL.UnitText.dtx>
@@ -105,7 +104,6 @@ Description
   Raises a system error.
 ----------------------------------------------------------------------------------------------------
 @@TJvSearchAttributes
-<GROUP TJvSearchFiles>
 Summary
   Represents an attribute filter for files and directories.
 Description
@@ -317,7 +315,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvSearchFiles
 <TITLEIMG TJvSearchFiles>
-<GROUP TJvSearchFiles>
+<GROUP JVCL.System.FilesAndFolders>
 Summary
   Enables you to search for files and directories.
 Description
@@ -360,7 +358,9 @@ Description
   a file or directory is found.
     
   Eventually the search operation will end with result False, if an error occurred or the user did 
-  abort the operation; or otherwise with result True.  
+  abort the operation; or otherwise with result True.
+  
+  For examples on how to search for specific file, look <LINK TJvSearchFiles_Example, here>.
 ----------------------------------------------------------------------------------------------------
 @@TJvSearchFiles.Abort
 Summary
@@ -718,7 +718,6 @@ Description
 <COMBINEWITH TJvSearchOption>
 ----------------------------------------------------------------------------------------------------
 @@TJvSearchParams
-<GROUP TJvSearchFiles>
 Summary
   Represents a filter for files and directories.
 Description

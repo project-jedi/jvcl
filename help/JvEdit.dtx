@@ -1,18 +1,5 @@
-----------------------------------------------------------------------------------------------------
-@@$TJvEdit
-<TITLE TJvEdit overview>
-<GROUP JVCL.EditsMemosAndCombos.Edits>
-  TEdit implements the generic behavior introduced in TJvCustomEdit. 
-
-  * Use <LINK TJvCustomEdit.AutoSave,AutoSave> to automatically load and save the content of the control.
-  * Use <LINK TJvCustomEdit.Alignment,Alignment> to align the text in the edit box.
-  * Use <LINK TJvCustomEdit.MaxPixel,MaxPixel> to limit the maximum text size in pixels.
-  * Use <LINK TJvCustomEdit.DisabledColor,DisabledColor> and 
-     <LINK TJvCustomEdit.DisabledTextColor,DisabledTextColor> to specify a disabled color and text color.
-  * Use <LINK TJvCustomEdit.ClipBoardCommands,ClipBoardCommands> to disable specific clipboard commands.
-  * Use <LINK TJvCustomEdit.Caret,Caret> to provide a custom caret shape.
-----------------------------------------------------------------------------------------------------
 @@JvEdit.pas
+<GROUP JVCL.FileRef>
 Summary
   Contains the TJvEdit component.
 <INCLUDE JVCL.UnitText.dtx>
@@ -20,7 +7,6 @@ Author
   Sébastien Buysse
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEdit
-<GROUP TJvEdit>
 Summary
   Base class from which all enhanced edit-box and memo controls are derived.
 Description
@@ -180,17 +166,18 @@ See Also
   AutoSave
 ----------------------------------------------------------------------------------------------------
 @@TJvEdit
+##JVCL:Component
 <TITLEIMG TJvEdit>
-<GROUP TJvEdit>
+<GROUP JVCL.EditsMemosAndCombos.Edits>
 Summary
   Supports extended features such as alignment, auto-save, custom caret and disabling clipboard commands.
 Description
-  TEdit implements the generic behavior introduced in TJvCustomEdit. 
+  TJvEdit implements the generic behavior introduced in TJvCustomEdit:
 
-  * Use <LINK TJvCustomEdit.AutoSave,AutoSave> to automatically load and save the content of the control.
-  * Use <LINK TJvCustomEdit.Alignment,Alignment> to align the text in the edit box.
-  * Use <LINK TJvCustomEdit.MaxPixel,MaxPixel> to limit the maximum text size in pixels.
-  * Use <LINK TJvCustomEdit.DisabledColor,DisabledColor> and 
-     <LINK TJvCustomEdit.DisabledTextColor,DisabledTextColor> to specify a disabled color and text color.
-  * Use <LINK TJvCustomEdit.ClipBoardCommands,ClipBoardCommands> to disable specific clipboard commands.
-  * Use <LINK TJvCustomEdit.Caret,Caret> to provide a custom caret shape.
+  * Use AutoSave to automatically load and save the content of the control.
+  * Use Alignment to align the text in the edit box.
+  * Use MaxPixel to limit the maximum text size in pixels.
+  * Use DisabledColor and DisabledTextColor to specify a disabled color and text color.
+  * Use ClipBoardCommands to disable specific clipboard commands.
+  * Use Caret to provide a custom caret shape.
+----------------------------------------------------------------------------------------------------

@@ -1,25 +1,3 @@
-----------------------------------------------------------------------------------------------------
-@@$TJvAppearingLabel
-<TITLE TJvAppearingLabel overview>
-<GROUP JVCL.LabelsAndStatic>
-  TJvAppearingLabel is a label descendant that is able to let the label fly onto the form. The label
-  can be set to appear from the top, right, bottom or left side of the screen. The appearing
-  sequence is handled in a background thread which makes it possible to have multiple labels
-  appearing at the same time.
-
-  To use an appearing label you should execute these tasks:
-
-  * Drop a TJvAppearingLabel control on the form.
-  * Specify <LINK TJvAppearingLabel.AppearFrom, from which direction> the label is to appear.
-  * Specify if the label should <LINK TJvAppearingLabel.AutoStart,appear immediately> after the
-    label is created.
-  * Specify the <LINK TJvAppearingLabel.FirstInterval, initial delay> before the item should start
-    to appear.
-  * Specify the <LINK TJvAppearingLabel.Interval, delay between two movements>.
-  * Specify the <LINK TJvAppearingLabel.ScrollPixel, number of pixels to move> each time.
-  * Optionally assign an <LINK TJvAppearingLabel.OnAppeared, OnAppeared> event handler to be
-    notified when the label is in it's final (design time) location.
-----------------------------------------------------------------------------------------------------
 @@JvAppearingLabel.pas
 <GROUP JVCL.FileRef>
 Summary
@@ -29,8 +7,9 @@ Author
   Sébastien Buysse
 ----------------------------------------------------------------------------------------------------
 @@TJvAppearingLabel
+##JVCL:Component
 <TITLEIMG TJvAppearingLabel>
-<GROUP TJvAppearingLabel>
+<GROUP JVCL.LabelsAndStatic>
 Summary
   Label that flies onto the form.
 Description
@@ -40,6 +19,17 @@ Description
   appearing at the same time.
 
   When the label has appeared, the OnAppeared event is called.
+  
+  To use an appearing label you should execute these tasks:
+
+  * Drop a TJvAppearingLabel control on the form.
+  * Specify <LINK AppearFrom, from which direction> the label is to appear.
+  * Specify if the label should <LINK AutoStart,appear immediately> after the label is created.
+  * Specify the <LINK FirstInterval, initial delay> before the item should start to appear.
+  * Specify the <LINK Interval, delay between two movements>.
+  * Specify the <LINK ScrollPixel, number of pixels to move> each time.
+  * Optionally assign an OnAppeared event handler to be notified when the label is in it's final
+    (design time) location.
 ----------------------------------------------------------------------------------------------------
 @@TJvAppearingLabel.Appear
 Summary

@@ -1,7 +1,17 @@
+@@JvCaesarCipher.pas
+<GROUP JVCL.FileRef>
+Summary
+  Contains all code for TJvCaesarCipher.
+<INCLUDE JVCL.UnitText.dtx>
+Author
+  Sébastien Buysse
 ----------------------------------------------------------------------------------------------------
-@@$TJvCaesarCipher
+@@TJvCaesarCipher
+##JVCL:Component
 <GROUP JVCL.System.Encryption>
-<TITLE TJvCaesarCipher: overview>
+<TITLEIMG TJvCaesarCipher>
+Summary
+  TJvCaesarCipher is a component to (de)cipher strings.
 Description
   TJvCaesarCipher is a component to (de)cipher strings or series of bytes using
   "Ceasar Cipher", one of the simplest forms of substitution cipher. The method
@@ -19,7 +29,7 @@ Description
   The component accepts a string, a list of strings (a TString object) or a stream for
   (de)ciphering.
 
-  To use a JvCaesarCipher component
+  To use a TJvCaesarCipher component you should:
   * drop a TJvCaesarCipher on a form.
   * Set the property N to a value between 0 and 255, indicating the number of
     characters the characterset should be shifted. When used with strings a high value of N may 
@@ -29,23 +39,6 @@ Description
     get the deciphered string by reading the property Decoded.
   * Use the methods Decode and Encode to (de)cipher TString objects.
   * Use the methods DecodeStream and EncodeStream to (de)cipher TStream objects.
-----------------------------------------------------------------------------------------------------
-@@JvCaesarCipher.pas
-<GROUP JVCL.FileRef>
-Summary
-  Contains all code for TJvCaesarCipher.
-<INCLUDE JVCL.UnitText.dtx>
-Author
-  Sébastien Buysse
-----------------------------------------------------------------------------------------------------
-@@TJvCaesarCipher
-<GROUP TJvCaesarCipher>
-<TITLEIMG TJvCaesarCipher>
-Summary
-  TJvCaesarCipher is a component to (de)cipher strings.
-Description
-  TJvCaesarCipher uses Caesar Cipher, a character substitution cipher algorithm, for
-  (de)ciphering strings.
 ----------------------------------------------------------------------------------------------------
 @@TJvCaesarCipher.Decode
 Summary

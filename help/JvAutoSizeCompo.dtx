@@ -1,17 +1,3 @@
-----------------------------------------------------------------------------------------------------
-@@$TJvAutoSizeCompo
-<GROUP JVCL.FormsAndApp.Forms.Sizing>
-<TITLE TJvAutoSizeCompo overview>
-  The TJvAutoSizeCompo component will resize and move your controls whenever the form is resized.
-  This is achieved by assigning the form's OnResize event to the components Resize method. The old
-  event will be saved and called from this method.
-
-  To have your controls move and resize according to the forms size you should execute the following
-  tasks:
-
-  * Drop a TJvAutoSizeCompo component on a form.
-  * <LINK TJvAutoSizeCompo.Active, Activate> the component.
-----------------------------------------------------------------------------------------------------
 @@JvAutoSizeCompo.pas
 <GROUP JVCL.FileRef>
 Summary
@@ -21,14 +7,21 @@ Author
   Sébastien Buysse
 ----------------------------------------------------------------------------------------------------
 @@TJvAutoSizeCompo
+##JVCL:Component
 <TITLEIMG TJvAutoSizeCompo>
-<GROUP TJvAutoSizeCompo>
+<GROUP JVCL.FormsAndApp.Forms.Sizing>
 Summary
   Component that will resize all components of the form whenever the form resizes.
 Description
   The TJvAutoSizeCompo component will resize and move your controls whenever the form is resized.
   This is achieved by assigning the form's OnResize event to the components Resize method. The old
   event will be saved and called from this method.
+
+  To have your controls move and resize according to the forms size you should execute the following
+  tasks:
+
+  * Drop a TJvAutoSizeCompo component on a form.
+  * <LINK Active, Activate> the component.
 Note
   Do not assign a new OnResize event handler after the component has been activated. If you do
   assign a new handler, TJvAutoSizeCompo will not work. 

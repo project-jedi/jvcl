@@ -1,23 +1,5 @@
-----------------------------------------------------------------------------------------------------
-@@$TJvCaptionPanel
-<TITLE TJvCaptionPanel overview>
-<GROUP JVCL.PanelsBevelsAndGroups.Panels>
-  TJvCaptionPanel is a panel with a caption bar so it looks like a form. The caption panel will
-  contain the caption of the panel along with 0 or more caption buttons.
-
-  To use a panel with a caption in your form:
-
-  * Drop a TJvCaptionPanel on the form or any control that accepts child controls.
-  * Set the <LINK TJvCaptionPanel.Caption, caption> of the panel.
-  * Specify the <LINK TJvCaptionPanel.Buttons, caption buttons> the panel should have.
-  * Specify the <LINK TJvCaptionPanel.CaptionColor, color> of the caption bar.
-  * Specify the <LINK TJvCaptionPanel.CaptionFont, font> of the caption bar.
-  * Specify the <LINK TJvCaptionPanel.CaptionPosition, position> of the caption bar.
-  * Specify if <LINK TJvCaptionPanel.FlatButtons, flat buttons> are needed.
-  * Assign a <LINK TJvCaptionPanel.OnButtonClick, OnButtonClick event handler> to take action when
-    a caption button is clicked.
-----------------------------------------------------------------------------------------------------
 @@JvCaptionPanel.pas
+<GROUP JVCL.FileRef>
 Summary
   Contains all code for TJvCaptionPanel
 <INCLUDE JVCL.UnitText.dtx>
@@ -25,7 +7,8 @@ Author
   Peter Thörnqvist
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptionPanel
-<GROUP TJvCaptionPanel>
+##JVCL:Component
+<GROUP JVCL.PanelsBevelsAndGroups.Panels>
 <TITLEIMG TJvCaptionPanel>
 Summary
   A panel with a caption bar.
@@ -36,14 +19,14 @@ Description
   To use a panel with a caption in your form:
 
   * Drop a TJvCaptionPanel on the form or any control that accepts child controls.
-  * Set the <LINK TJvCaptionPanel.Caption, caption> of the panel.
-  * Specify the <LINK TJvCaptionPanel.Buttons, caption buttons> the panel should have.
-  * Specify the <LINK TJvCaptionPanel.CaptionColor, color> of the caption bar.
-  * Specify the <LINK TJvCaptionPanel.CaptionFont, font> of the caption bar.
-  * Specify the <LINK TJvCaptionPanel.CaptionPosition, position> of the caption bar.
-  * Specify if <LINK TJvCaptionPanel.FlatButtons, flat buttons> are needed.
-  * Assign a <LINK TJvCaptionPanel.OnButtonClick, OnButtonClick event handler> to take action when
-    a caption button is clicked.
+  * Set the <LINK Caption, caption> of the panel.
+  * Specify the <LINK Buttons, caption buttons> the panel should have.
+  * Specify the <LINK CaptionColor, color> of the caption bar.
+  * Specify the <LINK CaptionFont, font> of the caption bar.
+  * Specify the <LINK CaptionPosition, position> of the caption bar.
+  * Specify if <LINK FlatButtons, flat buttons> are needed.
+  * Assign a <LINK OnButtonClick, OnButtonClick event handler> to take action when a caption button
+    is clicked.
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptionPanel.AutoDrag
 Summary

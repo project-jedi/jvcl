@@ -1,15 +1,3 @@
-----------------------------------------------------------------------------------------------------
-@@$TJvScreenCanvas
-##JVCL:NoComponent
-<TITLE TJvScreenCanvas overview>
-<GROUP JVCL.Graphics>
-  TJvScreenCanvas is an object that allows you to draw on the screen.
-
-  * Read the Width and Height properties to determine the size of the screen.
-  * Start a drawing operation by calling BeginDraw.
-  * Use the Canvas property to do the actual drawing.
-  * End the drawing operation by calling EndDraw.
-----------------------------------------------------------------------------------------------------
 @@JvScreenCanvas.pas
 <GROUP JVCL.FileRef>
 Summary
@@ -19,16 +7,17 @@ Author
   Sébastien Buysse
 ----------------------------------------------------------------------------------------------------
 @@TJvScreenCanvas
-##JVCL:NoComponent
-<GROUP TJvScreenCanvas>
+##JVCL:Class
+<GROUP JVCL.Graphics>
 Summary
   Enables you to draw on the screen.
 Description
   Use a TJvScreenCanvas object to draw on the screen.
   
-  Use the Canvas property for the drawing operations. Call BeginPaint before using the Canvas property, 
-  and call EndPaint to signal the end of any drawing operation. Read properties Width and Height to
-  determine the size of the screen.
+  * Read the Width and Height properties to determine the size of the screen.
+  * Start a drawing operation by calling BeginDraw.
+  * Use the Canvas property to do the actual drawing.
+  * End the drawing operation by calling EndDraw.
 ----------------------------------------------------------------------------------------------------
 @@TJvScreenCanvas.Create
 Summary

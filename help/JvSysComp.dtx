@@ -1,38 +1,5 @@
-@@$TJvCreateProcess
-<TITLE TJvCreateProcess overview>
-<GROUP JVCL.System.LibProcAndThread.Processes>
-  Use TJvCreateProcess to start a process or application, and possibly wait for it to terminate.
-  
-  First use the properties of TJvCreateProcess to specify how and which process must be created:
-  
-  * Set <LINK TJvCreateProcess.ApplicationName,ApplicationName> to a string to specify the module to execute. 
-  * Set <LINK TJvCreateProcess.CommandLine,CommandLine to a string to specify the command line to execute.
-  * Use <LINK TJvCreateProcess.WaitForTerminate,WaitForTerminate> to specify whether TJvCreateProcess
-    must wait for the process to end. If you set <LINK TJvCreateProcess.WaitForTerminate,WaitForTerminate>
-    to True, specify an <LINK TJvCreateProcess.OnTerminate,OnTerminate> event handler to execute code after 
-    the process finishes executing. 
-
-  You might also set the following properties:
-  
-  * Use <LINK TJvCreateProcess.StartupInfo,StartupInfo> to specify the window station, desktop, and
-    appearance of the main window for the new process.
-  * Set <LINK TJvCreateProcess.CurrentDirectory,CurrentDirectory> to a drive and directory to specify
-    another drive and directory for the new process than the current application.
-  * Use <LINK TJvCreateProcess.Environment,Environment> to specify another environment for the new
-    process than the current application.
-  * Set <LINK TJvCreateProcess.CreationFlags.CreationFlags> to control the creation of the process.
-  * Set <LINK TJvCreateProcess.Priority.Priority> to specify another priority class for the new process
-    than the default ppNormal.
-  
-  After setting these properties you can call <LINK TJvCreateProcess.Run,Run> to start the application
-  or process. After succesfully creating the new process, you can call <LINK TJvCreateProcess.CloseApplication,
-  CloseApplication> or <LINK TJvCreateProcess.Terminate,Terminate> to stop the application. 
-  
-  If <LINK TJvCreateProcess.WaitForTerminate,WaitForTerminate> is set to True, the component waits
-  for the process to end and then triggers an <LINK TJvCreateProcess.OnTerminate,OnTerminate> event.
-  You can stop waiting for the process to end by calling <LINK TJvCreateProcess.StopWaiting,StopWaiting>.
-----------------------------------------------------------------------------------------------------
 @@JvSysComp.pas
+<GROUP JVCL.FileRef>
 Summary
   Contains the TJvCreateProcess, TJvProcessEntry and TJvCPSStartupInfo components.
 <INCLUDE JVCL.UnitText.dtx>
@@ -123,7 +90,6 @@ See Also
   DefaultWindowState
 ----------------------------------------------------------------------------------------------------
 @@TJvCPSStartupInfo
-<GROUP TJvCPSStartupInfo>
 Summary
   Wrapper for the windows STARTUPINFO structure.
 Description
@@ -304,8 +270,9 @@ Description
   stop waiting for the process to end. 
 ----------------------------------------------------------------------------------------------------
 @@TJvCreateProcess
+##JVCL:Component
 <TITLEIMG TJvCreateProcess>
-<GROUP TJvCreateProcess>
+<GROUP JVCL.System.LibProcAndThread.Processes>
 Summary
   Enables you to create processes and wait for them to end.
 Description
@@ -627,7 +594,6 @@ See Also
   OnTerminate, Run, State, StopWaiting, Terminate
 ----------------------------------------------------------------------------------------------------
 @@TJvProcessEntry
-<GROUP TJvProcessEntry>
 Summary
   Enables you to control a process.
 Description

@@ -1,0 +1,1606 @@
+@@JvInspector.pas
+<GROUP JVCL.FileRef>
+Summary
+  Contains a data inspector.
+<INCLUDE JVCL.UnitText.dtx>
+Author
+  Marcel Bestebroer
+See Also
+  JVCL.Info.Inspector
+----------------------------------------------------------------------------------------------------
+@@TJvInspector
+##JVCL:Component
+<TITLEIMG TJvCustomInspector>
+<GROUP JVCL.EditsMemosAndCombos.Other>
+Summary
+  Inspector control.
+Description
+  TJvInspector is an inspector control. The inspector control is responsible of
+  displaying and navigating the data tree. The control is completely seperated
+  from the editing layer and the editing layer is completely seperated from the
+  data layer. This means the control is able to "inspect" a wide variaty of data
+  types, without the need of creating a new descendant of the inspector control.
+  It also means you can mix various data sources in one view.
+
+  The control does not handle the painting itself. This is left
+  to a painter object.
+--------------------------------------------------------------------------------
+@@TJvCustomInspector
+<TITLEIMG TJvCustomInspector>
+Summary
+  Base inspector control.
+Description
+  TJvCustomInspector is the base inspector control. You should
+  never create an instance of this class, but rather one of the
+  descendants.
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.AfterDataCreate
+<COMBINEWITH TInspectorDataEvent>
+Summary
+  Event called when the data instance has been created
+Description
+  The AfterDataCreate event is called right after the data
+  instance has been created.
+Parameters
+  Sender -   The inspector control that fired the event
+  Data -     The data instance belonging to the event
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.AfterItemCreate
+<COMBINEWITH TInspectorItemEvent>
+Description
+  The AfterItemCreate event is called after the item has been
+  constructed.
+Summary
+  Event called when the item has been created.
+Parameters
+  Item -     The item that has just been created.
+  Sender -   Inspector that fired the event
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.BandSizing
+Summary
+  Internal band resizing flag.
+Description
+  BandSizing indicates wether the control is resizing band on mouse movements.
+  The flag is used internally to keep track of band resizing.
+See Also
+  BandSizingBand
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.BandSizingBand
+Summary
+  Indicates which band is being resized.
+Description
+  BandSizingBand indicates which band is being resized by the user. It's used
+  internally during band resizing.
+See Also
+  BandSizing
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.BandStarts
+Summary
+  A list of items that start a new band.
+Description
+  BandStarts is a list containing the items that are displayed on a new band.
+  The list is used internally by the control for rendering and navigation.
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.BandWidth
+Summary
+  Width of a band.
+Description
+  BandWidth holds the width of a band. Read BandWith to determine the current
+  width of a band or set it to a new value.
+See Also
+  UseBands
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.BeforeItemCreate
+<COMBINEWITH TInspectorItemBeforeCreateEvent>
+Summary
+  Event fired before an item is constructed.
+Description
+  The BeforeItemCreate event is called after the data has been
+  constructed and right before the item is constructed. The
+  Data parameter references the Data instance just created. The
+  ItemClass parameter can be set to an item class or <B>nil</B>
+  to prevent the item from being created.
+Parameters
+  Sender -    The inspector that fired the event
+  Data -      A reference to the data instance
+  ItemClass - The item to be constructed for this data object.
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.BeforeSelection
+<COMBINEWITH TInspectorItemBeforeSelectEvent>
+Summary
+  Event fired before an item is selected.
+Description
+  The BeforeSelection event is called just before an item is selected.
+Parameters
+  Sender -    The inspector that fired the event
+  NewItem -   The item about to be selected.
+  Allow -     When set to True, the selection will happen, otherwise the
+              selection is aborted.
+See also
+  OnItemSelected
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.BeginUpdate
+Summary
+  Prevents updating of the inspector until the EndUpdate method is called.
+Description
+  Call BeginUpdate before making multiple changes to the inspector. When all
+  changes are complete, call EndUpdate so that the changes can be reflected on
+  screen. BeginUpdate and EndUpdate prevent excessive redraws and speed
+  processing time when items are added, deleted, inserted or otherwise modified.
+See Also
+  EndUpdate
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.CalcImageHeight
+Summary
+  Determines the total size of the visible items.
+Description
+  CalcImageHeight determines the total size of the visible items. This means
+  that the height will be calculated as if there are no bands (this value will
+  be returned) and the number of bands and band starts are calculated.
+
+  CalcImageHeight is called when you read the ImageHeight property as well as
+  by the rendering methods.
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.CalcItemIndex
+Summary
+  Determines which item is at the specified position.
+Description
+  CalcItemIndex determines which item is displayed at the given position. In
+  addition it will return the rectangle for that item. If the specified position
+  has no item, the function will return -1 and the Rect parameter will be
+  undefined.
+Parameters:
+  X - X-position to check
+  Y - Y-position to check
+  Rect - Rectangle of item found. If no item was found, Rect will be undefined.
+Returns
+  Index of the item found at the given position or -1 if no item is displayed at
+  the given position.
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.CalcItemRect
+Summary
+  Determines the displaying rectangle for the given item.
+Description
+  CalcItemRect determines the displaying rectangle of the given item. Since this
+  value is stored in the item itself, CalcItemRect can be replaced with:
+  <CODE>
+    ItemRect := Item.Rects[iprItem];
+  </CODE>
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.CollapseButton
+Summary
+  Bitmap to use as a collapse button.
+Description
+  CollapseButton holds the TBitmap to use as a collapse button
+  for an item. By default it uses the image used in Borlands
+  Object Inspector.
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.DoAfterDataCreate
+Summary
+  Executes the event handler assigned to AfterDataCreate.
+Description
+  DoAfterDataCreate calls the event handler assigned to AfterDataCreate, if any.
+Parameters
+  \Data - The data instance just created.
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.DoAfterItemCreate
+Summary
+  Executes the event handler assigned to AfterItemCreate.
+Description
+  DoAfterItemCreate calls the event handler assigned to AfterItemCreate, if any.
+Parameters
+  \Item - The item just created.
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.DoBeforeItemCreate
+Summary
+  Executes the event handler assigned to BeforeItemCreate.
+Description
+  DoBeforeItemCreate calls the event handler assigned to BeforeItemCreate, if
+  any.
+Parameters
+  \Data - The data instance just created.
+  ItemClass - class of the item to be created for this data instance.
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.DoBeforeItemSelect
+Summary
+  Executes the event handler assigned to BeforeSelection.
+Description
+  DoBeforeItemSelect calls the event handler assigned to BeforeSelection, if
+  any. Returns True if the selection is allowed or no handler was assigned to
+  BeforeSelection.
+Parameters
+  NewItem - Item to be selected.
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.DoItemSelected
+Summary
+  Executes the event handler assigned to OnItemSelected.
+Description
+  DoItemSelected calls the event handler assigned to OnItemSelected, if any.
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.Divider
+Summary
+  Divider position.
+Description
+  Divider is the X-position of the divider between the name and
+  the value part. Read Divider to determine it's current
+  location or set it to a new position.
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.DraggingDivider
+Summary
+  Flag to indicate the dragging of the divider bar.
+Description
+  DraggingDivider is an internal flag to indicate if the user is dragging the
+  divider bar with the mouse.
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.EndUpdate
+Summary
+  Reenables screen repainting that was turned off with the BeginUpdate method.
+Description
+  Call EndUpdate after completing changes to the inspector that were begun with
+  a call to the BeginUpdate method. When every call to BeginUpdate is matched by
+  a subsequent call to EndUpdate, the inspector view image updates to reflect
+  all changes that occurred while repaints were disabled.
+See Also
+  BeginUpdate
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.ExpandButton
+Summary
+  Bitmap to use as an expand button.
+Description
+  ExpandButton holds the TBitmap to use as an expand button for
+  an item. By default it uses the image used in Borlands Object
+  Inspector.
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.Focused
+Summary
+  Determines whether the control has input focus.
+Description
+  Use the Focused method to see if the control is the active control. When
+  Focused returns True, the control has the input focus. If Focused returns
+  False, the user cannot interact with the control.
+
+  Because the inspector might have an edit control that has focus, Focused is
+  reimplemented to check the active edit control as well as the inspector.
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.GetBandFor
+Summary
+  Determines in which band a given item is displayed.
+Description
+  GetBandFor retrieves the band index in  which the given item is displayed or
+  -1 if it's not displayed at all.
+
+  GetBandFor is used in determining the scrollbar settings for a horizontal
+  scrollbar and is called from UpdateScrollBars.
+Parameters
+  ItemIdx - Index into the VisibleItems list of the item to retrieve the band
+              index for.
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.GetButtonRect
+Summary
+  Retrieves the expand/collapse button rectangle.
+Description
+  GetButtonRect retrieves the items expand/collapse button rectangle. If the
+  item has no expand/collapse button, an empty rectange will be returned.
+Parameters
+  ItemIndex - Index into the VisibleItems list of the item to retrieve the
+               button rectangle for.
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.GetLastFullVisible
+Summary
+  Retrieves the index of the last item that is completely visible.
+Description
+  GetLastFullVisible retrieves the index of the last completely visible item.
+  GetLastFullVisible is used for navigational purposes. When scrolling a page
+  down, the selection is first moved to the last completely visible item or,
+  if it's already selected, scrolls an entire page.
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.HandleBandResize
+Summary
+  Resizes the band.
+Description
+  HandleBandResize will calculate the size of the band that is currently being
+  resized. HandleBandResize is called when the user is resizing the bands with
+  the mouse.
+Parameters
+  X - current X-position of the mouse
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.IdxToY
+Summary
+  Calculates the Y offset of a given item index
+Description
+  IdxToY will determine the top of the item rectangle if the items would be
+  rendered in a single band.
+Parameters
+  Index - Item index to retrieve the Y position for.
+See Also
+  YToIdx
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.IncPaintGeneration
+Summary
+  Increases the paint generation counter.
+Description
+  IncPaintGeneration increases the PaintGeneration property by 1. You should
+  never need to call this method, as it is called automatically by the painting
+  methods.
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.InvalidateHeight
+Summary
+  Invalidates the cached virtual height of the inspector.
+Description
+  InvalidateHeight will clear the cached virtual height of the inspector. This
+  will lead to a new size determination of the inspector image.
+
+  InvalidateHeight is automatically called when items are resized (either
+  through the user interface or in code) or the ItemHeight property of the
+  inspector is changed.
+See Also
+  ItemHeight
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.InvalidateItem
+Summary
+  Signals that an item has been changed and the image should be redrawn.
+Description
+  InvalidateItem will make sure that the inspector will redraw the items. If
+  LockCount is non-zero, NeedRedraw will be set, otherwise the scrollbar
+  settings will be update, which in turn will lead to a repaint.
+
+  InvalidateItem is called whenever an item has changed a visible property (e.g.
+  it's value, name or height).
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.InvalidateList
+Summary
+  Signals that the list of visible items should be redetermined.
+Description
+  InvalidateList will make sure that the list of visible items will be rebuild
+  before a new redraw will take place. If LockCount is non-zero, Needrebuild
+  will be set, otherwise RebuildVisible will be called.
+
+  InvalidateList is called whenever an item is made visible or invisible (either
+  through the items Visible or Hidden property, or because a parent item is
+  expanded or collapsed).
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.ItemHeight
+Summary
+  Standard item height.
+Description
+  ItemHeight is the standard items height. Although each item
+  can have it's own height, this property determines the default
+  height for all non-resized items. In addition, this value
+  could be used to determine the resize increments of an item.
+
+  When you change this property, all non-resizable items are
+  resized accordingly. In addition the items that resize in
+  increments of ItemHeight or need a minimum height of
+  ItemHeight are adjusted as well.
+See Also
+  InvalidateHeight
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.ImageHeight
+Summary
+  Current image height.
+Description
+  ImageHeight returns the total height of all visible inspector items. This is
+  the height that would be neccessary to render all currently displayable items
+  in a single band, even if the Inspector is in bands mode.
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.LockCount
+Summary
+  Number of BeginUpdates not ended.
+Description
+  LockCount is the number of BeginUpdates that have been issued but have not
+  been matched with an EndUpdate.
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.NeedRebuild
+Summary
+  Indicates if the visible item list needs to be rebuild.
+Description
+  NeedRebuild indicates if the visible item list needs to be rebuild.
+  NeedRebuild is set when InvalidateList is called and updates are blocked by a
+  call to BeginUpdate. As soon as EndUpdate is called, the list will be rebuild.
+See Also
+  BeginUpdate, EndUpdate, NeedRedraw, RebuildVisible
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.NeedRedraw
+Summary
+  Indicates if the control should redraw all items.
+Description
+  NeedRedraw indicates if the items should be redrawn when EndUpdate is called.
+  NeedRedraw is set by InvalidateItem when update are blocked by a call to
+  BeginUpdate.
+See Also
+  BeginUpdate, EndUpdate, NeedRebuild
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.NotifySort
+Summary
+  Places an item into the sort request list.
+Description
+  NotifySort adds the specified item to the list of sort requests if it's not in
+  the list already and LockCount <> 0. If LockCount is 0, the item's Sort method
+  is called.
+
+  The sort requests are handled when EndUpdate is called and the lock count
+  reaches 0.
+See Also
+  BeginUpdate, EndUpdate, SortNotificationList, RemoveNotifySort,
+  TJvCustomInspectorItem.Sort
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.OnItemSelected
+Summary
+  Event fired after an item is selected.
+Description
+  The OnItemSelected event is fired when a new item is selected.
+Parameters
+  Sender -    The inspector that fired the event.
+See Also
+  BeforeSelection
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.Paint
+Summary
+  Will paint the inspector control.
+Description
+  Paint will increase the PaintGeneration counter and tell the Painter to paint
+  the image.
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.Painter
+Summary
+  Reference to the painter object.
+Description
+  Painter is a reference to the painter object currently assigned. Painter are
+  responsible for painting the control in different styles. By assigning a
+  different painter to the inspector you can switch the viewing style.
+
+  Read Painter to find out which painter is currently used to render the
+  inspector or set it to another painter to change styles.
+See Also
+  TJvInspectorPainter
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.PaintGeneration
+Summary
+  Counter of paints issued.
+Description
+  PaintGeneration holds the number of times the inspector has rendered it's
+  image. It's primary goal is to keep track which items have been painted during
+  the last iteration. For that purpose, an item also has a PaintGeneration
+  property. If the two values are equal, the item has been displayed during the
+  last render.
+See Also
+  TJvCustomInspectorItem.PaintGeneration
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.RebuildVisible
+Summary
+  Rebuilds the VisibleItems list.
+Description
+  RebuildVisible will clear the VisibleItems array and fill it up with the
+  currently visible items. It will not change the Selected property, unless the
+  previously selected item is no longer visible, in which case the Selected
+  property will be set to <B>nil</B>.
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.Readonly
+Summary
+  Indicates wether the inspector is in read-only mode.
+Description
+  Readonly indicates the read-only state of the inspector. When Readonly is
+  True, the inspector is locked and items can not be edited. When Readonly is
+  False, items can be edited (provided their Readonly property is True).
+See Also
+  TJvCustomInspectorItem.Readonly
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.RemoveNotifySort
+Summary
+  Removes an item from the sort request list.
+Description
+  RemoveNotifySort removes the specified item from the list of sort requests. If
+  the item does not exist, RemoveNotifySort does nothing.
+Note:  
+  This method is usually called by the destructor of an item.
+See Also
+  NotifySort, TJvCustomInspectorItem.Destroy
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.Root
+Summary
+  References the root item.
+Description
+  Root is a reference to the inspector's root item. The root item is a hidden
+  item that functions as a place holder for the actual items to be inspected.
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.RowSizing
+Summary
+  Tracks if a row is being resized.
+Description
+  RowSizing indicates if the user is resizing an item with the mouse. If
+  RowSizing is set to True, mouse movements will be interpreted as changing the
+  height of the item indicated by RowSizingItem. If RowSizing is False, mouse
+  movements are not resizing an item (however, RowSizingItem might still point
+  to the last resized item).
+See Also
+  RowSizingItem, BandSizing, BandSizingBand
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.RowSizingItem
+Summary
+  Holds the item being resized.
+Description
+  RowSizingItem indicates which item is being resized by the user. RowSizingItem
+  is used internally to find out which row is being resized, and gives valid
+  results only if RowSizing is True.
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.ScrollfactorV
+Summary
+  Determines the multiply/devision factor for vertical scrollbar settings.
+Description
+  ScrollfactorV determines the multiplication/devision factor for setting the
+  vertical scrollbar.
+
+  Because the windows scrollbar can only handle 16 bit values for thumbtracking
+  messages, all values should be within -32768 .. 32767. The ImageHeight could
+  be larger than that. To circumvent that, a factor is determined if the
+  ImageHeight is to large such that the ImageHeight can be expressed as 32767.
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.Selected
+Summary
+  Reference to the selected item
+Description
+  Selected is the current selected item. If no item is selected, <B>nil</B> will
+  be returned. Reading Selected is the same as:
+  <CODE>
+  if SelectedIndex > -1 then
+    Selected := VisibleItems[SelectedIndex]
+  else
+    Selected := nil;
+  </CODE>
+  When you set Selected to a new item, and that item is not visible, Selected
+  and SelectedIndex will not be changed.
+See Also
+  SelectedIndex, VisibleItems
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.SelectedIndex
+Summary
+  Index of selected item.
+Description
+  SelectedIndex indicates which item in the VisibleItems array is currently
+  selected. If no item is selected, -1 will be returned, otherwise the 0-based
+  index into the VisibleItems property is returned.
+See Also
+  Selected, VisibleItems
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.Selecting
+Summary
+  Tracks if the user is selecting items.
+Description
+  Selecting indicates if the user is selecting items with the mouse. If the user
+  presses the left mouse button and moves the mouse, the item where mouse moves
+  over will be selected, until the user releases the left mouse button.
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.SortNotificationList
+Summary
+  List of items that need to be resorted.
+Description
+  SortNotificationList holds a list of items that need to be resorted when
+  updates are no longer blocked. An item is added to this list when NotifySort
+  is called, updates are blocked, and the item isn't already in the list. When
+  EndUpdate decreases the LockCount to 0, the items will be resorted, after
+  which the VisibleItems array will be rebuild.
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.TopIndex
+Summary
+  Index of the first displayed item.
+Description
+  TopIndex indicates which item is displayed first (the item in the top left
+  corner). Read TopIndex to find out which item is in the top left corner of the
+  view or set it to a new index to scroll the view.
+Notes
+  Although you can change this value, it will be adjusted to display the
+  selected item as soon as the user presses a key.
+See Also
+  Selected, SelectedIndex, VisibleItems
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.UpdateScrollBars
+Summary
+  Updates the scrollbar settings.
+Description
+  UpdateScrollBars will update the scrollbar settings to reflect the current
+  control state.
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.UseBands
+Summary
+  Indicates if inspector bands are used.
+Description
+  UseBands indicates if inspector bands are used. Bands are resizable inspector
+  columns, where each column will contain a number of items. The number of bands
+  and items per band are calculated on each resize.
+
+  When using bands (UseBands is True), the inspector will never show a vertical
+  scroll bar, but a horizontal scroll bar can appear if more bands are shown
+  than actually fit in the control.
+
+  When not using bands (UseBands is False), the inspector will never show a
+  horizontal scroll bar, but a vertical scroll bar may appear if more items are
+  shown than actually fit in the control.
+See Also
+  BandWidth
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.ViewHeight
+Summary
+  Displayable height of the control.
+Description
+  ViewHeight returns the height of the controls ViewRect.
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.ViewRect
+Summary
+  Displayable rectangle of the control.
+Description
+  ViewRect returns the rectangle in which items can be rendered. The current
+  implementation returns ClientRect. Descendants could override this method to
+  return a smaller rectangle if additional borders are needed.
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.ViewWidth
+Summary
+  Displayable width of the control.
+Description
+  ViewWidth returns the width of the controls ViewRect.
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.VisibleCount
+Summary
+  Number of visible items.
+Description
+  VisibleCount indicates the number of items that are visible. This does not
+  mean that the items are actually displayed at the moment, it means that that
+  number of items are displayable using the current settings.
+
+  Use VisibleItems to find out which items are visible.
+See Also
+  VisibleItems.
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.FocusedItem
+Summary
+  The currently focused item.
+Description
+  FocusedItem returns the item that has input focus. Usually this will be same
+  as Selected, unless the selected item is a compound item, in which case it
+  will be set to the item of the currently selected column.
+See Also
+  Selected, TJvInspectorCompoundItem, TJvInspectorCompoundItem.SelectedColumn
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.VisibleIndex
+Summary
+  View index of an item.
+Description
+  VisibleIndex returns the index (row number) at which the item is displayed. If
+  the item is not displayed at all (ie. the parent is not expanded or visible or
+  the item is hidden or not visible) the function will return -1. Otherwise it's
+  a 0-based index into the VisibleItems property.
+See Also
+  VisibleItems
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.VisibleItems
+Summary
+  Array of displayable items
+Description
+  VisibleItems is a 0-based array of displayable items. Read VisibleItems to
+  find out which items are being displayed and in what order. Use VisibleCount
+  to find out how many items are displayable.
+See Also
+  VisibleCount
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.WantTabs
+Summary
+  Indicates if TABs are wanted as alternative navigation keys.
+Description
+  WantTabs indicates wheter the TAB and Shift-TAB keys will function as a "Next"
+  and "Prior" item respectively. If WantTabs is True, TAB and Shift-TAB will
+  function as navigation keys in addition to the standard up and down keys.
+--------------------------------------------------------------------------------
+@@TJvCustomInspector.YToIdx
+Summary
+  Calculates the item index of a given Y offset.
+Description
+  YToIdx will determine the index of the item for the given Y-position if the
+  items would be rendered in a single band. If no item is at the given position,
+  -1 will be returned.
+Parameters
+  Y - Y-position to retrieve the item index of.
+See Also
+  IdxToY
+--------------------------------------------------------------------------------
+@@EJvInspector
+Summary
+  JvInspector base exception class
+Description
+  EJvInspector is the base exception class used by the JvInspector package.
+  This exception class is used when exceptions occur within the
+  TJvCustomInspector and descendant classes.
+
+  There are three descendant exception classes (EJvInspectorData,
+  EJvInspectorItem and EJvInspectorReg).
+----------------------------------------------------------------------------------------------------
+@@EJvInspectorData
+Summary
+  Inspector data exception class.
+Description
+  Exception class for exceptions occuring in the TJvCustomInspectorData class or one of it's
+  descendants.
+----------------------------------------------------------------------------------------------------
+@@EJvInspectorItem
+Summary
+  Inspector item exception class.
+Description
+  Exception class for exceptions occuring in the TJvCustomInspectorItem class or one of it's
+  descendants.
+----------------------------------------------------------------------------------------------------
+@@EJvInspectorReg
+Summary
+  Inspector registration exception class.
+Description
+  Exception class for exception occuring in the TJvInspectorRegister class or in the
+  TJvCustomInspectorRegItem class or one of it's descendants.
+----------------------------------------------------------------------------------------------------
+@@TInspectorComponentFlag
+Summary
+  Flags used for the TComponent type inspector items.
+Description
+  TInspectorComponentFlag are the available flags for TComponent type inspector item.
+@@TInspectorComponentFlag.icfShowOwnerNames
+  Indicates if owner names should be displayed.
+@@TInspectorComponentFlag.icfNoShowFirstOwnerName
+  Indicates wether the name of the first owner in the list should be suppressed.
+@@TInspectorComponentFlag.icfSortComponents
+  Indicates wether components are sorted alphabetically withing their owner.
+@@TInspectorComponentFlag.icfSortOwners
+  Indicates wether owners are sorted alphabetically.
+@@TInspectorComponentFlag.icfKeepFirstOwnerAsFirst
+  Indicates wether the first owner in the list should stay the first after sorting.
+----------------------------------------------------------------------------------------------------
+@@TInspectorComponentFlags
+<COMBINE TInspectorComponentFlag>
+----------------------------------------------------------------------------------------------------
+@@TInspectorCompoundItemFlag
+Summary
+  Flags used for the compound inspector items.
+Description
+  TInspectorCompoundItemFlag are the available flags for compound items.
+@@TInspectorCompoundItemFlag.icifSingleName
+  Indicates the item is represented by a single name.
+TInspectorCompoundItemFlag.icifSingleNameUseFirstCol
+  Indicates the item's name in single name mode is obtained from the DisplayName of the item associated
+  with the first column.
+----------------------------------------------------------------------------------------------------
+@@TInspectorCompoundItemFlags
+<COMBINE TInspectorCompoundItemFlag>
+----------------------------------------------------------------------------------------------------
+@@TInspectorClassFlag
+Summary
+  Flags used for class type inspector items.
+Description
+  TInspectorClassFlag holds the flags for class type inspector items.
+@@TInspectorClassFlag.icfCreateMemberItems
+  Create member items for the class instance.
+@@TInspectorClassFlag.icfShowClassName
+  Show the class name, instead of the default component name.
+----------------------------------------------------------------------------------------------------
+@@TInspectorClassFlags
+<COMBINE TInspectorClassFlag>
+----------------------------------------------------------------------------------------------------
+@@TInspectorItemFlag
+Summary
+  Item flags
+Description
+  TInspectorItemFlag is the flag type for inspector items.
+@@TInspectorItemFlag.iifAllowNonListValues
+  The item can accept any value, including values that are not in the pick list. This value is only
+  of use when iifValueList is also specified.
+@@TInspectorItemFlag.iifAutoUpdate
+  Any change to the edit control is immediately applied to the underlaying data object.
+@@TInspectorItemFlag.iifEditButton
+  The item uses an edit button to perform additional editing functionality.
+@@TInspectorItemFlag.iifEditFixed
+  When specified locks the edit control. This flag is useful when you need an edit button to do the
+  editing but the value should not be directly editable.
+@@TInspectorItemFlag.iifExpanded
+  Indicates the expanded state of the item. The item's Expanded property maps directly onto this
+  flag.
+@@TInspectorItemFlag.iifHidden
+  Indicates wether the item is hidden. Hidden means that the item itself is never shown, but it's
+  sub items can be, depending on the iifExpanded and iifVisible flags.
+@@TInspectorItemFlag.iifMultiLine
+  Indicates wether or not the item is a multiline edit.
+@@TInspectorItemFlag.iifOwnerDrawListFixed
+  The pick list should be owner drawn with a fixed height. This flag can only be used when
+  iifValueList is also specified. In addition, this flag and iifOwnerDrawListVariable are mutually
+  exclusive (this is handled by the item itself).
+@@TInspectorItemFlag.iifOwnerDrawListVariable
+  The pick list should be owner drawn with a variable height. This flag can only be used when
+  iifValueList is also specified. In addition, this flag and iifOwnerDrawListFixed are mutually
+  exclusive (this is handled by the item itself).
+@@TInspectorItemFlag.iifQualifiedNames
+  Indicates whether or not the sub-items will use qualified names (ie. ParentName.ChildName).
+@@TInspectorItemFlag.iifReadonly
+  Indicates whether or not the item is read-only.
+@@TInspectorItemFlag.iifValueList
+  Indicates wheter or not the item uses a value list to edit the item (ie. uses a combobox to edit
+  the value).
+@@TInspectorItemFlag.iifVisible
+  Indicates whether or not the item is visible. The Visible property maps directly onto this flags.
+----------------------------------------------------------------------------------------------------
+@@TInspectorItemFlags
+<COMBINE TInspectorItemFlag>
+----------------------------------------------------------------------------------------------------
+@@TInspectorPaintRect
+Summary
+  Specific paint rectangle
+Description
+  TInspectorPaintRect enumerates the different painting rectangles for an item. The painter object
+  will set these rectangles for each item when it gets painted.
+@@TInspectorPaintRect.iprItem
+  Item rectangle. This rectangle holds the rectangle that encompasses the entire item.
+@@TInspectorPaintRect.iprButtonArea
+  The rectangle that contains the button. Note that this area might not be completely filled by the
+  button.
+@@TInspectorPaintRect.iprBtnSrcRect
+  The rectangle in the button image that should be painted. The rectangle could be empty if no
+  button is to be painted.
+@@TInspectorPaintRect.iprBtnDstRect
+  The rectangle within the button area where the button is to be drawn. The rectangle could be empty
+  if no button is to be painted.
+@@TInspectorPaintRect.iprNameArea
+  The rectangle the name is to be painted in. Note that this area might not be filled completely.
+@@TInspectorPaintRect.iprName
+  The rectangle for the name. This rectangle will fall in the iprNameArea rectangle.
+@@TInspectorPaintRect.iprValueArea
+  The rectangle the value or editor and button are to be painted in. Note that this area might not
+  be filled completely.
+@@TInspectorPaintRect.iprValue
+  The rectangle for the value. This rectangle will fall in the iprValueArea rectangle.
+@@TInspectorPaintRect.iprEditValue
+  The rectangle for the editor. This rectangle will fall in the iprValueArea. If the item has an
+  edit button, the rectangle will have a right margin 1 left of the button's left rectangle. The
+  rectangle will be empty if the item is not in edit mode.
+@@TInspectorPaintRect.iprEditButton
+  The rectangle for the dropdown or ellipses button. This rectangle will be at the right margin of
+  the iprValueArea. The rectangle will be empty if the item is not in edit mode or if the item
+  doesn't require a button.
+@@TInspectorPaintRect.iprUser1
+  First user rectangle. Usage depends on the individual item types.
+@@TInspectorPaintRect.iprUser2
+  Second user rectangle. Usage depends on the individual item types.
+@@TInspectorPaintRect.iprUser3
+  Third user rectangle. Usage depends on the individual item types.
+@@TInspectorPaintRect.iprUser4
+  Forth user rectangle. Usage depends on the individual item types.
+@@TInspectorPaintRect.iprUser5
+  Fifth user rectangle. Usage depends on the individual item types.
+@@TInspectorPaintRect.iprUser6
+  Sixth user rectangle. Usage depends on the individual item types.
+----------------------------------------------------------------------------------------------------
+@@TInspectorSetFlag
+Summary
+  Set item flags.
+Description
+  TInspectorSetFlag holds the flags for set inspector item.
+@@TInspectorSetFlag.isfCreateMemberItems
+  Indicates that for each item in the set, a member item is created as a boolean value.
+@@TInspectorSetFlag.isfEditString
+  Indicates the string representing the set value can be edited.
+----------------------------------------------------------------------------------------------------
+@@TInspectorSetFlags
+<COMBINE TInspectorSetFlag>
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorItemSizing
+Summary
+  Contains item row sizing settings.
+Description
+  TJvInspectorItemSizing is used in the RowSizing property of TJvCustomInspectorItem and its
+  descendants. It specifies the minimum height and sizing steps for an item's height for resizing
+  purposes. An item's height will never me smaller then the minimum height and always increments in
+  sizing steps.
+
+  When the sizing steps (specified by the SizingFactor property) equals 0 (or irsNoReSize), an item
+  cannot be resized and will always have a height of the inspector's ItemHeight (Note: when
+  SizingFactor equals irsNoReSize, MinHeight will be set to irsItemHeight).
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorItemSizing.MinHeight
+Summary
+  The minimum height the item can be resized to.
+Description
+  MinHeight indicates the minimum height an item can be resized to. MinHeight can be any value or
+  one of the following constants:
+  <TABLE>
+  Constant          Meaning
+  --------          -------
+  irsItemHeight     Item will have a minimum height equal to the inspector's ItemHeight property.
+  irsNameHeight     Item will have a minimum height equal to the height of the text 'Wy' rendered in
+                      the item's name font.
+  irsValueHeight    Item will have a minimum height equal to the height of the text 'Wy' rendered in
+                      the item's value font.
+  irsNoReSize       Resizing will be turned of. Setting MinHeight to this value will set
+                      SizingFactor to irsNoReSize while MinHeight will be set to irsItemHeight.
+  </TABLE>
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorItemSizing.Sizable
+Summary
+  Determines if the item can be resized by the UI.
+Description
+  Sizable is a flag that indicates if the item can be resized by the user by dragging the bottom of
+  the item. If Sizable if False, the item can not be resized by the user (it can be resized through
+  code), otherwise the user can drag the item to resize it.
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorItemSizing.SizingFactor
+Summary
+  The sizing increments to use when resizing an item.
+Description
+  SizingFactor indicates the increments used when resizing an item. An item's height will be a
+  multiple of this value added to it's minimum height. SizingFactor can be any value or one of the
+  following constants:
+  <TABLE>
+  Constant          Meaning
+  --------          -------
+  irsItemHeight     Item will resize in steps of the inspector's ItemHeight property.
+  irsNameHeight     Item will resize in steps of the height of the text 'Wy' rendered in the item's
+                      name font.
+  irsValueHeight    Item will resize in steps of the height of the text 'Wy' rendered in the item's
+                      value font.
+  irsNoReSize       Resizing will be turned of. Setting SizingFactor to this value will set
+                      MinHeight to irsItemHeight.
+  </TABLE>
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorCompoundColumn
+Summary
+  Holds column information for a compound item.
+Description
+  The TJvInspectorCompoundColumn class is used by the TJvInspectorCompoundItem class to represent a
+  column. The class provides properties to get/set the item associated with the column, it's width
+  as it is displayed and the width it is set to.
+
+  Do not create instances of TJvInspectorCompoundColumn, use TJvInspectorCompoundItem.AddColumn to
+  add columns to a compound item.
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorCompoundColumn.Create
+Summary
+  Instantiates a new column.
+Description
+  Create instantiates a new column. The parameters will initialize the column to use the given item,
+  initializing it's Width to 0.
+Parameters
+  AParent - Compound item the column belongs too.
+  AItem -   The item that is to be associated with the column. The item must be a child of Parent,
+            and will be moved out of the child list.
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorCompoundColumn.Item
+Summary
+  The item associated with the column.
+Description
+  Item is the inspector item the column represents. Read Item to determine the current item for this
+  column, or set it to a new item.
+
+  When setting the Item, the previous item (if any) will be moved back to the child list of the
+  compound item. The new item (if any) will be moved out of the child list of the compound item.
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorCompoundColumn.Parent
+Summary
+  The compound item that owns this column.
+Description
+  Parent is the compound item that owns this column and is therefor the parent of the associated
+  item.
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorCompoundColumn.Width
+Summary
+  The (display) width of the column.
+Description
+  Width indicates the width of the column as it is displayed. The width is represented as a
+  percentage. Read Width to determine the width of the item as it is displayed or set it to a
+  desired new width.
+
+  Setting Width to 0 will result in whatever space the column can get. When multiple columns have a
+  width of 0, the available space will be equally distributed among those columns.
+Notes
+  When setting Width, you actually set WidthSet. Width will then be determined based on the other
+  columns (ie. it might not be the value you have set it to).
+See Also
+  WidthSet
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorCompoundColumn.WidthSet
+Summary
+  The set width of the column.
+Description
+  WidthSet indicates the width the columm has been set to. The width is represented as a percentage.
+  Note that the width of the column might not be this value. WidthSet indicates what the ideal width
+  should be.
+
+  A width to 0 will result in whatever space the column can get. When multiple columns have a width
+  of 0, the available space will be equally distributed among those columns.
+----------------------------------------------------------------------------------------------------
+@@TInspectorItemSortKind
+Summary
+  The sort types.
+Description
+  The TInspectorItemSortKind type defines the various sort types available. This type is used by the
+  SortKind property of an inspector item.
+@@TInspectorItemSortKind.iskNone
+  No sort order. All items are displayed in the order they are added.
+@@TInspectorItemSortKind.iskName
+  Items are sorted alphabetically by their DisplayName.
+@@TInspectorItemSortKind.iskManual
+  Items are sorted by their DisplayIndex.
+@@TInspectorItemSortKind.iskCustom
+  Items are sorted using an OnCompare event to dermine the order.
+----------------------------------------------------------------------------------------------------
+@@TJvInspConfSectionEvent
+Summary
+  Event generated before a configuration section is added.
+Description
+  The TJvInspConfSectionEvent event is called just before a configuration section is parsed.
+
+  Write a handler for this event to change the display name of the section or to prevent this
+  section from being added.
+Parameters
+  SectionName - Name of the section to be parsed on entry. Change this parameter to it's display
+                name.
+  Parse -       Initially set to True. Set it to False to prevent this section from being added.
+----------------------------------------------------------------------------------------------------
+@@TJvInspConfKeyEvent
+Summary
+  Event generated before a configuration key is added.
+Description
+  The TJvInspConfKeyEvent event is called just before a configuration key is added.
+
+  Write a handler for this event to change the display name of the key or to prevent this key from
+  being added.
+Parameters
+  SectionName - Name of the section the key is in.
+  ItemName -    Name of the key to be added on entry. Change this parameter to it's display name.
+  ATypeInfo -   Initially set to the type info of the string type. Change this parameter to whatever
+                the key represents.
+  Allow -       Initially set to True. Set it to False to prevent this key from being added.
+----------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+## Painter Objects: Types, Class references
+--------------------------------------------------------------------------------
+@@TJvInspectorPainterClass
+Summary
+  Painter class reference
+Description
+  TJvInspectorPainterClass is the painter class reference.
+--------------------------------------------------------------------------------
+## Painter Objects: Base class
+--------------------------------------------------------------------------------
+@@TJvInspectorPainter
+<TITLEIMG TJvInspectorPainter>
+Summary
+  Base inspector painter class.
+Description
+  TJvInspectorPainter is the base painter class for the data inspector. It
+  provides methods and properties to aid in painting the various items in a
+  specific style. Each style should be in it's own descendant.
+
+  The base package provides two paint styles: Borland and Visual Studio/.NET.
+--------------------------------------------------------------------------------
+@@TJvInspectorPainter.Create
+Summary
+  Instantiates the painter.
+Description
+  Create instantiates a new painter object and assigns an inspector to it. In
+  addition, the bitmaps for the collapse and expand buttons are generated.
+  Descendants could therefor generate other button images if so desired.
+
+  The inspector assigned to this painter will not use it until the Painter
+  property of the inspector is set to this instance.
+--------------------------------------------------------------------------------
+@@TJvInspectorPainter.Destroy
+Summary
+  Disposes of the painter.
+Description
+  Destroy will dispose of the painter object, freeing the internal bitmaps.
+--------------------------------------------------------------------------------
+@@TJvInspectorPainter.ApplyNameFont
+Summary
+  Activates the name font.
+Description
+  ApplyNameFont sets the Canvas font to the font used to display the name.
+  The base implementation sets this to the inspector font and selects the
+  NameColor as the font color.
+See Also
+  ApplyValueFont, Canvas, NameColor
+--------------------------------------------------------------------------------
+@@TJvInspectorPainter.ApplyValueFont
+Summary
+  Activates the value font.
+Description
+  ApplyValueFont sets the Canvas font to the font used to display the value.
+
+  The base implementation sets this to the inspector font and selects the
+  ValueColor as the font color.
+See Also
+  ApplyNameFont, Canvas, ValueColor
+--------------------------------------------------------------------------------
+@@TJvInspectorPainter.BackgroundColor
+Summary
+  Background color of the inspector.
+Description
+  BackgroundColor indicates the color used to render the background of the
+  inspector. Read Background to find out which color is used as the background
+  color or set it to another value to change it.
+--------------------------------------------------------------------------------
+@@TJvInspectorPainter.ButtonImage
+Summary
+  Reference to the bitmap to use as a collapse/expand button.
+Description
+  ButtonImage holds a reference to the bitmap to use when the collapse/expand
+  button for the current item should be rendered. If no button is to be
+  rendered, this property is set to <B>nil</B>.
+See Also
+  GetCollapseImage, GetExpandImage
+--------------------------------------------------------------------------------
+@@TJvInspectorPainter.CalcButtonBasedRects
+Summary
+  Calculates rectangles for the expand/collapse button of an item.
+Description
+  CalcButtonBasedRects calculates the rectangles needed to render the
+  expand/collapse button of an item.
+
+  The base implementation does nothing. Descendants should override this method
+  to calculate the needed rectangles.
+See Also
+  CalcEditBasedRects, CalcNameBasedRects, CalcValueBasedRects, SetupRects
+--------------------------------------------------------------------------------
+@@TJvInspectorPainter.CalcEditBasedRects
+Summary
+  Calculates rectangles for the edit control and button of an item.
+Description
+  CalcEditBasedRects calculates the rectangles needed to render the edit control
+  and it's optional button of an item.
+
+  The base implementation does nothing. Descendants should override this method
+  to calculate the needed rectangles.
+See Also
+  CalcButtonBasedRects, CalcNameBasedRects, CalcValueBasedRects, SetupRects
+--------------------------------------------------------------------------------
+@@TJvInspectorPainter.CalcNameBasedRects
+Summary
+  Calculates rectangles for the name of an item.
+Description
+  CalcNameBasedRects calculates the rectangles needed to render the name of an
+  item.
+
+  The base implementation does nothing. Descendants should override this method
+  to calculate the needed rectangles.
+See Also
+  CalcButtonBasedRects, CalcEditBasedRects, CalcValueBasedRects, SetupRects
+--------------------------------------------------------------------------------
+@@TJvInspectorPainter.CalcValueBasedRects
+Summary
+  Calculates rectangles for the value of an item.
+Description
+  CalcValueBasedRects calculates the rectangles needed to render the value of an
+  item.
+
+  The base implementation does nothing. Descendants should override this method
+  to calculate the needed rectangles.
+See Also
+  CalcButtonBasedRects, CalcEditBasedRects, CalcNameBasedRects, SetupRects
+--------------------------------------------------------------------------------
+@@TJvInspectorPainter.Canvas
+Summary
+  Reference to the canvas to render to.
+Description
+  Canvas holds a reference to the canvas that is to be used to render the items
+  on. It is initialized by a call to Setup.
+See Also
+  Setup
+--------------------------------------------------------------------------------
+@@TJvInspectorPainter.CategoryColor
+Summary
+  Background color for category items.
+Description
+  CategoryColor indicates the background color for category items. Read
+  CategoryColor to find out which color is used as a background when rendering a
+  category item or set it to another value to change it.
+See Also
+  CategoryTextColor, TJvInspectorCustomCategoryItem
+--------------------------------------------------------------------------------
+@@TJvInspectorPainter.CategoryTextColor
+Summary
+  Font color for selected items.
+Description
+  CategoryTextColor indicates the font color for category items. Read
+  CategoryTextColor to find out which color is used for the font when rendering
+  a category item or set it to another value to change it.
+See Also
+  CategoryColor, TJvInspectorCustomCategoryItem
+--------------------------------------------------------------------------------
+@@TJvInspectorPainter.DividerColor
+Summary
+  Pen color of the divider bar.
+Description
+  DividerColor indicates the pen color used to render the divider bar. Read
+  DividerColor to find out which color is used to render the divider bar or set
+  it to another value to change it.
+See Also
+  TJvCustomInspector.Divider
+--------------------------------------------------------------------------------
+@@TJvInspectorPainter.DividerWidth
+Summary
+  Returns the width of the divider bar
+Description
+  DividerWidth returns the width of the bar dividing the name and value column.
+
+  The base implementation returns 1. Descendants can override this method to
+  return another value.
+See Also
+  PaintDivider
+--------------------------------------------------------------------------------
+@@TJvInspectorPainter.DoPaint
+Summary
+  Renders the current item.
+Description
+  DoPaint renders the item that has just been setup. The Item property indicates
+  the item to render while Rects hold the various calculated rectangles.
+  ButtonImage will hold the image of the collapse/expand button if one is
+  needed, or it is set to <B>nil</B> if no button is to be drawn. Use
+  ApplyNameFont/ApplyValueFont to activate the font to render the name/value and
+  use PaintDivider to render the divider bar.
+
+  The base implementation does nothing. Descendants should override this method
+  to do the actual painting.
+--------------------------------------------------------------------------------
+@@TJvInspectorPainter.GetCollapseImage
+Summary
+  Retrieves the image for a collapse button.
+Description
+  GetCollapseImage retrieves an image to use as a collapse button. If no bitmap
+  has been assigned to the <LINK TJvCustomInspector.CollapseButton,
+  Inspector.CollapseButton>, the internal image will be returned, otherwise the
+  assigned bitmap will be returned.
+See Also
+  ButtonImage, GetExpandImage, TJvCustomInspector.CollapseButton
+--------------------------------------------------------------------------------
+@@TJvInspectorPainter.GetExpandImage
+Summary
+  Retrieves the image for an expand button.
+Description
+  GetExpandImage retrieves an image to use as an expand button. If no bitmap
+  has been assigned to the <LINK TJvCustomInspector.ExpandButton,
+  Inspector.ExpandButton>, the internal image will be returned, otherwise the
+  assigned bitmap will be returned.
+See Also
+  ButtonImage, GetCollapseImage, TJvCustomInspector.ExpandButton
+--------------------------------------------------------------------------------
+@@TJvInspectorPainter.GetNameHeight
+Summary
+  Returns the height of the name font.
+Description
+  GetNameHeight will apply the name font and determine the TextHeight of 'Wy'.
+  This result will be returned and the canvas is restored to it's original
+  state.
+See Also
+  ApplyNameFont, GetValueHeight
+--------------------------------------------------------------------------------
+@@TJvInspectorPainter.GetValueHeight
+Summary
+  Returns the height of the value font.
+Description
+  GetValueHeight will apply the value font and determine the TextHeight of 'Wy'.
+  This result will be returned and the canvas is restored to it's original
+  state.
+See Also
+  ApplyValueFont, GetNameHeight
+--------------------------------------------------------------------------------
+@@TJvInspectorPainter.HideEditor
+Summary
+  Hides the editor.
+Descripion
+  Hide editor will hide the edit control and/or the value list box for the
+  selected item. It does so by setting the item's iprEditValue rectange to an
+  empty rectangle.
+See Also
+  TJvCustomInspector.Selected
+--------------------------------------------------------------------------------
+@@TJvInspectorPainter.InitializeColors
+Summary
+  Sets the color properties to their defaults.
+Description
+  InitializeColors presets the color properties to the defaults of the class,
+  according to the RTTI info.
+
+  The base implementation presets the following properties:
+  * BackgroundColor
+  * DividerColor
+  * NameColor
+  * ValueColor
+  * CategoryColor
+  * CategoryTextColor
+  * SelectedColor
+  * SelectedTextColor
+
+  Descendants can override this method to preset additional properties.
+See Also
+  SetDefaultProp
+--------------------------------------------------------------------------------
+@@TJvInspectorPainter.Initializing
+Summary
+  Flag to indicate the painter is still initializing
+Description
+  Initializing indicates if the painter is still in the process of initializing
+  itself. The Create constructor will set Initializing to True right before
+  InitializeColors is called. Right after InitializeColors returns, Initializing
+  is reset to False.
+
+  Initializing is used in setter methods for the color properties to avoid calls
+  to the <LINK TJvCustomInspector.InvalidateItem, Inspector.InvalidateItem>
+  method during initialization.
+--------------------------------------------------------------------------------
+@@TJvInspectorPainter.Inspector
+Summary
+  Reference to the inspector.
+Description
+  Inspector holds a reference to the inspector that currently uses this painter.
+See Also
+  SetInspector
+--------------------------------------------------------------------------------
+@@TJvInspectorPainter.InternalCollapseButton
+Summary
+  Holds the internally created collapse button.
+Description
+  InternalCollapseButton is the internally created collapse button bitmap. Use
+  this bitmap if you need to change the standard collapse button image.
+See Also
+  GetCollapseImage, InternalExpandButton
+--------------------------------------------------------------------------------
+@@TJvInspectorPainter.InternalExpandButton
+Summary
+  Holds the internally created expand button.
+Description
+  InternalExpandButton is the internally created expand button bitmap. Use
+  this bitmap if you need to change the standard expand button image.
+See Also
+  GetExpandImage, InternalCollapseButton
+--------------------------------------------------------------------------------
+@@TJvInspectorPainter.Item
+Summary
+  Reference to the current item.
+Description
+  Item holds a reference to the item currently being painted.
+See Also
+  ItemIndex, PaintItem
+--------------------------------------------------------------------------------
+@@TJvInspectorPainter.ItemIndex
+Summary
+  The index of the current item.
+Description
+  ItemIndex holds the index into the <LINK TJvCustomInspector.VisibleItem,
+  Inspector.VisibleItems> array of the item currently painted. If ItemIndex < 0,
+  an item reference was supplied to the PaintItem method.
+See Also
+  Item, PaintItem
+--------------------------------------------------------------------------------
+@@TJvInspectorPainter.Loading
+Summary
+  Determines if the component is being loaded.
+Description
+  Loading returns True if the painter is being loaded. Loading is a short hand
+  notation for csLoading <B>in</B> ComponentState.
+
+  Loading is used in the set methods of the color properties to avoid calls to
+  <LINK TJvCustomInspector.Invalidate, Inspector.Invalidate>.
+--------------------------------------------------------------------------------
+@@TJvInspectorPainter.NameColor
+Summary
+  Font color for item names.
+Description
+  NameColor indicates the font color used to render an item's name in (unless
+  the item is either selected or a category, in which case SelectedTextColor or
+  CategoryTextColor will be used respectively). Read NameColor to find out which
+  font color is used to render an item's name, or set it to another value to
+  change it.
+See Also
+  ValueColor, CategoryTextColor, SelectedTextColor
+--------------------------------------------------------------------------------
+@@TJvInspectorPainter.Paint
+Summary
+  Renders the inspector items.
+Description
+  Paint is the main rendering method. It will fill the
+  <LINK TJvCustomInspector.ViewRect, Inspector.ViewRect> rectangle with the
+  BackgroundColor, loop through currently visible items (calling PaintItem for
+  each of them) and optionally hide the editor if the selected item is no longer
+  being displayed.
+
+  Paint assumes the background color has been set prior to calling Paint.
+See Also
+  BackgroundColor, PaintItem, Setup, TJvCustomInspector.ViewRect
+--------------------------------------------------------------------------------
+@@TJvInspectorPainter.PaintDivider
+Summary
+  Renders the name/value column divider bar at arbitrary positions.
+Description
+  PaintDivider is called whenever the name/value column divider bar needs to be
+  rendered. Because this divider bar is also used to divide columns in compound
+  items, the PaintDivider method can paint the divider at any location.
+
+  The base implementation does nothing. Descendants should override this method
+  to paint the divider bar.
+Parameters
+  X - X-position of the bar.
+  YTop - Top of the divider bar.
+  YBottom - Bottom of the divider bar.
+--------------------------------------------------------------------------------
+@@TJvInspectorPainter.PaintItem
+Summary
+  Renders an item.
+Description
+  PaintItem handles a request to render an item. The actual rendering will be
+  done by the DoPaint method. PaintItem will setup the paint information before
+  calling DoPaint and cleans up when DoPaint returns.
+
+  PaintItem has two overloaded methods. The first method accepts a rectangle and
+  an item index and will paint the specified item inside the rectangle,
+  returning the rectangle not used.
+
+  The second method will accept an item instance and will render it at the
+  position it was last rendered in.
+Parameters
+  ARect - Available rectangle for the item. On exit, this parameter will hold
+            the rectangle available after the item was rendered.
+  AItemIndex - Index into the <LINK TJvCustomInspector.VisibleItems,
+                Inspector.VisibleItems> array of the item to be rendered.
+  AItem - Item instance to be rendered.
+--------------------------------------------------------------------------------
+@@TJvInspectorPainter.PaintRect
+Summary
+  Rectangle available to paint the item in.
+Description
+  PaintRect is the rectangle available to the item. SetupRects will use this
+  rectangle to calculate the item's rectangle and TeardownItem will modify this
+  rectangle to exlude to last rendered item.
+
+  The Paint method will initialize PaintRect to the
+  <LINK TJvCustomInspector.ViewRect, inspector's ViewRect>.
+See Also
+  Paint
+--------------------------------------------------------------------------------
+@@TJvInspectorPainter.Rects
+Summary
+  Reference to the item rectangles.
+Description
+  Rects is a reference to the current <LINK TJvCustomInspectorItem.Rects, item's
+  Rects> property. If there is no current item, setting a rectangle does
+  nothing, while reading will return an empty rectangle.
+--------------------------------------------------------------------------------
+@@TJvInspectorPainter.SetInspector
+Summary
+  Attach the painter to an inspector.
+Description
+  SetInspector attaches the painter to the specified inspector. If the
+  inspector's Painter property is not set to this painter, an exception will be
+  raised.
+See Also
+  TJvCustomInspector.Painter
+--------------------------------------------------------------------------------
+@@TJvInspectorPainter.Setup
+Summary
+  Initializes the painter.
+Description
+  Setup initializes the painter to use the specified canvas and initializes the
+  Canvas.Brush.Color to the BackgroundColor.
+
+  Setup is called by the <LINK TJvCustomInspector.Paint, Inspector.Paint> method
+  before it issues the paint request.
+
+  Descendants can override this method to do additional initialization if
+  needed.
+See Also
+  BackgroundColor, Canvas, <LINK TJvCustomInspector.Paint>
+--------------------------------------------------------------------------------
+@@TJvInspectorPainter.SetupItem
+Summary
+  Initializes item painting.
+Description
+  SetupItem will initialize the painter to render the specified item. On entry
+  to this method, either Item or ItemIndex has been set by the PaintItem method.
+  Depending on which is set the following actions will be taken:
+  * If ItemIndex is set, the corresponding item will be retrieved and stored in
+    the Item property.
+  * If an item is available, the BUttonImage will be set to either <B>nil</B>,
+    the bitmap returned by GetCollapseImage or the bitmap returned by
+    GetExpandImage.
+  * If an item index was specified, SetupRects is called to calculate the item
+    rectangles.
+
+  Descendants can override this method to do additional initialization if
+  needed.
+See Also
+  PaintItem, Setup, SetupRects, TeardownItem 
+--------------------------------------------------------------------------------
+@@TJvInspectorPainter.SetupRects
+Summary
+  Initializes item rectangles.
+Description
+  SetupRects initializes the items rectangles to their proper values. It will
+  set the item's iprItem rectangle to the paint rectangle, setting the bottom
+  value to PaintItem.Top + <LINK TJvCustomInspectorItem.Height, Item.Height>.
+
+  Descendants should override this method to initialize the other rectangles.
+See Also
+  PaintItem, Setup, SetupItem
+--------------------------------------------------------------------------------
+@@TJvInspectorPainter.SelectedColor
+Summary
+  Background color for selected items.
+Description
+  SelectedColor indicates the background color for selected items. Read
+  SelectedColor to find out which color is used as a background when an item is
+  selected or set it to another value to change it.
+See Also
+  SelectedTextColor
+--------------------------------------------------------------------------------
+@@TJvInspectorPainter.SelectedTextColor
+Summary
+  Font color for selected items.
+Description
+  SelectedTextColor indicates the font color for selected items. Read
+  SelectedTextColor to find out which color is used for the font when an item is
+  selected or set it to another value to change it.
+See Also
+  SelectedColor
+--------------------------------------------------------------------------------
+@@TJvInspectorPainter.TeardownItem
+Summary
+  Finalizes item rendering
+Description
+  TeardownItem finalizes the item rendering process. The PaintRect will be
+  adjusted in such a way that is starts just below the item just painted.
+
+  Descendants can override this method to do additional finalization if needed.
+See Also
+  SetupItem
+--------------------------------------------------------------------------------
+@@TJvInspectorPainter.ValueColor
+Summary
+  Font color for item values.
+Description
+  ValueColor indicates the font color used to render an item's value. Read
+  ValueColor to find out which font color is used to render an item's value, or
+  set it to another value to change it.
+See Also
+  NameColor
+--------------------------------------------------------------------------------
+## Painter Objects: Common class for Borland and .NET styles
+--------------------------------------------------------------------------------
+@@TJvInspectorBorlandNETBasePainter
+<TITLEIMG TJvInspectorPainter>
+Summary
+  Base inspector painter class common for Borland and .NET styles.
+Description
+  TJvInspectorBorlandNETBasePainter is the common base painter class for the
+  Borland and .NET paint styles. It implements many of the methods to setup
+  the various item rectangles, fonts and colors in such a way that is common for
+  the Borland and .NET styles.
+--------------------------------------------------------------------------------
+## Painter Objects: Borland style
+--------------------------------------------------------------------------------
+@@TJvInspectorBorlandPainter
+<TITLEIMG TJvInspectorBorlandPainter>
+Summary
+  Inspector painter class for Borland style.
+Description
+  TJvInspectorBorlandPainter is the painter component that implements the Borland
+  paint style.
+--------------------------------------------------------------------------------
+@@TJvInspectorBorlandPainter.DividerLightColor
+Summary
+  Pen color of the light side of the divider bar.
+Description
+  DividerLightColor indicates the pen color used to render the lighter part of
+  the divider bar (the line on the right). Read DividerLightColor to find out
+  which color is used to render the right side of the divider bar or set it to
+  another value to change it.
+See Also
+  DividerColor, TJvCustomInspector.Divider
+--------------------------------------------------------------------------------
+## Painter Objects: .NET / Visual Studio style
+--------------------------------------------------------------------------------
+@@TJvInspectorDotNETPainter
+<TITLEIMG TJvInspectorDotNETPainter>
+Summary
+  Inspector painter class for .NET / Visual Studio style.
+Description
+  TJvInspectorDotNETPainter is the painter component that implements the .NET/Visual Studio paint
+  style.
+--------------------------------------------------------------------------------

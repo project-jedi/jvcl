@@ -1,17 +1,3 @@
-----------------------------------------------------------------------------------------------------
-@@$TJvApplicationHotKey
-<GROUP JVCL.FormsAndApp.Application.HotKeys>
-<TITLE TJvApplicationHotKey overview>
-  The TJvApplicationHotKey components allows you to register an application wide hot key
-  combination. When that key combination is pressed an event is generated.
-
-  To use this component you should:
-
-  * Drop a TJvApplicationHotKey component on a form or data module.
-  * Assign a <B>unique</B> <LINK TJvApplicationHotKey.HotKey, hot key combination> to the component.
-  * <LINK TJvApplicationHotKey.OnHotKey, Assign a handler> to the notifcation event. 
-  * <LINK TJvApplicationHotKey.Active, Activate> the component.
-----------------------------------------------------------------------------------------------------
 @@JvAppHotKey.pas
 <GROUP JVCL.FileRef>
 Summary
@@ -21,13 +7,21 @@ Author
   Peter Thörnqvist
 ----------------------------------------------------------------------------------------------------
 @@TJvApplicationHotKey
+##JVCL:Component
 <TITLEIMG TJvApplicationHotKey>
-<GROUP TJvApplicationHotKey>
+<GROUP JVCL.FormsAndApp.Application.HotKeys>
 Summary
   Registers an application wide hotkey combination.
 Description
   The TJvApplicationHotKey components allows you to register an application wide hot key
   combination. When that key combination is pressed an event is generated.
+
+  To use this component you should:
+
+  * Drop a TJvApplicationHotKey component on a form or data module.
+  * Assign a <B>unique</B> <LINK HotKey, hot key combination> to the component.
+  * <LINK OnHotKey, Assign a handler> to the notifcation event. 
+  * Activate the component.
 ----------------------------------------------------------------------------------------------------
 @@TJvApplicationHotKey.Active
 Summary

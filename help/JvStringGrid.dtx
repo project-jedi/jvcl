@@ -1,29 +1,3 @@
-----------------------------------------------------------------------------------------------------
-@@$TJvStringGrid
-<TITLE TJvStringGrid overview>
-<GROUP JVCL.GridsAndContent.Grids>
-  TJvStringGrid supports extended features such as alternative cell alignment, sorting, loading and 
-  saving a grid.
-  
-  Call method SortGrid to sort the grid. Call method SaveToCSV, SaveToFile or SaveToStream to save the
-  grid to a stream or file. Call method LoadFromCSV, LoadFromFile or LoadFromStream to load the grid 
-  from a file or stream. 
-  
-  You can use OnMouseEnter and OnMouseLeave to alter the grids look or behavoir, when the user 
-  moves the mouse pointer over the control.
-  
-  Property HintColor can be used to set a different color of the Help hint boxes for the grid.
-  
-  Use Alignment to set the default alignment for the grid. Write an OnGetCellAlignment event handler
-  to provide the grid with an alignment for a specific cell. 
-  
-  Call InvalidateCell, InvalidateCol or InvalidateRow to repaint a cell, column or row, respectively.
-  
-  Call ActivateCell to set the input focus to a specific cell. Write an OnExitCell event handler to 
-  respend when the input focus shifts away from a cell.
-
-  Write an OnCaptionClick event handler to respond when the user clicks a fixed cell.
-----------------------------------------------------------------------------------------------------
 @@JvStringGrid.pas
 <GROUP JVCL.FileRef>
 Summary
@@ -70,8 +44,9 @@ Description
   a currency value. 
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid
+##JVCL:Component
 <TITLEIMG TJvStringGrid>
-<GROUP TJvStringGrid>
+<GROUP JVCL.GridsAndContent.Grids>
 Summary
   Supports extended features such as alternative cell alignment, sorting, loading and saving a grid.
 Description

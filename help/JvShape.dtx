@@ -1,14 +1,3 @@
-----------------------------------------------------------------------------------------------------
-@@$TJvShape
-<TITLE TJvShape overview>
-<GROUP JVCL.Graphics.Shapes>
-  TJvShape is a shape that supports extended features such as hot tracking. 
-  
-  You can use OnMouseEnter and OnMouseLeave to alter the shape's look or behavoir, when the user 
-  moves the mouse pointer over the control.
-  
-  Property HintColor can be used to set a different color of the Help hint boxes for the shape.
-----------------------------------------------------------------------------------------------------
 @@JvShape.pas
 <GROUP JVCL.FileRef>
 Summary
@@ -18,16 +7,22 @@ Author
   Sébastien Buysse
 ----------------------------------------------------------------------------------------------------
 @@TJvShape
+##JVCL:Component
 <TITLEIMG TJvShape>
-<GROUP TJvShape>
+<GROUP JVCL.Graphics.Shapes>
 Summary
   Supports extended features such as hot tracking.
 Description
-  Use property HintColor to change the color of the hint boxes for the shape.
+  TJvShape is a shape that supports extended features such as hot tracking. 
   
   TJvShape adds four events to TShape: OnCtl3DChanged, OnParentColorChange, OnMouseEnter and
-  OnMouseLeave. For example, you can use OnMouseEnter to change the brush color when the mouse is over the
-  shape, and then use the OnMouseLeave event to change it back when the mouse moves off the shape.
+  OnMouseLeave.
+
+  You can use OnMouseEnter and OnMouseLeave to alter the shape's look or behavoir, when the user 
+  moves the mouse pointer over the control.
+  
+  Property HintColor can be used to set a different color of the Help hint boxes for the shape.
+  
 ----------------------------------------------------------------------------------------------------
 @@TJvShape.Create
 Summary

@@ -1,16 +1,5 @@
-----------------------------------------------------------------------------------------------------
-@@$TJvSerialDlg
-<TITLE TJvSerialDlg overview>
-<GROUP JVCL.Dialogs.Custom>
-  The TJvSerialDlg component displays a modal dialog box that prompts the user for a name and 
-  serial key string. 
-  
-  The purpose of this dialog box is to let a user specify a name and serial key. You use the Execute
-  method to display the dialog box.
-  When the user chooses OK in the dialog box, the entered name and serial key are stored in the TJvSerialDlg
-  Name and Serial properties, resp., which you can then process as you want.
-----------------------------------------------------------------------------------------------------
 @@JvSerialDlg.pas
+<GROUP JVCL.FileRef>
 Summary
   Contains the TJvSerialDlg component.
 <INCLUDE JVCL.UnitText.dtx>
@@ -18,14 +7,20 @@ Author
   Sébastien Buysse
 ----------------------------------------------------------------------------------------------------
 @@TJvSerialDlg
+##JVCL:Component
 <TITLEIMG TJvSerialDlg>
-<GROUP TJvSerialDlg>
+<GROUP JVCL.Dialogs.Custom>
 Summary
   Displays a dialog for entering a name and serial key.
 Description
   The TJvSerialDlg component displays a modal dialog box that prompts the user for a name and 
   serial key string. The dialog does not appear at runtime until it is activated by a call to the 
   Execute method.
+  
+  The purpose of this dialog box is to let a user specify a name and serial key. You use the Execute
+  method to display the dialog box.
+  When the user chooses OK in the dialog box, the entered name and serial key are stored in the 
+  Name and Serial properties, resp., which you can then process as you want.
 ----------------------------------------------------------------------------------------------------
 @@TJvSerialDlg.Execute
 Summary

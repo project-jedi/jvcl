@@ -10,7 +10,6 @@
 |   |- Push=Push buttons=JVCL provides a number of enhanced push buttons and speed buttons.
 |   |- Radio=Radio buttons=JVCL provides a number of enhanced radio buttons.
 |- CommCtrl=Common controls=JVCL provides a number of wrappers for common controls.
-|- Inspector=Data Inspector=JVCL provides a Object Inspector like control. The control has the ability to inspect various types of data sources (such as published properties, variables, INI-files, dataset fields and more).
 |- DBAware=Data aware components=JVCL provides a number of database aware components and controls (both visual as well as non visual).
 |   |- Providers=Datasets and DataSources=JVCL provides a number of data source and dataset derivatives.
 |   |   |- Datasets=Datasets=JVCL provides a number of dataset derivatives to retrieve data from other sources than databases.

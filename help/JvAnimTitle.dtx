@@ -1,20 +1,3 @@
-@@$TJvAnimTitle
-<TITLE TJvAnimTitle overview>
-<GROUP JVCL.FormsAndApp.Forms.DecoratingAndEffects>
-  TJvAnimTitle is a component to provide an animated form caption. The component handles two things:
-
-  * Animate the caption (the caption slowly appears and then disappears).
-  * Allow the caption to blink <I>x</I> time after the caption has appeared.
-
-  To use this component you should:
-
-  * Drop TJvAnimTitle on a form
-  * Set the <LINK TJvAnimTitle.Title, Title> to the title to display (by default set to the forms
-    Caption. Changes to the forms Caption are not mirrored in this property).
-  * Set the delay between two animation steps.
-  * Optionally set Blink to the number of blinks after the title is fully displayed or leave it at
-    0 if you don't want the caption to blink.
-----------------------------------------------------------------------------------------------------
 @@JvAnimTitle.pas
 <TITLEIMG JvAnimTitle>
 <GROUP JVCL.FileRef>
@@ -25,7 +8,8 @@ Author:
   Sébastien Buysse
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimTitle
-<GROUP TJvAnimTitle>
+##JVCL:Component
+<GROUP JVCL.FormsAndApp.Forms.DecoratingAndEffects>
 <TITLEIMG TJvAnimTitle>
 Summary
   Caption animation component.
@@ -34,6 +18,15 @@ Description
 
   * Animate the caption (the caption appears character by character and then disappears).
   * Allow the caption to blink <I>x</I> time after the caption has appeared.
+
+  To use this component you should:
+
+  * Drop TJvAnimTitle on a form
+  * Set the Title to the title to display (by default set to the forms
+    Caption. Changes to the forms Caption are not mirrored in this property).
+  * Set the delay between two animation steps.
+  * Optionally set Blink to the number of blinks after the title is fully displayed or leave it at
+    0 if you don't want the caption to blink.
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimTitle.Blink
 Summary
