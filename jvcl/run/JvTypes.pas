@@ -55,11 +55,13 @@ const
   DEFAULT_SYSCOLOR_MASK = $80000000;
   {$ENDIF}
 
-{ Standard Windows colors that are not defined by Delphi }
+{ Standard Windows colors that are not defined in Delphi 5}
+  {$IFNDEF COMPILER6_UP}
   clMoneyGreen = TColor($C0DCC0);
   clSkyBlue = TColor($F0CAA6);
   clCream = TColor($F0FBFF);
   clMedGray = TColor($A4A0A0);
+  {$ENDIF}
 
 type
 {$IFNDEF COMPILER6_UP}
