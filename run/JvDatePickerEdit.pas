@@ -117,12 +117,14 @@ type
     FNoDateText: string;
     FStoreDate: Boolean;
     FAlwaysReturnEditDate: Boolean;
+    FEmptyMaskText: string;
     //    FMinYear: Word;
     //    FMaxYear: Word;
     procedure ButClick(Sender: TObject);
     procedure CalChange(Sender: TObject);
     procedure CalDestroy(Sender: TObject);
     procedure CalSelect(Sender: TObject);
+    function IsEmptyMaskText(const AText: string): Boolean; //TODO: make IsEmptyMaskText protected
     function AttemptTextToDate(const AText: string; var ADate: TDateTime;
       const AForce: Boolean = False; const ARaise: Boolean = False): Boolean;
     function DateFormatToEditMask(const ADateFormat: string): string;
@@ -452,7 +454,7 @@ function TJvCustomDatePickerEdit.AttemptTextToDate(const AText: string;
   var ADate: TDateTime; const AForce: Boolean; const ARaise: Boolean): Boolean;
 var
   OldFormat: string;
-  TmpDate: TDateTime;
+  OldDate: TDateTime;
   Dummy: Integer;
 begin
   Result := Validate(AText, Dummy);
@@ -460,12 +462,12 @@ begin
   - otherwise we'd be swamped by exceptions during input}
   if Result or AForce then
   begin
-    TmpDate := ADate;
+    OldDate := ADate;
     OldFormat := ShortDateFormat;
     try
       ShortDateFormat := Self.DateFormat;
       try
-        if AnsiSameText(AText,EditMask) then
+        if AllowNoDate and IsEmptyMaskText(AText) then
           ADate := 0.0
         else
           ADate := StrToDate(AText);
@@ -475,7 +477,7 @@ begin
         if (ARaise) then
           raise
         else
-          ADate := TmpDate;
+          ADate := OldDate;
       end;
     finally
       ShortDateFormat := OldFormat;
@@ -700,6 +702,7 @@ begin
   try
     Text := EmptyStr;
     EditMask := FMask;
+    FEmptyMaskText := Text;
   finally
     EndInternalChange;
   end;
@@ -919,6 +922,11 @@ procedure TJvCustomDatePickerEdit.CreateWnd;
 begin
   inherited;
   SetDateFormat(ShortDateFormat);
+end;
+
+function TJvCustomDatePickerEdit.IsEmptyMaskText(const AText: string): Boolean;
+begin
+  Result := AnsiSameStr(AText, FEmptyMaskText);
 end;
 
 end.
