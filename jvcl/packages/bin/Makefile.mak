@@ -123,7 +123,10 @@ Templates:
         @IF NOT $(MASTEREDITION)! == ! @copy ..\$(PKGDIR)\template.cfg $(PKGDIR_MASTEREDITION)\template.cfg 
 
 ################################################################################
-Compile: Bpg2Make.exe
+Compile: Bpg2Make.exe CompilePackages
+
+################################################################################
+CompilePackages:
         @echo [Compiling: Packages]
         cd $(JVCLPACKAGEDIR)
 
