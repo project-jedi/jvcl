@@ -63,6 +63,8 @@ type
   IInterface = IUnknown;
 
 function Supports(const Intf: IInterface; const IID: TGUID): Boolean; overload;
+
+function FileSetReadOnly(const FileName: string; ReadOnly: Boolean): Boolean;
 {$ENDIF COMPILER5}
 
 implementation
@@ -335,6 +337,21 @@ var
   TempIntf: IInterface;
 begin
   Result := Supports(Intf, IID, TempIntf);
+end;
+
+function FileSetReadOnly(const FileName: string; ReadOnly: Boolean): Boolean;
+var
+  Attr: Cardinal;
+begin
+  Result := False;
+  Attr := GetFileAttributes(PChar(FileName));
+  if Attr = -1 then
+    Exit;
+  if ReadOnly then
+    Attr := Attr or FILE_ATTRIBUTE_READONLY
+  else
+    Attr := Attr and not FILE_ATTRIBUTE_READONLY;
+  SetFileAttributes(PChar(FileName), Attr);
 end;
 {$ENDIF COMPILER5}
 

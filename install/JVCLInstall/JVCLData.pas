@@ -503,7 +503,10 @@ var
   i: Integer;
 begin
   if FJVCLConfig.Modified then
+  begin
+    FileSetReadOnly(JVCLConfig.Filename, False);
     JVCLConfig.SaveToFile(JVCLConfig.Filename);
+  end;
   for i := 0 to Targets.Count - 1 do
     TargetConfig[i].Save;
 end;
@@ -754,9 +757,12 @@ procedure TTargetConfig.SavePackagesSettings(ProjectGroup: TProjectGroup);
 var
   i: Integer;
   Ini: TMemIniFile;
+  IniFileName: string;
 begin
  // save to ini
-  Ini := TMemIniFile.Create(ChangeFileExt(ParamStr(0), '.ini'));
+  IniFileName := ChangeFileExt(ParamStr(0), '.ini');
+  FileSetReadOnly(IniFileName, False);
+  Ini := TMemIniFile.Create(IniFileName);
   try
     Ini.EraseSection(ProjectGroup.BpgName);
     for i := 0 to ProjectGroup.Count - 1 do
@@ -955,6 +961,7 @@ procedure TTargetConfig.Save;
 var
   Kind: TPackageGroupKind;
   Ini: TMemIniFile;
+  IniFileName: string;
 begin
   for Kind := pkFirst to pkLast do
   begin
@@ -964,7 +971,9 @@ begin
       SavePackagesSettings(Frameworks.Items[True, Kind]);
   end;
 
-  Ini := TMemIniFile.Create(ChangeFileExt(ParamStr(0), '.ini'));
+  IniFileName := ChangeFileExt(ParamStr(0), '.ini');
+  FileSetReadOnly(IniFileName, False);
+  Ini := TMemIniFile.Create(IniFileName);
   try
     Ini.WriteString(Target.DisplayName, 'JCLDir', JCLDir); // do not localize
     if Target.IsBCB then

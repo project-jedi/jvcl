@@ -31,7 +31,7 @@ unit JVCLConfiguration;
 interface
 
 uses
-  SysUtils, Classes, Contnrs, dpp_PascalParser;
+  SysUtils, Classes, Contnrs, dpp_PascalParser, Utils;
 
 type
   TJVCLConfig = class;
@@ -77,6 +77,7 @@ type
     procedure Parse;
     procedure LoadFromFile(const AFilename: string); override;
     procedure LoadFromStream(Stream: TStream); override;
+    procedure SaveToFile(const FileName: String); override;
 
     property ItemCount: Integer read GetItemCount;
     property Items[Index: Integer]: TJVCLConfigItem read GetItems;
@@ -272,6 +273,12 @@ procedure TJVCLConfig.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
   Parse;
+end;
+
+procedure TJVCLConfig.SaveToFile(const FileName: String);
+begin
+  FileSetReadOnly(Filename, False);
+  inherited SaveToFile(FileName);
 end;
 
 end.
