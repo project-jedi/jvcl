@@ -181,11 +181,11 @@ object Form1: TForm1
     object Favorites1: TMenuItem
       Caption = 'Favorites'
       object Addtofavorites1: TMenuItem
-        Caption = 'Add to favorites'
+        Caption = 'Add to Favorites'
         OnClick = Addtofavorites1Click
       end
       object Deletefavorite1: TMenuItem
-        Caption = 'Delete favorite'
+        Caption = 'Delete Favorite'
       end
       object N10: TMenuItem
         Caption = '-'
@@ -203,6 +203,94 @@ object Form1: TForm1
         Caption = 'About Registry Editor Demo...'
         OnClick = AboutRegistryeditordemo1Click
       end
+    end
+  end
+  object alMain: TActionList
+    Left = 80
+    Top = 144
+    object acImport: TAction
+      Category = 'Registry'
+      Caption = 'Import registryfile...'
+    end
+    object acExport: TAction
+      Category = 'Registry'
+      Caption = 'Export registryfile...'
+    end
+    object acConnectNetwork: TAction
+      Category = 'Registry'
+      Caption = 'Connect network drive...'
+    end
+    object acDisconnectNetwork: TAction
+      Category = 'Registry'
+      Caption = 'Disconnect network drive...'
+    end
+    object acPrint: TAction
+      Category = 'Registry'
+      Caption = 'Print...'
+    end
+    object acExit: TAction
+      Category = 'Registry'
+      Caption = 'Exit'
+    end
+    object acNewKey: TAction
+      Category = 'Edit'
+      Caption = 'Key'
+    end
+    object acNewString: TAction
+      Category = 'Edit'
+      Caption = 'String Value'
+    end
+    object acNewBinary: TAction
+      Category = 'Edit'
+      Caption = 'Binary Value'
+    end
+    object acNewDWORD: TAction
+      Category = 'Edit'
+      Caption = 'DWORD Value'
+    end
+    object acDelete: TAction
+      Category = 'Edit'
+      Caption = 'Delete'
+    end
+    object acRename: TAction
+      Category = 'Edit'
+      Caption = 'Rename'
+    end
+    object acCopyName: TAction
+      Category = 'Edit'
+      Caption = 'Copy Key Name'
+    end
+    object acFind: TAction
+      Category = 'Edit'
+      Caption = 'Find...'
+    end
+    object acFindNext: TAction
+      Category = 'Edit'
+      Caption = 'Find Next'
+    end
+    object acStatusBar: TAction
+      Category = 'View'
+      Caption = 'StatusBar'
+    end
+    object acRefresh: TAction
+      Category = 'View'
+      Caption = 'Refresh'
+    end
+    object acAddFav: TAction
+      Category = 'Favorites'
+      Caption = 'Add to Favorites'
+    end
+    object acDelFav: TAction
+      Category = 'Favorites'
+      Caption = 'Delete Favorite'
+    end
+    object acHelp: TAction
+      Category = 'Help'
+      Caption = 'Help Index'
+    end
+    object acAbout: TAction
+      Category = 'Help'
+      Caption = 'About Registry Editor Demo...'
     end
   end
 end

@@ -119,8 +119,8 @@ end;
 procedure TMainForm.SendBtnClick(Sender: TObject);
 begin
   JvMail1.Clear;
-  JvMail1.Recipient.AddRecip(ToEdit.Text);
-  if CcEdit.Text <> '' then JvMail1.CarbonCopy.AddRecip(CcEdit.Text);
+  JvMail1.Recipient.AddRecipient(ToEdit.Text);
+  if CcEdit.Text <> '' then JvMail1.CarbonCopy.AddRecipient(CcEdit.Text);
   JvMail1.Subject := SubjectEdit.Text;
   JvMail1.Body.Text := BodyEdit.Text;
   JvMail1.Attachment.Assign(AttachmentMemo.Lines);

@@ -89,7 +89,8 @@ begin
     Attributes[0] := WideString('displayName');
     Attributes[1] := WideString('mail');
     InitInfo.cAttributesToFetch := 2;
-    InitInfo.apwzAttributeNames := @Attributes[0];
+    { (p3) not sure about this one (was @Attributes[0])... }
+    InitInfo.apwzAttributeNames := LPLPWSTR(@Attributes[0]);
     // 5. initialize object picker
     if SUCCEEDED(ObjPicker.Initialize(InitInfo)) then
     begin

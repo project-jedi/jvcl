@@ -2,7 +2,7 @@ object frmMain: TfrmMain
   Left = 309
   Top = 132
   Width = 410
-  Height = 411
+  Height = 454
   BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'JvTrayIcon Demo'
   Color = clBtnFace
@@ -19,7 +19,7 @@ object frmMain: TfrmMain
     Top = 8
     Width = 385
     Height = 361
-    Anchors = [akLeft, akTop, akRight, akBottom]
+    Anchors = [akLeft, akTop, akRight]
     Caption = ' Tray Icon Options '
     TabOrder = 0
     object Label1: TLabel
@@ -148,7 +148,17 @@ object frmMain: TfrmMain
       TabOrder = 11
     end
   end
+  object chkAutoRestore: TCheckBox
+    Left = 18
+    Top = 390
+    Width = 283
+    Height = 17
+    Caption = 'Do NOT restore automatically after 15 seconds'
+    TabOrder = 1
+    OnClick = chkAutoRestoreClick
+  end
   object JvTrayIcon1: TJvTrayIcon
+    Active = True
     Icon.Data = {
       0000010001002020040000000000E80200001600000028000000200000004000
       0000010004000000000000020000000000000000000000000000000000000000
@@ -174,7 +184,7 @@ object frmMain: TfrmMain
       000F800000078000000380000003800000038000000380000003800000038000
       0003800000038000000380000003800000038000000380000003800000038000
       0003800000038000000380000003C0000003E0000003F0000003F8000007}
-    IconIndex = 0
+    IconIndex = -1
     PopupMenu = popTrayIcon
     Left = 264
     Top = 32
@@ -186,5 +196,11 @@ object frmMain: TfrmMain
       Caption = 'Show / Hide'
       OnClick = mnuShowHideClick
     end
+  end
+  object RestoreTimer: TTimer
+    Interval = 15000
+    OnTimer = RestoreTimerTimer
+    Left = 174
+    Top = 156
   end
 end

@@ -4,8 +4,8 @@ unit Main;
 interface
 
 uses
-  Windows, Messages, SysUtils, {$IFDEF DELPHI6_UP}Variants, {$ENDIF}Classes, Graphics, Controls, Forms,
-  Dialogs, ComCtrls, JvRegTV, ExtCtrls, Menus{, JvVersionInfo};
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  Dialogs, ComCtrls, JvRegTV, ExtCtrls, Menus, ActnList;
 
 type
   TForm1 = class(TForm)
@@ -51,6 +51,28 @@ type
     HelpIndex1: TMenuItem;
     N11: TMenuItem;
     AboutRegistryeditordemo1: TMenuItem;
+    alMain: TActionList;
+    acImport: TAction;
+    acExport: TAction;
+    acConnectNetwork: TAction;
+    acDisconnectNetwork: TAction;
+    acPrint: TAction;
+    acExit: TAction;
+    acNewKey: TAction;
+    acNewString: TAction;
+    acNewBinary: TAction;
+    acNewDWORD: TAction;
+    acDelete: TAction;
+    acRename: TAction;
+    acCopyName: TAction;
+    acFind: TAction;
+    acFindNext: TAction;
+    acStatusBar: TAction;
+    acRefresh: TAction;
+    acAddFav: TAction;
+    acDelFav: TAction;
+    acHelp: TAction;
+    acAbout: TAction;
     procedure RegistryTreeView1Expanding(Sender: TObject; Node: TTreeNode;
       var AllowExpansion: Boolean);
     procedure RegistryTreeView1Expanded(Sender: TObject; Node: TTreeNode);
@@ -122,7 +144,7 @@ begin
 end;
 
 procedure TForm1.AboutRegistryeditordemo1Click(Sender: TObject);
-var S,T,U:string;
+// var S,T,U:string;
 begin
 {  with TVersionInfo.Create(Application.Exename) do
   try
@@ -147,7 +169,13 @@ end;
 
 procedure TForm1.Key1Click(Sender: TObject);
 begin
-  RegistryTreeView1.Items.AddChild(RegistryTreeView1.Selected,'New key').EditText;
+  with RegistryTreeView1.Items.AddChild(RegistryTreeView1.Selected,'New Key') do
+  begin
+    ImageIndex := 1;
+    SelectedIndex := 2;
+    MakeVisible;
+    EditText;
+  end;
 end;
 
 procedure TForm1.DoFavoriteClick(Sender:TObject);

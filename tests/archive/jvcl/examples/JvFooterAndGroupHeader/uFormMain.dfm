@@ -169,8 +169,9 @@ object Form1: TForm1
       Width = 74
       Height = 23
       Anchors = [akBottom]
-      Caption = 'OK'
+      Caption = '&Close'
       TabOrder = 0
+      NumGlyphs = 2
       HotTrackFont.Charset = DEFAULT_CHARSET
       HotTrackFont.Color = clWindowText
       HotTrackFont.Height = -11

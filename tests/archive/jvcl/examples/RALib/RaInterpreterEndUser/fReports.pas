@@ -27,7 +27,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure bReportClick(Sender: TObject);
     procedure JvInterpreterFm1GetValue(Sender: TObject; Identifer: String;
-      var Value: Variant; Args: TArgs; var Done: Boolean);
+      var Value: Variant; Args: TJvInterpreterArgs; var Done: Boolean);
   private
     { Private declarations }
   public
@@ -114,7 +114,7 @@ begin
 end;
 
 procedure TReports.JvInterpreterFm1GetValue(Sender: TObject; Identifer: String;
-  var Value: Variant; Args: TArgs; var Done: Boolean);
+  var Value: Variant; Args: TJvInterpreterArgs; var Done: Boolean);
 var
   JvInterpreterFmRunner: TJvInterpreterFm;
 begin

@@ -61,7 +61,7 @@ type
     procedure raCommonAfterSave(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure JvInterpreterProgram1GetValue(Sender: TObject; Identifer: String;
-      var Value: Variant; Args: TArgs; var Done: Boolean);
+      var Value: Variant; Args: TJvInterpreterArgs; var Done: Boolean);
     procedure RAHLEditor1KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure RAHLEditor1KeyUp(Sender: TObject; var Key: Word;
@@ -73,7 +73,7 @@ type
     procedure RAHLEditor1PaintGutter(Sender: TObject; Canvas: TCanvas);
     procedure FormShow(Sender: TObject);
     procedure JvInterpreterProgram1SetValue(Sender: TObject; Identifer: String;
-      const Value: Variant; Args: TArgs; var Done: Boolean);
+      const Value: Variant; Args: TJvInterpreterArgs; var Done: Boolean);
   private
     FFileName: TFileName;
     FileTime: Integer;
@@ -93,12 +93,12 @@ type
     procedure WMCheckFileModified(var Message: TMessage); message WM_CHECKFILEMODIFIED;
   private { JvInterpreter support }
     JvInterpreterFileName: TFileName;
-    Args: TArgs;
+    Args: TJvInterpreterArgs;
     procedure ErrorLogFmt(const Message: string; const Args: array of const);
     function JvInterpreterScript: boolean;
     procedure JvInterpreterInitialize;
     procedure JvInterpreterUnInitialize;
-    function JvInterpreterSafeCall(const FunName: string; Args: TArgs;
+    function JvInterpreterSafeCall(const FunName: string; Args: TJvInterpreterArgs;
       Params: array of Variant): Variant;
     procedure JvInterpreterFileOpened;
     procedure JvInterpreterFileClosed;
@@ -446,7 +446,7 @@ end;    { ErrorLogFmt }
 
 procedure TMain.JvInterpreterInitialize;
 begin
-  Args := TArgs.Create;
+  Args := TJvInterpreterArgs.Create;
  { from JvInterpreter_all.pas }
   JvInterpreter_System.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
   JvInterpreter_Windows.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
@@ -497,7 +497,7 @@ begin
   Result := JvInterpreterProgram1.Source <> '';
 end;    {  }
 
-function TMain.JvInterpreterSafeCall(const FunName: string; Args: TArgs;
+function TMain.JvInterpreterSafeCall(const FunName: string; Args: TJvInterpreterArgs;
   Params: array of Variant): Variant;
 begin
   Result := Null;
@@ -521,7 +521,7 @@ begin
 end;    { JvInterpreterFileClosed }
 
 procedure TMain.JvInterpreterProgram1GetValue(Sender: TObject; Identifer: String;
-  var Value: Variant; Args: TArgs; var Done: Boolean);
+  var Value: Variant; Args: TJvInterpreterArgs; var Done: Boolean);
 var
   S: string;
 begin
@@ -598,7 +598,7 @@ begin
 end;
 
 procedure TMain.JvInterpreterProgram1SetValue(Sender: TObject; Identifer: String;
-  const Value: Variant; Args: TArgs; var Done: Boolean);
+  const Value: Variant; Args: TJvInterpreterArgs; var Done: Boolean);
 begin
   if Args.Obj = RAHLEditor1 then
   begin

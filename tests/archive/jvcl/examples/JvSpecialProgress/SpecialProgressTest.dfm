@@ -1,6 +1,6 @@
 object Form1: TForm1
-  Left = 362
-  Top = 85
+  Left = 247
+  Top = 109
   Width = 770
   Height = 575
   Caption = 'Form1'
@@ -29,18 +29,14 @@ object Form1: TForm1
       Width = 744
       Height = 55
       Hint = 'TJvSpecialProgress'
-      StartColor = clBlack
-      EndColor = clWhite
-      Step = 0
-      Color = clYellow
-      TextFont.Charset = DEFAULT_CHARSET
-      TextFont.Color = clWindowText
-      TextFont.Height = -27
-      TextFont.Name = 'Tahoma'
-      TextFont.Style = []
       Anchors = [akLeft, akTop, akRight, akBottom]
-      ShowHint = True
+      Color = clYellow
+      EndColor = clWhite
       HintColor = clYellow
+      ParentColor = False
+      ShowHint = True
+      StartColor = clBlack
+      Step = 0
     end
     object Gauge1: TGauge
       Left = 8
@@ -240,7 +236,6 @@ object Form1: TForm1
       Height = 17
       Caption = 'Transparent'
       TabOrder = 7
-      OnClick = chbTransparentClick
     end
     object chbGradientBlocks: TCheckBox
       Left = 584

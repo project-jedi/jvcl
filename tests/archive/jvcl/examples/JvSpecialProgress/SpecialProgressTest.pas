@@ -4,7 +4,7 @@ unit SpecialProgressTest;
 interface
 
 uses
-  Windows, Messages, SysUtils, {$IFDEF DELPHI6_UP}Variants, {$ENDIF}Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, Gauges, JvSpecialProgress, ComCtrls, ExtCtrls, StdCtrls, JvPanel,
   JvSpacer;
 
@@ -42,7 +42,6 @@ type
     procedure rgrStartColorClick(Sender: TObject);
     procedure rgrEndColorClick(Sender: TObject);
     procedure chbTextCenteredClick(Sender: TObject);
-    procedure chbTransparentClick(Sender: TObject);
     procedure chbGradientBlocksClick(Sender: TObject);
     procedure btnApplyClick(Sender: TObject);
     procedure rgrBackgroundClick(Sender: TObject);
@@ -72,7 +71,10 @@ end;
 
 procedure TForm1.chbTextVisibleClick(Sender: TObject);
 begin
-  JvSpecialProgress1.TextVisible := chbTextVisible.Checked;
+  if chbTextVisible.Checked then
+    JvSpecialProgress1.TextOption := toCaption
+  else
+    JvSpecialProgress1.TextOption := toNoText
 end;
 
 procedure TForm1.chbSolidClick(Sender: TObject);
@@ -95,11 +97,6 @@ end;
 procedure TForm1.chbTextCenteredClick(Sender: TObject);
 begin
   JvSpecialProgress1.TextCentered := chbTextCentered.Checked;
-end;
-
-procedure TForm1.chbTransparentClick(Sender: TObject);
-begin
-  JvSpecialProgress1.Transparent := chbTransparent.Checked;
 end;
 
 procedure TForm1.chbGradientBlocksClick(Sender: TObject);
@@ -178,11 +175,11 @@ begin
           end;
       else
         begin
-          JvSpecialProgress1.TextFont.Assign(Font);
+          JvSpecialProgress1.Font.Assign(Font);
           Exit;
         end;
       end;
-    JvSpecialProgress1.TextFont.Assign(TmpFont);
+    JvSpecialProgress1.Font.Assign(TmpFont);
   finally
     TmpFont.Free;
   end;

@@ -35,6 +35,7 @@ ControlsExample.exe \
 CreateProcessExample.exe \
 WebMapper.exe \
 UseCase.exe \
+DepWalk.exe \
 DSAExamples.exe \
 MessageDlgEditor.exe \
 EnvironmentList.exe \
@@ -173,6 +174,11 @@ WebMapper.exe: Diagram1WebSiteScanner\WebMapper.dpr
 
 UseCase.exe: Diagram2UseCaseEditor\UseCase.dpr
   cd Diagram2UseCaseEditor
+  $(DCC) $&.dpr
+  cd ..
+
+DepWalk.exe: Diagram3DependencyWalker\DepWalk.dpr
+  cd Diagram3DependencyWalker
   $(DCC) $&.dpr
   cd ..
 

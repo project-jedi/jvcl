@@ -469,10 +469,10 @@ begin
       if (C.StartConn.Shape = AShape) or (C.EndConn.Shape = AShape) then
       begin
         Changed := true;
-        if C.LineColour = FIntfLineColor then
-          C.LineColour := FIntfSelColor
-        else if C.LineColour = FImplLineColor then
-          C.LineColour := FImplSelColor
+        if C.LineColor = FIntfLineColor then
+          C.LineColor := FIntfSelColor
+        else if C.LineColor = FImplLineColor then
+          C.LineColor := FImplSelColor
         else
           Changed := false;
         if Changed then C.Invalidate;
@@ -480,10 +480,10 @@ begin
       else // reset to standard color
       begin
         Changed := true;
-        if C.LineColour = FIntfSelColor then
-          C.LineColour := FIntfLineColor
-        else if C.LineColour = FImplSelColor then
-          C.LineColour := FImplLineColor
+        if C.LineColor = FIntfSelColor then
+          C.LineColor := FIntfLineColor
+        else if C.LineColor = FImplSelColor then
+          C.LineColor := FImplLineColor
         else
           Changed := false;
         if Changed then C.Invalidate;
@@ -547,9 +547,9 @@ begin
   with arr do
   begin
     if IsInterface then
-      LineColour := FIntfLineColor
+      LineColor := FIntfLineColor
     else
-      LineColour := FImplLineColor;
+      LineColor := FImplLineColor;
     // Set the start connection
     StartConn.Side := csRight;
     StartConn.Offset := StartShape.Height div 2;

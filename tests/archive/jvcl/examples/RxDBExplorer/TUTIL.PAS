@@ -153,9 +153,9 @@ const
 {$ELSE}
   TULib = 'TUTILITY.DLL';
 {$ENDIF}
-  TUHandle: THandle = 0;
 
 var
+  TUHandle: THandle = 0;
   TUInit: function (hTUSession: PHTUses): DBIResult {$IFDEF WIN32} stdcall {$ENDIF};
   TUVerifyTable: function (hTUSession: HTUses; pszTableName,
     pszDriverType, pszErrTableName, pszPassword: PChar; iOptions: Integer;
@@ -425,7 +425,7 @@ procedure TTUtility.SetTabName(const TabName: string; const Dest: DBIPATH);
 var
   P: PChar;
 begin
-  P := @Dest;
+  P := @Dest[0];
   if ChangeFileExt(TabName, '') <> StrPas(Dest) then begin
     if TabName <> '' then
       StrPLCopy(Dest, AnsiUpperCase(ChangeFileExt(TabName, '')),

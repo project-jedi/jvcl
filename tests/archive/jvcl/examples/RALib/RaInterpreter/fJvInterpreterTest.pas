@@ -80,8 +80,6 @@ type
     procedure RegAuto1AfterLoad(Sender: TObject);
     procedure bRunFormClick(Sender: TObject);
     procedure bRunReportClick(Sender: TObject);
-    procedure JvInterpreterProgram1GetValue(Sender: TObject; Identifer: string;
-      var Value: Variant; Args: TArgs; var Done: boolean);
     procedure JvInterpreterProgram1GetUnitSource(UnitName: string; var Source: string;
       var Done: Boolean);
     procedure ComboBox1Change(Sender: TObject);
@@ -92,6 +90,9 @@ type
     procedure ComboBox1DropDown(Sender: TObject);
     procedure JvInterpreterProgram1GetDfmFileName(Sender: TObject; UnitName: String;
       var FileName: String; var Done: Boolean);
+    procedure JvInterpreterProgram1GetValue(Sender: TObject;
+      Identifer: String; var Value: Variant; Args: TJvInterpreterArgs;
+      var Done: Boolean);
   private
     { Private declarations }
     Parser : TJvIParser;
@@ -165,7 +166,7 @@ begin
 end;
 
 { constructor Create(Msg: string) }
-procedure EZeroDivide_Create(var Value: Variant; Args: TArgs);
+procedure EZeroDivide_Create(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := O2V(EZeroDivide.Create(Args.Values[0]));
 end;
@@ -307,35 +308,6 @@ end;
 var
   temp: TSearchRec;
 
-procedure TTest.JvInterpreterProgram1GetValue(Sender: TObject; Identifer: string;
-  var Value: Variant; Args: TArgs; var Done: boolean);
-begin
-  if Cmp(Identifer, 'Test') then
-  begin
-    Done := True;
-    Value := O2V(Self);
-  end
-  else if Cmp(Identifer, 'Rec') then
-  begin
-    Done := True;
-    //Value := SearchRec2Var(temp);
-    JvInterpreterVarCopy(Value, SearchRec2Var(temp));
-  end
-  else
-  if Cmp(Identifer, 'ShowMessage') and (Args.Obj = Self) then
-  begin
-    Done := True;
-    ShowMessage(Args.Values[0]);
-    Value := Null;
-  end
-  else
-  if Cmp(Identifer, 'MyFunction') then
-  begin
-    Done := True;
-    Value := Args.Values[0] + 1;
-  end
-end;
-
 procedure TTest.JvInterpreterProgram1GetUnitSource(UnitName: string; var Source: string;
   var Done: Boolean);
 var
@@ -424,6 +396,36 @@ begin
   RegAuto1AfterSave(nil);
 end;
                                                     
+procedure TTest.JvInterpreterProgram1GetValue(Sender: TObject;
+  Identifer: String; var Value: Variant; Args: TJvInterpreterArgs;
+  var Done: Boolean);
+begin
+  if Cmp(Identifer, 'Test') then
+  begin
+    Done := True;
+    Value := O2V(Self);
+  end
+  else if Cmp(Identifer, 'Rec') then
+  begin
+    Done := True;
+    //Value := SearchRec2Var(temp);
+    JvInterpreterVarCopy(Value, SearchRec2Var(temp));
+  end
+  else
+  if Cmp(Identifer, 'ShowMessage') and (Args.Obj = Self) then
+  begin
+    Done := True;
+    ShowMessage(Args.Values[0]);
+    Value := Null;
+  end
+  else
+  if Cmp(Identifer, 'MyFunction') then
+  begin
+    Done := True;
+    Value := Args.Values[0] + 1;
+  end
+end;
+
 initialization
   //JvInterpreter_QRExpr.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
   //JvInterpreter_iMTracer.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);

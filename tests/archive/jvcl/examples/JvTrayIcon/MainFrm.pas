@@ -3,8 +3,8 @@ unit MainFrm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, Menus, JvComponent, JvTrayIcon;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, Menus, JvComponent, JvTrayIcon, ExtCtrls;
 
 type
   TfrmMain = class(TForm)
@@ -26,12 +26,16 @@ type
     chkPopUp: TCheckBox;
     btnUpdate: TButton;
     chkDropDown: TCheckBox;
+    chkAutoRestore: TCheckBox;
+    RestoreTimer: TTimer;
     procedure btnUpdateClick(Sender: TObject);
     procedure mnuShowHideClick(Sender: TObject);
     procedure chkRestoreClickClick(Sender: TObject);
     procedure chkRestoreDblClickClick(Sender: TObject);
     procedure chkMinClickClick(Sender: TObject);
     procedure chkMinDblClickClick(Sender: TObject);
+    procedure RestoreTimerTimer(Sender: TObject);
+    procedure chkAutoRestoreClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -107,6 +111,17 @@ end;
 procedure TfrmMain.chkMinDblClickClick(Sender: TObject);
 begin
   chkMinClick.Enabled := not chkMinDblClick.Checked;
+end;
+
+procedure TfrmMain.RestoreTimerTimer(Sender: TObject);
+begin
+  if not IsWindowVisible(Handle) then
+    JvTrayIcon1.ShowApplication;
+end;
+
+procedure TfrmMain.chkAutoRestoreClick(Sender: TObject);
+begin
+  RestoreTimer.Enabled := not chkAutoRestore.Checked;
 end;
 
 end.
