@@ -34,11 +34,12 @@ unit JvSegmentedLEDDisplay;
 interface
 
 uses
-  Classes, Graphics, Windows,
-  {$IFDEF VisualCLX}
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
+  Classes, Graphics, 
+  {$IFDEF VisualCLX}
+  QWindows,
   {$ENDIF VisualCLX}
   JclBase,
   JvComponent, JvTypes;
@@ -48,6 +49,13 @@ uses
 const
   clDefaultBackground = TColor($20100001);
   clDefaultLitColor = TColor($20100002);
+  {$IFDEF VCL}
+  NullHandle = 0;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  NullHandle = nil;
+  {$ENDIF VisualCLX}
+  
 
 type
   TJvCustomSegmentedLEDDisplay = class;
@@ -1195,7 +1203,7 @@ begin
         begin
           Rgn := CreatePolygonRgn(SegPts[0], Length(SegPts), WINDING);
           try
-            if Rgn <> 0 then
+            if Rgn <> NullHandle then
               Result := PtInRegion(Rgn, Pt.X, Pt.Y)
             else
               Result := False;
@@ -1209,7 +1217,7 @@ begin
         begin
           Rgn := CreateEllipticRgn(SegPts[0].X, SegPts[0].Y, SegPts[1].X, SegPts[1].Y);
           try
-            if Rgn <> 0 then
+            if Rgn <> NullHandle then
               Result := PtInRegion(Rgn, Pt.X, Pt.Y)
             else
               Result := False;
