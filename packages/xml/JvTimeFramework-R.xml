@@ -6,6 +6,7 @@
   <C5Libs/>
   <C6Libs/>
   <Requires>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
     <Package Name="vcl50" Targets="C5,D5,D5s" Condition=""/>
     <Package Name="CJCL50" Targets="C5" Condition=""/>
     <Package Name="bcbsmp50" Targets="C5" Condition=""/>
