@@ -276,9 +276,9 @@ function TMakeThread.CompilePackageGroup(const BpgFilename, IncludePaths,
 var
   PrepareBpgData: TPrepareBpgData;
   Build, Options, DcpOptions, StartDir: string;
-  JclMakeFilename: string;
-  Files: TStrings;
-  PackageList: TPackageList;
+  //JclMakeFilename: string;
+  //Files: TStrings;
+  //PackageList: TPackageList;
   i: Integer;
   b: Boolean;
 begin
