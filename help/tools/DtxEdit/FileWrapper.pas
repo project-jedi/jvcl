@@ -100,7 +100,7 @@ begin
 
   for i := 0 to FItems.Count-1 do
   begin
-    content := content + FItems[i].GetRawText;
+    content := content + FItems[i].GetRawText + #13#10#13#10;
   end;
 
   sstr := TStringStream.Create(content);
