@@ -200,7 +200,6 @@ Known Issues:
     - fixed: ecBackspace with BackSpaceUnindents=True may destroy the line
     - fixed a bug in InsertText
     - optimized ExpandTabs
-
 }
 
 unit JvEditor;
@@ -208,8 +207,8 @@ unit JvEditor;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Menus,
-  ExtCtrls, StdCtrls, Clipbrd, JvJCLUtils, JvFixedEditPopup,
+  Windows, Messages, SysUtils, Classes, Contnrs, Graphics, Controls, Forms,
+  Menus, ExtCtrls, StdCtrls, Clipbrd, JvJCLUtils, JvFixedEditPopup,
   JvUnicodeCanvas, JvComponent, JvExControls;
 
 const
@@ -312,6 +311,7 @@ type
     procedure Paint;
     procedure Invalidate;
   end;
+
   TOnPaintGutter = procedure(Sender: TObject; Canvas: TCanvas) of object;
   TOnGutterClick = procedure(Sender: TObject; Line: Integer) of object;
 
@@ -334,6 +334,7 @@ type
 
   TCommand2Event = procedure(Sender: TObject; const Key1: Word; const Shift1: TShiftState;
       const Key2: Word; const Shift2: TShiftState; var Command: TEditCommand) of object;
+
   TJvKeyboard = class(TObject)
   private
     List: TList;
@@ -358,7 +359,6 @@ type
   end;
 
   EJvEditorError = class(Exception);
-
   TUndoBuffer = class;
 
   PJvSelectionRec = ^TJvSelectionRec;
@@ -373,6 +373,87 @@ type
     SelStartX: Integer;
     SelStartY: Integer;
     SelLineOrgBegX, SelLineOrgEndX: Integer;
+  end;
+
+  TJvLineSelectStyle =
+    (lssUnselected, lssBreakpoint, lssDebugPoint, lssErrorPoint);
+
+  TJvLineInformation = class(TObject)
+  private
+    FLine: Integer;
+    FSelectStyle: TJvLineSelectStyle;
+    FData: Pointer;
+    FEditor: TJvCustomEditor;
+    procedure SetLine(Value: Integer);
+    procedure SetSelectStyle(const Value: TJvLineSelectStyle);
+  protected
+    procedure RepaintLine(LineNum: Integer); virtual;
+    procedure CheckEmpty; virtual; // releases the object if Data=nil and SelectStyle=lssUnselected
+  public
+    constructor Create(AEditor: TJvCustomEditor; ALine: Integer);
+    destructor Destroy; override;
+
+    property Line: Integer read FLine write SetLine;
+    property SelectStyle: TJvLineSelectStyle read FSelectStyle write SetSelectStyle;
+    property Data: Pointer read FData write FData;
+    property Editor: TJvCustomEditor read FEditor;
+  end;
+
+  TJvLineInformationList = class(TObject)
+  private
+    FEditor: TJvCustomEditor;
+    FList: TObjectList;
+    FDebugColor: TColor;
+    FDebugTextColor: TColor;
+    FBreakpointColor: TColor;
+    FBreakpointTextColor: TColor;
+    FErrorPointTextColor: TColor;
+    FErrorPointColor: TColor;
+    function GetCount: Integer;
+    function GetData(Index: Integer): Pointer;
+    function GetItems(Index: Integer): TJvLineInformation;
+    function GetLineCount: Integer;
+    function GetLines(Index: Integer): TJvLineInformation;
+    function GetSelectStyle(Index: Integer): TJvLineSelectStyle;
+    procedure SetData(Index: Integer; Value: Pointer);
+    procedure SetSelectStyle(Index: Integer; const Value: TJvLineSelectStyle);
+    procedure SetBreakpointColor(const Value: TColor);
+    procedure SetBreakpointTextColor(const Value: TColor);
+    procedure SetDebugColor(const Value: TColor);
+    procedure SetDebugTextColor(const Value: TColor);
+    procedure SetErrorPointColor(const Value: TColor);
+    procedure SetErrorPointTextColor(const Value: TColor);
+  protected
+    function CreateLineInfo(Index: Integer): TJvLineInformation;
+      // Returns the line information assoziated with the line or creates a new.
+      // If Index not in [0..Count-1] the function raises EListError
+  public
+    constructor Create(AEditor: TJvCustomEditor);
+    destructor Destroy; override;
+
+    procedure Clear;
+      // Clear() removes all extra line information objects
+
+    property Count: Integer read GetCount;
+    property Items[Index: Integer]: TJvLineInformation read GetItems;
+
+    property LineCount: Integer read GetLineCount;
+      // LineCount returns Editor.Lines.Count
+    property Lines[Index: Integer]: TJvLineInformation read GetLines; default;
+      // Lines[] returns nil if the line has no extra information
+    property SelectStyle[Index: Integer]: TJvLineSelectStyle read GetSelectStyle write SetSelectStyle;
+      // SelectStyle[] returns/sets the select style for the line
+    property Data[Index: Integer]: Pointer read GetData write SetData;
+      // Data[] returns/sets the user defined data for the line
+
+    property DebugPointColor: TColor read FDebugColor write SetDebugColor;
+    property DebugPointTextColor: TColor read FDebugTextColor write SetDebugTextColor;
+    property BreakpointColor: TColor read FBreakpointColor write SetBreakpointColor;
+    property BreakpointTextColor: TColor read FBreakpointTextColor write SetBreakpointTextColor;
+    property ErrorPointColor: TColor read FErrorPointColor write SetErrorPointColor;
+    property ErrorPointTextColor: TColor read FErrorPointTextColor write SetErrorPointTextColor;
+
+    property Editor: TJvCustomEditor read FEditor;
   end;
 
   TUndo = class(TObject)
@@ -483,8 +564,9 @@ type
     FUpdateSelBegY: Integer;
     FUpdateSelEndY: Integer;
     FPersistentBlocksCaretChanged: Boolean;
-    FclSelectBC: TColor;
-    FclSelectFC: TColor;
+    FSelBackColor: TColor;
+    FSelForeColor: TColor;
+    FLineInformations: TJvLineInformationList;
 
     { mouse support }
     TimerScroll: TTimer;
@@ -495,9 +577,9 @@ type
     FMouseDowned: Boolean;
 
     { internal }
-    FTabPos: array [0..Max_X] of Boolean;
+    FTabPos: array[0..Max_X] of Boolean;
     FTabStops: string;
-    MyDi: array [0..1024] of Integer;
+    MyDi: array[0..1024] of Integer;
 
     { internal - primary for TIReader support }
     FEditBuffer: string;
@@ -611,6 +693,8 @@ type
     procedure AdjustPersistentBlockSelection(X, Y: Integer;
       Mode: TAdjustPersistentBlockMode; Args: array of Integer);
     procedure AdjustSelLineMode(Restore: Boolean);
+    procedure SetSelBackColor(const Value: TColor);
+    procedure SetSelForeColor(const Value: TColor);
   protected
     LineAttrs: TLineAttrs;
 
@@ -779,6 +863,7 @@ type
     property Recording: Boolean read FRecording;
     property UseFixedPopup:boolean read FUseFixedPopup write FUseFixedPopup;
 
+    property LineInformations: TJvLineInformationList read FLineInformations;
   public { published in descendants }
     property BeepOnError: Boolean read FBeepOnError write FBeepOnError default True;
     property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
@@ -804,8 +889,8 @@ type
     property CursorBeyondEOF: Boolean read FCursorBeyondEOF write FCursorBeyondEOF default False;
     property BlockOverwrite: Boolean read FBlockOverwrite write FBlockOverwrite default True;
     property PersistentBlocks: Boolean read FPersistentBlocks write FPersistentBlocks default False;
-    property SelForeColor: TColor read FclSelectFC write FclSelectFC;
-    property SelBackColor: TColor read FclSelectBC write FclSelectBC;
+    property SelForeColor: TColor read FSelForeColor write SetSelForeColor;
+    property SelBackColor: TColor read FSelBackColor write SetSelBackColor;
     property HideCaret: Boolean read FHideCaret write FHideCaret default False;
 
     property OnGetLineAttr: TOnGetLineAttr read FOnGetLineAttr write FOnGetLineAttr;
@@ -1097,7 +1182,11 @@ procedure MbcsStrLead(var P: PChar);
 implementation
 
 uses
-  Consts, Math,
+  Consts,
+  {$IFDEF COMPILER6_UP}
+  RTLConsts,
+  {$ENDIF COMPILER6_UP}
+  Math,
   JvThemes, JvConsts, JvResources;
 
 
@@ -1808,8 +1897,8 @@ begin
 
   Color := clWindow;
   FGutterColor := clBtnFace;
-  FclSelectBC := clHighLight;
-  FclSelectFC := clHighLightText;
+  FSelBackColor := clHighLight;
+  FSelForeColor := clHighLightText;
   FRightMarginColor := clSilver;
 
   EditorClient := TJvEditorClient.Create;
@@ -1841,10 +1930,12 @@ begin
   Font.Size := 10;
 
   FFontCache := TList.Create;
+  FLineInformations := TJvLineInformationList.Create(Self);
 end;
 
 destructor TJvCustomEditor.Destroy;
 begin
+  FLineInformations.Free;
   FLines.Free;
   scbHorz.Free;
   scbVert.Free;
@@ -2230,7 +2321,7 @@ begin
           end
           else
             TJvUnicodeCanvas(Canvas).ExtTextOut(R.Left, R.Top, [etoOpaque, etoClipped], nil, Ch, @MyDi[0]);
-//            Windows.ExtTextOut(Canvas.Handle, R.Left, R.Top, 0, nil, PChar(Ch), Length(Ch), @MyDi[0]);
+            // Windows.ExtTextOut(Canvas.Handle, R.Left, R.Top, 0, nil, PChar(Ch), Length(Ch), @MyDi[0]);
           i := jC - 1;
         end;
     end
@@ -2248,7 +2339,7 @@ begin
   {if the line is selected, paint right empty space with selected background}
   if FSelection.IsSelected and (FSelection.SelBlockFormat in [bfInclusive, bfLine, bfNonInclusive]) and
     (Line >= FSelection.SelBegY) and (Line < FSelection.SelEndY) then
-    EditorClient.Canvas.Brush.Color := FclSelectBC
+    EditorClient.Canvas.Brush.Color := FSelBackColor
   else
     EditorClient.Canvas.Brush.Color := Color;
   EditorClient.Canvas.FillRect(R);
@@ -2259,17 +2350,32 @@ procedure TJvCustomEditor.GetLineAttr(var Str: string; Line, ColBeg, ColEnd: Int
 var
   I: Integer;
   S: string;
+  LineStyle: TJvLineSelectStyle;
 
-  procedure ChangeSelectedAttr;
+  procedure ChangeSelectedAttr(LineStyle: TJvLineSelectStyle);
 
     procedure DoChange(const iBeg, iEnd: Integer);
     var
       I: Integer;
+      Color: TColor;
     begin
-      for I := iBeg to iEnd do
+      if LineStyle = lssUnselected then
       begin
-        LineAttrs[I+1].FC := FclSelectFC;
-        LineAttrs[I+1].BC := FclSelectBC;
+        for I := iBeg to iEnd do
+        begin
+          LineAttrs[I+1].FC := FSelForeColor;
+          LineAttrs[I+1].BC := FSelBackColor;
+        end;
+      end
+      else
+      begin
+       // exchange fore and background color
+        for I := iBeg to iEnd do
+        begin
+          Color := LineAttrs[I+1].FC;
+          LineAttrs[I+1].FC := LineAttrs[I+1].BC;
+          LineAttrs[I+1].BC := Color;
+        end;
       end;
     end;
 
@@ -2301,17 +2407,47 @@ var
 begin
   if ColBeg < 0 then ColBeg := 0;
   if ColEnd > Max_X then ColEnd := Max_X;
-  LineAttrs[ColBeg].FC := Font.Color;
   LineAttrs[ColBeg].Style := Font.Style;
+  LineAttrs[ColBeg].FC := Font.Color;
   LineAttrs[ColBeg].BC := Color;
+
   for I := ColBeg + 1 to ColEnd do
     Move(LineAttrs[ColBeg], LineAttrs[I], SizeOf(LineAttrs[1]));
   S := FLines[Line];
   GetAttr(Line, ColBeg, ColEnd);
+
+ // line style
+  LineStyle := LineInformations.SelectStyle[Line];
+  case LineStyle of
+    lssBreakpoint:
+      begin
+        LineAttrs[ColBeg].FC := LineInformations.BreakpointTextColor;
+        LineAttrs[ColBeg].BC := LineInformations.BreakpointColor;
+      end;
+    lssDebugPoint:
+      begin
+        LineAttrs[ColBeg].FC := LineInformations.DebugPointTextColor;
+        LineAttrs[ColBeg].BC := LineInformations.DebugPointColor;
+      end;
+    lssErrorPoint:
+      begin
+        LineAttrs[ColBeg].FC := LineInformations.ErrorPointTextColor;
+        LineAttrs[ColBeg].BC := LineInformations.ErrorPointColor;
+      end;
+  end;
+  if LineStyle <> lssUnselected then
+  begin
+    for I := ColBeg + 1 to ColEnd do
+    begin
+      LineAttrs[I].FC := LineAttrs[ColBeg].FC;
+      LineAttrs[I].BC := LineAttrs[ColBeg].BC;
+    end;
+  end;
+
   if Assigned(FOnGetLineAttr) then
     FOnGetLineAttr(Self, S, Line, LineAttrs);
   if FSelection.IsSelected then
-    ChangeSelectedAttr; { we change the attributes of the chosen block [translated] }
+    ChangeSelectedAttr(LineStyle); { we change the attributes of the chosen block [translated] }
   ChangeAttr(Line, ColBeg, ColEnd);
 end;
 
@@ -5533,6 +5669,134 @@ begin
     Result := 0;
 end;
 
+procedure TJvCustomEditor.EMCanUndo(var Msg: TMessage);
+begin
+  Msg.Result := Ord(FUndoBuffer.CanUndo);
+end;
+
+procedure TJvCustomEditor.EMGetSelection(var Msg: TMessage);
+var
+   LSelStart, LSelEnd: Integer;
+begin
+   LSelStart := SelStart;
+   LSelEnd := SelStart + SelLength;
+   if Pointer(Msg.WParam) <> nil then
+     PLongint(Msg.WParam)^ := LSelStart;
+   if Pointer(Msg.LParam) <> nil then
+     PLongint(Msg.LParam)^ := LSelEnd;
+   if (LSelEnd > 65535) or (LSelStart > 65535) then
+     Msg.Result := -1
+   else
+   begin
+     Msg.ResultLo := LongRec(LSelStart).Lo;
+     Msg.ResultHi := LongRec(LSelEnd).Lo;
+   end;
+end;
+
+procedure TJvCustomEditor.EMSetReadOnly(var Msg: TMessage);
+begin
+  ReadOnly := Msg.WParam = 1;
+end;
+
+procedure TJvCustomEditor.EMSetSelection(var Msg: TMessage);
+begin
+  if (Msg.wParam = 0) and (Msg.LParam = -1) then
+    SelectAll
+  else
+  begin
+    SelStart := Msg.wParam;
+    SelLength := Msg.lParam;
+  end;
+end;
+
+procedure TJvCustomEditor.WMClear(var Msg: TMessage);
+begin
+  if not ReadOnly then
+    DeleteSelected;
+end;
+
+procedure TJvCustomEditor.WMUndo(var Msg: TMessage);
+begin
+  Undo;
+end;
+
+procedure TJvCustomEditor.WMGetTextLength(var Msg: TMessage);
+begin
+  Msg.Result := GetTextLen;
+end;
+
+procedure TJvCustomEditor.WMGetText(var Msg: TWMGetText);
+var S: AnsiString;
+begin
+  if Msg.Text = nil then
+    Msg.Result := 0
+  else
+  begin
+    S := FLines.Text;
+    Msg.Result := Min(Length(S) + 1, Msg.TextMax);
+    if Msg.Result > 0 then
+      Move(S[1], Msg.Text^, Msg.Result);
+  end;
+end;
+
+function TJvCustomEditor.CanSelectAll: Boolean;
+var
+  MaxCol, MaxLine: Integer;
+begin
+  MaxLine := FLines.Count - 1;
+  if MaxLine > 0 then
+    MaxCol := Length(FLines[MaxLine])
+  else
+    MaxCol := 0;
+  Result := (FSelection.SelBegX > 0) or (FSelection.SelBegY > 0) or
+            (FSelection.SelEndX < MaxCol) or (FSelection.SelEndY < MaxLine);
+end;
+
+function TJvCustomEditor.CanUndo: Boolean;
+begin
+  Result := FUndoBuffer.CanUndo;
+end;
+
+function TJvCustomEditor.HasSelection: Boolean;
+begin
+  Result := FSelection.IsSelected and not IsEmptySelection;
+end;
+
+function TJvCustomEditor.CanRedo: Boolean;
+begin
+  Result := FUndoBuffer.CanRedo;
+end;
+
+procedure TJvCustomEditor.Redo;
+begin
+  FUndoBuffer.Redo;
+end;
+
+procedure TJvCustomEditor.Undo;
+begin
+  FUndoBuffer.Undo;
+end;
+
+procedure TJvCustomEditor.SetSelBackColor(const Value: TColor);
+begin
+  if Value <> FSelBackColor then
+  begin
+    FSelBackColor := Value;
+    if FSelection.IsSelected then
+      Invalidate;
+  end;
+end;
+
+procedure TJvCustomEditor.SetSelForeColor(const Value: TColor);
+begin
+  if Value <> FSelForeColor then
+  begin
+    FSelForeColor := Value;
+    if FSelection.IsSelected then
+      Invalidate;
+  end;
+end;
+
 //=== TJvEditKey =============================================================
 
 constructor TJvEditKey.Create(const ACommand: TEditCommand; const AKey1: Word;
@@ -6989,112 +7253,227 @@ begin
   end;
 end;
 
-procedure TJvCustomEditor.EMCanUndo(var Msg: TMessage);
+{ TJvLineInformation }
+
+procedure TJvLineInformation.CheckEmpty;
 begin
-  Msg.Result := Ord(FUndoBuffer.CanUndo);
+  if (Data = nil) and (SelectStyle = lssUnselected) then
+    Free;
 end;
 
-procedure TJvCustomEditor.EMGetSelection(var Msg: TMessage);
-var
-   LSelStart, LSelEnd: Integer;
+constructor TJvLineInformation.Create(AEditor: TJvCustomEditor; ALine: Integer);
 begin
-   LSelStart := SelStart;
-   LSelEnd := SelStart + SelLength;
-   if Pointer(Msg.WParam) <> nil then
-     PLongint(Msg.WParam)^ := LSelStart;
-   if Pointer(Msg.LParam) <> nil then
-     PLongint(Msg.LParam)^ := LSelEnd;
-   if (LSelEnd > 65535) or (LSelStart > 65535) then
-     Msg.Result := -1
-   else
-   begin
-     Msg.ResultLo := LongRec(LSelStart).Lo;
-     Msg.ResultHi := LongRec(LSelEnd).Lo;
-   end;
+  inherited Create;
+  FEditor := AEditor;
+  FLine := ALine;
+  FSelectStyle := lssUnselected;
 end;
 
-procedure TJvCustomEditor.EMSetReadOnly(var Msg: TMessage);
+destructor TJvLineInformation.Destroy;
 begin
-  ReadOnly := Msg.WParam = 1;
-end;
-
-procedure TJvCustomEditor.EMSetSelection(var Msg: TMessage);
-begin
-  if (Msg.wParam = 0) and (Msg.LParam = -1) then
-    SelectAll
-  else
+  if not (csDestroying in Editor.ComponentState) then
   begin
-    SelStart := Msg.wParam;
-    SelLength := Msg.lParam;
+    Editor.FLineInformations.FList.Extract(Self);
+    RepaintLine(Line);
+  end;
+  inherited Destroy;
+end;
+
+procedure TJvLineInformation.RepaintLine(LineNum: Integer);
+begin
+  if Assigned(Editor) then
+  begin
+    if (LineNum >= 0) and (LineNum < Editor.Lines.Count) then
+      Editor.PaintLine(Line, 0, Editor.VisibleColCount);
   end;
 end;
 
-procedure TJvCustomEditor.WMClear(var Msg: TMessage);
+procedure TJvLineInformation.SetLine(Value: Integer);
+var
+  LastLine: Integer;
 begin
-  if not ReadOnly then
-    DeleteSelected;
-end;
-
-procedure TJvCustomEditor.WMUndo(var Msg: TMessage);
-begin
-  Undo;
-end;
-
-procedure TJvCustomEditor.WMGetTextLength(var Msg: TMessage);
-begin
-  Msg.Result := GetTextLen;
-end;
-
-procedure TJvCustomEditor.WMGetText(var Msg: TWMGetText);
-var S: AnsiString;
-begin
-  if Msg.Text = nil then
-    Msg.Result := 0
-  else
+  if Value <> FLine then
   begin
-    S := FLines.Text;
-    Msg.Result := Min(Length(S) + 1, Msg.TextMax);
-    if Msg.Result > 0 then
-      Move(S[1], Msg.Text^, Msg.Result);
+    LastLine := FLine;
+    FLine := Value;
+    RepaintLine(LastLine);
+    RepaintLine(Line);
+    CheckEmpty;
   end;
 end;
 
-function TJvCustomEditor.CanSelectAll: Boolean;
+procedure TJvLineInformation.SetSelectStyle(const Value: TJvLineSelectStyle);
+begin
+  if Value <> FSelectStyle then
+  begin
+    FSelectStyle := Value;
+    RepaintLine(Line);
+    CheckEmpty;
+  end;
+end;
+
+{ TJvLineInformationList }
+
+constructor TJvLineInformationList.Create(AEditor: TJvCustomEditor);
+begin
+  inherited Create;
+  FEditor := AEditor;
+  FList := TObjectList.Create;
+  FDebugColor := clNavy;
+  FDebugTextColor := clWhite;
+  FBreakpointColor := clRed;
+  FBreakpointTextColor := clWhite;
+  FErrorPointColor := clMaroon;
+  FErrorPointTextColor := clWhite;
+end;
+
+destructor TJvLineInformationList.Destroy;
+begin
+  FList.Free;
+  inherited Destroy;
+end;
+
+procedure TJvLineInformationList.Clear;
+begin
+  FList.Clear;
+end;
+
+function TJvLineInformationList.GetCount: Integer;
+begin
+  Result := FList.Count;
+end;
+
+function TJvLineInformationList.GetData(Index: Integer): Pointer;
 var
-  MaxCol, MaxLine: Integer;
+  Item: TJvLineInformation;
 begin
-  MaxLine := FLines.Count - 1;
-  if MaxLine > 0 then
-    MaxCol := Length(FLines[MaxLine])
+  Item := Lines[Index];
+  if Item <> nil then
+    Result := Item.Data
   else
-    MaxCol := 0;
-  Result := (FSelection.SelBegX > 0) or (FSelection.SelBegY > 0) or
-            (FSelection.SelEndX < MaxCol) or (FSelection.SelEndY < MaxLine);
+    Result := nil;
 end;
 
-function TJvCustomEditor.CanUndo: Boolean;
+function TJvLineInformationList.GetItems(Index: Integer): TJvLineInformation;
 begin
-  Result := FUndoBuffer.CanUndo;
+  Result := TJvLineInformation(FList[Index]);
 end;
 
-function TJvCustomEditor.HasSelection: Boolean;
+function TJvLineInformationList.GetLineCount: Integer;
 begin
-  Result := FSelection.IsSelected and not IsEmptySelection;
+  Result := Editor.Lines.Count;
 end;
 
-function TJvCustomEditor.CanRedo: Boolean;
+function TJvLineInformationList.GetLines(Index: Integer): TJvLineInformation;
+var
+  i: Integer;
 begin
-  Result := FUndoBuffer.CanRedo;
+  for i := 0 to Count - 1 do
+  begin
+    Result := TJvLineInformation(FList[i]);
+    if Result.Line = Index then
+      Exit;
+  end;
+  Result := nil;
 end;
 
-procedure TJvCustomEditor.Redo;
+function TJvLineInformationList.GetSelectStyle(Index: Integer): TJvLineSelectStyle;
+var
+  Item: TJvLineInformation;
 begin
-  FUndoBuffer.Redo;
+  Item := Lines[Index];
+  if Item <> nil then
+    Result := Item.SelectStyle
+  else
+    Result := lssUnselected;
 end;
 
-procedure TJvCustomEditor.Undo;
+procedure TJvLineInformationList.SetData(Index: Integer; Value: Pointer);
 begin
-  FUndoBuffer.Undo;
+  CreateLineInfo(Index).Data := Value;
+end;
+
+procedure TJvLineInformationList.SetSelectStyle(Index: Integer;
+  const Value: TJvLineSelectStyle);
+begin
+  CreateLineInfo(Index).SelectStyle := Value;
+end;
+
+function TJvLineInformationList.CreateLineInfo(Index: Integer): TJvLineInformation;
+var
+  i: Integer;
+begin
+  if Index <= 0 then
+    raise EListError.CreateFmt(SListIndexError, [LineCount]);
+  for i := 0 to Count - 1 do
+  begin
+    Result := TJvLineInformation(FList[i]);
+    if Result.Line = Index then
+      Exit;
+  end;
+  Result := TJvLineInformation.Create(FEditor, Index);
+  FList.Add(Result);
+end;
+
+procedure TJvLineInformationList.SetBreakpointColor(const Value: TColor);
+begin
+  if Value <> FBreakpointColor then
+  begin
+    FBreakpointColor := Value;
+    if Count > 0 then
+      Editor.Invalidate;
+  end;
+end;
+
+procedure TJvLineInformationList.SetBreakpointTextColor(
+  const Value: TColor);
+begin
+  if Value <> FBreakpointTextColor then
+  begin
+    FBreakpointTextColor := Value;
+    if Count > 0 then
+      Editor.Invalidate;
+  end;
+end;
+
+procedure TJvLineInformationList.SetDebugColor(const Value: TColor);
+begin
+  if Value <> FDebugColor then
+  begin
+    FDebugColor := Value;
+    if Count > 0 then
+      Editor.Invalidate;
+  end;
+end;
+
+procedure TJvLineInformationList.SetDebugTextColor(const Value: TColor);
+begin
+  if Value <> FDebugTextColor then
+  begin
+    FDebugTextColor := Value;
+    if Count > 0 then
+      Editor.Invalidate;
+  end;
+end;
+
+procedure TJvLineInformationList.SetErrorPointColor(const Value: TColor);
+begin
+  if Value <> FErrorPointColor then
+  begin
+    FErrorPointColor := Value;
+    if Count > 0 then
+      Editor.Invalidate;
+  end;
+end;
+
+procedure TJvLineInformationList.SetErrorPointTextColor(const Value: TColor);
+begin
+  if Value <> FErrorPointTextColor then
+  begin
+    FErrorPointTextColor := Value;
+    if Count > 0 then
+      Editor.Invalidate;
+  end;
 end;
 
 end.
