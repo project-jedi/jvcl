@@ -6,7 +6,7 @@ object FrameConfigPage: TFrameConfigPage
   TabOrder = 0
   object LblBCBGuide: TLabel
     Left = 272
-    Top = 312
+    Top = 328
     Width = 102
     Height = 13
     Cursor = crHandPoint
