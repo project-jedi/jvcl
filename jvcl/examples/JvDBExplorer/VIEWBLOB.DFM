@@ -95,7 +95,7 @@ object BlobViewDlg: TBlobViewDlg
     Left = 240
     Top = 4
   end
-  object FormStorage: TJvFormStorage 
+  object FormStorage: TJvFormStorage
     StoredProps.Strings = (
       'AddressBox.Checked')
     Left = 268

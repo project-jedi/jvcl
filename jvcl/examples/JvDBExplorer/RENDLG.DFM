@@ -48,7 +48,7 @@ object RenameDialog: TRenameDialog
     ModalResult = 2
     TabOrder = 1
   end
-  object TabnameEdit: TJvFilenameEdit 
+  object TabnameEdit: TJvFilenameEdit
     Left = 7
     Top = 64
     Width = 315

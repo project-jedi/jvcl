@@ -86,7 +86,7 @@ object BdePropertyDlg: TBdePropertyDlg
       Alignment = taRightJustify
       AutoSize = False
     end
-    object BDEDLLList: TJvTextListBox 
+    object BDEDLLList: TJvTextListBox
       Left = 8
       Top = 16
       Width = 149
@@ -115,7 +115,7 @@ object BdePropertyDlg: TBdePropertyDlg
     Height = 117
     Caption = ' BDE System Information '
     TabOrder = 0
-    object SysInformation: TJvTextListBox 
+    object SysInformation: TJvTextListBox
       Left = 8
       Top = 16
       Width = 300
