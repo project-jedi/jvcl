@@ -31,10 +31,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvRichEdit;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvRichEdit;
 
 {$RANGECHECKS OFF}
 

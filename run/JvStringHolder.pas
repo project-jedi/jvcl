@@ -22,9 +22,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvStringHolder;
+
+{$I jvcl.inc}
 
 interface
 

@@ -51,10 +51,10 @@ Scrolling rules:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvPrvwDoc;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvPrvwDoc;
 
 interface
 

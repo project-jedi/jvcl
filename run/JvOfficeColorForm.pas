@@ -27,9 +27,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvOfficeColorForm;
+
+{$I jvcl.inc}
 
 interface
 

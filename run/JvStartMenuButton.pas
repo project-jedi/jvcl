@@ -23,10 +23,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvStartMenuButton;
+
 {$I jvcl.inc}
 {$I vclonly.inc}
-
-unit JvStartMenuButton;
 
 interface
 

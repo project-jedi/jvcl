@@ -20,9 +20,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvOwnerDrawViewer;
+
+{$I jvcl.inc}
 
 interface
 

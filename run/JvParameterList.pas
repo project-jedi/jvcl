@@ -21,9 +21,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvParameterList;
+
+{$I jvcl.inc}
 
 interface
 

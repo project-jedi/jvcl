@@ -24,10 +24,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvStrings;
+
 {$I jvcl.inc}
 {$I crossplatform.inc}
-
-unit JvStrings;
 
 interface
 

@@ -25,17 +25,17 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvSLDMappingEditorDialog;
+
+{$I jvcl.inc}
 
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls,
-  Forms, Dialogs, StdCtrls,
+  Forms, Dialogs, StdCtrls, ActnList, Menus,
   JvBaseDlg, JvSegmentedLEDDisplay, JvSegmentedLEDDisplayMapperFrame,
-  ActnList, Menus, JvExControls, JvComponent;
+  JvExControls, JvComponent;
 
 type
   TfrmSLDMappingEditorDialog = class(TForm)

@@ -40,11 +40,11 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvSimScope;
 
 interface
+
+{$I jvcl.inc}
 
 uses
   {$IFDEF VCL}

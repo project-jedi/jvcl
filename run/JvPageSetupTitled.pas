@@ -21,10 +21,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvPageSetupTitled;
+
 {$I jvcl.inc}
 {$I vclonly.inc}
-
-unit JvPageSetupTitled;
 
 interface
 
@@ -57,11 +57,9 @@ type
 implementation
 
 {$IFDEF MSWINDOWS}
-{.$R ..\Resources\JvPageSetupTitledRus.res}
 {$R ..\Resources\JvPageSetupTitled.res}
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
-{.$R ../Resources/JvPageSetupTitledRus.res}
 {$R ../Resources/JvPageSetupTitled.res}
 {$ENDIF LINUX}
 

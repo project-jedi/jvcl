@@ -23,10 +23,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvRenameError;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvRenameError;
 
 interface
 

@@ -29,9 +29,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvOfficeColorButton;
+
+{$I jvcl.inc}
 
 interface
 
@@ -94,20 +94,14 @@ type
     FOnColorButtonClick: TNotifyEvent;
     FOnArrowClick: TNotifyEvent;
     procedure SetFlat(const Value: Boolean);
-
-
     // Set Control Color
     procedure SetControlBgColor(const Value: TColor);
     function GetControlBgColor: TColor;
-
     // Get Selection Color: (The Value of this control)
     procedure SetSelectedColor(const Value: TColor);
     function GetSelectedColor: TColor;
-    
-    
     function GetCustomColors: TStrings;
     procedure SetCustomColors(const Value: TStrings);
-
     function GetGlyph: TBitmap;
     procedure SetGlyph(const Value: TBitmap);
     function GetProperties: TJvOfficeColorButtonProperties;

@@ -23,10 +23,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvRas32;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvRas32;
 
 interface
 

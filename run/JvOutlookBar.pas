@@ -19,22 +19,22 @@ Contributor(s):
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
-Known Issues:
------------------------------------------------------------------------------}
-// $Id$
-
-{$I jvcl.inc}
-
-unit JvOutlookBar;
-
-{ Outlook style control. Simpler than TJvLookout)
+Description:
+  Outlook style control. Simpler than TJvLookout)
    Hierarchy:
     TJvCustomOutlookBar
       Pages: TJvOutlookBarPages
         Page: TJvOutlookBarPage
           Buttons: TJvOutlookBarButtons
             Button: TJvOutlookBarButton
-}
+
+Known Issues:
+-----------------------------------------------------------------------------}
+// $Id$
+
+unit JvOutlookBar;
+
+{$I jvcl.inc}
 
 interface
 

@@ -69,9 +69,9 @@ Versionhistory:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvPluginManager;
+
+{$I jvcl.inc}
 
 interface
 

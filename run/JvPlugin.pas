@@ -30,9 +30,9 @@ Todo : Why the "stdcall" definitions ? (routines Configure, Initialize...)
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvPlugin;
+
+{$I jvcl.inc}
 
 interface
 
@@ -78,8 +78,8 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Configure; virtual; stdcall;
-    function Initialize(Manager: TComponent; HostApplication: TApplication; FileName: string): Boolean; virtual;
-      stdcall;
+    function Initialize(Manager: TComponent; HostApplication: TApplication;
+      FileName: string): Boolean; virtual; stdcall;
     procedure SendPluginMessage(APluginMessage: Longint; AMessageText: string);
     property HostApplication: TApplication read FHostApplication;
     property Manager: TComponent read FManager;

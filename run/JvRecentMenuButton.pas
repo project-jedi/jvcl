@@ -23,10 +23,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvRecentMenuButton;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvRecentMenuButton;
 
 interface
 

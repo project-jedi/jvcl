@@ -26,9 +26,9 @@ Description:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvProgressForm;
+
+{$I jvcl.inc}
 
 interface
 
