@@ -326,6 +326,7 @@ var
   VCSource: TJvDockVCDragDockObject;
   SysCaptionHeight: Integer;
   PanelScreenRect: TRect;
+  R: TRect;
 begin
   inherited CustomDockOver(Source, X, Y, State, Accept);
 
@@ -361,12 +362,20 @@ begin
       if DropAlign in [alTop, alBottom] then
       begin
         if ((Source.Control.DockOrientation = doVertical) or (Source.Control.HostDockSite = nil)) then
-          Source.DockRect.Bottom := Source.DockRect.Top + Source.Control.UnDockHeight - SysCaptionHeight;
+        begin
+          R := Source.DockRect;
+          R.Bottom := Source.DockRect.Top + Source.Control.UnDockHeight - SysCaptionHeight;
+          Source.DockRect := R;
+        end;
       end
       else
       if DropAlign in [alLeft, alRight] then
         if (Source.Control.DockOrientation = doHorizontal) or (Source.Control.HostDockSite = nil) then
-          Source.DockRect.Right := Source.DockRect.Left + Source.Control.UnDockWidth - SysCaptionHeight;
+        begin
+          R := Source.DockRect;
+          R.Right := Source.DockRect.Left + Source.Control.UnDockWidth - SysCaptionHeight;
+          Source.DockRect := R;
+        end;
     end;
   end;
 end;
@@ -590,8 +599,8 @@ begin
   inherited GetDockEdge(DockRect, MousePos, DropAlign, Control);
 
   MapWindowPoints(0, DockSite.Handle, DockRect, 2);
-  SetDockHeightWidthArr(0, DockSite.Height, DockSite.Width);
-  SetDockRectangles(DockRect);
+  InitDockHeightWidth(0, DockSite.Height, DockSite.Width);
+  InitDockRectangles(DockRect);
 
   TempOrient := DockSiteOrientation;
   Zone := GetDropOnZone(TempOrient, DockRect, DropAlign);

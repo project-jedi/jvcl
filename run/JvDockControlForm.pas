@@ -3841,7 +3841,7 @@ begin
     if NameLen > 0 then Stream.Write(Pointer(ControlName)^, NameLen);
     SheetVisible := 0;
     if (Self is TJvDockVSNETTabPageControl) and (ParentForm.HostDockSite is TJvDockPanel) then
-      SheetVisible := Integer(TJvDockVSNETTabSheet(Pages[I]).PreviousVisible)
+      SheetVisible := Integer(TJvDockVSNETTabSheet(Pages[I]).OldVisible)
     else
       SheetVisible := SheetVisible + Integer(CurrentControl.Visible);
 
@@ -4117,6 +4117,7 @@ procedure TJvDockBasicStyle.FormPositionDockRect(DockClient: TJvDockClient;
 var
   NewWidth, NewHeight: Integer;
   TempX, TempY: Double;
+  R: TRect;
 begin
   with Source do
   begin
@@ -4139,12 +4140,17 @@ begin
     end
     else
     begin
-      GetWindowRect(TargetControl.Handle, DockRect);
+      GetWindowRect(TargetControl.Handle, R);
+      DockRect := R;
       if TlbWinControlAccess(DragTarget).UseDockManager then
         if TargetControl is TJvDockCustomPanel then
           if (TJvDockCustomPanel(DragTarget).JvDockManager <> nil) then
+          begin
+            R := DockRect;
             TJvDockCustomPanel(DragTarget).JvDockManager.PositionDockRect(Control,
-              DropOnControl, DropAlign, DockRect);
+              DropOnControl, DropAlign, R);
+            DockRect := R;
+          end;
     end;
   end;
 end;
