@@ -150,6 +150,17 @@ const
   ClipToWord    = $10000;
   ModifyString  = $20000;
 
+  TA_LEFT = Integer(AlignmentFlags_AlignLeft);
+  TA_RIGHT = Integer(AlignmentFlags_AlignRight);
+  TA_CENTER = Integer(AlignmentFlags_AlignHCenter);
+  TA_TOP = Integer(AlignmentFlags_AlignTop);
+  TA_BOTTOM = Integer(AlignmentFlags_AlignBottom);
+  VTA_CENTER = Integer(AlignmentFlags_AlignVCenter);
+  TA_NOUPDATECP = 0;
+  TA_UPDATECP = $8000;
+  TA_BASELINE = $4000;
+  VTA_BASELINE = TA_BASELINE;
+
   pf24bit = pf32bit;
   clMoneyGreen = TColor($C0DCC0);
   clSkyBlue = TColor($F0CAA6);
@@ -372,11 +383,13 @@ function RestoreDC(Handle: QPainterH; nSavedDC: Integer): LongBool;
 function SaveDC(Handle: QPainterH): Integer;
 
 function ExtTextOut(Handle: QPainterH; X, Y: Integer; WinFlags: Cardinal;
-  R: PRect; Text: WideString; Len: Integer; lpDx: Pointer): LongBool; overload;
+  R: PRect; const Text: WideString; Len: Integer; lpDx: Pointer): LongBool; overload;
 function ExtTextOut(Handle: QPainterH; X, Y: Integer; WinFlags: Cardinal;
   R: PRect; pText: PChar; Len: Integer; lpDx: Pointer): LongBool; overload;
 function ExtTextOutW(Handle: QPainterH; X, Y: Integer; WinFlags: Cardinal;
   R: PRect; pText: PWideChar; Len: Integer; lpDx: Pointer): LongBool;
+function SetTextAlign(Handle: QPainterH; Mode: Cardinal): Cardinal; 
+function GetTextAlign(Handle: QPainterH): Cardinal;
 
 const
   { ExtTextOut format flags }
@@ -525,6 +538,7 @@ function EnableWindow(Handle: QWidgetH; Value: Boolean): LongBool;
 function GetClientRect(Handle: QWidgetH; var R: TRect): LongBool;
 function GetFocus: QWidgetH;
 function GetParent(Handle: QWidgetH): QWidgetH;
+function SetParent(hWndChild, hWndNewParent: QWidgetH): QWidgetH;
 function GetWindowPlacement(Handle: QWidgetH; W: PWindowPlacement): LongBool;
 function GetWindowRect(Handle: QWidgetH; var  R: TRect): LongBool;
 function WindowFromDC(Handle: QPainterH): QWidgetH;
@@ -537,7 +551,6 @@ function IsWindowVisible(Handle: QWidgetH): LongBool;
 function MapWindowPoints(WidgetTo, WidgetFrom: QWidgetH; var Points; nr: Cardinal): Integer;
 function SetFocus(Handle: QWidgetH): QWidgetH;
 function SetForegroundWindow(Handle: QWidgetH): LongBool;
-//function SetParent(hWndChild, hWndNewParent: QWidgetH): QWidgetH;
 function SetWindowPlacement(Handle: QWidgetH; W: PWindowPlacement): LongBool;
 function ShowWindow(Handle: QWidgetH; showCmd: UInt): LongBool;
 function SwitchToThisWindow(Handle: QWidgetH; Restore: Boolean): LongBool;
@@ -651,7 +664,7 @@ function InvertRgn(Handle: QPainterH; Region: QRegionH): LongBool;
 function OffsetClipRgn(Handle: QPainterH; X, Y: Integer): Integer;
 function OffsetRgn(Region: QRegionH; X, Y: Integer): Integer;
 function PtInRegion(Rgn: QRegionH; X, Y: Integer): Boolean;
-function RectInRegion(RGN: QRegionH; Rect: TRect): LongBool;
+function RectInRegion(RGN: QRegionH; const Rect: TRect): LongBool;
 function SelectClipRgn(Handle: QPainterH; Region: QRegionH): Integer;
 function SetRectRgn(Rgn: QRegionH; X1, Y1, X2, Y2: Integer): LongBool;
 
@@ -732,13 +745,14 @@ implementation
 
 {$IFDEF LINUX}
 uses
-  Libc, Windows;
+  Libc;
 {$ENDIF LINUX}
 {$IFDEF MSWINDOWS}
 uses
   Windows;
 {$ENDIF MSWINDOWS}
 
+{---------------------------------------}
 // easier QColor handling:
 type
   IQColorGuard = interface
@@ -776,6 +790,7 @@ function QColorEx(Color: TColor): IQColorGuard;
 begin
   Result := TQColorGuard.Create(Color);
 end;
+{---------------------------------------}
 
 
 // used internally
@@ -823,6 +838,115 @@ begin
     QWMatrix_map(Matrix, PPoint(@Pt), PPoint(@Pt));
   end;
 end;
+
+{---------------------------------------}
+type
+  IPainterInfo = interface
+    function GetIsCompatibleDC: Boolean;
+    procedure SetIsCompatibleDC(Value: Boolean);
+    function GetTextAlignment: Cardinal;
+    procedure SetTextAlignment(Value: Cardinal);
+
+    property IsCompatibleDC: Boolean read GetIsCompatibleDC write SetIsCompatibleDC;
+    property TextAlignment: Cardinal read GetTextAlignment write SetTextAlignment;
+  end;
+
+  TPainterInfo = class(TInterfacedObject, IPainterInfo)
+  private
+   // format: '1234567890'
+   //         1='c': CompatibleDC or 1=' '
+   //         23456=Word(Alignment) (not binary)
+    FHandle: QObjectH;
+    function GetText: string;
+    procedure SetText(const Value: string);
+  protected
+    function GetField(StartIndex, Len: Integer): string;
+    procedure SetField(StartIndex, Len: Integer; const Value: string);
+  public
+    constructor Create(AHandle: QPainterH);
+
+    function GetIsCompatibleDC: Boolean;
+    procedure SetIsCompatibleDC(Value: Boolean);
+    function GetTextAlignment: Cardinal;
+    procedure SetTextAlignment(Value: Cardinal);
+  end;
+
+function GetPainterInfo(Handle: QPainterH): IPainterInfo;
+begin
+  Result := TPainterInfo.Create(Handle);
+end;
+
+{ TPainterInfo }
+constructor TPainterInfo.Create(AHandle: QPainterH);
+begin
+  inherited Create;
+  FHandle := QObjectH(AHandle);
+end;
+
+function TPainterInfo.GetText: string;
+begin
+  Result := QObject_name(FHandle);
+end;
+
+procedure TPainterInfo.SetText(const Value: string);
+begin
+  QObject_setName(FHandle, PChar(Value));
+end;
+
+function TPainterInfo.GetField(StartIndex, Len: Integer): string;
+begin
+  Result := GetText;
+  Delete(Result, 1, StartIndex - 1);
+  Delete(Result, Len + 1, MaxInt);
+  Result := Trim(Result);
+end;
+
+procedure TPainterInfo.SetField(StartIndex, Len: Integer; const Value: string);
+var
+  S: string;
+begin
+  S := GetText;
+  if StartIndex + Len > Length(S) then
+    SetLength(S, StartIndex + Len - 1);
+  FillChar(S[StartIndex], Len * SizeOf(Char), ' ');
+  if Value <> '' then
+    Move(Value[1], S[StartIndex], Length(Value) * SizeOf(Char));
+  SetText(S);
+end;
+
+function TPainterInfo.GetIsCompatibleDC: Boolean;
+begin
+  Result := GetField(1, 1) = 'c';
+end;
+
+procedure TPainterInfo.SetIsCompatibleDC(Value: Boolean);
+begin
+  if Value <> GetIsCompatibleDC then
+  begin
+    if Value then
+      SetField(1, 1, 'c')
+    else
+      SetField(1, 1, ' ');
+  end;
+end;
+
+function TPainterInfo.GetTextAlignment: Cardinal;
+var
+  S: string;
+begin
+  S := GetField(2, 5);
+  if S = '' then
+    Result := TA_LEFT or TA_TOP
+  else
+    Result := StrToIntDef(GetField(2, 5), 0);
+end;
+
+procedure TPainterInfo.SetTextAlignment(Value: Cardinal);
+begin
+  SetField(2, 5, IntToStr(Word(Value)));
+end;
+{---------------------------------------}
+
 
 function DrawTextBiDiModeFlagsReadingOnly: Longint;
 begin
@@ -1037,9 +1161,16 @@ begin
 end;
 
 function SetParent(hWndChild, hWndNewParent: QWidgetH): QWidgetH;
+var
+  Pt: TPoint;
 begin
-  Result := GetParent(hWndChild);
-// QWidget_reparent(Handle: QWidgetH; parent: QWidgetH; p2: PPoint; showIt: Boolean)
+  try
+    Result := GetParent(hWndChild);
+    QWidget_pos(hWndChild, @Pt);
+    QWidget_reparent(hWndChild, hWndNewParent, @Pt, QWidget_isVisible(hWndChild));
+  except
+    Result := nil;
+  end;
 end;
 
 function PatternPaint(DestDC: QPainterH; X, Y, W, H: Integer; rop: RasterOp): LongBool;
@@ -1483,7 +1614,7 @@ end;
 
 function SelectObject(Handle: QPainterH; Bitmap: QPixmapH): QPixmapH;
 begin
-  if StrComp(QObject_name(QObjectH(Handle)), 'CompatibleDC') = 0 then
+  if GetPainterInfo(Handle).IsCompatibleDC then
   begin
     Result := QPixmapH(QPainter_device(Handle));
     if QPainter_isActive(Handle) then
@@ -1679,7 +1810,7 @@ var
 begin
   tmpRgn := QRegion_create;
   try
-    Result := CombineRgn(tmpRgn, Rgn1, Rgn2, RGN_XOR) =  NULLREGION
+    Result := CombineRgn(tmpRgn, Rgn1, Rgn2, RGN_XOR) = NULLREGION
   except
     Result := False;
   end;
@@ -1712,8 +1843,8 @@ begin
       RGN_XOR: QRegion_eor(Source1, Destination, Source2);
       // RGN_COPY: Creates a copy of the region identified by Source1.
       RGN_COPY:	QRegion_unite(Source1, Destination, Source1)
-      else
-        Raise Exception.Create('CombineRgn: operation not implemented');
+    else
+      raise Exception.Create('CombineRgn: operation not implemented');
     end;
     Result := GetRegionType(destination);
   except
@@ -1772,18 +1903,21 @@ begin
   oRgn := nil;
   Result := False;
   QPainter_save(Handle);
-  hasClipping := QPainter_hasClipping(Handle);
-  if hasClipping then
-    oRgn := QPainter_clipRegion(Handle);
-  if SelectClipRgn(Handle, Region) <> RGN_ERROR then
-  begin
-    QRegion_boundingRect(Region, @R);
-    QPainter_fillRect(Handle, @R, Brush);
+  try
+    hasClipping := QPainter_hasClipping(Handle);
     if hasClipping then
-      SelectClipRgn(Handle, oRgn);
-    Result := True;  
+      oRgn := QPainter_clipRegion(Handle);
+    if SelectClipRgn(Handle, Region) <> RGN_ERROR then
+    begin
+      QRegion_boundingRect(Region, @R);
+      QPainter_fillRect(Handle, @R, Brush);
+      if hasClipping then
+        SelectClipRgn(Handle, oRgn);
+      Result := True;
+    end;
+  finally
+    QPainter_restore(Handle);
   end;
-  QPainter_restore(Handle);
 end;
 
 function DeleteObject(Region: QRegionH): LongBool;
@@ -1805,19 +1939,24 @@ begin
   Result := QRegion_contains(Rgn, PPoint(@P));
 end;
 
-function RectInRegion(Rgn: QRegionH; Rect: TRect): LongBool;
-var
+function RectInRegion(Rgn: QRegionH; const Rect: TRect): LongBool;
+{var
   tmpRgn: QRegionH;
-  retval: Integer;
+  retval: Integer;}
 begin
-  tmpRgn := CreateRectRgnIndirect(Rect);
+  try
+    Result := QRegion_contains(Rgn, PRect(@Rect));
+  except
+    Result := False;
+  end;
+{  tmpRgn := CreateRectRgnIndirect(Rect);
   try
     Retval := CombineRgn(tmpRgn, Rgn, TmpRgn, RGN_And);
     Result := (RetVal = SIMPLEREGION) or (RetVal = COMPLEXREGION);
   except
     Result := False;
   end;
-  QRegion_destroy(tmpRgn);
+  DeleteObject(tmpRgn);}
 end;
 
 function LPtoDP(Handle: QPainterH; var Points; Count: Integer): LongBool;
@@ -1904,8 +2043,8 @@ begin
     QPainter_viewport(Handle, @R);
     if size <> nil then
     begin
-      Size.cx := R.Right-R.Left;
-      Size.cy := R.bottom-R.top;
+      Size.cx := R.Right - R.Left;
+      Size.cy := R.Bottom - R.Top;
     end;
     QPainter_setViewport(Handle, R.Left, R.Top, XExt, YExt);
   except
@@ -1920,8 +2059,8 @@ begin
   Result := True;
   try
     QPainter_viewport(Handle, @R);
-    Size.cx := R.Right-R.Left;
-    Size.cy := R.bottom-R.top;
+    Size.cx := R.Right - R.Left;
+    Size.cy := R.Bottom - R.Top;
   except
     Result := False;
   end;
@@ -1984,13 +2123,22 @@ end;
 
 function GetDoubleClickTime: Cardinal;
 begin
+{$IFDEF MSWINDOWS}
+  Result := Windows.GetDoubleClickTime;
+{$ELSE}
   Result := QApplication_doubleClickInterval;
+{$ENDIF}
 end;
 
 function SetDoubleClickTime(Interval: Cardinal): LongBool;
 begin
   try
     QApplication_setDoubleClickInterval(Interval);
+    {$IFDEF MSWINDOWS}
+    if not Windows.SetDoubleClickTime(Interval) then
+      Result := False
+    else
+    {$ENDIF}
     Result := True;
   except
     Result := False;
@@ -2039,26 +2187,26 @@ begin
   pdm := QPaintDeviceMetrics_create(QPainter_device(Handle));
   try
     case devcap of
-    HORZSIZE:
-      Result := QPaintDeviceMetrics_widthMM(pdm);
-    VERTSIZE:
-      Result := QPaintDeviceMetrics_heightMM(pdm);
-    PHYSICALWIDTH, HORZRES:
-      Result := QPaintDeviceMetrics_width(pdm); // Horizontal width in pixels
-    BITSPIXEL:
-      Result := QPaintDeviceMetrics_Depth(pdm); // Number of bits per pixel
-    NUMCOLORS:
-      Result := QPaintDeviceMetrics_numColors(pdm);
-    LOGPIXELSX:
-      Result := QPaintDeviceMetrics_logicalDpiX(pdm); // Logical pixelsinch in X
-    LOGPIXELSY:
-      Result := QPaintDeviceMetrics_logicalDpiY(pdm); // Logical pixelsinch in Y
-    PHYSICALOFFSETX:
-      Result := 0;
-    PHYSICALOFFSETY:
-      Result := 0;
-    PHYSICALHEIGHT, VERTRES:
-      Result := QPaintDeviceMetrics_height(pdm); // Vertical height in pixels
+      HORZSIZE:
+        Result := QPaintDeviceMetrics_widthMM(pdm);
+      VERTSIZE:
+        Result := QPaintDeviceMetrics_heightMM(pdm);
+      PHYSICALWIDTH, HORZRES:
+        Result := QPaintDeviceMetrics_width(pdm); // Horizontal width in pixels
+      BITSPIXEL:
+        Result := QPaintDeviceMetrics_Depth(pdm); // Number of bits per pixel
+      NUMCOLORS:
+        Result := QPaintDeviceMetrics_numColors(pdm);
+      LOGPIXELSX:
+        Result := QPaintDeviceMetrics_logicalDpiX(pdm); // Logical pixelsinch in X
+      LOGPIXELSY:
+        Result := QPaintDeviceMetrics_logicalDpiY(pdm); // Logical pixelsinch in Y
+      PHYSICALOFFSETX:
+        Result := 0;
+      PHYSICALOFFSETY:
+        Result := 0;
+      PHYSICALHEIGHT, VERTRES:
+        Result := QPaintDeviceMetrics_height(pdm); // Vertical height in pixels
     else
       raise Exception.Create('GetDeviceCaps: unsupported capability');
     end;
@@ -2260,18 +2408,20 @@ begin
     Result := name;
 end;
 
-function WordEllipsis(Words: WideString; Handle: QPainterH; R: TRect;
-  flags:Integer): WideString;
+function WordEllipsis(Words: WideString; Handle: QPainterH; const R: TRect;
+  Flags: Integer): WideString;
 var
   R2, R1: TRect;
   ShortedText: WideString;
   I: Integer;
+
   function RectInsideRect(const R1, R2: TRect): Boolean;
   begin
     with R1 do
       Result := (Left >= R2.Left) and (Right  <= R2.Right) and
                 (Top  >= R2.Top)  and (Bottom <= R2.Bottom);
   end;
+
 begin
   Result := ShortedText;
   R1 := R;
@@ -2337,7 +2487,7 @@ begin
     try
       Paths.Delimiter := PathDelim;
       Paths.DelimitedText := F; // splits the filepath
-      if Length(paths[0]) = 0 then
+      if paths[0] = '' then
         start := 1     // absolute path
       else
         start := 0;    // relative path
@@ -2347,10 +2497,10 @@ begin
         if Length(CurPath) > 2 then   // this excludes '~' '..'
         begin
           Paths[k] := CurPath; // replace with ellipses
-          I:= Length(CurPath);
-          while (I > 0)  and (TextWidth(Handle, Paths.DelimitedText, 0) > MaxLen) do
+          I := Length(CurPath);
+          while (I > 0) and (TextWidth(Handle, Paths.DelimitedText, 0) > MaxLen) do
           begin
-            dec(I);
+            Dec(I);
             Paths[k] := LeftStr(Curpath, I) + Ellipses;// remove a character
           end;
           if TextWidth(Handle, Paths.DelimitedText, 0)<= MaxLen then
@@ -2375,7 +2525,7 @@ begin
         I:= Length(CurPath);
         while (I > 0)  and (TextWidth(Handle, Paths.DelimitedText,0) > MaxLen) do
         begin
-          dec(I);
+          Dec(I);
           Paths[I] := LeftStr(Curpath, I) + Ellipses;// remove a character
         end;
       end;
@@ -2389,40 +2539,92 @@ end;
 function TruncatePath(const FilePath: string; Canvas: TCanvas; MaxLen: Integer): string;
 begin
   Canvas.Start;
-  Result := FileEllipsis(FilePath, Canvas.Handle, MaxLen);
-  Canvas.Stop;
+  try
+    Result := FileEllipsis(FilePath, Canvas.Handle, MaxLen);
+  finally
+    Canvas.Stop;
+  end;
 end;
 
 function TruncateName(const Name: WideString; Canvas: TCanvas; MaxLen: Integer): WideString;
 begin
-  Canvas.start;
-  Result := NameEllipsis(Name, Canvas.Handle, MaxLen);
-  Canvas.stop;
+  Canvas.Start;
+  try
+    Result := NameEllipsis(Name, Canvas.Handle, MaxLen);
+  finally
+    Canvas.Stop;
+  end;
 end;
 
-function DrawText(Handle :QPainterH; var Text: WideString; Len: Integer;
+function DrawText(Handle: QPainterH; var Text: WideString; Len: Integer;
   var R: TRect; WinFlags: Integer): Integer;
 var
   Flags: Integer;
   R2: TRect;  // bliep bliep bl...
   Caption: WideString;
   FontSaved, FontSet: QFontH;
-  function HidePrefix(txt: WideString): WideString;
+
+  function HidePrefix(const Text: WideString): WideString;
+  var
+    i, Len: Integer;
   begin
-   // StrPos
-    Result := txt;
+    Result := Text;
+    Len := Length(Result);
+
+    i := 1;
+    while i <= Len do
+    begin
+      if (Result[i] = '&') then
+      begin
+        Delete(Result, i, 1);
+        Dec(Len);                // &&& -> _&_    && -> &      &x -> _x_
+        if (Result[i] = '&') and (Result[i + 1] = '&') then
+        begin
+          Delete(Result, i, 1);
+          Dec(Len);
+        end;
+      end;
+      Inc(i);
+    end;
   end;
 
-  function CheckTabStop(winflags: Integer): Integer;
+  function OnlyPrefix(const Text: WideString): WideString;
   var
-    size: Integer;
+    i, Len: Integer;
+  begin
+    Result := Text;
+    Len := Length(Result);
+
+    i := 1;
+    while i <= Len do
+    begin
+      if (Result[i] = '&') then
+      begin
+        Delete(Result, i, 1);
+        Dec(Len);                // &&& -> _&_    && -> &      &x -> _x_
+        if (Result[i] = '&') and (Result[i + 1] = '&') then
+        begin
+          Delete(Result, i, 1);
+          Dec(Len);
+        end;
+        Result[i] := '&';
+      end
+      else
+        Result[i] := ' ';
+      Inc(i);
+    end;
+  end;
+  
+  function CheckTabStop(WinFlags: Integer): Integer;
+  var
+    Size: Integer;
   begin
     if WinFlags and DT_TABSTOP <> 0 then
     begin
-      size := WinFlags and $FF00;
-      WinFlags := WinFlags - size;
-      size := (size shr 8) and $FF;
-      QPainter_setTabStops(Handle, size);
+      Size := WinFlags and $FF00;
+      WinFlags := WinFlags - Size;
+      Size := (Size shr 8) and $FF;
+      QPainter_setTabStops(Handle, Size);
     end;
     Result := WinFlags;
   end;
@@ -2437,34 +2639,28 @@ begin
     QPainter_setFont(Handle, FontSet);
   end;
   Flags := Win2QtAlign(CheckTabStop(WinFlags));
-  (*  TODO
   if WinFlags and DT_PREFIXONLY <> 0 then
   begin
-
+    Flags := Flags or ShowPrefix;
+    Caption := OnlyPrefix(Text);
   end
   else if WinFlags and DT_HIDEPREFIX <> 0 then
   begin
-    // Flags := Flags or NoPrefix;
-//    Caption := HidePrefix(text);
+    Flags := Flags and not ShowPrefix;
+    Caption := HidePrefix(Text);
   end;
-  *)
   if Flags and Calcrect = 0 then
   begin
-    if ClipName and flags <> 0
-    then
-      Caption := NameEllipsis(text, Handle, R.Right-R.Left)
-    else if ClipPath and flags <> 0
-    then
-      Caption := FileEllipsis(text, Handle, R.Right-R.Left)
-    else if ClipToWord and flags <> 0
-    then
-      Caption := WordEllipsis(text, Handle, R, flags)
+    if ClipName and Flags <> 0 then
+      Caption := NameEllipsis(Text, Handle, R.Right - R.Left)
+    else if ClipPath and Flags <> 0 then
+      Caption := FileEllipsis(Text, Handle, R.Right - R.Left)
+    else if ClipToWord and Flags <> 0 then
+      Caption := WordEllipsis(Text, Handle, R, flags)
     else
-    begin
-      Caption := text;
-    end;
-    QPainter_DrawText(Handle, @R, flags, PWideString(@Caption), len, @R2, nil);
-    if ModifyString and flags <> 0 then
+      Caption := Text;
+    QPainter_DrawText(Handle, @R, Flags, PWideString(@Caption), Len, @R2, nil);
+    if ModifyString and Flags <> 0 then
       Text := Caption;
     Result := R2.Bottom - R2.Top;
   end
@@ -2493,7 +2689,103 @@ begin
 end;
 
 function ExtTextOut(Handle: QPainterH; X, Y: Integer; WinFlags: Cardinal;
-  R: PRect; Text: WideString; Len: Integer; lpDx: Pointer): LongBool;
+  R: PRect; const Text: WideString; Len: Integer; lpDx: Pointer): LongBool;
+{TODO missing feature: horizontal text alignment }
+var
+  WS: WideString;
+  Index, Width: Integer;
+  Dx: PInteger;
+  RR{, CellRect}: TRect;
+  TextLen: Integer;
+  Canvas: TCanvas;
+begin
+  Result := False;
+  if (Text = '') then
+    Exit;
+  if (WinFlags and ETO_CLIPPED <> 0) and (R = nil) then
+    WinFlags := WinFlags and not ETO_CLIPPED;
+
+  Canvas := TCanvas.Create;
+  try
+    Canvas.Handle := Handle;
+    Canvas.Start(False);
+    with Canvas do
+    begin
+      Result := True;
+      if WinFlags and ETO_OPAQUE <> 0 then
+      begin
+        if Brush.Style <> bsSolid then
+          Brush.Style := bsSolid;
+        if R <> nil then
+          FillRect(R^);
+      end
+      else
+        if Brush.Style = bsSolid then
+          Brush.Style := bsClear;
+
+      if lpDx = nil then
+      begin
+        if (WinFlags and ETO_CLIPPED <> 0) then
+          TextRect(R^, X, Y, Text)
+        else
+          TextOut(X, Y, Text);
+      end
+      else
+      begin
+       // put each char into its cell
+        TextLen := Length(Text);
+        if (WinFlags and ETO_OPAQUE <> 0) and (R = nil) then
+        begin
+          Dx := lpDx;
+          Width := 0;
+          for Index := 1 to TextLen do
+          begin
+            Inc(Width, Dx^);
+            Inc(Dx);
+          end;
+          RR.Left := X;
+          RR.Right := X + Width;
+          RR.Top := Y;
+          RR.Bottom := Y + TextHeight(Text);
+          FillRect(RR);
+        end;
+
+        Dx := lpDx;
+        SetLength(WS, 1);
+        for Index := 1 to TextLen do
+        begin
+          if (R <> nil) and (X >= R^.Right) then
+            Break;
+
+          WS[1] := Text[Index];
+          if WinFlags and ETO_CLIPPED <> 0 then
+          begin
+            {CellRect.Left := X;
+            CellRect.Right := X + Dx^;
+            CellRect.Top := R^.Top;
+            CellRect.Bottom := R^.Bottom;
+            if CellRect.Right > R^.Right then
+              CellRect.Right := R^.Right;}
+            TextRect(RR, X, Y, WS);
+          end
+          else
+            TextOut(X, Y, WS);
+
+          if Index = TextLen then
+            Break;
+
+          Inc(X, Dx^);
+          Inc(Dx);
+        end;
+      end;
+    end;
+  finally
+    Canvas.Stop;
+    Canvas.Free;
+    QPainter_restore(Handle);
+  end;
+end;
+(*
 begin
   try
     if WinFlags and ETO_CLIPPED = 0 then
@@ -2501,14 +2793,13 @@ begin
       DrawText(Handle, Text, len, R^, DT_CALCRECT);
 //      OffsetRect(R, X - R.left, Y - R.Top);
     end;
-    if WinFlags and ETO_OPAQUE <> 0
-    then
+    if WinFlags and ETO_OPAQUE <> 0 then
       FillRect(Handle, R^, QPainter_brush(Handle));
     Result:= DrawText(Handle, Text, len, R^, 0) <> 0;
   except
     Result := False;
   end;
-end;
+end;*)
 
 function ExtTextOut(Handle: QPainterH; X, Y: Integer; WinFlags: Cardinal;
   R: PRect; pText: PChar; Len: Integer; lpDx: Pointer): LongBool;
@@ -2526,6 +2817,17 @@ var
 begin
   ws := pText;
   Result := ExtTextOut(Handle, X, Y, WinFlags, R, ws, len, lpDx);
+end;
+
+function GetTextAlign(Handle: QPainterH): Cardinal;
+begin
+  Result := GetPainterInfo(Handle).TextAlignment;
+end;
+
+function SetTextAlign(Handle: QPainterH; Mode: Cardinal): Cardinal;
+begin
+  Result := GetTextAlign(Handle);
+  GetPainterInfo(Handle).TextAlignment := Mode;
 end;
 
 function FillRect(Handle: QPainterH; R: TRect; Brush: QBrushH): LongBool;
@@ -2748,7 +3050,7 @@ end;
 
 function DeleteDC(Handle: QPainterH): LongBool;
 begin
-  if StrComp(QObject_name(QObjectH(Handle)), 'CompatibleDC') = 0 then
+  if GetPainterInfo(Handle).IsCompatibleDC then
     Result := DeleteObject(Handle)
   else
     Result := ReleaseDC(0, Handle) = 1;
@@ -2763,7 +3065,7 @@ begin
     try
       Result := QPainter_create(CreateCompatibleBitmap(Handle, Width, Height));
       try
-        QObject_setName(QObjectH(Result), 'CompatibleDC');
+        GetPainterInfo(Result).IsCompatibleDC := True;
         QPainter_begin(Result, QPainter_device(Result));
       except
         DeleteObject(Result);
@@ -2895,7 +3197,7 @@ begin
     if QPainter_isActive(Handle) then
       QPainter_end(Handle);
 
-    IsCompatible := StrComp(QObject_name(QObjectH(Handle)), 'CompatibleDC') = 0;
+    IsCompatible := GetPainterInfo(Handle).IsCompatibleDC;
     QPainter_destroy(Handle);  // destroy painter
     if IsCompatible then
       QPixmap_destroy(QPixmapH(Pixmap)); // destroy pixmap paintdevice
