@@ -26,9 +26,6 @@ Known Issues:
 
 {$I JVCL.INC}
 
-{$IFDEF COMPILER6_UP}
-{$WARN UNIT_PLATFORM OFF}
-{$ENDIF}
 {$INCLUDE WINDOWSONLY.INC}
 
 unit JvZlibMultiple;
@@ -139,7 +136,7 @@ procedure TJvZlibMultiple.AddFile(FileName, Directory, FilePath: string;
   DestStream: TStream);
 var
   Stream: TStream;
-  FStream: TFileStream;
+  FileStream: TFileStream;
   ZStream: TCompressionStream;
   Buffer: array [0..1023] of Byte;
   Count: Integer;
@@ -170,7 +167,7 @@ var
 
 begin
   Stream := TMemoryStream.Create;
-  FStream := TFileStream.Create(FilePath, fmOpenRead or fmShareDenyWrite);
+  FileStream := TFileStream.Create(FilePath, fmOpenRead or fmShareDenyWrite);
   try
     ZStream := TCompressionStream.Create(clDefault, Stream);
     try
@@ -179,10 +176,10 @@ begin
 
       { (RB) ZStream has an OnProgress event, thus CopyFrom can be used }
       repeat
-        Count := FStream.Read(Buffer, SizeOf(Buffer));
+        Count := FileStream.Read(Buffer, SizeOf(Buffer));
         ZStream.Write(Buffer, Count);
         if Assigned(FOnProgress) then
-          FOnProgress(Self, FStream.Position, FStream.Size);
+          FOnProgress(Self, FileStream.Position, FileStream.Size);
       until Count = 0;
     finally
       ZStream.Free;
@@ -191,10 +188,10 @@ begin
     if Assigned(FOnCompressedFile) then
       FOnCompressedFile(Self, FilePath);
 
-    WriteFileRecord(Directory, FileName, FStream.Size, Stream.Size);
+    WriteFileRecord(Directory, FileName, FileStream.Size, Stream.Size);
     DestStream.CopyFrom(Stream, 0);
   finally
-    FStream.Free;
+    FileStream.Free;
     Stream.Free;
   end;
 end;
@@ -203,6 +200,7 @@ procedure TJvZlibMultiple.CompressDirectory(Directory: string;
   Recursive: Boolean; FileName: string);
 var
   MemStream: TMemoryStream;
+  tmpStream:TStream;
 begin
   // don't create file until we save it so we don't accidentally
   // try to compress ourselves!
@@ -212,8 +210,14 @@ begin
   try
     { (RB) This causes a memory leak }
     // (rom) still in effect?
-    MemStream.CopyFrom(CompressDirectory(Directory, Recursive), 0);
-    MemStream.SaveToFile(FileName);
+    // (p3) should be fixed now...
+    tmpStream := CompressDirectory(Directory, Recursive);
+    try
+      MemStream.CopyFrom(tmpStream, 0);
+      MemStream.SaveToFile(FileName);
+    finally
+      tmpStream.Free;
+    end;
   finally
     MemStream.Free;
   end;
@@ -256,13 +260,20 @@ end;
 procedure TJvZlibMultiple.CompressFiles(Files: TStrings; FileName: string);
 var
   MemStream: TMemoryStream;
+  tmpStream:TStream;
 begin
   MemStream := TMemoryStream.Create;
   try
     { (RB) This causes a memory leak }
     // (rom) still in effect?
-    MemStream.CopyFrom(CompressFiles(Files), 0);
-    MemStream.SaveToFile(FileName);
+    // (p3) should be fixed now...
+    tmpStream := CompressFiles(Files);
+    try
+      MemStream.CopyFrom(tmpStream, 0);
+      MemStream.SaveToFile(FileName);
+    finally
+      tmpStream.Free;
+    end;
   finally
     MemStream.Free;
   end;
@@ -271,7 +282,7 @@ end;
 procedure TJvZlibMultiple.DecompressStream(Stream: TStream;
   Directory: string; Overwrite: Boolean);
 var
-  FStream: TFileStream;
+  FileStream: TFileStream;
   ZStream: TDecompressionStream;
   CStream: TMemoryStream;
   B: Byte;
@@ -314,7 +325,7 @@ begin
       S := Directory + S;
       if Overwrite or not FileExists(S) then
       begin
-        FStream := TFileStream.Create(S, fmCreate or fmShareExclusive);
+        FileStream := TFileStream.Create(S, fmCreate or fmShareExclusive);
         ZStream := TDecompressionStream.Create(CStream);
         try
 
@@ -324,15 +335,15 @@ begin
           { (RB) ZStream has an OnProgress event, thus copyfrom can be used }
           repeat
             Count := ZStream.Read(Buffer, SizeOf(Buffer));
-            FStream.Write(Buffer, Count);
+            FileStream.Write(Buffer, Count);
             if Assigned(FOnProgress) then
-              FOnProgress(Self, FStream.Size, FileSize);
+              FOnProgress(Self, FileStream.Size, FileSize);
           until Count = 0;
 
           if Assigned(FOnDecompressedFile) then
             FOnDecompressedFile(Self, S);
         finally
-          FStream.Free;
+          FileStream.Free;
           ZStream.Free;
         end;
       end;
