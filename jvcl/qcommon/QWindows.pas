@@ -179,6 +179,7 @@ const
   clMedGray = TColor($A4A0A0);
 
   INFINITE = Longword($FFFFFFFF); // Infinite timeout
+  INVALID_HANDLE_VALUE = DWORD(-1);
 
   MaxWord = High(Cardinal);
 
@@ -308,7 +309,7 @@ const
   COLOR_INFOTEXT = 23;                // clNormalText
   COLOR_INFOBK = 24;                  // TColor($E1FFFF)
 //             = 25;                  // ?? (asn: defined as clBlack for now)
-  COLOR_HOTLIGHT = 26;                // clNormalHighlight (asn: ??)
+  COLOR_HOTLIGHT = 26;                // clActiveHighlight (asn: ??)
   COLOR_GRADIENTACTIVECAPTION = 27;   // clActiveHighLight (asn: ??)
   COLOR_GRADIENTINACTIVECAPTION = 28; // clDisabledHighlight (asn: ??)
 
@@ -328,7 +329,7 @@ const
 
   clNoRole = TColor(-15);
   clNormalNoRole = TColor(clNoRole - cloNormal);
-  clInfoBk = clNormalNoRole;
+//  clInfoBk = clHintBk; //clNormalNoRole;
   clDisabledNoRole = TColor(clNoRole - cloDisabled);
   clDesktop = clDisabledNoRole;
   clActiveNoRole = TColor(clNoRole - cloActive);
@@ -345,7 +346,7 @@ const
     clNormalButton, clNormalDark, clDisabledText,                    // 15
     clNormalButtonText, clDisabledHighlightedText, clActiveLight,    // 18
     clNormalMid, clNormalMidLight, clNormalText,                     // 21
-    clInfoBk, clBlack ,clNormalHighlight,                            // 24
+    clInfoBk, clBlack ,clActiveHighlight,                            // 24
     clActiveHighLight, clDisabledHighlight                           // 27
   );
 
@@ -518,6 +519,12 @@ function BitBlt(DestDC: QPainterH; X, Y, Width, Height: Integer; SrcDC: QPainter
   XSrc, YSrc: Integer; Rop: RasterOp): LongBool; overload;
 function BitBlt(DestDC: QPainterH; X, Y, Width, Height: Integer; SrcDC: QPainterH;
   XSrc, YSrc: Integer; WinRop: Cardinal): LongBool; overload;
+//
+// does the required start/stop painting if needed
+//
+function BitBlt(DestCanvas: TCanvas; X, Y, Width, Height: Integer; SrcCanvas: TCanvas;
+  XSrc, YSrc: Integer; WinRop: Cardinal): LongBool; overload;
+
 function PatBlt(Handle: QPainterH; X, Y, Width, Height: Integer;
   WinRop: Cardinal): LongBool; //overload;
 
@@ -2592,6 +2599,17 @@ begin
       Result := False;
     end;
   end;
+end;
+
+function BitBlt(DestCanvas: TCanvas; X, Y, Width, Height: Integer; SrcCanvas: TCanvas;
+  XSrc, YSrc: Integer; WinRop: Cardinal): LongBool;
+begin
+  DestCanvas.Start;
+  SrcCanvas.Start;
+  Result := BitBlt(DestCanvas.Handle, X, Y, Width, Height, SrcCanvas.Handle,
+    XSrc, YSrc, WinRop);
+  SrcCanvas.Stop;
+  DestCanvas.Stop;
 end;
 
 function PatBlt(Handle: QPainterH; X, Y, Width, Height: Integer; WinRop: Cardinal): LongBool;
