@@ -33,6 +33,9 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, JclSysInfo, JvSIMDUtils, ToolsApi;
 
+const
+  WM_MODIFYCONTINUE = WM_USER + 100;
+
 type
   TJvSIMDModifyFrm = class(TForm)
     ComboBoxDisplay: TComboBox;
@@ -43,8 +46,6 @@ type
     PanelModify: TPanel;
     ButtonOK: TButton;
     ButtonCancel: TButton;
-    procedure FormCreate(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
     procedure ComboBoxDisplayChange(Sender: TObject);
     procedure ComboBoxFormatChange(Sender: TObject);
     procedure ButtonOKClick(Sender: TObject);
@@ -52,25 +53,39 @@ type
     FDisplay: TJvXMMContentType;
     FFormat: TJvSIMDFormat;
     FXMMRegister: TJvXMMRegister;
-    //FDebugServices: IOTADebuggerServices;
+    FDebugServices: IOTADebuggerServices;
     FServices: IOTAServices;
+    FComboBoxList: TList;
     FLabelList: TList;
     FHistory: TStringList;
     FThread: IOTAThread;
+    FTextIndex: Integer;
+    FExprStr: string;
+    FResultStr: string;
+    FReturnCode: Cardinal;
+    FCPUInfo: TCpuInfo;
+    procedure ContinueModify;
+    procedure StartModify;
+    procedure WMModifyContinue(var Message: TMessage); message WM_MODIFYCONTINUE;
   public
+    constructor Create (AOwner: TComponent); override;
+    destructor Destroy; override;
     function Execute(AThread: IOTAThread; ADisplay: TJvXMMContentType;
-      AFormat: TJvSIMDFormat; var ARegister: TJvXMMRegister):Boolean;
+      AFormat: TJvSIMDFormat; var ARegister: TJvXMMRegister;
+      const ACpuInfo: TCpuInfo):Boolean;
+    procedure ThreadEvaluate(const ExprStr, ResultStr: string;
+      ReturnCode: Integer);
     procedure UpdateDisplay;
     procedure UpdateFormat;
     procedure LoadHistory;
     procedure SaveHistory;
     procedure MergeHistory;
-    function ModifyRegister: Boolean;
+    //function ModifyRegister: Boolean;
     property XMMRegister: TJvXMMRegister read FXMMRegister;
     property Display: TJvXMMContentType read FDisplay;
     property Format: TJvSIMDFormat read FFormat;
     property History: TStringList read FHistory;
-    //property DebugServices: IOTADebuggerServices read FDebugServices;
+    property DebugServices: IOTADebuggerServices read FDebugServices;
     property Services: IOTAServices read FServices;
     property Thread: IOTAThread read FThread;
   end;
@@ -94,17 +109,38 @@ const
 
 { TJvSIMDModifyFrm }
 
-function TJvSIMDModifyFrm.Execute(AThread: IOTAThread; ADisplay: TJvXMMContentType;
-  AFormat: TJvSIMDFormat; var ARegister: TJvXMMRegister): Boolean;
+constructor TJvSIMDModifyFrm.Create(AOwner: TComponent);
 begin
+  inherited Create(AOwner);
+  FComboBoxList := TList.Create;
+  FLabelList := TList.Create;
+end;
+
+destructor TJvSIMDModifyFrm.Destroy;
+begin
+  FLabelList.Free;
+  FComboBoxList.Free;
+  inherited Destroy;
+end;
+
+function TJvSIMDModifyFrm.Execute(AThread: IOTAThread; ADisplay: TJvXMMContentType;
+  AFormat: TJvSIMDFormat; var ARegister: TJvXMMRegister;
+  const ACPUInfo: TCPUInfo): Boolean;
+begin
+  FTextIndex := 0;
   FXMMRegister := ARegister;
   FFormat := AFormat;
   FDisplay := ADisplay;
+  FThread := AThread;
+  FCpuInfo := ACpuInfo;
   FHistory := TStringList.Create;
   FHistory.Duplicates := dupIgnore;
   try
     Assert(Supports(BorlandIDEServices,IOTAServices,FServices),
       'Unable to get Borland IDE Services');
+    Assert(Supports(BorlandIDEServices,IOTADebuggerServices,FDebugServices),
+      'Unable to get Borland Debug Services');
+
     LoadHistory;
 
     ComboBoxDisplay.ItemIndex := Integer(Display);
@@ -134,6 +170,7 @@ begin
   MergeHistory;
   while PanelModify.ControlCount>0 do
     PanelModify.Controls[0].Free;
+  FComboBoxList.Clear;
   FLabelList.Clear;
 
   ComboBoxDisplay.ItemIndex := Integer(Display);
@@ -150,6 +187,7 @@ begin
     AComboBox.Tag := Index;
     AComboBox.Text := '';
     AComboBox.Items.Assign(History);
+    FComboBoxList.Add(AComboBox);
     ALabel := TLabel.Create(Self);
     ALabel.Parent := PanelModify;
     ALabel.SetBounds(X+5,Y+2,60,ALabel.Height);
@@ -183,16 +221,6 @@ begin
       end;
     TLabel(FLabelList.Items[Index]).Caption := SysUtils.Format('%s%d = %s',[Texts[Display],Index,FormatValue(Value,Format)]);
   end;
-end;
-
-procedure TJvSIMDModifyFrm.FormCreate(Sender: TObject);
-begin
-  FLabelList := TList.Create;
-end;
-
-procedure TJvSIMDModifyFrm.FormDestroy(Sender: TObject);
-begin
-  FLabelList.Free;
 end;
 
 procedure TJvSIMDModifyFrm.ComboBoxDisplayChange(Sender: TObject);
@@ -267,7 +295,7 @@ begin
     History.Delete(0);
 end;
 
-function TJvSIMDModifyFrm.ModifyRegister: Boolean;
+{function TJvSIMDModifyFrm.ModifyRegister: Boolean;
 var
   Index: Integer;
   Value: TJvSIMDValue;
@@ -305,12 +333,106 @@ begin
     end;
   end;
   Result := True;
+end;}
+
+procedure TJvSIMDModifyFrm.WMModifyContinue(var Message: TMessage);
+begin
+  ContinueModify;
+end;
+
+procedure TJvSIMDModifyFrm.StartModify;
+begin
+  FTextIndex := -1;
+  FResultStr := '';
+  FReturnCode := 0;
+  ContinueModify;
+end;
+
+procedure TJvSIMDModifyFrm.ContinueModify;
+const
+  ResultBufferSize = 200;
+var
+  EvaluateResult: TOTAEvaluateResult;
+  AValue: TJvSIMDValue;
+  AComboBox: TComboBox;
+  ResultBuffer: array [0..ResultBufferSize-1] of Char;
+  ResultAddr, ResultSize: Cardinal;
+  CanModify: Boolean;
+  VectorFrame: TJvVectorFrame;
+begin
+  if (FReturnCode <> 0) then
+    EvaluateResult := erError
+  else EvaluateResult := erOK;
+  AValue.Display := Display;
+  GetVectorContext(Thread.Handle,VectorFrame);
+  while (FTextIndex < FComboBoxList.Count) and (EvaluateResult = erOK) do
+  begin
+    if (FTextIndex >= 0) and (FResultStr <> '') then
+    begin
+      if (ParseValue(FResultStr,AValue,Format)) then
+        case AValue.Display of
+          xt16Bytes  : FXMMRegister.Bytes[FTextIndex] := AValue.ValueByte;
+          xt8Words   : FXMMRegister.Words[FTextIndex] := AValue.ValueWord;
+          xt4DWords  : FXMMRegister.DWords[FTextIndex] := AValue.ValueDWord;
+          xt2QWords  : FXMMRegister.QWords[FTextIndex] := AValue.ValueQWord;
+          xt4Singles : FXMMRegister.Singles[FTextIndex] := AValue.ValueSingle;
+          xt2Doubles : FXMMRegister.Doubles[FTextIndex] := AValue.ValueDouble;
+        end
+      else EvaluateResult := erError;
+    end;
+    if (EvaluateResult = erOK) then
+    begin
+      Inc(FTextIndex);
+      if (FTextIndex < FComboBoxList.Count) then
+      begin
+        AComboBox := TComboBox(FComboBoxList.Items[FTextIndex]);
+        FExprStr := AComboBox.Text;
+        if (FExprStr <> '') then
+        begin
+          if (not ParseValue(FExprStr,AValue,Format)) then
+          begin
+            if ReplaceXMMRegisters(FExprStr,FCPUInfo.Is64Bits,VectorFrame.XMMRegisters) then
+              EvaluateResult := Thread.Evaluate(FExprStr,ResultBuffer,
+                ResultBufferSize,CanModify,True,'',ResultAddr,ResultSize,FReturnCode)
+            else EvaluateResult := erError;
+            if (EvaluateResult <> erDeferred) and (FReturnCode <> 0) then
+              EvaluateResult := erError;
+            if (EvaluateResult = erOK) then
+              FResultStr := ResultBuffer;
+            if (FResultStr = '') then
+              EvaluateResult := erError;
+          end else
+          begin
+            FResultStr := FExprStr;
+            EvaluateResult := erOK;
+          end;
+        end else FResultStr := '';
+      end;
+    end;
+  end;
+  if (EvaluateResult = erError) and (FTextIndex < FComboBoxList.Count) then
+  begin
+    AComboBox := TComboBox(FComboBoxList.Items[FTextIndex]);
+    FocusControl(AComboBox);
+    AComboBox.SelectAll;
+  end else if (EvaluateResult = erOK) and (FTextIndex >= FComboBoxList.Count) then
+    ModalResult := mrOk;
 end;
 
 procedure TJvSIMDModifyFrm.ButtonOKClick(Sender: TObject);
 begin
-  if (ModifyRegister) then
-    ModalResult := mrOk;
+  StartModify;
+end;
+
+procedure TJvSIMDModifyFrm.ThreadEvaluate(const ExprStr, ResultStr: string;
+  ReturnCode: Integer);
+begin
+  if (CompareText(FExprStr,ExprStr)=0) then
+  begin
+    FResultStr := ResultStr;
+    FReturnCode := ReturnCode;
+    PostMessage(Handle,WM_MODIFYCONTINUE,0,0);
+  end;
 end;
 
 {$IFDEF UNITVERSIONING}

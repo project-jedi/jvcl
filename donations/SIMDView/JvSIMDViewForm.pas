@@ -31,7 +31,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ToolsApi, Grids, ExtCtrls, Menus, JclSysInfo, JvSIMDUtils;
+  Dialogs, StdCtrls, ToolsApi, Grids, ExtCtrls, Menus, JclSysInfo, JvSIMDUtils,
+  JvSIMDModifyForm;
 
 type
   TJvSIMDViewFrm = class(TForm)
@@ -86,6 +87,7 @@ type
     FCpuInfoValid: Boolean;
     FSSECaption: string;
     FOldThreadID: Cardinal;
+    FModifyForm: TJvSIMDModifyFrm;
     procedure SetDisplay(const Value: TJvXMMContentType);
     procedure SetFormat(const Value: TJvSIMDFormat);
   protected
@@ -94,6 +96,8 @@ type
   public
     constructor Create (AOwner:TComponent;
      AServices:IOTADebuggerServices); reintroduce;
+    procedure ThreadEvaluate(const ExprStr, ResultStr: string;
+      ReturnCode: Integer);
     destructor Destroy; override;
     procedure SetThreadValues;
     procedure GetThreadValues;
@@ -109,7 +113,9 @@ type
 implementation
 
 uses
-  JvSIMDModifyForm,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JvSIMDCpuInfo;
 
 {$R *.dfm}
@@ -502,12 +508,14 @@ end;
 procedure TJvSIMDViewFrm.MenuItemModifyClick(Sender: TObject);
 begin
   if ListBoxRegs.ItemIndex>0 then
-    with TJvSIMDModifyFrm.Create(Self) do
-  begin
-    Icon.Assign(Self.Icon);
-    if (Execute(DebugServices.CurrentProcess.CurrentThread,Display,Format,FVectorFrame.XMMRegisters.LongXMM[ListBoxRegs.ItemIndex-1]))
+  try
+    FModifyForm := TJvSIMDModifyFrm.Create(Self);
+    FModifyForm.Icon.Assign(Self.Icon);
+    if (FModifyForm.Execute(DebugServices.CurrentProcess.CurrentThread,Display,
+      Format,FVectorFrame.XMMRegisters.LongXMM[ListBoxRegs.ItemIndex-1],FCpuInfo))
       then SetThreadValues;
-    Free;
+  finally
+    FreeAndNil(FModifyForm);
   end;
 end;
 
@@ -548,5 +556,28 @@ begin
     GetThreadValues;
   FOldThreadID := CurrentThreadID;
 end;
+
+procedure TJvSIMDViewFrm.ThreadEvaluate(const ExprStr, ResultStr: string;
+  ReturnCode: Integer);
+begin
+  if Assigned(FModifyForm) then
+    FModifyForm.ThreadEvaluate(ExprStr,ResultStr,ReturnCode);
+end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+    );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

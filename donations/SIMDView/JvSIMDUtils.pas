@@ -249,6 +249,8 @@ type
 
 function FormatValue(Value:TJvSIMDValue; Format: TJvSIMDFormat):string;
 function ParseValue(const StringValue: string; var Value:TJvSIMDValue; Format: TJvSIMDFormat):Boolean;
+function ReplaceXMMRegisters(var Expression: string; Is64Bits: Boolean;
+  var XMMRegisters: TJvXMMRegisters): Boolean;
 
 const
   CONTEXT_EXTENDED_REGISTERS = CONTEXT_i386 or $00000020;
@@ -272,7 +274,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  SysUtils, Math;
+  SysUtils, Math, Dialogs;
 
 function FormatBinary(Value: TJvSIMDValue): string;
 var
@@ -395,10 +397,10 @@ begin
                   then Value.ValueByte := TestValue
                   else Result := False;
     xt8Words  : if (TestValue>=Word($0000)) and (TestValue<=Word($FFFF))
-                  then Value.ValueByte := TestValue
+                  then Value.ValueWord := TestValue
                   else Result := False;
     xt4DWords : if (TestValue>=Cardinal($00000000)) and (TestValue<=Cardinal($FFFFFFFF))
-                  then Value.ValueByte := TestValue
+                  then Value.ValueDWord := TestValue
                   else Result := False;
     xt2QWords : Value.ValueQWord := TestValue;
     else        Result := False;
@@ -418,10 +420,10 @@ begin
                     then Value.ValueByte := TestValue
                     else Result := False;
       xt8Words  : if (TestValue>=SmallInt($8000)) and (TestValue<=SmallInt($7FFF))
-                    then Value.ValueByte := TestValue
+                    then Value.ValueWord := TestValue
                     else Result := False;
       xt4DWords : if (TestValue>=Integer($80000000)) and (TestValue<=Integer($7FFFFFFF))
-                    then Value.ValueByte := TestValue
+                    then Value.ValueDWord := TestValue
                     else Result := False;
       xt2QWords : Value.ValueQWord := TestValue;
       else        Result := False;
@@ -441,10 +443,10 @@ begin
                     then Value.ValueByte := TestValue
                     else Result := False;
       xt8Words  : if (TestValue>=Word($0000)) and (TestValue<=Word($FFFF))
-                    then Value.ValueByte := TestValue
+                    then Value.ValueWord := TestValue
                     else Result := False;
       xt4DWords : if (TestValue>=Cardinal($00000000)) and (TestValue<=Cardinal($FFFFFFFF))
-                    then Value.ValueByte := TestValue
+                    then Value.ValueDWord := TestValue
                     else Result := False;
       xt2QWords : Value.ValueQWord := TestValue;
       else        Result := False;
@@ -477,10 +479,10 @@ begin
                   then Value.ValueByte := TestValue
                   else Result := False;
     xt8Words  : if (TestValue>=Word($0000)) and (TestValue<=Word($FFFF))
-                  then Value.ValueByte := TestValue
+                  then Value.ValueWord := TestValue
                   else Result := False;
     xt4DWords : if (TestValue>=Cardinal($00000000)) and (TestValue<=Cardinal($FFFFFFFF))
-                  then Value.ValueByte := TestValue
+                  then Value.ValueDWord := TestValue
                   else Result := False;
     xt2QWords : Value.ValueQWord := TestValue;
     else        Result := False;
@@ -492,6 +494,9 @@ var
   TestValue: Extended;
   ErrorCode: Integer;
 begin
+  if (DecimalSeparator<>'.') then
+    StringValue := StringReplace(StringValue,DecimalSeparator,'.',
+      [rfReplaceAll,rfIgnoreCase]);
   Val(StringValue,TestValue,ErrorCode);
   Result := ErrorCode=0;
   if (Result) then
@@ -524,6 +529,117 @@ begin
     xt16Bytes..xt2QWords   : Result := ParseFunction(StringValue, Value);
     xt4Singles..xt2Doubles : Result := ParseFloat(StringValue, Value);
   end;
+end;
+
+function ReplaceXMMRegisters(var Expression: string; Is64Bits: Boolean;
+  var XMMRegisters: TJvXMMRegisters): Boolean;
+var
+  LocalString: string;
+  XMMPosition: Integer;
+  DataPosition: Integer;
+  DataType: string;
+  Index: Integer;
+  RegisterIndex: Integer;
+  DataIndex: Integer;
+  ErrorCode: Integer;
+  NumberOfRegister: Integer;
+  AValue: TJvSIMDValue;
+  ValueStr: string;
+  OldLength: Integer;
+begin
+  if (Is64Bits) then
+    NumberOfRegister := 16
+  else NumberOfRegister := 8;
+  Result := False;
+  LocalString := AnsiUpperCase(Expression);
+  XMMPosition := AnsiPos('XMM',LocalString);
+  while (XMMPosition > 0) do
+  begin
+    for Index := XMMPosition to Length(LocalString) do
+      if (LocalString[Index] = '.') then
+        Break;
+    if (Index >= Length(LocalString)) then
+      Exit;
+    Val(Copy(LocalString,XMMPosition+3,Index-XMMPosition-3),RegisterIndex,ErrorCode);
+    if   (ErrorCode<>0) or (RegisterIndex<0)
+      or (RegisterIndex>=NumberOfRegister) then
+      Exit;
+
+    DataPosition := Index + 1;
+    if (DataPosition > Length(LocalString)) then
+      Exit;
+    for Index := DataPosition to Length(LocalString) do
+      if (LocalString[Index] in ['0'..'9']) then
+        Break;
+    if (Index > Length(LocalString)) then
+      Exit;
+    DataType := Copy(LocalString,DataPosition,Index-DataPosition);
+
+    DataPosition := Index;
+    for Index := DataPosition to Length(LocalString) do
+      if not (LocalString[Index] in ['0'..'9']) then
+        Break;
+    Val(Copy(LocalString,DataPosition,Index-DataPosition),DataIndex,ErrorCode);
+    if (ErrorCode<>0) or (DataIndex<0) then
+      Exit;
+
+    if (CompareStr(DataType,'BYTE') = 0) then
+    begin
+      if (DataIndex >= 16) then
+        Exit;
+      AValue.Display := xt16Bytes;
+      AValue.ValueByte := XMMRegisters.LongXMM[RegisterIndex].Bytes[DataIndex];
+    end else if (CompareStr(DataType,'WORD') = 0) then
+    begin
+      if (DataIndex >= 8) then
+        Exit;
+      AValue.Display := xt8Words;
+      AValue.ValueWord := XMMRegisters.LongXMM[RegisterIndex].Words[DataIndex];
+    end else if (CompareStr(DataType,'DWORD') = 0) then
+    begin
+      if (DataIndex >= 4) then
+        Exit;
+      AValue.Display := xt4DWords;
+      AValue.ValueDWord := XMMRegisters.LongXMM[RegisterIndex].DWords[DataIndex];
+    end else if (CompareStr(DataType,'QWORD') = 0) then
+    begin
+      if (DataIndex >= 2) then
+        Exit;
+      AValue.Display := xt2QWords;
+      AValue.ValueQWord := XMMRegisters.LongXMM[RegisterIndex].QWords[DataIndex];
+    end else if (CompareStr(DataType,'SINGLE') = 0) then
+    begin
+      if (DataIndex >= 4) then
+        Exit;
+      AValue.Display := xt4Singles;
+      AValue.ValueSingle := XMMRegisters.LongXMM[RegisterIndex].Singles[DataIndex];
+    end else if (CompareStr(DataType,'DOUBLE') = 0) then
+    begin
+      if (DataIndex >= 2) then
+        Exit;
+      AValue.Display := xt2Doubles;
+      AValue.ValueDouble := XMMRegisters.LongXMM[RegisterIndex].Doubles[DataIndex];
+    end else Exit;
+    ValueStr := Trim(FormatValue(AValue,sfSigned));
+    if (DecimalSeparator <> '.') then
+      ValueStr := StringReplace(ValueStr,DecimalSeparator,'.',[rfReplaceAll, rfIgnoreCase]);
+    if (Length(ValueStr) >= (Index-XMMPosition)) then
+    begin
+      OldLength := Length(Expression);
+      SetLength(Expression,Length(Expression)+Length(ValueStr)-(Index-XMMPosition));
+      if (Length(ValueStr)>(Index-XMMPosition)) then
+        Move(Expression[Index],Expression[XMMPosition+Length(ValueStr)],OldLength-Index+1);
+      Move(ValueStr[1],Expression[XMMPosition],Length(ValueStr));
+    end else
+    begin
+      Move(ValueStr[1],Expression[XMMPosition],Length(ValueStr));
+      Move(Expression[Index],Expression[XMMPosition+Length(ValueStr)],Length(Expression)-Index+1);
+      SetLength(Expression,Length(Expression)+Length(ValueStr)-(Index-XMMPosition));
+    end;
+    LocalString := AnsiUpperCase(Expression);
+    XMMPosition := AnsiPos('XMM',LocalString);
+  end;
+  Result := True;
 end;
 
 function GetThreadContext(hThread: THandle;
