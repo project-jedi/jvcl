@@ -1,5 +1,7 @@
 Changelog for JVCL 3.0
 ======================
+2003-12-01:
+- renamed TJvAVICapture.HWND to Handle // ahuser
 2003-11-19:
 - updated bcb6 packages in CVS to reflect the xml sources. // obones
 - updated the build status page for BCB6 (all ok). // obones
