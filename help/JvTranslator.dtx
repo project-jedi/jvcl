@@ -1,5 +1,5 @@
 ##Package: Cmp
-##Status: Completed (I) (peter3)
+##Status: Completed,Checked (peter3)
 ----------------------------------------------------------------------------------------------------
 @@JvTranslator.pas
 Summary
@@ -20,101 +20,109 @@ Description
   forms and components. The forms and components to change and what value to change their properties to
   can be read from a string, a stream or a file.
 
-  You can also use this component to read the components and their properties and create an XML string
-  from it. You can then use the generated XML to create a template used in translation.
+  You can also use this component to read the components and their properties and create an \XML string
+  from it. You can then use the generated \XML to create a template used in translation.
+----------------------------------------------------------------------------------------------------
+@@TJvTranslator.ClearSkipList
+Summary
+  Clears the skip list.
+Description
+  Call ClearSkipList to clear the internal skip list.
+See Also
+  <LINK SkipClass>, <LINK SkipProperty>
 ----------------------------------------------------------------------------------------------------
 @@TJvTranslator.ComponentToXML
 Summary
-  Converts the properties of a TComponent to an XML string.
+  Converts the properties of a TComponent to an \XML string.
 Description
   Use ComponentToXML to convert the name and published properties of a TComponent instance into a
-  correctly formatted XML string compatible with the format used by JvTranslator. You can create a complete
+  correctly formatted \XML string compatible with the format used by JvTranslator. You can create a complete
   translation template file for your application by calling ComponentToXML for the Application object.
 
   Note that ComponentToXML lists all published properties not skipped by a call to SkipProperty of a
-  component and you might have to clean the returned XML from properties you don't need to translate.
+  component and you might have to clean the returned \XML from properties you don't need to \translate.
 Parameters
-  AComponent - The component to create the XL fragment for. If AComponent is found in the skip list, it's
-               properties will not be listed. If any of the component's properties is found in the skiplist,
+  AComponent - The component to create the \XML fragment for. If AComponent is found in the skip list, it's
+               properties will not be listed. If any of the component's properties is found in the skip list,
                the property will not be listed. If AComponent is Application, a root node with the name 'Translation'
-               is automatically added to the returned XML.
-  Recurse    - Set this parameter to true to recurse the Components array of AComponent and create the XML for
+               is automatically added to the returned \XML.
+  Recurse    - Set this parameter to true to recurse the Components array of AComponent and create the \XML for
                owned components as well. If AComponent is in the skip list and Recurse is true, the owned
-               components of AComponent will still be checked and its properties added to the XML string.
+               components of AComponent will still be checked and its properties added to the \XML string.
 Return value
-  An XML string then can be used in calls to TJvTranslator.Translate or as a building block for a XML
-  translation template file. 
+  An \XML string then can be used in calls to TJvTranslator.Translate or as a building block for a \XML
+  translation template file.
 See Also
-  SkipClass, SkipProperty, InSkipList
+  <LINK SkipClass>, <LINK SkipProperty>, InSkipList
 ----------------------------------------------------------------------------------------------------
 @@TJvTranslator.InSkipList@TClass
 Summary
-  Checks if a specific class is skipped when creating XML with ComponentToXML
+  Checks if a specific class is skipped when creating \XML with ComponentToXML
 Description
   InSkipList returns true if the specified class has been added to the skip list by a call to
-  SkipClass. If a class is in the skip list, it's properties will not be included in the XML string.
+  SkipClass. If a class is in the skip list, it's properties will not be included in the \XML string.
 Parameters
   AClass - The class to check. The specified class and all classes inherited from it are checked.
 Return Value
   True if AClass is in the skip list, false if it is not.
 See Also
-  SkipClass, ComponentToXML
+  <LINK SkipClass>, ComponentToXML
 ----------------------------------------------------------------------------------------------------
 @@TJvTranslator.InSkipList@TClass@string
 Summary
-  Checks if a specific class is skipped when creating XML with ComponentToXML
+  Checks if a specific class is skipped when creating \XML with ComponentToXML
 Description
   InSkipList returns true if the specified class has been added to the skip list by a call to
-  SkipClass. If a class is in the skip list, it's properties will not be included in the XML string.
+  SkipClass. If a class is in the skip list, it's properties will not be included in the \XML string.
 Parameters
   AClass - The class to check. The specified class and all classes inherited from it are checked.
   PropName - The name of the property to check.
 Return value
   True if PropName of AClass is in the skip list, false if it is not.
 See Also
-  SkipClass, SkipProperty, ComponentToXML
+  <LINK SkipClass>, <LINK SkipProperty>, ComponentToXML
 ----------------------------------------------------------------------------------------------------
 @@TJvTranslator.InSkipList@TObject
 Summary
-  Checks if a specific class instance is skipped when creating XML with ComponentToXML
+  Checks if a specific class instance is skipped when creating \XML with ComponentToXML
 Description
   InSkipList returns true if the specified class instance has been added to the skip list by a call to
-  SkipClass. If a class is in the skip list, it's properties will not be included in the XML string.
+  SkipClass. If a class is in the skip list, it's properties will not be included in the \XML string.
 Parameters
   Obj - The class instance to check.
 Return value
   True if Obj is in the skip list, false if it is not.
 See Also
-  SkipClass, SkipProperty, ComponentToXML
+  <LINK SkipClass>, SkipProperty, ComponentToXML
 ----------------------------------------------------------------------------------------------------
 @@TJvTranslator.InSkipList@TObject@string
 Summary
-  Checks if a specific class is skipped when creating XML with ComponentToXML
+  Checks if a specific class is skipped when creating \XML with ComponentToXML
 Description
   InSkipList returns true if the specified class has been added to the skip list by a call to
-  SkipClass. If a class is in the skip list, it's properties will not be included in the XML string.
+  SkipClass. If a class is in the skip list, it's properties will not be included in the \XML string.
 Parameters
   Obj      - The class instance to check.
   PropName - The name of the property.
 Return value
   True if PropName of Obj is in the skip list, false if it is not.
 See Also
-  SkipClass, SkipProperty, ComponentToXML
+  <LINK SkipClass>, SkipProperty, ComponentToXML
 ----------------------------------------------------------------------------------------------------
 @@TJvTranslator.SkipClass
 Summary
   Adds a class to the internal skip list.
 Description
   Call SkipClass with a class name to add the class to the skip list. The skip list is used by
-  ComponentToXML to determine whether the properties of a class should be added to the returned XML
-  string and by Translate to determine what to translate.
+  ComponentToXML to determine whether the properties of a class should be added to the returned \XML
+  string and by Translate to determine what to \translate.
 
   Note that even if a class is in the skip list, the Components array of the skipped class will
   still be iterated and checked if the Recurse parameter to ComponentToXML is true.
 Parameters
   AClass - The class to skip. Calling SkipClass with the same class multiple times, does nothing.
 See Also
-  ComponentToXML, InSkipList, UnSkipClass, SkipProperty, UnskipProperty
+  ComponentToXML, InSkipList, UnskipClass, SkipProperty, UnskipProperty
 ----------------------------------------------------------------------------------------------------
 @@TJvTranslator.SkipProperty
 Summary
@@ -122,35 +130,35 @@ Summary
 Description
   Call SkipProperty with a class and property name to add the property of the class to the skip list. The
   skip list is used by ComponentToXML to determine whether the properties of a class should be added to the
-  returned XML string and by Translate to determine what to translate.
+  returned \XML string and by Translate to determine what to \translate.
 
   Note that even if a class is in the skip list, the Components array of the skipped class will
   still be iterated and checked if the Recurse parameter to ComponentToXML is true.
 Parameters
   AClass - The class containing the property.
-  APropName - the property to skip in the class.
+  PropName - the property to skip in the class.
 See Also
-  ComponentToXML, InSkipList, SkipClass, UnSkipClass, UnskipProperty
+  ComponentToXML, InSkipList, SkipClass, UnskipClass, UnskipProperty
 ----------------------------------------------------------------------------------------------------
 @@TJvTranslator.Translate@string
 Summary
   Translates the entire application.
 Description
-  Translates all forms in the current application using the XML in FileName. Only instantiated forms and
+  Translates all forms in the current application using the \XML in FileName. Only instantiated forms and
   their components are translated.
 Parameters
   FileName - The name of the file containing the translation.
 ----------------------------------------------------------------------------------------------------
 @@TJvTranslator.Translate@string@string
 Summary
-  Translates a string using the currently loaded XML.
+  Translates a string using the currently loaded \XML.
 Description
-  Searches the currently loaded XML for a node matching the names as defined by Category and Item and
+  Searches the currently loaded \XML for a node matching the names as defined by Category and Item and
   \returns the found value.
 
   <B>\Example</B>
 
-  If Category = "Variables" and Item = "Item", the XML would have to look like the following for this
+  If Category = "Variables" and Item = "Item", the \XML would have to look like the following for this
   method to find a match:
   <CODE>
     \<Translation\>
@@ -161,7 +169,7 @@ Description
       ...
     \</Translation\>
   </CODE>
-  This would return the string "XXX". Alternatively, the XML could look like this:
+  This would return the string "XXX". Alternatively, the \XML could look like this:
   <CODE>
     \<Translation\>
       ...
@@ -175,7 +183,7 @@ Description
   the one used.
 Parameters
   Category - The name of the Category of the translation to use. The value of this parameter is checked
-             against the names of the direct sub nodes of the root node in the XML.
+             against the names of the direct sub nodes of the root node in the \XML.
   Item     - The name of the Item of the translation to use. The value of this parameter is checked agains
              the names of the subnodes.
 Return Value
@@ -196,7 +204,7 @@ Parameters
 Summary
   Translates a form.
 Description
-  Translates a form and all contained components on the form using the currently loaded XML. The XML
+  Translates a form and all contained components on the form using the currently loaded \XML. The \XML
   can be loaded with any of the Translate functions that contains a string, a filename or a stream.
 Parameters
   Form - The form to translate.
@@ -205,10 +213,19 @@ Parameters
 Summary
   Translates the entire application.
 Description
-  Translates all forms in the current application using the XML in the stream. Only instantiated forms and
+  Translates all forms in the current application using the \XML in the stream. Only instantiated forms and
   their components are translated.
 Parameters
-  Stream - The stream to read the XML from. The reading starts at the current position in the stream.
+  Stream - The stream to read the \XML from. The reading starts at the current position in the stream.
+----------------------------------------------------------------------------------------------------
+@@TJvTranslator.Translate@TStream@TCustomForm
+Summary
+  Translates a form.
+Description
+  Translates a form and all contained components on the form using the translation loaded from Stream.
+Parameters
+  Stream - The stream to read the \XML from. The reading starts at the current position in the stream.
+  Form   - The form to translate.
 ----------------------------------------------------------------------------------------------------
 @@TJvTranslator.TranslateScreen@string
 Summary
@@ -226,7 +243,16 @@ Description
   Translates all forms maintained by the global Screen object. Only instantiated forms and their
   components are translated.
 Parameters
-  Stream - The stream to read the XML from. The reading starts at the current position in the stream.
+  Stream - The stream to read the \XML from. The reading starts at the current position in the stream.
+----------------------------------------------------------------------------------------------------
+@@TJvTranslator.TranslateScreenString
+Summary
+  Translates all forms on the screen.
+Description
+  Translates all forms maintained by the global Screen object. Only instantiated forms and their
+  components are translated.
+Parameters
+  S - The string to read the \XML from.
 ----------------------------------------------------------------------------------------------------
 @@TJvTranslator.TranslateString@string
 Summary
@@ -235,14 +261,15 @@ Description
   Translates all forms maintained by the global Screen object. Only instantiated forms and their
   components are translated.
 Parameters
-  S - The string to read the XML from.
+  S - The string to read the \XML from.
 ----------------------------------------------------------------------------------------------------
 @@TJvTranslator.TranslateString@string@TCustomForm
+Summary
   Translates a form.
 Description
-  Translates a form and all contained components on the form using the XML in the string.
+  Translates a form and all contained components on the form using the \XML in the string.
 Parameters
-  S    - The string to read the XML from.
+  S    - The string to read the \XML from.
   Form - The form to translate.
 ----------------------------------------------------------------------------------------------------
 @@TJvTranslator.UnskipClass
@@ -253,7 +280,7 @@ Description
 Parameters
   AClass - The class to remove
 See Also
-  unskipProperty
+  UnskipProperty
 ----------------------------------------------------------------------------------------------------
 @@TJvTranslator.UnskipProperty
 Summary
@@ -265,13 +292,13 @@ Parameters
   AClass   - The class containing the property.
   PropName - The name of the property.
 See Also
-  UnSkipClass
+  UnskipClass
 ----------------------------------------------------------------------------------------------------
 @@TJvTranslator.XML
 Summary
-  Provides access to the internal XML object.
+  Provides access to the internal \XML object.
 Description
-  Use the XML property to access the internal TJvSimpleXML object used to read and write the XML data.
+  Use the \XML property to access the internal TJvSimpleXML object used to read and write the \XML data.
 ----------------------------------------------------------------------------------------------------
 @@TJvTranslatorStrings
 <TITLEIMG TJvTranslatorStrings>
@@ -314,7 +341,7 @@ Parameters
   Name  - The name of the string variable. This value must be unique within the application.
   Value - The value of the string.
 Return Value
-  The index into the list where the Name/Value pair was saved.
+  The index into the list where the Name/\Value pair was saved.
 ----------------------------------------------------------------------------------------------------
 @@TJvTranslatorStrings.Count
 Summary
@@ -360,4 +387,3 @@ Description
   Use Value to read the value of a string at a particular position. Index gives the position of the
   string, where 0 is the position of the first string, 1 is the position of the second string, and so
   \on.
-

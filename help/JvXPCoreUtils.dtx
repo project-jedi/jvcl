@@ -1,5 +1,5 @@
 ##Package: XPCtrls
-##Status: Completed (peter3)
+##Status: Completed,Checked (peter3)
 ----------------------------------------------------------------------------------------------------
 @@JvXPCoreUtils.pas
 Summary
@@ -14,7 +14,7 @@ Summary
   Adjust a TRect based on several parameters.
 Description
   JvXPAdjustBoundRect is used to modify the size of a TRect based on the current value of several properties.
-  When entering the procedure , Rect should be set to the current boundning rect of the control. When returning,
+  When entering the procedure, Rect should be set to the current bounding rect of the control. When returning,
   Rect has been modified with the new values.
 Parameters
   BorderWidth    - Width of the controls borders.
@@ -62,7 +62,7 @@ Parameters
 Summary
   Draws bounding lines in a specific rect on a specific canvas.
 Description
-  Call JvXPDrawBoundLines when you need to draw the boudning lines of a control.
+  Call JvXPDrawBoundLines when you need to draw the bounding lines of a control.
 Parameters
   ACanvas    - The canvas to draw on.
   BoundLines - The bounding lines to draw.
@@ -150,11 +150,10 @@ Summary
 Description
   Use JvXPSetDrawFlags as an easy way to set Flags with the alignment and wordwrap values.
   The DT_ENDELLIPSIS value is always included in Flags. Flags can be used in calls to DrawText and
-  JvXPRenderText.
+  <LINK JvXPRenderText>.
 Parameters
   AAlignment - The alignment to include in Flags
   AWordWrap  - The wordwrap value to include in Flags.
   Flags      - Modified to include the values of AAlignment and AWordWrap.
 See Also
-  DrawText, JvXPRenderText
-
+  DrawText, <LINK JvXPRenderText>

@@ -1,5 +1,5 @@
 ##Package: XPCtrls
-##Status: Completed (peter3), Review
+##Status: Completed,Checked (peter3)
 ----------------------------------------------------------------------------------------------------
 @@JvXPButtons.pas
 Summary
@@ -11,27 +11,31 @@ Author
 @@TJvXPButton
 <TITLEIMG TJvXPButton>
 JVCLInfo
-  GROUP=JVCL.XPControls
+  GROUP=JVCL.XPControls,JVCL.Buttons.Push
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  Button drawn in an XP style.
 Description
-  Write here a description
+  Use TJvXPButton on your form when you need a button that has a themed XP look.
+
+  TJvXPButton introduces properties to display an image on the button and arrange the images and
+  text on the button.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomButton
 Summary
   Base class for buttons that are drawn in an XP style.
 Description
-  Write here a description
+  Use TJvXPCustomButton as a base class for buttons that are drawn in an XP style.
+
+  Do not create instances of TJvXPCustomButton. Use the generic descendant TJvXPButton, or create your
+  own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomButton.AutoGray
 Summary
-  Write here a summary (1 line)
+  Indicates whether to display the image of the button grayed when the button is not enabled.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Set AutoGray to true to render the image of the button grayed, when the button is
+  not enabled.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomButton.Cancel
 Summary
@@ -101,13 +105,13 @@ Summary
   Indicates how the edges are drawn.
 Description
   Use SmoothEdges to specify whether the edges of the button are drawn in a standard way or with
-  color highligting that makes the edges appear smoother.
+  color highlighting that makes the edges appear smoother.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomButton.Spacing
 Summary
-  Specifies the distance in pixels between th eimage and the text.
+  Specifies the distance in pixels between the image and the text.
 Description
-  Use spacing to specify how many pxiels separate the image in Glyph and the text in Caption.
+  Use spacing to specify how many pixels separate the image in Glyph and the text in Caption.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomButton.WordWrap
 Summary
@@ -126,7 +130,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomToolButton
 Summary
-  Base class for buttons that are drawn like the border icon buttons (minimize, MAximize etc) in XP style.
+  Base class for buttons that are drawn like the border icon buttons (minimize, maximize etc) in XP style.
 Description
   Derive a new class from TJvXPCustomToolButton when you need to create a button control that
   is drawn like XP style border icon buttons. Don't create instances of TJvXPCustomToolButton. Instead use a
@@ -156,14 +160,14 @@ Description
 @@TJvXPToolButton
 <TITLEIMG TJvXPToolButton>
 JVCLInfo
-  GROUP=JVCL.XPControls
+  GROUP=JVCL.XPControls,JVCL.Buttons.Push
   FLAG=Component
 Summary
   Button control that draws its client area using a predefined style.
 Description
   Use TJvXPToolButton on your form when you need a button that looks like the caption buttons in
   Windows XP. A border icon button is a button located in the caption area of a form, like the minimize, maximize
-  and restore buttons. TJvXPToolButton can also display some additional images. 
+  and restore buttons. TJvXPToolButton can also display some additional images.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPToolType
 <TITLE TJvXPToolType type>
@@ -185,4 +189,3 @@ Description
   Displays a standard Popup icon.
 @@TJvXPToolType.ttRestore
   Displays a standard Restore icon.
-
