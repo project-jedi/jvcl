@@ -15,9 +15,6 @@ object FoWallpaperChooser: TFoWallpaperChooser
   Position = poScreenCenter
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  DesignSize = (
-    392
-    281)
   PixelsPerInch = 96
   TextHeight = 13
   object Button1: TButton
@@ -57,9 +54,6 @@ object FoWallpaperChooser: TFoWallpaperChooser
     Height = 39
     Anchors = [akLeft, akTop, akRight]
     TabOrder = 0
-    DesignSize = (
-      382
-      39)
     object Label1: TLabel
       Left = 8
       Top = 16
