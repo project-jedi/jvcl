@@ -25,6 +25,7 @@ package %NAME%;
 {$DESCRIPTION '%DESCRIPTION%'}
 {$%TYPE%ONLY}
 {$IMPLICITBUILD OFF}
+{$DEFINE D7PersonalEdition}
 
 requires
 <%%% START REQUIRES %%%>
