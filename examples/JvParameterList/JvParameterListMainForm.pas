@@ -32,8 +32,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, {Variants, }Classes, Graphics, Controls, Forms,
-  Dialogs, JvDsaDialogs, jvParameterList, StdCtrls, JvParameterListParameter, Mask,
-  JvToolEdit, jvPanel,
+  Dialogs, JvDsaDialogs, JvParameterList, StdCtrls, JvParameterListParameter, Mask,
+  JvToolEdit, JvPanel,
   {$IFDEF INCLUDE_DEVEXP_CX}
   cxButtons, cxListBox, cxRadioGroup, cxLookAndFeelPainters,
   cxDropDownEdit, cxCalendar, cxSpinEdit, cxTimeEdit, cxCheckBox, cxMemo,
@@ -486,7 +486,8 @@ begin
       Button8Click(nil)
     else if Parameter.SearchName = 'ButtonE' then
       if Assigned(ParameterList) then
-        MessageDlg('Edit 1 : ', ParameterList.ParameterByName('Edit1').WinControlData, mtWarning, [mbOK], 0);
+        // (p3) type cast variant to string (for D5)
+        MessageDlg('Edit 1 : ' , string(ParameterList.ParameterByName('Edit1').WinControlData), mtWarning, [mbOK], 0);
   ;
 end;
 
