@@ -904,15 +904,20 @@ begin
       PathList.Free;
     end;
 
-    SearchPaths := '';
-    for i := 0 to TargetConfig.Target.SearchPaths.Count - 1 do
+    if TargetConfig.Target.Version > 6 then // Overcome make.exe "command line too long" bug
     begin
-      S := ExtractShortPathName(ExcludeTrailingPathDelimiter(TargetConfig.Target.ExpandDirMacros(TargetConfig.Target.SearchPaths[i])));
-      if SearchPaths <> '' then
-        SearchPaths := SearchPaths + ';' + S
-      else
-        SearchPaths := S;
-    end;
+      SearchPaths := '';
+      for i := 0 to TargetConfig.Target.SearchPaths.Count - 1 do
+      begin
+        S := ExtractShortPathName(ExcludeTrailingPathDelimiter(TargetConfig.Target.ExpandDirMacros(TargetConfig.Target.SearchPaths[i])));
+        if SearchPaths <> '' then
+          SearchPaths := SearchPaths + ';' + S
+        else
+          SearchPaths := S;
+      end;
+    end
+    else
+      SearchPaths := '.';
 
     SetEnvironmentVariable('PATH', PChar(Path));
     SetEnvironmentVariable('DCCOPT', Pointer(DccOpt));
