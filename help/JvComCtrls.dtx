@@ -565,7 +565,7 @@ See Also
 @@TJvTreeView
 <TITLEIMG TJvTreeView>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.TreesAndLists
   FLAG=Component
 Summary
   Write here a summary (1 line)
@@ -740,19 +740,56 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
+@@TJvTreeView.Menu
+Summary
+  Specifies a menu that is used as the items of the tree view.
+Description
+  Assign a TMenu (or descendant, like TMainMenu or TPopupMenu) to the Menu property of the control to
+  make the treeview use the menu's items for its structure.
+
+  Whena menu is assigned, clicking a node in the tree view has the same effect as clicking the menu
+  item itself (see MenuDblClick for details).  
+
+  Only menu items with valid captions (all captions except '-' and '') are added to the treeview.
+Note
+  TJvTreeView replaces the OnChange event of the assigned TMenu to be notified about changes in the
+  menus structure. The original OnCHange event is called automatically (if assigned). If you need to
+  replace the menu's OnChange event at run-time, you should first set Menu equal to nil, replace the
+  menu's OnChange event and reset the Menu property to its previous value.
+
+  Failing to do so, can cause errors and even Access Violations exceptions in your program.
+See Also
+  MenuDblClick
+----------------------------------------------------------------------------------------------------
+@@TJvTreeView.MenuDblClick
+Summary
+  Specifies if the menu item is activated by single or double clicks.
+Description
+  Use MenuDblClick to specify whether the OnClick event of the menu item associated with a node is called
+  when single-clicking or when double-clicking the node.
+
+  If MenuDblClick is false, the menu item's OnClick event is called when the item is selected, either with
+  the mouse or the keyboard. If MenuDblClick is true, the user must double-click the item with the mouse or
+  select it and press either SPACE or ENTER.
+See Also
+  Menu
+----------------------------------------------------------------------------------------------------
 @@TJvTreeView.OnComparePage
 Summary
-  Write here a summary (1 line)
+  Occurs when the treeview needs to determine which page to activate in a page control.
 Description
-  Write here a description
+  Assign a handler to this event to control which page is slected in a page control when a specific node is
+  clicked. This event is only triggered if PageControl is assigned.
+
+  If no handler is assigned, TJvTreeView selects the first tab in the page control where the Caption matches the Text
+  of the selected node.
 Parameters
-  Sender  - Description for this parameter
-  Page    - Description for this parameter
-  Node    - Description for this parameter
-  Matches - Description for this parameter
+  Sender  - The treeview that triggered the event.
+  Page    - The current page being compared.
+  Node    - The current node being compared.
+  Matches - Set this to true if Page is a match to Node.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  PageControl
 ----------------------------------------------------------------------------------------------------
 @@TJvTreeView.OnCustomDrawItem
 Summary
