@@ -80,7 +80,7 @@ type
     procedure Add(const Name, Value: string); overload;
     procedure Add(const Name: string; const Value: Int64); overload;
     procedure Add(const Name: string; const Value: Boolean); overload;
-    procedure Clear;
+    procedure Clear;virtual;
     procedure Delete(const Index: Integer);overload;
     procedure Delete(const Name: string);overload;
     function Value(const Name: string; Default: string = ''): string;
@@ -113,7 +113,7 @@ type
     function Add(const Name: string; const Value: Boolean): TJvSimpleXmlElem; overload;
     function Add(const Name: string; const Value: TStream): TJvSimpleXmlElem; overload;
     function Add(Value: TJvSimpleXmlElem): TJvSimpleXmlElem; overload;
-    procedure Clear;
+    procedure Clear;virtual;
     procedure Delete(const Index: Integer);overload;
     procedure Delete(const Name: string);overload;
     function Value(const Name: string; Default: string = ''): string;
@@ -148,7 +148,7 @@ type
     constructor Create(const AOwner: TJvSimpleXmlElem);
     destructor Destroy; override;
     procedure Assign(Value: TJvSimpleXmlElem);
-    procedure Clear;
+    procedure Clear;virtual;
 
     function SaveToString: string;
     procedure GetBinaryValue(const Stream: TStream);
@@ -180,8 +180,9 @@ type
 
     procedure LoadFromString(const Value: string);
     procedure LoadFromFile(const FileName: TFileName);
-    procedure SaveToFile(FileName: TFileName);
     procedure LoadFromStream(const Stream: TStream);
+    procedure LoadFromResourceName(Instance: THandle; const ResName: string);
+    procedure SaveToFile(FileName: TFileName);
     procedure SaveToStream(const Stream: TStream);
     function SaveToString: string;
 
@@ -473,6 +474,22 @@ begin
     Stream.LoadFromFile(FileName);
     LoadFromStream(Stream);
   finally
+    Stream.Free;               
+  end;
+end;
+{*************************************************}
+
+procedure TJvSimpleXml.LoadFromResourceName(Instance: THandle;
+  const ResName: string);
+const
+  RT_RCDATA       = PChar(10);
+var
+  Stream: TResourceStream;
+begin
+  Stream := TResourceStream.Create(Instance, ResName, RT_RCDATA);
+  try
+    LoadFromStream(Stream);
+  finally
     Stream.Free;
   end;
 end;
@@ -518,7 +535,7 @@ var
         end;
         inc(k);
       end;
-    until (l = 2) or (count <> 0);
+    until (l = 2) or (count = 0);
     if count = 0 then
       raise EJVCLException.Create(RS_INVALID_SimpleXml)
     else

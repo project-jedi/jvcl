@@ -92,19 +92,18 @@ var
   Bitmap: TBitmap;
 begin
   inherited;
-  if Clipboard.HasFormat(CF_BITMAP) then
+  if Clipboard.HasFormat(CF_BITMAP) and (Assigned(FOnImage)) then
   begin
     Bitmap := nil;
     try
       Bitmap := TBitmap.Create;
       Bitmap.Assign(Clipboard);
-      if Assigned(FOnImage) then
-        FOnImage(Self, Bitmap);
+      FOnImage(Self, Bitmap);
     finally
       Bitmap.Free;
     end;
   end
-  else if Assigned(FOnText) then
+  else if (Clipboard.HasFormat(CF_TEXT)) and (Assigned(FOnText)) then
     FOnText(Self, ClipBoard.AsText);
   Msg.Result := 0;
 end;
