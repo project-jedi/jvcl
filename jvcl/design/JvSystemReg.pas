@@ -16,7 +16,7 @@ uses
   {$ENDIF COMPILER6_UP}
   JvConsts, JvClipboardMonitor,  JvClipboardViewer,  JvCommStatus,  {JvComputerInfo,}  
   JvDdeCmd,  JvDeviceChanged,  JvDirectories, JvDragDrop,  JvHidControllerClass,  JvJoystick,  JvKeyboardStates,
-  JvMRUList,  JvMRUManager, JvNTEventLog,  JvRas32,
+  JvMRUList,  JvMRUManager, JvNTEventLog,  JvRas32, JvAppInst,
   JvScreenSaver,  JvShellHook,  JvSHFileOperation, JvSoundControl,  JvSystemColors,
   JvThread,  JvThreadTimer,  JvTimerList, JvChangeNotify,  JvSimpleXml, JvXMLDatabase,
   JvWndProcHook, JvFormPlacement, JvTimer, JvSearchFiles, JvPerfMon95,
@@ -28,11 +28,12 @@ uses
 
 procedure Register;
 begin
-  RegisterComponents(SPaletteSystem,[TJvClipboardMonitor,TJvClipboardViewer,
+  RegisterComponents(SPaletteSystem, [TJvClipboardMonitor,TJvClipboardViewer,
     {TJvComputerInfo, // - do not register this component as default}
-    TJvSHFileOperation, TJvChangeNotify, TJvDragDrop, TJvHidDeviceController,
+    TJvSHFileOperation, TJvChangeNotify, TJvDragDrop, TJvAppInstances,
+    TJvHidDeviceController,
     TJvNTEventLog, TJvScreenSaver,
-    TJvDeviceChanged, TJvJoystick, TJvSoundControl, 
+    TJvDeviceChanged, TJvJoystick, TJvSoundControl,
     TJvKeyboardStates, TJvDirectories, TJvSystemColors, TJvAppDdeCmd, TJvPerfStat95]);
 
   RegisterComponents(SPaletteInternetWork,[
@@ -41,7 +42,7 @@ begin
   RegisterComponents(SPaletteNonVisual,[
     TJvFormStorage, TJvSearchFiles,
     TJvMRUList, TJvMRUManager,
-    TJvShellHook, TJvWindowHook, 
+    TJvShellHook, TJvWindowHook,
     TJvTimer, TJvThread, TJvThreadTimer, TJvTimerList
     ]);
 
