@@ -35,7 +35,7 @@
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JvDlgsC6D.cpp"/>
     <INCLUDEPATH value="..\..\design;..\..\common;$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="C:\Prog\delphi6\Lib\JCL\dcu;..\..\design;..\..\dcu;..\..\resources;..\..\run;$(BCB)\Projects\Lib;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <LIBPATH value="..\..\design;..\..\dcu;..\..\resources;..\..\run;$(BCB)\Projects\Lib;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
@@ -71,7 +71,7 @@
       <FILE FILENAME="JvDlgsC6R.bpi" FORMNAME="" UNITNAME="JvDlgsC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="bcbsmp.bpi" FORMNAME="" UNITNAME="bcbsmp" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="bcbie.bpi" FORMNAME="" UNITNAME="bcbie" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="c:\prog\cbuilder6\Projects\Lib\JvCoreC6D.bpi" FORMNAME="" UNITNAME="JvCoreC6D" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="JvCoreC6D.bpi" FORMNAME="" UNITNAME="JvCoreC6D" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>

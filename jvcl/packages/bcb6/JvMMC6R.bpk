@@ -33,9 +33,8 @@
       visualdbclx.lib dsnapcrba.lib dsnapcon.lib bcbsmp.lib inetdbbde.lib 
       inetdbxpress.lib dbexpress.lib nmfast.lib bcbie.lib soaprtl.lib dclocx.lib 
       dbxcds.lib indy.lib bcb2kaxserver.lib"/>
-    <PACKAGES value="rtl.bpi vcl.bpi JvCoreC6D.bpi CJCL60.bpi JvCoreC6R.bpi vclx.bpi 
-      JvSystemC6R.bpi JvCtrlsC6R.bpi JvStdCtrlsC6R.bpi JvCmpC6R.bpi bcbsmp.bpi 
-      bcbie.bpi"/>
+    <PACKAGES value="rtl.bpi vcl.bpi CJCL60.bpi JvCoreC6R.bpi vclx.bpi bcbsmp.bpi bcbie.bpi 
+      JvSystemC6R.bpi JvCtrlsC6R.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;..\..\run"/>
     <PATHRC value=".;"/>
@@ -103,17 +102,14 @@
       <FILE FILENAME="..\..\run\JvWaitingGradient.pas" FORMNAME="" UNITNAME="JvWaitingGradient" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvWaitingProgress.pas" FORMNAME="" UNITNAME="JvWaitingProgress" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="JvCoreC6D.bpi" FORMNAME="" UNITNAME="JvCoreC6D" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="CJCL60.bpi" FORMNAME="" UNITNAME="CJCL60" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="JvCoreC6R.bpi" FORMNAME="" UNITNAME="JvCoreC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="vclx.bpi" FORMNAME="" UNITNAME="vclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="JvSystemC6R.bpi" FORMNAME="" UNITNAME="JvSystemC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="JvCtrlsC6R.bpi" FORMNAME="" UNITNAME="JvCtrlsC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="JvStdCtrlsC6R.bpi" FORMNAME="" UNITNAME="JvStdCtrlsC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="VFW.pas" FORMNAME="" UNITNAME="VFW" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="JvCmpC6R.bpi" FORMNAME="" UNITNAME="JvCmpC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="bcbsmp.bpi" FORMNAME="" UNITNAME="bcbsmp" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="bcbie.bpi" FORMNAME="" UNITNAME="bcbie" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="JvSystemC6R.bpi" FORMNAME="" UNITNAME="JvSystemC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="JvCtrlsC6R.bpi" FORMNAME="" UNITNAME="JvCtrlsC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>
