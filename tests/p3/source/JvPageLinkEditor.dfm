@@ -1,8 +1,8 @@
 object frmJvTreeViewLinksEditor: TfrmJvTreeViewLinksEditor
   Left = 294
   Top = 184
-  Width = 405
-  Height = 349
+  Width = 472
+  Height = 267
   ActiveControl = tvItems
   BorderIcons = [biSystemMenu]
   Caption = 'JvTreeViewLinks Editor'
@@ -19,33 +19,33 @@ object frmJvTreeViewLinksEditor: TfrmJvTreeViewLinksEditor
   TextHeight = 13
   object Bevel1: TBevel
     Left = 0
-    Top = 280
-    Width = 397
+    Top = 198
+    Width = 464
     Height = 42
     Align = alBottom
     Shape = bsTopLine
   end
   object Splitter1: TSplitter
-    Left = 134
+    Left = 163
     Top = 0
     Width = 3
-    Height = 280
+    Height = 198
     Cursor = crHSplit
     AutoSnap = False
   end
   object Splitter2: TSplitter
-    Left = 239
+    Left = 268
     Top = 0
     Width = 3
-    Height = 280
+    Height = 198
     Cursor = crHSplit
     AutoSnap = False
   end
   object pnlLeft: TPanel
     Left = 0
     Top = 0
-    Width = 134
-    Height = 280
+    Width = 163
+    Height = 198
     Align = alLeft
     BevelOuter = bvNone
     BorderWidth = 4
@@ -53,7 +53,7 @@ object frmJvTreeViewLinksEditor: TfrmJvTreeViewLinksEditor
     object Label1: TLabel
       Left = 4
       Top = 4
-      Width = 126
+      Width = 155
       Height = 16
       Align = alTop
       AutoSize = False
@@ -64,8 +64,8 @@ object frmJvTreeViewLinksEditor: TfrmJvTreeViewLinksEditor
     object tvItems: TTreeView
       Left = 4
       Top = 20
-      Width = 126
-      Height = 256
+      Width = 155
+      Height = 174
       Align = alClient
       ChangeDelay = 60
       HideSelection = False
@@ -80,8 +80,8 @@ object frmJvTreeViewLinksEditor: TfrmJvTreeViewLinksEditor
     end
   end
   object btnOK: TButton
-    Left = 218
-    Top = 289
+    Left = 285
+    Top = 207
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
@@ -90,8 +90,8 @@ object frmJvTreeViewLinksEditor: TfrmJvTreeViewLinksEditor
     TabOrder = 3
   end
   object btnCancel: TButton
-    Left = 306
-    Top = 289
+    Left = 373
+    Top = 207
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
@@ -100,10 +100,10 @@ object frmJvTreeViewLinksEditor: TfrmJvTreeViewLinksEditor
     TabOrder = 4
   end
   object pnlMid: TPanel
-    Left = 137
+    Left = 166
     Top = 0
     Width = 102
-    Height = 280
+    Height = 198
     Align = alLeft
     BevelOuter = bvNone
     TabOrder = 1
@@ -119,10 +119,10 @@ object frmJvTreeViewLinksEditor: TfrmJvTreeViewLinksEditor
     end
   end
   object pnlRight: TPanel
-    Left = 242
+    Left = 271
     Top = 0
-    Width = 155
-    Height = 280
+    Width = 193
+    Height = 198
     Align = alClient
     BevelOuter = bvNone
     BorderWidth = 4
@@ -131,7 +131,7 @@ object frmJvTreeViewLinksEditor: TfrmJvTreeViewLinksEditor
     object Label2: TLabel
       Left = 4
       Top = 4
-      Width = 147
+      Width = 185
       Height = 17
       Align = alTop
       AutoSize = False
@@ -142,8 +142,8 @@ object frmJvTreeViewLinksEditor: TfrmJvTreeViewLinksEditor
     object lbPages: TListBox
       Left = 4
       Top = 21
-      Width = 147
-      Height = 255
+      Width = 185
+      Height = 173
       Align = alClient
       ItemHeight = 13
       TabOrder = 0
@@ -160,7 +160,7 @@ object frmJvTreeViewLinksEditor: TfrmJvTreeViewLinksEditor
     end
   end
   object popTree: TPopupMenu
-    Left = 40
-    Top = 144
+    Left = 58
+    Top = 72
   end
 end

@@ -72,13 +72,21 @@ type
   end;
 
   {$IFNDEF COMPILER6_UP}
+
   // since D5 doesn't support interface style published properties,
   // this editor is supplied to make it easier to select a specific interface
   // implementor at design-time
+  // NOTE: you must derive a new editor from TJvInterfaceProperty and override
+  // GetInterfaceGUID and GetInterfaceName since these are declared as virtual abstract
   TJvInterfaceProperty = class(TComponentProperty)
+  private
+    FOrgStrProc: TGetStrProc;
   protected
-    function GetInterface: TGUID; virtual;
-    function GetInterfaceName: string; virtual;
+    function IntfSupported(AComponent:TComponent):boolean;virtual;
+    function GetInterfaceGUID:TGUID;virtual;abstract;
+    function GetInterfaceName: string; virtual;abstract;
+    procedure ProcComps(const S:String);
+    property OrgStrProc: TGetStrProc read FOrgStrProc write FOrgStrProc;
   public
     procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const Value: string); override;
@@ -86,7 +94,7 @@ type
 
   TJvPageListProperty = class(TJvInterfaceProperty)
   protected
-    function GetInterface: TGUID; override;
+    function GetInterfaceGUID:TGUID;override;
     function GetInterfaceName: string; override;
   end;
   {$ENDIF}
@@ -96,8 +104,8 @@ procedure Register;
 
 implementation
 uses
-  Forms, ComCtrls, Controls, SysUtils,
-  JvPageLinkEditor, JvTreeItemsEditor, TypInfo;
+  Forms, ComCtrls, Controls, SysUtils, TypInfo, Consts,
+  JvPageLinkEditor, JvTreeItemsEditor;
 
 resourcestring
   SFmtInterfaceNotSupported = '%s does not support the required interface (%s)';
@@ -289,47 +297,44 @@ end;
 {$IFNDEF COMPILER6_UP}
 { TJvInterfaceProperty }
 
-function TJvInterfaceProperty.GetInterface: TGUID;
+function TJvInterfaceProperty.IntfSupported(AComponent:TComponent):boolean;
+var obj:IUnknown;
 begin
-  Result := IUnknown;
+  Result := Supports(AComponent,GetInterfaceGUID,obj);
 end;
 
-function TJvInterfaceProperty.GetInterfaceName: string;
+procedure TJvInterfaceProperty.ProcComps(const S:String);
+var Comp:TComponent;
 begin
-  Result := 'IUnknown';
+  Comp := Designer.GetComponent(S);
+  if (Comp <> nil) and IntfSupported(Comp) then
+    OrgStrProc(S);
 end;
 
 procedure TJvInterfaceProperty.GetValues(Proc: TGetStrProc);
-var
-  i: integer;
-  obj: IUnknown;
 begin
-  for i := 0 to Designer.Form.ComponentCount - 1 do
-    if Supports(Designer.Form.Components[i], GetInterface, obj) and
-      (Designer.Form.Components[i] <> GetComponent(0)) then
-      Proc(Designer.Form.Components[i].Name);
+  OrgStrProc := Proc;
+  inherited GetValues(ProcComps);
 end;
 
 procedure TJvInterfaceProperty.SetValue(const Value: string);
 var
-  i: integer;
-  obj: IUnknown;
+  Comp: TComponent;
 begin
   if Value = '' then
-    inherited // setting to nil
+    Comp := nil
   else
   begin
-    for i := 0 to Designer.Form.ComponentCount - 1 do
-      if SameText(Designer.Form.Components[i].Name, Value) then
-        if not Supports(Designer.Form.Components[i], GetInterface, obj) then
-          raise Exception.CreateFmt(SFmtInterfaceNotSupported, [Value, GetInterfaceName]);
-    inherited;
+    Comp := Designer.GetComponent(Value);
+    if not (Comp is GetTypeData(GetPropType)^.ClassType) and not IntfSupported(Comp) then
+      raise EPropertyError.CreateFmt(SFmtInterfaceNotSupported,[Comp.Name,GetInterfaceName]);
   end;
+  SetOrdValue(Longint(Comp));
 end;
 
 { TJvPageListProperty }
 
-function TJvPageListProperty.GetInterface: TGUID;
+function TJvPageListProperty.GetInterfaceGUID: TGUID;
 begin
   Result := IPageList;
 end;
