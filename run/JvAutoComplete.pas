@@ -368,7 +368,7 @@ begin
   else
     FFilter := GetText;
 
-  case Ord(Key) of
+  case Key of
     Esc {VK_ESCAPE}:
       Exit;
     Tab {VK_TAB}:
