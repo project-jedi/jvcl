@@ -340,6 +340,7 @@ object frmMain: TfrmMain
         LabelPosition = lpLeft
         LabelSpacing = 8
         TabOrder = 0
+        OnChange = ledPackageChange
       end
       object cmbStatus: TComboBox
         Left = 240
@@ -348,6 +349,7 @@ object frmMain: TfrmMain
         Height = 21
         ItemHeight = 13
         TabOrder = 1
+        OnChange = cmbStatusChange
         Items.Strings = (
           'Generated'
           'Updating'
@@ -411,6 +413,7 @@ object frmMain: TfrmMain
   end
   object jmnMain: TJvMainMenu
     Images = imlImages
+    Style = msOffice
     DisabledImages = imlDisabledImages
     ImageMargin.Left = 1
     ImageMargin.Top = 1
@@ -418,7 +421,6 @@ object frmMain: TfrmMain
     ImageMargin.Bottom = 1
     ImageSize.Height = 0
     ImageSize.Width = 0
-    Style = msOffice
     Left = 760
     Top = 28
     object mnuFile: TMenuItem

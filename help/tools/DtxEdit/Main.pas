@@ -114,6 +114,8 @@ type
     procedure tshRawShow(Sender: TObject);
     procedure actRawExecute(Sender: TObject);
     procedure actElementsExecute(Sender: TObject);
+    procedure cmbStatusChange(Sender: TObject);
+    procedure ledPackageChange(Sender: TObject);
   private
     { Private declarations }
     FFileWrapper : TFileWrapper;
@@ -429,6 +431,16 @@ end;
 procedure TfrmMain.actElementsExecute(Sender: TObject);
 begin
   jpcEdit.ActivePage := tshElements;
+end;
+
+procedure TfrmMain.cmbStatusChange(Sender: TObject);
+begin
+  FFileWrapper.Status := cmbStatus.Text;
+end;
+
+procedure TfrmMain.ledPackageChange(Sender: TObject);
+begin
+  FFileWrapper.Package :=  ledPackage.Text;
 end;
 
 end.
