@@ -43,7 +43,7 @@ uses
   Windows, Messages, Buttons, Controls, Graphics, ImgList, Forms, StdCtrls, ExtCtrls,
   {$IFDEF VCL}
   {$IFDEF JVCLThemesEnabled}
-  UxTheme,
+  UxTheme, 
   {$IFNDEF COMPILER7_UP}
   TmSchema,
   {$ENDIF COMPILER7_UP}
@@ -192,7 +192,7 @@ type
     property Buttons: TJvOutlookBarButtons read FButtons write SetButtons;
     property ButtonSize: TJvBarButtonSize read FButtonSize write SetButtonSize;
     property Caption: TCaption read FCaption write SetCaption;
-    property Color: TColor read FColor write SetColor;
+    property Color: TColor read FColor write SetColor default clDefault;
     property DownFont: TFont read FDownFont write SetDownFont;
     property ImageIndex: TImageIndex read FImageIndex write SetImageIndex default -1;
     property Font: TFont read FFont write SetFont;
@@ -1009,15 +1009,15 @@ begin
   if (Collection <> nil) and (TJvOutlookBarPages(Collection).Owner <> nil) then
   begin
     FButtonSize := TJvCustomOutlookBar(TJvOutlookBarPages(Collection).Owner).ButtonSize;
-    FColor := TJvCustomOutlookBar(TJvOutlookBarPages(Collection).Owner).Color;
+//    FColor := TJvCustomOutlookBar(TJvOutlookBarPages(Collection).Owner).Color;
     Font := TJvCustomOutlookBar(TJvOutlookBarPages(Collection).Owner).Font;
     DownFont := Font;
   end
   else
   begin
     FButtonSize := olbsLarge;
-    FColor := clGray;
   end;
+  FColor := clDefault;
   Font.Color := clWhite;
   FParentButtonSize := True;
 end;
@@ -1859,6 +1859,9 @@ procedure TJvCustomOutlookBar.DrawCurrentPage(PageIndex: Integer);
 var
   R: TRect;
   AColor: TColor;
+  {$IFDEF JVCLThemesEnabled}
+  Details: TThemedElementDetails;
+  {$ENDIF JVCLThemesEnabled}
 begin
   if csDestroying in ComponentState then
     Exit;
@@ -1874,9 +1877,18 @@ begin
       if not DrawPicture(R, Pages[PageIndex].Picture) then
       begin
         {$IFDEF JVCLThemesEnabled}
-        if not ThemedBackground or not ThemeServices.ThemesEnabled then
+        if (Canvas.Brush.Color = clDefault) and ThemedBackground and ThemeServices.ThemesEnabled then
+        begin
+          Details := ThemeServices.GetElementDetails(tebHeaderBackgroundNormal);
+          ThemeServices.DrawElement(Canvas.Handle, Details, R);
+        end
+        else
         {$ENDIF JVCLThemesEnabled}
+        begin
+          if Canvas.Brush.Color = clDefault then
+            Canvas.Brush.Color := Self.Color;
           Canvas.FillRect(R);
+        end;
       end;
     end;
     DrawButtonFrame(ActivePageIndex, FLastButtonIndex, FPressedButtonIndex);
