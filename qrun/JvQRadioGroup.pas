@@ -48,7 +48,6 @@ type
   TJvRadioGroup = class(TJvExRadioGroup, IJvDenySubClassing)
   private
     FReadOnly: Boolean;
-
     FEdgeBorders: TEdgeBorders;
     FEdgeInner: TEdgeStyle;
     FEdgeOuter: TEdgeStyle;
@@ -61,7 +60,6 @@ type
   protected
     procedure Paint; override;
     function CanModify: Boolean; override;
-
     procedure GetItemHint(Index: Integer; var AHint: TCaption); virtual;
     function HintShow(var HintInfo: THintInfo): Boolean; override;
   public
@@ -71,7 +69,6 @@ type
     property EdgeBorders: TEdgeBorders read FEdgeBorders write SetEdgeBorders default [ebLeft, ebTop, ebRight, ebBottom];
     property EdgeInner: TEdgeStyle read FEdgeInner write SetEdgeInner default esRaised;
     property EdgeOuter: TEdgeStyle read FEdgeOuter write SetEdgeOuter default esLowered;
-
     property HintColor;
     {$IFDEF JVCLThemesEnabledD56}
     property ParentBackground default True;
@@ -102,17 +99,20 @@ end;
 
 procedure TJvRadioGroup.Paint;
 const
-  InnerStyles: array[TEdgeStyle] of Integer = (0, BDR_RAISEDINNER, BDR_SUNKENINNER);
-  OuterStyles: array[TEdgeStyle] of Integer = (0, BDR_RAISEDOUTER, BDR_SUNKENOUTER);
-  Ctl3DStyles: array[Boolean] of Integer = (BF_MONO, 0);
+  InnerStyles: array [TEdgeStyle] of Integer =
+    (0, BDR_RAISEDINNER, BDR_SUNKENINNER);
+  OuterStyles: array [TEdgeStyle] of Integer =
+    (0, BDR_RAISEDOUTER, BDR_SUNKENOUTER);
+  Ctl3DStyles: array [Boolean] of Integer =
+    (BF_MONO, 0);
 var
   H: Integer;
   R: TRect;
   Flags: Longint;
-{$IFDEF JVCLThemesEnabledD56}
+  {$IFDEF JVCLThemesEnabledD56}
   Details: TThemedElementDetails;
   ClipRect, CaptionRect: TRect;
-{$ENDIF JVCLThemesEnabledD56}
+  {$ENDIF JVCLThemesEnabledD56}
 begin
   {$IFDEF JVCLThemesEnabledD56}
   if ThemeServices.ThemesEnabled then
@@ -157,7 +157,7 @@ begin
     H := TextHeight('0');
     R := Rect(0, H div 2 - 1, Width, Height);  
     DrawEdge(Handle, R, InnerStyles[FEdgeInner] or OuterStyles[FEdgeOuter],
-      Byte(FEdgeBorders) or BF_ADJUST);
+      Byte(FEdgeBorders) {or Ctl3DStyles[Ctl3D]} or BF_ADJUST);
     if (Text <> '') and CaptionVisible then
     begin
       if not UseRightToLeftAlignment then
@@ -167,10 +167,10 @@ begin
       Flags := DrawTextBiDiModeFlags(DT_SINGLELINE);
       
       
-      DrawTextW(Handle, PWideChar(Text), Length(Text), R, Flags or DT_CALCRECT);
+      DrawText(Canvas, Text, Length(Text), R, Flags or DT_CALCRECT);
       Brush.Color := Color;
       SetBkMode(Handle, OPAQUE);
-      DrawTextW(Handle, PWideChar(Text), Length(Text), R, Flags);
+      DrawText(Canvas, Text, Length(Text), R, Flags);
       
     end;
   end;

@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -20,13 +20,12 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck att bigfoot dott com].
 
-Last Modified: 2002-09-18
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -36,10 +35,10 @@ interface
 
 uses
   SysUtils, Classes,
-  
-  
-  Types, QGraphics, QControls, QForms, QGrids, QWindows,
-  
+
+
+  Types, QGraphics, QControls, QForms, QGrids, QWindows, QMessages,
+
   JvQTypes, JvQJCLUtils, JvQExGrids;
 
 const
@@ -93,11 +92,13 @@ type
     procedure DrawCell(AColumn, ARow: Longint;
       Rect: TRect; State: TGridDrawState); override;
     procedure CaptionClick(AColumn, ARow: Longint); dynamic;
-//    procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
-//    procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
-    
+    procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
+    procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
+
     function SelectCell(ACol, ARow: Longint): Boolean; override;
 
+    procedure DoLoadProgress(Position, Count: integer);
+    procedure DoSaveProgress(Position, Count: integer);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -106,10 +107,13 @@ type
       State: TGridDrawState): TAlignment; virtual;
     procedure DefaultDrawCell(AColumn, ARow: Longint;
       Rect: TRect; State: TGridDrawState); virtual;
-//    procedure ActivateCell(AColumn, ARow: Integer);
+    procedure ActivateCell(AColumn, ARow: Integer);
     procedure InvalidateCell(AColumn, ARow: Integer);
     procedure InvalidateCol(AColumn: Integer);
     procedure InvalidateRow(ARow: Integer);
+    procedure MoveColumn(FromIndex, ToIndex: Integer);
+    procedure MoveRow(FromIndex, ToIndex: Longint);
+
     property InplaceEditor;
     // Calculates and sets the width of a specific column or all columns if Index < 0
     // based on the text in the affected Cells.
@@ -160,9 +164,12 @@ type
 
     procedure SortGrid(Column: Integer; Ascending: boolean = true; Fixed: boolean = false;
       SortType: TJvSortType = stClassic; BlankTop: boolean = true);
+    // Sort grid using the column inidices in ColOrder. For example if ColOrder contains
+    // [1, 3, 0, 2], column 3 is used when the items in column 1 are identical
+    procedure SortGridByCols(ColOrder: array of Integer);
     procedure SaveToFile(FileName: string);
     procedure LoadFromFile(FileName: string);
-    procedure LoadFromCSV(FileName: string; Separator: char = ';'; QuoteChar: char = '"');
+    procedure LoadFromCSV(FileName: string; Separator: char = ';'; QuoteChar: char = '"'; StripQuotes: boolean = true);
     procedure SaveToCSV(FileName: string; Separator: char = ';'; QuoteChar: char = '"');
     procedure LoadFromStream(Stream: TStream);
     procedure SaveToStream(Stream: TStream);
@@ -192,7 +199,7 @@ uses
 const
   BufSize = 1024;
 
-//=== TExInplaceEdit =========================================================
+  //=== TExInplaceEdit =========================================================
 
 type
   TExInplaceEdit = class(TJvExInplaceEdit)
@@ -411,6 +418,7 @@ var
       Inc(i);
     end;
   end;
+
   procedure MoveBlankBottom;
   var
     i, j: Integer;
@@ -475,81 +483,93 @@ begin
   end;
 end;
 
-procedure TJvStringGrid.LoadFromCSV(FileName: string; Separator: char = ';'; QuoteChar: char = '"');
+procedure TJvStringGrid.LoadFromCSV(FileName: string; Separator: char = ';'; QuoteChar: char = '"'; StripQuotes: boolean = true);
 var
-  St, st2: string;
-  i, j, K, L, m, N: Integer;
-  fich: TextFile;
-  FilePos, Count: Integer;
-  f: file of byte;
-begin
-  FilePos := 0;
-  AssignFile(f, FileName);
-  Reset(f);
-  Count := FileSize(f);
-  CloseFile(f);
-  if Assigned(FOnLoadProgress) then
-    FOnLoadProgress(Self, FilePos, Count);
+  i: LongInt;
+  Lines, Fields: TStringList;
 
-  AssignFile(fich, FileName);
-  Reset(fich);
-  K := 0;
-  while not EOF(fich) do
+  procedure SplitLine(const Line: string; Result: TStrings; Delimiter, QuoteChar: Char; StripQuotes: boolean);
+  var
+    i, SLen, QuoteCount: Integer;
+    S: string;
+    IgnoreDelim: boolean;
+    QuotedStr: PChar;
   begin
-    ReadLn(fich, St);
-    FilePos := FilePos + Length(St) + 2;
-    if Assigned(FOnLoadProgress) then
-      FOnLoadProgress(Self, FilePos, Count);
-
-    //Analyse St
-    j := 0;
-    L := 1;
-    for i := 1 to Length(St) do
-      if St[i] = QuoteChar then
-        j := (j + 1) mod 2
-      else if St[i] = Separator then
-        if j = 0 then
-          Inc(L);
-    if ColCount < L then
-      ColCount := L;
-    Inc(K);
-    if RowCount < K then
-      RowCount := K;
-
-    j := 0;
-    m := Pos(Separator, St);
-    N := Pos(QuoteChar, St);
-    while m <> 0 do
+    S := '';
+    SLen := Length(Line);
+    IgnoreDelim := false;
+    QuoteCount := 0;
+    Result.Clear;
+    for i := 1 to SLen do
     begin
-      if (N = 0) or (N > m) then
+      if Line[i] = QuoteChar then
       begin
-        Cells[j, K - 1] := Copy(St, 1, m - 1);
-        St := Copy(St, m + 1, Length(St));
-      end
+        inc(QuoteCount);
+        {* A Delimiter surrounded by a pair of QuoteChar has to be ignored.
+           See example above: "FirstName, LastName"
+           therefor: *}
+        IgnoreDelim := QuoteCount mod 2 <> 0;
+      end;
+
+      if IgnoreDelim then
+        S := S + Line[i]
+      else if Line[i] <> Delimiter then
+        S := S + Line[i]
       else
       begin
-        St := Copy(St, N + 1, Length(St));
-        N := Pos(QuoteChar, St);
-        st2 := Copy(St, 1, N - 1);
-        St := Copy(St, N + 1, Length(St));
-        m := Pos(Separator, St);
-        if m <> 0 then
-          St := Copy(St, m + 1, Length(St))
+        if S <> '' then
+        begin
+          if (StripQuotes and (S[1] = QuoteChar)) then
+          begin
+            QuotedStr := PChar(S);
+            Result.Add(AnsiExtractQuotedStr(QuotedStr, QuoteChar));
+          end
+          else
+            Result.Add(S);
+        end
         else
-          St := '';
-        Cells[j, K - 1] := st2;
-      end;
-      Inc(j);
+          Result.Add(S);
 
-      m := Pos(Separator, St);
-      N := Pos(QuoteChar, St);
+        S := '';
+      end;
     end;
-    if St <> '' then
-      Cells[j, K - 1] := St;
+    if S <> '' then
+    begin
+      if (StripQuotes and (S[1] = QuoteChar)) then
+      begin
+        QuotedStr := PChar(S);
+        Result.Add(AnsiExtractQuotedStr(QuotedStr, QuoteChar));
+      end
+      else
+        Result.Add(S);
+    end
+    else
+      Result.Add(S);
   end;
-  if Assigned(FOnLoadProgress) then
-    FOnLoadProgress(Self, Count, Count);
-  CloseFile(fich);
+
+begin
+  Lines := TStringList.Create;
+  Fields := TStringList.Create;
+  try
+    Lines.LoadFromFile(FileName);
+    DoLoadProgress(0, Lines.Count);
+    RowCount := Lines.Count;
+    ColCount := FixedCols + 1;
+    for i := 0 to Lines.Count - 1 do
+    begin
+      {* added John *}
+      SplitLine(Lines[i], Fields, Separator, QuoteChar, StripQuotes);
+      DoLoadProgress(i, Lines.Count);
+
+      if Fields.Count > ColCount then
+        ColCount := Fields.Count;
+      Rows[i].Assign(Fields);
+    end;
+    DoLoadProgress(Lines.Count, Lines.Count);
+  finally
+    Fields.Free;
+    Lines.Free;
+  end;
 end;
 
 procedure TJvStringGrid.LoadFromStream(Stream: TStream);
@@ -560,13 +580,11 @@ var
 begin
   Col := 0;
   Rom := 1;
-  if Assigned(FOnLoadProgress) then
-    FOnLoadProgress(Self, 0, Stream.Size);
+  DoLoadProgress(0, Stream.Size);
   while Stream.Position < Stream.Size do
   begin
     Count := Stream.Read(Buffer, 1024);
-    if Assigned(FOnLoadProgress) then
-      FOnLoadProgress(Self, Stream.Position, Stream.Size);
+    DoLoadProgress(Stream.Position, Stream.Size);
     for i := 0 to Count - 1 do
       case Buffer[i] of
         0:
@@ -596,11 +614,9 @@ begin
       end;
   end;
   RowCount := RowCount - 1;
-  if Assigned(FOnLoadProgress) then
-    FOnLoadProgress(Self, Stream.Size, Stream.Size);
+  DoLoadProgress(Stream.Size, Stream.Size);
 end;
 
-(*)
 procedure TJvStringGrid.WMHScroll(var Msg: TWMHScroll);
 begin
   inherited;
@@ -614,7 +630,6 @@ begin
   if Assigned(FOnVerticalScroll) then
     FOnVerticalScroll(Self);
 end;
-(*)
 
 procedure TJvStringGrid.SaveToFile(FileName: string);
 var
@@ -631,52 +646,55 @@ end;
 
 procedure TJvStringGrid.SaveToCSV(FileName: string; Separator: char = ';'; QuoteChar: char = '"');
 var
-  St: string;
-  i, j: Integer;
-  fich: TextFile;
+  i, j: LongInt;
+  BufStr, Value: string;
+  Lines: TStringList;
 begin
-  AssignFile(fich, FileName);
-  Rewrite(fich);
-  if Assigned(FOnSaveProgress) then
-    FOnSaveProgress(Self, 0, RowCount * ColCount);
-  for i := 0 to RowCount - 1 do
-  begin
-    St := '';
-    for j := 0 to ColCount - 1 do
+  Lines := TStringList.Create;
+  DoSaveProgress(0, RowCount);
+  try
+    Lines.Clear;
+    for i := 0 to RowCount - 1 do
     begin
-      if Assigned(FOnSaveProgress) then
-        FOnSaveProgress(Self, i * ColCount + j, RowCount * ColCount);
-      if Pos(Separator, Cells[j, i]) = 0 then
-        St := St + Cells[j, i]
-      else
-        St := St + QuoteChar + Cells[j, i] + QuoteChar;
-      if j <> ColCount - 1 then
-        St := St + Separator
+      BufStr := '';
+      DoSaveProgress(i, RowCount);
+      for j := 0 to ColCount - 1 do
+      begin
+        {* added John *}
+        Value := Cells[j, i];
+        if Pos(Separator, Value) > 0 then
+          Value := AnsiQuotedStr(Value, QuoteChar);
+        {* end added John *}
+
+        BufStr := BufStr + Value;
+        if j <> (ColCount - 1) then
+          BufStr := BufStr + Separator;
+      end;
+      Lines.Add(BufStr);
     end;
-    Writeln(fich, St);
+    DoSaveProgress(RowCount, RowCount);
+    Lines.SaveToFile(FileName);
+  finally
+    Lines.Free;
   end;
-  CloseFile(fich);
-  if Assigned(FOnSaveProgress) then
-    FOnSaveProgress(Self, RowCount * ColCount, RowCount * ColCount);
 end;
 
 procedure TJvStringGrid.SaveToStream(Stream: TStream);
 var
-  i, j, K: Integer;
+  i, j, K, ATotal: Integer;
   St: array[0..BufSize - 1] of char;
   Stt: string;
   A, B: byte;
 begin
   A := 0;
   B := 1; // A for end of string, B for end of line
-  if Assigned(FOnSaveProgress) then
-    FOnSaveProgress(Self, 0, RowCount * ColCount);
+  ATotal := RowCount * ColCount;
+  DoSaveProgress(0, ATotal);
   for i := 0 to RowCount - 1 do
   begin
     for j := 0 to ColCount - 1 do
     begin
-      if Assigned(FOnSaveProgress) then
-        FOnSaveProgress(Self, i * ColCount + j, RowCount * ColCount);
+      DoSaveProgress(i * ColCount + j, ATotal);
       Stt := Cells[j, i];
       for K := 1 to Length(Stt) do
         St[K - 1] := Stt[K];
@@ -686,16 +704,14 @@ begin
     end;
     Stream.Write(B, 1);
   end;
-  if Assigned(FOnSaveProgress) then
-    FOnSaveProgress(Self, RowCount * ColCount, RowCount * ColCount);
+  DoSaveProgress(ATotal, ATotal);
 end;
 
-(*)
 procedure TJvStringGrid.ActivateCell(AColumn, ARow: Integer);
 begin
   PostMessage(Handle, GM_ACTIVATECELL, AColumn, ARow);
 end;
-(*)
+
 procedure TJvStringGrid.CaptionClick(AColumn, ARow: Integer);
 begin
   if Assigned(FCaptionClick) then
@@ -720,9 +736,12 @@ begin
   if Length(S) > 0 then
   begin
     InflateRect(Rect, -2, -2);
-    DrawText(Canvas.Handle, PChar(S), Length(S), Rect,
+    
+    
+    DrawText(Canvas, S, Length(S), Rect,
       DT_SINGLELINE or DT_NOPREFIX or DT_VCENTER or
       Flags[GetCellAlignment(AColumn, ARow, State)]);
+    
   end;
 end;
 
@@ -758,10 +777,11 @@ begin
 end;
 
 
+
 function TJvStringGrid.SelectCell(ACol, ARow: Longint): Boolean;
 begin
   Result := inherited SelectCell(ACol, ARow);
-  if Result then
+    if Result then
   begin
     Col := ACol;
     Row := ARow;
@@ -980,7 +1000,7 @@ begin
         AColWidth := MinWidth;
       for j := 0 to RowCount - 1 do
       begin
-        if GetTextExtentPoint32W(Canvas.Handle, PWideChar(Cells[i, j]), Length(Cells[i, j]), ASize) then
+        if GetTextExtentPoint32(Canvas.Handle, PWideChar(Cells[i, j]), Length(Cells[i, j]), ASize) then
           AColWidth := Max(AColWidth, ASize.cx + 8);
       end;
       ColWidths[i] := AColWidth;
@@ -1031,6 +1051,71 @@ begin
   if AHeight < 0 then AWidth := DefaultRowHeight;
   if ColWidths[ACol] < 0 then ColWidths[ACol] := AWidth;
   if RowHeights[ARow] < 0 then RowHeights[ARow] := AHeight;
+end;
+
+procedure TJvStringGrid.DoLoadProgress(Position, Count: integer);
+begin
+  if Assigned(FOnLoadProgress) then
+    FOnLoadProgress(Self, Position, Count);
+end;
+
+procedure TJvStringGrid.DoSaveProgress(Position, Count: integer);
+begin
+  if Assigned(FOnSaveProgress) then
+    FOnSaveProgress(Self, Position, Count);
+end;
+
+procedure TJvStringGrid.SortGridByCols(ColOrder: array of Integer);
+var
+  i, j: Integer;
+  Sorted: Boolean;
+
+  function Sort(Row1, Row2: Integer): Integer;
+  var
+    C: Integer;
+  begin
+    C := 0;
+    Result := AnsiCompareStr(Cols[ColOrder[C]][Row1], Cols[ColOrder[C]][Row2]);
+    if Result = 0 then
+    begin
+      Inc(C);
+      while (C <= High(ColOrder)) and (Result = 0) do
+      begin
+        Result := AnsiCompareStr(Cols[ColOrder[C]][Row1], Cols[ColOrder[C]][Row2]);
+        Inc(C);
+      end;
+    end;
+  end;
+
+begin
+  // (p3) is this really necessary? Doesn't seem so to me...
+  if SizeOf(ColOrder) div SizeOf(i) <> ColCount then Exit;
+
+  for i := 0 to High(ColOrder) do
+    if (ColOrder[i] < 0) or (ColOrder[i] >= ColCount) then Exit;
+
+  j := 0;
+  Sorted := False;
+  repeat
+    Inc(j);
+    for i := 0 to RowCount - 2 do
+      if Sort(i, i + 1) > 0 then
+      begin
+        MoveRow(i + 1, i);
+        Sorted := False;
+      end;
+  until Sorted or (j = 1000);
+  Repaint;
+end;
+
+procedure TJvStringGrid.MoveColumn(FromIndex, ToIndex: Integer);
+begin
+  inherited MoveColumn(FromIndex, ToIndex);
+end;
+
+procedure TJvStringGrid.MoveRow(FromIndex, ToIndex: Integer);
+begin
+  inherited MoveRow(FromIndex, ToIndex);
 end;
 
 end.

@@ -332,10 +332,10 @@ type
     procedure ScrollChildren(Start: Word); virtual;
     procedure AlignControls(Control: TControl; var Rect: TRect); override;
     procedure SetParent( const  AParent: TWinControl); override;
-
-
+    
+    
     procedure CreateWidget; override;
-
+    
     procedure SmoothScroll(AControl: TControl; NewTop, AInterval: Integer; Smooth: Boolean); virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -369,7 +369,7 @@ type
     property ShowPressed: Boolean read FShowPressed write FShowPressed default False;
     property Caption: TCaption read FCaption write SetCaption;
     property Color;
-
+    
     property DragMode;
     property ShowHint;
     property Visible;
@@ -421,7 +421,7 @@ type
     
     procedure WMNCPaint(var Msg: TMessage); message WM_NCPAINT;
   protected
-    procedure SetAutoSize(Value: Boolean); //override;
+    procedure SetAutoSize(Value: Boolean); // override;
     procedure SmoothScroll(AControl: TControl; NewTop, AInterval: Integer; Smooth: Boolean); virtual;
     procedure Paint; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -1199,7 +1199,7 @@ begin
     if csDesigning in ComponentState then
     begin
       Brush.Color := clBlack;
-      FrameRect(Canvas, R);
+      FrameRect(Canvas,R);
     end;
 
     if (FImageSize = isSmall) and Assigned(FSmallImages) then
@@ -1258,7 +1258,10 @@ begin
     if FDown then
       OffsetRect(R, FOffset, FOffset);
     FTextRect := R;
-    H := DrawTextW(Canvas, PWideChar(Caption), -1, FTextRect, Flags or DT_CALCRECT);
+    
+    
+    H := DrawText(Canvas, Caption, -1, FTextRect, Flags or DT_CALCRECT);
+    
     if ImageSize = isLarge then
     begin
       FTextRect.Top := R.Top;
@@ -1271,7 +1274,10 @@ begin
       FTextRect.Bottom := FTextRect.Top + Canvas.TextHeight(Caption);
       FTextRect.Right := R.Left + Canvas.TextWidth(Caption);
     end;
-    DrawTextW(Canvas, PWideChar(Caption), -1, R, Flags);
+    
+    
+    DrawText(Canvas, Caption, -1, R, Flags);
+    
   end;
 end;
 
@@ -2100,8 +2106,8 @@ end;
 
 procedure TJvLookOutPage.SetBitmap(Value: TBitmap);
 begin
-  Bitmap.Assign(Value);
-  if Bitmap.Empty then
+  FBitmap.Assign(Value);
+  if FBitmap.Empty then
     ControlStyle := ControlStyle - [csOpaque]
   else
     ControlStyle := ControlStyle + [csOpaque];
@@ -2255,7 +2261,10 @@ begin
       { draw disabled text }
       SetTextColor(DC, ColorToRGB(clBtnHighLight));
       OffsetRect(R, 1, 1);
+      
+      
       DrawTextW(DC, PWideChar(FCaption), Length(FCaption), R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
+      
       OffsetRect(R, -1, -1);
       SetTextColor(DC, ColorToRGB(clBtnShadow));
     end
@@ -2263,7 +2272,10 @@ begin
       SetTextColor(DC, ColorToRGB(Canvas.Font.Color));
     if FShowPressed and FDown then
       OffsetRect(R, 1, 1);
+    
+    
     DrawTextW(DC, PWideChar(FCaption), Length(FCaption), R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
+    
   end;
 end;
 
@@ -2707,7 +2719,7 @@ end;
 procedure TJvExpress.Paint;
 begin
   
-  Perform(WM_NCPAINT, 1, 0);
+  Perform(WM_NCPAINT, 0, 0);
   
   if not FBitmap.Empty then
   begin

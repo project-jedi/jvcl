@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -20,13 +20,12 @@ All Rights Reserved.
 
 Contributor(s): ______________________________________.
 
-Last Modified: 2004-01-06
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -88,10 +87,6 @@ begin
 end;
 
 procedure TJvGroupBox.Paint;
-
-const
-  clWindowFrame = cl3DDkShadow;
-
 var
   H: Integer;
   R: TRect;
@@ -102,17 +97,10 @@ var
   {$ENDIF JVCLThemesEnabledD56}
   LastBkMode: Integer;
   
-  
-  Txt: WideString;
-  
 begin
   
   with Canvas do
   begin
-    
-    
-    Txt := Text;
-    Start;
     
     LastBkMode := GetBkMode(Handle);
     try
@@ -142,20 +130,32 @@ begin
         Flags := DrawTextBiDiModeFlags(DT_SINGLELINE);
         // calculate text rect
         SetBkMode(Handle, OPAQUE);
-        DrawText(Handle, Txt, Length(Text), R, Flags or DT_CALCRECT);
+        
+        
+        DrawText(Canvas, Text, Length(Text), R, Flags or DT_CALCRECT);
+        
         Brush.Color := Color;
         if not Enabled then
         begin
           OffsetRect(R, 1, 1);
           Font.Color := clBtnHighlight;
-          DrawText(Handle, Txt, Length(Text), R, Flags);
+          
+          
+          DrawText(Canvas, Text, Length(Text), R, Flags);
+          
           OffsetRect(R, -1, -1);
           Font.Color := clBtnShadow;
           SetBkMode(Handle, TRANSPARENT);
-          DrawText(Handle, Txt, Length(Text), R, Flags);
+          
+          
+          DrawText(Canvas, Text, Length(Text), R, Flags);
+          
         end
         else
-          DrawText(Handle, Txt, Length(Text), R, Flags);
+          
+          
+          DrawText(Canvas, Text, Length(Text), R, Flags);
+          
       end;
     finally
       SetBkMode(Handle, LastBkMode);

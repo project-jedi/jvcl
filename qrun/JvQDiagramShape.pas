@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -17,13 +17,12 @@ The Original Code is: JvDiagramShape.PAS, released on 2002-03-22.
 Original Developer: Jim Cooper <jcooper@tabdee.ltd.uk>
 Contributor(s): Michael Beck <mbeck1@compuserve.com>
 
-Last Modified: 2002-03-25
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -1205,7 +1204,7 @@ begin
   TempRect := ClientRect; // So can pass as a var parameter
   
   
-  DrawTextW(Canvas.Handle, PWideChar(FText), Length(FText), TempRect,
+  DrawText(Canvas, FText, Length(FText), TempRect,
     DT_CENTER or DT_NOPREFIX or DT_WORDBREAK);
   
   inherited Paint;

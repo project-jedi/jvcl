@@ -175,7 +175,7 @@ begin
   }
   
   
-  
+  Repaint;
   
 end;
 

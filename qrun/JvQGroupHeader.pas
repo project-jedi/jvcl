@@ -20,13 +20,12 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2004-01-06
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -250,13 +249,19 @@ begin
   begin
     OffsetRect(Rect, 1, 1);
     Canvas.Font.Color := clBtnHighlight;
-    DrawText(Canvas.Handle, PChar(Text), Length(Text), Rect, Flags);
+    
+    
+    DrawText(Canvas, Text, Length(Text), Rect, Flags);
     OffsetRect(Rect, -1, -1);
     Canvas.Font.Color := clBtnShadow;
-    DrawText(Canvas.Handle, PChar(Text), Length(Text), Rect, Flags);
+    DrawText(Canvas, Text, Length(Text), Rect, Flags);
+    
   end
   else
-    DrawText(Canvas.Handle, PChar(Text), Length(Text), Rect, Flags);
+    
+    
+    DrawText(Canvas, Text, Length(Text), Rect, Flags);
+    
 end;
 
 procedure TJvGroupHeader.Paint;

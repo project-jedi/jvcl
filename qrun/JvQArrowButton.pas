@@ -205,16 +205,7 @@ type
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
 
-function DrawText(Canvas: TCanvas; Caption: TCaption; var R: TRect;
-  Flags: Integer): Integer;
-begin
-  
-  
-  Canvas.Start;
-  Result := QWindows.DrawText(Canvas.Handle, WideString(Caption), Length(Caption), R, Flags);
-  Canvas.Stop;
-  
-end;
+
 
 procedure DrawLine(Canvas: TCanvas; X, Y, X2, Y2: Integer);
 begin
@@ -488,13 +479,12 @@ begin
             MonoBmp := TBitmap.Create;
             DDB := TBitmap.Create;
             DDB.Assign(FOriginal);
-
+            
             if NumGlyphs > 1 then
               with TmpImage.Canvas do
               begin { Change white & gray to clBtnHighlight and clBtnShadow }
-                Start;
                 CopyRect(IRect, DDB.Canvas, ORect);
-                //MonoBmp.Monochrome := True;
+                MonoBmp.Monochrome := True;
                 MonoBmp.Width := IWidth;
                 MonoBmp.Height := IHeight;
 
@@ -527,7 +517,6 @@ begin
                 SetBkColor(DestDC, clWhite);
                 BitBlt(DestDC, 0, 0, IWidth, IHeight,
                   MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
-                stop;
               end
             else
             begin
@@ -536,7 +525,7 @@ begin
               begin
                 Assign(FOriginal);
                 GrayedBitmap(MonoBmp);
-
+                
                 Canvas.Brush.Color := clBlack;
                 Width := IWidth;
                 if Monochrome then
@@ -549,7 +538,6 @@ begin
               end;
               with TmpImage.Canvas do
               begin
-                Start;
                 Brush.Color := clBtnFace;
                 FillRect(IRect);
                 Brush.Color := clBtnHighlight;
@@ -562,7 +550,6 @@ begin
                 SetBkColor(Handle, clWhite);
                 BitBlt(Handle, 0, 0, IWidth, IHeight,
                   MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
-                Stop;
               end;
             end;
           finally
@@ -614,13 +601,13 @@ begin
     begin
       OffsetRect(TextBounds, 1, 1);
       Font.Color := clBtnHighlight;
-      DrawText(Canvas, S, TextBounds, 0);
+      DrawText(Canvas, S, -1, TextBounds, 0);
       OffsetRect(TextBounds, -1, -1);
       Font.Color := clBtnShadow;
-      DrawText(Canvas, S, TextBounds, 0);
+      DrawText(Canvas, S, -1, TextBounds, 0);
     end
     else
-      DrawText(Canvas, S, TextBounds,
+      DrawText(Canvas, S, -1, TextBounds,
         DT_CENTER or DT_VCENTER or DT_SINGLELINE);
   end;
 end;
@@ -647,7 +634,7 @@ begin
   begin
     TextBounds := Rect(0, 0, Client.Right - Client.Left, 0);
     S := Caption;
-    DrawText(Canvas, S, TextBounds, DT_CALCRECT);
+    DrawText(Canvas, S, -1, TextBounds, DT_CALCRECT);
     TextSize := Point(TextBounds.Right - TextBounds.Left, TextBounds.Bottom -
       TextBounds.Top);
   end
@@ -778,7 +765,6 @@ begin
   FSpacing := 4;
   FPressBoth := True;
   Inc(ButtonCount);
-//  DoubleBuffered := true;
 end;
 
 destructor TJvArrowButton.Destroy;
