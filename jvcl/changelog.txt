@@ -1,5 +1,11 @@
 Changelog for JVCL 3.0
 ======================
+2004-07-22
+- Fixed: JvComCtrls.TJvTreeView tree nodes do not keep their checked state when set before the first WM_PAINT event // ahuser
+- Improved: JvComCtrls.TJvIPAddress now supports the TAB for each field. Property TabThroughFields controls this feature // ahuser
+- Class hierarchy changed: JvComCtrls.TJvIPAddress now inherits from TJvCustomControl instead of TJvWinControl // ahuser
+- Fixed: JvComCtrls.TJvIPAddress now changes the controls's background. // ahuser
+- Fixed: JvCtrls.TJvCustomImageButton has ignored Alignment. // ahuser
 2004-07-21
 - TJvDesktopAlert now has styles, use the StyleOptions property to define the parameters // obones
 - TJvDesktopAlert can now use the Grow From Center grow // obones
