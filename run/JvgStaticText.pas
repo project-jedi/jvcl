@@ -51,11 +51,13 @@ type
     FTransparent: Boolean;
     FWordWrap: Boolean;
     FActive: Boolean;
+    FShortLinesLeftAligned: Boolean;
     procedure DrawTextBroadwise;
     procedure AdjustBounds;
     procedure SetAlignment(Value: TglAlignment);
     procedure SetTransparent(Value: Boolean);
     procedure SetWordWrap(Value: Boolean);
+    procedure SetShortLinesLeftAligned(const Value: Boolean);
   protected
     procedure SetAutoSize(Value: Boolean); override; 
     procedure Paint; override;
@@ -91,6 +93,7 @@ type
     property ActiveColor: TColor read FActiveColor write FActiveColor default clWhite;
     property Alignment: TglAlignment read FAlignment write SetAlignment default ftaBroadwise;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
+    property ShortLinesLeftAligned: Boolean read FShortLinesLeftAligned write SetShortLinesLeftAligned default False;
     property Transparent: Boolean read FTransparent write SetTransparent default True;
     property WordWrap: Boolean read FWordWrap write SetWordWrap default True;
     {$IFDEF USEJVCL}
@@ -147,20 +150,20 @@ const
     (DT_LEFT, DT_RIGHT, DT_CENTER, 0);
   WordWraps: array [Boolean] of Word = (0, DT_WORDBREAK);
 var
-  Alignment_: TglAlignment;
+  LocalAlignment: TglAlignment;
   Rect: TRect;
 begin
   if Length(Caption) = 0 then
     Exit;
-  Alignment_ := Alignment;
-  SetBkMode(Canvas.Handle, Ord(Transparent));
+  LocalAlignment := Alignment;
+  SetBkMode(Canvas.Handle, Ord(Self.Transparent));
   if FActive then
     SetTextColor(Canvas.Handle, ColorToRGB(ActiveColor))
   else
     SetTextColor(Canvas.Handle, ColorToRGB(Font.Color));
   //  TextOut( Canvas.Handle, 0, 0, 'lpszString', 10);
   //  BitBlt( Canvas.Handle, 0, 0, Width, Height, Image.Canvas.Handle, Width, Height, SRCCOPY );
-  if Alignment = ftaBroadwise then
+  if LocalAlignment = ftaBroadwise then
   begin
     if WordWrap then
     begin
@@ -168,11 +171,11 @@ begin
       Exit;
     end
     else
-      Alignment_ := ftaLeftJustify;
+      LocalAlignment := ftaLeftJustify;
   end;
   Rect := ClientRect;
-  Windows.DrawText(Canvas.Handle, PChar(Caption), Length(Caption), Rect,
-    DT_EXPANDTABS or WordWraps[WordWrap] or Alignments[Alignment_]);
+  DrawText(Canvas.Handle, PChar(Caption), Length(Caption), Rect,
+    DT_EXPANDTABS or WordWraps[WordWrap] or Alignments[LocalAlignment]);
 end;
 
 procedure TJvgStaticText.DrawTextBroadwise;
@@ -229,6 +232,22 @@ var
     end;
   end;
 
+  procedure DrawLineLeftAligned;
+  var
+    i, DrawPos1, DrawPos2: Integer;
+    Lexem: string;
+  begin
+    DrawPos1 := DrawPos;
+    DrawPos2 := DrawPos;
+    LineWidth := 0;
+    for i := 1 to LexemCount do
+    begin
+      Lexem := Lexem + GetNextLexem(DrawPos1, DrawPos2, i = 1);
+      DrawPos1 := DrawPos2;
+    end;
+    TextOut(Canvas.Handle, 0, LineNo * TextHeight, PChar(Lexem), Length(Lexem));
+  end;
+
 begin
   LineWidth := 0;
   LineNo := 0;
@@ -256,7 +275,12 @@ begin
         DrawLine(Width - (LineWidth - Size.cx));
       end
       else
-        DrawLine(Width - LineWidth);
+      begin
+        if not ShortLinesLeftAligned and ((Width - LineWidth) / Width < 0.3) then
+          DrawLine(Width - LineWidth)
+        else
+          DrawLineLeftAligned;
+      end;
 
       DrawPos := Pos1;
       Inc(LineNo);
@@ -327,6 +351,15 @@ begin
   if FWordWrap <> Value then
   begin
     FWordWrap := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvgStaticText.SetShortLinesLeftAligned(const Value: Boolean);
+begin
+  if Value <> FShortLinesLeftAligned then
+  begin
+    FShortLinesLeftAligned := Value;
     Invalidate;
   end;
 end;
