@@ -418,6 +418,11 @@ begin
     if FAppStorage.ValueStored(APath) then
     begin
       S := FAppStorage.ReadString(APath);
+      { UniqueString is used because we modify the contents of S after
+        casting S to a PChar. S might point to an actual string in a storage,
+        as is the case with TJvAppXMLFileStorage. Not using UniqueString would
+        change the value in the storage too. }
+      UniqueString(S);
       cp := PChar(S);
       cp1 := StrPos(cp, ';');
       while cp1 <> nil do
