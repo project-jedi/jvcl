@@ -408,7 +408,12 @@ begin
   {$ENDIF VisualCLX}
   // (p3) draw image here since it can potentionally change background and font color
   if IsValidImage and (Flags and DT_CALCRECT = 0) then
-    Images.Draw(Canvas, 0,0, ImageIndex, Enabled);
+    {$IFDEF VCL}
+    Images.Draw(Canvas, 0, 0, ImageIndex, Enabled);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    Images.Draw(Canvas, 0, 0, ImageIndex, itImage, Enabled);
+    {$ENDIF VisualCLX}
 end;
 
 procedure TJvCustomLabel.DoDrawText(var Rect: TRect; Flags: Word);
