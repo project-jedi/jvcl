@@ -37,6 +37,7 @@ interface
 {$ENDIF COMPILER6_UP}
 
 uses
+  Classes, SysUtils, Contnrs,
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
@@ -50,7 +51,6 @@ uses
   Types, QWindows, QGraphics, QImgList, QControls,
   QStdCtrls, // type TOwnerDrawState
   {$ENDIF VisualCLX}
-  Classes, SysUtils, Contnrs,
   JclBase,
   JvConsts, JvComponent, JvDataProviderIntf;
 
