@@ -192,6 +192,26 @@ var
    end;
  end;
 
+ procedure TransProperties(const Obj: TObject;const Elem: TJvSimpleXmlElem);
+ var
+  i: Integer;
+  prop: PPropInfo;
+ begin
+    for i:=0 to Elem.Properties.Count-1 do
+    try
+      prop := GetPropInfo(Obj,Elem.Properties[i].Name,[tkInteger,
+        tkEnumeration, tkString, tkLString]);
+      if prop<>nil then
+       case Prop^.PropType^.Kind of
+         tkstring, tkLString:
+           SetStrProp(Obj, Prop, StringReplace(Elem.Properties[i].Value,'\n',#13#10,[]));
+         tkEnumeration, tkInteger:
+           SetOrdProp(Obj, Prop, Elem.Properties[i].IntValue);
+       end;
+    except
+    end;
+ end;
+
  function IsObject(const Obj: TClass; ClassName: string):Boolean;
  begin
    if Obj=nil then
@@ -231,19 +251,7 @@ begin
 
   try
     //Transform properties
-    for i:=0 to Elem.Properties.Count-1 do
-    try
-      prop := GetPropInfo(Component,Elem.Properties[i].Name,[tkInteger,
-        tkEnumeration, tkString, tkLString]);
-      if prop<>nil then
-       case Prop^.PropType^.Kind of
-         tkstring, tkLString:
-           SetStrProp(Component, Prop, StringReplace(Elem.Properties[i].Value,'\n',#13#10,[]));
-         tkEnumeration, tkInteger:
-           SetOrdProp(Component, Prop, Elem.Properties[i].IntValue);
-       end;
-    except
-    end;
+    TransProperties(Component,Elem);
 
     //Transform childs
     with Component do
@@ -275,7 +283,9 @@ begin
             else if IsObject(obj.ClassType,'TListColumns') then
               TransColumns(obj,Elem.Items[i])
             else if IsObject(obj.ClassType,'TListItems') then
-              TransListItems(obj,Elem.Items[i]);
+              TransListItems(obj,Elem.Items[i])
+            else
+              TransProperties(obj,Elem.Items[i]);
           end;
         end;
       end;
