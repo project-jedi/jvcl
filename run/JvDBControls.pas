@@ -574,8 +574,6 @@ type
     FOnGetDataName: TGetStringEvent;
     FOnGetRecNo: TDataValueEvent;
     FOnGetRecordCount: TDataValueEvent;
-    FLeftMargin: Integer;
-    FRightMargin: Integer;
     function GetStatusKind(State: TDataSetState): TDBStatusKind;
     procedure CaptionsChanged(Sender: TObject);
     function GetDataSetName: string;
@@ -2378,7 +2376,7 @@ begin
     if GlyphAlign = glGlyphLeft then
       GlyphOrigin.X := GlyphSpacing
     else {glGlyphRight}
-      GlyphOrigin.X := ClientWidth - FRightMargin + GlyphSpacing;
+      GlyphOrigin.X := ClientWidth - MarginRight + GlyphSpacing;
     case Layout of
       tlTop:
         GlyphOrigin.Y := 0;
@@ -2438,15 +2436,15 @@ begin
           begin
             if AutoSize then
               Alignment := taRightJustify;
-            FRightMargin := 0;
-            FLeftMargin := (FGlyph.Width div GlyphColumns) + GlyphSpacing * 2;
+            MarginRight := 0;
+            MarginLeft := (FGlyph.Width div GlyphColumns) + GlyphSpacing * 2;
           end
           else {glGlyphRight}
           begin
             if AutoSize then
               Alignment := taLeftJustify;
-            FLeftMargin := 0;
-            FRightMargin := (FGlyph.Width div GlyphColumns) + GlyphSpacing * 2;
+            MarginLeft := 0;
+            MarginRight := (FGlyph.Width div GlyphColumns) + GlyphSpacing * 2;
           end;
           if FCell = nil then
             FCell := TBitmap.Create;
@@ -2457,15 +2455,15 @@ begin
         begin
           FCell.Free;
           FCell := nil;
-          FLeftMargin := 0;
-          FRightMargin := 0;
+          MarginLeft := 0;
+          MarginRight := 0;
         end;
       lsRecordNo:
         begin
           FCell.Free;
           FCell := nil;
-          FLeftMargin := 0;
-          FRightMargin := 0;
+          MarginLeft := 0;
+          MarginRight := 0;
           FRecordNo := -1;
           if FDataLink.Active then
           begin
@@ -2484,8 +2482,8 @@ begin
         begin
           FCell.Free;
           FCell := nil;
-          FLeftMargin := 0;
-          FRightMargin := 0;
+          MarginLeft := 0;
+          MarginRight := 0;
         end;
     end;
   end
@@ -2592,7 +2590,8 @@ end;
 
 procedure TJvDBStatusLabel.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
 begin
-  inherited SetBounds(ALeft, ATop, AWidth + FLeftMargin + FRightMargin, AHeight);
+  //inherited SetBounds(ALeft, ATop, AWidth + FLeftMargin + FRightMargin, AHeight);
+  inherited SetBounds(ALeft, ATop, AWidth, AHeight);
 end;
 
 end.

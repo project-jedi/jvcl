@@ -77,7 +77,6 @@ type
     FShowFocus: Boolean;
     FFocused: Boolean;
     FDragging: Boolean;
-    FMargin: Integer;
     FImageIndex: TImageIndex;
     FImages: TCustomImageList;
     FChangeLink: TChangeLink;
@@ -94,6 +93,10 @@ type
     FTextEllipsis: TJvTextEllipsis;
     FFrameColor: TColor;
     FRoundedFrame: Integer; // DS
+    FMarginLeft: Integer;
+    FMarginTop: Integer;
+    FMarginRight: Integer;
+    FMarginBottom: Integer;
     function GetTransparent: Boolean;
     procedure UpdateTracking;
     procedure SetAlignment(Value: TAlignment);
@@ -119,6 +122,7 @@ type
     procedure SetTextEllipsis(Value: TJvTextEllipsis);
     procedure SetFrameColor(const Value: TColor);
     procedure SetRoundedFrame(const Value: Integer);
+    function GetMargin: Integer;
   protected
     procedure DoDrawCaption(var Rect: TRect; Flags: Integer);virtual;
     procedure DoProviderDraw(var Rect: TRect; Flags: Integer);virtual;
@@ -138,6 +142,12 @@ type
     {$IFDEF VisualCLX}
     procedure SetAutoSize(Value: Boolean); virtual;
     {$ENDIF VisualCLX}
+
+    // MarginXxx do not update the control.
+    property MarginLeft: Integer read FMarginLeft write FMarginLeft;
+    property MarginTop: Integer read FMarginTop write FMarginTop;
+    property MarginRight: Integer read FMarginRight write FMarginRight;
+    property MarginBottom: Integer read FMarginBottom write FMarginBottom;
 
     function GetDefaultFontColor: TColor; virtual;
     function GetLabelCaption: string; virtual;
@@ -175,7 +185,7 @@ type
     // specifies the offset between the right edge of the image and the left edge of the text (in pixels)
     property Spacing: Integer read FSpacing write SetSpacing default 4;
     property Layout: TTextLayout read FLayout write SetLayout default tlTop;
-    property Margin: Integer read FMargin write SetMargin default 0;
+    property Margin: Integer read GetMargin write SetMargin default 0;
     property RoundedFrame: Integer read FRoundedFrame write SetRoundedFrame default 0; //DS
     property ShadowColor: TColor read FShadowColor write SetShadowColor default clBtnHighlight;
     property ShadowSize: Byte read FShadowSize write SetShadowSize default 0;
@@ -474,17 +484,17 @@ begin
   // (p3) draw image here since it can potentionally change background and font color
   if IsValidImage and (Flags and DT_CALCRECT = 0) then
   begin
-    X := Margin;
+    X := MarginLeft;
     case Layout of
       tlTop:
-        Y := Margin;
+        Y := MarginTop;
       tlBottom:
-        Y := Height - Images.Height - Margin;
+        Y := Height - Images.Height - MarginBottom;
     else
       Y := (Height - Images.Height) div 2;
     end;
-    if Y < Margin then
-      Y := Margin;
+    if Y < MarginTop then
+      Y := MarginTop;
     {$IFDEF VCL}
     Images.Draw(Canvas, X, Y, ImageIndex, Enabled);
     {$ENDIF VCL}
@@ -568,15 +578,15 @@ begin
     Rect.Bottom := Rect.Top + h;
     if HasImage then
       Inc(Rect.Right, Images.Width);
-    Inc(Rect.Right, Margin * 2);
-    Inc(Rect.Bottom, Margin * 2);
+    Inc(Rect.Right, MarginLeft + MarginRight);
+    Inc(Rect.Bottom, MarginTop + MarginBottom);
   end
   else
   begin
     if HasImage then
       Inc(TextX, Images.Width);
-    Inc(TextX, Margin);
-    Inc(TextY, Margin);
+    Inc(TextX, MarginLeft);
+    Inc(TextY, MarginTop);
     if ShadowSize > 0 then
     begin
       ShadowX := TextX;
@@ -746,10 +756,10 @@ begin
       end;
     end;
     Rect := ClientRect;
-    Inc(Rect.Left, Margin + InteriorMargin);
-    Dec(Rect.Right, Margin + InteriorMargin);
-    Inc(Rect.Top, Margin + InteriorMargin);
-    Dec(Rect.Bottom, Margin + InteriorMargin);
+    Inc(Rect.Left, MarginLeft + InteriorMargin);
+    Dec(Rect.Right, MarginRight + InteriorMargin);
+    Inc(Rect.Top, MarginTop + InteriorMargin);
+    Dec(Rect.Bottom, MarginBottom + InteriorMargin);
     InflateRect(Rect, -1, 0);
     DrawStyle := DT_EXPANDTABS or WordWraps[FWordWrap] or
       Alignments[FAlignment];
@@ -760,9 +770,9 @@ begin
       DoDrawText(CalcRect, DrawStyle or DT_CALCRECT);
       if FLayout = tlBottom then OffsetRect(Rect, 0, Height - CalcRect.Bottom)
       else OffsetRect(Rect, 0, (Height - CalcRect.Bottom) div 2);
-      Rect.Left := Margin;
-      Rect.Right := Rect.Right - Rect.Left - Margin;
     end;
+    Rect.Left := MarginLeft;
+    Rect.Right := Rect.Right - MarginRight;
     DoDrawText(Rect, DrawStyle);
     if FShowFocus and Assigned(FFocusControl) and FFocused and
       not (csDesigning in ComponentState) then
@@ -788,7 +798,7 @@ procedure TJvCustomLabel.AdjustBounds;
 var
   DC: HDC;
   X: Integer;
-  Rect: TRect;
+  Rect, R: TRect;
   AAlignment: TAlignment;
 begin
   if not (csReading in ComponentState) and AutoSize and FNeedsResize then
@@ -803,10 +813,17 @@ begin
       {$ENDIF VisualCLX}
       if Angle = 0 then
       begin
-        InflateRect(Rect, -Margin, -Margin);
+        R := Rect;
+        Inc(Rect.Left, MarginLeft);
+        Inc(Rect.Top, MarginTop);
+        Dec(Rect.Right, MarginRight);
+        Dec(Rect.Bottom, MarginBottom);
+        //InflateRect(Rect, -Margin, -Margin);
+
         DoDrawText(Rect, DT_EXPANDTABS or DT_CALCRECT or WordWraps[FWordWrap]);
-        InflateRect(Rect, Margin, Margin);
-        Inc(Rect.Bottom, Margin);
+
+        Rect := R; // restore
+        Inc(Rect.Bottom, MarginTop);
       end
       else
         DrawAngleText(Rect, DT_CALCRECT or DT_EXPANDTABS or DT_WORDBREAK or Alignments[Alignment], IsValidImage, 0, 0, spLeftTop);
@@ -862,11 +879,21 @@ begin
   end;
 end;
 
+function TJvCustomLabel.GetMargin: Integer;
+begin
+  Result := FMarginLeft;
+end;
+
 procedure TJvCustomLabel.SetMargin(Value: Integer);
 begin
-  if FMargin <> Value then
+  Value := Max(Value, 0);
+  if Margin <> Value then
   begin
-    FMargin := Max(Value, 0);
+    MarginLeft := Value;
+    MarginTop := Value;
+    MarginRight := Value;
+    MarginBottom := Value;
+
     FNeedsResize := True;
     AdjustBounds;
     Invalidate;
