@@ -870,12 +870,12 @@ begin
   if SelectDirectory(Dir, Opt, HelpContext) then
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-   {$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   if SelectDirectory('', '', Dir) then
-   {$ENDIF MSWINDOWS}
-   {$IFDEF LINUX}
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
   if SelectDirectory('', '/', Dir, False) then
-   {$ENDIF LINUX}
+  {$ENDIF LINUX}
   {$ENDIF VisualCLX}
     ControlSetValue(Dir);
 end;

@@ -707,8 +707,14 @@ end;
 
 { just like DrawText, but draws disabled instead }
 
-function DrawDisabledText(DC: HDC; lpString: {$IFDEF VCL} PChar {$ELSE} PWideChar {$ENDIF};
+{$IFDEF VCL}
+function DrawDisabledText(DC: HDC; lpString: PChar;
   nCount: Integer; var lpRect: TRect; uFormat: Integer): Integer;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+function DrawDisabledText(DC: HDC; lpString: PWideChar;
+  nCount: Integer; var lpRect: TRect; uFormat: Integer): Integer;
+{$ENDIF VisualCLX}
 var
   OldCol: Integer;
 begin

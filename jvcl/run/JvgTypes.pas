@@ -38,9 +38,9 @@ uses
   Graphics;
   {$ENDIF VisualCLX}
 
+{$IFDEF MSWINDOWS}
+{$IFDEF VCL}
 const
-  {$IFDEF MSWINDOWS}
-  {$IFDEF VCL}
   { OEM Resource Ordinal Numbers }
   OBM_CLOSE       = 32754;
   OBM_UPARROW     = 32753;
@@ -76,8 +76,8 @@ const
   OBM_OLD_REDUCE  = 32757;
   OBM_OLD_ZOOM    = 32756;
   OBM_OLD_RESTORE = 32755;
-  {$ENDIF VCL}
-  {$ENDIF MSWINDOWS}
+{$ENDIF VCL}
+{$ENDIF MSWINDOWS}
 
 type
   TSpPercent = 1..99;
