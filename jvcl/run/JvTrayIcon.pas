@@ -30,7 +30,9 @@ Known Issues:
 
 {
 History:
-  2/29/2004 12:02PM
+  2004-03-23
+     Added code to hide balloon correctly under W2k, as suggested by VladS
+  2004-02-29
      VladS separate click and dblclick
   2003-09-28 by Winston Feng
     Add WM_SESSIONEND message handler, TaskbarRestart message handler to:
@@ -109,6 +111,13 @@ type
     FPopupMenu: TPopupMenu;
     FOnClick: TMouseEvent;
     FOnDblClick: TMouseEvent;
+
+    // Under Windows 2000, in order to hide a balloon hint, BalloonHint must be
+    // called with empty strings as many times it was called with real messages.
+    // So we keep a counter of the number of times ballon hint was called to
+    // track this and be sure to call a the right number of times when trying
+    // to hide the balloon
+    FBalloonCount: Integer;
 
     { Vlad S}
     {
@@ -193,6 +202,7 @@ type
     procedure BalloonHint(Title, Value: string; BalloonType:
       TBalloonType = btNone; ADelay: Cardinal = 5000; CancelPrevious: Boolean = False);
     function AcceptBalloons: Boolean;
+    procedure HideBalloon;
   published
     property Active: Boolean read FActive write SetActive default False;
     property Animated: Boolean read FAnimated write SetAnimated default False;
@@ -318,12 +328,7 @@ begin
 
     // if we must cancel an existing balloon
     if CancelPrevious then
-      // then we call BalloonHint with title and info set to
-      // empty strings which surprisingly will cancel any existing
-      // balloon for the icon. This is clearly not documented by
-      // microsoft and may not work in later releases of Windows
-      // it has been tested on XP Home French
-      BalloonHint('', '');
+      HideBalloon;
 
     with FIconData do
       StrPLCopy(szInfoTitle, Title, SizeOf(szInfoTitle) - 1);
@@ -335,9 +340,18 @@ begin
 
     NotifyIcon(NIF_INFO, NIM_MODIFY);
 
+    if (Title = '') and (Value = '') then
+    begin
+      Dec(FBalloonCount);
+      if FBalloonCount < 0 then
+        FBalloonCount := 0;
+    end
+    else
+      Inc(FBalloonCount);
+
     // if the delay is less than the system's minimum and the balloon
-    // was really shown (title and value are not empty)
-    if (ADelay < GetSystemMinimumBalloonDelay) and (Title <> '') and (Value <> '') then
+    // was really shown (title and value are not both empty)
+    if (ADelay < GetSystemMinimumBalloonDelay) and ((Title <> '') or (Value <> '')) then
     begin
       // then we enable the ballon closer timer which will cancel
       // the balloon when the delay is elapsed
@@ -347,6 +361,21 @@ begin
     if Assigned(FOnBalloonShow) then
       FOnBalloonShow(Self);
   end;
+end;
+
+procedure TJvTrayIcon.HideBalloon;
+var
+  I: Integer;
+begin
+  // We call BalloonHint with title and info set to
+  // empty strings which surprisingly will cancel any existing
+  // balloon for the icon. This is clearly not documented by
+  // microsoft and may not work in later releases of Windows
+  // Under Windows XP, you only need to do this once. But under
+  // Windows 2000, it seems one must do this one time more than
+  // there were calls to BalloonHint with real messages
+  for I := 0 to FBalloonCount do
+    BalloonHint('', '');
 end;
 
 constructor TJvTrayIcon.Create(AOwner: TComponent);
@@ -363,6 +392,7 @@ begin
   FAnimated := False;
   FDelay := 100;
   FIconIndex := 0;
+  FBalloonCount := 0;
   FActive := False;
   FTask := True;
 
@@ -448,14 +478,9 @@ end;
 
 procedure TJvTrayIcon.DoCloseBalloon;
 begin
+  // we stop the timer and hide the balloon
   StopTimer(CloseBalloonTimer);
-
-  // We call BalloonHint with title and info set to
-  // empty strings which surprisingly will cancel any existing
-  // balloon for the icon. This is clearly not documented by
-  // microsoft and may not work in later releases of Windows
-  // it has been tested on XP Home French
-  BalloonHint('', '');
+  HideBalloon;
 end;
 
 procedure TJvTrayIcon.DoDoubleClick(Button: TMouseButton;
@@ -1039,7 +1064,7 @@ begin
                 begin
                   I := SecondsBetween(Now, FTime);
                   if I > FTimeDelay then
-                    BalloonHint('', '');
+                    HideBalloon;
                   Result := Ord(True);
                 end;
               NIN_BALLOONUSERCLICK: //sb
@@ -1052,7 +1077,7 @@ begin
                   end;
                   Result := Ord(True);
                   //Result := DefWindowProc(FHandle, Msg, wParam, lParam);
-                  BalloonHint('', '');
+                  HideBalloon;
                 end;
             end;
           end;
