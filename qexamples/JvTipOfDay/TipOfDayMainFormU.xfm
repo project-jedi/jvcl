@@ -100,7 +100,7 @@ object TipOfDayMainForm: TTipOfDayMainForm
     ButtonClose.HotTrackFont.Style = []
     ButtonClose.HotTrackFont.Weight = 40
     ButtonClose.HotTrackFontOptions = []
-    ButtonClose.ShowHint = False
+    ButtonClose.ShowHint = True
     CheckBoxText = '&Show Tips on StartUp'
     DefaultFonts = False
     HeaderFont.Color = clText
@@ -109,7 +109,7 @@ object TipOfDayMainForm: TTipOfDayMainForm
     HeaderFont.Pitch = fpVariable
     HeaderFont.Style = [fsBold]
     HeaderText = 'Did you know...'
-    Options = []
+    Options = [toShowWhenFormShown]
     TipFont.Color = clText
     TipFont.Height = 11
     TipFont.Name = 'Arial'
