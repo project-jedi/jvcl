@@ -13,7 +13,7 @@ The Original Code is: JvThemes.PAS, released on 2003-09-25
 The Initial Developers of the Original Code are: Andreas Hausladen <Andreas.Hausladen@gmx.de>
 All Rights Reserved.
 
-Last Modified: 2002-09-25
+Last Modified: 2002-10-09
 
 Contributers:
 
@@ -1139,6 +1139,10 @@ type
 var
   ThemeHooks: TThemeHookList;
   ThemeHookComponent: TThemeHookComponent;
+  WinControlHookInstalled: Boolean;
+
+procedure InstallWinControlHook; forward;
+procedure UninstallWinControlHook; forward;
 
 { TThemeHookList }
 
@@ -1216,6 +1220,8 @@ begin
     FOrgWndProc := FControl.WindowProc;
     FControl.FreeNotification(ThemeHookComponent);
     FControl.WindowProc := WndProc;
+    if not WinControlHookInstalled then
+      InstallWinControlHook;
   end;
 end;
 
@@ -1471,6 +1477,9 @@ type
     Offset: Integer;
   end;
 
+var
+  SavedWinControlCode: TJumpCode;
+
 procedure InstallWinControlHook;
 var
   Code: TJumpCode;
@@ -1490,11 +1499,40 @@ begin
     Code.Offset := Integer(@WMEraseBkgndHook) -
                    (Integer(@P) + 1) -
                    SizeOf(Code);
-   { The strange thing is that WriteProcessMemory does not want @P or something
-     overrides the $e9 with a "PUSH xxx"}
-    if WriteProcessMemory(GetCurrentProcess, Pointer(Cardinal(@P) + 1), @Code, SizeOf(Code), n) then
-      ThemeHooks.FEraseBkgndHooked := True;
-    FlushInstructionCache(GetCurrentProcess, @P, SizeOf(Code));
+
+    if ReadProcessMemory(GetCurrentProcess, Pointer(Cardinal(@P) + 1),
+      @SavedWinControlCode, SizeOf(SavedWinControlCode), n) then
+    begin
+     { The strange thing is that WriteProcessMemory does not want @P or something
+       overrides the $e9 with a "PUSH xxx"}
+      if WriteProcessMemory(GetCurrentProcess, Pointer(Cardinal(@P) + 1), @Code,
+        SizeOf(Code), n) then
+      begin
+        WinControlHookInstalled := True;
+        ThemeHooks.FEraseBkgndHooked := True;
+        FlushInstructionCache(GetCurrentProcess, @P, SizeOf(Code));
+      end;
+    end;
+  end;
+end;
+
+procedure UninstallWinControlHook;
+var
+  P: procedure;
+  n: Cardinal;
+begin
+  if not WinControlHookInstalled then
+    Exit;
+
+  P := GetDynamicMethod(TWinControl, WM_ERASEBKGND);
+  if Assigned(P) then
+  begin
+    if WriteProcessMemory(GetCurrentProcess, Pointer(Cardinal(@P) + 1),
+      @SavedWinControlCode, SizeOf(SavedWinControlCode), n) then
+    begin
+      WinControlHookInstalled := False;
+      FlushInstructionCache(GetCurrentProcess, @P, SizeOf(SavedWinControlCode));
+    end;
   end;
 end;
 
@@ -1502,9 +1540,11 @@ end;
 initialization
   ThemeHooks := TThemeHookList.Create;
   ThemeHookComponent := TThemeHookComponent.Create(nil);
-  InstallWinControlHook;
+  WinControlHookInstalled := False;
 
 finalization
+  if WinControlHookInstalled then
+    UninstallWinControlHook;
   FreeAndNil(ThemeHooks);
   ThemeHookComponent.Free;
 
