@@ -135,8 +135,14 @@ type
     procedure RestoreFormPlacement;
     function ReadString(const Ident: string; const Default: string = ''): string;
     procedure WriteString(const Ident: string; const Value: string);
+    function ReadBoolean(const Ident: string; Default: Boolean): Boolean;
+    procedure WriteBoolean(const Ident: string; Value: Boolean);
+    function ReadFloat(const Ident: string; Default: Double = 0): Double;
+    procedure WriteFloat(const Ident: string; Value: Double);
     function ReadInteger(const Ident: string; Default: Longint = 0): Longint;
     procedure WriteInteger(const Ident: string; Value: Longint);
+    function ReadDateTime(const Ident: string; Default: TDateTime = 0): tDateTime;
+    procedure WriteDateTime(const Ident: string; Value: tDateTime);
     procedure EraseSections;
   published
     property Active: Boolean read FActive write FActive default True;
@@ -263,7 +269,6 @@ uses
 
 const
   siActiveCtrl = 'ActiveControl'; // do not localize
-  siVisible = 'Visible'; // do not localize
   siVersion = 'FormVersion'; // do not localize
 
 //=== { TJvFormPlacement } ===================================================
@@ -679,7 +684,6 @@ begin
     if Options <> [fpActiveControl] then
     begin
       InternalSaveFormPlacement(Form, AppStorage, AppStoragePath, Options);
-      AppStorage.WriteInteger(AppStoragePath + siVisible, Ord(FDestroying));
       if (fpActiveControl in Options) and (Form.ActiveControl <> nil) then
         AppStorage.WriteString(AppStoragePath + siActiveCtrl, Form.ActiveControl.Name);
     end;
@@ -713,6 +717,38 @@ begin
       WriteString(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, False)]), Value);
 end;
 
+function TJvFormPlacement.ReadBoolean(const Ident: string; Default: Boolean) : Boolean;
+begin
+  if Assigned(AppStorage) then
+    with AppStorage do
+      Result := ReadBoolean(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, True)]), Default)
+  else
+    Result := Default;
+end;
+
+procedure TJvFormPlacement.WriteBoolean(const Ident : string; Value: Boolean);
+begin
+  if Assigned(AppStorage) then
+    with AppStorage do
+      WriteBoolean(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, False)]), Value);
+end;
+
+function TJvFormPlacement.ReadFloat(const Ident: string; Default: Double = 0): Double;
+begin
+  if Assigned(AppStorage) then
+    with AppStorage do
+      Result := ReadFloat(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, False)]), Default)
+  else
+    Result := Default;
+end;
+
+procedure TJvFormPlacement.WriteFloat(const Ident: string; Value: Double);
+begin
+  if Assigned(AppStorage) then
+    with AppStorage do
+      WriteFloat(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, False)]), Value);
+end;
+
 function TJvFormPlacement.ReadInteger(const Ident: string; Default: Longint = 0): Longint;
 begin
   if Assigned(AppStorage) then
@@ -727,6 +763,22 @@ begin
   if Assigned(AppStorage) then
     with AppStorage do
       WriteInteger(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, False)]), Value);
+end;
+
+function TJvFormPlacement.ReadDateTime(const Ident: string; Default: tDateTime = 0): tDateTime;
+begin
+  if Assigned(AppStorage) then
+    with AppStorage do
+      Result := ReadDateTime(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, False)]), Default)
+  else
+    Result := Default;
+end;
+
+procedure TJvFormPlacement.WriteDateTime(const Ident: string; Value: tDateTime);
+begin
+  if Assigned(AppStorage) then
+    with AppStorage do
+      WriteDateTime(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, False)]), Value);
 end;
 
 procedure TJvFormPlacement.EraseSections;
@@ -1093,10 +1145,23 @@ begin
   SaveValue := Value;
   if Assigned(FOnSave) then
     FOnSave(Self, SaveValue);
-  SaveStrValue := VarToStr(SaveValue);
   if KeyString <> '' then
+  begin
+    SaveStrValue := VarToStr(SaveValue);
     SaveStrValue := XorEncode(KeyString, SaveStrValue);
-  StoredValues.Storage.WriteString(Name, SaveStrValue);
+    StoredValues.Storage.WriteString(Name, SaveStrValue);
+  end
+  else
+    if VarIsInt (Value) then
+      StoredValues.Storage.WriteInteger(Name, Value)
+    else if VarType (Value) in [varSingle, varDouble, varCurrency] then
+      StoredValues.Storage.WriteFloat(Name, Value)
+    else if VarType (Value) in [varDate] then
+      StoredValues.Storage.WriteDateTime(Name, Value)
+    else if VarType (Value) in [varBoolean] then
+      StoredValues.Storage.WriteBoolean(Name, Value)
+    else
+      StoredValues.Storage.WriteString(Name, Value);
 end;
 
 procedure TJvStoredValue.Restore;
@@ -1104,13 +1169,25 @@ var
   RestoreValue: Variant;
   RestoreStrValue, DefaultStrValue: string;
 begin
-  DefaultStrValue := VarToStr(Value);
   if KeyString <> '' then
+  begin
+    DefaultStrValue := VarToStr(Value);
     DefaultStrValue := XorEncode(KeyString, DefaultStrValue);
-  RestoreStrValue := StoredValues.Storage.ReadString(Name, DefaultStrValue);
-  if KeyString <> '' then
+    RestoreStrValue := StoredValues.Storage.ReadString(Name, DefaultStrValue);
     RestoreStrValue := XorDecode(KeyString, RestoreStrValue);
-  RestoreValue := RestoreStrValue;
+    RestoreValue := RestoreStrValue;
+  end
+  else
+    if VarIsInt (Value) then
+      RestoreValue := StoredValues.Storage.ReadInteger(Name, Value)
+    else if VarType (Value) in [varSingle, varDouble, varCurrency] then
+      RestoreValue := StoredValues.Storage.ReadFloat(Name, Value)
+    else if VarType (Value) in [varDate] then
+      RestoreValue := StoredValues.Storage.ReadDateTime(Name, Value)
+    else if VarType (Value) in [varBoolean] then
+      RestoreValue := StoredValues.Storage.ReadBoolean(Name, Value)
+    else
+      RestoreValue := StoredValues.Storage.ReadString(Name, Value);
   if Assigned(FOnRestore) then
     FOnRestore(Self, RestoreValue);
   Value := RestoreValue;
