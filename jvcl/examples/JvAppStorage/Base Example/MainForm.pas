@@ -10,7 +10,7 @@ uses
   ShellAPI, Menus;
 
 type
-  TMainFormDlg = class(TForm)
+  TMainFormDlg = class(TForm, IAppStorageHandler)
     StatusBar1: TStatusBar;
     JvAppIniFileStorage1: TJvAppIniFileStorage;
     JvFormStorage1: TJvFormStorage;
@@ -35,9 +35,13 @@ type
     OpenDialog1: TOpenDialog;
     Button1: TButton;
     JvFormStorageSelectList1: TJvFormStorageSelectList;
+    JvAppRegistryStorage1: TJvAppRegistryStorage;
     procedure YetAnotherOption1Click(Sender: TObject);
   private
     { Private declarations }
+    procedure ReadFromAppStorage(AppStorage: TJvCustomAppStorage; BasePath: string);
+    procedure WriteToAppStorage(AppStorage: TJvCustomAppStorage; BasePath: string);
+
   public
     { Public declarations }
   end;
@@ -54,5 +58,19 @@ begin
   if Sender is TMenuItem
      then TMenuItem(Sender).Checked := not TMenuItem(Sender).Checked;
 end;
+
+
+procedure TMainFormDlg.ReadFromAppStorage(AppStorage: TJvCustomAppStorage; BasePath: string);
+begin
+  CheckBox1.Checked := AppStorage.ReadBoolean(AppStorage.ConcatPaths([BasePath, 'MyCheckBox1']), CheckBox1.Checked);
+  CheckBox2.Checked := AppStorage.ReadBoolean(AppStorage.ConcatPaths([BasePath, 'MyCheckBox2']), CheckBox2.Checked);
+end;
+
+procedure TMainFormDlg.WriteToAppStorage(AppStorage: TJvCustomAppStorage; BasePath: string);
+begin
+  AppStorage.WriteBoolean(AppStorage.ConcatPaths([BasePath, 'MyCheckBox1']), CheckBox1.Checked);
+  AppStorage.WriteBoolean(AppStorage.ConcatPaths([BasePath, 'MyCheckBox2']), CheckBox2.Checked);
+end;
+
 
 end.

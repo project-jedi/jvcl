@@ -90,6 +90,7 @@ uses
   JvComponent, JvTypes;
 
 type
+
   TJvCustomAppStorage = class;
   TJvAppStorage = class;
   TJvCustomAppStorageOptions = class;
@@ -97,6 +98,16 @@ type
   TJvAppSubStorage = class;
 
   EJVCLAppStorageError = class(EJVCLException);
+
+  IAppStorageHandler = interface
+  ['{E3754817-49A3-4612-A228-5D44A088681D}']
+    procedure ReadFromAppStorage(AppStorage: TJvCustomAppStorage; BasePath: string);
+    procedure WriteToAppStorage(AppStorage: TJvCustomAppStorage; BasePath: string);
+  end;
+
+  IAppStoragePublishedProps = interface
+  ['{0211AEF7-CCE9-4F13-B3CE-287251C89182}']
+  end;
 
   TJvAppStorageListItemEvent = procedure(Sender: TJvCustomAppStorage; const Path: string;
     const List: TObject; const Index: Integer) of object;
@@ -701,6 +712,11 @@ const
   aptFolder = 1;
   aptValue  = 2;
 
+{$IFNDEF COMPILER6_UP}
+function Supports(Instance: TObject; const Intf: TGUID): Boolean; overload;
+function Supports(AClass: TClass; const Intf: TGUID): Boolean; overload;
+{$ENDIF COMPILER6_UP}
+
 implementation
 
 uses
@@ -713,6 +729,20 @@ const
   cItem = 'Item';
   cClassName = 'Classname';
   cInvalidIdentifier = ' #!@not known@!# ';
+
+{$IFNDEF COMPILER6_UP}
+
+function Supports(Instance: TObject; const Intf: TGUID): Boolean;
+begin
+  Result := Instance.GetInterfaceEntry(Intf) <> nil;
+end;
+
+function Supports(AClass: TClass; const Intf: TGUID): Boolean;
+begin
+  Result := AClass.GetInterfaceEntry(Intf) <> nil;
+end;
+
+{$ENDIF !COMPILER6_UP}
 
 procedure UpdateGlobalPath(GlobalPaths, NewPaths: TStrings);
 var
@@ -2056,17 +2086,22 @@ var
   PropName: string;
   KeyName: string;
   PropPath: string;
+  AppStorageHandler: IAppStorageHandler;
 begin
   if not Assigned(PersObj) then
     Exit;
-  for Index := 0 to GetPropCount(PersObj) - 1 do
-  begin
-    PropName := GetPropName(PersObj, Index);
-    KeyName := TranslatePropertyName(PersObj, PropName, False);
-    PropPath := ConcatPaths([Path, KeyName]);
-    if (IgnoreProperties = nil) or (IgnoreProperties.IndexOf(PropName) = -1) then
-      ReadProperty (PropPath, PersObj, PropName, Recursive, ClearFirst);
-  end;
+  if Supports(PersObj, IAppStorageHandler, AppStorageHandler)then
+    AppStorageHandler.ReadFromAppStorage(Self, Path);
+  if not Supports (PersObj, IAppStorageHandler) or
+     Supports (PersObj, IAppStoragePublishedProps) then
+    for Index := 0 to GetPropCount(PersObj) - 1 do
+    begin
+      PropName := GetPropName(PersObj, Index);
+      KeyName := TranslatePropertyName(PersObj, PropName, False);
+      PropPath := ConcatPaths([Path, KeyName]);
+      if (IgnoreProperties = nil) or (IgnoreProperties.IndexOf(PropName) = -1) then
+        ReadProperty (PropPath, PersObj, PropName, Recursive, ClearFirst);
+    end;
 end;
 
 procedure TJvCustomAppStorage.WritePersistent(const Path: string; const PersObj: TPersistent;
@@ -2076,17 +2111,22 @@ var
   PropName: string;
   KeyName: string;
   PropPath: string;
+  AppStorageHandler: IAppStorageHandler;
 begin
   if not Assigned(PersObj) then
     Exit;
-  for Index := 0 to GetPropCount(PersObj) - 1 do
-  begin
-    PropName := GetPropName(PersObj, Index);
-    KeyName := TranslatePropertyName(PersObj, PropName, False);
-    PropPath := ConcatPaths([Path, KeyName]);
-    if (IgnoreProperties = nil) or (IgnoreProperties.IndexOf(PropName) = -1) then
-      WriteProperty (PropPath, PersObj, PropName, Recursive);
-  end;
+  if Supports(PersObj, IAppStorageHandler, AppStorageHandler)then
+    AppStorageHandler.WriteToAppStorage(Self, Path);
+  if not Supports (PersObj, IAppStorageHandler) or
+     Supports (PersObj, IAppStoragePublishedProps) then
+    for Index := 0 to GetPropCount(PersObj) - 1 do
+    begin
+      PropName := GetPropName(PersObj, Index);
+      KeyName := TranslatePropertyName(PersObj, PropName, False);
+      PropPath := ConcatPaths([Path, KeyName]);
+      if (IgnoreProperties = nil) or (IgnoreProperties.IndexOf(PropName) = -1) then
+        WriteProperty (PropPath, PersObj, PropName, Recursive);
+    end;
 end;
 
 function TJvCustomAppStorage.GetCharName(Ch: Char): string;
