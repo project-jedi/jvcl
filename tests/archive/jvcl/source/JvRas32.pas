@@ -28,8 +28,6 @@ Known Issues:
 
 unit JvRas32;
 
-
-
 interface
 
 uses
@@ -54,6 +52,7 @@ type
     RASEvent: Word;
     FIndex: Integer;
     FConnected: Boolean;
+    FPhoneBook: TStrings;
     FOnAuthProject: TNotifyEvent;
     FOnAuthChangePassword: TNotifyEvent;
     FOnAuthLinkSpeed: TNotifyEvent;
@@ -65,7 +64,7 @@ type
     FOnConnectDevice: TNotifyEvent;
     FOnAuthRetry: TNotifyEvent;
     FOnAuthenticate: TNotifyEvent;
-    FOnWaiTFormodemReset: TNotifyEvent;
+    FOnWaitForModemReset: TNotifyEvent;
     FOnOpenPort: TNotifyEvent;
     FOnAuthCallback: TNotifyEvent;
     FOnRetryAuthentication: TNotifyEvent;
@@ -89,26 +88,29 @@ type
     FRasCreatePhonebookEntry: TRasCreatePhonebookEntry;
     FRasEditPhonebookEntry: TRasEditPhonebookEntry;
     FKeepConnected: boolean;
-    function GetPhoneBook: TStringList;
+    //    function GetPhoneBook: TStringList;
     procedure WndProc(var Msg: TMessage);
     procedure SetIndex(const Value: Integer);
     function GetConnected: Boolean;
+    function GetPhoneBook: TStrings;
   protected
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure RefreshPhoneBook;
     property DeviceType: string read FDevice;
     property DeviceName: string read FDeviceName;
     property PhoneNumber: string read FPhone write FPhone;
     property Domain: string read FDomain write FDomain;
     property CallBackNumber: string read FCallBack write FCallBack;
   published
-    property KeepConnected:boolean read FKeepConnected write FKeepConnected;
-    property PhoneBook: TStringList read GetPhoneBook;
+    property PhoneBook: TStrings read GetPhoneBook;
+    property KeepConnected: boolean read FKeepConnected write FKeepConnected;
+    //    property PhoneBook: TStringList read GetPhoneBook;
     property EntryIndex: Integer read FIndex write SetIndex default -1;
     property PhoneBookPath: TFileName read FPath write FPath;
     property Entry: string read FEntry write FEntry;
-    property Username: string read FUsername write FUSername;
+    property Username: string read FUsername write FUsername;
     property Password: string read FPassword write FPassword;
     property Connected: Boolean read GetConnected write FConnected;
     property OnOpenPort: TNotifyEvent read FOnOpenPort write FOnOpenport;
@@ -127,7 +129,7 @@ type
     property OnReAuthenticate: TNotifyEvent read FOnReAuthenticate write FOnReAuthenticate;
     property OnAuthenticated: TNotifyEvent read FOnAuthenticated write FOnAuthenticated;
     property OnPrepareForCallback: TNotifyEvent read FOnPrepareForCallback write FOnPrepareForCallback;
-    property OnWaiTFormodemReset: TNotifyEvent read FOnWaiTFormodemReset write FOnWaiTFormodemReset;
+    property OnWaitForModemReset: TNotifyEvent read FOnWaitForModemReset write FOnWaitForModemReset;
     property OnInteractive: TNotifyEvent read FOnInteractive write FOnInteractive;
     property OnRetryAuthentication: TNotifyEvent read FOnRetryAuthentication write FOnRetryAuthentication;
     property OnPasswordExpired: TNotifyEvent read FOnPasswordExpired write FOnPasswordExpired;
@@ -205,16 +207,17 @@ end;
 
 destructor TJvRas32.Destroy;
 begin
+  FPhoneBook.Free;
   if FDll <> 0 then
   begin
     try
-     if not KeepConnected then
+      if not KeepConnected then
         HangUp;
     except
     end;
     FreeLibrary(FDll);
   end;
-  {$IFDEF COMPILER6_UP}Classes.{$ENDIF}DeallocateHWnd(FHandle);
+{$IFDEF COMPILER6_UP}Classes.{$ENDIF}DeallocateHWnd(FHandle);
   inherited
 end;
 
@@ -235,7 +238,7 @@ begin
     with RASDialParams do
     begin
       dwSize := SizeOf(TRasDialParams);
-      StrLCopy(szEntryName, PChar(GetPhoneBook[Index]), RAS_MAXENTRYNAME);
+      StrLCopy(szEntryName, PChar(PhoneBook[Index]), RAS_MAXENTRYNAME);
       x := Self.EntryIndex;
       Self.EntryIndex := index;
       StrLCopy(szUserName, PChar(FUsername), RAS_MAXENTRYNAME);
@@ -244,6 +247,7 @@ begin
       szDomain := '*';
       szCallbackNumber := '*';
       szPhoneNumber := '';
+
     end;
     if @FRasDial <> nil then
     begin
@@ -261,16 +265,14 @@ end;
 {**************************************************}
 
 function TJvRas32.EditConnection(Index: Integer): Boolean;
-var
-  st: TStringList;
 begin
-  st := GetPhonebook;
-
   Result := False;
   if @FRasEditPhonebookEntry <> nil then
-    if Index < st.Count then
-      Result := FRasEditPhonebookEntry(FPHandle, nil, PChar(st[Index])) = 0;
-  st.Free;
+  begin
+    RefreshPhoneBook;
+    if Index < PhoneBook.Count then
+      Result := FRasEditPhonebookEntry(FPHandle, nil, PChar(PhoneBook[Index])) = 0;
+  end;
 end;
 
 {**************************************************}
@@ -291,36 +293,67 @@ end;
 
 {**************************************************}
 
-function TJvRas32.GetPhoneBook: TStringList;
+procedure TJvRas32.RefreshPhoneBook;
 var
   RASEntryName: array[1..50] of TRasEntryName;
   I, BufSize, Entries: DWORD;
 begin
-  Result := TStringList.Create;
-  RasEntryName[1].dwSize := SizeOf(RasEntryName[1]);
-  BufSize := SizeOf(RasEntryName);
+  { Build internal copy. }
+  if FPhoneBook = nil then
+    FPhoneBook := TStringList.Create;
+  FPhoneBook.BeginUpdate;
+  try
+    FPhoneBook.Clear;
+    RasEntryName[1].dwSize := SizeOf(RasEntryName[1]);
+    BufSize := SizeOf(RasEntryName);
 
-  if @FRasEnumEntries <> nil then
-  begin
-    if (FPath <> '') then
-      i := FRasEnumEntries(nil, PChar(FPath), @RASEntryName, BufSize, Entries)
-    else
-      i := FRasEnumEntries(nil, nil, @RASEntryName, BufSize, Entries);
-    if (i = 0) or (i = ERROR_BUFFER_TOO_SMALL) then
-      for i := 1 to Entries do
-        if (i < 51) and (RasEntryName[i].szEntryName[0] <> #0) then
-          Result.Add(StrPas(RasEntryName[i].szEntryName));
+    if @FRasEnumEntries <> nil then
+    begin
+      if (FPath <> '') then
+        i := FRasEnumEntries(nil, PChar(FPath), @RASEntryName, BufSize, Entries)
+      else
+        i := FRasEnumEntries(nil, nil, @RASEntryName, BufSize, Entries);
+      if (i = 0) or (i = ERROR_BUFFER_TOO_SMALL) then
+        for i := 1 to Entries do
+          if (i < 51) and (RasEntryName[i].szEntryName[0] <> #0) then
+            FPhoneBook.Add(StrPas(RasEntryName[i].szEntryName));
+    end;
+  finally
+    PhoneBook.Endupdate;
   end;
 end;
 
 {**************************************************}
 
 function TJvRas32.HangUp: Boolean;
+var
+  rc: Longint;
+  i: integer;
+  RasConnStatus: TRasConnStatus;
 begin
   Result := False;
   if (FConnection <> 0) and (@FRasHangUp <> nil) then
   begin
-    Result := FRasHangUp(FConnection) = 0;
+    rc := FRasHangUp(FConnection);
+    if rc <> 0 then
+    begin
+      RasConnStatus.dwSize := sizeof(TRASConnStatus);
+      i := 0;
+      while true do
+      begin
+        rc := FRasGetConnectStatus(FConnection, @RasConnStatus);
+        if rc = ERROR_INVALID_HANDLE then
+        begin
+          rc := 0;
+          Break;
+        end;
+        sleep(10);
+        Inc(i);
+        if i > 9 then
+          Break; // don't want an infinite loop...
+      end;
+    end;
+    Result := rc = 0;
     FConnection := 0;
   end;
 end;
@@ -341,9 +374,9 @@ begin
   FCallBack := '';
   FPassword := '';
 
-  if FIndex >= GetPhoneBook.Count then
+  if FIndex >= PhoneBook.Count then
   begin
-    if GetPhoneBook.Count > 0 then
+    if PhoneBook.Count > 0 then
       FIndex := 0
     else
       FIndex := -1;
@@ -351,10 +384,10 @@ begin
 
   if FIndex <> -1 then
   begin
-    FEntry := GetPhonebook[FIndex];
+    FEntry := Phonebook[FIndex];
 
     FillChar(RasDial, SizeOf(TRasDialParams), #0);
-    StrLCopy(RasDial.szEntryName, PChar(GetPhoneBook[Findex]), RAS_MAXENTRYNAME);
+    StrLCopy(RasDial.szEntryName, PChar(PhoneBook[Findex]), RAS_MAXENTRYNAME);
     RasDial.dwSize := SizeOf(TRasDialParams);
 
     if @FRasGetEntryDialParams <> nil then
@@ -429,9 +462,9 @@ begin
       RASCS_PrepareForCallback:
         if Assigned(FOnPrepareForCallback) then
           FOnPrepareForCallback(Self);
-      RASCS_WaiTFormodemReset:
-        if Assigned(FOnWaiTFormodemReset) then
-          FOnWaiTFormodemReset(Self);
+      RASCS_WaitForModemReset:
+        if Assigned(FOnWaitForModemReset) then
+          FOnWaitForModemReset(Self);
       RASCS_Interactive:
         if Assigned(FOnInteractive) then
           FOnInteractive(Self);
@@ -456,4 +489,14 @@ begin
     DefWindowProc(FHandle, Msg.Msg, Msg.wParam, Msg.lParam);
 end;
 
+function TJvRas32.GetPhoneBook: TStrings;
+begin
+  if FPhoneBook = nil then
+    FPhoneBook := TStringList.Create;
+  if FPhoneBook.Count = 0 then
+    RefreshPhoneBook;
+  Result := FPhoneBook;
+end;
+
 end.
+
