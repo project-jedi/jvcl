@@ -164,9 +164,9 @@ type
     property GroupIndex;
     property MaxPixel;
     property Modified;
-    property SelStart;
+    // property SelStart; (p3) why published?
     //property SelText;
-    property SelLength;
+    // property SelLength; (p3) why published?
     property OnMouseEnter;
     property OnMouseLeave;
     property OnCtl3DChanged;
