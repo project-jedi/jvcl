@@ -62,6 +62,7 @@ uses
 type
   TShadowPosition = (spLeftTop, spLeftBottom, spRightBottom, spRightTop);
   TJvLabelRotateAngle = 0..360;
+  TJvTextEllipsis = (teNone, tePathEllipsis, teEndEllipsis);
 
   TJvCustomLabel = class(TJvGraphicControl)
   private
@@ -92,6 +93,7 @@ type
     FHotTrackFontOptions: TJvTrackFontOptions;
     FConsumerSvc: TJvDataConsumer;
     FNeedsResize:boolean;
+    FTextEllipsis: TJvTextEllipsis;
     function GetTransparent: Boolean;
     procedure UpdateTracking;
     procedure SetAlignment(Value: TAlignment);
@@ -106,14 +108,15 @@ type
     procedure SetTransparent(Value: Boolean);
     procedure SetWordWrap(Value: Boolean);
     procedure SetShowFocus(Value: Boolean);
-    procedure SetImageIndex(const Value: TImageIndex);
-    procedure SetImages(const Value: TCustomImageList);
+    procedure SetImageIndex(Value: TImageIndex);
+    procedure SetImages(Value: TCustomImageList);
     procedure DoImagesChange(Sender:TObject);
     procedure DrawAngleText(Flags: Word);
-    procedure SetAngle(const Value: TJvLabelRotateAngle);
-    procedure SetHotTrackFont(const Value: TFont);
-    procedure SetSpacing(const Value: Integer);
+    procedure SetAngle(Value: TJvLabelRotateAngle);
+    procedure SetHotTrackFont(Value: TFont);
+    procedure SetSpacing(Value: Integer);
     procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
+    procedure SetTextEllipsis(Value: TJvTextEllipsis);
   protected
     procedure DoFocusChanged(Control: TWinControl); override;
     procedure TextChanged; override;
@@ -163,6 +166,7 @@ type
     property FocusControl: TWinControl read FFocusControl write SetFocusControl;
     property Images:TCustomImageList read FImages write SetImages;
     property ImageIndex: TImageIndex read FImageIndex write SetImageIndex default -1;
+    property TextEllipsis: TJvTextEllipsis read FTextEllipsis write SetTextEllipsis default teNone;
     // specifies the offset between the right edge of the image and the left edge of the text (in pixels)
     property Spacing:Integer read FSpacing write SetSpacing default 4;
     property Layout: TTextLayout read FLayout write SetLayout default tlTop;
@@ -242,6 +246,7 @@ type
     property ImageIndex;
     property Provider;
     property Spacing;
+    property TextEllipsis;
     property URL;
     property OnParentColorChange;
   end;
@@ -328,7 +333,7 @@ begin
   FHotTrackFont.Free;
   FFontSave.Free;
   FreeAndNil(FConsumerSvc);
-  inherited;
+  inherited Destroy;
 end;
 
 function TJvCustomLabel.GetLabelCaption: string;
@@ -357,16 +362,22 @@ begin
 end;
 
 procedure TJvCustomLabel.DoDrawCaption(var Rect: TRect; Flags: Word);
+const
+  EllipsisFlags: array[TJvTextEllipsis] of Word = (
+    0, DT_PATH_ELLIPSIS, DT_END_ELLIPSIS
+  );
 var
   Text: string;
   PosShadow: TShadowPosition;
   SizeShadow: Byte;
   ColorShadow: TColor;
+
   function IsValidImage:boolean;
   begin
     Result := (Images <> nil) and (ImageIndex >= 0);
       // and (ImageIndex < Images.Count);
   end;
+
 begin
   Text := GetLabelCaption;
   if (Flags and DT_CALCRECT <> 0) and ((Text = '') or FShowAccelChar and
@@ -374,6 +385,7 @@ begin
     Text := Text + ' ';
   if not FShowAccelChar then
     Flags := Flags or DT_NOPREFIX;
+  Flags := Flags or EllipsisFlags[TextEllipsis];
   Flags := DrawTextBiDiModeFlags(Flags);
   Canvas.Font := Font;
   Canvas.Font.Color := GetDefaultFontColor;
@@ -970,7 +982,7 @@ begin
   end;
 end;
 
-procedure TJvCustomLabel.SetImageIndex(const Value: TImageIndex);
+procedure TJvCustomLabel.SetImageIndex(Value: TImageIndex);
 begin
   if FImageIndex <> Value then
   begin
@@ -984,7 +996,7 @@ begin
   end;
 end;
 
-procedure TJvCustomLabel.SetImages(const Value: TCustomImageList);
+procedure TJvCustomLabel.SetImages(Value: TCustomImageList);
 begin
   if FImages <> Value then
   begin
@@ -1050,7 +1062,7 @@ begin
     Result := Images.Width;
 end;
 
-procedure TJvCustomLabel.SetHotTrackFont(const Value: TFont);
+procedure TJvCustomLabel.SetHotTrackFont(Value: TFont);
 begin
   FHotTrackFont.Assign(Value);
 end;
@@ -1081,7 +1093,7 @@ begin
   end;
 end;
 
-procedure TJvCustomLabel.SetAngle(const Value: TJvLabelRotateAngle);
+procedure TJvCustomLabel.SetAngle(Value: TJvLabelRotateAngle);
 begin
   if FAngle <> Value then
   begin
@@ -1099,7 +1111,7 @@ begin
   Invalidate;
 end;
 
-procedure TJvCustomLabel.SetSpacing(const Value: Integer);
+procedure TJvCustomLabel.SetSpacing(Value: Integer);
 begin
   if FSpacing <> Value then
   begin
@@ -1109,7 +1121,8 @@ begin
       FNeedsResize := true;
       AdjustBounds;
     end
-    else Invalidate;
+    else
+      Invalidate;
   end;
 end;
 
@@ -1122,11 +1135,19 @@ begin
   end;
 end;
 
-
 procedure TJvCustomLabel.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
 begin
   FNeedsResize := (ALeft <> Left) or (ATop <> Top) or (AWidth <> Width) or (AHeight <> Height);
-  inherited;
+  inherited SetBounds(ALeft, ATop, AWidth, AHeight);
+end;
+
+procedure TJvCustomLabel.SetTextEllipsis(Value: TJvTextEllipsis);
+begin
+  if Value <> FTextEllipsis then
+  begin
+    FTextEllipsis := Value;
+    Invalidate;
+  end;
 end;
 
 end.
