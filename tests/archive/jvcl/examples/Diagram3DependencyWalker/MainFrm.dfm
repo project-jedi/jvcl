@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 301
-  Top = 157
+  Left = 405
+  Top = 189
   Width = 593
   Height = 463
   BorderWidth = 2
@@ -849,9 +849,6 @@ object frmMain: TfrmMain
       Font.Style = [fsBold]
       ParentFont = False
       TabOrder = 1
-      DesignSize = (
-        185
-        21)
       object SpeedButton1: TSpeedButton
         Left = 166
         Top = 2
@@ -1018,6 +1015,12 @@ object frmMain: TfrmMain
     end
     object Edit1: TMenuItem
       Caption = 'Edit'
+      object Find1: TMenuItem
+        Action = acFind
+      end
+      object N10: TMenuItem
+        Caption = '-'
+      end
       object CopyDiagramtoClipboard2: TMenuItem
         Action = acCopy
       end
@@ -1062,8 +1065,30 @@ object frmMain: TfrmMain
       object N2: TMenuItem
         Caption = '-'
       end
-      object Find1: TMenuItem
-        Action = acFind
+      object Options1: TMenuItem
+        Action = acOptions
+      end
+    end
+    object Shapes1: TMenuItem
+      Caption = 'Shapes'
+      object ParseUnit2: TMenuItem
+        Action = acParseUnit
+        Default = True
+      end
+      object N11: TMenuItem
+        Caption = '-'
+      end
+      object Addtoskiplist2: TMenuItem
+        Action = acAddToSkipList
+      end
+      object Delete4: TMenuItem
+        Action = acDelShape
+      end
+      object N9: TMenuItem
+        Caption = '-'
+      end
+      object Statistics2: TMenuItem
+        Action = acUnitStats
       end
     end
     object View1: TMenuItem
@@ -2109,8 +2134,15 @@ object frmMain: TfrmMain
     end
     object acParseUnit: TAction
       Category = 'Shapes'
-      Caption = 'Parse unit'
+      Caption = 'Parse Unit'
+      ImageIndex = 19
+      ShortCut = 13
       OnExecute = acParseUnitExecute
+    end
+    object acOptions: TAction
+      Category = 'View'
+      Caption = 'Options...'
+      OnExecute = acOptionsExecute
     end
   end
   object popShape: TPopupMenu

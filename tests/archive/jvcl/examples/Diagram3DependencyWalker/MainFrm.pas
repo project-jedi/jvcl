@@ -1,10 +1,11 @@
+{$I JVCL.INC}
 unit MainFrm;
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   JvDiagramShape, Dialogs, ComCtrls, Menus, ImgList, StdCtrls, ExtCtrls,
-  ActnList, IniFiles, PersistSettings, DepWalkConsts, ToolWin, Buttons;
+  ActnList, PersistSettings, DepWalkConsts, ToolWin, Buttons;
 
 type
 (*
@@ -114,9 +115,19 @@ type
     acParseUnit: TAction;
     Parseunit1: TMenuItem;
     N8: TMenuItem;
+    acOptions: TAction;
+    Options1: TMenuItem;
+    N10: TMenuItem;
+    Shapes1: TMenuItem;
+    Addtoskiplist2: TMenuItem;
+    Statistics2: TMenuItem;
+    Delete4: TMenuItem;
+    ParseUnit2: TMenuItem;
+    N9: TMenuItem;
+    N11: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
-    procedure SbMouseWheel(Sender: TObject; Shift: TShiftState;
+    procedure sbMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
     procedure acOpenExecute(Sender: TObject);
     procedure acExitExecute(Sender: TObject);
@@ -144,17 +155,22 @@ type
     procedure sbMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure acParseUnitExecute(Sender: TObject);
+    procedure acOptionsExecute(Sender: TObject);
   private
     { Private declarations }
     FPrintFormat: TPrintFormat;
-    FFileShapes: TStringlist;
+    FFileShapes, FSearchPaths: TStringlist;
     FInitialDir: string;
     FLeft, FTop: integer;
     FSelected:TJvCustomDiagramShape;
-
+    FOffsetX,FOffsetY:integer;
+    FReload:boolean;
+    FIntfLineColor,FImplLineColor,FIntfSelColor,FImplSelColor:TColor;
     procedure LoadSettings;
     procedure SaveSettings;
     function FindUnit(const Filename:string;const DefaultExt:string='.pas'):string;
+    procedure GetSearchPaths;
+    function GetPersistStorage:TPersistSettings;
     procedure Clear;
     procedure CreatePrintOut(Strings: TStrings; AFormat: TPrintFormat = pfText);
     function GetFileShape(const Filename: string): TJvBitmapShape;
@@ -170,8 +186,8 @@ type
     procedure SortItems(ATag: integer; AList: TList; InvertedSort: boolean);
 
     {IPersistSettings}
-    procedure Load(Storage: TCustomIniFile);
-    procedure Save(Storage: TCustomIniFile);
+    procedure Load(Storage: TPersistSettings);
+    procedure Save(Storage: TPersistSettings);
     procedure CreateDiagramBitmap(Bmp: TBitmap);
     procedure HighlightConnectors(AShape: TJvCustomDiagramShape);
     procedure DoShapeMouseDown(Sender: TObject; Button: TMouseButton;
@@ -185,7 +201,17 @@ var
 
 implementation
 uses
-  JCLParseUses, Clipbrd, StatsFrm, ShellAPI, PrintFrm, Registry;
+  JCLParseUses,
+  Clipbrd,
+  IniFiles, 
+  StatsFrm,
+  ShellAPI,
+  PrintFrm,
+  Registry,
+  {$IFNDEF COMPILER6_UP}
+  JvFunctions,
+  {$ENDIF}
+  OptionsFrm;
 
 
 {$R *.dfm}
@@ -225,12 +251,41 @@ begin
   Result := TChangeCursor.Create(NewCursor);
 end;
 
+(*
+{ TListBox }
+
+procedure TListBox.Load(Storage: TCustomIniFile);
+begin
+  Exit;
+  if Storage.SectionExists(Name) then
+  begin
+    Sorted := false;
+    Storage.ReadSection(Name, Items);
+    Sorted := true;
+  end;
+end;
+
+procedure TListBox.Save(Storage: TCustomIniFile);
+var i: integer;
+begin
+  Exit;
+  Storage.EraseSection(Name);
+  for i := 0 to Items.Count - 1 do
+    Storage.WriteString(Name, Items[i], '');
+end;
+
+*)
+
+// utility functions
+
+// (3) shows a message box with Yes and No buttons
 function YesNo(const ACaption, AMsg: string): boolean;
 begin
   Result := MessageBox(GetFocus, PChar(AMsg), PChar(ACaption),
     MB_YESNO or MB_ICONQUESTION or MB_TASKMODAL) = IDYES;
 end;
 
+// suspend/resumes the drawing of a TWinControl
 procedure SuspendRedraw(AControl: TWinControl; Suspend: boolean);
 begin
   AControl.Perform(WM_SETREDRAW, Ord(not Suspend), 0);
@@ -238,25 +293,7 @@ begin
     RedrawWindow(AControl.Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INTERNALPAINT or RDW_INVALIDATE or RDW_UPDATENOW or RDW_ALLCHILDREN);
 end;
 
-function GetDelphiLibPath(Version:integer):string;
-const
-  cLibPath:PChar = '\Software\Borland\Delphi\%d.0\Library';
-var ALibPath:string;
-begin
-  ALibPath := Format(cLibPath,[Version]);
-  with TRegistry.Create(KEY_READ) do // defaults to HKCU - just what we want
-  try
-    if OpenKeyReadOnly(ALibPath) and KeyExists('Search Path') then
-      Result := ReadString('Search Path')
-    else
-      Result := '';
-  finally
-    Free;
-  end;
-end;
-
 // (p3) copy Strings.Objects to TList
-
 procedure CopyObjects(Strings: TStrings; AList: TList);
 var
   i: integer;
@@ -266,7 +303,6 @@ begin
 end;
 
 // (p3) returns the number of links that are connected to AShape
-
 function GetNumLinksTo(AShape: TJvCustomDiagramShape): integer;
 var
   i: integer;
@@ -279,7 +315,6 @@ begin
 end;
 
 // (p3) returns the number of links that are connected from AShape
-
 function GetNumLinksFrom(AShape: TJvCustomDiagramShape): integer;
 var
   i: integer;
@@ -292,7 +327,6 @@ begin
 end;
 
 // (p3) retrievs the shapes that AShape is connected to and store their name and pointers in Strings
-
 procedure UsesUnits(AShape: TJvCustomDiagramShape; Strings: TStrings; const Ext: string = cPascalExt);
 var i: integer;
 begin
@@ -334,6 +368,7 @@ begin
   Result := nil;
 end;
 
+// TList sorting functions:
 function NameCompare(Item1, Item2: Pointer): integer;
 begin
   Result := CompareText(
@@ -374,32 +409,11 @@ begin
   Result := -MinLinksFromCompare(Item1, Item2);
 end;
 
-(*
-{ TListBox }
-
-procedure TListBox.Load(Storage: TCustomIniFile);
-begin
-  Exit;
-  if Storage.SectionExists(Name) then
-  begin
-    Sorted := false;
-    Storage.ReadSection(Name, Items);
-    Sorted := true;
-  end;
-end;
-
-procedure TListBox.Save(Storage: TCustomIniFile);
-var i: integer;
-begin
-  Exit;
-  Storage.EraseSection(Name);
-  for i := 0 to Items.Count - 1 do
-    Storage.WriteString(Name, Items[i], '');
-end;
-
-*)
 { TfrmMain }
 
+// main form utility functions
+
+// (p3) highlights the connectors (arrows) going to and from AShape
 procedure TfrmMain.HighlightConnectors(AShape:TJvCustomDiagramShape);
 var i:integer;C:TJvConnector;Changed:boolean;
 begin
@@ -412,10 +426,10 @@ begin
       if (C.StartConn.Shape = AShape) or (C.EndConn.Shape = AShape) then
       begin
         Changed := true;
-        if C.LineColour = cIntfLineColor then
-          C.LineColour := cIntfSelColor
-        else if C.LineColour = cImplLineColor then
-          C.LineColour := cImplSelColor
+        if C.LineColour = FIntfLineColor then
+          C.LineColour := FIntfSelColor
+        else if C.LineColour = FImplLineColor then
+          C.LineColour := FImplSelColor
         else
           Changed := false;
         if Changed then C.Invalidate;
@@ -423,10 +437,10 @@ begin
       else // reset to standard color
       begin
         Changed := true;
-        if C.LineColour = cIntfSelColor then
-          C.LineColour := cIntfLineColor
-        else if C.LineColour = cImplSelColor then
-          C.LineColour := cImplLineColor
+        if C.LineColour = FIntfSelColor then
+          C.LineColour := FIntfLineColor
+        else if C.LineColour = FImplSelColor then
+          C.LineColour := FImplLineColor
         else
           Changed := false;
         if Changed then C.Invalidate;
@@ -440,23 +454,8 @@ begin
   end;
 end;
 
-procedure TfrmMain.DoShapeClick(Sender: TObject);
-begin
-  TJvBitmapShape(Sender).BringToFront;
-  TJvBitmapShape(Sender).Caption.BringToFront;
-//  HighlightConnectors(TJvBitmapShape(Sender));
-end;
-
-procedure TfrmMain.DoShapeMouseDown(Sender:TObject;Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-begin
-  FSelected := Sender as TJvCustomDiagramShape;
-  if Button = mbLeft then
-    HighLightConnectors(FSelected);
-end;
-
 // (p3) returns an existing or new shape
-// Filename is considered unique
-
+// Filename is checked against unique list
 function TfrmMain.GetFileShape(const Filename: string): TJvBitmapShape;
 var
   i: integer;
@@ -501,9 +500,9 @@ begin
   with arr do
   begin
     if IsInterface then
-      LineColour := cIntfLineColor
+      LineColour := FIntfLineColor
     else
-      LineColour := cImplLineColor;
+      LineColour := FImplLineColor;
     // Set the start connection
     StartConn.Side := csRight;
     StartConn.Offset := StartShape.Height div 2;
@@ -554,10 +553,10 @@ begin
       Free;
     end;
   except
-    on E: Exception do
+    on E: EFOpenError do
     begin
       Result := false;
-      ErrorMessage := E.Message;
+      ErrorMessage := E.Message + #13#10 + SCheckPaths;
     end;
   end;
 end;
@@ -570,31 +569,33 @@ var
   FS: TJvBitmapShape;
   i: integer;
   AFilename, ErrMsg: string;
+  b:boolean;
 begin
-  AFilename := FindUnit(Filename); 
+  AFilename := FindUnit(Filename);
   if InSkipList(AFilename) then
     Exit;
   AUsesIntf := TStringlist.Create;
   AUsesImpl := TStringlist.Create;
   FTop := cStartY;
   try
-    if not GetUses(AFilename, AUsesIntf, AUsesImpl, ErrMsg) then
+    b := GetUses(AFilename, AUsesIntf, AUsesImpl, ErrMsg);
+    if not b and (Errors <> nil) then
       Errors.Add(Format('%s: %s', [AFilename, ErrMsg]));
-    // add the actual file
     FS := GetFileShape(AFilename);
-    FS.ImageIndex := cUnitParsedImageIndex; // this is a parsed file
-    Inc(FLeft, cOffsetX);
+    if b then
+      FS.ImageIndex := cUnitParsedImageIndex; // this is a parsed file
+    Inc(FLeft, FOffsetX);
     for i := 0 to AUsesIntf.Count - 1 do
     begin
       //add the used unit and connect to the parsed file
       Connect(FS, GetFileShape(AUsesIntf[i]),true);
-      Inc(FTop, cOffsetY);
+      Inc(FTop, FOffsetY);
     end;
     for i := 0 to AUsesImpl.Count - 1 do
     begin
       //add the used unit and connect to the parsed file
       Connect(FS, GetFileShape(AUsesImpl[i]),false);
-      Inc(FTop, cOffsetY);
+      Inc(FTop, FOffsetY);
     end;
   finally
     AUsesIntf.Free;
@@ -617,7 +618,7 @@ begin
       StatusBar1.Panels[0].Text := Files[i];
       StatusBar1.Update;
       if i > 0 then
-        Inc(FLeft, cOffsetX);
+        Inc(FLeft, FOffsetX);
       ParseUnit(Files[i], Errors);
     end;
   finally
@@ -629,6 +630,7 @@ end;
 // (p3) tries to find Filename and return it's full path and filename
 // if it fails, the original Filename is returned instead
 function TfrmMain.FindUnit(const Filename: string;const DefaultExt:string='.pas'): string;
+var i:integer;
 begin
   Result := ExpandUNCFileName(Filename);
   if FileExists(Result) then Exit;
@@ -636,7 +638,17 @@ begin
   if FileExists(Result) then Exit;
   Result := ExtractFilePath(dlgSelectFiles.FileName) + ExtractFileName(Result);
   if FileExists(Result) then Exit;
-  // TODO: check system paths and Delphi paths as well 
+
+  if FSearchPaths = nil then
+    GetSearchPaths;
+  Result := ExtractFileName(Result);
+  for i := 0 to FSearchPaths.Count - 1 do
+    if FileExists(IncludeTrailingPathDelimiter(FSearchPaths[i]) + Result) then
+    begin
+      Result := IncludeTrailingPathDelimiter(FSearchPaths[i]) + Result;
+      Exit;
+    end;
+
   Result := Filename;
 end;
 
@@ -689,13 +701,6 @@ begin
   lbSkipList.Items.SaveToFile(ExtractFilePath(Application.Exename) + 'SkipList.txt');
 end;
 
-procedure TfrmMain.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
-begin
-  //  Clear;
-  SaveSettings;
-  FFileShapes.Free;
-end;
-
 function TfrmMain.InSkipList(const Filename: string): boolean;
 begin
   Result := (lbSkipList.Items.IndexOf(ChangeFileExt(ExtractFileName(Filename), '')) > -1);
@@ -722,11 +727,11 @@ begin
       if i = 0 then
         Inc(FTop, cStartY)  // first row
       else
-        Inc(FTop, cOffsetY);
+        Inc(FTop, FOffsetY);
     end;
     FS := TJvCustomDiagramShape(AList[i]);
     FS.SetBounds(FLeft, FTop, FS.Width, FS.Height);
-    Inc(FLeft, cOffsetX);
+    Inc(FLeft, FOffsetX);
   end;
 end;
 
@@ -736,47 +741,6 @@ begin
     Result := TrueValue
   else
     Result := FalseValue;
-end;
-
-procedure TfrmMain.SbMouseWheel(Sender: TObject;
-  Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint;
-  var Handled: Boolean);
-begin
-  Handled := true;
-  with sb do
-    if (ssShift in Shift) and (HorzScrollBar.IsScrollBarVisible) then
-      HorzScrollBar.Position := HorzScrollBar.Position - iff(ssCtrl in Shift, WheelDelta * 3, WheelDelta)
-    else if (VertScrollBar.IsScrollBarVisible) then
-      VertScrollBar.Position := VertScrollBar.Position - iff(ssCtrl in Shift, WheelDelta * 3, WheelDelta);
-end;
-
-procedure TfrmMain.acOpenExecute(Sender: TObject);
-var
-  Errors: TStringlist; // S: string;
-begin
-  ForceCurrentDirectory := true;
-  dlgSelectFiles.InitialDir := FInitialDir;
-  if dlgSelectFiles.Execute then
-  begin
-    FInitialDir := ExtractFilePath(dlgSelectFiles.Filename);
-    Errors := TStringlist.Create;
-    try
-      ParseUnits(dlgSelectFiles.Files, Errors);
-      if Errors.Count > 0 then
-      begin
-        ShowMessageFmt(SParseErrorsFmt, [Errors.Text]);
-        // copy to clipboard as well
-        Clipboard.SetTextBuf(PChar(Errors.Text));
-      end;
-    finally
-      Errors.Free;
-    end;
-  end;
-end;
-
-procedure TfrmMain.acExitExecute(Sender: TObject);
-begin
-  Close;
 end;
 
 procedure TfrmMain.SortItems(ATag: integer; AList: TList; InvertedSort: boolean);
@@ -865,6 +829,7 @@ begin
           end;
         pfXML:
           begin
+            // DO NOT LOCALIZE!
             Strings.Add(Format('<UNIT Name="%s">', [AShape.Caption.Text]));
             for j := 0 to UsesStrings.Count - 1 do
               Strings.Add(Format('<USES Name="%s" />', [UsesStrings[j]]));
@@ -878,11 +843,13 @@ begin
     case AFormat of
       pfXML:
         begin
+          // DO NOT LOCALIZE!
           Strings.Insert(0, '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><DependencyWalker>');
           Strings.Add('</DependencyWalker>');
         end;
       pfHTML:
         begin
+          // DO NOT LOCALIZE!
           Strings.Insert(0, Format('<html><head><title>%s</title><link rel="stylesheet" href="DependencyWalker.css" type="text/css"></head>', [SDependencyWalkerTitle]));
           Strings.Insert(1, Format('<body><h1>%s</h1><hr>', [SDependencyWalkerTitle]));
           Strings.Add('</body></html>');
@@ -895,6 +862,166 @@ begin
   end;
 end;
 
+procedure TfrmMain.LoadSettings;
+var Ini: TPersistSettings;
+begin
+  LoadSkipList;
+  Ini := GetPersistStorage;
+  try
+    PersistSettings.LoadComponents(self, Ini);
+  finally
+    Ini.Free;
+  end;
+  Application.HintShortCuts := true;
+end;
+
+procedure TfrmMain.SaveSettings;
+var Ini: TPersistSettings;
+begin
+  SaveSkipList;
+  Ini := GetPersistStorage;
+  try
+    PersistSettings.SaveComponents(self, Ini);
+    Ini.UpdateFile;
+  finally
+    Ini.Free;
+  end;
+end;
+
+function Max(Val1, Val2: integer): integer;
+begin
+  Result := Val1;
+  if Val2 > Val1 then
+    Result := Val2;
+end;
+
+// (p3) probably not the most effective code in the world but it does seem to work...
+
+procedure PaintScrollBox(sb: TScrollBox; Canvas: TCanvas);
+var sbPos: TPoint;
+    tmpPos: integer;
+begin
+  sbPos.X := sb.HorzScrollBar.Position;
+  sbPos.Y := sb.VertScrollBar.Position;
+  try
+    sb.HorzScrollBar.Position := 0;
+    sb.VertScrollBar.Position := 0;
+    while true do
+    begin
+      while true do
+      begin
+        sb.PaintTo(Canvas.Handle, sb.HorzScrollBar.Position, sb.VertScrollBar.Position);
+        tmpPos := sb.VertScrollBar.Position;
+        sb.VertScrollBar.Position := sb.VertScrollBar.Position + sb.ClientHeight;
+        if sb.VertScrollBar.Position = tmpPos then
+          Break;
+      end;
+      sb.VertScrollBar.Position := 0;
+      tmpPos := sb.HorzScrollBar.Position;
+      sb.HorzScrollBar.Position := sb.HorzScrollBar.Position + sb.ClientWidth;
+      if sb.HorzScrollBar.Position = tmpPos then
+        Break;
+    end;
+  finally
+    sb.HorzScrollBar.Position := sbPos.X;
+    sb.VertScrollBar.Position := sbPos.Y;
+  end;
+end;
+
+procedure TfrmMain.CreateDiagramBitmap(Bmp: TBitmap);
+begin
+    // add some extra pixels around the edges...
+  bmp.Width := Max(sb.ClientWidth, sb.HorzScrollBar.Range) + 10;
+  bmp.Height := Max(sb.ClientHeight, sb.VertScrollBar.Range) + 10;
+  bmp.Canvas.Brush.Color := sb.Color;
+  bmp.Canvas.FillRect(Rect(0, 0, bmp.Width, bmp.Height));
+  PaintScrollBox(sb, bmp.Canvas);
+end;
+
+procedure TfrmMain.GetSearchPaths;
+var ini:TCustomIniFile;
+begin
+  FreeAndNil(FSearchPaths);
+  FSearchPaths := TStringlist.Create;
+  ini := GetPersistStorage;
+  try
+    ini.ReadSection('Options.Paths',FSearchPaths);
+  finally
+    ini.Free;
+  end;
+end;
+// (p3) return the type of TCUstomIniFile we are currently using
+// could easily be changed to use registry or storing in a different location
+function TfrmMain.GetPersistStorage: TPersistSettings;
+begin
+  Result := TPersistSettings(TMemIniFile.Create(ChangeFileExt(Application.ExeName, cIniFileExt)));
+end;
+
+// main form event handlers (normal, run-time assigned) and actions
+
+// (p3) bring the Shape up so we can see it
+procedure TfrmMain.DoShapeClick(Sender: TObject);
+begin
+  TJvBitmapShape(Sender).BringToFront;
+  TJvBitmapShape(Sender).Caption.BringToFront;
+end;
+
+// (p3) highlight the shapes connectors when it is selected
+procedure TfrmMain.DoShapeMouseDown(Sender:TObject;Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  FSelected := Sender as TJvCustomDiagramShape;
+  if Button = mbLeft then
+    HighLightConnectors(FSelected);
+end;
+
+procedure TfrmMain.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+begin
+  //  Clear;
+  SaveSettings;
+  FFileShapes.Free;
+  FreeAndNil(FSearchPaths);
+end;
+
+procedure TfrmMain.sbMouseWheel(Sender: TObject;
+  Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint;
+  var Handled: Boolean);
+begin
+  Handled := true;
+  with sb do
+    if (ssShift in Shift) and (HorzScrollBar.IsScrollBarVisible) then
+      HorzScrollBar.Position := HorzScrollBar.Position - iff(ssCtrl in Shift, WheelDelta * 3, WheelDelta)
+    else if (VertScrollBar.IsScrollBarVisible) then
+      VertScrollBar.Position := VertScrollBar.Position - iff(ssCtrl in Shift, WheelDelta * 3, WheelDelta);
+end;
+
+procedure TfrmMain.acOpenExecute(Sender: TObject);
+var
+  Errors: TStringlist; // S: string;
+begin
+  ForceCurrentDirectory := true;
+  dlgSelectFiles.InitialDir := FInitialDir;
+  if dlgSelectFiles.Execute then
+  begin
+    FInitialDir := ExtractFilePath(dlgSelectFiles.Filename);
+    Errors := TStringlist.Create;
+    try
+      ParseUnits(dlgSelectFiles.Files, Errors);
+      if Errors.Count > 0 then
+      begin
+        ShowMessageFmt(SParseErrorsFmt, [Errors.Text]);
+        // copy to clipboard as well
+        Clipboard.SetTextBuf(PChar(Errors.Text));
+      end;
+    finally
+      Errors.Free;
+    end;
+  end;
+end;
+
+procedure TfrmMain.acExitExecute(Sender: TObject);
+begin
+  Close;
+end;
 
 procedure TfrmMain.acArrangeAction(Sender: TObject);
 var
@@ -902,11 +1029,12 @@ var
 begin
   WaitCursor;
   SuspendRedraw(sb, true);
-  // (p3) reset checked here so it will be easier to check wich one is used as radio-item
   AList := TList.Create;
   try
     FLeft := cStartX;
     FTop := cStartY;
+    // (p3) reset here so it will be easier to check wich one is used as radio-item
+    // (actions doesn't support RadioItem functionality but menus do):
     acSortName.Checked := false;
     acSortLinksTo.Checked := false;
     acSortLinksFrom.Checked := false;
@@ -962,80 +1090,15 @@ end;
 procedure TfrmMain.alMainUpdate(Action: TBasicAction;
   var Handled: Boolean);
 begin
-  if csFreeNotification in ComponentState then
-    Exit;
   acDelete.Enabled := lbSkipList.SelCount > 0;
   acNew.Enabled := sb.ControlCount > 0;
   acFind.Enabled := acNew.Enabled;
   acReport.Enabled := acNew.Enabled;
 
-  // (p3) this might be too slow on large sets of shapes so comment it out
-  // if it gets too sluggish
   acDelShape.Enabled := FSelected <> nil;
   acUnitStats.Enabled := acDelShape.Enabled;
   acAddToSkipList.Enabled := acDelShape.Enabled;
   acParseUnit.Enabled := acDelShape.Enabled;
-end;
-
-procedure TfrmMain.Load(Storage: TCustomIniFile);
-begin
-  Top := Storage.ReadInteger(ClassName, 'Top', Top);
-  Left := Storage.ReadInteger(ClassName, 'Left', Left);
-  Width := Storage.ReadInteger(ClassName, 'Width', Width);
-  Height := Storage.ReadInteger(ClassName, 'Height', Height);
-  acInvertSort.Checked := Storage.ReadBool(ClassName, 'InvertSort', false);
-  FPrintFormat := TPrintFormat(Storage.ReadInteger(ClassName, 'Print Format', 0));
-  FInitialDir := Storage.ReadString(ClassName, 'InitialDir', '');
-  pnlSkipList.Width := Storage.ReadInteger(ClassName, 'vertSplitter', pnlSkipList.Width);
-  if not acViewStatusBar.Checked = Storage.ReadBool(ClassName, acViewStatusBar.Name, acViewStatusBar.Checked) then
-    acViewStatusBar.Execute; // toggle to other state
-  if not acViewToolbar.Checked = Storage.ReadBool(ClassName, acViewToolbar.Name, acViewToolbar.Checked) then
-    acViewToolbar.Execute;
-  if not acViewSkipList.Checked = Storage.ReadBool(ClassName, acViewSkipList.Name, acViewSkipList.Checked) then
-    acViewSkipList.Execute;
-end;
-
-procedure TfrmMain.Save(Storage: TCustomIniFile);
-begin
-  if not IsZoomed(Handle) and not IsIconic(Application.Handle) then
-  begin
-    Storage.WriteInteger(ClassName, 'Top', Top);
-    Storage.WriteInteger(ClassName, 'Left', Left);
-    Storage.WriteInteger(ClassName, 'Width', Width);
-    Storage.WriteInteger(ClassName, 'Height', Height);
-  end;
-  Storage.WriteBool(ClassName, 'InvertSort', acInvertSort.Checked);
-  Storage.WriteInteger(ClassName, 'Print Format', Ord(FPrintFormat));
-  Storage.WriteString(ClassName, 'InitialDir', FInitialDir);
-  Storage.WriteInteger(ClassName, 'vertSplitter', pnlSkipList.Width);
-  Storage.WriteBool(ClassName, acViewStatusBar.Name, acViewStatusBar.Checked);
-  Storage.WriteBool(ClassName, acViewToolbar.Name, acViewToolbar.Checked);
-  Storage.WriteBool(ClassName, acViewSkipList.Name, acViewSkipList.Checked);
-end;
-
-procedure TfrmMain.LoadSettings;
-var Ini: TIniFile;
-begin
-  LoadSkipList;
-  Ini := TIniFile.Create(ChangeFileExt(Application.ExeName, cIniFileExt));
-  try
-    PersistSettings.LoadComponents(self, Ini);
-  finally
-    Ini.Free;
-  end;
-  Application.HintShortCuts := true;
-end;
-
-procedure TfrmMain.SaveSettings;
-var Ini: TIniFile;
-begin
-  SaveSkipList;
-  Ini := TIniFile.Create(ChangeFileExt(Application.ExeName, cIniFileExt));
-  try
-    PersistSettings.SaveComponents(self, Ini);
-  finally
-    Ini.Free;
-  end;
 end;
 
 procedure TfrmMain.acUnitStatsExecute(Sender: TObject);
@@ -1093,16 +1156,21 @@ end;
 
 procedure TfrmMain.acReportExecute(Sender: TObject);
 const
+  // DO NOT LOCALIZE!
   cFormatExt: array[TPrintFormat] of PChar = ('.txt', '.htm', '.xml');
 var
   S: TStringlist;
   AFileName: string;
+  Ini:TPersistSettings;
 begin
   S := TStringlist.Create;
+  Ini := GetPersistStorage;
   try
-    if not TfrmPrint.Execute(FPrintFormat) then
+    if not TfrmPrint.Execute(Ini) then
       Exit;
     WaitCursor;
+    Ini.UpdateFile;
+    FPrintFormat := TPrintFormat(Ini.ReadInteger('Printing', 'Print Format', Ord(FPrintFormat)));
     CreatePrintOut(S, FPrintFormat);
     if S.Count > 0 then
     begin
@@ -1113,9 +1181,9 @@ begin
     end;
   finally
     S.Free;
+    Ini.Free;
   end;
 end;
-
 
 procedure TfrmMain.acFindExecute(Sender: TObject);
 var S: string;
@@ -1172,56 +1240,6 @@ end;
 procedure TfrmMain.acRefreshExecute(Sender: TObject);
 begin
   sb.Invalidate;
-end;
-
-function Max(Val1, Val2: integer): integer;
-begin
-  Result := Val1;
-  if Val2 > Val1 then
-    Result := Val2;
-end;
-
-// (p3) probably not the most effective code in the world but it does seem to work...
-
-procedure PaintScrollBox(sb: TScrollBox; Canvas: TCanvas);
-var sbPos: TPoint;
-    tmpPos: integer;
-begin
-  sbPos.X := sb.HorzScrollBar.Position;
-  sbPos.Y := sb.VertScrollBar.Position;
-  try
-    sb.HorzScrollBar.Position := 0;
-    sb.VertScrollBar.Position := 0;
-    while true do
-    begin
-      while true do
-      begin
-        sb.PaintTo(Canvas, sb.HorzScrollBar.Position, sb.VertScrollBar.Position);
-        tmpPos := sb.VertScrollBar.Position;
-        sb.VertScrollBar.Position := sb.VertScrollBar.Position + sb.ClientHeight;
-        if sb.VertScrollBar.Position = tmpPos then
-          Break;
-      end;
-      sb.VertScrollBar.Position := 0;
-      tmpPos := sb.HorzScrollBar.Position;
-      sb.HorzScrollBar.Position := sb.HorzScrollBar.Position + sb.ClientWidth;
-      if sb.HorzScrollBar.Position = tmpPos then
-        Break;
-    end;
-  finally
-    sb.HorzScrollBar.Position := sbPos.X;
-    sb.VertScrollBar.Position := sbPos.Y;
-  end;
-end;
-
-procedure TfrmMain.CreateDiagramBitmap(Bmp: TBitmap);
-begin
-    // add some extra pixels around the edges...
-  bmp.Width := Max(sb.ClientWidth, sb.HorzScrollBar.Range) + 10;
-  bmp.Height := Max(sb.ClientHeight, sb.VertScrollBar.Range) + 10;
-  bmp.Canvas.Brush.Color := sb.Color;
-  bmp.Canvas.FillRect(Rect(0, 0, bmp.Width, bmp.Height));
-  PaintScrollBox(sb, bmp.Canvas);
 end;
 
 procedure TfrmMain.acSaveBMPExecute(Sender: TObject);
@@ -1287,11 +1305,13 @@ end;
 procedure TfrmMain.sbMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
+// (p3) unselect any selected shape
   if FSelected <> nil then
     FSelected.Selected := false;
   FSelected := nil;
 end;
 
+// (p3) do a recursive parse of a unit
 procedure TfrmMain.acParseUnitExecute(Sender: TObject);
 var Errors:TStringList;i:integer;
 begin
@@ -1300,9 +1320,9 @@ begin
   if i < 0 then
   begin
     if FSelected <> nil then
-      ShowMessageFmt('Unit %s not found!',[FSelected.Caption.Text])
+      ShowMessageFmt(SFileNotFoundFmt,[FSelected.Caption.Text])
     else
-      ShowMessage('Unit not found!');
+      ShowMessage(SUnitNotFound);
     Exit;
   end;
 
@@ -1318,6 +1338,71 @@ begin
   finally
     Errors.Free;
   end;
+end;
+
+procedure TfrmMain.acOptionsExecute(Sender: TObject);
+var Ini: TPersistSettings;
+begin
+  Ini := GetPersistStorage;
+  try
+    if TfrmOptions.Execute(Ini) then
+    begin
+      Ini.UpdateFile;
+      FreeAndNil(FSearchPaths);
+      ShowMessage(SRestartForNewOptions);
+    end;
+  finally
+    Ini.Free;
+  end;
+end;
+
+procedure TfrmMain.Load(Storage: TPersistSettings);
+begin
+  // DO NOT LOCALIZE!
+  if not FReload then
+  begin
+    Top := Storage.ReadInteger(ClassName, 'Top', (Screen.Height - ClientHeight) div 2);
+    Left := Storage.ReadInteger(ClassName, 'Left', (Screen.Width - ClientWidth) div 2);
+    Width := Storage.ReadInteger(ClassName, 'Width', Width);
+    Height := Storage.ReadInteger(ClassName, 'Height', Height);
+    FReload := true;
+  end;
+  acInvertSort.Checked := Storage.ReadBool(ClassName, 'InvertSort', false);
+  FInitialDir := Storage.ReadString(ClassName, 'InitialDir', '');
+  pnlSkipList.Width := Storage.ReadInteger(ClassName, 'vertSplitter', pnlSkipList.Width);
+  if not acViewStatusBar.Checked = Storage.ReadBool(ClassName, acViewStatusBar.Name, acViewStatusBar.Checked) then
+    acViewStatusBar.Execute; // toggle to other state
+  if not acViewToolbar.Checked = Storage.ReadBool(ClassName, acViewToolbar.Name, acViewToolbar.Checked) then
+    acViewToolbar.Execute;
+  if not acViewSkipList.Checked = Storage.ReadBool(ClassName, acViewSkipList.Name, acViewSkipList.Checked) then
+    acViewSkipList.Execute;
+
+  FOffsetX := Storage.ReadInteger('Options','ShapeHeight',100);
+  FOffsetY := Storage.ReadInteger('Options','ShapeHeight',100);
+  FIntfLineColor := Storage.ReadInteger('Options','IntfColor',clBlack);
+  FIntfSelColor := Storage.ReadInteger('Options','IntfSelColor',clRed);
+  FImplLineColor := Storage.ReadInteger('Options','ImplColor',clBtnShadow);
+  FImplSelColor := Storage.ReadInteger('Options','ImplSelColor',clBlue);
+
+end;
+
+procedure TfrmMain.Save(Storage: TPersistSettings);
+begin
+  // DO NOT LOCALIZE!
+  if not IsZoomed(Handle) and not IsIconic(Application.Handle) then
+  begin
+    Storage.WriteInteger(ClassName, 'Top', Top);
+    Storage.WriteInteger(ClassName, 'Left', Left);
+    Storage.WriteInteger(ClassName, 'Width', Width);
+    Storage.WriteInteger(ClassName, 'Height', Height);
+  end;
+
+  Storage.WriteBool(ClassName, 'InvertSort', acInvertSort.Checked);
+  Storage.WriteString(ClassName, 'InitialDir', FInitialDir);
+  Storage.WriteInteger(ClassName, 'vertSplitter', pnlSkipList.Width);
+  Storage.WriteBool(ClassName, acViewStatusBar.Name, acViewStatusBar.Checked);
+  Storage.WriteBool(ClassName, acViewToolbar.Name, acViewToolbar.Checked);
+  Storage.WriteBool(ClassName, acViewSkipList.Name, acViewSkipList.Checked);
 end;
 
 

@@ -6,22 +6,24 @@ uses
   Classes, IniFiles;
 
 type
+  TPersistSettings = class(TCustomIniFile);
+  
   IPersistSettings = interface
   ['{74727C9C-50F6-4C3A-8051-5CC5E64E9EB7}']
-    procedure Load(Storage:TCustomIniFile);
-    procedure Save(Storage:TCustomIniFile);
+    procedure Load(Storage:TPersistSettings);
+    procedure Save(Storage:TPersistSettings);
   end;
 
 // save a component and any sub-component that implements the IPersistSettings interface
-procedure SaveComponents(Root:TComponent;Storage:TCustomIniFile);
+procedure SaveComponents(Root:TComponent;Storage:TPersistSettings);
 // load a component and any sub-component that implements the IPersistSettings interface
-procedure LoadComponents(Root:TComponent;Storage:TCustomIniFile);
+procedure LoadComponents(Root:TComponent;Storage:TPersistSettings);
 
 implementation
 uses
   SysUtils;
 
-procedure SaveComponents(Root:TComponent;Storage:TCustomIniFile);
+procedure SaveComponents(Root:TComponent;Storage:TPersistSettings);
 var i:integer;PS:IPersistSettings;
 begin
   if Supports(Root,IPersistSettings,PS) then
@@ -30,7 +32,7 @@ begin
     SaveComponents(Root.Components[i],Storage);
 end;
 
-procedure LoadComponents(Root:TComponent;Storage:TCustomIniFile);
+procedure LoadComponents(Root:TComponent;Storage:TPersistSettings);
 var i:integer;PS:IPersistSettings;
 begin
   if Supports(Root,IPersistSettings,PS) then

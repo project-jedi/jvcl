@@ -14,12 +14,6 @@ const
 // icon offsets
   cStartX = 50;
   cStartY = 50;
-  cOffsetX = 100;
-  cOffsetY = 100;
-  cIntfLineColor = clBlack;
-  cImplLineColor = clBtnShadow;
-  cIntfSelColor = clRed;
-  cImplSelColor = clBlue;
 
 
 resourcestring
@@ -36,6 +30,7 @@ resourcestring
   SConfirmDelete = 'Confirm delete';
   SDelSelItemsPrompt = 'Delete selected items?';
   SDelSelItemFmt = 'Remove "%s" from diagram?';
+  SCheckPaths    = 'Check your paths in the options dialog and try again.';
 
   SAboutText = 'Dependency Walker Demo - part of JVCL (http://jvcl.sourceforge.net)';
   SClearDiagramPrompt = 'Clear diagram?';
@@ -43,6 +38,9 @@ resourcestring
   SFindTitle = 'Find';
   SFindNameColon = 'Name:';
   SFindNotFoundFmt = '"%s" not found.';
+  SRestartForNewOptions = 'Restart the program for the changed options to take effect';
+  SFileNotFoundFmt      = 'Unit %s not found.';
+  SUnitNotFound = 'Unit not found.';
 
 
 implementation
