@@ -139,7 +139,6 @@ type
     property Anchors;
     property Constraints;
     {$IFDEF VCL}
-    property DragKind;
     property AutoSize default True;
     {$ENDIF VCL}
     property AsyncDrawing: Boolean read FAsyncDrawing write SetAsyncDrawing default False;
@@ -154,13 +153,13 @@ type
     property InactiveGlyph: Integer read FInactiveGlyph write SetInactiveGlyph default -1;
     property TransparentColor: TColor read FTransparentColor write SetTransparentColor
       stored TransparentStored;
-    {$IFDEF VCL}
-    property Transparent: Boolean read FTransparent write SetTransparent default False;
-    {$ENDIF VCL}
     property Color;
     property Cursor;
     {$IFDEF VCL}
+    property Transparent: Boolean read FTransparent write SetTransparent default False;
     property DragCursor;
+    property OnEndDock;
+    property OnStartDock;
     {$ENDIF VCL}
     property DragMode;
     property ParentColor default True;
@@ -178,10 +177,6 @@ type
     property OnDragDrop;
     property OnEndDrag;
     property OnStartDrag;
-    {$IFDEF VCL}
-    property OnEndDock;
-    property OnStartDock;
-    {$ENDIF VCL}
     property OnContextPopup;
     property OnFrameChanged: TNotifyEvent read FOnFrameChanged write FOnFrameChanged;
     property OnStart: TNotifyEvent read FOnStart write FOnStart;
@@ -337,7 +332,7 @@ end;
 
 {$IFDEF VisualCLX}
 type
-  TWidgetControlAccessProtected = class(TWidgetControl);
+  THackedWidgetControl = class(TWidgetControl);
 {$ENDIF VisualCLX}
 
 procedure TJvImageControl.DoPaintControl;
@@ -365,7 +360,7 @@ begin
   {$IFDEF VisualCLX}
   DC := QPainter_create;
   try
-    QPainter_begin(DC, TWidgetControlAccessProtected(Parent).GetPaintDevice);
+    QPainter_begin(DC, THackedWidgetControl(Parent).GetPaintDevice);
     try
       QPainter_setClipRect(DC, Left, Top, Width, Height);
       QPainter_translate(DC, Left, Top);
