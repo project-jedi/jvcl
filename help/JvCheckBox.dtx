@@ -47,16 +47,6 @@ Description
   Associated is the Control which will be Enabled/Disabled according to the value of the Checked
   property of the CheckBox.
 ----------------------------------------------------------------------------------------------------
-@@TJvCheckBox.AutoSave
-Summary
-  Specifies the auto save settings for the edit control.
-Description
-  Use AutoSave to specify whether automatically saving of the edit control's text is enabled,
-  and to specify the registry key and path that will be used to save the text.
-
-  If AutoSave is enabled, the control saves its state automatically on changes by the user,
-  and loads the state automatically when the control is be created.
-----------------------------------------------------------------------------------------------------
 @@TJvCheckBox.AutoSize
 Summary
   Determines whether control automatically resizes to accommodate the Caption.
@@ -69,6 +59,24 @@ Description
 
   Leaving AutoSize to False and adjusting the size manually allows control of the Wordwrap of the
   Caption.
+----------------------------------------------------------------------------------------------------
+@@TJvCheckBox.Caption
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCheckBox.HintColor
+Summary
+  Color of the hint when the mouse hovers over the control.
+Description
+  TJvBevel provides the mechanism of having another color when the mouse pointer hovers over the
+  control. The default is the Windows HintColor default (Delphi Color: clInfoBk)
+See Also
+  OnMouseEnter, OnMouseLeave
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckBox.HotTrack
 Summary
@@ -88,14 +96,12 @@ Description
 See Also
   HotTrack, OnMouseEnter, OnMouseLeave
 ----------------------------------------------------------------------------------------------------
-@@TJvCheckBox.HintColor
+@@TJvCheckBox.OnCtl3DChanged
 Summary
-  Color of the hint when the mouse hovers over the control.
+  Occurs when the Ctl3D property of the <xxx> changes.
 Description
-  TJvBevel provides the mechanism of having another color when the mouse pointer hovers over the
-  control. The default is the Windows HintColor default (Delphi Color: clInfoBk)
+  Write an OnCtl3DChanged event handler to take specific action when the Ctl3D property changes.
 See Also
-  OnMouseEnter, OnMouseLeave
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckBox.OnMouseEnter
 Summary
@@ -116,10 +122,11 @@ Description
 See Also
   OnMouseEnter
 ----------------------------------------------------------------------------------------------------
-@@TJvCheckBox.OnRestored
+@@TJvCheckBox.OnParentColorChange
 Summary
-  Custom event triggered when the saved state is read back in.
+  Write here a summary (1 line)
 Description
-  Write an OnRestored event handler to take special action whenever the value of the checked
-  property is restored (only happens when the form is loaded and AutoSave is set to True).
-----------------------------------------------------------------------------------------------------
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references

@@ -43,16 +43,6 @@ Description
   taRightJustify  Align text on the right side in the edit control.
   </TABLE>
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomEdit.AutoSave
-Summary
-  Specifies the auto save settings for the edit control.
-Description
-  Use AutoSave to specify whether automatically saving of the edit control's text is enabled, and to
-  specify the registry key and path that will be used to save the text.
-  
-  If AutoSave is enabled, the control saves it's text automatically on changes by the user, and loads
-  the text automatically when the control will be created. 
-----------------------------------------------------------------------------------------------------
 @@TJvCustomEdit.Caret
 Summary
   Specifies the caret settings for the edit control.
@@ -163,19 +153,6 @@ Summary
   Occurs when the color property for the parent of the edit control changes.
 Description
   \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
-----------------------------------------------------------------------------------------------------
-@@TJvCustomEdit.OnRestored
-Summary
-  Occurs after the original text is restored.
-Description
-  \Write an OnRestored event to take specific action when the original text of the edit box is restored.
-  
-  Use AutoSave to enable saving the text of the edit box to the registry when the user changes the text.
-  If AutoSave is set to save the control's text to the registry, then when the edit control is recreated 
-  - for example if the user restarts the application - the AutoSave object restores the original text, 
-  and an OnRestored event is triggered.
-See Also
-  AutoSave
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEdit.ProtectPassword
 Summary
