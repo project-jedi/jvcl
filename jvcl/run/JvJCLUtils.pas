@@ -974,14 +974,14 @@ uses
   RTLConsts,
   {$ENDIF COMPILER6_UP}
   SysConst,
-  {$IFDEF WINDOWS}
+  {$IFDEF MSWINDOWS}
   ComObj, ShellAPI, MMSystem, Registry,
-  {$ENDIF}
+  {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
   Consts,
   {$ELSE}
   QConsts,
-  {$ENDIF}
+  {$ENDIF VCL}
   JclSysInfo, JclStrings,
   JvTypes;
 

@@ -84,9 +84,9 @@ type
     procedure Toggle; override;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    procedure UpdateProperties;
     procedure AdjustSize; override;
     {$ENDIF VisualCLX}
+    procedure UpdateProperties;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure CalcAutoSize; virtual;
     procedure Loaded; override;
@@ -182,14 +182,21 @@ begin
     Style := Style or cAlign[Alignment] or cLayout[Layout] or
       cLeftText[LeftText] or cWordWrap[WordWrap];
 end;
+{$ENDIF VCL}
 
 procedure TJvCheckBox.UpdateProperties;
 begin
+  {$IFDEF VCL}
   RecreateWnd;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  RecreateWidget;
+  {$ENDIF VisualCLX}
 end;
 
-{$ENDIF VCL}
 {$IFDEF VisualCLX}
+
+(*
 procedure TJvCheckBox.UpdateProperties;
 begin
  { TODO:
@@ -202,12 +209,14 @@ begin
   WordWrap
  }
 end;
+*)
 
 procedure TJvCheckBox.AdjustSize;
 begin
   inherited AdjustSize;
   CalcAutoSize;
 end;
+
 {$ENDIF VisualCLX}
 
 procedure TJvCheckBox.MouseEnter(AControl: TControl);

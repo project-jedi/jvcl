@@ -98,10 +98,10 @@ unit JvHTControls;
 interface
 
 uses
-  {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, StdCtrls, ShellAPI, Dialogs;
-  {$ENDIF VCL}
   SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, StdCtrls, ShellAPI, Dialogs,
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   Types, Qt, QGraphics, QControls, QStdCtrls,
   {$ENDIF VisualCLX}
