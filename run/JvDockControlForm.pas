@@ -1185,6 +1185,7 @@ function FindDockClient(Client: TControl): TJvDockClient;
 var
   ADockControl: TJvDockBaseControl;
 begin
+  { (rb) Weird routine }
   ADockControl := FindDockBaseControl(Client);
   if ADockControl is TJvDockClient then
     Result := TJvDockClient(ADockControl)
@@ -1902,9 +1903,10 @@ begin
     if Index <> -1 then
       JvGlobalDockManager.DockableFormList.Delete(Index);
   end;
-  if DockClient.LastDockSite is TJvDockPanel then
-    if Assigned(TJvDockPanel(DockClient.LastDockSite).JvDockManager) then
-      TJvDockPanel(DockClient.LastDockSite).JvDockManager.RemoveControl(Self);
+  { Now handled in destroy of DockClient via TJvDockClient.SetLastDockSite }
+  //if DockClient.LastDockSite is TJvDockPanel then
+  //  if Assigned(TJvDockPanel(DockClient.LastDockSite).JvDockManager) then
+  //    TJvDockPanel(DockClient.LastDockSite).JvDockManager.RemoveControl(Self);
   inherited Destroy;
   // (rom) better comment this
   FFloatingChild := nil;
@@ -2076,14 +2078,18 @@ end;
 //=== { TJvDockAdvTabPageControl } ===========================================
 
 destructor TJvDockAdvTabPageControl.Destroy;
-var
-  DockClient: TJvDockClient;
+//var
+//  DockClient: TJvDockClient;
 begin
-  DockClient := FindDockClient(Parent);
-  if (DockClient <> nil) and (DockClient.LastDockSite is TJvDockPanel) then
-    with TJvDockPanel(DockClient.LastDockSite) do
-      if UseDockManager and (JvDockManager <> nil) then
-        JvDockManager.RemoveControl(Self.Parent);
+  { Now handled in TJvDockClient.SetLastDockSite }
+  //  { Parent is always nil? Self is maintained by TJvDockTabHostForm (=Parent),
+  //    Self is destroyed only if TJvDockTabHostForm is destroyed (thus is nil at
+  //    this point }
+  //  DockClient := FindDockClient(Parent);
+  //  if (DockClient <> nil) and (DockClient.LastDockSite is TJvDockPanel) then
+  //    with TJvDockPanel(DockClient.LastDockSite) do
+  //      if UseDockManager and (JvDockManager <> nil) then
+  //        JvDockManager.RemoveControl(Self.Parent);
   inherited Destroy;
 end;
 
@@ -3178,6 +3184,7 @@ begin
     SetDockSite(ParentForm, False);
   ParentForm.DragKind := dkDrag;
   ParentForm.DragMode := dmManual;
+  LastDockSite := nil;
   inherited Destroy;
 end;
 
@@ -3230,8 +3237,9 @@ var
   OldDockWidth, OldDockHeight: Integer;
 begin
   Result := TJvDockConjoinHostForm.Create(Application);
-  Result.DockClient.DockStyle := Self.DockStyle;
 
+  { CreateConjoinPanelClass implicitly sets Result.DockClient.DockStyle via the
+    assign in that function }
   APanel := CreateConjoinPanelClass(Result);
 
   Result.BoundsRect := Control1.BoundsRect;
@@ -3294,8 +3302,9 @@ var
   OldDockWidth, OldDockHeight: Integer;
 begin
   Result := TJvDockTabHostForm.Create(Application);
-  Result.DockClient.DockStyle := Self.DockStyle;
 
+  { CreateTabDockClass implicitly sets Result.DockClient.DockStyle via the
+    assign in that function }
   Page := CreateTabDockClass(Result);
 
   Result.BoundsRect := Control1.BoundsRect;
@@ -3602,11 +3611,21 @@ begin
 end;
 
 procedure TJvDockClient.SetLastDockSite(ALastDockSite: TWinControl);
+var
+  JvDockManager: IJvDockManager;
 begin
   if ALastDockSite <> FLastDockSite then
   begin
     if FLastDockSite <> nil then
+    begin
       FLastDockSite.RemoveFreeNotification(Self);
+
+      if TWinControlAccessProtected(FLastDockSite).UseDockManager and
+        Supports(TWinControlAccessProtected(FLastDockSite).DockManager, IJvDockManager, JvDockManager) then
+      begin
+        JvDockManager.RemoveControl(Self.ParentForm);
+      end;
+    end;
 
     FLastDockSite := ALastDockSite;
 
@@ -4976,10 +4995,12 @@ var
   I, ACount, NameLen, SheetVisible, ActiveSheetIndex: Integer;
   ControlName: string;
   AControl: TControl;
+  Index: Integer;
 begin
   Stream.Read(I, SizeOf(I));
 
   Stream.Read(ACount, SizeOf(ACount));
+  Index := 0;
   for I := 0 to ACount - 1 do
   begin
     ControlName := '';
@@ -4990,15 +5011,20 @@ begin
       SetLength(ControlName, NameLen);
       Stream.Read(Pointer(ControlName)^, NameLen);
     end;
+
+    Stream.Read(SheetVisible, SizeOf(SheetVisible));
+
     if ControlName <> '' then
     begin
       ReloadDockedControl(ControlName, AControl);
       if AControl <> nil then
+      begin
         AControl.ManualDock(Self, nil, alClient);
+        { DockClients[Index] is always AControl? }
+        DockClients[Index].Visible := Boolean(SheetVisible);
+        Inc(Index);
+      end;
     end;
-
-    Stream.Read(SheetVisible, SizeOf(SheetVisible));
-    DockClients[I].Visible := Boolean(SheetVisible);
   end;
 
   Stream.Read(ActiveSheetIndex, SizeOf(ActiveSheetIndex));

@@ -153,7 +153,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  SysUtils, 
+  SysUtils,
   JvDockGlobals, JvDockVSNetStyle;
 
 //=== Local procedures =======================================================
@@ -228,21 +228,27 @@ end;
 function TJvDockInfoTree.CreateHostControl(ATreeZone: TJvDockInfoZone): TWinControl;
 var
   Form: TForm;
-  DockClient: TJvDockClient;
+  ADockClient: TJvDockClient;
 begin
+  { The dockinfo data that is saved, contains names of the values of ChildZone.DockControl
+    Thus on loading it can be that no form with that DockControl name can be found;
+    then DockControl will be nil
+  }
   Result := nil;
   case ATreeZone.DockFormStyle of
     dsConjoin:
+      if Assigned(TJvDockInfoZone(ATreeZone.ChildZone).DockControl) then
       begin
         Form := TJvDockConjoinHostForm.Create(Application);
-        DockClient := FindDockClient(TJvDockInfoZone(ATreeZone.ChildZone).DockControl);
-        Result := DockClient.CreateConjoinPanelClass(Form).Parent;
+        ADockClient := FindDockClient(TJvDockInfoZone(ATreeZone.ChildZone).DockControl);
+        Result := ADockClient.CreateConjoinPanelClass(Form).Parent;
       end;
     dsTab:
+      if Assigned(TJvDockInfoZone(ATreeZone.ChildZone).DockControl) then
       begin
         Form := TJvDockTabHostForm.Create(Application);
-        DockClient := FindDockClient(TJvDockInfoZone(ATreeZone.ChildZone).DockControl);
-        Result := DockClient.CreateTabDockClass(Form).Parent;
+        ADockClient := FindDockClient(TJvDockInfoZone(ATreeZone.ChildZone).DockControl);
+        Result := ADockClient.CreateTabDockClass(Form).Parent;
       end;
   end;
   if Result <> nil then
