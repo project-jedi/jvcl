@@ -172,6 +172,7 @@ end;
 
 destructor TJvProgressDialog.Destroy;
 begin
+//  Hide;
   FreeAndNil(FImage);
   FreeAndNil(FIImage);
   inherited;
@@ -219,7 +220,8 @@ end;
 
 procedure TJvProgressDialog.SetPicture(const Value: TPicture);
 begin
-  FImage.Assign(Value);
+  if FImage <> nil then
+    FImage.Assign(Value);
 end;
 
 procedure TJvProgressDialog.DoClose;
@@ -252,12 +254,19 @@ end;
 procedure TJvProgressDialog.Hide;
 begin
   if FForm <> nil then
+  begin
     FForm.Close;
+    Application.ProcessMessages;
+  end;
 end;
 
 procedure TJvProgressDialog.Show;
 begin
-  FreeAndNil(FForm);
+  if FForm <> nil then
+  begin
+    FForm.Release;
+    FForm := nil;
+  end;
   FForm := TfrmProgress.Create(Application);
   FForm.OnClose := InternalDoClose;
   FCancelled := false;
@@ -270,8 +279,8 @@ end;
 procedure TJvProgressDialog.InternalDoClose(Sender: TObject;
   var Action: TCloseAction);
 begin
-  Action := caFree;
   FForm := nil;
+  Action := caFree;
   RestoreValues;
   DoClose;
 end;
