@@ -63,5 +63,6 @@
     <File Name="..\..\qcommon\QSetupApi.pas" Targets="D7clx" Formname="" Condition=""/>
     <File Name="..\..\run\JvAppXMLStorage.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvComputerInfoEx.pas" Targets="windows" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQSystemColors.pas" Targets="allclx" Formname="" Condition=""/>
   </Contains>
 </Package>
