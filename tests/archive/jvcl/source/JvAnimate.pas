@@ -122,7 +122,10 @@ end;
 
 procedure TJvAnimate.MouseEnter(var Msg: TMessage);
 begin
+  inherited;
   FSaved := Application.HintColor;
+  // for D7...
+  if csDesigning in ComponentState then Exit;
   Application.HintColor := FColor;
   DoMouseEnter(Msg);
 end;

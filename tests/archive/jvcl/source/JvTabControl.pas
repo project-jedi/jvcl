@@ -85,6 +85,8 @@ end;
 procedure TJvTabControl.MouseEnter(var Msg: TMessage);
 begin
   FSaved := Application.HintColor;
+  // for D7...
+  if csDesigning in ComponentState then Exit;
   Application.HintColor := FColor;
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
