@@ -120,7 +120,9 @@ type
     property Params;
   published
     property Transaction;
+{$IFDEF DELPHI6_UP}
     property UniDirectionnal;
+{$ENDIF}
     property OnClose;
     property OnError;
     property SQL;
@@ -136,7 +138,9 @@ type
   end;
 
 implementation
+{$IFDEF DELPHI6_UP}
 uses FMTBCD;
+{$ENDIF}
 
 procedure TJvUIBCustomDataSet.InternalOpen;
 begin
@@ -173,7 +177,7 @@ procedure TJvUIBCustomDataSet.InternalGotoBookmark (Bookmark: Pointer);
 var
   ReqBookmark: Integer;
 begin
-  ReqBookmark := PInteger (Bookmark)^;
+  ReqBookmark := Integer(Bookmark^);
     FCurrentRecord := ReqBookmark
 end;
 
@@ -215,7 +219,7 @@ end;
 procedure TJvUIBCustomDataSet.GetBookmarkData (
   Buffer: PChar; Data: Pointer);
 begin
-  PInteger(Data)^ :=
+  Integer(Data^) :=
     PUIBBookMark(Buffer + FRecordSize).Bookmark;
 end;
 
@@ -223,7 +227,7 @@ procedure TJvUIBCustomDataSet.SetBookmarkData (
   Buffer: PChar; Data: Pointer);
 begin
   PUIBBookMark(Buffer + FRecordSize).Bookmark :=
-    PInteger(Data)^;
+    Integer(Data^);
 end;
 
 function TJvUIBCustomDataSet.GetRecordCount: Longint;
@@ -297,7 +301,7 @@ begin
       end;
   end;
 
-  PInteger (Buffer)^ := FCurrentRecord;
+  PInteger(Buffer)^ := FCurrentRecord;
   with PUIBBookMark(Buffer + FRecordSize)^ do
   begin
     case Result of
@@ -378,7 +382,9 @@ end;
 
 procedure TJvUIBCustomDataSet.SetUniDirectional(const Value: boolean);
 begin
+{$IFDEF DELPHI6_UP}
   inherited SetUniDirectional(Value);
+{$ENDIF}
   FStatement.CachedFetch := not Value;
 end;
 
@@ -430,8 +436,10 @@ begin
                   if Size = 9 then
                     Precision := 10 else
                     Precision := 9;
+                  {$IFDEF DELPHI6_UP}
                   if size > 4 then
                     DataType := ftFMTBcd else
+                  {$ENDIF}
                     DataType := ftBCD;
                 end;
               SQL_INT64,
@@ -442,8 +450,10 @@ begin
                   if Size = 18 then
                     Precision := 19 else
                     Precision := 18;
+                  {$IFDEF DELPHI6_UP}
                   if size > 4 then
                     DataType := ftFMTBcd else
+                  {$ENDIF}
                     DataType := ftBCD;
                 end;
               SQL_DOUBLE:
@@ -509,19 +519,31 @@ begin
             case FStatement.Fields.SQLType[FieldNo] of
               SQL_SHORT:
                 begin
+                {$IFDEF DELPHI6_UP}
                   TBCD(Buffer^) := strToBcd(IntToStr(PSmallint(sqldata)^));
                   BcdDivide(TBCD(Buffer^), inttostr(scaledivisor[sqlscale]), TBCD(Buffer^));
+                {$ELSE}
+                  CurrToBcd(PSmallint(sqldata)^/scaledivisor[sqlscale], TBCD(Buffer^));
+                {$ENDIF}
                 end;
               SQL_LONG:
                 begin
+                {$IFDEF DELPHI6_UP}
                   TBCD(Buffer^) := strToBcd(IntToStr(PInteger(sqldata)^));
                   BcdDivide(TBCD(Buffer^), inttostr(scaledivisor[sqlscale]), TBCD(Buffer^));
+                {$ELSE}
+                  CurrToBcd(PInteger(sqldata)^/scaledivisor[sqlscale], TBCD(Buffer^));
+                {$ENDIF}
                 end;
               SQL_INT64,
               SQL_QUAD:
                 begin
+                {$IFDEF DELPHI6_UP}
                   TBCD(Buffer^) := strToBcd(IntToStr(PInt64(sqldata)^));
                   BcdDivide(TBCD(Buffer^), inttostr(scaledivisor[sqlscale]), TBCD(Buffer^));
+                {$ELSE}
+                  CurrToBcd(PInt64(sqldata)^/scaledivisor[sqlscale], TBCD(Buffer^));
+                {$ENDIF}
                 end;
               SQL_DOUBLE: PDouble(Buffer)^ := PDouble(sqldata)^;
             else
