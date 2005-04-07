@@ -107,9 +107,10 @@ type
   TJvTitleHintEvent = procedure(Sender: TObject; Field: TField;
     var AHint: string; var ATimeOut: Integer) of object;
   TJvCellHintEvent = TJvTitleHintEvent;
-  
+  TJvDBColumnResizeEvent = procedure(Grid: TJvDBGrid; ACol: Longint; NewWidth: Integer) of object;
+
   TJvDBGridLayoutChangeEvent = procedure(Grid: TJvDBGrid; Kind: TJvDBGridLayoutChangeKind) of object;
-  
+
   TJvDBGridLayoutChangeLink = class
   private
     FOnChange: TJvDBGridLayoutChangeEvent;
@@ -223,6 +224,7 @@ type
     FInAutoSize: Boolean;
     FSelectColumnsDialogStrings: TJvSelectDialogColumnStrings;
     FTitleColumn: TColumn;
+    FOnColumnResized: TJvDBColumnResizeEvent;
     FSortMarker: TSortMarker;
     FShowCellHint: Boolean;
     FOnShowCellHint: TJvCellHintEvent;
@@ -247,6 +249,8 @@ type
     procedure SetRowResize(Value: Boolean);
     procedure SetRowsHeight(Value: Integer);
     procedure SetTitleRowHeight(Value: Integer);
+    procedure WriteCellText(ARect: TRect; DX, DY: Integer; const Text: string;
+      Alignment: TAlignment; ARightToLeft: Boolean; Options: Integer = 0);
 
     function GetImageIndex(Field: TField): Integer;
     procedure SetShowGlyphs(Value: Boolean);
@@ -470,6 +474,8 @@ type
     property ShowMemos: Boolean read FShowMemos write SetShowMemos default True;
     { BooleanEditor: if true, a checkbox is used to edit boolean fields }
     property BooleanEditor: Boolean read FBooleanEditor write SetBooleanEditor default True;
+    { OnColumnResized: event triggered each time a column is resized with the mouse }
+    property OnColumnResized: TJvDBColumnResizeEvent read FOnColumnResized write FOnColumnResized;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -1974,13 +1980,14 @@ begin
     end
     else
     begin
-      //-----------------------------------------------------------------------
-      // FBC: do not move column if RowSelect = True
-      //-----------------------------------------------------------------------
-      if (dgRowSelect in Options) and (Columns.State <> csCustomized) then
+      //-------------------------------------------------------------------------------
+      // Prevents the grid from going back to the first column when dgRowSelect is True
+      // Does not work if there's no indicator column
+      //-------------------------------------------------------------------------------
+      if (dgRowSelect in Options) and (Cell.Y >= TitleOffset) then
         inherited MouseDown(Button, Shift, 1, Y)
       else
-        inherited MouseDown(Button, Shift, X, Y)
+        inherited MouseDown(Button, Shift, X, Y);
     end;  
     MouseDownEvent := OnMouseDown;
     if Assigned(MouseDownEvent) then
@@ -2060,6 +2067,7 @@ var
   Cell: TGridCoord;
   ACol: Longint;
   DoClick: Boolean;
+  ALeftCol: Integer;
 begin
   Cell := MouseCoord(X, Y);
   if FTracking and (FPressedCol <> nil) then
@@ -2102,7 +2110,18 @@ begin
     (Cell.X = 0) and (Cell.Y = 0) and DataLink.Active then
     ShowSelectColumnClick; // Selection of columns
 
-  inherited MouseUp(Button, Shift, X, Y);
+  if (Button = mbLeft) and (FGridState = gsColSizing) then
+  begin
+    ALeftCol := LeftCol;
+    inherited MouseUp(Button, Shift, X, Y);
+    if (dgRowSelect in Options) then
+      LeftCol := ALeftCol;
+    if Assigned(OnColumnResized) then
+      OnColumnResized(Self, FSizingIndex + Byte(not (dgIndicator in Options)) - 1,
+        ColWidths[FSizingIndex]);
+  end
+  else
+    inherited MouseUp(Button, Shift, X, Y);
   DoAutoSizeColumns;
 end;
 
@@ -2313,9 +2332,66 @@ begin
   Result := AnsiSameText(AFieldName, SortedField);
 end;
 
+procedure TJvDBGrid.WriteCellText(ARect: TRect; DX, DY: Integer; const Text: string;
+  Alignment: TAlignment; ARightToLeft: Boolean; Options: Integer = 0);
+const
+  AlignFlags: array [TAlignment] of Integer =
+    (DT_LEFT or DT_EXPANDTABS or DT_NOPREFIX,
+     DT_RIGHT or DT_EXPANDTABS or DT_NOPREFIX,
+     DT_CENTER or DT_EXPANDTABS or DT_NOPREFIX);
+  RTL: array [Boolean] of Integer = (0, DT_RTLREADING);
+var
+  DrawBitmap: TBitmap;
+  B, R: TRect;
+  Hold, DrawOptions: Integer;
+begin
+  DrawBitmap := TBitmap.Create;
+  try
+    DrawBitmap.Canvas.Lock;
+    try
+      with DrawBitmap, ARect do { Use offscreen bitmap to eliminate flicker and }
+      begin                     { brush origin tics in painting / scrolling.    }
+        Width := Max(Width, Right - Left);
+        Height := Max(Height, Bottom - Top);
+        R := Classes.Rect(DX, DY, Right - Left - 1, Bottom - Top - 1);
+        B := Classes.Rect(0, 0, Right - Left, Bottom - Top);
+      end;
+      with DrawBitmap.Canvas do
+      begin
+        Font := Canvas.Font;
+        Font.Color := Canvas.Font.Color;
+        Brush := Canvas.Brush;
+        Brush.Style := bsSolid;
+        FillRect(B);
+        SetBkMode(Handle, TRANSPARENT);
+        if Canvas.CanvasOrientation = coRightToLeft then
+          ChangeBiDiModeAlignment(Alignment);
+        DrawOptions := AlignFlags[Alignment] or RTL[ARightToLeft];
+        if Options <> 0 then
+          DrawOptions := DrawOptions or Options;
+        if WordWrap then
+          DrawOptions := DrawOptions or DT_WORDBREAK;
+        Windows.DrawText(Handle, PChar(Text), Length(Text), R, DrawOptions);
+      end;
+      if Canvas.CanvasOrientation = coRightToLeft then
+      begin
+        Hold := ARect.Left;
+        ARect.Left := ARect.Right;
+        ARect.Right := Hold;
+      end;
+      Canvas.CopyRect(ARect, DrawBitmap.Canvas, B);
+    finally
+      DrawBitmap.Canvas.Unlock;
+    end;
+  finally
+    DrawBitmap.Free;
+  end;
+end;
+
 procedure TJvDBGrid.DrawCell(ACol, ARow: Longint; ARect: TRect; AState: TGridDrawState);
 const
   EdgeFlag: array [Boolean] of UINT = (BDR_RAISEDINNER, BDR_SUNKENINNER);
+  MinOffs = 1;
 var
   FrameOffs: Byte;
   BackColor: TColor;
@@ -2427,6 +2503,40 @@ var
     end;
   end;
 
+  procedure DrawTitleCaption;
+  var
+    CalcRect: TRect;
+    TitleSpace,
+    TitleOptions: Integer;
+  begin
+    with DrawColumn.Title do
+    begin
+      TitleOptions := DT_END_ELLIPSIS;
+      if WordWrap then
+      begin
+        CalcRect := TextRect;
+        Dec(CalcRect.Right, MinOffs + 1);
+        Windows.DrawText(Canvas.Handle, PChar(Caption), -1, CalcRect,
+          DT_CALCRECT or DT_LEFT or DT_EXPANDTABS or DT_NOPREFIX or DT_WORDBREAK);
+        if CalcRect.Bottom > TextRect.Bottom then
+        begin
+          TitleOptions := DT_END_ELLIPSIS or DT_SINGLELINE;
+          TitleSpace := TextRect.Bottom - TextRect.Top - Canvas.TextHeight('^g');
+        end
+        else
+        begin
+          if (CalcRect.Bottom - CalcRect.Top) > Canvas.TextHeight('^g') then
+            TitleOptions := 0;
+          TitleSpace := TextRect.Bottom - CalcRect.Bottom;
+        end;
+      end
+      else
+        TitleSpace := TextRect.Bottom - TextRect.Top - Canvas.TextHeight('^g');
+      WriteCellText(TextRect, MinOffs, Max(MinOffs, TitleSpace div 2), Caption, Alignment,
+        IsRightToLeft, TitleOptions);
+    end;
+  end;
+
 begin
 //  if gdFixed in AState then
 //    Canvas.Brush.Color := FixedColor;
@@ -2485,7 +2595,7 @@ begin
     end;
   end
   else
-  if not (csLoading in ComponentState) and (FTitleButtons or (FixedCols > 0)) and
+  if not (csLoading in ComponentState) and //(FTitleButtons or (FixedCols > 0)) and
     (gdFixed in AState) and (dgTitles in Options) and (ARow < TitleOffset) then
   begin
     SavePen := Canvas.Pen.Color;
@@ -2559,10 +2669,7 @@ begin
         Canvas.Brush.Color := BackColor;
       end;
       if Down then
-      begin
-        Inc(TitleRect.Left);
-        Inc(TitleRect.Top);
-      end;
+        OffsetRect(TitleRect, 1, 1);
       ARect := TitleRect;
       if (DataLink = nil) or not DataLink.Active then
         Canvas.FillRect(TitleRect)
@@ -2586,17 +2693,13 @@ begin
         DoDrawColumnTitle(Canvas, TitleRect, DrawColumn, Bmp, Down, Indicator,
           DefaultDrawText, DefaultDrawSortMarker);
         TextRect := TitleRect;
-        if (ASortMarker <> smNone) and ((DrawColumn.Title.Alignment = taRightJustify) or (Canvas.TextWidth(Caption) >=
-          (TextRect.Right - TextRect.Left))) then
+        if ASortMarker <> smNone then
           Dec(TextRect.Right, Bmp.Width + 4);
         if DefaultDrawText then
         begin
           if DrawColumn.Expandable then
             DrawExpandBtn(TitleRect, TextRect, InBiDiMode, DrawColumn.Expanded);
-          with DrawColumn.Title do
-            DrawCellText(Self, ACol, ARow, MinimizeText(Caption, Canvas,
-              RectWidth(TextRect) - Indicator), TextRect, Alignment,
-              vaCenterJustify, IsRightToLeft);
+          DrawTitleCaption;
         end;
         if DefaultDrawSortMarker then
         begin
@@ -2604,8 +2707,8 @@ begin
           begin
             //          ALeft := TitleRect.Right - Bmp.Width - 3;
             ALeft := TitleRect.Right - Indicator + 3;
-            if Down then
-              Inc(ALeft);
+            //if Down then
+            //  Inc(ALeft);
             if IsRightToLeft then
               ALeft := TitleRect.Left + 3;
             Canvas.FillRect(Rect(TextRect.Right, TitleRect.Top, TitleRect.Right, TitleRect.Bottom));
@@ -2616,7 +2719,7 @@ begin
         end;
       end
       else
-        DrawCellText(Self, ACol, ARow, '', ARect, taLeftJustify, vaCenterJustify);
+        WriteCellText(ARect, MinOffs, MinOffs, '', taLeftJustify, IsRightToLeft);
     finally
       Canvas.Pen.Color := SavePen;
     end;
@@ -2636,12 +2739,6 @@ end;
 
 procedure TJvDBGrid.DrawColumnCell(const Rect: TRect; DataCol: Integer;
   Column: TColumn; State: TGridDrawState);
-const
-  AlignFlags: array [TAlignment] of Integer =
-    (DT_LEFT or DT_EXPANDTABS or DT_NOPREFIX,
-     DT_RIGHT or DT_EXPANDTABS or DT_NOPREFIX,
-     DT_CENTER or DT_EXPANDTABS or DT_NOPREFIX);
-  RTL: array [Boolean] of Integer = (0, DT_RTLREADING);
 var
   I: Integer;
   NewBackgrnd: TColor;
@@ -2649,10 +2746,6 @@ var
   Bmp: TBitmap;
   Field: TField;
   MemoText: string;
-  DrawBitmap: TBitmap;
-  DrawRect, B, R: TRect;
-  Alignment: TAlignment;
-  Hold, DrawOptions: Integer;
 begin
   Field := Column.Field;
   if Assigned(DataSource) and Assigned(DataSource.DataSet) and DataSource.DataSet.Active and
@@ -2680,48 +2773,8 @@ begin
           MemoText := Field.DisplayText
         else
           MemoText := Field.AsString;
-        DrawBitmap := TBitmap.Create;
-        try
-          DrawBitmap.Canvas.Lock;
-          try
-            DrawRect := Rect;
-            with DrawBitmap, DrawRect do { Use offscreen bitmap to eliminate flicker and }
-            begin                        { brush origin tics in painting / scrolling.    }
-              Width := Max(Width, Right - Left);
-              Height := Max(Height, Bottom - Top);
-              R := Classes.Rect(2, 2, Right - Left - 1, Bottom - Top - 1);
-              B := Classes.Rect(0, 0, Right - Left, Bottom - Top);
-            end;
-            Alignment := Column.Alignment;
-            with DrawBitmap.Canvas do
-            begin
-              Font := Canvas.Font;
-              Font.Color := Canvas.Font.Color;
-              Brush := Canvas.Brush;
-              Brush.Style := bsSolid;
-              FillRect(B);
-              SetBkMode(Handle, TRANSPARENT);
-              if Canvas.CanvasOrientation = coRightToLeft then
-                ChangeBiDiModeAlignment(Alignment);
-              DrawOptions := AlignFlags[Alignment] or
-                RTL[UseRightToLeftAlignmentForField(Field, Alignment)];
-              if WordWrap then
-                DrawOptions := DrawOptions or DT_WORDBREAK;
-              Windows.DrawText(Handle, PChar(MemoText), Length(MemoText), R, DrawOptions);
-            end;
-            if Canvas.CanvasOrientation = coRightToLeft then
-            begin
-              Hold := DrawRect.Left;
-              DrawRect.Left := DrawRect.Right;
-              DrawRect.Right := Hold;
-            end;
-            Canvas.CopyRect(DrawRect, DrawBitmap.Canvas, B);
-          finally
-            DrawBitmap.Canvas.Unlock;
-          end;
-        finally
-          DrawBitmap.Free;
-        end;
+        WriteCellText(Rect, 2, 2, MemoText, Column.Alignment,
+          UseRightToLeftAlignmentForField(Field, Column.Alignment));
       end
       else
         DefaultDrawColumnCell(Rect, DataCol, Column, State);
@@ -3075,6 +3128,10 @@ begin
 end;
 
 procedure TJvDBGrid.DoAutoSizeColumns;
+// This function ignores Min and Max column widths because these values
+// bring about two problems:
+// - if (min. width * nb. of columns) > total width --> result too large
+// - if (max. width * nb. of columns) < total width --> result too small
 var
   TotalWidth, OrigWidth: Integer;
   I: Integer;
@@ -3114,7 +3171,7 @@ begin
               Columns[I].Width := TotalWidth - AUsedWidth
             else
             begin
-              AWidth := GetMaxColWidth(GetMinColWidth(round(ScaleFactor * Columns[I].Width)));
+              AWidth := Round(ScaleFactor * Columns[I].Width);
               if AWidth < 1 then
                 AWidth := 1;
               Columns[I].Width := AWidth;
@@ -3134,7 +3191,7 @@ begin
         for I := 0 to Columns.Count - 1 do
           if Columns[I].Visible and (I <> AUsedWidth) then
             Inc(OrigWidth, Columns[I].Width);
-        AWidth := GetMaxColWidth(GetMinColWidth(TotalWidth - OrigWidth));
+        AWidth := TotalWidth - OrigWidth;
         if AWidth > 0 then
           Columns[AUsedWidth].Width := AWidth;
       end
@@ -3146,7 +3203,7 @@ begin
         for I := 0 to Columns.Count - 1 do
           if Columns[I].Visible and (I <> AutoSizeColumnIndex) then
             Inc(OrigWidth, Columns[I].Width);
-        AWidth := GetMaxColWidth(GetMinColWidth(TotalWidth - OrigWidth));
+        AWidth := TotalWidth - OrigWidth;
         if AWidth > 0 then
           Columns[AutoSizeColumnIndex].Width := AWidth;
       end;
@@ -3458,10 +3515,12 @@ begin
       SaveRow := DataLink.ActiveRecord;
       try
         CalcOptions := DT_CALCRECT or DT_LEFT or DT_NOPREFIX or DrawTextBiDiModeFlagsReadingOnly;
-        if (ARow = -1) then
+        if ARow = -1 then
         begin
           Canvas.Font.Assign(Columns[ACol].Title.Font);
           HintStr := Columns[ACol].Title.Caption;
+          if WordWrap then
+            CalcOptions := CalcOptions or DT_WORDBREAK;
         end
         else
         with Columns[ACol] do
@@ -3520,9 +3579,14 @@ procedure TJvDBGrid.WMVScroll(var Msg: TWMVScroll);
 var
   ALeftCol: Integer;
 begin
-  ALeftCol := LeftCol;
-  inherited;
-  LeftCol := ALeftCol;
+  if (dgRowSelect in Options) then
+  begin
+    ALeftCol := LeftCol;
+    inherited;
+    LeftCol := ALeftCol;
+  end
+  else
+    inherited;
 end;
 
 procedure TJvDBGrid.SetWordWrap(Value: Boolean);
