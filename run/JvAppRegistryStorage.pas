@@ -19,9 +19,12 @@ Contributor(s):
   Jens Fudickar
   Hofi
 
-Last Modified: 2004-10-11
+Last Modified: 2005-04-10
 
 Changes:
+2005-04-10:      by outchy
+  * Issue 2854: wrong parameter in TJvAppRegistryStorage.DoReadBinary
+                and TJvAppRegistryStorage.DoWriteBinary
 2004-10-11:      by Hofi
   * Changed
       in class
@@ -564,19 +567,17 @@ var
   ValueName: string;
 begin
   SplitKeyPath(Path, SubKey, ValueName);
-  Result := RegReadBinary(FRegHKEY, SubKey, ValueName, Buf, BufSize);
+  Result := RegReadBinary(FRegHKEY, SubKey, ValueName, Buf^, BufSize);
 end;
 
 procedure TJvAppRegistryStorage.DoWriteBinary(const Path: string; Buf: Pointer; BufSize: Integer);
 var
   SubKey: string;
   ValueName: string;
-  TmpBuf: Byte;
 begin
-  TmpBuf := Byte(Buf);
   SplitKeyPath(Path, SubKey, ValueName);
   CreateKey(SubKey);
-  RegWriteBinary(FRegHKEY, SubKey, ValueName, TmpBuf, BufSize);
+  RegWriteBinary(FRegHKEY, SubKey, ValueName, Buf^, BufSize);
 end;
 
 {$IFDEF UNITVERSIONING}
