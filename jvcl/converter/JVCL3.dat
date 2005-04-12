@@ -245,3 +245,6 @@ JvShell=JvTrayIcon
 D2H=Dec2Hex
 H2D=Hex2Dec
 HideStartButton=ShowStartButton(False)
+TJvxCurrencyEdit=TJvValidateEdit
+TJvIntegerEdit=TJvValidateEdit
+JvTypedEdit=JvValidateEdit
