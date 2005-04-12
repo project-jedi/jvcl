@@ -311,25 +311,31 @@ procedure TJvAppEventList.ClearEvents;
 begin
   if FHooked then
   begin
-    Application.OnActivate := nil;
-    Application.OnDeactivate := nil;
-    Application.OnException := nil;
-    {$IFDEF VisualCLX}
-    Application.OnEvent := nil;
-    {$ENDIF VisualCLX}
-    Application.OnIdle := nil;
-    Application.OnHelp := nil;
-    Application.OnHint := nil;
-    {$IFDEF VCL}
-    Application.OnMessage := nil;
-    {$ENDIF VCL}
-    Application.OnMinimize := nil;
-    Application.OnRestore := nil;
-    Application.OnShowHint := nil;
-    Application.OnActionExecute := nil;
-    Application.OnActionUpdate := nil;
-    Application.OnShortCut := nil;
-    if Screen <> nil then
+    // Application might get destroyed and set to nil before our finalization is called
+    if Assigned(Application) then
+    begin
+      Application.OnActivate := nil;
+      Application.OnDeactivate := nil;
+      Application.OnException := nil;
+      {$IFDEF VisualCLX}
+      Application.OnEvent := nil;
+      {$ENDIF VisualCLX}
+      Application.OnIdle := nil;
+      Application.OnHelp := nil;
+      Application.OnHint := nil;
+      {$IFDEF VCL}
+      Application.OnMessage := nil;
+      {$ENDIF VCL}
+      Application.OnMinimize := nil;
+      Application.OnRestore := nil;
+      Application.OnShowHint := nil;
+      Application.OnActionExecute := nil;
+      Application.OnActionUpdate := nil;
+      Application.OnShortCut := nil;
+    end;
+
+    // Screen might get destroyed and set to nil before our finalization is called
+    if Assigned(Screen) then
     begin
       Screen.OnActiveControlChange := nil;
       Screen.OnActiveFormChange := nil;
