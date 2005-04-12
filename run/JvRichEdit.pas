@@ -5649,7 +5649,8 @@ begin
       raise EOutOfResources.CreateRes(@sRichEditLoadFail);
   end;
 
-  FRichEdit.SetSelection(0, 0, True);
+  if not (smSelection in Mode) then  // Mantis 2591: do not change the selection if there is one
+    FRichEdit.SetSelection(0, 0, True);
 end;
 
 procedure TJvRichEditStrings.EnableChange(const Value: Boolean);
