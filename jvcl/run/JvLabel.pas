@@ -22,6 +22,12 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Changes:
+2005-04-02:
+  * Fixed (Added) support for Alignment when used with Angle. (Layout still to do)
+  * Fixed Shadow (was not visible when JvLabel not Transparent).
+  * Fixed RoundedFrame (was not visible when not Transparent).
+2004-04-05:
+  * Add property RoundedFrame in TJvCustomLabel (Integer>0 is the radius corner)
 2003-10-19:
   * Moved TJvCustomLabel from JvxCtrls to this unit
 2003-09-13:
@@ -39,9 +45,9 @@ Changes:
     a URL (or file-path) to the URL property.
   * JvAngleLabel merged into JvLabel: set Angle > 0 and font to a TrueTrype font to rotate the text // peter3
 
-  Contributor(s): dierk schmid
-  //dierk 2004-5-04
-  --add property RoundedFrame in TJvCustomLabel (Integer>0 is the radius corner)
+  Contributor(s):
+    Dierk schmid
+    Stephane Bischoff (Tief)
 
 Known Issues:
 * AutoSize calculations aren't correct when RoundedFrame and/or Shadow are active
@@ -65,6 +71,13 @@ type
   TShadowPosition = (spLeftTop, spLeftBottom, spRightBottom, spRightTop);
   TJvLabelRotateAngle = -360..360;
   TJvTextEllipsis = (teNone, teWordEllipsis, tePathEllipsis, teEndEllipsis);
+
+  TAngleInfo = record
+    TextWidth, TextHeight : Integer;
+    TextGapWidth, TextGapHeight : Integer;
+    TotalWidth, TotalHeight : Integer;
+    PosX, PosY : Integer
+  end;
 
   TJvCustomLabel = class(TJvGraphicControl)
   private
@@ -279,6 +292,12 @@ function DrawShadowText(Canvas: TCanvas; Str: PChar; Count: Integer; var Rect: T
 
 procedure FrameRounded(Canvas: TCanvas; ARect: TRect; AColor: TColor; R: Integer);
 
+function CalculateAlignment(Alignment: TAlignment; Angle: integer; X, Y: Real;
+  Info: TAngleInfo): TPoint;
+procedure CalculateAngleInfo(Canvas: TCanvas; Angle: Integer; Text: string;
+  Rect: TRect; var Info: TAngleInfo; AutoSize: boolean = true;
+  Alignment: TAlignment = taLeftJustify);
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -300,6 +319,112 @@ const
   WordWraps: array [Boolean] of Word = (0, DT_WORDBREAK);
 
 //=== { TJvCustomLabel } =====================================================
+
+function CalculateAlignment(Alignment: TAlignment; Angle: integer; X, Y: Real; Info: TAngleInfo) : TPoint;
+begin
+  with Info do begin
+    case Angle of
+      0..89:
+        begin
+          case Alignment of
+            taLeftJustify : Result := Point(0, Round(Y + (TotalHeight - 2 * TextGapHeight) / 2));
+            taCenter      : Result := Point(Round(X - TotalWidth / 2), Round(Y + (TotalHeight - 2 * TextGapHeight) / 2));
+            taRightJustify: Result := Point(Round(X * 2 - TotalWidth), Round(Y + (TotalHeight - 2 * TextGapHeight) / 2));
+          end;
+        end;
+      90..179:
+        begin
+          case Alignment of
+            taLeftJustify : Result := Point(TextWidth, Round(Y + TotalHeight / 2));
+            taCenter      : Result := Point(Round(X + (TotalWidth - 2 * TextGapWidth) / 2), Round(Y + TotalHeight / 2));
+            taRightJustify: Result := Point(Round(X * 2 - TextGapWidth), Round(Y + TotalHeight / 2));
+          end;
+        end;
+      180..269:
+        begin
+          case Alignment of
+            taLeftJustify : Result := Point(TotalWidth, Round(Y - (TotalHeight - 2 * TextGapHeight) / 2));
+            taCenter      : Result := Point(Round(X + TotalWidth / 2), Round(Y - (TotalHeight - 2 * TextGapHeight) / 2));
+            taRightJustify: Result := Point(Round(X * 2), Round(Y - (TotalHeight - 2 * TextGapHeight) / 2));
+          end;
+        end;
+      else begin
+        case Alignment of
+          taLeftJustify : Result := Point(TextGapWidth, Round(Y - TotalHeight / 2));
+          taCenter      : Result := Point(Round(X - (TotalWidth - 2 * TextGapWidth) / 2), Round(Y - TotalHeight / 2));
+          taRightJustify: Result := Point(Round(X * 2 - TextWidth), Round(Y - TotalHeight / 2));
+        end;
+      end;
+    end;
+  end;
+end;
+
+procedure CalculateAngleInfo(Canvas: TCanvas; Angle: Integer; Text: string;
+  Rect: TRect; var Info: TAngleInfo; AutoSize: boolean = true;
+  Alignment: TAlignment = taLeftJustify);
+var
+  TxtWdt, TxtHgt : Extended;
+  angB, X, Y : Real;
+  Origin: TPoint;
+begin
+  // Calculate intermediate values
+  case Angle of
+    0..89   : angB := DegToRad(90 - Angle);
+    90..179 : angB := DegToRad(Angle - 90);
+    180..269: angB := DegToRad(270 - Angle);
+  else {270..359}
+    angB := DegToRad(Angle - 270);
+  end;
+  with Canvas do begin
+    TxtWdt := TextWidth (Text);
+    TxtHgt := TextHeight(Text);
+  end;
+  with Info do begin
+    TextWidth    := Round(sin(angB) * TxtWdt);
+    TextGapWidth := Round(cos(angB) * TxtHgt);
+    TextHeight    := Round(cos(angB) * TxtWdt);
+    TextGapHeight := Round(sin(angB) * TxtHgt);
+    // Calculate new sizes of component
+    TotalWidth   := (TextWidth + TextGapWidth);
+    TotalHeight   := (TextHeight + TextGapHeight);
+  end;
+  // Calculate draw position of text
+  with Rect do begin
+    X := (Right - Left) / 2;
+    Y := (Bottom - Top) / 2;
+  end;
+  // Calculate Layout and Alignment Position
+  //SetTextAlign(Canvas.Handle, TA_LEFT);
+  Origin := CalculateAlignment(Alignment, Angle, X, Y, Info);
+  if AutoSize then
+  begin
+    case Angle of
+      0..89:
+        begin
+          Info.PosX := 0;
+          Info.PosY := Info.TextHeight;
+        end;
+      90..179:
+        begin
+          Info.PosX := Info.TextWidth;
+          Info.PosY := Info.TotalHeight;
+        end;
+      180..269:
+        begin
+          Info.posX := Info.TotalWidth;
+          Info.posY := Info.TextGapHeight;
+        end;
+      else begin{270..359}
+        Info.PosX := Info.TextGapWidth;
+        Info.PosY := 0;
+      end;
+    end;
+  end
+  else begin
+    Info.PosX := Origin.X;
+    Info.PosY := Origin.Y;
+  end;
+end;
 
 function DrawShadowText(Canvas: TCanvas; Str: PChar; Count: Integer; var Rect: TRect;
   Format: Word; ShadowSize: Byte; ShadowColor: TColorRef;
@@ -327,6 +452,7 @@ begin
         OffsetRect(RShadow, ShadowSize, -ShadowSize);
       end;
   end;
+  Canvas.Brush.Style := bsClear;
   Result := DrawText(Canvas, Str, Count, RShadow, Format);
   if Result > 0 then
     Inc(Result, ShadowSize);
@@ -528,6 +654,9 @@ begin
 end;
 
 {$IFDEF VCL}
+//
+// TODO: check if code for VCL is applicable to CLX. If so, make change
+//
 procedure TJvCustomLabel.DrawAngleText(var Rect: TRect; Flags: Word; HasImage: Boolean;
   ShadowSize: Byte; ShadowColor: TColorRef; ShadowPos: TShadowPosition);
 var
@@ -535,9 +664,9 @@ var
   LogFont, NewLogFont: TLogFont;
   NewFont: HFont;
   TextX, TextY, ShadowX, ShadowY: Integer;
-  Phi: Real;
   Angle10: Integer;
   w, h: Integer;
+  Info: TAngleInfo;
   CalcRect: Boolean;
 begin
   Angle10 := Angle * 10;
@@ -563,31 +692,13 @@ begin
     ...this does the same thing:
   }
   Canvas.Font.Handle := NewFont;
-  Phi := Angle10 * Pi / 1800;
-  if not AutoSize then
-  begin
-    w := Rect.Right - Rect.Left;
-    h := Rect.Bottom - Rect.Top;
-    TextX := Trunc(0.5 * w - 0.5 * Canvas.TextWidth(Text) * Cos(Phi) -
-      0.5 * Canvas.TextHeight(Text) * Sin(Phi));
-    TextY := Trunc(0.5 * h - 0.5 * Canvas.TextHeight(Text) * Cos(Phi) +
-      0.5 * Canvas.TextWidth(Text) * Sin(Phi));
-  end
-  else
-  begin
-    w := 4 + Trunc(Canvas.TextWidth(Text) * Abs(Cos(Phi)) + Canvas.TextHeight(Text) * Abs(Sin(Phi)));
-    h := 4 + Trunc(Canvas.TextHeight(Text) * Abs(Cos(Phi)) + Canvas.TextWidth(Text) * Abs(Sin(Phi)));
-    TextX := 2;
-    if (Angle10 > 900) and (Angle10 < 2700) then
-      TextX := TextX + Trunc(Canvas.TextWidth(Text) * Abs(Cos(Phi)));
-    if Angle10 > 1800 then
-      TextX := TextX + Trunc(Canvas.TextHeight(Text) * Abs(Sin(Phi)));
-    TextY := 2;
-    if Angle10 < 1800 then
-      TextY := TextY + Trunc(Canvas.TextWidth(Text) * Abs(Sin(Phi)));
-    if (Angle10 > 900) and (Angle10 < 2700) then
-      TextY := TextY + Trunc(Canvas.TextHeight(Text) * Abs(Cos(Phi)));
-  end;
+  Canvas.Brush.Style := bsClear; // Do not Erase Shadow or Background
+
+  CalculateAngleInfo(Canvas, Angle, Text, ClientRect, Info, AutoSize, Alignment);
+  w := Info.TotalWidth;
+  h := Info.TotalHeight;
+  TextX := Info.posX;
+  TextY := Info.posY;
 
   if CalcRect then
   begin
@@ -601,7 +712,13 @@ begin
   else
   begin
     if HasImage then
-      Inc(TextX, Images.Width);
+    begin
+      case Alignment of
+        taLeftJustify : Inc(TextX, Images.Width);
+        taCenter      : Inc(TextX, Images.Width div 2);
+        taRightJustify: Inc(TextX, 0);
+      end;
+    end;
     Inc(TextX, MarginLeft);
     Inc(TextY, MarginTop);
     if ShadowSize > 0 then
@@ -669,6 +786,8 @@ begin
 
   Canvas.Start;
   try
+    Canvas.Brush.Style := bsClear; // Do not Erase Shadow or Background
+
     Phi := Angle * Pi / 180;
     if not AutoSize then
     begin
@@ -765,11 +884,11 @@ begin
       else
       begin
         Brush.Color := Color;
-        FrameRounded(Canvas, ClientRect, FrameColor, RoundedFrame);
         {$IFDEF VCL}
         if not Transparent then // clx: TODO
           FloodFill(ClientRect.Left + 1, ClientRect.Top + RoundedFrame, FrameColor, fsBorder);
         {$ENDIF VCL}
+        FrameRounded(Canvas, ClientRect, FrameColor, RoundedFrame);
       end;
     end;
     Rect := ClientRect;
