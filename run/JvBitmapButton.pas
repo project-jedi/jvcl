@@ -105,6 +105,7 @@ type
     property OnClick;
     property OnMouseDown;
     property OnMouseUp;
+    property Visible;
   end;
 
 {$IFDEF UNITVERSIONING}
