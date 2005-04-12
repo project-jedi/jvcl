@@ -959,7 +959,9 @@ begin
   end;
   if IsOwnerDrawMenu <> OldOwnerDraw then
     RefreshMenu(not OldOwnerDraw);
-  // to be used in a standard (non JV) toolbar
+
+  // To be used in a standard (non JV) toolbar and to have the editor show
+  // the images in the ImageIndex property of the menu items
   inherited Images := Value;
 end;
 
@@ -1470,6 +1472,10 @@ begin
   end;
   if IsOwnerDrawMenu <> OldOwnerDraw then
     RefreshMenu(not OldOwnerDraw);
+
+  // To have the editor show the images in the ImageIndex property of
+  // the menu items  
+  inherited Images := Value;
 end;
 
 procedure TJvPopupMenu.DisabledImageListChange(Sender: TObject);
