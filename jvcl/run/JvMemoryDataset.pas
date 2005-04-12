@@ -1753,7 +1753,7 @@ begin
     end;
   finally
     // move back to where we started from
-    if (SB <> nil) and Source.BookmarkValid(SB) then
+    if (SB <> nil) and Source.BookmarkValid(SB) and not Source.IsEmpty then
     begin
       Source.GotoBookmark(SB);
       Source.FreeBookmark(SB);
