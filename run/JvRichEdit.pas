@@ -61,8 +61,8 @@ type
 
   TJvAttributeType = (atDefaultText, atSelected, atWord);
   TJvConsistentAttribute = (caBold, caColor, caFace, caItalic, caSize,
-    caStrikeOut, caUnderline, caProtected, caOffset, caHidden, caLink,
-    caBackColor, caDisabled, caWeight, caSubscript, caRevAuthor);
+    caStrikeOut, caUnderline, caProtected, caOffset, caHidden, caCharset,
+    caLink, caBackColor, caDisabled, caWeight, caSubscript, caRevAuthor);
   TJvConsistentAttributes = set of TJvConsistentAttribute;
   TSubscriptStyle = (ssNone, ssSubscript, ssSuperscript);
   TUnderlineType = (utNone, utSolid, utWord, utDouble, utDotted, utDash,
@@ -6269,6 +6269,8 @@ begin
         Include(Result, caOffset);
       if (dwMask and CFM_HIDDEN) <> 0 then
         Include(Result, caHidden);
+      if (dwMask and CFM_CHARSET) <> 0 then
+        Include(Result, caCharset);
       if RichEditVersion >= 2 then
       begin
         if (dwMask and CFM_LINK) <> 0 then
