@@ -552,10 +552,14 @@ begin
   if Self.Selected[I] then
   begin
     State := [odSelected];
-    Canvas.Font.Color := FColorHighlightText
+    Canvas.Font.Color := FColorHighlightText;
+    Canvas.Brush.Color := FColorHighlight;
   end
   else
+  begin
     Canvas.Font.Color := Font.Color;
+    Canvas.Brush.Color := Color;
+  end;
   if IsHyperLink(Canvas, R, State, Items[I], X, Y, LinkName) then
     Cursor := crHandPoint
   else
