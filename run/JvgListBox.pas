@@ -1036,15 +1036,17 @@ begin
     APoint.X := X;
     APoint.Y := Y;
     Index := ItemAtPos(APoint, True);
-    case TCheckBoxState(Items.Objects[Index]) of
-      cbUnchecked:
-        Items.Objects[Index] := Pointer(cbChecked);
-      cbChecked:
-        Items.Objects[Index] := Pointer(cbUnchecked);
-      cbGrayed:
-       ;
+    if Index > -1 then begin
+      case TCheckBoxState(Items.Objects[Index]) of
+        cbUnchecked:
+          Items.Objects[Index] := Pointer(cbChecked);
+        cbChecked:
+          Items.Objects[Index] := Pointer(cbUnchecked);
+        cbGrayed:
+         ;
+      end;
+      Invalidate;
     end;
-    Invalidate;
   end;
 end;
 
