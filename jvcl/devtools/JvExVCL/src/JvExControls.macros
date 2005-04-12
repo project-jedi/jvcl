@@ -394,6 +394,7 @@ end;
 (*$DEFINE CONTROL_WNDPROC(ClassName)
 procedure TJvEx##ClassName.WndProc(var Msg: TMessage);
 begin
+  if not DispatchIsDesignMsg(self,Msg) then
   case Msg.Msg of
     CONTROL_WNDPROC_CASES
   else
@@ -469,6 +470,7 @@ var
   DlgCodes: TDlgCodes;
   Canvas: TCanvas;
 begin
+  if not DispatchIsDesignMsg(self,Msg) then
   case Msg.Msg of
     WINCONTROL_WNDPROC_CASES
   else
@@ -514,6 +516,7 @@ var
   DlgCodes: TDlgCodes;
   Canvas: TCanvas;
 begin
+  if not DispatchIsDesignMsg(self,Msg) then
   case Msg.Msg of
     EDITCONTROL_WNDPROC_CASES
   else

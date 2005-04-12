@@ -290,6 +290,7 @@ end;
 
 procedure TJvExSpeedButton.WndProc(var Msg: TMessage);
 begin
+  if not DispatchIsDesignMsg(self,Msg) then
   case Msg.Msg of
     CM_DENYSUBCLASSING:
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
@@ -522,6 +523,7 @@ var
   DlgCodes: TDlgCodes;
   Canvas: TCanvas;
 begin
+  if not DispatchIsDesignMsg(self,Msg) then
   case Msg.Msg of
     CM_DENYSUBCLASSING:
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);

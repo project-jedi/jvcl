@@ -1310,6 +1310,7 @@ end;
 
 procedure TJvExShape.WndProc(var Msg: TMessage);
 begin
+  if not DispatchIsDesignMsg(self,Msg) then
   case Msg.Msg of
     CM_DENYSUBCLASSING:
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
@@ -1470,6 +1471,7 @@ end;
 
 procedure TJvExPaintBox.WndProc(var Msg: TMessage);
 begin
+  if not DispatchIsDesignMsg(self,Msg) then
   case Msg.Msg of
     CM_DENYSUBCLASSING:
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
@@ -1630,6 +1632,7 @@ end;
 
 procedure TJvExImage.WndProc(var Msg: TMessage);
 begin
+  if not DispatchIsDesignMsg(self,Msg) then
   case Msg.Msg of
     CM_DENYSUBCLASSING:
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
@@ -1790,6 +1793,7 @@ end;
 
 procedure TJvExBevel.WndProc(var Msg: TMessage);
 begin
+  if not DispatchIsDesignMsg(self,Msg) then
   case Msg.Msg of
     CM_DENYSUBCLASSING:
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
@@ -2022,6 +2026,7 @@ var
   DlgCodes: TDlgCodes;
   Canvas: TCanvas;
 begin
+  if not DispatchIsDesignMsg(self,Msg) then
   case Msg.Msg of
     CM_DENYSUBCLASSING:
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
@@ -2309,6 +2314,7 @@ var
   DlgCodes: TDlgCodes;
   Canvas: TCanvas;
 begin
+  if not DispatchIsDesignMsg(self,Msg) then
   case Msg.Msg of
     CM_DENYSUBCLASSING:
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
@@ -2596,6 +2602,7 @@ var
   DlgCodes: TDlgCodes;
   Canvas: TCanvas;
 begin
+  if not DispatchIsDesignMsg(self,Msg) then
   case Msg.Msg of
     CM_DENYSUBCLASSING:
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
@@ -2883,6 +2890,7 @@ var
   DlgCodes: TDlgCodes;
   Canvas: TCanvas;
 begin
+  if not DispatchIsDesignMsg(self,Msg) then
   case Msg.Msg of
     CM_DENYSUBCLASSING:
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
@@ -3170,6 +3178,7 @@ var
   DlgCodes: TDlgCodes;
   Canvas: TCanvas;
 begin
+  if not DispatchIsDesignMsg(self,Msg) then
   case Msg.Msg of
     CM_DENYSUBCLASSING:
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
@@ -3457,6 +3466,7 @@ var
   DlgCodes: TDlgCodes;
   Canvas: TCanvas;
 begin
+  if not DispatchIsDesignMsg(self,Msg) then
   case Msg.Msg of
     CM_DENYSUBCLASSING:
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
@@ -3744,6 +3754,7 @@ var
   DlgCodes: TDlgCodes;
   Canvas: TCanvas;
 begin
+  if not DispatchIsDesignMsg(self,Msg) then
   case Msg.Msg of
     CM_DENYSUBCLASSING:
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
@@ -4031,6 +4042,7 @@ var
   DlgCodes: TDlgCodes;
   Canvas: TCanvas;
 begin
+  if not DispatchIsDesignMsg(self,Msg) then
   case Msg.Msg of
     CM_DENYSUBCLASSING:
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
@@ -4318,6 +4330,7 @@ var
   DlgCodes: TDlgCodes;
   Canvas: TCanvas;
 begin
+  if not DispatchIsDesignMsg(self,Msg) then
   case Msg.Msg of
     CM_DENYSUBCLASSING:
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
@@ -4535,6 +4548,7 @@ end;
 
 procedure TJvExBoundLabel.WndProc(var Msg: TMessage);
 begin
+  if not DispatchIsDesignMsg(self,Msg) then
   case Msg.Msg of
     CM_DENYSUBCLASSING:
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
@@ -4767,6 +4781,7 @@ var
   DlgCodes: TDlgCodes;
   Canvas: TCanvas;
 begin
+  if not DispatchIsDesignMsg(self,Msg) then
   case Msg.Msg of
     CM_DENYSUBCLASSING:
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
@@ -5054,6 +5069,7 @@ var
   DlgCodes: TDlgCodes;
   Canvas: TCanvas;
 begin
+  if not DispatchIsDesignMsg(self,Msg) then
   case Msg.Msg of
     CM_DENYSUBCLASSING:
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
@@ -5341,6 +5357,7 @@ var
   DlgCodes: TDlgCodes;
   Canvas: TCanvas;
 begin
+  if not DispatchIsDesignMsg(self,Msg) then
   case Msg.Msg of
     CM_DENYSUBCLASSING:
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
@@ -5628,6 +5645,7 @@ var
   DlgCodes: TDlgCodes;
   Canvas: TCanvas;
 begin
+  if not DispatchIsDesignMsg(self,Msg) then
   case Msg.Msg of
     CM_DENYSUBCLASSING:
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
@@ -5845,6 +5863,7 @@ end;
 
 procedure TJvExSplitter.WndProc(var Msg: TMessage);
 begin
+  if not DispatchIsDesignMsg(self,Msg) then
   case Msg.Msg of
     CM_DENYSUBCLASSING:
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
