@@ -517,10 +517,12 @@ type
   private
     FItemFormat: TJvFullColorAxisConfigFormat;
     FColorID: TJvFullColorSpaceID;
+    FOnFormatItem: TJvFullColorAxisFormatEvent;
     procedure SetItemFormat(const Value: TJvFullColorAxisConfigFormat);
     procedure SetSelected(const Value: TJvFullColorAxisConfig);
     procedure SetColorID(const Value: TJvFullColorSpaceID);
     function GetSelected: TJvFullColorAxisConfig;
+    procedure SetOnFormatItem(const Value: TJvFullColorAxisFormatEvent);
   protected
     procedure MakeList; virtual;
     procedure CreateWnd; override;
@@ -530,6 +532,7 @@ type
     property ItemFormat: TJvFullColorAxisConfigFormat read FItemFormat write SetItemFormat default afComplete;
     property Selected: TJvFullColorAxisConfig read GetSelected write SetSelected;
     property ColorID: TJvFullColorSpaceID read FColorID write SetColorID default csRGB;
+    property OnFormatItem: TJvFullColorAxisFormatEvent read FOnFormatItem write SetOnFormatItem;
     {$IFDEF COMPILER6_UP}
     property AutoDropDown;
     {$ENDIF COMPILER6_UP}
@@ -3143,15 +3146,26 @@ procedure TJvFullColorAxisCombo.MakeList;
 var
   Index: TJvFullColorAxisConfig;
   LColorSpace: TJvColorSpace;
+  OldItemIndex: Integer;
+  FormattedItem: string;
 begin
+  OldItemIndex := ItemIndex;
   LColorSpace := ColorSpaceManager.ColorSpace[ColorID];
   with Items do
   begin
     Clear;
     for Index := Low(TJvFullColorAxisConfig) to High(TJvFullColorAxisConfig) do
-      Add(AxisConfigToString(Index, ItemFormat, LColorSpace));
+    begin
+      if Assigned(FOnFormatItem) then
+        FOnFormatItem(Self,Index,FormattedItem)
+      else
+        FormattedItem := AxisConfigToString(Index, ItemFormat, LColorSpace);
+      Add(FormattedItem);
+    end;
   end;
-  ItemIndex := Ord(Selected);
+  if (OldItemIndex > -1) then
+    ItemIndex := OldItemIndex
+  else ItemIndex := 0;
 end;
 
 procedure TJvFullColorAxisCombo.SetColorID(const Value: TJvFullColorSpaceID);
@@ -3170,6 +3184,13 @@ begin
     FItemFormat := Value;
     MakeList;
   end;
+end;
+
+procedure TJvFullColorAxisCombo.SetOnFormatItem(
+  const Value: TJvFullColorAxisFormatEvent);
+begin
+  FOnFormatItem := Value;
+  MakeList;
 end;
 
 procedure TJvFullColorAxisCombo.SetSelected(const Value: TJvFullColorAxisConfig);
