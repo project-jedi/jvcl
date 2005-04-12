@@ -392,11 +392,22 @@ begin
   if GScheduleThread <> nil then
   begin
     if GScheduleThread.Suspended then
+    begin
       GScheduleThread.Resume;
+      // In order for the thread to actually start (and respond to Terminate)
+      // we must indicate to the system that we want to be paused. This way
+      // the thread can start and will start working.
+      // If we don't do this, the threadproc in classes.pas will directly see
+      // that Terminated is set to True and never call Execute
+      SleepEx(10, True);
+    end;
     GScheduleThread.FreeOnTerminate := False;
     GScheduleThread.Terminate;
     while not GScheduleThread.Ended do
+    begin
+      SleepEx(10, True);
       Application.ProcessMessages;
+    end;
     FreeAndNil(GScheduleThread);
   end;
 end;
