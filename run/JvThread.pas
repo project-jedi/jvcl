@@ -90,7 +90,7 @@ type
     destructor Destroy; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 
-//    procedure Synchronize (Method: TThreadMethod);
+    procedure Synchronize (Method: TThreadMethod);
 
     property Count: Integer read GetCount;
     property Threads[Index: Integer]: TJvBaseThread read GetThreads;
@@ -200,11 +200,17 @@ begin
       FThreadDialogForm := nil
 end;
 
+procedure TJvThread.Synchronize (Method: TThreadMethod);
+begin
+  if Assigned(LastThread) then
+    LastThread.Synchronize(Method);
+end;
+
 function TJvThread.Execute(P: Pointer): THandle;
 var
   BaseThread: TJvBaseThread;
 begin
-  Result := 0;      
+  Result := 0;                     
   if Exclusive and OneThreadIsRunning then
     Exit;
 
@@ -380,7 +386,10 @@ end;
 procedure TJvThread.CreateThreadDialogForm;
 begin
   if Assigned(ThreadDialog) and not Assigned(FThreadDialogForm) then
+  begin
     FThreadDialogForm := ThreadDialog.CreateThreadDialogForm(Self);
+    FreeNotification(FThreadDialogForm);
+  end;
 end;
 
 function TJvThread.GetLastThread: TJvBaseThread;
