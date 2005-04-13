@@ -57,8 +57,8 @@ type
   public
     Value: Integer;
     Value2: Integer;
-    procedure Stats1(Sender: TObject);
-    procedure Stats2(Sender: TObject);
+    procedure Stats1;
+    procedure Stats2;
   end;
 
 var
@@ -74,14 +74,14 @@ var
 begin
   //Do the job here
   k := 0;
-  for i := 0 to 1000000 do
-    for j := 0 to 1000000 do
+  for i := 0 to 100 do
+    for j := 0 to 100 do
     begin
       Inc(k);
 
       //To use global variable/objects, you have to synchronize (to avoid conflicts)
       TForm1(params).Value := k;
-      Synchronize(TForm1(params).Stats1);
+      JvThread1.Synchronize(TForm1(params).Stats1);
 
       if JvThread1.Terminated then
         Exit;
@@ -94,18 +94,19 @@ var
 begin
   //Do the job here
   k := 0;
-  for i := 0 to 1000000 do
-    for j := 0 to 1000000 do
+  for i := 0 to 100 do
+    for j := 0 to 10 do
     begin
       Inc(k,5); //This is the only difference with the other thread
       sleep(13);
       //To use global variable/objects, you have to synchronize (to avoid conflicts)
       TForm1(params).Value2 := k;
-      Synchronize(TForm1(params).Stats2);
+      JvThread2.Synchronize(TForm1(params).Stats2);
 
       if JvThread2.Terminated then
         Exit;
     end;
+
 end;
 
 procedure TForm1.Button1Click(Sender: TObject);
@@ -122,12 +123,12 @@ begin
   (Sender as TButton).Enabled := False;
 end;
 
-procedure TForm1.Stats1(Sender: TObject);
+procedure TForm1.Stats1;
 begin
   Label2.Caption := IntToStr(Value);
 end;
 
-procedure TForm1.Stats2(Sender: TObject);
+procedure TForm1.Stats2;
 begin
   Label4.Caption := IntToStr(Value2);
 end;
@@ -150,14 +151,14 @@ procedure TForm1.Button4Click(Sender: TObject);
 begin
   JvThread2.ThreadDialog := JvThreadAnimateDialog1;
   JvThread2.Execute(Self);
-  (Sender as TButton).Enabled := False;
+  //(Sender as TButton).Enabled := False;
 end;
 
 procedure TForm1.Button3Click(Sender: TObject);
 begin
   JvThread1.ThreadDialog := JvThreadSimpleDialog1;
   JvThread1.Execute(Self);
-  (Sender as TButton).Enabled := False;
+  //(Sender as TButton).Enabled := False;
 end;
 
 end.

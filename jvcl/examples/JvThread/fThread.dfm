@@ -1,6 +1,6 @@
 object Form1: TForm1
-  Left = 397
-  Top = 361
+  Left = 270
+  Top = 215
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'JvThread Demo'
@@ -85,8 +85,8 @@ object Form1: TForm1
     Exclusive = True
     RunOnCreate = True
     FreeOnTerminate = False
-    OnExecute = JvThread1Execute
     ThreadDialog = JvThreadSimpleDialog1
+    OnExecute = JvThread1Execute
     Left = 6
     Top = 6
   end
@@ -94,13 +94,14 @@ object Form1: TForm1
     Exclusive = True
     RunOnCreate = True
     FreeOnTerminate = False
-    OnExecute = JvThread2Execute
     ThreadDialog = JvThreadAnimateDialog1
+    OnExecute = JvThread2Execute
     Left = 6
     Top = 44
   end
   object JvThreadSimpleDialog1: TJvThreadSimpleDialog
     DialogOptions.ShowDialog = True
+    DialogOptions.ShowModal = False
     DialogOptions.InfoText = 'Infotext'
     DialogOptions.Caption = '23423423423432'
     DialogOptions.CancelButtonCaption = 'Cancel'
