@@ -63,34 +63,31 @@ type
     procedure SetTextAlignment(const Value: TAlignment);
     procedure SetTextEllipsis(const Value: Boolean);
     procedure SetSystemInfo(const Value: Boolean);
-    procedure SetActiveFont(const Value: TFont);
-    procedure SetInactiveFont(const Value: TFont);
+    procedure SetActiveFont(Value: TFont);
+    procedure SetInactiveFont(Value: TFont);
   protected
+    procedure FontChanged(Sender: TObject);
+    function IsNotSystemInfo: Boolean;
     procedure SettingChange(Sender: TObject);
     procedure ResetDockControlOption; override;
-    procedure SetDefaultSystemCaptionInfo; virtual;
+    procedure UpdateDefaultSystemCaptionInfo; virtual;
+    procedure SetDefaultSystemCaptionInfo;
   public
     constructor Create(ADockStyle: TJvDockBasicStyle); override;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
-    procedure SetActiveTitleEndColor_WithoutChangeSystemInfo(const Value: TColor);
-    procedure SetActiveTitleStartColor_WithoutChangeSystemInfo(const Value: TColor);
-    procedure SetInactiveTitleEndColor_WithoutChangeSystemInfo(const Value: TColor);
-    procedure SetInactiveTitleStartColor_WithoutChangeSystemInfo(const Value: TColor);
-    procedure SetTextAlignment_WithoutChangeSystemInfo(const Value: TAlignment);
-    procedure SetTextEllipsis_WithoutChangeSystemInfo(const Value: Boolean);
-    procedure SetActiveFont_WithoutChangeSystemInfo(const Value: TFont);
-    procedure SetInactiveFont_WithoutChangeSystemInfo(const Value: TFont);
   published
-    property ActiveFont: TFont read FActiveFont write SetActiveFont;
-    property InactiveFont: TFont read FInactiveFont write SetInactiveFont;
-    property TextAlignment: TAlignment read FTextAlignment write SetTextAlignment;
-    property ActiveTitleStartColor: TColor read FActiveTitleStartColor write SetActiveTitleStartColor;
-    property ActiveTitleEndColor: TColor read FActiveTitleEndColor write SetActiveTitleEndColor;
-    property InactiveTitleStartColor: TColor read FInactiveTitleStartColor write SetInactiveTitleStartColor;
-    property InactiveTitleEndColor: TColor read FInactiveTitleEndColor write SetInactiveTitleEndColor;
-    property TextEllipsis: Boolean read FTextEllipsis write SetTextEllipsis;
-    property SystemInfo: Boolean read FSystemInfo write SetSystemInfo;
+    property ActiveFont: TFont read FActiveFont write SetActiveFont stored IsNotSystemInfo;
+    property InactiveFont: TFont read FInactiveFont write SetInactiveFont stored IsNotSystemInfo;
+    property TextAlignment: TAlignment read FTextAlignment write SetTextAlignment default taLeftJustify;
+    property ActiveTitleStartColor: TColor read FActiveTitleStartColor write SetActiveTitleStartColor stored IsNotSystemInfo;
+    property ActiveTitleEndColor: TColor read FActiveTitleEndColor write SetActiveTitleEndColor stored IsNotSystemInfo;
+    property InactiveTitleStartColor: TColor read FInactiveTitleStartColor write SetInactiveTitleStartColor stored IsNotSystemInfo;
+    property InactiveTitleEndColor: TColor read FInactiveTitleEndColor write SetInactiveTitleEndColor stored IsNotSystemInfo;
+    property TextEllipsis: Boolean read FTextEllipsis write SetTextEllipsis default True;
+    property SystemInfo: Boolean read FSystemInfo write SetSystemInfo default True;
+    property GrabbersSize default VIDDefaultDockGrabbersSize;
+    property SplitterWidth default VIDDefaultDockSplitterWidth;
   end;
 
   TJvDockZoneSizeStyle = (zssMinimum, zssNormal, zssMaximum);
@@ -103,19 +100,14 @@ type
     FInactiveFont: TFont;
     FInactiveSheetColor: TColor;
     FShowTabImages: Boolean;
-    function GetActiveFont: TFont;
-    function GetActiveSheetColor: TColor;
-    function GetHotTrackColor: TColor;
-    function GetInactiveFont: TFont;
-    function GetInactiveSheetColor: TColor;
-    function GetShowTabImages: Boolean;
-    procedure SetActiveFont(const Value: TFont);
+    procedure SetActiveFont(Value: TFont);
     procedure SetActiveSheetColor(const Value: TColor);
     procedure SetHotTrackColor(const Value: TColor);
-    procedure SetInactiveFont(const Value: TFont);
+    procedure SetInactiveFont(Value: TFont);
     procedure SetInactiveSheetColor(const Value: TColor);
     procedure SetShowTabImages(const Value: Boolean);
   protected
+    procedure FontChanged(Sender: TObject);
     procedure ResetDockControlOption; override;
     procedure ResetTabPageControl(APage: TJvDockTabPageControl); override;
   public
@@ -124,12 +116,13 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure SetTabPosition(const Value: TTabPosition); override;
   published
-    property ActiveSheetColor: TColor read GetActiveSheetColor write SetActiveSheetColor;
-    property InactiveSheetColor: TColor read GetInactiveSheetColor write SetInactiveSheetColor;
-    property ActiveFont: TFont read GetActiveFont write SetActiveFont;
-    property InactiveFont: TFont read GetInactiveFont write SetInactiveFont;
-    property HotTrackColor: TColor read GetHotTrackColor write SetHotTrackColor;
-    property ShowTabImages: Boolean read GetShowTabImages write SetShowTabImages;
+    property ActiveSheetColor: TColor read FActiveSheetColor write SetActiveSheetColor;
+    property InactiveSheetColor: TColor read FInactiveSheetColor write SetInactiveSheetColor default clBtnShadow;
+    property ActiveFont: TFont read FActiveFont write SetActiveFont;
+    property InactiveFont: TFont read FInactiveFont write SetInactiveFont;
+    property HotTrackColor: TColor read FHotTrackColor write SetHotTrackColor default clBlue;
+    property ShowTabImages: Boolean read FShowTabImages write SetShowTabImages default False;
+    property TabPosition default tpBottom;
   end;
 
   TJvDockSystemInfoChange = procedure(Value: Boolean) of object;
@@ -150,8 +143,6 @@ type
       var Source: TJvDockDragDockObject); override;
     procedure FormGetDockEdge(DockClient: TJvDockClient; Source: TJvDockDragDockObject;
       MousePos: TPoint; var DropAlign: TAlign); override;
-    procedure CreateConjoinServerOption(var Option: TJvDockBasicConjoinServerOption); override;
-    procedure CreateTabServerOption(var Option: TJvDockBasicTabServerOption); override;
     procedure AssignConjoinServerOption(APanel: TJvDockCustomPanel); override;
     procedure AssignTabServerOption(APage: TJvDockTabPageControl); override;
     procedure DoSystemInfoChange(Value: Boolean);
@@ -427,8 +418,8 @@ type
     procedure SetTabLeftOffset(const Value: Integer);
     procedure SetTabRightOffset(const Value: Integer);
     procedure SetTabTopOffset(const Value: Integer);
-    procedure SetActiveFont(const Value: TFont);
-    procedure SetInactiveFont(const Value: TFont);
+    procedure SetActiveFont(Value: TFont);
+    procedure SetInactiveFont(Value: TFont);
     procedure SetHotTrackColor(const Value: TColor);
     function GetTabBottomOffset: Integer;
     function GetTabLeftOffset: Integer;
@@ -1078,17 +1069,6 @@ function TJvDockVIDVCStyle.DockClientWindowProc(DockClient: TJvDockClient;
   var Msg: TMessage): Boolean;
 begin
   Result := inherited DockClientWindowProc(DockClient, Msg);
-end;
-
-procedure TJvDockVIDVCStyle.CreateConjoinServerOption(
-  var Option: TJvDockBasicConjoinServerOption);
-begin
-  Option := TJvDockVIDVCConjoinServerOption.Create(Self);
-end;
-
-procedure TJvDockVIDVCStyle.CreateTabServerOption(var Option: TJvDockBasicTabServerOption);
-begin
-  Option := TJvDockVIDVCTabServerOption.Create(Self);
 end;
 
 procedure TJvDockVIDVCStyle.AssignConjoinServerOption(APanel: TJvDockCustomPanel);
@@ -2844,7 +2824,7 @@ begin
   end;
 end;
 
-procedure TJvDockVIDVCTabPageControl.SetActiveFont(const Value: TFont);
+procedure TJvDockVIDVCTabPageControl.SetActiveFont(Value: TFont);
 begin
   FPanel.FActiveFont.Assign(Value);
   if ActivePage <> nil then
@@ -2858,7 +2838,7 @@ begin
   FPanel.Invalidate;
 end;
 
-procedure TJvDockVIDVCTabPageControl.SetInactiveFont(const Value: TFont);
+procedure TJvDockVIDVCTabPageControl.SetInactiveFont(Value: TFont);
 var
   I: Integer;
 begin
@@ -4283,10 +4263,12 @@ begin
   inherited Create(ADockStyle);
   TabPosition := tpBottom;
   FActiveFont := TFont.Create;
+  FActiveFont.OnChange := FontChanged;
   FActiveSheetColor := clBtnFace;
   FHotTrackColor := clBlue;
   FInactiveFont := TFont.Create;
   FInactiveFont.Color := clWhite;
+  FInactiveFont.OnChange := FontChanged;
   FInactiveSheetColor := clBtnShadow;
   FShowTabImages := False;
 end;
@@ -4299,47 +4281,34 @@ begin
 end;
 
 procedure TJvDockVIDVCTabServerOption.Assign(Source: TPersistent);
+var
+  Src: TJvDockVIDVCTabServerOption;
 begin
   if Source is TJvDockVIDVCTabServerOption then
   begin
-    FActiveFont.Assign(TJvDockVIDVCTabServerOption(Source).FActiveFont);
-    FActiveSheetColor := TJvDockVIDVCTabServerOption(Source).FActiveSheetColor;
-    FHotTrackColor := TJvDockVIDVCTabServerOption(Source).FHotTrackColor;
-    FInactiveFont.Assign(TJvDockVIDVCTabServerOption(Source).FInactiveFont);
-    FInactiveSheetColor := TJvDockVIDVCTabServerOption(Source).FInactiveSheetColor;
-    FShowTabImages := TJvDockVIDVCTabServerOption(Source).FShowTabImages;
-  end;
-  inherited Assign(Source);
+    BeginUpdate;
+    try
+      Src := TJvDockVIDVCTabServerOption(Source);
+      
+      ActiveFont := Src.ActiveFont;
+      ActiveSheetColor := Src.ActiveSheetColor;
+      HotTrackColor := Src.HotTrackColor;
+      InactiveFont := Src.InactiveFont;
+      InactiveSheetColor := Src.InactiveSheetColor;
+      ShowTabImages := Src.ShowTabImages;
+
+      inherited Assign(Source);
+    finally
+      EndUpdate;
+    end;
+  end
+  else
+    inherited Assign(Source);
 end;
 
-function TJvDockVIDVCTabServerOption.GetActiveFont: TFont;
+procedure TJvDockVIDVCTabServerOption.FontChanged(Sender: TObject);
 begin
-  Result := FActiveFont;
-end;
-
-function TJvDockVIDVCTabServerOption.GetActiveSheetColor: TColor;
-begin
-  Result := FActiveSheetColor;
-end;
-
-function TJvDockVIDVCTabServerOption.GetHotTrackColor: TColor;
-begin
-  Result := FHotTrackColor;
-end;
-
-function TJvDockVIDVCTabServerOption.GetInactiveFont: TFont;
-begin
-  Result := FInactiveFont;
-end;
-
-function TJvDockVIDVCTabServerOption.GetInactiveSheetColor: TColor;
-begin
-  Result := FInactiveSheetColor;
-end;
-
-function TJvDockVIDVCTabServerOption.GetShowTabImages: Boolean;
-begin
-  Result := FShowTabImages;
+  Changed;
 end;
 
 procedure TJvDockVIDVCTabServerOption.ResetDockControlOption;
@@ -4362,10 +4331,9 @@ begin
   end;
 end;
 
-procedure TJvDockVIDVCTabServerOption.SetActiveFont(const Value: TFont);
+procedure TJvDockVIDVCTabServerOption.SetActiveFont(Value: TFont);
 begin
   FActiveFont.Assign(Value);
-  ResetDockControlOption;
 end;
 
 procedure TJvDockVIDVCTabServerOption.SetActiveSheetColor(const Value: TColor);
@@ -4373,7 +4341,7 @@ begin
   if FActiveSheetColor <> Value then
   begin
     FActiveSheetColor := Value;
-    ResetDockControlOption;
+    Changed;
   end;
 end;
 
@@ -4382,14 +4350,13 @@ begin
   if FHotTrackColor <> Value then
   begin
     FHotTrackColor := Value;
-    ResetDockControlOption;
+    Changed;
   end;
 end;
 
-procedure TJvDockVIDVCTabServerOption.SetInactiveFont(const Value: TFont);
+procedure TJvDockVIDVCTabServerOption.SetInactiveFont(Value: TFont);
 begin
   FInactiveFont.Assign(Value);
-  ResetDockControlOption;
 end;
 
 procedure TJvDockVIDVCTabServerOption.SetInactiveSheetColor(const Value: TColor);
@@ -4397,7 +4364,7 @@ begin
   if FInactiveSheetColor <> Value then
   begin
     FInactiveSheetColor := Value;
-    ResetDockControlOption;
+    Changed;
   end;
 end;
 
@@ -4406,7 +4373,7 @@ begin
   if FShowTabImages <> Value then
   begin
     FShowTabImages := Value;
-    ResetDockControlOption;
+    Changed;
   end;
 end;
 
@@ -4425,7 +4392,9 @@ begin
   inherited Create(ADockStyle);
   GrabbersSize := 18;
   FActiveFont := TFont.Create;
+  FActiveFont.OnChange := FontChanged;
   FInactiveFont := TFont.Create;
+  FInactiveFont.OnChange := FontChanged;
   SystemInfo := True;
 end;
 
@@ -4439,20 +4408,32 @@ begin
 end;
 
 procedure TJvDockVIDVCConjoinServerOption.Assign(Source: TPersistent);
+var
+  Src: TJvDockVIDVCConjoinServerOption;
 begin
   if Source is TJvDockVIDVCConjoinServerOption then
   begin
-    FTextEllipsis := TJvDockVIDVCConjoinServerOption(Source).FTextEllipsis;
-    FTextAlignment := TJvDockVIDVCConjoinServerOption(Source).FTextAlignment;
-    FInactiveTitleEndColor := TJvDockVIDVCConjoinServerOption(Source).FInactiveTitleEndColor;
-    FInactiveTitleStartColor := TJvDockVIDVCConjoinServerOption(Source).FInactiveTitleStartColor;
-    FActiveTitleEndColor := TJvDockVIDVCConjoinServerOption(Source).FActiveTitleEndColor;
-    FActiveTitleStartColor := TJvDockVIDVCConjoinServerOption(Source).FActiveTitleStartColor;
-    FActiveFont.Assign(TJvDockVIDVCConjoinServerOption(Source).FActiveFont);
-    FInactiveFont.Assign(TJvDockVIDVCConjoinServerOption(Source).FInactiveFont);
-    SystemInfo := TJvDockVIDVCConjoinServerOption(Source).FSystemInfo;
-  end;
-  inherited Assign(Source);
+    BeginUpdate;
+    try
+      Src := TJvDockVIDVCConjoinServerOption(Source);
+      
+      TextEllipsis := Src.TextEllipsis;
+      TextAlignment := Src.TextAlignment;
+      InactiveTitleEndColor := Src.InactiveTitleEndColor;
+      InactiveTitleStartColor := Src.InactiveTitleStartColor;
+      ActiveTitleEndColor := Src.ActiveTitleEndColor;
+      ActiveTitleStartColor := Src.ActiveTitleStartColor;
+      ActiveFont := Src.ActiveFont;
+      InactiveFont := Src.InactiveFont;
+      SystemInfo := Src.SystemInfo;
+
+      inherited Assign(Source);
+    finally
+      EndUpdate;
+    end;
+  end
+  else
+    inherited Assign(Source);
 end;
 
 procedure TJvDockVIDVCConjoinServerOption.SetActiveTitleEndColor(const Value: TColor);
@@ -4461,7 +4442,7 @@ begin
   begin
     FActiveTitleEndColor := Value;
     SystemInfo := False;
-    ResetDockControlOption;
+    Changed;
   end;
 end;
 
@@ -4471,7 +4452,7 @@ begin
   begin
     FActiveTitleStartColor := Value;
     SystemInfo := False;
-    ResetDockControlOption;
+    Changed;
   end;
 end;
 
@@ -4481,7 +4462,7 @@ begin
   begin
     FInactiveTitleEndColor := Value;
     SystemInfo := False;
-    ResetDockControlOption;
+    Changed;
   end;
 end;
 
@@ -4491,7 +4472,7 @@ begin
   begin
     FInactiveTitleStartColor := Value;
     SystemInfo := False;
-    ResetDockControlOption;
+    Changed;
   end;
 end;
 
@@ -4506,7 +4487,6 @@ begin
     begin
       RegisterSettingChangeClient(Self, SettingChange);
       SetDefaultSystemCaptionInfo;
-      ResetDockControlOption;
     end;
   end;
 end;
@@ -4518,7 +4498,7 @@ begin
   begin
     FTextAlignment := Value;
     SystemInfo := False;
-    ResetDockControlOption;
+    Changed;
   end;
 end;
 
@@ -4528,39 +4508,64 @@ begin
   begin
     FTextEllipsis := Value;
     SystemInfo := False;
-    ResetDockControlOption;
+    Changed;
   end;
 end;
 
 procedure TJvDockVIDVCConjoinServerOption.SetDefaultSystemCaptionInfo;
+var
+  Saved: Boolean;
 begin
-  FActiveTitleStartColor := JvDockGetActiveTitleBeginColor;
-  FActiveTitleEndColor := JvDockGetActiveTitleEndColor;
-  FInactiveTitleStartColor := JvDockGetInactiveTitleBeginColor;
-  FInactiveTitleEndColor := JvDockGetInactiveTitleEndColor;
-  FTextAlignment := taLeftJustify;
-  FTextEllipsis := True;
-  FActiveFont.Assign(JvDockGetTitleFont);
-  FActiveFont.Style := FActiveFont.Style + [fsBold];
-  FInactiveFont.Assign(FActiveFont);
-  FActiveFont.Color := JvDockGetActiveTitleFontColor;
-  FInactiveFont.Color := JvDockGetInactiveTitleFontColor;
+  { We use a trick to temporarily disable changing of SystemInfo; by
+    setting FSystemInfo to false.
+  }
+  Saved := SystemInfo;
+  BeginUpdate;
+  FSystemInfo := False;
+  try
+    UpdateDefaultSystemCaptionInfo;
+  finally
+    FSystemInfo := Saved;
+    EndUpdate;
+  end;
+end;
+
+procedure TJvDockVIDVCConjoinServerOption.SetActiveFont(Value: TFont);
+begin
+  FActiveFont.Assign(Value);
+end;
+
+procedure TJvDockVIDVCConjoinServerOption.SetInactiveFont(Value: TFont);
+begin
+  FInactiveFont.Assign(Value);
+end;
+
+procedure TJvDockVIDVCConjoinServerOption.FontChanged(Sender: TObject);
+begin
+  SystemInfo := False;
+  Changed;
+end;
+
+procedure TJvDockVIDVCConjoinServerOption.UpdateDefaultSystemCaptionInfo;
+begin
+  ActiveTitleStartColor := JvDockGetActiveTitleBeginColor;
+  ActiveTitleEndColor := JvDockGetActiveTitleEndColor;
+  InactiveTitleStartColor := JvDockGetInactiveTitleBeginColor;
+  InactiveTitleEndColor := JvDockGetInactiveTitleEndColor;
+  TextAlignment := taLeftJustify;
+  TextEllipsis := True;
+  ActiveFont := JvDockGetTitleFont;
+  ActiveFont.Style := ActiveFont.Style + [fsBold];
+  InactiveFont := ActiveFont;
+  ActiveFont.Color := JvDockGetActiveTitleFontColor;
+  InactiveFont.Color := JvDockGetInactiveTitleFontColor;
   GrabbersSize := VIDDefaultDockGrabbersSize;
   SplitterWidth := VIDDefaultDockSplitterWidth;
 end;
 
-procedure TJvDockVIDVCConjoinServerOption.SetActiveFont(const Value: TFont);
+function TJvDockVIDVCConjoinServerOption.IsNotSystemInfo: Boolean;
 begin
-  FActiveFont.Assign(Value);
-  SystemInfo := False;
-  ResetDockControlOption;
-end;
-
-procedure TJvDockVIDVCConjoinServerOption.SetInactiveFont(const Value: TFont);
-begin
-  FInactiveFont.Assign(Value);
-  SystemInfo := False;
-  ResetDockControlOption;
+  Result := not SystemInfo;
 end;
 
 procedure TJvDockVIDVCConjoinServerOption.SettingChange(Sender: TObject);
@@ -4576,48 +4581,7 @@ begin
   inherited ResetDockControlOption;
   SystemInfo := SystemInfo and (GrabbersSize = VIDDefaultDockGrabbersSize) and
     (SplitterWidth = VIDDefaultDockSplitterWidth);
-  TJvDockVIDVCStyle(DockStyle).DoSystemInfoChange(FSystemInfo);
-end;
-
-procedure TJvDockVIDVCConjoinServerOption.SetActiveFont_WithoutChangeSystemInfo(
-  const Value: TFont);
-begin
-  FActiveFont.Assign(Value);
-end;
-
-procedure TJvDockVIDVCConjoinServerOption.SetActiveTitleEndColor_WithoutChangeSystemInfo(
-  const Value: TColor);
-begin
-  FActiveTitleEndColor := Value;
-end;
-
-procedure TJvDockVIDVCConjoinServerOption.SetActiveTitleStartColor_WithoutChangeSystemInfo(
-  const Value: TColor);
-begin
-  FActiveTitleStartColor := Value;
-end;
-
-procedure TJvDockVIDVCConjoinServerOption.SetInactiveFont_WithoutChangeSystemInfo(
-  const Value: TFont);
-begin
-  FInactiveFont.Assign(Value);
-end;
-
-procedure TJvDockVIDVCConjoinServerOption.SetInactiveTitleEndColor_WithoutChangeSystemInfo(
-  const Value: TColor);
-begin
-  FInactiveTitleEndColor := Value;
-end;
-
-procedure TJvDockVIDVCConjoinServerOption.SetInactiveTitleStartColor_WithoutChangeSystemInfo(
-  const Value: TColor);
-begin
-  FInactiveTitleStartColor := Value;
-end;
-
-procedure TJvDockVIDVCConjoinServerOption.SetTextAlignment_WithoutChangeSystemInfo(const Value: TAlignment);
-begin
-  FTextAlignment := Value;
+  TJvDockVIDVCStyle(DockStyle).DoSystemInfoChange(SystemInfo);
 end;
 
 procedure TJvDockVIDVCTree.DrawDockSiteRect;
@@ -4713,11 +4677,6 @@ begin
       DockSite.Invalidate;
     end;
   end;
-end;
-
-procedure TJvDockVIDVCConjoinServerOption.SetTextEllipsis_WithoutChangeSystemInfo(const Value: Boolean);
-begin
-  FTextEllipsis := Value;
 end;
 
 procedure TJvDockVIDVCZone.DoSetChildSizeStyle(ZoneSizeStyle: TJvDockZoneSizeStyle);

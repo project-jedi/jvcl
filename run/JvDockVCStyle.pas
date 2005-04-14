@@ -63,8 +63,6 @@ type
     procedure FormStartDock(DockClient: TJvDockClient;
       var Source: TJvDockDragDockObject); override;
     procedure AssignConjoinServerOption(APanel: TJvDockCustomPanel); override;
-    procedure CreateConjoinServerOption(var Option: TJvDockBasicConjoinServerOption); override;
-    procedure CreateTabServerOption(var Option: TJvDockBasicTabServerOption); override;
   public
     constructor Create(AOwner: TComponent); override;
     function CanSetEachOtherDocked(ADockBaseControl: TJvDockBaseControl): Boolean; override;
@@ -733,16 +731,6 @@ end;
 function TJvDockVCStyle.CanSetEachOtherDocked(ADockBaseControl: TJvDockBaseControl): Boolean;
 begin
   Result := False;
-end;
-
-procedure TJvDockVCStyle.CreateConjoinServerOption(var Option: TJvDockBasicConjoinServerOption);
-begin
-  Option := TJvDockVCConjoinServerOption.Create(Self);
-end;
-
-procedure TJvDockVCStyle.CreateTabServerOption(var Option: TJvDockBasicTabServerOption);
-begin
-  Option := TJvDockVCTabServerOption.Create(Self);
 end;
 
 procedure TJvDockVCStyle.FormGetDockEdge(DockClient: TJvDockClient;
