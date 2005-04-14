@@ -44,7 +44,7 @@ uses
 
 const
   // a version string for the component
-  cHidControllerClassVersion = '1.0.27';
+  cHidControllerClassVersion = '1.0.28';
 
   // strings from the registry for CheckOutByClass
   cHidNoClass = 'HIDClass';
@@ -1552,7 +1552,11 @@ begin
   if LoadSetupApi then
     LoadHid;
   if IsHidLoaded then
-    HidD_GetHidGuid(FHidGuid)
+  begin
+    HidD_GetHidGuid(FHidGuid);
+    // only hook messages if there is a HID DLL
+    Application.HookMainWindow(EventPipe);
+  end
   else
     FHidGuid := cHidGuid;
 end;
@@ -1603,8 +1607,6 @@ begin
   inherited Loaded;
   if IsHidLoaded then
   begin
-    // only hook messages if there is a HID DLL
-    Application.HookMainWindow(EventPipe);
     // this one executes after Create completed which ensures
     // that all global elements like Application.MainForm are initialized
     PostMessage(Application.Handle, WM_DEVICECHANGE, DBT_DEVNODES_CHANGED, 0);
