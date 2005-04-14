@@ -371,7 +371,6 @@ type
     procedure SetDevDataError(const DataErrorEvent: TJvHidDataErrorEvent);
     procedure SetDevUnplug(const Unplugger: TJvHidUnplugEvent);
   protected
-    procedure Loaded; override;
     procedure DoArrival(HidDev: TJvHidDevice);
     procedure DoRemoval(HidDev: TJvHidDevice);
     procedure DoDeviceChange;
@@ -1556,6 +1555,9 @@ begin
     HidD_GetHidGuid(FHidGuid);
     // only hook messages if there is a HID DLL
     Application.HookMainWindow(EventPipe);
+    // this one executes after Create completed which ensures
+    // that all global elements like Application.MainForm are initialized
+    PostMessage(Application.Handle, WM_DEVICECHANGE, DBT_DEVNODES_CHANGED, 0);
   end
   else
     FHidGuid := cHidGuid;
@@ -1600,17 +1602,6 @@ begin
   UnloadHid;
 
   inherited Destroy;
-end;
-
-procedure TJvHidDeviceController.Loaded;
-begin
-  inherited Loaded;
-  if IsHidLoaded then
-  begin
-    // this one executes after Create completed which ensures
-    // that all global elements like Application.MainForm are initialized
-    PostMessage(Application.Handle, WM_DEVICECHANGE, DBT_DEVNODES_CHANGED, 0);
-  end;
 end;
 
 procedure TJvHidDeviceController.DoArrival(HidDev: TJvHidDevice);
