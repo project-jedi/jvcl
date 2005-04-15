@@ -139,11 +139,11 @@ type
     function GetItemsClass: TCustomComboBoxStringsClass; override;
     {$ENDIF COMPILER6_UP}
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure KeyPress(var Key: Char); override;
     {$IFDEF COMPILER5}
     procedure DoChange(Sender: TObject);
     procedure DoDropDown(Sender: TObject);
     procedure DoValueChange(Sender: TObject);
-    procedure KeyPress(var Key: Char); override;  // SPM - Ported backward from D7
     {$ENDIF COMPILER5}
     procedure SetItemHeight(Value: Integer); {$IFDEF COMPILER6_UP} override; {$ENDIF}
     function GetMeasureStyle: TJvComboBoxMeasureStyle;
@@ -1610,6 +1610,17 @@ begin
   FKey := Key;
 end;
 
+procedure TJvCustomComboBox.KeyPress(var Key: Char); 
+begin
+  if (ReadOnly) and (Key = Chr(VK_BACK)) then
+    Key := #0;
+  inherited KeyPress(Key);
+{$IFDEF COMPILER5}
+  if AutoComplete then
+    FAutoCompleteCode.AutoComplete(Key);
+{$ENDIF COMPILER5}
+end;
+
 {$IFDEF COMPILER5}
 
 procedure TJvCustomComboBox.DoChange(Sender: TObject);
@@ -1627,13 +1638,6 @@ procedure TJvCustomComboBox.DoValueChange(Sender: TObject);
 begin
   Click;
   Select;
-end;
-
-procedure TJvCustomComboBox.KeyPress(var Key: Char);
-begin
-  inherited KeyPress(Key);
-  if AutoComplete then
-    FAutoCompleteCode.AutoComplete(Key);
 end;
 
 procedure TJvCustomComboBox.Select;
