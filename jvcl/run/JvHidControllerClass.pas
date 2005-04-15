@@ -360,6 +360,8 @@ type
     FNumCheckedInDevices: Integer;
     FNumCheckedOutDevices: Integer;
     FNumUnpluggedDevices: Integer;
+    // reentrancy
+    FInDeviceChange: Boolean;
     // internal worker functions
     function CheckThisOut(var HidDev: TJvHidDevice; Idx: Integer; Check: Boolean): Boolean;
     function EventPipe(var Msg: TMessage): Boolean;
@@ -1540,6 +1542,7 @@ begin
   FNumUnpluggedDevices := 0;
   FDevThreadSleepTime := 100;
   FVersion := cHidControllerClassVersion;
+  FInDeviceChange := False;
 
   // this is just to remind you that one controller is sufficient
   Inc(GlobalInstanceCount);
@@ -1639,7 +1642,12 @@ begin
   Result := False;
   // sort out WM_DEVICECHANGE : DBT_DEVNODES_CHANGED
   if (Msg.Msg = WM_DEVICECHANGE) and (TWMDeviceChange(Msg).Event = DBT_DEVNODES_CHANGED) then
+  if not FInDeviceChange then
+  begin
+    FInDeviceChange := True;
     DeviceChange;
+    FInDeviceChange := False;
+  end;
 end;
 
 // implements OnDeviceChange event
