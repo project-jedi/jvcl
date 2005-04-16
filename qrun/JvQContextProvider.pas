@@ -36,6 +36,9 @@ unit JvQContextProvider;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Classes,
   JvQDataProvider, JvQDataProviderIntf;
 
@@ -88,12 +91,19 @@ type
     function IsValidClient(Client: IJvDataConsumerClientNotify): Boolean; override;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   SysUtils,
   JvQTypes, JvQResources;
 
@@ -623,30 +633,19 @@ var
   ClientProv: IJvDataProvider;
   ConsumerProv: IJvDataConsumerProvider;
 begin
-  { Only allow client consumers who's Provider points to the ClientProvider of the context
+  { Only allow client consumers whose Provider points to the ClientProvider of the context
     provider this consumer is linked to. }
   ClientProv := (ConsumerImpl.ProviderIntf as IJvDataContextProvider).ClientProvider;
   Result := Supports(Client, IJvDataConsumerProvider, ConsumerProv) and
     (ConsumerProv.GetProvider = ClientProv);
 end;
 
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
-
 initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
-
   RegisterClasses([TJvContextProviderServerNotify]);
-  
+ 
 
 {$IFDEF UNITVERSIONING}
 finalization

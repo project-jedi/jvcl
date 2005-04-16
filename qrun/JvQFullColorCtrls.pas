@@ -35,23 +35,21 @@ unit JvQFullColorCtrls;
 interface
 
 uses
-  QWindows, QMessages, SysUtils, Classes, QControls, QGraphics,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  SysUtils, Classes, QControls,
+  QWindows, QMessages, QGraphics,
   QComCtrls, QStdCtrls, QExtCtrls,
   {$IFDEF HAS_UNIT_TYPES}
   Types,
   {$ENDIF HAS_UNIT_TYPES}
-  JvQComponent, JvQExStdCtrls,
   JvQTypes, JvQFullColorSpaces, JvQFullColorRotate;
 
 type
   TJvFullColorAxisConfig = (acXYZ, acXZY, acYXZ, acYZX, acZXY, acZYX);
   TJvFullColorOrientation = (coNormal, coInverse);
   TJvArrowPosition = (apNormal, apOpposite);
-
-
-const
-  WM_MOUSELEAVE = CM_MOUSELEAVE;
-
 
 type
   TJvKeyCode = (kcLeft, kcRight, kcUp, kcDown);
@@ -64,7 +62,7 @@ type
 
   EJvFullColorError = class(EJVCLException);
 
-  TJvFullColorComponent = class(TJvCustomControl)
+  TJvFullColorComponent = class(TCustomControl)
   private
     FAutoMouse: Boolean;
     FFullColor: TJvFullColor;
@@ -77,6 +75,7 @@ type
     FBuffer: TBitmap;
     FCreating: Boolean;
     FWantDrawBuffer: Boolean;
+    FMouseDragging: Boolean;
     function GetColorSpace: TJvColorSpace;
     procedure SetAxisConfig(const Value: TJvFullColorAxisConfig);
     procedure WMGetDlgCode(var Msg: TWMGetDlgCode); message WM_GETDLGCODE;
@@ -102,6 +101,7 @@ type
     procedure KeyMove(KeyCode: TJvKeyCode; MoveCount: Integer); virtual;
     procedure InvalidateCursor; virtual; abstract;
     property WantDrawBuffer: Boolean read FWantDrawBuffer write SetWantDrawBuffer;
+    property MouseDragging: Boolean read FMouseDragging;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -341,8 +341,9 @@ type
 
   TJvShapePosition = (spLeft, spRight, spTop, spBottom);
 
-  TJvFullColorLabel = class(TJvGraphicControl)
+  TJvFullColorLabel = class(TGraphicControl)
   private
+    FAutosize: Boolean;
     FBrush: TBrush;
     FFont: TFont;
     FPen: TPen;
@@ -354,9 +355,7 @@ type
     FSpacing: Integer;
     FRoundShapeWidth: Integer;
     FRoundShapeHeight: Integer;
-    FLabelColor: TJvFullColor; 
-    FAutosize: Boolean; 
-
+    FLabelColor: TJvFullColor;
     procedure SetCaption(const Value: TCaption);
     procedure SetShapeType(const Value: TShapeType);
     procedure SetShapeHeight(const Value: Integer);
@@ -372,7 +371,7 @@ type
   protected
     procedure Paint; override;
     procedure CalcSize;
-    procedure SetAutoSize(Value: Boolean);  //override;
+    procedure SetAutoSize(Value: Boolean); // override;
     procedure GraphicChange(Sender: TObject);
     procedure SetName(const Value: TComponentName); override;
   public
@@ -392,33 +391,39 @@ type
     property RoundShapeWidth: Integer read FRoundShapeWidth write SetRoundShapeWidth default 4;
     property RoundShapeHeight: Integer read FRoundShapeHeight write SetRoundShapeHeight default 4;
     property Align;
-    property Anchors;  
-    property AutoSize: Boolean read FAutoSize write SetAutoSize; 
-
+    property Anchors;
+    property AutoSize: boolean read FAutosize write SetAutosize;
+//    property BiDiMode;
     property Color nodefault;
     property Constraints;
+//    property DragCursor;
+//    property DragKind;
     property DragMode;
     property Enabled;
+//    property ParentBiDiMode;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
     property ShowHint;
     property Visible;
+//    property OnCanResize;
     property OnClick;
     property OnConstrainedResize;
     property OnContextPopup;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
+//    property OnEndDock;
     property OnEndDrag;
     property OnMouseDown;
     property OnMouseMove;
-    property OnMouseUp; 
+    property OnMouseUp;
     property OnMouseWheel;
     property OnMouseWheelDown;
-    property OnMouseWheelUp; 
+    property OnMouseWheelUp;
     property OnResize;
+//    property OnStartDock;
     property OnStartDrag;
   end;
 
@@ -427,7 +432,7 @@ type
   TJvFullColorSpaceFormatEvent = procedure(Sender: TObject; AColorSpace: TJvColorSpace;
     out ACaption: string) of object;
 
-  TJvFullColorSpaceCombo = class(TJvExCustomComboBox)
+  TJvFullColorSpaceCombo = class(TCustomComboBox)
   private
     FAllowVariable: Boolean;
     FItemFormat: TJvFullColorSpaceFormat;
@@ -439,7 +444,7 @@ type
     function GetColorSpaceID: TJvFullColorSpaceID;
     procedure SetItemFormat(const Value: TJvFullColorSpaceFormat);
   protected
-    procedure CreateWnd; override;
+    procedure CreateWidget; override;
   public
     constructor Create(AOwner: TComponent); override;
     property SelectedSpace: TJvColorSpace read GetColorSpace write SetColorSpace;
@@ -449,15 +454,28 @@ type
     property ColorSpaceID: TJvFullColorSpaceID read GetColorSpaceID write SetColorSpaceID default csRGB;
     property ItemFormat: TJvFullColorSpaceFormat read FItemFormat write SetItemFormat default cfBoth;
     property OnFormatItem: TJvFullColorSpaceFormatEvent read FOnFormatItem write FOnFormatItem; 
+//    property AutoDropDown;
+//    property BevelEdges;
+//    property BevelInner;
+//    property BevelKind default bkNone;
+//    property BevelOuter;
     property Anchors;
+//    property BiDiMode;
     property Color;
     property Constraints;
+//    property Ctl3D;
+//    property DragCursor;
+//    property DragKind;
     property DragMode;
     property DropDownCount;
     property Enabled;
     property Font;
+//    property ImeMode;
+//    property ImeName;
     property ItemHeight;
+//    property ParentBiDiMode;
     property ParentColor;
+//    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -467,22 +485,24 @@ type
     property TabStop;
     property Visible;
     property OnChange;
-    property OnClick; 
-    property OnCloseUp; 
+    property OnClick;
+    property OnCloseUp;
     property OnContextPopup;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
     property OnDrawItem;
     property OnDropDown;
+//    property OnEndDock;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
-    property OnMeasureItem; 
-    property OnSelect; 
+    property OnMeasureItem;
+    property OnSelect;
+//    property OnStartDock;
     property OnStartDrag;
   end;
 
@@ -491,32 +511,48 @@ type
   TJvFullColorAxisFormatEvent = procedure(Sender: TObject; AAxisConfig: TJvFullColorAxisConfig;
     out ACaption: string) of object;
 
-  TJvFullColorAxisCombo = class(TJvExCustomComboBox)
+  TJvFullColorAxisCombo = class(TCustomComboBox)
   private
     FItemFormat: TJvFullColorAxisConfigFormat;
     FColorID: TJvFullColorSpaceID;
+    FOnFormatItem: TJvFullColorAxisFormatEvent;
     procedure SetItemFormat(const Value: TJvFullColorAxisConfigFormat);
     procedure SetSelected(const Value: TJvFullColorAxisConfig);
     procedure SetColorID(const Value: TJvFullColorSpaceID);
     function GetSelected: TJvFullColorAxisConfig;
+    procedure SetOnFormatItem(const Value: TJvFullColorAxisFormatEvent);
   protected
     procedure MakeList; virtual;
-    procedure CreateWnd; override;
+    procedure CreateWidget; override;
   public
     constructor Create(AOwner: TComponent); override;
   published
     property ItemFormat: TJvFullColorAxisConfigFormat read FItemFormat write SetItemFormat default afComplete;
     property Selected: TJvFullColorAxisConfig read GetSelected write SetSelected;
-    property ColorID: TJvFullColorSpaceID read FColorID write SetColorID default csRGB; 
+    property ColorID: TJvFullColorSpaceID read FColorID write SetColorID default csRGB;
+    property OnFormatItem: TJvFullColorAxisFormatEvent read FOnFormatItem write SetOnFormatItem;
+//    property AutoDropDown;
+//    property BevelEdges;
+//    property BevelInner;
+//    property BevelKind default bkNone;
+//    property BevelOuter;
     property Anchors;
+//    property BiDiMode;
     property Color;
     property Constraints;
+//    property Ctl3D;
+//    property DragCursor;
+//    property DragKind;
     property DragMode;
     property DropDownCount;
     property Enabled;
     property Font;
+//    property ImeMode;
+//    property ImeName;
     property ItemHeight;
+//    property ParentBiDiMode;
     property ParentColor;
+//    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -534,6 +570,7 @@ type
     property OnDragOver;
     property OnDrawItem;
     property OnDropDown;
+//    property OnEndDock;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
@@ -542,6 +579,7 @@ type
     property OnKeyUp;
     property OnMeasureItem; 
     property OnSelect; 
+//    property OnStartDock;
     property OnStartDrag;
   end;
 
@@ -597,14 +635,11 @@ type
     property OnChange: TJvFullColorListEvent read FOnChange write FOnChange;
   end;
 
-  TJvFullColorEdge = (feRaised, feLowered, feFlat); 
- 
+  TJvFullColorEdge = (feRaised, feLowered, feFlat);
   TJvFormatHintEvent = procedure(Sender: TObject; HintColor: TJvFullColor;
-    var HintText: widestring) of object; 
+    var HintText: widestring) of object;
 
-
-  
-  TJvFullColorGroup = class(TJvCustomPanel) 
+  TJvFullColorGroup = class(TCustomControl)
   private
     FItems: TJvFullColorList;
     FColCount: Integer;
@@ -628,7 +663,7 @@ type
     procedure SetSelected(const Value: TJvFullColor);
     procedure SetSelectedIndex(const Value: Integer);
     procedure SetBrush(const Value: TBrush);
-    procedure WMMouseLeave(var Msg: TWMMouse); message WM_MOUSELEAVE;
+    procedure CMMouseLeave(var Msg: TWMMouse); message CM_MOUSELEAVE;
     procedure CMHintShow(var Msg: TMessage); message CM_HINTSHOW;
   protected
     procedure Paint; override;
@@ -659,11 +694,12 @@ type
     property OnFormatHint: TJvFormatHintEvent read FOnFormatHint write FOnFormatHint;
     property Align;
     property Anchors;
-    property BevelInner;
-    property BevelOuter; 
-    property BevelWidth; 
-    property BorderStyle; 
-    property BorderWidth;
+//    property BevelInner;
+//    property BevelOuter;
+//    property BevelEdges;
+//    property BevelKind default bkTile;
+//    property BevelWidth;
+//    property BorderWidth;
     property Color;
     property Constraints;
     property Hint;
@@ -682,12 +718,19 @@ function ColorSpaceToString(AColorSpace: TJvColorSpace;
 function AxisConfigToString(AxisConfig: TJvFullColorAxisConfig;
   ItemFormat: TJvFullColorAxisConfigFormat; AColorSpace: TJvColorSpace): string;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
   {$ELSE}
@@ -769,12 +812,12 @@ begin
   FBuffer.PixelFormat := pf32Bit;
   FAutoMouse := True;
   FAxisConfig := acXYZ;
-
   FFullColor := fclRGBWhite;
 
   TabStop := True;
-
   ControlStyle := [csSetCaption, csOpaque];
+  Width := 100;
+  Height := 100;
 end;
 
 destructor TJvFullColorComponent.Destroy;
@@ -862,7 +905,10 @@ begin
   SetFocus;
   try
     if AutoMouse and (Shift * [ssLeft, ssMiddle, ssRight] <> []) then
+    begin
+      FMouseDragging := True;
       MouseColor(Shift, X, Y);
+    end;
     inherited MouseDown(Button, Shift, X, Y);
   finally
     SetCapture(Handle);
@@ -871,7 +917,7 @@ end;
 
 procedure TJvFullColorComponent.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
-  if AutoMouse and (Shift * [ssLeft, ssMiddle, ssRight] <> []) then
+  if MouseDragging and AutoMouse and (Shift * [ssLeft, ssMiddle, ssRight] <> []) then
     MouseColor(Shift, X, Y);
   inherited MouseMove(Shift, X, Y);
 end;
@@ -879,6 +925,7 @@ end;
 procedure TJvFullColorComponent.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   try
+    FMouseDragging := False;
     inherited MouseUp(Button, Shift, X, Y);
   finally
     ReleaseCapture;
@@ -2724,6 +2771,8 @@ begin
   FShapeWidth := 16;
   FShapeHeight := 16;
   FLabelColor := fclDEFWindowText;
+  Width := 100;
+  Height := 25;
 end;
 
 destructor TJvFullColorLabel.Destroy;
@@ -2829,8 +2878,8 @@ begin
 end;
 
 procedure TJvFullColorLabel.SetAutoSize(Value: Boolean);
-begin  
-  FAutoSize := Value; 
+begin
+  FAutosize := Value;
   CalcSize;
 end;
 
@@ -2969,15 +3018,15 @@ begin
   FItemFormat := cfBoth;
 end;
 
-procedure TJvFullColorSpaceCombo.CreateWnd;
+procedure TJvFullColorSpaceCombo.CreateWidget;
 begin
-  inherited CreateWnd;
+  inherited CreateWidget;
   MakeList;
 end;
 
 function TJvFullColorSpaceCombo.GetColorSpace: TJvColorSpace;
 begin
-  if (ItemIndex > -1) and (ItemIndex < Items.Count) then
+  if ItemIndex > -1 then
     Result := TJvColorSpace(Self.Items.Objects[ItemIndex])
   else
     Result := nil;
@@ -3066,9 +3115,9 @@ begin
   FItemFormat := afComplete;
 end;
 
-procedure TJvFullColorAxisCombo.CreateWnd;
+procedure TJvFullColorAxisCombo.CreateWidget;
 begin
-  inherited CreateWnd;
+  inherited CreateWidget;
   MakeList;
 end;
 
@@ -3084,15 +3133,26 @@ procedure TJvFullColorAxisCombo.MakeList;
 var
   Index: TJvFullColorAxisConfig;
   LColorSpace: TJvColorSpace;
+  OldItemIndex: Integer;
+  FormattedItem: string;
 begin
+  OldItemIndex := ItemIndex;
   LColorSpace := ColorSpaceManager.ColorSpace[ColorID];
   with Items do
   begin
     Clear;
     for Index := Low(TJvFullColorAxisConfig) to High(TJvFullColorAxisConfig) do
-      Add(AxisConfigToString(Index, ItemFormat, LColorSpace));
+    begin
+      if Assigned(FOnFormatItem) then
+        FOnFormatItem(Self,Index,FormattedItem)
+      else
+        FormattedItem := AxisConfigToString(Index, ItemFormat, LColorSpace);
+      Add(FormattedItem);
+    end;
   end;
-  ItemIndex := Ord(Selected);
+  if (OldItemIndex > -1) then
+    ItemIndex := OldItemIndex
+  else ItemIndex := 0;
 end;
 
 procedure TJvFullColorAxisCombo.SetColorID(const Value: TJvFullColorSpaceID);
@@ -3111,6 +3171,13 @@ begin
     FItemFormat := Value;
     MakeList;
   end;
+end;
+
+procedure TJvFullColorAxisCombo.SetOnFormatItem(
+  const Value: TJvFullColorAxisFormatEvent);
+begin
+  FOnFormatItem := Value;
+  MakeList;
 end;
 
 procedure TJvFullColorAxisCombo.SetSelected(const Value: TJvFullColorAxisConfig);
@@ -3347,7 +3414,10 @@ begin
   FColCount := 5;
   FSquareSize := 6;
   FSelectedIndex := -1;
-  FMouseIndex := -1; 
+  FMouseIndex := -1;
+//  BevelKind := bkTile;
+  Width := 100;
+  Height := 100;
 end;
 
 destructor TJvFullColorGroup.Destroy;
@@ -3418,7 +3488,7 @@ begin
   end;
 end;
 
-procedure TJvFullColorGroup.WMMouseLeave(var Msg: TWMMouse);
+procedure TJvFullColorGroup.CMMouseLeave(var Msg: TWMMouse);
 begin
   FMouseIndex := -1;
   Msg.Result := 1;
@@ -3793,14 +3863,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-    );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

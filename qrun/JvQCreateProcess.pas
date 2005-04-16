@@ -39,11 +39,12 @@ unit JvQCreateProcess;
 interface
 
 uses
-  Windows, SysUtils, Classes, 
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  Windows, Messages, SysUtils, Classes, 
   ShellAPI, SyncObjs,
-  JvQComponent, 
-  JvQTypes,
-  Messages; // (asn) Messges after Jv(Q)Component for VisualCLX
+  JvQComponent, JvQTypes;
 
 const
   CCPS_BufferSize = 1024;
@@ -228,12 +229,19 @@ type
     property OnRawRead: TJvCPSRawReadEvent read FOnRawRead write FOnRawRead;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   Math,
   JclStrings,
   JvQJCLUtils, JvQJVCLUtils, JvQConsts, JvQResources;
@@ -1469,14 +1477,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

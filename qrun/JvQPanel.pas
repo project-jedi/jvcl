@@ -39,6 +39,9 @@ unit JvQPanel;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   QWindows, QMessages,
   SysUtils, Classes, QGraphics, QControls, QForms, QExtCtrls, 
   Qt, 
@@ -141,7 +144,7 @@ type
     procedure ParentColorChanged; override;
     procedure TextChanged; override;
     procedure Paint; override;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override; 
+//    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override; 
     function DoBeforeMove(X, Y: Integer): Boolean; dynamic;
     procedure DoAfterMove; dynamic; 
     procedure DrawMask(ACanvas: TCanvas); override; 
@@ -222,13 +225,22 @@ type
     property OnStartDrag;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING} 
-  Types, 
+  {$IFDEF HAS_UNIT_TYPES}
+  Types,
+  {$ENDIF HAS_UNIT_TYPES}
   JvQMouseTimer;
 
 const
@@ -248,8 +260,8 @@ begin
   FMaxWidth := 0;
   FBorderLeft := 0;
   FBorderTop := 0;
-  FDistanceVertical:= 0;
-  FDistanceHorizontal:= 0;
+  FDistanceVertical := 0;
+  FDistanceHorizontal := 0;
   WrapControls := True;
   ShowNotVisibleAtDesignTime := True;
   FAutoSize := asNone;
@@ -644,13 +656,15 @@ begin
   end;
 end;
 
-function TJvPanel.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+(*
+function TJvPanel.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   if Transparent and not IsThemed then
     Result := True
   else
-    Result := inherited DoPaintBackground(Canvas, Param);
+    Result := inherited DoEraseBackground(Canvas, Param);
 end;
+*)
 
 procedure TJvPanel.SetMultiLine(const Value: Boolean);
 begin
@@ -1040,14 +1054,6 @@ end;
 
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

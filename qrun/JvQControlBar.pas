@@ -35,6 +35,9 @@ unit JvQControlBar;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   QWindows, Classes, QGraphics, QControls, QMenus,
   JvQExControls, JvQExExtCtrls, JvQAppStorage;
 
@@ -51,7 +54,7 @@ type
   protected
     procedure ReadFromAppStorage(AppStorage: TJvCustomAppStorage; const BasePath: string); virtual;
     procedure WriteToAppStorage(AppStorage: TJvCustomAppStorage; const BasePath: string); virtual;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override; 
+//    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure PopupMenuClick(Sender: TObject);
     procedure Loaded; override;
@@ -69,12 +72,19 @@ type
     property OnParentColorChange;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   SysUtils,
   JvQThemes;
 
@@ -99,16 +109,18 @@ begin
   inherited Destroy;
 end;
 
-function TJvControlBar.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+(*
+function TJvControlBar.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   if Picture.Graphic <> nil then
-    Result := inherited DoPaintBackground(Canvas, Param)
+    Result := inherited DoEraseBackground(Canvas, Param)
   else
   begin
     DrawThemedBackground(Self, Canvas.Handle, ClientRect, Parent.Brush.Handle);
     Result := True;
   end;
 end;
+*)
 
 procedure TJvControlBar.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
@@ -250,14 +262,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

@@ -41,7 +41,10 @@ unit JvQBaseEdits;
 interface
 
 uses
-  QWindows, Classes, QControls, QImgList, QMessages, 
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  QWindows, QMessages, Classes, QControls, QImgList,
   JvQToolEdit;
 
 type
@@ -79,14 +82,15 @@ type
     procedure SetZeroEmpty(Value: Boolean);
     procedure SetFormatOnEditing(Value: Boolean);
     function GetText: string;  reintroduce; 
-    procedure SetText(const AValue: string);  reintroduce; 
 //    function TextToValText(const AValue: string): string;
     //Polaris    function CheckValue(NewValue: Extended; RaiseOnError: Boolean): Extended;
     function IsFormatStored: Boolean; 
-    procedure WMPaste(var Mesg: TMessage); message WM_PASTE;
   protected 
     procedure Paint; override; 
+    procedure WMPaste(var Msg: TMessage); message WM_PASTE;
     procedure SetBeepOnError(Value: Boolean); override;
+
+    procedure SetText(const AValue: string);  reintroduce;  virtual; 
 
     procedure EnabledChanged; override;
     procedure DoEnter; override;
@@ -277,12 +281,19 @@ type
     property OnStartDrag;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   SysUtils, QConsts, Math, QGraphics,
   JvQJCLUtils, JvQCalc, JvQConsts, JvQResources;
 
@@ -806,8 +817,11 @@ var
   S: string;
   IsEmpty: Boolean;
   OldLen, SelStart, SelStop: Integer;
+  WasModified: Boolean;
 begin
   FFormatting := True;
+  { Changing Text sets Modified to false }
+  WasModified := Modified;
   try
     S := inherited Text;
     OldLen := Length(S);
@@ -826,6 +840,7 @@ begin
     end;
   finally
     FFormatting := False;
+    Modified := WasModified;
   end;
 end;
 
@@ -845,18 +860,18 @@ begin
   Self.Value := CheckValue(Value, False); //Polaris
 end;
 
-procedure TJvCustomNumEdit.WMPaste(var Mesg: TMessage);
+procedure TJvCustomNumEdit.WMPaste(var Msg: TMessage);
 var
   S: string;
   WasModified: Boolean;
 begin
-  Mesg.Result := 1;
   WasModified := Modified;
   S := EditText;
   try
     inherited;
     UpdateData;
   except
+    { Changing EditText sets Modified to false }
     EditText := S;
     Modified := WasModified;
     SelectAll;
@@ -1006,14 +1021,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

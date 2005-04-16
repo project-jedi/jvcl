@@ -35,6 +35,9 @@ unit JvQBitmapButton;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   QWindows, QMessages,
   Classes, QGraphics, QControls,
   JvQComponent, JvQTypes;
@@ -107,14 +110,21 @@ type
     property OnClick;
     property OnMouseDown;
     property OnMouseUp;
+    property Visible;
   end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
-{$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
-{$ENDIF UNITVERSIONING}
 
 { (ahuser) make Delphi 5 compiler happy
 function NonPaletteColor(Color: TColor): TColor;
@@ -395,66 +405,59 @@ end;
 
 procedure TJvBitmapButton.MakeCaption(Target: TBitmap; FontColor: TColor);
 var
-  ARect: TRect;
+  R: TRect;
 begin
   if FCaption <> '' then
-  begin
-    Target.Canvas.Brush.Style := bsClear;
-    Target.Canvas.Font.Assign(FFont);
-    Target.Canvas.Font.Color := FontColor;
-    ARect := Rect(0, 0, Width, Height);
-    Target.Canvas.TextRect(ARect, FCaptionLeft, FCaptionTop, FCaption);
-  end;
+    with Target.Canvas do
+    begin
+      Brush.Style := bsClear;
+      Font.Assign(FFont);
+      Font.Color := FontColor;
+      R := Rect(0, 0, Width, Height);
+      TextRect(R, FCaptionLeft, FCaptionTop, FCaption);
+    end;
 end;
 
 procedure TJvBitmapButton.MakeHelperBitmap(Target: TBitmap; Transform: TPixelTransform);
 var
-  p1, p2: PJvRGBTriple;
+  P1, P2: PJvRGBTriple;
   X, Y: Integer;
-  rt, gt, bt: Byte;
-  AColor: TColor;
+  RT, GT, BT: Byte;
+  LColor: TColor;
 begin
   Target.Width := FBitmap.Width;
   Target.Height := FBitmap.Height;
-  Target.Transparent:= FBitmap.Transparent;
+  Target.Transparent := FBitmap.Transparent;
   if FBitmap.Transparent then
   begin
-    AColor := FBitmap.TransparentColor;
-    Target.TransparentColor:= AColor;
+    LColor := FBitmap.TransparentColor;
+    Target.TransparentColor := LColor;
   end
   else
-    AColor:= clNone;
-  rt := GetRValue(AColor);
-  gt := GetGValue(AColor);
-  bt := GetBValue(AColor);
+    LColor := clNone;
+  RT := GetRValue(LColor);
+  GT := GetGValue(LColor);
+  BT := GetBValue(LColor);
   Target.PixelFormat := pf24bit;
-  assert(FBitmap.PixelFormat = pf24bit);
+  Assert(FBitmap.PixelFormat = pf24bit);
   for Y := 0 to FBitmap.Height - 1 do
   begin
-    p1 := FBitmap.ScanLine[Y];
-    p2 := Target.ScanLine[Y];
+    P1 := FBitmap.ScanLine[Y];
+    P2 := Target.ScanLine[Y];
     for X := 1 to FBitmap.Width do
     begin
-      if (AColor <> clNone) and
-        (p1.rgbBlue = bt) and (p1.rgbGreen = gt) and (p1.rgbRed = rt) then
-        p2^ := p1^
+      if (LColor <> clNone) and
+        (P1.rgbBlue = BT) and (P1.rgbGreen = GT) and (P1.rgbRed = RT) then
+        P2^ := P1^
       else
-        Transform(p2, p1);
-      Inc(p1);
-      Inc(p2);
+        Transform(P2, P1);
+      Inc(P1);
+      Inc(P2);
     end;
   end;
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

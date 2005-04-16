@@ -39,6 +39,9 @@ unit JvQLED;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   QWindows, QMessages, QControls, QGraphics, QExtCtrls,
   Classes,
   JvQComponent;
@@ -111,12 +114,19 @@ type
     property OnStartDrag;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   SysUtils;
 
 {$IFDEF MSWINDOWS}
@@ -177,12 +187,9 @@ begin
   Canvas.CopyMode := cmSrcAnd;
   with Canvas do
   begin
-    CopyRect( DestRect, FImgMask.Canvas, SrcRect);
+    QWindows.CopyRect( Canvas,  DestRect, FImgMask.Canvas, SrcRect);
     CopyMode := cmSrcPaint;
-    CopyRect(DestRect, FImgPict.Canvas, SrcRect);
-//    QWindows.CopyRect( Canvas,  DestRect, FImgMask.Canvas, SrcRect);
-//    CopyMode := cmSrcPaint;
-//    QWindows.CopyRect( Canvas,  DestRect, FImgPict.Canvas, SrcRect);
+    QWindows.CopyRect( Canvas,  DestRect, FImgPict.Canvas, SrcRect);
   end;
 end;
 
@@ -280,14 +287,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

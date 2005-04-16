@@ -35,6 +35,9 @@ unit JvQSlider;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, Classes, QWindows, QMessages, QGraphics, QControls, QExtCtrls,
   JvQComponent;
 
@@ -113,12 +116,18 @@ type
     property OnStopChanged: TNotifyEvent read FOnStopChanged write FOnStopChanged;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
-{$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
-{$ENDIF UNITVERSIONING}
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvSlider.res}
@@ -145,8 +154,8 @@ begin
   FChanged := False;
   FHorizontal := True;
   FChanging := False;
-  FImageThumb.LoadFromResourceName(hInstance, 'JvSliderTHUMB');
-  FImageRuler.LoadFromResourceName(hInstance, 'JvSliderRULER');
+  FImageThumb.LoadFromResourceName(HInstance, 'JvSliderTHUMB');
+  FImageRuler.LoadFromResourceName(HInstance, 'JvSliderRULER');
   Calculate;
   FImageThumb.OnChange := ThumbChanged;
   Self.OnResize := ReCalcule;
@@ -400,14 +409,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

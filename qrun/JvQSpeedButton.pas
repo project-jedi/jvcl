@@ -42,6 +42,9 @@ unit JvQSpeedButton;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, Classes,  
   Qt, 
   QWindows, QMessages,
@@ -128,8 +131,7 @@ type
     procedure TimerExpired(Sender: TObject);
     procedure UpdateExclusive;
     procedure SetHotTrackOptions(Value: TJvSpeedButtonHotTrackOptions);
-    procedure CMButtonPressed(var Msg: TCMButtonPressed); message CM_BUTTONPRESSED;
-    procedure CMSysColorChange(var Msg: TMessage); message CM_SYSCOLORCHANGE; 
+    procedure CMButtonPressed(var Msg: TCMButtonPressed); message CM_JVBUTTONPRESSED; 
   protected
     FState: TJvButtonState;
     function WantKey(Key: Integer; Shift: TShiftState;
@@ -214,7 +216,7 @@ type
   protected
     FClient: TJvSpeedButton;
     procedure AssignClient(AClient: TObject); override;
-    function IsCheckedLinked: Boolean; override; 
+    function IsCheckedLinked: Boolean; override;   
     procedure SetChecked(Value: Boolean); override;
   end;
 
@@ -241,6 +243,7 @@ type
     destructor Destroy; override;
   published
     property Action;
+    property Align;
     property Alignment;
     property AllowAllUp;
     property AllowTimer;
@@ -320,6 +323,7 @@ type
     destructor Destroy; override;
   published
     property Action;
+    property Align;
     property Alignment;
     property AllowAllUp;
     property AllowTimer;
@@ -468,12 +472,19 @@ type
 function DrawButtonFrame(Canvas: TCanvas; const Client: TRect;
   IsDown, IsFlat: Boolean; Style: TButtonStyle; AColor: TColor): TRect;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   Math;
 
 type
@@ -890,11 +901,7 @@ begin
   end;
 end;
 
-procedure TJvCustomSpeedButton.CMSysColorChange(var Msg: TMessage);
-begin
-  TJvxButtonGlyph(FGlyph).Invalidate;
-  Invalidate;
-end;
+
 
 procedure TJvCustomSpeedButton.TextChanged;
 begin
@@ -968,8 +975,8 @@ begin
       FState := rbsUp;
       { Calling Click might open a new window or something which will remove
         the focus; if the new window is modal then UpdateTracking won't be
-        called until the window is closed, thus: }
-      Perform(CM_MOUSELEAVE, 0, 0);
+        called until the window is closed, thus: }  
+      MouseLeave(Self); 
       { Even if the mouse is not in the control (DoClick=False) we must redraw
         the image, because it must change from hot -> normal }
       //if not DoClick then
@@ -1220,21 +1227,28 @@ begin
       { .. do not paint gray image }
       LState := FState;
 
-    if (MouseOver or FDragging) and HotTrack then
+    if ((HotTrackOptions.Enabled and Down) or (MouseOver or FDragging)) and HotTrack then
     begin
       Canvas.Font := Self.HotTrackFont;
       {Inserted by (ag) 2004-09-04}
       if HotTrackOptions.Enabled then
         begin
-          Canvas.Brush.Color := HotTrackOptions.Color;
-          Canvas.Brush.Style := bsSolid;
+          if Down then
+            Canvas.Brush.Bitmap := CreateTwoColorsBrushPattern(HotTrackOptions.Color, clWindow)
+          else
+          begin
+            Canvas.Brush.Color := HotTrackOptions.Color;
+            Canvas.Brush.Style := bsSolid;
+          end;
           Canvas.Pen.Color := HotTrackOptions.FrameColor;
           Canvas.Rectangle(0, 0, Width, Height);
+          if Down then
+            Canvas.Brush.Bitmap := nil; // release bitmap
         end;
       {Insert End}
     end else
       Canvas.Font := Self.Font;
-  PaintImage(Canvas, PaintRect, Offset, LState,
+    PaintImage(Canvas, PaintRect, Offset, LState,
       FMarkDropDown and Assigned(FDropDownMenu));
   end;
 end;
@@ -1434,11 +1448,11 @@ var
 begin
   if (FGroupIndex <> 0) and (Parent <> nil) then
   begin
-    Msg.Msg := CM_BUTTONPRESSED;
+    Msg.Msg := CM_JVBUTTONPRESSED;
     Msg.Index := FGroupIndex;
     Msg.Control := Self;
-    Msg.Result := 0;  
-    BroadcastMsg(Parent, Msg); 
+    Msg.Result := 0;
+    Parent.Broadcast(Msg);
   end;
 end;
 
@@ -1478,7 +1492,6 @@ begin
   FHotTrackOptions.Assign(Value);
 end;
 {Insert End}
-
 
 //=== { TJvGlyphCache } ======================================================
 
@@ -1688,7 +1701,8 @@ begin
     FClient.AllowAllUp and (FClient.Down = (Action as TCustomAction).Checked);
 end;
 
- 
+
+
 
 
 function TJvImageSpeedButtonActionLink.IsImageIndexLinked: Boolean;
@@ -2093,8 +2107,7 @@ begin
           end
           else
           begin
-            MonoBmp := CreateDisabledBitmap(FOriginal, clWhite);
-//            MonoBmp := CreateMonoBitmap(FOriginal, clNone);
+            MonoBmp := CreateDisabledBitmap(FOriginal, clBlack);
             try
               FIndexs[State] := TJvGlyphList(FGlyphList).AddMasked(MonoBmp,
                 ColorToRGB(clBtnFace));
@@ -2490,14 +2503,6 @@ end;
 
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

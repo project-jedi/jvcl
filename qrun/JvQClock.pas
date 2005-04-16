@@ -37,6 +37,9 @@ unit JvQClock;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   QWindows, QMessages, Classes, QGraphics, QControls,
   JvQJCLUtils, JvQTimer, JvQComponent, JvQExControls;
 
@@ -150,12 +153,19 @@ type
     property OnConstrainedResize; 
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS} 
@@ -776,6 +786,8 @@ procedure TJvClock.PaintAnalogClock(PaintMode: TPaintMode);
 var
   NewTime: TJvClockTime;
 begin
+  if not Enabled then Exit;
+  
   Canvas.Pen.Color := Font.Color;
   Canvas.Brush.Color := Color;
   SetBkMode(Canvas.Handle, TRANSPARENT);
@@ -868,6 +880,8 @@ var
   end;
 
 begin
+  if not Enabled then Exit;
+
   GetTime(NewTime);
   H := NewTime.Hour;
   if NewTime.Hour >= 12 then
@@ -980,14 +994,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

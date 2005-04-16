@@ -27,6 +27,12 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Changes:
+2005-04-02:
+  * Fixed (Added) support for Alignment when used with Angle. (Layout still to do)
+  * Fixed Shadow (was not visible when JvLabel not Transparent).
+  * Fixed RoundedFrame (was not visible when not Transparent).
+2004-04-05:
+  * Add property RoundedFrame in TJvCustomLabel (Integer>0 is the radius corner)
 2003-10-19:
   * Moved TJvCustomLabel from JvxCtrls to this unit
 2003-09-13:
@@ -44,9 +50,9 @@ Changes:
     a URL (or file-path) to the URL property.
   * JvAngleLabel merged into JvLabel: set Angle > 0 and font to a TrueTrype font to rotate the text // peter3
 
-  Contributor(s): dierk schmid
-  //dierk 2004-5-04
-  --add property RoundedFrame in TJvCustomLabel (Integer>0 is the radius corner)
+  Contributor(s):
+    Dierk schmid
+    Stephane Bischoff (Tief)
 
 Known Issues:
 * AutoSize calculations aren't correct when RoundedFrame and/or Shadow are active
@@ -60,6 +66,9 @@ unit JvQLabel;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   QWindows, QMessages, Classes, QGraphics, QControls, QStdCtrls, QImgList, 
   JvQTypes, JvQComponent, JvQDataProvider, JvQExControls;
 
@@ -67,6 +76,13 @@ type
   TShadowPosition = (spLeftTop, spLeftBottom, spRightBottom, spRightTop);
   TJvLabelRotateAngle = -360..360;
   TJvTextEllipsis = (teNone, teWordEllipsis, tePathEllipsis, teEndEllipsis);
+
+  TAngleInfo = record
+    TextWidth, TextHeight : Integer;
+    TextGapWidth, TextGapHeight : Integer;
+    TotalWidth, TotalHeight : Integer;
+    PosX, PosY : Integer
+  end;
 
   TJvCustomLabel = class(TJvGraphicControl)
   private
@@ -87,7 +103,6 @@ type
     FChangeLink: TChangeLink;
     FHotTrack: Boolean;
     FHotTrackFont: TFont;
-    FFontSave: TFont;
     FAutoOpenURL: Boolean;
     FURL: string;
     FAngle: TJvLabelRotateAngle;
@@ -128,10 +143,11 @@ type
     procedure SetFrameColor(const Value: TColor);
     procedure SetRoundedFrame(const Value: Integer);
     function GetMargin: Integer;
+    procedure HotFontChanged(Sender: TObject);
   protected
     procedure DoDrawCaption(var Rect: TRect; Flags: Integer);virtual;
     procedure DoProviderDraw(var Rect: TRect; Flags: Integer);virtual;
-    procedure FocusChanged; override;
+//    procedure FocusChanged(AControl: TWinControl); override;
     procedure TextChanged; override;
     procedure FontChanged; override;
     function WantKey(Key: Integer; Shift: TShiftState;
@@ -169,7 +185,7 @@ type
     procedure ConsumerServiceChanged(Sender: TJvDataConsumer; Reason: TJvDataConsumerChangeReason);
     procedure NonProviderChange;
     property Angle: TJvLabelRotateAngle read FAngle write SetAngle default 0;
-    property AutoOpenURL: Boolean read FAutoOpenURL write FAutoOpenURL;
+    property AutoOpenURL: Boolean read FAutoOpenURL write FAutoOpenURL default True;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
     property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont;
     property HotTrackFontOptions: TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions default DefaultTrackFontOptions;
@@ -270,21 +286,139 @@ function DrawShadowText(Canvas: TCanvas; Str: PChar; Count: Integer; var Rect: T
 
 procedure FrameRounded(Canvas: TCanvas; ARect: TRect; AColor: TColor; R: Integer);
 
+function CalculateAlignment(Alignment: TAlignment; Angle: integer; X, Y: Real;
+  Info: TAngleInfo): TPoint;
+procedure CalculateAngleInfo(Canvas: TCanvas; Angle: Integer; Text: string;
+  Rect: TRect; var Info: TAngleInfo; AutoSize: boolean = true;
+  Alignment: TAlignment = taLeftJustify);
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   SysUtils, Math, QForms,
-  JvQDataProviderIntf,
-  JvQConsts, JvQThemes, JvQJCLUtils, JvQJVCLUtils;
+  JvQDataProviderIntf, JvQConsts, JvQThemes, JvQJCLUtils, JvQJVCLUtils;
 
 const
-  Alignments: array[TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
-  WordWraps: array[Boolean] of Word = (0, DT_WORDBREAK);
+  Alignments: array [TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
+  WordWraps: array [Boolean] of Word = (0, DT_WORDBREAK);
 
 //=== { TJvCustomLabel } =====================================================
+
+function CalculateAlignment(Alignment: TAlignment; Angle: integer; X, Y: Real; Info: TAngleInfo) : TPoint;
+begin
+  with Info do begin
+    case Angle of
+      0..89:
+        begin
+          case Alignment of
+            taLeftJustify : Result := Point(0, Round(Y + (TotalHeight - 2 * TextGapHeight) / 2));
+            taCenter      : Result := Point(Round(X - TotalWidth / 2), Round(Y + (TotalHeight - 2 * TextGapHeight) / 2));
+            taRightJustify: Result := Point(Round(X * 2 - TotalWidth), Round(Y + (TotalHeight - 2 * TextGapHeight) / 2));
+          end;
+        end;
+      90..179:
+        begin
+          case Alignment of
+            taLeftJustify : Result := Point(TextWidth, Round(Y + TotalHeight / 2));
+            taCenter      : Result := Point(Round(X + (TotalWidth - 2 * TextGapWidth) / 2), Round(Y + TotalHeight / 2));
+            taRightJustify: Result := Point(Round(X * 2 - TextGapWidth), Round(Y + TotalHeight / 2));
+          end;
+        end;
+      180..269:
+        begin
+          case Alignment of
+            taLeftJustify : Result := Point(TotalWidth, Round(Y - (TotalHeight - 2 * TextGapHeight) / 2));
+            taCenter      : Result := Point(Round(X + TotalWidth / 2), Round(Y - (TotalHeight - 2 * TextGapHeight) / 2));
+            taRightJustify: Result := Point(Round(X * 2), Round(Y - (TotalHeight - 2 * TextGapHeight) / 2));
+          end;
+        end;
+      else begin
+        case Alignment of
+          taLeftJustify : Result := Point(TextGapWidth, Round(Y - TotalHeight / 2));
+          taCenter      : Result := Point(Round(X - (TotalWidth - 2 * TextGapWidth) / 2), Round(Y - TotalHeight / 2));
+          taRightJustify: Result := Point(Round(X * 2 - TextWidth), Round(Y - TotalHeight / 2));
+        end;
+      end;
+    end;
+  end;
+end;
+
+procedure CalculateAngleInfo(Canvas: TCanvas; Angle: Integer; Text: string;
+  Rect: TRect; var Info: TAngleInfo; AutoSize: boolean = true;
+  Alignment: TAlignment = taLeftJustify);
+var
+  TxtWdt, TxtHgt : Extended;
+  angB, X, Y : Real;
+  Origin: TPoint;
+begin
+  // Calculate intermediate values
+  case Angle of
+    0..89   : angB := DegToRad(90 - Angle);
+    90..179 : angB := DegToRad(Angle - 90);
+    180..269: angB := DegToRad(270 - Angle);
+  else {270..359}
+    angB := DegToRad(Angle - 270);
+  end;
+  with Canvas do begin
+    TxtWdt := TextWidth (Text);
+    TxtHgt := TextHeight(Text);
+  end;
+  with Info do begin
+    TextWidth    := Round(sin(angB) * TxtWdt);
+    TextGapWidth := Round(cos(angB) * TxtHgt);
+    TextHeight    := Round(cos(angB) * TxtWdt);
+    TextGapHeight := Round(sin(angB) * TxtHgt);
+    // Calculate new sizes of component
+    TotalWidth   := (TextWidth + TextGapWidth);
+    TotalHeight   := (TextHeight + TextGapHeight);
+  end;
+  // Calculate draw position of text
+  with Rect do begin
+    X := (Right - Left) / 2;
+    Y := (Bottom - Top) / 2;
+  end;
+  // Calculate Layout and Alignment Position
+  //SetTextAlign(Canvas.Handle, TA_LEFT);
+  Origin := CalculateAlignment(Alignment, Angle, X, Y, Info);
+  if AutoSize then
+  begin
+    case Angle of
+      0..89:
+        begin
+          Info.PosX := 0;
+          Info.PosY := Info.TextHeight;
+        end;
+      90..179:
+        begin
+          Info.PosX := Info.TextWidth;
+          Info.PosY := Info.TotalHeight;
+        end;
+      180..269:
+        begin
+          Info.posX := Info.TotalWidth;
+          Info.posY := Info.TextGapHeight;
+        end;
+      else begin{270..359}
+        Info.PosX := Info.TextGapWidth;
+        Info.PosY := 0;
+      end;
+    end;
+  end
+  else begin
+    Info.PosX := Origin.X;
+    Info.PosY := Origin.Y;
+  end;
+end;
 
 function DrawShadowText(Canvas: TCanvas; Str: PChar; Count: Integer; var Rect: TRect;
   Format: Word; ShadowSize: Byte; ShadowColor: TColorRef;
@@ -312,6 +446,7 @@ begin
         OffsetRect(RShadow, ShadowSize, -ShadowSize);
       end;
   end;
+  Canvas.Brush.Style := bsClear;
   Result := DrawText(Canvas, Str, Count, RShadow, Format);
   if Result > 0 then
     Inc(Result, ShadowSize);
@@ -333,7 +468,7 @@ begin
   FHotTrack := False;
   // (rom) needs better font handling
   FHotTrackFont := TFont.Create;
-  FFontSave := TFont.Create;
+  FHotTrackFont.OnChange := HotFontChanged;
   Width := 65;
   Height := 17;
   FAutoSize := True;
@@ -343,13 +478,13 @@ begin
   FShadowSize := 0;
   FShadowPos := spRightBottom;
   FHotTrackFontOptions := DefaultTrackFontOptions;
+  FAutoOpenURL := True;
 end;
 
 destructor TJvCustomLabel.Destroy;
 begin
   FChangeLink.Free;
   FHotTrackFont.Free;
-  FFontSave.Free;
   FreeAndNil(FConsumerSvc);
   inherited Destroy;
 end;
@@ -398,7 +533,10 @@ begin
       Supports(TmpItem, IJvDataItemRenderer, ItemRenderer)) then
     begin
       Canvas.Brush.Color := Color;
-      Canvas.Font := Font;
+      if MouseOver then
+        Canvas.Font := HotTrackFont
+      else
+        Canvas.Font := Font;
       if (Flags and DT_CALCRECT <> 0) then
       begin
         if ItemsRenderer <> nil then
@@ -425,8 +563,8 @@ end;
 
 procedure TJvCustomLabel.DoDrawCaption(var Rect: TRect; Flags: Integer);
 const
-  EllipsisFlags: array[TJvTextEllipsis] of Integer =
-  (0, DT_WORD_ELLIPSIS, DT_PATH_ELLIPSIS, DT_END_ELLIPSIS);
+  EllipsisFlags: array [TJvTextEllipsis] of Integer =
+    (0, DT_WORD_ELLIPSIS, DT_PATH_ELLIPSIS, DT_END_ELLIPSIS);
 var
   Text: string;
   PosShadow: TShadowPosition;
@@ -442,8 +580,13 @@ begin
     Flags := Flags or DT_NOPREFIX;
   Flags := Flags or EllipsisFlags[TextEllipsis];
   Flags := DrawTextBiDiModeFlags(Flags);
-  Canvas.Font := Font;
-  Canvas.Font.Color := GetDefaultFontColor;
+  if MouseOver then
+    Canvas.Font := HotTrackFont
+  else
+  begin
+    Canvas.Font := Font;
+    Canvas.Font.Color := GetDefaultFontColor;
+  end;
   PosShadow := FShadowPos;
   SizeShadow := FShadowSize;
   ColorShadow := FShadowColor;
@@ -508,7 +651,7 @@ const // (ahuser) no function known for these
   XOffsetFrame = 0;
   YOffsetFrame = 0;
 var
-  Text: array[0..4096] of Char;
+  Text: array [0..4096] of Char;
   TextX, TextY: Integer;
   Phi: Real;
   w, h: Integer;
@@ -522,15 +665,17 @@ begin
 
   Canvas.Start;
   try
+    Canvas.Brush.Style := bsClear; // Do not Erase Shadow or Background
+
     Phi := Angle * Pi / 180;
     if not AutoSize then
     begin
       w := Rect.Right - Rect.Left;
       h := Rect.Bottom - Rect.Top;
-      TextX := Trunc(0.5 * w - 0.5 * Canvas.TextWidth(Text) * Cos(Phi) - 0.5 * Canvas.TextHeight(Text) *
-        Sin(Phi));
-      TextY := Trunc(0.5 * h - 0.5 * Canvas.TextHeight(Text) * Cos(Phi) + 0.5 * Canvas.TextWidth(Text) *
-        Sin(Phi));
+      TextX := Trunc(0.5 * w - 0.5 * Canvas.TextWidth(Text) * Cos(Phi) -
+        0.5 * Canvas.TextHeight(Text) * Sin(Phi));
+      TextY := Trunc(0.5 * h - 0.5 * Canvas.TextHeight(Text) * Cos(Phi) +
+        0.5 * Canvas.TextWidth(Text) * Sin(Phi));
     end
     else
     begin
@@ -617,8 +762,8 @@ begin
       end
       else
       begin
-        Brush.Color := Color;
-        FrameRounded(Canvas, ClientRect, FrameColor, RoundedFrame); 
+        Brush.Color := Color; 
+        FrameRounded(Canvas, ClientRect, FrameColor, RoundedFrame);
       end;
     end;
     Rect := ClientRect;
@@ -718,6 +863,12 @@ begin
     SetBounds(X, Top, Rect.Right, Rect.Bottom);
   end;
   FNeedsResize := False;
+end;
+
+procedure TJvCustomLabel.HotFontChanged(Sender: TObject);
+begin
+  if MouseOver then
+    Invalidate;
 end;
 
 procedure TJvCustomLabel.SetAlignment(Value: TAlignment);
@@ -896,20 +1047,21 @@ begin
     else
       MouseLeave(Self);
 end;
-
-procedure TJvCustomLabel.FocusChanged;
+(*
+procedure TJvCustomLabel.FocusChanged(AControl: TWinControl);
 var
   Active: Boolean;
 begin
-  Active := Assigned(FFocusControl) and (GetFocusedControl(Self) = FFocusControl);
+  Active := Assigned(FFocusControl) and (AControl = FFocusControl);
   if FFocused <> Active then
   begin
     FFocused := Active;
     if FShowFocus then
       Invalidate;
   end;
-  inherited FocusChanged;
+  inherited FocusChanged(AControl);
 end;
+*)
 
 procedure TJvCustomLabel.TextChanged;
 begin
@@ -953,27 +1105,16 @@ end;
 
 procedure TJvCustomLabel.MouseEnter(Control: TControl);
 begin
-  if csDesigning in ComponentState then
-    Exit;
-  if not MouseOver and Enabled and IsForegroundTask then
-  begin
-    if HotTrack then
-    begin
-      FFontSave.Assign(Font);
-      Font.Assign(FHotTrackFont);
-    end;
-    inherited MouseEnter(Control);
-  end;
+  inherited MouseEnter(Control);
+  if MouseOver and Enabled and IsForegroundTask and HotTrack then
+    FontChanged;
 end;
 
 procedure TJvCustomLabel.MouseLeave(Control: TControl);
 begin
-  if MouseOver then
-  begin
-    if HotTrack then
-      Font.Assign(FFontSave);
-    inherited MouseLeave(Control);
-  end;
+  if MouseOver and HotTrack then
+    FontChanged;
+  inherited MouseLeave(Control);
 end;
 
 procedure TJvCustomLabel.SetImageIndex(Value: TImageIndex);
@@ -1156,7 +1297,6 @@ procedure TJvCustomLabel.SetRoundedFrame(const Value: Integer);
 begin
   if FRoundedFrame <> Value then
   begin
-    // no negative and too hight value
     if (Value < Height div 2) and (Value >= 0) then
     begin
       FRoundedFrame := Value;
@@ -1195,14 +1335,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

@@ -39,6 +39,9 @@ unit JvQDesktopAlertForm;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   QWindows, QMessages, Classes, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls,
   QImgList, QActnList,
   JvQButton, JvQLabel, JvQComponent, JvQConsts;
@@ -129,12 +132,19 @@ type
     property OnUserMove: TNotifyEvent read FOnUserMove write FOnUserMove;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   QMenus, SysUtils,
   JvQJVCLUtils, JvQDesktopAlert, JvQResources;
 
@@ -321,7 +331,8 @@ begin
   if tbDropDown.DropDownMenu = nil then
     tbDropDown.Visible := False;
 
-  if not Closeable and (TJvDesktopAlert(Owner).StyleHandler.DisplayDuration > 0) then // must have either WaitTime or close button
+  // must have either WaitTime or close button
+  if not Closeable and (TJvDesktopAlert(Owner).StyleHandler.DisplayDuration > 0) then
   begin
     tbClose.Visible := False;
     tbDropDown.Left := tbClose.Left;
@@ -647,22 +658,11 @@ begin
   TJvDesktopAlert(Owner).StyleHandler.EndInterval := 0;
 end;
 
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
-
 initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
   RegisterClasses([TLabel, TImage, TAction, TJvDesktopAlertButton, TJvLabel]);
-
 
 {$IFDEF UNITVERSIONING}
 finalization

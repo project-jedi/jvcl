@@ -71,6 +71,9 @@ unit JvQButtons;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   QWindows, QMessages,
   Classes, QGraphics, QControls, QForms, QButtons, 
   QImgList,  
@@ -179,12 +182,19 @@ type
     destructor Destroy; override;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
-uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING} 
+uses 
   SysUtils, Math,
   JvQHtControls, JvQDsgnIntf, JvQConsts, JvQResources, JvQTypes, JvQThemes;
 
@@ -315,12 +325,12 @@ begin
   with Pattern.Canvas do
   begin
     Brush.Style := bsSolid;
-    Brush.Color := FaceColor {clBtnFace};
+    Brush.Color := FaceColor; // clBtnFace
     FillRect(Rect(0, 0, Pattern.Width, Pattern.Height));
     for Y := 0 to 7 do
       for X := 0 to 7 do
         if (Y mod 2) = (X mod 2) then { toggles between even/odd pixels }
-          Pixels[X, Y] := HighLightColor {clBtnHighlight}; { on even/odd rows }
+          Pixels[X, Y] := HighLightColor; {clBtnHighlight}; { on even/odd rows }
   end;
 end;
 
@@ -1022,14 +1032,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

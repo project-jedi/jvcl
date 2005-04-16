@@ -35,6 +35,9 @@ unit JvQNavigationPane;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   QWindows, QMessages, QControls, QGraphics, QMenus, QExtCtrls, QImgList, 
   Qt, 
@@ -465,7 +468,6 @@ type
     procedure SetParentStyleManager(const Value: Boolean);
     function IsColorsStored: Boolean;
   protected
-    procedure Paint; override;
     procedure TextChanged; override;
     procedure FontChanged; override;
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
@@ -473,6 +475,7 @@ type
     function WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean; override; 
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property WordWrap: Boolean read FWordWrap write SetWordWrap default False;
+    procedure PaintButton(Canvas: TCanvas); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1081,12 +1084,19 @@ type
 type 
   TCustomImageListEx = TCustomImageList; 
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   Math, 
   QForms, QActnList,
   JvQJVCLUtils, JvQJCLUtils, JvQResources;
@@ -1105,7 +1115,8 @@ begin
   Msg.Msg := CM_PARENTSTYLEMANAGERCHANGED;
   Msg.Sender := AControl;
   Msg.StyleManager := AStyleManager;
-  Msg.Result := 0;  
+  Msg.Result := 0;
+  AControl.Broadcast(Msg); 
   with Msg do
     for I := 0 to AControl.ControlCount - 1 do
       if QWindows.Perform(AControl.Controls[I], Msg, Integer(Sender), Integer(StyleManager)) <> 0 then
@@ -1113,7 +1124,6 @@ begin
 end;
 
 //=== { TCustomImageListEx } =================================================
-
 
 
 
@@ -2275,7 +2285,7 @@ begin
   end;
 end;
 
-procedure TJvNavPanelButton.Paint;
+procedure TJvNavPanelButton.PaintButton(Canvas:TCanvas);
 //const
 //  cAlignment: array [TAlignment] of Cardinal = (DT_LEFT, DT_RIGHT, DT_CENTER);
 //  cWordWrap: array [Boolean] of Cardinal = (DT_SINGLELINE, DT_WORDBREAK);
@@ -3143,6 +3153,7 @@ end;
 constructor TJvOutlookSplitter.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  ControlStyle := ControlStyle + [csOpaque]; 
   FStyleLink := TJvNavStyleLink.Create;
   FStyleLink.OnChange := DoStyleChange;
   FColorFrom := TColor($B78676);
@@ -4622,6 +4633,7 @@ end;
 procedure TJvNavPaneToolButton.SetAction(const Value: TBasicAction);
 begin
   FRealButton.Action := Value;
+  FRealButton.ActionChange(Value, false);
 end;
 
 procedure TJvNavPaneToolButton.SetEnabled(const Value: Boolean);
@@ -5048,14 +5060,6 @@ end;
   RegisterClasses([TJvNavPanelPage]);} // ahuser: moved to TJvCustomNavigationPane.Create
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

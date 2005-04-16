@@ -45,6 +45,9 @@ unit JvQErrorIndicator;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   QWindows, Classes, QGraphics, QControls, QImgList,
   JvQComponent;
 
@@ -202,26 +205,28 @@ type
     property ImageIndex: Integer read FImageIndex write SetImageIndex;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
-uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING} 
+uses 
   SysUtils, 
   JvQTypes, JvQResources;
 
-
-
-
 {$IFDEF MSWINDOWS}
-{$R ..\Resources\JvQErrorIndicator.res}
+{$R ..\Resources\JvErrorIndicator.res}
 {$ENDIF MSWINDOWS}
 {$IFDEF UNIX}
-{$R ../Resources/JvQErrorIndicator.res}
+{$R ../Resources/JvErrorIndicator.res}
 {$ENDIF UNIX}
-
-
 
 const
   cDefBlinkCount = 5;
@@ -253,7 +258,7 @@ begin
   inherited Create(AComponent);
   FDefaultImage := TImageList.CreateSize(16, 16);  
   Bmp := TBitmap.Create;
-  Bmp.LoadFromResourceName(hInstance, 'XJVERRORINDICATORICON');
+  Bmp.LoadFromResourceName(HInstance, 'JVERRORINDICATOR');
   FDefaultImage.AddMasked(Bmp, clBlack);
   Bmp.Free; 
   FBlinkStyle := ebsBlinkIfDifferentError;
@@ -572,8 +577,12 @@ end;
 procedure TJvErrorIndicator.StopThread;
 begin
   if FBlinkThread <> nil then
+  try
     FBlinkThread.Terminate;
-  FreeAndNil(FBlinkThread);
+    FBlinkThread.WaitFor;
+  finally
+    FreeAndNil(FBlinkThread);
+  end;
 end;
 
 procedure TJvErrorIndicator.DoBlink(Sender: TObject; Erase: Boolean);
@@ -788,14 +797,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

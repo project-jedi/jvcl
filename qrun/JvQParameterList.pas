@@ -33,6 +33,9 @@ unit JvQParameterList;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Classes, SysUtils, QWindows, QMessages,
   QStdCtrls, QExtCtrls, QGraphics, QForms, QControls, QDialogs, QComCtrls,
   {$IFDEF HAS_UNIT_VARIANTS}
@@ -296,8 +299,8 @@ type
     procedure SetArrangeSettings(Value: TJvArrangeSettings);
     procedure SetAppStoragePath(const Value: string);
     function GetAppStoragePath: string;
-    function GetJvAppStorage: TJvCustomAppStorage;
-    procedure SetJvAppStorage(Value: TJvCustomAppStorage);
+    function GetAppStorage: TJvCustomAppStorage;
+    procedure SetAppStorage(Value: TJvCustomAppStorage);
 
     procedure ResizeDialogAfterArrange(Sender: TObject; nLeft, nTop, nWidth, nHeight: Integer);
 
@@ -405,7 +408,7 @@ type
     property CancelButtonVisible: Boolean read FCancelButtonVisible write FCancelButtonVisible;
     property HistoryEnabled: Boolean read FHistoryEnabled write FHistoryEnabled;
     property LastHistoryName: string read FLastHistoryName write FLastHistoryName;
-    property AppStorage: TJvCustomAppStorage read GetJvAppStorage write SetJvAppStorage;
+    property AppStorage: TJvCustomAppStorage read GetAppStorage write SetAppStorage;
   end;
 
   TJvParameterListSelectList = class(TJvAppStorageSelectList)
@@ -435,12 +438,19 @@ type
     property ParameterList: TJvParameterList read FParameterList write FParameterList;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   JclStrings,
   JvQParameterListParameter, JvQResources;
 
@@ -453,6 +463,34 @@ const
      'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
      'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
      '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '_'];
+
+{$IFNDEF HAS_UNIT_VARIANTS}
+type
+  TVariantRelationship = (vrEqual, vrLessThan, vrGreaterThan, vrNotEqual);
+
+function VarCompareValue(const V1, V2: Variant): TVariantRelationship;
+begin
+  if VarIsNull(V1) and VarIsNull(V2) then
+    Result := vrEqual
+  else
+  if VarIsNull(V1) or VarIsNull(V2) then
+    Result := vrNotEqual
+  else
+  if VarIsEmpty(V1) and VarIsEmpty(V2) then
+    Result := vrEqual
+  else
+  if VarIsEmpty(V1) or VarIsEmpty(V2) then
+    Result := vrNotEqual
+  else
+  if V1 = V2 then
+    Result := vrEqual
+  else
+  if V1 < V2 then
+    Result := vrLessThan
+  else
+    Result := vrGreaterThan;
+end;
+{$ENDIF !HAS_UNIT_VARIANTS}
 
 //=== { TJvParameterListMessages } ===========================================
 
@@ -1140,12 +1178,12 @@ begin
   Result := FParameterListPropertyStore.AppStoragePath;
 end;
 
-function TJvParameterList.GetJvAppStorage: TJvCustomAppStorage;
+function TJvParameterList.GetAppStorage: TJvCustomAppStorage;
 begin
   Result := FParameterListPropertyStore.AppStorage;
 end;
 
-procedure TJvParameterList.SetJvAppStorage(Value: TJvCustomAppStorage);
+procedure TJvParameterList.SetAppStorage(Value: TJvCustomAppStorage);
 begin
   FParameterListPropertyStore.AppStorage := Value;
   if Assigned(Value) then
@@ -1557,7 +1595,7 @@ begin
       if (not VarIsEmpty(Data)) and Reason.IsNotEmpty and (IEnable <> -1) then
         IEnable := 1;
       try
-        if (Reason.AsVariant = Data) and (IEnable <> -1) then
+        if (VarCompareValue(Reason.AsVariant, Data) = vrEqual) and (IEnable <> -1) then
           IEnable := 1;
       except
       end;
@@ -1585,7 +1623,7 @@ begin
       if (not (VarIsEmpty(Data) or (VarToStr(Data) = ''))) and Reason.IsNotEmpty then
         IEnable := -1;
       try
-        if Reason.AsVariant = Data then
+        if VarCompareValue(Reason.AsVariant, Data) = vrEqual then
           IEnable := -1;
       except
       end;
@@ -1948,14 +1986,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

@@ -34,6 +34,9 @@ unit JvQParameterListParameter;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Classes, SysUtils, QStdCtrls, QExtCtrls, QGraphics, QForms,
   QControls, QFileCtrls, QDialogs, QComCtrls, QButtons,
   {$IFDEF HAS_UNIT_VARIANTS}
@@ -558,12 +561,19 @@ function DSADialogsMessageDlg(const Msg: string; const DlgType: TMsgDlgType; con
   const HelpButton: TMsgDlgBtn = mbHelp;
   const ADynControlEngine: TJvDynControlEngine = nil): TModalResult;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   JvQResources;
 
 function DSADialogsMessageDlg(const Msg: string; const DlgType: TMsgDlgType; const Buttons: TMsgDlgButtons;
@@ -864,7 +874,7 @@ begin
       LabelControl.Width := LabelWidth
     else
       if FramePanel is TCustomControl then
-        TAccessCustomControl(FramePanel).Canvas.TextWidth(Caption);
+        LabelControl.Width := TAccessCustomControl(FramePanel).Canvas.TextWidth(Caption);
     WinControl.Top := LabelControl.Top;
     WinControl.Left := LabelControl.Left + LabelControl.Width + 4;
     if FramePanel.Height > 0 then
@@ -1305,7 +1315,7 @@ var
   Index: Integer;
 begin
   if Assigned(JvDynControlData) then
-    Index:= JvDynControlData.ControlValue
+    Index := JvDynControlData.ControlValue
   else
     Index := -1;
   if VariantAsItemIndex then
@@ -1375,6 +1385,7 @@ begin
   //    ItemList.IndexOf (AsString) := ItemIndex;
 end;
 
+
 //=== { TJvRadioGroupParameter } =============================================
 
 procedure TJvRadioGroupParameter.Assign(Source: TPersistent);
@@ -1425,8 +1436,8 @@ constructor TJvComboBoxParameter.Create(AParameterList: TJvParameterList);
 begin
   inherited Create(AParameterList);
   LabelArrangeMode := lamBefore;
-  FSorted:= False;
-  FNewEntriesAllowed:= False;
+  FSorted := False;
+  FNewEntriesAllowed := False;
 end;
 
 procedure TJvComboBoxParameter.Assign(Source: TPersistent);
@@ -1480,7 +1491,7 @@ var
   Index: Integer;
 begin
   if Assigned(JvDynControlData) then
-    Index:= ItemList.IndexOf(JvDynControlData.ControlValue)
+    Index := ItemList.IndexOf(JvDynControlData.ControlValue)
   else
     Index := -1;
   if VariantAsItemIndex then
@@ -2297,14 +2308,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

@@ -34,6 +34,9 @@ unit JvQJVCLUtils;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
@@ -120,13 +123,7 @@ function CreateDisabledBitmapEx(FOriginal: TBitmap; OutlineColor, BackColor,
   HighLightColor, ShadowColor: TColor; DrawHighlight: Boolean): TBitmap;
 function CreateDisabledBitmap(FOriginal: TBitmap; OutlineColor: TColor):
   TBitmap;
-
-  overload;
-function CreateDisabledBitmap(FOriginal: TBitmap): TBitmap; overload;
-function CreateMonoBitmap(FOriginal: TBitmap; BackColor: TColor = clDefault): TBitmap;
-
-
-
+function CreateMonoBitmap(FOriginal: TBitmap; BackColor: TColor): TBitmap;
 procedure AssignBitmapCell(Source: TGraphic; Dest: TBitmap; Cols, Rows,
   Index: Integer);
 function ChangeBitmapColor(Bitmap: TBitmap; Color, NewColor: TColor): TBitmap;
@@ -340,7 +337,6 @@ procedure IniEraseSection(IniFile: TObject; const Section: string);
 procedure IniDeleteKey(IniFile: TObject; const Section, Ident: string);
 }
 
-procedure AppBroadcast(Msg, wParam: Longint; lParam: Longint);
 
 
 { Internal using utilities }
@@ -526,11 +522,11 @@ function CanvasMaxTextHeight(Canvas: TCanvas): Integer;
 
 {$IFDEF MSWINDOWS}
 // AllocateHWndEx works like Classes.AllocateHWnd but does not use any virtual memory pages
-function AllocateHWndEx(Method: Classes.TWndMethod; const AClassName: string = ''): Windows.HWND;
+function AllocateHWndEx(Method: TWndMethod; const AClassName: string = ''): Windows.HWND;
 // DeallocateHWndEx works like Classes.DeallocateHWnd but does not use any virtual memory pages
 procedure DeallocateHWndEx(Wnd: Windows.HWND);
 
-function JvMakeObjectInstance(Method: Classes.TWndMethod): Pointer;
+function JvMakeObjectInstance(Method: TWndMethod): Pointer;
 procedure JvFreeObjectInstance(ObjectInstance: Pointer);
 {$ENDIF MSWINDOWS}
 
@@ -569,12 +565,19 @@ function HTMLPlainText(const Text: string): string;
 function HTMLTextHeight(Canvas: TCanvas; const Text: string; Scale: Integer = 100): Integer;
 function HTMLPrepareText(const Text: string): string;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   SysConst, 
   {$IFDEF MSWINDOWS}
   CommCtrl, MMSystem, ShlObj, ActiveX,
@@ -591,8 +594,8 @@ uses
 {$R ../Resources/JvConsts.res}
 {$ENDIF UNIX}
 
-  {$IFDEF MSWINDOWS}
 const
+  {$IFDEF MSWINDOWS}
   RC_ControlRegistry = 'Control Panel\Desktop';
   RC_WallPaperStyle = 'WallpaperStyle';
   RC_WallpaperRegistry = 'Wallpaper';
@@ -1320,7 +1323,6 @@ begin
     Bitmap.Width, Bitmap.Height, 0, 0, Bitmap.Width, Bitmap.Height);
 end;
 
-
 function CreateMonoBitmap(FOriginal: TBitmap; BackColor: TColor): TBitmap;
 var
   Img: QImageH;
@@ -1395,7 +1397,6 @@ begin
   end;
   MonoBmp.Free;
 end;
-
 
 { CreateDisabledBitmap. Creating TBitmap object with disable button glyph
   image. You must destroy it outside by calling TBitmap.Free method. }
@@ -1511,13 +1512,12 @@ end;
 
 function CreateDisabledBitmap(FOriginal: TBitmap; OutlineColor: TColor):
   TBitmap;
-begin  
+begin
   Result := CreateDisabledBitmapEx(FOriginal, OutlineColor,
-//    clBtnFace, clBtnHighlight, clBtnShadow, True);
-    clDark, clLight, clBtnShadow, True); 
+    clBtnFace, clBtnHighlight, clBtnShadow, True);
 end;
 
-{ ChangeBitmapColor. This function creates a new TBitmap object.
+{ ChangeBitmapColor. This function create new TBitmap object.
   You must destroy it outside by calling TBitmap.Free method. }
 
 function ChangeBitmapColor(Bitmap: TBitmap; Color, NewColor: TColor): TBitmap;
@@ -3353,14 +3353,6 @@ begin
   InternalRestoreFormPlacement(Form, AppStorage, GetDefaultSection(Form), Options);
 end;
 
-procedure AppBroadcast(Msg, wParam: Longint; lParam: Longint);
-var
-  I: Integer;
-begin
-  for I := 0 to Screen.FormCount - 1 do
-    SendMessage(Screen.Forms[I].Handle, Msg, wParam, lParam);
-end;
-
 
 { end JvAppUtils }
 { begin JvGraph }
@@ -4886,7 +4878,7 @@ function StdWndProc(Window: Windows.HWND; Message, WParam: WPARAM;
   LParam: LPARAM): LRESULT; stdcall;
 var
   Msg: Messages.TMessage;
-  WndProc: Classes.TWndMethod;
+  WndProc: TWndMethod;
 begin
   TMethod(WndProc).Code := Pointer(GetWindowLong(Window, 0));
   TMethod(WndProc).Data := Pointer(GetWindowLong(Window, 4));
@@ -4903,7 +4895,7 @@ begin
     Result := DefWindowProc(Window, Message, WParam, LParam);
 end;
 
-function AllocateHWndEx(Method: Classes.TWndMethod; const AClassName: string = ''): Windows.HWND;
+function AllocateHWndEx(Method: TWndMethod; const AClassName: string = ''): Windows.HWND;
 var
   TempClass: TWndClass;
   UtilWindowExClass: TWndClass;
@@ -4939,7 +4931,7 @@ begin
   Windows.DestroyWindow(Wnd);
 end;
 
-function JvMakeObjectInstance(Method: Classes.TWndMethod): Pointer;
+function JvMakeObjectInstance(Method: TWndMethod): Pointer;
 begin 
   Result := Classes.MakeObjectInstance(Method); 
 end;
@@ -4953,7 +4945,7 @@ end;
 {$ENDIF MSWINDOWS}
 
 procedure InitScreenCursors;
-begin
+begin 
 end;
 
 const
@@ -5740,21 +5732,10 @@ begin
   Inc(Result);
 end;
 
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
-
 initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
-
   InitScreenCursors;
 
 finalization

@@ -37,6 +37,9 @@ unit JvQSpecialProgress;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   QWindows, QMessages, QGraphics, QControls, QForms, QExtCtrls, // for Frame3D
   JvQComponent;
@@ -91,7 +94,7 @@ type
     procedure PaintRectangle;
     procedure PaintNonSolid;
     procedure PaintSolid;
-    procedure PaintBackground;
+    procedure DoEraseBackground;
     procedure PaintText;
   protected
     procedure Paint; override;
@@ -143,12 +146,18 @@ type
     property OnParentColorChange;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
-{$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
-{$ENDIF UNITVERSIONING}
 
 constructor TJvSpecialProgress.Create(AOwner: TComponent);
 begin
@@ -237,16 +246,13 @@ begin
     UpdateBuffer;
   end;
   if (ClientWidth > 2) and (ClientHeight > 2) then
-  begin
-    FBuffer.Canvas.Start;
+  begin  
     BitBlt(Canvas, 0, 0, ClientWidth, ClientHeight,
-      FBuffer.Canvas, 0, 0, SRCCOPY);
-    FBuffer.SaveToFile('JvQSpecialProgress.bmp');  
-    FBuffer.Canvas.Stop;  
+      FBuffer.Canvas, 0, 0, SRCCOPY); 
   end;
 end;
 
-procedure TJvSpecialProgress.PaintBackground;
+procedure TJvSpecialProgress.DoEraseBackground;
 begin
   if FBlock >= ClientWidth - 2 then
     Exit;
@@ -619,16 +625,16 @@ begin
     Exit;
   FBuffer.Width := ClientWidth;
   FBuffer.Height := ClientHeight;
-  FBuffer.Canvas.start;
+
   if FSolid then
     PaintSolid
   else
     PaintNonSolid;
 
-  PaintBackground;
+  DoEraseBackground;
   PaintText;
   PaintRectangle;
-  FBuffer.Canvas.Stop;
+
   Repaint;
 end;
 
@@ -695,14 +701,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

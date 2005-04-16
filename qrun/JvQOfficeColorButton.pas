@@ -41,6 +41,9 @@ unit JvQOfficeColorButton;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   QWindows, QMessages, QGraphics, QControls, QForms, QStdCtrls, QDialogs, QExtCtrls,
   JvQComponent, JvQSpeedButton, JvQOfficeColorForm, JvQOfficeColorPanel;
@@ -186,12 +189,19 @@ type
     property OnClick;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   TypInfo,
   JvQJCLUtils, JvQExExtCtrls, JvQThemes, JvQResources;
 
@@ -554,11 +564,11 @@ end;
 
 procedure TJvCustomOfficeColorButton.DoFormShowingChanged(Sender: TObject);
 begin
-  if not FColorsForm.Visible then
+  if not FColorsForm.Visible  and not (csDesigning in ComponentState)then
   begin
-    FArrowButton.Down := False;  
+    FArrowButton.Down := False;
     TColorSpeedButtonAccessProtected(FArrowButton).MouseLeave(FArrowButton);
-    TColorSpeedButtonAccessProtected(FMainButton).MouseLeave(FMainButton); 
+    TColorSpeedButtonAccessProtected(FMainButton).MouseLeave(FMainButton);
   end;
 end;
 
@@ -592,41 +602,41 @@ end;
 
 procedure TJvCustomOfficeColorButton.DoFormWindowStyleChanged(Sender: TObject);
 begin
-  if FColorsForm.ToolWindowStyle then
+  if FColorsForm.ToolWindowStyle  and not (csDesigning in ComponentState)then
   begin
-    FArrowButton.Down := False;  
+    FArrowButton.Down := False;
     TColorSpeedButtonAccessProtected(FArrowButton).MouseLeave(FArrowButton);
-    TColorSpeedButtonAccessProtected(FMainButton).MouseLeave(FMainButton); 
+    TColorSpeedButtonAccessProtected(FMainButton).MouseLeave(FMainButton);
   end;
 end;
 
 procedure TJvCustomOfficeColorButton.DoButtonMouseEnter(Sender: TObject);
 begin
-  if FFlat and Enabled then
-  begin  
+  if FFlat and Enabled and not (csDesigning in ComponentState) then
+  begin
     TColorSpeedButtonAccessProtected(FMainButton).MouseEnter(FMainButton);
-    TColorSpeedButtonAccessProtected(FArrowButton).MouseEnter(FArrowButton); 
+    TColorSpeedButtonAccessProtected(FArrowButton).MouseEnter(FArrowButton);
   end;
 end;
 
 procedure TJvCustomOfficeColorButton.DoButtonMouseLeave(Sender: TObject);
 begin
-  if FFlat and Enabled then
+  if FFlat and Enabled and not (csDesigning in ComponentState) then
   begin
     if Sender = FMainButton then
     begin
-      if FColorsForm.Visible then  
+      if FColorsForm.Visible then
         TColorSpeedButtonAccessProtected(FMainButton).MouseEnter(FMainButton)
       else
-        TColorSpeedButtonAccessProtected(FArrowButton).MouseLeave(FArrowButton); 
+        TColorSpeedButtonAccessProtected(FArrowButton).MouseLeave(FArrowButton);
     end
     else
     if Sender = FArrowButton then
     begin
-      if not FColorsForm.Visible then  
+      if not FColorsForm.Visible then
         TColorSpeedButtonAccessProtected(FMainButton).MouseLeave(FMainButton)
       else
-        TColorSpeedButtonAccessProtected(FArrowButton).MouseEnter(FArrowButton); 
+        TColorSpeedButtonAccessProtected(FArrowButton).MouseEnter(FArrowButton);
     end;
   end;
 end;
@@ -823,14 +833,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

@@ -46,6 +46,9 @@ unit JvQComboListBox;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   QWindows, QMessages,
   Classes, QGraphics, QControls, QForms, QStdCtrls, QButtons,  
   Qt, JvQExStdCtrls, 
@@ -157,12 +160,19 @@ type
 //    property OnChange;  // not supported for listboxes
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   Math;
 
 constructor TJvComboListBox.Create(AOwner: TComponent);
@@ -516,7 +526,7 @@ begin
         P := ClientToScreen(P);
         DropdownMenu.PopupComponent := Self;
         DropdownMenu.Popup(P.X, P.Y);  
-        //QWindows.IgnoreMouseEvents(Handle); 
+//        QWindows.IgnoreMouseEvents(Handle); 
       end;
       MouseUp(Button, Shift, X, Y);
     end;
@@ -613,14 +623,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

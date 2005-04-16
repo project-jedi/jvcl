@@ -35,9 +35,10 @@ unit JvQItemsSearchs;
 interface
 
 uses
-  {$IFDEF COMPILER9_UP}
-  QWindows,
-  {$ENDIF COMPILER9_UP}
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING} 
+  QWindows, 
   SysUtils, Classes;
 
 type
@@ -54,12 +55,18 @@ type
       CaseSensitive: Boolean = True): Integer;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
-{$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
-{$ENDIF UNITVERSIONING}
 
 class function TJvItemsSearchs.DeleteExactString(Items: TStrings; const Value: string;
   All: Boolean; CaseSensitive: Boolean): Integer;
@@ -222,14 +229,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

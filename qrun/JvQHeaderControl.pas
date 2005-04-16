@@ -35,24 +35,19 @@ unit JvQHeaderControl;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JvQExComCtrls;
 
 type
   TJvHeaderControl = class(TJvExHeaderControl)
   published
-    property Font;
     property HintColor;
     property OnMouseEnter;
     property OnMouseLeave;
     property OnParentColorChange;
   end;
-
-implementation
-
-{$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
-{$ENDIF UNITVERSIONING}
 
 {$IFDEF UNITVERSIONING}
 const
@@ -62,7 +57,12 @@ const
     Date: '$Date$';
     LogPath: 'JVCL\run'
   );
+{$ENDIF UNITVERSIONING}
 
+implementation
+
+
+{$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

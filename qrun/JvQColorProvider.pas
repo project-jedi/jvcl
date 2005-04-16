@@ -36,6 +36,9 @@ unit JvQColorProvider;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   QWindows, Classes, Contnrs, QGraphics, QDialogs,
   JclBase,
   JvQDataProvider, JvQDataProviderIntf, JvQTypes;
@@ -496,12 +499,19 @@ const
 
 function ColorProviderColorAdderRegister: TJvColorProviderColorAdderRegister;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   SysUtils,
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
@@ -528,6 +538,8 @@ begin
   if Result then
   begin
     Color := StrToInt('$0' + Copy(S, 8, 8)); 
+    if (Color and $80000000) <> 0 then
+      Color := Color or TColor(clSystemColor); 
   end;
 end;
 
@@ -1597,9 +1609,9 @@ begin
     end;
   end;
   if ColorFound then
-  begin
-
-
+  begin 
+    if (ColorValue and clSystemColor) = clSystemColor then
+      ColorValue := ColorValue and $80FFFFFF; 
     SetID(cColorItemIDPrefix + IntToHex(ColorValue, 8));
   end
   else
@@ -3744,21 +3756,10 @@ begin
   Result := False;
 end;
 
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
-
 initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
-
   RegisterClasses([TJvColorProviderSettings, TJvColorProviderServerNotify, TJvColorContext]);
   MasterColorConsumer := TJvColorConsumer.Create;
 

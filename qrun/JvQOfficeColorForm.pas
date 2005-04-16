@@ -38,6 +38,9 @@ unit JvQOfficeColorForm;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   QWindows, QMessages, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, 
   Qt, 
@@ -104,7 +107,7 @@ type
     procedure AdjustColorForm;  
     function WidgetFlags: Integer; override;
     procedure Paint; override; 
-    procedure DoKillFocus(FocusedWnd: HWND); override;
+//    procedure FocusKilled(NextWnd: HWND); override;
     procedure ShowingChanged; override;
     property OnShowingChanged: TNotifyEvent read FOnShowingChanged write FOnShowingChanged;
     property OnKillFocus: TNotifyEvent read FOnKillFocus write FOnKillFocus;
@@ -121,12 +124,19 @@ type
     property Flat: Boolean read FFlat write SetFlat;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   JvQResources;
 
 //=== { TJvOfficeColorForm } =================================================
@@ -325,12 +335,14 @@ begin
     FOnShowingChanged(ActiveControl);
 end;
 
-procedure TJvOfficeColorForm.DoKillFocus(FocusedWnd: HWND);
+(*
+procedure TJvOfficeColorForm.FocusKilled(NextWnd: HWND);
 begin
-  inherited DoKillFocus(FocusedWnd);
+  inherited FocusKilled(NextWnd);
   if Assigned(FOnKillFocus) and not DropDownMoving then
     FOnKillFocus(ActiveControl);
 end;
+*)
 
 procedure TJvOfficeColorForm.FormDeactivate(Sender: TObject);
 begin
@@ -492,14 +504,6 @@ end;
 
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

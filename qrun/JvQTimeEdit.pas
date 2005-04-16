@@ -18,7 +18,8 @@ Contributor(s):
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
-Known Issues:
+Known Issues:  Up/Down increments/decrements hours only.
+               (CursorPos returns 0, 1. No other values(?) ) 
 -----------------------------------------------------------------------------}
 // $Id$
 
@@ -190,10 +191,10 @@ begin
   CheckCursor;
   tf := GetTimeField;
   Increment := GetDelta(tf);
-//  cp := CursorPos;
+  cp := CursorPos;
   inherited;
-//  CursorPos := cp;
-//  SetSelection(tf);
+  CursorPos := cp;
+  SetSelection(tf);
 end;
 
 procedure TJvTimeSpin.DownClick(Sender: TObject);
@@ -204,10 +205,10 @@ begin
   CheckCursor;
   tf := GetTimeField;
   Increment := GetDelta(tf);
-//  cp := CursorPos;
+  cp := CursorPos;
   inherited;
-//  CursorPos := cp;
-//  SetSelection(tf);
+  CursorPos := cp;
+  SetSelection(tf);
 end;
 
 function TJvTimeSpin.GetTimeField : TTimeField;

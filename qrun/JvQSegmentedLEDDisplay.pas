@@ -39,6 +39,9 @@ unit JvQSegmentedLEDDisplay;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
@@ -106,8 +109,8 @@ type
     procedure DefineProperties(Filer: TFiler); override;
     procedure Loaded; override;
     procedure Paint; override;
-    function GetText: string;  reintroduce;
-    procedure SetText(Value: string); reintroduce;
+    function GetText: string;
+    procedure SetText(Value: string);
     procedure SetDigitHeight(Value: Integer);
     procedure SetDigits(Value: TJvSegmentedLEDDigits);
     procedure SetDigitSpacing(Value: Integer);
@@ -385,12 +388,19 @@ procedure UnregisterSegmentedLEDDigitClass(DigitClass: TJvSegmentedLEDDigitClass
 procedure UnregisterSegmentedLEDDigitClasses(DigitClasses: array of TJvSegmentedLEDDigitClass);
 procedure UnregisterModuleSegmentedLEDDigitClasses(Module: HMODULE);
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   QControls, SysUtils,
   JclQGraphUtils,
   JvQThemes, JvQConsts, JvQResources;
@@ -1941,34 +1951,23 @@ begin
     Result := Format('%s%.8x', [HexDisplayPrefix, Color]);
 end;
 
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
-
 initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
-  {$ENDIF UNITVERSIONING}
- 
+  {$ENDIF UNITVERSIONING} 
   GroupDescendentsWith(TJvCustomSegmentedLEDDigit, TControl); 
   AddModuleUnloadProc(ModuleUnload);
   RegisterSegmentedLEDDigitClasses([TJv7SegmentedLEDDigit]);
   RegisterIntegerConsts(TypeInfo(TUnlitColor), IdentToUnlitColor, UnlitColorToIdent);
 
-finalization
-  {$IFDEF UNITVERSIONING}
-  UnregisterUnitVersion(HInstance);
-  {$ENDIF UNITVERSIONING} 
+finalization 
   UnregisterIntegerConsts(TypeInfo(TUnlitColor), IdentToUnlitColor, UnlitColorToIdent); 
   UnregisterModuleSegmentedLEDDigitClasses(HInstance);
   FreeAndNil(GDigitClassList);
   RemoveModuleUnloadProc(ModuleUnload);
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
 
 end.
 

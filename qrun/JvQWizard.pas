@@ -338,10 +338,15 @@ unit JvQWizard;
 
 interface
 
-uses
+uses 
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING} 
   SysUtils, Classes,
-  QWindows, QMessages, QControls, QForms, QGraphics, QButtons, QImgList, 
-  Types,  
+  QWindows, QMessages, QControls, QForms, QGraphics, QButtons, QImgList,
+  {$IFDEF HAS_UNIT_TYPES}
+  Types,
+  {$ENDIF HAS_UNIT_TYPES} 
   JvQComponent, JvQThemes, 
   JvQWizardCommon;
 
@@ -528,6 +533,7 @@ type
     property WizardPageHeader: TJvWizardPageHeader
       read FWizardPageHeader write SetWizardPageHeader;
   public
+    procedure Assign(Source: TPersistent); override;
     constructor Create; override;
     destructor Destroy; override;
     procedure PaintTo(ACanvas: TCanvas; var ARect: TRect); override;
@@ -568,6 +574,8 @@ type
     procedure SetParentFont(Value: Boolean);
     procedure SetShowDivider(Value: Boolean);
     procedure AdjustTitleFont;
+    procedure SetSubtitle(const Value: TJvWizardPageTitle);
+    procedure SetTitle(const Value: TJvWizardPageTitle);
   protected
     procedure VisibleChanged; override;
     procedure Initialize; override;
@@ -585,8 +593,8 @@ type
     property ImageAlignment: TJvWizardImageLeftRight read FImageAlignment write SetImageAlignment default iaRight;
     property Height: Integer read FHeight write SetHeight default 70;
     property ParentFont: Boolean read FParentFont write SetParentFont default True;
-    property Title: TJvWizardPageTitle read FTitle write FTitle;
-    property Subtitle: TJvWizardPageTitle read FSubtitle write FSubtitle;
+    property Title: TJvWizardPageTitle read FTitle write SetTitle;
+    property Subtitle: TJvWizardPageTitle read FSubtitle write SetSubtitle;
     property ShowDivider: Boolean read FShowDivider write SetShowDivider default True;
     property Color default clWindow;
     property Visible;
@@ -781,7 +789,8 @@ type
     FOnActivePageChanging: TJvWizardChangingPageEvent;
     FHeaderImages: TCustomImageList;
     FImageChangeLink: TChangeLink;
-    FAutoHideButtonBar: Boolean; 
+    FAutoHideButtonBar: Boolean;
+    FDefaultButtons: Boolean; 
     procedure SetShowDivider(Value: Boolean);
     function GetShowRouteMap: Boolean;
     procedure SetShowRouteMap(Value: Boolean);
@@ -803,6 +812,7 @@ type
       CheckDisable: Boolean = True): TJvWizardCustomPage;
     procedure SetAutoHideButtonBar(const Value: Boolean);
     function GetWizardPages(Index: Integer): TJvWizardCustomPage;
+    procedure SetDefaultButtons(const Value: Boolean);
   protected
     procedure Loaded; override;
     procedure AdjustClientRect(var Rect: TRect); override;
@@ -845,6 +855,7 @@ type
     property ButtonFinish: TJvWizardNavigateButton read FNavigateButtons[bkFinish] write FNavigateButtons[bkFinish];
     property ButtonCancel: TJvWizardNavigateButton read FNavigateButtons[bkCancel] write FNavigateButtons[bkCancel];
     property ButtonHelp: TJvWizardNavigateButton read FNavigateButtons[bkHelp] write FNavigateButtons[bkHelp];
+    property DefaultButtons: Boolean read FDefaultButtons write SetDefaultButtons default True;
     property ShowDivider: Boolean read FShowDivider write SetShowDivider default True;
     property ShowRouteMap: Boolean read GetShowRouteMap write SetShowRouteMap;
     property HeaderImages: TCustomImageList read FHeaderImages write SetHeaderImages;
@@ -871,12 +882,21 @@ type
     property Visible;
   end;
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
+
 implementation
 
 uses 
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   JvQResources, 
   QConsts;
 
@@ -966,7 +986,7 @@ begin
   inherited Create(AOwner);
   if csDesigning in ComponentState then
   begin 
-      { !!! YW - Add csClickEvents in order to fired the Click method
+      { !!! YW - Add csClickEvents in order to fire the Click method
          at design time. It does NOT need at run time, otherwise it cause
         the OnClick event to be called twice. }
     ControlStyle := ControlStyle + [csClickEvents]; 
@@ -1455,7 +1475,7 @@ var
   I: Integer;
   AParent: TWidgetControl;
 begin
-  AParent:= ParentA;
+  AParent := ParentA;
 
 
   if Assigned(AParent) then
@@ -1810,6 +1830,25 @@ begin
   end;
 end;
 
+procedure TJvWizardPageTitle.Assign(Source: TPersistent);
+begin
+  if Source is TJvWizardPageTitle then
+  begin
+    if Source <> Self then
+    begin
+      FText := TJvWizardPageTitle(Source).Text;
+      FAnchors := TJvWizardPageTitle(Source).Anchors;
+      FAnchorPlacement := TJvWizardPageTitle(Source).AnchorPlacement;
+      FIndent := TJvWizardPageTitle(Source).Indent;
+      FAlignment := TJvWizardPageTitle(Source).Alignment;
+      Font := TJvWizardPageTitle(Source).Font;
+      DoChange
+    end
+  end
+  else
+    inherited Assign(Source);
+end;
+
 procedure TJvWizardPageTitle.OnChange(Sender: TObject);
 begin
   DoChange;
@@ -1940,6 +1979,16 @@ begin
     if Result.Left < ARect.Right then
       ARect.Right := Result.Left;
   end;
+end;
+
+procedure TJvWizardPageHeader.SetSubtitle(const Value: TJvWizardPageTitle);
+begin
+  FSubtitle.Assign(Value);
+end;
+
+procedure TJvWizardPageHeader.SetTitle(const Value: TJvWizardPageTitle);
+begin
+  FTitle.Assign(Value);
 end;
 
 procedure TJvWizardPageHeader.PaintTo(ACanvas: TCanvas; var ARect: TRect);
@@ -2495,7 +2544,8 @@ begin
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := ImageListChange;
   FAutoHideButtonBar := True;
-  CreateNavigateButtons; 
+  CreateNavigateButtons;
+  FDefaultButtons := True; 
   InputKeys := [ikAll]; 
 end;
 
@@ -2961,10 +3011,10 @@ begin
   { YW - Set Default Button, Next Button has the higher priority than
      the Finish Button. }
   if (bkNext in AVisibleButtonSet) and (bkNext in AEnabledButtonSet) then
-    FNavigateButtons[bkNext].Control.Default := True
+    FNavigateButtons[bkNext].Control.Default := DefaultButtons
   else
   if (bkFinish in AVisibleButtonSet) and (bkFinish in AEnabledButtonSet) then
-    FNavigateButtons[bkFinish].Control.Default := True;
+    FNavigateButtons[bkFinish].Control.Default := DefaultButtons;
 end;
 
 procedure TJvWizard.RepositionButtons;
@@ -3122,16 +3172,17 @@ begin
     FOnActivePageChanging(Self, ToPage);
 end;
 
+procedure TJvWizard.SetDefaultButtons(const Value: Boolean);
+begin
+  if Value <> FDefaultButtons then
+  begin
+    FDefaultButtons := Value;
+    UpdateButtonsStatus;
+  end;
+end;
+
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 
