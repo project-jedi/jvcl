@@ -37,6 +37,9 @@ unit JvQDesktopAlert;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   QWindows, Classes, QControls, QGraphics, QForms, QExtCtrls, QMenus, QImgList,
   JvQComponent, JvQBaseDlg, JvQDesktopAlertForm;
 
@@ -433,17 +436,24 @@ type
 
 function CreateHandlerForStyle(Style: TJvAlertStyle; OwnerForm: TJvFormDesktopAlert): TJvCustomDesktopAlertStyleHandler;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   SysUtils,
   JvQJVCLUtils, JvQTypes;
 
 var
-  FGlobalStacker: TJvDesktopAlertStack = nil;
+  GStacker: TJvDesktopAlertStack = nil;
 
 function CreateHandlerForStyle(Style: TJvAlertStyle; OwnerForm: TJvFormDesktopAlert): TJvCustomDesktopAlertStyleHandler;
 begin
@@ -459,9 +469,9 @@ end;
 
 function GlobalStacker: TJvDesktopAlertStack;
 begin
-  if FGlobalStacker = nil then
-    FGlobalStacker := TJvDesktopAlertStack.Create(nil);
-  Result := FGlobalStacker;
+  if GStacker = nil then
+    GStacker := TJvDesktopAlertStack.Create(nil);
+  Result := GStacker;
 end;
 
 //=== { TJvDesktopAlertChangePersistent } ====================================
@@ -708,7 +718,7 @@ procedure TJvDesktopAlert.DoLocationChange(Sender: TObject);
 begin
   if GetStacker.Position <> Location.Position then
   begin
-    if GetStacker = FGlobalStacker then
+    if GetStacker = GlobalStacker then
       GetStacker.Position := Location.Position
     else
       Location.Position := GetStacker.Position;
@@ -1450,7 +1460,6 @@ begin
   DoAlphaBlend(MaxAlphaBlendValue);
 end;
 
-
 procedure TJvFadeAlertStyleHandler.DoAlphaBlend(Value: Byte);
 begin
 
@@ -1638,7 +1647,6 @@ begin
   if FMinGrowthPercentage > 100.0 then
     FMinGrowthPercentage := 100.0;
 end;
-
 (*
 function TJvDesktopAlert.GetBiDiMode: TBidiMode;
 begin
@@ -1650,23 +1658,13 @@ begin
   FDesktopForm.BiDiMode := Value;
 end;
 *)
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
-
 initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
 
 finalization
-  FreeAndNil(FGlobalStacker);
+  FreeAndNil(GStacker);
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}

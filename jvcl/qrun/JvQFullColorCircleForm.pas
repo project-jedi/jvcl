@@ -35,11 +35,13 @@ unit JvQFullColorCircleForm;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   QWindows, QMessages, SysUtils, Classes, QGraphics, QControls, QForms,
   QExtCtrls, QStdCtrls, QMask, 
   JvQFullColorDialogs, JvQFullColorCtrls, JvQFullColorSpaces, JvQFullColorRotate,
-  JvQExMask, JvQSpin, JvQExStdCtrls, JvQExControls, JvQComponent,
-  QComboEdits, JvQExComboEdits;
+  JvQExMask, JvQSpin;
 
 type
   TJvFullColorCircleFrm = class(TForm)
@@ -173,12 +175,19 @@ type
     property OnApply: TNotifyEvent read FOnApply write FOnApply;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   JvQResources,
   TypInfo, 
   Math;
@@ -711,7 +720,7 @@ procedure TJvFullColorCircleFrm.SetDelta(const Value: TJvColorDelta);
 var
   ChangeColorSpace:Boolean;
 begin
-  ChangeColorSpace:= Value.ColorID <> Delta.ColorID;
+  ChangeColorSpace := Value.ColorID <> Delta.ColorID;
   FDelta.Assign(Value);
   if not FUpdating then
   begin
@@ -807,7 +816,7 @@ begin
     begin
       if ARotateColor = rcRed then
       begin
-        //RedDelta:=GetDelta(RedDelta,JvColorCircle.RedColor,FRedAxis0,FRedAxis1,FRedAxis2);
+        //RedDelta := GetDelta(RedDelta, JvColorCircle.RedColor, FRedAxis0, FRedAxis1, FRedAxis2);
         for I := Low(TJvAxisIndex) to High(TJvAxisIndex) do
         begin
           AxisDelta[I].Value := GetDelta(RedDelta[I].Value, GetAxisValue(JvColorCircle.RedColor, I),
@@ -819,7 +828,7 @@ begin
 
       if ARotateColor = rcGreen then
       begin
-        //GreenDelta:=GetDelta(GreenDelta,JvColorCircle.GreenColor,FGreenAxis0,FGreenAxis1,FGreenAxis2);
+        //GreenDelta := GetDelta(GreenDelta, JvColorCircle.GreenColor, FGreenAxis0, FGreenAxis1, FGreenAxis2);
         for I := Low(TJvAxisIndex) to High(TJvAxisIndex) do
         begin
           AxisDelta[I].Value := GetDelta(GreenDelta[I].Value, GetAxisValue(JvColorCircle.GreenColor, I),
@@ -831,7 +840,7 @@ begin
 
       if ARotateColor = rcBlue then
       begin
-        //BlueDelta:=GetDelta(BlueDelta,JvColorCircle.BlueColor,FBlueAxis0,FBlueAxis1,FBlueAxis2);
+        //BlueDelta := GetDelta(BlueDelta, JvColorCircle.BlueColor, FBlueAxis0, FBlueAxis1, FBlueAxis2);
         for I := Low(TJvAxisIndex) to High(TJvAxisIndex) do
         begin
           AxisDelta[I].Value := GetDelta(BlueDelta[I].Value, GetAxisValue(JvColorCircle.BlueColor, I),
@@ -956,21 +965,11 @@ begin
   GlobalRange := Copy(LString, 3, Length(LString) - 2);
 end;
 
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-    );
-{$ENDIF UNITVERSIONING}
-
 initialization
-  InitializeStrings;
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
+  InitializeStrings;
 
 {$IFDEF UNITVERSIONING}
 finalization

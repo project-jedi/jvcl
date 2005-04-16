@@ -789,8 +789,8 @@ end;
 
 procedure TJvMouseGestureHook.CreateForThreadOrSystem(AOwner: TComponent; ADwThreadID: Cardinal);
 
-var
-  Method: TMethod;
+//var
+//  Method: TMethod;
 
 begin
   if JvMouseGestureHookAlreadyInstalled then

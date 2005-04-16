@@ -37,6 +37,9 @@ unit JvQNetscapeSplitter;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   QWindows, QMessages, QGraphics, QForms, QExtCtrls, QControls, 
   Qt, 
@@ -106,8 +109,8 @@ type
     FDownPos: TPoint; 
     procedure LoadOtherProperties(Reader: TReader); dynamic;
     procedure StoreOtherProperties(Writer: TWriter); dynamic;
-    procedure DefineProperties(Filer: TFiler); override; 
-    function DoCanResize(var NewSize: Integer): Boolean; override; 
+    procedure DefineProperties(Filer: TFiler); override;
+    function DoCanResize(var NewSize: Integer): Boolean; override;
     procedure Loaded; override;
     procedure PaintButton(Highlight: Boolean); dynamic;
     function DrawArrow(ACanvas: TCanvas; AvailableRect: TRect; Offset: Integer;
@@ -190,12 +193,19 @@ type
     property OnParentColorChange;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   JvQThemes;
 
 procedure SetRectEmpty(var R: TRect);
@@ -267,7 +277,6 @@ begin
     Minimized or Maximized);
 end;
 
-
 function TJvCustomNetscapeSplitter.DoCanResize(var NewSize: Integer): Boolean;
 begin
   Result := inherited DoCanResize(NewSize);
@@ -276,7 +285,6 @@ begin
   if Result and (NewSize < MinSize) then
     NewSize := MinSize;
 end;
-
 
 procedure TJvCustomNetscapeSplitter.DoClose;
 begin
@@ -758,7 +766,7 @@ begin
   if Align <> Value then
   begin
     inherited Align := Value;
-    Invalidate; // Direction changing, redraw arrows. 
+    Invalidate; // Direction changing, redraw arrows.
   end;
 end;
 
@@ -1145,14 +1153,6 @@ end;
 
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

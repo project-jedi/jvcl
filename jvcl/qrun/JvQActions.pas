@@ -35,6 +35,9 @@ unit JvQActions;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   {$IFDEF MSWINDOWS}
   JclMapi,
   Windows, ShellAPI,
@@ -110,13 +113,18 @@ type
     property URL: string read FURL write FURL;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
-{$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
-{$ENDIF UNITVERSIONING}
 
 {$IFDEF MSWINDOWS}
 
@@ -264,14 +272,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

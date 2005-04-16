@@ -35,14 +35,16 @@ unit JvQThread;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   QWindows,
-  {$ENDIF UNIX} 
-  QForms, 
+  {$ENDIF UNIX}
   QDialogs,
   JvQTypes, JvQComponent, JvQThreadDialog;
 
@@ -87,19 +89,20 @@ type
     function GetThreads(Index: Integer): TJvBaseThread;
     function GetTerminated: Boolean;
     procedure CreateThreadDialogForm;
-    function GetLastThread : TJvBaseThread;
+    function GetLastThread: TJvBaseThread;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 
-//    procedure Synchronize (Method: TThreadMethod);
+    procedure Synchronize (Method: TThreadMethod);
 
     property Count: Integer read GetCount;
     property Threads[Index: Integer]: TJvBaseThread read GetThreads;
     property LastThread: TJvBaseThread read GetLastThread;
   published
     function Execute(P: Pointer): THandle;
+    procedure ExecuteAndWait(P: Pointer);
     function OneThreadIsRunning: Boolean;
     function GetPriority(Thread: THandle): TThreadPriority;
     procedure SetPriority(Thread: THandle; Priority: TThreadPriority);
@@ -127,74 +130,41 @@ type
 procedure Synchronize(Method: TNotifyEvent);
 procedure SynchronizeParams(Method: TJvNotifyParamsEvent; P: Pointer);
 
-implementation
-
 {$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
 {$ENDIF UNITVERSIONING}
 
+implementation
 
 
-
-type
-  TJvSynchronize = class(TObject)
-  private
-    FParmsMethod: TJvNotifyParamsEvent;
-    FParmsP: Pointer;
-    FMethod: TNotifyEvent;
-    procedure DoSynchronize;
-    procedure DoParmsSynchronize;
-  public
-    procedure Synchronize(Method: TNotifyEvent);
-    procedure ParmsSynchronize(Method: TJvNotifyParamsEvent; P: Pointer);
-  end;
-
-procedure TJvSynchronize.DoSynchronize;
-begin
-  { asn: meanwhile the application could be terminated }
-  if not Application.Terminated then
-    FMethod(nil);
-end;
-
-procedure TJvSynchronize.DoParmsSynchronize;
-begin
-  if not Application.Terminated then
-    FParmsMethod(nil, FParmsP);
-end;
-
-procedure TJvSynchronize.Synchronize(Method: TNotifyEvent);
-begin
-  FMethod := Method;
-  TThread.Synchronize(nil, DoSynchronize);
-end;
-
-procedure TJvSynchronize.ParmsSynchronize(Method: TJvNotifyParamsEvent; P: Pointer);
-begin
-  FParmsMethod := Method;
-  FParmsP := P;
-  TThread.Synchronize(nil, DoParmsSynchronize);
-end;
+var
+  SyncMtx: THandle = 0;
 
 procedure Synchronize(Method: TNotifyEvent);
-var
-  JvSync: TJvSynchronize;
 begin
-  JvSync := TJvSynchronize.Create;
-  JvSync.Synchronize(Method);
-  JvSync.Free;
+  WaitForSingleObject(SyncMtx, INFINITE);
+  try
+    Method(nil);
+  finally
+    ReleaseMutex(SyncMtx);
+  end;
 end;
 
 procedure SynchronizeParams(Method: TJvNotifyParamsEvent; P: Pointer);
-var
-  JvSync: TJvSynchronize;
 begin
-  JvSync := TJvSynchronize.Create;
-  JvSync.ParmsSynchronize(Method, P);
-  JvSync.Free;
+  WaitForSingleObject(SyncMtx, INFINITE);
+  try
+    Method(nil, P);
+  finally
+    ReleaseMutex(SyncMtx);
+  end;
 end;
-
-
 
 //=== { TJvThread } ==========================================================
 
@@ -230,14 +200,20 @@ begin
       FThreadDialog := nil
     else
     if AComponent = FThreadDialogForm then
-      FThreadDialogForm:= nil
+      FThreadDialogForm := nil
+end;
+
+procedure TJvThread.Synchronize (Method: TThreadMethod);
+begin
+  if Assigned(LastThread) then
+    LastThread.Synchronize(Method);
 end;
 
 function TJvThread.Execute(P: Pointer): THandle;
 var
   BaseThread: TJvBaseThread;
 begin
-  Result := 0;
+  Result := 0;                     
   if Exclusive and OneThreadIsRunning then
     Exit;
 
@@ -261,6 +237,13 @@ begin
     end;
     Result := BaseThread.ThreadID;
   end;
+end;
+
+procedure TJvThread.ExecuteAndWait(P: Pointer);
+begin
+  Execute(P);
+  while OneThreadIsRunning do
+    Sleep(1);
 end;
 
 function TJvThread.GetPriority(Thread: THandle): TThreadPriority;
@@ -292,7 +275,7 @@ end;
 procedure TJvThread.SetPolicy(Thread: THandle; Policy: Integer);
 begin
   if Thread <> 0 then
-    SetThreadPolicy(Thread, Policy);
+    SetThreadPriority(Thread, Policy);
 end;
 
 {$ENDIF UNIX}
@@ -406,7 +389,10 @@ end;
 procedure TJvThread.CreateThreadDialogForm;
 begin
   if Assigned(ThreadDialog) and not Assigned(FThreadDialogForm) then
+  begin
     FThreadDialogForm := ThreadDialog.CreateThreadDialogForm(Self);
+    FreeNotification(FThreadDialogForm);
+  end;
 end;
 
 function TJvThread.GetLastThread: TJvBaseThread;
@@ -430,16 +416,16 @@ end;
 
 procedure TJvBaseThread.InternalMessageDlg;
 begin
-  FSynchMessageDlgResult := MessageDlg (FSynchMsg, FSynchAType, FSynchAButtons, FSynchHelpCtx);
+  FSynchMessageDlgResult := MessageDlg(FSynchMsg, FSynchAType, FSynchAButtons, FSynchHelpCtx);
 end;
 
 function TJvBaseThread.SynchMessageDlg(const Msg: string; AType: TMsgDlgType; AButtons: TMsgDlgButtons; HelpCtx: Longint): Word;
 begin
   FSynchMsg := Msg;
-  FSynchAType:= AType;
-  FSynchAButtons:= AButtons;
-  FSynchHelpCtx:= HelpCtx;
-  Synchronize (InternalMessageDlg);
+  FSynchAType := AType;
+  FSynchAButtons := AButtons;
+  FSynchHelpCtx := HelpCtx;
+  Synchronize(InternalMessageDlg);
   Result := FSynchMessageDlgResult;
 end;
 
@@ -462,22 +448,15 @@ begin
   end;
 end;
 
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
-
 initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
-  {$ENDIF UNITVERSIONING} 
+  {$ENDIF UNITVERSIONING}
+  SyncMtx := CreateMutex(nil, False, 'VCLJvThreadMutex');
 
-finalization 
+finalization
+  CloseHandle(SyncMtx);
+  SyncMtx := 0;
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}

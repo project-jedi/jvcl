@@ -48,6 +48,9 @@ unit JvQThreadTimer;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
@@ -92,9 +95,20 @@ type
       {$IFDEF MSWINDOWS} default tpNormal {$ENDIF};
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
-
+uses 
+  JvQJCLUtils;
 
 type
   TJvTimerThread = class(TThread)
@@ -132,8 +146,8 @@ begin
   FreeOnTerminate := True;
   { Manually reset = false; Initial State = false }
   FEvent := CreateEvent(nil, False, False, nil);
-  if FEvent = 0 then 
-    RaiseLastOSError; 
+  if FEvent = 0 then
+    RaiseLastOSError;
   FInterval := ATimer.FInterval;
   FTimer := ATimer;
   Priority := ATimer.Priority;
@@ -334,14 +348,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

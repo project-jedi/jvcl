@@ -46,8 +46,11 @@ unit JvQAppEvent;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   QWindows, QMessages, 
-  Qt, QStyle,
+  Qt, 
   SysUtils, Classes, QControls, QGraphics, QForms, QActnList,
   JvQTypes, JvQComponent;
 
@@ -62,6 +65,8 @@ type
   { short names }
   TUIEffect = ( General, AnimateMenu, FadeMenu, AnimateCombo, AnimateTooltip, FadeTooltip );
   TUIEffects = set of TUIEffect;
+
+
 
 
 type
@@ -89,13 +94,11 @@ type
     FOnException: TExceptionEvent;
     FOnIdle: TIdleEvent;
     FOnHelp: THelpEvent;
-    FOnHint: TNotifyEvent;
-    FOnEvent: TEventEvent;
-    FSavedHintFont: TFont;
-    FSavedStyle: TDefaultStyle;
+    FOnHint: TNotifyEvent;  
+    FOnEvent: TEventEvent; 
     FOnMinimize: TNotifyEvent;
     FOnRestore: TNotifyEvent;
-    FOnShowHint: TShowHintEvent;
+    FOnShowHint: TShowHintEvent; 
     FOnActiveControlChange: TNotifyEvent;
     FOnActiveFormChange: TNotifyEvent;
     procedure UpdateAppProps;
@@ -119,26 +122,22 @@ type
     function GetMouseDragImmediate: Boolean;
     function GetMouseDragThreshold: Integer;
     procedure SetMouseDragImmediate(Value: Boolean);
-    procedure SetMouseDragThreshold(Value: Integer);
+    procedure SetMouseDragThreshold(Value: Integer);  
     function GetEffects: TUIEffects;
     function GetHintFont: TFont;
-    function GetStyle: TDefaultStyle;
     procedure SetEffects(Value: TUIEffects);
-    procedure SetHintFont(Value: TFont);
-    procedure SetStyle(Value: TDefaultStyle);
+    procedure SetHintFont(Value: TFont); 
   protected
-    procedure Loaded; override;
+    procedure Loaded; override; 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property Canvas: TCanvas read GetCanvas; { for painting the icon }
     procedure CancelDispatch;
   published
-    property HintFont: TFont read GetHintFont write SetHintFont;
-    property Effects: TUIEffects read GetEffects write SetEffects;
-    property Style: TDefaultStyle read GetStyle write SetStyle;
     property Chained: Boolean read FChained write FChained default True;
-    property HintColor: TColor read GetHintColor write SetHintColor default DefHintColor;
+    property HintColor: TColor read GetHintColor write SetHintColor default DefHintColor; 
+    property HintFont: TFont read GetHintFont write SetHintFont; 
     property HintPause: Integer read GetHintPause write SetHintPause default DefHintPause;
     property ShowHint: Boolean read GetShowHint write SetShowHint default True;
     property UpdateFormatSettings: Boolean read GetUpdateFormatSettings
@@ -150,7 +149,8 @@ type
     property ShowMainForm: Boolean read GetShowMainForm write SetShowMainForm
       default True;
     property HintShortCuts: Boolean read GetHintShortCuts write SetHintShortCuts
-      default True;
+      default True; 
+    property Effects: TUIEffects read GetEffects write SetEffects;  
     property MouseDragImmediate: Boolean read GetMouseDragImmediate
       write SetMouseDragImmediate default True;
     property MouseDragThreshold: Integer read GetMouseDragThreshold
@@ -167,18 +167,24 @@ type
     property OnMinimize: TNotifyEvent read FOnMinimize write FOnMinimize;
     property OnPaintIcon: TNotifyEvent read FOnPaintIcon write FOnPaintIcon;
     property OnRestore: TNotifyEvent read FOnRestore write FOnRestore;
-    property OnShowHint: TShowHintEvent read FOnShowHint write FOnShowHint;
+    property OnShowHint: TShowHintEvent read FOnShowHint write FOnShowHint; 
     property OnActiveControlChange: TNotifyEvent read FOnActiveControlChange write FOnActiveControlChange;
     property OnActiveFormChange: TNotifyEvent read FOnActiveFormChange write FOnActiveFormChange; 
     property OnEvent: TEventEvent read FOnEvent write FOnEvent; 
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
-{$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
-{$ENDIF UNITVERSIONING}
 
 type
   TJvAppEventList = class(TObject)
@@ -246,20 +252,26 @@ procedure TJvAppEventList.ClearEvents;
 begin
   if FHooked then
   begin
-    Application.OnActivate := nil;
-    Application.OnDeactivate := nil;
-    Application.OnException := nil; 
-    Application.OnEvent := nil; 
-    Application.OnIdle := nil;
-    Application.OnHelp := nil;
-    Application.OnHint := nil;
-    Application.OnMinimize := nil;
-    Application.OnRestore := nil;
-    Application.OnShowHint := nil;
-    Application.OnActionExecute := nil;
-    Application.OnActionUpdate := nil;
-    Application.OnShortCut := nil;
-    if Screen <> nil then
+    // Application might get destroyed and set to nil before our finalization is called
+    if Assigned(Application) then
+    begin
+      Application.OnActivate := nil;
+      Application.OnDeactivate := nil;
+      Application.OnException := nil; 
+      Application.OnEvent := nil; 
+      Application.OnIdle := nil;
+      Application.OnHelp := nil;
+      Application.OnHint := nil; 
+      Application.OnMinimize := nil;
+      Application.OnRestore := nil;
+      Application.OnShowHint := nil;
+      Application.OnActionExecute := nil;
+      Application.OnActionUpdate := nil;
+      Application.OnShortCut := nil;
+    end;
+
+    // Screen might get destroyed and set to nil before our finalization is called
+    if Assigned(Screen) then
     begin
       Screen.OnActiveControlChange := nil;
       Screen.OnActiveFormChange := nil;
@@ -279,8 +291,8 @@ begin
       FOnException := Application.OnException;
       FOnIdle := Application.OnIdle;
       FOnHelp := Application.OnHelp;
-      FOnHint := Application.OnHint;
-      FOnEvent := Application.OnEvent;
+      FOnHint := Application.OnHint;  
+      FOnEvent := Application.OnEvent; 
       FOnMinimize := Application.OnMinimize;
       FOnRestore := Application.OnRestore;
       FOnShowHint := Application.OnShowHint;
@@ -295,8 +307,8 @@ begin
       Application.OnException := DoException;
       Application.OnIdle := DoIdle;
       Application.OnHelp := DoHelp;
-      Application.OnHint := DoHint;
-      Application.OnEvent := DoEvent;
+      Application.OnHint := DoHint;  
+      Application.OnEvent := DoEvent; 
       Application.OnMinimize := DoMinimize;
       Application.OnRestore := DoRestore;
       Application.OnShowHint := DoShowHint;
@@ -629,19 +641,12 @@ begin
   FHintShortCuts := True;
   FMouseDragImmediate := True;
   FMouseDragThreshold := 5;
-  FUpdateFormatSettings := True;
-  FSavedHintFont := TFont.Create;
-  FSavedHintFont.assign(Screen.HintFont);
-  FSavedStyle := Application.Style.DefaultStyle;
-
+  FUpdateFormatSettings := True; 
   AppList.AddEvents(Self);
 end;
 
 destructor TJvAppEvents.Destroy;
-begin  
-  Screen.HintFont.assign(FSavedHintFont);
-  Application.Style.DefaultStyle := FSavedStyle; 
-
+begin 
   if (Self <> nil) and (AppList <> nil) then
     AppList.RemoveEvents(Self);
   inherited Destroy;
@@ -790,15 +795,8 @@ begin
   Screen.HintFont := Value;
 end;
 
-function TJvAppEvents.GetStyle: TDefaultStyle;
-begin
-  Result := Application.Style.DefaultStyle;
-end;
 
-procedure TJvAppEvents.SetStyle(Value: TDefaultStyle);
-begin
-  Application.Style.DefaultStyle := Value;
-end;
+
 
 
 function TJvAppEvents.GetHintShortCuts: Boolean;
@@ -871,25 +869,13 @@ begin
   end;
 end;
 
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
-
 initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
 
-
 finalization
   AppList.Free;
-
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}

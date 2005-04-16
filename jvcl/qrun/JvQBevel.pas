@@ -35,6 +35,9 @@ unit JvQBevel;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   QWindows, QMessages, Classes, QControls,
   JvQThemes, JvQExExtCtrls;
 
@@ -59,18 +62,6 @@ type
     property OnStartDrag;
   end;
 
-implementation
-
-{$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
-{$ENDIF UNITVERSIONING}
-
-constructor TJvBevel.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner); 
-end;
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -79,7 +70,17 @@ const
     Date: '$Date$';
     LogPath: 'JVCL\run'
   );
+{$ENDIF UNITVERSIONING}
 
+implementation
+
+
+constructor TJvBevel.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner); 
+end;
+
+{$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

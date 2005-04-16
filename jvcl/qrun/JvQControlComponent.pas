@@ -38,6 +38,9 @@ unit JvQControlComponent;
 interface
 
 uses 
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, Classes, QWindows, QMessages, QControls, QForms,
   JvQComponent; 
 
@@ -60,14 +63,19 @@ type
     property Parent: TWinControl read GetParent write SetParent;
   end;
 
-implementation
-
 
 {$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
 {$ENDIF UNITVERSIONING}
 
+
+implementation
 
 procedure TJvCustomControlComponent.SetParentComponent(Value: TComponent);
 begin
@@ -137,14 +145,6 @@ end;
 
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

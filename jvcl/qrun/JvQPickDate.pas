@@ -37,6 +37,9 @@ unit JvQPickDate;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
@@ -148,12 +151,19 @@ procedure SetupPopupCalendar(PopupCalendar: TWinControl;
 const
   PopupCalendarSize: TPoint = (X: 187; Y: 124);
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   Math, QConsts,
   JvQThemes, JvQConsts, JvQResources, JvQJCLUtils, JvQToolEdit, JvQSpeedButton;
 
@@ -999,7 +1009,7 @@ begin
   begin
     Parent := Control;
     SetBounds(0 - HorzOffset, VertOffset, BtnSide, BtnSide);
-    CreateButtonGlyph(Glyph, 0); 
+    CreateButtonGlyph(Glyph, 0);
     OnClick := PrevYearBtnClick;
     Hint := RsPrevYearHint;
   end;
@@ -1682,14 +1692,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

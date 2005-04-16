@@ -33,6 +33,9 @@ unit JvQDynControlEngine;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Classes, QControls, QForms, QStdCtrls, QGraphics, QButtons,
   JvQDynControlEngineIntf;
 
@@ -64,6 +67,7 @@ const
   jctFileNameEdit = TJvDynControlType('FileNameEdit');
   jctButton = TJvDynControlType('Button');
   jctButtonEdit = TJvDynControlType('ButtonEdit');
+  jctTreeView = TJvDynControlType('TreeView');
   jctForm = TJvDynControlType('Form');
 
 type
@@ -169,6 +173,8 @@ type
       const AControlName: string): TWinControl; virtual;
     function CreateFileNameControl(AOwner: TComponent; AParentControl: TWinControl;
       const AControlName: string): TWinControl; virtual;
+    function CreateTreeViewControl(AOwner: TComponent; AParentControl: TWinControl;
+      const AControlName: string): TWinControl; virtual;
     function CreateButton(AOwner: TComponent; AParentControl: TWinControl;
       const AButtonName, ACaption, AHint: string;
       AOnClick: TNotifyEvent; ADefault: Boolean = False;
@@ -194,12 +200,19 @@ function IntfCast(Instance: TObject; const Intf: TGUID): IUnknown;
 procedure SetDefaultDynControlEngine(AEngine: TJvDynControlEngine);
 function DefaultDynControlEngine: TJvDynControlEngine;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
@@ -527,8 +540,8 @@ end;
 constructor TJvDynControlEngine.Create;
 begin
   inherited Create;
-  FDistanceBetweenLabelAndControlHorz:= 4;
-  FDistanceBetweenLabelAndControlVert:= 1;
+  FDistanceBetweenLabelAndControlHorz := 4;
+  FDistanceBetweenLabelAndControlVert := 1;
 end;
 
 function TJvDynControlEngine.CreateLabelControl(AOwner: TComponent;
@@ -722,6 +735,12 @@ begin
   Result := TWinControl(CreateControl(jctFileNameEdit, AOwner, AParentControl, AControlName));
 end;
 
+function TJvDynControlEngine.CreateTreeViewControl(AOwner: TComponent; AParentControl: TWinControl;
+  const AControlName: string): TWinControl; 
+begin
+  Result := TWinControl(CreateControl(jctTreeView, AOwner, AParentControl, AControlName));
+end;
+
 function TJvDynControlEngine.CreateButton(AOwner: TComponent;
   AParentControl: TWinControl; const AButtonName, ACaption, AHint: string;
   AOnClick: TNotifyEvent; ADefault: Boolean = False; ACancel: Boolean = False): TButton;
@@ -817,14 +836,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-    );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

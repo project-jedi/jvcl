@@ -35,6 +35,9 @@ unit JvQDrawImage;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   QWindows,  
   QForms, 
   Classes, QGraphics, QControls, QExtCtrls,
@@ -236,12 +239,19 @@ type
     property OnColorPicked: TColorPicked read FOnColorPicked write SetOnColorPicked;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   SysUtils, Math, QDialogs, QClipbrd,
   JvQResample, JvQPainterEffectsForm, JvQQuickPreviewForm, JvQPainterQBForm,
   JvQTypes, JvQResources;
@@ -5004,14 +5014,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

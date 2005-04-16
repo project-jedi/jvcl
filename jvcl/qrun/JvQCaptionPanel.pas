@@ -49,6 +49,9 @@ interface
 
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   QWindows, QMessages, 
   Qt, 
   Classes, QGraphics, QControls, QForms,
@@ -182,12 +185,19 @@ type
     property OnResize;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   SysUtils, QExtCtrls;
 
 //=== { TJvCapBtn } ==========================================================
@@ -762,10 +772,7 @@ begin
   inherited MouseMove(Shift, X, Y);
   {$IFDEF JVCAPTIONPANEL_STD_BEHAVE}
   if FDragging then
-  begin
-    Left := Left + X - FAnchorPos.X;
-    Top := Top + Y - FAnchorPos.Y;
-  end;
+    SetBounds(Left + X - FAnchorPos.X, Top + Y - FAnchorPos.Y, Width, Height);
   {$ENDIF JVCAPTIONPANEL_STD_BEHAVE}
 end;
 
@@ -829,14 +836,6 @@ end;
 
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

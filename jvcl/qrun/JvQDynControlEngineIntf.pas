@@ -34,7 +34,11 @@ unit JvQDynControlEngineIntf;
 interface
 
 uses
-  Classes, QControls, QForms, QStdCtrls, QExtCtrls, QGraphics, QButtons, QDialogs,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  QActnList, QGraphics, QComCtrls, QImgList,
+  Classes, QControls, QForms, QStdCtrls, QExtCtrls, QButtons, QDialogs,
   QFileCtrls, SysUtils;
 
 type
@@ -46,7 +50,12 @@ type
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(const Value: String);
+    procedure ControlSetHint(const Value: string);
+  end;
+
+  IJvDynControlAction = interface
+    ['{8AB9511C-A03A-4388-A00A-AB95B7041133}']
+    procedure ControlSetAction(Value: TCustomAction);
   end;
 
   IJvDynControlData = interface
@@ -152,6 +161,8 @@ type
 
   IJvDynControlButton = interface
     ['{65193802-7E31-47FD-A4B8-E1201E0A2F38}']
+    procedure ControlSetDefault(Value: Boolean);
+    procedure ControlSetCancel(Value: Boolean);
     procedure ControlSetGlyph(Value: TBitmap);
     procedure ControlSetNumGlyphs(Value: Integer);
     procedure ControlSetLayout(Value: TButtonLayout);
@@ -196,12 +207,22 @@ type
     function ControlGetState: TCheckBoxState;
   end;
 
-implementation
-
-{$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
-{$ENDIF UNITVERSIONING}
+  IJvDynControlTreeView = interface
+    ['{8DFBBAB2-C9C4-4709-A71F-E522D3998650}']
+    procedure ControlSetAutoExpand(Value: Boolean);
+    procedure ControlSetHotTrack(Value: Boolean);
+    procedure ControlSetShowHint(Value: Boolean);
+    procedure ControlSetShowLines(Value: Boolean);
+    procedure ControlSetShowRoot(Value: Boolean);
+    procedure ControlSetToolTips(Value: Boolean);
+    procedure ControlSetItems(Value: TTreeNodes);
+    function ControlGetItems: TTreeNodes;
+    procedure ControlSetImages(Value: TCustomImageList);
+    procedure ControlSetStateImages(Value: TCustomImageList);
+    function ControlGetSelected: TTreeNode;
+    procedure ControlSetOnChange(Value: TTVChangedEvent);
+    procedure ControlSetSortType(Value: TSortType);
+  end;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -211,7 +232,12 @@ const
     Date: '$Date$';
     LogPath: 'JVCL\run'
   );
+{$ENDIF UNITVERSIONING}
 
+implementation
+
+
+{$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

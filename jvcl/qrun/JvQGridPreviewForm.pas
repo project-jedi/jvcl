@@ -35,6 +35,9 @@ unit JvQGridPreviewForm;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   QWindows, QMessages, QGraphics, QControls, QForms, QDialogs,
   QExtCtrls, QGrids, QStdCtrls, QComCtrls, QButtons, QPrinters, QExtDlgs, 
@@ -100,12 +103,19 @@ type
     property Grid: TStringGrid read FGrid write SetGrid;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   JvQPaintFX, JvQConsts, JvQResources;
 
 {$R *.xfm}
@@ -700,14 +710,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

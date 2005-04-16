@@ -34,7 +34,10 @@ unit JvQMTThreading;
 
 interface
 
-uses
+uses 
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING} 
   SysUtils, Classes, SyncObjs, Contnrs,
   {$IFDEF MSWINDOWS}
   Windows, Messages,
@@ -135,13 +138,22 @@ type
 
 function CurrentMTThread: TMTThread;
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
+
 implementation
 
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   JvQResources;
 
 
@@ -281,7 +293,7 @@ begin
     on E: EMTTerminateError do
       {nothing};
     on E: Exception do
-      Log('OnExecute Exception: "' + E.Message+'"'); // do not localize
+      Log('OnExecute Exception: "' + E.Message + '"'); // do not localize
   end;
   
   // make sure terminate flag is set
@@ -293,7 +305,7 @@ begin
       FOnTerminating(Self);
   except
     on E: Exception do
-      Log('OnTerminate Exception: "' + E.Message+'"'); // do not localize
+      Log('OnTerminate Exception: "' + E.Message + '"'); // do not localize
   end; 
 end;
 
@@ -642,26 +654,12 @@ end;
 
 
 
-
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
-
-
 initialization 
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
-  {$ENDIF UNITVERSIONING} 
- 
+  {$ENDIF UNITVERSIONING}  
 
-finalization 
- 
+finalization  
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING} 

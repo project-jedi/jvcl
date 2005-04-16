@@ -34,6 +34,9 @@ unit JvQBoxProcs;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   QWindows, Classes, QControls;
 
 procedure BoxMoveSelectedItems(SrcList, DstList: TWinControl);
@@ -48,12 +51,19 @@ function BoxGetFirstSelection(List: TWinControl): Integer;
 function BoxCanDropItem(List: TWinControl; X, Y: Integer;
   var DragIndex: Integer): Boolean;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
-uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING} 
+uses 
   QStdCtrls;
 
 
@@ -310,14 +320,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

@@ -46,7 +46,10 @@ unit JvQWizardRouteMapNodes;
 
 interface
 
-uses
+uses 
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING} 
   Classes, QWindows, QMessages, QGraphics, QStdCtrls,
   JvQWizard;
 
@@ -105,14 +108,19 @@ type
     property OnDisplaying;
   end;
 
-implementation
-
 
 {$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
 {$ENDIF UNITVERSIONING}
 
+
+implementation
 
 //=== { TJvWizardRouteMapNodeColors } ========================================
 
@@ -406,14 +414,6 @@ end;
 
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

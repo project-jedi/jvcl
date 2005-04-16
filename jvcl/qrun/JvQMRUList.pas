@@ -62,6 +62,9 @@ unit JvQMRUList;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
@@ -173,14 +176,21 @@ type
 
   EMruException = class(EJVCLException);
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   Registry,
-  JvQResources;
+  JvQJCLUtils, JvQResources;
 
 var
   hComCtlDll: HMODULE = 0;
@@ -383,75 +393,81 @@ begin
     Exit;
   P := nil;
 
-  if FType = dtString then
-  begin
-    if not UseUnicode then
+  try
+    if FType = dtString then
     begin
-      ReAllocMem(P, 256);
-      I := EnumMruList(FList, Index, P, 256);
-      if I > 255 then
+      if not UseUnicode then
       begin
-        ReAllocMem(P, I + 1);
-        I := EnumMruList(FList, Index, P, I + 1);
+        ReAllocMem(P, 256);
+        I := EnumMruList(FList, Index, P, 256);
+        if I > 255 then
+        begin
+          ReAllocMem(P, I + 1);
+          I := EnumMruList(FList, Index, P, I + 1);
+        end;
+        if I <> -1 then
+        begin
+          Result := True;
+          SetItemData(P);
+          FItemIndex := Index;
+          if FireEvent then
+            DoEnumText
+        end;
+      end
+      else
+      begin // Unicode
+        ReAllocMem(P, 512);
+        I := EnumMruListW(FList, Index, P, 256);
+        if I > 255 then
+        begin
+          ReAllocMem(P, (I + 1) * 2);
+          I := EnumMruListW(FList, Index, P, I + 1);
+        end;
+        if I <> -1 then
+        begin
+          Result := True;
+          SetItemData(P);
+          FItemIndex := Index;
+          if FireEvent then
+            DoUnicodeEnumText;
+        end;
+      end
+    end
+    else // FType = dtBinary
+    begin
+      ReAllocMem(P, 1024);
+
+      if UnicodeAvailable then
+        EnP := EnumMruListW
+      else
+        EnP := EnumMruList;
+      //Arioch: work-around MS bug
+
+      I := EnP(FList, Index, P, 1024);
+
+      if I >= 1024 then
+      begin
+        ReAllocMem(P, 64000); // Arioch: Hmmm We'll never guess how much may there appear :)
+        I := EnP(FList, 0, P, 64000);
       end;
+
       if I <> -1 then
       begin
         Result := True;
+        ReAllocMem(P, I);
+        // Arioch: should we waste more memory than we need?
+        // and we can know the size of memory allocated
+        // with GetMem and ReAllocMem, so we know how big Data was
         SetItemData(P);
         FItemIndex := Index;
         if FireEvent then
-          DoEnumText
+          DoEnumData(I);
       end;
-    end
-    else
-    begin // Unicode
-      ReAllocMem(P, 512);
-      I := EnumMruListW(FList, Index, P, 256);
-      if I > 255 then
-      begin
-        ReAllocMem(P, (I + 1) * 2);
-        I := EnumMruListW(FList, Index, P, I + 1);
-      end;
-      if I <> -1 then
-      begin
-        Result := True;
-        SetItemData(P);
-        FItemIndex := Index;
-        if FireEvent then
-          DoUnicodeEnumText;
-      end;
-    end
-  end
-  else // FType = dtBinary
-  begin
-    ReAllocMem(P, 1024);
-
-    if UnicodeAvailable then
-      EnP := EnumMruListW
-    else
-      EnP := EnumMruList;
-    //Arioch: work-around MS bug
-
-    I := EnP(FList, Index, P, 1024);
-
-    if I >= 1024 then
-    begin
-      ReAllocMem(P, 64000); // Arioch: Hmmm We'll never guess how much may there appear :)
-      I := EnP(FList, 0, P, 64000);
     end;
-
-    if I <> -1 then
-    begin
-      Result := True;
-      ReAllocMem(P, I);
-      // Arioch: should we waste more memory than we need?
-      // and we can know the size of memory allocated
-      // with GetMem and ReAllocMem, so we know how big Data was
-      SetItemData(P);
-      FItemIndex := Index;
-      if FireEvent then
-        DoEnumData(I);
-    end;
+  finally
+    // Free the memory
+    if Assigned(P) then
+      FreeMem(P);
   end;
 end;
 
@@ -748,20 +764,10 @@ begin
         EnumMruListW := GetProcAddress(hComCtlDll, PChar(403));
       end;
     end
-    else 
-      RaiseLastOSError; 
+    else
+      RaiseLastOSError;
   end;
 end;
-
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
 
 initialization
   {$IFDEF UNITVERSIONING}

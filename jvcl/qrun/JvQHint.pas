@@ -38,10 +38,13 @@ unit JvQHint;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   QWindows, QControls, QForms, QExtCtrls, 
   QGraphics, Qt, 
-  JvQHtControls, JvQTypes;
+  JvQHTControls, JvQTypes;
 
 type
   TJvHintWindow = class(THintWindow)
@@ -86,12 +89,19 @@ type
 
 procedure RegisterHtHints;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   Math,
   JvQConsts, JvQResources;
 
@@ -266,14 +276,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\qrun'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

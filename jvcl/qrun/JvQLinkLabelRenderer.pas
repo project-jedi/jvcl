@@ -46,6 +46,9 @@ unit JvQLinkLabelRenderer;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Classes, SysUtils, QWindows, QGraphics,
   JvQLinkLabelTree, JvQLinkLabelTextHandler, JvQTypes;
 
@@ -104,12 +107,18 @@ type
     property LinkStyle: TFontStyles read GetLinkStyle write SetLinkStyle;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
-{$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
-{$ENDIF UNITVERSIONING}
 
 procedure TDefaultRenderer.DoRenderNode(const Node: TAreaNode;
   Styles: TFontStyles; Color: TColor);
@@ -250,14 +259,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

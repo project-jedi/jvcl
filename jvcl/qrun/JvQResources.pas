@@ -38,6 +38,9 @@ unit JvQResources;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JvQConsts;
 
 //=== used in several files ==================================================
@@ -729,9 +732,9 @@ resourcestring
   RsEVariablesNotDefined_ = 'variable %s not defined';
   RsESystemsNotDefined = 'System %s not defined';
   RsECanNotAssignSystems = 'can not assign System %s';
-  RsEUnrecognizeExternalVariableMethodss = 'unrecognize external variable method %s.%s';
-  RsEUnrecognizeInternalVariableMethodss = 'unrecognize internal variable method %s.%s';
-  RsEUnrecognizeSystemMethodss = 'unrecognize system method %s.%s';
+  RsEUnrecognizedExternalVariableMethodss = 'unrecognized external variable method %s.%s';
+  RsEUnrecognizedInternalVariableMethodss = 'unrecognized internal variable method %s.%s';
+  RsEUnrecognizedSystemMethodss = 'unrecognized system method %s.%s';
   RsEFilesDoesNotExist = 'File %s does not exist';
   RsECanNotSaveToFiles = 'Can not save to file %s';
   RsEXMLSelectionIsEmpty = 'XML selection is empty';
@@ -1606,6 +1609,11 @@ resourcestring
   RsERegisterPluginNotFound = 'Plugin function %s not found in %s';
   RsERegisterPluginFailed = 'Calling %s in %s failed';
 
+//=== JvPoweredBy.pas ========================================================
+resourcestring
+  RsURLPoweredByJCL = 'http://homepages.borland.com/jedi/jcl/PoweredByJCL.htm';
+  RsURLPoweredByJVCL = 'http://homepages.borland.com/jedi/jvcl/PoweredByJVCL.htm';
+
 //=== JvProfilerForm.pas =====================================================
 resourcestring
   RsTotalElapsedTimedms = '%s -  total elapsed time: %d (ms)';
@@ -2256,15 +2264,6 @@ resourcestring
   SExprBadCompare = 'Relational operators require a field and a constant';
 }
 
-implementation
-
-
-
-{$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
-{$ENDIF UNITVERSIONING}
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -2273,7 +2272,14 @@ const
     Date: '$Date$';
     LogPath: 'JVCL\run'
   );
+{$ENDIF UNITVERSIONING}
 
+implementation
+
+
+
+
+{$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

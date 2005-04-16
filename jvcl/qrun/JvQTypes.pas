@@ -38,6 +38,9 @@ unit JvQTypes;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   QWindows, QMessages, QControls, QForms, QGraphics, 
   Qt, JclWideStrings, 
@@ -116,7 +119,7 @@ type
   TJvFTPProgressEvent = procedure(Sender: TObject; Position: Integer; Url: string) of object;
 
   // from JvComponent.pas
-  TJvClipboardCommand = (caCopy, caCut, caPaste, caUndo);
+  TJvClipboardCommand = (caCopy, caCut, caPaste, caClear, caUndo);
   TJvClipboardCommands = set of TJvClipboardCommand;
 
   // used in JvButton
@@ -364,7 +367,7 @@ const
     (Value: clDisabledBackground;      Constant: 'clDisabledBackground';      Description: RsClDisabledBackground),
     (Value: clDisabledShadow;          Constant: 'clDisabledShadow';          Description: RsClDisabledShadow),
     (Value: clDisabledHighlight;       Constant: 'clDisabledHighlight';       Description: RsClDisabledHighlight),
-    (Value: clDisabledHighlightedText; Constant: 'clDisabledHighlightedText'; Description: RsClDisabledHighlightedText)
+    (Value: clDisabledHighlightedText; Constant: 'clDisabledHighlightedText'; Description: RsClDisabledHighlightedText) 
   );
 
 type
@@ -514,14 +517,17 @@ type
      ); 
   end;
 
-implementation
-
 {$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
 {$ENDIF UNITVERSIONING}
 
-//=== { TJvPersistent } ======================================================
+implementation
 
 
 constructor TJvPersistent.Create(AOwner: TComponent);
@@ -534,14 +540,6 @@ end;
 
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

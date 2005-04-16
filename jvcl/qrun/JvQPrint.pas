@@ -35,7 +35,10 @@ unit JvQPrint;
 interface
 
 uses
-  QWindows, SysUtils, Classes, QGraphics, QPrinters, QStdCtrls,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  QWindows, SysUtils, Classes, QStdCtrls, QGraphics, QPrinters,
   JvQTypes, JvQComponent;
 
 type
@@ -72,12 +75,19 @@ type
     property OnDrawItem: TJvPrintDrawItemEvent read FOnDrawItem write FOnDrawItem;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   JvQJCLUtils, JvQJVCLUtils;
 
 procedure TJvPrint.Abort;
@@ -221,14 +231,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

@@ -35,6 +35,9 @@ unit JvQThemes;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, Classes, 
   QControls, QStdCtrls, QGraphics, 
   QWindows, QForms, // Mouse 
@@ -105,12 +108,18 @@ function DrawThemedButtonFace(Control: TControl; Canvas: TCanvas; const Client: 
 function IsMouseOver(Control: TControl): Boolean;
 
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
-{$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
-{$ENDIF UNITVERSIONING}
 
 procedure DrawThemedBackground(Control: TControl; Canvas: TCanvas;
   const R: TRect; NeedsParentBackground: Boolean = True);
@@ -188,24 +197,12 @@ end;
 
 
 
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
-
 initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
-  {$ENDIF UNITVERSIONING}
- 
+  {$ENDIF UNITVERSIONING} 
 
 finalization 
-
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}

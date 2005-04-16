@@ -35,7 +35,10 @@ unit JvQXPButtons;
 
 interface
 
-uses
+uses 
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING} 
   Classes, TypInfo,
   QWindows, QMessages, QGraphics, QControls, QForms, QActnList, QImgList, QMenus, 
   JvQExControls, Qt, 
@@ -162,10 +165,8 @@ type
     //property OnStartDock;
     //property OnUnDock;
     property OnClick;
-    property OnConstrainedResize;
-
-    property OnContextPopup;
-
+    property OnConstrainedResize; 
+    property OnContextPopup; 
     property OnDragDrop;
     property OnDragOver;
     property OnEndDrag;
@@ -257,10 +258,8 @@ type
     //property OnStartDock;
     //property OnUnDock;
     property OnClick;
-    property OnConstrainedResize;
-
-    property OnContextPopup;
-
+    property OnConstrainedResize; 
+    property OnContextPopup; 
     property OnDragDrop;
     property OnDragOver;
     property OnEndDrag;
@@ -277,14 +276,19 @@ type
     property OnStartDrag;
   end;
 
-implementation
-
 
 {$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
 {$ENDIF UNITVERSIONING}
 
+
+implementation
 
 //=== { TJvXPCustomButtonActionLink } ========================================
 
@@ -891,14 +895,6 @@ end;
 
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

@@ -34,6 +34,9 @@ unit JvQProgressUtils;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   QControls, QComCtrls, SysUtils, Classes;
 
 
@@ -50,12 +53,19 @@ procedure SetProgressMax(Control: TControl; MaxValue: Longint);
 procedure SetProgressMin(Control: TControl; MinValue: Longint);
 procedure SetProgressValue(Control: TControl; ProgressValue: Longint);
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   TypInfo;
 
 type
@@ -217,16 +227,6 @@ procedure SetProgressValue(Control: TControl; ProgressValue: Longint);
 begin
   GetProgressList.SetControlProperty(Control, ppProgress, ProgressValue);
 end;
-
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
 
 initialization
   {$IFDEF UNITVERSIONING}

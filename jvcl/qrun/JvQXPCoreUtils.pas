@@ -35,7 +35,10 @@ unit JvQXPCoreUtils;
 
 interface
 
-uses
+uses 
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING} 
   SysUtils, Classes, TypInfo, QWindows, QGraphics, QControls, 
   JvQJCLUtils, 
   JvQXPCore;
@@ -67,14 +70,19 @@ procedure JvXPPlaceText(const AParent: TControl; const ACanvas: TCanvas;
   const AText: TCaption; const AFont: TFont; const AEnabled, AShowAccelChar: Boolean;
   const AAlignment: TAlignment; const AWordWrap: Boolean; var Rect: TRect);
 
-implementation
-
 
 {$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
 {$ENDIF UNITVERSIONING}
 
+
+implementation
 
 function JvXPMethodsEqual(const Method1, Method2: TMethod): Boolean;
 begin
@@ -399,14 +407,6 @@ end;
 
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

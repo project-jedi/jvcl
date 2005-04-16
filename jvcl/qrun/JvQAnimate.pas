@@ -38,6 +38,9 @@ unit JvQAnimate;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Classes, QControls,
   JvQThemes, JvQExComCtrls;
 
@@ -65,18 +68,6 @@ type
     property OnMouseMove;
   end;
 
-implementation
-
-{$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
-{$ENDIF UNITVERSIONING}
-
-constructor TJvAnimate.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner); 
-end;
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -85,7 +76,17 @@ const
     Date: '$Date$';
     LogPath: 'JVCL\run'
   );
+{$ENDIF UNITVERSIONING}
 
+implementation
+
+
+constructor TJvAnimate.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner); 
+end;
+
+{$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

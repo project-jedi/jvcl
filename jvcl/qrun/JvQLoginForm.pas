@@ -45,6 +45,9 @@ unit JvQLoginForm;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   {$IFDEF MSWINDOWS}
   Windows, // GetCurrentThreadID => Linux: System.pas
@@ -115,7 +118,7 @@ type
     function Execute: Boolean; override;
     procedure TerminateApplication;
     procedure Lock;
-    property LoggedUser: string read GetLoggedUser;
+    property LoggedUser: string read GetLoggedUser write SetLoggedUser;
   published
     property Caption: string read FCaption write FCaption;
   end;
@@ -179,12 +182,19 @@ function CreateLoginDialog(UnlockMode, ASelectDatabase: Boolean;
  FormShowEvent, OkClickEvent: TNotifyEvent;
  ACaption: string = ''): TJvLoginForm;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   QConsts,
   IniFiles,
   JvQJCLUtils, JvQJVCLUtils, JvQResources, JvQConsts;
@@ -290,6 +300,7 @@ var
 begin
   LoginName := '';
   DoBeforeLogin;
+  LoginName := LoggedUser;
   Result := DoLogin(LoginName);
   if Result then
   begin
@@ -550,14 +561,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

@@ -39,6 +39,9 @@ unit JvQScrollPanel;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   QWindows, QMessages, QGraphics, QControls, QToolWin, QExtCtrls,
   JvQComponent, JvQExForms;
@@ -180,12 +183,19 @@ type
     property HelpContext;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   Math,
   JvQThemes, JvQExControls;
 
@@ -487,8 +497,8 @@ begin
   // this is very strange: without it I get a "Control '' has no parent window" error
   // when dropping it in design-time. Never seen the need before
   // (rom) probably assigning Align causes it. That needs a parent.
-//  if AOwner is TWinControl then
-//    Parent := TWinControl(AOwner);
+  if AOwner is TWinControl then
+    Parent := TWinControl(AOwner);
   ControlStyle := ControlStyle + [csAcceptsControls]; 
   FScrollDirection := sdHorizontal;
   FScrollAmount := 16;
@@ -719,14 +729,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

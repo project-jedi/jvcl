@@ -37,6 +37,9 @@ unit JvQStrings;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
@@ -218,12 +221,19 @@ function ParseDate(const S: string): Integer;
 // parse a SQL style data string from positions 1,
 // starts and ends with #
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   JvQConsts, JvQResources, JvQTypes;
 
 const
@@ -999,9 +1009,7 @@ procedure RecurseDirProgs(const ADir: string; var AFileList: TStringList);
 var
   SR: TSearchRec;
   FileAttrs: Integer;
-  {$IFDEF MSWINDOWS}
   E: string;
-  {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
   ST: TStatBuf;
   {$ENDIF UNIX}
@@ -2214,14 +2222,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

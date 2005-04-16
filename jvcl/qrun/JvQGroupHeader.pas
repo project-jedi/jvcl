@@ -35,6 +35,9 @@ unit JvQGroupHeader;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Classes, QWindows, QMessages, QGraphics, QControls, QExtCtrls,
   JvQJCLUtils, JvQComponent, JvQTypes;
 
@@ -127,12 +130,19 @@ type
     property OnStartDrag;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   JvQThemes;
 
 //=== { TJvGroupHeaderOptions } ==============================================
@@ -535,15 +545,6 @@ end;
 }
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

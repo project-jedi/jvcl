@@ -35,6 +35,9 @@ unit JvQSimpleXml;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   {$IFDEF MSWINDOWS}
   Windows, // Delphi 2005 inline
   {$ENDIF MSWINDOWS}
@@ -93,7 +96,7 @@ type
     FName: string;
     FValue: string;
     FParent: TJvSimpleXMLProps;
-    FPointer: string;
+    FNameSpace: string;
     FData: Pointer;
     function GetBoolValue: Boolean;
     procedure SetBoolValue(const Value: Boolean);
@@ -106,13 +109,14 @@ type
   public
     function GetSimpleXML: TJvSimpleXML;
     function SaveToString: string;
+    function FullName:string;
     property Parent: TJvSimpleXMLProps read FParent write FParent;
     property Name: string read FName write SetName;
     property Value: string read FValue write FValue;
     property IntValue: Int64 read GetIntValue write SetIntValue;
     property BoolValue: Boolean read GetBoolValue write SetBoolValue;
     property FloatValue: Extended read GetFloatValue write SetFloatValue;
-    property Pointer: string read FPointer write FPointer;
+    property NameSpace: string read FNameSpace write FNameSpace;
 
     property Data: Pointer read FData write FData;
   end;
@@ -238,7 +242,7 @@ type
     FItems: TJvSimpleXMLElems;
     FProps: TJvSimpleXMLProps;
     FValue: string;
-    FPointer: string;
+    FNameSpace: string;
     FData: Pointer;
     FSimpleXML: TJvSimpleXML;
     FContainer: TJvSimpleXMLElems;
@@ -273,9 +277,10 @@ type
     property SimpleXML: TJvSimpleXML read GetSimpleXML;
     property Container: TJvSimpleXMLElems read FContainer write FContainer;
   published
+    function FullName:string;
     property Name: string read FName write SetName;
     property Parent: TJvSimpleXMLElem read FParent write FParent;
-    property Pointer: string read FPointer write FPointer;
+    property NameSpace: string read FNameSpace write FNameSpace;
     property ChildsCount: Integer read GetChildsCount;
     property Items: TJvSimpleXMLElems read GetItems;
     property Properties: TJvSimpleXMLProps read GetProps;
@@ -446,12 +451,19 @@ function EntityEncode(const S: string): string;
 // Decodes XML entities (@apos;, &quot;, &lt;, &gt; and &amp;) into special characters (', ", <, > and &)
 function EntityDecode(const S: string): string;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
-uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING} 
+uses 
   JvQConsts, JvQResources;
 
 const
@@ -1066,6 +1078,14 @@ begin
   Error(Format(S, Args));
 end;
 
+function TJvSimpleXMLElem.FullName: string;
+begin
+  if FNameSpace <> '' then
+    Result := FNameSpace + ':' + Name
+  else
+    Result := Name;
+end;
+
 procedure TJvSimpleXMLElem.GetBinaryValue(const Stream: TStream);
 var
   I, J: Integer;
@@ -1457,10 +1477,12 @@ var
   I, lStreamPos, Count, lPos: Integer;
   lBuf: array [0..cBufferSize - 1] of Char;
   St: string;
+  Po: string;
   lElem: TJvSimpleXMLElem;
 begin
   lStreamPos := Stream.Position;
   Result := '';
+  Po := '';
   St := '';
   lPos := 0;
 
@@ -1525,7 +1547,8 @@ begin
                 end;
             else
               begin
-                St := St + lBuf[I];
+                if (St <> '<![CDATA') or not (lBuf[i] in [' ', Tab, Cr, Lf]) then
+                  St := St + lBuf[I];
                 if St = '<![CDATA[' then
                   lElem := TJvSimpleXMLElemCData.Create(Parent)
                 else
@@ -1549,14 +1572,24 @@ begin
           end;
 
         2: //This is an end tag
-          if lBuf[I] = '>' then
-          begin
-            Result := St;
-            Count := 0;
-            Break;
-          end
+          case lBuf[I] of
+            '>':
+              begin
+                if Po <> '' then
+                  Result := Po + ':' + St
+                else
+                  Result := St;
+                Count := 0;
+                Break;
+              end;
+            ':':
+              begin
+                Po := St;
+                St := '';
+              end;
           else
             St := St + lBuf[I];
+          end;
       end;
     end;
   until Count = 0;
@@ -1812,12 +1845,12 @@ var
   lPos: TPosType;
   I, lStreamPos, Count: Integer;
   lBuf: array [0..cBufferSize - 1] of Char;
-  lName, lValue, lPointer: string;
+  lName, lValue, lNameSpace: string;
   lPropStart: Char;
 begin
   lStreamPos := Stream.Position;
   lValue := '';
-  lPointer := '';
+  lNameSpace := '';
   lName := '';
   lPropStart := ' ';
   lPos := ptWaiting;
@@ -1842,7 +1875,7 @@ begin
               'a'..'z', 'A'..'Z', '0'..'9', '-', '_':
                 begin
                   lName := lBuf[I];
-                  lPointer := '';
+                  lNameSpace := '';
                   lPos := ptReadingName;
                 end;
               '/', '>', '?':
@@ -1862,7 +1895,7 @@ begin
               lName := lName + lBuf[I];
             ':':
               begin
-                lPointer := lName;
+                lNameSpace := lName;
                 lName := '';
               end;
             '=':
@@ -1892,7 +1925,7 @@ begin
             if (GetSimpleXML <> nil) then
               GetSimpleXML.DoDecodeValue(lValue);
             with Add(lName, lValue) do
-              Pointer := lPointer;
+              NameSpace := lNameSpace;
             lPos := ptWaiting;
           end
           else
@@ -1951,6 +1984,14 @@ begin
   Result := StrToFloatDef(Value, 0.0);
 end;
 
+function TJvSimpleXMLProp.FullName: string;
+begin
+  if FNameSpace <> '' then
+    Result := FNameSpace + ':' + Name
+  else
+    Result := Name;
+end;
+
 function TJvSimpleXMLProp.GetIntValue: Int64;
 begin
   Result := StrToInt64Def(Value, -1);
@@ -1971,11 +2012,11 @@ var
 begin
   AEncoder := GetSimpleXML;
   tmp := FValue;
-  if Pointer <> '' then
+  if NameSpace <> '' then
   begin
     if AEncoder <> nil then
       AEncoder.DoEncodeValue(tmp);
-    Result := Format(' %s:%s="%s"', [Pointer, Name, tmp]);
+    Result := Format(' %s:%s="%s"', [NameSpace, Name, tmp]);
   end
   else
   begin
@@ -2019,12 +2060,12 @@ procedure TJvSimpleXMLElemClassic.LoadFromStream(const Stream: TStream; Parent: 
 var
   I, lStreamPos, Count, lPos: Integer;
   lBuf: array [0..cBufferSize - 1] of Char;
-  St, lName, lValue, lPointer: string;
+  St, lName, lValue, lNameSpace: string;
 begin
   lStreamPos := Stream.Position;
   St := '';
   lValue := '';
-  lPointer := '';
+  lNameSpace := '';
   lPos := 1;
 
   repeat
@@ -2070,8 +2111,14 @@ begin
                   //Load elements
                   Stream.Seek(lStreamPos, soFromBeginning);
                   St := Items.LoadFromStream(Stream, Parent);
-                  if lName <> St then
-                    FmtError(RsEInvalidXMLElementErroneousEndOfTagE, [lName, St]);
+                  if lNameSpace <> '' then
+                  begin
+                    if not AnsiSameText(lNameSpace + ':' + lName, St) then
+                      FmtError(RsEInvalidXMLElementErroneousEndOfTagE, [lName, St]);
+                  end
+                  else
+                    if not AnsiSameText(lName, St) then
+                      FmtError(RsEInvalidXMLElementErroneousEndOfTagE, [lName, St]);
                   lStreamPos := Stream.Position;
 
                   //Set value if only one sub element
@@ -2092,7 +2139,7 @@ begin
                 end;
               ':':
                 begin
-                  lPointer := St;
+                  lNameSpace := St;
                   St := '';
                 end;
             else
@@ -2111,7 +2158,7 @@ begin
   if GetSimpleXML <> nil then
     GetSimpleXML.DoDecodeValue(lValue);
   Value := lValue;
-  Pointer := lPointer;
+  NameSpace := lNameSpace;
 
   if Parent <> nil then
   begin
@@ -2127,7 +2174,15 @@ var
   St, AName, tmp: string;
   LevelAdd: string;
 begin
-  AName := Name;
+  if(NameSpace <> '') then
+  begin
+    AName := NameSpace + ':' + Name;
+  end
+  else
+  begin
+    AName := Name;
+  end;
+
   if Name <> '' then
   begin
     if GetSimpleXML <> nil then
@@ -2273,7 +2328,7 @@ procedure TJvSimpleXMLElemCData.LoadFromStream(const Stream: TStream; Parent: TJ
 //<![CDATA[<greeting>Hello, world!</greeting>]]>
 const
   CS_START_CDATA = '<![CDATA[';
-  CS_STOP_CDATA = '         ]]>';
+  CS_STOP_CDATA =  '         ]]>';
 var
   I, lStreamPos, Count, lPos: Integer;
   lBuf: array [0..cBufferSize - 1] of Char;
@@ -2789,7 +2844,8 @@ begin
             lElem := nil;
             lEnd := False;
 
-            St := St + lBuf[I];
+            if (St <> '<![CDATA') or not (lBuf[i] in [' ', Tab, Cr, Lf]) then
+              St := St + lBuf[I];
             if St = '<![CDATA[' then
               lEnd := True
             else
@@ -2915,7 +2971,7 @@ begin
     end;
   end
   else
-    inherited;
+    inherited CastTo(Dest, Source, AVarType);
 end;
 
 procedure TXMLVariant.Clear(var V: TVarData);
@@ -3158,18 +3214,6 @@ begin
   end;
 end;
 
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
-
-
-
 initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -3178,7 +3222,6 @@ initialization
 finalization 
   FreeAndNil(GlobalXMLVariant); 
   FreeAndNil(GlobalSorts);
-  
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}

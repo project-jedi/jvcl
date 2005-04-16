@@ -54,10 +54,23 @@ unit JvQXPBar;
 
 
 
+// XP_TRANSPARENCY_FIX:
+//  WinXPSP2/WinServer2003 transparency workaround:
+//  Define to add calls to BitmapBgPaint to pre-paint
+//  bitmap using XPBar.Colors.BodyColor, to fix
+//  transparency issues.  Note that this is a real
+//  bug in Windows XP and 2003 and once all machines
+//  "OUT THERE" have been updated, this should be removed
+//  from the code.
+//{ $ define XP_TRANSPARENCY_FIX}
+
 interface
 
-uses
-  QWindows, Classes, SysUtils, 
+uses 
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING} 
+  QWindows, Classes, SysUtils,
   QGraphics, QControls, QForms, QExtCtrls, QImgList, QActnList, QMessages, 
   Qt, QTypes, JvQTypes,  
   JvQConsts, 
@@ -529,12 +542,21 @@ type
 
 procedure RoundedFrame(Canvas: TCanvas; ARect: TRect; AColor: TColor; R: Integer);
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
+
 implementation
 
-uses 
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}   
+uses  
   JvQJCLUtils, JvQResources, 
   QMenus;
 
@@ -565,6 +587,32 @@ begin
   else
     Result := 1;
 end;
+
+{$ifdef XP_TRANSPARENCY_FIX}
+{ BitmapBgPaint:
+
+  This fixes a bug in the Delphi 7 VCL on systems
+  running Windows XP SP2 or Windows Server 2003,
+  where transparency in the VCL TImageList.Draw
+  function is broken.
+
+  -WPostma. }
+
+procedure BitmapBgPaint( Bitmap:TBitmap;bgColor:TColor);
+var
+ r:TRect;
+begin
+  r.Left := 0;
+  r.Top := 0;
+  r.Right := Bitmap.Width;
+  r.Bottom := Bitmap.Height;
+  Bitmap.Canvas.Brush.Color := bgColor;
+  Bitmap.Canvas.FillRect( r );
+end;
+
+{$endif}
+
+
 
 //=== { TJvXPBarItemActionLink } =============================================
 
@@ -1860,8 +1908,12 @@ begin
     Bitmap.Assign(nil);
     ItemRect := GetItemRect(Index);
     HasImages := FVisibleItems[Index].Images <> nil;
-    if HasImages then
+    if HasImages then begin
+{$ifdef XP_TRANSPARENCY_FIX}
+      BitmapBgPaint( Bitmap, {WinXPBar.}Colors.BodyColor);
+{$endif}
       FVisibleItems[Index].Images.GetBitmap(FVisibleItems[Index].ImageIndex, Bitmap);
+    end;
     Bitmap.Transparent := True;
     if OwnerDraw then
     begin
@@ -1932,6 +1984,8 @@ var
         ACanvas.Pixels[Width - 1, R.Top + 1] := OwnColor;
         ACanvas.Pixels[Width - 2, R.Top + 1] := FColors.FBorderColor;
       end;
+
+      // Paint rollover button: (expanded/collapsed state button images)
       if FShowRollButton and (Width >= 115) then
       begin
         Bitmap := TBitmap.Create;
@@ -1974,6 +2028,7 @@ var
             else
               Bitmap.LoadFromResourceName(HInstance, 'JvXPCustomWinXPBarCOLLAPSE' + IntToStr(Index));
           end;
+          // Transparency fix not needed Here! -WPostma
           Bitmap.Transparent := True;
           ACanvas.Draw(R.Right - 24, R.Top + (HeaderHeight - GetRollHeight) div 2, Bitmap);
         finally
@@ -2066,18 +2121,14 @@ end;
 
 procedure TJvXPCustomWinXPBar.GroupMessage;
 var
-  Msg: TMessage; 
-//  I: Integer; 
+  Msg: TMessage;
 begin
   if Parent <> nil then
   begin
     Msg.Msg := WM_XPBARAFTEREXPAND;
     Msg.WParam := WPARAM(Self);
-    Msg.Result := 0;  
-    BroadcastMsg(Parent, Msg);
-//    for I := 0 to Parent.ControlCount - 1 do
-//      if Parent.Controls[I] is TJvCustomGraphicButton then
-//        TJvCustomGraphicButton(Parent.Controls[I]).ButtonPressed(Self, GroupIndex); 
+    Msg.Result := 0;
+    Parent.Broadcast(Msg);
   end;
 end;
 
@@ -2273,14 +2324,6 @@ end;
 
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

@@ -35,11 +35,13 @@ unit JvQFullColorForm;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   QWindows, QMessages, SysUtils, Classes, QControls, QForms, QGraphics,
   QDialogs, QStdCtrls, QExtCtrls, QMask,
   JvQFullColorCtrls, JvQFullColorSpaces, JvQFullColorDialogs, JvQExMask,
-  JvQSpin, JvQExStdCtrls, JvQCombobox, JvQColorCombo, 
-  JvQExControls, JvQComponent, JvQExExtCtrls, QComboEdits, JvQExComboEdits;
+  JvQSpin, JvQExStdCtrls, JvQCombobox, JvQColorCombo;
 
 type
   TJvFullColorFrm = class(TForm)
@@ -111,12 +113,19 @@ type
     property OnApply: TNotifyEvent read FOnApply write FOnApply;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
-uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING} 
+uses 
   JvQResources;
 
 {$R *.xfm}
@@ -142,7 +151,7 @@ begin
   with ColorSpaceManager do
   begin
     CS := TJvDEFColorSpace(ColorSpace[csDEF]);
-    for Index:=0 to CS.ColorCount-1 do
+    for Index := 0 to CS.ColorCount - 1 do
       JvFullColorGroup.Items.Add(CS.ConvertFromColor(CS.ColorValue[Index]));
     LabelDrawOld.Color := ConvertToColor(FullColor);
     JvColorSpaceCombo.ColorSpaceID := GetColorSpaceID(FullColor);
@@ -244,7 +253,7 @@ begin
   with (Sender as TJvFullColorGroup), ColorSpaceManager do
     if (SelectedIndex>-1) then
   begin
-    JvColorSpaceCombo.ColorSpaceID:=GetColorSpaceID(Selected);
+    JvColorSpaceCombo.ColorSpaceID := GetColorSpaceID(Selected);
     FullColor := Selected;
   end;
   FUpdating := False;
@@ -330,7 +339,7 @@ begin
   JvColorSpaceCombo.ColorSpaceID := LColorID;
 
   NewIndex := -1;
-  DefColorSpace:=ColorSpaceManager.ColorSpace[csDEF];
+  DefColorSpace := ColorSpaceManager.ColorSpace[csDEF];
   with ColorBox, Items, ColorSpaceManager do
   begin
     for J := 0 to Items.Count - 1 do
@@ -482,14 +491,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-    );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 finalization

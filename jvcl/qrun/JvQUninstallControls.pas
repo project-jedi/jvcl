@@ -36,6 +36,9 @@ unit JvQUninstallControls;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Windows, SysUtils, Classes, QGraphics, QControls, QStdCtrls,
   JvQComponent, JvQTypes;
 
@@ -60,8 +63,8 @@ type
     function GetHKey: HKEY;
     function GetHKeyName: string;
     procedure SetSorted(const Value: Boolean);
-  protected  
-    procedure CreateWidget; override; 
+  protected
+    procedure CreateWidget; override;
   public
     constructor Create(AComponent: TComponent); override;
     destructor Destroy; override;
@@ -128,8 +131,8 @@ type
     function GetHKey: HKEY;
     function GetHKeyName: string;
     procedure SetSorted(const Value: Boolean);
-  protected  
-    procedure CreateWidget; override; 
+  protected
+    procedure CreateWidget; override;
   public
     constructor Create(AComponent: TComponent); override;
     destructor Destroy; override;
@@ -177,6 +180,16 @@ type
     property Anchors;
     property Constraints;
   end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -504,16 +517,12 @@ begin
   inherited Clear;
 end;
 
-
-
-
 procedure TJvUninstallComboBox.CreateWidget;
 begin
   inherited CreateWidget;
   if ItemIndex < 0 then
     Rebuild;
 end;
-
 
 function TJvUninstallComboBox.GetProperties: TStrings;
 begin
@@ -650,16 +659,12 @@ begin
     ItemIndex := 0;
 end;
 
-
-
-
 procedure TJvUninstallListBox.CreateWidget;
 begin
   inherited CreateWidget;
   if ItemIndex < 0 then
     Rebuild;
 end;
-
 
 function TJvUninstallListBox.GetProperties: TStrings;
 begin
@@ -710,6 +715,14 @@ procedure TJvUninstallListBox.RefreshItem;
 begin
   Click;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

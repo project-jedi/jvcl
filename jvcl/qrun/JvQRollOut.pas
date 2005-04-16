@@ -931,7 +931,7 @@ begin
     if Placement = plLeft then
       DrawText(Canvas, WS, -1, R, DT_VCENTER, 270)
     else
-      DrawText(Canvas, WS, -1, R, DT_VCENTER, 0) 
+      DrawText(Canvas, WS, -1, R, DT_VCENTER, 0)
   end;
   if ShowFocus and Focused then
   begin

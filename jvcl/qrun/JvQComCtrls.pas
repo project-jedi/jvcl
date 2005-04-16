@@ -45,11 +45,14 @@ unit JvQComCtrls;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   QWindows, QMessages, Contnrs, QGraphics, QControls, QForms,
   Classes, // (ahuser) "Classes" after "Forms" (D5 warning)
   QMenus, QComCtrls, QImgList, QButtons,  
-  QExtCtrls, 
-  JvQJVCLUtils, JvQComponent, JvQExControls, JvQExComCtrls, JvQTypes;
+  Qt, QExtCtrls, 
+  JvQJVCLUtils, JvQComponent, JvQExControls, JvQExComCtrls;
 
 const
   JvDefPageControlBorder = 4; 
@@ -242,13 +245,47 @@ type
     property OnMouseUp; 
   end;
  
+ 
+
+  { A fake component which either maps the properties to TTreeView or ignores them. }
+  TJvTreeView = class(TJvExTreeView)
+  private
+    FOnSelectionChange: TNotifyEvent;
+    FLineColor: TColor;
+    FLastSelection: TTreeNode;
+    FHideSelection: Boolean;
+    FShowRoot: Boolean;
+    procedure SetLineColor(Value: TColor);
+    procedure SetHideSelection(Value: Boolean);
+    procedure SetShowRoot(Value: Boolean);
+  protected
+    procedure Change(Node: TTreeNode); override;
+    procedure DoSelectionChange; dynamic;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  published
+    property HideSelection: Boolean read FHideSelection write SetHideSelection default True;
+    property ShowRoot: Boolean read FShowRoot write SetShowRoot default True;
+    property LineColor: TColor read FLineColor write SetLineColor default clDefault;
+
+    property OnSelectionChange: TNotifyEvent read FOnSelectionChange write FOnSelectionChange;
+  end;
+ 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   SysUtils,
   JclStrings,
   JvQConsts, JvQJCLUtils;
@@ -558,6 +595,33 @@ begin
   Result := True;
 end;
 
+procedure TJvTabDefaultPainter.SetGlyphLayout(const Value: TButtonLayout);
+begin
+  if FGlyphLayout <> Value then
+  begin
+    FGlyphLayout := Value;
+    Change;
+  end;
+end;
+
+procedure TJvTabDefaultPainter.SetDivider(const Value: Boolean);
+begin
+  if FDivider <> Value then
+  begin
+    FDivider := Value;
+    Change;
+  end;
+end;
+
+procedure TJvTabDefaultPainter.SetShowFocus(const Value: Boolean);
+begin
+  if FShowFocus <> Value then
+  begin
+    FShowFocus := Value;
+    Change;
+  end;
+end;
+
 //=== { TJvTabControl } ======================================================
 
 constructor TJvTabControl.Create(AOwner: TComponent);
@@ -620,7 +684,7 @@ function TJvTabControl.DrawTab(TabIndex: Integer; const Rect: TRect; Active: Boo
 begin
   Result := True;
   if Assigned(TabPainter) then
-    TabPainter.DrawTab(Self, Canvas, Images, TabIndex, Tabs[TabIndex].Caption, Rect, TabIndex = Self.TabIndex, Enabled)
+    TabPainter.DrawTab(Self, Canvas, Images, GetImageIndex(TabIndex), Tabs[TabIndex].Caption, Rect, TabIndex = Self.TabIndex, Enabled)
   else
     Result := inherited DrawTab(TabIndex, Rect, Active);
 end;
@@ -719,7 +783,8 @@ begin
     I := 0;
     while I <= TabIndex + RealIndex do
     begin
-      if not Pages[I].TabVisible then Inc(RealIndex);
+      if not Pages[I].TabVisible then
+        Inc(RealIndex);
       Inc(I);
     end;
     RealIndex := RealIndex + TabIndex;
@@ -908,47 +973,69 @@ end;
 
 
 
-//=== { TJvTreeNode } ========================================================
 
 
 
 
-procedure TJvTabDefaultPainter.SetGlyphLayout(const Value: TButtonLayout);
+//=== { TJvTreeView } ========================================================
+
+constructor TJvTreeView.Create(AOwner: TComponent);
 begin
-  if FGlyphLayout <> Value then
+  inherited Create(AOwner);
+  FLineColor := clDefault;
+  FLastSelection := nil;
+end;
+
+destructor TJvTreeView.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TJvTreeView.SetLineColor(Value: TColor);
+begin
+  if Value <> FLineColor then
   begin
-    FGlyphLayout := Value;
-    Change;
+    FLineColor := Value;
+    Invalidate;
   end;
 end;
 
-procedure TJvTabDefaultPainter.SetDivider(const Value: Boolean);
+procedure TJvTreeView.SetHideSelection(Value: Boolean);
 begin
-  if FDivider <> Value then
+  if Value <> FHideSelection then
   begin
-    FDivider := Value;
-    Change;
+    FHideSelection := Value;
+    Invalidate;
   end;
 end;
 
-procedure TJvTabDefaultPainter.SetShowFocus(const Value: Boolean);
+procedure TJvTreeView.SetShowRoot(Value: Boolean);
 begin
-  if FShowFocus <> Value then
+  if Value <> FShowRoot then
   begin
-    FShowFocus := Value;
-    Change;
+    FShowRoot := Value;
+    Invalidate;
   end;
 end;
+
+procedure TJvTreeView.Change(Node: TTreeNode);
+begin
+  if Selected <> FLastSelection then
+  begin
+    FLastSelection := Selected;
+    DoSelectionChange;
+  end;
+end;
+
+procedure TJvTreeView.DoSelectionChange;
+begin
+  if Assigned(FOnSelectionChange) then
+    FOnSelectionChange(Self);
+end;
+
+
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

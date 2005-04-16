@@ -32,6 +32,14 @@ unit JvQUIBError;
 {$I JvUIB.inc}
 
 interface
+
+
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
+
+
 {$IFDEF USE_IBERROR_H}
 (*$HPPEMIT '#include<iberror.h>' *)
 {$ENDIF USE_IBERROR_H}
@@ -1617,13 +1625,8 @@ const
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_err_max} {$ENDIF}
 {$ENDIF IB71}
 
-implementation
-
 
 {$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
-
 const
   UnitVersioning: TUnitVersionInfo = (
     RCSfile: '$RCSfile$';
@@ -1631,7 +1634,13 @@ const
     Date: '$Date$';
     LogPath: 'JVCL\run'
   );
+{$ENDIF UNITVERSIONING}
 
+
+implementation
+
+
+{$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

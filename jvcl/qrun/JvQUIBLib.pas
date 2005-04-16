@@ -38,7 +38,10 @@ unit JvQUIBLib;
 
 interface
 
-uses
+uses 
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING} 
   {$IFDEF MSWINDOWS} Windows, {$ENDIF}  Variants, 
   {$IFDEF FPC} Variants, {$ENDIF}
   JvQUIBase, JvQUIBError, Classes, SysUtils;
@@ -879,12 +882,21 @@ const
 
 
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
+
 implementation
 
-uses 
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING} 
+uses
   JvQUIBConst;
 
 { EUIBParser }
@@ -5012,14 +5024,6 @@ end;
 
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

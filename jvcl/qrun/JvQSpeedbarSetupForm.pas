@@ -34,6 +34,9 @@ unit JvQSpeedbarSetupForm;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils,  Classes, 
   QGraphics, QControls, QForms, QStdCtrls, QGrids, QExtCtrls, 
   QWindows, 
@@ -91,12 +94,19 @@ type
 
 procedure ShowSpeedbarSetupWindow(Speedbar: TJvSpeedBar; HelpCtx: THelpContext);
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   Math, QConsts,
   JvQJVCLUtils, JvQTypes, JvQResources;
 
@@ -418,14 +428,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

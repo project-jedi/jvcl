@@ -33,6 +33,9 @@ unit JvQAutoComplete;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   QWindows, 
   SysUtils, Classes, QControls, QStdCtrls;
 
@@ -226,12 +229,22 @@ type
     property OnValueChange: TNotifyEvent read FOnValueChange write FOnValueChange;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNIT_STRUTILS}
+  StrUtils,
+  {$ENDIF HAS_UNIT_STRUTILS}
   JvQConsts, JvQJCLUtils;
 
 //=== { TJvControlAutoComplete } =============================================
@@ -485,10 +498,10 @@ begin
   if List <> nil then
   begin
     for Result := IndexStart + 1 to List.Count - 1 do
-      if StringStartsWith(List[Result], Prefix) then
+      if AnsiStartsText(Prefix, List[Result]) then
         Exit;
     for Result := 0 to IndexStart do
-      if StringStartsWith(List[Result], Prefix) then
+      if AnsiStartsText(Prefix, List[Result]) then
         Exit;
   end;
   Result := -1;
@@ -648,10 +661,10 @@ function TJvComboBoxAutoComplete.FindItemPrefix(IndexStart: Integer;
   const Prefix: string): Integer;
 begin
   for Result := IndexStart + 1 to ComboBox.Items.Count - 1 do
-    if StringStartsWith(ComboBox.Items[Result], Prefix) then
+    if AnsiStartsText(Prefix, ComboBox.Items[Result]) then
       Exit;
   for Result := 0 to IndexStart do
-    if StringStartsWith(ComboBox.Items[Result], Prefix) then
+    if AnsiStartsText(Prefix, ComboBox.Items[Result]) then
       Exit;
   Result := -1;
 end;
@@ -881,14 +894,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

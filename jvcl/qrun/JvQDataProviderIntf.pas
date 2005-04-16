@@ -36,6 +36,9 @@ unit JvQDataProviderIntf;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   QWindows, Classes, QGraphics, QImgList,
   JclBase,
   JvQTypes;
@@ -347,13 +350,6 @@ type
   EJVCLDataItems = class(EJVCLDataProvider);
   EJVCLDataContexts = class(EJVCLDataProvider);
 
-implementation
-
-{$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
-{$ENDIF UNITVERSIONING}
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -362,7 +358,12 @@ const
     Date: '$Date$';
     LogPath: 'JVCL\run'
   );
+{$ENDIF UNITVERSIONING}
 
+implementation
+
+
+{$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

@@ -38,7 +38,10 @@ unit JvQWizardRouteMapSteps;
 
 interface
 
-uses
+uses 
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING} 
   SysUtils, Classes,
   QWindows, QMessages, QGraphics, QControls, QForms,
   JvQWizard;
@@ -86,13 +89,22 @@ type
     property ShowNavigators: Boolean read FShowNavigators write SetShowNavigators default True;
   end;
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+    );
+{$ENDIF UNITVERSIONING}
+
+
 implementation
 
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   JvQResources;
 
 
@@ -380,14 +392,6 @@ end;
 
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-    );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

@@ -65,7 +65,10 @@ unit JvQUIB;
 ------------------------------------------------------------------------------*)
 
 interface
-uses
+uses 
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING} 
   {$IFDEF MSWINDOWS} Windows, {$ENDIF}  JvQComponent, 
   Classes, SysUtils, SyncObjs, JvQUIBLib, JvQUIBase, JvQUIBSQLParser, JvQUIBConst;
 
@@ -752,12 +755,21 @@ TJvUIBComponent = class(TJvComponent)
     property PageSize: Cardinal read FPageSize write FPageSize default 0;
   end;
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
+
 implementation
 
-uses 
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING} 
+uses
   Math,
   JvQUIBMetaData;
 
@@ -3005,14 +3017,6 @@ end;
 
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

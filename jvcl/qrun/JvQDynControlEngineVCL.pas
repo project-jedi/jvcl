@@ -34,8 +34,12 @@ unit JvQDynControlEngineVCL;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  QActnList, QGraphics, QComCtrls, QImgList,
   Classes,
-  QControls, QStdCtrls, QExtCtrls, QComCtrls, QMask, QForms, QGraphics,
+  QControls, QStdCtrls, QExtCtrls, QMask, QForms,
   QButtons, QDialogs, QFileCtrls, QExtDlgs, QCheckLst,
   JvQDynControlEngine, JvQDynControlEngineIntf;
 
@@ -103,6 +107,8 @@ type
     procedure ControlSetGlyph(Value: TBitmap);
     procedure ControlSetNumGlyphs(Value: Integer);
     procedure ControlSetLayout(Value: TButtonLayout);
+    procedure ControlSetDefault(Value: Boolean);
+    procedure ControlSetCancel(Value: Boolean);
   end;
 
   TJvDynControlVCLFileNameEdit = class(TPanel, IUnknown,
@@ -420,7 +426,7 @@ type
  
 
   TJvDynControlVCLButton = class(TBitBtn, IUnknown,
-    IJvDynControl, IJvDynControlButton)
+    IJvDynControl, IJvDynControlButton, IJvDynControlAction)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
@@ -434,6 +440,11 @@ type
     procedure ControlSetGlyph(Value: TBitmap);
     procedure ControlSetNumGlyphs(Value: Integer);
     procedure ControlSetLayout(Value: TButtonLayout);
+    procedure ControlSetDefault(Value: Boolean);
+    procedure ControlSetCancel(Value: Boolean);
+
+    // IJvDynControlAction
+    procedure ControlSetAction(Value: TCustomAction);
   end;
 
   TJvDynControlVCLRadioButton = class(TRadioButton, IUnknown,
@@ -454,14 +465,52 @@ type
     function ControlGetValue: Variant;
   end;
 
+  TJvDynControlVCLTreeView = class(TTreeView, IUnknown,
+    IJvDynControl, IJvDynControlTreeView, IJvDynControlReadOnly)
+  public
+    procedure ControlSetDefaultProperties;
+    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetTabOrder(Value: Integer);
+
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetHint(const Value: string);
+
+    // IJvDynControlReadOnly
+    procedure ControlSetReadOnly(Value: Boolean);
+
+    // IJvDynControlTreeView
+    procedure ControlSetAutoExpand(Value: Boolean);
+    procedure ControlSetHotTrack(Value: Boolean);
+    procedure ControlSetShowHint(Value: Boolean);
+    procedure ControlSetShowLines(Value: Boolean);
+    procedure ControlSetShowRoot(Value: Boolean);
+    procedure ControlSetToolTips(Value: Boolean);
+    procedure ControlSetItems(Value: TTreeNodes);
+    function ControlGetItems: TTreeNodes;
+    procedure ControlSetImages(Value: TCustomImageList);
+    procedure ControlSetStateImages(Value: TCustomImageList);
+    function ControlGetSelected: TTreeNode;
+    procedure ControlSetOnChange(Value: TTVChangedEvent);
+    procedure ControlSetSortType(Value: TSortType);
+  end;
+
 function DynControlEngineVCL: TJvDynControlEngine;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
@@ -637,7 +686,7 @@ end;
 
 procedure TJvDynControlVCLButtonEdit.ControlSetOnButtonClick(Value: TNotifyEvent);
 begin
-  FButton.OnClick:= Value;
+  FButton.OnClick := Value;
 end;
 
 procedure TJvDynControlVCLButtonEdit.ControlSetButtonCaption(const Value: string);
@@ -658,6 +707,16 @@ end;
 procedure TJvDynControlVCLButtonEdit.ControlSetLayout(Value: TButtonLayout);
 begin
   FButton.Layout := Value;
+end;
+
+procedure TJvDynControlVCLButtonEdit.ControlSetDefault(Value: Boolean);
+begin
+  FButton.Default := Value;
+end;
+
+procedure TJvDynControlVCLButtonEdit.ControlSetCancel(Value: Boolean);
+begin
+  FButton.Cancel := Value;
 end;
 
 //=== { TJvDynControlVCLFileNameEdit } =======================================
@@ -1362,7 +1421,7 @@ begin
 end;
 
 function TJvDynControlVCLCheckListBox.ControlGetHeader(Index: Integer): Boolean;
-begin  
+begin   
   Result := False;  
 end;
 
@@ -1751,6 +1810,21 @@ begin
   Layout := Value;
 end;
 
+procedure TJvDynControlVCLButton.ControlSetDefault(Value: Boolean);
+begin
+  Default := Value;
+end;
+
+procedure TJvDynControlVCLButton.ControlSetCancel(Value: Boolean);
+begin
+  Cancel := Value;
+end;
+
+procedure TJvDynControlVCLButton.ControlSetAction(Value: TCustomAction);
+begin
+  Action := Value;
+end;
+
 //=== { TJvDynControlVCLRadioButton } ========================================
 
 procedure TJvDynControlVCLRadioButton.ControlSetDefaultProperties;
@@ -1803,6 +1877,112 @@ begin
   Result := Checked;
 end;
 
+//=== { TJvDynControlVCLTreeView } =========================================
+
+procedure TJvDynControlVCLTreeView.ControlSetDefaultProperties;
+begin
+end;
+
+procedure TJvDynControlVCLTreeView.ControlSetCaption(const Value: string);
+begin
+  Caption := Value;
+end;
+
+procedure TJvDynControlVCLTreeView.ControlSetTabOrder(Value: Integer);
+begin
+  TabOrder := Value;
+end;
+
+procedure TJvDynControlVCLTreeView.ControlSetOnEnter(Value: TNotifyEvent);
+begin
+  OnEnter := Value;
+end;
+
+procedure TJvDynControlVCLTreeView.ControlSetOnExit(Value: TNotifyEvent);
+begin
+  OnExit := Value;
+end;
+
+procedure TJvDynControlVCLTreeView.ControlSetOnClick(Value: TNotifyEvent);
+begin
+  OnClick := Value;
+end;
+
+procedure TJvDynControlVCLTreeView.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+procedure TJvDynControlVCLTreeView.ControlSetReadOnly(Value: Boolean);
+begin
+  ReadOnly := Value;
+end;
+
+procedure TJvDynControlVCLTreeView.ControlSetAutoExpand(Value: Boolean);
+begin
+  AutoExpand := Value;
+end;
+
+procedure TJvDynControlVCLTreeView.ControlSetHotTrack(Value: Boolean);
+begin
+//  HotTrack := Value;
+end;
+
+procedure TJvDynControlVCLTreeView.ControlSetShowHint(Value: Boolean);
+begin
+  ShowHint := Value;
+end;
+
+procedure TJvDynControlVCLTreeView.ControlSetShowLines(Value: Boolean);
+begin
+//  ShowLines := Value;
+end;
+
+procedure TJvDynControlVCLTreeView.ControlSetShowRoot(Value: Boolean);
+begin
+//  ShowRoot := Value;
+end;
+
+procedure TJvDynControlVCLTreeView.ControlSetToolTips(Value: Boolean);
+begin
+//  ToolTips := Value;
+end;
+
+procedure TJvDynControlVCLTreeView.ControlSetItems(Value: TTreeNodes);
+begin
+  Items.Assign(Value);
+end;
+
+function TJvDynControlVCLTreeView.ControlGetItems: TTreeNodes;
+begin
+  Result := Items;
+end;
+
+procedure TJvDynControlVCLTreeView.ControlSetImages(Value: TCustomImageList);
+begin
+  Images.Assign(Value);
+end;
+
+procedure TJvDynControlVCLTreeView.ControlSetStateImages(Value: TCustomImageList);
+begin
+//  StateImages.Assign(Value);
+end;
+
+function TJvDynControlVCLTreeView.ControlGetSelected: TTreeNode;
+begin
+  Result := Selected;
+end;
+
+procedure TJvDynControlVCLTreeView.ControlSetOnChange(Value: TTVChangedEvent);
+begin
+  OnChange := Value;
+end;
+
+procedure TJvDynControlVCLTreeView.ControlSetSortType(Value: TSortType);
+begin
+  SortType := Value;
+end;
+
 //=== { TJvDynControlEngineVCL } =============================================
 
 function DynControlEngineVCL: TJvDynControlEngine;
@@ -1832,25 +2012,16 @@ begin
 //  RegisterControlType(jctSpinEdit, TJvDynControlVCLMaskEdit);
   RegisterControlType(jctDirectoryEdit, TJvDynControlVCLDirectoryEdit);
   RegisterControlType(jctFileNameEdit, TJvDynControlVCLFileNameEdit);
-  RegisterControlType(jctMemo, TJvDynControlVCLMemo); 
+  RegisterControlType(jctMemo, TJvDynControlVCLMemo);
+//  RegisterControlType(jctRichEdit, TJvDynControlVCLRichEdit);
   RegisterControlType(jctButtonEdit, TJvDynControlVCLButtonEdit);
+  RegisterControlType(jctTreeView, TJvDynControlVCLTreeView);
 end;
-
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
 
 initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
-
   IntDynControlEngineVCL := TJvDynControlEngineVCL.Create;
   SetDefaultDynControlEngine(IntDynControlEngineVCL);
 

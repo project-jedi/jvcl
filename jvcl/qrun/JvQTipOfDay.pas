@@ -38,6 +38,9 @@ unit JvQTipOfDay;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Classes, QGraphics, QControls, QMessages, QForms, QStdCtrls,
   JvQAppStorage, JvQBaseDlg, JvQButtonPersistent, JvQSpeedButton, JvQTypes, JvQConsts;
   
@@ -151,12 +154,19 @@ type
     property Title: string read FTitle write FTitle;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   SysUtils, QWindows, QExtCtrls, QDialogs, 
   JvQButton, JvQResources;
 
@@ -689,14 +699,14 @@ begin
   }
   SavedDefaultFonts := FDefaultFonts;
 
-//  FTipFont.Charset := DEFAULT_CHARSET;
+  FTipFont.Charset := fcsDefaultCharSet;
   FTipFont.Color := clWindowText;
   FTipFont.Name := 'MS Sans Serif';
   FTipFont.Pitch := fpDefault;
   FTipFont.Size := 8;
   FTipFont.Style := [];
 
-//  FHeaderFont.Charset := DEFAULT_CHARSET;
+  FHeaderFont.Charset := fcsDefaultCharSet;
   FHeaderFont.Color := clWindowText;
   FHeaderFont.Pitch := fpDefault;
   FHeaderFont.Style := [fsBold];
@@ -732,14 +742,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

@@ -110,6 +110,9 @@ unit JvQHtControls;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   {$IFDEF MSWINDOWS}
   ShellAPI,
@@ -339,12 +342,19 @@ function ItemHTPlain(const Text: string): string;
 function ItemHTHeight(Canvas: TCanvas; const Text: string; Scale: Integer = 100): Integer;
 function PrepareText(const A: string): string;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   Math,
   JvQConsts;
 
@@ -484,10 +494,14 @@ begin
   if Self.Selected[I] then
   begin
     State := [odSelected];
-    Canvas.Font.Color := FColorHighlightText
+    Canvas.Font.Color := FColorHighlightText;
+    Canvas.Brush.Color := FColorHighlight;
   end
   else
+  begin
     Canvas.Font.Color := Font.Color;
+    Canvas.Brush.Color := Color;
+  end;
   if IsHyperLink(Canvas, R, State, Items[I], X, Y, LinkName) then
     Cursor := crHandPoint
   else
@@ -750,14 +764,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

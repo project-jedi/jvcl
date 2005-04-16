@@ -36,6 +36,9 @@ unit JvQForth;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   {$IFDEF MSWINDOWS}
   ShellAPI,
@@ -339,12 +342,19 @@ type
 // runs an external file or progam
 procedure Launch(const AFile: string);
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   Math,
   JvQConsts, JvQResources;
 
@@ -1942,7 +1952,7 @@ begin
   if aMethod = 'get' then
     ProcVariable
   else
-    raise EJvJanScriptError.CreateResFmt(@RsEUnrecognizeExternalVariableMethodss, [AName, amethod]);
+    raise EJvJanScriptError.CreateResFmt(@RsEUnrecognizedExternalVariableMethodss, [AName, amethod]);
 end;
 
 procedure TJvForthScript.ProcIntVar;
@@ -1990,7 +2000,7 @@ begin
   if aMethod = 'save' then
     ProcVarSave
   else
-    raise EJvJanScriptError.CreateResFmt(@RsEUnrecognizeInternalVariableMethodss, [AName, amethod]);
+    raise EJvJanScriptError.CreateResFmt(@RsEUnrecognizedInternalVariableMethodss, [AName, amethod]);
 end;
 
 procedure TJvForthScript.procSystem;
@@ -2005,7 +2015,7 @@ begin
   if aMethod = 'get' then
     procSysGet
   else
-    raise EJvJanScriptError.CreateResFmt(@RsEUnrecognizeSystemMethodss, [AName, amethod]);
+    raise EJvJanScriptError.CreateResFmt(@RsEUnrecognizedSystemMethodss, [AName, amethod]);
 end;
 
 procedure TJvForthScript.ProcVarDec;
@@ -2727,14 +2737,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 
