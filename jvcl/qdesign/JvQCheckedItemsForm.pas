@@ -34,11 +34,9 @@ unit JvQCheckedItemsForm;
 interface
 
 uses
-  QWindows,
-  SysUtils, Classes, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QMenus,
-  QCheckLst, 
-  RTLConsts, DesignIntf, DesignEditors,
-  CLXEditors, 
+  QWindows, SysUtils, Classes, QGraphics, QControls, QForms, QStdCtrls,
+  QExtCtrls, QMenus, QCheckLst, 
+  RTLConsts, DesignIntf, DesignEditors, CLXEditors, 
   JvQComponent;
 
 type
@@ -238,7 +236,6 @@ begin
     TabOrder := 4;
   end;
 end;
-
 
 procedure TJvCheckItemsEditor.CheckButtons;
 begin

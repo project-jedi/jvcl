@@ -114,12 +114,11 @@ begin
 end;
 
 
-procedure TJvDataEmbeddedEditor.PrepareItem(Index: Integer;
-  const AItem: IMenuItem);
+procedure TJvDataEmbeddedEditor.PrepareItem(Index: Integer; const AItem: IMenuItem);
 begin
-  inherited;
+  inherited PrepareItem(Index, AItem);
   case Index of
-  1,2:
+  1, 2:
     AItem.Enabled := (Component as TJvDataEmbedded).Data.Size > 0;
   end;
 end;
@@ -127,29 +126,30 @@ end;
 
 procedure TJvDataEmbeddedEditor.ViewAsText;
 var
-  F:TFileStream;
-  S:string;
+  F: TFileStream;
+  S: string;
 begin
-//  S := FileGetTempName('JVCL');
-  S := 'JVCL.tmp';
-  F := TFileStream.Create(S,fmCreate);
+  S := FileGetTempName('JVCL');
+  F := TFileStream.Create(S, fmCreate);
   try
     (Component as TJvDataEmbedded).DataSaveToStream(F);
   finally
     F.Free;
   end;
   {$IFDEF MSWINDOWS}
-  ShellExecute(GetActiveWindow, 'open','notepad.exe',PChar(S),PChar(ExtractFilePath(S)),SW_SHOWNORMAL);
+  ShellExecute(GetActiveWindow, 'open','notepad.exe',
+    PChar(S), PChar(ExtractFilePath(S)), SW_SHOWNORMAL);
   // (p3) not 100% kosher, but seems to work most of the time
   // if anyone knows a better way to delete the temp file, please fix
-  sleep(300);
+  Sleep(300);
   DeleteFile(PChar(S));
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
-  ShellExecute(GetActiveWindow, 'open', PChar(S), nil, PChar(ExtractFilePath(S)),SW_SHOWNORMAL);
+  ShellExecute(GetActiveWindow, 'open', PChar(S),
+    nil, PChar(ExtractFilePath(S)), SW_SHOWNORMAL);
   // (p3) not 100% kosher, but seems to work most of the time
   // if anyone knows a better way to delete the temp file, please fix
-  sleep(300);
+  Sleep(300);
   DeleteFile(PChar(S));
   {$ENDIF LINUX}
 end;

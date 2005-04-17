@@ -81,7 +81,7 @@ procedure TJvFooterEditor.ExecuteVerb(Index: Integer);
 const
   cButtonHeight = 50;
 var
-  FButton: TJvFooterBtn;
+  Button: TJvFooterBtn;
 begin
   case Index of
     0:
@@ -90,33 +90,33 @@ begin
       ;
     2:
       begin
-        FButton := TJvFooterBtn(Designer.CreateComponent(TJvFooterBtn, Component, 0, 0, 0, cButtonHeight));
-        FButton.Caption := SHelpButton;
-        FButton.Alignment := taLeftJustify;
-        FButton := TJvFooterBtn(Designer.CreateComponent(TJvFooterBtn, Component, 0, 0, 0, cButtonHeight));
-        FButton.Caption := SOKButton;
-        FButton.Default := True;
-        FButton := TJvFooterBtn(Designer.CreateComponent(TJvFooterBtn, Component, 0, 0, 0, cButtonHeight));
-        FButton.Caption := SCancelButton;
-        FButton.Cancel := True;
+        Button := TJvFooterBtn(Designer.CreateComponent(TJvFooterBtn, Component, 0, 0, 0, cButtonHeight));
+        Button.Caption := SHelpButton;
+        Button.Alignment := taLeftJustify;
+        Button := TJvFooterBtn(Designer.CreateComponent(TJvFooterBtn, Component, 0, 0, 0, cButtonHeight));
+        Button.Caption := SOKButton;
+        Button.Default := True;
+        Button := TJvFooterBtn(Designer.CreateComponent(TJvFooterBtn, Component, 0, 0, 0, cButtonHeight));
+        Button.Caption := SCancelButton;
+        Button.Cancel := True;
       end;
     3:
       begin
-        FButton := TJvFooterBtn(Designer.CreateComponent(TJvFooterBtn, Component, 0, 0, 0, cButtonHeight));
-        FButton.Caption := RsPrevious;
-        FButton.SpaceInterval := 0;
-        FButton := TJvFooterBtn(Designer.CreateComponent(TJvFooterBtn, Component, 0, 0, 0, cButtonHeight));
-        FButton.Caption := RsNext;
-        FButton.Default := True;
-        FButton := TJvFooterBtn(Designer.CreateComponent(TJvFooterBtn, Component, 0, 0, 0, cButtonHeight));
-        FButton.Caption := SCloseButton;
+        Button := TJvFooterBtn(Designer.CreateComponent(TJvFooterBtn, Component, 0, 0, 0, cButtonHeight));
+        Button.Caption := RsPrevious;
+        Button.SpaceInterval := 0;
+        Button := TJvFooterBtn(Designer.CreateComponent(TJvFooterBtn, Component, 0, 0, 0, cButtonHeight));
+        Button.Caption := RsNext;
+        Button.Default := True;
+        Button := TJvFooterBtn(Designer.CreateComponent(TJvFooterBtn, Component, 0, 0, 0, cButtonHeight));
+        Button.Caption := SCloseButton;
       end;
     4:
       begin
-        FButton := TJvFooterBtn(Designer.CreateComponent(TJvFooterBtn, Component, 0, 0, 0, cButtonHeight));
-        FButton.Caption := SOKButton;
-        FButton.SpaceInterval := 0;
-        FButton.Alignment := taCenter;
+        Button := TJvFooterBtn(Designer.CreateComponent(TJvFooterBtn, Component, 0, 0, 0, cButtonHeight));
+        Button.Caption := SOKButton;
+        Button.SpaceInterval := 0;
+        Button.Alignment := taCenter;
       end;
   end;
 end;
