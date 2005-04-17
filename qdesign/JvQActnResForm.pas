@@ -44,7 +44,7 @@ type
   TJvStandardActions = class(TDataModule)
     ImageList1: TImageList;
     ActionList1: TActionList;
-//    JvSendMailAction1: TJvSendMailAction;
+    JvSendMailAction1: TJvSendMailAction;
     JvWebAction1: TJvWebAction;
   public
   end;

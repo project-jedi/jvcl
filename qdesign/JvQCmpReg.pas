@@ -33,7 +33,7 @@ unit JvQCmpReg;
 {$I jvcl.inc}
 
 {$IFDEF MSWINDOWS}
-{$DEFINE USEWINDOWS}
+{.$DEFINE USEWINDOWS}
 {$ENDIF MSWINDOWS}
 
 interface

@@ -62,14 +62,14 @@ end;
 
 type
   // (p3) TCommonDialog.Execute is protected in D5...
-  THackCommonDialog = class(TCommonDialog);
+  TAccessProtectedCommonDialog = class(TCommonDialog);
 
 procedure TJvBaseDlgEditor.ExecuteVerb(Index: Integer);
 begin
   if Index <> 0 then
     Exit;
   if Component is TCommonDialog then // (p3) a TJvCommonDialog is also a TCommonDialog (nowadays)
-    THackCommonDialog(Component).Execute
+    TAccessProtectedCommonDialog(Component).Execute
   else
   if Component is TJvCommonDialogP then
     TJvCommonDialogP(Component).Execute

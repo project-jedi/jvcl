@@ -179,7 +179,7 @@ end;
 procedure TGroupBox.EnabledChanged;
 begin
   if PropagateEnabled then
-    inherited;
+    inherited EnabledChanged;
 end;
 
 

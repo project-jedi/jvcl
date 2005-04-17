@@ -268,8 +268,7 @@ begin
 end;
 
 procedure TJvFullColorListFrm.ListBoxColorsDrawItem(Control: TObject;
-  Index: Integer; Rect: TRect; State: TOwnerDrawState;
-  var Handled: Boolean);
+  Index: Integer; Rect: TRect; State: TOwnerDrawState; var Handled: Boolean);
 var
   AFullColor: TJvFullColor;
   AText: string;
@@ -277,6 +276,7 @@ var
   AColor: TColor;
   AColorSpace: TJvColorSpace;
 begin
+  Handled := true;
   with TListBox(Control), Canvas do
   begin
     if odSelected in State then
@@ -298,7 +298,7 @@ begin
         with TJvDEFColorSpace(AColorSpace) do
         begin
           AColor := ConvertToColor(AFullColor);
-          AText := Format('%s : Unamed color $%.8x', [Name, AFullColor]);
+          AText := Format(RsUnnamedColorFmt, [Name, AFullColor]);
           for ColorIndex := 0 to ColorCount - 1 do
             if AColor = ColorValue[ColorIndex] then
             begin
@@ -308,7 +308,7 @@ begin
         end
       else
         with AColorSpace do
-          AText := Format('%s : %s = $%.2x; %s = $%.2x; %s = $%.2x',
+          AText := Format('%s: %s = $%.2x; %s = $%.2x; %s = $%.2x',
             [Name,
              AxisName[axIndex0], GetAxisValue(AFullColor, axIndex0),
              AxisName[axIndex1], GetAxisValue(AFullColor, axIndex1),
@@ -322,6 +322,7 @@ begin
     Rectangle(Rect.Left + 2, Rect.Top + 2, Rect.Left + Rect.Bottom - Rect.Top - 2, Rect.Bottom - 2);
   end;
 end;
+
 
 end.
 

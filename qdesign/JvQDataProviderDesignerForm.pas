@@ -82,7 +82,6 @@ type
     function AutoStoreSettings: Boolean; override;
   public
     PropName: string;
-    destructor Destroy; override;
     property Provider: IJvDataProvider read GetProvider write SetProvider;
     property Designer: IJvFormDesigner read FDesigner write SetDesigner;
   end;
@@ -353,11 +352,6 @@ end;
 function TfrmDataProviderDesigner.AutoStoreSettings: Boolean;
 begin
   Result := True;
-end;
-
-destructor TfrmDataProviderDesigner.Destroy;
-begin
-  inherited Destroy;
 end;
 
 procedure TfrmDataProviderDesigner.aiAddItemExecute(Sender: TObject);

@@ -85,7 +85,7 @@ end;
 
 procedure TJvCSVFieldProperty.GetValues(Proc: TGetStrProc);
 var
-  I, C: Integer;
+  I: Integer;
   DbEdit: TJvCSVEdit;
   DbCombo: TJvCSVComboBox;
   Ck: TJvCSVCheckBox;
@@ -97,36 +97,24 @@ begin
     begin
       DbEdit := TJvCSVEdit(GetComponent(0));
       if Assigned(DbEdit.CSVDataBase) then
-      begin
-        C := DbEdit.CSVDataBase.CSVFieldNames.Count;
-        if C > 0 then
-          for I := 0 to C - 1 do
-            Proc(DbEdit.CSVDataBase.CSVFieldNames[I]);
-      end;
+        for I := 0 to DbEdit.CSVDataBase.CSVFieldNames.Count - 1 do
+          Proc(DbEdit.CSVDataBase.CSVFieldNames[I]);
     end
     else
     if Compo.ClassName = 'TJvCSVComboBox' then
     begin
       DbCombo := TJvCSVComboBox(GetComponent(0));
       if Assigned(DbCombo.CSVDataBase) then
-      begin
-        C := DbCombo.CSVDataBase.CSVFieldNames.Count;
-        if C > 0 then
-          for I := 0 to C - 1 do
-            Proc(DbCombo.CSVDataBase.CSVFieldNames[I]);
-      end;
+        for I := 0 to DbCombo.CSVDataBase.CSVFieldNames.Count - 1 do
+          Proc(DbCombo.CSVDataBase.CSVFieldNames[I]);
     end
     else
     if Compo.ClassName = 'TJvCSVCheckBox' then
     begin
       Ck := TJvCSVCheckBox(GetComponent(0));
       if Assigned(Ck.CSVDataBase) then
-      begin
-        C := Ck.CSVDataBase.CSVFieldNames.Count;
-        if C > 0 then
-          for I := 0 to C - 1 do
-            Proc(Ck.CSVDataBase.CSVFieldNames[I]);
-      end;
+        for I := 0 to Ck.CSVDataBase.CSVFieldNames.Count - 1 do
+          Proc(Ck.CSVDataBase.CSVFieldNames[I]);
     end;
   except
   end;

@@ -169,7 +169,7 @@ uses
   Registry,
   {$ENDIF MSWINDOWS} 
   {$IFDEF UNIX}
-  JvQRegistryIniFile,
+  JvQQRegistryIniFile,
   {$ENDIF UNIX}
   JvQTypes, JvQStringsForm, JvQDsgnConsts, JvQConsts;
 
@@ -709,18 +709,14 @@ end;
 
 function TJvStringsEditor.GetEditPropertyName: string;
 begin
-  { (rb) Probably should not be a resource string, because its value should be the
-         same as the property name }
-  Result := RsStrings;
+  Result := 'Strings';
 end;
 
 //=== { TJvItemsEditor } =====================================================
 
 function TJvItemsEditor.GetEditPropertyName: string;
 begin
-  { (rb) Probably should not be a resource string, because its value should be the
-         same as the property name }
-  Result := RsItems;
+  Result := 'Items';
 end;
 
 end.
