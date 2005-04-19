@@ -132,6 +132,7 @@ type
     procedure ClipboardCopy; override;
     procedure ClipboardPaste; override;
     procedure DeleteSelected; override;
+    procedure Clear;
 
     function GetSelText: string;
     procedure SetSelText(const AValue: string);
@@ -318,7 +319,11 @@ type
   end;
 
   TJvDeleteLineUndo = class(TJvInsertUndo)
+  private
+    FLastLineDelete: Boolean;
   public
+    constructor Create(AJvEditor: TJvCustomEditor; ACaretX, ACaretY: Integer;
+      const AText: string; ALastLineDelete: Boolean);
     procedure Undo; override;
     //procedure Redo; override;
   end;
@@ -1346,12 +1351,19 @@ begin
         if (CaretY >= 0) and (CaretY < FLines.Count) then
         begin
           S := FLines[CaretY];
+          if (CaretY >= FLines.Count - 1) and (S = '') then
+            Exit;
+
           LockUpdate;
           try
             { --- UNDO --- }
-            TJvDeleteLineUndo.Create(Self, CaretX, CaretY, S);
+            TJvDeleteLineUndo.Create(Self, CaretX, CaretY, S, CaretY >= FLines.Count - 1);
             { --- /UNDO --- }
-            FLines.Delete(CaretY);
+            if CaretY < FLines.Count - 1 then
+              FLines.Delete(CaretY)
+            else
+              FLines[CaretY] := '';
+            SetCaretInternal(0, CaretY); // set caret to 0/Y when in last line
           finally
             UnlockUpdate;
           end;
@@ -1861,6 +1873,10 @@ begin
   end;
 end;
 
+procedure TJvCustomEditor.Clear;
+begin
+  FLines.Clear;
+end;
 
 function TJvCustomEditor.GetLines: TStrings;
 begin
@@ -2310,12 +2326,27 @@ begin
   GetEditor.FLines.Insert(CaretY, FText);
 end;}
 
+constructor TJvDeleteLineUndo.Create(AJvEditor: TJvCustomEditor; ACaretX, ACaretY: Integer;
+  const AText: string; ALastLineDelete: Boolean);
+begin
+  inherited Create(AJvEditor, ACaretX, ACaretY, AText);
+  FLastLineDelete := ALastLineDelete;
+end;
+
 procedure TJvDeleteLineUndo.Undo;
 begin
   GetEditor.LockUpdate;
   try
-    GetEditor.FLines.Insert(CaretY, FText);
-    GetEditor.TextModified(CaretX, CaretY, maInsert, FText);
+    if FLastLineDelete then
+    begin
+      GetEditor.FLines[CaretY] := FText;
+      GetEditor.TextModified(CaretX, CaretY, maReplace, FText);
+    end
+    else
+    begin
+      GetEditor.FLines.Insert(CaretY, FText);
+      GetEditor.TextModified(CaretX, CaretY, maInsert, FText);
+    end;
   finally
     GetEditor.UnlockUpdate;
   end;

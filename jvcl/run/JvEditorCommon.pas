@@ -2767,6 +2767,15 @@ end;
 
 procedure TJvCustomEditorBase.DoLinesChange(Sender: TObject);
 begin
+  if FUpdateLock = 0 then
+    Repaint;
+  if CaretY >= LineCount then
+  begin
+    if LineCount = 0 then
+      CaretY := 0
+    else
+      CaretY := LineCount - 1;
+  end;
   Changed;
 end;
 
