@@ -101,6 +101,7 @@ type
     FLibDir: string;
     FIsPersonal: Boolean;
     FIsCLX: Boolean;
+    FKeyName: string;
 
     function GetBDSProjectsDir: string;
     procedure ReadRegistryData;
@@ -124,6 +125,7 @@ type
     property Name: string read FName;
     property IsPersonal: Boolean read FIsPersonal;
     property IsCLX: Boolean read FIsCLX;
+    property KeyName: string read FKeyName;
   end;
 
 var
@@ -573,7 +575,6 @@ end;
 {******************************************************************************}
 procedure TEdition.ReadRegistryData;
 var
-  KeyName: string;
   Reg: HKEY;
   RegTyp: LongWord;
   ProjectsDir: string;
@@ -624,11 +625,11 @@ var
 begin
   case Typ of
     Delphi:
-      KeyName := 'Software\Borland\Delphi\' + IDEVersionStr + '.0';
+      FKeyName := 'Software\Borland\Delphi\' + IDEVersionStr + '.0';
     BCB:
-      KeyName := 'Software\Borland\C++Builder\' + IDEVersionStr + '.0';
+      FKeyName := 'Software\Borland\C++Builder\' + IDEVersionStr + '.0';
     BDS:
-      KeyName := 'Software\Borland\BDS\' + IDEVersionStr + '.0';
+      FKeyName := 'Software\Borland\BDS\' + IDEVersionStr + '.0';
   end;
 
   if RegOpenKeyEx(HKEY_LOCAL_MACHINE, PChar(KeyName), 0, KEY_QUERY_VALUE or KEY_READ, Reg) = ERROR_SUCCESS then
@@ -1131,7 +1132,8 @@ begin
     begin
       if Edition.RootDir = '' then
       begin
-        WriteLn('Delphi/BCB version not installed.');
+        WriteLn('Delphi/BCB version not installed or the registry value of ');
+        WriteLn('[HKLM\', Edition.KeyName, ']\RootDir is empty.');
         Continue;
       end;
     end
@@ -1141,7 +1143,8 @@ begin
         Edition := GetNewestEdition;
       if Edition.RootDir = '' then
       begin
-        WriteLn('No Delphi/BCB version installed.');
+        WriteLn('Delphi/BCB version not installed or the registry value of ');
+        WriteLn('[HKLM\', Edition.KeyName, ']\RootDir is empty.');
         Continue;
       end;
     end;
