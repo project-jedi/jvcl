@@ -7679,12 +7679,12 @@ end;
 
 function RectWidth(R: TRect): Integer;
 begin
-  Result := R.Right - R.Left;
+  Result := Abs(R.Right - R.Left);
 end;
 
 function RectHeight(R: TRect): Integer;
 begin
-  Result := R.Bottom - R.Top;
+  Result := Abs(R.Bottom - R.Top);
 end;
 
 {$IFDEF MSWINDOWS}
