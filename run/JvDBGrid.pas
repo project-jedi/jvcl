@@ -82,9 +82,6 @@ const
 type
   TJvDBGrid = class;
 
-  // Consts for TJvDBGridLayoutChangeLink
-  TJvDBGridLayoutChangeKind = (lcLayoutChanged, lcSizeChanged, lcTopLeftChanged);
-
   TSelectColumn = (scDataBase, scGrid);
   TTitleClickEvent = procedure(Sender: TObject; ACol: Longint;
     Field: TField) of object;
@@ -108,9 +105,10 @@ type
     var AHint: string; var ATimeOut: Integer) of object;
   TJvCellHintEvent = TJvTitleHintEvent;
   TJvDBColumnResizeEvent = procedure(Grid: TJvDBGrid; ACol: Longint; NewWidth: Integer) of object;
+  TJvDBIsBoolFieldEvent = function(Grid: TJvDBGrid; const Field: TField): Boolean of object;
 
+  TJvDBGridLayoutChangeKind = (lcLayoutChanged, lcSizeChanged, lcTopLeftChanged);
   TJvDBGridLayoutChangeEvent = procedure(Grid: TJvDBGrid; Kind: TJvDBGridLayoutChangeKind) of object;
-
   TJvDBGridLayoutChangeLink = class
   private
     FOnChange: TJvDBGridLayoutChangeEvent;
@@ -199,7 +197,9 @@ type
     FOnGetCellProps: TGetCellPropsEvent;
     FOnGetCellParams: TGetCellParamsEvent;
     FOnGetBtnParams: TGetBtnParamsEvent;
+    {$IFDEF COMPILER6_UP}
     FOnEditChange: TNotifyEvent;
+    {$ENDIF COMPILER6_UP}
     FOnTitleBtnClick: TTitleClickEvent;
     FOnTitleBtnDblClick: TTitleClickEvent;
     FOnShowEditor: TJvDBEditShowEvent;
@@ -235,6 +235,7 @@ type
     FOldControlWndProc: TWndMethod;
     FBooleanFieldToEdit: TField;
     FBooleanEditor: Boolean;
+    FIsBoolField: TJvDBIsBoolFieldEvent;
     FWordWrap: Boolean;
 
     FAutoSizeRows: Boolean;
@@ -298,6 +299,7 @@ type
     procedure HideCurrentControl;
     procedure ControlWndProc(var Message: TMessage);
     procedure ChangeBoolean(const FieldValueChange: Shortint);
+    function EditWithBoolBox(Field: TField): Boolean; {$IFDEF DELPHI9} inline; {$ENDIF DELPHI9}
     function DoKeyPress(var Msg: TWMChar): Boolean;
     procedure SetWordWrap(Value: Boolean);
     procedure NotifyLayoutChange(const Kind: TJvDBGridLayoutChangeKind);
@@ -317,7 +319,9 @@ type
     procedure DrawCell(ACol, ARow: Longint; ARect: TRect; AState: TGridDrawState); override;
     procedure DrawDataCell(const Rect: TRect; Field: TField;
       State: TGridDrawState); override; { obsolete from Delphi 2.0 }
+    {$IFDEF COMPILER6_UP}
     procedure EditChanged(Sender: TObject); dynamic;
+    {$ENDIF COMPILER6_UP}
     procedure GetCellProps(Field: TField; AFont: TFont; var Background: TColor;
       Highlight: Boolean); dynamic;
     function HighlightCell(DataCol, DataRow: Integer; const Value: string;
@@ -424,7 +428,9 @@ type
     property OnGetCellProps: TGetCellPropsEvent read FOnGetCellProps write FOnGetCellProps; { obsolete }
     property OnGetCellParams: TGetCellParamsEvent read FOnGetCellParams write FOnGetCellParams;
     property OnGetBtnParams: TGetBtnParamsEvent read FOnGetBtnParams write FOnGetBtnParams;
+    {$IFDEF COMPILER6_UP}
     property OnEditChange: TNotifyEvent read FOnEditChange write FOnEditChange;
+    {$ENDIF COMPILER6_UP}
     property OnShowEditor: TJvDBEditShowEvent read FOnShowEditor write FOnShowEditor;
     property OnTitleBtnClick: TTitleClickEvent read FOnTitleBtnClick write FOnTitleBtnClick;
     property OnTitleBtnDblClick: TTitleClickEvent read FOnTitleBtnDblClick write FOnTitleBtnDblClick;
@@ -476,6 +482,8 @@ type
     property BooleanEditor: Boolean read FBooleanEditor write SetBooleanEditor default True;
     { OnColumnResized: event triggered each time a column is resized with the mouse }
     property OnColumnResized: TJvDBColumnResizeEvent read FOnColumnResized write FOnColumnResized;
+    { IsBooleanField: event used to treat integer fields as boolean fields }
+    property IsBooleanField: TJvDBIsBoolFieldEvent read FIsBoolField write FIsBoolField;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -522,6 +530,11 @@ const
 
   bmMultiDot = 'JvDBGridMSDOT';
   bmMultiArrow = 'JvDBGridMSARROW';
+
+  // Consts for ChangeBoolean
+  JvGridBool_INVERT = 9;
+  JvGridBool_CHECK = 0;
+  JvGridBool_UNCHECK = -1;
 
 var
   GridBitmaps: array [TGridPicture] of TBitmap =
@@ -910,7 +923,7 @@ begin
   FIniLink.Free;
   FMsIndicators.Free;
   FSelectColumnsDialogStrings.Free;
-  
+
   FChangeLinks.Free;
   
   inherited Destroy;
@@ -924,6 +937,13 @@ end;
 procedure TJvDBGrid.UnregisterLayoutChangeLink(Link: TJvDBGridLayoutChangeLink);
 begin
   FChangeLinks.Remove(Link);
+end;
+
+function TJvDBGrid.EditWithBoolBox(Field: TField): Boolean;
+begin
+  Result := FBooleanEditor and ((Field.DataType = ftBoolean)
+    or ((Field.DataType in [ftSmallint, ftInteger, ftWord]) and Assigned(FIsBoolField)
+      and FIsBoolField(Self, Field)));
 end;
 
 function TJvDBGrid.GetImageIndex(Field: TField): Integer;
@@ -955,6 +975,12 @@ begin
             Result := Ord(gpChecked)
           else
             Result := Ord(gpUnChecked);
+      ftSmallint, ftInteger, ftWord:
+        if EditWithBoolBox(Field) and not Field.IsNull then
+          if Field.AsInteger = 0 then
+            Result := Ord(gpUnChecked)
+          else
+            Result := Ord(gpChecked);
     end;
   end;
 end;
@@ -1296,7 +1322,7 @@ begin
             end;
             Exit;
           end;
-      end
+      end;
     end
     else
     begin
@@ -1313,7 +1339,7 @@ begin
             Exit;
           end;
       end;
-      if DataLink.DataSet.State = dsBrowse then
+      if DataLink.DataSet.State <> dsInsert then
         case Key of
           VK_UP:
             begin
@@ -1329,7 +1355,7 @@ begin
       if ((Key in [VK_LEFT, VK_RIGHT]) and (dgRowSelect in Options)) or
         ((Key in [VK_HOME, VK_END]) and ((ColCount = IndicatorOffset + 1) or
         (dgRowSelect in Options))) or (Key in [VK_ESCAPE, VK_NEXT, VK_PRIOR]) or
-        ((Key = VK_INSERT) and (CanModify and (not ReadOnly) and (dgEditing in Options))) then
+        ((Key = VK_INSERT) and CanModify and (not ReadOnly) and (dgEditing in Options)) then
         ClearSelections
       else
       if (Key = VK_TAB) and not (ssAlt in Shift) then
@@ -1523,16 +1549,6 @@ end;
 
 function TJvDBGrid.CanEditShow: Boolean;
 
-  function CanEditField: Boolean;
-  begin
-    Result := (inherited CanEditShow) and (not ReadOnly)
-      and Assigned(DataLink) and DataLink.Active
-      and Assigned(SelectedField) and (not SelectedField.ReadOnly)
-      and SelectedField.DataSet.CanModify
-      and (SelectedIndex >= 0) and (SelectedIndex < Columns.Count)
-      and (not Columns[SelectedIndex].ReadOnly);
-  end;
-
   function UseDefaultEditor: Boolean;
   const
     ude_DEFAULT_EDITOR = 0;
@@ -1543,6 +1559,13 @@ function TJvDBGrid.CanEditShow: Boolean;
     Editor: Shortint;
     Control: TJvDBGridControl;
     EditControl: TWinControl;
+
+    function IsReadOnlyField: Boolean;
+    begin
+      Result := ReadOnly or Columns[SelectedIndex].ReadOnly or F.ReadOnly
+        or not F.DataSet.CanModify;
+    end;
+
   begin
     // Is there an editor for the selected field ?
     F := SelectedField;
@@ -1550,21 +1573,22 @@ function TJvDBGrid.CanEditShow: Boolean;
     if Assigned(Control) and not (dgAlwaysShowEditor in Options) then
       Editor := ude_CUSTOM_EDITOR
     else
-    if (F.DataType = ftBoolean) and BooleanEditor then
+    if EditWithBoolBox(F) then
       Editor := ude_BOOLEAN_EDITOR
     else
+    begin
       Editor := ude_DEFAULT_EDITOR;
 
-    // The default editor cannot modify a binary or memo field
-    if (Editor = ude_DEFAULT_EDITOR)
-      and (F.DataType in [ftUnknown, ftBytes, ftVarBytes, ftAutoInc, ftBlob,
-      ftMemo, ftFmtMemo, ftGraphic, ftTypedBinary, ftDBaseOle, ftParadoxOle,
-      ftCursor, ftADT, ftReference, ftDataSet, ftOraBlob, ftOraClob]) then
-    begin
-      Result := False;
-      HideCurrentControl;
-      HideEditor;
-      Exit;
+      // The default editor cannot modify a binary or memo field
+      if (F.DataType in [ftUnknown, ftBytes, ftVarBytes, ftAutoInc, ftBlob,
+        ftMemo, ftFmtMemo, ftGraphic, ftTypedBinary, ftDBaseOle, ftParadoxOle,
+        ftCursor, ftADT, ftReference, ftDataSet, ftOraBlob, ftOraClob]) then
+      begin
+        Result := False;
+        HideCurrentControl;
+        HideEditor;
+        Exit;
+      end;
     end;
 
     // There is an editor, so we trigger the OnShowEditor event
@@ -1594,7 +1618,16 @@ function TJvDBGrid.CanEditShow: Boolean;
         Control.FieldName := '';
         raise EJVCLDbGridException.CreateRes(@RsEJvDBGridControlPropertyNotAssigned);
       end;
-      PlaceControl(EditControl, Col, Row);
+      if IsPublishedProp(EditControl, 'ReadOnly') then
+      begin
+        SetOrdProp(EditControl, 'ReadOnly', Ord(IsReadOnlyField));
+        PlaceControl(EditControl, Col, Row);
+      end
+      else
+      if IsReadOnlyField then
+        HideCurrentControl
+      else
+        PlaceControl(EditControl, Col, Row);
     end
     else
     if Editor = ude_BOOLEAN_EDITOR then
@@ -1603,7 +1636,8 @@ function TJvDBGrid.CanEditShow: Boolean;
       Result := False;
       HideCurrentControl;
       HideEditor;
-      FBooleanFieldToEdit := F;
+      if not IsReadOnlyField then
+        FBooleanFieldToEdit := F;
     end
     else
       // Default editor
@@ -1614,7 +1648,8 @@ begin
   if (dgAlwaysShowEditor in Options) and not EditorMode then
     EditorMode := True;
   Result := False;
-  if CanEditField then
+  if (inherited CanEditShow) and Assigned(SelectedField)
+    and (SelectedIndex >= 0) and (SelectedIndex < Columns.Count) then
   begin
     FBooleanFieldToEdit := nil;
     Result := UseDefaultEditor;
@@ -1848,11 +1883,13 @@ begin
   end;
 end;
 
+{$IFDEF COMPILER6_UP}
 procedure TJvDBGrid.EditChanged(Sender: TObject);
 begin
   if Assigned(FOnEditChange) then
     FOnEditChange(Self);
 end;
+{$ENDIF COMPILER6_UP}
 
 procedure TJvDBGrid.TopLeftChanged;
 begin
@@ -2171,25 +2208,25 @@ end;
 
 procedure TJvDBGrid.WMChar(var Msg: TWMChar);
 begin
-  if BooleanEditor and (Char(Msg.CharCode) in [Backspace, #32..#255])
-    and Assigned(SelectedField) and (SelectedField is TBooleanField) then
+  if Assigned(SelectedField) and EditWithBoolBox(SelectedField)
+    and (Char(Msg.CharCode) in [Backspace, #32..#255]) then
   begin
     if not DoKeyPress(Msg) then
       case Char(Msg.CharCode) of
         #32:
         begin
           EditorMode := True;
-          ChangeBoolean(0);  // invert
+          ChangeBoolean(JvGridBool_INVERT);
         end;
         Backspace, '0', '-':
         begin
           EditorMode := True;
-          ChangeBoolean(-1); // uncheck
+          ChangeBoolean(JvGridBool_UNCHECK);
         end;
         '1', '+':
         begin
           EditorMode := True;
-          ChangeBoolean(1);  // check
+          ChangeBoolean(JvGridBool_CHECK);
         end;
       end;
   end
@@ -2205,8 +2242,8 @@ begin
     else
       if InplaceEditor = nil then
         DoKeyPress(Msg); // This is needed to trigger an onKeyPressed event when the
-                         // default editor hasn't been created because the field is
-                         // not editable.
+                         // default editor hasn't been created because the data type
+                         // of the selected field is binary or memo.
   end;
 end;
 
@@ -2244,6 +2281,10 @@ begin
     // Goal: Allow to go directly into the InplaceEditor when one types the first
     // characters of a word found in the list.
     // Remark: InplaceEditor is protected in TCustomGrid, published in TJvDBGrid.
+    if (not DataSource.DataSet.CanModify) or ReadOnly
+      or Columns[SelectedIndex].ReadOnly or Columns[SelectedIndex].Field.ReadOnly then
+      Key := #0
+    else
     with Columns[SelectedIndex].Field do
       if (FieldKind = fkLookup) and (Key in CharList) then
       begin
@@ -3006,15 +3047,23 @@ end;
 {$ENDIF COMPILER5}
 
 procedure TJvDBGrid.ChangeBoolean(const FieldValueChange: Shortint);
-// FieldValueChange = 0 -> invert, 1 -> check (true), -1 -> uncheck (false)
+// FieldValueChange = 9 -> invert, 0 -> check (true), -1 -> uncheck (false)
 begin
   if Assigned(FBooleanFieldToEdit) and BooleanEditor then
   begin
     DataLink.Edit;
-    if (FBooleanFieldToEdit.Value = Null) or (FieldValueChange <> 0) then
-      FBooleanFieldToEdit.Value := (FieldValueChange <> -1)
+    if FBooleanFieldToEdit.IsNull or (FieldValueChange <> JvGridBool_INVERT) then
+    begin
+      if FBooleanFieldToEdit.DataType = ftBoolean then
+        FBooleanFieldToEdit.Value := (FieldValueChange = JvGridBool_CHECK)
+      else
+        FBooleanFieldToEdit.Value := FieldValueChange + 1;
+    end
     else
-      FBooleanFieldToEdit.Value := not FBooleanFieldToEdit.Value;
+      if FBooleanFieldToEdit.DataType = ftBoolean then
+        FBooleanFieldToEdit.Value := not FBooleanFieldToEdit.AsBoolean
+      else
+        FBooleanFieldToEdit.Value := 1 - Abs(FBooleanFieldToEdit.AsInteger);
     InvalidateCell(Col, Row);
   end;
   FBooleanFieldToEdit := nil;
@@ -3026,7 +3075,7 @@ begin
   inherited CellClick(Column);
 
   if Assigned(Column.Field) and (FBooleanFieldToEdit = Column.Field) then
-    ChangeBoolean(0); // Invert the field value
+    ChangeBoolean(JvGridBool_INVERT); // Invert the field value
 end;
 
 procedure TJvDBGrid.EditButtonClick;
@@ -3608,10 +3657,7 @@ begin
   // up with an infinite loop of error messages. This check must
   // be done in UseDefaultEditor
 
-  if not DataLink.Edit then
-    Exit;
-
-  if not Control.Enabled then
+  if not (Control.Enabled and DataLink.DataSet.CanModify and DataLink.Edit) then
   begin
     HideCurrentControl;
     Exit;
