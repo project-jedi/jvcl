@@ -7258,6 +7258,7 @@ begin
   // (p3) remove warnings
   OldFontColor := 0;
   OldBrushColor := 0;
+  OldBrushStyle := fsSolid;
   RemFontSize := 0;
   RemFontColor := 0;
   RemBrushColor := 0;
