@@ -376,8 +376,8 @@ var
     begin
       Sheet.Cells[RecNo, ColNo] := Strings[I];
       CellFont.Assign(Font);
-      if Assigned(FOnGetHeaderLineFont) then
-        FOnGetHeaderLineFont(Self, I, Strings[I], CellFont);
+      if Assigned(GetLineFontEvent) then
+        GetLineFontEvent(Self, I, Strings[I], CellFont);
 
       Sheet.Cells[RecNo, ColNo].Font.Size := CellFont.Size;
       Sheet.Cells[RecNo, ColNo].Font.Color := CellFont.Color;
