@@ -105,7 +105,7 @@ type
     var AHint: string; var ATimeOut: Integer) of object;
   TJvCellHintEvent = TJvTitleHintEvent;
   TJvDBColumnResizeEvent = procedure(Grid: TJvDBGrid; ACol: Longint; NewWidth: Integer) of object;
-  TJvDBIsBoolFieldEvent = function(Grid: TJvDBGrid; const Field: TField): Boolean of object;
+  TJvDBIsBoolFieldEvent = function(Grid: TJvDBGrid; Field: TField): Boolean of object;
 
   TJvDBGridLayoutChangeKind = (lcLayoutChanged, lcSizeChanged, lcTopLeftChanged);
   TJvDBGridLayoutChangeEvent = procedure(Grid: TJvDBGrid; Kind: TJvDBGridLayoutChangeKind) of object;
@@ -1706,6 +1706,8 @@ begin
 end;
 
 procedure TJvDBGrid.DoTitleClick(ACol: Longint; AField: TField);
+// This function has a few known bugs, so don't complain about them and use
+// JvDBUltimGrid instead if you're looking for an improved sorting function.
 const
   cIndexName = 'IndexName';
   cIndexDefs = 'IndexDefs';
@@ -3514,7 +3516,7 @@ begin
   AtCursorPosition := True;
   with PHintInfo(Msg.LParam)^ do
   begin
-    HintStr := Hint;
+    HintStr := GetShortHint(Hint);
     ATimeOut := HideTimeOut;
     Self.MouseToCell(CursorPos.X, CursorPos.Y, ACol, ARow);
 
