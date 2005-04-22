@@ -656,9 +656,9 @@ begin
     Exit;
 
   FChanging := True;
+  OldSelStart := SelStart;
   try
     //    OldText := inherited Text;
-    OldSelStart := SelStart;
     try
       if not (csDesigning in ComponentState) and (coCheckOnChange in CheckOptions) then
       begin
@@ -671,15 +671,19 @@ begin
   finally
     FChanging := False;
   end;
+
+  SelStart := OldSelStart;
+
   if FOldValue <> Value then
   begin
+    if Thousands and (Length(Text) mod 4 = 1) and (SelStart > 0) then
+      SelStart := SelStart + 1;
     inherited Change;
     FOldValue := Value;
   end;
   //  if AnsiCompareText(inherited Text, OldText) <> 0 then
   //    inherited Change;
 
-  SelStart := OldSelStart;
 end;
 
 function TJvCustomSpinEdit.CheckDefaultRange(CheckMax: Boolean): Boolean;
