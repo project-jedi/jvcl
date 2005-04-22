@@ -1753,7 +1753,7 @@ begin
     if Pos < 0 then
       inherited Click(btPrev)
     else
-      inherited Click(btPrev)
+      inherited Click(btNext)
   end;
 end;
 
