@@ -590,7 +590,7 @@ begin
     Flags := Flags or DT_NOPREFIX;
   Flags := Flags or EllipsisFlags[TextEllipsis];
   Flags := DrawTextBiDiModeFlags(Flags);
-  if MouseOver then
+  if MouseOver and HotTrack then
     Canvas.Font := HotTrackFont
   else
   begin
