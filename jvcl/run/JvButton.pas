@@ -637,7 +637,6 @@ end;
 
 procedure TJvCustomGraphicButton.Click;
 begin
-  inherited Click;
   if GroupIndex <> 0 then
   begin
     if AllowAllUp then
@@ -645,6 +644,7 @@ begin
     else
       Down := True;
   end;
+  inherited Click;
 end;
 
 procedure TJvCustomGraphicButton.ButtonPressed(Sender: TJvCustomGraphicButton;
