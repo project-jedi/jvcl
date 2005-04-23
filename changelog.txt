@@ -1,5 +1,8 @@
 Changelog for JVCL 3.0
 ======================
+2005-04-23:
+- Fixed Mantis: 2871: TJvCustomGraphicButton.Click calls inherited in the wrong order // ahuser
+  This fix changes the meaning on "button.Down" in the OnClick handler. "Down" is no more inverted.
 2005-03-30:
 - added new components TJvPoweredByJCL and TJvPoweredByJVCL // (rom)
 2005-03-13:
