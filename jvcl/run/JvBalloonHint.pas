@@ -1757,6 +1757,30 @@ begin
   FCurrentPosition := FCtrl.DefaultBalloonPosition;
 end;
 
+procedure BoundRect(var ARect: TRect; const BoundingRect: TRect);
+begin
+  if BoundingRect.Left > ARect.Left then
+  begin
+    ARect.Right := ARect.Right + (BoundingRect.Left - ARect.Left);
+    ARect.Left := BoundingRect.Left;
+  end;
+  if BoundingRect.Top > ARect.Top then
+  begin
+    ARect.Bottom := ARect.Bottom + (BoundingRect.Top - ARect.Top);
+    ARect.Top := BoundingRect.Top;
+  end;
+  if BoundingRect.Right < ARect.Right then
+  begin
+    ARect.Left := ARect.Left - (ARect.Right - BoundingRect.Right);
+    ARect.Right := BoundingRect.Right;
+  end;
+  if BoundingRect.Bottom < ARect.Bottom then
+  begin
+    ARect.Top := ARect.Top - (ARect.Bottom - BoundingRect.Bottom);
+    ARect.Bottom := BoundingRect.Bottom;
+  end;
+end;
+
 procedure TJvBalloonWindowEx.InternalActivateHint(var Rect: TRect;
   const AHint: string);
 const
@@ -1787,18 +1811,11 @@ begin
   else
     ParentWindow := 0;
 
-  UpdateBoundsRect(Rect);
-  UpdateRegion;
-  UpdateBoundsRect(Rect);
+  BoundRect(Rect, Screen.DesktopRect);
 
-  if Rect.Top + Height > Screen.DesktopHeight then
-    Rect.Top := Screen.DesktopHeight - Height;
-  if Rect.Left + Width > Screen.DesktopWidth then
-    Rect.Left := Screen.DesktopWidth - Width;
-  if Rect.Left < Screen.DesktopLeft then
-    Rect.Left := Screen.DesktopLeft;
-  if Rect.Bottom < Screen.DesktopTop then
-    Rect.Bottom := Screen.DesktopTop;
+  with Rect do
+    SetBounds(Left, Top, Right-Left, Bottom-Top);
+  UpdateRegion;
 
   { Set the Z order of the balloon }
   if Assigned(FCtrl.FData.RAnchorWindow) then
