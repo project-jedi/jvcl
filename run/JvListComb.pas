@@ -130,6 +130,7 @@ type
     procedure SetObjects(Index: Integer; const Value: TObject);
   protected
     procedure Update(Item: TCollectionItem); override;
+    procedure FillItems;
   public
     function Add: TJvImageItem; overload;
     function Add(const Text: string): Integer; overload;
@@ -451,6 +452,7 @@ begin
   FGlyph := TBitmap.Create;
 
   inherited Create(Collection);
+  FImageIndex := -1;
   FOwner := Collection as TJvImageItems;
   FListPropertiesUsed := AllListPropertiesUsed;
   FFont := nil;
@@ -517,13 +519,18 @@ var
   S: TStrings;
 begin
   S := GetOwnerStrings;
+  if Assigned(FOwner) and (FOwner.FStrings.Count <> FOwner.Count) then
+    FOwner.FillItems;
   if S <> nil then
   begin
-    while S.Count <= Index do
-      S.Add('');
     if S[Index] <> Value then
     begin
-      S[Index] := Value;
+      S.Delete(Index);
+      if (FOwner.Owner is TJvImageListBox) and (TJvImageListBox(FOwner.Owner).Sorted) then
+        S.AddObject(Value,Self)
+      else
+        S.InsertObject(Index,Value,Self);
+      Index := S.IndexOfObject(Self);
       Change;
     end;
   end;
@@ -534,29 +541,23 @@ var
   S: TStrings;
 begin
   Result := '';
+  if Assigned(FOwner) and (FOwner.FStrings.Count <> FOwner.Count) then
+    FOwner.FillItems;
   S := GetOwnerStrings;
   if S <> nil then
-  begin
-    while S.Count <= Index do
-      S.Add('');
     Result := S[Index];
-  end;
 end;
 
 procedure TJvImageItem.SetIndex(Value: Integer);
 var
-  I: Integer;
+  OldIndex: Integer;
   S: TStrings;
 begin
-  I := Index;
+  OldIndex := Index;
   inherited SetIndex(Value);
   S := GetOwnerStrings;
-  if (S <> nil) and (I >= 0) and (Value >= 0) and (I <> Value) then
-  begin
-    while I >= S.Count do
-      S.Add('');
-    S.Move(I, Value);
-  end;
+  if (S.IndexOfObject(Self) <> Value) then
+    S.Move(OldIndex,Value);
 end;
 
 //=== { TJvImageItems } ======================================================
@@ -570,7 +571,7 @@ function TJvImageItems.Add: TJvImageItem;
 begin
   Result := TJvImageItem(inherited Add);
   while FStrings.Count < Count do
-    FStrings.Add('');
+    Result.Index := FStrings.AddObject('',Result);
 end;
 
 function TJvImageItems.Add(const Text: string): Integer;
@@ -584,7 +585,9 @@ end;
 
 function TJvImageItems.Insert(Index: Integer): TJvImageItem;
 begin
-  Result := TJvImageItem(inherited Insert(Index));;
+  Result := TJvImageItem(inherited Insert(Index));
+  FStrings.InsertObject(Index,'',Result);
+  Result.Index := FStrings.IndexOfObject(Result);
 end;
 
 procedure TJvImageItems.Insert(Index: Integer; const Text: string);
@@ -594,9 +597,8 @@ end;
 
 procedure TJvImageItems.Move(CurIndex, NewIndex: Integer);
 var
-  Item, NewItem: TJvImageItem;
+  Item: TJvImageItem;
   ItemText: string;
-  ItemObject: TObject;
 begin
   if NewIndex < 0 then
     NewIndex := 0;
@@ -607,39 +609,11 @@ begin
   begin
     BeginUpdate;
     try
-      while FStrings.Count < Count do
-        FStrings.Add('');
-      { Save object data }
-      ItemText := FStrings.Strings[CurIndex];
-      ItemObject := FStrings.Objects[CurIndex];
-      Item := TJvImageItem.Create(nil);
-      try
-        Item.FNoTextAssign := True;
-        Item.Assign(Items[CurIndex]);
-        { Delete item }
-        Delete(CurIndex);
-
-        { Add new item on NewIndex }
-        if NewIndex < Count then
-          NewItem := Insert(NewIndex)
-        else
-          NewItem := Add;
-        { restore data except property Text which is linked to FStrings[] }
-        NewItem.FNoTextAssign := True;
-        try
-          NewItem.Assign(Item);
-        finally
-          NewItem.FNoTextAssign := False;
-        end;
-
-        { restore property Text } 
-        NewItem.Text := ItemText;
-        while FStrings.Count < Count do
-          FStrings.Add('');
-        FStrings.Objects[NewIndex] := ItemObject;
-      finally
-        Item.Free;
-      end;
+      Item := TJvImageItem(FStrings.Objects[CurIndex]);
+      ItemText := Item.Text;
+      FStrings.Delete(CurIndex);
+      FStrings.InsertObject(NewIndex,ItemText,Item);
+      Item.Index := FStrings.IndexOfObject(Item);
     finally
       EndUpdate;
     end;
@@ -670,8 +644,6 @@ begin
       Clear;
       for I := 0 to TStrings(Source).Count - 1 do
         Add.Text := TStrings(Source)[I];
-      if FStrings <> nil then
-        FStrings.Assign(Source);
     finally
       EndUpdate;
     end;
@@ -682,7 +654,7 @@ end;
 
 function TJvImageItems.GetItems(Index: Integer): TJvImageItem;
 begin
-  Result := TJvImageItem(inherited Items[Index])
+  Result := TJvImageItem(inherited Items[Index]);
 end;
 
 procedure TJvImageItems.SetItems(Index: Integer; const Value: TJvImageItem);
@@ -704,6 +676,17 @@ begin
   else
   if W is TWinControl then
     TWinControl(W).Invalidate;
+end;
+
+procedure TJvImageItems.FillItems;
+var
+  Index: Integer;
+begin
+  for Index := 0 to Count-1 do
+    if FStrings.IndexOfObject(Items[Index]) = -1 then
+      FStrings.InsertObject(Index,'',Items[Index]);
+  for Index := 0 to FStrings.Count-1 do
+    TJvImageItem(FStrings.Objects[Index]).Index := Index;
 end;
 
 //=== { TJvImageComboBox } ===================================================
@@ -1252,6 +1235,7 @@ end;
 procedure TJvImageListBox.CreateWnd;
 begin
   inherited CreateWnd;
+  Items.FillItems;
   SetBkMode(FCanvas.Handle, TRANSPARENT);
 end;
 {$ENDIF VCL}
@@ -1822,6 +1806,7 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
+
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 
