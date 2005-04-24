@@ -94,7 +94,7 @@ uses
   QWindows, 
   SysUtils, Classes, TypInfo,
   {$IFDEF UNIX}
-  JvQQJCLUtils,
+  JvQJCLUtils,
   {$ENDIF UNIX}
   JvQComponent, JvQTypes;
 

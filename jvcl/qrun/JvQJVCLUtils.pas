@@ -122,7 +122,9 @@ function CreateDisabledBitmap_NewStyle(FOriginal: TBitmap; BackColor: TColor):
 function CreateDisabledBitmapEx(FOriginal: TBitmap; OutlineColor, BackColor,
   HighLightColor, ShadowColor: TColor; DrawHighlight: Boolean): TBitmap;
 function CreateDisabledBitmap(FOriginal: TBitmap; OutlineColor: TColor):
-  TBitmap;
+  TBitmap; overload;
+function CreateDisabledBitmap(FOriginal: TBitmap): TBitmap; overload;
+
 function CreateMonoBitmap(FOriginal: TBitmap; BackColor: TColor): TBitmap;
 procedure AssignBitmapCell(Source: TGraphic; Dest: TBitmap; Cols, Rows,
   Index: Integer);
@@ -594,14 +596,14 @@ uses
 {$R ../Resources/JvConsts.res}
 {$ENDIF UNIX}
 
+{$IFDEF MSWINDOWS}
 const
-  {$IFDEF MSWINDOWS}
   RC_ControlRegistry = 'Control Panel\Desktop';
   RC_WallPaperStyle = 'WallpaperStyle';
   RC_WallpaperRegistry = 'Wallpaper';
   RC_TileWallpaper = 'TileWallpaper';
   RC_RunCpl = 'rundll32.exe shell32,Control_RunDLL ';
-  {$ENDIF MSWINDOWS}
+{$ENDIF MSWINDOWS}
 
 function GetAppHandle: HWND;
 begin  
@@ -1382,7 +1384,7 @@ var
   MonoBmp: TBitmap;
 begin
   Result := TBitmap.Create;
-  MonoBmp := CreateMonoBitmap(FOriginal);
+  MonoBmp := CreateMonoBitmap(FOriginal, clDefault);
   try
     IconSet := QIconSet_create(MonoBmp.Handle, QIconSetSize_Small);
     try
