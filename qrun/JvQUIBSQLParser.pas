@@ -39,7 +39,7 @@
 unit JvQUIBSQLParser;
 
 {$I jvcl.inc}
-{$I JvUIB.inc}
+{$I jvuib.inc}
 
 interface
 
