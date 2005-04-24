@@ -169,7 +169,7 @@ uses
   Registry,
   {$ENDIF MSWINDOWS} 
   {$IFDEF UNIX}
-  JvQQRegistryIniFile,
+  JvQRegistryIniFile,
   {$ENDIF UNIX}
   JvQTypes, JvQStringsForm, JvQDsgnConsts, JvQConsts;
 
