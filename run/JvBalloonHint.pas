@@ -342,6 +342,21 @@ begin
   SystemParametersInfo(SPI_GETWORKAREA, 0, @Result, 0);
 end;
 
+function DesktopRect: TRect;
+{$IFNDEF COMPILER7_UP}
+const
+  SM_XVIRTUALSCREEN = 76;
+  SM_YVIRTUALSCREEN = 77;
+  SM_CXVIRTUALSCREEN = 78;
+  SM_CYVIRTUALSCREEN = 79;
+{$ENDIF !COMPILER7_UP}
+begin
+  Result := Rect(GetSystemMetrics(SM_YVIRTUALSCREEN),
+                 GetSystemMetrics(SM_XVIRTUALSCREEN),
+                 GetSystemMetrics(SM_CYVIRTUALSCREEN),
+                 GetSystemMetrics(SM_CXVIRTUALSCREEN));
+end;
+
 {$IFNDEF COMPILER6_UP}
 
 const
@@ -1811,7 +1826,7 @@ begin
   else
     ParentWindow := 0;
 
-  BoundRect(Rect, Screen.DesktopRect);
+  BoundRect(Rect, DesktopRect);
 
   with Rect do
     SetBounds(Left, Top, Right-Left, Bottom-Top);
