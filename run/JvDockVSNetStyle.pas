@@ -503,6 +503,7 @@ procedure HideAllPopupPanel(ExcludeChannel: TJvDockVSChannel);
 { Disables auto-hide for ADockWindow. If ADockWindow is not auto-hidden then
   the procedures works the same as JvDockControlForm.ShowDockForm }
 procedure UnAutoHideDockForm(ADockWindow: TWinControl);
+function RetrieveChannel(HostDockSite: TWinControl): TJvDockVSChannel;
 
 var
   DefaultVSChannelClass: TJvDockVSChannelClass = nil;
@@ -1680,7 +1681,7 @@ begin
   PaneCount := 0;
   for I := 0 to BlockCount - 1 do
     for J := 0 to Block[I].VSPaneCount - 1 do
-      if Block[I].VSPane[J].FVisible = True then
+      if Block[I].VSPane[J].FVisible then
         Inc(PaneCount);
 
   Visible := PaneCount > 0;
@@ -2203,6 +2204,8 @@ begin
     FTimer.Interval := 100; // !! high interval
     FTimer.OnTimer := Self.Timer;
     FTimer.Enabled := True;
+
+    FCurrentTimer := ChannelOption.HideHoldTime;
   end;
 end;
 
@@ -2408,16 +2411,16 @@ begin
     Exit;
 
   Pane := Channel.FindPane(ADockClient.ParentForm);
-  if Assigned(Pane) then
+  if Assigned(Pane) and (Pane.FDockForm = ADockClient.ParentForm) then
   begin
     Pane.FVisible := AVisible;
     ResetActiveControl;
     if ADockClient.ParentForm.Parent is TJvDockVSNETTabSheet then
       TJvDockVSNETTabSheet(ADockClient.ParentForm.Parent).OldVisible := AVisible;
-  end;
 
-  Channel.ResetPosition;
-  Channel.Invalidate;
+    Channel.ResetPosition;
+    Channel.Invalidate;
+  end;
 end;
 
 procedure TJvDockVSNetStyle.ShowDockForm(ADockClient: TJvDockClient);
