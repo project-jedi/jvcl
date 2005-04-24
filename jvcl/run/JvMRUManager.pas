@@ -67,6 +67,8 @@ type
     FMaxSize: Integer;
     FMode: TRecentMode;
     procedure SetMaxSize(Value: Integer);
+  protected
+    procedure SetTextStr(const Value: String); override;
   public
     constructor Create;
     function Add(const S: string): Integer; override;
@@ -679,6 +681,21 @@ begin
   inherited Create;
   FMaxSize := 10;
   FMode := rmInsert;
+end;
+
+procedure TJvRecentStrings.SetTextStr(const Value: String);
+var
+  LastMode: TRecentMode;
+begin
+  { Temporary change the FMode to rmAppend so the lines in Value will be added
+    in the correct ordern. }
+  LastMode := FMode;
+  try
+    FMode := rmAppend;
+    inherited SetTextStr(Value);
+  finally
+    FMode := LastMode;
+  end;
 end;
 
 procedure TJvRecentStrings.SetMaxSize(Value: Integer);
