@@ -1190,6 +1190,7 @@ var
   J: Integer;
   ADockServer: TJvDockServer;
   ARect: TRect;
+  Channel: TJvDockVSChannel;
 begin
   if DockForm is TJvDockableForm then
   begin
@@ -1233,9 +1234,10 @@ begin
       else
         ARect := DockForm.BoundsRect;
 
-      if DockForm.HostDockSite is TJvDockVSPopupPanel then
+      Channel := RetrieveChannel(DockForm.HostDockSite);
+      if Assigned(Channel) then
       begin
-        TJvDockVSPopupPanel(DockForm.HostDockSite).VSNETDockPanel.VSChannel.RemoveDockControl(TWinControl(DockForm));
+        Channel.RemoveDockControl(TWinControl(DockForm));
         DockForm.Dock(nil, Bounds(DockForm.Left, DockForm.Top, DockForm.UndockWidth, DockForm.UndockHeight));
       end
       else
@@ -1343,6 +1345,9 @@ var
   begin
     if (DockWindow <> nil) and (DockWindow.HostDockSite <> nil) then
     begin
+      // work-around
+      if Assigned(RetrieveChannel(DockWindow.HostDockSite)) then Exit;
+
       Host := DockWindow.HostDockSite;
       if Host.VisibleDockClientCount = 0 then
         if Host is TJvDockPanel then
@@ -1361,18 +1366,12 @@ var
   end;
 
   procedure HidePopupPanel(Client: TWinControl);
+  var
+    Channel: TJvDockVSChannel;
   begin
-    if Client.HostDockSite is TJvDockVSPopupPanel then
-      TJvDockVSPopupPanel(Client.HostDockSite).VSChannel.HidePopupPanel(Client)
-    else
-    if (Client.HostDockSite <> nil) and (Client.HostDockSite.Parent <> nil) then
-    begin
-      if (Client.HostDockSite.Parent.HostDockSite is TJvDockVSPopupPanel) then
-        TJvDockVSPopupPanel(Client.HostDockSite.Parent.HostDockSite).VSChannel.HidePopupPanel(Client)
-      else
-      if (Client.HostDockSite.Parent.HostDockSite is TJvDockPanel) then
-        Client.HostDockSite.Parent.HostDockSite.Invalidate
-    end;
+    Channel := RetrieveChannel(Client.HostDockSite);
+    if Assigned(Channel) then
+      Channel.HidePopupPanel(Client);
   end;
 
 begin
@@ -1484,7 +1483,7 @@ var
 begin
   AppStorage.BeginUpdate;
   try
-    HideAllPopupPanel(nil);
+    HideAllPopupPanel(nil); {This is in JvDockVSNetStyle.pas }
 
     Form := TForm.CreateNew(nil);
     // What does this form do, and why is it created only during the loading of the app storage?
@@ -2038,18 +2037,12 @@ var
   end;
 
   procedure ShowPopupPanel(Client: TWinControl);
+  var
+    Channel: TJvDockVSChannel;
   begin
-    if Client.HostDockSite is TJvDockVSPopupPanel then
-      TJvDockVSPopupPanel(Client.HostDockSite).VSChannel.PopupDockForm(Client)
-    else
-    if (Client.HostDockSite <> nil) and (Client.HostDockSite.Parent <> nil) then
-    begin
-      if (Client.HostDockSite.Parent.HostDockSite is TJvDockVSPopupPanel) then
-        TJvDockVSPopupPanel(Client.HostDockSite.Parent.HostDockSite).VSChannel.PopupDockForm(Client)
-      else
-      if Client.HostDockSite.Parent.HostDockSite is TJvDockPanel then
-        Client.HostDockSite.Parent.HostDockSite.Invalidate;
-    end;
+    Channel := RetrieveChannel(Client.HostDockSite);
+    if Assigned(Channel) then
+      Channel.PopupDockForm(Client);
   end;
 
 begin
