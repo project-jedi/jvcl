@@ -25,6 +25,7 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 -----------------------------------------------------------------------------
+
 INFO: Draw events are triggered in this order:
 
 - Title cells:
@@ -36,16 +37,25 @@ OnGetCellParams
 OnDrawColumnCell
 
 OnGetCellProps and OnDrawDataCell are obsolete.
+
 -----------------------------------------------------------------------------
 
-Known Issues:
+KNOWN ISSUES:
+
 - THE AlwaysShowEditor OPTION IS NOT COMPATIBLE WITH THE CUSTOM INPLACE EDIT CONTROLS
   Custom inplace edit controls are deactivated when this option is set to True.
 
-2004/07/08 - WPostma merged changes by Frédéric Leneuf-Magaud and ahuser.
------------------------------------------------------------------------------}
+- THE ColLines OPTION DOES NOT WORK WELL WITH HIDDEN COLUMNS - BUG SOURCE: DBGRID.PAS
+  If a column is followed by hidden columns and ColLines is set to False, the display size
+  of the column is smaller than its width. This is easy to notice when you give the focus
+  to the cell (the focus rect is truncated) or when you use the AutoSize feature (there's
+  a gap after the last column). This bug comes from DBGrid.pas.
+
+-----------------------------------------------------------------------------
+2004/07/08 - WPostma merged changes by Frédéric Leneuf-Magaud and ahuser.}
+
 // $Id$
- 
+
 unit JvDBGrid;
 
 {$I jvcl.inc}
@@ -474,16 +484,16 @@ type
     property RowsHeight: Integer read FRowsHeight write SetRowsHeight;
     { TitleRowHeight: title row height (cannot be resized with the mouse) }
     property TitleRowHeight: Integer read FTitleRowHeight write SetTitleRowHeight;
-    { WordWrap: are memo and string fields displayed on many lines ? }
+    { WordWrap: if true, titles, memo and string fields are displayed on several lines }
     property WordWrap: Boolean read FWordWrap write SetWordWrap default False;
-    { ShowMemos: if true, Memo fields are shown as text }
+    { ShowMemos: if true, memo fields are shown as text }
     property ShowMemos: Boolean read FShowMemos write SetShowMemos default True;
     { BooleanEditor: if true, a checkbox is used to edit boolean fields }
     property BooleanEditor: Boolean read FBooleanEditor write SetBooleanEditor default True;
-    { OnColumnResized: event triggered each time a column is resized with the mouse }
-    property OnColumnResized: TJvDBColumnResizeEvent read FOnColumnResized write FOnColumnResized;
     { IsBooleanField: event used to treat integer fields as boolean fields }
     property IsBooleanField: TJvDBIsBoolFieldEvent read FIsBoolField write FIsBoolField;
+    { OnColumnResized: event triggered each time a column is resized with the mouse }
+    property OnColumnResized: TJvDBColumnResizeEvent read FOnColumnResized write FOnColumnResized;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -2283,10 +2293,8 @@ begin
     // Goal: Allow to go directly into the InplaceEditor when one types the first
     // characters of a word found in the list.
     // Remark: InplaceEditor is protected in TCustomGrid, published in TJvDBGrid.
-    if (not DataSource.DataSet.CanModify) or ReadOnly
-      or Columns[SelectedIndex].ReadOnly or Columns[SelectedIndex].Field.ReadOnly then
-      Key := #0
-    else
+    if DataSource.DataSet.CanModify and not (ReadOnly
+      or Columns[SelectedIndex].ReadOnly or Columns[SelectedIndex].Field.ReadOnly) then
     with Columns[SelectedIndex].Field do
       if (FieldKind = fkLookup) and (Key in CharList) then
       begin
@@ -3184,77 +3192,78 @@ procedure TJvDBGrid.DoAutoSizeColumns;
 // - if (min. width * nb. of columns) > total width --> result too large
 // - if (max. width * nb. of columns) < total width --> result too small
 var
-  TotalWidth, OrigWidth: Integer;
-  I: Integer;
+  ColLineWidth, AvailableWidth, TotalColWidth, AWidth: Integer;
+  I, ALeftCol, LastColIndex: Integer;
   ScaleFactor: Double;
-  AWidth, AUsedWidth, ALeftCol: Integer;
 begin
   if not AutoSizeColumns or FInAutoSize or (Columns.Count = 0) or (FGridState = gsColSizing) then
     Exit;
   FInAutoSize := True;
   ALeftCol := LeftCol;
   try
-    // get useable width
-    TotalWidth := ClientWidth - (Ord(dgIndicator in Options) * IndicatorWidth)
-      - (Ord(dgColLines in Options) * Columns.Count * GridLineWidth);
-    OrigWidth := 0;
-    // get width currently occupied by columns
+    // Get useable width
+    ColLineWidth := Ord(dgColLines in Options) * GridLineWidth;
+    AvailableWidth := ClientWidth;
+    if (dgIndicator in Options) then
+      Dec(AvailableWidth, IndicatorWidth + ColLineWidth);
+    TotalColWidth := 0;
     if FixedCols = 0 then
       BeginLayout;
     try
-      // autosize all columns proportionally
+      // Autosize all columns proportionally
       if AutoSizeColumnIndex = JvGridResizeProportionally then
       begin
+        // Get width currently occupied by visible columns
         for I := 0 to Columns.Count - 1 do
           if Columns[I].Visible then
-            Inc(OrigWidth, Columns[I].Width);
-        if OrigWidth = 0 then
-          OrigWidth := 1;
-        // calculate the relationship between what's available and what's in use
-        ScaleFactor := TotalWidth / OrigWidth;
+          begin
+            Inc(TotalColWidth, Columns[I].Width);
+            Dec(AvailableWidth, ColLineWidth);
+          end;
+        if TotalColWidth = 0 then
+          TotalColWidth := 1;
+        // Calculate the relationship between what's available and what's in use
+        ScaleFactor := AvailableWidth / TotalColWidth;
         if ScaleFactor = 1.0 then
-          Exit; // no need to continue - resizing won't change anything
-        AUsedWidth := 0;
+          Exit; // No need to continue - resizing won't change anything
+        // Adjust the columns width
         for I := 0 to Columns.Count - 1 do
           if Columns[I].Visible then
           begin
             if I = LastVisibleColumn then
-              Columns[I].Width := TotalWidth - AUsedWidth
+              Columns[I].Width := AvailableWidth
             else
             begin
               AWidth := Round(ScaleFactor * Columns[I].Width);
               if AWidth < 1 then
                 AWidth := 1;
               Columns[I].Width := AWidth;
-              Inc(AUsedWidth, AWidth);
+              Dec(AvailableWidth, AWidth);
             end;
           end;
       end
       else
-      // autosize the last visible column
+      // Autosize the last visible column
       if AutoSizeColumnIndex = JvGridResizeLastVisibleCol then
       begin
-        // reuse AUsedWidth as the actual resize column index
-        AUsedWidth := LastVisibleColumn;
-        if AUsedWidth < 0 then
+        LastColIndex := LastVisibleColumn;
+        if LastColIndex < 0 then
           Exit;
-        OrigWidth := 0;
         for I := 0 to Columns.Count - 1 do
-          if Columns[I].Visible and (I <> AUsedWidth) then
-            Inc(OrigWidth, Columns[I].Width);
-        AWidth := TotalWidth - OrigWidth;
+          if Columns[I].Visible and (I < LastColIndex) then
+            Inc(TotalColWidth, Columns[I].Width + ColLineWidth);
+        AWidth := AvailableWidth - TotalColWidth - ColLineWidth;
         if AWidth > 0 then
-          Columns[AUsedWidth].Width := AWidth;
+          Columns[LastColIndex].Width := AWidth;
       end
       else
-      // only auto size one column
+      // Only autosize one column
       if AutoSizeColumnIndex <= LastVisibleColumn then
       begin
-        OrigWidth := 0;
         for I := 0 to Columns.Count - 1 do
           if Columns[I].Visible and (I <> AutoSizeColumnIndex) then
-            Inc(OrigWidth, Columns[I].Width);
-        AWidth := TotalWidth - OrigWidth;
+            Inc(TotalColWidth, Columns[I].Width + ColLineWidth);
+        AWidth := AvailableWidth - TotalColWidth - ColLineWidth;
         if AWidth > 0 then
           Columns[AutoSizeColumnIndex].Width := AWidth;
       end;
