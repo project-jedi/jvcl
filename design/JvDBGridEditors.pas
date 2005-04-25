@@ -63,9 +63,10 @@ begin
   if TJvDBGrid(GetComponent(0)).DataSource.DataSet = nil then
     raise EJVCLException.CreateRes(@RsEJvDBGridDataSetNeeded);
   if not TJvDBGrid(GetComponent(0)).DataSource.DataSet.Active then
-  begin
+  try
     TJvDBGrid(GetComponent(0)).DataSource.DataSet.Open;
     CloseDataset := True;
+  except
   end;
 
   Dlg := TfrmJvDBGridControlsEditor.Create(Application);
