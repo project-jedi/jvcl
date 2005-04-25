@@ -3,7 +3,7 @@ The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
 http://www.mozilla.org/MPL/MPL-1.1.html
-
+                        
 Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
@@ -193,12 +193,12 @@ type
     FItems: TList;
     FValidationSummary: IJvValidationSummary;
     FErrorIndicator: IJvErrorIndicator;
-    {$IFDEF COMPILER5}
+    {$IFNDEF COMPILER6_UP}
     FValidationSummaryComponent: TComponent;
     FErrorIndicatorComponent: TComponent;
     procedure SetValidationSummaryComponent(Value: TComponent);
     procedure SetErrorIndicatorComponent(Value: TComponent);
-    {$ENDIF COMPILER5}
+    {$ENDIF COMPILER6_UP}
     procedure SetValidationSummary(const Value: IJvValidationSummary);
     procedure SetErrorIndicator(const Value: IJvErrorIndicator);
     function GetCount: Integer;
@@ -262,7 +262,6 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-
 implementation
 
 uses
@@ -316,7 +315,7 @@ begin
     Result := Comp.ClassName;
 end;
 
-{$IFDEF COMPILER5}
+{$IFNDEF COMPILER6_UP}
 
 // these types and functions were introduced in D6
 type
@@ -355,7 +354,7 @@ begin
     Result := vrGreaterThan;
 end;
 
-{$ENDIF COMPILER5}
+{$ENDIF COMPILER6_UP}
 
 //=== { TJvBaseValidator } ===================================================
 
@@ -723,11 +722,13 @@ begin
               FValidationSummary.AddError(Items[I].ErrorMessage);
             if ErrorIndicator <> nil then
               FErrorIndicator.SetError(Items[I].ControlToValidate, Items[I].ErrorMessage);
-          end;
+          end;                   
           Result := False;
           if not DoValidateFailed(Items[I]) then
             Exit;
-        end;
+        end
+        else if (Items[I].ControlToValidate <> nil) and (FErrorIndicator <> nil) then
+          FErrorIndicator.SetError(Items[I].ControlToValidate, ''); // clear error indicator
       end;
     end;
   finally
@@ -776,7 +777,7 @@ begin
   {$ENDIF COMPILER6_UP}
 end;
 
-{$IFDEF COMPILER5}
+{$IFNDEF COMPILER6_UP}
 
 procedure TJvValidators.SetValidationSummaryComponent(Value: TComponent);
 var
@@ -826,7 +827,7 @@ begin
   end;
 end;
 
-{$ENDIF COMPILER5}
+{$ENDIF COMPILER6_UP}
 
 procedure TJvValidators.Insert(AValidator: TJvBaseValidator);
 begin
@@ -950,15 +951,18 @@ begin
   TJvBaseValidator.RegisterBaseValidator('Controls Compare Validator', TJvControlsCompareValidator);
 end;
 
+
 initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
+
   // (p3) do NOT touch! This is required to make the registration work!!!
   RegisterBaseValidators;
 
 finalization
   FreeAndNil(GlobalValidatorsList);
+
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
