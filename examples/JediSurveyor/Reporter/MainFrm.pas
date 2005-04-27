@@ -183,7 +183,7 @@ const
   cDelimLength = 60;
   cReportFileExt = '.jsr';
   cPrintReportExt = '.htm';
-  cPrintTemplate = 'SurveyTemplate.htt';
+  cPrintTemplate = 'Data\SurveyTemplate.htt';
 
 function MakeString(Ch: char; Count: integer): string;
 begin
