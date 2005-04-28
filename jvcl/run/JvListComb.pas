@@ -526,7 +526,8 @@ begin
     if S[Index] <> Value then
     begin
       S.Delete(Index);
-      if (FOwner.Owner is TJvImageListBox) and (TJvImageListBox(FOwner.Owner).Sorted) then
+      // Use FOwner.GetOwner to keep D5/C5 compatibility
+      if (FOwner.GetOwner is TJvImageListBox) and (TJvImageListBox(FOwner.GetOwner).Sorted) then
         S.AddObject(Value,Self)
       else
         S.InsertObject(Index,Value,Self);
