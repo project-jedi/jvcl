@@ -39,7 +39,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
   ImgList, ActnList,
-  JvButton, JvLabel, JvComponent, JvConsts;
+  JvButton, JvLabel, JvComponent, JvConsts, JvExForms;
 
 const
   cDefaultAlertFormWidth = 329;
@@ -80,7 +80,7 @@ type
     property OnClick;
   end;
 
-  TJvFormDesktopAlert = class(TJvForm)
+  TJvFormDesktopAlert = class(TJvExCustomForm)
   private
     FOnMouseLeave: TNotifyEvent;
     FOnMouseEnter: TNotifyEvent;
@@ -130,6 +130,10 @@ type
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnUserMove: TNotifyEvent read FOnUserMove write FOnUserMove;
+    property ParentFont;
+    property PopupMenu;
+    property OnClose;
+    property OnShow;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -280,6 +284,7 @@ begin
   tbDropDown.OnDropDownMenu := DoDropDownMenu;
   tbDropDown.OnDropDownClose := DoDropDownClose;
 end;
+
 
 procedure TJvFormDesktopAlert.FormPaint(Sender: TObject);
 begin
@@ -655,7 +660,7 @@ end;
 
 procedure TJvFormDesktopAlert.JvDeskTopAlertAutoFree(var Msg: TMessage);
 begin
-  // WPAram is us, LParam is the TJvDesktopAlert
+  // WParam is us, LParam is the TJvDesktopAlert
   if Msg.WParam = WPARAM(Self) then
   begin
     Release;
