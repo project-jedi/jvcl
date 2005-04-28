@@ -57,6 +57,7 @@ type
   TJvSimpleXMLElemCData = class;
   TJvSimpleXMLElemText = class;
   TJvSimpleXMLElemHeader = class;
+  TJvSimpleXMLElemSheet = class;
   TJvOnSimpleXMLParsed = procedure(Sender: TObject; Name: string) of object;
   TJvOnValueParsed = procedure(Sender: TObject; Name, Value: string) of object;
   TJvOnSimpleProgress = procedure(Sender: TObject; const Position, Total: Integer) of object;
@@ -171,6 +172,7 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
+    function AddStyleSheet(AType, AHRef: string): TJvSimpleXMLElemSheet;
     function LoadFromStream(const Stream: TStream; Parent: TJvSimpleXML = nil): string;
     procedure SaveToStream(const Stream: TStream; Parent: TJvSimpleXML = nil);
     property Item[const Index: Integer]: TJvSimpleXMLElem read GetItem; default;
@@ -276,7 +278,7 @@ type
     property SimpleXML: TJvSimpleXML read GetSimpleXML;
     property Container: TJvSimpleXMLElems read FContainer write FContainer;
   published
-    function FullName:string;
+    function FullName: string;virtual;
     property Name: string read FName write SetName;
     property Parent: TJvSimpleXMLElem read FParent write FParent;
     property NameSpace: string read FNameSpace write FNameSpace;
@@ -493,6 +495,7 @@ begin
 end;
 
 {$IFDEF COMPILER6_UP}
+
 function XMLVariant: TXMLVariant;
 begin
   if not Assigned(GlobalXMLVariant) then
@@ -3299,21 +3302,27 @@ function TJvSimpleXMLElemsProlog.FindHeader: TJvSimpleXMLElem;
 var
   I: Integer;
 begin
-  if Count = 0 then
-  begin
-    Result := TJvSimpleXMLElemHeader.Create(nil);
-    FElems.AddObject('', Result);
-  end
-  else
-  begin
-    for I := 0 to Count - 1 do
-      if Item[I] is TJvSimpleXMLElemHeader then
-      begin
-        Result := Item[I];
-        Exit;
-      end;
-    Result := nil;
-  end;
+  for I := 0 to Count - 1 do
+    if Item[I] is TJvSimpleXMLElemHeader then
+    begin
+      Result := Item[I];
+      Exit;
+    end;
+  // (p3) if we get here, an xml header was not found
+  Result := TJvSimpleXMLElemHeader.Create(nil);
+  Result.Name := 'xml';
+  FElems.AddObject('', Result);
+end;
+
+function TJvSimpleXMLElemsProlog.AddStyleSheet(AType, AHRef: string): TJvSimpleXMLElemSheet;
+begin
+  // make sure there is an xml header
+  FindHeader;
+  Result := TJvSimpleXMLElemSheet.Create(nil);
+  Result.Name := 'xml-stylesheet';
+  Result.Properties.Add('type',AType);
+  Result.Properties.Add('href',AHRef);
+  FElems.AddObject('xml-stylesheet', Result);
 end;
 
 initialization
