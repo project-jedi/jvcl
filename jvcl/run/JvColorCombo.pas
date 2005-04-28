@@ -207,6 +207,8 @@ type
     FShowMRU: Boolean;
     FMaxMRUCount, FUpdateCount: Integer;
     FOnDrawPreviewEvent: TJvDrawPreviewEvent;
+    FFontSizes:TStrings;
+    FEnumeratorDC:HDC;
     procedure SetUseImages(Value: Boolean);
     procedure SetDevice(Value: TFontDialogDevice);
     procedure SetOptions(Value: TJvFontComboOptions);
@@ -222,6 +224,7 @@ type
     procedure SetDropDownWidth(const Value: Integer);
     procedure SetShowMRU(const Value: Boolean);
     procedure SetMaxMRUCount(const Value: Integer);
+    function GetFontSizes: TStrings;
   protected
     procedure FontChanged; override;
     procedure Loaded; override;
@@ -248,6 +251,8 @@ type
     function FontSubstitute(const AFontName: string): string;
     property Text;
     property MRUCount: Integer read FMRUCount;
+    // returns the supported font sizes or a set of default sizes for TrueType fonts
+    property FontSizes:TStrings read GetFontSizes;
   published
     property Anchors;
     property AutoComplete default False;
@@ -906,6 +911,7 @@ begin
   FTrueTypeBmp.Free;
   FDeviceBmp.Free;
   FFixBmp.Free;
+  FFontSizes.Free;
   inherited Destroy;
 end;
 
@@ -1157,6 +1163,7 @@ begin
   HandleNeeded;
   if HandleAllocated then
   begin
+    FreeAndNil(FFontSizes);
     S := FontName;
     GetFonts;
     if S <> '' then
@@ -1183,6 +1190,7 @@ begin
       ItemIndex := Items.IndexOf(FontSubstitute(Value));
     if (ItemIndex = -1) and (foDisableVerify in Options) then // add if allowed to
       ItemIndex := Items.AddObject(Value, TObject(TRUETYPE_FONTTYPE));
+    FreeAndNil(FFontSizes);
   end;
 end;
 
@@ -1365,7 +1373,75 @@ begin
     FontName := Font.Name;
 end;
 
+function EnumFontSizeProc(var LogFont: TLogFont; var TextMetric: TTextMetric;
+  FontType: Integer; FontCombo: TJvFontComboBox): Integer; stdcall;
+var tmp:integer;
+begin
+  if FontType and TRUETYPE_FONTTYPE <> TRUETYPE_FONTTYPE then // TTF's don't have size info
+  begin
+    tmp := round(((TextMetric.tmHeight - TextMetric.tmInternalLeading) * 72) / GetDeviceCaps(FontCombo.FEnumeratorDC, LOGPIXELSY));
+    FontCombo.FFontSizes.AddObject(IntToStr(tmp), TObject(tmp));
+    Result := 1;
+  end
+  else
+    Result := 0;
+end;
+
+function IntegerSort(List: TStringList; Index1, Index2: Integer): Integer;
+begin
+  Result := StrToIntDef(List[Index1], 0) - StrToIntDef(List[Index2], 0);
+end;
+
+function TJvFontComboBox.GetFontSizes: TStrings;
+begin
+  if FFontSizes = nil then
+    FFontSizes := TStringlist.Create;
+  FFontSizes.Clear;
+  TStringlist(FFontSizes).Sorted := true;
+
+  FEnumeratorDC := GetDC(HWND_DESKTOP);
+  try
+    if FDevice in [fdScreen, fdBoth] then
+      EnumFonts(FEnumeratorDC, PChar(FontName), @EnumFontSizeProc, Pointer(Self));
+  finally
+    ReleaseDC(HWND_DESKTOP, FEnumeratorDC);
+  end;
+  if FDevice in [fdPrinter, fdBoth] then
+  try
+    FEnumeratorDC := Printer.Handle;
+    EnumFonts(FEnumeratorDC,  PChar(FontName), @EnumFontSizeProc, Pointer(Self));
+  except
+    // ignore exceptions (printer may not be installed)
+  end;
+
+  TStringlist(FFontSizes).Sorted := false;
+  if FFontSizes.Count > 1 then
+    TStringlist(FFontSizes).CustomSort(IntegerSort)
+  else // true type font or font with only one size, so fake it:
+  begin
+    FFontSizes.Clear;
+    FFontSizes.AddObject('8', TObject(8));
+    FFontSizes.AddObject('9', TObject(9));
+    FFontSizes.AddObject('10', TObject(10));
+    FFontSizes.AddObject('11', TObject(11));
+    FFontSizes.AddObject('12', TObject(12));
+    FFontSizes.AddObject('14', TObject(14));
+    FFontSizes.AddObject('16', TObject(16));
+    FFontSizes.AddObject('18', TObject(18));
+    FFontSizes.AddObject('20', TObject(20));
+    FFontSizes.AddObject('22', TObject(22));
+    FFontSizes.AddObject('24', TObject(24));
+    FFontSizes.AddObject('26', TObject(26));
+    FFontSizes.AddObject('28', TObject(28));
+    FFontSizes.AddObject('36', TObject(36));
+    FFontSizes.AddObject('48', TObject(48));
+    FFontSizes.AddObject('72', TObject(72));
+  end;
+  Result := FFontSizes;
+end;
+
 {$IFDEF UNITVERSIONING}
+
 
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
