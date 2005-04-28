@@ -259,8 +259,8 @@ type
   protected
     procedure UpdatePositions;
   public
-    procedure Add(AForm: TForm);
-    procedure Remove(AForm: TForm);
+    procedure Add(AForm: TCustomForm);
+    procedure Remove(AForm: TCustomForm);
 
     property Items[Index: Integer]: TJvFormDesktopAlert read GetItems;
     property Count: Integer read GetCount;
@@ -726,7 +726,7 @@ var
   I, X, Y: Integer;
   FActiveWindow, FActiveFocus: HWND;
 
-  procedure CenterForm(AForm: TForm; ARect: TRect);
+  procedure CenterForm(AForm: TCustomForm; ARect: TRect);
   begin
     AForm.Top := ARect.Top + ((ARect.Bottom - ARect.Top) - AForm.Height) div 2;
     AForm.Left := ARect.Left + ((ARect.Right - ARect.Left) - AForm.Width) div 2;
@@ -1142,7 +1142,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvDesktopAlertStack.Add(AForm: TForm);
+procedure TJvDesktopAlertStack.Add(AForm: TCustomForm);
 begin
   FItems.Add(AForm);
   UpdatePositions;
@@ -1159,7 +1159,7 @@ begin
   Assert((Result = nil) or (Result is TJvFormDesktopAlert));
 end;
 
-procedure TJvDesktopAlertStack.Remove(AForm: TForm);
+procedure TJvDesktopAlertStack.Remove(AForm: TCustomForm);
 var
   Index, PrevNilSlot: Integer;
   Form: TJvFormDesktopAlert;
