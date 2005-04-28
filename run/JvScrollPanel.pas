@@ -701,6 +701,7 @@ begin
     if AComponent = FDownRight then
       FDownRight := nil;
   end;
+  Invalidate;
 end;
 
 procedure TJvCustomScrollPanel.EnabledChanged;
