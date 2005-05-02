@@ -1,332 +1,909 @@
 ##Package: Ctrls
-##Status: Generated
-----------------------------------------------------------------------------------------------------
+##Status: Needs review
+------------------------------------------------------------------------
 @@JvHtControls.pas
 Summary
-  Contains the TJvHtControls component.
-<INCLUDE JVCL.UnitText.dtx>
+  Contains controls capable of rendering HTML tags found in their
+  content.
+
 Author
   Andrei Prygounkov
 
-----------------------------------------------------------------------------------------------------
-@@ItemHTDraw
-<TITLE ItemHTDraw function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Canvas - Description for this parameter
-  Rect   - Description for this parameter
-  State  - Description for this parameter
-  Text   - Description for this parameter
-  Scale  - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+Contributor(s)
+  Maciej Kaczkowski
 
-----------------------------------------------------------------------------------------------------
-@@ItemHTDrawEx
-<TITLE ItemHTDrawEx procedure>
-Summary
-  Write here a summary (1 line)
 Description
-  Write here a description
-Parameters
-  Canvas      - Description for this parameter
-  Rect        - Description for this parameter
-  State       - Description for this parameter
-  Text        - Description for this parameter
-  Width       - Description for this parameter
-  CalcType    - Description for this parameter
-  MouseX      - Description for this parameter
-  MouseY      - Description for this parameter
-  MouseOnLink - Description for this parameter
-  LinkName    - Description for this parameter
-  Scale       - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@ItemHTHeight
-<TITLE ItemHTHeight function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Canvas - Description for this parameter
-  Text   - Description for this parameter
-  Scale  - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@ItemHTPlain
-<TITLE ItemHTPlain function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Text - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@ItemHTWidth
-<TITLE ItemHTWidth function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Canvas - Description for this parameter
-  Rect   - Description for this parameter
-  State  - Description for this parameter
-  Text   - Description for this parameter
-  Scale  - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@PrepareText
-<TITLE PrepareText function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  A - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
+  <INCLUDE JVCL.UnitText.dtx>
+------------------------------------------------------------------------
 @@THyperLinkClick
 <TITLE THyperLinkClick type>
-Summary
-  Write here a summary (1 line)
-Description
-  This type is used by (for reference): TJvCustomHTLabel.OnHyperLinkClick
-  TJvCustomHTListBox.OnHyperLinkClick
+
 Parameters
-  Sender   - Description for this parameter
-  LinkName - Description for this parameter
+  Sender   - Object signalling the event notification.
 
-----------------------------------------------------------------------------------------------------
-@@TJvCustomHTComboBox
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  LinkName - URL for the HTML anchor clicked in the HTML-enabled
+  control.
 
-----------------------------------------------------------------------------------------------------
-@@TJvCustomHTComboBox.ColorDisabledText
 Summary
-  Write here a summary (1 line)
+  Type used for OnHyperLinkClick event handlers.
+
 Description
-  Write here a description
+  THyperLinkClick is the type used to implement OnHyperLinkClick event
+  handlers in TJvCustomHTLabel, TJvCustomHTListBox, TJvHTLabel, and
+  TJvHTListBox.  THyperLinkClick allows the HTML-enabled controls to
+  respond to mouse clicks on HTML anchors in the control.
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomHTComboBox.ColorHighlight
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomHTComboBox.ColorHighlightText
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomHTComboBox.DropWidth
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomHTComboBox.GetHeight
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomHTComboBox.HideSel
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomHTComboBox.PlainItems
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Index - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomHTComboBox.SetHeight
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Value - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomHTLabel
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomHTLabel.OnHyperLinkClick
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
+  TJvCustomHTLabel.OnHyperLinkClick,
+  TJvCustomHTListBox.OnHyperLinkClick,
+  TJvHTLabel.OnHyperLinkClick,
+  TJvHTListBox.OnHyperLinkClick
+------------------------------------------------------------------------
 @@TJvCustomHTListBox
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+<TITLE TJvCustomHTListBox component>
 
-----------------------------------------------------------------------------------------------------
-@@TJvCustomHTListBox.ColorDisabledText
 Summary
-  Write here a summary (1 line)
+  Specifies the interface for an HTML-enabled list box.
+
 Description
-  Write here a description
+
+  TJvCustomHTListBox is a TJvExCustomListBox descendant that implements
+  an HTML-enabled list box component.
+
+  TJvCustomHTListBox provides the ability to render HTML tags found in
+  the Items property, and includes the following tags and attributes:
+
+  <table>
+  Tags
+  --------------------
+  \<A\>\<\/A\>
+  \<B\>\<\/B\>
+  \<I\>\</I\>
+  \<U\>\<\/U\>
+  \<S\>\<\/S\>
+  \<FONT\>\<\/FONT\>
+  \<HR\>
+  \<BR\>
+  </table>
+
+  <table>
+  Attribute             Usage
+  --------------------  -------------------------------------------
+  HREF                  Valid URL for anchor tags.
+  ALIGN                 "CENTER" or "RIGHT" ("LEFT" is the default)
+  COLOR                 String representation of TColor values.
+  BGCOLOR               "clRED", "clGREEN", "clBLUE", etc.
+  SIZE                  Font size in points (1/72 inch).
+  IND                   Indent in pixels.
+  </table>
+
+  HTML Character entities are recognized in the content for the control.
+  The following character entities are rendered as the indicated characters or
+  symbols:
+
+  <table>
+  Entity                Character or Symbol
+  ---------------       ----------------------------------
+  \&lt\;                \< (Less-than character)
+  \&gt\;                \> (Greater-than character)
+  \&amp\;               \& (Ampersand character)
+  \&quot\;              \" (Double Quote character)
+  \&reg\;               \® (Registered symbol)
+  \&copy\;              \© (Copyright symbol)
+  \&trade\;             \™ (Trademark symbol)
+  \&euro\;              \€ (Euro symbol)
+  \&nbsp\;              (Non-breaking space character)
+  </table>
+
+  Use the OnHyperLinkClick event handler to respond to mouse clicks on
+  Anchor tags found in the content for the control.
+
+  Use PlainItems to access the content of the control as plain text
+  instead of HTML tagged content.
+
+  Use the ColorHighlight, ColorHighlightText, and ColorDisabledText
+  properties to set the TColor values applied to the control when
+  selected or disabled.
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomHTListBox.ColorHighlight
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomHTListBox.ColorHighlightText
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomHTListBox.HideSel
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
+  OnHyperLinkClick, PlainItems,
+  ColorHighlight, ColorHighlightText, ColorDisabledText
+------------------------------------------------------------------------
 @@TJvCustomHTListBox.OnHyperLinkClick
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<TITLE TJvCustomHTListBox.OnHyperLinkClick property>
 
-----------------------------------------------------------------------------------------------------
+Summary
+  Event handler signalled when an anchor in the list is clicked.
+
+Description
+
+  OnHyperLinkClick is a THyperLinkClick property that represents the
+  event handler signalled when the user clicks on an HTML \<A\> tag
+  found in the Items for the control.
+
+  OnHyperLinkClick is used during execution of the MouseUp event when
+  the Item has been rendered using the colors specified in
+  ColorHighlight and ColorHighlightText.  The event handler is fired
+  immediately after calling ShellExecute with the URL specified in the
+  HREF attribute for the tag.
+
+  Applications must assign a procedure to the OnHyperLinkClick event
+  handler to allow responding to the event notification.
+
+See Also
+  Items, ColorHighlight, ColorHighlightText
+------------------------------------------------------------------------
+@@TJvCustomHTListBox.ColorHighlight
+<TITLE TJvCustomHTListBox.ColorHighlight property>
+
+Summary
+  Color used when highlighting a selected item in the control.
+
+Description
+  ColorHighlight is a TColor property that represents the color used
+  when highlighting a selected item in the list. The default value for
+  ColorHilight is clHighlight as assigned in the constructor of the
+  control.
+
+  ColorHighlight and ColorHighlightText are used to set the values for
+  the canvas brush and font colors when items are rendered in DrawItem.
+  ColorHighlight and ColorHighlightText are also used when the selected
+  item in the control may have change after MouseMove or MouseUp
+  messages.
+
+  Use ColorDisabled to indicate the font color used when the control is
+  not Enabled.
+
+See Also
+  ColorHighlightText, ColorDisabled
+------------------------------------------------------------------------
+@@TJvCustomHTListBox.ColorHighlightText
+<TITLE TJvCustomHTListBox.ColorHighlightText property>
+
+Summary
+  Color used when drawing highlighted text for the selected item in the
+  control.
+
+Description
+  ColorHighlightText is a TColor property that represents the color
+  used when drawing highlighted text for the selected item in the
+  control. The default value for ColorHilightText is clHighlightText as
+  assigned in the constructor of the control.
+
+  ColorHighlight and ColorHighlightText are used to set the values for
+  the canvas brush and font colors when items are rendered in DrawItem.
+  ColorHighlight and ColorHighlightText are also used when the selected
+  item in the control may have change after MouseMove or MouseUp
+  messages.
+
+  Use ColorDisabled to indicate the font color used when the control is
+  not Enabled.
+
+See Also
+  ColorHighlight, ColorDisabled
+------------------------------------------------------------------------
+@@TJvCustomHTListBox.HideSel
+<TITLE TJvCustomHTListBox.HideSel property>
+
+Summary
+  Influences redrawing of the control following changes in the focused
+  selection.
+
+Description
+  HideSel is a Boolean property that influences redrawing of the
+  control following changes in the focused selection.  Changing the
+  value of the HideSel property force the control to be redrawn by
+  calling Invalidate.
+
+  Please note that HideSel has relationship to or bearing upon the
+  HideSelection property inherited from TCustomEdit.
+
+------------------------------------------------------------------------
+@@TJvCustomHTListBox.ColorDisabledText
+<TITLE TJvCustomHTListBox.ColorDisabledText property>
+
+Summary
+  Color used to draw text in the control when not Enabled.
+
+Description
+  ColorDisabledText is a TColor property that represents the color used
+  to draw text in the control when not Enabled. The default value for
+  ColorDisabledText is clGrayText as assigned in the constructor for
+  the control.
+
+  ColorDisabledText is used to set the font color in the DrawItem
+  method when the Enabled property contains False. Use ColorHighlight
+  and ColorHighlightText to set the values for the canvas brush and
+  font colors for items when the control is Enabled.
+
+See Also
+  ColorHighlight, ColorHighlightText
+------------------------------------------------------------------------
 @@TJvCustomHTListBox.PlainItems
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+<TITLE TJvCustomHTListBox.PlainItems property>
+
 Parameters
-  Index - Description for this parameter
+  Index - Ordinal position of the plain text item.
+
+Summary
+  Provides access to items in the control as plain text instead of HTML
+  tags.
+
+Description
+  PlainItems is an indexed String property that provides access to the
+  Items in the control as plain text instead of HTML tags.  Using
+  PlainItems is very much like using values in the Items property,
+  except all HTML tags and attributes are removed from the contents of
+  the item.
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvHTComboBox
-<TITLEIMG TJvHTComboBox>
-JVCLInfo
-  GROUP=JVCL.EditsMemosAndCombos.Combos
-  FLAG=Component
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvHTLabel
-<TITLEIMG TJvHTLabel>
-JVCLInfo
-  GROUP=JVCL.LabelsAndStatic
-  FLAG=Component
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
+  Items
+------------------------------------------------------------------------
 @@TJvHTListBox
 <TITLEIMG TJvHTListBox>
+<TITLE TJvHTListBox component>
 JVCLInfo
   GROUP=JVCL.ListsAndTrees.Lists
   FLAG=Component
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
 
+Summary
+  Implements an HTML-enabled list box.
+
+Description
+
+  TJvHTListBox is a TJvCustomHTListBox descendant that implements an
+  HTML-enabled list box component.
+
+  TJvHTListBox provides the ability to render HTML tags found in the
+  Items property, and includes the following tags and attributes:
+
+  <table>
+  Tags
+  --------------------
+  \<A\>\<\/A\>
+  \<B\>\<\/B\>
+  \<I\>\</I\>
+  \<U\>\<\/U\>
+  \<S\>\<\/S\>
+  \<FONT\>\<\/FONT\>
+  \<HR\>
+  \<BR\>
+  </table>
+
+  <table>
+  Attribute             Usage
+  --------------------  -------------------------------------------
+  HREF                  Valid URL for anchor tags.
+  ALIGN                 "CENTER" or "RIGHT" ("LEFT" is the default)
+  COLOR                 String representation of TColor values.
+  BGCOLOR               "clRED", "clGREEN", "clBLUE", etc.
+  SIZE                  Font size in points (1/72 inch).
+  IND                   Indent in pixels.
+  </table>
+
+  HTML Character entities are recognized in the content for the control.
+  The following character entities are rendered as the indicated characters or
+  symbols:
+
+  <table>
+  Entity                Character or Symbol
+  ---------------       ----------------------------------
+  \&lt\;                \< (Less-than character)
+  \&gt\;                \> (Greater-than character)
+  \&amp\;               \& (Ampersand character)
+  \&quot\;              \" (Double Quote character)
+  \&reg\;               \® (Registered symbol)
+  \&copy\;              \© (Copyright symbol)
+  \&trade\;             \™ (Trademark symbol)
+  \&euro\;              \€ (Euro symbol)
+  \&nbsp\;              (Non-breaking space character)
+  </table>
+
+  Use the OnHyperLinkClick event handler to respond to mouse clicks on
+  Anchor tags found in the content for the control.
+
+  Use PlainItems to access the content of the control as plain text
+  instead of HTML tagged content.
+
+  Use the ColorHighlight, ColorHighlightText, and ColorDisabledText
+  properties to set the TColor values applied to the control when
+  selected or disabled.
+
+See Also
+  OnHyperLinkClick, PlainItems,
+  ColorHighlight, ColorHighlightText, ColorDisabledText,
+  TJvCustomHTListBox
+------------------------------------------------------------------------
+@@TJvCustomHTLabel
+<TITLE TJvCustomHTLabel component>
+
+Summary
+  Specifies the interface for an HTML-enabled label control.
+
+Description
+
+  TJvCustomHTLabel is a TJvExCustomLabel descendant that specifies the
+  interface for an HTML-enabled label component. TJvCustomHTLabel adds
+  the capability to render HTML tags in the caption for the component
+  and to trigger events when an HTML anchor is clicked.
+
+  TJvCustomHTLabel overrides methods in the ancestor class to provide
+  sizing of HTML content based on changes in font size.
+
+  TJvCustomHTLabel recognizes the following HTML tags and attributes:
+
+  <table>
+  Tags
+  --------------------
+  \<A\>\<\/A\>
+  \<B\>\<\/B\>
+  \<I\>\</I\>
+  \<U\>\<\/U\>
+  \<S\>\<\/S\>
+  \<FONT\>\<\/FONT\>
+  \<HR\>
+  \<BR\>
+  </table>
+
+  <table>
+  Attribute             Usage
+  --------------------  -------------------------------------------
+  HREF                  Valid URL for anchor tags.
+  ALIGN                 "CENTER" or "RIGHT" ("LEFT" is the default)
+  COLOR                 String representation of TColor values.
+  BGCOLOR               "clRED", "clGREEN", "clBLUE", etc.
+  SIZE                  Font size in points (1/72 inch).
+  IND                   Indent in pixels.
+  </table>
+
+  HTML Character entities are recognized in the content for the control.
+  The following character entities are rendered as the indicated characters or
+  symbols:
+
+  <table>
+  Entity                Character or Symbol
+  ---------------       ----------------------------------
+  \&lt\;                \< (Less-than character)
+  \&gt\;                \> (Greater-than character)
+  \&amp\;               \& (Ampersand character)
+  \&quot\;              \" (Double Quote character)
+  \&reg\;               \® (Registered symbol)
+  \&copy\;              \© (Copyright symbol)
+  \&trade\;             \™ (Trademark symbol)
+  \&euro\;              \€ (Euro symbol)
+  \&nbsp\;              (Non-breaking space character)
+  </table>
+
+  Use the OnHyperLinkClick event handler to respond to mouse clicks on
+  Anchor tags found in the content for the control.
+
+  Use the ColorHighlight, ColorHighlightText, and ColorDisabledText
+  properties to set the TColor values applied to the control when
+  selected or disabled.
+
+See Also
+  ColorHighlight, ColorHighlightText, ColorDisabledText,
+  OnHyperLinkClick, TJvHTLabel
+------------------------------------------------------------------------
+@@TJvCustomHTLabel.OnHyperLinkClick
+<TITLE TJvCustomHTLabel.OnHyperLinkClick property>
+
+Summary
+  Event handler signalled when an HTML anchor in the control is
+  clicked.
+
+Description
+
+  OnHyperLinkClick is a THyperLinkClick property that represents the
+  event handler signalled when the user clicks on an HTML \<A\> tag
+  found in the caption for the control.
+
+  OnHyperLinkClick is used during execution of the MouseUp event when
+  the Item has been rendered using the colors specified in
+  ColorHighlight and ColorHighlightText.  The event handler is fired
+  immediately after calling ShellExecute with the URL specified in the
+  HREF attribute for the tag.
+
+  Applications must assign a procedure to the OnHyperLinkClick event
+  handler to allow responding to the event notification.
+
+See Also
+  Caption, ColorHighlight, ColorHighlightText
+------------------------------------------------------------------------
+@@TJvHTLabel
+<TITLEIMG TJvHTLabel>
+<TITLE TJvHTLabel component>
+JVCLInfo
+  GROUP=JVCL.LabelsAndStatic
+  FLAG=Component
+
+Summary
+  Implements an HTML-enabled label control.
+
+Description
+
+  TJvHTLabel is a TJvCustomHTLabel descendant that implements an
+  HTML-enabled label component. TJvHTLabel adds the capability to
+  render HTML tags in the caption for the component and to trigger
+  events when an HTML anchor is clicked.
+
+  TJvHTLabel publishes properties specified in the ancestor class.
+  TJvHTLabel overrides methods in the ancestor class to provide sizing
+  of HTML content based on changes in font size.
+
+  TJvHTLabel recognizes the following HTML tags and attributes:
+
+  <table>
+  Tags
+  --------------------
+  \<A\>\<\/A\>
+  \<B\>\<\/B\>
+  \<I\>\</I\>
+  \<U\>\<\/U\>
+  \<S\>\<\/S\>
+  \<FONT\>\<\/FONT\>
+  \<HR\>
+  \<BR\>
+  </table>
+
+  <table>
+  Attribute             Usage
+  --------------------  -------------------------------------------
+  HREF                  Valid URL for anchor tags.
+  ALIGN                 "CENTER" or "RIGHT" ("LEFT" is the default)
+  COLOR                 String representation of TColor values.
+  BGCOLOR               "clRED", "clGREEN", "clBLUE", etc.
+  SIZE                  Font size in points (1/72 inch).
+  IND                   Indent in pixels.
+  </table>
+
+  HTML Character entities are recognized in the content for the control.
+  The following character entities are rendered as the indicated characters or
+  symbols:
+
+  <table>
+  Entity                Character or Symbol
+  ---------------       ----------------------------------
+  \&lt\;                \< (Less-than character)
+  \&gt\;                \> (Greater-than character)
+  \&amp\;               \& (Ampersand character)
+  \&quot\;              \" (Double Quote character)
+  \&reg\;               \® (Registered symbol)
+  \&copy\;              \© (Copyright symbol)
+  \&trade\;             \™ (Trademark symbol)
+  \&euro\;              \€ (Euro symbol)
+  \&nbsp\;              (Non-breaking space character)
+  </table>
+
+  Use the OnHyperLinkClick event handler to respond to mouse clicks on
+  Anchor tags found in the content for the control.
+
+  Use the ColorHighlight, ColorHighlightText, and ColorDisabledText
+  properties to set the TColor values applied to the control when
+  selected or disabled.
+
+See Also
+  ColorHighlight, ColorHighlightText, ColorDisabledText,
+  OnHyperLinkClick, TJvCustomHTLabel
+------------------------------------------------------------------------
+@@TJvHTComboBox
+<TITLEIMG TJvHTComboBox>
+<TITLE TJvHTComboBox component>
+JVCLInfo
+  GROUP=JVCL.EditsMemosAndCombos.Combos
+  FLAG=Component
+
+Summary
+  Implements an HTML-enabled ComboBox control.
+
+Description
+  TJvHTComboBox is a TJvCustomHTComboBox descendant that implements an
+  HTML-enabled ComboBox control. TJvHTComboBox provides the ability to
+  render HTML tags and attributes in the Items for the component, and
+  to trigger events when an HTML anchor is clicked.
+
+  TJvHTComboBox overrides methods in the ancestor class to provide
+  sizing of HTML content based on changes in font size.
+
+  TJvHTComboBox recognizes the following HTML tags and attributes:
+
+  <table>
+  Tags
+  --------------------
+  \<A\>\<\/A\>
+  \<B\>\<\/B\>
+  \<I\>\</I\>
+  \<U\>\<\/U\>
+  \<S\>\<\/S\>
+  \<FONT\>\<\/FONT\>
+  \<HR\>
+  \<BR\>
+  </table>
+
+  <table>
+  Attribute             Usage
+  --------------------  -------------------------------------------
+  HREF                  Valid URL for anchor tags.
+  ALIGN                 "CENTER" or "RIGHT" ("LEFT" is the default)
+  COLOR                 String representation of TColor values.
+  BGCOLOR               "clRED", "clGREEN", "clBLUE", etc.
+  SIZE                  Font size in points (1/72 inch).
+  IND                   Indent in pixels.
+  </table>
+
+  HTML Character entities are recognized in the content for the control.
+  The following character entities are rendered as the indicated characters or
+  symbols:
+
+  <table>
+  Entity                Character or Symbol
+  ---------------       ----------------------------------
+  \&lt\;                \< (Less-than character)
+  \&gt\;                \> (Greater-than character)
+  \&amp\;               \& (Ampersand character)
+  \&quot\;              \" (Double Quote character)
+  \&reg\;               \® (Registered symbol)
+  \&copy\;              \© (Copyright symbol)
+  \&trade\;             \™ (Trademark symbol)
+  \&euro\;              \€ (Euro symbol)
+  \&nbsp\;              (Non-breaking space character)
+  </table>
+
+  Use the OnHyperLinkClick event handler to respond to mouse clicks on
+  Anchor tags found in the content for the control.
+
+  Use the ColorHighlight, ColorHighlightText, and ColorDisabledText
+  properties to set the TColor values applied to the control when
+  selected or disabled.
+
+See Also
+  ColorHighlight, ColorHighlightText, ColorDisabledText,
+  OnHyperLinkClick
+------------------------------------------------------------------------
+@@TJvCustomHTComboBox
+<TITLE TJvCustomHTComboBox component>
+
+Summary
+  Specifies the interface for an HTML-enabled ComboBox control.
+
+Description
+  TJvCustomHTComboBox is a TJvExCustomComboBox descendant that
+  specifies the interface for an HTML-enabled ComboBox control.
+  TJvCustomHTComboBox provides the ability to render HTML tags and
+  attributes in the Items for the component, and to trigger events when
+  an HTML anchor is clicked.
+
+  TJvCustomHTComboBox overrides methods in the ancestor class to
+  provide sizing of HTML content based on changes in font size.
+
+  TJvCustomHTComboBox recognizes the following HTML tags and
+  attributes:
+
+  <table>
+  Tags
+  --------------------
+  \<A\>\<\/A\>
+  \<B\>\<\/B\>
+  \<I\>\</I\>
+  \<U\>\<\/U\>
+  \<S\>\<\/S\>
+  \<FONT\>\<\/FONT\>
+  \<HR\>
+  \<BR\>
+  </table>
+
+  <table>
+  Attribute             Usage
+  --------------------  -------------------------------------------
+  HREF                  Valid URL for anchor tags.
+  ALIGN                 "CENTER" or "RIGHT" ("LEFT" is the default)
+  COLOR                 String representation of TColor values.
+  BGCOLOR               "clRED", "clGREEN", "clBLUE", etc.
+  SIZE                  Font size in points (1/72 inch).
+  IND                   Indent in pixels.
+  </table>
+
+  HTML Character entities are recognized in the content for the control.
+  The following character entities are rendered as the indicated characters or
+  symbols:
+
+  <table>
+  Entity                Character or Symbol
+  ---------------       ----------------------------------
+  \&lt\;                \< (Less-than character)
+  \&gt\;                \> (Greater-than character)
+  \&amp\;               \& (Ampersand character)
+  \&quot\;              \" (Double Quote character)
+  \&reg\;               \® (Registered symbol)
+  \&copy\;              \© (Copyright symbol)
+  \&trade\;             \™ (Trademark symbol)
+  \&euro\;              \€ (Euro symbol)
+  \&nbsp\;              (Non-breaking space character)
+  </table>
+
+  Use the OnHyperLinkClick event handler to respond to mouse clicks on
+  Anchor tags found in the content for the control.
+
+  Use the ColorHighlight, ColorHighlightText, and ColorDisabledText
+  properties to set the TColor values applied to the control when
+  selected or disabled.
+
+See Also
+  ColorHighlight, ColorHighlightText, ColorDisabledText,
+  OnHyperLinkClick
+------------------------------------------------------------------------
+@@TJvCustomHTComboBox.PlainItems
+<TITLE TJvCustomHTComboBox.PlainItems property>
+
+Parameters
+  Index - Ordinal position of the plain text item.
+
+Summary
+  Provides access to items in the control as plain text instead of HTML
+  tags.
+
+Description
+  PlainItems is an indexed String property that provides access to the
+  Items in the control as plain text instead of HTML tags.  Using
+  PlainItems is very much like using values in the Items property,
+  except all HTML tags and attributes are removed from the contents of
+  the item.
+
+See Also
+  Items
+------------------------------------------------------------------------
+@@TJvCustomHTComboBox.HideSel
+<TITLE TJvCustomHTComboBox.HideSel property>
+
+Summary
+  Influences redrawing of the control following changes in the focused
+  selection.
+
+Description
+  HideSel is a Boolean property that influences redrawing of the
+  control following changes in the focused selection.  Changing the
+  value of the HideSel property force the control to be redrawn by
+  calling Invalidate.
+
+  Please note that HideSel has relationship to or bearing upon the
+  HideSelection property inherited from TCustomEdit.
+
+------------------------------------------------------------------------
+@@TJvCustomHTComboBox.DropWidth
+<TITLE TJvCustomHTComboBox.DropWidth property>
+
+Summary
+  Width of the drop-down area for the ComboBox control.
+
+Description
+  DropWidth is an Integer property that represents the width of the
+  drop-down area for the ComboBox control. DropWidth is updated when
+  the control is created to ensure that the drop-down area is sized to
+  match the width of the associated edit control.
+
+  Changing the value in DropWidth causes the WIndows CB_SETDROPPEDWIDTH
+  message to be performed using the new value for the drop-down area.
+
+------------------------------------------------------------------------
+@@TJvCustomHTComboBox.ColorHighlightText
+<TITLE TJvCustomHTComboBox.ColorHighlightText property>
+
+Summary
+  Color used when drawing highlighted text for the selected item in the
+  control.
+
+Description
+  ColorHighlightText is a TColor property that represents the color
+  used when drawing highlighted text for the selected item in the
+  control. The default value for ColorHilightText is clHighlightText as
+  assigned in the constructor of the control.
+
+  ColorHighlight and ColorHighlightText are used to set the values for
+  the canvas brush and font colors when items are rendered in DrawItem.
+  ColorHighlight and ColorHighlightText are also used when the selected
+  item in the control may have change after MouseMove or MouseUp
+  messages.
+
+  Use ColorDisabled to indicate the font color used when the control is
+  not Enabled.
+
+See Also
+  ColorHighlight, ColorDisabled
+------------------------------------------------------------------------
+@@TJvCustomHTComboBox.ColorHighlight
+<TITLE TJvCustomHTComboBox.ColorHighlight property>
+
+Summary
+  Color used when highlighting a selected item in the control.
+
+Description
+  ColorHighlight is a TColor property that represents the color used
+  when highlighting a selected item in the control. The default value
+  for ColorHilight is clHighlight as assigned in the constructor of the
+  control.
+
+  ColorHighlight and ColorHighlightText are used to set the values for
+  the canvas brush and font colors when items are rendered in DrawItem.
+  ColorHighlight and ColorHighlightText are also used when the selected
+  item in the control may have change after MouseMove or MouseUp
+  messages.
+
+  Use ColorDisabled to indicate the font color used when the control is
+  not Enabled.
+
+See Also
+  ColorHighlightText, ColorDisabled
+------------------------------------------------------------------------
+@@TJvCustomHTComboBox.ColorDisabledText
+<TITLE TJvCustomHTComboBox.ColorDisabledText property>
+
+Summary
+  Color used to draw text in the control when not Enabled.
+
+Description
+  ColorDisabledText is a TColor property that represents the color used
+  to draw text in the control when not Enabled. The default value for
+  ColorDisabledText is clGrayText as assigned in the constructor for
+  the control.
+
+  ColorDisabledText is used to set the font color in the DrawItem
+  method when the Enabled property contains False. Use ColorHighlight
+  and ColorHighlightText to set the values for the canvas brush and
+  font colors for items when the control is Enabled.
+
+See Also
+  ColorHighlight, ColorHighlightText
+------------------------------------------------------------------------
+@@TJvCustomHTComboBox.GetHeight
+<TITLE TJvCustomHTComboBox.GetHeight method>
+
+Summary
+
+Description
+
+Return value
+
+See Also
+
+------------------------------------------------------------------------
+@@TJvCustomHTComboBox.SetHeight
+<TITLE TJvCustomHTComboBox.SetHeight method>
+
+Parameters
+  Value -
+
+Summary
+
+Description
+
+See Also
+
+------------------------------------------------------------------------
+@@PrepareText
+<TITLE PrepareText function>
+
+Parameters
+  A - String argument to be prepared for rendering.
+
+Summary
+  Normalizes HTML tags from an HTML-enabled control prior to rendering.
+
+Description
+  PrepareText is a String function used to normalize HTML tags from an
+  HTML-enabled control prior to rendering.  Normalization inlcudeds the
+  following operations:
+
+  * Converts HTML entities to characters or symbols
+  * Removes line-end sequences
+  * Converts BR tags to line-end sequences
+
+  PrepareText calls the HTMLPrepareText function in JvJVCLUtils.pas.
+
+See Also
+  HTMLPrepareText
+------------------------------------------------------------------------
+@@ItemHTWidth
+<TITLE ItemHTWidth function>
+
+Parameters
+  Canvas - Canvas used to render the HTML content.
+
+  Rect   - Rectangle to use for rendering HTML content.
+
+  State  - Draw state values for the rendering operation.
+
+  Text   - HTML tags to render.
+
+  Scale  - Scaling factor for the render.  Default value is 100.
+
+Returns
+  Integer - Width the rendered HTML tag.
+
+Summary
+  Renders HTML-tagged contents using the specified Canvas, Rectangle,
+  and Scaling factor.
+
+Description
+  ItemHTWidth is an Integer function used to render HTML-tagged
+  contents using the specified Canvas, Rectangle, and Scaling factor.
+
+  ItemHTWidth is used when rendering or auto-sizing the content in
+  HTML-enabled controls like TJvHTLabel to determine the width of the
+  rendered value.
+
+  Use ItemHTHeight to determine the render height of HTML-tagged
+  values.
+
+  ItemHTWidth calls the HTMLTextWidth in JvJVCLUtils.pas.
+
+See Also
+  HTMLTextWidth
+------------------------------------------------------------------------
+@@ItemHTPlain
+<TITLE ItemHTPlain function>
+
+Parameters
+  Text -
+
+Summary
+
+Description
+
+See Also
+
+------------------------------------------------------------------------
+@@ItemHTHeight
+<TITLE ItemHTHeight function>
+
+Parameters
+  Canvas -
+  Text   -
+  Scale  -
+
+Summary
+
+Description
+
+See Also
+
+------------------------------------------------------------------------
+@@ItemHTDrawEx
+<TITLE ItemHTDrawEx procedure>
+
+Parameters
+  Canvas      -
+  Rect        -
+  State       -
+  Text        -
+  Width       -
+  CalcType    -
+  MouseX      -
+  MouseY      -
+  MouseOnLink -
+  LinkName    -
+  Scale       -
+
+Summary
+
+Description
+
+See Also
+
+------------------------------------------------------------------------
+@@ItemHTDraw
+<TITLE ItemHTDraw function>
+
+Parameters
+  Canvas -
+  Rect   -
+  State  -
+  Text   -
+  Scale  -
+
+Summary
+
+Description
+
+See Also
+
+------------------------------------------------------------------------
