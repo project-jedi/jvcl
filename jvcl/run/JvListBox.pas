@@ -1109,6 +1109,8 @@ end;
 procedure TJvCustomListBox.DefaultStartDrag(var DragObject: TDragObject);
 begin
   FDragIndex := ItemIndex;
+  if FDragIndex >= Items.Count then
+    FDragIndex := Items.Count-1;
   if not IsProviderSelected and (FDragIndex >= 0) then
     CreateDragImage(Items[FDragIndex])
   else
