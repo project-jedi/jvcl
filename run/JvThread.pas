@@ -137,6 +137,7 @@ const
 
 implementation
 
+Uses Forms;
 
 var
   SyncMtx: THandle = 0;
@@ -240,7 +241,8 @@ procedure TJvThread.ExecuteAndWait(P: Pointer);
 begin
   Execute(P);
   while OneThreadIsRunning do
-    Sleep(1);
+    //Sleep(25);
+    Application.HandleMessage; 
 end;
 
 function TJvThread.GetPriority(Thread: THandle): TThreadPriority;
