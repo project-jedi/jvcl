@@ -410,6 +410,7 @@ begin
     begin
       Interval := 500;
       OnTimer := MainTimerTimer;
+      Enabled := True;
     end;
     if Assigned(ThreadStatusDialog) then
       if DialogOptions.ShowModal then
