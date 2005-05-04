@@ -70,6 +70,7 @@ type
     FColorNameMap: TStringList;
     FOnInsertColor: TJvNewColorEvent;
     FOnBeforeCustom: TNotifyEvent;
+    FCustomColors: TStrings;
     procedure SetOptions(Value: TJvColorComboOptions);
     procedure SetColorDialogText(Value: string);
     procedure SetColorWidth(Value: Integer);
@@ -102,7 +103,10 @@ type
     function BeginUpdate: integer;
     function EndUpdate: integer;
     procedure GetColors; virtual;
+    function GetCustomColorsStrings: TStrings;
+    procedure SetCustomColorsStrings(const Value: TStrings);
     procedure GetCustomColors(AList: TList);
+    procedure SetCustomColors(AList: TList);
     // Returns the current name for AColor. Note that this implicitly might call the
     // OnGetDisplayName event if the protected GetColorName returns an empty string
     function ColorName(AColor: TColor): string;
@@ -114,6 +118,7 @@ type
     procedure InsertColor(AIndex: Integer; AColor: TColor; const DisplayName: string);
     property Text;
     property CustomColorCount: Integer read FCustomColorCount;
+    property CustomColors: TStrings read GetCustomColorsStrings write SetCustomColorsStrings;
 
     property Colors[Index: Integer]: TColor read GetColor;
   published
@@ -249,6 +254,8 @@ type
     function BeginUpdate: integer;
     function EndUpdate: integer;
     function FontSubstitute(const AFontName: string): string;
+    procedure FontSizeList(SizeList: TList);
+    function IsTrueType: Boolean;
     property Text;
     property MRUCount: Integer read FMRUCount;
     // returns the supported font sizes or a set of default sizes for TrueType fonts
@@ -407,6 +414,7 @@ end;
 constructor TJvColorComboBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FCustomColors := TStringList.Create;
   FColorNameMap := TStringList.Create;
   Style := csOwnerDrawFixed;
   FColorValue := clBlack;
@@ -427,6 +435,7 @@ end;
 destructor TJvColorComboBox.Destroy;
 begin
   FColorNameMap.Free;
+  FCustomColors.Free;
   inherited Destroy;
 end;
 
@@ -539,11 +548,11 @@ begin
     end;
     Exit;
   end
-  else
-  if coCustomColors in Options then
+  else if coCustomColors in Options then
   begin
     InsertColor(Items.Count - 1, Value, Format(FNewColorText, [FCustomColorCount]));
     //      Items.InsertObject(Items.Count, FNewColorText + IntToStr(FCustomColorCount), TObject(Value))
+    Inc(FCustomColorCount);
     FColorValue := Value;
     ItemIndex := Items.Count - 2;
   end
@@ -594,6 +603,7 @@ var
   AColor: TColor;
   S: string;
 begin
+  if Index >= Items.Count then Exit;
   aRect := R;
   Inc(aRect.Top, 2);
   Inc(aRect.Left, 2);
@@ -618,6 +628,7 @@ begin
     try
       Rectangle(aRect);
     finally
+      Brush.Style := bsSolid;
       Brush.Color := AColor;
     end;
     if (coCustomColors in FOptions) and (Index = Items.Count - 1) then
@@ -629,6 +640,10 @@ begin
       R.Left := R.Left + 2;
       R.Right := R.Left + TextWidth(S) + 2;
       Brush.Color := AColor;
+      if AColor = clNone then
+        Brush.Style := bsFDiagonal
+      else if AColor = clDefault then
+        Brush.Style := bsBDiagonal;
       FillRect(R);
       SetBkMode(Canvas.Handle, TRANSPARENT);
       DrawText(Canvas.Handle, PChar(S), Length(S), R, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
@@ -642,13 +657,16 @@ begin
       begin
         if coHex in FOptions then
           S := Format('0x%.6x', [ColorToRGB(TColor(Items.Objects[Index]))])
-        else
-        if coRGB in FOptions then
+        else if coRGB in FOptions then
           S := Format('(%d,%d,%d)', [GetRValue(TColor(Items.Objects[Index])), GetGValue(TColor(Items.Objects[Index])),
             GetBValue(TColor(Items.Objects[Index]))]);
       end;
       R.Left := R.Left + FColorWidth + 6;
       R.Right := R.Left + TextWidth(S) + 6;
+      if AColor = clNone then
+        Brush.Style := bsFDiagonal
+      else if AColor = clDefault then
+        Brush.Style := bsBDiagonal;
       FillRect(R);
       OffsetRect(R, 2, 0);
       SetBkMode(Canvas.Handle, TRANSPARENT);
@@ -677,10 +695,12 @@ begin
     with CD do
     try
       CD.Color := ColorValue;
+      CD.CustomColors := Self.CustomColors;
       Options := Options + [cdFullOpen, cdPreventFullOpen];
       S := FNewColorText;
       if Execute then
       begin
+        Self.CustomColors := CD.CustomColors;
         if DoNewColor(CD.Color, S) then
           Inc(FCustomColorCount);
         Tmp := FNewColorText;
@@ -698,8 +718,7 @@ begin
       Free;
     end;
   end
-  else
-  if ItemIndex >= 0 then
+  else if ItemIndex >= 0 then
     ColorValue := TColor(Items.Objects[ItemIndex]);
   inherited Click;
   FExecutingDialog := False;
@@ -848,9 +867,84 @@ var
 begin
   if AList = nil then
     Exit;
-  J := Ord((coCustomColors in Options));
-  for I := Items.Count - (CustomColorCount + J) to pred(Items.Count - J) do
-    AList.Add(Items.Objects[I]);
+  Items.BeginUpdate;
+  try
+    J := Ord((coCustomColors in Options));
+    for I := Items.Count - (CustomColorCount + J) to pred(Items.Count - J) do
+      AList.Add(Items.Objects[I]);
+  finally
+    Items.EndUpdate;
+  end;
+end;
+
+procedure TJvColorComboBox.SetCustomColors(AList: TList);
+var
+  I: Integer;
+  AColor: TColor;
+  S: string;
+begin
+  if AList = nil then
+    Exit;
+  Items.BeginUpdate;
+  try
+    for I := 0 to AList.Count - 1 do
+    begin
+      AColor := TColor(AList[I]);
+      if AColor <> -1 then
+      begin
+        S := FNewColorText;
+        if DoNewColor(AColor, S) then
+        begin
+          InsertColor(Items.Count - 1, AColor, Format(S, [FCustomColorCount]));
+          Inc(FCustomColorCount);
+        end;
+      end;
+    end;
+  finally
+    Items.EndUpdate;
+  end;
+end;
+
+function TJvColorComboBox.GetCustomColorsStrings: TStrings;
+var
+  AList: TList;
+  I: Integer;
+begin
+  AList := TList.Create;
+  FCustomColors.BeginUpdate;
+  try
+    FCustomColors.Clear;
+    GetCustomColors(AList);
+    for I := 0 to AList.Count - 1 do
+      FCustomColors.Values['Color' + Char(Ord('A') + I)] := Format('%.6x', [Integer(AList[I])]);
+  finally
+    AList.Free;
+    FCustomColors.EndUpdate;
+  end;
+  Result := FCustomColors;
+end;
+
+procedure TJvColorComboBox.SetCustomColorsStrings(const Value: TStrings);
+var
+  AList: TList;
+  AValue: string;
+  I: Integer;
+begin
+  FCustomColors.Assign(Value);
+  AList := TList.Create;
+  FCustomColors.BeginUpdate;
+  try
+    for I := 0 to FCustomColors.Count - 1 do
+    begin
+      AValue := FCustomColors.Values['Color' + Char(Ord('A') + I)];
+      if (AValue <> '') and (AValue <> 'FFFFFF') then
+        AList.Add(Pointer(StrToInt('$' + AValue)));
+    end;
+    SetCustomColors(AList);
+  finally
+    AList.Free;
+    FCustomColors.EndUpdate;
+  end;
 end;
 
 procedure TJvColorComboBox.InternalInsertColor(AIndex: Integer;
@@ -1038,8 +1132,7 @@ begin
     //    AWidth  := 20;
     if (Integer(Items.Objects[Index]) and TRUETYPE_FONTTYPE) <> 0 then
       ABmp := FTrueTypeBmp
-    else
-    if (Integer(Items.Objects[Index]) and DEVICE_FONTTYPE) <> 0 then
+    else if (Integer(Items.Objects[Index]) and DEVICE_FONTTYPE) <> 0 then
       ABmp := FDeviceBmp
     else
       ABmp := FFixBmp;
@@ -1099,8 +1192,7 @@ begin
         Canvas.MoveTo(0, R.Bottom - 1);
         Canvas.LineTo(ClientWidth, R.Bottom - 1);
       end
-      else
-      if (Index = MRUCount) and (Index > 0) then
+      else if (Index = MRUCount) and (Index > 0) then
       begin
         Canvas.Pen.Color := clGray;
         Canvas.Pen.Width := 1;
@@ -1269,6 +1361,62 @@ begin
   end;
 end;
 
+var
+  FPixelsPerInch: Integer = 96;
+
+function GetFontSizes(var lpelf: TEnumLogFont; var lpntm: TNewTextMetric;
+  FontType: Integer; lParam: Integer): Integer; stdcall;
+var
+  aSize: Integer;
+begin
+  aSize := MulDiv(lpelf.elfLogFont.lfHeight, 72, FPixelsPerInch);
+  if TList(lParam).IndexOf(Pointer(aSize)) < 0 then
+    TList(lParam).Add(Pointer(aSize));
+  Result := 1;
+end;
+
+function SizeSort(Item1, Item2: Pointer): Integer;
+begin
+  Result := integer(Item1) - integer(Item2);
+end;
+
+function TJvFontComboBox.IsTrueType: Boolean;
+begin
+  if ItemIndex >= 0 then
+    Result := (Integer(Items.Objects[ItemIndex]) and TRUETYPE_FONTTYPE) <> 0
+  else
+    Result := False;
+end;
+
+procedure TJvFontComboBox.FontSizeList(SizeList: TList);
+const
+  cTTSizes : array [0..15] of integer = (8,9,10,11,12,14,16,18,20,22,24,26,28,36,48,72);
+var
+  DC: HDC;
+  I:Integer;
+begin
+  if SizeList = nil then Exit;
+  SizeList.Clear;
+  if IsTrueType then
+  begin
+    // fill in constant sizes for true type fonts
+    SizeList.Clear;
+    for I := 0 to High(cTTSizes) do
+      SizeList.Add(Pointer(cTTSizes[I]));
+  end
+  else
+  begin
+    DC := GetDC(HWND_DESKTOP);
+    try
+      FPixelsPerInch := GetDeviceCaps(DC, LOGPIXELSY);
+      EnumFontFamilies(DC, PChar(FontName), GetFontSizes, integer(SizeList));
+      SizeList.Sort(SizeSort);
+    finally
+      ReleaseDC(HWND_DESKTOP, DC);
+    end;
+  end;
+end;
+
 function TJvFontComboBox.AddToMRU: Integer;
 var
   I: Integer;
@@ -1284,16 +1432,14 @@ begin
       Items.InsertObject(0, Items[I], Items.Objects[I]);
       Inc(FMRUCount);
     end
-    else
-    if I < 0 then
+    else if I < 0 then
     begin
       Items.InsertObject(0, Text, TObject(TRUETYPE_FONTTYPE));
       Inc(FMRUCount);
     end;
     Result := 0;
   end
-  else
-  if (MRUCount > 0) and (ItemIndex > 0) then
+  else if (MRUCount > 0) and (ItemIndex > 0) then
   begin
     Items[0] := Items[ItemIndex];
     Items.Objects[0] := Items.Objects[ItemIndex];
