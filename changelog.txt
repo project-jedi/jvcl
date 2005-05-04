@@ -1,5 +1,7 @@
 Changelog for JVCL 3.0
 ======================
+2005-05-04:
+- Added published JvModernTabBarPainter.TabWidth property // ahuser
 2005-04-23:
 - Fixed Mantis: 2871: TJvCustomGraphicButton.Click calls inherited in the wrong order // ahuser
   This fix changes the meaning on "button.Down" in the OnClick handler. "Down" is no more inverted.
