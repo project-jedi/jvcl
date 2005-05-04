@@ -207,6 +207,7 @@ type
     FCloseColorSelected: TColor;
     FDividerColor: TColor;
     FMoveDividerColor: TColor;
+    FTabWidth: Integer;
 
     procedure SetCloseRectColorDisabled(const Value: TColor);
     procedure SetCloseColor(const Value: TColor);
@@ -227,6 +228,7 @@ type
     procedure FontChanged(Sender: TObject);
     procedure SetDividerColor(const Value: TColor);
     procedure SetCloseCrossColorSelected(const Value: TColor);
+    procedure SetTabWidth(Value: Integer);
   protected
     procedure DrawBackground(Canvas: TCanvas; TabBar: TJvCustomTabBar; R: TRect); override;
     procedure DrawTab(Canvas: TCanvas; Tab: TJvTabBarItem; R: TRect); override;
@@ -254,6 +256,7 @@ type
     property CloseRectColorDisabled: TColor read FCloseRectColorDisabled write SetCloseRectColorDisabled default $D6D6D6;
     property DividerColor: TColor read FDividerColor write SetDividerColor default $99A8AC;
     property MoveDividerColor: TColor read FMoveDividerColor write FMoveDividerColor default clBlack;
+    property TabWidth: Integer read FTabWidth write SetTabWidth default 0;
 
     property Font: TFont read FFont write SetFont;
     property DisabledFont: TFont read FDisabledFont write SetDisabledFont;
@@ -1916,7 +1919,12 @@ end;
 function TJvModernTabBarPainter.GetTabSize(Canvas: TCanvas; Tab: TJvTabBarItem): TSize;
 begin
   if Tab.Enabled then
-    Canvas.Font.Assign(Font)
+  begin
+    if Tab.Selected then
+      Canvas.Font.Assign(SelectedFont)
+    else
+      Canvas.Font.Assign(Font)
+  end
   else
     Canvas.Font.Assign(DisabledFont);
 
@@ -1926,6 +1934,9 @@ begin
     Result.cx := Result.cx + 15;
   if (Tab.ImageIndex <> -1) and (Tab.GetImages <> nil) then
     Result.cx := Result.cx + Tab.GetImages.Width + 2;
+
+  if TabWidth > 0 then
+    Result.cx := TabWidth;
 end;
 
 function TJvModernTabBarPainter.Options: TJvTabBarPainterOptions;
@@ -2051,6 +2062,17 @@ begin
   if Value <> FDividerColor then
   begin
     FDividerColor := Value;
+    Changed;
+  end;
+end;
+
+procedure TJvModernTabBarPainter.SetTabWidth(Value: Integer);
+begin
+  if Value < 0 then
+    Value := 0;
+  if Value <> FTabWidth then
+  begin
+    FTabWidth := Value;
     Changed;
   end;
 end;
