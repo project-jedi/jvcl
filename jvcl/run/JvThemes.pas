@@ -36,6 +36,9 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
+  {$IFDEF COMPILER7_UP}
+  Types,
+  {$ENDIF COMPILER7_UP}
   {$IFDEF VCL}
   Windows, Messages,
   {$IFDEF JVCLThemesEnabled}
@@ -787,9 +790,10 @@ function DrawThemedFrameControl(Control: TControl; DC: HDC; const Rect: TRect;
 
 {$IFDEF VCL}
 { PerformEraseBackground sends a WM_ERASEBKGND message to the Control's parent. }
-procedure PerformEraseBackground(Control: TControl; DC: HDC; Offset: TPoint;
-  R: PRect = nil); overload;
-procedure PerformEraseBackground(Control: TControl; DC: HDC; R: PRect = nil); overload;
+procedure PerformEraseBackground(Control: TControl; DC: HDC; Offset: TPoint); overload;
+procedure PerformEraseBackground(Control: TControl; DC: HDC; Offset: TPoint; const R: TRect); overload;
+procedure PerformEraseBackground(Control: TControl; DC: HDC); overload;
+procedure PerformEraseBackground(Control: TControl; DC: HDC; const R: TRect); overload;
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}
@@ -849,12 +853,12 @@ begin
     if Control is TWinControl then
     begin
       if TWinControl(Control).DoubleBuffered then
-        PerformEraseBackground(Control, Canvas.Handle, @R)
+        PerformEraseBackground(Control, Canvas.Handle, R)
       else
         ThemeServices.DrawParentBackground(TWinControl(Control).Handle, Canvas.Handle, nil, False, @R);
     end
     else
-      PerformEraseBackground(Control, Canvas.Handle, @R)
+      PerformEraseBackground(Control, Canvas.Handle, R)
   end
   else
   {$ENDIF JVCLThemesEnabled}
@@ -887,12 +891,12 @@ begin
     if Control is TWinControl then
     begin
       if TWinControl(Control).DoubleBuffered then
-        PerformEraseBackground(Control, DC, @R)
+        PerformEraseBackground(Control, DC, R)
       else
         ThemeServices.DrawParentBackground(TWinControl(Control).Handle, DC, nil, False, @R);
     end
     else
-      PerformEraseBackground(Control, DC, @R)
+      PerformEraseBackground(Control, DC, R)
   end
   else
   {$ENDIF JVCLThemesEnabled}
@@ -1090,7 +1094,17 @@ end;
 
 {$IFDEF VCL}
 
-procedure PerformEraseBackground(Control: TControl; DC: HDC; Offset: TPoint; R: PRect = nil);
+function IsInvalidRect(const R: TRect): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+begin
+  Result := (R.Left = MaxInt) and (R.Top = MaxInt) and (R.Right = MaxInt) and (R.Bottom = MaxInt);
+end;
+
+procedure PerformEraseBackground(Control: TControl; DC: HDC; Offset: TPoint);
+begin
+  PerformEraseBackground(Control, DC, Offset, Rect(MaxInt, MaxInt, MaxInt, MaxInt));
+end;
+
+procedure PerformEraseBackground(Control: TControl; DC: HDC; Offset: TPoint; const R: TRect);
 var
   WindowOrg: TPoint;
   OrgRgn, Rgn: THandle;
@@ -1107,7 +1121,7 @@ begin
     end;
 
     OrgRgn := 0;
-    if R <> nil then
+    if not IsInvalidRect(R) then
     begin
       OrgRgn := CreateRectRgn(0, 0, 1, 1);
       if GetClipRgn(DC, OrgRgn) = 0 then
@@ -1115,7 +1129,7 @@ begin
         DeleteObject(OrgRgn);
         OrgRgn := 0;
       end;
-      Rgn := CreateRectRgnIndirect(R^);
+      Rgn := CreateRectRgnIndirect(R);
       SelectClipRgn(DC, Rgn);
       DeleteObject(Rgn);
     end;
@@ -1135,7 +1149,12 @@ begin
   end;
 end;
 
-procedure PerformEraseBackground(Control: TControl; DC: HDC; R: PRect = nil);
+procedure PerformEraseBackground(Control: TControl; DC: HDC);
+begin
+  PerformEraseBackground(Control, DC, Point(Control.Left, Control.Top));
+end;
+
+procedure PerformEraseBackground(Control: TControl; DC: HDC; const R: TRect);
 begin
   PerformEraseBackground(Control, DC, Point(Control.Left, Control.Top), R);
 end;

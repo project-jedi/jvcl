@@ -1396,7 +1396,6 @@ begin
   begin
     with TJvTabBarItem(Source) do
     begin
-      // (rom) possible bug. Better assign properties not property implementors.
       Self.FImageIndex := FImageIndex;
       Self.FEnabled := FEnabled;
       Self.FVisible := FVisible;
@@ -1408,6 +1407,7 @@ begin
       Self.FCaption := FCaption;
       Self.FModified := FModified;
       Self.FImages := FImages;
+      Changed;
     end;
   end
   else
@@ -1438,8 +1438,8 @@ begin
 
     case TabBar.Orientation of
       toBottom:
-          Result := Rect(FLeft, 0,
-            FLeft + TabBar.GetTabWidth(Self), 0 + TabBar.GetTabHeight(Self));
+        Result := Rect(FLeft, 0,
+          FLeft + TabBar.GetTabWidth(Self), 0 + TabBar.GetTabHeight(Self));
     else
       // toTop
       Result := Rect(FLeft, TabBar.ClientHeight - TabBar.GetTabHeight(Self),

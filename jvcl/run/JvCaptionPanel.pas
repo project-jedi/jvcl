@@ -48,10 +48,13 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages,
+  {$IFDEF CLR}
+  Types,
+  {$ENDIF CLR}
   {$IFDEF VisualCLX}
   Qt,
   {$ENDIF VisualCLX}
-  Classes, Graphics, Controls, Forms,
+  SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls,
   JvComponent, JvExControls;
 
 type
@@ -136,7 +139,7 @@ type
     procedure Paint; override;
     procedure Resize; override;
 
-    procedure AlignControls(AControl: TControl; var Rect: TRect); override;
+    procedure AlignControls(AControl: TControl; var R: TRect); override;
     {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
     {$ENDIF VCL}
@@ -213,7 +216,7 @@ const
 implementation
 
 uses
-  SysUtils, ExtCtrls;
+  JvJCLUtils;
 
 //=== { TJvCapBtn } ==========================================================
 
@@ -523,19 +526,19 @@ begin
   Invalidate;
 end;
 
-procedure TJvCaptionPanel.AlignControls(AControl: TControl; var Rect: TRect);
+procedure TJvCaptionPanel.AlignControls(AControl: TControl; var R: TRect);
 begin
   case FCaptionPosition of
     dpLeft:
-      Rect := Classes.Rect(FCaptionWidth + FCaptionOffsetSmall, 0, ClientWidth, ClientHeight);
+      R := Rect(FCaptionWidth + FCaptionOffsetSmall, 0, ClientWidth, ClientHeight);
     dpTop:
-      Rect := Classes.Rect(0, FCaptionWidth + FCaptionOffsetSmall, ClientWidth, ClientHeight);
+      R := Rect(0, FCaptionWidth + FCaptionOffsetSmall, ClientWidth, ClientHeight);
     dpRight:
-      Rect := Classes.Rect(0, 0, ClientWidth - FCaptionWidth - FCaptionOffsetSmall, ClientHeight);
+      R := Rect(0, 0, ClientWidth - FCaptionWidth - FCaptionOffsetSmall, ClientHeight);
     dpBottom:
-      Rect := Classes.Rect(0, 0, ClientWidth, ClientHeight - FCaptionWidth - FCaptionOffsetSmall);
+      R := Rect(0, 0, ClientWidth, ClientHeight - FCaptionWidth - FCaptionOffsetSmall);
   end;
-  inherited AlignControls(AControl, Rect);
+  inherited AlignControls(AControl, R);
 end;
 
 {$IFDEF VCL}
@@ -658,7 +661,11 @@ begin
       Tf := TFont.Create;
       try
         Tf.Assign(CaptionFont);
+        {$IFDEF CLR}
+        GetObject(Tf.Handle, SizeOf(Lf), Lf);
+        {$ELSE}
         GetObject(Tf.Handle, SizeOf(Lf), @Lf);
+        {$ENDIF CLR}
         Lf.lfEscapement := Rotation * 10;
         Lf.lfOrientation := Rotation * 10;
         Lf.lfOutPrecision := OUT_TT_PRECIS;
@@ -744,7 +751,7 @@ begin
         Flags := Flags or DT_VCENTER;
       if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
         Flags := Flags or DT_NOCLIP; { bug or feature? }
-      DrawText(Canvas.Handle, PChar(Caption), -1, R, Flags);
+      DrawText(Canvas, Caption, -1, R, Flags);
       {$ENDIF VCL}
       {$IFDEF VisualCLX}
       // ToDo: replace with DrawText(Canvas, .... , Rotation)

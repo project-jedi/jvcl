@@ -50,6 +50,9 @@ uses
   {$IFDEF VCL}
   JvJCLUtils, JvComboBox,
   {$ENDIF VCL}
+  {$IFDEF COMPILER5}
+  JvVCL5Utils,
+  {$ENDIF COMPILER5}
   JvComponent, JvExControls, JvExStdCtrls;
 
 type
@@ -103,7 +106,7 @@ type
     function IsFontStored: Boolean;
     procedure FontChange(Sender: TObject);
   public
-    constructor Create(Collection: TCollection); override;
+    constructor Create(Collection: Classes.TCollection); override;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     property LinkedObject: TObject read FLinkedObject write FLinkedObject;
@@ -444,7 +447,7 @@ end;
 
 //=== { TJvImageItem } =======================================================
 
-constructor TJvImageItem.Create(Collection: TCollection);
+constructor TJvImageItem.Create(Collection: Classes.TCollection);
 begin
   // FGlyph MUST be created before calling inherited or the
   // creation of the item from a stream (DFM for instance)

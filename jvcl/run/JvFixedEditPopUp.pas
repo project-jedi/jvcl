@@ -86,6 +86,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF CLR}
+  System.Text, System.Security, System.Runtime.InteropServices,
+  {$ENDIF CLR}
   Windows, Messages, SysUtils, Classes, Controls, Menus, TypInfo,
   JvTypes;
 
@@ -136,6 +139,12 @@ const
 implementation
 
 uses
+  {$IFDEF COMPILER5}
+  JvVCL5Utils,
+  {$ENDIF COMPILER5}
+  {$IFDEF CLR}
+  JclBase,
+  {$ENDIF CLR}
   JvResources;
 
 type
@@ -204,7 +213,7 @@ var
   PopupIntf: IFixedPopupIntf;
 begin
   if Assigned(Edit) and Edit.HandleAllocated then
-    if Edit.GetInterface(IFixedPopupIntf, PopupIntf) then
+    if Supports(Edit, IFixedPopupIntf, PopupIntf) then
       PopupIntf.Copy
     else
       Edit.Perform(WM_COPY, 0, 0);
@@ -215,7 +224,7 @@ var
   PopupIntf: IFixedPopupIntf;
 begin
   if Assigned(Edit) and Edit.HandleAllocated then
-    if Edit.GetInterface(IFixedPopupIntf, PopupIntf) then
+    if Supports(Edit, IFixedPopupIntf, PopupIntf) then
       PopupIntf.Cut
     else
       Edit.Perform(WM_CUT, 0, 0);
@@ -226,7 +235,7 @@ var
   PopupIntf: IFixedPopupIntf;
 begin
   if Assigned(Edit) and Edit.HandleAllocated then
-    if Edit.GetInterface(IFixedPopupIntf, PopupIntf) then
+    if Supports(Edit, IFixedPopupIntf, PopupIntf) then
       PopupIntf.Delete
     else
       Edit.Perform(WM_CLEAR, 0, 0);
@@ -237,7 +246,7 @@ var
   PopupIntf: IFixedPopupIntf;
 begin
   if Assigned(Edit) and Edit.HandleAllocated then
-    if Edit.GetInterface(IFixedPopupIntf, PopupIntf) then
+    if Supports(Edit, IFixedPopupIntf, PopupIntf) then
       PopupIntf.Paste
     else
       Edit.Perform(WM_PASTE, 0, 0);
@@ -248,7 +257,7 @@ var
   PopupIntf: IFixedPopupIntf;
 begin
   if Assigned(Edit) and Edit.HandleAllocated then
-    if Edit.GetInterface(IFixedPopupIntf, PopupIntf) then
+    if Supports(Edit, IFixedPopupIntf, PopupIntf) then
       PopupIntf.SelectAll
     else
       Edit.Perform(EM_SETSEL, 0, -1);
@@ -260,7 +269,7 @@ var
 begin
   if Assigned(Edit) and Edit.HandleAllocated then
   begin
-    if Edit.GetInterface(IFixedPopupIntf, PopupIntf) then
+    if Supports(Edit, IFixedPopupIntf, PopupIntf) then
       PopupIntf.Undo
     else
       Edit.Perform(WM_UNDO, 0, 0);
@@ -281,7 +290,7 @@ begin
   begin
     Result := [];
     // does it really have to be this complicated ?!
-    Integer(Value) := GetOrdProp(Edit, cClipboardCommands);
+    Value := TIntegerSet(GetOrdProp(Edit, cClipboardCommands));
     for I := 0 to SizeOf(Integer) * 8 - 1 do
       if I in Value then
         Include(Result, TJvClipboardCommand(I));
@@ -290,15 +299,31 @@ begin
     Result := [caCopy, caCut, caPaste, caUndo];
 end;
 
+{$IFDEF CLR}
+[SuppressUnmanagedCodeSecurity, DllImport(user32, CharSet = CharSet.Auto, SetLastError = True, EntryPoint = 'LoadMenu')]
+function LoadMenu(hInstance: HINST; lpMenuId: Integer): HMENU; overload; external;
+{$ENDIF CLR}
+
+
 procedure THiddenPopupObject.GetDefaultMenuCaptions;
+const
+  BufLen = 255;
 var
   H: HMODULE;
   hMenu, hSubMenu: THandle;
-  Buf: array [0..255] of Char;
+  {$IFDEF CLR}
+  Buf: StringBuilder;
+  {$ELSE}
+  Buf: array [0..BufLen] of Char;
+  {$ENDIF CLR}
 begin
   // get the translated captions from Windows' own default popup:
   H := GetModuleHandle('user32.dll');
+  {$IFDEF CLR}
+  hMenu := LoadMenu(H, 1);
+  {$ELSE}
   hMenu := LoadMenu(H, MakeIntResource(1));
+  {$ENDIF CLR}
   if hMenu = 0 then
     Exit;
   try
@@ -306,18 +331,21 @@ begin
     if hSubMenu = 0 then
       Exit;
 
-    if GetMenuString(hSubMenu, WM_UNDO, Buf, SizeOf(Buf), MF_BYCOMMAND) <> 0 then
-      FPopupMenu.Items[0].Caption := Buf;
-    if GetMenuString(hSubMenu, WM_CUT, Buf, SizeOf(Buf), MF_BYCOMMAND) <> 0 then
-      FPopupMenu.Items[2].Caption := Buf;
-    if GetMenuString(hSubMenu, WM_COPY, Buf, SizeOf(Buf), MF_BYCOMMAND) <> 0 then
-      FPopupMenu.Items[3].Caption := Buf;
-    if GetMenuString(hSubMenu, WM_PASTE, Buf, SizeOf(Buf), MF_BYCOMMAND) <> 0 then
-      FPopupMenu.Items[4].Caption := Buf;
-    if GetMenuString(hSubMenu, WM_CLEAR, Buf, SizeOf(Buf), MF_BYCOMMAND) <> 0 then
-      FPopupMenu.Items[5].Caption := Buf;
-    if GetMenuString(hSubMenu, EM_SETSEL, Buf, SizeOf(Buf), MF_BYCOMMAND) <> 0 then
-      FPopupMenu.Items[7].Caption := Buf;
+    {$IFDEF CLR}
+    Buf := StringBuilder.Create(BufLen);
+    {$ENDIF CLR}
+    if GetMenuString(hSubMenu, WM_UNDO, Buf, BufLen, MF_BYCOMMAND) <> 0 then
+      FPopupMenu.Items[0].Caption := Buf{$IFDEF CLR}.ToString{$ENDIF};
+    if GetMenuString(hSubMenu, WM_CUT, Buf, BufLen, MF_BYCOMMAND) <> 0 then
+      FPopupMenu.Items[2].Caption := Buf{$IFDEF CLR}.ToString{$ENDIF};
+    if GetMenuString(hSubMenu, WM_COPY, Buf, BufLen, MF_BYCOMMAND) <> 0 then
+      FPopupMenu.Items[3].Caption := Buf{$IFDEF CLR}.ToString{$ENDIF};
+    if GetMenuString(hSubMenu, WM_PASTE, Buf, BufLen, MF_BYCOMMAND) <> 0 then
+      FPopupMenu.Items[4].Caption := Buf{$IFDEF CLR}.ToString{$ENDIF};
+    if GetMenuString(hSubMenu, WM_CLEAR, Buf, BufLen, MF_BYCOMMAND) <> 0 then
+      FPopupMenu.Items[5].Caption := Buf{$IFDEF CLR}.ToString{$ENDIF};
+    if GetMenuString(hSubMenu, EM_SETSEL, Buf, BufLen, MF_BYCOMMAND) <> 0 then
+      FPopupMenu.Items[7].Caption := Buf{$IFDEF CLR}.ToString{$ENDIF};
   finally
     DestroyMenu(hMenu);
   end;
@@ -406,7 +434,7 @@ begin
     cc := GetClipboardCommands;
     FPopupMenu.PopupComponent := Edit;
 
-    if Edit.GetInterface(IFixedPopupIntf, PopupIntf) then
+    if Supports(Edit, IFixedPopupIntf, PopupIntf) then
     begin
       // undo
       FPopupMenu.Items[0].Enabled := (caUndo in cc) and PopupIntf.CanUndo;
@@ -461,18 +489,40 @@ end;
 
 function THiddenPopupObject.SelLength: Integer;
 var
-  StartPos, EndPos: Integer;
+  StartPos, EndPos: Longint;
   MsgResult: Longint;
+  {$IFDEF CLR}
+  p1, p2: IntPtr;
+  {$ENDIF CLR}
 begin
   Result := 0;
   if (Edit <> nil) and Edit.HandleAllocated then
   begin
     StartPos := 0;
     EndPos := 0;
+    {$IFDEF CLR}
+    p1 := Marshal.AllocHGlobal(SizeOf(StartPos));
+    p2 := Marshal.AllocHGlobal(SizeOf(EndPos));
+    try
+      Marshal.StructureToPtr(TObject(StartPos), p1, True);
+      Marshal.StructureToPtr(TObject(EndPos), p2, True);
+      MsgResult := SendMessage(Edit.Handle, EM_GETSEL, Longint(p1), Longint(p2));
+      StartPos := Marshal.ReadInt32(p1);
+      EndPos := Marshal.ReadInt32(p2);
+    finally
+      Marshal.FreeHGlobal(p1);
+      Marshal.FreeHGlobal(p2);
+    end;
+    {$ELSE}
     MsgResult := SendMessage(Edit.Handle, EM_GETSEL, Longint(@StartPos), Longint(@EndPos));
+    {$ENDIF CLR}
     Result := EndPos - StartPos;
     if (Result <= 0) and (MsgResult > 0) then
+      {$IFDEF CLR}
+      Result := (MsgResult shr 16) - MsgResult and $0000FFFF;
+      {$ELSE}
       Result := LongRec(MsgResult).Hi - LongRec(MsgResult).Lo;
+      {$ENDIF CLR}
   end;
 end;
 
@@ -502,7 +552,9 @@ initialization
   {$ENDIF UNITVERSIONING}
 
 finalization
+  {$IFNDEF CLR}
   FreeAndNil(GlobalHiddenPopup);
+  {$ENDIF !CLR}
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}

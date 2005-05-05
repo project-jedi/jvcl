@@ -309,7 +309,7 @@ const
 implementation
 
 uses
-  JvJCLUtils, JvResources;
+  JvResources;
 
 const
   cAutoCaption = 'AutoCaption';
@@ -993,31 +993,31 @@ var
   I: Integer;
 begin
   LFlag := False;
-  if Cmp(PropName, cShowAutoButton) or Cmp(PropName, cShowOtherButton) then
+  if SameText(PropName, cShowAutoButton) or SameText(PropName, cShowOtherButton) then
     LFlag := True
   else
-  if Cmp(PropName, cAutoCaption) then
+  if SameText(PropName, cAutoCaption) then
   begin
     if Properties.AutoCaption = '' then
       Properties.ShowAutoButton := False;
   end
   else
-  if Cmp(PropName, cOtherCaption) then
+  if SameText(PropName, cOtherCaption) then
   begin
     if Properties.OtherCaption = '' then
       Properties.ShowOtherButton := False;
   end
   else
-  if Cmp(PropName, cAutoHint) then
+  if SameText(PropName, cAutoHint) then
     FAutoButton.Hint := Properties.AutoHint
   else
-  if Cmp(PropName, cOtherHint) then
+  if SameText(PropName, cOtherHint) then
     FOtherButton.Hint := Properties.OtherHint
   else
-  if Cmp(PropName, cAutoColor) then
+  if SameText(PropName, cAutoColor) then
     FAutoButton.ButtonColor := Properties.AutoColor
   else
-  if Cmp(PropName, cShowColorHint) then
+  if SameText(PropName, cShowColorHint) then
   begin
     FAutoButton.ShowHint :=  Properties.ShowColorHint;
     FOtherButton.ShowHint :=  Properties.ShowColorHint;

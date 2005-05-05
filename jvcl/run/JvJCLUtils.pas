@@ -49,6 +49,10 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, Messages, ShlObj, ActiveX,
   {$ENDIF MSWINDOWS}
+  {$IFDEF CLR}
+  Types, System.Text, System.Security, System.IO, System.Threading,
+  System.Reflection, System.Diagnostics, System.Runtime.InteropServices,
+  {$ENDIF CLR}
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
@@ -58,13 +62,16 @@ uses
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
+  {$IFDEF COMPILER5}
+  JvVCL5Utils,
+  {$ENDIF COMPILER5}
   SysUtils, Classes, Contnrs, Graphics, Clipbrd, Controls,
-  {$IFDEF VisualCLX}
-  Qt, QWindows, QStdCtrls, 
-  {$ENDIF VisualCLX}
   {$IFDEF HAS_UNIT_STRUTILS}
   StrUtils,
   {$ENDIF HAS_UNIT_STRUTILS}
+  {$IFDEF VisualCLX}
+  Qt, QWindows, QStdCtrls,
+  {$ENDIF VisualCLX}
   TypInfo;
 
 const
@@ -91,6 +98,23 @@ type
   TFileTime = Integer;
 {$ENDIF UNIX}
 
+
+function SendRectMessage(Handle: HWND; Msg: Integer; wParam: WPARAM; var R: TRect): Integer;
+function SendStructMessage(Handle: HWND; Msg: Integer; wParam: WPARAM; var Data): Integer;
+{$IFDEF CLR}
+function VarFromDateTime(const Value: TDateTime): Variant;
+function VarToDateTime(const Value: Variant): TDateTime;
+
+function SucceededCom(out Intf; Value: TObject): Boolean;
+
+function GetPrivateField(Instance: TObject; const FieldName: string): TObject;
+procedure SetPrivateField(Instance: TObject; const FieldName: string; Value: TObject);
+
+[SuppressUnmanagedCodeSecurity, DllImport(user32, CharSet = CharSet.Auto, SetLastError = True, EntryPoint = 'SystemParametersInfo')]
+function SystemParametersInfo(uiAction, uiParam: UINT;
+  var pvParam: TNonClientMetrics; fWinIni: UINT): BOOL; overload; external;
+{$ENDIF CLR}
+
 // (p3) duplicated from JvTypes since this unit should not rely on JVCL at all
 type
   TDateOrder = (doMDY, doDMY, doYMD);
@@ -98,7 +122,7 @@ const
   DefaultDateOrder = doDMY;
   CenturyOffset: Byte = 60;
   NullDate: TDateTime = {-693594} 0;
-                 
+
 function USToLocalFloatStr(const Text: string): string;
 function StrToFloatUS(const Text: string): Extended;
 // StrToFloatUS uses US '.' as decimal seperator and ',' as thousand separator
@@ -106,6 +130,14 @@ function StrToFloatUSDef(const Text: string; Default: Extended): Extended;
 
 function VarIsInt(Value: Variant): Boolean;
  // VarIsInt returns VarIsOrdinal-[varBoolean]
+
+{ PosIdx returns the index of the first appearance of SubStr in Str. The search
+  starts at index "Index". }
+function PosIdx(const SubStr, S: string; Index: Integer = 0): Integer;
+{$IFNDEF CLR}
+function PosIdxW(const SubStr, S: WideString; Index: Integer = 0): Integer;
+{$ENDIF !CLR}
+function PosLastCharIdx(Ch: Char; const S: string; Index: Integer = 0): Integer;
 
 { GetWordOnPos returns Word from string, S, on the cursor position, P}
 function GetWordOnPos(const S: string; const P: Integer): string;
@@ -129,13 +161,19 @@ procedure GetEndPosCaretW(const Text: WideString; CaretX, CaretY: Integer;
 { GetEndPosCaret returns the caret position of the last char. For the position
   after the last char of Text you must add 1 to the returned X value. }
 
-{ SubStr returns substring from string, S, separated with Separator string}
-function SubStr(const S: string; const Index: Integer; const Separator: string): string;
-function SubStrW(const S: WideString; const Index: Integer; const Separator: WideString): WideString;
+{ SubStrBySeparator returns substring from string, S, separated with Separator string}
+function SubStrBySeparator(const S: string; const Index: Integer; const Separator: string; StartIndex: Integer = 1): string;
+{$IFNDEF CLR}
+function SubStrBySeparatorW(const S: WideString; const Index: Integer; const Separator: WideString; StartIndex: Integer = 1): WideString;
+{$ENDIF !CLR}
 { SubStrEnd same to previous function but Index numerated from the end of string }
-function SubStrEnd(const S: string; const Index: Integer; const Separator: string): string;
+//function SubStrEnd(const S: string; const Index: Integer; const Separator: string): string;
 { SubWord returns next Word from string, P, and offsets Pointer to the end of Word, P2 }
+{$IFDEF CLR}
+function SubWord(P: string; var P2: string): string;
+{$ELSE}
 function SubWord(P: PChar; var P2: PChar): string;
+{$ENDIF CLR}
 //  function CurrencyByWord(Value: Currency): string;
 { GetLineByPos returns the Line number, there
   the symbol Pos is pointed. Lines separated with #13 symbol }
@@ -145,8 +183,10 @@ procedure GetXYByPos(const S: string; const Pos: Integer; var X, Y: Integer);
 procedure GetXYByPosW(const S: WideString; const Pos: Integer; var X, Y: Integer);
 { ReplaceString searches for all substrings, OldPattern,
   in a string, S, and replaces them with NewPattern }
-function ReplaceString(S: string; const OldPattern, NewPattern: string): string;
-function ReplaceStringW(S: WideString; const OldPattern, NewPattern: WideString): WideString;
+function ReplaceString(S: string; const OldPattern, NewPattern: string; StartIndex: Integer = 1): string;
+{$IFNDEF CLR}
+function ReplaceStringW(S: WideString; const OldPattern, NewPattern: WideString; StartIndex: Integer = 1): WideString;
+{$ENDIF !CLR}
 { ConcatSep concatenate S1 and S2 strings with Separator.
   if S = '' then separator not included }
 function ConcatSep(const S1, S2, Separator: string): string; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
@@ -163,26 +203,33 @@ function Dos2WinRes(const S: string): string; {$IFDEF SUPPORTS_INLINE} inline; {
 function Win2DosRes(const S: string): string; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 function Win2Koi(const S: string): string;
 
+{ FillString fills the string Buffer with Count Chars }
+procedure FillString(var Buffer: string; Count: Integer; const Value: Char); overload;
+procedure FillString(var Buffer: string; StartIndex, Count: Integer; const Value: Char); overload;
+{ MoveString copies Count Chars from Source to Dest }
+procedure MoveString(const Source: string; var Dest: string; Count: Integer); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE} overload;
+procedure MoveString(const Source: string; SrcStartIdx: Integer; var Dest: string;
+  DstStartIdx: Integer; Count: Integer); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE} overload;
+{$IFNDEF CLR}
 { FillWideChar fills Buffer with Count WideChars (2 Bytes) }
 procedure FillWideChar(var Buffer; Count: Integer; const Value: WideChar);
 { MoveWideChar copies Count WideChars from Source to Dest }
 procedure MoveWideChar(const Source; var Dest; Count: Integer); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
+{$ENDIF !CLR}
 
 { Spaces returns string consists on N space chars }
 function Spaces(const N: Integer): string;
-function SpacesW(const N: Integer): WideString;
 { AddSpaces adds spaces to string S, if its Length is smaller than N }
 function AddSpaces(const S: string; const N: Integer): string;
+{$IFNDEF CLR}
+function SpacesW(const N: Integer): WideString;
 function AddSpacesW(const S: WideString; const N: Integer): WideString;
+{$ENDIF !CLR}
 { function LastDateRUS for russian users only }
 { returns date relative to current date: 'два дн€ назад' }
 function LastDateRUS(const Dat: TDateTime): string;
 { CurrencyToStr format Currency, Cur, using ffCurrency float format}
 function CurrencyToStr(const Cur: Currency): string;
-{ Cmp compares two strings and returns True if they are equal. Case-insensitive.}
-function Cmp(const S1, S2: string): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
-{ StringCat add S2 string to S1 and returns this string }
-function StringCat(var S1: string; S2: string): string;
 { HasChar returns True, if Char, Ch, contains in string, S }
 function HasChar(const Ch: Char; const S: string): Boolean;
 function HasCharW(const Ch: WideChar; const S: WideString): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
@@ -192,38 +239,17 @@ function CharInSetW(const Ch: WideChar; const SetOfChar: TSysCharSet): Boolean; 
 function CountOfChar(const Ch: Char; const S: string): Integer;
 function DefStr(const S: string; Default: string): string; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 
+{$IFNDEF CLR}
 { StrLICompW2 is a faster replacement for JclUnicode.StrLICompW }
 function StrLICompW2(S1, S2: PWideChar; MaxLen: Integer): Integer;
 function StrPosW(S, SubStr: PWideChar): PWideChar;
 function StrLenW(S: PWideChar): Integer;
-{$IFDEF COMPILER5}
-function WideCompareText(const S1, S2: WideString): Integer;
-function WideUpperCase(const S: WideString): WideString;
-function WideLowerCase(const S: WideString): WideString;
-{$ENDIF COMPILER5}
+{$ENDIF !CLR}
 function TrimW(const S: WideString): WideString; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 function TrimLeftW(const S: WideString): WideString; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 function TrimRightW(const S: WideString): WideString; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 {**** files routines}
 procedure SetDelimitedText(List: TStrings; const Text: string; Delimiter: Char);
-
-{$IFDEF COMPILER5}
-
-type
-  TValueSign = -1..1;
-
-const
-  NegativeValue = Low(TValueSign);
-  ZeroValue = 0;
-  PositiveValue = High(TValueSign);
-
-function Sign(const AValue: Integer): TValueSign; overload;
-function Sign(const AValue: Int64): TValueSign; overload;
-function Sign(const AValue: Double): TValueSign; overload;
-
-function TryStrToInt(const S: string; out Value: Integer): Boolean;
-
-{$ENDIF COMPILER5}
 
 const
   {$IFDEF MSWINDOWS}
@@ -256,11 +282,13 @@ function FileEquMasks(FileName, Masks: TFileName;
   CaseSensitive: Boolean = DefaultCaseSensitivity): Boolean;
 function DeleteFiles(const Folder: TFileName; const Masks: string): Boolean;
 
+{$IFNDEF CLR}
 {$IFDEF MSWINDOWS}
 { LZFileExpand expand file, FileSource,
   into FileDest. Given file must be compressed, using MS Compress program }
 function LZFileExpand(const FileSource, FileDest: string): Boolean;
 {$ENDIF MSWINDOWS}
+{$ENDIF !CLR}
 
 { FileGetInfo fills SearchRec record for specified file attributes}
 function FileGetInfo(FileName: TFileName; var SearchRec: TSearchRec): Boolean;
@@ -269,10 +297,8 @@ function HasSubFolder(APath: TFileName): Boolean;
 { IsEmptyFolder returns True, if there are no files or
   folders in given folder, APath}
 function IsEmptyFolder(APath: TFileName): Boolean;
-{ AddSlash add slash Char to Dir parameter, if needed }
-procedure AddSlash(var Dir: TFileName); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 { AddSlash returns string with added slash Char to Dir parameter, if needed }
-function AddSlash2(const Dir: TFileName): string;
+function AddSlash(const Dir: TFileName): string; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 { AddPath returns FileName with Path, if FileName not contain any path }
 function AddPath(const FileName, Path: TFileName): TFileName;
 function AddPaths(const PathList, Path: string): string;
@@ -318,30 +344,25 @@ function TrueInflateRect(const R: TRect; const I: Integer): TRect;
 {**** other routines }
 procedure SwapInt(var Int1, Int2: Integer); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 function IntPower(Base, Exponent: Integer): Integer;
+{$IFNDEF CLR}
 function ChangeTopException(E: TObject): TObject; // Linux version writes error message to ErrOutput
+{$ENDIF !CLR}
 function StrToBool(const S: string): Boolean;
 
-function Var2Type(V: Variant; const VarType: Integer): Variant;
+function Var2Type(V: Variant; const DestVarType: Integer): Variant;
 function VarToInt(V: Variant): Integer;
 function VarToFloat(V: Variant): Double;
-{$IFDEF COMPILER5}
-function VarIsStr(const V: Variant): Boolean;
-{$ENDIF COMPILER5}
 
 { following functions are not documented
   because they do not work properly sometimes, so do not use them }
 // (rom) ReplaceStrings1, GetSubStr removed
-function GetParameter: string;
+
 function GetLongFileName(const FileName: string): string;
-{$IFDEF COMPILER5}
-{* from unit FileCtrl}
-function DirectoryExists(const Name: string): Boolean;
-procedure ForceDirectories(Dir: string);
-{# from unit FileCtrl}
-function SameFileName(const FN1, FN2: string): Boolean;
-{$ENDIF COMPILER5}
 function FileNewExt(const FileName, NewExt: TFileName): TFileName;
+{$IFNDEF CLR}
+function GetParameter: string;
 function GetComputerID: string;
+{$ENDIF !CLR}
 function GetComputerName: string;
 
 {**** string routines }
@@ -368,6 +389,7 @@ procedure SQLAddWhere(SQL: TStrings; const Where: string);
 
 {**** files routines - }
 
+{$IFNDEF CLR}
 {$IFDEF MSWINDOWS}
 { ResSaveToFile save resource named as Name with Typ type into file FileName.
   Resource can be compressed using MS Compress program}
@@ -377,6 +399,7 @@ function ResSaveToFileEx(Instance: HINST; Typ, Name: PChar;
 function ResSaveToString(Instance: HINST; const Typ, Name: string;
   var S: string): Boolean;
 {$ENDIF MSWINDOWS}
+{$ENDIF !CLR}
 { IniReadSection read section, Section, from ini-file,
   IniFileName, into strings, Ss.
   This function reads ALL strings from specified section.
@@ -431,8 +454,10 @@ function ItemHtPlain(const Text: string): string;
 { ClearList - clears list of TObject }
 procedure ClearList(List: TList);
 
+{$IFNDEF CLR}
 procedure MemStreamToClipBoard(MemStream: TMemoryStream; const Format: Word);
 procedure ClipBoardToMemStream(MemStream: TMemoryStream; const Format: Word);
+{$ENDIF !CLR}
 
 { RTTI support }
 function GetPropType(Obj: TObject; const PropName: string): TTypeKind;
@@ -449,12 +474,15 @@ function PointL(const X, Y: Longint): TPointL; {$IFDEF SUPPORTS_INLINE} inline; 
 // (rom) from JvBandUtils to make it obsolete
 function iif(const Test: Boolean; const ATrue, AFalse: Variant): Variant; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 
+{$IFNDEF CLR}
 procedure CopyIconToClipboard(Icon: TIcon; BackColor: TColor);
 function CreateIconFromClipboard: TIcon;
+{$ENDIF !CLR}
 {$IFDEF VCL}
 { begin JvIconClipboardUtils }
 { Icon clipboard routines }
 function CF_ICON: Word;
+{$IFNDEF CLR}
 procedure AssignClipboardIcon(Icon: TIcon);
 
 { Real-size icons support routines (32-bit only) }
@@ -462,6 +490,7 @@ procedure GetIconSize(Icon: HICON; var W, H: Integer);
 function CreateRealSizeIcon(Icon: TIcon): HICON;
 procedure DrawRealSizeIcon(Canvas: TCanvas; Icon: TIcon; X, Y: Integer);
 {end JvIconClipboardUtils }
+{$ENDIF !CLR}
 {$ENDIF VCL}
 
 { begin JvRLE }
@@ -505,9 +534,6 @@ function CutTime(ADate: TDateTime): TDateTime; {$IFDEF SUPPORTS_INLINE} inline; 
 { String to date conversions }
 function GetDateOrder(const DateFormat: string): TDateOrder;
 function MonthFromName(const S: string; MaxLen: Byte): Byte;
-{$IFDEF COMPILER5}
-function TryStrToDateTime(const S: string; out Date: TDateTime): Boolean;
-{$ENDIF COMPILER5}
 function StrToDateDef(const S: string; Default: TDateTime): TDateTime;
 function StrToDateFmt(const DateFormat, S: string): TDateTime;
 function StrToDateFmtDef(const DateFormat, S: string; Default: TDateTime): TDateTime;
@@ -517,8 +543,10 @@ function DefDateMask(BlanksChar: Char; AFourDigitYear: Boolean): string;
 function FormatLongDate(Value: TDateTime): string;
 function FormatLongDateTime(Value: TDateTime): string;
 { end JvDateUtil }
+{$IFNDEF CLR}
 function BufToBinStr(Buf: Pointer; BufSize: Integer): string;
 function BinStrToBuf(Value: string; Buf: Pointer; BufSize: Integer): Integer;
+{$ENDIF !CLR}
 
 
 { begin JvStrUtils }
@@ -564,7 +592,9 @@ function Tab2Space(const S: string; Numb: Byte): string;
 function NPos(const C: string; S: string; N: Integer): Integer;
 { NPos searches for a N-th position of substring C in a given string. }
 function MakeStr(C: Char; N: Integer): string; overload;
+{$IFNDEF CLR}
 function MakeStr(C: WideChar; N: Integer): WideString; overload;
+{$ENDIF !CLR}
 function MS(C: Char; N: Integer): string; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 { MakeStr return a string of length N filled with character C. }
 function AddChar(C: Char; const S: string; N: Integer): string;
@@ -578,10 +608,10 @@ function RightStr(const S: string; N: Integer): string;
 function CenterStr(const S: string; Len: Integer): string;
 { CenterStr centers the characters in the string based upon the
   Len specified. }
-function CompStr(const S1, S2: string): Integer;
+function CompStr(const S1, S2: string): Integer; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 { CompStr compares S1 to S2, with case-sensitivity. The return value is
   -1 if S1 < S2, 0 if S1 = S2, or 1 if S1 > S2. }
-function CompText(const S1, S2: string): Integer;
+function CompText(const S1, S2: string): Integer; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 { CompText compares S1 to S2, without case-sensitivity. The return value
   is the same as for CompStr. }
 function Copy2Symb(const S: string; Symb: Char): string;
@@ -670,15 +700,14 @@ function FindNotBlankCharPos(const S: string): Integer;
 function FindNotBlankCharPosW(const S: WideString): Integer;
 function AnsiChangeCase(const S: string): string;
 function WideChangeCase(const S: string): string;
-function ExtractFilePath2(const FileName: string): string;
 
-{$IFDEF COMPILER5}
-// missing in Delphi 5
-function AnsiStartsText(const SubText, Text: string): Boolean;
-function AnsiEndsText(const SubText, Text: string): Boolean;
-function AnsiStartsStr(const SubStr, Str: string): Boolean;
-function AnsiEndsStr(const SubStr, Str: string): Boolean;
-{$ENDIF COMPILER5}
+{$IFNDEF CLR}
+function StartsText(const SubStr, S: string): Boolean;
+function EndsText(const SubStr, S: string): Boolean;
+
+function DequotedStr(const S: string; QuoteChar: Char = ''''): string;
+function AnsiDequotedStr(const S: AnsiString; AQuote: AnsiChar): AnsiString;
+{$ENDIF !CLR}
 
 {end JvStrUtils}
 
@@ -694,38 +723,29 @@ function NormalDir(const DirName: string): string;
 function RemoveBackSlash(const DirName: string): string; // only for Windows/DOS Paths
 function ValidFileName(const FileName: string): Boolean;
 
+{$IFNDEF CLR}
 {$IFDEF MSWINDOWS}
 function FileLock(Handle: Integer; Offset, LockSize: Longint): Integer; overload;
 function FileLock(Handle: Integer; Offset, LockSize: Int64): Integer; overload;
 function FileUnlock(Handle: Integer; Offset, LockSize: Longint): Integer; overload;
 function FileUnlock(Handle: Integer; Offset, LockSize: Int64): Integer; overload;
-function GetWindowsDir: string;
-function GetSystemDir: string;
 {$ENDIF MSWINDOWS}
+function GetWindowsDir: string;
+{$ENDIF !CLR}
+function GetSystemDir: string;
 
 function ShortToLongFileName(const ShortName: string): string;
-function ShortToLongPath(const ShortName: string): string;
 function LongToShortFileName(const LongName: string): string;
+function ShortToLongPath(const ShortName: string): string;
 function LongToShortPath(const LongName: string): string;
+{$IFNDEF CLR}
 {$IFDEF MSWINDOWS}
 procedure CreateFileLink(const FileName, DisplayName: string; Folder: Integer);
 procedure DeleteFileLink(const DisplayName: string; Folder: Integer);
 {$ENDIF MSWINDOWS}
+{$ENDIF !CLR}
 
 { end JvFileUtil }
-
-{$IFDEF COMPILER5}
-{ begin JvXMLDatabase D5 compatiblility functions }
-function StrToDateTimeDef(const S: string; Default: TDateTime): TDateTime;
-function CompareDateTime(const A, B: TDateTime): Integer;
-// function StrToFloatDef(const Str: string; Default: Extended): Extended;
-{ end JvXMLDatabase D5 compatiblility functions }
-
-{ D5 compatibility functions }
-procedure RaiseLastOSError;
-function IncludeTrailingPathDelimiter(const APath: string): string;
-function ExcludeTrailingPathDelimiter(const APath: string): string;
-{$ENDIF COMPILER5}
 
 // Works like PtInRect but includes all edges in comparision
 function PtInRectInclusive(R: TRect; Pt: TPoint): Boolean;
@@ -738,8 +758,10 @@ function IsFourDigitYear: Boolean;
 { moved from JvJVCLUTils }
 
 //Open an object with the shell (url or something like that)
-function OpenObject(Value: PChar): Boolean; overload;
 function OpenObject(const Value: string): Boolean; overload;
+{$IFNDEF CLR}
+function OpenObject(Value: PChar): Boolean; overload;
+{$ENDIF !CLR}
 
 {$IFDEF MSWINDOWS}
 //Raise the last Exception
@@ -758,12 +780,14 @@ function GetFileVersion(const AFileName: string): Cardinal;
 function GetShellVersion: Cardinal;
 {$EXTERNALSYM GetShellVersion}
 
+{$IFNDEF CLR}
 // CD functions
 procedure OpenCdDrive;
 procedure CloseCdDrive;
 
 // returns True if Drive is accessible
 function DiskInDrive(Drive: Char): Boolean;
+{$ENDIF !CLR}
 {$ENDIF MSWINDOWS}
 
 //Same as linux function ;)
@@ -772,7 +796,7 @@ procedure PError(const Text: string);
 // execute a program without waiting
 procedure Exec(const FileName, Parameters, Directory: string);
 // execute a program and wait for it to finish
-procedure ExecuteAndWait(const FileName: string; Visibility: Integer);
+function ExecuteAndWait(const CommandLine, WorkingDirectory: string; Visibility: Integer = SW_SHOW): Integer;
 
 {$IFDEF VCL}
 // returns True if this is the first instance of the program that is running
@@ -784,7 +808,9 @@ procedure RestoreOtherInstance(const MainFormClassName, MainFormCaption: string)
 // manipulate the traybar and start button
 procedure HideTraybar;
 procedure ShowTraybar;
+{$IFNDEF CLR}
 procedure ShowStartButton(Visible: Boolean = True);
+{$ENDIF !CLR}
 
 // (rom) SC_MONITORPOWER is documented as Windows 95 only
 // (rom) better do some testing
@@ -797,14 +823,16 @@ procedure LowPower;
 function SendKey(const AppName: string; Key: Char): Boolean;
 {$ENDIF VCL}
 {$IFDEF MSWINDOWS}
+
+{$IFNDEF CLR}
+// returns a list of all windows currently visible, the Objects property is filled with their window handle
+procedure GetVisibleWindows(List: TStrings);
 // associates an extension to a specific program
 procedure AssociateExtension(const IconPath, ProgramName, Path, Extension: string);
 
-function GetRecentDocs: TStringList;
 procedure AddToRecentDocs(const FileName: string);
-
-// returns a list of all windows currently visible, the Objects property is filled with their window handle
-procedure GetVisibleWindows(List: TStrings);
+{$ENDIF !CLR}
+function GetRecentDocs: TStringList;
 {$ENDIF MSWINDOWS}
 
 // JvComponentFunctions
@@ -820,7 +848,7 @@ Comments:
   I have tried to group related functions together
 }
 
-function CharIsMoney(const Ch: Char): Boolean;
+function CharIsMoney(const Ch: AnsiChar): Boolean;
 
 { there is a STrToIntDef provided by Delphi, but no "safe" versions of
   StrToFloat or StrToCurr }
@@ -881,6 +909,7 @@ function MinimizeText(const Text: string; Canvas: TCanvas; MaxWidth: Integer): s
   '...' symbols, if Length of S is more than MaxLen }
 function MinimizeString(const S: string; const MaxLen: Integer): string;
 
+{$IFNDEF CLR}
 {$IFDEF MSWINDOWS}
 { RunDLL32 runs a function in a DLL using the utility rundll32.exe (on NT) or rundll.exe (on Win95/98)
  ModuleName is the name of the DLL to load, FuncName is the function to call and CmdLine is
@@ -918,11 +947,15 @@ procedure RunDll32Internal(Wnd: HWND; const DLLName, FuncName, CmdLine: string; 
 from the function. Returns False if the DLL couldn't be loaded or if GetDLLVersion couldn't be found. }
 function GetDLLVersion(const DLLName: string; var pdwMajor, pdwMinor: Integer): Boolean;
 {$ENDIF MSWINDOWS}
+{$ENDIF !CLR}
 
+{$IFNDEF CLR}
 procedure ResourceNotFound(ResID: PChar);
+{$ENDIF !CLR}
 function RectWidth(R: TRect): Integer;
 function RectHeight(R: TRect): Integer;
 
+{$IFNDEF CLR}
 {$IFDEF MSWINDOWS}
 procedure FreeUnusedOle;
 function GetWindowsVersion: string;
@@ -930,32 +963,41 @@ function LoadDLL(const LibName: string): THandle;
 function RegisterServer(const ModuleName: string): Boolean;
 function UnregisterServer(const ModuleName: string): Boolean;
 {$ENDIF MSWINDOWS}
+{$ENDIF !CLR}
 
 { String routines }
 function GetEnvVar(const VarName: string): string;
-function AnsiUpperFirstChar(const S: string): string;
+function AnsiUpperFirstChar(const S: AnsiString): AnsiString;
+{$IFNDEF CLR}
 function StringToPChar(var S: string): PChar;
 function StrPAlloc(const S: string): PChar;
-procedure SplitCommandLine(const CmdLine: string; var ExeName,
-  Params: string);
+{$ENDIF !CLR}
+procedure SplitCommandLine(const CmdLine: string; var ExeName, Params: string);
 function DropT(const S: string): string;
 
 { Memory routines }
 
+{$IFNDEF CLR}
 function AllocMemo(Size: Longint): Pointer;
 function ReallocMemo(fpBlock: Pointer; Size: Longint): Pointer;
 procedure FreeMemo(var fpBlock: Pointer);
 function GetMemoSize(fpBlock: Pointer): Longint;
 function CompareMem(fpBlock1, fpBlock2: Pointer; Size: Cardinal): Boolean;
+{$ENDIF !CLR}
 
 { Manipulate huge pointers routines }
 
+{$IFNDEF CLR}
 procedure HugeInc(var HugePtr: Pointer; Amount: Longint);
 procedure HugeDec(var HugePtr: Pointer; Amount: Longint);
 function HugeOffset(HugePtr: Pointer; Amount: Longint): Pointer;
 procedure HugeMove(Base: Pointer; Dst, Src, Size: Longint);
 procedure HMemCpy(DstPtr, SrcPtr: Pointer; Amount: Longint);
+{$ENDIF !CLR}
+
+{$IFNDEF CLR}
 function WindowClassName(Wnd: HWND): string;
+{$ENDIF !CLR}
 {$IFDEF VCL}
 procedure SwitchToWindow(Wnd: HWND; Restore: Boolean);
 procedure ActivateWindow(Wnd: HWND);
@@ -978,6 +1020,7 @@ function PixelsToDialogUnitsY(PixUnits: Word): Word;
 
 function GetUniqueFileNameInDir(const Path, FileNameMask: string): string;
 
+{$IFNDEF CLR}
 {$IFDEF VCL}
 {$IFDEF BCB}
 function FindPrevInstance(const MainFormClass: ShortString;
@@ -998,10 +1041,13 @@ function BrowseForFolderNative(const Handle: HWND; const Title: string; var Fold
 procedure AntiAlias(Clip: TBitmap);
 procedure AntiAliasRect(Clip: TBitmap; XOrigin, YOrigin,
   XFinal, YFinal: Integer);
+{$ENDIF !CLR}
 
 {$IFDEF VCL}
+{$IFNDEF CLR}
 procedure CopyRectDIBits(ACanvas: TCanvas; const DestRect: TRect;
   ABitmap: TBitmap; const SourceRect: TRect);
+{$ENDIF !CLR}
 function IsTrueType(const FontName: string): Boolean;
 {$ENDIF VCL}
 
@@ -1012,19 +1058,23 @@ function TextToValText(const AValue: string): string;
 {$IFDEF VCL}
 // VisualCLX compatibility functions
 function DrawText(DC: HDC; const Text: TCaption; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
-function DrawText(Canvas: TCanvas; Text: PAnsiChar; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
 function DrawText(Canvas: TCanvas; const Text: string; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
+{$IFNDEF CLR}
+function DrawText(Canvas: TCanvas; Text: PAnsiChar; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
 function DrawTextEx(Canvas: TCanvas; lpchText: PChar; cchText: Integer; var p4: TRect; dwDTFormat: UINT; DTParams: PDrawTextParams): Integer; overload;
 function DrawTextEx(Canvas: TCanvas; const Text: string; cchText: Integer; var p4: TRect; dwDTFormat: UINT; DTParams: PDrawTextParams): Integer; overload;
 {$IFDEF COMPILER6_UP}
 function DrawText(Canvas: TCanvas; const Text: WideString; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
 function DrawTextEx(Canvas: TCanvas; const Text: WideString; cchText: Integer; var p4: TRect; dwDTFormat: UINT; DTParams: PDrawTextParams): Integer; overload;
 {$ENDIF COMPILER6_UP}
+{$ENDIF !CLR}
 
+{$IFNDEF CLR}
 function DrawTextW(Canvas: TCanvas; const Text: WideString; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
 function DrawTextW(Canvas: TCanvas; Text: PWideChar; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
 function DrawTextExW(Canvas: TCanvas; lpchText: PWideChar; cchText: Integer; var p4: TRect; dwDTFormat: UINT; DTParams: PDrawTextParams): Integer; overload;
 function DrawTextExW(Canvas: TCanvas; const Text: WideString; cchText: Integer; var p4: TRect; dwDTFormat: UINT; DTParams: PDrawTextParams): Integer; overload;
+{$ENDIF !CLR}
 
 type
   {$IFDEF COMPILER6_UP}
@@ -1086,6 +1136,49 @@ function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC;
 
 function IsEqualGUID(const IID1, IID2: TGUID): Boolean;
 
+
+{$IFDEF COMPILER5}
+{ These functions simply call their JvVCL5Utils equivalents }
+
+function TryStrToInt(const S: string; out Value: Integer): Boolean;
+function TryStrToDateTime(const S: string; out Date: TDateTime): Boolean;
+function StrToDateTimeDef(const S: string; Default: TDateTime): TDateTime;
+// function StrToFloatDef(const Str: string; Default: Extended): Extended;
+procedure RaiseLastOSError;
+function IncludeTrailingPathDelimiter(const APath: string): string;
+function ExcludeTrailingPathDelimiter(const APath: string): string;
+function DirectoryExists(const Name: string): Boolean;
+function ForceDirectories(Dir: string): Boolean;
+function SameFileName(const FN1, FN2: string): Boolean;
+
+function WideCompareText(const S1, S2: WideString): Integer;
+function WideUpperCase(const S: WideString): WideString;
+function WideLowerCase(const S: WideString): WideString;
+function CompareDateTime(const A, B: TDateTime): Integer;
+
+// StrUtils
+function AnsiStartsText(const SubText, Text: string): Boolean;
+function AnsiEndsText(const SubText, Text: string): Boolean;
+function AnsiStartsStr(const SubStr, Str: string): Boolean;
+function AnsiEndsStr(const SubStr, Str: string): Boolean;
+
+// Math
+type
+  TValueSign = JvVCL5Utils.TValueSign;
+
+const
+  NegativeValue = Low(TValueSign);
+  ZeroValue = 0;
+  PositiveValue = High(TValueSign);
+
+function Sign(const AValue: Integer): TValueSign; overload;
+function Sign(const AValue: Int64): TValueSign; overload;
+function Sign(const AValue: Double): TValueSign; overload;
+
+// Variants
+function VarIsStr(const V: Variant): Boolean;
+{$ENDIF COMPILER5}
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -1111,6 +1204,11 @@ uses
   JclStrings, JclSysInfo,
   {$ENDIF !NO_JCL}
   Math;
+
+{$IFDEF CLR}
+type
+  PPropInfo = TPropInfo;
+{$ENDIF CLR}
 
 const
   Separators: TSysCharSet = [#00, ' ', '-', #13, #10, '.', ',', '/', '\', '#', '"', '''',
@@ -1138,7 +1236,11 @@ const
 
 function StrIPos(const SubStr, S: string): Integer;
 begin
+  {$IFDEF CLR}
+  Result := S.ToLower().IndexOf(SubStr.ToLower());
+  {$ELSE}
   Result := Pos(AnsiLowerCase(SubStr), AnsiLowerCase(S));
+  {$ENDIF CLR}
 end;
 
 function CharIsDigit(Ch: AnsiChar): Boolean;
@@ -1153,11 +1255,16 @@ end;
 
 function CharIsAlpha(Ch: AnsiChar): Boolean;
 begin
-  Result := Windows.IsCharAlpha(Ch);
+  Result := Windows.IsCharAlpha(Char(Ch));
 end;
 
 {$IFDEF MSWINDOWS}
 function GetRecentFolder: string;
+{$IFDEF CLR}
+begin
+  Result := System.Environment.GetFolderPath(Environment.SpecialFolder.Recent);
+end;
+{$ELSE}
 var
   ItemIDList: PItemIDList;
 begin
@@ -1166,9 +1273,97 @@ begin
   SHGetPathFromIDList(ItemIDList, PChar(Result));
   SetLength(Result, Length(PChar(Result)));
 end;
+{$ENDIF CLR}
 {$ENDIF MSWINDOWS}
 
 {$ENDIF NO_JCL}
+
+function SendRectMessage(Handle: HWND; Msg: Integer; wParam: WPARAM; var R: TRect): Integer;
+{$IFDEF CLR}
+var
+  Mem: IntPtr;
+begin
+  { R is a System.ValueType }
+  Mem := Marshal.AllocHGlobal(Marshal.SizeOf(R));
+  try
+    Marshal.StructureToPtr(R, Mem, False);
+    Result := SendMessage(Handle, Msg, wParam, Longint(Mem));
+    R := TRect(Marshal.PtrToStructure(Mem, R.GetType));
+  finally
+    Marshal.DestroyStructure(Mem, R.GetType);
+  end;
+end;
+{$ELSE}
+begin
+  Result := SendMessage(Handle, Msg, wParam, Longint(@R));
+end;
+{$ENDIF CLR}
+
+function SendStructMessage(Handle: HWND; Msg: Integer; wParam: WPARAM; var Data): Integer;
+{$IFDEF CLR}
+var
+  Mem: IntPtr;
+begin
+  { Data is System.Object }
+  Mem := Marshal.AllocHGlobal(Marshal.SizeOf(TObject(Data)));
+  try
+    Marshal.StructureToPtr(TObject(Data), Mem, False);
+    Result := SendMessage(Handle, Msg, wParam, Longint(Mem));
+    Data := Marshal.PtrToStructure(Mem, TObject(Data).GetType);
+  finally
+    Marshal.DestroyStructure(Mem, TObject(Data).GetType);
+  end;
+end;
+{$ELSE}
+begin
+  Result := SendMessage(Handle, Msg, wParam, Longint(@Data));
+end;
+{$ENDIF CLR}
+
+
+{$IFDEF CLR}
+function VarFromDateTime(const Value: TDateTime): Variant;
+begin
+  Result := Value;
+end;
+
+function VarToDateTime(const Value: Variant): TDateTime;
+begin
+  Result := Value;
+end;
+
+function SucceededCom(out Intf; Value: TObject): Boolean;
+begin
+  Intf := Value;
+  Result := Value <> nil;
+end;
+
+function GetPrivateField(Instance: TObject; const FieldName: string): TObject;
+var
+  Info: FieldInfo;
+begin
+  Result := nil;
+  if Instance <> nil then
+  begin
+    Info := Instance.GetType.GetField(FieldName, BindingFlags.NonPublic or BindingFlags.Instance);
+    if Info <> nil then
+      Result := Info.GetValue(Instance);
+  end;
+end;
+
+procedure SetPrivateField(Instance: TObject; const FieldName: string; Value: TObject);
+var
+  Info: FieldInfo;
+begin
+  if Instance <> nil then
+  begin
+    Info := Instance.GetType.GetField(FieldName, BindingFlags.NonPublic or BindingFlags.Instance);
+    if Info <> nil then
+      Info.SetValue(Instance, Value);
+  end;
+end;
+{$ENDIF CLR}
+
 
 // StrToFloatUS uses US '.' as decimal separator and ',' as thousand separator
 
@@ -1180,12 +1375,21 @@ begin
   if (DecimalSeparator <> '.') or (ThousandSeparator <> ',') then
   begin
     for I := 0 to Length(Result) do
+      {$IFNDEF CLR}
       case Result[I] of
         '.':
           Result[I] := DecimalSeparator;
         ',':
           Result[I] := ThousandSeparator;
       end;
+      {$ELSE}
+      case Result[I] of
+        '.':
+          Result[I] := DecimalSeparator[1];
+        ',':
+          Result[I] := ThousandSeparator[1];
+      end;
+      {$ENDIF !CLR}
   end;
 end;
 
@@ -1211,6 +1415,134 @@ begin
     {$ENDIF COMPILER6_UP}
     varSmallint, varInteger];
 end;
+
+function PosIdx(const SubStr, S: string; Index: Integer = 0): Integer;
+{$IFDEF CLR}
+begin
+  Result := S.IndexOf(SubStr, Index - 1) + 1;
+end;
+{$ELSE}
+  // use best register allocation
+  function Find(Index, EndPos: Integer; StartChar: Char; const S: string): Integer;
+  begin
+    for Result := Index to EndPos do
+      if S[Result] = StartChar then
+        Exit;
+    Result := 0;
+  end;
+
+  // use best register allocation
+  function FindNext(Index, EndPos: Integer; const S, SubStr: string): Integer;
+  begin
+    for Result := Index + 1 to EndPos do
+      if S[Result] <> SubStr[Result - Index + 1] then
+        Exit;
+    Result := 0;
+  end;
+
+var
+  StartChar: Char;
+  LenSubStr, LenStr: Integer;
+  EndPos: Cardinal;
+begin
+  if Index <= 0 then
+    Index := 1;
+  Result := 0;
+  LenSubStr := Length(SubStr);
+  LenStr := Length(S);
+  if (LenSubStr = 0) or (S = '') or (LenSubStr > LenStr - (Index - 1)) then
+    Exit;
+
+  StartChar := SubStr[1];
+  EndPos := LenStr - LenSubStr + 1;
+  if LenSubStr = 1 then
+    Result := Find(Index, EndPos, StartChar, S)
+  else
+  begin
+    repeat
+      Result := Find(Index, EndPos, StartChar, S);
+      if Result = 0 then
+        Break;
+      Index := Result;
+      Result := FindNext(Result, Index + LenSubStr - 1, S, SubStr);
+      if Result = 0 then
+      begin
+        Result := Index;
+        Exit;
+      end
+      else
+        Inc(Index);
+    until False;
+  end;
+end;
+
+function PosIdxW(const SubStr, S: WideString; Index: Integer = 0): Integer;
+
+  // use best register allocation
+  function Find(Index, EndPos: Integer; StartChar: WideChar; const S: WideString): Integer;
+  begin
+    for Result := Index to EndPos do
+      if S[Result] = StartChar then
+        Exit;
+    Result := 0;
+  end;
+
+  // use best register allocation
+  function FindNext(Index, EndPos: Integer; const S, SubStr: WideString): Integer;
+  begin
+    for Result := Index + 1 to EndPos do
+      if S[Result] <> SubStr[Result - Index + 1] then
+        Exit;
+    Result := 0;
+  end;
+
+var
+  StartChar: WideChar;
+  LenSubStr, LenStr: Integer;
+  EndPos: Cardinal;
+begin
+  if Index <= 0 then
+    Index := 1;
+  Result := 0;
+  LenSubStr := Length(SubStr);
+  LenStr := Length(S);
+  if (LenSubStr = 0) or (S = '') or (LenSubStr > LenStr - (Index - 1)) then
+    Exit;
+
+  StartChar := SubStr[1];
+  EndPos := LenStr - LenSubStr + 1;
+  if LenSubStr = 1 then
+    Result := Find(Index, EndPos, StartChar, S)
+  else
+  begin
+    repeat
+      Result := Find(Index, EndPos, StartChar, S);
+      if Result = 0 then
+        Break;
+      Index := Result;
+      Result := FindNext(Result, Index + LenSubStr - 1, S, SubStr);
+      if Result = 0 then
+      begin
+        Result := Index;
+        Exit;
+      end
+      else
+        Inc(Index);
+    until False;
+  end;
+end;
+{$ENDIF CLR}
+
+function PosLastCharIdx(Ch: Char; const S: string; Index: Integer = 0): Integer;
+begin
+  if (Index = 0) or (Index > Length(S)) then
+    Index := Length(S);
+  for Result := Index downto 1 do
+    if S[Result] = Ch then
+      Exit;
+  Result := 0;
+end;
+
 
 function GetLineByPos(const S: string; const Pos: Integer): Integer;
 var
@@ -1542,77 +1874,84 @@ begin
   Inc(Y, CaretY);
 end;
 
-function SubStr(const S: string; const Index: Integer; const Separator: string): string;
-{ Returns a substring. Substrings are divided by Sep character [translated] }
+function SubStrBySeparator(const S: string; const Index: Integer; const Separator: string; StartIndex: Integer): string;
+{ Returns a substring. Substrings are divided by a separator character }
 var
-  I: Integer;
-  PB, PE: PChar;
+  I, LenS, LenSeparator: Integer;
 begin
   Result := '';
-  if ((Index < 0) or ((Index = 0) and (Length(S) > 0) and (S[1] = Separator))) or
-    (Length(S) = 0) then
+  LenSeparator := Length(Separator);
+  LenS := Length(S);
+
+  if StartIndex <= 0 then
+    StartIndex := 1;
+  if (LenS = 0) or (LenSeparator = 0) or (StartIndex > LenS) or
+     ((Index < 0) or ((Index = 0) and (LenS > 0) and (S[StartIndex] = Separator[1]))) then
     Exit;
-  PB := PChar(S);
+
   for I := 1 to Index do
   begin
-    PB := StrPos(PB, PChar(Separator));
-    if PB = nil then
+    StartIndex := PosIdx(Separator, S, StartIndex);
+    if StartIndex = 0 then
       Exit;
-    PB := PB + Length(Separator);
-    if PB[0] = #0 then
+    Inc(StartIndex, LenSeparator);
+    if StartIndex > LenS then
       Exit;
   end;
-  PE := StrPos(PB + 1, PChar(Separator));
-  if PE = nil then
-    PE := PChar(S) + Length(S);
-  if not (AnsiStrLIComp(PB, PChar(Separator), Length(Separator)) = 0) then
-    SetString(Result, PB, PE - PB);
+  I := PosIdx(Separator, S, StartIndex + 1);
+  if I = 0 then
+    I := LenS;
+  Result := Copy(S, StartIndex, I - StartIndex);
+  if CompareText(Result, Separator) = 0 then
+    Result := '';
 end;
 
-function SubStrW(const S: WideString; const Index: Integer; const Separator: WideString): WideString;
-{ Returns a substring. Substrings are divided by Sep character [translated] }
+{$IFNDEF CLR}
+function SubStrBySeparatorW(const S: WideString; const Index: Integer; const Separator: WideString; StartIndex: Integer): WideString;
+{ Returns a substring. Substrings are divided by a separator character }
 var
-  I: Integer;
-  PB, PE: PWideChar;
+  I, LenS, LenSeparator: Integer;
 begin
   Result := '';
-  if ((Index < 0) or ((Index = 0) and (Length(S) > 0) and (S[1] = Separator))) or
-    (Length(S) = 0) then
+  LenSeparator := Length(Separator);
+  LenS := Length(S);
+
+  if StartIndex <= 0 then
+    StartIndex := 1;
+  if (LenS = 0) or (LenSeparator = 0) or (StartIndex > LenS) or
+     ((Index < 0) or ((Index = 0) and (LenS > 0) and (S[StartIndex] = Separator[1]))) then
     Exit;
-  PB := PWideChar(S);
+
   for I := 1 to Index do
   begin
-    PB := StrPosW(PB, PWideChar(Separator));
-    if PB = nil then
+    StartIndex := PosIdx(Separator, S, StartIndex);
+    if StartIndex = 0 then
       Exit;
-    PB := PB + Length(Separator);
-    if PB[0] = #0 then
+    Inc(StartIndex, LenSeparator);
+    if StartIndex > LenS then
       Exit;
   end;
-  PE := StrPosW(PB + 1, PWideChar(Separator));
-  if PE = nil then
-    PE := PWideChar(S) + Length(S);
-  if not (StrLICompW2(PB, PWideChar(Separator), Length(Separator)) = 0) then
-    SetString(Result, PB, PE - PB);
+  I := PosIdx(Separator, S, StartIndex + 1);
+  if I = 0 then
+    I := LenS;
+  Result := Copy(S, StartIndex, I - StartIndex);
+  if WideCompareText(Result, Separator) = 0 then
+    Result := '';
 end;
+{$ENDIF !CLR}
 
-function SubStrEnd(const S: string; const Index: Integer; const Separator: string): string;
-{ The same as SubStr, but substrings are numbered from the end [translated]}
+{$IFDEF CLR}
+function SubWord(P: string; var P2: string): string;
 var
-  MaxIndex: Integer;
-  PB: PChar;
+  I: Integer;
 begin
-  { Not optimal implementation [translated] }
-  MaxIndex := 0;
-  PB := StrPos(PChar(S), PChar(Separator));
-  while PB <> nil do
-  begin
-    Inc(MaxIndex);
-    PB := StrPos(PB + Length(Separator), PChar(Separator));
-  end;
-  Result := SubStr(S, MaxIndex - Index, Separator);
+  for I := 1 to Length(P) do
+    if P[I] in Separators then
+      Break;
+  Result := Copy(P, 1, I);
+  P2 := Copy(Result, I + 1, MaxInt);
 end;
-
+{$ELSE}
 function SubWord(P: PChar; var P2: PChar): string;
 var
   I: Integer;
@@ -1623,40 +1962,49 @@ begin
   SetString(Result, P, I);
   P2 := P + I;
 end;
+{$ENDIF CLR}
 
-function ReplaceString(S: string; const OldPattern, NewPattern: string): string;
+function ReplaceString(S: string; const OldPattern, NewPattern: string; StartIndex: Integer): string;
 var
-  LW: Integer;
-  P: PChar;
-  Sm: Integer;
+  I, LenOldPattern: Integer;
 begin
-  LW := Length(OldPattern);
-  P := StrPos(PChar(S), PChar(OldPattern));
-  while P <> nil do
+  if OldPattern <> '' then
   begin
-    Sm := P - PChar(S);
-    S := Copy(S, 1, Sm) + NewPattern + Copy(S, Sm + LW + 1, Length(S));
-    P := StrPos(PChar(S) + Sm + Length(NewPattern), PChar(OldPattern));
+    if StartIndex <= 0 then
+      StartIndex := 1;
+    LenOldPattern := Length(OldPattern);
+    I := PosIdx(OldPattern, S, StartIndex);
+    while I > 0 do
+    begin
+      StartIndex := I + LenOldPattern;
+      S := Copy(S, 1, I - 1) + NewPattern + Copy(S, StartIndex, MaxInt);
+      I := PosIdx(OldPattern, S, StartIndex);
+    end;
   end;
   Result := S;
 end;
 
-function ReplaceStringW(S: WideString; const OldPattern, NewPattern: WideString): WideString;
+{$IFNDEF CLR}
+function ReplaceStringW(S: WideString; const OldPattern, NewPattern: WideString; StartIndex: Integer): WideString;
 var
-  LW: Integer;
-  P: PWideChar;
-  Sm: Integer;
+  I, LenOldPattern: Integer;
 begin
-  LW := Length(OldPattern);
-  P := StrPosW(PWideChar(S), PWideChar(OldPattern));
-  while P <> nil do
+  if OldPattern <> '' then
   begin
-    Sm := P - PWideChar(S);
-    S := Copy(S, 1, Sm) + NewPattern + Copy(S, Sm + LW + 1, Length(S));
-    P := StrPosW(PWideChar(S) + Sm + Length(NewPattern), PWideChar(OldPattern));
+    if StartIndex <= 0 then
+      StartIndex := 1;
+    LenOldPattern := Length(OldPattern);
+    I := PosIdxW(OldPattern, S, StartIndex);
+    while I > 0 do
+    begin
+      StartIndex := I + LenOldPattern;
+      S := Copy(S, 1, I - 1) + NewPattern + Copy(S, StartIndex, MaxInt);
+      I := PosIdxW(OldPattern, S, StartIndex);
+    end;
   end;
   Result := S;
 end;
+{$ENDIF !CLR}
 
 function ConcatSep(const S1, S2, Separator: string): string;
 begin
@@ -1699,7 +2047,11 @@ begin
   Result := False;
   Path := ExtractFilePath(ExpandFileName(FileName)) + AllFilesMask;
   {$IFDEF MSWINDOWS}
+  {$IFDEF CLR}
+  FileName := ExtractFileName(FileName).ToUpper();
+  {$ELSE}
   FileName := AnsiUpperCase(ExtractFileName(FileName));
+  {$ENDIF CLR}
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
   FileName := ExtractFileName(FileName);
@@ -1729,8 +2081,7 @@ var
   DosError: Integer;
 begin
   Result := False;
-  AddSlash(APath);
-  APath := Concat(APath, AllFilesMask);
+  APath := Concat(AddSlash(APath), AllFilesMask);
   DosError := FindFirst(APath, faDirectory, SearchRec);
   while DosError = 0 do
   begin
@@ -1751,8 +2102,7 @@ var
   DosError: Integer;
 begin
   Result := True;
-  AddSlash(APath);
-  APath := Concat(APath, AllFilesMask);
+  APath := Concat(AddSlash(APath), AllFilesMask);
   DosError := FindFirst(APath, faDirectory, SearchRec);
   while DosError = 0 do
   begin
@@ -1766,33 +2116,7 @@ begin
   FindClose(SearchRec);
 end;
 
-{$IFDEF COMPILER5}
-
-function DirectoryExists(const Name: string): Boolean;
-var
-  Code: Cardinal;
-begin
-  Code := Integer(GetFileAttributes(PChar(Name)));
-  Result := (Code <> $FFFFFFFF) and (Code and FILE_ATTRIBUTE_DIRECTORY <> 0);
-end;
-
-procedure ForceDirectories(Dir: string);
-begin
-  if Dir[Length(Dir)] = PathDelim then
-    Delete(Dir, Length(Dir), 1);
-  if (Length(Dir) < 3) or DirectoryExists(Dir) or (ExtractFilePath(Dir) = Dir) then
-    Exit; { avoid 'xyz:\' problem.}
-  ForceDirectories(ExtractFilePath(Dir));
-  CreateDir(Dir);
-end;
-
-function SameFileName(const FN1, FN2: string): Boolean;
-begin
-  Result := CompareText(FN1, FN2) = 0;
-end;
-
-{$ENDIF COMPILER5}
-
+{$IFNDEF CLR}
 {$IFDEF MSWINDOWS}
 function LZFileExpand(const FileSource, FileDest: string): Boolean;
 type
@@ -1841,6 +2165,7 @@ begin
   end;
 end;
 {$ENDIF MSWINDOWS}
+{$ENDIF !CLR}
 
 procedure Dos2Win(var S: string);
 var
@@ -1896,6 +2221,35 @@ begin
   end;
 end;
 
+{$IFNDEF CLR}
+procedure FillString(var Buffer: string; Count: Integer; const Value: Char);
+begin
+  FillChar(Buffer[1], Count, Value);
+end;
+
+procedure FillString(var Buffer: string; StartIndex, Count: Integer; const Value: Char);
+begin
+  if StartIndex <= 0 then
+    StartIndex := 1;
+  FillChar(Buffer[StartIndex], Count, Value);
+end;
+
+procedure MoveString(const Source: string; var Dest: string; Count: Integer);
+begin
+  Move(Source[1], Dest[1], Count);
+end;
+
+procedure MoveString(const Source: string; SrcStartIdx: Integer; var Dest: string;
+  DstStartIdx: Integer; Count: Integer);
+begin
+  if DstStartIdx <= 0 then
+    DstStartIdx := 1;
+  if SrcStartIdx <= 0 then
+    SrcStartIdx := 1;
+
+  Move(Source[SrcStartIdx], Dest[DstStartIdx], Count);
+end;
+
 procedure FillWideChar(var Buffer; Count: Integer; const Value: WideChar);
 var
   P: PLongint;
@@ -1920,24 +2274,56 @@ procedure MoveWideChar(const Source; var Dest; Count: Integer);
 begin
   Move(Source, Dest, Count * SizeOf(WideChar));
 end;
+{$ELSE}
+procedure FillString(var Buffer: string; Count: Integer; const Value: Char);
+var
+  sb: StringBuilder;
+  I: Integer;
+begin
+  sb := StringBuilder.Create(Count);
+  for I := 1 to Count do
+    sb.Append(Value);
+  Buffer := sb.ToString() + Buffer.Substring(Count);
+end;
+
+procedure FillString(var Buffer: string; StartIndex, Count: Integer; const Value: Char); overload;
+var
+  sb: StringBuilder;
+  I: Integer;
+begin
+  if StartIndex <= 0 then
+    StartIndex := 1;
+  sb := StringBuilder.Create(Count);
+  for I := 1 to Count do
+    sb.Append(Value);
+  Buffer := Buffer.Substring(0, StartIndex - 1) + sb.ToString() + Buffer.Substring(StartIndex - 1 + Count);
+end;
+
+procedure MoveString(const Source: string; var Dest: string; Count: Integer);
+begin
+  Dest.Remove(0, Count);
+  Dest.Insert(0, Source.Substring(0, Count));
+end;
+
+procedure MoveString(const Source: string; SrcStartIdx: Integer; var Dest: string;
+  DstStartIdx: Integer; Count: Integer);
+begin
+  if DstStartIdx <= 0 then
+    DstStartIdx := 1;
+  if SrcStartIdx <= 0 then
+    SrcStartIdx := 1;
+
+  Dest.Remove(DstStartIdx - 1, Count);
+  Dest.Insert(DstStartIdx - 1, Source.Substring(SrcStartIdx - 1, Count));
+end;
+{$ENDIF !CLR}
 
 function Spaces(const N: Integer): string;
 begin
   if N > 0 then
   begin
     SetLength(Result, N);
-    FillChar(Result[1], N, ' ');
-  end
-  else
-    Result := '';
-end;
-
-function SpacesW(const N: Integer): WideString;
-begin
-  if N > 0 then
-  begin
-    SetLength(Result, N);
-    FillWideChar(Result[1], N, ' ');
+    FillString(Result, N, ' ');
   end
   else
     Result := '';
@@ -1951,11 +2337,23 @@ begin
   if (Len < N) and (N > 0) then
   begin
     SetLength(Result, N);
-    Move(S[1], Result[1], Len * SizeOf(Char));
-    FillChar(Result[Len + 1], N - Len, ' ');
+    MoveString(S, Result, Len);
+    FillString(Result, Len + 1, N - Len, ' ');
   end
   else
     Result := S;
+end;
+
+{$IFNDEF CLR}
+function SpacesW(const N: Integer): WideString;
+begin
+  if N > 0 then
+  begin
+    SetLength(Result, N);
+    FillWideChar(Result[1], N, ' ');
+  end
+  else
+    Result := '';
 end;
 
 function AddSpacesW(const S: WideString; const N: Integer): WideString;
@@ -1972,6 +2370,7 @@ begin
   else
     Result := S;
 end;
+{$ENDIF !CLR}
 
 { (rb) maybe construct an english variant? }
 
@@ -1979,13 +2378,13 @@ function LastDateRUS(const Dat: TDateTime): string;
 const
   D2D: array [0..9] of Byte =
     (3, 1, 2, 2, 2, 3, 3, 3, 3, 3);
-  Day: array [1..3] of PChar =
+  Day: array [1..3] of string =
     ('день', 'дн€', 'дней'); // Day, Days, Days
-  Month: array [1..3] of PChar =
+  Month: array [1..3] of string =
     ('мес€ц', 'мес€ца', 'мес€цев'); // Month, Months, Months
-  Year: array [1..3] of PChar =
+  Year: array [1..3] of string =
     ('год', 'года', 'лет'); // Year, Years, Years
-  Week: array [1..4] of PChar =
+  Week: array [1..4] of string =
     ('неделю', '2 недели', '3 недели', 'мес€ц'); // Week, 2 Weeks, 3 Weeks, Month
 var
   Y, M, D: Integer;
@@ -2020,13 +2419,7 @@ begin
   end;
 end;
 
-procedure AddSlash(var Dir: TFileName);
-begin
-  if (Length(Dir) > 0) and (Dir[Length(Dir)] <> PathDelim) then
-    Dir := Dir + PathDelim;
-end;
-
-function AddSlash2(const Dir: TFileName): string;
+function AddSlash(const Dir: TFileName): string;
 begin
   Result := Dir;
   if (Length(Dir) > 0) and (Dir[Length(Dir)] <> PathDelim) then
@@ -2036,7 +2429,7 @@ end;
 function AddPath(const FileName, Path: TFileName): TFileName;
 begin
   if ExtractFileDrive(FileName) = '' then
-    Result := AddSlash2(Path) + FileName
+    Result := AddSlash(Path) + FileName
   else
     Result := FileName;
 end;
@@ -2048,12 +2441,12 @@ var
 begin
   Result := '';
   I := 0;
-  S := SubStr(PathList, I, PathSep);
+  S := SubStrBySeparator(PathList, I, PathSep);
   while S <> '' do
   begin
     Result := ConcatSep(Result, AddPath(S, Path), PathSep);
     Inc(I);
-    S := SubStr(PathList, I, PathSep);
+    S := SubStrBySeparator(PathList, I, PathSep);
   end;
 end;
 
@@ -2071,20 +2464,21 @@ var
   S: string;
 begin
   I := 0;
-  S := SubStr(PathList, I, PathSep);
+  S := SubStrBySeparator(PathList, I, PathSep);
   while S <> '' do
   begin
-    Result := AddSlash2(S) + FileName;
+    Result := AddSlash(S) + FileName;
     if FileExists(Result) then
       Exit;
     Inc(I);
-    S := SubStr(PathList, I, PathSep);
+    S := SubStrBySeparator(PathList, I, PathSep);
   end;
   Result := '';
 end;
 
-function GetComputerID: string;
+{$IFNDEF CLR}
 {$IFDEF MSWINDOWS}
+function GetComputerID: string;
 var
   SN: DWORD;
   Nul: DWORD;
@@ -2107,25 +2501,35 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 {$IFDEF UNIX}
+function GetComputerID: string;
 begin
   Result := 'None';
 end;
 {$ENDIF UNIX}
 
+{$ENDIF !CLR}
+
+function GetComputerName: string;
+{$IFDEF CLR}
+begin
+  Result := System.Environment.MachineName;
+end;
+{$ELSE}
+var
+  nSize: Cardinal;
+begin
+  nSize := MAX_COMPUTERNAME_LENGTH + 1;
+  SetLength(Result, nSize);
+  if Windows.GetComputerName(PChar(Result), nSize) then
+    SetLength(Result, nSize)
+  else
+    Result := '';
+end;
+{$ENDIF CLR}
+
 function CurrencyToStr(const Cur: Currency): string;
 begin
   Result := CurrToStrF(Cur, ffCurrency, CurrencyDecimals)
-end;
-
-function Cmp(const S1, S2: string): Boolean;
-begin
-  Result := AnsiStrIComp(PChar(S1), PChar(S2)) = 0;
-end;
-
-function StringCat(var S1: string; S2: string): string;
-begin
-  S1 := S1 + S2;
-  Result := S1;
 end;
 
 function HasChar(const Ch: Char; const S: string): Boolean;
@@ -2194,7 +2598,7 @@ begin
   Result := False;
   for I := 1 to ParamCount do
   begin
-    Result := Cmp(ParamStr(I), Param);
+    Result := SameText(ParamStr(I), Param);
     if Result then
       Exit;
   end;
@@ -2208,7 +2612,7 @@ begin
   for I := 1 to ParamCount do
     if HasChar(ParamStr(I)[1], '-/') then
     begin
-      Result := Cmp(Copy(ParamStr(I), 2, Length(Param)), Param);
+      Result := SameText(Copy(ParamStr(I), 2, Length(Param)), Param);
       if Result then
         Exit;
     end;
@@ -2221,7 +2625,7 @@ begin
   Result := '';
   for I := 1 to ParamCount do
     if HasChar(ParamStr(I)[1], '-/\') and
-      Cmp(Copy(ParamStr(I), 2, Length(Param)), Param) then
+      SameText(Copy(ParamStr(I), 2, Length(Param)), Param) then
     begin
       Result := Copy(ParamStr(I), 2 + Length(Param), 260);
       Exit;
@@ -2270,6 +2674,7 @@ begin
     Result := 1;
 end;
 
+{$IFNDEF CLR}
 function ChangeTopException(E: TObject): TObject;
 type
   PRaiseFrame = ^TRaiseFrame;
@@ -2305,6 +2710,7 @@ begin
   Result := E;
   {$ENDIF UNIX}
 end;
+{$ENDIF !CLR}
 
 {$IFDEF VCL}
 function KeyPressed(VK: Integer): Boolean;
@@ -2313,12 +2719,22 @@ begin
 end;
 {$ENDIF VCL}
 
-function Var2Type(V: Variant; const VarType: Integer): Variant;
+function Var2Type(V: Variant; const DestVarType: Integer): Variant;
+var
+  VType: TVarType;
 begin
-  if TVarData(V).VType in [varEmpty, varNull] then
+  {$IFDEF CLR}
+  VType := VarType(V);
+  {$ELSE}
+  VType := TVarData(V).VType;
+  {$ENDIF CLR}
+  if VType in [varEmpty, varNull] then
   begin
-    case VarType of
-      varString, varOleStr:
+    case DestVarType of
+      {$IFNDEF CLR}
+      varOleStr,
+      {$ENDIF !CLR}
+      varString:
         Result := '';
       varInteger, varSmallint, varByte:
         Result := 0;
@@ -2326,15 +2742,19 @@ begin
         Result := False;
       varSingle, varDouble, varCurrency, varDate:
         Result := 0.0;
+      {$IFDEF CLR}
+      varObject:
+      {$ELSE}
       varVariant:
+      {$ENDIF CLR}
         Result := Null;
     else
-      Result := VarAsType(V, VarType);
+      Result := VarAsType(V, DestVarType);
     end;
   end
   else
-    Result := VarAsType(V, VarType);
-  if (VarType = varInteger) and (TVarData(V).VType = varBoolean) then
+    Result := VarAsType(V, DestVarType);
+  if (DestVarType = varInteger) and (VType = varBoolean) then
     Result := Integer(V = True);
 end;
 
@@ -2348,21 +2768,6 @@ begin
   Result := Var2Type(V, varDouble);
 end;
 
-{$IFDEF COMPILER5}
-function VarIsStr(const V: Variant): Boolean;
-var
-  VarType: TVarType;
-  VarData: PVarData;
-begin
-  VarData := @TVarData(V);
-  while VarData.VType = varByRef or varVariant do
-    VarData := PVarData(VarData.VPointer);
-
-  VarType := VarData^.VType;
-  Result := (VarType = varOleStr) or (VarType = varString);
-end;
-{$ENDIF COMPILER5}
-
 function CopyDir(const SourceDir, DestDir: TFileName): Boolean;
 var
   SearchRec: TSearchRec;
@@ -2373,18 +2778,21 @@ begin
   if not CreateDir(DestDir) then
     Exit;
   Path := SourceDir;
-  DestPath := AddSlash2(DestDir);
-  AddSlash(Path);
+  DestPath := AddSlash(DestDir);
+  Path := AddSlash(Path);
   DosError := FindFirst(Path + AllFilesMask, faAnyFile, SearchRec);
   while DosError = 0 do
   begin
     if (SearchRec.Name <> '.') and (SearchRec.Name <> '..') then
     begin
       if (SearchRec.Attr and faDirectory) = faDirectory then
-        Result := CopyDir(Path + SearchRec.Name, AddSlash2(DestDir) + SearchRec.Name)
+        Result := CopyDir(Path + SearchRec.Name, AddSlash(DestDir) + SearchRec.Name)
       else
-        Result := CopyFile(PChar(Path + SearchRec.Name),
-          PChar(DestPath + SearchRec.Name), True);
+        {$IFDEF CLR}
+        Result := CopyFile(Path + SearchRec.Name, DestPath + SearchRec.Name, True);
+        {$ELSE}
+        Result := CopyFile(PChar(Path + SearchRec.Name), PChar(DestPath + SearchRec.Name), True);
+        {$ENDIF CLR}
       if not Result then
         Exit;
     end;
@@ -2445,6 +2853,7 @@ begin
     Result := Default;
 end;
 
+{$IFNDEF CLR}
 function StrLICompW2(S1, S2: PWideChar; MaxLen: Integer): Integer;
 // faster than the JclUnicode.StrLICompW function
 var
@@ -2498,33 +2907,7 @@ begin
     while S[Result] <> #0 do
       Inc(Result);
 end;
-
-{$IFDEF COMPILER5}
-
-function WideCompareText(const S1, S2: WideString): Integer;
-begin
-  if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
-    Result := CompareText(string(S1), string(S2))
-  else
-    Result := CompareStringW(LOCALE_USER_DEFAULT, NORM_IGNORECASE,
-      PWideChar(S1), Length(S1), PWideChar(S2), Length(S2)) - 2;
-end;
-
-function WideUpperCase(const S: WideString): WideString;
-begin
-  Result := S;
-  if Result <> '' then
-    CharUpperBuffW(Pointer(Result), Length(Result));
-end;
-
-function WideLowerCase(const S: WideString): WideString;
-begin
-  Result := S;
-  if Result <> '' then
-    CharLowerBuffW(Pointer(Result), Length(Result));
-end;
-
-{$ENDIF COMPILER5}
+{$ENDIF !CLR}
 
 function TrimW(const S: WideString): WideString;
 {$IFDEF COMPILER6_UP}
@@ -2643,66 +3026,9 @@ begin
   {$ENDIF COMPILER6_UP}
 end;
 
-{$IFDEF COMPILER5}
-
-function Sign(const AValue: Integer): TValueSign;
-begin
-  if AValue < 0 then
-    Result := NegativeValue
-  else
-  if AValue > 0 then
-    Result := PositiveValue
-  else
-    Result := ZeroValue;
-end;
-
-function Sign(const AValue: Int64): TValueSign;
-begin
-  if AValue < 0 then
-    Result := NegativeValue
-  else
-  if AValue > 0 then
-    Result := PositiveValue
-  else
-    Result := ZeroValue;
-end;
-
-function Sign(const AValue: Double): TValueSign;
-begin
-  if (PInt64(@AValue)^ and $7FFFFFFFFFFFFFFF) = $0000000000000000 then
-    Result := ZeroValue
-  else
-  if (PInt64(@AValue)^ and $8000000000000000) = $8000000000000000 then
-    Result := NegativeValue
-  else
-    Result := PositiveValue;
-end;
-
-function TryStrToInt(const S: string; out Value: Integer): Boolean;
-var
-  E: Integer;
-begin
-  Val(S, Value, E);
-  Result := E = 0;
-end;
-
-{$ENDIF COMPILER5}
-
-function GetComputerName: string;
-var
-  nSize: Cardinal;
-begin
-  nSize := MAX_COMPUTERNAME_LENGTH + 1;
-  SetLength(Result, nSize);
-  if Windows.GetComputerName(PChar(Result), nSize) then
-    SetLength(Result, nSize)
-  else
-    Result := '';
-end;
-
 function StrToBool(const S: string): Boolean;
 begin
-  Result := (S = '1') or Cmp(S, 'True') or Cmp(S, 'yes');
+  Result := (S = '1') or SameText(S, 'True') or SameText(S, 'yes');
 end;
 
 function RATextOutEx(Canvas: TCanvas; const R, RClip: TRect; const S: string;
@@ -2724,9 +3050,15 @@ begin
           R.Left, // X-coordinate of reference point
           R.Top + H * I, // Y-coordinate of reference point
           ETO_CLIPPED, // text-output options
+          {$IFDEF CLR}
+          RClip,
+          Ss[I],
+          Length(Ss[I]),
+          {$ELSE}
           @RClip, // optional clipping and/or opaquing rectangle
           PChar(Ss[I]),
           Length(Ss[I]), // number of characters in string
+          {$ENDIF CLR}
           nil); // address of array of intercharacter spacing values
   finally
     Ss.Free;
@@ -2875,7 +3207,7 @@ begin
   FileList.BeginUpdate;
   try
     FileList.Clear;
-    Result := FindFirst(AddSlash2(Folder) + Mask, faAnyFile, SearchRec);
+    Result := FindFirst(AddSlash(Folder) + Mask, faAnyFile, SearchRec);
     DosError := Result;
     while DosError = 0 do
     begin
@@ -2897,7 +3229,7 @@ begin
   FolderList.BeginUpdate;
   try
     FolderList.Clear;
-    Result := FindFirst(AddSlash2(Folder) + AllFilesMask, faAnyFile, SearchRec);
+    Result := FindFirst(AddSlash(Folder) + AllFilesMask, faAnyFile, SearchRec);
     DosError := Result;
     while DosError = 0 do
     begin
@@ -2970,21 +3302,10 @@ end;
 
 function ReplaceAllStrings(S: string; Words, Frases: TStrings): string;
 var
-  I, LW: Integer;
-  P: PChar;
-  Sm: Integer;
+  I: Integer;
 begin
   for I := 0 to Words.Count - 1 do
-  begin
-    LW := Length(Words[I]);
-    P := StrPos(PChar(S), PChar(Words[I]));
-    while P <> nil do
-    begin
-      Sm := P - PChar(S);
-      S := Copy(S, 1, Sm) + Frases[I] + Copy(S, Sm + LW + 1, Length(S));
-      P := StrPos(PChar(S) + Sm + Length(Frases[I]), PChar(Words[I]));
-    end;
-  end;
+    Result := ReplaceString(S, Words[I], Frases[I]);
   Result := S;
 end;
 
@@ -3020,6 +3341,18 @@ begin
   J := SQL.Count - 1;
   for I := 0 to SQL.Count - 1 do
     // (rom) does this always work? Think of a fieldname "grouporder"
+    {$IFDEF CLR}
+    if StartsText('where ', SQL[I]) then
+    begin
+      J := I + 1;
+      while J < SQL.Count do
+      begin
+        if StartsText('order ', SQL[J]) or StartsText('group ', SQL[J]) then
+          Break;
+        Inc(J);
+      end;
+    end;
+    {$ELSE}
     if StrLIComp(PChar(SQL[I]), 'where ', 6) = 0 then
     begin
       J := I + 1;
@@ -3031,6 +3364,7 @@ begin
         Inc(J);
       end;
     end;
+    {$ENDIF CLR}
   SQL.Insert(J, 'and ' + Where);
 end;
 
@@ -3113,6 +3447,7 @@ begin
   Result.Canvas.CopyRect(Rect(0, 0, AWidth, AHeight), SrcBitmap.Canvas, Bounds(AWidth * Index, 0, AWidth, AHeight));
 end;
 
+{$IFNDEF CLR}
 {$IFDEF MSWINDOWS}
 
 function ResSaveToFileEx(Instance: HINST; Typ, Name: PChar;
@@ -3211,6 +3546,7 @@ begin
 end;
 
 {$ENDIF MSWINDOWS}
+{$ENDIF !CLR}
 
 function TextHeight(const AStr: string): Integer;
 var
@@ -3278,12 +3614,16 @@ var
 
   function Cmp(const M1: string): Boolean;
   begin
+    {$IFDEF CLR}
+    Result := System.String.Compare(Text, I, M1, 0, M1.Length, True) = 0;
+    {$ELSE}
     Result := AnsiStrLIComp(PChar(Text) + I, PChar(M1), Length(M1)) = 0;
+    {$ENDIF CLR}
   end;
 
   function Cmp1(const M1: string): Boolean;
   begin
-    Result := AnsiStrLIComp(PChar(Text) + I, PChar(M1), Length(M1)) = 0;
+    Result := Cmp(M1);
     if Result then
       Inc(I, Length(M1));
   end;
@@ -3372,7 +3712,7 @@ begin
         else
         if Cmp1('c:') then
         begin
-          CL := SubStr(PChar(Text) + I, 0, '>');
+          CL := SubStrBySeparator(Text, 0, '>', I);
           if (HideSelColor or not (odSelected in State)) and Assigned(Canvas) then
           try
             if (Length(CL) > 0) and (CL[1] <> '$') then
@@ -3462,6 +3802,7 @@ begin
   end;
 end;
 
+{$IFNDEF CLR}
 procedure MemStreamToClipBoard(MemStream: TMemoryStream; const Format: Word);
 {$IFDEF VCL}
 var
@@ -3537,6 +3878,16 @@ begin
   end;
 end;
 {$ENDIF VisualCLX}
+{$ENDIF !CLR}
+
+function GetPropTypeKind(PropInf: PPropInfo): TTypeKind;
+begin
+  {$IFDEF CLR}
+  Result := PropInf.TypeKind;
+  {$ELSE}
+  Result := PropInf.PropType^.Kind;
+  {$ENDIF CLR}
+end;
 
 function GetPropType(Obj: TObject; const PropName: string): TTypeKind;
 var
@@ -3546,7 +3897,7 @@ begin
   if PropInf = nil then
     Result := tkUnknown
   else
-    Result := PropInf^.PropType^.Kind;
+    Result := GetPropTypeKind(PropInf);
 end;
 
 function GetPropStr(Obj: TObject; const PropName: string): string;
@@ -3555,10 +3906,17 @@ var
 begin
   PropInf := GetPropInfo(Obj.ClassInfo, PropName);
   if PropInf = nil then
+    {$IFDEF CLR}
+    raise Exception.CreateFmt(RsEPropertyNotExists, [PropName]);
+    {$ELSE}
     raise Exception.CreateResFmt(@RsEPropertyNotExists, [PropName]);
-  if not (PropInf^.PropType^.Kind in
-    [tkString, tkLString, tkWString]) then
+    {$ENDIF CLR}
+  if not (GetPropTypeKind(PropInf) in [tkString, tkLString, tkWString]) then
+    {$IFDEF CLR}
+    raise Exception.CreateFmt(RsEInvalidPropertyType, [PropName]);
+    {$ELSE}
     raise Exception.CreateResFmt(@RsEInvalidPropertyType, [PropName]);
+    {$ENDIF CLR}
   Result := GetStrProp(Obj, PropInf);
 end;
 
@@ -3568,10 +3926,17 @@ var
 begin
   PropInf := GetPropInfo(Obj.ClassInfo, PropName);
   if PropInf = nil then
+    {$IFDEF CLR}
+    raise Exception.CreateFmt(RsEPropertyNotExists, [PropName]);
+    {$ELSE}
     raise Exception.CreateResFmt(@RsEPropertyNotExists, [PropName]);
-  if not (PropInf^.PropType^.Kind in
-    [tkInteger, tkChar, tkWChar, tkEnumeration, tkClass]) then
+    {$ENDIF CLR}
+  if not (GetPropTypeKind(PropInf) in [tkInteger, tkChar, tkWChar, tkEnumeration, tkClass]) then
+    {$IFDEF CLR}
+    raise Exception.CreateFmt(RsEInvalidPropertyType, [PropName]);
+    {$ELSE}
     raise Exception.CreateResFmt(@RsEInvalidPropertyType, [PropName]);
+    {$ENDIF CLR}
   Result := GetOrdProp(Obj, PropInf);
 end;
 
@@ -3581,9 +3946,17 @@ var
 begin
   PropInf := GetPropInfo(Obj.ClassInfo, PropName);
   if PropInf = nil then
+    {$IFDEF CLR}
+    raise Exception.CreateFmt(RsEPropertyNotExists, [PropName]);
+    {$ELSE}
     raise Exception.CreateResFmt(@RsEPropertyNotExists, [PropName]);
-  if not (PropInf^.PropType^.Kind = tkMethod) then
+    {$ENDIF CLR}
+  if not (GetPropTypeKind(PropInf) = tkMethod) then
+    {$IFDEF CLR}
+    raise Exception.CreateFmt(RsEInvalidPropertyType, [PropName]);
+    {$ELSE}
     raise Exception.CreateResFmt(@RsEInvalidPropertyType, [PropName]);
+    {$ENDIF CLR}
   Result := GetMethodProp(Obj, PropInf);
 end;
 
@@ -3672,6 +4045,7 @@ begin
   Result := Private_CF_ICON;
 end;
 
+{$IFNDEF CLR}
 function CreateBitmapFromIcon(Icon: TIcon; BackColor: TColor): TBitmap;
 var
   Ico: HICON;
@@ -3797,6 +4171,7 @@ begin
     raise;
   end;
 end;
+{$ENDIF !CLR}
 
 {$ENDIF VCL}
 
@@ -3883,9 +4258,10 @@ begin
   end;
 end;
 
+{$IFNDEF CLR}
 procedure OutOfResources;
 begin
-  raise EOutOfResources.CreateRes(@SOutOfResources);
+  raise EOutOfResources.Create(SOutOfResources);
 end;
 
 function DupBits(Src: HBITMAP; Size: TPoint; Mono: Boolean): HBITMAP;
@@ -3927,6 +4303,7 @@ begin
   DeleteDC(Mem2);
 end;
 
+{$IFDEF MSWINDOWS}
 procedure TwoBitsFromDIB(var BI: TBitmapInfoHeader; var XorBits, AndBits: HBITMAP);
 type
   PLongArray = ^TLongArray;
@@ -3988,7 +4365,6 @@ begin
   end;
 end;
 
-{$IFDEF MSWINDOWS}
 procedure ReadIcon(Stream: TStream; var Icon: HICON; ImageCount: Integer;
   StartOffset: Integer);
 type
@@ -4177,6 +4553,7 @@ begin
 end;
 
 {$ENDIF VCL}
+{$ENDIF !CLR}
 
 { end JvIconClipboardUtils }
 
@@ -4676,7 +5053,7 @@ begin
   end;
 end;
 
-function ScanDate(const S, DateFormat: string; var Pos: Integer;
+function ScanDate(const S, DateFormat: string; var Position: Integer;
   var Y, M, D: Integer): Boolean;
 var
   DateOrder: TDateOrder;
@@ -4688,13 +5065,13 @@ begin
   D := 0;
   DateOrder := GetDateOrder(DateFormat);
   if ShortDateFormat[1] = 'g' then { skip over prefix text }
-    ScanToNumber(S, Pos);
-  if not (ScanNumber(S, MaxInt, Pos, N1) and ScanChar(S, Pos, DateSeparator) and
-    ScanNumber(S, MaxInt, Pos, N2)) then
+    ScanToNumber(S, Position);
+  if not (ScanNumber(S, MaxInt, Position, N1) and ScanChar(S, Position, DateSeparator{$IFDEF CLR}[1]{$ENDIF}) and
+    ScanNumber(S, MaxInt, Position, N2)) then
     Exit;
-  if ScanChar(S, Pos, DateSeparator) then
+  if ScanChar(S, Position, DateSeparator{$IFDEF CLR}[1]{$ENDIF}) then
   begin
-    if not ScanNumber(S, MaxInt, Pos, N3) then
+    if not ScanNumber(S, MaxInt, Position, N3) then
       Exit;
     case DateOrder of
       doMDY:
@@ -4732,22 +5109,27 @@ begin
       D := N2;
     end;
   end;
-  ScanChar(S, Pos, DateSeparator);
-  ScanBlanks(S, Pos);
-  if SysLocale.FarEast and (System.Pos('ddd', ShortDateFormat) <> 0) then
+  ScanChar(S, Position, DateSeparator{$IFDEF CLR}[1]{$ENDIF});
+  ScanBlanks(S, Position);
+  if SysLocale.FarEast and (Pos('ddd', ShortDateFormat) <> 0) then
   begin { ignore trailing text }
     if ShortTimeFormat[1] in ['0'..'9'] then { stop at time digit }
-      ScanToNumber(S, Pos)
+      ScanToNumber(S, Position)
     else { stop at time prefix }
       repeat
-        while (Pos <= Length(S)) and (S[Pos] <> ' ') do
-          Inc(Pos);
-        ScanBlanks(S, Pos);
-      until (Pos > Length(S)) or
-        AnsiSameText(TimeAMString, Copy(S, Pos, Length(TimeAMString))) or
-        AnsiSameText(TimePMString, Copy(S, Pos, Length(TimePMString)));
+        while (Position <= Length(S)) and (S[Position] <> ' ') do
+          Inc(Position);
+        ScanBlanks(S, Position);
+      until (Position > Length(S)) or
+        {$IFDEF CLR}
+        SameText(TimeAMString, Copy(S, Position, Length(TimeAMString))) or
+        SameText(TimePMString, Copy(S, Position, Length(TimePMString)));
+        {$ELSE}
+        AnsiSameText(TimeAMString, Copy(S, Position, Length(TimeAMString))) or
+        AnsiSameText(TimePMString, Copy(S, Position, Length(TimePMString)));
+        {$ENDIF CLR}
   end;
-  Result := IsValidDate(Y, M, D) and (Pos > Length(S));
+  Result := IsValidDate(Y, M, D) and (Position > Length(S));
 end;
 
 function MonthFromName(const S: string; MaxLen: Byte): Byte;
@@ -4756,8 +5138,11 @@ begin
     for Result := 1 to 12 do
     begin
       if (Length(LongMonthNames[Result]) > 0) and
-        AnsiSameText(Copy(S, 1, MaxLen),
-        Copy(LongMonthNames[Result], 1, MaxLen)) then
+         {$IFDEF CLR}
+         SameText(Copy(S, 1, MaxLen), Copy(LongMonthNames[Result], 1, MaxLen)) then
+         {$ELSE}
+         AnsiSameText(Copy(S, 1, MaxLen), Copy(LongMonthNames[Result], 1, MaxLen)) then
+         {$ENDIF CLR}
         Exit;
     end;
   Result := 0;
@@ -4777,7 +5162,11 @@ begin
   else
   if Length(S) > L then
     Exit;
+  {$IFDEF CLR}
+  J := Pos(MakeStr(Ch, Cnt), Format.ToUpper());
+  {$ELSE}
   J := Pos(MakeStr(Ch, Cnt), AnsiUpperCase(Format));
+  {$ENDIF CLR}
   if J <= 0 then
     Exit;
   Tmp := '';
@@ -4842,22 +5231,14 @@ begin
   end;
 end;
 
-{$IFDEF COMPILER5}
-function TryStrToDateTime(const S: string; out Date: TDateTime): Boolean;
-begin
-  Result := True;
-  try
-    Date := StrToDateTime(S);
-  except
-    Result := False;
-  end;
-end;
-{$ENDIF COMPILER5}
-
 function StrToDateFmt(const DateFormat, S: string): TDateTime;
 begin
   if not InternalStrToDate(DateFormat, S, Result) then
+    {$IFDEF CLR}
+    raise EConvertError.CreateFmt(SInvalidDate, [S]);
+    {$ELSE}
     raise EConvertError.CreateResFmt(@SInvalidDate, [S]);
+    {$ENDIF CLR}
 end;
 
 function StrToDateDef(const S: string; Default: TDateTime): TDateTime;
@@ -4923,6 +5304,11 @@ begin
 end;
 
 function FormatLongDate(Value: TDateTime): string;
+{$IFDEF CLR}
+begin
+  Result := TrimRight(FormatDateTime(LongDateFormat, Value));
+end;
+{$ELSE}
 {$IFDEF MSWINDOWS}
 var
   Buffer: array [0..1023] of Char;
@@ -4939,6 +5325,7 @@ begin
   Result := TrimRight(FormatDateTime(LongDateFormat, Value));
 end;
 {$ENDIF UNIX}
+{$ENDIF CLR}
 
 function FormatLongDateTime(Value: TDateTime): string;
 begin
@@ -4955,10 +5342,15 @@ end;
 
 function IsFourDigitYear: Boolean;
 begin
+  {$IFDEF CLR}
+  Result := Pos('YYYY', ShortDateFormat.ToUpper()) > 0;
+  {$ELSE}
   Result := Pos('YYYY', AnsiUpperCase(ShortDateFormat)) > 0;
+  {$ENDIF CLR}
 end;
 { end JvDateUtil }
 
+{$IFNDEF CLR}
 function BufToBinStr(Buf: Pointer; BufSize: Integer): string;
 var
   I: Integer;
@@ -4983,6 +5375,7 @@ begin
     P[I] := StrToInt('$' + Value[2 * I + 1] + Value[2 * I + 2]);
   Result := BufSize;
 end;
+{$ENDIF !CLR}
 
 { begin JvStrUtils }
 {$IFDEF UNIX}
@@ -5036,18 +5429,47 @@ end;
 {$ENDIF UNIX}
 
 function StrToOem(const AnsiStr: string): string;
+{$IFDEF CLR}
+var
+  sb: StringBuilder;
+begin
+  if AnsiStr <> '' then
+  begin
+    sb := StringBuilder.Create(AnsiStr.Length);
+    CharToOemBuff(AnsiStr, sb, sb.Capacity);
+    Result := sb.ToString();
+  end
+  else
+    Result := '';
+end;
+{$ELSE}
 begin
   {$IFDEF MSWINDOWS}
   SetLength(Result, Length(AnsiStr));
-  if Length(Result) > 0 then
+  if Result <> '' then
     CharToOemBuff(PChar(AnsiStr), PChar(Result), Length(Result));
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
   Result := AnsiStrToOem(AnsiStr);
   {$ENDIF UNIX}
 end;
+{$ENDIF CLR}
 
 function OemToAnsiStr(const OemStr: string): string;
+{$IFDEF CLR}
+var
+  sb: StringBuilder;
+begin
+  if OemStr <> '' then
+  begin
+    sb := StringBuilder.Create(OemStr.Length);
+    OemToCharBuff(OemStr, sb, sb.Capacity);
+    Result := sb.ToString();
+  end
+  else
+    Result := '';
+end;
+{$ELSE}
 begin
   {$IFDEF MSWINDOWS}
   SetLength(Result, Length(OemStr));
@@ -5058,6 +5480,7 @@ begin
   Result := OemStrToAnsi(OemStr);
   {$ENDIF UNIX}
 end;
+{$ENDIF CLR}
 
 function IsEmptyStr(const S: string; const EmptyChars: TSysCharSet): Boolean;
 var
@@ -5178,10 +5601,11 @@ begin
   else
   begin
     SetLength(Result, N);
-    FillChar(Result[1], Length(Result), C);
+    FillString(Result, Length(Result), C);
   end;
 end;
 
+{$IFNDEF CLR}
 function MakeStr(C: WideChar; N: Integer): WideString; overload;
 begin
   if N < 1 then
@@ -5192,6 +5616,7 @@ begin
     FillWideChar(Result[1], Length(Result), C);
   end;
 end;
+{$ENDIF !CLR}
 
 function MS(C: Char; N: Integer): string;
 begin
@@ -5250,14 +5675,22 @@ end;
 
 function CompStr(const S1, S2: string): Integer;
 begin
+  {$IFDEF CLR}
+  Result := System.String.Compare(S1, S2, False);
+  {$ELSE}
   Result := CompareString(GetThreadLocale, SORT_STRINGSORT, PChar(S1),
     Length(S1), PChar(S2), Length(S2)) - 2;
+  {$ENDIF CLR}
 end;
 
 function CompText(const S1, S2: string): Integer;
 begin
+  {$IFDEF CLR}
+  Result := System.String.Compare(S1, S2, True);
+  {$ELSE}
   Result := CompareString(GetThreadLocale, SORT_STRINGSORT or NORM_IGNORECASE,
     PChar(S1), Length(S1), PChar(S2), Length(S2)) - 2;
+  {$ENDIF CLR}
 end;
 
 {$ENDIF MSWINDOWS}
@@ -5306,7 +5739,11 @@ function AnsiProperCase(const S: string; const WordDelims: TSysCharSet): string;
 var
   SLen, I: Cardinal;
 begin
+  {$IFDEF CLR}
+  Result := LowerCase(S);
+  {$ELSE}
   Result := AnsiLowerCase(S);
+  {$ENDIF CLR}
   I := 1;
   SLen := Length(Result);
   while I <= SLen do
@@ -5314,7 +5751,11 @@ begin
     while (I <= SLen) and (Result[I] in WordDelims) do
       Inc(I);
     if I <= SLen then
+      {$IFDEF CLR}
+      Result[I] := UpperCase(Result[I])[1];
+      {$ELSE}
       Result[I] := AnsiUpperCase(Result[I])[1];
+      {$ENDIF CLR}
     while (I <= SLen) and not (Result[I] in WordDelims) do
       Inc(I);
   end;
@@ -5463,18 +5904,16 @@ end;
 
 function QuotedString(const S: string; Quote: Char): string;
 begin
+  {$IFDEF CLR}
+  Result := QuotedStr(S, Quote);
+  {$ELSE}
   Result := AnsiQuotedStr(S, Quote);
+  {$ENDIF CLR}
 end;
 
 function ExtractQuotedString(const S: string; Quote: Char): string;
-var
-  P: PChar;
 begin
-  P := PChar(S);
-  if P^ = Quote then
-    Result := AnsiExtractQuotedStr(P, Quote)
-  else
-    Result := S;
+  Result := DequotedStr(S, Quote);
 end;
 
 function Numb2USA(const S: string): string;
@@ -5801,8 +6240,13 @@ begin
   MaxWilds := Length(Wilds);
   if IgnoreCase then
   begin { upcase all letters }
+    {$IFDEF CLR}
+    InputStr := InputStr.ToUpper();
+    Wilds := Wilds.ToUpper();
+    {$ELSE}
     InputStr := AnsiUpperCase(InputStr);
     Wilds := AnsiUpperCase(Wilds);
+    {$ENDIF CLR}
   end;
   if (MaxWilds = 0) or (MaxInputWord = 0) then
   begin
@@ -5877,7 +6321,7 @@ begin
   Result := Src;
   if Length(Key) > 0 then
     for I := 1 to Length(Src) do
-      Result[I] := Chr(Byte(Key[1 + ((I - 1) mod Length(Key))]) xor Ord(Src[I]));
+      Result[I] := AnsiChar(Chr(Byte(Key[1 + ((I - 1) mod Length(Key))]) xor Ord(Src[I])));
 end;
 
 function XorEncode(const Key, Source: string): string;
@@ -5892,7 +6336,11 @@ begin
       C := Byte(Key[1 + ((I - 1) mod Length(Key))]) xor Byte(Source[I])
     else
       C := Byte(Source[I]);
+    {$IFDEF CLR}
+    Result := Result + IntToHex(C, 2).ToLower();
+    {$ELSE}
     Result := Result + AnsiLowerCase(IntToHex(C, 2));
+    {$ENDIF CLR}
   end;
 end;
 
@@ -5922,7 +6370,11 @@ begin
     S := ParamStr(I);
     if (ASwitchChars = []) or ((S[1] in ASwitchChars) and (Length(S) > 1)) then
     begin
+      {$IFDEF CLR}
+      if SameText(Copy(S, 2, MaxInt), Switch) then
+      {$ELSE}
       if AnsiSameText(Copy(S, 2, MaxInt), Switch) then
+      {$ENDIF CLR}
       begin
         Inc(I);
         if I <= ParamCount then
@@ -5964,8 +6416,13 @@ var
   Down: string;
 begin
   Result := S;
+  {$IFDEF CLR}
+  Up := S.ToUpper();
+  Down := S.ToLower();
+  {$ELSE}
   Up := AnsiUpperCase(S);
   Down := AnsiLowerCase(S);
+  {$ENDIF CLR}
   for I := 1 to Length(Result) do
     if Result[I] = Up[I] then
       Result[I] := Down[I]
@@ -5989,29 +6446,6 @@ begin
       Result[I] := Up[I];
 end;
 
-function ExtractFilePath2(const FileName: string): string;
-var
-  P, P1, P2, PP: PChar;
-begin
-  P := PChar(FileName);
-  P1 := StrRScan(P, '\');
-  P2 := StrRScan(P, '/');
-  if P1 <> nil then
-    if P2 <> nil then
-      if P2 > P1 then
-        PP := P2
-      else
-        PP := P1
-    else
-      PP := P1
-  else
-    PP := P2;
-
-  if PP = nil then
-    Result := ''
-  else
-    SetString(Result, P, PP - P + 1);
-end;
 { end JvStrUtil }
 { end JvStrUtils }
 
@@ -6022,7 +6456,12 @@ begin
   Result := DirName;
   {$IFDEF MSWINDOWS}
   if (Result <> '') and
-    not (AnsiLastChar(Result)^ in [':', '\']) then
+    {$IFDEF CLR}
+    not (Result[Length(Result)] in [':', '\'])
+    {$ELSE}
+    not (AnsiLastChar(Result)^ in [':', '\'])
+    {$ENDIF CLR}
+  then
     if (Length(Result) = 1) and (UpCase(Result[1]) in ['A'..'Z']) then
       Result := Result + ':\'
     else
@@ -6030,61 +6469,16 @@ begin
   {$ENDIF MSWINDOWS}
 end;
 
-{$IFDEF COMPILER5}
-
-function AnsiStartsText(const SubText, Text: string): Boolean;
-var
-  SubTextLen: Integer;
-begin
-  SubTextLen := Length(SubText);
-  if SubTextLen > Length(Text) then
-    Result := False
-  else
-    Result := CompareString(LOCALE_USER_DEFAULT, NORM_IGNORECASE,
-      PChar(Text), SubTextLen, PChar(SubText), SubTextLen) = 2;
-end;
-
-function AnsiEndsText(const SubText, Text: string): Boolean;
-var
-  SubTextStart: Integer;
-begin
-  SubTextStart := Length(Text) - Length(SubText) + 1;
-  if (SubTextStart > 0) and (SubText <> '') and (ByteType(Text, SubTextStart) <> mbTrailByte) then
-    Result := AnsiStrIComp(Pointer(SubText), PChar(Pointer(Text)) + SubTextStart - 1) = 0
-  else
-    Result := False;
-end;
-
-function AnsiStartsStr(const SubStr, Str: string): Boolean;
-var
-  SubStrLen: Integer;
-begin
-  SubStrLen := Length(SubStr);
-  if SubStrLen > Length(Str) then
-    Result := False
-  else
-    Result := CompareString(LOCALE_USER_DEFAULT, 0,
-      PChar(Str), SubStrLen, PChar(SubStr), SubStrLen) = 2;
-end;
-
-function AnsiEndsStr(const SubStr, Str: string): Boolean;
-var
-  SubStrStart: Integer;
-begin
-  SubStrStart := Length(Str) - Length(SubStr) + 1;
-  if (SubStrStart > 0) and (SubStr <> '') and (ByteType(Str, SubStrStart) <> mbTrailByte) then
-    Result := AnsiStrComp(Pointer(SubStr), PChar(Pointer(Str)) + SubStrStart - 1) = 0
-  else
-    Result := False;
-end;
-
-{$ENDIF COMPILER5}
-
 function RemoveBackSlash(const DirName: string): string;
 begin
   Result := DirName;
   if (Length(Result) > 1) and
-    (AnsiLastChar(Result)^ = '\') then
+    {$IFDEF CLR}
+    (Result[Length(Result)] = '\')
+    {$ELSE}
+    (AnsiLastChar(Result)^ = '\')
+    {$ENDIF CLR}
+  then
     if not ((Length(Result) = 3) and (UpCase(Result[1]) in ['A'..'Z']) and
       (Result[2] = ':')) then
       Delete(Result, Length(Result), 1);
@@ -6123,19 +6517,27 @@ end;
 
 {$IFDEF MSWINDOWS}
 
+{$IFNDEF CLR}
 function GetWindowsDir: string;
 var
   Buffer: array [0..MAX_PATH] of Char;
 begin
   SetString(Result, Buffer, GetWindowsDirectory(Buffer, SizeOf(Buffer)));
 end;
+{$ENDIF !CLR}
 
 function GetSystemDir: string;
+{$IFDEF CLR}
+begin
+  Result := System.Environment.SystemDirectory;
+end;
+{$ELSE}
 var
   Buffer: array [0..MAX_PATH] of Char;
 begin
   SetString(Result, Buffer, GetSystemDirectory(Buffer, SizeOf(Buffer)));
 end;
+{$ENDIF CLR}
 
 {$ENDIF MSWINDOWS}
 
@@ -6154,12 +6556,16 @@ end;
 function GenTempFileName(FileName: string): string;
 var
   TempDir: string;
+  {$IFDEF CLR}
+  TempFile: StringBuilder;
+  {$ELSE}
   {$IFDEF MSWINDOWS}
   TempFile: array [0..MAX_PATH] of Char;
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
   TempFile: string;
   {$ENDIF UNIX}
+  {$ENDIF CLR}
   STempDir: TFileName;
   Res: Integer;
 begin
@@ -6173,12 +6579,19 @@ begin
       (AnsiCompareFileName(TempDir, FileName) <> 0) then
     begin
       STempDir := ExtractFilePath(FileName);
-      Move(STempDir[1], TempDir, Length(STempDir) + 1);
+      MoveString(STempDir, TempDir, Length(STempDir) + 1);
     end;
   end;
+  {$IFDEF CLR}
+  TempFile := StringBuilder.Create(MAX_PATH);
+  {$ENDIF CLR}
   {$IFDEF MSWINDOWS}
   Res := GetTempFileName(
+    {$IFDEF CLR}
+    TempDir, { address of directory name for temporary file}
+    {$ELSE}
     PChar(TempDir), { address of directory name for temporary file}
+    {$ENDIF CLR}
     '~JV', { address of filename prefix}
     0, { number used to create temporary filename}
     TempFile); { address of buffer that receives the new filename}
@@ -6188,7 +6601,7 @@ begin
   Res := 1;
   {$ENDIF UNIX}
   if Res <> 0 then
-    Result := TempFile
+    Result := TempFile{$IFDEF CLR}.ToString(){$ENDIF}
   else
     Result := '~JVCLTemp.tmp';
   DeleteFile(Result);
@@ -6200,6 +6613,11 @@ begin
 end;
 
 function GetTempDir: string;
+{$IFDEF CLR}
+begin
+  Result := Path.GetTempPath;
+end;
+{$ELSE}
 {$IFDEF MSWINDOWS}
 var
   TempDir: array [0..MAX_PATH] of Char;
@@ -6215,6 +6633,7 @@ begin
     Result := '/tmp'; // hard coded
 end;
 {$ENDIF UNIX}
+{$ENDIF CLR}
 
 function ClearDir(const Dir: string): Boolean;
 var
@@ -6223,8 +6642,7 @@ var
   Path: TFileName;
 begin
   Result := True;
-  Path := Dir;
-  AddSlash(Path);
+  Path := AddSlash(Dir);
   DosError := FindFirst(Path + AllFilesMask, faAnyFile, SearchRec);
   while DosError = 0 do
   begin
@@ -6254,7 +6672,7 @@ var
   Path: TFileName;
 begin
   Result := False;
-  Path := AddSlash2(Folder);
+  Path := AddSlash(Folder);
   DosError := FindFirst(Path + AllFilesMask, faAnyFile and not faDirectory, SearchRec);
   while DosError = 0 do
   begin
@@ -6265,6 +6683,7 @@ begin
   FindClose(SearchRec);
 end;
 
+{$IFNDEF CLR}
 function GetParameter: string;
 var
   FN, FN1: PChar;
@@ -6301,6 +6720,7 @@ begin
   if FileExists(Result) then
     Result := GetLongFileName(Result);
 end;
+{$ENDIF !CLR}
 
 function GetLongFileName(const FileName: string): string;
 {$IFDEF MSWINDOWS}
@@ -6323,7 +6743,8 @@ function FileEquMask(FileName, Mask: TFileName; CaseSensitive: Boolean): Boolean
 var
   I: Integer;
   C: Char;
-  P: PChar;
+  Index: Integer;
+  LenFileName: Integer;
 begin
   if not CaseSensitive then
   begin
@@ -6335,12 +6756,13 @@ begin
   if Pos('.', FileName) = 0 then
     FileName := FileName + '.';
   {$ENDIF MSWINDOWS}
+  LenFileName := Length(FileName);
   I := 1;
-  P := PChar(FileName);
+  Index := 1;
   while I <= Length(Mask) do
   begin
     C := Mask[I];
-    if (P[0] = #0) and (C <> '*') then
+    if (Index > LenFileName) and (C <> '*') then
       Exit;
     case C of
       '*':
@@ -6351,21 +6773,21 @@ begin
         end
         else
         begin
-          P := StrScan(P, Mask[I + 1]);
-          if P = nil then
+          Index := PosIdx(Mask[I + 1], FileName, Index);
+          if Index = 0 then
             Exit;
         end;
       '?':
-        Inc(P);
+        Inc(Index);
     else
-      if C = P[0] then
-        Inc(P)
+      if C = FileName[Index] then
+        Inc(Index)
       else
         Exit;
     end;
     Inc(I);
   end;
-  if P[0] = #0 then
+  if Index > LenFileName then
     Result := True;
 end;
 
@@ -6376,7 +6798,7 @@ var
 begin
   Result := False;
   I := 0;
-  Mask := Trim(SubStr(Masks, I, PathSep));
+  Mask := Trim(SubStrBySeparator(Masks, I, PathSep));
   while Length(Mask) <> 0 do
     if FileEquMask(FileName, Mask, CaseSensitive) then
     begin
@@ -6386,7 +6808,7 @@ begin
     else
     begin
       Inc(I);
-      Mask := Trim(SubStr(Masks, I, PathSep));
+      Mask := Trim(SubStrBySeparator(Masks, I, PathSep));
     end;
 end;
 
@@ -6419,6 +6841,7 @@ begin
     Result := Pos(PathDelim, ExtractFileName(FileName)) = 0;
 end;
 
+{$IFNDEF CLR}
 {$IFDEF MSWINDOWS}
 
 function FileLock(Handle: Integer; Offset, LockSize: Longint): Integer; overload;
@@ -6456,6 +6879,7 @@ begin
 end;
 
 {$ENDIF MSWINDOWS}
+{$ENDIF !CLR}
 
 function ShortToLongFileName(const ShortName: string): string;
 {$IFDEF MSWINDOWS}
@@ -6463,7 +6887,11 @@ var
   Temp: TWin32FindData;
   SearchHandle: THandle;
 begin
+  {$IFDEF CLR}
+  SearchHandle := FindFirstFile(ShortName, Temp);
+  {$ELSE}
   SearchHandle := FindFirstFile(PChar(ShortName), Temp);
+  {$ENDIF CLR}
   if SearchHandle <> INVALID_HANDLE_VALUE then
   begin
     Result := Temp.cFileName;
@@ -6490,7 +6918,11 @@ var
   Temp: TWin32FindData;
   SearchHandle: THandle;
 begin
+  {$IFDEF CLR}
+  SearchHandle := FindFirstFile(LongName, Temp);
+  {$ELSE}
   SearchHandle := FindFirstFile(PChar(LongName), Temp);
+  {$ENDIF CLR}
   if SearchHandle <> INVALID_HANDLE_VALUE then
   begin
     Result := Temp.cAlternateFileName;
@@ -6512,6 +6944,22 @@ end;
 {$ENDIF UNIX}
 
 function ShortToLongPath(const ShortName: string): string;
+{$IFDEF CLR}
+var
+  LastSlash: Integer;
+  TempPath: string;
+begin
+  Result := '';
+  TempPath := ShortName;
+  LastSlash := PosLastCharIdx(PathDelim, ShortName);
+  while LastSlash > 0 do
+  begin
+    Result := PathDelim + ShortToLongFileName(TempPath) + Result;
+    LastSlash := PosLastCharIdx(PathDelim, ShortName, LastSlash - 1);
+    TempPath := Copy(TempPath, 1, LastSlash);
+  end;
+end;
+{$ELSE}
 var
   LastSlash: PChar;
   TempPathPtr: PChar;
@@ -6530,8 +6978,14 @@ begin
   end;
   Result := TempPathPtr + Result;
 end;
+{$ENDIF CLR}
 
 function LongToShortPath(const LongName: string): string;
+{$IFDEF CLR}
+begin
+  Result := ExtractShortPathName(LongName);
+end;
+{$ELSE}
 var
   LastSlash: PChar;
   TempPathPtr: PChar;
@@ -6550,7 +7004,9 @@ begin
   end;
   Result := TempPathPtr + Result;
 end;
+{$ENDIF CLR}
 
+{$IFNDEF CLR}
 {$IFDEF MSWINDOWS}
 
 const
@@ -6617,65 +7073,9 @@ begin
 end;
 
 {$ENDIF MSWINDOWS}
+{$ENDIF !CLR}
 
 { end JvFileUtil }
-
-{$IFDEF COMPILER5}
-{ begin JvXMLDatabase D5 compatiblility functions }
-
-{ TODO -oJVCL -cTODO : Implement these better for D5! }
-
-function StrToDateTimeDef(const S: string; Default: TDateTime): TDateTime;
-begin
-  // stupid and slow but at least simple
-  try
-    Result := StrToDateTime(S);
-  except
-    Result := Default;
-  end;
-end;
-
-const
-  OneMillisecond = 1 / 24 / 60 / 60 / 1000; // as TDateTime
-
-function CompareDateTime(const A, B: TDateTime): Integer;
-begin
-  if Abs(A - B) < OneMillisecond then
-    Result := 0
-  else
-  if A < B then
-    Result := -1
-  else
-    Result := 1;
-end;
-
-{ end JvXMLDatabase D5 compatiblility functions }
-
-procedure RaiseLastOSError;
-begin
-  RaiseLastWin32Error;
-end;
-
-function IncludeTrailingPathDelimiter(const APath: string): string;
-begin
-  if (Length(APath) > 0) and (APath[Length(APath)] <> PathDelim) then
-    Result := APath + PathDelim
-  else
-    Result := APath;
-end;
-
-function ExcludeTrailingPathDelimiter(const APath: string): string;
-var
-  I: Integer;
-begin
-  Result := APath;
-  I := Length(Result);
-  while (I > 0) and (Result[I] = PathDelim) do
-    Dec(I);
-  SetLength(Result, I);
-end;
-
-{$ENDIF COMPILER5}
 
 function PtInRectInclusive(R: TRect; Pt: TPoint): Boolean;
 begin
@@ -6691,17 +7091,22 @@ begin
   Result := PtInRect(R, Pt);
 end;
 
-function OpenObject(const Value: string): Boolean; overload;
+function OpenObject(const Value: string): Boolean;
 begin
+  {$IFNDEF CLR}
   Result := OpenObject(PChar(Value));
+  {$ELSE}
+  Result := ShellExecute(0, 'open', Value, '', '', SW_SHOWNORMAL) > HINSTANCE_ERROR;
+  {$ENDIF !CLR}
 end;
 
 { (rb) Duplicate of JvFunctions.Exec }
-
-function OpenObject(Value: PChar): Boolean; overload;
+{$IFNDEF CLR}
+function OpenObject(Value: PChar): Boolean;
 begin
   Result := ShellExecute(0, 'open', Value, nil, nil, SW_SHOWNORMAL) > HINSTANCE_ERROR;
 end;
+{$ENDIF !CLR}
 
 {$IFDEF MSWINDOWS}
 
@@ -6715,22 +7120,42 @@ begin
   PError(Text);
 end;
 
+{$IFDEF CLR}
+[SuppressUnmanagedCodeSecurity, DllImport('version.dll', CharSet = CharSet.Auto, SetLastError = True, EntryPoint = 'VerQueryValue')]
+function JvVerQueryValue([in] pBlock: TBytes; lpSubBlock: string;
+  out lplpBuffer: TVSFixedFileInfo; out puLen: UINT): BOOL; external;
+{$ENDIF CLR}
+
 function GetFileVersion(const AFileName: string): Cardinal;
 var
   FileName: string;
   InfoSize, Wnd: DWORD;
+  {$IFDEF CLR}
+  VerBuf: TBytes;
+  FI: TVSFixedFileInfo;
+  {$ELSE}
   VerBuf: Pointer;
   FI: PVSFixedFileInfo;
+  {$ENDIF CLR}
   VerSize: DWORD;
 begin
   Result := 0;
   // GetFileVersionInfo modifies the filename parameter data while parsing.
   // Copy the string const into a local variable to create a writeable copy.
   FileName := AFileName;
+  {$IFDEF CLR}
+  InfoSize := GetFileVersionInfoSize(FileName, Wnd);
+  {$ELSE}
   UniqueString(FileName);
   InfoSize := GetFileVersionInfoSize(PChar(FileName), Wnd);
+  {$ENDIF CLR}
   if InfoSize <> 0 then
   begin
+    {$IFDEF CLR}
+    if GetFileVersionInfo(FileName, Wnd, InfoSize, VerBuf) then
+      if JvVerQueryValue(VerBuf, '\', FI, VerSize) then
+        Result := FI.dwFileVersionMS;
+    {$ELSE}
     GetMem(VerBuf, InfoSize);
     try
       if GetFileVersionInfo(PChar(FileName), Wnd, InfoSize, VerBuf) then
@@ -6739,6 +7164,7 @@ begin
     finally
       FreeMem(VerBuf);
     end;
+    {$ENDIF CLR}
   end;
 end;
 
@@ -6752,6 +7178,7 @@ begin
   Result := ShellVersion;
 end;
 
+{$IFNDEF CLR}
 procedure OpenCdDrive;
 begin
   mciSendString(PChar(RC_OpenCDDrive), nil, 0, Windows.GetForegroundWindow);
@@ -6797,9 +7224,14 @@ begin
     raise {$IFDEF COMPILER6_UP} EOSError{$ELSE} EWin32Error{$ENDIF}.Create(St);
   end;
 end;
+{$ENDIF !CLR}
 
 procedure Exec(const FileName, Parameters, Directory: string);
 begin
+  {$IFDEF CLR}
+  ShellExecute(Windows.GetForegroundWindow, 'open', FileName, Parameters, Directory,
+    SW_SHOWNORMAL);
+  {$ELSE}
   {$IFDEF MSWINDOWS}
   ShellExecute(Windows.GetForegroundWindow, 'open', PChar(FileName), PChar(Parameters), PChar(Directory),
     SW_SHOWNORMAL);
@@ -6808,6 +7240,7 @@ begin
   ShellExecute(GetForegroundWindow, 'open', PChar(FileName), PChar(Parameters), PChar(Directory),
     SW_SHOWNORMAL);
   {$ENDIF UNIX}
+  {$ENDIF CLR}
 end;
 {$IFDEF UNIX}
 // begin
@@ -6818,37 +7251,83 @@ end;
 
 { (rb) Duplicate of JclMiscel.WinExec32AndWait }
 
-procedure ExecuteAndWait(const FileName: string; Visibility: Integer);
+function ExecuteAndWait(const CommandLine, WorkingDirectory: string; Visibility: Integer): Integer;
+{$IFDEF CLR}
+var
+  Proc: Process;
+begin
+  Result := 0;
+  Proc := Process.Create;
+  Proc.StartInfo.FileName := CommandLine;
+
+  case Visibility of
+    SW_HIDE:
+      Proc.StartInfo.WindowStyle := ProcessWindowStyle.Hidden;
+    SW_SHOWMINIMIZED:
+      Proc.StartInfo.WindowStyle := ProcessWindowStyle.Minimized;
+    SW_SHOWMAXIMIZED:
+      Proc.StartInfo.WindowStyle := ProcessWindowStyle.Maximized;
+  else
+    Proc.StartInfo.WindowStyle := ProcessWindowStyle.Normal
+  end;
+
+  if Proc.Start then
+    Proc.WaitForExit
+  else
+    Result := 1;
+  Proc.Close;
+end;
+{$ELSE}
 {$IFDEF MSWINDOWS}
 var
-  zAppName: array [0..512] of Char;
-  zCurDir: array [0..255] of Char;
-  WorkDir: string;
   StartupInfo: TStartupInfo;
   ProcessInfo: TProcessInformation;
 begin
-  StrPCopy(zAppName, FileName);
-  GetDir(0, WorkDir);
-  StrPCopy(zCurDir, WorkDir);
-  FillChar(StartupInfo, SizeOf(StartupInfo), #0);
+  Result := 0;
+  FillChar(StartupInfo, SizeOf(StartupInfo), 0);
   StartupInfo.cb := SizeOf(StartupInfo);
   StartupInfo.dwFlags := STARTF_USESHOWWINDOW;
   StartupInfo.wShowWindow := Visibility;
-  if not CreateProcess(nil, zAppName, nil, nil, False, Create_NEW_CONSOLE or NORMAL_PRIORITY_CLASS,
-    nil, nil, StartupInfo, ProcessInfo) then
-    WaitForSingleObject(ProcessInfo.hProcess, INFINITE);
+  if not CreateProcess(nil, PChar(CommandLine), nil, nil, False, CREATE_NEW_CONSOLE or NORMAL_PRIORITY_CLASS,
+    nil, Pointer(WorkingDirectory), StartupInfo, ProcessInfo) then
+    WaitForSingleObject(ProcessInfo.hProcess, INFINITE)
+  else
+    Result := GetLastError;
 end;
 {$ENDIF MSWINDOWS}
 {$IFDEF UNIX}
 begin
   // ignores Visibility
-  Libc.system(PChar(Format('kfmclient exec "%s"', [FileName])));
+  { TODO : Untested }
+  if Libc.system(PChar(Format('kfmclient exec "%s"', [CommandLine]))) = -1 then
+  begin
+    if WorkingDirectory = '' then
+      Result := Libc.system(PChar(Format('cd "%s" ; %s',
+        [GetCurrentDir, CommandLine])))
+    else
+      Result := Libc.system(PChar(Format('cd "%s" ; %s',
+        [WorkingDirectory, CommandLine])));
+  end;
 end;
 {$ENDIF UNIX}
+{$ENDIF CLR}
 
 {$IFDEF VCL}
 
 function FirstInstance(const ATitle: string): Boolean;
+{$IFDEF CLR}
+var
+  Mux: System.Threading.Mutex;
+  IsNew: Boolean;
+begin
+  Mux := System.Threading.Mutex.Create(False, ATitle, IsNew);
+  try
+    Result := IsNew;
+  finally
+    Mux.ReleaseMutex;
+  end;
+end;
+{$ELSE}
 var
   Mutex: THandle;
 begin
@@ -6859,12 +7338,17 @@ begin
     ReleaseMutex(Mutex);
   end;
 end;
+{$ENDIF CLR}
 
 procedure RestoreOtherInstance(const MainFormClassName, MainFormCaption: string);
 var
   OtherWnd, OwnerWnd: HWND;
 begin
+  {$IFDEF CLR}
+  OtherWnd := FindWindow(MainFormClassName, MainFormCaption);
+  {$ELSE}
   OtherWnd := FindWindow(PChar(MainFormClassName), PChar(MainFormCaption));
+  {$ENDIF CLR}
   ShowWindow(OtherWnd, SW_SHOW); //in case the window was not visible before
 
   OwnerWnd := 0;
@@ -6886,14 +7370,23 @@ end;
 
 procedure HideTraybar;
 begin
+  {$IFDEF CLR}
+  ShowWindow(FindWindow(RC_ShellName, nil), SW_HIDE);
+  {$ELSE}
   ShowWindow(FindWindow(PChar(RC_ShellName), nil), SW_HIDE);
+  {$ENDIF CLR}
 end;
 
 procedure ShowTraybar;
 begin
+  {$IFDEF CLR}
+  ShowWindow(FindWindow(RC_ShellName, nil), SW_SHOW);
+  {$ELSE}
   ShowWindow(FindWindow(PChar(RC_ShellName), nil), SW_SHOW);
+  {$ENDIF CLR}
 end;
 
+{$IFNDEF CLR}
 procedure ShowStartButton(Visible: Boolean);
 var
   Tray, Child: HWND;
@@ -6916,6 +7409,7 @@ begin
     Child := GetWindow(Child, GW_HWNDNEXT);
   end;
 end;
+{$ENDIF !CLR}
 
 procedure MonitorOn;
 begin
@@ -6966,7 +7460,11 @@ var
   Shift, Ctrl: Boolean;
   H: Windows.HWND;
 begin
+  {$IFDEF CLR}
+  H := FindWindow(AppName, nil);
+  {$ELSE}
   H := FindWindow(PChar(AppName), nil);
+  {$ENDIF CLR}
   if H <> 0 then
   begin
     ConvKey := OemKeyScan(Ord(Key));
@@ -6997,6 +7495,7 @@ end;
 
 {$IFDEF MSWINDOWS}
 
+{$IFNDEF CLR}
 procedure RebuildIconCache;
 var
   Dummy: DWORD;
@@ -7039,6 +7538,7 @@ procedure AssociateExtension(const IconPath, ProgramName, Path, Extension: strin
 begin
   AssociateFileExtension(IconPath, ProgramName, Path, Extension);
 end;
+{$ENDIF !CLR}
 
 function GetRecentDocs: TStringList;
 {$IFDEF VCL}
@@ -7068,6 +7568,7 @@ end;
 
 { (rb) Duplicate of JvWinDialogs.AddToRecentDocs }
 
+{$IFNDEF CLR}
 procedure AddToRecentDocs(const FileName: string);
 begin
   SHAddToRecentDocs(SHARD_PATH, PChar(FileName));
@@ -7099,6 +7600,7 @@ begin
     List.EndUpdate;
   end;
 end;
+{$ENDIF !CLR}
 
 {$ENDIF MSWINDOWS}
 // from JvComponentFunctions
@@ -7167,7 +7669,7 @@ end;
 { if it's not a decimal point then it must be a digit, space or Currency symbol
   also always use $ for money }
 
-function CharIsMoney(const Ch: Char): Boolean;
+function CharIsMoney(const Ch: AnsiChar): Boolean;
 begin
   Result := CharIsDigit(Ch) or (Ch = AnsiSpace) or (Ch = '$') or (Ch = '-') or
     (Pos(Ch, CurrencyString) > 0);
@@ -7175,15 +7677,31 @@ end;
 
 function StrToCurrDef(const Str: string; Def: Currency): Currency;
 var
+  {$IFDEF CLR}
+  LStr: StringBuilder;
+  {$ELSE}
   LStr: string;
+  {$ENDIF CLR}
   I: Integer;
 begin
+  {$IFDEF CLR}
+  LStr := StringBuilder.Create(Length(Str));
+  {$ELSE}
   LStr := '';
+  {$ENDIF CLR}
   for I := 1 to Length(Str) do
-    if Str[I] in ['0'..'9', '-', '+', DecimalSeparator] then
+    if Str[I] in ['0'..'9', '-', '+', AnsiChar(DecimalSeparator{$IFDEF CLR}[1]{$ENDIF})] then
+      {$IFDEF CLR}
+      LStr.Append(Str[I]);
+      {$ELSE}
       LStr := LStr + Str[I];
+      {$ENDIF CLR}
   try
+    {$IFDEF CLR}
+    if not TryStrToCurr(LStr.ToString(), Result) then
+    {$ELSE}
     if not TextToFloat(PChar(LStr), Result, fvCurrency) then
+    {$ENDIF CLR}
       Result := Def;
   except
     Result := Def;
@@ -7192,13 +7710,42 @@ end;
 
 function StrToFloatDef(const Str: string; Def: Extended): Extended;
 var
+  {$IFDEF CLR}
+  LStr: StringBuilder;
+  d: Double;
+  b: Boolean;
+  {$ELSE}
   LStr: string;
+  {$ENDIF CLR}
   I: Integer;
 begin
+  {$IFDEF CLR}
+  LStr := StringBuilder.Create;
+  {$ENDIF CLR}
   for I := 1 to Length(Str) do
-    if Str[I] in ['0'..'9', '-', '+', DecimalSeparator] then
+    if Str[I] in ['0'..'9', '-', '+', AnsiChar(DecimalSeparator{$IFDEF CLR}[1]{$ENDIF})] then
+      {$IFDEF CLR}
+      LStr.Append(Str[I]);
+      {$ELSE}
       LStr := LStr + Str[I];
+      {$ENDIF CLR}
   Result := Def;
+  {$IFDEF CLR}
+  if LStr.Length > 0 then
+  try
+    { the string '-' fails StrToFloat, but it can be interpreted as 0  }
+    if LStr[LStr.Length] = '-' then
+      LStr.Append('0');
+
+    { a string that ends in a '.' such as '12.' fails StrToFloat,
+     but as far as I am concerned, it may as well be interpreted as 12.0 }
+    if LStr[LStr.Length] = DecimalSeparator then
+      LStr.Append('0');
+
+    b := TryStrToFloat(LStr.ToString(), d);
+    Result := d;
+    if not b then
+  {$ELSE}
   if LStr <> '' then
   try
     { the string '-' fails StrToFloat, but it can be interpreted as 0  }
@@ -7210,6 +7757,7 @@ begin
     if LStr[Length(LStr)] = DecimalSeparator then
       LStr := LStr + '0';
     if not TextToFloat(PChar(LStr), Result, fvExtended) then
+  {$ENDIF CLR}
       Result := Def;
   except
     Result := Def;
@@ -7254,7 +7802,11 @@ var
   Century: Integer;
 begin
   if Pivot < 0 then
+    {$IFDEF CLR}
+    raise Exception.Create(RsEPivotLessThanZero);
+    {$ELSE}
     raise Exception.CreateRes(@RsEPivotLessThanZero);
+    {$ENDIF CLR}
 
   { map 100 to zero }
   if Year = 100 then
@@ -7283,12 +7835,12 @@ end;
 function StrIsInteger(const S: string): Boolean;
 var
   I: Integer;
-  Ch: Char;
+  Ch: AnsiChar;
 begin
   Result := S <> '';
   for I := 1 to Length(S) do
   begin
-    Ch := S[I];
+    Ch := AnsiChar(S[I]);
     if (not CharIsNumber(Ch)) or (Ch = DecimalSeparator) then //Az
     begin
       Result := False;
@@ -7300,7 +7852,7 @@ end;
 function StrIsFloatMoney(const Ps: string): Boolean;
 var
   I, liDots: Integer;
-  Ch: Char;
+  Ch: AnsiChar;
 begin
   Result := True;
   liDots := 0;
@@ -7308,7 +7860,7 @@ begin
   for I := 1 to Length(Ps) do
   begin
     { allow digits, space, Currency symbol and one decimal dot }
-    Ch := Ps[I];
+    Ch := AnsiChar(Ps[I]);
 
     if Ch = DecimalSeparator then
     begin
@@ -7334,7 +7886,7 @@ const
   MAX_DATE_TIME_LEN = 30; { 30 chars or so in '12 December 1999 12:23:23:00' }
 var
   I: Integer;
-  Ch: Char;
+  Ch: AnsiChar;
   liColons, liSlashes, liSpaces, liDigits, liAlpha: Integer;
   lbDisqualify: Boolean;
 begin
@@ -7359,7 +7911,7 @@ begin
 
   for I := 1 to Length(Ps) do
   begin
-    Ch := Ps[I];
+    Ch := AnsiChar(Ps[I]);
 
     if Ch = ':' then
       Inc(liColons)
@@ -7538,17 +8090,16 @@ end;
 
 function MinimizeFileName(const FileName: string; Canvas: TCanvas; MaxLen: Integer): string;
 var
-  B: string;
   R: TRect;
 begin
-  B := FileName;
-  UniqueString(B);
+  Result := FileName;
   R := Rect(0, 0, MaxLen, Canvas.TextHeight('Wq'));
-  if DrawText(Canvas, PChar(B), Length(B), R,
+  {$IFNDEF CLR}
+  UniqueString(Result);
+  {$ENDIF CLR}
+  if DrawText(Canvas, Result, Length(Result), R,
        DT_SINGLELINE or DT_MODIFYSTRING or DT_PATH_ELLIPSIS or DT_CALCRECT or
-       DT_NOPREFIX) > 0 then
-    Result := string(PChar(B))
-  else
+       DT_NOPREFIX) <= 0 then
     Result := FileName;
 end;
 
@@ -7566,6 +8117,7 @@ begin
   end;
 end;
 
+{$IFNDEF CLR}
 {$IFDEF MSWINDOWS}
 
 function RunDLL32(const ModuleName, FuncName, CmdLine: string; WaitForCompletion: Boolean; CmdShow: Integer =
@@ -7676,6 +8228,7 @@ begin
     S := StrPas(ResID);
   raise EResNotFound.CreateResFmt(@SResNotFound, [S]);
 end;
+{$ENDIF !CLR}
 
 function RectWidth(R: TRect): Integer;
 begin
@@ -7690,6 +8243,7 @@ end;
 {$IFDEF MSWINDOWS}
 { Service routines }
 
+{$IFNDEF CLR}
 function LoadDLL(const LibName: string): THandle;
 var
   ErrMode: Cardinal;
@@ -7777,15 +8331,11 @@ procedure FreeUnusedOle;
 begin
   FreeLibrary(GetModuleHandle('OleAut32'));
 end;
+{$ENDIF !CLR}
 
 function GetEnvVar(const VarName: string): string;
-var
-  S: array [0..16383] of Char;
 begin
-  if GetEnvironmentVariable(PChar(VarName), S, SizeOf(S) - 1) > 0 then
-    Result := StrPas(S)
-  else
-    Result := '';
+  Result := GetEnvironmentVariable(VarName);
 end;
 
 {$ENDIF MSWINDOWS}
@@ -7799,6 +8349,7 @@ end;
 
 { Memory routines }
 
+{$IFNDEF CLR}
 function AllocMemo(Size: Longint): Pointer;
 begin
   if Size > 0 then
@@ -7854,9 +8405,11 @@ asm
 @@2:    POP     EDI
         POP     ESI
 end;
+{$ENDIF !CLR}
 
 { Manipulate huge pointers routines by Ray Lischner, The Waite Group, Inc. }
 
+{$IFNDEF CLR}
 procedure HugeInc(var HugePtr: Pointer; Amount: Longint);
 begin
   HugePtr := PChar(HugePtr) + Amount;
@@ -7885,8 +8438,11 @@ begin
   DstPtr := PChar(Base) + Dst * SizeOf(Pointer);
   Move(SrcPtr^, DstPtr^, Size * SizeOf(Pointer));
 end;
+{$ENDIF !CLR}
+
 { String routines }
 
+{$IFNDEF CLR}
 { function GetParamStr copied from SYSTEM.PAS unit of Delphi 2.0 }
 
 function GetParamStr(P: PChar; var Param: string): PChar;
@@ -7956,9 +8512,47 @@ begin
     Dec(Index);
   end;
 end;
+{$ENDIF !CLR}
 
-procedure SplitCommandLine(const CmdLine: string; var ExeName,
-  Params: string);
+procedure SplitCommandLine(const CmdLine: string; var ExeName, Params: string);
+{$IFDEF CLR}
+var
+  I, Len: Integer;
+begin
+  ExeName := Trim(CmdLine);
+  Len := Length(ExeName);
+  if Len > 0 then
+  begin
+    if ExeName[1] = '"' then
+    begin
+      I := 2;
+      while (I < Len) do
+      begin
+        if ExeName[I] = '"' then
+        begin
+          if ExeName[I + 1] = '"' then
+            Inc(I)
+          else
+            Break;
+          Inc(I);
+        end;
+      end;
+    end
+    else
+      I := Pos(' ', ExeName);
+
+    if (I = 0) or (I >= Len) then
+      Params := ''
+    else
+    begin
+      Params := Trim(Copy(ExeName, I + 1, MaxInt));
+      Delete(ExeName, I, MaxInt);
+    end;
+  end
+  else
+    Params := '';
+end;
+{$ELSE}
 var
   Buffer: PChar;
   Cnt, I: Integer;
@@ -7986,8 +8580,9 @@ begin
     StrDispose(Buffer);
   end;
 end;
+{$ENDIF CLR}
 
-function AnsiUpperFirstChar(const S: string): string;
+function AnsiUpperFirstChar(const S: AnsiString): AnsiString;
 var
   Temp: string[1];
 begin
@@ -8000,6 +8595,7 @@ begin
   end;
 end;
 
+{$IFNDEF CLR}
 function StrPAlloc(const S: string): PChar;
 begin
   Result := StrPCopy(StrAlloc(Length(S) + 1), S);
@@ -8009,6 +8605,7 @@ function StringToPChar(var S: string): PChar;
 begin
   Result := PChar(S);
 end;
+{$ENDIF !CLR}
 
 function DropT(const S: string): string;
 begin
@@ -8018,12 +8615,14 @@ begin
     Result := S;
 end;
 
+{$IFNDEF CLR}
 function WindowClassName(Wnd: HWND): string;
 var
   Buffer: array [0..255] of Char;
 begin
   SetString(Result, Buffer, GetClassName(Wnd, Buffer, SizeOf(Buffer) - 1));
 end;
+{$ENDIF !CLR}
 
 {$IFDEF VCL}
 
@@ -8031,8 +8630,8 @@ function GetAnimation: Boolean;
 var
   Info: TAnimationInfo;
 begin
-  Info.cbSize := SizeOf(TAnimationInfo);
-  if SystemParametersInfo(SPI_GETANIMATION, SizeOf(Info), @Info, 0) then
+  Info.cbSize := SizeOf(Info);
+  if SystemParametersInfo(SPI_GETANIMATION, Info.cbSize, {$IFNDEF CLR}@{$ENDIF}Info, 0) then
     Result := Info.iMinAnimate <> 0
   else
     Result := False;
@@ -8042,9 +8641,9 @@ procedure SetAnimation(Value: Boolean);
 var
   Info: TAnimationInfo;
 begin
-  Info.cbSize := SizeOf(TAnimationInfo);
-  BOOL(Info.iMinAnimate) := Value;
-  SystemParametersInfo(SPI_SETANIMATION, SizeOf(Info), @Info, 0);
+  Info.cbSize := SizeOf(Info);
+  Info.iMinAnimate := Integer(Value);
+  SystemParametersInfo(SPI_SETANIMATION, Info.cbSize, {$IFNDEF CLR}@{$ENDIF}Info, 0);
 end;
 
 procedure ShowWinNoAnimate(Handle: HWND; CmdShow: Integer);
@@ -8087,6 +8686,7 @@ begin
   end;
 end;
 
+{$IFNDEF CLR}
 {$IFDEF BCB}
 function FindPrevInstance(const MainFormClass: ShortString;
   const ATitle: string): HWND;
@@ -8173,9 +8773,10 @@ begin
     Result := True;
   end;
 end;
-
+{$ENDIF !CLR}
 {$ENDIF VCL}
 
+{$IFNDEF CLR}
 {$IFDEF MSWINDOWS}
 function BrowseForFolderNative(const Handle: HWND; const Title: string; var Folder: string): Boolean;
 var
@@ -8206,6 +8807,7 @@ begin
   end;
 end;
 {$ENDIF MSWINDOWS}
+{$ENDIF !CLR}
 
 procedure FitRectToScreen(var Rect: TRect);
 var
@@ -8330,6 +8932,7 @@ begin
   end;
 end;
 
+{$IFNDEF CLR}
 procedure AntiAlias(Clip: TBitmap);
 begin
   AntiAliasRect(Clip, 0, 0, Clip.Width, Clip.Height);
@@ -8392,8 +8995,10 @@ begin
   end;
   Clip.PixelFormat := OPF;
 end;
+{$ENDIF !CLR}
 
 {$IFDEF VCL}
+{$IFNDEF CLR}
 
 procedure CopyRectDIBits(ACanvas: TCanvas; const DestRect: TRect; ABitmap: TBitmap;
   const SourceRect: TRect);
@@ -8435,6 +9040,7 @@ begin
       ABitmap.Free;
   end;
 end;
+{$ENDIF !CLR}
 
 function IsTTFontSelected(const DC: HDC): Boolean;
 var
@@ -8470,7 +9076,7 @@ var
 begin
   Result := DelRSpace(AValue);
   if DecimalSeparator <> ThousandSeparator then
-    Result := DelChars(Result, ThousandSeparator);
+    Result := DelChars(Result, ThousandSeparator{$IFDEF CLR}[1]{$ENDIF});
 
   if (DecimalSeparator <> '.') and (ThousandSeparator <> '.') then
     Result := ReplaceStr(Result, '.', DecimalSeparator);
@@ -8479,7 +9085,8 @@ begin
 
   J := 1;
   for I := 1 to Length(Result) do
-    if Result[I] in ['0'..'9', '-', '+', DecimalSeparator, ThousandSeparator] then
+    if Result[I] in ['0'..'9', '-', '+',
+        AnsiChar(DecimalSeparator{$IFDEF CLR}[1]{$ENDIF}), AnsiChar(ThousandSeparator{$IFDEF CLR}[1]{$ENDIF})] then
     begin
       Result[J] := Result[I];
       Inc(J);
@@ -8495,29 +9102,39 @@ end;
 
 {$IFDEF VCL}
 
+
+function DrawText(Canvas: TCanvas; const Text: string; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
+begin
+  {$IFDEF CLR}
+  Result := Windows.DrawText(Canvas.Handle, Text, Len, R, WinFlags and not DT_MODIFYSTRING); // make sure the string cannot be modified
+  {$ELSE}
+  Result := DrawText(Canvas, PChar(Text), Len, R, WinFlags and not DT_MODIFYSTRING); // make sure the string cannot be modified  {$ENDIF CLR}
+  {$ENDIF CLR}
+end;
+
+function DrawText(DC: HDC; const Text: TCaption; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
+begin
+  {$IFDEF CLR}
+  Result := Windows.DrawText(DC, Text, Len, R, WinFlags and not DT_MODIFYSTRING); // make sure the string cannot be modified
+  {$ELSE}
+  Result := Windows.DrawText(DC, PChar(Text), Len, R, WinFlags and not DT_MODIFYSTRING); // make sure the string cannot be modified
+  {$ENDIF CLR}
+end;
+
+{$IFNDEF CLR}
+function DrawTextEx(Canvas: TCanvas; const Text: string; cchText: Integer; var p4: TRect; dwDTFormat: UINT; DTParams: PDrawTextParams): Integer;
+begin
+  Result := Windows.DrawTextEx(Canvas.Handle, PChar(Text), cchText, p4, dwDTFormat and not DT_MODIFYSTRING, DTParams);
+end;
+
 function DrawText(Canvas: TCanvas; Text: PAnsiChar; Len: Integer; var R: TRect; WinFlags: Integer): Integer;
 begin
   Result := Windows.DrawText(Canvas.Handle, Text, Len, R, WinFlags);
 end;
 
-function DrawText(Canvas: TCanvas; const Text: string; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
-begin
-  Result := DrawText(Canvas, PChar(Text), Len, R, WinFlags and not DT_MODIFYSTRING); // make sure the string cannot be modified
-end;
-
-function DrawText(DC: HDC; const Text: TCaption; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
-begin
-  Result := Windows.DrawText(DC, PChar(Text), Len, R, WinFlags and not DT_MODIFYSTRING); // make sure the string cannot be modified
-end;
-
 function DrawTextEx(Canvas: TCanvas; lpchText: PChar; cchText: Integer; var p4: TRect; dwDTFormat: UINT; DTParams: PDrawTextParams): Integer;
 begin
   Result := Windows.DrawTextEx(Canvas.Handle, lpchText, cchText, p4, dwDTFormat, DTParams);
-end;
-
-function DrawTextEx(Canvas: TCanvas; const Text: string; cchText: Integer; var p4: TRect; dwDTFormat: UINT; DTParams: PDrawTextParams): Integer;
-begin
-  Result := Windows.DrawTextEx(Canvas.Handle, PChar(Text), cchText, p4, dwDTFormat and not DT_MODIFYSTRING, DTParams);
 end;
 
 {$IFDEF COMPILER6_UP}
@@ -8553,6 +9170,7 @@ function DrawTextExW(Canvas: TCanvas; const Text: WideString; cchText: Integer; 
 begin
   Result := Windows.DrawTextExW(Canvas.Handle, PWideChar(Text), cchText, p4, dwDTFormat and not DT_MODIFYSTRING, DTParams);
 end;
+{$ENDIF !CLR}
 
 const
   // (p3) move to interface?
@@ -8795,6 +9413,146 @@ begin
   Result := SysUtils.IsEqualGUID(IID1, IID2);
   {$ENDIF COMPILER5}
 end;
+
+
+{$IFNDEF CLR}
+function StartsText(const SubStr, S: string): Boolean;
+begin
+  Result := AnsiStartsText(SubStr, S);
+end;
+
+function EndsText(const SubStr, S: string): Boolean;
+begin
+  Result := AnsiEndsText(SubStr, S);
+end;
+
+function DequotedStr(const S: string; QuoteChar: Char = ''''): string;
+begin
+  Result := AnsiDequotedStr(S, QuoteChar);
+end;
+
+function AnsiDequotedStr(const S: AnsiString; AQuote: AnsiChar): AnsiString;
+var
+  P: PChar;
+begin
+  P := PChar(S);
+  Result := AnsiExtractQuotedStr(P, AQuote);
+end;
+{$ENDIF !CLR}
+
+
+{$IFDEF COMPILER5}
+{ These functions simply call their JvVCL5Utils equivalents }
+
+function TryStrToInt(const S: string; out Value: Integer): Boolean;
+begin
+  Result := JvVCL5Utils.TryStrToInt(S, Value);
+end;
+
+function TryStrToDateTime(const S: string; out Date: TDateTime): Boolean;
+begin
+  Result := JvVCL5Utils.TryStrToDateTime(S, Date);
+end;
+
+function StrToDateTimeDef(const S: string; Default: TDateTime): TDateTime;
+begin
+  Result := JvVCL5Utils.StrToDateTimeDef(S, Default);
+end;
+
+// function StrToFloatDef(const Str: string; Default: Extended): Extended;
+procedure RaiseLastOSError;
+begin
+  JvVCL5Utils.RaiseLastOSError;
+end;
+
+function IncludeTrailingPathDelimiter(const APath: string): string;
+begin
+  Result := JvVCL5Utils.IncludeTrailingPathDelimiter(APath);
+end;
+
+function ExcludeTrailingPathDelimiter(const APath: string): string;
+begin
+  Result := JvVCL5Utils.ExcludeTrailingPathDelimiter(APath);
+end;
+
+function DirectoryExists(const Name: string): Boolean;
+begin
+  Result := JvVCL5Utils.DirectoryExists(Name);
+end;
+
+function ForceDirectories(Dir: string): Boolean;
+begin
+  Result := JvVCL5Utils.ForceDirectories(Dir);
+end;
+
+function SameFileName(const FN1, FN2: string): Boolean;
+begin
+  Result := JvVCL5Utils.SameFileName(FN1, FN2);
+end;
+
+function WideCompareText(const S1, S2: WideString): Integer;
+begin
+  Result := JvVCL5Utils.WideCompareText(S1, S2);
+end;
+
+function WideUpperCase(const S: WideString): WideString;
+begin
+  Result := JvVCL5Utils.WideUpperCase(S);
+end;
+
+function WideLowerCase(const S: WideString): WideString;
+begin
+  Result := JvVCL5Utils.WideLowerCase(S);
+end;
+
+function CompareDateTime(const A, B: TDateTime): Integer;
+begin
+  Result := JvVCL5Utils.CompareDateTime(A, B);
+end;
+
+// StrUtils
+function AnsiStartsText(const SubText, Text: string): Boolean;
+begin
+  Result := JvVCL5Utils.AnsiStartsText(SubText, Text);
+end;
+
+function AnsiEndsText(const SubText, Text: string): Boolean;
+begin
+  Result := JvVCL5Utils.AnsiEndsText(SubText, Text);
+end;
+
+function AnsiStartsStr(const SubStr, Str: string): Boolean;
+begin
+  Result := JvVCL5Utils.AnsiStartsStr(SubStr, Str);
+end;
+
+function AnsiEndsStr(const SubStr, Str: string): Boolean;
+begin
+  Result := JvVCL5Utils.AnsiEndsStr(SubStr, Str);
+end;
+
+// Math
+function Sign(const AValue: Integer): TValueSign;
+begin
+  Result := JvVCL5Utils.Sign(AValue)
+end;
+
+function Sign(const AValue: Int64): TValueSign;
+begin
+  Result := JvVCL5Utils.Sign(AValue);
+end;
+
+function Sign(const AValue: Double): TValueSign;
+begin
+  Result := JvVCL5Utils.Sign(AValue);
+end;
+
+// Variants
+function VarIsStr(const V: Variant): Boolean;
+begin
+  Result := JvVCL5Utils.VarIsStr(V);
+end;
+{$ENDIF COMPILER5}
 
 {$IFDEF UNITVERSIONING}
 initialization

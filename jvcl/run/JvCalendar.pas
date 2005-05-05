@@ -38,8 +38,11 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF CLR}
+  System.Text, System.Runtime.InteropServices,
+  {$ENDIF CLR}
   Windows, Messages, CommCtrl, Classes, Graphics, Controls, Forms,
-  JvComponent, JvTypes, JvExControls;
+  JvComponent, JvTypes, JvJCLUtils, JvExControls;
 
 type
   EMonthCalError = class(EJVCLException);
@@ -406,15 +409,28 @@ end;
 function DayStatesToString(Days: TMonthDayState): string;
 var
   I: Integer;
+  {$IFDEF CLR}
+  sb: StringBuilder;
+  {$ENDIF CLR}
 begin
   Result := '';
   if Days = 0 then
     Exit;
+  {$IFDEF CLR}
+  sb := StringBuilder.Create;
+  for I := 0 to 30 do
+    if (Days and (1 shl (I))) <> 0 then
+      sb.AppendFormat('{0},', [I + 1]);
+  if sb.Length > 0 then
+    sb.Remove(sb.Length - 1, 1);
+  Result := sb.ToString();
+  {$ELSE}
   for I := 0 to 30 do
     if (Days and (1 shl (I))) <> 0 then
       Result := Result + Format('%d,', [I + 1]);
-  if AnsiLastChar(Result) = ',' then
+  if Result <> '' then
     SetLength(Result, Length(Result) - 1);
+  {$ENDIF CLR}
 end;
 
 //=== { TJvMonthCalColors } ==================================================
@@ -621,7 +637,11 @@ end;
 function TMonthCalStrings.AddObject(const S: string; AObject: TObject): Integer;
 begin
   if AnsiPos('=', S) <> 7 then
+    {$IFDEF CLR}
+    raise EMonthCalError.CreateFmt(RsEInvalidDateStr, [S]);
+    {$ELSE}
     raise EMonthCalError.CreateResFmt(@RsEInvalidDateStr, [S]);
+    {$ENDIF CLR}
 
   Result := IndexOfName(Copy(S, 1, 6));
   if Result > -1 then
@@ -673,7 +693,11 @@ constructor TJvCustomMonthCalendar.CreateWithAppearance(AOwner: TComponent;
   const AAppearance: TJvMonthCalAppearance; const AOwnsAppearance: Boolean);
 begin
   if not Assigned(AAppearance) then
+    {$IFDEF CLR}
+    raise EMonthCalError.Create(RsEInvalidAppearance);
+    {$ELSE}
     raise EMonthCalError.CreateRes(@RsEInvalidAppearance);
+    {$ENDIF CLR}
   CheckCommonControl(ICC_DATE_CLASSES);
   inherited Create(AOwner);
   FAppearance := AAppearance;
@@ -781,7 +805,7 @@ begin
     Flag := GMR_DAYSTATE
   else
     Flag := GMR_VISIBLE;
-  if SendMessage(Handle, MCM_GETMONTHRANGE, Flag, Longint(@rgst)) <> 0 then
+  if SendStructMessage(Handle, MCM_GETMONTHRANGE, Flag, rgst) <> 0 then
     with rgst[0] do
       Result := Trunc(EncodeDate(wYear, wMonth, wDay));
 end;
@@ -797,7 +821,7 @@ var
 begin
   Result := 0;
   Flag := IsPartial[Partial];
-  if SendMessage(Handle, MCM_GETMONTHRANGE, Flag, Longint(@rgst)) <> 0 then
+  if SendStructMessage(Handle, MCM_GETMONTHRANGE, Flag, rgst) <> 0 then
     with rgst[1] do
       Result := Trunc(EncodeDate(wYear, wMonth, wDay));
 end;
@@ -806,7 +830,11 @@ end;
 
 procedure TJvCustomMonthCalendar.Change;
 var
+  {$IFDEF CLR}
+  rgst: TSystemTimeRangeArray;
+  {$ELSE}
   rgst: array [0..1] of TSystemTime;
+  {$ENDIF CLR}
   Y, M, D: Word;
 begin
   if not HandleAllocated then
@@ -832,10 +860,18 @@ begin
       wMonth := M;
       wDay := D;
     end;
+    {$IFDEF CLR}
+    MonthCal_SetRange(Handle, GDTR_MIN or GDTR_MAX, rgst);
+    {$ELSE}
     MonthCal_SetRange(Handle, GDTR_MIN or GDTR_MAX, @rgst[0]);
+    {$ENDIF CLR}
   end
   else
+    {$IFDEF CLR}
+    MonthCal_SetRange(Handle, 0, rgst); // rgst is empty
+    {$ELSE}
     MonthCal_SetRange(Handle, 0, nil);
+    {$ENDIF CLR}
   DecodeDate(FToday, Y, M, D);
   with rgst[0] do
   begin
@@ -851,18 +887,25 @@ var
   Y, M, D: Word;
   DayArray: TMonthDayStateArray;
   NMDayState: TNMDayState;
+  {$IFDEF CLR}
+  Mem: IntPtr;
+  {$ENDIF CLR}
 begin
   if not HandleAllocated then
     Exit;
   DecodeDate(FirstVisibleDate(True), Y, M, D);
+  {$IFNDEF CLR}
   FillChar(DayArray, SizeOf(TMonthDayStateArray), 0);
+  {$ENDIF !CLR}
   with NMDayState do
   begin
     stStart.wYear := Y;
     stStart.wMonth := M;
     stStart.wDay := D;
     cDayState := VisibleMonths;
+    {$IFNDEF CLR}
     prgDayState := PMonthDayState(@DayArray);
+    {$ENDIF !CLR}
   end;
   for D := 0 to VisibleMonths - 1 do
   begin
@@ -874,8 +917,20 @@ begin
       Inc(Y);
     end;
   end;
+
+  {$IFDEF CLR}
+  Mem := Marshal.AllocHGlobal(Marshal.SizeOf(DayArray));
+  Marshal.StructureToPtr(DayArray, Mem, True);
+  NMDayState.prgDayState := Mem;
+  try
+    SendStructMessage(Handle, MCM_SETDAYSTATE, VisibleMonths, DayArray);
+  finally
+    Marshal.DestroyStructure(Mem, TypeOf(DayArray));
+  end;
+  {$ELSE}
   SendMessage(Handle, MCM_SETDAYSTATE, VisibleMonths, Longint(@DayArray));
   //  MonthCal_SetDayState(Handle,VisibleMonths,aNMDayState);
+  {$ENDIF CLR}
 end;
 
 procedure TJvCustomMonthCalendar.DoDateSelect(StartDate, EndDate: TDateTime);
@@ -901,7 +956,12 @@ var
   I: Integer;
   Y, M: Word;
 begin
+  {$IFDEF CLR}
+  for I := 0 to Length(StateArray) do
+    StateArray[I] := 0;
+  {$ELSE}
   FillChar(StateArray, SizeOf(TMonthDayStateArray), #0);
+  {$ENDIF CLR}
   with DayState.stStart do
   begin
     Y := wYear;

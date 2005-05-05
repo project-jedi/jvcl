@@ -34,6 +34,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF COMPILER5}
+  JvVCL5Utils,
+  {$ENDIF COMPILER5}
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
@@ -141,9 +144,6 @@ implementation
 
 uses
   Registry,
-  {$IFDEF COMPILER5}
-  JvJCLUtils,
-  {$ENDIF COMPILER5}
   JvResources;
 
 const

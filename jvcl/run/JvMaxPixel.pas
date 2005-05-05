@@ -73,7 +73,6 @@ const
 
 implementation
 
-
 constructor TJvMaxPixel.Create(AOwner: TControl);
 begin
   inherited Create;
@@ -142,7 +141,7 @@ begin
 
       Result := TextWidth(Value) > Length;
       while (Value <> '') and (TextWidth(Value) > Length) do
-        Delete(Value, System.Length(Value), 1);
+        Delete(Value, {$IFDEF CLR}Borland.Delphi.{$ENDIF}System.Length(Value), 1);
     finally
       Free;
     end;

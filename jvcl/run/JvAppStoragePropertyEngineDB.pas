@@ -53,6 +53,9 @@ implementation
 
 uses
   Classes, DBGrids,
+  {$IFDEF COMPILER5}
+  JvVCL5Utils,
+  {$ENDIF COMPILER5}
   JvAppStorage;
 
 type

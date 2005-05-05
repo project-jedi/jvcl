@@ -2470,7 +2470,7 @@ begin
       for I := SelBegY to SelEndY do
       begin
         S := GetEditor.FLines[I];
-        Insert(SubStr(FText, I - SelBegY, sLineBreak), S, SelBegX + 1);
+        Insert(SubStrBySeparator(FText, I - SelBegY, sLineBreak), S, SelBegX + 1);
         GetEditor.FLines.Internal[I] := S;
       end;
       GetEditor.TextModified(SelBegX, SelBegY, maInsertColumn, FText);
@@ -2625,7 +2625,7 @@ begin
     ItemIndex := -1
   else
     ItemIndex := FindFirst(Items, S);
-  Eq := (ItemIndex > -1) and Cmp(Trim(SubStr(Items[ItemIndex], 0, FSeparator)), S);
+  Eq := (ItemIndex > -1) and SameText(Trim(SubStrBySeparator(Items[ItemIndex], 0, FSeparator)), S);
 end;
 
 function TJvCompletion.GetStrings(Index: Integer): TStrings;
@@ -2662,7 +2662,7 @@ end;
 
 procedure TJvCompletion.ReplaceWordItemIndex(SubStrStart: Integer);
 begin
-  ReplaceWord(SubStr(Items[ItemIndex], SubStrStart, FSeparator));
+  ReplaceWord(SubStrBySeparator(Items[ItemIndex], SubStrStart, FSeparator));
 end;
 
 function TJvCustomEditor.GetCompletion: TJvCompletion;

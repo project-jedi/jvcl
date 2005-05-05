@@ -197,7 +197,10 @@ implementation
 
 uses
   SysUtils, Forms,
-  JvJVCLUtils, JvThemes, Math;
+  {$IFDEF COMPILER6_UP}
+  Types,
+  {$ENDIF COMPILER6_UP}
+  JvJVCLUtils, JvThemes;
 
 const
   JvBtnLineSeparator = '|';
@@ -865,7 +868,7 @@ begin
   if (Parent <> nil) and Parent.HandleAllocated then
   begin
     R := BoundsRect;
-    InvalidateRect(Parent.Handle, @R, True);
+    InvalidateRect(Parent.Handle, {$IFNDEF CLR}@{$ENDIF}R, True);
   end;
   Repaint;
 end;

@@ -50,12 +50,20 @@ type
 
   TJvCommonDialogP = class(TJvComponent)
   public
+    {$IFDEF CLR}
+    procedure DefaultHandler(var Msg); virtual;
+    {$ENDIF CLR}
+
     procedure Execute; virtual; abstract;
   end;
 
   // (rom) alternative to TJvCommonDialogP
   TJvCommonDialogF = class(TJvComponent)
   public
+    {$IFDEF CLR}
+    procedure DefaultHandler(var Msg); virtual;
+    {$ENDIF CLR}
+
     function Execute: Boolean; virtual; abstract;
   end;
 
@@ -70,6 +78,16 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
+
+{$IFDEF CLR}
+procedure TJvCommonDialogP.DefaultHandler(var Msg);
+begin
+end;
+
+procedure TJvCommonDialogF.DefaultHandler(var Msg);
+begin
+end;
+{$ENDIF CLR}
 
 
 {$IFDEF UNITVERSIONING}

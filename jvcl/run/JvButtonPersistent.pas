@@ -63,8 +63,8 @@ type
     procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
   protected
     procedure Changed;
-  public
     procedure AssignTo(Sender: TPersistent); override;
+  public
     property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
     constructor Create;
     destructor Destroy; override;

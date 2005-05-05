@@ -35,6 +35,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF CLR}
+  WinUtils,
+  {$ENDIF CLR}
   Windows, Messages, Classes, Controls, Forms, StdCtrls, Menus, ExtCtrls,
   {$IFDEF VisualCLX}
   QImgList,
@@ -294,7 +297,11 @@ var
 begin
   {$IFDEF VCL}
   NonClientMetrics.cbSize := SizeOf(NonClientMetrics);
+  {$IFDEF CLR}
+  if SystemParametersInfo(SPI_GETNONCLIENTMETRICS, 0, NonClientMetrics, 0) then
+  {$ELSE}
   if SystemParametersInfo(SPI_GETNONCLIENTMETRICS, 0, @NonClientMetrics, 0) then
+  {$ENDIF CLR}
     AFont.Handle := CreateFontIndirect(NonClientMetrics.lfMessageFont)
   else
     with AFont do
@@ -326,7 +333,7 @@ end;
 function CreateCalcBtn(AParent: TWinControl; AKind: TCalcBtnKind;
   AOnClick: TNotifyEvent; ALayout: TCalcPanelLayout): TJvCalcButton;
 const
-  BtnCaptions: array [cbSgn..cbMC] of PChar =
+  BtnCaptions: array [cbSgn..cbMC] of string[4] =
     ('±', ',', '/', '*', '-', '+', 'sqrt', '%', '1/x', '=', '<-', 'C',
      'MP', 'MS', 'MR', 'MC');
 begin
@@ -340,7 +347,7 @@ begin
       Caption := DecimalSeparator
     else
     if Kind in [cbSgn..cbMC] then
-      Caption := StrPas(BtnCaptions[Kind]);
+      Caption := BtnCaptions[Kind];
     Left := BtnPos[ALayout, Kind].X;
     Top := BtnPos[ALayout, Kind].Y;
     if ALayout = clDialog then
@@ -864,7 +871,7 @@ begin
     cbSgn:
       CalcKey('_');
     cbDcm:
-      CalcKey(DecimalSeparator);
+      CalcKey(DecimalSeparator{$IFDEF CLR}[1]{$ENDIF});
     cbDiv:
       CalcKey('/');
     cbMul:
@@ -938,7 +945,7 @@ begin
     Key := #0;
   if Assigned(FOnCalcKey) then
     FOnCalcKey(Self, Key);
-  if Key in [DecimalSeparator, '.', ','] then
+  if Key in [AnsiChar(DecimalSeparator{$IFDEF CLR}[1]{$ENDIF}), '.', ','] then
   begin
     CheckFirst;
     if Pos(DecimalSeparator, Text) = 0 then
@@ -984,7 +991,7 @@ begin
         if (Length(Text) = 1) or ((Length(Text) = 2) and (Text[1] = '-')) then
           SetText('0')
         else
-          SetText(System.Copy(Text, 1, Length(Text) - 1));
+          SetText({$IFDEF CLR}Borland.Delphi.{$ENDIF}System.Copy(Text, 1, Length(Text) - 1));
       end;
     '_':
       SetDisplay(-GetDisplay);
@@ -1103,7 +1110,7 @@ var
   I: Integer;
   BtnTag: Longint;
 begin
-  if Key in [DecimalSeparator, '.', ','] then
+  if Key in [AnsiChar(DecimalSeparator{$IFDEF CLR}[1]{$ENDIF}), '.', ','] then
     Key := '.'
   else
   if Key = Cr then

@@ -222,7 +222,7 @@ implementation
 
 uses
   TypInfo,
-  JvJCLUtils, JvExExtCtrls, JvThemes, JvResources;
+  JvExExtCtrls, JvThemes, JvResources;
 
 const
   cArrowWidth = 'ArrowWidth';
@@ -716,7 +716,7 @@ end;
 procedure TJvCustomOfficeColorButton.PropertiesChanged(Sender: TObject;
   PropName: string);
 begin
-  if Cmp(PropName, cShowDragBar) then
+  if SameText(PropName, cShowDragBar) then
   begin
     if FColorsForm.ShowDragBar <> Properties.ShowDragBar then
       FColorsForm.ShowDragBar := Properties.ShowDragBar;
@@ -725,28 +725,28 @@ begin
       AdjustColorForm;
   end
   else
-  if Cmp(PropName, cDragCaption) then
+  if SameText(PropName, cDragCaption) then
     FColorsForm.Caption := Properties.DragCaption
   else
-  if Cmp(PropName, cDragBarHeight) then
+  if SameText(PropName, cDragBarHeight) then
   begin
     FColorsForm.DragBarHeight := Properties.DragBarHeight;
     AdjustColorForm;
   end
   else
-  if Cmp(PropName, cDragBarHint) then
+  if SameText(PropName, cDragBarHint) then
     FColorsForm.DragBarHint := Properties.DragBarHint
   else
-  if Cmp(PropName, cDragBarSpace) then
+  if SameText(PropName, cDragBarSpace) then
   begin
     FColorsForm.DragBarSpace := Properties.DragBarSpace;
     AdjustColorForm;
   end
   else
-  if Cmp(PropName, cArrowWidth) then
+  if SameText(PropName, cArrowWidth) then
     AdjustSize
   else
-  if Cmp(PropName, cEdgeWidth) then
+  if SameText(PropName, cEdgeWidth) then
     FMainButton.EdgeWidth := Properties.EdgeWidth
   else
   begin

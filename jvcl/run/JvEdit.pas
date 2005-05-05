@@ -48,6 +48,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF CLR}
+  Types,
+  {$ENDIF CLR}
   Windows, Messages,
   {$IFDEF VisualCLX}
   Qt,
@@ -131,7 +134,7 @@ type
 
     {$IFDEF VCL}
     function GetText: TCaption; virtual;
-    procedure SetText(const Value: TCaption); virtual;
+    procedure SetText(const Value: TCaption); {$IFDEF CLR}reintroduce;{$ENDIF} virtual;
     procedure CreateHandle; override;
     procedure DestroyWnd; override;
     {$ENDIF VCL}
@@ -323,7 +326,11 @@ begin
     C.StartPaint;
     {$ENDIF VisualCLX}
     Result :=
+      {$IFDEF CLR}
+      not GetTextExtentPoint32(C.Handle, Text, Length(Text), Size) or
+      {$ELSE}
       not GetTextExtentPoint32(C.Handle, PChar(Text), Length(Text), Size) or
+      {$ENDIF CLR}
       { (rb) ClientWidth is too big, should be EM_GETRECT, don't know the Clx variant }
       (Control.ClientWidth > Size.cx);
     {$IFDEF VisualCLX}
@@ -397,14 +404,28 @@ end;
 
 {$IFDEF VCL}
 procedure TJvCustomEdit.CMHintShow(var Msg: TMessage);
+{$IFDEF CLR}
+var
+  Info: THintInfo;
+{$ENDIF CLR}
 begin
   if AutoHint and not TextFitsInCtrl(Self, Self.Text) then
+    {$IFDEF CLR}
+    with TCMHintShow.Create(Msg) do
+    begin
+      Info := HintInfo;
+      Info.HintPos := Self.ClientToScreen(Point(-2, Height - 2));
+      Info.HintStr := Self.Text;
+      HintInfo := Info;
+    end
+    {$ELSE}
     with TCMHintShow(Msg) do
     begin
       HintInfo.HintPos := Self.ClientToScreen(Point(-2, Height - 2));
       HintInfo.HintStr := Self.Text;
       Result := 0;
     end
+    {$ENDIF CLR}
   else
     inherited;
 end;

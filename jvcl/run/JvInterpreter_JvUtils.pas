@@ -117,13 +117,6 @@ begin
   Value := ResSaveToString(Args.Values[0], Args.Values[1], Args.Values[2], string(TVarData(Args.Values[3]).vString));
 end;
 
-{ function Execute(const CommandLine, WorkingDirectory: string): Integer; }
-
-procedure JvInterpreter_Execute(var Value: Variant; Args: TJvInterpreterArgs);
-begin
-  Value := Execute(Args.Values[0],Args.Values[1]);
-end;
-
 { function IniReadSection(const IniFileName: TFileName; const Section: string; Ss: TStrings): Boolean; }
 
 procedure JvInterpreter_IniReadSection(var Value: Variant; Args: TJvInterpreterArgs);
@@ -457,18 +450,11 @@ begin
     TVarData(Args.Values[3]).vInteger);
 end;
 
-{ function SubStr(const S: string; const index: Integer; const Separator: string): string; }
+{ function SubStrBySeparator(const S: string; const index: Integer; const Separator: string): string; }
 
-procedure JvInterpreter_SubStr(var Value: Variant; Args: TJvInterpreterArgs);
+procedure JvInterpreter_SubStrBySeparator(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := SubStr(Args.Values[0], Args.Values[1], Args.Values[2]);
-end;
-
-{ function SubStrEnd(const S: string; const index: Integer; const Separator: string): string; }
-
-procedure JvInterpreter_SubStrEnd(var Value: Variant; Args: TJvInterpreterArgs);
-begin
-  Value := SubStrEnd(Args.Values[0], Args.Values[1], Args.Values[2]);
+  Value := SubStrBySeparator(Args.Values[0], Args.Values[1], Args.Values[2]);
 end;
 
 (*
@@ -591,13 +577,6 @@ begin
   Value := Cmp(Args.Values[0], Args.Values[1]);
 end;
 
-{ function StringCat(var S1: string; S2: string): string; }
-
-procedure JvInterpreter_StringCat(var Value: Variant; Args: TJvInterpreterArgs);
-begin
-  Value := StringCat(string(TVarData(Args.Values[0]).vString), Args.Values[1]);
-end;
-
 { function HasChar(const Ch: Char; const S: string): Boolean; }
 
 procedure JvInterpreter_HasChar(var Value: Variant; Args: TJvInterpreterArgs);
@@ -718,18 +697,11 @@ begin
   Value := IsEmptyFolder(Args.Values[0]);
 end;
 
-{ procedure AddSlash(var Dir: TFileName); }
+{ function AddSlash(const Dir: TFileName): string; }
 
 procedure JvInterpreter_AddSlash(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  AddSlash(TFileName(TVarData(Args.Values[0]).vString));
-end;
-
-{ function AddSlash2(const Dir: TFileName): string; }
-
-procedure JvInterpreter_AddSlash2(var Value: Variant; Args: TJvInterpreterArgs);
-begin
-  Value := AddSlash2(Args.Values[0]);
+  Value := AddSlash(Args.Values[0]);
 end;
 
 { function AddPath(const FileName, Path: TFileName): TFileName; }
@@ -972,7 +944,6 @@ begin
       varString], varEmpty);
     AddFunction(cJvUtils, 'ResSaveToString', JvInterpreter_ResSaveToString, 4, [varEmpty, varString, varString, varString or
       varByRef], varEmpty);
-    AddFunction(cJvUtils, 'Execute', JvInterpreter_Execute, 2, [varString, varString], varEmpty);
     AddFunction(cJvUtils, 'IniReadSection', JvInterpreter_IniReadSection, 3, [varEmpty, varString, varObject], varEmpty);
     AddFunction(cJvUtils, 'LoadTextFile', JvInterpreter_LoadTextFile, 1, [varEmpty], varEmpty);
     AddFunction(cJvUtils, 'SaveTextFile', JvInterpreter_SaveTextFile, 2, [varEmpty, varString], varEmpty);
@@ -1035,8 +1006,7 @@ begin
     AddFunction(cJvStrUtil, 'GetWordOnPos', JvInterpreter_GetWordOnPos, 2, [varString, varInteger], varEmpty);
     AddFunction(cJvStrUtil, 'GetWordOnPosEx', JvInterpreter_GetWordOnPosEx, 4, [varString, varInteger, varInteger or
       varByRef, varInteger or varByRef], varEmpty);
-    AddFunction(cJvStrUtil, 'SubStr', JvInterpreter_SubStr, 3, [varString, varInteger, varString], varEmpty);
-    AddFunction(cJvStrUtil, 'SubStrEnd', JvInterpreter_SubStrEnd, 3, [varString, varInteger, varString], varEmpty);
+    AddFunction(cJvStrUtil, 'SubStrBySeparator', JvInterpreter_SubStrBySeparator, 3, [varString, varInteger, varString], varEmpty);
     AddFunction(cJvStrUtil, 'GetLineByPos', JvInterpreter_GetLineByPos, 2, [varString, varInteger], varEmpty);
     AddFunction(cJvStrUtil, 'GetXYByPos', JvInterpreter_GetXYByPos, 4, [varString, varInteger, varInteger or varByRef,
       varInteger or varByRef], varEmpty);
@@ -1055,7 +1025,7 @@ begin
     AddFunction(cJvStrUtil, 'LastDateRUS', JvInterpreter_LastDateRUS, 1, [varEmpty], varEmpty);
     AddFunction(cJvStrUtil, 'CurrencyToStr', JvInterpreter_CurrencyToStr, 1, [varEmpty], varEmpty);
     AddFunction(cJvStrUtil, 'Cmp', JvInterpreter_Cmp, 2, [varString, varString], varEmpty);
-    AddFunction(cJvStrUtil, 'StringCat', JvInterpreter_StringCat, 2, [varString or varByRef, varString], varEmpty);
+    //AddFunction(cJvStrUtil, 'StringCat', JvInterpreter_StringCat, 2, [varString or varByRef, varString], varEmpty);
     AddFunction(cJvStrUtil, 'HasChar', JvInterpreter_HasChar, 2, [varEmpty, varString], varEmpty);
     AddFunction(cJvStrUtil, 'HasAnyChar', JvInterpreter_HasAnyChar, 2, [varString, varString], varEmpty);
     AddFunction(cJvStrUtil, 'CountOfChar', JvInterpreter_CountOfChar, 2, [varEmpty, varString], varEmpty);
@@ -1072,8 +1042,7 @@ begin
     AddFunction(cJvUtils, 'FileGetInfo', JvInterpreter_FileGetInfo, 2, [varEmpty, varEmpty or varByRef], varEmpty);
     AddFunction(cJvUtils, 'HasSubFolder', JvInterpreter_HasSubFolder, 1, [varEmpty], varEmpty);
     AddFunction(cJvUtils, 'IsEmptyFolder', JvInterpreter_IsEmptyFolder, 1, [varEmpty], varEmpty);
-    AddFunction(cJvUtils, 'AddSlash', JvInterpreter_AddSlash, 1, [varEmpty or varByRef], varEmpty);
-    AddFunction(cJvUtils, 'AddSlash2', JvInterpreter_AddSlash2, 1, [varEmpty], varEmpty);
+    AddFunction(cJvUtils, 'AddSlash', JvInterpreter_AddSlash, 1, [varEmpty], varEmpty);
     AddFunction(cJvUtils, 'AddPath', JvInterpreter_AddPath, 2, [varEmpty, varEmpty], varEmpty);
     AddFunction(cJvUtils, 'AddPaths', JvInterpreter_AddPaths, 2, [varString, varString], varEmpty);
     AddFunction(cJvUtils, 'ParentPath', JvInterpreter_ParentPath, 1, [varEmpty], varEmpty);
