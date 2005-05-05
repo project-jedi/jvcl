@@ -91,6 +91,7 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 
     procedure Synchronize (Method: TThreadMethod);
+    function SynchMessageDlg(const Msg: string; AType: TMsgDlgType; AButtons: TMsgDlgButtons; HelpCtx: Longint): Word;
 
     property Count: Integer read GetCount;
     property Threads[Index: Integer]: TJvBaseThread read GetThreads;
@@ -206,6 +207,15 @@ begin
   if Assigned(LastThread) then
     LastThread.Synchronize(Method);
 end;
+
+function TJvThread.SynchMessageDlg(const Msg: string; AType: TMsgDlgType; AButtons: TMsgDlgButtons; HelpCtx: Longint): Word;
+begin
+  if Assigned(LastThread) then
+    Result := LastThread.SynchMessageDlg(Msg, AType, AButtons, HelpCtx)
+  else
+    Result := 0;
+end;
+
 
 function TJvThread.Execute(P: Pointer): THandle;
 var
