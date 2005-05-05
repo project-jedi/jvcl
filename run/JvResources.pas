@@ -292,6 +292,7 @@ resourcestring
   RsNA = ' n/a ';
 
   RsEDataIndexCannotBeNegative = 'Data: index cannot be negative';
+  RsEPenIndexInvalid = 'Data: pen index invalid/out of range.';
   RsEDataIndexTooLargeProbablyAnInternal = 'Data: index too large. Probably an internal error';
   RsEGetAverageValueIndexNegative = 'GetAverageValue: Index negative';
   RsESetAverageValueIndexNegative = 'SetAverageValue: Index negative';
@@ -397,9 +398,9 @@ resourcestring
 //=== JvCsvData.pas ==========================================================
 resourcestring
   RsErrorRowItem = '<ERROR>';
-
-  RsECsvErrFormat = '%s: %s';
-  RsECsvInvalidSeparatorFmt = 'Invalid separator character (%s)'; 
+  RsECsvErrFormat = '%s: %s ';
+  RsECsvErrFormat2 = '%s: %s (%d)';
+  RsECsvInvalidSeparatorFmt = 'Invalid separator character (%s)';
   RsEProblemReadingRow = 'Problem reading row %d';
   RsENoRecord = 'No records';
   RsENoFieldNamesMatch = 'No field names match in these datasets. CopyFromDataset failed.';
