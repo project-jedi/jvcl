@@ -2517,6 +2517,7 @@ begin
   TabPosition := tpTop; // Warren changed! was tpBottom;
   FTabImageList := nil;
   Images := nil;
+
   if AOwner is TJvDockTabHostForm then
   begin
     FTabImageList := TCustomImageList.Create(AOwner);
@@ -3391,6 +3392,15 @@ begin
   end;
 end;
 
+{ TJvDockTabPanel.Paint,etc.
+  TODO-LIST-ITEM:
+  ---------------
+  VID style has a bit of a problem with what to do in
+  case of a lot of tabs. It keeps making the text shorter via
+  text drawn with ellipsis but doesn't EVER display the left/right
+  buttons that allow you to scroll through a long list of tabs.
+  To fix this is non-trivial. -WPostma.
+  }
 procedure TJvDockTabPanel.Paint;
 var
   ARect: TRect;
