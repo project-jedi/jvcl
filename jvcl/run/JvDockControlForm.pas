@@ -861,6 +861,9 @@ type
     FPageControl: TJvDockTabPageControl;
   public
     constructor Create(AOwner: TComponent); override;
+    procedure ShowDockedControl(AControl:TWinControl); virtual; // If aControl is docked in PageControl, change PageControl to that page. NEW! WPostma.
+    procedure UpdateCaption(AControl:TWinControl); virtual; // update tab host's tabs and title bar when page caption changes.
+
     function GetActiveDockForm: TForm;
     property DockClient;
     { Constructed in TJvDockClient.CreateTabDockClass }
@@ -5199,6 +5202,63 @@ constructor TJvDockTabHostForm.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   BorderStyle := TabDockHostBorderStyle;
+end;
+
+//------------------------------------------------------------------------
+// ShowDockedControl:
+//
+// If under program control you need a tabdock to switch pages to show
+// a particular docked form, you call DockTabHostForm.ShowControl(aForm):
+//
+// If aControl is docked in DockTabhostForm.PageControl, this will
+// change the PageControl.ActivePage to that page.
+//------------------------------------------------------------------------
+procedure TJvDockTabHostForm.ShowDockedControl(AControl:TWinControl); // NEW! WPostma.
+var
+ t:Integer;
+ TabSheet :TJvDockTabSheet;
+begin
+  Assert(Assigned(AControl));
+  if not Assigned(AControl.Parent) then exit;
+  if not (AControl.Parent is TJvDockTabSheet) then exit;
+  TabSheet := TJvDockTabSheet(AControl.Parent);
+  // Now go through the pages and find it!
+  for t := 0 to FPageControl.Count-1 do begin
+      if FPageControl.Pages[t]=TabSheet then begin
+          FPageControl.ActivePage := TabSheet; { set page!}
+          if AControl is TForm then
+            TabSheet.Caption := TForm(AControl).Caption;
+          Self.Caption := TabSheet.Caption;
+          exit;
+      end;
+  end;
+end;
+
+// If while docked, you need a docked form's caption to update,
+// and this update needs to be shown on the tabs on the screen,
+// and possibly also the title bar of the docktabhost form needs
+// updating also, then you need to call this function, like this:
+//   DockTabHostForm.UpdateCaption(MyForm)
+procedure TJvDockTabHostForm.UpdateCaption(AControl:TWinControl); //virtual; 
+var
+ t:Integer;
+ TabSheet :TJvDockTabSheet;
+begin
+  Assert(Assigned(AControl));
+  if not Assigned(AControl.Parent) then exit;
+  if not (AControl.Parent is TJvDockTabSheet) then exit;
+  TabSheet := TJvDockTabSheet(AControl.Parent);
+  // Now go through the pages and find the one page that needs
+  // its caption updated.
+  for t := 0 to FPageControl.Count-1 do begin
+      if FPageControl.Pages[t]=TabSheet then begin
+          if AControl is TForm then
+            TabSheet.Caption := TForm(AControl).Caption;
+          if FPageControl.ActivePage = TabSheet then
+                Self.Caption := TabSheet.Caption; // tabhost's form caption needs updating. 
+          exit;
+      end;
+  end;
 end;
 
 function TJvDockTabHostForm.GetActiveDockForm: TForm;
