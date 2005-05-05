@@ -191,7 +191,7 @@ type
 
   { SPECIAL TYPES OF  DATABASE COLUMNS FOR THIS COMPONENT }
   { Columns are numeric, text, or one of two kinds of Specially Encoded date/time formats: }
-  TJvCsvColumnFlag = (jcsvNull, jcsvString, jcsvNumeric, jcsvAsciiDateTime, jcsvGMTDateTime, jcsvTZDateTime);
+  TJvCsvColumnFlag = (jcsvNull, jcsvString, jcsvNumeric, jcsvAsciiDateTime, jcsvGMTDateTime, jcsvTZDateTime, jcsvAsciiDate, jcsvAsciiTime );
 
   { pointer to special CSV COLUMN }
   PCsvColumn = ^TJvCsvColumn;
@@ -688,11 +688,26 @@ procedure CsvRowSetColumnMarker(Row: PCsvRow; ColumnIndex: Integer; ColumnMarker
 function CsvRowGetColumnMarker(Row: PCsvRow; ColumnIndex: Integer): Integer;
 
 { Date/Time String decoding functions }
+
+// Decides a TIME_T (A common standard-C-library way of encoding date time values
+// as a number of seconds since 12:00 AM Jan 1, 1970 UTC) which is stored in Hex
+// in the CSV file.
 function TimeTHexToDateTime(const HexStr: string; TimeZoneCorrection: Integer): TDateTime;
-function TimeTAsciiToDateTime(const AsciiDateStr: string): TDateTime;
+
+function JvIsoDateTimeStrToDateTime(const AsciiDateTimeStr: string): TDateTime; // [formerly TimeTAsciiToDateTime]
+function JvIsoDateStrToDate(const AsciiDateStr: string): TDateTime; // new.
+function JvIsoTimeStrToTime(const AsciiTimeStr: string): TDateTime; // new. If INVALID value: returns -1.0
 
 { Date/Time string encoding functions }
-function DateTimeToTimeToIsoAscii(ADateTime: TDateTime): string;
+function JvDateTimeIsoStr(ADateTime: TDateTime): string; // renamed! formerly DateTimeToTimeToIsoAscii
+
+// new: JvDateIsoStr [support function for new Date ASCII CSV column type]
+function JvDateIsoStr(ADateTime: TDateTime): string;
+
+// new: JvTimeIsoStr [support function for new Date ASCII CSV column type]
+function JvTimeIsoStr(ADateTime: TDateTime): string;
+
+
 function DateTimeToTimeTHex(ADateTime: TDateTime; TimeZoneCorrection: Integer): string;
 
 { Routine to keep backup copies of old Data files around }
@@ -730,14 +745,16 @@ const
   // Either they are used as field type specifiers, break lines or are used to
   // delimit field content
   cInvalidSeparators = [#0, Backspace, Lf, #12, Cr, #39, '"', '\',
-    '$', '%', '&', '@', '#', '^', '!', '-'];
+    '$', '%', '&', '@', '#', '^', '!', '-', '/', '*' ];
 
 var
-  // (rom) disabled unused
-  // CallCount: Integer = 0;
-  AsciiTime_MinValue: array [1..6] of Integer = (1900, 1, 1, 0, 0, 0);
-  AsciiTime_MaxValue: array [1..6] of Integer = (3999, 12, 31, 23, 59, 59);
-  AsciiTime_ExpectLengths: array [1..6] of Integer = (4, 2, 2, 2, 2, 2);
+// These arrays are needed by the string-input validation routines
+// that validate the ascii input for ISO date/time formats:
+
+                                                     //YYYY  MM  DD  HH  NN  SS
+  AsciiTime_MinValue: array [1..6] of Integer =      (1900, 1,  1,  0,  0,  0);
+  AsciiTime_MaxValue: array [1..6] of Integer =      (3999, 12, 31, 23, 59, 59);
+  AsciiTime_ExpectLengths: array [1..6] of Integer = (4,    2,  2,  2,  2,  2);
 
 procedure JvCsvDatabaseError(const TableName, Msg: string);
 begin
@@ -746,6 +763,15 @@ begin
   OutputDebugString(PChar('JvCsvDatabaseError in ' + TableName + ': ' + Msg));
   {$ENDIF DEBUGINFO_ON}
   raise EJvCsvDataSetError.CreateResFmt(@RsECsvErrFormat, [TableName, Msg]);
+end;
+
+procedure JvCsvDatabaseError2(const TableName, Msg: string;Code:Integer);
+begin
+  // (rom) no OutputDebugString in production code
+  {$IFDEF DEBUGINFO_ON}
+  OutputDebugString(PChar('JvCsvDatabaseError in ' + TableName + ': ' + Msg));
+  {$ENDIF DEBUGINFO_ON}
+  raise EJvCsvDataSetError.CreateResFmt(@RsECsvErrFormat2, [TableName, Msg, Code]);
 end;
 
 // note that file is not being locked!
@@ -1368,8 +1394,12 @@ begin
          { one of three different datetime formats}
          if Length(TempString) > 0 then
            case CsvColumnData^.FFlag of
+             jcsvAsciiTime:
+               Result := JvIsoDateTimeStrToDateTime(TempString);
+             jcsvAsciiDate:
+               Result := JvIsoDateTimeStrToDateTime(TempString);
              jcsvAsciiDateTime:
-               Result := TimeTAsciiToDateTime(TempString);
+               Result := JvIsoDateTimeStrToDateTime(TempString);
              jcsvGMTDateTime:
                Result := TimeTHexToDateTime(TempString,0);
              jcsvTZDateTime:
@@ -1757,6 +1787,8 @@ var
   PDestination: PChar;
   CsvColumnData: PCsvColumn;
   DT: TDateTime;
+  TempInteger:Integer;
+  ATimeStamp: TTimeStamp;
 begin
   //Trace( 'SetFieldData '+Field.FieldName );
   PDestination := GetActiveRecordBuffer;
@@ -1845,15 +1877,53 @@ begin
       ftBoolean:
         NewVal := IntToStr(Ord(PWordBool(Buffer)^)); // bugfix May 26, 2003 - WP
       // There are two ways of handling date and time:
+      ftDate: // NEW: TDateField support!
+          if (CsvColumnData^.FFlag = jcsvAsciiDate) then
+            begin
+              ATimeStamp.Time := 0;
+              ATimeStamp.Date := Integer(Buffer^);
+              DT := TimeStampToDateTime(ATimeStamp);
+              NewVal := JvDateIsoStr(DT);
+            end else begin
+              JvCsvDatabaseError2(FTableName, RsEFieldTypeNotHandled, Ord(CsvColumnData^.FFlag) );
+            end;
+
+      ftTime: // NEW: TTimeField support!
+          if (CsvColumnData^.FFlag = jcsvAsciiTime) then
+          begin
+              ATimeStamp.Time := LongInt(Buffer^);
+              ATimeStamp.Date := DateDelta;
+              DT := TimeStampToDateTime(ATimeStamp);
+              NewVal := JvTimeIsoStr(DT);
+          end else begin
+              JvCsvDatabaseError2(FTableName, RsEFieldTypeNotHandled, Ord(CsvColumnData^.FFlag) );
+          end;
+
       ftDateTime:
         case CsvColumnData^.FFlag of
-          // Localized time in Ascii
+          // Localized date only (no time) in Ascii
+          jcsvAsciiDate:
+            begin
+              DT := TimeStampToDateTime(MSecsToTimeStamp(Double(Buffer^)));
+              NewVal := JvDateIsoStr(DT);
+            end;
+         
+
+          // Localized time only (no date) in Ascii
+          jcsvAsciiTime:
+            begin
+              DT := TimeStampToDateTime(MSecsToTimeStamp(Double(Buffer^)));
+              NewVal := JvTimeIsoStr(DT);
+            end;
+
+
+          // Localized date+time in Ascii
           jcsvAsciiDateTime:
             begin
               DT := TimeStampToDateTime(MSecsToTimeStamp(Double(Buffer^)));
-              NewVal := DateTimeToTimeToIsoAscii(DT);
-              //OutputDebugString(PChar('date '+NewVal));
+              NewVal := JvDateTimeIsoStr(DT);
             end;
+
           // GMT Times are stored in HEX
           jcsvGMTDateTime:
             begin
@@ -1866,10 +1936,10 @@ begin
               NewVal := DateTimeToTimeTHex(DT, FTimeZoneCorrection);
             end;
         else
-          JvCsvDatabaseError(FTableName, RsETimeTConvError);
+          JvCsvDatabaseError2(FTableName, RsETimeTConvError, Ord(CsvColumnData^.FFlag));
         end;
     else
-      JvCsvDatabaseError(FTableName, RsEFieldTypeNotHandled);
+      JvCsvDatabaseError2(FTableName, RsEFieldTypeNotHandled, Ord(CsvColumnData^.FFlag) );
     end;
 
   // Set new Data value (NewVal = String)
@@ -2172,12 +2242,86 @@ begin
           PWordBool(Buffer)^ := True // bugfix May 26, 2003 - WP
         else
           PWordBool(Buffer)^ := False; // bugfix May 26, 2003 - WP
+
+      ftDate:
+          if ( CsvColumnData^.FFlag = jcsvAsciiDate) then
+          // Ascii Date yyyy/mm/ddd
+            begin
+              ADateTime := JvIsoDateStrToDate(TempString);
+              if ADateTime <= 1.0 then
+              begin
+                Result := False; { field is NULL, no date/time value }
+                Exit;
+              end;
+                // XXX Delphi Weirdness Ahead.  Read docs before you try to
+                // understand this. The data in Buffer^ is an integer timestamp
+              Integer(Buffer^) := DateTimeToTimeStamp(ADateTime).Date;
+
+            end else
+                 JvCsvDatabaseError(FTableName, RsETimeTConvError);
+
+      ftTime:
+          if ( CsvColumnData^.FFlag = jcsvAsciiTime) then
+          begin
+              ADateTime := JvIsoTimeStrToTime(TempString);
+              if ADateTime < 0.0 then
+              begin
+                Result := False; { field is NULL, no date/time value }
+                Exit;
+              end;
+              // The data in Buffer^ is an integer timestamp
+              Integer(Buffer^) := DateTimeToTimeStamp(ADateTime).Time;
+
+          end else
+                 JvCsvDatabaseError(FTableName, RsETimeTConvError);
+
       ftDateTime:
         case CsvColumnData^.FFlag of
+          jcsvAsciiDate:
+          // Ascii Date yyyy/mm/ddd
+            begin
+              ADateTime := JvIsoDateStrToDate(TempString);
+              if ADateTime <= 1.0 then
+              begin
+                Result := False; { field is NULL, no date/time value }
+                Exit;
+              end;
+              ts := DateTimeToTimeStamp(ADateTime);
+              if (ts.Time = 0) and (ts.Date = 0) then
+              begin
+                Exit;
+              end;
+                // XXX Delphi Weirdness Ahead.  Read docs before you try to
+                // understand this. We want to store 8 bytes at Buffer^, this
+                // is how we do it.
+              Double(Buffer^) := TimeStampToMSecs(DateTimeToTimeStamp(ADateTime));
+            end;
+
+          jcsvAsciiTime:
+          // Ascii Time 08:23:15
+            begin
+              ADateTime := JvIsoTimeStrToTime(TempString);
+              if ADateTime <= 1.0 then
+              begin
+                Result := False; { field is NULL, no date/time value }
+                Exit;
+              end;
+              ts := DateTimeToTimeStamp(ADateTime);
+              if (ts.Time = 0) and (ts.Date = 0) then
+              begin
+                Exit;
+              end;
+                // XXX Delphi Weirdness Ahead.  Read docs before you try to
+                // understand this. We want to store 8 bytes at Buffer^, this
+                // is how we do it.
+              Double(Buffer^) := TimeStampToMSecs(DateTimeToTimeStamp(ADateTime));
+            end;
+
+
           // Ascii Date 1999/03/05 08:23:15
           jcsvAsciiDateTime:
             begin
-              ADateTime := TimeTAsciiToDateTime(TempString);
+              ADateTime := JvIsoDateTimeStrToDateTime(TempString);
               if ADateTime <= 1.0 then
               begin
                 Result := False; { field is NULL, no date/time value }
@@ -2208,7 +2352,7 @@ begin
           JvCsvDatabaseError(FTableName, RsETimeTConvError);
         end;
     else // not a valid ftXXXX type for this TDataSet descendant!?
-      JvCsvDatabaseError(FTableName, RsEFieldTypeNotHandled);
+      JvCsvDatabaseError2(FTableName, RsEFieldTypeNotHandled, Ord(Field.DataType) );
     end
   except
     on E: EConvertError do
@@ -2393,6 +2537,19 @@ begin
             FieldType := jcsvAsciiDateTime;
             FieldLen := 0; // automatic.
           end;
+	'/':
+	   begin // /=date only as ascii YYYY/MM/DD
+            VclFieldType := ftDate;
+            FieldType := jcsvAsciiDate;
+            FieldLen := 0; // automatic.
+	   end;
+	'*':
+	   begin // *=time only as HH:MM:SS
+            VclFieldType := ftTime;
+            FieldType := jcsvAsciiTime;
+            FieldLen := 0; // automatic.
+	   end;
+		
         '!':
           begin // != Boolean field True/False
             VclFieldType := ftBoolean; // Boolean field in dataset
@@ -4024,17 +4181,20 @@ end;
  //------------------------------------------------------------------------------
  // TimeTHexToDateTime
  //
- // TDateTime is a whole number representing days since Dec 30, 1899.
- // A standard C library time is seconds since 1970. We compensate by
- // getting the base date (Jan 1, 1970) and adding 1 for every day since
- // then, and a fractional part representing the seconds.
- // By dividing the seconds by the number of seconds in a day (24*24*60=86400)
- // we obtain this Result.
+ // The Delphi TDateTime format is a whole number representing days since Dec 30, 1899.
+ // Whereas the TIME_T type is a standard C library time representing seconds since
+ // 12:00 UTC on Jan 1 1970.
+ //
+ // We accept the hex encoded TIME_T and convert it to a TDateTime by getting
+ // the base date (Jan 1, 1970) and adding 1 for every day since then, and
+ // a fractional part representing the seconds.  By dividing the seconds
+ // by the number of seconds in a day (24*24*60=86400) we obtain this Result.
+ //
  // The incoming value in hex will roll over in mid-Janary 2038, and
  // hopefully by then this code won't be in use any more! :-)
  //
  // Note: TDateTime is really a Double floating-point and zero is considered
- // an Error code.
+ // an invalidate date indicator. (on screen this appears as 1899/nn/nn
  //------------------------------------------------------------------------------
 
 function TimeTHexToDateTime(const HexStr: string; TimeZoneCorrection: Integer): TDateTime;
@@ -4054,7 +4214,8 @@ begin
   Result := Base;
 end;
 
-function TimeTAsciiToDateTime(const AsciiDateStr: string): TDateTime;
+// JvIsoDateTimeStrToDateTime [formerly TimeTAsciiToDateTime]
+function JvIsoDateTimeStrToDateTime(const AsciiDateTimeStr: string): TDateTime;
 const
   Separators = '// ::'; // separators in yyyy/mm/dd hh:mm:ss
   Separators2 = '-- --'; // separators in yyyy/mm/dd hh:mm:ss
@@ -4064,18 +4225,98 @@ var
   I, U, Len, Index: Integer;
 begin
   Result := 0.0; // default Result.
-  Len := Length(AsciiDateStr);
+  Len := Length(AsciiDateTimeStr);
 
  // validate ranges:
   for I := 1 to 6 do
     Values[I] := 0;
 
  // T loops through each value we are looking for (1..6):
-  Index := 1; // what character in AsciiDateStr are we looking at?
+  Index := 1; // what character in AsciiDateTimeStr are we looking at?
   for I := 1 to 6 do
   begin
     if (I >= 3) and (Index >= Len) then
       Break; // as long as we at least got the date, we can continue.
+    for U := 1 to AsciiTime_ExpectLengths[I] do
+    begin
+      if Index > Len then
+        Break;
+      Ch := AsciiDateTimeStr[Index];
+      if not (Ch in DigitSymbols) then
+      begin
+        // (rom) no OutputDebugString in production code
+        {$IFDEF DEBUGINFO_ON}
+        OutputDebugString(PChar('JvCsvData: illegal character in datetime string: ' + Ch));
+        {$ENDIF DEBUGINFO_ON}
+        Exit; // failed: invalid character.
+      end;
+      Values[I] := (Values[I] * 10) + (Ord(Ch) - Ord('0'));
+      Inc(Index);
+
+      if Index > Len then
+        Break;
+    end;
+
+    // if we haven't reached the end of the string, then
+    // check for a valid separator character:
+    if Index < Len then
+      if (AsciiDateTimeStr[Index] <> Separators[I]) and
+        (AsciiDateTimeStr[Index] <> Separators2[I]) then
+      begin
+        // (rom) no OutputDebugString in production code
+        {$IFDEF DEBUGINFO_ON}
+        OutputDebugString('JvIsoDateTimeStrToDateTime: illegal separator Char');
+        {$ENDIF DEBUGINFO_ON}
+        Exit;
+      end;
+
+    // validate ranges:
+    if (Values[I] < AsciiTime_MinValue[I]) or (Values[I] > AsciiTime_MaxValue[I]) then
+    begin
+      // (rom) no OutputDebugString in production code
+      {$IFDEF DEBUGINFO_ON}
+      OutputDebugString('JvIsoDateTimeStrToDateTime: range error');
+      {$ENDIF DEBUGINFO_ON}
+      Exit; // a value is out of range.
+    end;
+    Inc(Index);
+  end;
+
+  // Now that we probably have a valid value we will try to encode it.
+  // EncodeData will catch any invalid date values we have let slip through
+  // such as trying to encode February 29 on a non-leap year, or the 31st
+  // day of a month with only 30 days, etc.
+  try
+    Result := EncodeDate({year}Values[1], {month} Values[2], {day} Values[3]) +
+      EncodeTime({hour}Values[4], {minute} Values[5], {second} Values[6], {msec} 0);
+  except
+    on E: EConvertError do
+      Result := 0.0; // catch any other conversion errors and just return 0.
+  end;
+end;
+
+function JvIsoDateStrToDate(const AsciiDateStr: string): TDateTime; // new.
+const
+  Separators = '//'; // separators in yyyy/mm/dd [a custom nearly-ISO-compliant format]
+  Separators2 = '--'; // separators in yyyy-mm-dd [the real ISO date format uses dashes as separators]
+var
+  Values: array [1..3] of Integer; //year,month,day
+  Ch: Char;
+  I, U, Len, Index: Integer;
+begin
+  Result := 0.0; // default Result.
+  Len := Length(AsciiDateStr);
+
+ // validate ranges:
+  for I := 1 to 3 do
+    Values[I] := 0;
+
+ // T loops through each value we are looking for (1..6):
+  Index := 1; // what character in AsciiDateStr are we looking at?
+  for I := 1 to 3 do
+  begin
+    //if (I >= 3) and (Index >= Len) then
+    //  Break; // as long as we at least got the date, we can continue.
     for U := 1 to AsciiTime_ExpectLengths[I] do
     begin
       if Index > Len then
@@ -4104,7 +4345,7 @@ begin
       begin
         // (rom) no OutputDebugString in production code
         {$IFDEF DEBUGINFO_ON}
-        OutputDebugString('TimeTAsciiToDateTime: illegal separator Char');
+        OutputDebugString('JvIsoDateTimeStrToDateTime: illegal separator Char');
         {$ENDIF DEBUGINFO_ON}
         Exit;
       end;
@@ -4114,7 +4355,7 @@ begin
     begin
       // (rom) no OutputDebugString in production code
       {$IFDEF DEBUGINFO_ON}
-      OutputDebugString('TimeTAsciiToDateTime: range error');
+      OutputDebugString('JvIsoDateStrToDate: range error');
       {$ENDIF DEBUGINFO_ON}
       Exit; // a value is out of range.
     end;
@@ -4126,11 +4367,91 @@ begin
   // such as trying to encode February 29 on a non-leap year, or the 31st
   // day of a month with only 30 days, etc.
   try
-    Result := EncodeDate({year}Values[1], {month} Values[2], {day} Values[3]) +
-      EncodeTime({hour}Values[4], {minute} Values[5], {second} Values[6], {msec} 0);
+    Result := EncodeDate({year}Values[1], {month} Values[2], {day} Values[3]);
   except
     on E: EConvertError do
       Result := 0.0; // catch any other conversion errors and just return 0.
+  end;
+end;
+
+function JvIsoTimeStrToTime(const AsciiTimeStr: string): TDateTime; // new.
+const
+  Separators = '::'; // separators hh:mm:ss
+  Separators2 = '--'; // separators hh-mm-ss
+var
+  Values: array [1..3] of Integer; //year,month,day,hour,minute,second in that order.
+  Ch: Char;
+  I, U, Len, Index: Integer;
+begin
+  Result := -1.0; // default Result. (flag for invalid time. 0.0 is a VALID time = midnight!)
+  Len := Length(AsciiTimeStr);
+
+ // validate ranges:
+  for I := 1 to 3 do
+    Values[I] := 0;
+
+ // T loops through each value we are looking for (1..6):
+  Index := 1; // what character in AsciiTimeStr are we looking at?
+  for I := 1 to 6 do
+  begin
+    if (I >= 3) and (Index >= Len) then
+      Break; // as long as we at least got the date, we can continue.
+
+    {Note: AsciiTime_ExpectLengths[ 3+I]:skip to the ISO time fields widths!}
+    for U := 1 to AsciiTime_ExpectLengths[3+I] do
+    begin
+      if Index > Len then
+        Break;
+      Ch := AsciiTimeStr[Index];
+      if not (Ch in DigitSymbols) then
+      begin
+        // (rom) no OutputDebugString in production code
+        {$IFDEF DEBUGINFO_ON}
+        OutputDebugString(PChar('JvCsvData: illegal character in datetime string: ' + Ch));
+        {$ENDIF DEBUGINFO_ON}
+        Exit; // failed: invalid character.
+      end;
+      Values[I] := (Values[I] * 10) + (Ord(Ch) - Ord('0'));
+      Inc(Index);
+
+      if Index > Len then
+        Break;
+    end;
+
+    // if we haven't reached the end of the string, then
+    // check for a valid separator character:
+    if Index < Len then
+      if (AsciiTimeStr[Index] <> Separators[I]) and
+        (AsciiTimeStr[Index] <> Separators2[I]) then
+      begin
+        // (rom) no OutputDebugString in production code
+        {$IFDEF DEBUGINFO_ON}
+        OutputDebugString('JvIsoDateTimeStrToDateTime: illegal separator Char');
+        {$ENDIF DEBUGINFO_ON}
+        Exit;
+      end;
+
+    // validate ranges:
+    if (Values[I] < AsciiTime_MinValue[3+I]) or (Values[I] > AsciiTime_MaxValue[3+I]) then
+    begin
+      // (rom) no OutputDebugString in production code
+      {$IFDEF DEBUGINFO_ON}
+      OutputDebugString('JvIsoTimeStrToTime: range error');
+      {$ENDIF DEBUGINFO_ON}
+      Exit; // a value is out of range.
+    end;
+    Inc(Index);
+  end;
+
+  // Now that we probably have a valid value we will try to encode it.
+  // EncodeData will catch any invalid date values we have let slip through
+  // such as trying to encode February 29 on a non-leap year, or the 31st
+  // day of a month with only 30 days, etc.
+  try
+    Result := EncodeTime({hour}Values[1], {minute} Values[2], {second} Values[3], {msec} 0);
+  except
+    on E: EConvertError do
+      Result := -1.0; // catch any other conversion errors and just return 0.
   end;
 end;
 
@@ -4150,11 +4471,31 @@ begin
   end;
 end;
 
-function DateTimeToTimeToIsoAscii(ADateTime: TDateTime): string;
+// JvDateTimeIsoStr [formerly called DateTimeToTimeToIsoAscii]
+// [support function for DateTime ASCII CSV column type]
+// Name changed by Warren. Only used internally here. The name was misleading,
+// complex, and bizarre. It had to change. Curse me or Thank me as you like. :-)
+function JvDateTimeIsoStr(ADateTime: TDateTime): string;
 begin
   // ISO DATETIME FORMAT:
   Result := FormatDateTime('yyyy-mm-dd hh:nn:ss', ADateTime);
 end;
+
+
+// new: JvDateIsoStr - support function for ASCII DATE csv column type
+function JvDateIsoStr(ADateTime: TDateTime): string;
+begin
+  // ISO DATE FORMAT:
+  Result := FormatDateTime('yyyy-mm-dd', ADateTime);
+end;
+
+// new: JvTimeIsoStr - support function for ASCII TIME csv column type
+function JvTimeIsoStr(ADateTime: TDateTime): string;
+begin
+  // ISO DATE FORMAT:
+  Result := FormatDateTime('hh:nn:ss', ADateTime);
+end;
+
 
 function JvFilePathSplit(FileName: string; var Path, FilenameOnly: string): Boolean;
 var

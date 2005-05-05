@@ -27,6 +27,9 @@ object JvCsvDefStrDialog: TJvCsvDefStrDialog
   Position = poScreenCenter
   Scaled = False
   OnCreate = FormCreate
+  DesignSize = (
+    434
+    295)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -226,7 +229,9 @@ object JvCsvDefStrDialog: TJvCsvDefStrDialog
       'Float (123.45)'
       'DateTime (YYYY/MM/DD HH:MM:SS)'
       'Hex Timestamp (GMTTIME Hex)'
-      'Hex LocalTime (LOCALTIME Hex)')
+      'Hex LocalTime (LOCALTIME Hex)'
+      'Date (YYYY/MM/DD)'
+      'Time (HH:MM:SS)')
     TabOrder = 4
     OnClick = ListBoxFieldTypesClick
   end
