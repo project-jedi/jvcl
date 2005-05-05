@@ -37,6 +37,9 @@ uses
   Dialogs, ExtCtrls, Buttons, StdCtrls,
   JvTypes, JvComponent;
 
+const
+  JvCsvAsciiTypeArrayLimit=8; // Array Size constant for TJvCsvColumnFlag to Ascii Character mapping.
+
 type
   TJvCsvDefStrDialog = class(TJvForm)
     EditCsvStr: TEdit;
@@ -74,7 +77,7 @@ type
     FUpdating: Boolean;
     FOriginalCsvStr: string;
     FSeparator: Char;
-    FTypeChars: array [0..6] of Char;
+    FTypeChars: array [0..JvCsvAsciiTypeArrayLimit] of Char;
     FFieldTypeCh: Char;
     procedure ItemChange;
     function MakeString: string; // take changes, put back into string format
@@ -249,6 +252,16 @@ end;
 
 procedure TJvCsvDefStrDialog.FormCreate(Sender: TObject);
 begin
+  // FTypeChars:  Map of Ascii character symbols to TJvCsvColumnFlag enumerated
+  //              types.
+  //
+  // IF YOU ADD ANYTHING TO THIS LIST, CHANGE CONSTANT
+  // JvCsvAsciiTypeArrayLimit at top of this unit!
+  //
+  // The order of this list must match the order of the
+  // enumerated TJvCsvColumnFlag type in JvCsvData.pas!
+  //
+  //
   FTypeChars[0] := '!'; // Boolean
   FTypeChars[1] := '$'; // String
   FTypeChars[2] := '%'; // Integer
@@ -256,6 +269,8 @@ begin
   FTypeChars[4] := '@'; // Ascii DateTime
   FTypeChars[5] := '#'; // Hex Timestamp
   FTypeChars[6] := '^'; // Hex LocalTime
+  FTypeChars[7] := '/'; // Ascii Date
+  FTypeChars[8] := '*';
   {
    $ = string (ftString) - also used if no character is given.
    % = whole Integer value (ftInteger)
@@ -264,6 +279,7 @@ begin
    # = Hex-Ascii Timestamp (A93F38C9) seconds since Jan 1, 1970 GMT (Component Specific)
    ^ = Hex-Ascii Timestamp (A93F38CP) corrected to local timezone (Component Specific)
    ! = Boolean Field (0 in csv file=False, not 0 = True, blank = NULL)
+
   }
 end;
 
