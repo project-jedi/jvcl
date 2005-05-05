@@ -239,15 +239,15 @@ end;
 procedure TJvCheckListBox.LoadFromStream(Stream: TStream);
 var
   CheckLst: TCheckListRecord;
-  Buf: array [0..1023] of Char;
+  Buf: array [0..1023] of AnsiChar;
 begin
   Items.Clear;
   while Stream.Position + SizeOf(TCheckListRecord) <= Stream.Size do
   begin
-    Stream.read(CheckLst, SizeOf(TCheckListRecord));
+    Stream.Read(CheckLst, SizeOf(TCheckListRecord));
     if Stream.Position + CheckLst.StringSize <= Stream.Size then
     begin
-      Stream.read(Buf, CheckLst.StringSize);
+      Stream.Read(Buf, CheckLst.StringSize);
       Buf[CheckLst.StringSize] := #0;
       Checked[Items.Add(Buf)] := CheckLst.Checked;
     end;
@@ -314,10 +314,10 @@ begin
   begin
     CheckLst.Checked := Checked[I];
     CheckLst.StringSize := Length(Items[I]);
-    Stream.write(CheckLst, SizeOf(TCheckListRecord));
+    Stream.Write(CheckLst, SizeOf(TCheckListRecord));
     for J := 1 to Length(Items[I]) do
       Buf[J] := Items[I][J];
-    Stream.write(Buf, CheckLst.StringSize);
+    Stream.Write(Buf, CheckLst.StringSize);
   end;
 end;
 
@@ -398,7 +398,7 @@ begin
     begin
       R := ClientRect;
       R.Right := R.Left + 20;
-      InvalidateRect(Handle, @R, False);
+      InvalidateRect(Handle, {$IFNDEF CLR}@{$ENDIF}R, False);
     end;
   end;
   if Assigned(FOnHScroll) then

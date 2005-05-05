@@ -226,10 +226,13 @@ begin
         FSearchTickCount := TickCount;
         if Length(FSearchText) < 32 then
           FSearchText := FSearchText + Key;
+        {$IFNDEF CLR}
         {$IFDEF VCL}
-        SendMessage(Handle, LB_SELECTSTRING, WPARAM(-1),
-          LPARAM(PChar(FSearchText)));
+        SendMessage(Handle, LB_SELECTSTRING, WPARAM(-1), LPARAM(PChar(FSearchText)));
         {$ENDIF VCL}
+        {$ELSE}
+        SendTextMessage(Handle, LB_SELECTSTRING, WPARAM(-1), FSearchText);
+        {$ENDIF !CLR}
         Key := #0;
       end;
   end;

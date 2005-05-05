@@ -70,13 +70,13 @@ type
     procedure Changed; dynamic;
     function UsingBitmap: Boolean;
     function IsDefaultCaret: Boolean;
+    procedure DefineProperties(Filer: TFiler); override;
     property CaretOwner: TWinControl read FCaretOwner;
     property UpdateCount: Integer read FUpdateCount;
     property CaretCreated: Boolean read FCaretCreated;
   public
     constructor Create(Owner: TWinControl);
     destructor Destroy; override;
-    procedure DefineProperties(Filer: TFiler); override;
     procedure CreateCaret;
     procedure DestroyCaret;
     procedure Assign(Source: TPersistent); override;
@@ -110,9 +110,13 @@ uses
 
 constructor TJvCaret.Create(Owner: TWinControl);
 begin
-  if not Assigned(Owner) then
-    raise EJVCLException.CreateResFmt(@RsEInvalidCaretOwner, [ClassName]);
   inherited Create;
+  if not Assigned(Owner) then
+    {$IFDEF CLR}
+    raise EJVCLException.CreateFmt(RsEInvalidCaretOwner, [ClassName]);
+    {$ELSE}
+    raise EJVCLException.CreateResFmt(@RsEInvalidCaretOwner, [ClassName]);
+    {$ENDIF CLR}
   FCaretOwner := Owner;
   FCaretBitmap := TBitmap.Create;
 end;

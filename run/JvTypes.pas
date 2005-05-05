@@ -36,6 +36,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF CLR}
+  System.Runtime.InteropServices,
+  {$ENDIF CLR}
   SysUtils, Classes,
   Windows, Messages, Controls, Forms, Graphics,
   {$IFDEF VisualCLX}
@@ -82,6 +85,9 @@ type
   TInputKey = (ikAll, ikArrows, ikChars, ikButton, ikTabs, ikEdit, ikNative{, ikNav, ikEsc});
   TInputKeys = set of TInputKey;
 
+  {$IFDEF CLR}
+  [StructLayout(LayoutKind.Sequential)]
+  {$ENDIF CLR}
   TJvRGBTriple = packed record
     rgbBlue: Byte;
     rgbGreen: Byte;
@@ -471,6 +477,7 @@ type
     Height: Integer;
   end;
 
+{$IFNDEF CLR}
   TJvMessage = packed record
     Msg: Integer;
     case Integer of
@@ -616,6 +623,7 @@ type
      );
     {$ENDIF VCL}
   end;
+{$ENDIF !CLR}
 
 {$IFDEF UNITVERSIONING}
 const

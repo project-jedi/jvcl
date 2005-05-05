@@ -913,8 +913,8 @@ begin
             if IsVBStatement(Token) then
               SetColor(Colors.Statement)
             else
-            if Cmp(PrevToken, 'function') or Cmp(PrevToken, 'sub') or
-              Cmp(PrevToken, 'class') then
+            if SameText(PrevToken, 'function') or SameText(PrevToken, 'sub') or
+              SameText(PrevToken, 'class') then
               SetColor(Colors.Declaration)
             else
               F := False;

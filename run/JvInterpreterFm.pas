@@ -156,42 +156,6 @@ uses
   TypInfo,
   JvResources, JvTypes, JvJCLUtils;
 
-function LoadTextFile(const FileName: TFileName): string;
-begin
-  with TStringList.Create do
-  try
-    LoadFromFile(FileName);
-    Result := Text;
-  finally
-    Free;
-  end;
-end;
-
-function AddSlash2(const Dir: TFileName): string;
-begin
-  Result := Dir;
-  if (Length(Dir) > 0) and (Dir[Length(Dir)] <> '\') then
-    Result := Dir + '\';
-end;
-
-function FindInPath(const FileName, PathList: string): TFileName;
-var
-  I: Integer;
-  S: string;
-begin
-  I := 0;
-  S := SubStr(PathList, I, ';');
-  while S <> '' do
-  begin
-    Result := AddSlash2(S) + FileName;
-    if FileExists(Result) then
-      Exit;
-    Inc(I);
-    S := SubStr(PathList, I, ';');
-  end;
-  Result := '';
-end;
-
 //=== { TJvInterpreterReader } ===============================================
 
 type

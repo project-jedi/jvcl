@@ -37,6 +37,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF CLR}
+  Types,
+  {$ENDIF CLR}
   Windows, Messages, Classes, Graphics, Controls, StdCtrls,
   JvTypes, JvExStdCtrls, JvLinkedControls;
 
@@ -271,7 +274,11 @@ begin
     Exit;
   ASize := GetDefaultCheckBoxSize;
   // add some spacing
+  {$IFDEF CLR}
+  ASize.cy := ASize.cy + 4;
+  {$ELSE}
   Inc(ASize.cy, 4);
+  {$ENDIF CLR}
   FCanvas.Font := Font;
   R := Rect(0, 0, ClientWidth, ClientHeight);
   // This is slower than GetTextExtentPoint but it does consider hotkeys

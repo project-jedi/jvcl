@@ -49,16 +49,23 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF CLR}
+  System.Text, System.Runtime.InteropServices, System.Security,
+  {$ENDIF CLR}
   {$IFDEF VisualCLX}
   Qt, QWindows,
   {$ENDIF VisualCLX}
-  Windows, Messages, Classes, ShlObj,
+  Windows, Messages, ShlObj, Classes,
   JvBaseDlg;
+
+{$IFDEF CLR}
+type
+  IUnknown = IInterface;
+{$ENDIF CLR}
 
 const
   { Interfaces from ShObjIdl.h }
-  IID_IFolderFilterSite: TGUID = (
-    D1: $C0A651F5; D2: $B48B; D3: $11D2; D4: ($B5, $ED, $00, $60, $97, $C6, $86, $F6));
+  IID_IFolderFilterSite: TGUID = '{C0A651F5-B48B-11d2-B5ED-006097C686F6}';
   SID_IFolderFilterSite = '{C0A651F5-B48B-11d2-B5ED-006097C686F6}';
 
 type
@@ -68,8 +75,7 @@ type
   end;
 
 const
-  IID_IFolderFilter: TGUID = (
-    D1: $9CC22886; D2: $DC8E; D3: $11D2; D4: ($B1, $D0, $00, $C0, $4F, $8E, $EB, $3E));
+  IID_IFolderFilter: TGUID = '{9CC22886-DC8E-11d2-B1D0-00C04F8EEB3E}';
   SID_IFolderFilter = '{9CC22886-DC8E-11d2-B1D0-00C04F8EEB3E}';
 
 type
@@ -214,8 +220,8 @@ type
     FOnValidateFailed: TJvValidateFailedEvent;
 
     { For hooking the control }
-    FDefWndProc: Pointer;
-    FObjectInstance: Pointer;
+    FDefWndProc: {$IFDEF CLR}TFNBFFCallBack{$ELSE}Pointer{$ENDIF};
+    FObjectInstance: {$IFDEF CLR}TFNWndProc{$ELSE}Pointer{$ENDIF};
     FPositionSet: Boolean;
 
     // (p3) updates the status text. NOTE: doesn't work if odNewDialogStyle is true (MS limitation)!!!
@@ -232,8 +238,8 @@ type
     procedure DoInitialized;
     procedure DoIUnknown(const Unknown: IUnknown);
     procedure DoSelChanged(IDList: PItemIDList);
-    function DoValidateFailed(AEditText: PChar): Integer;
-    function DoValidateFailedW(AEditText: PWideChar): Integer;
+    function DoValidateFailed(AEditText: string): Integer;
+    function DoValidateFailedW(AEditText: WideString): Integer;
     function DoShouldShow(const AItem: string): Boolean;
     function DoGetEnumFlags(const AFolder: string; var Flags: TJvBrowsableObjectClasses): Boolean;
 
@@ -311,7 +317,9 @@ implementation
 
 uses
   SysUtils, ActiveX, Controls, Forms, Consts, Graphics,
+  {$IFNDEF CLR}
   JclShell,
+  {$ENDIF ~CLR}
   JvJCLUtils, JvJVCLUtils, JvConsts, JvResources, JvTypes;
 
 {$IFDEF VisualCLX}
@@ -319,12 +327,20 @@ type
   TMessage = Messages.TMessage;
 {$ENDIF VisualCLX}
 
+{$IFDEF CLR}
+// .NET loads the library on first access
+[SuppressUnmanagedCodeSecurity, DllImport('SHFolder.dll', CharSet = CharSet.Ansi, SetLastError = True, EntryPoint = 'SHGetFolderPathA')]
+function SHGetFolderPathProc(hWnd: HWND; CSIDL: Integer; hToken: THandle;
+    dwFlags: DWORD; pszPath: StringBuilder): HResult; external;
+
+{$ELSE}
 type
   TSHGetFolderPathProc = function(hWnd: HWND; CSIDL: Integer; hToken: THandle;
     dwFlags: DWORD; pszPath: PAnsiChar): HResult; stdcall;
 
 var
   SHGetFolderPathProc: TSHGetFolderPathProc = nil;
+{$ENDIF CLR}
 
 const
   { Taken from ShlObj.h & ShObjIdl.h }
@@ -459,6 +475,19 @@ end;
 { From QDialogs.pas }
 
 function StrRetToString(PIDL: PItemIDList; StrRet: TStrRet): string;
+{$IFDEF CLR}
+begin
+  case StrRet.uType of
+    STRRET_CSTR:
+      Result := Marshal.PtrToStringAnsi(StrRet.cStr);
+    STRRET_OFFSET:
+      Result := Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(PIDL.mkid.abID, StrRet.uOffset - SizeOf(PIDL.mkid.cb)),
+        PIDL.mkid.cb - StrRet.uOffset);
+    STRRET_WSTR:
+      Result := Marshal.PtrToStringBSTR(StrRet.pOleStr);
+  end;
+end;
+{$ELSE}
 var
   P: PChar;
 begin
@@ -474,6 +503,7 @@ begin
       Result := StrRet.pOleStr;
   end;
 end;
+{$ENDIF CLR}
 
 type
   TFromDirectoryData = record
@@ -653,6 +683,8 @@ const
     CanSimulate: False; Alternative: fdNoSpecialFolder)
     );
 
+{$IFDEF CLR}
+{$ELSE}
 procedure InitSHFolder;
 const
   SHFolderDll = 'SHFolder.dll';
@@ -662,15 +694,20 @@ begin
   { You never know, maybe someone does not have SHFolder.dll, thus load on request }
   SHFolderHandle := GetModuleHandle(SHFolderDll);
   if SHFolderHandle <> 0 then
-    @SHGetFolderPathProc := GetProcAddress(SHFolderHandle, 'SHGetFolderPathA');
+    SHGetFolderPathProc := GetProcAddress(SHFolderHandle, 'SHGetFolderPathA');
 end;
+{$ENDIF CLR}
 
 procedure GetCSIDLLocation(const ASpecialDirectory: TFromDirectory;
   var CSIDL: Cardinal; var APath: string);
 { This function is a bit overkill }
 var
   LSpecialDirectory: TFromDirectory;
+  {$IFDEF CLR}
+  Buffer: StringBuilder;
+  {$ELSE}
   Buffer: PChar;
+  {$ENDIF CLR}
 
   function IsOk: Boolean;
   begin
@@ -692,19 +729,28 @@ begin
   end;
 
   CSIDL := 0;
+  {$IFDEF CLR}
+  Buffer := StringBuilder.Create(MAX_PATH);
+  Buffer.Length := MAX_PATH;
+  if Succeeded(SHGetFolderPathProc(0, CSIDLLocations[LSpecialDirectory].CSIDL, 0, 0, Buffer)) then
+    APath := Buffer.ToString()
+  else
+    APath := '';
+
+  {$ELSE}
   GetMem(Buffer, MAX_PATH);
   try
     if not Assigned(SHGetFolderPathProc) then
       InitSHFolder;
     if Assigned(SHGetFolderPathProc) and
-      Succeeded(SHGetFolderPathProc(0, CSIDLLocations[LSpecialDirectory].CSIDL, 0, 0, Buffer)) then
-
+       Succeeded(SHGetFolderPathProc(0, CSIDLLocations[LSpecialDirectory].CSIDL, 0, 0, Buffer)) then
       APath := Buffer
     else
       APath := '';
   finally
     FreeMem(Buffer);
   end;
+  {$ENDIF CLR}
 end;
 
 function CreateIDListFromPath(const APath: string): PItemIDList;
@@ -1047,7 +1093,7 @@ begin
     Result := True;
 end;
 
-function TJvBrowseForFolderDialog.DoValidateFailed(AEditText: PChar): Integer;
+function TJvBrowseForFolderDialog.DoValidateFailed(AEditText: string): Integer;
 var
   CanClose: Boolean;
 begin
@@ -1063,7 +1109,7 @@ begin
     Result := 0; // = Integer(False)
 end;
 
-function TJvBrowseForFolderDialog.DoValidateFailedW(AEditText: PWideChar): Integer;
+function TJvBrowseForFolderDialog.DoValidateFailedW(AEditText: WideString): Integer;
 begin
   { Explicit conversion }
   Result := DoValidateFailed(PChar(string(AEditText)));

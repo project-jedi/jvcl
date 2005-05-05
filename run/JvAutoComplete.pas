@@ -31,6 +31,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF COMPILER5}
+  JvVCL5Utils,
+  {$ENDIF COMPILER5}
   Windows,
   {$IFDEF VCL}
   Messages,
@@ -252,7 +255,7 @@ uses
   {$IFDEF HAS_UNIT_STRUTILS}
   StrUtils,
   {$ENDIF HAS_UNIT_STRUTILS}
-  JvConsts, JvJCLUtils;
+  JvConsts;
 
 //=== { TJvControlAutoComplete } =============================================
 

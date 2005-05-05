@@ -48,6 +48,9 @@ uses
   Qt,
   {$ENDIF VisualCLX}
   Windows, Messages,
+  {$IFDEF COMPILER6_UP}
+  Types,
+  {$ENDIF COMPILER6_UP}
   Controls, Graphics, Forms, ExtCtrls, Buttons, Menus, ImgList, ActnList,
   JvExControls, JvComponent, JvConsts, JvTypes, JvJCLUtils, JvJVCLUtils,
   JvThemes;
@@ -77,6 +80,8 @@ type
   end;
   {Insert End}
 
+  TJvxButtonGlyph = class;
+
   TJvCustomSpeedButton = class(TJvGraphicControl)
   private
     FAllowAllUp: Boolean;
@@ -86,7 +91,7 @@ type
     FDropDownMenu: TPopupMenu;
     FFlat: Boolean;
     FFontSave: TFont;
-    FGlyph: Pointer;
+    FGlyph: TJvxButtonGlyph;
     FGroupIndex: Integer;
     FHotTrack: Boolean;
     FHotTrackFont: TFont;
@@ -163,7 +168,7 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure PaintImage(Canvas: TCanvas; ARect: TRect; const Offset: TPoint;
       AState: TJvButtonState; DrawMark: Boolean); virtual; abstract;
-    property ButtonGlyph: Pointer read FGlyph;
+    property ButtonGlyph: TJvxButtonGlyph read FGlyph;
     property IsDragging: Boolean read FDragging;
   public
     constructor Create(AOwner: TComponent); override;
@@ -335,7 +340,7 @@ type
 
   TJvSpeedButton = class(TJvCustomSpeedButton)
   private
-    FHotTrackGlyph: Pointer;
+    FHotTrackGlyph: TJvxButtonGlyph;
     function GetGlyph: TBitmap;
     function GetHotTrackGlyph: TBitmap;
     function GetNumGlyphs: TJvNumGlyphs;
@@ -431,7 +436,7 @@ type
 
   TJvButtonImage = class(TObject)
   private
-    FGlyph: TObject;
+    FGlyph: TJvxButtonGlyph;
     FButtonSize: TPoint;
     FCaption: TCaption;
     function GetNumGlyphs: TJvNumGlyphs;
@@ -477,8 +482,7 @@ type
     procedure SetNumGlyphs(Value: TJvNumGlyphs);
     function MapColor(Color: TColor): TColor;
   protected
-    procedure MinimizeCaption(Canvas: TCanvas; const Caption: string;
-      Buffer: PChar; MaxLen, Width: Integer);
+    procedure MinimizeCaption(Canvas: TCanvas; var Caption: string; Width: Integer);
     function CreateButtonGlyph(State: TJvButtonState): Integer;
     function CreateImageGlyph(State: TJvButtonState; Images: TCustomImageList;
       Index: Integer): Integer;
@@ -702,6 +706,7 @@ end;
 
 constructor TJvButtonImage.Create;
 begin
+  inherited Create;
   FGlyph := TJvxButtonGlyph.Create;
   NumGlyphs := 1;
   FButtonSize := Point(24, 23);
@@ -740,7 +745,7 @@ begin
     Frame3D(Canvas, Target, clBtnHighlight, clBtnShadow, 1);
     if AFont <> nil then
       Canvas.Font := AFont;
-    TJvxButtonGlyph(FGlyph).DrawEx(Canvas, Target, Offset, Caption, Layout, Margin,
+    FGlyph.DrawEx(Canvas, Target, Offset, Caption, Layout, Margin,
       Spacing, False, Images, ImageIndex, rbsUp, Flags);
   finally
     Canvas.Font.Assign(SaveFont);
@@ -751,47 +756,47 @@ end;
 
 function TJvButtonImage.GetAlignment: TAlignment;
 begin
-  Result := TJvxButtonGlyph(FGlyph).Alignment;
+  Result := FGlyph.Alignment;
 end;
 
 function TJvButtonImage.GetGlyph: TBitmap;
 begin
-  Result := TJvxButtonGlyph(FGlyph).Glyph;
+  Result := FGlyph.Glyph;
 end;
 
 function TJvButtonImage.GetNumGlyphs: TJvNumGlyphs;
 begin
-  Result := TJvxButtonGlyph(FGlyph).NumGlyphs;
+  Result := FGlyph.NumGlyphs;
 end;
 
 function TJvButtonImage.GetWordWrap: Boolean;
 begin
-  Result := TJvxButtonGlyph(FGlyph).WordWrap;
+  Result := FGlyph.WordWrap;
 end;
 
 procedure TJvButtonImage.Invalidate;
 begin
-  TJvxButtonGlyph(FGlyph).Invalidate;
+  FGlyph.Invalidate;
 end;
 
 procedure TJvButtonImage.SetAlignment(Value: TAlignment);
 begin
-  TJvxButtonGlyph(FGlyph).Alignment := Value;
+  FGlyph.Alignment := Value;
 end;
 
 procedure TJvButtonImage.SetGlyph(Value: TBitmap);
 begin
-  TJvxButtonGlyph(FGlyph).Glyph := Value;
+  FGlyph.Glyph := Value;
 end;
 
 procedure TJvButtonImage.SetNumGlyphs(Value: TJvNumGlyphs);
 begin
-  TJvxButtonGlyph(FGlyph).NumGlyphs := Value;
+  FGlyph.NumGlyphs := Value;
 end;
 
 procedure TJvButtonImage.SetWordWrap(Value: Boolean);
 begin
-  TJvxButtonGlyph(FGlyph).WordWrap := Value;
+  FGlyph.WordWrap := Value;
 end;
 
 //=== { TJvCustomSpeedButton } ===============================================
@@ -906,7 +911,7 @@ begin
   end
   else
     State := rbsDisabled;
-  TJvxButtonGlyph(FGlyph).CreateButtonGlyph(State);
+  FGlyph.CreateButtonGlyph(State);
   { Resync MouseOver }
   UpdateTracking;
   Repaint;
@@ -965,7 +970,7 @@ end;
 {$IFDEF VCL}
 procedure TJvCustomSpeedButton.CMSysColorChange(var Msg: TMessage);
 begin
-  TJvxButtonGlyph(FGlyph).Invalidate;
+  FGlyph.Invalidate;
   Invalidate;
 end;
 {$ENDIF VCL}
@@ -995,7 +1000,7 @@ begin
   ControlStyle := ControlStyle + [csReplicatable];
   FInactiveGrayed := True;
   FGlyph := TJvxButtonGlyph.Create;
-  TJvxButtonGlyph(FGlyph).GrayNewStyle := True;
+  FGlyph.GrayNewStyle := True;
   ParentFont := True;
   ParentShowHint := False;
   ShowHint := True;
@@ -1019,7 +1024,7 @@ begin
   {Inserted by (ag) 2004-09-04}
   FHotTrackOptions.Free;
   {Insert End}
-  TJvxButtonGlyph(FGlyph).Free;
+  FGlyph.Free;
   Dec(ButtonCount);
   if FRepeatTimer <> nil then
     FRepeatTimer.Free;
@@ -1078,7 +1083,7 @@ end;
 
 function TJvCustomSpeedButton.GetAlignment: TAlignment;
 begin
-  Result := TJvxButtonGlyph(FGlyph).Alignment;
+  Result := FGlyph.Alignment;
 end;
 
 function TJvCustomSpeedButton.GetDropDownMenuPos: TPoint;
@@ -1114,12 +1119,12 @@ end;
 
 function TJvCustomSpeedButton.GetGrayNewStyle: Boolean;
 begin
-  Result := TJvxButtonGlyph(FGlyph).GrayNewStyle;
+  Result := FGlyph.GrayNewStyle;
 end;
 
 function TJvCustomSpeedButton.GetWordWrap: Boolean;
 begin
-  Result := TJvxButtonGlyph(FGlyph).WordWrap;
+  Result := FGlyph.WordWrap;
 end;
 
 procedure TJvCustomSpeedButton.Loaded;
@@ -1137,7 +1142,7 @@ begin
   end
   else
     LState := rbsDisabled;
-  TJvxButtonGlyph(FGlyph).CreateButtonGlyph(LState);
+  FGlyph.CreateButtonGlyph(LState);
 end;
 
 procedure TJvCustomSpeedButton.MouseDown(Button: TMouseButton;
@@ -1433,7 +1438,7 @@ procedure TJvCustomSpeedButton.SetAlignment(Value: TAlignment);
 begin
   if Alignment <> Value then
   begin
-    TJvxButtonGlyph(FGlyph).Alignment := Value;
+    FGlyph.Alignment := Value;
     Invalidate;
   end;
 end;
@@ -1506,7 +1511,7 @@ procedure TJvCustomSpeedButton.SetGrayNewStyle(const Value: Boolean);
 begin
   if GrayNewStyle <> Value then
   begin
-    TJvxButtonGlyph(FGlyph).GrayNewStyle := Value;
+    FGlyph.GrayNewStyle := Value;
     Invalidate;
   end;
 end;
@@ -1601,7 +1606,7 @@ procedure TJvCustomSpeedButton.SetWordWrap(Value: Boolean);
 begin
   if Value <> WordWrap then
   begin
-    TJvxButtonGlyph(FGlyph).WordWrap := Value;
+    FGlyph.WordWrap := Value;
     Invalidate;
   end;
 end;
@@ -1759,7 +1764,7 @@ var
 begin
   for I := FGlyphLists.Count - 1 downto 0 do
   begin
-    Result := FGlyphLists[I];
+    Result := TJvGlyphList(FGlyphLists[I]);
     with Result do
       if (AWidth = Width) and (AHeight = Height) then
         Exit;
@@ -1886,7 +1891,7 @@ begin
     LImageIndex := HotTrackImageIndex
   else
     LImageIndex := ImageIndex;
-  TJvxButtonGlyph(FGlyph).DrawEx(Canvas, ARect, Offset, Caption, FLayout,
+  FGlyph.DrawEx(Canvas, ARect, Offset, Caption, FLayout,
     FMargin, FSpacing, DrawMark, Images, LImageIndex, AState, DrawTextBiDiModeFlags(Alignments[Alignment]));
 end;
 
@@ -2013,14 +2018,14 @@ end;
 constructor TJvSpeedButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  TJvxButtonGlyph(FGlyph).OnChange := GlyphChanged;
+  FGlyph.OnChange := GlyphChanged;
   FHotTrackGlyph := TJvxButtonGlyph.Create;
-  TJvxButtonGlyph(FHotTrackGlyph).OnChange := HotTrackGlyphChanged;
+  FHotTrackGlyph.OnChange := HotTrackGlyphChanged;
 end;
 
 destructor TJvSpeedButton.Destroy;
 begin
-  TJvxButtonGlyph(FHotTrackGlyph).Free;
+  FHotTrackGlyph.Free;
   inherited Destroy;
 end;
 
@@ -2031,17 +2036,17 @@ end;
 
 function TJvSpeedButton.GetGlyph: TBitmap;
 begin
-  Result := TJvxButtonGlyph(FGlyph).Glyph;
+  Result := FGlyph.Glyph;
 end;
 
 function TJvSpeedButton.GetHotTrackGlyph: TBitmap;
 begin
-  Result := TJvxButtonGlyph(FHotTrackGlyph).Glyph;
+  Result := FHotTrackGlyph.Glyph;
 end;
 
 function TJvSpeedButton.GetNumGlyphs: TJvNumGlyphs;
 begin
-  Result := TJvxButtonGlyph(FGlyph).NumGlyphs;
+  Result := FGlyph.NumGlyphs;
 end;
 
 {$IFDEF VCL}
@@ -2067,23 +2072,23 @@ begin
   if (MouseOver or FDragging) and HotTrack and not HotTrackGlyph.Empty then
   begin
     SyncHotGlyph;
-    TJvxButtonGlyph(FHotTrackGlyph).Draw(Canvas, ARect, Offset, Caption, FLayout,
+    FHotTrackGlyph.Draw(Canvas, ARect, Offset, Caption, FLayout,
       FMargin, FSpacing, DrawMark, AState, DrawTextBiDiModeFlags(Alignments[Alignment]));
   end
   else
-    TJvxButtonGlyph(FGlyph).Draw(Canvas, ARect, Offset, Caption, FLayout,
+    FGlyph.Draw(Canvas, ARect, Offset, Caption, FLayout,
       FMargin, FSpacing, DrawMark, AState, DrawTextBiDiModeFlags(Alignments[Alignment]));
 end;
 
 procedure TJvSpeedButton.SetGlyph(Value: TBitmap);
 begin
-  TJvxButtonGlyph(FGlyph).Glyph := Value;
+  FGlyph.Glyph := Value;
   Invalidate;
 end;
 
 procedure TJvSpeedButton.SetHotTrackGlyph(const Value: TBitmap);
 begin
-  TJvxButtonGlyph(FHotTrackGlyph).Glyph := Value;
+  FHotTrackGlyph.Glyph := Value;
   Invalidate;
 end;
 
@@ -2094,23 +2099,23 @@ begin
   else
   if Value > Ord(High(TJvButtonState)) + 1 then
     Value := Ord(High(TJvButtonState)) + 1;
-  if Value <> TJvxButtonGlyph(FGlyph).NumGlyphs then
+  if Value <> FGlyph.NumGlyphs then
   begin
-    TJvxButtonGlyph(FGlyph).NumGlyphs := Value;
+    FGlyph.NumGlyphs := Value;
     Invalidate;
   end;
 end;
 
 procedure TJvSpeedButton.SyncHotGlyph;
 begin
-  with TJvxButtonGlyph(FHotTrackGlyph) do
+  with FHotTrackGlyph do
   begin
     OnChange := nil;
     try
-      Alignment := TJvxButtonGlyph(FGlyph).Alignment;
-      GrayNewStyle := TJvxButtonGlyph(FGlyph).GrayNewStyle;
-      NumGlyphs := TJvxButtonGlyph(FGlyph).NumGlyphs;
-      WordWrap := TJvxButtonGlyph(FGlyph).WordWrap;
+      Alignment := FGlyph.Alignment;
+      GrayNewStyle := FGlyph.GrayNewStyle;
+      NumGlyphs := FGlyph.NumGlyphs;
+      WordWrap := FGlyph.WordWrap;
     finally
       OnChange := HotTrackGlyphChanged;
     end;
@@ -2165,9 +2170,6 @@ var
   TextPos: TPoint;
   MaxSize, ClientSize, GlyphSize, TextSize: TPoint;
   TotalSize: TPoint;
-  { Parameter nCount of DrawText specifies the length of the string. For the
-    ANSI function it is a BYTE count }
-  CString: array [0..255] of Char;
 begin
   { calculate the item sizes }
   ClientSize := Point(Client.Right - Client.Left, Client.Bottom - Client.Top);
@@ -2201,12 +2203,11 @@ begin
   end;
   MaxSize.X := Max(0, MaxSize.X);
   MaxSize.Y := Max(0, MaxSize.Y);
-  MinimizeCaption(Canvas, Caption, CString, SizeOf(CString) - 1, MaxSize.X);
-  Caption := StrPas(CString);
+  MinimizeCaption(Canvas, Caption, MaxSize.X);
   if Length(Caption) > 0 then
   begin
     TextBounds := Rect(0, 0, MaxSize.X, 0);
-    DrawText(Canvas, CString, -1, TextBounds, DT_CALCRECT or DT_CENTER or
+    DrawText(Canvas, Caption, -1, TextBounds, DT_CALCRECT or DT_CENTER or
       DT_VCENTER or WordWraps[FWordWrap] or Flags);
   end
   else
@@ -2603,13 +2604,8 @@ end;
 
 procedure TJvxButtonGlyph.DrawButtonText(Canvas: TCanvas; const Caption: string;
   TextBounds: TRect; State: TJvButtonState; Flags: Word);
-var
-  { Parameter nCount of DrawText specifies the length of the string. For the
-    ANSI function it is a BYTE count }
-  CString: array [0..255] of Char;
 begin
   Canvas.Brush.Style := bsClear;
-  StrPLCopy(CString, Caption, SizeOf(CString) - 1);
   Flags := DT_VCENTER or WordWraps[FWordWrap] or Flags;
   if State = rbsDisabled then
   begin
@@ -2617,14 +2613,14 @@ begin
     begin
       OffsetRect(TextBounds, 1, 1);
       Font.Color := clBtnHighlight;
-      DrawText(Canvas, CString, Length(Caption), TextBounds, Flags);
+      DrawText(Canvas, Caption, Length(Caption), TextBounds, Flags);
       OffsetRect(TextBounds, -1, -1);
       Font.Color := clBtnShadow;
-      DrawText(Canvas, CString, Length(Caption), TextBounds, Flags);
+      DrawText(Canvas, Caption, Length(Caption), TextBounds, Flags);
     end;
   end
   else
-    DrawText(Canvas, CString, -1, TextBounds, Flags);
+    DrawText(Canvas, Caption, -1, TextBounds, Flags);
 end;
 
 function TJvxButtonGlyph.DrawEx(Canvas: TCanvas; const Client: TRect;
@@ -2776,13 +2772,12 @@ begin
   end;
 end;
 
-procedure TJvxButtonGlyph.MinimizeCaption(Canvas: TCanvas; const Caption: string;
-  Buffer: PChar; MaxLen, Width: Integer);
+procedure TJvxButtonGlyph.MinimizeCaption(Canvas: TCanvas; var Caption: string;
+  Width: Integer);
 var
   I: Integer;
   Lines: TStringList;
 begin
-  StrPLCopy(Buffer, Caption, MaxLen);
   if FWordWrap then
     Exit;
   Lines := TStringList.Create;
@@ -2790,7 +2785,7 @@ begin
     Lines.Text := Caption;
     for I := 0 to Lines.Count - 1 do
       Lines[I] := MinimizeText(Lines[I], Canvas, Width);
-    StrPLCopy(Buffer, TrimRight(Lines.Text), MaxLen);
+    Caption := TrimRight(Lines.Text);
   finally
     Lines.Free;
   end;

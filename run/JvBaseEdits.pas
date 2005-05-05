@@ -39,6 +39,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF CLR}
+  WinUtils, Variants,
+  {$ENDIF CLR}
   Windows, Messages, Classes, Controls, ImgList,
   JvToolEdit;
 
@@ -90,7 +93,11 @@ type
     procedure WMPaste(var Msg: TMessage); message WM_PASTE;
     procedure SetBeepOnError(Value: Boolean); override;
 
-    procedure SetText(const AValue: string); {$IFDEF VisualCLX} reintroduce; {$ENDIF} virtual; 
+    procedure SetText(const AValue: string);
+      {$IFDEF CLR}reintroduce;{$ELSE}
+        {$IFDEF VisualCLX} reintroduce; {$ENDIF}
+      {$ENDIF CLR}
+      virtual;
 
     procedure EnabledChanged; override;
     procedure DoEnter; override;
@@ -337,15 +344,35 @@ var
 type
   TJvPopupWindowAccessProtected = class(TJvPopupWindow);
 
+{$IFDEF CLR}
+function DecimalSeparator: AnsiChar;
+begin
+  Result := AnsiChar(SysUtils.DecimalSeparator[1]);
+end;
+
+function ThousandSeparator: Char; 
+begin
+  Result := SysUtils.ThousandSeparator[1];
+end;
+{$ENDIF CLR}
+
 function IsValidFloat(const Value: string; var RetValue: Extended): Boolean;
 var
   I: Integer;
+  {$IFDEF CLR}
+  d: Double;
+  {$ENDIF CLR}
 begin
   Result := False;
   for I := 1 to Length(Value) do
     if not (Value[I] in [DecimalSeparator, '-', '+', '0'..'9', 'e', 'E']) then
       Exit;
+  {$IFDEF CLR}
+  Result := TryStrToFloat(Value, d);
+  RetValue := d;
+  {$ELSE}
   Result := TextToFloat(PChar(Value), RetValue, fvExtended);
+  {$ENDIF CLR}
 end;
 
 function FormatFloatStr(const S: string; Thousands: Boolean): string;
@@ -363,7 +390,11 @@ begin
   I := Pos(DecimalSeparator, S);
   if I > 0 then
     MaxSym := I - 1;
+  {$IFDEF CLR}
+  I := Pos('E', UpperCase(S));
+  {$ELSE}
   I := Pos('E', AnsiUpperCase(S));
+  {$ENDIF CLR}
   if I > 0 then
     MaxSym := Min(I - 1, MaxSym);
   Result := Copy(S, MaxSym + 1, MaxInt);
@@ -451,7 +482,7 @@ end;
 function xTextToValText(const AValue: string): string;
 begin
   Result := DelRSpace(AValue);
-  if DecimalSeparator <> ThousandSeparator then
+  if DecimalSeparator <> AnsiChar(ThousandSeparator) then
     Result := DelChars(Result, ThousandSeparator);
   if (DecimalSeparator <> '.') and (ThousandSeparator <> '.') then
     Result := ReplaceStr(Result, '.', DecimalSeparator);
@@ -473,8 +504,8 @@ begin
   Result := False;
   S := EditText;
   GetSel(SelStart, SelStop);
-  System.Delete(S, SelStart + 1, SelStop - SelStart);
-  System.Insert(Key, S, SelStart + 1);
+  Delete(S, SelStart + 1, SelStop - SelStart);
+  Insert(Key, S, SelStart + 1);
   S := xTextToValText(S);
   DecPos := Pos(DecimalSeparator, S);
   if DecPos > 0 then
@@ -497,13 +528,13 @@ begin
   if PopupVisible and (UpCase(Key) in
     DigitSymbols +
     [DecimalSeparator, '.', ',', '+', '-', '*', '/', '_', '=', 'C', 'R', 'Q', '%', Backspace, Cr] -
-    [ThousandSeparator]) then
+    [AnsiChar(ThousandSeparator)]) then
   begin
     TJvPopupWindowAccessProtected(FPopup).KeyPress(Key);
     Key := #0;
   end;
-  if Key in ['.', ','] - [ThousandSeparator] then
-    Key := DecimalSeparator;
+  if Key in ['.', ','] - [AnsiChar(ThousandSeparator)] then
+    Key := Char(DecimalSeparator);
   inherited KeyPress(Key);
   if (Key in [#32..#255]) and not IsValidChar(Key) then
   begin
@@ -716,7 +747,11 @@ begin
       end;
     end;
     if RaiseOnError and (Result <> NewValue) then
+      {$IFDEF CLR}
+      raise ERangeError.CreateFmt(RsEOutOfRangeXFloat,
+      {$ELSE}
       raise ERangeError.CreateResFmt(@RsEOutOfRangeXFloat,
+      {$ENDIF CLR}
         [DecimalPlaces, FMinValue, DecimalPlaces, FMaxValue]);
   end;
 end;

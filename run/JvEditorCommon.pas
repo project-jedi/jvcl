@@ -2713,7 +2713,7 @@ begin
   if Next then
   begin
     I := 0;
-    S := Trim(SubStr(FTabStops, I, ' '));
+    S := Trim(SubStrBySeparator(FTabStops, I, ' '));
     A := 0;
     B := 1;
     while S <> '' do
@@ -2726,7 +2726,7 @@ begin
         Exit;
       end;
       Inc(I);
-      S := Trim(SubStr(FTabStops, I, ' '));
+      S := Trim(SubStrBySeparator(FTabStops, I, ' '));
     end;
     { after last tab pos }
     Result := X + ((B - A) - ((X - B) mod (B - A)));
@@ -2734,7 +2734,7 @@ begin
   else
   begin
     I := 0;
-    S := Trim(SubStr(FTabStops, I, ' '));
+    S := Trim(SubStrBySeparator(FTabStops, I, ' '));
     A := 0;
     B := 0;
     while S <> '' do
@@ -2747,7 +2747,7 @@ begin
         Exit;
       end;
       Inc(I);
-      S := Trim(SubStr(FTabStops, I, ' '));
+      S := Trim(SubStrBySeparator(FTabStops, I, ' '));
     end;
     { after last tab pos }
     Result := X - ((B - A) - ((X - B) mod (B - A)));
@@ -5563,14 +5563,14 @@ begin
     with (Owner as TJvCustomEditorBase).Completion do
       case Mode of
         cmIdentifiers:
-          TJvUnicodeCanvas(Canvas).TextOut(Rect.Left + Offset, Rect.Top, SubStr(Items[Index], 1,
+          TJvUnicodeCanvas(Canvas).TextOut(Rect.Left + Offset, Rect.Top, SubStrBySeparator(Items[Index], 1,
             GetAnsiSeparator));
         cmTemplates:
           begin
-            TJvUnicodeCanvas(Canvas).TextOut(Rect.Left + Offset, Rect.Top, SubStr(Items[Index], 1,
+            TJvUnicodeCanvas(Canvas).TextOut(Rect.Left + Offset, Rect.Top, SubStrBySeparator(Items[Index], 1,
               GetAnsiSeparator));
             Canvas.Font.Style := [fsBold];
-            S := SubStr(Items[Index], 0, GetAnsiSeparator);
+            S := SubStrBySeparator(Items[Index], 0, GetAnsiSeparator);
             W := Canvas.TextWidth(S);
             TJvUnicodeCanvas(Canvas).TextOut(Rect.Right - 2 * Offset - W, Rect.Top, S);
           end;

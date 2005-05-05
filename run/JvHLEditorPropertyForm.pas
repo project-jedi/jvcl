@@ -324,7 +324,7 @@ begin
   begin
 //    raise Exception.CreateRes(@RsEHLEdPropDlg_RegAutoNotAssigned);
     FJvHLEditor.GetInterface(IJvHLEditor, HLed);
-    S := AddSlash2(FStorageSection) + cParams;
+    S := AddSlash(FStorageSection) + cParams;
     with Storage do
     begin
       StoredValue['DoubleClickLine'] := FJvHLEditor.DoubleClickLine;
@@ -352,7 +352,7 @@ begin
   if Storage <> nil then
   begin
 //    raise Exception.CreateRes(@RsEHLEdPropDlg_RegAutoNotAssigned);
-    S := AddSlash2(StorageSection) + cParams;
+    S := AddSlash(StorageSection) + cParams;
     FJvHLEditor.GetInterface(IJvHLEditor, HLed);
     with Storage do
     begin
@@ -395,7 +395,7 @@ begin
 //    raise Exception.CreateRes(@RsEHLEdPropDlg_RegAutoNotAssigned);
     ed := TJvCustomEditorBaseAccessProtected(AJvHLEditor);
     FJvHLEditor.GetInterface(IJvHLEditor, HLed);
-    Section := AddSlash2(Storage.AppStoragePath) + AddSlash2(StorageSection) +
+    Section := AddSlash(Storage.AppStoragePath) + AddSlash(StorageSection) +
       Highlighters[AHighlighter];
     Storage.StoredValue[Section + 'BackColor'] := ColorToString(ed.Color);
     Storage.StoredValue[Section + 'FontName'] := ed.Font.Name;
@@ -428,17 +428,17 @@ var
   begin
     S := Storage.DefaultValue[Section + Prefix, ColorToString(DefaultForeColor) + ', ' + ColorToString(DefaultBackColor)
       + ', ' + IntToStr(byte(DefaultStyle))];
-    S1 := Trim(SubStr(S, 0, ','));
+    S1 := Trim(SubStrBySeparator(S, 0, ','));
     if S1 <> '' then
       AColor.ForeColor := StringToColor(S1)
     else
       AColor.ForeColor := DefaultForeColor;
-    S1 := Trim(SubStr(S, 1, ','));
+    S1 := Trim(SubStrBySeparator(S, 1, ','));
     if S1 <> '' then
       AColor.BackColor := StringToColor(S1)
     else
       AColor.BackColor := DefaultBackColor;
-    S1 := Trim(SubStr(S, 2, ','));
+    S1 := Trim(SubStrBySeparator(S, 2, ','));
     if S1 <> '' then
       AColor.Style := TFontStyles(byte(StrToInt(S1)))
     else
@@ -454,7 +454,7 @@ begin
 //    raise Exception.CreateRes(@RsEHLEdPropDlg_RegAutoNotAssigned);
     ed := TJvCustomEditorBaseAccessProtected(AJvHLEditor);
     FJvHLEditor.GetInterface(IJvHLEditor, HLed);
-    Section := AddSlash2(StorageSection) + Highlighters[AHighlighter];
+    Section := AddSlash(StorageSection) + Highlighters[AHighlighter];
     LoadColor(HLed.Colors.Number, clNavy, clWindow, [], 'Number');
     LoadColor(HLed.Colors.Strings, clMaroon, clWindow, [], 'Strings');
     LoadColor(HLed.Colors.Symbol, clBlue, clWindow, [], 'Symbol');
@@ -512,7 +512,7 @@ begin
       FOnDialogPopup(Self, Form);
 
     if Storage <> nil then
-      F := Storage.ReadInteger(AddSlash2(StorageSection) + 'Params' + 'ActivePage', F);
+      F := Storage.ReadInteger(AddSlash(StorageSection) + 'Params' + 'ActivePage', F);
     F := Max(Min(F, Pages.PageCount - 1), 0);
     if not Pages.Pages[F].TabVisible then
       Pages.ActivePage := Pages.FindNextPage(Pages.Pages[F], True, True)
@@ -527,7 +527,7 @@ begin
     end;
 
     if (Storage <> nil) and (Pages.ActivePage <> nil) then
-      Storage.WriteInteger(AddSlash2(StorageSection) + 'Params' +
+      Storage.WriteInteger(AddSlash(StorageSection) + 'Params' +
         'ActivePage', Pages.ActivePage.PageIndex);
 
     if Assigned(FOnDialogClosed) then

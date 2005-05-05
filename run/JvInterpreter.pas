@@ -3070,12 +3070,12 @@ begin
     JvInterpreterUnit.FSource := Source;
     JvInterpreterUnit.Data := Data;
     I := 0;
-    S := Trim(SubStr(UsesList, I, ','));
+    S := Trim(SubStrBySeparator(UsesList, I, ','));
     while S <> '' do
     begin
       JvInterpreterUnit.FUsesList[I] := S;
       Inc(I);
-      S := Trim(SubStr(UsesList, I, ','));
+      S := Trim(SubStrBySeparator(UsesList, I, ','));
     end;
   end;
 end;

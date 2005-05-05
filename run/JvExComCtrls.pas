@@ -60,10 +60,14 @@ type
     FOnMouseLeave: TNotifyEvent;
     {$ENDIF VCL}
     FOnParentColorChanged: TNotifyEvent;
-    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
+    function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
+    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer; 
   protected
     procedure WndProc(var Msg: TMessage); override;
+    {$IFNDEF CLR}
     procedure FocusChanged(AControl: TWinControl); dynamic;
+    {$ENDIF !CLR}
     procedure VisibleChanged; reintroduce; dynamic;
     procedure EnabledChanged; reintroduce; dynamic;
     procedure TextChanged; reintroduce; virtual;
@@ -94,13 +98,17 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  private
+    FDotNetHighlighting: Boolean;
   protected
     procedure BoundsChanged; reintroduce; virtual;
     procedure CursorChanged; reintroduce; dynamic;
     procedure ShowingChanged; reintroduce; dynamic;
     procedure ShowHintChanged; reintroduce; dynamic;
+    {$IFNDEF CLR}
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
+    {$ENDIF !CLR}
     procedure GetDlgCode(var Code: TDlgCodes); virtual;
     procedure FocusSet(PrevWnd: HWND); virtual;
     procedure FocusKilled(NextWnd: HWND); virtual;
@@ -112,6 +120,8 @@ type
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   {$ENDIF JVCLThemesEnabledD56}
+  published
+    property DotNetHighlighting: Boolean read FDotNetHighlighting write FDotNetHighlighting default False;
   end;
   {$ENDIF COMPILER6_UP}
 
@@ -125,10 +135,14 @@ type
     FOnMouseLeave: TNotifyEvent;
     {$ENDIF VCL}
     FOnParentColorChanged: TNotifyEvent;
-    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
+    function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
+    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer; 
   protected
     procedure WndProc(var Msg: TMessage); override;
+    {$IFNDEF CLR}
     procedure FocusChanged(AControl: TWinControl); dynamic;
+    {$ENDIF !CLR}
     procedure VisibleChanged; reintroduce; dynamic;
     procedure EnabledChanged; reintroduce; dynamic;
     procedure TextChanged; reintroduce; virtual;
@@ -159,13 +173,17 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  private
+    FDotNetHighlighting: Boolean;
   protected
     procedure BoundsChanged; reintroduce; virtual;
     procedure CursorChanged; reintroduce; dynamic;
     procedure ShowingChanged; reintroduce; dynamic;
     procedure ShowHintChanged; reintroduce; dynamic;
+    {$IFNDEF CLR}
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
+    {$ENDIF !CLR}
     procedure GetDlgCode(var Code: TDlgCodes); virtual;
     procedure FocusSet(PrevWnd: HWND); virtual;
     procedure FocusKilled(NextWnd: HWND); virtual;
@@ -177,6 +195,8 @@ type
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   {$ENDIF JVCLThemesEnabledD56}
+  published
+    property DotNetHighlighting: Boolean read FDotNetHighlighting write FDotNetHighlighting default False;
   end;
 
   TJvExCustomTreeView = class(TCustomTreeView, IJvExControl)
@@ -189,10 +209,14 @@ type
     FOnMouseLeave: TNotifyEvent;
     {$ENDIF VCL}
     FOnParentColorChanged: TNotifyEvent;
-    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
+    function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
+    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer; 
   protected
     procedure WndProc(var Msg: TMessage); override;
+    {$IFNDEF CLR}
     procedure FocusChanged(AControl: TWinControl); dynamic;
+    {$ENDIF !CLR}
     procedure VisibleChanged; reintroduce; dynamic;
     procedure EnabledChanged; reintroduce; dynamic;
     procedure TextChanged; reintroduce; virtual;
@@ -223,13 +247,17 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  private
+    FDotNetHighlighting: Boolean;
   protected
     procedure BoundsChanged; reintroduce; virtual;
     procedure CursorChanged; reintroduce; dynamic;
     procedure ShowingChanged; reintroduce; dynamic;
     procedure ShowHintChanged; reintroduce; dynamic;
+    {$IFNDEF CLR}
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
+    {$ENDIF !CLR}
     procedure GetDlgCode(var Code: TDlgCodes); virtual;
     procedure FocusSet(PrevWnd: HWND); virtual;
     procedure FocusKilled(NextWnd: HWND); virtual;
@@ -241,6 +269,8 @@ type
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   {$ENDIF JVCLThemesEnabledD56}
+  published
+    property DotNetHighlighting: Boolean read FDotNetHighlighting write FDotNetHighlighting default False;
   end;
 
   TJvExTreeView = class(TTreeView, IJvExControl)
@@ -253,10 +283,14 @@ type
     FOnMouseLeave: TNotifyEvent;
     {$ENDIF VCL}
     FOnParentColorChanged: TNotifyEvent;
-    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
+    function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
+    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer; 
   protected
     procedure WndProc(var Msg: TMessage); override;
+    {$IFNDEF CLR}
     procedure FocusChanged(AControl: TWinControl); dynamic;
+    {$ENDIF !CLR}
     procedure VisibleChanged; reintroduce; dynamic;
     procedure EnabledChanged; reintroduce; dynamic;
     procedure TextChanged; reintroduce; virtual;
@@ -287,13 +321,17 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  private
+    FDotNetHighlighting: Boolean;
   protected
     procedure BoundsChanged; reintroduce; virtual;
     procedure CursorChanged; reintroduce; dynamic;
     procedure ShowingChanged; reintroduce; dynamic;
     procedure ShowHintChanged; reintroduce; dynamic;
+    {$IFNDEF CLR}
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
+    {$ENDIF !CLR}
     procedure GetDlgCode(var Code: TDlgCodes); virtual;
     procedure FocusSet(PrevWnd: HWND); virtual;
     procedure FocusKilled(NextWnd: HWND); virtual;
@@ -305,6 +343,8 @@ type
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   {$ENDIF JVCLThemesEnabledD56}
+  published
+    property DotNetHighlighting: Boolean read FDotNetHighlighting write FDotNetHighlighting default False;
   end;
 
   TJvExCustomListView = class(TCustomListView, IJvExControl)
@@ -317,10 +357,14 @@ type
     FOnMouseLeave: TNotifyEvent;
     {$ENDIF VCL}
     FOnParentColorChanged: TNotifyEvent;
-    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
+    function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
+    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer; 
   protected
     procedure WndProc(var Msg: TMessage); override;
+    {$IFNDEF CLR}
     procedure FocusChanged(AControl: TWinControl); dynamic;
+    {$ENDIF !CLR}
     procedure VisibleChanged; reintroduce; dynamic;
     procedure EnabledChanged; reintroduce; dynamic;
     procedure TextChanged; reintroduce; virtual;
@@ -351,13 +395,17 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  private
+    FDotNetHighlighting: Boolean;
   protected
     procedure BoundsChanged; reintroduce; virtual;
     procedure CursorChanged; reintroduce; dynamic;
     procedure ShowingChanged; reintroduce; dynamic;
     procedure ShowHintChanged; reintroduce; dynamic;
+    {$IFNDEF CLR}
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
+    {$ENDIF !CLR}
     procedure GetDlgCode(var Code: TDlgCodes); virtual;
     procedure FocusSet(PrevWnd: HWND); virtual;
     procedure FocusKilled(NextWnd: HWND); virtual;
@@ -369,6 +417,8 @@ type
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   {$ENDIF JVCLThemesEnabledD56}
+  published
+    property DotNetHighlighting: Boolean read FDotNetHighlighting write FDotNetHighlighting default False;
   end;
 
   TJvExListView = class(TListView, IJvExControl)
@@ -381,10 +431,14 @@ type
     FOnMouseLeave: TNotifyEvent;
     {$ENDIF VCL}
     FOnParentColorChanged: TNotifyEvent;
-    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
+    function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
+    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer; 
   protected
     procedure WndProc(var Msg: TMessage); override;
+    {$IFNDEF CLR}
     procedure FocusChanged(AControl: TWinControl); dynamic;
+    {$ENDIF !CLR}
     procedure VisibleChanged; reintroduce; dynamic;
     procedure EnabledChanged; reintroduce; dynamic;
     procedure TextChanged; reintroduce; virtual;
@@ -415,13 +469,17 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  private
+    FDotNetHighlighting: Boolean;
   protected
     procedure BoundsChanged; reintroduce; virtual;
     procedure CursorChanged; reintroduce; dynamic;
     procedure ShowingChanged; reintroduce; dynamic;
     procedure ShowHintChanged; reintroduce; dynamic;
+    {$IFNDEF CLR}
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
+    {$ENDIF !CLR}
     procedure GetDlgCode(var Code: TDlgCodes); virtual;
     procedure FocusSet(PrevWnd: HWND); virtual;
     procedure FocusKilled(NextWnd: HWND); virtual;
@@ -433,6 +491,8 @@ type
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   {$ENDIF JVCLThemesEnabledD56}
+  published
+    property DotNetHighlighting: Boolean read FDotNetHighlighting write FDotNetHighlighting default False;
   end;
 
   TJvExPageControl = class(TPageControl, IJvExControl)
@@ -445,10 +505,14 @@ type
     FOnMouseLeave: TNotifyEvent;
     {$ENDIF VCL}
     FOnParentColorChanged: TNotifyEvent;
-    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
+    function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
+    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer; 
   protected
     procedure WndProc(var Msg: TMessage); override;
+    {$IFNDEF CLR}
     procedure FocusChanged(AControl: TWinControl); dynamic;
+    {$ENDIF !CLR}
     procedure VisibleChanged; reintroduce; dynamic;
     procedure EnabledChanged; reintroduce; dynamic;
     procedure TextChanged; reintroduce; virtual;
@@ -479,13 +543,17 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  private
+    FDotNetHighlighting: Boolean;
   protected
     procedure BoundsChanged; reintroduce; virtual;
     procedure CursorChanged; reintroduce; dynamic;
     procedure ShowingChanged; reintroduce; dynamic;
     procedure ShowHintChanged; reintroduce; dynamic;
+    {$IFNDEF CLR}
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
+    {$ENDIF !CLR}
     procedure GetDlgCode(var Code: TDlgCodes); virtual;
     procedure FocusSet(PrevWnd: HWND); virtual;
     procedure FocusKilled(NextWnd: HWND); virtual;
@@ -497,6 +565,8 @@ type
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   {$ENDIF JVCLThemesEnabledD56}
+  published
+    property DotNetHighlighting: Boolean read FDotNetHighlighting write FDotNetHighlighting default False;
   end;
 
   TJvExCustomTabControl = class(TCustomTabControl, IJvExControl)
@@ -509,10 +579,14 @@ type
     FOnMouseLeave: TNotifyEvent;
     {$ENDIF VCL}
     FOnParentColorChanged: TNotifyEvent;
-    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
+    function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
+    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer; 
   protected
     procedure WndProc(var Msg: TMessage); override;
+    {$IFNDEF CLR}
     procedure FocusChanged(AControl: TWinControl); dynamic;
+    {$ENDIF !CLR}
     procedure VisibleChanged; reintroduce; dynamic;
     procedure EnabledChanged; reintroduce; dynamic;
     procedure TextChanged; reintroduce; virtual;
@@ -543,13 +617,17 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  private
+    FDotNetHighlighting: Boolean;
   protected
     procedure BoundsChanged; reintroduce; virtual;
     procedure CursorChanged; reintroduce; dynamic;
     procedure ShowingChanged; reintroduce; dynamic;
     procedure ShowHintChanged; reintroduce; dynamic;
+    {$IFNDEF CLR}
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
+    {$ENDIF !CLR}
     procedure GetDlgCode(var Code: TDlgCodes); virtual;
     procedure FocusSet(PrevWnd: HWND); virtual;
     procedure FocusKilled(NextWnd: HWND); virtual;
@@ -561,6 +639,8 @@ type
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   {$ENDIF JVCLThemesEnabledD56}
+  published
+    property DotNetHighlighting: Boolean read FDotNetHighlighting write FDotNetHighlighting default False;
   end;
 
   TJvExTabControl = class(TTabControl, IJvExControl)
@@ -573,10 +653,14 @@ type
     FOnMouseLeave: TNotifyEvent;
     {$ENDIF VCL}
     FOnParentColorChanged: TNotifyEvent;
-    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
+    function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
+    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer; 
   protected
     procedure WndProc(var Msg: TMessage); override;
+    {$IFNDEF CLR}
     procedure FocusChanged(AControl: TWinControl); dynamic;
+    {$ENDIF !CLR}
     procedure VisibleChanged; reintroduce; dynamic;
     procedure EnabledChanged; reintroduce; dynamic;
     procedure TextChanged; reintroduce; virtual;
@@ -607,13 +691,17 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  private
+    FDotNetHighlighting: Boolean;
   protected
     procedure BoundsChanged; reintroduce; virtual;
     procedure CursorChanged; reintroduce; dynamic;
     procedure ShowingChanged; reintroduce; dynamic;
     procedure ShowHintChanged; reintroduce; dynamic;
+    {$IFNDEF CLR}
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
+    {$ENDIF !CLR}
     procedure GetDlgCode(var Code: TDlgCodes); virtual;
     procedure FocusSet(PrevWnd: HWND); virtual;
     procedure FocusKilled(NextWnd: HWND); virtual;
@@ -625,6 +713,8 @@ type
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   {$ENDIF JVCLThemesEnabledD56}
+  published
+    property DotNetHighlighting: Boolean read FDotNetHighlighting write FDotNetHighlighting default False;
   end;
 
   TJvExTrackBar = class(TTrackBar, IJvExControl)
@@ -637,10 +727,14 @@ type
     FOnMouseLeave: TNotifyEvent;
     {$ENDIF VCL}
     FOnParentColorChanged: TNotifyEvent;
-    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
+    function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
+    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer; 
   protected
     procedure WndProc(var Msg: TMessage); override;
+    {$IFNDEF CLR}
     procedure FocusChanged(AControl: TWinControl); dynamic;
+    {$ENDIF !CLR}
     procedure VisibleChanged; reintroduce; dynamic;
     procedure EnabledChanged; reintroduce; dynamic;
     procedure TextChanged; reintroduce; virtual;
@@ -671,13 +765,17 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  private
+    FDotNetHighlighting: Boolean;
   protected
     procedure BoundsChanged; reintroduce; virtual;
     procedure CursorChanged; reintroduce; dynamic;
     procedure ShowingChanged; reintroduce; dynamic;
     procedure ShowHintChanged; reintroduce; dynamic;
+    {$IFNDEF CLR}
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
+    {$ENDIF !CLR}
     procedure GetDlgCode(var Code: TDlgCodes); virtual;
     procedure FocusSet(PrevWnd: HWND); virtual;
     procedure FocusKilled(NextWnd: HWND); virtual;
@@ -689,6 +787,8 @@ type
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   {$ENDIF JVCLThemesEnabledD56}
+  published
+    property DotNetHighlighting: Boolean read FDotNetHighlighting write FDotNetHighlighting default False;
   end;
 
   TJvExAnimate = class(TAnimate, IJvExControl)
@@ -701,10 +801,14 @@ type
     FOnMouseLeave: TNotifyEvent;
     {$ENDIF VCL}
     FOnParentColorChanged: TNotifyEvent;
-    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
+    function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
+    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer; 
   protected
     procedure WndProc(var Msg: TMessage); override;
+    {$IFNDEF CLR}
     procedure FocusChanged(AControl: TWinControl); dynamic;
+    {$ENDIF !CLR}
     procedure VisibleChanged; reintroduce; dynamic;
     procedure EnabledChanged; reintroduce; dynamic;
     procedure TextChanged; reintroduce; virtual;
@@ -735,13 +839,17 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  private
+    FDotNetHighlighting: Boolean;
   protected
     procedure BoundsChanged; reintroduce; virtual;
     procedure CursorChanged; reintroduce; dynamic;
     procedure ShowingChanged; reintroduce; dynamic;
     procedure ShowHintChanged; reintroduce; dynamic;
+    {$IFNDEF CLR}
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
+    {$ENDIF !CLR}
     procedure GetDlgCode(var Code: TDlgCodes); virtual;
     procedure FocusSet(PrevWnd: HWND); virtual;
     procedure FocusKilled(NextWnd: HWND); virtual;
@@ -753,6 +861,8 @@ type
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   {$ENDIF JVCLThemesEnabledD56}
+  published
+    property DotNetHighlighting: Boolean read FDotNetHighlighting write FDotNetHighlighting default False;
   end;
 
   {$IFDEF COMPILER6_UP}
@@ -767,10 +877,14 @@ type
     FOnMouseLeave: TNotifyEvent;
     {$ENDIF VCL}
     FOnParentColorChanged: TNotifyEvent;
-    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
+    function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
+    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer; 
   protected
     procedure WndProc(var Msg: TMessage); override;
+    {$IFNDEF CLR}
     procedure FocusChanged(AControl: TWinControl); dynamic;
+    {$ENDIF !CLR}
     procedure VisibleChanged; reintroduce; dynamic;
     procedure EnabledChanged; reintroduce; dynamic;
     procedure TextChanged; reintroduce; virtual;
@@ -801,13 +915,17 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  private
+    FDotNetHighlighting: Boolean;
   protected
     procedure BoundsChanged; reintroduce; virtual;
     procedure CursorChanged; reintroduce; dynamic;
     procedure ShowingChanged; reintroduce; dynamic;
     procedure ShowHintChanged; reintroduce; dynamic;
+    {$IFNDEF CLR}
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
+    {$ENDIF !CLR}
     procedure GetDlgCode(var Code: TDlgCodes); virtual;
     procedure FocusSet(PrevWnd: HWND); virtual;
     procedure FocusKilled(NextWnd: HWND); virtual;
@@ -819,6 +937,8 @@ type
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   {$ENDIF JVCLThemesEnabledD56}
+  published
+    property DotNetHighlighting: Boolean read FDotNetHighlighting write FDotNetHighlighting default False;
   end;
 
   TJvExCustomStatusBar = class(TCustomStatusBar, IJvExControl)
@@ -831,10 +951,14 @@ type
     FOnMouseLeave: TNotifyEvent;
     {$ENDIF VCL}
     FOnParentColorChanged: TNotifyEvent;
-    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
+    function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
+    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer; 
   protected
     procedure WndProc(var Msg: TMessage); override;
+    {$IFNDEF CLR}
     procedure FocusChanged(AControl: TWinControl); dynamic;
+    {$ENDIF !CLR}
     procedure VisibleChanged; reintroduce; dynamic;
     procedure EnabledChanged; reintroduce; dynamic;
     procedure TextChanged; reintroduce; virtual;
@@ -865,13 +989,17 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  private
+    FDotNetHighlighting: Boolean;
   protected
     procedure BoundsChanged; reintroduce; virtual;
     procedure CursorChanged; reintroduce; dynamic;
     procedure ShowingChanged; reintroduce; dynamic;
     procedure ShowHintChanged; reintroduce; dynamic;
+    {$IFNDEF CLR}
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
+    {$ENDIF !CLR}
     procedure GetDlgCode(var Code: TDlgCodes); virtual;
     procedure FocusSet(PrevWnd: HWND); virtual;
     procedure FocusKilled(NextWnd: HWND); virtual;
@@ -883,6 +1011,8 @@ type
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   {$ENDIF JVCLThemesEnabledD56}
+  published
+    property DotNetHighlighting: Boolean read FDotNetHighlighting write FDotNetHighlighting default False;
   end;
 
   TJvExComboBoxEx = class(TComboBoxEx, IJvExControl)
@@ -895,10 +1025,14 @@ type
     FOnMouseLeave: TNotifyEvent;
     {$ENDIF VCL}
     FOnParentColorChanged: TNotifyEvent;
-    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
+    function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
+    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer; 
   protected
     procedure WndProc(var Msg: TMessage); override;
+    {$IFNDEF CLR}
     procedure FocusChanged(AControl: TWinControl); dynamic;
+    {$ENDIF !CLR}
     procedure VisibleChanged; reintroduce; dynamic;
     procedure EnabledChanged; reintroduce; dynamic;
     procedure TextChanged; reintroduce; virtual;
@@ -929,13 +1063,17 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  private
+    FDotNetHighlighting: Boolean;
   protected
     procedure BoundsChanged; reintroduce; virtual;
     procedure CursorChanged; reintroduce; dynamic;
     procedure ShowingChanged; reintroduce; dynamic;
     procedure ShowHintChanged; reintroduce; dynamic;
+    {$IFNDEF CLR}
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
+    {$ENDIF !CLR}
     procedure GetDlgCode(var Code: TDlgCodes); virtual;
     procedure FocusSet(PrevWnd: HWND); virtual;
     procedure FocusKilled(NextWnd: HWND); virtual;
@@ -947,6 +1085,8 @@ type
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   {$ENDIF JVCLThemesEnabledD56}
+  published
+    property DotNetHighlighting: Boolean read FDotNetHighlighting write FDotNetHighlighting default False;
   end;
 
   {$ENDIF COMPILER6_UP}
@@ -961,10 +1101,14 @@ type
     FOnMouseLeave: TNotifyEvent;
     {$ENDIF VCL}
     FOnParentColorChanged: TNotifyEvent;
-    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
+    function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
+    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer; 
   protected
     procedure WndProc(var Msg: TMessage); override;
+    {$IFNDEF CLR}
     procedure FocusChanged(AControl: TWinControl); dynamic;
+    {$ENDIF !CLR}
     procedure VisibleChanged; reintroduce; dynamic;
     procedure EnabledChanged; reintroduce; dynamic;
     procedure TextChanged; reintroduce; virtual;
@@ -995,13 +1139,17 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  private
+    FDotNetHighlighting: Boolean;
   protected
     procedure BoundsChanged; reintroduce; virtual;
     procedure CursorChanged; reintroduce; dynamic;
     procedure ShowingChanged; reintroduce; dynamic;
     procedure ShowHintChanged; reintroduce; dynamic;
+    {$IFNDEF CLR}
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
+    {$ENDIF !CLR}
     procedure GetDlgCode(var Code: TDlgCodes); virtual;
     procedure FocusSet(PrevWnd: HWND); virtual;
     procedure FocusKilled(NextWnd: HWND); virtual;
@@ -1013,6 +1161,8 @@ type
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   {$ENDIF JVCLThemesEnabledD56}
+  published
+    property DotNetHighlighting: Boolean read FDotNetHighlighting write FDotNetHighlighting default False;
   end;
 
   TJvExCommonCalendar = class(TCommonCalendar, IJvExControl)
@@ -1025,10 +1175,14 @@ type
     FOnMouseLeave: TNotifyEvent;
     {$ENDIF VCL}
     FOnParentColorChanged: TNotifyEvent;
-    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
+    function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
+    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer; 
   protected
     procedure WndProc(var Msg: TMessage); override;
+    {$IFNDEF CLR}
     procedure FocusChanged(AControl: TWinControl); dynamic;
+    {$ENDIF !CLR}
     procedure VisibleChanged; reintroduce; dynamic;
     procedure EnabledChanged; reintroduce; dynamic;
     procedure TextChanged; reintroduce; virtual;
@@ -1059,13 +1213,17 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  private
+    FDotNetHighlighting: Boolean;
   protected
     procedure BoundsChanged; reintroduce; virtual;
     procedure CursorChanged; reintroduce; dynamic;
     procedure ShowingChanged; reintroduce; dynamic;
     procedure ShowHintChanged; reintroduce; dynamic;
+    {$IFNDEF CLR}
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
+    {$ENDIF !CLR}
     procedure GetDlgCode(var Code: TDlgCodes); virtual;
     procedure FocusSet(PrevWnd: HWND); virtual;
     procedure FocusKilled(NextWnd: HWND); virtual;
@@ -1077,6 +1235,8 @@ type
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   {$ENDIF JVCLThemesEnabledD56}
+  published
+    property DotNetHighlighting: Boolean read FDotNetHighlighting write FDotNetHighlighting default False;
   end;
 
   TJvExMonthCalendar = class(TMonthCalendar, IJvExControl)
@@ -1089,10 +1249,14 @@ type
     FOnMouseLeave: TNotifyEvent;
     {$ENDIF VCL}
     FOnParentColorChanged: TNotifyEvent;
-    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
+    function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
+    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer; 
   protected
     procedure WndProc(var Msg: TMessage); override;
+    {$IFNDEF CLR}
     procedure FocusChanged(AControl: TWinControl); dynamic;
+    {$ENDIF !CLR}
     procedure VisibleChanged; reintroduce; dynamic;
     procedure EnabledChanged; reintroduce; dynamic;
     procedure TextChanged; reintroduce; virtual;
@@ -1123,13 +1287,17 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  private
+    FDotNetHighlighting: Boolean;
   protected
     procedure BoundsChanged; reintroduce; virtual;
     procedure CursorChanged; reintroduce; dynamic;
     procedure ShowingChanged; reintroduce; dynamic;
     procedure ShowHintChanged; reintroduce; dynamic;
+    {$IFNDEF CLR}
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
+    {$ENDIF !CLR}
     procedure GetDlgCode(var Code: TDlgCodes); virtual;
     procedure FocusSet(PrevWnd: HWND); virtual;
     procedure FocusKilled(NextWnd: HWND); virtual;
@@ -1141,6 +1309,8 @@ type
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   {$ENDIF JVCLThemesEnabledD56}
+  published
+    property DotNetHighlighting: Boolean read FDotNetHighlighting write FDotNetHighlighting default False;
   end;
 
   TJvExCustomHotKey = class(TCustomHotKey, IJvExControl)
@@ -1153,10 +1323,14 @@ type
     FOnMouseLeave: TNotifyEvent;
     {$ENDIF VCL}
     FOnParentColorChanged: TNotifyEvent;
-    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
+    function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
+    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer; 
   protected
     procedure WndProc(var Msg: TMessage); override;
+    {$IFNDEF CLR}
     procedure FocusChanged(AControl: TWinControl); dynamic;
+    {$ENDIF !CLR}
     procedure VisibleChanged; reintroduce; dynamic;
     procedure EnabledChanged; reintroduce; dynamic;
     procedure TextChanged; reintroduce; virtual;
@@ -1187,13 +1361,17 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  private
+    FDotNetHighlighting: Boolean;
   protected
     procedure BoundsChanged; reintroduce; virtual;
     procedure CursorChanged; reintroduce; dynamic;
     procedure ShowingChanged; reintroduce; dynamic;
     procedure ShowHintChanged; reintroduce; dynamic;
+    {$IFNDEF CLR}
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
+    {$ENDIF !CLR}
     procedure GetDlgCode(var Code: TDlgCodes); virtual;
     procedure FocusSet(PrevWnd: HWND); virtual;
     procedure FocusKilled(NextWnd: HWND); virtual;
@@ -1205,6 +1383,8 @@ type
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   {$ENDIF JVCLThemesEnabledD56}
+  published
+    property DotNetHighlighting: Boolean read FDotNetHighlighting write FDotNetHighlighting default False;
   end;
 
   TJvExHotKey = class(THotKey, IJvExControl)
@@ -1217,10 +1397,14 @@ type
     FOnMouseLeave: TNotifyEvent;
     {$ENDIF VCL}
     FOnParentColorChanged: TNotifyEvent;
-    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
+    function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
+    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer; 
   protected
     procedure WndProc(var Msg: TMessage); override;
+    {$IFNDEF CLR}
     procedure FocusChanged(AControl: TWinControl); dynamic;
+    {$ENDIF !CLR}
     procedure VisibleChanged; reintroduce; dynamic;
     procedure EnabledChanged; reintroduce; dynamic;
     procedure TextChanged; reintroduce; virtual;
@@ -1251,13 +1435,17 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  private
+    FDotNetHighlighting: Boolean;
   protected
     procedure BoundsChanged; reintroduce; virtual;
     procedure CursorChanged; reintroduce; dynamic;
     procedure ShowingChanged; reintroduce; dynamic;
     procedure ShowHintChanged; reintroduce; dynamic;
+    {$IFNDEF CLR}
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
+    {$ENDIF !CLR}
     procedure GetDlgCode(var Code: TDlgCodes); virtual;
     procedure FocusSet(PrevWnd: HWND); virtual;
     procedure FocusKilled(NextWnd: HWND); virtual;
@@ -1269,6 +1457,8 @@ type
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   {$ENDIF JVCLThemesEnabledD56}
+  published
+    property DotNetHighlighting: Boolean read FDotNetHighlighting write FDotNetHighlighting default False;
   end;
 
   TJvExCustomUpDown = class(TCustomUpDown, IJvExControl)
@@ -1281,10 +1471,14 @@ type
     FOnMouseLeave: TNotifyEvent;
     {$ENDIF VCL}
     FOnParentColorChanged: TNotifyEvent;
-    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
+    function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
+    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer; 
   protected
     procedure WndProc(var Msg: TMessage); override;
+    {$IFNDEF CLR}
     procedure FocusChanged(AControl: TWinControl); dynamic;
+    {$ENDIF !CLR}
     procedure VisibleChanged; reintroduce; dynamic;
     procedure EnabledChanged; reintroduce; dynamic;
     procedure TextChanged; reintroduce; virtual;
@@ -1315,13 +1509,17 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  private
+    FDotNetHighlighting: Boolean;
   protected
     procedure BoundsChanged; reintroduce; virtual;
     procedure CursorChanged; reintroduce; dynamic;
     procedure ShowingChanged; reintroduce; dynamic;
     procedure ShowHintChanged; reintroduce; dynamic;
+    {$IFNDEF CLR}
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
+    {$ENDIF !CLR}
     procedure GetDlgCode(var Code: TDlgCodes); virtual;
     procedure FocusSet(PrevWnd: HWND); virtual;
     procedure FocusKilled(NextWnd: HWND); virtual;
@@ -1333,6 +1531,8 @@ type
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   {$ENDIF JVCLThemesEnabledD56}
+  published
+    property DotNetHighlighting: Boolean read FDotNetHighlighting write FDotNetHighlighting default False;
   end;
 
   TJvExUpDown = class(TUpDown, IJvExControl)
@@ -1345,10 +1545,14 @@ type
     FOnMouseLeave: TNotifyEvent;
     {$ENDIF VCL}
     FOnParentColorChanged: TNotifyEvent;
-    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
+    function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
+    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer; 
   protected
     procedure WndProc(var Msg: TMessage); override;
+    {$IFNDEF CLR}
     procedure FocusChanged(AControl: TWinControl); dynamic;
+    {$ENDIF !CLR}
     procedure VisibleChanged; reintroduce; dynamic;
     procedure EnabledChanged; reintroduce; dynamic;
     procedure TextChanged; reintroduce; virtual;
@@ -1379,13 +1583,17 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  private
+    FDotNetHighlighting: Boolean;
   protected
     procedure BoundsChanged; reintroduce; virtual;
     procedure CursorChanged; reintroduce; dynamic;
     procedure ShowingChanged; reintroduce; dynamic;
     procedure ShowHintChanged; reintroduce; dynamic;
+    {$IFNDEF CLR}
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
+    {$ENDIF !CLR}
     procedure GetDlgCode(var Code: TDlgCodes); virtual;
     procedure FocusSet(PrevWnd: HWND); virtual;
     procedure FocusKilled(NextWnd: HWND); virtual;
@@ -1397,6 +1605,8 @@ type
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   {$ENDIF JVCLThemesEnabledD56}
+  published
+    property DotNetHighlighting: Boolean read FDotNetHighlighting write FDotNetHighlighting default False;
   end;
 
   TJvExDateTimePicker = class(TDateTimePicker, IJvExControl)
@@ -1409,10 +1619,14 @@ type
     FOnMouseLeave: TNotifyEvent;
     {$ENDIF VCL}
     FOnParentColorChanged: TNotifyEvent;
-    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
+    function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
+    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer; 
   protected
     procedure WndProc(var Msg: TMessage); override;
+    {$IFNDEF CLR}
     procedure FocusChanged(AControl: TWinControl); dynamic;
+    {$ENDIF !CLR}
     procedure VisibleChanged; reintroduce; dynamic;
     procedure EnabledChanged; reintroduce; dynamic;
     procedure TextChanged; reintroduce; virtual;
@@ -1443,13 +1657,17 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  private
+    FDotNetHighlighting: Boolean;
   protected
     procedure BoundsChanged; reintroduce; virtual;
     procedure CursorChanged; reintroduce; dynamic;
     procedure ShowingChanged; reintroduce; dynamic;
     procedure ShowHintChanged; reintroduce; dynamic;
+    {$IFNDEF CLR}
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
+    {$ENDIF !CLR}
     procedure GetDlgCode(var Code: TDlgCodes); virtual;
     procedure FocusSet(PrevWnd: HWND); virtual;
     procedure FocusKilled(NextWnd: HWND); virtual;
@@ -1461,6 +1679,8 @@ type
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   {$ENDIF JVCLThemesEnabledD56}
+  published
+    property DotNetHighlighting: Boolean read FDotNetHighlighting write FDotNetHighlighting default False;
   end;
 
   TJvExPageScroller = class(TPageScroller, IJvExControl)
@@ -1473,10 +1693,14 @@ type
     FOnMouseLeave: TNotifyEvent;
     {$ENDIF VCL}
     FOnParentColorChanged: TNotifyEvent;
-    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
+    function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
+    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer; 
   protected
     procedure WndProc(var Msg: TMessage); override;
+    {$IFNDEF CLR}
     procedure FocusChanged(AControl: TWinControl); dynamic;
+    {$ENDIF !CLR}
     procedure VisibleChanged; reintroduce; dynamic;
     procedure EnabledChanged; reintroduce; dynamic;
     procedure TextChanged; reintroduce; virtual;
@@ -1507,13 +1731,17 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  private
+    FDotNetHighlighting: Boolean;
   protected
     procedure BoundsChanged; reintroduce; virtual;
     procedure CursorChanged; reintroduce; dynamic;
     procedure ShowingChanged; reintroduce; dynamic;
     procedure ShowHintChanged; reintroduce; dynamic;
+    {$IFNDEF CLR}
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
+    {$ENDIF !CLR}
     procedure GetDlgCode(var Code: TDlgCodes); virtual;
     procedure FocusSet(PrevWnd: HWND); virtual;
     procedure FocusKilled(NextWnd: HWND); virtual;
@@ -1525,6 +1753,8 @@ type
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   {$ENDIF JVCLThemesEnabledD56}
+  published
+    property DotNetHighlighting: Boolean read FDotNetHighlighting write FDotNetHighlighting default False;
   end;
 
   TJvExProgressBar = class(TProgressBar, IJvExControl)
@@ -1537,10 +1767,14 @@ type
     FOnMouseLeave: TNotifyEvent;
     {$ENDIF VCL}
     FOnParentColorChanged: TNotifyEvent;
-    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
+    function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
+    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer; 
   protected
     procedure WndProc(var Msg: TMessage); override;
+    {$IFNDEF CLR}
     procedure FocusChanged(AControl: TWinControl); dynamic;
+    {$ENDIF !CLR}
     procedure VisibleChanged; reintroduce; dynamic;
     procedure EnabledChanged; reintroduce; dynamic;
     procedure TextChanged; reintroduce; virtual;
@@ -1571,13 +1805,17 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  private
+    FDotNetHighlighting: Boolean;
   protected
     procedure BoundsChanged; reintroduce; virtual;
     procedure CursorChanged; reintroduce; dynamic;
     procedure ShowingChanged; reintroduce; dynamic;
     procedure ShowHintChanged; reintroduce; dynamic;
+    {$IFNDEF CLR}
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
+    {$ENDIF !CLR}
     procedure GetDlgCode(var Code: TDlgCodes); virtual;
     procedure FocusSet(PrevWnd: HWND); virtual;
     procedure FocusKilled(NextWnd: HWND); virtual;
@@ -1589,6 +1827,8 @@ type
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   {$ENDIF JVCLThemesEnabledD56}
+  published
+    property DotNetHighlighting: Boolean read FDotNetHighlighting write FDotNetHighlighting default False;
   end;
 
   TJvExStatusBar = class(TStatusBar, IJvExControl)
@@ -1601,10 +1841,14 @@ type
     FOnMouseLeave: TNotifyEvent;
     {$ENDIF VCL}
     FOnParentColorChanged: TNotifyEvent;
-    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
+    function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
+    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer; 
   protected
     procedure WndProc(var Msg: TMessage); override;
+    {$IFNDEF CLR}
     procedure FocusChanged(AControl: TWinControl); dynamic;
+    {$ENDIF !CLR}
     procedure VisibleChanged; reintroduce; dynamic;
     procedure EnabledChanged; reintroduce; dynamic;
     procedure TextChanged; reintroduce; virtual;
@@ -1635,13 +1879,17 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  private
+    FDotNetHighlighting: Boolean;
   protected
     procedure BoundsChanged; reintroduce; virtual;
     procedure CursorChanged; reintroduce; dynamic;
     procedure ShowingChanged; reintroduce; dynamic;
     procedure ShowHintChanged; reintroduce; dynamic;
+    {$IFNDEF CLR}
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
+    {$ENDIF !CLR}
     procedure GetDlgCode(var Code: TDlgCodes); virtual;
     procedure FocusSet(PrevWnd: HWND); virtual;
     procedure FocusKilled(NextWnd: HWND); virtual;
@@ -1653,6 +1901,8 @@ type
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   {$ENDIF JVCLThemesEnabledD56}
+  published
+    property DotNetHighlighting: Boolean read FDotNetHighlighting write FDotNetHighlighting default False;
   end;
 
   TJvExTabSheet = class(TTabSheet, IJvExControl)
@@ -1665,10 +1915,14 @@ type
     FOnMouseLeave: TNotifyEvent;
     {$ENDIF VCL}
     FOnParentColorChanged: TNotifyEvent;
-    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
+    function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
+    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer; 
   protected
     procedure WndProc(var Msg: TMessage); override;
+    {$IFNDEF CLR}
     procedure FocusChanged(AControl: TWinControl); dynamic;
+    {$ENDIF !CLR}
     procedure VisibleChanged; reintroduce; dynamic;
     procedure EnabledChanged; reintroduce; dynamic;
     procedure TextChanged; reintroduce; virtual;
@@ -1699,13 +1953,17 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  private
+    FDotNetHighlighting: Boolean;
   protected
     procedure BoundsChanged; reintroduce; virtual;
     procedure CursorChanged; reintroduce; dynamic;
     procedure ShowingChanged; reintroduce; dynamic;
     procedure ShowHintChanged; reintroduce; dynamic;
+    {$IFNDEF CLR}
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
+    {$ENDIF !CLR}
     procedure GetDlgCode(var Code: TDlgCodes); virtual;
     procedure FocusSet(PrevWnd: HWND); virtual;
     procedure FocusKilled(NextWnd: HWND); virtual;
@@ -1717,6 +1975,8 @@ type
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   {$ENDIF JVCLThemesEnabledD56}
+  published
+    property DotNetHighlighting: Boolean read FDotNetHighlighting write FDotNetHighlighting default False;
   end;
 
   TJvExToolBar = class(TToolBar, IJvExControl)
@@ -1729,10 +1989,14 @@ type
     FOnMouseLeave: TNotifyEvent;
     {$ENDIF VCL}
     FOnParentColorChanged: TNotifyEvent;
-    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
+    function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
+    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer; 
   protected
     procedure WndProc(var Msg: TMessage); override;
+    {$IFNDEF CLR}
     procedure FocusChanged(AControl: TWinControl); dynamic;
+    {$ENDIF !CLR}
     procedure VisibleChanged; reintroduce; dynamic;
     procedure EnabledChanged; reintroduce; dynamic;
     procedure TextChanged; reintroduce; virtual;
@@ -1763,13 +2027,17 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  private
+    FDotNetHighlighting: Boolean;
   protected
     procedure BoundsChanged; reintroduce; virtual;
     procedure CursorChanged; reintroduce; dynamic;
     procedure ShowingChanged; reintroduce; dynamic;
     procedure ShowHintChanged; reintroduce; dynamic;
+    {$IFNDEF CLR}
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
+    {$ENDIF !CLR}
     procedure GetDlgCode(var Code: TDlgCodes); virtual;
     procedure FocusSet(PrevWnd: HWND); virtual;
     procedure FocusKilled(NextWnd: HWND); virtual;
@@ -1781,6 +2049,8 @@ type
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   {$ENDIF JVCLThemesEnabledD56}
+  published
+    property DotNetHighlighting: Boolean read FDotNetHighlighting write FDotNetHighlighting default False;
   end;
 
   TJvExToolButton = class(TToolButton, IJvExControl)
@@ -1793,10 +2063,14 @@ type
     FOnMouseLeave: TNotifyEvent;
     {$ENDIF VCL}
     FOnParentColorChanged: TNotifyEvent;
-    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
+    function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
+    function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer; 
   protected
     procedure WndProc(var Msg: TMessage); override;
+    {$IFNDEF CLR}
     procedure FocusChanged(AControl: TWinControl); dynamic;
+    {$ENDIF !CLR}
     procedure VisibleChanged; reintroduce; dynamic;
     procedure EnabledChanged; reintroduce; dynamic;
     procedure TextChanged; reintroduce; virtual;
@@ -1849,16 +2123,35 @@ begin
   FHintColor := clDefault;
 end;
 
-function TJvExCustomComboBoxEx.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+function TJvExCustomComboBoxEx.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer;
 var
   Mesg: TMessage;
 begin
-  Mesg.Msg := Msg;
-  Mesg.WParam := WParam;
-  Mesg.LParam := LParam;
-  Mesg.Result := 0;
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
   inherited WndProc(Mesg);
   Result := Mesg.Result;
+end;
+
+function TJvExCustomComboBoxEx.BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer;
+var
+  Mesg: TMessage;
+begin
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
+  inherited WndProc(Mesg);
+  Result := Mesg.Result;
+end;
+
+function TJvExCustomComboBoxEx.BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer;
+var
+  Mesg: TStructPtrMessage;
+begin
+  Mesg := TStructPtrMessage.Create(Msg, WParam, LParam);
+  try
+    inherited WndProc(Mesg.Msg);
+  finally
+    Result := Mesg.Msg.Result;
+    Mesg.Free;
+  end;
 end;
 
 procedure TJvExCustomComboBoxEx.VisibleChanged;
@@ -1910,13 +2203,13 @@ end;
 
 function TJvExCustomComboBoxEx.HitTest(X, Y: Integer): Boolean;
 begin
-  Result := BaseWndProc(CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
+  Result := BaseWndProc(CM_HITTEST, 0, SmallPointToLong(PointToSmallPoint(Point(X, Y)))) <> 0;
 end;
 
 function TJvExCustomComboBoxEx.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   GetHintColor(HintInfo, Self, FHintColor);
-  Result := BaseWndProc(CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
+  Result := BaseWndProcEx(CM_HINTSHOW, 0, HintInfo) <> 0;
 end;
 
 procedure TJvExCustomComboBoxEx.MouseEnter(AControl: TControl);
@@ -1926,23 +2219,25 @@ begin
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
   {$ENDIF VCL}
-  BaseWndProc(CM_MOUSEENTER, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSEENTER, 0, AControl);
 end;
 
 procedure TJvExCustomComboBoxEx.MouseLeave(AControl: TControl);
 begin
   FMouseOver := False;
-  BaseWndProc(CM_MOUSELEAVE, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSELEAVE, 0, AControl);
   {$IFDEF VCL}
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
   {$ENDIF VCL}
 end;
 
+{$IFNDEF CLR}
 procedure TJvExCustomComboBoxEx.FocusChanged(AControl: TWinControl);
 begin
-  BaseWndProc(CM_FOCUSCHANGED, 0, Integer(AControl));
+  BaseWndProc(CM_FOCUSCHANGED, 0, AControl);
 end;
+{$ENDIF !CLR}
 
 {$IFDEF COMPILER5}
 {$IFNDEF HASAUTOSIZE}
@@ -1979,6 +2274,7 @@ begin
   BaseWndProc(CM_SHOWHINTCHANGED);
 end;
 
+{$IFNDEF CLR}
 { VCL sends CM_CONTROLLISTCHANGE and CM_CONTROLCHANGE in a different order than
   the CLX methods are used. So we must correct it by evaluating "Inserting". }
 procedure TJvExCustomComboBoxEx.ControlsListChanging(Control: TControl; Inserting: Boolean);
@@ -1996,6 +2292,7 @@ begin
   else
     BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
 end;
+{$ENDIF !CLR}
 
 procedure TJvExCustomComboBoxEx.GetDlgCode(var Code: TDlgCodes);
 begin
@@ -2033,24 +2330,41 @@ var
   IdSaveDC: Integer;
   DlgCodes: TDlgCodes;
   Canvas: TCanvas;
+  {$IFDEF CLR}
+  AHintInfo: THintInfo;
+  {$ENDIF CLR}
 begin
-  if not DispatchIsDesignMsg(self,Msg) then
-  case Msg.Msg of
-    CM_DENYSUBCLASSING:
+  if not DispatchIsDesignMsg(Self, Msg) then
+  begin
+    case Msg.Msg of
+      CM_DENYSUBCLASSING:
+      {$IFNDEF CLR}
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
+      {$ELSE}
+      Msg.Result := Integer(Supports(Self, IJvDenySubClassing));
+      {$ENDIF !CLR}
     CM_DIALOGCHAR:
-      with TCMDialogChar(Msg) do
+      with TCMDialogChar{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Ord(WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode)));
     CM_HINTSHOW:
+      {$IFNDEF CLR}
       with TCMHintShow(Msg) do
         Result := Integer(HintShow(HintInfo^));
+      {$ELSE}
+      with TCMHintShow.Create(Msg) do
+      begin
+        AHintInfo := HintInfo;
+        Result := Integer(HintShow(AHintInfo));
+        HintInfo := AHintInfo;
+      end;
+      {$ENDIF !CLR}
     CM_HITTEST:
-      with TCMHitTest(Msg) do
+      with TCMHitTest{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Integer(HitTest(XPos, YPos));
     CM_MOUSEENTER:
-      MouseEnter(TControl(Msg.LParam));
+      MouseEnter({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_MOUSELEAVE:
-      MouseLeave(TControl(Msg.LParam));
+      MouseLeave({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_VISIBLECHANGED:
       VisibleChanged;
     CM_ENABLEDCHANGED:
@@ -2061,8 +2375,10 @@ begin
       FontChanged;
     CM_COLORCHANGED:
       ColorChanged;
+    {$IFNDEF CLR}
     CM_FOCUSCHANGED:
       FocusChanged(TWinControl(Msg.LParam));
+    {$ENDIF !CLR}
     CM_PARENTFONTCHANGED:
       ParentFontChanged;
     CM_PARENTCOLORCHANGED:
@@ -2075,6 +2391,7 @@ begin
       ShowingChanged;
     CM_SHOWHINTCHANGED:
       ShowHintChanged;
+    {$IFNDEF CLR}
     CM_CONTROLLISTCHANGE:
       if Msg.LParam <> 0 then
         ControlsListChanging(TControl(Msg.WParam), True)
@@ -2085,6 +2402,7 @@ begin
         ControlsListChanging(TControl(Msg.WParam), False)
       else
         ControlsListChanged(TControl(Msg.WParam), True);
+    {$ENDIF !CLR}
     WM_SETFOCUS:
       FocusSet(HWND(Msg.WParam));
     WM_KILLFOCUS:
@@ -2124,8 +2442,11 @@ begin
         if not (dcNative in DlgCodes) then
           Msg.Result := DlgCodesToDlgc(DlgCodes);
       end;
-  else
-    inherited WndProc(Msg);
+    else
+      inherited WndProc(Msg);
+    end;
+    if DotNetHighlighting then
+      HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
   end;
 end;
 
@@ -2137,16 +2458,35 @@ begin
   FHintColor := clDefault;
 end;
 
-function TJvExCustomStatusBar.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+function TJvExCustomStatusBar.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer;
 var
   Mesg: TMessage;
 begin
-  Mesg.Msg := Msg;
-  Mesg.WParam := WParam;
-  Mesg.LParam := LParam;
-  Mesg.Result := 0;
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
   inherited WndProc(Mesg);
   Result := Mesg.Result;
+end;
+
+function TJvExCustomStatusBar.BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer;
+var
+  Mesg: TMessage;
+begin
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
+  inherited WndProc(Mesg);
+  Result := Mesg.Result;
+end;
+
+function TJvExCustomStatusBar.BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer;
+var
+  Mesg: TStructPtrMessage;
+begin
+  Mesg := TStructPtrMessage.Create(Msg, WParam, LParam);
+  try
+    inherited WndProc(Mesg.Msg);
+  finally
+    Result := Mesg.Msg.Result;
+    Mesg.Free;
+  end;
 end;
 
 procedure TJvExCustomStatusBar.VisibleChanged;
@@ -2198,13 +2538,13 @@ end;
 
 function TJvExCustomStatusBar.HitTest(X, Y: Integer): Boolean;
 begin
-  Result := BaseWndProc(CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
+  Result := BaseWndProc(CM_HITTEST, 0, SmallPointToLong(PointToSmallPoint(Point(X, Y)))) <> 0;
 end;
 
 function TJvExCustomStatusBar.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   GetHintColor(HintInfo, Self, FHintColor);
-  Result := BaseWndProc(CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
+  Result := BaseWndProcEx(CM_HINTSHOW, 0, HintInfo) <> 0;
 end;
 
 procedure TJvExCustomStatusBar.MouseEnter(AControl: TControl);
@@ -2214,23 +2554,25 @@ begin
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
   {$ENDIF VCL}
-  BaseWndProc(CM_MOUSEENTER, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSEENTER, 0, AControl);
 end;
 
 procedure TJvExCustomStatusBar.MouseLeave(AControl: TControl);
 begin
   FMouseOver := False;
-  BaseWndProc(CM_MOUSELEAVE, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSELEAVE, 0, AControl);
   {$IFDEF VCL}
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
   {$ENDIF VCL}
 end;
 
+{$IFNDEF CLR}
 procedure TJvExCustomStatusBar.FocusChanged(AControl: TWinControl);
 begin
-  BaseWndProc(CM_FOCUSCHANGED, 0, Integer(AControl));
+  BaseWndProc(CM_FOCUSCHANGED, 0, AControl);
 end;
+{$ENDIF !CLR}
 
 {$IFDEF COMPILER5}
 {$IFNDEF HASAUTOSIZE}
@@ -2267,6 +2609,7 @@ begin
   BaseWndProc(CM_SHOWHINTCHANGED);
 end;
 
+{$IFNDEF CLR}
 { VCL sends CM_CONTROLLISTCHANGE and CM_CONTROLCHANGE in a different order than
   the CLX methods are used. So we must correct it by evaluating "Inserting". }
 procedure TJvExCustomStatusBar.ControlsListChanging(Control: TControl; Inserting: Boolean);
@@ -2284,6 +2627,7 @@ begin
   else
     BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
 end;
+{$ENDIF !CLR}
 
 procedure TJvExCustomStatusBar.GetDlgCode(var Code: TDlgCodes);
 begin
@@ -2321,24 +2665,41 @@ var
   IdSaveDC: Integer;
   DlgCodes: TDlgCodes;
   Canvas: TCanvas;
+  {$IFDEF CLR}
+  AHintInfo: THintInfo;
+  {$ENDIF CLR}
 begin
-  if not DispatchIsDesignMsg(self,Msg) then
-  case Msg.Msg of
-    CM_DENYSUBCLASSING:
+  if not DispatchIsDesignMsg(Self, Msg) then
+  begin
+    case Msg.Msg of
+      CM_DENYSUBCLASSING:
+      {$IFNDEF CLR}
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
+      {$ELSE}
+      Msg.Result := Integer(Supports(Self, IJvDenySubClassing));
+      {$ENDIF !CLR}
     CM_DIALOGCHAR:
-      with TCMDialogChar(Msg) do
+      with TCMDialogChar{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Ord(WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode)));
     CM_HINTSHOW:
+      {$IFNDEF CLR}
       with TCMHintShow(Msg) do
         Result := Integer(HintShow(HintInfo^));
+      {$ELSE}
+      with TCMHintShow.Create(Msg) do
+      begin
+        AHintInfo := HintInfo;
+        Result := Integer(HintShow(AHintInfo));
+        HintInfo := AHintInfo;
+      end;
+      {$ENDIF !CLR}
     CM_HITTEST:
-      with TCMHitTest(Msg) do
+      with TCMHitTest{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Integer(HitTest(XPos, YPos));
     CM_MOUSEENTER:
-      MouseEnter(TControl(Msg.LParam));
+      MouseEnter({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_MOUSELEAVE:
-      MouseLeave(TControl(Msg.LParam));
+      MouseLeave({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_VISIBLECHANGED:
       VisibleChanged;
     CM_ENABLEDCHANGED:
@@ -2349,8 +2710,10 @@ begin
       FontChanged;
     CM_COLORCHANGED:
       ColorChanged;
+    {$IFNDEF CLR}
     CM_FOCUSCHANGED:
       FocusChanged(TWinControl(Msg.LParam));
+    {$ENDIF !CLR}
     CM_PARENTFONTCHANGED:
       ParentFontChanged;
     CM_PARENTCOLORCHANGED:
@@ -2363,6 +2726,7 @@ begin
       ShowingChanged;
     CM_SHOWHINTCHANGED:
       ShowHintChanged;
+    {$IFNDEF CLR}
     CM_CONTROLLISTCHANGE:
       if Msg.LParam <> 0 then
         ControlsListChanging(TControl(Msg.WParam), True)
@@ -2373,6 +2737,7 @@ begin
         ControlsListChanging(TControl(Msg.WParam), False)
       else
         ControlsListChanged(TControl(Msg.WParam), True);
+    {$ENDIF !CLR}
     WM_SETFOCUS:
       FocusSet(HWND(Msg.WParam));
     WM_KILLFOCUS:
@@ -2412,8 +2777,11 @@ begin
         if not (dcNative in DlgCodes) then
           Msg.Result := DlgCodesToDlgc(DlgCodes);
       end;
-  else
-    inherited WndProc(Msg);
+    else
+      inherited WndProc(Msg);
+    end;
+    if DotNetHighlighting then
+      HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
   end;
 end;
 
@@ -2425,16 +2793,35 @@ begin
   FHintColor := clDefault;
 end;
 
-function TJvExComboBoxEx.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+function TJvExComboBoxEx.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer;
 var
   Mesg: TMessage;
 begin
-  Mesg.Msg := Msg;
-  Mesg.WParam := WParam;
-  Mesg.LParam := LParam;
-  Mesg.Result := 0;
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
   inherited WndProc(Mesg);
   Result := Mesg.Result;
+end;
+
+function TJvExComboBoxEx.BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer;
+var
+  Mesg: TMessage;
+begin
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
+  inherited WndProc(Mesg);
+  Result := Mesg.Result;
+end;
+
+function TJvExComboBoxEx.BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer;
+var
+  Mesg: TStructPtrMessage;
+begin
+  Mesg := TStructPtrMessage.Create(Msg, WParam, LParam);
+  try
+    inherited WndProc(Mesg.Msg);
+  finally
+    Result := Mesg.Msg.Result;
+    Mesg.Free;
+  end;
 end;
 
 procedure TJvExComboBoxEx.VisibleChanged;
@@ -2486,13 +2873,13 @@ end;
 
 function TJvExComboBoxEx.HitTest(X, Y: Integer): Boolean;
 begin
-  Result := BaseWndProc(CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
+  Result := BaseWndProc(CM_HITTEST, 0, SmallPointToLong(PointToSmallPoint(Point(X, Y)))) <> 0;
 end;
 
 function TJvExComboBoxEx.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   GetHintColor(HintInfo, Self, FHintColor);
-  Result := BaseWndProc(CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
+  Result := BaseWndProcEx(CM_HINTSHOW, 0, HintInfo) <> 0;
 end;
 
 procedure TJvExComboBoxEx.MouseEnter(AControl: TControl);
@@ -2502,23 +2889,25 @@ begin
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
   {$ENDIF VCL}
-  BaseWndProc(CM_MOUSEENTER, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSEENTER, 0, AControl);
 end;
 
 procedure TJvExComboBoxEx.MouseLeave(AControl: TControl);
 begin
   FMouseOver := False;
-  BaseWndProc(CM_MOUSELEAVE, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSELEAVE, 0, AControl);
   {$IFDEF VCL}
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
   {$ENDIF VCL}
 end;
 
+{$IFNDEF CLR}
 procedure TJvExComboBoxEx.FocusChanged(AControl: TWinControl);
 begin
-  BaseWndProc(CM_FOCUSCHANGED, 0, Integer(AControl));
+  BaseWndProc(CM_FOCUSCHANGED, 0, AControl);
 end;
+{$ENDIF !CLR}
 
 {$IFDEF COMPILER5}
 {$IFNDEF HASAUTOSIZE}
@@ -2555,6 +2944,7 @@ begin
   BaseWndProc(CM_SHOWHINTCHANGED);
 end;
 
+{$IFNDEF CLR}
 { VCL sends CM_CONTROLLISTCHANGE and CM_CONTROLCHANGE in a different order than
   the CLX methods are used. So we must correct it by evaluating "Inserting". }
 procedure TJvExComboBoxEx.ControlsListChanging(Control: TControl; Inserting: Boolean);
@@ -2572,6 +2962,7 @@ begin
   else
     BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
 end;
+{$ENDIF !CLR}
 
 procedure TJvExComboBoxEx.GetDlgCode(var Code: TDlgCodes);
 begin
@@ -2609,24 +3000,41 @@ var
   IdSaveDC: Integer;
   DlgCodes: TDlgCodes;
   Canvas: TCanvas;
+  {$IFDEF CLR}
+  AHintInfo: THintInfo;
+  {$ENDIF CLR}
 begin
-  if not DispatchIsDesignMsg(self,Msg) then
-  case Msg.Msg of
-    CM_DENYSUBCLASSING:
+  if not DispatchIsDesignMsg(Self, Msg) then
+  begin
+    case Msg.Msg of
+      CM_DENYSUBCLASSING:
+      {$IFNDEF CLR}
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
+      {$ELSE}
+      Msg.Result := Integer(Supports(Self, IJvDenySubClassing));
+      {$ENDIF !CLR}
     CM_DIALOGCHAR:
-      with TCMDialogChar(Msg) do
+      with TCMDialogChar{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Ord(WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode)));
     CM_HINTSHOW:
+      {$IFNDEF CLR}
       with TCMHintShow(Msg) do
         Result := Integer(HintShow(HintInfo^));
+      {$ELSE}
+      with TCMHintShow.Create(Msg) do
+      begin
+        AHintInfo := HintInfo;
+        Result := Integer(HintShow(AHintInfo));
+        HintInfo := AHintInfo;
+      end;
+      {$ENDIF !CLR}
     CM_HITTEST:
-      with TCMHitTest(Msg) do
+      with TCMHitTest{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Integer(HitTest(XPos, YPos));
     CM_MOUSEENTER:
-      MouseEnter(TControl(Msg.LParam));
+      MouseEnter({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_MOUSELEAVE:
-      MouseLeave(TControl(Msg.LParam));
+      MouseLeave({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_VISIBLECHANGED:
       VisibleChanged;
     CM_ENABLEDCHANGED:
@@ -2637,8 +3045,10 @@ begin
       FontChanged;
     CM_COLORCHANGED:
       ColorChanged;
+    {$IFNDEF CLR}
     CM_FOCUSCHANGED:
       FocusChanged(TWinControl(Msg.LParam));
+    {$ENDIF !CLR}
     CM_PARENTFONTCHANGED:
       ParentFontChanged;
     CM_PARENTCOLORCHANGED:
@@ -2651,6 +3061,7 @@ begin
       ShowingChanged;
     CM_SHOWHINTCHANGED:
       ShowHintChanged;
+    {$IFNDEF CLR}
     CM_CONTROLLISTCHANGE:
       if Msg.LParam <> 0 then
         ControlsListChanging(TControl(Msg.WParam), True)
@@ -2661,6 +3072,7 @@ begin
         ControlsListChanging(TControl(Msg.WParam), False)
       else
         ControlsListChanged(TControl(Msg.WParam), True);
+    {$ENDIF !CLR}
     WM_SETFOCUS:
       FocusSet(HWND(Msg.WParam));
     WM_KILLFOCUS:
@@ -2700,8 +3112,11 @@ begin
         if not (dcNative in DlgCodes) then
           Msg.Result := DlgCodesToDlgc(DlgCodes);
       end;
-  else
-    inherited WndProc(Msg);
+    else
+      inherited WndProc(Msg);
+    end;
+    if DotNetHighlighting then
+      HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
   end;
 end;
 
@@ -2713,16 +3128,35 @@ begin
   FHintColor := clDefault;
 end;
 
-function TJvExCustomHeaderControl.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+function TJvExCustomHeaderControl.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer;
 var
   Mesg: TMessage;
 begin
-  Mesg.Msg := Msg;
-  Mesg.WParam := WParam;
-  Mesg.LParam := LParam;
-  Mesg.Result := 0;
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
   inherited WndProc(Mesg);
   Result := Mesg.Result;
+end;
+
+function TJvExCustomHeaderControl.BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer;
+var
+  Mesg: TMessage;
+begin
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
+  inherited WndProc(Mesg);
+  Result := Mesg.Result;
+end;
+
+function TJvExCustomHeaderControl.BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer;
+var
+  Mesg: TStructPtrMessage;
+begin
+  Mesg := TStructPtrMessage.Create(Msg, WParam, LParam);
+  try
+    inherited WndProc(Mesg.Msg);
+  finally
+    Result := Mesg.Msg.Result;
+    Mesg.Free;
+  end;
 end;
 
 procedure TJvExCustomHeaderControl.VisibleChanged;
@@ -2774,13 +3208,13 @@ end;
 
 function TJvExCustomHeaderControl.HitTest(X, Y: Integer): Boolean;
 begin
-  Result := BaseWndProc(CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
+  Result := BaseWndProc(CM_HITTEST, 0, SmallPointToLong(PointToSmallPoint(Point(X, Y)))) <> 0;
 end;
 
 function TJvExCustomHeaderControl.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   GetHintColor(HintInfo, Self, FHintColor);
-  Result := BaseWndProc(CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
+  Result := BaseWndProcEx(CM_HINTSHOW, 0, HintInfo) <> 0;
 end;
 
 procedure TJvExCustomHeaderControl.MouseEnter(AControl: TControl);
@@ -2790,23 +3224,25 @@ begin
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
   {$ENDIF VCL}
-  BaseWndProc(CM_MOUSEENTER, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSEENTER, 0, AControl);
 end;
 
 procedure TJvExCustomHeaderControl.MouseLeave(AControl: TControl);
 begin
   FMouseOver := False;
-  BaseWndProc(CM_MOUSELEAVE, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSELEAVE, 0, AControl);
   {$IFDEF VCL}
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
   {$ENDIF VCL}
 end;
 
+{$IFNDEF CLR}
 procedure TJvExCustomHeaderControl.FocusChanged(AControl: TWinControl);
 begin
-  BaseWndProc(CM_FOCUSCHANGED, 0, Integer(AControl));
+  BaseWndProc(CM_FOCUSCHANGED, 0, AControl);
 end;
+{$ENDIF !CLR}
 
 {$IFDEF COMPILER5}
 {$IFNDEF HASAUTOSIZE}
@@ -2843,6 +3279,7 @@ begin
   BaseWndProc(CM_SHOWHINTCHANGED);
 end;
 
+{$IFNDEF CLR}
 { VCL sends CM_CONTROLLISTCHANGE and CM_CONTROLCHANGE in a different order than
   the CLX methods are used. So we must correct it by evaluating "Inserting". }
 procedure TJvExCustomHeaderControl.ControlsListChanging(Control: TControl; Inserting: Boolean);
@@ -2860,6 +3297,7 @@ begin
   else
     BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
 end;
+{$ENDIF !CLR}
 
 procedure TJvExCustomHeaderControl.GetDlgCode(var Code: TDlgCodes);
 begin
@@ -2897,24 +3335,41 @@ var
   IdSaveDC: Integer;
   DlgCodes: TDlgCodes;
   Canvas: TCanvas;
+  {$IFDEF CLR}
+  AHintInfo: THintInfo;
+  {$ENDIF CLR}
 begin
-  if not DispatchIsDesignMsg(self,Msg) then
-  case Msg.Msg of
-    CM_DENYSUBCLASSING:
+  if not DispatchIsDesignMsg(Self, Msg) then
+  begin
+    case Msg.Msg of
+      CM_DENYSUBCLASSING:
+      {$IFNDEF CLR}
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
+      {$ELSE}
+      Msg.Result := Integer(Supports(Self, IJvDenySubClassing));
+      {$ENDIF !CLR}
     CM_DIALOGCHAR:
-      with TCMDialogChar(Msg) do
+      with TCMDialogChar{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Ord(WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode)));
     CM_HINTSHOW:
+      {$IFNDEF CLR}
       with TCMHintShow(Msg) do
         Result := Integer(HintShow(HintInfo^));
+      {$ELSE}
+      with TCMHintShow.Create(Msg) do
+      begin
+        AHintInfo := HintInfo;
+        Result := Integer(HintShow(AHintInfo));
+        HintInfo := AHintInfo;
+      end;
+      {$ENDIF !CLR}
     CM_HITTEST:
-      with TCMHitTest(Msg) do
+      with TCMHitTest{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Integer(HitTest(XPos, YPos));
     CM_MOUSEENTER:
-      MouseEnter(TControl(Msg.LParam));
+      MouseEnter({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_MOUSELEAVE:
-      MouseLeave(TControl(Msg.LParam));
+      MouseLeave({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_VISIBLECHANGED:
       VisibleChanged;
     CM_ENABLEDCHANGED:
@@ -2925,8 +3380,10 @@ begin
       FontChanged;
     CM_COLORCHANGED:
       ColorChanged;
+    {$IFNDEF CLR}
     CM_FOCUSCHANGED:
       FocusChanged(TWinControl(Msg.LParam));
+    {$ENDIF !CLR}
     CM_PARENTFONTCHANGED:
       ParentFontChanged;
     CM_PARENTCOLORCHANGED:
@@ -2939,6 +3396,7 @@ begin
       ShowingChanged;
     CM_SHOWHINTCHANGED:
       ShowHintChanged;
+    {$IFNDEF CLR}
     CM_CONTROLLISTCHANGE:
       if Msg.LParam <> 0 then
         ControlsListChanging(TControl(Msg.WParam), True)
@@ -2949,6 +3407,7 @@ begin
         ControlsListChanging(TControl(Msg.WParam), False)
       else
         ControlsListChanged(TControl(Msg.WParam), True);
+    {$ENDIF !CLR}
     WM_SETFOCUS:
       FocusSet(HWND(Msg.WParam));
     WM_KILLFOCUS:
@@ -2988,8 +3447,11 @@ begin
         if not (dcNative in DlgCodes) then
           Msg.Result := DlgCodesToDlgc(DlgCodes);
       end;
-  else
-    inherited WndProc(Msg);
+    else
+      inherited WndProc(Msg);
+    end;
+    if DotNetHighlighting then
+      HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
   end;
 end;
 
@@ -3003,16 +3465,35 @@ begin
   FHintColor := clDefault;
 end;
 
-function TJvExHeaderControl.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+function TJvExHeaderControl.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer;
 var
   Mesg: TMessage;
 begin
-  Mesg.Msg := Msg;
-  Mesg.WParam := WParam;
-  Mesg.LParam := LParam;
-  Mesg.Result := 0;
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
   inherited WndProc(Mesg);
   Result := Mesg.Result;
+end;
+
+function TJvExHeaderControl.BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer;
+var
+  Mesg: TMessage;
+begin
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
+  inherited WndProc(Mesg);
+  Result := Mesg.Result;
+end;
+
+function TJvExHeaderControl.BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer;
+var
+  Mesg: TStructPtrMessage;
+begin
+  Mesg := TStructPtrMessage.Create(Msg, WParam, LParam);
+  try
+    inherited WndProc(Mesg.Msg);
+  finally
+    Result := Mesg.Msg.Result;
+    Mesg.Free;
+  end;
 end;
 
 procedure TJvExHeaderControl.VisibleChanged;
@@ -3064,13 +3545,13 @@ end;
 
 function TJvExHeaderControl.HitTest(X, Y: Integer): Boolean;
 begin
-  Result := BaseWndProc(CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
+  Result := BaseWndProc(CM_HITTEST, 0, SmallPointToLong(PointToSmallPoint(Point(X, Y)))) <> 0;
 end;
 
 function TJvExHeaderControl.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   GetHintColor(HintInfo, Self, FHintColor);
-  Result := BaseWndProc(CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
+  Result := BaseWndProcEx(CM_HINTSHOW, 0, HintInfo) <> 0;
 end;
 
 procedure TJvExHeaderControl.MouseEnter(AControl: TControl);
@@ -3080,23 +3561,25 @@ begin
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
   {$ENDIF VCL}
-  BaseWndProc(CM_MOUSEENTER, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSEENTER, 0, AControl);
 end;
 
 procedure TJvExHeaderControl.MouseLeave(AControl: TControl);
 begin
   FMouseOver := False;
-  BaseWndProc(CM_MOUSELEAVE, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSELEAVE, 0, AControl);
   {$IFDEF VCL}
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
   {$ENDIF VCL}
 end;
 
+{$IFNDEF CLR}
 procedure TJvExHeaderControl.FocusChanged(AControl: TWinControl);
 begin
-  BaseWndProc(CM_FOCUSCHANGED, 0, Integer(AControl));
+  BaseWndProc(CM_FOCUSCHANGED, 0, AControl);
 end;
+{$ENDIF !CLR}
 
 {$IFDEF COMPILER5}
 {$IFNDEF HASAUTOSIZE}
@@ -3133,6 +3616,7 @@ begin
   BaseWndProc(CM_SHOWHINTCHANGED);
 end;
 
+{$IFNDEF CLR}
 { VCL sends CM_CONTROLLISTCHANGE and CM_CONTROLCHANGE in a different order than
   the CLX methods are used. So we must correct it by evaluating "Inserting". }
 procedure TJvExHeaderControl.ControlsListChanging(Control: TControl; Inserting: Boolean);
@@ -3150,6 +3634,7 @@ begin
   else
     BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
 end;
+{$ENDIF !CLR}
 
 procedure TJvExHeaderControl.GetDlgCode(var Code: TDlgCodes);
 begin
@@ -3187,24 +3672,41 @@ var
   IdSaveDC: Integer;
   DlgCodes: TDlgCodes;
   Canvas: TCanvas;
+  {$IFDEF CLR}
+  AHintInfo: THintInfo;
+  {$ENDIF CLR}
 begin
-  if not DispatchIsDesignMsg(self,Msg) then
-  case Msg.Msg of
-    CM_DENYSUBCLASSING:
+  if not DispatchIsDesignMsg(Self, Msg) then
+  begin
+    case Msg.Msg of
+      CM_DENYSUBCLASSING:
+      {$IFNDEF CLR}
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
+      {$ELSE}
+      Msg.Result := Integer(Supports(Self, IJvDenySubClassing));
+      {$ENDIF !CLR}
     CM_DIALOGCHAR:
-      with TCMDialogChar(Msg) do
+      with TCMDialogChar{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Ord(WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode)));
     CM_HINTSHOW:
+      {$IFNDEF CLR}
       with TCMHintShow(Msg) do
         Result := Integer(HintShow(HintInfo^));
+      {$ELSE}
+      with TCMHintShow.Create(Msg) do
+      begin
+        AHintInfo := HintInfo;
+        Result := Integer(HintShow(AHintInfo));
+        HintInfo := AHintInfo;
+      end;
+      {$ENDIF !CLR}
     CM_HITTEST:
-      with TCMHitTest(Msg) do
+      with TCMHitTest{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Integer(HitTest(XPos, YPos));
     CM_MOUSEENTER:
-      MouseEnter(TControl(Msg.LParam));
+      MouseEnter({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_MOUSELEAVE:
-      MouseLeave(TControl(Msg.LParam));
+      MouseLeave({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_VISIBLECHANGED:
       VisibleChanged;
     CM_ENABLEDCHANGED:
@@ -3215,8 +3717,10 @@ begin
       FontChanged;
     CM_COLORCHANGED:
       ColorChanged;
+    {$IFNDEF CLR}
     CM_FOCUSCHANGED:
       FocusChanged(TWinControl(Msg.LParam));
+    {$ENDIF !CLR}
     CM_PARENTFONTCHANGED:
       ParentFontChanged;
     CM_PARENTCOLORCHANGED:
@@ -3229,6 +3733,7 @@ begin
       ShowingChanged;
     CM_SHOWHINTCHANGED:
       ShowHintChanged;
+    {$IFNDEF CLR}
     CM_CONTROLLISTCHANGE:
       if Msg.LParam <> 0 then
         ControlsListChanging(TControl(Msg.WParam), True)
@@ -3239,6 +3744,7 @@ begin
         ControlsListChanging(TControl(Msg.WParam), False)
       else
         ControlsListChanged(TControl(Msg.WParam), True);
+    {$ENDIF !CLR}
     WM_SETFOCUS:
       FocusSet(HWND(Msg.WParam));
     WM_KILLFOCUS:
@@ -3278,8 +3784,11 @@ begin
         if not (dcNative in DlgCodes) then
           Msg.Result := DlgCodesToDlgc(DlgCodes);
       end;
-  else
-    inherited WndProc(Msg);
+    else
+      inherited WndProc(Msg);
+    end;
+    if DotNetHighlighting then
+      HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
   end;
 end;
 
@@ -3291,16 +3800,35 @@ begin
   FHintColor := clDefault;
 end;
 
-function TJvExCustomListView.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+function TJvExCustomListView.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer;
 var
   Mesg: TMessage;
 begin
-  Mesg.Msg := Msg;
-  Mesg.WParam := WParam;
-  Mesg.LParam := LParam;
-  Mesg.Result := 0;
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
   inherited WndProc(Mesg);
   Result := Mesg.Result;
+end;
+
+function TJvExCustomListView.BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer;
+var
+  Mesg: TMessage;
+begin
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
+  inherited WndProc(Mesg);
+  Result := Mesg.Result;
+end;
+
+function TJvExCustomListView.BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer;
+var
+  Mesg: TStructPtrMessage;
+begin
+  Mesg := TStructPtrMessage.Create(Msg, WParam, LParam);
+  try
+    inherited WndProc(Mesg.Msg);
+  finally
+    Result := Mesg.Msg.Result;
+    Mesg.Free;
+  end;
 end;
 
 procedure TJvExCustomListView.VisibleChanged;
@@ -3352,13 +3880,13 @@ end;
 
 function TJvExCustomListView.HitTest(X, Y: Integer): Boolean;
 begin
-  Result := BaseWndProc(CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
+  Result := BaseWndProc(CM_HITTEST, 0, SmallPointToLong(PointToSmallPoint(Point(X, Y)))) <> 0;
 end;
 
 function TJvExCustomListView.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   GetHintColor(HintInfo, Self, FHintColor);
-  Result := BaseWndProc(CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
+  Result := BaseWndProcEx(CM_HINTSHOW, 0, HintInfo) <> 0;
 end;
 
 procedure TJvExCustomListView.MouseEnter(AControl: TControl);
@@ -3368,23 +3896,25 @@ begin
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
   {$ENDIF VCL}
-  BaseWndProc(CM_MOUSEENTER, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSEENTER, 0, AControl);
 end;
 
 procedure TJvExCustomListView.MouseLeave(AControl: TControl);
 begin
   FMouseOver := False;
-  BaseWndProc(CM_MOUSELEAVE, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSELEAVE, 0, AControl);
   {$IFDEF VCL}
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
   {$ENDIF VCL}
 end;
 
+{$IFNDEF CLR}
 procedure TJvExCustomListView.FocusChanged(AControl: TWinControl);
 begin
-  BaseWndProc(CM_FOCUSCHANGED, 0, Integer(AControl));
+  BaseWndProc(CM_FOCUSCHANGED, 0, AControl);
 end;
+{$ENDIF !CLR}
 
 {$IFDEF COMPILER5}
 {$IFNDEF HASAUTOSIZE}
@@ -3421,6 +3951,7 @@ begin
   BaseWndProc(CM_SHOWHINTCHANGED);
 end;
 
+{$IFNDEF CLR}
 { VCL sends CM_CONTROLLISTCHANGE and CM_CONTROLCHANGE in a different order than
   the CLX methods are used. So we must correct it by evaluating "Inserting". }
 procedure TJvExCustomListView.ControlsListChanging(Control: TControl; Inserting: Boolean);
@@ -3438,6 +3969,7 @@ begin
   else
     BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
 end;
+{$ENDIF !CLR}
 
 procedure TJvExCustomListView.GetDlgCode(var Code: TDlgCodes);
 begin
@@ -3475,24 +4007,41 @@ var
   IdSaveDC: Integer;
   DlgCodes: TDlgCodes;
   Canvas: TCanvas;
+  {$IFDEF CLR}
+  AHintInfo: THintInfo;
+  {$ENDIF CLR}
 begin
-  if not DispatchIsDesignMsg(self,Msg) then
-  case Msg.Msg of
-    CM_DENYSUBCLASSING:
+  if not DispatchIsDesignMsg(Self, Msg) then
+  begin
+    case Msg.Msg of
+      CM_DENYSUBCLASSING:
+      {$IFNDEF CLR}
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
+      {$ELSE}
+      Msg.Result := Integer(Supports(Self, IJvDenySubClassing));
+      {$ENDIF !CLR}
     CM_DIALOGCHAR:
-      with TCMDialogChar(Msg) do
+      with TCMDialogChar{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Ord(WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode)));
     CM_HINTSHOW:
+      {$IFNDEF CLR}
       with TCMHintShow(Msg) do
         Result := Integer(HintShow(HintInfo^));
+      {$ELSE}
+      with TCMHintShow.Create(Msg) do
+      begin
+        AHintInfo := HintInfo;
+        Result := Integer(HintShow(AHintInfo));
+        HintInfo := AHintInfo;
+      end;
+      {$ENDIF !CLR}
     CM_HITTEST:
-      with TCMHitTest(Msg) do
+      with TCMHitTest{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Integer(HitTest(XPos, YPos));
     CM_MOUSEENTER:
-      MouseEnter(TControl(Msg.LParam));
+      MouseEnter({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_MOUSELEAVE:
-      MouseLeave(TControl(Msg.LParam));
+      MouseLeave({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_VISIBLECHANGED:
       VisibleChanged;
     CM_ENABLEDCHANGED:
@@ -3503,8 +4052,10 @@ begin
       FontChanged;
     CM_COLORCHANGED:
       ColorChanged;
+    {$IFNDEF CLR}
     CM_FOCUSCHANGED:
       FocusChanged(TWinControl(Msg.LParam));
+    {$ENDIF !CLR}
     CM_PARENTFONTCHANGED:
       ParentFontChanged;
     CM_PARENTCOLORCHANGED:
@@ -3517,6 +4068,7 @@ begin
       ShowingChanged;
     CM_SHOWHINTCHANGED:
       ShowHintChanged;
+    {$IFNDEF CLR}
     CM_CONTROLLISTCHANGE:
       if Msg.LParam <> 0 then
         ControlsListChanging(TControl(Msg.WParam), True)
@@ -3527,6 +4079,7 @@ begin
         ControlsListChanging(TControl(Msg.WParam), False)
       else
         ControlsListChanged(TControl(Msg.WParam), True);
+    {$ENDIF !CLR}
     WM_SETFOCUS:
       FocusSet(HWND(Msg.WParam));
     WM_KILLFOCUS:
@@ -3566,8 +4119,11 @@ begin
         if not (dcNative in DlgCodes) then
           Msg.Result := DlgCodesToDlgc(DlgCodes);
       end;
-  else
-    inherited WndProc(Msg);
+    else
+      inherited WndProc(Msg);
+    end;
+    if DotNetHighlighting then
+      HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
   end;
 end;
 
@@ -3579,16 +4135,35 @@ begin
   FHintColor := clDefault;
 end;
 
-function TJvExListView.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+function TJvExListView.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer;
 var
   Mesg: TMessage;
 begin
-  Mesg.Msg := Msg;
-  Mesg.WParam := WParam;
-  Mesg.LParam := LParam;
-  Mesg.Result := 0;
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
   inherited WndProc(Mesg);
   Result := Mesg.Result;
+end;
+
+function TJvExListView.BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer;
+var
+  Mesg: TMessage;
+begin
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
+  inherited WndProc(Mesg);
+  Result := Mesg.Result;
+end;
+
+function TJvExListView.BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer;
+var
+  Mesg: TStructPtrMessage;
+begin
+  Mesg := TStructPtrMessage.Create(Msg, WParam, LParam);
+  try
+    inherited WndProc(Mesg.Msg);
+  finally
+    Result := Mesg.Msg.Result;
+    Mesg.Free;
+  end;
 end;
 
 procedure TJvExListView.VisibleChanged;
@@ -3640,13 +4215,13 @@ end;
 
 function TJvExListView.HitTest(X, Y: Integer): Boolean;
 begin
-  Result := BaseWndProc(CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
+  Result := BaseWndProc(CM_HITTEST, 0, SmallPointToLong(PointToSmallPoint(Point(X, Y)))) <> 0;
 end;
 
 function TJvExListView.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   GetHintColor(HintInfo, Self, FHintColor);
-  Result := BaseWndProc(CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
+  Result := BaseWndProcEx(CM_HINTSHOW, 0, HintInfo) <> 0;
 end;
 
 procedure TJvExListView.MouseEnter(AControl: TControl);
@@ -3656,23 +4231,25 @@ begin
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
   {$ENDIF VCL}
-  BaseWndProc(CM_MOUSEENTER, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSEENTER, 0, AControl);
 end;
 
 procedure TJvExListView.MouseLeave(AControl: TControl);
 begin
   FMouseOver := False;
-  BaseWndProc(CM_MOUSELEAVE, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSELEAVE, 0, AControl);
   {$IFDEF VCL}
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
   {$ENDIF VCL}
 end;
 
+{$IFNDEF CLR}
 procedure TJvExListView.FocusChanged(AControl: TWinControl);
 begin
-  BaseWndProc(CM_FOCUSCHANGED, 0, Integer(AControl));
+  BaseWndProc(CM_FOCUSCHANGED, 0, AControl);
 end;
+{$ENDIF !CLR}
 
 {$IFDEF COMPILER5}
 {$IFNDEF HASAUTOSIZE}
@@ -3709,6 +4286,7 @@ begin
   BaseWndProc(CM_SHOWHINTCHANGED);
 end;
 
+{$IFNDEF CLR}
 { VCL sends CM_CONTROLLISTCHANGE and CM_CONTROLCHANGE in a different order than
   the CLX methods are used. So we must correct it by evaluating "Inserting". }
 procedure TJvExListView.ControlsListChanging(Control: TControl; Inserting: Boolean);
@@ -3726,6 +4304,7 @@ begin
   else
     BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
 end;
+{$ENDIF !CLR}
 
 procedure TJvExListView.GetDlgCode(var Code: TDlgCodes);
 begin
@@ -3763,24 +4342,41 @@ var
   IdSaveDC: Integer;
   DlgCodes: TDlgCodes;
   Canvas: TCanvas;
+  {$IFDEF CLR}
+  AHintInfo: THintInfo;
+  {$ENDIF CLR}
 begin
-  if not DispatchIsDesignMsg(self,Msg) then
-  case Msg.Msg of
-    CM_DENYSUBCLASSING:
+  if not DispatchIsDesignMsg(Self, Msg) then
+  begin
+    case Msg.Msg of
+      CM_DENYSUBCLASSING:
+      {$IFNDEF CLR}
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
+      {$ELSE}
+      Msg.Result := Integer(Supports(Self, IJvDenySubClassing));
+      {$ENDIF !CLR}
     CM_DIALOGCHAR:
-      with TCMDialogChar(Msg) do
+      with TCMDialogChar{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Ord(WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode)));
     CM_HINTSHOW:
+      {$IFNDEF CLR}
       with TCMHintShow(Msg) do
         Result := Integer(HintShow(HintInfo^));
+      {$ELSE}
+      with TCMHintShow.Create(Msg) do
+      begin
+        AHintInfo := HintInfo;
+        Result := Integer(HintShow(AHintInfo));
+        HintInfo := AHintInfo;
+      end;
+      {$ENDIF !CLR}
     CM_HITTEST:
-      with TCMHitTest(Msg) do
+      with TCMHitTest{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Integer(HitTest(XPos, YPos));
     CM_MOUSEENTER:
-      MouseEnter(TControl(Msg.LParam));
+      MouseEnter({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_MOUSELEAVE:
-      MouseLeave(TControl(Msg.LParam));
+      MouseLeave({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_VISIBLECHANGED:
       VisibleChanged;
     CM_ENABLEDCHANGED:
@@ -3791,8 +4387,10 @@ begin
       FontChanged;
     CM_COLORCHANGED:
       ColorChanged;
+    {$IFNDEF CLR}
     CM_FOCUSCHANGED:
       FocusChanged(TWinControl(Msg.LParam));
+    {$ENDIF !CLR}
     CM_PARENTFONTCHANGED:
       ParentFontChanged;
     CM_PARENTCOLORCHANGED:
@@ -3805,6 +4403,7 @@ begin
       ShowingChanged;
     CM_SHOWHINTCHANGED:
       ShowHintChanged;
+    {$IFNDEF CLR}
     CM_CONTROLLISTCHANGE:
       if Msg.LParam <> 0 then
         ControlsListChanging(TControl(Msg.WParam), True)
@@ -3815,6 +4414,7 @@ begin
         ControlsListChanging(TControl(Msg.WParam), False)
       else
         ControlsListChanged(TControl(Msg.WParam), True);
+    {$ENDIF !CLR}
     WM_SETFOCUS:
       FocusSet(HWND(Msg.WParam));
     WM_KILLFOCUS:
@@ -3854,8 +4454,11 @@ begin
         if not (dcNative in DlgCodes) then
           Msg.Result := DlgCodesToDlgc(DlgCodes);
       end;
-  else
-    inherited WndProc(Msg);
+    else
+      inherited WndProc(Msg);
+    end;
+    if DotNetHighlighting then
+      HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
   end;
 end;
 
@@ -3867,16 +4470,35 @@ begin
   FHintColor := clDefault;
 end;
 
-function TJvExCustomTreeView.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+function TJvExCustomTreeView.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer;
 var
   Mesg: TMessage;
 begin
-  Mesg.Msg := Msg;
-  Mesg.WParam := WParam;
-  Mesg.LParam := LParam;
-  Mesg.Result := 0;
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
   inherited WndProc(Mesg);
   Result := Mesg.Result;
+end;
+
+function TJvExCustomTreeView.BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer;
+var
+  Mesg: TMessage;
+begin
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
+  inherited WndProc(Mesg);
+  Result := Mesg.Result;
+end;
+
+function TJvExCustomTreeView.BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer;
+var
+  Mesg: TStructPtrMessage;
+begin
+  Mesg := TStructPtrMessage.Create(Msg, WParam, LParam);
+  try
+    inherited WndProc(Mesg.Msg);
+  finally
+    Result := Mesg.Msg.Result;
+    Mesg.Free;
+  end;
 end;
 
 procedure TJvExCustomTreeView.VisibleChanged;
@@ -3928,13 +4550,13 @@ end;
 
 function TJvExCustomTreeView.HitTest(X, Y: Integer): Boolean;
 begin
-  Result := BaseWndProc(CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
+  Result := BaseWndProc(CM_HITTEST, 0, SmallPointToLong(PointToSmallPoint(Point(X, Y)))) <> 0;
 end;
 
 function TJvExCustomTreeView.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   GetHintColor(HintInfo, Self, FHintColor);
-  Result := BaseWndProc(CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
+  Result := BaseWndProcEx(CM_HINTSHOW, 0, HintInfo) <> 0;
 end;
 
 procedure TJvExCustomTreeView.MouseEnter(AControl: TControl);
@@ -3944,23 +4566,25 @@ begin
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
   {$ENDIF VCL}
-  BaseWndProc(CM_MOUSEENTER, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSEENTER, 0, AControl);
 end;
 
 procedure TJvExCustomTreeView.MouseLeave(AControl: TControl);
 begin
   FMouseOver := False;
-  BaseWndProc(CM_MOUSELEAVE, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSELEAVE, 0, AControl);
   {$IFDEF VCL}
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
   {$ENDIF VCL}
 end;
 
+{$IFNDEF CLR}
 procedure TJvExCustomTreeView.FocusChanged(AControl: TWinControl);
 begin
-  BaseWndProc(CM_FOCUSCHANGED, 0, Integer(AControl));
+  BaseWndProc(CM_FOCUSCHANGED, 0, AControl);
 end;
+{$ENDIF !CLR}
 
 {$IFDEF COMPILER5}
 {$IFNDEF HASAUTOSIZE}
@@ -3997,6 +4621,7 @@ begin
   BaseWndProc(CM_SHOWHINTCHANGED);
 end;
 
+{$IFNDEF CLR}
 { VCL sends CM_CONTROLLISTCHANGE and CM_CONTROLCHANGE in a different order than
   the CLX methods are used. So we must correct it by evaluating "Inserting". }
 procedure TJvExCustomTreeView.ControlsListChanging(Control: TControl; Inserting: Boolean);
@@ -4014,6 +4639,7 @@ begin
   else
     BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
 end;
+{$ENDIF !CLR}
 
 procedure TJvExCustomTreeView.GetDlgCode(var Code: TDlgCodes);
 begin
@@ -4051,24 +4677,41 @@ var
   IdSaveDC: Integer;
   DlgCodes: TDlgCodes;
   Canvas: TCanvas;
+  {$IFDEF CLR}
+  AHintInfo: THintInfo;
+  {$ENDIF CLR}
 begin
-  if not DispatchIsDesignMsg(self,Msg) then
-  case Msg.Msg of
-    CM_DENYSUBCLASSING:
+  if not DispatchIsDesignMsg(Self, Msg) then
+  begin
+    case Msg.Msg of
+      CM_DENYSUBCLASSING:
+      {$IFNDEF CLR}
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
+      {$ELSE}
+      Msg.Result := Integer(Supports(Self, IJvDenySubClassing));
+      {$ENDIF !CLR}
     CM_DIALOGCHAR:
-      with TCMDialogChar(Msg) do
+      with TCMDialogChar{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Ord(WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode)));
     CM_HINTSHOW:
+      {$IFNDEF CLR}
       with TCMHintShow(Msg) do
         Result := Integer(HintShow(HintInfo^));
+      {$ELSE}
+      with TCMHintShow.Create(Msg) do
+      begin
+        AHintInfo := HintInfo;
+        Result := Integer(HintShow(AHintInfo));
+        HintInfo := AHintInfo;
+      end;
+      {$ENDIF !CLR}
     CM_HITTEST:
-      with TCMHitTest(Msg) do
+      with TCMHitTest{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Integer(HitTest(XPos, YPos));
     CM_MOUSEENTER:
-      MouseEnter(TControl(Msg.LParam));
+      MouseEnter({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_MOUSELEAVE:
-      MouseLeave(TControl(Msg.LParam));
+      MouseLeave({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_VISIBLECHANGED:
       VisibleChanged;
     CM_ENABLEDCHANGED:
@@ -4079,8 +4722,10 @@ begin
       FontChanged;
     CM_COLORCHANGED:
       ColorChanged;
+    {$IFNDEF CLR}
     CM_FOCUSCHANGED:
       FocusChanged(TWinControl(Msg.LParam));
+    {$ENDIF !CLR}
     CM_PARENTFONTCHANGED:
       ParentFontChanged;
     CM_PARENTCOLORCHANGED:
@@ -4093,6 +4738,7 @@ begin
       ShowingChanged;
     CM_SHOWHINTCHANGED:
       ShowHintChanged;
+    {$IFNDEF CLR}
     CM_CONTROLLISTCHANGE:
       if Msg.LParam <> 0 then
         ControlsListChanging(TControl(Msg.WParam), True)
@@ -4103,6 +4749,7 @@ begin
         ControlsListChanging(TControl(Msg.WParam), False)
       else
         ControlsListChanged(TControl(Msg.WParam), True);
+    {$ENDIF !CLR}
     WM_SETFOCUS:
       FocusSet(HWND(Msg.WParam));
     WM_KILLFOCUS:
@@ -4142,8 +4789,11 @@ begin
         if not (dcNative in DlgCodes) then
           Msg.Result := DlgCodesToDlgc(DlgCodes);
       end;
-  else
-    inherited WndProc(Msg);
+    else
+      inherited WndProc(Msg);
+    end;
+    if DotNetHighlighting then
+      HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
   end;
 end;
 
@@ -4155,16 +4805,35 @@ begin
   FHintColor := clDefault;
 end;
 
-function TJvExTreeView.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+function TJvExTreeView.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer;
 var
   Mesg: TMessage;
 begin
-  Mesg.Msg := Msg;
-  Mesg.WParam := WParam;
-  Mesg.LParam := LParam;
-  Mesg.Result := 0;
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
   inherited WndProc(Mesg);
   Result := Mesg.Result;
+end;
+
+function TJvExTreeView.BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer;
+var
+  Mesg: TMessage;
+begin
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
+  inherited WndProc(Mesg);
+  Result := Mesg.Result;
+end;
+
+function TJvExTreeView.BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer;
+var
+  Mesg: TStructPtrMessage;
+begin
+  Mesg := TStructPtrMessage.Create(Msg, WParam, LParam);
+  try
+    inherited WndProc(Mesg.Msg);
+  finally
+    Result := Mesg.Msg.Result;
+    Mesg.Free;
+  end;
 end;
 
 procedure TJvExTreeView.VisibleChanged;
@@ -4216,13 +4885,13 @@ end;
 
 function TJvExTreeView.HitTest(X, Y: Integer): Boolean;
 begin
-  Result := BaseWndProc(CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
+  Result := BaseWndProc(CM_HITTEST, 0, SmallPointToLong(PointToSmallPoint(Point(X, Y)))) <> 0;
 end;
 
 function TJvExTreeView.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   GetHintColor(HintInfo, Self, FHintColor);
-  Result := BaseWndProc(CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
+  Result := BaseWndProcEx(CM_HINTSHOW, 0, HintInfo) <> 0;
 end;
 
 procedure TJvExTreeView.MouseEnter(AControl: TControl);
@@ -4232,23 +4901,25 @@ begin
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
   {$ENDIF VCL}
-  BaseWndProc(CM_MOUSEENTER, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSEENTER, 0, AControl);
 end;
 
 procedure TJvExTreeView.MouseLeave(AControl: TControl);
 begin
   FMouseOver := False;
-  BaseWndProc(CM_MOUSELEAVE, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSELEAVE, 0, AControl);
   {$IFDEF VCL}
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
   {$ENDIF VCL}
 end;
 
+{$IFNDEF CLR}
 procedure TJvExTreeView.FocusChanged(AControl: TWinControl);
 begin
-  BaseWndProc(CM_FOCUSCHANGED, 0, Integer(AControl));
+  BaseWndProc(CM_FOCUSCHANGED, 0, AControl);
 end;
+{$ENDIF !CLR}
 
 {$IFDEF COMPILER5}
 {$IFNDEF HASAUTOSIZE}
@@ -4285,6 +4956,7 @@ begin
   BaseWndProc(CM_SHOWHINTCHANGED);
 end;
 
+{$IFNDEF CLR}
 { VCL sends CM_CONTROLLISTCHANGE and CM_CONTROLCHANGE in a different order than
   the CLX methods are used. So we must correct it by evaluating "Inserting". }
 procedure TJvExTreeView.ControlsListChanging(Control: TControl; Inserting: Boolean);
@@ -4302,6 +4974,7 @@ begin
   else
     BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
 end;
+{$ENDIF !CLR}
 
 procedure TJvExTreeView.GetDlgCode(var Code: TDlgCodes);
 begin
@@ -4339,24 +5012,41 @@ var
   IdSaveDC: Integer;
   DlgCodes: TDlgCodes;
   Canvas: TCanvas;
+  {$IFDEF CLR}
+  AHintInfo: THintInfo;
+  {$ENDIF CLR}
 begin
-  if not DispatchIsDesignMsg(self,Msg) then
-  case Msg.Msg of
-    CM_DENYSUBCLASSING:
+  if not DispatchIsDesignMsg(Self, Msg) then
+  begin
+    case Msg.Msg of
+      CM_DENYSUBCLASSING:
+      {$IFNDEF CLR}
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
+      {$ELSE}
+      Msg.Result := Integer(Supports(Self, IJvDenySubClassing));
+      {$ENDIF !CLR}
     CM_DIALOGCHAR:
-      with TCMDialogChar(Msg) do
+      with TCMDialogChar{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Ord(WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode)));
     CM_HINTSHOW:
+      {$IFNDEF CLR}
       with TCMHintShow(Msg) do
         Result := Integer(HintShow(HintInfo^));
+      {$ELSE}
+      with TCMHintShow.Create(Msg) do
+      begin
+        AHintInfo := HintInfo;
+        Result := Integer(HintShow(AHintInfo));
+        HintInfo := AHintInfo;
+      end;
+      {$ENDIF !CLR}
     CM_HITTEST:
-      with TCMHitTest(Msg) do
+      with TCMHitTest{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Integer(HitTest(XPos, YPos));
     CM_MOUSEENTER:
-      MouseEnter(TControl(Msg.LParam));
+      MouseEnter({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_MOUSELEAVE:
-      MouseLeave(TControl(Msg.LParam));
+      MouseLeave({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_VISIBLECHANGED:
       VisibleChanged;
     CM_ENABLEDCHANGED:
@@ -4367,8 +5057,10 @@ begin
       FontChanged;
     CM_COLORCHANGED:
       ColorChanged;
+    {$IFNDEF CLR}
     CM_FOCUSCHANGED:
       FocusChanged(TWinControl(Msg.LParam));
+    {$ENDIF !CLR}
     CM_PARENTFONTCHANGED:
       ParentFontChanged;
     CM_PARENTCOLORCHANGED:
@@ -4381,6 +5073,7 @@ begin
       ShowingChanged;
     CM_SHOWHINTCHANGED:
       ShowHintChanged;
+    {$IFNDEF CLR}
     CM_CONTROLLISTCHANGE:
       if Msg.LParam <> 0 then
         ControlsListChanging(TControl(Msg.WParam), True)
@@ -4391,6 +5084,7 @@ begin
         ControlsListChanging(TControl(Msg.WParam), False)
       else
         ControlsListChanged(TControl(Msg.WParam), True);
+    {$ENDIF !CLR}
     WM_SETFOCUS:
       FocusSet(HWND(Msg.WParam));
     WM_KILLFOCUS:
@@ -4430,8 +5124,11 @@ begin
         if not (dcNative in DlgCodes) then
           Msg.Result := DlgCodesToDlgc(DlgCodes);
       end;
-  else
-    inherited WndProc(Msg);
+    else
+      inherited WndProc(Msg);
+    end;
+    if DotNetHighlighting then
+      HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
   end;
 end;
 
@@ -4443,16 +5140,35 @@ begin
   FHintColor := clDefault;
 end;
 
-function TJvExTrackBar.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+function TJvExTrackBar.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer;
 var
   Mesg: TMessage;
 begin
-  Mesg.Msg := Msg;
-  Mesg.WParam := WParam;
-  Mesg.LParam := LParam;
-  Mesg.Result := 0;
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
   inherited WndProc(Mesg);
   Result := Mesg.Result;
+end;
+
+function TJvExTrackBar.BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer;
+var
+  Mesg: TMessage;
+begin
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
+  inherited WndProc(Mesg);
+  Result := Mesg.Result;
+end;
+
+function TJvExTrackBar.BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer;
+var
+  Mesg: TStructPtrMessage;
+begin
+  Mesg := TStructPtrMessage.Create(Msg, WParam, LParam);
+  try
+    inherited WndProc(Mesg.Msg);
+  finally
+    Result := Mesg.Msg.Result;
+    Mesg.Free;
+  end;
 end;
 
 procedure TJvExTrackBar.VisibleChanged;
@@ -4504,13 +5220,13 @@ end;
 
 function TJvExTrackBar.HitTest(X, Y: Integer): Boolean;
 begin
-  Result := BaseWndProc(CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
+  Result := BaseWndProc(CM_HITTEST, 0, SmallPointToLong(PointToSmallPoint(Point(X, Y)))) <> 0;
 end;
 
 function TJvExTrackBar.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   GetHintColor(HintInfo, Self, FHintColor);
-  Result := BaseWndProc(CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
+  Result := BaseWndProcEx(CM_HINTSHOW, 0, HintInfo) <> 0;
 end;
 
 procedure TJvExTrackBar.MouseEnter(AControl: TControl);
@@ -4520,23 +5236,25 @@ begin
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
   {$ENDIF VCL}
-  BaseWndProc(CM_MOUSEENTER, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSEENTER, 0, AControl);
 end;
 
 procedure TJvExTrackBar.MouseLeave(AControl: TControl);
 begin
   FMouseOver := False;
-  BaseWndProc(CM_MOUSELEAVE, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSELEAVE, 0, AControl);
   {$IFDEF VCL}
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
   {$ENDIF VCL}
 end;
 
+{$IFNDEF CLR}
 procedure TJvExTrackBar.FocusChanged(AControl: TWinControl);
 begin
-  BaseWndProc(CM_FOCUSCHANGED, 0, Integer(AControl));
+  BaseWndProc(CM_FOCUSCHANGED, 0, AControl);
 end;
+{$ENDIF !CLR}
 
 {$IFDEF COMPILER5}
 {$IFNDEF HASAUTOSIZE}
@@ -4573,6 +5291,7 @@ begin
   BaseWndProc(CM_SHOWHINTCHANGED);
 end;
 
+{$IFNDEF CLR}
 { VCL sends CM_CONTROLLISTCHANGE and CM_CONTROLCHANGE in a different order than
   the CLX methods are used. So we must correct it by evaluating "Inserting". }
 procedure TJvExTrackBar.ControlsListChanging(Control: TControl; Inserting: Boolean);
@@ -4590,6 +5309,7 @@ begin
   else
     BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
 end;
+{$ENDIF !CLR}
 
 procedure TJvExTrackBar.GetDlgCode(var Code: TDlgCodes);
 begin
@@ -4627,24 +5347,41 @@ var
   IdSaveDC: Integer;
   DlgCodes: TDlgCodes;
   Canvas: TCanvas;
+  {$IFDEF CLR}
+  AHintInfo: THintInfo;
+  {$ENDIF CLR}
 begin
-  if not DispatchIsDesignMsg(self,Msg) then
-  case Msg.Msg of
-    CM_DENYSUBCLASSING:
+  if not DispatchIsDesignMsg(Self, Msg) then
+  begin
+    case Msg.Msg of
+      CM_DENYSUBCLASSING:
+      {$IFNDEF CLR}
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
+      {$ELSE}
+      Msg.Result := Integer(Supports(Self, IJvDenySubClassing));
+      {$ENDIF !CLR}
     CM_DIALOGCHAR:
-      with TCMDialogChar(Msg) do
+      with TCMDialogChar{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Ord(WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode)));
     CM_HINTSHOW:
+      {$IFNDEF CLR}
       with TCMHintShow(Msg) do
         Result := Integer(HintShow(HintInfo^));
+      {$ELSE}
+      with TCMHintShow.Create(Msg) do
+      begin
+        AHintInfo := HintInfo;
+        Result := Integer(HintShow(AHintInfo));
+        HintInfo := AHintInfo;
+      end;
+      {$ENDIF !CLR}
     CM_HITTEST:
-      with TCMHitTest(Msg) do
+      with TCMHitTest{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Integer(HitTest(XPos, YPos));
     CM_MOUSEENTER:
-      MouseEnter(TControl(Msg.LParam));
+      MouseEnter({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_MOUSELEAVE:
-      MouseLeave(TControl(Msg.LParam));
+      MouseLeave({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_VISIBLECHANGED:
       VisibleChanged;
     CM_ENABLEDCHANGED:
@@ -4655,8 +5392,10 @@ begin
       FontChanged;
     CM_COLORCHANGED:
       ColorChanged;
+    {$IFNDEF CLR}
     CM_FOCUSCHANGED:
       FocusChanged(TWinControl(Msg.LParam));
+    {$ENDIF !CLR}
     CM_PARENTFONTCHANGED:
       ParentFontChanged;
     CM_PARENTCOLORCHANGED:
@@ -4669,6 +5408,7 @@ begin
       ShowingChanged;
     CM_SHOWHINTCHANGED:
       ShowHintChanged;
+    {$IFNDEF CLR}
     CM_CONTROLLISTCHANGE:
       if Msg.LParam <> 0 then
         ControlsListChanging(TControl(Msg.WParam), True)
@@ -4679,6 +5419,7 @@ begin
         ControlsListChanging(TControl(Msg.WParam), False)
       else
         ControlsListChanged(TControl(Msg.WParam), True);
+    {$ENDIF !CLR}
     WM_SETFOCUS:
       FocusSet(HWND(Msg.WParam));
     WM_KILLFOCUS:
@@ -4718,8 +5459,11 @@ begin
         if not (dcNative in DlgCodes) then
           Msg.Result := DlgCodesToDlgc(DlgCodes);
       end;
-  else
-    inherited WndProc(Msg);
+    else
+      inherited WndProc(Msg);
+    end;
+    if DotNetHighlighting then
+      HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
   end;
 end;
 
@@ -4731,16 +5475,35 @@ begin
   FHintColor := clDefault;
 end;
 
-function TJvExAnimate.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+function TJvExAnimate.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer;
 var
   Mesg: TMessage;
 begin
-  Mesg.Msg := Msg;
-  Mesg.WParam := WParam;
-  Mesg.LParam := LParam;
-  Mesg.Result := 0;
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
   inherited WndProc(Mesg);
   Result := Mesg.Result;
+end;
+
+function TJvExAnimate.BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer;
+var
+  Mesg: TMessage;
+begin
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
+  inherited WndProc(Mesg);
+  Result := Mesg.Result;
+end;
+
+function TJvExAnimate.BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer;
+var
+  Mesg: TStructPtrMessage;
+begin
+  Mesg := TStructPtrMessage.Create(Msg, WParam, LParam);
+  try
+    inherited WndProc(Mesg.Msg);
+  finally
+    Result := Mesg.Msg.Result;
+    Mesg.Free;
+  end;
 end;
 
 procedure TJvExAnimate.VisibleChanged;
@@ -4792,13 +5555,13 @@ end;
 
 function TJvExAnimate.HitTest(X, Y: Integer): Boolean;
 begin
-  Result := BaseWndProc(CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
+  Result := BaseWndProc(CM_HITTEST, 0, SmallPointToLong(PointToSmallPoint(Point(X, Y)))) <> 0;
 end;
 
 function TJvExAnimate.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   GetHintColor(HintInfo, Self, FHintColor);
-  Result := BaseWndProc(CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
+  Result := BaseWndProcEx(CM_HINTSHOW, 0, HintInfo) <> 0;
 end;
 
 procedure TJvExAnimate.MouseEnter(AControl: TControl);
@@ -4808,23 +5571,25 @@ begin
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
   {$ENDIF VCL}
-  BaseWndProc(CM_MOUSEENTER, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSEENTER, 0, AControl);
 end;
 
 procedure TJvExAnimate.MouseLeave(AControl: TControl);
 begin
   FMouseOver := False;
-  BaseWndProc(CM_MOUSELEAVE, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSELEAVE, 0, AControl);
   {$IFDEF VCL}
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
   {$ENDIF VCL}
 end;
 
+{$IFNDEF CLR}
 procedure TJvExAnimate.FocusChanged(AControl: TWinControl);
 begin
-  BaseWndProc(CM_FOCUSCHANGED, 0, Integer(AControl));
+  BaseWndProc(CM_FOCUSCHANGED, 0, AControl);
 end;
+{$ENDIF !CLR}
 
 {$IFDEF COMPILER5}
 {$IFNDEF HASAUTOSIZE}
@@ -4861,6 +5626,7 @@ begin
   BaseWndProc(CM_SHOWHINTCHANGED);
 end;
 
+{$IFNDEF CLR}
 { VCL sends CM_CONTROLLISTCHANGE and CM_CONTROLCHANGE in a different order than
   the CLX methods are used. So we must correct it by evaluating "Inserting". }
 procedure TJvExAnimate.ControlsListChanging(Control: TControl; Inserting: Boolean);
@@ -4878,6 +5644,7 @@ begin
   else
     BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
 end;
+{$ENDIF !CLR}
 
 procedure TJvExAnimate.GetDlgCode(var Code: TDlgCodes);
 begin
@@ -4915,24 +5682,41 @@ var
   IdSaveDC: Integer;
   DlgCodes: TDlgCodes;
   Canvas: TCanvas;
+  {$IFDEF CLR}
+  AHintInfo: THintInfo;
+  {$ENDIF CLR}
 begin
-  if not DispatchIsDesignMsg(self,Msg) then
-  case Msg.Msg of
-    CM_DENYSUBCLASSING:
+  if not DispatchIsDesignMsg(Self, Msg) then
+  begin
+    case Msg.Msg of
+      CM_DENYSUBCLASSING:
+      {$IFNDEF CLR}
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
+      {$ELSE}
+      Msg.Result := Integer(Supports(Self, IJvDenySubClassing));
+      {$ENDIF !CLR}
     CM_DIALOGCHAR:
-      with TCMDialogChar(Msg) do
+      with TCMDialogChar{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Ord(WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode)));
     CM_HINTSHOW:
+      {$IFNDEF CLR}
       with TCMHintShow(Msg) do
         Result := Integer(HintShow(HintInfo^));
+      {$ELSE}
+      with TCMHintShow.Create(Msg) do
+      begin
+        AHintInfo := HintInfo;
+        Result := Integer(HintShow(AHintInfo));
+        HintInfo := AHintInfo;
+      end;
+      {$ENDIF !CLR}
     CM_HITTEST:
-      with TCMHitTest(Msg) do
+      with TCMHitTest{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Integer(HitTest(XPos, YPos));
     CM_MOUSEENTER:
-      MouseEnter(TControl(Msg.LParam));
+      MouseEnter({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_MOUSELEAVE:
-      MouseLeave(TControl(Msg.LParam));
+      MouseLeave({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_VISIBLECHANGED:
       VisibleChanged;
     CM_ENABLEDCHANGED:
@@ -4943,8 +5727,10 @@ begin
       FontChanged;
     CM_COLORCHANGED:
       ColorChanged;
+    {$IFNDEF CLR}
     CM_FOCUSCHANGED:
       FocusChanged(TWinControl(Msg.LParam));
+    {$ENDIF !CLR}
     CM_PARENTFONTCHANGED:
       ParentFontChanged;
     CM_PARENTCOLORCHANGED:
@@ -4957,6 +5743,7 @@ begin
       ShowingChanged;
     CM_SHOWHINTCHANGED:
       ShowHintChanged;
+    {$IFNDEF CLR}
     CM_CONTROLLISTCHANGE:
       if Msg.LParam <> 0 then
         ControlsListChanging(TControl(Msg.WParam), True)
@@ -4967,6 +5754,7 @@ begin
         ControlsListChanging(TControl(Msg.WParam), False)
       else
         ControlsListChanged(TControl(Msg.WParam), True);
+    {$ENDIF !CLR}
     WM_SETFOCUS:
       FocusSet(HWND(Msg.WParam));
     WM_KILLFOCUS:
@@ -5006,8 +5794,11 @@ begin
         if not (dcNative in DlgCodes) then
           Msg.Result := DlgCodesToDlgc(DlgCodes);
       end;
-  else
-    inherited WndProc(Msg);
+    else
+      inherited WndProc(Msg);
+    end;
+    if DotNetHighlighting then
+      HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
   end;
 end;
 
@@ -5019,16 +5810,35 @@ begin
   FHintColor := clDefault;
 end;
 
-function TJvExCoolBar.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+function TJvExCoolBar.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer;
 var
   Mesg: TMessage;
 begin
-  Mesg.Msg := Msg;
-  Mesg.WParam := WParam;
-  Mesg.LParam := LParam;
-  Mesg.Result := 0;
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
   inherited WndProc(Mesg);
   Result := Mesg.Result;
+end;
+
+function TJvExCoolBar.BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer;
+var
+  Mesg: TMessage;
+begin
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
+  inherited WndProc(Mesg);
+  Result := Mesg.Result;
+end;
+
+function TJvExCoolBar.BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer;
+var
+  Mesg: TStructPtrMessage;
+begin
+  Mesg := TStructPtrMessage.Create(Msg, WParam, LParam);
+  try
+    inherited WndProc(Mesg.Msg);
+  finally
+    Result := Mesg.Msg.Result;
+    Mesg.Free;
+  end;
 end;
 
 procedure TJvExCoolBar.VisibleChanged;
@@ -5080,13 +5890,13 @@ end;
 
 function TJvExCoolBar.HitTest(X, Y: Integer): Boolean;
 begin
-  Result := BaseWndProc(CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
+  Result := BaseWndProc(CM_HITTEST, 0, SmallPointToLong(PointToSmallPoint(Point(X, Y)))) <> 0;
 end;
 
 function TJvExCoolBar.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   GetHintColor(HintInfo, Self, FHintColor);
-  Result := BaseWndProc(CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
+  Result := BaseWndProcEx(CM_HINTSHOW, 0, HintInfo) <> 0;
 end;
 
 procedure TJvExCoolBar.MouseEnter(AControl: TControl);
@@ -5096,23 +5906,25 @@ begin
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
   {$ENDIF VCL}
-  BaseWndProc(CM_MOUSEENTER, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSEENTER, 0, AControl);
 end;
 
 procedure TJvExCoolBar.MouseLeave(AControl: TControl);
 begin
   FMouseOver := False;
-  BaseWndProc(CM_MOUSELEAVE, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSELEAVE, 0, AControl);
   {$IFDEF VCL}
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
   {$ENDIF VCL}
 end;
 
+{$IFNDEF CLR}
 procedure TJvExCoolBar.FocusChanged(AControl: TWinControl);
 begin
-  BaseWndProc(CM_FOCUSCHANGED, 0, Integer(AControl));
+  BaseWndProc(CM_FOCUSCHANGED, 0, AControl);
 end;
+{$ENDIF !CLR}
 
 {$IFDEF COMPILER5}
 {$IFNDEF HASAUTOSIZE}
@@ -5149,6 +5961,7 @@ begin
   BaseWndProc(CM_SHOWHINTCHANGED);
 end;
 
+{$IFNDEF CLR}
 { VCL sends CM_CONTROLLISTCHANGE and CM_CONTROLCHANGE in a different order than
   the CLX methods are used. So we must correct it by evaluating "Inserting". }
 procedure TJvExCoolBar.ControlsListChanging(Control: TControl; Inserting: Boolean);
@@ -5166,6 +5979,7 @@ begin
   else
     BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
 end;
+{$ENDIF !CLR}
 
 procedure TJvExCoolBar.GetDlgCode(var Code: TDlgCodes);
 begin
@@ -5203,24 +6017,41 @@ var
   IdSaveDC: Integer;
   DlgCodes: TDlgCodes;
   Canvas: TCanvas;
+  {$IFDEF CLR}
+  AHintInfo: THintInfo;
+  {$ENDIF CLR}
 begin
-  if not DispatchIsDesignMsg(self,Msg) then
-  case Msg.Msg of
-    CM_DENYSUBCLASSING:
+  if not DispatchIsDesignMsg(Self, Msg) then
+  begin
+    case Msg.Msg of
+      CM_DENYSUBCLASSING:
+      {$IFNDEF CLR}
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
+      {$ELSE}
+      Msg.Result := Integer(Supports(Self, IJvDenySubClassing));
+      {$ENDIF !CLR}
     CM_DIALOGCHAR:
-      with TCMDialogChar(Msg) do
+      with TCMDialogChar{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Ord(WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode)));
     CM_HINTSHOW:
+      {$IFNDEF CLR}
       with TCMHintShow(Msg) do
         Result := Integer(HintShow(HintInfo^));
+      {$ELSE}
+      with TCMHintShow.Create(Msg) do
+      begin
+        AHintInfo := HintInfo;
+        Result := Integer(HintShow(AHintInfo));
+        HintInfo := AHintInfo;
+      end;
+      {$ENDIF !CLR}
     CM_HITTEST:
-      with TCMHitTest(Msg) do
+      with TCMHitTest{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Integer(HitTest(XPos, YPos));
     CM_MOUSEENTER:
-      MouseEnter(TControl(Msg.LParam));
+      MouseEnter({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_MOUSELEAVE:
-      MouseLeave(TControl(Msg.LParam));
+      MouseLeave({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_VISIBLECHANGED:
       VisibleChanged;
     CM_ENABLEDCHANGED:
@@ -5231,8 +6062,10 @@ begin
       FontChanged;
     CM_COLORCHANGED:
       ColorChanged;
+    {$IFNDEF CLR}
     CM_FOCUSCHANGED:
       FocusChanged(TWinControl(Msg.LParam));
+    {$ENDIF !CLR}
     CM_PARENTFONTCHANGED:
       ParentFontChanged;
     CM_PARENTCOLORCHANGED:
@@ -5245,6 +6078,7 @@ begin
       ShowingChanged;
     CM_SHOWHINTCHANGED:
       ShowHintChanged;
+    {$IFNDEF CLR}
     CM_CONTROLLISTCHANGE:
       if Msg.LParam <> 0 then
         ControlsListChanging(TControl(Msg.WParam), True)
@@ -5255,6 +6089,7 @@ begin
         ControlsListChanging(TControl(Msg.WParam), False)
       else
         ControlsListChanged(TControl(Msg.WParam), True);
+    {$ENDIF !CLR}
     WM_SETFOCUS:
       FocusSet(HWND(Msg.WParam));
     WM_KILLFOCUS:
@@ -5294,8 +6129,11 @@ begin
         if not (dcNative in DlgCodes) then
           Msg.Result := DlgCodesToDlgc(DlgCodes);
       end;
-  else
-    inherited WndProc(Msg);
+    else
+      inherited WndProc(Msg);
+    end;
+    if DotNetHighlighting then
+      HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
   end;
 end;
 
@@ -5307,16 +6145,35 @@ begin
   FHintColor := clDefault;
 end;
 
-function TJvExCommonCalendar.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+function TJvExCommonCalendar.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer;
 var
   Mesg: TMessage;
 begin
-  Mesg.Msg := Msg;
-  Mesg.WParam := WParam;
-  Mesg.LParam := LParam;
-  Mesg.Result := 0;
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
   inherited WndProc(Mesg);
   Result := Mesg.Result;
+end;
+
+function TJvExCommonCalendar.BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer;
+var
+  Mesg: TMessage;
+begin
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
+  inherited WndProc(Mesg);
+  Result := Mesg.Result;
+end;
+
+function TJvExCommonCalendar.BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer;
+var
+  Mesg: TStructPtrMessage;
+begin
+  Mesg := TStructPtrMessage.Create(Msg, WParam, LParam);
+  try
+    inherited WndProc(Mesg.Msg);
+  finally
+    Result := Mesg.Msg.Result;
+    Mesg.Free;
+  end;
 end;
 
 procedure TJvExCommonCalendar.VisibleChanged;
@@ -5368,13 +6225,13 @@ end;
 
 function TJvExCommonCalendar.HitTest(X, Y: Integer): Boolean;
 begin
-  Result := BaseWndProc(CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
+  Result := BaseWndProc(CM_HITTEST, 0, SmallPointToLong(PointToSmallPoint(Point(X, Y)))) <> 0;
 end;
 
 function TJvExCommonCalendar.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   GetHintColor(HintInfo, Self, FHintColor);
-  Result := BaseWndProc(CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
+  Result := BaseWndProcEx(CM_HINTSHOW, 0, HintInfo) <> 0;
 end;
 
 procedure TJvExCommonCalendar.MouseEnter(AControl: TControl);
@@ -5384,23 +6241,25 @@ begin
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
   {$ENDIF VCL}
-  BaseWndProc(CM_MOUSEENTER, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSEENTER, 0, AControl);
 end;
 
 procedure TJvExCommonCalendar.MouseLeave(AControl: TControl);
 begin
   FMouseOver := False;
-  BaseWndProc(CM_MOUSELEAVE, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSELEAVE, 0, AControl);
   {$IFDEF VCL}
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
   {$ENDIF VCL}
 end;
 
+{$IFNDEF CLR}
 procedure TJvExCommonCalendar.FocusChanged(AControl: TWinControl);
 begin
-  BaseWndProc(CM_FOCUSCHANGED, 0, Integer(AControl));
+  BaseWndProc(CM_FOCUSCHANGED, 0, AControl);
 end;
+{$ENDIF !CLR}
 
 {$IFDEF COMPILER5}
 {$IFNDEF HASAUTOSIZE}
@@ -5437,6 +6296,7 @@ begin
   BaseWndProc(CM_SHOWHINTCHANGED);
 end;
 
+{$IFNDEF CLR}
 { VCL sends CM_CONTROLLISTCHANGE and CM_CONTROLCHANGE in a different order than
   the CLX methods are used. So we must correct it by evaluating "Inserting". }
 procedure TJvExCommonCalendar.ControlsListChanging(Control: TControl; Inserting: Boolean);
@@ -5454,6 +6314,7 @@ begin
   else
     BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
 end;
+{$ENDIF !CLR}
 
 procedure TJvExCommonCalendar.GetDlgCode(var Code: TDlgCodes);
 begin
@@ -5491,24 +6352,41 @@ var
   IdSaveDC: Integer;
   DlgCodes: TDlgCodes;
   Canvas: TCanvas;
+  {$IFDEF CLR}
+  AHintInfo: THintInfo;
+  {$ENDIF CLR}
 begin
-  if not DispatchIsDesignMsg(self,Msg) then
-  case Msg.Msg of
-    CM_DENYSUBCLASSING:
+  if not DispatchIsDesignMsg(Self, Msg) then
+  begin
+    case Msg.Msg of
+      CM_DENYSUBCLASSING:
+      {$IFNDEF CLR}
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
+      {$ELSE}
+      Msg.Result := Integer(Supports(Self, IJvDenySubClassing));
+      {$ENDIF !CLR}
     CM_DIALOGCHAR:
-      with TCMDialogChar(Msg) do
+      with TCMDialogChar{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Ord(WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode)));
     CM_HINTSHOW:
+      {$IFNDEF CLR}
       with TCMHintShow(Msg) do
         Result := Integer(HintShow(HintInfo^));
+      {$ELSE}
+      with TCMHintShow.Create(Msg) do
+      begin
+        AHintInfo := HintInfo;
+        Result := Integer(HintShow(AHintInfo));
+        HintInfo := AHintInfo;
+      end;
+      {$ENDIF !CLR}
     CM_HITTEST:
-      with TCMHitTest(Msg) do
+      with TCMHitTest{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Integer(HitTest(XPos, YPos));
     CM_MOUSEENTER:
-      MouseEnter(TControl(Msg.LParam));
+      MouseEnter({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_MOUSELEAVE:
-      MouseLeave(TControl(Msg.LParam));
+      MouseLeave({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_VISIBLECHANGED:
       VisibleChanged;
     CM_ENABLEDCHANGED:
@@ -5519,8 +6397,10 @@ begin
       FontChanged;
     CM_COLORCHANGED:
       ColorChanged;
+    {$IFNDEF CLR}
     CM_FOCUSCHANGED:
       FocusChanged(TWinControl(Msg.LParam));
+    {$ENDIF !CLR}
     CM_PARENTFONTCHANGED:
       ParentFontChanged;
     CM_PARENTCOLORCHANGED:
@@ -5533,6 +6413,7 @@ begin
       ShowingChanged;
     CM_SHOWHINTCHANGED:
       ShowHintChanged;
+    {$IFNDEF CLR}
     CM_CONTROLLISTCHANGE:
       if Msg.LParam <> 0 then
         ControlsListChanging(TControl(Msg.WParam), True)
@@ -5543,6 +6424,7 @@ begin
         ControlsListChanging(TControl(Msg.WParam), False)
       else
         ControlsListChanged(TControl(Msg.WParam), True);
+    {$ENDIF !CLR}
     WM_SETFOCUS:
       FocusSet(HWND(Msg.WParam));
     WM_KILLFOCUS:
@@ -5582,8 +6464,11 @@ begin
         if not (dcNative in DlgCodes) then
           Msg.Result := DlgCodesToDlgc(DlgCodes);
       end;
-  else
-    inherited WndProc(Msg);
+    else
+      inherited WndProc(Msg);
+    end;
+    if DotNetHighlighting then
+      HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
   end;
 end;
 
@@ -5595,16 +6480,35 @@ begin
   FHintColor := clDefault;
 end;
 
-function TJvExMonthCalendar.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+function TJvExMonthCalendar.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer;
 var
   Mesg: TMessage;
 begin
-  Mesg.Msg := Msg;
-  Mesg.WParam := WParam;
-  Mesg.LParam := LParam;
-  Mesg.Result := 0;
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
   inherited WndProc(Mesg);
   Result := Mesg.Result;
+end;
+
+function TJvExMonthCalendar.BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer;
+var
+  Mesg: TMessage;
+begin
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
+  inherited WndProc(Mesg);
+  Result := Mesg.Result;
+end;
+
+function TJvExMonthCalendar.BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer;
+var
+  Mesg: TStructPtrMessage;
+begin
+  Mesg := TStructPtrMessage.Create(Msg, WParam, LParam);
+  try
+    inherited WndProc(Mesg.Msg);
+  finally
+    Result := Mesg.Msg.Result;
+    Mesg.Free;
+  end;
 end;
 
 procedure TJvExMonthCalendar.VisibleChanged;
@@ -5656,13 +6560,13 @@ end;
 
 function TJvExMonthCalendar.HitTest(X, Y: Integer): Boolean;
 begin
-  Result := BaseWndProc(CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
+  Result := BaseWndProc(CM_HITTEST, 0, SmallPointToLong(PointToSmallPoint(Point(X, Y)))) <> 0;
 end;
 
 function TJvExMonthCalendar.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   GetHintColor(HintInfo, Self, FHintColor);
-  Result := BaseWndProc(CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
+  Result := BaseWndProcEx(CM_HINTSHOW, 0, HintInfo) <> 0;
 end;
 
 procedure TJvExMonthCalendar.MouseEnter(AControl: TControl);
@@ -5672,23 +6576,25 @@ begin
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
   {$ENDIF VCL}
-  BaseWndProc(CM_MOUSEENTER, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSEENTER, 0, AControl);
 end;
 
 procedure TJvExMonthCalendar.MouseLeave(AControl: TControl);
 begin
   FMouseOver := False;
-  BaseWndProc(CM_MOUSELEAVE, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSELEAVE, 0, AControl);
   {$IFDEF VCL}
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
   {$ENDIF VCL}
 end;
 
+{$IFNDEF CLR}
 procedure TJvExMonthCalendar.FocusChanged(AControl: TWinControl);
 begin
-  BaseWndProc(CM_FOCUSCHANGED, 0, Integer(AControl));
+  BaseWndProc(CM_FOCUSCHANGED, 0, AControl);
 end;
+{$ENDIF !CLR}
 
 {$IFDEF COMPILER5}
 {$IFNDEF HASAUTOSIZE}
@@ -5725,6 +6631,7 @@ begin
   BaseWndProc(CM_SHOWHINTCHANGED);
 end;
 
+{$IFNDEF CLR}
 { VCL sends CM_CONTROLLISTCHANGE and CM_CONTROLCHANGE in a different order than
   the CLX methods are used. So we must correct it by evaluating "Inserting". }
 procedure TJvExMonthCalendar.ControlsListChanging(Control: TControl; Inserting: Boolean);
@@ -5742,6 +6649,7 @@ begin
   else
     BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
 end;
+{$ENDIF !CLR}
 
 procedure TJvExMonthCalendar.GetDlgCode(var Code: TDlgCodes);
 begin
@@ -5779,24 +6687,41 @@ var
   IdSaveDC: Integer;
   DlgCodes: TDlgCodes;
   Canvas: TCanvas;
+  {$IFDEF CLR}
+  AHintInfo: THintInfo;
+  {$ENDIF CLR}
 begin
-  if not DispatchIsDesignMsg(self,Msg) then
-  case Msg.Msg of
-    CM_DENYSUBCLASSING:
+  if not DispatchIsDesignMsg(Self, Msg) then
+  begin
+    case Msg.Msg of
+      CM_DENYSUBCLASSING:
+      {$IFNDEF CLR}
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
+      {$ELSE}
+      Msg.Result := Integer(Supports(Self, IJvDenySubClassing));
+      {$ENDIF !CLR}
     CM_DIALOGCHAR:
-      with TCMDialogChar(Msg) do
+      with TCMDialogChar{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Ord(WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode)));
     CM_HINTSHOW:
+      {$IFNDEF CLR}
       with TCMHintShow(Msg) do
         Result := Integer(HintShow(HintInfo^));
+      {$ELSE}
+      with TCMHintShow.Create(Msg) do
+      begin
+        AHintInfo := HintInfo;
+        Result := Integer(HintShow(AHintInfo));
+        HintInfo := AHintInfo;
+      end;
+      {$ENDIF !CLR}
     CM_HITTEST:
-      with TCMHitTest(Msg) do
+      with TCMHitTest{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Integer(HitTest(XPos, YPos));
     CM_MOUSEENTER:
-      MouseEnter(TControl(Msg.LParam));
+      MouseEnter({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_MOUSELEAVE:
-      MouseLeave(TControl(Msg.LParam));
+      MouseLeave({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_VISIBLECHANGED:
       VisibleChanged;
     CM_ENABLEDCHANGED:
@@ -5807,8 +6732,10 @@ begin
       FontChanged;
     CM_COLORCHANGED:
       ColorChanged;
+    {$IFNDEF CLR}
     CM_FOCUSCHANGED:
       FocusChanged(TWinControl(Msg.LParam));
+    {$ENDIF !CLR}
     CM_PARENTFONTCHANGED:
       ParentFontChanged;
     CM_PARENTCOLORCHANGED:
@@ -5821,6 +6748,7 @@ begin
       ShowingChanged;
     CM_SHOWHINTCHANGED:
       ShowHintChanged;
+    {$IFNDEF CLR}
     CM_CONTROLLISTCHANGE:
       if Msg.LParam <> 0 then
         ControlsListChanging(TControl(Msg.WParam), True)
@@ -5831,6 +6759,7 @@ begin
         ControlsListChanging(TControl(Msg.WParam), False)
       else
         ControlsListChanged(TControl(Msg.WParam), True);
+    {$ENDIF !CLR}
     WM_SETFOCUS:
       FocusSet(HWND(Msg.WParam));
     WM_KILLFOCUS:
@@ -5870,8 +6799,11 @@ begin
         if not (dcNative in DlgCodes) then
           Msg.Result := DlgCodesToDlgc(DlgCodes);
       end;
-  else
-    inherited WndProc(Msg);
+    else
+      inherited WndProc(Msg);
+    end;
+    if DotNetHighlighting then
+      HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
   end;
 end;
 
@@ -5883,16 +6815,35 @@ begin
   FHintColor := clDefault;
 end;
 
-function TJvExCustomHotKey.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+function TJvExCustomHotKey.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer;
 var
   Mesg: TMessage;
 begin
-  Mesg.Msg := Msg;
-  Mesg.WParam := WParam;
-  Mesg.LParam := LParam;
-  Mesg.Result := 0;
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
   inherited WndProc(Mesg);
   Result := Mesg.Result;
+end;
+
+function TJvExCustomHotKey.BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer;
+var
+  Mesg: TMessage;
+begin
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
+  inherited WndProc(Mesg);
+  Result := Mesg.Result;
+end;
+
+function TJvExCustomHotKey.BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer;
+var
+  Mesg: TStructPtrMessage;
+begin
+  Mesg := TStructPtrMessage.Create(Msg, WParam, LParam);
+  try
+    inherited WndProc(Mesg.Msg);
+  finally
+    Result := Mesg.Msg.Result;
+    Mesg.Free;
+  end;
 end;
 
 procedure TJvExCustomHotKey.VisibleChanged;
@@ -5944,13 +6895,13 @@ end;
 
 function TJvExCustomHotKey.HitTest(X, Y: Integer): Boolean;
 begin
-  Result := BaseWndProc(CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
+  Result := BaseWndProc(CM_HITTEST, 0, SmallPointToLong(PointToSmallPoint(Point(X, Y)))) <> 0;
 end;
 
 function TJvExCustomHotKey.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   GetHintColor(HintInfo, Self, FHintColor);
-  Result := BaseWndProc(CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
+  Result := BaseWndProcEx(CM_HINTSHOW, 0, HintInfo) <> 0;
 end;
 
 procedure TJvExCustomHotKey.MouseEnter(AControl: TControl);
@@ -5960,23 +6911,25 @@ begin
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
   {$ENDIF VCL}
-  BaseWndProc(CM_MOUSEENTER, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSEENTER, 0, AControl);
 end;
 
 procedure TJvExCustomHotKey.MouseLeave(AControl: TControl);
 begin
   FMouseOver := False;
-  BaseWndProc(CM_MOUSELEAVE, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSELEAVE, 0, AControl);
   {$IFDEF VCL}
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
   {$ENDIF VCL}
 end;
 
+{$IFNDEF CLR}
 procedure TJvExCustomHotKey.FocusChanged(AControl: TWinControl);
 begin
-  BaseWndProc(CM_FOCUSCHANGED, 0, Integer(AControl));
+  BaseWndProc(CM_FOCUSCHANGED, 0, AControl);
 end;
+{$ENDIF !CLR}
 
 {$IFDEF COMPILER5}
 {$IFNDEF HASAUTOSIZE}
@@ -6013,6 +6966,7 @@ begin
   BaseWndProc(CM_SHOWHINTCHANGED);
 end;
 
+{$IFNDEF CLR}
 { VCL sends CM_CONTROLLISTCHANGE and CM_CONTROLCHANGE in a different order than
   the CLX methods are used. So we must correct it by evaluating "Inserting". }
 procedure TJvExCustomHotKey.ControlsListChanging(Control: TControl; Inserting: Boolean);
@@ -6030,6 +6984,7 @@ begin
   else
     BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
 end;
+{$ENDIF !CLR}
 
 procedure TJvExCustomHotKey.GetDlgCode(var Code: TDlgCodes);
 begin
@@ -6067,24 +7022,41 @@ var
   IdSaveDC: Integer;
   DlgCodes: TDlgCodes;
   Canvas: TCanvas;
+  {$IFDEF CLR}
+  AHintInfo: THintInfo;
+  {$ENDIF CLR}
 begin
-  if not DispatchIsDesignMsg(self,Msg) then
-  case Msg.Msg of
-    CM_DENYSUBCLASSING:
+  if not DispatchIsDesignMsg(Self, Msg) then
+  begin
+    case Msg.Msg of
+      CM_DENYSUBCLASSING:
+      {$IFNDEF CLR}
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
+      {$ELSE}
+      Msg.Result := Integer(Supports(Self, IJvDenySubClassing));
+      {$ENDIF !CLR}
     CM_DIALOGCHAR:
-      with TCMDialogChar(Msg) do
+      with TCMDialogChar{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Ord(WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode)));
     CM_HINTSHOW:
+      {$IFNDEF CLR}
       with TCMHintShow(Msg) do
         Result := Integer(HintShow(HintInfo^));
+      {$ELSE}
+      with TCMHintShow.Create(Msg) do
+      begin
+        AHintInfo := HintInfo;
+        Result := Integer(HintShow(AHintInfo));
+        HintInfo := AHintInfo;
+      end;
+      {$ENDIF !CLR}
     CM_HITTEST:
-      with TCMHitTest(Msg) do
+      with TCMHitTest{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Integer(HitTest(XPos, YPos));
     CM_MOUSEENTER:
-      MouseEnter(TControl(Msg.LParam));
+      MouseEnter({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_MOUSELEAVE:
-      MouseLeave(TControl(Msg.LParam));
+      MouseLeave({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_VISIBLECHANGED:
       VisibleChanged;
     CM_ENABLEDCHANGED:
@@ -6095,8 +7067,10 @@ begin
       FontChanged;
     CM_COLORCHANGED:
       ColorChanged;
+    {$IFNDEF CLR}
     CM_FOCUSCHANGED:
       FocusChanged(TWinControl(Msg.LParam));
+    {$ENDIF !CLR}
     CM_PARENTFONTCHANGED:
       ParentFontChanged;
     CM_PARENTCOLORCHANGED:
@@ -6109,6 +7083,7 @@ begin
       ShowingChanged;
     CM_SHOWHINTCHANGED:
       ShowHintChanged;
+    {$IFNDEF CLR}
     CM_CONTROLLISTCHANGE:
       if Msg.LParam <> 0 then
         ControlsListChanging(TControl(Msg.WParam), True)
@@ -6119,6 +7094,7 @@ begin
         ControlsListChanging(TControl(Msg.WParam), False)
       else
         ControlsListChanged(TControl(Msg.WParam), True);
+    {$ENDIF !CLR}
     WM_SETFOCUS:
       FocusSet(HWND(Msg.WParam));
     WM_KILLFOCUS:
@@ -6158,8 +7134,11 @@ begin
         if not (dcNative in DlgCodes) then
           Msg.Result := DlgCodesToDlgc(DlgCodes);
       end;
-  else
-    inherited WndProc(Msg);
+    else
+      inherited WndProc(Msg);
+    end;
+    if DotNetHighlighting then
+      HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
   end;
 end;
 
@@ -6171,16 +7150,35 @@ begin
   FHintColor := clDefault;
 end;
 
-function TJvExHotKey.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+function TJvExHotKey.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer;
 var
   Mesg: TMessage;
 begin
-  Mesg.Msg := Msg;
-  Mesg.WParam := WParam;
-  Mesg.LParam := LParam;
-  Mesg.Result := 0;
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
   inherited WndProc(Mesg);
   Result := Mesg.Result;
+end;
+
+function TJvExHotKey.BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer;
+var
+  Mesg: TMessage;
+begin
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
+  inherited WndProc(Mesg);
+  Result := Mesg.Result;
+end;
+
+function TJvExHotKey.BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer;
+var
+  Mesg: TStructPtrMessage;
+begin
+  Mesg := TStructPtrMessage.Create(Msg, WParam, LParam);
+  try
+    inherited WndProc(Mesg.Msg);
+  finally
+    Result := Mesg.Msg.Result;
+    Mesg.Free;
+  end;
 end;
 
 procedure TJvExHotKey.VisibleChanged;
@@ -6232,13 +7230,13 @@ end;
 
 function TJvExHotKey.HitTest(X, Y: Integer): Boolean;
 begin
-  Result := BaseWndProc(CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
+  Result := BaseWndProc(CM_HITTEST, 0, SmallPointToLong(PointToSmallPoint(Point(X, Y)))) <> 0;
 end;
 
 function TJvExHotKey.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   GetHintColor(HintInfo, Self, FHintColor);
-  Result := BaseWndProc(CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
+  Result := BaseWndProcEx(CM_HINTSHOW, 0, HintInfo) <> 0;
 end;
 
 procedure TJvExHotKey.MouseEnter(AControl: TControl);
@@ -6248,23 +7246,25 @@ begin
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
   {$ENDIF VCL}
-  BaseWndProc(CM_MOUSEENTER, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSEENTER, 0, AControl);
 end;
 
 procedure TJvExHotKey.MouseLeave(AControl: TControl);
 begin
   FMouseOver := False;
-  BaseWndProc(CM_MOUSELEAVE, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSELEAVE, 0, AControl);
   {$IFDEF VCL}
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
   {$ENDIF VCL}
 end;
 
+{$IFNDEF CLR}
 procedure TJvExHotKey.FocusChanged(AControl: TWinControl);
 begin
-  BaseWndProc(CM_FOCUSCHANGED, 0, Integer(AControl));
+  BaseWndProc(CM_FOCUSCHANGED, 0, AControl);
 end;
+{$ENDIF !CLR}
 
 {$IFDEF COMPILER5}
 {$IFNDEF HASAUTOSIZE}
@@ -6301,6 +7301,7 @@ begin
   BaseWndProc(CM_SHOWHINTCHANGED);
 end;
 
+{$IFNDEF CLR}
 { VCL sends CM_CONTROLLISTCHANGE and CM_CONTROLCHANGE in a different order than
   the CLX methods are used. So we must correct it by evaluating "Inserting". }
 procedure TJvExHotKey.ControlsListChanging(Control: TControl; Inserting: Boolean);
@@ -6318,6 +7319,7 @@ begin
   else
     BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
 end;
+{$ENDIF !CLR}
 
 procedure TJvExHotKey.GetDlgCode(var Code: TDlgCodes);
 begin
@@ -6355,24 +7357,41 @@ var
   IdSaveDC: Integer;
   DlgCodes: TDlgCodes;
   Canvas: TCanvas;
+  {$IFDEF CLR}
+  AHintInfo: THintInfo;
+  {$ENDIF CLR}
 begin
-  if not DispatchIsDesignMsg(self,Msg) then
-  case Msg.Msg of
-    CM_DENYSUBCLASSING:
+  if not DispatchIsDesignMsg(Self, Msg) then
+  begin
+    case Msg.Msg of
+      CM_DENYSUBCLASSING:
+      {$IFNDEF CLR}
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
+      {$ELSE}
+      Msg.Result := Integer(Supports(Self, IJvDenySubClassing));
+      {$ENDIF !CLR}
     CM_DIALOGCHAR:
-      with TCMDialogChar(Msg) do
+      with TCMDialogChar{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Ord(WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode)));
     CM_HINTSHOW:
+      {$IFNDEF CLR}
       with TCMHintShow(Msg) do
         Result := Integer(HintShow(HintInfo^));
+      {$ELSE}
+      with TCMHintShow.Create(Msg) do
+      begin
+        AHintInfo := HintInfo;
+        Result := Integer(HintShow(AHintInfo));
+        HintInfo := AHintInfo;
+      end;
+      {$ENDIF !CLR}
     CM_HITTEST:
-      with TCMHitTest(Msg) do
+      with TCMHitTest{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Integer(HitTest(XPos, YPos));
     CM_MOUSEENTER:
-      MouseEnter(TControl(Msg.LParam));
+      MouseEnter({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_MOUSELEAVE:
-      MouseLeave(TControl(Msg.LParam));
+      MouseLeave({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_VISIBLECHANGED:
       VisibleChanged;
     CM_ENABLEDCHANGED:
@@ -6383,8 +7402,10 @@ begin
       FontChanged;
     CM_COLORCHANGED:
       ColorChanged;
+    {$IFNDEF CLR}
     CM_FOCUSCHANGED:
       FocusChanged(TWinControl(Msg.LParam));
+    {$ENDIF !CLR}
     CM_PARENTFONTCHANGED:
       ParentFontChanged;
     CM_PARENTCOLORCHANGED:
@@ -6397,6 +7418,7 @@ begin
       ShowingChanged;
     CM_SHOWHINTCHANGED:
       ShowHintChanged;
+    {$IFNDEF CLR}
     CM_CONTROLLISTCHANGE:
       if Msg.LParam <> 0 then
         ControlsListChanging(TControl(Msg.WParam), True)
@@ -6407,6 +7429,7 @@ begin
         ControlsListChanging(TControl(Msg.WParam), False)
       else
         ControlsListChanged(TControl(Msg.WParam), True);
+    {$ENDIF !CLR}
     WM_SETFOCUS:
       FocusSet(HWND(Msg.WParam));
     WM_KILLFOCUS:
@@ -6446,8 +7469,11 @@ begin
         if not (dcNative in DlgCodes) then
           Msg.Result := DlgCodesToDlgc(DlgCodes);
       end;
-  else
-    inherited WndProc(Msg);
+    else
+      inherited WndProc(Msg);
+    end;
+    if DotNetHighlighting then
+      HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
   end;
 end;
 
@@ -6459,16 +7485,35 @@ begin
   FHintColor := clDefault;
 end;
 
-function TJvExCustomUpDown.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+function TJvExCustomUpDown.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer;
 var
   Mesg: TMessage;
 begin
-  Mesg.Msg := Msg;
-  Mesg.WParam := WParam;
-  Mesg.LParam := LParam;
-  Mesg.Result := 0;
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
   inherited WndProc(Mesg);
   Result := Mesg.Result;
+end;
+
+function TJvExCustomUpDown.BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer;
+var
+  Mesg: TMessage;
+begin
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
+  inherited WndProc(Mesg);
+  Result := Mesg.Result;
+end;
+
+function TJvExCustomUpDown.BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer;
+var
+  Mesg: TStructPtrMessage;
+begin
+  Mesg := TStructPtrMessage.Create(Msg, WParam, LParam);
+  try
+    inherited WndProc(Mesg.Msg);
+  finally
+    Result := Mesg.Msg.Result;
+    Mesg.Free;
+  end;
 end;
 
 procedure TJvExCustomUpDown.VisibleChanged;
@@ -6520,13 +7565,13 @@ end;
 
 function TJvExCustomUpDown.HitTest(X, Y: Integer): Boolean;
 begin
-  Result := BaseWndProc(CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
+  Result := BaseWndProc(CM_HITTEST, 0, SmallPointToLong(PointToSmallPoint(Point(X, Y)))) <> 0;
 end;
 
 function TJvExCustomUpDown.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   GetHintColor(HintInfo, Self, FHintColor);
-  Result := BaseWndProc(CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
+  Result := BaseWndProcEx(CM_HINTSHOW, 0, HintInfo) <> 0;
 end;
 
 procedure TJvExCustomUpDown.MouseEnter(AControl: TControl);
@@ -6536,23 +7581,25 @@ begin
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
   {$ENDIF VCL}
-  BaseWndProc(CM_MOUSEENTER, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSEENTER, 0, AControl);
 end;
 
 procedure TJvExCustomUpDown.MouseLeave(AControl: TControl);
 begin
   FMouseOver := False;
-  BaseWndProc(CM_MOUSELEAVE, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSELEAVE, 0, AControl);
   {$IFDEF VCL}
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
   {$ENDIF VCL}
 end;
 
+{$IFNDEF CLR}
 procedure TJvExCustomUpDown.FocusChanged(AControl: TWinControl);
 begin
-  BaseWndProc(CM_FOCUSCHANGED, 0, Integer(AControl));
+  BaseWndProc(CM_FOCUSCHANGED, 0, AControl);
 end;
+{$ENDIF !CLR}
 
 {$IFDEF COMPILER5}
 {$IFNDEF HASAUTOSIZE}
@@ -6589,6 +7636,7 @@ begin
   BaseWndProc(CM_SHOWHINTCHANGED);
 end;
 
+{$IFNDEF CLR}
 { VCL sends CM_CONTROLLISTCHANGE and CM_CONTROLCHANGE in a different order than
   the CLX methods are used. So we must correct it by evaluating "Inserting". }
 procedure TJvExCustomUpDown.ControlsListChanging(Control: TControl; Inserting: Boolean);
@@ -6606,6 +7654,7 @@ begin
   else
     BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
 end;
+{$ENDIF !CLR}
 
 procedure TJvExCustomUpDown.GetDlgCode(var Code: TDlgCodes);
 begin
@@ -6643,24 +7692,41 @@ var
   IdSaveDC: Integer;
   DlgCodes: TDlgCodes;
   Canvas: TCanvas;
+  {$IFDEF CLR}
+  AHintInfo: THintInfo;
+  {$ENDIF CLR}
 begin
-  if not DispatchIsDesignMsg(self,Msg) then
-  case Msg.Msg of
-    CM_DENYSUBCLASSING:
+  if not DispatchIsDesignMsg(Self, Msg) then
+  begin
+    case Msg.Msg of
+      CM_DENYSUBCLASSING:
+      {$IFNDEF CLR}
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
+      {$ELSE}
+      Msg.Result := Integer(Supports(Self, IJvDenySubClassing));
+      {$ENDIF !CLR}
     CM_DIALOGCHAR:
-      with TCMDialogChar(Msg) do
+      with TCMDialogChar{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Ord(WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode)));
     CM_HINTSHOW:
+      {$IFNDEF CLR}
       with TCMHintShow(Msg) do
         Result := Integer(HintShow(HintInfo^));
+      {$ELSE}
+      with TCMHintShow.Create(Msg) do
+      begin
+        AHintInfo := HintInfo;
+        Result := Integer(HintShow(AHintInfo));
+        HintInfo := AHintInfo;
+      end;
+      {$ENDIF !CLR}
     CM_HITTEST:
-      with TCMHitTest(Msg) do
+      with TCMHitTest{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Integer(HitTest(XPos, YPos));
     CM_MOUSEENTER:
-      MouseEnter(TControl(Msg.LParam));
+      MouseEnter({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_MOUSELEAVE:
-      MouseLeave(TControl(Msg.LParam));
+      MouseLeave({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_VISIBLECHANGED:
       VisibleChanged;
     CM_ENABLEDCHANGED:
@@ -6671,8 +7737,10 @@ begin
       FontChanged;
     CM_COLORCHANGED:
       ColorChanged;
+    {$IFNDEF CLR}
     CM_FOCUSCHANGED:
       FocusChanged(TWinControl(Msg.LParam));
+    {$ENDIF !CLR}
     CM_PARENTFONTCHANGED:
       ParentFontChanged;
     CM_PARENTCOLORCHANGED:
@@ -6685,6 +7753,7 @@ begin
       ShowingChanged;
     CM_SHOWHINTCHANGED:
       ShowHintChanged;
+    {$IFNDEF CLR}
     CM_CONTROLLISTCHANGE:
       if Msg.LParam <> 0 then
         ControlsListChanging(TControl(Msg.WParam), True)
@@ -6695,6 +7764,7 @@ begin
         ControlsListChanging(TControl(Msg.WParam), False)
       else
         ControlsListChanged(TControl(Msg.WParam), True);
+    {$ENDIF !CLR}
     WM_SETFOCUS:
       FocusSet(HWND(Msg.WParam));
     WM_KILLFOCUS:
@@ -6734,8 +7804,11 @@ begin
         if not (dcNative in DlgCodes) then
           Msg.Result := DlgCodesToDlgc(DlgCodes);
       end;
-  else
-    inherited WndProc(Msg);
+    else
+      inherited WndProc(Msg);
+    end;
+    if DotNetHighlighting then
+      HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
   end;
 end;
 
@@ -6747,16 +7820,35 @@ begin
   FHintColor := clDefault;
 end;
 
-function TJvExUpDown.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+function TJvExUpDown.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer;
 var
   Mesg: TMessage;
 begin
-  Mesg.Msg := Msg;
-  Mesg.WParam := WParam;
-  Mesg.LParam := LParam;
-  Mesg.Result := 0;
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
   inherited WndProc(Mesg);
   Result := Mesg.Result;
+end;
+
+function TJvExUpDown.BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer;
+var
+  Mesg: TMessage;
+begin
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
+  inherited WndProc(Mesg);
+  Result := Mesg.Result;
+end;
+
+function TJvExUpDown.BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer;
+var
+  Mesg: TStructPtrMessage;
+begin
+  Mesg := TStructPtrMessage.Create(Msg, WParam, LParam);
+  try
+    inherited WndProc(Mesg.Msg);
+  finally
+    Result := Mesg.Msg.Result;
+    Mesg.Free;
+  end;
 end;
 
 procedure TJvExUpDown.VisibleChanged;
@@ -6808,13 +7900,13 @@ end;
 
 function TJvExUpDown.HitTest(X, Y: Integer): Boolean;
 begin
-  Result := BaseWndProc(CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
+  Result := BaseWndProc(CM_HITTEST, 0, SmallPointToLong(PointToSmallPoint(Point(X, Y)))) <> 0;
 end;
 
 function TJvExUpDown.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   GetHintColor(HintInfo, Self, FHintColor);
-  Result := BaseWndProc(CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
+  Result := BaseWndProcEx(CM_HINTSHOW, 0, HintInfo) <> 0;
 end;
 
 procedure TJvExUpDown.MouseEnter(AControl: TControl);
@@ -6824,23 +7916,25 @@ begin
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
   {$ENDIF VCL}
-  BaseWndProc(CM_MOUSEENTER, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSEENTER, 0, AControl);
 end;
 
 procedure TJvExUpDown.MouseLeave(AControl: TControl);
 begin
   FMouseOver := False;
-  BaseWndProc(CM_MOUSELEAVE, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSELEAVE, 0, AControl);
   {$IFDEF VCL}
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
   {$ENDIF VCL}
 end;
 
+{$IFNDEF CLR}
 procedure TJvExUpDown.FocusChanged(AControl: TWinControl);
 begin
-  BaseWndProc(CM_FOCUSCHANGED, 0, Integer(AControl));
+  BaseWndProc(CM_FOCUSCHANGED, 0, AControl);
 end;
+{$ENDIF !CLR}
 
 {$IFDEF COMPILER5}
 {$IFNDEF HASAUTOSIZE}
@@ -6877,6 +7971,7 @@ begin
   BaseWndProc(CM_SHOWHINTCHANGED);
 end;
 
+{$IFNDEF CLR}
 { VCL sends CM_CONTROLLISTCHANGE and CM_CONTROLCHANGE in a different order than
   the CLX methods are used. So we must correct it by evaluating "Inserting". }
 procedure TJvExUpDown.ControlsListChanging(Control: TControl; Inserting: Boolean);
@@ -6894,6 +7989,7 @@ begin
   else
     BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
 end;
+{$ENDIF !CLR}
 
 procedure TJvExUpDown.GetDlgCode(var Code: TDlgCodes);
 begin
@@ -6931,24 +8027,41 @@ var
   IdSaveDC: Integer;
   DlgCodes: TDlgCodes;
   Canvas: TCanvas;
+  {$IFDEF CLR}
+  AHintInfo: THintInfo;
+  {$ENDIF CLR}
 begin
-  if not DispatchIsDesignMsg(self,Msg) then
-  case Msg.Msg of
-    CM_DENYSUBCLASSING:
+  if not DispatchIsDesignMsg(Self, Msg) then
+  begin
+    case Msg.Msg of
+      CM_DENYSUBCLASSING:
+      {$IFNDEF CLR}
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
+      {$ELSE}
+      Msg.Result := Integer(Supports(Self, IJvDenySubClassing));
+      {$ENDIF !CLR}
     CM_DIALOGCHAR:
-      with TCMDialogChar(Msg) do
+      with TCMDialogChar{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Ord(WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode)));
     CM_HINTSHOW:
+      {$IFNDEF CLR}
       with TCMHintShow(Msg) do
         Result := Integer(HintShow(HintInfo^));
+      {$ELSE}
+      with TCMHintShow.Create(Msg) do
+      begin
+        AHintInfo := HintInfo;
+        Result := Integer(HintShow(AHintInfo));
+        HintInfo := AHintInfo;
+      end;
+      {$ENDIF !CLR}
     CM_HITTEST:
-      with TCMHitTest(Msg) do
+      with TCMHitTest{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Integer(HitTest(XPos, YPos));
     CM_MOUSEENTER:
-      MouseEnter(TControl(Msg.LParam));
+      MouseEnter({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_MOUSELEAVE:
-      MouseLeave(TControl(Msg.LParam));
+      MouseLeave({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_VISIBLECHANGED:
       VisibleChanged;
     CM_ENABLEDCHANGED:
@@ -6959,8 +8072,10 @@ begin
       FontChanged;
     CM_COLORCHANGED:
       ColorChanged;
+    {$IFNDEF CLR}
     CM_FOCUSCHANGED:
       FocusChanged(TWinControl(Msg.LParam));
+    {$ENDIF !CLR}
     CM_PARENTFONTCHANGED:
       ParentFontChanged;
     CM_PARENTCOLORCHANGED:
@@ -6973,6 +8088,7 @@ begin
       ShowingChanged;
     CM_SHOWHINTCHANGED:
       ShowHintChanged;
+    {$IFNDEF CLR}
     CM_CONTROLLISTCHANGE:
       if Msg.LParam <> 0 then
         ControlsListChanging(TControl(Msg.WParam), True)
@@ -6983,6 +8099,7 @@ begin
         ControlsListChanging(TControl(Msg.WParam), False)
       else
         ControlsListChanged(TControl(Msg.WParam), True);
+    {$ENDIF !CLR}
     WM_SETFOCUS:
       FocusSet(HWND(Msg.WParam));
     WM_KILLFOCUS:
@@ -7022,8 +8139,11 @@ begin
         if not (dcNative in DlgCodes) then
           Msg.Result := DlgCodesToDlgc(DlgCodes);
       end;
-  else
-    inherited WndProc(Msg);
+    else
+      inherited WndProc(Msg);
+    end;
+    if DotNetHighlighting then
+      HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
   end;
 end;
 
@@ -7035,16 +8155,35 @@ begin
   FHintColor := clDefault;
 end;
 
-function TJvExDateTimePicker.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+function TJvExDateTimePicker.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer;
 var
   Mesg: TMessage;
 begin
-  Mesg.Msg := Msg;
-  Mesg.WParam := WParam;
-  Mesg.LParam := LParam;
-  Mesg.Result := 0;
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
   inherited WndProc(Mesg);
   Result := Mesg.Result;
+end;
+
+function TJvExDateTimePicker.BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer;
+var
+  Mesg: TMessage;
+begin
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
+  inherited WndProc(Mesg);
+  Result := Mesg.Result;
+end;
+
+function TJvExDateTimePicker.BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer;
+var
+  Mesg: TStructPtrMessage;
+begin
+  Mesg := TStructPtrMessage.Create(Msg, WParam, LParam);
+  try
+    inherited WndProc(Mesg.Msg);
+  finally
+    Result := Mesg.Msg.Result;
+    Mesg.Free;
+  end;
 end;
 
 procedure TJvExDateTimePicker.VisibleChanged;
@@ -7096,13 +8235,13 @@ end;
 
 function TJvExDateTimePicker.HitTest(X, Y: Integer): Boolean;
 begin
-  Result := BaseWndProc(CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
+  Result := BaseWndProc(CM_HITTEST, 0, SmallPointToLong(PointToSmallPoint(Point(X, Y)))) <> 0;
 end;
 
 function TJvExDateTimePicker.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   GetHintColor(HintInfo, Self, FHintColor);
-  Result := BaseWndProc(CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
+  Result := BaseWndProcEx(CM_HINTSHOW, 0, HintInfo) <> 0;
 end;
 
 procedure TJvExDateTimePicker.MouseEnter(AControl: TControl);
@@ -7112,23 +8251,25 @@ begin
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
   {$ENDIF VCL}
-  BaseWndProc(CM_MOUSEENTER, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSEENTER, 0, AControl);
 end;
 
 procedure TJvExDateTimePicker.MouseLeave(AControl: TControl);
 begin
   FMouseOver := False;
-  BaseWndProc(CM_MOUSELEAVE, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSELEAVE, 0, AControl);
   {$IFDEF VCL}
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
   {$ENDIF VCL}
 end;
 
+{$IFNDEF CLR}
 procedure TJvExDateTimePicker.FocusChanged(AControl: TWinControl);
 begin
-  BaseWndProc(CM_FOCUSCHANGED, 0, Integer(AControl));
+  BaseWndProc(CM_FOCUSCHANGED, 0, AControl);
 end;
+{$ENDIF !CLR}
 
 {$IFDEF COMPILER5}
 {$IFNDEF HASAUTOSIZE}
@@ -7165,6 +8306,7 @@ begin
   BaseWndProc(CM_SHOWHINTCHANGED);
 end;
 
+{$IFNDEF CLR}
 { VCL sends CM_CONTROLLISTCHANGE and CM_CONTROLCHANGE in a different order than
   the CLX methods are used. So we must correct it by evaluating "Inserting". }
 procedure TJvExDateTimePicker.ControlsListChanging(Control: TControl; Inserting: Boolean);
@@ -7182,6 +8324,7 @@ begin
   else
     BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
 end;
+{$ENDIF !CLR}
 
 procedure TJvExDateTimePicker.GetDlgCode(var Code: TDlgCodes);
 begin
@@ -7219,24 +8362,41 @@ var
   IdSaveDC: Integer;
   DlgCodes: TDlgCodes;
   Canvas: TCanvas;
+  {$IFDEF CLR}
+  AHintInfo: THintInfo;
+  {$ENDIF CLR}
 begin
-  if not DispatchIsDesignMsg(self,Msg) then
-  case Msg.Msg of
-    CM_DENYSUBCLASSING:
+  if not DispatchIsDesignMsg(Self, Msg) then
+  begin
+    case Msg.Msg of
+      CM_DENYSUBCLASSING:
+      {$IFNDEF CLR}
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
+      {$ELSE}
+      Msg.Result := Integer(Supports(Self, IJvDenySubClassing));
+      {$ENDIF !CLR}
     CM_DIALOGCHAR:
-      with TCMDialogChar(Msg) do
+      with TCMDialogChar{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Ord(WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode)));
     CM_HINTSHOW:
+      {$IFNDEF CLR}
       with TCMHintShow(Msg) do
         Result := Integer(HintShow(HintInfo^));
+      {$ELSE}
+      with TCMHintShow.Create(Msg) do
+      begin
+        AHintInfo := HintInfo;
+        Result := Integer(HintShow(AHintInfo));
+        HintInfo := AHintInfo;
+      end;
+      {$ENDIF !CLR}
     CM_HITTEST:
-      with TCMHitTest(Msg) do
+      with TCMHitTest{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Integer(HitTest(XPos, YPos));
     CM_MOUSEENTER:
-      MouseEnter(TControl(Msg.LParam));
+      MouseEnter({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_MOUSELEAVE:
-      MouseLeave(TControl(Msg.LParam));
+      MouseLeave({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_VISIBLECHANGED:
       VisibleChanged;
     CM_ENABLEDCHANGED:
@@ -7247,8 +8407,10 @@ begin
       FontChanged;
     CM_COLORCHANGED:
       ColorChanged;
+    {$IFNDEF CLR}
     CM_FOCUSCHANGED:
       FocusChanged(TWinControl(Msg.LParam));
+    {$ENDIF !CLR}
     CM_PARENTFONTCHANGED:
       ParentFontChanged;
     CM_PARENTCOLORCHANGED:
@@ -7261,6 +8423,7 @@ begin
       ShowingChanged;
     CM_SHOWHINTCHANGED:
       ShowHintChanged;
+    {$IFNDEF CLR}
     CM_CONTROLLISTCHANGE:
       if Msg.LParam <> 0 then
         ControlsListChanging(TControl(Msg.WParam), True)
@@ -7271,6 +8434,7 @@ begin
         ControlsListChanging(TControl(Msg.WParam), False)
       else
         ControlsListChanged(TControl(Msg.WParam), True);
+    {$ENDIF !CLR}
     WM_SETFOCUS:
       FocusSet(HWND(Msg.WParam));
     WM_KILLFOCUS:
@@ -7310,8 +8474,11 @@ begin
         if not (dcNative in DlgCodes) then
           Msg.Result := DlgCodesToDlgc(DlgCodes);
       end;
-  else
-    inherited WndProc(Msg);
+    else
+      inherited WndProc(Msg);
+    end;
+    if DotNetHighlighting then
+      HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
   end;
 end;
 
@@ -7323,16 +8490,35 @@ begin
   FHintColor := clDefault;
 end;
 
-function TJvExProgressBar.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+function TJvExProgressBar.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer;
 var
   Mesg: TMessage;
 begin
-  Mesg.Msg := Msg;
-  Mesg.WParam := WParam;
-  Mesg.LParam := LParam;
-  Mesg.Result := 0;
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
   inherited WndProc(Mesg);
   Result := Mesg.Result;
+end;
+
+function TJvExProgressBar.BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer;
+var
+  Mesg: TMessage;
+begin
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
+  inherited WndProc(Mesg);
+  Result := Mesg.Result;
+end;
+
+function TJvExProgressBar.BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer;
+var
+  Mesg: TStructPtrMessage;
+begin
+  Mesg := TStructPtrMessage.Create(Msg, WParam, LParam);
+  try
+    inherited WndProc(Mesg.Msg);
+  finally
+    Result := Mesg.Msg.Result;
+    Mesg.Free;
+  end;
 end;
 
 procedure TJvExProgressBar.VisibleChanged;
@@ -7384,13 +8570,13 @@ end;
 
 function TJvExProgressBar.HitTest(X, Y: Integer): Boolean;
 begin
-  Result := BaseWndProc(CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
+  Result := BaseWndProc(CM_HITTEST, 0, SmallPointToLong(PointToSmallPoint(Point(X, Y)))) <> 0;
 end;
 
 function TJvExProgressBar.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   GetHintColor(HintInfo, Self, FHintColor);
-  Result := BaseWndProc(CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
+  Result := BaseWndProcEx(CM_HINTSHOW, 0, HintInfo) <> 0;
 end;
 
 procedure TJvExProgressBar.MouseEnter(AControl: TControl);
@@ -7400,23 +8586,25 @@ begin
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
   {$ENDIF VCL}
-  BaseWndProc(CM_MOUSEENTER, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSEENTER, 0, AControl);
 end;
 
 procedure TJvExProgressBar.MouseLeave(AControl: TControl);
 begin
   FMouseOver := False;
-  BaseWndProc(CM_MOUSELEAVE, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSELEAVE, 0, AControl);
   {$IFDEF VCL}
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
   {$ENDIF VCL}
 end;
 
+{$IFNDEF CLR}
 procedure TJvExProgressBar.FocusChanged(AControl: TWinControl);
 begin
-  BaseWndProc(CM_FOCUSCHANGED, 0, Integer(AControl));
+  BaseWndProc(CM_FOCUSCHANGED, 0, AControl);
 end;
+{$ENDIF !CLR}
 
 {$IFDEF COMPILER5}
 {$IFNDEF HASAUTOSIZE}
@@ -7453,6 +8641,7 @@ begin
   BaseWndProc(CM_SHOWHINTCHANGED);
 end;
 
+{$IFNDEF CLR}
 { VCL sends CM_CONTROLLISTCHANGE and CM_CONTROLCHANGE in a different order than
   the CLX methods are used. So we must correct it by evaluating "Inserting". }
 procedure TJvExProgressBar.ControlsListChanging(Control: TControl; Inserting: Boolean);
@@ -7470,6 +8659,7 @@ begin
   else
     BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
 end;
+{$ENDIF !CLR}
 
 procedure TJvExProgressBar.GetDlgCode(var Code: TDlgCodes);
 begin
@@ -7507,24 +8697,41 @@ var
   IdSaveDC: Integer;
   DlgCodes: TDlgCodes;
   Canvas: TCanvas;
+  {$IFDEF CLR}
+  AHintInfo: THintInfo;
+  {$ENDIF CLR}
 begin
-  if not DispatchIsDesignMsg(self,Msg) then
-  case Msg.Msg of
-    CM_DENYSUBCLASSING:
+  if not DispatchIsDesignMsg(Self, Msg) then
+  begin
+    case Msg.Msg of
+      CM_DENYSUBCLASSING:
+      {$IFNDEF CLR}
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
+      {$ELSE}
+      Msg.Result := Integer(Supports(Self, IJvDenySubClassing));
+      {$ENDIF !CLR}
     CM_DIALOGCHAR:
-      with TCMDialogChar(Msg) do
+      with TCMDialogChar{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Ord(WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode)));
     CM_HINTSHOW:
+      {$IFNDEF CLR}
       with TCMHintShow(Msg) do
         Result := Integer(HintShow(HintInfo^));
+      {$ELSE}
+      with TCMHintShow.Create(Msg) do
+      begin
+        AHintInfo := HintInfo;
+        Result := Integer(HintShow(AHintInfo));
+        HintInfo := AHintInfo;
+      end;
+      {$ENDIF !CLR}
     CM_HITTEST:
-      with TCMHitTest(Msg) do
+      with TCMHitTest{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Integer(HitTest(XPos, YPos));
     CM_MOUSEENTER:
-      MouseEnter(TControl(Msg.LParam));
+      MouseEnter({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_MOUSELEAVE:
-      MouseLeave(TControl(Msg.LParam));
+      MouseLeave({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_VISIBLECHANGED:
       VisibleChanged;
     CM_ENABLEDCHANGED:
@@ -7535,8 +8742,10 @@ begin
       FontChanged;
     CM_COLORCHANGED:
       ColorChanged;
+    {$IFNDEF CLR}
     CM_FOCUSCHANGED:
       FocusChanged(TWinControl(Msg.LParam));
+    {$ENDIF !CLR}
     CM_PARENTFONTCHANGED:
       ParentFontChanged;
     CM_PARENTCOLORCHANGED:
@@ -7549,6 +8758,7 @@ begin
       ShowingChanged;
     CM_SHOWHINTCHANGED:
       ShowHintChanged;
+    {$IFNDEF CLR}
     CM_CONTROLLISTCHANGE:
       if Msg.LParam <> 0 then
         ControlsListChanging(TControl(Msg.WParam), True)
@@ -7559,6 +8769,7 @@ begin
         ControlsListChanging(TControl(Msg.WParam), False)
       else
         ControlsListChanged(TControl(Msg.WParam), True);
+    {$ENDIF !CLR}
     WM_SETFOCUS:
       FocusSet(HWND(Msg.WParam));
     WM_KILLFOCUS:
@@ -7598,8 +8809,11 @@ begin
         if not (dcNative in DlgCodes) then
           Msg.Result := DlgCodesToDlgc(DlgCodes);
       end;
-  else
-    inherited WndProc(Msg);
+    else
+      inherited WndProc(Msg);
+    end;
+    if DotNetHighlighting then
+      HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
   end;
 end;
 
@@ -7611,16 +8825,35 @@ begin
   FHintColor := clDefault;
 end;
 
-function TJvExPageControl.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+function TJvExPageControl.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer;
 var
   Mesg: TMessage;
 begin
-  Mesg.Msg := Msg;
-  Mesg.WParam := WParam;
-  Mesg.LParam := LParam;
-  Mesg.Result := 0;
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
   inherited WndProc(Mesg);
   Result := Mesg.Result;
+end;
+
+function TJvExPageControl.BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer;
+var
+  Mesg: TMessage;
+begin
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
+  inherited WndProc(Mesg);
+  Result := Mesg.Result;
+end;
+
+function TJvExPageControl.BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer;
+var
+  Mesg: TStructPtrMessage;
+begin
+  Mesg := TStructPtrMessage.Create(Msg, WParam, LParam);
+  try
+    inherited WndProc(Mesg.Msg);
+  finally
+    Result := Mesg.Msg.Result;
+    Mesg.Free;
+  end;
 end;
 
 procedure TJvExPageControl.VisibleChanged;
@@ -7672,13 +8905,13 @@ end;
 
 function TJvExPageControl.HitTest(X, Y: Integer): Boolean;
 begin
-  Result := BaseWndProc(CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
+  Result := BaseWndProc(CM_HITTEST, 0, SmallPointToLong(PointToSmallPoint(Point(X, Y)))) <> 0;
 end;
 
 function TJvExPageControl.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   GetHintColor(HintInfo, Self, FHintColor);
-  Result := BaseWndProc(CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
+  Result := BaseWndProcEx(CM_HINTSHOW, 0, HintInfo) <> 0;
 end;
 
 procedure TJvExPageControl.MouseEnter(AControl: TControl);
@@ -7688,23 +8921,25 @@ begin
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
   {$ENDIF VCL}
-  BaseWndProc(CM_MOUSEENTER, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSEENTER, 0, AControl);
 end;
 
 procedure TJvExPageControl.MouseLeave(AControl: TControl);
 begin
   FMouseOver := False;
-  BaseWndProc(CM_MOUSELEAVE, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSELEAVE, 0, AControl);
   {$IFDEF VCL}
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
   {$ENDIF VCL}
 end;
 
+{$IFNDEF CLR}
 procedure TJvExPageControl.FocusChanged(AControl: TWinControl);
 begin
-  BaseWndProc(CM_FOCUSCHANGED, 0, Integer(AControl));
+  BaseWndProc(CM_FOCUSCHANGED, 0, AControl);
 end;
+{$ENDIF !CLR}
 
 {$IFDEF COMPILER5}
 {$IFNDEF HASAUTOSIZE}
@@ -7741,6 +8976,7 @@ begin
   BaseWndProc(CM_SHOWHINTCHANGED);
 end;
 
+{$IFNDEF CLR}
 { VCL sends CM_CONTROLLISTCHANGE and CM_CONTROLCHANGE in a different order than
   the CLX methods are used. So we must correct it by evaluating "Inserting". }
 procedure TJvExPageControl.ControlsListChanging(Control: TControl; Inserting: Boolean);
@@ -7758,6 +8994,7 @@ begin
   else
     BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
 end;
+{$ENDIF !CLR}
 
 procedure TJvExPageControl.GetDlgCode(var Code: TDlgCodes);
 begin
@@ -7795,24 +9032,41 @@ var
   IdSaveDC: Integer;
   DlgCodes: TDlgCodes;
   Canvas: TCanvas;
+  {$IFDEF CLR}
+  AHintInfo: THintInfo;
+  {$ENDIF CLR}
 begin
-  if not DispatchIsDesignMsg(self,Msg) then
-  case Msg.Msg of
-    CM_DENYSUBCLASSING:
+  if not DispatchIsDesignMsg(Self, Msg) then
+  begin
+    case Msg.Msg of
+      CM_DENYSUBCLASSING:
+      {$IFNDEF CLR}
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
+      {$ELSE}
+      Msg.Result := Integer(Supports(Self, IJvDenySubClassing));
+      {$ENDIF !CLR}
     CM_DIALOGCHAR:
-      with TCMDialogChar(Msg) do
+      with TCMDialogChar{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Ord(WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode)));
     CM_HINTSHOW:
+      {$IFNDEF CLR}
       with TCMHintShow(Msg) do
         Result := Integer(HintShow(HintInfo^));
+      {$ELSE}
+      with TCMHintShow.Create(Msg) do
+      begin
+        AHintInfo := HintInfo;
+        Result := Integer(HintShow(AHintInfo));
+        HintInfo := AHintInfo;
+      end;
+      {$ENDIF !CLR}
     CM_HITTEST:
-      with TCMHitTest(Msg) do
+      with TCMHitTest{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Integer(HitTest(XPos, YPos));
     CM_MOUSEENTER:
-      MouseEnter(TControl(Msg.LParam));
+      MouseEnter({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_MOUSELEAVE:
-      MouseLeave(TControl(Msg.LParam));
+      MouseLeave({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_VISIBLECHANGED:
       VisibleChanged;
     CM_ENABLEDCHANGED:
@@ -7823,8 +9077,10 @@ begin
       FontChanged;
     CM_COLORCHANGED:
       ColorChanged;
+    {$IFNDEF CLR}
     CM_FOCUSCHANGED:
       FocusChanged(TWinControl(Msg.LParam));
+    {$ENDIF !CLR}
     CM_PARENTFONTCHANGED:
       ParentFontChanged;
     CM_PARENTCOLORCHANGED:
@@ -7837,6 +9093,7 @@ begin
       ShowingChanged;
     CM_SHOWHINTCHANGED:
       ShowHintChanged;
+    {$IFNDEF CLR}
     CM_CONTROLLISTCHANGE:
       if Msg.LParam <> 0 then
         ControlsListChanging(TControl(Msg.WParam), True)
@@ -7847,6 +9104,7 @@ begin
         ControlsListChanging(TControl(Msg.WParam), False)
       else
         ControlsListChanged(TControl(Msg.WParam), True);
+    {$ENDIF !CLR}
     WM_SETFOCUS:
       FocusSet(HWND(Msg.WParam));
     WM_KILLFOCUS:
@@ -7886,8 +9144,11 @@ begin
         if not (dcNative in DlgCodes) then
           Msg.Result := DlgCodesToDlgc(DlgCodes);
       end;
-  else
-    inherited WndProc(Msg);
+    else
+      inherited WndProc(Msg);
+    end;
+    if DotNetHighlighting then
+      HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
   end;
 end;
 
@@ -7899,16 +9160,35 @@ begin
   FHintColor := clDefault;
 end;
 
-function TJvExPageScroller.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+function TJvExPageScroller.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer;
 var
   Mesg: TMessage;
 begin
-  Mesg.Msg := Msg;
-  Mesg.WParam := WParam;
-  Mesg.LParam := LParam;
-  Mesg.Result := 0;
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
   inherited WndProc(Mesg);
   Result := Mesg.Result;
+end;
+
+function TJvExPageScroller.BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer;
+var
+  Mesg: TMessage;
+begin
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
+  inherited WndProc(Mesg);
+  Result := Mesg.Result;
+end;
+
+function TJvExPageScroller.BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer;
+var
+  Mesg: TStructPtrMessage;
+begin
+  Mesg := TStructPtrMessage.Create(Msg, WParam, LParam);
+  try
+    inherited WndProc(Mesg.Msg);
+  finally
+    Result := Mesg.Msg.Result;
+    Mesg.Free;
+  end;
 end;
 
 procedure TJvExPageScroller.VisibleChanged;
@@ -7960,13 +9240,13 @@ end;
 
 function TJvExPageScroller.HitTest(X, Y: Integer): Boolean;
 begin
-  Result := BaseWndProc(CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
+  Result := BaseWndProc(CM_HITTEST, 0, SmallPointToLong(PointToSmallPoint(Point(X, Y)))) <> 0;
 end;
 
 function TJvExPageScroller.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   GetHintColor(HintInfo, Self, FHintColor);
-  Result := BaseWndProc(CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
+  Result := BaseWndProcEx(CM_HINTSHOW, 0, HintInfo) <> 0;
 end;
 
 procedure TJvExPageScroller.MouseEnter(AControl: TControl);
@@ -7976,23 +9256,25 @@ begin
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
   {$ENDIF VCL}
-  BaseWndProc(CM_MOUSEENTER, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSEENTER, 0, AControl);
 end;
 
 procedure TJvExPageScroller.MouseLeave(AControl: TControl);
 begin
   FMouseOver := False;
-  BaseWndProc(CM_MOUSELEAVE, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSELEAVE, 0, AControl);
   {$IFDEF VCL}
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
   {$ENDIF VCL}
 end;
 
+{$IFNDEF CLR}
 procedure TJvExPageScroller.FocusChanged(AControl: TWinControl);
 begin
-  BaseWndProc(CM_FOCUSCHANGED, 0, Integer(AControl));
+  BaseWndProc(CM_FOCUSCHANGED, 0, AControl);
 end;
+{$ENDIF !CLR}
 
 {$IFDEF COMPILER5}
 {$IFNDEF HASAUTOSIZE}
@@ -8029,6 +9311,7 @@ begin
   BaseWndProc(CM_SHOWHINTCHANGED);
 end;
 
+{$IFNDEF CLR}
 { VCL sends CM_CONTROLLISTCHANGE and CM_CONTROLCHANGE in a different order than
   the CLX methods are used. So we must correct it by evaluating "Inserting". }
 procedure TJvExPageScroller.ControlsListChanging(Control: TControl; Inserting: Boolean);
@@ -8046,6 +9329,7 @@ begin
   else
     BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
 end;
+{$ENDIF !CLR}
 
 procedure TJvExPageScroller.GetDlgCode(var Code: TDlgCodes);
 begin
@@ -8083,24 +9367,41 @@ var
   IdSaveDC: Integer;
   DlgCodes: TDlgCodes;
   Canvas: TCanvas;
+  {$IFDEF CLR}
+  AHintInfo: THintInfo;
+  {$ENDIF CLR}
 begin
-  if not DispatchIsDesignMsg(self,Msg) then
-  case Msg.Msg of
-    CM_DENYSUBCLASSING:
+  if not DispatchIsDesignMsg(Self, Msg) then
+  begin
+    case Msg.Msg of
+      CM_DENYSUBCLASSING:
+      {$IFNDEF CLR}
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
+      {$ELSE}
+      Msg.Result := Integer(Supports(Self, IJvDenySubClassing));
+      {$ENDIF !CLR}
     CM_DIALOGCHAR:
-      with TCMDialogChar(Msg) do
+      with TCMDialogChar{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Ord(WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode)));
     CM_HINTSHOW:
+      {$IFNDEF CLR}
       with TCMHintShow(Msg) do
         Result := Integer(HintShow(HintInfo^));
+      {$ELSE}
+      with TCMHintShow.Create(Msg) do
+      begin
+        AHintInfo := HintInfo;
+        Result := Integer(HintShow(AHintInfo));
+        HintInfo := AHintInfo;
+      end;
+      {$ENDIF !CLR}
     CM_HITTEST:
-      with TCMHitTest(Msg) do
+      with TCMHitTest{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Integer(HitTest(XPos, YPos));
     CM_MOUSEENTER:
-      MouseEnter(TControl(Msg.LParam));
+      MouseEnter({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_MOUSELEAVE:
-      MouseLeave(TControl(Msg.LParam));
+      MouseLeave({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_VISIBLECHANGED:
       VisibleChanged;
     CM_ENABLEDCHANGED:
@@ -8111,8 +9412,10 @@ begin
       FontChanged;
     CM_COLORCHANGED:
       ColorChanged;
+    {$IFNDEF CLR}
     CM_FOCUSCHANGED:
       FocusChanged(TWinControl(Msg.LParam));
+    {$ENDIF !CLR}
     CM_PARENTFONTCHANGED:
       ParentFontChanged;
     CM_PARENTCOLORCHANGED:
@@ -8125,6 +9428,7 @@ begin
       ShowingChanged;
     CM_SHOWHINTCHANGED:
       ShowHintChanged;
+    {$IFNDEF CLR}
     CM_CONTROLLISTCHANGE:
       if Msg.LParam <> 0 then
         ControlsListChanging(TControl(Msg.WParam), True)
@@ -8135,6 +9439,7 @@ begin
         ControlsListChanging(TControl(Msg.WParam), False)
       else
         ControlsListChanged(TControl(Msg.WParam), True);
+    {$ENDIF !CLR}
     WM_SETFOCUS:
       FocusSet(HWND(Msg.WParam));
     WM_KILLFOCUS:
@@ -8174,8 +9479,11 @@ begin
         if not (dcNative in DlgCodes) then
           Msg.Result := DlgCodesToDlgc(DlgCodes);
       end;
-  else
-    inherited WndProc(Msg);
+    else
+      inherited WndProc(Msg);
+    end;
+    if DotNetHighlighting then
+      HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
   end;
 end;
 
@@ -8187,16 +9495,35 @@ begin
   FHintColor := clDefault;
 end;
 
-function TJvExCustomTabControl.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+function TJvExCustomTabControl.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer;
 var
   Mesg: TMessage;
 begin
-  Mesg.Msg := Msg;
-  Mesg.WParam := WParam;
-  Mesg.LParam := LParam;
-  Mesg.Result := 0;
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
   inherited WndProc(Mesg);
   Result := Mesg.Result;
+end;
+
+function TJvExCustomTabControl.BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer;
+var
+  Mesg: TMessage;
+begin
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
+  inherited WndProc(Mesg);
+  Result := Mesg.Result;
+end;
+
+function TJvExCustomTabControl.BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer;
+var
+  Mesg: TStructPtrMessage;
+begin
+  Mesg := TStructPtrMessage.Create(Msg, WParam, LParam);
+  try
+    inherited WndProc(Mesg.Msg);
+  finally
+    Result := Mesg.Msg.Result;
+    Mesg.Free;
+  end;
 end;
 
 procedure TJvExCustomTabControl.VisibleChanged;
@@ -8248,13 +9575,13 @@ end;
 
 function TJvExCustomTabControl.HitTest(X, Y: Integer): Boolean;
 begin
-  Result := BaseWndProc(CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
+  Result := BaseWndProc(CM_HITTEST, 0, SmallPointToLong(PointToSmallPoint(Point(X, Y)))) <> 0;
 end;
 
 function TJvExCustomTabControl.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   GetHintColor(HintInfo, Self, FHintColor);
-  Result := BaseWndProc(CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
+  Result := BaseWndProcEx(CM_HINTSHOW, 0, HintInfo) <> 0;
 end;
 
 procedure TJvExCustomTabControl.MouseEnter(AControl: TControl);
@@ -8264,23 +9591,25 @@ begin
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
   {$ENDIF VCL}
-  BaseWndProc(CM_MOUSEENTER, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSEENTER, 0, AControl);
 end;
 
 procedure TJvExCustomTabControl.MouseLeave(AControl: TControl);
 begin
   FMouseOver := False;
-  BaseWndProc(CM_MOUSELEAVE, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSELEAVE, 0, AControl);
   {$IFDEF VCL}
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
   {$ENDIF VCL}
 end;
 
+{$IFNDEF CLR}
 procedure TJvExCustomTabControl.FocusChanged(AControl: TWinControl);
 begin
-  BaseWndProc(CM_FOCUSCHANGED, 0, Integer(AControl));
+  BaseWndProc(CM_FOCUSCHANGED, 0, AControl);
 end;
+{$ENDIF !CLR}
 
 {$IFDEF COMPILER5}
 {$IFNDEF HASAUTOSIZE}
@@ -8317,6 +9646,7 @@ begin
   BaseWndProc(CM_SHOWHINTCHANGED);
 end;
 
+{$IFNDEF CLR}
 { VCL sends CM_CONTROLLISTCHANGE and CM_CONTROLCHANGE in a different order than
   the CLX methods are used. So we must correct it by evaluating "Inserting". }
 procedure TJvExCustomTabControl.ControlsListChanging(Control: TControl; Inserting: Boolean);
@@ -8334,6 +9664,7 @@ begin
   else
     BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
 end;
+{$ENDIF !CLR}
 
 procedure TJvExCustomTabControl.GetDlgCode(var Code: TDlgCodes);
 begin
@@ -8371,24 +9702,41 @@ var
   IdSaveDC: Integer;
   DlgCodes: TDlgCodes;
   Canvas: TCanvas;
+  {$IFDEF CLR}
+  AHintInfo: THintInfo;
+  {$ENDIF CLR}
 begin
-  if not DispatchIsDesignMsg(self,Msg) then
-  case Msg.Msg of
-    CM_DENYSUBCLASSING:
+  if not DispatchIsDesignMsg(Self, Msg) then
+  begin
+    case Msg.Msg of
+      CM_DENYSUBCLASSING:
+      {$IFNDEF CLR}
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
+      {$ELSE}
+      Msg.Result := Integer(Supports(Self, IJvDenySubClassing));
+      {$ENDIF !CLR}
     CM_DIALOGCHAR:
-      with TCMDialogChar(Msg) do
+      with TCMDialogChar{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Ord(WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode)));
     CM_HINTSHOW:
+      {$IFNDEF CLR}
       with TCMHintShow(Msg) do
         Result := Integer(HintShow(HintInfo^));
+      {$ELSE}
+      with TCMHintShow.Create(Msg) do
+      begin
+        AHintInfo := HintInfo;
+        Result := Integer(HintShow(AHintInfo));
+        HintInfo := AHintInfo;
+      end;
+      {$ENDIF !CLR}
     CM_HITTEST:
-      with TCMHitTest(Msg) do
+      with TCMHitTest{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Integer(HitTest(XPos, YPos));
     CM_MOUSEENTER:
-      MouseEnter(TControl(Msg.LParam));
+      MouseEnter({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_MOUSELEAVE:
-      MouseLeave(TControl(Msg.LParam));
+      MouseLeave({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_VISIBLECHANGED:
       VisibleChanged;
     CM_ENABLEDCHANGED:
@@ -8399,8 +9747,10 @@ begin
       FontChanged;
     CM_COLORCHANGED:
       ColorChanged;
+    {$IFNDEF CLR}
     CM_FOCUSCHANGED:
       FocusChanged(TWinControl(Msg.LParam));
+    {$ENDIF !CLR}
     CM_PARENTFONTCHANGED:
       ParentFontChanged;
     CM_PARENTCOLORCHANGED:
@@ -8413,6 +9763,7 @@ begin
       ShowingChanged;
     CM_SHOWHINTCHANGED:
       ShowHintChanged;
+    {$IFNDEF CLR}
     CM_CONTROLLISTCHANGE:
       if Msg.LParam <> 0 then
         ControlsListChanging(TControl(Msg.WParam), True)
@@ -8423,6 +9774,7 @@ begin
         ControlsListChanging(TControl(Msg.WParam), False)
       else
         ControlsListChanged(TControl(Msg.WParam), True);
+    {$ENDIF !CLR}
     WM_SETFOCUS:
       FocusSet(HWND(Msg.WParam));
     WM_KILLFOCUS:
@@ -8462,8 +9814,11 @@ begin
         if not (dcNative in DlgCodes) then
           Msg.Result := DlgCodesToDlgc(DlgCodes);
       end;
-  else
-    inherited WndProc(Msg);
+    else
+      inherited WndProc(Msg);
+    end;
+    if DotNetHighlighting then
+      HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
   end;
 end;
 
@@ -8475,16 +9830,35 @@ begin
   FHintColor := clDefault;
 end;
 
-function TJvExTabControl.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+function TJvExTabControl.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer;
 var
   Mesg: TMessage;
 begin
-  Mesg.Msg := Msg;
-  Mesg.WParam := WParam;
-  Mesg.LParam := LParam;
-  Mesg.Result := 0;
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
   inherited WndProc(Mesg);
   Result := Mesg.Result;
+end;
+
+function TJvExTabControl.BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer;
+var
+  Mesg: TMessage;
+begin
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
+  inherited WndProc(Mesg);
+  Result := Mesg.Result;
+end;
+
+function TJvExTabControl.BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer;
+var
+  Mesg: TStructPtrMessage;
+begin
+  Mesg := TStructPtrMessage.Create(Msg, WParam, LParam);
+  try
+    inherited WndProc(Mesg.Msg);
+  finally
+    Result := Mesg.Msg.Result;
+    Mesg.Free;
+  end;
 end;
 
 procedure TJvExTabControl.VisibleChanged;
@@ -8536,13 +9910,13 @@ end;
 
 function TJvExTabControl.HitTest(X, Y: Integer): Boolean;
 begin
-  Result := BaseWndProc(CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
+  Result := BaseWndProc(CM_HITTEST, 0, SmallPointToLong(PointToSmallPoint(Point(X, Y)))) <> 0;
 end;
 
 function TJvExTabControl.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   GetHintColor(HintInfo, Self, FHintColor);
-  Result := BaseWndProc(CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
+  Result := BaseWndProcEx(CM_HINTSHOW, 0, HintInfo) <> 0;
 end;
 
 procedure TJvExTabControl.MouseEnter(AControl: TControl);
@@ -8552,23 +9926,25 @@ begin
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
   {$ENDIF VCL}
-  BaseWndProc(CM_MOUSEENTER, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSEENTER, 0, AControl);
 end;
 
 procedure TJvExTabControl.MouseLeave(AControl: TControl);
 begin
   FMouseOver := False;
-  BaseWndProc(CM_MOUSELEAVE, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSELEAVE, 0, AControl);
   {$IFDEF VCL}
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
   {$ENDIF VCL}
 end;
 
+{$IFNDEF CLR}
 procedure TJvExTabControl.FocusChanged(AControl: TWinControl);
 begin
-  BaseWndProc(CM_FOCUSCHANGED, 0, Integer(AControl));
+  BaseWndProc(CM_FOCUSCHANGED, 0, AControl);
 end;
+{$ENDIF !CLR}
 
 {$IFDEF COMPILER5}
 {$IFNDEF HASAUTOSIZE}
@@ -8605,6 +9981,7 @@ begin
   BaseWndProc(CM_SHOWHINTCHANGED);
 end;
 
+{$IFNDEF CLR}
 { VCL sends CM_CONTROLLISTCHANGE and CM_CONTROLCHANGE in a different order than
   the CLX methods are used. So we must correct it by evaluating "Inserting". }
 procedure TJvExTabControl.ControlsListChanging(Control: TControl; Inserting: Boolean);
@@ -8622,6 +9999,7 @@ begin
   else
     BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
 end;
+{$ENDIF !CLR}
 
 procedure TJvExTabControl.GetDlgCode(var Code: TDlgCodes);
 begin
@@ -8659,24 +10037,41 @@ var
   IdSaveDC: Integer;
   DlgCodes: TDlgCodes;
   Canvas: TCanvas;
+  {$IFDEF CLR}
+  AHintInfo: THintInfo;
+  {$ENDIF CLR}
 begin
-  if not DispatchIsDesignMsg(self,Msg) then
-  case Msg.Msg of
-    CM_DENYSUBCLASSING:
+  if not DispatchIsDesignMsg(Self, Msg) then
+  begin
+    case Msg.Msg of
+      CM_DENYSUBCLASSING:
+      {$IFNDEF CLR}
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
+      {$ELSE}
+      Msg.Result := Integer(Supports(Self, IJvDenySubClassing));
+      {$ENDIF !CLR}
     CM_DIALOGCHAR:
-      with TCMDialogChar(Msg) do
+      with TCMDialogChar{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Ord(WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode)));
     CM_HINTSHOW:
+      {$IFNDEF CLR}
       with TCMHintShow(Msg) do
         Result := Integer(HintShow(HintInfo^));
+      {$ELSE}
+      with TCMHintShow.Create(Msg) do
+      begin
+        AHintInfo := HintInfo;
+        Result := Integer(HintShow(AHintInfo));
+        HintInfo := AHintInfo;
+      end;
+      {$ENDIF !CLR}
     CM_HITTEST:
-      with TCMHitTest(Msg) do
+      with TCMHitTest{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Integer(HitTest(XPos, YPos));
     CM_MOUSEENTER:
-      MouseEnter(TControl(Msg.LParam));
+      MouseEnter({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_MOUSELEAVE:
-      MouseLeave(TControl(Msg.LParam));
+      MouseLeave({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_VISIBLECHANGED:
       VisibleChanged;
     CM_ENABLEDCHANGED:
@@ -8687,8 +10082,10 @@ begin
       FontChanged;
     CM_COLORCHANGED:
       ColorChanged;
+    {$IFNDEF CLR}
     CM_FOCUSCHANGED:
       FocusChanged(TWinControl(Msg.LParam));
+    {$ENDIF !CLR}
     CM_PARENTFONTCHANGED:
       ParentFontChanged;
     CM_PARENTCOLORCHANGED:
@@ -8701,6 +10098,7 @@ begin
       ShowingChanged;
     CM_SHOWHINTCHANGED:
       ShowHintChanged;
+    {$IFNDEF CLR}
     CM_CONTROLLISTCHANGE:
       if Msg.LParam <> 0 then
         ControlsListChanging(TControl(Msg.WParam), True)
@@ -8711,6 +10109,7 @@ begin
         ControlsListChanging(TControl(Msg.WParam), False)
       else
         ControlsListChanged(TControl(Msg.WParam), True);
+    {$ENDIF !CLR}
     WM_SETFOCUS:
       FocusSet(HWND(Msg.WParam));
     WM_KILLFOCUS:
@@ -8750,8 +10149,11 @@ begin
         if not (dcNative in DlgCodes) then
           Msg.Result := DlgCodesToDlgc(DlgCodes);
       end;
-  else
-    inherited WndProc(Msg);
+    else
+      inherited WndProc(Msg);
+    end;
+    if DotNetHighlighting then
+      HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
   end;
 end;
 
@@ -8763,16 +10165,35 @@ begin
   FHintColor := clDefault;
 end;
 
-function TJvExTabSheet.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+function TJvExTabSheet.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer;
 var
   Mesg: TMessage;
 begin
-  Mesg.Msg := Msg;
-  Mesg.WParam := WParam;
-  Mesg.LParam := LParam;
-  Mesg.Result := 0;
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
   inherited WndProc(Mesg);
   Result := Mesg.Result;
+end;
+
+function TJvExTabSheet.BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer;
+var
+  Mesg: TMessage;
+begin
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
+  inherited WndProc(Mesg);
+  Result := Mesg.Result;
+end;
+
+function TJvExTabSheet.BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer;
+var
+  Mesg: TStructPtrMessage;
+begin
+  Mesg := TStructPtrMessage.Create(Msg, WParam, LParam);
+  try
+    inherited WndProc(Mesg.Msg);
+  finally
+    Result := Mesg.Msg.Result;
+    Mesg.Free;
+  end;
 end;
 
 procedure TJvExTabSheet.VisibleChanged;
@@ -8824,13 +10245,13 @@ end;
 
 function TJvExTabSheet.HitTest(X, Y: Integer): Boolean;
 begin
-  Result := BaseWndProc(CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
+  Result := BaseWndProc(CM_HITTEST, 0, SmallPointToLong(PointToSmallPoint(Point(X, Y)))) <> 0;
 end;
 
 function TJvExTabSheet.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   GetHintColor(HintInfo, Self, FHintColor);
-  Result := BaseWndProc(CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
+  Result := BaseWndProcEx(CM_HINTSHOW, 0, HintInfo) <> 0;
 end;
 
 procedure TJvExTabSheet.MouseEnter(AControl: TControl);
@@ -8840,23 +10261,25 @@ begin
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
   {$ENDIF VCL}
-  BaseWndProc(CM_MOUSEENTER, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSEENTER, 0, AControl);
 end;
 
 procedure TJvExTabSheet.MouseLeave(AControl: TControl);
 begin
   FMouseOver := False;
-  BaseWndProc(CM_MOUSELEAVE, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSELEAVE, 0, AControl);
   {$IFDEF VCL}
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
   {$ENDIF VCL}
 end;
 
+{$IFNDEF CLR}
 procedure TJvExTabSheet.FocusChanged(AControl: TWinControl);
 begin
-  BaseWndProc(CM_FOCUSCHANGED, 0, Integer(AControl));
+  BaseWndProc(CM_FOCUSCHANGED, 0, AControl);
 end;
+{$ENDIF !CLR}
 
 {$IFDEF COMPILER5}
 {$IFNDEF HASAUTOSIZE}
@@ -8893,6 +10316,7 @@ begin
   BaseWndProc(CM_SHOWHINTCHANGED);
 end;
 
+{$IFNDEF CLR}
 { VCL sends CM_CONTROLLISTCHANGE and CM_CONTROLCHANGE in a different order than
   the CLX methods are used. So we must correct it by evaluating "Inserting". }
 procedure TJvExTabSheet.ControlsListChanging(Control: TControl; Inserting: Boolean);
@@ -8910,6 +10334,7 @@ begin
   else
     BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
 end;
+{$ENDIF !CLR}
 
 procedure TJvExTabSheet.GetDlgCode(var Code: TDlgCodes);
 begin
@@ -8947,24 +10372,41 @@ var
   IdSaveDC: Integer;
   DlgCodes: TDlgCodes;
   Canvas: TCanvas;
+  {$IFDEF CLR}
+  AHintInfo: THintInfo;
+  {$ENDIF CLR}
 begin
-  if not DispatchIsDesignMsg(self,Msg) then
-  case Msg.Msg of
-    CM_DENYSUBCLASSING:
+  if not DispatchIsDesignMsg(Self, Msg) then
+  begin
+    case Msg.Msg of
+      CM_DENYSUBCLASSING:
+      {$IFNDEF CLR}
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
+      {$ELSE}
+      Msg.Result := Integer(Supports(Self, IJvDenySubClassing));
+      {$ENDIF !CLR}
     CM_DIALOGCHAR:
-      with TCMDialogChar(Msg) do
+      with TCMDialogChar{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Ord(WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode)));
     CM_HINTSHOW:
+      {$IFNDEF CLR}
       with TCMHintShow(Msg) do
         Result := Integer(HintShow(HintInfo^));
+      {$ELSE}
+      with TCMHintShow.Create(Msg) do
+      begin
+        AHintInfo := HintInfo;
+        Result := Integer(HintShow(AHintInfo));
+        HintInfo := AHintInfo;
+      end;
+      {$ENDIF !CLR}
     CM_HITTEST:
-      with TCMHitTest(Msg) do
+      with TCMHitTest{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Integer(HitTest(XPos, YPos));
     CM_MOUSEENTER:
-      MouseEnter(TControl(Msg.LParam));
+      MouseEnter({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_MOUSELEAVE:
-      MouseLeave(TControl(Msg.LParam));
+      MouseLeave({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_VISIBLECHANGED:
       VisibleChanged;
     CM_ENABLEDCHANGED:
@@ -8975,8 +10417,10 @@ begin
       FontChanged;
     CM_COLORCHANGED:
       ColorChanged;
+    {$IFNDEF CLR}
     CM_FOCUSCHANGED:
       FocusChanged(TWinControl(Msg.LParam));
+    {$ENDIF !CLR}
     CM_PARENTFONTCHANGED:
       ParentFontChanged;
     CM_PARENTCOLORCHANGED:
@@ -8989,6 +10433,7 @@ begin
       ShowingChanged;
     CM_SHOWHINTCHANGED:
       ShowHintChanged;
+    {$IFNDEF CLR}
     CM_CONTROLLISTCHANGE:
       if Msg.LParam <> 0 then
         ControlsListChanging(TControl(Msg.WParam), True)
@@ -8999,6 +10444,7 @@ begin
         ControlsListChanging(TControl(Msg.WParam), False)
       else
         ControlsListChanged(TControl(Msg.WParam), True);
+    {$ENDIF !CLR}
     WM_SETFOCUS:
       FocusSet(HWND(Msg.WParam));
     WM_KILLFOCUS:
@@ -9038,8 +10484,11 @@ begin
         if not (dcNative in DlgCodes) then
           Msg.Result := DlgCodesToDlgc(DlgCodes);
       end;
-  else
-    inherited WndProc(Msg);
+    else
+      inherited WndProc(Msg);
+    end;
+    if DotNetHighlighting then
+      HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
   end;
 end;
 
@@ -9051,16 +10500,35 @@ begin
   FHintColor := clDefault;
 end;
 
-function TJvExToolBar.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+function TJvExToolBar.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer;
 var
   Mesg: TMessage;
 begin
-  Mesg.Msg := Msg;
-  Mesg.WParam := WParam;
-  Mesg.LParam := LParam;
-  Mesg.Result := 0;
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
   inherited WndProc(Mesg);
   Result := Mesg.Result;
+end;
+
+function TJvExToolBar.BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer;
+var
+  Mesg: TMessage;
+begin
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
+  inherited WndProc(Mesg);
+  Result := Mesg.Result;
+end;
+
+function TJvExToolBar.BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer;
+var
+  Mesg: TStructPtrMessage;
+begin
+  Mesg := TStructPtrMessage.Create(Msg, WParam, LParam);
+  try
+    inherited WndProc(Mesg.Msg);
+  finally
+    Result := Mesg.Msg.Result;
+    Mesg.Free;
+  end;
 end;
 
 procedure TJvExToolBar.VisibleChanged;
@@ -9112,13 +10580,13 @@ end;
 
 function TJvExToolBar.HitTest(X, Y: Integer): Boolean;
 begin
-  Result := BaseWndProc(CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
+  Result := BaseWndProc(CM_HITTEST, 0, SmallPointToLong(PointToSmallPoint(Point(X, Y)))) <> 0;
 end;
 
 function TJvExToolBar.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   GetHintColor(HintInfo, Self, FHintColor);
-  Result := BaseWndProc(CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
+  Result := BaseWndProcEx(CM_HINTSHOW, 0, HintInfo) <> 0;
 end;
 
 procedure TJvExToolBar.MouseEnter(AControl: TControl);
@@ -9128,23 +10596,25 @@ begin
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
   {$ENDIF VCL}
-  BaseWndProc(CM_MOUSEENTER, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSEENTER, 0, AControl);
 end;
 
 procedure TJvExToolBar.MouseLeave(AControl: TControl);
 begin
   FMouseOver := False;
-  BaseWndProc(CM_MOUSELEAVE, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSELEAVE, 0, AControl);
   {$IFDEF VCL}
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
   {$ENDIF VCL}
 end;
 
+{$IFNDEF CLR}
 procedure TJvExToolBar.FocusChanged(AControl: TWinControl);
 begin
-  BaseWndProc(CM_FOCUSCHANGED, 0, Integer(AControl));
+  BaseWndProc(CM_FOCUSCHANGED, 0, AControl);
 end;
+{$ENDIF !CLR}
 
 {$IFDEF COMPILER5}
 {$IFNDEF HASAUTOSIZE}
@@ -9181,6 +10651,7 @@ begin
   BaseWndProc(CM_SHOWHINTCHANGED);
 end;
 
+{$IFNDEF CLR}
 { VCL sends CM_CONTROLLISTCHANGE and CM_CONTROLCHANGE in a different order than
   the CLX methods are used. So we must correct it by evaluating "Inserting". }
 procedure TJvExToolBar.ControlsListChanging(Control: TControl; Inserting: Boolean);
@@ -9198,6 +10669,7 @@ begin
   else
     BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
 end;
+{$ENDIF !CLR}
 
 procedure TJvExToolBar.GetDlgCode(var Code: TDlgCodes);
 begin
@@ -9235,24 +10707,41 @@ var
   IdSaveDC: Integer;
   DlgCodes: TDlgCodes;
   Canvas: TCanvas;
+  {$IFDEF CLR}
+  AHintInfo: THintInfo;
+  {$ENDIF CLR}
 begin
-  if not DispatchIsDesignMsg(self,Msg) then
-  case Msg.Msg of
-    CM_DENYSUBCLASSING:
+  if not DispatchIsDesignMsg(Self, Msg) then
+  begin
+    case Msg.Msg of
+      CM_DENYSUBCLASSING:
+      {$IFNDEF CLR}
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
+      {$ELSE}
+      Msg.Result := Integer(Supports(Self, IJvDenySubClassing));
+      {$ENDIF !CLR}
     CM_DIALOGCHAR:
-      with TCMDialogChar(Msg) do
+      with TCMDialogChar{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Ord(WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode)));
     CM_HINTSHOW:
+      {$IFNDEF CLR}
       with TCMHintShow(Msg) do
         Result := Integer(HintShow(HintInfo^));
+      {$ELSE}
+      with TCMHintShow.Create(Msg) do
+      begin
+        AHintInfo := HintInfo;
+        Result := Integer(HintShow(AHintInfo));
+        HintInfo := AHintInfo;
+      end;
+      {$ENDIF !CLR}
     CM_HITTEST:
-      with TCMHitTest(Msg) do
+      with TCMHitTest{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Integer(HitTest(XPos, YPos));
     CM_MOUSEENTER:
-      MouseEnter(TControl(Msg.LParam));
+      MouseEnter({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_MOUSELEAVE:
-      MouseLeave(TControl(Msg.LParam));
+      MouseLeave({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_VISIBLECHANGED:
       VisibleChanged;
     CM_ENABLEDCHANGED:
@@ -9263,8 +10752,10 @@ begin
       FontChanged;
     CM_COLORCHANGED:
       ColorChanged;
+    {$IFNDEF CLR}
     CM_FOCUSCHANGED:
       FocusChanged(TWinControl(Msg.LParam));
+    {$ENDIF !CLR}
     CM_PARENTFONTCHANGED:
       ParentFontChanged;
     CM_PARENTCOLORCHANGED:
@@ -9277,6 +10768,7 @@ begin
       ShowingChanged;
     CM_SHOWHINTCHANGED:
       ShowHintChanged;
+    {$IFNDEF CLR}
     CM_CONTROLLISTCHANGE:
       if Msg.LParam <> 0 then
         ControlsListChanging(TControl(Msg.WParam), True)
@@ -9287,6 +10779,7 @@ begin
         ControlsListChanging(TControl(Msg.WParam), False)
       else
         ControlsListChanged(TControl(Msg.WParam), True);
+    {$ENDIF !CLR}
     WM_SETFOCUS:
       FocusSet(HWND(Msg.WParam));
     WM_KILLFOCUS:
@@ -9326,8 +10819,11 @@ begin
         if not (dcNative in DlgCodes) then
           Msg.Result := DlgCodesToDlgc(DlgCodes);
       end;
-  else
-    inherited WndProc(Msg);
+    else
+      inherited WndProc(Msg);
+    end;
+    if DotNetHighlighting then
+      HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
   end;
 end;
 
@@ -9339,16 +10835,35 @@ begin
   FHintColor := clDefault;
 end;
 
-function TJvExStatusBar.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+function TJvExStatusBar.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer;
 var
   Mesg: TMessage;
 begin
-  Mesg.Msg := Msg;
-  Mesg.WParam := WParam;
-  Mesg.LParam := LParam;
-  Mesg.Result := 0;
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
   inherited WndProc(Mesg);
   Result := Mesg.Result;
+end;
+
+function TJvExStatusBar.BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer;
+var
+  Mesg: TMessage;
+begin
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
+  inherited WndProc(Mesg);
+  Result := Mesg.Result;
+end;
+
+function TJvExStatusBar.BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer;
+var
+  Mesg: TStructPtrMessage;
+begin
+  Mesg := TStructPtrMessage.Create(Msg, WParam, LParam);
+  try
+    inherited WndProc(Mesg.Msg);
+  finally
+    Result := Mesg.Msg.Result;
+    Mesg.Free;
+  end;
 end;
 
 procedure TJvExStatusBar.VisibleChanged;
@@ -9400,13 +10915,13 @@ end;
 
 function TJvExStatusBar.HitTest(X, Y: Integer): Boolean;
 begin
-  Result := BaseWndProc(CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
+  Result := BaseWndProc(CM_HITTEST, 0, SmallPointToLong(PointToSmallPoint(Point(X, Y)))) <> 0;
 end;
 
 function TJvExStatusBar.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   GetHintColor(HintInfo, Self, FHintColor);
-  Result := BaseWndProc(CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
+  Result := BaseWndProcEx(CM_HINTSHOW, 0, HintInfo) <> 0;
 end;
 
 procedure TJvExStatusBar.MouseEnter(AControl: TControl);
@@ -9416,23 +10931,25 @@ begin
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
   {$ENDIF VCL}
-  BaseWndProc(CM_MOUSEENTER, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSEENTER, 0, AControl);
 end;
 
 procedure TJvExStatusBar.MouseLeave(AControl: TControl);
 begin
   FMouseOver := False;
-  BaseWndProc(CM_MOUSELEAVE, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSELEAVE, 0, AControl);
   {$IFDEF VCL}
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
   {$ENDIF VCL}
 end;
 
+{$IFNDEF CLR}
 procedure TJvExStatusBar.FocusChanged(AControl: TWinControl);
 begin
-  BaseWndProc(CM_FOCUSCHANGED, 0, Integer(AControl));
+  BaseWndProc(CM_FOCUSCHANGED, 0, AControl);
 end;
+{$ENDIF !CLR}
 
 {$IFDEF COMPILER5}
 {$IFNDEF HASAUTOSIZE}
@@ -9469,6 +10986,7 @@ begin
   BaseWndProc(CM_SHOWHINTCHANGED);
 end;
 
+{$IFNDEF CLR}
 { VCL sends CM_CONTROLLISTCHANGE and CM_CONTROLCHANGE in a different order than
   the CLX methods are used. So we must correct it by evaluating "Inserting". }
 procedure TJvExStatusBar.ControlsListChanging(Control: TControl; Inserting: Boolean);
@@ -9486,6 +11004,7 @@ begin
   else
     BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
 end;
+{$ENDIF !CLR}
 
 procedure TJvExStatusBar.GetDlgCode(var Code: TDlgCodes);
 begin
@@ -9523,24 +11042,41 @@ var
   IdSaveDC: Integer;
   DlgCodes: TDlgCodes;
   Canvas: TCanvas;
+  {$IFDEF CLR}
+  AHintInfo: THintInfo;
+  {$ENDIF CLR}
 begin
-  if not DispatchIsDesignMsg(self,Msg) then
-  case Msg.Msg of
-    CM_DENYSUBCLASSING:
+  if not DispatchIsDesignMsg(Self, Msg) then
+  begin
+    case Msg.Msg of
+      CM_DENYSUBCLASSING:
+      {$IFNDEF CLR}
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
+      {$ELSE}
+      Msg.Result := Integer(Supports(Self, IJvDenySubClassing));
+      {$ENDIF !CLR}
     CM_DIALOGCHAR:
-      with TCMDialogChar(Msg) do
+      with TCMDialogChar{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Ord(WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode)));
     CM_HINTSHOW:
+      {$IFNDEF CLR}
       with TCMHintShow(Msg) do
         Result := Integer(HintShow(HintInfo^));
+      {$ELSE}
+      with TCMHintShow.Create(Msg) do
+      begin
+        AHintInfo := HintInfo;
+        Result := Integer(HintShow(AHintInfo));
+        HintInfo := AHintInfo;
+      end;
+      {$ENDIF !CLR}
     CM_HITTEST:
-      with TCMHitTest(Msg) do
+      with TCMHitTest{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Integer(HitTest(XPos, YPos));
     CM_MOUSEENTER:
-      MouseEnter(TControl(Msg.LParam));
+      MouseEnter({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_MOUSELEAVE:
-      MouseLeave(TControl(Msg.LParam));
+      MouseLeave({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_VISIBLECHANGED:
       VisibleChanged;
     CM_ENABLEDCHANGED:
@@ -9551,8 +11087,10 @@ begin
       FontChanged;
     CM_COLORCHANGED:
       ColorChanged;
+    {$IFNDEF CLR}
     CM_FOCUSCHANGED:
       FocusChanged(TWinControl(Msg.LParam));
+    {$ENDIF !CLR}
     CM_PARENTFONTCHANGED:
       ParentFontChanged;
     CM_PARENTCOLORCHANGED:
@@ -9565,6 +11103,7 @@ begin
       ShowingChanged;
     CM_SHOWHINTCHANGED:
       ShowHintChanged;
+    {$IFNDEF CLR}
     CM_CONTROLLISTCHANGE:
       if Msg.LParam <> 0 then
         ControlsListChanging(TControl(Msg.WParam), True)
@@ -9575,6 +11114,7 @@ begin
         ControlsListChanging(TControl(Msg.WParam), False)
       else
         ControlsListChanged(TControl(Msg.WParam), True);
+    {$ENDIF !CLR}
     WM_SETFOCUS:
       FocusSet(HWND(Msg.WParam));
     WM_KILLFOCUS:
@@ -9614,8 +11154,11 @@ begin
         if not (dcNative in DlgCodes) then
           Msg.Result := DlgCodesToDlgc(DlgCodes);
       end;
-  else
-    inherited WndProc(Msg);
+    else
+      inherited WndProc(Msg);
+    end;
+    if DotNetHighlighting then
+      HandleDotNetHighlighting(Self, Msg, MouseOver, Color);
   end;
 end;
 
@@ -9627,16 +11170,35 @@ begin
   FHintColor := clDefault;
 end;
 
-function TJvExToolButton.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Integer = 0): Integer;
+function TJvExToolButton.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer;
 var
   Mesg: TMessage;
 begin
-  Mesg.Msg := Msg;
-  Mesg.WParam := WParam;
-  Mesg.LParam := LParam;
-  Mesg.Result := 0;
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
   inherited WndProc(Mesg);
   Result := Mesg.Result;
+end;
+
+function TJvExToolButton.BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer;
+var
+  Mesg: TMessage;
+begin
+  Mesg := CreateWMMessage(Msg, WParam, LParam);
+  inherited WndProc(Mesg);
+  Result := Mesg.Result;
+end;
+
+function TJvExToolButton.BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer;
+var
+  Mesg: TStructPtrMessage;
+begin
+  Mesg := TStructPtrMessage.Create(Msg, WParam, LParam);
+  try
+    inherited WndProc(Mesg.Msg);
+  finally
+    Result := Mesg.Msg.Result;
+    Mesg.Free;
+  end;
 end;
 
 procedure TJvExToolButton.VisibleChanged;
@@ -9688,13 +11250,13 @@ end;
 
 function TJvExToolButton.HitTest(X, Y: Integer): Boolean;
 begin
-  Result := BaseWndProc(CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
+  Result := BaseWndProc(CM_HITTEST, 0, SmallPointToLong(PointToSmallPoint(Point(X, Y)))) <> 0;
 end;
 
 function TJvExToolButton.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   GetHintColor(HintInfo, Self, FHintColor);
-  Result := BaseWndProc(CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
+  Result := BaseWndProcEx(CM_HINTSHOW, 0, HintInfo) <> 0;
 end;
 
 procedure TJvExToolButton.MouseEnter(AControl: TControl);
@@ -9704,23 +11266,25 @@ begin
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
   {$ENDIF VCL}
-  BaseWndProc(CM_MOUSEENTER, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSEENTER, 0, AControl);
 end;
 
 procedure TJvExToolButton.MouseLeave(AControl: TControl);
 begin
   FMouseOver := False;
-  BaseWndProc(CM_MOUSELEAVE, 0, Integer(AControl));
+  BaseWndProc(CM_MOUSELEAVE, 0, AControl);
   {$IFDEF VCL}
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
   {$ENDIF VCL}
 end;
 
+{$IFNDEF CLR}
 procedure TJvExToolButton.FocusChanged(AControl: TWinControl);
 begin
-  BaseWndProc(CM_FOCUSCHANGED, 0, Integer(AControl));
+  BaseWndProc(CM_FOCUSCHANGED, 0, AControl);
 end;
+{$ENDIF !CLR}
 
 {$IFDEF COMPILER5}
 {$IFNDEF HASAUTOSIZE}
@@ -9739,24 +11303,41 @@ end;
 {$ENDIF COMPILER5}
 
 procedure TJvExToolButton.WndProc(var Msg: TMessage);
+{$IFDEF CLR}
+var
+  AHintInfo: THintInfo;
+{$ENDIF CLR}
 begin
-  if not DispatchIsDesignMsg(self,Msg) then
+  if not DispatchIsDesignMsg(Self, Msg) then
   case Msg.Msg of
     CM_DENYSUBCLASSING:
+      {$IFNDEF CLR}
       Msg.Result := Ord(GetInterfaceEntry(IJvDenySubClassing) <> nil);
+      {$ELSE}
+      Msg.Result := Integer(Supports(Self, IJvDenySubClassing));
+      {$ENDIF !CLR}
     CM_DIALOGCHAR:
-      with TCMDialogChar(Msg) do
+      with TCMDialogChar{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Ord(WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode)));
     CM_HINTSHOW:
+      {$IFNDEF CLR}
       with TCMHintShow(Msg) do
         Result := Integer(HintShow(HintInfo^));
+      {$ELSE}
+      with TCMHintShow.Create(Msg) do
+      begin
+        AHintInfo := HintInfo;
+        Result := Integer(HintShow(AHintInfo));
+        HintInfo := AHintInfo;
+      end;
+      {$ENDIF !CLR}
     CM_HITTEST:
-      with TCMHitTest(Msg) do
+      with TCMHitTest{$IFDEF CLR}.Create{$ENDIF}(Msg) do
         Result := Integer(HitTest(XPos, YPos));
     CM_MOUSEENTER:
-      MouseEnter(TControl(Msg.LParam));
+      MouseEnter({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_MOUSELEAVE:
-      MouseLeave(TControl(Msg.LParam));
+      MouseLeave({$IFDEF CLR}nil{$ELSE}TControl(Msg.LParam){$ENDIF});
     CM_VISIBLECHANGED:
       VisibleChanged;
     CM_ENABLEDCHANGED:
@@ -9767,8 +11348,10 @@ begin
       FontChanged;
     CM_COLORCHANGED:
       ColorChanged;
+    {$IFNDEF CLR}
     CM_FOCUSCHANGED:
       FocusChanged(TWinControl(Msg.LParam));
+    {$ENDIF !CLR}
     CM_PARENTFONTCHANGED:
       ParentFontChanged;
     CM_PARENTCOLORCHANGED:
