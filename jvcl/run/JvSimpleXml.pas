@@ -2519,13 +2519,12 @@ end;
 
 procedure TJvSimpleXMLElemText.LoadFromStream(const Stream: TStream; Parent: TJvSimpleXML);
 var
-  I, lStreamPos, Count, lPos: Integer;
+  I, lStreamPos, Count: Integer;
   lBuf: array [0..cBufferSize - 1] of Char;
   St: string;
 begin
   lStreamPos := Stream.Position;
   St := '';
-  lPos := 0;
 
   repeat
     Count := Stream.Read(lBuf, SizeOf(lBuf));
@@ -2544,15 +2543,8 @@ begin
             Count := 0;
             Break;
           end;
-        ' ':
-          if lPos = 0 then
-          begin
-            Inc(lPos);
-            St := St + ' ';
-          end;
       else
         begin
-          lPos := 0;
           St := St + lBuf[I];
         end;
       end;
