@@ -138,7 +138,7 @@ type
     procedure SetTrimDecimals(const Value: Boolean);
   protected
     function IsValidChar(const S: string; Key: Char; Posn: Integer): Boolean; virtual;
-    function MakeValid(ParseString: string): string;virtual;
+    function MakeValid(const ParseString: string): string;virtual;
     procedure Change; override;
     procedure FocusKilled(NextWnd: HWND); override;
     procedure FocusSet(PrevWnd: HWND); override;
@@ -277,7 +277,6 @@ uses
 constructor TJvCustomValidateEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-
   FSelfChange := False;
   FAutoAlignment := True;
   FCriticalPoints := TJvValidateEditCriticalPoints.Create;
@@ -308,8 +307,6 @@ procedure TJvCustomValidateEdit.Assign(Source: TPersistent);
 var
   lcSource: TJvCustomValidateEdit;
 begin
-  inherited Assign(Source);
-
   if Source is TJvCustomValidateEdit then
   begin
     lcSource := Source as TJvCustomValidateEdit;
@@ -321,7 +318,9 @@ begin
     HasMinValue := lcSource.HasMinValue;
     HasMaxValue := lcSource.HasMaxValue;
     ZeroEmpty := lcSource.ZeroEmpty;
-  end;
+  end
+  else
+    inherited Assign(Source);
 end;
 
 procedure TJvCustomValidateEdit.Loaded;
@@ -673,7 +672,7 @@ begin
   EditText := MakeValid(inherited Text);
 end;
 
-function TJvCustomValidateEdit.MakeValid(ParseString: string): string;
+function TJvCustomValidateEdit.MakeValid(const ParseString: string): string;
 var
   S: string;
   I: Integer;
@@ -1137,7 +1136,6 @@ procedure TJvValidateEditCriticalPoints.Assign(Source: TPersistent);
 var
   LocalSource: TJvValidateEditCriticalPoints;
 begin
-  inherited Assign(Source);
   if Source is TJvValidateEditCriticalPoints then
   begin
     LocalSource := Source as TJvValidateEditCriticalPoints;
@@ -1146,7 +1144,9 @@ begin
     ColorBelow := LocalSource.ColorBelow;
     MaxValue := LocalSource.MaxValue;
     MinValue := LocalSource.MinValue;
-  end;
+  end
+  else
+    inherited Assign(Source);
 end;
 
 {$IFDEF UNITVERSIONING}
