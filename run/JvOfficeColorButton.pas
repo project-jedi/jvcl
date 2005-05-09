@@ -48,6 +48,8 @@ const
   Tag_ArrowWidth = 11;
 
 type
+  TJvClickColorButtonType = JvOfficeColorPanel.TJvClickColorButtonType;
+
   TJvOfficeColorButtonProperties = class(TJvOfficeColorPanelProperties)
   private
     FShowDragBar: Boolean;
@@ -91,6 +93,7 @@ type
     FOnDropDown: TNotifyEvent;
     FOnColorButtonClick: TNotifyEvent;
     FOnArrowClick: TNotifyEvent;
+    FOnAdvColorButtonClick: TJvAdvColorButtonClick;
     procedure SetFlat(const Value: Boolean);
     // Set Control Color
     procedure SetControlBgColor(const Value: TColor);
@@ -119,7 +122,7 @@ type
     procedure DoButtonMouseEnter(Sender: TObject);
     procedure DoButtonMouseLeave(Sender: TObject);
     procedure DoArrowClick(Sender: TObject);
-    procedure DoColorButtonClick(Sender: TObject);
+    procedure DoAdvColorButtonClick(Sender: TObject; Button: TJvClickColorButtonType);
     procedure DoClick(Sender: TObject);
   protected
     procedure AdjustColorForm(X: Integer = 0; Y: Integer = 0); //Screen position
@@ -153,6 +156,7 @@ type
     property OnColorChange: TNotifyEvent read FOnColorChange write FOnColorChange;
     property OnArrowClick: TNotifyEvent read FOnArrowClick write FOnArrowClick;
     property OnColorButtonClick: TNotifyEvent read FOnColorButtonClick write FOnColorButtonClick;
+    property OnAdvColorButtonClick: TJvAdvColorButtonClick read FOnAdvColorButtonClick write FOnAdvColorButtonClick;
   end;
 
   TJvOfficeColorButton = class(TJvCustomOfficeColorButton)
@@ -205,6 +209,7 @@ type
     property OnArrowClick;
     property OnColorChange;
     property OnColorButtonClick;
+    property OnAdvColorButtonClick;
     property OnClick;
   end;
 
@@ -374,7 +379,7 @@ begin
     OnWindowStyleChanged := DoFormWindowStyleChanged;
 
     ColorPanel.OnColorChange := DoOnColorChange;
-    ColorPanel.OnColorButtonClick := DoColorButtonClick;
+    ColorPanel.OnAdvColorButtonClick := DoAdvColorButtonClick;
   end;
 
   FProperties := TJvOfficeColorButtonProperties.Create;
@@ -493,7 +498,7 @@ begin
     FOnArrowClick(Self);
 end;
 
-procedure TJvCustomOfficeColorButton.DoColorButtonClick(Sender: TObject);
+procedure TJvCustomOfficeColorButton.DoAdvColorButtonClick(Sender: TObject; Button: TJvClickColorButtonType);
 begin
   if not FColorsForm.ToolWindowStyle then
   begin
@@ -505,10 +510,12 @@ begin
   end
   else
   begin
-    if FColorsForm.ColorPanel.ClickColorButton = cbctOtherButton then
+    if Button = cbctOtherButton then
       FColorsForm.FormStyle := fsNormal;
   end;
 
+  if Assigned(FOnAdvColorButtonClick) then
+    FOnAdvColorButtonClick(Sender, Button);
   if Assigned(FOnColorButtonClick) then
     FOnColorButtonClick(Sender);
 end;
@@ -570,6 +577,12 @@ procedure TJvCustomOfficeColorButton.SetSelectedColor(const Value: TColor);
 begin
   if FColorsForm.ColorPanel.SelectedColor <> Value then
     FColorsForm.ColorPanel.SelectedColor := Value;
+end;
+
+procedure TJvCustomOfficeColorButton.DoClick(Sender: TObject);
+begin
+  if Assigned(OnClick) then
+    OnClick(Self);
 end;
 
 procedure TJvCustomOfficeColorButton.AdjustColorForm(X: Integer = 0; Y: Integer = 0);
@@ -870,12 +883,6 @@ begin
     FShowDragBar := Value;
     Changed(cShowDragBar);
   end;
-end;
-
-procedure TJvCustomOfficeColorButton.DoClick(Sender: TObject);
-begin
-  if Assigned(OnClick) then
-    OnClick(Self);
 end;
 
 {$IFDEF UNITVERSIONING}
