@@ -84,6 +84,7 @@ type
   TJvClickColorButtonType =
     (cbctColorsButton, cbctAutoButton, cbctOtherButton, cbctNone);
   TJvPropertiesChangedEvent = procedure(Sender: TObject; PropName: string) of object;
+  TJvAdvColorButtonClick = procedure(Sender: TObject; Button: TJvClickColorButtonType) of object;
 
   TJvColorSpeedButton = class(TJvSpeedButton)
   private
@@ -132,11 +133,13 @@ type
     FAutoHint: string;
     FOtherHint: string;
 
-    FOnPropertiesChanged: TJvPropertiesChangedEvent;
     FAutoColor: TColor;
     FShowColorHint: Boolean;
     FRightClickSelect: Boolean;
     FSelectIfPopup: Boolean;
+
+    FOnPropertiesChanged: TJvPropertiesChangedEvent;
+
     procedure SetShowAutoButton(const Value: Boolean);
     procedure SetShowOtherButton(const Value: Boolean);
     procedure SetMeasure(const Index, Value: Integer);
@@ -159,22 +162,14 @@ type
     property ShowOtherButton: Boolean read FShowOtherButton write SetShowOtherButton default True;
     property ShowColorHint: Boolean read FShowColorHint write SetShowColorHint default True;
 
-    property TopMargin: Integer index Tag_TopMargin read FTopMargin write SetMeasure
-      default MinTopMargin;
-    property BottomMargin: Integer index Tag_BottomMargin read FBottomMargin write SetMeasure
-      default MinBottomMargin;
-    property HorizontalMargin: Integer index Tag_HorizontalMargin read FHorizontalMargin write SetMeasure
-      default MinHorizontalMargin;
-    property ColorSpace: Integer index Tag_ColorSpace read FColorSpace write SetMeasure
-       default MinColorSpace;
-    property ColorSpaceTop: Integer index Tag_ColorSpaceTop read FColorSpaceTop write SetMeasure
-      default MinColorSpaceTop;
-    property ColorSpaceBottom: Integer index Tag_ColorSpaceBottom read FColorSpaceBottom write SetMeasure
-      default MinColorSpaceBottom;
-    property ColorSize: Integer index Tag_ColorSize read FColorSize write SetMeasure
-      default MinColorSize;
-    property ButtonHeight: Integer index Tag_ButtonHeight read FButtonHeight write SetMeasure
-      default MinButtonHeight;
+    property TopMargin: Integer index Tag_TopMargin read FTopMargin write SetMeasure default MinTopMargin;
+    property BottomMargin: Integer index Tag_BottomMargin read FBottomMargin write SetMeasure default MinBottomMargin;
+    property HorizontalMargin: Integer index Tag_HorizontalMargin read FHorizontalMargin write SetMeasure default MinHorizontalMargin;
+    property ColorSpace: Integer index Tag_ColorSpace read FColorSpace write SetMeasure default MinColorSpace;
+    property ColorSpaceTop: Integer index Tag_ColorSpaceTop read FColorSpaceTop write SetMeasure default MinColorSpaceTop;
+    property ColorSpaceBottom: Integer index Tag_ColorSpaceBottom read FColorSpaceBottom write SetMeasure default MinColorSpaceBottom;
+    property ColorSize: Integer index Tag_ColorSize read FColorSize write SetMeasure default MinColorSize;
+    property ButtonHeight: Integer index Tag_ButtonHeight read FButtonHeight write SetMeasure default MinButtonHeight;
     property AutoCaption: string index Tag_AutoCaption read GetStringValue write SetStringValue;
     property OtherCaption: string index Tag_OtherCaption read GetStringValue write SetStringValue;
     property AutoHint: string index Tag_AutoHint read GetStringValue write SetStringValue;
@@ -196,9 +191,10 @@ type
     FWordStyle: Boolean;
     FFlat: Boolean;
     FInited: Boolean;
+    FClickColorButton: TJvClickColorButtonType;
     FOnColorChange: TNotifyEvent;
     FOnColorButtonClick: TNotifyEvent;
-    FClickColorButton: TJvClickColorButtonType;
+    FOnAdvColorButtonClick: TJvAdvColorButtonClick;
     {$IFDEF VCL}
     FColorDialogOptions: TColorDialogOptions;
     procedure SetColorDialogOptions(const Value: TColorDialogOptions);
@@ -227,7 +223,6 @@ type
     procedure MakeColorButtons;
     procedure AdjustColorButtons;
     procedure SetEnabled({$IFDEF VisualCLX} const {$ENDIF} Value: Boolean); override;
-
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -246,6 +241,7 @@ type
     {$ENDIF VCL}
     property OnColorChange: TNotifyEvent read FOnColorChange write FOnColorChange;
     property OnColorButtonClick: TNotifyEvent read FOnColorButtonClick write FOnColorButtonClick;
+    property OnAdvColorButtonClick: TJvAdvColorButtonClick read FOnAdvColorButtonClick write FOnAdvColorButtonClick;
   end;
 
   TJvOfficeColorPanel = class(TJvCustomOfficeColorPanel)
@@ -293,6 +289,7 @@ type
     property Properties;
     property OnColorChange;
     property OnColorButtonClick;
+    property OnAdvColorButtonClick;
     property OnClick;
   end;
 
@@ -804,6 +801,8 @@ begin
   else
     FClickColorButton := cbctNone;
 
+  if Assigned(FOnAdvColorButtonClick) then
+     FOnAdvColorButtonClick(Sender,  FClickColorButton);
   if Assigned(FOnColorButtonClick) then
      FOnColorButtonClick(Sender);
 
