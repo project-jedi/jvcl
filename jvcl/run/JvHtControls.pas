@@ -320,6 +320,7 @@ type
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
+    procedure MouseLeave(AControl: TControl); override;
     procedure FontChanged; override;
     procedure AdjustBounds; {$IFDEF VCL} override; {$ENDIF}
     procedure SetAutoSize(Value: Boolean); override;
@@ -864,6 +865,13 @@ begin
       FHyperLinkClick(Self, LinkName);
   end;
 end;
+
+procedure TJvCustomHTLabel.MouseLeave(AControl: TControl);
+begin
+  inherited MouseLeave(AControl);
+  Invalidate;
+end;
+
 
 {$IFDEF UNITVERSIONING}
 initialization
