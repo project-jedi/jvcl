@@ -1,5 +1,7 @@
 Changelog for JVCL 3.0
 ======================
+2005-05-09:
+- Added new published event OnAdvColorButtonClick to TJvOfficeColorButton and TJvOfficeColorPanel // ahuser
 2005-05-04:
 - Added published JvModernTabBarPainter.TabWidth property // ahuser
 2005-04-23:
