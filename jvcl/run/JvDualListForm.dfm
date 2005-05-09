@@ -5,7 +5,7 @@ object JvDualListForm: TJvDualListForm
   BorderIcons = []
   BorderStyle = bsSingle
   ClientHeight = 269
-  ClientWidth = 392
+  ClientWidth = 394
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -62,7 +62,6 @@ object JvDualListForm: TJvDualListForm
     Background.Visible = False
     MultiSelect = True
     ParentShowHint = False
-    ScrollBars = ssNone
     ShowHint = True
     Sorted = True
     TabOrder = 0
@@ -83,7 +82,6 @@ object JvDualListForm: TJvDualListForm
     Background.Visible = False
     MultiSelect = True
     ParentShowHint = False
-    ScrollBars = ssNone
     ShowHint = True
     Sorted = True
     TabOrder = 5
