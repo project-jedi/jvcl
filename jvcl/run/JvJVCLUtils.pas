@@ -7086,6 +7086,10 @@ begin
     Dec(Size);
     Dec(Rect.Right);
   end;
+  // set to center  by dejoy
+  if RectHeight(Rect) > Size then
+    Rect.Top := Rect.Top + (RectHeight(Rect) - (Size div 2)) div 2;
+
   Rect.Bottom := Rect.Top + Size;
   Canvas.Pen.Color := Color;
   case Direction of

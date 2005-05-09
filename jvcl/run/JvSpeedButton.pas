@@ -18,6 +18,7 @@ All Rights Reserved.
 Contributor(s):
   Polaris Software
   Peter Thornqvist [peter3 at sourceforge dot net]
+  Dejoy Den
 
 Changes:
 2003-10-19:
@@ -40,19 +41,18 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  SysUtils, Classes,
   {$IFDEF VCL}
   CommCtrl,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   Qt,
   {$ENDIF VisualCLX}
-  Windows, Messages,
   {$IFDEF COMPILER6_UP}
   Types,
   {$ENDIF COMPILER6_UP}
+  SysUtils, Classes, Windows, Messages,
   Controls, Graphics, Forms, ExtCtrls, Buttons, Menus, ImgList, ActnList,
-  JvExControls, JvComponent, JvConsts, JvTypes, JvJCLUtils, JvJVCLUtils,
+  JvExControls, JvComponent, JvButton, JvConsts, JvTypes,
   JvThemes;
 
 type
@@ -65,24 +65,12 @@ type
   {$ENDIF VisualCLX}
 
   {Inserted by (ag) 2004-09-04}
-  TJvSpeedButtonHotTrackOptions = class(TPersistent)
-  private
-    FEnabled: Boolean;
-    FColor: TColor;
-    FFrameColor: TColor;
-  public
-    constructor Create;
-    procedure Assign(Source: TPersistent); override;
-  published
-    property Enabled: Boolean read FEnabled write FEnabled default False;
-    property Color: TColor read FColor write FColor default $00D2BDB6;
-    property FrameColor: TColor read FFrameColor write FFrameColor default $006A240A;
-  end;
+  TJvSpeedButtonHotTrackOptions = TJvHotTrackOptions;
   {Insert End}
 
   TJvxButtonGlyph = class;
 
-  TJvCustomSpeedButton = class(TJvGraphicControl)
+  TJvCustomSpeedButton = class(TJvGraphicControl, IJvHotTrack)
   private
     FAllowAllUp: Boolean;
     FAllowTimer: Boolean;
@@ -96,6 +84,7 @@ type
     FHotTrack: Boolean;
     FHotTrackFont: TFont;
     FHotTrackFontOptions: TJvTrackFontOptions;
+    FHotTrackOptions: TJvHotTrackOptions;
     FInactiveGrayed: Boolean;
     FInitRepeatPause: Word;
     FLayout: TButtonLayout;
@@ -110,7 +99,6 @@ type
     FStyle: TButtonStyle;
     FTransparent: Boolean;
     FDoubleBuffered: Boolean;
-    FHotTrackOptions: TJvSpeedButtonHotTrackOptions;
     function GetAlignment: TAlignment;
     function GetGrayNewStyle: Boolean;
     function GetWordWrap: Boolean;
@@ -122,8 +110,6 @@ type
     procedure SetFlat(Value: Boolean);
     procedure SetGrayNewStyle(const Value: Boolean);
     procedure SetGroupIndex(Value: Integer);
-    procedure SetHotTrackFont(const Value: TFont);
-    procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
     procedure SetInactiveGrayed(Value: Boolean);
     procedure SetLayout(Value: TButtonLayout);
     procedure SetMargin(Value: Integer);
@@ -133,11 +119,20 @@ type
     procedure SetTransparent(Value: Boolean);
     procedure SetWordWrap(Value: Boolean);
 
+{IJvHotTrack}   //added by dejoy 2005-04-20
+    function GetHotTrack:Boolean;
+    function GetHotTrackFont:TFont;
+    function GetHotTrackFontOptions:TJvTrackFontOptions;
+    function GetHotTrackOptions:TJvHotTrackOptions;
+    procedure SetHotTrack(Value: Boolean);
+    procedure SetHotTrackFont(Value: TFont);
+    procedure SetHotTrackFontOptions(Value: TJvTrackFontOptions);
+    procedure SetHotTrackOptions(Value: TJvHotTrackOptions);
+
     function CheckMenuDropDown(const Pos: TSmallPoint; Manual: Boolean): Boolean;
     procedure DoMouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure TimerExpired(Sender: TObject);
     procedure UpdateExclusive;
-    procedure SetHotTrackOptions(Value: TJvSpeedButtonHotTrackOptions);
     procedure CMButtonPressed(var Msg: TCMButtonPressed); message CM_JVBUTTONPRESSED;
     {$IFDEF VCL}
     procedure CMSysColorChange(var Msg: TMessage); message CM_SYSCOLORCHANGE;
@@ -190,11 +185,11 @@ type
     { If True, Image is grayed (when enables=False) like the imagelist does, otherwise like the speedbutton does }
     property GrayNewStyle: Boolean read GetGrayNewStyle write SetGrayNewStyle default True;
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex default 0;
-    property HotTrack: Boolean read FHotTrack write FHotTrack default False;
-    property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont;
-    property HotTrackFontOptions: TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions default
+    property HotTrack: Boolean read GetHotTrack write SetHotTrack default False;
+    property HotTrackFont: TFont read GetHotTrackFont write SetHotTrackFont;
+    property HotTrackFontOptions: TJvTrackFontOptions read GetHotTrackFontOptions write SetHotTrackFontOptions default
       DefaultTrackFontOptions;
-    property HotTrackOptions: TJvSpeedButtonHotTrackOptions read FHotTrackOptions write SetHotTrackOptions;
+    property HotTrackOptions: TJvHotTrackOptions read GetHotTrackOptions write SetHotTrackOptions;
     property InitPause: Word read FInitRepeatPause write FInitRepeatPause default 500;
     { (rb) Weird default }
     property Layout: TButtonLayout read FLayout write SetLayout default blGlyphTop;
@@ -535,7 +530,7 @@ const
 implementation
 
 uses
-  Math;
+  Math, JvJCLUtils, JvJVCLUtils;
 
 type
   TJvGlyphList = class;
@@ -678,28 +673,6 @@ begin
     end;
   end;
   InflateRect(Result, -1, -1);
-end;
-
-//=== { TJvSpeedButtonHotTrackOptions } ======================================
-
-constructor TJvSpeedButtonHotTrackOptions.Create;
-begin
-  inherited Create;
-  FEnabled := False;
-  FColor := $00D2BDB6;
-  FFrameColor := $006A240A;
-end;
-
-procedure TJvSpeedButtonHotTrackOptions.Assign(Source: TPersistent);
-begin
-  if Source is TJvSpeedButtonHotTrackOptions then
-  begin
-    Enabled := TJvSpeedButtonHotTrackOptions(Source).Enabled;
-    Color := TJvSpeedButtonHotTrackOptions(Source).Color;
-    FrameColor := TJvSpeedButtonHotTrackOptions(Source).FrameColor;
-  end
-  else
-    inherited Assign(Source);
 end;
 
 //=== { TJvButtonImage } =====================================================
@@ -929,7 +902,7 @@ var
 begin
   if csDesigning in ComponentState then
     Exit;
-  if not MouseOver and Enabled then
+  if not MouseOver and Enabled  then
   begin
     { Don't draw a border if DragMode <> dmAutomatic since this button is meant to
       be used as a dock client. }
@@ -951,14 +924,14 @@ procedure TJvCustomSpeedButton.MouseLeave(Control: TControl);
 var
   NeedRepaint: Boolean;
 begin
-  if MouseOver and Enabled then
+  if MouseOver and Enabled  then
   begin
     NeedRepaint :=
       {$IFDEF JVCLThemesEnabled}
       { Windows XP introduced hot states also for non-flat buttons. }
       ThemeServices.ThemesEnabled or
       {$ENDIF JVCLThemesEnabled}
-      HotTrack or (FFlat and Enabled and not FDragging);
+      HotTrack or (FFlat and Enabled and not FDragging and (GetCapture = NullHandle));
 
     inherited MouseLeave(Control); // set MouseOver
 
@@ -994,6 +967,10 @@ begin
   Color := clBtnFace;
   FHotTrack := False;
   FHotTrackFont := TFont.Create;
+  FHotTrackFontOptions := DefaultTrackFontOptions;
+  {Inserted by (ag) 2004-09-04}
+  FHotTrackOptions := TJvSpeedButtonHotTrackOptions.Create;
+  {Insert End}
   FFontSave := TFont.Create;
   SetBounds(0, 0, 25, 25);
   ControlStyle := [csCaptureMouse, csOpaque, csDoubleClicks];
@@ -1011,11 +988,7 @@ begin
   FStyle := bsAutoDetect;
   FLayout := blGlyphTop;
   FMarkDropDown := True;
-  FHotTrackFontOptions := DefaultTrackFontOptions;
   FDoubleBuffered := True;
-  {Inserted by (ag) 2004-09-04}
-  FHotTrackOptions := TJvSpeedButtonHotTrackOptions.Create;
-  {Insert End}
   Inc(ButtonCount);
 end;
 
@@ -1048,6 +1021,7 @@ begin
       { Calling Click might open a new window or something which will remove
         the focus; if the new window is modal then UpdateTracking won't be
         called until the window is closed, thus: }
+      MouseLeave(Self);
       {$IFDEF VCL}
       Perform(CM_MOUSELEAVE, 0, 0);
       {$ENDIF VCL}
@@ -1525,18 +1499,25 @@ begin
   end;
 end;
 
-procedure TJvCustomSpeedButton.SetHotTrackFont(const Value: TFont);
+procedure TJvCustomSpeedButton.SetHotTrackFont(Value: TFont);
 begin
-  FHotTrackFont.Assign(Value);
+  if (FHotTrackFont<>Value) and (Value <> nil) then
+    FHotTrackFont.Assign(Value);
 end;
 
-procedure TJvCustomSpeedButton.SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
+procedure TJvCustomSpeedButton.SetHotTrackFontOptions(Value: TJvTrackFontOptions);
 begin
   if FHotTrackFontOptions <> Value then
   begin
     FHotTrackFontOptions := Value;
     UpdateTrackFont(HotTrackFont, Font, FHotTrackFontOptions);
   end;
+end;
+
+procedure TJvCustomSpeedButton.SetHotTrackOptions(Value: TJvHotTrackOptions);
+begin
+  if (FHotTrackOptions <> Value) and (Value <> nil) then
+    FHotTrackOptions.Assign(Value);
 end;
 
 procedure TJvCustomSpeedButton.SetInactiveGrayed(Value: Boolean);
@@ -1608,6 +1589,34 @@ begin
   begin
     FGlyph.WordWrap := Value;
     Invalidate;
+  end;
+end;
+
+function TJvCustomSpeedButton.GetHotTrack: Boolean;
+begin
+  Result := FHotTrack;
+end;
+
+function TJvCustomSpeedButton.GetHotTrackFont: TFont;
+begin
+  Result := FHotTrackFont;
+end;
+
+function TJvCustomSpeedButton.GetHotTrackFontOptions: TJvTrackFontOptions;
+begin
+  Result := FHotTrackFontOptions;
+end;
+
+function TJvCustomSpeedButton.GetHotTrackOptions: TJvHotTrackOptions;
+begin
+  Result := FHotTrackOptions;
+end;
+
+procedure TJvCustomSpeedButton.SetHotTrack(Value: Boolean);
+begin
+  if FHotTrack <> Value then
+  begin
+    FHotTrack := Value;
   end;
 end;
 
@@ -1732,13 +1741,6 @@ end;
 
 {$ENDIF VCL}
 
-{Inserted by (ag) 2004-09-04}
-procedure TJvCustomSpeedButton.SetHotTrackOptions(Value: TJvSpeedButtonHotTrackOptions);
-begin
-  FHotTrackOptions.Assign(Value);
-end;
-{Insert End}
-
 //=== { TJvGlyphCache } ======================================================
 
 constructor TJvGlyphCache.Create;
@@ -1764,7 +1766,7 @@ var
 begin
   for I := FGlyphLists.Count - 1 downto 0 do
   begin
-    Result := TJvGlyphList(FGlyphLists[I]);
+    Result := FGlyphLists[I];
     with Result do
       if (AWidth = Width) and (AHeight = Height) then
         Exit;
@@ -2817,6 +2819,7 @@ end;
 
 
 {$IFDEF UNITVERSIONING}
+
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 

@@ -259,7 +259,7 @@ type
     property Text;
     property MRUCount: Integer read FMRUCount;
     // returns the supported font sizes or a set of default sizes for TrueType fonts
-    property FontSizes:TStrings read GetFontSizes;
+    property FontSizes: TStrings read GetFontSizes;
   published
     property Anchors;
     property AutoComplete default False;
@@ -1364,7 +1364,7 @@ end;
 var
   FPixelsPerInch: Integer = 96;
 
-function GetFontSizes(var lpelf: TEnumLogFont; var lpntm: TNewTextMetric;
+function GetFontSizesEnum(var lpelf: TEnumLogFont; var lpntm: TNewTextMetric;
   FontType: Integer; lParam: Integer): Integer; stdcall;
 var
   aSize: Integer;
@@ -1409,7 +1409,7 @@ begin
     DC := GetDC(HWND_DESKTOP);
     try
       FPixelsPerInch := GetDeviceCaps(DC, LOGPIXELSY);
-      EnumFontFamilies(DC, PChar(FontName), GetFontSizes, integer(SizeList));
+      EnumFontFamilies(DC, PChar(FontName), @GetFontSizesEnum, integer(SizeList));
       SizeList.Sort(SizeSort);
     finally
       ReleaseDC(HWND_DESKTOP, DC);

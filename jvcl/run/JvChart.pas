@@ -133,9 +133,9 @@ type
 
   TJvChartLegend = (clChartLegendNone, clChartLegendRight, clChartLegendBelow);
 
-{$ifdef TJVCHART_ARRAY_OF_ARRAY}
+{$IFDEF TJVCHART_ARRAY_OF_ARRAY}
   TJvChartDataArray = array of array of Double;
-{$endif}
+{$ENDIF TJVCHART_ARRAY_OF_ARRAY}
 
   TJvChart = class;
 
@@ -205,7 +205,7 @@ type
     property LineWidth: Integer read FLineWidth write FLineWidth;
     property Caption: string read FCaption write FCaption;
     property CaptionPosition :TJvChartCaptionPosition read FCaptionPosition write FCaptionPosition;
-    property CaptionBoxed :Boolean read FCaptionBoxed write FCaptionBoxed;  
+    property CaptionBoxed :Boolean read FCaptionBoxed write FCaptionBoxed;
 
     property Tag  :Integer read FTag write FTag; // User assignable integer like TComponent.Tag
 
@@ -218,11 +218,11 @@ type
     a memory cap, so we don't thrash the system or leak forever.  -WAP.}
   TJvChartData = class(TObject)
   private
-{$ifdef TJVCHART_ARRAY_OF_ARRAY}
+    {$IFDEF TJVCHART_ARRAY_OF_ARRAY}
     FData: TJvChartDataArray;
-{$else}
-    FData:Array of Double;
-{$endif}
+    {$ELSE}
+    FData: array of Double;
+    {$ENDIF TJVCHART_ARRAY_OF_ARRAY}
 
     FClearToValue: Double; // Typically either 0.0 or NaN
     FTimeStamp: array of TDateTime; // Time-series as a TDateTime
@@ -812,11 +812,11 @@ uses
   JvJVCLUtils, JvConsts, JvResources;
 
 const
-{$ifdef TJVCHART_ARRAY_OF_ARRAY}
+{$IFDEF TJVCHART_ARRAY_OF_ARRAY}
   CHART_SANITY_LIMIT = 60000;
-{$else}
+{$ELSE}
   CHART_SANITY_LIMIT = 12000000;
-{$endif}
+{$ENDIF TJVCHART_ARRAY_OF_ARRAY}
 
         // Any attempt to have more than CHART_SANITY_LIMIT elements in this
         // graph will be treated as an internal failure on our part.  This prevents
@@ -912,40 +912,44 @@ end;
 //=== { TJvChartData } =======================================================
 
 constructor TJvChartData.Create;
-{$ifdef TJVCHART_ARRAY_OF_ARRAY}
+{$IFDEF TJVCHART_ARRAY_OF_ARRAY}
 var
   I: Integer;
-{$endif}
+{$ENDIF TJVCHART_ARRAY_OF_ARRAY}
 begin
   inherited Create;
   FPenCount := DEFAULT_PEN_COUNT; // Can never set less than one inside TJvChartData!
-{$ifdef TJVCHART_ARRAY_OF_ARRAY}
+{$IFDEF TJVCHART_ARRAY_OF_ARRAY}
   // FPenCount must be valid here:
   for I := 0 to DEFAULT_PEN_COUNT do
     Grow(I, DEFAULT_VALUE_COUNT);
-{$else}
+{$ELSE}
   Grow( DEFAULT_PEN_COUNT, DEFAULT_VALUE_COUNT);
-{$endif}
+{$ENDIF TJVCHART_ARRAY_OF_ARRAY}
 end;
 
 destructor TJvChartData.Destroy;
+{$IFDEF TJVCHART_ARRAY_OF_ARRAY}
 var
   I: Integer;
+{$ENDIF TJVCHART_ARRAY_OF_ARRAY}
 begin
+  {$IFDEF TJVCHART_ARRAY_OF_ARRAY}
   for I := 0 to FDataAlloc - 1 do
     Finalize(FData[I]);
+  {$ENDIF TJVCHART_ARRAY_OF_ARRAY}
   Finalize(FData); // Free array.
   inherited Destroy;
 end;
 
 function TJvChartData.GetValue(Pen, ValueIndex: Integer): Double;
-{$ifdef TJVCHART_ARRAY_OF_ARRAY}
+{$IFDEF TJVCHART_ARRAY_OF_ARRAY}
 begin
   Assert(ValueIndex >= 0);
   Grow(Pen, ValueIndex);
   Result := FData[ValueIndex, Pen]; // This will raise EInvalidOP for NaN values.
 end;
-{$else}
+{$ELSE}
 var
   idx:Integer;
 begin
@@ -966,11 +970,11 @@ begin
   Result := FData[ idx ];
   end;
 end;
-{$endif}
+{$ENDIF TJVCHART_ARRAY_OF_ARRAY}
 
 
 procedure TJvChartData.SetValue(Pen, ValueIndex: Integer; NewValue: Double);
-{$ifdef TJVCHART_ARRAY_OF_ARRAY}
+{$IFDEF TJVCHART_ARRAY_OF_ARRAY}
 begin
   // Grow base array
   Grow(Pen, ValueIndex);
@@ -982,7 +986,7 @@ begin
     FValueCount := ValueIndex + 1;
   end;
 end;
-{$else}
+{$ELSE}
 var
   idx:Integer;
 begin
@@ -1006,7 +1010,7 @@ begin
   if ValueIndex >= FValueCount then
       FValueCount := ValueIndex + 1;
 end;
-{$endif}
+{$ENDIF TJVCHART_ARRAY_OF_ARRAY}
 
 function TJvChartData.GetTimestamp(ValueIndex: Integer): TDateTime;
 begin
@@ -1026,7 +1030,7 @@ begin
 end;
 
 procedure TJvChartData.Scroll;
-{$ifdef TJVCHART_ARRAY_OF_ARRAY}
+{$IFDEF TJVCHART_ARRAY_OF_ARRAY}
 var
   I, J: Integer;
 begin
@@ -1045,7 +1049,7 @@ begin
   FTimeStamp[FValueCount - 1] := 0;
   // Check we didn't break the heap:
 end;
-{$else}
+{$ELSE}
 var
  t:Integer;
  idx:Integer;
@@ -1072,10 +1076,10 @@ begin
     Clear;
   end;
 end;
-{$endif}
+{$ENDIF TJVCHART_ARRAY_OF_ARRAY}
 
 procedure TJvChartData.PreGrow(Pen, ValueIndex: Integer);
-{$ifdef TJVCHART_ARRAY_OF_ARRAY}
+{$IFDEF TJVCHART_ARRAY_OF_ARRAY}
 var
  t:Integer;
 begin
@@ -1086,17 +1090,17 @@ begin
     end;
     FDataAlloc := ValueIndex;
 end;
-{$else}
+{$ELSE}
 begin
   if Pen>FPenCount then
       FPenCount := Pen;
   Grow(Pen,ValueIndex);
   FDataAlloc := ValueIndex;
 end;
-{$endif}
+{$ENDIF TJVCHART_ARRAY_OF_ARRAY}
 
 
-{$ifdef TJVCHART_ARRAY_OF_ARRAY}
+{$IFDEF TJVCHART_ARRAY_OF_ARRAY}
 procedure TJvChartData.Grow(Pen, ValueIndex: Integer);
 var
   I, J, oldLength: Integer;
@@ -1149,7 +1153,7 @@ begin
     end;
   end;
 end;
-{$else}
+{$ELSE}
 procedure TJvChartData.Grow(Pen, ValueIndex: Integer);
 var
   n,idx:Integer;
@@ -1167,7 +1171,7 @@ begin
       end;
   end;
 end;
-{$endif}
+{$ENDIF TJVCHART_ARRAY_OF_ARRAY}
 
 
 function TJvChartData.DebugStr(ValueIndex: Integer): string; // dump all pens for particular valueindex, as string.
@@ -1197,7 +1201,7 @@ begin
 end;
 
 procedure TJvChartData.Clear; // Resets FValuesCount/FPenCount to zero. Zeroes everything too, just for good luck.
-{$ifdef TJVCHART_ARRAY_OF_ARRAY}
+{$IFDEF TJVCHART_ARRAY_OF_ARRAY}
 var
   I, J: Integer;
 begin
@@ -1206,7 +1210,7 @@ begin
       FData[I, J] := FClearToValue;
   FValueCount := 0;
 end;
-{$else}
+{$ELSE}
 var
   I: Integer;
 begin
@@ -1214,11 +1218,11 @@ begin
       FData[I] := FClearToValue;
   end;
 end;
-{$endif}
+{$ENDIF TJVCHART_ARRAY_OF_ARRAY}
 
 
 procedure TJvChartData.ClearPenValues; // Clears all pen values to NaN but does not reset pen definitions etc.
-{$ifdef TJVCHART_ARRAY_OF_ARRAY}
+{$IFDEF TJVCHART_ARRAY_OF_ARRAY}
 var
   I, J: Integer;
 begin
@@ -1226,11 +1230,11 @@ begin
     for J := 0 to Length(FData[I]) - 1 do
       FData[I, J] :=  ClearToValue; // 0.0;
 end;
-{$else}
+{$ELSE}
 begin
-    Clear;
+  Clear;
 end;
-{$endif}
+{$ENDIF TJVCHART_ARRAY_OF_ARRAY}
 
 //=== { TJvChartYAxisOptions } ===============================================
 

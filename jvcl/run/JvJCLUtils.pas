@@ -18,7 +18,8 @@ Contributor(s):
   Andreas Hausladen
   Ralf Kaiser
   Vladimir Gaitanoff
-  
+  Dejoy den
+
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -72,7 +73,8 @@ uses
   {$IFDEF VisualCLX}
   Qt, QWindows, QStdCtrls,
   {$ENDIF VisualCLX}
-  TypInfo;
+  TypInfo,
+  JvTypes;
 
 const
   {$IFDEF MSWINDOWS}
@@ -340,6 +342,11 @@ function CreateRegionFromBitmap(Bitmap: TBitmap; RegionColor: TColor;
 
 { TrueInflateRect inflates rect in other method, than InflateRect API function }
 function TrueInflateRect(const R: TRect; const I: Integer): TRect;
+{**** Color routines }
+procedure RGBToHSV(R, G, B: Integer; var H, S, V: Integer);
+function RGBToBGR(Value: Cardinal): Cardinal;
+function ColorToPrettyName(Value: TColor): string;
+function PrettyNameToColor(const Value: string): TColor;
 
 {**** other routines }
 procedure SwapInt(var Int1, Int2: Integer); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
@@ -9414,6 +9421,127 @@ begin
   {$ENDIF COMPILER5}
 end;
 
+{Color functions}
+procedure RGBToHSV(R, G, B: Integer; var H, S, V: Integer);
+{$IFDEF VCL}
+var
+  Delta: Integer;
+  Min, Max: Integer;
+
+  function GetMax(I, J, K: Integer): Integer;
+  begin
+    if J > I then
+      I := J;
+    if K > I then
+      I := K;
+    Result := I;
+  end;
+
+  function GetMin(I, J, K: Integer): Integer;
+  begin
+    if J < I then
+      I := J;
+    if K < I then
+      I := K;
+    Result := I;
+  end;
+
+begin
+  Min := GetMin(R, G, B);
+  Max := GetMax(R, G, B);
+  V := Max;
+  Delta := Max - Min;
+  if Max = 0 then
+    S := 0
+  else
+    S := (255 * Delta) div Max;
+  if S = 0 then
+    H := 0
+  else
+  begin
+    if R = Max then
+      H := (60 * (G - B)) div Delta
+    else
+    if G = Max then
+      H := 120 + (60 * (B - R)) div Delta
+    else
+      H := 240 + (60 * (R - G)) div Delta;
+    if H < 0 then
+      H := H + 360;
+  end;
+end;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+var
+  QC: QColorH;
+begin
+  QC := QColor_create(R, G, B);
+  QColor_getHsv(QC, @H, @S, @V);
+  QColor_destroy(QC);
+end;
+{$ENDIF VisualCLX}
+
+function RGBToBGR(Value: Cardinal): Cardinal;
+begin
+  Result :=
+   ((Value and $00FF0000) shr 16) or
+    (Value and $0000FF00) or
+   ((Value and $000000FF) shl 16);
+end;
+
+function ColorToPrettyName(Value: TColor): string;
+var
+  Index: Integer;
+begin
+  for Index := Low(ColorValues) to High(ColorValues) do
+    if Value = ColorValues[Index].Value then
+    begin
+      Result := ColorValues[Index].Description;
+      Exit;
+    end;
+  for Index := Low(StandardColorValues) to High(StandardColorValues) do
+    if Value = StandardColorValues[Index].Value then
+    begin
+      Result := StandardColorValues[Index].Description;
+      Exit;
+    end;
+  for Index := Low(SysColorValues) to High(SysColorValues) do
+    if Value = SysColorValues[Index].Value then
+    begin
+      Result := SysColorValues[Index].Description;
+      Exit;
+    end;
+  Result := ColorToString(Value);
+end;
+
+function PrettyNameToColor(const Value: string): TColor;
+var
+  Index: Integer;
+  ColorResult: Integer;
+begin
+  for Index := Low(ColorValues) to High(ColorValues) do
+    if CompareText(Value, ColorValues[Index].Description) = 0 then
+    begin
+      Result := ColorValues[Index].Value;
+      Exit;
+    end;
+  for Index := Low(StandardColorValues) to High(StandardColorValues) do
+    if CompareText(Value, StandardColorValues[Index].Description) = 0 then
+    begin
+      Result := StandardColorValues[Index].Value;
+      Exit;
+    end;
+  for Index := Low(SysColorValues) to High(SysColorValues) do
+    if CompareText(Value, SysColorValues[Index].Description) = 0 then
+    begin
+      Result := SysColorValues[Index].Value;
+      Exit;
+    end;
+  if IdentToColor(Value, ColorResult) then
+    Result := ColorResult
+  else
+    Result := clNone;
+end;
 
 {$IFNDEF CLR}
 function StartsText(const SubStr, S: string): Boolean;

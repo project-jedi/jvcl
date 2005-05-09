@@ -398,7 +398,7 @@ resourcestring
 //=== JvCsvData.pas ==========================================================
 resourcestring
   RsErrorRowItem = '<ERROR>';
-  RsECsvErrFormat = '%s: %s ';
+  RsECsvErrFormat = '%s: %s';
   RsECsvErrFormat2 = '%s: %s (%d)';
   RsECsvInvalidSeparatorFmt = 'Invalid separator character (%s)';
   RsEProblemReadingRow = 'Problem reading row %d';
@@ -1511,8 +1511,13 @@ resourcestring
 
 //=== JvOfficeColorPanel.pas =================================================
 resourcestring
+  // (dejoy) will be moved
+  RsOtherColorCaption = 'No Color';
   RsAutoCaption = 'Automatic';
-  RsOtherColorCaption = 'Other Colors...';
+
+  RsNoneColorCaption = 'No Color';
+  RsDefaultColorCaption = 'Automatic';
+  RsCustomColorCaption = 'Other Colors...';
 
 //=== JvPageSetup.pas ========================================================
 resourcestring
@@ -2060,6 +2065,43 @@ resourcestring
   RsClSkyBlue = 'Sky blue';
   RsClCream = 'Cream';
   RsClMedGray = 'Medium gray';
+
+  //Standrad colors
+  RsClBrown = 'Brown';
+  RsClOliveGreen = 'Olive Green';
+  RsClDarkGreen = 'Dark Green';
+  RsClDarkTeal = 'Dark Teal';
+  RsClDarkBlue = 'Dark Blue';
+  RsClIndigo = 'Indigo';
+  RsClGray80 = 'Gray 80%';
+
+  RsClDarkRed = 'Dark Red';
+  RsClOrange = 'Orange';
+  RsClDarkYellow = 'Dark Yellow';
+  RsClBlueGray = 'Blue Gray';
+  RsClGray50 = 'Gray 50%';
+
+  RsClLightOrange = 'Light Orange';
+  RsClSeaGreen = 'Sea Green';
+  RsClLightBlue = 'Light Blue';
+  RsClViolet = 'Violet';
+  RsClGray40 = 'Gray 40%';
+
+  RsClPink = 'Pink';
+  RsClGold = 'Gold';
+  RsClBrightGreen = 'Bright Green';
+  RsClTurquoise = 'Turquoise';
+  RsClPlum = 'Plum';
+  RsClGray25 = 'Gray 25%';
+
+  RsClRose = 'Rose';
+  RsClTan = 'Tan';
+  RsClLightYellow  = 'Light Yellow';
+  RsClLightGreen = 'Light Green';
+  RsClLightTurquoise = 'Light Turquoise';
+  RsClPaleBlue = 'Pale Blue';
+  RsClLavender = 'Lavender';
+
   {$IFDEF VCL}
   // windows system colors
   RsClScrollBar = 'Scrollbar';
@@ -2087,6 +2129,12 @@ resourcestring
   RsCl3DLight = 'Highlight 3D elements';
   RsClInfoText = 'Tooltip text';
   RsClInfoBk = 'Tooltip background';
+  RsGradientActiveCaption ='Gradient Active Caption';
+  RsGradientInactiveCaption ='Gradient Inactive Caption';
+  RsHotLight ='Hot Light';
+  RsMenuBar ='Menu Bar';
+  RsMenuHighlight ='Menu Highlight';
+
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   // VisualCLX system colors
