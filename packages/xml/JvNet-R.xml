@@ -22,7 +22,7 @@
     <Package Name="vclx" Targets="C6,C6p" Condition=""/>
     <Package Name="vclx" Targets="C6,C6p" Condition=""/>
     <Package Name="indy50" Targets="D5,D5s" Condition="USE_3RDPARTY_INDY"/>
-    <Package Name="indy" Targets="D6,D6p,D7,D7p,D9" Condition="USE_3RDPARTY_INDY"/>
+    <Package Name="indy" Targets="D6,D6p,D7,D7p,D9,D9p" Condition="USE_3RDPARTY_INDY"/>
     <Package Name="IcsDel50" Targets="D5,D5s" Condition="USE_3RDPARTY_ICS"/>
     <Package Name="IcsDel60" Targets="D6,D6p" Condition="USE_3RDPARTY_ICS"/>
     <Package Name="IcsDel70" Targets="D7,D7p" Condition="USE_3RDPARTY_ICS"/>
