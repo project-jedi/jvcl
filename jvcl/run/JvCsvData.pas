@@ -1787,7 +1787,6 @@ var
   PDestination: PChar;
   CsvColumnData: PCsvColumn;
   DT: TDateTime;
-  TempInteger:Integer;
   ATimeStamp: TTimeStamp;
 begin
   //Trace( 'SetFieldData '+Field.FieldName );
