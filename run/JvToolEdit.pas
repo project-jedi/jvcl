@@ -68,9 +68,7 @@ const
 
 {$IFDEF CLR}
 type
-  {$IFDEF CLR}
   [ComImport, InterfaceTypeAttribute(ComInterfaceType.InterfaceIsIUnknown)]
-  {$ENDIF CLR}
   IUnknown = IInterface;
 {$ENDIF CLR}
 
