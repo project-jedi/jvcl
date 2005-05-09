@@ -38,7 +38,7 @@ uses
   {$IFDEF HAS_UNIT_TYPES}
   Types,
   {$ENDIF HAS_UNIT_TYPES}
-  JvTypes, JvFullColorSpaces, JvFullColorRotate;
+  JvJCLUtils, JvTypes, JvFullColorSpaces, JvFullColorRotate;
 
 type
   TJvFullColorAxisConfig = (acXYZ, acXZY, acYXZ, acYZX, acZXY, acZYX);
@@ -748,7 +748,7 @@ uses
   {$IFDEF COMPILER5}
   JclMath, // For EnsureRange
   {$ENDIF COMPILER5}
-  JvResources, JvConsts;
+  JvResources, JvConsts, JvJVCLUtils;
 
 type
   TJvFullColorAxisConfigs = array [TJvAxisIndex] of TJvAxisIndex;

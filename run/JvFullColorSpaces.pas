@@ -314,11 +314,6 @@ function ColorSpaceManager: TJvColorSpaceManager;
 function GetAxisValue(AColor: TJvFullColor; AAxis: TJvAxisIndex): Byte;
 function SetAxisValue(AColor: TJvFullColor; AAxis: TJvAxisIndex; NewValue: Byte): TJvFullColor;
 
-function ColorToPrettyName(Value: TColor): string;
-function PrettyNameToColor(Value: string): TColor;
-
-function RGBToBGR(Value: Cardinal): Cardinal;
-
 procedure SplitColorParts(AColor: TJvFullColor; var Part1, Part2, Part3: Integer);
 function JoinColorParts(const Part1, Part2, Part3: Integer): TJvFullColor;
 
@@ -338,7 +333,7 @@ uses
   {$IFDEF COMPILER6_UP}
   Controls, StdCtrls, ExtCtrls,
   {$ENDIF COMPILER6_UP}
-  JvResources, TypInfo,
+  JvResources, TypInfo, JvJCLUtils ,JvJVCLUtils,
   {$IFDEF COMPILER5}
   JclMath,   // For EnsureRange
   {$ENDIF COMPILER5}
@@ -401,14 +396,6 @@ begin
   end;
 end;
 
-function RGBToBGR(Value: Cardinal): Cardinal;
-begin
-  Result :=
-   ((Value and $00FF0000) shr 16) or
-    (Value and $0000FF00) or
-   ((Value and $000000FF) shl 16);
-end;
-
 procedure SplitColorParts(AColor: TJvFullColor; var Part1, Part2, Part3: Integer);
 begin
   Part1 :=  AColor         and $000000FF;
@@ -424,47 +411,6 @@ begin
     ((Part3 and $000000FF) shl 16);
 end;
 
-function ColorToPrettyName(Value: TColor): string;
-var
-  Index: Integer;
-begin
-  for Index := Low(ColorValues) to High(ColorValues) do
-    if Value = ColorValues[Index].Value then
-  begin
-    Result := ColorValues[Index].Description;
-    Exit;
-  end;
-  for Index := Low(SysColorValues) to High(SysColorValues) do
-    if Value = SysColorValues[Index].Value then
-  begin
-    Result := SysColorValues[Index].Description;
-    Exit;
-  end;
-  Result := ColorToString(Value);
-end;
-
-function PrettyNameToColor(Value: string): TColor;
-var
-  Index: Integer;
-  ColorResult: Integer;
-begin
-  for Index := Low(ColorValues) to High(ColorValues) do
-    if CompareText(Value,ColorValues[Index].Description) = 0 then
-  begin
-    Result := ColorValues[Index].Value;
-    Exit;
-  end;
-  for Index := Low(SysColorValues) to High(SysColorValues) do
-    if CompareText(Value,SysColorValues[Index].Description) = 0 then
-  begin
-    Result := SysColorValues[Index].Value;
-    Exit;
-  end;
-  if IdentToColor(Value,ColorResult) then
-    Result := ColorResult
-  else
-    Result := clNone;
-end;
 
 //=== { TJvColorSpace } ======================================================
 
