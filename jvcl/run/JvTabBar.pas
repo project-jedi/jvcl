@@ -37,7 +37,7 @@ uses
   {$IFDEF WINFORMS}
   System.Windows.Forms, System.Drawing,
   Borland.Vcl.Windows, Borland.Vcl.Messages, Borland.Vcl.SysUtils,
-  Borland.Vcl.Classes, Borland.Vcl.Types,
+  Borland.Vcl.Classes, Borland.Vcl.Types, Borland.Vcl.Contnrs,
   Jedi.WinForms.Vcl.Graphics, Jedi.WinForms.Vcl.Controls,
   Jedi.WinForms.Vcl.Forms, Jedi.WinForms.Vcl.ImgList, Jedi.WinForms.Vcl.Menus,
   Jedi.WinForms.Vcl.Buttons;
@@ -51,7 +51,7 @@ uses
   {$IFDEF VisualCLX}
   Types, Qt, QTypes, QGraphics, QControls, QForms, QImgList, QMenus, QButtons,
   {$ENDIF VisualCLX}
-  SysUtils, Classes;
+  SysUtils, Classes, Contnrs;
   {$ENDIF WINFORMS}
 
 type
@@ -176,7 +176,7 @@ type
 
   TJvTabBarPainter = class(TComponent)
   private
-    FOnChange: TNotifyEvent;
+    FOnChangeList: TList;
   protected
     procedure Changed; virtual;
 
@@ -192,6 +192,9 @@ type
     procedure DrawScrollButton(Canvas: TCanvas; TabBar: TJvCustomTabBar; Button: TJvTabBarScrollButtonKind;
       State: TJvTabBarScrollButtonState; R: TRect); virtual;
     procedure GetScrollButtons(TabBar: TJvCustomTabBar; var LeftButton, RightButton: TRect); {virtual; reserved for future use }
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
   end;
 
   TJvModernTabBarPainter = class(TJvTabBarPainter)
@@ -658,7 +661,7 @@ begin
   begin
     if Assigned(FPainter) then
     begin
-      FPainter.FOnChange := nil;
+      FPainter.FOnChangeList.Extract(Self);
       FPainter.RemoveFreeNotification(Self);
     end;
     FPainter := Value;
@@ -666,7 +669,7 @@ begin
     begin
       FreeAndNil(FDefaultPainter);
       FPainter.FreeNotification(Self);
-      FPainter.FOnChange := ImagesChanged;
+      FPainter.FOnChangeList.Add(Self);
     end;
 
     if not (csDestroying in ComponentState) then
@@ -1828,10 +1831,24 @@ end;
 
 //=== { TJvTabBarPainter } ===================================================
 
-procedure TJvTabBarPainter.Changed;
+constructor TJvTabBarPainter.Create(AOwner: TComponent);
 begin
-  if Assigned(FOnChange) then
-    FOnChange(Self);
+  inherited Create(AOwner);
+  FOnChangeList := TList.Create;
+end;
+
+destructor TJvTabBarPainter.Destroy;
+begin
+  FOnChangeList.Free;
+  inherited Destroy;
+end;
+
+procedure TJvTabBarPainter.Changed;
+var
+  i: Integer;
+begin
+  for i := 0 to FOnChangeList.Count - 1 do
+    TJvCustomTabBar(FOnChangeList[i]).ImagesChanged(Self);
 end;
 
 procedure TJvTabBarPainter.GetScrollButtons(TabBar: TJvCustomTabBar; var LeftButton, RightButton: TRect);
