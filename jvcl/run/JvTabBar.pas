@@ -59,6 +59,8 @@ type
   TJvTabBarItem = class;
 
   TJvTabBarOrientation = (toTop, toBottom);
+  TJvTabBarScrollButtonKind = (sbScrollLeft, sbScrollRight);
+  TJvTabBarScrollButtonState = (sbsHidden, sbsNormal, sbsHot, sbsPressed, sbsDisabled);
 
   TJvGetModifiedEvent = procedure(Sender: TJvTabBarItem; var Modified: Boolean) of object;
   TJvGetEnabledEvent = procedure(Sender: TJvTabBarItem; var Enabled: Boolean) of object;
@@ -169,7 +171,7 @@ type
     property TabBar: TJvCustomTabBar read GetTabBar;
   end;
 
-  TJvTabBarPainterOptionType = (poPaintsHotTab);
+  TJvTabBarPainterOptionType = (poPaintsHotTab, poBottomScrollButtons);
   TJvTabBarPainterOptions = set of TJvTabBarPainterOptionType;
 
   TJvTabBarPainter = class(TComponent)
@@ -186,6 +188,10 @@ type
     function GetTabSize(Canvas: TCanvas; Tab: TJvTabBarItem): TSize; virtual; abstract;
     function GetCloseRect(Canvas: TCanvas; Tab: TJvTabBarItem; R: TRect): TRect; virtual; abstract;
     function Options: TJvTabBarPainterOptions; virtual; abstract;
+
+    procedure DrawScrollButton(Canvas: TCanvas; TabBar: TJvCustomTabBar; Button: TJvTabBarScrollButtonKind;
+      State: TJvTabBarScrollButtonState; R: TRect); virtual;
+    procedure GetScrollButtons(TabBar: TJvCustomTabBar; var LeftButton, RightButton: TRect); {virtual; reserved for future use }
   end;
 
   TJvModernTabBarPainter = class(TJvTabBarPainter)
@@ -266,6 +272,7 @@ type
   TJvTabBarItemEvent = procedure(Sender: TObject; Item: TJvTabBarItem) of object;
   TJvTabBarSelectingEvent = procedure(Sender: TObject; Item: TJvTabBarItem; var AllowSelect: Boolean) of object;
   TJvTabBarClosingEvent = procedure(Sender: TObject; Item: TJvTabBarItem; var AllowClose: Boolean) of object;
+  TJvTabBarScrollButtonClickEvent = procedure(Sender: TObject; Button: TJvTabBarScrollButtonKind) of object;
 
   TJvCustomTabBar = class(TCustomControl)
   private
@@ -299,14 +306,18 @@ type
     FLastTabRight: Integer;
     FRequiredWidth: Integer;
     FBarWidth: Integer;
-    FBtnLeftScroll: TSpeedButton;
-    FBtnRightScroll: TSpeedButton;
-    FBmpLeftScroll: TBitmap;
-    FBmpRightScroll: TBitmap;
+    FBtnLeftScroll: TJvTabBarScrollButtonState;
+    FBtnRightScroll: TJvTabBarScrollButtonState;
+    FBtnLeftScrollRect: TRect;
+    FBtnRightScrollRect: TRect;
+    FBtnLeftScrollExState: Boolean;
+    FBtnRightScrollExState: Boolean;
+    FScrollButtonBackground: TBitmap;
     FHint: TCaption;
     FFlatScrollButtons: Boolean;
     FAllowTabMoving: Boolean;
     FOrientation: TJvTabBarOrientation;
+    FOnScrollButtonClick: TJvTabBarScrollButtonClickEvent;
 
     function GetLeftTab: TJvTabBarItem;
     procedure SetLeftTab(Value: TJvTabBarItem);
@@ -320,17 +331,18 @@ type
     procedure SetHotTab(Tab: TJvTabBarItem);
     procedure SetClosingTab(Tab: TJvTabBarItem);
     procedure UpdateScrollButtons;
-    function GetScrollBarGlyph(Left: Boolean): TBitmap;
     function FindSelectableTab(Tab: TJvTabBarItem): TJvTabBarItem;
     procedure SetHint(const Value: TCaption);
     procedure SetFlatScrollButtons(const Value: Boolean);
     procedure SetPageList(const Value: TCustomControl);
     procedure SetOrientation(const Value: TJvTabBarOrientation);
   protected
+    procedure DrawScrollBarGlyph(Canvas: TCanvas; X, Y: Integer; Left, Disabled: Boolean);
     procedure Resize; override;
     procedure CalcTabsRects;
     procedure Paint; override;
     procedure PaintTab(Canvas: TCanvas; Tab: TJvTabBarItem); virtual;
+    procedure PaintScrollButtons;
 
     function GetTabWidth(Tab: TJvTabBarItem): Integer;
     function GetTabHeight(Tab: TJvTabBarItem): Integer;
@@ -344,11 +356,15 @@ type
     procedure TabSelected(Tab: TJvTabBarItem); virtual;
     procedure Changed; virtual;
     procedure ImagesChanged(Sender: TObject); virtual;
-    procedure ScrollButtonClicked(Sender: TObject); virtual;
+    procedure ScrollButtonClick(Button: TJvTabBarScrollButtonKind); virtual;
 
     procedure DragOver(Source: TObject; X: Integer; Y: Integer;
       State: TDragState; var Accept: Boolean); override;
     procedure DragCanceled; override;
+
+    function ScrollButtonsMouseDown(Button: TMouseButton; Shift: TShiftState; X: Integer; Y: Integer): Boolean; virtual;
+    function ScrollButtonsMouseUp(Button: TMouseButton; Shift: TShiftState; X: Integer; Y: Integer): Boolean; virtual;
+    function ScrollButtonsMouseMove(Shift: TShiftState; X: Integer; Y: Integer): Boolean; virtual;
 
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X: Integer; Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X: Integer; Y: Integer); override;
@@ -358,6 +374,7 @@ type
     procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
+    procedure InitWidget; override;
     procedure MouseLeave(AControl: TControl); override;
     {$ENDIF VisualCLX}
   public
@@ -402,6 +419,7 @@ type
     property OnTabSelecting: TJvTabBarSelectingEvent read FOnTabSelecting write FOnTabSelecting;
     property OnTabSelected: TJvTabBarItemEvent read FOnTabSelected write FOnTabSelected;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property OnScrollButtonClick: TJvTabBarScrollButtonClickEvent read FOnScrollButtonClick write FOnScrollButtonClick;
   end;
 
   TJvTabBar = class(TJvCustomTabBar)
@@ -513,7 +531,7 @@ end;
 constructor TJvCustomTabBar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  ControlStyle := ControlStyle - [csAcceptsControls];
+  ControlStyle := ControlStyle - [csAcceptsControls, csOpaque];
   
   FTabs := TJvTabBarItems.Create(Self, TJvTabBarItem);
   FChangeLink := TChangeLink.Create;
@@ -542,8 +560,7 @@ begin
   Images := nil;
   FChangeLink.Free;
   FreeAndNil(FTabs);
-  FreeAndNil(FBmpLeftScroll);
-  FreeAndNil(FBmpRightScroll);
+  FreeAndNil(FScrollButtonBackground);
   inherited Destroy;
 end;
 
@@ -568,46 +585,65 @@ begin
       Tabs[I].Notification(Component, Operation);
 end;
 
-function TJvCustomTabBar.GetScrollBarGlyph(Left: Boolean): TBitmap;
+procedure TJvCustomTabBar.DrawScrollBarGlyph(Canvas: TCanvas; X, Y: Integer; Left, Disabled: Boolean);
+
+  procedure OffsetPt(var Pt: TPoint; X, Y: Integer);
+  begin
+    Pt := Point(Pt.X + X, Pt.Y + Y);
+  end;
+
 const
-  W = 6;
-  H = 6;
+  W = 4;
+  H = 7;
 var
   Pts: array [0..2] of TPoint;
+  Brush: TBrush;
+  Pen: TPen;
 begin
-  if Left then
-    Result := FBmpLeftScroll
-  else
-    Result := FBmpRightScroll;
-
-  if not Assigned(Result) then
-  begin
-    Result := TBitmap.Create;
-    Result.Width := 8;
-    Result.Height := 8;
+  Brush := TBrush.Create;
+  Pen := TPen.Create;
+  try
+    Brush.Assign(Canvas.Brush);
+    Pen.Assign(Canvas.Pen);
 
     if Left then
     begin
-      Pts[0] := Point(W div 2 + 1, 0);
-      Pts[1] := Point(W div 2 + 1, H);
-      Pts[2] := Point(0 + 1, H div 2);
+      Pts[0] := Point(X + W - 1, Y + 0);
+      Pts[1] := Point(X + W - 1, Y + H - 1);
+      Pts[2] := Point(X + 0, Y + (H - 1) div 2);
     end
     else
     begin
-      Pts[0] := Point(W div 2 - 1, 0);
-      Pts[1] := Point(W div 2 - 1, H);
-      Pts[2] := Point(W - 1, H div 2);
+      Pts[0] := Point(X + 0, Y + 0);
+      Pts[1] := Point(X + 0, Y + H - 1);
+      Pts[2] := Point(X + W - 1, Y + (H - 1) div 2);
     end;
-    Result.Canvas.Brush.Style := bsSolid;
-    Result.Canvas.Brush.Color := clBlack;
-    Result.Canvas.Pen.Color := Result.Canvas.Brush.Color;
-    Result.Canvas.Polygon(Pts)
-  end;
+    Canvas.Brush.Style := bsSolid;
+    if Disabled then
+    begin
+      Canvas.Brush.Color := clWhite;
+      OffsetPt(Pts[0], 1, 1);
+      OffsetPt(Pts[1], 1, 1);
+      OffsetPt(Pts[2], 1, 1);
+    end
+    else
+      Canvas.Brush.Color := clBlack;
 
-  if Left then
-    FBmpLeftScroll := Result
-  else
-    FBmpRightScroll := Result;
+    Canvas.Pen.Color := Canvas.Brush.Color;
+    Canvas.Polygon(Pts);
+    if Disabled then
+    begin
+      Canvas.Brush.Color := clGray;
+      OffsetPt(Pts[0], -1, -1);
+      OffsetPt(Pts[1], -1, -1);
+      OffsetPt(Pts[2], -1, -1);
+      Canvas.Pen.Color := Canvas.Brush.Color;
+      Canvas.Polygon(Pts);
+    end;
+  finally
+    Canvas.Pen.Assign(Pen);
+    Canvas.Brush.Assign(Brush);
+  end;
 end;
 
 procedure TJvCustomTabBar.SetTabs(Value: TJvTabBarItems);
@@ -888,6 +924,12 @@ end;
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}
+procedure TJvCustomTabBar.InitWidget;
+begin
+  inherited InitWidget;
+  QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground); // reduces flicker
+end;
+
 procedure TJvCustomTabBar.MouseLeave(AControl: TControl);
 begin
   SetHotTab(nil);
@@ -901,6 +943,9 @@ var
   Tab: TJvTabBarItem;
   LastSelected: TJvTabBarItem;
 begin
+  if ScrollButtonsMouseDown(Button, Shift, X, Y) then
+    Exit;
+
   if Button = mbLeft then
   begin
     FMouseDownClosingTab := nil;
@@ -932,6 +977,9 @@ var
   Pt: TPoint;
   Tab: TJvTabBarItem;
 begin
+  if ScrollButtonsMouseUp(Button, Shift, X, Y) then
+    Exit;
+
   try
     if RightClickSelect and not Assigned(PopupMenu) and (Button = mbRight) then
     begin
@@ -967,7 +1015,10 @@ var
   Tab: TJvTabBarItem;
   NewHint: TCaption;
 begin
-  CalcTabsRects;
+  CalcTabsRects; // maybe inefficent
+  if ScrollButtonsMouseMove(Shift, X, Y) then
+    Exit;
+
   Tab := TabAt(X, Y);
   if HotTracking and ([ssLeft, ssMiddle, ssRight] * Shift = []) then
     SetHotTab(Tab);
@@ -995,6 +1046,112 @@ begin
   end;
 
   inherited MouseMove(Shift, X, Y);
+end;
+
+function TJvCustomTabBar.ScrollButtonsMouseDown(Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer): Boolean;
+
+  function HandleButton(Kind: TJvTabBarScrollButtonKind; var State: TJvTabBarScrollButtonState;
+    X, Y: Integer; const R: TRect): Boolean;
+  begin
+    Result := PtInRect(R, Point(X, Y));
+    case State of
+      sbsNormal, sbsHot:
+        begin
+          if Result then
+          begin
+            State := sbsPressed;
+            PaintScrollButtons;
+          end;
+        end;
+    end;
+  end;
+
+begin
+  Result := False;
+  if (FBtnLeftScroll <> sbsHidden) then
+    Result := HandleButton(sbScrollLeft, FBtnLeftScroll, X, Y, FBtnLeftScrollRect);
+  if (FBtnRightScroll <> sbsHidden) then
+    Result := HandleButton(sbScrollRight, FBtnRightScroll, X, Y, FBtnRightScrollRect);
+end;
+
+function TJvCustomTabBar.ScrollButtonsMouseMove(Shift: TShiftState; X, Y: Integer): Boolean;
+
+  function HandleButton(var ExState: Boolean; var State: TJvTabBarScrollButtonState;
+    X, Y: Integer; const R: TRect): Boolean;
+  begin
+    Result := PtInRect(R, Point(X, Y));
+    case State of
+      sbsNormal:
+        begin
+          if Result then
+          begin
+            State := sbsHot;
+            PaintScrollButtons;
+            Result := True;
+          end;
+        end;
+      sbsPressed:
+        begin
+          if not Result then
+          begin
+            ExState := True;
+            State := sbsNormal;
+            PaintScrollButtons;
+            State := sbsPressed;
+          end
+          else
+          begin
+            if ExState then
+            begin
+              ExState := False;
+              PaintScrollButtons;
+            end;
+          end;
+        end;
+      sbsHot:
+        begin
+          if not Result then
+          begin
+            State := sbsNormal;
+            PaintScrollButtons;
+          end;
+        end;
+    end;
+  end;
+
+begin
+  Result := False;
+  if (FBtnLeftScroll <> sbsHidden) then
+    Result := HandleButton(FBtnLeftScrollExState, FBtnLeftScroll, X, Y, FBtnLeftScrollRect);
+  if (FBtnRightScroll <> sbsHidden) then
+    Result := HandleButton(FBtnRightScrollExState, FBtnRightScroll, X, Y, FBtnRightScrollRect);
+end;
+
+function TJvCustomTabBar.ScrollButtonsMouseUp(Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer): Boolean;
+
+  function HandleButton(Kind: TJvTabBarScrollButtonKind; var State: TJvTabBarScrollButtonState;
+    X, Y: Integer; const R: TRect): Boolean;
+  begin
+    Result := PtInRect(R, Point(X, Y));
+    case State of
+      sbsPressed:
+        begin
+          State := sbsNormal;
+          PaintScrollButtons;
+          if Result then
+            ScrollButtonClick(Kind);
+        end;
+    end;
+  end;
+
+begin
+  Result := False;
+  if (FBtnLeftScroll <> sbsHidden) then
+    Result := HandleButton(sbScrollLeft, FBtnLeftScroll, X, Y, FBtnLeftScrollRect);
+  if (FBtnRightScroll <> sbsHidden) then
+    Result := HandleButton(sbScrollRight, FBtnRightScroll, X, Y, FBtnRightScrollRect);
 end;
 
 procedure TJvCustomTabBar.SetHotTab(Tab: TJvTabBarItem);
@@ -1065,9 +1222,6 @@ begin
   FLastTabRight := X;
 end;
 
-type
-  TSpeedButtonAccess = class(TSpeedButton);
-  
 procedure TJvCustomTabBar.Paint;
 var
   I: Integer;
@@ -1080,13 +1234,15 @@ begin
     Bmp.Width := ClientWidth;
     Bmp.Height := ClientHeight;
     CurrentPainter.DrawBackground(Bmp.Canvas, Self, ClientRect);
-    if Assigned(FBtnLeftScroll) and Assigned(FBtnRightScroll) then
+    if (FBtnLeftScroll <> sbsHidden) and (FBtnRightScroll <> sbsHidden) then
     begin
-      // paint scroll button's background and the buttons
+      if not Assigned(FScrollButtonBackground) then
+        FScrollButtonBackground := TBitmap.Create;
+      FScrollButtonBackground.Width := Bmp.Width - FBarWidth;
+      FScrollButtonBackground.Height := Bmp.Height;
       R := Rect(FBarWidth, 0, Bmp.Width, Bmp.Height);
-      Canvas.CopyRect(R, Bmp.Canvas, R);
-      TSpeedButtonAccess(FBtnLeftScroll).Paint;
-      TSpeedButtonAccess(FBtnRightScroll).Paint;
+      FScrollButtonBackground.Canvas.CopyRect(Rect(0, 0, FScrollButtonBackground.Width, R.Bottom), Bmp.Canvas, R);
+      PaintScrollButtons;
       if FBarWidth > 0 then
         Bmp.Width := FBarWidth;
     end;
@@ -1121,6 +1277,17 @@ begin
   end;
 end;
 
+procedure TJvCustomTabBar.PaintScrollButtons;
+begin
+  if not Assigned(FScrollButtonBackground) and Visible then
+    Paint
+  else
+    // paint scroll button's background and the buttons
+    Canvas.Draw(FBarWidth, 0, FScrollButtonBackground);
+  CurrentPainter.DrawScrollButton(Canvas, Self, sbScrollLeft, FBtnLeftScroll, FBtnLeftScrollRect);
+  CurrentPainter.DrawScrollButton(Canvas, Self, sbScrollRight, FBtnRightScroll, FBtnRightScrollRect);
+end;
+
 function TJvCustomTabBar.GetTabHeight(Tab: TJvTabBarItem): Integer;
 begin
   Result := CurrentPainter.GetTabSize(Canvas, Tab).cy;
@@ -1136,7 +1303,7 @@ var
   I: Integer;
   Pt: TPoint;
 begin
-  if not Assigned(FBtnLeftScroll) or (X < FBarWidth) then
+  if (FBtnLeftScroll = sbsHidden) or (X < FBarWidth) then
   begin
     CalcTabsRects;
     Pt := Point(X, Y);
@@ -1211,48 +1378,47 @@ end;
 
 procedure TJvCustomTabBar.UpdateScrollButtons;
 const
+  State: array[Boolean] of TJvTabBarScrollButtonState = (sbsDisabled, sbsNormal);
   BtnSize = 12;
 begin
   CalcTabsRects;
   if (FRequiredWidth < ClientWidth) or ((FLeftIndex = 0) and
     (FLastTabRight <= ClientWidth)) then
   begin
-    FreeAndNil(FBtnLeftScroll);
-    FreeAndNil(FBtnRightScroll);
+    FBtnLeftScroll := sbsHidden;
+    FBtnRightScroll := sbsHidden;
     FLeftIndex := 0;
     FBarWidth := ClientWidth;
     Invalidate;
   end
   else
   begin
-    if not Assigned(FBtnLeftScroll) then
+    FBtnLeftScroll := sbsNormal;
+    FBtnRightScroll := sbsNormal;
+
+    if poBottomScrollButtons in CurrentPainter.Options then
     begin
-      FBtnLeftScroll := TSpeedButton.Create(Self);
-      FBtnLeftScroll.Caption := '';
-      FBtnLeftScroll.Flat := FlatScrollButtons;
-      FBtnLeftScroll.Parent := Self;
-      FBtnLeftScroll.OnClick := ScrollButtonClicked;
-      FBtnLeftScroll.Glyph := GetScrollBarGlyph(True);
-    end;
-    if not Assigned(FBtnRightScroll) then
+      FBtnLeftScrollRect := Bounds(ClientWidth - BtnSize * 2 - 1 - 1,
+        ClientHeight - BtnSize - 2, BtnSize, BtnSize);
+      FBtnRightScrollRect := Bounds(FBtnLeftScrollRect.Right,
+        ClientHeight - BtnSize - 2, BtnSize, BtnSize);
+    end
+    else
     begin
-      FBtnRightScroll := TSpeedButton.Create(Self);
-      FBtnRightScroll.Caption := '';
-      FBtnRightScroll.Flat := FlatScrollButtons;
-      FBtnRightScroll.Parent := Self;
-      FBtnRightScroll.OnClick := ScrollButtonClicked;
-      FBtnRightScroll.Glyph := GetScrollBarGlyph(False);
+      FBtnLeftScrollRect := Bounds(ClientWidth - BtnSize * 2 - 1 - 1, 2, BtnSize, BtnSize);
+      FBtnRightScrollRect := Bounds(FBtnLeftScrollRect.Right, 2, BtnSize, BtnSize);
     end;
+    if not FlatScrollButtons then
+      OffsetRect(FBtnRightScrollRect, -1, 0);
 
-    FBtnLeftScroll.SetBounds(ClientWidth - BtnSize * 2 - 1 - 1,
-      ClientHeight - BtnSize - 2, BtnSize, BtnSize);
-    FBtnRightScroll.SetBounds(ClientWidth - BtnSize - 1 - 1,
-      ClientHeight - BtnSize - 2, BtnSize, BtnSize);
+    //CurrentPainter.GetScrollButtons(Self, FBtnLeftScrollRect, FBtnRightScrollRect);
 
-    FBarWidth := FBtnLeftScroll.Left - 2;
+    FBarWidth := FBtnLeftScrollRect.Left - 2;
 
-    FBtnLeftScroll.Enabled := FLeftIndex > 0;
-    FBtnRightScroll.Enabled := FLastTabRight > ClientWidth;
+    FBtnLeftScroll := State[FLeftIndex > 0];
+    FBtnRightScroll := State[FLastTabRight >= ClientWidth];
+
+    PaintScrollButtons;
   end;
 end;
 
@@ -1262,15 +1428,17 @@ begin
   inherited Resize;
 end;
 
-procedure TJvCustomTabBar.ScrollButtonClicked(Sender: TObject);
+procedure TJvCustomTabBar.ScrollButtonClick(Button: TJvTabBarScrollButtonKind);
 begin
-  if Sender = FBtnLeftScroll then
+  if Button = sbScrollLeft then
     Dec(FLeftIndex)
   else
-  if Sender = FBtnRightScroll then
+  if Button = sbScrollRight then
     Inc(FLeftIndex);
   UpdateScrollButtons;
   Invalidate;
+  if Assigned(FOnScrollButtonClick) then
+    FOnScrollButtonClick(Self, Button);
 end;
 
 function TJvCustomTabBar.MakeVisible(Tab: TJvTabBarItem): Boolean;
@@ -1329,8 +1497,8 @@ begin
   if Value <> FFlatScrollButtons then
   begin
     FFlatScrollButtons := Value;
-    FreeAndNil(FBtnLeftScroll);
-    FreeAndNil(FBtnRightScroll);
+    FBtnLeftScroll := sbsHidden;
+    FBtnRightScroll := sbsHidden;
     UpdateScrollButtons;
   end;
 end;
@@ -1664,6 +1832,31 @@ procedure TJvTabBarPainter.Changed;
 begin
   if Assigned(FOnChange) then
     FOnChange(Self);
+end;
+
+procedure TJvTabBarPainter.GetScrollButtons(TabBar: TJvCustomTabBar; var LeftButton, RightButton: TRect);
+begin
+  { reserved for future use }
+end;
+
+procedure TJvTabBarPainter.DrawScrollButton(Canvas: TCanvas; TabBar: TJvCustomTabBar; Button: TJvTabBarScrollButtonKind;
+  State: TJvTabBarScrollButtonState; R: TRect);
+begin
+  {$IFDEF VCL}
+  if TabBar.FlatScrollButtons then
+    DrawButtonFace(Canvas, R, 1, bsNew, False, State = sbsPressed, False)
+  else
+    DrawButtonFace(Canvas, R, 1, bsWin31, False, State = sbsPressed, False);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  DrawButtonFace(Canvas, R, 1, State = sbsPressed, False, TabBar.FlatScrollButtons);
+  {$ENDIF VisualCLX}
+  if State = sbsPressed then
+    OffsetRect(R, 1, 1);
+  TabBar.DrawScrollBarGlyph(Canvas,
+    R.Left + (R.Right - R.Left - 4) div 2,
+    R.Top + (R.Bottom - R.Top - 7) div 2,
+    Button = sbScrollLeft, State = sbsDisabled);
 end;
 
 //=== { TJvModernTabBarPainter } =============================================
