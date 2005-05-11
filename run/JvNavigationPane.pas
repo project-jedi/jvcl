@@ -3057,7 +3057,7 @@ end;
 
 procedure TJvNavPanelPage.DoButtonClick(Sender: TObject);
 begin
-  if not NavPanel.Down then
+  if NavPanel.Down then
   begin
     if Parent <> nil then
       TJvCustomNavigationPane(Parent).ActivePage := Self; // this sets "Down" as well
