@@ -337,15 +337,15 @@ begin
   begin
     ArrowRect := Rect(Width - 16, Height div 2, Width - 9, Height div 2 + 9);
     if bsMouseDown in FStates then
-      OffsetRect(ArrowRect, 1, 1); 
+      OffsetRect(ArrowRect, 1, 1);
     DrawDropArrow(Canvas, ArrowRect);
   end;
-//  BitBlt(Canvas.Handle,0,0,Width,Height,FBuffer.Canvas.Handle,0,0,SRCCOPY);
+//  BitBlt(Canvas.Handle, 0, 0, Width,Height, FBuffer.Canvas.Handle, 0, 0, SRCCOPY);
 end;
 
 procedure TJvCustomGraphicButton.PaintFrame(Canvas: TCanvas);
 begin
-// do nothing
+  // do nothing
 end;
 
 procedure TJvCustomGraphicButton.PaintButton(Canvas: TCanvas);
@@ -391,13 +391,19 @@ begin
   begin
     if not InsideBtn(X, Y) then
     begin
-      Exclude(FStates, bsMouseInside);
-      RepaintBackground;
+      if bsMouseInside in FStates then
+      begin
+        Exclude(FStates, bsMouseInside);
+        RepaintBackground;
+      end;
     end
     else
     begin
-      Include(FStates, bsMouseInside);
-      RepaintBackground;
+      if not (bsMouseInside in FStates) then
+      begin
+        Include(FStates, bsMouseInside);
+        RepaintBackground;
+      end;
     end;
   end;
 end;
