@@ -522,6 +522,7 @@ begin
   FLinks := TJvPageLinks.Create;
   FLinks.FTreeView := Self;
   ReadOnly := True;
+  ShowButtons := False;
 end;
 
 destructor TJvCustomPageListTreeView.Destroy;
