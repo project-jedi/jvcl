@@ -7730,7 +7730,7 @@ begin
   LStr := StringBuilder.Create;
   {$ENDIF CLR}
   for I := 1 to Length(Str) do
-    if Str[I] in ['0'..'9', '-', '+', AnsiChar(DecimalSeparator{$IFDEF CLR}[1]{$ENDIF})] then
+    if Str[I] in ['0'..'9', '-', '+', 'e', 'E', AnsiChar(DecimalSeparator{$IFDEF CLR}[1]{$ENDIF})] then
       {$IFDEF CLR}
       LStr.Append(Str[I]);
       {$ELSE}
