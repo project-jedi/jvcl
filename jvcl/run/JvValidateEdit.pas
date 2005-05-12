@@ -309,7 +309,7 @@ var
 begin
   if Source is TJvCustomValidateEdit then
   begin
-    lcSource := Source as TJvCustomValidateEdit;
+    lcSource := TJvCustomValidateEdit(Source);
     CriticalPoints.Assign(lcSource.CriticalPoints);
     DisplayFormat := lcSource.DisplayFormat;
     DecimalPlaces := lcSource.DecimalPlaces;
@@ -428,7 +428,8 @@ begin
             Alignment := taRightJustify;
         end;
       dfCheckChars, dfNonCheckChars:
-        Alignment := taLeftJustify;
+        if FAutoAlignment then
+          Alignment := taLeftJustify;
       dfCustom, dfNone:
         begin
           FCheckChars := '';
@@ -661,7 +662,7 @@ end;
 
 procedure TJvCustomValidateEdit.KeyPress(var Key: Char);
 begin
-  if not IsValidChar(Text, Key, SelStart) and (Key >= #32) then
+  if not IsValidChar(Text, Key, SelStart + 1) and (Key >= #32) then
     Key := #0;
   inherited KeyPress(Key);
 end;
@@ -700,13 +701,13 @@ begin
       Result := DoValidate(Key, S, Posn);
     dfInteger:
       Result := (Pos(Key, FCheckChars) > 0) or
-        ((Key = '+') and (Pos('+', S) = 0)) or
-        ((Key = '-') and (Pos('-', S) = 0));
+        ((Key = '+') and (Posn = 1) and (Pos('+', S) = 0)) or
+        ((Key = '-') and (Posn = 1) and (Pos('-', S) = 0));
     dfFloat, dfCurrency, dfPercent:
       Result := (Pos(Key, FCheckChars) > 0) or
         ((Key = DecimalSeparator) and (Pos(DecimalSeparator, S) = 0)) or
-        ((Key = '+') and (Pos('+', S) = 0)) or
-        ((Key = '-') and (Pos('-', S) = 0));
+        ((Key = '+') and (Posn = 1) and (Pos('+', S) = 0)) or
+        ((Key = '-') and (Posn = 1) and (Pos('-', S) = 0));
     dfNonCheckChars:
       Result := Pos(Key, FCheckChars) = 0;
     dfNone:
@@ -722,18 +723,19 @@ begin
             if iPosE = 0 then
               Result := (Pos(DecimalSeparator, S) = 0)
             else
-              Result := ((Posn < iPosE) and (Pos(DecimalSeparator, Copy(S, 1, iPosE - 1)) = 0)) or
-                ((Posn > iPosE) and (Pos(DecimalSeparator, Copy(S, iPosE + 1, 99)) = 0));
+              Result := ((Posn <= iPosE) and (Pos(DecimalSeparator, Copy(S, 1, iPosE - 1)) = 0));
+               //or ((Posn > iPosE) and (Pos(DecimalSeparator, Copy(S, iPosE + 1, Length(S))) = 0));
+               // (outchy) XXXeY,YY are not valid scientific numbers, Y must be an integer value
           end
           else
           if Key in ['E', 'e'] then
             Result := (iPosE = 0) and (Posn > 1)
           else
           if Key = '+' then
-            Result := (Posn = 0) or (Posn = iPosE)
+            Result := (Posn = 1) or (Posn = iPosE + 1)
           else
           if Key = '-' then
-            Result := (Posn = 0) or (Posn = iPosE);
+            Result := (Posn = 1) or (Posn = iPosE + 1);
         end;
       end;
   else
@@ -830,7 +832,7 @@ end;
 
 procedure TJvCustomValidateEdit.ChangeText(const NewValue: string);
 var
-  S: string;
+  S, Exponent: string;
   Ps, I: Integer;
 begin
   FSelfChange := True;
@@ -838,15 +840,24 @@ begin
     Ps := 0;
     if TrimDecimals then
     begin
+      I := Pos('e',LowerCase(NewValue));
+      if (DisplayFormat = dfScientific) and (I <> 0) then
+      begin
+        Exponent := Copy(NewValue,I,Length(NewValue));
+        Dec(I);
+      end else
+      begin
+        Exponent := '';
+        I := Length(NewValue);
+      end;
       Ps := Pos(DecimalSeparator, NewValue);
       if Ps > 0 then
       begin
-        I := Length(NewValue);
         while (I > Ps) and (NewValue[I] = '0') do
           Dec(I);
         if Ps = I then
           Dec(I); // skip decimal separator (Ivo Bauer)
-        S := FDisplayPrefix + Copy(NewValue, 1, I) + FDisplaySuffix;
+        S := FDisplayPrefix + Copy(NewValue, 1, I) + Exponent + FDisplaySuffix;
       end;
     end;
     if Ps = 0 then
@@ -946,10 +957,12 @@ var
   function IntToBaseChar(IntValue: Integer): Char;
   begin
     case IntValue of
+      Low(Integer)..-1:
+        Result := '0';
       0..9:
         Result := Chr(Ord('0') + IntValue);
-    else
-      Result := Chr(Ord('A') + IntValue - 10);
+      else
+        Result := Chr(Ord('A') + IntValue - 10);
     end;
   end;
 
@@ -1138,7 +1151,7 @@ var
 begin
   if Source is TJvValidateEditCriticalPoints then
   begin
-    LocalSource := Source as TJvValidateEditCriticalPoints;
+    LocalSource := TJvValidateEditCriticalPoints(Source);
     CheckPoints := LocalSource.CheckPoints;
     ColorAbove := LocalSource.ColorAbove;
     ColorBelow := LocalSource.ColorBelow;
