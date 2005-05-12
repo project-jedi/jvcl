@@ -181,6 +181,7 @@ type
     FDisabledIndex: TImageIndex;
     FDownIndex: TImageIndex;
     FHotIndex: TImageIndex;
+    FKeepMouseLeavePressed: Boolean;
     procedure SetGrayList(Value: TImageList);
     procedure SetActiveList(Value: TImageList);
     procedure SetDisabledList(Value: TImageList);
@@ -211,6 +212,7 @@ type
     property DownIndex: TImageIndex read FDownIndex write SetDownIndex default -1;
     property HotImage: TImageList read FHotList write SetHotList;
     property HotIndex: TImageIndex read FHotIndex write SetHotIndex default -1;
+    property KeepMouseLeavePressed: Boolean read FKeepMouseLeavePressed write FKeepMouseLeavePressed default False; 
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -1208,7 +1210,8 @@ begin
     if not Enabled then
       Index := 1 { disabled }
     else
-    if (bsMouseDown in MouseStates) or Down then
+    if ((bsMouseDown in MouseStates) and
+        (KeepMouseLeavePressed or (bsMouseInside in MouseStates))) or Down then
       Index := 2 { down }
     else
     if (FrameStyle = fsExplorer) and FAutoGray and (MouseStates = []) then
