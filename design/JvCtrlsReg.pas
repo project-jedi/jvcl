@@ -126,10 +126,11 @@ begin
   // RegisterPropertyEditor(TypeInfo(TDateTime), TJvAlarmInfo, 'Date', TJvDateTimeExProperty);
   RegisterPropertyEditor(TypeInfo(TCaption), TJvSpeedItem, 'BtnCaption', TStringProperty);
 
-  RegisterPropertyEditor(TypeInfo(Integer), TJvTransparentButton2, 'ActiveIndex', TJvTBImagesProperty);
-  RegisterPropertyEditor(TypeInfo(Integer), TJvTransparentButton2, 'DisabledIndex', TJvTBImagesProperty);
-  RegisterPropertyEditor(TypeInfo(Integer), TJvTransparentButton2, 'DownIndex', TJvTBImagesProperty);
-  RegisterPropertyEditor(TypeInfo(Integer), TJvTransparentButton2, 'GrayIndex', TJvTBImagesProperty);
+  RegisterPropertyEditor(TypeInfo(TImageIndex), TJvTransparentButton2, 'ActiveIndex', TJvTBImagesProperty);
+  RegisterPropertyEditor(TypeInfo(TImageIndex), TJvTransparentButton2, 'DisabledIndex', TJvTBImagesProperty);
+  RegisterPropertyEditor(TypeInfo(TImageIndex), TJvTransparentButton2, 'DownIndex', TJvTBImagesProperty);
+  RegisterPropertyEditor(TypeInfo(TImageIndex), TJvTransparentButton2, 'GrayIndex', TJvTBImagesProperty);
+  RegisterPropertyEditor(TypeInfo(TImageIndex), TJvTransparentButton2, 'HotIndex', TJvTBImagesProperty);
   RegisterPropertyEditor(TypeInfo(TImageIndex), TJvRollOutImageOptions, '', TJvRollOutOptionsImagesProperty);
 
   RegisterComponentEditor(TJvScrollMax, TJvScrollMaxEditor);
