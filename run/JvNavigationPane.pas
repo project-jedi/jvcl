@@ -34,7 +34,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
-  Windows, Messages, Controls, Graphics, Menus, ExtCtrls, ImgList,
+  Windows, Messages, Controls, Graphics, Menus, ExtCtrls, ImgList, Dialogs,
   {$IFDEF VisualCLX}
   Qt,
   {$ENDIF VisualCLX}
@@ -3055,9 +3055,16 @@ begin
   inherited Destroy;
 end;
 
+type
+  TJvCustomGraphicButtonAccess = class(TJvCustomGraphicButton)
+  public
+    property Down;
+  end;
+
 procedure TJvNavPanelPage.DoButtonClick(Sender: TObject);
 begin
-  if NavPanel.Down then
+  { We cannot test for NavPanel.Down if the Sender is a icon button }
+  if (Sender is TJvCustomGraphicButton) and TJvCustomGraphicButtonAccess(Sender).Down then
   begin
     if Parent <> nil then
       TJvCustomNavigationPane(Parent).ActivePage := Self; // this sets "Down" as well
