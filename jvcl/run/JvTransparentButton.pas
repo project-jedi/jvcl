@@ -996,7 +996,7 @@ begin
       {$IFDEF VCL}
       Icon := ImageList_GetIcon(FActiveList.Handle, FActiveIndex, ILD_TRANSPARENT);
       ImageList_AddIcon(FImList.Handle, Icon);
-      DeleteObject(Icon);
+      DestroyIcon(Icon);
       {$ENDIF VCL}
       {$IFDEF VisualCLX}
       FActiveList.GetBitmap(FActiveIndex, Bmp);
@@ -1011,6 +1011,7 @@ begin
       {$IFDEF VCL}
       Icon := ImageList_GetIcon(FDisabledList.Handle, FDisabledIndex, ILD_TRANSPARENT);
       ImageList_AddIcon(FImList.Handle, Icon);
+      DestroyIcon(Icon);
       {$ENDIF VCL}
       {$IFDEF VisualCLX}
       FDisabledList.GetBitmap(FDisabledIndex, Bmp);
@@ -1029,7 +1030,7 @@ begin
       {$IFDEF VCL}
       Icon := ImageList_GetIcon(FDownList.Handle,FDownIndex, ILD_TRANSPARENT);
       ImageList_AddIcon(FImList.Handle, Icon);
-      DeleteObject(Icon);
+      DestroyIcon(Icon);
       {$ENDIF VCL}
       {$IFDEF VisualCLX}
       FDownList.GetBitmap(FDownIndex, Bmp);
@@ -1041,7 +1042,7 @@ begin
       {$IFDEF VCL}
       Icon := ImageList_GetIcon(FActiveList.Handle,FActiveIndex, ILD_TRANSPARENT);
       ImageList_AddIcon(FImList.Handle, Icon);
-      DeleteObject(Icon);
+      DestroyIcon(Icon);
       {$ENDIF VCL}
       {$IFDEF VisualCLX}
       FActiveList.GetBitmap(FActiveIndex, Bmp);
@@ -1054,7 +1055,7 @@ begin
       {$IFDEF VCL}
       Icon := ImageList_GetIcon(FGrayList.Handle,FGrayIndex, ILD_TRANSPARENT);
       ImageList_AddIcon(FImList.Handle, Icon);
-      DeleteObject(Icon);
+      DestroyIcon(Icon);
       {$ENDIF VCL}
       {$IFDEF VisualCLX}
       FGrayList.GetBitmap(FGrayIndex, Bmp);
