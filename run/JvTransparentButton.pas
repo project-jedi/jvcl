@@ -1214,7 +1214,7 @@ begin
     if (FrameStyle = fsExplorer) and FAutoGray and (MouseStates = []) then
       Index := 3 { autogray }
     else
-    if bsMouseInside in MouseStates  then
+    if (bsMouseInside in MouseStates) and HotTrack then
       Index := 4 { hot }
     else
       Index := 0; { active }
