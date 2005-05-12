@@ -34,7 +34,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
-  Windows, Messages, Controls, Graphics, Menus, ExtCtrls, ImgList, Dialogs,
+  Windows, Messages, Controls, Graphics, Menus, ExtCtrls, ImgList, 
   {$IFDEF VisualCLX}
   Qt,
   {$ENDIF VisualCLX}
