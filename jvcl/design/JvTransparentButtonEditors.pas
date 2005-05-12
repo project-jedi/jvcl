@@ -66,6 +66,9 @@ begin
   if AnsiSameText(GetName,'GrayIndex') then
     Result := (GetComponent(0) as TJvTransparentButton2).GrayImage
   else
+  if AnsiSameText(GetName,'HotIndex') then
+    Result := (GetComponent(0) as TJvTransparentButton2).HotImage
+  else
     Result := nil;
 end;
 
