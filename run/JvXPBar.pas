@@ -1707,9 +1707,9 @@ function TJvXPCustomWinXPBar.GetHitTestRect(const HitTest: TJvXPBarHitTest): TRe
 begin
   case HitTest of
     htHeader:
-      Result := Bounds(0, 5, Width, FHeaderHeight);
+      Result := Bounds(0, FTopSpace, Width, FHeaderHeight);
     htRollButton:
-      Result := Bounds(Width - 24, (FHeaderHeight - GetRollHeight) div 2, GetRollWidth, GetRollHeight);
+      Result := Bounds(Width - 24, FTopSpace + (FHeaderHeight - GetRollHeight) div 2, GetRollWidth, GetRollHeight);
   end;
 end;
 
@@ -1770,7 +1770,7 @@ begin
   FHitTest := GetHitTestAt(X, Y);
   if FHitTest <> OldHitTest then
   begin
-    Rect := Bounds(0, 5, Width, FHeaderHeight); // header
+    Rect := Bounds(0, FTopSpace, Width, FHeaderHeight); // header
     Windows.InvalidateRect(Handle, @Rect, False);
     if FShowLinkCursor then
       if FHitTest <> htNone then
@@ -1779,11 +1779,11 @@ begin
         Cursor := crDefault;
   end;
 
-  Header := FC_HEADER_MARGIN + HeaderHeight + FC_ITEM_MARGIN;
-  if (Y < Header) or (Y > Height - FC_ITEM_MARGIN) then
+  Header := FC_HEADER_MARGIN div 2 + HeaderHeight + FC_ITEM_MARGIN div 2 + FTopSpace;
+  if (Y < Header) or (Y > Height - FC_ITEM_MARGIN div 2) then
     NewIndex := -1
   else
-    NewIndex := (Y - Header) div ((Height - Header + 4 - FTopSpace) div FVisibleItems.Count);
+    NewIndex := (Y - Header) div ItemHeight;
   if (NewIndex >= 0) and (NewIndex < VisibleItems.Count) then
   begin
     if FStoredHint = cPipe then
@@ -1795,6 +1795,7 @@ begin
   end
   else
   begin
+    NewIndex := -1;
     if FStoredHint <> cPipe then
       inherited Hint := FStoredHint;
     FStoredHint := cPipe;
