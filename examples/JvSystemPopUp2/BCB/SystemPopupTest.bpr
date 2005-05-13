@@ -11,20 +11,9 @@
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES) JvSystemPopup2MainFormU.dfm"/>
     <LIBFILES value=""/>
-    <LIBRARIES value="JVSTDCTRLSC5R.lib JVCTRLSC5R.lib JVMMC5R.lib VCLX50.lib CJCL50.lib 
-      JVCOREC5R.lib JVSYSTEMC5R.lib Vcl50.lib"/>
-    <SPARELIBS value="Vcl50.lib JVSYSTEMC5R.lib JVCOREC5R.lib CJCL50.lib VCLX50.lib JVMMC5R.lib 
-      JVCTRLSC5R.lib JVSTDCTRLSC5R.lib"/>
-    <PACKAGES value="Vcl50.bpi Vclx50.bpi bcbsmp50.bpi Qrpt50.bpi Vcldb50.bpi Vclbde50.bpi 
-      ibsmp50.bpi vcldbx50.bpi TeeUI50.bpi TeeDB50.bpi Tee50.bpi TeeQR50.bpi 
-      VCLIB50.bpi bcbie50.bpi CJCL50.bpi JVCOREC5R.bpi JVSYSTEMC5R.bpi 
-      JVSTDCTRLSC5R.bpi JVCTRLSC5R.bpi JVCMPC5R.bpi JVCUSTOMC5R.bpi 
-      JVDLGSC5R.bpi JVCRYPTC5R.bpi JVMMC5R.bpi JVAPPFRMC5R.bpi JVDBC5R.bpi 
-      JVBDEC5R.bpi JVBANDSC5R.bpi JVPLUGINC5R.bpi JVJANSC5R.bpi vclie50.bpi 
-      JVGLOBUSC5R.bpi JVPRINTPREVIEWC5R.bpi JVPAGECOMPSC5R.bpi 
-      JVVALIDATORSC5R.bpi JVUIBC5R.bpi JVWIZARDC5R.bpi JVTIMEFRAMEWORKC5R.bpi 
-      JVHMIC5R.bpi JVMANAGEDTHREADSC5R.bpi JVXPCTRLSC5R.bpi JVDOCKINGC5R.bpi 
-      JVDOTNETCTRLSC5R.bpi JVEDIC5R.bpi"/>
+    <LIBRARIES value=""/>
+    <SPARELIBS value=""/>
+    <PACKAGES value=""/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;"/>
     <PATHRC value=".;"/>
