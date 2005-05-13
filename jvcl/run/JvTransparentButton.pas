@@ -228,9 +228,6 @@ type
     property Images: TJvTransparentButtonImages read FImages write SetImages;
   end;
 
-  { Backward compatibility }
-  TJvTransparentButton2 = TJvTransparentButton;
-
 { SLOW! don't use in realtime! }
 procedure GrayBitmap(Bmp: TBitmap; R, G, B: Integer);
 procedure DisabledBitmap(Bmp: TBitmap);
