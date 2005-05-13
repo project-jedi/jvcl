@@ -35,7 +35,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, Classes, Graphics, Controls, Forms, StdCtrls, Menus,
-  JvCheckListBox, JvExStdCtrls, 
+  JvCheckListBox, JvExStdCtrls,
   {$IFDEF COMPILER5}
   JvAutoComplete,
   {$ENDIF COMPILER5}
@@ -390,6 +390,11 @@ uses
   {$ENDIF HAS_UNIT_RTLCONSTS}
   JvDataProviderIntf, JvItemsSearchs, JvThemes, JvConsts, JvResources, JvTypes;
 
+const
+  MaxSelLength = 256;
+  MinDropLines = 2;
+  MaxDropLines = 50;
+
 type
   PStrings = ^TStrings;
 
@@ -398,11 +403,6 @@ type
     function GetValue: Variant; override;
     procedure SetValue(const Value: Variant); override;
   end;
-
-const
-  MAXSELLENGTH = 256;
-  MINDROPLINES = 6;
-  MAXDROPLINES = 10;
 
 //=== Local procedures =======================================================
 
@@ -414,7 +414,7 @@ var
   M: Integer;
   Temp1, Temp2: string;
 begin
-  Temp1 := Copy(Source, 1, MAXSELLENGTH);
+  Temp1 := Copy(Source, 1, MaxSelLength);
   Result := Part = Temp1;
   while not Result do
   begin
@@ -446,10 +446,10 @@ begin
   begin
     Len := Length(Part);
     if P = 1 then
-      Result := Copy(Source, P + Len + 1, MAXSELLENGTH)
+      Result := Copy(Source, P + Len + 1, MaxSelLength)
     else
     begin
-      Result := Copy(S2, 2, P - 1) + Copy(S2, P + Len + 2, MAXSELLENGTH);
+      Result := Copy(S2, 2, P - 1) + Copy(S2, P + Len + 2, MaxSelLength);
       SetLength(Result, Length(Result) - 1);
     end;
   end;
@@ -458,7 +458,7 @@ end;
 function Add(const Sub: string; var Str: string; Delimiter: Char): Boolean;
 begin
   Result := False;
-  if Length(Str) + Length(Sub) + 1 >= MAXSELLENGTH then
+  if Length(Str) + Length(Sub) + 1 >= MaxSelLength then
     raise EJVCLException.CreateRes(@RsENoMoreLength);
   if Str = '' then
   begin
@@ -513,7 +513,7 @@ end;
 constructor TJvCustomCheckedComboBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FDropDownLines := MINDROPLINES;
+  FDropDownLines := 6;
   FDelimiter := ',';
   FColumns := 0;
   FQuoteStyle := qsNone;  // added 2000/04/08
@@ -652,10 +652,10 @@ begin
   //Click;
   if FColumns > 1 then
     FDropDownLines := FListBox.Items.Count div FColumns + 1;
-  if FDropDownLines < MINDROPLINES then
-    FDropDownLines := MINDROPLINES;
-  if FDropDownLines > MAXDROPLINES then
-    FDropDownLines := MAXDROPLINES;
+  if FDropDownLines < MinDropLines then
+    FDropDownLines := MinDropLines;
+  if FDropDownLines > MaxDropLines then
+    FDropDownLines := MaxDropLines;
 
   FSelectAll.Caption := FCapSelAll;
   FDeselectAll.Caption := FCapDeselAll;
@@ -829,7 +829,7 @@ end;
 procedure TJvCustomCheckedComboBox.SetDropDownLines(Value: Integer);
 begin
   if FDropDownLines <> Value then
-    if (Value >= MINDROPLINES) and (Value <= MAXDROPLINES) then
+    if (Value >= MinDropLines) and (Value <= MaxDropLines) then
       FDropDownLines := Value;
 end;
 
