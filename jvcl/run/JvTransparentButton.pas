@@ -63,18 +63,86 @@ type
     procedure SetChecked(Value: Boolean); override;
   end;
 
-  TJvTransparentButtonBase = class(TJvCustomGraphicButton)
+  TJvTransparentButton = class;
+
+  TJvTransparentButtonImages = class(TPersistent)
+  private
+    FButton: TJvTransparentButton;
+
+    FGrayList: TCustomImageList;
+    FActiveList: TCustomImageList;
+    FDisabledList: TCustomImageList;
+    FDownList: TCustomImageList;
+    FHotList: TCustomImageList;
+    FGrayLink: TChangeLink;
+    FActiveLink: TChangeLink;
+    FDisabledLink: TChangeLink;
+    FDownLink: TChangeLink;
+    FHotLink: TChangeLink;
+    FGrayIndex: TImageIndex;
+    FActiveIndex: TImageIndex;
+    FDisabledIndex: TImageIndex;
+    FDownIndex: TImageIndex;
+    FHotIndex: TImageIndex;
+    procedure SetGrayList(Value: TCustomImageList);
+    procedure SetActiveList(Value: TCustomImageList);
+    procedure SetDisabledList(Value: TCustomImageList);
+    procedure SetDownList(Value: TCustomImageList);
+    procedure SetHotList(Value: TCustomImageList);
+    procedure SetGrayIndex(Value: TImageIndex);
+    procedure SetActiveIndex(Value: TImageIndex);
+    procedure SetDisabledIndex(Value: TImageIndex);
+    procedure SetDownIndex(Value: TImageIndex);
+    procedure SetHotIndex(Value: TImageIndex);
+  protected
+    procedure AddGlyphs;
+    procedure SetImageList(var List: TCustomImageList; Link: TChangeLink;
+      Value: TCustomImageList);
+  public
+    constructor Create(AButton: TJvTransparentButton);
+    destructor Destroy; override;
+    procedure Assign(Source: TPersistent); override;
+  published
+    property ActiveImage: TCustomImageList read FActiveList write SetActiveList;
+    property ActiveIndex: TImageIndex read FActiveIndex write SetActiveIndex default -1;
+    property GrayImage: TCustomImageList read FGrayList write SetGrayList;
+    property GrayIndex: TImageIndex read FGrayIndex write SetGrayIndex default -1;
+    property DisabledImage: TCustomImageList read FDisabledList write SetDisabledList;
+    property DisabledIndex: TImageIndex read FDisabledIndex write SetDisabledIndex default -1;
+    property DownImage: TCustomImageList read FDownList write SetDownList;
+    property DownIndex: TImageIndex read FDownIndex write SetDownIndex default -1;
+    property HotImage: TCustomImageList read FHotList write SetHotList;
+    property HotIndex: TImageIndex read FHotIndex write SetHotIndex default -1;
+  end;
+
+  TJvTransparentButton = class(TJvCustomGraphicButton)
   private
     FTextAlign: TJvTextAlign;
     FAutoGray: Boolean;
     FTransparent: Boolean;
     FShowPressed: Boolean;
-    FOffset: Integer;
+    FPressOffset: Integer;
     FSpacing: Integer;
     FBorderSize: Cardinal;
-    FImList: TImageList;
+    FImList: TCustomImageList;
     FOutline: TJvFrameStyle;
     FWordWrap: Boolean;
+
+    { former TJvTransparentButton }
+    FGlyph: TBitmap;
+    FGrayGlyph: TBitmap;
+    FDisabledGlyph: TBitmap;
+    FNumGlyphs: TNumGlyphs;
+    { former TJvTransparentButton2 }
+    FKeepMouseLeavePressed: Boolean;
+    FImages: TJvTransparentButtonImages;
+    { former TJvTransparentButton }
+    procedure SetGlyph(Bmp: TBitmap);
+    procedure SetNumGlyphs(Value: TNumGlyphs);
+    procedure CalcGlyphCount;
+    { former TJvTransparentButton2 }
+    procedure SetImages(Value: TJvTransparentButtonImages);
+
     procedure SetWordWrap(Value: Boolean);
     procedure SetSpacing(Value: Integer);
     procedure SetAutoGray(Value: Boolean);
@@ -82,17 +150,29 @@ type
     procedure SetFrameStyle(Value: TJvFrameStyle);
     procedure SetTransparent(Value: Boolean);
     procedure SetBorderWidth(Value: Cardinal);
+    function GetUseImages: Boolean;
   protected
     procedure PaintButton(Canvas: TCanvas); override;
     procedure PaintFrame(Canvas: TCanvas); override;
     procedure DrawTheText(ARect: TRect; Canvas: TCanvas); virtual;
-    procedure DrawTheBitmap(ARect: TRect; Canvas: TCanvas); virtual; abstract;
+    procedure DrawTheBitmap(ARect: TRect; Canvas: TCanvas); virtual;
     function GetActionLinkClass: TControlActionLinkClass; override;
+    procedure GlyphChanged(Sender: TObject);
+
+    { former TJvTransparentButton }
+    procedure AddGlyphGlyphs(aGlyph: TBitmap; AColor: TColor; Value: Integer);
+    procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
+
+    { former TJvTransparentButton2 }
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure AddImageGlyphs;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    property InternalList: TImageList read FImList;
+
+    property InternalList: TCustomImageList read FImList;
     property Canvas;
+    property UseImages: Boolean read GetUseImages;
   published
     property Action;
     property AllowAllUp;
@@ -120,6 +200,7 @@ type
     property PopupMenu;
     property ShowHint;
     property ShowPressed: Boolean read FShowPressed write FShowPressed default True;
+    property PressOffset: Integer read FPressOffset write FPressOffset default 1;
     property Spacing: Integer read FSpacing write SetSpacing default 2;
     property TextAlign: TJvTextAlign read FTextAlign write SetTextAlign default ttaCenter;
     property Transparent: Boolean read FTransparent write SetTransparent default True;
@@ -138,82 +219,26 @@ type
     property OnMouseLeave;
     property OnParentColorChange;
     property OnStartDrag;
-  end;
 
-  TJvTransparentButton = class(TJvTransparentButtonBase)
-  private
-    FOffset: Integer;
-    FGlyph: TBitmap;
-    FGrayGlyph: TBitmap;
-    FDisabledGlyph: TBitmap;
-    FNumGlyphs: TNumGlyphs;
-    procedure SetGlyph(Bmp: TBitmap);
-    procedure SetNumGlyphs(Value: TNumGlyphs);
-    procedure GlyphChanged(Sender: TObject);
-    procedure CalcGlyphCount;
-  protected
-    procedure AddGlyphs(aGlyph: TBitmap; AColor: TColor; Value: Integer);
-    procedure DrawTheBitmap(ARect: TRect; Canvas: TCanvas); override;
-    procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-  published
+    { former TJvTransparentButton }
     property Glyph: TBitmap read FGlyph write SetGlyph;
     property NumGlyphs: TNumGlyphs read FNumGlyphs write SetNumGlyphs default 1;
-    property Offset: Integer read FOffset write FOffset default 1;
+    { former TJvTransparentButton2 }
+    property KeepMouseLeavePressed: Boolean read FKeepMouseLeavePressed write FKeepMouseLeavePressed default False;
+    property Images: TJvTransparentButtonImages read FImages write SetImages;
   end;
 
-  TJvTransparentButton2 = class(TJvTransparentButtonBase)
-  private
-    FGrayList: TImageList;
-    FActiveList: TImageList;
-    FDisabledList: TImageList;
-    FDownList: TImageList;
-    FHotList: TImageList;
-    FGrayLink: TChangeLink;
-    FActiveLink: TChangeLink;
-    FDisabledLink: TChangeLink;
-    FDownLink: TChangeLink;
-    FHotLink: TChangeLink;
-    FGrayIndex: TImageIndex;
-    FActiveIndex: TImageIndex;
-    FDisabledIndex: TImageIndex;
-    FDownIndex: TImageIndex;
-    FHotIndex: TImageIndex;
-    FKeepMouseLeavePressed: Boolean;
-    procedure SetGrayList(Value: TImageList);
-    procedure SetActiveList(Value: TImageList);
-    procedure SetDisabledList(Value: TImageList);
-    procedure SetDownList(Value: TImageList);
-    procedure SetHotList(Value: TImageList);
-    procedure SetGrayIndex(Value: TImageIndex);
-    procedure SetActiveIndex(Value: TImageIndex);
-    procedure SetDisabledIndex(Value: TImageIndex);
-    procedure SetDownIndex(Value: TImageIndex);
-    procedure SetHotIndex(Value: TImageIndex);
-    procedure GlyphChanged(Sender: TObject);
-  protected
-    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    procedure AddGlyphs;
-    procedure DrawTheBitmap(ARect: TRect; Canvas: TCanvas); override;
-    procedure ActionChange(Sender: TObject; CheckDefaults: Boolean);override;
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-  published
-    property ActiveImage: TImageList read FActiveList write SetActiveList;
-    property ActiveIndex: TImageIndex read FActiveIndex write SetActiveIndex default -1;
-    property GrayImage: TImageList read FGrayList write SetGrayList;
-    property GrayIndex: TImageIndex read FGrayIndex write SetGrayIndex default -1;
-    property DisabledImage: TImageList read FDisabledList write SetDisabledList;
-    property DisabledIndex: TImageIndex read FDisabledIndex write SetDisabledIndex default -1;
-    property DownImage: TImageList read FDownList write SetDownList;
-    property DownIndex: TImageIndex read FDownIndex write SetDownIndex default -1;
-    property HotImage: TImageList read FHotList write SetHotList;
-    property HotIndex: TImageIndex read FHotIndex write SetHotIndex default -1;
-    property KeepMouseLeavePressed: Boolean read FKeepMouseLeavePressed write FKeepMouseLeavePressed default False; 
-  end;
+  { Backward compatibility }
+  TJvTransparentButton2 = TJvTransparentButton;
+
+{ SLOW! don't use in realtime! }
+procedure GrayBitmap(Bmp: TBitmap; R, G, B: Integer);
+procedure DisabledBitmap(Bmp: TBitmap);
+procedure MonoBitmap(Bmp: TBitmap; R, G, B: Integer);
+procedure BWBitmap(Bmp: TBitmap);
+
+function DrawDisabledText(DC: HDC; Caption: TCaption; nCount: Integer;
+  var lpRect: TRect; uFormat: Integer): Integer;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -387,8 +412,8 @@ end;
 
 function TJvTransparentButtonActionLink.IsCheckedLinked: Boolean;
 begin
-  if FClient is TJvTransparentButtonBase then
-    Result := inherited IsCheckedLinked and (TJvTransparentButtonBase(FClient).Down = (Action as TCustomAction).Checked)
+  if FClient is TJvTransparentButton then
+    Result := inherited IsCheckedLinked and (TJvTransparentButton(FClient).Down = (Action as TCustomAction).Checked)
   else
     Result := False;
 end;
@@ -410,41 +435,226 @@ end;
 
 procedure TJvTransparentButtonActionLink.SetChecked(Value: Boolean);
 begin
-  if IsCheckedLinked and (FClient is TJvTransparentButtonBase) then
-    TJvTransparentButtonBase(FClient).Down := Value;
+  if IsCheckedLinked and (FClient is TJvTransparentButton) then
+    TJvTransparentButton(FClient).Down := Value;
 end;
 
-// === { TJvTransparentButtonBase } ==========================================
+//=== { TJvTransparentButtonImages } =========================================
 
-constructor TJvTransparentButtonBase.Create(AOwner: TComponent);
+constructor TJvTransparentButtonImages.Create(AButton: TJvTransparentButton);
+begin
+  inherited Create;
+  FButton := AButton;
+
+  FGrayLink := TChangeLink.Create;
+  FGrayLink.OnChange := AButton.GlyphChanged;
+  FActiveLink := TChangeLink.Create;
+  FActiveLink.OnChange := AButton.GlyphChanged;
+  FDisabledLink := TChangeLink.Create;
+  FDisabledLink.OnChange := AButton.GlyphChanged;
+  FDownLink := TChangeLink.Create;
+  FDownLink.OnChange := AButton.GlyphChanged;
+  FHotLink := TChangeLink.Create;
+  FHotLink.OnChange := AButton.GlyphChanged;
+  FActiveIndex := -1;
+  FDisabledIndex := -1;
+  FDownIndex := -1;
+  FGrayIndex := -1;
+  FHotIndex := -1;
+end;
+
+destructor TJvTransparentButtonImages.Destroy;
+begin
+  FGrayLink.Free;
+  FActiveLink.Free;
+  FDisabledLink.Free;
+  FDownLink.Free;
+  FHotLink.Free;
+  inherited Destroy;
+end;
+
+procedure TJvTransparentButtonImages.Assign(Source: TPersistent);
+var
+  Src: TJvTransparentButtonImages;
+begin
+  if Source is TJvTransparentButtonImages then
+  begin
+    Src := TJvTransparentButtonImages(Source);
+
+    ActiveImage := Src.ActiveImage;
+    GrayImage := Src.GrayImage;
+    DisabledImage := Src.DisabledImage;
+    DownImage := Src.DownImage;
+    HotImage := Src.HotImage;
+
+    ActiveIndex := Src.ActiveIndex;
+    GrayIndex := Src.GrayIndex;
+    DisabledIndex := Src.DisabledIndex;
+    DownIndex := Src.DownIndex;
+    HotIndex := Src.HotIndex;
+  end
+  else
+    inherited Assign(Source);
+end;
+
+procedure TJvTransparentButtonImages.AddGlyphs;
+begin
+  FButton.AddImageGlyphs;
+end;
+
+procedure TJvTransparentButtonImages.SetImageList(var List: TCustomImageList; Link: TChangeLink;
+  Value: TCustomImageList);
+begin
+  if Value <> List then
+  begin
+    if Assigned(List) then
+      List.UnRegisterChanges(Link);
+    List := Value;
+    if Assigned(List) then
+      List.RegisterChanges(Link);
+    AddGlyphs;
+  end;
+end;
+
+procedure TJvTransparentButtonImages.SetGrayList(Value: TCustomImageList);
+begin
+  SetImageList(FGrayList, FGrayLink, Value);
+end;
+
+procedure TJvTransparentButtonImages.SetActiveList(Value: TCustomImageList);
+begin
+  SetImageList(FActiveList, FActiveLink, Value);
+end;
+
+procedure TJvTransparentButtonImages.SetDisabledList(Value: TCustomImageList);
+begin
+  SetImageList(FDisabledList, FDisabledLink, Value);
+end;
+
+procedure TJvTransparentButtonImages.SetDownList(Value: TCustomImageList);
+begin
+  SetImageList(FDownList, FDownLink, Value);
+end;
+
+procedure TJvTransparentButtonImages.SetHotList(Value: TCustomImageList);
+begin
+  SetImageList(FHotList, FHotLink, Value);
+end;
+
+procedure TJvTransparentButtonImages.SetGrayIndex(Value: TImageIndex);
+begin
+  if FGrayIndex <> Value then
+  begin
+    FGrayIndex := Value;
+    AddGlyphs;
+  end;
+end;
+
+procedure TJvTransparentButtonImages.SetActiveIndex(Value: TImageIndex);
+begin
+  if FActiveIndex <> Value then
+  begin
+    FActiveIndex := Value;
+    AddGlyphs;
+  end;
+end;
+
+procedure TJvTransparentButtonImages.SetDisabledIndex(Value: TImageIndex);
+begin
+  if FDisabledIndex <> Value then
+  begin
+    FDisabledIndex := Value;
+    AddGlyphs;
+  end;
+end;
+
+procedure TJvTransparentButtonImages.SetDownIndex(Value: TImageIndex);
+begin
+  if FDownIndex <> Value then
+  begin
+    FDownIndex := Value;
+    AddGlyphs;
+  end;
+end;
+
+procedure TJvTransparentButtonImages.SetHotIndex(Value: TImageIndex);
+begin
+  if FHotIndex <> Value then
+  begin
+    FHotIndex := Value;
+    AddGlyphs;
+  end;
+end;
+
+//=== { TJvTransparentButton } ===============================================
+
+constructor TJvTransparentButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  AllowAllUp := True;
   FAutoGray := True;
   FShowPressed := True;
   FBorderSize := 1;
   FTransparent := True;
-  Flat := True;
 
   FImList := TImageList.Create(Self);
+  FPressOffset := 1;
   FSpacing := 2;
   FTextAlign := ttaCenter;
   FWordWrap := False;
   FOutline := fsExplorer;
+
+  { former TJvTransparentButton2 }
+  FImages := TJvTransparentButtonImages.Create(Self);
+
+  { former TJvTransparentButton }
+  FNumGlyphs := 1;
+  FGlyph := TBitmap.Create;
+  FGrayGlyph := TBitmap.Create;
+  FDisabledGlyph := TBitmap.Create;
+  FGlyph.OnChange := GlyphChanged;
+  FNumGlyphs := 1;
+
+  AllowAllUp := True;
+  Flat := True;
 end;
 
-destructor TJvTransparentButtonBase.Destroy;
+destructor TJvTransparentButton.Destroy;
 begin
+  { former TJvTransparentButton }
+  FGlyph.Free;
+  FGrayGlyph.Free;
+  FDisabledGlyph.Free;
+  { former TJvTransparentButton2 }
+  FImages.Free;
+
   FImList.Free;
   inherited Destroy;
 end;
 
-function TJvTransparentButtonBase.GetActionLinkClass: TControlActionLinkClass;
+procedure TJvTransparentButton.Notification(AComponent: TComponent; Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if Operation = opRemove then
+  begin
+    if AComponent = FImages.FGrayList then
+      FImages.GrayImage := nil;
+    if AComponent = FImages.FActiveList then
+      FImages.ActiveImage := nil;
+    if AComponent = FImages.FDisabledList then
+      FImages.DisabledImage := nil;
+    if AComponent = FImages.FDownList then
+      FImages.DownImage := nil;
+    if AComponent = FImages.FHotList then
+      FImages.HotImage := nil;
+  end;
+end;
+
+function TJvTransparentButton.GetActionLinkClass: TControlActionLinkClass;
 begin
   Result := TJvTransparentButtonActionLink;
 end;
 
-procedure TJvTransparentButtonBase.SetFrameStyle(Value: TJvFrameStyle);
+procedure TJvTransparentButton.SetFrameStyle(Value: TJvFrameStyle);
 begin
   if FOutline <> Value then
   begin
@@ -454,7 +664,7 @@ begin
   end;
 end;
 
-procedure TJvTransparentButtonBase.SetTransparent(Value: Boolean);
+procedure TJvTransparentButton.SetTransparent(Value: Boolean);
 begin
   if FTransparent <> Value then
   begin
@@ -464,7 +674,7 @@ begin
   end;
 end;
 
-procedure TJvTransparentButtonBase.SetBorderWidth(Value: Cardinal);
+procedure TJvTransparentButton.SetBorderWidth(Value: Cardinal);
 begin
   if FBorderSize <> Value then
   begin
@@ -473,7 +683,7 @@ begin
   end;
 end;
 
-procedure TJvTransparentButtonBase.SetWordWrap(Value: Boolean);
+procedure TJvTransparentButton.SetWordWrap(Value: Boolean);
 begin
   if FWordWrap <> Value then
   begin
@@ -482,7 +692,7 @@ begin
   end;
 end;
 
-procedure TJvTransparentButtonBase.SetSpacing(Value: Integer);
+procedure TJvTransparentButton.SetSpacing(Value: Integer);
 begin
   if FSpacing <> Value then
   begin
@@ -491,7 +701,7 @@ begin
   end;
 end;
 
-procedure TJvTransparentButtonBase.SetAutoGray(Value: Boolean);
+procedure TJvTransparentButton.SetAutoGray(Value: Boolean);
 begin
   if FAutoGray <> Value then
   begin
@@ -500,7 +710,7 @@ begin
   end;
 end;
 
-procedure TJvTransparentButtonBase.SetTextAlign(Value: TJvTextAlign);
+procedure TJvTransparentButton.SetTextAlign(Value: TJvTextAlign);
 begin
   if FTextAlign <> Value then
   begin
@@ -511,7 +721,7 @@ end;
 
 { paint everything but bitmap and text }
 
-procedure TJvTransparentButtonBase.PaintFrame(Canvas: TCanvas);
+procedure TJvTransparentButton.PaintFrame(Canvas: TCanvas);
 var
   TmpRect: TRect;
   DrawIt: Boolean;
@@ -671,7 +881,7 @@ begin
   end;
 end;
 
-procedure TJvTransparentButtonBase.PaintButton(Canvas: TCanvas);
+procedure TJvTransparentButton.PaintButton(Canvas: TCanvas);
 var
   Dest: TRect;
   TmpWidth: Integer;
@@ -720,7 +930,7 @@ end;
 
 { ARect contains the bitmap bounds }
 
-procedure TJvTransparentButtonBase.DrawTheText(ARect: TRect; Canvas: TCanvas);
+procedure TJvTransparentButton.DrawTheText(ARect: TRect; Canvas: TCanvas);
 var
   Flags, MidX, MidY: Integer;
   DC: HDC; { Col: TColor; }
@@ -781,7 +991,7 @@ begin
     Flags := Flags or DT_SINGLELINE or DT_NOCLIP;
 
   if ((bsMouseDown in MouseStates) or Down) and FShowPressed then
-    OffsetRect(TmpRect, FOffset, FOffset);
+    OffsetRect(TmpRect, FPressOffset, FPressOffset);
 
   SetBkMode(DC, Windows.TRANSPARENT);
   if not Enabled then
@@ -801,34 +1011,17 @@ begin
   {$ENDIF VisualCLX}
 end;
 
-//=== { TJvTransparentButton } ===============================================
-
-constructor TJvTransparentButton.Create(AOwner: TComponent);
+procedure TJvTransparentButton.SetImages(Value: TJvTransparentButtonImages);
 begin
-  inherited Create(AOwner);
-  FNumGlyphs := 1;
-  FOffset := 1;
-  FGlyph := TBitmap.Create;
-  FGrayGlyph := TBitmap.Create;
-  FDisabledGlyph := TBitmap.Create;
-  FGlyph.OnChange := GlyphChanged;
-
-  FNumGlyphs := 1;
-end;
-
-destructor TJvTransparentButton.Destroy;
-begin
-  FGlyph.Free;
-  FGrayGlyph.Free;
-  FDisabledGlyph.Free;
-  inherited Destroy;
+  if Value <> FImages then
+    FImages.Assign(Value);
 end;
 
 procedure TJvTransparentButton.CalcGlyphCount;
 var
   GlyphNum: Integer;
 begin
-  if (Glyph <> nil) and (Glyph.Height > 0) then
+  if not Glyph.Empty then
   begin
     if Glyph.Width mod Glyph.Height = 0 then
     begin
@@ -840,12 +1033,15 @@ begin
   end;
 end;
 
-procedure TJvTransparentButton.AddGlyphs(aGlyph: TBitmap; AColor: TColor; Value: Integer);
+procedure TJvTransparentButton.AddGlyphGlyphs(aGlyph: TBitmap; AColor: TColor; Value: Integer);
 var
   Bmp: TBitmap;
   I, TmpWidth: Integer;
   Dest, Source: TRect;
 begin
+  if UseImages then
+    Exit;
+    
   FImList.Clear;
   Bmp := TBitmap.Create;
   try
@@ -887,6 +1083,8 @@ end;
 procedure TJvTransparentButton.SetGlyph(Bmp: TBitmap);
 begin
   FGlyph.Assign(Bmp);
+  if UseImages then
+    AddImageGlyphs;
   CalcGlyphCount;
   Invalidate;
 end;
@@ -896,77 +1094,116 @@ begin
   if FNumGlyphs <> Value then
   begin
     FNumGlyphs := Value;
-    GlyphChanged(Self);
-    Invalidate;
+    if not UseImages then
+    begin
+      GlyphChanged(Self);
+      Invalidate;
+    end;
   end;
 end;
 
 procedure TJvTransparentButton.DrawTheBitmap(ARect: TRect; Canvas: TCanvas);
 var
-  Index: Integer;
+  Index: TImageIndex;
   HelpRect: TRect;
 begin
-  Index := 0;
-
-  case FNumGlyphs of {normal,disabled,down,down }
-    2:
-      if not Enabled then
-        Index := 1;
-    3:
-      if not Enabled then
-        Index := 1
-      else
-      if (bsMouseDown in MouseStates) or Down then
-        Index := 2;
-    4:
-      if not Enabled then
-        Index := 1
-      else
-      if (bsMouseDown in MouseStates) or Down then
-        Index := 2;
-  else
-    Index := 0;
-  end;
-
   if FImList.Count = 0 then
     Exit;
+  Index := 0;
 
-  if ((bsMouseDown in MouseStates) and FShowPressed) or Down then
-    OffsetRect(ARect, FOffset, FOffset);
-  { do we need the grayed bitmap ? }
-  if (Flat or (FrameStyle = fsExplorer)) and FAutoGray and not (bsMouseInside in MouseStates) and not Down then
-    Index := FImList.Count - 2;
+  if UseImages then
+  begin
+    // Images
+    with FImList do
+    begin
+      if not Enabled then
+        Index := 1 { disabled }
+      else
+      if ((bsMouseDown in MouseStates) and
+          (KeepMouseLeavePressed or (bsMouseInside in MouseStates))) or Down then
+        Index := 2 { down }
+      else
+      if (FrameStyle = fsExplorer) and FAutoGray and (MouseStates = []) then
+        Index := 3 { autogray }
+      else
+      if (bsMouseInside in MouseStates) and HotTrack then
+        Index := 4 { hot }
+      else
+        Index := 0; { normal/active }
+    end;
+  end
+  else
+  begin
+    // Glyph
+    case FNumGlyphs of {normal,disabled,down,down }
+      2:
+        if not Enabled then
+          Index := 1;
+      3:
+        if not Enabled then
+          Index := 1
+        else
+        if (bsMouseDown in MouseStates) or Down then
+          Index := 2;
+      4:
+        if not Enabled then
+          Index := 1
+        else
+        if (bsMouseDown in MouseStates) or Down then
+          Index := 2;
+    else
+      Index := 0;
+    end;
 
-  { do we need the disabled bitmap ? }
-  if not Enabled and (FNumGlyphs = 1) then
-    Index := FImList.Count - 1;
+    { do we need the grayed bitmap ? }
+    if (Flat or (FrameStyle = fsExplorer)) and FAutoGray and not (bsMouseInside in MouseStates) and not Down then
+      Index := FImList.Count - 2;
+
+    { do we need the disabled bitmap ? }
+    if not Enabled and (FNumGlyphs = 1) then
+      Index := FImList.Count - 1;
+  end;
+
+  if ((bsMouseDown in MouseStates) or Down) and FShowPressed then
+    OffsetRect(ARect, FPressOffset, FPressOffset);
 
   { Norris }
-  if (bsMouseInside in MouseStates) and Down then
+  if (bsMouseInside in MouseStates) and ((bsMouseDown in MouseStates) or Down) then
   begin
     HelpRect := ClientRect;
     InflateRect(HelpRect, -BorderWidth - 1, -BorderWidth - 1);
     Canvas.Brush.Bitmap := Pattern;
     Self.Canvas.FillRect(HelpRect);
   end;
-  {$IFDEF VCL}
+
+  FImList.Draw(Canvas, ARect.Left, ARect.Top, Index);
+
+  (*{$IFDEF VCL}
   ImageList_DrawEx(FImList.Handle, Index, Canvas.Handle, ARect.Left, ARect.Top, 0, 0,
     clNone, clNone, ILD_TRANSPARENT);
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   FImList.Draw(Canvas, ARect.Left, ARect.Top, Index);
-  {$ENDIF VisualCLX}
+  {$ENDIF VisualCLX}*)
+end;
+
+function TJvTransparentButton.GetUseImages: Boolean;
+begin
+  Result := not Assigned(Glyph) or Glyph.Empty;
 end;
 
 procedure TJvTransparentButton.GlyphChanged(Sender: TObject);
 begin
+  if UseImages then
+    AddImageGlyphs
+  else
+    AddGlyphGlyphs(Glyph, Glyph.TransparentColor, NumGlyphs);
   Invalidate;
-  AddGlyphs(Glyph, Glyph.TransparentColor, NumGlyphs);
 end;
 
 procedure TJvTransparentButton.ActionChange(Sender: TObject; CheckDefaults: Boolean);
 
-  procedure CopyImage(ImageList: TCustomImageList; Index: TImageIndex);
+  {procedure CopyImage(ImageList: TCustomImageList; Index: TImageIndex);
   begin
     with Glyph do
     begin
@@ -977,55 +1214,40 @@ procedure TJvTransparentButton.ActionChange(Sender: TObject; CheckDefaults: Bool
       ImageList.Draw(Self.Canvas, 0, 0, Index);
     end;
     GlyphChanged(Glyph);
-  end;
+  end;}
 
 begin
   inherited ActionChange(Sender, CheckDefaults);
   if Sender is TCustomAction then
+  begin
     with TCustomAction(Sender) do
     begin
       if not CheckDefaults then
         Self.Down := Checked;
-      { Copy image from action's imagelist }
-      if (Glyph.Empty) and (ActionList <> nil) and (ActionList.Images <> nil) and
-        (ImageIndex >= 0) and (ImageIndex < ActionList.Images.Count) then
-        CopyImage(ActionList.Images, ImageIndex);
+      {if UseImages then
+      begin}
+        // action uses ActiveImage
+        Glyph.Width := 0;
+        Glyph.Height := 0;
+        
+        if not CheckDefaults or (Images.ActiveIndex = -1) then
+        begin
+          Images.ActiveImage := ActionList.Images;
+          Images.ActiveIndex := ImageIndex;
+        end;
+      {end
+      else
+      begin
+        // Copy image from action's imagelist
+        if (Glyph.Empty) and (ActionList <> nil) and (ActionList.Images <> nil) and
+           (ImageIndex >= 0) and (ImageIndex < ActionList.Images.Count) then
+          CopyImage(ActionList.Images, ImageIndex);
+      end;}
     end;
+  end;
 end;
 
-//=== { TJvTransparentButton2 } ==============================================
-
-constructor TJvTransparentButton2.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FGrayLink := TChangeLink.Create;
-  FGrayLink.OnChange := GlyphChanged;
-  FActiveLink := TChangeLink.Create;
-  FActiveLink.OnChange := GlyphChanged;
-  FDisabledLink := TChangeLink.Create;
-  FDisabledLink.OnChange := GlyphChanged;
-  FDownLink := TChangeLink.Create;
-  FDownLink.OnChange := GlyphChanged;
-  FHotLink := TChangeLink.Create;
-  FHotLink.OnChange := GlyphChanged;
-  FActiveIndex := -1;
-  FDisabledIndex := -1;
-  FDownIndex := -1;
-  FGrayIndex := -1;
-  FHotIndex := -1;
-end;
-
-destructor TJvTransparentButton2.Destroy;
-begin
-  FGrayLink.Free;
-  FActiveLink.Free;
-  FDisabledLink.Free;
-  FDownLink.Free;
-  FHotLink.Free;
-  inherited Destroy;
-end;
-
-procedure TJvTransparentButton2.AddGlyphs;
+procedure TJvTransparentButton.AddImageGlyphs;
 var
   Bmp: TBitmap; // creating a Bitmap is time consuming in Qt, so use one for all
 
@@ -1051,228 +1273,61 @@ var
   end;
 
 begin
+  if not UseImages then
+    Exit;
+    
   Bmp := TBitmap.Create;
   try
+    { get imagelist properties (width, height, ...) }
+    FImList.BkColor := clNone;
     { destroy old list }
     FImList.Clear;
     { create the imagelist }
-    if Assigned(FActiveList) and (FActiveIndex > -1) then
+    with Images do
     begin
-      FImList.Height := FActiveList.Height;
-      FImList.Width := FActiveList.Width;
-      AddGlyph(FActiveList, FActiveIndex);
-    end
-    else
-      Exit; // without an active image the component cannot do anything
+      if Assigned(FActiveList) and (FActiveIndex > -1) then
+      begin
+        FImList.Height := FActiveList.Height;
+        FImList.Width := FActiveList.Width;
 
-    Bmp.Height := FImList.Height;
-    Bmp.Width := FImList.Width;
+        { copy some properties }
+        FImList.Masked := FActiveList.Masked;
+        FImList.ImageType := FActiveList.ImageType;
+        FImList.DrawingStyle := FActiveList.DrawingStyle;
+        FImList.BlendColor := FActiveList.BlendColor;
+        
+        AddGlyph(FActiveList, FActiveIndex);
+      end
+      else
+        Exit; // without an active image the component cannot do anything
 
-    if not AddGlyph(FDisabledList, FDisabledIndex) then
-    begin
-      FActiveList.GetBitmap(FActiveIndex, Bmp);
-      DisabledBitmap(Bmp);
-      FImList.AddMasked(Bmp, Bmp.TransparentColor);
+      Bmp.Height := FImList.Height;
+      Bmp.Width := FImList.Width;
+
+      if not AddGlyph(FDisabledList, FDisabledIndex) then
+      begin
+        FActiveList.GetBitmap(FActiveIndex, Bmp);
+        DisabledBitmap(Bmp);
+        FImList.AddMasked(Bmp, Bmp.TransparentColor);
+      end;
+
+      if not AddGlyph(FDownList, FDownIndex) then
+        AddGlyph(FActiveList, FActiveIndex);
+
+      if not AddGlyph(FGrayList, FGrayIndex) then
+      begin
+        FActiveList.GetBitmap(FActiveIndex, Bmp);
+        GrayBitmap(Bmp, 11, 59, 30);
+        FImList.AddMasked(Bmp, Bmp.TransparentColor);
+      end;
+
+      if not AddGlyph(FHotList, FHotIndex) then
+        AddGlyph(FActiveList, FActiveIndex);
     end;
-
-    if not AddGlyph(FDownList, FDownIndex) then
-      AddGlyph(FActiveList, FActiveIndex);
-
-    if not AddGlyph(FGrayList, FGrayIndex) then
-    begin
-      FActiveList.GetBitmap(FActiveIndex, Bmp);
-      GrayBitmap(Bmp, 11, 59, 30);
-      FImList.AddMasked(Bmp, Bmp.TransparentColor);
-    end;
-
-    if not AddGlyph(FHotList, FHotIndex) then
-      AddGlyph(FActiveList, FActiveIndex);
   finally
     Bmp.Free;
     Repaint;
   end;
-end;
-
-procedure TJvTransparentButton2.SetGrayList(Value: TImageList);
-begin
-  if FGrayList <> nil then
-    FGrayList.UnRegisterChanges(FGrayLink);
-  FGrayList := Value;
-
-  if FGrayList <> nil then
-    FGrayList.RegisterChanges(FGrayLink);
-  AddGlyphs;
-end;
-
-procedure TJvTransparentButton2.SetActiveList(Value: TImageList);
-begin
-  if FActiveList <> nil then
-    FActiveList.UnRegisterChanges(FActiveLink);
-  FActiveList := Value;
-
-  if FActiveList <> nil then
-  begin
-    FImList.Assign(FActiveList); // get properties
-    FImList.BkColor := clNone;
-    FActiveList.RegisterChanges(FActiveLink);
-  end;
-  AddGlyphs;
-end;
-
-procedure TJvTransparentButton2.SetDisabledList(Value: TImageList);
-begin
-  if FDisabledList <> nil then
-    FDisabledList.UnRegisterChanges(FDisabledLink);
-  FDisabledList := Value;
-
-  if FDisabledList <> nil then
-    FDisabledList.RegisterChanges(FDisabledLink);
-  AddGlyphs;
-end;
-
-procedure TJvTransparentButton2.SetDownList(Value: TImageList);
-begin
-  if FDownList <> nil then
-    FDownList.UnRegisterChanges(FDownLink);
-  FDownList := Value;
-
-  if FDownList <> nil then
-    FDownList.RegisterChanges(FDownLink);
-  AddGlyphs;
-end;
-
-procedure TJvTransparentButton2.SetHotList(Value: TImageList);
-begin
-  if FHotList <> nil then
-    FHotList.UnRegisterChanges(FHotLink);
-  FHotList := Value;
-
-  if FHotList <> nil then
-    FHotList.RegisterChanges(FHotLink);
-  AddGlyphs;
-end;
-
-procedure TJvTransparentButton2.SetGrayIndex(Value: TImageIndex);
-begin
-  if FGrayIndex <> Value then
-  begin
-    FGrayIndex := Value;
-    AddGlyphs;
-  end;
-end;
-
-procedure TJvTransparentButton2.SetActiveIndex(Value: TImageIndex);
-begin
-  if FActiveIndex <> Value then
-  begin
-    FActiveIndex := Value;
-    AddGlyphs;
-  end;
-end;
-
-procedure TJvTransparentButton2.SetDisabledIndex(Value: TImageIndex);
-begin
-  if FDisabledIndex <> Value then
-  begin
-    FDisabledIndex := Value;
-    AddGlyphs;
-  end;
-end;
-
-procedure TJvTransparentButton2.SetDownIndex(Value: TImageIndex);
-begin
-  if FDownIndex <> Value then
-  begin
-    FDownIndex := Value;
-    AddGlyphs;
-  end;
-end;
-
-procedure TJvTransparentButton2.SetHotIndex(Value: TImageIndex);
-begin
-  if FHotIndex <> Value then
-  begin
-    FHotIndex := Value;
-    AddGlyphs;
-  end;
-end;
-
-procedure TJvTransparentButton2.DrawTheBitmap(ARect: TRect; Canvas: TCanvas);
-var
-  Index: TImageIndex;
-  HelpRect: TRect;
-begin
-  if FImList.Count = 0 then
-    Exit;
-
-  with FImList do
-  begin
-    if not Enabled then
-      Index := 1 { disabled }
-    else
-    if ((bsMouseDown in MouseStates) and
-        (KeepMouseLeavePressed or (bsMouseInside in MouseStates))) or Down then
-      Index := 2 { down }
-    else
-    if (FrameStyle = fsExplorer) and FAutoGray and (MouseStates = []) then
-      Index := 3 { autogray }
-    else
-    if (bsMouseInside in MouseStates) and HotTrack then
-      Index := 4 { hot }
-    else
-      Index := 0; { active }
-
-    { Norris }
-    if (bsMouseInside in MouseStates) and ((bsMouseDown in MouseStates) or Down) then
-    begin
-      HelpRect := ClientRect;
-      InflateRect(HelpRect, -BorderWidth - 1, -BorderWidth - 1);
-      Canvas.Brush.Bitmap := Pattern;
-      Self.Canvas.FillRect(HelpRect);
-    end;
-
-    if ((bsMouseDown in MouseStates) or Down) and FShowPressed then
-      OffsetRect(ARect, 1, 1);
-
-    FImList.Draw(Canvas, ARect.Left, ARect.Top, Index);
-  end;
-end;
-
-procedure TJvTransparentButton2.GlyphChanged(Sender: TObject);
-begin
-  AddGlyphs;
-end;
-
-procedure TJvTransparentButton2.Notification(AComponent: TComponent; Operation: TOperation);
-begin
-  inherited Notification(AComponent, Operation);
-  if Operation = opRemove then
-  begin
-    if AComponent = FGrayList then
-      GrayImage := nil;
-    if AComponent = FActiveList then
-      ActiveImage := nil;
-    if AComponent = FDisabledList then
-      DisabledImage := nil;
-    if AComponent = FDownList then
-      DownImage := nil;
-    if AComponent = FHotList then
-      HotImage := nil;
-  end;
-end;
-
-procedure TJvTransparentButton2.ActionChange(Sender: TObject;
-  CheckDefaults: Boolean);
-begin
-  inherited ActionChange(Sender, CheckDefaults);
-  if Sender is TCustomAction then
-    with TCustomAction(Sender) do
-    begin
-      if not CheckDefaults then
-        Self.Down := Checked;
-      if not CheckDefaults or (ActiveIndex = -1) then
-        Self.ActiveIndex := ImageIndex;
-    end;
 end;
 
 {$IFDEF UNITVERSIONING}
