@@ -1,5 +1,9 @@
 Changelog for JVCL 3.0
 ======================
+2005-05-13:
+- Merged TJvTransparentButton and TJvTransparentButton2 // ahuser
+- Renamed TJvTransparentButton.Offset to PressOffset // ahuser
+- Moved TJvTransparentButton.ActiveImage, GrayImage, DisabledImage, DownImage to new subcomponent Images // ahuser
 2005-05-09:
 - Added new published event OnAdvColorButtonClick to TJvOfficeColorButton and TJvOfficeColorPanel // ahuser
 2005-05-04:
