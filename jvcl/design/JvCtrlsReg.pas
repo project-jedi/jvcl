@@ -82,8 +82,7 @@ begin
   GroupDescendentsWith(TJvHint, TControl);
   {$ENDIF COMPILER7_UP}
 
-  RegisterComponents(RsPaletteButton, [TJvTransparentButton,
-    TJvTransparentButton2, TJvArrowButton,
+  RegisterComponents(RsPaletteButton, [TJvTransparentButton, TJvArrowButton,
     {$IFDEF VCL}
     TJvCaptionButton,
     {$ENDIF VCL}
