@@ -2204,7 +2204,10 @@ end;
 class function TJvTreeNode.CreateEnh(AOwner: TTreeNodes): TJvTreeNode;
 begin
   Result := Create(AOwner);
-  Result.FPopupMenu := TPopupMenu.Create(AOwner.Owner);
+
+// (obones): There is no need to create a popup for every single node, it even
+//           triggers Mantis 2582
+//  Result.FPopupMenu := TPopupMenu.Create(AOwner.Owner);
 end;
 
 procedure TJvTreeNode.Assign(Source: TPersistent);
@@ -2755,7 +2758,8 @@ begin
               end;
             end;
             if (Selected <> nil) and (NMHdr^.code = NM_RCLICK) then
-              TJvTreeNode(Selected).PopupMenu.Popup(Mouse.CursorPos.X, Mouse.CursorPos.Y);
+              if Assigned(TJvTreeNode(Selected).PopupMenu) then  // Popup menu may not be assigned
+                TJvTreeNode(Selected).PopupMenu.Popup(Mouse.CursorPos.X, Mouse.CursorPos.Y);
           end;
         TVN_SELCHANGEDA, TVN_SELCHANGEDW:
           if Assigned(FPageControl) then
