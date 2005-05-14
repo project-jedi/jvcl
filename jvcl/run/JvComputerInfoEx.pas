@@ -3159,11 +3159,27 @@ end;
 function TJvMiscInfo.GetIsOnline: Boolean;
 const
   INTERNET_CONNECTION_OFFLINE = $20;
+type
+  TInternetGetConnectedStateFunc = function (lpdwFlags: LPDWORD;
+    dwReserved: DWORD): BOOL; stdcall;
 var
   ConnectFlag: DWORD;
+  LibraryHandle: THandle;
+  InternetGetConnectedStateFunc: TInternetGetConnectedStateFunc;
 begin
   { TODO : Load dynamically (not all have WinInet) }
-  Result := InternetGetConnectedState(@ConnectFlag, 0) and (ConnectFlag <> INTERNET_CONNECTION_OFFLINE);
+  // (outchy) done
+  LibraryHandle := LoadLibrary('wininet.dll');                 { Do not localize }
+  try
+    InternetGetConnectedStateFunc := GetProcAddress(LibraryHandle,
+                   'InternetGetConnectedState');               { Do not localize }
+    Result :=    Assigned(InternetGetConnectedStateFunc)
+             and InternetGetConnectedStateFunc(@ConnectFlag,0)
+             and (ConnectFlag <> INTERNET_CONNECTION_OFFLINE);
+  finally
+    FreeLibrary(LibraryHandle);
+  end;
+  //Result := InternetGetConnectedState(@ConnectFlag, 0) and (ConnectFlag <> INTERNET_CONNECTION_OFFLINE);
 end;
 
 function TJvMiscInfo.GetNetBIOS: Boolean;
