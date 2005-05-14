@@ -336,6 +336,9 @@ type
     procedure ResetDockControlConjoinOption;
     procedure ResetDockControlTabOption;
 
+    procedure DoShowDockForm(DockWindow: TWinControl); virtual;
+    procedure DoHideDockForm(DockWindow: TWinControl); virtual;
+
     procedure ShowDockForm(ADockClient: TJvDockClient); virtual;
     procedure HideDockForm(ADockClient: TJvDockClient); virtual;
     function GetDockFormVisible(ADockClient: TJvDockClient): Boolean; virtual;
@@ -1192,7 +1195,7 @@ var
   I: TAlign;
   J: Integer;
   ADockServer: TJvDockServer;
-  ARect: TRect;
+  //  ARect: TRect;
   Channel: TJvDockVSChannel;
 begin
   if DockForm is TJvDockableForm then
@@ -1233,9 +1236,9 @@ begin
         if (DockForm.HostDockSite.Parent is TJvDockableForm) and
           (DockForm.HostDockSite.DockClientCount <= 2) then
           PostMessage(DockForm.HostDockSite.Parent.Handle, WM_CLOSE, 0, 0);
-      end
-      else
-        ARect := DockForm.BoundsRect;
+      end;
+      //      else
+      //        ARect := DockForm.BoundsRect;
 
       Channel := RetrieveChannel(DockForm.HostDockSite);
       if Assigned(Channel) then
@@ -1322,7 +1325,15 @@ end;
 
 procedure HideDockForm(DockWindow: TWinControl);
 var
-  TmpDockWindow: TWinControl;
+  ADockClient: TJvDockClient;
+begin
+  // delegate to style
+  ADockClient := FindDockClient(DockWindow);
+  if Assigned(ADockClient) and Assigned(ADockClient.DockStyle) then
+    ADockClient.DockStyle.DoHideDockForm(DockWindow);
+end;
+
+procedure TJvDockBasicStyle.DoHideDockForm(DockWindow: TWinControl);
 
   procedure HideDockChild(DockWindow: TWinControl);
   var
@@ -1348,9 +1359,6 @@ var
   begin
     if (DockWindow <> nil) and (DockWindow.HostDockSite <> nil) then
     begin
-      // work-around
-      if Assigned(RetrieveChannel(DockWindow.HostDockSite)) then Exit;
-
       Host := DockWindow.HostDockSite;
       if Host.VisibleDockClientCount = 0 then
         if Host is TJvDockPanel then
@@ -1368,22 +1376,11 @@ var
     end;
   end;
 
-  procedure HidePopupPanel(Client: TWinControl);
-  var
-    Channel: TJvDockVSChannel;
-  begin
-    Channel := RetrieveChannel(Client.HostDockSite);
-    if Assigned(Channel) then
-      Channel.HidePopupPanel(Client);
-  end;
-
 begin
-  TmpDockWindow := TWinControl(DockWindow);
   HideDockChild(DockWindow);
   HideDockParent(DockWindow);
   if (DockWindow.HostDockSite is TJvDockCustomControl) then
     TJvDockCustomControl(DockWindow.HostDockSite).UpdateCaption(DockWindow);
-  HidePopupPanel(TmpDockWindow);
 end;
 
 function IsDockable(Sender: TWinControl; Client: TControl; DropCtl: TControl = nil;
@@ -1950,11 +1947,20 @@ end;
 
 procedure ShowDockForm(DockWindow: TWinControl);
 var
-  TmpDockWindow: TWinControl;
+  ADockClient: TJvDockClient;
+begin
+  // delegate to style
+  ADockClient := FindDockClient(DockWindow);
+  if Assigned(ADockClient) and Assigned(ADockClient.DockStyle) then
+    ADockClient.DockStyle.DoShowDockForm(DockWindow);
+end;
+
+procedure TJvDockBasicStyle.DoShowDockForm(DockWindow: TWinControl);
 
   procedure ShowClient(Client, DockParent: TWinControl);
   var
     ADockClient: TJvDockClient;
+    ADockServer: TJvDockServer;
     I: Integer;
   begin
     if (DockParent is TJvDockableForm) and (Client <> nil) then
@@ -1972,7 +1978,9 @@ var
       if (ADockClient <> nil) and (ADockClient.DockStyle <> nil) then
       begin
         ADockClient.DockStyle.ShowDockForm(ADockClient);
-        if DockParent.CanFocus then
+        ADockServer := FindDockServer(GetParentForm(DockParent));
+        if (not Assigned(ADockServer) or ADockServer.AutoFocusDockedForm) and
+          DockParent.CanFocus then
           DockParent.SetFocus;
       end;
     end;
@@ -2039,17 +2047,7 @@ var
     end;
   end;
 
-  procedure ShowPopupPanel(Client: TWinControl);
-  var
-    Channel: TJvDockVSChannel;
-  begin
-    Channel := RetrieveChannel(Client.HostDockSite);
-    if Assigned(Channel) then
-      Channel.PopupDockForm(Client);
-  end;
-
 begin
-  TmpDockWindow := DockWindow;
   repeat
     { Show single floating window }
     if Assigned(DockWindow) and (DockWindow.HostDockSite = nil) then
@@ -2059,7 +2057,6 @@ begin
     { Show docked window }
     DockWindow := ShowDockPanel(DockWindow);
   until (DockWindow = nil) or (DockWindow.Parent = nil);
-  ShowPopupPanel(TmpDockWindow);
 end;
 
 //=== { TJvDockableForm } ====================================================
@@ -4631,7 +4628,9 @@ begin
   begin
     if not Client.Visible then
       Client.Show;
-    if (not TWinControl(Client).Focused) and (TWinControl(Client).CanFocus) then
+
+    if DockServer.AutoFocusDockedForm and (Client is TWinControl) and
+      not TWinControl(Client).Focused and TWinControl(Client).CanFocus then
       TWinControl(Client).SetFocus;
   end;
 end;
