@@ -10,8 +10,8 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvDBGridExport.pas, released on 2004-01-15
 
-The Initial Developer of the Original Code is Lionel Renayud
-Portions created by Lionel Renayud are Copyright (C) 2004 Lionel Renayud.
+The Initial Developer of the Original Code is Lionel Reynaud
+Portions created by Lionel Reynaud are Copyright (C) 2004 Lionel Reynaud.
 All Rights Reserved.
 
 Contributor(s):
@@ -199,6 +199,7 @@ type
     FDocument: TStringList;
     FDestination: TExportDestination;
     FExportSeparator: TExportSeparator;
+    FShowColumnName: boolean;
     procedure SetExportSeparator(const Value: TExportSeparator);
     function SeparatorToString(ASeparator: TExportSeparator): string;
     procedure SetDestination(const Value: TExportDestination);
@@ -218,6 +219,7 @@ type
 
     property Destination: TExportDestination read FDestination write SetDestination default edFile;
     property ExportSeparator: TExportSeparator read FExportSeparator write SetExportSeparator default esTab;
+    property ShowColumnName: boolean read FShowColumnName write FShowColumnName default true;
   end;
 
   TJvDBGridXMLExport = class(TJvCustomDBGridExport)
@@ -399,7 +401,8 @@ begin
     Exit;
 
   try
-    FWord.Visible := FVisible;
+    if not FRunningInstance then
+      FWord.Visible := FVisible;
     FWord.Documents.Add;
 
     lColVisible := 0;
@@ -564,8 +567,9 @@ begin
   if VarIsEmpty(FExcel) then
     Exit;
   try
+    if not FRunningInstance then
+      FExcel.Visible := Visible;
     FExcel.WorkBooks.Add;
-    FExcel.Visible := Visible;
 
     lTable := FExcel.ActiveWorkbook.ActiveSheet;
 
@@ -933,6 +937,7 @@ begin
   FDestination := edFile;
   ExportSeparator := esTab;
   Caption := RsExportFile;
+  FShowColumnName := true;
 end;
 
 destructor TJvDBGridCSVExport.Destroy;
@@ -982,6 +987,15 @@ begin
   FDocument.Clear;
   Result := True;
   try
+    if ShowColumnName then
+    begin
+      lString := '';
+      for I := 0 to FColumnCount - 1 do
+        if FRecordColumns[I].Visible then
+          lString := lString + FRecordColumns[I].ColumnName + Separator;
+      FDocument.Add(lString);
+    end;
+
     with Grid.DataSource.DataSet do
     begin
       ARecNo := 0;
