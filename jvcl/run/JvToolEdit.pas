@@ -102,6 +102,9 @@ type
 
 {$ENDIF !COMPILER7_UP}
 
+// C++ Builder needs this HPPEMIT in order for the generated header to compile.
+{$HPPEMIT 'typedef DelphiInterface<IEnumString> _di_IEnumString;'}
+
 type
   TFileExt = type string;
 
