@@ -50,7 +50,6 @@ type
     N2: TMenuItem;
     Exit2: TMenuItem;
     Label3: TLabel;
-    JvTransparentButton21: TJvTransparentButton2;
     PageControl1: TPageControl;
     TabSheet1: TTabSheet;
     TabSheet2: TTabSheet;
@@ -69,13 +68,13 @@ type
     TransparentButton13: TJvTransparentButton;
     TransparentButton14: TJvTransparentButton;
     Button1: TButton;
-    JvTransparentButton22: TJvTransparentButton2;
-    JvTransparentButton23: TJvTransparentButton2;
-    JvTransparentButton24: TJvTransparentButton2;
-    JvTransparentButton25: TJvTransparentButton2;
-    JvTransparentButton26: TJvTransparentButton2;
-    JvTransparentButton27: TJvTransparentButton2;
-    JvTransparentButton28: TJvTransparentButton2;
+    JvTransparentButton22: TJvTransparentButton;
+    JvTransparentButton23: TJvTransparentButton;
+    JvTransparentButton24: TJvTransparentButton;
+    JvTransparentButton25: TJvTransparentButton;
+    JvTransparentButton26: TJvTransparentButton;
+    JvTransparentButton27: TJvTransparentButton;
+    JvTransparentButton28: TJvTransparentButton;
     ImageList1: TImageList;
     Image2: TImage;
     Image3: TImage;
