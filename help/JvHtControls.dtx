@@ -2,6 +2,7 @@
 ##Status: Needs review
 ------------------------------------------------------------------------
 @@JvHtControls.pas
+
 Summary
   Contains controls capable of rendering HTML tags found in their
   content.
@@ -281,9 +282,9 @@ Description
   IND                   Indent in pixels.
   </table>
 
-  HTML Character entities are recognized in the content for the control.
-  The following character entities are rendered as the indicated characters or
-  symbols:
+  HTML Character entities are recognized in the content for the
+  control. The following character entities are rendered as the
+  indicated characters or symbols:
 
   <table>
   Entity                Character or Symbol
@@ -356,9 +357,9 @@ Description
   IND                   Indent in pixels.
   </table>
 
-  HTML Character entities are recognized in the content for the control.
-  The following character entities are rendered as the indicated characters or
-  symbols:
+  HTML Character entities are recognized in the content for the
+  control. The following character entities are rendered as the
+  indicated characters or symbols:
 
   <table>
   Entity                Character or Symbol
@@ -457,9 +458,9 @@ Description
   IND                   Indent in pixels.
   </table>
 
-  HTML Character entities are recognized in the content for the control.
-  The following character entities are rendered as the indicated characters or
-  symbols:
+  HTML Character entities are recognized in the content for the
+  control. The following character entities are rendered as the
+  indicated characters or symbols:
 
   <table>
   Entity                Character or Symbol
@@ -531,9 +532,9 @@ Description
   IND                   Indent in pixels.
   </table>
 
-  HTML Character entities are recognized in the content for the control.
-  The following character entities are rendered as the indicated characters or
-  symbols:
+  HTML Character entities are recognized in the content for the
+  control. The following character entities are rendered as the
+  indicated characters or symbols:
 
   <table>
   Entity                Character or Symbol
@@ -603,9 +604,9 @@ Description
   IND                   Indent in pixels.
   </table>
 
-  HTML Character entities are recognized in the content for the control.
-  The following character entities are rendered as the indicated characters or
-  symbols:
+  HTML Character entities are recognized in the content for the
+  control. The following character entities are rendered as the
+  indicated characters or symbols:
 
   <table>
   Entity                Character or Symbol
@@ -790,7 +791,7 @@ Summary
 
 Description
   PrepareText is a String function used to normalize HTML tags from an
-  HTML-enabled control prior to rendering.  Normalization inlcudeds the
+  HTML-enabled control prior to rendering.  Normalization inlcudes the
   following operations:
 
   * Converts HTML entities to characters or symbols
@@ -807,25 +808,23 @@ See Also
 
 Parameters
   Canvas - Canvas used to render the HTML content.
-
   Rect   - Rectangle to use for rendering HTML content.
-
   State  - Draw state values for the rendering operation.
-
   Text   - HTML tags to render.
-
   Scale  - Scaling factor for the render.  Default value is 100.
 
 Returns
-  Integer - Width the rendered HTML tag.
+  Integer - Width of the rendered HTML tag.
 
 Summary
   Renders HTML-tagged contents using the specified Canvas, Rectangle,
   and Scaling factor.
 
 Description
-  ItemHTWidth is an Integer function used to render HTML-tagged
-  contents using the specified Canvas, Rectangle, and Scaling factor.
+  ItemHTWidth is a function used to render the HTML-tagged contents
+  using the specified in Text using the Canvas, Rectangle, State, and
+  Scaling factor arguments.  The return value is an Integer that
+  indicates the width of the rendered Text.
 
   ItemHTWidth is used when rendering or auto-sizing the content in
   HTML-enabled controls like TJvHTLabel to determine the width of the
@@ -839,71 +838,127 @@ Description
 See Also
   HTMLTextWidth
 ------------------------------------------------------------------------
-@@ItemHTPlain
-<TITLE ItemHTPlain function>
-
-Parameters
-  Text -
-
-Summary
-
-Description
-
-See Also
-
-------------------------------------------------------------------------
 @@ItemHTHeight
 <TITLE ItemHTHeight function>
 
 Parameters
-  Canvas -
-  Text   -
-  Scale  -
+  Canvas - Canvas used to render the HTML content.
+  Text   - HTML tags to render.
+  Scale  - Scaling factor for the render.  Default value is 100.
 
 Summary
+  Determines the height of rendered HTML values.
 
 Description
+  ItemHTHeight is a function used to determine the height of the
+  rendered HTML values specified in Text on the drawing area specified
+  in Canvas.
+
+  Scale indicates the scaling (or zoom) factor for the rendered values.
+  The default value is 100.  Use scale to control rendering of relative
+  fonts sizes.
+
+  ItemHTHeight calls HTMLTextHeight to perform the low-level operations
+  for the function.
 
 See Also
+  HTMLTextHeight
+------------------------------------------------------------------------
+@@ItemHTPlain
+<TITLE ItemHTPlain function>
 
+Parameters
+  Text   - HTML tags to convert to plain text.
+
+Summary
+  Converts HTML-tagged values to plain text.
+
+Description
+  ItemHTPlain is a function used to convert the HTML-tagged values
+  specified in Text as plain text.  ItemHTPlain calls the HTMLPlainText
+  function to remove the HTML tags in the specified argument.
+
+  Use ItemHTDraw or ItemHTDrawEx to render HTML-tagged values to the a
+  TCanvas instance.
+
+See Also
+  ItemHTDraw, ItemHTDrawEx
 ------------------------------------------------------------------------
 @@ItemHTDrawEx
 <TITLE ItemHTDrawEx procedure>
 
 Parameters
-  Canvas      -
-  Rect        -
-  State       -
-  Text        -
-  Width       -
-  CalcType    -
-  MouseX      -
-  MouseY      -
-  MouseOnLink -
-  LinkName    -
-  Scale       -
+  Canvas      - Canvas used to render the HTML content.
+  Rect        - Rectangle to use for rendering HTML content.
+  State       - Draw state values for the rendering operation.
+  Text        - HTML tags to render.
+  Width       - Width of the rendered values.
+  CalcType    - Type of HTML size calculation.
+  MouseX      - Mouse position.
+  MouseY      - Mouse position.
+  MouseOnLink - Mouse is currently in the HTML Anchor.
+  LinkName    - URL for the HTML Anchor.
+  Scale       - Scaling factor for the render.  Default value is 100.
 
 Summary
+  Renders HTML that contains a link (or HTML Anchor).
 
 Description
+  ItemHTDrawEx is a procedure used to render HTML-tagged values that
+  include links (HTML Anchors) using a TCanvas drawing area. Parameters
+  for the procedure provide the drawing canvas, clipping rectangle,
+  mouse position, and state information needed to draw the specified
+  HTML-tagged values.
+
+  Width indicates the calculated width for the render HTML values in
+  Text.
+
+  MouseX and MouseY represent the coordinates for the mouse pointer.
+  The value in MouseOnLink is updated to indicate if the MouseX and
+  MouseY coordinates are currently in an HTML anchor in the rendered
+  values.  LinkName is updated to indicate the URL for the HTML Anchor.
+
+  Scale indicates the scaling (or zoom) factor for the rendered values.
+  The default value is 100.  Use scale to control rendering of
+  relative fonts sizes.
+
+  ItemHTDrawEx calls the HTMLDrawTextEx procedure to perform the
+  low-level operations required for the procedure.
+
+  Use ItemHtDraw to render HTML-tagged values that do not include links
+  (HTML Anchors) or mouse position information.
 
 See Also
-
+  ItemHTDraw
 ------------------------------------------------------------------------
 @@ItemHTDraw
 <TITLE ItemHTDraw function>
 
 Parameters
-  Canvas -
-  Rect   -
-  State  -
-  Text   -
-  Scale  -
+  Canvas - Canvas used to render the HTML content.
+  Rect   - Rectangle to use for rendering HTML content.
+  State  - Draw state values for the rendering operation.
+  Text   - HTML tags to render.
+  Scale  - Scaling factor for the render.  Default value is 100.
 
 Summary
 
 Description
+  ItemHTDraw is a procedure used to render HTML-tagged values using a
+  TCanvas drawing area.  Parameters for the procedure provide the
+  drawing canvas, clipping rectangle, and state information needed to
+  draw the specified HTML-tagged values.
+
+  Scale indicates the scaling (or zoom) factor for the rendered values.
+  The default value is 100.  Use scale to control rendering of
+  relative fonts sizes.
+
+  ItemHTDraw calls the HTMLDrawText procedure to perform the low-level
+  operations required for the procedure.
+
+  Use ItemHtDrawEx to render HTML-tagged values that include links
+  (HTML Anchors) and mouse position information.
 
 See Also
-
+  ItemHTDrawEx
 ------------------------------------------------------------------------
