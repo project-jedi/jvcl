@@ -1165,7 +1165,8 @@ begin
   if Tab <> FHotTab then
   begin
     FHotTab := Tab;
-    Paint;
+    if poPaintsHotTab in CurrentPainter.Options then
+      Paint;
   end;
 end;
 
