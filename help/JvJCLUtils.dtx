@@ -95,20 +95,7 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@AddSlash
-<TITLE AddSlash procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Dir - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@AddSlash2
-<TITLE AddSlash2 function>
+<TITLE AddSlash function>
 Summary
   Write here a summary (1 line)
 Description
@@ -182,6 +169,20 @@ Description
   Write here a description
 Parameters
   S - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@AnsiDequotedStr
+<TITLE AnsiDequotedStr function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  S      - Description for this parameter
+  AQuote - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -591,15 +592,14 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@Cmp
-<TITLE Cmp function>
+@@ColorToPrettyName
+<TITLE ColorToPrettyName function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  S1 - Description for this parameter
-  S2 - Description for this parameter
+  Value - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1194,6 +1194,20 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
+@@DequotedStr
+<TITLE DequotedStr function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  S         - Description for this parameter
+  QuoteChar - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@DialogUnitsToPixelsX
 <TITLE DialogUnitsToPixelsX function>
 Summary
@@ -1480,6 +1494,20 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
+@@EndsText
+<TITLE EndsText function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  SubStr - Description for this parameter
+  S      - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@Error
 <TITLE Error procedure>
 Summary
@@ -1509,14 +1537,15 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@ExecuteAndWait
-<TITLE ExecuteAndWait procedure>
+<TITLE ExecuteAndWait function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  FileName   - Description for this parameter
-  Visibility - Description for this parameter
+  CommandLine      - Description for this parameter
+  WorkingDirectory - Description for this parameter
+  Visibility       - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1556,19 +1585,6 @@ Parameters
   N      - Description for this parameter
   S      - Description for this parameter
   Delims - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@ExtractFilePath2
-<TITLE ExtractFilePath2 function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  FileName - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1789,6 +1805,43 @@ Parameters
   Handle   - Description for this parameter
   Offset   - Description for this parameter
   LockSize - Description for this parameter
+
+----------------------------------------------------------------------------------------------------
+@@FillString@string@Integer@Char
+<TITLE FillString procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description of all these
+  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
+  name.
+Parameters
+  Buffer - Description for this parameter
+  Count  - Description for this parameter
+  Value  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@FillString@string@Integer@Integer@Char
+<TITLE FillString procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description of all these
+  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
+  name.
+Parameters
+  Buffer     - Description for this parameter
+  StartIndex - Description for this parameter
+  Count      - Description for this parameter
+  Value      - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@FillWideChar
@@ -3423,6 +3476,44 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
+@@MoveString@string@Integer@string@Integer@Integer
+<TITLE MoveString procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description of all these
+  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
+  name.
+Parameters
+  Source      - Description for this parameter
+  SrcStartIdx - Description for this parameter
+  Dest        - Description for this parameter
+  DstStartIdx - Description for this parameter
+  Count       - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@MoveString@string@string@Integer
+<TITLE MoveString procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description of all these
+  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
+  name.
+Parameters
+  Source - Description for this parameter
+  Dest   - Description for this parameter
+  Count  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@MoveWideChar
 <TITLE MoveWideChar procedure>
 Summary
@@ -3636,6 +3727,51 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
+@@PosIdx
+<TITLE PosIdx function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  SubStr - Description for this parameter
+  S      - Description for this parameter
+  Index  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@PosIdxW
+<TITLE PosIdxW function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  SubStr - Description for this parameter
+  S      - Description for this parameter
+  Index  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@PosLastCharIdx
+<TITLE PosLastCharIdx function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Ch    - Description for this parameter
+  S     - Description for this parameter
+  Index - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@PreformatDateString
 <TITLE PreformatDateString function>
 Summary
@@ -3657,6 +3793,19 @@ Description
   Write here a description
 Parameters
   Ss - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@PrettyNameToColor
+<TITLE PrettyNameToColor function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Value - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -4001,6 +4150,7 @@ Parameters
   S          - Description for this parameter
   OldPattern - Description for this parameter
   NewPattern - Description for this parameter
+  StartIndex - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -4034,6 +4184,7 @@ Parameters
   S          - Description for this parameter
   OldPattern - Description for this parameter
   NewPattern - Description for this parameter
+  StartIndex - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -4110,6 +4261,37 @@ Description
 Parameters
   MainFormClassName - Description for this parameter
   MainFormCaption   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@RGBToBGR
+<TITLE RGBToBGR function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@RGBToHSV
+<TITLE RGBToHSV procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  R - Description for this parameter
+  G - Description for this parameter
+  B - Description for this parameter
+  H - Description for this parameter
+  S - Description for this parameter
+  V - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -4312,6 +4494,38 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
+@@SendRectMessage
+<TITLE SendRectMessage function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Handle - Description for this parameter
+  Msg    - Description for this parameter
+  wParam - Description for this parameter
+  R      - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@SendStructMessage
+<TITLE SendStructMessage function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Handle - Description for this parameter
+  Msg    - Description for this parameter
+  wParam - Description for this parameter
+  Data   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@SetChildPropOrd
 <TITLE SetChildPropOrd procedure>
 Summary
@@ -4475,6 +4689,20 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
+@@StartsText
+<TITLE StartsText function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  SubStr - Description for this parameter
+  S      - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@StrDelete
 <TITLE StrDelete function>
 Summary
@@ -4484,20 +4712,6 @@ Description
 Parameters
   psSub  - Description for this parameter
   psMain - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@StringCat
-<TITLE StringCat function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  S1 - Description for this parameter
-  S2 - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -4747,46 +4961,33 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@SubStr
-<TITLE SubStr function>
+@@SubStrBySeparator
+<TITLE SubStrBySeparator function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  S         - Description for this parameter
-  Index     - Description for this parameter
-  Separator - Description for this parameter
+  S          - Description for this parameter
+  Index      - Description for this parameter
+  Separator  - Description for this parameter
+  StartIndex - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@SubStrEnd
-<TITLE SubStrEnd function>
+@@SubStrBySeparatorW
+<TITLE SubStrBySeparatorW function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  S         - Description for this parameter
-  Index     - Description for this parameter
-  Separator - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@SubStrW
-<TITLE SubStrW function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  S         - Description for this parameter
-  Index     - Description for this parameter
-  Separator - Description for this parameter
+  S          - Description for this parameter
+  Index      - Description for this parameter
+  Separator  - Description for this parameter
+  StartIndex - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -5102,8 +5303,8 @@ Summary
 Description
   Write here a description
 Parameters
-  V       - Description for this parameter
-  VarType - Description for this parameter
+  V           - Description for this parameter
+  DestVarType - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references

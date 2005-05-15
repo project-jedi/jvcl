@@ -28,6 +28,19 @@ Parameters
                     hidden.
 
 ----------------------------------------------------------------------------------------------------
+@@RetrieveChannel
+<TITLE RetrieveChannel function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  HostDockSite - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvDockBlockType
 <TITLE TJvDockBlockType type>
 Summary
@@ -82,23 +95,6 @@ Description
   The channel is currently hidden.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockPoppupPanelAnimateStyle
-<TITLE TJvDockPoppupPanelAnimateStyle type>
-Summary
-  Defines styles of animation.
-Description
-  TJvDockPoppupPanelAnimateStyle is used to define the possible animation styles of a VS.Net style
-  docking panel.
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockPoppupPanelAnimateStyle.pasShow
-  The panel is animated while showing.
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockPoppupPanelAnimateStyle.pasHide
-  The panel is animated while hiding.
-
-----------------------------------------------------------------------------------------------------
 @@TJvDockVSBlock
 Summary
   Represents a group of tabs on a VS.Net channel.
@@ -106,7 +102,7 @@ Description
   Each TJvDockVSBlock object is a member of a blocks collection of a TJvDockVSChannel object and
   represents a group of tabs or panes on a VS.Net channel.
 See Also
-  TJvDockVSChannel.Blocks
+  TJvDockVSChannel.Block
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockVSBlock.ActiveBlockWidth
@@ -146,6 +142,21 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockVSBlock.FindDockControl
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Control   - Description for this parameter
+  PaneIndex - Description for this parameter
+Return value
+  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -193,24 +204,24 @@ Description
   the channel object to which the block belongs.
 
 ----------------------------------------------------------------------------------------------------
+@@TJvDockVSBlock.VSPane
+Summary
+  Lists the tabs of a block.
+Description
+  Use VSPane to access a single tab (also named pane) of a VS.Net channel.
+Parameters
+  Index - The tab index.
+See Also
+  VSPaneCount
+
+----------------------------------------------------------------------------------------------------
 @@TJvDockVSBlock.VSPaneCount
 Summary
   Indicates the number of tabs on the block.
 Description
   Read VSPaneCount to determine the number of tabs (also named panes) on a block.
 See Also
-  VSPanes
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockVSBlock.VSPanes
-Summary
-  Lists the tabs of a block.
-Description
-  Use VSPanes to access a single tab (also named pane) of a VS.Net channel.
-Parameters
-  Index - The tab index.
-See Also
-  VSPaneCount
+  VSPane
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockVSChannel
@@ -267,16 +278,25 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockVSChannel.AnimatePopupPanel
+@@TJvDockVSChannel.AutoFocusActiveDockForm
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  AnimateStyle - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockVSChannel.Block
+Summary
+  Lists the blocks on the channel.
+Description
+  Use Block to access the blocks on the VS.Net channel.
+Parameters
+  Index - The block index
+See Also
+  BlockCount
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockVSChannel.BlockCount
@@ -285,7 +305,7 @@ Summary
 Description
   Read BlockCount to determine the number of blocks on the VS.Net channel.
 See Also
-  Blocks
+  Block
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockVSChannel.BlockInterval
@@ -296,17 +316,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockVSChannel.Blocks
-Summary
-  Lists the blocks on the channel.
-Description
-  Use Blocks to access the blocks on the VS.Net channel.
-Parameters
-  Index - The block index
-See Also
-  BlockCount
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockVSChannel.BlockStartOffset
@@ -756,6 +765,18 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockVSNetStyle.DoUnAutoHideDockForm
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  DockWindow - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
