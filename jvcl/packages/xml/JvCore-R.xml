@@ -95,6 +95,6 @@
     <File Name="..\..\run\JvClipbrd.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvAutoComplete.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvBackgrounds.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvVCL5Utils.pas" Targets="d5,c5" Formname="" Condition=""/>
+    <File Name="..\..\run\JvVCL5Utils.pas" Targets="d5,d5s,c5,c5s" Formname="" Condition=""/>
   </Contains>
 </Package>
