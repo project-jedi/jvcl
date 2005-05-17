@@ -6,8 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, JvProgramVersionCheck, JvComponent, JvAppStorage, JvAppIniStorage,
   StdCtrls, JvUrlListGrabber, JvUrlGrabbers, ImgList, JvPropertyStore,
-  IdBaseComponent, IdComponent, IdTCPConnection, IdTCPClient, IdFTP, IdHTTP,
-  FtpCli, HttpProt;
+  IdBaseComponent, IdComponent, IdTCPConnection, IdTCPClient, IdFTP, IdHTTP;
 
 type
   TForm1 = class(TForm)
@@ -20,7 +19,6 @@ type
     Label1: TLabel;
     Label2: TLabel;
     ProgramVersionCheck: TJvProgramVersionCheck;
-    JvProgramVersionHTTPLocationICS1: TJvProgramVersionHTTPLocationICS;
     procedure FormShow(Sender: TObject);
   public
     procedure VersionCheck;

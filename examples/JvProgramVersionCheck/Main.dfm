@@ -63,9 +63,8 @@ object Form1: TForm1
     LocalVersionInfoFileName = 'ProgramVersionCheckLocal.Ini'
     LocationDatabase = JvProgramVersionDatabaseLocation1
     LocationFTP = JvProgramVersionFTPLocation1
-    LocationHTTP = JvProgramVersionHTTPLocationICS1
     LocationNetwork = JvProgramVersionNetworkLocation1
-    LocationType = pvltHTTP
+    LocationType = pvltNetwork
     UserOptions = [uoCheckFrequency, uoAllowedReleaseType, uoLocationNetwork, uoLocationHTTP, uoLocationFTP, uoLocationDatabase]
     Left = 355
     Top = 205
@@ -97,13 +96,5 @@ object Form1: TForm1
     VersionInfoFileName = 'ProjektVersions_http.ini'
     Left = 300
     Top = 320
-  end
-  object JvProgramVersionHTTPLocationICS1: TJvProgramVersionHTTPLocationICS
-    VersionInfoLocationPathList.Strings = (
-      'asdas'
-      'ftp://www.oratool.de/test/')
-    VersionInfoFileName = 'ProjektVersions_http.ini'
-    Left = 300
-    Top = 270
   end
 end
