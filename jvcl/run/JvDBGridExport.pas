@@ -1015,7 +1015,6 @@ begin
               begin
                 lField := FRecordColumns[I].Field.AsString;
                 if Pos(Separator, lField) <> 0 then
-                  //lString := lString + '"' + lField + '"'
                   lString := lString + AnsiQuotedStr(lField, '"')
                 else
                   lString := lString + lField;
