@@ -18,9 +18,6 @@ object TransBtnFormMain: TTransBtnFormMain
   Scaled = False
   OnActivate = FormActivate
   OnKeyPress = FormKeyPress
-  DesignSize = (
-    528
-    355)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
