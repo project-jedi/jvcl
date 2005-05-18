@@ -34,6 +34,7 @@
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "JvUninstallControls"
+#pragma link "ExtCtrls"
 #pragma resource "*.dfm"
 TForm1 *Form1;
 //---------------------------------------------------------------------------
