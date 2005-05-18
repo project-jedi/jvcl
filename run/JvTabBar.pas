@@ -142,7 +142,7 @@ type
     property Closing: Boolean read GetClosing;
   published
     property Caption: TCaption read FCaption write SetCaption;
-    property Selected: Boolean read GetSelected write SetSelected stored False;
+    property Selected: Boolean read GetSelected write SetSelected default False;
     property Enabled: Boolean read GetEnabled write SetEnabled default True;
     property Modified: Boolean read GetModified write SetModified default False;
     property Hint: TCaption read FHint write FHint;
@@ -380,6 +380,7 @@ type
     procedure InitWidget; override;
     procedure MouseLeave(AControl: TControl); override;
     {$ENDIF VisualCLX}
+    procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -565,6 +566,12 @@ begin
   FreeAndNil(FTabs);
   FreeAndNil(FScrollButtonBackground);
   inherited Destroy;
+end;
+
+procedure TJvCustomTabBar.Loaded;
+begin
+  inherited Loaded;
+  SelectedTab := FindSelectableTab(nil);
 end;
 
 procedure TJvCustomTabBar.Notification(Component: TComponent; Operation: TOperation);
