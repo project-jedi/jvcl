@@ -492,24 +492,34 @@ end;
 
 constructor TJvCustomScrollPanel.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner);
-  // this is very strange: without it I get a "Control '' has no parent window" error
-  // when dropping it in design-time. Never seen the need before
-  // (rom) probably assigning Align causes it. That needs a parent.
-  if AOwner is TWinControl then
-    Parent := TWinControl(AOwner);
-  ControlStyle := ControlStyle + [csAcceptsControls];
-  {$IFDEF VCL}
-  IncludeThemeStyle(Self, [csParentBackground]);
-  BevelInner := bvRaised;
-  BevelOuter := bvNone;
-  BevelKind := bkTile;
-  {$ENDIF VCL}
-  FScrollDirection := sdHorizontal;
-  FScrollAmount := 16;
-  Align := alTop;
-  Height := 35;
-  SetupArrows;
+  // We must set the csCreating flag ourselves into ControlState so that
+  // other functions can use it. In particular, the Notification method called
+  // by one of the inherited Create constructors must see it so as to not call
+  // Invalidate. If it calls it during creation, it triggers a big AV.
+  // Note that it doesn't seem that the VCL uses that flag itself.
+  ControlState := ControlState + [csCreating];
+  try
+    inherited Create(AOwner);
+    // this is very strange: without it I get a "Control '' has no parent window" error
+    // when dropping it in design-time. Never seen the need before
+    // (rom) probably assigning Align causes it. That needs a parent.
+    if AOwner is TWinControl then
+      Parent := TWinControl(AOwner);
+    ControlStyle := ControlStyle + [csAcceptsControls];
+    {$IFDEF VCL}
+    IncludeThemeStyle(Self, [csParentBackground]);
+    BevelInner := bvRaised;
+    BevelOuter := bvNone;
+    BevelKind := bkTile;
+    {$ENDIF VCL}
+    FScrollDirection := sdHorizontal;
+    FScrollAmount := 16;
+    Align := alTop;
+    Height := 35;
+    SetupArrows;
+  finally
+    ControlState := ControlState - [csCreating];
+  end;
 end;
 
 procedure TJvCustomScrollPanel.AlignArrows;
@@ -701,7 +711,13 @@ begin
     if AComponent = FDownRight then
       FDownRight := nil;
   end;
-  Invalidate;
+
+  // If we invalidate while creating, it triggers a series of exceptions
+  // leading to an access violation at 0000000
+  // Note that csCreating is specifically added to ControlState in the
+  // constructor for Notification to be able to use
+  if not (csCreating in ControlState) then
+    Invalidate;
 end;
 
 procedure TJvCustomScrollPanel.EnabledChanged;
