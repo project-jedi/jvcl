@@ -73,6 +73,8 @@ type
     procedure TextMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure TextMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure TextMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    function GetWordWrap: Boolean;
+    procedure SetWordWrap(const Value: Boolean);
   protected
     procedure BoundsChanged; override;
     procedure Loaded; override;
@@ -99,6 +101,7 @@ type
     {$IFDEF JVCLThemesEnabled}
     property ParentBackground default True;
     {$ENDIF JVCLThemesEnabled}
+    property WordWrap: Boolean read GetWordWrap write SetWordWrap;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -512,6 +515,16 @@ end;
 procedure TJvScrollText.SetAlignment(const Value: TAlignment);
 begin
   FText.Alignment := Value;
+end;
+
+function TJvScrollText.GetWordWrap: Boolean;
+begin
+  Result := FText.WordWrap;
+end;
+
+procedure TJvScrollText.SetWordWrap(const Value: Boolean);
+begin
+  FText.WordWrap := Value;
 end;
 
 {$IFDEF UNITVERSIONING}
