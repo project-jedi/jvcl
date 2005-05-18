@@ -1,16 +1,23 @@
 object TransBtnFormMain: TTransBtnFormMain
-  Left = 164
+  Left = 430
   Top = 182
-  Width = 538
-  Height = 379
+  BorderIcons = [biSystemMenu, biMinimize, biHelp]
+  BorderStyle = bsSingle
   Caption = 'TransparentButton Example Program'
+  ClientHeight = 355
+  ClientWidth = 528
   Color = clBtnFace
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
-  OldCreateOrder = False
+  OldCreateOrder = True
+  Position = poDesktopCenter
+  Scaled = False
+  OnActivate = FormActivate
+  OnKeyPress = FormKeyPress
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -35,7 +42,7 @@ object TransBtnFormMain: TTransBtnFormMain
       'f bitmaps and text.'
     Transparent = True
   end
-  object JvTransparentButton21: TJvTransparentButton2
+  object JvTransparentButton21: TJvTransparentButton
     Left = 224
     Top = 224
     Width = 40
@@ -56,6 +63,7 @@ object TransBtnFormMain: TTransBtnFormMain
     ActivePage = TabSheet2
     Anchors = [akLeft, akTop, akRight, akBottom]
     TabOrder = 0
+    OnChange = PageControl1Change
     object TabSheet1: TTabSheet
       Caption = 'TransparentButtons (using Glyphs)'
       object Image3: TImage
@@ -1870,6 +1878,15 @@ object TransBtnFormMain: TTransBtnFormMain
         HotTrackFont.Name = 'MS Sans Serif'
         HotTrackFont.Style = []
         FrameStyle = fsNone
+        ParentFont = False
+        Spacing = 0
+        TextAlign = ttaBottom
+        WordWrap = True
+        OnClick = TransparentButton1Click
+        OnMouseDown = TransparentButton1MouseDown
+        OnMouseUp = TransparentButton1MouseUp
+        OnMouseEnter = TransparentButton1MouseEnter
+        OnMouseLeave = TransparentButton1MouseLeave
         Glyph.Data = {
           72010000424D7201000000000000760000002800000015000000150000000100
           040000000000FC00000000000000000000001000000010000000000000000000
@@ -1883,15 +1900,6 @@ object TransBtnFormMain: TTransBtnFormMain
           60000FFFFFFFFFFFF066666660000FFFFFFFFFFFF06CC6C660000FCCFFFFFFF9
           7066666660000FFFFFFFFFF7706CC6CC60000000000000000066666660006666
           66666666666666666000666666666666666666666000}
-        ParentFont = False
-        Spacing = 0
-        TextAlign = ttaBottom
-        WordWrap = True
-        OnClick = TransparentButton1Click
-        OnMouseDown = TransparentButton1MouseDown
-        OnMouseUp = TransparentButton1MouseUp
-        OnMouseEnter = TransparentButton1MouseEnter
-        OnMouseLeave = TransparentButton1MouseLeave
       end
       object TransparentButton2: TJvTransparentButton
         Left = 89
@@ -1907,6 +1915,8 @@ object TransBtnFormMain: TTransBtnFormMain
         HotTrackFont.Name = 'MS Sans Serif'
         HotTrackFont.Style = []
         FrameStyle = fsIndent
+        Spacing = 8
+        TextAlign = ttaLeft
         Glyph.Data = {
           72010000424D7201000000000000760000002800000015000000150000000100
           040000000000FC00000000000000000000001000000010000000000000000000
@@ -1920,8 +1930,6 @@ object TransBtnFormMain: TTransBtnFormMain
           600066607FEFEFEF706655556000666607FEFEF70666555660006666607FEF70
           6666555560006666660777066666565560006666666000666666666560006666
           66666666666666656000666666666666666666566000}
-        Spacing = 8
-        TextAlign = ttaLeft
       end
       object TransparentButton3: TJvTransparentButton
         Left = 8
@@ -1941,6 +1949,13 @@ object TransBtnFormMain: TTransBtnFormMain
         HotTrackFont.Height = -11
         HotTrackFont.Name = 'MS Sans Serif'
         HotTrackFont.Style = []
+        ParentFont = False
+        ParentShowHint = False
+        ShowHint = True
+        Spacing = 5
+        TextAlign = ttaBottom
+        WordWrap = True
+        OnClick = TransparentButton3Click
         Glyph.Data = {
           46160000424D4616000000000000360400002800000088000000220000000100
           08000000000010120000000000000000000000010000000100006A5757006A69
@@ -2122,13 +2137,6 @@ object TransBtnFormMain: TTransBtnFormMain
           0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0806050402010204050607090B
           0B0B0B0B0B0B0B0B0B0B}
         NumGlyphs = 4
-        ParentFont = False
-        ParentShowHint = False
-        ShowHint = True
-        Spacing = 5
-        TextAlign = ttaBottom
-        WordWrap = True
-        OnClick = TransparentButton3Click
       end
       object TransparentButton7: TJvTransparentButton
         Left = 260
@@ -2142,6 +2150,7 @@ object TransBtnFormMain: TTransBtnFormMain
         HotTrackFont.Name = 'MS Sans Serif'
         HotTrackFont.Style = []
         FrameStyle = fsNone
+        PressOffset = 2
         Glyph.Data = {
           C20C0000424DC20C000000000000420000002800000031000000200000000100
           100003000000800C000000000000000000000000000000000000007C0000E003
@@ -2246,7 +2255,6 @@ object TransBtnFormMain: TTransBtnFormMain
           1863F85EF85EF85E1863F85E1863F85EF85EF85E1863F85EF85EF85EF85EF85E
           F85EF85EF85EF85E1863F85EF85E18631863F85E1863F762186318631863F762
           186318630000}
-        Offset = 2
       end
       object TransparentButton8: TJvTransparentButton
         Left = 203
@@ -2260,6 +2268,7 @@ object TransBtnFormMain: TTransBtnFormMain
         HotTrackFont.Name = 'MS Sans Serif'
         HotTrackFont.Style = []
         FrameStyle = fsNone
+        PressOffset = 2
         Glyph.Data = {
           C20C0000424DC20C000000000000420000002800000031000000200000000100
           100003000000800C000000000000000000000000000000000000007C0000E003
@@ -2364,7 +2373,6 @@ object TransBtnFormMain: TTransBtnFormMain
           1863F85EF85EF85E1863F85E1863F85EF85EF85E1863F85EF85EF85EF85EF85E
           F85EF85EF85EF85E1863F85EF85E18631863F85E1863F762186318631863F762
           186318630000}
-        Offset = 2
       end
       object TransparentButton9: TJvTransparentButton
         Left = 203
@@ -2384,6 +2392,8 @@ object TransBtnFormMain: TTransBtnFormMain
         HotTrackFont.Name = 'Arial'
         HotTrackFont.Style = []
         FrameStyle = fsNone
+        ParentFont = False
+        PressOffset = 2
         Glyph.Data = {
           321F0000424D321F00000000000042000000280000006E000000240000000100
           100003000000F01E000000000000000000000000000000000000007C0000E003
@@ -2635,8 +2645,6 @@ object TransBtnFormMain: TTransBtnFormMain
           1863186318631863186318631863186318631863186318631863186318631863
           1863186318631863186318631863186318631863186318631863186318631863
           18631863186318631863186318631863186318631863}
-        Offset = 2
-        ParentFont = False
       end
       object TransparentButton6: TJvTransparentButton
         Left = 312
@@ -2645,12 +2653,15 @@ object TransBtnFormMain: TTransBtnFormMain
         Height = 66
         AllowAllUp = True
         Caption = 'OS'
-        GroupIndex = 2
         HotTrackFont.Charset = DEFAULT_CHARSET
         HotTrackFont.Color = clWindowText
         HotTrackFont.Height = -11
         HotTrackFont.Name = 'MS Sans Serif'
         HotTrackFont.Style = []
+        Spacing = 5
+        TextAlign = ttaBottom
+        Transparent = False
+        OnClick = TransparentButton6Click
         Glyph.Data = {
           16020000424D160200000000000076000000280000001A0000001A0000000100
           040000000000A001000000000000000000001000000010000000000000000000
@@ -2669,10 +2680,6 @@ object TransBtnFormMain: TTransBtnFormMain
           EEEEEEEEEEEEEE000000EEEEEEEEEEEEEEEEEEEEEEEEEE000000EEEEEEEEEEEE
           EEEEEEEEEEEEEE000000EEEEEEEEEEEEEEEEEEEEEEEEEE000000EEEEEEEEEEEE
           EEEEEEEEEEEEEE000000EEEEEEEEEEEEEEEEEEEEEEEEEE000000}
-        Spacing = 5
-        TextAlign = ttaBottom
-        Transparent = False
-        OnClick = TransparentButton6Click
       end
       object TransparentButton10: TJvTransparentButton
         Left = 232
@@ -2681,13 +2688,17 @@ object TransBtnFormMain: TTransBtnFormMain
         Height = 65
         AllowAllUp = True
         Caption = 'Down / not Down'
-        GroupIndex = 1
         HotTrackFont.Charset = DEFAULT_CHARSET
         HotTrackFont.Color = clWindowText
         HotTrackFont.Height = -11
         HotTrackFont.Name = 'MS Sans Serif'
         HotTrackFont.Style = []
         FrameStyle = fsIndent
+        Spacing = 6
+        TextAlign = ttaBottom
+        Transparent = False
+        WordWrap = True
+        OnClick = TransparentButton10Click
         Glyph.Data = {
           B6010000424DB60100000000000076000000280000001E000000140000000100
           0400000000004001000000000000000000001000000010000000000000000000
@@ -2703,11 +2714,6 @@ object TransBtnFormMain: TTransBtnFormMain
           0FFF0BB00DDDDDDDDD00DDDDDDDDDD0BB0F0BB090DDDDDDDDD00DDDDDDDDDDD0
           BB0BB0090DDDDDDDDD00DDDDDDDDDDDD0BBB0D090DDDDDDDDD00DDDDDDDDDDDD
           D0B0DD090DDDDDDDDD00DDDDDDDDDDDDDD0DDD000DDDDDDDDD00}
-        Spacing = 6
-        TextAlign = ttaBottom
-        Transparent = False
-        WordWrap = True
-        OnClick = TransparentButton10Click
       end
       object TransparentButton11: TJvTransparentButton
         Left = 169
@@ -2722,6 +2728,9 @@ object TransBtnFormMain: TTransBtnFormMain
         HotTrackFont.Name = 'MS Sans Serif'
         HotTrackFont.Style = []
         FrameStyle = fsIndent
+        PopupMenu = PopupMenu1
+        Spacing = 6
+        TextAlign = ttaTop
         Glyph.Data = {
           F6000000424DF600000000000000760000002800000010000000100000000100
           0400000000008000000000000000000000001000000010000000FFFFFF000000
@@ -2731,12 +2740,9 @@ object TransBtnFormMain: TTransBtnFormMain
           B0BAAAAAAB0BCCBCCB0AA000A0B0BCCCB0BAA0CCAB0BCBCBCB0AA000A0B0B0B0
           B0BAA0CCAAAAAAAAAAAAA0000AB0B0A88888A0220CAAAA888A88A0220000A888
           8A88A0220CC0A88AAAAAA0000000A8888A88AAAAAAAAA8888A88}
-        PopupMenu = PopupMenu1
-        Spacing = 6
-        TextAlign = ttaTop
       end
       object TransparentButton5: TJvTransparentButton
-        Left = 98
+        Left = 96
         Top = 105
         Width = 63
         Height = 54
@@ -2748,6 +2754,8 @@ object TransBtnFormMain: TTransBtnFormMain
         HotTrackFont.Height = -11
         HotTrackFont.Name = 'MS Sans Serif'
         HotTrackFont.Style = []
+        Spacing = 6
+        TextAlign = ttaTop
         Glyph.Data = {
           B6010000424DB60100000000000076000000280000001E000000140000000100
           0400000000004001000000000000000000001000000010000000000000000000
@@ -2763,8 +2771,6 @@ object TransBtnFormMain: TTransBtnFormMain
           700080DDDDDDDDDDDD000FFFFFFFFFFFFFF080DDDDDDDDDDDD000F1818181818
           1FF080DDDDDDDDDDDD000F81818181818FF080DDDDDDDDDDDD000FFFFFFFFFFF
           FFF000DDDDDDDDDDDD000000000000000000DDDDDDDDDDDDDD00}
-        Spacing = 6
-        TextAlign = ttaTop
       end
       object TransparentButton15: TJvTransparentButton
         Left = 46
@@ -2778,6 +2784,8 @@ object TransBtnFormMain: TTransBtnFormMain
         HotTrackFont.Name = 'MS Sans Serif'
         HotTrackFont.Style = []
         FrameStyle = fsNone
+        ShowPressed = False
+        TextAlign = ttaBottom
         Glyph.Data = {
           46160000424D4616000000000000360400002800000088000000220000000100
           08000000000010120000000000000000000000010000000100006A5757006A69
@@ -2959,8 +2967,6 @@ object TransBtnFormMain: TTransBtnFormMain
           0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0806050402010204050607090B
           0B0B0B0B0B0B0B0B0B0B}
         NumGlyphs = 4
-        ShowPressed = False
-        TextAlign = ttaBottom
       end
       object TransparentButton12: TJvTransparentButton
         Left = 7
@@ -2974,6 +2980,8 @@ object TransBtnFormMain: TTransBtnFormMain
         HotTrackFont.Name = 'MS Sans Serif'
         HotTrackFont.Style = []
         FrameStyle = fsNone
+        ShowPressed = False
+        TextAlign = ttaBottom
         Glyph.Data = {
           46160000424D4616000000000000360400002800000088000000220000000100
           08000000000010120000000000000000000000010000000100006A5757006A69
@@ -3155,8 +3163,6 @@ object TransBtnFormMain: TTransBtnFormMain
           0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0806050402010204050607090B
           0B0B0B0B0B0B0B0B0B0B}
         NumGlyphs = 4
-        ShowPressed = False
-        TextAlign = ttaBottom
       end
       object TransparentButton13: TJvTransparentButton
         Left = 85
@@ -3170,6 +3176,8 @@ object TransBtnFormMain: TTransBtnFormMain
         HotTrackFont.Name = 'MS Sans Serif'
         HotTrackFont.Style = []
         FrameStyle = fsNone
+        ShowPressed = False
+        TextAlign = ttaBottom
         Glyph.Data = {
           46160000424D4616000000000000360400002800000088000000220000000100
           08000000000010120000000000000000000000010000000100006A5757006A69
@@ -3351,8 +3359,6 @@ object TransBtnFormMain: TTransBtnFormMain
           0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0806050402010204050607090B
           0B0B0B0B0B0B0B0B0B0B}
         NumGlyphs = 4
-        ShowPressed = False
-        TextAlign = ttaBottom
       end
       object TransparentButton14: TJvTransparentButton
         Left = 124
@@ -3366,6 +3372,8 @@ object TransBtnFormMain: TTransBtnFormMain
         HotTrackFont.Name = 'MS Sans Serif'
         HotTrackFont.Style = []
         FrameStyle = fsNone
+        ShowPressed = False
+        TextAlign = ttaBottom
         Glyph.Data = {
           46160000424D4616000000000000360400002800000088000000220000000100
           08000000000010120000000000000000000000010000000100006A5757006A69
@@ -3547,8 +3555,6 @@ object TransBtnFormMain: TTransBtnFormMain
           0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0806050402010204050607090B
           0B0B0B0B0B0B0B0B0B0B}
         NumGlyphs = 4
-        ShowPressed = False
-        TextAlign = ttaBottom
       end
     end
     object TabSheet2: TTabSheet
@@ -3562,7 +3568,7 @@ object TransBtnFormMain: TTransBtnFormMain
         Align = alClient
         Stretch = True
       end
-      object JvTransparentButton22: TJvTransparentButton2
+      object JvTransparentButton22: TJvTransparentButton
         Left = 8
         Top = 8
         Width = 40
@@ -3574,11 +3580,11 @@ object TransBtnFormMain: TTransBtnFormMain
         HotTrackFont.Height = -11
         HotTrackFont.Name = 'MS Sans Serif'
         HotTrackFont.Style = []
-        ActiveImage = ImageList1
-        ActiveIndex = 0
         Transparent = False
+        Images.ActiveImage = ImageList1
+        Images.ActiveIndex = 0
       end
-      object JvTransparentButton23: TJvTransparentButton2
+      object JvTransparentButton23: TJvTransparentButton
         Left = 56
         Top = 8
         Width = 40
@@ -3591,10 +3597,10 @@ object TransBtnFormMain: TTransBtnFormMain
         HotTrackFont.Name = 'MS Sans Serif'
         HotTrackFont.Style = []
         FrameStyle = fsIndent
-        ActiveImage = ImageList1
-        ActiveIndex = 1
+        Images.ActiveImage = ImageList1
+        Images.ActiveIndex = 1
       end
-      object JvTransparentButton24: TJvTransparentButton2
+      object JvTransparentButton24: TJvTransparentButton
         Left = 104
         Top = 8
         Width = 40
@@ -3607,10 +3613,10 @@ object TransBtnFormMain: TTransBtnFormMain
         HotTrackFont.Name = 'MS Sans Serif'
         HotTrackFont.Style = []
         FrameStyle = fsLight
-        ActiveImage = ImageList1
-        ActiveIndex = 2
+        Images.ActiveImage = ImageList1
+        Images.ActiveIndex = 2
       end
-      object JvTransparentButton25: TJvTransparentButton2
+      object JvTransparentButton25: TJvTransparentButton
         Left = 152
         Top = 8
         Width = 40
@@ -3622,28 +3628,26 @@ object TransBtnFormMain: TTransBtnFormMain
         HotTrackFont.Name = 'MS Sans Serif'
         HotTrackFont.Style = []
         FrameStyle = fsMono
-        ActiveImage = ImageList1
-        ActiveIndex = 3
+        Images.ActiveImage = ImageList1
+        Images.ActiveIndex = 3
       end
-      object JvTransparentButton26: TJvTransparentButton2
+      object JvTransparentButton26: TJvTransparentButton
         Left = 296
         Top = 8
         Width = 40
         Height = 40
         AllowAllUp = True
-        GroupIndex = 1
         HotTrackFont.Charset = DEFAULT_CHARSET
         HotTrackFont.Color = clWindowText
         HotTrackFont.Height = -11
         HotTrackFont.Name = 'MS Sans Serif'
         HotTrackFont.Style = []
-        ActiveImage = ImageList1
-        ActiveIndex = 6
-        DisabledIndex = 1
         OnClick = JvTransparentButton26Click
+        Images.ActiveImage = ImageList1
+        Images.ActiveIndex = 6
       end
-      object JvTransparentButton27: TJvTransparentButton2
-        Left = 198
+      object JvTransparentButton27: TJvTransparentButton
+        Left = 200
         Top = 8
         Width = 40
         Height = 40
@@ -3654,17 +3658,17 @@ object TransBtnFormMain: TTransBtnFormMain
         HotTrackFont.Name = 'MS Sans Serif'
         HotTrackFont.Style = []
         FrameStyle = fsNone
-        ActiveImage = ImageList1
-        ActiveIndex = 4
-        GrayImage = ImageList1
-        GrayIndex = 11
-        DisabledImage = ImageList1
-        DisabledIndex = 15
-        DownImage = ImageList1
-        DownIndex = 10
+        Images.ActiveImage = ImageList1
+        Images.ActiveIndex = 4
+        Images.GrayImage = ImageList1
+        Images.GrayIndex = 11
+        Images.DisabledImage = ImageList1
+        Images.DisabledIndex = 15
+        Images.DownImage = ImageList1
+        Images.DownIndex = 10
       end
-      object JvTransparentButton28: TJvTransparentButton2
-        Left = 250
+      object JvTransparentButton28: TJvTransparentButton
+        Left = 248
         Top = 8
         Width = 40
         Height = 40
@@ -3675,10 +3679,10 @@ object TransBtnFormMain: TTransBtnFormMain
         HotTrackFont.Name = 'MS Sans Serif'
         HotTrackFont.Style = []
         FrameStyle = fsRegular
-        ActiveImage = ImageList1
-        ActiveIndex = 5
         Transparent = False
         OnClick = JvTransparentButton28Click
+        Images.ActiveImage = ImageList1
+        Images.ActiveIndex = 5
       end
     end
   end

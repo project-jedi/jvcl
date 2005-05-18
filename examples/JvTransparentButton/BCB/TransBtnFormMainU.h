@@ -49,7 +49,7 @@ class TTransBtnFormMain : public TForm
 __published:	// IDE-managed Components
         TLabel *Label1;
         TLabel *Label3;
-        TJvTransparentButton2 *JvTransparentButton21;
+        TJvTransparentButton *JvTransparentButton21;
         TPageControl *PageControl1;
         TTabSheet *TabSheet1;
         TImage *Image3;
@@ -69,13 +69,13 @@ __published:	// IDE-managed Components
         TJvTransparentButton *TransparentButton14;
         TTabSheet *TabSheet2;
         TImage *Image2;
-        TJvTransparentButton2 *JvTransparentButton22;
-        TJvTransparentButton2 *JvTransparentButton23;
-        TJvTransparentButton2 *JvTransparentButton24;
-        TJvTransparentButton2 *JvTransparentButton25;
-        TJvTransparentButton2 *JvTransparentButton26;
-        TJvTransparentButton2 *JvTransparentButton27;
-        TJvTransparentButton2 *JvTransparentButton28;
+        TJvTransparentButton *JvTransparentButton22;
+        TJvTransparentButton *JvTransparentButton23;
+        TJvTransparentButton *JvTransparentButton24;
+        TJvTransparentButton *JvTransparentButton25;
+        TJvTransparentButton *JvTransparentButton26;
+        TJvTransparentButton *JvTransparentButton27;
+        TJvTransparentButton *JvTransparentButton28;
         TButton *Button1;
         TPopupMenu *PopupMenu1;
         TMenuItem *Open1;
@@ -104,8 +104,12 @@ __published:	// IDE-managed Components
         void __fastcall Exit2Click(TObject *Sender);
         void __fastcall JvTransparentButton28Click(TObject *Sender);
         void __fastcall JvTransparentButton26Click(TObject *Sender);
+        void __fastcall FormActivate(TObject *Sender);
+        void __fastcall FormKeyPress(TObject *Sender, char &Key);
+        void __fastcall PageControl1Change(TObject *Sender);
 private:
         AnsiString GetOS(void);	// User declarations
+        bool Activated;
 public:		// User declarations
         __fastcall TTransBtnFormMain(TComponent* Owner);
 };
