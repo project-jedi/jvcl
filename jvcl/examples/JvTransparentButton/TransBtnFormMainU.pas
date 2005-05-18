@@ -94,7 +94,6 @@ type
     procedure Exit2Click(Sender: TObject);
     procedure TransparentButton1MouseLeave(Sender: TObject);
     procedure Button1Click(Sender: TObject);
-    procedure FormPaint(Sender: TObject);
     procedure PageControl1Change(Sender: TObject);
     procedure JvTransparentButton26Click(Sender: TObject);
     procedure JvTransparentButton28Click(Sender: TObject);
@@ -194,39 +193,6 @@ end;
 procedure TTransBtnFormMain.Button1Click(Sender: TObject);
 begin
   Close;
-end;
-
-procedure TTransBtnFormMain.FormPaint(Sender: TObject);
-{
-var
-  X, Y, W, H: Longint;
-  ACanvas: TControlCanvas;
-}
-begin
-{
-  ACanvas := TControlCanvas.Create;
-  try
-    ACanvas.Control := PageControl1.ActivePage;
-  with Image1.Picture.Bitmap do
-  begin
-    W := Width;
-    H := Height;
-  end;
-  Y := 0;
-  while Y < PageControl1.ActivePage.Height do begin
-    X := 0;
-    while X < PageControl1.ActivePage.Width do
-    begin
-      ACanvas.Draw(X, Y, Image1.Picture.Bitmap);
-      Inc(X, W);
-    end;
-    Inc(Y, H);
-  end;
-
-  finally
-    ACanvas.Free;
-  end;
-  }
 end;
 
 procedure TTransBtnFormMain.PageControl1Change(Sender: TObject);
