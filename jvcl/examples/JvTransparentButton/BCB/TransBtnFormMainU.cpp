@@ -138,3 +138,30 @@ void __fastcall TTransBtnFormMain::JvTransparentButton26Click(
   JvTransparentButton26->Down = !JvTransparentButton26->Down;
 }
 //---------------------------------------------------------------------------
+void __fastcall TTransBtnFormMain::FormActivate(TObject *Sender)
+{
+  if (!Activated)
+  {
+    Activated = True;
+    Image2->Picture->Assign(Image3->Picture);
+  }
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TTransBtnFormMain::FormKeyPress(TObject *Sender, char &Key)
+{
+  if (Key == 13)
+  {
+    Key = 0;
+    TransparentButton1->OnClick(NULL);
+  }
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TTransBtnFormMain::PageControl1Change(TObject *Sender)
+{
+  Invalidate();        
+}
+//---------------------------------------------------------------------------
+
