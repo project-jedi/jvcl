@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8' ?>
+<?xml version="1.0" encoding="utf-8"?>
 <!-- C++Builder XML Project -->
 <PROJECT>
   <MACROS>
@@ -44,8 +44,7 @@
     <ALLRES value="$(RESFILES)"/>
     <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mt.lib"/>
   </LINKER>
-  <IDEOPTIONS>
-[Version Info]
+  <IDEOPTIONS>[Version Info]
 IncludeVerInfo=1
 AutoIncBuild=0
 MajorVer=1
@@ -59,5 +58,6 @@ Private=0
 DLL=0
 Locale=1036
 CodePage=1252
-  </IDEOPTIONS>
+
+</IDEOPTIONS>
 </PROJECT>

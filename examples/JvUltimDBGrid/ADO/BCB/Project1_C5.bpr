@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8' ?>
+<?xml version="1.0" encoding="utf-8"?>
 <!-- C++Builder XML Project -->
 <PROJECT>
   <MACROS>
@@ -11,7 +11,7 @@
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES) Unit1.dfm"/>
     <LIBFILES value=""/>
-    <LIBRARIES value="VCLX50.lib Vclbde50.lib Vcldb50.lib Vcl50.lib"/>
+    <LIBRARIES value=""/>
     <SPARELIBS value=""/>
     <PACKAGES value=""/>
     <PATHCPP value=".;"/>
@@ -22,7 +22,7 @@
     <RELEASELIBPATH value="$(BCB)\lib\release"/>
     <LINKER value="tlink32"/>
     <USERDEFINES value="_DEBUG"/>
-    <SYSDEFINES value="_RTLDLL;NO_STRICT"/>
+    <SYSDEFINES value="NO_STRICT"/>
     <MAINSOURCE value="Project1_C5.cpp"/>
     <INCLUDEPATH value="..\..\..\..\..\jcl\source\common;..\..\..\..\common;..\..\..\..\run;$(BCB)\include;$(BCB)\include\vcl"/>
     <LIBPATH value="$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;..\..\..\..\resources;..\..\..\..\run"/>
@@ -43,8 +43,7 @@
     <ALLRES value="$(RESFILES)"/>
     <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mti.lib"/>
   </LINKER>
-  <IDEOPTIONS>
-[Version Info]
+  <IDEOPTIONS>[Version Info]
 IncludeVerInfo=0
 AutoIncBuild=0
 MajorVer=1
@@ -59,61 +58,5 @@ DLL=0
 Locale=1036
 CodePage=1252
 
-[Version Info Keys]
-CompanyName=
-FileDescription=
-FileVersion=1.0.0.0
-InternalName=
-LegalCopyright=
-LegalTrademarks=
-OriginalFilename=
-ProductName=
-ProductVersion=1.0.0.0
-Comments=
-
-[HistoryLists\hlIncludePath]
-Count=2
-Item0=$(BCB)\include;$(BCB)\include\vcl
-Item1=..\Composants\Jedi VCL\jcl\source\common;..\Composants\Jedi VCL\jvcl\common;..\Composants\Jedi VCL\jvcl\run;$(BCB)\include;$(BCB)\include\vcl
-
-[HistoryLists\hlLibraryPath]
-Count=2
-Item0=$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;..\..\..\..\resources;..\..\..\..\run
-Item1=$(BCB)\Projects\Lib;..\Composants\Jedi VCL\jvcl\run;..\Composants\Jedi VCL\jvcl\resources;$(BCB)\lib\obj;$(BCB)\lib
-
-[HistoryLists\hlDebugSourcePath]
-Count=1
-Item0=$(BCB)\source\vcl
-
-[HistoryLists\hlConditionals]
-Count=1
-Item0=_DEBUG
-
-[HistoryLists\hlIntOutputDir]
-Count=1
-Item0=..\..\..\..\dcu
-
-[HistoryLists\hlFinalOutputDir]
-Count=1
-Item0=..\..\..\..\bin
-
-[Debugging]
-DebugSourceDirs=$(BCB)\source\vcl
-
-[Parameters]
-RunParams=
-HostApplication=
-RemoteHost=
-RemotePath=
-RemoteDebug=0
-
-[Compiler]
-ShowInfoMsgs=0
-LinkDebugVcl=0
-
-[CORBA]
-AddServerUnit=1
-AddClientUnit=1
-PrecompiledHeaders=1
-  </IDEOPTIONS>
+</IDEOPTIONS>
 </PROJECT>

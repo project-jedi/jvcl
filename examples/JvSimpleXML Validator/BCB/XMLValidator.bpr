@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8' ?>
+<?xml version="1.0" encoding="utf-8"?>
 <!-- C++Builder XML Project -->
 <PROJECT>
   <MACROS>
@@ -47,15 +47,12 @@
     <OTHERFILES value=""/>
   </LINKER>
   <FILELIST>
-      <FILE FILENAME="XMLValidator.res" FORMNAME="" UNITNAME="XMLValidator.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="XMLValidator.cpp" FORMNAME="" UNITNAME="XMLValidator" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="MainForm.cpp" FORMNAME="frmMain" UNITNAME="MainForm" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+    <FILE FILENAME="XMLValidator.res" FORMNAME="" UNITNAME="XMLValidator.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+    <FILE FILENAME="XMLValidator.cpp" FORMNAME="" UNITNAME="XMLValidator" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+    <FILE FILENAME="MainForm.cpp" FORMNAME="frmMain" UNITNAME="MainForm" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
-  <BUILDTOOLS>
-  </BUILDTOOLS>
-
-  <IDEOPTIONS>
-[Version Info]
+  <BUILDTOOLS/>
+  <IDEOPTIONS>[Version Info]
 IncludeVerInfo=0
 AutoIncBuild=0
 MajorVer=1
@@ -70,16 +67,5 @@ DLL=0
 Locale=1036
 CodePage=1252
 
-[Version Info Keys]
-CompanyName=
-FileDescription=
-FileVersion=1.0.0.0
-InternalName=
-LegalCopyright=
-LegalTrademarks=
-OriginalFilename=
-ProductName=
-ProductVersion=1.0.0.0
-Comments=
-  </IDEOPTIONS>
+</IDEOPTIONS>
 </PROJECT>
