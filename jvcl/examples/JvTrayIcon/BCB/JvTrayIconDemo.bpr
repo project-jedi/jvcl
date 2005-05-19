@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8' ?>
+<?xml version="1.0" encoding="utf-8"?>
 <!-- C++Builder XML Project -->
 <PROJECT>
   <MACROS>
@@ -47,15 +47,12 @@
     <OTHERFILES value=""/>
   </LINKER>
   <FILELIST>
-      <FILE FILENAME="JvTrayIconDemo.res" FORMNAME="" UNITNAME="JvTrayIconDemo.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="JvTrayIconDemo.cpp" FORMNAME="" UNITNAME="JvTrayIconDemo" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="MainForm.cpp" FORMNAME="frmMain" UNITNAME="MainForm" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+    <FILE FILENAME="JvTrayIconDemo.res" FORMNAME="" UNITNAME="JvTrayIconDemo.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+    <FILE FILENAME="JvTrayIconDemo.cpp" FORMNAME="" UNITNAME="JvTrayIconDemo" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+    <FILE FILENAME="MainForm.cpp" FORMNAME="frmMain" UNITNAME="MainForm" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
-  <BUILDTOOLS>
-  </BUILDTOOLS>
-
-  <IDEOPTIONS>
-[Version Info]
+  <BUILDTOOLS/>
+  <IDEOPTIONS>[Version Info]
 IncludeVerInfo=0
 AutoIncBuild=0
 MajorVer=1
@@ -68,16 +65,5 @@ Special=0
 Private=0
 DLL=0
 
-[Version Info Keys]
-CompanyName=
-FileDescription=
-FileVersion=1.0.0.0
-InternalName=
-LegalCopyright=
-LegalTrademarks=
-OriginalFilename=
-ProductName=
-ProductVersion=1.0.0.0
-Comments=
-  </IDEOPTIONS>
+</IDEOPTIONS>
 </PROJECT>

@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8' ?>
+<?xml version="1.0" encoding="utf-8"?>
 <!-- C++Builder XML Project -->
 <PROJECT>
   <MACROS>
@@ -47,15 +47,12 @@
     <OTHERFILES value=""/>
   </LINKER>
   <FILELIST>
-      <FILE FILENAME="BlobStream.res" FORMNAME="" UNITNAME="BlobStream.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="BlobStream.cpp" FORMNAME="" UNITNAME="BlobStream" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="main.cpp" FORMNAME="frmMain" UNITNAME="main" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+    <FILE FILENAME="BlobStream.res" FORMNAME="" UNITNAME="BlobStream.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+    <FILE FILENAME="BlobStream.cpp" FORMNAME="" UNITNAME="BlobStream" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+    <FILE FILENAME="main.cpp" FORMNAME="frmMain" UNITNAME="main" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
-  <BUILDTOOLS>
-  </BUILDTOOLS>
-
-  <IDEOPTIONS>
-[Version Info]
+  <BUILDTOOLS/>
+  <IDEOPTIONS>[Version Info]
 IncludeVerInfo=0
 AutoIncBuild=0
 MajorVer=1
@@ -70,78 +67,5 @@ DLL=0
 Locale=1029
 CodePage=1250
 
-[Version Info Keys]
-CompanyName=
-FileDescription=
-FileVersion=1.0.0.0
-InternalName=
-LegalCopyright=
-LegalTrademarks=
-OriginalFilename=
-ProductName=
-ProductVersion=1.0.0.0
-Comments=
-
-[Excluded Packages]
-c:\prog\cbuilder6\Projects\Bpl\JvCryptC6D.bpl=JVCL Encryption and Compression Components
-c:\prog\cbuilder6\Projects\Bpl\JvBandsC6D.bpl=JVCL Band Objects
-c:\prog\cbuilder6\Projects\Bpl\JvPluginC6D.bpl=JVCL Plugin Components
-c:\prog\cbuilder6\Projects\Bpl\JvJansC6D.bpl=JVCL Jans Components
-c:\prog\cbuilder6\Projects\Bpl\JvValidatorsC6D.bpl=JVCL Validators and Error Provider Components
-
-[HistoryLists\hlIncludePath]
-Count=1
-Item0=$(BCB)\include;$(BCB)\include\vcl;$(INCLUDEPATH)
-
-[HistoryLists\hlLibraryPath]
-Count=1
-Item0=$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(RESPATH)
-
-[HistoryLists\hlDebugSourcePath]
-Count=1
-Item0=$(BCB)\source\vcl
-
-[HistoryLists\hlConditionals]
-Count=1
-Item0=_DEBUG
-
-[HistoryLists\hlIntOutputDir]
-Count=1
-Item0=..\..\..\..\..\dcu
-
-[HistoryLists\hlFinalOutputDir]
-Count=2
-Item0=..\..\..\..\..\bin\
-Item1=..\..\..\..\..\bin
-
-[Debugging]
-DebugSourceDirs=$(BCB)\source\vcl
-
-[Parameters]
-RunParams=
-Launcher=
-UseLauncher=0
-DebugCWD=
-HostApplication=
-RemoteHost=
-RemotePath=
-RemoteLauncher=
-RemoteCWD=
-RemoteDebug=0
-
-[Compiler]
-ShowInfoMsgs=0
-LinkDebugVcl=0
-LinkCGLIB=0
-
-[CORBA]
-AddServerUnit=1
-AddClientUnit=1
-PrecompiledHeaders=1
-
-[Language]
-ActiveLang=
-ProjectLang=
-RootDir=
-  </IDEOPTIONS>
+</IDEOPTIONS>
 </PROJECT>

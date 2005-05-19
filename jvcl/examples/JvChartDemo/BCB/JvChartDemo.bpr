@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8' ?>
+<?xml version="1.0" encoding="utf-8"?>
 <!-- C++Builder XML Project -->
 <PROJECT>
   <MACROS>
@@ -23,7 +23,7 @@
     <RELEASELIBPATH value="$(BCB)\lib\release"/>
     <LINKER value="ilink32"/>
     <USERDEFINES value="_DEBUG"/>
-    <SYSDEFINES value="_RTLDLL;NO_STRICT"/>
+    <SYSDEFINES value="NO_STRICT"/>
     <MAINSOURCE value="JvChartDemo.cpp"/>
     <INCLUDEPATH value="$(BCB)\include;$(BCB)\include\vcl;..\..\..\common;..\..\..\run;..\..\..\..\jcl\source\visclx;..\..\..\..\jcl\source\windows;..\..\..\..\jcl\source\vcl;..\..\..\..\jcl\source\common;$(INCLUDEPATH)"/>
     <LIBPATH value="$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;..\..\..\resources;..\..\..\run;$(RESPATH)"/>
@@ -46,8 +46,7 @@
     <ALLRES value="$(RESFILES)"/>
     <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mti.lib"/>
   </LINKER>
-  <IDEOPTIONS>
-[Version Info]
+  <IDEOPTIONS>[Version Info]
 IncludeVerInfo=0
 AutoIncBuild=0
 MajorVer=1
@@ -61,5 +60,6 @@ Private=0
 DLL=0
 Locale=1036
 CodePage=1252
-  </IDEOPTIONS>
+
+</IDEOPTIONS>
 </PROJECT>

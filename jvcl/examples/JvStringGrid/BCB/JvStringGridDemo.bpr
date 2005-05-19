@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8' ?>
+<?xml version="1.0" encoding="utf-8"?>
 <!-- C++Builder XML Project -->
 <PROJECT>
   <MACROS>
@@ -43,8 +43,7 @@
     <ALLRES value="$(RESFILES)"/>
     <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mt.lib"/>
   </LINKER>
-  <IDEOPTIONS>
-[Version Info]
+  <IDEOPTIONS>[Version Info]
 IncludeVerInfo=1
 AutoIncBuild=0
 MajorVer=1
@@ -59,63 +58,5 @@ DLL=0
 Locale=1036
 CodePage=1252
 
-[Version Info Keys]
-CompanyName=
-FileDescription=
-FileVersion=1.0.0.0
-InternalName=
-LegalCopyright=
-LegalTrademarks=
-OriginalFilename=
-ProductName=
-ProductVersion=1.0.0.0
-
-[HistoryLists\hlIncludePath]
-Count=5
-Item0=$(BCB)\include;$(BCB)\include\vcl;..\..\..\run;..\..\..\common
-Item1=..\..\JvShellHook\BCB;$(BCB)\include;$(BCB)\include\vcl;..\..\JvShellHook\BCB\$(INCLUDEPATH);..\..\..\run;..\..\..\common
-Item2=$(BCB)\include;$(BCB)\include\vcl;$(INCLUDEPATH);..\..\..\run;..\..\..\common
-Item3=$(BCB)\include;$(BCB)\include\vcl;$(INCLUDEPATH);..\..\..\run
-Item4=$(BCB)\include;$(BCB)\include\vcl;$(INCLUDEPATH)
-
-[HistoryLists\hlLibraryPath]
-Count=5
-Item0=$(BCB)\lib\debug;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;..\..\..\Resources
-Item1=..\..\JvShellHook\BCB;$(BCB)\lib\debug;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;..\..\JvShellHook\BCB\$(RESPATH);..\..\..\Resources
-Item2=$(BCB)\lib\debug;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(RESPATH);..\..\..\Resources
-Item3=$(BCB)\lib\debug;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(RESPATH)
-Item4=$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(RESPATH)
-
-[HistoryLists\hlDebugSourcePath]
-Count=1
-Item0=$(BCB)\source\vcl
-
-[HistoryLists\hlConditionals]
-Count=1
-Item0=_DEBUG
-
-[HistoryLists\hlIntOutputDir]
-Count=2
-Item0=..\..\..\dcu
-Item1=OBJ
-
-[HistoryLists\hlFinalOutputDir]
-Count=2
-Item0=..\..\..\bin\
-Item1=..\..\..\bin
-
-[Debugging]
-DebugSourceDirs=$(BCB)\source\vcl
-
-[Parameters]
-RunParams=
-HostApplication=
-RemoteHost=
-RemotePath=
-RemoteDebug=0
-
-[Compiler]
-ShowInfoMsgs=1
-LinkDebugVcl=0
-  </IDEOPTIONS>
+</IDEOPTIONS>
 </PROJECT>

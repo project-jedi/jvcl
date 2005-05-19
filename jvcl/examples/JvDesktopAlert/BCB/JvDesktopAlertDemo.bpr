@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8' ?>
+<?xml version="1.0" encoding="utf-8"?>
 <!-- C++Builder XML Project -->
 <PROJECT>
   <MACROS>
@@ -46,14 +46,11 @@
     <OTHERFILES value=""/>
   </LINKER>
   <FILELIST>
-      <FILE FILENAME="JvDesktopAlertDemo.cpp" FORMNAME="" UNITNAME="JvDesktopAlertDemo" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="MainForm.cpp" FORMNAME="frmMain" UNITNAME="MainForm" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+    <FILE FILENAME="JvDesktopAlertDemo.cpp" FORMNAME="" UNITNAME="JvDesktopAlertDemo" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+    <FILE FILENAME="MainForm.cpp" FORMNAME="frmMain" UNITNAME="MainForm" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
-  <BUILDTOOLS>
-  </BUILDTOOLS>
-
-  <IDEOPTIONS>
-[Version Info]
+  <BUILDTOOLS/>
+  <IDEOPTIONS>[Version Info]
 IncludeVerInfo=0
 AutoIncBuild=0
 MajorVer=1
@@ -67,5 +64,6 @@ Private=0
 DLL=0
 Locale=1036
 CodePage=1252
-  </IDEOPTIONS>
+
+</IDEOPTIONS>
 </PROJECT>

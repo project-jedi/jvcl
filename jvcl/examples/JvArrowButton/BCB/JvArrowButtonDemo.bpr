@@ -1,10 +1,10 @@
-<?xml version='1.0' encoding='utf-8' ?>
+<?xml version="1.0" encoding="utf-8"?>
 <!-- C++Builder XML Project -->
 <PROJECT>
   <MACROS>
     <VERSION value="BCB.06.00"/>
-    <PROJECT value="JvArrowButtonDemo.exe"/>
-    <OBJFILES value="JvArrowButtonDemo.obj MainForm.obj"/>
+    <PROJECT value="..\..\..\bin\JvArrowButtonDemo.exe"/>
+    <OBJFILES value="..\..\..\dcu\JvArrowButtonDemo.obj ..\..\..\dcu\MainForm.obj"/>
     <RESFILES value="JvArrowButtonDemo.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -22,10 +22,10 @@
     <RELEASELIBPATH value="$(BCB)\lib\release"/>
     <LINKER value="ilink32"/>
     <USERDEFINES value="_DEBUG"/>
-    <SYSDEFINES value="_RTLDLL;NO_STRICT"/>
+    <SYSDEFINES value="NO_STRICT"/>
     <MAINSOURCE value="JvArrowButtonDemo.cpp"/>
-    <INCLUDEPATH value=".\;$(BCB)\include;$(BCB)\include\vcl;..\..\..\common;..\..\..\run;..\..\..\..\jcl\source\visclx;..\..\..\..\jcl\source\windows;..\..\..\..\jcl\source\vcl;..\..\..\..\jcl\source\common;$(INCLUDEPATH)"/>
-    <LIBPATH value=".\;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;..\..\..\resources;..\..\..\run;$(RESPATH)"/>
+    <INCLUDEPATH value=".;$(BCB)\include;$(BCB)\include\vcl;..\..\..\common;..\..\..\run;..\..\..\..\jcl\source\visclx;..\..\..\..\jcl\source\windows;..\..\..\..\jcl\source\vcl;..\..\..\..\jcl\source\common;$(INCLUDEPATH)"/>
+    <LIBPATH value=".;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;..\..\..\resources;..\..\..\run;$(RESPATH)"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
@@ -36,10 +36,10 @@
       -D_DEBUG -boa"/>
     <CFLAG1 value="-Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
       -tW -tWM"/>
-    <PFLAGS value="-$YD -$W -$O- -$A8 -v -JPHNE -M"/>
+    <PFLAGS value="-N2..\..\..\dcu -N0..\..\..\dcu -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-D&quot;&quot; -aa -Tpe -x -Gn -v"/>
+    <LFLAGS value="-I..\..\..\dcu -D&quot;&quot; -aa -Tpe -x -Gn -v"/>
     <OTHERFILES value=""/>
   </OPTIONS>
   <LINKER>
@@ -49,15 +49,12 @@
     <OTHERFILES value=""/>
   </LINKER>
   <FILELIST>
-      <FILE FILENAME="JvArrowButtonDemo.res" FORMNAME="" UNITNAME="JvArrowButtonDemo.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="JvArrowButtonDemo.cpp" FORMNAME="" UNITNAME="JvArrowButtonDemo" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="MainForm.cpp" FORMNAME="frmMain" UNITNAME="MainForm" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+    <FILE FILENAME="JvArrowButtonDemo.res" FORMNAME="" UNITNAME="JvArrowButtonDemo.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+    <FILE FILENAME="JvArrowButtonDemo.cpp" FORMNAME="" UNITNAME="JvArrowButtonDemo" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+    <FILE FILENAME="MainForm.cpp" FORMNAME="frmMain" UNITNAME="MainForm" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
-  <BUILDTOOLS>
-  </BUILDTOOLS>
-
-  <IDEOPTIONS>
-[Version Info]
+  <BUILDTOOLS/>
+  <IDEOPTIONS>[Version Info]
 IncludeVerInfo=0
 AutoIncBuild=0
 MajorVer=1
@@ -72,64 +69,5 @@ DLL=0
 Locale=1036
 CodePage=1252
 
-[Version Info Keys]
-CompanyName=
-FileDescription=
-FileVersion=1.0.0.0
-InternalName=
-LegalCopyright=
-LegalTrademarks=
-OriginalFilename=
-ProductName=
-ProductVersion=1.0.0.0
-Comments=
-
-[HistoryLists\hlIncludePath]
-Count=2
-Item0=$(BCB)\include;$(BCB)\include\vcl;$(INCLUDEPATH)
-Item1=$(BCB)\include;$(BCB)\include\vcl
-
-[HistoryLists\hlLibraryPath]
-Count=2
-Item0=$(BCB)\lib\obj;$(BCB)\lib;$(RESPATH)
-Item1=$(BCB)\lib\obj;$(BCB)\lib
-
-[HistoryLists\hlDebugSourcePath]
-Count=1
-Item0=$(BCB)\source\vcl
-
-[HistoryLists\hlConditionals]
-Count=1
-Item0=_DEBUG
-
-[Debugging]
-DebugSourceDirs=$(BCB)\source\vcl
-
-[Parameters]
-RunParams=
-Launcher=
-UseLauncher=0
-DebugCWD=
-HostApplication=
-RemoteHost=
-RemotePath=
-RemoteLauncher=
-RemoteCWD=
-RemoteDebug=0
-
-[Compiler]
-ShowInfoMsgs=0
-LinkDebugVcl=0
-LinkCGLIB=0
-
-[CORBA]
-AddServerUnit=1
-AddClientUnit=1
-PrecompiledHeaders=1
-
-[Language]
-ActiveLang=
-ProjectLang=
-RootDir=
-  </IDEOPTIONS>
+</IDEOPTIONS>
 </PROJECT>
