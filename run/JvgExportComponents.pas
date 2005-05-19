@@ -63,12 +63,15 @@ type
 
   EJvgExportException = class(Exception);
 
+  TJvgExportOptions = set of (jeoOutputInvisibleColumns, jeoOutputFormattedStrings);
+
   {$IFDEF USEJVCL}
   TJvgCommonExport = class(TJvComponent)
   {$ELSE}
   TJvgCommonExport = class(TComponent)
   {$ENDIF USEJVCL}
   private
+    FOptions: TJvgExportOptions;
     FSaveToFileName: string;
     FDataSet: TDataSet;
     FOnExportField: TJvExportFieldEvent;
@@ -98,6 +101,7 @@ type
     property TransliterateRusToEng: Boolean read FTransliterateRusToEng write
       SetTransliterateRusToEng;
     property MaxFieldSize: Integer read FMaxFieldSize write SetMaxFieldSize;
+    property Options: TJvgExportOptions read FOptions write FOptions default [];
 
     property OnGetCaption: TJvExportGetValue read FOnGetCaption write FOnGetCaption;
     property OnExportRecord: TJvExportRecordEvent read FOnExportRecord write FOnExportRecord;
@@ -159,6 +163,8 @@ type
     property ForceTextFormat: Boolean read FForceTextFormat write FForceTextFormat default False;
     property CloseExcel: Boolean read FCloseExcel write SetCloseExcel;
 
+    property Options;
+
     property OnGetHeaderLineFont: TJvGetLineFontEvent read FOnGetHeaderLineFont write FOnGetHeaderLineFont;
     property OnGetSubHeaderLineFont: TJvGetLineFontEvent read FOnGetSubHeaderLineFont write FOnGetSubHeaderLineFont;
     property OnGetFooterLineFont: TJvGetLineFontEvent read FOnGetFooterLineFont write FOnGetFooterLineFont;
@@ -178,6 +184,7 @@ type
   published
     property DataSet;
     property Captions;
+    property Options;
     property MaxFieldSize;
     property OnGetCaption;
     property OnExportRecord;
@@ -207,6 +214,7 @@ type
     property SaveToFileName;
     property TransliterateRusToEng;
     property MaxFieldSize;
+    property Options;
     property OnGetCaption;
     property OnExportRecord;
     property OnExportField;
@@ -223,6 +231,7 @@ type
     property DataSet;
     property Captions;
     property SaveToFileName;
+    property Options;
     property TransliterateRusToEng;
     property MaxFieldSize;
     property OnGetCaption;
@@ -312,7 +321,10 @@ end;
 
 function TJvgCommonExport.GetFieldValue(const Field: TField): string;
 begin
-  Result := Field.AsString;
+  if jeoOutputFormattedStrings in Options then
+    Result := Field.DisplayText
+  else
+    Result := Field.AsString;
   if Assigned(FOnExportField) then
     FOnExportField(Self, Field, Result);
 
@@ -346,6 +358,7 @@ begin
   FHeaderFont.Style := [fsBold];
   FSubHeaderFont.Size := 10;
   FAutoColumnFit := True;
+  FOptions := [];
 end;
 
 destructor TJvgExportExcel.Destroy;
