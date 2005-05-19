@@ -368,11 +368,6 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
-procedure TJvSpecialImage.WMApplyChanges(var msg: TMessage);
-begin
-  ApplyChanges;
-end;
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 
