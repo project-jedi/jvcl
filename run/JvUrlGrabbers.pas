@@ -51,9 +51,13 @@ type
     FProxyAddresses: string;
     FProxyMode: TJvProxyMode;
     FProxyIgnoreList: string;
+    FProxyUserName: string;
+    FProxyPassword: string;
     property ProxyMode: TJvProxyMode read FProxyMode write FProxyMode default pmSysConfig;
     property ProxyAddresses: string read FProxyAddresses write FProxyAddresses;
     property ProxyIgnoreList: string read FProxyIgnoreList write FProxyIgnoreList;
+    property ProxyUserName: string read FProxyUserName write FProxyUserName;
+    property ProxyPassword: string read FProxyPassword write FProxyPassword;
   public
     constructor Create(AOwner: TComponent); overload; override;
     constructor Create(AOwner: TComponent; AUrl: string; DefaultProperties: TJvCustomUrlGrabberDefaultProperties); overload;
@@ -64,9 +68,13 @@ type
     FProxyAddresses: string;
     FProxyMode: TJvProxyMode;
     FProxyIgnoreList: string;
+    FProxyUserName: string;
+    FProxyPassword: string;
     property ProxyMode: TJvProxyMode read FProxyMode write FProxyMode default pmSysConfig;
     property ProxyAddresses: string read FProxyAddresses write FProxyAddresses;
     property ProxyIgnoreList: string read FProxyIgnoreList write FProxyIgnoreList;
+    property ProxyUserName: string read FProxyUserName write FProxyUserName;
+    property ProxyPassword: string read FProxyPassword write FProxyPassword;
   public
     constructor Create(AOwner: TJvUrlGrabberDefaultPropertiesList); override;
   end;
@@ -614,6 +622,13 @@ begin
         Synchronize(Error);
         Exit;
       end;
+      if Grabber.ProxyMode = pmManual then
+      begin
+        // if manual mode and valid session, we set proxy user name and password
+        InternetSetOption(hSession, INTERNET_OPTION_PROXY_USERNAME, PChar(Grabber.ProxyUserName), Length(Grabber.ProxyUserName)+1);
+        InternetSetOption(hSession, INTERNET_OPTION_PROXY_PASSWORD, PChar(Grabber.ProxyPassword), Length(Grabber.ProxyPassword)+1);
+      end;
+      
 //      InternetSetStatusCallback(hSession, PFNInternetStatusCallback(@DownloadCallBack));
 
       // Connect to the hostname
@@ -776,6 +791,13 @@ begin
         Exit;
       end;
       InternetSetStatusCallback(hSession, PFNInternetStatusCallback(@DownloadCallBack));
+
+      if Grabber.ProxyMode = pmManual then
+      begin
+        // if manual mode and valid session, we set proxy user name and password
+        InternetSetOption(hSession, INTERNET_OPTION_PROXY_USERNAME, PChar(Grabber.ProxyUserName), Length(Grabber.ProxyUserName)+1);
+        InternetSetOption(hSession, INTERNET_OPTION_PROXY_PASSWORD, PChar(Grabber.ProxyPassword), Length(Grabber.ProxyPassword)+1);
+      end;
 
 
       // Connect to the host
