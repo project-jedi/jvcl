@@ -344,6 +344,7 @@ begin
     Exit;
   S := Copy(AText, P + L, P2 - (P + L));
   AValue := StringReplace(S, '~~', Cr, [rfReplaceAll]);
+  Result := False;
 end;
 
 function GetStrValue(const AText, AName, ADefault: string): string;
