@@ -97,6 +97,8 @@ type
     property ProxyMode;
     property ProxyAddresses;
     property ProxyIgnoreList;
+    property ProxyUserName;
+    property ProxyPassword;
     property Port default 21;
     property Passive: Boolean read FPassive write FPassive default True;
     property Mode: TJvFtpDownloadMode read FMode write FMode default hmBinary;
@@ -127,6 +129,8 @@ type
     property ProxyMode;
     property ProxyAddresses;
     property ProxyIgnoreList;
+    property ProxyUserName;
+    property ProxyPassword;
     property Port default 21;
     property OnDoneFile;
     property OnDoneStream;
@@ -164,7 +168,7 @@ type
     function GetGrabberThreadClass: TJvCustomUrlGrabberThreadClass; override;
     procedure DoStatus; override;
   public
-    constructor Create(AOwner: TComponent; AUrl: string; DefaultProperties: TJvCustomUrlGrabberDefaultProperties); 
+    constructor Create(AOwner: TComponent; AUrl: string; DefaultProperties: TJvCustomUrlGrabberDefaultProperties);
     class function CanGrab(const Url: string): Boolean; override;
     class function GetDefaultPropertiesClass: TJvCustomUrlGrabberDefaultPropertiesClass; override;
     class function GetSupportedProtocolMarker: string; override;
@@ -181,6 +185,8 @@ type
     property ProxyMode;
     property ProxyAddresses;
     property ProxyIgnoreList;
+    property ProxyUserName;
+    property ProxyPassword;
     property OnDoneFile;
     property OnDoneStream;
     property OnError;
@@ -216,6 +222,8 @@ type
     property ProxyMode;
     property ProxyAddresses;
     property ProxyIgnoreList;
+    property ProxyUserName;
+    property ProxyPassword;
   end;
 
   TJvHttpUrlGrabberThread = class(TJvCustomUrlGrabberThread)
