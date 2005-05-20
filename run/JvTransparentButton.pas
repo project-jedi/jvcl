@@ -61,6 +61,7 @@ type
     {$ENDIF COMPILER6_UP}
     {$ENDIF VCL}
     procedure SetChecked(Value: Boolean); override;
+    procedure SetImageIndex(Value: Integer); override;
   end;
 
   TJvTransparentButton = class;
@@ -434,6 +435,19 @@ procedure TJvTransparentButtonActionLink.SetChecked(Value: Boolean);
 begin
   if IsCheckedLinked and (FClient is TJvTransparentButton) then
     TJvTransparentButton(FClient).Down := Value;
+end;
+
+procedure TJvTransparentButtonActionLink.SetImageIndex(Value: Integer);
+begin
+  // Force updating the image indexes when the action changes its own value
+  if (FClient is TJvTransparentButton) then
+  begin
+    TJvTransparentButton(FClient).Images.ActiveIndex := Value;
+    TJvTransparentButton(FClient).Images.GrayIndex := Value;
+    TJvTransparentButton(FClient).Images.DisabledIndex := Value;
+    TJvTransparentButton(FClient).Images.DownIndex := Value;
+    TJvTransparentButton(FClient).Images.HotIndex := Value;
+  end;
 end;
 
 //=== { TJvTransparentButtonImages } =========================================
@@ -1327,11 +1341,13 @@ begin
   end;
 end;
 
-{$IFDEF UNITVERSIONING}
 initialization
+{$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
+{$ENDIF UNITVERSIONING}
 
 finalization
+{$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
 
