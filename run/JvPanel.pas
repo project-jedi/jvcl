@@ -140,6 +140,7 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
+    procedure ColorChanged; override;
     procedure ParentColorChanged; override;
     procedure TextChanged; override;
     procedure Paint; override;
@@ -419,6 +420,7 @@ begin
   FFlatBorder := False;
   FFlatBorderColor := clBtnShadow;
   FHotColor := clBtnFace;
+  FOldColor := clNone;
 
   FArrangeSettings := TJvArrangeSettings.Create(Self);
 end;
@@ -469,7 +471,6 @@ begin
   end;
 end;
 
-
 procedure TJvPanel.WMExitSizeMove(var Msg: TMessage);
 begin
   inherited;
@@ -492,7 +493,6 @@ begin
   if Assigned(FOnAfterMove) then
     FOnAfterMove(Self);
 end;
-
 
 {$IFDEF VisualCLX}
 
@@ -720,6 +720,13 @@ begin
   end;
 end;
 
+procedure TJvPanel.ColorChanged;
+begin
+  if FOldColor <> clNone then
+    FOldColor := Color;
+  inherited ColorChanged;
+end;
+
 procedure TJvPanel.ParentColorChanged;
 begin
   Invalidate;
@@ -727,15 +734,19 @@ begin
 end;
 
 procedure TJvPanel.MouseEnter(Control: TControl);
+var
+  Col: TColor;
 begin
   if csDesigning in ComponentState then
     Exit;
   if not MouseOver and (Control = nil) then
   begin
-    FOldColor := Color;
+    FOldColor := clNone;
+    Col := Color;
     if not Transparent or IsThemed then
     begin
       Color := HotColor;
+      FOldColor := Col;
       MouseTimer.Attach(Self);
     end;
   end;
@@ -743,6 +754,8 @@ begin
 end;
 
 procedure TJvPanel.MouseLeave(Control: TControl);
+var
+  Col: TColor;
 begin
   if csDesigning in ComponentState then
     Exit;
@@ -750,7 +763,9 @@ begin
   begin
     if not Transparent or IsThemed then
     begin
-      Color := FOldColor;
+      Col := FOldColor;
+      FOldColor := clNone; // Color:= invoked ColorChanged
+      Color := Col;
       MouseTimer.Detach(Self);
     end;
   end;
