@@ -147,11 +147,12 @@ type
   end;
 
   {$IFDEF VCL}
-  TJvImageComboBox = class(TJvCustomComboBox, IUnknown, IJvResetItemHeight)
+  TJvImageComboBoxBase = TJvCustomComboBox;
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  TJvImageComboBox = class(TCustomComboBox, IUnknown, IJvResetItemHeight)
+  TJvImageComboBoxBase = TCustomComboBox;
   {$ENDIF VisualCLX}
+  TJvImageComboBox = class(TJvImageComboBoxBase, IUnknown, IJvResetItemHeight)
   private
     FItems: TJvImageItems;
     FImageList: TCustomImageList;
