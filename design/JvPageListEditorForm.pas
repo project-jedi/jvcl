@@ -68,6 +68,7 @@ type
     N1: TMenuItem;
     MoveUp1: TMenuItem;
     MoveDown1: TMenuItem;
+    procedure FormCreate(Sender: TObject);
     procedure acAddExecute(Sender: TObject);
     procedure acDeleteExecute(Sender: TObject);
     procedure acMoveUpExecute(Sender: TObject);
@@ -374,6 +375,13 @@ begin
     ActivateInspector(Key);
     Key := #0;
   end;
+end;
+
+procedure TfrmPageListEditor.FormCreate(Sender: TObject);
+begin
+  {$IFDEF COMPILER9_UP}
+  FormStyle := fsStayOnTop;
+  {$ENDIF COMPILER9_UP}
 end;
 
 end.
