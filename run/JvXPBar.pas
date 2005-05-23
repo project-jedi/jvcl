@@ -984,13 +984,13 @@ begin
   if Source is TJvXPBarItem then
     with TJvXPBarItem(Source) do
     begin
-      Self.Action.Assign(Action);
+      Self.Action := Action;
       Self.Caption := Caption;
       Self.Data := Data;
       Self.DataObject := DataObject;
       Self.Enabled := Enabled;
       Self.Hint := Hint;
-      Self.ImageList.Assign(ImageList);
+      Self.ImageList := ImageList;
       Self.ImageIndex := ImageIndex;
       Self.Name := Name;
       Self.Tag := Tag;
