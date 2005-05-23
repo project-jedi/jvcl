@@ -318,11 +318,13 @@ type
     Item: TJvCustomInspectorItem; var DisplayStr: string) of object;
 
   {$IFDEF VCL}
-  TJvCustomInspector = class(TJvCustomControl)
+  TJvCustomInspectorBase = TJvCustomControl;
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  TJvCustomInspector = class(TJvExCustomPanel)
+  TJvCustomInspectorBase = TJvExCustomPanel;
   {$ENDIF VisualCLX}
+
+  TJvCustomInspector = class(TJvCustomInspectorBase)
   private
     FAfterDataCreate: TInspectorDataEvent;
     FAfterItemCreate: TInspectorItemEvent;
