@@ -41,12 +41,13 @@ uses
   SysUtils, Classes, Controls, StdCtrls;
 
 type
+  TJvGetSearchItemPrefixEvent = procedure(Sender: TObject; var Prefix: string) of object;
+
   { TControlAutoComplete implements a autocomplete code for a controls it is a
     abstract base class. After you have created an instance of a derived class
     you must either assign the AutoCompleteEvent to the OnKeyPress event of the
     control or you must call the AutoComplete method from in a KeyPress event
     handler.
-
 
     (ahuser) 2005-01-31: changed from TObject to TComponent due to Notification()
     Do not register this component it is more a "TObject" than a TComponent. }
@@ -61,6 +62,7 @@ type
     FOnValidateItems: TNotifyEvent;
     FOnChange: TNotifyEvent;
     FOnValueChange: TNotifyEvent;
+    FOnGetSearchItemPrefix: TJvGetSearchItemPrefixEvent;
   protected
     function GetText: TCaption; virtual; abstract;
     procedure SetText(const Value: TCaption); virtual; abstract;
@@ -81,6 +83,7 @@ type
     procedure DoValidateItems; dynamic;
     procedure DoChange; dynamic;
     procedure DoValueChange; dynamic;
+    procedure GetSearchItemPrefix(var Prefix: string); dynamic;
   public
     constructor Create; reintroduce;
     procedure AutoCompleteEvent(Sender: TObject; var Key: Char);
@@ -94,6 +97,7 @@ type
     property OnValidateItems: TNotifyEvent read FOnValidateItems write FOnValidateItems;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnValueChange: TNotifyEvent read FOnValueChange write FOnValueChange;
+    property OnGetSearchItemPrefix: TJvGetSearchItemPrefixEvent read FOnGetSearchItemPrefix write FOnGetSearchItemPrefix;
   end;
 
   TJvBaseEditListAutoComplete = class(TJvControlAutoComplete)
@@ -300,6 +304,12 @@ begin
     FOnValueChange(Self);
 end;
 
+procedure TJvControlAutoComplete.GetSearchItemPrefix(var Prefix: string);
+begin
+  if Assigned(FOnGetSearchItemPrefix) then
+    FOnGetSearchItemPrefix(Self, Prefix);
+end;
+
 procedure TJvControlAutoComplete.AutoCompleteEvent(Sender: TObject; var Key: Char);
 begin
   AutoComplete(Key);
@@ -334,11 +344,12 @@ var
     SetEditSel(StartPos, StartPos);
   end;
 
-  function SelectItem(const AnItem: string): Boolean;
+  function SelectItem(AnItem: string): Boolean;
   var
     Idx: Integer;
     ValueChange: Boolean;
   begin
+    GetSearchItemPrefix(AnItem);
     if AnItem = '' then
     begin
       Result := False;
