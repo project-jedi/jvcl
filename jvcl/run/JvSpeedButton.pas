@@ -119,7 +119,7 @@ type
     procedure SetTransparent(Value: Boolean);
     procedure SetWordWrap(Value: Boolean);
 
-{IJvHotTrack}   //added by dejoy 2005-04-20
+    {IJvHotTrack}   //added by dejoy 2005-04-20
     function GetHotTrack:Boolean;
     function GetHotTrackFont:TFont;
     function GetHotTrackFontOptions:TJvTrackFontOptions;
@@ -1710,6 +1710,7 @@ begin
     MemDC := CreateCompatibleDC(Msg.DC);
     SaveBitmap := SelectObject(MemDC, MemBitmap);
     try
+      BitBlt(MemDC, 0, 0, Width, Height, Msg.DC, 0, 0, SRCCOPY);
       DC := Msg.DC;
       Index := SaveDC(DC);
       Msg.DC := MemDC;
