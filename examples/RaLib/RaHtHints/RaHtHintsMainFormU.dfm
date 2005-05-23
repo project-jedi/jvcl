@@ -39,7 +39,7 @@ object RaHtHintsMainForm: TRaHtHintsMainForm
     Height = 105
     Lines.Strings = (
       'Button1 <b>Bold Hint</b> not bold'
-      'Color red = <b><c:Red>Red')
+      'Color red = <b><font color=clRed>Red')
     TabOrder = 1
   end
   object RegAuto1: TJvFormStorage
