@@ -2371,13 +2371,11 @@ begin
   end
   else
   begin
+    if (TVarData(V).VType = varBoolean) and (VarType = varInteger) then
+      Result := Ord(V = True)
+    else
     if TVarData(V).VType = varInteger then
-    begin
-      if (TVarData(V).VType = VarType) then
-        Result := Ord(V = True)
-      else
-        Result := Integer(V)
-    end
+      Result := Integer(V)
     else
     if TVarData(V).VType = varArray then
     begin
