@@ -55,6 +55,7 @@ type
   TJvSimpleXMLElemComment = class;
   TJvSimpleXMLElemClassic = class;
   TJvSimpleXMLElemCData = class;
+  TJvSimpleXMLElemDocType = class;
   TJvSimpleXMLElemText = class;
   TJvSimpleXMLElemHeader = class;
   TJvSimpleXMLElemSheet = class;
@@ -171,6 +172,8 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+    function AddComment(const AValue: string): TJvSimpleXMLElemComment;
+    function AddDocType(const AValue: string): TJvSimpleXMLElemDocType;
     procedure Clear;
     function AddStyleSheet(AType, AHRef: string): TJvSimpleXMLElemSheet;
     function LoadFromStream(const Stream: TStream; Parent: TJvSimpleXML = nil): string;
@@ -3315,6 +3318,24 @@ begin
   Result.Properties.Add('type',AType);
   Result.Properties.Add('href',AHRef);
   FElems.AddObject('xml-stylesheet', Result);
+end;
+
+function TJvSimpleXMLElemsProlog.AddComment(const AValue: string): TJvSimpleXMLElemComment;
+begin
+  // make sure there is an xml header
+  FindHeader;
+  Result := TJvSimpleXMLElemComment.Create(nil);
+  Result.Value := AValue;
+  FElems.AddObject('', Result);
+end;
+
+function TJvSimpleXMLElemsProlog.AddDocType(const AValue: string): TJvSimpleXMLElemDocType;
+begin
+  // make sure there is an xml header
+  FindHeader;
+  Result := TJvSimpleXMLElemDocType.Create(nil);
+  Result.Value := AValue;
+  FElems.AddObject('', Result);
 end;
 
 initialization
