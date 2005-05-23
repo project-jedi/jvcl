@@ -733,6 +733,9 @@ end;
 procedure TJvCustomPageList.SetActivePage(Page: TJvCustomPage);
 var
   ParentForm: TCustomForm;
+  {$IFDEF COMPILER9_UP}
+  I: Integer;
+  {$ENDIF COMPILER9_UP}
 begin
   if GetPageCount = 0 then
     FActivePage := nil;
@@ -751,7 +754,14 @@ begin
         Exit;
       end;
     end;
+
+    {$IFDEF COMPILER9_UP}
+    for I := 0 to GetPageCount - 1 do
+      if Pages[i] <> Page then
+        Pages[i].Hide;
+    {$ELSE}
     Page.BringToFront;
+    {$ENDIF COMPILER9_UP}
     Page.Visible := True;
     if (ParentForm <> nil) and (FActivePage <> nil) and (ParentForm.ActiveControl = FActivePage) then
     begin
