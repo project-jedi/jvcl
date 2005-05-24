@@ -785,7 +785,10 @@ var
 begin
   if Assigned(PageList) and Supports(PageList, IPageList, PageListIntf) then
   begin
-    PageListIntf.SetActivePageIndex(Tab.Index);
+    if Assigned(Tab) then
+      PageListIntf.SetActivePageIndex(Tab.Index)
+    else
+      PageListIntf.SetActivePageIndex(-1);
     PageListIntf := nil; // who knows what OnTabSelected does with the PageList
   end;
   if Assigned(FOnTabSelected) then
