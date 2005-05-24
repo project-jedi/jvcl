@@ -344,33 +344,35 @@ var
     SetEditSel(StartPos, StartPos);
   end;
 
-  function SelectItem(AnItem: string): Boolean;
+  function SelectItem(const AnItem: string): Boolean;
   var
     Idx: Integer;
     ValueChange: Boolean;
+    PartToFind: string;
   begin
-    GetSearchItemPrefix(AnItem);
-    if AnItem = '' then
+    Result := False;
+    PartToFind := AnItem;
+    GetSearchItemPrefix(PartToFind);
+    if PartToFind = '' then
     begin
-      Result := False;
       SetItemIndex(-1);
       DoChange;
       Exit;
     end;
-    Idx := FindItemPrefix(-1, AnItem);
-    Result := (Idx <> -1);
-    if not Result then
+    Idx := FindItemPrefix(-1, PartToFind);
+    if Idx < 0 then
       Exit;
+    Result := True;
     ValueChange := Idx <> GetItemIndex;
     SetItemIndex(Idx);
     if ListSearch then
     begin
       SetItemIndex(Idx);
-      FFilter := AnItem;
+      FFilter := PartToFind;
     end
     else
     begin
-      SetText(AnItem + Copy(GetItemAt(Idx), Length(AnItem) + 1, MaxInt));
+      SetText(AnItem + Copy(GetItemAt(Idx), Length(PartToFind) + 1, MaxInt));
       SetEditSel(Length(AnItem), Length(GetText));
     end;
     if ValueChange then
