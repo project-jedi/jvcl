@@ -171,6 +171,7 @@ type
     procedure WMSetFont(var Msg: TWMSetFont); message WM_SETFONT;
     procedure WMSetFocus(var Msg: TWMSetFocus); message WM_SETFOCUS;
     procedure WMSetText(var Msg: TWMSetText); message WM_SETTEXT;
+    procedure WMGetText(var Msg: TWMGetText); message WM_GETTEXT;
     procedure WMCtlColorEdit(var Msg: TWMCtlColorEdit); message WM_CTLCOLOREDIT;
     procedure WMKeyDown(var Msg: TWMKeyDown); message WM_KEYDOWN;
     procedure WMKeyUp(var Msg: TWMKeyUp); message WM_KEYUP;
@@ -194,6 +195,8 @@ type
     procedure DoAddressChanging(Sender: TObject; Index: Integer;
       Value: Byte; var AllowChange: Boolean); virtual;
     procedure DoFieldChange(FieldIndex: Integer; var FieldValue: Integer); dynamic;
+
+    procedure UpdateValuesFromString(S: string);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1186,6 +1189,17 @@ begin
   //  (p3) do nothing
 end;
 
+procedure TJvIPAddress.UpdateValuesFromString(S: string);
+begin
+  with AddressValues do
+  begin
+    Value1 := StrToIntDef(StrToken(S, '.'), 0);
+    Value2 := StrToIntDef(StrToken(S, '.'), 0);
+    Value3 := StrToIntDef(StrToken(S, '.'), 0);
+    Value4 := StrToIntDef(S, 0);
+  end;
+end;
+
 { Added 03/05/2004 by Kai Gossens }
 
 procedure TJvIPAddress.WMCtlColorEdit(var Msg: TWMCtlColorEdit);
@@ -1223,20 +1237,27 @@ begin
 end;
 
 procedure TJvIPAddress.WMSetText(var Msg: TWMSetText);
-var
-  S: string;
 begin
+  // Update the internal values from the message's text
+  UpdateValuesFromString(Msg.Text);
+
   // really long values for the text crashes the program (try: 127.0.0.8787787878787878), so we limit it here before it is set
-  S := Msg.Text;
   with AddressValues do
-  begin
-    Value1 := StrToIntDef(StrToken(S, '.'), 0);
-    Value2 := StrToIntDef(StrToken(S, '.'), 0);
-    Value3 := StrToIntDef(StrToken(S, '.'), 0);
-    Value4 := StrToIntDef(S, 0);
     Msg.Text := PChar(Format('%d.%d.%d.%d', [Value1, Value2, Value3, Value4]));
-  end;
+    
   inherited;
+end;
+
+procedure TJvIPAddress.WMGetText(var Msg: TWMGetText);
+begin
+  inherited;
+
+  // Here, we are sure to have the text inside the Text member.
+  // It has been retrieved by the intricate message handling of the windows
+  // API, we simply use it to update the values of the AddressValues property
+  // If we did not do this, then those values would not get updated as reported
+  // in Mantis 2986.
+  UpdateValuesFromString(Msg.Text);
 end;
 
 procedure TJvIPAddress.WMParentNotify(var Msg: TWMParentNotify);
