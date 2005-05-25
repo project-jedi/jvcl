@@ -1712,6 +1712,8 @@ begin
   if (Handle <> NextWnd) and (FDataList.Handle <> NextWnd) and
     (FDataList.FTree.Handle <> NextWnd) then
     CloseUp(False);
+
+  inherited FocusKilled(NextWnd);
 end;
 
 
