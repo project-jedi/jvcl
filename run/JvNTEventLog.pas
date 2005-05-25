@@ -497,14 +497,15 @@ end;
 
 function TJvNTEventLogRecord.GetUsername: string;
 var
-  UserName: array [0..256] of Char;
+  UserName: array [0..512] of Char;
   UserNameLen: Cardinal;
-  DomainName: array [0..256] of Char;
+  DomainName: array [0..512] of Char;
   DomainNameLen: Cardinal;
   Use: SID_NAME_USE;
 
 begin
   Result := '';
+
   UserNameLen := SizeOf(UserName);
   DomainNameLen := SizeOf(DomainName);
   if LookupAccountSID(nil, SID, UserName, UserNameLen, DomainName, DomainNameLen, Use) then
