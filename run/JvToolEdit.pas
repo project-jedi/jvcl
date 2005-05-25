@@ -4009,6 +4009,7 @@ end;
 procedure TJvCustomDateEdit.SetDate(Value: TDateTime);
 var
   D: TDateTime;
+  SavedModified : Boolean;
 begin
   if not ValidDate(Value) or (Value = NullDate) then
   begin
@@ -4018,12 +4019,13 @@ begin
       Value := NullDate;
   end;
   D := Self.Date;
+  SavedModified := Modified;
   TestDateBetween(Value); // Polaris
   if Value = NullDate then
     Text := ''
   else
     Text := FormatDateTime(FDateFormat, Value);
-  Modified := D <> Self.Date;
+  Modified := SavedModified or (D <> Self.Date);
 end;
 
 procedure TJvCustomDateEdit.SetDateAutoBetween(Value: Boolean);
