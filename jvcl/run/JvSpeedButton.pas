@@ -1269,25 +1269,17 @@ begin
     if FTransparent then
       CopyParentImage(Self, Canvas)
     else
-      PerformEraseBackground(Self, Canvas.Handle);
+    begin
+      if not DoubleBuffered then
+        PerformEraseBackground(Self, Canvas.Handle) // uses Control.Left/Top as offset
+      else
+        PerformEraseBackground(Self, Canvas.Handle, Point(0, 0)); // we are drawing into a bitmap
+    end;
 
     if (MouseOver or FDragging) and HotTrack then
       Canvas.Font := Self.HotTrackFont
     else
       Canvas.Font := Self.Font;
-
-    { (rb) No longer necessary because of the WM_PRINTCLIENT fix }
-//    { (rb) Hack: Force font&brush refresh,
-//      - themes seem to delete the font, thus font.handle etc is not valid anymore.
-//      - if nothing changed since the last paint cycle, then Canvas.Font
-//        equals Self.Font/Self.HotTrackFont, ie Canvas doesn't refresh the
-//        font handles due to the assign.
-//      - Thus we have to force the font to drop the old handle, don't know other
-//        way than calling Changed.
-//      (see also remark at TCustomActionControl.Paint)
-//    }
-//    TFontAccessProtected(Canvas.Font).Changed;
-//    TFontAccessProtected(Canvas.Brush).Changed;
 
     if not Enabled then
       Button := tbPushButtonDisabled
@@ -1710,15 +1702,15 @@ begin
     MemDC := CreateCompatibleDC(Msg.DC);
     SaveBitmap := SelectObject(MemDC, MemBitmap);
     try
-      BitBlt(MemDC, 0, 0, Width, Height, Msg.DC, 0, 0, SRCCOPY);
       DC := Msg.DC;
       Index := SaveDC(DC);
-      Msg.DC := MemDC;
-
-      inherited;
-
-      Msg.DC := DC;
-      RestoreDC(Msg.DC, Index);
+      try
+        Msg.DC := MemDC;
+        inherited;
+        Msg.DC := DC;
+      finally
+        RestoreDC(Msg.DC, Index);
+      end;
       BitBlt(Msg.DC, 0, 0, Width, Height, MemDC, 0, 0, SRCCOPY);
     finally
       SelectObject(MemDC, SaveBitmap);
@@ -1767,7 +1759,7 @@ var
 begin
   for I := FGlyphLists.Count - 1 downto 0 do
   begin
-    Result := FGlyphLists[I];
+    Result := TJvGlyphList(FGlyphLists[I]);
     with Result do
       if (AWidth = Width) and (AHeight = Height) then
         Exit;
