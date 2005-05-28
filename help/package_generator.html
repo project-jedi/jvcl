@@ -46,8 +46,8 @@ allow you to safely edit the source XML files. Here is the flow diagram:<br>
 <br>
 Each file has its own role:<br>
 <br>
-<table style="text-align: left; width: 100%;" border="0" cellspacing="0"
- cellpadding="2">
+<table style="text-align: left; width: 100%;" border="0" cellpadding="2"
+ cellspacing="0">
   <tbody>
     <tr>
       <td style="vertical-align: top; white-space: nowrap;"><a
@@ -131,7 +131,7 @@ Here is a basic XML source file (Extracted from JvCore-R.xml):<br>
 <br>
 <table
  style="width: 80%; text-align: left; margin-left: auto; margin-right: auto;"
- border="0" cellspacing="0" cellpadding="2">
+ border="0" cellpadding="2" cellspacing="0">
   <tbody>
     <tr>
       <td
@@ -192,8 +192,8 @@ which
 will ensure that the format of the xml files is correct. Here is a
 description of each node and its usage:<br>
 <br>
-<table style="text-align: left; width: 100%;" border="1" cellspacing="1"
- cellpadding="2">
+<table style="text-align: left; width: 100%;" border="1" cellpadding="2"
+ cellspacing="1">
   <tbody>
     <tr>
       <td
@@ -333,7 +333,7 @@ node indicates a package that the current package requires in order to
 be
 compiled. It must have the following three attributes:<br>
       <table style="text-align: left; width: 100%;" border="0"
- cellspacing="0" cellpadding="2">
+ cellpadding="2" cellspacing="0">
         <tbody>
           <tr>
             <td style="vertical-align: top;">Name<br>
@@ -379,7 +379,7 @@ about the available operators.<br>
 node indicates a file to include in the package. It must
 have the following four attributes:<br>
       <table style="text-align: left; width: 100%;" border="0"
- cellspacing="0" cellpadding="2">
+ cellpadding="2" cellspacing="0">
         <tbody>
           <tr>
             <td style="vertical-align: top;">Name<br>
@@ -431,7 +431,7 @@ pgEdit.xml distributed with the JVCL:<br>
 <br>
 <table
  style="width: 80%; text-align: left; margin-left: auto; margin-right: auto;"
- border="0" cellspacing="0" cellpadding="2">
+ border="0" cellpadding="2" cellspacing="0">
   <tbody>
     <tr>
       <td
@@ -477,8 +477,8 @@ you may end up with an Acces Violation exception anyway. To get a
 meaningful file, you need to indicate the correct
 values according to the following table:<br>
 <br>
-<table style="text-align: left; width: 100%;" border="1" cellspacing="1"
- cellpadding="2">
+<table style="text-align: left; width: 100%;" border="1" cellpadding="2"
+ cellspacing="1">
   <tbody>
     <tr>
       <td
@@ -536,7 +536,7 @@ generation model that can be used by the package generator. The first
 five
 attributes are compulsory and serve the following purpose:<br>
       <table style="width: 100%; text-align: left;" border="0"
- cellspacing="0" cellpadding="2">
+ cellpadding="2" cellspacing="0">
         <tbody>
           <tr>
             <td style="vertical-align: top;">name<br>
@@ -567,7 +567,7 @@ the detailed description of the <a href="#Detailed_Generation_process">generatio
 process</a> for further information. Some special markers will get
 replaced:<br>
             <table style="width: 100%; text-align: left;" border="0"
- cellspacing="0" cellpadding="2">
+ cellpadding="2" cellspacing="0">
               <tbody>
                 <tr>
                   <td style="vertical-align: top;">%e<br>
@@ -706,7 +706,7 @@ a package, and only when the target being generated is marked as CLX.<br>
       <td style="vertical-align: top;">Each target node must have at
 least the name attribute. All other attributes are optionnal:<br>
       <table style="width: 100%; text-align: left;" border="0"
- cellspacing="0" cellpadding="2">
+ cellpadding="2" cellspacing="0">
         <tbody>
           <tr>
             <td style="vertical-align: top;">name<br>
@@ -764,9 +764,11 @@ packages.<br>
             <td style="vertical-align: top;">ver<br>
             </td>
             <td style="vertical-align: top;">A character to identify
-the version of the environment. Defaults to the second character of
-'name'. The expected value is a number and errors will arise if it is
-not. For instance, for Delphi 7, it should be "7".<br>
+the version of the environment. Defaults to the substring of digits
+starting from the second character of
+'name'. That is, if the target is d7 or d7clx, then the default value
+will be 7. If you don't want this to happen, explicitly specify a value
+for this property.<br>
             </td>
           </tr>
           <tr>
@@ -784,7 +786,7 @@ Delphi 7. Hence in the include file, we have this:<br>
             </code>
             <table
  style="text-align: left; background-color: rgb(204, 204, 204); width: 100%;"
- border="0" cellspacing="0" cellpadding="2">
+ border="0" cellpadding="2" cellspacing="0">
               <tbody>
                 <tr>
                   <td
@@ -839,7 +841,7 @@ for more details.<br>
       <td style="vertical-align: top;">Each alias node must have those
 two attributes:<br>
       <table style="width: 100%; text-align: left;" border="0"
- cellspacing="0" cellpadding="2">
+ cellpadding="2" cellspacing="0">
         <tbody>
           <tr>
             <td style="vertical-align: top;">name<br>
@@ -870,7 +872,7 @@ to include them in the value for your alias.<br>
       <td style="vertical-align: top;"> Each replacement node must have
 those two attributes:<br>
       <table style="width: 100%; text-align: left;" border="0"
- cellspacing="0" cellpadding="2">
+ cellpadding="2" cellspacing="0">
         <tbody>
           <tr>
             <td style="vertical-align: top;">original<br>
@@ -920,7 +922,7 @@ and can appear more than once.<br>
 <br>
 <table
  style="width: 90%; text-align: left; margin-left: auto; margin-right: auto;"
- border="1" cellspacing="1" cellpadding="2">
+ border="1" cellpadding="2" cellspacing="1">
   <tbody>
     <tr>
       <td
@@ -1170,7 +1172,7 @@ file after marker replacement has been done. Lines read in the
 <br>
 <table
  style="width: 90%; text-align: left; margin-left: auto; margin-right: auto;"
- border="1" cellspacing="1" cellpadding="2">
+ border="1" cellpadding="2" cellspacing="1">
   <tbody>
     <tr>
       <td
@@ -1249,7 +1251,7 @@ simple file:<br>
 </p>
 <table
  style="width: 80%; text-align: left; margin-left: auto; margin-right: auto;"
- border="0" cellspacing="0" cellpadding="2">
+ border="0" cellpadding="2" cellspacing="0">
   <tbody>
     <tr>
       <td
@@ -1468,8 +1470,8 @@ items of the package XML source files. Here are its specifications:<br>
 <div style="margin-left: 40px;">Syntax:<br>
 </div>
 <div style="margin-left: 80px;">
-<table style="text-align: left; width: 100%;" border="0" cellspacing="0"
- cellpadding="0">
+<table style="text-align: left; width: 100%;" border="0" cellpadding="0"
+ cellspacing="0">
   <tbody>
     <tr>
       <td style="vertical-align: top; width: 1px;">&lt;b-exp&gt;</td>
@@ -1498,8 +1500,8 @@ items of the package XML source files. Here are its specifications:<br>
 <br>
 <div style="margin-left: 40px;">Symbols:<br>
 <div style="margin-left: 40px;">
-<table style="text-align: left; width: 100%;" border="0" cellspacing="0"
- cellpadding="0">
+<table style="text-align: left; width: 100%;" border="0" cellpadding="0"
+ cellspacing="0">
   <tbody>
     <tr>
       <td style="vertical-align: top; width: 1px; white-space: nowrap;">!<br>
@@ -1535,8 +1537,8 @@ items of the package XML source files. Here are its specifications:<br>
 <div style="margin-left: 40px;">Examples:<br>
 </div>
 <div style="margin-left: 80px;">
-<table style="text-align: left; width: 90%;" border="0" cellspacing="0"
- cellpadding="0">
+<table style="text-align: left; width: 90%;" border="0" cellpadding="0"
+ cellspacing="0">
   <tbody>
     <tr>
       <td
@@ -1556,7 +1558,7 @@ been designed to be used from batch files and the JVLC installer. Here
 are the options it accepts:<br>
 <table
  style="width: 80%; margin-left: auto; margin-right: auto; text-align: left;"
- border="0" cellspacing="0" cellpadding="4">
+ border="0" cellpadding="4" cellspacing="0">
   <tbody>
     <tr>
       <td style="vertical-align: top;">-h<br>
