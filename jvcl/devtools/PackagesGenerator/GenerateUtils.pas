@@ -1725,9 +1725,9 @@ begin
   if Assigned(Node.Properties.ItemNamed['pdir']) then
     FPDir := Node.Properties.ItemNamed['pdir'].Value;
   if Assigned(Node.Properties.ItemNamed['env']) then
-    FEnv := AnsiUpperCase(Node.Properties.ItemNamed['env'].Value)[1];
+    FEnv := AnsiUpperCase(Node.Properties.ItemNamed['env'].Value);
   if Assigned(Node.Properties.ItemNamed['ver']) then
-    FVer := AnsiLowerCase(Node.Properties.ItemNamed['ver'].Value)[1];
+    FVer := AnsiLowerCase(Node.Properties.ItemNamed['ver'].Value);
 
   FDefines := TStringList.Create;
   if Assigned(Node.Properties.ItemNamed['defines']) then
@@ -1775,11 +1775,20 @@ begin
 end;
 
 function TTarget.GetVer: string;
+var
+  I : Integer;
 begin
   if FVer <> '' then
     Result := FVer
   else if Length(Name)>1 then
-    Result := AnsiLowerCase(Name[2])
+  begin
+    I := 2;
+    while (I < Length(Name)) and (Name[I] in ['0'..'9']) do
+      Inc(I);
+    if I < Length(name) then
+      Dec(I);
+    Result := AnsiLowerCase(Copy(Name, 2, I-2+1));
+  end
   else
     Result := '';
 end;
