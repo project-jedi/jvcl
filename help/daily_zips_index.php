@@ -2,16 +2,24 @@
 
 function GetDisplayFileDate($filename)
 {
-  return date("Y-m-d H:i:s T", filemtime($filename));
+  if (file_exists($filename))
+    return date("Y-m-d H:i:s T", filemtime($filename));
+  else
+    return "Missing file";
 }
 
 function GetShortFileDate($filename)
 {
-  return date("Y-m-d", filemtime($filename));
+  if (file_exists($filename))
+    return date("Y-m-d", filemtime($filename));
+  else
+    return "Missing file";
 }
 
 function GetDisplayFileSize($filename)
 {
+  if (!file_exists($filename))
+    return "Missing file";
   $size = filesize($filename);
   
   if ($size > 1024*1024)
