@@ -131,10 +131,20 @@ type
 implementation
 
 function BplNameToGenericName(const BplName: string): string;
+var
+  I, Len : Integer;
 begin
    // obtain package name used in the xml file
   Result := ChangeFileExt(BplName, '');
-  Delete(Result, Length(Result) - 2, 1);
+
+  // Remove numbers from the end of the package name
+  Len := Length(Result);
+  I := Len-1;
+  while (I > 0) and (Result[I] in ['0'..'9']) do
+    Dec(I);
+  Delete(Result, I+1, Len-I-1);
+
+  // Replace the environment character by a dash
   Result[Length(Result) - 1] := '-';
   if Result[3] = 'Q' then
     Delete(Result, 3, 1);
