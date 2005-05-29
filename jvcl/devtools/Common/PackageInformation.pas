@@ -457,8 +457,12 @@ begin
   finally
     Stream.Free;
   end;
-  Delete(Content, 1, 3); // This is a little bit dirty but unless we mix UTF8,
-                         // UTF16 and ANSI files there is no problem.
+
+  // Remove the BOM if it is present. It is NOT a requirement of UTF-8 that
+  // the BOM is present.
+  if (Content[1] = #$EF) and (Content[2] = #$BB) and (Content[3] = #$BF) then
+    Delete(Content, 1, 3);
+    
   {$IFDEF COMPILER6_UP}
   Result := Utf8ToAnsi(Content);
   {$ELSE}
