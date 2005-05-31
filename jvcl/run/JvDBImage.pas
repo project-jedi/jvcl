@@ -103,7 +103,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, Classes, Graphics, Controls,
-  Clipbrd, DB, DBCtrls, Forms, Contnrs; 
+  Clipbrd, DB, DBCtrls, Forms, Contnrs;
 
 type
   TJvGetGraphicClassEvent = procedure(Sender: TObject; Stream: TMemoryStream;
@@ -127,7 +127,7 @@ type
   protected
     procedure CreateHandle; override;
     procedure CheckFieldType;
-    function CreateGraphic: TGraphic;
+    procedure AssignGraphicTo(Picture: TPicture);
     function DestRect(W, H, CW, CH: Integer): TRect;
     procedure Paint; override;
 
@@ -380,13 +380,12 @@ begin
   end;
 end;
 
-function TJvDBImage.CreateGraphic: TGraphic;
+procedure TJvDBImage.AssignGraphicTo(Picture: TPicture);
 var
+  Graphic: TGraphic;
   GraphicClass: TGraphicClass;
   Stream: TMemoryStream;
 begin
-  Result := nil;
-
   // If nil field or null field just exit
   if (Field = nil) or (Field.IsNull) then
     Exit;
@@ -406,20 +405,17 @@ begin
     // If we got one, load it..
     if GraphicClass <> nil then
     begin
-      Result := GraphicClass.Create;
+      Graphic := GraphicClass.Create;
       try
         Stream.Position := 0;
-        Result.LoadFromStream(Stream);
-      except
-        Result.Free;
-        raise;
+        Graphic.LoadFromStream(Stream);
+        Picture.Graphic := Graphic;
+      finally
+        Graphic.Free;
       end;
     end
     else // try the old fashioned way
-    begin
       Picture.Assign(Field);
-      Result := Picture.Graphic;
-    end;
   finally
     Stream.Free;
   end;
@@ -516,7 +512,7 @@ begin
         if (csPaintCopy in ControlState) and Assigned(FDataLink.Field) and
           FDataLink.Field.IsBlob then
         begin
-          DrawPict.Graphic := CreateGraphic;
+          AssignGraphicTo(DrawPict);
           if DrawPict.Graphic is TBitmap then
             DrawPict.Bitmap.IgnorePalette := QuickDraw;
         end
@@ -575,7 +571,7 @@ procedure TJvDBImage.LoadPicture;
 begin
   if not FPictureLoaded then
   try
-    Picture.Graphic := CreateGraphic;
+    AssignGraphicTo(Picture);
   except
     Picture.Graphic := nil;
     raise;
