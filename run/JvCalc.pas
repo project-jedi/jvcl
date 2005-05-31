@@ -191,7 +191,7 @@ type
     FOnCalcKey: TKeyPressEvent;
     FOnDisplayChange: TNotifyEvent;
     FControl: TControl;
-    procedure SetText(const Value: string); {$IFDEF VisualCLX} reintroduce; {$ENDIF}
+    procedure SetText(const Value: string); {$IFDEF VisualCLX} reintroduce; {$ENDIF}{$IFDEF CLR} reintroduce; {$ENDIF}
     procedure CheckFirst;
     procedure CalcKey(Key: Char);
     procedure Clear;
