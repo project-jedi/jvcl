@@ -61,7 +61,10 @@ type
     procedure SetInfoLabel(ACaption: TCaption);
     procedure FormOnShow(Sender: TObject);
     procedure FormOnCancel(Sender: TObject);
-    procedure SetProgress(Index: Integer; AValue: Integer);
+    procedure SetProgressMax(const Value: Integer);
+    procedure SetProgressMin(const Value: Integer);
+    procedure SetProgressPosition(const Value: Integer);
+    procedure SetProgressStep(const Value: Integer);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -72,10 +75,10 @@ type
   published
     property Caption: TCaption read FCaption write SetCaption;
     property InfoLabel: TCaption read FInfoLabel write SetInfoLabel;
-    property ProgressMin: Integer index 0 read FProgressMin write SetProgress default 0;
-    property ProgressMax: Integer index 1 read FProgressMax write SetProgress default 100;
-    property ProgressStep: Integer index 2 read FProgressStep write SetProgress default 1;
-    property ProgressPosition: Integer index 3 read FProgressPosition write SetProgress default 0;
+    property ProgressMin: Integer read FProgressMin write SetProgressMin default 0;
+    property ProgressMax: Integer read FProgressMax write SetProgressMax default 100;
+    property ProgressStep: Integer read FProgressStep write SetProgressStep default 1;
+    property ProgressPosition: Integer read FProgressPosition write SetProgressPosition default 0;
     property OnShow: TNotifyEvent read FOnShow write FOnShow;
   end;
 
@@ -244,40 +247,46 @@ begin
     FLabel1.Caption := ACaption;
 end;
 
-procedure TJvProgressComponent.SetProgress(Index: Integer; AValue: Integer);
+procedure TJvProgressComponent.SetProgressMax(const Value: Integer);
 begin
-  case Index of
-    0:
-      begin
-        FProgressMin := AValue;
-        if FForm <> nil then
-          FProgressBar.Min := FProgressMin;
-      end;
-    1:
-      begin
-        FProgressMax := AValue;
-        if FForm <> nil then
-          FProgressBar.Max := FProgressMax;
-      end;
-    2:
-      begin
-        FProgressStep := AValue;
-        if FForm <> nil then
-          FProgressBar.Step := FProgressStep;
-      end;
-    3:
-      begin
-        FProgressPosition := AValue;
-        if FForm <> nil then
-          FProgressBar.Position := FProgressPosition;
-      end;
-  end;
+  FProgressMax := Value;
+  if FForm <> nil then
+    FProgressBar.Max := FProgressMax;
+end;
+
+procedure TJvProgressComponent.SetProgressMin(const Value: Integer);
+begin
+  FProgressMin := Value;
+  if FForm <> nil then
+    FProgressBar.Min := FProgressMin;
+end;
+
+procedure TJvProgressComponent.SetProgressPosition(const Value: Integer);
+begin
+  FProgressPosition := Value;
+  if FForm <> nil then
+    FProgressBar.Position := FProgressPosition;
+end;
+
+procedure TJvProgressComponent.SetProgressStep(const Value: Integer);
+begin
+  FProgressStep := Value;
+  if FForm <> nil then
+    FProgressBar.Step := FProgressStep;
 end;
 
 procedure TJvProgressComponent.ProgressStepIt;
 begin
   if FForm <> nil then
-    FProgressBar.StepIt;
+  begin
+    Inc(FProgressPosition, ProgressStep);
+    if ProgressPosition > ProgressMax then
+      FProgressPosition := ProgressMax
+    else if ProgressPosition < ProgressMin then
+      FProgressPosition := ProgressMin
+    else
+      FProgressBar.StepIt;
+  end;
 end;
 
 {$IFDEF UNITVERSIONING}
