@@ -70,6 +70,7 @@ type
     procedure SetTextStr(const Value: WideString); override;
     function Add(const S: WideString): Integer; override;
     procedure Insert(Index: Integer; const S: WideString); override;
+    procedure Delete(Index: Integer); override;
     procedure DeleteText(BegX, BegY, EndX, EndY: Integer);
     procedure InsertText(X, Y: Integer; const Text: WideString);
     procedure DeleteColumnText(BegX, BegY, EndX, EndY: Integer);
@@ -467,6 +468,13 @@ end;
 procedure TJvEditorWideStrings.Insert(Index: Integer; const S: WideString);
 begin
   inherited Insert(Index, JvEditor.ExpandTabs(S));
+  JvEditor.LineInserted(Index);
+end;
+
+procedure TJvEditorWideStrings.Delete(Index: Integer);
+begin
+  inherited Delete(Index);
+  JvEditor.LineDeleted(Index);
 end;
 
 procedure TJvEditorWideStrings.Put(Index: Integer; const S: WideString);
@@ -816,6 +824,7 @@ begin
         FillRect(Bounds(R.Left, R.Bottom - 1, CellRect.Width * Length(Ch), 1));
 
         TJvUnicodeCanvas(Canvas).ExtTextOutW(R.Left, R.Top, [etoOpaque, etoClipped], nil, Ch, @FMyDi[0]);
+        ErrorHighlighting.PaintError(Canvas, ColPainted + 1, Line, R, Length(Ch), MyDi);
 
         if LA.Border <> clNone then
         begin
