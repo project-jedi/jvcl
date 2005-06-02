@@ -524,6 +524,12 @@ type
 
     procedure Clear;
       // Clear() removes all extra line information objects
+    procedure DeleteLine(Line: Integer);
+      // DeleteLine() deletes all information for "Line" and updates all
+      // following lines by decrementing their line number
+    procedure InsertLine(Line: Integer);
+      // InsertLine() updates all line information line number which are below
+      // "Line"
 
     property Count: Integer read GetCount;
     property Items[Index: Integer]: TJvLineInformation read GetItems;
@@ -629,6 +635,13 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
 
+    procedure DeleteLine(Line: Integer);
+      // DeleteLine() deletes all error information for "Line" and updates all
+      // following lines by decrementing their line number
+    procedure InsertLine(Line: Integer);
+      // InsertLine() updates all error information line number which are below
+      // "Line"
+
     function GetLineErrorMap(Y: Integer): TDynBoolArray;
     function ErrorAt(X, Y: Integer): TJvErrorHighlightingItem;
     procedure PaintError(Canvas: TCanvas; Col, Line: Integer; const R: TRect;
@@ -636,6 +649,8 @@ type
 
     property Count: Integer read GetCount;
     property Items[Index: Integer]: TJvErrorHighlightingItem read GetItem; default;
+
+    property Editor: TJvCustomEditorBase read FEditor;
   end;
 
   TJvCustomEditorBase = class(TJvCustomControl, IFixedPopupIntf)
@@ -2224,6 +2239,26 @@ begin
   FList.Clear;
 end;
 
+procedure TJvLineInformationList.DeleteLine(Line: Integer);
+var
+  i: Integer;
+begin
+  for i := Count - 1 downto 0 do
+    if Items[i].Line = Line then
+      FList.Delete(i)
+    else if Items[i].Line > Line then
+      Items[i].Line := Items[i].Line - 1;
+end;
+
+procedure TJvLineInformationList.InsertLine(Line: Integer);
+var
+  i: Integer;
+begin
+  for i := 0 to Count - 1 do
+    if Items[i].Line >= Line then
+      Items[i].Line := Items[i].Line + 1;
+end;
+
 function TJvLineInformationList.GetCount: Integer;
 begin
   Result := FList.Count;
@@ -2505,7 +2540,6 @@ end;
 
 destructor TJvCustomEditorBase.Destroy;
 begin
-  FErrorHighlighting.FEditor := nil; // do not update the editor while destruction
   FBracketHighlighting.Free;
   FErrorHighlighting.Free;
   FLineInformations.Free;
@@ -5556,7 +5590,8 @@ end;
 
 destructor TJvErrorHighlightingItem.Destroy;
 begin
-  FOwner.FItems.Extract(Self);
+  if not (csDestroying in FOwner.Editor.ComponentState) then
+    FOwner.FItems.Extract(Self);
   inherited Destroy;
 end;
 
@@ -5674,6 +5709,26 @@ end;
 procedure TJvErrorHighlighting.BeginUpdate;
 begin
   Inc(FPaintLock);
+end;
+
+procedure TJvErrorHighlighting.DeleteLine(Line: Integer);
+var
+  i: Integer;
+begin
+  for i := Count - 1 downto 0 do
+    if Items[i].Line = Line then
+      Delete(i)
+    else if Items[i].Line > Line then
+      Items[i].Line := Items[i].Line - 1;
+end;
+
+procedure TJvErrorHighlighting.InsertLine(Line: Integer);
+var
+  i: Integer;
+begin
+  for i := 0 to Count - 1 do
+    if Items[i].Line >= Line then
+      Items[i].Line := Items[i].Line + 1;
 end;
 
 function TJvErrorHighlighting.GetLineErrorMap(Y: Integer): TDynBoolArray;
