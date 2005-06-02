@@ -85,7 +85,7 @@ type
          the trayicon, and could not come up with a backwards compatible way
          right-away }
   TTrayVisibility = (tvVisibleTaskBar, tvVisibleTaskList, tvAutoHide, tvAutoHideIcon, tvVisibleDesign,
-    tvRestoreClick, tvRestoreDbClick, tvMinimizeClick, tvMinimizeDbClick);
+    tvRestoreClick, tvRestoreDbClick, tvMinimizeClick, tvMinimizeDbClick, tvAnimateToTray);
   TTrayVisibilities = set of TTrayVisibility;
 
   TJvTrayIconState = (tisTrayIconVisible, tisAnimating, tisHooked, tisHintChanged,
@@ -200,6 +200,7 @@ type
       TBalloonType = btNone; ADelay: Cardinal = 5000; CancelPrevious: Boolean = False);
     function AcceptBalloons: Boolean;
     procedure HideBalloon;
+    function GetIconRect(var IconRect: TRect): Boolean;
 
     property ApplicationVisible: Boolean read GetApplicationVisible write SetApplicationVisible;
     property VisibleInTaskList: Boolean read FTask write SetTask default True;
@@ -241,7 +242,7 @@ const
 implementation
 
 uses
-  JvJCLUtils, JvJVCLUtils;
+  JvJCLUtils, JvJVCLUtils, CommCtrl;
 
 type
   TRegisterServiceProcess = function(dwProcessID, dwType: Integer): Integer; stdcall;
@@ -250,6 +251,8 @@ const
   AnimationTimer = 1;
   CloseBalloonTimer = 2;
   DblClickTimer = 3;
+
+  cTaskbarIconIdentifier = 1;
 
   // The hint size is 64 for pre IE 5.0 Shell32 versions, 128 for newer versions.
   cHintSize: array [Boolean] of Cardinal = (64 - 1, 128 - 1);  // -1 for trailing #0
@@ -395,6 +398,71 @@ begin
     if GKernel32Handle > 0 then
       RegisterServiceProcess := GetProcAddress(GKernel32Handle, RegisterServiceProcessName);
   end;
+end;
+
+function GetTrayHandle: THandle;
+var
+  ShellTrayHandle: THandle;
+begin
+  ShellTrayHandle := FindWindow('Shell_TrayWnd', nil);
+  if ShellTrayHandle <> 0 then
+    Result := FindWindowEx(ShellTrayHandle, 0, 'TrayNotifyWnd', nil)
+  else
+    Result := 0;
+end;
+
+procedure AnimateToTray(AHandle: THandle);
+var
+  SourceRect, DestRect: TRect;
+  TrayHandle: THandle;
+begin
+  TrayHandle := GetTrayHandle;
+  if TrayHandle <> 0 then
+  begin
+    GetWindowRect(AHandle, SourceRect);
+    GetWindowRect(TrayHandle, DestRect);
+
+    DrawAnimatedRects(AHandle, IDANI_CAPTION, SourceRect, DestRect);
+  end;
+end;
+
+procedure AnimateFromTray(AHandle: THandle);
+var
+  SourceRect, DestRect: TRect;
+  TrayHandle: THandle;
+begin
+  TrayHandle := GetTrayHandle;
+  if TrayHandle <> 0 then
+  begin
+    GetWindowRect(TrayHandle, SourceRect);
+    GetWindowRect(AHandle, DestRect);
+
+    DrawAnimatedRects(AHandle, IDANI_CAPTION, SourceRect, DestRect);
+  end;
+end;
+
+function FindToolbar(Window: THandle; var ToolbarHandle: THandle): BOOL; stdcall;
+var
+  Buf: array [Byte] of Char;
+begin
+  GetClassName(Window, Buf, SizeOf(Buf));
+  // Set result to false when we have found a toolbar
+  Result := StrIComp(Buf, TOOLBARCLASSNAME) <> 0;
+  if not Result then
+    ToolbarHandle := Window;
+end;
+
+function GetToolbarHandle: THandle;
+var
+  TrayHandle: THandle;
+begin
+  Result := 0;
+
+  TrayHandle := GetTrayHandle;
+  if TrayHandle = 0 then
+    Exit;
+
+  EnumChildWindows(TrayHandle, @FindToolbar, Longint(@Result));
 end;
 
 //=== { TJvTrayIcon } ========================================================
@@ -688,6 +756,105 @@ begin
   Result := not (tisAppHiddenButNotMinimized in FState) and not IsApplicationMinimized;
 end;
 
+function TJvTrayIcon.GetIconRect(var IconRect: TRect): Boolean;
+{ Taken from http://www.thecodeproject.com/shell/ctrayiconposition.asp }
+type
+  TExtraData = packed record
+    Wnd: HWND;
+    uID: UINT;
+  end;
+var
+  ToolbarHandle: THandle;
+  ProcessID: DWORD;
+  Process: THandle;
+  ButtonCount: Integer;
+  Data: Pointer;
+  Index: Integer;
+  BytesRead: DWORD;
+  Button: TTBButton;
+  ExtraData: TExtraData;
+begin
+  Result := False;
+
+  // The trayicons are actually buttons on a toolbar
+  ToolbarHandle := GetToolbarHandle;
+  if ToolbarHandle = 0 then
+    Exit;
+
+  ButtonCount := SendMessage(ToolbarHandle, TB_BUTTONCOUNT, 0, 0);
+  if ButtonCount < 1 then
+    Exit;
+
+  // We want to get data from another process - it's not possible
+  // to just send messages like TB_GETBUTTON with a locally
+  // allocated buffer for return data. Pointer to locally allocated
+  // data has no usefull meaning in a context of another
+  // process (since Win95) - so we need
+  // to allocate some memory inside Tray process.
+
+  if GetWindowThreadProcessId(ToolbarHandle, ProcessID) = 0 then
+    Exit;
+
+  Process := OpenProcess(PROCESS_ALL_ACCESS, False, ProcessID);
+  if Process = 0 then
+    Exit;
+  try
+    // Allocate needed memory in the context of the tray process. We reuse
+    // Data to read multiple parts so we set it to the biggest chunk we need
+    // (TTBButton)
+    Data := VirtualAllocEx(Process, nil, SizeOf(TTBButton), MEM_COMMIT, PAGE_READWRITE);
+    if Data = nil then
+      Exit;
+    try
+      for Index := 0 to ButtonCount - 1 do
+      begin
+        // First we have to determine if the button with index Index is our
+        // button.
+        SendMessage(ToolbarHandle, TB_GETBUTTON, Index, Longint(Data));
+
+        // Read the data from the tray process into the current process.
+        Result := ReadProcessMemory(Process, Data,
+          @Button, SizeOf(Button), BytesRead) and (BytesRead = SizeOf(Button));
+        if not Result then
+          Continue;
+
+        // Read the extra data, Button.dwData points to its location
+        Result := ReadProcessMemory(Process, Pointer(Button.dwData),
+          @ExtraData, SizeOf(ExtraData), BytesRead) and (BytesRead = SizeOf(ExtraData));
+        if not Result then
+          Continue;
+
+        // Is it our button?
+        if (ExtraData.Wnd <> FHandle) or (ExtraData.uID <> cTaskbarIconIdentifier) then
+          Continue;
+
+        // Button can be hidden in XP
+        if (Button.fsState and TBSTATE_HIDDEN) <> 0 then
+          Break;
+
+        // Retrieve the button rectangle..
+        SendMessage(ToolbarHandle, TB_GETITEMRECT, Index, Longint(Data));
+        // ..and copy it to the current process
+        Result := ReadProcessMemory(Process, Data,
+          @IconRect, SizeOf(IconRect), BytesRead) and (BytesRead = SizeOf(IconRect));
+        // If it fails no need to continue
+        if not Result then
+          Break;
+
+        // Convert it to the desktop coordinate space
+        MapWindowPoints(ToolbarHandle, HWND_DESKTOP, IconRect.TopLeft, 2);
+
+        Result := True;
+        Break;
+      end;
+    finally
+      VirtualFreeEx(Process, Data, 0, MEM_RELEASE);
+    end;
+  finally
+    CloseHandle(Process);
+  end;
+end;
+
 function TJvTrayIcon.GetSystemMinimumBalloonDelay: Cardinal;
 begin
   // from Microsoft's documentation, a balloon is shown for at
@@ -698,15 +865,25 @@ end;
 
 procedure TJvTrayIcon.HideApplication;
 begin
+  // Note: some actions will show/hide the taskbar button of the application,
+  // so we have to do them in a certain order.
+
   if ApplicationVisible then
   begin
-    // Minimize the application..
-    if Snap then
+    // Custom animation?
+    if Snap or (tvAnimateToTray in Visibility) then
     begin
       if Assigned(Application.MainForm) then
+      begin
+        if tvAnimateToTray in Visibility then
+          AnimateToTray(Application.MainForm.Handle);
+        // To prevent another animation we have to set both
+        // ShowMainForm and MainForm.Visible to false
         Application.MainForm.Visible := False;
+      end;
       Application.ShowMainForm := False;
     end;
+    // This will show the taskbar button
     Application.Minimize;
   end;
 
@@ -799,7 +976,8 @@ begin
     else
       cbSize := SizeOf(TNotifyIconData);
     Wnd := FHandle;
-    uID := 1; // We have only 1 icon per FHandle, so no need to uniquely identify
+    // We have only 1 icon per FHandle, so no need to uniquely identify
+    uID := cTaskbarIconIdentifier;
     uCallbackMessage := WM_CALLBACKMESSAGE;
     if not CurrentIcon.Empty then
       hIcon := CurrentIcon.Handle
@@ -832,7 +1010,10 @@ begin
         // application's button on the taskbar for a short time.
         // So we use the tisHiddenNotMinized flag as work-around, to indicate that
         // the application is minimized.
-        ShowWindow(Application.Handle, SW_HIDE);
+
+        Application.NormalizeTopMosts;
+        SetActiveWindow(Application.Handle);
+        ShowWinNoAnimate(Application.Handle, SW_HIDE);
         Include(FState, tisAppHiddenButNotMinimized);
       end;
 
@@ -1039,23 +1220,34 @@ end;
 
 procedure TJvTrayIcon.ShowApplication;
 begin
+  // Note: some actions will show/hide the taskbar button of the application,
+  // so we have to do them in a certain order.
+
   if tisAppHiddenButNotMinimized in FState then
   begin
-    Exclude(FState, tisAppHiddenButNotMinimized);
-
-    Application.Minimize;
-    Application.ShowMainForm := True;
+    // Make the application not iconic; this will show the taskbar button
+    ShowWinNoAnimate(Application.Handle, SW_MINIMIZE);
+    // If we set ShowMainForm to true we get an animation when we call
+    // Application.Restore
+    if not Snap and not (tvAnimateToTray in Visibility) then
+      Application.ShowMainForm := True;
   end;
 
   // Show the taskbar button of the application..
   Include(FVisibility, tvVisibleTaskBar);
   ShowWindow(Application.Handle, SW_SHOW);
 
-  // ..and restore the application
-  Application.Restore;
+  if not ApplicationVisible then
+  begin
+    if (tvAnimateToTray in Visibility) and Assigned(Application.MainForm) then
+      AnimateFromTray(Application.MainForm.Handle);
+    // ..and restore the application
+    Application.Restore;
+    if Application.MainForm <> nil then
+      Application.MainForm.Visible := True;
+  end;
 
-  if Application.MainForm <> nil then
-    Application.MainForm.Visible := True;
+  Exclude(FState, tisAppHiddenButNotMinimized);
   if tvAutoHideIcon in Visibility then
     HideTrayIcon;
 end;
