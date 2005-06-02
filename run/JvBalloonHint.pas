@@ -351,10 +351,10 @@ const
   SM_CYVIRTUALSCREEN = 79;
 {$ENDIF !COMPILER7_UP}
 begin
-  Result := Rect(GetSystemMetrics(SM_YVIRTUALSCREEN),
-                 GetSystemMetrics(SM_XVIRTUALSCREEN),
-                 GetSystemMetrics(SM_CYVIRTUALSCREEN),
-                 GetSystemMetrics(SM_CXVIRTUALSCREEN));
+  Result := Rect(GetSystemMetrics(SM_XVIRTUALSCREEN),
+                 GetSystemMetrics(SM_YVIRTUALSCREEN),
+                 GetSystemMetrics(SM_CXVIRTUALSCREEN),
+                 GetSystemMetrics(SM_CYVIRTUALSCREEN));
 end;
 
 {$IFNDEF COMPILER6_UP}
