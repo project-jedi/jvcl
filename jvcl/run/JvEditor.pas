@@ -69,6 +69,7 @@ type
     procedure SetTextStr(const Value: string); override;
     function Add(const S: string): Integer; override;
     procedure Insert(Index: Integer; const S: string); override;
+    procedure Delete(Index: Integer); override;
     procedure DeleteText(BegX, BegY, EndX, EndY: Integer);
     procedure InsertText(X, Y: Integer; const Text: string);
     procedure DeleteColumnText(BegX, BegY, EndX, EndY: Integer);
@@ -201,6 +202,8 @@ type
     property OnCompletionDrawItem;
     property OnCompletionMeasureItem;
     property OnCompletionApply;
+    property OnLineInserted;
+    property OnLineDeleted;
 
     { TCustomControl }
     property Align;
@@ -262,27 +265,6 @@ type
     property Separator: string read FSeparator write FSeparator;
   end;
 
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
-
-implementation
-
-uses
-  Consts,
-  {$IFDEF HAS_UNIT_RTLCONSTS}
-  RTLConsts,
-  {$ENDIF HAS_UNIT_RTLCONSTS}
-  SysUtils, Math, Graphics, Clipbrd,
-  JvUnicodeCanvas, JvJCLUtils, JvThemes, JvConsts, JvResources;
-
-type
   TJvInsertUndo = class(TJvCaretUndo)
   private
     FText: string;
@@ -382,6 +364,27 @@ type
     procedure Undo; override;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
+implementation
+
+uses
+  Consts,
+  {$IFDEF HAS_UNIT_RTLCONSTS}
+  RTLConsts,
+  {$ENDIF HAS_UNIT_RTLCONSTS}
+  SysUtils, Math, Graphics, Clipbrd,
+  JvUnicodeCanvas, JvJCLUtils, JvThemes, JvConsts, JvResources;
+
+type
   TJvUndoBufferAccessProtected = class(TJvUndoBuffer);
 
 //=== { TJvEditorStrings } ===================================================
@@ -464,6 +467,13 @@ end;
 procedure TJvEditorStrings.Insert(Index: Integer; const S: string);
 begin
   inherited Insert(Index, JvEditor.ExpandTabs(S));
+  JvEditor.LineInserted(Index);
+end;
+
+procedure TJvEditorStrings.Delete(Index: Integer);
+begin
+  inherited Delete(Index);
+  JvEditor.LineDeleted(Index);
 end;
 
 procedure TJvEditorStrings.Put(Index: Integer; const S: string);
@@ -817,6 +827,7 @@ begin
         FillRect(Bounds(R.Left, R.Bottom - 1, CellRect.Width * Length(Ch), 1));
 
         TJvUnicodeCanvas(Canvas).ExtTextOut(R.Left, R.Top, [etoOpaque, etoClipped], nil, Ch, @MyDi[0]);
+        ErrorHighlighting.PaintError(Canvas, ColPainted + 1, Line, R, Length(Ch), MyDi);
 
         if LA.Border <> clNone then
         begin

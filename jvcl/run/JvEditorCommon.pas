@@ -245,6 +245,7 @@ type
   TLineAttrs = array {[0..Max_X]} of TLineAttr;
 
   TDynIntArray = array of Integer;
+  TDynBoolArray = array of Boolean;
 
   TModifiedAction =
     (maAll, maInsert, maDelete, maInsertColumn, maDeleteColumn, maReplace);
@@ -266,6 +267,8 @@ type
 
   TOnPaintGutter = procedure(Sender: TObject; Canvas: TCanvas) of object;
   TOnGutterClick = procedure(Sender: TObject; Line: Integer) of object;
+
+  TJvLineChangeEvent = procedure(Sender: TObject; Line: Integer) of object;
 
   TEditCommand = Word;
   TMacro = AnsiString; { used as buffer (array of char) }
@@ -315,7 +318,7 @@ type
     property OnCommand2: TCommand2Event read FOnCommand2 write FOnCommand2;
   end;
 
-  { TJvSelectionRec contains all text selection information } 
+  { TJvSelectionRec contains all text selection information }
   PJvSelectionRec = ^TJvSelectionRec;
   TJvSelectionRec = record
     IsSelected: Boolean; // maybe a function that checks BegX/Y EndX/Y would be better
@@ -548,14 +551,18 @@ type
   private
     FStart: TRect;
     FStop: TRect;
-    
+
     FActive: Boolean;
     FFontColor: TColor;
     FBorderColor: TColor;
     FColor: TColor;
     FWordPairs: TStrings;
     FCaseSensitiveWordPairs: Boolean;
+    FStringChar: string;
+    FCommentPairs: TStrings;
+    FStringChars: string;
     procedure SetWordPairs(Value: TStrings);
+    procedure SetCommentPairs(const Value: TStrings);
   public
     constructor Create;
     destructor Destroy; override;
@@ -569,6 +576,66 @@ type
     property CaseSensitiveWordPairs: Boolean read FCaseSensitiveWordPairs write FCaseSensitiveWordPairs default True;
     property WordPairs: TStrings read FWordPairs write SetWordPairs;
       { example: "begin=end", "repeat=until", "for=do", "asm=end" }
+    property StringChars: string read FStringChars write FStringChars;
+      { example: '"''' }
+    property CommentPairs: TStrings read FCommentPairs write SetCommentPairs;
+      { example: "/*=*/", "(*=*)" }
+  end;
+
+  TJvErrorHighlighting = class;
+
+  TJvErrorHighlightingItem = class(TObject)
+  private
+    FCol: Integer;
+    FLine: Integer;
+    FLen: Integer;
+    FErrorText: string;
+    FData: TObject;
+    FTag: Integer;
+    FOwner: TJvErrorHighlighting;
+    procedure SetCol(const Value: Integer);
+    procedure SetLine(const Value: Integer);
+  public
+    constructor Create(AOwner: TJvErrorHighlighting;
+       ACol, ALine, ALen: Integer; const AErrorText: string);
+    destructor Destroy; override;
+
+    property Col: Integer read FCol write SetCol;
+    property Line: Integer read FLine write SetLine;
+    property Len: Integer read FLen;
+    property ErrorText: string read FErrorText;
+    property Data: TObject read FData write FData;
+    property Tag: Integer read FTag write FTag;
+  end;
+
+  TJvErrorHighlighting = class(TObject)
+  private
+    FItems: TObjectList;
+    FEditor: TJvCustomEditorBase;
+    FNeedsRepaint: Boolean;
+    FPaintLock: Integer;
+    function GetCount: Integer;
+    function GetItem(Index: Integer): TJvErrorHighlightingItem;
+  protected
+    procedure RepaintLine(Line: Integer);
+  public
+    constructor Create(AEditor: TJvCustomEditorBase);
+    destructor Destroy; override;
+
+    function Add(ACol, ALine, ALen: Integer; const AErrorText: string): Integer;
+    procedure Remove(Item: TJvErrorHighlightingItem);
+    procedure Delete(Index: Integer);
+    procedure Clear;
+    procedure BeginUpdate;
+    procedure EndUpdate;
+
+    function GetLineErrorMap(Y: Integer): TDynBoolArray;
+    function ErrorAt(X, Y: Integer): TJvErrorHighlightingItem;
+    procedure PaintError(Canvas: TCanvas; Col, Line: Integer; const R: TRect;
+      Len: Integer; const MyDi: TDynIntArray);
+
+    property Count: Integer read GetCount;
+    property Items[Index: Integer]: TJvErrorHighlightingItem read GetItem; default;
   end;
 
   TJvCustomEditorBase = class(TJvCustomControl, IFixedPopupIntf)
@@ -586,6 +653,8 @@ type
     FGroupUndo: Boolean;
     FUndoAfterSave: Boolean;
     FBracketHighlighting: TJvBracketHighlighting;
+    FErrorHighlighting: TJvErrorHighlighting;
+    FCurrentLineHighlight: TColor;
 
     { internal - Columns and rows attributes }
     FCols: Integer;
@@ -669,13 +738,14 @@ type
     FOnCompletionTemplate: TOnCompletion;
     FOnCompletionDrawItem: TDrawItemEvent;
     FOnCompletionMeasureItem: TMeasureItemEvent;
-    FCurrentLineHighlight: TColor;
+
+    FOnLineInserted: TJvLineChangeEvent;
+    FOnLineDeleted: TJvLineChangeEvent;
 
     { internal message processing }
     procedure WMEditCommand(var Msg: TMessage); message WM_EDITCOMMAND;
     procedure WMCompound(var Msg: TMessage); message WM_COMPOUND;
     procedure CMResetCaptureControl(var Msg: TMessage); message CM_RESETCAPTURECONTROL;
-
     {$IFDEF VCL}
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
@@ -851,6 +921,8 @@ type
 
     function DoCommand(ACommand: TEditCommand; var X, Y: Integer;
       var CaretUndo: Boolean): Boolean; virtual; abstract;
+    procedure LineDeleted(Line: Integer); virtual;
+    procedure LineInserted(Line: Integer); virtual;
 
     property LineCount: Integer read GetLineCount;
     property LineLength[Index: Integer]: Integer read GetLineLength;
@@ -961,6 +1033,7 @@ type
     property SelBackColor: TColor read FSelBackColor write SetSelBackColor;
     property HideCaret: Boolean read FHideCaret write FHideCaret default False;
     property CurrentLineHighlight: TColor read FCurrentLineHighlight write SetCurrentLineHighlight default clNone;
+    property ErrorHighlighting: TJvErrorHighlighting read FErrorHighlighting;
 
     property OnChangeStatus: TNotifyEvent read FOnChangeStatus write FOnChangeStatus;
     property OnScroll: TNotifyEvent read FOnScroll write FOnScroll;
@@ -982,6 +1055,9 @@ type
     property OnCompletionTemplate: TOnCompletion read FOnCompletionTemplate write FOnCompletionTemplate;
     property OnCompletionDrawItem: TDrawItemEvent read FOnCompletionDrawItem write FOnCompletionDrawItem;
     property OnCompletionMeasureItem: TMeasureItemEvent read FOnCompletionMeasureItem write FOnCompletionMeasureItem;
+
+    property OnLineInserted: TJvLineChangeEvent read FOnLineInserted write FOnLineInserted;
+    property OnLineDeleted: TJvLineChangeEvent read FOnLineDeleted write FOnLineDeleted;
 
     property DockManager;
   end;
@@ -2065,7 +2141,6 @@ begin
   end;
 end;
 
-
 //=== { TJvLineInformation } =================================================
 
 constructor TJvLineInformation.Create(AEditor: TJvCustomEditorBase; ALine: Integer);
@@ -2295,6 +2370,7 @@ begin
   FStop.Left := -1;
 
   FWordPairs := TStringList.Create;
+  FCommentPairs := TStringList.Create;
   FCaseSensitiveWordPairs := True;
 
   FActive := False;
@@ -2305,6 +2381,7 @@ end;
 
 destructor TJvBracketHighlighting.Destroy;
 begin
+  FCommentPairs.Free;
   FWordPairs.Free;
   inherited Destroy;
 end;
@@ -2320,6 +2397,9 @@ begin
       Self.FBorderColor := FBorderColor;
       Self.FColor := FColor;
       Self.FWordPairs.Assign(FWordPairs);
+      Self.FCaseSensitiveWordPairs := FCaseSensitiveWordPairs;
+      Self.FStringChar := FStringChar;
+      Self.FCommentPairs.Assign(FCommentPairs);
     end;
   end
   else
@@ -2332,6 +2412,11 @@ begin
     FWordPairs.Assign(Value);
 end;
 
+procedure TJvBracketHighlighting.SetCommentPairs(const Value: TStrings);
+begin
+  if Value <> FCommentPairs then
+    FCommentPairs.Assign(Value);
+end;
 
 //=== { TJvCustomEditorBase } ================================================
 
@@ -2353,6 +2438,7 @@ begin
   FGroupUndo := True;
   FBracketHighlighting := TJvBracketHighlighting.Create;
   FCurrentLineHighlight := clNone;
+  FErrorHighlighting := TJvErrorHighlighting.Create(Self);
 
   FRightMarginVisible := True;
   FRightMargin := 80;
@@ -2419,7 +2505,9 @@ end;
 
 destructor TJvCustomEditorBase.Destroy;
 begin
+  FErrorHighlighting.FEditor := nil; // do not update the editor while destruction
   FBracketHighlighting.Free;
+  FErrorHighlighting.Free;
   FLineInformations.Free;
   FScrollBarHorz.Free;
   FScrollBarVert.Free;
@@ -4637,6 +4725,18 @@ begin
   FUndoBuffer.ClearRedo;
 end;
 
+procedure TJvCustomEditorBase.LineDeleted(Line: Integer);
+begin
+  if Assigned(FOnLineDeleted) then
+    FOnLineDeleted(Self, Line);
+end;
+
+procedure TJvCustomEditorBase.LineInserted(Line: Integer);
+begin
+  if Assigned(FOnLineInserted) then
+    FOnLineInserted(Self, Line);
+end;
+
 procedure TJvCustomEditorBase.ChangeBookmark(Bookmark: TBookmarkNum;
   Valid: Boolean);
 
@@ -5431,6 +5531,219 @@ begin
     BracketHighlighting.Assign(Value);
 end;
 
+procedure TJvCustomEditorBase.SetCurrentLineHighlight(const Value: TColor);
+begin
+  if Value <> FCurrentLineHighlight then
+  begin
+    FCurrentLineHighlight := Value;
+    if not (csLoading in ComponentState) and (CaretY >= 0) and (CaretY < LineCount) then
+      PaintLine(CaretY);
+  end;
+end;
+
+//=== { TJvErrorHighlightingItem } ===========================================
+
+constructor TJvErrorHighlightingItem.Create(AOwner: TJvErrorHighlighting;
+  ACol, ALine, ALen: Integer; const AErrorText: string);
+begin
+  inherited Create;
+  FOwner := AOwner;
+  FCol := ACol;
+  FLine := ALine;
+  FLen := ALen;
+  FErrorText := AErrorText;
+end;
+
+destructor TJvErrorHighlightingItem.Destroy;
+begin
+  FOwner.FItems.Extract(Self);
+  inherited Destroy;
+end;
+
+procedure TJvErrorHighlightingItem.SetCol(const Value: Integer);
+begin
+  if Value <> FCol then
+  begin
+    FCol := Value;
+    FOwner.RepaintLine(Line);
+  end;
+end;
+
+procedure TJvErrorHighlightingItem.SetLine(const Value: Integer);
+begin
+  if Value <> FLine then
+  begin
+    FLine := -1;
+    FOwner.RepaintLine(Line);
+    FLine := Value;
+    FOwner.RepaintLine(Line);
+  end;
+end;
+
+//=== { TJvErrorHighlighting } ===============================================
+
+constructor TJvErrorHighlighting.Create(AEditor: TJvCustomEditorBase);
+begin
+  inherited Create;
+  FEditor := AEditor;
+  FItems := TObjectList.Create;
+end;
+
+destructor TJvErrorHighlighting.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+function TJvErrorHighlighting.GetCount: Integer;
+begin
+  Result := FItems.Count;
+end;
+
+function TJvErrorHighlighting.Add(ACol, ALine, ALen: Integer; const AErrorText: string): Integer;
+begin
+  Result := FItems.Add(TJvErrorHighlightingItem.Create(Self, ACol, ALine, ALen, AErrorText));
+  RepaintLine(ALine);
+end;
+
+function TJvErrorHighlighting.GetItem(Index: Integer): TJvErrorHighlightingItem;
+begin
+  Result := TJvErrorHighlightingItem(FItems[Index]);
+end;
+
+procedure TJvErrorHighlighting.Remove(Item: TJvErrorHighlightingItem);
+var
+  Line: Integer;
+begin
+  if Assigned(Item) then
+  begin
+    Line := Item.Line;
+    FItems.Remove(Item);
+    RepaintLine(Line);
+  end;
+end;
+
+procedure TJvErrorHighlighting.Delete(Index: Integer);
+var
+  Line: Integer;
+begin
+  if (Index >= 0) and (Index < Count) then
+  begin
+    Line := Items[Index].Line;
+    FItems.Delete(Index);
+    RepaintLine(Line);
+  end
+  else
+    FItems.Delete(Index);
+end;
+
+procedure TJvErrorHighlighting.Clear;
+begin
+  BeginUpdate;
+  try
+    FItems.Clear;
+  finally
+    EndUpdate;
+  end;
+end;
+
+procedure TJvErrorHighlighting.RepaintLine(Line: Integer);
+begin
+  if FPaintLock > 0 then
+    FNeedsRepaint := True
+  else
+  begin
+    if Assigned(FEditor) then
+      FEditor.PaintLine(Line);
+    FNeedsRepaint := False;
+  end;
+end;
+
+procedure TJvErrorHighlighting.EndUpdate;
+begin
+  Assert(FPaintLock > 0, 'Unpaired call to EndUpdate');
+  Dec(FPaintLock);
+  if FNeedsRepaint then
+  begin
+    if Assigned(FEditor) then
+      FEditor.Paint;
+    FNeedsRepaint := False;
+  end;
+end;
+
+procedure TJvErrorHighlighting.BeginUpdate;
+begin
+  Inc(FPaintLock);
+end;
+
+function TJvErrorHighlighting.GetLineErrorMap(Y: Integer): TDynBoolArray;
+var
+  i, X: Integer;
+  Item: TJvErrorHighlightingItem;
+  MaxX: Integer;
+begin
+  MaxX := 0;
+  for i := 0 to Count - 1 do
+  begin
+    Item := Items[i];
+    if Item.Line = Y then
+      if Item.Col + Item.Len > MaxX then
+        MaxX := Item.Col + Item.Len;
+  end;
+  SetLength(Result, MaxX);
+
+  if MaxX > 0 then
+  begin
+    for i := 0 to Count - 1 do
+    begin
+      Item := Items[i];
+      if Item.Line = Y then
+        for X := Item.Col to Item.Col + Item.Len - 1 do
+          Result[X] := True;
+    end;
+  end;
+end;
+
+function TJvErrorHighlighting.ErrorAt(X, Y: Integer): TJvErrorHighlightingItem;
+var
+  i: Integer;
+begin
+  for i := 0 to Count - 1 do
+  begin
+    Result := Items[i];
+    if (Result.Line = Y) and (X >= Result.Col) and (X < Result.Col + Result.Len) then
+      Exit;
+  end;
+  Result := nil;
+end;
+
+procedure TJvErrorHighlighting.PaintError(Canvas: TCanvas; Col, Line: Integer;
+  const R: TRect; Len: Integer; const MyDi: TDynIntArray);
+var
+  i, Width, X: Integer;
+  Errors: TDynBoolArray;
+begin
+  Errors := GetLineErrorMap(Line);
+  X := R.Left;
+  for i := Col to Col + Len - 1 do
+  begin
+    Width := MyDi[i];
+    if (i <= High(Errors)) and Errors[i] then
+    begin
+      with Canvas do
+      begin
+        Pen.Color := clRed;
+        MoveTo(X, R.Bottom - 1);
+        LineTo(X + Width div 4, R.Bottom - 4);
+        LineTo(X + Width div 4 * 2, R.Bottom - 1);
+        LineTo(X + Width div 4 * 3, R.Bottom - 4);
+        LineTo(X + Width, R.Bottom - 1);
+      end;
+    end;
+    Inc(X, Width);
+  end;
+end;
+
 //=== { TJvEditorCompletionList } ============================================
 
 constructor TJvEditorCompletionList.Create(AOwner: TComponent);
@@ -5812,7 +6125,6 @@ begin
   Result := FPopupList.Items;
 end;
 
-
 //=== { TJvSymbolColor } =====================================================
 
 constructor TJvSymbolColor.Create;
@@ -5906,17 +6218,6 @@ begin
   else
     inherited Assign(Source);
 end;
-
-procedure TJvCustomEditorBase.SetCurrentLineHighlight(const Value: TColor);
-begin
-  if Value <> FCurrentLineHighlight then
-  begin
-    FCurrentLineHighlight := Value;
-    if not (csLoading in ComponentState) and (CaretY >= 0) and (CaretY < LineCount) then
-      PaintLine(CaretY);
-  end;
-end;
-
 
 {$IFDEF UNITVERSIONING}
 initialization
