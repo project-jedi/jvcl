@@ -10,14 +10,14 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvTrayIcon.PAS, released on 2001-02-28.
 
-The Initial Developer of the Original Code is Sébastien Buysse [sbuysse att buypin dott com]
-Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
+The Initial Developer of the Original Code is S?stien Buysse [sbuysse att buypin dott com]
+Portions created by S?stien Buysse are Copyright (C) 2001 S?stien Buysse.
 All Rights Reserved.
 
 Contributor(s):
   Michael Beck [mbeck att bigfoot dott com].
   Feng Mingyu(Winston Feng), [winstonf att tom dott com]
-  Hans-Eric Grönlund
+  Hans-Eric Grnlund
   Vlad S
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
@@ -764,8 +764,8 @@ type
     uID: UINT;
   end;
 var
-  ToolbarHandle: THandle;
-  ProcessID: DWORD;
+  ToolbarHandle: THandle; 
+  ProcessID: DWORD;  
   Process: THandle;
   ButtonCount: Integer;
   Data: Pointer;
@@ -791,8 +791,9 @@ begin
   // data has no usefull meaning in a context of another
   // process (since Win95) - so we need
   // to allocate some memory inside Tray process.
+  // Use @ProcessId for C5/D5 compatibility
 
-  if GetWindowThreadProcessId(ToolbarHandle, ProcessID) = 0 then
+  if GetWindowThreadProcessId(ToolbarHandle, @ProcessID) = 0 then
     Exit;
 
   Process := OpenProcess(PROCESS_ALL_ACCESS, False, ProcessID);
