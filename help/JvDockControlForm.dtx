@@ -820,7 +820,10 @@ See Also
 Summary
   Specifies the class for the conjoinment panels.
 Description
-  Write here a description
+  Use ConjoinPanelClass in a derived class to determine the class used for conjoinment panels created
+  by the docking style component. Descendants of TJvDockBasicStyle initialize this value in the
+  constructor so that when TJvDockBasicStyle needs to construct a conjoin panel, it can create the
+  appropriate type of panel.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicStyle.ConjoinPanelTreeClass

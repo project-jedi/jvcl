@@ -719,9 +719,12 @@ Description
   Indicates whether the application and the application button on the taskbar are visible.
 
   Use this flag at run-time to show or hide the application. For example removing this flag from <LINK
-  TJvTrayIcon.Visibility, Visibility> will hide the application. Use this flag at design-time to
-  indicate whether the application and the application button must be visible when the application
-  starts up.
+  TJvTrayIcon.Visibility, Visibility> will hide the application.
+
+  Use this flag at design-time to indicate whether the application and the application button must be
+  visible when the application starts up. If you want to hide the application at start-up, exclude the
+  tvVisibleTaskBar flag from the Visibility and make sure that the Visible property of the form where
+  on the tray icon component is dropped is set to false.
 
 ----------------------------------------------------------------------------------------------------
 @@TTrayVisibility.tvVisibleTaskList

@@ -21,6 +21,58 @@ See Also
   TJvTabBar.PageList, TJvTabBar.OnTabSelected
 
 ----------------------------------------------------------------------------------------------------
+@@IPageList.CanChange
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AIndex - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IPageList.GetPageCaption
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AIndex - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IPageList.GetPageCount
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IPageList.SetActivePageIndex
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AIndex - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvCustomTabBar
 <TITLE TJvCustomTabBar>
 Summary
@@ -421,11 +473,9 @@ Summary
 Description
   Write here a description
 Parameters
-  Sender - Description for this parameter
-  Button - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Sender - The tabbed-bar control generating the event notification.
+  Button - The TJvTabBarScrollButtonKind values that represents the kind of scroll button for the
+           notification.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTabBar.OnTabClosed
@@ -1860,7 +1910,7 @@ Description
 
   * TabBar
   * Items
-  
+
   TJvTabBarItems implements the following methods used to search for tab definitions in the
   collection:
 
@@ -1988,7 +2038,6 @@ Description
   TJvTabBarPainterOptionType is an enumerated type that represents valid values that can be included in
   TJvTabBarPainterOptions. TJvTabBarPainterOptions is the type used in the implementation of the
   TJvTabBarPainter.Options property.
-
 See Also
   TJvTabBarPainterOptions, TJvTabBarPainter.Options
 
