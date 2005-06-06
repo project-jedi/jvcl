@@ -12,12 +12,6 @@ Author
 @@PTagInfo
 <TITLE PTagInfo type>
 <COMBINE TTagInfo>
-Summary
-  Pointer to a TTagInfo record type.
-Description
-  Pointer to a TTagInfo record type.
-See Also
-  TTagInfo, TTagInfoList
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHTMLParser
@@ -48,7 +42,6 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHTMLParser.AddCondition
-<TITLE TJvHTMLParser.AddCondition method>
 Summary
   Adds an HTML tag definition with conditional parsing information to the HTML parser.
 Description
@@ -75,7 +68,6 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHTMLParser.AnalyseFile
-<TITLE TJvHTMLParser.AnalyseFile method>
 Summary
   Loads and parses HTML content found in the file name for the parser.
 Description
@@ -87,7 +79,6 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHTMLParser.AnalyseString
-<TITLE TJvHTMLParser.AnalyseString method>
 Summary
   Parses the specified HTML content.
 Description
@@ -119,7 +110,6 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHTMLParser.ClearConditions
-<TITLE TJvHTMLParser.ClearConditions method>
 Summary
   Clears all HTML tag defintions.
 Description
@@ -135,7 +125,6 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHTMLParser.ConditionsCount
-<TITLE TJvHTMLParser.ConditionsCount property>
 Summary
   Number of HTML tags and conditional parsing definitions for the parser.
 Description
@@ -147,7 +136,6 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHTMLParser.Content
-<TITLE TJvHTMLParser.Content property>
 Summary
   HTML content to parse using the component.
 Description
@@ -159,7 +147,6 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHTMLParser.FileName
-<TITLE TJvHTMLParser.FileName property>
 Summary
   File name used to load the HTML content for the parser.
 Description
@@ -176,7 +163,6 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHTMLParser.GetCondition@Integer@string@string@string
-<TITLE TJvHTMLParser.GetCondition method>
 Summary
   Retrieves values for a tag definition by ordinal position.
 Description
@@ -200,7 +186,6 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHTMLParser.GetCondition@Integer@string@string@string@Integer
-<TITLE TJvHTMLParser.GetCondition method>
 Summary
   Retrieves values for a tag definition by ordinal position.
 Description
@@ -226,7 +211,6 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHTMLParser.OnKeyFound
-<TITLE TJvHTMLParser.OnKeyFound event>
 Summary
   Event handler signalled when a defined HTML tag is encountered during parsing.
 Description
@@ -257,7 +241,6 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHTMLParser.OnKeyFoundEx
-<TITLE TJvHTMLParser.OnKeyFoundEx event>
 Summary
   Event handler signalled when a defined HTML tag is encountered during parsing.
 Description
@@ -290,7 +273,6 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHTMLParser.Parser
-<TITLE TJvHTMLParser.Parser property>
 Summary
   Design-time HTML tag definitions for the HTML parser.
 Description
@@ -323,7 +305,6 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHTMLParser.RemoveCondition
-<TITLE TJvHTMLParser.RemoveCondition method>
 Summary
   Removes the tag and parsing conditions at the specified position.
 Description
@@ -340,7 +321,6 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHTMLParser.TagList
-<TITLE TJvHTMLParser.TagList property>
 Summary
   List of HTML tags parsed using tag definitions in the HTML Parser.
 Description
@@ -359,19 +339,11 @@ See Also
 @@TJvKeyFoundEvent
 <TITLE TJvKeyFoundEvent type>
 <COMBINE TJvHTMLParser.OnKeyFound>
-Summary
-  Type for the event that occurs when a defined HTML tag is found during in TJvHTMLParser.
-See Also
-  TJvHTMLParser.OnKeyFound
 
 ----------------------------------------------------------------------------------------------------
 @@TJvKeyFoundExEvent
 <TITLE TJvKeyFoundExEvent type>
 <COMBINE TJvHTMLParser.OnKeyFoundEx>
-Summary
-  Type for the event that occurs when a defined HTML tag is found during in TJvHTMLParser.
-See Also
-  TJvHTMLParser.OnKeyFoundEx
 
 ----------------------------------------------------------------------------------------------------
 @@TJvParserInfo
@@ -390,7 +362,6 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvParserInfo.EndTag
-<TITLE TJvParserInfo.EndTag member>
 Summary
   HTML recognized as the end of a tag definition.
 Description
@@ -407,7 +378,6 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvParserInfo.MustBe
-<TITLE TJvParserInfo.MustBe member>
 Summary
   Position of the HTML tag definition.
 Description
@@ -419,7 +389,6 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvParserInfo.StartTag
-<TITLE TJvParserInfo.StartTag member>
 Summary
   HTML recognized as the start of a tag definition.
 Description
@@ -436,7 +405,6 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvParserInfo.TakeText
-<TITLE TJvParserInfo.TakeText member>
 Summary
   Indicates the text required for the HTML tag.
 Description
@@ -445,8 +413,8 @@ Description
 
   <TABLE>
     Value  Meaning
-    -----  --------------------------------------------------------------------------------
-    0      Takes text following the HTML start tag, up to the beginning of the HTM end tag.
+    -----  ---------------------------------------------------------------------------------
+    0      Takes text following the HTML start tag, up to the beginning of the HTML end tag.
     1      Takes all text prior to the HTML start tag.
     2      Takes all text following the end of the HTML start tag.
     3      Takes the entire line of test containing the HTML start tag.
@@ -459,7 +427,7 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TTagInfo
-<TITLE TTagInfo record>
+<TITLE TTagInfo type>
 Summary
   Represents information about HTML tags and attributes defined for use in the TJvHTMLParser
   component.
@@ -511,7 +479,6 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TTagInfoList.AddValue
-<TITLE TTagInfoList.AddValue method>
 Summary
   Initializes and updates storage for TTagInfo instances in the list.
 Description
@@ -530,7 +497,6 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TTagInfoList.Clear
-<TITLE TTagInfoList.Clear method>
 Summary
   Removes TTagInfo instances stored in the list.
 Description
