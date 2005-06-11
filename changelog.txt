@@ -1,5 +1,7 @@
 Changelog for JVCL 3.0
 ======================
+2005-06-10:
+- Issue 3000: a handle is now required to update the display of the TJvDatePickerEdit  // obones
 2005-05-13:
 - Merged TJvTransparentButton and TJvTransparentButton2 // ahuser
 - Renamed TJvTransparentButton.Offset to PressOffset // ahuser
