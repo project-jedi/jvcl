@@ -1077,6 +1077,16 @@ begin
   if InternalChanging or (csLoading in ComponentState) then
     Exit;
 
+  // (obones): We need a valid handle here, because setting the text
+  // will read the value of DateSeparator. This value is #0 until the
+  // CreateWnd method is called.
+  // If we don't do that, setting any property that changes the display
+  // (like checked) just after having created the control at runtime
+  // would trigger an "Invalid date" exception because the date, month
+  // and day would not be separated at all.
+  // Doing this means that a parent is required for the change to work.
+  HandleNeeded;
+  
   BeginInternalChange;
   try
     inherited SetChecked(not IsEmpty);
