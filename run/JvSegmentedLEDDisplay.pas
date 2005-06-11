@@ -531,6 +531,7 @@ end;
 destructor TJvCustomSegmentedLEDDisplay.Destroy;
 begin
   FreeAndNil(FDigits);
+  FreeAndNil(FCharacterMapper);
   inherited Destroy;
 end;
 
