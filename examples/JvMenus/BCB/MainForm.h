@@ -83,6 +83,7 @@ __published:	// IDE-managed Components
   TMenuItem *Test1;
   TMenuItem *Testagain1;
   TJvStandardMenuItemPainter *jipMarginPainter;
+        TImageList *imlSubImages;
   void __fastcall Exit1Click(TObject *Sender);
   void __fastcall Try1Click(TObject *Sender);
   void __fastcall btnAddItemsClick(TObject *Sender);

@@ -75,6 +75,7 @@ type
     jipMarginPainter: TJvStandardMenuItemPainter;
     memExplanation: TMemo;
     N3: TMenuItem;
+    imlSubImages: TImageList;
     procedure Exit1Click(Sender: TObject);
     procedure btnAddItemsClick(Sender: TObject);
     procedure btnChangeCaptionClick(Sender: TObject);
