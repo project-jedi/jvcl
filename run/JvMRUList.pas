@@ -382,11 +382,13 @@ var
   I: Integer;
   P: Pointer;
   EnP: TEnumMruList;
+  CanFree: Boolean;
 begin
   Result := False;
   if FList = 0 then
     Exit;
   P := nil;
+  CanFree := True;
 
   try
     if FType = dtString then
@@ -404,6 +406,7 @@ begin
         begin
           Result := True;
           SetItemData(P);
+          CanFree := False;
           FItemIndex := Index;
           if FireEvent then
             DoEnumText
@@ -422,6 +425,7 @@ begin
         begin
           Result := True;
           SetItemData(P);
+          CanFree := False;
           FItemIndex := Index;
           if FireEvent then
             DoUnicodeEnumText;
@@ -454,6 +458,7 @@ begin
         // and we can know the size of memory allocated
         // with GetMem and ReAllocMem, so we know how big Data was
         SetItemData(P);
+        CanFree := False;
         FItemIndex := Index;
         if FireEvent then
           DoEnumData(I);
@@ -461,7 +466,7 @@ begin
     end;
   finally
     // Free the memory
-    if Assigned(P) then
+    if Assigned(P) and CanFree then
       FreeMem(P);
   end;
 end;
