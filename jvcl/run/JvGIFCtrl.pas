@@ -203,6 +203,7 @@ begin
   FCache.Free;
   FImage.OnChange := nil;
   FImage.Free;
+  FTimer.Free; // Note: not really required (VCL does it for us), but cleaner
   inherited Destroy;
 end;
 
