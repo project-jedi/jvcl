@@ -98,7 +98,7 @@ type
   // when the content of the menu has changed. Pass an instance of
   // TJvMenuChangeLink to a TJvMainMenu through RegisterChanges and
   // the OnChange event of your object will be fired whenever it is
-  // required. This is done on the same principle as the TImageList.
+  // required. This is done on the same principle as the TCustomImageList.
   // In the JVCL, TJvToolbar uses this principle to automatically
   // adjust its content (and size if autosize is true) when the
   // content of the menu it is linked to has changed.
@@ -169,10 +169,10 @@ type
   private
     FAboutJVCL: TJVCLAboutInfo;
     FCursor: TCursor;
-    FDisabledImages: TImageList;
-    FHotImages: TImageList;
+    FDisabledImages: TCustomImageList;
+    FHotImages: TCustomImageList;
     FImageMargin: TJvImageMargin;
-    FImages: TImageList;
+    FImages: TCustomImageList;
     FImageSize: TJvMenuImageSize;
     FShowCheckMarks: Boolean;
     FStyle: TJvMenuStyle;
@@ -204,9 +204,9 @@ type
     procedure SetItemPainter(const Value: TJvCustomMenuItemPainter);
     function GetActiveItemPainter: TJvCustomMenuItemPainter;
     procedure SetStyle(Value: TJvMenuStyle);
-    procedure SetDisabledImages(Value: TImageList);
-    procedure SetImages(Value: TImageList);
-    procedure SetHotImages(Value: TImageList);
+    procedure SetDisabledImages(Value: TCustomImageList);
+    procedure SetImages(Value: TCustomImageList);
+    procedure SetHotImages(Value: TCustomImageList);
   protected
     procedure ImageListChange(Sender: TObject);
     procedure DisabledImageListChange(Sender: TObject);
@@ -256,9 +256,9 @@ type
     property Style: TJvMenuStyle read FStyle write SetStyle default msStandard;
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Cursor: TCursor read FCursor write FCursor default crDefault;
-    property DisabledImages: TImageList read FDisabledImages write SetDisabledImages;
-    property HotImages: TImageList read FHotImages write SetHotImages;
-    property Images: TImageList read FImages write SetImages;
+    property DisabledImages: TCustomImageList read FDisabledImages write SetDisabledImages;
+    property HotImages: TCustomImageList read FHotImages write SetHotImages;
+    property Images: TCustomImageList read FImages write SetImages;
     property ImageMargin: TJvImageMargin read FImageMargin write FImageMargin;
     property ImageSize: TJvMenuImageSize read FImageSize write FImageSize;
     property ItemPainter: TJvCustomMenuItemPainter read FItemPainter write SetItemPainter;
@@ -283,10 +283,10 @@ type
   private
     FAboutJVCL: TJVCLAboutInfo;
     FCursor: TCursor;
-    FDisabledImages: TImageList;
-    FHotImages: TImageList;
+    FDisabledImages: TCustomImageList;
+    FHotImages: TCustomImageList;
     FImageMargin: TJvImageMargin;
-    FImages: TImageList;
+    FImages: TCustomImageList;
     FImageSize: TJvMenuImageSize;
     FShowCheckMarks: Boolean;
     FStyle: TJvMenuStyle;
@@ -318,9 +318,9 @@ type
     function GetCanvas: TCanvas;
     procedure SetItemPainter(const Value: TJvCustomMenuItemPainter);
     function GetActiveItemPainter: TJvCustomMenuItemPainter;
-    procedure SetDisabledImages(Value: TImageList);
-    procedure SetImages(Value: TImageList);
-    procedure SetHotImages(Value: TImageList);
+    procedure SetDisabledImages(Value: TCustomImageList);
+    procedure SetImages(Value: TCustomImageList);
+    procedure SetHotImages(Value: TCustomImageList);
     procedure SetStyle(Value: TJvMenuStyle);
   protected
     procedure ImageListChange(Sender: TObject);
@@ -367,10 +367,10 @@ type
     property Style: TJvMenuStyle read FStyle write SetStyle default msStandard;
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Cursor: TCursor read FCursor write FCursor default crDefault;
-    property DisabledImages: TImageList read FDisabledImages write SetDisabledImages;
-    property HotImages: TImageList read FHotImages write SetHotImages;
+    property DisabledImages: TCustomImageList read FDisabledImages write SetDisabledImages;
+    property HotImages: TCustomImageList read FHotImages write SetHotImages;
     property ImageMargin: TJvImageMargin read FImageMargin write FImageMargin;
-    property Images: TImageList read FImages write SetImages;
+    property Images: TCustomImageList read FImages write SetImages;
     property ImageSize: TJvMenuImageSize read FImageSize write FImageSize;
     property ItemPainter: TJvCustomMenuItemPainter read FItemPainter write SetItemPainter;
     property OwnerDraw stored False;
@@ -429,13 +429,13 @@ type
     function GetCheckMarkHeight: Integer; virtual;
     function GetCheckMarkWidth: Integer; virtual;
     function GetComponentState: TComponentState;
-    function GetDisabledImages: TImageList;
+    function GetDisabledImages: TCustomImageList;
     function GetDrawHighlight: Boolean; virtual;
     function GetGrayColor: TColor; virtual;
-    function GetHotImages: TImageList;
+    function GetHotImages: TCustomImageList;
     function GetImageHeight: Integer; virtual;
     function GetImageWidth: Integer; virtual;
-    function GetImages: TImageList;
+    function GetImages: TCustomImageList;
     function GetIsPopup: Boolean;
     function GetIsRightToLeft: Boolean;
     function GetShowCheckMarks: Boolean;
@@ -543,11 +543,11 @@ type
     property CheckMarkHeight: Integer read GetCheckMarkHeight;
     property CheckMarkWidth: Integer read GetCheckMarkWidth;
     property ComponentState: TComponentState read GetComponentState;
-    property DisabledImages: TImageList read GetDisabledImages;
+    property DisabledImages: TCustomImageList read GetDisabledImages;
     property DrawHighlight: Boolean read GetDrawHighlight;
     property GrayColor: TColor read GetGrayColor;
-    property HotImages: TImageList read GetHotImages;
-    property Images: TImageList read GetImages;
+    property HotImages: TCustomImageList read GetHotImages;
+    property Images: TCustomImageList read GetImages;
     property ImageHeight: Integer read GetImageHeight;
     property ImageMargin: TJvImageMargin read FImageMargin;
     property ImageSize: TJvMenuImageSize read FImageSize;
@@ -944,7 +944,7 @@ begin
     RefreshMenu(IsOwnerDrawMenu);
 end;
 
-procedure TJvMainMenu.SetImages(Value: TImageList);
+procedure TJvMainMenu.SetImages(Value: TCustomImageList);
 var
   OldOwnerDraw: Boolean;
 begin
@@ -971,7 +971,7 @@ begin
     RefreshMenu(IsOwnerDrawMenu);
 end;
 
-procedure TJvMainMenu.SetDisabledImages(Value: TImageList);
+procedure TJvMainMenu.SetDisabledImages(Value: TCustomImageList);
 var
   OldOwnerDraw: Boolean;
 begin
@@ -994,7 +994,7 @@ begin
     RefreshMenu(IsOwnerDrawMenu);
 end;
 
-procedure TJvMainMenu.SetHotImages(Value: TImageList);
+procedure TJvMainMenu.SetHotImages(Value: TCustomImageList);
 var
   OldOwnerDraw: Boolean;
 begin
@@ -1457,7 +1457,7 @@ begin
     RefreshMenu(IsOwnerDrawMenu);
 end;
 
-procedure TJvPopupMenu.SetImages(Value: TImageList);
+procedure TJvPopupMenu.SetImages(Value: TCustomImageList);
 var
   OldOwnerDraw: Boolean;
 begin
@@ -1484,7 +1484,7 @@ begin
     RefreshMenu(IsOwnerDrawMenu);
 end;
 
-procedure TJvPopupMenu.SetDisabledImages(Value: TImageList);
+procedure TJvPopupMenu.SetDisabledImages(Value: TCustomImageList);
 var
   OldOwnerDraw: Boolean;
 begin
@@ -1507,7 +1507,7 @@ begin
     RefreshMenu(IsOwnerDrawMenu);
 end;
 
-procedure TJvPopupMenu.SetHotImages(Value: TImageList);
+procedure TJvPopupMenu.SetHotImages(Value: TCustomImageList);
 var
   OldOwnerDraw: Boolean;
 begin
@@ -1998,7 +1998,7 @@ begin
   Frame3D(Canvas, ARect, GrayColor, clBtnHighlight, 1);
 end;
 
-function TJvCustomMenuItemPainter.GetDisabledImages: TImageList;
+function TJvCustomMenuItemPainter.GetDisabledImages: TCustomImageList;
 begin
   if Assigned(FMainMenu) then
     Result := FMainMenu.DisabledImages
@@ -2006,7 +2006,7 @@ begin
     Result := FPopupMenu.DisabledImages;
 end;
 
-function TJvCustomMenuItemPainter.GetHotImages: TImageList;
+function TJvCustomMenuItemPainter.GetHotImages: TCustomImageList;
 begin
   if Assigned(FMainMenu) then
     Result := FMainMenu.HotImages
@@ -2014,9 +2014,11 @@ begin
     Result := FPopupMenu.HotImages;
 end;
 
-function TJvCustomMenuItemPainter.GetImages: TImageList;
+function TJvCustomMenuItemPainter.GetImages: TCustomImageList;
 begin
-  if Assigned(FMainMenu) then
+  if Assigned(FItem) and Assigned(FItem.Parent) and Assigned(FItem.Parent.SubMenuImages) then
+    Result := FItem.Parent.SubMenuImages
+  else if Assigned(FMainMenu) then
     Result := FMainMenu.Images
   else
     Result := FPopupMenu.Images;
@@ -3121,7 +3123,12 @@ begin
       (TForm(FMainMenu.GetOwner).Handle = CanvasWindow)) then
     begin
       DesktopCanvas := TJvDesktopCanvas.Create;
-      GetWindowRect(CanvasWindow, WRect);
+//      GetWindowRect(CanvasWindow, WRect);
+      if not GetWindowRect(CanvasWindow, WRect) then
+      begin
+        inherited Paint(Item, ItemRect, State);
+        Exit;
+      end;
 
       with DesktopCanvas do
       begin
@@ -3178,16 +3185,20 @@ begin
           begin
             MoveTo(WRect.Left + 3, WRect.Top + ItemRect.Top + 3);
             LineTo(WRect.Left + 3, WRect.Top + ItemRect.Bottom + 3);
-            MoveTo(WRect.Left + 1, WRect.Top + 2);
+//            MoveTo(WRect.Left + 1, WRect.Top + 2);
+            MoveTo(WRect.Left + 3, WRect.Top + 2);
             LineTo(WRect.Left + 1 + CheckMarkWidth + ImageMargin.Left + ImageWidth + ImageMargin.Right + 1, WRect.Top + 2);
-            MoveTo(WRect.Left + 1, WRect.Bottom - 3);
+//            MoveTo(WRect.Left + 1, WRect.Bottom - 3);
+            MoveTo(WRect.Left + 3, WRect.Bottom - 3);
             LineTo(WRect.Left + 1 + CheckMarkWidth + ImageMargin.Left + ImageWidth + ImageMargin.Right + 1, WRect.Bottom - 3);
           end
           else
           begin
-            MoveTo(WRect.Left + 1, WRect.Top + 2);
+//            MoveTo(WRect.Left + 1, WRect.Top + 2);
+            MoveTo(WRect.Left + 3, WRect.Top + 2);
             LineTo(WRect.Left + 1 + CheckMarkWidth + ImageMargin.Left + ImageWidth + ImageMargin.Right, WRect.Top + 2);
-            MoveTo(WRect.Left + 1, WRect.Bottom - 3);
+//            MoveTo(WRect.Left + 1, WRect.Bottom - 3);
+            MoveTo(WRect.Left + 3, WRect.Bottom - 3);
             LineTo(WRect.Left + 1 + CheckMarkWidth + ImageMargin.Left + ImageWidth + ImageMargin.Right, WRect.Bottom - 3);
           end;
         end
