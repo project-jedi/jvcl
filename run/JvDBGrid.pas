@@ -876,6 +876,13 @@ var
 begin
   inherited Create(AOwner);
   inherited DefaultDrawing := False;
+
+  // (obones): issue 3026: need to create FChangeLinks at the beginning
+  // so that any change can access the object. It seems that on some
+  // foreign systems, the assignment to the Options property triggers
+  // NotifyLayoutChange, so it needs the FChangeLinks object 
+  FChangeLinks := TObjectList.Create(False);
+
   FAutoSort := True;
   FBeepOnError := True;
   Options := DefJvGridOptions;
@@ -905,9 +912,11 @@ begin
   FPostOnEnter := False;
   FAutoSizeColumnIndex := JvGridResizeProportionally;
   FSelectColumnsDialogStrings := TJvSelectDialogColumnStrings.Create;
+  // Note to users: the second line may not compile on non western european
+  // systems, in which case you should simply remove it and recompile. 
   FCharList :=
-    ['A'..'Z', 'a'..'z', ' ', '-', '+', '0'..'9', '.', ',',
-     'é', 'è', 'ê', 'ë', 'ô', 'û', 'ù', 'â', 'à', 'î', 'ï', 'ç', Backspace];
+    ['A'..'Z', 'a'..'z', ' ', '-', '+', '0'..'9', '.', ',', Backspace,
+     'é', 'è', 'ê', 'ë', 'ô', 'û', 'ù', 'â', 'à', 'î', 'ï', 'ç'];
 
   FControls := TJvDBGridControls.Create(Self);
   FCurrentControl := nil;
@@ -921,8 +930,6 @@ begin
   FRowsHeight := DefaultRowHeight;
   FTitleRowHeight := RowHeights[0];
   FShowMemos := True;
-  
-  FChangeLinks := TObjectList.Create(False);
 end;
 
 destructor TJvDBGrid.Destroy;
