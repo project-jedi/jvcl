@@ -7476,7 +7476,8 @@ var
       Height := CanvasMaxTextHeight(Canvas);
       if IsLink and not MouseOnLink then
         if (MouseY >= R.Top) and (MouseY <= R.Top + Height) and
-           (MouseX >= R.Left) and (MouseX <= R.Left + Width) then
+           (MouseX >= R.Left) and (MouseX <= R.Left + Width) and
+           ((MouseY > 0) or (MouseX > 0)) then
         begin
           MouseOnLink := True;
           Canvas.Font.Color := clRed; // hover link
