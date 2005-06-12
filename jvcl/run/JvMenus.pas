@@ -3123,12 +3123,7 @@ begin
       (TForm(FMainMenu.GetOwner).Handle = CanvasWindow)) then
     begin
       DesktopCanvas := TJvDesktopCanvas.Create;
-//      GetWindowRect(CanvasWindow, WRect);
-      if not GetWindowRect(CanvasWindow, WRect) then
-      begin
-        inherited Paint(Item, ItemRect, State);
-        Exit;
-      end;
+      GetWindowRect(CanvasWindow, WRect);
 
       with DesktopCanvas do
       begin
@@ -3185,20 +3180,16 @@ begin
           begin
             MoveTo(WRect.Left + 3, WRect.Top + ItemRect.Top + 3);
             LineTo(WRect.Left + 3, WRect.Top + ItemRect.Bottom + 3);
-//            MoveTo(WRect.Left + 1, WRect.Top + 2);
-            MoveTo(WRect.Left + 3, WRect.Top + 2);
+            MoveTo(WRect.Left + 1, WRect.Top + 2);
             LineTo(WRect.Left + 1 + CheckMarkWidth + ImageMargin.Left + ImageWidth + ImageMargin.Right + 1, WRect.Top + 2);
-//            MoveTo(WRect.Left + 1, WRect.Bottom - 3);
-            MoveTo(WRect.Left + 3, WRect.Bottom - 3);
+            MoveTo(WRect.Left + 1, WRect.Bottom - 3);
             LineTo(WRect.Left + 1 + CheckMarkWidth + ImageMargin.Left + ImageWidth + ImageMargin.Right + 1, WRect.Bottom - 3);
           end
           else
           begin
-//            MoveTo(WRect.Left + 1, WRect.Top + 2);
-            MoveTo(WRect.Left + 3, WRect.Top + 2);
+            MoveTo(WRect.Left + 1, WRect.Top + 2);
             LineTo(WRect.Left + 1 + CheckMarkWidth + ImageMargin.Left + ImageWidth + ImageMargin.Right, WRect.Top + 2);
-//            MoveTo(WRect.Left + 1, WRect.Bottom - 3);
-            MoveTo(WRect.Left + 3, WRect.Bottom - 3);
+            MoveTo(WRect.Left + 1, WRect.Bottom - 3);
             LineTo(WRect.Left + 1 + CheckMarkWidth + ImageMargin.Left + ImageWidth + ImageMargin.Right, WRect.Bottom - 3);
           end;
         end
