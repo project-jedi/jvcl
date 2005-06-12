@@ -2015,9 +2015,15 @@ begin
 end;
 
 function TJvCustomMenuItemPainter.GetImages: TCustomImageList;
+var
+  Item : TMenuItem;
 begin
-  if Assigned(FItem) and Assigned(FItem.Parent) and Assigned(FItem.Parent.SubMenuImages) then
-    Result := FItem.Parent.SubMenuImages
+  Item := FItem.Parent;
+  while Assigned(Item) and not Assigned(Item.SubMenuImages) do
+    Item := Item.Parent;
+
+  if Assigned(Item) and Assigned(Item.SubMenuImages) then
+    Result := Item.SubMenuImages
   else if Assigned(FMainMenu) then
     Result := FMainMenu.Images
   else
