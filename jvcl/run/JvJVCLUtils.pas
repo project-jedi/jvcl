@@ -7399,6 +7399,7 @@ var
   OldFontStyles: TFontStyles;
   OldFontColor: TColor;
   OldBrushColor: TColor;
+  OldBrushStyle: TBrushStyle;
   OldAlignment: TAlignment;
   OldFont: TFont;
   OldWidth: Integer;
@@ -7514,6 +7515,7 @@ begin
   // (p3) remove warnings
   OldFontColor := 0;
   OldBrushColor := 0;
+  OldBrushStyle := bsClear;
   RemFontSize := 0;
   RemFontColor := 0;
   RemBrushColor := 0;
@@ -7525,6 +7527,7 @@ begin
     OldFontStyles := Canvas.Font.Style;
     OldFontColor  := Canvas.Font.Color;
     OldBrushColor := Canvas.Brush.Color;
+    OldBrushStyle := Canvas.Brush.Style;
     OldAlignment  := Alignment;
     RemFontColor  := Canvas.Font.Color;
     RemBrushColor := Canvas.Brush.Color;
@@ -7701,6 +7704,7 @@ begin
       Canvas.Font.Style := OldFontStyles;
       Canvas.Font.Color := OldFontColor;
       Canvas.Brush.Color := OldBrushColor;
+      Canvas.Brush.Style := OldBrushStyle;
       Alignment := OldAlignment;
   {    Canvas.Font.Color := RemFontColor;
       Canvas.Brush.Color:= RemBrushColor;}
