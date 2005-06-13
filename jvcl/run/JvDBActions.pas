@@ -194,13 +194,14 @@ type
     function EngineBof: boolean;
     function EngineControlsDisabled: boolean;
     function EngineEditModeActive: boolean;
-    property DataEngine: TJvDatabaseActionBaseEngine Read FDataEngine;
   public
     constructor Create(AOwner: TComponent); override;
     procedure UpdateTarget(Target: TObject); override;
     function HandlesTarget(Target: TObject): boolean; override;
     procedure ExecuteTarget(Target: TObject); override;
+    procedure ExecuteOperation(Target: TObject); virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    property DataEngine: TJvDatabaseActionBaseEngine Read FDataEngine;
     property DataSource: TDataSource Read GetDataSource;
     property DataSet: TDataSet Read GetDataSet;
   published
@@ -247,25 +248,25 @@ type
   TJvDatabaseFirstAction = class(TJvDatabaseBaseNavigateAction)
   public
     procedure UpdateTarget(Target: TObject); override;
-    procedure ExecuteTarget(Target: TObject); override;
+    procedure ExecuteOperation(Target: TObject); override;
   end;
 
   TJvDatabaseLastAction = class(TJvDatabaseBaseNavigateAction)
   public
     procedure UpdateTarget(Target: TObject); override;
-    procedure ExecuteTarget(Target: TObject); override;
+    procedure ExecuteOperation(Target: TObject); override;
   end;
 
   TJvDatabasePriorAction = class(TJvDatabaseBaseNavigateAction)
   public
     procedure UpdateTarget(Target: TObject); override;
-    procedure ExecuteTarget(Target: TObject); override;
+    procedure ExecuteOperation(Target: TObject); override;
   end;
 
   TJvDatabaseNextAction = class(TJvDatabaseBaseNavigateAction)
   public
     procedure UpdateTarget(Target: TObject); override;
-    procedure ExecuteTarget(Target: TObject); override;
+    procedure ExecuteOperation(Target: TObject); override;
   end;
 
   TJvDatabasePriorBlockAction = class(TJvDatabaseBaseNavigateAction)
@@ -274,7 +275,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     procedure UpdateTarget(Target: TObject); override;
-    procedure ExecuteTarget(Target: TObject); override;
+    procedure ExecuteOperation(Target: TObject); override;
   published
     property BlockSize: integer Read FBlockSize Write FBlockSize default 50;
   end;
@@ -285,7 +286,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     procedure UpdateTarget(Target: TObject); override;
-    procedure ExecuteTarget(Target: TObject); override;
+    procedure ExecuteOperation(Target: TObject); override;
   published
     property BlockSize: integer Read FBlockSize Write FBlockSize default 50;
   end;
@@ -298,7 +299,7 @@ type
     procedure Refresh;
   public
     constructor Create(AOwner: TComponent); override;
-    procedure ExecuteTarget(Target: TObject); override;
+    procedure ExecuteOperation(Target: TObject); override;
   published
     property RefreshLastPosition: boolean Read FRefreshLastPosition Write FRefreshLastPosition default True;
     property RefreshAsOpenClose: boolean Read FRefreshAsOpenClose Write FRefreshAsOpenClose default False;
@@ -310,13 +311,13 @@ type
   public
     procedure ShowPositionDialog;
     procedure UpdateTarget(Target: TObject); override;
-    procedure ExecuteTarget(Target: TObject); override;
+    procedure ExecuteOperation(Target: TObject); override;
   end;
 
   TJvDatabaseInsertAction = class(TJvDatabaseBaseEditAction)
   public
     procedure UpdateTarget(Target: TObject); override;
-    procedure ExecuteTarget(Target: TObject); override;
+    procedure ExecuteOperation(Target: TObject); override;
   end;
 
   TJvDatabaseOnCopyRecord = procedure(Field: TField; OldValue: variant) of object;
@@ -331,7 +332,7 @@ type
   public
     procedure CopyRecord;
     procedure UpdateTarget(Target: TObject); override;
-    procedure ExecuteTarget(Target: TObject); override;
+    procedure ExecuteOperation(Target: TObject); override;
   published
     property BeforeCopyRecord: TJvDatabaseBeforeCopyRecord Read FBeforeCopyRecord Write FBeforeCopyRecord;
     property AfterCopyRecord: TJvDatabaseAfterCopyRecord Read FAfterCopyRecord Write FAfterCopyRecord;
@@ -341,25 +342,25 @@ type
   TJvDatabaseEditAction = class(TJvDatabaseBaseEditAction)
   public
     procedure UpdateTarget(Target: TObject); override;
-    procedure ExecuteTarget(Target: TObject); override;
+    procedure ExecuteOperation(Target: TObject); override;
   end;
 
   TJvDatabaseDeleteAction = class(TJvDatabaseBaseEditAction)
   public
     procedure UpdateTarget(Target: TObject); override;
-    procedure ExecuteTarget(Target: TObject); override;
+    procedure ExecuteOperation(Target: TObject); override;
   end;
 
   TJvDatabasePostAction = class(TJvDatabaseBaseEditAction)
   public
     procedure UpdateTarget(Target: TObject); override;
-    procedure ExecuteTarget(Target: TObject); override;
+    procedure ExecuteOperation(Target: TObject); override;
   end;
 
   TJvDatabaseCancelAction = class(TJvDatabaseBaseEditAction)
   public
     procedure UpdateTarget(Target: TObject); override;
-    procedure ExecuteTarget(Target: TObject); override;
+    procedure ExecuteOperation(Target: TObject); override;
   end;
 
   TJvDatabaseSingleRecordWindowAction = class(TJvDatabaseBaseActiveAction)
@@ -368,7 +369,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure ExecuteTarget(Target: TObject); override;
+    procedure ExecuteOperation(Target: TObject); override;
   published
     property Options: TJvShowSingleRecordWindowOptions Read FOptions Write FOptions;
   end;
@@ -376,13 +377,13 @@ type
   TJvDatabaseOpenAction = class(TJvDatabaseBaseActiveAction)
   public
     procedure UpdateTarget(Target: TObject); override;
-    procedure ExecuteTarget(Target: TObject); override;
+    procedure ExecuteOperation(Target: TObject); override;
   end;
 
   TJvDatabaseCloseAction = class(TJvDatabaseBaseActiveAction)
   public
     procedure UpdateTarget(Target: TObject); override;
-    procedure ExecuteTarget(Target: TObject); override;
+    procedure ExecuteOperation(Target: TObject); override;
   end;
 
   {$IFDEF USE_3RDPARTY_SMEXPORT}
@@ -418,7 +419,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure ExecuteTarget(Target: TObject); override;
+    procedure ExecuteOperation(Target: TObject); override;
   published
     property Options: TJvDatabaseSMExportOptions Read FOptions Write FOptions;
   end;
@@ -454,7 +455,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure ExecuteTarget(Target: TObject); override;
+    procedure ExecuteOperation(Target: TObject); override;
   published
     property Options: TJvDatabaseSMImportOptions Read FOptions Write FOptions;
   end;
@@ -1213,7 +1214,12 @@ begin
   else if Assigned(FOnExecuteDataSource) then
     FOnExecuteDataSource(Self, DataSource)
   else
-    inherited ExecuteTarget(Target);
+    ExecuteOperation(Target);
+end;
+
+procedure TJvDatabaseBaseAction.ExecuteOperation(Target: TObject);
+begin
+  Inherited ExecuteTarget(Target);
 end;
 
 procedure TJvDatabaseBaseAction.Notification(AComponent: TComponent; Operation: TOperation);
@@ -1281,7 +1287,7 @@ begin
   SetEnabled(Assigned(DataEngine) and not EngineControlsDisabled and EngineIsActive and not EngineBof);
 end;
 
-procedure TJvDatabaseFirstAction.ExecuteTarget(Target: TObject);
+procedure TJvDatabaseFirstAction.ExecuteOperation(Target: TObject);
 begin
   DataEngine.First(DataComponent);
 end;
@@ -1293,7 +1299,7 @@ begin
   SetEnabled(Assigned(DataEngine) and not EngineControlsDisabled and EngineIsActive and not EngineEof);
 end;
 
-procedure TJvDatabaseLastAction.ExecuteTarget(Target: TObject);
+procedure TJvDatabaseLastAction.ExecuteOperation(Target: TObject);
 begin
   DataEngine.Last(DataComponent);
 end;
@@ -1305,7 +1311,7 @@ begin
   SetEnabled(Assigned(DataEngine) and not EngineControlsDisabled and EngineIsActive and not EngineBof);
 end;
 
-procedure TJvDatabasePriorAction.ExecuteTarget(Target: TObject);
+procedure TJvDatabasePriorAction.ExecuteOperation(Target: TObject);
 begin
   DataEngine.MoveBy(DataComponent, -1);
 end;
@@ -1317,7 +1323,7 @@ begin
   SetEnabled(Assigned(DataEngine) and not EngineControlsDisabled and EngineIsActive and not EngineEof);
 end;
 
-procedure TJvDatabaseNextAction.ExecuteTarget(Target: TObject);
+procedure TJvDatabaseNextAction.ExecuteOperation(Target: TObject);
 begin
   DataEngine.MoveBy(DataComponent, 1);
 end;
@@ -1335,7 +1341,7 @@ begin
   SetEnabled(Assigned(DataEngine) and not EngineControlsDisabled and EngineIsActive and not EngineBof);
 end;
 
-procedure TJvDatabasePriorBlockAction.ExecuteTarget(Target: TObject);
+procedure TJvDatabasePriorBlockAction.ExecuteOperation(Target: TObject);
 begin
   with DataEngine do
     try
@@ -1359,7 +1365,7 @@ begin
   SetEnabled(Assigned(DataEngine) and not EngineControlsDisabled and EngineIsActive and not EngineEof);
 end;
 
-procedure TJvDatabaseNextBlockAction.ExecuteTarget(Target: TObject);
+procedure TJvDatabaseNextBlockAction.ExecuteOperation(Target: TObject);
 begin
   with DataEngine do
     try
@@ -1379,7 +1385,7 @@ begin
   FRefreshAsOpenClose  := False;
 end;
 
-procedure TJvDatabaseRefreshAction.ExecuteTarget(Target: TObject);
+procedure TJvDatabaseRefreshAction.ExecuteOperation(Target: TObject);
 begin
   Refresh;
 end;
@@ -1437,7 +1443,7 @@ begin
   end;
 end;
 
-procedure TJvDatabasePositionAction.ExecuteTarget(Target: TObject);
+procedure TJvDatabasePositionAction.ExecuteOperation(Target: TObject);
 begin
   ShowPositionDialog;
 end;
@@ -1544,7 +1550,7 @@ begin
     EngineIsActive and EngineCanInsert and not EngineEditModeActive);
 end;
 
-procedure TJvDatabaseInsertAction.ExecuteTarget(Target: TObject);
+procedure TJvDatabaseInsertAction.ExecuteOperation(Target: TObject);
 begin
   DataSet.Insert;
 end;
@@ -1557,7 +1563,7 @@ begin
     EngineCanInsert and EngineHasData and not EngineEditModeActive);
 end;
 
-procedure TJvDatabaseCopyAction.ExecuteTarget(Target: TObject);
+procedure TJvDatabaseCopyAction.ExecuteOperation(Target: TObject);
 begin
   CopyRecord;
 end;
@@ -1612,7 +1618,7 @@ begin
     EngineCanUpdate and EngineHasData and not EngineEditModeActive);
 end;
 
-procedure TJvDatabaseEditAction.ExecuteTarget(Target: TObject);
+procedure TJvDatabaseEditAction.ExecuteOperation(Target: TObject);
 begin
   DataSet.Edit;
 end;
@@ -1625,7 +1631,7 @@ begin
     EngineCanDelete and EngineHasData and not EngineEditModeActive);
 end;
 
-procedure TJvDatabaseDeleteAction.ExecuteTarget(Target: TObject);
+procedure TJvDatabaseDeleteAction.ExecuteOperation(Target: TObject);
 begin
   DataSet.Delete;
 end;
@@ -1637,7 +1643,7 @@ begin
   SetEnabled(Assigned(DataSet) and not EngineControlsDisabled and EngineIsActive and EngineEditModeActive);
 end;
 
-procedure TJvDatabasePostAction.ExecuteTarget(Target: TObject);
+procedure TJvDatabasePostAction.ExecuteOperation(Target: TObject);
 begin
   DataSet.Post;
 end;
@@ -1649,7 +1655,7 @@ begin
   SetEnabled(Assigned(DataSet) and not EngineControlsDisabled and EngineIsActive and EngineEditModeActive);
 end;
 
-procedure TJvDatabaseCancelAction.ExecuteTarget(Target: TObject);
+procedure TJvDatabaseCancelAction.ExecuteOperation(Target: TObject);
 begin
   DataSet.Cancel;
 end;
@@ -1668,7 +1674,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvDatabaseSingleRecordWindowAction.ExecuteTarget(Target: TObject);
+procedure TJvDatabaseSingleRecordWindowAction.ExecuteOperation(Target: TObject);
 begin
   DataEngine.ShowSingleRecordWindow(Options, DataComponent);
 end;
@@ -1680,7 +1686,7 @@ begin
   SetEnabled(Assigned(DataSet) and not EngineIsActive);
 end;
 
-procedure TJvDatabaseOpenAction.ExecuteTarget(Target: TObject);
+procedure TJvDatabaseOpenAction.ExecuteOperation(Target: TObject);
 begin
   DataSet.Open;
 end;
@@ -1692,7 +1698,7 @@ begin
   SetEnabled(Assigned(DataSet) and EngineIsActive and not EngineEditModeActive);
 end;
 
-procedure TJvDatabaseCloseAction.ExecuteTarget(Target: TObject);
+procedure TJvDatabaseCloseAction.ExecuteOperation(Target: TObject);
 begin
   DataSet.Close;
 end;
@@ -1799,7 +1805,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvDatabaseSMExportAction.ExecuteTarget(Target: TObject);
+procedure TJvDatabaseSMExportAction.ExecuteOperation(Target: TObject);
 begin
   ExportData;
 end;
@@ -1899,7 +1905,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvDatabaseSMImportAction.ExecuteTarget(Target: TObject);
+procedure TJvDatabaseSMImportAction.ExecuteOperation(Target: TObject);
 begin
   ImportData;
 end;
