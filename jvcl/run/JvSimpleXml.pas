@@ -267,7 +267,7 @@ type
   public
     constructor Create(const AOwner: TJvSimpleXMLElem); virtual;
     destructor Destroy; override;
-    procedure Assign(Value: TJvSimpleXMLElem);
+    procedure Assign(Value: TJvSimpleXMLElem); virtual;
     procedure Clear; virtual;
     function SaveToString: string;
     procedure LoadFromString(const Value: string);
@@ -324,6 +324,8 @@ type
     FEncoding: string;
     FVersion: string;
   public
+    procedure Assign(Value: TJvSimpleXMLElem); override;
+    
     procedure LoadFromStream(const Stream: TStream; Parent: TJvSimpleXML = nil); override;
     procedure SaveToStream(const Stream: TStream; const Level: string = ''; Parent: TJvSimpleXML = nil); override;
     property Version: string read FVersion write FVersion;
@@ -2581,6 +2583,17 @@ begin
 end;
 
 //=== { TJvSimpleXMLElemHeader } =============================================
+
+procedure TJvSimpleXMLElemHeader.Assign(Value: TJvSimpleXMLElem);
+begin
+  inherited Assign(Value);
+  if Value is TJvSimpleXMLElemHeader then
+  begin
+    FStandAlone := TJvSimpleXMLElemHeader(Value).FStandalone;
+    FEncoding := TJvSimpleXMLElemHeader(Value).FEncoding;
+    FVersion := TJvSimpleXMLElemHeader(Value).FVersion;
+  end;
+end;
 
 constructor TJvSimpleXMLElemHeader.Create(const AOwner: TJvSimpleXMLElem);
 begin
