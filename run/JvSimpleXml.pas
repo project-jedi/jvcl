@@ -293,6 +293,7 @@ type
     property FloatValue: Extended read GetFloatValue write SetFloatValue;
     property Value: string read FValue write FValue;
   end;
+  TJvSimpleXMLElemClass = class of TJvSimpleXMLElem;
 
   TJvSimpleXMLElemComment = class(TJvSimpleXMLElem)
   public
@@ -1147,8 +1148,11 @@ begin
 
   for I := 0 to Elems.Items.Count - 1 do
   begin
-    Elem := Items.Add(Elems.Items[I].Name, Elems.Items[I].Value);
-    Elem.Assign(TJvSimpleXMLElem(Elems.Items[I]));
+    // Create from the class type, so that the virtual constructor is called
+    // creating an element of the correct class type.
+    Elem := TJvSimpleXMLElemClass(Elems.Items[I].ClassType).Create(Elem.Items[I].Parent);
+    Elem.Assign(Elems.Items[I]);
+    Items.Add(Elem);
   end;
 end;
 
