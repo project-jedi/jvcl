@@ -205,8 +205,8 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Messages, SysUtils, Classes, Contnrs, Graphics, Controls, Forms,
-  StdCtrls, ExtCtrls, Menus,
+  Windows, Messages, ShellAPI, SysUtils, Classes, Contnrs, Graphics, Controls,
+  Forms, StdCtrls, ExtCtrls, Menus,
   JvFixedEditPopup, JvUnicodeCanvas, JvComponent, JvExControls;
 
 const
@@ -341,7 +341,6 @@ type
 
   TCompletionList = (cmIdentifiers, cmTemplates);
   TOnCompletion = procedure(Sender: TObject; var Cancel: Boolean) of object;
-
 
   TJvUndo = class;
 
@@ -920,11 +919,9 @@ type
     procedure FontCacheClear;
     procedure InsertChar(const Key: Word); virtual; abstract;
 
-    procedure DrawRightMargin;
     procedure Mouse2Cell(X, Y: Integer; var CX, CY: Integer);
-    procedure Mouse2Caret(X, Y: Integer; var CX, CY: Integer);
-    procedure CaretCoord(X, Y: Integer; var CX, CY: Integer);
-    function PosFromMouse(X, Y: Integer): Integer;
+
+    procedure DrawRightMargin;
     procedure SetCaretInternal(X, Y: Integer);
 
     procedure NotUndoable;
@@ -975,6 +972,13 @@ type
     procedure SetCaret(X, Y: Integer);
     procedure CaretFromPos(Pos: Integer; var X, Y: Integer);
     function PosFromCaret(X, Y: Integer): Integer;
+    procedure Mouse2Caret(X, Y: Integer; var CX, CY: Integer);
+      { MousePosToCell returns the cell position of the cell where the mouse
+        cursor is. }
+    procedure MousePosToCell(X, Y: Integer; var CX, CY: Integer);
+    procedure CaretCoord(X, Y: Integer; var CX, CY: Integer);
+    function PosFromMouse(X, Y: Integer): Integer;
+
     procedure PaintCaret(bShow: Boolean);
     function GetTextLen: Integer;
     procedure SelectWordOnCaret; virtual; abstract;
@@ -3380,7 +3384,10 @@ begin
       SetSel(XX, YY);
     end;
     SetCaret(XX, YY);
-  end;
+  end
+  else
+  if Button = mbRight then
+    SetCaret(XX, YY);
   PaintCaret(True);
   FMouseDown := True;
 
@@ -4680,6 +4687,22 @@ begin
     CY := LineCount - 1;
 end;
 
+procedure TJvCustomEditorBase.MousePosToCell(X, Y: Integer; var CX, CY: Integer);
+begin
+  CX := (X - FEditorClient.Left) div CellRect.Width; // difference to Mouse2Caret
+  CY := (Y - FEditorClient.Top) div CellRect.Height;
+  if CX < 0 then
+    CX := 0;
+  if CY < 0 then
+    CY := 0;
+  CX := CX + FLeftCol;
+  CY := CY + FTopRow;
+  if CX > FLastVisibleCol then
+    CX := FLastVisibleCol;
+  if CY > LineCount - 1 then
+    CY := LineCount - 1;
+end;
+
 procedure TJvCustomEditorBase.CaretCoord(X, Y: Integer; var CX, CY: Integer);
 begin
   CX := X - FLeftCol;
@@ -5626,7 +5649,8 @@ end;
 
 destructor TJvErrorHighlighting.Destroy;
 begin
-  Clear;
+  FItems.Free;
+  FEditor := nil;
   inherited Destroy;
 end;
 
@@ -5676,6 +5700,7 @@ procedure TJvErrorHighlighting.Clear;
 begin
   BeginUpdate;
   try
+    FNeedsRepaint := FItems.Count > 0;
     FItems.Clear;
   finally
     EndUpdate;

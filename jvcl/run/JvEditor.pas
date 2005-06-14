@@ -827,7 +827,7 @@ begin
         FillRect(Bounds(R.Left, R.Bottom - 1, CellRect.Width * Length(Ch), 1));
 
         TJvUnicodeCanvas(Canvas).ExtTextOut(R.Left, R.Top, [etoOpaque, etoClipped], nil, Ch, @MyDi[0]);
-        ErrorHighlighting.PaintError(Canvas, ColPainted + 1, Line, R, Length(Ch), MyDi);
+        ErrorHighlighting.PaintError(Canvas, ColPainted, Line, R, Length(Ch), MyDi);
 
         if LA.Border <> clNone then
         begin
