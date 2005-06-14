@@ -135,13 +135,18 @@ type
     procedure Update(Item: TCollectionItem); override;
     procedure FillItems;
   public
-    function Add: TJvImageItem; overload;
-    function Add(const Text: string): Integer; overload;
-    function Insert(Index: Integer): TJvImageItem; overload;
-    procedure Insert(Index: Integer; const Text: string); overload;
-    procedure Move(CurIndex, NewIndex: Integer);
-    procedure Assign(Source: TPersistent); override;
     constructor Create(AOwner: TPersistent);
+    procedure Assign(Source: TPersistent); override;
+    function Add: TJvImageItem;
+    function AddText(const Text: string): Integer;
+    function AddObject(const Text: string; ALinkedObject: TObject): Integer;
+    function Insert(Index: Integer): TJvImageItem;
+    procedure InsertText(Index: Integer; const Text: string);
+    procedure InsertObject(Index: Integer; const Text: string; ALinkedObject: TObject);
+    procedure Move(CurIndex, NewIndex: Integer);
+
+    function IndexOfLinkedObject(ALinkedObject: TObject): Integer;
+
     property Items[Index: Integer]: TJvImageItem read GetItems write SetItems; default;
     property Objects[Index: Integer]: TObject read GetObjects write SetObjects;
   end;
@@ -576,10 +581,10 @@ function TJvImageItems.Add: TJvImageItem;
 begin
   Result := TJvImageItem(inherited Add);
   while FStrings.Count < Count do
-    Result.Index := FStrings.AddObject('',Result);
+    Result.Index := FStrings.AddObject('', Result);
 end;
 
-function TJvImageItems.Add(const Text: string): Integer;
+function TJvImageItems.AddText(const Text: string): Integer;
 var
   Item: TJvImageItem;
 begin
@@ -591,11 +596,11 @@ end;
 function TJvImageItems.Insert(Index: Integer): TJvImageItem;
 begin
   Result := TJvImageItem(inherited Insert(Index));
-  FStrings.InsertObject(Index,'',Result);
+  FStrings.InsertObject(Index, '', Result);
   Result.Index := FStrings.IndexOfObject(Result);
 end;
 
-procedure TJvImageItems.Insert(Index: Integer; const Text: string);
+procedure TJvImageItems.InsertText(Index: Integer; const Text: string);
 begin
   Insert(Index).Text := Text;
 end;
@@ -624,6 +629,14 @@ begin
     end;
     Changed;
   end;
+end;
+
+function TJvImageItems.IndexOfLinkedObject(ALinkedObject: TObject): Integer;
+begin
+  for Result := 0 to Count - 1 do
+    if Items[Result].LinkedObject = ALinkedObject then
+      Exit;
+  Result := -1;
 end;
 
 procedure TJvImageItems.Assign(Source: TPersistent);
@@ -692,6 +705,27 @@ begin
       FStrings.InsertObject(Index,'',Items[Index]);
   for Index := 0 to FStrings.Count-1 do
     TJvImageItem(FStrings.Objects[Index]).Index := Index;
+end;
+
+function TJvImageItems.AddObject(const Text: string;
+  ALinkedObject: TObject): Integer;
+var
+  Item: TJvImageItem;
+begin
+  Item := Add;
+  Item.Text := Text;
+  Item.LinkedObject := ALinkedObject;
+  Result := Item.Index;
+end;
+
+procedure TJvImageItems.InsertObject(Index: Integer; const Text: string;
+  ALinkedObject: TObject);
+var
+  Item: TJvImageItem;
+begin
+  Item := Insert(Index);
+  Item.Text := Text;
+  Item.LinkedObject := ALinkedObject;
 end;
 
 //=== { TJvImageComboBox } ===================================================
