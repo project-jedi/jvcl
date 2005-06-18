@@ -1150,7 +1150,7 @@ begin
   begin
     // Create from the class type, so that the virtual constructor is called
     // creating an element of the correct class type.
-    Elem := TJvSimpleXMLElemClass(Elems.Items[I].ClassType).Create(Elem.Items[I].Parent);
+    Elem := TJvSimpleXMLElemClass(Elems.Items[I].ClassType).Create(Elems.Items[I].Parent);
     Elem.Assign(Elems.Items[I]);
     Items.Add(Elem);
   end;
