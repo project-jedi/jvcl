@@ -472,13 +472,18 @@ end;
 destructor TJvImageItem.Destroy;
 var
   S: TStrings;
+  i: Integer;
 begin
   S := GetOwnerStrings;
+  FOwner := nil; // indicate that the item is in the destructor
   // PRY 2002.06.04
   //if (S <> nil) and not (csDestroying in TComponent(FOwner.GetWinControl).ComponentState) then
   if (S <> nil) and not (csDestroying in GetWinControl.ComponentState) then
+  begin
     S.Delete(Index);
-
+    for i := 0 to S.Count - 1 do
+      TJvImageItem(S.Objects[i]).Index := i;
+  end;
   FFont.Free;
   FGlyph.Free;
   inherited Destroy;
@@ -526,6 +531,7 @@ end;
 procedure TJvImageItem.SetText(const Value: string);
 var
   S: TStrings;
+  SavedOwner: TJvImageItems;
 begin
   S := GetOwnerStrings;
   if Assigned(FOwner) and (FOwner.FStrings.Count <> FOwner.Count) then
@@ -534,12 +540,18 @@ begin
   begin
     if S[Index] <> Value then
     begin
-      S.Delete(Index);
-      // Use FOwner.GetOwner to keep D5/C5 compatibility
-      if (FOwner.GetOwner is TJvImageListBox) and (TJvImageListBox(FOwner.GetOwner).Sorted) then
-        S.AddObject(Value,Self)
-      else
-        S.InsertObject(Index,Value,Self);
+      SavedOwner := FOwner; // do not add the item in FillItems which meight be called by the draw message handler while deleting the string
+      try
+        FOwner := nil;
+        S.Delete(Index);
+        // Use FOwner.GetOwner to keep D5/C5 compatibility
+        if (SavedOwner.GetOwner is TJvImageListBox) and (TJvImageListBox(SavedOwner.GetOwner).Sorted) then
+          S.AddObject(Value, Self)
+        else
+          S.InsertObject(Index, Value, Self);
+      finally
+        FOwner := SavedOwner;
+      end;
       Index := S.IndexOfObject(Self);
       Change;
     end;
@@ -563,11 +575,14 @@ var
   OldIndex: Integer;
   S: TStrings;
 begin
-  OldIndex := Index;
-  inherited SetIndex(Value);
-  S := GetOwnerStrings;
-  if (S.IndexOfObject(Self) <> Value) then
-    S.Move(OldIndex,Value);
+  if Value <> Index then
+  begin
+    OldIndex := Index;
+    inherited SetIndex(Value);
+    S := GetOwnerStrings;
+    if (S.IndexOfObject(Self) <> Value) then
+      S.Move(OldIndex,Value);
+  end;
 end;
 
 //=== { TJvImageItems } ======================================================
@@ -700,10 +715,11 @@ procedure TJvImageItems.FillItems;
 var
   Index: Integer;
 begin
-  for Index := 0 to Count-1 do
-    if FStrings.IndexOfObject(Items[Index]) = -1 then
-      FStrings.InsertObject(Index,'',Items[Index]);
-  for Index := 0 to FStrings.Count-1 do
+  for Index := 0 to Count - 1 do
+    if Items[Index].FOwner = Self then // not in destructor
+      if FStrings.IndexOfObject(Items[Index]) = -1 then
+        FStrings.InsertObject(Index, '', Items[Index]);
+  for Index := 0 to FStrings.Count - 1 do
     TJvImageItem(FStrings.Objects[Index]).Index := Index;
 end;
 
