@@ -7633,6 +7633,7 @@ begin
 
             if Assigned(Coord.Schedule) then
               SchedName := Coord.Schedule.SchedName;
+            DragRect := Rect(-1, -1, -1, -1); // Used to not show hint if outside a valid day.
             for I := 0 to Cols.Count - 1 do
             begin
               Sched := Cols[I].Schedule;
@@ -7657,7 +7658,9 @@ begin
                 DrawFrame(DragRect);
               end;
             end;
-            if not Clear and (agoShowApptHints in Options) then
+            if not Clear and (agoShowApptHints in Options) and
+              (DragRect.Top <> -1) and (DragRect.Left <> -1) and
+              (DragRect.Right <> -1) and (DragRect.Bottom <> -1) then
               FHint.StartEndHint(Trunc(StartDT), Trunc(EndDT),
                 Frac(StartDT), Frac(EndDT),
                 DragRect.Right + 2, DragRect.Top + 2,
