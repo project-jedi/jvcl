@@ -8714,7 +8714,7 @@ begin
       FOnCreateQuickEntry(Self, ID, ApptStartDate, ApptStartTime,
         ApptEndDate, ApptEndTime, Confirm);
 
-    if Confirm then
+    if Confirm and Assigned(ScheduleManager) then
     begin
       Appt := ScheduleManager.dbNewAppt(ID);
       Appt.Persistent := True;
