@@ -7585,7 +7585,7 @@ begin
             for I := 0 to Cols.Count - 1 do
             begin
               Sched := Cols[I].Schedule;
-              if (Sched.SchedName = SchedName) and
+              if Assigned(Sched) and (Sched.SchedName = SchedName) and
                 ((Trunc(Sched.SchedDate) >= Trunc(AAppt.StartDate)) and
                 (Trunc(Sched.SchedDate) <= Trunc(EndDT))) then
               begin
@@ -7631,11 +7631,12 @@ begin
               Update;
             end;
 
-            SchedName := Coord.Schedule.SchedName;
+            if Assigned(Coord.Schedule) then
+              SchedName := Coord.Schedule.SchedName;
             for I := 0 to Cols.Count - 1 do
             begin
               Sched := Cols[I].Schedule;
-              if (Sched.SchedName = SchedName) and
+              if Assigned(Sched) and (Sched.SchedName = SchedName) and
                 ((Trunc(Sched.SchedDate) >= Trunc(StartDT)) and
                 (Trunc(Sched.SchedDate) <= Trunc(EndDT))) then
               begin
