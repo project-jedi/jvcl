@@ -1955,11 +1955,14 @@ begin
   if Value < 1 then
     Value := 1;
 
-  if Value <> FLinearDayCount then
+  if (Value <> FLinearDayCount) then
   begin
     FLinearDayCount := Value;
-    FLinearEndDate := FLinearStartDate + Value - 1;
-    LinearDaysChanged;
+    if not (csLoading in FGrid.ComponentState) then
+    begin
+      FLinearEndDate := FLinearStartDate + Value - 1;
+      LinearDaysChanged;
+    end;
   end;
 end;
 
@@ -1968,11 +1971,14 @@ begin
   if Trunc(Value) < Trunc(FLinearStartDate) then
     Value := FLinearStartDate;
 
-  if Trunc(Value) <> Trunc(FLinearEndDate) then
+  if (Trunc(Value) <> Trunc(FLinearEndDate)) then
   begin
     FLinearEndDate := Value;
-    FLinearDayCount := Trunc(FLinearEndDate - FLinearStartDate + 1);
-    LinearDaysChanged;
+    if not (csLoading in FGrid.ComponentState) then
+    begin
+      FLinearDayCount := Trunc(FLinearEndDate - FLinearStartDate + 1);
+      LinearDaysChanged;
+    end;
   end;
 end;
 
@@ -14675,6 +14681,13 @@ end;
 
 {$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
+procedure TJvTFDaysTemplate.Loaded;
+begin
+  inherited Loaded;
+
+  LinearDaysChanged;
+end;
+
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 
