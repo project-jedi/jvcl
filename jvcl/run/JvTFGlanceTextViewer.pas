@@ -81,9 +81,12 @@ type
     FViewer: TJvTFGlanceTextViewer;
     FReplicating: Boolean;
     FMouseLine: Integer;
+    FCanEdit : Boolean;
+    
     function GetGlanceControl: TJvTFCustomGlance;
     procedure SetTopLine(Value: Integer);
     function GetTopLine: Integer;
+    procedure SetCanEdit(const Value: Boolean);
   protected
     FMousePtInfo: TJvTFGlTxtVwPointInfo;
     FDDBtnRect: TRect;
@@ -147,7 +150,6 @@ type
     procedure EditAppt(ACell: TJvTFGlanceCell; RelLine: Integer; Appt: TJvTFAppt);
     procedure FinishEditAppt;
     function Editing: Boolean;
-    function CanEdit: Boolean;
 
     function LineCount: Integer;
     function AbsLineCount: Integer;
@@ -157,6 +159,8 @@ type
 
     function GetApptAt(X, Y: Integer): TJvTFAppt;
     function GetApptAccel(X, Y: Integer): TJvTFAppt;
+
+    property CanEdit: Boolean read FCanEdit write SetCanEdit;
   end;
 
   TJvTFLineDDClickEvent = procedure(Sender: TObject; LineNum: Integer) of object;
@@ -191,11 +195,13 @@ type
     FTopLines: TStringList;
     FSelApptAttr: TJvTFTxtVwApptAttr;
     FSelAppt: TJvTFAppt;
+    FInPlaceEdit: Boolean;
     procedure SetLineSpacing(Value: Integer);
     procedure SetSelApptAttr(Value: TJvTFTxtVwApptAttr);
     procedure SetEditorAlign(Value: TJvTFGlTxtVwEditorAlign);
     procedure SetShowStartEnd(Value: Boolean);
     function GetCellString(ACell: TJvTFGlanceCell): string;
+    procedure SetInplaceEdit(const Value: Boolean);
   protected
     procedure SetVisible(Value: Boolean); override;
     procedure SetGlanceControl(Value: TJvTFCustomGlance); override;
@@ -235,6 +241,7 @@ type
       write SetEditorAlign default eaLine;
     property ShowStartEnd: Boolean read FShowStartEnd
       write SetShowStartEnd default True;
+    property InPlaceEdit: Boolean read FInPlaceEdit write SetInplaceEdit;
   end;
 
 {$IFDEF USEJVCL}
@@ -771,6 +778,11 @@ begin
     Result := Rect(0, 0, 0, 0);
 end;
 
+procedure TJvTFGVTextControl.SetCanEdit(const Value: Boolean);
+begin
+  FCanEdit := Value;
+end;
+
 destructor TJvTFGVTextControl.Destroy;
 begin
   FEditor.Free;
@@ -868,11 +880,6 @@ begin
     GlanceControl.CellIsSelected(Viewer.Cell), False);
 
   Result := RectHeight(aRect) div CalcLineHeight;
-end;
-
-function TJvTFGVTextControl.CanEdit: Boolean;
-begin
-  Result := True;
 end;
 
 {
@@ -1205,6 +1212,13 @@ begin
   FViewControl.Parent := Value;
 end;
 
+procedure TJvTFGlanceTextViewer.SetInplaceEdit(const Value: Boolean);
+begin
+  FInPlaceEdit := Value;
+  FViewControl.CanEdit := InPlaceEdit;
+  FViewControl.Invalidate;
+end;
+
 procedure TJvTFGlanceTextViewer.SetLineSpacing(Value: Integer);
 begin
   //Value := Greater(Value, 0);
@@ -1278,7 +1292,7 @@ end;
 
 function TJvTFGlanceTextViewer.CanEdit: Boolean;
 begin
-  Result := FViewControl.CanEdit;
+  Result := FViewControl.CanEdit and InPlaceEdit;
 end;
 
 procedure TJvTFGlanceTextViewer.EditAppt(ACell: TJvTFGlanceCell; RelLine: Integer;
