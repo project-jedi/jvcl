@@ -91,7 +91,7 @@ type
     procedure RemoveZone(Zone: TJvDockZone; Hide: Boolean); override;
   public
     constructor Create(DockSite: TWinControl; ADockZoneClass: TJvDockZoneClass;
-      ADockStyle: TComponent {TJvDockBasicStyle}); override;
+      ADockStyle: TJvDockObservableStyle); override;
     property BottomOffset: Integer read FBottomOffset write SetBottomOffset;
     property ButtonHeight: Integer read FButtonHeight write SetButtonHeight;
     property ButtonSplitter: Integer read FButtonSplitter write SetButtonSplitter;
@@ -126,7 +126,7 @@ uses
 //=== { TJvDockAdvTree } =====================================================
 
 constructor TJvDockAdvTree.Create(DockSite: TWinControl;
-  ADockZoneClass: TJvDockZoneClass; ADockStyle: TComponent {TJvDockBasicStyle});
+  ADockZoneClass: TJvDockZoneClass; ADockStyle: TJvDockObservableStyle);
 begin
   inherited Create(DockSite, ADockZoneClass, ADockStyle);
   FButtonHeight := 12;
@@ -136,11 +136,6 @@ begin
   FTopOffset := 0;
   FBottomOffset := 0;
   FButtonSplitter := 2;
-  if DockSite is TJvDockAdvPanel then
-  begin {NEW!}
-    Assert(not Assigned(TJvDockADVPanel(DockSite).ADVTree));
-    TJvDockAdvPanel(DockSite).ADVTree := Self;
-  end;
 end;
 
 function TJvDockAdvTree.DoLButtonDown(var Msg: TWMMouse;

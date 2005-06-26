@@ -69,14 +69,15 @@ type
     procedure FontChanged(Sender: TObject);
     function IsNotSystemInfo: Boolean;
     procedure SettingChange(Sender: TObject);
-    procedure ResetDockControlOption; override;
+    procedure Changed; override;
     procedure UpdateDefaultSystemCaptionInfo; virtual;
     procedure SetDefaultSystemCaptionInfo;
   public
-    constructor Create(ADockStyle: TJvDockBasicStyle); override;
+    constructor Create(ADockStyle: TJvDockObservableStyle); override;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
   published
+    { (rb) these properties are all *not* used. }
     property ActiveFont: TFont read FActiveFont write SetActiveFont stored IsNotSystemInfo;
     property InactiveFont: TFont read FInactiveFont write SetInactiveFont stored IsNotSystemInfo;
     property TextAlignment: TAlignment read FTextAlignment write SetTextAlignment default taLeftJustify;
@@ -108,10 +109,8 @@ type
     procedure SetShowTabImages(const Value: Boolean);
   protected
     procedure FontChanged(Sender: TObject);
-    procedure ResetDockControlOption; override;
-    procedure ResetTabPageControl(APage: TJvDockTabPageControl); override;
   public
-    constructor Create(ADockStyle: TJvDockBasicStyle); override;
+    constructor Create(ADockStyle: TJvDockObservableStyle); override;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure SetTabPosition(const Value: TTabPosition); override;
@@ -143,8 +142,6 @@ type
       var Source: TJvDockDragDockObject); override;
     procedure FormGetDockEdge(DockClient: TJvDockClient; Source: TJvDockDragDockObject;
       MousePos: TPoint; var DropAlign: TAlign); override;
-    procedure AssignConjoinServerOption(APanel: TJvDockCustomPanel); override;
-    procedure AssignTabServerOption(APage: TJvDockTabPageControl); override;
     procedure DoSystemInfoChange(Value: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
@@ -175,7 +172,6 @@ type
       State: TDragState; var Accept: Boolean); override;
     procedure CustomGetDockEdge(Source: TJvDockDragDockObject; MousePos: TPoint;
       var DropAlign: TAlign); override;
-    function CreateDockManager: IDockManager; override;
   public
     procedure DockDrop(Source: TDragDockObject; X, Y: Integer); override;
     procedure UpdateCaption(Exclude: TControl); override;
@@ -191,7 +187,6 @@ type
     procedure CustomGetDockEdge(Source: TJvDockDragDockObject; MousePos: TPoint; var DropAlign: TAlign); override;
     function CustomUnDock(Source: TJvDockDragDockObject; NewTarget: TWinControl; Client: TControl): Boolean; override;
     procedure CustomDockDrop(Source: TJvDockDragDockObject; X, Y: Integer); override;
-    function CreateDockManager: IDockManager; override;
   public
     procedure UpdateCaption(Exclude: TControl); override;
     procedure DockDrop(Source: TDragDockObject; X, Y: Integer); override;
@@ -269,7 +264,7 @@ type
     property CaptionLeftOffset: Integer read FCaptionLeftOffset write SetCaptionLeftOffset;
     property CaptionRightOffset: Integer read FCaptionRightOffset write SetCaptionRightOffset;
   public
-    constructor Create(DockSite: TWinControl; DockZoneClass: TJvDockZoneClass; ADockStyle: TComponent); override;
+    constructor Create(DockSite: TWinControl; DockZoneClass: TJvDockZoneClass; ADockStyle: TJvDockObservableStyle); override;
   end;
 
   TJvDockVIDVCTabPageControl = class;
@@ -1071,30 +1066,6 @@ begin
   Result := inherited DockClientWindowProc(DockClient, Msg);
 end;
 
-procedure TJvDockVIDVCStyle.AssignConjoinServerOption(APanel: TJvDockCustomPanel);
-begin
-  inherited AssignConjoinServerOption(APanel);
-end;
-
-procedure TJvDockVIDVCStyle.AssignTabServerOption(APage: TJvDockTabPageControl);
-var
-  TmpPage: TJvDockVIDVCTabPageControl;
-  TmpOption: TJvDockVIDVCTabServerOption;
-begin
-  inherited AssignTabServerOption(APage);
-  if (APage is TJvDockVIDVCTabPageControl) and (TabServerOption is TJvDockVIDVCTabServerOption) then
-  begin
-    TmpPage := APage as TJvDockVIDVCTabPageControl;
-    TmpOption := TabServerOption as TJvDockVIDVCTabServerOption;
-    TmpPage.ActiveFont.Assign(TmpOption.ActiveFont);
-    TmpPage.ActiveSheetColor := TmpOption.ActiveSheetColor;
-    TmpPage.InactiveFont.Assign(TmpOption.InactiveFont);
-    TmpPage.InactiveSheetColor := TmpOption.InactiveSheetColor;
-    TmpPage.HotTrackColor := TmpOption.HotTrackColor;
-    TmpPage.ShowTabImages := TmpOption.ShowTabImages;
-  end;
-end;
-
 procedure TJvDockVIDVCStyle.DoSystemInfoChange(Value: Boolean);
 begin
   if Assigned(FSystemInfoChange) then
@@ -1102,18 +1073,6 @@ begin
 end;
 
 //=== { TJvDockVIDVCPanel } ==================================================
-
-function TJvDockVIDVCPanel.CreateDockManager: IDockManager;
-var
-  Option: TJvDockVIDVCConjoinServerOption;
-begin
-  Result := inherited CreateDockManager;
-  if (DockServer <> nil) and (Result <> nil) then
-  begin
-    Option := TJvDockVIDVCConjoinServerOption(DockServer.DockStyle.ConjoinServerOption);
-    (Result as IJvDockManager).GrabberSize := Option.GrabbersSize;
-  end;
-end;
 
 procedure TJvDockVIDVCPanel.CustomDockDrop(Source: TJvDockDragDockObject; X, Y: Integer);
 begin
@@ -1182,11 +1141,10 @@ end;
 //=== { TJvDockVIDVCTree } ===================================================
 
 constructor TJvDockVIDVCTree.Create(DockSite: TWinControl;
-  DockZoneClass: TJvDockZoneClass; ADockStyle: TComponent);
+  DockZoneClass: TJvDockZoneClass; ADockStyle: TJvDockObservableStyle);
 begin
   inherited Create(DockSite, DockZoneClass, ADockStyle);
   FDropOnZone := nil;
-  GrabberSize := 18;
   ButtonHeight := 11;
   ButtonWidth := 13;
   LeftOffset := 2;
@@ -1741,7 +1699,6 @@ begin
         begin
         end;
     end;
-
 end;
 
 procedure TJvDockVIDVCTree.ResetBounds(Force: Boolean);
@@ -2432,18 +2389,6 @@ end;
 
 //=== { TJvDockVIDVCConjoinPanel } ===========================================
 
-function TJvDockVIDVCConjoinPanel.CreateDockManager: IDockManager;
-var
-  Option: TJvDockVIDVCConjoinServerOption;
-begin
-  Result := inherited CreateDockManager;
-  if (ParentForm <> nil) and (ParentForm.DockClient.DockStyle <> nil) and (Result <> nil) then
-  begin
-    Option := TJvDockVIDVCConjoinServerOption(ParentForm.DockClient.DockStyle.ConjoinServerOption);
-    (Result as IJvDockManager).GrabberSize := Option.GrabbersSize;
-  end;
-end;
-
 procedure TJvDockVIDVCConjoinPanel.CustomDockDrop(Source: TJvDockDragDockObject;
   X, Y: Integer);
 begin
@@ -2921,19 +2866,25 @@ procedure TJvDockVIDVCTabPageControl.DockDrop(Source: TDragDockObject;
   X, Y: Integer);
 var
   Index: Integer;
+  NewPage: TJvDockTabSheet;
 begin
   inherited DockDrop(Source, X, Y);
   FPanel.SelectSheet := nil;
-  ParentForm.Caption := ActivePage.Caption;
+  if ActivePage <> nil then
+    ParentForm.Caption := ActivePage.Caption;
   if Source.Control is TCustomForm then
   begin
-    if Source.Control.Visible and (Source.Control.Parent is TJvDockTabSheet) then
-      ActivePage := TJvDockTabSheet(Source.Control.Parent);
+    if Source.Control.Parent is TJvDockTabSheet then
+      NewPage := TJvDockTabSheet(Source.Control.Parent)
+    else
+      NewPage := nil;
+    if Source.Control.Visible and Assigned(NewPage) then
+      ActivePage := NewPage;
     if FTabImageList <> nil then
     begin
       Index := FTabImageList.AddIcon(TForm(Source.Control).Icon);
-      if (Index <> -1) and (ActivePage <> nil) then
-        ActivePage.ImageIndex := Index;
+      if (Index <> -1) and Assigned(NewPage) then
+        NewPage.ImageIndex := Index;
     end;
   end;
 end;
@@ -4258,7 +4209,7 @@ end;
 
 //=== { TJvDockVIDVCTabServerOption } ========================================
 
-constructor TJvDockVIDVCTabServerOption.Create(ADockStyle: TJvDockBasicStyle);
+constructor TJvDockVIDVCTabServerOption.Create(ADockStyle: TJvDockObservableStyle);
 begin
   inherited Create(ADockStyle);
   TabPosition := tpBottom;
@@ -4289,7 +4240,7 @@ begin
     BeginUpdate;
     try
       Src := TJvDockVIDVCTabServerOption(Source);
-      
+
       ActiveFont := Src.ActiveFont;
       ActiveSheetColor := Src.ActiveSheetColor;
       HotTrackColor := Src.HotTrackColor;
@@ -4309,26 +4260,6 @@ end;
 procedure TJvDockVIDVCTabServerOption.FontChanged(Sender: TObject);
 begin
   Changed;
-end;
-
-procedure TJvDockVIDVCTabServerOption.ResetDockControlOption;
-begin
-  inherited ResetDockControlOption;
-end;
-
-procedure TJvDockVIDVCTabServerOption.ResetTabPageControl(APage: TJvDockTabPageControl);
-begin
-  inherited ResetTabPageControl(APage);
-  if APage is TJvDockVIDVCTabPageControl then
-  begin
-    TJvDockVIDVCTabPageControl(APage).ActiveFont := ActiveFont;
-    TJvDockVIDVCTabPageControl(APage).ActiveSheetColor := ActiveSheetColor;
-    TJvDockVIDVCTabPageControl(APage).HotTrackColor := HotTrackColor;
-    TJvDockVIDVCTabPageControl(APage).InactiveFont := InactiveFont;
-    TJvDockVIDVCTabPageControl(APage).InactiveSheetColor := InactiveSheetColor;
-    TJvDockVIDVCTabPageControl(APage).ShowTabImages := ShowTabImages;
-    TJvDockVIDVCTabPageControl(APage).TabPosition := TabPosition;
-  end;
 end;
 
 procedure TJvDockVIDVCTabServerOption.SetActiveFont(Value: TFont);
@@ -4387,10 +4318,11 @@ end;
 
 ///=== { TJvDockVIDVCConjoinServerOption } ===================================
 
-constructor TJvDockVIDVCConjoinServerOption.Create(ADockStyle: TJvDockBasicStyle);
+constructor TJvDockVIDVCConjoinServerOption.Create(ADockStyle: TJvDockObservableStyle);
 begin
   inherited Create(ADockStyle);
-  GrabbersSize := 18;
+  GrabbersSize := VIDDefaultDockGrabbersSize;
+  SplitterWidth := VIDDefaultDockSplitterWidth; 
   FActiveFont := TFont.Create;
   FActiveFont.OnChange := FontChanged;
   FInactiveFont := TFont.Create;
@@ -4576,9 +4508,9 @@ begin
     SetDefaultSystemCaptionInfo;
 end;
 
-procedure TJvDockVIDVCConjoinServerOption.ResetDockControlOption;
+procedure TJvDockVIDVCConjoinServerOption.Changed;
 begin
-  inherited ResetDockControlOption;
+  inherited Changed;
   SystemInfo := SystemInfo and (GrabbersSize = VIDDefaultDockGrabbersSize) and
     (SplitterWidth = VIDDefaultDockSplitterWidth);
   TJvDockVIDVCStyle(DockStyle).DoSystemInfoChange(SystemInfo);

@@ -121,7 +121,6 @@ type
   {$ENDIF USEJVCL}
   private
     function GetJvDockManager: IJvDockManager;
-    procedure SetJvDockManager(const Value: IJvDockManager);
   protected
     procedure WndProc(var Msg: TMessage); override;
     procedure CustomStartDock(var Source: TJvDockDragDockObject); virtual;
@@ -138,7 +137,7 @@ type
   public
     procedure UpdateCaption(Exclude: TControl); virtual;
     property DockManager;
-    property JvDockManager: IJvDockManager read GetJvDockManager write SetJvDockManager;
+    property JvDockManager: IJvDockManager read GetJvDockManager{ write SetJvDockManager};
   end;
 
   TJvDockCustomPanel = class(TJvDockCustomControl)
@@ -737,11 +736,6 @@ begin
   Result := IJvDockManager(DockManager);
 end;
 
-procedure TJvDockCustomControl.SetJvDockManager(const Value: IJvDockManager);
-begin
-  DockManager := Value;
-end;
-
 procedure TJvDockCustomControl.UpdateCaption(Exclude: TControl);
 var
   I: Integer;
@@ -818,62 +812,11 @@ begin
 end;
 
 function TJvDockCustomPanel.CreateDockManager: IDockManager;
-var
-  DS: TJvDockBasicStyle;
-  // DC: TJvDockClient;
 begin
-  // Wow, TJvDockCustomPanel.CreateDockManager is actually checking that
-  // it is a particular Subclass of itself in this case. I guess that this method
-  // can't be virtual, so instead there is a big if..else... clause here
-  // that handles a number of different TJvDockCustomPanel descendants.
-  if (Self is TJvDockConjoinPanel) and
-    (TJvDockConjoinPanel(Self).DockClient <> nil) and
-    (TJvDockConjoinPanel(Self).DockClient.DockStyle <> nil) and
-    (TJvDockConjoinPanel(Self).DockClient.DockStyle.ConjoinPanelTreeClass <> nil) and
-    (TJvDockConjoinPanel(Self).DockClient.DockStyle.ConjoinPanelTreeClass <> TJvDockTreeClass(ClassType)) then
-  begin
-    if (DockManager = nil) and DockSite and UseDockManager then
-    begin
-      { Given a custom panel, to create the dock manager (which is an
-        interface, IDockManager, but is of a delphi Class that descends
-        from TJvDockTree), we have to do a dynamic constructor. The
-        class of object created here is stored in
-           TJvDockConjoinPanel(Self).DockClient.DockStyle.ConjoinPanelTreeClass
-        and we pass in the owner,
-      }
-      DS := TJvDockConjoinPanel(Self).DockClient.DockStyle;
-      Result := DS.ConjoinPanelTreeClass.Create(Self, DS.ConjoinPanelZoneClass,
-        DS) as IJvDockManager; // cast VCL object to Interface IDockManager
-    end
-    else
-      Result := DockManager;
-  end
+  if (DockManager = nil) and DockSite and UseDockManager then
+    Result := DefaultDockTreeClass.Create(Self, DefaultDockZoneClass, nil) as IJvDockManager
   else
-  if (Self is TJvDockPanel) and
-    (TJvDockPanel(Self).DockServer <> nil) then
-  begin
-    DS := TJvDockPanel(Self).DockServer.DockStyle;
-    if ((DS <> nil) and (DS.DockPanelTreeClass <> nil) and
-      (DS.DockPanelTreeClass <> TJvDockTreeClass(ClassType))) then
-    begin
-      if (DockManager = nil) and DockSite and UseDockManager then
-        /// This is a fallback, kind of ugly!  This is used for the JVVSNET
-        // and other special panel types only.
-        Result := DS.DockPanelTreeClass.Create(Self, DS.DockPanelZoneClass, DS) as IJvDockManager
-      else
-        Result := DockManager;
-    end
-    else
-      Result := DockManager;
-  end
-  else
-  begin
-    if (DockManager = nil) and DockSite and UseDockManager then
-      //DS := ????
-      Result := DefaultDockTreeClass.Create( Self, DefaultDockZoneClass, nil {DS}) as IJvDockManager
-    else
-      Result := DockManager;
-  end;
+    Result := DockManager;
   DoubleBuffered := DoubleBuffered or (Result <> nil);
 end;
 
