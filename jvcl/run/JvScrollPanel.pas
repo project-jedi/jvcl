@@ -124,8 +124,6 @@ type
     procedure EnabledChanged; override;
     procedure SetParent({$IFDEF VisualCLX} const {$ENDIF} AParent: TWinControl); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    property Align default alTop;
-    property Height default 35;
     property AutoHide: Boolean read FAutoHide write SetAutoHide;
     property AutoRepeat: Boolean read FAutoRepeat write FAutoRepeat;
     property AutoArrange: Boolean read FAutoArrange write SetAutoArrange default False;
@@ -137,6 +135,9 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
+  published
+    property Align default alTop;
+    property Height default 35;
   end;
 
   TJvScrollingWindow = class(TJvCustomScrollPanel)
