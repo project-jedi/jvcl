@@ -37,7 +37,11 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$ENDIF USEJVCL}
+  ComCtrls,
   Windows, Messages, Classes, Graphics, Controls, Forms,
+  {$IFDEF USEJVCL}
+  JvComponent,
+  {$ENDIF USEJVCL}
   JvDockSupportClass;
 
 type
@@ -76,6 +80,10 @@ type
     function GetDockClientLimit(Orient: TDockOrientation; IsMin: Boolean): Integer;
     function GetFrameRect(Control: TControl): TRect;
     function GetFrameRectEx(Control: TControl): TRect;
+    {$IFDEF JVDOCK_QUERY}
+    // Descends the Tree and Finds and return TWinControls docked to a particular parent.
+    procedure ControlQuery(DockedTo: TWinControl; FoundItems: TList);
+    {$ENDIF JVDOCK_QUERY}
     property ActiveControl: TControl read GetActiveControl write SetActiveControl;
     property GrabberSize: Integer read GetGrabberSize write SetGrabberSize;
     property SplitterWidth: Integer read GetDockSplitterWidth write SetDockSplitterWidth;
@@ -112,7 +120,7 @@ type
      \   \   \         \     \
       x0  x1  x2        x3    x4
   }
-  
+
   TJvDockZone = class(TObject)
   private
     FChildControl: TWinControl;
@@ -237,6 +245,9 @@ type
   TJvDockForEachZoneProc = procedure(Zone: TJvDockZone) of object;
   TJvDockZoneClass = class of TJvDockZone;
 
+  TJvDockObservableStyle = class;
+  TJvDockStyleLink = class;
+
   TJvDockTree = class(TInterfacedObject, IJvDockManager)
   private
     FDockZoneClass: TJvDockZoneClass;
@@ -265,10 +276,7 @@ type
     FParentLimit: Integer;
     FMinSize: Integer;
     FCanvas: TControlCanvas;
-    {$IFDEF JVCL_DOCKING_NOTIFYLISTENERS}
-    FDockStyle: TComponent; {FUTURE: actual type is TJvDockBasicStyle}  {NEW!}
-    FDockStyleListener: Boolean; {FUTURE:if True, we are linked as a listener to this dock style.}
-    {$ENDIF JVCL_DOCKING_NOTIFYLISTENERS}
+    FStyleLink: TJvDockStyleLink;
     FGrabberSize: Integer; { size of grabber }
     FGrabberShowLines: Boolean; {should there be bump-lines to make the grabber look 'grabby'? }
     FGrabberBgColor: TColor; // if FGrabberStandardDraw is False, this indicates background color of Grabber.
@@ -295,6 +303,8 @@ type
     procedure SetDockRect(const Value: TRect);
     function GetMinSize: Integer;
     function HasZoneWithControl(Control: TControl): Boolean;
+    procedure DockStyleChanged(Sender: TObject);
+    function GetDockStyle: TJvDockObservableStyle;
    protected
     procedure WindowProc(var Msg: TMessage); virtual;
     procedure BeginDrag(Control: TControl;
@@ -424,6 +434,7 @@ type
     procedure ShowSingleControl(Control: TControl);
     procedure HideSingleControl(Control: TControl);
     procedure ReplaceZoneChild(OldControl, NewControl: TControl);
+    procedure SyncWithStyle; virtual;
     property BorderWidth: Integer read GetBorderWidth write SetBorderWidth;
     property Canvas: TControlCanvas read FCanvas;
     property DockSiteSize: Integer read GetDockSiteSize write SetDockSiteSize;
@@ -432,7 +443,7 @@ type
     property DockSiteSizeWithOrientation[Orient: TDockOrientation]: Integer
     read GetDockSiteSizeWithOrientation write SetDockSiteSizeWithOrientation;
 
-    property GrabberSize: Integer read FGrabberSize write SetGrabberSize;
+    property GrabberSize: Integer read GetGrabberSize write SetGrabberSize;
     property GrabberShowLines: Boolean read FGrabberShowLines write FGrabberShowLines; {should there be bump-lines to make the grabber look 'grabby'? }
     property GrabberBgColor: TColor read FGrabberBgColor write FGrabberBgColor; // if FGrabberStandardDraw is False, this indicates background color of Grabber. Set to clNone to skip painting the background.
     property GrabberBottomEdgeColor: TColor read FGrabberBottomEdgeColor write FGrabberBottomEdgeColor; // if anything other than clNone, draw a line at bottom edge.
@@ -483,11 +494,9 @@ type
     {$ENDIF JVDOCK_QUERY}
     // (rom) deactivated  completely unused
     // SplitterCanvas: TControlCanvas;
-    constructor Create(ADockSite: TWinControl; ADockZoneClass: TJvDockZoneClass; ADockStyle: TComponent {TJvDockBasicStyle}); virtual;
+    constructor Create(ADockSite: TWinControl; ADockZoneClass: TJvDockZoneClass; ADockStyle: TJvDockObservableStyle); virtual;
     destructor Destroy; override;
-   {$IFDEF JVCL_DOCKING_NOTIFYLISTENERS}
-    procedure NotifyDockStyleChange; virtual; // properties in Dock Style (FDockStyle) have changed.
-   {$ENDIF JVCL_DOCKING_NOTIFYLISTENERS}
+    procedure AfterConstruction; override;
     property DockSite: TWinControl read FDockSite write FDockSite;
     property DockSiteOrientation: TDockOrientation read GetDockSiteOrientation;
     procedure SetSplitterCursor(CursorIndex: TDockOrientation); virtual;
@@ -497,13 +506,111 @@ type
     procedure UpdateAll;
     procedure UpdateChild(Zone: TJvDockZone);
     property DockZoneClass: TJvDockZoneClass read FDockZoneClass write SetDockZoneClass;
-   {$IFDEF JVCL_DOCKING_NOTIFYLISTENERS}
-    property DockStyle: TComponent read FDockStyle write FDockStyle; {actual type is TJvDockBasicStyle}  {NEW!}
-    property DockStyleListener: Boolean read FDockStyleListener write FDockStyleListener; {if True, we are linked as a listener to this dock style.}
-   {$ENDIF JVCL_DOCKING_NOTIFYLISTENERS}
+    property DockStyle: TJvDockObservableStyle read GetDockStyle;
   end;
 
   TJvDockTreeClass = class of TJvDockTree;
+  TJvDockBasicConjoinServerOptionClass = class of TJvDockBasicConjoinServerOption;
+  TJvDockBasicTabServerOptionClass = class of TJvDockBasicTabServerOption;
+
+  { Maintained by a TJvDockBasicStyle ancestor. That ancestor ensures that
+    FDockStyle is set (to itself) }
+  TJvDockBasicServerOption = class(TPersistent)
+  private
+    FDockStyle: TJvDockObservableStyle;
+    FUpdateCount: Integer;
+    FIsChanged: Boolean;
+  protected
+    procedure Changed; virtual;
+    property DockStyle: TJvDockObservableStyle read FDockStyle;
+  public
+    constructor Create(ADockStyle: TJvDockObservableStyle); virtual;
+    procedure Assign(Source: TPersistent); override;
+    procedure BeginUpdate;
+    procedure EndUpdate;
+  end;
+
+  TJvDockGrabbersSize = 1..MaxInt;
+  TJvDockSplitterWidth = 1..MaxInt;
+
+  TJvDockBasicConjoinServerOption = class(TJvDockBasicServerOption)
+  private
+    FGrabbersSize: TJvDockGrabbersSize;
+    FSplitterWidth: TJvDockSplitterWidth;
+  protected
+    procedure SetGrabbersSize(const Value: TJvDockGrabbersSize);
+    procedure SetDockSplitterWidth(const Value: TJvDockSplitterWidth);
+  public
+    constructor Create(ADockStyle: TJvDockObservableStyle); override;
+    procedure Assign(Source: TPersistent); override;
+  published
+    property GrabbersSize: TJvDockGrabbersSize read FGrabbersSize write SetGrabbersSize default 12;
+    property SplitterWidth: TJvDockSplitterWidth read FSplitterWidth write SetDockSplitterWidth default 4;
+  end;
+
+  TJvDockBasicTabServerOption = class(TJvDockBasicServerOption)
+  private
+    FTabPosition: TTabPosition;
+    FHotTrack: Boolean;
+  protected
+    procedure SetTabPosition(const Value: TTabPosition); virtual;
+    procedure SetHotTrack(const Value: Boolean); virtual;
+  public
+    constructor Create(ADockStyle: TJvDockObservableStyle); override;
+    procedure Assign(Source: TPersistent); override;
+  published
+    property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
+    property TabPosition: TTabPosition read FTabPosition write SetTabPosition default tpTop;
+  end;
+
+  TJvDockStyleLink = class
+  private
+    FDockStyle: TJvDockObservableStyle;
+    FOnStyleChanged: TNotifyEvent;
+    procedure SetDockStyle(ADockStyle: TJvDockObservableStyle);
+  public
+    destructor Destroy; override;
+    procedure StyleChanged;
+    property DockStyle: TJvDockObservableStyle read FDockStyle write SetDockStyle;
+    property OnStyleChanged: TNotifyEvent read FOnStyleChanged write FOnStyleChanged;
+  end;
+
+  {$IFDEF USEJVCL}
+  TJvDockObservableStyle = class(TJvComponent)
+  {$ELSE}
+  TJvDockObservableStyle = class(TComponent)
+  {$ENDIF USEJVCL}
+  private
+    FConjoinServerOptionClass: TJvDockBasicConjoinServerOptionClass;
+    FTabServerOptionClass: TJvDockBasicTabServerOptionClass;
+    FConjoinServerOption: TJvDockBasicConjoinServerOption;
+    FTabServerOption: TJvDockBasicTabServerOption;
+    FLinks: TList;
+    procedure SetConjoinServerOption(Value: TJvDockBasicConjoinServerOption); //virtual;
+    procedure SetTabServerOption(Value: TJvDockBasicTabServerOption);
+  protected
+    procedure CreateServerOption; virtual;
+    procedure FreeServerOption; virtual;
+
+    procedure AddLink(ALink: TJvDockStyleLink);
+    procedure RemoveLink(ALink: TJvDockStyleLink);
+
+    procedure Changed;
+    procedure SendStyleEvent;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+    procedure AfterConstruction; override;
+
+    property ConjoinServerOptionClass: TJvDockBasicConjoinServerOptionClass read FConjoinServerOptionClass
+      write FConjoinServerOptionClass;
+    property TabServerOptionClass: TJvDockBasicTabServerOptionClass read FTabServerOptionClass
+      write FTabServerOptionClass;
+    property ConjoinServerOption: TJvDockBasicConjoinServerOption read FConjoinServerOption
+      write SetConjoinServerOption;
+    property TabServerOption: TJvDockBasicTabServerOption read FTabServerOption write SetTabServerOption;
+  end;
 
 // (rom) made typed const to allow SizeOf
 const
@@ -798,6 +905,22 @@ var
 begin
   if Visibled and (ChildControl <> nil) and (FTree.FUpdateCount = 0) then
   begin
+    { (rb) It is possible that ChildControl points to a control that is
+      already destroyed. This can happen when Tree.RemoveControl is not
+      called for this control.
+
+      This is possible when the host docksite is marked as destroying when
+      the ChildControl is destroyed (See TControl.Destroy) thus no
+      CM_UNDOCKCLIENT message is processed. Normally the tree&zones are
+      destroyed as soon as the host docksite is beginning to destroy; but
+      a host docksite can be marked earlier as destroying when its parent
+      is destroying. (This looks like a VCL bug)
+
+      Don't know a good way to catch this but checking whether the host
+      docksite is destroying before accessing ChildControl is a work-around.
+    }
+    if csDestroying in FTree.FDockSite.ComponentState then
+      Exit;
     ChildControl.DockOrientation := FParentZone.Orientation;
     NewWidth := Width;
     NewHeight := Height;
@@ -1209,7 +1332,7 @@ end;
 //=== { TJvDockTree } ========================================================
 
 constructor TJvDockTree.Create(ADockSite: TWinControl;
-  ADockZoneClass: TJvDockZoneClass; ADockStyle: TComponent); {TJvDockBasicStyle}
+  ADockZoneClass: TJvDockZoneClass; ADockStyle: TJvDockObservableStyle);
 var
   I: Integer;
 begin
@@ -1217,24 +1340,16 @@ begin
   inherited Create;
   // (rom) Canvas now always existent
   FCanvas := TControlCanvas.Create;
+  FStyleLink := TJvDockStyleLink.Create;
+  { First set DockStyle then OnStyleChanged so no OnStyleChanged is fired;
+    we do it ourself in AfterContruction }
+  FStyleLink.DockStyle := ADockStyle;
+  FStyleLink.OnStyleChanged := DockStyleChanged;
   FDockZoneClass := ADockZoneClass;
   FBorderWidth := 0;
   FSplitterWidth := 4;
   FDockSite := ADockSite;
-  {$IFDEF JVCL_DOCKING_NOTIFYLISTENERS}
-  FDockStyle := ADockStyle;
-  if Assigned(FDockStyle) then
-  begin
-    TJvDockBasicStyle(FDockStyle).AddDockTreeListener(Self);
-    FDockStyleListener := True; // must unhook our listener link unless this flag is turned off.
-    if TJvDockBasicStyle(FDockStyle).ConjoinServerOption.GrabbersSize > 0 then
-        FGrabberSize := TJvDockBasicStyle(FDockStyle).ConjoinServerOption.GrabbersSize
-  end
-  else
-    FGrabberSize := 18; {Default Grabber Height}
-  {$ELSE}
   FGrabberSize := 18; {Default Grabber Height}
-  {$ENDIF JVCL_DOCKING_NOTIFYLISTENERS}
 
   FDockSite.ShowHint := True;
   FVersion := RsDockBaseDockTreeVersion;
@@ -1247,7 +1362,7 @@ begin
   FGrabberBgColor := clBtnFace; // default grabber color.
   FGrabberShowLines := True;
   FGrabberBottomEdgeColor := clBtnShadow; // Dark gray, usually.
-  
+
   BeginUpdate;
   try
     for I := 0 to DockSite.ControlCount - 1 do
@@ -1265,13 +1380,7 @@ end;
 
 destructor TJvDockTree.Destroy;
 begin
-  {$IFDEF JVCL_DOCKING_NOTIFYLISTENERS}
-  if Assigned(FDockStyle) and FDockStyleListener then
-  begin
-    TJvDockBasicStyle(FDockStyle).RemoveDockTreeListener(Self);
-    FDockStyleListener := True; // must unhook our listener link unless this flag is turned off.
-  end;
-  {$ENDIF JVCL_DOCKING_NOTIFYLISTENERS}
+  FStyleLink.Free;
 
   if Assigned(FOldWndProc) then
     FDockSite.WindowProc := FOldWndProc;
@@ -1654,40 +1763,6 @@ begin
 end;
 
 {$ENDIF JVDOCK_QUERY}
-
-{$IFDEF JVCL_DOCKING_NOTIFYLISTENERS}
-// properties in Dock Style (FDockStyle) have changed.
-procedure TJvDockTree.NotifyDockStyleChange;
-var
- Changed: Boolean;
- LDockStyle: TJvDockBasicStyle;
-begin
-  if not Assigned(FDockStyle) then
-    Exit;
-  LDockStyle := FDockStyle as TJvDockBasicStyle;
-  Changed := False;
-  { change in grabber size: }
-  if LDockStyle.ConjoinServerOption.GrabbersSize > 0 then
-    if FGrabberSize <> LDockStyle.ConjoinServerOption.GrabbersSize then
-    begin
-      Changed := True;
-      // we purposely DON'T use the TJvDockTree.SetGrabberSize function or
-      // access the GrabberSize as a Property, instead we assign FGrabberSize
-      // directly, because doing otherwise would cause TWO calls to UpdateAll
-      // and DockSite.Invalidate.
-      FGrabberSize := LDockStyle.ConjoinServerOption.GrabbersSize;
-    end;
-
-  // This now happens only when NotifyDockStyleChange is invoked, because
-  // multiple properties might be updated, and we only want to update the whole
-  // deal once, for less flickering, and more efficiency: Wpostma.
-  if Changed then
-  begin
-    UpdateAll; // Update once with each change.
-    DockSite.Invalidate;
-  end;
-end;
-{$ENDIF JVCL_DOCKING_NOTIFYLISTENERS}
 
 procedure TJvDockTree.AdjustDockRect(Control: TControl; var ARect: TRect);
 begin
@@ -2758,11 +2833,11 @@ end;
 function TJvDockTree.GetLeftGrabbersHTFlag(const MousePos: TPoint;
   out HTFlag: Integer; Zone: TJvDockZone): TJvDockZone;
 begin
-  if (MousePos.X >= Zone.Left + BorderWidth) and (MousePos.X <= Zone.Left + BorderWidth + FGrabberSize) and
+  if (MousePos.X >= Zone.Left + BorderWidth) and (MousePos.X <= Zone.Left + BorderWidth + GrabberSize) and
     (MousePos.Y >= Zone.Top) and (MousePos.Y <= Zone.Top + Zone.Height) then
   begin
     Result := Zone;
-    if MousePos.Y < Zone.ChildControl.Top + FGrabberSize + 3 then
+    if MousePos.Y < Zone.ChildControl.Top + GrabberSize + 3 then
       HTFlag := HTCLOSE
     else
       HTFlag := HTCAPTION;
@@ -2780,12 +2855,12 @@ end;
 function TJvDockTree.GetTopGrabbersHTFlag(const MousePos: TPoint;
   out HTFlag: Integer; Zone: TJvDockZone): TJvDockZone;
 begin
-  if (MousePos.Y >= Zone.Top + BorderWidth) and (MousePos.Y <= Zone.Top + BorderWidth + FGrabberSize) and
+  if (MousePos.Y >= Zone.Top + BorderWidth) and (MousePos.Y <= Zone.Top + BorderWidth + GrabberSize) and
     (MousePos.X >= Zone.Left) and (MousePos.X <= Zone.Left + Zone.Width) then
   begin
     Result := Zone;
     with Zone.ChildControl do
-      if MousePos.X > Left + Width - FGrabberSize - 3 then
+      if MousePos.X > Left + Width - GrabberSize - 3 then
         HTFlag := HTCLOSE
       else
         HTFlag := HTCAPTION;
@@ -2846,8 +2921,7 @@ begin
   if FSplitterWidth <> Value then
   begin
     FSplitterWidth := Value;
-    if FUpdateCount <= 0 then
-      UpdateAll;
+    UpdateAll;
   end;
 end;
 
@@ -3244,8 +3318,8 @@ begin
   if FBorderWidth <> Value then
   begin
     FBorderWidth := Value;
-    if FUpdateCount <= 0 then
-      UpdateAll;
+    UpdateAll;
+    DockSite.Invalidate;
   end;
 end;
 
@@ -4078,6 +4152,33 @@ begin
       AZone.ChildControl.Visible := False;
 end;
 
+procedure TJvDockTree.DockStyleChanged(Sender: TObject);
+begin
+  BeginUpdate;
+  try
+    SyncWithStyle;
+  finally
+    EndUpdate;
+  end;
+end;
+
+procedure TJvDockTree.SyncWithStyle;
+begin
+  GrabberSize := DockStyle.ConjoinServerOption.GrabbersSize;
+  SplitterWidth := DockStyle.ConjoinServerOption.SplitterWidth;
+end;
+
+function TJvDockTree.GetDockStyle: TJvDockObservableStyle;
+begin
+  Result := FStyleLink.DockStyle;
+end;
+
+procedure TJvDockTree.AfterConstruction;
+begin
+  inherited AfterConstruction;
+  FStyleLink.StyleChanged;
+end;
+
 //=== { TJvDockAdvZone } =====================================================
 
 constructor TJvDockAdvZone.Create(ATree: TJvDockTree);
@@ -4112,6 +4213,277 @@ end;
 
 // TJvDockAdvTree has been moved into its own unit because of compiler issues.
 // -Wpostma.
+
+//=== { TJvDockObservableStyle } =============================================
+
+procedure TJvDockObservableStyle.AddLink(ALink: TJvDockStyleLink);
+begin
+  FLinks.Add(ALink);
+end;
+
+procedure TJvDockObservableStyle.AfterConstruction;
+begin
+  inherited AfterConstruction;
+  CreateServerOption;
+end;
+
+procedure TJvDockObservableStyle.Changed;
+begin
+  SendStyleEvent;
+end;
+
+constructor TJvDockObservableStyle.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+
+  FConjoinServerOptionClass := TJvDockBasicConjoinServerOption;
+  FTabServerOptionClass := TJvDockBasicTabServerOption;
+  FLinks := TList.Create;
+end;
+
+procedure TJvDockObservableStyle.CreateServerOption;
+begin
+  if FConjoinServerOption = nil then
+    FConjoinServerOption := ConjoinServerOptionClass.Create(Self);
+  if FTabServerOption = nil then
+    FTabServerOption := TabServerOptionClass.Create(Self);
+end;
+
+destructor TJvDockObservableStyle.Destroy;
+begin
+  FreeServerOption;
+  while FLinks.Count > 0 do
+    TJvDockStyleLink(FLinks[0]).DockStyle := nil;
+  FreeAndNil(FLinks);
+  inherited Destroy;
+end;
+
+procedure TJvDockObservableStyle.FreeServerOption;
+begin
+  FConjoinServerOption.Free;
+  FConjoinServerOption := nil;
+  FTabServerOption.Free;
+  FTabServerOption := nil;
+end;
+
+procedure TJvDockObservableStyle.RemoveLink(ALink: TJvDockStyleLink);
+begin
+  FLinks.Remove(ALink);
+end;
+
+procedure TJvDockObservableStyle.SendStyleEvent;
+var
+  I: Integer;
+begin
+  for I := 0 to FLinks.Count - 1 do
+    TJvDockStyleLink(FLinks[I]).StyleChanged;
+end;
+
+procedure TJvDockObservableStyle.SetConjoinServerOption(
+  Value: TJvDockBasicConjoinServerOption);
+begin
+  FConjoinServerOption.Assign(Value);
+end;
+
+procedure TJvDockObservableStyle.SetTabServerOption(
+  Value: TJvDockBasicTabServerOption);
+begin
+  FTabServerOption.Assign(Value);
+end;
+
+//=== { TJvDockBasicConjoinServerOption } ====================================
+
+constructor TJvDockBasicConjoinServerOption.Create(ADockStyle: TJvDockObservableStyle);
+begin
+  inherited Create(ADockStyle);
+  FGrabbersSize := 12;
+  FSplitterWidth := 4;
+end;
+
+procedure TJvDockBasicConjoinServerOption.Assign(Source: TPersistent);
+begin
+  if Source is TJvDockBasicConjoinServerOption then
+  begin
+    BeginUpdate;
+    try
+      GrabbersSize := TJvDockBasicConjoinServerOption(Source).FGrabbersSize;
+      SplitterWidth := TJvDockBasicConjoinServerOption(Source).FSplitterWidth;
+    finally
+      EndUpdate;
+    end;
+  end
+  else
+    inherited Assign(Source);
+end;
+
+procedure TJvDockBasicConjoinServerOption.SetDockSplitterWidth(const Value: TJvDockSplitterWidth);
+begin
+  if FSplitterWidth <> Value then
+  begin
+    FSplitterWidth := Value;
+    Changed;
+  end;
+end;
+
+procedure TJvDockBasicConjoinServerOption.SetGrabbersSize(const Value: TJvDockGrabbersSize);
+begin
+  if FGrabbersSize <> Value then
+  begin
+    FGrabbersSize := Value;
+    Changed;
+  end;
+end;
+
+//=== { TJvDockBasicServerOption } ===========================================
+
+constructor TJvDockBasicServerOption.Create(ADockStyle: TJvDockObservableStyle);
+begin
+  // (rom) added inherited Create
+  inherited Create;
+  FDockStyle := ADockStyle;
+end;
+
+procedure TJvDockBasicServerOption.Assign(Source: TPersistent);
+begin
+  if Source is TJvDockBasicServerOption then
+  begin
+    // TODO
+  end
+  else
+    inherited Assign(Source);
+end;
+
+procedure TJvDockBasicServerOption.BeginUpdate;
+begin
+  Inc(FUpdateCount);
+end;
+
+procedure TJvDockBasicServerOption.Changed;
+begin
+  if FUpdateCount = 0 then
+  begin
+    FIsChanged := False;
+    DockStyle.Changed;
+  end
+  else
+    FIsChanged := True;
+end;
+
+procedure TJvDockBasicServerOption.EndUpdate;
+begin
+  Dec(FUpdateCount);
+  if (FUpdateCount = 0) and FIsChanged then
+    Changed;
+end;
+
+//=== { TJvDockBasicTabServerOption } ========================================
+
+constructor TJvDockBasicTabServerOption.Create(ADockStyle: TJvDockObservableStyle);
+begin
+  inherited Create(ADockStyle);
+  FHotTrack := False;
+  FTabPosition := tpTop;
+end;
+
+procedure TJvDockBasicTabServerOption.Assign(Source: TPersistent);
+begin
+  if Source is TJvDockBasicTabServerOption then
+  begin
+    BeginUpdate;
+    try
+      TabPosition := TJvDockBasicTabServerOption(Source).TabPosition;
+      HotTrack := TJvDockBasicTabServerOption(Source).HotTrack;
+    finally
+      EndUpdate;
+    end;
+  end
+  else
+    inherited Assign(Source);
+end;
+
+procedure TJvDockBasicTabServerOption.SetHotTrack(const Value: Boolean);
+begin
+  if FHotTrack <> Value then
+  begin
+    FHotTrack := Value;
+    Changed;
+  end;
+end;
+
+procedure TJvDockBasicTabServerOption.SetTabPosition(const Value: TTabPosition);
+begin
+  if FTabPosition <> Value then
+  begin
+    FTabPosition := Value;
+    Changed;
+  end;
+end;
+
+//=== { TJvDockStyleLink } ===================================================
+
+destructor TJvDockStyleLink.Destroy;
+begin
+  DockStyle := nil;
+  inherited Destroy;
+end;
+
+procedure TJvDockStyleLink.SetDockStyle(ADockStyle: TJvDockObservableStyle);
+begin
+  if ADockStyle <> FDockStyle then
+  begin
+    if FDockStyle <> nil then
+      FDockStyle.RemoveLink(Self);
+    FDockStyle := ADockStyle;
+    if FDockStyle <> nil then
+    begin
+      FDockStyle.AddLink(Self);
+      StyleChanged;
+
+      { Note: Most controls that use the style link, set the DockStyle property
+        in the contructor. This will trigger an OnStyleChanged event, upon which
+        the control will sync with the DockStyle. This may be a problem if the
+        control is overriden:
+
+        for example in the TJvDockTree case:
+
+   (1)  TJvDockVSNETTree.Create, inherited Create is called, thus:
+        TJvDockVIDTree.Create, inherited Create is called, thus:
+        TJvDockAdvTree.Create, inherited Create is called, thus:
+        TJvDockTree.Create, properties are set to default
+   (2)  TJvDockTree.FStyleLink.DockStyle is set thus
+        TJvDockVIDTree.SyncWithStyle is called; properties are set
+        TJvDockTree.SyncStyle is called; properties are set
+   (3)  TJvDockAdvTree.Create continues, properties are set to default
+        TJvDockVIDTree.Create continues, properties are set to default
+        TJvDockVSNETTree.Create continues, properties are set to default
+
+        Thus /after/ the SyncWithStyle call the values that are set to the
+        TJvDock**ConjoinServerOption values are overwritten with the values in
+        the ancestor Tree constructors.
+
+        In most cases this is solved by using AfterConstruction, thus
+
+   (1)  TJvDockVSNETTree.Create, inherited Create is called, thus:
+        TJvDockVIDTree.Create, inherited Create is called, thus:
+        TJvDockAdvTree.Create, inherited Create is called, thus:
+        TJvDockTree.Create, properties are set to default
+   (3)  TJvDockAdvTree.Create continues, properties are set to default
+        TJvDockVIDTree.Create continues, properties are set to default
+        TJvDockVSNETTree.Create continues, properties are set to default
+        TJvDockTree.AfterConstruction is called thus:
+   (2)  TJvDockTree.FStyleLink.StyleChanged is called thus:
+        TJvDockVIDTree.SyncWithStyle is called; properties are set
+        TJvDockTree.SyncStyle is called; properties are set
+      }
+    end;
+  end;
+end;
+
+procedure TJvDockStyleLink.StyleChanged;
+begin
+  if Assigned(FDockStyle) and Assigned(FOnStyleChanged) then
+    FOnStyleChanged(Self);
+end;
 
 {$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}

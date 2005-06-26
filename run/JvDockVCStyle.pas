@@ -43,10 +43,8 @@ type
   private
     FBorderWidth: Integer;
     procedure SetBorderWidth(const Value: Integer);
-  protected
-    procedure ResetDockControlOption; override;
   public
-    constructor Create(ADockStyle: TJvDockBasicStyle); override;
+    constructor Create(ADockStyle: TJvDockObservableStyle); override;
     procedure Assign(Source: TPersistent); override;
   published
     property BorderWidth: Integer read FBorderWidth write SetBorderWidth default 4;
@@ -62,7 +60,6 @@ type
       MousePos: TPoint; var DropAlign: TAlign); override;
     procedure FormStartDock(DockClient: TJvDockClient;
       var Source: TJvDockDragDockObject); override;
-    procedure AssignConjoinServerOption(APanel: TJvDockCustomPanel); override;
   public
     constructor Create(AOwner: TComponent); override;
     function CanSetEachOtherDocked(ADockBaseControl: TJvDockBaseControl): Boolean; override;
@@ -169,8 +166,9 @@ type
     procedure ScaleSiblingZone(Zone: TJvDockZone); override;
     procedure ShiftZone(Zone: TJvDockZone); override;
     procedure SplitterMouseUp; override;
+    procedure SyncWithStyle; override;
   public
-    constructor Create(DockSite: TWinControl; DockZoneClass: TJvDockZoneClass; ADockStyle: TComponent); override;
+    constructor Create(DockSite: TWinControl; DockZoneClass: TJvDockZoneClass; ADockStyle: TJvDockObservableStyle); override;
   end;
 
   TJvDockVCDragDockObject = class(TJvDockDragDockObject)
@@ -234,27 +232,35 @@ const
 
 //=== { TJvDockVCConjoinServerOption } =======================================
 
-constructor TJvDockVCConjoinServerOption.Create(ADockStyle: TJvDockBasicStyle);
+constructor TJvDockVCConjoinServerOption.Create(ADockStyle: TJvDockObservableStyle);
 begin
   inherited Create(ADockStyle);
-  BorderWidth := 4;
+  FBorderWidth := 4;
 end;
 
 procedure TJvDockVCConjoinServerOption.Assign(Source: TPersistent);
 begin
   if Source is TJvDockVCConjoinServerOption then
-    FBorderWidth := TJvDockVCConjoinServerOption(Source).BorderWidth;
-  inherited Assign(Source);
-end;
-
-procedure TJvDockVCConjoinServerOption.ResetDockControlOption;
-begin
-  inherited ResetDockControlOption;
+  begin
+    BeginUpdate;
+    try
+      BorderWidth := TJvDockVCConjoinServerOption(Source).FBorderWidth;
+      inherited Assign(Source);
+    finally
+      EndUpdate;
+    end;
+  end
+  else
+    inherited Assign(Source);
 end;
 
 procedure TJvDockVCConjoinServerOption.SetBorderWidth(const Value: Integer);
 begin
-  FBorderWidth := Value;
+  if Value <> FBorderWidth then
+  begin
+    FBorderWidth := Value;
+    Changed;
+  end;
 end;
 
 //=== { TJvDockVCDragDockObject } ============================================
@@ -721,13 +727,6 @@ begin
   TabServerOptionClass := TJvDockVCTabServerOption;
 end;
 
-procedure TJvDockVCStyle.AssignConjoinServerOption(APanel: TJvDockCustomPanel);
-begin
-  inherited AssignConjoinServerOption(APanel);
-  if ConjoinServerOption is TJvDockVCConjoinServerOption then
-    APanel.JvDockManager.BorderWidth := TJvDockVCConjoinServerOption(ConjoinServerOption).BorderWidth;
-end;
-
 function TJvDockVCStyle.CanSetEachOtherDocked(ADockBaseControl: TJvDockBaseControl): Boolean;
 begin
   Result := False;
@@ -774,7 +773,7 @@ end;
 //=== { TJvDockVCTree } ======================================================
 
 constructor TJvDockVCTree.Create(DockSite: TWinControl; DockZoneClass: TJvDockZoneClass;
-  ADockStyle: TComponent);
+  ADockStyle: TJvDockObservableStyle);
 begin
   inherited Create(DockSite, DockZoneClass, ADockStyle);
   Version := RsDockVCDockTreeVersion;
@@ -2125,6 +2124,13 @@ end;
 procedure TJvDockVCZone.SetZoneSize(Size: Integer; Show: Boolean);
 begin
   inherited SetZoneSize(Size, Show);
+end;
+
+procedure TJvDockVCTree.SyncWithStyle;
+begin
+  inherited SyncWithStyle;
+  if DockStyle.ConjoinServerOption is TJvDockVCConjoinServerOption then
+    BorderWidth := TJvDockVCConjoinServerOption(DockStyle.ConjoinServerOption).BorderWidth;
 end;
 
 {$IFDEF USEJVCL}
