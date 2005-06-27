@@ -208,7 +208,7 @@ type
     procedure LineDDClick(LineNum: Integer); virtual;
     procedure ParentReconfig; override;
     procedure SetSelAppt(Value: TJvTFAppt);
-    procedure SetInplaceEdit(const Value: Boolean);
+    procedure SetInplaceEdit(const Value: Boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
