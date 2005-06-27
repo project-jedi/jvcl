@@ -693,6 +693,9 @@ type
     function GetDistinctAppt(Index: Integer): TJvTFAppt;
     function GetAppt(Index: Integer): TJvTFAppt;
   protected
+    FInPlaceEdit: Boolean;
+    
+    procedure SetInplaceEdit(const Value: Boolean); virtual;
     procedure SetVisible(Value: Boolean); virtual; abstract;
     procedure SetGlanceControl(Value: TJvTFCustomGlance); virtual;
     procedure ParentReconfig; virtual;
@@ -728,6 +731,7 @@ type
     function GetApptAt(X, Y: Integer): TJvTFAppt; virtual;
   published
     property RepeatGrouped: Boolean read FRepeatGrouped write SetRepeatGrouped default True;
+    property InPlaceEdit: Boolean read FInPlaceEdit write SetInplaceEdit;
   end;
 
   TJvTFGlance = class(TJvTFCustomGlance)
@@ -3616,6 +3620,11 @@ end;
 procedure TJvTFGlanceViewer.SetGlanceControl(Value: TJvTFCustomGlance);
 begin
   FGlanceControl := Value;
+end;
+
+procedure TJvTFGlanceViewer.SetInplaceEdit(const Value: Boolean);
+begin
+  FInPlaceEdit := Value;
 end;
 
 procedure TJvTFGlanceViewer.SetRepeatGrouped(Value: Boolean);
