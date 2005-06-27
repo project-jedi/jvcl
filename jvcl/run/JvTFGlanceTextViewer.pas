@@ -195,13 +195,11 @@ type
     FTopLines: TStringList;
     FSelApptAttr: TJvTFTxtVwApptAttr;
     FSelAppt: TJvTFAppt;
-    FInPlaceEdit: Boolean;
     procedure SetLineSpacing(Value: Integer);
     procedure SetSelApptAttr(Value: TJvTFTxtVwApptAttr);
     procedure SetEditorAlign(Value: TJvTFGlTxtVwEditorAlign);
     procedure SetShowStartEnd(Value: Boolean);
     function GetCellString(ACell: TJvTFGlanceCell): string;
-    procedure SetInplaceEdit(const Value: Boolean);
   protected
     procedure SetVisible(Value: Boolean); override;
     procedure SetGlanceControl(Value: TJvTFCustomGlance); override;
@@ -210,6 +208,7 @@ type
     procedure LineDDClick(LineNum: Integer); virtual;
     procedure ParentReconfig; override;
     procedure SetSelAppt(Value: TJvTFAppt);
+    procedure SetInplaceEdit(const Value: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -241,7 +240,6 @@ type
       write SetEditorAlign default eaLine;
     property ShowStartEnd: Boolean read FShowStartEnd
       write SetShowStartEnd default True;
-    property InPlaceEdit: Boolean read FInPlaceEdit write SetInplaceEdit;
   end;
 
 {$IFDEF USEJVCL}
@@ -1214,7 +1212,8 @@ end;
 
 procedure TJvTFGlanceTextViewer.SetInplaceEdit(const Value: Boolean);
 begin
-  FInPlaceEdit := Value;
+  inherited SetInplaceEdit(Value);
+  
   FViewControl.CanEdit := InPlaceEdit;
   FViewControl.Invalidate;
 end;
