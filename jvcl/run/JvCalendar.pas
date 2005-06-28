@@ -1084,6 +1084,7 @@ begin
     MonthCal_GetCurSel(Handle, rgst[0]);
   with rgst[0] do
     FFirstSelDate := EncodeDate(wYear, wMonth, wDay);
+  Result := FFirstSelDate;
 end;
 
 procedure TJvCustomMonthCalendar.SetLastSelDate(Value: TDateTime);
