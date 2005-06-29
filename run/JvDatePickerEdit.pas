@@ -343,13 +343,45 @@ const
 procedure TJvCustomDatePickerEdit.AcceptValue(const Value: Variant);
 var
   TextBefore : string;
-  TmpDate : TDateTime; 
+  TmpDate : TDateTime;
+  TmpValue : Variant;
+  OldFormat : string;
+  OldSeparator : Char; 
 begin
   TextBefore := Text;
-  inherited AcceptValue(Value);
 
-  // Inherited AcceptValue will change the base class Text property, thus not calling
-  // our SetText method. As a result, we must set the date in this case 
+  // Mantis 3056: If the date format is not the system's default, the value
+  // displayed in the text box after having selected a date in the popup
+  // will be 30.12.1899. This is because the variant will be converted to a
+  // string using ShortDateFormat. So we change it here, to ensure it is
+  // the one for the control. We also have to do the cast to a string
+  // ourselves because VarToStr (called in TJvCustomComboEdit) ignores the
+  // ShortDateFormat variable.
+  // And we only call the inherited method this way if the variant is a
+  // date, or we would risk an exception trying to convert something to a
+  // date when it is not.
+  if VarIsType(Value, varDate) then
+  begin
+    OldFormat := ShortDateFormat;
+    OldSeparator := SysUtils.DateSeparator;
+    try
+      ShortDateFormat := FInternalDateFormat;
+      SysUtils.DateSeparator := FDateSeparator;
+      TmpDate := Value;
+      TmpValue := DateToStr(TmpDate);
+      inherited AcceptValue(TmpValue);
+    finally
+      ShortDateFormat := OldFormat;
+      SysUtils.DateSeparator := OldSeparator;
+    end;
+  end
+  else
+  begin
+    inherited AcceptValue(TmpValue);
+  end;
+
+  // Inherited AcceptValue will change the base class Text property, thus not
+  // calling our SetText method. As a result, we must set the date in this case 
   if Text <> TextBefore then
   begin
     AttemptTextToDate(Text, TmpDate, False);
@@ -582,8 +614,11 @@ end;
 procedure TJvCustomDatePickerEdit.CreateWnd;
 begin
   inherited CreateWnd;
-  { (rb) Should be DateFormat? }
-  SetDateFormat(ShortDateFormat);
+
+  // obones: changed to DateFormat instead of ShortDateFormat, it was
+  // preventing any date format different from the system's value to be
+  // set at design time
+  SetDateFormat(DateFormat);
 end;
 
 function TJvCustomDatePickerEdit.DateFormatToEditMask(
