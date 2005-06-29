@@ -26,7 +26,7 @@
     <SYSDEFINES value="NO_STRICT"/>
     <MAINSOURCE value="JvThumbnailDemo.cpp"/>
     <INCLUDEPATH value="$(BCB)\include;$(BCB)\include\vcl;$(INCLUDEPATH)"/>
-    <LIBPATH value="..\..\..\..\..\..\..\lib\release;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(RESPATH)"/>
+    <LIBPATH value="..\..\..\..\..\..\..\lib\release;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(RESPATH);..\..\..\Resources"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
