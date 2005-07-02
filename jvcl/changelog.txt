@@ -1,5 +1,13 @@
 Changelog for JVCL 3.0
 ======================
+2005-07-02:
+- TJvOfficeColorPanel: Rename property CustomColors to ColorDlgCustomColors. // dejoy
+- TJvOfficeColorPanel: Rename property Options to ColorDialogOptions. // dejoy
+- TJvOfficeColorButtonProperties: Rename property DragCaption to FloatWindowCaption. // dejoy
+- TJvCustomOfficeColorButton: Rename property CustomColors to ColorDlgCustomColors. // dejoy
+- TJvCustomOfficeColorButton: Rename property Options to ColorDialogOptions. // dejoy
+- TJvCustomOfficeColorButton: Removed code of compatible to loading TJvColorButton. // dejoy
+- Renamed HotColor property to HotTrackOptions.Color. // dejoy
 2005-06-13:
 - Operator properties renamed to SetOperator and SQLOperator to avoid C++ confusion in JvXMLDatabase  // obones
 2005-06-10:
