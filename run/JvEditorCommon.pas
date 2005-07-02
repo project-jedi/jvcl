@@ -5740,20 +5740,30 @@ procedure TJvErrorHighlighting.DeleteLine(Line: Integer);
 var
   i: Integer;
 begin
-  for i := Count - 1 downto 0 do
-    if Items[i].Line = Line then
-      Delete(i)
-    else if Items[i].Line > Line then
-      Items[i].Line := Items[i].Line - 1;
+  BeginUpdate;
+  try
+    for i := Count - 1 downto 0 do
+      if Items[i].Line = Line then
+        Delete(i)
+      else if Items[i].Line > Line then
+        Items[i].Line := Items[i].Line - 1;
+  finally
+    EndUpdate;
+  end;
 end;
 
 procedure TJvErrorHighlighting.InsertLine(Line: Integer);
 var
   i: Integer;
 begin
-  for i := 0 to Count - 1 do
-    if Items[i].Line >= Line then
-      Items[i].Line := Items[i].Line + 1;
+  BeginUpdate;
+  try
+    for i := 0 to Count - 1 do
+      if Items[i].Line >= Line then
+        Items[i].Line := Items[i].Line + 1;
+  finally
+    EndUpdate;
+  end;
 end;
 
 function TJvErrorHighlighting.GetLineErrorMap(Y: Integer): TDynBoolArray;
