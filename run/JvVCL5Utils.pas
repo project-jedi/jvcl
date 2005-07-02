@@ -86,6 +86,7 @@ const
 function TryStrToInt(const S: string; out Value: Integer): Boolean;
 function TryStrToDateTime(const S: string; out Date: TDateTime): Boolean;
 function StrToDateTimeDef(const S: string; Default: TDateTime): TDateTime;
+function StrToDateDef(const S: string; Default: TDateTime): TDateTime;
 // function StrToFloatDef(const Str: string; Default: Extended): Extended;
 procedure RaiseLastOSError;
 function IncludeTrailingPathDelimiter(const APath: string): string;
@@ -125,8 +126,9 @@ function Sign(const AValue: Int64): TValueSign; overload;
 function Sign(const AValue: Double): TValueSign; overload;
 
 // Variants
+function FindVarData(const V: Variant): PVarData;
 function VarIsStr(const V: Variant): Boolean;
-
+function VarIsType(const V: Variant; AVarType: TVarType): Boolean;
 
 implementation
 
@@ -511,6 +513,16 @@ begin
   end;
 end;
 
+function StrToDateDef(const S: string; Default: TDateTime): TDateTime;
+begin
+  // stupid and slow but at least simple
+  try
+    Result := StrToDate(S);
+  except
+    Result := Default;
+  end;
+end;
+
 const
   OneMillisecond = 1 / 24 / 60 / 60 / 1000; // as TDateTime
 
@@ -727,6 +739,17 @@ begin
   Result := (VarType = varOleStr) or (VarType = varString);
 end;
 
+function FindVarData(const V: Variant): PVarData;
+begin
+  Result := @TVarData(V);
+  while Result.VType = varByRef or varVariant do
+    Result := PVarData(Result.VPointer);
+end;
+
+function VarIsType(const V: Variant; AVarType: TVarType): Boolean;
+begin
+  Result := FindVarData(V)^.VType = AVarType;
+end;
 
 initialization
 
