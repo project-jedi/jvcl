@@ -331,7 +331,7 @@ uses
   SysUtils, Menus,
   JclStrings,
   {$IFDEF COMPILER5}
-  JvJCLUtils, // StrToXxxDef
+  JvVcl5Utils, // StrToXxxDef
   {$ENDIF COMPILER5}
   JvConsts, JvTypes, JvResources;
 

@@ -183,8 +183,7 @@ type
     property UpdatingGrid: Boolean read FUpdatingGrid;
     property ApptGrid: TJvTFDays read FGrid;
   published
-    property ActiveTemplate: TJvTFDaysTemplates read FActiveTemplate
-      write SetActiveTemplate default agtNone;
+    property ActiveTemplate: TJvTFDaysTemplates read FActiveTemplate write SetActiveTemplate default agtNone;
 
     property CompDate: TDate read FCompDate write SetCompDate;
     property CompNames: TStrings read GetCompNames write SetCompNames;
@@ -14681,13 +14680,6 @@ end;
 
 {$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
-procedure TJvTFDaysTemplate.Loaded;
-begin
-  inherited Loaded;
-
-  LinearDaysChanged;
-end;
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 
