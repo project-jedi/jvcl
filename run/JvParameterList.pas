@@ -1070,7 +1070,7 @@ begin
   FParameterListPropertyStore.ParameterList := Self;
   FIntParameterList := TStringList.Create;
   FDynControlEngine := DefaultDynControlEngine;
-  FArrangeSettings := TJvArrangeSettings.Create(nil);
+  FArrangeSettings := TJvArrangeSettings.Create;
   with FArrangeSettings do
   begin
     AutoArrange := True;

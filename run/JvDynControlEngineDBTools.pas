@@ -193,7 +193,7 @@ begin
   FPosition := poScreenCenter;
   FDynControlEngineDB := nil;
   FDataSource := nil;
-  FArrangeSettings := TJvArrangeSettings.Create(nil);
+  FArrangeSettings := TJvArrangeSettings.Create;
   with FArrangeSettings do
   begin
     AutoSize := asBoth;

@@ -86,9 +86,10 @@ type
   end;
 
 
-{ IJvHotTrack is Specifies whether Control are highlighted when the mouse passes over them}
+  { IJvHotTrack is Specifies whether Control are highlighted when the mouse passes over them}
   IJvHotTrack = interface
-  ['{8F1B40FB-D8E3-46FE-A7A3-21CE4B199A8F}']
+    ['{8F1B40FB-D8E3-46FE-A7A3-21CE4B199A8F}']
+
     function GetHotTrack:Boolean;
     function GetHotTrackFont:TFont;
     function GetHotTrackFontOptions:TJvTrackFontOptions;
@@ -116,7 +117,7 @@ type
     procedure SetFrameColor(Value: TColor);
     procedure SetFrameVisible(Value: Boolean);
   public
-    constructor Create;
+    constructor Create; virtual;
     procedure Assign(Source: TPersistent); override;
   published
     property Enabled: Boolean read FEnabled write SetEnabled default False;
@@ -837,6 +838,7 @@ begin
     try
       Enabled := TJvHotTrackOptions(Source).Enabled;
       Color := TJvHotTrackOptions(Source).Color;
+      FrameVisible := TJvHotTrackOptions(Source).FrameVisible;
       FrameColor := TJvHotTrackOptions(Source).FrameColor;
     finally
       EndUpdate;
