@@ -23,6 +23,10 @@ Contributor(s):
 Changes:
 2003-10-19:
   * Moved TJvSpeedButton from JvxCtrls to this unit
+2005-05-20:(dejoy)
+  * TJvSpeedButton implemented interface of IJvHotTrack.
+2005-06-04:(dejoy)
+  * fixed bug: memory leak in TJvCustomSpeedButton.Paint;
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -560,7 +564,7 @@ type
     property Count: Integer read FCount;
   end;
 
-  //TFontAccessProtected = class(TFont);
+  TWinControlAccess = class(TWinControl); 
 
 const
   Alignments: array [TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
@@ -571,6 +575,8 @@ var
   // (rb) used for?
   ButtonCount: Integer;
   GlyphCache: TJvGlyphCache;
+  TempBrushBitmap: TBitmap = nil;
+  SaveColor1, SaveColor2: TColor;
 
 //=== Local procedures =======================================================
 
@@ -673,6 +679,24 @@ begin
     end;
   end;
   InflateRect(Result, -1, -1);
+end;
+
+function GetBrushPattern(Color1, Color2: TColor): TBitmap;
+begin
+  if TempBrushBitmap = nil then
+    TempBrushBitmap := CreateTwoColorsBrushPattern(Color1, Color2)
+  else
+  begin
+    if (Color1 <> SaveColor1) or (Color2 <> SaveColor2) then
+    begin
+      FreeAndNil(TempBrushBitmap);
+      TempBrushBitmap := CreateTwoColorsBrushPattern(Color1, Color2);
+    end;
+  end;
+  SaveColor1 := Color1;
+  SaveColor2 := Color2;
+
+  Result := TempBrushBitmap;
 end;
 
 //=== { TJvButtonImage } =====================================================
@@ -912,11 +936,21 @@ begin
       {$ENDIF JVCLThemesEnabled}
       FHotTrack or (FFlat and Enabled and (DragMode <> dmAutomatic) and (GetCapture = NullHandle));
 
+    NeedRepaint := NeedRepaint and not
+      {$IFDEF VCL}
+       {$IFDEF COMPILER6_UP}
+      Mouse.IsDragging;
+       {$ELSE}
+      KeyPressed(VK_LBUTTON);
+       {$ENDIF COMPILER6_UP}
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      DragActivated;
+      {$ENDIF VisualCLX}
     inherited MouseEnter(Control); // set MouseOver
-
     { Windows XP introduced hot states also for non-flat buttons. }
     if NeedRepaint then
-      Repaint;
+      Invalidate;
   end;
 end;
 
@@ -933,10 +967,20 @@ begin
       {$ENDIF JVCLThemesEnabled}
       HotTrack or (FFlat and Enabled and not FDragging and (GetCapture = NullHandle));
 
+    NeedRepaint := NeedRepaint and not
+      {$IFDEF VCL}
+       {$IFDEF COMPILER6_UP}
+      Mouse.IsDragging;
+       {$ELSE}
+      KeyPressed(VK_LBUTTON);
+       {$ENDIF COMPILER6_UP}
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      DragActivated;
+      {$ENDIF VisualCLX}
     inherited MouseLeave(Control); // set MouseOver
-
-    if NeedRepaint then
-      Repaint;
+    if NeedRepaint   then
+      Invalidate;
   end;
 end;
 
@@ -1213,12 +1257,12 @@ begin
   DoMouseUp(Button, Shift, X, Y);
   if FRepeatTimer <> nil then
     FRepeatTimer.Enabled := False;
-{$IFDEF VisualCLX}
+  {$IFDEF VisualCLX}
   // (ahuser) Maybe we should remove the WM_RBUTTONUP code and make this
   // code available for VCL and VisualCLX.
   if Button = mbRight then
     UpdateTracking;
-{$ENDIF VisualCLX}    
+  {$ENDIF VisualCLX}
 end;
 
 procedure TJvCustomSpeedButton.Notification(AComponent: TComponent;
@@ -1232,7 +1276,8 @@ end;
 procedure TJvCustomSpeedButton.Paint;
 var
   PaintRect: TRect;
-  LState: TJvButtonState;
+  State: TJvButtonState;
+  OldPenColor:TColor;
   Offset: TPoint;
   {$IFDEF JVCLThemesEnabled}
   Button: TThemedButton;
@@ -1255,11 +1300,11 @@ begin
   if FFlat and not MouseOver and not (csDesigning in ComponentState) then
     { rbsInactive : flat and not 'mouse in control', thus
         - picture might be painted gray
-        - no border, unless button is exclusive
+        - no border, unless Button is exclusive
     }
-    LState := rbsInactive
+    State := rbsInactive
   else
-    LState := FState;
+    State := FState;
 
   PaintRect := Rect(0, 0, Width, Height);
 
@@ -1271,7 +1316,7 @@ begin
     else
     begin
       if not DoubleBuffered then
-        PerformEraseBackground(Self, Canvas.Handle) // uses Control.Left/Top as offset
+        PerformEraseBackground(Self, Canvas.Handle) // uses Control.Left/Top as Offset
       else
         PerformEraseBackground(Self, Canvas.Handle, Point(0, 0)); // we are drawing into a bitmap
     end;
@@ -1321,7 +1366,7 @@ begin
     end;
 
     if Button = tbPushButtonPressed then
-      // A pressed speed button has a white text. This applies however only to flat buttons.
+      // A pressed speed Button has a white text. This applies however only to flat buttons.
       //if ToolButton <> ttbToolbarDontCare then
       //  Canvas.Font.Color := clHighlightText;
       Offset := Point(1, 0)
@@ -1331,9 +1376,9 @@ begin
     { Check whether the image need to be painted gray.. }
     if (FState = rbsDisabled) or not FInactiveGrayed then
       { .. do not paint gray image }
-      LState := FState;
+      State := FState;
 
-    PaintImage(Canvas, PaintRect, Offset, LState,
+    PaintImage(Canvas, PaintRect, Offset, State,
       FMarkDropDown and Assigned(FDropDownMenu));
   end
   else
@@ -1345,11 +1390,14 @@ begin
         CopyParentImage(Self, Canvas)
       else
       begin
-        Brush.Color := Self.Color;
+        if Flat then
+          Brush.Color := TWinControlAccess(Parent).Color
+        else
+          Brush.Color := Self.Color;
         Brush.Style := bsSolid;
         FillRect(PaintRect);
       end;
-      if (LState <> rbsInactive) or (FState = rbsExclusive) then
+      if (State <> rbsInactive) or (FState = rbsExclusive) then
         PaintRect := DrawButtonFrame(Canvas, PaintRect,
           FState in [rbsDown, rbsExclusive], FFlat, FStyle, Color)
       else
@@ -1357,7 +1405,7 @@ begin
         InflateRect(PaintRect, -2, -2);
     end;
     if (FState = rbsExclusive) and not Transparent and
-      (not FFlat or (LState = rbsInactive)) then
+      (not FFlat or (State = rbsInactive)) then
     begin
       Canvas.Brush.Bitmap := AllocPatternBitmap(clBtnFace, clBtnHighlight);
       InflateRect(PaintRect, 1, 1);
@@ -1372,7 +1420,7 @@ begin
     { Check whether the image need to be painted gray.. }
     if (FState = rbsDisabled) or not FInactiveGrayed then
       { .. do not paint gray image }
-      LState := FState;
+      State := FState;
 
     if ((HotTrackOptions.Enabled and Down) or (MouseOver or FDragging)) and HotTrack then
     begin
@@ -1380,22 +1428,38 @@ begin
       {Inserted by (ag) 2004-09-04}
       if HotTrackOptions.Enabled then
         begin
-          if Down then
-            Canvas.Brush.Bitmap := CreateTwoColorsBrushPattern(HotTrackOptions.Color, clWindow)
+          if Down then  //fixed bug: memory leak 
+            Canvas.Brush.Bitmap := GetBrushPattern(HotTrackOptions.Color, clWindow)
           else
           begin
             Canvas.Brush.Color := HotTrackOptions.Color;
             Canvas.Brush.Style := bsSolid;
           end;
-          Canvas.Pen.Color := HotTrackOptions.FrameColor;
-          Canvas.Rectangle(0, 0, Width, Height);
+          {Inserted by (dejoy) 2005-05-20}
+          if HotTrackOptions.FrameVisible then
+          begin
+            OldPenColor := Canvas.Pen.Color;
+            Canvas.Pen.Color := HotTrackOptions.FrameColor;
+            Canvas.Rectangle(0, 0, Width, Height);
+            Canvas.Pen.Color := OldPenColor;
+          end
+          else
+          begin
+            PaintRect := ClientRect;
+            if Flat then
+              InflateRect(PaintRect,-1,-1)
+            else
+              InflateRect(PaintRect,-1,-2);
+            Canvas.FillRect(PaintRect);
+          end;
+         {Insert End by (dejoy)}
           if Down then
             Canvas.Brush.Bitmap := nil; // release bitmap
         end;
       {Insert End}
     end else
       Canvas.Font := Self.Font;
-    PaintImage(Canvas, PaintRect, Offset, LState,
+    PaintImage(Canvas, PaintRect, Offset, State,
       FMarkDropDown and Assigned(FDropDownMenu));
   end;
 end;
@@ -2810,18 +2874,16 @@ begin
   end;
 end;
 
-
-{$IFDEF UNITVERSIONING}
-
 initialization
+  {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
 
 finalization
+  {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
+  FreeAndNil(TempBrushBitmap);
 
 end.
-
-
-
 

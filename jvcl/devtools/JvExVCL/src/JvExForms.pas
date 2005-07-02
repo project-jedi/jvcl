@@ -72,6 +72,18 @@ type
     constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;
   end;
 
+  {$IFDEF VCL}
+  TJvExCustomDockForm = class(TCustomDockForm, IJvExControl)
+  WINCONTROL_DECL
+  protected
+    procedure CMShowingChanged(var Msg: TMessage); message CM_SHOWINGCHANGED;
+    procedure CMDialogKey(var Msg: TCMDialogKey); message CM_DIALOGKEY;
+  public
+    constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;
+  end;
+ {$ENDIF VCL}
+
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -152,6 +164,34 @@ begin
   end;
   inherited;
 end;
+
+{$IFDEF VCL}
+WINCONTROL_IMPL_DEFAULT(CustomDockForm)
+
+constructor TJvExCustomDockForm.CreateNew(AOwner: TComponent; Dummy: Integer);
+begin
+  inherited CreateNew(AOwner, Dummy);
+  FHintColor := clDefault;
+end;
+
+procedure TJvExCustomDockForm.CMShowingChanged(var Msg: TMessage);
+begin
+  if Showing then
+    SendMessage(Handle, WM_CHANGEUISTATE, UIS_INITIALIZE, 0);
+  inherited;
+end;
+
+procedure TJvExCustomDockForm.CMDialogKey(var Msg: TCMDialogKey);
+begin
+  case Msg.CharCode of
+    VK_LEFT..VK_DOWN, VK_TAB:
+      SendMessage(Handle, WM_CHANGEUISTATE, MakeLong(UIS_CLEAR, UISF_HIDEFOCUS), 0);
+    VK_MENU:
+      SendMessage(Handle, WM_CHANGEUISTATE, MakeLong(UIS_CLEAR, UISF_HIDEFOCUS or UISF_HIDEACCEL), 0);
+  end;
+  inherited;
+end;
+{$ENDIF VCL}
 
 {$IFDEF UNITVERSIONING}
 initialization

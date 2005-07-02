@@ -1511,10 +1511,6 @@ resourcestring
 
 //=== JvOfficeColorPanel.pas =================================================
 resourcestring
-  // (dejoy) will be moved
-  RsOtherColorCaption = 'No Color';
-  RsAutoCaption = 'Automatic';
-
   RsNoneColorCaption = 'No Color';
   RsDefaultColorCaption = 'Automatic';
   RsCustomColorCaption = 'Other Colors...';

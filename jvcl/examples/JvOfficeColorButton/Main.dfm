@@ -1,219 +1,286 @@
-object ColorDemoMainForm: TColorDemoMainForm
-  Left = 423
-  Top = 160
-  BorderIcons = [biSystemMenu, biMinimize]
-  BorderStyle = bsSingle
-  Caption = 'JvOfficeColorButton Demo'
-  ClientHeight = 351
-  ClientWidth = 323
+object Form1: TForm1
+  Left = 206
+  Top = 129
+  Width = 764
+  Height = 569
+  Caption = 'New JvOffice pack demo'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
-  Font.Name = 'MS Sans Serif'
+  Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = True
+  OldCreateOrder = False
   OnCreate = FormCreate
+  DesignSize = (
+    756
+    535)
   PixelsPerInch = 96
   TextHeight = 13
-  object JvNetscapeSplitter1: TJvNetscapeSplitter
-    Left = 0
-    Top = 151
-    Width = 323
-    Height = 8
-    Cursor = crVSplit
-    Align = alBottom
-    AutoSnap = False
-    Maximized = False
-    Minimized = False
-    ButtonCursor = crDefault
-  end
-  object pConfigurePanel: TPanel
-    Left = 0
-    Top = 159
-    Width = 323
-    Height = 192
-    Align = alBottom
-    BevelOuter = bvNone
+  object grp1: TGroupBox
+    Left = 269
+    Top = 15
+    Width = 301
+    Height = 390
+    Anchors = [akRight, akBottom]
+    Caption = 'Demo style'
     TabOrder = 0
-    object GroupBoxPanelStyles: TGroupBox
-      Left = 7
-      Top = 2
-      Width = 150
-      Height = 87
-      Caption = 'JvOfficeColorPanel'
-      TabOrder = 0
-      object chkPanelFlat: TCheckBox
-        Left = 13
-        Top = 20
-        Width = 79
-        Height = 13
-        Caption = 'Flat'
-        Checked = True
-        State = cbChecked
-        TabOrder = 0
-        OnClick = PanelOptionsClick
-      end
-      object chkPanelAuto: TCheckBox
-        Tag = 1
-        Left = 13
-        Top = 39
-        Width = 131
-        Height = 14
-        Caption = 'Show Automatic'
-        Checked = True
-        State = cbChecked
-        TabOrder = 1
-        OnClick = PanelOptionsClick
-      end
-      object chkPanelOther: TCheckBox
-        Tag = 2
-        Left = 13
-        Top = 59
-        Width = 124
-        Height = 13
-        Caption = 'Show Others'
-        Checked = True
-        State = cbChecked
-        TabOrder = 2
-        OnClick = PanelOptionsClick
-      end
+    object lbl1: TLabel
+      Left = 177
+      Top = 239
+      Width = 63
+      Height = 13
+      Caption = 'Border Width'
     end
-    object pPanelColor: TPanel
-      Left = 169
-      Top = 2
-      Width = 150
-      Height = 33
-      TabOrder = 1
-    end
-    object JvOfficeColorPanel: TJvOfficeColorPanel
+    object chkShowSystemColors: TCheckBox
       Left = 163
-      Top = 40
-      Width = 158
-      Height = 148
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'MS Shell Dlg 2'
-      Font.Style = []
-      ParentFont = False
+      Top = 57
+      Width = 130
+      Height = 17
+      Caption = 'Show System Colors'
+      TabOrder = 0
+      OnClick = chkShowNoneClick
+    end
+    object chkShowDefault: TCheckBox
+      Left = 163
+      Top = 36
+      Width = 130
+      Height = 17
+      Caption = 'Show Default Color'
+      TabOrder = 1
+      OnClick = chkShowNoneClick
+    end
+    object chkShowUserColors: TCheckBox
+      Left = 163
+      Top = 83
+      Width = 130
+      Height = 17
+      Caption = 'Show user Colors'
       TabOrder = 2
-      Properties.AutoCaption = 'Automatic'
-      Properties.OtherCaption = 'Other Colors...'
-      OnColorChange = JvOfficeColorPanelColorChange
+      OnClick = chkShowNoneClick
+    end
+    object chkShowCustom: TCheckBox
+      Left = 163
+      Top = 102
+      Width = 130
+      Height = 17
+      Caption = 'Show Custom Button'
+      TabOrder = 3
+      OnClick = chkShowNoneClick
+    end
+    object chkHoldCustomColor: TCheckBox
+      Left = 163
+      Top = 123
+      Width = 130
+      Height = 17
+      Caption = 'Hold Custom Color'
+      TabOrder = 4
+      OnClick = chkShowNoneClick
+    end
+    object chkShowNone: TCheckBox
+      Left = 163
+      Top = 14
+      Width = 130
+      Height = 17
+      Caption = 'Show None Color'
+      TabOrder = 5
+      OnClick = chkShowNoneClick
+    end
+    object chkFlatBorder: TCheckBox
+      Left = 163
+      Top = 223
+      Width = 131
+      Height = 16
+      Caption = 'Flat Border'
+      TabOrder = 6
+      OnClick = chkShowNoneClick
+    end
+    object JvSpinEdit1: TJvSpinEdit
+      Left = 177
+      Top = 257
+      Width = 75
+      Height = 25
+      MaxValue = 4.000000000000000000
+      TabOrder = 7
+      OnChange = chkShowNoneClick
+    end
+    object grp2: TGroupBox
+      Left = 6
+      Top = 110
+      Width = 142
+      Height = 74
+      Caption = 'Style'
+      TabOrder = 8
+      object rbStandard: TRadioButton
+        Left = 12
+        Top = 18
+        Width = 87
+        Height = 13
+        Caption = 'Standard'
+        Checked = True
+        TabOrder = 0
+        TabStop = True
+        OnClick = rbStandardClick
+      end
+      object rbOfficeXP: TRadioButton
+        Left = 12
+        Top = 43
+        Width = 87
+        Height = 13
+        Caption = 'Office XP'
+        TabOrder = 1
+        OnClick = rbOfficeXPClick
+      end
+    end
+    object grp3: TGroupBox
+      Left = 6
+      Top = 18
+      Width = 142
+      Height = 81
+      Caption = 'Apply on'
+      TabOrder = 9
+      object rbColorPanel: TRadioButton
+        Left = 12
+        Top = 24
+        Width = 123
+        Height = 13
+        Caption = 'JvOfficeColorPanel'
+        Checked = True
+        TabOrder = 0
+        TabStop = True
+        OnClick = rbColorPanelClick
+      end
+      object rbColorButton: TRadioButton
+        Left = 12
+        Top = 49
+        Width = 123
+        Height = 13
+        Caption = 'JvOfficeColorButton'
+        TabOrder = 1
+        OnClick = rbColorPanelClick
+      end
+    end
+    object chkEnableGlyph: TCheckBox
+      Left = 163
+      Top = 149
+      Width = 113
+      Height = 17
+      Caption = 'Enable glyph'
+      TabOrder = 10
+      OnClick = chkShowNoneClick
+    end
+    object chkEnable: TCheckBox
+      Left = 163
+      Top = 198
+      Width = 113
+      Height = 17
+      Caption = 'Enable'
+      TabOrder = 11
+      OnClick = chkShowNoneClick
+    end
+    object chkShowDragBar: TCheckBox
+      Left = 163
+      Top = 174
+      Width = 130
+      Height = 16
+      Caption = 'Show DragBar'
+      TabOrder = 12
+      OnClick = chkShowNoneClick
     end
   end
-  object pConfigureButton: TPanel
-    Left = 0
-    Top = 0
-    Width = 323
-    Height = 151
-    Align = alClient
-    BevelOuter = bvNone
-    Constraints.MinHeight = 149
+  object jvofcb1: TJvOfficeColorButton
+    Left = 6
+    Top = 12
+    Width = 35
+    Height = 22
     TabOrder = 1
-    object GroupBoxButtonStyles: TGroupBox
-      Left = 7
-      Top = 7
-      Width = 150
-      Height = 138
-      Caption = 'JvOfficeColorButton'
+    SelectedColor = clDefault
+    HotTrackFont.Charset = DEFAULT_CHARSET
+    HotTrackFont.Color = clWindowText
+    HotTrackFont.Height = -13
+    HotTrackFont.Name = 'MS Sans Serif'
+    HotTrackFont.Style = []
+    HotTrackFontOptions = []
+    Properties.NoneColorCaption = 'No Color'
+    Properties.DefaultColorCaption = 'Automatic'
+    Properties.CustomColorCaption = 'Other Colors...'
+    Properties.NoneColorHint = 'No Color'
+    Properties.DefaultColorHint = 'Automatic'
+    Properties.CustomColorHint = 'Other Colors...'
+    Properties.NoneColorFont.Charset = DEFAULT_CHARSET
+    Properties.NoneColorFont.Color = clWindowText
+    Properties.NoneColorFont.Height = -13
+    Properties.NoneColorFont.Name = 'MS Sans Serif'
+    Properties.NoneColorFont.Style = []
+    Properties.DefaultColorFont.Charset = DEFAULT_CHARSET
+    Properties.DefaultColorFont.Color = clWindowText
+    Properties.DefaultColorFont.Height = -13
+    Properties.DefaultColorFont.Name = 'MS Sans Serif'
+    Properties.DefaultColorFont.Style = []
+    Properties.CustomColorFont.Charset = DEFAULT_CHARSET
+    Properties.CustomColorFont.Color = clWindowText
+    Properties.CustomColorFont.Height = -13
+    Properties.CustomColorFont.Name = 'MS Sans Serif'
+    Properties.CustomColorFont.Style = []
+    Properties.FloatWindowCaption = 'Color Window'
+    Properties.DragBarHint = 'Drag to float'
+    OnColorChange = jvocp1ColorChange
+  end
+  object jvocp1: TJvOfficeColorPanel
+    Left = 111
+    Top = 11
+    Width = 116
+    Height = 124
+    SelectedColor = clDefault
+    HotTrackFont.Charset = DEFAULT_CHARSET
+    HotTrackFont.Color = clWindowText
+    HotTrackFont.Height = -13
+    HotTrackFont.Name = 'MS Sans Serif'
+    HotTrackFont.Style = []
+    HotTrackFontOptions = []
+    TabOrder = 2
+    Properties.NoneColorCaption = 'No Color'
+    Properties.DefaultColorCaption = 'Automatic'
+    Properties.CustomColorCaption = 'Other Colors...'
+    Properties.NoneColorHint = 'No Color'
+    Properties.DefaultColorHint = 'Automatic'
+    Properties.CustomColorHint = 'Other Colors...'
+    Properties.NoneColorFont.Charset = DEFAULT_CHARSET
+    Properties.NoneColorFont.Color = clWindowText
+    Properties.NoneColorFont.Height = -13
+    Properties.NoneColorFont.Name = 'MS Sans Serif'
+    Properties.NoneColorFont.Style = []
+    Properties.DefaultColorFont.Charset = DEFAULT_CHARSET
+    Properties.DefaultColorFont.Color = clWindowText
+    Properties.DefaultColorFont.Height = -13
+    Properties.DefaultColorFont.Name = 'MS Sans Serif'
+    Properties.DefaultColorFont.Style = []
+    Properties.CustomColorFont.Charset = DEFAULT_CHARSET
+    Properties.CustomColorFont.Color = clWindowText
+    Properties.CustomColorFont.Height = -13
+    Properties.CustomColorFont.Name = 'MS Sans Serif'
+    Properties.CustomColorFont.Style = []
+    OnColorChange = jvocp1ColorChange
+  end
+  object grp4: TGroupBox
+    Left = 6
+    Top = 324
+    Width = 258
+    Height = 81
+    Anchors = [akLeft, akBottom]
+    Caption = 'Seleted Color'
+    Color = clBtnFace
+    ParentColor = False
+    TabOrder = 3
+    object pnlDemoColor: TPanel
+      Left = 2
+      Top = 15
+      Width = 254
+      Height = 64
+      Align = alClient
+      Anchors = [akLeft, akBottom]
+      BevelOuter = bvNone
       TabOrder = 0
-      object chkButtonFlat: TCheckBox
-        Left = 13
-        Top = 20
-        Width = 79
-        Height = 13
-        Caption = 'Flat'
-        Checked = True
-        State = cbChecked
-        TabOrder = 0
-        OnClick = ButtonOptionClick
-      end
-      object chkButtonAuto: TCheckBox
-        Tag = 1
-        Left = 13
-        Top = 39
-        Width = 131
-        Height = 14
-        Caption = 'Show Automatic'
-        Checked = True
-        State = cbChecked
-        TabOrder = 1
-        OnClick = ButtonOptionClick
-      end
-      object chkButtonOther: TCheckBox
-        Tag = 2
-        Left = 13
-        Top = 59
-        Width = 124
-        Height = 13
-        Caption = 'Show Others'
-        Checked = True
-        State = cbChecked
-        TabOrder = 2
-        OnClick = ButtonOptionClick
-      end
-      object chkButtonDrag: TCheckBox
-        Tag = 3
-        Left = 13
-        Top = 78
-        Width = 124
-        Height = 14
-        Caption = 'Show DragBar'
-        Checked = True
-        State = cbChecked
-        TabOrder = 3
-        OnClick = ButtonOptionClick
-      end
-      object chkButtonGlyph: TCheckBox
-        Tag = 4
-        Left = 13
-        Top = 96
-        Width = 124
-        Height = 13
-        Caption = 'Use glyph'
-        ParentShowHint = False
-        ShowHint = False
-        TabOrder = 4
-        OnClick = ButtonOptionClick
-      end
-      object chkButtonEnabled: TCheckBox
-        Left = 14
-        Top = 114
-        Width = 97
-        Height = 17
-        Caption = 'Enabled'
-        Checked = True
-        State = cbChecked
-        TabOrder = 5
-        OnClick = ButtonOptionClick
-      end
-    end
-    object pButtonColor: TPanel
-      Left = 169
-      Top = 13
-      Width = 150
-      Height = 33
-      TabOrder = 1
-    end
-    object JvOfficeColorButton: TJvOfficeColorButton
-      Left = 188
-      Top = 56
-      Width = 36
-      Height = 22
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -15
-      Font.Name = 'MS Shell Dlg 2'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 2
-      Color = clBtnFace
-      Properties.AutoCaption = 'Automatic'
-      Properties.OtherCaption = 'Other Colors...'
-      Properties.DragBarHint = 'Drag to floating'
-      OnColorChange = JvOfficeColorButtonColorChange
     end
   end
 end

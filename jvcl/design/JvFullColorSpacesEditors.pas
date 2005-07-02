@@ -165,7 +165,7 @@ implementation
 
 uses
   Math, SysUtils, DesignConst, TypInfo, Forms,
-  JvFullColorDialogs, JvFullColorCtrls, JvFullColorListForm, JvJCLUtils, JvJVCLUtils;
+  JvFullColorDialogs, JvFullColorCtrls, JvFullColorListForm, JvJCLUtils;
 
 const
   COLOR_PREVIEW_RECT = 16;

@@ -382,10 +382,17 @@ type
   TJvListViewColumnSortEvent = procedure(Sender: TObject; Column: Integer; var AMethod: TJvSortMethod) of object;
 
   // from JvOfficeColorPanel.pas
+  TJvAddInControlSiteInfo = record
+    AddInControl: TControl;
+    BoundsRect: TRect;
+    SiteInfoData: Pointer;
+  end;
+
   TJvClickColorType =
-    (cctColors, cctNoneColor, cctDefaultColor, cctCustomColor, cctNone);
+    (cctColors, cctNoneColor, cctDefaultColor, cctCustomColor, cctAddInControl, cctNone);
+  TJvHoldCustomColorEvent = procedure(Sender: TObject; AColor: TColor) of object;
   TJvColorQuadLayOut = (cqlNone, cqlLeft, cqlRight, cqlClient);
-  TJvGetAddInControlBoundsRectEvent = procedure(Sender: TControl; var ABoundsRect: TRect) of object;
+  TJvGetAddInControlSiteInfoEvent = procedure(Sender: TControl; var ASiteInfo: TJvAddInControlSiteInfo) of object;
 
   // from JvColorProvider.pas
   TColorType = (ctStandard, ctSystem, ctCustom);
