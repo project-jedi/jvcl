@@ -3120,6 +3120,7 @@ destructor TJvMiscInfo.Destroy;
 begin
   FVersions.Free;
   FColorSchemes.Free;
+  FHardwareProfile.Free;
   inherited Destroy;
 end;
 
@@ -4145,6 +4146,7 @@ begin
   FCaptionFont.Free;
   FMenuFont.Free;
   FMessageFont.Free;
+  FSmallCaptionFont.Free;
   FStatusFont.Free;
   inherited Destroy;
 end;
@@ -4802,12 +4804,13 @@ begin
   FFilterKeys.Free;
   FHighContrast.Free;
   FIconMetrics.Free;
+  FIconTitleFont.Free;
   FMinimizedMetrics.Free;
   FMouseKeys.Free;
   FNonClientMetrics.Free;
   FSerialKeys.Free;
   FSoundSentry.Free;
-  FWorkArea.Create;
+  FWorkArea.Free;
   inherited Destroy;
 end;
 
