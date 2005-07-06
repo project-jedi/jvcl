@@ -586,6 +586,7 @@ type
 
     procedure dbPostAppt(Appt: TJvTFAppt);
     procedure dbDeleteAppt(Appt: TJvTFAppt);
+    procedure dbDeleteAllAppt;
     procedure dbRefreshAppt(Appt: TJvTFAppt);
     procedure dbRefreshSched(Sched: TJvTFSched);
     procedure dbRefreshAll;
@@ -3187,6 +3188,16 @@ begin
   begin
     DeleteAppt(Appt);
     Appt.Notify(Self, sncDeleteAppt);
+  end;
+end;
+
+procedure TJvTFScheduleManager.dbDeleteAllAppt;
+var
+  i : Integer;
+begin
+  for i := FAppts.Count - 1 downto 0 do
+  begin
+    RemoveAppt(TJvTFAppt(FAppts.Objects[0]));
   end;
 end;
 
