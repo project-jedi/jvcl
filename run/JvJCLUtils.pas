@@ -8541,8 +8541,8 @@ begin
             Inc(I)
           else
             Break;
-          Inc(I);
         end;
+        Inc(I);
       end;
     end
     else
