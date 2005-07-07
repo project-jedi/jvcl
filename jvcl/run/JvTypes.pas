@@ -385,7 +385,7 @@ type
   TJvAddInControlSiteInfo = record
     AddInControl: TControl;
     BoundsRect: TRect;
-    SiteInfoData: Pointer;
+    SiteInfoData: TObject;
   end;
 
   TJvClickColorType =
