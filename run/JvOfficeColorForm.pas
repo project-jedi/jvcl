@@ -41,7 +41,7 @@ uses
   {$IFDEF VisualCLX}
   Qt,
   {$ENDIF VisualCLX}
-  JvConsts, JvComponent, JvLabel, JvOfficeColorPanel;
+  JvConsts, JvComponent, JvOfficeColorPanel;
 
 {------------------------------------------------------------------------------}
 const
@@ -61,12 +61,7 @@ const
   {$ENDIF VisualCLX}
 
 type
-  {$IFDEF VCL}
-  TJvOfficeColorPanelDragBar = class(TJvLabel)
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  TJvOfficeColorPanelDragBar = class(TLabel)
-  {$ENDIF VisualCLX}
+  TJvOfficeColorPanelDragBar = class(TJvWinControl)
   private
     FOwnerForm: TControl;
     {$IFDEF VisualCLX}
