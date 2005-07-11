@@ -124,6 +124,7 @@ type
   public
     ImageList: TCustomImageList;
     ImageIndex: Integer;
+    Glyph: TGraphic;
     PicLeft: Integer;
     PicTop: Integer;
   end;
@@ -5897,13 +5898,14 @@ var
   CustomImageMap: TJvTFCustomImageMap;
 
   procedure AddToList(AImageList: TCustomImageList; AImageIndex: Integer;
-    APicLeft, APicTop: Integer);
+    AGlyph: TGraphic; APicLeft, APicTop: Integer);
   var
     DrawInfo: TJvTFDrawPicInfo;
   begin
     DrawInfo := TJvTFDrawPicInfo.Create;
     DrawInfo.ImageList := AImageList;
     DrawInfo.ImageIndex := AImageIndex;
+    DrawInfo.Glyph := AGlyph;
     DrawInfo.PicLeft := APicLeft;
     DrawInfo.PicTop := APicTop;
     DrawList.Add(DrawInfo);
@@ -5911,6 +5913,12 @@ var
 
 begin
   NextPicLeft := ARect.Left;
+
+  if (agoShowPics in Options) and (not Appt.Glyph.Graphic.Empty) then
+  begin
+    AddToList(nil, -1, Appt.Glyph.Graphic, NextPicLeft, ARect.Top);
+    Inc(NextPicLeft, Appt.Glyph.Graphic.Width + 2);
+  end;
 
   if (agoShowPics in Options) and Assigned(ScheduleManager.CustomImages) then
   begin
@@ -5920,7 +5928,7 @@ begin
     for I := 0 to CustomImageMap.Count - 1 do
     begin
       ImageIndex := CustomImageMap[I];
-      AddToList(ImageList, ImageIndex, NextPicLeft, ARect.Top);
+      AddToList(ImageList, ImageIndex, nil, NextPicLeft, ARect.Top);
       Inc(NextPicLeft, ImageList.Width + 2);
     end;
   end;
@@ -5935,7 +5943,7 @@ begin
       ImageIndex := ImageMap.AlarmEnabled;
       if ImageIndex > -1 then
       begin
-        AddToList(ImageList, ImageIndex, NextPicLeft, ARect.Top);
+        AddToList(ImageList, ImageIndex, nil, NextPicLeft, ARect.Top);
         Inc(NextPicLeft, ImageList.Width + 2);
       end
     end
@@ -5944,7 +5952,7 @@ begin
       ImageIndex := ImageMap.AlarmDisabled;
       if ImageIndex > -1 then
       begin
-        AddToList(ImageList, ImageIndex, NextPicLeft, ARect.Top);
+        AddToList(ImageList, ImageIndex, nil, NextPicLeft, ARect.Top);
         Inc(NextPicLeft, ImageList.Width + 2);
       end;
     end;
@@ -5952,13 +5960,13 @@ begin
     ImageIndex := ImageMap.Shared;
     if Appt.Shared and (ImageIndex > -1) then
     begin
-      AddToList(ImageList, ImageIndex, NextPicLeft, ARect.Top);
+      AddToList(ImageList, ImageIndex, nil, NextPicLeft, ARect.Top);
       Inc(NextPicLeft, ImageList.Width + 2);
     end;
 
     if Appt.Modified and (ImageMap.Modified > -1) then
     begin
-      AddToList(ImageList, ImageMap.Modified, NextPicLeft, ARect.Top);
+      AddToList(ImageList, ImageMap.Modified, nil, NextPicLeft, ARect.Top);
        // The following line generates a compiler hint so comment out,
        //  but leave here as reminder in case method is expanded.
        //Inc(NextPicLeft, ImageList.Width + 2);
@@ -6006,9 +6014,15 @@ begin
 
       if DrawIt then
       begin
-        PicsHeight := Greater(PicsHeight, ImageList.Height + 2);
+        if Assigned(ImageList) then
+          PicsHeight := Greater(PicsHeight, ImageList.Height + 2)
+        else
+          PicsHeight := Greater(PicsHeight, Glyph.Height + 2);
         PicLeft := NextPicLeft;
-        Inc(NextPicLeft, ImageList.Width + 2);
+        if Assigned(ImageList) then
+          Inc(NextPicLeft, ImageList.Width + 2)
+        else
+          Inc(NextPicLeft, Glyph.Width + 2);
           // Increment I to move onto next pic in list
         Inc(I);
       end
@@ -6043,7 +6057,12 @@ begin
   begin
     DrawInfo := TJvTFDrawPicInfo(DrawList[I]);
     with DrawInfo do
-      ImageList.Draw(ACanvas, PicLeft, PicTop, ImageIndex);
+    begin
+      if Assigned(ImageList) then
+        ImageList.Draw(ACanvas, PicLeft, PicTop, ImageIndex)
+      else
+        ACanvas.Draw(PicLeft, PicTop, Glyph);
+    end;
   end;
 end;
 
