@@ -1205,7 +1205,7 @@ begin
   if (AbsIndex >= 0) and (AbsIndex < Count) then
   begin
     Result := Items[AbsIndex];
-    if (Result.ColIndex <> ColIndex) or (Result.RowIndex <> RowIndex) then
+    if ((Result.ColIndex <> ColIndex) or (Result.RowIndex <> RowIndex)) and not (csDesigning in GlanceControl.ComponentState) then
     begin
       S := '(' + IntToStr(Result.ColIndex) + ':' + IntToStr(ColIndex) + ') ' +
         '(' + IntToStr(Result.RowIndex) + ':' + IntToStr(RowIndex) + ')';
