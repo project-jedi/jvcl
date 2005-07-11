@@ -219,6 +219,7 @@ type
     FColor: TColor;
     FBarColor: TColor;
     FRefreshed: Boolean;
+    FGlyph: TPicture;
 
     function GetDescription: string;
     procedure SetDescription(Value: string);
@@ -233,6 +234,7 @@ type
     function GetStartTime: TTime;
     function GetEndTime: TTime;
     procedure SetRefreshed(Value: Boolean);
+    procedure SetGlyph(const Value: TPicture);
   protected
     FID: string;
     FModified: Boolean;
@@ -312,6 +314,7 @@ type
     property Persistent: Boolean read FPersistent write FPersistent;
     property Color: TColor read FColor write SetColor default clDefault;
     property BarColor: TColor read FBarColor write SetBarColor default clDefault;
+    property Glyph: TPicture read FGlyph write SetGlyph;
   end;
 
   TJvTFSched = class(TObject)
@@ -1387,6 +1390,8 @@ begin
 
   inherited Create;
 
+  FGlyph := TPicture.Create;
+
   FSchedules := TStringList.Create;
   FConnections := TStringList.Create;
 
@@ -1422,6 +1427,8 @@ begin
   FSchedules.Free;
   FConnections.Free;
   FImageMap.Free;
+
+  FGlyph.Free;
 
   inherited Destroy;
 end;
@@ -1913,6 +1920,11 @@ end;
 procedure TJvTFAppt.SetRefreshed(Value: Boolean);
 begin
   FRefreshed := Value;
+end;
+
+procedure TJvTFAppt.SetGlyph(const Value: TPicture);
+begin
+  FGlyph.Assign(Value);
 end;
 
 procedure TJvTFAppt.RefreshNotification;
