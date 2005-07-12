@@ -106,8 +106,8 @@ type
     function GetEmpty: Boolean; override;
     function GetHeight: Integer; override;
     function GetWidth: Integer; override;
-    function GetPalette: HPALETTE;override;
-    function GetTransparent: Boolean;override;
+    function GetPalette: HPALETTE; override;
+    function GetTransparent: Boolean; override;
     procedure ClearItems;
     procedure NewImage;
     procedure UniqueImage;
@@ -288,9 +288,12 @@ end;
 
 //=== { TSharedImage } =======================================================
 
+type
+  TGifSignature = array [0..2] of Char;
+
 const
-  GIFSignature = 'GIF';
-  GIFVersionStr: array [TGIFVersion] of PChar = (#0#0#0, '87a', '89a');
+  GIFSignature: TGifSignature = 'GIF';
+  GIFVersionStr: array [TGIFVersion] of TGifSignature = (#0#0#0, '87a', '89a');
 
 function GIFVersionName(Version: TGIFVersion): string;
 begin
@@ -408,8 +411,8 @@ end;
 
 type
   TGIFHeader = packed record
-    Signature: array [0..2] of Char; { contains 'GIF' }
-    Version: array [0..2] of Char; { '87a' or '89a' }
+    Signature: TGifSignature; { contains 'GIF' }
+    Version: TGifSignature; { '87a' or '89a' }
   end;
 
   TScreenDescriptor = packed record
@@ -2510,17 +2513,15 @@ end;
 procedure TJvGIFImage.ReadSignature(Stream: TStream);
 var
   I: TGIFVersion;
-  S: string[3];
+  S: TGifSignature;
 begin
   FVersion := gvUnknown;
-  SetLength(S, 3);
-  Stream.Read(S[1], 3);
-  if CompareText(GIFSignature, S) <> 0 then
+  Stream.Read(S[0], 3);
+  if not CompareMem(@GIFSignature[0], @S[0], 3) then
     GifError(RsEGIFVersion);
-  SetLength(S, 3);
-  Stream.Read(S[1], 3);
+  Stream.Read(S[0], 3);
   for I := Low(TGIFVersion) to High(TGIFVersion) do
-    if CompareText(S, StrPas(GIFVersionStr[I])) = 0 then
+    if CompareMem(@S[0], @GIFVersionStr[I][0], 3) then
     begin
       FVersion := I;
       Break;
