@@ -94,6 +94,9 @@ type
     FScrollUpBtnBMP: TBitmap;
     FScrollDnBtnBMP: TBitmap;
     FEditor: TJvTFGVTxtEditor;
+
+    FWasMovedTicks : Cardinal; // See in MouseUp for details on usage of this member
+    
     {$IFDEF USEJVCL}
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
@@ -107,7 +110,9 @@ type
     property MouseLine: Integer read FMouseLine write SetMouseLine;
     procedure UpdateDDBtnRect;
 
+    procedure DblClick; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseAccel(X, Y: Integer);
 
@@ -141,6 +146,7 @@ type
     destructor Destroy; override;
 
     procedure PaintTo(ACanvas: TCanvas; DrawInfo: TJvTFGlTxtVwDrawInfo); overload;
+    procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
 
     property Viewer: TJvTFGlanceTextViewer read FViewer;
     property GlanceControl: TJvTFCustomGlance read GetGlanceControl;
@@ -195,6 +201,7 @@ type
     FTopLines: TStringList;
     FSelApptAttr: TJvTFTxtVwApptAttr;
     FSelAppt: TJvTFAppt;
+    FOnDblClick: TNotifyEvent;
     procedure SetLineSpacing(Value: Integer);
     procedure SetSelApptAttr(Value: TJvTFTxtVwApptAttr);
     procedure SetEditorAlign(Value: TJvTFGlTxtVwEditorAlign);
@@ -206,6 +213,7 @@ type
     procedure SelApptAttrChange(Sender: TObject);
     procedure Change; virtual;
     procedure LineDDClick(LineNum: Integer); virtual;
+    procedure DblClick(); virtual;
     procedure ParentReconfig; override;
     procedure SetSelAppt(Value: TJvTFAppt);
     procedure SetInplaceEdit(const Value: Boolean); override;
@@ -240,6 +248,7 @@ type
       write SetEditorAlign default eaLine;
     property ShowStartEnd: Boolean read FShowStartEnd
       write SetShowStartEnd default True;
+    property OnDblClick: TNotifyEvent read FOnDblClick write FOnDblClick; 
   end;
 
 {$IFDEF USEJVCL}
@@ -287,6 +296,9 @@ begin
   FEditor := TJvTFGVTxtEditor.Create(Self);
   FEditor.Visible := False;
   FEditor.Parent := Self;
+
+  FWasMovedTicks := 0;
+  
   //FEditor.Parent := Viewer.GlanceControl;
   // (rom) deactivated seems of no use
   // if FEditor.Parent = nil then
@@ -529,6 +541,18 @@ begin
   ////////////////////
 end;
 
+procedure TJvTFGVTextControl.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
+begin
+  // If the control is being moved, we keep track of when this happened.
+  // See in MouseUp for details of usage of this value.
+  if (Left <> ALeft) or (Top <> ATop) then
+    FWasMovedTicks := GetTickCount
+  else
+    FWasMovedTicks := 0;
+    
+  inherited SetBounds(ALeft, ATop, AWidth, AHeight);
+end;
+
 procedure TJvTFGVTextControl.SetMouseLine(Value: Integer);
 begin
   if Value <> FMouseLine then
@@ -685,6 +709,12 @@ begin
   Result := Rel - TopLine;
 end;
 
+procedure TJvTFGVTextControl.DblClick;
+begin
+  inherited DblClick;
+
+end;
+
 procedure TJvTFGVTextControl.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
@@ -710,9 +740,29 @@ begin
       Viewer.LineDDClick(MouseLine);
     end
     else
-    if not Windows.PtInRect(FDDBtnRect, Point(X, Y)) and Assigned(Appt) then
+    // only start dragging if the mouse down has not happened in the double
+    // click window. See MouseUp for details.
+    if not Windows.PtInRect(FDDBtnRect, Point(X, Y)) and Assigned(Appt) and
+       (GetTickCount - FWasMovedTicks >= GetDoubleClickTime) then
       Viewer.GlanceControl.BeginDrag(False);
   end;
+end;
+
+procedure TJvTFGVTextControl.MouseUp(Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  inherited MouseUp(Button, Shift, X, Y);
+
+  // When the user double clicks in a cell that is not already selected,
+  // we are moved to the new place. As a result, the second MouseUp is
+  // sent to us, not the grid, which result in a double click not being
+  // triggered. In order to trigger the double click, we keep track of
+  // the change of location in SetBounds and if we get a MouseUp event
+  // in less than the double click time, we know it's a because of a
+  // double click and we trigger the appropriate event.
+  if (GetTickCount - FWasMovedTicks < GetDoubleClickTime) then
+    Viewer.DblClick;
+  FWasMovedTicks := 0;
 end;
 
 {$IFDEF USEJVCL}
@@ -1154,6 +1204,12 @@ begin
     FOnLineDDClick(Self, LineNum);
 end;
 
+procedure TJvTFGlanceTextViewer.DblClick;
+begin
+  if Assigned(FOnDblClick) then
+    FOnDblClick(Self);
+end;
+
 procedure TJvTFGlanceTextViewer.MouseAccel(X, Y: Integer);
 begin
   inherited MouseAccel(X, Y);
@@ -1412,6 +1468,7 @@ end;
 
 {$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
+
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 
