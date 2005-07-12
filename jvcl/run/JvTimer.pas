@@ -35,7 +35,7 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, Messages,
   {$ENDIF MSWINDOWS}
-  SysUtils, Classes;
+  SysUtils, ExtCtrls, Classes;
 
 type
   TJvTimer = class(TComponent)
@@ -46,6 +46,7 @@ type
     FSyncEvent: Boolean;
     FThreaded: Boolean;
     FTimerThread: TThread;
+    FTimer: TTimer;
     {$IFDEF MSWINDOWS}
     FThreadPriority: TThreadPriority;
     procedure SetThreadPriority(Value: TThreadPriority);
@@ -165,6 +166,7 @@ begin
   FThreadPriority := tpNormal;
   {$ENDIF MSWINDOWS}
   FTimerThread := TJvTimerThread.Create(Self, False);
+  FTimer := nil;
 end;
 
 destructor TJvTimer.Destroy;
@@ -176,6 +178,7 @@ begin
   while FTimerThread.Suspended do
     FTimerThread.Resume;
   FTimerThread.Terminate;
+  FTimer.Free;
   inherited Destroy;
 end;
 
@@ -183,6 +186,7 @@ procedure TJvTimer.UpdateTimer;
 begin
   if FThreaded then
   begin
+    FreeAndNil(FTimer);
     if not FTimerThread.Suspended then
       FTimerThread.Suspend;
     TJvTimerThread(FTimerThread).FInterval := FInterval;
@@ -199,6 +203,11 @@ begin
   begin
     if not FTimerThread.Suspended then
       FTimerThread.Suspend;
+    if not Assigned(FTimer) then
+      FTimer := TTimer.Create(Self);
+    FTimer.Interval := FInterval;
+    FTimer.OnTimer := FOnTimer;
+    FTimer.Enabled := (FInterval <> 0) and FEnabled and Assigned(FOnTimer);
   end;
 end;
 
