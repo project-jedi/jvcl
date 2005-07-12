@@ -2947,6 +2947,9 @@ begin
   FHint.ReleaseHandle;
   Appt := DragInfo.Appt;
 
+  if not Assigned(Appt) then
+    Exit; // happens sometimes
+
   // calc new info
   // Schedule(s) do not change
   PtInfo := PtToCell(X, Y);
