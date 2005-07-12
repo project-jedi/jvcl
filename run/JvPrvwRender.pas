@@ -87,7 +87,7 @@ type
   protected
     procedure DoAddPage(Sender: TObject; PageIndex: Integer;
       Canvas: TCanvas; PageRect, PrintRect: TRect; var NeedMorePages: Boolean); override;
-    procedure Notification(AComponent: TComponent; Operation: TOperation);override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     function CreatePreview(Append: Boolean): Boolean; override;
   published
@@ -225,13 +225,14 @@ type
     function GetPageHeight: Integer;
     function GetPageWidth: Integer;
     function GetPrinting: Boolean;
+    function GetHandle: HDC;
     procedure NewPage;
     procedure Abort;
     function GetTitle: string;
     procedure SetTitle(const Value: string);
   public
     procedure Print;
-    procedure Assign(Source: TPersistent);override;
+    procedure Assign(Source: TPersistent); override;
     property Title: string read GetTitle write SetTitle;
     property Printer: TPrinter read FPrinter write SetPrinter;
   published
@@ -249,15 +250,15 @@ type
     property OnAbort: TNotifyEvent read FOnAbort write FOnAbort;
   end;
 
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
     RCSfile: '$RCSfile$';
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
+    );
+  {$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -272,11 +273,11 @@ procedure StretchDrawBitmap(Canvas: TCanvas; const ARect: TRect; Bitmap: TBitmap
 begin
   {$IFDEF VCL}
   if (Canvas = Printer.Canvas) or
-     (Printer.Printing and (Canvas.Handle = Printer.Canvas.Handle)) then
+    (Printer.Printing and (Canvas.Handle = Printer.Canvas.Handle)) then
     CopyRectDIBits(Canvas, ARect,
       Bitmap, Rect(0, 0, Bitmap.Width, Bitmap.Height))
   else
-  {$ENDIF VCL}
+    {$ENDIF VCL}
     Canvas.StretchDraw(ARect, Bitmap);
 end;
 
@@ -418,8 +419,10 @@ begin
     LogY := GetDeviceCaps(OutDC, LOGPIXELSY);
     if IsRectEmpty(RichEdit.PageRect) then
     begin
-      Range.rc.Right := (PrintRect.Right - PrintRect.Left) * cTwipsPerInch div LogX;
-      Range.rc.Bottom := (PrintRect.Bottom - PrintRect.Top) * cTwipsPerInch div LogY;
+      Range.rc.Left := PrintRect.Left * cTwipsPerInch div LogX;
+      Range.rc.Top := PrintRect.Top * cTwipsPerInch div LogY;
+      Range.rc.Right := PrintRect.Right * cTwipsPerInch div LogX;
+      Range.rc.Bottom := PrintRect.Bottom * cTwipsPerInch div LogY;
     end
     else
     begin
@@ -503,8 +506,10 @@ begin
     LogY := GetDeviceCaps(OutDC, LOGPIXELSY);
     if IsRectEmpty(RichEdit.PageRect) then
     begin
-      Range.rc.Right := (PrintRect.Right - PrintRect.Left) * cTwipsPerInch div LogX;
-      Range.rc.Bottom := (PrintRect.Bottom - PrintRect.Top) * cTwipsPerInch div LogY;
+      Range.rc.Left := PrintRect.Left * cTwipsPerInch div LogX;
+      Range.rc.Top := PrintRect.Top * cTwipsPerInch div LogY;
+      Range.rc.Right := PrintRect.Right * cTwipsPerInch div LogX;
+      Range.rc.Bottom := PrintRect.Bottom * cTwipsPerInch div LogY;
     end
     else
     begin
@@ -544,7 +549,7 @@ begin
     end;
   end;
 end;
-  
+
 procedure TJvPreviewRenderJvRichEdit.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
@@ -724,8 +729,7 @@ begin
     ADC := ACanvas.Handle;
     if Control is TWinControl then
       TWinControl(Control).PaintTo(ADC, 0, 0)
-    else
-    if Control <> nil then
+    else if Control <> nil then
     begin
       SaveIndex := SaveDC(ADC);
       try
@@ -791,7 +795,7 @@ function TJvPreviewGraphicItem.DestRect(RefRect: TRect; DestDC: HDC): TRect;
 // var Points: TPoint;
 begin
   UpdateGraphic;
-  Result := CalcDestRect(Picture.Width,Picture.Height, RefRect, Stretch, Proportional, Center);
+  Result := CalcDestRect(Picture.Width, Picture.Height, RefRect, Stretch, Proportional, Center);
 end;
 
 destructor TJvPreviewGraphicItem.Destroy;
@@ -859,9 +863,9 @@ begin
         end;
       end;
       if Picture.Graphic is TBitmap then
-        StretchDrawBitmap(Canvas, DestRect(PrintRect,Canvas.Handle), Picture.Bitmap)
+        StretchDrawBitmap(Canvas, DestRect(PrintRect, Canvas.Handle), Picture.Bitmap)
       else
-        Canvas.StretchDraw(DestRect(PrintRect,Canvas.Handle), Picture.Graphic);
+        Canvas.StretchDraw(DestRect(PrintRect, Canvas.Handle), Picture.Graphic);
     end;
   NeedMorePages := PageIndex < Images.Count - 1;
 end;
@@ -905,8 +909,7 @@ begin
     ToPage := TJvPreviewPrinter(Source).ToPage;
     Title := TJvPreviewPrinter(Source).Title;
   end
-  else
-  if Source is TPrintDialog then
+  else if Source is TPrintDialog then
   begin
     Collate := TPrintDialog(Source).Collate;
     Copies := TPrintDialog(Source).Copies;
@@ -958,6 +961,12 @@ function TJvPreviewPrinter.GetCanvas: TCanvas;
 begin
   CheckPrinter;
   Result := FPrinter.Canvas;
+end;
+
+function TJvPreviewPrinter.GetHandle: HDC;
+begin
+  CheckPrinter;
+  Result := FPrinter.Handle;
 end;
 
 function TJvPreviewPrinter.GetPageHeight: Integer;
@@ -1058,7 +1067,7 @@ initialization
 
 finalization
   UnregisterUnitVersion(HInstance);
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
 
 end.
 
