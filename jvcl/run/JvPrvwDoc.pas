@@ -94,6 +94,7 @@ type
     function GetPageWidth: Integer;
     function GetPageHeight: Integer;
     function GetPrinting: Boolean;
+    function GetHandle: HDC;
   end;
 
   TJvDeviceInfo = class(TPersistent)
@@ -431,15 +432,15 @@ type
     property OnUnDock;
   end;
 
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
     RCSfile: '$RCSfile$';
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
+    );
+  {$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -471,7 +472,7 @@ type
     constructor Create(Delay: Integer; HintWindow: THintWindow);
   end;
 
-// returns True if Inner is completely within Outer
+  // returns True if Inner is completely within Outer
 
 function RectInRect(Inner, Outer: TRect): Boolean;
 
@@ -718,12 +719,12 @@ end;
 
 function TJvDeviceInfo.InchToXPx(Inch: Single): Integer;
 begin
-  Result := Round(Inch * LogPixelsY);
+  Result := Round(Inch * LogPixelsX);
 end;
 
 function TJvDeviceInfo.InchToYPx(Inch: Single): Integer;
 begin
-  Result := Round(Inch * LogPixelsX);
+  Result := Round(Inch * LogPixelsY);
 end;
 
 function TJvDeviceInfo.MMToXPx(MM: Single): Integer;
@@ -879,7 +880,7 @@ end;
 
 function TJvDeviceInfo.XPxToMM(Pixels: Integer): Single;
 begin
-  Result := XPxToInch(Pixels) / 25.4;
+  Result := XPxToInch(Pixels) * 25.4;
 end;
 
 function TJvDeviceInfo.YPxToInch(Pixels: Integer): Single;
@@ -889,7 +890,7 @@ end;
 
 function TJvDeviceInfo.YPxToMM(Pixels: Integer): Single;
 begin
-  Result := YPxToInch(Pixels) / 25.4;
+  Result := YPxToInch(Pixels) * 25.4;
 end;
 
 //=== { TJvCustomPreviewControl } ============================================
@@ -1063,10 +1064,12 @@ begin
     begin
       APageRect := Rect(0, 0, PhysicalWidth, PhysicalHeight);
       APrintRect := APageRect;
-      Dec(APageRect.Left, OffsetLeft);
-      Dec(APageRect.Top, OffsetTop);
-      Inc(APageRect.Right, OffsetRight);
-      Inc(APageRect.Bottom, OffsetBottom);
+
+      Inc(APrintRect.Left, OffsetLeft);
+      Inc(APrintRect.Top, OffsetTop);
+      Dec(APrintRect.Right, OffsetRight);
+      Dec(APrintRect.Bottom, OffsetBottom);
+
       FOnAddPage(Self, PageIndex, ACanvas, APageRect, APrintRect, Result);
     end;
   // spool canvas to metafile
@@ -1153,8 +1156,8 @@ begin
     Pen.Style := psSolid;
     APageIndex := K * TotalCols;
     M := Max(0, PageCount - 1);
-//    if not IsPageMode and (K > 0) then
-//      Dec(K);
+    //    if not IsPageMode and (K > 0) then
+    //      Dec(K);
     for I := K to M do
     begin
       APrintRect := FPrintRect;
@@ -1208,7 +1211,7 @@ end;
 procedure TJvCustomPreviewControl.DrawPreview(PageIndex: Integer;
   APageRect, APrintRect: TRect);
 begin
-  FBuffer.Canvas.StretchDraw(APrintRect, Pages[PageIndex]);
+  FBuffer.Canvas.StretchDraw(APageRect, Pages[PageIndex]);
   DoDrawPreviewPage(PageIndex, FBuffer.Canvas, APageRect, APrintRect);
 end;
 
@@ -1385,9 +1388,13 @@ procedure TJvCustomPreviewControl.PrintRange(const APrinter: IJvPrinter;
   StartPage, EndPage, Copies: Integer; Collate: Boolean);
 var
   I, J: Integer;
+  PrinterPhysicalOffsetX, PrinterPhysicalOffsetY: cardinal;
 begin
-  if (APrinter = nil) or APrinter.GetPrinting then
-    Exit;
+  if (APrinter = nil) or APrinter.GetPrinting then Exit;
+
+  PrinterPhysicalOffsetX := GetDeviceCaps(APrinter.GetHandle, PHYSICALOFFSETX);
+  PrinterPhysicalOffsetY := GetDeviceCaps(APrinter.GetHandle, PHYSICALOFFSETY);
+
   if StartPage < 0 then
     StartPage := PageCount - 1;
   if StartPage >= PageCount then
@@ -1418,7 +1425,7 @@ begin
             APrinter.BeginDoc
           else
             APrinter.NewPage;
-          APrinter.GetCanvas.Draw(0, 0, Pages[J]);
+          APrinter.GetCanvas.Draw(-PrinterPhysicalOffsetX, -PrinterPhysicalOffsetY, Pages[J]);
         end;
     end
     else
@@ -1436,7 +1443,7 @@ begin
             APrinter.BeginDoc
           else
             APrinter.NewPage;
-          APrinter.GetCanvas.Draw(0, 0, Pages[J]);
+          APrinter.GetCanvas.Draw(-PrinterPhysicalOffsetX, -PrinterPhysicalOffsetY, Pages[J]);
         end;
     end;
   end
@@ -1458,7 +1465,7 @@ begin
             APrinter.BeginDoc
           else
             APrinter.NewPage;
-          APrinter.GetCanvas.Draw(0, 0, Pages[J]);
+          APrinter.GetCanvas.Draw(-PrinterPhysicalOffsetX, -PrinterPhysicalOffsetY, Pages[J]);
         end;
     end
     else
@@ -1476,7 +1483,7 @@ begin
             APrinter.BeginDoc
           else
             APrinter.NewPage;
-          APrinter.GetCanvas.Draw(0, 0, Pages[J]);
+          APrinter.GetCanvas.Draw(-PrinterPhysicalOffsetX, -PrinterPhysicalOffsetY, Pages[J]);
         end;
     end;
   end;
@@ -1985,7 +1992,7 @@ initialization
 
 finalization
   UnregisterUnitVersion(HInstance);
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
 
 end.
 
