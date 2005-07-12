@@ -69,6 +69,8 @@ type
     procedure TimerExpired(Sender: TObject);
     { Backwards compatibility; eventually remove }
     procedure ReadJvxAnimate(Reader: TReader);
+    function GetThreaded: Boolean;
+    procedure SetThreaded(const Value: Boolean);
   protected
     function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean; override;
     function GetPalette: HPALETTE; override;
@@ -94,6 +96,7 @@ type
     property Loop: Boolean read FLoop write FLoop default True;
     property Stretch: Boolean read FStretch write SetStretch default False;
     property Transparent: Boolean read FTransparent write SetTransparent default True;
+    property Threaded: Boolean read GetThreaded write SetThreaded default True;
     property Anchors;
     property Constraints;
     property DragKind;
@@ -176,6 +179,7 @@ constructor TJvGIFAnimator.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FTimer := TJvTimer.Create(Self);
+  FTimer.Threaded := True;
   AutoSize := True;
   FImage := TJvGIFImage.Create;
   FGraphic := FImage;
@@ -381,6 +385,11 @@ begin
     Result := FImage.Palette;
 end;
 
+function TJvGIFAnimator.GetThreaded: Boolean;
+begin
+  Result := FTimer.Threaded;
+end;
+
 procedure TJvGIFAnimator.ImageChanged(Sender: TObject);
 begin
   Lock;
@@ -508,6 +517,11 @@ begin
     if Animate then
       Repaint;
   end;
+end;
+
+procedure TJvGIFAnimator.SetThreaded(const Value: Boolean);
+begin
+  FTimer.Threaded := Value;
 end;
 
 procedure TJvGIFAnimator.SetTransparent(Value: Boolean);
