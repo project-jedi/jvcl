@@ -712,7 +712,7 @@ end;
 procedure TJvTFGVTextControl.DblClick;
 begin
   inherited DblClick;
-
+  Viewer.DblClick;
 end;
 
 procedure TJvTFGVTextControl.MouseDown(Button: TMouseButton;
