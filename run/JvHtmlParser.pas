@@ -137,8 +137,12 @@ begin
 end;
 
 destructor TJvHTMLParser.Destroy;
+var
+  Index: Integer;
 begin
   FParser.Free;
+  for Index := FKeys.Count-1 downto 0 do
+    FKeys.Objects[Index].Free;
   FKeys.Free;
   FTagList.Free;
   inherited Destroy;
@@ -173,6 +177,8 @@ var
 begin
   if FParser <> Value then // make sure we don't assign to ourselves (that will clear the list)
     FParser.Assign(Value);
+  for I := FKeys.Count-1 downto 0 do
+    FKeys.Objects[I].Free;
   FKeys.Clear;
   I := 0;
   while I < FParser.Count do
@@ -382,12 +388,17 @@ end;
 
 procedure TJvHTMLParser.RemoveCondition(Index: Integer);
 begin
+  FKeys.Objects[Index].Free;
   FKeys.Delete(Index);
 end;
 
 procedure TJvHTMLParser.ClearConditions;
+var
+  Index: Integer;
 begin
   FParser.Clear;
+  for Index := FKeys.Count-1 downto 0 do
+    FKeys.Objects[Index].Free;
   FKeys.Clear;
 end;
 
