@@ -1016,7 +1016,7 @@ type
     procedure DrawPics(ACanvas: TCanvas; var ARect: TRect; Appt: TJvTFAppt);
     procedure CreatePicDrawList(ARect: TRect; Appt: TJvTFAppt; DrawList: TList);
     procedure FilterPicDrawList(ARect: TRect; DrawList: TList;
-      var PicsHeight: Integer);
+      var PicsHeight: Integer; var PicsWidth: Integer);
     procedure ClearPicDrawList(DrawList: TList);
     procedure DrawListPics(ACanvas: TCanvas; var ARect: TRect; DrawList: TList);
     procedure DrawGrabLines(ACanvas: TCanvas; LineTop, LineLeft,
@@ -5674,7 +5674,7 @@ var
   PTxt: PChar;
   Flags: UINT;
   CanDrawText, CanDrawPics, CanDrawAppt: Boolean;
-  PicsHeight: Integer;
+  PicsHeight, PicsWidth: Integer;
   DrawList: TList;
   Attr: TJvTFDaysApptAttr;
   DrawInfo: TJvTFDaysApptDrawInfo;
@@ -5749,14 +5749,14 @@ begin
       DrawList := TList.Create;
       try
         CreatePicDrawList(TxtRect, Appt, DrawList);
-        FilterPicDrawList(TxtRect, DrawList, PicsHeight);
+        FilterPicDrawList(TxtRect, DrawList, PicsHeight, PicsWidth);
         // Calc'ing text height and width in CanDrawWhat
         CanDrawWhat(ACanvas, TxtRect, PicsHeight, CanDrawText, CanDrawPics);
 
         if CanDrawPics then
         begin
           DrawListPics(ACanvas, TxtRect, DrawList);
-          Inc(TxtRect.Left, PicsHeight); // Tim
+          Inc(TxtRect.Left, PicsWidth); // Tim
         end;
       finally
         ClearPicDrawList(DrawList);
@@ -5975,13 +5975,14 @@ begin
 end;
 
 procedure TJvTFDays.FilterPicDrawList(ARect: TRect; DrawList: TList;
-  var PicsHeight: Integer);
+  var PicsHeight: Integer; var PicsWidth: Integer);
 var
   I, NextPicLeft: Integer;
   DrawIt: Boolean;
   DrawInfo: TJvTFDrawPicInfo;
 begin
   PicsHeight := 0;
+  PicsWidth := 0;
   if DrawList.Count = 0 then
     Exit;
 
@@ -5998,7 +5999,6 @@ begin
     end;
   end;
 
-  PicsHeight := 0;
   NextPicLeft := ARect.Left;
   I := 0;
   while I < DrawList.Count do
@@ -6036,6 +6036,7 @@ begin
       end;
     end;
   end;
+  PicsWidth := NextPicLeft - ARect.Left;
 end;
 
 procedure TJvTFDays.ClearPicDrawList(DrawList: TList);
@@ -9425,7 +9426,7 @@ var
   ApptRect, EditorRect: TRect;
   //  EditHeightThreshold, EditWidthThreshold: Integer;
   FailEditor: Boolean;
-  PicsHeight, FrameOffset: Integer;
+  PicsHeight, PicsWidth, FrameOffset: Integer;
   DrawList: TList;
   CanDrawText, CanDrawPics: Boolean;
   DrawInfo: TJvTFDaysApptDrawInfo;
@@ -9467,7 +9468,7 @@ begin
   DrawList := TList.Create;
   try
     CreatePicDrawList(ApptRect, Appt, DrawList);
-    FilterPicDrawList(ApptRect, DrawList, PicsHeight);
+    FilterPicDrawList(ApptRect, DrawList, PicsHeight, PicsWidth);
     CanDrawWhat(Canvas, ApptRect, PicsHeight, CanDrawText, CanDrawPics);
   finally
     ClearPicDrawList(DrawList);
