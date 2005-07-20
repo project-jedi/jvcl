@@ -572,7 +572,7 @@ end;
 
 procedure TJvImageItem.SetIndex(Value: Integer);
 var
-  OldIndex: Integer;
+  OldIndex, TmpIndex: Integer;
   S: TStrings;
 begin
   if Value <> Index then
@@ -580,7 +580,8 @@ begin
     OldIndex := Index;
     inherited SetIndex(Value);
     S := GetOwnerStrings;
-    if (S.IndexOfObject(Self) <> Value) then
+    TmpIndex := S.IndexOfObject(Self);
+    if (TmpIndex > -1) and (TmpIndex <> Value) then
       S.Move(OldIndex,Value);
   end;
 end;
