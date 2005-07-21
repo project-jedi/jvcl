@@ -82,11 +82,13 @@ type
     FReplicating: Boolean;
     FMouseLine: Integer;
     FCanEdit : Boolean;
-    
+    FShowDDButton: Boolean;
+
     function GetGlanceControl: TJvTFCustomGlance;
     procedure SetTopLine(Value: Integer);
     function GetTopLine: Integer;
     procedure SetCanEdit(const Value: Boolean);
+    procedure SetShowDDButton(const Value: Boolean);
   protected
     FMousePtInfo: TJvTFGlTxtVwPointInfo;
     FDDBtnRect: TRect;
@@ -167,6 +169,7 @@ type
     function GetApptAccel(X, Y: Integer): TJvTFAppt;
 
     property CanEdit: Boolean read FCanEdit write SetCanEdit;
+    property ShowDDButton: Boolean read FShowDDButton write SetShowDDButton default True;
   end;
 
   TJvTFLineDDClickEvent = procedure(Sender: TObject; LineNum: Integer) of object;
@@ -207,6 +210,8 @@ type
     procedure SetEditorAlign(Value: TJvTFGlTxtVwEditorAlign);
     procedure SetShowStartEnd(Value: Boolean);
     function GetCellString(ACell: TJvTFGlanceCell): string;
+    procedure SetShowLineDDButton(const Value: Boolean);
+    function GetShowLineDDButton: Boolean;
   protected
     procedure SetVisible(Value: Boolean); override;
     procedure SetGlanceControl(Value: TJvTFCustomGlance); override;
@@ -244,10 +249,9 @@ type
     property LineSpacing: Integer read FLineSpacing write SetLineSpacing default 0;
     property OnLineDDClick: TJvTFLineDDClickEvent read FOnLineDDClick write FOnLineDDClick;
     property SelApptAttr: TJvTFTxtVwApptAttr read FSelApptAttr write SetSelApptAttr;
-    property EditorAlign: TJvTFGlTxtVwEditorAlign read FEditorAlign
-      write SetEditorAlign default eaLine;
-    property ShowStartEnd: Boolean read FShowStartEnd
-      write SetShowStartEnd default True;
+    property EditorAlign: TJvTFGlTxtVwEditorAlign read FEditorAlign write SetEditorAlign default eaLine;
+    property ShowStartEnd: Boolean read FShowStartEnd write SetShowStartEnd default True;
+    property ShowLineDDButton: Boolean read GetShowLineDDButton write SetShowLineDDButton default True;
     property OnDblClick: TNotifyEvent read FOnDblClick write FOnDblClick; 
   end;
 
@@ -284,6 +288,7 @@ begin
     FViewer := TJvTFGlanceTextViewer(AOwner);
 
   DoubleBuffered := True;
+  FShowDDButton := True;
 
   FReplicating := True;
   FMouseLine := -1;
@@ -495,7 +500,7 @@ begin
   if not (csDesigning in ComponentState) then
   begin
     if not Replicating and (FMousePtInfo.RelLineNum < Viewer.ApptCount) and
-       FMouseInControl then
+       FMouseInControl and FShowDDButton then
       DrawDDButton(ACanvas);
 
     BtnRect := ScrollUpBtnRect(DrawInfo.aRect);
@@ -829,6 +834,11 @@ end;
 procedure TJvTFGVTextControl.SetCanEdit(const Value: Boolean);
 begin
   FCanEdit := Value;
+end;
+
+procedure TJvTFGVTextControl.SetShowDDButton(const Value: Boolean);
+begin
+  FShowDDButton := Value;
 end;
 
 destructor TJvTFGVTextControl.Destroy;
@@ -1375,6 +1385,16 @@ begin
     if ACell.IsSubcell then
       Result := Result + 'S';
   end;
+end;
+
+function TJvTFGlanceTextViewer.GetShowLineDDButton: Boolean;
+begin
+  Result := FViewControl.ShowDDButton;
+end;
+
+procedure TJvTFGlanceTextViewer.SetShowLineDDButton(const Value: Boolean);
+begin
+  FViewControl.ShowDDButton := Value;
 end;
 
 //=== { TJvTFGVTxtEditor } ===================================================
