@@ -731,7 +731,7 @@ type
     function GetApptAt(X, Y: Integer): TJvTFAppt; virtual;
   published
     property RepeatGrouped: Boolean read FRepeatGrouped write SetRepeatGrouped default True;
-    property InPlaceEdit: Boolean read FInPlaceEdit write SetInplaceEdit;
+    property InPlaceEdit: Boolean read FInPlaceEdit write SetInplaceEdit default True;
   end;
 
   TJvTFGlance = class(TJvTFCustomGlance)
@@ -3483,6 +3483,7 @@ constructor TJvTFGlanceViewer.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FRepeatGrouped := True;
+  FInplaceEdit := True;
 end;
 
 function TJvTFGlanceViewer.ApptCount: Integer;
