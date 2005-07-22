@@ -5914,7 +5914,7 @@ var
 begin
   NextPicLeft := ARect.Left;
 
-  if (agoShowPics in Options) and (not Appt.Glyph.Graphic.Empty) then
+  if (agoShowPics in Options) and Assigned(Appt.Glyph.Graphic) and not Appt.Glyph.Graphic.Empty then
   begin
     AddToList(nil, -1, Appt.Glyph.Graphic, NextPicLeft, ARect.Top);
     Inc(NextPicLeft, Appt.Glyph.Graphic.Width + 2);
