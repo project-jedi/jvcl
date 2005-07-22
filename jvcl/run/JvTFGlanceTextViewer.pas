@@ -482,6 +482,11 @@ begin
             MoveTo(aRect.Left, LineRect.Bottom - 1);
             LineTo(aRect.Right, LineRect.Bottom - 1);
           end;
+        end
+        else 
+        begin
+          Brush.Color := Appt.Color;
+          FillRect(LineRect);
         end;
       end;
 
