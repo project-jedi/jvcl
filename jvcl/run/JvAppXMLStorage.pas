@@ -619,23 +619,27 @@ begin
     RefPath := cEmptyPath;
 
   Node := GetNodeFromPath(RefPath);
-  Result := False;
-  if Assigned(Node) and ListIsValue and
-    Assigned(Node.Items.ItemNamed[cCount]) then
-  begin
-    ValueNames := TStringList.Create;
-    try
-      I := 0;
-      repeat
-        Name := Node.Items[I].Name;
-        Result := not AnsiSameText(cCount, Name) and not NameIsListItem(Name);
-        Inc(I);
-      until (I = Node.Items.Count) or Result;
-    finally
-      ValueNames.Free;
-    end;
-  end;
+  if Assigned(Node) then
+    if ListIsValue and Assigned(Node.Items.ItemNamed[cCount]) then
+    begin
+      ValueNames := TStringList.Create;
+      try
+        I := 0;
+        repeat
+          Name := Node.Items[I].Name;
+          Result := not AnsiSameText(cCount, Name) and not NameIsListItem(Name);
+          Inc(I);
+        until (I = Node.Items.Count) or Result;
+      finally
+        ValueNames.Free;
+      end;
+    end
+    else
+      Result := Node.Items.Count>0
+  else
+    Result := False;
 end;
+
 
 function TJvCustomAppXMLStorage.GetRootNodeName: string;
 begin
