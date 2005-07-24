@@ -43,10 +43,13 @@ uses
   Classes,
   JvAppStorage, JvPropertyStore, JvSimpleXml;
 
+
 type
+
   TJvCustomAppXMLStorage = class;
   TJvAppXMLStorageOptions = class(TJvAppStorageOptions)
   private
+    FInvalidCharReplacement: string;
     FWhiteSpaceReplacement: string;
     FStorage: TJvCustomAppXMLStorage;
     function GetAutoEncodeEntity: Boolean;
@@ -55,7 +58,7 @@ type
     procedure SetAutoEncodeValue(const Value: Boolean);
     function GetAutoIndent: Boolean;
     procedure SetAutoIndent(const Value: Boolean);
-  protected
+    procedure SetInvalidCharReplacement(const Value: string);
     procedure SetWhiteSpaceReplacement(const Value: string);
   public
     constructor Create; override;
@@ -64,6 +67,8 @@ type
     property AutoEncodeValue: Boolean read GetAutoEncodeValue write SetAutoEncodeValue;
     property AutoEncodeEntity: Boolean read GetAutoEncodeEntity write SetAutoEncodeEntity;
     property AutoIndent: Boolean read GetAutoIndent write SetAutoIndent;
+    property InvalidCharReplacement: string read FInvalidCharReplacement write
+        SetInvalidCharReplacement;
   end;
 
   // This is the base class for an in memory XML file storage
@@ -84,7 +89,7 @@ type
     function GetAsString: string; override;
     procedure SetAsString(const Value: string); override;
 
-    function EnsureNoWhiteSpaceInNodeName(NodeName: string): string;
+    function CheckNodeNameCharacters(const NodeName: string): string;
 
     function DefaultExtension: string; override;
 
@@ -181,6 +186,7 @@ const
   cNullDigit = '0';
   cCount = 'Count';
   cEmptyPath = 'EmptyPath';
+  AllowedNodeNameChars = ['A'..'Z', 'a'..'z', '0'..'9', '_', ':'];
 
 //=== { TJvAppXMLStorageOptions } ============================================
 
@@ -188,6 +194,7 @@ constructor TJvAppXMLStorageOptions.Create;
 begin
   inherited Create;
   FWhiteSpaceReplacement := '';  // to keep the original behaviour
+  FInvalidCharReplacement := '_';  
 end;
 
 function TJvAppXMLStorageOptions.GetAutoEncodeEntity: Boolean;
@@ -230,13 +237,33 @@ begin
     FStorage.Xml.Options := FStorage.Xml.Options - [sxoAutoIndent];
 end;
 
+procedure TJvAppXMLStorageOptions.SetInvalidCharReplacement(const Value: string);
+var
+  I: Integer;
+begin
+  if Value <> FInvalidCharReplacement then
+  begin
+    for I := 1 to Length(Value) do
+      if not (Value[I] in AllowedNodeNameChars) then
+        raise EJVCLException.CreateResFmt(@RsENotAllowedCharacterForProperty, [Value[I], 'InvalidCharReplacement']);
+    FInvalidCharReplacement := Value;
+  end;
+end;
+
 procedure TJvAppXMLStorageOptions.SetWhiteSpaceReplacement(const Value: string);
+var
+  I: Integer;
 begin
   if Value <> FWhiteSpaceReplacement then
     if StrContainsChars(Value, AnsiWhiteSpace, True) then
       raise EJVCLException.CreateRes(@RsEWhiteSpaceReplacementCannotContainSpaces)
     else
+    begin
+      for I := 1 to Length(Value) do
+        if not (Value[I] in AllowedNodeNameChars) then
+          raise EJVCLException.CreateResFmt(@RsENotAllowedCharacterForProperty, [Value[I], 'WhiteSpaceReplacement']);
       FWhiteSpaceReplacement := Value;
+    end;
 end;
 
 //=== { TJvCustomAppXMLStorage } =============================================
@@ -264,52 +291,62 @@ begin
   Result := TJvAppXMLStorageOptions;
 end;
 
-function TJvCustomAppXMLStorage.EnsureNoWhiteSpaceInNodeName(NodeName: string): string;
+function TJvCustomAppXMLStorage.CheckNodeNameCharacters(const NodeName: string): string;
 var
   J, K: Integer;
   WSRLength: Integer;
+  ICRLength: Integer;
+  CurLength: Integer;
   InsertIndex: Integer;
-  WhiteSpaceCount: Integer;
   FixedNodeName: string;
   WhiteSpaceReplacement: string;
+  InvalidCharReplacement: string;
 begin
   WhiteSpaceReplacement := TJvAppXMLStorageOptions(StorageOptions).WhiteSpaceReplacement;
-  if StrContainsChars(NodeName, AnsiWhiteSpace, False) then
+  InvalidCharReplacement := TJvAppXMLStorageOptions(StorageOptions).InvalidCharReplacement;
+  FixedNodeName := NodeName;
+  WSRLength := Length(WhiteSpaceReplacement);
+  ICRLength := Length(InvalidCharReplacement);
+  CurLength := Length(NodeName);
+  SetLength(FixedNodeName, CurLength);
+  InsertIndex := 0;
+  for J := 1 to Length(NodeName) do
   begin
-    WSRLength := Length(WhiteSpaceReplacement);
-    case WSRLength of
-      0:
-        raise EJVCLException.CreateRes(@RsENodeNameCannotContainSpaces);
-      1:
-        NodeName := StrReplaceChars(NodeName, AnsiWhiteSpace, WhiteSpaceReplacement[1]);
-      else
-        begin
-          WhiteSpaceCount := StrCharsCount(NodeName, AnsiWhiteSpace);
-          SetLength(FixedNodeName, Length(NodeName) + WhiteSpaceCount*(WSRLength - 1));
-          InsertIndex := 1;
-          for J := 1 to Length(NodeName) do
+    Inc(InsertIndex);
+    if NodeName[J] in AnsiWhiteSpace then
+      case WSRLength of
+        0:
+          raise EJVCLException.CreateRes(@RsENodeNameCannotContainSpaces);
+        1:
+          FixedNodeName[InsertIndex] := WhiteSpaceReplacement[1];
+        else
+          for K := 1 to WSRLength do
           begin
-            if NodeName[J] in AnsiWhiteSpace then
-            begin
-              // if we have a white space then we replace it with the WSR string
-              for K := 1 to WSRLength do
-              begin
-                FixedNodeName[InsertIndex] := WhiteSpaceReplacement[K];
-                Inc(InsertIndex);
-              end;
-            end
-            else
-            begin
-              // else we simply copy the character
-              FixedNodeName[InsertIndex] := NodeName[J];
-              Inc(InsertIndex);
-            end;
+            FixedNodeName[InsertIndex] := WhiteSpaceReplacement[K];
+            Inc(InsertIndex);
+            Inc(CurLength);
+            SetLength(FixedNodeName, CurLength);
           end;
-          NodeName := FixedNodeName;
-        end;
-    end;
+      end   // case WSRLength of
+    else if not (NodeName[J] in AllowedNodeNameChars) then
+      case ICRLength of
+        0:
+          raise EJVCLException.CreateResFmt(@RsENodeNameCannotInvalidChars, [NodeName[J]]);
+        1:
+          FixedNodeName[InsertIndex] := InvalidCharReplacement[1];
+        else
+          for K := 1 to ICRLength do
+          begin
+            FixedNodeName[InsertIndex] := InvalidCharReplacement[K];
+            Inc(InsertIndex);
+            Inc(CurLength);
+            SetLength(FixedNodeName, CurLength);
+          end;
+      end   // case WSRLength of
+    else
+      FixedNodeName[InsertIndex] := NodeName[J];
   end;
-  Result := NodeName;
+  Result := FixedNodeName;
 end;
 
 procedure TJvCustomAppXMLStorage.SetRootNodeName(const Value: string);
@@ -318,7 +355,7 @@ begin
     raise EPropertyError.CreateRes(@RsENodeCannotBeEmpty)
   else
   begin
-    Xml.Root.Name := EnsureNoWhiteSpaceInNodeName(Value);
+    Xml.Root.Name := CheckNodeNameCharacters(Value);
     Root := Value;
   end;
 end;
@@ -326,7 +363,7 @@ end;
 procedure TJvCustomAppXMLStorage.SplitKeyPath(const Path: string; out Key, ValueName: string);
 begin
   inherited SplitKeyPath(Path, Key, ValueName);
-  ValueName := EnsureNoWhiteSpaceInNodeName(ValueName);
+  ValueName := CheckNodeNameCharacters(ValueName);
   if Key = '' then
     Key := Path;
 end;
@@ -678,7 +715,7 @@ begin
         // those spaces by the replacement string. If there is
         // no such string, we trigger an exception as the XML
         // standard doesn't allow spaces in node names
-        NodeName := EnsureNoWhiteSpaceInNodeName(NodeList[I]);
+        NodeName := CheckNodeNameCharacters(NodeList[I]);
 
         // If the name is the same as the root AND the first in 
         if not ((I = 0) and (NodeName = Xml.Root.Name)) then
