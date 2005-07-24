@@ -385,6 +385,9 @@ function ReplaceStrings(const S: string; PosBeg, Len: Integer; Words, Frases: TS
 { CountOfLines calculates the lines count in a string, S,
   each line must be separated from another with CrLf sequence }
 function CountOfLines(const S: string): Integer;
+{ DeleteLines deletes all lines from strings which in the words,  words.
+  The word of will be deleted from strings. }
+procedure DeleteOfLines(Ss: TStrings; Words:array of string);
 { DeleteEmptyLines deletes all empty lines from strings, Ss.
   Lines contained only spaces also deletes. }
 procedure DeleteEmptyLines(Ss: TStrings);
@@ -1907,7 +1910,7 @@ begin
   end;
   I := PosIdx(Separator, S, StartIndex + 1);
   if I = 0 then
-    I := LenS;
+    I := LenS + 1;
   Result := Copy(S, StartIndex, I - StartIndex);
   if CompareText(Result, Separator) = 0 then
     Result := '';
@@ -1940,7 +1943,7 @@ begin
   end;
   I := PosIdx(Separator, S, StartIndex + 1);
   if I = 0 then
-    I := LenS;
+    I := LenS + 1;
   Result := Copy(S, StartIndex, I - StartIndex);
   if WideCompareText(Result, Separator) = 0 then
     Result := '';
@@ -3327,18 +3330,24 @@ begin
   end;
 end;
 
-procedure DeleteEmptyLines(Ss: TStrings);
+procedure DeleteOfLines(Ss: TStrings; Words:array of string);
 var
-  I: Integer;
+  I,J: Integer;
 begin
   Ss.BeginUpdate;
   try
-    for I := Ss.Count - 1 downto 0 do
-      if Trim(Ss[I]) = '' then
-        Ss.Delete(I);
+    for J:= Low(Words) to High(Words) do
+      for I := Ss.Count - 1 downto 0 do
+        if Trim(Ss[I]) = Trim(Words[J]) then
+          Ss.Delete(I);
   finally
     Ss.EndUpdate;
   end;
+end;
+
+procedure DeleteEmptyLines(Ss: TStrings);
+begin
+  DeleteOfLines(Ss,['']);
 end;
 
 procedure SQLAddWhere(SQL: TStrings; const Where: string);
