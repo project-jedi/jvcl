@@ -588,8 +588,11 @@ var
   Key: string;
 begin
   ReloadIfNeeded;
-  SplitKeyPath(Path, Section, Key);
-  Result := IniFile.SectionExists(Section + '\' + Key);
+  if Copy(Path,1,1) = PathDelim then
+    Section := Copy(Path, 2, Length(Path)-1)
+  else
+    Section := Path;
+  Result := IniFile.SectionExists(Section);
 end;
 
 function TJvCustomAppIniStorage.IsFolderInt(const Path: string; ListIsValue: Boolean): Boolean;
