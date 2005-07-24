@@ -167,6 +167,8 @@ resourcestring
   RsENodeNameCannotContainSpaces = 'XML Node names cannot contain white space and the WhiteSpaceReplacement property is empty. Please set the WhiteSpaceReplacementProperty to a non empty value.';
   RsEWhiteSpaceReplacementCannotContainSpaces =
     'The WhiteSpaceReplacement property cannot contain any white spaces.';
+  RsENodeNameCannotInvalidChars = 'XML Node names cannot contain invalid chars ("%s") and the InvalidCharReplacement property is empty. Please set the InvalidCharReplacement to a non empty value.';
+  RsENotAllowedCharacterForProperty = '"%s" is not an allowed character for the %s property.';
 
 //=== JvAVICapture.pas =======================================================
 resourcestring
