@@ -585,7 +585,6 @@ end;
 function TJvCustomAppIniStorage.PathExistsInt(const Path: string): Boolean;
 var
   Section: string;
-  Key: string;
 begin
   ReloadIfNeeded;
   if Copy(Path,1,1) = PathDelim then
