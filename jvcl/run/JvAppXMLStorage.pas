@@ -186,7 +186,7 @@ const
   cNullDigit = '0';
   cCount = 'Count';
   cEmptyPath = 'EmptyPath';
-  AllowedNodeNameChars = ['A'..'Z', 'a'..'z', '0'..'9', '_', ':'];
+  AllowedNodeNameChars = ['A'..'Z', 'a'..'z', '0'..'9', '_', '-', '.', ':'];
 
 //=== { TJvAppXMLStorageOptions } ============================================
 
