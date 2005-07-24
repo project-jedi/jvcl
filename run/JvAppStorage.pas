@@ -1968,7 +1968,6 @@ begin
   if not TargetStore.ReadOnly then
   begin
     PrevListCount := ReadInteger(ConcatPaths([Path, cCount]), 0);
-    DeleteSubTree(Path);
     WriteInteger(ConcatPaths([Path, cCount]), ItemCount);
     for I := 0 to ItemCount - 1 do
       OnWriteItem(Self, Path, List, I, ItemName);
