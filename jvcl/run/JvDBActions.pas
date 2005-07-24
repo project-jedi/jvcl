@@ -1283,6 +1283,7 @@ end;
 
 procedure TJvDatabaseFirstAction.ExecuteTarget(Target: TObject);
 begin
+  inherited;
   DataEngine.First(DataComponent);
 end;
 
@@ -1295,6 +1296,7 @@ end;
 
 procedure TJvDatabaseLastAction.ExecuteTarget(Target: TObject);
 begin
+  inherited;
   DataEngine.Last(DataComponent);
 end;
 
@@ -1307,6 +1309,7 @@ end;
 
 procedure TJvDatabasePriorAction.ExecuteTarget(Target: TObject);
 begin
+  inherited;
   DataEngine.MoveBy(DataComponent, -1);
 end;
 
@@ -1319,6 +1322,7 @@ end;
 
 procedure TJvDatabaseNextAction.ExecuteTarget(Target: TObject);
 begin
+  inherited;
   DataEngine.MoveBy(DataComponent, 1);
 end;
 
@@ -1337,6 +1341,7 @@ end;
 
 procedure TJvDatabasePriorBlockAction.ExecuteTarget(Target: TObject);
 begin
+  inherited;
   with DataEngine do
     try
       DisableControls(DataComponent);
@@ -1361,6 +1366,7 @@ end;
 
 procedure TJvDatabaseNextBlockAction.ExecuteTarget(Target: TObject);
 begin
+  inherited;
   with DataEngine do
     try
       DisableControls(DataComponent);
@@ -1381,6 +1387,7 @@ end;
 
 procedure TJvDatabaseRefreshAction.ExecuteTarget(Target: TObject);
 begin
+  inherited;
   Refresh;
 end;
 
@@ -1439,6 +1446,7 @@ end;
 
 procedure TJvDatabasePositionAction.ExecuteTarget(Target: TObject);
 begin
+  inherited;
   ShowPositionDialog;
 end;
 
@@ -1546,6 +1554,7 @@ end;
 
 procedure TJvDatabaseInsertAction.ExecuteTarget(Target: TObject);
 begin
+  inherited;
   DataSet.Insert;
 end;
 
@@ -1559,6 +1568,7 @@ end;
 
 procedure TJvDatabaseCopyAction.ExecuteTarget(Target: TObject);
 begin
+  inherited;
   CopyRecord;
 end;
 
@@ -1614,6 +1624,7 @@ end;
 
 procedure TJvDatabaseEditAction.ExecuteTarget(Target: TObject);
 begin
+  inherited;
   DataSet.Edit;
 end;
 
@@ -1627,6 +1638,7 @@ end;
 
 procedure TJvDatabaseDeleteAction.ExecuteTarget(Target: TObject);
 begin
+  inherited;
   DataSet.Delete;
 end;
 
@@ -1639,6 +1651,7 @@ end;
 
 procedure TJvDatabasePostAction.ExecuteTarget(Target: TObject);
 begin
+  inherited;
   DataSet.Post;
 end;
 
@@ -1651,6 +1664,7 @@ end;
 
 procedure TJvDatabaseCancelAction.ExecuteTarget(Target: TObject);
 begin
+  inherited;
   DataSet.Cancel;
 end;
 
@@ -1670,6 +1684,7 @@ end;
 
 procedure TJvDatabaseSingleRecordWindowAction.ExecuteTarget(Target: TObject);
 begin
+  inherited;
   DataEngine.ShowSingleRecordWindow(Options, DataComponent);
 end;
 
@@ -1682,6 +1697,7 @@ end;
 
 procedure TJvDatabaseOpenAction.ExecuteTarget(Target: TObject);
 begin
+  inherited;
   DataSet.Open;
 end;
 
@@ -1694,6 +1710,7 @@ end;
 
 procedure TJvDatabaseCloseAction.ExecuteTarget(Target: TObject);
 begin
+  inherited;
   DataSet.Close;
 end;
 
@@ -1801,6 +1818,7 @@ end;
 
 procedure TJvDatabaseSMExportAction.ExecuteTarget(Target: TObject);
 begin
+  inherited;
   ExportData;
 end;
 
@@ -1901,6 +1919,7 @@ end;
 
 procedure TJvDatabaseSMImportAction.ExecuteTarget(Target: TObject);
 begin
+  inherited;
   ImportData;
 end;
 
