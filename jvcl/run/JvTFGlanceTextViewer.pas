@@ -97,8 +97,10 @@ type
     FScrollDnBtnBMP: TBitmap;
     FEditor: TJvTFGVTxtEditor;
 
-    FWasMovedTicks : Cardinal; // See in MouseUp for details on usage of this member
-    
+    // See in MouseDown for details on usage of these members
+    FWasMovedTicks : Cardinal;
+    FWasInDblClick : Boolean;
+
     {$IFDEF USEJVCL}
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
@@ -113,6 +115,7 @@ type
     procedure UpdateDDBtnRect;
 
     procedure DblClick; override;
+    procedure DoViewerDblClick; 
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -303,6 +306,7 @@ begin
   FEditor.Parent := Self;
 
   FWasMovedTicks := 0;
+  FWasInDblClick := False;
   
   //FEditor.Parent := Viewer.GlanceControl;
   // (rom) deactivated seems of no use
@@ -719,16 +723,23 @@ begin
   Result := Rel - TopLine;
 end;
 
+procedure TJvTFGVTextControl.DoViewerDblClick;
+begin
+  Viewer.DblClick;
+  FWasInDblClick := True;
+end;
+
 procedure TJvTFGVTextControl.DblClick;
 begin
   inherited DblClick;
-  Viewer.DblClick;
+  DoViewerDblClick;
 end;
 
 procedure TJvTFGVTextControl.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
   Appt: TJvTFAppt;
+  ticks: Cardinal;
 begin
   inherited MouseDown(Button, Shift, X, Y);
   SetFocus;
@@ -750,29 +761,41 @@ begin
       Viewer.LineDDClick(MouseLine);
     end
     else
-    // only start dragging if the mouse down has not happened in the double
-    // click window. See MouseUp for details.
-    if not Windows.PtInRect(FDDBtnRect, Point(X, Y)) and Assigned(Appt) and
-       (GetTickCount - FWasMovedTicks >= GetDoubleClickTime) then
-      Viewer.GlanceControl.BeginDrag(False);
+    begin
+      // When the user double clicks in a cell that is not already selected,
+      // we are moved to the new place. As a result, the second MouseUp is
+      // sent to us, not the grid, which result in a double click not being
+      // triggered. In order to trigger the double click, we keep track of
+      // the change of location in SetBounds and if we get a MouseUp event
+      // in less than the double click time, we know it's a because of a
+      // double click and we trigger the appropriate event.
+      ticks := GetTickCount;
+      if (ticks - FWasMovedTicks < GetDoubleClickTime) then
+      begin
+        DoViewerDblClick;
+      end;
+      FWasMovedTicks := 0;
+
+      // only start dragging if the mouse down has not happened in the double
+      // click window. That's because if we get a MouseDown right after a
+      // DoubleClick, then we will never receive the MouseUp. The code below
+      // would lead to the start of a drag of an appointment leading to potential
+      // problems when clicking again (like dropping an non existent appointment).
+      // To avoid this, we keep track of the fact that we went through a double
+      // click and do nothing when we get a mouse down right after that.
+      if not Windows.PtInRect(FDDBtnRect, Point(X, Y)) and Assigned(Appt) and
+         not FWasInDblClick then
+        Viewer.GlanceControl.BeginDrag(False);
+    end;
   end;
+
+  FWasInDblClick := False;
 end;
 
 procedure TJvTFGVTextControl.MouseUp(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
   inherited MouseUp(Button, Shift, X, Y);
-
-  // When the user double clicks in a cell that is not already selected,
-  // we are moved to the new place. As a result, the second MouseUp is
-  // sent to us, not the grid, which result in a double click not being
-  // triggered. In order to trigger the double click, we keep track of
-  // the change of location in SetBounds and if we get a MouseUp event
-  // in less than the double click time, we know it's a because of a
-  // double click and we trigger the appropriate event.
-  if (GetTickCount - FWasMovedTicks < GetDoubleClickTime) then
-    Viewer.DblClick;
-  FWasMovedTicks := 0;
 end;
 
 {$IFDEF USEJVCL}
