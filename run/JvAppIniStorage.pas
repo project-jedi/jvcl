@@ -181,12 +181,51 @@ begin
   FPreserveLeadingTrailingBlanks := Value;
 end;
 
+{ Optimalization of TCustomIniFile.ValueExists is only done for Delphi 7; Probably
+  works the same for other versions, but I can't check that.
+  Note that this is a dirty hack, a better way would be to rewrite TMemIniFile;
+  especially expose FSections, but other optimizations can be done also.
+  For example TCustomIniFile.SectionExists}
+{$IFDEF DELPHI7}
+type
+  TJvMemIniFile = class(TMemIniFile)
+  public
+    function DoesValueExists(const Section, Ident: string): Boolean;
+  end;
+
+  {$HINTS OFF}
+  TMemIniFileAccessPrivate = class(TCustomIniFile)
+  private
+    FSections: TStringList;
+  end;
+  {$HINTS ON}
+
+function TJvMemIniFile.DoesValueExists(const Section, Ident: string): Boolean;
+var
+  I: Integer;
+  Strings: TStrings;
+begin
+  I := TMemIniFileAccessPrivate(Self).FSections.IndexOf(Section);
+  if I >= 0 then
+  begin
+    Strings := TStrings(TMemIniFileAccessPrivate(Self).FSections.Objects[I]);
+    I := Strings.IndexOfName(Ident);
+    Result := I >= 0;
+  end else
+    Result := False;
+end;
+{$ENDIF DELPHI7}
+
 //=== { TJvCustomAppIniStorage } =============================================
 
 constructor TJvCustomAppIniStorage.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  {$IFDEF DELPHI7}
+  FIniFile := TJvMemIniFile.Create(Name);
+  {$ELSE}
   FIniFile := TMemIniFile.Create(Name);
+  {$ENDIF DELPHI7}
 end;
 
 destructor TJvCustomAppIniStorage.Destroy;
@@ -489,7 +528,11 @@ begin
   if IniFile <> nil then
   begin
     ReloadIfNeeded;
+    {$IFDEF DELPHI7}
+    Result := TJvMemIniFile(IniFile).DoesValueExists(CalcDefaultSection(Section), Key);
+    {$ELSE}
     Result := IniFile.ValueExists(CalcDefaultSection(Section), Key);
+    {$ENDIF DELPHI7}
   end
   else
     Result := False;
