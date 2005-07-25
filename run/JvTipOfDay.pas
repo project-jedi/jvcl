@@ -41,7 +41,7 @@ uses
   
 type
   TJvCanShowEvent = procedure(Sender: TObject; var CanShow: Boolean) of object;
-  TJvTipOfDayOption = (toShowOnStartUp, toUseAppStorage, toShowWhenFormShown, toShowStartupCheckbox);
+  TJvTipOfDayOption = (toShowOnStartUp, toUseAppStorage, toShowWhenFormShown, toHideStartupCheckbox);
   TJvTipOfDayOptions = set of TJvTipOfDayOption;
 
   TJvTipOfDayStyle = (tsVC, tsStandard);
@@ -153,7 +153,7 @@ type
     property HeaderText: string read FHeaderText write FHeaderText;
     property OnAfterExecute: TNotifyEvent read FOnAfterExecute write FOnAfterExecute;
     property OnCanShow: TJvCanShowEvent read FOnCanShow write FOnCanShow;
-    property Options: TJvTipOfDayOptions read FOptions write FOptions default [toShowOnStartUp, toShowStartupCheckbox];
+    property Options: TJvTipOfDayOptions read FOptions write FOptions default [toShowOnStartUp];
     property Style: TJvTipOfDayStyle read FStyle write SetStyle default tsVC;
     property TipFont: TFont read FTipFont write SetTipFont stored IsFontStored;
     property Tips: TStrings read GetTips write SetTips;
@@ -224,7 +224,7 @@ begin
   FColor := clWhite;
   FStyle := tsVC;
   FDefaultFonts := True;
-  FOptions := [toShowOnStartUp, toShowStartupCheckbox];
+  FOptions := [toShowOnStartUp];
   FIsAutoExecute := False;
 
   UpdateFonts;
@@ -312,7 +312,7 @@ begin
   {$IFDEF VCL}
       ShowModal;
 
-      if toShowStartupCheckbox in Options then
+      if not (toHideStartupCheckbox in Options) then
         if TButtonControlAccessProtected(FCheckBox).Checked then
           Include(FOptions, toShowOnStartUp)
         else
@@ -347,7 +347,7 @@ procedure TJvTipOfDay.FormHide(Sender: TObject);
 begin
   with Sender as TForm do
   begin
-    if toShowStartupCheckbox in Options then
+    if not (toShowStartupCheckbox in Options) then
       if TButtonControlAccessProtected(FCheckBox).Checked then
         Include(FOptions, toShowOnStartUp)
       else
@@ -482,7 +482,7 @@ begin
     end;
 
     { CheckBox: 'Show Tips on StartUp' }
-    if toShowStartupCheckbox in Options then
+    if not (toHideStartupCheckbox in Options) then
     begin
       FCheckBox := TCheckBox.Create(AForm);
       with TCheckBox(FCheckBox) do
@@ -587,7 +587,7 @@ begin
     end;
 
     { CheckBox: 'Show Tips on StartUp' }
-    if toShowStartupCheckbox in Options then
+    if not (toHideStartupCheckbox in Options) then
     begin
       FCheckBox := TCheckBox.Create(AForm);
       with TCheckBox(FCheckBox) do
