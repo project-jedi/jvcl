@@ -890,62 +890,97 @@ const
   // (rom) or \* as comments say?
   cSubStorePath = PathDelim + '*' ;
 
-procedure UpdateGlobalPath(GlobalPaths, NewPaths: TStrings);
+function OptimizePaths(const Paths: array of string): string;
 var
+  PathIndex: Integer;
+  Head, Tail, ResultIndex: Integer;
+  AllDots: Boolean;
+  MaxLength: Integer;
   I: Integer;
-  J: Integer;
+  DotCount: Integer;
+  L: Integer;
 begin
-  for I := 0 to NewPaths.Count - 1 do
-  begin
-    if StrCharCount(NewPaths[I],'.') = Length(NewPaths[I]) then
-    begin
-      J := Length(NewPaths[I]) - 1;
-      if J > GlobalPaths.Count then
-        J := GlobalPaths.Count;
-      while J > 0 do
-      begin
-        GlobalPaths.Delete(GlobalPaths.Count - 1);
-        Dec(J);
-      end;
-    end
-    else
-      GlobalPaths.Add(NewPaths[I]);
-  end;
-end;
+  PathIndex := High(Paths);
 
-function OptimizePaths(Paths: array of string): string;
-var
-  GlobalPaths: TStrings;
-  CurPaths: TStrings;
-  Index: Integer;
-begin
-  if Length(Paths) <> 0 then
+  if PathIndex < 0 then
   begin
-    GlobalPaths := nil;
-    CurPaths := nil;
-    try
-      GlobalPaths := TStringList.Create;
-      CurPaths := TStringList.Create;
-      Index := High(Paths);
-      while (Index > 0) and (StrLeft(Paths[Index], 1) <> PathDelim) do
-        Dec(Index);
-      repeat
-        StrToStrings(Paths[Index], PathDelim, CurPaths, False);
-        UpdateGlobalPath(GlobalPaths, CurPaths);
-        Inc(Index);
-      until Index > High(Paths);
-      Result := StringsToStr(GlobalPaths, PathDelim, False);
-      // (hofi) it would be better to trim both ends of path ?!?!?
-      // currently only path contains space(s) filtered out
-      if Length(Trim(Result)) = 0 then
-        Result := '';
-    finally
-      CurPaths.Free;
-      GlobalPaths.Free;
-    end;
-  end
-  else
     Result := '';
+    Exit;
+  end;
+
+  while (PathIndex > 0) and (StrLeft(Paths[PathIndex], 1) <> PathDelim) do
+    Dec(PathIndex);
+
+  MaxLength := 0;
+  for I := PathIndex to High(Paths) do
+    Inc(MaxLength, Length(Paths[I]) + 1);
+
+  SetLength(Result, MaxLength);
+
+  ResultIndex := 1;
+
+  repeat
+    Head := 1;
+    // L is only used for optimalization
+    L := Length(Paths[PathIndex]);
+    repeat
+      // skip first path delimiters
+      while (Head <= L) and (Paths[PathIndex][Head] = PathDelim) do
+        Inc(Head);
+      Tail := Head;
+      // search for a path delimiter
+      AllDots := True;
+      while (Head <= L) and (Paths[PathIndex][Head] <> PathDelim) do
+      begin
+        AllDots := AllDots and (Paths[PathIndex][Head] = '.');
+        Inc(Head);
+      end;
+      // Chunk [Tail..Head) is without a path delimiter, it can be either empty (Head=Tail)
+      // be full with dots or be a regular path.
+      if Head <> Tail then
+      begin
+        if AllDots then
+        begin
+          // [Tail..Head) are all dots
+          DotCount := Head - Tail;
+          if (DotCount > 1) and (ResultIndex > 1) then
+          begin
+            // Go back to the previous path delimiter; Current path delimiter is
+            // at Result[ResultIndex - 1]
+            Dec(ResultIndex, 2);
+            while DotCount > 1 do
+            begin
+              while (ResultIndex > 1) and (Result[ResultIndex] <> PathDelim) do
+                Dec(ResultIndex);
+              if ResultIndex = 1 then
+                Break;
+              // Result[ResultIndex] = PathDelim
+              Dec(ResultIndex);
+              Dec(DotCount);
+            end;
+            if ResultIndex > 1 then
+              Inc(ResultIndex, 2);
+          end;
+        end
+        else
+        begin
+          // copy [Tail..Head) to Result..
+          Move(Paths[PathIndex][Tail], Result[ResultIndex], Head - Tail);
+          Inc(ResultIndex, Head - Tail);
+          // ..and add a path delimiter to Result
+          Result[ResultIndex] := PathDelim;
+          Inc(ResultIndex);
+        end;
+      end;
+    until Head > L;
+    Inc(PathIndex);
+  until PathIndex > High(Paths);
+
+  // skip the last added delimiter (if it exists)
+  if ResultIndex > 1 then
+    Dec(ResultIndex);
+
+  SetLength(Result, ResultIndex - 1);
 end;
 
 procedure CopyEnumValue(const Source; var Target; const Kind: TOrdType);
