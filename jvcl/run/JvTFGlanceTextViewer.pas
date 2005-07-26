@@ -489,8 +489,11 @@ begin
         end
         else 
         begin
-          Brush.Color := Appt.Color;
-          FillRect(LineRect);
+          if Appt.Color <> clDefault then
+          begin
+            Brush.Color := Appt.Color;
+            FillRect(LineRect);
+          end;
         end;
       end;
 
