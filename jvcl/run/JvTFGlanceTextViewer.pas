@@ -467,7 +467,7 @@ begin
         Txt := '';
         if Viewer.ShowStartEnd then
           Txt := GetStartEndString(Appt) + ': ';
-        Txt := Txt + Appt.Description;
+        Txt := Txt + StringReplace(Appt.Description, #13#10, ' ', [rfReplaceAll]);
 
         if Appt = Viewer.SelAppt then
         begin
