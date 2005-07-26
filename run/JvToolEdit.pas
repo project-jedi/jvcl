@@ -581,6 +581,7 @@ type
     property MaxLength;
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     property LongName: string read GetLongName;
     property ShortName: string read GetShortName;
   published
@@ -4581,6 +4582,20 @@ begin
   finally
     ControlState := ControlState - [csCreating];
   end;
+end;
+
+destructor TJvFileDirEdit.Destroy;
+begin
+  {$IFDEF VCL}
+  // Mantis 3112: We drop the references we get to the various interfaces
+  // thus avoiding accesses to them triggered by the ancestor(s) destructor(s)
+  FMRUList := nil;
+  FHistoryList := nil;
+  FFileSystemList:= nil;
+  FAutoCompleteSourceIntf := nil;
+  {$ENDIF VCL}
+
+  inherited Destroy;
 end;
 
 procedure TJvFileDirEdit.Change;
