@@ -75,12 +75,15 @@ type
   private
     FPopupMenu: TPopupMenu;
     FBold: Boolean;
+    FTextColor: TColor;
   protected
+    procedure SetTextColor(const Value: TColor);
     procedure SetPopupMenu(const Value: TPopupMenu);
   public
     constructor CreateEnh(AOwner: TListItems; const Popup: TPopupMenu);
     property PopupMenu: TPopupMenu read FPopupMenu write SetPopupMenu;
   published
+    property TextColor: TColor read FTextColor write SetTextColor; 
     // Published now for the usage of AppStorage.Read/WritePersistent
     property Caption;
     property Checked;
@@ -134,6 +137,8 @@ type
     procedure InsertItem(Item: TListItem); override;
     function IsCustomDrawn(Target: TCustomDrawTarget; Stage: TCustomDrawStage): Boolean; {$IFDEF COMPILER6_UP} override; {$ENDIF}
     function CustomDraw(const ARect: TRect; Stage: TCustomDrawStage): Boolean; override;
+    function CustomDrawItem(Item: TListItem; State: TCustomDrawState;
+      Stage: TCustomDrawStage): Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -217,6 +222,11 @@ end;
 procedure TJvListItem.SetPopupMenu(const Value: TPopupMenu);
 begin
   FPopupMenu := Value;
+end;
+
+procedure TJvListItem.SetTextColor(const Value: TColor);
+begin
+  FTextColor := Value;
 end;
 
 //=== { TJvListItems } =======================================================
@@ -1311,7 +1321,9 @@ end;
 
 function TJvListView.IsCustomDrawn(Target: TCustomDrawTarget; Stage: TCustomDrawStage): Boolean;
 begin
-  Result := inherited IsCustomDrawn(Target, Stage) or ((Stage = cdPrePaint) and (Picture.Graphic <> nil) and not Picture.Graphic.Empty)
+  Result := inherited IsCustomDrawn(Target, Stage) or
+            ((Stage = cdPrePaint) and (Picture.Graphic <> nil) and not Picture.Graphic.Empty) or
+            ((Stage = cdPrePaint) and ((Target = dtItem) or (Target = dtSubItem)));
 end;
 
 
@@ -1385,6 +1397,17 @@ begin
     finally
       Bmp.Free;
     end;
+  end;
+end;
+
+function TJvListView.CustomDrawItem(Item: TListItem;
+  State: TCustomDrawState; Stage: TCustomDrawStage): Boolean;
+begin
+  Result := inherited CustomDrawItem(Item, State, Stage);
+
+  if Result and (Stage = cdPrePaint) and Assigned(Item) then
+  begin
+    ListView_SetTextColor(Handle, TJvListItem(Item).TextColor);
   end;
 end;
 
