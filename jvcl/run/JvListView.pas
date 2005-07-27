@@ -75,15 +75,19 @@ type
   private
     FPopupMenu: TPopupMenu;
     FBold: Boolean;
-    FTextColor: TColor;
+    FFont: TFont;
+    FBrush: TBrush;
+    procedure SetBrush(const Value: TBrush);
   protected
-    procedure SetTextColor(const Value: TColor);
     procedure SetPopupMenu(const Value: TPopupMenu);
+    procedure SetFont(const Value: TFont);
   public
     constructor CreateEnh(AOwner: TListItems; const Popup: TPopupMenu);
+    destructor Destroy; override;
     property PopupMenu: TPopupMenu read FPopupMenu write SetPopupMenu;
   published
-    property TextColor: TColor read FTextColor write SetTextColor; 
+    property Font: TFont read FFont write SetFont;
+    property Brush: TBrush read FBrush write SetBrush; 
     // Published now for the usage of AppStorage.Read/WritePersistent
     property Caption;
     property Checked;
@@ -215,18 +219,34 @@ const
 constructor TJvListItem.CreateEnh(AOwner: TListItems; const Popup: TPopupMenu);
 begin
   inherited Create(AOwner);
+  
   FBold := False;
   FPopupMenu := Popup; // (Salvatore) Get it from the JvListView
+  FFont := TFont.Create;
+  FBrush := TBrush.Create;
+end;
+
+destructor TJvListItem.Destroy;
+begin
+  FFont.Free;
+  FBrush.Free;
+  
+  inherited Destroy;
+end;
+
+procedure TJvListItem.SetBrush(const Value: TBrush);
+begin
+  FBrush.Assign(Value);
+end;
+
+procedure TJvListItem.SetFont(const Value: TFont);
+begin
+  FFont.Assign(Value);
 end;
 
 procedure TJvListItem.SetPopupMenu(const Value: TPopupMenu);
 begin
   FPopupMenu := Value;
-end;
-
-procedure TJvListItem.SetTextColor(const Value: TColor);
-begin
-  FTextColor := Value;
 end;
 
 //=== { TJvListItems } =======================================================
@@ -1407,7 +1427,8 @@ begin
 
   if Result and (Stage = cdPrePaint) and Assigned(Item) then
   begin
-    ListView_SetTextColor(Handle, TJvListItem(Item).TextColor);
+    Canvas.Font := TJvListItem(Item).Font;
+    Canvas.Brush := TJvListItem(Item).Brush;
   end;
 end;
 
