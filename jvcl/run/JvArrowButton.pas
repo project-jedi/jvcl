@@ -110,6 +110,7 @@ type
     destructor Destroy; override;
   published
     property Align;
+    property Action;
     property Anchors;
     property Constraints;
     property AllowAllUp: Boolean read FAllowAllUp write SetAllowAllUp default False;
