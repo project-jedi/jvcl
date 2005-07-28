@@ -223,7 +223,7 @@ begin
   APos := Position;
   if not Smooth then
     APos := APos - APos mod Steps;
-  ASize := GetMaxBarSize * (APos - Min) div (Max - Min);
+  ASize := MulDiv(GetMaxBarSize, (APos - Min), (Max - Min));
   DrawBar(Canvas, ASize);
 end;
 
