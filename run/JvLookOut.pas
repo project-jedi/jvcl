@@ -1871,7 +1871,7 @@ begin
   end;
   if Operation = opInsert then
   begin
-    if not (csDesigning in ComponentState) then
+    if not (csDesigning in ComponentState) and not (csLoading in ComponentState) then
       if Assigned(FUpArrow) and Assigned(FDownArrow) then
       begin
         FUpArrow.SetZOrder(True);
