@@ -1423,13 +1423,13 @@ end;
 function TJvListView.CustomDrawItem(Item: TListItem;
   State: TCustomDrawState; Stage: TCustomDrawStage): Boolean;
 begin
-  Result := inherited CustomDrawItem(Item, State, Stage);
-
-  if Result and (Stage = cdPrePaint) and Assigned(Item) then
+  if (Stage = cdPrePaint) and Assigned(Item) then
   begin
     Canvas.Font := TJvListItem(Item).Font;
     Canvas.Brush := TJvListItem(Item).Brush;
   end;
+
+  Result := inherited CustomDrawItem(Item, State, Stage);
 end;
 
 procedure TJvListView.SetPicture(const Value: TPicture);
