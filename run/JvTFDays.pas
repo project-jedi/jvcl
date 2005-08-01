@@ -4299,7 +4299,6 @@ begin
   FWeekendFillPic.Free;
   {$ENDIF Jv_TIMEBLOCKS}
 
-  FCols.Free;
   FEditor.Free;
   FThresholds.Free;
   FApptAttr.Free;
@@ -4310,6 +4309,13 @@ begin
   FGrabHandles.Free;
   PaintBuffer.Free;
   inherited Destroy;
+
+  // This MUST be done after the inherited Destroy as it will set the Manager
+  // property to nil, thus triggering RelSchedNotification if ScheduleCount
+  // is still not 0. And in that very method, there is a test on Cols.Count.
+  // Hence, if FCols was to be freed before inherited, RelSchedNotification
+  // would try to access a freed object, leading to potential AVs.
+  FCols.Free;
 end;
 
 {$IFDEF VCL}
