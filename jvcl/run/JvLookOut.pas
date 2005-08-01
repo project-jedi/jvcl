@@ -2652,18 +2652,15 @@ begin
       while AControl.Top < NewTop do
       begin
         AControl.Top := AControl.Top + AInterval;
-        Application.ProcessMessages;
       end
     else
       while AControl.Top > NewTop do
       begin
         AControl.Top := AControl.Top - AInterval;
-        Application.ProcessMessages;
       end;
   end;
   { adjust }
   AControl.Top := NewTop;
-  Application.ProcessMessages;
 end;
 
 procedure TJvLookOut.SetActiveOutlook(Value: TJvLookOutPage);
