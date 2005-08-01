@@ -369,6 +369,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure ExecuteTarget(Target: TObject); override;
+    procedure ShowSingleRecordWindow;
   published
     property Options: TJvShowSingleRecordWindowOptions Read FOptions Write FOptions;
   end;
@@ -414,11 +415,11 @@ type
   private
     FOptions: TJvDatabaseSMExportOptions;
   protected
-    procedure ExportData;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure ExecuteTarget(Target: TObject); override;
+    procedure ExportData;
   published
     property Options: TJvDatabaseSMExportOptions Read FOptions Write FOptions;
   end;
@@ -450,11 +451,11 @@ type
   private
     FOptions: TJvDatabaseSMImportOptions;
   protected
-    procedure ImportData;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure ExecuteTarget(Target: TObject); override;
+    procedure ImportData;
   published
     property Options: TJvDatabaseSMImportOptions Read FOptions Write FOptions;
   end;
@@ -1685,6 +1686,11 @@ end;
 procedure TJvDatabaseSingleRecordWindowAction.ExecuteTarget(Target: TObject);
 begin
   inherited;
+  ShowSingleRecordWindow
+end;
+
+procedure TJvDatabaseSingleRecordWindowAction.ShowSingleRecordWindow;
+begin
   DataEngine.ShowSingleRecordWindow(Options, DataComponent);
 end;
 
