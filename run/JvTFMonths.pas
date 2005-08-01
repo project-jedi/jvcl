@@ -123,6 +123,9 @@ const
 
 implementation
 
+uses
+  DateUtils;
+
 constructor TJvTFMonths.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -507,7 +510,11 @@ begin
 
   DecodeDate(DisplayDate, Y, M, D);
   if Value <> M then
+  begin
+    if D > DaysInAMonth(Y, Value) then
+      D := DaysInAMonth(Y, Value);
     DisplayDate := EncodeDate(Y, Value, D);
+  end;
 end;
 
 procedure TJvTFMonths.SetOffDayCellAttr(Value: TJvTFGlanceCellAttr);
