@@ -506,11 +506,16 @@ procedure TJvTFMonths.SetMonth(Value: Word);
 var
   Y, M, D: Word;
 begin
+  // Don't set the month while loading, the DisplayDate will be loaded as well
+  if csLoading in ComponentState then
+    Exit;
+
   EnsureMonth(Value);
 
   DecodeDate(DisplayDate, Y, M, D);
   if Value <> M then
   begin
+    // Ensure the day is still inside the valid values for the new month
     if D > DaysInAMonth(Y, Value) then
       D := DaysInAMonth(Y, Value);
     DisplayDate := EncodeDate(Y, Value, D);
@@ -561,9 +566,19 @@ procedure TJvTFMonths.SetYear(Value: Word);
 var
   Y, M, D: Word;
 begin
+  // Don't set the year while loading, the DisplayDate will be loaded as well
+  if csLoading in ComponentState then
+    Exit;
+
   DecodeDate(DisplayDate, Y, M, D);
   if Value <> Y then
+  begin
+    // Ensure the day is still inside the valid values for the month of
+    // the new year. This case only happens with February, by the way.
+    if D > DaysInAMonth(Value, M) then
+      D := DaysInAMonth(Value, M);
     DisplayDate := EncodeDate(Value, M, D);
+  end;
 end;
 
 procedure TJvTFMonths.UpdateTitle;
