@@ -477,18 +477,26 @@ type
     FBold: Boolean;
     FChecked: Boolean;
     FPopupMenu: TPopupMenu;
+    FFont: TFont;
     function GetChecked: Boolean;
     procedure SetChecked(Value: Boolean);
     function GetBold: Boolean;
     procedure SetBold(const Value: Boolean);
     procedure SetPopupMenu(const Value: TPopupMenu);
+    procedure SetFont(const Value: TFont);
+    function GetFont: TFont;
   protected
     procedure Reinitialize; virtual;
   public
     class function CreateEnh(AOwner: TTreeNodes): TJvTreeNode;
+
+    constructor Create(AOwner: TTreeNodes);
+    destructor Destroy; override;
+
     procedure Assign(Source: TPersistent); override;
     property Checked: Boolean read GetChecked write SetChecked;
     property Bold: Boolean read GetBold write SetBold;
+    property Font: TFont read GetFont write SetFont;
     property PopupMenu: TPopupMenu read FPopupMenu write SetPopupMenu;
   end;
 
@@ -2231,6 +2239,19 @@ begin
 //  Result.FPopupMenu := TPopupMenu.Create(AOwner.Owner);
 end;
 
+constructor TJvTreeNode.Create(AOwner: TTreeNodes);
+begin
+  inherited Create(AOwner);
+
+  FFont := nil;
+end;
+
+destructor TJvTreeNode.Destroy;
+begin
+  FFont.Free;
+  inherited Destroy;
+end;
+
 procedure TJvTreeNode.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
@@ -2245,6 +2266,22 @@ end;
 procedure TJvTreeNode.SetPopupMenu(const Value: TPopupMenu);
 begin
   FPopupMenu := Value;
+end;
+
+procedure TJvTreeNode.SetFont(const Value: TFont);
+begin
+  if not Assigned(FFont) then
+    FFont := TFont.Create;
+
+  FFont.Assign(Value);
+end;
+
+function TJvTreeNode.GetFont: TFont;
+begin
+  if not Assigned(FFont) then
+    FFont := TFont.Create;
+    
+  Result := FFont;
 end;
 
 function TJvTreeNode.GetBold: Boolean;
@@ -2517,6 +2554,9 @@ end;
 procedure TJvTreeView.InternalCustomDrawItem(Sender: TCustomTreeView;
   Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
 begin
+  if (State = []) or (State = [cdsDefault]) or (State = [cdsSelected]) then
+    Canvas.Font := TJvTreeNode(Node).Font;
+    
   if MultiSelect then
   begin
     with Canvas.Font do
