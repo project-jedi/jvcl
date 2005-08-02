@@ -478,6 +478,7 @@ type
     FChecked: Boolean;
     FPopupMenu: TPopupMenu;
     FFont: TFont;
+    FBrush: TBrush;
     function GetChecked: Boolean;
     procedure SetChecked(Value: Boolean);
     function GetBold: Boolean;
