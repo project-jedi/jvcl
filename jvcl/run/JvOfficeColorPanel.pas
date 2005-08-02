@@ -1259,6 +1259,7 @@ begin
   FBackgroundColor := clBtnFace;
   FHotTrack := False;
   FHotTrackFont := TFont.Create;
+  FHotTrackFontOptions := DefaultTrackFontOptions;
   FHotTrackOptions := TJvHotTrackOptions.Create;
   FHotTrackOptions.OnChange := DoHotTrackOptionsChange;
 
