@@ -8986,6 +8986,11 @@ begin
       else
         Inc(ColNum);
     end;
+    if not Done then
+    begin
+      Result.Col := Cols.Count-1;
+      Result.CellX := AdjX - (Temp - Cols[Cols.Count-1].Width);
+    end;
   end;
 
   if Y < CalcGroupHdrHeight then
@@ -9020,6 +9025,11 @@ begin
       end
       else
         Inc(RowNum);
+    end;
+    if not Done then
+    begin
+      Result.Row := RowCount-1;
+      Result.CellY := AdjY - (Temp - RowHeight);
     end;
   end;
 
