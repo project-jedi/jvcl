@@ -22,6 +22,8 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Changes:
+2005-07-20:(dejoy)
+  * TJvCustomLabel implemented interface of IJvHotTrack.
 2005-04-02:
   * Fixed (Added) support for Alignment when used with Angle. (Layout still to do)
   * Fixed Shadow (was not visible when JvLabel not Transparent).
@@ -48,7 +50,8 @@ Changes:
   Contributor(s):
     Dierk schmid
     Stephane Bischoff (Tief)
-
+    Dejoy Den
+    
 Known Issues:
 * AutoSize calculations aren't correct when RoundedFrame and/or Shadow are active
 -----------------------------------------------------------------------------}
@@ -79,7 +82,7 @@ type
     PosX, PosY : Integer
   end;
 
-  TJvCustomLabel = class(TJvGraphicControl)
+  TJvCustomLabel = class(TJvGraphicControl, IJvHotTrack)
   private
     FFocusControl: TWinControl;
     FAlignment: TAlignment;
@@ -98,11 +101,13 @@ type
     FChangeLink: TChangeLink;
     FHotTrack: Boolean;
     FHotTrackFont: TFont;
+    FHotTrackFontOptions: TJvTrackFontOptions;
+    FHotTrackOptions: TJvHotTrackOptions;
+
     FAutoOpenURL: Boolean;
     FURL: string;
     FAngle: TJvLabelRotateAngle;
     FSpacing: Integer;
-    FHotTrackFontOptions: TJvTrackFontOptions;
     FConsumerSvc: TJvDataConsumer;
     FNeedsResize: Boolean;
     FTextEllipsis: TJvTextEllipsis;
@@ -131,14 +136,22 @@ type
     procedure DrawAngleText(var Rect: TRect; Flags: Word; HasImage: Boolean;
       ShadowSize: Byte; ShadowColor: TColorRef; ShadowPos: TShadowPosition);
     procedure SetAngle(Value: TJvLabelRotateAngle);
-    procedure SetHotTrackFont(Value: TFont);
     procedure SetSpacing(Value: Integer);
-    procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
     procedure SetTextEllipsis(Value: TJvTextEllipsis);
     procedure SetFrameColor(const Value: TColor);
     procedure SetRoundedFrame(const Value: Integer);
     function GetMargin: Integer;
     procedure HotFontChanged(Sender: TObject);
+
+    {IJvHotTrack}  //added by dejoy 2005-07-20
+    function GetHotTrack:Boolean;
+    function GetHotTrackFont:TFont;
+    function GetHotTrackFontOptions:TJvTrackFontOptions;
+    function GetHotTrackOptions:TJvHotTrackOptions;
+    procedure SetHotTrack(Value: Boolean);
+    procedure SetHotTrackFont(Value: TFont);
+    procedure SetHotTrackFontOptions(Value: TJvTrackFontOptions);
+    procedure SetHotTrackOptions(Value: TJvHotTrackOptions);
   protected
     procedure DoDrawCaption(var Rect: TRect; Flags: Integer);virtual;
     procedure DoProviderDraw(var Rect: TRect; Flags: Integer);virtual;
@@ -148,7 +161,6 @@ type
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
     procedure EnabledChanged; override;
-    procedure VisibleChanged; override;
 
     procedure DoDrawText(var Rect: TRect; Flags: Integer); virtual;
     procedure AdjustBounds;virtual;
@@ -186,9 +198,13 @@ type
     procedure NonProviderChange;
     property Angle: TJvLabelRotateAngle read FAngle write SetAngle default 0;
     property AutoOpenURL: Boolean read FAutoOpenURL write FAutoOpenURL default True;
-    property HotTrack: Boolean read FHotTrack write FHotTrack default False;
-    property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont;
-    property HotTrackFontOptions: TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions default DefaultTrackFontOptions;
+
+    property HotTrack: Boolean read GetHotTrack write SetHotTrack default False;
+    property HotTrackFont: TFont read GetHotTrackFont write SetHotTrackFont;
+    property HotTrackFontOptions: TJvTrackFontOptions read GetHotTrackFontOptions write SetHotTrackFontOptions default
+      DefaultTrackFontOptions;
+    property HotTrackOptions: TJvHotTrackOptions read GetHotTrackOptions write SetHotTrackOptions;
+
     property NeedsResize: Boolean read FNeedsResize write FNeedsResize;
 
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
@@ -277,6 +293,7 @@ type
     property HotTrack;
     property HotTrackFont;
     property HotTrackFontOptions;
+    property HotTrackOptions;
     property Images;
     property ImageIndex;
     property Provider;
@@ -475,10 +492,15 @@ begin
   if ThemeServices.ThemesEnabled then
     ControlStyle := ControlStyle - [csOpaque];
   {$ENDIF JVCLThemesEnabled}
+
   FHotTrack := False;
   // (rom) needs better font handling
   FHotTrackFont := TFont.Create;
+  FHotTrackFontOptions := DefaultTrackFontOptions;
+  FHotTrackOptions := TJvHotTrackOptions.Create;
+  // (rom) needs better font handling
   FHotTrackFont.OnChange := HotFontChanged;
+
   Width := 65;
   Height := 17;
   FAutoSize := True;
@@ -487,7 +509,6 @@ begin
   FShadowColor := clBtnHighlight;
   FShadowSize := 0;
   FShadowPos := spRightBottom;
-  FHotTrackFontOptions := DefaultTrackFontOptions;
   FAutoOpenURL := True;
 end;
 
@@ -861,37 +882,79 @@ var
   Rect,CalcRect: TRect;
   DrawStyle: Integer;
   InteriorMargin: Integer;
+  OldPenColor: TColor;
 begin
   InteriorMargin := 0;
   if not Enabled and not (csDesigning in ComponentState) then
     FDragging := False;
+
   with Canvas do
   begin
-    Canvas.Brush.Color := Color;
-    Canvas.Brush.Style := bsSolid;
-    if not Transparent and ((RoundedFrame = 0) or (FrameColor = clNone)) then
-      DrawThemedBackground(Self, Canvas, ClientRect)
-    else
-    if Transparent then
-      Canvas.Brush.Style := bsClear;
-    if FrameColor <> clNone then
+    Rect := ClientRect;
+
+    {Inserted by (dejoy) 2005-07-20}
+    if Enabled and MouseOver and HotTrack  then
     begin
-      if RoundedFrame = 0 then
+      if HotTrackOptions.Enabled then
       begin
-        Brush.Color := FrameColor;
-        FrameRect({$IFDEF VisualCLX} Canvas, {$ENDIF} ClientRect);
-      end
+        Canvas.Brush.Color := HotTrackOptions.Color;
+        Canvas.Brush.Style := bsSolid;
+        if HotTrackOptions.FrameVisible then
+        begin
+          OldPenColor := Pen.Color;
+          if RoundedFrame = 0 then
+          begin
+            Canvas.Pen.Color := HotTrackOptions.FrameColor;
+            Canvas.Rectangle(0, 0, Width, Height);
+          end
+          else
+          begin
+            {$IFDEF VCL}
+            if not Transparent then // clx: TODO
+              FloodFill(ClientRect.Left + 1, ClientRect.Top + RoundedFrame, HotTrackOptions.FrameColor, fsBorder);
+            {$ENDIF VCL}
+            FrameRounded(Canvas, ClientRect, HotTrackOptions.FrameColor, RoundedFrame);
+          end;
+          Canvas.Pen.Color := OldPenColor;
+        end
+        else
+        begin
+          Canvas.FillRect(Rect);
+        end;
+      end;
+    end
+    else
+    begin
+      Canvas.Font := Self.Font;
+    {Insert End by (dejoy)}
+
+      Canvas.Brush.Color := Color;
+      Canvas.Brush.Style := bsSolid;
+      if not Transparent and ((RoundedFrame = 0) or (FrameColor = clNone)) then
+        DrawThemedBackground(Self, Canvas, ClientRect)
       else
+      if Transparent then
+        Canvas.Brush.Style := bsClear;
+
+      if FrameColor <> clNone then
       begin
-        Brush.Color := Color;
-        {$IFDEF VCL}
-        if not Transparent then // clx: TODO
-          FloodFill(ClientRect.Left + 1, ClientRect.Top + RoundedFrame, FrameColor, fsBorder);
-        {$ENDIF VCL}
-        FrameRounded(Canvas, ClientRect, FrameColor, RoundedFrame);
+        if RoundedFrame = 0 then
+        begin
+          Brush.Color := FrameColor;
+          FrameRect({$IFDEF VisualCLX} Canvas, {$ENDIF} ClientRect);
+        end
+        else
+        begin
+          Brush.Color := Color;
+          {$IFDEF VCL}
+          if not Transparent then // clx: TODO
+            FloodFill(ClientRect.Left + 1, ClientRect.Top + RoundedFrame, FrameColor, fsBorder);
+          {$ENDIF VCL}
+          FrameRounded(Canvas, ClientRect, FrameColor, RoundedFrame);
+        end;
       end;
     end;
-    Rect := ClientRect;
+
     Inc(Rect.Left, MarginLeft + InteriorMargin);
     Dec(Rect.Right, MarginRight + InteriorMargin);
     Inc(Rect.Top, MarginTop + InteriorMargin);
@@ -1155,8 +1218,6 @@ begin
   inherited MouseDown(Button, Shift, X, Y);
   if (Button = mbLeft) and Enabled then
     FDragging := True;
-  if Button = mbRight then // (ahuser) moved from WMRButtonDown
-    UpdateTracking;
 end;
 
 procedure TJvCustomLabel.MouseUp(Button: TMouseButton; Shift: TShiftState;
@@ -1170,18 +1231,26 @@ end;
 
 procedure TJvCustomLabel.UpdateTracking;
 var
-  P: TPoint;
-  OldValue: Boolean;
+  OldValue, OtherDragging: Boolean;
 begin
   OldValue := MouseOver;
-  GetCursorPos(P);
-  MouseOver := Enabled and (FindDragTarget(P, True) = Self) and
+  OtherDragging :=
+    {$IFDEF VCL}
+    KeyPressed(VK_LBUTTON)
+     {$IFDEF COMPILER6_UP}
+    or Mouse.IsDragging
+    {$ENDIF COMPILER6_UP}
+   {$ENDIF VCL}
+   {$IFDEF VisualCLX}
+    DragActivated
+   {$ENDIF VisualCLX}
+    ;
+
+  MouseOver := Enabled and  not OtherDragging and
+    (FindDragTarget(Mouse.CursorPos, True) = Self) and
     IsForegroundTask;
-  if MouseOver <> OldValue then
-    if MouseOver then
-      MouseEnter(Self)
-    else
-      MouseLeave(Self);
+  if (MouseOver <> OldValue)  then
+    Invalidate;
 end;
 
 procedure TJvCustomLabel.FocusChanged(AControl: TWinControl);
@@ -1231,25 +1300,80 @@ begin
   UpdateTracking;
 end;
 
-procedure TJvCustomLabel.VisibleChanged;
-begin
-  inherited VisibleChanged;
-  if Visible then
-    UpdateTracking;
-end;
-
 procedure TJvCustomLabel.MouseEnter(Control: TControl);
+var
+  NeedRepaint: Boolean;
+  OtherDragging:Boolean;
 begin
-  inherited MouseEnter(Control);
-  if MouseOver and Enabled and IsForegroundTask and HotTrack then
-    FontChanged;
+  if csDesigning in ComponentState then
+    Exit;
+
+  if  IsForegroundTask then
+    MouseCapture := True;  //Capture for MouseUp event
+
+  if not MouseOver and Enabled  and IsForegroundTask then
+  begin
+    OtherDragging :=
+      {$IFDEF VCL}
+      KeyPressed(VK_LBUTTON)
+       {$IFDEF COMPILER6_UP}
+        or Mouse.IsDragging
+      {$ENDIF COMPILER6_UP}
+     {$ENDIF VCL}
+     {$IFDEF VisualCLX}
+      DragActivated
+     {$ENDIF VisualCLX}
+      ;
+    NeedRepaint :=  not Transparent and
+     ({$IFDEF JVCLThemesEnabled}
+      ThemeServices.ThemesEnabled or
+      {$ENDIF JVCLThemesEnabled}
+      (FHotTrack  and not (FDragging or OtherDragging)));
+
+    inherited MouseEnter(Control); // set MouseOver
+
+    if NeedRepaint then
+    begin
+      Invalidate;
+    end;
+  end;
 end;
 
 procedure TJvCustomLabel.MouseLeave(Control: TControl);
+var
+  NeedRepaint: Boolean;
+  OtherDragging:Boolean;
 begin
-  if MouseOver and HotTrack then
-    FontChanged;
-  inherited MouseLeave(Control);
+  if csDesigning in ComponentState then
+    Exit;
+  MouseCapture := False;
+  if  MouseOver and Enabled then
+  begin
+    OtherDragging :=
+      {$IFDEF VCL}
+      KeyPressed(VK_LBUTTON)
+       {$IFDEF COMPILER6_UP}
+        or Mouse.IsDragging
+      {$ENDIF COMPILER6_UP}
+     {$ENDIF VCL}
+     {$IFDEF VisualCLX}
+      DragActivated
+     {$ENDIF VisualCLX}
+      ;
+
+    NeedRepaint :=  not Transparent and
+     ({$IFDEF JVCLThemesEnabled}
+      ThemeServices.ThemesEnabled or
+      {$ENDIF JVCLThemesEnabled}
+      (FHotTrack  and (FDragging or not OtherDragging)));
+
+    inherited MouseLeave(Control); // set MouseOver
+
+    if NeedRepaint then
+    begin
+      Invalidate;
+    end;
+  end;
 end;
 
 procedure TJvCustomLabel.SetImageIndex(Value: TImageIndex);
@@ -1395,13 +1519,47 @@ begin
   end;
 end;
 
-procedure TJvCustomLabel.SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
+procedure TJvCustomLabel.SetHotTrackFontOptions(Value: TJvTrackFontOptions);
 begin
   if FHotTrackFontOptions <> Value then
   begin
     FHotTrackFontOptions := Value;
     UpdateTrackFont(HotTrackFont, Font, FHotTrackFontOptions);
   end;
+end;
+
+function TJvCustomLabel.GetHotTrack: Boolean;
+begin
+  Result := FHotTrack;
+end;
+
+function TJvCustomLabel.GetHotTrackFont: TFont;
+begin
+  Result := FHotTrackFont;
+end;
+
+function TJvCustomLabel.GetHotTrackFontOptions: TJvTrackFontOptions;
+begin
+  Result := FHotTrackFontOptions;
+end;
+
+function TJvCustomLabel.GetHotTrackOptions: TJvHotTrackOptions;
+begin
+  Result := FHotTrackOptions;
+end;
+
+procedure TJvCustomLabel.SetHotTrack(Value: Boolean);
+begin
+  if FHotTrack <> Value then
+  begin
+    FHotTrack := Value;
+  end;
+end;
+
+procedure TJvCustomLabel.SetHotTrackOptions(Value: TJvHotTrackOptions);
+begin
+  if (FHotTrackOptions <> Value) and (Value <> nil) then
+    FHotTrackOptions.Assign(Value);
 end;
 
 procedure TJvCustomLabel.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
