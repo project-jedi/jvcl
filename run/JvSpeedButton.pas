@@ -936,17 +936,19 @@ begin
       {$ENDIF JVCLThemesEnabled}
       FHotTrack or (FFlat and Enabled and (DragMode <> dmAutomatic) and (GetCapture = NullHandle));
 
-    NeedRepaint := NeedRepaint and not
-      {$IFDEF VCL}
-       {$IFDEF COMPILER6_UP}
-      Mouse.IsDragging;
-       {$ELSE}
-      KeyPressed(VK_LBUTTON);
-       {$ENDIF COMPILER6_UP}
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      DragActivated;
-      {$ENDIF VisualCLX}
+    NeedRepaint :=  NeedRepaint
+{$IFDEF VCL}
+{$IFDEF COMPILER6_UP}
+     and not Mouse.IsDragging
+{$ELSE}
+     and not KeyPressed(VK_LBUTTON)
+{$ENDIF COMPILER6_UP}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+     and not DragActivated
+{$ENDIF VisualCLX}
+      ;
+
     inherited MouseEnter(Control); // set MouseOver
     { Windows XP introduced hot states also for non-flat buttons. }
     if NeedRepaint then
@@ -967,17 +969,19 @@ begin
       {$ENDIF JVCLThemesEnabled}
       HotTrack or (FFlat and Enabled and not FDragging and (GetCapture = NullHandle));
 
-    NeedRepaint := NeedRepaint and not
-      {$IFDEF VCL}
-       {$IFDEF COMPILER6_UP}
-      Mouse.IsDragging;
-       {$ELSE}
-      KeyPressed(VK_LBUTTON);
-       {$ENDIF COMPILER6_UP}
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      DragActivated;
-      {$ENDIF VisualCLX}
+    NeedRepaint :=  NeedRepaint
+{$IFDEF VCL}
+{$IFDEF COMPILER6_UP}
+     and not Mouse.IsDragging
+{$ELSE}
+     and not KeyPressed(VK_LBUTTON)
+{$ENDIF COMPILER6_UP}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+     and not DragActivated
+{$ENDIF VisualCLX}
+      ;
+
     inherited MouseLeave(Control); // set MouseOver
     if NeedRepaint   then
       Invalidate;
