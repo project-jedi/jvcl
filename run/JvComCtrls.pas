@@ -485,6 +485,8 @@ type
     procedure SetPopupMenu(const Value: TPopupMenu);
     procedure SetFont(const Value: TFont);
     function GetFont: TFont;
+    function GetBrush: TBrush;
+    procedure SetBrush(const Value: TBrush);
   protected
     procedure Reinitialize; virtual;
   public
@@ -497,6 +499,7 @@ type
     property Checked: Boolean read GetChecked write SetChecked;
     property Bold: Boolean read GetBold write SetBold;
     property Font: TFont read GetFont write SetFont;
+    property Brush: TBrush read GetBrush write SetBrush;
     property PopupMenu: TPopupMenu read FPopupMenu write SetPopupMenu;
   end;
 
@@ -2270,18 +2273,28 @@ end;
 
 procedure TJvTreeNode.SetFont(const Value: TFont);
 begin
-  if not Assigned(FFont) then
-    FFont := TFont.Create;
-
-  FFont.Assign(Value);
+  Font.Assign(Value);
 end;
 
 function TJvTreeNode.GetFont: TFont;
 begin
   if not Assigned(FFont) then
     FFont := TFont.Create;
-    
+
   Result := FFont;
+end;
+
+function TJvTreeNode.GetBrush: TBrush;
+begin
+  if not Assigned(FBrush) then
+    FBrush := TBrush.Create;
+
+  Result := FBrush;
+end;
+
+procedure TJvTreeNode.SetBrush(const Value: TBrush);
+begin
+  Brush.Assign(Value);
 end;
 
 function TJvTreeNode.GetBold: Boolean;
@@ -2555,7 +2568,10 @@ procedure TJvTreeView.InternalCustomDrawItem(Sender: TCustomTreeView;
   Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
 begin
   if (State = []) or (State = [cdsDefault]) or (State = [cdsSelected]) then
+  begin
     Canvas.Font := TJvTreeNode(Node).Font;
+    Canvas.Brush := TJvTreeNode(Node).Brush;
+  end;
     
   if MultiSelect then
   begin
