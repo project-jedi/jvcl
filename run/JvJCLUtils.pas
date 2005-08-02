@@ -516,6 +516,7 @@ procedure RleDecompress(Stream: TStream);
 { begin JvDateUtil }
 function CurrentYear: Word; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 function IsLeapYear(AYear: Integer): Boolean;
+function DaysInAMonth(const AYear, AMonth: Word): Word;
 function DaysPerMonth(AYear, AMonth: Integer): Integer;
 function FirstDayOfPrevMonth: TDateTime;
 function LastDayOfPrevMonth: TDateTime;
@@ -888,11 +889,13 @@ function SafeStrToTime(const Ps: string): TDateTime;
 
 function StrDelete(const psSub, psMain: string): string;
 
+{$IFNDEF COMPILER5_UP}
 type
   TTime = type TDateTime;
   {$EXTERNALSYM TTime}
   TDate = type TDateTime;
   {$EXTERNALSYM TDate}
+{$ENDIF !COMPILER5_UP}
 
   { returns the fractional value of pcValue}
 function TimeOnly(pcValue: TDateTime): TTime;
@@ -4706,14 +4709,14 @@ begin
   Result := (AYear mod 4 = 0) and ((AYear mod 100 <> 0) or (AYear mod 400 = 0));
 end;
 
-function DaysPerMonth(AYear, AMonth: Integer): Integer;
-const
-  DaysInMonth: array [1..12] of Integer =
-    (31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
+function DaysInAMonth(const AYear, AMonth: Word): Word;
 begin
-  Result := DaysInMonth[AMonth];
-  if (AMonth = 2) and IsLeapYear(AYear) then
-    Inc(Result); { leap-year Feb is special }
+  Result := MonthDays[(AMonth = 2) and IsLeapYear(AYear), AMonth];
+end;
+
+function DaysPerMonth(AYear, AMonth: Integer): Integer;
+begin
+  Result := DaysInAMonth(AYear, AMonth);
 end;
 
 function FirstDayOfNextMonth: TDateTime;
