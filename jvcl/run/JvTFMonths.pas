@@ -124,7 +124,12 @@ const
 implementation
 
 uses
-  DateUtils;
+{$IFDEF COMPILER6_UP}
+  DateUtils
+{$ELSE}
+  JvJCLUtils
+{$ENDIF COMPILER6_UP}
+  ;
 
 constructor TJvTFMonths.Create(AOwner: TComponent);
 begin
@@ -155,7 +160,7 @@ begin
     FrameAttr.Style := fs3DRaised;
     OnChange := GlanceTitleChange;
   end;
-end;
+end; 
 
 destructor TJvTFMonths.Destroy;
 begin
