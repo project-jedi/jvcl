@@ -1332,10 +1332,17 @@ begin
 end;
 
 procedure TJvListView.SetFocus;
+var
+  index : Integer;
 begin
   inherited SetFocus;
+
+  index := 0;
+  if Assigned(ItemFocused) then
+    index := ItemIndex;
+    
   if AutoSelect and (Selected = nil) and (Items.Count > 0) then
-    PostMessage(Handle, WM_AUTOSELECT, Integer(Items[0]), 1);
+    PostMessage(Handle, WM_AUTOSELECT, Integer(Items[index]), 1);
 end;
 
 
