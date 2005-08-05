@@ -220,6 +220,7 @@ type
     FBarColor: TColor;
     FRefreshed: Boolean;
     FGlyph: TPicture;
+    FDestroying: Boolean;
 
     function GetDescription: string;
     procedure SetDescription(Value: string);
@@ -263,6 +264,8 @@ type
     // implicit post fix
     procedure PostApptNotification;
     procedure RefreshNotification;
+
+    property Destroying: Boolean read FDestroying;
   public
     constructor Create(Serv: TJvTFScheduleManager; const ApptID: string); virtual;
     destructor Destroy; override;
@@ -491,6 +494,8 @@ type
     FFlushing: Boolean;
     FDestroying: Boolean;
     FSchedBatch: TStringList;
+    FApptBeingDestroyed : TJvTFAppt;
+    
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure ConnectControl(ApptCtrl: TJvTFControl);
     procedure DisconnectControl(ApptCtrl: TJvTFControl);
@@ -1400,6 +1405,7 @@ begin
   FEndDate := Date;
   FEndTime := FStartTime + EncodeTime(0, 1, 0, 0);
   FScheduleManager := Serv;
+  FDestroying := False;
 
   if ApptID <> '' then
     FID := ApptID
@@ -1419,6 +1425,7 @@ end;
 
 destructor TJvTFAppt.Destroy;
 begin
+  FDestroying := True;
   if Assigned(ScheduleManager) then
     ScheduleManager.DoDestroyApptEvent(Self);
 
@@ -2570,7 +2577,6 @@ begin
   inherited Create(AOwner);
 
   FSchedLoadMode := slmOnDemand;
-
   FAppts := TStringList.Create;
   FSchedules := TStringList.Create;
 
@@ -2586,6 +2592,7 @@ begin
   FImageChangeLink.OnChange := ImageListChange;
 
   FCache := TJvTFScheduleManagerCache.Create(Self);
+  FApptBeingDestroyed := nil;
 end;
 
 destructor TJvTFScheduleManager.Destroy;
@@ -2858,7 +2865,16 @@ end;
 procedure TJvTFScheduleManager.RemoveAppt(Appt: TJvTFAppt);
 var
   I: Integer;
+  indexOfAppt : Integer;
 begin
+  if Appt = FApptBeingDestroyed then
+    Exit;  // Do Nothing if this is already the Appt we are
+           // destroying ourselves
+
+  indexOfAppt := FAppts.IndexOfObject(Appt);
+  if indexOfAppt = -1 then
+    Exit; // Nothing to do if the appt is not in our list
+
   for I := 0 to ConControlCount - 1 do
     NotifyApptCtrl(ConControls[I], Appt, sncDestroyAppt);
 
@@ -2868,7 +2884,18 @@ begin
   while Appt.ConnectionCount > 0 do
     Appt.Notify(Appt.Connections[0], sncDisconnectAppt);
 
-  FAppts.Delete(FAppts.IndexOfObject(Appt));
+  FAppts.Delete(indexOfAppt);
+
+  // Do not free if the appt is being destroyed by someone else
+  if not Appt.Destroying then
+  begin
+    FApptBeingDestroyed := Appt;
+    try
+      Appt.Free;
+    finally
+      FApptBeingDestroyed := nil;
+    end;
+  end;
 end;
 
 procedure TJvTFScheduleManager.RemoveSchedule(Sched: TJvTFSched);
