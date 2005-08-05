@@ -97,9 +97,10 @@ type
     FScrollDnBtnBMP: TBitmap;
     FEditor: TJvTFGVTxtEditor;
 
-    // See in MouseDown for details on usage of these members
+    // See in MouseDown for details on usage of these three members
     FWasMovedTicks : Cardinal;
     FWasInDblClick : Boolean;
+    FHasScrolled : Boolean;
 
     {$IFDEF USEJVCL}
     procedure MouseEnter(Control: TControl); override;
@@ -728,12 +729,16 @@ end;
 
 procedure TJvTFGVTextControl.DoViewerDblClick;
 begin
+  if FHasScrolled then Exit;
+  
   Viewer.DblClick;
   FWasInDblClick := True;
 end;
 
 procedure TJvTFGVTextControl.DblClick;
 begin
+  if FHasScrolled then Exit;
+  
   inherited DblClick;
   DoViewerDblClick;
 end;
@@ -746,6 +751,12 @@ var
 begin
   inherited MouseDown(Button, Shift, X, Y);
   SetFocus;
+
+  // In order not to trigger double clicks when clicking too fast on the
+  // little arrows in the list, we keep track of wether or not scrolling
+  // occured. But of course, we have to reinitialize this, and the best
+  // Place to do it is here, in MouseDown.
+  FHasScrolled := False;
 
   if Windows.PtInRect(ScrollDnBtnRect(ClientRect), Point(X, Y)) then
     Scroll(1)
@@ -825,6 +836,7 @@ var
 begin
   CurrTop := Viewer.GetTopLine(Viewer.Cell);
   Viewer.SetTopLine(Viewer.Cell, CurrTop + ScrollBy);
+  FHasScrolled := True;
 end;
 
 function TJvTFGVTextControl.GetTopLine: Integer;
