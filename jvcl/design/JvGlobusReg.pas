@@ -54,7 +54,7 @@ uses
   JvgBitBtn, JvgRuler, JvgReport, JvgCaption, JvgCGI, JvgReportParamsEditor,
   JvgReportParamsForm, JvgRichEditUtils, JvgCommClasses, JvgRttiUtils,
   JvgScrollBox, JvgShade, JvgDigits,
-  JvgDrawTab, JvgEdit, JvgExceptionHandler, JvgShadowEditor,
+  JvgDrawTab, {JvgEdit, }JvgExceptionHandler, JvgShadowEditor,
   JvgFileIterator, JvgFileUtils, JvgFixFont, JvgShadow, {JvgGraph,}
   JvgGraphicButton, JvgSingleInstance, JvgShape,
   JvgSpeedButton, JvgStaticText, JvgHoleShape, JvgSplit,
@@ -96,7 +96,7 @@ begin
     TJvgVertDBSGrid,
     {$ENDIF !DelphiPersonalEdition}
     TJvgGridHeaderControl,
-    {TJvgSysInfo,} TJvgMaskEdit, TJvgBevel, TJvgBitBtn, TJvgGraphicButton,
+    {TJvgSysInfo, TJvgMaskEdit, }TJvgBevel, TJvgBitBtn, TJvgGraphicButton,
     {TJvgGraph,} TJvgTreeView, TJvgCheckTreeView, TJvgSplitter, TJvgShadow,
     TJvgShade, TJvgButton, {TJvgImageGroup,} TJvgProgress, TJvgTransparentMemo,
     {TJvgWinMask,} TJvgGroupBox, TJvgBitmapImage, TJvgListBox, TJvgCheckListBox,
