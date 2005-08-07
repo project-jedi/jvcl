@@ -92,7 +92,7 @@ object Mainform: TMainform
       Width = 112
       Height = 40
       Hint = 'shows a special Seach form'#13#10'where one can search for'#13#10'Demos'
-      Caption = 'Searcher'
+      Caption = 'Search'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
@@ -191,7 +191,7 @@ object Mainform: TMainform
       Width = 112
       Height = 40
       Hint = 'Leave the Demo. Don'#180't know '#13#10'why you want this, but anyway'
-      Caption = 'Exitus'
+      Caption = 'Exit'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
