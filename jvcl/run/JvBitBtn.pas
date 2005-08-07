@@ -47,14 +47,17 @@ type
     FOldGlyph: TBitmap;
     FDropDown: TPopupMenu;
     FCanvas: TControlCanvas;
+    FSimpleFrame: Boolean;
     function GetCanvas: TCanvas;
     procedure SetHotGlyph(Value: TBitmap);
     procedure SetHotTrackFont(const Value: TFont);
     procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
+    procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
   protected
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
     procedure FontChanged; override;
+    procedure DrawItem(const DrawItemStruct: TDrawItemStruct); virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -70,6 +73,8 @@ type
     property OnMouseEnter;
     property OnMouseLeave;
     property OnParentColorChange;
+
+    property SimpleFrame: Boolean read FSimpleFrame write FSimpleFrame default False;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -93,6 +98,7 @@ begin
   FCanvas := TControlCanvas.Create;
   FCanvas.Control := Self;
   FHotTrack := False;
+  FSimpleFrame := False;
   FHotTrackFont := TFont.Create;
   FFontSave := TFont.Create;
   FHotGlyph := TBitmap.Create;
@@ -181,6 +187,60 @@ procedure TJvBitBtn.FontChanged;
 begin
   inherited FontChanged;
   UpdateTrackFont(HotTrackFont, Font, HotTrackFontOptions);
+end;
+
+procedure TJvBitBtn.CNDrawItem(var Msg: TWMDrawItem);
+begin
+  inherited;
+  DrawItem(Msg.DrawItemStruct^);
+end;
+
+procedure TJvBitBtn.DrawItem(const DrawItemStruct: TDrawItemStruct);
+var
+  IsDown: Boolean;
+  R: TRect;
+begin
+  if (csDestroying in ComponentState) or not FSimpleFrame then
+    Exit;
+  FCanvas.Handle := DrawItemStruct.hDC;
+  R := ClientRect;
+  IsDown := DrawItemStruct.itemState and ODS_SELECTED <> 0;
+  {$IFDEF USEJVCL}
+  if (not MouseOver) and (not IsDown) then
+  {$ELSE}
+  if not IsDown then
+  {$ENDIF USEJVCL}
+  begin
+    with FCanvas do
+    begin
+      if not Focused and not Default then
+      begin
+        Pen.Color := clBtnFace;
+        MoveTo(R.Left + 1, R.Top + 1);
+        LineTo(R.Right - 1, R.Top + 1);
+        MoveTo(R.Left + 1, R.Top + 1);
+        LineTo(R.Left + 1, R.Bottom - 1);
+
+        Pen.Color := (Parent as TWinControl).Brush.Color;
+        MoveTo(R.Left, R.Bottom - 1);
+        LineTo(R.Right, R.Bottom - 1);
+        MoveTo(R.Right - 1, R.Top);
+        LineTo(R.Right - 1, R.Bottom);
+
+        Pen.Color := clBtnShadow;
+        MoveTo(R.Left - 2, R.Bottom - 2);
+        LineTo(R.Right - 1, R.Bottom - 2);
+        MoveTo(R.Right - 2, R.Top);
+        LineTo(R.Right - 2, R.Bottom - 1);
+      end
+      else
+      begin
+        Brush.Color := clBtnFace;
+        FrameRect(Rect(R.Left + 2, R.Top + 2, R.Right - 2, R.Bottom - 2));
+      end;
+    end;
+  end;
+  FCanvas.Handle := 0;
 end;
 
 {$IFDEF UNITVERSIONING}
