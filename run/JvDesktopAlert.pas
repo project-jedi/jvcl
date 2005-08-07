@@ -257,10 +257,10 @@ type
     function GetItems(Index: Integer): TJvFormDesktopAlert;
     procedure SetPosition(const Value: TJvDesktopAlertPosition);
   protected
-    procedure UpdatePositions;
+    procedure UpdatePositions; virtual;
   public
-    procedure Add(AForm: TCustomForm);
-    procedure Remove(AForm: TCustomForm);
+    procedure Add(AForm: TCustomForm); virtual;
+    procedure Remove(AForm: TCustomForm); virtual;
 
     property Items[Index: Integer]: TJvFormDesktopAlert read GetItems;
     property Count: Integer read GetCount;
