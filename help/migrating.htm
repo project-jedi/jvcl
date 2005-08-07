@@ -151,14 +151,17 @@ be part of the next release. Currently, there is no list of functions
 that might be moved to JCL or replaced by JCL equivalents. </li>
   <li>Donated component libraries will not likely be split up or merged
 with the "main" JVCL library. So if you are using a component from the
-Globus library, you can expect it to be available in the future even if
+Jans library, you can expect it to be available in the future even if
 that component is an exact duplicate of another component in JVCL. The
 same holds true the other way around: even if a component in JVCL is an
 exact duplicate of a component in a separate library, it will most
 likely not be removed. Currently, we have six libraries with components
 that we consider as separate entities. The JvUIB components, Jans
-components, the Globus library, the JvWizard components, the
-ManagedThreads components and the JvTimeFramework components.</li>
+components, the JvWizard components, the
+ManagedThreads components and the JvTimeFramework components. The
+Globus library is a separate case in JVCL 3.5 and is being merged into
+the JVCL. Please read on for details.<br>
+  </li>
 </ul>
 <p>&nbsp;</p>
 <h2>Migrating from pre-JVCL donated libraries</h2>
@@ -170,7 +173,7 @@ converter folder as shown:</p>
 <p>&nbsp;</p>
 <table
  style="width: 80%; text-align: left; margin-left: auto; margin-right: auto;"
- border="1" cellspacing="1" cellpadding="1" width="58%">
+ border="1" cellpadding="1" cellspacing="1" width="58%">
   <tbody>
     <tr>
       <td
@@ -227,6 +230,17 @@ between RxLib and JVCL2.10 and the resulting names might not be
 compatible with the latest release. To fix this, first convert using
 RxToJVCLApp.dat and then run again using converter\JVCL3.dat. </p>
 <p>&nbsp;</p>
+<h3>Migrating from Globus to JVCL 3.5<br>
+</h3>
+<h3>&nbsp;</h3>
+<p>The converter\Globus.dat file converts
+between Globus and JVCL 3.00 initial release. However, as the Globus
+components are being merged into the JVCL, the names and properties
+change in a way that makes it almost impossible to use the converte.
+Thus, please refer to the following <a href="migrating_globus.html">document</a>
+where you will find a list of equivalent components and properties.<br>
+<br>
+</p>
 <p>&nbsp;</p>
 <h2><a name="ManualRep"></a>Manual component replacement</h2>
 <p>&nbsp;</p>
