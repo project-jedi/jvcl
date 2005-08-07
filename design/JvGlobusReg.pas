@@ -58,7 +58,7 @@ uses
   JvgFileIterator, JvgFileUtils, JvgFixFont, JvgShadow, {JvgGraph,}
   JvgGraphicButton, JvgSingleInstance, JvgShape,
   JvgSpeedButton, JvgStaticText, JvgHoleShape, JvgSplit,
-  {JvgImageGroup,} JvgInspectorGrid, JvgJump, JvgSmallFontsDefense, JvgSysInf,
+  {JvgImageGroup,} JvgInspectorGrid, JvgJump, JvgSmallFontsDefense, //JvgSysInf,
   JvgLogicItemEditorForm, JvgLogics, JvgStringContainer, JvgMailSlots,
   JvgStringGrid, JvgTabComm, JvgTab, JvgSysRequirements, JvgProcess,
   JvgProcessUtils, JvgPropertyCenter, JvgTransparentMemo, JvgTreeView, JvgTypes,
@@ -96,7 +96,7 @@ begin
     TJvgVertDBSGrid,
     {$ENDIF !DelphiPersonalEdition}
     TJvgGridHeaderControl,
-    TJvgSysInfo, TJvgMaskEdit, TJvgBevel, TJvgBitBtn, TJvgGraphicButton,
+    {TJvgSysInfo,} TJvgMaskEdit, TJvgBevel, TJvgBitBtn, TJvgGraphicButton,
     {TJvgGraph,} TJvgTreeView, TJvgCheckTreeView, TJvgSplitter, TJvgShadow,
     TJvgShade, TJvgButton, {TJvgImageGroup,} TJvgProgress, TJvgTransparentMemo,
     {TJvgWinMask,} TJvgGroupBox, TJvgBitmapImage, TJvgListBox, TJvgCheckListBox,
