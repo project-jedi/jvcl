@@ -124,12 +124,12 @@ type
     property InterfaceUses: Boolean read FInterfaceUses write FInterfaceUses default False;
   end;
 
-function JvInterpreterRunFormModal(const FileName: TFileName): TModalResult;
-function JvInterpreterRunForm(const FileName: TFileName): TForm;
-function JvInterpreterMakeForm(const FileName: TFileName): TForm;
-function JvInterpreterRunUnit(const FileName: TFileName): Variant;
-procedure JvInterpreterRunReportPreview(const FileName: string);
-procedure JvInterpreterRunReportPreview2(const FileName: string; JvInterpreterProgram: TJvInterpreterFm);
+function JvInterpreterRunFormModal(const AFileName: TFileName): TModalResult;
+function JvInterpreterRunForm(const AFileName: TFileName): TForm;
+function JvInterpreterMakeForm(const AFileName: TFileName): TForm;
+function JvInterpreterRunUnit(const AFileName: TFileName): Variant;
+procedure JvInterpreterRunReportPreview(const AFileName: string);
+procedure JvInterpreterRunReportPreview2(const AFileName: string; JvInterpreterProgram: TJvInterpreterFm);
 
 procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
 
@@ -551,26 +551,30 @@ begin
   JvInterpreterRunReportPreview2(FileName, Self);
 end;
 
-function JvInterpreterRunFormModal(const FileName: TFileName): TModalResult;
+function JvInterpreterRunFormModal(const AFileName: TFileName): TModalResult;
+var
+  TmpInterpreterFm : TJvInterpreterFm;
 begin
-  with TJvInterpreterFm.Create(Application) do
+  TmpInterpreterFm := TJvInterpreterFm.Create(Application);
   try
-    Result := RunFormModal(FileName);
+    Result := TmpInterpreterFm.RunFormModal(AFileName);
   finally
-    Free;
+    TmpInterpreterFm.Free;
   end;
 end;
 
-function JvInterpreterRunForm(const FileName: TFileName): TForm;
+function JvInterpreterRunForm(const AFileName: TFileName): TForm;
+var
+  TmpInterpreterFm : TJvInterpreterFm;
 begin
-  with TJvInterpreterFm.Create(Application) do
+  TmpInterpreterFm := TJvInterpreterFm.Create(Application);
   begin
-    Result := RunForm(FileName);
+    Result := TmpInterpreterFm.RunForm(AFileName);
     (Result as TJvInterpreterForm).FFreeJvInterpreterFm := True;
   end;
 end;
 
-function JvInterpreterMakeForm(const FileName: TFileName): TForm;
+function JvInterpreterMakeForm(const AFileName: TFileName): TForm;
 begin
   with TJvInterpreterFm.Create(Application) do
   begin
@@ -579,7 +583,7 @@ begin
   end;
 end;
 
-function JvInterpreterRunUnit(const FileName: TFileName): Variant;
+function JvInterpreterRunUnit(const AFileName: TFileName): Variant;
 begin
   with TJvInterpreterFm.Create(Application) do
   try
@@ -618,18 +622,18 @@ begin
   Value := JvInterpreterRunUnit(Args.Values[0]);
 end;
 
-procedure JvInterpreterRunReportPreview(const FileName: string);
+procedure JvInterpreterRunReportPreview(const AFileName: string);
 begin
   if not Assigned(JvInterpreterRunReportPreviewProc) then
     raise EJVCLException.CreateRes(@RsENoReportProc);
-  JvInterpreterRunReportPreviewProc(FileName);
+  JvInterpreterRunReportPreviewProc(AFileName);
 end;
 
-procedure JvInterpreterRunReportPreview2(const FileName: string; JvInterpreterProgram: TJvInterpreterFm);
+procedure JvInterpreterRunReportPreview2(const AFileName: string; JvInterpreterProgram: TJvInterpreterFm);
 begin
   if not Assigned(JvInterpreterRunReportPreview2Proc) then
     raise EJVCLException.CreateRes(@RsENoReportProc2);
-  JvInterpreterRunReportPreview2Proc(FileName, JvInterpreterProgram);
+  JvInterpreterRunReportPreview2Proc(AFileName, JvInterpreterProgram);
 end;
 
 procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
