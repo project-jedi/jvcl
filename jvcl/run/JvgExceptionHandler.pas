@@ -43,7 +43,7 @@ uses
   {$IFDEF USEJVCL}
   JvTypes, JvComponent,
   {$ENDIF USEJVCL}
-  JvgMailSlots, JvgSysInf;
+  JvgMailSlots;
 
 type
   TExceptionHandlerOption = (fehActiveDesignTime, fehActiveRunTime,
@@ -68,7 +68,6 @@ type
     FMailSlot: TJvgMailSlotClient;
     FOptions: TExceptionHandlerOptions;
     FScreenShotList: TList;
-    FSysInfo: TJvgSysInfo;
     procedure MakeScreenShot(const ID: string);
     procedure ShowMessage(E: Exception; const Msg: string);
   protected
@@ -113,6 +112,7 @@ implementation
 
 uses
   FileCtrl,
+  JclSysInfo,
   {$IFDEF USEJVCL}
   JvConsts,
   {$ENDIF USEJVCL}
@@ -149,7 +149,6 @@ end;
 destructor TJvgExceptionHandler.Destroy;
 begin
   FScreenShotList.Free;
-  FSysInfo.Free;
   Application.OnException := nil;
   inherited Destroy;
 end;
@@ -185,6 +184,8 @@ procedure TJvgExceptionHandler.ProcessMessage(const ExceptionMessage, Msg, ID: s
 var
   fs: TFileStream;
   FileName, Mesg: string;
+  CpuInfo: TCpuInfo;
+  DC: HDC;
 begin
   FileName := IIF((Pos('//', LogFileName) = 0) and (Pos(':', LogFileName) = 0),
     ExtractFilePath(ParamStr(0)) + LogFileName, LogFileName);
@@ -195,26 +196,31 @@ begin
     // { первое создание лога }
     { 1st creation of log }
     try
-      if not Assigned(FSysInfo) then
-        FSysInfo := TJvgSysInfo.Create(nil);
-      FSysInfo.Refresh;
+      GetCpuInfo(CpuInfo);
       Mesg := '##################### exception log header';
       Mesg := Mesg + sLineBreak + 'ExeModule= ' + ParamStr(0);
-      Mesg := Mesg + sLineBreak + 'OSPlatform= ' + FSysInfo.OSPlatform;
-      Mesg := Mesg + sLineBreak + 'CPUKind= ' + IntToStr(FSysInfo.CPUKind);
-      Mesg := Mesg + sLineBreak + 'CPUName= ' + FSysInfo.CPUName;
-      Mesg := Mesg + sLineBreak + 'TotalPhys= ' + IntToStr(FSysInfo.TotalPhys);
-      Mesg := Mesg + sLineBreak + 'AvailPhys= ' + IntToStr(FSysInfo.AvailPhys);
-      Mesg := Mesg + sLineBreak + 'TotalPageFile= ' + IntToStr(FSysInfo.TotalPageFile);
-      Mesg := Mesg + sLineBreak + 'AvailPageFile= ' + IntToStr(FSysInfo.AvailPageFile);
-      Mesg := Mesg + sLineBreak + 'TotalVirtual= ' + IntToStr(FSysInfo.TotalVirtual);
-      Mesg := Mesg + sLineBreak + 'AvailVirtual= ' + IntToStr(FSysInfo.AvailVirtual);
-      Mesg := Mesg + sLineBreak + 'ColorDepth= ' + IntToStr(FSysInfo.ColorDepth);
-      Mesg := Mesg + sLineBreak + 'SystemFont= ' + FSysInfo.SystemFont;
-      Mesg := Mesg + sLineBreak + 'VRefreshRate= ' + IntToStr(FSysInfo.VRefreshRate);
-      Mesg := Mesg + sLineBreak + 'GraphicResolution= ' + FSysInfo.GraphicResolution;
+      Mesg := Mesg + sLineBreak + 'OSPlatform= ' + GetWindowsVersionString;
+      Mesg := Mesg + sLineBreak + 'CPUKind= ' + IntToStr(CpuInfo.Family);
+      Mesg := Mesg + sLineBreak + 'CPUName= ' + CpuInfo.CpuName;
+      Mesg := Mesg + sLineBreak + 'TotalPhys= ' + IntToStr(GetTotalPhysicalMemory);
+      Mesg := Mesg + sLineBreak + 'AvailPhys= ' + IntToStr(GetFreePhysicalMemory);
+      Mesg := Mesg + sLineBreak + 'TotalPageFile= ' + IntToStr(GetTotalPageFileMemory);
+      Mesg := Mesg + sLineBreak + 'AvailPageFile= ' + IntToStr(GetFreePageFileMemory);
+      Mesg := Mesg + sLineBreak + 'TotalVirtual= ' + IntToStr(GetTotalVirtualMemory);
+      Mesg := Mesg + sLineBreak + 'AvailVirtual= ' + IntToStr(GetFreeVirtualMemory);
+      DC := GetDC(HWND_DESKTOP);
+      Mesg := Mesg + sLineBreak + 'ColorDepth= ' + IntToStr(GetDeviceCaps(DC, BITSPIXEL));
+      if GetDeviceCaps(DC, LOGPIXELSX) = 96 then
+        Mesg := Mesg + sLineBreak + 'SystemFont=SmallFont'
+      else
+      if GetDeviceCaps(DC, LOGPIXELSX) = 120 then
+        Mesg := Mesg + sLineBreak + 'SystemFont=BigFont';
+      Mesg := Mesg + sLineBreak + 'VRefreshRate= ' + IntToStr(GetDeviceCaps(DC, VREFRESH));
+      Mesg := Mesg + sLineBreak + 'GraphicResolution= ' +
+        Format('%dx%d', [GetDeviceCaps(DC, HORZRES), GetDeviceCaps(DC, VERTRES)]);
       Mesg := Mesg + sLineBreak +
         '##################### exception log header end' + sLineBreak;
+      ReleaseDC(HWND_DESKTOP, DC);
     except
       // { —бои в работе TJvgSysInfo не должны мешать обработчику }
       { Handler should not to suffer from errors in TJvgSysInfo's working }
