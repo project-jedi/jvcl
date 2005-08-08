@@ -1339,7 +1339,7 @@ end;
 
 {$ENDIF VCL}
 
-function ClipFilename(const FileName: string): string;
+function ClipFilename(const FileName: string; const Clip: Boolean): string;
 var
   Params: string;
 begin
@@ -1349,7 +1349,10 @@ begin
   if DirectoryExists(FileName) then
     Result := IncludeTrailingPathDelimiter(FileName)
   else
-    SplitCommandLine(FileName, Result, Params);
+  if Clip then
+    SplitCommandLine(FileName, Result, Params)
+  else
+    Result := FileName;
 end;
 
 function ExtFilename(const FileName: string): string;
@@ -4950,10 +4953,7 @@ end;
 
 function TJvFilenameEdit.GetFileName: TFileName;
 begin
-  if AddQuotes then
-    Result := ClipFilename(inherited Text)
-  else
-    Result := inherited Text;
+  Result := ClipFilename(inherited Text, AddQuotes);
 end;
 
 function TJvFilenameEdit.GetFilter: string;
@@ -5014,9 +5014,8 @@ var
   Temp: string;
   Action: Boolean;
 begin
-  Temp := inherited Text;
   Action := True;
-  Temp := ClipFilename(Temp);
+  Temp := FileName;
   DoBeforeDialog(Temp, Action);
   if not Action then
     Exit;
@@ -5093,7 +5092,7 @@ end;
 
 procedure TJvFilenameEdit.SetFileName(const Value: TFileName);
 begin
-  if (Value = '') or ValidFileName(ClipFilename(Value)) then
+  if (Value = '') or ValidFileName(ClipFilename(Value, AddQuotes)) then
   begin
     if AddQuotes then
       inherited Text := ExtFilename(Value)
