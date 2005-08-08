@@ -197,6 +197,8 @@ type
     property OnMouseUp;
     property OnDblClick;
     property OnPaintGutter;
+    property OnGutterClick;
+    property OnGutterDblClick;
     property OnCompletionIdentifier;
     property OnCompletionTemplate;
     property OnCompletionDrawItem;
