@@ -1598,7 +1598,7 @@ begin
 
     SendMsg(SysUtils.Format('Generating packages for %s', [target]));
     // find all template files for that target
-    if FindFirst(path+TargetToDir(target)+PathSeparator+'template.*', 0, rec) = 0 then
+    if FindFirst(path+TargetToDir(target)+PathSeparator+'template.*', faAnyFile, rec) = 0 then
     begin
       repeat
         template := TStringList.Create;
@@ -1703,7 +1703,7 @@ var
   rec : TSearchRec;
 begin
   packages.Clear;
-  if FindFirst(StrEnsureSuffix(PathSeparator, path) +'xml'+PathSeparator+'*.xml', 0, rec) = 0 then
+  if FindFirst(StrEnsureSuffix(PathSeparator, path) +'xml'+PathSeparator+'*.xml', faAnyFile, rec) = 0 then
   begin
     repeat
       packages.Add(PathExtractFileNameNoExt(rec.Name));
