@@ -92,6 +92,7 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure MovePanelControls;
     function GetPanelClass: TStatusPanelClass; {$IFDEF VCL} override; {$ENDIF}
+    procedure SBSetParts(var msg: TMessage); message SB_SETPARTS;
     {$ENDIF COMPILER6_UP}
   public
     constructor Create(AOwner: TComponent); override;
@@ -274,6 +275,12 @@ end;
 function TJvStatusBar.GetPanelClass: TStatusPanelClass;
 begin
   Result := TJvStatusPanel;
+end;
+
+procedure TJvStatusBar.SBSetParts(var msg: TMessage);
+begin
+  inherited;
+  MovePanelControls;
 end;
 
 {$ENDIF COMPILER6_UP}
