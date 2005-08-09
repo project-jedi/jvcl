@@ -56,9 +56,9 @@ uses
   JvgScrollBox, JvgShade, JvgDigits,
   JvgDrawTab, {JvgEdit, }JvgExceptionHandler, JvgShadowEditor,
   JvgFileIterator, JvgFileUtils, JvgFixFont, JvgShadow, {JvgGraph,}
-  JvgGraphicButton, JvgSingleInstance, JvgShape,
+  JvgGraphicButton, JvgSingleInstance, {JvgShape,}
   JvgSpeedButton, JvgStaticText, JvgHoleShape, JvgSplit,
-  {JvgImageGroup,} JvgInspectorGrid, JvgJump, JvgSmallFontsDefense, //JvgSysInf,
+  {JvgImageGroup,} JvgInspectorGrid, {JvgJump,} JvgSmallFontsDefense, //JvgSysInf,
   JvgLogicItemEditorForm, JvgLogics, JvgStringContainer, JvgMailSlots,
   JvgStringGrid, JvgTabComm, JvgTab, JvgSysRequirements, JvgProcess,
   JvgProcessUtils, JvgPropertyCenter, JvgTransparentMemo, JvgTreeView, JvgTypes,
@@ -108,7 +108,7 @@ begin
     TJvgMailSlotServer, TJvgMailSlotClient, TJvgLabel, TJvgFlyingText,
     TJvgDigits, TJvgStaticText, TJvgHoleShape, TJvgHelpPanel,
     TJvgXMLSerializer, TJvgLanguageLoader, TJvgExceptionHandler,
-    TJvgJumpingComponent, TJvgStringContainer, TJvgSysRequirements,
+    {TJvgJumpingComponent,} TJvgStringContainer, TJvgSysRequirements,
     TJvg3DColors, TJvgHint, TJvginspectorGrid, TJvgReport,
     TJvgReportParamsEditor, TJvgLogicProducer, TJvgSmallFontsDefense,
     {$IFNDEF DelphiPersonalEdition}
