@@ -41,7 +41,6 @@
     <File Name="..\..\run\JvgScrollBox.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvgShade.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvgShadow.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgShape.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvgSingleInstance.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvgSmallFontsDefense.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvgSpeedButton.pas" Targets="allbutclx" Formname="" Condition=""/>
@@ -90,7 +89,6 @@
     <File Name="..\..\run\JvgHTTPVersionInfo.pas" Targets="d5,d6,d7,c5,c6,k3" Formname="" Condition="INTERNET_COMPONENTS"/>
     <File Name="..\..\run\JvgImage.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvgInspectorGrid.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgJump.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvgLabel.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvgLanguageLoader.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvgListBox.pas" Targets="allbutclx" Formname="" Condition=""/>
