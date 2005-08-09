@@ -1922,12 +1922,11 @@ end;
 
 procedure TJvCustomItemViewer.WMNCPaint(var Messages: TWMNCPaint);
 begin
+  inherited;
   {$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled then
     ThemeServices.PaintBorder(TWinControl(Self), False)
-  else
   {$ENDIF JVCLThemesEnabled}
-    inherited;
 end;
 
 function TJvCustomItemViewer.HintShow(var HintInfo: THintInfo): Boolean;
