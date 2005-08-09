@@ -96,10 +96,8 @@ type
   protected
     property DataSet: TDataSet read FDataSet write SetDataSet;
     property Captions: TJvExportCaptions read FCaptions write SetCaptions;
-    property SaveToFileName: string read FSaveToFileName write
-      SetSaveToFileName;
-    property TransliterateRusToEng: Boolean read FTransliterateRusToEng write
-      SetTransliterateRusToEng;
+    property SaveToFileName: string read FSaveToFileName write SetSaveToFileName;
+    property TransliterateRusToEng: Boolean read FTransliterateRusToEng write SetTransliterateRusToEng;
     property MaxFieldSize: Integer read FMaxFieldSize write SetMaxFieldSize;
     property Options: TJvgExportOptions read FOptions write FOptions default [];
 
@@ -155,8 +153,7 @@ type
     property HeaderFont: TFont read FHeaderFont write SetHeaderFont;
     property SubHeaderFont: TFont read FSubHeaderFont write SetSubHeaderFont;
     property FooterFont: TFont read FFooterFont write SetFooterFont;
-    property AutoColumnFit: Boolean read FAutoColumnFit write SetAutoColumnFit
-      default True;
+    property AutoColumnFit: Boolean read FAutoColumnFit write SetAutoColumnFit default True;
     property BackgroundPicture: TFileName read FBackgroundPicture write
       SetBackgroundPicture;
     property ExcelVisible: Boolean read FExcelVisible write SetExcelVisible;
@@ -408,7 +405,11 @@ begin
   try
     XL := GetActiveOleObject('Excel.Application');
   except
-    XL := CreateOleObject('Excel.Application');
+    try
+      XL := CreateOleObject('Excel.Application');
+    except
+      raise EJvgExportException.CreateRes(@RsEExcelNotAvailable);
+    end;
   end;
 
   XL.Visible := FExcelVisible;
@@ -426,17 +427,22 @@ begin
 
     Inc(RecNo, Header.Count + SubHeader.Count);
 
+    // HEADERS
     if FCaptions <> fecNone then
       for I := 0 to DataSet.FieldCount - 1 do
       begin
+        if not DataSet.Fields[I].Visible and not (jeoOutputInvisibleColumns in Options) then 
+        begin 
+          Dec(ColNo); 
+          Continue; 
+        end;
+        
         case FCaptions of
           fecDisplayLabels:
             if DataSet.Fields[I].DisplayLabel <> '' then
-              Sheet.Cells[RecNo, ColNo + I] :=
-                DataSet.Fields[I].DisplayLabel
+              Sheet.Cells[RecNo, ColNo + I] := DataSet.Fields[I].DisplayLabel
             else
-              Sheet.Cells[RecNo, ColNo + I] :=
-                DataSet.Fields[I].FieldName;
+              Sheet.Cells[RecNo, ColNo + I] := DataSet.Fields[I].FieldName;
           fecFieldNames:
             Sheet.Cells[RecNo, ColNo + I] := DataSet.Fields[I].FieldName;
         end;
@@ -449,12 +455,22 @@ begin
     RecCount := DataSet.RecordCount;
     while not DataSet.Eof do
     begin
+      ColNo := 1;
       AllowExportRecord := True;
       if Assigned(FOnExportRecord) then
         FOnExportRecord(Self, DataSet, AllowExportRecord);
+        
       if AllowExportRecord then
       begin
-        for I := 0 to DataSet.FieldCount - 1 do
+        // DATA
+        for I := 0 to DataSet.FieldCount - 1 do 
+        begin
+          if not DataSet.Fields[I].Visible and not (jeoOutputInvisibleColumns in Options) then 
+          begin 
+            Dec(ColNo); 
+            Continue; 
+          end;
+          
           if not (DataSet.Fields[I].DataType in [ftBlob, ftGraphic,
             ftParadoxOle, ftDBaseOle, ftTypedBinary,
               ftReference, ftDataSet, ftOraBlob, ftOraClob, ftInterface,
@@ -464,6 +480,7 @@ begin
               Sheet.Cells.NumberFormat := '@';
             Sheet.Cells[RecNo, ColNo + I] := GetFieldValue(DataSet.Fields[I]);
           end;
+        end;
       end;
       DoProgress(0, RecCount, RecNo, '');
       Inc(RecNo);
@@ -471,9 +488,10 @@ begin
     end;
 
     if FAutoColumnFit then
-      for I := 0 to DataSet.FieldCount - 1 do
+      for I := 0 to DataSet.FieldCount - 1 + ColNo - 1 do
         Sheet.Columns[I + 1].EntireColumn.AutoFit;
 
+    ColNo := 1;	
     OldRecNo := RecNo;
     RecNo := 1;
     InsertStrings(Header, HeaderFont, FOnGetHeaderLineFont);
@@ -488,9 +506,13 @@ begin
     if FSaveToFileName <> '' then
       XL.WorkBooks[XL.WorkBooks.Count].SaveAs(FSaveToFileName);
 
-    if CloseExcel then
-      XL.Quit;
+
   finally
+    try  
+      if CloseExcel then 
+        XL.Quit; 
+    except; 
+    end;
     CellFont.Free;
   end;
 end;
@@ -852,7 +874,6 @@ begin
 end;
 
 {$ENDIF USEJVCL}
-
 {$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization

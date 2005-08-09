@@ -889,6 +889,7 @@ resourcestring
 resourcestring
   RsEDataSetIsUnassigned = 'DataSet is unassigned';
   RsESaveToFileNamePropertyIsEmpty = 'SaveToFileName property is empty';
+  RsEExcelNotAvailable = 'Excel not available';
 {$ENDIF USEJVCL}
 
 //=== JvgHelpPanel.pas =======================================================
