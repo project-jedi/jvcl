@@ -558,6 +558,7 @@ begin
     end;
   end;
   FreeAndNil(FProperties);
+  FHotTrackOptions.Free;
   inherited Destroy;
 end;
 
