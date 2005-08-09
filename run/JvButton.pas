@@ -653,7 +653,16 @@ begin
     else
       Down := True;
   end;
-  inherited Click;
+  try
+    inherited Click;
+  except
+    // Mantis 3097: In case there is an exception, we ensure here that the
+    // button is not left "down", and we reraise the exception as we can't
+    // handle it and don't want to ignore it.
+    Exclude(FStates, bsMouseDown);
+    RepaintBackground;
+    raise;
+  end;
 end;
 
 procedure TJvCustomGraphicButton.ButtonPressed(Sender: TJvCustomGraphicButton;
