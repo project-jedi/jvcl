@@ -1825,7 +1825,7 @@ end;
 
 procedure TJvShapedButton.CNDrawItemRing(var Msg: TWMDrawItem);
 var
-  OdsDown, OdsFocus, ActionFocus: Boolean;
+  OdsDown, {OdsFocus,} ActionFocus: Boolean;
   R, Ri: TRect;
   x4, y4: Integer;
 begin
@@ -1840,7 +1840,7 @@ begin
   with Msg.DrawItemStruct^ do
   begin
     OdsDown := itemState and ODS_SELECTED <> 0;
-    OdsFocus := itemState and ODS_FOCUS <> 0;
+    //OdsFocus := itemState and ODS_FOCUS <> 0;
     ActionFocus := ItemAction = ODA_FOCUS;
   end;
 
