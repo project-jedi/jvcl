@@ -303,7 +303,6 @@ type
     procedure DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState); override;
     procedure MeasureItem(Index: Integer; var Height: Integer); override;
     procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
-    procedure CNCommand(var Msg: TWMCommand); message CN_COMMAND;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
 //    procedure CreateWidget; override;
@@ -1687,20 +1686,6 @@ begin
   end;
   Invalidate;
 end;
-
-{$IFDEF VCL}
-procedure TJvImageListBox.CNCommand(var Msg: TWMCommand);
-begin
-  inherited;
-  case Msg.NotifyCode of
-    LBN_SELCHANGE:
-      begin
-        inherited Changed;
-        Click;
-      end;
-  end;
-end;
-{$ENDIF VCL}
 
 procedure TJvImageListBox.Resize;
 begin
