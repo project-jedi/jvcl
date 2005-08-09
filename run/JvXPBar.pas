@@ -108,6 +108,7 @@ const
 
   dxColor_FocusedColorXP = TColor($00D8ACB0);
   dxColor_CheckedColorXP = TColor($00D9C1BB);
+  dxColor_BodyColorXP = TColor($00F7DFD6);
   {$IFDEF VisualCLX}
   clHotLight = clActiveHighlight;
   {$ENDIF VisualCLX}
@@ -310,6 +311,7 @@ type
     FCheckedColor: TColor;
     FFocusedColor: TColor;
     FBodyColor: TColor;
+    FBodyBorderColor: TColor;
     FGradientTo: TColor;
     FGradientFrom: TColor;
     FSeparatorColor: TColor;
@@ -324,6 +326,7 @@ type
     procedure SetFocusedColor(const Value: TColor);
     procedure SetCheckedFrameColor(const Value: TColor);
     procedure SetFocusedFrameColor(const Value: TColor);
+    procedure SetBodyBorderColor(const Value: TColor);
   public
     constructor Create;
     procedure Assign(Source: TPersistent); override;
@@ -334,7 +337,8 @@ type
     property FocusedColor: TColor read FFocusedColor write SetFocusedColor default dxColor_FocusedColorXP;
     property CheckedFrameColor: TColor read FCheckedFrameColor write SetCheckedFrameColor default dxColor_CheckedFrameColorXP;
     property FocusedFrameColor: TColor read FFocusedFrameColor write SetFocusedFrameColor default dxColor_FocusedFrameColorXP;
-    property BodyColor: TColor read FBodyColor write SetBodyColor default TColor($00F7DFD6);
+    property BodyColor: TColor read FBodyColor write SetBodyColor default dxColor_BodyColorXP;
+    property BodyBorderColor: TColor read FBodyBorderColor write SetBodyBorderColor default dxColor_BodyColorXP;
     property GradientFrom: TColor read FGradientFrom write SetGradientFrom default clWhite;
     property GradientTo: TColor read FGradientTo write SetGradientTo default TColor($00F7D7C6);
     property SeparatorColor: TColor read FSeparatorColor write SetSeparatorColor default TColor($00F7D7C6);
@@ -1413,7 +1417,8 @@ var
 begin
   inherited Create;
   // (rom) needs local color constants
-  FBodyColor := TColor($00F7DFD6);
+  FBodyColor := dxColor_BodyColorXP;
+  FBodyBorderColor := dxColor_BodyColorXP;
   FBorderColor := clWhite;
   FGradientFrom := clWhite;
   FGradientTo := TColor($00F7D7C6);
@@ -1546,6 +1551,15 @@ begin
   if FFocusedFrameColor <> Value then
   begin
     FFocusedFrameColor := Value;
+    Change;
+  end;
+end;
+
+procedure TJvXPBarColors.SetBodyBorderColor(const Value: TColor);
+begin
+  if FBodyBorderColor <> Value then
+  begin
+    FBodyBorderColor := Value;
     Change;
   end;
 end;
@@ -2114,7 +2128,15 @@ var
         FOnDrawBackground(Self, ACanvas, R);
     end
     else
-      ACanvas.FillRect(R);
+    begin
+      if not FCollapsed and (FColors.FBodyColor <> FColors.FBodyBorderColor) then
+      begin
+        ACanvas.Pen.Color := FColors.FBodyBorderColor;
+        ACanvas.Rectangle(R.Left, R.Top, R.Right, R.Bottom - 1);
+      end
+      else
+        ACanvas.FillRect(R);
+    end;
   end;
 
   procedure DoDrawHeader(ACanvas: TCanvas; var R: TRect);
@@ -2538,6 +2560,7 @@ end;
 
 {$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
+
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 
