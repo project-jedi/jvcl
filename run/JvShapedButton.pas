@@ -109,13 +109,13 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property ButtonShape: TJvButtonShapes read FButtonShape write SetButtonShape;
+    property ButtonShape: TJvButtonShapes read FButtonShape write SetButtonShape default jvSTriangleUp;
     property Color;
     property AntiAlias: Boolean read FAntiAlias write SetAntiAlias default False;
-    property HotColor: TColor read FHotColor write SetHotColor;
-    property Flat: Boolean read FFlat write SetFlat;
-    property FlatBorderColor: TColor read FFlatBorderColor write SetFlatBorderColor;
-    property FlatArrow: Boolean read FFlatArrow write SetFlatArrow;
+    property HotColor: TColor read FHotColor write SetHotColor default clBlue;
+    property Flat: Boolean read FFlat write SetFlat default False;
+    property FlatBorderColor: TColor read FFlatBorderColor write SetFlatBorderColor default clWhite;
+    property FlatArrow: Boolean read FFlatArrow write SetFlatArrow default False;
     property Width default 65;
     property Height default 65;
     property ParentShowHint;
@@ -153,6 +153,8 @@ begin
   FHotColor := clBlue;
   FFlatBorderColor := clWhite;
   FButtonShape := jvSTriangleUp; //TODO: Change to Left Arrow
+  FFlat := False;
+  FFlatArrow := False;
 end;
 
 destructor TJvShapedButton.Destroy;
@@ -1861,7 +1863,7 @@ begin
     // do not fill any more
     Brush.Style := bsClear;
     // draw border if default
-    if Default or OdsFocus then
+{    if Default or OdsFocus then
     begin
       Pen.Color := clWindowFrame;
       if not ActionFocus then
@@ -1872,9 +1874,15 @@ begin
       // reduce the area for further operations
       InflateRect(R, -1, -1);
       InflateRect(Ri, 1, 1);
-    end;
+    end;   }
 
-    if OdsDown then
+    if FFlat and (not OdsDown) and (not FIsHot) and (not (csDesigning in ComponentState)) then
+    begin
+      Pen.Color := FFlatBorderColor;
+      Ellipse(R.Left, R.Top, R.Right, R.Bottom);
+      Ellipse(Ri.Left, Ri.Top, Ri.Right, Ri.Bottom);
+    end
+    else if OdsDown then
     begin
       // draw gray border all around
       Pen.Color := clBtnShadow;
@@ -2011,7 +2019,7 @@ begin
     // do not fill any more
     Brush.Style := bsClear;
     // draw border if default
-    if Default or OdsFocus then
+{    if Default or OdsFocus then
     begin
       Pen.Color := clWindowFrame;
       if not ActionFocus then
@@ -2019,9 +2027,14 @@ begin
           Rect.Right, Rect.Bottom);
       // reduce the area for further operations
       InflateRect(Rect, -1, -1);
-    end;
+    end;}
 
-    if OdsDown then
+    if FFlat and (not OdsDown) and (not FIsHot) and (not (csDesigning in ComponentState)) then
+    begin
+      Pen.Color := FFlatBorderColor;
+      Ellipse(Rect.Left, Rect.Top, Rect.Right, Rect.Bottom);
+    end
+    else if OdsDown then
     begin
       // draw gray border all around
       Pen.Color := clBtnShadow;
