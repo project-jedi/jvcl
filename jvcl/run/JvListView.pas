@@ -934,7 +934,7 @@ begin
             Break;
           Inc(Start);
         end;
-        SetString(TmpStr, Start, Start - TmpStart);
+        SetString(TmpStr, TmpStart, Start - TmpStart);
         Li := Items.Add;
         Li.Caption := TmpStr;
       end;
@@ -959,7 +959,7 @@ begin
               Break;
             Inc(Start);
           end;
-          SetString(TmpStr, Start, Start - TmpStart);
+          SetString(TmpStr, TmpStart, Start - TmpStart);
           Li.SubItems.Add(TmpStr);
         end;
       end;
