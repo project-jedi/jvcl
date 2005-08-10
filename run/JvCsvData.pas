@@ -2959,7 +2959,8 @@ begin
         if not ExtendedHeaderInfo then
           FHeaderRow := FCsvFileAsStrings[0]
         else
-          FCsvFileAsStrings.Delete(0);
+          FHeaderRow := GetColumnsAsString;     // Do not delete first line, it is data, not the header
+
         if Length(FHeaderRow) > 0 then
           ProcessCsvHeaderRow;
         if FAppendedFieldCount > 0 then
