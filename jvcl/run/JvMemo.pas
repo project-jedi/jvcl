@@ -211,8 +211,6 @@ end;
 
 destructor TJvCustomMemo.Destroy;
 begin
-  if FMaxLines > 0 then
-    Lines.Assign(FOrigLines);
   FOrigLines.Free;
   FCaret.Free;
   inherited Destroy;
