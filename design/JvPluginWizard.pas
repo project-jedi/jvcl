@@ -149,7 +149,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JclFileUtils,
+  JclFileUtils, JclBorlandTools,
   JvPlugin, JvPluginParamsForm, JvConsts, JvDsgnConsts;
 
 {$IFDEF MSWINDOWS}
@@ -207,8 +207,32 @@ begin
 end;
 
 function TJvPluginWizard.GetPage: string;
+var
+  Repository : TJclBorRadToolRepository;
+  Installations : TJclBorRADToolInstallations;
 begin
   Result := RsProjects;
+  Installations := TJclBorRADToolInstallations.Create;
+  try
+    {$IFDEF BCB}
+    Repository := Installations.BCBInstallationFromVersion[
+      {$IFDEF BCB6}6{$ENDIF BCB6}
+      {$IFDEF BCB5}5{$ENDIF BCB5}
+                         ].Repository;
+    {$ENDIF BCB}
+    {$IFDEF DELPHI}
+    Repository := Installations.DelphiInstallationFromVersion[
+      {$IFDEF DELPHI9}9{$ENDIF DELPHI9}
+      {$IFDEF DELPHI7}7{$ENDIF DELPHI7}
+      {$IFDEF DELPHI6}6{$ENDIF DELPHI6}
+      {$IFDEF DELPHI5}5{$ENDIF DELPHI5}
+                         ].Repository;
+    {$ENDIF DELPHI}
+    
+    Result := Repository.FindPage(RsProjects, 2);
+  finally
+    Installations.Free;
+  end;
 end;
 
 function TJvPluginWizard.GetAuthor: string;
