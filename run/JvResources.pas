@@ -1259,6 +1259,7 @@ resourcestring
   RsESorryDynamicArraysSupportIsMadeForO = 'Sorry. Dynamic arrays support is made for one-dimensional arrays only';
   RsEUnknownRecordType = 'Unknown RecordType';
   RsERangeCheckError = 'Range check error';
+  RsArrayToArrayAssignment = 'Array to array assignment';
 
 //=== JvInterpreter_Quickrpt.pas =============================================
 resourcestring

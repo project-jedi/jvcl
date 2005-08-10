@@ -2394,7 +2394,10 @@ var
   SourceRecHolder: TJvInterpreterRecHolder;
 begin
   if TVarData(Source).VType = varArray then
-    TVarData(Dest) := TVarData(Source)
+  begin
+    NotImplemented(RsArrayToArrayAssignment);
+    // TVarData(Dest) := TVarData(Source);
+  end
   else
   if TVarData(Source).VType = varRecord then
   begin
