@@ -812,11 +812,12 @@ begin
   FCsvColumns := TJvCsvColumns.Create;
   FData := TJvCsvRows.Create;
   FData.EnquoteBackslash := FEnquoteBackslash;
+  FCsvFileAsStrings := TStringList.Create;
 end;
 
 destructor TJvCustomCsvDataSet.Destroy;
 begin
-  InternalClearFileStrings; // delete file strings
+  FCsvFileAsStrings.Free;
   FreeMem(FTempBuffer); // Free the memory we allocated.
   FTempBuffer := nil;
 
@@ -2859,18 +2860,14 @@ begin
           // otherwise this routine is parsing already-loaded Data, and we should NOT
           // return, or we won't get our Data in the table. -WP.
 
-  //if not FLoadsFromFile then
-  //  Exit;
-
-  if Assigned(FCsvFileAsStrings) then
+  if FCsvFileAsStrings.Count > 0 then
   begin
-    if FCsvFileAsStrings.Count > 0 then
-      Result := True; //loaded already
+    Result := True; //loaded already
     Exit; // don't repeat!
   end;
 
   try // open Data file
-    FCsvFileAsStrings := TStringList.Create;
+    FCsvFileAsStrings.Clear;
 
     if FLoadsFromFile then // The IF condition here is NEW!
        FCsvFileAsStrings.LoadFromFile(FOpenFileName);
@@ -2878,9 +2875,7 @@ begin
     if FCsvFileAsStrings.Count > 0 then
       Result := True; // it worked!
   except
-    //FTableName := '';
-    FCsvFileAsStrings.Free;
-    FCsvFileAsStrings := nil;
+    InternalClearFileStrings;
     raise;
   end;
 end;
@@ -2890,11 +2885,7 @@ end;
 
 procedure TJvCustomCsvDataSet.InternalClearFileStrings;
 begin
-  if Assigned(FCsvFileAsStrings) then
-  begin
-    FCsvFileAsStrings.Free;
-    FCsvFileAsStrings := nil;
-  end;
+  FCsvFileAsStrings.Clear;
 end;
 
 // Add 1+ commas to FCsvFileAsStrings[1 .. Count-1]
@@ -2931,56 +2922,61 @@ begin
     JvCsvDatabaseError(RsENoTableName, RsETableNameRequired);
   //Strings := nil;
 
-  InternalInitFieldDefs; // initialize FieldDef objects
+  try
+    InternalInitFieldDefs; // initialize FieldDef objects
 
-  // Create TField components when no persistent fields have been created
-  if DefaultFields then
-    CreateFields;
-  BindFields(True); // bind FieldDefs to actual Data
+    // Create TField components when no persistent fields have been created
+    if DefaultFields then
+      CreateFields;
+    BindFields(True); // bind FieldDefs to actual Data
 
-  if FCsvColumns.Count > 1 then
-  begin
-     // Create a null terminated string which is just a bunch of commas:
-    FillChar(TempBuf, FCsvColumns.Count - 1, Separator);
-    TempBuf[FCsvColumns.Count - 1] := Chr(0);
-      // When adding an empty row, we add this string as the ascii equivalent:
-    FEmptyRowStr := TempBuf;
-  end
-  else
-    FEmptyRowStr := ''; // nothing.
-
-  FBufferSize := SizeOf(TJvCsvRow) + CalcFieldsSize; // our regular record + calculated field Data.
-  //if CalcFieldsSize>0 then
-  //    OutputDebugString('Calculated Fields Debug');
-  FRecordPos := ON_BOF_CRACK; // initial record pos before BOF
-  BookmarkSize := SizeOf(Integer);
-  // initialize bookmark size for VCL (Integer uses 4 bytes on 32 bit operating systems)
-
-  //Trace( 'InternalOpen: FBufferSize='+IntToStr(FBufferSize) );
-  //Trace( 'InternalOpen: CalcFieldsSize='+IntToStr(CalcFieldsSize) );
-  //Trace( 'InternalOpen: FieldDefs.Count='+IntToStr(FieldDefs.Count) );
-
-  if InternalLoadFileStrings then
-  begin // may load the strings if they weren't loaded already!
-    if FHasHeaderRow then
+    if FCsvColumns.Count > 1 then
     begin
-      if not ExtendedHeaderInfo then
-        FHeaderRow := FCsvFileAsStrings[0]
-      else
-        FCsvFileAsStrings.Delete(0);
-      if Length(FHeaderRow) > 0 then
-        ProcessCsvHeaderRow;
-      if FAppendedFieldCount > 0 then
+       // Create a null terminated string which is just a bunch of commas:
+      FillChar(TempBuf, FCsvColumns.Count - 1, Separator);
+      TempBuf[FCsvColumns.Count - 1] := Chr(0);
+        // When adding an empty row, we add this string as the ascii equivalent:
+      FEmptyRowStr := TempBuf;
+    end
+    else
+      FEmptyRowStr := ''; // nothing.
+
+    FBufferSize := SizeOf(TJvCsvRow) + CalcFieldsSize; // our regular record + calculated field Data.
+    //if CalcFieldsSize>0 then
+    //    OutputDebugString('Calculated Fields Debug');
+    FRecordPos := ON_BOF_CRACK; // initial record pos before BOF
+    BookmarkSize := SizeOf(Integer);
+    // initialize bookmark size for VCL (Integer uses 4 bytes on 32 bit operating systems)
+
+    //Trace( 'InternalOpen: FBufferSize='+IntToStr(FBufferSize) );
+    //Trace( 'InternalOpen: CalcFieldsSize='+IntToStr(CalcFieldsSize) );
+    //Trace( 'InternalOpen: FieldDefs.Count='+IntToStr(FieldDefs.Count) );
+
+    if InternalLoadFileStrings then
+    begin // may load the strings if they weren't loaded already!
+      if FHasHeaderRow then
       begin
-        AppendPlaceHolderCommasToAllRows(FCsvFileAsStrings); // Add 1+ separators to FCsvFileAsStrings[1 .. Count-1]
+        if not ExtendedHeaderInfo then
+          FHeaderRow := FCsvFileAsStrings[0]
+        else
+          FCsvFileAsStrings.Delete(0);
+        if Length(FHeaderRow) > 0 then
+          ProcessCsvHeaderRow;
+        if FAppendedFieldCount > 0 then
+        begin
+          AppendPlaceHolderCommasToAllRows(FCsvFileAsStrings); // Add 1+ separators to FCsvFileAsStrings[1 .. Count-1]
+        end;
       end;
+      AssignFromStrings(FCsvFileAsStrings); // load into memory.
     end;
-    AssignFromStrings(FCsvFileAsStrings); // load into memory.
+
+    InternalClearFileStrings; // now unload 'em.
+
+    FCursorOpen := True;
+  except
+    InternalClearFileStrings;
+    raise;
   end;
-
-  InternalClearFileStrings; // now unload 'em.
-
-  FCursorOpen := True;
 end;
 
 procedure TJvCustomCsvDataSet.InternalPost;
