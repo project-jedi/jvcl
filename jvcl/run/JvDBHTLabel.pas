@@ -114,11 +114,13 @@ uses
 
 function ReplaceFieldNameTag(Str: string; DataSet: TDataSet): string;
 var
-  A, FieldName, Text: string;
-  I, J: Integer;
   F: TField;
 const
-  FieldStr: string = '<FIELD='; // non-standard html
+  FieldName = 'FIELD'; // non-standard html
+  FieldStr = '<' + FieldName + '=';
+  FieldLabelName = 'FIELDLABEL';
+  FieldLabelStr = '<' + FieldLabelName + '=';
+
   function ExtractPropertyValue(Tag, PropName: string): string;
   begin
     Result := '';
@@ -130,33 +132,51 @@ const
       Result := Copy(Result, 1, Pos('"', Result)-1);
     end;
   end;
-begin
-  Result := '';
-  I := Pos(FieldStr, Str);
-  while I > 0 do
+
+  function ExtractProperty(AStr: string; const PropName: string): string;
+  var
+    J: Integer;
+    I: Integer;
+    A, FieldName, Text: string;
+    PropStr: string;
   begin
-    Result := Result + Copy(Str, 1, I - 1);
-    A := Copy(Str, I, Length(Str));
-    J := Pos('>', A);
-    if J > 0 then
-      Delete(Str, 1, I + J - 1)
-    else
-      Str := '';
-    FieldName := ExtractPropertyValue(A, 'FIELD');
-    if Assigned(DataSet) and DataSet.Active then
+    Result := '';
+    PropStr := '<'+PropName+'=';
+    I := Pos(PropStr, AStr);
+    while I > 0 do
     begin
-      F := DataSet.FindField(FieldName);
-      if F <> nil then
-        Text := F.AsString
+      Result := Result + Copy(AStr, 1, I - 1);
+      A := Copy(AStr, I, Length(AStr));
+      J := Pos('>', A);
+      if J > 0 then
+        Delete(AStr, 1, I + J - 1)
       else
-        Text := Format('(%s)',[FieldName]);
-    end
-    else
-      Text := Format('(%s)',[FieldName]);
-    Result := Result + Text;
-    I := Pos(FieldStr, Str);
+        AStr := '';
+      FieldName := ExtractPropertyValue(A, PropStr);
+      if Assigned(DataSet) and DataSet.Active then
+      begin
+        F := DataSet.FindField(FieldName);
+        if F <> nil then
+        begin
+          if PropName = FieldLabelName then
+            Text := F.DisplayLabel
+          else
+            Text := F.DisplayText;
+        end
+        else
+          Text := Format('(%s)', [FieldName]);
+      end
+      else
+        Text := Format('(%s)', [FieldName]);
+      Result := Result + Text;
+      I := Pos(PropStr, AStr);
+    end;
+    Result := Result + AStr;
   end;
-  Result := Result + Str;
+
+begin
+  Result := ExtractProperty(Str, FieldLabelName);
+  Result := ExtractProperty(Result, FieldName);
 end;
 
 //=== { TJvDBHTLabel } =======================================================
