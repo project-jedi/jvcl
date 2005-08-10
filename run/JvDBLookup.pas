@@ -3503,7 +3503,11 @@ end;
 procedure TJvDBLookupEdit.SetLookupValue(const Value: string);
 begin
   TJvPopupDataWindow(FPopup).Value := Value;
-  Text := TJvPopupDataWindow(FPopup).DisplayValue;
+
+  if Value = EmptyStr then
+    Text := EmptyStr
+  else
+    Text := TJvPopupDataWindow(FPopup).DisplayValue;
 end;
 
 procedure TJvDBLookupEdit.ShowPopup(Origin: TPoint);
