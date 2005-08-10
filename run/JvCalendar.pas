@@ -947,7 +947,9 @@ end;
 
 procedure TJvCustomMonthCalendar.CheckDayState(Year, Month: Word; var DayState: TMonthDayState);
 begin
-  DayState := StringToDayStates(TMonthCalStrings(FAppearance.BoldDays).GetBoldDays(Year, Month));
+  DayState := StringToDayStates(
+                    TMonthCalStrings(FAppearance.BoldDays).GetBoldDays(Year, Month)+','+
+                    TMonthCalStrings(FAppearance.BoldDays).GetBoldDays(0, Month));
 end;
 
 procedure TJvCustomMonthCalendar.DoGetDayState(var DayState: TNMDayState; var StateArray: TMonthDayStateArray);
