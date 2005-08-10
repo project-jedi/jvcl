@@ -177,7 +177,7 @@ type
     function Add: TJvDBGridControl;
     function ControlByField(const FieldName: string): TJvDBGridControl;
     function ControlByName(const CtrlName: string): TJvDBGridControl;
-    property Items[Index: Integer]: TJvDBGridControl read GetItem write SetItem;
+    property Items[Index: Integer]: TJvDBGridControl read GetItem write SetItem; default;
   end;
 
   TCharList = set of Char;
