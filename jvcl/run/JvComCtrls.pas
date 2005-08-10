@@ -496,6 +496,8 @@ type
     constructor Create(AOwner: TTreeNodes);
     destructor Destroy; override;
 
+    procedure MoveTo(Destination: TTreeNode; Mode: TNodeAttachMode); override;
+
     procedure Assign(Source: TPersistent); override;
     property Checked: Boolean read GetChecked write SetChecked;
     property Bold: Boolean read GetBold write SetBold;
@@ -2374,6 +2376,32 @@ begin
       TreeView_SetItem(Handle, Item);
     end;
   end;
+end;
+
+procedure TJvTreeNode.MoveTo(Destination: TTreeNode;
+  Mode: TNodeAttachMode);
+var
+  SaveItem, Item: TTVItem;
+begin
+  // Mantis 3028: We need to save the state of he item as the
+  // inherited MoveTo calls Assign on a newly created TVItem.
+  // Hence, the state is reset and lost, putting Bold and Checked
+  // to False. We could save those two properties, but it's better
+  // to save the state, because we may have other properties inside
+  // it in the future.
+  FillChar(SaveItem, SizeOf(SaveItem), 0);
+  SaveItem.hItem := ItemId;
+  SaveItem.mask := TVIF_STATE;
+  TreeView_GetItem(Handle, SaveItem);
+
+  inherited MoveTo(Destination, Mode);
+
+  FillChar(Item, SizeOf(Item), 0);
+  Item.hItem := ItemId;
+  Item.mask := TVIF_STATE;
+  Item.stateMask := TVIS_STATEIMAGEMASK;
+  Item.state := SaveItem.state;
+  TreeView_SetItem(Handle, Item);
 end;
 
 procedure TJvTreeNode.Reinitialize;
