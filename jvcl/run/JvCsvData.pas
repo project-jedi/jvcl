@@ -4648,7 +4648,7 @@ begin
   MatchFieldCount := 0;
   for I := 0 to DataSet.FieldCount-1 do
   begin
-    MatchSourceField[MatchFieldCount] := DataSet.Fields.FieldByNumber(I+1);
+    MatchSourceField[MatchFieldCount] := DataSet.Fields[I];
     Assert(Assigned(MatchSourceField[MatchFieldCount]));
     FieldName := MatchSourceField[MatchFieldCount].FieldName;
     try
