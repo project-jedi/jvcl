@@ -46,7 +46,7 @@ type
   TJvReplaceProgressEvent = procedure(Sender: TObject; Position: Integer;
     var Terminate: Boolean) of object;
   TJvReplaceAllEvent = procedure(Sender: TObject; ReplaceCount: Integer) of object;
- 
+
   TJvFindReplace = class(TJvComponent)
   private
     FOnFind: TNotifyEvent;
@@ -63,12 +63,9 @@ type
     FReplaceDialog: TReplaceDialog;
     FOptions: TFindOptions;
     FPosition: TPoint;
-    FLeft: Integer;
-    FTop: Integer;
     FFast: Boolean;
     FHelpContext: THelpContext;
     FShowDialogs: Boolean;
-    FKeepText: Boolean;
     FFindText: string;
     FReplaceText: string;
     FNumberReplaced: Integer; // only used by Replace All
@@ -81,15 +78,11 @@ type
     procedure SetFindText(const Value: string);
     procedure SetReplaceText(const Value: string);
     procedure SetShowDialogs(Value: Boolean);
-    function GetPosition: TPoint;
     function GetTop: Integer;
     function GetLeft: Integer;
-    function GetOptions: TFindOptions;
-    function GetHelpContext: THelpContext;
-    function GetFindText: string;
-    function GetReplaceText: string;
     function ReplaceOne(Sender: TObject): Boolean;
     procedure UpdateDialogs;
+    procedure UpdateProperties(sender: TObject);
     procedure NeedDialogs;
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -101,24 +94,24 @@ type
     procedure DoReplacingAll; virtual;
     procedure DoReplacedAll(Sender: TObject); virtual;
     procedure DoProgress(Position: Integer; var Terminate: Boolean); virtual;
+    procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
     procedure Find; virtual;
     procedure FindAgain; virtual;
     procedure Replace; virtual;
     procedure ReplaceAll(const SearchText, ReplaceText: string); virtual;
-    property Position: TPoint read GetPosition write SetPosition;
+    property Position: TPoint read FPosition write SetPosition;
     property Top: Integer read GetTop write SetDialogTop default -1;
     property Left: Integer read GetLeft write SetDialogLeft default -1;
   published
     property Fast: Boolean read FFast write FFast default False;
-    property Options: TFindOptions read GetOptions write SetOptions;
+    property Options: TFindOptions read FOptions write SetOptions;
     property EditControl: TCustomEdit read FEditControl write SetEditControl;
-    property FindText: string read GetFindText write SetFindText;
-    property KeepText: Boolean read FKeepText write FKeepText default False;
-    property ReplaceText: string read GetReplaceText write SetReplaceText;
+    property FindText: string read FFindText write SetFindText;
+    property ReplaceText: string read FReplaceText write SetReplaceText;
     property ShowDialogs: Boolean read FShowDialogs write SetShowDialogs default True;
-    property HelpContext: THelpContext read GetHelpContext write SetHelpContext default 0;
+    property HelpContext: THelpContext read FHelpContext write SetHelpContext default 0;
     property OnFind: TNotifyEvent read FOnFind write FOnFind;
     property OnReplace: TNotifyEvent read FOnReplace write FOnReplace;
     property OnReplacingAll: TNotifyEvent read FOnReplacingAll write FOnReplacingAll;
@@ -142,14 +135,6 @@ implementation
 uses
   Math,
   JvConsts, JvResources, JvTypes;
-
-type
-  TFoundText = record
-    StartAt: Longint;
-    EndAt: Longint;
-    isWhole: Boolean;
-    isSameCase: Boolean;
-  end;
 
 procedure Error;
 begin
@@ -182,7 +167,7 @@ end;
 
 function BoyerMoore(SubStr, S: PChar): Integer;
 var
-  CharJump, MatchJump, BackUp: array [0..255] of Integer;
+  CharJump, MatchJump, BackUp: array[0..255] of Integer;
   PatLen, TextLen, u, uA, uB, uText, uPat: Integer;
 begin
   Result := 0;
@@ -249,51 +234,63 @@ begin
     Result := uText + 2;
 end;
 
-{ Find text, return a TFoundText }
+{ Find text, return a longint }
 
-function FindInText(const Text, Search: string; FromPos, ToPos: Integer; Fast: Boolean): TFoundText;
+function FindInText(const Text, Search: string; FromPos, Len: Integer; Fast,
+  WholeWord, MatchCase: Boolean): longint;
 var
-  Found: Integer;
+  Found, SearchLen, TextLen: Integer;
   S: string;
 begin
-  Result.StartAt := -1; // assume failure
-  if Fast then
-    Found := BoyerMoore(PChar(AnsiUpperCase(Search)), PChar(AnsiUpperCase(Copy(Text, FromPos + 1, ToPos))))
-  else
-    Found := Pos(AnsiUpperCase(Search), AnsiUpperCase(Copy(Text, FromPos + 1, ToPos)));
-  if Found > 0 then
+  Result := -1; // assume failure
+
+  // first character in string is at position 1
+  if FromPos = 0 then
+    FromPos := 1;
+
+  Found := 1;
+  while (Result = -1) and (Found > 0) do
   begin
-    Result.StartAt := Found + FromPos - 1;
-    Result.EndAt := Length(Search);
-    S := Copy(Text, Result.StartAt - 1, Result.EndAt + 2);
-    // check for extremes...
-    // is find string the same as the whole string?
-    if Length(Search) = Length(Text) then
-    begin
-      Result.isWhole := True;
-      S := Text;
-    end
+    if Fast then
+      Found := BoyerMoore(PChar(AnsiUpperCase(Search)),
+        PChar(AnsiUpperCase(Copy(Text, FromPos, Len))))
     else
+      Found := Pos(AnsiUpperCase(Search), AnsiUpperCase(Copy(Text, FromPos, Len)));
+    if Found > 0 then
     begin
-      // check for match at beginning or end of string
-      if Result.StartAt - 1 < 0 then
-        S := Copy(' ' + S, 1, Result.EndAt + 2);
-      if Result.StartAt - 1 + Result.EndAt + 2 > Length(Text) then
-        S := Copy(S + ' ', Length(Text)- Result.EndAt-1, Result.EndAt + 2);
-      Result.isWhole := IsValidWholeWord(S);
-      S := Copy(S, 2, Length(S) - 2);
+      Result := Found + FromPos - 1;
+      SearchLen := Length(Search);
+      TextLen := Length(Text);
+      FromPos := Result + SearchLen;
+      // is match-case required and does it?
+      if MatchCase and (AnsiCompareStr(Search, Copy(Text, Result, SearchLen)) <> 0) then
+        Result := -1
+          // is whole-word-only required and is it?
+      else if WholeWord and (SearchLen < TextLen) then
+      begin
+        // check for extremes...
+        S := Copy(Text, Result - 1, SearchLen + 2);
+        // check for match at beginning or end of string
+        if Result = 1 then
+          S := Copy(' ' + S, 1, SearchLen + 2);
+        if Result - 1 + SearchLen + 1 > TextLen then
+          S := Copy(S + ' ', Length(S) - SearchLen-2, SearchLen + 2);
+        if not IsValidWholeWord(S) then
+          result := -1;
+      end;
     end;
-    Result.isSameCase := (AnsiCompareStr(trim(Search), trim(S)) = 0);
   end;
 end;
 
 { invert and search }
 
-function FindInTextRev(const Text, Search: string; FromPos, ToPos: Integer; Fast: Boolean): TFoundText;
+function FindInTextRev(const Text, Search: string; FromPos, Len: Integer;
+  Fast, WholeWord, MatchCase: Boolean): longint;
 begin
-  Result := FindInText(StrRev(Text), StrRev(Search), FromPos, ToPos, Fast);
-  if Result.StartAt > -1 then
-    Result.StartAt := Length(Text) - Result.StartAt - Result.EndAt;
+  Result := FindInText(StrRev(Text), StrRev(Search), FromPos, Len, Fast,
+    WholeWord, MatchCase);
+  if Result > -1 then
+    Result := Length(Text) - (Result - 1) - (Length(Search) - 1);
 end;
 
 constructor TJvFindReplace.Create(AOwner: TComponent);
@@ -301,7 +298,6 @@ begin
   inherited Create(AOwner);
   FOwner := AOwner;
   FHelpContext := 0;
-  FKeepText := False;
   FShowDialogs := True;
   FPosition := Point(-1, -1);
 end;
@@ -340,49 +336,39 @@ end;
 procedure TJvFindReplace.ReplaceAll(const SearchText, ReplaceText: string);
 var
   Txt: string;
-  FoundPos: TFoundText;
-  TmpOptions: TFindOptions;
+  FoundPos: longint;
   SLen, RLen, TLen: Integer;
   Terminate: Boolean;
+  WholeWord, MatchCase: Boolean;
 begin
   if not Assigned(FEditControl) then
     Error;
   Terminate := False;
   UpdateDialogs;
-  TmpOptions := FReplaceDialog.Options;
+  WholeWord := frWholeWord in FOptions;
+  MatchCase := frMatchCase in FOptions;
   Txt := FEditControl.Text;
   SLen := Length(SearchText);
   RLen := Length(ReplaceText);
   TLen := Length(Txt);
-  FoundPos := FindInText(Txt, SearchText, EditControl.SelStart + EditControl.SelLength, TLen, True);
-//  FoundPos := FindInText(Txt, SearchText, 0, TLen, True);
+  FoundPos := FindInText(Txt, SearchText, EditControl.SelStart + EditControl.SelLength,
+    TLen, FFast, WholeWord, MatchCase);
 
-  if FoundPos.StartAt > -1 then
+  if FoundPos > -1 then
   begin
     DoReplacingAll;
     FNumberReplaced := 0;
-    while FoundPos.StartAt > -1 do
+    while FoundPos > -1 do
     begin
       Inc(FNumberReplaced);
-      if (frWholeWord in TmpOptions) and not FoundPos.isWhole then
-      begin
-        FoundPos := FindInText(Txt, SearchText, FoundPos.StartAt + RLen + 1, TLen + (RLen - SLen), True);
-        Continue;
-      end;
-      if (frMatchCase in TmpOptions) and not FoundPos.isSameCase then
-      begin
-        FoundPos := FindInText(Txt, SearchText, FoundPos.StartAt + RLen + 1, TLen + (RLen - SLen), True);
-        Continue;
-      end;
-      Delete(Txt, FoundPos.StartAt + 1, SLen);
-      Insert(ReplaceText, Txt, FoundPos.StartAt + 1);
-      FoundPos := FindInText(Txt, SearchText, FoundPos.StartAt + RLen + 1, TLen + (RLen - SLen), True);
-      if FoundPos.StartAt mod 60 = 0 then
-      begin
-        DoProgress(FoundPos.StartAt, Terminate);
-        if Terminate then
-          Exit;
-      end;
+
+      Delete(Txt, FoundPos, SLen);
+      Insert(ReplaceText, Txt, FoundPos);
+      FoundPos := FindInText(Txt, SearchText, FoundPos + RLen + 1, TLen + (RLen - SLen), FFast, WholeWord, MatchCase);
+
+      DoProgress(FoundPos, Terminate);
+      if Terminate then
+        Exit;
     end;
     FEditControl.Text := Txt;
     DoReplacedAll(FReplaceDialog);
@@ -436,6 +422,7 @@ begin
     FFindDialog := TFindDialog.Create(Self);
     FFindDialog.FindText := FFindText;
     FFindDialog.OnFind := DoOnFind;
+    FFindDialog.Position := FPosition;
   end;
   if not Assigned(FReplaceDialog) then
   begin
@@ -444,83 +431,81 @@ begin
     FReplaceDialog.ReplaceText := FReplaceText;
     FReplaceDialog.OnFind := DoOnFind;
     FReplaceDialog.OnReplace := DoOnReplace;
+    FReplaceDialog.Position := FPosition;
   end;
 end;
 
 procedure TJvFindReplace.UpdateDialogs;
 begin
-  NeedDialogs;
+  if not (csDesigning in ComponentState) and not (csLoading in ComponentState) then
+  begin
+    NeedDialogs;
 
-  FFindDialog.Position := GetPosition;
-  {$IFDEF VCL}
-  FFindDialog.Top := GetTop;
-  FFindDialog.Left := GetLeft;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  FFindDialog.Position := Point(GetTop, GetLeft);
-  {$ENDIF VisualCLX}
-  FFindDialog.Options := FOptions;
-  FFindDialog.HelpContext := GetHelpContext;
-  FFindDialog.FindText := GetFindText;
-  FReplaceDialog.Position := GetPosition;
+    FFindDialog.Position := FPosition;
+    FFindDialog.Options := FOptions;
+    FFindDialog.HelpContext := FHelpContext;
+    FFindDialog.FindText := FFindText;
 
-  {$IFDEF VCL}
-  FReplaceDialog.Top := GetTop;
-  FReplaceDialog.Left := GetLeft;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  FReplaceDialog.Position := Point(GetTop, GetLeft);
-  {$ENDIF VisualCLX}
-  FReplaceDialog.Options := FOptions;
-  FReplaceDialog.HelpContext := GetHelpContext;
-  FReplaceDialog.FindText := GetFindText;
-  FReplaceDialog.ReplaceText := GetReplaceText;
+    FReplaceDialog.Position := FPosition;
+    FReplaceDialog.Options := FOptions;
+    FReplaceDialog.HelpContext := FHelpContext;
+    FReplaceDialog.FindText := FFindText;
+    FReplaceDialog.ReplaceText := FReplaceText;
+  end;
+end;
+
+procedure TJvFindReplace.UpdateProperties(sender: TObject);
+begin
+  if Sender is TFindDialog then
+  begin
+    FPosition := TFindDialog(Sender).Position;
+    FOptions := TFindDialog(Sender).Options;
+    FHelpContext := TFindDialog(Sender).HelpContext;
+    FFindText := TFindDialog(Sender).FindText;
+  end;
+  if Sender is TReplaceDialog then
+    FReplaceText := TReplaceDialog(Sender).ReplaceText;
 end;
 
 procedure TJvFindReplace.DoOnFind(Sender: TObject);
 var
-  FoundPos: TFoundText;
-  S: string;
+  FoundPos: longint;
   Offset: Integer;
+  WholeWord, MatchCase: Boolean;
 begin
-  if FShowDialogs then
-    S := TFindDialog(Sender).FindText
-  else
-    S := FFindText;
+  /// update the local properties with the current values from the dialog
+  /// in case the user has changed the options (or the find/replace text)
+  UpdateProperties(Sender);
+  WholeWord := frWholeWord in FOptions;
+  MatchCase := frMatchCase in FOptions;
 
-  if FKeepText then
+  if not (frDown in FOptions) then
   begin
-    FFindText := TFindDialog(Sender).FindText;
-    FReplaceText := TReplaceDialog(Sender).ReplaceText;
+    Offset := FEditControl.SelStart;
+    if Offset = 0 then
+      Offset := 1;
+    FoundPos := FindInTextRev(FEditControl.Text, FFindText,
+      Length(FEditControl.Text) - Offset, Length(FEditControl.Text), FFast,
+      WholeWord, MatchCase)
+  end else
+  begin
+    Offset := FEditControl.SelStart + FEditControl.SelLength;
+    if Offset = 0 then
+      Offset := 1;
+    FoundPos := FindInText(FEditControl.Text, FFindText, Offset,
+      Length(FEditControl.Text), FFast, WholeWord, MatchCase);
   end;
-  if (FEditControl.SelStart = 0) and (FEditControl.SelLength < 1) then
-    Offset := 0
-  else
-    Offset := 1;
-  if not (frDown in TFindDialog(Sender).Options) then
-    FoundPos := FindInTextRev(FEditControl.Text, S, Length(FEditControl.Text) - FEditControl.SelStart + Offset,
-      Length(FEditControl.Text), FFast)
-  else
-    FoundPos := FindInText(FEditControl.Text, S, FEditControl.SelStart + Offset, Length(FEditControl.Text), FFast);
 
-  if FoundPos.StartAt > -1 then
+  if FoundPos > -1 then
   begin
-    if (frWholeWord in TFindDialog(Sender).Options) and not FoundPos.isWhole then
-      DoFailed(Sender)
-    else
-    if (frMatchCase in TFindDialog(Sender).Options) and not FoundPos.isSameCase then
-      DoFailed(Sender)
-    else
-    begin
-      FEditControl.SetFocus;
-      FEditControl.SelStart := FoundPos.StartAt;
-      FEditControl.SelLength := FoundPos.EndAt;
-      {$IFDEF VCL}
-      SendMessage(FEditControl.Handle, EM_SCROLLCARET, 0, 0);
-      {$ENDIF VCL}
-      if Assigned(FOnFind) then
-        FOnFind(Self);
-    end
+    FEditControl.SetFocus;
+    FEditControl.SelStart := FoundPos - 1;
+    FEditControl.SelLength := Length(FFindText);
+{$IFDEF VCL}
+    SendMessage(FEditControl.Handle, EM_SCROLLCARET, 0, 0);
+{$ENDIF VCL}
+    if Assigned(FOnFind) then
+      FOnFind(Self);
   end
   else
     DoFailed(Sender);
@@ -528,21 +513,20 @@ end;
 
 procedure TJvFindReplace.DoOnReplace(Sender: TObject);
 begin
-  if FEditControl.SelLength < 1 then
-    DoOnFind(Sender);
-  if FEditControl.SelLength < 1 then
-    Exit;
+  UpdateProperties(Sender);
 
-  if frReplaceAll in TFindDialog(Sender).Options then
+  if frReplaceAll in FOptions then
   begin
-    SetFindText(FReplaceDialog.FindText);
-    SetReplaceText(FReplaceDialog.ReplaceText);
     ReplaceAll(FFindText, FReplaceText);
     if Assigned(FOnReplace) then
       FOnReplace(Self);
   end
   else
   begin
+    if FEditControl.SelLength < 1 then
+      DoOnFind(Sender);
+    if FEditControl.SelLength < 1 then
+      Exit;
     ReplaceOne(Sender);
     if Assigned(FOnReplace) then
       FOnReplace(Self);
@@ -563,6 +547,7 @@ procedure TJvFindReplace.DoOnClose(Sender: TObject);
 begin
   if not Assigned(FEditControl) then
     Error;
+  UpdateProperties(Sender);
   UpdateDialogs;
   if Assigned(FOnClose) then
     FOnClose(Self);
@@ -574,6 +559,7 @@ var
 begin
   if not Assigned(FEditControl) then
     Error;
+  UpdateProperties(Sender);
   if Assigned(FOnNotFound) then
     FOnNotFound(Self);
   if not FShowDialogs then
@@ -585,13 +571,13 @@ begin
     FCaption := RsFindCaption;
 
   MessageBox(
-    {$IFDEF VCL}
+{$IFDEF VCL}
     TFindDialog(Sender).Handle,
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
     TFindDialog(Sender).Form.Handle,
-    {$ENDIF VisualCLX}
-    PChar(Format(RsNotFound, [TFindDialog(Sender).FindText])),
+{$ENDIF VisualCLX}
+    PChar(Format(RsNotFound, [FFindText])),
     PChar(FCaption), MB_OK or MB_ICONINFORMATION);
 end;
 
@@ -603,16 +589,17 @@ end;
 
 procedure TJvFindReplace.DoReplacedAll(Sender: TObject);
 begin
+  UpdateProperties(Sender);
   if FShowDialogs then
   begin
     MessageBox(
-      {$IFDEF VCL}
+{$IFDEF VCL}
       TFindDialog(Sender).Handle,
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
       TFindDialog(Sender).Form.Handle,
-      {$ENDIF VisualCLX}
-      PChar(Format(RsXOccurencesReplaced, [FNumberReplaced, TFindDialog(Sender).FindText])),
+{$ENDIF VisualCLX}
+      PChar(Format(RsXOccurencesReplaced, [FNumberReplaced, FFindText])),
       PChar(RsReplaceCaption), MB_OK or MB_ICONINFORMATION);
   end;
 
@@ -634,13 +621,13 @@ end;
 
 procedure TJvFindReplace.SetDialogTop(Value: Integer);
 begin
-  FTop := Value;
+  FPosition.Y := Value;
   UpdateDialogs;
 end;
 
 procedure TJvFindReplace.SetDialogLeft(Value: Integer);
 begin
-  FLeft := Value;
+  FPosition.X := Value;
   UpdateDialogs;
 end;
 
@@ -660,10 +647,7 @@ end;
 procedure TJvFindReplace.SetFindText(const Value: string);
 begin
   FFindText := Value;
-  if Assigned(FFindDialog) then
-    FFindDialog.FindText := Value;
-  if Assigned(FReplaceDialog) then
-    FReplaceDialog.FindText := Value;
+  UpdateDialogs;
 end;
 
 procedure TJvFindReplace.SetShowDialogs(Value: Boolean);
@@ -673,22 +657,21 @@ begin
   if not Value then
   begin
     NeedDialogs;
-    {$IFDEF VCL}
+{$IFDEF VCL}
     FFindDialog.CloseDialog;
     FReplaceDialog.CloseDialog;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
     FFindDialog.Form.Close;
     FReplaceDialog.Form.Close;
-    {$ENDIF VisualCLX}
+{$ENDIF VisualCLX}
   end;
 end;
 
 procedure TJvFindReplace.SetReplaceText(const Value: string);
 begin
   FReplaceText := Value;
-  if Assigned(FReplaceDialog) then
-    FReplaceDialog.ReplaceText := Value;
+  UpdateDialogs;
 end;
 
 procedure TJvFindReplace.SetHelpContext(Value: THelpContext);
@@ -697,70 +680,20 @@ begin
   UpdateDialogs;
 end;
 
-function TJvFindReplace.GetPosition: TPoint;
-begin
-  if (csDesigning in ComponentState) or not Assigned(FFindDialog) then
-    Result := FPosition
-  else
-    Result := FFindDialog.Position;
-end;
-
 function TJvFindReplace.GetTop: Integer;
 begin
-  if (csDesigning in ComponentState) or not Assigned(FFindDialog) then
-    Result := FPosition.Y
-  else
-    {$IFDEF VCL}
-    Result := FFindDialog.Top;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    Result := FFindDialog.Position.Y;
-    {$ENDIF VisualCLX}
+  Result := FPosition.Y
 end;
 
 function TJvFindReplace.GetLeft: Integer;
 begin
-  if (csDesigning in ComponentState) or not Assigned(FFindDialog) then
-    Result := FPosition.X
-  else
-    {$IFDEF VCL}
-    Result := FFindDialog.Left;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    Result := FFindDialog.Position.X;
-    {$ENDIF VisualCLX}
+  Result := FPosition.X
 end;
 
-function TJvFindReplace.GetOptions: TFindOptions;
+procedure TJvFindReplace.Loaded;
 begin
-  if (csDesigning in ComponentState) or not Assigned(FFindDialog) then
-    Result := FOptions
-  else
-    Result := FFindDialog.Options;
-end;
-
-function TJvFindReplace.GetHelpContext: THelpContext;
-begin
-  if (csDesigning in ComponentState) or not Assigned(FFindDialog) then
-    Result := FHelpContext
-  else
-    Result := FFindDialog.HelpContext;
-end;
-
-function TJvFindReplace.GetFindText: string;
-begin
-  if not FShowDialogs or (csDesigning in ComponentState) or not Assigned(FFindDialog) then
-    Result := FFindText
-  else
-    Result := FFindDialog.FindText;
-end;
-
-function TJvFindReplace.GetReplaceText: string;
-begin
-  if not FShowDialogs or (csDesigning in ComponentState) or not Assigned(FReplaceDialog) then
-    Result := FReplaceText
-  else
-    Result := FReplaceDialog.ReplaceText;
+  inherited;
+  UpdateDialogs;
 end;
 
 {$IFDEF UNITVERSIONING}
