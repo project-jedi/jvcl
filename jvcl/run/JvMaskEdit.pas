@@ -258,6 +258,7 @@ destructor TJvCustomMaskEdit.Destroy;
 begin
   FCaret.OnChanged := nil;
   FreeAndNil(FCaret);
+  FCanvas.Free;
   inherited Destroy;
 end;
 
