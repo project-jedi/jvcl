@@ -1192,6 +1192,11 @@ function Sign(const AValue: Double): TValueSign; overload;
 function VarIsStr(const V: Variant): Boolean;
 {$ENDIF COMPILER5}
 
+type
+  TCollectionSortProc = function(Item1, Item2: TCollectionItem): Integer;
+
+procedure CollectionSort(Collection: TCollection; sortProc: TCollectionSortProc);
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -9693,6 +9698,54 @@ begin
   Result := JvVCL5Utils.VarIsStr(V);
 end;
 {$ENDIF COMPILER5}
+
+procedure CollectionQuickSort(List: TCollection; L, R: Integer; sortProc: TCollectionSortProc);
+var
+ I, J, pix: Integer;
+ P, t1, t2: TCollectionItem;
+begin
+  List.BeginUpdate;
+  repeat
+    I := L;
+    J := R;
+    pix := (L+R) shr 1;
+    if pix> List.Count-1 then pix := List.Count-1;
+    P := List.Items[pix];
+
+    repeat
+
+      while sortProc(List.Items[I], P) < 0 do Inc(I);
+      while sortProc(List.Items[J], P) > 0 do Dec(J);
+
+      if I <= J then
+      begin
+        t1 := List.Items[I];
+        t2 := List.Items[J];
+        t1.Index := J;
+        t2.Index := I;
+
+        if pix = I then pix := J
+        else if pix = J then pix:=I;
+
+        P := List.Items[pix];
+        Inc(I);
+        Dec(J);
+      end;
+    until I > J;
+    if L < J then
+      CollectionQuickSort(List, L, J, sortProc);
+    L := I;
+  until I>=R;
+  List.EndUpdate;
+end;
+
+procedure CollectionSort(Collection: TCollection; sortProc: TCollectionSortProc);
+begin
+ if not Assigned(Collection) then Exit;
+ if not Assigned(sortProc) then Exit;
+ CollectionQuickSort(Collection, 0, Collection.Count-1, sortProc);
+end;
+
 
 {$IFDEF UNITVERSIONING}
 initialization
