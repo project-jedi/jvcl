@@ -40,7 +40,7 @@ uses
   {$IFDEF UNIX}
   QWindows,
   {$ENDIF UNIX}
-  Dialogs,
+  Forms, Dialogs,
   JvTypes, JvComponent, JvThreadDialog;
 
 type
@@ -138,8 +138,6 @@ const
 
 implementation
 
-Uses Forms;
-
 var
   SyncMtx: THandle = 0;
 
@@ -202,7 +200,7 @@ begin
       FThreadDialogForm := nil
 end;
 
-procedure TJvThread.Synchronize (Method: TThreadMethod);
+procedure TJvThread.Synchronize(Method: TThreadMethod);
 begin
   if Assigned(LastThread) then
     LastThread.Synchronize(Method);
@@ -215,7 +213,6 @@ begin
   else
     Result := 0;
 end;
-
 
 function TJvThread.Execute(P: Pointer): THandle;
 var
@@ -308,7 +305,7 @@ end;
 procedure TJvThread.DoCreate;
 begin
   if Assigned(FOnBegin) then
-    FOnBegin(nil);
+    FOnBegin(Self);
 end;
 
 procedure TJvThread.DoTerminate(Sender: TObject);
@@ -317,14 +314,14 @@ begin
   FThreads.Remove(Sender);
   try
     if Assigned(FOnFinish) then
-      FOnFinish(nil);
+      FOnFinish(Self);
   finally
     if FThreadCount = 0 then
     begin
       if Assigned(ThreadDialog) then
         ThreadDialog.CloseThreadDialogForm;
       if Assigned(FOnFinishAll) then
-        FOnFinishAll(nil);
+        FOnFinishAll(Self);
     end;
   end;
 end;
