@@ -226,7 +226,7 @@ begin
   if FMaximum - FMinimum = 0 then
     Result := 0
   else
-    Result := 100 * (FPosition - FMinimum) div (FMaximum - FMinimum);
+    Result := MulDiv(FPosition - FMinimum, 100, FMaximum - FMinimum);
 end;
 
 procedure TJvSpecialProgress.Loaded;
@@ -661,7 +661,7 @@ begin
 
   { Max width of the progressbar is ClientWidth -2 [-2 for the border],
     NewBlock specifies the new length of the progressbar }
-  NewBlock := (ClientWidth - 2) * (FPosition - FMinimum) div (FMaximum - FMinimum);
+  NewBlock := MulDiv(FPosition - FMinimum, ClientWidth - 2, FMaximum - FMinimum);
   if not FSolid then
   begin
     { The Block of a solid bar can have a different size than the Block
