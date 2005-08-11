@@ -144,6 +144,7 @@ type
     procedure InsertText(Index: Integer; const Text: string);
     procedure InsertObject(Index: Integer; const Text: string; ALinkedObject: TObject);
     procedure Move(CurIndex, NewIndex: Integer);
+    procedure Sort(sortProc: TCollectionSortProc);
 
     function IndexOfLinkedObject(ALinkedObject: TObject): Integer;
 
@@ -742,6 +743,11 @@ begin
   Item := Insert(Index);
   Item.Text := Text;
   Item.LinkedObject := ALinkedObject;
+end;
+
+procedure TJvImageItems.Sort(sortProc: TCollectionSortProc);
+begin
+  CollectionSort(Self, sortProc);
 end;
 
 //=== { TJvImageComboBox } ===================================================
