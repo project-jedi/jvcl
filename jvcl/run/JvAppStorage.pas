@@ -86,13 +86,12 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF CLR}
   JclBase,
-  {$ELSE}
+  {$IFNDEF CLR}
   {$IFDEF COMPILER9_UP}
   Windows,
   {$ENDIF COMPILER9_UP}
-  {$ENDIF CLR}
+  {$ENDIF !CLR}
   SysUtils, Classes, TypInfo,
   {$IFDEF UNIX}
   JvQJCLUtils,
