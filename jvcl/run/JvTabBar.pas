@@ -535,8 +535,8 @@ end;
 constructor TJvCustomTabBar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  ControlStyle := ControlStyle - [csAcceptsControls, csOpaque];
-  
+  ControlStyle := ControlStyle - [csAcceptsControls, csOpaque] {+ [csDesignInteractive]};
+
   FTabs := TJvTabBarItems.Create(Self, TJvTabBarItem);
   FChangeLink := TChangeLink.Create;
   FChangeLink.OnChange := ImagesChanged;
@@ -761,13 +761,13 @@ end;
 
 procedure TJvCustomTabBar.TabClosed(Tab: TJvTabBarItem);
 begin
-  if AutoFreeClosed then
+  if AutoFreeClosed and not (csDesigning in ComponentState) then
     Tab.Visible := False;
   try
     if Assigned(FOnTabClosed) then
       FOnTabClosed(Self, Tab);
   finally
-    if AutoFreeClosed then
+    if AutoFreeClosed and not (csDesigning in ComponentState) then
       Tab.Free;
   end;
 end;
