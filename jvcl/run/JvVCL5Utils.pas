@@ -82,6 +82,7 @@ function UninstallProcHook(OrgCallProc: Pointer): Boolean;
 const
   PathDelim = '\';
   DriveDelim = ';';
+  sLineBreak = #13#10;
 
 function TryStrToInt(const S: string; out Value: Integer): Boolean;
 function TryStrToDateTime(const S: string; out Date: TDateTime): Boolean;
