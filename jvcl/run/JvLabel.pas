@@ -76,10 +76,14 @@ type
   TJvTextEllipsis = (teNone, teWordEllipsis, tePathEllipsis, teEndEllipsis);
 
   TAngleInfo = record
-    TextWidth, TextHeight : Integer;
-    TextGapWidth, TextGapHeight : Integer;
-    TotalWidth, TotalHeight : Integer;
-    PosX, PosY : Integer
+    TextWidth: Integer;
+    TextHeight: Integer;
+    TextGapWidth: Integer;
+    TextGapHeight: Integer;
+    TotalWidth: Integer;
+    TotalHeight: Integer;
+    PosX: Integer;
+    PosY: Integer;
   end;
 
   TJvCustomLabel = class(TJvGraphicControl, IJvHotTrack)
@@ -144,17 +148,17 @@ type
     procedure HotFontChanged(Sender: TObject);
 
     {IJvHotTrack}  //added by dejoy 2005-07-20
-    function GetHotTrack:Boolean;
-    function GetHotTrackFont:TFont;
-    function GetHotTrackFontOptions:TJvTrackFontOptions;
-    function GetHotTrackOptions:TJvHotTrackOptions;
+    function GetHotTrack: Boolean;
+    function GetHotTrackFont: TFont;
+    function GetHotTrackFontOptions: TJvTrackFontOptions;
+    function GetHotTrackOptions: TJvHotTrackOptions;
     procedure SetHotTrack(Value: Boolean);
     procedure SetHotTrackFont(Value: TFont);
     procedure SetHotTrackFontOptions(Value: TJvTrackFontOptions);
     procedure SetHotTrackOptions(Value: TJvHotTrackOptions);
   protected
-    procedure DoDrawCaption(var Rect: TRect; Flags: Integer);virtual;
-    procedure DoProviderDraw(var Rect: TRect; Flags: Integer);virtual;
+    procedure DoDrawCaption(var Rect: TRect; Flags: Integer); virtual;
+    procedure DoProviderDraw(var Rect: TRect; Flags: Integer); virtual;
     procedure FocusChanged(AControl: TWinControl); override;
     procedure TextChanged; override;
     procedure FontChanged; override;
@@ -163,7 +167,7 @@ type
     procedure EnabledChanged; override;
 
     procedure DoDrawText(var Rect: TRect; Flags: Integer); virtual;
-    procedure AdjustBounds;virtual;
+    procedure AdjustBounds; virtual;
     {$IFDEF VCL}
     procedure SetAutoSize(Value: Boolean); override;
     {$ENDIF VCL}
@@ -233,8 +237,7 @@ type
     destructor Destroy; override;
     property Canvas;
     property MouseOver;
-    procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
-      AHeight: Integer); override;
+    procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer; AHeight: Integer); override;
   end;
 
   TJvLabel = class(TJvCustomLabel)
@@ -309,10 +312,10 @@ function DrawShadowText(Canvas: TCanvas; Str: PChar; Count: Integer; var Rect: T
 
 procedure FrameRounded(Canvas: TCanvas; ARect: TRect; AColor: TColor; R: Integer);
 
-function CalculateAlignment(Alignment: TAlignment; Angle: integer; X, Y: Real;
+function CalculateAlignment(Alignment: TAlignment; Angle: Integer; X, Y: Real;
   Info: TAngleInfo): TPoint;
 procedure CalculateAngleInfo(Canvas: TCanvas; Angle: Integer; Text: string;
-  Rect: TRect; var Info: TAngleInfo; AutoSize: boolean = true;
+  Rect: TRect; var Info: TAngleInfo; AutoSize: Boolean = True;
   Alignment: TAlignment = taLeftJustify);
 
 {$IFDEF UNITVERSIONING}
@@ -337,76 +340,86 @@ const
 
 //=== { TJvCustomLabel } =====================================================
 
-function CalculateAlignment(Alignment: TAlignment; Angle: integer; X, Y: Real; Info: TAngleInfo) : TPoint;
+function CalculateAlignment(Alignment: TAlignment; Angle: Integer; X, Y: Real; Info: TAngleInfo) : TPoint;
 begin
-  with Info do begin
+  with Info do
     case Angle of
       0..89:
-        begin
-          case Alignment of
-            taLeftJustify : Result := Point(0, Round(Y + (TotalHeight - 2 * TextGapHeight) / 2));
-            taCenter      : Result := Point(Round(X - TotalWidth / 2), Round(Y + (TotalHeight - 2 * TextGapHeight) / 2));
-            taRightJustify: Result := Point(Round(X * 2 - TotalWidth), Round(Y + (TotalHeight - 2 * TextGapHeight) / 2));
-          end;
+        case Alignment of
+          taLeftJustify :
+            Result := Point(0, Round(Y + (TotalHeight - 2 * TextGapHeight) / 2));
+          taCenter:
+            Result := Point(Round(X - TotalWidth / 2), Round(Y + (TotalHeight - 2 * TextGapHeight) / 2));
+          taRightJustify:
+            Result := Point(Round(X * 2 - TotalWidth), Round(Y + (TotalHeight - 2 * TextGapHeight) / 2));
         end;
       90..179:
-        begin
-          case Alignment of
-            taLeftJustify : Result := Point(TextWidth, Round(Y + TotalHeight / 2));
-            taCenter      : Result := Point(Round(X + (TotalWidth - 2 * TextGapWidth) / 2), Round(Y + TotalHeight / 2));
-            taRightJustify: Result := Point(Round(X * 2 - TextGapWidth), Round(Y + TotalHeight / 2));
-          end;
+        case Alignment of
+          taLeftJustify:
+            Result := Point(TextWidth, Round(Y + TotalHeight / 2));
+          taCenter:
+            Result := Point(Round(X + (TotalWidth - 2 * TextGapWidth) / 2), Round(Y + TotalHeight / 2));
+          taRightJustify:
+            Result := Point(Round(X * 2 - TextGapWidth), Round(Y + TotalHeight / 2));
         end;
       180..269:
-        begin
-          case Alignment of
-            taLeftJustify : Result := Point(TotalWidth, Round(Y - (TotalHeight - 2 * TextGapHeight) / 2));
-            taCenter      : Result := Point(Round(X + TotalWidth / 2), Round(Y - (TotalHeight - 2 * TextGapHeight) / 2));
-            taRightJustify: Result := Point(Round(X * 2), Round(Y - (TotalHeight - 2 * TextGapHeight) / 2));
-          end;
-        end;
-      else begin
         case Alignment of
-          taLeftJustify : Result := Point(TextGapWidth, Round(Y - TotalHeight / 2));
-          taCenter      : Result := Point(Round(X - (TotalWidth - 2 * TextGapWidth) / 2), Round(Y - TotalHeight / 2));
-          taRightJustify: Result := Point(Round(X * 2 - TextWidth), Round(Y - TotalHeight / 2));
+          taLeftJustify:
+            Result := Point(TotalWidth, Round(Y - (TotalHeight - 2 * TextGapHeight) / 2));
+          taCenter:
+            Result := Point(Round(X + TotalWidth / 2), Round(Y - (TotalHeight - 2 * TextGapHeight) / 2));
+          taRightJustify:
+            Result := Point(Round(X * 2), Round(Y - (TotalHeight - 2 * TextGapHeight) / 2));
         end;
-      end;
+      else
+        case Alignment of
+          taLeftJustify:
+            Result := Point(TextGapWidth, Round(Y - TotalHeight / 2));
+          taCenter:
+            Result := Point(Round(X - (TotalWidth - 2 * TextGapWidth) / 2), Round(Y - TotalHeight / 2));
+          taRightJustify:
+            Result := Point(Round(X * 2 - TextWidth), Round(Y - TotalHeight / 2));
+        end;
     end;
-  end;
 end;
 
 procedure CalculateAngleInfo(Canvas: TCanvas; Angle: Integer; Text: string;
-  Rect: TRect; var Info: TAngleInfo; AutoSize: boolean = true;
+  Rect: TRect; var Info: TAngleInfo; AutoSize: Boolean = True;
   Alignment: TAlignment = taLeftJustify);
 var
-  TxtWdt, TxtHgt : Extended;
-  angB, X, Y : Real;
+  TxtWdt, TxtHgt: Extended;
+  AngleB, X, Y: Real;
   Origin: TPoint;
 begin
   // Calculate intermediate values
   case Angle of
-    0..89   : angB := DegToRad(90 - Angle);
-    90..179 : angB := DegToRad(Angle - 90);
-    180..269: angB := DegToRad(270 - Angle);
+    0..89:
+      AngleB := DegToRad(90 - Angle);
+    90..179:
+      AngleB := DegToRad(Angle - 90);
+    180..269:
+      AngleB := DegToRad(270 - Angle);
   else {270..359}
-    angB := DegToRad(Angle - 270);
+    AngleB := DegToRad(Angle - 270);
   end;
-  with Canvas do begin
-    TxtWdt := TextWidth (Text);
+  with Canvas do
+  begin
+    TxtWdt := TextWidth(Text);
     TxtHgt := TextHeight(Text);
   end;
-  with Info do begin
-    TextWidth    := Round(sin(angB) * TxtWdt);
-    TextGapWidth := Round(cos(angB) * TxtHgt);
-    TextHeight    := Round(cos(angB) * TxtWdt);
-    TextGapHeight := Round(sin(angB) * TxtHgt);
+  with Info do
+  begin
+    TextWidth := Round(Sin(AngleB) * TxtWdt);
+    TextGapWidth := Round(Cos(AngleB) * TxtHgt);
+    TextHeight := Round(Cos(AngleB) * TxtWdt);
+    TextGapHeight := Round(Sin(AngleB) * TxtHgt);
     // Calculate new sizes of component
-    TotalWidth   := (TextWidth + TextGapWidth);
-    TotalHeight   := (TextHeight + TextGapHeight);
+    TotalWidth := (TextWidth + TextGapWidth);
+    TotalHeight := (TextHeight + TextGapHeight);
   end;
   // Calculate draw position of text
-  with Rect do begin
+  with Rect do
+  begin
     X := (Right - Left) / 2;
     Y := (Bottom - Top) / 2;
   end;
@@ -431,13 +444,13 @@ begin
           Info.posX := Info.TotalWidth;
           Info.posY := Info.TextGapHeight;
         end;
-      else begin{270..359}
-        Info.PosX := Info.TextGapWidth;
-        Info.PosY := 0;
-      end;
+    else{270..359}
+      Info.PosX := Info.TextGapWidth;
+      Info.PosY := 0;
     end;
   end
-  else begin
+  else
+  begin
     Info.PosX := Origin.X;
     Info.PosY := Origin.Y;
   end;
@@ -569,7 +582,7 @@ begin
         Canvas.Font := HotTrackFont
       else
         Canvas.Font := Font;
-      if (Flags and DT_CALCRECT <> 0) then
+      if (Flags and DT_CALCRECT) <> 0 then
       begin
         if ItemsRenderer <> nil then
           Tmp := ItemsRenderer.MeasureItem(Canvas, TmpItem)
@@ -687,7 +700,7 @@ var
   NewFont: HFont;
   TextX, TextY, ShadowX, ShadowY: Integer;
   Angle10: Integer;
-  w, h: Integer;
+  W, H: Integer;
   Info: TAngleInfo;
   CalcRect: Boolean;
 begin
@@ -717,15 +730,15 @@ begin
   Canvas.Brush.Style := bsClear; // Do not Erase Shadow or Background
 
   CalculateAngleInfo(Canvas, Angle, Text, ClientRect, Info, AutoSize, Alignment);
-  w := Info.TotalWidth;
-  h := Info.TotalHeight;
+  W := Info.TotalWidth;
+  H := Info.TotalHeight;
   TextX := Info.posX;
   TextY := Info.posY;
 
   if CalcRect then
   begin
-    Rect.Right := Rect.Left + w;
-    Rect.Bottom := Rect.Top + h;
+    Rect.Right := Rect.Left + W;
+    Rect.Bottom := Rect.Top + H;
     if HasImage then
       Inc(Rect.Right, Images.Width);
     Inc(Rect.Right, MarginLeft + MarginRight);
@@ -736,9 +749,12 @@ begin
     if HasImage then
     begin
       case Alignment of
-        taLeftJustify : Inc(TextX, Images.Width);
-        taCenter      : Inc(TextX, Images.Width div 2);
-        taRightJustify: Inc(TextX, 0);
+        taLeftJustify:
+          Inc(TextX, Images.Width);
+        taCenter:
+          Inc(TextX, Images.Width div 2);
+        taRightJustify:
+          Inc(TextX, 0);
       end;
     end;
     Inc(TextX, MarginLeft);
@@ -797,13 +813,12 @@ var
   Text: array [0..4096] of Char;
   TextX, TextY: Integer;
   Phi: Real;
-  w, h: Integer;
+  W, H: Integer;
   CalcRect: Boolean;
 begin
   CalcRect := (Flags and DT_CALCRECT <> 0);
   StrLCopy(@Text, PChar(GetLabelCaption), SizeOf(Text) - 1);
-  if CalcRect and ((Text[0] = #0) or ShowAccelChar and
-    (Text[0] = '&') and (Text[1] = #0)) then
+  if CalcRect and ((Text[0] = #0) or ShowAccelChar and (Text[0] = '&') and (Text[1] = #0)) then
     StrCopy(Text, ' ');
 
   Canvas.Start;
@@ -813,17 +828,17 @@ begin
     Phi := Angle * Pi / 180;
     if not AutoSize then
     begin
-      w := Rect.Right - Rect.Left;
-      h := Rect.Bottom - Rect.Top;
-      TextX := Trunc(0.5 * w - 0.5 * Canvas.TextWidth(Text) * Cos(Phi) -
+      W := Rect.Right - Rect.Left;
+      H := Rect.Bottom - Rect.Top;
+      TextX := Trunc(0.5 * W - 0.5 * Canvas.TextWidth(Text) * Cos(Phi) -
         0.5 * Canvas.TextHeight(Text) * Sin(Phi));
-      TextY := Trunc(0.5 * h - 0.5 * Canvas.TextHeight(Text) * Cos(Phi) +
+      TextY := Trunc(0.5 * H - 0.5 * Canvas.TextHeight(Text) * Cos(Phi) +
         0.5 * Canvas.TextWidth(Text) * Sin(Phi));
     end
     else
     begin
-      w := 4 + Trunc(Canvas.TextWidth(Text) * Abs(Cos(Phi)) + Canvas.TextHeight(Text) * Abs(Sin(Phi)));
-      h := 4 + Trunc(Canvas.TextHeight(Text) * Abs(Cos(Phi)) + Canvas.TextWidth(Text) * Abs(Sin(Phi)));
+      W := 4 + Trunc(Canvas.TextWidth(Text) * Abs(Cos(Phi)) + Canvas.TextHeight(Text) * Abs(Sin(Phi)));
+      H := 4 + Trunc(Canvas.TextHeight(Text) * Abs(Cos(Phi)) + Canvas.TextWidth(Text) * Abs(Sin(Phi)));
       TextX := 3;
       TextY := 3;
       if Angle <= 90 then
@@ -849,8 +864,8 @@ begin
 
     if CalcRect then
     begin
-      Rect.Right := Rect.Left + w;
-      Rect.Bottom := Rect.Top + h;
+      Rect.Right := Rect.Left + W;
+      Rect.Bottom := Rect.Top + H;
       if HasImage then
         Inc(Rect.Right, Images.Width);
       InflateRect(Rect, -XOffsetFrame, -YOffsetFrame);
@@ -919,9 +934,7 @@ begin
           Canvas.Pen.Color := OldPenColor;
         end
         else
-        begin
           Canvas.FillRect(Rect);
-        end;
       end;
     end
     else
@@ -1238,19 +1251,18 @@ begin
   OtherDragging :=
     {$IFDEF VCL}
     KeyPressed(VK_LBUTTON)
-     {$IFDEF COMPILER6_UP}
+    {$IFDEF COMPILER6_UP}
     or Mouse.IsDragging
     {$ENDIF COMPILER6_UP}
-   {$ENDIF VCL}
-   {$IFDEF VisualCLX}
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
     DragActivated
-   {$ENDIF VisualCLX}
+    {$ENDIF VisualCLX}
     ;
 
-  MouseOver := Enabled and  not OtherDragging and
-    (FindDragTarget(Mouse.CursorPos, True) = Self) and
-    IsForegroundTask;
-  if (MouseOver <> OldValue)  then
+  MouseOver := Enabled and not OtherDragging and
+    (FindDragTarget(Mouse.CursorPos, True) = Self) and IsForegroundTask;
+  if MouseOver <> OldValue then
     Invalidate;
 end;
 
@@ -1309,24 +1321,25 @@ begin
   if csDesigning in ComponentState then
     Exit;
 
-  if  IsForegroundTask then
+  if IsForegroundTask then
     MouseCapture := True;  //Capture for MouseUp event
 
-  if not MouseOver and Enabled  and IsForegroundTask then
+  if not MouseOver and Enabled and IsForegroundTask then
   begin
     OtherDragging :=
       {$IFDEF VCL}
       KeyPressed(VK_LBUTTON)
-       {$IFDEF COMPILER6_UP}
-        or Mouse.IsDragging
+      {$IFDEF COMPILER6_UP}
+      or Mouse.IsDragging
       {$ENDIF COMPILER6_UP}
-     {$ENDIF VCL}
-     {$IFDEF VisualCLX}
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
       DragActivated
-     {$ENDIF VisualCLX}
+      {$ENDIF VisualCLX}
       ;
-    NeedRepaint :=  not Transparent and
-     ({$IFDEF JVCLThemesEnabled}
+    NeedRepaint := not Transparent and
+      (
+      {$IFDEF JVCLThemesEnabled}
       ThemeServices.ThemesEnabled or
       {$ENDIF JVCLThemesEnabled}
       (FHotTrack  and not (FDragging or OtherDragging)));
@@ -1334,16 +1347,14 @@ begin
     inherited MouseEnter(Control); // set MouseOver
 
     if NeedRepaint then
-    begin
       Invalidate;
-    end;
   end;
 end;
 
 procedure TJvCustomLabel.MouseLeave(Control: TControl);
 var
   NeedRepaint: Boolean;
-  OtherDragging:Boolean;
+  OtherDragging: Boolean;
 begin
   if csDesigning in ComponentState then
     Exit;
@@ -1353,17 +1364,18 @@ begin
     OtherDragging :=
       {$IFDEF VCL}
       KeyPressed(VK_LBUTTON)
-       {$IFDEF COMPILER6_UP}
-        or Mouse.IsDragging
+      {$IFDEF COMPILER6_UP}
+      or Mouse.IsDragging
       {$ENDIF COMPILER6_UP}
-     {$ENDIF VCL}
-     {$IFDEF VisualCLX}
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
       DragActivated
-     {$ENDIF VisualCLX}
+      {$ENDIF VisualCLX}
       ;
 
-    NeedRepaint :=  not Transparent and
-     ({$IFDEF JVCLThemesEnabled}
+    NeedRepaint := not Transparent and
+      (
+      {$IFDEF JVCLThemesEnabled}
       ThemeServices.ThemesEnabled or
       {$ENDIF JVCLThemesEnabled}
       (FHotTrack  and (FDragging or not OtherDragging)));
@@ -1371,9 +1383,7 @@ begin
     inherited MouseLeave(Control); // set MouseOver
 
     if NeedRepaint then
-    begin
       Invalidate;
-    end;
   end;
 end;
 
@@ -1551,10 +1561,7 @@ end;
 
 procedure TJvCustomLabel.SetHotTrack(Value: Boolean);
 begin
-  if FHotTrack <> Value then
-  begin
-    FHotTrack := Value;
-  end;
+  FHotTrack := Value;
 end;
 
 procedure TJvCustomLabel.SetHotTrackOptions(Value: TJvHotTrackOptions);
@@ -1590,13 +1597,11 @@ end;
 procedure TJvCustomLabel.SetRoundedFrame(const Value: Integer);
 begin
   if FRoundedFrame <> Value then
-  begin
     if (Value < Height div 2) and (Value >= 0) then
     begin
       FRoundedFrame := Value;
       Invalidate;
     end;
-  end;
 end;
 
 procedure FrameRounded(Canvas: TCanvas; ARect: TRect; AColor: TColor; R: Integer);
@@ -1607,17 +1612,16 @@ begin
     Pen.Color := AColor;
     Dec(Right);
     Dec(Bottom);
-    Polygon([
-      Point(Left + R, Top),
-        Point(Right - R, Top),
-        Point(Right, Top + R),
-        Point(Right, Bottom - R),
-        Point(Right - R, Bottom),
-        Point(Left + R, Bottom),
-        Point(Left, Bottom - R),
-        Point(Left, Top + R),
-        Point(Left + R, Top)
-        ]);
+    Polygon(
+     [Point(Left + R, Top),
+      Point(Right - R, Top),
+      Point(Right, Top + R),
+      Point(Right, Bottom - R),
+      Point(Right - R, Bottom),
+      Point(Left + R, Bottom),
+      Point(Left, Bottom - R),
+      Point(Left, Top + R),
+      Point(Left + R, Top)]);
     Inc(Right);
     Inc(Bottom);
   end;

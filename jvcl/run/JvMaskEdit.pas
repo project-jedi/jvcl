@@ -37,8 +37,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages,
-  SysUtils, Classes, Graphics, Controls, Mask, Forms,
-  StdCtrls,
+  SysUtils, Classes, Graphics, Controls, Mask, Forms, StdCtrls,
   JvComponent, JvTypes, JvCaret, JvToolEdit, JvExMask;
 
 type
@@ -87,6 +86,7 @@ type
     procedure SetCaret(const Value: TJvCaret);
     procedure NotifyIfChanged;
     procedure Change; override;
+    // (rom) not CLX compatible
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
   public
     {$IFDEF VCL}
@@ -466,15 +466,21 @@ begin
     Params.Style := Params.Style or ES_MULTILINE;
 
   case FAlignment of
-    taLeftJustify:  Params.Style := Params.Style or ES_LEFT;
-    taRightJustify: Params.Style := Params.Style or ES_RIGHT;
-    taCenter:       Params.Style := Params.Style or ES_CENTER;
+    taLeftJustify:
+      Params.Style := Params.Style or ES_LEFT;
+    taRightJustify:
+      Params.Style := Params.Style or ES_RIGHT;
+    taCenter:
+      Params.Style := Params.Style or ES_CENTER;
   end;
 
   case FScrollBars of
-    ssHorizontal: Params.Style := Params.Style or WS_HSCROLL;
-    ssVertical:   Params.Style := Params.Style or WS_VSCROLL;
-    ssBoth:       Params.Style := Params.Style or WS_HSCROLL or WS_VSCROLL;
+    ssHorizontal:
+      Params.Style := Params.Style or WS_HSCROLL;
+    ssVertical:
+      Params.Style := Params.Style or WS_VSCROLL;
+    ssBoth:
+      Params.Style := Params.Style or WS_HSCROLL or WS_VSCROLL;
   end;
 
   if FWordWrap then

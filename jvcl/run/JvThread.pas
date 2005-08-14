@@ -61,7 +61,8 @@ type
     procedure InternalMessageDlg;
   public
     constructor Create(Sender: TObject; Event: TJvNotifyParamsEvent; Params: Pointer); virtual;
-    function SynchMessageDlg(const Msg: string; AType: TMsgDlgType; AButtons: TMsgDlgButtons; HelpCtx: Longint): Word;
+    function SynchMessageDlg(const Msg: string; AType: TMsgDlgType;
+      AButtons: TMsgDlgButtons; HelpCtx: Longint): Word;
     procedure Execute; override;
   end;
 
@@ -91,7 +92,8 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 
     procedure Synchronize (Method: TThreadMethod);
-    function SynchMessageDlg(const Msg: string; AType: TMsgDlgType; AButtons: TMsgDlgButtons; HelpCtx: Longint): Word;
+    function SynchMessageDlg(const Msg: string; AType: TMsgDlgType;
+      AButtons: TMsgDlgButtons; HelpCtx: Longint): Word;
 
     property Count: Integer read GetCount;
     property Threads[Index: Integer]: TJvBaseThread read GetThreads;
@@ -206,7 +208,8 @@ begin
     LastThread.Synchronize(Method);
 end;
 
-function TJvThread.SynchMessageDlg(const Msg: string; AType: TMsgDlgType; AButtons: TMsgDlgButtons; HelpCtx: Longint): Word;
+function TJvThread.SynchMessageDlg(const Msg: string; AType: TMsgDlgType;
+  AButtons: TMsgDlgButtons; HelpCtx: Longint): Word;
 begin
   if Assigned(LastThread) then
     Result := LastThread.SynchMessageDlg(Msg, AType, AButtons, HelpCtx)
@@ -425,7 +428,8 @@ begin
   FSynchMessageDlgResult := MessageDlg(FSynchMsg, FSynchAType, FSynchAButtons, FSynchHelpCtx);
 end;
 
-function TJvBaseThread.SynchMessageDlg(const Msg: string; AType: TMsgDlgType; AButtons: TMsgDlgButtons; HelpCtx: Longint): Word;
+function TJvBaseThread.SynchMessageDlg(const Msg: string; AType: TMsgDlgType;
+  AButtons: TMsgDlgButtons; HelpCtx: Longint): Word;
 begin
   FSynchMsg := Msg;
   FSynchAType := AType;

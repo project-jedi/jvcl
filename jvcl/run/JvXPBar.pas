@@ -60,7 +60,7 @@ unit JvXPBar;
 //  bug in Windows XP and 2003 and once all machines
 //  "OUT THERE" have been updated, this should be removed
 //  from the code.
-//{ $ define XP_TRANSPARENCY_FIX}
+//{ $ DEFINE XP_TRANSPARENCY_FIX}
 
 interface
 
@@ -239,7 +239,8 @@ type
   published
     property Action: TBasicAction read GetAction write SetAction;
     {$IFDEF VCL}
-    property AutoCheck: Boolean read FAutoCheck write FAutoCheck {$IFDEF COMPILER6_UP} stored IsAutoCheckStored {$ENDIF} default False;
+    property AutoCheck: Boolean read FAutoCheck write FAutoCheck
+      {$IFDEF COMPILER6_UP} stored IsAutoCheckStored {$ENDIF} default False;
     {$ENDIF VCL}
     property Caption: TCaption read FCaption write SetCaption stored IsCaptionStored;
     property Checked: Boolean read FChecked write SetChecked stored IsCheckedStored default False;
@@ -335,8 +336,10 @@ type
     property BorderColor: TColor read FBorderColor write SetBorderColor  default clWhite;
     property CheckedColor: TColor read FCheckedColor write SetCheckedColor default dxColor_CheckedColorXP;
     property FocusedColor: TColor read FFocusedColor write SetFocusedColor default dxColor_FocusedColorXP;
-    property CheckedFrameColor: TColor read FCheckedFrameColor write SetCheckedFrameColor default dxColor_CheckedFrameColorXP;
-    property FocusedFrameColor: TColor read FFocusedFrameColor write SetFocusedFrameColor default dxColor_FocusedFrameColorXP;
+    property CheckedFrameColor: TColor read FCheckedFrameColor write SetCheckedFrameColor
+      default dxColor_CheckedFrameColorXP;
+    property FocusedFrameColor: TColor read FFocusedFrameColor write SetFocusedFrameColor
+      default dxColor_FocusedFrameColorXP;
     property BodyColor: TColor read FBodyColor write SetBodyColor default dxColor_BodyColorXP;
     property BodyBorderColor: TColor read FBodyBorderColor write SetBodyBorderColor default dxColor_BodyColorXP;
     property GradientFrom: TColor read FGradientFrom write SetGradientFrom default clWhite;
@@ -422,8 +425,7 @@ type
     procedure CMDialogChar(var Msg: TCMDialogChar); message CM_DIALOGCHAR;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    function WantKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override;
+    function WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean; override;
     {$ENDIF VisualCLX}
     class function GetBarItemsClass: TJvXPBarItemsClass; virtual;
     function GetHitTestRect(const HitTest: TJvXPBarHitTest): TRect;
@@ -468,11 +470,10 @@ type
     property ShowItemFrame: Boolean read FShowItemFrame write FShowItemFrame;
     property RoundedItemFrame: Integer read FRoundedItemFrame write FRoundedItemFrame default 1; //DS
     property TopSpace: Integer read FTopSpace write SetTopSpace default 5;
-    // (rom) this name is not acceptable. Prefix with "On"
-    property AfterCollapsedChange: TJvXPBarOnCollapsedChangeEvent read FAfterCollapsedChange write
-      FAfterCollapsedChange;
-    property BeforeCollapsedChange: TJvXPBarOnCollapsedChangeEvent read FBeforeCollapsedChange write
-      FBeforeCollapsedChange;
+    property AfterCollapsedChange: TJvXPBarOnCollapsedChangeEvent read FAfterCollapsedChange
+      write FAfterCollapsedChange;
+    property BeforeCollapsedChange: TJvXPBarOnCollapsedChangeEvent read FBeforeCollapsedChange
+      write FBeforeCollapsedChange;
     property OnCollapsedChange: TJvXPBarOnCollapsedChangeEvent read FOnCollapsedChange write FOnCollapsedChange;
     property OnCanChange: TJvXPBarOnCanChangeEvent read FOnCanChange write FOnCanChange;
     property OnDrawItem: TJvXPBarOnDrawItemEvent read FOnDrawItem write FOnDrawItem;
@@ -651,7 +652,7 @@ begin
     Result := 1;
 end;
 
-{$ifdef XP_TRANSPARENCY_FIX}
+{$IFDEF XP_TRANSPARENCY_FIX}
 { BitmapBgPaint:
 
   This fixes a bug in the Delphi 7 VCL on systems
@@ -661,21 +662,18 @@ end;
 
   -WPostma. }
 
-procedure BitmapBgPaint( Bitmap:TBitmap;bgColor:TColor);
+procedure BitmapBgPaint(Bitmap: TBitmap; BgColor: TColor);
 var
- r:TRect;
+ R: TRect;
 begin
-  r.Left := 0;
-  r.Top := 0;
-  r.Right := Bitmap.Width;
-  r.Bottom := Bitmap.Height;
-  Bitmap.Canvas.Brush.Color := bgColor;
-  Bitmap.Canvas.FillRect( r );
+  R.Left := 0;
+  R.Top := 0;
+  R.Right := Bitmap.Width;
+  R.Bottom := Bitmap.Height;
+  Bitmap.Canvas.Brush.Color := BgColor;
+  Bitmap.Canvas.FillRect(R);
 end;
-
-{$endif}
-
-
+{$ENDIF XP_TRANSPARENCY_FIX}
 
 //=== { TJvXPBarItemActionLink } =============================================
 
@@ -2082,10 +2080,11 @@ begin
     Bitmap.Assign(nil);
     ItemRect := GetItemRect(Index);
     HasImages := FVisibleItems[Index].Images <> nil;
-    if HasImages then begin
-{$ifdef XP_TRANSPARENCY_FIX}
-      BitmapBgPaint( Bitmap, {WinXPBar.}Colors.BodyColor);
-{$endif}
+    if HasImages then
+    begin
+      {$IFDEF XP_TRANSPARENCY_FIX}
+      BitmapBgPaint(Bitmap, {WinXPBar.}Colors.BodyColor);
+      {$ENDIF XP_TRANSPARENCY_FIX}
       FVisibleItems[Index].Images.GetBitmap(FVisibleItems[Index].ImageIndex, Bitmap);
     end;
     Bitmap.Transparent := True;
@@ -2514,7 +2513,8 @@ begin
     Pen.Color := AColor;
     Dec(Right);
     Dec(Bottom);
-    Polygon([Point(Left + R, Top),
+    Polygon(
+     [Point(Left + R, Top),
       Point(Right - R, Top),
       Point(Right, Top + R),
       Point(Right, Bottom - R),
