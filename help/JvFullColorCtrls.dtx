@@ -3,292 +3,922 @@
 ----------------------------------------------------------------------------------------------------
 @@JvFullColorCtrls.pas
 Summary
-  Contains the TJvFullColorPanel, TJvFullColorCircle, TJvFullColorTrackBar, TJvFullColorLabel,
-  TJvFullColorGroup, TJvFullColorAxisCombo, TJvFullColorSpaceCombo components
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvFullColorPanel, TJvFullColorCircle, TJvFullColorTrackBar, TJvFullColorLabel,
 Author
   Florent Ouchet
+Description
+    TJvFullColorGroup, TJvFullColorAxisCombo, TJvFullColorSpaceCombo components
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@AxisConfigToString
-<TITLE AxisConfigToString function>
+@@TJvShapePosition.spLeft
+The shape is located at the left of the text.
+
+----------------------------------------------------------------------------------------------------
+@@TJvShapePosition.spRight
+The shape is located at the right of the text.
+
+----------------------------------------------------------------------------------------------------
+@@TJvShapePosition.spBottom
+The shape is located below the text.
+
+----------------------------------------------------------------------------------------------------
+@@TJvShapePosition.spTop
+The shape is located above the text.
+
+----------------------------------------------------------------------------------------------------
+@@TJvKeyCode.kcDown
+Move the cursor one pixel down.
+
+----------------------------------------------------------------------------------------------------
+@@TJvKeyCode.kcLeft
+Move the cursor one pixel left.
+
+----------------------------------------------------------------------------------------------------
+@@TJvKeyCode.kcRight
+Move the cursor one pixel right.
+
+----------------------------------------------------------------------------------------------------
+@@TJvKeyCode.kcUp
+Move the cursor one pixel up.
+
+----------------------------------------------------------------------------------------------------
+@@TJvShapePosition
+<TITLE TJvShapePosition type>
 Summary
-  Converts an axis config to a string given a colorspace.
+  Position of the shape around the text.
 Description
-  if ItemFormat is afShort, the format of the result string is 'XYZ' if ItemFormat is afIndent, the
-  format of the result string is 'acXYZ' if ItemFormat is afShort and the Color space is RGB, the
-  format of the result string is 'X = Red ; Y = Green ; Z = Blue'
+  This type is used by the TJvFullColorLabel component to set the position of the shape around the
+  text.
+See Also
+  TJvFullColorLabel.ShapePosition
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorTrackBar.ValueYAuto
+Summary
+  Adjust the ValueY property to the color space default value.
+  
+Description
+  If this property is true, the ValueY property will be automaticly set to the color space default
+  value.
+See Also
+  TJvFullColorTrackBar.ValueY, TJvFullColorTrackBar.ValueXAuto
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorTrackBar.ValueY
+Summary
+  Default value for the Y Axis.
+Description
+  This property sets the default value of the Y-axis (specified by the AxisConfig property) when
+  rendering the bar. This property is only used when FullColorDrawing is false and ValueYAuto is
+  false.
+See Also
+  TJvFullColorTrackBar.FullColorDrawing, TJvFullColorTrackBar.ValueX,
+  TJvFullColorTrackBar.ValueYAuto, TJvFullColorComponent.AxisConfig
+
+----------------------------------------------------------------------------------------------------
+@@TJvKeyCode
+<TITLE TJvKeyCode type>
+Summary
+  Type used internaly to code the key direction.
+Description
+  You do not need to use this type.
+  It is used internaly to code a key to a direction.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorTrackBar.ValueXAuto
+Summary
+  Adjust the ValueX property to the color space default value.
+Description
+  If this property is true, the ValueX property will be automaticly set to the color space default
+  value.
+See Also
+  TJvFullColorTrackBar.ValueX, TJvFullColorTrackBar.ValueYAuto
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorTrackBar.ValueX
+Summary
+  Default value for the X Axis.
+Description
+  This property sets the default value of the X-axis (specified by the AxisConfig property) when
+  rendering the bar. This property is only used when FullColorDrawing is false and ValueXAuto is
+  false.
+See Also
+  TJvFullColorTrackBar.FullColorDrawing, TJvFullColorTrackBar.ValueY,
+  TJvFullColorTrackBar.ValueXAuto, TJvFullColorComponent.AxisConfig
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorTrackBar.SetLink
+Summary
+  Set the link to an other component.
+Description
+  This function changes the component linked to the trackbar.
 Parameters
-  AxisConfig  - Axis config
-  ItemFormat  - Specify the format used to convert to string (short, long or with axis names)
-  AColorSpace - Color space used to get axis names (used only if ItemFormat is afComplete).
+  AComponent - New component to be linked.
+See Also
+  TJvFullColorTrackBar.FreeLink, TJvFullColorTrackBar.Linked, TJvFullColorTrackBar.LinkerName,
+  TJvFullColorPanel, TJvFullColorCircle
 
 ----------------------------------------------------------------------------------------------------
-@@ColorSpaceToString
-<TITLE ColorSpaceToString function>
+@@TJvFullColorTrackBar.Orientation
 Summary
-  Get a string describing the color space.
+  Specify the orientation of the bar.
 Description
-  if ItemFormat is cfName then the result is the Color space description (ie: 'True Color'). if
-  ItemFormat is cfShort then the result is the Color space short name (ie: 'RGB'). if ItemFormat is
-  cfBoth the result is 'description (short name)'.
-Parameters
-  AColorSpace - Color space used
-  ItemFormat  - Format of the output
+  This property changes the orientation of the bar :
+   - trHorizontal : the bar orientation will be horizontal.
+   - trVertical : the bar orientation will be vertical.
+See Also
+  TJvFullColorTrackBar.ColorOrientation
 
 ----------------------------------------------------------------------------------------------------
-@@EJvFullColorError
+@@TJvFullColorTrackBar.LinkerName
 Summary
-  Exception raised when a color cannot be converted or when components cannot be linked.
+  Returns the name of the linked component.
 Description
-  This exception is raised if the next cases: - There is no registered color space to handle this
-  color. - The color is not valid in the current color space. - The color component
-  (TJvFullColorTrackBar) is already linked to another instance of TJvFullColorPanel or
-  TJvFullColorCircle class.
-
-----------------------------------------------------------------------------------------------------
-@@EJvFullColorListError
-Summary
-  Exception raised on TJvFullColorList errors
-Description
-  This exception is raised if the item index is out of the range 0..Count-1
-
-----------------------------------------------------------------------------------------------------
-@@GetIndexAxis
-<TITLE GetIndexAxis function>
-Summary
-  Returns the axis index for the specified axis configuration
-Description
-  According to the specified axis configuration, the input axis index is translated to the
-  corresponding axis index.
-
-  if axis configuration is acYXZ and axis index is axIndex0, the result will be axIndex1 For more help,
-  see the TabAxisConfigs array in JvFullColorCtrls.pas
-Parameters
-  AxisConfig - Identifier of the axis configuration
-  AxisID     - Axis index to be converted
+  This function returns the name of the linked component.
 Return value
-  The converted value of the Axis Index
+  The name of the linked component.
+See Also
+  TJvFullColorTrackBar.FreeLink, TJvFullColorTrackBar.Linked, TJvFullColorTrackBar.SetLink,
+  TJvFullColorPanel, TJvFullColorCircle
 
 ----------------------------------------------------------------------------------------------------
-@@GetIndexAxisX
-<TITLE GetIndexAxisX function>
+@@TJvFullColorTrackBar.Linked
 Summary
-  Returns the X axis index for the specified axis configuration
+  Returns if the trackbar is linked to an other component.
 Description
-  According to the specified axis configuration, the X axis index is returned.
-
-  IE: if the axis configuration is acYXZ, the result will be axIndex1 (standing for Y).
-Parameters
-  AxisConfig - Identifier of the axis configuration
+  This function returns true if the trackbar is linked to an other full color component
+  (TJvFullColorPanel or TJvFullColorCircle), false otherwise.
 Return value
-  The converted value of the Axis Index
+  Returns if the trackbar is linked to an other component.
+See Also
+  TJvFullColorTrackBar.FreeLink, TJvFullColorTrackBar.LinkerName, TJvFullColorTrackBar.SetLink,
+  TJvFullColorPanel, TJvFullColorCircle
 
 ----------------------------------------------------------------------------------------------------
-@@GetIndexAxisY
-<TITLE GetIndexAxisY function>
+@@TJvFullColorTrackBar.FullColorDrawing
 Summary
-  Returns the Y axis index for the specified axis configuration
+  Change the color display.
 Description
-  According to the specified axis configuration, the Y axis index is returned.
-
-  IE: if the axis configuration is acYXZ, the result will be axIndex0 (standing for X).
-Parameters
-  AxisConfig - Identifier of the axis configuration
-Return value
-  The converted value of the Axis Index
+  This property enable or not the values of the others axes during the rendering. IE: if this
+  property is true, each color will get the current value of others axes (in the FullColor property);
+  if it is false each color will get the values specified by the ValueX and ValueY properties.
+See Also
+  TJvFullColorTrackBar.ValueX, TJvFullColorTrackBar.ValueY, TJvFullColorComponent.FullColor,
+  TJvColorSpace.AxisDefault
 
 ----------------------------------------------------------------------------------------------------
-@@GetIndexAxisZ
-<TITLE GetIndexAxisZ function>
+@@TJvFullColorTrackBar.FreeLink
 Summary
-  Returns the Z axis index for the specified axis configuration
+  Remove the link between the TJvFullColorTrackBar and an other control.
 Description
-  According to the specified axis configuration, the Z axis index is returned.
-
-  IE: if the axis configuration is acYXZ, the result will be axIndex2 (standing for Z).
-Parameters
-  AxisConfig - Identifier of the axis configuration
-Return value
-  The converted value of the Axis Index
+  This function removes the link between the TJvFullColorTrackBar and an other FullColor component
+  (TJvFullColorPanel or TJvFullColorCircle).
+See Also
+  TJvFullColorTrackBar.Linked, TJvFullColorTrackBar.LinkerName, TJvFullColorTrackBar.SetLink,
+  TJvFullColorPanel, TJvFullColorCircle
 
 ----------------------------------------------------------------------------------------------------
-@@PJvFullColorArray
-<TITLE PJvFullColorArray type>
-<COMBINE TJvFullColorArray>
-
-----------------------------------------------------------------------------------------------------
-@@TJvArrowPosition
-<TITLE TJvArrowPosition type>
+@@TJvFullColorTrackBar.ColorOrientation
 Summary
-  Place the arrow before or after the trackbar
+  Orientation of the color space axis.
 Description
-  If the TJvFullColorTrackbar orientation is horizontal, using apNormal will place the arrow at the top
-  of the trackbar, using apOpposite will place the arrow at the bottom of the trackbar. If the
-  TJvFullColorTrackbar orientation is vertical, using apNormal will place the arrow at the left of the
-  trackbar, using apOpposite will place the arrow at the right of the trackbar.
+  This property changes the orientation of the color space axis. Its effect depends on the
+  Orientation property.
+  
+  If the Orientation property is trHorizontal :
+  
+      * ArrowPosition = coNormal : the lower value of the axis is located at the left side of the
+  control, the higher value of the axis is located at the right side of the control.
+      * ArrowPosition = coOpposite : the lower value of the axis is located at the right side of the
+  control, the higher value of the axis is located at the left side of the control.
+  
+  If the Orientation property is trVertical :
+  
+      * ArrowPosition = coNormal : the lower value of the axis is located at the top side of the
+  control, the higher value of the axis is located at the bottom side of the control.
+      * ArrowPosition = coOpposite : the lower value of the axis is located at the bottom side of the
+  control, the higher value of the axis is located at the top side of the control.
+See Also
+  TJvFullColorTrackBar.Orientation, TJvFullComponent.AxisConfig
 
 ----------------------------------------------------------------------------------------------------
-@@TJvArrowPosition.apNormal
-  Place the arrow at the left of the trackbar if the orientation is vertical or at its top if the
-  orientation is horizontal.
-
-----------------------------------------------------------------------------------------------------
-@@TJvArrowPosition.apOpposite
-  Place the arrow at the right of the trackbar if the orientation is vertical or at its bottom if the
-  orientation is horizontal.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCursorPoints
-<TITLE TJvCursorPoints type>
+@@TJvFullColorTrackBar.ArrowWidth
 Summary
-  Data type storing the positions of the 3 points for the arrow triangle.
+  Width of the arrow.
 Description
-  Do not use directly, used inside the TJvFullColorTrackBar class.
+  This property changes the width (in pixels) of the arrow.
+See Also
+  TJvFullColorTrackBar.ArrowColor, TJvFullColorTrackBar.ArrowPosition
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFormatHintEvent
-<TITLE TJvFormatHintEvent type>
-<COMBINE TJvFullColorGroup.OnFormatHint>
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorArray
-<TITLE TJvFullColorArray type>
+@@TJvFullColorTrackBar.ArrowColor
 Summary
-  An array of TJvFullColor
+  Color of the arrow.
 Description
-  Do not use directly, used inside TJvFullColorList.
+  This property changes the color used to display the arrow pointing the selected color.
+See Also
+  TJvFullColorTrackBar.ArrowPosition, TJvFullColorTrackBar.ArrowWidth
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFullColorAxisCombo
-<TITLEIMG TJvFullColorAxisCombo>
+@@TJvFullColorTrackBar.ArrowPosition
+Summary
+  Position of the arrow in the control.
+Description
+  This property changes the position of the arrow in the control. Its effect depends on the
+  Orientation property.
+  
+  If the Orientation property is trHorizontal :
+   - ArrowPosition = coNormal places the arrow above the bar.
+   - ArrowPosition = coOpposite places the arrow below the bar.
+  
+  If the Orientation property is trVertical :
+   - ArrowPosition = coNormal places the arrow at the left side of the bar.
+   - ArrowPosition = coOpposite places the arrow at the right side of the bar.
+See Also
+  TJvFullColorTrackBar.Orientation
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorSpaceFormat.cfBoth
+Both the color space name and shotname are used to set the item name.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorSpaceFormatEvent
+<TITLE TJvFullColorSpaceFormatEvent type> <COMBINE TJvFullColorSpaceCombo.OnFormatItem>
+Description
+  Type of the TJvFullColorSpaceComboBox.OnFormatItem event.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorSpaceFormat.cfName
+The item only contains the color space name.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorSpaceFormat.cfShortName
+The item only contains the color space shortname.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorTrackBar
+<TITLEIMG TJvFullColorTrackBar>
 JVCLInfo
   GROUP=JVCL.??
   FLAG=Component
 Summary
-  Combobox filled with the 6 axis configurations.
+  Control displaying one axis of a color space.
 Description
-  This component is a combobox filled with the 6 axis configurations. This is an usefull component to
-  be used with TJvFullColorPanel, TJvFullColorCircle and TJvFullColorTrackbar component.
+  This control mimics the behaviour and the functionality of the trackbar displayed in the "Choose a
+  color..." standard-dialog box.
+  It is configurable :
+  
+      * the property AxisConfig changes the configuration of axes used to display the panel.
+      * the properties ArrowPosition, ArrowWidth and ArrowColor control the arrow appearance.
+      * the property ColorOrientation can change the panel orientation.
+  
+See Also
+  TJvFullColorComponent.AxisConfig, TJvFullColorTrackBar.ArrowPosition,
+  TJvFullColorTrackBar.ArrowWidth, TJvFullColorTrackBar.ArrowColor,
+  TJvFullColorTrackBar.ColorOrientation
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFullColorAxisCombo.ColorID
+@@TJvFullColorSpaceFormat
+<TITLE TJvFullColorSpaceFormat type>
 Summary
-  Color space ID used to format the item.
+  Format of an item in a TJvFullColorSpaceCombo.
 Description
-  This color space ID is used to format the item string if ItemFormat is afComplete If ID is csRGB, the
-  item acXYZ will be formated as '[X] Red ; [Y] Green ; [Z] Blue'
+  Type of the ItemFormat property of the TJvFullColorSpaceCombo component. This property controls the
+  format of an item added to the list.
+See Also
+  TJvFullColorSpaceCombo.ItemFormat, TJvColorSpace.Name, TJvColorSpace.ShortName
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFullColorAxisCombo.ItemFormat
+@@TJvFullColorSpaceCombo.SelectedSpace
 Summary
-  Method used to format the item.
+  Selected color space.
 Description
-  Specifies the format used to fill items in the combobox.
-
-  If the OnFormatItem event handler exists, the item receive the returned string otherwise the control
-  uses default formatting techniques : The axis configuration is acXYZ If ItemFormat is afShort, the
-  item string will be 'XYZ' If ItemFormat is afIndent, the item string will be 'acXYZ' If ItemFormat is
-  afComplete, the item string will be '[X] xxx ; [Y] yyy ; [Z] zzz' where xxx, yyy and zzz are the
-  color space axis names.
+  This property gets and sets the selected color space.
+See Also
+  TJvFullColorSpaceCombo.ColorSpaceID
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFullColorAxisCombo.OnFormatItem
+@@TJvFullColorSpaceCombo.OnFormatItem
 Summary
-  Write here a summary (1 line)
+  Event triggered when an item need to be formatted.
 Description
-  Write here a description
+  The TJvFullColorSpaceCombo triggers this event when the list is filled (in the MakeList procedure),
+  this event overrides the settings of the ItemFormat property.
 Parameters
-  Sender      - Description for this parameter
-  AAxisConfig - Description for this parameter
-  ACaption    - Description for this parameter
+  Sender      - The TJvFullColorAxisCombo instance which is asking for a format event.
+  AColorSpace - Color space corresponding to the item.
+  ACaption    - (out) Caption that will be displayed for this item.
+See Also
+  TJvFullColorSpaceCombo.MakeList, TJvFullColorSpaceCombo.ItemFormat
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorSpaceCombo.MakeList
+Summary
+  Refill the list of color spaces.
+Description
+  This procedure refills the list of color spaces displayed in the drop down list. The ItemFormat
+  property and the OnFormatItem event control the format of each item.
+See Also
+  TJvFullColorSpaceCombo.ItemFormat, TJvFullColorSpaceCombo.OnFormatItem
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorSpaceCombo.ItemFormat
+Summary
+  Format used to display the caption of an item.
+Description
+  This property changes the way to format the text displayed in the drop down list and in the edit
+  control.
+  The OnFormatItem event overrides this format and allows the user to custom the items' text.
+See Also
+  TJvFullColorSpaceCombo.OnFormatItem, TJvFullColorSpaceFormat
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorSpaceCombo.ColorSpaceID
+Summary
+  Identifier of the selected color space.
+Description
+  This property gets and sets the current identifier of the selected color space.
+See Also
+  TJvFullColorSpaceCombo.SelectedSpace
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorSpaceCombo
+<TITLEIMG TJvFullColorSpaceCombo>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  ComboBox filled with all available color spaces.
+Description
+  This control is the standard combobox automaticly filled with all registered color spaces.
+See Also
+  TJvFullColorSpaceCombo.ColorSpaceID, TJvFullColorSpaceCombo.SelectedSpace
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorSpaceCombo.AllowVariable
+Summary
+  Specify if variable color spaces are added to the list.
+Description
+  This property specify if variable color spaces (like predefined color space) are added to the list.
+See Also
+  TJvDEFColorSpace
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorPanel.ReverseAxisY
+Summary
+  Orientation of the vertical axis.
+Description
+  This property changes the orientation of the vertical axis of the panel. The vertical axis is
+  linked to a color space axis according to the AxisConfig property.
+  When ReverseAxisY is false, the lowest value of the axis is located at the top side of the control,
+  the highest is located at the bottom side.
+  When ReverseAxisY is false, the lowest value of the axis is located at the bottom side of the
+  control, the highest is located at the top side.
+  
+See Also
+  TJvFullColorComponent.AxisConfig, TJvFullColorPanel.ReverseAxisX
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorPanel.ReverseAxisX
+Summary
+  Orientation of the horizontal axis.
+Description
+  This property changes the orientation of the horizontal axis of the panel. The horizontal axis is
+  linked to a color space axis according to the AxisConfig property.
+  When ReverseAxisX is false, the lowest value of the axis is located at the left side of the
+  control, the highest is located at the right side.
+  When ReverseAxisX is false, the lowest value of the axis is located at the right side of the
+  control, the highest is located at the left side.
+  
+See Also
+  TJvFullColorComponent.AxisConfig, TJvFullColorPanel.ReverseAxisY.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorPanel.CrossSize
+Summary
+  Size of the cross.
+Description
+  This property changes the size in pixel of the cross.
+See Also
+  TJvFullColorPanel.CrossStyle, TJvFullColorPanel.CrossCenter.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorPanel.ColorTrackBar
+Summary
+  TJvFullColorTrackbar linked to the component.
+Description
+  This property sets the TJvFullColorTrackbar used to display the third color axis of the color space.
+  When changing the FullColor property of either the panel or the trackbar, the changes (of color
+  and/or color space) are applied automaticly to the other control.
+See Also
+  TJvFullColorComponent.AxisConfig, TJvFullColorComponent.FullColor, TJvFullColorTrackbar
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorPanel.CrossStyle
+Summary
+  Pen used to render the cross.
+Description
+  This property changes the pen used to render the cross on the panel display. All properties of TPen
+  (Width, Color, Mode, Style) are applied.
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFullColorAxisCombo.Selected
+@@TJvFullColorPanel.CrossCenter
 Summary
-  Get the selected axis configuration
+  Size of the hole at the center of the cross.
 Description
-  Return the selected axis configuration.
+  This property is the size of the hole in pixels at the center of the cross.
+See Also
+  TJvFullColorPanel.CrossSize, TJvFullColorPanel.CrossStyle
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFullColorAxisConfig
-<TITLE TJvFullColorAxisConfig type>
+@@TJvFullColorPanel
+<TITLEIMG TJvFullColorPanel>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
 Summary
-  Axis configuration used by TJvFullColorPanel, TJvFullColorCircle and TJvFullColorTrackbars controls
+  Control displaying 2 axes of a color space.
 Description
-  The axis configuration changes the fullcolor axis assigned to a graphical axis of a fullcolor
-  component.
+  This control mimics the behaviour and the functionality of the plane displayed in the "Choose a
+  color..." standard-dialog box.
+  It is highly configurable :
+   - the property AxisConfig changes the configuration of axes used to display the panel.
+   - the properties CrossStyle, CrossSize and CrossCircle change the Cross appearance.
+   - the properties ReverseAxisX and ReverseAxisY can change the panel orientation.
+  
+See Also
+  TJvFullColorComponent.AxisConfig, TJvFullColorPanel.CrossStyle, TJvFullColorPanel.CrossSize,
+  TJvFullColorPanel.CrossCircle, TJvFullColorPanel.ReverseAxisX, TJvFullColorPanel.ReverseAxisY.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFullColorAxisConfig.acXYZ
-  TJvFullColorPanel will display first axis (IE: Red if colorspace is csRGB) as horizontal axis, second
-  axis (IE: Green if colorspace is csRGB) as vertical axis. TJvFullColorCircle will display first axis
-  as radius axis, second axis as rotation axis. TJvFullColorTrackbar will display third axis (IE: Blue
-  if colorspace is csRGB)
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorAxisConfig.acXZY
-  TJvFullColorPanel will display first axis (IE: Red if colorspace is csRGB) as horizontal axis, third
-  axis (IE: Blue if colorspace is csRGB) as vertical axis. TJvFullColorCircle will display first axis
-  as radius axis, third axis as rotation axis. TJvFullColorTrackbar will display second axis (IE: Green
-  if colorspace is csRGB)
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorAxisConfig.acYXZ
-  TJvFullColorPanel will display second axis (IE: Green if colorspace is csRGB) as horizontal axis,
-  first axis (IE: Red if colorspace is csRGB) as vertical axis. TJvFullColorCircle will display second
-  axis as radius axis, first axis as rotation axis. TJvFullColorTrackbar will display third axis (IE:
-  Blue if colorspace is csRGB)
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorAxisConfig.acYZX
-  TJvFullColorPanel will display third axis (IE: Blue if colorspace is csRGB) as horizontal axis, first
-  axis (IE: Red if colorspace is csRGB) as vertical axis. TJvFullColorCircle will display third axis as
-  radius axis, first axis as rotation axis. TJvFullColorTrackbar will display second axis (IE: Green if
-  colorspace is csRGB)
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorAxisConfig.acZXY
-  TJvFullColorPanel will display second axis (IE: Green if colorspace is csRGB) as horizontal axis,
-  third axis (IE: Blue if colorspace is csRGB) as vertical axis. TJvFullColorCircle will display second
-  axis as radius axis, third axis as rotation axis. TJvFullColorTrackbar will display first axis (IE:
-  Red if colorspace is csRGB)
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorAxisConfig.acZYX
-  TJvFullColorPanel will display third axis (IE: Blue if colorspace is csRGB) as horizontal axis,
-  second axis (IE: Green if colorspace is csRGB) as vertical axis. TJvFullColorCircle will display
-  third axis as radius axis, second axis as rotation axis. TJvFullColorTrackbar will display first axis
-  (IE: Red if colorspace is csRGB)
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorAxisConfigFormat
-<TITLE TJvFullColorAxisConfigFormat type>
+@@TJvFullColorOrientation
+<TITLE TJvFullColorOrientation type>
 Summary
-  Format used to format items displayed in TJvFullColorAxisCombo
+  Orientation of the axis.
 Description
-  This enumeration is used to select the format of items displayed.
+  Orientation of the trackbar.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorOrientation.coNormal
+The axis is placed at its normal orientation : the minimum of the axis is placed at the left (if the bar is horizontal or at the top if the bar is vertical) and the maximum is placed at the right (or at the bottom).
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorOrientation.coInverse
+The bar is inversed: the minimum of the axis is placed at the right (if the bar is horizontal or at
+the bottom if the bar is vertical) and the maximum is placed at the left (or the top).
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorMouseEvent
+<TITLE TJvFullColorMouseEvent type> <COMBINE TJvFullColorComponent.OnMouseColor>
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorListOperation.foAllChanged
+All items of the list may be changed.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorListOperation.foDeleted
+One item is deleted from the list.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorListOperation.foAdded
+An item was added in the list.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorListOperation.foChanged
+One item was changed in the list.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorListEvent
+<TITLE TJvFullColorListEvent type> <COMBINE TJvFullColorList.OnChange>
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorListOperation
+<TITLE TJvFullColorListOperation type> <COMBINE TJvFullColorList.OnChange>
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorList.UpdateCount
+Summary
+  Number of updates being made on the list.
+Description
+  UpdateCount prevents the OnChange event from being called when it is not 0. You can increment
+  UpdateCount by calling BeginUpdate and decrement it by calling EndUpdate.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorList.Remove
+Summary
+  Remove a color of the list.
+Description
+  This function delete the first match of the AColor parameter in the list. If one color is found, it is deleted and an OnChange event is sent with Operation = ofDeleted, the result of this function is
+  he old index of this color in the list. If the color is not found in the list, the return value is
+  -1 and the list remains unchanged. This remove only the first match of the color in the list.
+Parameters
+  AColor - Color to remove.
+Return value
+  Old index of this color in the list.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorList.OnChange
+Summary
+  Event triggered when the list is changed.
+Description
+  Operation gives informations about the operation made on the item. If Operation is foAllChanged,
+  all items are changed in the list, Index is not usefull. If Operation is foDeleted, an item was
+  deleted,
+  Index is the old index of this item in the list. If Operation is foAdded, an item was added, Index
+  is the index of this item in the list. If Operation is foChanged, an item was changed, Index is the
+  index of this item in the list.
+  
+  No event is triggered if UpdateCount is not 0.
+Parameters
+  Sender    - List that send the event.
+  Index     - Index of the changed item.
+  Operation - Operation that changed this item.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorList.List
+Summary
+  Address of the list in memory.
+Description
+  Retrieve the list location in the memory. This pointer is a dynamicly allocated according to the
+  Capacity property. This pointer is provided for fast memory access and copy of memory, no event is
+  triggered when an item is changed in this array. Only apacity items are allocated (from 0 to
+  Capacity-1), but only Count items are valid (from 0 to Count-1).
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircleStyle
+<TITLE TJvFullColorCircleStyle type>
+Summary
+  Enumeration for TJvFullColorCircleStyles
+Description
+  Enumeration for TJvFullColorCircleStyles
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircleStyle.csShowLines
+A line is drawn between the center of the circle and the center of each cross.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircleStyle.csShowCommon
+Show only the common cursor. When moving this cursor, the Red, Green and Blue cursor get the same changes.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircleStyle.csShowRed
+When csShowCommon is not included, activate the Red cursor.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircle.RedTrackBar
+Summary
+  TJvFullColorTrackbar associated with the red color variations
+Description
+  The TJvFullColorTrackbar linked to this property will display the third axis of the RedColor.
+  Changing the FullColor property of the linked trackbar will change the RedColor property of the
+  circle and changing the RedColor property of the circle will change the FullColor of the trackbar.
+  
+  Warning: a TJvFullColorTrackbar instance can be linked only to one other component.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorList.Items
+Summary
+  Retreive items of the list.
+Description
+  This is the default property for this class. It retreives or set the item at the specified index. If
+  Index is negative or greater or equal (> =) than Count, an exception is raised. When an item is
+  changed, an OnChange event is triggered.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircle.PositionToFullColor
+Summary
+  Convert a graphic position to a color
+Description
+  This function convert a graphical position to a full color. This convertion uses InvertRadius,
+  InvertRotation and AxisConfig properties to give the color at the position (x,y) on the control.
+Parameters
+  APoint - graphic position
+Return value
+  Returned color
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircle.OnGreenColorChange
+Summary
+  Event sent when the GreenColor property is changed by code or by the user.
+Description
+  This event is sent by the control after the GreenColor property is changed.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircle.OnBlueColorChange
+Summary
+  Event sent when the BlueColor property is changed by code or by the user
+Description
+  This event is sent by the control after the BlueColor property is changed.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircle.OnColorSpaceChange
+Summary
+  Event sent when the colorspace is changed.
+Description
+  When the colorspace is changed by code (after calling the ConvertToID function or changing the
+  colorspace of BlueColor, GreenColor or RedColor properties), the BlueColor, RedColor and GreenColor
+  properties are converted to the new colorspace, then this event is sent.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircle.InvertRadius
+Summary
+  Graphical inversion of the radius
+Description
+  Setting this property to True will place the maximum of the radius axis at the center of the circle,
+  setting this property to false will place the minimum of the radius axis at the center of the
+  circle.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircle.GreenColor
+Summary
+  Color associated to green variations.
+Description
+  This color is associated with the green cross (this color may be modified by the CrossGreenColor).
+  The color space is always the current color space of the control. Changing the color value will
+  change the green cross position, changing the color space will change the control color space.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorList.Insert
+Summary
+  Insert an item in the list.
+Description
+  Insert a color at the given position. Lower indexes are not changed. Higher indexes are shift left
+  to make a free space to place the new item. After inserting the item, an OnChange event is
+  triggered with Operation = foAdded.
+Parameters
+  Index  - Index to insert the item.
+  AColor - Color to insert at this position.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircle.ConvertToID
+Summary
+  Convert the control to the specified color space
+Description
+  Calling this function changes the control color space (the graphic is repainted to the new color
+  space), BlueColor, GreenColor, RedColor, CommonColor properties are converted to the new color
+  space.
+  Linked components (BlueTrackbar, RedTrackbar, GreenTrackbar, CommonTrackbar are converted too.
+Parameters
+  NewFullColor - Only the highest byte (which contains the colorspace) of this parameter is used.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircle.CrossBlueColor
+Summary
+  Color used to display the blue cross
+Description
+  This is the color used to draw the blue cross (this cross is only visible if csShowBlue is included
+  in Styles).
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircle.CrossGreenColor
+Summary
+  Color used to display the green cross
+Description
+  This is the color used to draw the green cross (this cross is only visible if csShowGreen is
+  included in Styles).
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircle.CrossCenter
+Summary
+  Number of pixels in the center of the cross
+Description
+  This property sets the size in pixel between the center of the cross and the start of the dash.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorList.IndexOf
+Summary
+  Index of an item in the list
+Description
+  This function search for a color in the list and return the first match found. If the color is not
+  in
+  the list, -1 is returned.
+Parameters
+  AColor - Color to search
+Return value
+  Index of the first match in the list.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorList.Exchange
+Summary
+  Exchange 2 items of the list.
+Description
+  This function exchange two items of the list. After the exchange, two OnChange event are triggered
+  (one per index) with Operation = ofChanged.
+Parameters
+  Index1 - first index.
+  Index2 - second index.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorList.EndUpdate
+Summary
+  End an update of items.
+Description
+  This function decrement the UpdateCount property. The if UpdateCount is 0, an OnChange event is
+  triggered with Operation set to foAllChanged.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorList.DeleteRedundant
+Summary
+  Pack the list by deleting redundant items.
+Description
+  This function delete redundant items (present more than one time in the list). The first case if
+  kept, following matches are deleted.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorList.Delete
+Summary
+  Delete an item from the list
+Description
+  This function delete an item from the list. After removing this item, items that had a greater
+  Index are shifted to the right, the list is always packed. After deleting the item, the OnChange
+  event is triggered with Operation = ofDelete.
+Parameters
+  Index - Index of the item to delete.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorList.Count
+Summary
+  Number of items in the list.
+Description
+  This property is the number of valid items in the list. All items are placed at the beginning of
+  the list (from 0 to Count-1), items between Count and Capacity-1 are allocated but not valid.
+  Changing the Count property delete the last items from the list.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircle.BlueColor
+Summary
+  Color associated to blue variations.
+Description
+  This color is associated with the blue cross (this color may be modified by the CrossBlueColor).
+  The color space is always the current color space of the control. Changing the color value will
+  change the blue cross position, changing the color space will change the control color space.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorList.Clear
+Summary
+  Clear all items of the list.
+Description
+  This function delete all items of the list. After the call of Clear, Capacity and Count are reset
+  to 0. After clearing the list, the OnChange event is triggered with Operation = ofAllChanged.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorList.Capacity
+Summary
+  Number of items allocated.
+Description
+  The Capacity property is the number of items allocated to store the list's content. Capacity is
+  always greater or equal (> =) than the Count property. When there is not enough space to store new
+  items, the Capacity property is incremented by the AllocBy property.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorList.BeginUpdate
+Summary
+  Begin an update of items.
+Description
+  This function increment the UpdateCount property. While UpdateCount is not 0, the event OnChange is
+  not triggered when the list is changed. This result in a fast way to change the content of the
+  current list.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorList.Assign
+Summary
+  Copy from the content of a source list
+Description
+  This function assign the content of the current instance from the list given as parameter. The
+  source list must be a descendant of TJvFullColorList, if this parameter is not a TJvFullColor list,
+  an exception is raised. The current list is cleared and filled with items from the source list.
+Parameters
+  Source - Source for the copy
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorList.AllocBy
+Summary
+  Granularity of allocation
+Description
+  When there is no free space in the list (Count = Capacity), this is the number of new items
+  allocated.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorList
+Summary
+  List of TJvFullColor
+Description
+  This list of TJvFullColor is used by TJvFullColorGroup. It can store many items and is implemented
+  like TList.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorList.Add
+Summary
+  Add a new color.
+Description
+  This function adds a new item in the list. This color is added at the end of the list. The return
+  value is the index of this item in the list after being added (Count-1).
+Parameters
+  AColor - Color to add.
+Return value
+  Index of this new item in the list.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorLabel.ShapeWidth
+Summary
+  Width of the shape.
+Description
+  Width in pixel of the shape.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorLabel.Spacing
+Summary
+  Space between the shape and the text.
+Description
+  Space in pixels between the shape and the text. This space is vertical if ShapePosition is spTop or
+  spBottom, it is horizontal if ShapePosition is spLeft or spRight.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorLabel.ShapePosition
+Summary
+  Position of the shape.
+Description
+  Position of the shape around the text. The space between the text and the shape is given by the
+  Spacing property.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorLabel.ShapeHeight
+Summary
+  Height of the shape.
+Description
+  Height in pixels of the shape.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorLabel.Shape
+Summary
+  Geometric aspect of the shape.
+Description
+  This property set the shape aspect. Its size is set by ShapeWidth and ShapeHeight properties.
+  Additionnal properties RoundShapeHeight and RoundShapeWidth are used to set rounded edges sizes.
+  The position of the shape around the text is set by the ShapePosition property.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorLabel.RoundShapeWidth
+Summary
+  Width of rounded edges.
+Description
+  When shape is stRoundRect or stRoundSquare, this is the width of the rounded edge. In other shape,
+  RoundShapeHeight is not used.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorLabel.Pen
+Summary
+  Pen used to draw the shape's outline.
+Description
+  This pen is used to draw the line around the shape, dashes and dots are supported.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFullColorAxisConfigFormat.afShort
-  if axis configuration is acYXZ, the displayed item will be 'YXZ'
+if axis configuration is acYXZ, the displayed item will be 'YXZ'
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFullColorAxisConfigFormat.afIndent
-  if axis configuration is acYXZ, the displayed item will be 'acYXZ'
+if axis configuration is acYXZ, the displayed item will be 'acYXZ'
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFullColorAxisConfigFormat.afComplete
-  If colorspace is csRGB and axisconfig is acYXZ, the displayed item will be '[Y] = Red ; [X] = Green ;
-  [Z] = Blue'
+@@TJvFullColorCircleStyle.csShowGreen
+When csShowCommon is not included, activate the Green cursor.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircleStyle.csShowBlue
+When csShowCommon is not included, activate the Blue cursor.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircle.Styles
+Summary
+  Styles of the controls
+Description
+  This property set the behaviour of the TJvFullColorCircle control.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircle.RedColor
+Summary
+  Color associated to red variations.
+Description
+  This color is associated with the red cross (this color may be modified by the CrossRedColor). The
+  color space is always the current color space of the control. Changing the color value will change
+  the blue cross position, changing the color space will change the control color space.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircle.OnRedColorChange
+Summary
+  Event sent when the RedColor property is changed by code or by the user
+Description
+  This event is sent by the control after the RedColor property is changed.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFullColorAxisFormatEvent
-<TITLE TJvFullColorAxisFormatEvent type>
-<COMBINE TJvFullColorAxisCombo.OnFormatItem>
+<TITLE TJvFullColorAxisFormatEvent type> <COMBINE TJvFullColorAxisCombo.OnFormatItem>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFullColorCircle
@@ -305,88 +935,47 @@ Description
   Green, Red and Blue values. These variations can be used by RotateColor and RotateBitmap functions.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircle.BlueColor
-Summary
-  Color associated to blue variations.
-Description
-  This color is associated with the blue cross (this color may be modified by the CrossBlueColor). The
-  color space is always the current color space of the control. Changing the color value will change
-  the blue cross position, changing the color space will change the control color space.
+@@TJvFullColorAxisConfig.acYXZ
+TJvFullColorPanel will display second axis (IE: Green if colorspace is csRGB) as horizontal axis, first axis (IE: Red if colorspace is csRGB) as vertical axis. TJvFullColorCircle will display second axis as radius axis, first axis as rotation axis. TJvFullColorTrackbar will display third axis (IE:
+Blue if colorspace is csRGB)
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircle.BlueTrackBar
-Summary
-  TJvFullColorTrackbar associated with the blue color variations
-Description
-  The TJvFullColorTrackbar linked to this property will display the third axis of the BlueColor.
-  Changing the FullColor property of the linked trackbar will change the BlueColor property of the
-  circle and changing the BlueColor property of the circle will change the FullColor of the trackbar.
-
-  Warning: a TJvFullColorTrackbar instance can be linked only to one other component.
+@@TJvFullColorAxisConfig.acYZX
+TJvFullColorPanel will display third axis (IE: Blue if colorspace is csRGB) as horizontal axis, first axis (IE: Red if colorspace is csRGB) as vertical axis. TJvFullColorCircle will display third axis as radius axis, first axis as rotation axis. TJvFullColorTrackbar will display second axis (IE: Green if colorspace is csRGB)
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircle.CommonTrackBar
-Summary
-  TJvFullColorTrackbar associated with the common color variations
-Description
-  This property is only used if csShowCommon is set in the styles.
-
-  The TJvFullColorTrackbar linked to this property will display the third axis of the RedColor property
-  (which equals to BlueColor and GreenColor properties in this style). Changing the FullColor property
-  of the linked trackbar will change the BlueColor and RedColor and GreenColor properties of the circle
-  and changing the BlueColor property (or RedColor or GreenColor properties) of the circle will change
-  the FullColor of the trackbar.
-
-  Warning: a TJvFullColorTrackbar instance can be linked only to one other component.
+@@TJvFullColorAxisConfig.acZXY
+TJvFullColorPanel will display second axis (IE: Green if colorspace is csRGB) as horizontal axis, third axis (IE: Blue if colorspace is csRGB) as vertical axis. TJvFullColorCircle will display second axis as radius axis, third axis as rotation axis. TJvFullColorTrackbar will display first axis (IE:
+Red if colorspace is csRGB)
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircle.ConvertToID
-Summary
-  Convert the control to the specified color space
-Description
-  Calling this function changes the control color space (the graphic is repainted to the new color
-  space), BlueColor, GreenColor, RedColor, CommonColor properties are converted to the new color space.
-  Linked components (BlueTrackbar, RedTrackbar, GreenTrackbar, CommonTrackbar are converted too.
-Parameters
-  NewFullColor - Only the highest byte (which contains the colorspace) of this parameter is used.
+@@TJvFullColorAxisConfig.acZYX
+TJvFullColorPanel will display third axis (IE: Blue if colorspace is csRGB) as horizontal axis, second axis (IE: Green if colorspace is csRGB) as vertical axis. TJvFullColorCircle will display third axis as radius axis, second axis as rotation axis. TJvFullColorTrackbar will display first axis (IE: Red if colorspace is csRGB)
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircle.CrossBlueColor
+@@TJvFullColorCircle.LineWidth
 Summary
-  Color used to display the blue cross
+  Width of the line drawn between the center and a cross
 Description
-  This is the color used to draw the blue cross (this cross is only visible if csShowBlue is included
-  in Styles).
+  This property sets the with in pixel of the line between the center of the circle and the center of
+  a cross.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircle.CrossCenter
+@@TJvFullColorCircle.InvertRotation
 Summary
-  Number of pixels in the center of the cross
+  Graphical inversion of the rotation
 Description
-  This property sets the size in pixel between the center of the cross and the start of the dash.
+  Setting this property to True will decrement the rotation axis in the clockwise direction. Setting
+  this property to False will increment the rotation axis in the clockwise direction.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircle.CrossGreenColor
+@@TJvFullColorCircle.GreenTrackBar
 Summary
-  Color used to display the green cross
+  TJvFullColorTrackbar associated with the green color variations
 Description
-  This is the color used to draw the green cross (this cross is only visible if csShowGreen is included
-  in Styles).
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircle.CrossRedColor
-Summary
-  Color used to display the red cross
-Description
-  This is the color used to draw the red cross (this cross is only visible if csShowRed is included in
-  Styles).
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircle.CrossSize
-Summary
-  Size in pixel of a cross.
-Description
-  This property sets the size in pixel between the center of the cross and the end of the dash.
+  The TJvFullColorTrackbar linked to this property will display the third axis of the GreenColor.
+  Changing the FullColor property of the linked trackbar will change the GreenColor property of the
+  circle and changing the GreenColor property of the circle will change the FullColor of the trackbar.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFullColorCircle.CrossStyle
@@ -410,159 +999,295 @@ Return value
   Returned graphic position
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircle.GreenColor
+@@GetIndexAxisX
+<TITLE GetIndexAxisX function>
 Summary
-  Color associated to green variations.
+  Returns the X axis index for the specified axis configuration
 Description
-  This color is associated with the green cross (this color may be modified by the CrossGreenColor).
-  The color space is always the current color space of the control. Changing the color value will
-  change the green cross position, changing the color space will change the control color space.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircle.GreenTrackBar
-Summary
-  TJvFullColorTrackbar associated with the green color variations
-Description
-  The TJvFullColorTrackbar linked to this property will display the third axis of the GreenColor.
-  Changing the FullColor property of the linked trackbar will change the GreenColor property of the
-  circle and changing the GreenColor property of the circle will change the FullColor of the trackbar.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircle.InvertRadius
-Summary
-  Graphical inversion of the radius
-Description
-  Setting this property to True will place the maximum of the radius axis at the center of the circle,
-  setting this property to false will place the minimum of the radius axis at the center of the
-  circle.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircle.InvertRotation
-Summary
-  Graphical inversion of the rotation
-Description
-  Setting this property to True will decrement the rotation axis in the clockwise direction. Setting
-  this property to False will increment the rotation axis in the clockwise direction.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircle.LineWidth
-Summary
-  Width of the line drawn between the center and a cross
-Description
-  This property sets the with in pixel of the line between the center of the circle and the center of a
-  cross.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircle.OnBlueColorChange
-Summary
-  Event sent when the BlueColor property is changed by code or by the user
-Description
-  This event is sent by the control after the BlueColor property is changed.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircle.OnColorSpaceChange
-Summary
-  Event sent when the colorspace is changed.
-Description
-  When the colorspace is changed by code (after calling the ConvertToID function or changing the
-  colorspace of BlueColor, GreenColor or RedColor properties), the BlueColor, RedColor and GreenColor
-  properties are converted to the new colorspace, then this event is sent.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircle.OnGreenColorChange
-Summary
-  Event sent when the GreenColor property is changed by code or by the user.
-Description
-  This event is sent by the control after the GreenColor property is changed.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircle.OnRedColorChange
-Summary
-  Event sent when the RedColor property is changed by code or by the user
-Description
-  This event is sent by the control after the RedColor property is changed.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircle.PositionToFullColor
-Summary
-  Convert a graphic position to a color
-Description
-  This function convert a graphical position to a full color. This convertion uses InvertRadius,
-  InvertRotation and AxisConfig properties to give the color at the position (x,y) on the control.
+  According to the specified axis configuration, the X axis index is returned.
+  
+  IE: if the axis configuration is acYXZ, the result will be axIndex1 (standing for Y).
 Parameters
-  APoint - graphic position
+  AxisConfig - Identifier of the axis configuration
 Return value
-  Returned color
+  The converted value of the Axis Index
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircle.RedColor
+@@TJvFullColorCircle.CrossSize
 Summary
-  Color associated to red variations.
+  Size in pixel of a cross.
 Description
-  This color is associated with the red cross (this color may be modified by the CrossRedColor). The
-  color space is always the current color space of the control. Changing the color value will change
-  the blue cross position, changing the color space will change the control color space.
+  This property sets the size in pixel between the center of the cross and the end of the dash.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircle.RedTrackBar
+@@TJvFullColorCircle.CrossRedColor
 Summary
-  TJvFullColorTrackbar associated with the red color variations
+  Color used to display the red cross
 Description
-  The TJvFullColorTrackbar linked to this property will display the third axis of the RedColor.
-  Changing the FullColor property of the linked trackbar will change the RedColor property of the
-  circle and changing the RedColor property of the circle will change the FullColor of the trackbar.
+  This is the color used to draw the red cross (this cross is only visible if csShowRed is included in
+  Styles).
 
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorAxisCombo.OnFormatItem
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender      - Description for this parameter
+  AAxisConfig - Description for this parameter
+  ACaption    - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorAxisCombo.Selected
+Summary
+  Get the selected axis configuration
+Description
+  Return the selected axis configuration.
+
+----------------------------------------------------------------------------------------------------
+@@AxisConfigToString
+<TITLE AxisConfigToString function>
+Summary
+  Converts an axis config to a string given a colorspace.
+Description
+  if ItemFormat is afShort, the format of the result string is 'XYZ' if ItemFormat is afIndent, the
+  format of the result string is 'acXYZ' if ItemFormat is afShort and the Color space is RGB, the
+  format of the result string is 'X = Red ; Y = Green ; Z = Blue'
+Parameters
+  AxisConfig  - Axis config
+  ItemFormat  - Specify the format used to convert to string (short, long or with axis names)
+  AColorSpace - Color space used to get axis names (used only if ItemFormat is afComplete).
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircle.CommonTrackBar
+Summary
+  TJvFullColorTrackbar associated with the common color variations
+Description
+  This property is only used if csShowCommon is set in the styles.
+  
+  The TJvFullColorTrackbar linked to this property will display the third axis of the RedColor
+  property (which equals to BlueColor and GreenColor properties in this style). Changing the
+  FullColor property of the linked trackbar will change the BlueColor and RedColor and GreenColor
+  properties of the circle and changing the BlueColor property (or RedColor or GreenColor properties)
+  of the circle will change the FullColor of the trackbar.
+  
   Warning: a TJvFullColorTrackbar instance can be linked only to one other component.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircle.Styles
+@@TJvFullColorCircle.BlueTrackBar
 Summary
-  Styles of the controls
+  TJvFullColorTrackbar associated with the blue color variations
 Description
-  This property set the behaviour of the TJvFullColorCircle control.
+  The TJvFullColorTrackbar linked to this property will display the third axis of the BlueColor.
+  Changing the FullColor property of the linked trackbar will change the BlueColor property of the
+  circle and changing the BlueColor property of the circle will change the FullColor of the trackbar.
+  
+  Warning: a TJvFullColorTrackbar instance can be linked only to one other component.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircleStyle
-<TITLE TJvFullColorCircleStyle type>
+@@TJvFullColorArray
+<TITLE TJvFullColorArray type>
 Summary
-  Enumeration for TJvFullColorCircleStyles
+  An array of TJvFullColor
 Description
-  Enumeration for TJvFullColorCircleStyles
+  Do not use directly, used inside TJvFullColorList.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircleStyle.csShowLines
-  A line is drawn between the center of the circle and the center of each cross.
+@@TJvFullColorAxisCombo.ItemFormat
+Summary
+  Method used to format the item.
+Description
+  Specifies the format used to fill items in the combobox.
+  
+  If the OnFormatItem event handler exists, the item receive the returned string otherwise the
+  control uses default formatting techniques : The axis configuration is acXYZ If ItemFormat is
+  afShort, the item string will be 'XYZ' If ItemFormat is afIndent, the item string will be 'acXYZ'
+  If ItemFormat is afComplete, the item string will be '[X] xxx ; [Y] yyy ; [Z] zzz' where xxx, yyy
+  and zzz are the color space axis names.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircleStyle.csShowCommon
-  Show only the common cursor. When moving this cursor, the Red, Green and Blue cursor get the same
-  changes.
+@@TJvFullColorAxisConfigFormat.afComplete
+If colorspace is csRGB and axisconfig is acYXZ, the displayed item will be '[Y] = Red ; [X] = Green ; [Z] = Blue'
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircleStyle.csShowRed
-  When csShowCommon is not included, activate the Red cursor.
+@@TJvFullColorAxisCombo.ColorID
+Summary
+  Color space ID used to format the item.
+Description
+  This color space ID is used to format the item string if ItemFormat is afComplete If ID is csRGB,
+  the item acXYZ will be formated as '[X] Red ; [Y] Green ; [Z] Blue'
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircleStyle.csShowGreen
-  When csShowCommon is not included, activate the Green cursor.
+@@TJvCursorPoints
+<TITLE TJvCursorPoints type>
+Summary
+  Data type storing the positions of the 3 points for the arrow triangle.
+Description
+  Do not use directly, used inside the TJvFullColorTrackBar class.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircleStyle.csShowBlue
-  When csShowCommon is not included, activate the Blue cursor.
+@@TJvFullColorAxisConfigFormat
+<TITLE TJvFullColorAxisConfigFormat type>
+Summary
+  Format used to format items displayed in TJvFullColorAxisCombo
+Description
+  This enumeration is used to select the format of items displayed.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFormatHintEvent
+<TITLE TJvFormatHintEvent type> <COMBINE TJvFullColorGroup.OnFormatHint>
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorAxisConfig.acXYZ
+TJvFullColorPanel will display first axis (IE: Red if colorspace is csRGB) as horizontal axis, second axis (IE: Green if colorspace is csRGB) as vertical axis. TJvFullColorCircle will display first axis as radius axis, second axis as rotation axis. TJvFullColorTrackbar will display third axis (IE: Blue if colorspace is csRGB)
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorAxisConfig.acXZY
+TJvFullColorPanel will display first axis (IE: Red if colorspace is csRGB) as horizontal axis, third axis (IE: Blue if colorspace is csRGB) as vertical axis. TJvFullColorCircle will display first axis as radius axis, third axis as rotation axis. TJvFullColorTrackbar will display second axis (IE: Green if colorspace is csRGB)
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorAxisConfig
+<TITLE TJvFullColorAxisConfig type>
+Summary
+  Axis configuration used by TJvFullColorPanel, TJvFullColorCircle and TJvFullColorTrackbars controls
+Description
+  The axis configuration changes the fullcolor axis assigned to a graphical axis of a fullcolor
+  component.
+
+----------------------------------------------------------------------------------------------------
+@@TJvArrowPosition.apNormal
+Place the arrow at the left of the trackbar if the orientation is vertical or at its top if the orientation is horizontal.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorAxisCombo
+<TITLEIMG TJvFullColorAxisCombo>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Combobox filled with the 6 axis configurations.
+Description
+  This component is a combobox filled with the 6 axis configurations. This is an usefull component to
+  be used with TJvFullColorPanel, TJvFullColorCircle and TJvFullColorTrackbar component.
+
+----------------------------------------------------------------------------------------------------
+@@TJvArrowPosition.apOpposite
+Place the arrow at the right of the trackbar if the orientation is vertical or at its bottom if the orientation is horizontal.
+
+----------------------------------------------------------------------------------------------------
+@@TJvArrowPosition
+<TITLE TJvArrowPosition type>
+Summary
+  Place the arrow before or after the trackbar
+Description
+  If the TJvFullColorTrackbar orientation is horizontal, using apNormal will place the arrow at the
+  top of the trackbar, using apOpposite will place the arrow at the bottom of the trackbar. If the
+  TJvFullColorTrackbar orientation is vertical, using apNormal will place the arrow at the left of
+  the trackbar, using apOpposite will place the arrow at the right of the trackbar.
+
+----------------------------------------------------------------------------------------------------
+@@GetIndexAxisZ
+<TITLE GetIndexAxisZ function>
+Summary
+  Returns the Z axis index for the specified axis configuration
+Description
+  According to the specified axis configuration, the Z axis index is returned.
+  
+  IE: if the axis configuration is acYXZ, the result will be axIndex2 (standing for Z).
+Parameters
+  AxisConfig - Identifier of the axis configuration
+Return value
+  The converted value of the Axis Index
+
+----------------------------------------------------------------------------------------------------
+@@EJvFullColorListError
+Summary
+  Exception raised on TJvFullColorList errors
+Description
+  This exception is raised if the item index is out of the range 0..Count-1
+
+----------------------------------------------------------------------------------------------------
+@@GetIndexAxis
+<TITLE GetIndexAxis function>
+Summary
+  Returns the axis index for the specified axis configuration
+Description
+  According to the specified axis configuration, the input axis index is translated to the
+  corresponding axis index.
+  
+  if axis configuration is acYXZ and axis index is axIndex0, the result will be axIndex1 For more
+  help, see the TabAxisConfigs array in JvFullColorCtrls.pas
+Parameters
+  AxisConfig - Identifier of the axis configuration
+  AxisID     - Axis index to be converted
+Return value
+  The converted value of the Axis Index
+
+----------------------------------------------------------------------------------------------------
+@@EJvFullColorError
+Summary
+  Exception raised when a color cannot be converted or when components cannot be linked.
+Description
+  This exception is raised if the next cases: - There is no registered color space to handle this
+  color. - The color is not valid in the current color space. - The color component
+  (TJvFullColorTrackBar) is already linked to another instance of TJvFullColorPanel or
+  TJvFullColorCircle class.
+
+----------------------------------------------------------------------------------------------------
+@@GetIndexAxisY
+<TITLE GetIndexAxisY function>
+Summary
+  Returns the Y axis index for the specified axis configuration
+Description
+  According to the specified axis configuration, the Y axis index is returned.
+  
+  IE: if the axis configuration is acYXZ, the result will be axIndex0 (standing for X).
+Parameters
+  AxisConfig - Identifier of the axis configuration
+Return value
+  The converted value of the Axis Index
+
+----------------------------------------------------------------------------------------------------
+@@PJvFullColorArray
+<TITLE PJvFullColorArray type> <COMBINE TJvFullColorArray>
+
+----------------------------------------------------------------------------------------------------
+@@ColorSpaceToString
+<TITLE ColorSpaceToString function>
+Summary
+  Get a string describing the color space.
+Description
+  if ItemFormat is cfName then the result is the Color space description (ie: 'True Color'). if
+  ItemFormat is cfShort then the result is the Color space short name (ie: 'RGB'). if ItemFormat is
+  cfBoth the result is 'description (short name)'.
+Parameters
+  AColorSpace - Color space used
+  ItemFormat  - Format of the output
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorLabel.RoundShapeHeight
+Summary
+  Height or the rounded edge
+Description
+  When shape is stRoundRect or stRoundSquare, this is the height of the rounded edge. In other shape,
+  RoundShapeHeight is not used.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFullColorCircleStyle.cs3ButtonsMouse
-  When csShowCommon is not included, the left button moves the Red cursor, the middle but moves the
-  Green cursor, the right button moves the Blue cursor.
+When csShowCommon is not included, the left button moves the Red cursor, the middle but moves the
+Green cursor, the right button moves the Blue cursor.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFullColorCircleStyle.cs3ButtonsCommon
-  Indicate that all mouse buttons can move the common color cursor.
+Indicate that all mouse buttons can move the common color cursor.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFullColorCircleStyles
-<TITLE TJvFullColorCircleStyles type>
-<COMBINE TJvFullColorCircleStyle>
+<TITLE TJvFullColorCircleStyles type> <COMBINE TJvFullColorCircleStyle>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFullColorComponent
@@ -603,8 +1328,8 @@ Summary
   Indicate the cursor position.
 Description
   This property returns the color displayed at the cursor position. Changing one of the color's axis
-  value update the cross position. Changing its color space change the color space used to display the
-  control.
+  value update the cross position. Changing its color space change the color space used to display
+  the control.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFullColorComponent.MouseDragging
@@ -625,10 +1350,10 @@ Description
 Summary
   The color has changed.
 Description
-  This event is triggered when the color is changed, it occurs in these cases : - the FullColor
-  property was changed. - the user changed the cursor position using the mouse. - the user changed the
-  cursor position using the keyboard. - the color space was changed. This is usefull because there may
-  be some rounding that may affect the color.
+  This event is triggered when the color is changed, it occurs in these cases : - the FullColor property was changed. - the user chan
+  ed the cursor position using the mouse. - the user changed the cursor position using the keyboard.
+  - the color space was changed. This is usefull because there may be some rounding that may affect
+  the color.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFullColorComponent.OnColorSpaceChange
@@ -643,8 +1368,8 @@ Description
 Summary
   The mouse is dragging one cursor.
 Description
-  This event is sent when the user is dragging one cursor. It is sent at the beginning of the movement
-  and each time the mouve cursor is moved.
+  This event is sent when the user is dragging one cursor. It is sent at the beginning of the
+  movement and each time the mouve cursor is moved.
 Parameters
   Sender - The sender of this event.
   ColorX - The X position of the mouse cursor inside the control.
@@ -656,7 +1381,8 @@ Summary
   The buffer must be repainted.
 Description
   Do not use it directly, it is used by the control to indicate that the buffer need to be refreshed.
-  The control use a bitmap as buffer because it takes some fractions of second to paint the color rect.
+  The control use a bitmap as buffer because it takes some fractions of second to paint the color
+  rect.
   The buffer need to be refreshed when the color space is changed or when the default value of
   undisplayed axis is changed.
 
@@ -673,18 +1399,17 @@ Description
 Summary
   The third axis value.
 Description
-  The user is able to modify the value of axis X and axis Y using the keyboard and the keyboard. But he
-  can't change the third axis value. This value is used to paint the buffer, this value is used in any
-  point to get the RGB value of the color (X,Y,ValueZ) --> (R,G,B). The Z axis is given by the current
-  axis configuration.
+  The user is able to modify the value of axis X and axis Y using the keyboard and the keyboard. But he can't change the third axis value. This value is used t
+   paint the buffer, this value is used in any point to get the RGB value of the color (X,Y,ValueZ)
+  --> (R,G,B). The Z axis is given by the current axis configuration.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFullColorComponent2D.ValueZAuto
 Summary
   Use default value of the color space for axis Z.
 Description
-  When this property is True, the ValueZ property is automaticly set to the default value of the Z axis
-  in the current color space. The Z axis is given by the current axis configuration.
+  When this property is True, the ValueZ property is automaticly set to the default value of the Z
+  axis in the current color space. The Z axis is given by the current axis configuration.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFullColorEdge
@@ -696,15 +1421,15 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFullColorEdge.feRaised
-  The control seems to be above the surface.
+The control seems to be above the surface.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFullColorEdge.feLowered
-  The rectangle seems to be below the surface.
+The rectangle seems to be below the surface.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFullColorEdge.feFlat
-  A simple black line is drawn around the color. There is no appearance of relief.
+A simple black line is drawn around the color. There is no appearance of relief.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFullColorGroup
@@ -723,16 +1448,16 @@ Description
 Summary
   Brush used to paint rectangles of color.
 Description
-  This property set the brush used to fill rectangles of color. The color property of the brush is not
-  used because it is replaced by the color of each rectangle.
+  This property set the brush used to fill rectangles of color. The color property of the brush is
+  not used because it is replaced by the color of each rectangle.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFullColorGroup.ColCount
 Summary
   Number of columns displayed.
 Description
-  This property set the number of columns displayed by the control. The number of lines is given by the
-  number of items divided this number.
+  This property set the number of columns displayed by the control. The number of lines is given by
+  the number of items divided this number.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFullColorGroup.Edge
@@ -754,8 +1479,8 @@ Description
 Summary
   Edge drawn around the rectangle of color under the mouse cursor.
 Description
-  This property set the line drawn around each rectangle of color when the rectangle is under the mouse
-  cursor.
+  This property set the line drawn around each rectangle of color when the rectangle is under the
+  mouse cursor.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFullColorGroup.MouseIndex
@@ -789,8 +1514,8 @@ Parameters
 Summary
   The number of rows displayed.
 Description
-  Read-only - this property returns the number of lines displayed in the control. This number is given
-  but the division of the number of items by the number of columns.
+  Read-only - this property returns the number of lines displayed in the control. This number is
+  given but the division of the number of items by the number of columns.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFullColorGroup.Selected
@@ -872,692 +1597,4 @@ Summary
   Color displayed in the shape
 Description
   Specify the color used to paint the shape, all registered color spaces are supported.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorLabel.Pen
-Summary
-  Pen used to draw the shape's outline.
-Description
-  This pen is used to draw the line around the shape, dashes and dots are supported.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorLabel.RoundShapeHeight
-Summary
-  Height or the rounded edge
-Description
-  When shape is stRoundRect or stRoundSquare, this is the height of the rounded edge. In other shape,
-  RoundShapeHeight is not used.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorLabel.RoundShapeWidth
-Summary
-  Width of rounded edges.
-Description
-  When shape is stRoundRect or stRoundSquare, this is the width of the rounded edge. In other shape,
-  RoundShapeHeight is not used.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorLabel.Shape
-Summary
-  Geometric aspect of the shape.
-Description
-  This property set the shape aspect. Its size is set by ShapeWidth and ShapeHeight properties.
-  Additionnal properties RoundShapeHeight and RoundShapeWidth are used to set rounded edges sizes. The
-  position of the shape around the text is set by the ShapePosition property.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorLabel.ShapeHeight
-Summary
-  Height of the shape.
-Description
-  Height in pixels of the shape.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorLabel.ShapePosition
-Summary
-  Position of the shape.
-Description
-  Position of the shape around the text. The space between the text and the shape is given by the
-  Spacing property.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorLabel.ShapeWidth
-Summary
-  Width of the shape.
-Description
-  Width in pixel of the shape.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorLabel.Spacing
-Summary
-  Space between the shape and the text.
-Description
-  Space in pixels between the shape and the text. This space is vertical if ShapePosition is spTop or
-  spBottom, it is horizontal if ShapePosition is spLeft or spRight.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorList
-Summary
-  List of TJvFullColor
-Description
-  This list of TJvFullColor is used by TJvFullColorGroup. It can store many items and is implemented
-  like TList.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorList.Add
-Summary
-  Add a new color.
-Description
-  This function adds a new item in the list. This color is added at the end of the list. The return
-  value is the index of this item in the list after being added (Count-1).
-Parameters
-  AColor - Color to add.
-Return value
-  Index of this new item in the list.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorList.AllocBy
-Summary
-  Granularity of allocation
-Description
-  When there is no free space in the list (Count = Capacity), this is the number of new items
-  allocated.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorList.Assign
-Summary
-  Copy from the content of a source list
-Description
-  This function assign the content of the current instance from the list given as parameter. The source
-  list must be a descendant of TJvFullColorList, if this parameter is not a TJvFullColor list, an
-  exception is raised. The current list is cleared and filled with items from the source list.
-Parameters
-  Source - Source for the copy
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorList.BeginUpdate
-Summary
-  Begin an update of items.
-Description
-  This function increment the UpdateCount property. While UpdateCount is not 0, the event OnChange is
-  not triggered when the list is changed. This result in a fast way to change the content of the
-  current list.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorList.Capacity
-Summary
-  Number of items allocated.
-Description
-  The Capacity property is the number of items allocated to store the list's content. Capacity is
-  always greater or equal (> =) than the Count property. When there is not enough space to store new
-  items, the Capacity property is incremented by the AllocBy property.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorList.Clear
-Summary
-  Clear all items of the list.
-Description
-  This function delete all items of the list. After the call of Clear, Capacity and Count are reset to
-  0. After clearing the list, the OnChange event is triggered with Operation = ofAllChanged.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorList.Count
-Summary
-  Number of items in the list.
-Description
-  This property is the number of valid items in the list. All items are placed at the beginning of the
-  list (from 0 to Count-1), items between Count and Capacity-1 are allocated but not valid. Changing
-  the Count property delete the last items from the list.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorList.Delete
-Summary
-  Delete an item from the list
-Description
-  This function delete an item from the list. After removing this item, items that had a greater Index
-  are shifted to the right, the list is always packed. After deleting the item, the OnChange event is
-  triggered with Operation = ofDelete.
-Parameters
-  Index - Index of the item to delete.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorList.DeleteRedundant
-Summary
-  Pack the list by deleting redundant items.
-Description
-  This function delete redundant items (present more than one time in the list). The first case if
-  kept, following matches are deleted.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorList.EndUpdate
-Summary
-  End an update of items.
-Description
-  This function decrement the UpdateCount property. The if UpdateCount is 0, an OnChange event is
-  triggered with Operation set to foAllChanged.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorList.Exchange
-Summary
-  Exchange 2 items of the list.
-Description
-  This function exchange two items of the list. After the exchange, two OnChange event are triggered
-  (one per index) with Operation = ofChanged.
-Parameters
-  Index1 - first index.
-  Index2 - second index.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorList.IndexOf
-Summary
-  Index of an item in the list
-Description
-  This function search for a color in the list and return the first match found. If the color is not in
-  the list, -1 is returned.
-Parameters
-  AColor - Color to search
-Return value
-  Index of the first match in the list.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorList.Insert
-Summary
-  Insert an item in the list.
-Description
-  Insert a color at the given position. Lower indexes are not changed. Higher indexes are shift left to
-  make a free space to place the new item. After inserting the item, an OnChange event is triggered
-  with Operation = foAdded.
-Parameters
-  Index  - Index to insert the item.
-  AColor - Color to insert at this position.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorList.Items
-Summary
-  Retreive items of the list.
-Description
-  This is the default property for this class. It retreives or set the item at the specified index. If
-  Index is negative or greater or equal (> =) than Count, an exception is raised. When an item is
-  changed, an OnChange event is triggered.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorList.List
-Summary
-  Address of the list in memory.
-Description
-  Retrieve the list location in the memory. This pointer is a dynamicly allocated according to the
-  Capacity property. This pointer is provided for fast memory access and copy of memory, no event is
-  triggered when an item is changed in this array. Only apacity items are allocated (from 0 to
-  Capacity-1), but only Count items are valid (from 0 to Count-1).
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorList.OnChange
-Summary
-  Event triggered when the list is changed.
-Description
-  Operation gives informations about the operation made on the item. If Operation is foAllChanged, all
-  items are changed in the list, Index is not usefull. If Operation is foDeleted, an item was deleted,
-  Index is the old index of this item in the list. If Operation is foAdded, an item was added, Index is
-  the index of this item in the list. If Operation is foChanged, an item was changed, Index is the
-  index of this item in the list.
-
-  No event is triggered if UpdateCount is not 0.
-Parameters
-  Sender    - List that send the event.
-  Index     - Index of the changed item.
-  Operation - Operation that changed this item.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorList.Remove
-Summary
-  Remove a color of the list.
-Description
-  This function delete the first match of the AColor parameter in the list. If one color is found, it
-  is deleted and an OnChange event is sent with Operation = ofDeleted, the result of this function is
-  he old index of this color in the list. If the color is not found in the list, the return value is -1
-  and the list remains unchanged. This remove only the first match of the color in the list.
-Parameters
-  AColor - Color to remove.
-Return value
-  Old index of this color in the list.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorList.UpdateCount
-Summary
-  Number of updates being made on the list.
-Description
-  UpdateCount prevents the OnChange event from being called when it is not 0. You can increment
-  UpdateCount by calling BeginUpdate and decrement it by calling EndUpdate.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorListEvent
-<TITLE TJvFullColorListEvent type>
-<COMBINE TJvFullColorList.OnChange>
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorListOperation
-<TITLE TJvFullColorListOperation type>
-<COMBINE TJvFullColorList.OnChange>
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorListOperation.foAllChanged
-  All items of the list may be changed.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorListOperation.foDeleted
-  One item is deleted from the list.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorListOperation.foAdded
-  An item was added in the list.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorListOperation.foChanged
-  One item was changed in the list.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorMouseEvent
-<TITLE TJvFullColorMouseEvent type>
-<COMBINE TJvFullColorComponent.OnMouseColor>
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorOrientation
-<TITLE TJvFullColorOrientation type>
-Summary
-  Orientation of the axis.
-Description
-  Orientation of the trackbar.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorOrientation.coNormal
-  The axis is placed at its normal orientation : the minimum of the axis is placed at the left (if the
-  bar is horizontal or at the top if the bar is vertical) and the maximum is placed at the right (or at
-  the bottom).
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorOrientation.coInverse
-  The bar is inversed: the minimum of the axis is placed at the right (if the bar is horizontal or at
-  the bottom if the bar is vertical) and the maximum is placed at the left (or the top).
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorPanel
-<TITLEIMG TJvFullColorPanel>
-JVCLInfo
-  GROUP=JVCL.??
-  FLAG=Component
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorPanel.ColorTrackBar
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorPanel.CrossCenter
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorPanel.CrossSize
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorPanel.CrossStyle
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorPanel.ReverseAxisX
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorPanel.ReverseAxisY
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorSpaceCombo
-<TITLEIMG TJvFullColorSpaceCombo>
-JVCLInfo
-  GROUP=JVCL.??
-  FLAG=Component
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorSpaceCombo.AllowVariable
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorSpaceCombo.ColorSpaceID
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorSpaceCombo.ItemFormat
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorSpaceCombo.MakeList
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorSpaceCombo.OnFormatItem
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Sender      - The TJvFullColorAxisCombo instance which is asking for a format event.
-  AColorSpace - Description for this parameter
-  ACaption    - Formatted value for this item.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorSpaceCombo.SelectedSpace
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorSpaceFormat
-<TITLE TJvFullColorSpaceFormat type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorSpaceFormat.cfName
-  Description for cfName
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorSpaceFormat.cfShortName
-  Description for cfShortName
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorSpaceFormat.cfBoth
-  Description for cfBoth
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorSpaceFormatEvent
-<TITLE TJvFullColorSpaceFormatEvent type>
-<COMBINE TJvFullColorSpaceCombo.OnFormatItem>
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorTrackBar
-<TITLEIMG TJvFullColorTrackBar>
-JVCLInfo
-  GROUP=JVCL.??
-  FLAG=Component
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorTrackBar.ArrowColor
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorTrackBar.ArrowPosition
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorTrackBar.ArrowWidth
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorTrackBar.ColorOrientation
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorTrackBar.FreeLink
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorTrackBar.FullColorDrawing
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorTrackBar.Linked
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorTrackBar.LinkerName
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorTrackBar.Orientation
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorTrackBar.SetLink
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AComponent - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorTrackBar.ValueX
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorTrackBar.ValueXAuto
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorTrackBar.ValueY
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorTrackBar.ValueYAuto
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvKeyCode
-<TITLE TJvKeyCode type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvKeyCode.kcLeft
-  Description for kcLeft
-
-----------------------------------------------------------------------------------------------------
-@@TJvKeyCode.kcRight
-  Description for kcRight
-
-----------------------------------------------------------------------------------------------------
-@@TJvKeyCode.kcUp
-  Description for kcUp
-
-----------------------------------------------------------------------------------------------------
-@@TJvKeyCode.kcDown
-  Description for kcDown
-
-----------------------------------------------------------------------------------------------------
-@@TJvShapePosition
-<TITLE TJvShapePosition type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvShapePosition.spLeft
-  Description for spLeft
-
-----------------------------------------------------------------------------------------------------
-@@TJvShapePosition.spRight
-  Description for spRight
-
-----------------------------------------------------------------------------------------------------
-@@TJvShapePosition.spTop
-  Description for spTop
-
-----------------------------------------------------------------------------------------------------
-@@TJvShapePosition.spBottom
-  Description for spBottom
 
