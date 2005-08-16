@@ -870,7 +870,7 @@ function TJvgAskListBox.SetPushedButtonInLine(Index: Word; Value: Word): Boolean
 var
   R: TRect;
 begin
-  if (Index < Items.Count) and (Value in [0..2]) then
+  if (Index < Items.Count) and (Value <= FButtons.Count) then
   begin
     Result := True;
     if FPushedButton[Index] = Value then
@@ -881,7 +881,7 @@ begin
     InvalidateRect(Handle, @R, True);
     //ButtonClicked;
     if (aloAutoScroll in Options) and (Value <> 0) then
-      SendMessage(Handle, LB_SETCURSEL, FSelectedItem + 1, Longint(0));
+      SendMessage(Handle, LB_SETCURSEL, Index, Longint(0));
   end
   else
     Result := False;
