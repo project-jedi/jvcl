@@ -934,7 +934,7 @@ begin
   Items.BeginUpdate;
   for I := 0 to Items.Count - 1 do
   begin
-    Items.Insert(I, Items.Strings[I]);
+    Items.InsertObject(I, Items[I], Items.Objects[I]);
     Items.Delete(I + 1);
   end;
   Items.EndUpdate;
