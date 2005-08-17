@@ -189,6 +189,7 @@ type
 
     FHandle: THandle;
     FTimerActive: Boolean;
+    FMaxWidth: Integer;
 
     function GetHandle: THandle;
     function GetUseBalloonAsApplicationHint: Boolean;
@@ -256,6 +257,8 @@ type
       FApplicationHintOptions default [ahShowHeaderInHint, ahShowIconInHint];
     property UseBalloonAsApplicationHint: Boolean read GetUseBalloonAsApplicationHint write
       SetUseBalloonAsApplicationHint default False;
+
+    property MaxWidth : Integer read FMaxWidth write FMaxWidth default 0;
 
     property OnBalloonClick: TNotifyEvent read FOnBalloonClick write FOnBalloonClick;
     property OnCloseBtnClick: TCloseQueryEvent read FOnCloseBtnClick write FOnCloseBtnClick;
@@ -972,6 +975,7 @@ begin
   FDefaultImageIndex := -1;
   FCustomAnimationTime := 100;
   FCustomAnimationStyle := atBlend;
+  FMaxWidth := 0;
 
   TGlobalCtrl.Instance.Add(Self);
 end;
@@ -1234,6 +1238,7 @@ procedure TJvBalloonHint.InternalActivateHintPos;
 var
   Rect: TRect;
   Animate: BOOL;
+  TmpMaxWidth : Integer;
 begin
   with FData do
   begin
@@ -1277,7 +1282,11 @@ begin
 
     { Determine the size of the balloon rect, the stem point will be on
       position (0, 0) }
-    Rect := FHint.CalcHintRect(Screen.Width, RHint, @FData);
+    if MaxWidth = 0 then
+      TmpMaxWidth := Screen.Width
+    else
+      TmpMaxWidth := MaxWidth;
+    Rect := FHint.CalcHintRect(TmpMaxWidth, RHint, @FData);
 
     { Offset the rectangle to the anchor position }
     if Assigned(RAnchorWindow) then
