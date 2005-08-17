@@ -44,7 +44,7 @@ uses
 
 const
   // a version string for the component
-  cHidControllerClassVersion = '1.0.28';
+  cHidControllerClassVersion = '1.0.29';
 
   // strings from the registry for CheckOutByClass
   cHidNoClass = 'HIDClass';
@@ -362,6 +362,7 @@ type
     FNumUnpluggedDevices: Integer;
     // reentrancy
     FInDeviceChange: Boolean;
+    FLParam: LPARAM;
     // internal worker functions
     function CheckThisOut(var HidDev: TJvHidDevice; Idx: Integer; Check: Boolean): Boolean;
     function EventPipe(var Msg: TMessage): Boolean;
@@ -1560,7 +1561,7 @@ begin
     Application.HookMainWindow(EventPipe);
     // this one executes after Create completed which ensures
     // that all global elements like Application.MainForm are initialized
-    PostMessage(Application.Handle, WM_DEVICECHANGE, DBT_DEVNODES_CHANGED, 0);
+    PostMessage(Application.Handle, WM_DEVICECHANGE, DBT_DEVNODES_CHANGED, -1);
   end
   else
     FHidGuid := cHidGuid;
@@ -1644,6 +1645,7 @@ begin
   if (Msg.Msg = WM_DEVICECHANGE) and (TWMDeviceChange(Msg).Event = DBT_DEVNODES_CHANGED) then
   if not FInDeviceChange then
   begin
+    FLParam := Msg.LParam;
     FInDeviceChange := True;
     DeviceChange;
     FInDeviceChange := False;
@@ -1718,7 +1720,8 @@ var
   end;
 
 begin
-  Changed := False;
+  // initial auto message always triggers OnDeviceChange event
+  Changed := (FLParam = -1);
   // get new device list
   NewList := TList.Create;
   FillInList;
