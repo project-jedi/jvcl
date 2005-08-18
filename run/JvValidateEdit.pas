@@ -78,6 +78,7 @@ type
 
   TJvCustomTextValidateEvent = procedure(Sender: TObject; Key: Char;
     const AText: string; const Pos: Integer; var IsValid: Boolean) of object;
+  TJvCustomIsValidEvent = procedure(Sender: TObject; var IsValid: Boolean) of object;
 
   TJvCustomValidateEdit = class(TJvCustomEdit)
   private
@@ -101,6 +102,7 @@ type
     FAutoAlignment: Boolean;
     FTrimDecimals: Boolean;
     FOldFontChange: TNotifyEvent;
+    FOnIsValid: TJvCustomIsValidEvent;
     procedure DisplayText;
     function ScientificStrToFloat(SciString: string): Double;
     procedure SetHasMaxValue(NewValue: Boolean);
@@ -169,9 +171,13 @@ type
     function DoValidate(const Key: Char; const AText: string;
       const Posn: Integer): Boolean;
     procedure Loaded; override;
+
+    property OnIsValid: TJvCustomIsValidEvent read FOnIsValid write FOnIsValid;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
+    function IsValid: Boolean; virtual; // fires OnIsValid if assigned
 
     procedure Assign(Source: TPersistent); override;
     property AsInteger: Integer read GetAsInteger write SetAsInteger;
@@ -254,6 +260,7 @@ type
     property OnMouseUp;
     property OnStartDrag;
     property OnValueChanged;
+    property OnIsValid;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -1033,6 +1040,20 @@ procedure TJvCustomValidateEdit.CriticalPointsChange(Sender: TObject);
 begin
   SetFontColor;
   Invalidate;
+end;
+
+function TJvCustomValidateEdit.IsValid: Boolean;
+begin
+  Result := True;
+  case FCriticalPoints.CheckPoints of
+    cpMaxValue:
+      Result := AsFloat <= FCriticalPoints.MaxValue;
+    cpBoth:
+      Result := (AsFloat <= FCriticalPoints.MaxValue) and
+                (AsFloat >= FCriticalPoints.MinValue);
+  end;
+  if Assigned(FOnIsValid) then
+    FOnIsValid(Self, Result);
 end;
 
 procedure TJvCustomValidateEdit.SetFontColor;
