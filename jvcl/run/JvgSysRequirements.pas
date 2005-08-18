@@ -131,7 +131,7 @@ var
   Icon: Integer;
 begin
   inherited Loaded;
-  if not (csDesigning in ComponentState) then
+  if Enabled and not (csDesigning in ComponentState) then
     if not TestRequirements(ReportMessage) then
     begin
       DoShowWarning := True;
