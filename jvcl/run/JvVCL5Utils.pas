@@ -27,9 +27,7 @@ unit JvVCL5Utils;
 
 {$I jvcl.inc}
 
-{$IFNDEF COMPILER5}
-'This unit if for Delphi 5 / BCB 5 only'
-{$ENDIF !COMPILER5}
+{$IFDEF COMPILER5}
 
 interface
 
@@ -131,7 +129,11 @@ function FindVarData(const V: Variant): PVarData;
 function VarIsStr(const V: Variant): Boolean;
 function VarIsType(const V: Variant; AVarType: TVarType): Boolean;
 
+{$ENDIF COMPILER5}
+
 implementation
+
+{$IFDEF COMPILER5}
 
 var
   GlobalCollectionHooked: Boolean = False;
@@ -757,5 +759,7 @@ initialization
 finalization
   if GlobalCollectionHooked then
     UnhookCollection;
+
+{$ENDIF COMPILER5}
 
 end.
