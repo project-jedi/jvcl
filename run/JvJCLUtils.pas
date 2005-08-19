@@ -1150,6 +1150,7 @@ function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC;
 function IsEqualGUID(const IID1, IID2: TGUID): Boolean;
 
 
+{$IFNDEF BCB}
 {$IFDEF COMPILER5}
 { These functions simply call their JvVCL5Utils equivalents }
 
@@ -1191,6 +1192,7 @@ function Sign(const AValue: Double): TValueSign; overload;
 // Variants
 function VarIsStr(const V: Variant): Boolean;
 {$ENDIF COMPILER5}
+{$ENDIF !BCB}
 
 type
   TCollectionSortProc = function(Item1, Item2: TCollectionItem): Integer;
