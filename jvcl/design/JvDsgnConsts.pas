@@ -92,6 +92,7 @@ resourcestring
   RsPaletteJansCsv = 'Jv Jans CSV';
   RsPalettePlugin = 'Jv Plugin';
   RsPaletteNavPane = 'Jv NavPane';
+  RsPaletteRuntimeDesign  = 'Jv Runtime Design';
   {$IFDEF USEJVCL}
   RsPaletteUIB = 'Jv UIB';
   RsPaletteMTThreads = 'Jv Threading';

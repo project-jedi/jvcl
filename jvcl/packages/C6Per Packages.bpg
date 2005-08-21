@@ -37,7 +37,7 @@ PROJECTS = Jv3rdC6R.bpl                                    \
            JvXPCtrlsC6R.bpl JvXPCtrlsC6D.bpl               \
            JvDockingC6R.bpl JvDockingC6D.bpl               \
            JvDotNetCtrlsC6R.bpl JvDotNetCtrlsC6D.bpl       \
-           JvInspectorC6R.bpl JvInspectorC6D.bpl
+           JvRuntimeDesignC6R.bpl JvRuntimeDesignC6D.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -262,10 +262,10 @@ JvDotNetCtrlsC6D.bpl: c6\JvDotNetCtrlsC6D.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvInspectorC6R.bpl: c6per\JvInspectorC6R.bpk
+JvRuntimeDesignC6R.bpl: c6per\JvRuntimeDesignC6R.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvInspectorC6D.bpl: c6\JvInspectorC6D.bpk
+JvRuntimeDesignC6D.bpl: c6\JvRuntimeDesignC6D.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak

@@ -37,7 +37,7 @@ PROJECTS = Jv3rdD6R.bpl                           \
   JvXPCtrlsD6R.bpl JvXPCtrlsD6D.bpl               \
   JvDockingD6R.bpl JvDockingD6D.bpl               \
   JvDotNetCtrlsD6R.bpl JvDotNetCtrlsD6D.bpl       \
-  JvInspectorD6R.bpl JvInspectorD6D.bpl
+  JvRuntimeDesignD6R.bpl JvRuntimeDesignD6D.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -207,9 +207,9 @@ JvDotNetCtrlsD6R.bpl: d6per\JvDotNetCtrlsD6R.dpk
 JvDotNetCtrlsD6D.bpl: d6\JvDotNetCtrlsD6D.dpk
   $(DCC)
 
-JvInspectorD6R.bpl: d6per\JvInspectorD6R.dpk
+JvRuntimeDesignD6R.bpl: d6per\JvRuntimeDesignD6R.dpk
   $(DCC)
 
-JvInspectorD6D.bpl: d6\JvInspectorD6D.dpk
+JvRuntimeDesignD6D.bpl: d6\JvRuntimeDesignD6D.dpk
   $(DCC)
 
