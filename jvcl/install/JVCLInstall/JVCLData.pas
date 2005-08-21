@@ -875,7 +875,8 @@ begin
   try
     for i := 0 to ProjectGroup.Count - 1 do
       if not ProjectGroup.Packages[i].Info.IsDesign then
-        ProjectGroup.Packages[i].Compile := Ini.ReadBool(ProjectGroup.BpgName, ProjectGroup.Packages[i].Info.Name, False);
+        // Ini read defaults to True, to compile and install newly created packages
+        ProjectGroup.Packages[i].Compile := Ini.ReadBool(ProjectGroup.BpgName, ProjectGroup.Packages[i].Info.Name, True);
   finally
     Ini.Free;
   end;
@@ -898,6 +899,7 @@ begin
     for i := 0 to Target.DisabledPackages.Count - 1 do
       if CompareText(Target.DisabledPackages[i].Name, BplName) = 0 then
       begin
+        // shouldn't the following value be False?
         ProjectGroup.Packages[PkgIndex].Install := True;
         IsInstalled := True;
         Break;
