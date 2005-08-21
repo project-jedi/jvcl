@@ -1,1 +1,0 @@
-This folder contains files that might be shared by other parts of JEDI, like INC files and API translation. 
