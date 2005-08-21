@@ -9588,6 +9588,7 @@ end;
 {$ENDIF !CLR}
 
 
+{$IFNDEF BCB}
 {$IFDEF COMPILER5}
 { These functions simply call their JvVCL5Utils equivalents }
 
@@ -9700,6 +9701,7 @@ begin
   Result := JvVCL5Utils.VarIsStr(V);
 end;
 {$ENDIF COMPILER5}
+{$ENDIF !BCB}
 
 procedure CollectionQuickSort(List: TCollection; L, R: Integer; sortProc: TCollectionSortProc);
 var
