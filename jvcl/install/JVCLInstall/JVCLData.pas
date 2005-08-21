@@ -1246,18 +1246,18 @@ begin
 
   // remove old
   AddPaths(Target.BrowsingPaths, False, Owner.JVCLDir,
-    ['common', 'run', 'qcommon', 'qrun']); // do not localize
+    ['common', 'run', 'Resources', 'qcommon', 'qrun']); // do not localize
   AddPaths(Target.SearchPaths, False, Owner.JVCLDir,
-    ['common', 'run', 'qcommon', 'qrun']); // do not localize
+    ['common', 'run', 'Resources', 'qcommon', 'qrun']); // do not localize
   AddPaths(Target.DebugDcuPaths, {Add:=}False, Owner.JVCLDir,
     [Target.InsertDirMacros(UnitOutDir + '\debug'), UnitOutDir + '\debug']); // do not localize
 
 
   // common
-  AddPaths(Target.BrowsingPaths, True, Owner.JVCLDir,
+  AddPaths(Target.BrowsingPaths, True, Owner.JVCLDir, // Resources directory must not be in browse-paths
     ['common']); // do not localize
   AddPaths(Target.SearchPaths, True, Owner.JVCLDir,
-    ['common', Target.InsertDirMacros(UnitOutDir)]); // do not localize
+    ['common', 'Resources', Target.InsertDirMacros(UnitOutDir)]); // do not localize
   if DebugUnits and not DeveloperInstall then
     AddPaths(Target.DebugDcuPaths, True, Owner.JVCLDir,
       [Target.InsertDirMacros(UnitOutDir + '\debug')]); // do not localize
@@ -1405,9 +1405,9 @@ begin
 
   // remove JVCL 3 directories
   AddPaths(Target.BrowsingPaths, {Add:=}False, Owner.JVCLDir,
-    ['common', 'design', 'run', 'qcommon', 'qdesign', 'qrun']); // do not localize
+    ['common', 'design', 'run', 'Resources', 'qcommon', 'qdesign', 'qrun']); // do not localize
   AddPaths(Target.SearchPaths, {Add:=}False, Owner.JVCLDir,
-    ['common', 'design', 'run', 'qcommon', 'qdesign', 'qrun', // do not localize
+    ['common', 'design', 'run', 'Resources', 'qcommon', 'qdesign', 'qrun', // do not localize
     Target.InsertDirMacros(UnitOutDir), UnitOutDir]);
   AddPaths(Target.DebugDcuPaths, {Add:=}False, Owner.JVCLDir,
     [Target.InsertDirMacros(UnitOutDir + '\debug'), UnitOutDir + '\debug']); // do not localize
