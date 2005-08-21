@@ -37,7 +37,7 @@ PROJECTS = Jv3rdC5R.bpl                                    \
            JvXPCtrlsC5R.bpl JvXPCtrlsC5D.bpl               \
            JvDockingC5R.bpl JvDockingC5D.bpl               \
            JvDotNetCtrlsC5R.bpl JvDotNetCtrlsC5D.bpl       \
-           JvInspectorC5R.bpl JvInspectorC5D.bpl
+           JvRuntimeDesignC5R.bpl JvRuntimeDesignC5D.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -262,10 +262,10 @@ JvDotNetCtrlsC5D.bpl: c5\JvDotNetCtrlsC5D.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvInspectorC5R.bpl: c5std\JvInspectorC5R.bpk
+JvRuntimeDesignC5R.bpl: c5std\JvRuntimeDesignC5R.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvInspectorC5D.bpl: c5\JvInspectorC5D.bpk
+JvRuntimeDesignC5D.bpl: c5\JvRuntimeDesignC5D.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak

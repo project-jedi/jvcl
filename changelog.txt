@@ -1,5 +1,7 @@
 Changelog for JVCL 3.0
 ======================
+2005-08-21:
+- JvInspector packages removed and integrated in the new JvRuntimeDesign package. See http://sourceforge.net/forum/forum.php?forum_id=490055 for details on procedure  // obones
 2005-07-02:
 - TJvOfficeColorPanel: Rename property CustomColors to ColorDlgCustomColors. // dejoy
 - TJvOfficeColorPanel: Rename property Options to ColorDialogOptions. // dejoy

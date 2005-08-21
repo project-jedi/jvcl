@@ -40,7 +40,7 @@ PROJECTS = Jv3rdD7R.bpl                           \
   JvDockingD7R.bpl JvDockingD7D.bpl               \
   JvDotNetCtrlsD7R.bpl JvDotNetCtrlsD7D.bpl       \
   JvEDID7R.bpl JvEDID7D.bpl                       \
-  JvInspectorD7R.bpl JvInspectorD7D.bpl
+  JvRuntimeDesignD7R.bpl JvRuntimeDesignD7D.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -228,9 +228,9 @@ JvEDID7R.bpl: d7\JvEDID7R.dpk
 JvEDID7D.bpl: d7\JvEDID7D.dpk
   $(DCC)
 
-JvInspectorD7R.bpl: d7\JvInspectorD7R.dpk
+JvRuntimeDesignD7R.bpl: d7\JvRuntimeDesignD7R.dpk
   $(DCC)
 
-JvInspectorD7D.bpl: d7\JvInspectorD7D.dpk
+JvRuntimeDesignD7D.bpl: d7\JvRuntimeDesignD7D.dpk
   $(DCC)
 

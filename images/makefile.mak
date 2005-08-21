@@ -104,7 +104,7 @@ JvUIBReg.dcr \
 JvValidatorsReg.dcr \
 JvWizardReg.dcr \
 JvXPCtrlsReg.dcr \
-JvInspectorReg.dcr
+JvRuntimeDesignReg.dcr
 
 Display:
 	@echo [Generating: Resources]

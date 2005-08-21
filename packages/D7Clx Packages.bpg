@@ -18,8 +18,8 @@ PROJECTS = JvQ3rdD7R.bpl JvQCoreD7R.bpl JvQCoreD7D.bpl JvQSystemD7R.bpl \
   JvQJansD7D.bpl JvQNetD7R.bpl JvQNetD7D.bpl JvQUIBD7R.bpl JvQUIBD7D.bpl \
   JvQWizardD7R.bpl JvQWizardD7D.bpl JvQAppFrmD7R.bpl JvQAppFrmD7D.bpl \
   JvQHMID7R.bpl JvQHMID7D.bpl JvQEDID7R.bpl JvQEDID7D.bpl JvQPageCompsD7R.bpl \
-  JvQPageCompsD7D.bpl JvQXPCtrlsD7R.bpl JvQXPCtrlsD7D.bpl JvQInspectorD7R.bpl \
-  JvQInspectorD7D.bpl JvQDBD7R.bpl JvQDBD7D.bpl
+  JvQPageCompsD7D.bpl JvQXPCtrlsD7R.bpl JvQXPCtrlsD7D.bpl JvQRuntimeDesignD7R.bpl \
+  JvQRuntimeDesignD7D.bpl JvQDBD7R.bpl JvQDBD7D.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
