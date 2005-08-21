@@ -1223,6 +1223,9 @@ uses
   {$ENDIF MSWINDOWS}
   {$IFDEF COMPILER5}
   Forms,
+  {$IFDEF BCB5}
+  JvVCL5Utils,
+  {$ENDIF BCB5}
   JvJclUtils, // SameFileName() for Delphi 5
   {$ENDIF COMPILER5}
   JclBase, JclFileUtils, JclLogic, JclDateTime,

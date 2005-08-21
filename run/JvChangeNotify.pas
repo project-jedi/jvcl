@@ -10,8 +10,8 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvChangeNotify.PAS, released on 2002-05-26.
 
-The Initial Developer of the Original Code is Peter Thörnqvist [peter3 at sourceforge dot net]
-Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
+The Initial Developer of the Original Code is Peter Thrnqvist [peter3 at sourceforge dot net]
+Portions created by Peter Thrnqvist are Copyright (C) 2002 Peter Thrnqvist.
 All Rights Reserved.
 
 Contributor(s):
@@ -159,6 +159,9 @@ implementation
 
 uses
   SysUtils, 
+  {$IFDEF BCB5}
+  JvVCL5Utils,
+  {$ENDIF BCB5}
   JvJCLUtils, JvResources, JvTypes;
   // JvJCLUtils for DirectoryExists
 
@@ -181,7 +184,7 @@ end;
 
 //=== { TJvChangeItem } ======================================================
 
-constructor TJvChangeItem.Create(Collection: TCollection);
+constructor TJvChangeItem.Create(Collection: Classes.TCollection);  // TCollection redefined in JvVCL5Utils
 begin
   inherited Create(Collection);
   FParent := TJvChangeItems(Collection);

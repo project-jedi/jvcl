@@ -736,6 +736,9 @@ uses
   {$ENDIF HAS_UNIT_VARIANTS}
   SysUtils, Controls, Forms, 
   {$IFDEF COMPILER5}
+  {$IFDEF BCB5}
+  JvVCL5Utils,
+  {$ENDIF BCB5}
   JvJVCLUtils,
   {$ENDIF COMPILER5}
   JvJCLUtils, JvCsvParse, JvConsts, JvResources;

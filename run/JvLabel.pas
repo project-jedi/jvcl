@@ -332,6 +332,9 @@ implementation
 
 uses
   SysUtils, Math, Forms,
+  {$IFDEF BCB5}
+  JvVCL5Utils,
+  {$ENDIF BCB5}
   JvDataProviderIntf, JvConsts, JvThemes, JvJCLUtils, JvJVCLUtils;
 
 const

@@ -10,8 +10,8 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvXMLDatabase.PAS, released on 2003-06-22.
 
-The Initial Developer of the Original Code is Sébastien Buysse [sbuysse att buypin dott com]
-Portions created by Sébastien Buysse are Copyright (C) 2003 Sébastien Buysse.
+The Initial Developer of the Original Code is S?stien Buysse [sbuysse att buypin dott com]
+Portions created by S?stien Buysse are Copyright (C) 2003 S?stien Buysse.
 All Rights Reserved.
 
 Contributor(s):
@@ -218,6 +218,9 @@ const
 implementation
 
 uses
+  {$IFDEF BCB5}
+  JvVCL5Utils,
+  {$ENDIF BCB5}
   JvJCLUtils, JvResources;
 
 //=== { TJvXMLDatabase } =====================================================

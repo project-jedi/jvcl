@@ -623,7 +623,7 @@ TJvUIBComponent = class(TComponent)
     { If true the blob data is fetched with the record. }
     property FetchBlobs: boolean read FFetchBlobs write FFetchBlobs default False;
     { Use BufferChunks to get or set the number of records for which the query
-      allocates buffer space at any time. When the query’s buffer is full,
+      allocates buffer space at any time. When the querys buffer is full,
       trying to fetch an additional record causes the dataset to reallocate
       the buffer so that it has enough memory to hold an additional BufferChunks
       records. <br>

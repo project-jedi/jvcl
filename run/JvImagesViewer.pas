@@ -10,7 +10,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvImagesViewer.PAS, released on 2003-12-01.
 
-The Initial Developer of the Original Code is: Peter Thörnqvist
+The Initial Developer of the Original Code is: Peter Thrnqvist
 All Rights Reserved.
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
@@ -218,6 +218,9 @@ const
 implementation
 
 uses
+  {$IFDEF BCB5}
+  JvVCL5Utils,
+  {$ENDIF BCB5}
   JvJCLUtils;
   
 //=== { TJvImageViewerOptions } ==============================================

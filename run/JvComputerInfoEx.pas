@@ -10,12 +10,12 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvComputerInfoEx.PAS, released on 2004-03-07.
 
-The Initial Developer of the Original Code is Peter Thörnqvist [peter3 at sourceforge dot net]
-Portions created by Peter Thörnqvist are Copyright (C) 2004 Peter Thörnqvist.
+The Initial Developer of the Original Code is Peter Thrnqvist [peter3 at sourceforge dot net]
+Portions created by Peter Thrnqvist are Copyright (C) 2004 Peter Thrnqvist.
 All Rights Reserved.
 
 Contributor(s):
-André Snepvangers - better TimeRunning
+Andr?nepvangers - better TimeRunning
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -1495,7 +1495,11 @@ uses
   WinInet, Registry,
   JclShell, JclRegistry, JclFileUtils,
   {$IFDEF COMPILER5}
+  {$IFDEF BCB5}
+  JvVCL5Utils,
+  {$ELSE}
   JvJCLUtils, // Include/ExcludeTrailingPathDelimiter
+  {$ENDIF BCB5}
   {$ENDIF COMPILER5}
   JvResources;
 

@@ -196,6 +196,9 @@ implementation
 
 uses
   {$IFDEF COMPILER5}
+  {$IFDEF BCB5}
+  JvVCL5Utils,
+  {$ENDIF BCB5}
   JvJCLUtils, // for IncludeTrailingPathDelimiter (only <D6)
   {$ENDIF COMPILER5}
   JvResources;

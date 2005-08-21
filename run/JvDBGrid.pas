@@ -517,6 +517,9 @@ uses
   StrUtils,
   JvDBLookup,
   {$ENDIF COMPILER6_UP}
+  {$IFDEF BCB5}
+  JvVCL5Utils,
+  {$ENDIF BCB5}
   JvConsts, JvResources, JvDBUtils, JvJCLUtils, JvJVCLUtils,
   JvAppStoragePropertyEngineDB, JvDBGridSelectColumnForm;
 

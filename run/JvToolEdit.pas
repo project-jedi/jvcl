@@ -1122,6 +1122,9 @@ uses
   JvBrowseFolder,
   {$ENDIF !CLR}
   {$ENDIF VCL}
+  {$IFDEF BCB5}
+  JvVCL5Utils,
+  {$ENDIF BCB5}
   JvPickDate, JvJCLUtils, JvJVCLUtils,
   JvThemes, JvResources, JvConsts;
 
