@@ -107,6 +107,9 @@ uses
   {$IFDEF MSWINDOWS}
   ShellAPI, LibHelp,
   {$ENDIF MSWINDOWS}
+  {$IFDEF BCB5}
+  JvVCL5Utils,
+  {$ENDIF BCB5}
   JvJVCLUtils, JvJCLUtils, JvConsts, JvDsgnConsts, JvDirectoryListForm, JvTypes;
 
 

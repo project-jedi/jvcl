@@ -258,6 +258,9 @@ uses
   ActiveX,
   {$ENDIF VCL}
   {$IFDEF COMPILER5}
+  {$IFDEF BCB5}
+  JvVCL5Utils,
+  {$ENDIF BCB5}
   JvJclUtils, // SameFileName() for Delphi 5
   {$ENDIF COMPILER5}
   JvJVCLUtils, JvResources;
@@ -393,7 +396,7 @@ end;
 
 //=== { TJvImageListItem } ===================================================
 
-constructor TJvImageListItem.Create(Collection: TCollection);
+constructor TJvImageListItem.Create(Collection: Classes.TCollection); // TCollection redeclared in JvVCL5Utils
 begin
   inherited Create(Collection);
 

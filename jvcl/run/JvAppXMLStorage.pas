@@ -180,6 +180,9 @@ implementation
 uses
   SysUtils, TypInfo,
   JclStrings,
+  {$IFDEF BCB5}
+  JvVCL5Utils,
+  {$ENDIF BCB5}
   JvJCLUtils, JvTypes, JvConsts, JvResources;
 
 const

@@ -241,6 +241,9 @@ implementation
 
 uses
   Math,
+  {$IFDEF BCB5}
+  JvVCL5Utils,
+  {$ENDIF BCB5}
   JclStrings,
   JvJCLUtils, JvJVCLUtils, JvConsts, JvResources;
 

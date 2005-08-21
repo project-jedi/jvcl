@@ -10,8 +10,8 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvZlibMultiple.PAS, released on 2001-02-28.
 
-The Initial Developer of the Original Code is Sébastien Buysse [sbuysse att buypin dott com]
-Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
+The Initial Developer of the Original Code is S?stien Buysse [sbuysse att buypin dott com]
+Portions created by S?stien Buysse are Copyright (C) 2001 S?stien Buysse.
 All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck att bigfoot dott com].
@@ -135,6 +135,9 @@ uses
   {$IFDEF COMPILER5}
   FileCtrl,
   {$ENDIF COMPILER5}
+  {$IFDEF BCB5}
+  JvVCL5Utils,
+  {$ENDIF BCB5}
   JvJCLUtils;
 
 {*******************************************************}

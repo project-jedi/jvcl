@@ -22,7 +22,7 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Description:
-  Итератор для поиска файлов по FindFirst/Next включая поддиректории.
+  ???? ?????FindFirst/Next ???????
   Iterator, searching files by FindFirst/Next including subdirs [translated]
 
 Known Issues:
@@ -70,15 +70,15 @@ type
     constructor Create;
     destructor Destroy; override;
     { Last result of search [translated] }
-    property CurrentItem: TSearchRec read GetCurrentItem; // последний результат поиска
+    property CurrentItem: TSearchRec read GetCurrentItem; // ??? ?????
     { Path to search in [translated] }
-    property Path: string read GetPath; // заданный для поиска путь
+    property Path: string read GetPath; // ???????
     { And attributes [translated] }
-    property Attr: Integer read FAttr; // и атрибуты
+    property Attr: Integer read FAttr; // ??
     property Recurse: Boolean read FRecurse;
 
     { Windows Error Code [translated] }
-    property ErrorCode: Integer read FLastSearchResult; // код ошибки Windows
+    property ErrorCode: Integer read FLastSearchResult; // ? ?? Windows
     procedure First(const FilePath, FileExt: string; FileAttr: Integer; RecurseSearch: Boolean);
     procedure Next;
     function IsDone: Boolean;
@@ -100,6 +100,9 @@ implementation
 
 {$IFDEF USEJVCL}
 uses
+  {$IFDEF BCB5}
+  JvVCL5Utils,
+  {$ENDIF BCB5}
   JvJCLUtils;
 {$ENDIF USEJVCL}
 

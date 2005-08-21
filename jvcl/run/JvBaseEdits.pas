@@ -326,6 +326,9 @@ implementation
 
 uses
   SysUtils, Consts, Math, Graphics,
+  {$IFDEF BCB5}
+  JvVCL5Utils,
+  {$ENDIF BCB5}
   JvJCLUtils, JvCalc, JvConsts, JvResources;
 
 {$IFDEF MSWINDOWS}

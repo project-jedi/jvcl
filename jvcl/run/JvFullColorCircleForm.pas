@@ -186,6 +186,9 @@ uses
   JvResources,
   TypInfo,
   {$IFDEF COMPILER5}
+  {$IFDEF BCB5}
+  JvVCL5Utils,
+  {$ENDIF BCB5}
   JclMath,   // For EnsureRange
   JvJCLUtils,   // for TryStrToInt
   {$ENDIF COMPILER5}

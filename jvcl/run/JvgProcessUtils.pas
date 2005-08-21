@@ -86,6 +86,9 @@ implementation
 
 uses
   TLHelp32,
+  {$IFDEF BCB5}
+  JvVCL5Utils,
+  {$ENDIF BCB5}
   {$IFDEF COMPILER5}
   JvgUtils, // SameFileName() for Delphi 5
   {$ENDIF COMPILER5}
