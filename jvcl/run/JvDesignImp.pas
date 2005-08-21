@@ -52,7 +52,7 @@ type
     procedure WMEraseBkgnd(var Message: TWmEraseBkgnd); message WM_ERASEBKGND;
     property Resizeable: Boolean read FResizeable write FResizeable;
   end;
-  //
+
   TJvDesignHandles = class(TComponent)
   private
     FContainer: TWinControl;
@@ -80,7 +80,7 @@ type
     property Resizeable: Boolean read FResizeable write SetResizeable;
     property Selected: TControl read FSelected write SetSelected;
   end;
-  //
+
   TJvDesignSelector = class(TJvDesignCustomSelector)
   private
     FHandles: TObjectList;
@@ -111,7 +111,7 @@ type
     property HandleWidth: Integer read FHandleWidth
       write SetHandleWidth default cJvDesignDefaultHandleWidth;
   end;
-  //
+
   TJvDesignCustomMouseTool = class
   protected
     FDragRect: TRect;
@@ -123,13 +123,13 @@ type
       X, Y: Integer);  virtual; abstract;
     property DragRect: TRect read FDragRect write FDragRect;
   end;
-  //
+
   TJvDesignDragMode = ( dmNone, dmMove, dmResize, dmSelect, dmCreate );
-  //
+
   TJvDesignAction = ( daSelectParent, daDelete, daCopy, daCut, daPaste,
     daNudgeLeft, daNudgeRight, daNudgeUp, daNudgeDown, daGrowWidth,
     daShrinkWidth, daGrowHeight, daShrinkHeight, daLastAction {$IFDEF COMPILER6_UP}= MAXINT{$ENDIF COMPILER6_UP} );
-  //
+
   TJvDesignController = class(TJvDesignCustomController)
   private
     FClicked: TControl;
@@ -147,7 +147,7 @@ type
     function MouseUp(Button: TMouseButton; X, Y: Integer): Boolean; override;
     procedure Action(inAction: TJvDesignAction);
   end;
-  //
+
   TJvDesignMouseTool = class(TJvDesignCustomMouseTool)
   private
     FSurface: TJvDesignSurface;
@@ -159,7 +159,7 @@ type
     constructor Create(AOwner: TJvDesignSurface); virtual;
     property Surface: TJvDesignSurface read FSurface write FSurface;
   end;
-  //
+
   TJvDesignMover = class(TJvDesignMouseTool)
   private
     FDragRects: array of TRect;
@@ -176,7 +176,7 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
   end;
-  //
+
   TJvDesignBander = class(TJvDesignMouseTool)
   protected
     function GetClient: TControl; virtual;
@@ -190,7 +190,7 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
   end;
-  //
+
   TJvDesignSizer = class(TJvDesignBander)
   private
     FHandleId: TJvDesignHandleId;
@@ -205,8 +205,8 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
   end;
-  //
-  TJvDesignDesigner = class(TComponent, 
+
+  TJvDesignDesigner = class(TComponent,
                             {$IFDEF COMPILER5}
                             IDesigner
                             {$ELSE}
@@ -217,23 +217,29 @@ type
     FMessenger: TJvDesignCustomMessenger;
   public
     constructor Create(inMessenger: TJvDesignCustomMessenger); reintroduce;
-    function GetCustomForm: TCustomForm;
-    function GetIsControl: Boolean;
-    function GetRoot: TComponent;
-    function IsDesignMsg(Sender: TControl; var Message: TMessage): Boolean;
-    function UniqueName(const BaseName: string): string;
+
+    property Messenger: TJvDesignCustomMessenger read FMessenger write FMessenger;
+
+    // IDesignerNotify interface
     procedure Modified;
     procedure Notification(AnObject: TPersistent; Operation: TOperation); reintroduce;
-    procedure PaintGrid;
+
+    // IDesigner, IDesignerHook interface
+    function GetCustomForm: TCustomForm;
     procedure SetCustomForm(Value: TCustomForm);
+    function GetIsControl: Boolean;
     procedure SetIsControl(Value: Boolean);
+    function IsDesignMsg(Sender: TControl; var Message: TMessage): Boolean;
+    procedure PaintGrid;
     procedure ValidateRename(AComponent: TComponent;
       const CurName, NewName: string); reintroduce;
+    function UniqueName(const BaseName: string): string;
+    function GetRoot: TComponent;
     property IsControl: Boolean read GetIsControl write SetIsControl;
     property Form: TCustomForm read GetCustomForm write SetCustomForm;
-    property Messenger: TJvDesignCustomMessenger read FMessenger write FMessenger;
+
   end;
-  //
+
   TJvDesignDesignerMessenger = class(TJvDesignCustomMessenger)
   private
     FDesignedForm: TCustomForm;
@@ -248,7 +254,7 @@ type
     destructor Destroy; override;
     procedure DesignComponent(inComponent: TComponent); override;
   end;
-  //
+
   TJvDesignMessageHookList = class(TComponent)
   private
     FHooks: TObjectList;
@@ -263,7 +269,7 @@ type
     procedure Hook(inClient: TWinControl);
     procedure Unhook(inComponent: TComponent);
   end;
-  //
+
   TJvDesignWinControlHookMessenger = class(TJvDesignCustomMessenger)
   private
     FHooks: TJvDesignMessageHookList;
