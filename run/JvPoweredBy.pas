@@ -147,12 +147,7 @@ implementation
 uses
   JvJCLUtils, JvResources;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvPoweredBy.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvPoweredBy.res}
-{$ENDIF UNIX}
+{$R JvPoweredBy.res}
 
 const
   cPoweredByJCL = 'JvPoweredByJCL';

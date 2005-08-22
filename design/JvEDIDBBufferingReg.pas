@@ -39,12 +39,7 @@ uses
   JvDsgnConsts,
   JvEDIDBBuffering {, JvEDITCPServer, JvEDITCPClient};
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvEDIDBBufferingReg.dcr}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvEDIDBBufferingReg.dcr}
-{$ENDIF UNIX}
+{$R JvEDIDBBufferingReg.dcr}
 
 procedure Register;
 begin

@@ -45,12 +45,7 @@ uses
   JvBDEProgress, JvBDEQBE, JvBDESecurity, JvBDEMemTable, JvBDEQuery,
   JvBDESQLScript, JvBDEMemTableEditor, JvBDESecurityEditor;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvBDEReg.dcr}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvBDEReg.dcr}
-{$ENDIF UNIX}
+{$R JvBDEReg.dcr}
 
 procedure Register;
 const

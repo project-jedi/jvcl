@@ -442,12 +442,7 @@ uses
   Math,
   JvConsts;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvOutlookBar.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvOutlookBar.res}
-{$ENDIF UNIX}
+{$R JvOutlookBar.res}
 
 const
   cButtonLeftOffset = 4;

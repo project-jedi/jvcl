@@ -157,12 +157,7 @@ implementation
 uses
   JvJVCLUtils, JvThemes;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvSwitch.Res}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvSwitch.Res}
-{$ENDIF UNIX}
+{$R JvSwitch.Res}
 
 constructor TJvSwitch.Create(AOwner: TComponent);
 var

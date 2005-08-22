@@ -393,12 +393,7 @@ uses
   {$ENDIF USEJVCL}
   JvXPCoreUtils;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvXPCore.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvXPCore.res}
-{$ENDIF UNIX}
+{$R JvXPCore.res}
 
 {$IFNDEF USEJVCL}
 resourcestring

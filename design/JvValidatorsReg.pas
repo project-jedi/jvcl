@@ -43,12 +43,7 @@ uses
   JvDsgnConsts,
   JvErrorIndicator, JvValidators, JvValidatorsEditorForm, JvDsgnEditors;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvValidatorsReg.dcr}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvValidatorsReg.dcr}
-{$ENDIF UNIX}
+{$R JvValidatorsReg.dcr}
 
 procedure Register;
 begin

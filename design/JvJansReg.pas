@@ -51,12 +51,7 @@ procedure Register;
 
 implementation
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvJansReg.dcr}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvJansReg.dcr}
-{$ENDIF UNIX}
+{$R JvJansReg.dcr}
 
 procedure Register;
 const

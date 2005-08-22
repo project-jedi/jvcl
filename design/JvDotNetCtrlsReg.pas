@@ -30,12 +30,7 @@ unit JvDotNetCtrlsReg;
 
 interface
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvDotNetCtrlsReg.dcr}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvDotNetCtrlsReg.dcr}
-{$ENDIF UNIX}
+{$R JvDotNetCtrlsReg.dcr}
 
 procedure Register;
 

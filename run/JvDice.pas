@@ -150,12 +150,7 @@ uses
   SysUtils, ImgList,
   JvThemes;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvDice.Res}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvDice.Res}
-{$ENDIF UNIX}
+{$R JvDice.Res}
 
 constructor TJvDice.Create(AOwner: TComponent);
 var

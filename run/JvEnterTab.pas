@@ -89,12 +89,7 @@ implementation
 uses
   Forms, StdCtrls;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvEnterTab.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvEnterTab.res}
-{$ENDIF UNIX}
+{$R JvEnterTab.res}
 
 constructor TJvEnterAsTab.Create(AOwner: TComponent);
 begin

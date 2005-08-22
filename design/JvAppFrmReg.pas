@@ -50,12 +50,7 @@ uses
   JvAnimTitle, JvFormAutoSize, JvEmbeddedForms,
   JvFormWallpaperEditor;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvAppFrmReg.dcr}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvAppFrmReg.dcr}
-{$ENDIF UNIX}
+{$R JvAppFrmReg.dcr}
 
 procedure Register;
 begin

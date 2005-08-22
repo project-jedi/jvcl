@@ -339,12 +339,7 @@ const
 implementation
 
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvSimImages.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvSimImages.res}
-{$ENDIF UNIX}
+{$R JvSimImages.res}
 
 // general bin procedure
 

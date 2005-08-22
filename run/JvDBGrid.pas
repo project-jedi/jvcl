@@ -523,12 +523,7 @@ uses
   JvConsts, JvResources, JvDBUtils, JvJCLUtils, JvJVCLUtils,
   JvAppStoragePropertyEngineDB, JvDBGridSelectColumnForm;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvDBGrid.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvDBGrid.res}
-{$ENDIF UNIX}
+{$R JvDBGrid.res}
 
 type
   TBookmarks = class(TBookmarkList);

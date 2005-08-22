@@ -179,12 +179,7 @@ uses
   {$ENDIF VCL}
   JvButton, JvResources;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvTipOfDay.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvTipOfDay.res}
-{$ENDIF UNIX}
+{$R JvTipOfDay.res}
 
 {$IFDEF VisualCLX}
 const

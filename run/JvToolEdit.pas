@@ -1128,12 +1128,7 @@ uses
   JvPickDate, JvJCLUtils, JvJVCLUtils,
   JvThemes, JvResources, JvConsts;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvToolEdit.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvToolEdit.res}
-{$ENDIF UNIX}
+{$R JvToolEdit.res}
 
 type
   {$IFDEF CLR}

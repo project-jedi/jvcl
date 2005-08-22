@@ -69,12 +69,7 @@ uses
   JvDsgnEditors, JvScrollMaxEditor, JvBehaviorLabelEditor, JvGroupHeaderEditor,
   JvFooterEditor, JvSpeedbarForm, JvTransparentButtonEditors, JvRollOutEditor;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvCtrlsReg.dcr}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvCtrlsReg.dcr}
-{$ENDIF UNIX}
+{$R JvCtrlsReg.dcr}
 
 procedure Register;
 begin

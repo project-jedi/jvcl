@@ -132,12 +132,7 @@ implementation
 uses
   Controls;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvComponentPanel.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvComponentPanel.res}
-{$ENDIF UNIX}
+{$R JvComponentPanel.res}
 
 constructor TJvComponentPanel.Create(AOwner: TComponent);
 begin
@@ -394,4 +389,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

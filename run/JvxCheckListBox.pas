@@ -325,12 +325,7 @@ const
 
 implementation
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvxCheckListBox.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvxCheckListBox.res}
-{$ENDIF UNIX}
+{$R JvxCheckListBox.res}
 
 uses
   SysUtils, Consts, Math,

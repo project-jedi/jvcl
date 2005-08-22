@@ -149,12 +149,7 @@ implementation
 uses
   JvTypes, JvResources;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvWinampLabel.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvWinampLabel.res}
-{$ENDIF UNIX}
+{$R JvWinampLabel.res}
 
 const
   // (p3) fixed as suggested by Remko Bonte

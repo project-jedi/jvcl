@@ -341,12 +341,7 @@ uses
   Consts,
   JvJVCLUtils, JvThemes;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvTMTimeLine.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvTMTimeLine.res}
-{$ENDIF UNIX}
+{$R JvTMTimeLine.res}
 
 {$IFDEF VisualCLX}
 resourcestring

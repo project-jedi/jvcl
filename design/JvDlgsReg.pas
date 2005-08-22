@@ -65,12 +65,7 @@ uses
   JvImageDlg, JvLoginForm, JvDualList, JvProgressDialog, JvBaseDlgEditor,
   JvTipOfDayEditor;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvDlgsReg.dcr}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvDlgsReg.dcr}
-{$ENDIF UNIX}
+{$R JvDlgsReg.dcr}
 
 procedure Register;
 const

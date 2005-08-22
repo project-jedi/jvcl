@@ -619,12 +619,7 @@ uses
   {$ENDIF USEJVCL}
   Menus;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvXPBar.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvXPBar.res}
-{$ENDIF UNIX}
+{$R JvXPBar.res}
 
 {$IFNDEF USEJVCL}
 resourcestring

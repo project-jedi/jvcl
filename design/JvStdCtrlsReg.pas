@@ -75,12 +75,7 @@ uses
   JvStaticText, JvStatusBar, JvGrids, JvStringGrid, JvBitBtn, JvPanel, JvImageList,
   JvCheckedItemsForm, JvProgressEditor, JvDsgnEditors, JvCheckedMaskEdit;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvStdCtrlsReg.dcr}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvStdCtrlsReg.dcr}
-{$ENDIF UNIX}
+{$R JvStdCtrlsReg.dcr}
 
 procedure Register;
 const
