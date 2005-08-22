@@ -150,6 +150,7 @@ begin
                 Add(RsAddToBrowsePath, S);
                 if not DeveloperInstall then
                   S := sJVCLMacroCommonDir;
+                S := S + ';' + sJVCLMacroResourcesDir;
                 Add(RsAddToSearchPath, S);
 
                 Add(RsAddToLibraryPath, UnitOutDir);

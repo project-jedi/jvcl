@@ -148,9 +148,10 @@ resourcestring
 
 const
   // sJVCLMacroXxx are displayed in the Summary page. They are not used by code.
-  sJVCLMacroCommonDir = '$(JVCL)\common';             // do not localize
-  sJVCLMacroRunDir = '$(JVCL)\run';                   // do not localize
-  sJVCLMacroClxDirs = '$(JVCL)\qcommon;$(JVCL)\qrun'; // do not localize
+  sJVCLMacroCommonDir = '$(JVCL)\common';                                // do not localize
+  sJVCLMacroRunDir = '$(JVCL)\run';                                      // do not localize
+  sJVCLMacroResourcesDir = '$(JVCL)\Resources';                          // do not localize
+  sJVCLMacroClxDirs = '$(JVCL)\qcommon;$(JVCL)\qrun;$(JVCL)\Resources';  // do not localize
 
 
  // PgConfig.pas
