@@ -9747,6 +9747,7 @@ procedure CollectionSort(Collection: TCollection; sortProc: TCollectionSortProc)
 begin
  if not Assigned(Collection) then Exit;
  if not Assigned(sortProc) then Exit;
+ if Collection.Count < 2 then Exit;
  CollectionQuickSort(Collection, 0, Collection.Count-1, sortProc);
 end;
 
