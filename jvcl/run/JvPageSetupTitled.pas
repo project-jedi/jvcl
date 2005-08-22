@@ -69,12 +69,7 @@ const
 
 implementation
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvPageSetupTitled.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvPageSetupTitled.res}
-{$ENDIF UNIX}
+{$R JvPageSetupTitled.res}
 
 uses
   Windows, Forms, SysUtils, CommDlg;

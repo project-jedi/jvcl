@@ -107,12 +107,7 @@ uses
   {$ENDIF USEJVCL}
   JvgTypes, JvgUtils;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvgHint.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvgHint.res}
-{$ENDIF UNIX}
+{$R JvgHint.res}
 
 {$IFNDEF USEJVCL}
 resourcestring

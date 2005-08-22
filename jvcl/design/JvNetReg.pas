@@ -54,12 +54,7 @@ uses
   JvTypes, JvDsgnConsts,
   JvStringListToHtml, JvFormToHtml, JvRgbToHtml, JvStrToHtml;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvNetReg.dcr}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvNetReg.dcr}
-{$ENDIF UNIX}
+{$R JvNetReg.dcr}
 
 procedure Register;
 begin

@@ -55,12 +55,7 @@ uses
   JvDataEmbeddedEditor, JvPatcherEditor, JvProfilerForm, JvPageManagerForm,
   JvDsgnEditors;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvCmpReg.dcr}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvCmpReg.dcr}
-{$ENDIF UNIX}
+{$R JvCmpReg.dcr}
 
 procedure Register;
 begin

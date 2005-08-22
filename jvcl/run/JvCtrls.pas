@@ -228,12 +228,7 @@ uses
   Consts, SysUtils, Forms, ActnList, ExtCtrls,
   JvJCLUtils, JvJVCLUtils, JvThemes;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvCtrls.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvCtrls.res}
-{$ENDIF UNIX}
+{$R JvCtrls.res}
 
 const
   JvImgBtnModalResults: array [TJvImgBtnKind] of TModalResult =

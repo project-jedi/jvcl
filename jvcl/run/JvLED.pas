@@ -134,12 +134,7 @@ implementation
 uses
   SysUtils;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvLED.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvLED.res}
-{$ENDIF UNIX}
+{$R JvLED.res}
 
 const
   cMaskLEDName = 'JvCustomLEDMASK';

@@ -35,12 +35,7 @@ procedure Register;
 
 implementation
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvGlobusReg.dcr}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvGlobusReg.dcr}
-{$ENDIF UNIX}
+{$R JvGlobusReg.dcr}
 
 uses
   Classes,

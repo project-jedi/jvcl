@@ -143,12 +143,7 @@ uses
   JvToolEdit, JvSpeedButton, JvExExtCtrls,
   JvJVCLUtils, JvJCLUtils, JvConsts, JvResources;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvCalc.Res}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvCalc.Res}
-{$ENDIF UNIX}
+{$R JvCalc.Res}
 
 type
   TCalcBtnKind =
@@ -334,7 +329,7 @@ function CreateCalcBtn(AParent: TWinControl; AKind: TCalcBtnKind;
   AOnClick: TNotifyEvent; ALayout: TCalcPanelLayout): TJvCalcButton;
 const
   BtnCaptions: array [cbSgn..cbMC] of string[4] =
-    ('±', ',', '/', '*', '-', '+', 'sqrt', '%', '1/x', '=', '<-', 'C',
+    ('', ',', '/', '*', '-', '+', 'sqrt', '%', '1/x', '=', '<-', 'C',
      'MP', 'MS', 'MR', 'MC');
 begin
   Result := TJvCalcButton.CreateKind(AParent, AKind);

@@ -414,12 +414,7 @@ uses
   JclGraphUtils,
   JvThemes, JvConsts, JvResources;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvSegmentedLEDDisplay.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvSegmentedLEDDisplay.res}
-{$ENDIF UNIX}
+{$R JvSegmentedLEDDisplay.res}
 
 var
   GDigitClassList: TThreadList = nil;

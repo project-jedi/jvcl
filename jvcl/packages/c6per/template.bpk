@@ -63,6 +63,7 @@
                    -DDelphiPersonalEdition
                    %C6PFLAGS%
                    -U$(BCB)\Projects\Bpl
+                   -R..\..\Resources
                   "/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>

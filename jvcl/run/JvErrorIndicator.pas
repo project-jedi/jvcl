@@ -219,12 +219,7 @@ uses
   SysUtils, 
   JvTypes, JvResources;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvErrorIndicator.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvErrorIndicator.res}
-{$ENDIF UNIX}
+{$R JvErrorIndicator.res}
 
 const
   cDefBlinkCount = 5;

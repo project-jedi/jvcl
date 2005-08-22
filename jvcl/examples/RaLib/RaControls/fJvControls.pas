@@ -146,12 +146,12 @@ uses JvJCLUtils, JvJVCLUtils;
 
 {$R *.DFM}
 
-{$R ..\..\..\resources\JvStdCtrlsReg.dcr}
-{$R ..\..\..\resources\JvDlgsReg.dcr}
-{$R ..\..\..\resources\JvCustomReg.dcr}
-{$R ..\..\..\resources\JvCtrlsReg.dcr}
-{$R ..\..\..\resources\JvDBReg.dcr}
-{$R ..\..\..\resources\JvBDEReg.dcr}
+{$R JvStdCtrlsReg.dcr}
+{$R JvDlgsReg.dcr}
+{$R JvCustomReg.dcr}
+{$R JvCtrlsReg.dcr}
+{$R JvDBReg.dcr}
+{$R JvBDEReg.dcr}
 //{$R rai.dcr}
 {$R res.dcr}
 

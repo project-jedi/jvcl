@@ -63,6 +63,7 @@
                    -U$(BCB)\Lib\Obj
                    %C5PFLAGS%
                    -U$(BCB)\Projects\Bpl
+                   -R..\..\Resources
                   "/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>

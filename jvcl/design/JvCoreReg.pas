@@ -62,12 +62,7 @@ uses
   JvAppIniStorage, JvAppStorage, JvAppStorageSelectList,
   JvAutoComplete;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvCoreReg.dcr}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvCoreReg.dcr}
-{$ENDIF UNIX}
+{$R JvCoreReg.dcr}
 
 procedure Register;
 const

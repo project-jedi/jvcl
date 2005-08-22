@@ -155,12 +155,7 @@ uses
 {$ENDIF USEJVCL}
 
 {$IFDEF GL_CAPT_BUTTONS}
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvgCaption.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvgCaption.res}
-{$ENDIF UNIX}
+{$R JvgCaption.res}
 {$ENDIF GL_CAPT_BUTTONS}
 
 {$IFNDEF USEJVCL}

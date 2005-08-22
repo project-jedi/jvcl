@@ -235,12 +235,7 @@ uses
   JvConsts, JvJCLUtils, JvResources, JvThemes;
 {$ENDIF USEJVCL}
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvgButton.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvgButton.res}
-{$ENDIF UNIX}
+{$R JvgButton.res}
 
 {$IFNDEF USEJVCL}
 resourcestring

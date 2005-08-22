@@ -44,12 +44,7 @@ uses
   JvDsgnConsts,
   JvPlugin, JvPluginManager, JvPluginWizard, JvPluginParamsForm;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvPluginReg.dcr}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvPluginReg.dcr}
-{$ENDIF UNIX}
+{$R JvPluginReg.dcr}
 
 procedure Register;
 begin

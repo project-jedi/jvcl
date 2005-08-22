@@ -174,12 +174,7 @@ uses
   SysUtils, Forms, Dialogs,
   JvThemes, JvResources;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvCSVBase.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvCSVBase.res}
-{$ENDIF UNIX}
+{$R JvCSVBase.res}
 
 //=== { TJvCSVBase } =========================================================
 

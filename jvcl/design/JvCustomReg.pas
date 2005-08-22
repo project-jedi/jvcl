@@ -57,12 +57,7 @@ uses
   JvTimeLine, JvTMTimeLine, JvValidateEdit, JvChart, JvTimeLineEditor,
   JvOutlookBarEditors, JvLookoutEditor, JvTabBar;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvCustomReg.dcr}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvCustomReg.dcr}
-{$ENDIF UNIX}
+{$R JvCustomReg.dcr}
 
 procedure Register;
 const

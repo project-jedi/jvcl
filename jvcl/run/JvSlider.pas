@@ -137,12 +137,7 @@ const
 implementation
 
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvSlider.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvSlider.res}
-{$ENDIF UNIX}
+{$R JvSlider.res}
 
 constructor TJvSlider.Create(AOwner: TComponent);
 begin

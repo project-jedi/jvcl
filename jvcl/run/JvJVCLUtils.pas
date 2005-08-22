@@ -767,12 +767,7 @@ uses
   JclSysInfo,
   JvConsts, JvProgressUtils, JvResources;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvConsts.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvConsts.res}
-{$ENDIF UNIX}
+{$R JvConsts.res}
 
 const
   {$IFDEF MSWINDOWS}

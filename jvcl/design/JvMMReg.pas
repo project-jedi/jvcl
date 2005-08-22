@@ -64,12 +64,7 @@ uses
   JvFullColorDialogs, JvFullColorCtrls, JvFullColorEditors,
   JvFullColorSpacesEditors, JvFullColorSpaces;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvMMReg.dcr}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvMMReg.dcr}
-{$ENDIF UNIX}
+{$R JvMMReg.dcr}
 
 procedure Register;
 begin

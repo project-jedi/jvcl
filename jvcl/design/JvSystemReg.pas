@@ -62,12 +62,7 @@ uses
   JvFormPlacement, JvAppXMLStorage, JvFormPlacementSelectList,
   JvMinMaxForm, JvFormPropertiesForm, JvDsgnEditors;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvSystemReg.dcr}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvSystemReg.dcr}
-{$ENDIF UNIX}
+{$R JvSystemReg.dcr}
 
 procedure Register;
 begin

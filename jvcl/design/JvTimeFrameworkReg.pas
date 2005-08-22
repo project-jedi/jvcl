@@ -38,12 +38,7 @@ uses
   {$ENDIF COMPILER6_UP}
   ColnEdit;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvTimeFrameworkReg.dcr}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvTimeFrameworkReg.dcr}
-{$ENDIF UNIX}
+{$R JvTimeFrameworkReg.dcr}
 
 type
   {$IFDEF COMPILER5}

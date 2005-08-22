@@ -37,12 +37,7 @@ procedure Register;
 
 implementation
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvManagedThreadsReg.dcr}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvManagedThreadsReg.dcr}
-{$ENDIF UNIX}
+{$R JvManagedThreadsReg.dcr}
 
 {$IFNDEF USEJVCL}
 resourcestring

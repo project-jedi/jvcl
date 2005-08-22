@@ -37,12 +37,7 @@ uses
   Classes,
   JvDsgnConsts, JvInspector, JvDesignSurface;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvRuntimeDesignReg.dcr}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvRuntimeDesignReg.dcr}
-{$ENDIF UNIX}
+{$R JvRuntimeDesignReg.dcr}
 
 procedure Register;
 begin

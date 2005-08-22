@@ -298,12 +298,7 @@ uses
   Math,
   JvgUtils;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvgTreeView.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvgTreeView.res}
-{$ENDIF UNIX}
+{$R JvgTreeView.res}
 
 //=== { TJvgCustomTreeView } =================================================
 

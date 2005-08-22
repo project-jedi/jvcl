@@ -331,12 +331,7 @@ uses
   {$ENDIF BCB5}
   JvJCLUtils, JvCalc, JvConsts, JvResources;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvBaseEdits.Res}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvBaseEdits.Res}
-{$ENDIF UNIX}
+{$R JvBaseEdits.Res}
 
 const
   sCalcBmp = 'JvCustomNumEditBUTTONGLYPH'; { Numeric editor button glyph }

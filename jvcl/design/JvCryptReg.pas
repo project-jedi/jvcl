@@ -45,12 +45,7 @@ uses
   JvDsgnConsts,
   JvCipher, JvGenetic, JvSerialMaker;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvCryptReg.dcr}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvCryptReg.dcr}
-{$ENDIF UNIX}
+{$R JvCryptReg.dcr}
 
 procedure Register;
 begin

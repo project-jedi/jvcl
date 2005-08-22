@@ -187,12 +187,7 @@ uses
 
 {$R *.dfm}
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvgLabelEditorForm.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvgLabelEditorForm.res}
-{$ENDIF UNIX}
+{$R JvgLabelEditorForm.res}
 
 {$IFNDEF USEJVCL}
 resourcestring

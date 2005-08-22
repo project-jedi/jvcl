@@ -52,12 +52,7 @@ uses
   JvDBMemDatasetEditor, JvDBGridExportEditors, JvDBGridEditors, JvCsvDataEditor,
   JvDBActions, JvDBActnResForm;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvDBReg.dcr}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvDBReg.dcr}
-{$ENDIF UNIX}
+{$R JvDBReg.dcr}
 
 procedure Register;
 const

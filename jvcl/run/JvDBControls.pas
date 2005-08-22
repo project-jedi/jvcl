@@ -690,12 +690,7 @@ uses
   SysUtils, Math, Forms,
   JvJCLUtils, JvJVCLUtils, JvCalc, JvTypes, JvConsts, JvResources;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvDBControls.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvDBControls.res}
-{$ENDIF UNIX}
+{$R JvDBControls.res}
 
 //=== NEW IN JVCL 3.0 ==
 //=== { TJvDBMaskEdit } ======================================================

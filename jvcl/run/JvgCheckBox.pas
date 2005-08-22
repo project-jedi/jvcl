@@ -192,7 +192,7 @@ uses
   Math;
 {$ENDIF USEJVCL}
 
-{$R ..\Resources\JvgCheckBox.res}
+{$R JvgCheckBox.res}
 
 {$IFNDEF USEJVCL}
 

@@ -49,12 +49,7 @@ uses
 
 procedure Register;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvPageListTreeViewReg.dcr}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvPageListTreeViewReg.dcr}
-{$ENDIF UNIX}
+{$R JvPageListTreeViewReg.dcr}
 
 implementation
 
