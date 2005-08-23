@@ -3234,7 +3234,7 @@ var
   I: Integer;
 begin
   // test if the new value is only made of spaces or tabs
-  for I := 0 to Length(Value) do
+  for I := 1 to Length(Value) do
     if not (Value[I] in [Tab, ' ']) then
       Exit;
   FIndentString := Value;
