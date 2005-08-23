@@ -129,16 +129,20 @@ type
 
   TJvImageItems = class(TOwnedCollection)
   private
-    FStrings: TStrings;
     function GetItems(Index: Integer): TJvImageItem;
     procedure SetItems(Index: Integer; const Value: TJvImageItem);
     function GetObjects(Index: Integer): TObject;
     procedure SetObjects(Index: Integer; const Value: TObject);
   protected
+    FStrings: TStrings;  // Protected to allow to use it in derived classes
+    FDestroying: Boolean; // True when our Destroy has been called.
+    
     procedure Update(Item: TCollectionItem); override;
     procedure FillItems;
+    procedure Notify(Item: TCollectionItem; Action: TCollectionNotification); override;
   public
     constructor Create(AOwner: TPersistent);
+    destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     function Add: TJvImageItem;
     function AddText(const Text: string): Integer;
@@ -480,7 +484,7 @@ begin
   FOwner := nil; // indicate that the item is in the destructor
   // PRY 2002.06.04
   //if (S <> nil) and not (csDestroying in TComponent(FOwner.GetWinControl).ComponentState) then
-  if (S <> nil) and not (csDestroying in GetWinControl.ComponentState) then
+  if (S <> nil) and (GetWinControl <> nil)  and not (csDestroying in GetWinControl.ComponentState) then
   begin
     S.Delete(Index);
     for i := 0 to S.Count - 1 do
@@ -594,6 +598,13 @@ end;
 constructor TJvImageItems.Create(AOwner: TPersistent);
 begin
   inherited Create(AOwner, TJvImageItem);
+  FDestroying := False;
+end;
+
+destructor TJvImageItems.Destroy;
+begin
+  FDestroying := True;
+  inherited Destroy;
 end;
 
 function TJvImageItems.Add: TJvImageItem;
@@ -699,6 +710,16 @@ begin
   inherited Items[Index] := Value;
 end;
 
+function TJvImageItems.GetObjects(Index: Integer): TObject;
+begin
+  Result := Items[Index].LinkedObject;
+end;
+
+procedure TJvImageItems.SetObjects(Index: Integer; const Value: TObject);
+begin
+  Items[Index].LinkedObject := Value;
+end;
+
 procedure TJvImageItems.Update(Item: TCollectionItem);
 var
   W: TPersistent;
@@ -749,6 +770,21 @@ end;
 procedure TJvImageItems.Sort(SortProc: TCollectionSortProc);
 begin
   CollectionSort(Self, SortProc);
+end;
+
+procedure TJvImageItems.Notify(Item: TCollectionItem;
+  Action: TCollectionNotification);
+begin
+  inherited Notify(Item, Action);
+
+  if FDestroying then
+    Exit;
+
+  case Action of
+    cnAdded: ;
+    cnExtracting,
+    cnDeleting: FStrings.Delete(FStrings.IndexOfObject(Item));
+  end;
 end;
 
 //=== { TJvImageComboBox } ===================================================
@@ -1779,35 +1815,27 @@ end;
 procedure TJvImageItem.SetGlyph(const Value: TBitmap);
 begin
   FGlyph.Assign(Value);
-  if FOwner <> nil then
+  if GetWinControl <> nil then
     GetWinControl.Invalidate;
 end;
 
 procedure TJvImageItem.FontChange(Sender: TObject);
 begin
   if not (puFont in FListPropertiesUsed) then
-    if FOwner <> nil then
+    if GetWinControl <> nil then
       GetWinControl.Invalidate;
-end;
-
-function TJvImageItems.GetObjects(Index: Integer): TObject;
-begin
-  Result := Items[Index].LinkedObject;
-end;
-
-procedure TJvImageItems.SetObjects(Index: Integer; const Value: TObject);
-begin
-  Items[Index].LinkedObject := Value;
 end;
 
 function TJvImageItem.GetWinControl: TWinControl;
 begin
-  Result := TWinControl(TJvImageItems(Collection).GetOwner);
+  Result := nil;
+  if Assigned(Collection) then
+    Result := TWinControl(TJvImageItems(Collection).GetOwner);
 end;
 
 function TJvImageItem.GetColorHighlight: TColor;
 begin
-  if (puColorHighlight in FListPropertiesUsed) and (FOwner <> nil) then
+  if (puColorHighlight in FListPropertiesUsed) and (GetWinControl <> nil) then
   begin
     if GetWinControl is TJvImageListBox then
       Result := TJvImageListBox(GetWinControl).ColorHighlight
@@ -1820,7 +1848,7 @@ end;
 
 function TJvImageItem.GetColorHighlightText: TColor;
 begin
-  if (puColorHighlightText in FListPropertiesUsed) and (FOwner <> nil) then
+  if (puColorHighlightText in FListPropertiesUsed) and (GetWinControl <> nil) then
   begin
     if GetWinControl is TJvImageListBox then
       Result := TJvImageListBox(GetWinControl).ColorHighlightText
@@ -1833,7 +1861,7 @@ end;
 
 procedure TJvImageItem.SetColorHighlight(const Value: TColor);
 begin
-  if (puColorHighlight in FListPropertiesUsed) and (FOwner <> nil) then
+  if (puColorHighlight in FListPropertiesUsed) and (GetWinControl <> nil) then
   begin
     if GetWinControl is TJvImageListBox then
       TJvImageListBox(GetWinControl).ColorHighlight := Value
@@ -1846,7 +1874,7 @@ end;
 
 procedure TJvImageItem.SetColorHighlightText(const Value: TColor);
 begin
-  if (puColorHighlightText in FListPropertiesUsed) and (FOwner <> nil) then
+  if (puColorHighlightText in FListPropertiesUsed) and (GetWinControl <> nil) then
   begin
     if GetWinControl is TJvImageListBox then
       TJvImageListBox(GetWinControl).ColorHighlightText := Value
