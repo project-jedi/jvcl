@@ -153,6 +153,9 @@ type
     procedure Move(CurIndex, NewIndex: Integer);
     procedure Sort(SortProc: TCollectionSortProc);
 
+    procedure BeginUpdate; override;
+    procedure EndUpdate; override;
+
     function IndexOfLinkedObject(ALinkedObject: TObject): Integer;
 
     property Items[Index: Integer]: TJvImageItem read GetItems write SetItems; default;
@@ -734,6 +737,20 @@ begin
   else
   if W is TWinControl then
     TWinControl(W).Invalidate;
+end;
+
+procedure TJvImageItems.BeginUpdate;
+begin
+  inherited BeginUpdate;
+  if not FDestroying then
+    FStrings.BeginUpdate;
+end;
+
+procedure TJvImageItems.EndUpdate;
+begin
+  if not FDestroying then
+    FStrings.EndUpdate;
+  inherited EndUpdate;
 end;
 
 procedure TJvImageItems.FillItems;
