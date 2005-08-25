@@ -797,10 +797,14 @@ begin
   if FDestroying then
     Exit;
 
+  // For Added and Deleting, the TListBoxStrings class will deal with
+  // notifying the list box. In the case of Extracting though, we must
+  // remove the item ourselves or the count in FStrings will be out of
+  // sync with the count in this class.
   case Action of
     cnAdded: ;
-    cnExtracting,
-    cnDeleting: FStrings.Delete(FStrings.IndexOfObject(Item));
+    cnExtracting: FStrings.Delete(FStrings.IndexOfObject(Item));
+    cnDeleting: ;  
   end;
 end;
 
