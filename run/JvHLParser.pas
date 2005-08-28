@@ -14,7 +14,7 @@ The Initial Developers of the Original Code are: Andrei Prygounkov <a dott prygo
 Copyright (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
-Contributor(s):
+Contributor(s): Eswar Prakash R [eswar dott prakash att gmail.com]
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -54,7 +54,7 @@ const
   ieBadRemark = 1;
 
 type
-  TIParserStyle = (psNone, psPascal, psCpp, psPython, psVB, psHtml, psPerl, psCocoR, psPhp);
+  TIParserStyle = (psNone, psPascal, psCpp, psPython, psVB, psHtml, psPerl, psCocoR, psPhp, psSql);
 
   TJvIParser = class(TObject)
   protected
@@ -292,6 +292,39 @@ var
           if F = nil then
             F := StrEnd(P + 1);
           P := F;
+        end;
+      // Support for the SQL -- comments
+      '-':
+        if (FStyle = psSql) and (P[1] = '-') then
+        begin
+          F := StrScan(P + 1, Cr);
+          if F = nil then
+            F := StrEnd(P + 1);
+          P := F;
+        end;
+      // Support for multiline comments for HTML
+      '<':
+        if (FStyle = psHtml) and (P[1] = '!') then
+        begin
+          // we need the next 2 chars to be --
+          if (P[2] = #0) or (P[3] = #0) then
+            Exit; // line end
+          if (P[2] <> '-') and (P[3] <> '-') then
+            Exit;
+          F := P + 3;
+          while True do
+          begin
+            F := StrScan(F, '-');
+            if F = nil then //IParserError(ieBadRemark, P - FpcProgram);
+              Exit;
+            if (F[1] = '-') and (F[2] = '>') then
+            begin
+              Inc(F, 2);
+              Break;
+            end;
+            Inc(F);
+          end;
+          P := F + 1;
         end;
     end;
     SkipComments := False;
@@ -656,6 +689,39 @@ var
           if F = nil then
             F := StrEndW(P + 1);
           P := F;
+        end;
+      // Support for the SQL -- comments
+      '-':
+        if (FStyle = psSql) and (P[1] = '-') then
+        begin
+          F := StrScanW(P + 1, WideChar(Cr));
+          if F = nil then
+            F := StrEndW(P + 1);
+          P := F;
+        end;
+      // Support for multiline comments for HTML
+      '<':
+        if (FStyle = psHtml) and (P[1] = '!') then
+        begin
+          // we need the next 2 chars to be --
+          if (P[2] = #0) or (P[3] = #0) then
+            Exit; // line end
+          if (P[2] <> '-') and (P[3] <> '-') then
+            Exit;
+          F := P + 3;
+          while True do
+          begin
+            F := StrScanW(F, WideChar('-'));
+            if F = nil then //IParserError(ieBadRemark, P - FpcProgram);
+              Exit;
+            if (F[1] = '-') and (F[2] = '>') then
+            begin
+              Inc(F, 2);
+              Break;
+            end;
+            Inc(F);
+          end;
+          P := F + 1;
         end;
     end;
     SkipComments := False;
