@@ -14,7 +14,7 @@ The Initial Developers of the Original Code are: Andrei Prygounkov <a dott prygo
 Copyright (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
-Contributor(s):
+Contributor(s): Eswar Prakash R [eswar dott prakash att gmail.com]
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -255,8 +255,10 @@ begin
     case FHighlighter of
       hlPascal:
         Parser.Style := psPascal;
-      hlCBuilder, hlSql, hlJava, hlNQC, hlCSharp:
+      hlCBuilder, hlJava, hlNQC, hlCSharp:
         Parser.Style := psCpp;
+      hlSql:
+        Parser.Style := psSql;
       hlPython:
         Parser.Style := psPython;
       hlVB:
@@ -321,6 +323,7 @@ const
     ' int monitor repeat return signed start stop sub switch task true' +
     ' until void while ';
 
+  // Support for REPLACE keyword 
   SQLKeyWords =
     ' active as add asc after ascending all at alter auto' +
     ' and autoddl any avg based between basename blob' +
@@ -346,7 +349,7 @@ const
     ' open output_type option overflow page post_event pagelength  precision' +
     ' pages  prepare page_size procedure parameter  protected password  primary' +
     ' plan  privileges position  public quit' +
-    ' raw_partitions  retain rdb db_key  return read  returning_values real  returns' +
+    ' raw_partitions  retain rdb db_key  return read replace returning_values real  returns' +
     ' record_version revoke references  right release  rollback reserv runtime' +
     ' reserving schema  sql segment  sqlcode select  sqlerror set  sqlwarning' +
     ' shadow  stability shared  starting shell  starts show  statement' +
@@ -580,9 +583,17 @@ const
         Result := ((LS > 0) and (St[1] = '{')) or
           ((LS > 1) and (((St[1] = '(') and (St[2] = '*')) or
           ((St[1] = '/') and (St[2] = '/'))));
-      hlCBuilder, hlSql, hlJava, hlPhp, hlNQC:
+      hlCBuilder, hlJava, hlPhp, hlNQC:
         Result := (LS > 1) and (St[1] = '/') and
           ((St[2] = '*') or (St[2] = '/'));
+      // Support for SQL comment line beginning with -- 
+      hlSql:
+        Result := (LS > 1) and ((St[1] = '-') and
+          (St[2] = '-'));
+      // HTML multi line comment support 
+      hlHtml:
+        Result := (LS > 3) and (St[1] = '<') and (St[2] = '!')
+          and (St[3] = '-') and (St[4] = '-');
       hlVB:
         Result := (LS > 0) and (St[1] = '''');
       hlPython, hlPerl:
@@ -791,7 +802,7 @@ begin
       C := Colors.Comment
     else
       C := Colors.PlainText;
-    if (FLong <> 0) and (FHighlighter <> hlHtml) then
+    if (FLong <> 0) {(FHighlighter <> hlHtml)} then
     begin
       Parser.pcPos := Parser.pcProgram + FindLongEnd + 1;
       case Highlighter of
@@ -921,15 +932,34 @@ begin
           hlHtml:
             if not InTag then
             begin
+              { Check for the comment starting
+                 with <!-- and force the hilighter to check for
+                 the comments }
+              if Token = '<!--' then
+              begin
+                InTag := True;
+                SetColor(Colors.Comment);
+                F := False;
+              end
+              else
               if Token = '<' then
               begin
                 InTag := True;
-                SetColor(Colors.Reserved)
-              end;
-              F := True;
+                SetColor(Colors.Reserved);
+                F := True;
+              end
+              else
+                F := False;
             end
             else
             begin
+              if Token = '-->' then
+              begin
+                InTag := False;
+                SetColor(Colors.Reserved);
+                F := False;
+              end
+              else
               if Token = '>' then
               begin
                 InTag := False;
@@ -1338,12 +1368,28 @@ begin
                       P := StrScanW(F + I, WideChar('>'));
                       if P = nil then
                       begin
-                        FLong := lgTag;
+                        // Multiline comments in HTML 
+                        if S[2] = '!' then
+                          FLong := lgComment1
+                        else
+                          FLong := lgTag;
+                          
                         Break;
                       end
                       else
                         I := P - F + 1;
                     end;
+                end;
+              // Multiline comments in HTML 
+              lgComment1:
+                begin
+                  P := StrScanW(F + I - 1, WideChar('>'));
+                  if P = nil then
+                    Break
+                  else
+                    if (P[-2] = '-') and (P[-1] = '-') then
+                      FLong := lgNone;
+                  I := P - F + 1;
                 end;
               lgTag: // html tag
                 begin
@@ -1545,6 +1591,16 @@ begin
       end;
     hlHtml:
       case FLong of
+        // HTML multiline comments 
+        lgComment1:
+          begin
+            P := StrScanW(P, WideChar('>'));
+            if P <> nil then
+              // check if the previous characters are
+              // --
+              if (P[-1] = '-') and (P[-2] = '-') then
+                Result := P - PWideChar(FLine);
+          end;
         lgTag:
           begin
             P := StrScanW(P, WideChar('>'));
