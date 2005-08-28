@@ -37,7 +37,7 @@ Known Issues:
 // individual versions including service packs
 // ONLY A SINGLE ONE IS ALLOWED TO BE ACTIVATED BY REMOVING THE DOT!
 {.$DEFINE WIN95}
-{.DEFINE WIN98Gold}
+{.$DEFINE WIN98Gold}
 {.$DEFINE WIN98SE}
 {.$DEFINE WIN98ME}
 {.$DEFINE WINNT35}
@@ -359,6 +359,9 @@ Known Issues:
 // History:
 
 // $Log$
+// Revision 1.2  2005/08/28 15:23:33  obones
+// Added missing $
+//
 // Revision 1.1  2004/11/07 20:36:05  marquardt
 // Config Manager and Setup API conversions
 //
