@@ -5791,11 +5791,11 @@ type
     DeviceInfoData: TSPDevInfoData; Reserved1, Reserved2: Pointer): BOOL; stdcall;
 
   {$IFDEF WINXP_UP}
-  TInstallHinfSectionA = procedure(Window: HWND; ModuleHandle: HINSTANCE;
+  TInstallHinfSectionA = procedure(Window: HWND; ModuleHandle: HINST;
     CommandLine: PAnsiChar; ShowCommand: Integer); stdcall;
-  TInstallHinfSectionW = procedure(Window: HWND; ModuleHandle: HINSTANCE;
+  TInstallHinfSectionW = procedure(Window: HWND; ModuleHandle: HINST;
     CommandLine: PWideChar; ShowCommand: Integer); stdcall;
-  TInstallHinfSection = procedure (Window: HWND; ModuleHandle: HINSTANCE;
+  TInstallHinfSection = procedure (Window: HWND; ModuleHandle: HINST;
     CommandLine: PTSTR; ShowCommand: Integer); stdcall;
   {$ENDIF WINXP_UP}
 
