@@ -1187,6 +1187,12 @@ type
       var dwEffect: DWORD): HRESULT; stdcall;
   end;
 
+  TBIDIOPTIONS = record
+    cbSize : UINT;
+    wMask : WORD; 
+    wEffects : WORD;
+  end;
+
 const
   { File Conversion Errors }
 
@@ -1228,6 +1234,8 @@ const
 
   // (can be combined with other PFNS_xxx)
 
+  EM_GETBIDIOPTIONS = (WM_USER + 200);
+  EM_SETBIDIOPTIONS = (WM_USER + 201);
   EM_SETTYPOGRAPHYOPTIONS = (WM_USER + 202);
   EM_GETTYPOGRAPHYOPTIONS = (WM_USER + 203);
 
@@ -1237,6 +1245,21 @@ const
   TO_SIMPLELINEBREAK = 2;
   TO_DISABLECUSTOMTEXTOUT = 4;
   TO_ADVANCEDLAYOUT = 8;
+
+  // Options for EM_GET/EM_SET TYPOGRAPHYOPTIONS
+  BOM_DEFPARADIR        = $0001;   // Default paragraph direction (implies alignment) (obsolete)
+  BOM_PLAINTEXT         = $0002;   // Use plain text layout (obsolete)
+  BOM_NEUTRALOVERRIDE   = $0004;   // Override neutral layout (obsolete)
+  BOM_CONTEXTREADING    = $0008;   // Context reading order
+  BOM_CONTEXTALIGNMENT  = $0010;   // Context alignment
+
+  BOE_RTLDIR            = $0001;   // Default paragraph direction (implies alignment) (obsolete)
+  BOE_PLAINTEXT         = $0002;   // Use plain text layout (obsolete)
+  BOE_NEUTRALOVERRIDE   = $0004;   // Override neutral layout (obsolete)
+  BOE_CONTEXTREADING    = $0008;   // Context reading order
+  BOE_CONTEXTALIGNMENT  = $0010;   // Context alignment 
+
+
 
   // Underline types. RE 1.0 displays only CFU_UNDERLINE
   CFU_CF1UNDERLINE = $FF; // Map charformat's bit underline to CF2
@@ -2446,9 +2469,16 @@ end;
 procedure TJvCustomRichEdit.CMBiDiModeChanged(var Msg: TMessage);
 var
   AParagraph: TParaFormat2;
+  BiDiOptions : TBIDIOPTIONS;
 begin
   HandleNeeded; { we REALLY need the handle for BiDi }
   inherited;
+
+  BiDiOptions.cbSize := sizeof(BiDiOptions);
+  BiDiOptions.wMask := BOM_NEUTRALOVERRIDE or BOM_CONTEXTREADING or BOM_CONTEXTALIGNMENT;
+  BiDiOptions.wEffects := BOE_NEUTRALOVERRIDE or BOE_CONTEXTREADING or BOE_CONTEXTALIGNMENT;
+  SendMessage(Handle, EM_SETBIDIOPTIONS, 0, Integer(@BiDiOptions));
+
   Paragraph.GetAttributes(AParagraph);
   AParagraph.dwMask := PFM_ALIGNMENT;
   AParagraph.wAlignment := Ord(Alignment) + 1;
