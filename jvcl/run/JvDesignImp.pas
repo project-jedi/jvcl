@@ -70,7 +70,7 @@ type
     procedure ShowHideHandles(inShow: Boolean);
   public
     Handles: array[0..3] of TJvDesignHandle;
-    constructor Create(inOwner: TComponent); override;
+    constructor Create(AOwner: TComponent); override;
     function HitRect(X, Y: Integer): TJvDesignHandleId;
     function SelectedToContainer(const inPt: TPoint): TPoint;
     procedure RepaintHandles;
@@ -97,7 +97,7 @@ type
     property Handles[inIndex: Integer]: TJvDesignHandles read GetHandles
       write SetHandles;
   public
-    constructor Create(inSurface: TJvDesignSurface); override;
+    constructor Create(ASurface: TJvDesignSurface); override;
     destructor Destroy; override;
     function GetClientControl(inControl: TControl): TControl; override;
     function GetCursor(inX, inY: Integer): TCursor; override;
@@ -235,9 +235,11 @@ type
       const CurName, NewName: string); reintroduce;
     function UniqueName(const BaseName: string): string;
     function GetRoot: TComponent;
+    {$IFDEF COMPILER9_UP}
+    procedure PaintMenu;
+    {$ENDIF COMPILER9_UP}
     property IsControl: Boolean read GetIsControl write SetIsControl;
     property Form: TCustomForm read GetCustomForm write SetCustomForm;
-
   end;
 
   TJvDesignDesignerMessenger = class(TJvDesignCustomMessenger)
@@ -396,9 +398,9 @@ end;
 
 { TJvDesignHandles }
 
-constructor TJvDesignHandles.Create(inOwner: TComponent);
+constructor TJvDesignHandles.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   CreateHandles;
   Resizeable := true;
 end;
@@ -560,9 +562,9 @@ end;
 
 { TJvDesignSelector }
 
-constructor TJvDesignSelector.Create(inSurface: TJvDesignSurface);
+constructor TJvDesignSelector.Create(ASurface: TJvDesignSurface);
 begin
-  inherited;
+  inherited Create(ASurface);
   //ControllerClass := TJvDesignController;
   FHandleWidth := cJvDesignDefaultHandleWidth;
   FHandles := TObjectList.Create;
@@ -571,7 +573,7 @@ end;
 destructor TJvDesignSelector.Destroy;
 begin
   FHandles.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvDesignSelector.SetHandleWidth(inValue: Integer);
@@ -676,7 +678,7 @@ end;
 
 function TJvDesignSelector.GetClientControl(inControl: TControl): TControl;
 begin
-  if (inControl is TJvDesignHandle) then
+  if inControl is TJvDesignHandle then
     Result := TJvDesignHandles(inControl.Owner).Selected
   else
     Result := inControl;
@@ -692,7 +694,7 @@ end;
 
 function TJvDesignSelector.GetHitHandle(inX, inY: Integer): TJvDesignHandleId;
 begin
-  if (Count > 0) then
+  if Count > 0 then
     Result := Handles[0].HitRect(inX, inY)
   else
     Result := dhNone;
@@ -1227,6 +1229,13 @@ begin
   //
 end;
 
+{$IFDEF COMPILER9_UP}
+procedure TJvDesignDesigner.PaintMenu;
+begin
+  //
+end;
+{$ENDIF COMPILER9_UP}
+
 { TJvDesignDesignerMessenger }
 
 constructor TJvDesignDesignerMessenger.Create;
@@ -1339,13 +1348,14 @@ end;
 
 constructor TJvDesignWinControlHookMessenger.Create;
 begin
+  inherited Create;
   FHooks := TJvDesignMessageHookList.Create(Self);
 end;
 
 destructor TJvDesignWinControlHookMessenger.Destroy;
 begin
   FHooks.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvDesignWinControlHookMessenger.Clear;
