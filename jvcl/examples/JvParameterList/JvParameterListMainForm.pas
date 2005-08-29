@@ -1168,7 +1168,7 @@ begin
   UnitVersionForm := DynEngine.CreateForm('Unit Versioning', '');
   try
     if UnitVersionForm is TForm then
-      TForm(UnitVersionForm).Position := poDesktopCenter;
+      TForm(UnitVersionForm).Position := poScreenCenter;
     UnitVersionForm.Width := 500;
     UnitVersionForm.Height := 500;
     ButtonPanel := DynEngine.CreatePanelControl(UnitVersionForm, UnitVersionForm, 'ButtonPanel', '', alBottom);
@@ -1255,7 +1255,7 @@ begin
     TreeViewOnChange(nil, nil);
     UnitVersionForm.ShowModal;
   finally
-    UnitVersionForm.Free;
+    UnitVersionForm.Release; // keep the form created till all used interfaces are cleared
   end;
 end;
 
