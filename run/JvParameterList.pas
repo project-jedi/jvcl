@@ -84,7 +84,9 @@ type
 
   TJvParameterListEnableDisableReasonList = class(TStringList)
   public
+    destructor Destroy; override;
     procedure Clear; override;
+    procedure Delete(Index: Integer); override;
     procedure AddReasonVariant(const RemoteParameterName: string; Value: Variant);
     procedure AddReason(const RemoteParameterName: string; Value: Boolean); overload;
     procedure AddReason(const RemoteParameterName: string; Value: Integer); overload;
@@ -109,6 +111,7 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear; override;
+    procedure Delete(Index: Integer); override;
     procedure AddValue(const AName: string; AValue: Variant);
   end;
 
@@ -604,6 +607,18 @@ end;
 
 //=== { TJvParameterListEnableDisableReasonList } ============================
 
+destructor TJvParameterListEnableDisableReasonList.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+procedure TJvParameterListEnableDisableReasonList.Delete(Index: Integer);
+begin
+  Objects[Index].Free;
+  inherited Delete(Index);
+end;
+
 procedure TJvParameterListEnableDisableReasonList.Clear;
 var
   I: Integer;
@@ -720,7 +735,13 @@ var
 begin
   for I := 0 to Count - 1 do
     Objects[I].Free;
-  Inherited Clear;
+  inherited Clear;
+end;
+
+procedure TJvParameterPropertyValues.Delete(Index: Integer);
+begin
+  Objects[Index].Free;
+  inherited Delete(Index);
 end;
 
 procedure TJvParameterPropertyValues.AddValue(const AName: string; AValue: Variant);
