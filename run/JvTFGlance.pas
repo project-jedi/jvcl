@@ -523,6 +523,7 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure DblClick; override;
+    procedure Click; override;
 
     procedure CheckApptHint(Info: TJvTFGlanceCoord); virtual;
 
@@ -1516,6 +1517,11 @@ end;
 procedure TJvTFCustomGlance.DblClick;
 begin
   inherited DblClick;
+end;
+
+procedure TJvTFCustomGlance.Click;
+begin
+  inherited Click;
 end;
 
 procedure TJvTFCustomGlance.DoConfigCells;
