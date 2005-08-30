@@ -116,11 +116,15 @@ type
     procedure UpdateDDBtnRect;
 
     procedure DblClick; override;
-    procedure DoViewerDblClick; 
+    procedure DoViewerDblClick;
+    procedure DoViewerClick;
+    procedure DoViewerEnter;
+
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseAccel(X, Y: Integer);
+    procedure Click; override;
 
     procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState;
       var Accept: Boolean); override;
@@ -209,6 +213,8 @@ type
     FSelApptAttr: TJvTFTxtVwApptAttr;
     FSelAppt: TJvTFAppt;
     FOnDblClick: TNotifyEvent;
+    FOnClick: TNotifyEvent;
+    FOnEnter: TNotifyEvent;
     procedure SetLineSpacing(Value: Integer);
     procedure SetSelApptAttr(Value: TJvTFTxtVwApptAttr);
     procedure SetEditorAlign(Value: TJvTFGlTxtVwEditorAlign);
@@ -222,7 +228,11 @@ type
     procedure SelApptAttrChange(Sender: TObject);
     procedure Change; virtual;
     procedure LineDDClick(LineNum: Integer); virtual;
-    procedure DblClick(); virtual;
+
+    procedure DoDblClick(); virtual;
+    procedure DoClick; virtual;
+    procedure DoEnter; virtual;
+
     procedure ParentReconfig; override;
     procedure SetSelAppt(Value: TJvTFAppt);
     procedure SetInplaceEdit(const Value: Boolean); override;
@@ -256,7 +266,9 @@ type
     property EditorAlign: TJvTFGlTxtVwEditorAlign read FEditorAlign write SetEditorAlign default eaLine;
     property ShowStartEnd: Boolean read FShowStartEnd write SetShowStartEnd default True;
     property ShowLineDDButton: Boolean read GetShowLineDDButton write SetShowLineDDButton default True;
-    property OnDblClick: TNotifyEvent read FOnDblClick write FOnDblClick; 
+    property OnDblClick: TNotifyEvent read FOnDblClick write FOnDblClick;
+    property OnClick: TNotifyEvent read FOnClick write FOnClick;
+    property OnEnter: TNotifyEvent read FOnEnter write FOnEnter;
   end;
 
 {$IFDEF USEJVCL}
@@ -662,6 +674,7 @@ procedure TJvTFGVTextControl.DoEnter;
 begin
   inherited DoEnter;
   Viewer.SetSelAppt(FindApptAtLine(FMousePtInfo.RelLineNum));
+  DoViewerEnter;
 end;
 
 procedure TJvTFGVTextControl.DoExit;
@@ -731,8 +744,18 @@ procedure TJvTFGVTextControl.DoViewerDblClick;
 begin
   if FHasScrolled then Exit;
   
-  Viewer.DblClick;
+  Viewer.DoDblClick;
   FWasInDblClick := True;
+end;
+
+procedure TJvTFGVTextControl.DoViewerClick;
+begin
+  Viewer.DoClick;
+end;
+
+procedure TJvTFGVTextControl.DoViewerEnter;
+begin
+  Viewer.DoEnter;
 end;
 
 procedure TJvTFGVTextControl.DblClick;
@@ -767,7 +790,13 @@ begin
   begin
     Appt := FindApptAtLine(FMousePtInfo.RelLineNum);
     if Assigned(Appt) then
-      Viewer.SetSelAppt(Appt);
+    begin
+      if Viewer.SelAppt <> Appt then
+      begin
+        Viewer.SetSelAppt(Appt);
+        Click;
+      end;
+    end;
 
     if Windows.PtInRect(FDDBtnRect, Point(X, Y)) and Assigned(Viewer) then
     begin
@@ -1142,6 +1171,11 @@ begin
     Viewer.SetSelAppt(Appt);
 end;
 
+procedure TJvTFGVTextControl.Click; 
+begin
+  DoViewerClick;
+end;
+
 function TJvTFGVTextControl.GetStartEndString(Appt: TJvTFAppt): string;
 var
   ShowDates: Boolean;
@@ -1257,16 +1291,29 @@ begin
     FOnLineDDClick(Self, LineNum);
 end;
 
-procedure TJvTFGlanceTextViewer.DblClick;
+procedure TJvTFGlanceTextViewer.DoDblClick;
 begin
   if Assigned(FOnDblClick) then
     FOnDblClick(Self);
+end;
+
+procedure TJvTFGlanceTextViewer.DoClick;
+begin
+  if Assigned(FOnClick) then
+    FOnClick(Self);
+end;
+
+procedure TJvTFGlanceTextViewer.DoEnter;
+begin
+  if Assigned(FOnEnter) then
+    FOnEnter(Self);
 end;
 
 procedure TJvTFGlanceTextViewer.MouseAccel(X, Y: Integer);
 begin
   inherited MouseAccel(X, Y);
   FViewControl.MouseAccel(X, Y);
+  DoClick;
 end;
 
 procedure TJvTFGlanceTextViewer.Notify(Sender: TObject;
@@ -1531,7 +1578,6 @@ end;
 
 {$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 
