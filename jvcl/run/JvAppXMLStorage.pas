@@ -152,6 +152,7 @@ type
     property AutoFlush;
     property AutoReload;
     property FileName;
+    property FlushOnDestroy;
     property Location;
     property RootNodeName;
     property SubStorages;

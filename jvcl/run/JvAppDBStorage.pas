@@ -113,6 +113,7 @@ type
     property ReadOnly;
 
     property DataSource;
+    property FlushOnDestroy;
     property KeyField;
     property SectionField;
     property ValueField;

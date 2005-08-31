@@ -113,6 +113,7 @@ type
     property RegRoot: TJvRegKey read GetRegRoot write SetRegRoot default hkCurrentUser;
     property Root read GetRoot write SetRoot;
     property SubStorages;
+    property FlushOnDestroy;
     property UseOldDefaultRoot: Boolean read FUseOldDefaultRoot write SetUseOldDefaultRoot stored True default False ;
 
     property ReadOnly;
