@@ -922,6 +922,8 @@ type
     procedure UpdateFormat;
     procedure UpdatePopup;
     procedure PopupDropDown(DisableEdit: Boolean); override;
+    procedure SetParent(AParent: TWinControl); override;
+    
     property BlanksChar: Char read FBlanksChar write SetBlanksChar default ' ';
     property CalendarHints: TStrings read GetCalendarHints write SetCalendarHints;
     property CheckOnExit: Boolean read FCheckOnExit write FCheckOnExit default False;
@@ -2418,7 +2420,7 @@ begin
              function calls that display or activate a window.
     }
     AsyncPopupCloseUp(False);
-  end;
+  end; 
 end;
 
 function TJvCustomComboEdit.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
@@ -2716,7 +2718,7 @@ begin
       TWinControlAccessProtected(Form).KeyPress(Key);
       {$ENDIF CLR}
   end;
-  //Polaris
+  //Polaris       
   inherited KeyPress(Key);
 end;
 
@@ -2827,7 +2829,7 @@ begin
     finally
       FPopupVisible := False;
     end;
-  end;
+  end;  
 end;
 
 procedure TJvCustomComboEdit.PopupDropDown(DisableEdit: Boolean);
@@ -3685,7 +3687,7 @@ begin
     FPopup.Parent := nil;
   end;
   FPopup.Free;
-  FPopup := nil;
+  FPopup := nil;    
   FCalendarHints.OnChange := nil;
   FCalendarHints.Free;
   FCalendarHints := nil;
@@ -3969,6 +3971,12 @@ begin
   end
   else
     inherited PopupDropDown(DisableEdit);
+end;
+
+procedure TJvCustomDateEdit.SetParent(AParent: TWinControl);
+begin
+  // This is here to help debugging parenting issues such as Mantis 3042
+  inherited SetParent(AParent);
 end;
 
 procedure TJvCustomDateEdit.SetBlanksChar(Value: Char);
@@ -5149,7 +5157,16 @@ begin
   {$ENDIF VisualCLX}
 
   FEditor := TWinControl(AOwner);
-  ControlStyle := ControlStyle + [csNoDesignVisible, csReplicatable, csAcceptsControls];
+  ControlStyle := ControlStyle + [csNoDesignVisible, csReplicatable];
+
+  // If we were to add csAcceptsControls at design time, any attempt
+  // to paste a component while a component using TJvPopupWindow is active
+  // would lead to the parent of the pasted component being set to the
+  // TJvPopupWindow instead of the parent of the selected component.
+  // This was reported in issue 3042 and was seen in TJvCustomDateEdit
+  // descendents 
+  if not (csDesigning in ComponentState) then
+    ControlStyle := ControlStyle + [csAcceptsControls];
   Visible := False;
   {$IFDEF VCL}
   Ctl3D := False;
