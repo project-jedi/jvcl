@@ -1,22 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Configuration>
   <!-- These are the values stored by jaxStore -->
-  <pgEdit>
-    <FormVersion>0</FormVersion>
-    <ShowCmd>1</ShowCmd>
-    <Flags>0</Flags>
-    <PixelsPerInch>96</PixelsPerInch>
-    <MinMaxPos(1024x768)>-1,-1,-1,-1</MinMaxPos(1024x768)>
-    <MinMaxPos>-1,-1,-1,-1</MinMaxPos>
-    <NormPos(1024x768)>108,84,915,684</NormPos(1024x768)>
-    <NormPos>108,84,915,684</NormPos>
-    <pnlList_Width>137</pnlList_Width>
-    <jsgDependencies_Height>165</jsgDependencies_Height>
-    <pnlEdit_Width>660</pnlEdit_Width>
-    <jsgFiles_Height>196</jsgFiles_Height>
-    <odlAddFiles_InitialDir>..\..\run</odlAddFiles_InitialDir>
-    <cmbModel_ItemIndex>-1</cmbModel_ItemIndex>
-  </pgEdit>
+  <pgEdit/>
   <!--
     The nodes below are read by the generation process.
     Packages are generated according to a model. The models are defined
@@ -102,7 +87,7 @@
         <replacement original="\common\Jv" replacement="\qcommon\JvQ"/>
       </ClxReplacements>
     </model>
-    <Model Name="JCL" format="%e%p%n" NoLibSuffixFormat="%e%p%n%v0" prefix="Jcl" packages="" incfile="">
+    <Model Name="JCL" format="%e%p%n" NoLibSuffixFormat="%e%p%n%v0" prefix="Jcl" packages="..\packages" incfile="">
       <targets>
         <target name="c5"/>
         <target name="c6"/>
