@@ -177,7 +177,13 @@ type
     FReadOnly: Boolean;
     function GetUpdating: Boolean;
   protected
+    FFlushOnDestroy: Boolean;
+    
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+
+    { Sets the value of FFlushOnDestroy. Derived classes may override this
+      method to prevent it from changing or add extra behaviour to it. }
+    procedure SetFlushOnDestroy(Value: Boolean); virtual;
 
     //Returns the property count of an instance
     function GetPropCount(Instance: TPersistent): Integer;
@@ -597,6 +603,10 @@ type
       The property is calulated by a combination of setting the
       property ReadOnly and Result of the function GetPhysicalReadOnly }
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
+    { If True, the destructor will call Flush as its first instruction.
+      This property was added following Mantis 3168 and is True by default
+      to keep backward compatibility }
+    property FlushOnDestroy: Boolean read FFlushOnDestroy write SetFlushOnDestroy default True;
   published
     property StorageOptions: TJvCustomAppStorageOptions read FStorageOptions write SetStorageOptions;
     property OnTranslatePropertyName: TJvAppStoragePropTranslateEvent read FOnTranslatePropertyName
@@ -1134,6 +1144,7 @@ end;
 constructor TJvCustomAppStorage.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FFlushOnDestroy := True;
   FAutoFlush := False;
   FAutoReload := False;
   FStorageOptions := GetStorageOptionsClass.Create;
@@ -1144,7 +1155,8 @@ end;
 
 destructor TJvCustomAppStorage.Destroy;
 begin
-  Flush;
+  if FlushOnDestroy then
+    Flush;
   FreeAndNil(FSubStorages);
   FreeAndNil(FStorageOptions);
   inherited Destroy;
@@ -1188,6 +1200,11 @@ begin
   if (AComponent is TJvCustomAppStorage) and (Operation = opRemove) and
     Assigned(SubStorages) then
     SubStorages.Delete(AComponent as TJvCustomAppStorage);
+end;
+
+procedure TJvCustomAppStorage.SetFlushOnDestroy(Value: Boolean);
+begin
+  FFlushOnDestroy := Value;
 end;
 
 function TJvCustomAppStorage.GetPropCount(Instance: TPersistent): Integer;
