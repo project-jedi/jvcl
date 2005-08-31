@@ -664,6 +664,7 @@ type
     procedure WriteSetInt(const Path: string; ATypeInfo: PTypeInfo; const Value); override;
     property ReadOnly;
   published
+    property FlushOnDestroy;
     property SubStorages;
   end;
 
