@@ -942,16 +942,35 @@ begin
   inherited DestroyWnd;
 end;
 
+// Type used to get access to FindNextControl outside Forms.pas
+// This allows to fix Mantis 2812
 type
-  TWinControlAccess = class(TWinControl);
+  TWinControlAccess = class(TWinControl)
+  public
+    function FindNextControl(CurControl: TWinControl;
+      GoForward, CheckTabStop, CheckParent: Boolean): TWinControl;
+  end;
+
+function TWinControlAccess.FindNextControl(CurControl: TWinControl;
+      GoForward, CheckTabStop, CheckParent: Boolean): TWinControl;
+begin
+  Result := inherited FindNextControl(CurControl, GoForward, CheckTabStop, CheckParent);
+end;
 
 procedure TJvIPAddress.SelectTabControl(Previous: Boolean);
 var
   Control: TWinControl;
+  ParentForm: TCustomForm;
 begin
-  Control := TWinControlAccess(Parent).FindNextControl(Self, not Previous, True, True);
-  if Control <> nil then
-    Control.SetFocus;
+  ParentForm := GetParentForm(Self);
+  if Assigned(ParentForm) then
+  begin
+    // Must use GetParentForm to fix Mantis 2812, where it wasn't possible
+    // to tab outside the control
+    Control := TWinControlAccess(ParentForm).FindNextControl(Self, not Previous, True, False); //True);
+    if Control <> nil then
+      Control.SetFocus;
+  end;
 end;
 
 procedure TJvIPAddress.WMKeyDown(var Msg: TWMKeyDown);
