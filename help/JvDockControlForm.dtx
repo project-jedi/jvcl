@@ -1,9 +1,6 @@
 ##Package: Docking
 ##Status: Generated
 ##Skip: TJvDockBaseControl.Assign
-##Skip: TJvDockBasicConjoinServerOption.Assign
-##Skip: TJvDockBasicServerOption.Assign
-##Skip: TJvDockBasicTabServerOption.Assign
 ##Skip: TJvDockClient.Assign
 ##Skip: TJvDockSplitterStyle.Assign
 ----------------------------------------------------------------------------------------------------
@@ -545,16 +542,6 @@ Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockAdvPanel.ADVTree
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
 @@TJvDockAdvStyle
 Summary
   Write here a summary (1 line)
@@ -643,70 +630,6 @@ Summary
   Specifies whether top docking is allowed.
 Description
   Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockBasicConjoinServerOption
-Summary
-  Provides the basic properties describing a conjoinment docking site.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockBasicConjoinServerOption.GrabbersSize
-Summary
-  Size of grabber.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockBasicConjoinServerOption.SplitterWidth
-Summary
-  Width of splitter.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockBasicConjoinServerOptionClass
-<TITLE TJvDockBasicConjoinServerOptionClass type>
-Summary
-  Defines the metaclass for TJvDockBasicConjoinServerOption.
-Description
-  TJvDockBasicConjoinServerOptionClass is the metaclass for TJvDockBasicConjoinServerOption. Its value
-  is the class reference for TJvDockBasicConjoinServerOption or for one of its descendants.
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockBasicServerOption
-Summary
-  Provides the basic properties describing a docking site.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockBasicServerOption.BeginUpdate
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockBasicServerOption.DockStyle
-Summary
-  Gives access to the dock style object that owns this option object.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockBasicServerOption.EndUpdate
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicStyle
@@ -840,20 +763,6 @@ Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBasicStyle.ConjoinServerOption
-Summary
-  Object that provides the properties describing a conjoinment docking site.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockBasicStyle.ConjoinServerOptionClass
-Summary
-  Specifies the class for the conjoinment panel zones.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
 @@TJvDockBasicStyle.DockBaseControl
 Summary
   Write here a summary (1 line)
@@ -978,26 +887,6 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBasicStyle.ResetDockControlConjoinOption
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockBasicStyle.ResetDockControlTabOption
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
 @@TJvDockBasicStyle.RestoreClient
 Summary
   Write here a summary (1 line)
@@ -1027,54 +916,6 @@ Summary
   Specifies the class for the conjoinment panel zones.
 Description
   Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockBasicStyle.TabServerOption
-Summary
-  Object that provides the properties describing a tabbed docking site.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockBasicStyle.TabServerOptionClass
-Summary
-  Specifies the class for the conjoinment panel zones.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockBasicTabServerOption
-Summary
-  Provides the basic properties describing a docking page control.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockBasicTabServerOption.HotTrack
-Summary
-  Specifies whether the <xxx> is highlighted when the mouse passes over it.
-Description
-  Set HotTrack to True to provide visual feedback about which item is under the mouse; the font
-  specified by HotTrackFont is used for the <xxx> text. When HotTrack is False, there is no visual
-  feedback when the mouse passes over the <xxx> .
-See Also
-  HotGlyph, HotTrackFont, OnMouseEnter, OnMouseLeave
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockBasicTabServerOption.TabPosition
-Summary
-  Specifies the position of the tab.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockBasicTabServerOptionClass
-<TITLE TJvDockBasicTabServerOptionClass type>
-Summary
-  Defines the metaclass for TJvDockBasicTabServerOption.
-Description
-  TJvDockBasicTabServerOptionClass is the metaclass for TJvDockBasicTabServerOption. Its value is the
-  class reference for TJvDockBasicTabServerOption or for one of its descendants.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockCheckDockableEvent
@@ -1847,16 +1688,6 @@ Description
 <COMBINE TJvDockServer.OnGetClientAlignSize>
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockGrabbersSize
-<TITLE TJvDockGrabbersSize type>
-Summary
-  The subrange type for certain TJvDockBasicConjoinServerOption properties.
-Description
-  TJvDockGrabbersSize is the subrange type for certain TJvDockBasicConjoinServerOption properties.
-See Also
-  TJvDockBasicConjoinServerOption.GrabbersSize
-
-----------------------------------------------------------------------------------------------------
 @@TJvDockMouseStation
 <TITLE TJvDockMouseStation type>
 Summary
@@ -2445,16 +2276,6 @@ Description
   object. Note that Splitter may be nil.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockSplitterWidth
-<TITLE TJvDockSplitterWidth type>
-Summary
-  The subrange type for certain TJvDockBasicConjoinServerOption properties.
-Description
-  TJvDockSplitterWidth is the subrange type for certain TJvDockBasicConjoinServerOption properties.
-See Also
-  TJvDockBasicConjoinServerOption.SplitterWidth
-
-----------------------------------------------------------------------------------------------------
 @@TJvDockTabClass
 <TITLE TJvDockTabClass type>
 Summary
@@ -2526,11 +2347,14 @@ Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockTabPageControl.DockClient
+@@TJvDockTabPageControl.DockStyle
 Summary
-  Gives access to the dockable form manager.
+  Write here a summary (1 line)
 Description
   Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockTabPageControl.LoadFromStream
@@ -2631,20 +2455,6 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvGlobalDockManager.FindClientStyle
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AForm - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
 @@TJvGlobalDockManager.FindDockClientForm
 Summary
   Write here a summary (1 line)
@@ -2680,34 +2490,6 @@ Description
   Write here a description
 Parameters
   AName - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvGlobalDockManager.FindServerStyle
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AForm - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvGlobalDockManager.FindStyle
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AForm - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
