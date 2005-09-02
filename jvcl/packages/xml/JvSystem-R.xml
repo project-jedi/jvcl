@@ -63,5 +63,6 @@
     <File Name="..\..\common\SetupApi.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvAppXMLStorage.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvComputerInfoEx.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvAppCommand.pas" Targets="allbutclx" Formname="" Condition=""/>
   </Contains>
 </Package>
