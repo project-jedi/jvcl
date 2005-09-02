@@ -186,21 +186,24 @@ var
   Dev: TJvAppCommandDevice;
 begin
   Result := False;
-  if (Msg.Msg = WM_APPCOMMAND) and Enabled and Assigned(FOnAppCommand) then
+  if (Msg.Msg = WM_APPCOMMAND) and Enabled then
   begin
     Msg.Result := 1;
     Result := True;
-    case GET_DEVICE_LPARAM(Msg.LParam) of
-      FAPPCOMMAND_MOUSE:
-        Dev := acdMouse;
-      FAPPCOMMAND_OEM:
-        Dev := acdOEM;
-    else
-      Dev := acdKey;
-    end;
+    if Assigned(FOnAppCommand) then
+    begin
+      case GET_DEVICE_LPARAM(Msg.LParam) of
+        FAPPCOMMAND_MOUSE:
+          Dev := acdMouse;
+        FAPPCOMMAND_OEM:
+          Dev := acdOEM;
+      else
+        Dev := acdKey;
+      end;
 
-    FOnAppCommand(HWND(Msg.WParam), GET_APPCOMMAND_LPARAM(Msg.LParam),
-      Dev, GET_KEYSTATE_LPARAM(Msg.LParam));
+      FOnAppCommand(HWND(Msg.WParam), GET_APPCOMMAND_LPARAM(Msg.LParam),
+        Dev, GET_KEYSTATE_LPARAM(Msg.LParam));
+    end;
   end;
 end;
 
