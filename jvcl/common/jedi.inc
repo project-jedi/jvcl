@@ -292,6 +292,15 @@
   SUPPORTS_LIBRARY              Compiler supports the library directive (D6+/BCB6+)
   SUPPORTS_LOCAL                Compiler supports the local directive (D6+/BCB6+)
   SUPPORTS_INLINE               Compiler supports the inline directive (D9+)
+  SUPPORTS_FOR_IN               Compiler supports for in loops (D9+)
+  SUPPORTS_NESTED_CONSTANTS     Compiler supports nested constants (D9+)
+  SUPPORTS_NESTED_TYPES         Compiler supports nested types (D9+)
+  SUPPORTS_CLASS_FIELDS         Compiler supports class fields (D9+ .NET)
+  SUPPORTS_CLASS_HELPERS        Compiler supports class helpers (D9+ .NET)
+  SUPPORTS_CLASS_OPERATORS      Compiler supports class operators (D9+ .NET)
+  SUPPORTS_STRICT               Compiler supports strict keyword (D9+ .NET)
+  SUPPORTS_STATIC               Compiler supports static keyword (D9+ .NET)
+  SUPPORTS_FINAL                Compiler supports final keyword (D9+ .NET)
   ACCEPT_DEPRECATED             Compiler supports or ignores the deprecated directive (D6+/BCB6+/FPC)
   ACCEPT_PLATFORM               Compiler supports or ignores the platform directive (D6+/BCB6+)
   ACCEPT_LIBRARY                Compiler supports or ignores the library directive (D6+/BCB6+)
@@ -952,7 +961,18 @@
 {$ENDIF COMPILER7_UP}
 
 {$IFDEF COMPILER9_UP}
+  {$DEFINE SUPPORTS_FOR_IN}
   {$DEFINE SUPPORTS_INLINE}
+  {$DEFINE SUPPORTS_NESTED_CONSTANTS}
+  {$DEFINE SUPPORTS_NESTED_TYPES}
+  {$IFDEF CLR}
+    {$DEFINE SUPPORTS_CLASS_FIELDS}
+    {$DEFINE SUPPORTS_CLASS_HELPERS}
+    {$DEFINE SUPPORTS_CLASS_OPERATORS}
+    {$DEFINE SUPPORTS_STRICT}
+    {$DEFINE SUPPORTS_STATIC}
+    {$DEFINE SUPPORTS_FINAL}
+  {$ENDIF CLR}
 {$ENDIF COMPILER9_UP}
 
 {$IFDEF RTL140_UP}
@@ -1041,8 +1061,11 @@
 // History:
 
 // $Log$
-// Revision 1.15  2005/08/29 16:34:06  ahuser
-// Updated jedi.inc
+// Revision 1.16  2005/09/03 15:45:42  marquardt
+// updated from JCL new SUPPORTS_ IFDEFs for .NET
+//
+// Revision 1.25  2005/09/03 15:22:24  rrossmair
+// - support for Delphi.NET personality syntax
 //
 // Revision 1.24  2005/08/22 01:43:02  rrossmair
 // - added symbols Win32API, PUREPASCAL, DELPHI2005, DELPHI2005_UP
