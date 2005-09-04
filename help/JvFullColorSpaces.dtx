@@ -3,7 +3,7 @@
 ----------------------------------------------------------------------------------------------------
 @@JvFullColorSpaces.pas
 Summary
-  Contains the TJvFullColorSpaces component.
+  Contains the TJvFullColorSpaces classes.
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Florent Ouchet
@@ -12,109 +12,107 @@ Author
 @@ColorSpaceManager
 <TITLE ColorSpaceManager function>
 Summary
-  Write here a summary (1 line)
+  Unique instance of a TJvColorSpaceManager.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Returns an unique instance of the TJvColorSpaceManager class. If this instance doesn't exist, it is
+  created.
+Return value
+  Returns this instance.
 
 ----------------------------------------------------------------------------------------------------
 @@EJvColorSpaceError
 Summary
-  Write here a summary (1 line)
+  Exception raised if an error occurs durring a full color conversion
 Description
-  Write here a description
+  This is the class of exceptions which are raised if an error happens during a full color space
+  conversion.
 
 ----------------------------------------------------------------------------------------------------
 @@GetAxisValue
 <TITLE GetAxisValue function>
 Summary
-  Write here a summary (1 line)
+  Return the value of an indexed axis.
 Description
-  Write here a description
+  A TJvFullColor is an agregation of 3 axis values and one color space identifier. This function
+  returns one of the axis values. To get all axis values, use SplitColorParts, to change one axis value
+  use SetAxisValue.
 Parameters
-  AColor - Description for this parameter
-  AAxis  - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AColor - TJvFullColor to get the axis value.
+  AAxis  - Index of the axis to get.
+Return value
+  The axis value.
 
 ----------------------------------------------------------------------------------------------------
 @@JoinColorParts
 <TITLE JoinColorParts function>
 Summary
-  Write here a summary (1 line)
+  Join 3 axis values to create a TJvFullColor.
 Description
-  Write here a description
+  This function joins 3 axis values to create a TJvFullColor initialized with these values. The
+  Identifier of the TJvFullColor is not initialized. To split a TJvFullColor into 3 axis values, use
+  SplitColorParts. To set one axis value, use SetAxisValue.
 Parameters
-  Part1 - Description for this parameter
-  Part2 - Description for this parameter
-  Part3 - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Part1 - Value of the first axis.
+  Part2 - Value of the second axis.
+  Part3 - Value of the third axis.
+Return value
+  The TJvFullColor created.
 
 ----------------------------------------------------------------------------------------------------
 @@SetAxisValue
 <TITLE SetAxisValue function>
 Summary
-  Write here a summary (1 line)
+  Change the value of an indexed axis.
 Description
-  Write here a description
+  This function change the value of one axis of a TJvFullColor. To change 3 axis values, use
+  JoinColorParts. To get one axis value, use GetAxisValue
 Parameters
-  AColor   - Description for this parameter
-  AAxis    - Description for this parameter
-  NewValue - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AColor   - TJvFullColor to change one axis value.
+  AAxis    - Index of the axis.
+  NewValue - New value of this axis.
+Return value
+  The new TJvFullColor
 
 ----------------------------------------------------------------------------------------------------
 @@SplitColorParts
 <TITLE SplitColorParts procedure>
 Summary
-  Write here a summary (1 line)
+  Get the 3 axis values of a TJvFullColor
 Description
-  Write here a description
+  This function splits a TJvFullColor and return its axis values. To join 3 axis values and create a
+  TJvFullColor, use JoinColorParts. To set one axis value, use SetAxisValue.
 Parameters
-  AColor - Description for this parameter
-  Part1  - Description for this parameter
-  Part2  - Description for this parameter
-  Part3  - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AColor - TJvFullColor to be splitted.
+  Part1  - Value of the first axis.
+  Part2  - Value of the second axis.
+  Part3  - Value of the third axis.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAxisIndex
 <TITLE TJvAxisIndex type>
 Summary
-  Write here a summary (1 line)
+  Index of a TJvFullColor axis.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  This enumeration is the index of a TJvFullColor axis
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAxisIndex.axIndex0
-  Description for axIndex0
+  Index of the first axis.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAxisIndex.axIndex1
-  Description for axIndex1
+  Index of the second axis.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAxisIndex.axIndex2
-  Description for axIndex2
+  Index of the third axis.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCMYColorSpace
 Summary
-  Write here a summary (1 line)
+  Cyan-Magenta-Yellow color space.
 Description
-  Write here a description
+  This is one of the most used color space: Yellow = 255 - Blue Magenta = 255 - Green Cyan = 255 - Red
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCMYColorSpace.ConvertFromColor
@@ -149,197 +147,167 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvColorSpace
 Summary
-  Write here a summary (1 line)
+  Base class for all TJv*ColorSpace classes.
 Description
-  Write here a description
+  This is the ancestor of all TJv*FullColorSpace. It defines all functions needed to convert a color
+  and get the color space caracteristics.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvColorSpace.AxisDefault
 Summary
-  Write here a summary (1 line)
+  Default value for an axis.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  This indexed read-only property returns the default value of an axis (used in graphic rendering).
 
 ----------------------------------------------------------------------------------------------------
 @@TJvColorSpace.AxisMax
 Summary
-  Write here a summary (1 line)
+  Maximum value for an axis.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  This indexed and read-only property returns the maximum value of an axis to be sure the conversions
+  are valid. Every conversion from RGB to this color space must give values that are below or equal
+  this property for each axes.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvColorSpace.AxisMin
 Summary
-  Write here a summary (1 line)
+  Minimum value for an axis.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  This indexed and read-only property returns the minimum value of an axis to be sure the conversions
+  are valid. Every conversion from RGB to this color space must give values that are above or equal
+  this property for each axes.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvColorSpace.AxisName
 Summary
-  Write here a summary (1 line)
+  Name of an axis.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  This indexed and read-only property returns the name of an axis.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvColorSpace.ConvertFromColor
 Summary
-  Write here a summary (1 line)
+  Convert an RGB value to this color space.
 Description
-  Write here a description
+  This function converts the color given as parameter from RGB to this color space. As implemented in
+  TJvColorSpace, ConvertFromColor does nothing, you have to use a valid color space to make
+  conversions.
 Parameters
-  AColor - Description for this parameter
+  AColor - RGB value to be converted.
 Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The same color in this color space.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvColorSpace.ConvertToColor
 Summary
-  Write here a summary (1 line)
+  Converts a color of this color space to RGB.
 Description
-  Write here a description
+  This function converts the color given as parameter to RGB. As implemented in TJvColorSpace,
+  ConvertToColor does nothing, you have to use a valid color space to make conversions.
 Parameters
-  AColor - Description for this parameter
+  AColor - TJvFullColor to be converted.
 Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The RGB value that describes the same color.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvColorSpace.ID
 Summary
-  Write here a summary (1 line)
+  Identifier of this color space.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  This is the identifier of this color space. Identifier are staticly allocated to avoid conflicts
+  depending of the registration order of color spaces.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvColorSpace.Name
 Summary
-  Write here a summary (1 line)
+  Name of the color space.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  This read-only property returns the long name of the color space.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvColorSpace.NumberOfColors
 Summary
-  Write here a summary (1 line)
+  Number of colors in this color space.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  This read-only property returns the numbers of different colors in this color space.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvColorSpace.ShortName
 Summary
-  Write here a summary (1 line)
+  Short name of this color space.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  This read-only property returns the short name of this color space. A short name is typicaly 3
+  characters like RGB for Red-Green-Blue.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvColorSpaceManager
 Summary
-  Write here a summary (1 line)
+  Class of the manager of color spaces.
 Description
-  Write here a description
+  This class provides basic operations : - registeration and unregistration of colorspaces. -
+  conversions from one color space to an other. - conversion from one full color to RGB. - conversion
+  from RGB to one full color. - enumeration of all registered color spaces.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvColorSpaceManager.ColorSpace
 Summary
-  Write here a summary (1 line)
+  Retreive a color space using its identifier.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  This indexed and read-only property returns a color space given its identifier. The color space must
+  have been registered using the RegisterColorSpace procedure.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvColorSpaceManager.ColorSpaceByIndex
 Summary
-  Write here a summary (1 line)
+  Enumeration of color space.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  This indexed and read-only property gives a direct access to all registered color spaces.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvColorSpaceManager.ConvertFromColor
 Summary
-  Write here a summary (1 line)
+  Convert an RGB value to a full color value.
 Description
-  Write here a description
+  If the RGB value is a system color (like clBtnFace), the result is the same color in the csDEF
+  colorspace, otherwize the result is the same color in the csRGB color space.
 Parameters
-  AColor - Description for this parameter
+  AColor - RGB value to be converted.
 Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The full color value.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvColorSpaceManager.ConvertToColor
 Summary
-  Write here a summary (1 line)
+  Convert a full color to an RGB value.
 Description
-  Write here a description
+  This function converts a TJvFullColor to a TColor value. If the AColor argument belongs to the csDEF
+  color space, then the result if a system color, otherwize the result is a standard RGB value.
 Parameters
-  AColor - Description for this parameter
+  AColor - TJvFullColor to be converted.
 Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The RGB value.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvColorSpaceManager.ConvertToID
 Summary
-  Write here a summary (1 line)
+  Change the color space of a full color.
 Description
-  Write here a description
+  This function converts the existing full color to an RGB value and converts it to the new color space
+  specified by its identifier.
 Parameters
-  AColor - Description for this parameter
-  DestID - Description for this parameter
+  AColor - TJvFullColor to be converted.
+  DestID - Identifier of the new color space.
 Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The same color in the new color space.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvColorSpaceManager.Count
 Summary
-  Write here a summary (1 line)
+  Number of color spaces.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  This read-only property returns the number of registered color spaces. To register a new color space
+  use RegisterColorSpace, to unregister a color space use UnRegisterColorSpace. To enumerate the color
+  spaces, use the ColorSpaceByIndex property in a for loop.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvColorSpaceManager.GetColorSpaceID
@@ -358,14 +326,11 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvColorSpaceManager.RegisterColorSpace
 Summary
-  Write here a summary (1 line)
+  Register a new color space.
 Description
-  Write here a description
+  This function registers a new color space.
 Parameters
-  NewColorSpace - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  NewColorSpace - color space to be registered.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvColorSpaceManager.UnRegisterColorSpace

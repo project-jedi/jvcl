@@ -40,7 +40,17 @@ Description
   Use CustomColors to set the custom colors to add to the common color dialog displayed when the
   "Other" button is clicked. \Read CustomColors to determine the custom colors added by the user from
   this dialog. CustomColors is assignment compatible with the <LINK TColorDialog.CustomColors,
-  CustomColors> property of TColorDialog.
+  CustomColors> property of TColorDialog. You can also edit the property as a standard TStringList,
+  inside which you put values of this form:
+
+  <AUTOLINK OFF>
+  <CODE>
+  ColorX=rrggbb
+  </CODE>
+  <AUTOLINK ON>
+
+  where X is a letter from A to P and rrggbb is an hexadecimal RGB code. Hence ColorA=FF0000 would add
+  a pure red as the first custom color.
 See Also
   TColorDialog
 
