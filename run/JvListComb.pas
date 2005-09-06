@@ -82,6 +82,7 @@ type
     FGlyph: TBitmap;
     FLinkedObject: TObject;
     FNoTextAssign: Boolean;
+    FBrush: TBrush;
     procedure SetImageIndex(const Value: Integer);
     procedure SetText(const Value: string);
     procedure SetIndent(const Value: Integer);
@@ -99,6 +100,7 @@ type
     procedure SetColorHighlightText(const Value: TColor);
     function IsColorHighlightTextStored: Boolean;
     function IsColorHighlightStored: Boolean;
+    procedure SetBrush(const Value: TBrush);
   protected
     procedure SetIndex(Value: Integer); override;
     function GetDisplayName: string; override;
@@ -121,6 +123,7 @@ type
     property ColorHighlightText: TColor read GetColorHighlightText
       write SetColorHighlightText stored IsColorHighlightTextStored default clHighlightText;
     property Font: TFont read GetFont write SetFont stored IsFontStored;
+    property Brush: TBrush read FBrush write SetBrush;
     property Glyph: TBitmap read GetGlyph write SetGlyph stored True;
     property ImageIndex: Integer read FImageIndex write SetImageIndex default -1;
     property Indent: Integer read FIndent write SetIndent default 2;
@@ -184,6 +187,7 @@ type
     FButtonStyle: TJvButtonColors;
     FIndentSelected: Boolean;
     FDroppedWidth: Integer;
+    FFullWidthItemDraw: Boolean;
     {$IFDEF VCL}
     FCanvas: TControlCanvas;
     function GetCanvas: TCanvas;
@@ -198,6 +202,7 @@ type
     procedure SetDefaultIndent(const Value: Integer);
     procedure SetItems(const Value: TJvImageItems); reintroduce;
     procedure SetIndentSelected(const Value: Boolean);
+    procedure SetFullWidthItemDraw(const Value: Boolean);
     { IJvResetItemHeight }
     procedure ResetItemHeight;
   protected
@@ -256,6 +261,7 @@ type
     property ColorHighlightText: TColor read FColorHighlightText write SetColorHighlightText default clHighlightText;
     property Font;
     property Images: TCustomImageList read FImageList write SetImageList;
+    property FullWidthItemDraw : Boolean read FFullWidthItemDraw write SetFullWidthItemDraw default False;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -292,6 +298,7 @@ type
     FColorHighlightText: TColor;
     FButtonFrame: Boolean;
     FButtonStyle: TJvButtonColors;
+    FFullWidthItemDraw: Boolean;
     {$IFDEF VCL}
     FCanvas: TControlCanvas;
     function GetCanvas: TCanvas;
@@ -304,6 +311,7 @@ type
     procedure DrawRightGlyph(Index: Integer; R: TRect; State: TOwnerDrawState);
     procedure DrawCenteredGlyph(Index: Integer; R: TRect; State: TOwnerDrawState);
     procedure SetItems(const Value: TJvImageItems);
+    procedure SetFullWidthItemDraw(const Value: Boolean);
     { IJvResetItemHeight }
     procedure ResetItemHeight;
   protected
@@ -354,6 +362,7 @@ type
     property ColorHighlight: TColor read FColorHighlight write SetColorHighlight default clHighlight;
     property ColorHighlightText: TColor read FColorHighlightText write SetColorHighlightText default clHighlightText;
     property Images: TCustomImageList read FImageList write SetImageList;
+    property FullWidthItemDraw : Boolean read FFullWidthItemDraw write SetFullWidthItemDraw default False;   
     property MultiSelect;
     property ItemHeight;
     property ParentColor;
@@ -464,10 +473,12 @@ end;
 
 constructor TJvImageItem.Create(Collection: Classes.TCollection);
 begin
-  // FGlyph MUST be created before calling inherited or the
+  // FGlyph and FBrush MUST be created before calling inherited or the
   // creation of the item from a stream (DFM for instance)
   // will not work correctly.
   FGlyph := TBitmap.Create;
+  FBrush := TBrush.Create;
+  FBrush.Style := bsClear;
 
   inherited Create(Collection);
   FImageIndex := -1;
@@ -495,6 +506,7 @@ begin
   end;
   FFont.Free;
   FGlyph.Free;
+  FBrush.Free;
   inherited Destroy;
 end;
 
@@ -831,6 +843,8 @@ begin
   {$ENDIF VCL}
   FChangeLink := TChangeLink.Create;
   FChangeLink.OnChange := ImageListChange;
+
+  FFullWidthItemDraw := False;
 end;
 
 destructor TJvImageComboBox.Destroy;
@@ -884,6 +898,15 @@ begin
     {$IFDEF VisualCLX}
     RecreateWidget;
     {$ENDIF VisualCLX}
+  end;
+end;
+
+procedure TJvImageComboBox.SetFullWidthItemDraw(const Value: Boolean);
+begin
+  if Value <> FFullWidthItemDraw then
+  begin
+    FFullWidthItemDraw := Value;
+    Invalidate
   end;
 end;
 
@@ -954,15 +977,24 @@ begin
     FCanvas.Handle := hDC;
     FCanvas.Font := Font;
     FCanvas.Brush := Brush;
-    if (Integer(itemID) >= 0) and (odSelected in State) then
+    
+    if (Integer(itemID) >= 0) then
     begin
-      FCanvas.Brush.Color := FColorHighlight;
-      FCanvas.Font.Color := FColorHighlightText;
-    end;
-    if Integer(itemID) >= 0 then
+      if Items[itemID].Brush.Style <> bsClear then
+        FCanvas.Brush := Items[itemID].Brush;
+      if (odSelected in State) then
+      begin
+        FCanvas.Brush.Color := FColorHighlight;
+        FCanvas.Font.Color := FColorHighlightText;
+      end;
+
       DrawItem(itemID, rcItem, State)
+    end
     else
+    begin
       FCanvas.FillRect(rcItem);
+    end;
+
     FCanvas.Handle := 0;
   end;
 end;
@@ -993,7 +1025,6 @@ begin
   end;
   {$ENDIF VisualCLX}
   SavedColor := Canvas.Font.Color;
-  Canvas.Font.Assign(Items[Index].Font);
 
   if odSelected in State then
   begin
@@ -1006,10 +1037,13 @@ begin
   OrigR := R;
   with Canvas do
   begin
-    TmpCol := Brush.Color;
-    Brush.Color := Color;
-    FillRect(R);
-    Brush.Color := TmpCol;
+    if not FullWidthItemDraw then
+    begin
+      TmpCol := Brush.Color;
+      Brush.Color := Color;
+      FillRect(R);
+      Brush.Color := TmpCol;
+    end;
 
     // (p3) don't draw indentation for edit item unless explicitly told to do so
     if not (odComboBoxEdit in State) or IndentSelected then
@@ -1066,13 +1100,21 @@ begin
     if Length(Items[Index].Text) > 0 then
     begin
       Inc(R.Right,2);
-      FillRect(R);
+      if FullWidthItemDraw then
+        FillRect(OrigR)
+      else
+        FillRect(R);
       Inc(R.Left, 2);
       DrawText(Canvas, Items[Index].Text, Length(Items[Index].Text), R,
         DT_SINGLELINE or DT_NOPREFIX or DT_VCENTER);
       Dec(R.Left, 2);
       if (odSelected in State) and (Color <> FColorHighlight) then
-        DrawFocusRect(R);
+      begin
+        if FullWidthItemDraw then
+          DrawFocusRect(OrigR)
+        else
+          DrawFocusRect(R);
+      end;
     end
     else
     begin
@@ -1296,6 +1338,8 @@ begin
   {$ENDIF VCL}
   FChangeLink := TChangeLink.Create;
   FChangeLink.OnChange := ImageListChange;
+
+  FFullWidthItemDraw := False;
 end;
 
 destructor TJvImageListBox.Destroy;
@@ -1349,6 +1393,15 @@ begin
     {$IFDEF VisualCLX}
     RecreateWidget;
     {$ENDIF VisualCLX}
+  end;
+end;
+
+procedure TJvImageListBox.SetFullWidthItemDraw(const Value: Boolean);
+begin
+  if Value <> FFullWidthItemDraw then
+  begin
+    FFullWidthItemDraw := Value;
+    Invalidate;    
   end;
 end;
 
@@ -1423,16 +1476,27 @@ begin
     FCanvas.Font := Font;
     FCanvas.Brush := Brush;
 
-    if (Integer(itemID) >= 0) and (odSelected in State) then
+    if (Integer(itemID) >= 0) then
     begin
-      FCanvas.Brush.Color := Items[Integer(itemID)].ColorHighlight;
-      FCanvas.Font.Color := Items[Integer(itemID)].ColorHighlightText;
-    end;
+      if Items[Integer(itemID)].Brush.Style <> bsClear then
+      begin
+        FCanvas.Brush := Items[Integer(itemID)].Brush;
+        FCanvas.FillRect(rcItem);
+      end;
 
-    if Integer(itemID) >= 0 then
+      if (odSelected in State) then
+      begin
+        FCanvas.Brush.Color := Items[Integer(itemID)].ColorHighlight;
+        FCanvas.Font.Color := Items[Integer(itemID)].ColorHighlightText;
+      end;
+
       DrawItem(itemID, rcItem, State)
+    end
     else
+    begin
       FCanvas.FillRect(rcItem);
+    end;
+    
     FCanvas.Handle := 0;
   end;
 end;
@@ -1461,6 +1525,7 @@ begin
   {$ENDIF VisualCLX}
   SavedColor := Canvas.Font.Color;
   Canvas.Font.Assign(Items[Index].Font);
+
   if State <> [] then
     Canvas.Font.Color := SavedColor;
   case FAlignment of
@@ -1484,10 +1549,13 @@ begin
   OrigR := R;
   with Canvas do
   begin
-    TmpCol := Brush.Color;
-    Brush.Color := Color;
-    FillRect(R);
-    Brush.Color := TmpCol;
+    if not FullWidthItemDraw then
+    begin
+      TmpCol := Brush.Color;
+      Brush.Color := Color;
+      FillRect(R);
+      Brush.Color := TmpCol;
+    end;
 
     if not Items[Index].Glyph.Empty then
     begin
@@ -1535,11 +1603,21 @@ begin
     R.Top := R.Bottom - TextHeight(Items[Index].Text) - 1;
     if Length(Items[Index].Text) > 0 then
     begin
-      FillRect(R);
+      if FullWidthItemDraw then
+        FillRect(OrigR)
+      else
+        FillRect(R);
+
       DrawText(Canvas, Items[Index].Text, Length(Items[Index].Text), R,
         DT_SINGLELINE or DT_NOPREFIX or DT_CENTER or DT_BOTTOM);
+
       if (odSelected in State) and (Color <> FColorHighlight) then
-        DrawFocusRect(R);
+      begin
+        if FullWidthItemDraw then
+          DrawFocusRect(OrigR)
+        else
+          DrawFocusRect(R);
+      end;
     end
     else
     begin
@@ -1561,10 +1639,13 @@ begin
   OrigR := R;
   with Canvas do
   begin
-    TmpCol := Brush.Color;
-    Brush.Color := Color;
-    FillRect(R);
-    Brush.Color := TmpCol;
+    if not FullWidthItemDraw then
+    begin
+      TmpCol := Brush.Color;
+      Brush.Color := Color;
+      FillRect(R);
+      Brush.Color := TmpCol;
+    end;
 
     if not Items[Index].Glyph.Empty then
     begin
@@ -1614,13 +1695,21 @@ begin
     if Length(Items[Index].Text) > 0 then
     begin
       Inc(R.Right, 2);
-      FillRect(R);
+      if FullWidthItemDraw then
+        FillRect(OrigR)
+      else
+        FillRect(R);
       Inc(R.Left, 2);
       DrawText(Canvas, Items[Index].Text, Length(Items[Index].Text), R,
         DT_SINGLELINE or DT_NOPREFIX or DT_VCENTER);
       Dec(R.Left, 2);
       if (odSelected in State) and (Color <> FColorHighlight) then
-        DrawFocusRect(R);
+      begin
+        if FullWidthItemDraw then
+          DrawFocusRect(OrigR)
+        else
+          DrawFocusRect(R);
+      end;
     end
     else
     begin
@@ -1642,10 +1731,13 @@ begin
   OrigR := R;
   with Canvas do
   begin
-    TmpCol := Brush.Color;
-    Brush.Color := Color;
-    FillRect(R);
-    Brush.Color := TmpCol;
+    if not FullWidthItemDraw then
+    begin
+      TmpCol := Brush.Color;
+      Brush.Color := Color;
+      FillRect(R);
+      Brush.Color := TmpCol;
+    end;
 
     if not Items[Index].Glyph.Empty then
     begin
@@ -1699,12 +1791,20 @@ begin
     if Length(Items[Index].Text) > 0 then
     begin
       Dec(R.Right, 2);
-      FillRect(R);
+      if FullWidthItemDraw then
+        FillRect(OrigR)
+      else
+        FillRect(R);
       DrawText(Canvas, Items[Index].Text, Length(Items[Index].Text), R,
         DT_SINGLELINE or DT_NOPREFIX or DT_VCENTER or DT_RIGHT);
       Inc(R.Right, 2);
       if (odSelected in State) and (Color <> FColorHighlight) then
-        DrawFocusRect(R);
+      begin
+        if FullWidthItemDraw then
+          DrawFocusRect(OrigR)
+        else
+          DrawFocusRect(R);
+      end;
     end
     else
     begin
@@ -1802,6 +1902,11 @@ begin
     Result := FImageList.Height
   else
     Result := FImageHeight;
+end;
+
+procedure TJvImageItem.SetBrush(const Value: TBrush);
+begin
+  FBrush.Assign(Value);
 end;
 
 procedure TJvImageItem.SetFont(const Value: TFont);
