@@ -110,7 +110,8 @@ type
   TJvAppCommandDevice = (acdKey, acdMouse, acdOEM);
 
   TJvAppCommandEvent = procedure(Handle: HWND;
-    Cmd: WORD; Device: TJvAppCommandDevice; KeyState: WORD) of object;
+    Cmd: WORD; Device: TJvAppCommandDevice; KeyState: WORD;
+    var Handled: Boolean) of object;
 
   TJvAppCommand = class(TJvComponent)
   private
@@ -202,7 +203,8 @@ begin
       end;
 
       FOnAppCommand(HWND(Msg.WParam), GET_APPCOMMAND_LPARAM(Msg.LParam),
-        Dev, GET_KEYSTATE_LPARAM(Msg.LParam));
+        Dev, GET_KEYSTATE_LPARAM(Msg.LParam), Result);
+      Msg.Result := Ord(Result);
     end;
   end;
 end;
