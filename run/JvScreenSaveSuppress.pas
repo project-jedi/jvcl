@@ -49,11 +49,12 @@ type
     FOnScreenSave: TJvScreenSaveEvent;
     FForm: TCustomForm;
     function NewWndProc(var Msg: TMessage): Boolean;
+    procedure SetActive(Value: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property Active: Boolean read FActive write FActive default True;
+    property Active: Boolean read FActive write SetActive default True;
     property OnScreenSave: TJvScreenSaveEvent read FOnScreenSave write FOnScreenSave;
   end;
 
@@ -75,17 +76,27 @@ uses
 constructor TJvScreenSaveSuppressor.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FActive := True;
   FForm := GetParentForm(TControl(AOwner));
-  if (FForm <> nil) and not (csDesigning in ComponentState) then
-    RegisterWndProcHook(FForm, NewWndProc, hoBeforeMsg);
+  Active := True;
 end;
 
 destructor TJvScreenSaveSuppressor.Destroy;
 begin
-  if (FForm <> nil) and not (csDesigning in ComponentState) then
-    UnregisterWndProcHook(FForm, NewWndProc, hoBeforeMsg);
+  Active := False;
   inherited Destroy;
+end;
+
+procedure TJvScreenSaveSuppressor.SetActive(Value: Boolean);
+begin
+  if FActive <> Value then
+  begin
+    FActive := Value;
+    if (FForm <> nil) and not (csDesigning in ComponentState) then
+      if Value then
+        RegisterWndProcHook(FForm, NewWndProc, hoBeforeMsg)
+      else
+        UnregisterWndProcHook(FForm, NewWndProc, hoBeforeMsg);
+  end;
 end;
 
 function TJvScreenSaveSuppressor.NewWndProc(var Msg: TMessage): Boolean;

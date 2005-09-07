@@ -115,15 +115,16 @@ type
 
   TJvAppCommand = class(TJvComponent)
   private
-    FEnabled: Boolean;
+    FActive: Boolean;
     FOnAppCommand: TJvAppCommandEvent;
     FForm: TCustomForm;
+    procedure SetActive(Value: Boolean);
     function NewWndProc(var Msg: TMessage): Boolean;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property Enabled: Boolean read FEnabled write FEnabled default True;
+    property Active: Boolean read FActive write SetActive default True;
     property OnAppCommand: TJvAppCommandEvent read FOnAppCommand write FOnAppCommand;
   end;
 
@@ -169,17 +170,27 @@ end;
 constructor TJvAppCommand.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FEnabled := True;
   FForm := GetParentForm(TControl(AOwner));
-  if (FForm <> nil) and not (csDesigning in ComponentState) then
-    RegisterWndProcHook(FForm, NewWndProc, hoBeforeMsg);
+  Active := True;
 end;
 
 destructor TJvAppCommand.Destroy;
 begin
-  if (FForm <> nil) and not (csDesigning in ComponentState) then
-    UnregisterWndProcHook(FForm, NewWndProc, hoBeforeMsg);
+  Active := False;
   inherited Destroy;
+end;
+
+procedure TJvAppCommand.SetActive(Value: Boolean);
+begin
+  if FActive <> Value then
+  begin
+    FActive := Value;
+    if (FForm <> nil) and not (csDesigning in ComponentState) then
+      if Value then
+        RegisterWndProcHook(FForm, NewWndProc, hoBeforeMsg)
+      else
+        UnregisterWndProcHook(FForm, NewWndProc, hoBeforeMsg);
+  end;
 end;
 
 function TJvAppCommand.NewWndProc(var Msg: TMessage): Boolean;
@@ -187,7 +198,7 @@ var
   Dev: TJvAppCommandDevice;
 begin
   Result := False;
-  if (Msg.Msg = WM_APPCOMMAND) and Enabled then
+  if (Msg.Msg = WM_APPCOMMAND) and Active then
   begin
     Msg.Result := 1;
     Result := True;
