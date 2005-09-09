@@ -46,7 +46,7 @@ uses
   {$ENDIF COMPILER6_UP}
   JvDsgnConsts,
   JvgReportEditorForm, JvgAlignForm, JvgAlignFunction, JvgReportParamEditorForm,
-  {JvgBitBtn, }JvgRuler, JvgReport, JvgCaption, JvgCGI, JvgReportParamsEditor,
+  {JvgBitBtn, }JvgRuler, JvgReport, JvgCaption, JvgReportParamsEditor,
   JvgReportParamsForm, JvgRichEditUtils, JvgCommClasses, JvgRttiUtils,
   JvgScrollBox, JvgShade, JvgDigits,
   JvgDrawTab, {JvgEdit, }JvgExceptionHandler, JvgShadowEditor,

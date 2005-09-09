@@ -65,7 +65,6 @@
     <File Name="..\..\run\JvgBevel.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvgButton.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvgCaption.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgCGI.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvgCheckBox.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvgCheckVersionInfoForm.pas" Targets="d5,d6,d7,c5,c6,k3" Formname="JvgfCheckVersionInfo" Condition="INTERNET_COMPONENTS"/>
     <File Name="..\..\run\JvgCommClasses.pas" Targets="allbutclx" Formname="" Condition=""/>
