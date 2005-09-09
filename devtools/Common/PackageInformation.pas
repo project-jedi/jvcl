@@ -296,6 +296,9 @@ const
   PathDelim = '\';
 {$ENDIF COMPILER5}
 
+uses
+  JclStrings;
+
 var
   XmlFileCache: TStringList; // cache for .xml files ( TPackageXmlInfo )
 
@@ -599,8 +602,8 @@ begin
     FGUID := RootNode.Items.Value('GUID');
     FC5PFlags := RootNode.Items.Value('C5PFlags');
     FC6PFlags := RootNode.Items.Value('C6PFlags');
-    FC5Libs.CommaText := RootNode.Items.Value('C5Libs');
-    FC6Libs.CommaText := RootNode.Items.Value('C6Libs');
+    StrToStrings(RootNode.Items.Value('C5Libs'), ' ', C5Libs, False);
+    StrToStrings(RootNode.Items.Value('C6Libs'), ' ', C6Libs, False);
 
     RequiredNode := RootNode.Items.ItemNamed['Requires'];               // do not localize
     ContainsNode := RootNode.Items.ItemNamed['Contains'];               // do not localize
