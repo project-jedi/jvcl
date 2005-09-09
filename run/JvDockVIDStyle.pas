@@ -564,7 +564,7 @@ type
   public
     constructor Create(AControl: TControl); override;
     destructor Destroy; override;
-    function DragFindWindow(const Pos: TPoint): HWND; override;
+    function DragFindWindow(const Pos: TPoint): THandle; override;
     function GetDropCtl: TControl; override;
     property SourceDockClients[Index: Integer]: TControl read GetSourceDockClient;
     property SourceDockClientCount: Integer read GetSourceDockClientCount;
@@ -3957,7 +3957,7 @@ begin
   end;
 end;
 
-function TJvDockVIDDragDockObject.DragFindWindow(const Pos: TPoint): HWND;
+function TJvDockVIDDragDockObject.DragFindWindow(const Pos: TPoint): THandle;
 begin
   Result := 0;
 end;

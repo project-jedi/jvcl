@@ -494,8 +494,8 @@ type
     {$IFDEF VCL}
     procedure GetDlgCode(var Code: TDlgCodes); override;
     {$ENDIF VCL}
-    procedure FocusSet(Focused: HWND); override;
-    procedure FocusKilled(Focused: HWND); override;
+    procedure FocusSet(PrevWnd: THandle); override;
+    procedure FocusKilled(NextWnd: THandle); override;
     {$IFDEF VisualCLX}
     procedure Scrolled(Sender: TObject; ScrollCode: TScrollCode;
       var ScrollPos: Integer); dynamic;
@@ -4106,18 +4106,18 @@ begin
 end;
 {$ENDIF VCL}
 
-procedure TJvCustomInspector.FocusSet(Focused: HWND);
+procedure TJvCustomInspector.FocusSet(PrevWnd: THandle);
 begin
-  inherited FocusSet(Focused);
+  inherited FocusSet(PrevWnd);
   if (Selected <> nil) and not Selected.EditCtrlDestroying then
     Selected.SetFocus;
   Invalidate;
 end;
 
-procedure TJvCustomInspector.FocusKilled(Focused: HWND);
+procedure TJvCustomInspector.FocusKilled(NextWnd: THandle);
 begin
-  inherited FocusKilled(Focused);
-{  if (Selected <> nil) and Selected.Editing and (Selected.EditCtrl.Handle <> Focuseded) then
+  inherited FocusKilled(NextWnd);
+{  if (Selected <> nil) and Selected.Editing and (Selected.EditCtrl.Handle <> NextWnd) then
     Selected.EditCtrl.Invalidate;}
   Invalidate;
 end;

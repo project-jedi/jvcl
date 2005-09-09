@@ -68,7 +68,7 @@ type
     FEvents: TJvEventCollection;
     FOnStartEvent: TNotifyEvent;
     FOnEndEvent: TNotifyEvent;
-    FWnd: HWND;
+    FWnd: THandle;
   protected
     procedure DoEndEvent(const Event: TJvEventCollectionItem);
     procedure DoStartEvent(const Event: TJvEventCollectionItem);
@@ -96,7 +96,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    property Handle: HWND read FWnd;
+    property Handle: THandle read FWnd;
     property Events: TJvEventCollection read GetEvents write SetEvents;
     procedure LoadEventStates(const ClearBefore: Boolean = True);
     procedure SaveEventStates;

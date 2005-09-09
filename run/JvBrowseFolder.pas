@@ -82,7 +82,7 @@ type
   IFolderFilter = interface(IUnknown)
     [SID_IFolderFilter]
     function ShouldShow(psf: IShellFolder; pidlFolder, pidlItem: PItemIDList): HResult; stdcall;
-    function GetEnumFlags(psf: IShellFolder; pidlFolder: PItemIDList; const phWnd: HWND;
+    function GetEnumFlags(psf: IShellFolder; pidlFolder: PItemIDList; const phWnd: THandle;
       var pgrfFlags: DWORD): HResult; stdcall;
   end;
 
@@ -192,11 +192,10 @@ type
   TJvBrowseForFolderDialog = class(TJvCommonDialogF, IFolderFilter, IUnknown)
   {$ENDIF COMPILER6_UP}
   private
-    // (rom) changed names to Window and type to HWND
     { Handle to the owner form of the dialog, used if Position = fpFormCenter }
-    FOwnerWindow: HWND;
+    FOwnerWindow: THandle;
     { Handle to the MS "Browse for folder" dialog }
-    FDialogWindow: HWND;
+    FDialogWindow: THandle;
     FHelpContext: THelpContext;
     FTitle: string;
     FOptions: TOptionsDir;
@@ -243,13 +242,13 @@ type
     function DoShouldShow(const AItem: string): Boolean;
     function DoGetEnumFlags(const AFolder: string; var Flags: TJvBrowsableObjectClasses): Boolean;
 
-    function GetOwnerWindow: HWND;
+    function GetOwnerWindow: THandle;
     procedure MainWndProc(var Msg: TMessage);
     procedure HookDialog;
 
     { IFolderFilter }
     function ShouldShow(psf: IShellFolder; pidlFolder, pidlItem: PItemIDList): HResult; stdcall;
-    function GetEnumFlags(psf: IShellFolder; pidlFolder: PItemIDList; const phWnd: HWND;
+    function GetEnumFlags(psf: IShellFolder; pidlFolder: PItemIDList; const phWnd: THandle;
       var pgrfFlags: DWORD): HResult; stdcall;
   public
     constructor Create(AOwner: TComponent); override;
@@ -269,7 +268,7 @@ type
     procedure SetExpanded(IDList: PItemIDList); overload;
 
     property Pidl: PItemIDList read FPidl;
-    property Handle: HWND read FDialogWindow;
+    property Handle: THandle read FDialogWindow;
 
     function Execute: Boolean; override;
   published
@@ -1207,7 +1206,7 @@ begin
 end;
 
 function TJvBrowseForFolderDialog.GetEnumFlags(psf: IShellFolder;
-  pidlFolder: PItemIDList; const phWnd: HWND;
+  pidlFolder: PItemIDList; const phWnd: THandle;
   var pgrfFlags: DWORD): HResult;
 var
   Flags: TJvBrowsableObjectClasses;
@@ -1237,7 +1236,7 @@ begin
       Inc(pgrfFlags, CBrowseObjectClasses[Obj]);
 end;
 
-function TJvBrowseForFolderDialog.GetOwnerWindow: HWND;
+function TJvBrowseForFolderDialog.GetOwnerWindow: THandle;
 var
   F: TCustomForm;
 begin

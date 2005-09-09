@@ -57,8 +57,8 @@ type
     FOnSetFocus: TJvFocusChangeEvent;
   protected
     function GetEdit: TCustomEdit;
-    procedure FocusSet(PrevWnd: HWND); override;
-    procedure FocusKilled(NextWnd: HWND); override;
+    procedure FocusSet(PrevWnd: THandle); override;
+    procedure FocusKilled(NextWnd: THandle); override;
     procedure DoFocusSet(const APreviousControl: TWinControl); dynamic;
     procedure DoFocusKilled(const ANextControl: TWinControl); dynamic;
     procedure DoClose(var Action: TCloseAction); override;
@@ -80,7 +80,7 @@ type
   end;
 
 {TODO : IsChildWindow should probably better be moved somewhere into the JCL}
-function IsChildWindow(const AChild, AParent: HWND): Boolean;
+function IsChildWindow(const AChild, AParent: THandle): Boolean;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -112,7 +112,7 @@ begin
 end;
 {$ENDIF COMPILER5}
 
-function IsChildWindow(const AChild, AParent: HWND): Boolean;
+function IsChildWindow(const AChild, AParent: THandle): Boolean;
 var
   LParent: HWND;
 begin
@@ -218,7 +218,7 @@ begin
   Result := TCustomEdit(Owner);
 end;
 
-procedure TJvCustomDropDownForm.FocusKilled(NextWnd: HWND);
+procedure TJvCustomDropDownForm.FocusKilled(NextWnd: THandle);
 begin
   if IsChildWindow(NextWnd, Self.Handle) then
     inherited FocusKilled(NextWnd)
@@ -242,7 +242,7 @@ begin
     Close;
 end;
 
-procedure TJvCustomDropDownForm.FocusSet(PrevWnd: HWND);
+procedure TJvCustomDropDownForm.FocusSet(PrevWnd: THandle);
 begin
   if IsChildWindow(PrevWnd, Self.Handle) then
     inherited FocusSet(PrevWnd)

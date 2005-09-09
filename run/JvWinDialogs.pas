@@ -127,7 +127,7 @@ type
     nFileExtension: Word; // Offset of extension in filepath=lpstrFile.
     lpstrDefExt: PAnsiChar; // Default extension if no extension typed.
     lCustData: LPARAM; // Custom data to be passed to hook.
-    lpfnHook: function(Wnd: HWND; Msg: UINT; wParam: WPARAM;
+    lpfnHook: function(Wnd: THandle; Msg: UINT; wParam: WPARAM;
       lParam: LPARAM): UINT stdcall; // Hook.
     lpTemplateName: PAnsiChar; // Template dialog, if applicable.
     // Extended structure starts here.
@@ -177,7 +177,7 @@ type
   end;
 
   // the signature of procedures in CPL's that implements Control Panel functionality
-  TCplApplet = function(hwndCPl: HWND; uMsg: DWORD; lParam1, lParam2: Longint): Longint; stdcall;
+  TCplApplet = function(hwndCPl: THandle; uMsg: DWORD; lParam1, lParam2: Longint): Longint; stdcall;
 
   {$IFDEF VCL}
   // (rom) largely reimplemented
@@ -528,48 +528,48 @@ function RecycleFile(FileToRecycle: string): Boolean;
 function CopyFile(FromFile, ToDir: string): Boolean;
 function ShellObjectTypeEnumToConst(ShellObjectType: TShellObjectType): UINT;
 function ShellObjectTypeConstToEnum(ShellObjectType: UINT): TShellObjectType;
-function ShellMessageBox(Instance: THandle; Owner: HWND; Text: PChar;
+function ShellMessageBox(Instance: THandle; Owner: THandle; Text: PChar;
   Caption: PChar; Style: UINT; Parameters: array of Pointer): Integer; cdecl;
 
 type
   FreePIDLProc = procedure(PIDL: PItemIDList); stdcall;
-  SHChangeIconProc = function(Wnd: HWND; szFileName: PChar; Reserved: Integer;
+  SHChangeIconProc = function(Wnd: THandle; szFileName: PChar; Reserved: Integer;
     var lpIconIndex: Integer): DWORD; stdcall;
-  SHChangeIconProcW = function(Wnd: HWND; szFileName: PWideChar;
+  SHChangeIconProcW = function(Wnd: THandle; szFileName: PWideChar;
     Reserved: Integer; var lpIconIndex: Integer): DWORD; stdcall;
-  SHFormatDriveProc = function(Wnd: HWND; Drive: UINT; fmtID: UINT;
+  SHFormatDriveProc = function(Wnd: THandle; Drive: UINT; fmtID: UINT;
     Options: UINT): DWORD; stdcall;
-  SHShutDownDialogProc = procedure(Wnd: HWND); stdcall;
-  SHRunDialogProc = function(Wnd: HWND; Unknown1: Integer; Unknown2: Pointer;
+  SHShutDownDialogProc = procedure(Wnd: THandle); stdcall;
+  SHRunDialogProc = function(Wnd: THandle; Unknown1: Integer; Unknown2: Pointer;
     szTitle: PChar; szPrompt: PChar; uiFlages: Integer): DWORD; stdcall;
   SHFindFilesProc = function(Root: PItemIDList; SavedSearchFile: PItemIDList): LongBool; stdcall;
   SHFindComputerProc = function(Reserved1: PItemIDList; Reserved2: PItemIDList): LongBool; stdcall;
-  SHObjectPropertiesProc = function(Owner: HWND; Flags: UINT;
+  SHObjectPropertiesProc = function(Owner: THandle; Flags: UINT;
     ObjectName: Pointer; InitialTabName: Pointer): LongBool; stdcall;
-  SHNetConnectionDialogProc = function(Owner: HWND; ResourceName: Pointer;
+  SHNetConnectionDialogProc = function(Owner: THandle; ResourceName: Pointer;
     ResourceType: DWORD): DWORD; stdcall;
-  SHStartNetConnectionDialogProc = function(Owner: HWND;
+  SHStartNetConnectionDialogProc = function(Owner: THandle;
     ResourceName: PWideChar; ResourceType: DWORD): DWORD; stdcall;
-  SHOutOfMemoryMessageBoxProc = function(Owner: HWND; Caption: Pointer;
+  SHOutOfMemoryMessageBoxProc = function(Owner: THandle; Caption: Pointer;
     Style: UINT): Integer; stdcall;
-  SHHandleDiskFullProc = procedure(Owner: HWND; uDrive: UINT); stdcall;
+  SHHandleDiskFullProc = procedure(Owner: THandle; uDrive: UINT); stdcall;
   NewLinkHereProc = procedure(HWND: THandle; HInstance: THandle; CmdLine: PChar;
     CmdShow: Integer); stdcall;
   SHOpenWithProc = procedure(HWND: THandle; HInstance: THandle; CmdLine: PChar;
     CmdShow: Integer); stdcall;
   GetOpenFileNameExProc = function(var OpenFile: TOpenFileNameEx): BOOL; stdcall;
   GetSaveFileNameExProc = function(var SaveFile: TOpenFileNameEx): BOOL; stdcall;
-  URLAssociationDialogProcA = function(hwndParent: HWND; dwInFlags: DWORD; const pcszFile: PChar; const pcszURL: PChar;
+  URLAssociationDialogProcA = function(hwndParent: THandle; dwInFlags: DWORD; const pcszFile: PChar; const pcszURL: PChar;
     pszBuff: PChar; ucAppBufLen: UINT): HRESULT; stdcall;
-  URLAssociationDialogProcW = function(hwndParent: HWND; dwInFlags: DWORD; const pcszFile: PWideChar; const pcszURL:
+  URLAssociationDialogProcW = function(hwndParent: THandle; dwInFlags: DWORD; const pcszFile: PWideChar; const pcszURL:
     PWideChar; pszBuff: PWideChar; ucAppBufLen: UINT): HRESULT; stdcall;
 
-  MIMEAssociationDialogProcA = function(hwndParent: HWND; dwInFlags: DWORD;
+  MIMEAssociationDialogProcA = function(hwndParent: THandle; dwInFlags: DWORD;
     const pcszFile: PChar; const pcszMIMEContentType: PChar; pszAppBuf: PChar; ucAppBufLen: UINT): HRESULT; stdcall;
-  MIMEAssociationDialogProcW = function(hwndParent: HWND; dwInFlags: DWORD;
+  MIMEAssociationDialogProcW = function(hwndParent: THandle; dwInFlags: DWORD;
     const pcszFile: PWideChar; const pcszMIMEContentType: PWideChar; pszAppBuf: PWideChar;
       ucAppBufLen: UINT): HRESULT; stdcall;
-  SoftwareUpdateMessageBoxProc = function(hWnd: HWND; szDistUnit: LPCWSTR; dwFlags: DWORD;
+  SoftwareUpdateMessageBoxProc = function(hWnd: THandle; szDistUnit: LPCWSTR; dwFlags: DWORD;
     var psdi: TSoftDistInfo): DWORD; stdcall;
 
 var
@@ -629,12 +629,12 @@ var
 
 {$IFDEF VisualCLX}
 
-function GetForegroundWindow: HWND;
+function GetForegroundWindow: THandle;
 begin
   Result := Windows.GetForegroundWindow;
 end;
 
-function GetDesktopWindow: HWND;
+function GetDesktopWindow: THandle;
 begin
   Result := Windows.GetDesktopWindow;
 end;
@@ -1200,7 +1200,7 @@ begin
   end;
 end;
 
-function ShellMessageBox(Instance: THandle; Owner: HWND; Text: PChar;
+function ShellMessageBox(Instance: THandle; Owner: THandle; Text: PChar;
   Caption: PChar; Style: UINT; Parameters: array of Pointer): Integer;
 var
   MethodPtr: Pointer;

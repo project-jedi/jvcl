@@ -179,13 +179,13 @@ type
     procedure HookClient;
     procedure UnhookClient;
     function GetClientColor: TColor;
-    function GetClientHandle: HWND;
+    function GetClientHandle: THandle;
     procedure SetClient(Value: TWinControl);
   protected
     procedure Release;
     property Background: TJvBackground read FBackground;
     property ClientColor: TColor read GetClientColor;
-    property ClientHandle: HWND read GetClientHandle;
+    property ClientHandle: THandle read GetClientHandle;
     property Client: TWinControl read FClient write SetClient;
     property ClientIsMDIForm: Boolean read FClientIsMDIForm;
   public
@@ -1542,7 +1542,7 @@ begin
   Result := TWinControlAccessProtected(FClient).Color;
 end;
 
-function TJvBackgroundClientLink.GetClientHandle: HWND;
+function TJvBackgroundClientLink.GetClientHandle: THandle;
 begin
   Result := 0;
   if FClient is TCustomForm then

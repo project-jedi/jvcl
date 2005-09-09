@@ -72,7 +72,7 @@ type
     FButtonStyle: TButtonStyle;
     FGridSize: TPoint;
     FOffset: TPoint;
-    FEditWin: HWND;
+    FEditWin: THandle;
     FRowCount: Integer;
     FPrevRect: TRect;
     FPrevAlign: TAlign;
@@ -189,7 +189,7 @@ type
     function NewItem(AOwner: TComponent; Section: Integer;
       const AName: string): TJvSpeedItem;
     function AcceptDropItem(Item: TJvSpeedItem; X, Y: Integer): Boolean;
-    procedure SetEditing(Win: HWND);
+    procedure SetEditing(Win: THandle);
     function GetEditing: Boolean;
     function SearchItem(const ItemName: string): TJvSpeedItem;
     function FindItem(Item: TJvSpeedItem; var Section, Index: Integer): Boolean;
@@ -2029,7 +2029,7 @@ begin
   Result := (FEditWin <> NullHandle);
 end;
 
-procedure TJvSpeedBar.SetEditing(Win: HWND);
+procedure TJvSpeedBar.SetEditing(Win: THandle);
 begin
   FEditWin := Win;
   ForEachItem(SetItemEditing, 0);
@@ -3195,7 +3195,7 @@ end;
 function FindSpeedBar(const Pos: TPoint): TJvSpeedBar;
 var
   Window: TWinControl;
-  Handle: HWND;
+  Handle: THandle;
 begin
   Result := nil;
   Handle := WindowFromPoint(Pos);

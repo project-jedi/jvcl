@@ -83,8 +83,8 @@ type
     procedure WMClear(var Msg: TMessage); message WM_CLEAR;
     procedure WMUndo(var Msg: TMessage); message WM_UNDO;
     procedure CaretChange(Sender: TObject); dynamic;
-    procedure FocusKilled(NextWnd: HWND); override;
-    procedure FocusSet(PrevWnd: HWND); override;
+    procedure FocusKilled(NextWnd: THandle); override;
+    procedure FocusSet(PrevWnd: THandle); override;
     function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
@@ -355,7 +355,7 @@ begin
   FCaret.Assign(Value);
 end;
 
-procedure TJvCustomMemo.FocusSet(PrevWnd: HWND);
+procedure TJvCustomMemo.FocusSet(PrevWnd: THandle);
 begin
   inherited FocusSet(PrevWnd);
   FCaret.CreateCaret;
@@ -398,7 +398,7 @@ begin
     FHideCaret := Value;
 end;
 
-procedure TJvCustomMemo.FocusKilled(NextWnd: HWND);
+procedure TJvCustomMemo.FocusKilled(NextWnd: THandle);
 begin
   if FHideCaret then
     ShowCaret(Handle);

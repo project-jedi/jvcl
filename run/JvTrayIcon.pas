@@ -60,7 +60,7 @@ type
 
   TNotifyIconDataXP = record
     cbSize: DWORD;
-    Wnd: HWND;
+    Wnd: THandle;
     uID: UINT;
     uFlags: UINT;
     uCallbackMessage: UINT;
@@ -760,7 +760,7 @@ function TJvTrayIcon.GetIconRect(var IconRect: TRect): Boolean;
 { Taken from http://www.thecodeproject.com/shell/ctrayiconposition.asp }
 type
   TExtraData = packed record
-    Wnd: HWND;
+    Wnd: THandle;
     uID: UINT;
   end;
 var

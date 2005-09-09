@@ -72,7 +72,10 @@ type
     procedure DoExit; override;
     procedure Change; override;
     procedure Click; override;
-    procedure ComboWndProc(var Msg: TMessage; ComboWnd: HWND;
+    
+    // This may cause trouble with BCB because it uses a HWND parameter
+    // but as it is defined in the VCL itself, we can't do much. 
+    procedure ComboWndProc(var Msg: TMessage; ComboWnd: Hwnd;
       ComboProc: Pointer); override;
     procedure CreateWnd; override;
     procedure DropDown; override;
@@ -430,7 +433,7 @@ begin
   inherited WndProc(Msg);
 end;
 
-procedure TJvCustomDBComboBox.ComboWndProc(var Msg: TMessage; ComboWnd: HWND;
+procedure TJvCustomDBComboBox.ComboWndProc(var Msg: TMessage; ComboWnd: Hwnd;
   ComboProc: Pointer);
 begin
   if not (csDesigning in ComponentState) then

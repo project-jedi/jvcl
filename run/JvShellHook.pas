@@ -206,7 +206,7 @@ const
 type
   PShellHookInfo = ^TShellHookInfo;
   TShellHookInfo = record
-    hwnd: HWND;
+    hwnd: THandle;
     rc: TRect;
   end;
   SHELLHOOKINFO = TShellHookInfo;
@@ -219,7 +219,7 @@ type
 
   TJvShellHook = class(TJvComponent)
   private
-    FWndHandle: HWND;
+    FWndHandle: THandle;
     FHookMsg: Cardinal;
     FOnShellMessage: TJvShellHookEvent;
     FActive: Boolean;
@@ -299,7 +299,7 @@ begin
 end;
 
 type
-  TRegisterShellHookWindowFunc = function(hWnd: HWND): BOOL; stdcall;
+  TRegisterShellHookWindowFunc = function(THandle: HWND): BOOL; stdcall;
 
 var
   RegisterShellHookWindow: TRegisterShellHookWindowFunc = nil;

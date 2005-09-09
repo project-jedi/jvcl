@@ -108,7 +108,7 @@ procedure GetWindowImageFrom(Control: TWinControl; X, Y: Integer; ADrawSelf, ADr
 procedure GetWindowImage(Control: TWinControl; ADrawSelf, ADrawChildWindows: Boolean; DC: HDC);
 procedure GetParentImageRect(Control: TControl; Rect: TRect; DC: HDC);
 function CreateRotatedFont(F: TFont; Escapement: Integer): HFONT;
-function FindMainWindow(const AWndClass, AWndTitle: string): HWND;
+function FindMainWindow(const AWndClass, AWndTitle: string): THandle;
 procedure CalcShadowAndHighlightColors(BaseColor: TColor; Colors: TJvgLabelColors);
 
 function CalcMathString(AExpression: string): Single;
@@ -1407,7 +1407,7 @@ end;
 
 { Returns main window of application }
 
-function FindMainWindow(const AWndClass, AWndTitle: string): HWND;
+function FindMainWindow(const AWndClass, AWndTitle: string): THandle;
 begin
   Result := 0;
   if (AWndClass <> '') or (AWndTitle <> '') then

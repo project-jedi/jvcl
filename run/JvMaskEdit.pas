@@ -73,8 +73,8 @@ type
   protected
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CaretChanged(Sender: TObject); dynamic;
-    procedure FocusKilled(NextWnd: HWND); override;
-    procedure FocusSet(PrevWnd: HWND); override;
+    procedure FocusKilled(NextWnd: THandle); override;
+    procedure FocusSet(PrevWnd: THandle); override;
     procedure DoKillFocus(const ANextControl: TWinControl); virtual;
     procedure DoSetFocus(const APreviousControl: TWinControl); virtual;
     {$IFDEF VisualCLX}
@@ -262,7 +262,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvCustomMaskEdit.FocusKilled(NextWnd: HWND);
+procedure TJvCustomMaskEdit.FocusKilled(NextWnd: THandle);
 begin
   FLeaving := True;
   try
@@ -281,7 +281,7 @@ begin
     FOnKillFocus(Self, ANextControl);
 end;
 
-procedure TJvCustomMaskEdit.FocusSet(PrevWnd: HWND);
+procedure TJvCustomMaskEdit.FocusSet(PrevWnd: THandle);
 begin
   FEntering := True;
   try

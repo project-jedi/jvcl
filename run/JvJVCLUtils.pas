@@ -94,7 +94,7 @@ procedure GetValueBitmap(var Dest: TBitmap; const Source: TBitmap);
 
 {$IFDEF VCL}
 // hides / shows the a forms caption area
-procedure HideFormCaption(FormHandle: Windows.HWND; Hide: Boolean);
+procedure HideFormCaption(FormHandle: THandle; Hide: Boolean);
 {$ENDIF VCL}
 
 {$IFDEF MSWINDOWS}
@@ -331,7 +331,7 @@ function IsForegroundTask: Boolean;
   if Caption parameter = '', it replaced with Application.Title }
 function MessageBox(const Msg, Caption: string; const Flags: Integer): Integer;
 function MsgBox(const Caption, Text: string; Flags: Integer): Integer; overload;
-function MsgBox(Handle: HWND; const Caption, Text: string; Flags: Integer): Integer; overload;
+function MsgBox(Handle: THandle; const Caption, Text: string; Flags: Integer): Integer; overload;
 function MsgDlg(const Msg: string; AType: TMsgDlgType; AButtons: TMsgDlgButtons; HelpCtx: Longint): Word;
 function MsgDlg2(const Msg, ACaption: string; DlgType: TMsgDlgType;
   Buttons: TMsgDlgButtons; HelpContext: Integer; Control: TWinControl): Integer;
@@ -400,7 +400,7 @@ procedure ShowMenu(Form: TForm; MenuAni: TMenuAnimation);
 { TargetFileName - if FileName is ShortCut returns filename ShortCut linked to }
 function TargetFileName(const FileName: TFileName): TFileName;
 { return filename ShortCut linked to }
-function ResolveLink(const HWND: HWND; const LinkFile: TFileName;
+function ResolveLink(const HWND: THandle; const LinkFile: TFileName;
   var FileName: TFileName): HRESULT;
 {$ENDIF MSWINDOWS}
 
@@ -697,15 +697,15 @@ function CanvasMaxTextHeight(Canvas: TCanvas): Integer;
 
 {$IFDEF MSWINDOWS}
 // AllocateHWndEx works like Classes.AllocateHWnd but does not use any virtual memory pages
-function AllocateHWndEx(Method: TWndMethod; const AClassName: string = ''): Windows.HWND;
+function AllocateHWndEx(Method: TWndMethod; const AClassName: string = ''): THandle;
 // DeallocateHWndEx works like Classes.DeallocateHWnd but does not use any virtual memory pages
-procedure DeallocateHWndEx(Wnd: Windows.HWND);
+procedure DeallocateHWndEx(Wnd: THandle);
 
 function JvMakeObjectInstance(Method: TWndMethod): {$IFDEF CLR}TFNWndProc{$ELSE}Pointer{$ENDIF};
 procedure JvFreeObjectInstance(ObjectInstance: {$IFDEF CLR}TFNWndProc{$ELSE}Pointer{$ENDIF});
 {$ENDIF MSWINDOWS}
 
-function GetAppHandle: HWND;
+function GetAppHandle: THandle;
 // DrawArrow draws a standard arrow in any of four directions and with the specifed color.
 // Rect is the area to draw the arrow in and also defines the size of the arrow
 // Note that this procedure might shrink Rect so that it's width and height is always
@@ -778,7 +778,7 @@ const
   RC_RunCpl = 'rundll32.exe shell32,Control_RunDLL ';
   {$ENDIF MSWINDOWS}
 
-function GetAppHandle: HWND;
+function GetAppHandle: THandle;
 begin
   {$IFDEF VCL}
   Result := Application.Handle;
@@ -1180,7 +1180,7 @@ end;
 {$IFDEF VCL}
 { (rb) Duplicate of JvAppUtils.AppTaskbarIcons }
 
-procedure HideFormCaption(FormHandle: HWND; Hide: Boolean);
+procedure HideFormCaption(FormHandle: THandle; Hide: Boolean);
 begin
   if Hide then
     SetWindowLong(FormHandle, GWL_STYLE,
@@ -2713,7 +2713,7 @@ begin
 end;
 {$ENDIF VCL}
 
-function MsgBox(Handle: HWND; const Caption, Text: string; Flags: Integer): Integer;
+function MsgBox(Handle: THandle; const Caption, Text: string; Flags: Integer): Integer;
 begin
   {$IFDEF CLR}
   Result := Windows.MessageBox(Handle, Text, Caption, Flags);
@@ -3403,7 +3403,7 @@ var
   CheckTaskInfo: PCheckTaskInfo;
 {$ENDIF CLR}
 
-function CheckTaskWindow(Window: Windows.HWND; Data: Longint): LongBool; {$IFNDEF CLR}stdcall;{$ENDIF}
+function CheckTaskWindow(Window: THandle; Data: Longint): LongBool; {$IFNDEF CLR}stdcall;{$ENDIF}
 begin
   Result := True;
   {$IFDEF CLR}
@@ -3965,7 +3965,7 @@ begin
       {$ENDIF CLR}
 end;
 
-function ResolveLink(const HWND: HWND; const LinkFile: TFileName;
+function ResolveLink(const HWND: THandle; const LinkFile: TFileName;
   var FileName: TFileName): HRESULT;
 var
   psl: IShellLink;
@@ -4044,7 +4044,7 @@ begin
   FProcObj := AProcObj;
 end;
 
-procedure TmrProc(hwnd: HWND; uMsg: Integer; idEvent: Integer; dwTime: Integer); stdcall;
+procedure TmrProc(hwnd: THandle; uMsg: Integer; idEvent: Integer; dwTime: Integer); stdcall;
 var
   Pr: TProcObj;
 begin
@@ -6818,7 +6818,7 @@ const
     lpszMenuName: nil;
     lpszClassName: 'TPUtilWindowEx');
 
-function StdWndProc(Window: Windows.HWND; Message, WParam: WPARAM;
+function StdWndProc(Window: THandle; Message, WParam: WPARAM;
   LParam: LPARAM): LRESULT; stdcall;
 var
   Msg: Messages.TMessage;
@@ -6840,7 +6840,7 @@ begin
 end;
 {$ENDIF !CLR}
 
-function AllocateHWndEx(Method: TWndMethod; const AClassName: string = ''): Windows.HWND;
+function AllocateHWndEx(Method: TWndMethod; const AClassName: string = ''): THandle;
 {$IFDEF CLR}
 begin
   Result := AllocateHWnd(Method);
@@ -6877,7 +6877,7 @@ begin
 end;
 {$ENDIF CLR}
 
-procedure DeallocateHWndEx(Wnd: Windows.HWND);
+procedure DeallocateHWndEx(Wnd: THandle);
 begin
   {$IFDEF CLR}
   DeallocateHWnd(Wnd);

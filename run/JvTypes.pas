@@ -95,7 +95,7 @@ type
     rgbRed: Byte;
   end;
 
-  TTimerProc = procedure(hwnd: HWND; Msg: Cardinal; idEvent: Cardinal; dwTime: Cardinal);
+  TTimerProc = procedure(hwnd: THandle; Msg: Cardinal; idEvent: Cardinal; dwTime: Cardinal);
 
 const
   NullHandle = 0;
@@ -258,7 +258,7 @@ type
   //  TJvRunOptions = set of TJvRunOption; // JvRunDlg
   //  TJvFileKind = (ftFile, ftPrinter); // JvObjectPropertiesDlg
 
-  //  TSHFormatDrive = function(Handle: HWND; Drive, ID, Options: Word): LongInt; stdcall; // JvFormatDrive
+  //  TSHFormatDrive = function(Handle: THandle; Drive, ID, Options: Word): LongInt; stdcall; // JvFormatDrive
   //  TFormatOption = (shQuickFormat, shFull, shSystemFilesOnly); // JvFormatDrive
   //  TButtonStyle = (bsAbortRetryIgnore, bsOk, bsOkCancel, bsRetryCancel, bsYesNo, bsYesNoCancel); // JvMessageBox
   //  TButtonDisplay = (bdIconExclamation, bdIconWarning, bdIconInformation, bdIconAsterisk, bdIconQuestion, bdIconStop, bdIconError, bdIconHand); // JvMessageBox

@@ -144,7 +144,7 @@ type
   TJvTimerList = class(TComponent)
   private
     FEvents: TJvTimerEvents;
-    FWndHandle: HWND;
+    FWndHandle: THandle;
     FOnFinish: TNotifyEvent;
     FOnTimers: TAllTimersEvent;
     FActive: Boolean;

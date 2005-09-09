@@ -1359,7 +1359,7 @@ type
   TJvDisplayChangeEvent = procedure(Sender: TObject; BitsPerPixel, ScreenWidth, ScreenHeight: Integer) of object;
   TJvSettingChangeEvent = procedure(Sender: TObject; Flag: Integer; const Section: string) of object;
   TJvSpoolerChangeEvent = procedure(Sender: TObject; JobStatus, JobsLeft: Integer) of object;
-  TJvPaletteChangeEvent = procedure(Sender: TObject; Wnd: HWND) of object;
+  TJvPaletteChangeEvent = procedure(Sender: TObject; Wnd: THandle) of object;
 
   TJvComputerInfoEx = class(TJvComponent)
   private
@@ -1438,8 +1438,8 @@ type
     procedure DoFontChange; dynamic;
     procedure DoSysColorChange; dynamic;
     procedure DoSpoolerStatus(JobStatus, JobsLeft: Integer); dynamic;
-    procedure DoPaletteChanging(Wnd: HWND); dynamic;
-    procedure DoPaletteChanged(Wnd: HWND); dynamic;
+    procedure DoPaletteChanging(Wnd: THandle); dynamic;
+    procedure DoPaletteChanged(Wnd: THandle); dynamic;
     procedure WndProc(var Message: TMessage);
   public
     constructor Create(AOwner: TComponent); override;
@@ -6151,13 +6151,13 @@ begin
     FOnSpoolerStatusChange(Self, JobStatus, JobsLeft);
 end;
 
-procedure TJvComputerInfoEx.DoPaletteChanging(Wnd: HWND);
+procedure TJvComputerInfoEx.DoPaletteChanging(Wnd: THandle);
 begin
   if Assigned(FOnPaletteChanging) then
     FOnPaletteChanging(Self, Wnd);
 end;
 
-procedure TJvComputerInfoEx.DoPaletteChanged(Wnd: HWND);
+procedure TJvComputerInfoEx.DoPaletteChanged(Wnd: THandle);
 begin
   if Assigned(FOnPaletteChanged) then
     FOnPaletteChanged(Self, Wnd);

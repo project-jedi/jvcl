@@ -152,8 +152,8 @@ type
 //    procedure KeyPress(var Key: Char); override;
     function HintShow(var HintInfo: THintInfo): Boolean; override;
     {$ENDIF VisualCLX}
-    procedure FocusSet(PrevWnd: HWND); override;
-    procedure FocusKilled(NextWnd: HWND); override;
+    procedure FocusSet(PrevWnd: THandle); override;
+    procedure FocusKilled(NextWnd: THandle); override;
     function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure EnabledChanged; override;
     procedure SetFlat(Value: Boolean); virtual;
@@ -589,7 +589,7 @@ begin
   DoEmptyValueExit;
 end;
 
-procedure TJvCustomEdit.FocusKilled(NextWnd: HWND);
+procedure TJvCustomEdit.FocusKilled(NextWnd: THandle);
 begin
   FCaret.DestroyCaret;
   inherited FocusKilled(NextWnd);
@@ -616,7 +616,7 @@ begin
   end;
 end;
 
-procedure TJvCustomEdit.FocusSet(PrevWnd: HWND);
+procedure TJvCustomEdit.FocusSet(PrevWnd: THandle);
 begin
   inherited FocusSet(PrevWnd);
   FCaret.CreateCaret;

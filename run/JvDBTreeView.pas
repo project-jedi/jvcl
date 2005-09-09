@@ -100,8 +100,13 @@ type
     {**** Drag'n'Drop ****}
     procedure TimerDnDTimer(Sender: TObject);
   protected
+    FSavedActive : Boolean;
+    
     procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState;
       var Accept: Boolean); override;
+      
+    procedure CreateWnd; override;
+    procedure DestroyWnd; override;
   protected
     procedure Warning(Msg: string);
     procedure HideEditor;
@@ -175,6 +180,9 @@ type
   private
     FMasterValue: Variant;
   public
+    constructor Create(AOwner: TTreeNodes);
+    destructor Destroy; override;
+    
     procedure SetMasterValue(AValue: Variant);
     procedure MoveTo(Destination: TTreeNode; Mode: TNodeAttachMode); override;
     property MasterValue: Variant read FMasterValue;
@@ -364,6 +372,16 @@ begin
 end;
 
 //=== { TJvDBTreeNode } ======================================================
+
+constructor TJvDBTreeNode.Create(AOwner: TTreeNodes);
+begin
+  inherited Create(AOwner);
+end;
+
+destructor TJvDBTreeNode.Destroy;
+begin
+  inherited Destroy;
+end;
 
 procedure TJvDBTreeNode.MoveTo(Destination: TTreeNode; Mode: TNodeAttachMode);
 var
@@ -998,8 +1016,10 @@ end;
 
 procedure TJvCustomDBTreeView.Change2(Node: TTreeNode);
 begin
+  if ((Node as TJvDBTreeNode).FMasterValue = Unassigned) then
+    Exit;
   FDataLink.DataSet.Locate(FMasterField, (Node as TJvDBTreeNode).FMasterValue, []);
-  if (Node as TJvDBTreeNode).FMasterValue = Null then
+  if ((Node as TJvDBTreeNode).FMasterValue = NULL) then
     (Node as TJvDBTreeNode).SetMasterValue(FDataLink.DataSet.FieldByName(MasterField).AsVariant);
 end;
 
@@ -1350,6 +1370,23 @@ begin
     MirrorControl(Self, Value);
   {$ENDIF VCL}
   FMirror := Value;
+end;
+
+procedure TJvCustomDBTreeView.CreateWnd;
+begin
+  inherited CreateWnd;
+  if Assigned(FDataLink) and Assigned(FDataLink.DataSet) then
+    FDataLink.DataSet.Active := FSavedActive;
+end;
+
+procedure TJvCustomDBTreeView.DestroyWnd;
+begin
+  if Assigned(FDataLink) and Assigned(FDataLink.DataSet) then
+  begin
+    FSavedActive := FDataLink.DataSet.Active;
+    FDataLink.DataSet.Active := False;
+  end;
+  inherited DestroyWnd;
 end;
 
 {$IFDEF UNITVERSIONING}

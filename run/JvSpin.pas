@@ -219,7 +219,7 @@ type
     FButtonKind: TSpinButtonKind;
     procedure WMPaste(var Msg: TMessage); message WM_PASTE;
     procedure WMCut(var Msg: TMessage); message WM_CUT;
-    procedure FocusKilled(NextWnd: HWND); override;
+    procedure FocusKilled(NextWnd: THandle); override;
     function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
       {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean; override;
     procedure BoundsChanged; override;
@@ -890,7 +890,7 @@ begin
   inherited DoExit;
 end;
 
-procedure TJvCustomSpinEdit.FocusKilled(NextWnd: HWND);
+procedure TJvCustomSpinEdit.FocusKilled(NextWnd: THandle);
 begin
   if ([coCropBeyondLimit, coCheckOnExit] <= CheckOptions) and
     not (csDesigning in ComponentState) then

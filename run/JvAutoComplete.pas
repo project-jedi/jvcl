@@ -73,7 +73,7 @@ type
     function FindItemPrefix(IndexStart: Integer; const Prefix: string): Integer; virtual; abstract;
     function GetItemAt(Index: Integer): string; virtual; abstract;
     {$IFDEF VCL}
-    function GetEditHandle: HWND; virtual; abstract;
+    function GetEditHandle: THandle; virtual; abstract;
     {$ENDIF VCL}
 
     function GetActive: Boolean; virtual;
@@ -114,7 +114,7 @@ type
     function FindItemPrefix(IndexStart: Integer; const Prefix: string): Integer; override;
     function GetItemAt(Index: Integer): string; override;
     {$IFDEF VCL}
-    function GetEditHandle: HWND; override;
+    function GetEditHandle: THandle; override;
     {$ENDIF VCL}
     function GetActive: Boolean; override;
     property List: TStrings read FList write FList;
@@ -184,7 +184,7 @@ type
     function FindItemPrefix(IndexStart: Integer; const Prefix: string): Integer; override;
     function GetItemAt(Index: Integer): string; override;
     {$IFDEF VCL}
-    function GetEditHandle: HWND; override;
+    function GetEditHandle: THandle; override;
     {$ENDIF VCL}
     function GetActive: Boolean; override;
   public
@@ -562,7 +562,7 @@ begin
 end;
 
 {$IFDEF VCL}
-function TJvBaseEditListAutoComplete.GetEditHandle: HWND;
+function TJvBaseEditListAutoComplete.GetEditHandle: THandle;
 begin
   Result := FEditCtrl.Handle;
 end;
@@ -687,7 +687,7 @@ begin
 end;
 
 {$IFDEF VCL}
-function TJvComboBoxAutoComplete.GetEditHandle: HWND;
+function TJvComboBoxAutoComplete.GetEditHandle: THandle;
 begin
   Result := ComboBox.Handle;
 end;

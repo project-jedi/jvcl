@@ -142,8 +142,8 @@ type
     function IsValidChar(const S: string; Key: Char; Posn: Integer): Boolean; virtual;
     function MakeValid(const ParseString: string): string;virtual;
     procedure Change; override;
-    procedure FocusKilled(NextWnd: HWND); override;
-    procedure FocusSet(PrevWnd: HWND); override;
+    procedure FocusKilled(NextWnd: THandle); override;
+    procedure FocusSet(PrevWnd: THandle); override;
     procedure WMPaste(var Msg: TMessage); message WM_PASTE;
     procedure SetText(const NewValue: TCaption); override;
     property CheckChars: string read FCheckChars write SetCheckChars;
@@ -824,13 +824,13 @@ begin
   DoValueChanged;
 end;
 
-procedure TJvCustomValidateEdit.FocusSet(PrevWnd: HWND);
+procedure TJvCustomValidateEdit.FocusSet(PrevWnd: THandle);
 begin
   DisplayText;
   inherited FocusSet(PrevWnd);
 end;
 
-procedure TJvCustomValidateEdit.FocusKilled(NextWnd: HWND);
+procedure TJvCustomValidateEdit.FocusKilled(NextWnd: THandle);
 begin
   if not (csDestroying in ComponentState) then
     EditText := inherited Text;

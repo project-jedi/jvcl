@@ -112,8 +112,8 @@ type
     procedure SetDrawButtons(const Value: Boolean);
   protected
     function SelectCell(ACol, ARow: Longint): Boolean; override;
-    procedure FocusKilled(NextWnd: HWND); override;
-    procedure FocusSet(PrevWnd: HWND); override;
+    procedure FocusKilled(NextWnd: THandle); override;
+    procedure FocusSet(PrevWnd: THandle); override;
 
     function CanEditAcceptKey(Key: Char): Boolean; override;
     function CanEditShow: Boolean; override;
@@ -256,7 +256,7 @@ type
     procedure WMSetCursor(var Msg: TWMSetCursor); message WM_SETCURSOR;
     {$ENDIF VCL}
   protected
-    procedure FocusKilled(NextWnd: HWND); override;
+    procedure FocusKilled(NextWnd: THandle); override;
     {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
     {$ENDIF VCL}
@@ -671,7 +671,7 @@ end;
 
 {$ENDIF VCL}
 
-procedure TJvInplaceEdit.FocusKilled(NextWnd: HWND);
+procedure TJvInplaceEdit.FocusKilled(NextWnd: THandle);
 begin
   if not SysLocale.FarEast then
     inherited FocusKilled(NextWnd)
@@ -1391,14 +1391,14 @@ end;
 
 {$ENDIF VCL}
 
-procedure TJvDrawGrid.FocusKilled(NextWnd: HWND);
+procedure TJvDrawGrid.FocusKilled(NextWnd: THandle);
 begin
   inherited FocusKilled(NextWnd);
   if Assigned(FOnChangeFocus) then
     FOnChangeFocus(Self);
 end;
 
-procedure TJvDrawGrid.FocusSet(PrevWnd: HWND);
+procedure TJvDrawGrid.FocusSet(PrevWnd: THandle);
 begin
   inherited FocusSet(PrevWnd);
   if Assigned(FOnChangeFocus) then

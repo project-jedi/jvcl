@@ -45,12 +45,12 @@ type
   TJvCommonDialogD = class(TJvComponent)
   private
     FTitle: string;
-    FOwnerWindow: HWND;
+    FOwnerWindow: THandle;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function Execute: TJvDiskRes; virtual; abstract;
-    property OwnerWindow: HWND read FOwnerWindow write FOwnerWindow stored False;
+    property OwnerWindow: THandle read FOwnerWindow write FOwnerWindow stored False;
   published
     property Title: string read FTitle write FTitle;
   end;

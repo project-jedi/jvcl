@@ -455,7 +455,7 @@ type
     procedure CreateParams(var Params: TCreateParams); override;
     procedure WMNCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
     {$ENDIF VCL}
-    procedure FocusSet(PrevWnd: HWND); override;
+    procedure FocusSet(PrevWnd: THandle); override;
     procedure GetDlgCode(var Code: TDlgCodes); override;
     procedure VisibleChanged; override;
     procedure FontChanged; override;
@@ -1405,7 +1405,7 @@ begin
 end;
 {$ENDIF VCL}
 
-procedure TCharZoomPanel.FocusSet(PrevWnd: HWND);
+procedure TCharZoomPanel.FocusSet(PrevWnd: THandle);
 begin
   inherited FocusSet(PrevWnd);
   if not (csDestroying in ComponentState) and Parent.CanFocus then

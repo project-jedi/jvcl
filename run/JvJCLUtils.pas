@@ -101,8 +101,8 @@ type
 {$ENDIF UNIX}
 
 
-function SendRectMessage(Handle: HWND; Msg: Integer; wParam: WPARAM; var R: TRect): Integer;
-function SendStructMessage(Handle: HWND; Msg: Integer; wParam: WPARAM; var Data): Integer;
+function SendRectMessage(Handle: THandle; Msg: Integer; wParam: WPARAM; var R: TRect): Integer;
+function SendStructMessage(Handle: THandle; Msg: Integer; wParam: WPARAM; var Data): Integer;
 {$IFDEF CLR}
 function VarFromDateTime(const Value: TDateTime): Variant;
 function VarToDateTime(const Value: Variant): TDateTime;
@@ -938,7 +938,7 @@ function MinimizeString(const S: string; const MaxLen: Integer): string;
 }
 type
   // the signature of procedures in DLL's that can be called using rundll32.exe
-  TRunDLL32Proc = procedure(Handle: HWND; HInstance: HMODULE; CmdLine: PChar; CmdShow: Integer); stdcall;
+  TRunDLL32Proc = procedure(Handle: THandle; HInstance: HMODULE; CmdLine: PChar; CmdShow: Integer); stdcall;
 
 function RunDLL32(const ModuleName, FuncName, CmdLine: string; WaitForCompletion: Boolean; CmdShow: Integer =
   SW_SHOWDEFAULT): Boolean;
@@ -955,7 +955,7 @@ function RunDLL32(const ModuleName, FuncName, CmdLine: string; WaitForCompletion
    (a dialog is displayed if do something wrong)
  * RunDll32Internal is slightly faster but RunDLL32 is safer
 }
-procedure RunDll32Internal(Wnd: HWND; const DLLName, FuncName, CmdLine: string; CmdShow: Integer = SW_SHOWDEFAULT);
+procedure RunDll32Internal(Wnd: THandle; const DLLName, FuncName, CmdLine: string; CmdShow: Integer = SW_SHOWDEFAULT);
 { GetDLLVersion loads DLLName, gets a pointer to the DLLVersion function and calls it, returning the major and minor version values
 from the function. Returns False if the DLL couldn't be loaded or if GetDLLVersion couldn't be found. }
 function GetDLLVersion(const DLLName: string; var pdwMajor, pdwMinor: Integer): Boolean;
@@ -1009,17 +1009,17 @@ procedure HMemCpy(DstPtr, SrcPtr: Pointer; Amount: Longint);
 {$ENDIF !CLR}
 
 {$IFNDEF CLR}
-function WindowClassName(Wnd: HWND): string;
+function WindowClassName(Wnd: THandle): string;
 {$ENDIF !CLR}
 {$IFDEF VCL}
-procedure SwitchToWindow(Wnd: HWND; Restore: Boolean);
-procedure ActivateWindow(Wnd: HWND);
-procedure ShowWinNoAnimate(Handle: HWND; CmdShow: Integer);
-procedure KillMessage(Wnd: HWND; Msg: Cardinal);
+procedure SwitchToWindow(Wnd: THandle; Restore: Boolean);
+procedure ActivateWindow(Wnd: THandle);
+procedure ShowWinNoAnimate(Handle: THandle; CmdShow: Integer);
+procedure KillMessage(Wnd: THandle; Msg: Cardinal);
 {$ENDIF VCL}
 { SetWindowTop put window to top without recreating window }
-procedure SetWindowTop(const Handle: HWND; const Top: Boolean);
-procedure CenterWindow(Wnd: HWND);
+procedure SetWindowTop(const Handle: THandle; const Top: Boolean);
+procedure CenterWindow(Wnd: THandle);
 function MakeVariant(const Values: array of Variant): Variant;
 
 { Convert dialog units to pixels and backwards }
@@ -1037,18 +1037,18 @@ function GetUniqueFileNameInDir(const Path, FileNameMask: string): string;
 {$IFDEF VCL}
 {$IFDEF BCB}
 function FindPrevInstance(const MainFormClass: ShortString;
-  const ATitle: string): HWND;
+  const ATitle: string): THandle;
 function ActivatePrevInstance(const MainFormClass: ShortString;
   const ATitle: string): Boolean;
 {$ELSE}
-function FindPrevInstance(const MainFormClass, ATitle: string): HWND;
+function FindPrevInstance(const MainFormClass, ATitle: string): THandle;
 function ActivatePrevInstance(const MainFormClass, ATitle: string): Boolean;
 {$ENDIF BCB}
 {$ENDIF VCL}
 
 {$IFDEF MSWINDOWS}
 { BrowseForFolderNative displays Browse For Folder dialog }
-function BrowseForFolderNative(const Handle: HWND; const Title: string; var Folder: string): Boolean;
+function BrowseForFolderNative(const Handle: THandle; const Title: string; var Folder: string): Boolean;
 {$ENDIF MSWINDOWS}
 
 procedure AntiAlias(Clip: TBitmap);
@@ -1298,7 +1298,7 @@ end;
 
 {$ENDIF NO_JCL}
 
-function SendRectMessage(Handle: HWND; Msg: Integer; wParam: WPARAM; var R: TRect): Integer;
+function SendRectMessage(Handle: THandle; Msg: Integer; wParam: WPARAM; var R: TRect): Integer;
 {$IFDEF CLR}
 var
   Mem: IntPtr;
@@ -1319,7 +1319,7 @@ begin
 end;
 {$ENDIF CLR}
 
-function SendStructMessage(Handle: HWND; Msg: Integer; wParam: WPARAM; var Data): Integer;
+function SendStructMessage(Handle: THandle; Msg: Integer; wParam: WPARAM; var Data): Integer;
 {$IFDEF CLR}
 var
   Mem: IntPtr;
@@ -2227,8 +2227,8 @@ end;
 
 function Win2Koi(const S: string): string;
 const
-  W = 'абвгдеёжзийклмнопрстуфхчцшщьыъэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЧЦШЩЬЫЪЭЮЯ';
-  K = 'БВЧЗДЕЈЦЪЙКЛМНОПРТУФХЖИЮГЫЭШЩЯЬАСбвчздеіцъйклмнопртуфхжиюгыэшщяьас';
+  W = 'абвгдеёжзийклмнопрс=уфхчцшщьыъэЭя+--+-+ЁЖЗ++--Э-+ПРСТУФiЧЦШ+_Э+ЭЮо';
+  K = '--ЧЗ-+ЈЦ++--Э-+ПРТУФiЖ+Ю+ЭЭШ+о_+СбвчздеЭцъйклмнопр=уфхжиЭгыэшщяьас';
 var
   I, J: Integer;
 begin
@@ -2403,9 +2403,9 @@ const
   Month: array [1..3] of string =
     ('месяц', 'месяца', 'месяцев'); // Month, Months, Months
   Year: array [1..3] of string =
-    ('год', 'года', 'лет'); // Year, Years, Years
+    ('год', 'года', 'ле='); // Year, Years, Years
   Week: array [1..4] of string =
-    ('неделю', '2 недели', '3 недели', 'месяц'); // Week, 2 Weeks, 3 Weeks, Month
+    ('неделЭ', '2 недели', '3 недели', 'месяц'); // Week, 2 Weeks, 3 Weeks, Month
 var
   Y, M, D: Integer;
 begin
@@ -7452,7 +7452,7 @@ begin
   SendMessage(GetForegroundWindow, WM_SYSCOMMAND, SC_MONITORPOWER, 1);
 end;
 
-procedure SendShift(H: HWND; Down: Boolean);
+procedure SendShift(H: THandle; Down: Boolean);
 var
   VKey, ScanCode: Word;
   LParam: Cardinal;
@@ -7465,7 +7465,7 @@ begin
   SendMessage(H, WM_KEYDOWN, VKey, LParam);
 end;
 
-procedure SendCtrl(H: HWND; Down: Boolean);
+procedure SendCtrl(H: THandle; Down: Boolean);
 var
   VKey, ScanCode: Word;
   LParam: Cardinal;
@@ -8167,7 +8167,7 @@ begin
   end;
 end;
 
-procedure RunDll32Internal(Wnd: HWND; const DLLName, FuncName, CmdLine: string; CmdShow: Integer = SW_SHOWDEFAULT);
+procedure RunDll32Internal(Wnd: THandle; const DLLName, FuncName, CmdLine: string; CmdShow: Integer = SW_SHOWDEFAULT);
 var
   H: THandle;
   ErrMode: Cardinal;
@@ -8642,7 +8642,7 @@ begin
 end;
 
 {$IFNDEF CLR}
-function WindowClassName(Wnd: HWND): string;
+function WindowClassName(Wnd: THandle): string;
 var
   Buffer: array [0..255] of Char;
 begin
@@ -8672,7 +8672,7 @@ begin
   SystemParametersInfo(SPI_SETANIMATION, Info.cbSize, {$IFNDEF CLR}@{$ENDIF}Info, 0);
 end;
 
-procedure ShowWinNoAnimate(Handle: HWND; CmdShow: Integer);
+procedure ShowWinNoAnimate(Handle: THandle; CmdShow: Integer);
 var
   Animation: Boolean;
 begin
@@ -8684,7 +8684,7 @@ begin
     SetAnimation(True);
 end;
 
-procedure SwitchToWindow(Wnd: HWND; Restore: Boolean);
+procedure SwitchToWindow(Wnd: THandle; Restore: Boolean);
 begin
   if Windows.IsWindowEnabled(Wnd) then
   begin
@@ -8698,12 +8698,12 @@ begin
   end;
 end;
 
-function GetWindowParent(Wnd: HWND): HWND;
+function GetWindowParent(Wnd: THandle): THandle;
 begin
   Result := GetWindowLong(Wnd, GWL_HWNDPARENT);
 end;
 
-procedure ActivateWindow(Wnd: HWND);
+procedure ActivateWindow(Wnd: THandle);
 begin
   if Wnd <> 0 then
   begin
@@ -8715,9 +8715,9 @@ end;
 {$IFNDEF CLR}
 {$IFDEF BCB}
 function FindPrevInstance(const MainFormClass: ShortString;
-  const ATitle: string): HWND;
+  const ATitle: string): THandle;
 {$ELSE}
-function FindPrevInstance(const MainFormClass, ATitle: string): HWND;
+function FindPrevInstance(const MainFormClass, ATitle: string): THandle;
 {$ENDIF BCB}
 var
   BufClass, BufTitle: PChar;
@@ -8739,7 +8739,7 @@ begin
   end;
 end;
 
-function WindowsEnum(Handle: HWND; Param: Longint): BOOL; export; stdcall;
+function WindowsEnum(Handle: THandle; Param: Longint): BOOL; export; stdcall;
 begin
   if WindowClassName(Handle) = 'TAppBuilder' then
   begin
@@ -8804,7 +8804,7 @@ end;
 
 {$IFNDEF CLR}
 {$IFDEF MSWINDOWS}
-function BrowseForFolderNative(const Handle: HWND; const Title: string; var Folder: string): Boolean;
+function BrowseForFolderNative(const Handle: THandle; const Title: string; var Folder: string): Boolean;
 var
   BrowseInfo: TBrowseInfo;
   Id: PItemIDList;
@@ -8870,7 +8870,7 @@ begin
   end;
 end;
 
-procedure CenterWindow(Wnd: HWND);
+procedure CenterWindow(Wnd: THandle);
 var
   R: TRect;
 begin
@@ -8887,7 +8887,7 @@ end;
 { Delete the requested message from the queue, but throw back }
 { any WM_QUIT msgs that PeekMessage may also return.          }
 { Copied from DbGrid.pas                                      }
-procedure KillMessage(Wnd: HWND; Msg: Cardinal);
+procedure KillMessage(Wnd: THandle; Msg: Cardinal);
 var
   M: TMsg;
 begin
@@ -8897,7 +8897,7 @@ begin
 end;
 {$ENDIF VCL}
 
-procedure SetWindowTop(const Handle: HWND; const Top: Boolean);
+procedure SetWindowTop(const Handle: THandle; const Top: Boolean);
 const
   TopFlag: array [Boolean] of Longword = (HWND_NOTOPMOST, HWND_TOPMOST);
 begin

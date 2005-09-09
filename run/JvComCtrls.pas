@@ -889,7 +889,7 @@ end;
 
 procedure TJvIPAddress.CreateWnd;
 var
-  EditHandle: HWND;
+  EditHandle: THandle;
   Msg: TWMParentNotify;
 begin
   ClearEditControls;
