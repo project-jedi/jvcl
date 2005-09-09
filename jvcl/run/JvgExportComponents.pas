@@ -258,7 +258,7 @@ uses
   JvResources,
   JvConsts, JvSimpleXML,
   {$ENDIF USEJVCL}
-  JvgUtils, JvgFileUtils;
+  JvgUtils;
 
 {$IFNDEF USEJVCL}
 resourcestring
@@ -273,6 +273,20 @@ begin
   Result := BoolStr[Value, AsString];
 end;
 {$ENDIF COMPILER5}
+
+function DeleteFileEx(const FileName: string): Boolean;
+const
+  cSuffix = '_del_';
+begin
+  if FileExists(FileName) then
+  begin
+    Result := RenameFile(FileName, FileName + cSuffix);
+    if Result then
+      Result := DeleteFile(FileName + cSuffix);
+  end
+  else
+    Result := False;
+end;
 
 //=== { TJvgCommonExport } ===================================================
 

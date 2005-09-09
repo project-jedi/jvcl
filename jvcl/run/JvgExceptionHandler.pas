@@ -116,7 +116,7 @@ uses
   {$IFDEF USEJVCL}
   JvConsts,
   {$ENDIF USEJVCL}
-  JvgUtils, JvgFileUtils;
+  JvgUtils;
 
 var
   ExceptionHandler: TJvgExceptionHandler = nil;
@@ -133,6 +133,11 @@ begin
   ExceptionClass := EAssertionFailed;
   //  E := CreateAssertException(Msg, FileName, LineNumber);
   //  RaiseAssertException(E, ErrorAddr, PChar(@ErrorAddr)+4);
+end;
+
+function DeleteFileExt(const FileName: string): string;
+begin
+  Result := ChangeFileExt(Trim(FileName), '');
 end;
 
 //=== { TJvgExceptionHandler } ===============================================
