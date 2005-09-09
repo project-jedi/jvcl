@@ -46,24 +46,24 @@ uses
   {$ENDIF COMPILER6_UP}
   JvDsgnConsts,
   JvgReportEditorForm, JvgAlignForm, JvgAlignFunction, JvgReportParamEditorForm,
-  {JvgBitBtn, }JvgRuler, JvgReport, JvgCaption, JvgReportParamsEditor,
+  {JvgBitBtn, } JvgRuler, JvgReport, JvgCaption, JvgReportParamsEditor,
   JvgReportParamsForm, JvgRichEditUtils, JvgCommClasses, JvgRttiUtils,
   JvgScrollBox, JvgShade, JvgDigits,
-  JvgDrawTab, {JvgEdit, }JvgExceptionHandler, JvgShadowEditor,
-  JvgFileIterator, JvgFileUtils, JvgFixFont, JvgShadow, {JvgGraph,}
-  JvgGraphicButton, JvgSingleInstance, {JvgShape,}
+  JvgDrawTab, {JvgEdit, } JvgExceptionHandler, JvgShadowEditor,
+  JvgFileIterator, {JvgFileUtils, } JvgFixFont, JvgShadow, {JvgGraph,}
+  JvgGraphicButton, JvgSingleInstance, {JvgShape, }
   JvgSpeedButton, JvgStaticText, JvgHoleShape, JvgSplit,
-  {JvgImageGroup,} JvgInspectorGrid, {JvgJump,} JvgSmallFontsDefense, //JvgSysInf,
+  {JvgImageGroup, } JvgInspectorGrid, {JvgJump, } JvgSmallFontsDefense, //JvgSysInf,
   JvgLogicItemEditorForm, JvgLogics, JvgStringContainer, JvgMailSlots,
   JvgStringGrid, JvgTabComm, JvgTab, JvgSysRequirements, JvgProcess,
   JvgProcessUtils, JvgPropertyCenter, JvgTransparentMemo, JvgTreeView, JvgTypes,
-  JvgUtils, {JvgWinMask,} JvgRTFPreviewForm,
+  JvgUtils, {JvgWinMask, } JvgRTFPreviewForm,
   JvgWizardHeader, JvgXMLSerializer, Jvg3DColors, JvgAskListBox, JvgBevel,
   JvgButton, JvgCheckBox, JvgCompDescription,
   JvgComponentListEditorForm, JvgFlyingText,
   JvgGroupBox, JvgHelpPanel, JvgHelpPanelEditor, JvgHint, JvgImage,
   JvgLabel, JvgLanguageLoader, JvgListBox, JvgLogicsEditorForm,
-  JvgMultiResourceEditorForm, {JvgMultiResources,} JvgPage, JvgProgress,
+  JvgMultiResourceEditorForm, {JvgMultiResources, } JvgPage, JvgProgress,
   JvgGridHeaderControl, 
   {$IFNDEF DelphiPersonalEdition}
   JvgCrossTable, JvgDBNav, JvgExport, JvgDBGrid, JvgExportComponents,

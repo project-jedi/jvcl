@@ -75,7 +75,6 @@
     <File Name="..\..\run\JvgExport.pas" Targets="allbutperso" Formname="" Condition=""/>
     <File Name="..\..\run\JvgExportComponents.pas" Targets="allbutperso" Formname="" Condition=""/>
     <File Name="..\..\run\JvgFileIterator.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgFileUtils.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvgFlyingText.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvgGraphicButton.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvgGridHeaderControl.pas" Targets="allbutclx" Formname="" Condition=""/>
