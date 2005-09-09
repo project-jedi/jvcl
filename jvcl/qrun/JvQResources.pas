@@ -876,12 +876,6 @@ resourcestring
   RsEOnlyOneInstanceOfTJvgCaption = 'Cannot create more than one instance of TJvgCaption component';
 
 
-//=== JvgCheckVersionInfoForm.pas ============================================
-
-resourcestring
-  RsNoNewerVersionOfProgramAvailable = 'No newer version of program available';
-
-
 //=== JvGenetic.pas ==========================================================
 resourcestring
   RsENoTest = 'TJvGenetic: OnTestMember must be assigned';

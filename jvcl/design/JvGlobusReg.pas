@@ -69,7 +69,7 @@ uses
   JvgCrossTable, JvgDBNav, JvgExport, JvgDBGrid, JvgExportComponents,
   {$IFNDEF COMPILER8_UP}
    {$IFDEF INTERNET_COMPONENTS}
-  JvgWebDocumentIterator, JvgHTTPVersionInfo, JvgCheckVersionInfoForm,
+  JvgWebDocumentIterator, JvgHTTPVersionInfo,
    {$ENDIF INTERNET_COMPONENTS}
   {$ENDIF !COMPILER8_UP}
   {$IFDEF JVCL_UseQuickReport}
