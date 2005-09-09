@@ -71,7 +71,7 @@ const
     RCSfile: '$RCSfile$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JVCL\run'
+    LogPath: 'JVCL\design'
   );
 {$ENDIF UNITVERSIONING}
 {$ENDIF USEJVCL}

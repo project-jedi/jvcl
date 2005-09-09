@@ -59,7 +59,6 @@
     <File Name="..\..\run\JvgWebDocumentIterator.pas" Targets="d5,d6,d7,c5,c6,k3" Formname="" Condition="INTERNET_COMPONENTS"/>
     <File Name="..\..\run\JvgWizardHeader.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\Jvg3DColors.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgAlignForm.pas" Targets="allbutclx" Formname="AlignForm" Condition=""/>
     <File Name="..\..\run\JvgAlignFunction.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvgAskListBox.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvgBevel.pas" Targets="allbutclx" Formname="" Condition=""/>
