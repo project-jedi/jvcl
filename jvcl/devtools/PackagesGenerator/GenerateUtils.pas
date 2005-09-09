@@ -1325,7 +1325,7 @@ begin
             Inc(i);
           end;
 
-          // read libs as a string of comma separated value
+          // read libs as a string of space separated value
           bcbId := TargetList[GetNonPersoTarget(target)].Env+TargetList[GetNonPersoTarget(target)].Ver;
           bcblibsList := nil;
           if CompareText(bcbId, 'c6') = 0 then
@@ -1351,12 +1351,15 @@ begin
         if Pos('%', curLine) > 0 then
         begin
           tmpStr := curLine;
+          StringsToStr(xml.C6Libs, ' ', False);
           if MacroReplace(curLine, '%',
             ['NAME%', PathExtractFileNameNoExt(OutFileName),
              'XMLNAME%', ExtractFileName(xmlName),
              'DESCRIPTION%', GetDescription(xml, target),
              'C5PFLAGS%', EnsurePFlagsCondition(xml.C5PFlags, target),
              'C6PFLAGS%', EnsurePFlagsCondition(xml.C6PFlags, target),
+             'C5LIBS%', StringsToStr(xml.C5Libs, ' ', False),
+             'C6LIBS%', StringsToStr(xml.C6Libs, ' ', False),
              'GUID%', xml.GUID,
              'TYPE%', Iff(xml.IsDesign, 'DESIGN', 'RUN'),
              'DATETIME%', FormatDateTime('dd-mm-yyyy  hh:nn:ss', NowUTC) + ' UTC',
