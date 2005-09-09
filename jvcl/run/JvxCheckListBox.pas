@@ -114,8 +114,8 @@ type
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
   protected
     procedure BoundsChanged; override;
-    procedure FocusKilled(NextWnd: HWND); override;
-    procedure FocusSet(PrevWnd: HWND); override;
+    procedure FocusKilled(NextWnd: THandle); override;
+    procedure FocusSet(PrevWnd: THandle); override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
     procedure DestroyWnd; override;
@@ -1157,14 +1157,14 @@ begin
   end;
 end;
 
-procedure TJvxCustomListBox.FocusKilled(NextWnd: HWND);
+procedure TJvxCustomListBox.FocusKilled(NextWnd: THandle);
 begin
   inherited FocusKilled(NextWnd);
   if FGraySelection and MultiSelect and (SelCount > 1) then
     Invalidate;
 end;
 
-procedure TJvxCustomListBox.FocusSet(PrevWnd: HWND);
+procedure TJvxCustomListBox.FocusSet(PrevWnd: THandle);
 begin
   inherited FocusSet(PrevWnd);
   if FGraySelection and MultiSelect and (SelCount > 1) then

@@ -110,8 +110,8 @@ type
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
     {$ENDIF !CLR}
     procedure GetDlgCode(var Code: TDlgCodes); virtual;
-    procedure FocusSet(PrevWnd: HWND); virtual;
-    procedure FocusKilled(NextWnd: HWND); virtual;
+    procedure FocusSet(PrevWnd: THandle); virtual;
+    procedure FocusKilled(NextWnd: THandle); virtual;
     function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF JVCLThemesEnabledD56}
   private
@@ -184,8 +184,8 @@ type
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
     {$ENDIF !CLR}
     procedure GetDlgCode(var Code: TDlgCodes); virtual;
-    procedure FocusSet(PrevWnd: HWND); virtual;
-    procedure FocusKilled(NextWnd: HWND); virtual;
+    procedure FocusSet(PrevWnd: THandle); virtual;
+    procedure FocusKilled(NextWnd: THandle); virtual;
     function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF JVCLThemesEnabledD56}
   private
@@ -258,8 +258,8 @@ type
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
     {$ENDIF !CLR}
     procedure GetDlgCode(var Code: TDlgCodes); virtual;
-    procedure FocusSet(PrevWnd: HWND); virtual;
-    procedure FocusKilled(NextWnd: HWND); virtual;
+    procedure FocusSet(PrevWnd: THandle); virtual;
+    procedure FocusKilled(NextWnd: THandle); virtual;
     function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF JVCLThemesEnabledD56}
   private
@@ -332,8 +332,8 @@ type
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
     {$ENDIF !CLR}
     procedure GetDlgCode(var Code: TDlgCodes); virtual;
-    procedure FocusSet(PrevWnd: HWND); virtual;
-    procedure FocusKilled(NextWnd: HWND); virtual;
+    procedure FocusSet(PrevWnd: THandle); virtual;
+    procedure FocusKilled(NextWnd: THandle); virtual;
     function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF JVCLThemesEnabledD56}
   private
@@ -406,8 +406,8 @@ type
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
     {$ENDIF !CLR}
     procedure GetDlgCode(var Code: TDlgCodes); virtual;
-    procedure FocusSet(PrevWnd: HWND); virtual;
-    procedure FocusKilled(NextWnd: HWND); virtual;
+    procedure FocusSet(PrevWnd: THandle); virtual;
+    procedure FocusKilled(NextWnd: THandle); virtual;
     function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF JVCLThemesEnabledD56}
   private
@@ -480,8 +480,8 @@ type
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
     {$ENDIF !CLR}
     procedure GetDlgCode(var Code: TDlgCodes); virtual;
-    procedure FocusSet(PrevWnd: HWND); virtual;
-    procedure FocusKilled(NextWnd: HWND); virtual;
+    procedure FocusSet(PrevWnd: THandle); virtual;
+    procedure FocusKilled(NextWnd: THandle); virtual;
     function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF JVCLThemesEnabledD56}
   private
@@ -559,8 +559,11 @@ type
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
     {$ENDIF !CLR}
     procedure GetDlgCode(var Code: TDlgCodes); virtual;
-    procedure FocusSet(PrevWnd: HWND); virtual;
-    procedure FocusKilled(NextWnd: HWND); virtual;
+
+    // Do not use HWND for those two parameters, see BCB compatibility
+    // guide for the reason. 
+    procedure FocusSet(PrevWnd: THandle); virtual;
+    procedure FocusKilled(NextWnd: THandle); virtual;
     function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF JVCLThemesEnabledD56}
   private
@@ -639,8 +642,8 @@ type
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
     {$ENDIF !CLR}
     procedure GetDlgCode(var Code: TDlgCodes); virtual;
-    procedure FocusSet(PrevWnd: HWND); virtual;
-    procedure FocusKilled(NextWnd: HWND); virtual;
+    procedure FocusSet(PrevWnd: THandle); virtual;
+    procedure FocusKilled(NextWnd: THandle); virtual;
     function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF JVCLThemesEnabledD56}
   private
@@ -860,12 +863,12 @@ procedure TJvExScrollingWinControl.GetDlgCode(var Code: TDlgCodes);
 begin
 end;
 
-procedure TJvExScrollingWinControl.FocusSet(PrevWnd: HWND);
+procedure TJvExScrollingWinControl.FocusSet(PrevWnd: THandle);
 begin
   BaseWndProc(WM_SETFOCUS, Integer(PrevWnd), 0);
 end;
 
-procedure TJvExScrollingWinControl.FocusKilled(NextWnd: HWND);
+procedure TJvExScrollingWinControl.FocusKilled(NextWnd: THandle);
 begin
   BaseWndProc(WM_KILLFOCUS, Integer(NextWnd), 0);
 end;
@@ -1195,12 +1198,12 @@ procedure TJvExScrollBox.GetDlgCode(var Code: TDlgCodes);
 begin
 end;
 
-procedure TJvExScrollBox.FocusSet(PrevWnd: HWND);
+procedure TJvExScrollBox.FocusSet(PrevWnd: THandle);
 begin
   BaseWndProc(WM_SETFOCUS, Integer(PrevWnd), 0);
 end;
 
-procedure TJvExScrollBox.FocusKilled(NextWnd: HWND);
+procedure TJvExScrollBox.FocusKilled(NextWnd: THandle);
 begin
   BaseWndProc(WM_KILLFOCUS, Integer(NextWnd), 0);
 end;
@@ -1530,12 +1533,12 @@ procedure TJvExCustomFrame.GetDlgCode(var Code: TDlgCodes);
 begin
 end;
 
-procedure TJvExCustomFrame.FocusSet(PrevWnd: HWND);
+procedure TJvExCustomFrame.FocusSet(PrevWnd: THandle);
 begin
   BaseWndProc(WM_SETFOCUS, Integer(PrevWnd), 0);
 end;
 
-procedure TJvExCustomFrame.FocusKilled(NextWnd: HWND);
+procedure TJvExCustomFrame.FocusKilled(NextWnd: THandle);
 begin
   BaseWndProc(WM_KILLFOCUS, Integer(NextWnd), 0);
 end;
@@ -1865,12 +1868,12 @@ procedure TJvExFrame.GetDlgCode(var Code: TDlgCodes);
 begin
 end;
 
-procedure TJvExFrame.FocusSet(PrevWnd: HWND);
+procedure TJvExFrame.FocusSet(PrevWnd: THandle);
 begin
   BaseWndProc(WM_SETFOCUS, Integer(PrevWnd), 0);
 end;
 
-procedure TJvExFrame.FocusKilled(NextWnd: HWND);
+procedure TJvExFrame.FocusKilled(NextWnd: THandle);
 begin
   BaseWndProc(WM_KILLFOCUS, Integer(NextWnd), 0);
 end;
@@ -2200,12 +2203,12 @@ procedure TJvExToolWindow.GetDlgCode(var Code: TDlgCodes);
 begin
 end;
 
-procedure TJvExToolWindow.FocusSet(PrevWnd: HWND);
+procedure TJvExToolWindow.FocusSet(PrevWnd: THandle);
 begin
   BaseWndProc(WM_SETFOCUS, Integer(PrevWnd), 0);
 end;
 
-procedure TJvExToolWindow.FocusKilled(NextWnd: HWND);
+procedure TJvExToolWindow.FocusKilled(NextWnd: THandle);
 begin
   BaseWndProc(WM_KILLFOCUS, Integer(NextWnd), 0);
 end;
@@ -2535,12 +2538,12 @@ procedure TJvExCustomForm.GetDlgCode(var Code: TDlgCodes);
 begin
 end;
 
-procedure TJvExCustomForm.FocusSet(PrevWnd: HWND);
+procedure TJvExCustomForm.FocusSet(PrevWnd: THandle);
 begin
   BaseWndProc(WM_SETFOCUS, Integer(PrevWnd), 0);
 end;
 
-procedure TJvExCustomForm.FocusKilled(NextWnd: HWND);
+procedure TJvExCustomForm.FocusKilled(NextWnd: THandle);
 begin
   BaseWndProc(WM_KILLFOCUS, Integer(NextWnd), 0);
 end;
@@ -2894,12 +2897,12 @@ procedure TJvExForm.GetDlgCode(var Code: TDlgCodes);
 begin
 end;
 
-procedure TJvExForm.FocusSet(PrevWnd: HWND);
+procedure TJvExForm.FocusSet(PrevWnd: THandle);
 begin
   BaseWndProc(WM_SETFOCUS, Integer(PrevWnd), 0);
 end;
 
-procedure TJvExForm.FocusKilled(NextWnd: HWND);
+procedure TJvExForm.FocusKilled(NextWnd: THandle);
 begin
   BaseWndProc(WM_KILLFOCUS, Integer(NextWnd), 0);
 end;
@@ -3254,12 +3257,12 @@ procedure TJvExCustomDockForm.GetDlgCode(var Code: TDlgCodes);
 begin
 end;
 
-procedure TJvExCustomDockForm.FocusSet(PrevWnd: HWND);
+procedure TJvExCustomDockForm.FocusSet(PrevWnd: THandle);
 begin
   BaseWndProc(WM_SETFOCUS, Integer(PrevWnd), 0);
 end;
 
-procedure TJvExCustomDockForm.FocusKilled(NextWnd: HWND);
+procedure TJvExCustomDockForm.FocusKilled(NextWnd: THandle);
 begin
   BaseWndProc(WM_KILLFOCUS, Integer(NextWnd), 0);
 end;

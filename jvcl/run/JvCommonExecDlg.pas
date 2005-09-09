@@ -39,10 +39,10 @@ uses
 type
   TJvCommonExecDialog = class(TJvCommonDialogP)
   private
-    FOwnerWindow: HWND;
+    FOwnerWindow: THandle;
   public
     constructor Create(AOwner: TComponent); override;
-    property OwnerWindow: HWND read FOwnerWindow;
+    property OwnerWindow: THandle read FOwnerWindow;
   end;
 
 {$IFDEF UNITVERSIONING}

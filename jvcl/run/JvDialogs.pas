@@ -58,7 +58,7 @@ type
     FMakeResizeable: Boolean;
     FOriginalRect: TRect;
     FParentWndInstance, FOldParentWndInstance: Pointer;
-    FParentWnd: HWND;
+    FParentWnd: THandle;
     {$IFDEF COMPILER5}
     FShowPlacesBar: Boolean;
     {$ENDIF COMPILER5}
@@ -88,7 +88,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    property ParentWnd: HWND read FParentWnd;
+    property ParentWnd: THandle read FParentWnd;
     procedure SelectFolder(const FolderName: string);
     property Template;
   published

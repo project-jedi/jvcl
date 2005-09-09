@@ -109,7 +109,7 @@ type
   // source of app command
   TJvAppCommandDevice = (acdKey, acdMouse, acdOEM);
 
-  TJvAppCommandEvent = procedure(Handle: HWND;
+  TJvAppCommandEvent = procedure(Handle: THandle;
     Cmd: WORD; Device: TJvAppCommandDevice; KeyState: WORD;
     var Handled: Boolean) of object;
 
@@ -213,7 +213,7 @@ begin
         Dev := acdKey;
       end;
 
-      FOnAppCommand(HWND(Msg.WParam), GET_APPCOMMAND_LPARAM(Msg.LParam),
+      FOnAppCommand(THandle(Msg.WParam), GET_APPCOMMAND_LPARAM(Msg.LParam),
         Dev, GET_KEYSTATE_LPARAM(Msg.LParam), Result);
       Msg.Result := Ord(Result);
     end;

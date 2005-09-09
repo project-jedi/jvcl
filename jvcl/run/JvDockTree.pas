@@ -266,7 +266,7 @@ type
     FShiftBy: Integer;
     FSizePos: TPoint;
     FSizingDC: HDC;
-    FSizingWnd: HWND;
+    FSizingWnd: THandle;
     FSizingZone: TJvDockZone;
     FTopZone: TJvDockZone; // <-- Root Node of the tree. What is called Zone in here should really be called TreeNode.
     FTopXYLimit: Integer;
@@ -460,7 +460,7 @@ type
     property ShiftScaleOrientation: TDockOrientation read FShiftScaleOrientation write FShiftScaleOrientation;
     property SizePos: TPoint read FSizePos write FSizePos;
     property SizingDC: HDC read FSizingDC;
-    property SizingWnd: HWND read FSizingWnd;
+    property SizingWnd: THandle read FSizingWnd;
     property SizingZone: TJvDockZone read FSizingZone write FSizingZone;
     property SplitterWidth: Integer read GetDockSplitterWidth write SetDockSplitterWidth;
     property UpdateCount: Integer read FUpdateCount write FUpdateCount;

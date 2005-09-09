@@ -44,7 +44,7 @@ type
 
   TJvCustomClipboardViewer = class(TJvExScrollBox)
   private
-    FWndNext: HWND;
+    FWndNext: THandle;
     FChained: Boolean;
     FPaintControl: TComponent;
     FViewFormat: TClipboardViewFormat;

@@ -45,7 +45,7 @@ function DeleteFileExt(const FileName: string): string;
 function DeleteFileEx(const FileName: string): Boolean;
 function LoadTextFromFile(const FileName: string): string;
 procedure SaveTextToFile(const FileName, AText: string);
-function GetFolder(Wnd: HWND; Title: string): string;
+function GetFolder(Wnd: THandle; Title: string): string;
 procedure CopyFolder(const SourceFilePath, TargetFilePath: string;
   Overwrite: Boolean = True; SubDirectories: Boolean = False);
 procedure RemoveDirectories(const FilePath: string);
@@ -135,7 +135,7 @@ begin
     end;
 end;
 
-function GetFolder(Wnd: HWND; Title: string): string;
+function GetFolder(Wnd: THandle; Title: string): string;
 var
   ItemID: PItemIDList;
   BrowseInfo: TBrowseInfo;

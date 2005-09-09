@@ -82,11 +82,11 @@ type
 
 function RegisterWndProcHook(AControl: TControl; Hook: TJvControlHook;
   const Order: TJvHookOrder): Boolean; overload;
-function RegisterWndProcHook(AHandle: HWND; Hook: TJvControlHook;
+function RegisterWndProcHook(AHandle: THandle; Hook: TJvControlHook;
   const Order: TJvHookOrder): Boolean; overload;
 function UnRegisterWndProcHook(AControl: TControl; Hook: TJvControlHook;
   const Order: TJvHookOrder): Boolean; overload;
-function UnRegisterWndProcHook(AHandle: HWND; Hook: TJvControlHook;
+function UnRegisterWndProcHook(AHandle: THandle; Hook: TJvControlHook;
   const Order: TJvHookOrder): Boolean; overload;
 procedure ReleaseObj(AObject: TObject);
 
@@ -133,7 +133,7 @@ type
     FStack: PHookInfoList;
     FStackCapacity: Integer;
     FStackCount: Integer;
-    FHandle: HWND;
+    FHandle: THandle;
     FControl: TControl;
     FControlDestroyed: Boolean;
     FOldWndProc: TWndMethod;
@@ -148,7 +148,7 @@ type
     procedure DecDepth;
   public
     constructor Create(AControl: TControl); overload;
-    constructor Create(AHandle: HWND); overload;
+    constructor Create(AHandle: THandle); overload;
     destructor Destroy; override;
     procedure Add(const Order: TJvHookOrder; Hook: TJvControlHook);
     procedure Delete(const Order: TJvHookOrder; Hook: TJvControlHook);
@@ -157,7 +157,7 @@ type
     { Prevent calls to WndProcHook by using property Controller;
       TJvHookInfos may live longer than WndProcHook }
     property Controller: TJvWndProcHook read FController write SetController;
-    property Handle: HWND read FHandle;
+    property Handle: THandle read FHandle;
   end;
 
   TJvWndProcHook = class(TComponent)
@@ -166,9 +166,9 @@ type
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     function IndexOf(AControl: TControl): Integer; overload;
-    function IndexOf(AHandle: HWND): Integer; overload;
+    function IndexOf(AHandle: THandle): Integer; overload;
     function Find(AControl: TControl): TJvHookInfos; overload;
-    function Find(AHandle: HWND): TJvHookInfos; overload;
+    function Find(AHandle: THandle): TJvHookInfos; overload;
 
     procedure Remove(AHookInfos: TJvHookInfos);
     procedure Add(AHookInfos: TJvHookInfos);
@@ -176,19 +176,19 @@ type
     destructor Destroy; override;
     function RegisterWndProc(AControl: TControl; Hook: TJvControlHook;
       const Order: TJvHookOrder): Boolean; overload;
-    function RegisterWndProc(AHandle: HWND; Hook: TJvControlHook;
+    function RegisterWndProc(AHandle: THandle; Hook: TJvControlHook;
       const Order: TJvHookOrder): Boolean; overload;
     function UnRegisterWndProc(AControl: TControl; Hook: TJvControlHook;
       const Order: TJvHookOrder): Boolean; overload;
-    function UnRegisterWndProc(AHandle: HWND; Hook: TJvControlHook;
+    function UnRegisterWndProc(AHandle: THandle; Hook: TJvControlHook;
       const Order: TJvHookOrder): Boolean; overload;
   end;
 
   TJvReleaser = class(TObject)
   private
-    FHandle: HWND;
+    FHandle: THandle;
     FReleasing: TList;
-    function GetHandle: HWND;
+    function GetHandle: THandle;
     procedure CMRelease(var Msg: TMessage); message CM_RELEASE;
     procedure WndProc(var Msg: TMessage);
   public
@@ -197,7 +197,7 @@ type
     procedure DefaultHandler(var Msg); override;
     class function Instance: TJvReleaser;
     procedure Release(AObject: TObject);
-    property Handle: HWND read GetHandle;
+    property Handle: THandle read GetHandle;
   end;
 
 var
@@ -217,7 +217,7 @@ begin
   Result := WndProcHook.RegisterWndProc(AControl, Hook, Order);
 end;
 
-function RegisterWndProcHook(AHandle: HWND; Hook: TJvControlHook;
+function RegisterWndProcHook(AHandle: THandle; Hook: TJvControlHook;
   const Order: TJvHookOrder): Boolean;
 begin
   Result := WndProcHook.RegisterWndProc(AHandle, Hook, Order);
@@ -229,7 +229,7 @@ begin
   Result := WndProcHook.UnRegisterWndProc(AControl, Hook, Order);
 end;
 
-function UnRegisterWndProcHook(AHandle: HWND; Hook: TJvControlHook;
+function UnRegisterWndProcHook(AHandle: THandle; Hook: TJvControlHook;
   const Order: TJvHookOrder): Boolean;
 begin
   Result := WndProcHook.UnRegisterWndProc(AHandle, Hook, Order);
@@ -264,7 +264,7 @@ begin
   inherited Destroy;
 end;
 
-function TJvWndProcHook.Find(AHandle: HWND): TJvHookInfos;
+function TJvWndProcHook.Find(AHandle: THandle): TJvHookInfos;
 var
   I: Integer;
 begin
@@ -286,7 +286,7 @@ begin
     Result := TJvHookInfos(FHookInfos[I]);
 end;
 
-function TJvWndProcHook.IndexOf(AHandle: HWND): Integer;
+function TJvWndProcHook.IndexOf(AHandle: THandle): Integer;
 begin
   { The following code introduces a problem:
 
@@ -372,7 +372,7 @@ begin
   Result := True;
 end;
 
-function TJvWndProcHook.RegisterWndProc(AHandle: HWND;
+function TJvWndProcHook.RegisterWndProc(AHandle: THandle;
   Hook: TJvControlHook; const Order: TJvHookOrder): Boolean;
 var
   HookInfos: TJvHookInfos;
@@ -404,7 +404,7 @@ begin
     FHookInfos.Delete(I);
 end;
 
-function TJvWndProcHook.UnRegisterWndProc(AHandle: HWND;
+function TJvWndProcHook.UnRegisterWndProc(AHandle: THandle;
   Hook: TJvControlHook; const Order: TJvHookOrder): Boolean;
 var
   HookInfos: TJvHookInfos;
@@ -506,7 +506,7 @@ begin
   //FillChar(FStackCount, SizeOf(FStackCount), 0);
 end;
 
-constructor TJvHookInfos.Create(AHandle: HWND);
+constructor TJvHookInfos.Create(AHandle: THandle);
 begin
   inherited Create;
   FHandle := AHandle;
@@ -960,7 +960,7 @@ begin
   inherited Destroy;
 end;
 
-function TJvReleaser.GetHandle: HWND;
+function TJvReleaser.GetHandle: THandle;
 begin
   if FHandle = 0 then
     FHandle := AllocateHWnd(WndProc);

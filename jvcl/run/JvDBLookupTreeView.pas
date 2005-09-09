@@ -126,8 +126,8 @@ type
     procedure SetReadOnly(Value: Boolean);
     procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
   protected
-    procedure FocusKilled(NextWnd: HWND); override;
-    procedure FocusSet(PrevWnd: HWND); override;
+    procedure FocusKilled(NextWnd: THandle); override;
+    procedure FocusSet(PrevWnd: THandle); override;
     procedure GetDlgCode(var Code: TDlgCodes); override;
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
@@ -195,7 +195,7 @@ type
     FOnGetImageIndex: TTVExpandedEvent;
   protected
     procedure FontChanged; override;
-    procedure FocusKilled(NextWnd: HWND); override;
+    procedure FocusKilled(NextWnd: THandle); override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure Paint; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
@@ -295,7 +295,7 @@ type
   private
     procedure CNNotify(var Msg: TWMNotify); message CN_NOTIFY;
   protected
-    procedure FocusSet(PrevWnd: HWND); override;
+    procedure FocusSet(PrevWnd: THandle); override;
     procedure DblClick; override;
   end;
 
@@ -359,7 +359,7 @@ type
     procedure SetOnCustomDraw(const Value: TTVCustomDrawEvent);
     procedure SetOnCustomDrawItem(const Value: TTVCustomDrawItemEvent);
   protected
-    procedure FocusSet(PrevWnd: HWND); override;
+    procedure FocusSet(PrevWnd: THandle); override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure ListLinkActiveChanged; override;
   public
@@ -827,14 +827,14 @@ begin
   Code := [dcWantArrows, dcWantChars];
 end;
 
-procedure TJvDBLookupControl.FocusKilled(NextWnd: HWND);
+procedure TJvDBLookupControl.FocusKilled(NextWnd: THandle);
 begin
   FFocused := False;
   inherited FocusKilled(NextWnd);
   Invalidate;
 end;
 
-procedure TJvDBLookupControl.FocusSet(PrevWnd: HWND);
+procedure TJvDBLookupControl.FocusSet(PrevWnd: THandle);
 begin
   FFocused := True;
   inherited FocusSet(PrevWnd);
@@ -1392,7 +1392,7 @@ begin
     end;
 end;
 
-procedure TJvPopupTree.FocusSet(PrevWnd: HWND);
+procedure TJvPopupTree.FocusSet(PrevWnd: THandle);
 begin
   inherited FocusSet(PrevWnd);
   (Owner.Owner as TJvDBLookupTreeViewCombo).SetFocus;
@@ -1512,7 +1512,7 @@ begin
   end;
 end;
 
-procedure TJvDBLookupTreeView.FocusSet(PrevWnd: HWND);
+procedure TJvDBLookupTreeView.FocusSet(PrevWnd: THandle);
 begin
   FTree.SetFocus;
 end;
@@ -1707,7 +1707,7 @@ begin
     end;
 end;
 
-procedure TJvDBLookupTreeViewCombo.FocusKilled(NextWnd: HWND);
+procedure TJvDBLookupTreeViewCombo.FocusKilled(NextWnd: THandle);
 begin
   if (Handle <> NextWnd) and (FDataList.Handle <> NextWnd) and
     (FDataList.FTree.Handle <> NextWnd) then

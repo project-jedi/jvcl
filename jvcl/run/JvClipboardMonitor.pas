@@ -43,8 +43,8 @@ uses
 type
   TJvClipboardMonitor = class(TJvComponent)
   private
-    FWindowHandle: HWND;
-    FNextWindow: HWND;
+    FWindowHandle: THandle;
+    FNextWindow: THandle;
     FEnabled: Boolean;
     FOnChange: TNotifyEvent;
     procedure ForwardMessage(var Msg: TMessage);

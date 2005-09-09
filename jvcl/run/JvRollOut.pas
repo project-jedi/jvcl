@@ -184,8 +184,8 @@ type
     // Normally, you don't need to call this method.
     procedure ClearChildTabStops;
 
-    procedure FocusKilled(NextWnd: HWND); override;
-    procedure FocusSet(PrevWnd: HWND); override;
+    procedure FocusKilled(NextWnd: THandle); override;
+    procedure FocusSet(PrevWnd: THandle); override;
     function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
@@ -1114,14 +1114,14 @@ begin
   Result := PtInRect(R, P);
 end;
 
-procedure TJvCustomRollOut.FocusKilled(NextWnd: HWND);
+procedure TJvCustomRollOut.FocusKilled(NextWnd: THandle);
 begin
   CheckChildTabStops;
   inherited FocusKilled(NextWnd);
   Invalidate;
 end;
 
-procedure TJvCustomRollOut.FocusSet(PrevWnd: HWND);
+procedure TJvCustomRollOut.FocusSet(PrevWnd: THandle);
 begin
   CheckChildTabStops;
   inherited FocusSet(PrevWnd);

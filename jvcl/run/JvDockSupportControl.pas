@@ -53,7 +53,7 @@ type
     FDragPos: TPoint;
     FDropOnControl: TControl;
     FDropAlign: TAlign;
-    FDragHandle: HWND;
+    FDragHandle: THandle;
     FDragTargetPos: TPoint;
     FCancelling: Boolean;
     FFloating: Boolean;
@@ -81,9 +81,9 @@ type
     destructor Destroy; override;
 
     procedure AdjustDockRect(const ARect: TRect); virtual;
-    function Capture: HWND;
-    function DragFindWindow(const Pos: TPoint): HWND; virtual;
-    procedure ReleaseCapture(Handle: HWND);
+    function Capture: THandle;
+    function DragFindWindow(const Pos: TPoint): THandle; virtual;
+    procedure ReleaseCapture(Handle: THandle);
     procedure EndDrag(Target: TObject; X, Y: Integer); virtual;
     procedure Finished(Target: TObject; X, Y: Integer; Accepted: Boolean); virtual;
     function GetDragCursor(Accepted: Boolean; X, Y: Integer): TCursor; virtual;
@@ -100,7 +100,7 @@ type
     property DragPos: TPoint read FDragPos write FDragPos;
     property DropOnControl: TControl read FDropOnControl write SetDropOnControl;
     property DropAlign: TAlign read FDropAlign write SetDropAlign;
-    property DragHandle: HWND read FDragHandle write FDragHandle;
+    property DragHandle: THandle read FDragHandle write FDragHandle;
     property DragTargetPos: TPoint read FDragTargetPos write FDragTargetPos;
     property EraseDockRect: TRect read FEraseDockRect;
     property Cancelling: Boolean read FCancelling write FCancelling;
@@ -390,14 +390,14 @@ type
   PSiteInfoRec = ^TSiteInfoRec;
   TSiteInfoRec = record
     Site: TWinControl;
-    TopParent: HWND;
+    TopParent: THandle;
   end;
 
   TSiteList = class(TList)
   public
     procedure AddSite(ASite: TWinControl);
     procedure Clear; override;
-    function Find(ParentWnd: HWND; var Index: Integer): Boolean;
+    function Find(ParentWnd: THandle; var Index: Integer): Boolean;
     function GetTopSite: TWinControl;
   end;
 
@@ -408,7 +408,7 @@ type
     FDragObject: TJvDockDragDockObject;
     FDragControl: TControl;
     FDragFreeObject: Boolean;
-    FDragCapture: HWND;
+    FDragCapture: THandle;
     FDragStartPos: TPoint;
     FDragSaveCursor: HCURSOR;
     FDragThreshold: Integer;
@@ -450,7 +450,7 @@ type
     procedure DragDone(Drop: Boolean); virtual;
     procedure CancelDrag; virtual;
     procedure ResetCursor; virtual;
-    function DragFindTarget(const Pos: TPoint; var Handle: HWND;
+    function DragFindTarget(const Pos: TPoint; var Handle: THandle;
       DragKind: TDragKind; Client: TControl): Pointer; virtual;
     procedure DoGetSiteInfo(Target, Client: TControl; var InfluenceRect: TRect;
       MousePos: TPoint; var CanDock: Boolean); virtual;
@@ -458,7 +458,7 @@ type
     procedure DoDockDrop(Source: TJvDockDragDockObject; Pos: TPoint); virtual;
     function DoUnDock(Source: TJvDockDragDockObject; Target: TWinControl; Client: TControl): Boolean; virtual;
     procedure DoEndDrag(Target: TObject; X, Y: Integer); virtual;
-    function DragFindWindow(const Pos: TPoint): HWND; virtual;
+    function DragFindWindow(const Pos: TPoint): THandle; virtual;
     function GetDockSiteAtPos(MousePos: TPoint; Client: TControl): TWinControl; virtual;
     procedure DoGetDockEdge(Target: TControl; MousePos: TPoint; var DropAlign: TAlign); virtual;
     procedure RegisterDockSite(Site: TWinControl; DoRegister: Boolean); virtual;
@@ -554,9 +554,9 @@ type
 
   PCheckTargetInfo = ^TCheckTargetInfo;
   TCheckTargetInfo = record
-    ClientWnd: HWND;
-    TargetWnd: HWND;
-    CurrentWnd: HWND;
+    ClientWnd: THandle;
+    TargetWnd: THandle;
+    CurrentWnd: THandle;
     MousePos: TPoint;
     Found: Boolean;
   end;
@@ -1775,7 +1775,7 @@ begin
   Result := NewTarget <> TWinControl(FDragTarget);
 end;
 
-function TJvDockDragDockObject.Capture: HWND;
+function TJvDockDragDockObject.Capture: THandle;
 begin
   Result := AllocateHWnd(MouseMsg);
   SetCapture(Result);
@@ -1809,7 +1809,7 @@ begin
   end;
 end;
 
-function TJvDockDragDockObject.DragFindWindow(const Pos: TPoint): HWND;
+function TJvDockDragDockObject.DragFindWindow(const Pos: TPoint): THandle;
 var
   WinControl: TWinControl;
 begin
@@ -2056,7 +2056,7 @@ begin
   end;
 end;
 
-procedure TJvDockDragDockObject.ReleaseCapture(Handle: HWND);
+procedure TJvDockDragDockObject.ReleaseCapture(Handle: THandle);
 begin
   Windows.ReleaseCapture;
   DeallocateHWnd(Handle);
@@ -2380,7 +2380,7 @@ begin
   end;
 end;
 
-function TJvDockManager.DragFindTarget(const Pos: TPoint; var Handle: HWND;
+function TJvDockManager.DragFindTarget(const Pos: TPoint; var Handle: THandle;
   DragKind: TDragKind; Client: TControl): Pointer;
 begin
   Result := GetDockSiteAtPos(Pos, Client);
@@ -2388,7 +2388,7 @@ begin
     Handle := TWinControl(Result).Handle;
 end;
 
-function TJvDockManager.DragFindWindow(const Pos: TPoint): HWND;
+function TJvDockManager.DragFindWindow(const Pos: TPoint): THandle;
 begin
   Result := DragObject.DragFindWindow(Pos);
 end;
@@ -2492,7 +2492,7 @@ procedure TJvDockManager.DragTo(const Pos: TPoint);
 var
   DragCursor: TCursor;
   Target: TControl;
-  TargetHandle: HWND;
+  TargetHandle: THandle;
   DoErase: Boolean;
   TempAlign: TAlign;
 begin
@@ -3658,7 +3658,7 @@ begin
   inherited Clear;
 end;
 
-function TSiteList.Find(ParentWnd: HWND; var Index: Integer): Boolean;
+function TSiteList.Find(ParentWnd: THandle; var Index: Integer): Boolean;
 begin
   Index := 0;
   Result := False;

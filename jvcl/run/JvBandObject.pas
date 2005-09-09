@@ -103,7 +103,7 @@ type
     FHasFocus: Boolean;
     FHook: HHook;
   protected
-    function CreateBandForm(const ParentWnd: HWND): TJvBandForm; virtual; abstract;
+    function CreateBandForm(const ParentWnd: THandle): TJvBandForm; virtual; abstract;
     procedure BandWndProc(var Msg: TMessage);
     procedure FocusChange(HasFocus: Boolean);
   public
@@ -124,6 +124,9 @@ type
     function CloseDW(dwReserved: DWORD): HRESULT; virtual; stdcall;
     function ResizeBorderDW(var Border: TRect;
       ToolbarSite: IUnknown; Reserved: BOOL): HRESULT; virtual; stdcall;
+      
+    // Note: this comes from IDeskBand but may not work under BCB, as it uses
+    // the HWND type. See the compatibility guide for details.
     function GetWindow(out Wnd: HWND): HRESULT; virtual; stdcall;
     function ContextSensitiveHelp(EnterMode: BOOL): HRESULT; virtual; stdcall;
     function SetSite(const Site: IUnknown): HRESULT; virtual; stdcall;

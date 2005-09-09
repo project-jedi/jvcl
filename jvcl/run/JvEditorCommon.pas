@@ -425,7 +425,7 @@ type
     FSmallChange: TScrollBarInc;
     FLargeChange: TScrollBarInc;
     FPage: Integer;
-    FHandle: HWND;
+    FHandle: THandle;
     FOnScroll: TScrollEvent;
     procedure SetParam(Index, Value: Integer);
   protected
@@ -441,7 +441,7 @@ type
     property Max: Integer index 1 read FMax write SetParam default 100;
     property Position: Integer index 2 read FPosition write SetParam default 0;
     property Page: Integer index 3 read FPage write SetParam;
-    property Handle: HWND read FHandle write FHandle;
+    property Handle: THandle read FHandle write FHandle;
     property OnScroll: TScrollEvent read FOnScroll write FOnScroll;
   end;
 
@@ -841,8 +841,8 @@ type
     procedure DblClick; override;
 
     procedure GetDlgCode(var Code: TDlgCodes); override;
-    procedure FocusSet(PrevWnd: HWND); override;
-    procedure FocusKilled(NextWnd: HWND); override;
+    procedure FocusSet(PrevWnd: THandle); override;
+    procedure FocusKilled(NextWnd: THandle); override;
     procedure DoPaste; dynamic;
     procedure DoCopy; dynamic;
     procedure DoCut; dynamic;
@@ -3507,14 +3507,14 @@ begin
   Code := [dcWantArrows, dcWantTab, dcWantChars, dcWantMessage];
 end;
 
-procedure TJvCustomEditorBase.FocusSet(PrevWnd: HWND);
+procedure TJvCustomEditorBase.FocusSet(PrevWnd: THandle);
 begin
   inherited FocusSet(PrevWnd);
   CreateCaret(Handle, 0, 2, CellRect.Height - 2);
   PaintCaret(True);
 end;
 
-procedure TJvCustomEditorBase.FocusKilled(NextWnd: HWND);
+procedure TJvCustomEditorBase.FocusKilled(NextWnd: THandle);
 begin
   inherited FocusKilled(NextWnd);
   Completion.CloseUp(False);

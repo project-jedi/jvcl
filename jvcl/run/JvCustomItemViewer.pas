@@ -236,7 +236,7 @@ type
 
     procedure GetDlgCode(var Code: TDlgCodes); override;
     procedure BoundsChanged; override;
-    procedure FocusSet(Focuseded: HWND); override;
+    procedure FocusSet(PrevWnd: THandle); override;
 
     procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean); override;
     procedure DoEndDrag(Sender: TObject; X, Y: Integer); override;
@@ -1756,10 +1756,10 @@ begin
   StopScrollTimer;
 end;
 
-procedure TJvCustomItemViewer.FocusSet(Focuseded: HWND);
+procedure TJvCustomItemViewer.FocusSet(PrevWnd: THandle);
 begin
-  inherited FocusSet(Focuseded);
-  if Focuseded = Handle then
+  inherited FocusSet(PrevWnd);
+  if PrevWnd = Handle then
   begin
     if SelectedIndex >= 0 then
       Invalidate;

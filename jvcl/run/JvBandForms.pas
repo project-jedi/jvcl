@@ -97,7 +97,7 @@ type
     @param ParentWindow   The parent window of the band form.
     @param BandObject     The band object associated with the band form.
     }
-    constructor CreateBandForm(const ParentWindow: HWND; const BandObject: TComObject);
+    constructor CreateBandForm(const ParentWindow: THandle; const BandObject: TComObject);
     constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;
     {:Returns the minimum size of the band form in a TPointL structure.
     Minimum size is obtained from in the properties Constraints.MinWidth and
@@ -318,7 +318,7 @@ begin
   ParentFont := False;
 end;
 
-constructor TJvBandForm.CreateBandForm(const ParentWindow: HWND; const BandObject: TComObject);
+constructor TJvBandForm.CreateBandForm(const ParentWindow: THandle; const BandObject: TComObject);
 var
   Rect: TRect;
 begin

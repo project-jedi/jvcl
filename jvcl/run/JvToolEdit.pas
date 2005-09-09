@@ -77,7 +77,7 @@ type
 type
   IAutoComplete = interface(IUnknown)
     ['{00bb2762-6a77-11d0-a535-00c04fd7d062}']
-    function Init(hwndEdit: HWND; punkACL: IUnknown;
+    function Init(hwndEdit: THandle; punkACL: IUnknown;
       pwszRegKeyPath: LPCWSTR; pwszQuickComplete: LPCWSTR): HRESULT; stdcall;
     function Enable(fEnable: BOOL): HRESULT; stdcall;
   end;
@@ -328,8 +328,8 @@ type
     procedure WMCut(var Msg: TMessage); message WM_CUT;
     procedure WMPaste(var Msg: TMessage); message WM_PASTE;
     procedure AdjustSize; override;
-    procedure FocusKilled(NextWnd: HWND); override;
-    procedure FocusSet(PrevWnd: HWND); override;
+    procedure FocusKilled(NextWnd: THandle); override;
+    procedure FocusSet(PrevWnd: THandle); override;
     procedure EnabledChanged; override;
     procedure FontChanged; override;
     procedure DoEnter; override;
@@ -2404,7 +2404,7 @@ begin
 end;
 {$ENDIF VisualCLX}
 
-procedure TJvCustomComboEdit.FocusKilled(NextWnd: HWND);
+procedure TJvCustomComboEdit.FocusKilled(NextWnd: THandle);
 var
   Sender: TWinControl;
 begin
@@ -2439,7 +2439,7 @@ begin
   end;
 end;
 
-procedure TJvCustomComboEdit.FocusSet(PrevWnd: HWND);
+procedure TJvCustomComboEdit.FocusSet(PrevWnd: THandle);
 begin
   inherited FocusSet(PrevWnd);
   FFocused := True;
