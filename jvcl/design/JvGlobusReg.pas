@@ -47,7 +47,7 @@ uses
   JvDsgnConsts,
   JvgReportEditorForm, JvgAlignForm, JvgAlignFunction, JvgReportParamEditorForm,
   {JvgBitBtn, } JvgRuler, JvgReport, JvgCaption, JvgReportParamsEditor,
-  JvgReportParamsForm, JvgRichEditUtils, JvgCommClasses, JvgRttiUtils,
+  JvgReportParamsForm, JvgRichEditUtils, JvgCommClasses, {JvgRttiUtils, }
   JvgScrollBox, JvgShade, JvgDigits,
   JvgDrawTab, {JvgEdit, } JvgExceptionHandler, JvgShadowEditor,
   JvgFileIterator, {JvgFileUtils, } JvgFixFont, JvgShadow, {JvgGraph,}
