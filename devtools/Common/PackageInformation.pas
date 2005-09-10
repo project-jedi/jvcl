@@ -296,9 +296,6 @@ const
   PathDelim = '\';
 {$ENDIF COMPILER5}
 
-uses
-  JclStrings;
-
 var
   XmlFileCache: TStringList; // cache for .xml files ( TPackageXmlInfo )
 
@@ -474,6 +471,41 @@ begin
       Delphi/BCB/BDN versions. }
   Result := Content;
   {$ENDIF COMPILIER6_UP}
+end;
+
+// (rom) copied from JclStrings.pas
+
+function StrLeft(const S: string; Count: Integer): string;
+begin
+  Result := Copy(S, 1, Count);
+end;
+
+// (rom) copied from JclStrings.pas
+
+procedure StrToStrings(S, Sep: string; const List: TStrings; const AllowEmptyString: Boolean = True);
+var
+  I, L: Integer;
+  Left: string;
+begin
+  Assert(List <> nil);
+  List.BeginUpdate;
+  try
+    List.Clear;
+    L := Length(Sep);
+    I := Pos(Sep, S);
+    while I > 0 do
+    begin
+      Left := StrLeft(S, I - 1);
+      if (Left <> '') or AllowEmptyString then
+        List.Add(Left);
+      Delete(S, 1, I + L - 1);
+      I := Pos(Sep, S);
+    end;
+    if S <> '' then
+      List.Add(S);  // Ignore empty strings at the end.
+  finally
+    List.EndUpdate;
+  end;
 end;
 
 { TPackageXmlInfoItem }
