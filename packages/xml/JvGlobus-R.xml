@@ -36,7 +36,6 @@
   <Contains>
     <File Name="..\..\run\JvgReportParamsEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvgRichEditUtils.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgRttiUtils.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvgRuler.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvgScrollBox.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvgShade.pas" Targets="allbutclx" Formname="" Condition=""/>
