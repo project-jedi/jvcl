@@ -56,7 +56,7 @@ uses
   {JvgImageGroup, } JvgInspectorGrid, {JvgJump, } JvgSmallFontsDefense, //JvgSysInf,
   JvgLogicItemEditorForm, JvgLogics, JvgStringContainer, JvgMailSlots,
   JvgStringGrid, JvgTabComm, JvgTab, JvgSysRequirements, JvgProcess,
-  JvgProcessUtils, JvgPropertyCenter, JvgTransparentMemo, JvgTreeView, JvgTypes,
+  {JvgProcessUtils, } JvgPropertyCenter, JvgTransparentMemo, JvgTreeView, JvgTypes,
   JvgUtils, {JvgWinMask, } JvgRTFPreviewForm,
   JvgWizardHeader, JvgXMLSerializer, Jvg3DColors, JvgAskListBox, JvgBevel,
   JvgButton, JvgCheckBox, JvgCompDescription,

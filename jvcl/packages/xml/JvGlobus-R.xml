@@ -91,7 +91,6 @@
     <File Name="..\..\run\JvgMailSlots.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvgPage.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvgProcess.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgProcessUtils.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvgProgress.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvgQPrintPreviewForm.pas" Targets="d5,d6,d7,c5,c6,k3" Formname="JvgfPrintPreview" Condition="JVCL_UseQuickReport"/>
     <File Name="..\..\run\JvgQPrintSetupForm.pas" Targets="d5,d6,d7,c5,c6,k3" Formname="JvgPrintSetup" Condition="JVCL_UseQuickReport"/>
