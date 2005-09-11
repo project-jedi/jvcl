@@ -65,7 +65,7 @@ uses
   JvTransparentButton, JvColorForm, JvImageDrawThread, JvWinampLabel,
   JvComponentPanel, JvButtons, JvCaptionPanel, JvScrollMax, JvMovableBevel,
   JvComboListBox, JvOfficeColorButton, JvOfficeColorPanel,
-  JvNetscapeSplitter, JvListComb,
+  JvNetscapeSplitter, JvListComb, JvRuler,
   JvDsgnEditors, JvScrollMaxEditor, JvBehaviorLabelEditor, JvGroupHeaderEditor,
   JvFooterEditor, JvSpeedbarForm, JvTransparentButtonEditors, JvRollOutEditor;
 
@@ -85,7 +85,7 @@ begin
     TJvHTButton, TJvSpacer, TJvSwitch]);
   RegisterComponents(RsPaletteBarPanel, [TJvSpeedBar, TJvCaptionPanel,
     TJvItemsPanel, TJvMovableBevel, TJvRollOut, TJvFooter, TJvGroupHeader,
-    TJvComponentPanel]);
+    TJvComponentPanel, TJvRuler]);
   RegisterComponents(RsPaletteLabel, [TJvBehaviorLabel, TJvInstallLabel,
     TJvHTLabel, TJvWinampLabel]);
   RegisterComponents(RsPaletteListComboTree, [TJvImageComboBox, TJvImageListBox,
