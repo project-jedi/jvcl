@@ -252,10 +252,15 @@ begin
         '0'..'9': ;
 
         '.':
-          if IsDecimal or IsExp then
-            Break
-          else
-            IsDecimal := True;
+          begin
+            if P[1] = '.' then // "1..2"
+              Break
+            else
+            if IsDecimal or IsExp then
+              Break
+            else
+              IsDecimal := True;
+          end;
 
         '+', '-':
           if not IsExp or IsExpSign then
@@ -304,6 +309,11 @@ begin
         Inc(P);
     end;
     Result.Kind := tkString;
+  end
+  else if (P[0] = '.') and (P[1] = '.') then
+  begin
+    Inc(P, 2);
+    Result.Kind := tkSymbol;
   end
   else if P[0] in OneSymbolChars then
   begin
