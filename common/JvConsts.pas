@@ -55,6 +55,7 @@ const
   fbsSizeToolWin = bsSizeToolWin;
 {$ENDIF VCL}
 
+const
   { JvEditor }
   JvEditorCompletionChars = #8 + '0123456789QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm';
 
@@ -125,6 +126,9 @@ const
   {$IFDEF DELPHI9}
   SDelphiKey = 'Software\Borland\BDS\3.0';
   {$ENDIF DELPHI9}
+  {$IFDEF DELPHI10}
+  SDelphiKey = 'Software\Borland\BDS\4.0';
+  {$ENDIF DELPHI10}
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
   SDelphiKey = '.borland/.jvclx1';
