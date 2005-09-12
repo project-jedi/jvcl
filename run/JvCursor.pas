@@ -42,7 +42,7 @@ uses
 type
   TJvCursorImage = class(TGraphic)
   private
-    FHandle: HICON;
+    FHandle: HCURSOR;
   protected
     procedure Draw(ACanvas: TCanvas; const Rect: TRect); override;
     function GetEmpty: Boolean; override;
@@ -57,11 +57,16 @@ type
     procedure LoadFromClipboardFormat(AFormat: Word; AData: THandle; APalette: HPALETTE); override;
     procedure LoadFromFile(const FileName: string); override;
     procedure LoadFromStream(Stream: TStream); override;
+    procedure LoadFromResourceID(Instance: THandle; ResID: Integer); virtual;
+    procedure LoadFromResourceName(Instance: THandle; const ResName: string); virtual;
     procedure SaveToClipboardFormat(var AFormat: Word; var AData: THandle; var APalette: HPALETTE); override;
     procedure SaveToStream(Stream: TStream); override;
-    property Handle: HICON read FHandle;
+    property Handle: HCURSOR read FHandle;
   end;
   
+var
+  CF_CURSOR: Word; { Clipboard format for cursor }
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -75,14 +80,19 @@ const
 implementation
 
 uses
-  SysUtils,
+  SysUtils, Consts,
   JvResources;
 
-procedure DestroyAndNilCursor(var Handle: HICON);
+function CopyCursor(pcur: HCURSOR): HCURSOR;
 begin
-  if Handle <> 0 then
-    DestroyCursor(Handle);
-  Handle := 0;
+ Result := HCURSOR(CopyIcon(HICON(pcur)));
+end;
+
+procedure DestroyAndNilCursor(var AHandle: HCURSOR);
+begin
+  if AHandle <> 0 then
+    DestroyCursor(AHandle);
+  AHandle := 0;
 end;
 
 destructor TJvCursorImage.Destroy;
@@ -95,11 +105,11 @@ end;
 
 procedure TJvCursorImage.Draw(ACanvas: TCanvas; const Rect: TRect);
 const
-   cTransparent: array [Boolean] of DWORD = (DI_IMAGE, DI_NORMAL);
+  cTransparent: array [Boolean] of DWORD = (DI_IMAGE, DI_NORMAL);
 begin
-   with Rect do
-     DrawIconEx(ACanvas.Handle, Left, Top, Handle, Right - Left, Bottom - Top,
-       0, 0, cTransparent[Transparent]);
+  with Rect do
+    DrawIconEx(ACanvas.Handle, Left, Top, Handle, Right - Left, Bottom - Top,
+      0, 0, cTransparent[Transparent]);
 end;
 
 function TJvCursorImage.GetEmpty: Boolean;
@@ -117,15 +127,31 @@ begin
   Result := GetSystemMetrics(SM_CXCURSOR);
 end;
 
-procedure TJvCursorImage.LoadFromClipboardFormat(AFormat: Word; AData: THandle;
-  APalette: HPALETTE);
+procedure TJvCursorImage.LoadFromClipboardFormat(AFormat: Word; AData: THandle; APalette: HPALETTE);
+var
+  Hnd: HCURSOR;
 begin
-  raise Exception.CreateRes(@RsECursorLoadFromClipboardFormat);
+  Hnd := GetClipboardData(CF_CURSOR);
+  if Hnd = 0 then
+    raise EInvalidGraphic.CreateRes(@SUnknownClipboardFormat);
+  Hnd := CopyCursor(Hnd);
+  if Hnd <> 0 then
+  begin
+    DestroyAndNilCursor(FHandle);
+    FHandle := Hnd;
+  end;
 end;
 
 procedure TJvCursorImage.LoadFromFile(const FileName: string);
+var
+  Hnd: HCURSOR;
 begin
-  FHandle := LoadCursorFromFile(PChar(FileName));
+  Hnd := LoadCursorFromFile(PChar(FileName));
+  if Hnd <> 0 then
+  begin
+    DestroyAndNilCursor(FHandle);
+    FHandle := Hnd;
+  end;
 end;
 
 procedure TJvCursorImage.LoadFromStream(Stream: TStream);
@@ -133,11 +159,41 @@ begin
   raise Exception.CreateRes(@RsECursorLoadFromStream);
 end;
 
+procedure TJvCursorImage.LoadFromResourceID(Instance: THandle; ResID: Integer);
+var
+  Hnd: HCURSOR;
+begin
+  Hnd := LoadCursor(Instance, PChar(ResID));
+  if Hnd <> 0 then
+  begin
+    DestroyAndNilCursor(FHandle);
+    FHandle := Hnd;
+  end;
+end;
+
+procedure TJvCursorImage.LoadFromResourceName(Instance: THandle; const ResName: string);
+var
+  Hnd: HCURSOR;
+begin
+  Hnd := LoadCursor(Instance, PChar(ResName));
+  if Hnd <> 0 then
+  begin
+    DestroyAndNilCursor(FHandle);
+    FHandle := Hnd;
+  end;
+end;
+
 procedure TJvCursorImage.SaveToClipboardFormat(var AFormat: Word;
   var AData: THandle; var APalette: HPALETTE);
 begin
-  raise Exception.CreateRes(@RsECursorSaveToClipboardFormat);
+  if Handle <> 0 then
+  begin
+    AFormat := CF_CURSOR;
+    APalette := 0;
+    AData := CopyCursor(Handle);
+  end;
 end;
+
 
 procedure TJvCursorImage.SaveToStream(Stream: TStream);
 begin
@@ -195,7 +251,9 @@ initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
   RegisterClass(TJvCursorImage);
+  CF_CURSOR := RegisterClipboardFormat(PChar(RsCursor));
   TPicture.RegisterFileFormat(RsCurExtension, RsCurDescription, TJvCursorImage);
+  TPicture.RegisterClipboardFormat(CF_CURSOR, TJvCursorImage);
 
 finalization
   TPicture.UnregisterGraphicClass(TJvCursorImage);
