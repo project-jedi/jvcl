@@ -7218,8 +7218,10 @@ begin
   begin
     if (DataSize > 0) and (MIMEType <> cURLArrow) then
     begin
-      TmpFileName := JclFileUtils.FileGetTempName(cPictureFrameFileNameTemplate);
-      TmpFileName := ChangeFileExt(TmpFileName, MIMETypeToExt(MIMEType));
+      { !! We can't use FileGetTempName; it /creates/ a file with extension TMP but
+           we need to have a specific extension }
+      TmpFileName := IncludeTrailingPathDelimiter(PathGetTempPath) + cPictureFrameFileNameTemplate;
+      TmpFileName := FindUnusedFileName(TmpFileName, MIMETypeToExt(MIMEType), '');
 
       SaveToFile(TmpFileName);
       try
