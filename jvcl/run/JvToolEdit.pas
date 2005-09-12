@@ -531,8 +531,8 @@ type
   { For internal use only; it's not intended to be used separately }
 
 type
-  TExecOpenDialogEvent = procedure(Sender: TObject; var Name: string;
-    var Action: Boolean) of object;
+  TExecOpenDialogEvent = procedure(Sender: TObject; var AName: string;
+    var AAction: Boolean) of object;
 
   TJvFileDirEdit = class(TJvCustomComboEdit)
   private
@@ -588,10 +588,8 @@ type
     {$IFDEF VCL}
     property AcceptFiles: Boolean read FAcceptFiles write SetAcceptFiles default True;
     {$ENDIF VCL}
-    property OnBeforeDialog: TExecOpenDialogEvent read FOnBeforeDialog
-      write FOnBeforeDialog;
-    property OnAfterDialog: TExecOpenDialogEvent read FOnAfterDialog
-      write FOnAfterDialog;
+    property OnBeforeDialog: TExecOpenDialogEvent read FOnBeforeDialog write FOnBeforeDialog;
+    property OnAfterDialog: TExecOpenDialogEvent read FOnAfterDialog write FOnAfterDialog;
     property OnDropFiles: TNotifyEvent read FOnDropFiles write FOnDropFiles;
     property OnButtonClick;
     property ClipboardCommands; // RDB
