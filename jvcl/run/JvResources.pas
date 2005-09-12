@@ -453,10 +453,9 @@ resourcestring
 resourcestring
   RsCurExtension = 'cur';
   RsCurDescription = 'Cursor files';
+  RsCursor = 'Cursor';
 
-  RsECursorLoadFromClipboardFormat = 'LoadFromClipboardFormat not supported';
   RsECursorLoadFromStream = 'LoadFromStream not supported';
-  RsECursorSaveToClipboardFormat = 'SaveToClipboardFormat not supported';
   RsECursorSaveToStream = 'SaveToStream not supported';
 
 //=== JvDataProvider.pas =====================================================

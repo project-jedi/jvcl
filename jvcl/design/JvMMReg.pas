@@ -55,7 +55,7 @@ uses
   JvEasterEgg, JvGradient, JvGradientHeaderPanel,
   JvImageRotate, JvImageTransform, JvImageSquare, JvPcx, JvStarfield,
   JvWaitingGradient, JvWaitingProgress, JvSpecialProgress,
-  JvColorTrackBar,
+  JvColorTrackBar, JvCursor,
   {$IFDEF USE_JV_GIF}
   JvGIF, JvGIFCtrl,
   {$ENDIF USE_JV_GIF}
