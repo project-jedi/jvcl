@@ -280,6 +280,7 @@ const
 const
   // for CreateCompatibleDC
   HDC_DESKTOP = HDC(0);
+  {$EXTERNALSYM HDC_DESKTOP}
 {$ENDIF VCL}
 
 {$IFDEF UNITVERSIONING}
