@@ -67,7 +67,6 @@
     <File Name="..\..\run\JvgCommClasses.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvgCrossTable.pas" Targets="allbutperso" Formname="" Condition=""/>
     <File Name="..\..\run\JvgDBGrid.pas" Targets="allbutperso" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgDBNav.pas" Targets="allbutperso" Formname="" Condition=""/>
     <File Name="..\..\run\JvgDigits.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvgDrawTab.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvgExceptionHandler.pas" Targets="allbutclx" Formname="" Condition=""/>

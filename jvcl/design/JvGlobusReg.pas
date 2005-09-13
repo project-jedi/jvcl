@@ -66,7 +66,7 @@ uses
   JvgMultiResourceEditorForm, {JvgMultiResources, } JvgPage, JvgProgress,
   JvgGridHeaderControl, 
   {$IFNDEF DelphiPersonalEdition}
-  JvgCrossTable, JvgDBNav, JvgExport, JvgDBGrid, JvgExportComponents,
+  JvgCrossTable, {JvgDBNav, } JvgExport, JvgDBGrid, JvgExportComponents,
   {$IFNDEF COMPILER8_UP}
    {$IFDEF INTERNET_COMPONENTS}
   JvgWebDocumentIterator, JvgHTTPVersionInfo,
@@ -87,7 +87,7 @@ procedure Register;
 begin
   RegisterComponents(RsPaletteGlobusComponents1, [
     {$IFNDEF DelphiPersonalEdition}
-    {TJvgExportDataset,} TJvgDBNavigator, TJvgPrintCrossTable, TJvgDBGrid,
+    {TJvgExportDataset,} {TJvgDBNavigator, } TJvgPrintCrossTable, TJvgDBGrid,
     TJvgVertDBSGrid,
     {$ENDIF !DelphiPersonalEdition}
     TJvgGridHeaderControl,
