@@ -5986,7 +5986,7 @@ begin
   with TBitmapInfoHeader(BitmapInfo) do
     biHeight := Abs(biHeight);
   OldPal := 0;
-  DC := CreateCompatibleDC(HDC_DESKTOP);
+  DC := CreateScreenCompatibleDC;
   try
     if Palette <> 0 then
     begin
