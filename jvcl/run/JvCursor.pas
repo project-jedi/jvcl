@@ -131,10 +131,9 @@ procedure TJvCursorImage.LoadFromClipboardFormat(AFormat: Word; AData: THandle; 
 var
   Hnd: HCURSOR;
 begin
-  Hnd := GetClipboardData(CF_CURSOR);
-  if Hnd = 0 then
+  if AFormat <> CF_CURSOR then
     raise EInvalidGraphic.CreateRes(@SUnknownClipboardFormat);
-  Hnd := CopyCursor(Hnd);
+  Hnd := CopyCursor(AData);
   if Hnd <> 0 then
   begin
     DestroyAndNilCursor(FHandle);
@@ -194,7 +193,6 @@ begin
   end;
 end;
 
-
 procedure TJvCursorImage.SaveToStream(Stream: TStream);
 begin
   raise Exception.CreateRes(@RsECursorSaveToStream);
@@ -202,12 +200,12 @@ end;
 
 procedure TJvCursorImage.SetHeight(Value: Integer);
 begin
-//  raise EInvalidGraphicOperation.CreateRes(@SChangeIconSize);
+  // just ignore
 end;
 
 procedure TJvCursorImage.SetWidth(Value: Integer);
 begin
-//  raise EInvalidGraphicOperation.CreateRes(@SChangeIconSize);
+  // just ignore
 end;
 
 procedure TJvCursorImage.Assign(Source: TPersistent);
