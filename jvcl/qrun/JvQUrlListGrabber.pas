@@ -511,7 +511,7 @@ const
 implementation
 
 uses
-  JvQConsts, JvQResources,
+  JvQResources,
   // JvUrlGrabbers MUST be included here so that the grabbers
   // it contains are registered before any JvUrlListGrabber
   // component reads its properties.
@@ -793,11 +793,11 @@ begin
   inherited Create(AOwner);
 
   // Set default properties
-  Agent := JediAgent;
+  Agent := RsJediAgent;
   Port := 0;
   UserName := '';
   Password := '';
-  FileName := DefaultOutputFileName;
+  FileName := RsDefaultOutputFileName;
   OutputMode := omFile;
 end;
 
@@ -1258,11 +1258,10 @@ begin
   inherited Create;
   FEditorTrick := TJvUrlGrabberDefPropEdTrick.Create(Self);
 
-  FFileName := DefaultOutputFileName;
-  FAgent := JediAgent;
+  FAgent := RsJediAgent;
   FUserName := '';
   FPassword := '';
-  FFileName := DefaultOutputFileName;
+  FFileName := RsDefaultOutputFileName;
   FOutputMode := omFile;
 end;
 
