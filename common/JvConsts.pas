@@ -71,17 +71,6 @@ const
   IdentifierSymbols = IdentifierFirstSymbols + DigitSymbols;
   HexadecimalSymbols = DigitSymbols + HexadecimalUppercaseLetters + HexadecimalLowercaseLetters;
 
-  { Menu Designer }
-  { (rom) disabled unused
-  SMDMenuDesigner       = 'Menu &Designer';
-  SMDInsertItem         = '&Insert';
-  SMDDeleteItem         = '&Delete';
-  SMDCreateSubmenuItem  = 'Create &SubMenu';
-  }
-
-  { RALib 1.23 }
-  // (rom) now in JvJCLUtils.pas
-
   { RALib 1.55 }
   {$IFDEF MSWINDOWS}
   {$IFDEF DELPHI2}
@@ -153,9 +142,9 @@ const
   CM_FORCESIZE = CM_JVBASE + 5;  // used in JvButton
 
   { Values for WParam for CM_SPEEDBARCHANGED message }
-  SBR_CHANGED = 0; { change buttons properties  }
-  SBR_DESTROYED = 1; { destroy SpeedBar           }
-  SBR_BTNSELECT = 2; { select button in SpeedBar  }
+  SBR_CHANGED        = 0; { change buttons properties  }
+  SBR_DESTROYED      = 1; { destroy SpeedBar           }
+  SBR_BTNSELECT      = 2; { select button in SpeedBar  }
   SBR_BTNSIZECHANGED = 3; { button size changed        }
 
   { TBitmap.GetTransparentColor from GRAPHICS.PAS use this value }
@@ -230,9 +219,6 @@ const
   ':', '+', '%', '*', '(', ')', ';', '=', '{', '}', '[', ']', '{', '}', '<', '>'];
 
   DigitChars = ['0'..'9'];
-  // (rom) disabled unused
-  //Brackets = ['(', ')', '[', ']', '{', '}'];
-  //StdWordDelims = [#0..' ', ',', '.', ';', '/', '\', ':', '''', '"', '`'] + Brackets;
 
 var
   crJVCLFirst: TCursor = 100;
@@ -259,15 +245,10 @@ const
   FOURCC_fram = 'fram';
   FOURCC_icon = 'icon';
   FOURCC_rate = 'rate';
-  FOURCC_seq = 'seq ';
+  FOURCC_seq  = 'seq ';
 
-  AF_ICON = $00000001;
+  AF_ICON     = $00000001;
   AF_SEQUENCE = $00000002;
-
-{ JvUrlGrabbers }
-const
-  JediAgent = 'JEDI-VCL';
-  DefaultOutputFileName = 'output.txt';
 
 const
   SC_DRAGMOVE = $F012;

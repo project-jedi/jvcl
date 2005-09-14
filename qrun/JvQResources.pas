@@ -2128,6 +2128,9 @@ resourcestring
   RsENoGrabberForUrl = 'There is no grabber capable of handling URL: %s';
   RsEGrabberNotStopped = 'The grabber is not stopped, you cannot change its URL.';
 
+  RsJediAgent = 'JEDI-VCL';
+  RsDefaultOutputFileName = 'output.txt';
+
 //=== JvValidateEdit.pas =====================================================
 resourcestring
   RsEBaseTooBig = 'Base > 36 not supported';

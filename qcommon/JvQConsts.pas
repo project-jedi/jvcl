@@ -184,11 +184,6 @@ const
   AF_ICON = $00000001;
   AF_SEQUENCE = $00000002;
 
-{ JvUrlGrabbers }
-const
-  JediAgent = 'JEDI-VCL';
-  DefaultOutputFileName = 'output.txt';
-
 const
   SC_DRAGMOVE = $F012;
 
