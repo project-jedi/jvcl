@@ -500,6 +500,8 @@ procedure GetIconSize(Icon: HICON; var W, H: Integer);
 function CreateRealSizeIcon(Icon: TIcon): HICON;
 procedure DrawRealSizeIcon(Canvas: TCanvas; Icon: TIcon; X, Y: Integer);
 {end JvIconClipboardUtils }
+
+function CreateScreenCompatibleDC: HDC;
 {$ENDIF !CLR}
 {$ENDIF VCL}
 
@@ -4576,6 +4578,13 @@ begin
   finally
     DestroyIcon(Ico);
   end;
+end;
+
+function CreateScreenCompatibleDC: HDC;
+const
+  HDC_DESKTOP = HDC(0);
+begin
+  Result := CreateCompatibleDC(HDC_DESKTOP);
 end;
 
 {$ENDIF VCL}

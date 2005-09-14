@@ -267,7 +267,7 @@ uses
   JvGIF,
   {$DEFINE HANDLES_GIF}
   {$ENDIF USE_JvGIF}
-  JvConsts, JvResources;
+  JvJCLUtils, JvConsts, JvResources;
 
 type
   TWinControlAccessProtected = class(TWinControl);
@@ -555,7 +555,7 @@ begin
       ClientRect := AClient.ClientRect;
       MemBitmap := CreateCompatibleBitmap(DC, ClientRect.Right, ClientRect.Bottom);
       ReleaseDC(HWND_DESKTOP, DC);
-      MemDC := CreateCompatibleDC(HDC_DESKTOP);
+      MemDC := CreateScreenCompatibleDC;
       OldBitmap := SelectObject(MemDC, MemBitmap);
       try
         DC := BeginPaint(AClient.Handle, PS);

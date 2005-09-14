@@ -776,7 +776,7 @@ var
 begin
   FreeHandle;
 
-  H := CreateCompatibleDC(HDC_DESKTOP);
+  H := CreateScreenCompatibleDC;
   FDIBHandle := CreateDIB(H, AWidth, AHeight);
   if FDIBHandle <> 0 then
     FOldBitmap := SelectObject(H, FDIBHandle)

@@ -378,7 +378,7 @@ begin
       MemDC := GetDC(HWND_DESKTOP);
       MemBitmap := CreateCompatibleBitmap(MemDC, ClientWidth, ClientHeight);
       ReleaseDC(HWND_DESKTOP, MemDC);
-      MemDC := CreateCompatibleDC(HDC_DESKTOP);
+      MemDC := CreateScreenCompatibleDC;
       OldBitmap := SelectObject(MemDC, MemBitmap);
       try
         DC := Msg.DC;

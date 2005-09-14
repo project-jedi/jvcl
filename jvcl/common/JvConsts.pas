@@ -276,13 +276,6 @@ const
   KeyboardShiftStates = [ssShift, ssAlt, ssCtrl];
   MouseShiftStates = [ssLeft, ssRight, ssMiddle, ssDouble];
 
-{$IFDEF VCL}
-const
-  // for CreateCompatibleDC
-  HDC_DESKTOP = HDC(0);
-  {$EXTERNALSYM HDC_DESKTOP}
-{$ENDIF VCL}
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
