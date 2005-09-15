@@ -34,7 +34,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes, Windows, Messages, Graphics, Controls, Forms, Dialogs,
-  JvSALHashList, JvStrings, JvComponent;
+  JvSALHashList, JvStrings, JvComponentBase;
 
 const
   StackLimit = 256;

@@ -34,7 +34,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Classes, Controls, ExtCtrls, Graphics, ImgList,
-  JvComponent;
+  JvComponentBase;
 
 type
   TJvAppAnimatedIcon = class(TJvComponent)

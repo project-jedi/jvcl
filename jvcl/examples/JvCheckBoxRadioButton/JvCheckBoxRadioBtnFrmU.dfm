@@ -13,9 +13,6 @@ object JvCheckBoxRadioBtnFrm: TJvCheckBoxRadioBtnFrm
   Font.Name = 'MS Shell Dlg 2'
   Font.Style = []
   OldCreateOrder = False
-  DesignSize = (
-    501
-    387)
   PixelsPerInch = 96
   TextHeight = 13
   object lblOption1: TJvLabel

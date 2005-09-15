@@ -35,7 +35,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
-  JvComponent;
+  JvComponentBase;
 
 type
   TJvStrToHtml = class(TJvComponent)

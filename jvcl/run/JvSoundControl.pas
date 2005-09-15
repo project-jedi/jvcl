@@ -35,7 +35,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, SysUtils, Classes, MMSystem,
-  JvTypes, JvComponent;
+  JvTypes, JvComponentBase;
 
 type
   TBalance = 0..100;

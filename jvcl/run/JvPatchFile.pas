@@ -34,7 +34,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
-  JvTypes, JvComponent;
+  JvTypes, JvComponentBase;
 
 type
   TJvPatchFile = class(TJvComponent)

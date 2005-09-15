@@ -34,7 +34,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Classes, Controls, ExtCtrls, Forms,
-  JvComponent;
+  JvComponentBase;
 
 type
   TJvAnimTitle = class(TJvComponent)

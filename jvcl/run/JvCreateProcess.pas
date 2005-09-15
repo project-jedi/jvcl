@@ -42,7 +42,7 @@ uses
   Forms,
   {$ENDIF !COMPILER6_UP}
   ShellAPI, SyncObjs,
-  JvComponent, JvTypes;
+  JvComponentBase, JvTypes;
 
 const
   CCPS_BufferSize = 1024;

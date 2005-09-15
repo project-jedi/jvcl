@@ -38,7 +38,7 @@ uses
   {$ENDIF USEJVCL}
   Classes,
   {$IFDEF USEJVCL}
-  JvComponent,
+  JvComponentBase,
   {$ENDIF USEJVCL}
   {$IFDEF VCL}
   Windows, Graphics, Controls;

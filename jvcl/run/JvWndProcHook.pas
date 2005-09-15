@@ -40,7 +40,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, Controls, Forms, Classes,
-  JvComponent;
+  JvComponentBase;
 
 type
   TJvControlHook = function(var Msg: TMessage): Boolean of object;

@@ -47,7 +47,7 @@ uses
   {$ENDIF VCL}
   Classes, Contnrs, Graphics, Controls, ImgList,
   JclBase,
-  JvComponent, JvDataProviderIntf;
+  JvComponentBase, JvDataProviderIntf;
 
 type
   // Forwards

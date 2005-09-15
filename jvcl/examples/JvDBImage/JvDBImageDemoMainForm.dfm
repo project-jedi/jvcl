@@ -12,9 +12,6 @@ object JvDBImageDemoMainFrm: TJvDBImageDemoMainFrm
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
-  DesignSize = (
-    708
-    361)
   PixelsPerInch = 96
   TextHeight = 13
   object DBGrid1: TJvDBGrid

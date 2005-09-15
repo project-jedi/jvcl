@@ -12,9 +12,6 @@ object Form1: TForm1
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
-  DesignSize = (
-    756
-    535)
   PixelsPerInch = 96
   TextHeight = 13
   object grp1: TGroupBox

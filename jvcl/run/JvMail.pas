@@ -40,7 +40,7 @@ uses
   Windows, SysUtils, Classes, Controls, Forms,
   Mapi,
   JclBase, JclMapi,
-  JvComponent;
+  JvComponentBase;
 
 type
   TJvMail = class;

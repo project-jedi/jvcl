@@ -35,7 +35,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Classes,
-  JvComponent;
+  JvComponentBase;
 
 type
   TJvCommPort = 0..8;

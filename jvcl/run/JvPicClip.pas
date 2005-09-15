@@ -39,7 +39,7 @@ uses
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
-  JvComponent;
+  JvComponentBase;
 
 type
   TJvCellRange = 1..MaxInt;

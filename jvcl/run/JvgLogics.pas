@@ -37,7 +37,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Classes, SysUtils, Graphics,
-  JvComponent, JvResources;
+  JvComponentBase, JvResources;
   {$ELSE}
   Classes, SysUtils, Graphics;
   {$ENDIF USEJVCL}

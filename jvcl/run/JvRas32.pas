@@ -43,7 +43,7 @@ uses
   {$ENDIF VCL}
   Windows, Messages,
    // Messages must be after QControls
-  JvComponent, JvTypes;
+  JvComponentBase, JvTypes;
 
 type
   TJvRas32 = class(TJvComponent)

@@ -173,7 +173,8 @@ uses
   {$ENDIF VisualCLX}
   SysUtils, Classes, Contnrs, TypInfo, IniFiles,
   Windows, Messages, Graphics, Controls, StdCtrls, ExtCtrls,
-  JvExControls, JvExExtCtrls, JvAutoComplete, JvJVCLUtils, JvComponent, JvTypes;
+  JvExControls, JvExExtCtrls, JvAutoComplete, JvJVCLUtils,
+  JvComponentBase, JvComponent, JvTypes;
 
 const
   { Inspector Row Size constants }

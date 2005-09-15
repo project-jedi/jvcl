@@ -40,7 +40,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, Classes,
-  JvComponent;
+  JvComponentBase;
 
 const
   HSHELL_WINDOWCREATED = 1;

@@ -49,7 +49,7 @@ uses
   Qt,
   {$ENDIF VisualCLX}
   SysUtils, Classes, Controls, Graphics, Forms, ActnList,
-  JvTypes, JvComponent;
+  JvTypes, JvComponentBase;
 
 const
   DefHintColor = clInfoBk;

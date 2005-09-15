@@ -34,7 +34,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Forms, Classes,
-  JvComponent;
+  JvComponentBase, JvComponent;
 
 type
   TJvEmbeddedFormLink = class(TJvComponent)

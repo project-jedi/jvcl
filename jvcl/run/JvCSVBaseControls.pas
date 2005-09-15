@@ -35,7 +35,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Classes, Controls, StdCtrls, Buttons,
-  JvComponent;
+  JvComponentBase, JvComponent;
 
 type
   // NameValues: TStringList has changed to TStrings

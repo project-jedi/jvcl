@@ -55,7 +55,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Classes, DB, DBTables,
-  JvComponent;
+  JvComponentBase;
 
 type
   TJvDBMove = class;

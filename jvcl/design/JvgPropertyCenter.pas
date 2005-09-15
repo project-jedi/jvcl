@@ -34,7 +34,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics,
   {$IFDEF USEJVCL}
   Controls, Forms, Dialogs, TypInfo,
-  JvComponent;
+  JvComponentBase;
   {$ELSE}
   Controls, Forms, Dialogs, TypInfo;
   {$ENDIF USEJVCL}

@@ -36,7 +36,7 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes, Graphics, Controls, Dialogs,
   JclCompression,
-  JvComponent;
+  JvComponentBase;
 
 // ----------------------------------------------------------------------------}
 // 2004-07-27 *** ALL USERS READ THIS: (wpostma) ***

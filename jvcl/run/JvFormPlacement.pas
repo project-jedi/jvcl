@@ -43,7 +43,7 @@ uses
   {$IFDEF VCL}
   JvWndProcHook,
   {$ENDIF VCL}
-  JvAppStorage, JvComponent, JvJVCLUtils, JvTypes, JvConsts;
+  JvAppStorage, JvComponentBase, JvJVCLUtils, JvTypes, JvConsts;
 
 type
   TJvIniLink = class;

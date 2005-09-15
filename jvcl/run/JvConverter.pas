@@ -33,7 +33,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Classes, SysUtils,
-  JvComponent, JvTypes;
+  JvComponentBase, JvTypes;
 
 type
 

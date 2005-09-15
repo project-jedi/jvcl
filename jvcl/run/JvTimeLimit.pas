@@ -34,7 +34,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes, Controls, Dialogs, Forms,
-  JvComponent, JvTypes;
+  JvComponentBase, JvTypes;
 
 type
   TJvTimeLimit = class(TJvComponent)

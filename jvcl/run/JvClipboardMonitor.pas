@@ -38,7 +38,7 @@ uses
   Clipbrd,
   {$ENDIF VCL}
   Classes,
-  JvComponent;
+  JvComponentBase;
 
 type
   TJvClipboardMonitor = class(TJvComponent)

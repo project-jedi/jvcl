@@ -41,7 +41,7 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   Classes, SysUtils,
-  JvComponent;
+  JvComponentBase;
 
 type
   TNotifyChangeEventLog = class;

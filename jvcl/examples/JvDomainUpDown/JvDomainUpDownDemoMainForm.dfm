@@ -57,9 +57,6 @@ object JvDomainUpDownDemoMainFrm: TJvDomainUpDownDemoMainFrm
     BevelInner = bvRaised
     BevelOuter = bvLowered
     TabOrder = 2
-    DesignSize = (
-      532
-      73)
     object Label2: TLabel
       Left = 9
       Top = 11

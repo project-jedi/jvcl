@@ -1313,7 +1313,7 @@ object JvgReportEditorForm: TJvgReportEditorForm
     Left = 0
     Top = 97
     Width = 626
-    Height = 353
+    Height = 349
     Align = alClient
     BevelOuter = bvNone
     Caption = 'P_Main'
@@ -1323,7 +1323,7 @@ object JvgReportEditorForm: TJvgReportEditorForm
       Left = 17
       Top = 0
       Width = 609
-      Height = 353
+      Height = 349
       Align = alClient
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -1354,7 +1354,7 @@ object JvgReportEditorForm: TJvgReportEditorForm
       Left = 0
       Top = 0
       Width = 17
-      Height = 353
+      Height = 349
       Align = alLeft
       BevelOuter = bvLowered
       TabOrder = 1

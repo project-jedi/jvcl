@@ -37,7 +37,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Classes, DBTables,
-  JvDBUtils, JvComponent;
+  JvDBUtils, JvComponentBase;
 
 type
   TJvBDESQLScript = class;

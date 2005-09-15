@@ -99,7 +99,7 @@ uses
   {$IFDEF COMPILER5}
   JvVCL5Utils,
   {$ENDIF COMPILER5}
-  JvComponent, JvTypes;
+  JvComponentBase, JvTypes;
 
 const
   // (rom) this name is shared in several units and should be made global

@@ -34,7 +34,7 @@ uses
   Windows, Controls, Classes, Forms, SysUtils,
   Dialogs, TypInfo,
   {$IFDEF USEJVCL}
-  JvComponent,
+  JvComponentBase,
   {$ENDIF USEJVCL}
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, PropertyCategories;

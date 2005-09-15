@@ -36,7 +36,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, ShellAPI, ActiveX, Classes, Controls,
-  JvComponent;
+  JvComponentBase;
 
 type
   TJvDropTarget = class;

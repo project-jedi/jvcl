@@ -53,7 +53,7 @@ uses
   {$ENDIF VisualCLX}
   Classes, Graphics, Controls,
   JclWin32, JclSysInfo,
-  JvJVCLUtils, JvComponent, JvTypes;
+  JvJVCLUtils, JvComponentBase, JvTypes;
 
 {$HPPEMIT '#include <dbt.h>'}
 // these are defined here to avoid including DBT.pas

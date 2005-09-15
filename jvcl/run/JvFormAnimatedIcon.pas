@@ -35,7 +35,7 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes, Controls, Forms, ExtCtrls,
   ImgList, Graphics,   // clx required
-  JvComponent;
+  JvComponentBase;
 
 type
   TJvFormAnimatedIcon = class(TJvComponent)

@@ -38,7 +38,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes, Windows, Controls, Messages,
-  JvSpellIntf, JvComponent;
+  JvSpellIntf, JvComponentBase;
 
 type
   TJvSpellChecker = class(TJvComponent)

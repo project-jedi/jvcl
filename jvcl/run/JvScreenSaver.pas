@@ -35,7 +35,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, SysUtils, Classes,
-  JvTypes, JvComponent;
+  JvTypes, JvComponentBase;
 
 type
   TJvScreenSaver = class(TJvComponent)

@@ -33,7 +33,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Classes, Controls, Forms,
-  JvJVCLUtils, JvComponent;
+  JvJVCLUtils, JvComponentBase;
 
 type
   TFormRequestEvent = procedure(Sender: TObject; CurrentForm: TCustomForm;

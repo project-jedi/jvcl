@@ -33,7 +33,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes, DB, DBTables, Bde,
-  JvComponent, JVCLVer;
+  JvComponentBase, JVCLVer;
 
 const
   DefaultMacroChar = '%';

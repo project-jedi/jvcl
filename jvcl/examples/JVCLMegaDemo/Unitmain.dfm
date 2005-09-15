@@ -345,9 +345,6 @@ object Mainform: TMainform
           BevelOuter = bvNone
           Color = clInfoBk
           TabOrder = 0
-          DesignSize = (
-            209
-            45)
           object JvLabel1: TJvLabel
             Left = 8
             Top = 8
@@ -752,9 +749,6 @@ object Mainform: TMainform
           BevelOuter = bvNone
           Color = clInfoBk
           TabOrder = 0
-          DesignSize = (
-            209
-            153)
           object JvLabel2: TJvLabel
             Left = 8
             Top = 8
@@ -893,9 +887,6 @@ object Mainform: TMainform
     OnCollapsedChange = JvXPBarIDECollapsedChange
     Align = alTop
     ParentFont = False
-    DesignSize = (
-      900
-      133)
     object JvPageControlComps: TJvPageControl
       Left = 7
       Top = 31

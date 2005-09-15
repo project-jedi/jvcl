@@ -39,7 +39,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Classes, SysUtils,
   JclUnicode,
-  JvComponent, JvID3v2Types, JvID3v1;
+  JvComponentBase, JvID3v2Types, JvID3v1;
 
 const
   { Only v2.2, v2.3 and v2.4 are supported }

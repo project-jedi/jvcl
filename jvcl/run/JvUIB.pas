@@ -66,8 +66,12 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$ENDIF USEJVCL}
-  {$IFDEF MSWINDOWS} Windows, {$ENDIF}
-  {$IFDEF USEJVCL} JvComponent, {$ENDIF}
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}
+  {$IFDEF USEJVCL}
+  JvComponentBase,
+  {$ENDIF USEJVCL}
   Classes, SysUtils, SyncObjs, JvUIBLib, JvUIBase, JvUIBSQLParser, JvUIBConst;
 
 type

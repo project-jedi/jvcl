@@ -34,7 +34,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
-  JvComponent;
+  JvComponentBase;
 
 type
   TJvFormToHtml = class(TJvComponent)

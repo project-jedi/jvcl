@@ -29,7 +29,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Classes, Controls, Forms,
-  JvComponent, JvTypes, JvAppStorage, JvDynControlEngine,
+  JvComponentBase, JvTypes, JvAppStorage, JvDynControlEngine,
   JvDynControlEngineIntf;
 
 type

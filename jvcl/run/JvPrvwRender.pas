@@ -39,7 +39,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, SysUtils, Messages, Classes, Controls, Graphics,
   Dialogs, ComCtrls, RichEdit, Printers,
-  JvComponent, JvPrvwDoc, JvRichEdit;
+  JvComponentBase, JvPrvwDoc, JvRichEdit;
 
 type
   EPrintPreviewError = Exception;

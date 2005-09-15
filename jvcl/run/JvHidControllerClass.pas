@@ -36,15 +36,15 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$ENDIF USEJVCL}
-  Windows, Messages, Classes, Forms, SysUtils,
+  Windows, Messages, Classes, SysUtils,
   {$IFDEF USEJVCL}
-  JvComponent,
+  JvComponentBase,
   {$ENDIF USEJVCL}
   DBT, SetupApi, HID, ModuleLoader;
 
 const
   // a version string for the component
-  cHidControllerClassVersion = '1.0.29';
+  cHidControllerClassVersion = '1.0.30';
 
   // strings from the registry for CheckOutByClass
   cHidNoClass = 'HIDClass';
@@ -363,9 +363,11 @@ type
     // reentrancy
     FInDeviceChange: Boolean;
     FLParam: LPARAM;
+    // window to catch WM_DEVICECHANGE
+    FHWnd: HWND;
     // internal worker functions
     function CheckThisOut(var HidDev: TJvHidDevice; Idx: Integer; Check: Boolean): Boolean;
-    function EventPipe(var Msg: TMessage): Boolean;
+    procedure EventPipe(var Msg: TMessage);
     // internal event implementors
     procedure SetDeviceChangeEvent(const Notifier: TNotifyEvent);
     procedure SetEnumerate(const Enumerator: TJvHidEnumerateEvent);
@@ -1558,10 +1560,10 @@ begin
   begin
     HidD_GetHidGuid(FHidGuid);
     // only hook messages if there is a HID DLL
-    Application.HookMainWindow(EventPipe);
+    FHWnd := AllocateHWnd(EventPipe);
     // this one executes after Create completed which ensures
     // that all global elements like Application.MainForm are initialized
-    PostMessage(Application.Handle, WM_DEVICECHANGE, DBT_DEVNODES_CHANGED, -1);
+    PostMessage(FHWnd, WM_DEVICECHANGE, DBT_DEVNODES_CHANGED, -1);
   end
   else
     FHidGuid := cHidGuid;
@@ -1584,7 +1586,7 @@ begin
   OnEnumerate := nil;
   // unhook event pipe
   if IsHidLoaded then
-    Application.UnhookMainWindow(EventPipe);
+    DeallocateHWnd(FHWnd);
 
   for I := 0 to FList.Count - 1 do
   begin
@@ -1638,9 +1640,8 @@ end;
 
 // gets all the Windows events/messages directly
 
-function TJvHidDeviceController.EventPipe(var Msg: TMessage): Boolean;
+procedure TJvHidDeviceController.EventPipe(var Msg: TMessage);
 begin
-  Result := False;
   // sort out WM_DEVICECHANGE : DBT_DEVNODES_CHANGED
   if (Msg.Msg = WM_DEVICECHANGE) and (TWMDeviceChange(Msg).Event = DBT_DEVNODES_CHANGED) then
   if not FInDeviceChange then

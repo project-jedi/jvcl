@@ -44,7 +44,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Menus,
-  JvTypes, JvComponent;
+  JvTypes, JvComponentBase;
 
 type
   TJvPositionInMenu = (pmTop, pmBottom);

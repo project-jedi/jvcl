@@ -34,7 +34,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes, Windows, Messages, Graphics, Controls, Forms, StdCtrls,
-  JvComponent;
+  JvComponentBase;
 
 type
   TJvFormAutoSize = class(TJvComponent)

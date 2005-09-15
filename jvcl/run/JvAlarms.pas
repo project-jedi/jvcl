@@ -37,7 +37,7 @@ uses
   {$ENDIF UNITVERSIONING}
   ExtCtrls,
   SysUtils, Classes,
-  JvTypes, JvComponent;
+  JvTypes, JvComponentBase;
 
 type
   TJvAlarmItem = class(TCollectionItem)

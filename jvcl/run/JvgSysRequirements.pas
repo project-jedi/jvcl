@@ -39,7 +39,7 @@ uses
   {$IFDEF COMPILER5}
   JvVCL5Utils,
   {$ENDIF COMPILER5}
-  JvComponent,
+  JvComponentBase,
   JclSysInfo;
 
 type

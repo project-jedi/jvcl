@@ -44,7 +44,7 @@ uses
   {$IFDEF VisualCLX}
   QForms,
   {$ENDIF VisualCLX}
-  JvTypes, JvComponent;
+  JvTypes, JvComponentBase;
 
 // (rom) in the time of USB this unit may have to support more than 2 joysticks
 

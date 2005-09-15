@@ -38,7 +38,7 @@ uses
   {$ENDIF USEJVCL}
   Windows, Controls, Graphics, Forms, Messages, // asn: messages after controls for clx
   {$IFDEF USEJVCL}
-  JvComponent,
+  JvComponentBase, JvComponent,
   {$ENDIF USEJVCL}
   Classes;
 

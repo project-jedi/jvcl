@@ -33,7 +33,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes, Controls, Forms, Contnrs,
-  JvComponent;
+  JvComponentBase;
 
 type
   TJvLogRecord = class(TObject)

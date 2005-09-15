@@ -36,7 +36,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Messages, DdeMan, Classes,
-  JvComponent, JvTypes;
+  JvComponentBase, JvTypes;
 
 type
   EJvADCParserError = class(EJVCLException);

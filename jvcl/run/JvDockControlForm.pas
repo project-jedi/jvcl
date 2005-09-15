@@ -53,7 +53,7 @@ uses
   Windows, Messages, Classes, Graphics, Controls, Forms, Menus,
   ExtCtrls, ComCtrls,
   {$IFDEF USEJVCL}
-  JvComponent, JvAppStorage,
+  JvComponentBase, JvAppStorage,
   {$ENDIF USEJVCL}
   JvDockTree, JvDockSupportClass, JvDockSupportControl, JvDockAdvTree;
 

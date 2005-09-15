@@ -35,7 +35,7 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   Windows, Controls, Forms,
-  JvComponent;
+  JvComponentBase, JvTypes;
 
 type
   TJvFormAnimation = class(TJvComponent)

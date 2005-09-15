@@ -28,9 +28,6 @@ object frmPluginParams: TfrmPluginParams
   Position = poScreenCenter
   Scaled = False
   OnShow = FormShow
-  DesignSize = (
-    474
-    521)
   PixelsPerInch = 96
   TextHeight = 13
   object lblCreateInfo: TLabel
@@ -71,9 +68,6 @@ object frmPluginParams: TfrmPluginParams
     Anchors = [akLeft, akTop, akRight]
     Caption = ' Plugin settings '
     TabOrder = 2
-    DesignSize = (
-      464
-      356)
     object lblPluginName: TLabel
       Left = 10
       Top = 16

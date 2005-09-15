@@ -37,7 +37,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Classes, SyncObjs, SysUtils, Forms,
-  JvComponent;
+  JvComponentBase;
   {$ELSE}
   Windows, Classes, SyncObjs, SysUtils, Forms;
   {$ENDIF USEJVCL}

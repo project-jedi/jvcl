@@ -38,7 +38,7 @@ uses
   SysUtils, Classes, SyncObjs,
   Consts,
   {$IFDEF USEJVCL}
-  JvComponent,
+  JvComponentBase,
   {$ENDIF USEJVCL}
   JvMTThreading, JvMTConsts, JvMTData, JvMTSync, JvMTSyncMon;
 

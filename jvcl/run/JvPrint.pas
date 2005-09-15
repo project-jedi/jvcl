@@ -34,7 +34,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, SysUtils, Classes, Graphics, Printers,
-  JvTypes, JvComponent;
+  JvTypes, JvComponentBase;
 
 type
   TJvPrintMeasureItemEvent = procedure(Sender: TObject; ACanvas: TCanvas;

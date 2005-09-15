@@ -41,7 +41,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls,
   Forms, Dialogs, jpeg,
   {$IFDEF USEJVCL}
-  JvTypes, JvComponent,
+  JvTypes, JvComponentBase,
   {$ENDIF USEJVCL}
   JvgMailSlots;
 
