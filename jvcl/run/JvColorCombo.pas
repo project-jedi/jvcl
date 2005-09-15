@@ -445,7 +445,8 @@ begin
   Dec(FUpdateCount);
   if FUpdateCount = 0 then
     GetColors
-  else if FUpdateCount < 0 then
+  else
+  if FUpdateCount < 0 then
     FUpdateCount := 0;
   Result := FUpdateCount;
 end;
@@ -543,7 +544,8 @@ begin
     end;
     Exit;
   end
-  else if coCustomColors in Options then
+  else
+  if coCustomColors in Options then
   begin
     InsertColor(Items.Count - 1, Value, Format(FNewColorText, [FCustomColorCount]));
     //      Items.InsertObject(Items.Count, FNewColorText + IntToStr(FCustomColorCount), TObject(Value))
@@ -637,7 +639,8 @@ begin
       Brush.Color := AColor;
       if AColor = clNone then
         Brush.Style := bsFDiagonal
-      else if AColor = clDefault then
+      else
+      if AColor = clDefault then
         Brush.Style := bsBDiagonal;
       FillRect(R);
       SetBkMode(Canvas.Handle, TRANSPARENT);
@@ -652,7 +655,8 @@ begin
       begin
         if coHex in FOptions then
           S := Format('0x%.6x', [ColorToRGB(TColor(Items.Objects[Index]))])
-        else if coRGB in FOptions then
+        else
+        if coRGB in FOptions then
           S := Format('(%d,%d,%d)', [GetRValue(TColor(Items.Objects[Index])), GetGValue(TColor(Items.Objects[Index])),
             GetBValue(TColor(Items.Objects[Index]))]);
       end;
@@ -660,7 +664,8 @@ begin
       R.Right := R.Left + TextWidth(S) + 6;
       if AColor = clNone then
         Brush.Style := bsFDiagonal
-      else if AColor = clDefault then
+      else
+      if AColor = clDefault then
         Brush.Style := bsBDiagonal;
       FillRect(R);
       OffsetRect(R, 2, 0);
@@ -713,7 +718,8 @@ begin
       Free;
     end;
   end
-  else if ItemIndex >= 0 then
+  else
+  if ItemIndex >= 0 then
     ColorValue := TColor(Items.Objects[ItemIndex]);
   inherited Click;
   FExecutingDialog := False;
@@ -1127,7 +1133,8 @@ begin
     //    AWidth  := 20;
     if (Integer(Items.Objects[Index]) and TRUETYPE_FONTTYPE) <> 0 then
       ABmp := FTrueTypeBmp
-    else if (Integer(Items.Objects[Index]) and DEVICE_FONTTYPE) <> 0 then
+    else
+    if (Integer(Items.Objects[Index]) and DEVICE_FONTTYPE) <> 0 then
       ABmp := FDeviceBmp
     else
       ABmp := FFixBmp;
@@ -1187,7 +1194,8 @@ begin
         Canvas.MoveTo(0, R.Bottom - 1);
         Canvas.LineTo(ClientWidth, R.Bottom - 1);
       end
-      else if (Index = MRUCount) and (Index > 0) then
+      else
+      if (Index = MRUCount) and (Index > 0) then
       begin
         Canvas.Pen.Color := clGray;
         Canvas.Pen.Width := 1;
@@ -1227,7 +1235,8 @@ begin
   Dec(FUpdateCount);
   if FUpdateCount = 0 then
     GetFonts
-  else if FUpdateCount < 0 then
+  else
+  if FUpdateCount < 0 then
     FUpdateCount := 0;
   Result := FUpdateCount;
 end;
@@ -1385,18 +1394,20 @@ end;
 
 procedure TJvFontComboBox.FontSizeList(SizeList: TList);
 const
-  cTTSizes : array [0..15] of integer = (8,9,10,11,12,14,16,18,20,22,24,26,28,36,48,72);
+  cTTSizes: array [0..15] of Integer =
+    (8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72);
 var
   DC: HDC;
   I:Integer;
 begin
-  if SizeList = nil then Exit;
+  if SizeList = nil then
+    Exit;
   SizeList.Clear;
   if IsTrueType then
   begin
     // fill in constant sizes for true type fonts
     SizeList.Clear;
-    for I := 0 to High(cTTSizes) do
+    for I := Low(cTTSizes) to High(cTTSizes) do
       SizeList.Add(Pointer(cTTSizes[I]));
   end
   else
@@ -1427,14 +1438,16 @@ begin
       Items.InsertObject(0, Items[I], Items.Objects[I]);
       Inc(FMRUCount);
     end
-    else if I < 0 then
+    else
+    if I < 0 then
     begin
       Items.InsertObject(0, Text, TObject(TRUETYPE_FONTTYPE));
       Inc(FMRUCount);
     end;
     Result := 0;
   end
-  else if (MRUCount > 0) and (ItemIndex > 0) then
+  else
+  if (MRUCount > 0) and (ItemIndex > 0) then
   begin
     Items[0] := Items[ItemIndex];
     Items.Objects[0] := Items.Objects[ItemIndex];

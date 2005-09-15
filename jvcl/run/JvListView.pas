@@ -1333,24 +1333,24 @@ end;
 
 procedure TJvListView.SetFocus;
 var
-  index : Integer;
+  Index: Integer;
 begin
   inherited SetFocus;
 
-  index := 0;
+  Index := 0;
   if Assigned(ItemFocused) then
-    index := ItemIndex;
+    Index := ItemIndex;
     
   if AutoSelect and (Selected = nil) and (Items.Count > 0) then
-    PostMessage(Handle, WM_AUTOSELECT, Integer(Items[index]), 1);
+    PostMessage(Handle, WM_AUTOSELECT, Integer(Items[Index]), 1);
 end;
 
 
 function TJvListView.IsCustomDrawn(Target: TCustomDrawTarget; Stage: TCustomDrawStage): Boolean;
 begin
   Result := inherited IsCustomDrawn(Target, Stage) or
-            ((Stage = cdPrePaint) and (Picture.Graphic <> nil) and not Picture.Graphic.Empty) or
-            ((Stage = cdPrePaint) and ((Target = dtItem) or (Target = dtSubItem)));
+    ((Stage = cdPrePaint) and (Picture.Graphic <> nil) and not Picture.Graphic.Empty) or
+    ((Stage = cdPrePaint) and ((Target = dtItem) or (Target = dtSubItem)));
 end;
 
 
@@ -1360,6 +1360,7 @@ var
   ItemRect: TRect; // List item bounds rectangle
   TopOffset: Integer; // Y pos where bmp drawing starts
   Bmp: TBitmap;
+
   function GetHeaderHeight: Integer;
   var
     Header: HWND; // header window handle
@@ -1374,6 +1375,7 @@ var
     // Calculate header window height
     Result := Pl.rcNormalPosition.Bottom - Pl.rcNormalPosition.Top;
   end;
+
 begin
   Result := inherited CustomDraw(ARect, Stage);
 

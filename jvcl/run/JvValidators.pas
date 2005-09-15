@@ -727,7 +727,8 @@ begin
           if not DoValidateFailed(Items[I]) then
             Exit;
         end
-        else if (Items[I].ControlToValidate <> nil) and (FErrorIndicator <> nil) then
+        else
+        if (Items[I].ControlToValidate <> nil) and (FErrorIndicator <> nil) then
           FErrorIndicator.SetError(Items[I].ControlToValidate, ''); // clear error indicator
       end;
     end;

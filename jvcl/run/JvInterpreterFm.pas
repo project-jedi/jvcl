@@ -553,7 +553,7 @@ end;
 
 function JvInterpreterRunFormModal(const AFileName: TFileName): TModalResult;
 var
-  TmpInterpreterFm : TJvInterpreterFm;
+  TmpInterpreterFm: TJvInterpreterFm;
 begin
   TmpInterpreterFm := TJvInterpreterFm.Create(Application);
   try
@@ -565,7 +565,7 @@ end;
 
 function JvInterpreterRunForm(const AFileName: TFileName): TForm;
 var
-  TmpInterpreterFm : TJvInterpreterFm;
+  TmpInterpreterFm: TJvInterpreterFm;
 begin
   TmpInterpreterFm := TJvInterpreterFm.Create(Application);
   begin

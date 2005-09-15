@@ -469,7 +469,7 @@ type
     {$IFDEF JVDOCK_DEBUG}
     // internal helper functions used recursively from DebugDump:
     procedure _ParentDump(LevelsLeft: Integer; AParent: TWinControl; Indent: string; Strs: TStrings);
-    procedure _PageControlDump(PageControl : TWinControl; Indent: string; Strs: TStrings); {actually TJvDockTabPageControl}
+    procedure _PageControlDump(PageControl: TWinControl; Indent: string; Strs: TStrings); {actually TJvDockTabPageControl}
     procedure _ControlDump(AControl: TWinControl; Indent: string; Strs: TStrings);
     // This helps us to understand the content of the tree by allowing
     // us to build a dump:
@@ -478,7 +478,7 @@ type
 
     {$IFDEF JVDOCK_QUERY}
     procedure _ParentQuery( LevelsLeft:Integer; AParent:TWinControl; FoundItems:TList );
-    procedure _PageControlQuery(PageControl : TWinControl; FoundItems:TList); {actually TJvDockTabPageControl}
+    procedure _PageControlQuery(PageControl: TWinControl; FoundItems:TList); {actually TJvDockTabPageControl}
     procedure _ControlQuery( AControl:TWinControl; FoundItems:TList);
     procedure DoControlQuery(TreeZone: TJvDockZone; FoundItems:TList); //virtual;
     {$ENDIF JVDOCK_QUERY}

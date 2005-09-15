@@ -2245,22 +2245,23 @@ end;
 
 procedure TJvLineInformationList.DeleteLine(Line: Integer);
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := Count - 1 downto 0 do
-    if Items[i].Line = Line then
-      FList.Delete(i)
-    else if Items[i].Line > Line then
-      Items[i].Line := Items[i].Line - 1;
+  for I := Count - 1 downto 0 do
+    if Items[I].Line = Line then
+      FList.Delete(I)
+    else
+    if Items[I].Line > Line then
+      Items[I].Line := Items[I].Line - 1;
 end;
 
 procedure TJvLineInformationList.InsertLine(Line: Integer);
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := 0 to Count - 1 do
-    if Items[i].Line >= Line then
-      Items[i].Line := Items[i].Line + 1;
+  for I := 0 to Count - 1 do
+    if Items[I].Line >= Line then
+      Items[I].Line := Items[I].Line + 1;
 end;
 
 function TJvLineInformationList.GetCount: Integer;
@@ -5738,15 +5739,16 @@ end;
 
 procedure TJvErrorHighlighting.DeleteLine(Line: Integer);
 var
-  i: Integer;
+  I: Integer;
 begin
   BeginUpdate;
   try
-    for i := Count - 1 downto 0 do
-      if Items[i].Line = Line then
-        Delete(i)
-      else if Items[i].Line > Line then
-        Items[i].Line := Items[i].Line - 1;
+    for I := Count - 1 downto 0 do
+      if Items[I].Line = Line then
+        Delete(I)
+      else
+      if Items[I].Line > Line then
+        Items[I].Line := Items[I].Line - 1;
   finally
     EndUpdate;
   end;
@@ -5754,13 +5756,13 @@ end;
 
 procedure TJvErrorHighlighting.InsertLine(Line: Integer);
 var
-  i: Integer;
+  I: Integer;
 begin
   BeginUpdate;
   try
-    for i := 0 to Count - 1 do
-      if Items[i].Line >= Line then
-        Items[i].Line := Items[i].Line + 1;
+    for I := 0 to Count - 1 do
+      if Items[I].Line >= Line then
+        Items[I].Line := Items[I].Line + 1;
   finally
     EndUpdate;
   end;
@@ -5768,14 +5770,14 @@ end;
 
 function TJvErrorHighlighting.GetLineErrorMap(Y: Integer): TDynBoolArray;
 var
-  i, X: Integer;
+  I, X: Integer;
   Item: TJvErrorHighlightingItem;
   MaxX: Integer;
 begin
   MaxX := 0;
-  for i := 0 to Count - 1 do
+  for I := 0 to Count - 1 do
   begin
-    Item := Items[i];
+    Item := Items[I];
     if Item.Line = Y then
       if Item.Col + Item.Len > MaxX then
         MaxX := Item.Col + Item.Len;
@@ -5784,9 +5786,9 @@ begin
 
   if MaxX > 0 then
   begin
-    for i := 0 to Count - 1 do
+    for I := 0 to Count - 1 do
     begin
-      Item := Items[i];
+      Item := Items[I];
       if Item.Line = Y then
         for X := Item.Col to Item.Col + Item.Len - 1 do
           Result[X] := True;
@@ -5796,11 +5798,11 @@ end;
 
 function TJvErrorHighlighting.ErrorAt(X, Y: Integer): TJvErrorHighlightingItem;
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := 0 to Count - 1 do
+  for I := 0 to Count - 1 do
   begin
-    Result := Items[i];
+    Result := Items[I];
     if (Result.Line = Y) and (X >= Result.Col) and (X < Result.Col + Result.Len) then
       Exit;
   end;
@@ -5810,15 +5812,15 @@ end;
 procedure TJvErrorHighlighting.PaintError(Canvas: TCanvas; Col, Line: Integer;
   const R: TRect; Len: Integer; const MyDi: TDynIntArray);
 var
-  i, Width, X: Integer;
+  I, Width, X: Integer;
   Errors: TDynBoolArray;
 begin
   Errors := GetLineErrorMap(Line);
   X := R.Left;
-  for i := Col to Col + Len - 1 do
+  for I := Col to Col + Len - 1 do
   begin
-    Width := MyDi[i];
-    if (i <= High(Errors)) and Errors[i] then
+    Width := MyDi[I];
+    if (I <= High(Errors)) and Errors[I] then
     begin
       with Canvas do
       begin

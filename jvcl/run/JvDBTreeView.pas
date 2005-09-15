@@ -100,7 +100,7 @@ type
     {**** Drag'n'Drop ****}
     procedure TimerDnDTimer(Sender: TObject);
   protected
-    FSavedActive : Boolean;
+    FSavedActive: Boolean;
     
     procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState;
       var Accept: Boolean); override;

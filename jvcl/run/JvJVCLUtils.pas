@@ -4537,30 +4537,6 @@ end;
 
 procedure InternalRestoreFormPlacement(Form: TForm; const AppStorage: TJvCustomAppStorage;
   const StorePath: string; Options: TPlacementOptions = [fpState, fpSize, fpLocation]);
-
-    procedure ChangePosition(APosition : TPosition);
-    begin
-      {$IFDEF CLR}
-      Form.GetType.InvokeMember('SetDesigning',
-        BindingFlags.NonPublic or BindingFlags.InvokeMethod or BindingFlags.Instance,
-        nil, Form, [True]);
-      try
-        Form.Position := APosition;
-      finally
-        Form.GetType.InvokeMember('SetDesigning',
-          BindingFlags.NonPublic or BindingFlags.InvokeMethod or BindingFlags.Instance,
-          nil, Form, [False]);
-      end;
-      {$ELSE}
-      TComponentAccessProtected(Form).SetDesigning(True);
-      try
-        Form.Position := APosition;
-      finally
-        TComponentAccessProtected(Form).SetDesigning(False);
-      end;
-      {$ENDIF CLR}
-    end;
-
 const
   Delims = [',', ' '];
 var
@@ -4568,6 +4544,30 @@ var
   Placement: TWindowPlacement;
   WinState: TWindowState;
   DataFound: Boolean;
+
+  procedure ChangePosition(APosition: TPosition);
+  begin
+    {$IFDEF CLR}
+    Form.GetType.InvokeMember('SetDesigning',
+      BindingFlags.NonPublic or BindingFlags.InvokeMethod or BindingFlags.Instance,
+      nil, Form, [True]);
+    try
+      Form.Position := APosition;
+    finally
+      Form.GetType.InvokeMember('SetDesigning',
+        BindingFlags.NonPublic or BindingFlags.InvokeMethod or BindingFlags.Instance,
+        nil, Form, [False]);
+    end;
+    {$ELSE}
+    TComponentAccessProtected(Form).SetDesigning(True);
+    try
+      Form.Position := APosition;
+    finally
+      TComponentAccessProtected(Form).SetDesigning(False);
+    end;
+    {$ENDIF CLR}
+  end;
+
 begin
   if Options = [fpActiveControl] then
     Exit;

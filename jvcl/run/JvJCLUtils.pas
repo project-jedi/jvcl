@@ -1199,7 +1199,7 @@ function VarIsStr(const V: Variant): Boolean;
 type
   TCollectionSortProc = function(Item1, Item2: TCollectionItem): Integer;
 
-procedure CollectionSort(Collection: TCollection; sortProc: TCollectionSortProc);
+procedure CollectionSort(Collection: TCollection; SortProc: TCollectionSortProc);
 
 {$IFDEF UNITVERSIONING}
 const
@@ -9596,7 +9596,6 @@ begin
 end;
 {$ENDIF !CLR}
 
-
 {$IFNDEF BCB}
 {$IFDEF COMPILER5}
 { These functions simply call their JvVCL5Utils equivalents }
@@ -9709,10 +9708,11 @@ function VarIsStr(const V: Variant): Boolean;
 begin
   Result := JvVCL5Utils.VarIsStr(V);
 end;
+
 {$ENDIF COMPILER5}
 {$ENDIF !BCB}
 
-procedure CollectionQuickSort(List: TCollection; L, R: Integer; sortProc: TCollectionSortProc);
+procedure CollectionQuickSort(List: TCollection; L, R: Integer; SortProc: TCollectionSortProc);
 var
  I, J, pix: Integer;
  P, t1, t2: TCollectionItem;
@@ -9722,13 +9722,15 @@ begin
     I := L;
     J := R;
     pix := (L+R) shr 1;
-    if pix> List.Count-1 then pix := List.Count-1;
+    if pix > List.Count - 1 then
+      pix := List.Count - 1;
     P := List.Items[pix];
 
     repeat
-
-      while sortProc(List.Items[I], P) < 0 do Inc(I);
-      while sortProc(List.Items[J], P) > 0 do Dec(J);
+      while SortProc(List.Items[I], P) < 0 do
+        Inc(I);
+      while SortProc(List.Items[J], P) > 0 do
+        Dec(J);
 
       if I <= J then
       begin
@@ -9737,8 +9739,11 @@ begin
         t1.Index := J;
         t2.Index := I;
 
-        if pix = I then pix := J
-        else if pix = J then pix:=I;
+        if pix = I then
+          pix := J
+        else
+        if pix = J then
+          pix := I;
 
         P := List.Items[pix];
         Inc(I);
@@ -9746,20 +9751,17 @@ begin
       end;
     until I > J;
     if L < J then
-      CollectionQuickSort(List, L, J, sortProc);
+      CollectionQuickSort(List, L, J, SortProc);
     L := I;
-  until I>=R;
+  until I >= R;
   List.EndUpdate;
 end;
 
-procedure CollectionSort(Collection: TCollection; sortProc: TCollectionSortProc);
+procedure CollectionSort(Collection: TCollection; SortProc: TCollectionSortProc);
 begin
- if not Assigned(Collection) then Exit;
- if not Assigned(sortProc) then Exit;
- if Collection.Count < 2 then Exit;
- CollectionQuickSort(Collection, 0, Collection.Count-1, sortProc);
+  if Assigned(Collection) and Assigned(SortProc) and (Collection.Count >= 2) then
+    CollectionQuickSort(Collection, 0, Collection.Count - 1, SortProc);
 end;
-
 
 {$IFDEF UNITVERSIONING}
 initialization

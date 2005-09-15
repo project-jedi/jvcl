@@ -354,7 +354,8 @@ const
   STATUSNAME = 'C67F70Z90'; (* Magic *)
 
 {$IFNDEF COMPILER6_UP} // Added 2005/01/05
-Type
+
+type
   TVariantRelationship = (vrEqual, vrLessThan, vrGreaterThan, vrNotEqual);
 
 //=== { Utility routines } ====================================================
@@ -376,17 +377,22 @@ begin
   LB := FindVarData(B)^;
   if LA.VType = varEmpty then
     Result := CTruth[LB.VType = varEmpty]
-  else if LA.VType = varNull then
+  else
+  if LA.VType = varNull then
     Result := CTruth[LB.VType = varNull]
-  else if LB.VType in [varEmpty, varNull] then
+  else
+  if LB.VType in [varEmpty, varNull] then
     Result := vrNotEqual
-  else if A = B then
+  else
+  if A = B then
     Result := vrEqual
-  else if A < B then
+  else
+  if A < B then
     Result := vrLessThan
   else
     Result := vrGreaterThan;
 end;
+
 {$ENDIF COMPILER6_UP}
 
 function CalcFieldLen(FieldType: TFieldType; Size: Word): Word;
@@ -1455,7 +1461,8 @@ begin
     if FDataset.Active and FDatasetClosed then
       FDataset.Close;
   end
-  else if not IsEmpty then
+  else
+  if not IsEmpty then
     SortOnFields();
   inherited DoAfterOpen;
 End;
@@ -1836,9 +1843,10 @@ end;
 procedure TJvMemoryData.SortOnFields(const FieldNames: string = '';
   CaseInsensitive: Boolean = True; Descending: Boolean = False);
 begin 
-  if (FieldNames <> '') then
+  if FieldNames <> '' then
   	CreateIndexList(FieldNames)
-  else if (FKeyFieldNames <> '') then
+  else
+  if FKeyFieldNames <> '' then
     CreateIndexList(FKeyFieldNames)
   else
     Exit;
@@ -2331,7 +2339,8 @@ var
                 Inc(Result);
                 bApply := True;
               end
-              else if FExactApply then
+              else
+              if FExactApply then
               begin
                 Error(RsEInsertError);
                 Break;
@@ -2340,7 +2349,8 @@ var
               if FDataset.State in dsEditModes then
                 FDataset.Cancel;
             end
-            else if FExactApply then
+            else
+            if FExactApply then
             begin
               Error(RsERecordInexistent);
               Break;

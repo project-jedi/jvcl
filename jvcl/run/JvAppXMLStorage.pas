@@ -79,8 +79,8 @@ type
   // a class (nothing much is involved, use the AsString property).
   TJvCustomAppXMLStorage = class(TJvCustomAppMemoryFileStorage)
   private
-    function GetStorageOptions : TJvAppXMLStorageOptions;
-    procedure SetStorageOptions (Value: TJvAppXMLStorageOptions);
+    function GetStorageOptions: TJvAppXMLStorageOptions;
+    procedure SetStorageOptions(Value: TJvAppXMLStorageOptions);
   protected
     FXml: TJvSimpleXML;
 
@@ -332,7 +332,8 @@ begin
             SetLength(FixedNodeName, CurLength);
           end;
       end   // case WSRLength of
-    else if not (NodeName[J] in AllowedNodeNameChars) then
+    else
+    if not (NodeName[J] in AllowedNodeNameChars) then
       case ICRLength of
         0:
           raise EJVCLException.CreateResFmt(@RsENodeNameCannotInvalidChars, [NodeName[J]]);
@@ -819,24 +820,22 @@ begin
   Result := FXml.OnEncodeValue;
 end;
 
-procedure TJvCustomAppXMLStorage.SetOnDecodeValue(
-  const Value: TJvSimpleXMLEncodeEvent);
+procedure TJvCustomAppXMLStorage.SetOnDecodeValue(const Value: TJvSimpleXMLEncodeEvent);
 begin
   FXml.OnDecodeValue := Value;
 end;
 
-procedure TJvCustomAppXMLStorage.SetOnEncodeValue(
-  const Value: TJvSimpleXMLEncodeEvent);
+procedure TJvCustomAppXMLStorage.SetOnEncodeValue(const Value: TJvSimpleXMLEncodeEvent);
 begin
   FXml.OnEncodeValue := Value;
 end;
 
-function TJvCustomAppXMLStorage.GetStorageOptions : TJvAppXMLStorageOptions;
+function TJvCustomAppXMLStorage.GetStorageOptions: TJvAppXMLStorageOptions;
 begin
   Result := TJvAppXMLStorageOptions(inherited StorageOptions);
 end;
 
-procedure TJvCustomAppXMLStorage.SetStorageOptions (Value: TJvAppXMLStorageOptions);
+procedure TJvCustomAppXMLStorage.SetStorageOptions(Value: TJvAppXMLStorageOptions);
 begin
   (Inherited StorageOptions).Assign(Value);
 end;

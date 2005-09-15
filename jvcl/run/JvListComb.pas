@@ -261,7 +261,7 @@ type
     property ColorHighlightText: TColor read FColorHighlightText write SetColorHighlightText default clHighlightText;
     property Font;
     property Images: TCustomImageList read FImageList write SetImageList;
-    property FullWidthItemDraw : Boolean read FFullWidthItemDraw write SetFullWidthItemDraw default False;
+    property FullWidthItemDraw: Boolean read FFullWidthItemDraw write SetFullWidthItemDraw default False;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -362,7 +362,7 @@ type
     property ColorHighlight: TColor read FColorHighlight write SetColorHighlight default clHighlight;
     property ColorHighlightText: TColor read FColorHighlightText write SetColorHighlightText default clHighlightText;
     property Images: TCustomImageList read FImageList write SetImageList;
-    property FullWidthItemDraw : Boolean read FFullWidthItemDraw write SetFullWidthItemDraw default False;   
+    property FullWidthItemDraw: Boolean read FFullWidthItemDraw write SetFullWidthItemDraw default False;   
     property MultiSelect;
     property ItemHeight;
     property ParentColor;

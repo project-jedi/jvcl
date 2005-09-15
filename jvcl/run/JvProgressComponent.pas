@@ -282,7 +282,8 @@ begin
     Inc(FProgressPosition, ProgressStep);
     if ProgressPosition > ProgressMax then
       FProgressPosition := ProgressMax
-    else if ProgressPosition < ProgressMin then
+    else
+    if ProgressPosition < ProgressMin then
       FProgressPosition := ProgressMin
     else
       FProgressBar.StepIt;

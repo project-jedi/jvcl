@@ -658,19 +658,24 @@ procedure TJvOfficeColorPanelProperties.ReadData(Reader: TReader);
 begin
   if SameText(FFilerTag,cShowAutoButton) then
     ShowDefaultColor := Reader.ReadBoolean
-  else if SameText(FFilerTag,cShowOtherButton) then
+  else
+  if SameText(FFilerTag,cShowOtherButton) then
     ShowCustomColor := Reader.ReadBoolean
-  else if SameText(FFilerTag,cShowColorHint) then
+  else
+  if SameText(FFilerTag,cShowColorHint) then
     ShowColorsHint := Reader.ReadBoolean
-  else if SameText(FFilerTag,cAutoCaption) then
+  else
+  if SameText(FFilerTag,cAutoCaption) then
     DefaultColorCaption := Reader.ReadString
-  else if SameText(FFilerTag,cOtherCaption) then
+  else
+  if SameText(FFilerTag,cOtherCaption) then
     CustomColorCaption := Reader.ReadString
-  else if SameText(FFilerTag,cAutoHint) then
+  else
+  if SameText(FFilerTag,cAutoHint) then
     DefaultColorHint := Reader.ReadString
-  else if SameText(FFilerTag,cOtherHint) then
-    CustomColorHint := Reader.ReadString
-  ;
+  else
+  if SameText(FFilerTag,cOtherHint) then
+    CustomColorHint := Reader.ReadString;
 end;
 
 procedure TJvOfficeColorPanelProperties.CreateDefaultText;
@@ -957,9 +962,11 @@ procedure TJvOfficeColorPanelProperties.OnFontChange(Sender: TObject);
 begin
   if Sender = FNoneColorFont then
     ChangedProperty(cNoneColorFont)
-  else if Sender = FDefaultColorFont then
+  else
+  if Sender = FDefaultColorFont then
     ChangedProperty(cDefaultColorFont)
-  else if Sender = FCustomColorFont then
+  else
+  if Sender = FCustomColorFont then
     ChangedProperty(cCustomColorFont);
 end;
 
@@ -1158,7 +1165,8 @@ var
 
   procedure SkipSetBody;
   begin
-    while Reader.ReadStr <> '' do ;
+    while Reader.ReadStr <> '' do
+      {nothing};
   end;
 
 begin
@@ -1173,13 +1181,17 @@ begin
         Break;
       if SameText(EnumName, 'cdFullOpen') then
         Include(Result,cdFullOpen)
-      else if SameText(EnumName, 'cdPreventFullOpen') then
+      else
+      if SameText(EnumName, 'cdPreventFullOpen') then
         Include(Result,cdPreventFullOpen)
-      else if SameText(EnumName, 'cdShowHelp') then
+      else
+      if SameText(EnumName, 'cdShowHelp') then
         Include(Result,cdShowHelp)
-      else if SameText(EnumName, 'cdSolidColor') then
+      else
+      if SameText(EnumName, 'cdSolidColor') then
         Include(Result,cdSolidColor)
-      else if SameText(EnumName, 'cdAnyColor') then
+      else
+      if SameText(EnumName, 'cdAnyColor') then
         Include(Result,cdAnyColor);
     end;
   except
@@ -1488,8 +1500,8 @@ begin
   ValidColCount := Min(ColorsList.Count, MaxSectColorCount);
   if DrawersList.Count > ValidColCount then
   begin
-    for i := ValidColCount to DrawersList.Count - 1 do
-      SetControlVisible(TControl(DrawersList[i]), False);
+    for I := ValidColCount to DrawersList.Count - 1 do
+      SetControlVisible(TControl(DrawersList[I]), False);
   end
   else
     while DrawersList.Count < ValidColCount do
@@ -1505,10 +1517,10 @@ begin
       DrawersList.Add(Drawer);
     end;
 
-  for i := 0 to ValidColCount - 1 do
+  for I := 0 to ValidColCount - 1 do
   begin
     ExceptionRaised := False;
-    Drawer := TJvOfficeColorDrawer(DrawersList[i]);
+    Drawer := TJvOfficeColorDrawer(DrawersList[I]);
     with Drawer do
     begin
       Parent := Self;
@@ -1516,7 +1528,7 @@ begin
       Tag := I;
       Flat := True;
       try
-        Value := Trim(ColorsList.Names[i]);
+        Value := Trim(ColorsList.Names[I]);
         DrawColor := StringToColor(Value);
       except
         on EConvertError do
@@ -1535,9 +1547,9 @@ begin
       else
         SetControlVisible(Drawer, AVisible);
       {$IFDEF COMPILER7_UP}
-      NewHint := ColorsList.ValueFromIndex[i];
+      NewHint := ColorsList.ValueFromIndex[I];
       {$ELSE}
-      NewHint := ColorsList.Values[ColorsList.Names[i]];
+      NewHint := ColorsList.Values[ColorsList.Names[I]];
       {$ENDIF}
       if SameText(NewHint, cUseDefaultColorHint) then
         NewHint := ColorToPrettyName(DrawColor);
@@ -1629,13 +1641,14 @@ begin
     ValidColCount := Min(FStandardColors.Count, MaxSectColorCount);
     if FStandardColorDrawers.Count < ValidColCount then
       CreateStandardColorDrawers
-    else if FStandardColorDrawers.Count > ValidColCount then
-      for i := ValidColCount to FStandardColorDrawers.Count - 1 do
-        SetControlVisible(TControl(FStandardColorDrawers[i]), False);
+    else
+    if FStandardColorDrawers.Count > ValidColCount then
+      for I := ValidColCount to FStandardColorDrawers.Count - 1 do
+        SetControlVisible(TControl(FStandardColorDrawers[I]), False);
 
-    for i := 0 to ValidColCount - 1 do
+    for I := 0 to ValidColCount - 1 do
     begin
-      Control := TJvColorSpeedButton(FStandardColorDrawers[i]);
+      Control := TJvColorSpeedButton(FStandardColorDrawers[I]);
 
       SetControlVisible(Control, ShowStandardColors);
       if Control.Visible then
@@ -1661,9 +1674,10 @@ begin
     ValidColCount := Min(FSystemColors.Count, MaxSectColorCount);
     if FSystemColorDrawers.Count < ValidColCount then
       CreateSystemColorDrawers
-    else if FSystemColorDrawers.Count > ValidColCount then
-      for i := ValidColCount to FSystemColorDrawers.Count - 1 do
-        SetControlVisible(TControl(FSystemColorDrawers[i]), False);
+    else
+    if FSystemColorDrawers.Count > ValidColCount then
+      for I := ValidColCount to FSystemColorDrawers.Count - 1 do
+        SetControlVisible(TControl(FSystemColorDrawers[I]), False);
 
     //set Divider Line position up System Colors
     SetControlVisible(FDividerLine1,
@@ -1681,9 +1695,9 @@ begin
       end;
 
     //set system Colors drawer position
-    for i := 0 to ValidColCount - 1 do
+    for I := 0 to ValidColCount - 1 do
     begin
-      Control := TControl(FSystemColorDrawers[i]);
+      Control := TControl(FSystemColorDrawers[I]);
 
       SetControlVisible(Control, ShowSystemColors);
       if Control.Visible then
@@ -1704,9 +1718,10 @@ begin
     ValidColCount := Min(FUserColors.Count, MaxSectColorCount);
     if FUserColorDrawers.Count < ValidColCount then
       CreateUserColorDrawers
-    else if FUserColorDrawers.Count > ValidColCount then
-      for i := ValidColCount to FUserColorDrawers.Count - 1 do
-        SetControlVisible(TControl(FUserColorDrawers[i]), False);
+    else
+    if FUserColorDrawers.Count > ValidColCount then
+      for I := ValidColCount to FUserColorDrawers.Count - 1 do
+        SetControlVisible(TControl(FUserColorDrawers[I]), False);
 
     // set Divider Line position up user Colors
     SetControlVisible(FDividerLine2,
@@ -1724,9 +1739,9 @@ begin
       end;
 
     // set User Colors drawer position
-    for i := 0 to ValidColCount - 1 do
+    for I := 0 to ValidColCount - 1 do
     begin
-      Control := TControl(FUserColorDrawers[i]);
+      Control := TControl(FUserColorDrawers[I]);
 
       SetControlVisible(Control, ShowUserColors);
       if Control.Visible then
@@ -1784,9 +1799,9 @@ begin
       end;
 
     //set Other Add-in Controls Bounds
-    for i := 0 to FAddInControls.Count - 1 do
+    for I := 0 to FAddInControls.Count - 1 do
     begin
-      Control := FAddInControls[i];
+      Control := FAddInControls[I];
       if (Control = FButtonNoneColor) or (Control = FButtonDefaultColor) or
          (Control = FButtonCustomColor) or (Control = FCustomColorDrawer) then
         Continue;
@@ -1904,11 +1919,14 @@ begin
   begin
     if Sender = FButtonNoneColor then
       FClickColorType := cctNoneColor
-    else if Sender = FButtonDefaultColor then
+    else
+    if Sender = FButtonDefaultColor then
       FClickColorType := cctDefaultColor
-    else if Sender = FButtonCustomColor then
+    else
+    if Sender = FButtonCustomColor then
       FClickColorType := cctCustomColor
-    else if FAddInControls.IndexOf(Sender) <> -1 then
+    else
+    if FAddInControls.IndexOf(Sender) <> -1 then
       FClickColorType := cctAddInControl
     else
       FClickColorType := cctColors;
@@ -2021,28 +2039,28 @@ begin
     inherited Color := Value;
     FBackgroundColor := Value;
     for I := 0 to FStandardColorDrawers.Count - 1 do
-      with TJvColorSpeedButton(FStandardColorDrawers[i]) do
+      with TJvColorSpeedButton(FStandardColorDrawers[I]) do
       begin
         Color := Value;
         DisabledDrawColor := Value;
       end;
     for I := 0 to FSystemColorDrawers.Count - 1 do
-      with TJvColorSpeedButton(FSystemColorDrawers[i]) do
+      with TJvColorSpeedButton(FSystemColorDrawers[I]) do
       begin
         Color := Value;
         DisabledDrawColor := Value;
       end;
     for I := 0 to FUserColorDrawers.Count - 1 do
-      with TJvColorSpeedButton(FUserColorDrawers[i]) do
+      with TJvColorSpeedButton(FUserColorDrawers[I]) do
       begin
         Color := Value;
         DisabledDrawColor := Value;
       end;
     for I := 0 to FAddInControls.Count - 1 do
     begin
-      TControlAccessProtected(FAddInControls[i]).Color := Value;
-      if TObject(FAddInControls[i]) is TJvColorSpeedButton then
-        TJvColorSpeedButton(FAddInControls[i]).DisabledDrawColor := Value;
+      TControlAccessProtected(FAddInControls[I]).Color := Value;
+      if TObject(FAddInControls[I]) is TJvColorSpeedButton then
+        TJvColorSpeedButton(FAddInControls[I]).DisabledDrawColor := Value;
     end;
   end;
 end;
@@ -2073,7 +2091,7 @@ begin
         ValidColCount := Min(FStandardColorDrawers.Count, MaxSectColorCount);
         for I := 0 to ValidColCount - 1 do
         begin
-          Button := TJvColorSpeedButton(FStandardColorDrawers[i]);
+          Button := TJvColorSpeedButton(FStandardColorDrawers[I]);
           Button.Down := Button.DrawColor = Value;
           if Button.Down then
           begin
@@ -2086,7 +2104,7 @@ begin
           ValidColCount := Min(FSystemColorDrawers.Count, MaxSectColorCount);
           for I := 0 to ValidColCount - 1 do
           begin
-            Button := TJvColorSpeedButton(FSystemColorDrawers[i]);
+            Button := TJvColorSpeedButton(FSystemColorDrawers[I]);
             Button.Down := Button.DrawColor = Value;
             if Button.Down then
             begin
@@ -2100,7 +2118,7 @@ begin
           ValidColCount := Min(FUserColorDrawers.Count, MaxSectColorCount);
           for I := 0 to ValidColCount - 1 do
           begin
-            Button := TJvColorSpeedButton(FUserColorDrawers[i]);
+            Button := TJvColorSpeedButton(FUserColorDrawers[I]);
             Button.Down := Button.DrawColor = Value;
             if Button.Down then
               Break;
@@ -2145,13 +2163,13 @@ begin
   begin
     FHotTrack := Value;
     for I := 0 to FStandardColorDrawers.Count - 1 do
-      TJvColorSpeedButton(FStandardColorDrawers[i]).HotTrack := Value;
+      TJvColorSpeedButton(FStandardColorDrawers[I]).HotTrack := Value;
     for I := 0 to FSystemColorDrawers.Count - 1 do
-      TJvColorSpeedButton(FSystemColorDrawers[i]).HotTrack := Value;
+      TJvColorSpeedButton(FSystemColorDrawers[I]).HotTrack := Value;
     for I := 0 to FUserColorDrawers.Count - 1 do
-      TJvColorSpeedButton(FUserColorDrawers[i]).HotTrack := Value;
+      TJvColorSpeedButton(FUserColorDrawers[I]).HotTrack := Value;
     for I := 0 to FAddInControls.Count - 1 do
-      if Supports(TObject(FAddInControls[i]), IJvHotTrack, HotTrackIntf) then
+      if Supports(TObject(FAddInControls[I]), IJvHotTrack, HotTrackIntf) then
         HotTrackIntf.HotTrack := Value;
   end;
 end;
@@ -2165,11 +2183,11 @@ begin
   begin
     FHotTrackFont.Assign(Value);
     for I := 0 to FStandardColorDrawers.Count - 1 do
-      TJvColorSpeedButton(FStandardColorDrawers[i]).HotTrackFont := Value;
+      TJvColorSpeedButton(FStandardColorDrawers[I]).HotTrackFont := Value;
     for I := 0 to FSystemColorDrawers.Count - 1 do
-      TJvColorSpeedButton(FSystemColorDrawers[i]).HotTrackFont := Value;
+      TJvColorSpeedButton(FSystemColorDrawers[I]).HotTrackFont := Value;
     for I := 0 to FAddInControls.Count - 1 do
-      if Supports(TObject(FAddInControls[i]), IJvHotTrack, HotTrackIntf) then
+      if Supports(TObject(FAddInControls[I]), IJvHotTrack, HotTrackIntf) then
         HotTrackIntf.HotTrackFont := Value;
   end;
 end;
@@ -2183,12 +2201,12 @@ begin
   begin
     FHotTrackFontOptions := Value;
     for I := 0 to FStandardColorDrawers.Count - 1 do
-      TJvColorSpeedButton(FStandardColorDrawers[i]).HotTrackFontOptions :=
+      TJvColorSpeedButton(FStandardColorDrawers[I]).HotTrackFontOptions :=
         Value;
     for I := 0 to FSystemColorDrawers.Count - 1 do
-      TJvColorSpeedButton(FSystemColorDrawers[i]).HotTrackFontOptions := Value;
+      TJvColorSpeedButton(FSystemColorDrawers[I]).HotTrackFontOptions := Value;
     for I := 0 to FAddInControls.Count - 1 do
-      if Supports(TObject(FAddInControls[i]), IJvHotTrack, HotTrackIntf) then
+      if Supports(TObject(FAddInControls[I]), IJvHotTrack, HotTrackIntf) then
         HotTrackIntf.HotTrackFontOptions := Value;
   end;
 end;
@@ -2202,14 +2220,14 @@ begin
   begin
     FHotTrackOptions.Assign(Value);
     for I := 0 to FStandardColorDrawers.Count - 1 do
-      TJvColorSpeedButton(FStandardColorDrawers[i]).HotTrackOptions := Value;
+      TJvColorSpeedButton(FStandardColorDrawers[I]).HotTrackOptions := Value;
     for I := 0 to FSystemColorDrawers.Count - 1 do
-      TJvColorSpeedButton(FSystemColorDrawers[i]).HotTrackOptions := Value;
+      TJvColorSpeedButton(FSystemColorDrawers[I]).HotTrackOptions := Value;
     for I := 0 to FUserColorDrawers.Count - 1 do
-      TJvColorSpeedButton(FUserColorDrawers[i]).HotTrackOptions := Value;
+      TJvColorSpeedButton(FUserColorDrawers[I]).HotTrackOptions := Value;
 
     for I := 0 to FAddInControls.Count - 1 do
-      if Supports(TObject(FAddInControls[i]), IJvHotTrack, HotTrackIntf) then
+      if Supports(TObject(FAddInControls[I]), IJvHotTrack, HotTrackIntf) then
         HotTrackIntf.HotTrackOptions := Value;
   end;
 end;
@@ -2225,16 +2243,16 @@ begin
   FButtonCustomColor.CanDrawInnerFrame := DrawInnerFrame;
 
   for I := 0 to FStandardColorDrawers.Count - 1 do
-    TJvColorSpeedButton(FStandardColorDrawers[i]).HotTrackOptions :=
+    TJvColorSpeedButton(FStandardColorDrawers[I]).HotTrackOptions :=
       FHotTrackOptions;
   for I := 0 to FSystemColorDrawers.Count - 1 do
-    TJvColorSpeedButton(FSystemColorDrawers[i]).HotTrackOptions :=
+    TJvColorSpeedButton(FSystemColorDrawers[I]).HotTrackOptions :=
       FHotTrackOptions;
   for I := 0 to FUserColorDrawers.Count - 1 do
-    TJvColorSpeedButton(FUserColorDrawers[i]).HotTrackOptions :=
+    TJvColorSpeedButton(FUserColorDrawers[I]).HotTrackOptions :=
       FHotTrackOptions;
   for I := 0 to FAddInControls.Count - 1 do
-    if Supports(TObject(FAddInControls[i]), IJvHotTrack, HotTrackIntf) then
+    if Supports(TObject(FAddInControls[I]), IJvHotTrack, HotTrackIntf) then
       HotTrackIntf.HotTrackOptions := FHotTrackOptions;
 end;
 
@@ -2312,13 +2330,13 @@ var
 begin
   inherited SetEnabled(Value);
   for I := 0 to FStandardColorDrawers.Count - 1 do
-    TControl(FStandardColorDrawers[i]).Enabled := Value;
+    TControl(FStandardColorDrawers[I]).Enabled := Value;
   for I := 0 to FSystemColorDrawers.Count - 1 do
-    TControl(FSystemColorDrawers[i]).Enabled := Value;
+    TControl(FSystemColorDrawers[I]).Enabled := Value;
   for I := 0 to FUserColorDrawers.Count - 1 do
-    TControl(FUserColorDrawers[i]).Enabled := Value;
+    TControl(FUserColorDrawers[I]).Enabled := Value;
   for I := 0 to FAddInControls.Count - 1 do
-    TControl(FAddInControls[i]).Enabled := Value;
+    TControl(FAddInControls[I]).Enabled := Value;
 end;
 
 procedure TJvCustomOfficeColorPanel.ShowHintChanged;
@@ -2327,13 +2345,13 @@ var
 begin
   inherited ShowHintChanged;
   for I := 0 to FStandardColorDrawers.Count - 1 do
-    TControl(FStandardColorDrawers[i]).ShowHint := ShowHint;
+    TControl(FStandardColorDrawers[I]).ShowHint := ShowHint;
   for I := 0 to FSystemColorDrawers.Count - 1 do
-    TControl(FSystemColorDrawers[i]).ShowHint := ShowHint;
+    TControl(FSystemColorDrawers[I]).ShowHint := ShowHint;
   for I := 0 to FUserColorDrawers.Count - 1 do
-    TControl(FUserColorDrawers[i]).ShowHint := ShowHint;
+    TControl(FUserColorDrawers[I]).ShowHint := ShowHint;
   for I := 0 to FAddInControls.Count - 1 do
-    TControl(FAddInControls[i]).ShowHint := ShowHint;
+    TControl(FAddInControls[I]).ShowHint := ShowHint;
 end;
 
 {$IFDEF VCL}
@@ -2380,42 +2398,55 @@ begin
 
   if SameText(PropName, cNoneColorCaption) then
     FButtonNoneColor.Caption := Properties.NoneColorCaption
-  else if SameText(PropName, cDefaultColorCaption) then
+  else
+  if SameText(PropName, cDefaultColorCaption) then
     FButtonDefaultColor.Caption := Properties.DefaultColorCaption
-  else if SameText(PropName, cCustomColorCaption) then
+  else
+  if SameText(PropName, cCustomColorCaption) then
     FButtonCustomColor.Caption := Properties.CustomColorCaption
-  else if SameText(PropName, cNoneColorHint) then
+  else
+  if SameText(PropName, cNoneColorHint) then
     FButtonNoneColor.Hint := Properties.NoneColorHint
-  else if SameText(PropName, cDefaultColorHint) then
+  else
+  if SameText(PropName, cDefaultColorHint) then
     FButtonDefaultColor.Hint := Properties.DefaultColorHint
-  else if SameText(PropName, cCustomColorHint) then
+  else
+  if SameText(PropName, cCustomColorHint) then
     FButtonCustomColor.Hint := Properties.CustomColorHint
-  else if SameText(PropName, cNoneColorColor) then
+  else
+  if SameText(PropName, cNoneColorColor) then
     FButtonNoneColor.DrawColor := Properties.NoneColorColor
-  else if SameText(PropName, cDefaultColorColor) then
+  else
+  if SameText(PropName, cDefaultColorColor) then
     FButtonDefaultColor.DrawColor := Properties.DefaultColorColor
-  else if SameText(PropName, cNoneColorFont) then
+  else
+  if SameText(PropName, cNoneColorFont) then
     FButtonNoneColor.Font := Properties.NoneColorFont
-  else if SameText(PropName, cDefaultColorFont) then
+  else
+  if SameText(PropName, cDefaultColorFont) then
     FButtonDefaultColor.Font := Properties.DefaultColorFont
-  else if SameText(PropName, cCustomColorFont) then
+  else
+  if SameText(PropName, cCustomColorFont) then
     FButtonCustomColor.Font := Properties.CustomColorFont
-  else if SameText(PropName, cShowAddInHint) then
+  else
+  if SameText(PropName, cShowAddInHint) then
   begin
     FButtonNoneColor.ShowHint := Properties.ShowAddInHint;
     FButtonDefaultColor.ShowHint := Properties.ShowAddInHint;
     FButtonCustomColor.ShowHint := Properties.ShowAddInHint;
   end
-  else if SameText(PropName, cShowColorsHint) then
+  else
+  if SameText(PropName, cShowColorsHint) then
   begin
     for I := 0 to FStandardColorDrawers.Count - 1 do
-      TControl(FStandardColorDrawers[i]).ShowHint := Properties.ShowColorsHint;
+      TControl(FStandardColorDrawers[I]).ShowHint := Properties.ShowColorsHint;
     for I := 0 to FSystemColorDrawers.Count - 1 do
-      TControl(FSystemColorDrawers[i]).ShowHint := Properties.ShowColorsHint;
+      TControl(FSystemColorDrawers[I]).ShowHint := Properties.ShowColorsHint;
     for I := 0 to FUserColorDrawers.Count - 1 do
-      TControl(FUserColorDrawers[i]).ShowHint := Properties.ShowColorsHint;
+      TControl(FUserColorDrawers[I]).ShowHint := Properties.ShowColorsHint;
   end
-  else if SameText(PropName, cRightClickSelect) or
+  else
+  if SameText(PropName, cRightClickSelect) or
     SameText(PropName, cHoldCustomColor) or
     SameText(PropName, cRightClickSelect) then
   else // Other property change will adjust size by default.
@@ -2476,12 +2507,15 @@ procedure TJvOfficeColorPanel.ReadData(Reader: TReader);
 begin
   if SameText(FFilerTag,'Color') then
     SelectedColor := JvReaderReadColor(Reader)
-  else if SameText(FFilerTag,'Flat') then
+  else
+  if SameText(FFilerTag,'Flat') then
     FlatBorder := Reader.ReadBoolean
-  else if SameText(FFilerTag,'CustomColors') then
+  else
+  if SameText(FFilerTag,'CustomColors') then
     JvReaderReadStrings(Reader,ColorDlgCustomColors)
   {$IFDEF VCL}
-  else if SameText(FFilerTag,'Options') then
+  else
+  if SameText(FFilerTag,'Options') then
     ColorDialogOptions := JvReaderReadColorDialogOptions(Reader)
   {$ENDIF VCL}
   ;

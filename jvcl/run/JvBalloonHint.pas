@@ -258,7 +258,7 @@ type
     property UseBalloonAsApplicationHint: Boolean read GetUseBalloonAsApplicationHint write
       SetUseBalloonAsApplicationHint default False;
 
-    property MaxWidth : Integer read FMaxWidth write FMaxWidth default 0;
+    property MaxWidth: Integer read FMaxWidth write FMaxWidth default 0;
 
     property OnBalloonClick: TNotifyEvent read FOnBalloonClick write FOnBalloonClick;
     property OnCloseBtnClick: TCloseQueryEvent read FOnCloseBtnClick write FOnCloseBtnClick;
@@ -1238,7 +1238,7 @@ procedure TJvBalloonHint.InternalActivateHintPos;
 var
   Rect: TRect;
   Animate: BOOL;
-  TmpMaxWidth : Integer;
+  TmpMaxWidth: Integer;
 begin
   with FData do
   begin

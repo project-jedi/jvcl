@@ -599,6 +599,15 @@ resourcestring
   RsEErrorCommandStart = 'Invalid command start format';
   RsEErrorCommandFormat = 'Invalid command format: %s';
 
+//=== JvDesignImp.pas ========================================================
+resourcestring
+  RsEDesignCannotSelect = 'Cannot add a nil selection.';
+  RsEOldestFmt = '%0:s: Oldest ancestor of Container must be a form.';
+
+//=== JvDesignSurface.pas ====================================================
+resourcestring
+  RsEDesignNilFmt = '%0:s: %1:s is nil';
+
 //=== JvDesktopAlertForm.pas =================================================
 resourcestring
   RsClose = 'Close';

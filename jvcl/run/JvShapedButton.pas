@@ -1882,7 +1882,8 @@ begin
       Ellipse(R.Left, R.Top, R.Right, R.Bottom);
       Ellipse(Ri.Left, Ri.Top, Ri.Right, Ri.Bottom);
     end
-    else if OdsDown then
+    else
+    if OdsDown then
     begin
       // draw gray border all around
       Pen.Color := clBtnShadow;
@@ -2034,7 +2035,8 @@ begin
       Pen.Color := FFlatBorderColor;
       Ellipse(Rect.Left, Rect.Top, Rect.Right, Rect.Bottom);
     end
-    else if OdsDown then
+    else
+    if OdsDown then
     begin
       // draw gray border all around
       Pen.Color := clBtnShadow;
