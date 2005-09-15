@@ -772,7 +772,8 @@ begin
     Len := Max(Length(S), Max_X) + 1;
     if Len > Length(LineAttrs) then
       SetLength(LineAttrs, Len)
-    else if Len + 128 < Length(LineAttrs) then
+    else
+    if Len + 128 < Length(LineAttrs) then
       SetLength(LineAttrs, Len);
 
     GetLineAttr(S, Line, ColBeg, ColEnd);

@@ -27,9 +27,9 @@ unit JvVCL5Utils;
 
 {$I jvcl.inc}
 
-{$IFDEF COMPILER5}
-
 interface
+
+{$IFDEF COMPILER5}
 
 uses
   Windows, SysUtils, Classes, TypInfo, ActiveX;
@@ -70,7 +70,6 @@ type
     procedure Delete(Index: Integer);
   end;
 
-
 function GetRelocAddress(ProcAddress: Pointer): Pointer;
 function InstallProcHook(ProcAddress, HookProc, OrgCallProc: Pointer): Boolean;
 function UninstallProcHook(OrgCallProc: Pointer): Boolean;
@@ -98,7 +97,6 @@ function GetEnvironmentVariable(const Name: string): string;
 function Supports(Instance: TObject; const Intf: TGUID): Boolean; overload;
 function Supports(AClass: TClass; const Intf: TGUID): Boolean; overload;
 function FileIsReadOnly(const FileName: string): Boolean;
-
 
 function WideCompareText(const S1, S2: WideString): Integer;
 function WideUpperCase(const S: WideString): WideString;
@@ -178,7 +176,8 @@ begin
     begin
       if Col is TCollection then
         TCollection(Col).Notify(Self, cnExtracting)
-      else if Col is TOwnedCollection then
+      else
+      if Col is TOwnedCollection then
         TOwnedCollection(Col).Notify(Self, cnExtracting);
     end;
     OrgTCollectionItem_SetCollection(Self, Value);
@@ -189,7 +188,8 @@ procedure TCollection_Delete(Self: Classes.TCollection; Index: Integer);
 begin
   if Self is TOwnedCollection then
     TOwnedCollection(Self).Notify(Self.Items[Index], cnDeleting)
-  else if Self is TCollection then
+  else
+  if Self is TCollection then
     TCollection(Self).Notify(Self.Items[Index], cnDeleting);
   TCollectionItem(Self.Items[Index]).Free;
 end;
@@ -218,7 +218,7 @@ begin
   end;
 end;
 
-{ TCollection }
+//=== { TCollection } ========================================================
 
 constructor TCollection.Create(ItemClass: TCollectionItemClass);
 begin
@@ -267,7 +267,7 @@ begin
   Notify(TCollectionItem(Item), cnAdded);
 end;
 
-{ TOwnedCollection }
+//=== { TOwnedCollection } ===================================================
 
 constructor TOwnedCollection.Create(AOwner: TPersistent; ItemClass: TCollectionItemClass);
 begin
@@ -384,46 +384,49 @@ end;
 
 function GetDisassembledByteCount(const Bytes: array of Byte): Integer;
 var
-  i, LastByteCount: Integer;
+  I, LastByteCount: Integer;
   ModRM: TModRM;
 begin
   Result := 0;
   LastByteCount := 0;
-  i := 0;
-  while i < Length(Bytes) do
+  I := 0;
+  while I < Length(Bytes) do
   begin
     LastByteCount := Result;
-    case Bytes[i] of
-      $53..$56: ; // push reg
+    case Bytes[I] of
+      $53..$56:
+        ; // push reg
       $8B, $3B: // mov/cmp
         begin
-          Inc(i);
-          ModRM := GetModRM(Bytes[i]);
+          Inc(I);
+          ModRM := GetModRM(Bytes[I]);
           case ModRM.Mode of
-            $00: if ModRM.RM = $07 then
-                   Inc(i, 2); // mov reg, disp16
-            $01: Inc(i); // mov reg, [reg]+disp8
-            $02: Inc(i, 2); // mov reg, [reg]+disp16
+            $00:
+              if ModRM.RM = $07 then
+                Inc(I, 2); // mov reg, disp16
+            $01:
+              Inc(I); // mov reg, [reg]+disp8
+            $02:
+              Inc(I, 2); // mov reg, [reg]+disp16
           end;
         end;
-      $E8: Inc(i, 4); // call rel32
-      $5B..$5E: ; // pop reg
-      $C3: ; // ret
-      $E9: Inc(i, 4); // jmp rel32
-
+      $E8:
+        Inc(I, 4); // call rel32
+      $5B..$5E:
+        ; // pop reg
+      $C3:
+        ; // ret
+      $E9:
+        Inc(I, 4); // jmp rel32
       $83: // add
-        begin
-          Inc(i, 2);
-        end;
+        Inc(I, 2);
       $89:
-        begin
-          Inc(i, 2);
-        end;
+        Inc(I, 2);
     end;                                         
-    Inc(i);
-    Result := i;
+    Inc(I);
+    Result := I;
   end;
-  if i > Length(Bytes) then
+  if I > Length(Bytes) then
     Result := LastByteCount;
 end;
 
@@ -431,7 +434,7 @@ function InstallProcHook(ProcAddress, HookProc, OrgCallProc: Pointer): Boolean;
 var
   Code: TJumpCode;
   OrgCallCode: TOrgCallCode;
-  i, Count: Integer;
+  I, Count: Integer;
 begin
   ProcAddress := GetRelocAddress(ProcAddress);
   Result := False;
@@ -442,8 +445,8 @@ begin
       if ReadProtectedMemory(ProcAddress, OrgCallCode, SizeOf(OrgCallCode.Code)) then
       begin
         Count := GetDisassembledByteCount(OrgCallCode.Code);
-        for i := Count to SizeOf(OrgCallCode.Code) do
-          OrgCallCode.Code[i] := $90; // NOP
+        for I := Count to SizeOf(OrgCallCode.Code) do
+          OrgCallCode.Code[I] := $90; // NOP
         OrgCallCode.Jmp := $E9;
         OrgCallCode.Offset := (Integer(ProcAddress) {+ SizeOf(Code)}+ Count) -
           Integer(OrgCallProc) -

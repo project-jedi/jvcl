@@ -1853,7 +1853,7 @@ begin
     case Field.DataType of
       ftString:
         begin
-            // Copy 0 to Field.Size bytes into NewVal (delphi String)
+          // Copy 0 to Field.Size bytes into NewVal (delphi String)
           if PChar(Buffer)[0] = Chr(0) then
             CP := -1
           else
@@ -1881,27 +1881,25 @@ begin
         NewVal := IntToStr(Ord(PWordBool(Buffer)^)); // bugfix May 26, 2003 - WP
       // There are two ways of handling date and time:
       ftDate: // NEW: TDateField support!
-          if (CsvColumnData^.FFlag = jcsvAsciiDate) then
-            begin
-              ATimeStamp.Time := 0;
-              ATimeStamp.Date := Integer(Buffer^);
-              DT := TimeStampToDateTime(ATimeStamp);
-              NewVal := JvDateIsoStr(DT);
-            end else begin
-              JvCsvDatabaseError2(FTableName, RsEFieldTypeNotHandled, Ord(CsvColumnData^.FFlag) );
-            end;
-
-      ftTime: // NEW: TTimeField support!
-          if (CsvColumnData^.FFlag = jcsvAsciiTime) then
+        if (CsvColumnData^.FFlag = jcsvAsciiDate) then
           begin
-              ATimeStamp.Time := LongInt(Buffer^);
-              ATimeStamp.Date := DateDelta;
-              DT := TimeStampToDateTime(ATimeStamp);
-              NewVal := JvTimeIsoStr(DT);
-          end else begin
-              JvCsvDatabaseError2(FTableName, RsEFieldTypeNotHandled, Ord(CsvColumnData^.FFlag) );
-          end;
-
+            ATimeStamp.Time := 0;
+            ATimeStamp.Date := Integer(Buffer^);
+            DT := TimeStampToDateTime(ATimeStamp);
+            NewVal := JvDateIsoStr(DT);
+          end
+          else
+            JvCsvDatabaseError2(FTableName, RsEFieldTypeNotHandled, Ord(CsvColumnData^.FFlag));
+      ftTime: // NEW: TTimeField support!
+        if CsvColumnData^.FFlag = jcsvAsciiTime then
+        begin
+          ATimeStamp.Time := LongInt(Buffer^);
+          ATimeStamp.Date := DateDelta;
+          DT := TimeStampToDateTime(ATimeStamp);
+          NewVal := JvTimeIsoStr(DT);
+        end
+        else
+          JvCsvDatabaseError2(FTableName, RsEFieldTypeNotHandled, Ord(CsvColumnData^.FFlag));
       ftDateTime:
         case CsvColumnData^.FFlag of
           // Localized date only (no time) in Ascii
@@ -1910,23 +1908,18 @@ begin
               DT := TimeStampToDateTime(MSecsToTimeStamp(Double(Buffer^)));
               NewVal := JvDateIsoStr(DT);
             end;
-         
-
           // Localized time only (no date) in Ascii
           jcsvAsciiTime:
             begin
               DT := TimeStampToDateTime(MSecsToTimeStamp(Double(Buffer^)));
               NewVal := JvTimeIsoStr(DT);
             end;
-
-
           // Localized date+time in Ascii
           jcsvAsciiDateTime:
             begin
               DT := TimeStampToDateTime(MSecsToTimeStamp(Double(Buffer^)));
               NewVal := JvDateTimeIsoStr(DT);
             end;
-
           // GMT Times are stored in HEX
           jcsvGMTDateTime:
             begin
@@ -1942,7 +1935,7 @@ begin
           JvCsvDatabaseError2(FTableName, RsETimeTConvError, Ord(CsvColumnData^.FFlag));
         end;
     else
-      JvCsvDatabaseError2(FTableName, RsEFieldTypeNotHandled, Ord(CsvColumnData^.FFlag) );
+      JvCsvDatabaseError2(FTableName, RsEFieldTypeNotHandled, Ord(CsvColumnData^.FFlag));
     end;
 
   // Set new Data value (NewVal = String)

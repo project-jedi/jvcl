@@ -260,7 +260,7 @@ var
   DynCtrlButton: IJvDynControlButton;
   DynCtrlAction: IJvDynControlAction;
 
-  function CalcButtonWidth (ACaptionWidth: Integer; AGlyph: TBitmap) : Integer;
+  function CalcButtonWidth(ACaptionWidth: Integer; AGlyph: TBitmap): Integer;
   begin
     Result := 4;
     if Assigned(AGlyph) then

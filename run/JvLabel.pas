@@ -343,13 +343,13 @@ const
 
 //=== { TJvCustomLabel } =====================================================
 
-function CalculateAlignment(Alignment: TAlignment; Angle: Integer; X, Y: Real; Info: TAngleInfo) : TPoint;
+function CalculateAlignment(Alignment: TAlignment; Angle: Integer; X, Y: Real; Info: TAngleInfo): TPoint;
 begin
   with Info do
     case Angle of
       0..89:
         case Alignment of
-          taLeftJustify :
+          taLeftJustify:
             Result := Point(0, Round(Y + (TotalHeight - 2 * TextGapHeight) / 2));
           taCenter:
             Result := Point(Round(X - TotalWidth / 2), Round(Y + (TotalHeight - 2 * TextGapHeight) / 2));

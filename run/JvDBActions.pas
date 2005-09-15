@@ -860,18 +860,21 @@ begin
           Control := ADynControlEngineDB.CreateDBFieldControl(Field, AParentControl, AParentControl, '', ds);
           if FieldDefaultWidth > 0 then
             Control.Width := FieldDefaultWidth
-          else begin
+          else
+          begin
             if UseFieldSizeForWidth then
               if Field.Size > 0 then
                 Control.Width :=
                   TAccessCustomControl(AParentControl).Canvas.TextWidth('X') * Field.Size
               else
-            else if Field.DisplayWidth > 0 then
+            else
+            if Field.DisplayWidth > 0 then
               Control.Width :=
                 TAccessCustomControl(AParentControl).Canvas.TextWidth('X') * Field.DisplayWidth;
             if (FieldMaxWidth > 0) and (Control.Width > FieldMaxWidth) then
               Control.Width := FieldMaxWidth
-            else if (FieldMinWidth > 0) and (Control.Width < FieldMinWidth) then
+            else
+            if (FieldMinWidth > 0) and (Control.Width < FieldMinWidth) then
               Control.Width := FieldMinWidth;
           end;
           if UseParentColorForReadOnly then
@@ -925,7 +928,8 @@ begin
         Result := TcxCustomGridTableView(TcxGrid(ADataComponent).FocusedView)
       else
         Result := nil
-    else if ADataComponent is TcxCustomGridTableView then
+    else
+    if ADataComponent is TcxCustomGridTableView then
       Result := TcxCustomGridTableView(ADataComponent)
     else
       Result := nil
@@ -943,7 +947,8 @@ begin
           TcxGrid(ADataComponent).FocusedView).DataController).DataSource
       else
         Result := nil
-    else if ADataComponent is TcxCustomGridTableView then
+    else
+    if ADataComponent is TcxCustomGridTableView then
       if TcxCustomGridTableView(ADataComponent).DataController is TcxGridDBDataController then
         Result := TcxGridDBDataController(TcxCustomGridTableView(ADataComponent).DataController).DataSource
       else
@@ -1211,7 +1216,8 @@ procedure TJvDatabaseBaseAction.ExecuteTarget(Target: TObject);
 begin
   if Assigned(FOnExecute) then
     FOnExecute(Self, DataEngine, DataComponent)
-  else if Assigned(FOnExecuteDataSource) then
+  else
+  if Assigned(FOnExecuteDataSource) then
     FOnExecuteDataSource(Self, DataSource)
   else
     inherited ExecuteTarget(Target);
@@ -1436,7 +1442,8 @@ begin
   try
     if not EngineIsActive then
       SetCaption (Format(cFormat, [0, 0]))
-    else if EngineRecordCount = 0 then
+    else
+    if EngineRecordCount = 0 then
       SetCaption (Format(cFormat, [0, 0]))
     else
       SetCaption (Format(cFormat, [EngineRecNo, EngineRecordCount]));
@@ -1764,41 +1771,50 @@ begin
         Text     := SNull;
         CellType := ctBlank;
       end
-      else if Field.DataType in [ftFloat, ftBCD, ftCurrency] then
+      else
+      if Field.DataType in [ftFloat, ftBCD, ftCurrency] then
         Text := AnsiReplaceStr(Text, ',', '.')
-      else if Field.DataType in [ftDate, ftDateTime] then
+      else
+      if Field.DataType in [ftDate, ftDateTime] then
       begin
         DT := Field.AsDateTime;
         if DT <= 0 then
           Text := SNull
-        else if DT = Trunc(DT) then
+        else
+        if DT = Trunc(DT) then
           Text := Format(SToDateFormatShort, [FormatDateTime(SFormatShort, DT)])
         else
           Text := Format(StoDateFormatLong, [FormatDateTime(SFormatLong, DT)]);
         CellType := ctBlank;
       end
-      else if Field.DataType in [ftString, ftWideString] then
+      else
+      if Field.DataType in [ftString, ftWideString] then
         Text := '''' + AnsiReplaceStr(Text, '''', '''''') + '''';
     end
-    else if Text = '' then
+    else
+    if Text = '' then
     begin
       Text     := SNull;
       CellType := ctBlank;
     end
-    else if CellType in [ctDouble, ctCurrency] then
+    else
+    if CellType in [ctDouble, ctCurrency] then
       Text := AnsiReplaceStr(Text, ',', '.')
-    else if CellType in [ctDateTime, ctDate, ctTime] then
+    else
+    if CellType in [ctDateTime, ctDate, ctTime] then
     begin
       DT := StrToDate(Text);
       if DT <= 0 then
         Text := SNull
-      else if DT = Trunc(DT) then
+      else
+      if DT = Trunc(DT) then
         Text := Format(SToDateFormatShort, [FormatDateTime(SFormatShort, DT)])
       else
         Text := Format(StoDateFormatLong, [FormatDateTime(SFormatLong, DT)]);
       CellType := ctBlank;
     end
-    else if CellType in [ctString] then
+    else
+    if CellType in [ctString] then
       Text := '''' + AnsiReplaceStr(Text, '''', '''''') + '''';
 end;
 
@@ -1824,11 +1840,13 @@ end;
 
 procedure TJvDatabaseSMExportAction.ExecuteTarget(Target: TObject);
 begin
-  inherited;
+  inherited ExecuteTarget(Target);
   ExportData;
 end;
 
 procedure TJvDatabaseSMExportAction.ExportData;
+const
+  cLastExport = '\Last Export.SME';
 var
   SMEWizardDlg: TSMEWizardDlg;
   {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
@@ -1854,14 +1872,16 @@ begin
       SMEWizardDlg.ColumnSource := csDBGrid;
     end
     {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
-    else if (DataComponent is TcxGrid) and (TcxGrid(DataComponent).FocusedView is TcxCustomGridTableView) then
+    else
+    if (DataComponent is TcxGrid) and (TcxGrid(DataComponent).FocusedView is TcxCustomGridTableView) then
     begin
       SMEEnginecx := TSMEcxCustomGridTableViewDataEngine.Create(Self);
       SMEEngineCx.cxCustomGridTableView := TcxCustomGridTableView(TcxGrid(DataComponent).FocusedView);
       SMEWizardDlg.DataEngine := SMEEngineCx;
       SMEWizardDlg.ColumnSource := csDataEngine;
     end
-    else if DataComponent is TcxCustomGridTableView then
+    else
+    if DataComponent is TcxCustomGridTableView then
     begin
       SMEEnginecx := TSMEcxCustomGridTableViewDataEngine.Create(Self);
       SMEEngineCx.cxCustomGridTableView := TcxCustomGridTableView(DataComponent);
@@ -1869,18 +1889,19 @@ begin
       SMEWizardDlg.ColumnSource := csDataEngine;
     end
     {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
-    else begin
-      SMEWizardDlg.DataSet      := DataSet;
+    else
+    begin
+      SMEWizardDlg.DataSet := DataSet;
       SMEWizardDlg.ColumnSource := csDataSet;
     end;
 
-    SMEWizardDlg.Formats     := Options.Formats;
-    SMEWizardDlg.Options     := Options.Options;
+    SMEWizardDlg.Formats := Options.Formats;
+    SMEWizardDlg.Options := Options.Options;
     SMEWizardDlg.HelpContext := Options.HelpContext;
-    if FileExists(Options.DefaultOptionsDirectory + '\Last Export.SME') then
-      SMEWizardDlg.LoadSpecification(Options.DefaultOptionsDirectory + '\Last Export.SME');
+    if FileExists(Options.DefaultOptionsDirectory + cLastExport) then
+      SMEWizardDlg.LoadSpecification(Options.DefaultOptionsDirectory + cLastExport);
     SMEWizardDlg.Execute;
-    SMEWizardDlg.SaveSpecification('Last Export', Options.DefaultOptionsDirectory + '\Last Export.SME', False);
+    SMEWizardDlg.SaveSpecification('Last Export', Options.DefaultOptionsDirectory + cLastExport, False);
   finally
     {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
     FreeAndNil(SMEEngineCx);

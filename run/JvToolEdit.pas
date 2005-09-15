@@ -4017,15 +4017,13 @@ end;
 procedure TJvCustomDateEdit.SetDate(Value: TDateTime);
 var
   D: TDateTime;
-  SavedModified : Boolean;
+  SavedModified: Boolean;
 begin
   if not ValidDate(Value) or (Value = NullDate) then
-  begin
     if DefaultToday then
       Value := SysUtils.Date
     else
       Value := NullDate;
-  end;
   D := Self.Date;
   SavedModified := Modified;
   TestDateBetween(Value); // Polaris

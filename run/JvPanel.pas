@@ -54,7 +54,7 @@ uses
 
 type
   TJvPanelResizeParentEvent = procedure(Sender: TObject; nLeft, nTop, nWidth, nHeight: Integer) of object;
-  TJvPanelChangedSizeEvent = procedure(Sender: TObject; ChangedSize : Integer) of object;
+  TJvPanelChangedSizeEvent = procedure(Sender: TObject; ChangedSize: Integer) of object;
   TJvAutoSizePanel = (asNone, asWidth, asHeight, asBoth);
 
   TJvArrangeSettings = class(TJvPersistentProperty)
@@ -1414,7 +1414,8 @@ begin
     if ArrangeSettings.AutoArrange then
       Rearrange;
   end
-  else if SameText(PropName,'AutoSize') then
+  else
+  if SameText(PropName,'AutoSize') then
   begin
     if ArrangeSettings.AutoSize <> asNone then
       Rearrange;

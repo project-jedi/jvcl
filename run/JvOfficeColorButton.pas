@@ -1353,10 +1353,12 @@ procedure TJvOfficeColorButton.ReadData(Reader: TReader);
 begin
   if SameText(FFilerTag,'Color') then
     BackColor := JvReaderReadColor(Reader)
-  else if SameText(FFilerTag,'CustomColors') then
+  else
+  if SameText(FFilerTag,'CustomColors') then
     JvReaderReadStrings(Reader,ColorDlgCustomColors)
   {$IFDEF VCL}
-  else if SameText(FFilerTag,'Options') then
+  else
+  if SameText(FFilerTag,'Options') then
     ColorDialogOptions := JvReaderReadColorDialogOptions(Reader)
   {$ENDIF VCL}
   ;

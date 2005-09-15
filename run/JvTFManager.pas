@@ -376,14 +376,14 @@ type
     function GetUsedTime: TDynTimeRangeArray; dynamic;
     function TimeIsFree(TimeRange: TJvTFTimeRange): Boolean; overload; dynamic;
     function TimeIsFree(RangeStart, RangeEnd: TTime): Boolean; overload; dynamic;
-    // The ApptHasConflicts(anAppt : TJvTFAppt) method declared here checks
+    // The ApptHasConflicts(anAppt: TJvTFAppt) method declared here checks
     //  ONLY THIS SCHEDULE!!
     function ApptHasConflicts(anAppt: TJvTFAppt): Boolean; dynamic;
     function EnumConflicts(TimeRange: TJvTFTimeRange): TDynApptArray;
       overload; dynamic;
     function EnumConflicts(RangeStart, RangeEnd: TTime): TDynApptArray;
       overload; dynamic;
-    // The following EnumConflicts(anAppt : TJvTFAppt) checks
+    // The following EnumConflicts(anAppt: TJvTFAppt) checks
     //  ONLY THIS SCHEDULE!!
     function EnumConflicts(anAppt: TJvTFAppt): TDynApptArray;
       overload; dynamic;
@@ -494,7 +494,7 @@ type
     FFlushing: Boolean;
     FDestroying: Boolean;
     FSchedBatch: TStringList;
-    FApptBeingDestroyed : TJvTFAppt;
+    FApptBeingDestroyed: TJvTFAppt;
     
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure ConnectControl(ApptCtrl: TJvTFControl);
@@ -520,7 +520,7 @@ type
     procedure RemoveAppt(Appt: TJvTFAppt);
     procedure RemoveSchedule(Sched: TJvTFSched);
 
-    //procedure RefreshAppt(Appt : TJvTFAppt);
+    //procedure RefreshAppt(Appt: TJvTFAppt);
     procedure DeleteAppt(Appt: TJvTFAppt);
     procedure PostAppt(Appt: TJvTFAppt);
 
@@ -791,8 +791,8 @@ type
   private
     FScheduleManager: TJvTFScheduleManager;
     FSchedules: TStringList;
-    //    FNavigator : TJvTFNavigator;
-    //    FOnNavigate : TJvTFNavEvent;
+    //    FNavigator: TJvTFNavigator;
+    //    FOnNavigate: TJvTFNavEvent;
     procedure SetManager(Value: TJvTFScheduleManager);
     function GetSchedule(Index: Integer): TJvTFSched;
     //    procedure SetNavigator(Value: TJvTFNavigator);
@@ -821,8 +821,8 @@ type
       X, Y: Integer); override;
     procedure Navigate(aControl: TJvTFControl; SchedNames: TStringList;
       Dates: TJvTFDateList); virtual;
-    //    property Navigator : TJvTFNavigator read FNavigator write SetNavigator;
-    //    property OnNavigate : TJvTFNavEvent read FOnNavigate write FOnNavigate;
+    //    property Navigator: TJvTFNavigator read FNavigator write SetNavigator;
+    //    property OnNavigate: TJvTFNavEvent read FOnNavigate write FOnNavigate;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1024,28 +1024,28 @@ type
 
   //  TJvTFNavigator = class(TComponent)
   //  private
-  //    FBeforeNavigate : TJvTFNavEvent;
-  //    FAfterNavigate : TJvTFNavEvent;
-  //    FControls : TStringList;
+  //    FBeforeNavigate: TJvTFNavEvent;
+  //    FAfterNavigate: TJvTFNavEvent;
+  //    FControls: TStringList;
   //    function GetControl(Index: Integer): TJvTFControl;
   //  protected
-  //    FNavigating : Boolean;
+  //    FNavigating: Boolean;
   //    procedure RegisterControl(aControl: TJvTFControl);
   //    procedure UnregisterControl(aControl: TJvTFControl);
   //  public
   //    constructor Create(AOwner: TComponent); override;
   //    destructor Destroy; override;
   //
-  //    function ControlCount : Integer;
-  //    property Controls[Index: Integer] : TJvTFControl read GetControl;
+  //    function ControlCount: Integer;
+  //    property Controls[Index: Integer]: TJvTFControl read GetControl;
   //
   //    procedure Navigate(aControl: TJvTFControl; SchedNames: TStringList;
   //      Dates: TJvTFDateList); virtual;
-  //    property Navigating : Boolean read FNavigating;
+  //    property Navigating: Boolean read FNavigating;
   //  published
-  //    property BeforeNavigate : TJvTFNavEvent read FBeforeNavigate
+  //    property BeforeNavigate: TJvTFNavEvent read FBeforeNavigate
   //      write FBeforeNavigate;
-  //    property AfterNavigate : TJvTFNavEvent read FAfterNavigate
+  //    property AfterNavigate: TJvTFNavEvent read FAfterNavigate
   //      write FAfterNavigate;
   //  end;
 
@@ -1523,7 +1523,7 @@ begin
     sncDisconnectAppt:
       Disconnect(TJvTFSched(Sender));
     // implicit post fix
-    //sncPostAppt        : FModified := False;
+    //sncPostAppt: FModified := False;
     sncPostAppt:
       PostApptNotification;
     sncDeleteAppt:
@@ -2248,12 +2248,12 @@ procedure TJvTFSched.RefreshAppts;
 Var
   I,
   J,
-  K : Integer;
+  K: Integer;
   ApptIDList,
-  RefList : TStringList;
-  Appt : TJvTFAppt;
-  Sched : TJvTFSched;
-  RefID : string;
+  RefList: TStringList;
+  Appt: TJvTFAppt;
+  Sched: TJvTFSched;
+  RefID: string;
 begin
   // In a multi-user environment, appt objects may be deleted as a result
   // of calling dbRefreshAppt.  (Component user may call Appt.Free.)
@@ -2865,14 +2865,14 @@ end;
 procedure TJvTFScheduleManager.RemoveAppt(Appt: TJvTFAppt);
 var
   I: Integer;
-  indexOfAppt : Integer;
+  IndexOfAppt: Integer;
 begin
   if Appt = FApptBeingDestroyed then
     Exit;  // Do Nothing if this is already the Appt we are
            // destroying ourselves
 
-  indexOfAppt := FAppts.IndexOfObject(Appt);
-  if indexOfAppt = -1 then
+  IndexOfAppt := FAppts.IndexOfObject(Appt);
+  if IndexOfAppt = -1 then
     Exit; // Nothing to do if the appt is not in our list
 
   for I := 0 to ConControlCount - 1 do
@@ -2884,7 +2884,7 @@ begin
   while Appt.ConnectionCount > 0 do
     Appt.Notify(Appt.Connections[0], sncDisconnectAppt);
 
-  FAppts.Delete(indexOfAppt);
+  FAppts.Delete(IndexOfAppt);
 
   // Do not free if the appt is being destroyed by someone else
   if not Appt.Destroying then
@@ -3232,12 +3232,10 @@ end;
 
 procedure TJvTFScheduleManager.dbDeleteAllAppt;
 var
-  i : Integer;
+  I: Integer;
 begin
-  for i := FAppts.Count - 1 downto 0 do
-  begin
+  for I := FAppts.Count - 1 downto 0 do
     RemoveAppt(TJvTFAppt(FAppts.Objects[0]));
-  end;
 end;
 
 procedure TJvTFScheduleManager.dbRefreshAppt(Appt: TJvTFAppt);
@@ -5388,8 +5386,8 @@ end;
 //procedure TJvTFNavigator.Navigate(aControl: TJvTFControl;
 //  SchedNames: TStringList; Dates: TJvTFDateList);
 //var
-//  I : Integer;
-//  Control : TJvTFControl;
+//  I: Integer;
+//  Control: TJvTFControl;
 //begin
 //  If Navigating or not Assigned(aControl) Then
 //    Exit;
@@ -5416,7 +5414,7 @@ end;
 //
 //procedure TJvTFNavigator.RegisterControl(aControl: TJvTFControl);
 //var
-//  I : Integer;
+//  I: Integer;
 //begin
 //  I := FControls.IndexOfObject(aControl);
 //  If I = -1 Then
@@ -5425,7 +5423,7 @@ end;
 //
 //procedure TJvTFNavigator.UnregisterControl(aControl: TJvTFControl);
 //var
-//  I : Integer;
+//  I: Integer;
 //begin
 //  I := FControls.IndexOfObject(aControl);
 //  If I > -1 Then

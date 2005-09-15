@@ -342,11 +342,11 @@ const
 
 procedure TJvCustomDatePickerEdit.AcceptValue(const Value: Variant);
 var
-  TextBefore : string;
-  TmpDate : TDateTime;
-  TmpValue : Variant;
-  OldFormat : string;
-  OldSeparator : Char; 
+  TextBefore: string;
+  TmpDate: TDateTime;
+  TmpValue: Variant;
+  OldFormat: string;
+  OldSeparator: Char;
 begin
   TextBefore := Text;
 
@@ -376,9 +376,7 @@ begin
     end;
   end
   else
-  begin
     inherited AcceptValue(TmpValue);
-  end;
 
   // Inherited AcceptValue will change the base class Text property, thus not
   // calling our SetText method. As a result, we must set the date in this case 
@@ -813,7 +811,7 @@ end;
 
 function TJvCustomDatePickerEdit.HasValidDate: Boolean;
 var
-  TmpDate : TDateTime;
+  TmpDate: TDateTime;
 begin
   Result := AttemptTextToDate(Text, TmpDate, False, False);
 end;

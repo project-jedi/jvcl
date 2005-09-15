@@ -1187,15 +1187,14 @@ type
       var dwEffect: DWORD): HRESULT; stdcall;
   end;
 
-  TBIDIOPTIONS = record
-    cbSize : UINT;
-    wMask : WORD; 
-    wEffects : WORD;
+  TBiDiOptions = record
+    cbSize: UINT;
+    wMask: WORD;
+    wEffects: WORD;
   end;
 
 const
   { File Conversion Errors }
-
   fceTrue = FCE(1); // IsFormatCorrect32: recognized the input file.
   fceNoErr = FCE(0); // IsFormatCorrect32: Did not recognize the input file.
   // Operation completed successfully for other APIs
@@ -2469,7 +2468,7 @@ end;
 procedure TJvCustomRichEdit.CMBiDiModeChanged(var Msg: TMessage);
 var
   AParagraph: TParaFormat2;
-  BiDiOptions : TBIDIOPTIONS;
+  BiDiOptions: TBiDiOptions;
 begin
   HandleNeeded; { we REALLY need the handle for BiDi }
   inherited;

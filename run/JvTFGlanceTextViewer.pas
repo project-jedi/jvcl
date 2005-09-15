@@ -81,7 +81,7 @@ type
     FViewer: TJvTFGlanceTextViewer;
     FReplicating: Boolean;
     FMouseLine: Integer;
-    FCanEdit : Boolean;
+    FCanEdit: Boolean;
     FShowDDButton: Boolean;
 
     function GetGlanceControl: TJvTFCustomGlance;
@@ -98,9 +98,9 @@ type
     FEditor: TJvTFGVTxtEditor;
 
     // See in MouseDown for details on usage of these three members
-    FWasMovedTicks : Cardinal;
-    FWasInDblClick : Boolean;
-    FHasScrolled : Boolean;
+    FWasMovedTicks: Cardinal;
+    FWasInDblClick: Boolean;
+    FHasScrolled: Boolean;
 
     {$IFDEF USEJVCL}
     procedure MouseEnter(Control: TControl); override;

@@ -266,7 +266,8 @@ begin
       if MatchCase and (AnsiCompareStr(Search, Copy(Text, Result, SearchLen)) <> 0) then
         Result := -1
           // is whole-word-only required and is it?
-      else if WholeWord and (SearchLen < TextLen) then
+      else
+      if WholeWord and (SearchLen < TextLen) then
       begin
         // check for extremes...
         S := Copy(Text, Result - 1, SearchLen + 2);

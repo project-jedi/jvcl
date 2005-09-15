@@ -64,8 +64,8 @@ type
     FIniFile: TMemIniFile;
     FDefaultSection: string;
     function CalcDefaultSection(Section: string): string;
-    function GetStorageOptions : TJvAppIniStorageOptions;
-    procedure SetStorageOptions (Value: TJvAppIniStorageOptions);
+    function GetStorageOptions: TJvAppIniStorageOptions;
+    procedure SetStorageOptions(Value: TJvAppIniStorageOptions);
   protected
     class function GetStorageOptionsClass: TJvAppStorageOptionsClass; override;
 
@@ -517,12 +517,12 @@ begin
     raise EJVCLAppStorageError.CreateRes(@RsEReadValueFailed);
 end;
 
-function TJvCustomAppIniStorage.GetStorageOptions : TJvAppIniStorageOptions;
+function TJvCustomAppIniStorage.GetStorageOptions: TJvAppIniStorageOptions;
 begin
   Result := TJvAppIniStorageOptions(inherited StorageOptions);
 end;
 
-procedure TJvCustomAppIniStorage.SetStorageOptions (Value: TJvAppIniStorageOptions);
+procedure TJvCustomAppIniStorage.SetStorageOptions(Value: TJvAppIniStorageOptions);
 begin
   (Inherited StorageOptions).Assign(Value);
 end;
