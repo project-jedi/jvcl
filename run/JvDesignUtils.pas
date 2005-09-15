@@ -22,6 +22,7 @@ home page, located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
+
 unit JvDesignUtils;
 
 {$I jvcl.inc}
@@ -34,34 +35,32 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils, Windows, Classes, Controls, Graphics, Forms;
 
-function DesignClientToParent(const inPt: TPoint;
-  inControl, inParent: TControl): TPoint;
+function DesignClientToParent(const APt: TPoint; AControl, AParent: TControl): TPoint;
 
-function DesignMin(inA, inB: Integer): Integer;
-function DesignMax(inA, inB: Integer): Integer;
+function DesignMin(AA, AB: Integer): Integer;
+function DesignMax(AA, AB: Integer): Integer;
 
-function DesignRectWidth(const inRect: TRect): Integer;
-function DesignRectHeight(const inRect: TRect): Integer;
-function DesignValidateRect(const inRect: TRect): TRect;
+function DesignRectWidth(const ARect: TRect): Integer;
+function DesignRectHeight(const ARect: TRect): Integer;
+function DesignValidateRect(const ARect: TRect): TRect;
 
-function DesignNameIsUnique(inOwner: TComponent; const inName: string): Boolean;
-function DesignUniqueName(inOwner: TComponent; const inClassName: string): string;
+function DesignNameIsUnique(AOwner: TComponent; const AName: string): Boolean;
+function DesignUniqueName(AOwner: TComponent; const AClassName: string): string;
 
-procedure DesignPaintRubberbandRect(const inRect: TRect; inPenStyle: TPenStyle);
-procedure DesignPaintGrid(inCanvas: TCanvas; const inRect: TRect;
-  inBackColor: TColor = clBtnFace; inGridColor: TColor = clBlack;
-  inDivPixels: Integer = 8);
-procedure DesignPaintRules(inCanvas: TCanvas; const inRect: TRect;
-  inDivPixels: Integer = 32; inSubDivs: Boolean = true);
+procedure DesignPaintRubberbandRect(const ARect: TRect; APenStyle: TPenStyle);
+procedure DesignPaintGrid(ACanvas: TCanvas; const ARect: TRect;
+  ABackColor: TColor = clBtnFace; AGridColor: TColor = clBlack;
+  ADivPixels: Integer = 8);
+procedure DesignPaintRules(ACanvas: TCanvas; const ARect: TRect;
+  ADivPixels: Integer = 32; ASubDivs: Boolean = True);
 
-procedure DesignSaveComponentToStream(inComp: TComponent; inStream: TStream);
-function DesignLoadComponentFromStream(inComp: TComponent; inStream: TStream;
-  inOnError: TReaderError): TComponent;
+procedure DesignSaveComponentToStream(AComp: TComponent; AStream: TStream);
+function DesignLoadComponentFromStream(AComp: TComponent; AStream: TStream;
+  AOnError: TReaderError): TComponent;
 
-procedure DesignSaveComponentToFile(inComp: TComponent;
-   const inFilename: string);
-procedure DesignLoadComponentFromFile(inComp: TComponent;
-  const inFilename: string; inOnError: TReaderError);
+procedure DesignSaveComponentToFile(AComp: TComponent; const AFileName: string);
+procedure DesignLoadComponentFromFile(AComp: TComponent;
+  const AFileName: string; AOnError: TReaderError);
 
 {$IFDEF UNITVERSIONING}
 const
@@ -75,244 +74,244 @@ const
 
 implementation
 
-function DesignClientToParent(const inPt: TPoint;
-  inControl, inParent: TControl): TPoint;
+function DesignClientToParent(const APt: TPoint; AControl, AParent: TControl): TPoint;
 begin
-  Result := inPt;
-  while (inControl <> inParent) and (inControl <> nil) do
+  Result := APt;
+  while (AControl <> AParent) and (AControl <> nil) do
   begin
-    Inc(Result.X, inControl.Left);
-    Inc(Result.Y, inControl.Top);
-    inControl := inControl.Parent;
+    Inc(Result.X, AControl.Left);
+    Inc(Result.Y, AControl.Top);
+    AControl := AControl.Parent;
   end;
 end;
 
-function DesignMin(inA, inB: Integer): Integer;
+function DesignMin(AA, AB: Integer): Integer;
 begin
-  if inB < inA then
-    Result := inB
+  if AB < AA then
+    Result := AB
   else
-    Result := inA;
+    Result := AA;
 end;
 
-function DesignMax(inA, inB: Integer): Integer;
+function DesignMax(AA, AB: Integer): Integer;
 begin
-  if inB > inA then
-    Result := inB
+  if AB > AA then
+    Result := AB
   else
-    Result := inA;
+    Result := AA;
 end;
 
-function DesignRectWidth(const inRect: TRect): Integer;
+function DesignRectWidth(const ARect: TRect): Integer;
 begin
-  Result := inRect.Right - inRect.Left;
+  Result := ARect.Right - ARect.Left;
 end;
 
-function DesignRectHeight(const inRect: TRect): Integer;
+function DesignRectHeight(const ARect: TRect): Integer;
 begin
-  Result := inRect.Bottom - inRect.Top;
+  Result := ARect.Bottom - ARect.Top;
 end;
 
-function DesignValidateRect(const inRect: TRect): TRect;
+function DesignValidateRect(const ARect: TRect): TRect;
 begin
   with Result do
   begin
-    if inRect.Right < inRect.Left then
+    if ARect.Right < ARect.Left then
     begin
-      Left := inRect.Right;
-      Right := inRect.Left;
+      Left := ARect.Right;
+      Right := ARect.Left;
     end
-    else begin
-      Left := inRect.Left;
-      Right := inRect.Right;
+    else
+    begin
+      Left := ARect.Left;
+      Right := ARect.Right;
     end;
-    if inRect.Bottom < inRect.Top then
+    if ARect.Bottom < ARect.Top then
     begin
-      Top := inRect.Bottom;
-      Bottom := inRect.Top;
+      Top := ARect.Bottom;
+      Bottom := ARect.Top;
     end
-    else begin
-      Top := inRect.Top;
-      Bottom := inRect.Bottom;
+    else
+    begin
+      Top := ARect.Top;
+      Bottom := ARect.Bottom;
     end;
   end;
 end;
 
-function DesignNameIsUnique(inOwner: TComponent; const inName: string): Boolean;
+function DesignNameIsUnique(AOwner: TComponent; const AName: string): Boolean;
 begin
-  Result := true;
-  while Result and (inOwner <> nil) do
+  Result := True;
+  while Result and (AOwner <> nil) do
   begin
-    Result := inOwner.FindComponent(inName) = nil;
-    inOwner := inOwner.Owner;
+    Result := AOwner.FindComponent(AName) = nil;
+    AOwner := AOwner.Owner;
   end;
 end;
 
-function DesignUniqueName(inOwner: TComponent; const inClassName: string): string;
+function DesignUniqueName(AOwner: TComponent; const AClassName: string): string;
 var
-  base: string;
-  i: Integer;
+  Base: string;
+  I: Integer;
 begin
-  base := Copy(inClassName, 2, MAXINT);
-  i := 0;
+  Base := Copy(AClassName, 2, MAXINT);
+  I := 0;
   repeat
-    Inc(i);
-    Result := base + IntToStr(i);
-  until DesignNameIsUnique(inOwner, Result);
+    Inc(I);
+    Result := Base + IntToStr(I);
+  until DesignNameIsUnique(AOwner, Result);
 end;
 
-procedure DesignPaintRubberbandRect(const inRect: TRect; inPenStyle: TPenStyle);
+procedure DesignPaintRubberbandRect(const ARect: TRect; APenStyle: TPenStyle);
 var
-  desktopWindow: HWND;
-  dc: HDC;
-  c: TCanvas;
+  DesktopWindow: HWND;
+  DC: HDC;
+  C: TCanvas;
 begin
-  desktopWindow := GetDesktopWindow;
-  dc := GetDCEx(desktopWindow, 0, DCX_CACHE or DCX_LOCKWINDOWUPDATE);
+  DesktopWindow := GetDesktopWindow;
+  DC := GetDCEx(DesktopWindow, 0, DCX_CACHE or DCX_LOCKWINDOWUPDATE);
   try
-    c := TCanvas.Create;
-    with c do
+    C := TCanvas.Create;
+    with C do
     try
-      Handle := dc;
-      Pen.Style := inPenStyle;
+      Handle := DC;
+      Pen.Style := APenStyle;
       Pen.Color := clWhite;
       Pen.Mode := pmXor;
       Brush.Style := bsClear;
-      Rectangle(inRect);
+      Rectangle(ARect);
     finally
-      c.Free;
+      C.Free;
     end;
   finally
-    ReleaseDC(desktopWindow, dc);
+    ReleaseDC(DesktopWindow, DC);
   end;
 end;
 
-procedure DesignPaintRules(inCanvas: TCanvas; const inRect: TRect;
-  inDivPixels: Integer; inSubDivs: Boolean);
+procedure DesignPaintRules(ACanvas: TCanvas; const ARect: TRect;
+  ADivPixels: Integer; ASubDivs: Boolean);
 var
-  d, d2, w, h, i: Integer;
+  d, d2, w, h, I: Integer;
 begin
-  d := inDivPixels;
+  d := ADivPixels;
   d2 := d div 2;
-  w := (inRect.Right - inRect.Left + d - 1) div d;
-  h := (inRect.Bottom - inRect.Top + d - 1) div d;
-  with inCanvas do
+  w := (ARect.Right - ARect.Left + d - 1) div d;
+  h := (ARect.Bottom - ARect.Top + d - 1) div d;
+  with ACanvas do
   begin
     Pen.Style := psDot;
-    for i := 0 to w do
+    for I := 0 to w do
     begin
       Pen.Color := $DDDDDD;
-      MoveTo(i * d, inRect.Top);
-      LineTo(i * d, inRect.Bottom);
-      if inSubDivs then
+      MoveTo(I * d, ARect.Top);
+      LineTo(I * d, ARect.Bottom);
+      if ASubDivs then
       begin
         Pen.Color := $F0F0F0;
-        MoveTo(i * d + d2, inRect.Top);
-        LineTo(i * d + d2, inRect.Bottom);
+        MoveTo(I * d + d2, ARect.Top);
+        LineTo(I * d + d2, ARect.Bottom);
       end;
     end;
-    for i := 0 to h do
+    for I := 0 to h do
     begin
       Pen.Color := $DDDDDD;
-      MoveTo(inRect.Left, i * d);
-      LineTo(inRect.Right, i * d);
-      if inSubDivs then
+      MoveTo(ARect.Left, I * d);
+      LineTo(ARect.Right, I * d);
+      if ASubDivs then
       begin
         Pen.Color := $F0F0F0;
-        MoveTo(inRect.Left, i * d + d2);
-        LineTo(inRect.Right, i * d + d2);
+        MoveTo(ARect.Left, I * d + d2);
+        LineTo(ARect.Right, I * d + d2);
       end;
     end;
   end;
 end;
 
-procedure DesignPaintGrid(inCanvas: TCanvas; const inRect: TRect;
-  inBackColor, inGridColor: TColor; inDivPixels: Integer);
+procedure DesignPaintGrid(ACanvas: TCanvas; const ARect: TRect;
+  ABackColor, AGridColor: TColor; ADivPixels: Integer);
 var
   b: TBitmap;
-  i: Integer;
+  I: Integer;
 begin
   b := TBitmap.Create;
   try
-    b.Height := DesignRectHeight(inRect);
-    b.Width := inDivPixels;
-    b.Canvas.Brush.Color := inBackColor;
+    b.Height := DesignRectHeight(ARect);
+    b.Width := ADivPixels;
+    b.Canvas.Brush.Color := ABackColor;
     b.Canvas.FillRect(Rect(0, 0, b.Width, b.Height));
-    //
-    i := 0;
+
+    I := 0;
     repeat
-      b.Canvas.Pixels[0, i] := inGridColor;
-      inc(i, inDivPixels);
-    until (i >= b.Height);
-    //
-    i := inRect.Left;
+      b.Canvas.Pixels[0, I] := AGridColor;
+      Inc(I, ADivPixels);
+    until (I >= b.Height);
+
+    I := ARect.Left;
     repeat
-      inCanvas.Draw(i, inRect.Top, b);
-      Inc(i, inDivPixels);
-    until (i >= inRect.Right);
+      ACanvas.Draw(I, ARect.Top, b);
+      Inc(I, ADivPixels);
+    until I >= ARect.Right;
   finally
     b.Free;
   end;
 end;
 
-procedure DesignSaveComponentToStream(inComp: TComponent; inStream: TStream);
+procedure DesignSaveComponentToStream(AComp: TComponent; AStream: TStream);
 var
-  ms: TMemoryStream;
+  MS: TMemoryStream;
 begin
-  ms := TMemoryStream.Create;
+  MS := TMemoryStream.Create;
   try
-    ms.WriteComponent(inComp);
-    ms.Position := 0;
-    ObjectBinaryToText(ms, inStream);
+    MS.WriteComponent(AComp);
+    MS.Position := 0;
+    ObjectBinaryToText(MS, AStream);
   finally
-    ms.Free;
+    MS.Free;
   end;
 end;
 
-function DesignLoadComponentFromStream(inComp: TComponent; inStream: TStream;
-  inOnError: TReaderError): TComponent;
+function DesignLoadComponentFromStream(AComp: TComponent; AStream: TStream;
+  AOnError: TReaderError): TComponent;
 var
-  ms: TMemoryStream;
+  MS: TMemoryStream;
 begin
-  ms := TMemoryStream.Create;
+  MS := TMemoryStream.Create;
   try
-    ObjectTextToBinary(inStream, ms);
-    ms.Position := 0;
-    with TReader.Create(ms, 4096) do
+    ObjectTextToBinary(AStream, MS);
+    MS.Position := 0;
+    with TReader.Create(MS, 4096) do
     try
-      OnError := inOnError;
-      Result := ReadRootComponent(inComp);
+      OnError := AOnError;
+      Result := ReadRootComponent(AComp);
     finally
       Free;
     end;
   finally
-    ms.Free;
+    MS.Free;
   end;
 end;
 
-procedure DesignSaveComponentToFile(inComp: TComponent;
-  const inFilename: string);
+procedure DesignSaveComponentToFile(AComp: TComponent; const AFileName: string);
 var
-  fs: TFileStream;
+  FS: TFileStream;
 begin
-  fs := TFileStream.Create(inFilename, fmCreate);
+  FS := TFileStream.Create(AFileName, fmCreate);
   try
-    DesignSaveComponentToStream(inComp, fs);
+    DesignSaveComponentToStream(AComp, FS);
   finally
-    fs.Free;
+    FS.Free;
   end;
 end;
 
-procedure DesignLoadComponentFromFile(inComp: TComponent;
-  const inFilename: string; inOnError: TReaderError);
+procedure DesignLoadComponentFromFile(AComp: TComponent;
+  const AFileName: string; AOnError: TReaderError);
 var
-  fs: TFileStream;
+  FS: TFileStream;
 begin
-  fs := TFileStream.Create(inFilename, fmOpenRead);
+  FS := TFileStream.Create(AFileName, fmOpenRead);
   try
-    DesignLoadComponentFromStream(inComp, fs, inOnError);
+    DesignLoadComponentFromStream(AComp, FS, AOnError);
   finally
-    fs.Free;
+    FS.Free;
   end;
 end;
 

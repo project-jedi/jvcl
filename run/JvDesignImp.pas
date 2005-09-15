@@ -22,6 +22,7 @@ home page, located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
+
 unit JvDesignImp;
 
 {$I jvcl.inc}
@@ -32,8 +33,8 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Messages, SysUtils, Classes, Controls, Graphics, Forms, ExtCtrls,
-  Contnrs,
+  Windows, Messages, SysUtils, Classes, Controls, Graphics,
+  Forms, ExtCtrls, Contnrs,
   JvDesignSurface;
 
 const
@@ -44,12 +45,12 @@ type
   private
     FResizeable: Boolean;
   protected
-    function HandleRect(inIndex: Integer): TRect;
-    function HitRect(inPoint: TPoint): Integer;
+    function HandleRect(AIndex: Integer): TRect;
+    function HitRect(APoint: TPoint): Integer;
     procedure Paint; override;
-    procedure PaintEdge(const inRect: TRect);
-    procedure PaintHandle(const inRect: TRect);
-    procedure WMEraseBkgnd(var Message: TWmEraseBkgnd); message WM_ERASEBKGND;
+    procedure PaintEdge(const ARect: TRect);
+    procedure PaintHandle(const ARect: TRect);
+    procedure WMEraseBkgnd(var Msg: TWmEraseBkgnd); message WM_ERASEBKGND;
     property Resizeable: Boolean read FResizeable write FResizeable;
   end;
 
@@ -61,18 +62,18 @@ type
   protected
     function GetHandleWidth: Integer;
     function GetSelectionRect: TRect;
-    function SelectedToScreenRect(const inRect: TRect): TRect;
+    function SelectedToScreenRect(const ARect: TRect): TRect;
     procedure CreateHandles;
     procedure SetContainer(const Value: TWinControl);
-    procedure SetHandleRects(const inRect: TRect);
+    procedure SetHandleRects(const ARect: TRect);
     procedure SetResizeable(const Value: Boolean);
     procedure SetSelected(const Value: TControl);
-    procedure ShowHideHandles(inShow: Boolean);
+    procedure ShowHideHandles(AShow: Boolean);
   public
-    Handles: array[0..3] of TJvDesignHandle;
+    Handles: array [0..3] of TJvDesignHandle;
     constructor Create(AOwner: TComponent); override;
     function HitRect(X, Y: Integer): TJvDesignHandleId;
-    function SelectedToContainer(const inPt: TPoint): TPoint;
+    function SelectedToContainer(const APt: TPoint): TPoint;
     procedure RepaintHandles;
     procedure UpdateHandles;
     property Container: TWinControl read FContainer write SetContainer;
@@ -86,33 +87,31 @@ type
     FHandles: TObjectList;
     FHandleWidth: Integer;
   protected
-    function FindHandles(inValue: TControl): TJvDesignHandles;
+    function FindHandles(AValue: TControl): TJvDesignHandles;
     function GetCount: Integer; override;
-    function GetHandles(inIndex: Integer): TJvDesignHandles;
-    function GetSelection(inIndex: Integer): TControl; override;
-    procedure SetHandles(inIndex: Integer; inValue: TJvDesignHandles);
-    procedure SetHandleWidth(inValue: Integer);
-    procedure SetSelection(inIndex: Integer; inValue: TControl); override;
+    function GetHandles(AIndex: Integer): TJvDesignHandles;
+    function GetSelection(AIndex: Integer): TControl; override;
+    procedure SetHandles(AIndex: Integer; AValue: TJvDesignHandles);
+    procedure SetHandleWidth(AValue: Integer);
+    procedure SetSelection(AIndex: Integer; AValue: TControl); override;
     procedure ShowHideResizeHandles;
-    property Handles[inIndex: Integer]: TJvDesignHandles read GetHandles
-      write SetHandles;
+    property Handles[AIndex: Integer]: TJvDesignHandles read GetHandles write SetHandles;
   public
     constructor Create(ASurface: TJvDesignSurface); override;
     destructor Destroy; override;
-    function GetClientControl(inControl: TControl): TControl; override;
-    function GetCursor(inX, inY: Integer): TCursor; override;
-    function GetHitHandle(inX, inY: Integer): TJvDesignHandleId; override;
-    function IsSelected(inValue: TControl): Boolean; override;
-    procedure AddToSelection(inValue: TControl); override;
+    function GetClientControl(AControl: TControl): TControl; override;
+    function GetCursor(AX, AY: Integer): TCursor; override;
+    function GetHitHandle(AX, AY: Integer): TJvDesignHandleId; override;
+    function IsSelected(AValue: TControl): Boolean; override;
+    procedure AddToSelection(AValue: TControl); override;
     procedure ClearSelection; override;
-    procedure RemoveFromSelection(inValue: TControl); override;
+    procedure RemoveFromSelection(AValue: TControl); override;
     procedure Update; override;
   published
-    property HandleWidth: Integer read FHandleWidth
-      write SetHandleWidth default cJvDesignDefaultHandleWidth;
+    property HandleWidth: Integer read FHandleWidth write SetHandleWidth default cJvDesignDefaultHandleWidth;
   end;
 
-  TJvDesignCustomMouseTool = class
+  TJvDesignCustomMouseTool = class(TObject)
   protected
     FDragRect: TRect;
   public
@@ -124,11 +123,11 @@ type
     property DragRect: TRect read FDragRect write FDragRect;
   end;
 
-  TJvDesignDragMode = ( dmNone, dmMove, dmResize, dmSelect, dmCreate );
+  TJvDesignDragMode = (dmNone, dmMove, dmResize, dmSelect, dmCreate);
 
-  TJvDesignAction = ( daSelectParent, daDelete, daCopy, daCut, daPaste,
+  TJvDesignAction = (daSelectParent, daDelete, daCopy, daCut, daPaste,
     daNudgeLeft, daNudgeRight, daNudgeUp, daNudgeDown, daGrowWidth,
-    daShrinkWidth, daGrowHeight, daShrinkHeight, daLastAction {$IFDEF COMPILER6_UP}= MAXINT{$ENDIF COMPILER6_UP} );
+    daShrinkWidth, daGrowHeight, daShrinkHeight, daLastAction {$IFDEF COMPILER6_UP} = MaxInt {$ENDIF});
 
   TJvDesignController = class(TJvDesignCustomController)
   private
@@ -140,12 +139,12 @@ type
     FMouseTool: TJvDesignCustomMouseTool;
   protected
     function GetDragRect: TRect; override;
-    function KeyDown(inKeycode: Cardinal): Boolean; override;
-    function KeyUp(inKeycode: Cardinal): Boolean; override;
+    function KeyDown(AKeyCode: Cardinal): Boolean; override;
+    function KeyUp(AKeyCode: Cardinal): Boolean; override;
     function MouseDown(Button: TMouseButton; X, Y: Integer): Boolean; override;
     function MouseMove(X, Y: Integer): Boolean; override;
     function MouseUp(Button: TMouseButton; X, Y: Integer): Boolean; override;
-    procedure Action(inAction: TJvDesignAction);
+    procedure Action(AAction: TJvDesignAction);
   end;
 
   TJvDesignMouseTool = class(TJvDesignCustomMouseTool)
@@ -200,26 +199,15 @@ type
     procedure ApplyMouseDelta(X, Y: Integer);
     procedure CalcDragRect; override;
   public
-    constructor CreateSizer(AOwner: TJvDesignSurface;
-      inHandle: TJvDesignHandleId);
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
+    constructor CreateSizer(AOwner: TJvDesignSurface; AHandle: TJvDesignHandleId);
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
   end;
 
-  TJvDesignDesigner = class(TComponent,
-                            {$IFDEF COMPILER5}
-                            IDesigner
-                            {$ELSE}
-                            IDesignerHook
-                            {$ENDIF COMPILER5}
-                           )
+  TJvDesignDesigner = class(TComponent, {$IFDEF COMPILER5} IDesigner {$ELSE} IDesignerHook {$ENDIF})
   private
     FMessenger: TJvDesignCustomMessenger;
   public
-    constructor Create(inMessenger: TJvDesignCustomMessenger); reintroduce;
-
-    property Messenger: TJvDesignCustomMessenger read FMessenger write FMessenger;
-
+    constructor Create(AMessenger: TJvDesignCustomMessenger); reintroduce;
     // IDesignerNotify interface
     procedure Modified;
     procedure Notification(AnObject: TPersistent; Operation: TOperation); reintroduce;
@@ -229,15 +217,15 @@ type
     procedure SetCustomForm(Value: TCustomForm);
     function GetIsControl: Boolean;
     procedure SetIsControl(Value: Boolean);
-    function IsDesignMsg(Sender: TControl; var Message: TMessage): Boolean;
+    function IsDesignMsg(Sender: TControl; var Msg: TMessage): Boolean;
     procedure PaintGrid;
-    procedure ValidateRename(AComponent: TComponent;
-      const CurName, NewName: string); reintroduce;
+    procedure ValidateRename(AComponent: TComponent; const CurName, NewName: string); reintroduce;
     function UniqueName(const BaseName: string): string;
     function GetRoot: TComponent;
     {$IFDEF COMPILER9_UP}
     procedure PaintMenu;
     {$ENDIF COMPILER9_UP}
+    property Messenger: TJvDesignCustomMessenger read FMessenger write FMessenger;
     property IsControl: Boolean read GetIsControl write SetIsControl;
     property Form: TCustomForm read GetCustomForm write SetCustomForm;
   end;
@@ -247,14 +235,13 @@ type
     FDesignedForm: TCustomForm;
     FDesigner: TJvDesignDesigner;
   protected
-    procedure SetComponentDesigning(inComponent: TComponent;
-      inDesigning: Boolean);
-    procedure SetContainer(inValue: TWinControl); override;
-    procedure UndesignComponent(inComponent: TComponent);
+    procedure SetComponentDesigning(AComponent: TComponent; ADesigning: Boolean);
+    procedure SetContainer(AValue: TWinControl); override;
+    procedure UndesignComponent(AComponent: TComponent);
   public
     constructor Create; override;
     destructor Destroy; override;
-    procedure DesignComponent(inComponent: TComponent); override;
+    procedure DesignComponent(AComponent: TComponent); override;
   end;
 
   TJvDesignMessageHookList = class(TComponent)
@@ -262,27 +249,26 @@ type
     FHooks: TObjectList;
     FUser: TJvDesignCustomMessenger;
   protected
-    procedure Notification(AComponent: TComponent;
-      Operation: TOperation); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
-    constructor Create(inUser: TJvDesignCustomMessenger); reintroduce;
+    constructor Create(AUser: TJvDesignCustomMessenger); reintroduce;
     destructor Destroy; override;
     procedure Clear;
-    procedure Hook(inClient: TWinControl);
-    procedure Unhook(inComponent: TComponent);
+    procedure Hook(AClient: TWinControl);
+    procedure Unhook(AComponent: TComponent);
   end;
 
   TJvDesignWinControlHookMessenger = class(TJvDesignCustomMessenger)
   private
     FHooks: TJvDesignMessageHookList;
   protected
-    procedure HookWinControl(inWinControl: TWinControl);
-    procedure SetContainer(inValue: TWinControl); override;
+    procedure HookWinControl(AWinControl: TWinControl);
+    procedure SetContainer(AValue: TWinControl); override;
   public
     constructor Create; override;
     destructor Destroy; override;
     procedure Clear; override;
-    procedure DesignComponent(inComponent: TComponent); override;
+    procedure DesignComponent(AComponent: TComponent); override;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -298,7 +284,7 @@ const
 implementation
 
 uses
-  JvDesignUtils;
+  JvDesignUtils, JvResources, JvTypes;
 
 var
   ShadedBits: TBitmap;
@@ -330,32 +316,36 @@ begin
   FreeAndNil(ShadedBits);
 end;
 
-{ TJvDesignHandle }
+//=== { TJvDesignHandle } ====================================================
 
-function TJvDesignHandle.HandleRect(inIndex: Integer): TRect;
+function TJvDesignHandle.HandleRect(AIndex: Integer): TRect;
 var
-  w: Integer;
+  W: Integer;
 begin
-  w := TJvDesignHandles(Owner).HandleWidth;
-  case inIndex of
-    0: Result := Rect(0, 0, w, w); // left-top
-    1: Result := Rect((Width - w) div 2, 0, (Width + w) div 2, w); // middle-top
-    2: Result := Rect(Width - w, 0, Width, w); // right-top
-    3: Result := Rect(0, (Height - w) div 2, w, (Height + w) div 2); // left-center
+  W := TJvDesignHandles(Owner).HandleWidth;
+  case AIndex of
+    0:
+      Result := Rect(0, 0, W, W); // left-top
+    1:
+      Result := Rect((Width - W) div 2, 0, (Width + W) div 2, W); // middle-top
+    2:
+      Result := Rect(Width - W, 0, Width, W); // right-top
+    3:
+      Result := Rect(0, (Height - W) div 2, W, (Height + W) div 2); // left-center
   end;
 end;
 
-procedure TJvDesignHandle.WMEraseBkgnd(var Message: TWmEraseBkgnd);
+procedure TJvDesignHandle.WMEraseBkgnd(var Msg: TWmEraseBkgnd);
 begin
-  Message.Result := 1;
+  Msg.Result := 1;
 end;
 
-procedure TJvDesignHandle.PaintHandle(const inRect: TRect);
+procedure TJvDesignHandle.PaintHandle(const ARect: TRect);
 begin
-  Canvas.Rectangle(inRect);
+  Canvas.Rectangle(ARect);
 end;
 
-procedure TJvDesignHandle.PaintEdge(const inRect: TRect);
+procedure TJvDesignHandle.PaintEdge(const ARect: TRect);
 begin
   Canvas.FillRect(ClientRect);
 end;
@@ -370,7 +360,7 @@ begin
     Brush.Color := clWhite;
     Pen.Color := clBlack;
     if Resizeable then
-      if (Width > Height) then
+      if Width > Height then
       begin
         PaintHandle(HandleRect(0));
         PaintHandle(HandleRect(1));
@@ -381,36 +371,38 @@ begin
   end;
 end;
 
-function TJvDesignHandle.HitRect(inPoint: TPoint): Integer;
+function TJvDesignHandle.HitRect(APoint: TPoint): Integer;
 begin
   Result := -1;
   if Width > Height then
-    if PtInRect(HandleRect(0), inPoint) then
+    if PtInRect(HandleRect(0), APoint) then
       Result := 0
-    else if PtInRect(HandleRect(1), inPoint) then
+    else
+    if PtInRect(HandleRect(1), APoint) then
       Result := 1
-    else if PtInRect(HandleRect(2), inPoint) then
+    else
+    if PtInRect(HandleRect(2), APoint) then
       Result := 2;
   if Result < 0 then
-    if PtInRect(HandleRect(3), inPoint) then
+    if PtInRect(HandleRect(3), APoint) then
       Result := 3;
 end;
 
-{ TJvDesignHandles }
+//=== { TJvDesignHandles } ===================================================
 
 constructor TJvDesignHandles.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   CreateHandles;
-  Resizeable := true;
+  Resizeable := True;
 end;
 
 procedure TJvDesignHandles.CreateHandles;
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := 0 to 3 do
-    Handles[i] := TJvDesignHandle.Create(Self);
+  for I := Low(Handles) to High(Handles) do
+    Handles[I] := TJvDesignHandle.Create(Self);
 end;
 
 function TJvDesignHandles.GetHandleWidth: Integer;
@@ -420,22 +412,22 @@ end;
 
 procedure TJvDesignHandles.SetContainer(const Value: TWinControl);
 var
-  i: Integer;
+  I: Integer;
 begin
   FContainer := Value;
-  for i := 0 to 3 do
-    with Handles[i] do
+  for I := Low(Handles) to High(Handles) do
+    with Handles[I] do
     begin
-      Visible := false;
+      Visible := False;
       Parent := Container;
     end;
 end;
 
 procedure TJvDesignHandles.SetSelected(const Value: TControl);
 begin
-  if (Selected <> Value) then
+  if Selected <> Value then
   begin
-    if (Value is TJvDesignHandle) then
+    if Value is TJvDesignHandle then
       FSelected := nil
     else
       FSelected := Value;
@@ -445,22 +437,22 @@ end;
 
 procedure TJvDesignHandles.SetResizeable(const Value: Boolean);
 var
-  i: Integer;
+  I: Integer;
 begin
   FResizeable := Value;
-  for i := 0 to 3 do
-    Handles[i].Resizeable := Value;
+  for I := Low(Handles) to High(Handles) do
+    Handles[I].Resizeable := Value;
 end;
 
-procedure TJvDesignHandles.ShowHideHandles(inShow: Boolean);
+procedure TJvDesignHandles.ShowHideHandles(AShow: Boolean);
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := 0 to 3 do
-    with Handles[i] do
+  for I := Low(Handles) to High(Handles) do
+    with Handles[I] do
     begin
-      Visible := inShow;
-      if inShow then
+      Visible := AShow;
+      if AShow then
         BringToFront;
       Update;
     end;
@@ -471,96 +463,98 @@ begin
   if (Selected <> nil) and (Container <> nil) and (Selected <> Container) then
   begin
     SetHandleRects(GetSelectionRect);
-    ShowHideHandles(true);
-  end else
-    ShowHideHandles(false)
+    ShowHideHandles(True);
+  end
+  else
+    ShowHideHandles(False)
 end;
 
 procedure TJvDesignHandles.RepaintHandles;
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := 0 to 3 do
-    Handles[i].Repaint;
+  for I := Low(Handles) to High(Handles) do
+    Handles[I].Repaint;
 end;
 
 function TJvDesignHandles.HitRect(X, Y: Integer): TJvDesignHandleId;
 const
-  cRectIds: array[0..3, 0..3] of TJvDesignHandleId = (
-    ( dhLeftTop, dhMiddleTop, dhRightTop, dhNone ),
-    ( dhNone, dhNone, dhNone, dhLeftMiddle ),
-    ( dhNone, dhNone, dhNone, dhRightMiddle ),
-    ( dhLeftBottom, dhMiddleBottom, dhRightBottom, dhNone )
-  );
+  cRectIds: array [0..3, 0..3] of TJvDesignHandleId =
+   (
+    (dhLeftTop, dhMiddleTop, dhRightTop, dhNone),
+    (dhNone, dhNone, dhNone, dhLeftMiddle),
+    (dhNone, dhNone, dhNone, dhRightMiddle),
+    (dhLeftBottom, dhMiddleBottom, dhRightBottom, dhNone)
+   );
 var
-  i, r: Integer;
+  I, R: Integer;
 begin
-  for i := 0 to 3 do
+  for I := 0 to 3 do
   begin
-    with Handles[i] do
-      r := HitRect(Point(X - Left, Y - Top));
-    if (r >= 0) then
+    with Handles[I] do
+      R := HitRect(Point(X - Left, Y - Top));
+    if R >= 0 then
     begin
-      Result := cRectIds[i][r];
-      exit;
+      Result := cRectIds[I][R];
+      Exit;
     end;
   end;
   Result := dhNone;
 end;
 
-function TJvDesignHandles.SelectedToContainer(const inPt: TPoint): TPoint;
+function TJvDesignHandles.SelectedToContainer(const APt: TPoint): TPoint;
 var
-  c: TControl;
+  C: TControl;
 begin
-  Result := inPt;
-  c := Selected.Parent;
-  while (c <> Container) and (c <> nil) do
+  Result := APt;
+  C := Selected.Parent;
+  while (C <> Container) and (C <> nil) do
   begin
-    Inc(Result.X, c.Left);
-    Inc(Result.Y, c.Top);
-    c := c.Parent;
+    Inc(Result.X, C.Left);
+    Inc(Result.Y, C.Top);
+    C := C.Parent;
   end;
 end;
 
-function TJvDesignHandles.SelectedToScreenRect(const inRect: TRect): TRect;
+function TJvDesignHandles.SelectedToScreenRect(const ARect: TRect): TRect;
 var
-  p: TWinControl;
+  P: TWinControl;
 begin
   if Selected = Container then
-    p := Container
+    P := Container
   else
-    p := Selected.Parent;
-  Result.topLeft := p.ClientToScreen(inRect.topLeft);
-  Result.bottomRight := p.ClientToScreen(inRect.bottomRight);
+    P := Selected.Parent;
+  Result.TopLeft := P.ClientToScreen(ARect.TopLeft);
+  Result.BottomRight := P.ClientToScreen(ARect.BottomRight);
 end;
 
 function TJvDesignHandles.GetSelectionRect: TRect;
 var
-  p: TPoint;
+  P: TPoint;
 begin
-  if (Selected = Container) then
-    p := Point(0, 0)
+  if Selected = Container then
+    P := Point(0, 0)
   else
-    p := SelectedToContainer(Selected.BoundsRect.topLeft);
-  Result := Rect(p.X, p.Y, p.X + Selected.Width, p.y + Selected.Height);
+    P := SelectedToContainer(Selected.BoundsRect.TopLeft);
+  Result := Rect(P.X, P.Y, P.X + Selected.Width, P.Y + Selected.Height);
   InflateRect(Result, -HandleWidth div 2, -HandleWidth div 2);
 end;
 
-procedure TJvDesignHandles.SetHandleRects(const inRect: TRect);
+procedure TJvDesignHandles.SetHandleRects(const ARect: TRect);
 var
-  w: Integer;
+  W: Integer;
 begin
-  w := HandleWidth;
-  with inRect do
+  W := HandleWidth;
+  with ARect do
   begin
-    Handles[0].BoundsRect := Rect(Left - w, Top - w, Right + w, Top);
-    Handles[1].BoundsRect := Rect(Left - w, Top, Left, Bottom);
-    Handles[2].BoundsRect := Rect(Right, Top, Right + w, Bottom);
-    Handles[3].BoundsRect := Rect(Left - w, Bottom, Right + w, Bottom + w);
+    Handles[0].BoundsRect := Rect(Left - W, Top - W, Right + W, Top);
+    Handles[1].BoundsRect := Rect(Left - W, Top, Left, Bottom);
+    Handles[2].BoundsRect := Rect(Right, Top, Right + W, Bottom);
+    Handles[3].BoundsRect := Rect(Left - W, Bottom, Right + W, Bottom + W);
   end;
 end;
 
-{ TJvDesignSelector }
+//=== { TJvDesignSelector } ==================================================
 
 constructor TJvDesignSelector.Create(ASurface: TJvDesignSurface);
 begin
@@ -576,9 +570,9 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvDesignSelector.SetHandleWidth(inValue: Integer);
+procedure TJvDesignSelector.SetHandleWidth(AValue: Integer);
 begin
-  FHandleWidth := inValue;
+  FHandleWidth := AValue;
   Update;
 end;
 
@@ -587,42 +581,42 @@ begin
   Result := FHandles.Count;
 end;
 
-function TJvDesignSelector.GetHandles(inIndex: Integer): TJvDesignHandles;
+function TJvDesignSelector.GetHandles(AIndex: Integer): TJvDesignHandles;
 begin
-  Result := TJvDesignHandles(FHandles[inIndex]);
+  Result := TJvDesignHandles(FHandles[AIndex]);
 end;
 
-procedure TJvDesignSelector.SetHandles(inIndex: Integer; inValue: TJvDesignHandles);
+procedure TJvDesignSelector.SetHandles(AIndex: Integer; AValue: TJvDesignHandles);
 begin
-  FHandles[inIndex] := inValue;
+  FHandles[AIndex] := AValue;
 end;
 
-function TJvDesignSelector.GetSelection(inIndex: Integer): TControl;
+function TJvDesignSelector.GetSelection(AIndex: Integer): TControl;
 begin
-  Result := Handles[inIndex].Selected;
+  Result := Handles[AIndex].Selected;
 end;
 
-procedure TJvDesignSelector.SetSelection(inIndex: Integer; inValue: TControl);
+procedure TJvDesignSelector.SetSelection(AIndex: Integer; AValue: TControl);
 begin
-  Handles[inIndex].Selected := inValue;
+  Handles[AIndex].Selected := AValue;
 end;
 
-function TJvDesignSelector.FindHandles(inValue: TControl): TJvDesignHandles;
+function TJvDesignSelector.FindHandles(AValue: TControl): TJvDesignHandles;
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := 0 to Pred(Count) do
-  begin
-    Result := Handles[i];
-    if Result.Selected = inValue then
-      exit;
-  end;
   Result := nil;
+  for I := 0 to Count - 1 do
+  begin
+    Result := Handles[I];
+    if Result.Selected = AValue then
+      Break;
+  end;
 end;
 
-function TJvDesignSelector.IsSelected(inValue: TControl): Boolean;
+function TJvDesignSelector.IsSelected(AValue: TControl): Boolean;
 begin
-  Result := FindHandles(inValue) <> nil;
+  Result := FindHandles(AValue) <> nil;
 end;
 
 procedure TJvDesignSelector.ClearSelection;
@@ -633,101 +627,114 @@ end;
 
 procedure TJvDesignSelector.ShowHideResizeHandles;
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := 0 to Pred(Count) do
-    with Handles[i] do
+  for I := 0 to Count - 1 do
+    with Handles[I] do
     begin
       Resizeable := (Count = 1);
       RepaintHandles;
     end;
 end;
 
-procedure TJvDesignSelector.AddToSelection(inValue: TControl);
+procedure TJvDesignSelector.AddToSelection(AValue: TControl);
 var
-  h: TJvDesignHandles;
+  H: TJvDesignHandles;
 begin
-  if inValue = nil then
-    raise Exception.Create('Cannot add a nil selection.');
-  if not IsSelected(inValue) then
+  if AValue = nil then
+    raise EJVCLException.CreateRes(@RsEDesignCannotSelect);
+  if not IsSelected(AValue) then
   begin
-    h := TJvDesignHandles.Create(Self);
-    h.Container := Surface.Container;
-    h.Resizeable := Count = 0;
-    FHandles.Add(h);
-    h.Selected := inValue;
-    if (Count = 2) then
+    H := TJvDesignHandles.Create(Self);
+    H.Container := Surface.Container;
+    H.Resizeable := Count = 0;
+    FHandles.Add(H);
+    H.Selected := AValue;
+    if Count = 2 then
       ShowHideResizeHandles
     else
-      h.UpdateHandles;
-    Surface.Messenger.DesignComponent(h.Handles[0]);
-    Surface.Messenger.DesignComponent(h.Handles[1]);
-    Surface.Messenger.DesignComponent(h.Handles[2]);
-    Surface.Messenger.DesignComponent(h.Handles[3]);
+      H.UpdateHandles;
+    Surface.Messenger.DesignComponent(H.Handles[0]);
+    Surface.Messenger.DesignComponent(H.Handles[1]);
+    Surface.Messenger.DesignComponent(H.Handles[2]);
+    Surface.Messenger.DesignComponent(H.Handles[3]);
   end;
 end;
 
-procedure TJvDesignSelector.RemoveFromSelection(inValue: TControl);
+procedure TJvDesignSelector.RemoveFromSelection(AValue: TControl);
 begin
-  if IsSelected(inValue) then
+  if IsSelected(AValue) then
   begin
-    FHandles.Remove(FindHandles(inValue));
+    FHandles.Remove(FindHandles(AValue));
     Surface.SelectionChange;
   end;
 end;
 
-function TJvDesignSelector.GetClientControl(inControl: TControl): TControl;
+function TJvDesignSelector.GetClientControl(AControl: TControl): TControl;
 begin
-  if inControl is TJvDesignHandle then
-    Result := TJvDesignHandles(inControl.Owner).Selected
+  if AControl is TJvDesignHandle then
+    Result := TJvDesignHandles(AControl.Owner).Selected
   else
-    Result := inControl;
+    Result := AControl;
 end;
 
 procedure TJvDesignSelector.Update;
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := 0 to Pred(Count) do
-    Handles[i].UpdateHandles;
+  for I := 0 to Count - 1 do
+    Handles[I].UpdateHandles;
 end;
 
-function TJvDesignSelector.GetHitHandle(inX, inY: Integer): TJvDesignHandleId;
+function TJvDesignSelector.GetHitHandle(AX, AY: Integer): TJvDesignHandleId;
 begin
   if Count > 0 then
-    Result := Handles[0].HitRect(inX, inY)
+    Result := Handles[0].HitRect(AX, AY)
   else
     Result := dhNone;
 end;
 
-function TJvDesignSelector.GetCursor(inX, inY: Integer): TCursor;
+function TJvDesignSelector.GetCursor(AX, AY: Integer): TCursor;
 const
   cCurs: array[TJvDesignHandleId] of TCursor =
-    ( crHandPoint, crSizeNWSE, crSizeNS, crSizeNESW, crSizeWE, crSizeWE,
-      crSizeNESW, crSizeNS, crSizeNWSE );
+   (crHandPoint, crSizeNWSE, crSizeNS, crSizeNESW, crSizeWE, crSizeWE,
+    crSizeNESW, crSizeNS, crSizeNWSE);
 begin
-  Result := cCurs[GetHitHandle(inX, inY)]
+  Result := cCurs[GetHitHandle(AX, AY)];
 end;
 
-{ TJvDesignController }
+//=== { TJvDesignController } ================================================
 
-procedure TJvDesignController.Action(inAction: TJvDesignAction);
+procedure TJvDesignController.Action(AAction: TJvDesignAction);
 begin
   with Surface do
-    case inAction of
-      daSelectParent: SelectParent;
-      daDelete: DeleteComponents;
-      daCopy: CopyComponents;
-      daCut: CutComponents;
-      daPaste: PasteComponents;
-      daNudgeLeft: NudgeComponents(-1, 0);
-      daNudgeRight: NudgeComponents(1, 0);
-      daNudgeUp: NudgeComponents(0, -1);
-      daNudgeDown: NudgeComponents(0, 1);
-      daGrowWidth: GrowComponents(1, 0);
-      daShrinkWidth: GrowComponents(-1, 0);
-      daGrowHeight: GrowComponents(0, 1);
-      daShrinkHeight: GrowComponents(0, -1);
+    case AAction of
+      daSelectParent:
+        SelectParent;
+      daDelete:
+        DeleteComponents;
+      daCopy:
+        CopyComponents;
+      daCut:
+        CutComponents;
+      daPaste:
+        PasteComponents;
+      daNudgeLeft:
+        NudgeComponents(-1, 0);
+      daNudgeRight:
+        NudgeComponents(1, 0);
+      daNudgeUp:
+        NudgeComponents(0, -1);
+      daNudgeDown:
+        NudgeComponents(0, 1);
+      daGrowWidth:
+        GrowComponents(1, 0);
+      daShrinkWidth:
+        GrowComponents(-1, 0);
+      daGrowHeight:
+        GrowComponents(0, 1);
+      daShrinkHeight:
+        GrowComponents(0, -1);
     end;
   Surface.UpdateDesigner;
 end;
@@ -737,29 +744,39 @@ begin
   Result := FDragRect;
 end;
 
-function TJvDesignController.KeyDown(inKeycode: Cardinal): Boolean;
+function TJvDesignController.KeyDown(AKeyCode: Cardinal): Boolean;
 
   function CtrlKeys: Boolean;
   begin
-    Result := true;
-    case inKeycode of
-      VK_LEFT:  Action(daNudgeLeft);
-      VK_RIGHT: Action(daNudgeRight);
-      VK_UP:    Action(daNudgeUp);
-      VK_DOWN:  Action(daNudgeDown);
-      else Result := false;
+    Result := True;
+    case AKeyCode of
+      VK_LEFT:
+        Action(daNudgeLeft);
+      VK_RIGHT:
+        Action(daNudgeRight);
+      VK_UP:
+        Action(daNudgeUp);
+      VK_DOWN:
+        Action(daNudgeDown);
+      else
+        Result := False;
     end;
   end;
 
   function ShiftKeys: Boolean;
   begin
-    Result := true;
-    case inKeycode of
-      VK_LEFT:  Action(daShrinkWidth);
-      VK_RIGHT: Action(daGrowWidth);
-      VK_UP:    Action(daShrinkHeight);
-      VK_DOWN:  Action(daGrowHeight);
-      else Result := false;
+    Result := True;
+    case AKeyCode of
+      VK_LEFT:
+        Action(daShrinkWidth);
+      VK_RIGHT:
+        Action(daGrowWidth);
+      VK_UP:
+        Action(daShrinkHeight);
+      VK_DOWN:
+        Action(daGrowHeight);
+      else
+        Result := False;
     end;
   end;
 
@@ -767,59 +784,67 @@ begin
   FKeyDownShift := Shift;
   if ssCtrl in FKeyDownShift then
     Result := CtrlKeys
-  else if ssShift in FKeyDownShift then
+  else
+  if ssShift in FKeyDownShift then
     Result := ShiftKeys
   else
-    Result := false
+    Result := False;
 end;
 
-function TJvDesignController.KeyUp(inKeycode: Cardinal): Boolean;
+function TJvDesignController.KeyUp(AKeyCode: Cardinal): Boolean;
 
   function Keys: Boolean;
   begin
-    Result := true;
-    case inKeycode of
-      VK_ESCAPE: Action(daSelectParent);
-      VK_DELETE: Action(daDelete);
-      else Result := false;
+    Result := True;
+    case AKeyCode of
+      VK_ESCAPE:
+        Action(daSelectParent);
+      VK_DELETE:
+        Action(daDelete);
+      else
+        Result := False;
     end;
   end;
 
   function CtrlKeys: Boolean;
   begin
-    Result := true;
-    case inKeycode of
-      Ord('C'): Action(daCopy);
-      Ord('X'): Action(daCut);
-      Ord('V'): Action(daPaste);
-      else Result := false;
+    Result := True;
+    case AKeyCode of
+      Ord('C'):
+        Action(daCopy);
+      Ord('X'):
+        Action(daCut);
+      Ord('V'):
+        Action(daPaste);
+      else
+        Result := False;
     end;
   end;
 
   function ShiftKeys: Boolean;
   begin
-    Result := false;
+    Result := False;
   end;
 
 begin
   FKeyDownShift := FKeyDownShift + Shift;
   if ssCtrl in FKeyDownShift then
     Result := CtrlKeys
-  else if ssShift in FKeyDownShift then
+  else
+  if ssShift in FKeyDownShift then
     Result := ShiftKeys
   else
     Result := Keys;
   FKeyDownShift := [];
 end;
 
-function TJvDesignController.MouseDown(Button: TMouseButton;
-  X, Y: Integer): Boolean;
+function TJvDesignController.MouseDown(Button: TMouseButton; X, Y: Integer): Boolean;
 var
-  handleId: TJvDesignHandleId;
+  HandleId: TJvDesignHandleId;
 
   procedure CaptureMouse;
   begin
-    FMouseIsDown := true;
+    FMouseIsDown := True;
     Mouse.Capture := Surface.Container.Handle;
   end;
 
@@ -831,26 +856,29 @@ var
 
   procedure SelectDragMode;
   begin
-    handleId := dhNone;
-    if (ssCtrl in Shift) then
+    HandleId := dhNone;
+    if ssCtrl in Shift then
       // Ctrl-drag selection has highest priority
       FDragMode := dmSelect
-    else begin
-      handleId := Surface.GetHitHandle(X, Y);
-      if (handleId <> dhNone) then
+    else
+    begin
+      HandleId := Surface.GetHitHandle(X, Y);
+      if HandleId <> dhNone then
       begin
         FClicked := Surface.Selection[0];
         FDragMode := dmResize;
       end
-      else begin
+      else
+      begin
         FClicked := Surface.FindControl(X, Y);
         if (FClicked = Surface.Container) or (FClicked is TJvDesignHandle) then
           FClicked := nil;
         Surface.GetAddClass;
-        if (Surface.AddClass <> '') then
+        if Surface.AddClass <> '' then
           // then object creation
           FDragMode := dmCreate
-        else if FClicked <> nil then
+        else
+        if FClicked <> nil then
           // moving is last
           FDragMode := dmMove
         else
@@ -867,26 +895,25 @@ var
   begin
     case FDragMode of
       dmSelect, dmCreate:
-      begin
-        Surface.ClearSelection;
-        FMouseTool := TJvDesignBander.Create(Surface);
-      end;
-      //
+        begin
+          Surface.ClearSelection;
+          FMouseTool := TJvDesignBander.Create(Surface);
+        end;
       dmMove:
-      begin
-        if (ssShift in Shift) then
-          Surface.Selector.AddToSelection(FClicked)
-        else if not Surface.Selector.IsSelected(FClicked) then
-          Surface.Select(FClicked);
-        FMouseTool := TJvDesignMover.Create(Surface);
-      end;
-      //
+        begin
+          if ssShift in Shift then
+            Surface.Selector.AddToSelection(FClicked)
+          else
+          if not Surface.Selector.IsSelected(FClicked) then
+            Surface.Select(FClicked);
+          FMouseTool := TJvDesignMover.Create(Surface);
+        end;
       dmResize:
-      begin
-        if not Surface.Selector.IsSelected(FClicked) then
-          Surface.Select(FClicked);
-        FMouseTool := TJvDesignSizer.CreateSizer(Surface, handleId);
-      end;
+        begin
+          if not Surface.Selector.IsSelected(FClicked) then
+            Surface.Select(FClicked);
+          FMouseTool := TJvDesignSizer.CreateSizer(Surface, HandleId);
+        end;
     end;
     if FMouseTool <> nil then
       FMouseTool.MouseDown(Button, Shift, X, Y);
@@ -897,7 +924,7 @@ begin
   CaptureMouse;
   SelectDragMode;
   CreateMouseTool;
-  Result := true;
+  Result := True;
 end;
 
 function TJvDesignController.MouseMove(X, Y: Integer): Boolean;
@@ -905,17 +932,16 @@ begin
   if not FMouseIsDown then
     Windows.SetCursor(Screen.Cursors[Surface.GetCursor(X, Y)])
   else
-    if FMouseTool <> nil then
-      FMouseTool.MouseMove(Shift, X, Y);
-  Result := true;
+  if FMouseTool <> nil then
+    FMouseTool.MouseMove(Shift, X, Y);
+  Result := True;
 end;
 
-function TJvDesignController.MouseUp(Button: TMouseButton;
-  X, Y: Integer): Boolean;
+function TJvDesignController.MouseUp(Button: TMouseButton; X, Y: Integer): Boolean;
 
   procedure ReleaseMouse;
   begin
-    FMouseIsDown := false;
+    FMouseIsDown := False;
     Mouse.Capture := 0;
   end;
 
@@ -925,9 +951,9 @@ function TJvDesignController.MouseUp(Button: TMouseButton;
     // AlignDisabled can become stuck.
     // This routine is to aid debugging only.
     if FClicked <> nil then
-{$IFDEF COMPILER6_UP}
+      {$IFDEF COMPILER6_UP}
       while FClicked.Parent.AlignDisabled do
-{$ENDIF COMPILER6_UP}
+      {$ENDIF COMPILER6_UP}
         FClicked.Parent.EnableAlign;
   end;
 
@@ -939,12 +965,13 @@ function TJvDesignController.MouseUp(Button: TMouseButton;
       FDragRect := DesignValidateRect(FMouseTool.DragRect);
       case FDragMode of
         dmCreate:
-        begin
-          if FClicked <> nil then
-            Surface.Select(FClicked);
-          Surface.AddComponent;
-        end;
-        else Surface.SelectionChange;
+          begin
+            if FClicked <> nil then
+              Surface.Select(FClicked);
+            Surface.AddComponent;
+          end;
+        else
+          Surface.SelectionChange;
       end;
     finally
       FreeAndNil(FMouseTool);
@@ -959,10 +986,10 @@ begin
     FinishMouseTool;
     FClicked := nil;
   end;
-  Result := true;
+  Result := True;
 end;
 
-{ TJvDesignMouseTool }
+//=== { TJvDesignMouseTool } =================================================
 
 constructor TJvDesignMouseTool.Create(AOwner: TJvDesignSurface);
 begin
@@ -983,56 +1010,56 @@ begin
   end;
 end;
 
-{ TJvDesignMover }
+//=== { TJvDesignMover } =====================================================
 
 constructor TJvDesignMover.Create(AOwner: TJvDesignSurface);
 begin
-  inherited;
+  inherited Create(AOwner);
   SetLength(FDragRects, Surface.Count);
 end;
 
 procedure TJvDesignMover.CalcDragRects;
 var
-  delta: TPoint;
-  i: Integer;
+  Delta: TPoint;
+  I: Integer;
 begin
-  delta := GetMouseDelta;
-  for i := 0 to Pred(Surface.Count) do
-    with Surface.Selection[i] do
+  Delta := GetMouseDelta;
+  for I := 0 to Surface.Count - 1 do
+    with Surface.Selection[I] do
     begin
-      FDragRects[i] := BoundsRect;
-      OffsetRect(FDragRects[i], delta.X, delta.Y);
+      FDragRects[I] := BoundsRect;
+      OffsetRect(FDragRects[I], Delta.X, Delta.Y);
     end;
 end;
 
 procedure TJvDesignMover.CalcPaintRects;
 var
-  i: Integer;
+  I: Integer;
 begin
   CalcDragRects;
-  for i := 0 to Pred(Surface.Count) do
-    with Surface.Selection[i] do
+  for I := 0 to Surface.Count - 1 do
+    with Surface.Selection[I] do
       with Parent.ClientToScreen(Point(0, 0)) do
-        OffsetRect(FDragRects[i], X, Y);
+        OffsetRect(FDragRects[I], X, Y);
 end;
 
 procedure TJvDesignMover.PaintDragRects;
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := 0 to Pred(Surface.Count) do
-    DesignPaintRubberbandRect(FDragRects[i], psDot);
+  for I := 0 to Surface.Count - 1 do
+    DesignPaintRubberbandRect(FDragRects[I], psDot);
 end;
 
 procedure TJvDesignMover.ApplyDragRects;
 var
-  i: Integer;
+  I: Integer;
 begin
   if (GetMouseDelta.X <> 0) or (GetMouseDelta.Y <> 0) then
   begin
     CalcDragRects;
-    for i := 0 to Pred(Surface.Count) do
-      Surface.Selection[i].BoundsRect := FDragRects[i];
+    for I := 0 to Surface.Count - 1 do
+      Surface.Selection[I].BoundsRect := FDragRects[I];
     Surface.UpdateDesigner;
     Surface.Change;
   end;
@@ -1063,7 +1090,7 @@ begin
   ApplyDragRects;
 end;
 
-{ TJvDesignBander }
+//=== { TJvDesignBander } ====================================================
 
 procedure TJvDesignBander.CalcDragRect;
 begin
@@ -1115,24 +1142,27 @@ begin
   CalcDragRect;
 end;
 
-{ TJvDesignSizer }
+//=== { TJvDesignSizer } =====================================================
 
-constructor TJvDesignSizer.CreateSizer(AOwner: TJvDesignSurface;
-  inHandle: TJvDesignHandleId);
+constructor TJvDesignSizer.CreateSizer(AOwner: TJvDesignSurface; AHandle: TJvDesignHandleId);
 begin
   inherited Create(AOwner);
-  FHandleId := inHandle;
+  FHandleId := AHandle;
 end;
 
 procedure TJvDesignSizer.ApplyMouseDelta(X, Y: Integer);
 begin
   case FHandleId of
-    dhLeftTop, dhMiddleTop, dhRightTop: Inc(FDragRect.Top, Y);
-    dhLeftBottom, dhMiddleBottom, dhRightBottom: Inc(FDragRect.Bottom, Y);
+    dhLeftTop, dhMiddleTop, dhRightTop:
+      Inc(FDragRect.Top, Y);
+    dhLeftBottom, dhMiddleBottom, dhRightBottom:
+      Inc(FDragRect.Bottom, Y);
   end;
   case FHandleId of
-    dhLeftTop, dhLeftMiddle, dhLeftBottom: Inc(FDragRect.Left, X);
-    dhRightTop, dhRightMiddle, dhRightBottom: Inc(FDragRect.Right, X);
+    dhLeftTop, dhLeftMiddle, dhLeftBottom:
+      Inc(FDragRect.Left, X);
+    dhRightTop, dhRightMiddle, dhRightBottom:
+      Inc(FDragRect.Right, X);
   end;
 end;
 
@@ -1159,16 +1189,16 @@ end;
 procedure TJvDesignSizer.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
-  inherited;
+  inherited MouseUp(Button, Shift, X, Y);
   ApplyDragRect;
 end;
 
-{ TJvDesignDesigner }
+//=== { TJvDesignDesigner } ==================================================
 
-constructor TJvDesignDesigner.Create(inMessenger: TJvDesignCustomMessenger);
+constructor TJvDesignDesigner.Create(AMessenger: TJvDesignCustomMessenger);
 begin
   inherited Create(nil);
-  FMessenger := inMessenger;
+  FMessenger := AMessenger;
 end;
 
 function TJvDesignDesigner.GetCustomForm: TCustomForm;
@@ -1178,7 +1208,7 @@ end;
 
 function TJvDesignDesigner.GetIsControl: Boolean;
 begin
-  Result := false;
+  Result := False;
 end;
 
 function TJvDesignDesigner.GetRoot: TComponent;
@@ -1186,10 +1216,9 @@ begin
   Result := nil;
 end;
 
-function TJvDesignDesigner.IsDesignMsg(Sender: TControl;
-  var Message: TMessage): Boolean;
+function TJvDesignDesigner.IsDesignMsg(Sender: TControl; var Msg: TMessage): Boolean;
 begin
-  Result := Messenger.IsDesignMessage(Sender, Message);
+  Result := Messenger.IsDesignMessage(Sender, Msg);
 end;
 
 procedure TJvDesignDesigner.Modified;
@@ -1236,7 +1265,7 @@ begin
 end;
 {$ENDIF COMPILER9_UP}
 
-{ TJvDesignDesignerMessenger }
+//=== { TJvDesignDesignerMessenger } =========================================
 
 constructor TJvDesignDesignerMessenger.Create;
 begin
@@ -1246,50 +1275,48 @@ end;
 destructor TJvDesignDesignerMessenger.Destroy;
 begin
   if Container <> nil then
-    SetComponentDesigning(Container, false);
-  if (FDesignedForm <> nil) then
+    SetComponentDesigning(Container, False);
+  if FDesignedForm <> nil then
     FDesignedForm.Designer := nil;
   FDesigner.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 type
-  TCrackedComponent = class(TComponent)
-  end;
+  TAccessComponent = class(TComponent);
 
-procedure TJvDesignDesignerMessenger.SetComponentDesigning(inComponent: TComponent;
-  inDesigning: Boolean);
+procedure TJvDesignDesignerMessenger.SetComponentDesigning(AComponent: TComponent; ADesigning: Boolean);
 begin
-  TCrackedComponent(inComponent).SetDesigning(inDesigning);
+  TAccessComponent(AComponent).SetDesigning(ADesigning);
 end;
 
-procedure TJvDesignDesignerMessenger.UndesignComponent(inComponent: TComponent);
+procedure TJvDesignDesignerMessenger.UndesignComponent(AComponent: TComponent);
 begin
-  SetComponentDesigning(inComponent, false);
+  SetComponentDesigning(AComponent, False);
 end;
 
-procedure TJvDesignDesignerMessenger.DesignComponent(inComponent: TComponent);
+procedure TJvDesignDesignerMessenger.DesignComponent(AComponent: TComponent);
 begin
-  SetComponentDesigning(inComponent, true);
+  SetComponentDesigning(AComponent, True);
 end;
 
-procedure TJvDesignDesignerMessenger.SetContainer(inValue: TWinControl);
+procedure TJvDesignDesignerMessenger.SetContainer(AValue: TWinControl);
 
   function FindParentForm: TCustomForm;
   var
-    p: TWinControl;
+    P: TWinControl;
   begin
-    p := Container;
-    while (p.Parent <> nil) do
-      p := p.Parent;
-    if not (p is TCustomForm) then
-      raise Exception.Create(ClassName + ': Oldest ancestor of Container must be a form.');
-    Result := TCustomForm(p);
+    P := Container;
+    while P.Parent <> nil do
+      P := P.Parent;
+    if not (P is TCustomForm) then
+      raise EJVCLException.CreateResFmt(@RsEOldestFmt , [ClassName]);
+    Result := TCustomForm(P);
   end;
 
 begin
-  inherited;
-  if (Container <> nil) then
+  inherited SetContainer(AValue);
+  if Container <> nil then
   begin
     FDesignedForm := FindParentForm;
     FDesignedForm.Designer := FDesigner;
@@ -1297,20 +1324,20 @@ begin
   end;
 end;
 
-{ TJvDesignMessageHookList }
+//=== { TJvDesignMessageHookList } ===========================================
 
-constructor TJvDesignMessageHookList.Create(inUser: TJvDesignCustomMessenger);
+constructor TJvDesignMessageHookList.Create(AUser: TJvDesignCustomMessenger);
 begin
   inherited Create(nil);
-  FUser := inUser;
+  FUser := AUser;
   FHooks := TObjectList.Create;
-  FHooks.OwnsObjects := true;
+  FHooks.OwnsObjects := True;
 end;
 
 destructor TJvDesignMessageHookList.Destroy;
 begin
   FHooks.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvDesignMessageHookList.Clear;
@@ -1318,33 +1345,33 @@ begin
   FHooks.Clear;
 end;
 
-procedure TJvDesignMessageHookList.Hook(inClient: TWinControl);
+procedure TJvDesignMessageHookList.Hook(AClient: TWinControl);
 begin
-  inClient.FreeNotification(Self);
-  FHooks.Add(TJvDesignMessageHook.Create(FUser, inClient));
+  AClient.FreeNotification(Self);
+  FHooks.Add(TJvDesignMessageHook.Create(FUser, AClient));
 end;
 
-procedure TJvDesignMessageHookList.Unhook(inComponent: TComponent);
+procedure TJvDesignMessageHookList.Unhook(AComponent: TComponent);
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := 0 to Pred(FHooks.Count) do
-    if TJvDesignMessageHook(FHooks[i]).Client = inComponent then
+  for I := 0 to FHooks.Count - 1 do
+    if TJvDesignMessageHook(FHooks[I]).Client = AComponent then
     begin
-      FHooks.Delete(i);
-      break;
+      FHooks.Delete(I);
+      Break;
     end;
 end;
 
 procedure TJvDesignMessageHookList.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
-  inherited;
-  if (Operation = opRemove) then
+  inherited Notification(AComponent, Operation);
+  if Operation = opRemove then
     Unhook(AComponent);
 end;
 
-{ TJvDesignWinControlHookMessenger }
+//=== { TJvDesignWinControlHookMessenger } ===================================
 
 constructor TJvDesignWinControlHookMessenger.Create;
 begin
@@ -1363,33 +1390,34 @@ begin
   FHooks.Clear;
 end;
 
-procedure TJvDesignWinControlHookMessenger.DesignComponent(inComponent: TComponent);
+procedure TJvDesignWinControlHookMessenger.DesignComponent(AComponent: TComponent);
 begin
-  if inComponent is TWinControl then
-    HookWinControl(TWinControl(inComponent));
+  if AComponent is TWinControl then
+    HookWinControl(TWinControl(AComponent));
 end;
 
-procedure TJvDesignWinControlHookMessenger.HookWinControl(inWinControl: TWinControl);
+procedure TJvDesignWinControlHookMessenger.HookWinControl(AWinControl: TWinControl);
 begin
-  FHooks.Hook(inWinControl);
-  DesignChildren(inWinControl);
+  FHooks.Hook(AWinControl);
+  DesignChildren(AWinControl);
 end;
 
-procedure TJvDesignWinControlHookMessenger.SetContainer(inValue: TWinControl);
+procedure TJvDesignWinControlHookMessenger.SetContainer(AValue: TWinControl);
 begin
-  inherited;
-  if (Container <> nil) then
+  inherited SetContainer(AValue);
+  if Container <> nil then
     DesignChildren(Container);
 end;
 
 initialization
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
 
 finalization
   FreeShadedBits;
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
+
 end.
