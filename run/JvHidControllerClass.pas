@@ -37,6 +37,9 @@ uses
   {$ENDIF UNITVERSIONING}
   {$ENDIF USEJVCL}
   Windows, Messages, Classes, SysUtils,
+  {$IFNDEF COMPILER6_UP}
+  Forms,
+  {$ENDIF COMPILER6_UP}
   {$IFDEF USEJVCL}
   JvComponentBase,
   {$ENDIF USEJVCL}
