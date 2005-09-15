@@ -33,7 +33,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Classes, BDE, DB,
-  JvTypes, JvComponent;
+  JvTypes, JvComponentBase;
 
 type
   TFilterLogicCond = (flAnd, flOr); { for captured DataSet }

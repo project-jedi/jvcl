@@ -34,7 +34,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, SysUtils, Classes, MMSystem,
-  JvTypes, JvComponent;
+  JvTypes, JvComponentBase;
 
 type
   TJvWavePlayer = class(TJvComponent)

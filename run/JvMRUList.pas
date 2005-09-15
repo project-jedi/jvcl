@@ -64,7 +64,7 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   SysUtils, Classes,
-  JvComponent, JvTypes;
+  JvComponentBase, JvTypes;
 
 type
   TJvDataType = (dtString, dtBinary);

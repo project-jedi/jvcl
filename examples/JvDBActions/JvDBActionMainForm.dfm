@@ -12,9 +12,6 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
-  DesignSize = (
-    862
-    606)
   PixelsPerInch = 96
   TextHeight = 13
   object DBGrid1: TDBGrid

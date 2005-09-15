@@ -40,7 +40,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics,
   {$IFDEF USEJVCL}
   Controls, Forms, Dialogs, DB,
-  JvComponent;
+  JvComponentBase;
   {$ELSE}
   Controls, Forms, Dialogs, DB;
   {$ENDIF USEJVCL}

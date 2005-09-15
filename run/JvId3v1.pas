@@ -34,7 +34,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
-  JvComponent;
+  JvComponentBase;
 
 type
   TID3v1Tag = packed record

@@ -43,17 +43,10 @@ uses
   Qt, QGraphics, QStdCtrls, // TOwnerDrawState 
   {$ENDIF VisualCLX}
   JvConsts,
-  JVCLVer, JvExControls, JvExExtCtrls, JvExForms, JvExStdCtrls, JvExComCtrls;
-
-{$IFDEF VCL}
-const
-  NullHandle = 0;
-{$ENDIF VCL}
+  JVCLVer, JvComponentBase, JvExControls, JvExExtCtrls, JvExForms,
+  JvExStdCtrls, JvExComCtrls;
 
 {$IFDEF VisualCLX}
-const
-  NullHandle = nil;
-
 type
   HDC = QWindows.HDC;
   {$NODEFINE HDC}
@@ -71,18 +64,6 @@ type
 {$ENDIF VisualCLX}
 
 type
-  TJvComponent = class(TComponent)
-  private
-    FAboutJVCL: TJVCLAboutInfo;
-  published
-    {$IFDEF VCL}
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    {$ENDIF VisualCLX}
-  end;
-
   TJvGraphicControl = class(TJvExGraphicControl);
   TJvPubGraphicControl = class(TJvExPubGraphicControl);
   TJvCustomPanel = class(TJvExCustomPanel);
@@ -128,7 +109,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
 
 {$IFDEF USE_DXGETTEXT}
 const

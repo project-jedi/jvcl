@@ -77,7 +77,7 @@ uses
   {$IFDEF VCL}
   JvWndProcHook,
   {$ENDIF VCL}
-  JvJCLUtils, JvComponent, JvExButtons;
+  JvJCLUtils, JvComponentBase, JvExButtons;
 
 type
   { VCL Buttons unit does not publish TJvButtonGlyph class,

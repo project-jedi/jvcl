@@ -39,7 +39,7 @@ uses
   {$ENDIF USEJVCL}
   Windows, Messages, SysUtils, Graphics, Controls, Classes, Forms,
   {$IFDEF USEJVCL}
-  JvComponent,
+  JvComponentBase,
   {$ENDIF USEJVCL}
   JvgCommClasses;
 

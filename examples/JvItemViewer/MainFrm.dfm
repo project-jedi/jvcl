@@ -36,9 +36,6 @@ object frmMain: TfrmMain
     BevelOuter = bvLowered
     FullRepaint = False
     TabOrder = 0
-    DesignSize = (
-      703
-      130)
     object lblFolder: TLabel
       Left = 8
       Top = 6

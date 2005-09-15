@@ -40,7 +40,7 @@ uses
   {$IFDEF VisualCLX}
   QForms, QComCtrls, QMenus, QDialogs,
   {$ENDIF VisualCLX}
-  JvSimpleXml, JvComponent;
+  JvSimpleXml, JvComponentBase;
 
 type
   TJvTranslator = class(TJvComponent)

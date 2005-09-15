@@ -16,9 +16,6 @@ object JvDBFindEditDemoFrm: TJvDBFindEditDemoFrm
   Position = poDesktopCenter
   OnClose = FormClose
   OnShow = FormShow
-  DesignSize = (
-    682
-    427)
   PixelsPerInch = 96
   TextHeight = 13
   object DBNavigator1: TDBNavigator

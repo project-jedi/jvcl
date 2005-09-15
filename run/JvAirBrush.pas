@@ -34,7 +34,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Classes, Windows, Graphics,
-  JvComponent;
+  JvComponentBase;
 
 type
   TJvAirBrushShape = (absRound, absSquare, absLeftSlash, absRightSlash,

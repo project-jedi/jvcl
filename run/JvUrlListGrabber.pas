@@ -36,7 +36,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Classes, SysUtils, Contnrs,
-  JvComponent, JvTypes;
+  JvComponentBase, JvTypes;
 
 type
   // early declarations

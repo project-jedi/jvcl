@@ -40,7 +40,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes, Windows, Messages, Controls, Dialogs, StdCtrls,
-  JvComponent;
+  JvComponentBase;
 
 type
   TJvReplaceProgressEvent = procedure(Sender: TObject; Position: Integer;

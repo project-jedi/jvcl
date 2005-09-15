@@ -34,7 +34,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, Classes, Controls, Forms,
-  JvComponent;
+  JvComponentBase;
 
 const
   // from JwaWinUser.pas

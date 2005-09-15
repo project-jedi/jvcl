@@ -35,7 +35,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Classes,
-  JvComponent;
+  JvComponentBase;
 
 type
   // abstract base class for simple ciphers

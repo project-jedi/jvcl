@@ -37,7 +37,7 @@ uses
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
   JvConsts, JvTypes, JvDynControlEngine, JvDynControlEngineIntf, JvDSADialogs,
-  JvComponent, JvPanel, JvPropertyStore, JvAppStorage, JvAppStorageSelectList;
+  JvComponentBase, JvPanel, JvPropertyStore, JvAppStorage, JvAppStorageSelectList;
 
 type
   TJvParameterList = class;

@@ -89,7 +89,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   {$IFDEF USEJVCL}
   Dialogs, ComCtrls, TypInfo,
-  JvComponent;
+  JvComponentBase;
   {$ELSE}
   Dialogs, ComCtrls, TypInfo;
   {$ENDIF USEJVCL}

@@ -17,9 +17,6 @@ object JvAniMainForm: TJvAniMainForm
   Position = poScreenCenter
   OnActivate = FormActivate
   OnCreate = FormCreate
-  DesignSize = (
-    488
-    323)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel

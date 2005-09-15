@@ -41,7 +41,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, Classes,
-  JvComponent;
+  JvComponentBase;
 
 type
   TJvHotKeyRegisterFailed = procedure(Sender: TObject; var HotKey: TShortCut) of object;

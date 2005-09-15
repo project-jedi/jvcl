@@ -87,7 +87,7 @@ uses
   QWindows,
   {$ENDIF VisualCLX}
   SysUtils, Classes,
-  JvComponent, JvPlugin; // reduced to the min
+  JvComponentBase, JvPlugin; // reduced to the min
 
 const
   C_VersionString = '5.10';

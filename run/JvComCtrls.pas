@@ -52,7 +52,7 @@ uses
   {$IFDEF VisualCLX}
   Qt, QExtCtrls,
   {$ENDIF VisualCLX}
-  JvJVCLUtils, JvComponent, JvExControls, JvExComCtrls;
+  JvJVCLUtils, JvComponentBase, JvComponent, JvExControls, JvExComCtrls;
 
 const
   JvDefPageControlBorder = 4;

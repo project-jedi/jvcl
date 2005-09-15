@@ -53,7 +53,7 @@ uses
   QWindows,
   {$ENDIF UNIX}
   SysUtils, Classes,
-  JvTypes, JvComponent;
+  JvTypes, JvComponentBase;
 
 type
   TJvThreadTimer = class(TJvComponent)

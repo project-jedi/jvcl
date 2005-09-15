@@ -48,7 +48,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvTypes, JvDsgnConsts, JvJCLUtils, JVCLVer, JvComponent, JvActions,
+  JvTypes, JvDsgnConsts, JvJCLUtils, JVCLVer, JvComponentBase, JvActions,
   JvActnResForm, JvJVCLAboutForm, JvPoweredBy, JvIDEZoom, JvBaseDlg,
   JvDataProvider, JvDataProviderIntf, JvColorProvider, JvContextProvider,
   JvDsgnEditors, JvJVCLAboutEditor, JvBaseDlgEditor, JvColorEditor,

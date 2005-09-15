@@ -39,7 +39,7 @@ uses
   Windows, Messages,
   {$ENDIF VCL}
   JclEDI, JclEDI_ANSIX12, JclEDISEF,
-  JvComponent;
+  JvComponentBase;
 
 const
   Field_SegmentId = 'SegmentId';

@@ -40,7 +40,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages, Controls, Forms, StdCtrls, ComCtrls,
   SysUtils, Classes,
-  JvComponent;
+  JvComponentBase;
 
 type
   TJvProgressComponent = class(TJvComponent)

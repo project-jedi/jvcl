@@ -36,7 +36,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Classes, Controls, Graphics, Forms, ExtCtrls, Menus, ImgList,
-  JvComponent, JvBaseDlg, JvDesktopAlertForm;
+  JvComponentBase, JvBaseDlg, JvDesktopAlertForm;
 
 const
   JvDefaultFrameColor = TColor($00943000);

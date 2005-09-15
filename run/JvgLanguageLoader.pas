@@ -58,7 +58,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   {$IFDEF USEJVCL}
   ComCtrls, Grids,
-  JvComponent;
+  JvComponentBase;
   {$ELSE}
   ComCtrls, Grids;
   {$ENDIF USEJVCL}

@@ -37,7 +37,7 @@ uses
   Qt,
   {$ENDIF VisualCLX}
   Windows, Messages, SysUtils, Classes, Controls, Forms,
-  JvComponent;
+  JvComponentBase;
 
 type
   TJvEasterEgg = class(TJvComponent)

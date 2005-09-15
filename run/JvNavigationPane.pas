@@ -38,7 +38,7 @@ uses
   {$IFDEF VisualCLX}
   Qt,
   {$ENDIF VisualCLX}
-  JvTypes, JvButton, JvPageList, JvComponent, JvExExtCtrls;
+  JvTypes, JvButton, JvPageList, JvComponentBase, JvComponent, JvExExtCtrls;
 
 const
   CM_PARENTSTYLEMANAGERCHANGE = CM_BASE + 1;

@@ -35,7 +35,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Classes, Windows, Dialogs, ComCtrls, StdCtrls, Controls, ExtCtrls, Forms,
-  JvComponent;
+  JvComponentBase, JvComponent;
 
 const
   MaxProfEntries = 1024; { maximum number of "blocks" to profile }

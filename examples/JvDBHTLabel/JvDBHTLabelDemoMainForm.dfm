@@ -16,9 +16,6 @@ object JvDBHTLabelDemoMainFrm: TJvDBHTLabelDemoMainFrm
   OldCreateOrder = False
   ShowHint = True
   OnCreate = FormCreate
-  DesignSize = (
-    472
-    330)
   PixelsPerInch = 96
   TextHeight = 13
   object JvDBHTLabel1: TJvDBHTLabel

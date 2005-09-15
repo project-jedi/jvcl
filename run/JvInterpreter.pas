@@ -188,7 +188,7 @@ uses
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
-  JvInterpreterParser, JvComponent;
+  JvInterpreterParser, JvComponentBase;
 
 const
   // (rom) renamed to longer names

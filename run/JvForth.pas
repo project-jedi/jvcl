@@ -42,7 +42,7 @@ uses
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
-  JvXMLTree, JvComponent, JvStrings, JvTypes;
+  JvXMLTree, JvComponentBase, JvStrings, JvTypes;
 
 const
   StackMax = 1000;

@@ -34,7 +34,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, SysUtils, Classes, Graphics, Controls, Forms,
-  JvComponent;
+  JvComponentBase;
 
 type
   TJvTransparentForm = class(TJvComponent)

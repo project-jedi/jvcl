@@ -1,3 +1,5 @@
+
+
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
@@ -40,7 +42,7 @@ uses
   {$IFDEF COMPILER6_UP}
   DateUtils,
   {$ENDIF COMPILER6_UP}
-  JvTypes, JvComponent, JvSimpleXml;
+  JvTypes, JvComponentBase, JvSimpleXml;
 
 type
   TJvXMLDatabase = class;

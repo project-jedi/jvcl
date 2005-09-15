@@ -28,9 +28,6 @@ object FormMain: TFormMain
     Align = alLeft
     BevelOuter = bvNone
     TabOrder = 0
-    DesignSize = (
-      273
-      385)
     object Label1: TLabel
       Left = 8
       Top = 16
@@ -88,9 +85,6 @@ object FormMain: TFormMain
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    DesignSize = (
-      294
-      385)
     object MemoFile: TMemo
       Left = 8
       Top = 8

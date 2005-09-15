@@ -48,7 +48,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Classes,
-  JvComponent;
+  JvComponentBase;
 
 type
   TJvNotifyArray = array [0..MAXIMUM_WAIT_OBJECTS - 1] of THandle;

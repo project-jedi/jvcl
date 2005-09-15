@@ -183,9 +183,6 @@ object JvPageListTreeViewMainFrm: TJvPageListTreeViewMainFrm
     Width = 597
     Height = 34
     Align = alBottom
-    DesignSize = (
-      597
-      34)
     object JvFooterBtn2: TJvFooterBtn
       Left = 354
       Top = 5
@@ -253,9 +250,6 @@ object JvPageListTreeViewMainFrm: TJvPageListTreeViewMainFrm
       Width = 413
       Height = 303
       Caption = 'Environment - General'
-      DesignSize = (
-        413
-        303)
       object Label1: TLabel
         Left = 248
         Top = 8
@@ -432,9 +426,6 @@ object JvPageListTreeViewMainFrm: TJvPageListTreeViewMainFrm
       Width = 413
       Height = 303
       Caption = 'Environment - Documents'
-      DesignSize = (
-        413
-        303)
       object Label7: TLabel
         Left = 32
         Top = 112

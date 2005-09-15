@@ -41,7 +41,7 @@ uses
   QWindows,
   {$ENDIF UNIX}
   Forms, Dialogs,
-  JvTypes, JvComponent, JvThreadDialog;
+  JvTypes, JvComponentBase, JvThreadDialog;
 
 type
   TJvBaseThread = class(TThread)

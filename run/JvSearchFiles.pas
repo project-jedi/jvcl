@@ -43,7 +43,7 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  JvComponent, JvJCLUtils;
+  JvComponentBase, JvJCLUtils;
 
 const
   { Taken from WinNT.h }

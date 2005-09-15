@@ -65,7 +65,7 @@ uses
   {$IFDEF VisualCLX}
   Qt, QControls, QForms,
   {$ENDIF VisualCLX}
-  JvComponent;
+  JvComponentBase;
 
 type
   { Description

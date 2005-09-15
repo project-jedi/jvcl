@@ -37,7 +37,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, Classes, Controls, Graphics, Forms, ImgList,
-  JvComponent;
+  JvComponentBase;
 
 const
   CJvBallonHintVisibleTimeDefault = 5000;

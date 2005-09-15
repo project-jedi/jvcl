@@ -40,7 +40,7 @@ uses
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
   {$IFDEF USEJVCL}
-  JvComponent, JvExControls,
+  JvComponentBase, JvExControls,
   {$ENDIF USEJVCL}
   JvgReport, JvgRuler, JvgReportParamEditorForm;
 

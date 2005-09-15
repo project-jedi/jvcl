@@ -39,7 +39,7 @@ uses
   Qt,
   {$ENDIF VisualCLX}
   Controls,
-  JvTypes, JvComponent;
+  JvTypes, JvComponentBase;
 
 type
   TJvCommonDialogD = class(TJvComponent)

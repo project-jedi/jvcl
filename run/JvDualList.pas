@@ -36,7 +36,7 @@ uses
   QTypes,
   {$ENDIF VisualCLX}
   Classes, Controls, StdCtrls,
-  JvComponent;
+  JvComponentBase;
 
 type
   TJvDualListDialog = class(TJvComponent)

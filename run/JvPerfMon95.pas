@@ -42,7 +42,7 @@ uses
   {$IFDEF VisualCLX}
   Windows, QForms,
   {$ENDIF VisualCLX}
-  JvComponent, JvTypes;
+  JvComponentBase, JvTypes;
 
 type
   EJvPerfStatException = class(EJVCLException);

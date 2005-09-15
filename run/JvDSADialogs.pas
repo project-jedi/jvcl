@@ -42,7 +42,7 @@ uses
   {$ENDIF VisualCLX}
   SysUtils, Classes, Contnrs, Graphics, Controls, Forms, StdCtrls, Dialogs,
   ExtCtrls,
-  JvComponent, JvDynControlEngine, JvTypes;
+  JvComponentBase, JvDynControlEngine, JvTypes;
 
 type
   TDlgCenterKind = (dckScreen, dckMainForm, dckActiveForm);

@@ -41,7 +41,7 @@ uses
   Qt,
   {$ENDIF VisualCLX}
   Windows, Menus, Graphics, Controls, Forms,
-  JvFormPlacement, JvAppStorage, JvComponent;
+  JvFormPlacement, JvAppStorage, JvComponentBase;
 
 type
   TJvRecentStrings = class;

@@ -35,7 +35,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Classes, SysUtils, DB, DBGrids,
-  JvComponent, JvSimpleXml, JvTypes;
+  JvComponentBase, JvSimpleXml, JvTypes;
 
 type
   TExportDestination = (edFile, edClipboard);

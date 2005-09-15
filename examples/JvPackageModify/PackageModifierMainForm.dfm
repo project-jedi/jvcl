@@ -241,9 +241,6 @@ object PackageModifierMainFrm: TPackageModifierMainFrm
     object tabFiles: TTabSheet
       Caption = 'Files'
       ImageIndex = 1
-      DesignSize = (
-        398
-        361)
       object reFiles: TRichEdit
         Left = 8
         Top = 16

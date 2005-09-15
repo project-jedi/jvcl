@@ -35,7 +35,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes, Graphics, Forms, ComCtrls,
-  JvRgbToHtml, JvStrToHtml, JvRichEdit, JvComponent;
+  JvRgbToHtml, JvStrToHtml, JvRichEdit, JvComponentBase;
 
 type
   TJvParaAttributesRec = record

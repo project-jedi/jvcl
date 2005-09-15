@@ -39,7 +39,7 @@ uses
   {$IFDEF UNIX}
   QWindows, QControls,
   {$ENDIF UNIX}
-  JvTypes, JvComponent;
+  JvTypes, JvComponentBase;
 
 type
   TJvCustomThreadDialog = class;

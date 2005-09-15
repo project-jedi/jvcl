@@ -36,7 +36,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, Classes,
-  JvComponent;
+  JvComponentBase;
   {$ELSE}
   Windows, Messages, SysUtils, Classes;
   {$ENDIF USEJVCL}

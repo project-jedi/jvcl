@@ -40,7 +40,7 @@ uses
   ComCtrls,
   Windows, Messages, Classes, Graphics, Controls, Forms,
   {$IFDEF USEJVCL}
-  JvComponent,
+  JvComponentBase,
   {$ENDIF USEJVCL}
   JvDockSupportClass;
 

@@ -35,7 +35,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Classes,
-  JvAppStorage, JvComponent;
+  JvAppStorage, JvComponentBase;
 
 type
   TJvIgnorePropertiesStringList = class(TStringList)

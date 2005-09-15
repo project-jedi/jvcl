@@ -42,7 +42,7 @@ uses
   {$IFDEF VisualCLX}
   Qt,
   {$ENDIF VisualCLX}
-  JvTypes, JvComponent;
+  JvTypes, JvComponentBase;
 
 type
   TJvWinHelp = class(TJvComponent)

@@ -44,7 +44,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Classes, Graphics, Controls, ImgList,
-  JvComponent;
+  JvComponentBase;
 
 type
   IJvErrorIndicatorClient = interface;

@@ -35,7 +35,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Classes, Registry,
-  JvComponent;
+  JvComponentBase;
 
 // (rom) the whole component seems to be badly designed
 

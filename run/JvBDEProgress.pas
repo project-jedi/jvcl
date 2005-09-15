@@ -33,7 +33,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Classes, Controls, DB, DBTables, Bde,
-  JvTimer, JvComponent;
+  JvTimer, JvComponentBase;
 
 type
   TOnMessageChange = procedure(Sender: TObject; const Msg: string) of object;

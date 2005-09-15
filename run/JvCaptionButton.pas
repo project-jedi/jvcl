@@ -66,7 +66,7 @@ uses
   Types,
   {$ENDIF HAS_UNIT_TYPES}
   ActnList, ImgList,
-  JvComponent;
+  JvComponentBase;
 
 {$IFNDEF COMPILER6_UP}
 const
