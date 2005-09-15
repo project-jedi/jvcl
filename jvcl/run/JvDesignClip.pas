@@ -35,28 +35,26 @@ uses
   Windows, Classes;
 
 type
-  TJvDesignComponentClipboard = class
+  TJvDesignComponentClipboard = class(TObject)
   protected
     Stream: TMemoryStream;
     procedure Close;
     procedure Open;
-    procedure ReadError(Reader: TReader; const Message: string;
-      var Handled: Boolean);
+    procedure ReadError(Reader: TReader; const Msg: string; var Handled: Boolean);
   public
     function GetComponent: TComponent;
     procedure CloseRead;
     procedure CloseWrite;
     procedure OpenRead;
     procedure OpenWrite;
-    procedure SetComponent(inComponent: TComponent);
+    procedure SetComponent(InComponent: TComponent);
   end;
 
-function DesignLoadComponentFromBinaryStream(inStream: TStream;
-  inComp: TComponent; inOnError: TReaderError): TComponent;
-procedure DesignSaveComponentToBinaryStream(inStream: TStream;
-  inComp: TComponent);
-procedure DesignCopyStreamFromClipboard(inFmt: Cardinal; inS: TStream);
-procedure DesignCopyStreamToClipboard(inFmt: Cardinal; inS: TStream);
+function DesignLoadComponentFromBinaryStream(InStream: TStream;
+  InComponent: TComponent; InOnError: TReaderError): TComponent;
+procedure DesignSaveComponentToBinaryStream(InStream: TStream; InComponent: TComponent);
+procedure DesignCopyStreamFromClipboard(InFmt: Cardinal; InS: TStream);
+procedure DesignCopyStreamToClipboard(InFmt: Cardinal; InS: TStream);
 
 {$IFDEF UNITVERSIONING}
 const
@@ -71,101 +69,102 @@ const
 implementation
 
 uses
-  SysUtils, Clipbrd, JvDesignUtils;
+  SysUtils, Clipbrd,
+  JvDesignUtils;
 
 var
   CF_COMPONENTSTREAM: Cardinal;
 
-procedure DesignSaveComponentToBinaryStream(inStream: TStream;
-  inComp: TComponent);
+procedure DesignSaveComponentToBinaryStream(InStream: TStream; InComponent: TComponent);
 var
-  ms: TMemoryStream;
-  sz: Int64;
+  MS: TMemoryStream;
+  SZ: Int64;
 begin
-  ms := TMemoryStream.Create;
+  MS := TMemoryStream.Create;
   try
-    ms.WriteComponent(inComp);
-    ms.Position := 0;
-    sz := ms.Size;
-    inStream.Write(sz, 8);
-    inStream.CopyFrom(ms, sz);
+    MS.WriteComponent(InComponent);
+    MS.Position := 0;
+    SZ := MS.Size;
+    InStream.Write(SZ, 8);
+    InStream.CopyFrom(MS, SZ);
   finally
-    ms.Free;
+    MS.Free;
   end;
 end;
 
-function DesignLoadComponentFromBinaryStream(inStream: TStream;
-  inComp: TComponent; inOnError: TReaderError): TComponent;
+function DesignLoadComponentFromBinaryStream(InStream: TStream;
+  InComponent: TComponent; InOnError: TReaderError): TComponent;
 var
-  ms: TMemoryStream;
-  sz: Int64;
+  MS: TMemoryStream;
+  SZ: Int64;
 begin
-  inStream.Read(sz, 8);
-  ms := TMemoryStream.Create;
+  InStream.Read(SZ, 8);
+  MS := TMemoryStream.Create;
   try
-    ms.CopyFrom(inStream, sz);
-    ms.Position := 0;
-    with TReader.Create(ms, 4096) do
+    MS.CopyFrom(InStream, SZ);
+    MS.Position := 0;
+    with TReader.Create(MS, 4096) do
     try
-      OnError := inOnError;
-      Result := ReadRootComponent(inComp);
+      OnError := InOnError;
+      Result := ReadRootComponent(InComponent);
     finally
       Free;
     end;
   finally
-    ms.Free;
+    MS.Free;
   end;
 end;
 
-procedure DesignCopyStreamToClipboard(inFmt: Cardinal; inS: TStream);
+procedure DesignCopyStreamToClipboard(InFmt: Cardinal; InS: TStream);
 var
-  hMem: THandle;
-  pMem: Pointer;
+  HMem: THandle;
+  PMem: Pointer;
 begin
-  inS.Position := 0;
-  hMem := GlobalAlloc(GHND or GMEM_DDESHARE, inS.Size);
-  if hMem <> 0 then
+  InS.Position := 0;
+  HMem := GlobalAlloc(GHND or GMEM_DDESHARE, InS.Size);
+  if HMem <> 0 then
   begin
-    pMem := GlobalLock(hMem);
-    if pMem <> nil then
+    PMem := GlobalLock(HMem);
+    if PMem <> nil then
     begin
-      inS.Read(pMem^, inS.Size);
-      inS.Position := 0;
-      GlobalUnlock(hMem);
+      InS.Read(PMem^, InS.Size);
+      InS.Position := 0;
+      GlobalUnlock(HMem);
       Clipboard.Open;
       try
-        Clipboard.SetAsHandle(inFmt, hMem);
+        Clipboard.SetAsHandle(InFmt, HMem);
       finally
         Clipboard.Close;
       end;
     end
-    else begin
-      GlobalFree(hMem);
+    else
+    begin
+      GlobalFree(HMem);
       OutOfMemoryError;
     end;
   end else
     OutOfMemoryError;
 end;
 
-procedure DesignCopyStreamFromClipboard(inFmt: Cardinal; inS: TStream);
+procedure DesignCopyStreamFromClipboard(InFmt: Cardinal; InS: TStream);
 var
-  hMem: THandle;
-  pMem: Pointer;
+  HMem: THandle;
+  PMem: Pointer;
 begin
-  hMem := Clipboard.GetAsHandle(inFmt);
-  if hMem <> 0 then
+  HMem := Clipboard.GetAsHandle(InFmt);
+  if HMem <> 0 then
   begin
-    pMem := GlobalLock(hMem);
-    if pMem <> nil then
+    PMem := GlobalLock(HMem);
+    if PMem <> nil then
     begin
-      inS.Write(pMem^, GlobalSize(hMem));
-      inS.Position := 0;
-      GlobalUnlock(hMem);
+      InS.Write(PMem^, GlobalSize(HMem));
+      InS.Position := 0;
+      GlobalUnlock(HMem);
     end;
   end;
 end;
 
-{ TJvDesignComponentClipboard }
+//=== { TJvDesignComponentClipboard } ========================================
 
 procedure TJvDesignComponentClipboard.Close;
 begin
@@ -210,27 +209,27 @@ begin
 end;
 
 procedure TJvDesignComponentClipboard.ReadError(Reader: TReader;
-  const Message: string; var Handled: Boolean);
+  const Msg: string; var Handled: Boolean);
 begin
-  Handled := true;
+  Handled := True;
 end;
 
-procedure TJvDesignComponentClipboard.SetComponent(inComponent: TComponent);
+procedure TJvDesignComponentClipboard.SetComponent(InComponent: TComponent);
 begin
-  DesignSaveComponentToBinaryStream(Stream, inComponent);
+  DesignSaveComponentToBinaryStream(Stream, InComponent);
 end;
 
 initialization
   { The following string should not be localized }
   CF_COMPONENTSTREAM := RegisterClipboardFormat('Delphi Components');
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
 
 finalization
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
 
 end.
 
