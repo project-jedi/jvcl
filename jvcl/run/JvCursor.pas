@@ -65,7 +65,7 @@ type
   end;
   
 var
-  CF_CURSOR: Word; { Clipboard format for cursor }
+  CF_CURSOR: UINT; { Clipboard format for cursor }
 
 {$IFDEF UNITVERSIONING}
 const

@@ -73,7 +73,7 @@ uses
   JvDesignUtils;
 
 var
-  CF_COMPONENTSTREAM: Cardinal;
+  CF_COMPONENTSTREAM: UINT;
 
 procedure DesignSaveComponentToBinaryStream(InStream: TStream; InComponent: TComponent);
 var

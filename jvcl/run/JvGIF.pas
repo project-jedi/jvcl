@@ -238,7 +238,7 @@ type
   end;
 
 var
-  CF_GIF: Word; { Clipboard format for GIF image }
+  CF_GIF: UINT; { Clipboard format for GIF image }
 
 { Load incomplete or corrupted images without exceptions }
 
