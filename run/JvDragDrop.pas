@@ -134,8 +134,8 @@ type
     property OnDrop: TJvDropEvent read FOnDrop write FOnDrop;
   end;
 
-function CF_FILEDESCRIPTOR: DWORD;
-function CF_FILECONTENTS: DWORD;
+function CF_FILEDESCRIPTOR: UINT;
+function CF_FILECONTENTS: UINT;
 function Malloc: IMalloc;
 
 {$IFDEF UNITVERSIONING}
@@ -162,22 +162,22 @@ uses
   JvWndProcHook;
 
 var
-  GlobalCF_FILEDESCRIPTOR: DWORD = $FFFFFFF;
-  GlobalCF_FILECONTENTS: DWORD = $FFFFFFF;
+  GlobalCF_FILEDESCRIPTOR: UINT = $FFFFFFF;
+  GlobalCF_FILECONTENTS: UINT = $FFFFFFF;
   GlobalMalloc: IMalloc = nil;
 
   FileDropFormatEtc: FORMATETC;
   FileContentFormatEtc: FORMATETC;
   FileDescriptorFormatEtc: FORMATETC;
 
-function CF_FILEDESCRIPTOR: DWORD;
+function CF_FILEDESCRIPTOR: UINT;
 begin
   if GlobalCF_FILEDESCRIPTOR = $FFFFFFF then
     GlobalCF_FILEDESCRIPTOR := RegisterClipboardFormat(CFSTR_FILEDESCRIPTOR);
   Result := GlobalCF_FILEDESCRIPTOR;
 end;
 
-function CF_FILECONTENTS: DWORD;
+function CF_FILECONTENTS: UINT;
 begin
   if GlobalCF_FILECONTENTS = $FFFFFFF then
     GlobalCF_FILECONTENTS := RegisterClipboardFormat(CFSTR_FILECONTENTS);
