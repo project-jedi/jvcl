@@ -26,6 +26,7 @@ Known Issues:
 program build;
 
 {$APPTYPE CONSOLE}
+{.$DEFINE JVCL}
 
 { build.exe setups the environment for a Delphi compiler }
 
@@ -854,7 +855,7 @@ var
 begin
   AddAllEditions(True);
   WriteLn('build.exe setups the environment for the given targets and executes the');
-  WriteLn('make file that does the required actions.');
+  WriteLn('makefile that does the required actions.');
   WriteLn;
   WriteLn('build.exe [TARGET] [OPTIONS]');
   WriteLn('  TARGETS:');
@@ -1016,6 +1017,7 @@ begin
   AssignFile(f, Edition.RootDir + '\bin\dcc32.cfg');
   if not FileExists(Edition.RootDir + '\bin\dcc32.cfg') then
   begin
+    // Invalid Delphi/BCB installation or someone deleted the dcc32.cfg file.
     {$I-}
     Rewrite(f);
     {$I+}
@@ -1091,7 +1093,6 @@ var
   Edition: TEdition;
 begin
   LibraryRootDir := GetLibraryRootDir;
-  // ahuser (2005-01-22): make.exe fails if a path with spaces is in the PATH envvar
 
   // set ExtraOptions default values
   for I := 0 to High(ExtraOptions) do
@@ -1172,38 +1173,6 @@ begin
       path to prevent collisions between packages in TargetConfig.BplDir and
       Target.BplDir. }
     Path := Path + ';' + ExtractShortPathName(Edition.BplDir);
-
-(*    dcc32cfg := CreateDcc32Cfg([
-      '-Q',
-      '-U"' + Edition.RootDir + '\Lib"',
-      '-U"' + Edition.RootDir + '\Lib\Obj"',
-      '-R"' + Edition.RootDir + '\Lib"',
-      '-I"' + Edition.RootDir + '\Include"',
-      '-I"' + Edition.RootDir + '\Include\Vcl"',
-      '-U"' + UserDcpDir + '"',
-      '-U"' + UserLibDir + '"'
-    ]);
-
-      '-I"$(JCLINCLUDEDIRS)">>"$(CFG)"
-	@echo -U"$(JCLSOURCEDIRS1)">>"$(CFG)"
-	@echo -U"$(JCLSOURCEDIRS2)">>"$(CFG)"
-	#
-	@echo -I"$(JVCLINCLUDEDIRS)">>"$(CFG)"
-	@echo -U"$(UNITOUTDIR)">>"$(CFG)"
-	@echo -U"$(LIBDIR)">>"$(CFG)"
-	@echo -U"$(JVCLSOURCEDIRS1)">>"$(CFG)"
-	@echo -U"$(JVCLSOURCEDIRS2)">>"$(CFG)"
-	@echo -R"$(JVCLRESDIRS)">>"$(CFG)"
-	#
-	@echo -U"$(EXTRAUNITDIRS)">>"$(CFG)"
-	@echo -I"$(EXTRAINCLUDEDIRS)">>"$(CFG)"
-	@echo -R"$(EXTRARESDIRS)">>"$(CFG)"
-	#
-	@echo -U"$(UNITDIRS)">>"$(CFG)"
-	@echo -R"$(UNITDIRS)">>"$(CFG)"
-*)
-
-    //SetEnvironemntVariable('CFGFILE', PChar('..\$(PKGDIR)\dcc32.cfg');
 
     SetEnvironmentVariable('PATH', Pointer(Path));
 
