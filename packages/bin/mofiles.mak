@@ -6,6 +6,8 @@
 ROOT = $(MAKEDIR)\..
 !endif
 
+MOFILES = *JVCLInstall.mo *jvcl.mo
+
 MAKE = "$(ROOT)\bin\make.exe" -l+
 
 #-------------------------------------------------------------------------------
@@ -14,56 +16,32 @@ LANGUAGES=bg de es fr it nl pl ro ru sv
 
 #-------------------------------------------------------------------------------
 
+.suffixes .po
+
+.po.mo:
+	@echo Generating: $<
+	@"$(DXGETTEXTDIR)\msgfmt" -o "$@" "$<" >NUL
+	
+#-------------------------------------------------------------------------------
+
 default: $(LANGUAGES)
 
+bg: $(MOFILES:*=bg\LC_MESSAGES\)
 
-bg:
-	echo Generating: $&
-	"$(DXGETTEXTDIR)\msgfmt" -o $&\LC_MESSAGES\JVCLInstall.mo $&\LC_MESSAGES\JVCLInstall.po >NUL
-	"$(DXGETTEXTDIR)\msgfmt" -o $&\LC_MESSAGES\jvcl.mo $&\LC_MESSAGES\jvcl.po >NUL
+de: $(MOFILES:*=de\LC_MESSAGES\)
 
-de:
-	echo Generating: $&
-	"$(DXGETTEXTDIR)\msgfmt" -o $&\LC_MESSAGES\JVCLInstall.mo $&\LC_MESSAGES\JVCLInstall.po >NUL
-	"$(DXGETTEXTDIR)\msgfmt" -o $&\LC_MESSAGES\jvcl.mo $&\LC_MESSAGES\jvcl.po >NUL
+es: $(MOFILES:*=es\LC_MESSAGES\)
 
-es:
-	echo Generating: $&
-	"$(DXGETTEXTDIR)\msgfmt" -o $&\LC_MESSAGES\JVCLInstall.mo $&\LC_MESSAGES\JVCLInstall.po >NUL
-	"$(DXGETTEXTDIR)\msgfmt" -o $&\LC_MESSAGES\jvcl.mo $&\LC_MESSAGES\jvcl.po >NUL
+fr: $(MOFILES:*=fr\LC_MESSAGES\)
 
-fr:
-	echo Generating: $&
-	"$(DXGETTEXTDIR)\msgfmt" -o $&\LC_MESSAGES\JVCLInstall.mo $&\LC_MESSAGES\JVCLInstall.po >NUL
-	"$(DXGETTEXTDIR)\msgfmt" -o $&\LC_MESSAGES\jvcl.mo $&\LC_MESSAGES\jvcl.po >NUL
+it: $(MOFILES:*=it\LC_MESSAGES\)
 
-it:
-	echo Generating: $&
-	"$(DXGETTEXTDIR)\msgfmt" -o $&\LC_MESSAGES\JVCLInstall.mo $&\LC_MESSAGES\JVCLInstall.po >NUL
-	"$(DXGETTEXTDIR)\msgfmt" -o $&\LC_MESSAGES\jvcl.mo $&\LC_MESSAGES\jvcl.po >NUL
+nl: $(MOFILES:*=nl\LC_MESSAGES\)
 
-nl:
-	echo Generating: $&
-	"$(DXGETTEXTDIR)\msgfmt" -o $&\LC_MESSAGES\JVCLInstall.mo $&\LC_MESSAGES\JVCLInstall.po >NUL
-	"$(DXGETTEXTDIR)\msgfmt" -o $&\LC_MESSAGES\jvcl.mo $&\LC_MESSAGES\jvcl.po >NUL
+pl: $(MOFILES:*=pl\LC_MESSAGES\)
 
-pl:
-	echo Generating: $&
-	"$(DXGETTEXTDIR)\msgfmt" -o $&\LC_MESSAGES\JVCLInstall.mo $&\LC_MESSAGES\JVCLInstall.po >NUL
-	"$(DXGETTEXTDIR)\msgfmt" -o $&\LC_MESSAGES\jvcl.mo $&\LC_MESSAGES\jvcl.po >NUL
+ro: $(MOFILES:*=ro\LC_MESSAGES\)
 
-ro:
-	echo Generating: $&
-	"$(DXGETTEXTDIR)\msgfmt" -o $&\LC_MESSAGES\JVCLInstall.mo $&\LC_MESSAGES\JVCLInstall.po >NUL
-	"$(DXGETTEXTDIR)\msgfmt" -o $&\LC_MESSAGES\jvcl.mo $&\LC_MESSAGES\jvcl.po >NUL
+ru: $(MOFILES:*=ru\LC_MESSAGES\)
 
-ru:
-	echo Generating: $&
-	"$(DXGETTEXTDIR)\msgfmt" -o $&\LC_MESSAGES\JVCLInstall.mo $&\LC_MESSAGES\JVCLInstall.po >NUL
-	"$(DXGETTEXTDIR)\msgfmt" -o $&\LC_MESSAGES\jvcl.mo $&\LC_MESSAGES\jvcl.po >NUL
-
-sv:
-	echo Generating: $&
-	"$(DXGETTEXTDIR)\msgfmt" -o $&\LC_MESSAGES\JVCLInstall.mo $&\LC_MESSAGES\JVCLInstall.po >NUL
-	"$(DXGETTEXTDIR)\msgfmt" -o $&\LC_MESSAGES\jvcl.mo $&\LC_MESSAGES\jvcl.po >NUL
-
+sv: $(MOFILES:*=sv\LC_MESSAGES\)

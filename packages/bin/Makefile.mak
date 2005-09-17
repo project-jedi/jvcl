@@ -149,49 +149,50 @@ configfile:
 	@echo Writing: $(CFG)
 	-@IF EXIST "$(CFG)"  del /q "$(CFG)"
 	-@IF EXIST "$(ROOT)\bin\dcc32.cfg"  type "$(ROOT)\bin\dcc32.cfg" >>"$(CFG)"
-	@echo. >>"$(CFG)"
-	@echo -Q>>"$(CFG)"
-	@echo -U"$(ROOT)\Lib">>"$(CFG)"
-	@echo -U"$(ROOT)\Lib\Obj">>"$(CFG)"
-	@echo -R"$(ROOT)\Lib">>"$(CFG)"
-	@echo -I"$(ROOT)\Include">>"$(CFG)"
-	@echo -I"$(ROOT)\Include\Vcl">>"$(CFG)"
-	@echo -U"$(DCPDIR)">>"$(CFG)"
-	@echo -U"$(LIBDIR)">>"$(CFG)"
-	#
-	@echo -I"$(JCLINCLUDEDIRS)">>"$(CFG)"
-	@echo -U"$(JCLSOURCEDIRS1)">>"$(CFG)"
-	@echo -U"$(JCLSOURCEDIRS2)">>"$(CFG)"
-	#
-	@echo -I"$(JVCLINCLUDEDIRS)">>"$(CFG)"
-	@echo -U"$(UNITOUTDIR)">>"$(CFG)"
-	@echo -U"$(LIBDIR)">>"$(CFG)"
-	@echo -U"$(JVCLSOURCEDIRS1)">>"$(CFG)"
-	@echo -U"$(JVCLSOURCEDIRS2)">>"$(CFG)"
-	@echo -R"$(JVCLRESDIRS)">>"$(CFG)"
-	#
-	@echo -U"$(EXTRAUNITDIRS)">>"$(CFG)"
-	@echo -I"$(EXTRAINCLUDEDIRS)">>"$(CFG)"
-	@echo -R"$(EXTRARESDIRS)">>"$(CFG)"
-	#
-	@echo -U"$(UNITDIRS)">>"$(CFG)"
-	@echo -R"$(UNITDIRS)">>"$(CFG)"
+	@type &&|
 
+-Q
+-U"$(ROOT)\Lib"
+-U"$(ROOT)\Lib\Obj"
+-R"$(ROOT)\Lib"
+-I"$(ROOT)\Include"
+-I"$(ROOT)\Include\Vcl"
+-U"$(DCPDIR)"
+-U"$(LIBDIR)"
+
+-I"$(JCLINCLUDEDIRS)"
+-U"$(JCLSOURCEDIRS1)"
+-U"$(JCLSOURCEDIRS2)"
+
+-I"$(JVCLINCLUDEDIRS)"
+-U"$(UNITOUTDIR)"
+-U"$(LIBDIR)"
+-U"$(JVCLSOURCEDIRS1)"
+-U"$(JVCLSOURCEDIRS2)"
+-R"$(JVCLRESDIRS)"
+
+-U"$(EXTRAUNITDIRS)"
+-I"$(EXTRAINCLUDEDIRS)"
+-R"$(EXTRARESDIRS)"
+
+-U"$(UNITDIRS)"
+-R"$(UNITDIRS)"
+| >>"$(CFG)"
 
 ################################################################################
 Templates:
 	@echo [Generating: Templates]
 	@$(MAKE) $(QUIET) -f makefile.mak "-DCFG=$(CFGFILE)" configfile
-	#
-	@echo -LE"$(BPLDIR)">>"$(CFGFILE)"
-	@echo -LN"$(DCPDIR)">>"$(CFGFILE)"
-	@echo $(PERSONALEDITION_OPTION)>>"$(CFGFILE)"
-	#
-	@echo -N"$(UNITOUTDIR)">>"$(CFGFILE)"
-	@echo -N1"$(HPPDIR)">>"$(CFGFILE)"
-	@echo -N2"$(UNITOUTDIR)\obj">>"$(CFGFILE)"
-	#
-	#
+	@type &&|
+
+-LE"$(BPLDIR)"
+-LN"$(DCPDIR)"
+(PERSONALEDITION_OPTION)
+
+-N"$(UNITOUTDIR)"
+-N1"$(HPPDIR)"
+-N2"$(UNITOUTDIR)\obj"
+| >>"$(CFGFILE)"
 	@IF NOT $(MASTEREDITION)! == ! @copy "$(CFGFILE)" "$(PKGDIR_MASTEREDITION)\$(CONFIGFILENAME)"
 
 ################################################################################
@@ -228,15 +229,15 @@ Installer_nomo:
 	@echo [Compiling: Installer]
 	$(MAKE) $(QUIET) "-DCFG=..\..\install\JVCLInstall\JVCLInstall.cfg" configfile
 	@cd ..\..\install\JVCLInstall
-	#
-	@echo -E"$(JVCLROOT)\bin">>JVCLInstall.cfg
-	@echo -N"$(JVCLROOT)\dcu">>JVCLInstall.cfg
-	@echo -DNO_JCL>>JVCLInstall.cfg
-	@echo -DNO_UNITVERSIONING>>JVCLInstall.cfg
-	@echo -DUSE_DXGETTEXT>>JVCLInstall.cfg
-	@echo -DDEFAULT_JVCL_INC>>JVCLInstall.cfg
-	#
-	#
+	type &&|
+
+-E"$(JVCLROOT)\bin"
+-N"$(JVCLROOT)\dcu"
+-DNO_JCL
+-DNO_UNITVERSIONING
+-DUSE_DXGETTEXT
+-DDEFAULT_JVCL_INC
+| >>JVCLInstall.cfg
 	$(DCC) -B $(DXGETTEXT) -DNO_JCL JVCLInstall.dpr
 	start ..\..\bin\JVCLInstall.exe $(INSTALLOPTIONS)
 
