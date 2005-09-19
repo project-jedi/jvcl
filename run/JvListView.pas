@@ -87,7 +87,7 @@ type
     property PopupMenu: TPopupMenu read FPopupMenu write SetPopupMenu;
   published
     property Font: TFont read FFont write SetFont;
-    property Brush: TBrush read FBrush write SetBrush; 
+    property Brush: TBrush read FBrush write SetBrush;
     // Published now for the usage of AppStorage.Read/WritePersistent
     property Caption;
     property Checked;
@@ -119,6 +119,12 @@ type
     property Items[Index: Integer] : TJvListExtendedColumn read GetItem write SetItem; default;
   end;
 
+  TViewStyles = set of TViewStyle;
+
+const
+  ALL_VIEW_STYLES = [vsIcon, vsSmallIcon, vsList, vsReport];
+
+type
   TJvListView = class(TJvExListView)
   private
     FAutoClipboardCopy: Boolean;
@@ -135,7 +141,8 @@ type
     FAutoSelect: Boolean;
     FPicture: TPicture;
     FExtendedColumns: TJvListExtendedColumns;
-    FSavedExtendedColumns: TJvListExtendedColumns;  // use for Create/DestroyWnd process
+    FSavedExtendedColumns: TJvListExtendedColumns;
+    FViewStylesItemBrush: TViewStyles;  // use for Create/DestroyWnd process
     procedure DoPictureChange(Sender: TObject);
     procedure SetPicture(const Value: TPicture);
     procedure SetHeaderImages(const Value: TCustomImageList);
@@ -146,6 +153,7 @@ type
     function GetItemIndex: Integer;
     procedure SetItemIndex(const Value: Integer);
     {$ENDIF COMPILER5}
+    procedure SetViewStylesItemBrush(const Value: TViewStyles);
   protected
     function CreateListItem: TListItem; override;
     function CreateListItems: TListItems; {$IFDEF COMPILER6_UP} override; {$ENDIF}
@@ -213,6 +221,9 @@ type
     property SortOnClick: Boolean read FSortOnClick write FSortOnClick default True;
     property SmallImages write SetSmallImages;
     property AutoClipboardCopy: Boolean read FAutoClipboardCopy write FAutoClipboardCopy default True;
+
+    property ViewStylesItemBrush : TViewStyles read FViewStylesItemBrush write SetViewStylesItemBrush default ALL_VIEW_STYLES;
+
     property OnAutoSort: TJvListViewColumnSortEvent read FOnAutoSort write FOnAutoSort;
     property OnHorizontalScroll: TNotifyEvent read FOnHorizontalScroll write FOnHorizontalScroll;
     property OnLoadProgress: TJvOnProgress read FOnLoadProgress write FOnLoadProgress;
@@ -440,6 +451,7 @@ begin
   FPicture := TPicture.Create;
   FPicture.OnChange := DoPictureChange;
 
+  FViewStylesItemBrush := ALL_VIEW_STYLES;
   FExtendedColumns := TJvListExtendedColumns.Create(Self);
   FSavedExtendedColumns := TJvListExtendedColumns.Create(Self);
 end;
@@ -1538,7 +1550,8 @@ begin
   if (Stage = cdPrePaint) and Assigned(Item) then
   begin
     Canvas.Font := TJvListItem(Item).Font;
-    Canvas.Brush := TJvListItem(Item).Brush;
+    if ViewStyle in ViewStylesItemBrush then
+      Canvas.Brush := TJvListItem(Item).Brush;
   end;
 
   Result := inherited CustomDrawItem(Item, State, Stage);
@@ -1591,6 +1604,13 @@ begin
 end;
 
 {$ENDIF COMPILER5}
+
+procedure TJvListView.SetViewStylesItemBrush(const Value: TViewStyles);
+begin
+  FViewStylesItemBrush := Value;
+  Invalidate;
+end;
+
 
 {$IFDEF UNITVERSIONING}
 initialization
