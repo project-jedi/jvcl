@@ -95,8 +95,27 @@ type
     property SubItems;
   end;
 
-  // (rom) Why that? C++ Builder should need this class.
-  {$EXTERNALSYM TJvListItem}
+  TJvListExtendedColumn = class(TCollectionItem)
+  private
+    FSortMethod: TJvSortMethod;
+    FUseParentSortMethod: Boolean;
+    function GetSortMethod: TJvSortMethod;
+    procedure SetSortMethod(const Value: TJvSortMethod);
+  public
+    constructor Create(Collection: TCollection); override;
+  published
+    property SortMethod: TJvSortMethod read GetSortMethod write SetSortMethod default smAutomatic;
+    property UseParentSortMethod : Boolean read FUseParentSortMethod write FUseParentSortMethod default True;
+  end;
+
+  TJvListExtendedColumns = class(TOwnedCollection)
+  private
+    function GetItem(Index: Integer): TJvListExtendedColumn;
+    procedure SetItem(Index: Integer; const Value: TJvListExtendedColumn);
+  public
+    constructor Create(AOwner: TPersistent);
+    property Items[Index: Integer] : TJvListExtendedColumn read GetItem write SetItem; default;
+  end;
 
   TJvListView = class(TJvExListView)
   private
@@ -113,11 +132,14 @@ type
     FHeaderImages: TCustomImageList;
     FAutoSelect: Boolean;
     FPicture: TPicture;
+    FExtendedColumns: TJvListExtendedColumns;
+    FSavedExtendedColumns: TJvListExtendedColumns;  // use for Create/DestroyWnd process
     procedure DoPictureChange(Sender: TObject);
     procedure SetPicture(const Value: TPicture);
     procedure SetHeaderImages(const Value: TCustomImageList);
     procedure UpdateHeaderImages(HeaderHandle: Integer);
     procedure WMAutoSelect(var Msg: TMessage); message WM_AUTOSELECT;
+    procedure SetExtendedColumns(const Value: TJvListExtendedColumns);
     {$IFDEF COMPILER5}
     function GetItemIndex: Integer;
     procedure SetItemIndex(const Value: Integer);
@@ -133,10 +155,15 @@ type
     procedure SetColumnsOrder(const Order: string);
     procedure SetItemPopup(Node: TListItem; Value: TPopupMenu);
     function GetItemPopup(Node: TListItem): TPopupMenu;
-    procedure CreateWnd; override;
     procedure DoHeaderImagesChange(Sender: TObject);
     procedure Loaded; override;
+
+    procedure CreateWnd; override;
+    procedure DestroyWnd; override;
+
     procedure WMNCCalcSize(var Msg: TWMNCCalcSize); message WM_NCCALCSIZE;
+    procedure LVMDeleteColumn(var Msg: TMessage); message LVM_DELETECOLUMN;
+    procedure LVMInsertColumn(var Msg: TMessage); message LVM_INSERTCOLUMN;
 
     procedure InsertItem(Item: TListItem); override;
     function IsCustomDrawn(Target: TCustomDrawTarget; Stage: TCustomDrawStage): Boolean; {$IFDEF COMPILER6_UP} override; {$ENDIF}
@@ -192,6 +219,17 @@ type
     property OnMouseEnter;
     property OnMouseLeave;
     property OnParentColorChange;
+
+    // This property contains a collection that allows to specify additional
+    // properties for each columns (sort method for instance). It can not be
+    // included in the Columns collection as the VCL does not offer a way
+    // to specify which class to use for the items of the Columns collection.
+    // Note that this one (ExtendedColumns) is populated automatically when
+    // a column is added or deleted. But because the VCL code for add starts
+    // by deleting all columns to reinsert them after, you should not change
+    // the properties for any item of ExtendedColumns in a loop that contains
+    // a call to the Add method of the Columns property.
+    property ExtendedColumns : TJvListExtendedColumns read FExtendedColumns write SetExtendedColumns;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -333,6 +371,50 @@ begin
       Sender.DeleteValue(Sender.ConcatPaths([Path, ItemName + IntToStr(I)]));
 end;
 
+{ TJvListExtendedColumn }
+
+constructor TJvListExtendedColumn.Create(Collection: TCollection);
+begin
+  inherited Create(Collection);
+
+  FSortMethod := smAutomatic;
+  FUseParentSortMethod := True;
+end;
+
+function TJvListExtendedColumn.GetSortMethod: TJvSortMethod;
+begin
+  if (Collection.Owner is TJvListView) and UseParentSortMethod then
+    Result := TJvListView(Collection.Owner).SortMethod
+  else
+    Result := FSortMethod;
+end;
+
+procedure TJvListExtendedColumn.SetSortMethod(
+  const Value: TJvSortMethod);
+begin
+  FSortMethod := Value;
+  UseParentSortMethod := False;
+end;
+
+{ TJvListExtendedColumns }
+
+constructor TJvListExtendedColumns.Create(AOwner: TPersistent);
+begin
+  inherited Create(AOwner, TJvListExtendedColumn);
+end;
+
+function TJvListExtendedColumns.GetItem(
+  Index: Integer): TJvListExtendedColumn;
+begin
+  Result := TJvListExtendedColumn(inherited Items[Index]);
+end;
+
+procedure TJvListExtendedColumns.SetItem(Index: Integer;
+  const Value: TJvListExtendedColumn);
+begin
+  inherited Items[Index] := Value;
+end;
+
 //=== { TJvListView } ========================================================
 
 const
@@ -350,10 +432,16 @@ begin
   FAutoSelect := True;
   FPicture := TPicture.Create;
   FPicture.OnChange := DoPictureChange;
+
+  FExtendedColumns := TJvListExtendedColumns.Create(Self);
+  FSavedExtendedColumns := TJvListExtendedColumns.Create(Self);
 end;
 
 destructor TJvListView.Destroy;
 begin
+  FExtendedColumns.Free;
+  FSavedExtendedColumns.Free;
+
   FImageChangeLink.Free;
   FPicture.Free;
   inherited Destroy;
@@ -523,7 +611,7 @@ var
     I := Parm.Index;
 
     // (Salvatore)
-    SortKind := TJvListView(Parm.Sender).SortMethod;
+    SortKind := TJvListView(Parm.Sender).ExtendedColumns[Parm.Index].SortMethod;
     if Assigned(TJvListView(Parm.Sender).OnAutoSort) then
       TJvListView(Parm.Sender).OnAutoSort(Parm.Sender, Parm.Index, SortKind);
 
@@ -1141,6 +1229,12 @@ begin
   end;
 end;
 
+procedure TJvListView.SetExtendedColumns(
+  const Value: TJvListExtendedColumns);
+begin
+  FExtendedColumns.Assign(Value);
+end;
+
 procedure TJvListView.Notification(AComponent: TComponent;
   Operation: TOperation);
 var
@@ -1161,6 +1255,8 @@ procedure TJvListView.CreateWnd;
 begin
   inherited CreateWnd;
   UpdateHeaderImages(ListView_GetHeader(Handle));
+  if FSavedExtendedColumns.Count > 0 then
+    FExtendedColumns.Assign(FSavedExtendedColumns);
 end;
 
 procedure TJvListView.UpdateHeaderImages(HeaderHandle: Integer);
@@ -1451,6 +1547,24 @@ begin
 //  if (Picture.Graphic <> nil) and not Picture.Graphic.Empty then
 //    Picture.Graphic.Transparent := true;
   Invalidate;
+end;
+
+procedure TJvListView.LVMDeleteColumn(var Msg: TMessage);
+begin
+  inherited;
+  FExtendedColumns.Delete(Msg.WParam);
+end;
+
+procedure TJvListView.LVMInsertColumn(var Msg: TMessage);
+begin
+  inherited;
+  FExtendedColumns.Insert(Msg.WParam);
+end;
+
+procedure TJvListView.DestroyWnd;
+begin
+  FSavedExtendedColumns.Assign(FExtendedColumns);
+  inherited DestroyWnd;
 end;
 
 {$IFDEF COMPILER5}
