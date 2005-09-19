@@ -112,6 +112,8 @@ type
   private
     function GetItem(Index: Integer): TJvListExtendedColumn;
     procedure SetItem(Index: Integer; const Value: TJvListExtendedColumn);
+
+    function Owner : TPersistent;
   public
     constructor Create(AOwner: TPersistent);
     property Items[Index: Integer] : TJvListExtendedColumn read GetItem write SetItem; default;
@@ -383,8 +385,8 @@ end;
 
 function TJvListExtendedColumn.GetSortMethod: TJvSortMethod;
 begin
-  if (Collection.Owner is TJvListView) and UseParentSortMethod then
-    Result := TJvListView(Collection.Owner).SortMethod
+  if (TJvListExtendedColumns(Collection).Owner is TJvListView) and UseParentSortMethod then
+    Result := TJvListView(TJvListExtendedColumns(Collection).Owner).SortMethod
   else
     Result := FSortMethod;
 end;
@@ -407,6 +409,11 @@ function TJvListExtendedColumns.GetItem(
   Index: Integer): TJvListExtendedColumn;
 begin
   Result := TJvListExtendedColumn(inherited Items[Index]);
+end;
+
+function TJvListExtendedColumns.Owner: TPersistent;
+begin
+  Result := GetOwner;
 end;
 
 procedure TJvListExtendedColumns.SetItem(Index: Integer;
