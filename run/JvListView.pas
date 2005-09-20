@@ -103,6 +103,8 @@ type
     procedure SetSortMethod(const Value: TJvSortMethod);
   public
     constructor Create(Collection: TCollection); override;
+
+    procedure Assign(AValue: TPersistent); override;
   published
     property SortMethod: TJvSortMethod read GetSortMethod write SetSortMethod default smAutomatic;
     property UseParentSortMethod : Boolean read FUseParentSortMethod write FUseParentSortMethod default True;
@@ -386,6 +388,17 @@ end;
 
 { TJvListExtendedColumn }
 
+procedure TJvListExtendedColumn.Assign(AValue: TPersistent);
+begin
+  if AValue is TJvListExtendedColumn then
+  begin
+    FSortMethod := TJvListExtendedColumn(AValue). SortMethod;
+    FUseParentSortMethod := TJvListExtendedColumn(AValue).UseParentSortMethod;
+  end
+  else
+    inherited Assign(AValue);
+end;
+
 constructor TJvListExtendedColumn.Create(Collection: TCollection);
 begin
   inherited Create(Collection);
@@ -630,7 +643,11 @@ var
     I := Parm.Index;
 
     // (Salvatore)
-    SortKind := TJvListView(Parm.Sender).ExtendedColumns[Parm.Index].SortMethod;
+    if Parm.Index < TJvListView(Parm.Sender).ExtendedColumns.Count  then
+      SortKind := TJvListView(Parm.Sender).ExtendedColumns[Parm.Index].SortMethod
+    else
+      SortKind := TJvListView(Parm.Sender).SortMethod; 
+      
     if Assigned(TJvListView(Parm.Sender).OnAutoSort) then
       TJvListView(Parm.Sender).OnAutoSort(Parm.Sender, Parm.Index, SortKind);
 
@@ -1572,7 +1589,11 @@ end;
 procedure TJvListView.LVMDeleteColumn(var Msg: TMessage);
 begin
   inherited;
-  FExtendedColumns.Delete(Msg.WParam);
+  // This may happen at design time, especially when migrating
+  // a project that uses an old version of TJvListView that did
+  // not the ExtendedColumns
+  if Msg.WParam < FExtendedColumns.Count then
+    FExtendedColumns.Delete(Msg.WParam);
 end;
 
 procedure TJvListView.LVMInsertColumn(var Msg: TMessage);
