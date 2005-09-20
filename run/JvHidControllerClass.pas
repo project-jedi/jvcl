@@ -47,7 +47,7 @@ uses
 
 const
   // a version string for the component
-  cHidControllerClassVersion = '1.0.30';
+  cHidControllerClassVersion = '1.0.31';
 
   // strings from the registry for CheckOutByClass
   cHidNoClass = 'HIDClass';
@@ -296,6 +296,7 @@ type
     function WriteFile(var Report; ToWrite: DWORD; var BytesWritten: DWORD): Boolean;
     function WriteFileEx(var Report; ToWrite: DWORD;
       CallBack: TPROverlappedCompletionRoutine): Boolean;
+    function CheckOut: Boolean;
     // read only properties
     property Attributes: THIDDAttributes read FAttributes;
     property Caps: THIDPCaps read GetCaps;
@@ -1530,6 +1531,21 @@ begin
     FillChar(FOvlWrite, SizeOf(TOverlapped), #0);
     FOvlWrite.hEvent := DWORD(Self);
     Result := JvHidControllerClass.WriteFileEx(HidOverlappedWrite, Report, ToWrite, FOvlWrite, CallBack);
+  end;
+end;
+
+function TJvHidDevice.CheckOut: Boolean;
+begin
+  Result := Assigned(FMyController) and IsPluggedIn and not IsCheckedOut;
+  if Result then
+  begin
+    FIsCheckedOut := True;
+    Inc(FMyController.FNumCheckedOutDevices);
+    Dec(FMyController.FNumCheckedInDevices);
+    StartThread;
+    CloseFile;
+    CloseFileEx(omhRead);
+    CloseFileEx(omhWrite);
   end;
 end;
 
