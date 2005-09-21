@@ -92,7 +92,7 @@ const
     (Ch: '<'; Html: '&lt;'),
     (Ch: '>'; Html: '&gt;'),
     (Ch: '^'; Html: '&circ;'),
-    (Ch: '~'; Html: '&tild;'),
+    (Ch: '~'; Html: '&tilde;'),
     (Ch: '£'; Html: '&pound;'),
     (Ch: '§'; Html: '&sect;'),
     (Ch: '°'; Html: '&deg;'),
