@@ -282,6 +282,7 @@ destructor TJvMruList.Destroy;
 begin
   if FList <> 0 then
     FreeMruList(FList);
+  SetItemData(Pointer(nil));
   inherited Destroy;
 end;
 
