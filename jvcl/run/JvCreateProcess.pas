@@ -177,7 +177,7 @@ type
     procedure SetEnvironment(const Value: TStrings);
     function GetHandle: THandle;
 
-    procedure StartConsoleEnding;
+    procedure BeginConsoleEnding;
     procedure EndConsoleEnding;
   protected
     procedure CheckRunning;
@@ -304,8 +304,6 @@ type
     FInputBufferSize: Cardinal;
     FInputBufferEnd: Cardinal;
   protected
-    FLoopEntered: Boolean;
-    FTerminateAfterLoopEntered: Boolean;
     procedure CopyToBuffer(Buffer: PChar; ASize: Cardinal);
     procedure Execute; override;
   public
@@ -317,6 +315,31 @@ type
   end;
 
 //=== Local procedures =======================================================
+
+var
+  GWinSrvHandle: HMODULE;
+  GTriedLoadWinSrvDll: Boolean;
+
+const
+  WinSrvDllName = 'WINSRV.DLL';
+
+function WinSrvHandle: HMODULE;
+begin
+  if (GWinSrvHandle = 0) and not GTriedLoadWinSrvDll then
+  begin
+    GTriedLoadWinSrvDll := True;
+
+    GWinSrvHandle := SafeLoadLibrary(WinSrvDllName);
+    if GWinSrvHandle <> 0 then
+      FreeLibrary(GWinSrvHandle);
+  end;
+  Result := GWinSrvHandle;
+end;
+
+function IsConsoleWindow(AHandle: THandle): Boolean;
+begin
+  Result := LongWord(GetWindowLong(AHandle, GWL_HINSTANCE)) = WinSrvHandle;
+end;
 
 function InternalCloseApp(ProcessID: DWORD; UseQuit: Boolean): Boolean;
 type
@@ -339,7 +362,7 @@ var
       if Param.PostQuit then
         PostThreadMessage(TID, WM_QUIT, 0, 0)
       else
-      if IsWindowVisible(Wnd) then
+      if IsWindowVisible(Wnd) or IsConsoleWindow(Wnd) then
         PostMessage(Wnd, WM_CLOSE, 0, 0);
       Param.FoundWin := True;
     end;
@@ -760,17 +783,8 @@ procedure TJvReadThread.Execute;
 var
   BytesRead: Cardinal;
 begin
-  { FTerminateAfterLoopEntered and FLoopEntered ensure that the loop is
-    entered minimal once, ie ReadFile is called minimal once. This ensures that
-    the output of very fast finishing executables is read. (We can't change
-    the loop to repeat until and call Terminate because Terminated is checked
-    in Classes.ThreadProc just before Execute is entered.)
-  }
-
-  while not Terminated or (FTerminateAfterLoopEntered and FLoopEntered) do
+  while not Terminated do
   begin
-    FLoopEntered := True;
-
     { ReadFile will block until *some* data is available on the pipe }
     if not ReadFile(FReadHandle, FPreBuffer[0], CCPS_BufferSize, BytesRead, nil) then
     begin
@@ -815,13 +829,8 @@ end;
 
 procedure TJvReadThread.TerminateThread;
 begin
-  if FLoopEntered then
-  begin
-    Terminate;
-    CloseRead;
-  end
-  else
-    FTerminateAfterLoopEntered := True;
+  Terminate;
+  CloseRead;
 end;
 
 //=== { TJvConsoleThread } ===================================================
@@ -1053,13 +1062,10 @@ procedure TJvCreateProcess.ConsoleWaitThreadTerminated(Sender: TObject);
 var
   AllThreadsDone: Boolean;
 begin
-  StartConsoleEnding;
+  FExitCode := TJvWaitForProcessThread(Sender).FExitCode;
+
+  BeginConsoleEnding;
   try
-    if Assigned(FReadThread) then
-      TJvReadThread(FReadThread).TerminateThread;
-
-    FExitCode := TJvWaitForProcessThread(Sender).FExitCode;
-
     { We only fire a TerminateEvent if both the read thread and the wait thread
       have terminated; usually the read thread will terminate before the wait
       thread; must be determined inside the lock (FEndLock) }
@@ -1246,13 +1252,13 @@ procedure TJvCreateProcess.ReadThreadTerminated(Sender: TObject);
 var
   AllThreadsDone: Boolean;
 begin
-  StartConsoleEnding;
-  try
-    // Read for the last time data from the read thread
-    HandleReadEvent;
-    if FCurrentLine <> '' then
-      DoReadEvent(False);
+  // Read for the last time data from the read thread
+  HandleReadEvent;
+  if FCurrentLine <> '' then
+    DoReadEvent(False);
 
+  BeginConsoleEnding;
+  try
     { We only fire a TerminateEvent if both the read thread and the wait thread
       have terminated; usually the read thread will terminate before the wait
       thread; must be determined inside the lock (FEndLock) }
@@ -1342,6 +1348,8 @@ begin
       }
       FState := psWaiting;
 
+      FEndLock := TCriticalSection.Create;
+
       FReadThread := TJvReadThread.Create(LLocalHandles.Read, Handle);
       FReadThread.OnTerminate := ReadThreadTerminated;
 
@@ -1392,10 +1400,8 @@ begin
   FState := psReady;
 end;
 
-procedure TJvCreateProcess.StartConsoleEnding;
+procedure TJvCreateProcess.BeginConsoleEnding;
 begin
-  if not Assigned(FEndLock) then
-    FEndLock := TCriticalSection.Create;
   FEndLock.Enter;
 end;
 
