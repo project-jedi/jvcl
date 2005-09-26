@@ -361,6 +361,7 @@ begin
   DropFilters;
   FFilter.Free;
   FDataLink.Free;
+  FDataLink := nil;
   inherited Destroy;
 end;
 

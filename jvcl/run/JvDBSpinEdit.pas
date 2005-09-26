@@ -113,6 +113,7 @@ end;
 destructor TJvDBSpinEdit.Destroy;
 begin
   FDataLink.Free;
+  FDataLink := nil;
   inherited Destroy;
 end;
 

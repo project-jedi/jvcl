@@ -421,6 +421,7 @@ end;
 destructor TJvCustomDBTreeView.Destroy;
 begin
   FDataLink.Free;
+  FDataLink := nil;
   TimerDnD.Free;
   inherited Destroy;
 end;
