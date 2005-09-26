@@ -2741,7 +2741,7 @@ end;
 
 procedure TJvTreeView.SetItemIndex(const Value: Integer);
 begin
-  if ItemIndex = -1 then
+  if Value = -1 then
     Selected := nil
   else
     Selected := Items[Value];
