@@ -625,8 +625,10 @@ begin
   FGlyph.OnChange := GlyphChanged;
   FNumGlyphs := 1;
 
-  AllowAllUp := True;
-  Flat := True;
+  // obones: removed, it goes against the default values set in the ancestor
+  // and will force them to be true when loading from a DFM.
+  //AllowAllUp := True;
+  //Flat := True;
 end;
 
 destructor TJvTransparentButton.Destroy;
