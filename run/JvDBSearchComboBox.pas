@@ -259,6 +259,7 @@ end;
 destructor TJvDBCustomSearchComboBox.Destroy;
 begin
   FDataLink.Free;
+  FDataLink := nil; // Notification() is called by inherited Destroy
   inherited Destroy;
 end;
 
