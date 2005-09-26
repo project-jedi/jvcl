@@ -531,6 +531,7 @@ begin
   FListLink.Free;
   FDataLink.FDBLookupControl := nil;
   FDataLink.Free;
+  FDataLink := nil;
   inherited Destroy;
 end;
 
