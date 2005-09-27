@@ -577,6 +577,8 @@ var
   I: Integer;
   PFValues: TPVariant;
 begin
+  if Active then
+    Close;
   if Assigned(FDeletedValues) then
   begin
     if FDeletedValues.Count > 0 then
