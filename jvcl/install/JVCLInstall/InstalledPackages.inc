@@ -92,6 +92,17 @@ begin
     Result := FileExists(GetSystemDir+(Format('\cxGridVCL%s%d.bpl',[LowerCase(TargetTypes[Target.IsBCB]), Target.Version])));  
 end;
 
+{------------------------------------------------------------------------------}
+{ DOA Components }
+function Opt_DOAComponents(Target: TCompileTarget): Boolean;
+begin
+  if Target.Version = 9 then 
+    Result := FileExists(Target.BDSProjectsDir + '\bpl\doa40d2005.dcp')
+  else
+    Result := FileExists(Target.RootDir + Format('\Projects\bpl\doa40%s%d.bpl',[LowerCase(TargetTypes[Target.IsBCB]), Target.Version]));  
+end;
+
+
 
 {------------------------------------------------------------------------------}
 {------------------------------------------------------------------------------}
@@ -106,8 +117,11 @@ begin
   // internet components
   EnableOption('INTERNET_COMPONENTS', Opt_InternetComponents(Target));
   
+  // Third Party Components
   EnableOption('USE_3RDPARTY_INDY', Opt_IndyComponents(Target));
   EnableOption('USE_3RDPARTY_ICS', Opt_ICSComponents(Target));
+
+  EnableOption('USE_3RDPARTY_DOA', Opt_DOAComponents(Target));
 
   EnableOption('USE_3RDPARTY_SMIMPORT', Opt_SMImportComponents(Target));
   EnableOption('USE_3RDPARTY_SMEXPORT', Opt_SMExportComponents(Target));

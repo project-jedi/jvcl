@@ -28,7 +28,7 @@ Known Issues:
 
 { Enable this define if you want to register property and component editors included in
 JVCL for non-JVCL components as well. }
-{.$DEFINE JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
+{$DEFINE JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
 
 { Some new libraries and packages (currently JvUIB, JvWizard and JvTimeFrameWork) can be
 installed either in "stand-alone" mode or in "JVCL" mode. These packages use the
@@ -43,7 +43,7 @@ translation tool installed and want to use it with the JVCL. }
 {.$DEFINE USE_DXGETTEXT}
 
 { Enable this define if you use/have QuickReport }
-{$DEFINE JVCL_UseQuickReport}
+{.$DEFINE JVCL_UseQuickReport}
 
 { Enable this define if you have QReport 4 installed. This will require qr4rund7 instead
 of qrpt. NB! JVCL_UseQuickReport must also be defined}
@@ -90,7 +90,7 @@ OLE automation calls (for VCL only). }
 
 { This activates the unit versioning system where each JVCL unit gets a record that defines
 which revision, date and filename the unit has. }
-{.$DEFINE UNITVERSIONING}
+{$DEFINE UNITVERSIONING}
 
 // *********************************************************************
 // Start Definition of Third Party Components
@@ -112,11 +112,11 @@ SMIMPORT PACKAGE FROM AUTOMATIC COMPILE NO MANUAL COMPILE }
 
 { Activates the DevExpress cxEditor-Controls
 For further informations have a look at http://www.devexpress.com }
-{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
+{$DEFINE USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
 
 { Activates the DevExpress cxEditor-Controls
 For further informations have a look at http://www.devexpress.com }
-{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXGRID}
+{$DEFINE USE_3RDPARTY_DEVEXPRESS_CXGRID}
 
 { Activates the Internet Direct (Indy)-Components
 For further informations have a look at http://www.indyproject.org }
@@ -128,3 +128,7 @@ ATTENTION :
 BEFORE YOU ACTIVATE THIS OPTION YOU MUST CHANGE THE 
 ICS* PACKAGE FROM AUTOMATIC COMPILE NO MANUAL COMPILE }
 {.$DEFINE USE_3RDPARTY_ICS}
+
+{%missing%}
+{ JVCL DEVELOPER INFO: This option is missing, please update the jvclbase.inc file. }
+{.$DEFINE USE_3RDPARTY_DOA}

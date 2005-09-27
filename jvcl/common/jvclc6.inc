@@ -128,3 +128,7 @@ ATTENTION :
 BEFORE YOU ACTIVATE THIS OPTION YOU MUST CHANGE THE 
 ICS* PACKAGE FROM AUTOMATIC COMPILE NO MANUAL COMPILE }
 {.$DEFINE USE_3RDPARTY_ICS}
+
+{ Activates Direct Oracle Access Components
+For further informations have a look at http://www.allroundautomations.com }
+{.$DEFINE USE_3RDPARTY_DOA}
