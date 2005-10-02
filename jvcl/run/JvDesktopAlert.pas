@@ -15,7 +15,7 @@ Portions created by Peter Thornqvist are Copyright (C) 2004 Peter Thornqvist.
 All Rights Reserved.
 
 Contributor(s):
-Hans-Eric Grönlund (stack logic)
+Hans-Eric Grnlund (stack logic)
 Olivier Sannier (animation styles logic)
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
@@ -444,7 +444,7 @@ const
 implementation
 
 uses
-  SysUtils,
+  SysUtils, Messages,
   JvJVCLUtils, JvTypes;
 
 var
@@ -845,7 +845,7 @@ begin
     FActiveFocus := NullHandle;
   end;
   FDesktopForm.AllowFocus := AutoFocus;
-  FDesktopForm.Show;
+  FDesktopForm.ShowNoActivate;
   if not AutoFocus and (FActiveFocus <> GetFocus) then
   begin
     if (FActiveFocus <> NullHandle) then
@@ -1226,7 +1226,7 @@ begin
           for I := 0 to Pred(C) do
           begin
             Form := Items[I];
-            if Assigned(Form) and Form.Visible then
+            if Assigned(Form) and IsWindowVisible(Form.Handle) then
             begin
               X := R.Right - Form.Width;
               Dec(Y, Form.Height);
@@ -1241,7 +1241,7 @@ begin
           for I := 0 to Pred(C) do
           begin
             Form := Items[I];
-            if Assigned(Form) and Form.Visible then
+            if Assigned(Form) and IsWindowVisible(Form.Handle) then
             begin
               Dec(Y, Form.Height);
               Form.SetNewOrigin(X, Y);
@@ -1254,7 +1254,7 @@ begin
           for I := 0 to Pred(C) do
           begin
             Form := Items[I];
-            if Assigned(Form) and Form.Visible then
+            if Assigned(Form) and IsWindowVisible(Form.Handle) then
             begin
               X := R.Right - Form.Width;
               Form.SetNewOrigin(X, Y);
@@ -1269,7 +1269,7 @@ begin
           for I := 0 to Pred(C) do
           begin
             Form := Items[I];
-            if Assigned(Form) and Form.Visible then
+            if Assigned(Form) and IsWindowVisible(Form.Handle) then
             begin
               Form.SetNewOrigin(X, Y);
               Inc(Y, Form.Height);
@@ -1316,6 +1316,7 @@ begin
     AnimTimer.Interval := EndInterval;
     FCurrentStep := 0;
     PrepareEndAnimation;
+    FStatus := hsEndAnim;
     AnimTimer.Enabled := True;
   end;
 end;
@@ -1328,6 +1329,7 @@ begin
     AnimTimer.OnTimer := DisplayTimer;
     AnimTimer.Interval := DisplayDuration;
     FCurrentStep := 0;
+    FStatus := hsDisplay;
     AnimTimer.Enabled := True;
   end;
 end;
@@ -1341,6 +1343,7 @@ begin
     AnimTimer.Interval := StartInterval;
     FCurrentStep := 0;
     PrepareStartAnimation;
+    FStatus := hsStartAnim;
     AnimTimer.Enabled := True;
   end;
 end;
@@ -1358,6 +1361,7 @@ end;
 procedure TJvCustomDesktopAlertStyleHandler.DisplayTimer(Sender: TObject);
 begin
   AnimTimer.Enabled := False;
+  FStatus := hsIdle;
 end;
 
 function TJvCustomDesktopAlertStyleHandler.GetActive: Boolean;
@@ -1422,7 +1426,7 @@ end;
 procedure TJvCustomDesktopAlertStyleHandler.PrepareStartAnimation;
 begin
   if OwnerForm <> nil then
-    OwnerForm.Show;
+    ShowWindow(OwnerForm.Handle, SW_SHOWNA);
 end;
 
 //=== { TJvFadeAlertStyleHandler } ===========================================
@@ -1451,8 +1455,11 @@ end;
 
 procedure TJvFadeAlertStyleHandler.AbortAnimation;
 begin
-  AnimTimer.Enabled := False;
-  DoAlphaBlend(MaxAlphaBlendValue);
+  if not (Status in [hsDisplay, hsStartAnim]) then
+  begin
+    AnimTimer.Enabled := False;
+    DoAlphaBlend(MaxAlphaBlendValue);
+  end;
 end;
 
 procedure TJvFadeAlertStyleHandler.DoAlphaBlend(Value: Byte);
@@ -1558,8 +1565,11 @@ end;
 
 procedure TJvCenterGrowAlertStyleHandler.AbortAnimation;
 begin
-  AnimTimer.Enabled := False;
-  DoGrowRegion(MaxGrowthPercentage);
+  if not (Status in [hsDisplay, hsStartAnim]) then
+  begin
+    AnimTimer.Enabled := False;
+    DoGrowRegion(MaxGrowthPercentage);
+  end;
 end;
 
 procedure TJvCenterGrowAlertStyleHandler.DoGrowRegion(Percentage: Double);
