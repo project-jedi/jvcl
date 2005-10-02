@@ -347,7 +347,7 @@ type
     procedure SaveToStream(const Stream: TStream; const Level: string = ''; Parent: TJvSimpleXML = nil); override;
   end;
 
-  TJvSimpleXMLOptions = set of (sxoAutoCreate, sxoAutoIndent, sxoAutoEncodeValue, sxoAutoEncodeEntity);
+  TJvSimpleXMLOptions = set of (sxoAutoCreate, sxoAutoIndent, sxoAutoEncodeValue, sxoAutoEncodeEntity, sxoDoNotSaveProlog);
   TJvSimpleXMLEncodeEvent = procedure(Sender: TObject; var Value: string) of object;
   TJvSimpleXMLEncodeStreamEvent = procedure(Sender: TObject; InStream, OutStream: TStream) of object;
   TJvSimpleXML = class(TComponent)
@@ -1090,13 +1090,15 @@ begin
       FSaveCount := lCount;
       FSaveCurrent := 0;
       FOnSaveProg(Self, 0, lCount);
-      Prolog.SaveToStream(AOutStream, Self);
+      if not (sxoDoNotSaveProlog in FOptions) then
+        Prolog.SaveToStream(AOutStream, Self);
       Root.SaveToStream(AOutStream, '', Self);
       FOnSaveProg(Self, lCount, lCount);
     end
     else
     begin
-      Prolog.SaveToStream(AOutStream);
+      if not (sxoDoNotSaveProlog in FOptions) then
+        Prolog.SaveToStream(AOutStream);
       Root.SaveToStream(AOutStream);
     end;
     if Assigned(FOnEncodeStream) then
