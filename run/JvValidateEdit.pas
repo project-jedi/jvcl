@@ -13,7 +13,7 @@ The Original Code is JvValidateEdit, released on 20 February 2003,
 Portions created by Christopher Latta are Copyright (C) 2003 Christopher Latta.
 All Rights Reserved.
 
-Contributor(s): Peter Thörnqvist
+Contributor(s): Peter Thrnqvist
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL
 home page, located at http://jvcl.sourceforge.net
@@ -103,6 +103,7 @@ type
     FTrimDecimals: Boolean;
     FOldFontChange: TNotifyEvent;
     FOnIsValid: TJvCustomIsValidEvent;
+    FAllowEmpty: Boolean;
     procedure DisplayText;
     function ScientificStrToFloat(SciString: string): Double;
     procedure SetHasMaxValue(NewValue: Boolean);
@@ -159,7 +160,8 @@ type
     property OnCustomValidate: TJvCustomTextValidateEvent
       read FOnCustomValidate write FOnCustomValidate;
     property OnValueChanged: TNotifyEvent read FOnValueChanged write FOnValueChanged;
-    property Value: Variant read GetValue write SetValue;
+    property Value: Variant read GetValue write SetValue stored False;
+    property AllowEmpty: Boolean read FAllowEmpty write FAllowEmpty;
     property ZeroEmpty: Boolean read FZeroEmpty write SetZeroEmpty;
     property DisplayPrefix: string read FDisplayPrefix write SetDisplayPrefix;
     property DisplaySuffix: string read FDisplaySuffix write SetDisplaySuffix;
@@ -187,6 +189,7 @@ type
 
   TJvValidateEdit = class(TJvCustomValidateEdit)
   published
+    property AllowEmpty default False;
     property Alignment default taRightJustify;
     property Anchors;
     property AutoAlignment default True;
@@ -325,6 +328,7 @@ begin
     HasMinValue := lcSource.HasMinValue;
     HasMaxValue := lcSource.HasMaxValue;
     ZeroEmpty := lcSource.ZeroEmpty;
+    AllowEmpty := lcSource.AllowEmpty;
   end
   else
     inherited Assign(Source);
@@ -879,7 +883,9 @@ end;
 procedure TJvCustomValidateEdit.DisplayText;
 begin
   // The number types need to be formatted
-  if (FDisplayFormat in [dfBinary, dfCurrency, dfFloat, dfInteger, dfOctal, dfPercent, dfScientific, dfYear]) and
+  if FAllowEmpty and (FEditText = '') then
+    ChangeText('')
+  else if (FDisplayFormat in [dfBinary, dfCurrency, dfFloat, dfInteger, dfOctal, dfPercent, dfScientific, dfYear]) and
     (AsFloat = 0) and FZeroEmpty then
     ChangeText('')
   else
