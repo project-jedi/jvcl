@@ -15,7 +15,7 @@ Portions created by Peter Thornqvist are Copyright (C) 2004 Peter Thornqvist.
 All Rights Reserved.
 
 Contributor(s):
-Hans-Eric Grönlund (stack logic)
+Hans-Eric Grnlund (stack logic)
 Olivier Sannier (animation styles logic)
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
@@ -91,6 +91,7 @@ type
     {$IFDEF VCL}
     procedure WMNCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
     procedure WMActivate(var Message: TWMActivate); message WM_ACTIVATE;
+    procedure WMMouseActivate(var Message: TWMMouseActivate); message WM_MOUSEACTIVATE;
     procedure WMMove(var Msg: TWMMove); message WM_MOVE;
     {$ENDIF VCL}
     procedure JvDeskTopAlertAutoFree(var Msg: TMessage); message JVDESKTOPALERT_AUTOFREE;
@@ -127,6 +128,7 @@ type
     procedure SetNewLeft(const Value: Integer);
     procedure SetNewOrigin(ALeft, ATop: Integer);
     procedure DoButtonClick(Sender: TObject);
+    procedure ShowNoActivate;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnUserMove: TNotifyEvent read FOnUserMove write FOnUserMove;
@@ -238,7 +240,6 @@ begin
 
   BorderStyle := fbsNone;
   BorderIcons := [];
-  FormStyle := fsStayOnTop;
   Scaled := False;
   Height := cDefaultAlertFormHeight;
   Width := cDefaultAlertFormWidth;
@@ -310,7 +311,9 @@ end;
 procedure TJvFormDesktopAlert.WMActivate(var Message: TWMActivate);
 begin
   if (Message.Active = WA_INACTIVE) or AllowFocus then
-    inherited;
+    inherited
+  else
+    Message.Result := 1;
 end;
 
 {$ENDIF VCL}
@@ -342,7 +345,8 @@ begin
   begin
     if Assigned(FOnMouseLeave) then
       FOnMouseLeave(Self);
-    if TJvDesktopAlert(Owner).StyleHandler.DisplayDuration > 0 then
+    if not TJvDesktopAlert(Owner).StyleHandler.Active
+        and (TJvDesktopAlert(Owner).StyleHandler.DisplayDuration > 0) then
       TJvDesktopAlert(Owner).StyleHandler.DoEndAnimation;
     MouseInControl := False;
   end;
@@ -705,6 +709,21 @@ begin
   // suspend the form while the menu is visible
   FEndInterval := TJvDesktopAlert(Owner).StyleHandler.EndInterval;
   TJvDesktopAlert(Owner).StyleHandler.EndInterval := 0;
+end;
+
+procedure TJvFormDesktopAlert.WMMouseActivate(var Message: TWMMouseActivate);
+begin
+  if AllowFocus then
+    inherited
+  else
+    Message.Result := MA_NOACTIVATE;
+end;
+
+procedure TJvFormDesktopAlert.ShowNoActivate;
+begin
+  SetWindowPos(Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE
+    or SWP_NOACTIVATE or SWP_NOOWNERZORDER or SWP_NOREDRAW or SWP_NOSENDCHANGING);
+  DoShow;
 end;
 
 initialization
