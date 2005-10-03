@@ -345,7 +345,8 @@ type
   end;
 
   TJvDynControlCxMemo = class(TcxMemo, IUnknown, IJvDynControl, IJvDynControlData,
-    IJvDynControlItems, IJvDynControlMemo, IJvDynControlDevExpCx, IJvDynControlReadOnly)
+    IJvDynControlItems, IJvDynControlMemo, IJvDynControlDevExpCx, IJvDynControlReadOnly,
+    IJvDynControlAlignment)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value: Boolean);
@@ -372,6 +373,8 @@ type
     procedure ControlSetScrollBars(Value: TScrollStyle);
 
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
+    //IJvDynControlAlignment
+    procedure ControlSetAlignment(Value: TAlignment);
   end;
 
   TJvDynControlCxRichEdit = class(TcxRichEdit, IUnknown, IJvDynControl, IJvDynControlData,
@@ -543,7 +546,8 @@ type
   end;
 
   TJvDynControlCxPanel = class(TPanel, IUnknown, IJvDynControl, IJvDynControlPanel,
-    IJvDynControlAlign, IJvDynControlAutoSize, IJvDynControlBevelBorder, IJvDynControlColor)
+    IJvDynControlAlign, IJvDynControlAutoSize, IJvDynControlBevelBorder, IJvDynControlColor,
+    IJvDynControlAlignment)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
@@ -572,6 +576,8 @@ type
     // IJvDynControlColor
     procedure ControlSetColor(Value : TColor);
     procedure ControlSetParentColor(Value: Boolean);
+    //IJvDynControlAlignment
+    procedure ControlSetAlignment(Value: TAlignment);
   end;
 
   TJvDynControlCxImage = class(TcxImage, IUnknown, IJvDynControl,
@@ -616,7 +622,8 @@ type
 
   TJvDynControlCxLabel = class(TcxLabel, IUnknown, IJvDynControl, IJvDynControlLabel,
     IJvDynControlDevExpCx, IJvDynControlAlign,
-    IJvDynControlAutoSize, IJvDynControlColor)
+    IJvDynControlAutoSize, IJvDynControlColor,
+    IJvDynControlAlignment)
   public
     procedure ControlSetAnchors(Value : TAnchors);
     procedure ControlSetDefaultProperties;
@@ -642,11 +649,14 @@ type
     // IJvDynControlColor
     procedure ControlSetColor(Value : TColor);
     procedure ControlSetParentColor(Value: Boolean);
+    //IJvDynControlAlignment
+    procedure ControlSetAlignment(Value: TAlignment);
   end;
 
   // (rom) Warning! TStaticText and TLabel are very different.
   TJvDynControlCxStaticText = class(TcxLabel, IUnknown, IJvDynControl, IJvDynControlDevExpCx,
-    IJvDynControlAlign, IJvDynControlAutoSize, IJvDynControlColor)
+    IJvDynControlAlign, IJvDynControlAutoSize, IJvDynControlColor,
+    IJvDynControlAlignment)
   public
     procedure ControlSetAnchors(Value : TAnchors);
     procedure ControlSetDefaultProperties;
@@ -668,6 +678,8 @@ type
     // IJvDynControlColor
     procedure ControlSetColor(Value : TColor);
     procedure ControlSetParentColor(Value: Boolean);
+    //IJvDynControlAlignment
+    procedure ControlSetAlignment(Value: TAlignment);
   end;
 
   TJvDynControlCxButton = class(TcxButton, IUnknown, IJvDynControl, IJvDynControlButton,
@@ -1875,6 +1887,12 @@ begin
   Style.StyleController := Value.StyleController;
 end;
 
+procedure TJvDynControlCxMemo.ControlSetAlignment(Value: TAlignment);
+begin
+  Properties.Alignment := Value;
+end;
+
+
 //=== { TJvDynControlCxRichEdit } ============================================
 
 procedure TJvDynControlCxRichEdit.ControlSetDefaultProperties;
@@ -2566,6 +2584,11 @@ begin
   ParentColor := Value;
 end;
 
+procedure TJvDynControlCxPanel.ControlSetAlignment(Value: TAlignment);
+begin
+  Alignment := Value;
+end;
+
 
 //=== { TJvDynControlCxImage } ===============================================
 
@@ -2782,6 +2805,11 @@ begin
   ParentColor := Value;
 end;
 
+procedure TJvDynControlCxLabel.ControlSetAlignment(Value: TAlignment);
+begin
+  Properties.Alignment.Horz := Value;
+end;
+
 
 //=== { TJvDynControlCxStaticText } ==========================================
 
@@ -2845,6 +2873,11 @@ end;
 procedure TJvDynControlCxStaticText.ControlSetParentColor(Value: Boolean);
 begin
   ParentColor := Value;
+end;
+
+procedure TJvDynControlCxStaticText.ControlSetAlignment(Value: TAlignment);
+begin
+  Properties.Alignment.Horz := Value;
 end;
 
 

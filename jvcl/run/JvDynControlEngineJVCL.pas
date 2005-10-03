@@ -312,7 +312,8 @@ type
 
   TJvDynControlJVCLMemo = class(TJvMemo, IUnknown,
     IJvDynControl, IJvDynControlData, IJvDynControlItems, IJvDynControlMemo,
-    IJvDynControlReadOnly)
+    IJvDynControlReadOnly,
+    IJvDynControlAlignment)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
@@ -337,6 +338,8 @@ type
     procedure ControlSetWantReturns(Value: Boolean);
     procedure ControlSetWordWrap(Value: Boolean);
     procedure ControlSetScrollBars(Value: TScrollStyle);
+    //IJvDynControlAlignment
+    procedure ControlSetAlignment(Value: TAlignment);
   end;
 
   TJvDynControlJVCLRichEdit = class(TJvRichEdit, IUnknown,
@@ -495,7 +498,8 @@ type
 
   TJvDynControlJVCLPanel = class(TJvPanel, IUnknown,
     IJvDynControl, IJvDynControlPanel, IJvDynControlAlign,
-    IJvDynControlAutoSize, IJvDynControlBevelBorder, IJvDynControlColor)
+    IJvDynControlAutoSize, IJvDynControlBevelBorder, IJvDynControlColor,
+    IJvDynControlAlignment)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
@@ -525,6 +529,8 @@ type
     // IJvDynControlColor
     procedure ControlSetColor(Value : TColor);
     procedure ControlSetParentColor(Value: Boolean);
+    //IJvDynControlAlignment
+    procedure ControlSetAlignment(Value: TAlignment);
   end;
 
   TJvDynControlJVCLImage = class(TJvImage, IUnknown,
@@ -567,7 +573,8 @@ type
 
   TJvDynControlJVCLLabel = class(TJvLabel, IUnknown,
     IJvDynControl, IJvDynControlLabel, IJvDynControlAlign,
-    IJvDynControlAutoSize)
+    IJvDynControlAutoSize,
+    IJvDynControlAlignment)
   public
     procedure ControlSetAnchors(Value : TAnchors);
     procedure ControlSetDefaultProperties;
@@ -589,10 +596,13 @@ type
     // IJvDynControlColor
     procedure ControlSetColor(Value : TColor);
     procedure ControlSetParentColor(Value: Boolean);
+    //IJvDynControlAlignment
+    procedure ControlSetAlignment(Value: TAlignment);
   end;
 
   TJvDynControlJVCLStaticText = class(TJvStaticText, IUnknown,
-    IJvDynControl, IJvDynControlAlign, IJvDynControlAutoSize, IJvDynControlColor)
+    IJvDynControl, IJvDynControlAlign, IJvDynControlAutoSize, IJvDynControlColor,
+    IJvDynControlAlignment)
   public
     procedure ControlSetAnchors(Value : TAnchors);
     procedure ControlSetDefaultProperties;
@@ -611,6 +621,8 @@ type
     // IJvDynControlColor
     procedure ControlSetColor(Value : TColor);
     procedure ControlSetParentColor(Value: Boolean);
+    //IJvDynControlAlignment
+    procedure ControlSetAlignment(Value: TAlignment);
   end;
 
   TJvDynControlJVCLButton = class(TJvBitBtn, IUnknown,
@@ -1677,6 +1689,12 @@ begin
   ScrollBars := Value;
 end;
 
+procedure TJvDynControlJVCLMemo.ControlSetAlignment(Value: TAlignment);
+begin
+  Alignment := Value;
+end;
+
+
 //=== { TJvDynControlJVCLRichEdit } ==========================================
 
 procedure TJvDynControlJVCLRichEdit.ControlSetDefaultProperties;
@@ -2294,6 +2312,11 @@ begin
   ParentColor := Value;
 end;
 
+procedure TJvDynControlJVCLPanel.ControlSetAlignment(Value: TAlignment);
+begin
+  Alignment := Value;
+end;
+
 
 //=== { TJvDynControlJVCLImage } =============================================
 
@@ -2490,6 +2513,11 @@ begin
   ParentColor := Value;
 end;
 
+procedure TJvDynControlJVCLLabel.ControlSetAlignment(Value: TAlignment);
+begin
+  Alignment := Value;
+end;
+
 
 //=== { TJvDynControlJVCLStaticText } ========================================
 
@@ -2546,6 +2574,11 @@ end;
 procedure TJvDynControlJVCLStaticText.ControlSetParentColor(Value: Boolean);
 begin
   ParentColor := Value;
+end;
+
+procedure TJvDynControlJVCLStaticText.ControlSetAlignment(Value: TAlignment);
+begin
+  Alignment := Value;
 end;
 
 
