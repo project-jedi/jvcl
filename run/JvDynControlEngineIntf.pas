@@ -82,6 +82,12 @@ type
     procedure ControlSetAlign(Value: TAlign);
   end;
 
+  IJvDynControlColor= interface
+    ['{D6E907A4-0E6F-4AB7-98D5-F9C7660660F0}']
+    procedure ControlSetColor(Value: TColor);
+    procedure ControlSetParentColor(Value: Boolean);
+  end;
+
   IJvDynControlBevelBorder= interface
     ['{20DAC6BE-340D-456B-87C6-0BD71C4AA4E8}']
     procedure ControlSetBevelInner(Value: TBevelCut);

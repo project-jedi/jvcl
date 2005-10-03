@@ -495,7 +495,7 @@ type
 
   TJvDynControlJVCLPanel = class(TJvPanel, IUnknown,
     IJvDynControl, IJvDynControlPanel, IJvDynControlAlign,
-    IJvDynControlAutoSize, IJvDynControlBevelBorder)
+    IJvDynControlAutoSize, IJvDynControlBevelBorder, IJvDynControlColor)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
@@ -522,6 +522,9 @@ type
     procedure ControlSetBevelOuter(Value: TBevelCut);
     procedure ControlSetBorderStyle(Value : TBorderStyle);
     procedure ControlSetBorderWidth(Value : Integer);
+    // IJvDynControlColor
+    procedure ControlSetColor(Value : TColor);
+    procedure ControlSetParentColor(Value: Boolean);
   end;
 
   TJvDynControlJVCLImage = class(TJvImage, IUnknown,
@@ -583,10 +586,13 @@ type
 
     // IJvDynControlAutoSize
     procedure ControlSetAutoSize(Value: Boolean);
+    // IJvDynControlColor
+    procedure ControlSetColor(Value : TColor);
+    procedure ControlSetParentColor(Value: Boolean);
   end;
 
   TJvDynControlJVCLStaticText = class(TJvStaticText, IUnknown,
-    IJvDynControl)
+    IJvDynControl, IJvDynControlAlign, IJvDynControlAutoSize, IJvDynControlColor)
   public
     procedure ControlSetAnchors(Value : TAnchors);
     procedure ControlSetDefaultProperties;
@@ -602,6 +608,9 @@ type
 
     // IJvDynControlAutoSize
     procedure ControlSetAutoSize(Value: Boolean);
+    // IJvDynControlColor
+    procedure ControlSetColor(Value : TColor);
+    procedure ControlSetParentColor(Value: Boolean);
   end;
 
   TJvDynControlJVCLButton = class(TJvBitBtn, IUnknown,
@@ -679,6 +688,8 @@ type
   end;
 
 function DynControlEngineJVCL: TJvDynControlEngine;
+procedure SetDynControlEngineJVCLDefault;
+
 
 {$IFDEF UNITVERSIONING}
 const
@@ -2273,6 +2284,17 @@ begin
   BorderWidth := Value;
 end;
 
+procedure TJvDynControlJVCLPanel.ControlSetColor(Value : TColor);
+begin
+  Color := Value;
+end;
+
+procedure TJvDynControlJVCLPanel.ControlSetParentColor(Value: Boolean);
+begin
+  ParentColor := Value;
+end;
+
+
 //=== { TJvDynControlJVCLImage } =============================================
 
 procedure TJvDynControlJVCLImage.ControlSetDefaultProperties;
@@ -2458,6 +2480,16 @@ begin
   AutoSize := Value;
 end;
 
+procedure TJvDynControlJVCLLabel.ControlSetColor(Value : TColor);
+begin
+  Color := Value;
+end;
+
+procedure TJvDynControlJVCLLabel.ControlSetParentColor(Value: Boolean);
+begin
+  ParentColor := Value;
+end;
+
 
 //=== { TJvDynControlJVCLStaticText } ========================================
 
@@ -2504,6 +2536,16 @@ end;
 procedure TJvDynControlJVCLStaticText.ControlSetAutoSize(Value: Boolean);
 begin
   AutoSize := Value;
+end;
+
+procedure TJvDynControlJVCLStaticText.ControlSetColor(Value : TColor);
+begin
+  Color := Value;
+end;
+
+procedure TJvDynControlJVCLStaticText.ControlSetParentColor(Value: Boolean);
+begin
+  ParentColor := Value;
 end;
 
 
@@ -2755,6 +2797,11 @@ type
 function DynControlEngineJVCL: TJvDynControlEngine;
 begin
   Result := IntDynControlEngineJVCL;
+end;
+
+procedure SetDynControlEngineJVCLDefault;
+begin
+  SetDefaultDynControlEngine(IntDynControlEngineJVCL);
 end;
 
 procedure TJvDynControlEngineJVCL.RegisterControls;

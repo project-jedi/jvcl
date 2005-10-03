@@ -543,7 +543,7 @@ type
   end;
 
   TJvDynControlCxPanel = class(TPanel, IUnknown, IJvDynControl, IJvDynControlPanel,
-    IJvDynControlAlign, IJvDynControlAutoSize, IJvDynControlBevelBorder)
+    IJvDynControlAlign, IJvDynControlAutoSize, IJvDynControlBevelBorder, IJvDynControlColor)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
@@ -569,6 +569,9 @@ type
     procedure ControlSetBevelOuter(Value: TBevelCut);
     procedure ControlSetBorderStyle(Value : TBorderStyle);
     procedure ControlSetBorderWidth(Value : Integer);
+    // IJvDynControlColor
+    procedure ControlSetColor(Value : TColor);
+    procedure ControlSetParentColor(Value: Boolean);
   end;
 
   TJvDynControlCxImage = class(TcxImage, IUnknown, IJvDynControl,
@@ -611,10 +614,9 @@ type
     procedure ControlSetHint(const Value: string);
   end;
 
-  // (rom) TLabel or TcxLabel?
   TJvDynControlCxLabel = class(TcxLabel, IUnknown, IJvDynControl, IJvDynControlLabel,
     IJvDynControlDevExpCx, IJvDynControlAlign,
-    IJvDynControlAutoSize)
+    IJvDynControlAutoSize, IJvDynControlColor)
   public
     procedure ControlSetAnchors(Value : TAnchors);
     procedure ControlSetDefaultProperties;
@@ -636,11 +638,15 @@ type
 
     // IJvDynControlAutoSize
     procedure ControlSetAutoSize(Value: Boolean);
+
+    // IJvDynControlColor
+    procedure ControlSetColor(Value : TColor);
+    procedure ControlSetParentColor(Value: Boolean);
   end;
 
   // (rom) Warning! TStaticText and TLabel are very different.
   TJvDynControlCxStaticText = class(TcxLabel, IUnknown, IJvDynControl, IJvDynControlDevExpCx,
-    IJvDynControlAutoSize)
+    IJvDynControlAlign, IJvDynControlAutoSize, IJvDynControlColor)
   public
     procedure ControlSetAnchors(Value : TAnchors);
     procedure ControlSetDefaultProperties;
@@ -659,6 +665,9 @@ type
 
     // IJvDynControlAutoSize
     procedure ControlSetAutoSize(Value: Boolean);
+    // IJvDynControlColor
+    procedure ControlSetColor(Value : TColor);
+    procedure ControlSetParentColor(Value: Boolean);
   end;
 
   TJvDynControlCxButton = class(TcxButton, IUnknown, IJvDynControl, IJvDynControlButton,
@@ -2547,6 +2556,17 @@ begin
   BorderWidth := Value;
 end;
 
+procedure TJvDynControlCxPanel.ControlSetColor(Value : TColor);
+begin
+  Color := Value;
+end;
+
+procedure TJvDynControlCxPanel.ControlSetParentColor(Value: Boolean);
+begin
+  ParentColor := Value;
+end;
+
+
 //=== { TJvDynControlCxImage } ===============================================
 
 procedure TJvDynControlCxImage.ControlSetDefaultProperties;
@@ -2752,6 +2772,17 @@ begin
   AutoSize := Value;
 end;
 
+procedure TJvDynControlCxLabel.ControlSetColor(Value : TColor);
+begin
+  Color := Value;
+end;
+
+procedure TJvDynControlCxLabel.ControlSetParentColor(Value: Boolean);
+begin
+  ParentColor := Value;
+end;
+
+
 //=== { TJvDynControlCxStaticText } ==========================================
 
 procedure TJvDynControlCxStaticText.ControlSetAnchors(Value : TAnchors);
@@ -2805,6 +2836,17 @@ procedure TJvDynControlCxStaticText.ControlSetAutoSize(Value: Boolean);
 begin
   AutoSize := Value;
 end;
+
+procedure TJvDynControlCxStaticText.ControlSetColor(Value : TColor);
+begin
+  Color := Value;
+end;
+
+procedure TJvDynControlCxStaticText.ControlSetParentColor(Value: Boolean);
+begin
+  ParentColor := Value;
+end;
+
 
 //=== { TJvDynControlCxButton } ==============================================
 
