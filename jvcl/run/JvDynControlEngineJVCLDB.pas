@@ -66,6 +66,7 @@ type
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
+    procedure ControlSetAnchors(Value : TAnchors);
   end;
 
   TJvDynControlJVCLDBButtonEdit = class(TPanel, IUnknown,
@@ -112,6 +113,7 @@ type
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
+    procedure ControlSetAnchors(Value : TAnchors);
   end;
 
   TJvDynControlJVCLDBFileNameEdit = class(TPanel, IUnknown,
@@ -161,6 +163,7 @@ type
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
+    procedure ControlSetAnchors(Value : TAnchors);
   end;
 
   TJvDynControlJVCLDBDirectoryEdit = class(TPanel, IUnknown,
@@ -206,6 +209,7 @@ type
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
+    procedure ControlSetAnchors(Value : TAnchors);
   end;
 
   TJvDynControlJVCLDBCheckBox = class(TDBCheckBox, IUnknown,
@@ -230,6 +234,7 @@ type
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
+    procedure ControlSetAnchors(Value : TAnchors);
 
     //IJvDynControlDBCheckbox
     procedure ControlSetValueChecked(Value: Variant);
@@ -268,6 +273,7 @@ type
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
+    procedure ControlSetAnchors(Value : TAnchors);
   end;
 
   TJvDynControlJVCLDBDateEdit = class(TJvDBDateTimePicker, IUnknown,
@@ -297,6 +303,7 @@ type
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
+    procedure ControlSetAnchors(Value : TAnchors);
   end;
 
   TJvDynControlJVCLDBTimeEdit = class(TJvDBDateTimePicker, IUnknown,
@@ -323,6 +330,7 @@ type
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
+    procedure ControlSetAnchors(Value : TAnchors);
   end;
 
   TJvDynControlJVCLDBRadioGroup = class(TDBRadioGroup, IUnknown,
@@ -353,6 +361,7 @@ type
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
+    procedure ControlSetAnchors(Value : TAnchors);
   end;
 
   TJvDynControlJVCLDBListBox = class(TDBListBox, IUnknown,
@@ -383,6 +392,7 @@ type
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
+    procedure ControlSetAnchors(Value : TAnchors);
   end;
 
   TJvDynControlJVCLDBComboBox = class(TJvDBComboBox, IUnknown,
@@ -413,6 +423,7 @@ type
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
+    procedure ControlSetAnchors(Value : TAnchors);
   end;
 
   TJvDynControlJVCLDBImage = class(TJvDBImage, IUnknown,
@@ -444,6 +455,7 @@ type
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
+    procedure ControlSetAnchors(Value : TAnchors);
   end;
 
   TJvDynControlJVCLDBText = class(TDBText, IUnknown,
@@ -463,6 +475,7 @@ type
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
+    procedure ControlSetAnchors(Value : TAnchors);
   end;
 
 
@@ -483,6 +496,7 @@ type
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
+    procedure ControlSetAnchors(Value : TAnchors);
   end;
 
   TJvDynControlJVCLDBNavigator = class(TDBNavigator, IUnknown,
@@ -502,6 +516,7 @@ type
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
+    procedure ControlSetAnchors(Value : TAnchors);
   end;
 
 function DynControlEngineJVCLDB: TJvDynControlEngineDB;
@@ -620,6 +635,11 @@ end;
 function TJvDynControlJVCLDBEdit.ControlGetDataField: string;
 begin
   Result := DataField;
+end;
+
+procedure TJvDynControlJVCLDBEdit.ControlSetAnchors(Value : TAnchors);
+begin
+  Anchors := Value;
 end;
 
 //=== { TJvDynControlJVCLDBButtonEdit } ======================================
@@ -777,6 +797,11 @@ end;
 function TJvDynControlJVCLDBButtonEdit.ControlGetDataField: string;
 begin
   Result := FEditControl.DataField;
+end;
+
+procedure TJvDynControlJVCLDBButtonEdit.ControlSetAnchors(Value : TAnchors);
+begin
+  Anchors := Value;
 end;
 
 //=== { TJvDynControlJVCLDBFileNameEdit } ====================================
@@ -985,6 +1010,11 @@ begin
   Result := FEditControl.DataField;
 end;
 
+procedure TJvDynControlJVCLDBFileNameEdit.ControlSetAnchors(Value : TAnchors);
+begin
+  Anchors := Value;
+end;
+
 //=== { TJvDynControlJVCLDBDirectoryEdit } ===================================
 
 constructor TJvDynControlJVCLDBDirectoryEdit.Create(AOwner: TComponent);
@@ -1136,6 +1166,11 @@ begin
   Result := FEditControl.DataField;
 end;
 
+procedure TJvDynControlJVCLDBDirectoryEdit.ControlSetAnchors(Value : TAnchors);
+begin
+  Anchors := Value;
+end;
+
 //=== { TJvDynControlJVCLDBCheckBox } ========================================
 
 procedure TJvDynControlJVCLDBCheckBox.ControlSetDefaultProperties;
@@ -1205,6 +1240,11 @@ end;
 function TJvDynControlJVCLDBCheckBox.ControlGetDataField: string;
 begin
   Result := DataField;
+end;
+
+procedure TJvDynControlJVCLDBCheckBox.ControlSetAnchors(Value : TAnchors);
+begin
+  Anchors := Value;
 end;
 
 procedure TJvDynControlJVCLDBCheckBox.ControlSetValueChecked(Value: Variant);
@@ -1327,6 +1367,11 @@ begin
   Result := DataField;
 end;
 
+procedure TJvDynControlJVCLDBMemo.ControlSetAnchors(Value : TAnchors);
+begin
+  Anchors := Value;
+end;
+
 //=== { TJvDynControlJVCLDBDateEdit } ========================================
 
 procedure TJvDynControlJVCLDBDateEdit.ControlSetDefaultProperties;
@@ -1417,6 +1462,11 @@ begin
   Result := DataField;
 end;
 
+procedure TJvDynControlJVCLDBDateEdit.ControlSetAnchors(Value : TAnchors);
+begin
+  Anchors := Value;
+end;
+
 //=== { TJvDynControlJVCLDBTimeEdit } ========================================
 
 procedure TJvDynControlJVCLDBTimeEdit.ControlSetDefaultProperties;
@@ -1494,6 +1544,11 @@ end;
 function TJvDynControlJVCLDBTimeEdit.ControlGetDataField: string;
 begin
   Result := DataField;
+end;
+
+procedure TJvDynControlJVCLDBTimeEdit.ControlSetAnchors(Value : TAnchors);
+begin
+  Anchors := Value;
 end;
 
 //=== { TJvDynControlJVCLDBRadioGroup } ======================================
@@ -1589,6 +1644,11 @@ begin
   Result := DataField;
 end;
 
+procedure TJvDynControlJVCLDBRadioGroup.ControlSetAnchors(Value : TAnchors);
+begin
+  Anchors := Value;
+end;
+
 //=== { TJvDynControlJVCLDBListBox } =========================================
 
 procedure TJvDynControlJVCLDBListBox.ControlSetDefaultProperties;
@@ -1680,6 +1740,11 @@ end;
 function TJvDynControlJVCLDBListBox.ControlGetDataField: string;
 begin
   Result := DataField;
+end;
+
+procedure TJvDynControlJVCLDBListBox.ControlSetAnchors(Value : TAnchors);
+begin
+  Anchors := Value;
 end;
 
 //=== { TJvDynControlJVCLDBComboBox } ========================================
@@ -1776,6 +1841,11 @@ end;
 function TJvDynControlJVCLDBComboBox.ControlGetDataField: string;
 begin
   Result := DataField;
+end;
+
+procedure TJvDynControlJVCLDBComboBox.ControlSetAnchors(Value : TAnchors);
+begin
+  Anchors := Value;
 end;
 
 //=== { TJvDynControlJVCLDBImage } ===========================================
@@ -1883,6 +1953,11 @@ begin
   Result := DataField;
 end;
 
+procedure TJvDynControlJVCLDBImage.ControlSetAnchors(Value : TAnchors);
+begin
+  Anchors := Value;
+end;
+
 //=== { TJvDynControlJVCLDBText } ============================================
 
 procedure TJvDynControlJVCLDBText.ControlSetDefaultProperties;
@@ -1932,6 +2007,11 @@ end;
 function TJvDynControlJVCLDBText.ControlGetDataField: string;
 begin
   Result := DataField;
+end;
+
+procedure TJvDynControlJVCLDBText.ControlSetAnchors(Value : TAnchors);
+begin
+  Anchors := Value;
 end;
 
 //=== { TJvDynControlJVCLDBGrid } ============================================
@@ -1987,6 +2067,11 @@ begin
   Result := '';
 end;
 
+procedure TJvDynControlJVCLDBGrid.ControlSetAnchors(Value : TAnchors);
+begin
+  Anchors := Value;
+end;
+
 //=== { TJvDynControlJVCLDBNavigator } =======================================
 
 procedure TJvDynControlJVCLDBNavigator.ControlSetDefaultProperties;
@@ -2038,6 +2123,11 @@ end;
 function TJvDynControlJVCLDBNavigator.ControlGetDataField: string;
 begin
   Result := '';
+end;
+
+procedure TJvDynControlJVCLDBNavigator.ControlSetAnchors(Value : TAnchors);
+begin
+  Anchors := Value;
 end;
 
 //=== { TJvDynControlEngineJVCLDB } ==========================================

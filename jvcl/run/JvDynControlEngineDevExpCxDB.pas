@@ -67,6 +67,7 @@ type
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
+    procedure ControlSetAnchors(Value : TAnchors);
 
     //IJvDynControlDevExpCx
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
@@ -117,6 +118,7 @@ type
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
+    procedure ControlSetAnchors(Value : TAnchors);
 
     //IJvDynControlDevExpCx
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
@@ -167,6 +169,7 @@ type
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
+    procedure ControlSetAnchors(Value : TAnchors);
 
     //IJvDynControlDevExpCx
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
@@ -213,6 +216,7 @@ type
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
+    procedure ControlSetAnchors(Value : TAnchors);
 
     //IJvDynControlDevExpCx
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
@@ -240,6 +244,7 @@ type
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
+    procedure ControlSetAnchors(Value : TAnchors);
 
     //IJvDynControlDBCheckbox
     procedure ControlSetValueChecked(Value: Variant);
@@ -281,6 +286,7 @@ type
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
+    procedure ControlSetAnchors(Value : TAnchors);
 
     //IJvDynControlDevExpCx
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
@@ -318,6 +324,7 @@ type
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
+    procedure ControlSetAnchors(Value : TAnchors);
 
     //IJvDynControlDevExpCx
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
@@ -351,6 +358,7 @@ type
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
+    procedure ControlSetAnchors(Value : TAnchors);
 
     //IJvDynControlDevExpCx
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
@@ -384,6 +392,7 @@ type
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
+    procedure ControlSetAnchors(Value : TAnchors);
 
     //IJvDynControlDevExpCx
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
@@ -418,6 +427,7 @@ type
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
+    procedure ControlSetAnchors(Value : TAnchors);
 
     //IJvDynControlDevExpCx
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
@@ -440,6 +450,7 @@ type
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
+    procedure ControlSetAnchors(Value : TAnchors);
 
     //IJvDynControlDevExpCx
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
@@ -462,9 +473,11 @@ type
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
+    procedure ControlSetAnchors(Value : TAnchors);
 
     //IJvDynControlDevExpCx
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
+
   end;
 
   TJvDynControlCxDBDateTimeEdit = class (TcxDBDateEdit, IUnknown, IJvDynControl,
@@ -497,6 +510,7 @@ type
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
+    procedure ControlSetAnchors(Value : TAnchors);
   end;
 
   TJvDynControlCxDBDateEdit = class (TcxDBDateEdit, IUnknown, IJvDynControl,
@@ -528,6 +542,7 @@ type
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
+    procedure ControlSetAnchors(Value : TAnchors);
   end;
 
   TJvDynControlCxDBTimeEdit = class (TcxDBTimeEdit, IUnknown, IJvDynControl,
@@ -556,6 +571,7 @@ type
     function ControlGetDataSource: TDataSource;
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
+    procedure ControlSetAnchors(Value : TAnchors);
   end;
 
 function DynControlEngineCxDB: TJvDynControlEngineDB;
@@ -678,6 +694,11 @@ end;
 function TJvDynControlCxDBEdit.ControlGetDataField: string;
 begin
   Result := Databinding.DataField;
+end;
+
+procedure TJvDynControlCxDBEdit.ControlSetAnchors(Value : TAnchors);
+begin
+  Anchors := Value;
 end;
 
 procedure TJvDynControlCxDBEdit.ControlSetCxProperties(Value: TCxDynControlWrapper);
@@ -822,6 +843,11 @@ end;
 function TJvDynControlCxDBButtonEdit.ControlGetDataField: string;
 begin
   Result := Databinding.DataField;
+end;
+
+procedure TJvDynControlCxDBButtonEdit.ControlSetAnchors(Value : TAnchors);
+begin
+  Anchors := Value;
 end;
 
 procedure TJvDynControlCxDBButtonEdit.ControlSetCxProperties(Value: TCxDynControlWrapper);
@@ -1019,6 +1045,11 @@ begin
   Result := Databinding.DataField;
 end;
 
+procedure TJvDynControlCxDBFileNameEdit.ControlSetAnchors(Value : TAnchors);
+begin
+  Anchors := Value;
+end;
+
 procedure TJvDynControlCxDBFileNameEdit.ControlSetCxProperties(Value: TCxDynControlWrapper);
 begin
   Style.LookAndFeel.Assign(Value.LookAndFeel);
@@ -1161,6 +1192,11 @@ begin
   Result := Databinding.DataField;
 end;
 
+procedure TJvDynControlCxDBDirectoryEdit.ControlSetAnchors(Value : TAnchors);
+begin
+  Anchors := Value;
+end;
+
 procedure TJvDynControlCxDBDirectoryEdit.ControlSetCxProperties(Value: TCxDynControlWrapper);
 begin
   Style.LookAndFeel.Assign(Value.LookAndFeel);
@@ -1236,6 +1272,11 @@ end;
 function TJvDynControlCxDBCheckBox.ControlGetDataField: string;
 begin
   Result := Databinding.DataField;
+end;
+
+procedure TJvDynControlCxDBCheckBox.ControlSetAnchors(Value : TAnchors);
+begin
+  Anchors := Value;
 end;
 
 procedure TJvDynControlCxDBCheckBox.ControlSetValueChecked(Value: Variant);
@@ -1366,6 +1407,11 @@ begin
   Result := Databinding.DataField;
 end;
 
+procedure TJvDynControlCxDBMemo.ControlSetAnchors(Value : TAnchors);
+begin
+  Anchors := Value;
+end;
+
 procedure TJvDynControlCxDBMemo.ControlSetCxProperties(Value: TCxDynControlWrapper);
 begin
   Style.LookAndFeel.Assign(Value.LookAndFeel);
@@ -1377,7 +1423,7 @@ end;
 constructor TJvDynControlCxDBRadioGroup.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FItems := TStrings.Create;
+  FItems := TStringList.Create;
 end;
 
 destructor TJvDynControlCxDBRadioGroup.Destroy;
@@ -1496,6 +1542,11 @@ begin
   Result := Databinding.DataField;
 end;
 
+procedure TJvDynControlCxDBRadioGroup.ControlSetAnchors(Value : TAnchors);
+begin
+  Anchors := Value;
+end;
+
 procedure TJvDynControlCxDBRadioGroup.ControlSetCxProperties(Value: TCxDynControlWrapper);
 begin
   Style.LookAndFeel.Assign(Value.LookAndFeel);
@@ -1595,6 +1646,11 @@ begin
   Result := Databinding.DataField;
 end;
 
+procedure TJvDynControlCxDBListBox.ControlSetAnchors(Value : TAnchors);
+begin
+  Anchors := Value;
+end;
+
 procedure TJvDynControlCxDBListBox.ControlSetCxProperties(Value: TCxDynControlWrapper);
 begin
   Style.LookAndFeel.Assign(Value.LookAndFeel);
@@ -1692,6 +1748,11 @@ end;
 function TJvDynControlCxDBComboBox.ControlGetDataField: string;
 begin
   Result := Databinding.DataField;
+end;
+
+procedure TJvDynControlCxDBComboBox.ControlSetAnchors(Value : TAnchors);
+begin
+  Anchors := Value;
 end;
 
 procedure TJvDynControlCxDBComboBox.ControlSetCxProperties(Value: TCxDynControlWrapper);
@@ -1805,6 +1866,11 @@ begin
   Result := Databinding.DataField;
 end;
 
+procedure TJvDynControlCxDBImage.ControlSetAnchors(Value : TAnchors);
+begin
+  Anchors := Value;
+end;
+
 procedure TJvDynControlCxDBImage.ControlSetCxProperties(Value: TCxDynControlWrapper);
 begin
   Style.LookAndFeel.Assign(Value.LookAndFeel);
@@ -1860,6 +1926,11 @@ end;
 function TJvDynControlCxDBText.ControlGetDataField: string;
 begin
   Result := Databinding.DataField;
+end;
+
+procedure TJvDynControlCxDBText.ControlSetAnchors(Value : TAnchors);
+begin
+  Anchors := Value;
 end;
 
 procedure TJvDynControlCxDBText.ControlSetCxProperties(Value: TCxDynControlWrapper);
@@ -1919,6 +1990,11 @@ end;
 function TJvDynControlCxDBNavigator.ControlGetDataField: string;
 begin
   Result := '';
+end;
+
+procedure TJvDynControlCxDBNavigator.ControlSetAnchors(Value : TAnchors);
+begin
+  Anchors := Value;
 end;
 
 procedure TJvDynControlCxDBNavigator.ControlSetCxProperties(Value: TCxDynControlWrapper);
@@ -2026,6 +2102,11 @@ begin
   Result := Databinding.DataField;
 end;
 
+procedure TJvDynControlCxDBDateTimeEdit.ControlSetAnchors(Value : TAnchors);
+begin
+  Anchors := Value;
+end;
+
 //=== { TJvDynControlCxDBDateEdit } ==========================================
 
 procedure TJvDynControlCxDBDateEdit.ControlSetDefaultProperties;
@@ -2125,6 +2206,11 @@ begin
   Result := Databinding.DataField;
 end;
 
+procedure TJvDynControlCxDBDateEdit.ControlSetAnchors(Value : TAnchors);
+begin
+  Anchors := Value;
+end;
+
 //=== { TJvDynControlCxDBTimeEdit } ==========================================
 
 procedure TJvDynControlCxDBTimeEdit.ControlSetDefaultProperties;
@@ -2218,6 +2304,11 @@ end;
 function TJvDynControlCxDBTimeEdit.ControlGetDataField: string;
 begin
   Result := Databinding.DataField;
+end;
+
+procedure TJvDynControlCxDBTimeEdit.ControlSetAnchors(Value : TAnchors);
+begin
+  Anchors := Value;
 end;
 
 //=== { TJvDynControlEngineDevExpCxDB } ======================================
@@ -2361,11 +2452,9 @@ type
 procedure TJvDynControlEngineDevExpCxDB.TransferGridItemToControl(AGridItem: TcxCustomGridTableItem;
   ADataSource: TDataSource; AControl: TWinControl; AOptions: TJvCreateDBFieldsOnControlOptions);
 var
-  J: Integer;
   Control: TWinControl;
   LabelControl: TWinControl;
   GridDataBinding: TcxGridItemDBDataBinding;
-  ControlType: TJvDynControlType;
 begin
   if not (AGridItem is TcxGridColumn) or
     not (AGridItem.DataBinding is TcxGridItemDBDataBinding) then
@@ -2484,11 +2573,6 @@ end;
 
 function TJvDynControlEngineDevExpCxDB.CreateControlsFromDataComponentOnControl(ADataComponent: TComponent;
   AControl: TWinControl; AOptions: TJvCreateDBFieldsOnControlOptions): Boolean;
-var
-  I: Integer;
-  Control: TWinControl;
-  LabelControl: TWinControl;
-  CreateOptions: TJvCreateDBFieldsOnControlOptions;
 begin
   if Assigned(ADataComponent) then
     if (ADataComponent is TcxGrid) and

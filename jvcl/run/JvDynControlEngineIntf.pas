@@ -51,6 +51,7 @@ type
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
     procedure ControlSetHint(const Value: string);
+    procedure ControlSetAnchors(Value : TAnchors);
   end;
 
   IJvDynControlAction = interface
@@ -69,6 +70,25 @@ type
   IJvDynControlReadOnly = interface
     ['{24E45D23-AC66-4644-8403-81FF81E28B89}']
     procedure ControlSetReadOnly(Value: Boolean);
+  end;
+
+  IJvDynControlAutoSize = interface
+    ['{8807045B-5FDB-4173-827D-B527D8018870}']
+    procedure ControlSetAutoSize(Value: Boolean);
+  end;
+
+  IJvDynControlAlign= interface
+    ['{03FF9D1F-6169-443C-A6AB-8FB1F6D1CA30}']
+    procedure ControlSetAlign(Value: TAlign);
+  end;
+
+  IJvDynControlBevelBorder= interface
+    ['{20DAC6BE-340D-456B-87C6-0BD71C4AA4E8}']
+    procedure ControlSetBevelInner(Value: TBevelCut);
+    procedure ControlSetBevelKind(Value: TBevelKind);
+    procedure ControlSetBevelOuter(Value: TBevelCut);
+    procedure ControlSetBorderStyle(Value : TBorderStyle);
+    procedure ControlSetBorderWidth(Value : Integer);
   end;
 
   IJvDynControlItems = interface
