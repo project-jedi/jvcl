@@ -82,6 +82,11 @@ type
     procedure ControlSetAlign(Value: TAlign);
   end;
 
+  IJvDynControlAlignment= interface
+    ['{BBF3775F-61A5-4455-8C54-43DCDA05E149}']
+    procedure ControlSetAlignment(Value: TAlignment);
+  end;
+
   IJvDynControlColor= interface
     ['{D6E907A4-0E6F-4AB7-98D5-F9C7660660F0}']
     procedure ControlSetColor(Value: TColor);
