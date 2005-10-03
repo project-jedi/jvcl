@@ -479,7 +479,7 @@ type
 
   TJvDynControlVCLPanel = class(TPanel, IUnknown,
     IJvDynControl, IJvDynControlPanel, IJvDynControlAlign,
-    IJvDynControlAutoSize, IJvDynControlBevelBorder)
+    IJvDynControlAutoSize, IJvDynControlBevelBorder, IJvDynControlColor)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
@@ -506,6 +506,9 @@ type
     procedure ControlSetBevelOuter(Value: TBevelCut);
     procedure ControlSetBorderStyle(Value : TBorderStyle);
     procedure ControlSetBorderWidth(Value : Integer);
+    // IJvDynControlColor
+    procedure ControlSetColor(Value : TColor);
+    procedure ControlSetParentColor(Value: Boolean);
   end;
 
   TJvDynControlVCLImage = class(TImage, IUnknown,
@@ -550,7 +553,7 @@ type
 
   TJvDynControlVCLLabel = class(TLabel, IUnknown,
     IJvDynControl, IJvDynControlLabel, IJvDynControlAlign,
-    IJvDynControlAutoSize)
+    IJvDynControlAutoSize, IJvDynControlColor)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
@@ -570,12 +573,17 @@ type
 
     // IJvDynControlAutoSize
     procedure ControlSetAutoSize(Value: Boolean);
+
+    // IJvDynControlColor
+    procedure ControlSetColor(Value : TColor);
+    procedure ControlSetParentColor(Value: Boolean);
+
   end;
 
   {$IFDEF VCL}
   TJvDynControlVCLStaticText = class(TStaticText, IUnknown,
     IJvDynControl, IJvDynControlAlign,
-    IJvDynControlAutoSize)
+    IJvDynControlAutoSize, IJvDynControlColor)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
@@ -592,6 +600,9 @@ type
 
     // IJvDynControlAutoSize
     procedure ControlSetAutoSize(Value: Boolean);
+    // IJvDynControlColor
+    procedure ControlSetColor(Value : TColor);
+    procedure ControlSetParentColor(Value: Boolean);
   end;
   {$ENDIF VCL}
 
@@ -670,6 +681,7 @@ type
   end;
 
 function DynControlEngineVCL: TJvDynControlEngine;
+procedure SetDynControlEngineVCLDefault;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -2267,6 +2279,16 @@ begin
   BorderWidth := Value;
 end;
 
+procedure TJvDynControlVCLPanel.ControlSetColor(Value : TColor);
+begin
+  Color := Value;
+end;
+
+procedure TJvDynControlVCLPanel.ControlSetParentColor(Value: Boolean);
+begin
+  ParentColor := Value;
+end;
+
 
 //=== { TJvDynControlVCLImage } ==============================================
 
@@ -2455,6 +2477,16 @@ begin
   AutoSize := Value;
 end;
 
+procedure TJvDynControlVCLLabel.ControlSetColor(Value : TColor);
+begin
+  Color := Value;
+end;
+
+procedure TJvDynControlVCLLabel.ControlSetParentColor(Value: Boolean);
+begin
+  ParentColor := Value;
+end;
+
 
 //=== { TJvDynControlVCLStaticText } =========================================
 
@@ -2504,6 +2536,17 @@ procedure TJvDynControlVCLStaticText.ControlSetAutoSize(Value: Boolean);
 begin
   AutoSize := Value;
 end;
+
+procedure TJvDynControlVCLStaticText.ControlSetColor(Value : TColor);
+begin
+  Color := Value;
+end;
+
+procedure TJvDynControlVCLStaticText.ControlSetParentColor(Value: Boolean);
+begin
+  ParentColor := Value;
+end;
+
 
 {$ENDIF VCL}
 
@@ -2745,6 +2788,11 @@ end;
 
 //=== { TJvDynControlEngineVCL } =============================================
 
+procedure SetDynControlEngineVCLDefault;
+begin
+  SetDefaultDynControlEngine(IntDynControlEngineVCL);
+end;
+
 function DynControlEngineVCL: TJvDynControlEngine;
 begin
   Result := IntDynControlEngineVCL;
@@ -2755,6 +2803,8 @@ begin
   RegisterControlType(jctLabel, TJvDynControlVCLLabel);
   {$IFDEF VCL}
   RegisterControlType(jctStaticText, TJvDynControlVCLStaticText);
+  {$ELSE}
+  RegisterControlType(jctLabel, TJvDynControlVCLStaticText);
   {$ENDIF VCL}
   RegisterControlType(jctButton, TJvDynControlVCLButton);
   RegisterControlType(jctRadioButton, TJvDynControlVCLRadioButton);
@@ -2792,7 +2842,7 @@ initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
   IntDynControlEngineVCL := TJvDynControlEngineVCL.Create;
-  SetDefaultDynControlEngine(IntDynControlEngineVCL);
+  SetDynControlEngineVCLDefault;
 
 finalization
   FreeAndNil(IntDynControlEngineVCL);
