@@ -38,7 +38,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Messages, SysUtils, Classes, Controls,
+  Windows, Messages, SysUtils, Classes, Controls, Graphics,
   JvExCheckLst;
 
 type
@@ -54,6 +54,7 @@ type
     procedure SetHScroll(const Value: Boolean);
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
+    procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
     procedure LBNSelCancel(var Msg: TMessage); message LBN_SELCANCEL;
     procedure RefreshH;
     procedure SetHotTrack(const Value: Boolean);
@@ -63,6 +64,24 @@ type
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
   {$ENDIF VCL}
+  {$IFDEF COMPILER5}
+  private
+    FHeaders: TList;
+    FHeaderColor: TColor;
+    FHeaderBackgroundColor: TColor;
+    function GetHeader(Index: Integer): Boolean;
+    procedure SetHeader(Index: Integer; const Value: Boolean);
+    procedure SetHeaderColor(Value: TColor);
+    procedure SetHeaderBackgroundColor(Value: TColor);
+  protected
+    procedure DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState); override;
+  public
+    property Header[Index: Integer]: Boolean read GetHeader write SetHeader;
+  published
+    property HeaderColor: TColor read FHeaderColor write SetHeaderColor default clInfoText;
+    property HeaderBackgroundColor: TColor read FHeaderBackgroundColor write SetHeaderBackgroundColor default clInfoBk;
+    destructor Destroy; override;
+  {$ENDIF COMPILER5}
   public
     constructor Create(AOwner: TComponent); override;
     function SearchExactString(Value: string; CaseSensitive: Boolean = True): Integer;
@@ -126,6 +145,11 @@ type
 constructor TJvCheckListBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  {$IFDEF COMPILER5}
+  FHeaders := TList.Create;
+  FHeaderColor := clInfoText;
+  FHeaderBackgroundColor := clInfoBk;
+  {$ENDIF COMPILER5}
   {$IFDEF VCL}
   FHotTrack := False;
   FMaxWidth := 0;
@@ -133,6 +157,62 @@ begin
   {$ENDIF VCL}
   // ControlStyle := ControlStyle + [csAcceptsControls];
 end;
+
+{$IFDEF COMPILER5}
+destructor TJvCheckListBox.Destroy;
+begin
+  FHeaders.Free;
+  inherited Destroy;
+end;
+
+procedure TJvCheckListBox.SetHeaderColor(Value: TColor);
+begin
+  if Value <> FHeaderColor then
+  begin
+    FHeaderColor := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvCheckListBox.SetHeaderBackgroundColor(Value: TColor);
+begin
+  if Value <> FHeaderBackgroundColor then
+  begin
+    FHeaderBackgroundColor := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvCheckListBox.SetHeader(Index: Integer; const Value: Boolean);
+var
+  Idx: Integer;
+begin
+  Idx := FHeaders.IndexOf(Pointer(Index));
+  if Idx < 0 then
+  begin
+    if Value then
+      FHeaders.Add(Pointer(Index));
+  end
+  else
+    if not Value then
+      FHeaders.Delete(Idx);
+end;
+
+function TJvCheckListBox.GetHeader(Index: Integer): Boolean;
+begin
+  Result := FHeaders.IndexOf(Pointer(Index)) >= 0;
+end;
+
+procedure TJvCheckListBox.DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState);
+begin
+  if Header[Index] then
+  begin
+    Canvas.Font.Color := HeaderColor;
+    Canvas.Brush.Color := HeaderBackgroundColor;
+  end;
+  inherited DrawItem(Index, Rect, State);
+end;
+{$ENDIF COMPILER5}
 
 procedure TJvCheckListBox.CheckAll;
 var
@@ -224,6 +304,21 @@ procedure TJvCheckListBox.LBNSelCancel(var Msg: TMessage);
 begin
   if Assigned(FOnSelectCancel) then
     FOnSelectCancel(Self);
+end;
+
+procedure TJvCheckListBox.CNDrawItem(var Msg: TWMDrawItem);
+begin
+  if (Items.Count = 0) or (Msg.DrawItemStruct^.itemID >= UINT(Items.Count)) then
+    Exit;
+  {$IFDEF COMPILER5}
+  with Msg.DrawItemStruct^ do
+    if Header[itemID] then
+      if not UseRightToLeftAlignment then
+        rcItem.Left := rcItem.Left - GetCheckWidth
+      else
+        rcItem.Right := rcItem.Right + GetCheckWidth;
+  {$ENDIF COMPILER5}
+  inherited;
 end;
 {$ENDIF VCL}
 
