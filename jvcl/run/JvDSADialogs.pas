@@ -686,6 +686,7 @@ var
   Image: TWinControl;
   DynControlImage: IJvDynControlImage;
   DynControlLabel: IJvDynControlLabel;
+  DynControlAutoSize: IJvDynControlAutoSize;
   Panel: TWinControl;
 begin
   if Assigned(ADynControlEngine) then
@@ -842,6 +843,8 @@ begin
       MessageLabel := DynControlEngine.CreateLabelControl(Result, Panel, 'Message', Msg, nil);
       if Supports(MessageLabel, IJvDynControlLabel, DynControlLabel) then
         DynControlLabel.ControlSetWordWrap(True);
+      if Supports(MessageLabel, IJvDynControlAutoSize, DynControlAutoSize) then
+        DynControlAutoSize.ControlSetAutoSize(True);
       with MessageLabel do
       begin
         BoundsRect := TextRect;
