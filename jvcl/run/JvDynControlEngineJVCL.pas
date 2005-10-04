@@ -2517,7 +2517,7 @@ procedure TJvDynControlJVCLLabel.ControlSetAlignment(Value: TAlignment);
 begin
   Alignment := Value;
 end;
-
+                      
 
 //=== { TJvDynControlJVCLStaticText } ========================================
 
