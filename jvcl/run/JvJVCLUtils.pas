@@ -5928,6 +5928,7 @@ var
   Bytes: Integer;
 begin
   DS.dsbmih.biSize := 0;
+  { Retrieve the info for the current bitmap, thus with the current bit size/PixelFormat }
   Bytes := GetObject(Bitmap, SizeOf(DS), @DS);
   if Bytes = 0 then
     InvalidBitmap
@@ -5954,9 +5955,13 @@ begin
     BI.biBitCount := DS.dsbm.bmBitsPixel * DS.dsbm.bmPlanes;
   end;
   BI.biPlanes := 1;
-  if BI.biSizeImage = 0 then
-    BI.biSizeImage := BytesPerScanLine(BI.biWidth, BI.biBitCount, 32) *
-      Abs(BI.biHeight);
+  { Calculate the size of the image with the new bit count; better would be to
+    call GetDIBits, see http://support.microsoft.com/default.aspx?scid=kb;EN-US;80080
+  }
+  BI.biSizeImage := BytesPerScanLine(BI.biWidth, BI.biBitCount, 32) *
+    Abs(BI.biHeight);
+  BI.biClrUsed := 0;
+  BI.biClrImportant := 0;
 end;
 
 procedure InternalGetDIBSizes(Bitmap: HBITMAP; var InfoHeaderSize: Integer;
@@ -5974,6 +5979,14 @@ begin
   else
     InfoHeaderSize := SizeOf(TBitmapInfoHeader) + SizeOf(TRGBQuad) * (1 shl BI.biBitCount);
   ImageSize := BI.biSizeImage;
+end;
+
+function GetDInColors(const BI: TBitmapInfoHeader): Integer;
+begin
+  if (BI.biClrUsed = 0) and (BI.biBitCount <= 8) then
+    Result := 1 shl BI.biBitCount
+  else
+    Result := BI.biClrUsed;
 end;
 
 function InternalGetDIB(Bitmap: HBITMAP; Palette: HPALETTE;
@@ -5995,6 +6008,8 @@ begin
     end;
     Result := GetDIBits(DC, Bitmap, 0, TBitmapInfoHeader(BitmapInfo).biHeight,
       @Bits, TBitmapInfo(BitmapInfo), DIB_RGB_COLORS) <> 0;
+
+    TBitmapInfoHeader(BitmapInfo).biClrUsed := GetDInColors(TBitmapInfoHeader(BitmapInfo));
   finally
     if OldPal <> 0 then
       SelectPalette(DC, OldPal, False);
@@ -6066,100 +6081,104 @@ begin
     end;
     Exit;
   end;
-  if not (PixelFormat in [pf1bit, pf4bit, pf8bit, pf24bit]) then
-    raise EJVCLException.CreateRes(@RsEPixelFormatNotImplemented)
-  else
-  if PixelFormat in [pf1bit, pf4bit] then
-  begin
-    P := DIBFromBit(Bitmap.Handle, Bitmap.Palette, PixelFormat, Length);
-    try
-      Result := TMemoryStream.Create;
-      try
-        Result.Write(P^, Length);
-        Result.Position := 0;
-      except
-        Result.Free;
-        raise;
-      end;
-    finally
-      FreeMemo(P);
-    end;
-    Exit;
-  end;
-  { pf8bit - expand to 24bit first }
-  InitData := DIBFromBit(Bitmap.Handle, Bitmap.Palette, pf24bit, Len);
-  try
-    BI := PBitmapInfoHeader(Longint(InitData) + SizeOf(TBitmapFileHeader));
-    if BI^.biBitCount <> 24 then
-      raise EJVCLException.CreateRes(@RsEBitCountNotImplemented);
-    Bits := Pointer(Longint(BI) + SizeOf(TBitmapInfoHeader));
-    InternalGetDIBSizes(Bitmap.Handle, NewHeaderSize, ImageSize, PixelFormat);
-    Length := SizeOf(TBitmapFileHeader) + NewHeaderSize;
-    P := AllocMemo(Length);
-    try
-      FillChar(P^, Length, #0);
-      NewBI := PBitmapInfoHeader(Longint(P) + SizeOf(TBitmapFileHeader));
-      NewPalette := PRGBPalette(Longint(NewBI) + SizeOf(TBitmapInfoHeader));
-      FileHeader := PBitmapFileHeader(P);
-      InitializeBitmapInfoHeader(Bitmap.Handle, NewBI^, PixelFormat);
-      case Method of
-        mmQuantize:
-          begin
-            ColorCount := 256;
-            Quantize(BI^, Bits, Bits, ColorCount, NewPalette^);
-            NewBI^.biClrImportant := ColorCount;
-          end;
-        mmTrunc784:
-          begin
-            TruncPal7R8G4B(NewPalette^);
-            Trunc7R8G4B(BI^, Bits, Bits);
-            NewBI^.biClrImportant := 224;
-          end;
-        mmTrunc666:
-          begin
-            TruncPal6R6G6B(NewPalette^);
-            Trunc6R6G6B(BI^, Bits, Bits);
-            NewBI^.biClrImportant := 216;
-          end;
-        mmTripel:
-          begin
-            TripelPal(NewPalette^);
-            Tripel(BI^, Bits, Bits);
-          end;
-        mmHistogram:
-          begin
-            Histogram(BI^, NewPalette^, Bits, Bits,
-              PixelFormatToColors(PixelFormat), 255, 255, 255);
-          end;
-        mmGrayscale:
-          begin
-            GrayPal(NewPalette^);
-            GrayScale(BI^, Bits, Bits);
-          end;
-      end;
-      with FileHeader^ do
+  case PixelFormat of
+    pf1bit, pf4bit, pf24bit:
       begin
-        bfType := $4D42;
-        bfSize := Length;
-        bfOffBits := SizeOf(FileHeader^) + NewHeaderSize;
+        P := DIBFromBit(Bitmap.Handle, Bitmap.Palette, PixelFormat, Length);
+        try
+          Result := TMemoryStream.Create;
+          try
+            Result.Write(P^, Length);
+            Result.Position := 0;
+          except
+            Result.Free;
+            raise;
+          end;
+        finally
+          FreeMemo(P);
+        end;
       end;
-      Result := TMemoryStream.Create;
-      try
-        Result.Write(P^, Length);
-        if SourceBitmapFormat = pfDevice then
-          Result.Write(Bits^, ImageSize)
-        else
-          Result.Write(Bits^, ImageSize div 3);
-        Result.Position := 0;
-      except
-        Result.Free;
-        raise;
-      end;
-    finally
-      FreeMemo(P);
-    end;
-  finally
-    FreeMemo(InitData);
+    pf8bit:
+      begin
+        { pf8bit - expand to 24bit first }
+        InitData := DIBFromBit(Bitmap.Handle, Bitmap.Palette, pf24bit, Len);
+        try
+          BI := PBitmapInfoHeader(Longint(InitData) + SizeOf(TBitmapFileHeader));
+          if BI^.biBitCount <> 24 then
+            raise EJVCLException.CreateRes(@RsEBitCountNotImplemented);
+          Bits := Pointer(Longint(BI) + SizeOf(TBitmapInfoHeader));
+          InternalGetDIBSizes(Bitmap.Handle, NewHeaderSize, ImageSize, PixelFormat);
+          Length := SizeOf(TBitmapFileHeader) + NewHeaderSize;
+          P := AllocMemo(Length);
+          try
+            FillChar(P^, Length, #0);
+            NewBI := PBitmapInfoHeader(Longint(P) + SizeOf(TBitmapFileHeader));
+            if NewHeaderSize <= SizeOf(TBitmapInfoHeader) then
+              NewPalette := nil
+            else
+              NewPalette := PRGBPalette(Longint(NewBI) + SizeOf(TBitmapInfoHeader));
+            FileHeader := PBitmapFileHeader(P);
+            InitializeBitmapInfoHeader(Bitmap.Handle, NewBI^, PixelFormat);
+            if Assigned(NewPalette) then
+              case Method of
+                mmQuantize:
+                  begin
+                    ColorCount := 256;
+                    Quantize(BI^, Bits, Bits, ColorCount, NewPalette^);
+                    NewBI^.biClrImportant := ColorCount;
+                  end;
+                mmTrunc784:
+                  begin
+                    TruncPal7R8G4B(NewPalette^);
+                    Trunc7R8G4B(BI^, Bits, Bits);
+                    NewBI^.biClrImportant := 224;
+                  end;
+                mmTrunc666:
+                  begin
+                    TruncPal6R6G6B(NewPalette^);
+                    Trunc6R6G6B(BI^, Bits, Bits);
+                    NewBI^.biClrImportant := 216;
+                  end;
+                mmTripel:
+                  begin
+                    TripelPal(NewPalette^);
+                    Tripel(BI^, Bits, Bits);
+                  end;
+                mmHistogram:
+                  begin
+                    Histogram(BI^, NewPalette^, Bits, Bits,
+                      PixelFormatToColors(PixelFormat), 255, 255, 255);
+                  end;
+                mmGrayscale:
+                  begin
+                    GrayPal(NewPalette^);
+                    GrayScale(BI^, Bits, Bits);
+                  end;
+              end;
+            with FileHeader^ do
+            begin
+              bfType := $4D42;
+              bfSize := Length;
+              bfOffBits := SizeOf(FileHeader^) + NewHeaderSize;
+            end;
+            Result := TMemoryStream.Create;
+            try
+              Result.Write(P^, Length);
+              Result.Write(Bits^, ImageSize);
+              Result.Position := 0;
+            except
+              Result.Free;
+              raise;
+            end;
+          finally
+            FreeMemo(P);
+          end;
+        finally
+          FreeMemo(InitData);
+        end;
+      end
+  else
+    raise EJVCLException.CreateRes(@RsEPixelFormatNotImplemented)
   end;
 end;
 
@@ -6200,7 +6219,7 @@ procedure SetBitmapPixelFormat(Bitmap: TBitmap; PixelFormat: TPixelFormat;
 var
   M: TMemoryStream;
 begin
-  if (Bitmap.Handle = 0) or (GetBitmapPixelFormat(Bitmap) = PixelFormat) then
+  if (Bitmap.Handle = 0) or ((GetBitmapPixelFormat(Bitmap) = PixelFormat) and (Method <> mmGrayscale)) then
     Exit;
   M := BitmapToMemoryStream(Bitmap, PixelFormat, Method);
   try
