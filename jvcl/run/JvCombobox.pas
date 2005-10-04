@@ -1180,6 +1180,9 @@ destructor TJvCustomComboBox.Destroy;
 begin
   FMaxPixel.Free;
   FreeAndNil(FConsumerSvc);
+  {$IFDEF COMPILER5}
+  FAutoCompleteCode.Free;
+  {$ENDIF COMPILER5}
   inherited Destroy;
 end;
 
