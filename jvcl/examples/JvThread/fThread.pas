@@ -30,7 +30,9 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, JvThread, JvComponent, JvThreadDialog, ComCtrls;
+  StdCtrls, JvThread, JvComponent, JvThreadDialog, ComCtrls, //JvThreadGifDialog,
+  JvExControls, JvAnimatedImage, JvGIFCtrl, JvProgressBar, JvExComCtrls,
+  JvComponentBase, ActnList, JvDBActions, ExtCtrls;
 
 type
   TForm1 = class(TForm)
