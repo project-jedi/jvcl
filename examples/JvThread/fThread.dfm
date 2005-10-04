@@ -1,11 +1,11 @@
 object Form1: TForm1
-  Left = 270
-  Top = 215
+  Left = 887
+  Top = 407
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'JvThread Demo'
-  ClientHeight = 452
-  ClientWidth = 719
+  ClientHeight = 143
+  ClientWidth = 364
   Color = clBtnFace
   DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
@@ -14,7 +14,6 @@ object Form1: TForm1
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
-  Position = poDesktopCenter
   Scaled = False
   OnDestroy = FormDestroy
   PixelsPerInch = 96
@@ -100,21 +99,24 @@ object Form1: TForm1
     Top = 44
   end
   object JvThreadSimpleDialog1: TJvThreadSimpleDialog
+    DialogOptions.FormStyle = fsNormal
     DialogOptions.ShowDialog = True
     DialogOptions.ShowModal = False
-    DialogOptions.InfoText = 'Infotext'
-    DialogOptions.Caption = '23423423423432'
     DialogOptions.CancelButtonCaption = 'Cancel'
+    DialogOptions.Caption = '23423423423432'
+    DialogOptions.InfoText = 'Infotext'#13#10'Multiline'#13#10'Third Line'
+    DialogOptions.InfoTextAlignment = taCenter
     Left = 260
     Top = 20
   end
   object JvThreadAnimateDialog1: TJvThreadAnimateDialog
+    DialogOptions.FormStyle = fsNormal
     DialogOptions.ShowDialog = True
-    DialogOptions.InfoText = 'Info'
-    DialogOptions.Caption = 'Execute Thread'
     DialogOptions.CancelButtonCaption = 'Cancel'
+    DialogOptions.Caption = 'Execute Thread'
+    DialogOptions.InfoText = 'Infotext'#13#10'<yx<yx'#13#10'<y'#13#10'x'
     DialogOptions.CommonAVI = aviCopyFiles
-    Left = 255
-    Top = 70
+    Left = 260
+    Top = 80
   end
 end
