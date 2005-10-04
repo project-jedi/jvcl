@@ -84,6 +84,7 @@ type
     procedure UpdateDialogs;
     procedure UpdateProperties(sender: TObject);
     procedure NeedDialogs;
+    procedure TestEditAssigned;
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure DoOnFind(Sender: TObject); virtual;
@@ -135,11 +136,6 @@ implementation
 uses
   Math,
   JvConsts, JvResources, JvTypes;
-
-procedure Error;
-begin
-  raise EJVCLException.CreateRes(@RsENoEditAssigned);
-end;
 
 { utility }
 
@@ -294,6 +290,8 @@ begin
     Result := Length(Text) - (Result - 1) - (Length(Search) - 1);
 end;
 
+//=== { TJvFindReplace } =====================================================
+
 constructor TJvFindReplace.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -303,10 +301,15 @@ begin
   FPosition := Point(-1, -1);
 end;
 
-procedure TJvFindReplace.Find;
+procedure TJvFindReplace.TestEditAssigned;
 begin
   if not Assigned(FEditControl) then
-    Error;
+    raise EJVCLException.CreateRes(@RsENoEditAssigned);
+end;
+
+procedure TJvFindReplace.Find;
+begin
+  TestEditAssigned;
   UpdateDialogs;
   if FShowDialogs then
     FFindDialog.Execute
@@ -316,16 +319,14 @@ end;
 
 procedure TJvFindReplace.FindAgain;
 begin
-  if not Assigned(FEditControl) then
-    Error;
+  TestEditAssigned;
   UpdateDialogs;
   DoOnFind(FFindDialog);
 end;
 
 procedure TJvFindReplace.Replace;
 begin
-  if not Assigned(FEditControl) then
-    Error;
+  TestEditAssigned;
   UpdateDialogs;
 
   if FShowDialogs then
@@ -342,8 +343,7 @@ var
   Terminate: Boolean;
   WholeWord, MatchCase: Boolean;
 begin
-  if not Assigned(FEditControl) then
-    Error;
+  TestEditAssigned;
   Terminate := False;
   UpdateDialogs;
   WholeWord := frWholeWord in FOptions;
@@ -502,9 +502,9 @@ begin
     FEditControl.SetFocus;
     FEditControl.SelStart := FoundPos - 1;
     FEditControl.SelLength := Length(FFindText);
-{$IFDEF VCL}
+    {$IFDEF VCL}
     SendMessage(FEditControl.Handle, EM_SCROLLCARET, 0, 0);
-{$ENDIF VCL}
+    {$ENDIF VCL}
     if Assigned(FOnFind) then
       FOnFind(Self);
   end
@@ -537,8 +537,7 @@ end;
 
 procedure TJvFindReplace.DoOnShow(Sender: TObject);
 begin
-  if not Assigned(FEditControl) then
-    Error;
+  TestEditAssigned;
   UpdateDialogs;
   if Assigned(FOnShow) then
     FOnShow(Self);
@@ -546,8 +545,7 @@ end;
 
 procedure TJvFindReplace.DoOnClose(Sender: TObject);
 begin
-  if not Assigned(FEditControl) then
-    Error;
+  TestEditAssigned;
   UpdateProperties(Sender);
   UpdateDialogs;
   if Assigned(FOnClose) then
@@ -558,8 +556,7 @@ procedure TJvFindReplace.DoFailed(Sender: TObject);
 var
   FCaption: string;
 begin
-  if not Assigned(FEditControl) then
-    Error;
+  TestEditAssigned;
   UpdateProperties(Sender);
   if Assigned(FOnNotFound) then
     FOnNotFound(Self);
@@ -572,12 +569,12 @@ begin
     FCaption := RsFindCaption;
 
   MessageBox(
-{$IFDEF VCL}
+    {$IFDEF VCL}
     TFindDialog(Sender).Handle,
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
     TFindDialog(Sender).Form.Handle,
-{$ENDIF VisualCLX}
+    {$ENDIF VisualCLX}
     PChar(Format(RsNotFound, [FFindText])),
     PChar(FCaption), MB_OK or MB_ICONINFORMATION);
 end;
@@ -594,12 +591,12 @@ begin
   if FShowDialogs then
   begin
     MessageBox(
-{$IFDEF VCL}
+      {$IFDEF VCL}
       TFindDialog(Sender).Handle,
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
       TFindDialog(Sender).Form.Handle,
-{$ENDIF VisualCLX}
+      {$ENDIF VisualCLX}
       PChar(Format(RsXOccurencesReplaced, [FNumberReplaced, FFindText])),
       PChar(RsReplaceCaption), MB_OK or MB_ICONINFORMATION);
   end;
@@ -658,14 +655,14 @@ begin
   if not Value then
   begin
     NeedDialogs;
-{$IFDEF VCL}
+    {$IFDEF VCL}
     FFindDialog.CloseDialog;
     FReplaceDialog.CloseDialog;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
     FFindDialog.Form.Close;
     FReplaceDialog.Form.Close;
-{$ENDIF VisualCLX}
+    {$ENDIF VisualCLX}
   end;
 end;
 
@@ -683,17 +680,17 @@ end;
 
 function TJvFindReplace.GetTop: Integer;
 begin
-  Result := FPosition.Y
+  Result := FPosition.Y;
 end;
 
 function TJvFindReplace.GetLeft: Integer;
 begin
-  Result := FPosition.X
+  Result := FPosition.X;
 end;
 
 procedure TJvFindReplace.Loaded;
 begin
-  inherited;
+  inherited Loaded;
   UpdateDialogs;
 end;
 
