@@ -182,6 +182,8 @@ type
     function CustomDraw(const ARect: TRect; Stage: TCustomDrawStage): Boolean; override;
     function CustomDrawItem(Item: TListItem; State: TCustomDrawState;
       Stage: TCustomDrawStage): Boolean; override;
+    function CustomDrawSubItem(Item: TListItem; SubItem: Integer;
+      State: TCustomDrawState; Stage: TCustomDrawStage): Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1572,6 +1574,19 @@ begin
   end;
 
   Result := inherited CustomDrawItem(Item, State, Stage);
+end;
+
+function TJvListView.CustomDrawSubItem(Item: TListItem; SubItem: Integer;
+  State: TCustomDrawState; Stage: TCustomDrawStage): Boolean;
+begin
+  if (Stage = cdPrePaint) and Assigned(Item) then
+  begin
+    Canvas.Font := TJvListItem(Item).Font;
+    if ViewStyle in ViewStylesItemBrush then
+      Canvas.Brush := TJvListItem(Item).Brush;
+  end;
+
+  Result := inherited CustomDrawSubItem(Item, SubItem, State, Stage);
 end;
 
 procedure TJvListView.SetPicture(const Value: TPicture);
