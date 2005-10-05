@@ -63,7 +63,7 @@ type
     FCkGradient: TBitmap;
     FDefault: Boolean;
     FFcGradient: TBitmap;
-    FGlyph: TBitmap;
+    FGlyph: TPicture;
     FHlGradient: TBitmap;
     FImageChangeLink: TChangeLink;
     FImageIndex: Integer;
@@ -88,7 +88,7 @@ type
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
     procedure SetAutoGray(Value: Boolean); virtual;
     procedure SetDefault(Value: Boolean); virtual;
-    procedure SetGlyph(Value: TBitmap); virtual;
+    procedure SetGlyph(Value: TPicture); virtual;
     procedure SetLayout(Value: TJvXPLayout); virtual;
     procedure SetShowAccelChar(Value: Boolean); virtual;
     procedure SetShowFocusRect(Value: Boolean); virtual;
@@ -101,7 +101,7 @@ type
     property AutoGray: Boolean read FAutoGray write SetAutoGray default True;
     property Cancel: Boolean read FCancel write FCancel default False;
     property Default: Boolean read FDefault write SetDefault default False;
-    property Glyph: TBitmap read FGlyph write SetGlyph;
+    property Glyph: TPicture read FGlyph write SetGlyph;
     property Layout: TJvXPLayout read FLayout write SetLayout default blGlyphLeft;
     property ShowAccelChar: Boolean read FShowAccelChar write SetShowAccelChar default True;
     property ShowFocusRect: Boolean read FShowFocusRect write SetShowFocusRect default False;
@@ -353,7 +353,7 @@ begin
   FImageIndex := -1;
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := ImageListChange;
-  FGlyph := TBitmap.Create;
+  FGlyph := TPicture.Create;
   FLayout := blGlyphLeft;
   FShowAccelChar := True;
   FShowFocusRect := False;
@@ -445,7 +445,7 @@ begin
   end;
 end;
 
-procedure TJvXPCustomButton.SetGlyph(Value: TBitmap);
+procedure TJvXPCustomButton.SetGlyph(Value: TPicture);
 begin
   FGlyph.Assign(Value);
   LockedInvalidate;
@@ -614,7 +614,7 @@ var
   Rect: TRect;
   Offset, Flags: Integer;
   DrawPressed: Boolean;
-  Image: TBitmap;
+  Image: TPicture;
   Bitmap: TBitmap;
 begin
   with Canvas do
@@ -697,24 +697,24 @@ begin
       Flags := Flags or DT_WORDBREAK;
 
     // draw image & caption.
-    Image := TBitmap.Create;
+    Image := TPicture.Create;
     try
       // get image from action or glyph property.
       if Assigned(Action) and Assigned(TAction(Action).ActionList.Images) and
         (FImageIndex > -1) and (FImageIndex < TAction(Action).ActionList.Images.Count) then
-        TAction(Action).ActionList.Images.GetBitmap(FImageIndex, Image)
+        TAction(Action).ActionList.Images.GetBitmap(FImageIndex, Image.Bitmap)
       else
         Image.Assign(FGlyph);
 
       // autogray image (if allowed).
       if FAutoGray and not Enabled then
-        JvXPConvertToGray2(Image);
+        JvXPConvertToGray2(Image.Bitmap);
 
       // assign canvas font (change HotTrack-Color, if necessary).
       Font.Assign(Self.Font);
 
       // calculate textrect.
-      if not Image.Empty then
+      if Assigned(Image.Graphic) and not Image.Graphic.Empty then
         case FLayout of
           blGlyphLeft:
             Inc(Rect.Left, Image.Width + FSpacing);
@@ -738,22 +738,22 @@ begin
         OffsetRect(Rect, 1, 1);
 
       // draw image - if available.
-      if not Image.Empty then
+      if Assigned(Image.Graphic) and not Image.Graphic.Empty then
       begin
-        Image.Transparent := True;
+        Image.Graphic.Transparent := True;
         case FLayout of
           blGlyphLeft:
             Draw(Rect.Left - (Image.Width + FSpacing), (Height - Image.Height) div 2 +
-              Integer(DrawPressed), Image);
+              Integer(DrawPressed), Image.Graphic);
           blGlyphRight:
             Draw(Rect.Right + FSpacing, (Height - Image.Height) div 2 +
-              Integer(DrawPressed), Image);
+              Integer(DrawPressed), Image.Graphic);
           blGlyphTop:
             Draw((Width - Image.Width) div 2 + Integer(DrawPressed),
-              Rect.Top - (Image.Height + FSpacing), Image);
+              Rect.Top - (Image.Height + FSpacing), Image.Graphic);
           blGlyphBottom:
             Draw((Width - Image.Width) div 2 + Integer(DrawPressed),
-              Rect.Bottom + FSpacing, Image);
+              Rect.Bottom + FSpacing, Image.Graphic);
         end;
       end;
 
