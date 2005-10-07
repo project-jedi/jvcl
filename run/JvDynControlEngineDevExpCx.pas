@@ -38,6 +38,7 @@ uses
   cxLookAndFeels, cxMaskEdit, cxLabel, cxButtons, cxListBox, cxDropDownEdit,
   cxButtonEdit, cxCalendar, cxCheckBox, cxMemo, cxRadioGroup, cxImage, cxTreeView,
   cxEdit, cxCalc, cxSpinEdit, cxTimeEdit, cxCheckListBox, cxGroupBox, cxRichEdit,
+  cxProgressBar,
   JvDynControlEngine, JvDynControlEngineIntf;
 
 type
@@ -761,6 +762,29 @@ type
     procedure ControlSetOnChange(Value: TTVChangedEvent);
     procedure ControlSetSortType(Value: TSortType);
 
+    // IJvDynControlDevExpCx
+    procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
+  end;
+
+  TJvDynControlCxProgressBar = class(TcxProgressBar, IUnknown, IJvDynControl,
+      IJvDynControlProgressBar, IJvDynControlDevExpCx)
+    procedure ControlSetDefaultProperties;
+    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetTabOrder(Value: Integer);
+
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetHint(const Value: string);
+    procedure ControlSetAnchors(Value : TAnchors);
+
+    //IJvDynControlProgressBar
+    procedure ControlSetMax(Value: integer);
+    procedure ControlSetMin(Value: integer);
+    procedure ControlSetOrientation(Value: TProgressBarOrientation);
+    procedure ControlSetPosition(Value: integer);
+    procedure ControlSetSmooth(Value: boolean);
+    procedure ControlSetStep(Value: integer);
     // IJvDynControlDevExpCx
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
   end;
@@ -3072,6 +3096,92 @@ begin
   LookAndFeel.Assign(Value.LookAndFeel);
 end;
 
+//=== { TJvDynControlCxProgressbar } =========================================
+
+procedure TJvDynControlCxProgressbar.ControlSetDefaultProperties;
+begin
+  Properties.ShowText := False;
+end;
+
+procedure TJvDynControlCxProgressbar.ControlSetCaption(const Value: string);
+begin
+  Caption := Value;
+end;
+
+procedure TJvDynControlCxProgressbar.ControlSetTabOrder(Value: Integer);
+begin
+  TabOrder := Value;
+end;
+
+procedure TJvDynControlCxProgressbar.ControlSetOnEnter(Value: TNotifyEvent);
+begin
+  OnEnter := Value;
+end;
+
+procedure TJvDynControlCxProgressbar.ControlSetOnExit(Value: TNotifyEvent);
+begin
+  OnExit := Value;
+end;
+
+procedure TJvDynControlCxProgressbar.ControlSetOnClick(Value: TNotifyEvent);
+begin
+  OnClick := Value;
+end;
+
+procedure TJvDynControlCxProgressbar.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+procedure TJvDynControlCxProgressbar.ControlSetAnchors(Value : TAnchors);
+begin
+  Anchors := Value;
+end;
+
+procedure TJvDynControlCxProgressbar.ControlSetMax(Value: integer);
+begin
+  Properties.Max := Value;
+end;
+
+procedure TJvDynControlCxProgressbar.ControlSetMin(Value: integer);
+begin
+  Properties.Min := Value;
+end;
+
+procedure TJvDynControlCxProgressbar.ControlSetOrientation(Value: TProgressBarOrientation);
+begin
+  if Value = pbHorizontal	then
+    Properties.Orientation:= cxorHorizontal
+  else
+    Properties.Orientation:= cxorVertical;
+end;
+
+procedure TJvDynControlCxProgressbar.ControlSetPosition(Value: integer);
+begin
+  Position := Value;
+end;
+
+procedure TJvDynControlCxProgressbar.ControlSetSmooth(Value: boolean);
+begin
+  //Properties.Smooth := Value;
+  if Value then
+    Properties.BarStyle := cxbsSolid
+  else
+    Properties.BarStyle := cxbsLEDs;
+end;
+
+procedure TJvDynControlCxProgressbar.ControlSetStep(Value: integer);
+begin
+//  Step := Value;
+end;
+
+procedure TJvDynControlCxProgressbar.ControlSetCxProperties(Value: TCxDynControlWrapper);
+begin
+  LookAndFeel.Assign(Value.LookAndFeel);
+end;
+
+
+
 //=== { TJvDynControlCxRadioButton } =========================================
 
 procedure TJvDynControlCxRadioButton.ControlSetDefaultProperties;
@@ -3184,6 +3294,7 @@ begin
   RegisterControlType(jctRichEdit, TJvDynControlCxRichEdit);
   RegisterControlType(jctButtonEdit, TJvDynControlCxButtonEdit);
   RegisterControlType(jctTreeVIew, TJvDynControlCxTreeView);
+  RegisterControlType(jctProgressbar, TJvDynControlCxProgressbar);
 end;
 
 function TJvDynControlEngineDevExpCx.CreateControlClass(AControlClass: TControlClass; AOwner: TComponent; AParentControl: TWinControl; AControlName: string): TControl;

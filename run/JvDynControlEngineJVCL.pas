@@ -44,7 +44,8 @@ uses
   JvMaskEdit, JvDateTimePicker, JvBitBtn, JvCheckBox, JvBaseEdits,
   JvLabel, JvListBox, JvMemo, JvRichEdit, JvPanel, JvRadioGroup, JvToolEdit,
   JvScrollBox, JvStaticText, JvComboBox, JvImage, JvSpin, JvCheckListBox,
-  JvDynControlEngine, JvDynControlEngineIntf, JvGroupBox, JvComCtrls;
+  JvDynControlEngine, JvDynControlEngineIntf, JvGroupBox, JvComCtrls,
+  JvProgressBar;
 
 type
   TJvDynControlJVCLMaskEdit = class(TJvMaskEdit, IUnknown,
@@ -697,6 +698,27 @@ type
     procedure ControlSetAnchors(Value : TAnchors);
     procedure ControlSetOnChange(Value: TTVChangedEvent);
     procedure ControlSetSortType(Value: TSortType);
+  end;
+
+  TJvDynControlJVCLProgressBar = class(TJvProgressBar, IUnknown, IJvDynControl,
+      IJvDynControlProgressBar)
+    procedure ControlSetDefaultProperties;
+    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetTabOrder(Value: Integer);
+
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetHint(const Value: string);
+    procedure ControlSetAnchors(Value : TAnchors);
+
+    //IJvDynControlProgressBar
+    procedure ControlSetMax(Value: integer);
+    procedure ControlSetMin(Value: integer);
+    procedure ControlSetOrientation(Value: TProgressBarOrientation);
+    procedure ControlSetPosition(Value: integer);
+    procedure ControlSetSmooth(Value: boolean);
+    procedure ControlSetStep(Value: integer);
   end;
 
 function DynControlEngineJVCL: TJvDynControlEngine;
@@ -2818,6 +2840,77 @@ begin
   SortType := Value;
 end;
 
+//=== { TJvDynControlJVCLProgressbar } =========================================
+
+procedure TJvDynControlJVCLProgressbar.ControlSetDefaultProperties;
+begin
+end;
+
+procedure TJvDynControlJVCLProgressbar.ControlSetCaption(const Value: string);
+begin
+  Caption := Value;
+end;
+
+procedure TJvDynControlJVCLProgressbar.ControlSetTabOrder(Value: Integer);
+begin
+  TabOrder := Value;
+end;
+
+procedure TJvDynControlJVCLProgressbar.ControlSetOnEnter(Value: TNotifyEvent);
+begin
+  OnEnter := Value;
+end;
+
+procedure TJvDynControlJVCLProgressbar.ControlSetOnExit(Value: TNotifyEvent);
+begin
+  OnExit := Value;
+end;
+
+procedure TJvDynControlJVCLProgressbar.ControlSetOnClick(Value: TNotifyEvent);
+begin
+  OnClick := Value;
+end;
+
+procedure TJvDynControlJVCLProgressbar.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+procedure TJvDynControlJVCLProgressbar.ControlSetAnchors(Value : TAnchors);
+begin
+  Anchors := Value;
+end;
+
+procedure TJvDynControlJVCLProgressbar.ControlSetMax(Value: integer);
+begin
+  Max := Value;
+end;
+
+procedure TJvDynControlJVCLProgressbar.ControlSetMin(Value: integer);
+begin
+  Min := Value;
+end;
+
+procedure TJvDynControlJVCLProgressbar.ControlSetOrientation(Value: TProgressBarOrientation);
+begin
+  Orientation:= Value;
+end;
+
+procedure TJvDynControlJVCLProgressbar.ControlSetPosition(Value: integer);
+begin
+  Position := Value;
+end;
+
+procedure TJvDynControlJVCLProgressbar.ControlSetSmooth(Value: boolean);
+begin
+  Smooth := Value;
+end;
+
+procedure TJvDynControlJVCLProgressbar.ControlSetStep(Value: integer);
+begin
+  Step := Value;
+end;
+
 
 //=== { TJvDynControlEngineJVCL } ============================================
 
@@ -2864,6 +2957,7 @@ begin
   RegisterControlType(jctRichEdit, TJvDynControlJVCLRichEdit);
   RegisterControlType(jctButtonEdit, TJvDynControlJVCLButtonEdit);
   RegisterControlType(jctTreeView, TJvDynControlJVCLTreeView);
+  RegisterControlType(jctProgressbar, TJvDynControlJVCLProgressbar);
 end;
 
 initialization
