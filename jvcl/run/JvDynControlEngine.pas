@@ -64,6 +64,7 @@ const
   jctButtonEdit = TJvDynControlType('ButtonEdit');
   jctTreeView = TJvDynControlType('TreeView');
   jctForm = TJvDynControlType('Form');
+  jctProgressBar = TJvDynControlType('Progressbar');
 
 type
   TControlClass = class of TControl;
@@ -183,6 +184,9 @@ type
     function CreateLabelControlPanel(AOwner: TComponent; AParentControl: TWinControl;
       const AControlName, ACaption: string; AFocusControl: TWinControl;
       ALabelOnTop: Boolean = True; ALabelDefaultWidth: Integer = 0): TWinControl; virtual;
+    function CreateProgressbarControl(AOwner: TComponent; AParentControl:
+        TWinControl; const AControlName: string; AMin: Integer = 0; AMax: Integer =
+        100; AStep: Integer = 1): TWinControl; virtual;
   published
     property DistanceBetweenLabelAndControlHorz: Integer read FDistanceBetweenLabelAndControlHorz write FDistanceBetweenLabelAndControlHorz default 4;
     property DistanceBetweenLabelAndControlVert: Integer read FDistanceBetweenLabelAndControlVert write FDistanceBetweenLabelAndControlVert default 1;
@@ -836,6 +840,20 @@ begin
   Panel.Width := Panel.Width + 1;
   Panel.Height := Panel.Height + 1;
   Result := Panel;
+end;
+
+function TJvDynControlEngine.CreateProgressbarControl(AOwner: TComponent;
+    AParentControl: TWinControl; const AControlName: string; AMin: Integer = 0;
+    AMax: Integer = 100; AStep: Integer = 1): TWinControl;
+var
+  JvDynCtrlProgresBar: IJvDynControlProgressbar;
+begin
+  Result := TWinControl(CreateControl(jctProgressBar, AOwner, AParentControl, AControlName));
+  if not Supports(Result, IJvDynControlProgressbar, JvDynCtrlProgresBar) then
+    raise EIntfCastError.CreateRes(@RsEIntfCastError);
+  JvDynCtrlProgresBar.ControlSetMin(AMin);
+  JvDynCtrlProgresBar.ControlSetMax(AMax);
+  JvDynCtrlProgresBar.ControlSetStep(AStep);
 end;
 
 procedure SetDefaultDynControlEngine(AEngine: TJvDynControlEngine);

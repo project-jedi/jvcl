@@ -653,7 +653,7 @@ type
     procedure ControlSetOnClick(Value: TNotifyEvent);
     procedure ControlSetHint(const Value: string);
     procedure ControlSetAnchors(Value : TAnchors);
-    
+
     // IJvDynControlData
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetValue(Value: Variant);
@@ -690,6 +690,27 @@ type
     function ControlGetSelected: TTreeNode;
     procedure ControlSetOnChange(Value: TTVChangedEvent);
     procedure ControlSetSortType(Value: TSortType);
+  end;
+
+  TJvDynControlVCLProgressBar = class(TProgressBar, IUnknown, IJvDynControl,
+      IJvDynControlProgressBar)
+    procedure ControlSetDefaultProperties;
+    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetTabOrder(Value: Integer);
+
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetHint(const Value: string);
+    procedure ControlSetAnchors(Value : TAnchors);
+
+    //IJvDynControlProgressBar
+    procedure ControlSetMax(Value: integer);
+    procedure ControlSetMin(Value: integer);
+    procedure ControlSetOrientation(Value: TProgressBarOrientation);
+    procedure ControlSetPosition(Value: integer);
+    procedure ControlSetSmooth(Value: boolean);
+    procedure ControlSetStep(Value: integer);
   end;
 
 function DynControlEngineVCL: TJvDynControlEngine;
@@ -2819,6 +2840,78 @@ begin
   SortType := Value;
 end;
 
+//=== { TJvDynControlVCLProgressbar } =========================================
+
+procedure TJvDynControlVCLProgressbar.ControlSetDefaultProperties;
+begin
+end;
+
+procedure TJvDynControlVCLProgressbar.ControlSetCaption(const Value: string);
+begin
+  Caption := Value;
+end;
+
+procedure TJvDynControlVCLProgressbar.ControlSetTabOrder(Value: Integer);
+begin
+  TabOrder := Value;
+end;
+
+procedure TJvDynControlVCLProgressbar.ControlSetOnEnter(Value: TNotifyEvent);
+begin
+  OnEnter := Value;
+end;
+
+procedure TJvDynControlVCLProgressbar.ControlSetOnExit(Value: TNotifyEvent);
+begin
+  OnExit := Value;
+end;
+
+procedure TJvDynControlVCLProgressbar.ControlSetOnClick(Value: TNotifyEvent);
+begin
+  OnClick := Value;
+end;
+
+procedure TJvDynControlVCLProgressbar.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+procedure TJvDynControlVCLProgressbar.ControlSetAnchors(Value : TAnchors);
+begin
+  Anchors := Value;
+end;
+
+procedure TJvDynControlVCLProgressbar.ControlSetMax(Value: integer);
+begin
+  Max := Value;
+end;
+
+procedure TJvDynControlVCLProgressbar.ControlSetMin(Value: integer);
+begin
+  Min := Value;
+end;
+
+procedure TJvDynControlVCLProgressbar.ControlSetOrientation(Value: TProgressBarOrientation);
+begin
+  Orientation:= Value;
+end;
+
+procedure TJvDynControlVCLProgressbar.ControlSetPosition(Value: integer);
+begin
+  Position := Value;
+end;
+
+procedure TJvDynControlVCLProgressbar.ControlSetSmooth(Value: boolean);
+begin
+  Smooth := Value;
+end;
+
+procedure TJvDynControlVCLProgressbar.ControlSetStep(Value: integer);
+begin
+  Step := Value;
+end;
+
+
 //=== { TJvDynControlEngineVCL } =============================================
 
 procedure SetDynControlEngineVCLDefault;
@@ -2868,6 +2961,7 @@ begin
   RegisterControlType(jctRichEdit, TJvDynControlVCLRichEdit);
   RegisterControlType(jctButtonEdit, TJvDynControlVCLButtonEdit);
   RegisterControlType(jctTreeView, TJvDynControlVCLTreeView);
+  RegisterControlType(jctProgressbar, TJvDynControlVCLProgressbar);
 end;
 
 initialization
