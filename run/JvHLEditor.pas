@@ -838,7 +838,7 @@ begin
 
     if (FHighlighter = hlSyntaxHighlighter) and (FSyntaxHighlighter <> nil) then
     begin
-     // user defined syntax highlighting
+      // user defined syntax highlighting
       FSyntaxHighlighter.GetAttr(Self, Lines, Line, ColBeg, ColEnd, FLong, LineAttrs);
       Exit;
     end;
@@ -858,7 +858,8 @@ begin
       C := Colors.Comment
     else
       C := Colors.PlainText;
-    if (FLong <> 0) {and (FHighlighter <> hlHtml)} then
+    // (rom) reenabled second part of if to handle two line DOCTYPE
+    if (FLong <> 0) and (FHighlighter <> hlHtml) then
     begin
       Parser.pcPos := Parser.pcProgram + FindLongEnd + 1;
       case Highlighter of
