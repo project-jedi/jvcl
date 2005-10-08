@@ -740,6 +740,19 @@ function HTMLPlainText(const Text: string): string;
 function HTMLTextHeight(Canvas: TCanvas; const Text: string; Scale: Integer = 100): Integer;
 function HTMLPrepareText(const Text: string): string;
 
+// This type is used to allow an easy migration from a TBitmap property to a
+// TPicture property. It is, for instance, used in TJvXPButton so that users
+// migrating to the JVCL can still open their applications and benefit
+// automatically from the change of format. The whole point is that a TPicture
+// can also contain an Icon, which could be a valid source for a button glyph.
+type
+  TJvPicture = class (TPicture)
+  private
+    procedure ReadBitmapData(Stream: TStream);
+  protected
+    procedure DefineProperties(Filer: TFiler); override;
+  end;
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -7779,6 +7792,65 @@ begin
   if Result = 0 then
     Result := CanvasMaxTextHeight(Canvas);
   Inc(Result);
+end;
+
+{ TJvPicture }
+procedure TJvPicture.ReadBitmapData(Stream: TStream);
+var
+  Size: Longint;
+begin
+  Stream.Read(Size, SizeOf(Size));
+  Bitmap.LoadFromStream(Stream);
+end;
+
+type
+  TAccessReader = class(TReader)
+  end;
+   
+procedure TJvPicture.DefineProperties(Filer: TFiler);
+var
+  SavedPosition: Integer;
+  Reader: TReader;
+  VType : TValueType;
+  WasBitmap : Boolean;
+  Count : Longint;
+  NameLength: Byte;
+begin
+  if Filer is TReader then
+  begin
+    // When we are reading, we must detect if the data is a valid TPicture
+    // data or just a TBitmap data. This is done by having a sneak peak at
+    // what's in the reader stream. If we find a NameLength tag that is
+    // greater than 63 (it's built-in limit, see TPicture.DefineProperties)
+    // then it must be a TBitmap and we then tell the bitmap to load itself
+    // from the Filter.
+    // Note: the test must be done here, before any call to the
+    // DefineBinaryProperty of the Reader. If not, then the FPropName field
+    // would be put back to blank and prevent the inherited DefineProperties
+    // from working correctly.
+    Reader := Filer as TReader;
+    WasBitmap := False;
+    SavedPosition := Reader.Position;
+
+    VType := Reader.ReadValue;
+    if VType = vaBinary then
+    begin
+      Reader.Read(Count, SizeOf(Count));
+      Reader.Read(NameLength, SizeOf(NameLength));
+      WasBitmap := NameLength > 63;
+    end;
+
+    Reader.Position := SavedPosition;
+
+    if WasBitmap then
+      Filer.DefineBinaryProperty('Data', ReadBitmapData, nil, True)
+    else
+      inherited DefineProperties(Filer);
+  end
+  else
+  begin
+    inherited DefineProperties(Filer);
+  end;
 end;
 
 initialization
