@@ -84,11 +84,11 @@ type
     FWeekNumbers: Boolean;
     FFirstDoW: TJvMonthCalWeekDay;
     FColors: TJvMonthCalColors;
-    FBoldDays: TStringList;
+    FBoldDays: TStrings;
     procedure SetColors(const AValue: TJvMonthCalColors);
     function GetBoldDays: TStrings;
-    procedure SetBoldDays(const AValue: TStrings);
-    procedure SetCalendar(const AValue: TJvCustomMonthCalendar);
+    procedure SetBoldDays(AValue: TStrings);
+    procedure SetCalendar(AValue: TJvCustomMonthCalendar);
     function GetCalendar: TJvCustomMonthCalendar;
     procedure SetCircleToday(const AValue: Boolean);
     procedure SetFirstDoW(const AValue: TJvMonthCalWeekDay);
@@ -534,13 +534,10 @@ type
   protected
     function GetDateIndex(Year, Month: Word): Integer; virtual;
     function GetBoldDays(Y, M: Word): string; virtual;
+    procedure Changed; override;
   public
     constructor Create;
-    { (RB) This is the same as the TStrings.AddString implementation ??? }
-    procedure AddStrings(Strings: TStrings); override;
     function AddObject(const S: string; AObject: TObject): Integer; override;
-    { (RB) no need to override Add, TStringList.Add just calls AddObject }
-    //function Add(const S: string): Integer; override;
     function IsBold(Year, Month, Day: Word): Boolean;
     procedure SetBold(Year, Month, Day: Word; Value: Boolean);
     function AddDays(Year, Month: Word; const Days: string): Integer; virtual;
@@ -567,28 +564,6 @@ begin
   else
     Result := Add(Format('%.4d%.2d=%s', [Year, Month, Days]));
 end;
-
-{ Note!
-  This must be fully qualified, i.e. '199801=1,2,3,4,5' or '000012=25,31' etc
-}
-
-(*function TMonthCalStrings.Add(const S: string): Integer;
-begin
-  if AnsiPos('=', S) <> 7 then
-    raise EMonthCalError.CreateResFmt(@RsEInvalidDateStr, [S]);
-
-  Result := IndexOfName(Copy(S, 1, 6));
-  if Result > -1 then
-  begin
-    Sorted := False;
-    Strings[Result] := S;
-    Sorted := True;
-  end
-  else
-    Result := inherited Add(S);
-  if (Calendar <> nil) and Calendar.HandleAllocated then
-    Calendar.DoBoldDays;
-end;*)
 
 function TMonthCalStrings.IsBold(Year, Month, Day: Word): Boolean;
 var
@@ -621,18 +596,9 @@ begin
   end;
 end;
 
-procedure TMonthCalStrings.AddStrings(Strings: TStrings);
-var
-  I: Integer;
-begin
-  BeginUpdate;
-  try
-    for I := 0 to Strings.Count - 1 do
-      Add(Strings[I]);
-  finally
-    EndUpdate;
-  end;
-end;
+{ Note!
+  This must be fully qualified, i.e. '199801=1,2,3,4,5' or '000012=25,31' etc
+}
 
 function TMonthCalStrings.AddObject(const S: string; AObject: TObject): Integer;
 begin
@@ -643,17 +609,22 @@ begin
     raise EMonthCalError.CreateResFmt(@RsEInvalidDateStr, [S]);
     {$ENDIF CLR}
 
-  Result := IndexOfName(Copy(S, 1, 6));
-  if Result > -1 then
-  begin
-    Sorted := False;
-    Strings[Result] := S;
-    Sorted := True;
-  end
-  else
-    Result := inherited AddObject(S, AObject);
-  if (Calendar <> nil) and Calendar.HandleAllocated then
-    Calendar.DoBoldDays;
+  BeginUpdate;
+  try
+    Result := IndexOfName(Copy(S, 1, 6));
+    if Result > -1 then
+    begin
+      { We can only set items when Sorted = False }
+      Sorted := False;
+      Strings[Result] := S;
+      Objects[Result] := AObject;
+      Sorted := True;
+    end
+    else
+      Result := inherited AddObject(S, AObject);
+  finally
+    EndUpdate;
+  end;
 end;
 
 function TMonthCalStrings.GetDateIndex(Year, Month: Word): Integer;
@@ -680,6 +651,13 @@ begin
   else
     S := Format('%.4d%.2d', [Y, M]);
   Result := Values[S];
+end;
+
+procedure TMonthCalStrings.Changed;
+begin
+  inherited Changed;
+  if (UpdateCount = 0) and Assigned(Calendar) then
+    Calendar.DoBoldDays;
 end;
 
 //=== { TJvCustomMonthCalendar } =============================================
@@ -1397,14 +1375,12 @@ begin
   Result := FBoldDays;
 end;
 
-procedure TJvMonthCalAppearance.SetBoldDays(const AValue: TStrings);
+procedure TJvMonthCalAppearance.SetBoldDays(AValue: TStrings);
 begin
   FBoldDays.Assign(AValue);
-  if Assigned(Calendar) then
-    Calendar.DoBoldDays;
 end;
 
-procedure TJvMonthCalAppearance.SetCalendar(const AValue: TJvCustomMonthCalendar);
+procedure TJvMonthCalAppearance.SetCalendar(AValue: TJvCustomMonthCalendar);
 begin
   FColors.Calendar := AValue;
   TMonthCalStrings(FBoldDays).Calendar := AValue;
