@@ -559,9 +559,6 @@ type
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
     {$ENDIF !CLR}
     procedure GetDlgCode(var Code: TDlgCodes); virtual;
-
-    // Do not use HWND for those two parameters, see BCB compatibility
-    // guide for the reason. 
     procedure FocusSet(PrevWnd: THandle); virtual;
     procedure FocusKilled(NextWnd: THandle); virtual;
     function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
@@ -969,9 +966,9 @@ begin
         ControlsListChanged(TControl(Msg.WParam), True);
     {$ENDIF !CLR}
     WM_SETFOCUS:
-      FocusSet(HWND(Msg.WParam));
+      FocusSet(THandle(Msg.WParam));
     WM_KILLFOCUS:
-      FocusKilled(HWND(Msg.WParam));
+      FocusKilled(THandle(Msg.WParam));
     WM_SIZE:
       begin
         inherited WndProc(Msg);
@@ -1304,9 +1301,9 @@ begin
         ControlsListChanged(TControl(Msg.WParam), True);
     {$ENDIF !CLR}
     WM_SETFOCUS:
-      FocusSet(HWND(Msg.WParam));
+      FocusSet(THandle(Msg.WParam));
     WM_KILLFOCUS:
-      FocusKilled(HWND(Msg.WParam));
+      FocusKilled(THandle(Msg.WParam));
     WM_SIZE:
       begin
         inherited WndProc(Msg);
@@ -1639,9 +1636,9 @@ begin
         ControlsListChanged(TControl(Msg.WParam), True);
     {$ENDIF !CLR}
     WM_SETFOCUS:
-      FocusSet(HWND(Msg.WParam));
+      FocusSet(THandle(Msg.WParam));
     WM_KILLFOCUS:
-      FocusKilled(HWND(Msg.WParam));
+      FocusKilled(THandle(Msg.WParam));
     WM_SIZE:
       begin
         inherited WndProc(Msg);
@@ -1974,9 +1971,9 @@ begin
         ControlsListChanged(TControl(Msg.WParam), True);
     {$ENDIF !CLR}
     WM_SETFOCUS:
-      FocusSet(HWND(Msg.WParam));
+      FocusSet(THandle(Msg.WParam));
     WM_KILLFOCUS:
-      FocusKilled(HWND(Msg.WParam));
+      FocusKilled(THandle(Msg.WParam));
     WM_SIZE:
       begin
         inherited WndProc(Msg);
@@ -2309,9 +2306,9 @@ begin
         ControlsListChanged(TControl(Msg.WParam), True);
     {$ENDIF !CLR}
     WM_SETFOCUS:
-      FocusSet(HWND(Msg.WParam));
+      FocusSet(THandle(Msg.WParam));
     WM_KILLFOCUS:
-      FocusKilled(HWND(Msg.WParam));
+      FocusKilled(THandle(Msg.WParam));
     WM_SIZE:
       begin
         inherited WndProc(Msg);
@@ -2644,9 +2641,9 @@ begin
         ControlsListChanged(TControl(Msg.WParam), True);
     {$ENDIF !CLR}
     WM_SETFOCUS:
-      FocusSet(HWND(Msg.WParam));
+      FocusSet(THandle(Msg.WParam));
     WM_KILLFOCUS:
-      FocusKilled(HWND(Msg.WParam));
+      FocusKilled(THandle(Msg.WParam));
     WM_SIZE:
       begin
         inherited WndProc(Msg);
@@ -3003,9 +3000,9 @@ begin
         ControlsListChanged(TControl(Msg.WParam), True);
     {$ENDIF !CLR}
     WM_SETFOCUS:
-      FocusSet(HWND(Msg.WParam));
+      FocusSet(THandle(Msg.WParam));
     WM_KILLFOCUS:
-      FocusKilled(HWND(Msg.WParam));
+      FocusKilled(THandle(Msg.WParam));
     WM_SIZE:
       begin
         inherited WndProc(Msg);
@@ -3363,9 +3360,9 @@ begin
         ControlsListChanged(TControl(Msg.WParam), True);
     {$ENDIF !CLR}
     WM_SETFOCUS:
-      FocusSet(HWND(Msg.WParam));
+      FocusSet(THandle(Msg.WParam));
     WM_KILLFOCUS:
-      FocusKilled(HWND(Msg.WParam));
+      FocusKilled(THandle(Msg.WParam));
     WM_SIZE:
       begin
         inherited WndProc(Msg);
