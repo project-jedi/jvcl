@@ -55,7 +55,7 @@ type
 
   TJvMonthCalColors = class(TPersistent)
   private
-    Calendar: TJvCustomMonthCalendar;
+    FCalendar: TJvCustomMonthCalendar;
     FBackColor: TColor;
     FTextColor: TColor;
     FTitleBackColor: TColor;
@@ -68,6 +68,7 @@ type
   public
     constructor Create(AOwner: TJvCustomMonthCalendar);
     procedure Assign(Source: TPersistent); override;
+    property Calendar: TJvCustomMonthCalendar read FCalendar;
   published
     property BackColor: TColor index 0 read GetColor write SetColor default clWindow;
     property TextColor: TColor index 1 read GetColor write SetColor default clWindowText;
@@ -438,7 +439,7 @@ end;
 constructor TJvMonthCalColors.Create(AOwner: TJvCustomMonthCalendar);
 begin
   inherited Create;
-  Calendar := AOwner;
+  FCalendar := AOwner;
   FBackColor := clWindow;
   FTextColor := clWindowText;
   FTitleBackColor := clActiveCaption;
@@ -530,17 +531,27 @@ end;
 type
   TMonthCalStrings = class(TStringList)
   private
-    Calendar: TJvCustomMonthCalendar;
+    FCalendar: TJvCustomMonthCalendar;
+{$IFDEF COMPILER5}
+    FUpdateCount: Integer;
+{$ENDIF COMPILER5}
   protected
     function GetDateIndex(Year, Month: Word): Integer; virtual;
     function GetBoldDays(Y, M: Word): string; virtual;
     procedure Changed; override;
+{$IFDEF COMPILER5}
+    procedure SetUpdateState(Updating: Boolean); override;
+{$ENDIF COMPILER5}
   public
     constructor Create;
     function AddObject(const S: string; AObject: TObject): Integer; override;
     function IsBold(Year, Month, Day: Word): Boolean;
     procedure SetBold(Year, Month, Day: Word; Value: Boolean);
     function AddDays(Year, Month: Word; const Days: string): Integer; virtual;
+    property Calendar: TJvCustomMonthCalendar read FCalendar;
+{$IFDEF COMPILER5}
+    property UpdateCount: Integer read FUpdateCount;
+{$ENDIF COMPILER5}
   end;
 
 constructor TMonthCalStrings.Create;
@@ -548,6 +559,9 @@ begin
   inherited Create;
   Sorted := True;
   Duplicates := dupIgnore;
+{$IFDEF COMPILER5}
+  FUpdateCount := 0;
+{$ENDIF COMPILER5}
 end;
 
 { Days is a comma separated list of days to set as bold. If Days is empty, the
@@ -659,6 +673,17 @@ begin
   if (UpdateCount = 0) and Assigned(Calendar) then
     Calendar.DoBoldDays;
 end;
+
+{$IFDEF COMPILER5}
+procedure TMonthCalStrings.SetUpdateState(Updating: Boolean);
+begin
+  inherited SetUpdateState(Updating);
+  if Updating then
+    FUpdateCount := 1
+  else
+    FUpdateCount := 0;
+end;
+{$ENDIF COMPILER5}
 
 //=== { TJvCustomMonthCalendar } =============================================
 
@@ -1382,8 +1407,8 @@ end;
 
 procedure TJvMonthCalAppearance.SetCalendar(AValue: TJvCustomMonthCalendar);
 begin
-  FColors.Calendar := AValue;
-  TMonthCalStrings(FBoldDays).Calendar := AValue;
+  FColors.FCalendar := AValue;
+  TMonthCalStrings(FBoldDays).FCalendar := AValue;
 end;
 
 procedure TJvMonthCalAppearance.SetCircleToday(const AValue: Boolean);
