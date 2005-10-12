@@ -148,7 +148,7 @@ function GetFocusedControl(AControl: TControl): TWinControl;
 function DlgcToDlgCodes(Value: Longint): TDlgCodes;
 function DlgCodesToDlgc(Value: TDlgCodes): Longint;
 procedure GetHintColor(var HintInfo: THintInfo; AControl: TControl; HintColor: TColor);
-function DispatchIsDesignMsg(Control: TControl; var Msg: TMessage):Boolean;
+function DispatchIsDesignMsg(Control: TControl; var Msg: TMessage): Boolean;
 
 {$IFDEF COMPILER5}
 procedure TOpenControl_SetAutoSize(AControl: TControl; Value: Boolean);
@@ -404,16 +404,24 @@ begin
   end;
 end;
 
-function DispatchIsDesignMsg(Control: TControl; var Msg: TMessage):Boolean;
+function DispatchIsDesignMsg(Control: TControl; var Msg: TMessage): Boolean;
 var
   Form: TCustomForm;
 begin
   Result := False;
+  case Msg.Msg of
+    WM_SETFOCUS, WM_KILLFOCUS, WM_NCHITTEST,
+    WM_MOUSEFIRST..WM_MOUSELAST,
+    WM_KEYFIRST..WM_KEYLAST,
+    WM_CANCELMODE:
+      Exit; // These messages are handled in TWinControl.WndProc before IsDesignMsg() is called
+  end;
   if (Control <> nil) and (csDesigning in Control.ComponentState) then
   begin
     Form := GetParentForm(Control);
-    if (Form <> nil) and (Form.Designer <> nil) then
-     Result :=  Form.Designer.IsDesignMsg(Control, Msg);
+    if (Form <> nil) and (Form.Designer <> nil) and
+       Form.Designer.IsDesignMsg(Control, Msg) then
+      Result := True;
   end;
 end;
 
