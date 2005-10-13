@@ -240,50 +240,90 @@ type
     {$ENDIF VCL}
     property Text;
   published
+    property Style; {Must be published before Items}
+    
     property Align;
+    property Anchors;
+    property AutoComplete default True;
+    {$IFDEF COMPILER6_UP}
+    property AutoDropDown default False;
+    {$ENDIF COMPILER6_UP}
+    property BevelEdges;
+    property BevelInner;
+    property BevelKind default bkNone;
+    property BevelOuter;
+    property BiDiMode;
+    property ButtonFrame: Boolean read FButtonFrame write FButtonFrame default False;
+    property ButtonStyle: TJvButtonColors read FButtonStyle write FButtonStyle;
+    property CharCase;
     property Color;
+    property ColorHighlight: TColor read FColorHighlight write SetColorHighlight default clHighlight;
+    property ColorHighlightText: TColor read FColorHighlightText write SetColorHighlightText default clHighlightText;
+    property Constraints;
+    property DefaultIndent: Integer read FDefaultIndent write SetDefaultIndent default 0;
     {$IFDEF VCL}
     property DragCursor;
     {$ENDIF VCL}
+    property DragKind;
     property DroppedWidth: Integer read GetDroppedWidth write SetDroppedWidth;
     property DragMode;
     property DropDownCount;
+    property EmptyValue;
+    property EmptyFontColor;
+    property Enabled;
+    property Font;
+    property FullWidthItemDraw: Boolean read FFullWidthItemDraw write SetFullWidthItemDraw default False;
+    property HintColor;
     property ImageHeight: Integer read FImageHeight write FImageHeight;
     property ImageWidth: Integer read FImageWidth write FImageWidth;
-    property Items: TJvImageItems read FItems write SetItems;
-    property IndentSelected: Boolean read FIndentSelected write SetIndentSelected default False;
-    property ItemIndex;
-    property DefaultIndent: Integer read FDefaultIndent write SetDefaultIndent default 0;
-    property Enabled;
-    property ButtonFrame: Boolean read FButtonFrame write FButtonFrame default False;
-    property ButtonStyle: TJvButtonColors read FButtonStyle write FButtonStyle;
-    property ColorHighlight: TColor read FColorHighlight write SetColorHighlight default clHighlight;
-    property ColorHighlightText: TColor read FColorHighlightText write SetColorHighlightText default clHighlightText;
-    property Font;
     property Images: TCustomImageList read FImageList write SetImageList;
-    property FullWidthItemDraw: Boolean read FFullWidthItemDraw write SetFullWidthItemDraw default False;
+    property ImeMode;
+    property ImeName;
+    property IndentSelected: Boolean read FIndentSelected write SetIndentSelected default False;
+    property ItemHeight;
+    property ItemIndex;
+    property MaxLength;
+    property MaxPixel;
+    property MeasureStyle;
+    property ParentBiDiMode;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
+    property Provider;
+    property ReadOnly; 
     property ShowHint;
+    property Sorted;
     property Tag;
     property TabOrder;
     property TabStop;
     property Visible;
+    
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnClick;
+    property OnCloseUp;
+    property OnContextPopup;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
+    property OnDrawItem;
     property OnDropDown;
     property OnEndDrag;
+    property OnEndDock;
     property OnEnter;
     property OnExit;
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
+    property OnMeasureItem;
+    property OnMouseEnter;
+    property OnMouseLeave;
+    property OnParentColorChange;
+    property OnSelect;
+    property OnStartDock;
     property OnStartDrag;
+
+    property Items: TJvImageItems read FItems write SetItems; // must be declared after OnMeasureItem
   end;
 
   TJvImageListBox = class(TJvExCustomListBox, IUnknown, IJvResetItemHeight)
