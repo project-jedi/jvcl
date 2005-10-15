@@ -2247,6 +2247,7 @@ procedure TJvLineInformationList.DeleteLine(Line: Integer);
 var
   I: Integer;
 begin
+  Dec(Line);
   for I := Count - 1 downto 0 do
     if Items[I].Line = Line then
       FList.Delete(I)
@@ -2259,6 +2260,7 @@ procedure TJvLineInformationList.InsertLine(Line: Integer);
 var
   I: Integer;
 begin
+  Dec(Line);
   for I := 0 to Count - 1 do
     if Items[I].Line >= Line then
       Items[I].Line := Items[I].Line + 1;
@@ -5741,6 +5743,7 @@ procedure TJvErrorHighlighting.DeleteLine(Line: Integer);
 var
   I: Integer;
 begin
+  Dec(Line);
   BeginUpdate;
   try
     for I := Count - 1 downto 0 do
@@ -5758,6 +5761,7 @@ procedure TJvErrorHighlighting.InsertLine(Line: Integer);
 var
   I: Integer;
 begin
+  Dec(Line);
   BeginUpdate;
   try
     for I := 0 to Count - 1 do
