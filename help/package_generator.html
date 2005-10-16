@@ -277,7 +277,7 @@ template files.<br>
       </td>
       <td style="vertical-align: top;">Package<br>
       </td>
-      <td style="vertical-align: top;">This is node has the same
+      <td style="vertical-align: top;">This node has the same
 meaning as C5PFlags but for C++ Builder 6, hence being the replacement
 for %C6PFLAGS%<br>
       </td>
@@ -302,6 +302,57 @@ list of library files and will be the replacement for %C5LIBS%<br>
       <td style="vertical-align: top;">This node has the same meaning
 as C5Libs but will be the replacement for %C6LIBS%<br>
       </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">ImageBase<br>
+      </td>
+      <td style="vertical-align: top;">Package<br>
+      </td>
+      <td style="vertical-align: top;">A string that will be the
+replacement for %IMAGE_BASE%. It's recommended use is to set the base
+of the image in a compiler directive. This node is not compulsory, an
+empty string being used by default.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">VersionMajorNumber<br>
+      </td>
+      <td style="vertical-align: top;">Package<br>
+      </td>
+      <td style="vertical-align: top;">A string that will be the
+replacement for %VERSION_MAJOR_NUMBER%. It's
+recommended use is to store the major version number. <br>
+This node is not compulsory, an empty string being used as a default.</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">VersionMinorNumber<br>
+      </td>
+      <td style="vertical-align: top;">Package<br>
+      </td>
+      <td style="vertical-align: top;">A string that will be the
+replacement for %VERSION_MINOR_NUMBER%. It's
+recommended use is to store the minor version number. <br>
+This node is not compulsory, an empty string being used as a default.</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">ReleaseNumber<br>
+      </td>
+      <td style="vertical-align: top;">Package<br>
+      </td>
+      <td style="vertical-align: top;">A string that will be the
+replacement for %RELEASE_NUMBER%. It's
+recommended use is to store the release number. <br>
+This node is not compulsory, an empty string being used as a default.</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">BuildNumber<br>
+      </td>
+      <td style="vertical-align: top;">Package<br>
+      </td>
+      <td style="vertical-align: top;">A string that will be the
+replacement for %BUILD_NUMBER%. It's
+recommended use is to store the build number. <br>
+This node is not compulsory, an empty string being used as a default.</td>
     </tr>
     <tr>
       <td style="vertical-align: top;">Requires<br>
@@ -816,7 +867,7 @@ information on the handling of the include file.<br>
             <td style="vertical-align: top;">Indicates which character
 is to be used as a path separator for the target. If not specified,
 this value defaults to "\". You are most likely to setup this value for
-Linux targets, where it should be set tot "/"<br>
+Linux targets, where it should be set to "/"<br>
             </td>
           </tr>
           <tr>
@@ -936,7 +987,7 @@ and can appear more than once.<br>
       </td>
     </tr>
     <tr>
-      <td colspan="1" rowspan="13"
+      <td colspan="1" rowspan="18"
  style="vertical-align: top; white-space: nowrap;">Standard Line<br>
       </td>
       <td style="vertical-align: top; white-space: nowrap;">&lt;%%%
@@ -1009,6 +1060,37 @@ processed for conditions.<br>
       <td style="vertical-align: top;">Replaced by the value from the
 c6pflags node in the package XML source file, after it has been
 processed for conditions.</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">%IMAGE_BASE%<br>
+      </td>
+      <td style="vertical-align: top;">Replaced by the value from the
+ImageBase node in the package XML source file.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">%VERSION_MAJOR_NUMBER%<br>
+      </td>
+      <td style="vertical-align: top;">Replaced by the value from the
+VersionMajorNumber node in the package XML source file.</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">%VERSION_MINOR_NUMBER%<br>
+      </td>
+      <td style="vertical-align: top;">Replaced by the value from the
+VersionMinorNumber node in the package XML source file.</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">%RELEASE_NUMBER%<br>
+      </td>
+      <td style="vertical-align: top;">Replaced by the value from the
+ReleaseNumber node in the package XML source file.</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">%BUILD_NUMBER%<br>
+      </td>
+      <td style="vertical-align: top;">Replaced by the value from the
+BuildNumber node in the package XML source file.</td>
     </tr>
     <tr>
       <td style="vertical-align: top; white-space: nowrap;">%TYPE%<br>
