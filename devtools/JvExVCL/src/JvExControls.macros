@@ -91,8 +91,8 @@
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean); reintroduce; dynamic;
     {$ENDIF !CLR}
     procedure GetDlgCode(var Code: TDlgCodes); virtual;
-    procedure FocusSet(PrevWnd: HWND); virtual;
-    procedure FocusKilled(NextWnd: HWND); virtual;
+    procedure FocusSet(PrevWnd: THandle); virtual;
+    procedure FocusKilled(NextWnd: THandle); virtual;
     function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF JVCLThemesEnabledD56}
   private
@@ -346,12 +346,12 @@ procedure TJvEx##ClassName.GetDlgCode(var Code: TDlgCodes);
 begin
 end;
 
-procedure TJvEx##ClassName.FocusSet(PrevWnd: HWND);
+procedure TJvEx##ClassName.FocusSet(PrevWnd: THandle);
 begin
   BaseWndProc(WM_SETFOCUS, Integer(PrevWnd), 0);
 end;
 
-procedure TJvEx##ClassName.FocusKilled(NextWnd: HWND);
+procedure TJvEx##ClassName.FocusKilled(NextWnd: THandle);
 begin
   BaseWndProc(WM_KILLFOCUS, Integer(NextWnd), 0);
 end;
@@ -478,9 +478,9 @@ end;
         ControlsListChanged(TControl(Msg.WParam), True);
     {$ENDIF !CLR}
     WM_SETFOCUS:
-      FocusSet(HWND(Msg.WParam));
+      FocusSet(THandle(Msg.WParam));
     WM_KILLFOCUS:
-      FocusKilled(HWND(Msg.WParam));
+      FocusKilled(THandle(Msg.WParam));
     WM_SIZE:
       begin
         inherited WndProc(Msg);
