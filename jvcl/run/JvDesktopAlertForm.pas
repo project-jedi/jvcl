@@ -15,7 +15,7 @@ Portions created by Peter Thornqvist are Copyright (C) 2004 Peter Thornqvist.
 All Rights Reserved.
 
 Contributor(s):
-Hans-Eric Grnlund (stack logic)
+Hans-Eric Grönlund (stack logic)
 Olivier Sannier (animation styles logic)
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
@@ -97,6 +97,7 @@ type
     procedure JvDeskTopAlertAutoFree(var Msg: TMessage); message JVDESKTOPALERT_AUTOFREE;
     procedure DoMouseTimer(Sender: TObject);
     procedure FormPaint(Sender: TObject);
+    function GetVisible: Boolean;
   protected
     procedure DoShow; override;
     procedure DoClose(var Action: TCloseAction); override;
@@ -129,6 +130,8 @@ type
     procedure SetNewOrigin(ALeft, ATop: Integer);
     procedure DoButtonClick(Sender: TObject);
     procedure ShowNoActivate;
+    property Showing read GetVisible;
+    property Visible read GetVisible;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnUserMove: TNotifyEvent read FOnUserMove write FOnUserMove;
@@ -449,6 +452,8 @@ procedure TJvFormDesktopAlert.DoClose(var Action: TCloseAction);
 begin
   MouseTimer.Enabled := False;
   inherited DoClose(Action);
+  if Action = caHide then
+    ShowWindow(Handle, SW_HIDE);
 end;
 
 //=== { TJvDesktopAlertButton } ==============================================
@@ -721,9 +726,18 @@ end;
 
 procedure TJvFormDesktopAlert.ShowNoActivate;
 begin
+  Include(FFormState, fsShowing);
+  Windows.SetParent(Handle, 0);
   SetWindowPos(Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE
     or SWP_NOACTIVATE or SWP_NOOWNERZORDER or SWP_NOREDRAW or SWP_NOSENDCHANGING);
   DoShow;
+  Exclude(FFormState, fsShowing);
+  Include(FFormState, fsVisible);
+end;
+
+function TJvFormDesktopAlert.GetVisible: Boolean;
+begin
+  Result := IsWindowVisible(Handle);
 end;
 
 initialization

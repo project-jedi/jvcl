@@ -1226,7 +1226,7 @@ begin
           for I := 0 to Pred(C) do
           begin
             Form := Items[I];
-            if Assigned(Form) and IsWindowVisible(Form.Handle) then
+            if Assigned(Form) and Form.Visible then
             begin
               X := R.Right - Form.Width;
               Dec(Y, Form.Height);
@@ -1241,7 +1241,7 @@ begin
           for I := 0 to Pred(C) do
           begin
             Form := Items[I];
-            if Assigned(Form) and IsWindowVisible(Form.Handle) then
+            if Assigned(Form) and Form.Visible then
             begin
               Dec(Y, Form.Height);
               Form.SetNewOrigin(X, Y);
@@ -1254,7 +1254,7 @@ begin
           for I := 0 to Pred(C) do
           begin
             Form := Items[I];
-            if Assigned(Form) and IsWindowVisible(Form.Handle) then
+            if Assigned(Form) and Form.Visible then
             begin
               X := R.Right - Form.Width;
               Form.SetNewOrigin(X, Y);
@@ -1269,7 +1269,7 @@ begin
           for I := 0 to Pred(C) do
           begin
             Form := Items[I];
-            if Assigned(Form) and IsWindowVisible(Form.Handle) then
+            if Assigned(Form) and Form.Visible then
             begin
               Form.SetNewOrigin(X, Y);
               Inc(Y, Form.Height);
