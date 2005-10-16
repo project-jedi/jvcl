@@ -2407,18 +2407,20 @@ var
   Sender: TWinControl;
 begin
   inherited FocusKilled(NextWnd);
-  FFocused := False;
-
-  Sender := FindControl(NextWnd);
-  if (Sender <> Self) and (Sender <> FPopup) and
-    {(Sender <> FButton)} ((FPopup <> nil) and
-    not FPopup.ContainsControl(Sender)) then
+  FFocused := Screen.ActiveControl <> Self;
+  if not FFocused then
   begin
-    { MSDN : While processing this message (WM_KILLFOCUS), do not make any
-             function calls that display or activate a window.
-    }
-    AsyncPopupCloseUp(False);
-  end; 
+    Sender := FindControl(NextWnd);
+    if (Sender <> Self) and (Sender <> FPopup) and
+      {(Sender <> FButton)} ((FPopup <> nil) and
+      not FPopup.ContainsControl(Sender)) then
+    begin
+      { MSDN : While processing this message (WM_KILLFOCUS), do not make any
+               function calls that display or activate a window.
+      }
+      AsyncPopupCloseUp(False);
+    end;
+  end;
 end;
 
 function TJvCustomComboEdit.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
@@ -2439,9 +2441,10 @@ end;
 
 procedure TJvCustomComboEdit.FocusSet(PrevWnd: THandle);
 begin
-  inherited FocusSet(PrevWnd);
-  FFocused := True;
-  SetShowCaret;
+  inherited FocusSet(PrevWnd); // triggers OnExit and OnEnter => Focus could be changed
+  FFocused := Screen.ActiveControl = Self;
+  if FFocused then
+    SetShowCaret;
 end;
 
 procedure TJvCustomComboEdit.EditButtonClick(Sender: TObject);
