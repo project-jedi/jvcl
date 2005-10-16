@@ -1,9 +1,9 @@
-object frmAdvancedBCB: TfrmAdvancedBCB
+object frmAdvancedOptions: TfrmAdvancedOptions
   Left = 241
   Top = 145
   BorderStyle = bsDialog
-  Caption = 'Advanced BCB options'
-  ClientHeight = 158
+  Caption = 'Advanced options'
+  ClientHeight = 312
   ClientWidth = 404
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -14,11 +14,14 @@ object frmAdvancedBCB: TfrmAdvancedBCB
   OldCreateOrder = False
   Position = poMainFormCenter
   Scaled = False
+  DesignSize = (
+    404
+    312)
   PixelsPerInch = 96
   TextHeight = 13
   object lblExpl: TLabel
     Left = 16
-    Top = 12
+    Top = 164
     Width = 373
     Height = 45
     AutoSize = False
@@ -30,23 +33,59 @@ object frmAdvancedBCB: TfrmAdvancedBCB
   end
   object lblBCB5: TLabel
     Left = 16
-    Top = 68
+    Top = 220
     Width = 27
     Height = 13
     Caption = 'BCB5'
   end
   object lblBCB6: TLabel
     Left = 16
-    Top = 92
+    Top = 244
     Width = 27
     Height = 13
     Caption = 'BCB6'
   end
+  object lblImageBase: TLabel
+    Left = 16
+    Top = 16
+    Width = 55
+    Height = 13
+    Caption = 'Image base'
+  end
+  object lblVersionMajorNumber: TLabel
+    Left = 16
+    Top = 44
+    Width = 101
+    Height = 13
+    Caption = 'Major version number'
+  end
+  object lblVersionMinorNumber: TLabel
+    Left = 16
+    Top = 72
+    Width = 101
+    Height = 13
+    Caption = 'Minor version number'
+  end
+  object lblReleaseNumber: TLabel
+    Left = 16
+    Top = 100
+    Width = 77
+    Height = 13
+    Caption = 'Release number'
+  end
+  object lblBuildNumber: TLabel
+    Left = 16
+    Top = 128
+    Width = 61
+    Height = 13
+    Caption = 'Build number'
+  end
   object bbtOk: TBitBtn
     Left = 156
-    Top = 120
+    Top = 276
     Width = 81
     Height = 29
+    Anchors = [akLeft, akBottom]
     Caption = 'OK'
     Default = True
     ModalResult = 1
@@ -107,16 +146,51 @@ object frmAdvancedBCB: TfrmAdvancedBCB
   end
   object edtBCB5: TEdit
     Left = 56
-    Top = 64
+    Top = 216
     Width = 333
     Height = 21
     TabOrder = 1
   end
   object edtBCB6: TEdit
     Left = 56
-    Top = 88
+    Top = 240
     Width = 333
     Height = 21
     TabOrder = 2
+  end
+  object edtImageBase: TEdit
+    Left = 152
+    Top = 12
+    Width = 241
+    Height = 21
+    TabOrder = 3
+  end
+  object edtVersionMajorNumber: TEdit
+    Left = 152
+    Top = 40
+    Width = 241
+    Height = 21
+    TabOrder = 4
+  end
+  object edtVersionMinorNumber: TEdit
+    Left = 152
+    Top = 68
+    Width = 241
+    Height = 21
+    TabOrder = 5
+  end
+  object edtReleaseNumber: TEdit
+    Left = 152
+    Top = 96
+    Width = 241
+    Height = 21
+    TabOrder = 6
+  end
+  object edtBuildNumber: TEdit
+    Left = 152
+    Top = 124
+    Width = 241
+    Height = 21
+    TabOrder = 7
   end
 end

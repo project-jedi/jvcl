@@ -47,6 +47,9 @@ object frmMain: TfrmMain
     Align = alLeft
     BevelOuter = bvLowered
     TabOrder = 1
+    DesignSize = (
+      137
+      502)
     object jlbList: TJvListBox
       Left = 8
       Top = 8
@@ -217,6 +220,9 @@ object frmMain: TfrmMain
     Align = alClient
     BevelOuter = bvLowered
     TabOrder = 3
+    DesignSize = (
+      660
+      502)
     object lblDependencies: TLabel
       Left = 12
       Top = 132
@@ -415,7 +421,7 @@ object frmMain: TfrmMain
       Width = 89
       Height = 45
       Anchors = [akRight, akBottom]
-      Caption = 'Advanced BCB'
+      Caption = 'Advanced'
       TabOrder = 7
       OnClick = btnAdvancedBCBClick
     end
@@ -1530,6 +1536,10 @@ object frmMain: TfrmMain
   object jaxStore: TJvAppXMLFileStorage
     StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
     StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
+    StorageOptions.AutoEncodeValue = False
+    StorageOptions.AutoEncodeEntity = False
+    StorageOptions.AutoIndent = True
+    StorageOptions.InvalidCharReplacement = '_'
     RootNodeName = 'Configuration'
     SubStorages = <>
     Left = 732
