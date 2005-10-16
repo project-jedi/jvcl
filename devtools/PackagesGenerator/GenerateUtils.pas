@@ -1361,6 +1361,11 @@ begin
              'C5LIBS%', StringsToStr(xml.C5Libs, ' ', False),
              'C6LIBS%', StringsToStr(xml.C6Libs, ' ', False),
              'GUID%', xml.GUID,
+             'IMAGE_BASE%', xml.ImageBase,
+             'VERSION_MAJOR_NUMBER%', xml.VersionMajorNumber,
+             'VERSION_MINOR_NUMBER%', xml.VersionMinorNumber,
+             'RELEASE_NUMBER%', xml.ReleaseNumber,
+             'BUILD_NUMBER%', xml.BuildNumber,
              'TYPE%', Iff(xml.IsDesign, 'DESIGN', 'RUN'),
              'DATETIME%', FormatDateTime('dd-mm-yyyy  hh:nn:ss', NowUTC) + ' UTC',
              'type%', OneLetterType]) then

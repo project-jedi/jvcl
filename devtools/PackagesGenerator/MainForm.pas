@@ -10,7 +10,7 @@ uses
   JvControlBar, ImgList, ActnList, JvComponent, JvBaseDlg, JvBrowseFolder,
   Mask, JvToolEdit, AppEvnts, Grids, JvGrids, JvFormPlacement, JvAppStorage,
   JvStringGrid, JvAppXMLStorage, JvExGrids, JvExComCtrls, JvExExtCtrls,
-  JvExStdCtrls;
+  JvExStdCtrls, JvComponentBase;
 
 type
   TfrmMain = class(TForm)
@@ -171,7 +171,7 @@ type
     FValidOrgDep: Boolean; // True if FOrgValueDep is officially set
     FValidOrgFiles: Boolean; // True if FOrgValueFiles is officially set
 
-    FClxDescription: string; // The CLX description of the active package 
+    FClxDescription: string; // The CLX description of the active package
 
     procedure LoadPackagesList;
     procedure LoadPackage;
@@ -190,7 +190,7 @@ implementation
 
 uses
   FileUtils, JvSimpleXml, JclFileUtils, JclStrings, TargetDialog,
-  GenerateUtils, KnownTagsForm, FormTypeDialog, ShellApi, AdvancedBCBForm,
+  GenerateUtils, KnownTagsForm, FormTypeDialog, ShellApi, AdvancedOptionsForm,
   GenerationMessagesForm,
   {$IFNDEF COMPILER6_UP}
   ActiveX, ComObj,  // For GUID related functions under D5
@@ -475,8 +475,18 @@ begin
       rootNode.Items.Add('GUID', edtGUID.Text);
       rootNode.Items.Add('C5PFlags', ledC5PFlags.Text);
       rootNode.Items.Add('C6PFlags', ledC6PFlags.Text);
-      rootNode.Items.Add('C5Libs', frmAdvancedBCB.edtBCB5.Text);
-      rootNode.Items.Add('C6Libs', frmAdvancedBCB.edtBCB6.Text);
+      rootNode.Items.Add('C5Libs', frmAdvancedOptions.edtBCB5.Text);
+      rootNode.Items.Add('C6Libs', frmAdvancedOptions.edtBCB6.Text);
+      if frmAdvancedOptions.edtImageBase.Text <> '' then
+        rootNode.Items.Add('ImageBase', frmAdvancedOptions.edtImageBase.Text);
+      if frmAdvancedOptions.edtVersionMajorNumber.Text <> '' then
+        rootNode.Items.Add('VersionMajorNumber', frmAdvancedOptions.edtVersionMajorNumber.Text);
+      if frmAdvancedOptions.edtVersionMinorNumber.Text <> '' then
+        rootNode.Items.Add('VersionMinorNumber', frmAdvancedOptions.edtVersionMinorNumber.Text);
+      if frmAdvancedOptions.edtReleaseNumber.Text <> '' then
+        rootNode.Items.Add('ReleaseNumber', frmAdvancedOptions.edtReleaseNumber.Text);
+      if frmAdvancedOptions.edtBuildNumber.Text <> '' then
+        rootNode.Items.Add('BuildNumber', frmAdvancedOptions.edtBuildNumber.Text);
 
       // add required packages
       requiredNode := rootNode.Items.Add('Requires');
@@ -579,10 +589,20 @@ begin
       ledC6PFlags.Text    := rootNode.Items.ItemNamed['C6PFlags'].Value;
       if Assigned(rootNode.Items.ItemNamed['GUID']) then
         edtGUID.Text := rootNode.Items.ItemNamed['GUID'].Value;
-      frmAdvancedBCB.edtBCB5.Text := rootNode.Items.ItemNamed['C5Libs'].Value;
-      frmAdvancedBCB.edtBCB6.Text := rootNode.Items.ItemNamed['C6Libs'].Value;
+      frmAdvancedOptions.edtBCB5.Text := rootNode.Items.ItemNamed['C5Libs'].Value;
+      frmAdvancedOptions.edtBCB6.Text := rootNode.Items.ItemNamed['C6Libs'].Value;
       if Assigned(rootNode.Items.ItemNamed['ClxDescription']) then
         FClxDescription := rootNode.Items.ItemNamed['ClxDescription'].Value;
+      if Assigned(RootNode.Items.ItemNamed['ImageBase']) then             // do not localize
+        frmAdvancedOptions.edtImageBase.Text := RootNode.Items.Value('ImageBase');
+      if Assigned(RootNode.Items.ItemNamed['VersionMajorNumber']) then    // do not localize
+        frmAdvancedOptions.edtVersionMajorNumber.Text := RootNode.Items.Value('VersionMajorNumber');
+      if Assigned(RootNode.Items.ItemNamed['VersionMinorNumber']) then    // do not localize
+        frmAdvancedOptions.edtVersionMinorNumber.Text := RootNode.Items.Value('VersionMinorNumber');
+      if Assigned(RootNode.Items.ItemNamed['ReleaseNumber']) then         // do not localize
+        frmAdvancedOptions.edtReleaseNumber.Text := RootNode.Items.Value('ReleaseNumber');
+      if Assigned(RootNode.Items.ItemNamed['BuildNumber']) then           // do not localize
+        frmAdvancedOptions.edtBuildNumber.Text := RootNode.Items.Value('BuildNumber');
 
       // read required packages
       requiredNode := rootNode.Items.ItemNamed['Requires'];
@@ -765,7 +785,7 @@ begin
   ShowMessage(
     'Jedi Package Generator'#13#10+
     #13#10+
-    '(c) 2003 Olivier Sannier for the Jedi group');
+    '(c) 2003-2005 Olivier Sannier for the Jedi group');
 end;
 
 procedure TfrmMain.jsgFilesGetEditText(Sender: TObject; ACol,
@@ -786,7 +806,7 @@ end;
 
 procedure TfrmMain.btnAdvancedBCBClick(Sender: TObject);
 begin
-  frmAdvancedBCB.ShowModal;
+  frmAdvancedOptions.ShowModal;
 end;
 
 procedure TfrmMain.FormShow(Sender: TObject);
