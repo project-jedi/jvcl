@@ -1140,21 +1140,21 @@ end;
 procedure TJvProgramVersionCheck.DownloadThreadOnFinishAll(Sender: TObject);
 begin
   if FDownloadError <> '' then
-    MessageDlg(FDownloadError, mtError, [mbOK], 0)
+    JvDSADialogs.MessageDlg(FDownloadError, mtError, [mbOK], 0)
   else
   if FExecuteDownloadInstallFileName = '' then
-    MessageDlg(RsPVCFileDownloadNotSuccessful, mtError, [mbOK], 0)
+    JvDSADialogs.MessageDlg(RsPVCFileDownloadNotSuccessful, mtError, [mbOK], 0)
   else
   if FExecuteOperation = rvoCopy then
-    MessageDlg(Format(RsPVCDownloadSuccessfulInstallManually,
+    JvDSADialogs.MessageDlg(Format(RsPVCDownloadSuccessfulInstallManually,
       [FExecuteDownloadInstallFileName]), mtInformation, [mbOK], 0)
   else
-  if MessageDlg(RsPVCDownloadSuccessfullInstallNow,
+  if JvDSADialogs.MessageDlg(RsPVCDownloadSuccessfullInstallNow,
     mtWarning, [mbYes, mbNo], 0) = mrYes then
     if ShellExecEx(FExecuteDownloadInstallFileName) then
       Application.Terminate
     else
-      MessageDlg(RsPVCErrorStartingSetup, mtError, [mbOK], 0);
+      JvDSADialogs.MessageDlg(RsPVCErrorStartingSetup, mtError, [mbOK], 0);
 end;
 
 procedure TJvProgramVersionCheck.Execute;
