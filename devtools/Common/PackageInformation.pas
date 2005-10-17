@@ -109,6 +109,11 @@ type
     FC5Libs: TStrings;
     FC6Libs: TStrings;
     FGUID: string;
+    FReleaseNumber: string;
+    FVersionMinorNumber: string;
+    FVersionMajorNumber: string;
+    FImageBase: string;
+    FBuildNumber: string;
 
     function GetContainCount: Integer;
     function GetContains(Index: Integer): TContainedFile;
@@ -132,6 +137,11 @@ type
     property RequiresDB: Boolean read FRequiresDB;
     property IsDesign: Boolean read FIsDesign;
     property IsXPlaform: Boolean read FIsXPlatform;
+    property ImageBase: string read FImageBase;
+    property VersionMajorNumber: string read FVersionMajorNumber;
+    property VersionMinorNumber: string read FVersionMinorNumber;
+    property ReleaseNumber: string read FReleaseNumber;
+    property BuildNumber: string read FBuildNumber;
 
     property C5PFlags: string read FC5PFlags;
     property C6PFlags: string read FC6PFlags;
@@ -645,6 +655,17 @@ begin
     FIsXPlatform := RootNode.Properties.BoolValue('XPlatform', False);  // do not localize
     FDescription := RootNode.Items.Value('Description');                // do not localize
     FClxDescription := RootNode.Items.Value('ClxDescription');          // do not localize
+
+    if Assigned(RootNode.Items.ItemNamed['ImageBase']) then             // do not localize
+      FImageBase := RootNode.Items.Value('ImageBase');
+    if Assigned(RootNode.Items.ItemNamed['VersionMajorNumber']) then    // do not localize
+      FVersionMajorNumber := RootNode.Items.Value('VersionMajorNumber');
+    if Assigned(RootNode.Items.ItemNamed['VersionMinorNumber']) then    // do not localize
+      FVersionMinorNumber := RootNode.Items.Value('VersionMinorNumber');
+    if Assigned(RootNode.Items.ItemNamed['ReleaseNumber']) then         // do not localize
+      FReleaseNumber := RootNode.Items.Value('ReleaseNumber');
+    if Assigned(RootNode.Items.ItemNamed['BuildNumber']) then           // do not localize
+      FBuildNumber := RootNode.Items.Value('BuildNumber');
 
    // requires
     for i := 0 to RequiredNode.Items.Count -1 do
